@@ -20,14 +20,14 @@ class TestStore:
     def test_h2_300_01(self, env):
         url = env.mkurl("https", "test1", "/index.html")
         r = env.curl_post_data(url, 'XYZ')
-        assert 200 == r.response["status"]
+        assert r.response["status"] == 200
         assert "previous" not in r.response
 
     # check that we see an interim response when we ask for it
     def test_h2_300_02(self, env):
         url = env.mkurl("https", "cgi", "/echo.py")
         r = env.curl_post_data(url, 'XYZ', options=["-H", "expect: 100-continue"])
-        assert 200 == r.response["status"]
+        assert r.response["status"] == 200
         assert "previous" in r.response
         assert 100 == r.response["previous"]["status"] 
 

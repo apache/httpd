@@ -11,7 +11,7 @@ from .env import CoreTestEnv
 
 def pytest_report_header(config, startdir):
     env = CoreTestEnv(setup_dirs=False)
-    return f"core [apache: {env.get_httpd_version()}, mpm: {env.mpm_type}, {env.prefix}]"
+    return f"core [apache: {env.get_httpd_version()}, mpm: {env.mpm_module}, {env.prefix}]"
 
 
 @pytest.fixture(scope="package")
@@ -24,15 +24,19 @@ def env(pytestconfig) -> CoreTestEnv:
     logging.getLogger('').setLevel(level=level)
     env = CoreTestEnv(pytestconfig=pytestconfig)
     env.apache_access_log_clear()
-    env.apache_error_log_clear()
+    env.httpd_error_log.clear_log()
     return env
 
 
 @pytest.fixture(autouse=True, scope="package")
 def _session_scope(env):
+    env.httpd_error_log.set_ignored_lognos([
+        'AH10244',  # core: invalid URI path
+        'AH01264',  # mod_cgid script not found
+    ])
     yield
     assert env.apache_stop() == 0
-    errors, warnings = env.apache_errors_and_warnings()
+    errors, warnings = env.httpd_error_log.get_missed()
     assert (len(errors), len(warnings)) == (0, 0),\
             f"apache logged {len(errors)} errors and {len(warnings)} warnings: \n"\
             "{0}\n{1}\n".format("\n".join(errors), "\n".join(warnings))

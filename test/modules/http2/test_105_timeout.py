@@ -90,13 +90,13 @@ class TestStore:
         conf.install()
         assert env.apache_restart() == 0
         url = env.mkurl("https", "cgi", "/necho.py")
-        r = env.curl_get(url, 5, [
+        r = env.curl_get(url, 5, options=[
             "-vvv",
             "-F", ("count=%d" % 100),
             "-F", ("text=%s" % "abcdefghijklmnopqrstuvwxyz"),
             "-F", ("wait1=%f" % 1.5),
         ])
-        assert 200 == r.response["status"]
+        assert r.response["status"] == 200
 
     def test_h2_105_10(self, env):
         # just a check without delays if all is fine

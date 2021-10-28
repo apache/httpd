@@ -15,7 +15,7 @@ class TestStore:
     @pytest.fixture(autouse=True, scope='class')
     def _class_scope(self, env):
         env.setup_data_1k_1m()
-        H2Conf(env).add("Timeout 10").add_vhost_cgi().install()
+        H2Conf(env).add_vhost_cgi().install()
         assert env.apache_restart() == 0
 
     # upload and GET again using curl, compare to original content
@@ -23,8 +23,8 @@ class TestStore:
         url = env.mkurl("https", "cgi", "/upload.py")
         fpath = os.path.join(env.gen_dir, fname)
         r = env.curl_upload(url, fpath, options=options)
-        assert r.exit_code == 0, r.stderr
-        assert r.response["status"] >= 200 and r.response["status"] < 300
+        assert r.exit_code == 0, f"{r}"
+        assert 200 <= r.response["status"] < 300
 
         r2 = env.curl_get(r.response["header"]["location"])
         assert r2.exit_code == 0
@@ -34,7 +34,7 @@ class TestStore:
         assert src == r2.response["body"]
 
     def test_h2_004_01(self, env):
-        self.curl_upload_and_verify(env, "data-1k", ["--http1.1"])
+        self.curl_upload_and_verify(env, "data-1k", ["-vvv", "--http1.1"])
         self.curl_upload_and_verify(env, "data-1k", ["--http2"])
 
     def test_h2_004_02(self, env):
@@ -99,10 +99,9 @@ class TestStore:
         assert r.response["body"] == src, f"expected '{src}', got '{r.response['body']}'"
 
     @pytest.mark.parametrize("name", [
-        # "data-1k", "data-10k", "data-100k", "data-1m"
-        "data-1m"
+        "data-1k", "data-10k", "data-100k", "data-1m"
     ])
-    def test_h2_004_21(self, env, name, repeat):
+    def test_h2_004_21(self, env, name):
         self.nghttp_post_and_verify(env, name, [])
 
     @pytest.mark.parametrize("name", [
@@ -161,12 +160,12 @@ CustomLog logs/test_004_30 issue_203
         """).add_vhost_cgi().install()
         assert env.apache_restart() == 0
         url = env.mkurl("https", "cgi", "/files/{0}".format(resource))
-        r = env.curl_get(url, 5, ["--http2"])
-        assert 200 == r.response["status"]
-        r = env.curl_get(url, 5, ["--http1.1", "-H", "Range: bytes=0-{0}".format(chunk-1)])
+        r = env.curl_get(url, 5, options=["--http2"])
+        assert r.response["status"] == 200
+        r = env.curl_get(url, 5, options=["--http1.1", "-H", "Range: bytes=0-{0}".format(chunk-1)])
         assert 206 == r.response["status"]
         assert chunk == len(r.response["body"].decode('utf-8'))
-        r = env.curl_get(url, 5, ["--http2", "-H", "Range: bytes=0-{0}".format(chunk-1)])
+        r = env.curl_get(url, 5, options=["--http2", "-H", "Range: bytes=0-{0}".format(chunk-1)])
         assert 206 == r.response["status"]
         assert chunk == len(r.response["body"].decode('utf-8'))
         # now check what response lengths have actually been reported

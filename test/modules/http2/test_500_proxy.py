@@ -22,7 +22,7 @@ class TestStore:
     def test_h2_500_01(self, env):
         url = env.mkurl("https", "cgi", "/proxy/hello.py")
         r = env.curl_get(url, 5)
-        assert 200 == r.response["status"]
+        assert r.response["status"] == 200
         assert "HTTP/1.1" == r.response["json"]["protocol"]
         assert "" == r.response["json"]["https"]
         assert "" == r.response["json"]["ssl_protocol"]

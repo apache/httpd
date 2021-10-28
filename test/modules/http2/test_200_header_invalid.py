@@ -57,12 +57,12 @@ class TestStore:
             val = "%s%s%s%s%s%s%s%s%s%s" % (val, val, val, val, val, val, val, val, val, val)
         # LimitRequestLine 8190 ok, one more char -> 431
         r = env.curl_get(url, options=["-H", "x: %s" % (val[:8187])])
-        assert 200 == r.response["status"]
+        assert r.response["status"] == 200
         r = env.curl_get(url, options=["-H", "x: %sx" % (val[:8188])])
         assert 431 == r.response["status"]
         # same with field name
         r = env.curl_get(url, options=["-H", "y%s: 1" % (val[:8186])])
-        assert 200 == r.response["status"]
+        assert r.response["status"] == 200
         r = env.curl_get(url, options=["-H", "y%s: 1" % (val[:8188])])
         assert 431 == r.response["status"]
 
@@ -75,7 +75,7 @@ class TestStore:
         # LimitRequestFieldSize 8190 ok, one more char -> 400 in HTTP/1.1
         # (we send 4000+4185 since they are concatenated by ", " and start with "x: "
         r = env.curl_get(url, options=["-H", "x: %s" % (val[:4000]),  "-H", "x: %s" % (val[:4185])])
-        assert 200 == r.response["status"]
+        assert r.response["status"] == 200
         r = env.curl_get(url, options=["--http1.1", "-H", "x: %s" % (val[:4000]),  "-H", "x: %s" % (val[:4189])])
         assert 400 == r.response["status"]
         r = env.curl_get(url, options=["-H", "x: %s" % (val[:4000]),  "-H", "x: %s" % (val[:4191])])
@@ -89,9 +89,9 @@ class TestStore:
         for i in range(98):  # curl sends 2 headers itself (user-agent and accept)
             opt += ["-H", "x: 1"]
         r = env.curl_get(url, options=opt)
-        assert 200 == r.response["status"]
+        assert r.response["status"] == 200
         r = env.curl_get(url, options=(opt + ["-H", "y: 2"]))
-        assert 200 == r.response["status"]
+        assert r.response["status"] == 200
 
     # test header field count, LimitRequestFields (default 100)
     # different header names count each
@@ -101,7 +101,7 @@ class TestStore:
         for i in range(98):  # curl sends 2 headers itself (user-agent and accept)
             opt += ["-H", "x{0}: 1".format(i)]
         r = env.curl_get(url, options=opt)
-        assert 200 == r.response["status"]
+        assert r.response["status"] == 200
         r = env.curl_get(url, options=(opt + ["-H", "y: 2"]))
         assert 431 == r.response["status"]
 
@@ -132,7 +132,7 @@ class TestStore:
         for i in range(100):
             opt += ["-H", "x{0}: 1".format(i)]
         r = env.curl_get(url, options=opt)
-        assert 200 == r.response["status"]
+        assert r.response["status"] == 200
 
     # the uri limits
     def test_h2_200_15(self, env):
@@ -145,7 +145,7 @@ class TestStore:
         assert env.apache_restart() == 0
         url = env.mkurl("https", "cgi", "/")
         r = env.curl_get(url)
-        assert 200 == r.response["status"]
+        assert r.response["status"] == 200
         url = env.mkurl("https", "cgi", "/" + (48*"x"))
         r = env.curl_get(url)
         assert 414 == r.response["status"]

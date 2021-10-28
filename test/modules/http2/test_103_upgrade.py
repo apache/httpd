@@ -8,15 +8,13 @@ class TestStore:
     @pytest.fixture(autouse=True, scope='class')
     def _class_scope(self, env):
         H2Conf(env).add_vhost_test1().add_vhost_test2().add_vhost_noh2(
-        ).start_vhost(
-            env.https_port, "test3", doc_root="htdocs/test1", with_ssl=True
+        ).start_vhost(domains=[f"test3.{env.http_tld}"], port=env.https_port, doc_root="htdocs/test1"
         ).add(
             """
             Protocols h2 http/1.1
             Header unset Upgrade"""
         ).end_vhost(
-        ).start_vhost(
-            env.http_port, "test1b", doc_root="htdocs/test1", with_ssl=False
+        ).start_vhost(domains=[f"test1b.{env.http_tld}"], port=env.http_port, doc_root="htdocs/test1"
         ).add(
             """
             Protocols h2c http/1.1
@@ -90,7 +88,7 @@ class TestStore:
     def test_h2_103_20(self, env):
         url = env.mkurl("http", "test1", "/index.html")
         r = env.nghttp().get(url, options=["-u"])
-        assert 200 == r.response["status"]
+        assert r.response["status"] == 200
 
     # upgrade to h2c for a request where http/1.1 is preferred, but the clients upgrade
     # wish is honored nevertheless
@@ -116,4 +114,4 @@ class TestStore:
     def test_h2_103_24(self, env):
         url = env.mkurl("http", "test1b", "/006.html")
         r = env.nghttp().get(url, options=["-u"])
-        assert 200 == r.response["status"]
+        assert r.response["status"] == 200

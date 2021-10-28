@@ -26,8 +26,8 @@ class TestStore:
     def test_h2_100_02(self, env):
         url = env.mkurl("https", "cgi", "/hello.py")
         hostname = ("cgi-alias.%s" % env.http_tld)
-        r = env.curl_get(url, 5, [ "-H", "Host:%s" % hostname ])
-        assert 200 == r.response["status"]
+        r = env.curl_get(url, 5, options=[ "-H", "Host:%s" % hostname ])
+        assert r.response["status"] == 200
         assert "HTTP/2" == r.response["protocol"]
         assert hostname == r.response["json"]["host"]
 
@@ -35,8 +35,8 @@ class TestStore:
     def test_h2_100_03(self, env):
         url = env.mkurl("https", "cgi", "/")
         hostname = ("test1.%s" % env.http_tld)
-        r = env.curl_get(url, 5, [ "-H", "Host:%s" % hostname ])
-        assert 200 == r.response["status"]
+        r = env.curl_get(url, 5, options=[ "-H", "Host:%s" % hostname ])
+        assert r.response["status"] == 200
         assert "HTTP/2" == r.response["protocol"]
         assert "text/html" == r.response["header"]["content-type"]
 
@@ -45,12 +45,12 @@ class TestStore:
     def test_h2_100_04(self, env):
         url = env.mkurl("https", "cgi", "/hello.py")
         hostname = ("noh2.%s" % env.http_tld)
-        r = env.curl_get(url, 5, [ "-H", "Host:%s" % hostname ])
+        r = env.curl_get(url, 5, options=[ "-H", "Host:%s" % hostname ])
         assert 421 == r.response["status"]
 
     # access an unknown vhost, after using ServerName in SNI
     def test_h2_100_05(self, env):
         url = env.mkurl("https", "cgi", "/hello.py")
         hostname = ("unknown.%s" % env.http_tld)
-        r = env.curl_get(url, 5, [ "-H", "Host:%s" % hostname ])
+        r = env.curl_get(url, 5, options=[ "-H", "Host:%s" % hostname ])
         assert 421 == r.response["status"]

@@ -13,32 +13,26 @@ class TestStore:
     @pytest.fixture(autouse=True, scope='class')
     def _class_scope(self, env):
         conf = H2Conf(env)
-        conf.start_vhost(env.https_port, "ssl", doc_root="htdocs/cgi", with_ssl=True)
-        conf.add("Protocols h2 http/1.1")
+        conf.start_vhost(domains=[f"ssl.{env.http_tld}"], port=env.https_port, doc_root="htdocs/cgi")
         conf.add("AddHandler cgi-script .py")
         conf.end_vhost()
-        conf.start_vhost(env.https_port, "pad0", doc_root="htdocs/cgi", with_ssl=True)
-        conf.add("Protocols h2 http/1.1")
+        conf.start_vhost(domains=[f"pad0.{env.http_tld}"], port=env.https_port, doc_root="htdocs/cgi")
         conf.add("H2Padding 0")
         conf.add("AddHandler cgi-script .py")
         conf.end_vhost()
-        conf.start_vhost(env.https_port, "pad1", doc_root="htdocs/cgi", with_ssl=True)
-        conf.add("Protocols h2 http/1.1")
+        conf.start_vhost(domains=[f"pad1.{env.http_tld}"], port=env.https_port, doc_root="htdocs/cgi")
         conf.add("H2Padding 1")
         conf.add("AddHandler cgi-script .py")
         conf.end_vhost()
-        conf.start_vhost(env.https_port, "pad2", doc_root="htdocs/cgi", with_ssl=True)
-        conf.add("Protocols h2 http/1.1")
+        conf.start_vhost(domains=[f"pad2.{env.http_tld}"], port=env.https_port, doc_root="htdocs/cgi")
         conf.add("H2Padding 2")
         conf.add("AddHandler cgi-script .py")
         conf.end_vhost()
-        conf.start_vhost(env.https_port, "pad3", doc_root="htdocs/cgi", with_ssl=True)
-        conf.add("Protocols h2 http/1.1")
+        conf.start_vhost(domains=[f"pad3.{env.http_tld}"], port=env.https_port, doc_root="htdocs/cgi")
         conf.add("H2Padding 3")
         conf.add("AddHandler cgi-script .py")
         conf.end_vhost()
-        conf.start_vhost(env.https_port, "pad8", doc_root="htdocs/cgi", with_ssl=True)
-        conf.add("Protocols h2 http/1.1")
+        conf.start_vhost(domains=[f"pad8.{env.http_tld}"], port=env.https_port, doc_root="htdocs/cgi")
         conf.add("H2Padding 8")
         conf.add("AddHandler cgi-script .py")
         conf.end_vhost()
@@ -52,7 +46,7 @@ class TestStore:
         # check the number of padding bytes is as expected
         for data in ["x", "xx", "xxx", "xxxx", "xxxxx", "xxxxxx", "xxxxxxx", "xxxxxxxx"]:
             r = env.nghttp().post_data(url, data, 5)
-            assert 200 == r.response["status"]
+            assert r.response["status"] == 200
             assert r.results["paddings"] == [
                 frame_padding(len(data)+1, 0), 
                 frame_padding(0, 0)
@@ -63,7 +57,7 @@ class TestStore:
         url = env.mkurl("https", "pad0", "/echo.py")
         for data in ["x", "xx", "xxx", "xxxx", "xxxxx", "xxxxxx", "xxxxxxx", "xxxxxxxx"]:
             r = env.nghttp().post_data(url, data, 5)
-            assert 200 == r.response["status"]
+            assert r.response["status"] == 200
             assert r.results["paddings"] == [0, 0]
 
     # 1 bit of padding
@@ -71,7 +65,7 @@ class TestStore:
         url = env.mkurl("https", "pad1", "/echo.py")
         for data in ["x", "xx", "xxx", "xxxx", "xxxxx", "xxxxxx", "xxxxxxx", "xxxxxxxx"]:
             r = env.nghttp().post_data(url, data, 5)
-            assert 200 == r.response["status"]
+            assert r.response["status"] == 200
             for i in r.results["paddings"]:
                 assert i in range(0, 2)
 
@@ -80,7 +74,7 @@ class TestStore:
         url = env.mkurl("https", "pad2", "/echo.py")
         for data in ["x", "xx", "xxx", "xxxx", "xxxxx", "xxxxxx", "xxxxxxx", "xxxxxxxx"]:
             r = env.nghttp().post_data(url, data, 5)
-            assert 200 == r.response["status"]
+            assert r.response["status"] == 200
             for i in r.results["paddings"]:
                 assert i in range(0, 4)
 
@@ -89,7 +83,7 @@ class TestStore:
         url = env.mkurl("https", "pad3", "/echo.py")
         for data in ["x", "xx", "xxx", "xxxx", "xxxxx", "xxxxxx", "xxxxxxx", "xxxxxxxx"]:
             r = env.nghttp().post_data(url, data, 5)
-            assert 200 == r.response["status"]
+            assert r.response["status"] == 200
             for i in r.results["paddings"]:
                 assert i in range(0, 8)
 
@@ -98,6 +92,6 @@ class TestStore:
         url = env.mkurl("https", "pad8", "/echo.py")
         for data in ["x", "xx", "xxx", "xxxx", "xxxxx", "xxxxxx", "xxxxxxx", "xxxxxxxx"]:
             r = env.nghttp().post_data(url, data, 5)
-            assert 200 == r.response["status"]
+            assert r.response["status"] == 200
             for i in r.results["paddings"]:
                 assert i in range(0, 256)

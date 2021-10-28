@@ -9,30 +9,22 @@ class TestEncoding:
 
     @pytest.fixture(autouse=True, scope='class')
     def _class_scope(self, env):
-        conf = HttpdConf(env)
-        conf.add(f"""
+        conf = HttpdConf(env, extras={
+            'base': f"""
         <Directory "{env.gen_dir}">
             AllowOverride None
             Options +ExecCGI -MultiViews +SymLinksIfOwnerMatch
             Require all granted
         </Directory>
-        """)
-        conf.add_vhost_test1()
-        conf.add_vhost_test2(extras={
+        """,
             f"test2.{env.http_tld}": "AllowEncodedSlashes on",
-        })
-        conf.add_vhost_cgi(extras={
             f"cgi.{env.http_tld}": f"ScriptAlias /cgi-bin/ {env.gen_dir}",
         })
+        conf.add_vhost_test1()
+        conf.add_vhost_test2()
+        conf.add_vhost_cgi()
         conf.install()
         assert env.apache_restart() == 0
-        yield
-        errors, warnings = env.apache_errors_and_warnings()
-        nl = "\n"
-        assert (len(errors), len(warnings)) == (TestEncoding.EXP_AH10244_ERRS, 0),\
-            f"apache logged {len(errors)} errors and {len(warnings)} warnings: \n"\
-            f"{nl.join(errors)}\n{nl.join(warnings)}\n"
-        env.apache_error_log_clear()
 
     # check handling of url encodings that are accepted
     @pytest.mark.parametrize("path", [

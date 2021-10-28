@@ -44,4 +44,4 @@ class TestFiles:
         url = env.mkurl("https", "cgi", self.URI_PATHS[2])
         r = env.curl_get(url)
         assert r.response, r.stderr + r.stdout
-        assert 200 == r.response["status"]
+        assert r.response["status"] == 200

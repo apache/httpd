@@ -1,7 +1,9 @@
 import inspect
 import logging
 import os
+import re
 import subprocess
+from typing import Dict, Any
 
 from pyhttpd.certs import CertificateSpec
 from pyhttpd.conf import HttpdConf
@@ -39,10 +41,11 @@ class H2TestEnv(HttpdTestEnv):
     def __init__(self, pytestconfig=None, setup_dirs=True):
         super().__init__(pytestconfig=pytestconfig,
                          local_dir=os.path.dirname(inspect.getfile(H2TestEnv)),
-                         add_base_conf="""
-        H2MinWorkers 1
-        H2MaxWorkers 64
-                            """,
+                         add_base_conf=[
+                             "H2MinWorkers 1",
+                             "H2MaxWorkers 64",
+                             "Protocols h2 http/1.1 h2c",
+                         ],
                          interesting_modules=["http2", "proxy_http2", "h2test"])
         self.add_cert_specs([
             CertificateSpec(domains=[
@@ -57,6 +60,18 @@ class H2TestEnv(HttpdTestEnv):
             ]),
             CertificateSpec(domains=[f"noh2.{self.http_tld}"], key_type='rsa2048'),
         ])
+
+        self.httpd_error_log.set_ignored_lognos([
+            'AH02032',
+            'AH01276',
+            'AH01630',
+            'AH00135',
+            'AH02261',  # Re-negotiation handshake failed (our test_101)
+        ])
+        self.httpd_error_log.add_ignored_patterns([
+            re.compile(r'.*malformed header from script \'hecho.py\': Bad header: x.*'),
+        ])
+
         if setup_dirs:
             self._setup = H2TestSetup(env=self)
             self._setup.make()
@@ -82,18 +97,40 @@ class H2TestEnv(HttpdTestEnv):
 
 class H2Conf(HttpdConf):
 
-    def __init__(self, env: HttpdTestEnv, path=None):
-        super().__init__(env=env, path=path)
+    def __init__(self, env: HttpdTestEnv, extras: Dict[str, Any] = None):
+        super().__init__(env=env, extras=HttpdConf.merge_extras(extras, {
+            f"cgi.{env.http_tld}": [
+                "SSLOptions +StdEnvVars",
+                "AddHandler cgi-script .py",
+            ]
+        }))
 
+    def start_vhost(self, domains, port=None, doc_root="htdocs", with_ssl=False):
+        super().start_vhost(domains=domains, port=port, doc_root=doc_root, with_ssl=with_ssl)
+        if f"noh2.{self.env.http_tld}" in domains:
+            protos = ["http/1.1"]
+        elif port == self.env.https_port or with_ssl is True:
+            protos = ["h2", "http/1.1"]
+        else:
+            protos = ["h2c", "http/1.1"]
+        if f"test2.{self.env.http_tld}" in domains:
+            protos = reversed(protos)
+        self.add(f"Protocols {' '.join(protos)}")
+        return self
 
     def add_vhost_noh2(self):
-        self.start_vhost(self.env.https_port, "noh2", aliases=["noh2-alias"], doc_root="htdocs/noh2", with_ssl=True)
-        self.add(f"""
-            Protocols http/1.1
-            SSLOptions +StdEnvVars""")
+        domains = [f"noh2.{self.env.http_tld}", f"noh2-alias.{self.env.http_tld}"]
+        self.start_vhost(domains=domains, port=self.env.https_port, doc_root="htdocs/noh2")
+        self.add(["Protocols http/1.1", "SSLOptions +StdEnvVars"])
         self.end_vhost()
-        self.start_vhost(self.env.http_port, "noh2", aliases=["noh2-alias"], doc_root="htdocs/noh2", with_ssl=False)
-        self.add("      Protocols http/1.1")
-        self.add("      SSLOptions +StdEnvVars")
+        self.start_vhost(domains=domains, port=self.env.http_port, doc_root="htdocs/noh2")
+        self.add(["Protocols http/1.1", "SSLOptions +StdEnvVars"])
         self.end_vhost()
         return self
+
+    def add_vhost_test1(self, proxy_self=False, h2proxy_self=False):
+        return super().add_vhost_test1(proxy_self=proxy_self, h2proxy_self=h2proxy_self)
+
+    def add_vhost_test2(self):
+        return super().add_vhost_test2()
+
