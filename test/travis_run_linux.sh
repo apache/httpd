@@ -174,9 +174,10 @@ if ! test -v SKIP_TESTING; then
         #         imports crypto/ed25519: unrecognized import path "crypto/ed25519" (import path does not begin with hostname)
         #
         # but works on a docker ubuntu-focal image. ???
+        export GOROOT=/usr/lib/go-1.14
         export GOPATH=${PREFIX}/gocode
         mkdir -p "${GOPATH}"
-        export PATH="${PATH}:/usr/lib/go-1.14/bin:${GOPATH}/bin"
+        export PATH="${PATH}:${GOROOT}/bin:${GOPATH}/bin"
         go get -u github.com/letsencrypt/pebble/...
         cd $GOPATH/src/github.com/letsencrypt/pebble && go install ./...
 
