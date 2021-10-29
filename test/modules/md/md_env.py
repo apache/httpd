@@ -168,7 +168,8 @@ class MDTestEnv(HttpdTestEnv):
         return self._store_dir
 
     def get_request_domain(self, request):
-        return "%s-%s" % (re.sub(r'[_]', '-', request.node.originalname), MDTestEnv.DOMAIN_SUFFIX)
+        name = request.node.originalname if request.node.originalname else request.node.name
+        return "%s-%s" % (re.sub(r'[_]', '-', name), MDTestEnv.DOMAIN_SUFFIX)
 
     def get_method_domain(self, method):
         return "%s-%s" % (re.sub(r'[_]', '-', method.__name__.lower()), MDTestEnv.DOMAIN_SUFFIX)
