@@ -165,6 +165,20 @@ if ! test -v SKIP_TESTING; then
         RV=$?
     fi
 
+    if test -v TEST_MD -a $RV -eq 0; then
+        # Run ACME tests.
+        # need the go based pebble as ACME test server
+        # which is a package on debian sid, but not on focal
+        export GOPATH=${PREFIX}/gocode
+        mkdir -p "${GOPATH}"
+        go get -u github.com/letsencrypt/pebble/...
+        cd $GOPATH/src/github.com/letsencrypt/pebble && go install ./...
+        export PATH="${PATH}:${GOPATH}/bin"
+
+        py.test-3 test/modules/md
+        RV=$?
+    fi
+
     # Catch cases where abort()s get logged to stderr by libraries but
     # only cause child processes to terminate e.g. during shutdown,
     # which may not otherwise trigger test failures.
