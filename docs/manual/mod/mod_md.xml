@@ -1292,4 +1292,37 @@ MDMessageCmd /etc/apache/md-message
         </usage>
     </directivesynopsis>
     
+    <directivesynopsis>
+        <name>MDExternalAccountBinding</name>
+        <description></description>
+        <syntax>MDExternalAccountBinding <var>key-id</var> <var>hmac-64</var></syntax>
+        <default>MDExternalAccountBinding none</default>
+        <contextlist>
+            <context>server config</context>
+        </contextlist>
+        <usage>
+            <p>
+                Configure values for ACME "External Account Binding", a feature
+                of the ACME standard that allows clients to bind registrations
+                to an existing customer account on ACME servers.
+            </p>
+            <p>
+                Let's Encrypt does not require those, but other ACME CAs do.
+                Check with your ACME CA if you need those and how to obtain the
+                values. They are two strings, a key identifier and a base64 encoded
+                'hmac' value.
+            </p>
+            <p>
+                You can configure those globally or for a specific MDomain. Since
+                these values allow anyone to register under the same account, it is
+                adivsable to give the configuration file restricted permissions,
+                e.g. root only.
+            </p>
+            <p>
+                If you change these values, the new ones will be used when the next
+                certificate renewal is due.
+            </p>
+        </usage>
+    </directivesynopsis>
+
 </modulesynopsis>

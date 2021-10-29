@@ -90,12 +90,15 @@ struct md_t {
     const char *ca_url;             /* url of CA certificate service */
     const char *ca_proto;           /* protocol used vs CA (e.g. ACME) */
     const char *ca_account;         /* account used at CA */
-    const char *ca_agreement;       /* accepted agreement uri between CA and user */ 
+    const char *ca_agreement;       /* accepted agreement uri between CA and user */
     struct apr_array_header_t *ca_challenges; /* challenge types configured for this MD */
     struct apr_array_header_t *cert_files; /* != NULL iff pubcerts explicitly configured */
     struct apr_array_header_t *pkey_files; /* != NULL iff privkeys explicitly configured */
-    
+    const char *ca_eab_kid;         /* optional KEYID for external account binding */
+    const char *ca_eab_hmac;        /* optional HMAC for external accont binding */
+
     md_state_t state;               /* state of this MD */
+    const char *state_descr;        /* description of state of NULL */
     
     struct apr_array_header_t *acme_tls_1_domains; /* domains supporting "acme-tls/1" protocol */
     int stapling;                   /* if OCSP stapling is enabled */
@@ -133,6 +136,8 @@ struct md_t {
 #define MD_KEY_DIR              "dir"
 #define MD_KEY_DOMAIN           "domain"
 #define MD_KEY_DOMAINS          "domains"
+#define MD_KEY_EAB              "eab"
+#define MD_KEY_EAB_REQUIRED     "externalAccountRequired"
 #define MD_KEY_ENTRIES          "entries"
 #define MD_KEY_ERRORED          "errored"
 #define MD_KEY_ERROR            "error"
@@ -142,11 +147,13 @@ struct md_t {
 #define MD_KEY_FINISHED         "finished"
 #define MD_KEY_FROM             "from"
 #define MD_KEY_GOOD             "good"
+#define MD_KEY_HMAC             "hmac"
 #define MD_KEY_HTTP             "http"
 #define MD_KEY_HTTPS            "https"
 #define MD_KEY_ID               "id"
 #define MD_KEY_IDENTIFIER       "identifier"
 #define MD_KEY_KEY              "key"
+#define MD_KEY_KID              "kid"
 #define MD_KEY_KEYAUTHZ         "keyAuthorization"
 #define MD_KEY_LAST             "last"
 #define MD_KEY_LAST_RUN         "last-run"
@@ -183,10 +190,12 @@ struct md_t {
 #define MD_KEY_SHA256_FINGERPRINT  "sha256-fingerprint"
 #define MD_KEY_STAPLING         "stapling"
 #define MD_KEY_STATE            "state"
+#define MD_KEY_STATE_DESCR      "state-descr"
 #define MD_KEY_STATUS           "status"
 #define MD_KEY_STORE            "store"
 #define MD_KEY_SUBPROBLEMS      "subproblems"
 #define MD_KEY_TEMPORARY        "temporary"
+#define MD_KEY_TOS              "termsOfService"
 #define MD_KEY_TOKEN            "token"
 #define MD_KEY_TOTAL            "total"
 #define MD_KEY_TRANSITIVE       "transitive"
@@ -280,20 +289,21 @@ md_t *md_copy(apr_pool_t *p, const md_t *src);
  *
  * This reads and writes the following information: name, domains, ca_url, ca_proto and state.
  */
-struct md_json_t *md_to_json (const md_t *md, apr_pool_t *p);
+struct md_json_t *md_to_json(const md_t *md, apr_pool_t *p);
 md_t *md_from_json(struct md_json_t *json, apr_pool_t *p);
+
+/**
+ * Same as md_to_json(), but with sensitive fields stripped.
+ */
+struct md_json_t *md_to_public_json(const md_t *md, apr_pool_t *p);
 
 int md_is_covered_by_alt_names(const md_t *md, const struct apr_array_header_t* alt_names);
 
 /* how many certificates this domain has/will eventually have. */
 int md_cert_count(const md_t *md);
 
-#define LE_ACMEv1_PROD      "https://acme-v01.api.letsencrypt.org/directory"
-#define LE_ACMEv1_STAGING   "https://acme-staging.api.letsencrypt.org/directory"
-
-#define LE_ACMEv2_PROD      "https://acme-v02.api.letsencrypt.org/directory"  
-#define LE_ACMEv2_STAGING   "https://acme-staging-v02.api.letsencrypt.org/directory"
-
+const char *md_get_ca_name_from_url(apr_pool_t *p, const char *url);
+apr_status_t md_get_ca_url_from_name(const char **purl, apr_pool_t *p, const char *name);
 
 /**************************************************************************************************/
 /* notifications */

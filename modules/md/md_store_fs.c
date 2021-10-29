@@ -631,7 +631,7 @@ static apr_status_t pfs_save(void *baton, apr_pool_t *p, apr_pool_t *ptemp, va_l
         && MD_OK(mk_group_dir(&dir, s_fs, group, name, p))
         && MD_OK(md_util_path_merge(&fpath, ptemp, dir, aspect, NULL))) {
         
-        md_log_perror(MD_LOG_MARK, MD_LOG_TRACE3, 0, ptemp, "storing in %s", fpath);
+        md_log_perror(MD_LOG_MARK, MD_LOG_TRACE2, 0, ptemp, "storing in %s", fpath);
         switch (vtype) {
             case MD_SV_TEXT:
                 rv = (create? md_text_fcreatex(fpath, perms->file, p, value)
@@ -745,7 +745,9 @@ static apr_status_t pfs_purge(void *baton, apr_pool_t *p, apr_pool_t *ptemp, va_
         /* Remove all files in dir, there should be no sub-dirs */
         rv = md_util_rm_recursive(dir, ptemp, 1);
     }
-    md_log_perror(MD_LOG_MARK, MD_LOG_TRACE2, rv, ptemp, "purge %s/%s (%s)", groupname, name, dir);
+    if (!APR_STATUS_IS_ENOENT(rv)) {
+        md_log_perror(MD_LOG_MARK, MD_LOG_TRACE2, rv, ptemp, "purge %s/%s (%s)", groupname, name, dir);
+    }
     return APR_SUCCESS;
 }
 
@@ -1018,12 +1020,12 @@ static apr_status_t pfs_move(void *baton, apr_pool_t *p, apr_pool_t *ptemp, va_l
         }
         
         if (!MD_OK(apr_file_rename(to_dir, narch_dir, ptemp))) {
-                md_log_perror(MD_LOG_MARK, MD_LOG_ERR, rv, ptemp, "rename from %s to %s", 
+                md_log_perror(MD_LOG_MARK, MD_LOG_ERR, rv, ptemp, "rename from %s to %s",
                               to_dir, narch_dir);
                 goto out;
         }
         if (!MD_OK(apr_file_rename(from_dir, to_dir, ptemp))) {
-            md_log_perror(MD_LOG_MARK, MD_LOG_ERR, rv, ptemp, "rename from %s to %s", 
+            md_log_perror(MD_LOG_MARK, MD_LOG_ERR, rv, ptemp, "rename from %s to %s",
                           from_dir, to_dir);
             apr_file_rename(narch_dir, to_dir, ptemp);
             goto out;
@@ -1034,7 +1036,7 @@ static apr_status_t pfs_move(void *baton, apr_pool_t *p, apr_pool_t *ptemp, va_l
     }
     else if (APR_STATUS_IS_ENOENT(rv)) {
         if (APR_SUCCESS != (rv = apr_file_rename(from_dir, to_dir, ptemp))) {
-            md_log_perror(MD_LOG_MARK, MD_LOG_ERR, rv, ptemp, "rename from %s to %s", 
+            md_log_perror(MD_LOG_MARK, MD_LOG_ERR, rv, ptemp, "rename from %s to %s",
                           from_dir, to_dir);
             goto out;
         }
@@ -1075,8 +1077,9 @@ static apr_status_t pfs_rename(void *baton, apr_pool_t *p, apr_pool_t *ptemp, va
         goto out;
     }
     
-    if (APR_SUCCESS != (rv = apr_file_rename(from_dir, to_dir, ptemp))) {
-        md_log_perror(MD_LOG_MARK, MD_LOG_ERR, rv, ptemp, "rename from %s to %s", 
+    if (APR_SUCCESS != (rv = apr_file_rename(from_dir, to_dir, ptemp))
+        && !APR_STATUS_IS_ENOENT(rv)) {
+        md_log_perror(MD_LOG_MARK, MD_LOG_ERR, rv, ptemp, "rename from %s to %s",
                       from_dir, to_dir);
         goto out;
     }

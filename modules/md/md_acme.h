@@ -122,6 +122,7 @@ struct md_acme_t {
     } api;
     const char *ca_agreement;
     const char *acct_name;
+    int eab_required;
     
     md_acme_new_nonce_fn *new_nonce_fn;
     md_acme_req_init_fn *req_init_fn;
@@ -185,10 +186,27 @@ const char *md_acme_acct_url_get(md_acme_t *acme);
 
 /** 
  * Specify the account to use by name in local store. On success, the account
- * the "current" one used by the acme instance.
+ * is the "current" one used by the acme instance.
+ * @param acme the acme instance to set the account for
+ * @param store the store to load accounts from
+ * @param p pool for allocations
+ * @param acct_id name of the account to load
  */
 apr_status_t md_acme_use_acct(md_acme_t *acme, struct md_store_t *store, 
                               apr_pool_t *p, const char *acct_id);
+
+/**
+ * Specify the account to use for a specific MD by name in local store.
+ * On success, the account is the "current" one used by the acme instance.
+ * @param acme the acme instance to set the account for
+ * @param store the store to load accounts from
+ * @param p pool for allocations
+ * @param acct_id name of the account to load
+ * @param md the MD the account shall be used for
+ */
+apr_status_t md_acme_use_acct_for_md(md_acme_t *acme, struct md_store_t *store,
+                                     apr_pool_t *p, const char *acct_id,
+                                     const md_t *md);
 
 /**
  * Get the local name of the account currently used by the acme instance.
@@ -232,7 +250,7 @@ struct md_acme_req_t {
     
     const char *url;               /* url to POST the request to */
     const char *method;            /* HTTP method to use */
-    apr_table_t *prot_hdrs;        /* JWS headers needing protection (nonce) */
+    struct md_json_t *prot_fields; /* JWS protected fields */
     struct md_json_t *req_json;    /* JSON to be POSTed in request body */
 
     apr_table_t *resp_hdrs;        /* HTTP response headers */
