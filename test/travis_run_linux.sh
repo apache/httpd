@@ -169,11 +169,17 @@ if ! test -v SKIP_TESTING; then
         # Run ACME tests.
         # need the go based pebble as ACME test server
         # which is a package on debian sid, but not on focal
-        export GOPATH=${PREFIX}/gocode
-        mkdir -p "${GOPATH}"
-        go get -u github.com/letsencrypt/pebble/...
-        cd $GOPATH/src/github.com/letsencrypt/pebble && go install ./...
-        export PATH="${PATH}:${GOPATH}/bin"
+        # FAILS on TRAVIS with
+        # package github.com/letsencrypt/pebble/cmd/pebble
+        #         imports crypto/ed25519: unrecognized import path "crypto/ed25519" (import path does not begin with hostname)
+        #
+        # but works on a docker ubuntu-focal image. ???
+        # DISABLED
+        #export GOPATH=${PREFIX}/gocode
+        #mkdir -p "${GOPATH}"
+        #go get -u github.com/letsencrypt/pebble/...
+        #cd $GOPATH/src/github.com/letsencrypt/pebble && go install ./...
+        #export PATH="${PATH}:${GOPATH}/bin"
 
         py.test-3 test/modules/md
         RV=$?

@@ -70,6 +70,8 @@ class H2TestEnv(HttpdTestEnv):
         ])
         self.httpd_error_log.add_ignored_patterns([
             re.compile(r'.*malformed header from script \'hecho.py\': Bad header: x.*'),
+            re.compile(r'.*:tls_post_process_client_hello:.*'),
+            re.compile(r'.*:tls_process_client_certificate:.*'),
         ])
 
         if setup_dirs:
