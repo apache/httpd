@@ -177,9 +177,9 @@ if ! test -v SKIP_TESTING; then
         export GOROOT=/usr/lib/go-1.14
         export GOPATH=${PREFIX}/gocode
         mkdir -p "${GOPATH}"
-        export PATH="${PATH}:${GOROOT}/bin:${GOPATH}/bin"
+        export PATH="${GOROOT}/bin:${GOPATH}/bin:${PATH}"
         go get -u github.com/letsencrypt/pebble/...
-        cd $GOPATH/src/github.com/letsencrypt/pebble && go install ./...
+        (cd $GOPATH/src/github.com/letsencrypt/pebble && go install ./...)
 
         py.test-3 test/modules/md
         RV=$?
