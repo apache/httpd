@@ -1388,7 +1388,7 @@ static APR_INLINE int modssl_DH_bits(DH *dh)
 #if OPENSSL_VERSION_NUMBER < 0x30000000L
 #define CHECK_PRIVKEY_ERROR(ec) (ERR_GET_FUNC(ec) != X509_F_X509_CHECK_PRIVATE_KEY)
 #else
-#define CHECK_PRIVKEY_ERROR(ec) (ERR_GET_LIB != ERR_LIB_X509            \
+#define CHECK_PRIVKEY_ERROR(ec) (ERR_GET_LIB(ec) != ERR_LIB_X509            \
                                  || (ERR_GET_REASON(ec) != X509_R_KEY_TYPE_MISMATCH \
                                      && ERR_GET_REASON(ec) != X509_R_KEY_VALUES_MISMATCH \
                                      && ERR_GET_REASON(ec) != X509_R_UNKNOWN_KEY_TYPE))
