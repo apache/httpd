@@ -787,21 +787,25 @@ static apr_status_t gen_ec(md_pkey_t **ppkey, apr_pool_t *p, const char *curve)
 #ifdef NID_secp384r1
     if (NID_undef == curve_nid && !apr_strnatcasecmp("secp384r1", curve)) {
         curve_nid = NID_secp384r1;
+        curve = EC_curve_nid2nist(curve_nid);
     }
 #endif
 #ifdef NID_X9_62_prime256v1
     if (NID_undef == curve_nid && !apr_strnatcasecmp("secp256r1", curve)) {
         curve_nid = NID_X9_62_prime256v1;
+        curve = EC_curve_nid2nist(curve_nid);
     }
 #endif
 #ifdef NID_X9_62_prime192v1
     if (NID_undef == curve_nid && !apr_strnatcasecmp("secp192r1", curve)) {
         curve_nid = NID_X9_62_prime192v1;
+        curve = EC_curve_nid2nist(curve_nid);
     }
 #endif
 #if defined(NID_X25519) && !defined(LIBRESSL_VERSION_NUMBER)
     if (NID_undef == curve_nid && !apr_strnatcasecmp("X25519", curve)) {
         curve_nid = NID_X25519;
+        curve = EC_curve_nid2nist(curve_nid);
     }
 #endif
     if (NID_undef == curve_nid) {
@@ -845,6 +849,7 @@ static apr_status_t gen_ec(md_pkey_t **ppkey, apr_pool_t *p, const char *curve)
 #endif
 
     default:
+#if OPENSSL_VERSION_NUMBER < 0x30000000L
         if (APR_SUCCESS != (rv = check_EC_curve(curve_nid, p))) goto leave;
         if (NULL == (ctx = EVP_PKEY_CTX_new_id(EVP_PKEY_EC, NULL))
             || EVP_PKEY_paramgen_init(ctx) <= 0 
@@ -856,6 +861,17 @@ static apr_status_t gen_ec(md_pkey_t **ppkey, apr_pool_t *p, const char *curve)
                           "error generate EC key for group: %s", curve); 
             rv = APR_EGENERAL; goto leave;
         }
+#else
+        if (APR_SUCCESS != (rv = check_EC_curve(curve_nid, p))) goto leave;
+        if (NULL == (ctx = EVP_PKEY_CTX_new_id(EVP_PKEY_EC, NULL))
+            || EVP_PKEY_keygen_init(ctx) <= 0
+            || EVP_PKEY_CTX_ctrl_str(ctx, "ec_paramgen_curve", curve) <= 0
+            || EVP_PKEY_keygen(ctx, &(*ppkey)->pkey) <= 0) {
+            md_log_perror(MD_LOG_MARK, MD_LOG_WARNING, 0, p,
+                          "error generate EC key for group: %s", curve);
+            rv = APR_EGENERAL; goto leave;
+        }
+#endif
         rv = APR_SUCCESS;
         break;
     }
