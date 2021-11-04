@@ -461,8 +461,6 @@ apr_status_t h2_workers_unregister(h2_workers *workers, struct h2_mplx *m)
 void h2_workers_graceful_shutdown(h2_workers *workers)
 {
     workers->shutdown = 1;
-    workers->min_workers = 1;
     workers->max_idle_duration = apr_time_from_sec(1);
-    h2_fifo_term(workers->mplxs);
     wake_non_essential_workers(workers);
 }

@@ -277,7 +277,7 @@ static int on_begin_headers_cb(nghttp2_session *ngh2,
                                const nghttp2_frame *frame, void *userp)
 {
     h2_session *session = (h2_session *)userp;
-    h2_stream *s;
+    h2_stream *s = NULL;
     
     /* We may see HEADERs at the start of a stream or after all DATA
      * streams to carry trailers. */
@@ -286,7 +286,7 @@ static int on_begin_headers_cb(nghttp2_session *ngh2,
     if (s) {
         /* nop */
     }
-    else {
+    else if (session->local.accepting) {
         s = h2_session_open_stream(userp, frame->hd.stream_id, 0);
     }
     return s? 0 : NGHTTP2_ERR_START_STREAM_NOT_ALLOWED;
