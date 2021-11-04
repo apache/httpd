@@ -1,0 +1,6 @@
+  * mod_http2: a regression in v1.15.24 of the modules was fixed that
+    could lead to httpd child processes not being terminated on a
+    graceful reload or when reaching MaxConnectionsPerChild.
+    When unprocessed h2 requests were queued at the time, these could stall.
+    See <https://github.com/icing/mod_h2/issues/212>.
+    [@hansborr, @famzah, Stefan Eissing]
