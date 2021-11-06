@@ -2,7 +2,7 @@
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
-<!-- English Revision: 1890574 -->
+<!-- English Revision: 1894610 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -1534,6 +1534,43 @@ MDMessageCmd /etc/apache/md-message
 		<directive>MDContactEmail</directive> n'est pas définie, <module>mod_md</module> utilisera l'email
 		spécifiée via la directive <directive
 		module="core">ServerAdmin</directive>.
+            </p>
+        </usage>
+    </directivesynopsis>
+
+    <directivesynopsis>
+        <name>MDExternalAccountBinding</name>
+        <description></description>
+        <syntax>MDExternalAccountBinding <var>key-id</var> <var>hmac-64</var></syntax>
+        <default>MDExternalAccountBinding none</default>
+        <contextlist>
+            <context>server config</context>
+        </contextlist>
+        <usage>
+            <p>
+                Cette directive permet de définir des valeurs pour associer des
+		comptes externes avec ACME ("External Account Binding") ; c'est
+		une fonctionnalité de la norme ACME qui permet à des clients
+		d'associer des inscriptions à un compte client existant sur les
+		serveurs ACME.
+            </p>
+            <p>
+		Certains CAs ACME ont besoin de ces valeurs, mais ce n'est pas
+		le cas pour Let's Encrypt. Vérifiez avec votre CA ACME si vous
+		avez besoin de ces valeurs et la manière de les obtenir. Ces
+		dernières se composent de deux chaînes : un identifiant de clé
+		et une valeur 'hmac' codée en base64.
+            </p>
+            <p>
+		Vous pouvez définir ces valeurs de manière globale ou pour un
+		MDomain spécifique. Comme ces valeurs permettent à n'importe qui
+		de s'inscrire sous le même compte, il est conseillé de
+		restreindre les permissions d'accès au fichier de configuration
+		(à root seulement, par exemple).
+            </p>
+            <p>
+		Si vous modifiez ces valeurs, ce sont les valeurs modifiées qui
+		seront utilisées lors du prochain renouvellement de certificat.
             </p>
         </usage>
     </directivesynopsis>
