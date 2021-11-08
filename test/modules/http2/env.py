@@ -16,15 +16,19 @@ class H2TestSetup(HttpdTestSetup):
 
     def __init__(self, env: 'HttpdTestEnv'):
         super().__init__(env=env)
+        self.add_source_dir(os.path.dirname(inspect.getfile(H2TestSetup)))
+        self.add_modules(["http2", "proxy_http2", "cgid", "autoindex"])
 
     def make(self):
-        super().make(add_modules=["http2", "proxy_http2"])
+        super().make()
         self._add_h2test()
+        self._setup_data_1k_1m()
 
     def _add_h2test(self):
+        local_dir = os.path.dirname(inspect.getfile(H2TestSetup))
         p = subprocess.run([self.env.apxs, '-c', 'mod_h2test.c'],
                            capture_output=True,
-                           cwd=os.path.join(self.env.local_dir, 'mod_h2test'))
+                           cwd=os.path.join(local_dir, 'mod_h2test'))
         rv = p.returncode
         if rv != 0:
             log.error(f"compiling md_h2test failed: {p.stderr}")
@@ -33,20 +37,34 @@ class H2TestSetup(HttpdTestSetup):
         modules_conf = os.path.join(self.env.server_dir, 'conf/modules.conf')
         with open(modules_conf, 'a') as fd:
             # load our test module which is not installed
-            fd.write(f"LoadModule h2test_module   \"{self.env.local_dir}/mod_h2test/.libs/mod_h2test.so\"\n")
+            fd.write(f"LoadModule h2test_module   \"{local_dir}/mod_h2test/.libs/mod_h2test.so\"\n")
+
+    def _setup_data_1k_1m(self):
+        s90 = "01234567890123456789012345678901234567890123456789012345678901234567890123456789012345678\n"
+        with open(os.path.join(self.env.gen_dir, "data-1k"), 'w') as f:
+            for i in range(10):
+                f.write(f"{i:09d}-{s90}")
+        with open(os.path.join(self.env.gen_dir, "data-10k"), 'w') as f:
+            for i in range(100):
+                f.write(f"{i:09d}-{s90}")
+        with open(os.path.join(self.env.gen_dir, "data-100k"), 'w') as f:
+            for i in range(1000):
+                f.write(f"{i:09d}-{s90}")
+        with open(os.path.join(self.env.gen_dir, "data-1m"), 'w') as f:
+            for i in range(10000):
+                f.write(f"{i:09d}-{s90}")
 
 
 class H2TestEnv(HttpdTestEnv):
 
-    def __init__(self, pytestconfig=None, setup_dirs=True):
-        super().__init__(pytestconfig=pytestconfig,
-                         local_dir=os.path.dirname(inspect.getfile(H2TestEnv)),
-                         add_base_conf=[
+    def __init__(self, pytestconfig=None):
+        super().__init__(pytestconfig=pytestconfig)
+        self.add_httpd_conf([
                              "H2MinWorkers 1",
                              "H2MaxWorkers 64",
                              "Protocols h2 http/1.1 h2c",
-                         ],
-                         interesting_modules=["http2", "proxy_http2", "h2test"])
+                         ])
+        self.add_httpd_log_modules(["http2", "proxy_http2", "h2test"])
         self.add_cert_specs([
             CertificateSpec(domains=[
                 f"push.{self._http_tld}",
@@ -74,27 +92,8 @@ class H2TestEnv(HttpdTestEnv):
             re.compile(r'.*:tls_process_client_certificate:.*'),
         ])
 
-        if setup_dirs:
-            self._setup = H2TestSetup(env=self)
-            self._setup.make()
-            self.issue_certs()
-            self.setup_data_1k_1m()
-
-
-    def setup_data_1k_1m(self):
-        s90 = "01234567890123456789012345678901234567890123456789012345678901234567890123456789012345678\n"
-        with open(os.path.join(self.gen_dir, "data-1k"), 'w') as f:
-            for i in range(10):
-                f.write(f"{i:09d}-{s90}")
-        with open(os.path.join(self.gen_dir, "data-10k"), 'w') as f:
-            for i in range(100):
-                f.write(f"{i:09d}-{s90}")
-        with open(os.path.join(self.gen_dir, "data-100k"), 'w') as f:
-            for i in range(1000):
-                f.write(f"{i:09d}-{s90}")
-        with open(os.path.join(self.gen_dir, "data-1m"), 'w') as f:
-            for i in range(10000):
-                f.write(f"{i:09d}-{s90}")
+    def setup_httpd(self, setup: HttpdTestSetup = None):
+        super().setup_httpd(setup=H2TestSetup(env=self))
 
 
 class H2Conf(HttpdConf):
@@ -135,4 +134,3 @@ class H2Conf(HttpdConf):
 
     def add_vhost_test2(self):
         return super().add_vhost_test2()
-

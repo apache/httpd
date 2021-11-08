@@ -97,7 +97,7 @@ class MDPebbleRunner(ACMEServer):
         shutil.copyfile(self.env.ca.cert_file, dest)
         end = datetime.now() + timedelta(seconds=20)
         while datetime.now() < end:
-            r = self.env.curl_get('https://localhost:15000/roots/0', insecure=True, debug_log=False)
+            r = self.env.curl_get('https://localhost:15000/roots/0', insecure=True)
             if r.exit_code == 0:
                 with open(dest, 'a') as fd:
                     fd.write(r.stdout)

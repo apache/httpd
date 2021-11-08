@@ -2,12 +2,10 @@ import logging
 import os
 import re
 import sys
-from datetime import timedelta
 import pytest
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '../..'))
 
-from .md_certs import CertificateSpec, MDTestCA
 from .md_conf import HttpdConf
 from .md_env import MDTestEnv
 from .md_acme import MDPebbleRunner, MDBoulderRunner
@@ -32,6 +30,7 @@ def env(pytestconfig) -> MDTestEnv:
     logging.getLogger('').addHandler(console)
     logging.getLogger('').setLevel(level=level)
     env = MDTestEnv(pytestconfig=pytestconfig)
+    env.setup_httpd()
     env.apache_access_log_clear()
     env.httpd_error_log.clear_log()
     return env

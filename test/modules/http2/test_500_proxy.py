@@ -1,3 +1,4 @@
+import inspect
 import os
 import re
 import pytest
@@ -5,13 +6,16 @@ import pytest
 from .env import H2Conf
 
 
-class TestStore:
+class TestProxy:
 
     @pytest.fixture(autouse=True, scope='class')
     def _class_scope(self, env):
-        env.setup_data_1k_1m()
+        TestProxy._local_dir = os.path.dirname(inspect.getfile(TestProxy))
         H2Conf(env).add_vhost_cgi(proxy_self=True).install()
         assert env.apache_restart() == 0
+
+    def local_src(self, fname):
+        return os.path.join(TestProxy._local_dir, fname)
 
     def setup_method(self, method):
         print("setup_method: %s" % method.__name__)
@@ -41,7 +45,7 @@ class TestStore:
         r2 = env.curl_get(re.sub(r'http:', 'https:', r.response["header"]["location"]))
         assert r2.exit_code == 0
         assert r2.response["status"] == 200
-        with open(env.local_src(fpath), mode='rb') as file:
+        with open(self.local_src(fpath), mode='rb') as file:
             src = file.read()
         assert src == r2.response["body"]
 
@@ -58,7 +62,7 @@ class TestStore:
         r = env.nghttp().upload(url, fpath, options=options)
         assert r.exit_code == 0
         assert 200 <= r.response["status"] < 300
-        with open(env.local_src(fpath), mode='rb') as file:
+        with open(self.local_src(fpath), mode='rb') as file:
             src = file.read()
         assert src == r.response["body"]
 
@@ -88,7 +92,7 @@ class TestStore:
         r2 = env.nghttp().get(re.sub(r'http:', 'https:', r.response["header"]["location"]))
         assert r2.exit_code == 0
         assert r2.response["status"] == 200
-        with open(env.local_src(fpath), mode='rb') as file:
+        with open(self.local_src(fpath), mode='rb') as file:
             src = file.read()
         assert src == r2.response["body"]
 

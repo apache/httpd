@@ -18,7 +18,7 @@ class TestEncoding:
         </Directory>
         """,
             f"test2.{env.http_tld}": "AllowEncodedSlashes on",
-            f"cgi.{env.http_tld}": f"ScriptAlias /cgi-bin/ {env.gen_dir}",
+            f"test1.{env.http_tld}": f"ScriptAlias /cgi-bin/ {env.gen_dir}",
         })
         conf.add_vhost_test1()
         conf.add_vhost_test2()
@@ -73,7 +73,7 @@ class TestEncoding:
         ["/cgi-bin/%25%32%65%25%32%65/%25%32%65%25%32%65/h2_env.py", 404],
     ])
     def test_core_001_04(self, env, path, status):
-        url = env.mkurl("https", "cgi", path)
+        url = env.mkurl("https", "test1", path)
         r = env.curl_get(url)
         assert r.response["status"] == status
         if status == 400:

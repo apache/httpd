@@ -104,7 +104,6 @@ class HttpdConf(object):
         self.add([
             "<Location /006>",
             "    Options +Indexes",
-            "    HeaderName /006/header.html",
             "</Location>",
         ])
         self.add_proxies("test1", proxy_self, h2proxy_self)
@@ -121,7 +120,6 @@ class HttpdConf(object):
         self.add([
             "<Location /006>",
             "    Options +Indexes",
-            "    HeaderName /006/header.html",
             "</Location>",
         ])
         self.end_vhost()

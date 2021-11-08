@@ -10,7 +10,6 @@ class TestBuffering:
 
     @pytest.fixture(autouse=True, scope='class')
     def _class_scope(self, env):
-        env.setup_data_1k_1m()
         conf = H2Conf(env)
         conf.add_vhost_cgi(h2proxy_self=True).install()
         assert env.apache_restart() == 0

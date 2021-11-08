@@ -1,5 +1,6 @@
 import difflib
 import email.parser
+import inspect
 import json
 import os
 import re
@@ -10,13 +11,16 @@ import pytest
 from .env import H2Conf
 
 
-class TestStore:
+class TestPost:
 
     @pytest.fixture(autouse=True, scope='class')
     def _class_scope(self, env):
-        env.setup_data_1k_1m()
+        TestPost._local_dir = os.path.dirname(inspect.getfile(TestPost))
         H2Conf(env).add_vhost_cgi().install()
         assert env.apache_restart() == 0
+
+    def local_src(self, fname):
+        return os.path.join(TestPost._local_dir, fname)
 
     # upload and GET again using curl, compare to original content
     def curl_upload_and_verify(self, env, fname, options=None):
@@ -29,7 +33,7 @@ class TestStore:
         r2 = env.curl_get(r.response["header"]["location"])
         assert r2.exit_code == 0
         assert r2.response["status"] == 200
-        with open(env.local_src(fpath), mode='rb') as file:
+        with open(self.local_src(fpath), mode='rb') as file:
             src = file.read()
         assert src == r2.response["body"]
 
@@ -84,7 +88,7 @@ class TestStore:
         assert r.exit_code == 0
         assert r.response["status"] >= 200 and r.response["status"] < 300
 
-        with open(env.local_src(fpath), mode='rb') as file:
+        with open(self.local_src(fpath), mode='rb') as file:
             src = file.read()
         assert 'request-length' in r.response["header"]
         assert int(r.response["header"]['request-length']) == len(src)
@@ -123,7 +127,7 @@ class TestStore:
         r2 = env.nghttp().get(r.response["header"]["location"])
         assert r2.exit_code == 0
         assert r2.response["status"] == 200
-        with open(env.local_src(fpath), mode='rb') as file:
+        with open(self.local_src(fpath), mode='rb') as file:
             src = file.read()
         assert src == r2.response["body"]
 
@@ -204,7 +208,7 @@ CustomLog logs/test_004_30 issue_203
                 if fname == part.get_filename():
                     filepart = part
             assert filepart
-            with open(env.local_src(fpath), mode='rb') as file:
+            with open(self.local_src(fpath), mode='rb') as file:
                 src = file.read()
             assert src == filepart.get_payload(decode=True)
         

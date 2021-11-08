@@ -370,7 +370,7 @@ class TestDrivev2:
         env.run(["openssl", "s_client",
                  f"-connect", "localhost:{env.https_port}",
                  "-servername", "example.com", "-crlf"
-                 ], input="GET https:// HTTP/1.1\nHost: example.com\n\n")
+                 ], intext="GET https:// HTTP/1.1\nHost: example.com\n\n")
         assert env.apache_restart() == 0
 
     # --------- critical state change -> drive again ---------

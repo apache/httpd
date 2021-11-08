@@ -10,7 +10,7 @@ from .env import H2TestEnv
 
 
 def pytest_report_header(config, startdir):
-    env = H2TestEnv(setup_dirs=False)
+    env = H2TestEnv()
     return f"mod_h2 [apache: {env.get_httpd_version()}, mpm: {env.mpm_module}, {env.prefix}]"
 
 
@@ -36,6 +36,7 @@ def env(pytestconfig) -> H2TestEnv:
     logging.getLogger('').addHandler(console)
     logging.getLogger('').setLevel(level=level)
     env = H2TestEnv(pytestconfig=pytestconfig)
+    env.setup_httpd()
     env.apache_access_log_clear()
     env.httpd_error_log.clear_log()
     return env

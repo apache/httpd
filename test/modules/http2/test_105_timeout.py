@@ -7,7 +7,7 @@ from .env import H2Conf
 from pyhttpd.curl import CurlPiper
 
 
-class TestStore:
+class TestTimeout:
 
     # Check that base servers 'Timeout' setting is observed on SSL handshake
     def test_h2_105_01(self, env):

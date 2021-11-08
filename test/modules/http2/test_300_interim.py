@@ -3,7 +3,7 @@ import pytest
 from .env import H2Conf
 
 
-class TestStore:
+class TestInterimResponses:
 
     @pytest.fixture(autouse=True, scope='class')
     def _class_scope(self, env):

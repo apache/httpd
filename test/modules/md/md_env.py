@@ -24,13 +24,16 @@ log = logging.getLogger(__name__)
 
 class MDTestSetup(HttpdTestSetup):
 
-    def __init__(self, env: 'HttpdTestEnv'):
+    def __init__(self, env: 'MDTestEnv'):
         super().__init__(env=env)
+        self.mdenv = env
+        self.add_modules(["watchdog", "proxy_connect", "md"])
 
     def make(self):
-        super().make(add_modules=["proxy_connect", "md"])
-        if "pebble" == self.env.acme_server:
+        super().make()
+        if "pebble" == self.mdenv.acme_server:
             self._make_pebble_conf()
+        self.mdenv.clear_store()
 
     def _make_pebble_conf(self):
         our_dir = os.path.dirname(inspect.getfile(MDTestSetup))
@@ -82,17 +85,16 @@ class MDTestEnv(HttpdTestEnv):
 
     @classmethod
     def has_a2md(cls):
-        dir = os.path.dirname(inspect.getfile(HttpdTestEnv))
+        d = os.path.dirname(inspect.getfile(HttpdTestEnv))
         config = ConfigParser(interpolation=ExtendedInterpolation())
-        config.read(os.path.join(dir, 'config.ini'))
+        config.read(os.path.join(d, 'config.ini'))
         bin_dir = config.get('global', 'bindir')
         a2md_bin = os.path.join(bin_dir, 'a2md')
         return os.path.isfile(a2md_bin)
 
-    def __init__(self, pytestconfig=None, setup_dirs=True):
-        super().__init__(pytestconfig=pytestconfig,
-                         local_dir=os.path.dirname(inspect.getfile(MDTestEnv)),
-                         interesting_modules=["md"])
+    def __init__(self, pytestconfig=None):
+        super().__init__(pytestconfig=pytestconfig)
+        self.add_httpd_log_modules(["md"])
         self._acme_server = self.get_acme_server()
         self._acme_tos = "accepted"
         self._acme_ca_pemfile = os.path.join(self.gen_dir, "apache/acme-ca.pem")
@@ -119,11 +121,8 @@ class MDTestEnv(HttpdTestEnv):
             CertificateSpec(domains=["localhost"], key_type='rsa2048'),
         ])
 
-        if setup_dirs:
-            self._setup = MDTestSetup(env=self)
-            self._setup.make()
-            self.issue_certs()
-            self.clear_store()
+    def setup_httpd(self, setup: HttpdTestSetup = None):
+        super().setup_httpd(setup=MDTestSetup(env=self))
 
     def set_store_dir_default(self):
         dirpath = "md"
@@ -134,8 +133,10 @@ class MDTestEnv(HttpdTestEnv):
     def set_store_dir(self, dirpath):
         self._store_dir = os.path.join(self.server_dir, dirpath)
         if self.acme_url:
-            self.a2md_stdargs([self.a2md_bin, "-a", self.acme_url, "-d", self._store_dir,  "-C", self.acme_ca_pemfile, "-j"])
-            self.a2md_rawargs([self.a2md_bin, "-a", self.acme_url, "-d", self._store_dir,  "-C", self.acme_ca_pemfile])
+            self.a2md_stdargs([self.a2md_bin, "-a", self.acme_url,
+                               "-d", self._store_dir,  "-C", self.acme_ca_pemfile, "-j"])
+            self.a2md_rawargs([self.a2md_bin, "-a", self.acme_url,
+                               "-d", self._store_dir,  "-C", self.acme_ca_pemfile])
 
     def get_apxs_var(self, name: str) -> str:
         p = subprocess.run([self._apxs, "-q", name], capture_output=True, text=True)
@@ -430,12 +431,11 @@ class MDTestEnv(HttpdTestEnv):
         assert r.exit_code == 0
         return r.stdout
 
-    def get_json_content(self, domain, path, use_https=True, insecure=False,
-                         debug_log=True):
+    def get_json_content(self, domain, path, use_https=True, insecure=False):
         schema = "https" if use_https else "http"
         port = self.https_port if use_https else self.http_port
         url = f"{schema}://{domain}:{port}{path}"
-        r = self.curl_get(url, insecure=insecure, debug_log=debug_log)
+        r = self.curl_get(url, insecure=insecure)
         if r.exit_code != 0:
             log.error(f"curl get on {url} returned {r.exit_code}"
                       f"\nstdout: {r.stdout}"
@@ -446,11 +446,11 @@ class MDTestEnv(HttpdTestEnv):
     def get_certificate_status(self, domain) -> Dict:
         return self.get_json_content(domain, "/.httpd/certificate-status", insecure=True)
 
-    def get_md_status(self, domain, via_domain=None, use_https=True, debug_log=False) -> Dict:
+    def get_md_status(self, domain, via_domain=None, use_https=True) -> Dict:
         if via_domain is None:
             via_domain = self._default_domain
         return self.get_json_content(via_domain, f"/md-status/{domain}",
-                                     use_https=use_https, debug_log=debug_log)
+                                     use_https=use_https)
 
     def get_server_status(self, query="/", via_domain=None, use_https=True):
         if via_domain is None:
@@ -521,7 +521,6 @@ class MDTestEnv(HttpdTestEnv):
                         and md['renewal']['errors'] >= errors:
                     return md
             time.sleep(0.1)
-        return None
 
     def await_file(self, fpath, timeout=60):
         try_until = time.time() + timeout

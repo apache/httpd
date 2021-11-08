@@ -35,7 +35,6 @@ class HttpdTestSetup:
         "logio",
         "unixd",
         "version",
-        "watchdog",
         "authn_core",
         "authz_host",
         "authz_groupfile",
@@ -56,32 +55,35 @@ class HttpdTestSetup:
         "setenvif",
         "slotmem_shm",
         "status",
-        "autoindex",
-        "cgid",
         "dir",
         "alias",
         "rewrite",
         "deflate",
         "proxy",
         "proxy_http",
-        "proxy_balancer",
-        "proxy_hcheck",
     ]
 
     def __init__(self, env: 'HttpdTestEnv'):
         self.env = env
+        self._source_dirs = [os.path.dirname(inspect.getfile(HttpdTestSetup))]
+        self._modules = HttpdTestSetup.MODULES.copy()
 
-    def make(self, modules: List[str] = None, add_modules: List[str] = None):
+    def add_source_dir(self, source_dir):
+        self._source_dirs.append(source_dir)
+
+    def add_modules(self, modules: List[str]):
+        for m in modules:
+            if m not in self._modules:
+                self._modules.append(m)
+
+    def make(self):
         self._make_dirs()
         self._make_conf()
-        mod_names = modules.copy() if modules else self.MODULES.copy()
-        if add_modules:
-            mod_names.extend(add_modules)
-        if self.env.mpm_module is not None and self.env.mpm_module not in mod_names:
-            mod_names.append(self.env.mpm_module)
-        if self.env.ssl_module is not None and self.env.ssl_module not in mod_names:
-            mod_names.append(self.env.ssl_module)
-        self._make_modules_conf(modules=mod_names)
+        if self.env.mpm_module is not None:
+            self.add_modules([self.env.mpm_module])
+        if self.env.ssl_module is not None:
+            self.add_modules([self.env.ssl_module])
+        self._make_modules_conf()
         self._make_htdocs()
         self.env.clear_curl_headerfiles()
 
@@ -93,18 +95,22 @@ class HttpdTestSetup:
             os.makedirs(self.env.server_logs_dir)
 
     def _make_conf(self):
-        our_dir = os.path.dirname(inspect.getfile(Dummy))
-        conf_src_dir = os.path.join(our_dir, 'conf')
+        # remove anything from another run/test suite
         conf_dest_dir = os.path.join(self.env.server_dir, 'conf')
-        if not os.path.exists(conf_dest_dir):
-            os.makedirs(conf_dest_dir)
-        for name in os.listdir(conf_src_dir):
-            src_path = os.path.join(conf_src_dir, name)
-            m = re.match(r'(.+).template', name)
-            if m:
-                self._make_template(src_path, os.path.join(conf_dest_dir, m.group(1)))
-            elif os.path.isfile(src_path):
-                shutil.copy(src_path, os.path.join(conf_dest_dir, name))
+        if os.path.isdir(conf_dest_dir):
+            shutil.rmtree(conf_dest_dir)
+        for d in self._source_dirs:
+            conf_src_dir = os.path.join(d, 'conf')
+            if os.path.isdir(conf_src_dir):
+                if not os.path.exists(conf_dest_dir):
+                    os.makedirs(conf_dest_dir)
+                for name in os.listdir(conf_src_dir):
+                    src_path = os.path.join(conf_src_dir, name)
+                    m = re.match(r'(.+).template', name)
+                    if m:
+                        self._make_template(src_path, os.path.join(conf_dest_dir, m.group(1)))
+                    elif os.path.isfile(src_path):
+                        shutil.copy(src_path, os.path.join(conf_dest_dir, name))
 
     def _make_template(self, src, dest):
         var_map = dict()
@@ -115,12 +121,12 @@ class HttpdTestSetup:
         with open(dest, 'w') as fd:
             fd.write(t.substitute(var_map))
 
-    def _make_modules_conf(self, modules: List[str]):
+    def _make_modules_conf(self):
         modules_conf = os.path.join(self.env.server_dir, 'conf/modules.conf')
         with open(modules_conf, 'w') as fd:
             # issue load directives for all modules we want that are shared
             missing_mods = list()
-            for m in modules:
+            for m in self._modules:
                 mod_path = os.path.join(self.env.libexec_dir, f"mod_{m}.so")
                 if os.path.isfile(mod_path):
                     fd.write(f"LoadModule {m}_module   \"{mod_path}\"\n")
@@ -133,18 +139,23 @@ class HttpdTestSetup:
                             f"DSOs: {self.env.dso_modules}")
 
     def _make_htdocs(self):
-        our_dir = os.path.dirname(inspect.getfile(Dummy))
         if not os.path.exists(self.env.server_docs_dir):
             os.makedirs(self.env.server_docs_dir)
-        shutil.copytree(os.path.join(our_dir, 'htdocs'),
-                        os.path.join(self.env.server_dir, 'htdocs'),
-                        dirs_exist_ok=True)
-        cgi_dir = os.path.join(self.env.server_dir, 'htdocs/cgi')
-        for name in os.listdir(cgi_dir):
-            if re.match(r'.+\.py', name):
-                cgi_file = os.path.join(cgi_dir, name)
-                st = os.stat(cgi_file)
-                os.chmod(cgi_file, st.st_mode | stat.S_IEXEC)
+        dest_dir = os.path.join(self.env.server_dir, 'htdocs')
+        # remove anything from another run/test suite
+        if os.path.isdir(dest_dir):
+            shutil.rmtree(dest_dir)
+        for d in self._source_dirs:
+            srcdocs = os.path.join(d, 'htdocs')
+            if os.path.isdir(srcdocs):
+                shutil.copytree(srcdocs, dest_dir, dirs_exist_ok=True)
+        # make all contained .py scripts executable
+        for dirpath, _dirnames, filenames in os.walk(dest_dir):
+            for fname in filenames:
+                if re.match(r'.+\.py', fname):
+                    py_file = os.path.join(dirpath, fname)
+                    st = os.stat(py_file)
+                    os.chmod(py_file, st.st_mode | stat.S_IEXEC)
 
 
 class HttpdTestEnv:
@@ -153,11 +164,8 @@ class HttpdTestEnv:
     def get_ssl_module(cls):
         return os.environ['SSL'] if 'SSL' in os.environ else 'ssl'
 
-    def __init__(self, pytestconfig=None,
-                 local_dir=None, add_base_conf: List[str] = None,
-                 interesting_modules: List[str] = None):
+    def __init__(self, pytestconfig=None):
         self._our_dir = os.path.dirname(inspect.getfile(Dummy))
-        self._local_dir = local_dir if local_dir else self._our_dir
         self.config = ConfigParser(interpolation=ExtendedInterpolation())
         self.config.read(os.path.join(self._our_dir, 'config.ini'))
 
@@ -196,24 +204,12 @@ class HttpdTestEnv:
         self._http_base = f"http://{self._httpd_addr}:{self.http_port}"
         self._https_base = f"https://{self._httpd_addr}:{self.https_port}"
 
+        self._verbosity = pytestconfig.option.verbose if pytestconfig is not None else 0
         self._test_conf = os.path.join(self._server_conf_dir, "test.conf")
         self._httpd_base_conf = []
-        if add_base_conf:
-            self._httpd_base_conf.extend(add_base_conf)
-
-        self._verbosity = pytestconfig.option.verbose if pytestconfig is not None else 0
-        if self._verbosity >= 2:
-            log_level = "trace2"
-            self._httpd_base_conf .append(f"LogLevel core:trace5 {self.mpm_module}:trace5")
-        elif self._verbosity >= 1:
-            log_level = "debug"
-        else:
-            log_level = "info"
-        if interesting_modules:
-            l = "LogLevel"
-            for name in interesting_modules:
-                l += f" {name}:{log_level}"
-            self._httpd_base_conf.append(l)
+        self._httpd_log_modules = []
+        self._log_interesting = None
+        self._setup = None
 
         self._ca = None
         self._cert_specs = [CertificateSpec(domains=[
@@ -225,6 +221,35 @@ class HttpdTestEnv:
 
         self._verify_certs = False
         self._curl_headerfiles_n = 0
+
+    def add_httpd_conf(self, lines: List[str]):
+        self._httpd_base_conf.extend(lines)
+
+    def add_httpd_log_modules(self, modules: List[str]):
+        self._httpd_log_modules.extend(modules)
+
+    def issue_certs(self):
+        if self._ca is None:
+            self._ca = HttpdTestCA.create_root(name=self.http_tld,
+                                               store_dir=os.path.join(self.server_dir, 'ca'),
+                                               key_type="rsa4096")
+        self._ca.issue_certs(self._cert_specs)
+
+    def setup_httpd(self, setup: HttpdTestSetup = None):
+        """Create the server environment with config, htdocs and certificates"""
+        self._setup = setup if setup is not None else HttpdTestSetup(env=self)
+        self._setup.make()
+        self.issue_certs()
+        if self._httpd_log_modules:
+            if self._verbosity >= 2:
+                log_level = "trace2"
+            elif self._verbosity >= 1:
+                log_level = "debug"
+            else:
+                log_level = "info"
+            self._log_interesting = "LogLevel"
+            for name in self._httpd_log_modules:
+                self._log_interesting += f" {name}:{log_level}"
 
     @property
     def apxs(self) -> str:
@@ -283,10 +308,6 @@ class HttpdTestEnv:
         return self._gen_dir
 
     @property
-    def local_dir(self) -> str:
-        return self._local_dir
-
-    @property
     def test_dir(self) -> str:
         return self._test_dir
 
@@ -319,15 +340,8 @@ class HttpdTestEnv:
         return self._server_docs_dir
 
     @property
-    def httpd_base_conf(self) -> List[str]:
-        return self._httpd_base_conf
-
-    @property
     def httpd_error_log(self) -> HttpdErrorLog:
         return self._error_log
-
-    def local_src(self, path):
-        return os.path.join(self.local_dir, path)
 
     def htdocs_src(self, path):
         return os.path.join(self._our_dir, 'htdocs', path)
@@ -346,13 +360,6 @@ class HttpdTestEnv:
 
     def add_cert_specs(self, specs: List[CertificateSpec]):
         self._cert_specs.extend(specs)
-
-    def issue_certs(self):
-        if self._ca is None:
-            self._ca = HttpdTestCA.create_root(name=self.http_tld,
-                                               store_dir=os.path.join(self.server_dir, 'ca'),
-                                               key_type="rsa4096")
-        self._ca.issue_certs(self._cert_specs)
 
     def get_credentials_for_name(self, dns_name) -> List['Credentials']:
         for spec in self._cert_specs:
@@ -396,12 +403,12 @@ class HttpdTestEnv:
         if not os.path.exists(path):
             return os.makedirs(path)
 
-    def run(self, args, input=None, debug_log=True):
+    def run(self, args, intext=None, debug_log=True):
         if debug_log:
             log.debug(f"run: {args}")
         start = datetime.now()
         p = subprocess.run(args, stderr=subprocess.PIPE, stdout=subprocess.PIPE,
-                           input=input.encode() if input else None)
+                           input=intext.encode() if intext else None)
         return ExecResult(args=args, exit_code=p.returncode,
                           stdout=p.stdout, stderr=p.stderr,
                           duration=datetime.now() - start)
@@ -413,7 +420,11 @@ class HttpdTestEnv:
     def install_test_conf(self, lines: List[str]):
         with open(self._test_conf, 'w') as fd:
             fd.write('\n'.join(self._httpd_base_conf))
-            fd.write('\n')
+            if self._verbosity >= 2:
+                fd.write(f"LogLevel core:trace5 {self.mpm_module}:trace5\n")
+            if self._log_interesting:
+                fd.write(self._log_interesting)
+            fd.write('\n\n')
             fd.write('\n'.join(lines))
             fd.write('\n')
 
@@ -427,7 +438,7 @@ class HttpdTestEnv:
         while datetime.now() < try_until:
             # noinspection PyBroadException
             try:
-                r = self.curl_get(url, insecure=True, debug_log=False)
+                r = self.curl_get(url, insecure=True)
                 if r.exit_code == 0:
                     return True
                 time.sleep(.1)
@@ -452,7 +463,7 @@ class HttpdTestEnv:
         while datetime.now() < try_until:
             # noinspection PyBroadException
             try:
-                r = self.curl_get(url, debug_log=False)
+                r = self.curl_get(url)
                 if r.exit_code != 0:
                     return True
                 time.sleep(.1)
@@ -596,7 +607,7 @@ class HttpdTestEnv:
         return r
 
     def curl_raw(self, urls, timeout=10, options=None, insecure=False,
-                 debug_log=True, force_resolve=True):
+                 force_resolve=True):
         xopt = ['-vvvv']
         if options:
             xopt.extend(options)
@@ -611,9 +622,8 @@ class HttpdTestEnv:
         os.remove(headerfile)
         return r
 
-    def curl_get(self, url, insecure=False, debug_log=True, options=None):
-        return self.curl_raw([url], insecure=insecure,
-                             options=options, debug_log=debug_log)
+    def curl_get(self, url, insecure=False, options=None):
+        return self.curl_raw([url], insecure=insecure, options=options)
 
     def curl_upload(self, url, fpath, timeout=5, options=None):
         if not options:

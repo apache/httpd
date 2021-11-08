@@ -8,7 +8,7 @@ def frame_padding(payload, padbits):
     return ((payload + 9 + mask) & ~mask) - (payload + 9)
         
 
-class TestStore:
+class TestPadding:
 
     @pytest.fixture(autouse=True, scope='class')
     def _class_scope(self, env):

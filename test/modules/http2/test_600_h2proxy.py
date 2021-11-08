@@ -3,11 +3,10 @@ import pytest
 from .env import H2Conf
 
 
-class TestStore:
+class TestH2Proxy:
 
     @pytest.fixture(autouse=True, scope='class')
     def _class_scope(self, env):
-        env.setup_data_1k_1m()
         conf = H2Conf(env)
         conf.add_vhost_cgi(h2proxy_self=True)
         if env.verbosity > 1:

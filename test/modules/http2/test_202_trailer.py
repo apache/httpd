@@ -13,7 +13,7 @@ def setup_data(env):
 
 # The trailer tests depend on "nghttp" as no other client seems to be able to send those
 # rare things.
-class TestStore:
+class TestTrailers:
 
     @pytest.fixture(autouse=True, scope='class')
     def _class_scope(self, env):

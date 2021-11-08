@@ -4,7 +4,7 @@ import pytest
 from .env import H2Conf
 
 
-class TestStore:
+class TestGet:
 
     @pytest.fixture(autouse=True, scope='class')
     def _class_scope(self, env):
@@ -92,7 +92,7 @@ class TestStore:
   <title>Index of /006</title>
  </head>
  <body>
-<title>My Header Title</title>
+<h1>Index of /006</h1>
 <ul><li><a href="/"> Parent Directory</a></li>
 <li><a href="006.css"> 006.css</a></li>
 <li><a href="006.js"> 006.js</a></li>

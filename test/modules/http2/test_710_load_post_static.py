@@ -4,11 +4,10 @@ import os
 from .env import H2Conf
 
 
-class TestStore:
+class TestLoadPostStatic:
 
     @pytest.fixture(autouse=True, scope='class')
     def _class_scope(self, env):
-        env.setup_data_1k_1m()
         H2Conf(env).add_vhost_test1().install()
         assert env.apache_restart() == 0
 

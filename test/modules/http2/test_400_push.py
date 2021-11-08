@@ -5,7 +5,7 @@ from .env import H2Conf
 
 
 # The push tests depend on "nghttp"
-class TestStore:
+class TestPush:
 
     @pytest.fixture(autouse=True, scope='class')
     def _class_scope(self, env):
