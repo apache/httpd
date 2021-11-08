@@ -159,10 +159,20 @@ if ! test -v SKIP_TESTING; then
         grep -v ':\(debug\|trace[12345678]\)\]' test/perl-framework/t/logs/error_log
     fi
 
+    if test -v TEST_CORE -a $RV -eq 0; then
+        # Run HTTP/2 tests.
+        MPM=event py.test-3 test/modules/core
+        RV=$?
+    fi
+
     if test -v TEST_H2 -a $RV -eq 0; then
         # Run HTTP/2 tests.
-        py.test-3 test/modules/http2
+        MPM=event py.test-3 test/modules/http2
         RV=$?
+        if test $RV -eq 0; then
+          MPM=worker py.test-3 test/modules/http2
+          RV=$?
+        fi
     fi
 
     if test -v TEST_MD -a $RV -eq 0; then
