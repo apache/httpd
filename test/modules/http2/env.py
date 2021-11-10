@@ -106,7 +106,7 @@ class H2Conf(HttpdConf):
             ]
         }))
 
-    def start_vhost(self, domains, port=None, doc_root="htdocs", with_ssl=False):
+    def start_vhost(self, domains, port=None, doc_root="htdocs", with_ssl=None):
         super().start_vhost(domains=domains, port=port, doc_root=doc_root, with_ssl=with_ssl)
         if f"noh2.{self.env.http_tld}" in domains:
             protos = ["http/1.1"]

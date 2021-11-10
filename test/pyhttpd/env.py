@@ -362,7 +362,7 @@ class HttpdTestEnv:
         self._cert_specs.extend(specs)
 
     def get_credentials_for_name(self, dns_name) -> List['Credentials']:
-        for spec in self._cert_specs:
+        for spec in [s for s in self._cert_specs if s.domains is not None]:
             if dns_name in spec.domains:
                 return self.ca.get_credentials_for_name(spec.domains[0])
         return []
@@ -420,6 +420,7 @@ class HttpdTestEnv:
     def install_test_conf(self, lines: List[str]):
         with open(self._test_conf, 'w') as fd:
             fd.write('\n'.join(self._httpd_base_conf))
+            fd.write('\n')
             if self._verbosity >= 2:
                 fd.write(f"LogLevel core:trace5 {self.mpm_module}:trace5\n")
             if self._log_interesting:
@@ -479,9 +480,10 @@ class HttpdTestEnv:
         return False
 
     def _run_apachectl(self, cmd) -> ExecResult:
+        conf_file = 'stop.conf' if cmd == 'stop' else 'httpd.conf'
         args = [self._apachectl,
                 "-d", self.server_dir,
-                "-f", os.path.join(self._server_dir, 'conf/httpd.conf'),
+                "-f", os.path.join(self._server_dir, f'conf/{conf_file}'),
                 "-k", cmd]
         r = self.run(args)
         self._apachectl_stderr = r.stderr

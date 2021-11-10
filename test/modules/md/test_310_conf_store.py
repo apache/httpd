@@ -250,7 +250,7 @@ class TestConf:
             """)
         conf.add_vhost(port=12346, domains=[
             "testdomain.org", "test.testdomain.org", "mail.testdomain.org",
-        ])
+        ], with_ssl=True)
         conf.install()
         assert env.apache_restart() == 0
         assert env.a2md(["list"]).json['output'][0]['domains'] == \

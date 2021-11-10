@@ -66,7 +66,6 @@ def _session_scope(env):
             re.compile(r'.*certificate with serial \S+ has no OCSP responder URL.*'),
         ])
     yield
-    HttpdConf(env).install()
     assert env.apache_stop() == 0
     errors, warnings = env.httpd_error_log.get_missed()
     assert (len(errors), len(warnings)) == (0, 0),\

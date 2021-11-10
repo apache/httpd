@@ -40,23 +40,25 @@ class HttpdConf(object):
         if self.env.ssl_module == "ssl":
             self.add([
                 f"SSLCertificateFile {cert_file}",
-                f"SSLCertificateKeyFile {key_file}",
+                f"SSLCertificateKeyFile {key_file if key_file else cert_file}",
             ])
         elif self.env.ssl_module == "tls":
             self.add(f"""
                 TLSCertificate {cert_file} {key_file}
             """)
 
-    def add_vhost(self, domains, port=None, doc_root="htdocs", with_ssl=True):
+    def add_vhost(self, domains, port=None, doc_root="htdocs", with_ssl=None):
         self.start_vhost(domains=domains, port=port, doc_root=doc_root, with_ssl=with_ssl)
         self.end_vhost()
         return self
 
-    def start_vhost(self, domains, port=None, doc_root="htdocs", with_ssl=False):
+    def start_vhost(self, domains, port=None, doc_root="htdocs", with_ssl=None):
         if not isinstance(domains, list):
             domains = [domains]
         if port is None:
             port = self.env.https_port
+        if with_ssl is None:
+            with_ssl = (self.env.https_port == port)
         self.add("")
         self.add(f"<VirtualHost *:{port}>")
         self._indents += 1
@@ -64,7 +66,7 @@ class HttpdConf(object):
         for alias in domains[1:]:
             self.add(f"ServerAlias {alias}")
         self.add(f"DocumentRoot {doc_root}")
-        if self.env.https_port == port or with_ssl:
+        if with_ssl:
             if self.env.ssl_module == "ssl":
                 self.add("SSLEngine on")
             for cred in self.env.get_credentials_for_name(domains[0]):
