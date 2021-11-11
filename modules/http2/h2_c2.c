@@ -269,14 +269,14 @@ static apr_status_t h2_c2_filter_in(ap_filter_t* f,
         return APR_ECONNABORTED;
     }
     
-    if (!conn_ctx->beam_in) {
-        return APR_EOF;
-    }
-
     if (!fctx) {
         fctx = apr_pcalloc(f->c->pool, sizeof(*fctx));
         f->ctx = fctx;
         fctx->bb = apr_brigade_create(f->c->pool, f->c->bucket_alloc);
+        if (!conn_ctx->beam_in) {
+            b = apr_bucket_eos_create(f->c->bucket_alloc);
+            APR_BRIGADE_INSERT_TAIL(fctx->bb, b);
+        }
     }
     
     /* Cleanup brigades from those nasty 0 length non-meta buckets
