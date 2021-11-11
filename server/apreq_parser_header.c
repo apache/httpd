@@ -41,7 +41,7 @@ struct hdr_ctx {
         HDR_GAP,
         HDR_VALUE,
         HDR_NEWLINE,
-        HDR_CONTLINE,
+        HDR_FOLDLINE,
         HDR_WANTLINE,
         HDR_NEXTLINE,
         HDR_LASTLINE,
@@ -343,41 +343,39 @@ APREQ_DECLARE_PARSER(apreq_parse_headers)
             if (off == dlen)
                 break;
 
-            {
-                ch = data[off];
-                switch (ch) {
-                case ' ':
-                case '\t':
-                    ++off;
-                    ++ctx->vlen;
-                    break;
+            ch = data[off];
+            switch (ch) {
+            case ' ':
+            case '\t':
+                ++off;
+                ++ctx->vlen;
+                break;
 
-                default:
-                    /* can parse brigade now */
-                    if (off > 0)
-                        apr_bucket_split(e, off);
-                    s = split_header_line(&param, pool, ctx->bb, ctx->nlen, ctx->glen, ctx->vlen);
-                    if (parser->hook != NULL && s == APR_SUCCESS)
-                        s = apreq_hook_run(parser->hook, param, NULL);
-                    if (s != APR_SUCCESS) {
-                        ctx->status = HDR_ERROR;
-                        return s;
-                    }
-
-                    apreq_value_table_add(&param->v, t);
-                    ctx->nlen = 0;
-                    ctx->vlen = 0;
-                    ctx->glen = 0;
-
-                    ctx->status = HDR_NEXTLINE;
-                    goto parse_hdr_bucket;
+            default:
+                /* can parse brigade now */
+                if (off > 0)
+                    apr_bucket_split(e, off);
+                s = split_header_line(&param, pool, ctx->bb, ctx->nlen, ctx->glen, ctx->vlen);
+                if (parser->hook != NULL && s == APR_SUCCESS)
+                    s = apreq_hook_run(parser->hook, param, NULL);
+                if (s != APR_SUCCESS) {
+                    ctx->status = HDR_ERROR;
+                    return s;
                 }
+
+                apreq_value_table_add(&param->v, t);
+                ctx->nlen = 0;
+                ctx->vlen = 0;
+                ctx->glen = 0;
+
+                ctx->status = HDR_NEXTLINE;
+                goto parse_hdr_bucket;
             }
 
             /* fall thru */
-            ctx->status = HDR_CONTLINE;
+            ctx->status = HDR_FOLDLINE;
 
-        case HDR_CONTLINE:
+        case HDR_FOLDLINE:
 
             while (off < dlen) {
                 ch = data[off++];
