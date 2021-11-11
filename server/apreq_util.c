@@ -1044,7 +1044,8 @@ APREQ_DECLARE(apr_status_t) apreq_brigade_concat(apr_pool_t *pool,
         if (s != APR_SUCCESS)
             return s;
 
-        last_out = apr_bucket_file_create(file, wlen, 0,
+        apr_brigade_cleanup(out);
+        last_out = apr_bucket_file_create(file, 0, wlen,
                                           out->p, out->bucket_alloc);
         last_out->type = &spool_bucket_type;
         APR_BRIGADE_INSERT_TAIL(out, last_out);
