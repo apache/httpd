@@ -41,9 +41,8 @@ struct hdr_ctx {
         HDR_GAP,
         HDR_VALUE,
         HDR_NEWLINE,
+        HDR_ENDLINE,
         HDR_FOLDLINE,
-        HDR_WANTLINE,
-        HDR_NEXTLINE,
         HDR_LASTLINE,
         HDR_COMPLETE,
         HDR_ERROR
@@ -53,26 +52,36 @@ struct hdr_ctx {
 /********************* header parsing utils ********************/
 
 
-static apr_status_t split_header_line(apreq_param_t **p,
-                                      apr_pool_t *pool,
-                                      apr_bucket_brigade *bb,
-                                      apr_size_t nlen,
-                                      apr_size_t glen,
-                                      apr_size_t vlen)
+static apr_bucket *split_header_line(apr_bucket *e, apr_size_t *off,
+                                     const char **data, apr_size_t *dlen)
+{
+    if (*off > 1) {
+        apr_bucket_split(e, *off - 1);
+        e = APR_BUCKET_NEXT(e);
+        *dlen -= *off - 1;
+        *data += *off - 1;
+        *off = 1;
+    }
+    return e;
+}
+
+static apr_status_t consume_header_line(apreq_param_t **p,
+                                        apr_pool_t *pool,
+                                        apr_bucket_brigade *bb,
+                                        apr_size_t nlen,
+                                        apr_size_t glen,
+                                        apr_size_t vlen)
 {
     apreq_param_t *param;
     apreq_value_t *v;
     apr_bucket *e, *f;
     apr_status_t s;
     struct iovec vec[APREQ_DEFAULT_NELTS], *iov;
-    apr_array_header_t arr, *a = &arr;
+    apr_array_header_t arr;
     char *dest;
     const char *data;
     apr_size_t dlen;
     int i;
-
-    if (nlen == 0)
-        return APR_EBADARG;
 
     param = apreq_param_make(pool, NULL, nlen, NULL, vlen);
     *(const apreq_value_t **)&v = &param->v;
@@ -86,17 +95,11 @@ static apr_status_t split_header_line(apreq_param_t **p,
     e = APR_BRIGADE_FIRST(bb);
 
     /* store name in a temporary iovec array */
-    while (nlen > 0) {
+    do {
         apr_size_t len;
 
-        if (a->nelts == a->nalloc) {
-            a = apr_array_make(pool, arr.nalloc * 2, sizeof(struct iovec));
-            memcpy(a->elts, arr.elts, arr.nelts * sizeof(struct iovec));
-            a->nelts = arr.nelts;
-        }
-        iov = (struct iovec *)apr_array_push(a);
-
         assert(e != APR_BRIGADE_SENTINEL(bb));
+        iov = (struct iovec *)apr_array_push(&arr);
         s = apr_bucket_read(e, (const char **)&iov->iov_base,
                             &len, APR_BLOCK_READ);
         if (s != APR_SUCCESS)
@@ -107,10 +110,10 @@ static apr_status_t split_header_line(apreq_param_t **p,
         nlen -= len;
 
         e = APR_BUCKET_NEXT(e);
-    }
+    } while (nlen > 0);
 
     /* skip gap */
-    while (glen > 0) {
+    do {
         assert(e != APR_BRIGADE_SENTINEL(bb));
         s = apr_bucket_read(e, &data, &dlen, APR_BLOCK_READ);
         if (s != APR_SUCCESS)
@@ -120,11 +123,11 @@ static apr_status_t split_header_line(apreq_param_t **p,
         glen -= dlen;
 
         e = APR_BUCKET_NEXT(e);
-    }
+    } while (glen > 0);
 
     /* copy value */
     dest = v->data;
-    while (vlen > 0) {
+    do {
         apr_size_t off;
 
         assert(e != APR_BRIGADE_SENTINEL(bb));
@@ -145,14 +148,14 @@ static apr_status_t split_header_line(apreq_param_t **p,
         }
 
         e = APR_BUCKET_NEXT(e);
-    }
+    } while (vlen > 0);
     v->dlen = dest - v->data;
     *dest++ = 0;
 
     /* write name */
     v->name = dest;
-    for (i = 0; i < a->nelts; ++i) {
-        iov = (struct iovec *)a->elts + i;
+    for (i = 0; i < arr.nelts; ++i) {
+        iov = &((struct iovec *)arr.elts)[i];
         memcpy(dest, iov->iov_base, iov->iov_len);
         dest += iov->iov_len;
         ++iov;
@@ -169,7 +172,8 @@ static apr_status_t split_header_line(apreq_param_t **p,
 
 }
 
-#define IS_TOKEN_CHAR(c) (c && (apr_isalnum(c) || strchr("!#$%&'*+-.^_`|~", c)))
+#define IS_TOKEN_CHAR(c) (apr_isalnum(c) \
+                          || ((c) && strchr("!#$%&'*+-.^_`|~", (c))))
 
 APREQ_DECLARE_PARSER(apreq_parse_headers)
 {
@@ -235,13 +239,11 @@ APREQ_DECLARE_PARSER(apreq_parse_headers)
                 ch = data[off++];
                 switch (ch) {
                 case ':':
-                    if (off > 1) {
-                        apr_bucket_split(e, off - 1);
-                        dlen -= off - 1;
-                        data += off - 1;
-                        off = 1;
-                        e = APR_BUCKET_NEXT(e);
+                    if (!ctx->nlen) {
+                        ctx->status = HDR_ERROR;
+                        return APREQ_ERROR_BADHEADER;
                     }
+                    e = split_header_line(e, &off, &data, &dlen);
                     ++ctx->glen;
                     ctx->status = HDR_GAP;
                     goto parse_hdr_bucket;
@@ -249,7 +251,7 @@ APREQ_DECLARE_PARSER(apreq_parse_headers)
                 default:
                     if (!IS_TOKEN_CHAR(ch)) {
                         ctx->status = HDR_ERROR;
-                        return APR_EINVAL;
+                        return APREQ_ERROR_BADCHAR;
                     }
                     ++ctx->nlen;
                 }
@@ -268,27 +270,23 @@ APREQ_DECLARE_PARSER(apreq_parse_headers)
                     break;
 
                 case '\n':
+                    e = split_header_line(e, &off, &data, &dlen);
                     ctx->status = HDR_NEWLINE;
                     goto parse_hdr_bucket;
 
                 case '\r':
-                    ctx->status = HDR_WANTLINE;
+                    e = split_header_line(e, &off, &data, &dlen);
+                    ctx->status = HDR_ENDLINE;
                     goto parse_hdr_bucket;
 
                 default:
                     if (apr_iscntrl(ch)) {
                         ctx->status = HDR_ERROR;
-                        return APR_EINVAL;
+                        return APREQ_ERROR_BADCHAR;
                     }
-                    ctx->status = HDR_VALUE;
-                    if (off > 1) {
-                        apr_bucket_split(e, off - 1);
-                        dlen -= off - 1;
-                        data += off - 1;
-                        off = 1;
-                        e = APR_BUCKET_NEXT(e);
-                    }
+                    e = split_header_line(e, &off, &data, &dlen);
                     ++ctx->vlen;
+                    ctx->status = HDR_VALUE;
                     goto parse_hdr_bucket;
                 }
             }
@@ -305,13 +303,13 @@ APREQ_DECLARE_PARSER(apreq_parse_headers)
                     goto parse_hdr_bucket;
 
                 case '\r':
-                    ctx->status = HDR_WANTLINE;
+                    ctx->status = HDR_ENDLINE;
                     goto parse_hdr_bucket;
 
                 default:
                     if (apr_iscntrl(ch)) {
                         ctx->status = HDR_ERROR;
-                        return APR_EINVAL;
+                        return APREQ_ERROR_BADCHAR;
                     }
                     ++ctx->vlen;
                 }
@@ -319,7 +317,7 @@ APREQ_DECLARE_PARSER(apreq_parse_headers)
             break;
 
 
-        case HDR_WANTLINE:
+        case HDR_ENDLINE:
         case HDR_LASTLINE:
 
             if (off == dlen)
@@ -327,7 +325,7 @@ APREQ_DECLARE_PARSER(apreq_parse_headers)
 
             if (data[off++] != '\n') {
                 ctx->status = HDR_ERROR;
-                return APR_EINVAL;
+                return APREQ_ERROR_BADHEADER;
             }
 
             if (ctx->status == HDR_LASTLINE) {
@@ -343,32 +341,48 @@ APREQ_DECLARE_PARSER(apreq_parse_headers)
             if (off == dlen)
                 break;
 
-            ch = data[off];
+            ch = data[off++];
             switch (ch) {
             case ' ':
             case '\t':
-                ++off;
                 ++ctx->vlen;
                 break;
 
             default:
-                /* can parse brigade now */
-                if (off > 0)
-                    apr_bucket_split(e, off);
-                s = split_header_line(&param, pool, ctx->bb, ctx->nlen, ctx->glen, ctx->vlen);
+                e = split_header_line(e, &off, &data, &dlen);
+
+                /* consume from splitted brigade now */
+                s = consume_header_line(&param, pool, ctx->bb,
+                                        ctx->nlen, ctx->glen, ctx->vlen);
                 if (parser->hook != NULL && s == APR_SUCCESS)
                     s = apreq_hook_run(parser->hook, param, NULL);
                 if (s != APR_SUCCESS) {
                     ctx->status = HDR_ERROR;
                     return s;
                 }
-
                 apreq_value_table_add(&param->v, t);
                 ctx->nlen = 0;
                 ctx->vlen = 0;
                 ctx->glen = 0;
 
-                ctx->status = HDR_NEXTLINE;
+                switch (ch) {
+                case '\n':
+                    ctx->status = HDR_COMPLETE;
+                    break;
+
+                case '\r':
+                    ctx->status = HDR_LASTLINE;
+                    break;
+
+                default:
+                    if (!IS_TOKEN_CHAR(ch)) {
+                        ctx->status = HDR_ERROR;
+                        return APREQ_ERROR_BADCHAR;
+                    }
+                    ++ctx->nlen;
+                    ctx->status = HDR_NAME;
+                    break;
+                }
                 goto parse_hdr_bucket;
             }
 
@@ -390,13 +404,13 @@ APREQ_DECLARE_PARSER(apreq_parse_headers)
                     goto parse_hdr_bucket;
 
                 case '\r':
-                    ctx->status = HDR_WANTLINE;
+                    ctx->status = HDR_ENDLINE;
                     goto parse_hdr_bucket;
 
                 default:
                     if (apr_iscntrl(ch)) {
                         ctx->status = HDR_ERROR;
-                        return APR_EINVAL;
+                        return APREQ_ERROR_BADCHAR;
                     }
                     ctx->status = HDR_VALUE;
                     ++ctx->vlen;
@@ -405,33 +419,6 @@ APREQ_DECLARE_PARSER(apreq_parse_headers)
             }
             break;
 
-
-        case HDR_NEXTLINE:
-
-            if (off == dlen)
-                break;
-
-            ch = data[off++];
-            switch (ch) {
-            case '\n':
-                /* We are done */
-                break;
-
-            case '\r':
-                ctx->status = HDR_LASTLINE;
-                goto parse_hdr_bucket;
-
-            default:
-                if (apr_iscntrl(ch)) {
-                    ctx->status = HDR_ERROR;
-                    return APR_EINVAL;
-                }
-                ctx->status = HDR_NAME;
-                goto parse_hdr_bucket;
-            }
-
-            /* fall thru */
-            ctx->status = HDR_COMPLETE;
 
         case HDR_COMPLETE:
 
