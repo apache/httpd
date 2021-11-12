@@ -220,17 +220,24 @@ struct mfd_ctx * create_multipart_context(const char *content_type,
 {
     apr_status_t s;
     apr_size_t blen;
-    struct mfd_ctx *ctx = apr_palloc(pool, sizeof *ctx);
-    char *ct = apr_pstrdup(pool, content_type);
+    struct mfd_ctx *ctx;
+    const char *attr;
+    char *buf;
 
-    ct = strchr(ct, ';');
-    if (ct == NULL)
+    attr = (content_type) ? strchr(content_type, ';') : NULL;
+    if (!attr)
         return NULL; /* missing semicolon */
 
-    *ct++ = 0;
-    s = apreq_header_attribute(ct, "boundary", 8,
-                               (const char **)&ctx->bdry, &blen);
+    ctx = apr_palloc(pool, sizeof *ctx);
 
+    attr++;
+    blen = strlen(attr) + 1;
+    buf = apr_palloc(pool, 4 + blen);
+    buf += 4;
+    memcpy(buf, attr, blen);
+
+    s = apreq_header_attribute(buf, "boundary", 8,
+                               (const char **)&ctx->bdry, &blen);
     if (s != APR_SUCCESS)
         return NULL; /* missing boundary */
 
