@@ -868,7 +868,7 @@ APREQ_DECLARE(apr_status_t)
         case '=':
         case ';':
         case ',':
-            v = hde + 1;
+            v = hde;
             hde -= tail;
             break;
         case ' ':
@@ -891,12 +891,13 @@ APREQ_DECLARE(apr_status_t)
         }
 
         /* Parse the value => (*val, *vlen) */
-        if (v[-1] == '=') {
+        if (*v == '=') {
             if (hde == hdr) {
                 /* The name can't be empty */
                 return APREQ_ERROR_BADATTR;
             }
 
+            ++v;
             while (IS_SPACE_CHAR(*v))
                 ++v;
 

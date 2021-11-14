@@ -240,6 +240,8 @@ struct mfd_ctx * create_multipart_context(const char *content_type,
                                (const char **)&ctx->bdry, &blen);
     if (s != APR_SUCCESS)
         return NULL; /* missing boundary */
+    if (!ctx->bdry || !*ctx->bdry)
+        return NULL; /* boundary with no or empty value */
 
     ctx->bdry[blen] = 0;
 
