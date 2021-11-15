@@ -81,7 +81,7 @@ static apr_status_t consume_header_line(apreq_param_t **p,
     char *dest;
     const char *data;
     apr_size_t dlen;
-    int i;
+    int i, eol = 0;
 
     param = apreq_param_make(pool, NULL, nlen, NULL, vlen);
     *(const apreq_value_t **)&v = &param->v;
@@ -138,7 +138,9 @@ static apr_status_t consume_header_line(apreq_param_t **p,
         for (off = 0; off < dlen; ++off) {
             const char ch = data[off];
             if (ch == '\r' || ch == '\n') {
-                /* skip continuation CRLF(s) */
+                /* Eat [CR]LF of continuation or end of line */
+                if (!vlen && ch == '\n')
+                    eol = 1; /* done */
                 continue;
             }
             assert(vlen > 0);
@@ -148,7 +150,7 @@ static apr_status_t consume_header_line(apreq_param_t **p,
         }
 
         e = APR_BUCKET_NEXT(e);
-    } while (vlen > 0);
+    } while (!eol);
     v->dlen = dest - v->data;
     *dest++ = 0;
 
