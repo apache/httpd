@@ -238,10 +238,8 @@ struct mfd_ctx * create_multipart_context(const char *content_type,
 
     s = apreq_header_attribute(buf, "boundary", 8,
                                (const char **)&ctx->bdry, &blen);
-    if (s != APR_SUCCESS)
-        return NULL; /* missing boundary */
-    if (!ctx->bdry || !*ctx->bdry)
-        return NULL; /* boundary with no or empty value */
+    if (s != APR_SUCCESS || !blen)
+        return NULL; /* missing or empty boundary */
 
     ctx->bdry[blen] = 0;
 
