@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.52
 
+  *) mod_proxy_uwsgi: Remove duplicate slashes at the beginning of PATH_INFO.
+     PR 65616.  [Ruediger Pluem]
+
 Changes with Apache 2.4.51
 
   *) SECURITY: CVE-2021-42013: Path Traversal and Remote Code

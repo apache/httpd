@@ -144,12 +144,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_proxy_uwsgi: Remove duplicate slashes at the beginning of PATH_INFO.
-     PR 65616.
-     trunk patch: http://svn.apache.org/r1894074
-     2.4.x patch: svn merge -c 1894074 ^/httpd/httpd/trunk .
-     +1: ylavic, rpluem, icing
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
