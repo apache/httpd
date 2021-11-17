@@ -471,13 +471,21 @@ static int uwsgi_handler(request_rec *r, proxy_worker * worker,
 
     /* ADD PATH_INFO (unescaped) */
     u_path_info = ap_strchr(url + sizeof(UWSGI_SCHEME) + 2, '/');
-    if (!u_path_info || ap_unescape_url(u_path_info) != OK) {
+    if (!u_path_info) {
+        u_path_info = apr_pstrdup(r->pool, "/");
+    }
+    else if (ap_unescape_url(u_path_info) != OK) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(10100)
                       "unable to decode uwsgi uri: %s", url);
         return HTTP_INTERNAL_SERVER_ERROR;
     }
+    else {
+        /* Remove duplicate slashes at the beginning of PATH_INFO */
+        while (u_path_info[1] == '/') {
+            u_path_info++;
+        }
+    }
     apr_table_add(r->subprocess_env, "PATH_INFO", u_path_info);
-
 
     /* Create space for state information */
     status = ap_proxy_acquire_connection(UWSGI_SCHEME, &backend, worker,
