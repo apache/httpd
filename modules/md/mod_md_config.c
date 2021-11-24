@@ -28,6 +28,7 @@
 #include "md.h"
 #include "md_crypt.h"
 #include "md_log.h"
+#include "md_json.h"
 #include "md_util.h"
 #include "mod_md_private.h"
 #include "mod_md_config.h"
@@ -1038,11 +1039,50 @@ static const char *md_config_set_eab(cmd_parms *cmd, void *dc,
         return err;
     }
     if (!hmac) {
-        if (apr_strnatcasecmp("None", keyid)) {
-            return "only 'None' or a KEYID and HMAC string are allowed.";
+        if (!apr_strnatcasecmp("None", keyid)) {
+            keyid = "none";
         }
-        keyid = "none";
+        else {
+            /* a JSON file keeping keyid and hmac */
+            const char *fpath;
+            apr_status_t rv;
+            md_json_t *json;
+
+            /* If only dumping the config, don't verify the file */
+            if (ap_state_query(AP_SQ_RUN_MODE) == AP_SQ_RM_CONFIG_DUMP) {
+                goto leave;
+            }
+
+            fpath = ap_server_root_relative(cmd->pool, keyid);
+            if (!fpath) {
+                return apr_pstrcat(cmd->pool, cmd->cmd->name,
+                                   ": Invalid file path ", keyid, NULL);
+            }
+            if (!md_file_exists(fpath, cmd->pool)) {
+                return apr_pstrcat(cmd->pool, cmd->cmd->name,
+                                   ": file not found: ", fpath, NULL);
+            }
+
+            rv = md_json_readf(&json, cmd->pool, fpath);
+            if (APR_SUCCESS != rv) {
+                return apr_pstrcat(cmd->pool, cmd->cmd->name,
+                                   ": error reading JSON file ", fpath, NULL);
+            }
+            keyid = md_json_gets(json, MD_KEY_KID, NULL);
+            if (!keyid || !*keyid) {
+                return apr_pstrcat(cmd->pool, cmd->cmd->name,
+                                   ": JSON does not contain '", MD_KEY_KID,
+                                   "' element in file ", fpath, NULL);
+            }
+            hmac = md_json_gets(json, MD_KEY_HMAC, NULL);
+            if (!hmac || !*hmac) {
+                return apr_pstrcat(cmd->pool, cmd->cmd->name,
+                                   ": JSON does not contain '", MD_KEY_HMAC,
+                                   "' element in file ", fpath, NULL);
+            }
+        }
     }
+leave:
     sc->ca_eab_kid = keyid;
     sc->ca_eab_hmac = hmac;
     return NULL;
