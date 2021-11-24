@@ -46,14 +46,14 @@
 /* account setup */
 
 static apr_status_t use_staged_acct(md_acme_t *acme, struct md_store_t *store, 
-                                    const char *md_name, apr_pool_t *p)
+                                    const md_t *md, apr_pool_t *p)
 {
     md_acme_acct_t *acct;
     md_pkey_t *pkey;
     apr_status_t rv;
     
     if (APR_SUCCESS == (rv = md_acme_acct_load(&acct, &pkey, store, 
-                                               MD_SG_STAGING, md_name, acme->p))) {
+                                               MD_SG_STAGING, md->name, acme->p))) {
         acme->acct_id = NULL;
         acme->acct = acct;
         acme->acct_key = pkey;
@@ -89,7 +89,7 @@ apr_status_t md_acme_drive_set_acct(md_proto_driver_t *d, md_result_t *result)
     md_acme_clear_acct(ad->acme);
     
     /* Do we have a staged (modified) account? */
-    if (APR_SUCCESS == (rv = use_staged_acct(ad->acme, d->store, md->name, d->p))) {
+    if (APR_SUCCESS == (rv = use_staged_acct(ad->acme, d->store, md, d->p))) {
         md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, rv, d->p, "re-using staged account");
     }
     else if (!APR_STATUS_IS_ENOENT(rv)) {
@@ -99,7 +99,7 @@ apr_status_t md_acme_drive_set_acct(md_proto_driver_t *d, md_result_t *result)
     /* Get an account for the ACME server for this MD */
     if (!ad->acme->acct && md->ca_account) {
         md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, rv, d->p, "re-use account '%s'", md->ca_account);
-        rv = md_acme_use_acct(ad->acme, d->store, d->p, md->ca_account);
+        rv = md_acme_use_acct_for_md(ad->acme, d->store, d->p, md->ca_account, md);
         if (APR_STATUS_IS_ENOENT(rv) || APR_STATUS_IS_EINVAL(rv)) {
             md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, rv, d->p, "rejected %s", md->ca_account);
             md->ca_account = NULL;
@@ -114,7 +114,7 @@ apr_status_t md_acme_drive_set_acct(md_proto_driver_t *d, md_result_t *result)
         /* Find a local account for server, store at MD */ 
         md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, rv, d->p, "%s: looking at existing accounts",
                       d->proto->protocol);
-        if (APR_SUCCESS == (rv = md_acme_find_acct(ad->acme, d->store))) {
+        if (APR_SUCCESS == (rv = md_acme_find_acct_for_md(ad->acme, d->store, md))) {
             md->ca_account = md_acme_acct_id_get(ad->acme);
             update_md = 1;
             md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, rv, d->p, "%s: using account %s (id=%s)",
@@ -153,7 +153,19 @@ apr_status_t md_acme_drive_set_acct(md_proto_driver_t *d, md_result_t *result)
             goto leave;
         }
     
-        rv = md_acme_acct_register(ad->acme, d->store, d->p, md->contacts, md->ca_agreement);
+        if (ad->acme->eab_required && (!md->ca_eab_kid || !strcmp("none", md->ca_eab_kid))) {
+            md_result_printf(result, APR_EINVAL,
+                  "the CA requires 'External Account Binding' which is not "
+                  "configured. This means you need to obtain a 'Key ID' and a "
+                  "'HMAC' from the CA and configure that using the "
+                  "MDExternalAccountBinding directive in your config. "
+                  "The creation of a new ACME account will most likely fail, "
+                  "but an attempt is made anyway.",
+                  ad->acme->ca_agreement);
+            md_result_log(result, MD_LOG_INFO);
+        }
+
+        rv = md_acme_acct_register(ad->acme, d->store, md, d->p);
         if (APR_SUCCESS != rv) {
             if (APR_SUCCESS != ad->acme->last->status) {
                 md_result_dup(result, ad->acme->last);
@@ -169,11 +181,11 @@ apr_status_t md_acme_drive_set_acct(md_proto_driver_t *d, md_result_t *result)
     
 leave:
     /* Persist MD changes in STAGING, so we pick them up on next run */
-    if (APR_SUCCESS == rv&& update_md) {
+    if (APR_SUCCESS == rv && update_md) {
         rv = md_save(d->store, d->p, MD_SG_STAGING, ad->md, 0);
     }
     /* Persist account changes in STAGING, so we pick them up on next run */
-    if (APR_SUCCESS == rv&& update_acct) {
+    if (APR_SUCCESS == rv && update_acct) {
         rv = save_acct_staged(ad->acme, d->store, md->name, d->p);
     }
     return rv;
@@ -894,6 +906,7 @@ static apr_status_t acme_preload(md_proto_driver_t *d, md_store_group_t load_gro
     md_credentials_t *creds;
     apr_array_header_t *all_creds;
     struct md_acme_acct_t *acct;
+    const char *id;
     int i;
 
     md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, 0, d->p, "%s: preload start", name);
@@ -953,7 +966,6 @@ static apr_status_t acme_preload(md_proto_driver_t *d, md_store_group_t load_gro
     
     if (acct) {
         md_acme_t *acme;
-        const char *id = md->ca_account;
 
         /* We may have STAGED the same account several times. This happens when
          * several MDs are renewed at once and need a new account. They will all store
@@ -961,8 +973,9 @@ static apr_status_t acme_preload(md_proto_driver_t *d, md_store_group_t load_gro
          * the same url, we save them all into a single one.
          */
         md_result_activity_setn(result, "saving staged account");
-        if (!id && acct->url) {
-            rv = md_acme_acct_id_for_url(&id, d->store, MD_SG_ACCOUNTS, acct->url, d->p);
+        id = md->ca_account;
+        if (!id) {
+            rv = md_acme_acct_id_for_md(&id, d->store, MD_SG_ACCOUNTS, md, d->p);
             if (APR_STATUS_IS_ENOENT(rv)) {
                 id = NULL;
             }
@@ -982,6 +995,14 @@ static apr_status_t acme_preload(md_proto_driver_t *d, md_store_group_t load_gro
             goto leave;
         }
         md->ca_account = id;
+    }
+    else if (!md->ca_account) {
+        /* staging reused another account and did not create a new one. find
+         * the account, if it is already there */
+        rv = md_acme_acct_id_for_md(&id, d->store, MD_SG_ACCOUNTS, md, d->p);
+        if (APR_SUCCESS == rv) {
+            md->ca_account = id;
+        }
     }
     
     md_result_activity_setn(result, "saving staged md/privkey/pubcert");

@@ -52,6 +52,7 @@ static acme_problem_status_t Problems[] = {
     { "acme:error:badCSR",                       APR_EINVAL,   1 },
     { "acme:error:badNonce",                     APR_EAGAIN,   0 },
     { "acme:error:badSignatureAlgorithm",        APR_EINVAL,   1 },
+    { "acme:error:externalAccountRequired",      APR_EINVAL,   1 },
     { "acme:error:invalidContact",               APR_BADARG,   1 },
     { "acme:error:unsupportedContact",           APR_EGENERAL, 1 },
     { "acme:error:malformed",                    APR_EINVAL,   1 },
@@ -147,11 +148,7 @@ static md_acme_req_t *md_acme_req_create(md_acme_t *acme, const char *method, co
     req->p = pool;
     req->method = method;
     req->url = url;
-    req->prot_hdrs = apr_table_make(pool, 5);
-    if (!req->prot_hdrs) {
-        apr_pool_destroy(pool);
-        return NULL;
-    }
+    req->prot_fields = md_json_create(pool);
     req->max_retries = acme->max_retries;
     req->result = md_result_make(req->p, APR_SUCCESS);
     return req;
@@ -207,6 +204,7 @@ static apr_status_t inspect_problem(md_acme_req_t *req, const md_http_response_t
     switch (res->status) {
         case 400:
             return APR_EINVAL;
+        case 401: /* sectigo returns this instead of 403 */
         case 403:
             return APR_EACCES;
         case 404:
@@ -246,7 +244,7 @@ static apr_status_t acmev2_req_init(md_acme_req_t *req, md_json_t *jpayload)
     md_log_perror(MD_LOG_MARK, MD_LOG_TRACE1, 0, req->p, 
                   "acme payload(len=%" APR_SIZE_T_FMT "): %s", payload.len, payload.data);
     return md_jws_sign(&req->req_json, req->p, &payload,
-                       req->prot_hdrs, req->acme->acct_key, req->acme->acct->url);
+                       req->prot_fields, req->acme->acct_key, req->acme->acct->url);
 }
 
 apr_status_t md_acme_req_body_init(md_acme_req_t *req, md_json_t *payload)
@@ -377,9 +375,9 @@ static apr_status_t md_acme_req_send(md_acme_req_t *req)
                           "error retrieving new nonce from ACME server");
             goto leave;
         }
-        
-        apr_table_set(req->prot_hdrs, "nonce", acme->nonce);
-        apr_table_set(req->prot_hdrs, "url", req->url);
+
+        md_json_sets(acme->nonce, req->prot_fields, "nonce", NULL);
+        md_json_sets(req->url, req->prot_fields, "url", NULL);
         acme->nonce = NULL;
     }
     
@@ -389,14 +387,13 @@ static apr_status_t md_acme_req_send(md_acme_req_t *req)
     if (req->req_json) {
         body = apr_pcalloc(req->p, sizeof(*body));
         body->data = md_json_writep(req->req_json, req->p, MD_JSON_FMT_INDENT);
-        if (!body) {
-            rv = APR_EINVAL; goto leave;
-        }
         body->len = strlen(body->data);
+        md_log_perror(MD_LOG_MARK, MD_LOG_TRACE3, 0, req->p,
+                      "sending JSON body: %s", body->data);
     }
 
-    if (body && md_log_is_level(req->p, MD_LOG_TRACE2)) {
-        md_log_perror(MD_LOG_MARK, MD_LOG_TRACE2, 0, req->p, 
+    if (body && md_log_is_level(req->p, MD_LOG_TRACE4)) {
+        md_log_perror(MD_LOG_MARK, MD_LOG_TRACE4, 0, req->p,
                       "req: %s %s, body:\n%s", req->method, req->url, body->data);
     }
     else {
@@ -549,10 +546,35 @@ apr_status_t md_acme_use_acct(md_acme_t *acme, md_store_t *store,
     md_acme_acct_t *acct;
     md_pkey_t *pkey;
     apr_status_t rv;
-    
-    if (APR_SUCCESS == (rv = md_acme_acct_load(&acct, &pkey, 
+
+    if (APR_SUCCESS == (rv = md_acme_acct_load(&acct, &pkey,
                                                store, MD_SG_ACCOUNTS, acct_id, acme->p))) {
-        if (acct->ca_url && !strcmp(acct->ca_url, acme->url)) {
+        if (md_acme_acct_matches_url(acct, acme->url)) {
+            acme->acct_id = apr_pstrdup(p, acct_id);
+            acme->acct = acct;
+            acme->acct_key = pkey;
+            rv = md_acme_acct_validate(acme, store, p);
+        }
+        else {
+            /* account is from another server or, more likely, from another
+             * protocol endpoint on the same server */
+            rv = APR_ENOENT;
+        }
+    }
+    return rv;
+}
+
+apr_status_t md_acme_use_acct_for_md(md_acme_t *acme, struct md_store_t *store,
+                                     apr_pool_t *p, const char *acct_id,
+                                     const md_t *md)
+{
+    md_acme_acct_t *acct;
+    md_pkey_t *pkey;
+    apr_status_t rv;
+
+    if (APR_SUCCESS == (rv = md_acme_acct_load(&acct, &pkey,
+                                               store, MD_SG_ACCOUNTS, acct_id, acme->p))) {
+        if (md_acme_acct_matches_md(acct, md)) {
             acme->acct_id = apr_pstrdup(p, acct_id);
             acme->acct = acct;
             acme->acct_key = pkey;
@@ -701,7 +723,8 @@ static apr_status_t update_directory(const md_http_response_t *res, void *data)
             && acme->api.v2.new_nonce) {
             acme->version = MD_ACME_VERSION_2;
         }
-        acme->ca_agreement = md_json_dups(acme->p, json, "meta", "termsOfService", NULL);
+        acme->ca_agreement = md_json_dups(acme->p, json, "meta", MD_KEY_TOS, NULL);
+        acme->eab_required = md_json_getb(json, "meta", MD_KEY_EAB_REQUIRED, NULL);
         acme->new_nonce_fn = acmev2_new_nonce;
         acme->req_init_fn = acmev2_req_init;
         acme->post_new_account_fn = acmev2_POST_new_account;

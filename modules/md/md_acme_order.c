@@ -397,9 +397,14 @@ static apr_status_t await_valid(void *baton, int attempt)
                                                   ctx->result, ctx->p))) goto out;
     switch (ctx->order->status) {
         case MD_ACME_ORDER_ST_VALID:
+            md_result_set(ctx->result, APR_EINVAL, "ACME server order status is 'valid'.");
             break;
         case MD_ACME_ORDER_ST_PROCESSING:
             rv = APR_EAGAIN;
+            break;
+        case MD_ACME_ORDER_ST_INVALID:
+            md_result_set(ctx->result, APR_EINVAL, "ACME server order status is 'invalid'.");
+            rv = APR_EINVAL;
             break;
         default:
             rv = APR_EINVAL;
@@ -515,12 +520,10 @@ static apr_status_t check_challenges(void *baton, int attempt)
                     goto leave;
                 case MD_ACME_AUTHZ_S_INVALID:
                     rv = APR_EINVAL;
-                    if (!authz->error_type) {
-                        md_result_printf(ctx->result, rv, 
-                                         "domain authorization for %s failed, CA considers "
-                                         "answer to challenge invalid, no error given", 
-                                         authz->domain);
-                    } 
+                    md_result_printf(ctx->result, rv,
+                                     "domain authorization for %s failed, CA considers "
+                                     "answer to challenge invalid%s.",
+                                     authz->domain, authz->error_type? "" : ", no error given");
                     md_result_log(ctx->result, MD_LOG_ERR);
                     goto leave;
                 default:

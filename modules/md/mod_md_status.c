@@ -172,7 +172,10 @@ static void si_val_status(status_ctx *ctx, md_json_t *mdj, const status_info *in
     apr_time_t until;
     (void)info;
     switch (md_json_getl(mdj, info->key, NULL)) {
-        case MD_S_INCOMPLETE: s = "incomplete"; break;
+        case MD_S_INCOMPLETE:
+            s = md_json_gets(mdj, MD_KEY_STATE_DESCR, NULL);
+            s = s? apr_psprintf(ctx->p, "incomplete: %s", s) : "incomplete";
+            break;
         case MD_S_EXPIRED_DEPRECATED:
         case MD_S_COMPLETE:
             until = md_json_get_time(mdj, MD_KEY_CERT, MD_KEY_VALID, MD_KEY_UNTIL, NULL);
@@ -188,28 +191,11 @@ static void si_val_status(status_ctx *ctx, md_json_t *mdj, const status_info *in
 static void si_val_url(status_ctx *ctx, md_json_t *mdj, const status_info *info)
 {
     const char *url, *s;
-    apr_uri_t uri_parsed;
 
-    
     s = url = md_json_gets(mdj, info->key, NULL);
     if (!url) return;
-    if (!strcmp(LE_ACMEv2_PROD, url)) {
-        s = "Let's Encrypt";
-    }
-    else if (!strcmp(LE_ACMEv2_STAGING, url)) {
-        s = "Let's Encrypt (staging)";
-    }
-    else if (!strcmp(LE_ACMEv1_PROD, url)) {
-        s = "Let's Encrypt (v1)";
-    }
-    else if (!strcmp(LE_ACMEv1_STAGING, url)) {
-        s = "Let's Encrypt (v1,staging)";
-    }
-    else if (APR_SUCCESS == apr_uri_parse(ctx->p, url, &uri_parsed)) {
-        s = uri_parsed.hostname;
-        
-    }
-    apr_brigade_printf(ctx->bb, NULL, NULL, "<a href='%s'>%s</a>", 
+    s = md_get_ca_name_from_url(ctx->p, url);
+    apr_brigade_printf(ctx->bb, NULL, NULL, "<a href='%s'>%s</a>",
                        ap_escape_html2(ctx->p, url, 1), 
                        ap_escape_html2(ctx->p, s, 1));
 }
@@ -326,13 +312,24 @@ static void si_val_ca_url(status_ctx *ctx, md_json_t *mdj, const status_info *in
     jcert = md_json_getj(mdj, info->key, NULL);
     if (jcert) si_val_url(ctx, jcert, &sub);
 }
-    
+
+static int count_certs(void *baton, const char *key, md_json_t *json)
+{
+    int *pcount = baton;
+
+    (void)json;
+    if (strcmp(key, MD_KEY_VALID)) {
+        *pcount += 1;
+    }
+    return 1;
+}
+
 static void print_job_summary(apr_bucket_brigade *bb, md_json_t *mdj, const char *key, 
                               const char *separator)
 {
     char buffer[HUGE_STRING_LEN];
     apr_status_t rv;
-    int finished, errors;
+    int finished, errors, cert_count;
     apr_time_t t;
     const char *s, *line;
     
@@ -353,8 +350,16 @@ static void print_job_summary(apr_bucket_brigade *bb, md_json_t *mdj, const char
     }
     
     if (finished) {
-        line = apr_psprintf(bb->p, "%s finished successfully.", line);
-    } 
+        cert_count = 0;
+        md_json_iterkey(count_certs, &cert_count, mdj, key, MD_KEY_CERT, NULL);
+        if (cert_count > 0) {
+            line =apr_psprintf(bb->p, "%s  finished, %d new certificate%s staged.",
+                               line, cert_count, cert_count > 1? "s" : "");
+        }
+        else {
+            line = apr_psprintf(bb->p, "%s  finished successfully.", line);
+        }
+    }
     else {
         s = md_json_gets(mdj, key, MD_KEY_LAST, MD_KEY_DETAIL, NULL);
         if (s) line = apr_psprintf(bb->p, "%s %s", line, s);

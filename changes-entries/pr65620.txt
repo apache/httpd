@@ -1,0 +1,2 @@
+  *) mod_md: Fix memory leak in case of failures to load the private key.
+     PR 65620 [ Filipe Casal <filipe.casal@trailofbits.com> ]

@@ -91,7 +91,9 @@ typedef struct md_srv_conf_t {
     const char *ca_proto;              /* protocol used vs CA (e.g. ACME) */
     const char *ca_agreement;          /* accepted agreement uri between CA and user */ 
     struct apr_array_header_t *ca_challenges; /* challenge types configured */
-    
+    const char *ca_eab_kid;            /* != NULL, external account binding keyid */
+    const char *ca_eab_hmac;           /* != NULL, external account binding hmac */
+
     int stapling;                      /* OCSP stapling enabled */
     int staple_others;                 /* Provide OCSP stapling for non-MD certificates */
 
