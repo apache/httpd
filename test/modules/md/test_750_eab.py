@@ -1,3 +1,7 @@
+import json.encoder
+import os
+import re
+
 import pytest
 
 from .md_conf import MDConf
@@ -237,3 +241,97 @@ class TestEab:
         md = env.await_error(domain)
         assert md['renewal']['errors'] > 0
         assert md['renewal']['last']['problem'] == 'urn:ietf:params:acme:error:unauthorized'
+
+    def test_md_750_017(self, env):
+        # md without EAB explicitly set to none
+        domain = self.test_domain
+        domains = [domain]
+        conf = MDConf(env)
+        conf.add("MDExternalAccountBinding kid-1 zWNDZM6eQGHWpSRTPal5eIUYFTu7EajVIoguysqZ9wG44nMEtx3MUAsUDkMTQ12W")
+        conf.start_md(domains)
+        conf.add("MDExternalAccountBinding none")
+        conf.end_md()
+        conf.add_vhost(domains=domains)
+        conf.install()
+        assert env.apache_restart() == 0
+        md = env.await_error(domain)
+        assert md['renewal']['errors'] > 0
+        assert md['renewal']['last']['problem'] == 'urn:ietf:params:acme:error:externalAccountRequired'
+
+    def test_md_750_018(self, env):
+        # md with EAB file that does not exist
+        domain = self.test_domain
+        domains = [domain]
+        conf = MDConf(env)
+        conf.add("MDExternalAccountBinding does-not-exist")
+        conf.add_md(domains)
+        conf.add_vhost(domains=domains)
+        conf.install()
+        assert env.apache_fail() == 0
+        assert re.search(r'.*file not found:', env.apachectl_stderr), env.apachectl_stderr
+
+    def test_md_750_019(self, env):
+        # md with EAB file that is not valid JSON
+        domain = self.test_domain
+        domains = [domain]
+        eab_file = os.path.join(env.server_dir, 'eab.json')
+        with open(eab_file, 'w') as fd:
+            fd.write("something not JSON\n")
+        conf = MDConf(env)
+        conf.add("MDExternalAccountBinding eab.json")
+        conf.add_md(domains)
+        conf.add_vhost(domains=domains)
+        conf.install()
+        assert env.apache_fail() == 0
+        assert re.search(r'.*error reading JSON file.*', env.apachectl_stderr), env.apachectl_stderr
+
+    def test_md_750_020(self, env):
+        # md with EAB file that is JSON, but missind kid
+        domain = self.test_domain
+        domains = [domain]
+        eab_file = os.path.join(env.server_dir, 'eab.json')
+        with open(eab_file, 'w') as fd:
+            eab = {'something': 1, 'other': 2}
+            fd.write(json.encoder.JSONEncoder().encode(eab))
+        conf = MDConf(env)
+        conf.add("MDExternalAccountBinding eab.json")
+        conf.add_md(domains)
+        conf.add_vhost(domains=domains)
+        conf.install()
+        assert env.apache_fail() == 0
+        assert re.search(r'.*JSON does not contain \'kid\' element.*', env.apachectl_stderr), env.apachectl_stderr
+
+    def test_md_750_021(self, env):
+        # md with EAB file that is JSON, but missind hmac
+        domain = self.test_domain
+        domains = [domain]
+        eab_file = os.path.join(env.server_dir, 'eab.json')
+        with open(eab_file, 'w') as fd:
+            eab = {'kid': 'kid-1', 'other': 2}
+            fd.write(json.encoder.JSONEncoder().encode(eab))
+        conf = MDConf(env)
+        conf.add("MDExternalAccountBinding eab.json")
+        conf.add_md(domains)
+        conf.add_vhost(domains=domains)
+        conf.install()
+        assert env.apache_fail() == 0
+        assert re.search(r'.*JSON does not contain \'hmac\' element.*', env.apachectl_stderr), env.apachectl_stderr
+
+    def test_md_750_022(self, env):
+        # md with EAB file that has correct values
+        domain = self.test_domain
+        domains = [domain]
+        eab_file = os.path.join(env.server_dir, 'eab.json')
+        with open(eab_file, 'w') as fd:
+            eab = {'kid': 'kid-1', 'hmac': 'zWNDZM6eQGHWpSRTPal5eIUYFTu7EajVIoguysqZ9wG44nMEtx3MUAsUDkMTQ12W'}
+            fd.write(json.encoder.JSONEncoder().encode(eab))
+        domain = self.test_domain
+        domains = [domain]
+        conf = MDConf(env)
+        # this is one of the values in conf/pebble-eab.json
+        conf.add("MDExternalAccountBinding eab.json")
+        conf.add_md(domains)
+        conf.add_vhost(domains=domains)
+        conf.install()
+        assert env.apache_restart() == 0
+        assert env.await_completion(domains)
