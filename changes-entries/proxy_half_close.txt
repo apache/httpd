@@ -1,0 +1,2 @@
+  *) mod_proxy: SetEnv proxy-nohalfclose (or alike) allows to disable TCP
+     half-close forwarding when tunneling protocols.  [Yann Ylavic]
