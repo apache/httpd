@@ -1,6 +1,0 @@
-  *) mod_md: values for External Account Binding (EAB) can
-     now also be configured to be read from a separate JSON
-     file. This allows to keep server configuration permissions
-     world readable without exposing secrets.
-     [Stefan Eissing]
-
