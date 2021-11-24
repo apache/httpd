@@ -1360,7 +1360,8 @@ typedef struct {
     proxy_tunnel_conn_t *client,
                         *origin;
     apr_size_t read_buf_size;
-    int replied;
+    int replied; /* TODO 2.5+: one bit to merge in below bitmask */
+    unsigned int nohalfclose :1;
 } proxy_tunnel_rec;
 
 /**
