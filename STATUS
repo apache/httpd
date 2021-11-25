@@ -233,7 +233,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1894171
      backport PR: https://github.com/apache/httpd/pull/277
      2.4.x patch: svn merge -c 1894171 ^/httpd/httpd/trunk .
-     +1: ylavic,
+     +1: ylavic, icing, 
 
   *) mod_proxy_connect: Honor the smallest of the backend or client timeout
      while tunneling, and handle "proxy-nohalfclose" as opt-out for hlaf-close
