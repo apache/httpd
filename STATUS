@@ -226,7 +226,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1894286
      backport PR: https://github.com/apache/httpd/pull/276
      2.4.x patch: svn merge -c 1894285,1894286 ^/httpd/httpd/trunk .
-     +1: ylavic,
+     +1: ylavic, icing,
 
   *) core: Be safe with ap_lingering_close() called with a socket NULL-ed by
      a third-party module.  PR 65627.
