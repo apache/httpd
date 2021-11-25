@@ -221,6 +221,29 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        PR: https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/275.diff
      +1: icing, 
 
+  *) mpm_event: Restart stopping of idle children after a load peak. PR 65626.
+     trunk patch: http://svn.apache.org/r1894285
+                  http://svn.apache.org/r1894286
+     backport PR: https://github.com/apache/httpd/pull/276
+     2.4.x patch: svn merge -c 1894285,1894286 ^/httpd/httpd/trunk .
+     +1: ylavic,
+
+  *) core: Be safe with ap_lingering_close() called with a socket NULL-ed by
+     a third-party module.  PR 65627.
+     trunk patch: http://svn.apache.org/r1894171
+     backport PR: https://github.com/apache/httpd/pull/277
+     2.4.x patch: svn merge -c 1894171 ^/httpd/httpd/trunk .
+     +1: ylavic,
+
+  *) mod_proxy_connect: Honor the smallest of the backend or client timeout
+     while tunneling, and handle "proxy-nohalfclose" as opt-out for hlaf-close
+     tunneling.  
+     trunk patch: http://svn.apache.org/r1894290
+                  http://svn.apache.org/r1895304
+     backport PR: https://github.com/apache/httpd/pull/278
+     2.4.x patch: https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/278.patch
+     +1: ylavic,
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
