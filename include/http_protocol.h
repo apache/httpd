@@ -96,13 +96,6 @@ AP_DECLARE(void) ap_get_mime_headers(request_rec *r);
 AP_DECLARE(void) ap_get_mime_headers_core(request_rec *r,
                                           apr_bucket_brigade *bb);
 
-/**
- * Run post_read_request hook and validate.
- * @param r The current request
- * @return OK or HTTP_...
- */
-AP_DECLARE(int) ap_post_read_request(request_rec *r);
-
 /* Finish up stuff after a request */
 
 /**

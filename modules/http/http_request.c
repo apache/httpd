@@ -690,7 +690,7 @@ static request_rec *internal_internal_redirect(const char *new_uri,
      * to do their thing on internal redirects as well.  Perhaps this is a
      * misnamed function.
      */
-    if ((access_status = ap_post_read_request(new))) {
+    if ((access_status = ap_run_post_read_request(new))) {
         ap_die(access_status, new);
         return NULL;
     }

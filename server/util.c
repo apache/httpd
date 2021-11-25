@@ -1735,50 +1735,36 @@ AP_DECLARE(char *) ap_get_token(apr_pool_t *p, const char **accept_line,
     return token;
 }
 
-#define IS_TOKEN_SEP(c) ((c) == ',' || (c) == ';')
 
 /* find http tokens, see the definition of token from RFC2068 */
 AP_DECLARE(int) ap_find_token(apr_pool_t *p, const char *line, const char *tok)
 {
     const unsigned char *start_token;
     const unsigned char *s;
-    apr_size_t tlen;
 
-    tlen = strlen(tok);
-    if (!line || !tlen)
+    if (!line)
         return 0;
 
     s = (const unsigned char *)line;
     for (;;) {
-        /* find start of token */
-        while (apr_isspace(*s) || IS_TOKEN_SEP(*s)) {
+        /* find start of token, skip all stop characters */
+        while (*s && TEST_CHAR(*s, T_HTTP_TOKEN_STOP)) {
             ++s;
         }
         if (!*s) {
             return 0;
         }
-        if (!TEST_CHAR(*s, T_HTTP_TOKEN_STOP)) {
-            /* find end of token */
-            start_token = s;
-            do {
-                ++s;
-            } while (!TEST_CHAR(*s, T_HTTP_TOKEN_STOP));
-
-            if (tlen == (apr_size_t)(s - start_token)) {
-                /* only spaces up to the next token separator */
-                while (apr_isspace(*s)) {
-                    ++s;
-                }
-                if ((!*s || IS_TOKEN_SEP(*s))
-                    && !ap_cstr_casecmpn((const char *)start_token,
-                                         (const char *)tok, tlen)) {
-                    return 1;
-                }
-            }
-        }
-        /* advance to the next token */
-        while (*s && !IS_TOKEN_SEP(*s)) {
+        start_token = s;
+        /* find end of the token */
+        while (*s && !TEST_CHAR(*s, T_HTTP_TOKEN_STOP)) {
             ++s;
+        }
+        if (!ap_cstr_casecmpn((const char *)start_token, (const char *)tok,
+                         s - start_token)) {
+            return 1;
+        }
+        if (!*s) {
+            return 0;
         }
     }
 }
@@ -1786,37 +1772,23 @@ AP_DECLARE(int) ap_find_token(apr_pool_t *p, const char *line, const char *tok)
 static const char *find_last_token(apr_pool_t *p, const char *line,
                             const char *tok)
 {
-    apr_size_t llen, tlen;
-    apr_ssize_t lidx;
+    int llen, tlen, lidx;
 
     if (!line)
         return NULL;
 
-    tlen = strlen(tok);
-    if (!tlen)
-        return NULL;
-
     llen = strlen(line);
-    while (llen > 0 && apr_isspace(line[llen - 1])) 
-        --llen;
+    tlen = strlen(tok);
     lidx = llen - tlen;
-    if (lidx < 0)
+
+    if (lidx < 0 ||
+        (lidx > 0 && !(apr_isspace(line[lidx - 1]) || line[lidx - 1] == ',')))
         return NULL;
 
-    if (lidx > 0) {
-        apr_size_t i = lidx - 1;
-        do {
-            if (line[i] == ',')
-                break;
-            if (!apr_isspace(line[i]))
-                return NULL;
-        } while (i--);
+    if (ap_cstr_casecmpn(&line[lidx], tok, tlen) == 0) { 
+        return &line[lidx];
     }
-
-    if (ap_cstr_casecmpn(&line[lidx], tok, tlen) != 0)
-        return NULL;
-
-    return &line[lidx];
+   return NULL;
 }
 
 AP_DECLARE(int) ap_find_last_token(apr_pool_t *p, const char *line,
