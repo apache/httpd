@@ -237,7 +237,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
   *) mod_proxy_connect: Honor the smallest of the backend or client timeout
      while tunneling, and handle "proxy-nohalfclose" as opt-out for hlaf-close
-     tunneling.  
+     tunneling. PR 65631, 65662, 65689.
      trunk patch: http://svn.apache.org/r1894290
                   http://svn.apache.org/r1895304
      backport PR: https://github.com/apache/httpd/pull/278
