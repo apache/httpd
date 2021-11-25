@@ -1595,7 +1595,7 @@ request_rec *ap_read_request(conn_rec *conn)
     /* we may have switched to another server */
     apply_server_config(r);
 
-    if ((access_status = ap_run_post_read_request(r))) {
+    if ((access_status = ap_post_read_request(r))) {
         goto die;
     }
 
@@ -1648,6 +1648,24 @@ ignore:
     r = NULL;
     AP_READ_REQUEST_FAILURE((uintptr_t)r);
     return NULL;
+}
+
+AP_DECLARE(int) ap_post_read_request(request_rec *r)
+{
+    int status;
+
+    if ((status = ap_run_post_read_request(r))) {
+        return status;
+    }
+
+    /* Enforce http(s) only scheme for non-forward-proxy requests */
+    if (!r->proxyreq
+            && r->parsed_uri.scheme
+            && ap_cstr_casecmp(r->parsed_uri.scheme, ap_http_scheme(r)) != 0) {
+        return HTTP_BAD_REQUEST;
+    }
+
+    return OK;
 }
 
 /* if a request with a body creates a subrequest, remove original request's
