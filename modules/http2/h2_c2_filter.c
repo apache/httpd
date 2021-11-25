@@ -245,16 +245,16 @@ static h2_headers *create_response(request_rec *r)
      * keep the set-by-proxy server and date headers, otherwise
      * generate a new server header / date header
      */
-    if (r->proxyreq != PROXYREQ_NONE
-        && !apr_table_get(r->headers_out, "Date")) {
+    if (r->proxyreq == PROXYREQ_NONE
+        || !apr_table_get(r->headers_out, "Date")) {
         char *date = apr_palloc(r->pool, APR_RFC822_DATE_LEN);
         ap_recent_rfc822_date(date, r->request_time);
         apr_table_setn(r->headers_out, "Date", date );
     }
-    if (r->proxyreq != PROXYREQ_NONE
-        && !apr_table_get(r->headers_out, "Server")) {
+    if (r->proxyreq == PROXYREQ_NONE
+        || !apr_table_get(r->headers_out, "Server")) {
         const char *us = ap_get_server_banner();
-        if (us) {
+        if (us && *us) {
             apr_table_setn(r->headers_out, "Server", us);
         }
     }
