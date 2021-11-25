@@ -63,8 +63,7 @@ apr_status_t md_acme_order_purge(struct md_store_t *store, apr_pool_t *p,
                                  md_store_group_t group, const char *md_name,
                                  apr_table_t *env);
 
-
-apr_status_t md_acme_order_start_challenges(md_acme_order_t *order, md_acme_t *acme, 
+apr_status_t md_acme_order_start_challenges(md_acme_order_t *order, md_acme_t *acme,
                                             apr_array_header_t *challenge_types,
                                             md_store_t *store, const md_t *md, 
                                             apr_table_t *env, struct md_result_t *result,

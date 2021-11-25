@@ -92,7 +92,8 @@ apr_status_t md_reg_create(md_reg_t **preg, apr_pool_t *p, struct md_store_t *st
     reg->can_http = 1;
     reg->can_https = 1;
     reg->proxy_url = proxy_url? apr_pstrdup(p, proxy_url) : NULL;
-    reg->ca_file = ca_file? apr_pstrdup(p, ca_file) : NULL;
+    reg->ca_file = (ca_file && apr_strnatcasecmp("none", ca_file))?
+                    apr_pstrdup(p, ca_file) : NULL;
 
     md_timeslice_create(&reg->renew_window, p, MD_TIME_LIFE_NORM, MD_TIME_RENEW_WINDOW_DEF); 
     md_timeslice_create(&reg->warn_window, p, MD_TIME_LIFE_NORM, MD_TIME_WARN_WINDOW_DEF); 
@@ -197,9 +198,11 @@ static apr_status_t check_values(md_reg_t *reg, apr_pool_t *p, const md_t *md, i
 
 static apr_status_t state_init(md_reg_t *reg, apr_pool_t *p, md_t *md)
 {
-    md_state_t state;
+    md_state_t state = MD_S_COMPLETE;
+    const char *state_descr = NULL;
     const md_pubcert_t *pub;
     const md_cert_t *cert;
+    const md_pkey_spec_t *spec;
     apr_status_t rv = APR_SUCCESS;
     int i;
 
@@ -207,45 +210,50 @@ static apr_status_t state_init(md_reg_t *reg, apr_pool_t *p, md_t *md)
     if (md->warn_window == NULL) md->warn_window = reg->warn_window;
     
     for (i = 0; i < md_cert_count(md); ++i) {
-        md_log_perror(MD_LOG_MARK, MD_LOG_TRACE2, rv, p, "md{%s}: check cert %d", md->name, i);
-        if (APR_SUCCESS == (rv = md_reg_get_pubcert(&pub, reg, md, i, p))) {
+        spec = md_pkeys_spec_get(md->pks, i);
+        md_log_perror(MD_LOG_MARK, MD_LOG_TRACE2, rv, p,
+                      "md{%s}: check cert %s", md->name, md_pkey_spec_name(spec));
+        rv = md_reg_get_pubcert(&pub, reg, md, i, p);
+        if (APR_SUCCESS == rv) {
             cert = APR_ARRAY_IDX(pub->certs, 0, const md_cert_t*);
             if (!md_is_covered_by_alt_names(md, pub->alt_names)) {
                 state = MD_S_INCOMPLETE;
-                md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, rv, p, 
-                              "md{%s}: incomplete, certificate(%d) does not cover all domains.",
-                              md->name, i);
-                goto out;
+                state_descr = apr_psprintf(p, "certificate(%s) does not cover all domains.",
+                                           md_pkey_spec_name(spec));
+                goto cleanup;
             }
             if (!md->must_staple != !md_cert_must_staple(cert)) {
                 state = MD_S_INCOMPLETE;
-                md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, rv, p, 
-                              "md{%s}: incomplete, OCSP Stapling is%s requested, but "
-                              "certificate(%d) has it%s enabled.", 
-                              md->name, md->must_staple? "" : " not", i, 
+                state_descr = apr_psprintf(p, "'must-staple' is%s requested, but "
+                              "certificate(%s) has it%s enabled.",
+                              md->must_staple? "" : " not",
+                              md_pkey_spec_name(spec),
                               !md->must_staple? "" : " not");
-                goto out;
+                goto cleanup;
             }
-            state = MD_S_COMPLETE;
-            md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, rv, p, "md{%s}: certificate(%d) is ok", 
+            md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, rv, p, "md{%s}: certificate(%d) is ok",
                           md->name, i);
         }
         else if (APR_STATUS_IS_ENOENT(rv)) {
             state = MD_S_INCOMPLETE;
+            state_descr = apr_psprintf(p, "certificate(%s) is missing",
+                                       md_pkey_spec_name(spec));
             rv = APR_SUCCESS;
-            md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, rv, p, 
-                          "md{%s}: incomplete, certificate(%d) is missing", md->name, i);
-            goto out;
+            goto cleanup;
+        }
+        else {
+            state = MD_S_ERROR;
+            state_descr = "error intializing";
+            md_log_perror(MD_LOG_MARK, MD_LOG_WARNING, rv, p, "md{%s}: error", md->name);
+            goto cleanup;
         }
     }
 
-out:    
-    if (APR_SUCCESS != rv) {
-        state = MD_S_ERROR;
-        md_log_perror(MD_LOG_MARK, MD_LOG_WARNING, rv, p, "md{%s}: error", md->name);
-    }
-    md_log_perror(MD_LOG_MARK, MD_LOG_TRACE2, rv, p, "md{%s}: state==%d", md->name, state);
+cleanup:
+    md_log_perror(MD_LOG_MARK, MD_LOG_TRACE2, rv, p, "md{%s}: state=%d, %s",
+                  md->name, state, state_descr);
     md->state = state;
+    md->state_descr = state_descr;
     return rv;
 }
 

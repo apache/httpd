@@ -28,6 +28,7 @@
 #include "md.h"
 #include "md_crypt.h"
 #include "md_log.h"
+#include "md_json.h"
 #include "md_util.h"
 #include "mod_md_private.h"
 #include "mod_md_config.h"
@@ -110,6 +111,8 @@ static md_srv_conf_t defconf = {
     "ACME",                    /* ca protocol */
     NULL,                      /* ca agreemnent */
     NULL,                      /* ca challenges array */
+    NULL,                      /* ca eab kid */
+    NULL,                      /* ca eab hmac */
     0,                         /* stapling */
     1,                         /* staple others */
     NULL,                      /* currently defined md */
@@ -162,6 +165,8 @@ static void srv_conf_props_clear(md_srv_conf_t *sc)
     sc->ca_proto = NULL;
     sc->ca_agreement = NULL;
     sc->ca_challenges = NULL;
+    sc->ca_eab_kid = NULL;
+    sc->ca_eab_hmac = NULL;
     sc->stapling = DEF_VAL;
     sc->staple_others = DEF_VAL;
 }
@@ -180,6 +185,8 @@ static void srv_conf_props_copy(md_srv_conf_t *to, const md_srv_conf_t *from)
     to->ca_proto = from->ca_proto;
     to->ca_agreement = from->ca_agreement;
     to->ca_challenges = from->ca_challenges;
+    to->ca_eab_kid = from->ca_eab_kid;
+    to->ca_eab_hmac = from->ca_eab_hmac;
     to->stapling = from->stapling;
     to->staple_others = from->staple_others;
 }
@@ -196,7 +203,14 @@ static void srv_conf_props_apply(md_t *md, const md_srv_conf_t *from, apr_pool_t
     if (from->ca_url) md->ca_url = from->ca_url;
     if (from->ca_proto) md->ca_proto = from->ca_proto;
     if (from->ca_agreement) md->ca_agreement = from->ca_agreement;
+    if (from->ca_contact) {
+        apr_array_clear(md->contacts);
+        APR_ARRAY_PUSH(md->contacts, const char *) =
+            md_util_schemify(p, from->ca_contact, "mailto");
+    }
     if (from->ca_challenges) md->ca_challenges = apr_array_copy(p, from->ca_challenges);
+    if (from->ca_eab_kid) md->ca_eab_kid = from->ca_eab_kid;
+    if (from->ca_eab_hmac) md->ca_eab_hmac = from->ca_eab_hmac;
     if (from->stapling != DEF_VAL) md->stapling = from->stapling;
 }
 
@@ -238,6 +252,8 @@ static void *md_config_merge(apr_pool_t *pool, void *basev, void *addv)
     nsc->ca_agreement = add->ca_agreement? add->ca_agreement : base->ca_agreement;
     nsc->ca_challenges = (add->ca_challenges? apr_array_copy(pool, add->ca_challenges) 
                     : (base->ca_challenges? apr_array_copy(pool, base->ca_challenges) : NULL));
+    nsc->ca_eab_kid = add->ca_eab_kid? add->ca_eab_kid : base->ca_eab_kid;
+    nsc->ca_eab_hmac = add->ca_eab_hmac? add->ca_eab_hmac : base->ca_eab_hmac;
     nsc->stapling = (add->stapling != DEF_VAL)? add->stapling : base->stapling;
     nsc->staple_others = (add->staple_others != DEF_VAL)? add->staple_others : base->staple_others;
     nsc->current = NULL;
@@ -461,13 +477,16 @@ static const char *md_config_set_names(cmd_parms *cmd, void *dc,
 static const char *md_config_set_ca(cmd_parms *cmd, void *dc, const char *value)
 {
     md_srv_conf_t *sc = md_config_get(cmd->server);
-    const char *err;
+    const char *err, *url;
 
     (void)dc;
     if ((err = md_conf_check_location(cmd, MD_LOC_ALL))) {
         return err;
     }
-    sc->ca_url = value;
+    if (APR_SUCCESS != md_get_ca_url_from_name(&url, cmd->pool, value)) {
+        return url;
+    }
+    sc->ca_url = url;
     return NULL;
 }
 
@@ -1009,9 +1028,69 @@ static const char *md_config_set_ca_certs(cmd_parms *cmd, void *dc, const char *
     return NULL;
 }
 
+static const char *md_config_set_eab(cmd_parms *cmd, void *dc,
+                                     const char *keyid, const char *hmac)
+{
+    md_srv_conf_t *sc = md_config_get(cmd->server);
+    const char *err;
+
+    (void)dc;
+    if ((err = md_conf_check_location(cmd, MD_LOC_ALL))) {
+        return err;
+    }
+    if (!hmac) {
+        if (!apr_strnatcasecmp("None", keyid)) {
+            keyid = "none";
+        }
+        else {
+            /* a JSON file keeping keyid and hmac */
+            const char *fpath;
+            apr_status_t rv;
+            md_json_t *json;
+
+            /* If only dumping the config, don't verify the file */
+            if (ap_state_query(AP_SQ_RUN_MODE) == AP_SQ_RM_CONFIG_DUMP) {
+                goto leave;
+            }
+
+            fpath = ap_server_root_relative(cmd->pool, keyid);
+            if (!fpath) {
+                return apr_pstrcat(cmd->pool, cmd->cmd->name,
+                                   ": Invalid file path ", keyid, NULL);
+            }
+            if (!md_file_exists(fpath, cmd->pool)) {
+                return apr_pstrcat(cmd->pool, cmd->cmd->name,
+                                   ": file not found: ", fpath, NULL);
+            }
+
+            rv = md_json_readf(&json, cmd->pool, fpath);
+            if (APR_SUCCESS != rv) {
+                return apr_pstrcat(cmd->pool, cmd->cmd->name,
+                                   ": error reading JSON file ", fpath, NULL);
+            }
+            keyid = md_json_gets(json, MD_KEY_KID, NULL);
+            if (!keyid || !*keyid) {
+                return apr_pstrcat(cmd->pool, cmd->cmd->name,
+                                   ": JSON does not contain '", MD_KEY_KID,
+                                   "' element in file ", fpath, NULL);
+            }
+            hmac = md_json_gets(json, MD_KEY_HMAC, NULL);
+            if (!hmac || !*hmac) {
+                return apr_pstrcat(cmd->pool, cmd->cmd->name,
+                                   ": JSON does not contain '", MD_KEY_HMAC,
+                                   "' element in file ", fpath, NULL);
+            }
+        }
+    }
+leave:
+    sc->ca_eab_kid = keyid;
+    sc->ca_eab_hmac = hmac;
+    return NULL;
+}
+
 const command_rec md_cmds[] = {
     AP_INIT_TAKE1("MDCertificateAuthority", md_config_set_ca, NULL, RSRC_CONF, 
-                  "URL of CA issuing the certificates"),
+                  "URL or known name of CA issuing the certificates"),
     AP_INIT_TAKE1("MDCertificateAgreement", md_config_set_agreement, NULL, RSRC_CONF, 
                   "either 'accepted' or the URL of CA Terms-of-Service agreement you accept"),
     AP_INIT_TAKE_ARGV("MDCAChallenges", md_config_set_cha_tyes, NULL, RSRC_CONF, 
@@ -1085,6 +1164,8 @@ const command_rec md_cmds[] = {
                   "How long to delay activation of new certificates"),
     AP_INIT_TAKE1("MDCACertificateFile", md_config_set_ca_certs, NULL, RSRC_CONF,
                   "Set the CA file to use for connections"),
+    AP_INIT_TAKE12("MDExternalAccountBinding", md_config_set_eab, NULL, RSRC_CONF,
+                  "Set the external account binding keyid and hmac values to use at CA"),
 
     AP_INIT_TAKE1(NULL, NULL, NULL, RSRC_CONF, NULL)
 };

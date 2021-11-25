@@ -19,6 +19,7 @@
 
 #include <apr_lib.h>
 #include <apr_strings.h>
+#include <apr_uri.h>
 #include <apr_tables.h>
 #include <apr_time.h>
 #include <apr_date.h>
@@ -277,6 +278,8 @@ md_json_t *md_to_json(const md_t *md, apr_pool_t *p)
             md_json_setj(md_pkeys_spec_to_json(md->pks, p), json, MD_KEY_PKEY, NULL);
         }
         md_json_setl(md->state, json, MD_KEY_STATE, NULL);
+        if (md->state_descr)
+            md_json_sets(md->state_descr, json, MD_KEY_STATE_DESCR, NULL);
         md_json_setl(md->renew_mode, json, MD_KEY_RENEW_MODE, NULL);
         if (md->renew_window)
             md_json_sets(md_timeslice_format(md->renew_window, p), json, MD_KEY_RENEW_WINDOW, NULL);
@@ -302,6 +305,10 @@ md_json_t *md_to_json(const md_t *md, apr_pool_t *p)
         if (md->cert_files) md_json_setsa(md->cert_files, json, MD_KEY_CERT_FILES, NULL);
         if (md->pkey_files) md_json_setsa(md->pkey_files, json, MD_KEY_PKEY_FILES, NULL);
         md_json_setb(md->stapling > 0, json, MD_KEY_STAPLING, NULL);
+        if (md->ca_eab_kid && strcmp("none", md->ca_eab_kid)) {
+            md_json_sets(md->ca_eab_kid, json, MD_KEY_EAB, MD_KEY_KID, NULL);
+            if (md->ca_eab_hmac) md_json_sets(md->ca_eab_hmac, json, MD_KEY_EAB, MD_KEY_HMAC, NULL);
+        }
         return json;
     }
     return NULL;
@@ -323,6 +330,7 @@ md_t *md_from_json(md_json_t *json, apr_pool_t *p)
             md->pks = md_pkeys_spec_from_json(md_json_getj(json, MD_KEY_PKEY, NULL), p);
         }
         md->state = (md_state_t)md_json_getl(json, MD_KEY_STATE, NULL);
+        md->state_descr = md_json_dups(p, json, MD_KEY_STATE_DESCR, NULL);
         if (MD_S_EXPIRED_DEPRECATED == md->state) md->state = MD_S_COMPLETE;
         md->renew_mode = (int)md_json_getl(json, MD_KEY_RENEW_MODE, NULL);
         md->domains = md_array_str_compact(p, md->domains, 0);
@@ -354,8 +362,84 @@ md_t *md_from_json(md_json_t *json, apr_pool_t *p)
         }
         md->stapling = (int)md_json_getb(json, MD_KEY_STAPLING, NULL);
         
+        if (md_json_has_key(json, MD_KEY_EAB, NULL)) {
+            md->ca_eab_kid = md_json_dups(p, json, MD_KEY_EAB, MD_KEY_KID, NULL);
+            md->ca_eab_hmac = md_json_dups(p, json, MD_KEY_EAB, MD_KEY_HMAC, NULL);
+        }
         return md;
     }
     return NULL;
 }
 
+md_json_t *md_to_public_json(const md_t *md, apr_pool_t *p)
+{
+    md_json_t *json = md_to_json(md, p);
+    if (md_json_has_key(json, MD_KEY_EAB, MD_KEY_HMAC, NULL)) {
+        md_json_sets("***", json, MD_KEY_EAB, MD_KEY_HMAC, NULL);
+    }
+    return json;
+}
+
+typedef struct {
+    const char *name;
+    const char *url;
+} md_ca_t;
+
+#define LE_ACMEv2_PROD      "https://acme-v02.api.letsencrypt.org/directory"
+#define LE_ACMEv2_STAGING   "https://acme-staging-v02.api.letsencrypt.org/directory"
+#define BUYPASS_ACME        "https://api.buypass.com/acme/directory"
+#define BUYPASS_ACME_TEST   "https://api.test4.buypass.no/acme/directory"
+
+static md_ca_t KNOWN_CAs[] = {
+    { "LetsEncrypt", LE_ACMEv2_PROD },
+    { "LetsEncrypt-Test", LE_ACMEv2_STAGING },
+    { "Buypass", BUYPASS_ACME },
+    { "Buypass-Test", BUYPASS_ACME_TEST },
+};
+
+const char *md_get_ca_name_from_url(apr_pool_t *p, const char *url)
+{
+    apr_uri_t uri_parsed;
+    unsigned int i;
+
+    for (i = 0; i < sizeof(KNOWN_CAs)/sizeof(KNOWN_CAs[0]); ++i) {
+        if (!apr_strnatcasecmp(KNOWN_CAs[i].url, url)) {
+            return KNOWN_CAs[i].name;
+        }
+    }
+    if (APR_SUCCESS == apr_uri_parse(p, url, &uri_parsed)) {
+        return uri_parsed.hostname;
+    }
+    return apr_pstrdup(p, url);
+}
+
+apr_status_t md_get_ca_url_from_name(const char **purl, apr_pool_t *p, const char *name)
+{
+    const char *err;
+    unsigned int i;
+    apr_status_t rv = APR_SUCCESS;
+
+    *purl = NULL;
+    for (i = 0; i < sizeof(KNOWN_CAs)/sizeof(KNOWN_CAs[0]); ++i) {
+        if (!apr_strnatcasecmp(KNOWN_CAs[i].name, name)) {
+            *purl = KNOWN_CAs[i].url;
+            goto leave;
+        }
+    }
+    *purl = name;
+    rv = md_util_abs_http_uri_check(p, name, &err);
+    if (APR_SUCCESS != rv) {
+        apr_array_header_t *names;
+
+        names = apr_array_make(p, 10, sizeof(const char*));
+        for (i = 0; i < sizeof(KNOWN_CAs)/sizeof(KNOWN_CAs[0]); ++i) {
+            APR_ARRAY_PUSH(names, const char *) = KNOWN_CAs[i].name;
+        }
+        *purl = apr_psprintf(p,
+            "The CA name '%s' is not known and it is not a URL either (%s). "
+            "Known CA names are: %s.",
+            name, err, apr_array_pstrcat(p, names, ' '));
+    }
+leave:
+    return rv;
+}

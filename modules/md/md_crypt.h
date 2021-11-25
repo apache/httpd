@@ -114,6 +114,9 @@ apr_status_t md_crypt_sign64(const char **psign64, md_pkey_t *pkey, apr_pool_t *
 
 void *md_pkey_get_EVP_PKEY(struct md_pkey_t *pkey);
 
+apr_status_t md_crypt_hmac64(const char **pmac64, const struct md_data_t *hmac_key,
+                             apr_pool_t *p, const char *d, size_t dlen);
+
 /**************************************************************************************************/
 /* X509 certificates */
 
