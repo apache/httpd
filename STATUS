@@ -202,6 +202,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        When unprocessed h2 requests were queued at the time, these could stall.
        See <https://github.com/icing/mod_h2/issues/212>.
      - fix logic for non-proxy Server and Date response headers. [ylavic]
+     - The pollset implemenation is only enabled when APR >= 1.6 is detected.
      Trunk version of patch:
         https://svn.apache.org/r1894163
         https://svn.apache.org/r1894169
@@ -219,6 +220,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         https://svn.apache.org/r1894728
         https://svn.apache.org/r1894949
         https://svn.apache.org/r1895336
+        https://svn.apache.org/r1895349
      Backport version for 2.4.x of patch:
        PR: https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/275.diff
      +1: icing, 
