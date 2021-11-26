@@ -17,6 +17,8 @@
 #ifndef __mod_h2__h2__
 #define __mod_h2__h2__
 
+#include <apr_version.h>
+
 struct h2_session;
 struct h2_stream;
 
@@ -27,7 +29,7 @@ struct h2_stream;
 #ifdef H2_NO_POLL_STREAMS
 #define H2_POLL_STREAMS           0
 #else
-#define H2_POLL_STREAMS           APR_FILES_AS_SOCKETS
+#define H2_POLL_STREAMS           (APR_FILES_AS_SOCKETS && APR_VERSION_AT_LEAST(1,6,0))
 #endif
 
 /**
