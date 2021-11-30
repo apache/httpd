@@ -182,7 +182,11 @@ class HttpdTestEnv:
 
         self._curl = self.config.get('global', 'curl_bin')
         self._nghttp = self.config.get('global', 'nghttp')
+        if self._nghttp is None:
+            self._nghttp = 'nghttp'
         self._h2load = self.config.get('global', 'h2load')
+        if self._h2load is None:
+            self._h2load = 'h2load'
 
         self._http_port = int(self.config.get('test', 'http_port'))
         self._https_port = int(self.config.get('test', 'https_port'))
@@ -381,6 +385,19 @@ class HttpdTestEnv:
 
     def has_h2load(self):
         return self._h2load != ""
+
+    def h2load_is_at_least(self, minv):
+        if not self.has_h2load():
+            return False
+        p = subprocess.run([self._h2load, '--version'], capture_output=True, text=True)
+        if p.returncode != 0:
+            return False
+        s = p.stdout.strip()
+        m = re.match(r'h2load nghttp2/(\S+)', s)
+        if m:
+            hv = self._versiontuple(m.group(1))
+            return hv >= self._versiontuple(minv)
+        return False
 
     def has_nghttp(self):
         return self._nghttp != ""
