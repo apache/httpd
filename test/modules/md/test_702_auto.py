@@ -548,7 +548,7 @@ class TestAutov2:
 
     # test case: 2.4.40 mod_ssl stumbles over a SSLCertificateChainFile when installing
     # a fallback certificate
-    @pytest.mark.skipif(HttpdTestEnv.get_ssl_module() != "ssl", reason="only for mod_ssl")
+    @pytest.mark.skipif(HttpdTestEnv.get_ssl_module() != "mod_ssl", reason="only for mod_ssl")
     def test_md_702_042(self, env):
         domain = self.test_domain
         dns_list = [domain]
@@ -657,6 +657,9 @@ class TestAutov2:
             f"ServerName {domain}",
             "<IfModule ssl_module>",
             "  SSLEngine on",
+            "</IfModule>",
+            "<IfModule tls_module>",
+            f"  TLSEngine {env.https_port}",
             "</IfModule>",
             ])
         conf.add_md([domain])

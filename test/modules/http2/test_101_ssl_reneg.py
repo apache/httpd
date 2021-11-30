@@ -1,9 +1,10 @@
 import re
 import pytest
 
-from .env import H2Conf
+from .env import H2Conf, H2TestEnv
 
 
+@pytest.mark.skipif(H2TestEnv.get_ssl_module() != "mod_ssl", reason="only for mod_ssl")
 class TestSslRenegotiation:
 
     @pytest.fixture(autouse=True, scope='class')

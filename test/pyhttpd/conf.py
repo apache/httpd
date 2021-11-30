@@ -17,6 +17,7 @@ class HttpdConf(object):
         self._extras = extras.copy() if extras else {}
         if 'base' in self._extras:
             self.add(self._extras['base'])
+        self._tls_engine_ports = set()
 
     def __repr__(self):
         s = '\n'.join(self._lines)
@@ -36,29 +37,45 @@ class HttpdConf(object):
             self._lines.extend(line)
         return self
 
-    def add_certificate(self, cert_file, key_file):
-        if self.env.ssl_module == "ssl":
+    def add_certificate(self, cert_file, key_file, ssl_module=None):
+        if ssl_module is None:
+            ssl_module = self.env.ssl_module
+        if ssl_module == 'mod_ssl':
             self.add([
                 f"SSLCertificateFile {cert_file}",
                 f"SSLCertificateKeyFile {key_file if key_file else cert_file}",
             ])
-        elif self.env.ssl_module == "tls":
-            self.add(f"""
-                TLSCertificate {cert_file} {key_file}
-            """)
+        elif ssl_module == 'mod_tls':
+            self.add(f"TLSCertificate {cert_file} {key_file if key_file else ''}")
+        elif ssl_module == 'mod_gnutls':
+            self.add([
+                f"GnuTLSCertificateFile {cert_file}",
+                f"GnuTLSKeyFile {key_file if key_file else cert_file}",
+            ])
+        else:
+            raise Exception(f"unsupported ssl module: {ssl_module}")
 
-    def add_vhost(self, domains, port=None, doc_root="htdocs", with_ssl=None):
-        self.start_vhost(domains=domains, port=port, doc_root=doc_root, with_ssl=with_ssl)
+    def add_vhost(self, domains, port=None, doc_root="htdocs", with_ssl=None,
+                  with_certificates=None, ssl_module=None):
+        self.start_vhost(domains=domains, port=port, doc_root=doc_root,
+                         with_ssl=with_ssl, with_certificates=with_certificates,
+                         ssl_module=ssl_module)
         self.end_vhost()
         return self
 
-    def start_vhost(self, domains, port=None, doc_root="htdocs", with_ssl=None):
+    def start_vhost(self, domains, port=None, doc_root="htdocs", with_ssl=None,
+                    ssl_module=None, with_certificates=None):
         if not isinstance(domains, list):
             domains = [domains]
         if port is None:
             port = self.env.https_port
+        if ssl_module is None:
+            ssl_module = self.env.ssl_module
         if with_ssl is None:
-            with_ssl = (self.env.https_port == port)
+            with_ssl = self.env.https_port == port
+        if with_ssl and ssl_module == 'mod_tls' and port not in self._tls_engine_ports:
+            self.add(f"TLSEngine {port}")
+            self._tls_engine_ports.add(port)
         self.add("")
         self.add(f"<VirtualHost *:{port}>")
         self._indents += 1
@@ -67,10 +84,13 @@ class HttpdConf(object):
             self.add(f"ServerAlias {alias}")
         self.add(f"DocumentRoot {doc_root}")
         if with_ssl:
-            if self.env.ssl_module == "ssl":
+            if ssl_module == 'mod_ssl':
                 self.add("SSLEngine on")
-            for cred in self.env.get_credentials_for_name(domains[0]):
-                self.add_certificate(cred.cert_file, cred.pkey_file)
+            elif ssl_module == 'mod_gnutls':
+                self.add("GnuTLSEnable on")
+            if with_certificates is not False:
+                for cred in self.env.get_credentials_for_name(domains[0]):
+                    self.add_certificate(cred.cert_file, cred.pkey_file, ssl_module=ssl_module)
         if domains[0] in self._extras:
             self.add(self._extras[domains[0]])
         return self

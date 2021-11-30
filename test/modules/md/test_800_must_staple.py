@@ -67,7 +67,7 @@ class TestMustStaple:
 
     # MD that must staple
     @pytest.mark.skipif(MDTestEnv.lacks_ocsp(), reason="no OCSP responder")
-    @pytest.mark.skipif(MDTestEnv.get_ssl_module() != "ssl", reason="only for mod_ssl")
+    @pytest.mark.skipif(MDTestEnv.get_ssl_module() != "mod_ssl", reason="only for mod_ssl")
     def test_md_800_004(self, env):
         # mod_ssl stapling is off, expect no stapling
         stat = env.get_ocsp_status(self.domain)

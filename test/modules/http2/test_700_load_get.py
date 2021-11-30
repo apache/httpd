@@ -31,7 +31,9 @@ class TestLoadGet:
         chunk = 32
         for n in range(0, 5):
             args = [env.h2load, "-n", "%d" % chunk, "-c", "1", "-m", "10",
-                    f"--base-uri={env.https_base_url}"]
+                    f"--connect-to=localhost:{env.https_port}",
+                    f"--base-uri={env.mkurl('https', 'cgi', '/')}",
+            ]
             for i in range(0, chunk):
                 args.append(env.mkurl("https", "cgi", ("/mnot164.py?count=%d&text=%s" % (start+(n*chunk)+i, text))))
             r = env.run(args)
@@ -47,7 +49,9 @@ class TestLoadGet:
         chunk = 64
         for n in range(0, 5):
             args = [env.h2load, "-n", "%d" % chunk, "-c", "%d" % conns, "-m", "10",
-                    f"--base-uri={env.https_base_url}"]
+                    f"--connect-to=localhost:{env.https_port}",
+                    f"--base-uri={env.mkurl('https', 'cgi', '/')}",
+            ]
             for i in range(0, chunk):
                 args.append(env.mkurl("https", "cgi", ("/mnot164.py?count=%d&text=%s" % (start+(n*chunk)+i, text))))
             r = env.run(args)

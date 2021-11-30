@@ -17,7 +17,7 @@ class H2TestSetup(HttpdTestSetup):
     def __init__(self, env: 'HttpdTestEnv'):
         super().__init__(env=env)
         self.add_source_dir(os.path.dirname(inspect.getfile(H2TestSetup)))
-        self.add_modules(["http2", "proxy_http2", "cgid", "autoindex"])
+        self.add_modules(["http2", "proxy_http2", "cgid", "autoindex", "ssl"])
 
     def make(self):
         super().make()
@@ -90,6 +90,7 @@ class H2TestEnv(HttpdTestEnv):
             re.compile(r'.*malformed header from script \'hecho.py\': Bad header: x.*'),
             re.compile(r'.*:tls_post_process_client_hello:.*'),
             re.compile(r'.*:tls_process_client_certificate:.*'),
+            re.compile(r'.*have incompatible TLS configurations.'),
         ])
 
     def setup_httpd(self, setup: HttpdTestSetup = None):
@@ -106,8 +107,11 @@ class H2Conf(HttpdConf):
             ]
         }))
 
-    def start_vhost(self, domains, port=None, doc_root="htdocs", with_ssl=None):
-        super().start_vhost(domains=domains, port=port, doc_root=doc_root, with_ssl=with_ssl)
+    def start_vhost(self, domains, port=None, doc_root="htdocs", with_ssl=None,
+                    ssl_module=None, with_certificates=None):
+        super().start_vhost(domains=domains, port=port, doc_root=doc_root,
+                            with_ssl=with_ssl, ssl_module=ssl_module,
+                            with_certificates=with_certificates)
         if f"noh2.{self.env.http_tld}" in domains:
             protos = ["http/1.1"]
         elif port == self.env.https_port or with_ssl is True:

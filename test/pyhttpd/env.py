@@ -72,9 +72,7 @@ class HttpdTestSetup:
         self._source_dirs.append(source_dir)
 
     def add_modules(self, modules: List[str]):
-        for m in modules:
-            if m not in self._modules:
-                self._modules.append(m)
+        self._modules.extend(modules)
 
     def make(self):
         self._make_dirs()
@@ -122,11 +120,17 @@ class HttpdTestSetup:
             fd.write(t.substitute(var_map))
 
     def _make_modules_conf(self):
+        loaded = set()
         modules_conf = os.path.join(self.env.server_dir, 'conf/modules.conf')
         with open(modules_conf, 'w') as fd:
             # issue load directives for all modules we want that are shared
             missing_mods = list()
             for m in self._modules:
+                match = re.match(r'^mod_(.+)$', m)
+                if match:
+                    m = match.group(1)
+                if m in loaded:
+                    continue
                 mod_path = os.path.join(self.env.libexec_dir, f"mod_{m}.so")
                 if os.path.isfile(mod_path):
                     fd.write(f"LoadModule {m}_module   \"{mod_path}\"\n")
@@ -134,6 +138,7 @@ class HttpdTestSetup:
                     fd.write(f"#built static: LoadModule {m}_module   \"{mod_path}\"\n")
                 else:
                     missing_mods.append(m)
+                loaded.add(m)
         if len(missing_mods) > 0:
             raise Exception(f"Unable to find modules: {missing_mods} "
                             f"DSOs: {self.env.dso_modules}")
@@ -162,7 +167,7 @@ class HttpdTestEnv:
 
     @classmethod
     def get_ssl_module(cls):
-        return os.environ['SSL'] if 'SSL' in os.environ else 'ssl'
+        return os.environ['SSL'] if 'SSL' in os.environ else 'mod_ssl'
 
     def __init__(self, pytestconfig=None):
         self._our_dir = os.path.dirname(inspect.getfile(Dummy))

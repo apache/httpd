@@ -103,7 +103,7 @@ class TestStapling:
         assert env.apache_restart() == 0
         stat = env.get_ocsp_status(md)
         assert stat['ocsp'] == "successful (0x0)" if \
-            env.ssl_module == "ssl" else "no response sent"
+            env.ssl_module == "mod_ssl" else "no response sent"
         stat = env.get_md_status(md)
         assert not stat["stapling"]
         #
@@ -124,7 +124,7 @@ class TestStapling:
         assert env.apache_restart() == 0
         stat = env.get_ocsp_status(md)
         assert stat['ocsp'] == "successful (0x0)" if \
-            env.ssl_module == "ssl" else "no response sent"
+            env.ssl_module == "mod_ssl" else "no response sent"
         stat = env.get_md_status(md)
         assert not stat["stapling"]
         
@@ -187,7 +187,7 @@ class TestStapling:
         # mdB has no md stapling, but mod_ssl kicks in
         stat = env.get_ocsp_status(md_b)
         assert stat['ocsp'] == "successful (0x0)" if \
-            env.ssl_module == "ssl" else "no response sent"
+            env.ssl_module == "mod_ssl" else "no response sent"
         stat = env.get_md_status(md_b)
         assert not stat["stapling"]
 
