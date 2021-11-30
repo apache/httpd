@@ -1496,7 +1496,7 @@ static void md_hooks(apr_pool_t *pool)
     /* Run once after configuration is set, before mod_ssl.
      * Run again after mod_ssl is done.
      */
-    ap_hook_post_config(md_post_config_before_ssl, NULL, mod_ssl, APR_HOOK_MIDDLE);
+    ap_hook_post_config(md_post_config_before_ssl, NULL, mod_ssl, APR_HOOK_FIRST);
     ap_hook_post_config(md_post_config_after_ssl, mod_ssl, mod_wd, APR_HOOK_LAST);
 
     /* Run once after a child process has been created.
