@@ -51,6 +51,20 @@ else
     CONFIG="$CONFIG --with-apr-util=/usr"
 fi
 
+# Since librustls is not a package (yet) on any platform, we
+# build the version we want from source
+if test -v TEST_MOD_TLS; then
+  RUSTLS_HOME="$HOME/build/rustls-ffi"
+  RUSTLS_VERSION="v0.8.2"
+  git clone https://github.com/rustls/rustls-ffi.git "$RUSTLS_HOME"
+  pushd "$RUSTLS_HOME"
+    git fetch origin
+    git checkout tags/$RUSTLS_VERSION
+    make install
+  popd
+  CONFIG="$CONFIG --with-tls"
+fi
+
 srcdir=$PWD
 
 if test -v TEST_VPATH; then
@@ -192,6 +206,14 @@ if ! test -v SKIP_TESTING; then
         (cd $GOPATH/src/github.com/letsencrypt/pebble && go install ./...)
 
         py.test-3 test/modules/md
+        RV=$?
+    fi
+
+    if test -v TEST_MOD_TLS -a $RV -eq 0; then
+        # Run mod_tls tests. The underlying librustls was build
+        # and installed before we configured the server (see top of file).
+        # This will be replaved once librustls is available as a package.
+        py.test-3 test/modules/tls
         RV=$?
     fi
 
