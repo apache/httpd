@@ -60,9 +60,9 @@ if test -v TEST_MOD_TLS; then
   pushd "$RUSTLS_HOME"
     git fetch origin
     git checkout tags/$RUSTLS_VERSION
-    make install
+    make install DESTDIR="$PREFIX"
   popd
-  CONFIG="$CONFIG --with-tls"
+  CONFIG="$CONFIG --with-tls --with-rustls=$PREFIX"
 fi
 
 srcdir=$PWD
