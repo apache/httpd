@@ -865,7 +865,7 @@ static int do_errorlog_default(const ap_errorlog_info *info, char *buf,
     char scratch[MAX_STRING_LEN];
 #endif
 
-    if (!info->using_provider && !info->startup) {
+    if (info->timestamp && !info->startup) {
         buf[len++] = '[';
         len += log_ctime(info, "u", buf + len, buflen - len);
         buf[len++] = ']';
@@ -1138,7 +1138,8 @@ static void log_error_core(const char *file, int line, int module_index,
     info.file          = NULL;
     info.line          = 0;
     info.status        = 0;
-    info.using_provider= (logf == NULL);
+    info.timestamp     = (errorlog_provider == NULL
+                          || (errorlog_provider->flags & AP_ERRORLOG_PROVIDER_ADD_TIMESTAMP));
     info.startup       = ((level & APLOG_STARTUP) == APLOG_STARTUP);
     info.format        = fmt;
 

@@ -1703,19 +1703,13 @@ static apr_status_t ap_default_log_writer( request_rec *r,
     }
     else {
         errorlog_provider_data *data = log_writer->log_writer;
-        ap_errorlog_info info;
+        ap_errorlog_info info = {0};
         info.r             = r;
         info.s             = r->server;
         info.c             = r->connection;
         info.pool          = r->pool;
-        info.file          = NULL;
-        info.line          = 0;
-        info.status        = 0;
-        info.using_provider = 1;
-        info.startup       = 0;
         info.format        = "";
-        rv = data->provider->writer(&info, data->handle,
-                                    str, len);
+        rv = data->provider->writer(&info, data->handle, str, len);
     }
 
     return rv;

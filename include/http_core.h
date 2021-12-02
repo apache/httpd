@@ -911,8 +911,8 @@ typedef struct ap_errorlog_info {
     /** apr error status related to the log message, 0 if no error */
     apr_status_t status;
 
-    /** 1 if logging using provider, 0 otherwise */
-    int using_provider;
+    /** 1 if timestamp should be used if no format is configured */
+    int timestamp;
     /** 1 if APLOG_STARTUP was set for the log message, 0 otherwise */
     int startup;
 
@@ -925,7 +925,11 @@ typedef struct ap_errorlog_info {
 #define AP_ERRORLOG_DEFAULT_PROVIDER "file"
 
 /** add APR_EOL_STR to the end of log message */
-#define AP_ERRORLOG_PROVIDER_ADD_EOL_STR       1
+#define AP_ERRORLOG_PROVIDER_ADD_EOL_STR       (0x0001)
+
+/** add timestamps if no log format is configured */
+#define AP_ERRORLOG_PROVIDER_ADD_TIMESTAMP     (0x0002)
+
 
 typedef struct ap_errorlog_provider ap_errorlog_provider;
 
