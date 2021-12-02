@@ -294,17 +294,15 @@ static int log_child(apr_pool_t *p, const char *progname,
     return rc;
 }
 
-/* Open the error log for the given server_rec.  If IS_MAIN is
- * non-zero, s is the main server. */
-static int open_error_log(server_rec *s, int is_main, apr_pool_t *p)
+AP_DECLARE(apr_file_t *) ap_open_error_log(const char *name, int is_main, apr_pool_t *p)
 {
+    apr_file_t *rv = NULL;
     const char *fname;
     int rc;
 
-    if (*s->error_fname == '|') {
-        apr_file_t *dummy = NULL;
+    if (*name == '|') {
         apr_cmdtype_e cmdtype = APR_PROGRAM_ENV;
-        fname = s->error_fname + 1;
+        fname = name + 1;
 
         /* In 2.4 favor PROGRAM_ENV, accept "||prog" syntax for compatibility
          * and "|$cmd" to override the default.
@@ -322,17 +320,40 @@ static int open_error_log(server_rec *s, int is_main, apr_pool_t *p)
          * the new child must use a dummy stderr since the current
          * stderr might be a pipe to the old logger.  Otherwise, the
          * child inherits the parents stderr. */
-        rc = log_child(p, fname, &dummy, cmdtype, is_main);
+        rc = log_child(p, fname, &rv, cmdtype, is_main);
         if (rc != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_STARTUP, rc, ap_server_conf, APLOGNO(00089)
                          "Couldn't start ErrorLog process '%s'.",
-                         s->error_fname + 1);
-            return DONE;
+                         name + 1);
+            return NULL;
         }
-
-        s->error_log = dummy;
     }
-    else if (s->errorlog_provider) {
+    else {
+        fname = ap_server_root_relative(p, name);
+        if (!fname) {
+            ap_log_error(APLOG_MARK, APLOG_STARTUP, APR_EBADPATH, ap_server_conf, APLOGNO(00090)
+                         "%s: Invalid error log path %s.",
+                         ap_server_argv0, name);
+            return NULL;
+        }
+        if ((rc = apr_file_open(&rv, fname,
+                               APR_APPEND | APR_WRITE | APR_CREATE | APR_LARGEFILE,
+                               APR_OS_DEFAULT, p)) != APR_SUCCESS) {
+            ap_log_error(APLOG_MARK, APLOG_STARTUP, rc, ap_server_conf, APLOGNO(00091)
+                         "%s: could not open error log file %s.",
+                         ap_server_argv0, fname);
+            return NULL;
+        }
+    }
+
+    return rv;
+}
+
+/* Open the error log for the given server_rec.  If IS_MAIN is
+ * non-zero, s is the main server. */
+static int open_error_log(server_rec *s, int is_main, apr_pool_t *p)
+{
+    if (s->errorlog_provider) {
         s->errorlog_provider_handle = s->errorlog_provider->init(p, s);
         s->error_log = NULL;
         if (!s->errorlog_provider_handle) {
@@ -341,19 +362,8 @@ static int open_error_log(server_rec *s, int is_main, apr_pool_t *p)
         }
     }
     else {
-        fname = ap_server_root_relative(p, s->error_fname);
-        if (!fname) {
-            ap_log_error(APLOG_MARK, APLOG_STARTUP, APR_EBADPATH, ap_server_conf, APLOGNO(00090)
-                         "%s: Invalid error log path %s.",
-                         ap_server_argv0, s->error_fname);
-            return DONE;
-        }
-        if ((rc = apr_file_open(&s->error_log, fname,
-                               APR_APPEND | APR_WRITE | APR_CREATE | APR_LARGEFILE,
-                               APR_OS_DEFAULT, p)) != APR_SUCCESS) {
-            ap_log_error(APLOG_MARK, APLOG_STARTUP, rc, ap_server_conf, APLOGNO(00091)
-                         "%s: could not open error log file %s.",
-                         ap_server_argv0, fname);
+        s->error_log = ap_open_error_log(s->error_fname, is_main, p);
+        if (!s->error_log) {
             return DONE;
         }
     }
