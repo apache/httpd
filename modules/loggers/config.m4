@@ -47,6 +47,7 @@ APACHE_MODULE(log_json, logging in jsonn, , , most, [
 APACHE_MODULE(log_config, logging configuration.  You won't be able to log requests to the server without this module., , , yes)
 APACHE_MODULE(log_debug, configurable debug logging, , , most)
 APACHE_MODULE(log_forensic, forensic logging)
+APACHE_MODULE(log_tee, multi-way error log output)
 
 if test "x$enable_log_forensic" != "xno"; then
     # mod_log_forensic needs test_char.h
