@@ -38,6 +38,10 @@ static void *tee_error_log_init(apr_pool_t *p, server_rec *s)
     struct tee_handle *prev = NULL, *this = NULL;
     char *tok;
     const char *lognames = s->error_fname;
+    /* If this is the error log provider for the main vhost then the
+     * first file-based log should be treated as main (for stderr
+     * handling). */
+    int is_main = s == ap_server_conf;
     
     if (lognames == NULL) {
         /* doesn't make sense */
@@ -77,12 +81,14 @@ static void *tee_error_log_init(apr_pool_t *p, server_rec *s)
             }
         }
         else {
-            this->fd = ap_open_error_log(tok, s == ap_server_conf, p);
+            this->fd = ap_open_error_log(tok, is_main, p);
             if (!this->fd) {
                 ap_log_error(APLOG_MARK, APLOG_STARTUP|APLOG_CRIT, 0, s,
                              "cannot open error log file %s", tok);
                 return NULL;
             }
+            /* Only the first iteration is treated as "main". */
+            is_main = 0;
         }
             
         this->next = prev;
