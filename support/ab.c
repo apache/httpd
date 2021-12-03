@@ -2592,8 +2592,8 @@ int main(int argc, const char * const argv[])
         }
     }
 
-    if (opt->ind != argc - 1) {
-        fprintf(stderr, "%s: wrong number of arguments\n", argv[0]);
+    if (status != APR_EOF || opt->ind != argc - 1) {
+        fprintf(stderr, "%s: Invalid or missing arguments\n", argv[0]);
         usage(argv[0]);
     }
 
