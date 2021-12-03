@@ -2869,16 +2869,15 @@ static void perform_idle_server_maintenance(int child_bucket)
         }
     }
 
-    if (idle_thread_count > max_spare_threads / num_buckets)
-    {
+    if (idle_thread_count > max_spare_threads / num_buckets) {
         /*
          * Child processes that we ask to shut down won't die immediately
          * but may stay around for a long time when they finish their
          * requests. If the server load changes many times, many such
          * gracefully finishing processes may accumulate, filling up the
          * scoreboard. To avoid running out of scoreboard entries, we
-         * don't shut down more processes when the total number of processes
-         * is high, until there are more than max_workers/4 idle threads.
+         * don't shut down more processes if there are stopping ones
+         * already (i.e. active_daemons < total_daemons).
          *
          * XXX It would be nice if we could
          * XXX - kill processes without keepalive connections first
@@ -2886,26 +2885,21 @@ static void perform_idle_server_maintenance(int child_bucket)
          * XXX   depending on server load, later be able to resurrect them
          *       or kill them
          */
-        if ((retained->total_daemons <= active_daemons_limit
-             && retained->total_daemons < server_limit)
-            /* The above test won't transition from true to false until a child
-             * exits by itself (i.e. MaxRequestsPerChild reached), so the below
-             * test makes sure that the situation unblocks when the load falls
-             * significantly (regardless of MaxRequestsPerChild, e.g. 0) */
-            || idle_thread_count > max_workers/4 / num_buckets) {
-            /* Kill off one child */
+        int ignore = (retained->active_daemons < retained->total_daemons);
+        ap_log_error(APLOG_MARK, APLOG_TRACE5, 0, ap_server_conf,
+                     "%shutting down one child: "
+                     "active daemons %d / active limit %d / "
+                     "total daemons %d / ServerLimit %d / "
+                     "idle threads %d / max workers %d",
+                     (ignore) ? "Not s" : "S",
+                     retained->active_daemons, active_daemons_limit,
+                     retained->total_daemons, server_limit,
+                     idle_thread_count, max_workers);
+        if (!ignore) {
             ap_mpm_podx_signal(all_buckets[child_bucket].pod,
                                AP_MPM_PODX_GRACEFUL);
-            retained->idle_spawn_rate[child_bucket] = 1;
-        } else {
-            /* Still busy enough, don't kill */
-            ap_log_error(APLOG_MARK, APLOG_TRACE5, 0, ap_server_conf,
-                         "Not shutting down child: total daemons %d / "
-                         "active limit %d / ServerLimit %d / "
-                         "idle threads %d / max workers %d",
-                         retained->total_daemons, active_daemons_limit,
-                         server_limit, idle_thread_count, max_workers);
         }
+        retained->idle_spawn_rate[child_bucket] = 1;
     }
     else if (idle_thread_count < min_spare_threads / num_buckets) {
         if (active_thread_count >= max_workers / num_buckets) {
