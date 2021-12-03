@@ -1,2 +1,0 @@
-  *) mod_dir: Add "NotFound" option to "DirectorySlash" directive to return 
-     404 instead of a DirectorySlash redirect. [Eric Covener]

@@ -1,8 +1,0 @@
-  *) mod_tls: added mod_tls from abetterinternet, donated
-     by ISRG/Prossimo <https://github.com/abetterinternet/mod_tls>.
-     - adds font-/backend TLS (v1.2/v1.3) via the Rust rustls crate
-       and its rustls-ffi C binding <https://github.com/rustls/rustls-ffi>.
-     - documentation at <https://github.com/abetterinternet/mod_tls>
-       (adding to Apache's manual TBD)
-     - build support for Apache httpd configure on *nix platforms,
-       rustls is linked statically into mod_tls.

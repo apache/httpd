@@ -1,2 +1,0 @@
-  *) mod_proxy_uwsgi: Remove duplicate slashes at the beginning of PATH_INFO.
-     PR 65616.  [Ruediger Pluem]

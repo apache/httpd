@@ -1,2 +1,0 @@
-  * mod_http2: the new pollset implementation is disabled when
-    compiling with an APR version less than 1.6.

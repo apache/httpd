@@ -1,2 +1,0 @@
-  *) mod_autoindex: Add "IndexForbiddenReturn404" to return 404 instead of a 
-     403 when Options does not included "indexes". [Eric Covener]

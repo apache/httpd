@@ -1,2 +1,0 @@
-  *) mpm_event: Restart stopping of idle children after a load peak. PR 65626.
-     [Yann Ylavic, Ruediger Pluem]
