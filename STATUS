@@ -144,13 +144,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mpm_event: Restart stopping of idle children after a load peak. PR 65626.
-     trunk patch: http://svn.apache.org/r1894285
-                  http://svn.apache.org/r1894286
-     backport PR: https://github.com/apache/httpd/pull/276
-     2.4.x patch: svn merge -c 1894285,1894286 ^/httpd/httpd/trunk .
-     +1: ylavic, icing, rpluem
-
   *) core: Be safe with ap_lingering_close() called with a socket NULL-ed by
      a third-party module.  PR 65627.
      trunk patch: http://svn.apache.org/r1894171
@@ -201,6 +194,21 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      backport PR: https://github.com/apache/httpd/pull/278
      2.4.x patch: https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/278.patch
      +1: ylavic, rpluem
+
+  *) mpm_event: Restart stopping of idle children after a load peak. PR 65626.
+     trunk patch: http://svn.apache.org/r1894285
+                  http://svn.apache.org/r1894286
+                  http://svn.apache.org/r1894291
+                  http://svn.apache.org/r1895550
+                  http://svn.apache.org/r1895551
+                  http://svn.apache.org/r1895553
+     backport PR: https://github.com/apache/httpd/pull/276
+     2.4.x patch: https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/276.patch
+     +1: ylavic,
+     ylavic: updated with r1894291 for correctness of perform_idle_server_maintenance()
+             w.r.t. num_buckets > 1 and ease merging of r1895553, with r1895550 for
+             correctness of active_daemons used in r1895553, and finally with r1895551
+             because it's in between (and it shouldn't hurt) :p
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
