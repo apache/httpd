@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.52
 
+  *) core: Be safe with ap_lingering_close() called with a socket NULL-ed by
+     a third-party module.  PR 65627.
+     [acmondor <bz.apache.org acmondor.ca>, Yann Ylavic]
+
   *) mod_md: Fix memory leak in case of failures to load the private key.
      PR 65620 [ Filipe Casal <filipe.casal@trailofbits.com> ]
 
