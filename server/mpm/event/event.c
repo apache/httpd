@@ -3598,6 +3598,7 @@ static int event_run(apr_pool_t * _pconf, apr_pool_t * plog, server_rec * s)
         /* Time to shut down:
          * Kill child processes, tell them to call child_exit, etc...
          */
+        ap_close_listeners();
         for (i = 0; i < num_buckets; i++) {
             ap_mpm_podx_killpg(retained->buckets[i].pod,
                                active_daemons_limit, AP_MPM_PODX_RESTART);
