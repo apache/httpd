@@ -2,7 +2,7 @@
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
-<!-- English Revision: 1894610 -->
+<!-- English Revision: 1895285 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -1541,7 +1541,7 @@ MDMessageCmd /etc/apache/md-message
     <directivesynopsis>
         <name>MDExternalAccountBinding</name>
         <description></description>
-        <syntax>MDExternalAccountBinding <var>key-id</var> <var>hmac-64</var></syntax>
+        <syntax>MDExternalAccountBinding <var>key-id</var> <var>hmac-64</var> | none | <var>file</var></syntax>
         <default>MDExternalAccountBinding none</default>
         <contextlist>
             <context>server config</context>
@@ -1569,9 +1569,21 @@ MDMessageCmd /etc/apache/md-message
 		(à root seulement, par exemple).
             </p>
             <p>
-		Si vous modifiez ces valeurs, ce sont les valeurs modifiées qui
-		seront utilisées lors du prochain renouvellement de certificat.
+                Les valeurs peuvent aussi être extraites d'un fichier JSON pour
+		conserver l'ouverture des permissions au niveau de la
+		configuration du serveur et restreindre celles de ce fichier. Le
+		fichier JSON sera du style :
             </p>
+            <example><title>Exemple de fichier EAB JSON</title>
+                <highlight language="config">
+{"kid": "kid-1", "hmac": "zWND..."}
+                </highlight>
+            </example>
+            <p>
+                Si vous modifiez les valeurs EAB, ce sont les nouvelles valeurs
+		qui seront utilisées lors du prochain renouvellement de
+		certificat.
+             </p>
         </usage>
     </directivesynopsis>
 
