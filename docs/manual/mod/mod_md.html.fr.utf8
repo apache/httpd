@@ -730,7 +730,7 @@
 <div class="directive-section"><h2><a name="mdexternalaccountbinding" id="mdexternalaccountbinding">Directive</a> <a name="MDExternalAccountBinding" id="MDExternalAccountBinding">MDExternalAccountBinding</a> <a title="Lien permanent" href="#mdexternalaccountbinding" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MDExternalAccountBinding <var>key-id</var> <var>hmac-64</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MDExternalAccountBinding <var>key-id</var> <var>hmac-64</var> | none | <var>file</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>MDExternalAccountBinding none</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
@@ -758,9 +758,18 @@
 		(à root seulement, par exemple).
             </p>
             <p>
-		Si vous modifiez ces valeurs, ce sont les valeurs modifiées qui
-		seront utilisées lors du prochain renouvellement de certificat.
+                Les valeurs peuvent aussi être extraites d'un fichier JSON pour
+		conserver l'ouverture des permissions au niveau de la
+		configuration du serveur et restreindre celles de ce fichier. Le
+		fichier JSON sera du style&nbsp;:
             </p>
+            <div class="example"><h3>Exemple de fichier EAB JSON</h3><pre class="prettyprint lang-config">{"kid": "kid-1", "hmac": "zWND..."}</pre>
+</div>
+            <p>
+                Si vous modifiez les valeurs EAB, ce sont les nouvelles valeurs
+		qui seront utilisées lors du prochain renouvellement de
+		certificat.
+             </p>
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
