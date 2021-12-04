@@ -345,6 +345,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#mdchallengedns01">MDChallengeDns01</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mdcontactemail">MDContactEmail</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mddrivemode">MDDriveMode</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#mdexternalaccountbinding">MDExternalAccountBinding</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mdhttpproxy">MDHttpProxy</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mdmember">MDMember</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mdmembers">MDMembers</a></li>
@@ -723,6 +724,52 @@
              <p>Cette directive est l'ancien nom de la directive <code class="directive"><a href="#mdrenewmode">MDRenewMode</a></code>, et n'est encore supportée
 	     qu'à titre de compatibilité ascendante.
             </p>
+        
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="mdexternalaccountbinding" id="mdexternalaccountbinding">Directive</a> <a name="MDExternalAccountBinding" id="MDExternalAccountBinding">MDExternalAccountBinding</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td /></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MDExternalAccountBinding <var>key-id</var> <var>hmac-64</var> | none | <var>file</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>MDExternalAccountBinding none</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_md</td></tr>
+</table>
+            <p>
+                Cette directive permet de définir des valeurs pour associer des
+		comptes externes avec ACME ("External Account Binding") ; c'est
+		une fonctionnalité de la norme ACME qui permet à des clients
+		d'associer des inscriptions à un compte client existant sur les
+		serveurs ACME.
+            </p>
+            <p>
+		Certains CAs ACME ont besoin de ces valeurs, mais ce n'est pas
+		le cas pour Let's Encrypt. Vérifiez avec votre CA ACME si vous
+		avez besoin de ces valeurs et la manière de les obtenir. Ces
+		dernières se composent de deux chaînes&nbsp;: un identifiant de clé
+		et une valeur 'hmac' codée en base64.
+            </p>
+            <p>
+		Vous pouvez définir ces valeurs de manière globale ou pour un
+		MDomain spécifique. Comme ces valeurs permettent à n'importe qui
+		de s'inscrire sous le même compte, il est conseillé de
+		restreindre les permissions d'accès au fichier de configuration
+		(à root seulement, par exemple).
+            </p>
+            <p>
+                Les valeurs peuvent aussi être extraites d'un fichier JSON pour
+		conserver l'ouverture des permissions au niveau de la
+		configuration du serveur et restreindre celles de ce fichier. Le
+		fichier JSON sera du style&nbsp;:
+            </p>
+            <div class="example"><h3>Exemple de fichier EAB JSON</h3><pre class="prettyprint lang-config">{"kid": "kid-1", "hmac": "zWND..."}</pre>
+</div>
+            <p>
+                Si vous modifiez les valeurs EAB, ce sont les nouvelles valeurs
+		qui seront utilisées lors du prochain renouvellement de
+		certificat.
+             </p>
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
