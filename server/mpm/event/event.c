@@ -3187,7 +3187,8 @@ static void perform_idle_server_maintenance(int child_bucket)
          * gracefully finishing processes may accumulate, filling up the
          * scoreboard. To avoid running out of scoreboard entries, we
          * don't shut down more processes if there are stopping ones
-         * already (i.e. active_daemons < total_daemons).
+         * already (i.e. active_daemons != total_daemons) and not enough
+         * slack space in the scoreboard for a graceful restart.
          *
          * XXX It would be nice if we could
          * XXX - kill processes without keepalive connections first
@@ -3195,19 +3196,24 @@ static void perform_idle_server_maintenance(int child_bucket)
          * XXX   depending on server load, later be able to resurrect them
          *       or kill them
          */
-        int ignore = (retained->active_daemons < retained->total_daemons);
+        int do_kill = (retained->active_daemons == retained->total_daemons
+                       || (server_limit - retained->total_daemons >
+                           active_daemons_limit));
         ap_log_error(APLOG_MARK, APLOG_TRACE5, 0, ap_server_conf,
                      "%shutting down one child: "
                      "active daemons %d / active limit %d / "
                      "total daemons %d / ServerLimit %d / "
                      "idle threads %d / max workers %d",
-                     (ignore) ? "Not s" : "S",
+                     (do_kill) ? "S" : "Not s",
                      retained->active_daemons, active_daemons_limit,
                      retained->total_daemons, server_limit,
                      idle_thread_count, max_workers);
-        if (!ignore) {
+        if (do_kill) {
             ap_mpm_podx_signal(retained->buckets[child_bucket].pod,
                                AP_MPM_PODX_GRACEFUL);
+        }
+        else {
+            /* Wait for dying daemon(s) to exit */
         }
         retained->idle_spawn_rate[child_bucket] = 1;
     }
