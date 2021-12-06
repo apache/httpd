@@ -89,6 +89,8 @@ struct h2_mplx {
     struct h2_iqueue *streams_output_written; /* streams whose output has been written to */
 #endif
     struct h2_workers *workers;     /* h2 workers process wide instance */
+
+    request_rec *scratch_r;         /* pseudo request_rec for scoreboard reporting */
 };
 
 apr_status_t h2_mplx_c1_child_init(apr_pool_t *pool, server_rec *s);

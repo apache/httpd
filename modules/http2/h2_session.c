@@ -406,8 +406,8 @@ static int on_frame_recv_cb(nghttp2_session *ng2s,
                 /* A stream reset on a request it sent us. Could happen in a browser
                  * when the user navigates away or cancels loading - maybe. */
                 h2_mplx_c1_client_rst(session->mplx, frame->hd.stream_id);
-                ++session->streams_reset;
             }
+            ++session->streams_reset;
             break;
         case NGHTTP2_GOAWAY:
             if (frame->goaway.error_code == 0 
@@ -685,6 +685,33 @@ static apr_status_t init_callbacks(conn_rec *c, nghttp2_session_callbacks **pcb)
     return APR_SUCCESS;
 }
 
+static void update_child_status(h2_session *session, int status,
+                                const char *msg, const h2_stream *stream)
+{
+    /* Assume that we also change code/msg when something really happened and
+     * avoid updating the scoreboard in between */
+    if (session->last_status_code != status
+        || session->last_status_msg != msg) {
+        char sbuffer[1024];
+        sbuffer[0] = '\0';
+        if (stream) {
+            apr_snprintf(sbuffer, sizeof(sbuffer),
+                         ": stream %d, %s %s",
+                         stream->id,
+                         stream->request? stream->request->method : "",
+                         stream->request? stream->request->path : "");
+        }
+        apr_snprintf(session->status, sizeof(session->status),
+                     "[%d/%d] %s%s",
+                     (int)(session->remote.emitted_count + session->pushes_submitted),
+                     (int)session->streams_done,
+                     msg? msg : "-", sbuffer);
+        ap_update_child_status_from_server(session->c1->sbh, status,
+                                           session->c1, session->s);
+        ap_update_child_status_descr(session->c1->sbh, status, session->status);
+    }
+}
+
 static apr_status_t h2_session_shutdown_notice(h2_session *session)
 {
     apr_status_t status;
@@ -714,10 +741,13 @@ static apr_status_t h2_session_shutdown(h2_session *session, int error,
     if (session->local.shutdown) {
         return APR_SUCCESS;
     }
-    if (!msg && error) {
-        msg = nghttp2_strerror(error);
+
+    if (error && !msg) {
+        if (APR_STATUS_IS_EPIPE(error)) {
+            msg = "remote close";
+        }
     }
-    
+
     if (error || force_close) {
         /* not a graceful shutdown, we want to leave... 
          * Do not start further streams that are waiting to be scheduled. 
@@ -728,6 +758,7 @@ static apr_status_t h2_session_shutdown(h2_session *session, int error,
          * we send. */
         session->local.accepted_max = h2_mplx_c1_shutdown(session->mplx);
         session->local.error = error;
+        session->local.error_msg = msg;
     }
     else {
         /* graceful shutdown. we will continue processing all streams
@@ -866,7 +897,7 @@ apr_status_t h2_session_create(h2_session **psession, conn_rec *c, request_rec *
         return APR_ENOTIMPL;
     }
 
-    h2_c1_io_init(&session->io, c, s);
+    h2_c1_io_init(&session->io, session);
     session->padding_max = h2_config_sgeti(s, H2_CONF_PADDING_BITS);
     if (session->padding_max) {
         session->padding_max = (0x01 << session->padding_max) - 1; 
@@ -1203,7 +1234,6 @@ static apr_status_t h2_session_send(h2_session *session)
     int ngrv;
     apr_status_t rv = APR_SUCCESS;
 
-    ap_update_child_status(session->c1->sbh, SERVER_BUSY_WRITE, NULL);
     while (nghttp2_session_want_write(session->ngh2)) {
         ngrv = nghttp2_session_send(session->ngh2);
         ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, session->c1,
@@ -1221,8 +1251,7 @@ static apr_status_t h2_session_send(h2_session *session)
     }
 cleanup:
     if (rv != APR_SUCCESS) {
-        h2_session_dispatch_event(session, H2_SESSION_EV_CONN_ERROR,
-                       H2_ERR_INTERNAL_ERROR, "c1 out writing");
+        h2_session_dispatch_event(session, H2_SESSION_EV_CONN_ERROR, rv, NULL);
     }
     return rv;
 }
@@ -1251,8 +1280,10 @@ static apr_status_t on_stream_input(void *ctx, h2_stream *stream)
                           H2_STRM_LOG(APLOGNO(10026), stream, "remote close missing"));
             nghttp2_submit_rst_stream(stream->session->ngh2, NGHTTP2_FLAG_NONE,
                                       stream->id, NGHTTP2_NO_ERROR);
+            update_child_status(session, SERVER_BUSY_WRITE, "reset", stream);
             goto cleanup;
         }
+        update_child_status(session, SERVER_BUSY_READ, "read", stream);
         h2_beam_report_consumption(stream->input);
         if (stream->state == H2_SS_CLOSED_R) {
             /* TODO: remove this stream from input polling */
@@ -1278,6 +1309,7 @@ static apr_status_t on_stream_output(void *ctx, h2_stream *stream)
         /* we dont poll output of stream 0, this should not be called */
         return APR_SUCCESS;
     }
+    update_child_status(session, SERVER_BUSY_WRITE, "write", stream);
     return h2_stream_read_output(stream);
 }
 
@@ -1299,32 +1331,13 @@ const char *h2_session_state_str(h2_session_state state)
     return StateNames[state];
 }
 
-static void update_child_status(h2_session *session, int status, const char *msg)
-{
-    /* Assume that we also change code/msg when something really happened and
-     * avoid updating the scoreboard in between */
-    if (session->last_status_code != status 
-        || session->last_status_msg != msg) {
-        apr_snprintf(session->status, sizeof(session->status),
-                     "%s, streams: %d/%d/%d/%d/%d (open/recv/resp/push/rst)", 
-                     msg? msg : "-",
-                     (int)session->open_streams, 
-                     (int)session->remote.emitted_count,
-                     (int)session->responses_submitted,
-                     (int)session->pushes_submitted,
-                     (int)session->pushes_reset + session->streams_reset);
-        ap_update_child_status_descr(session->c1->sbh, status, session->status);
-    }
-}
-
 static void transit(h2_session *session, const char *action, h2_session_state nstate)
 {
     int ostate;
 
     if (session->state != nstate) {
         ostate = session->state;
-        session->state = nstate;
-        
+
         ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c1,
                       H2_SSSN_LOG(APLOGNO(03078), session, 
                       "transit [%s] -- %s --> [%s]"), 
@@ -1340,22 +1353,21 @@ static void transit(h2_session *session, const char *action, h2_session_state ns
                      * If we return to mpm right away, this connection has the
                      * same chance of being cleaned up by the mpm as connections
                      * that already served requests - not fair. */
-                    update_child_status(session, SERVER_BUSY_READ, "idle");
                     ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, session->c1,
                                   H2_SSSN_LOG("", session, "enter idle"));
                 }
                 else {
                     /* normal keepalive setup */
-                    update_child_status(session, SERVER_BUSY_KEEPALIVE, "keepalive");
                     ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, session->c1,
                                   H2_SSSN_LOG("", session, "enter keepalive"));
                 }
+                session->state = nstate;
                 break;
             case H2_SESSION_ST_DONE:
-                update_child_status(session, SERVER_CLOSING, "done");
                 break;
             default:
                 /* nop */
+                session->state = nstate;
                 break;
         }
     }
@@ -1412,9 +1424,6 @@ static void h2_session_ev_input_exhausted(h2_session *session, int arg, const ch
 static void h2_session_ev_local_goaway(h2_session *session, int arg, const char *msg)
 {
     cleanup_unprocessed_streams(session);
-    if (!session->remote.shutdown) {
-        update_child_status(session, SERVER_CLOSING, "local goaway");
-    }
     transit(session, "local goaway", H2_SESSION_ST_DONE);
 }
 
@@ -1425,7 +1434,6 @@ static void h2_session_ev_remote_goaway(h2_session *session, int arg, const char
         session->remote.accepting = 0;
         session->remote.shutdown = 1;
         cleanup_unprocessed_streams(session);
-        update_child_status(session, SERVER_CLOSING, "remote goaway");
         transit(session, "remote goaway", H2_SESSION_ST_DONE);
     }
 }
@@ -1550,6 +1558,7 @@ static void ev_stream_open(h2_session *session, h2_stream *stream)
     /* Stream state OPEN means we have received all request headers
      * and can start processing the stream. */
     h2_iq_append(session->ready_to_process, stream->id);
+    update_child_status(session, SERVER_BUSY_READ, "schedule", stream);
 }
 
 static void ev_stream_closed(h2_session *session, h2_stream *stream)
@@ -1609,6 +1618,8 @@ static void on_stream_state_enter(void *ctx, h2_stream *stream)
         case H2_SS_CLEANUP:
             nghttp2_session_set_stream_user_data(session->ngh2, stream->id, NULL);
             h2_mplx_c1_stream_cleanup(session->mplx, stream, &session->open_streams);
+            ++session->streams_done;
+            update_child_status(session, SERVER_BUSY_WRITE, "done", stream);
             if (session->open_streams == 0) {
                 h2_session_dispatch_event(session, H2_SESSION_EV_NO_MORE_STREAMS,
                                           0, "stream done");
@@ -1653,7 +1664,7 @@ static void on_stream_state_event(void *ctx, h2_stream *stream,
 }
 
 void h2_session_dispatch_event(h2_session *session, h2_session_event_t ev,
-                               int arg, const char *msg)
+                               apr_status_t arg, const char *msg)
 {
     switch (ev) {
         case H2_SESSION_EV_INIT:
@@ -1719,15 +1730,13 @@ apr_status_t h2_session_process(h2_session *session, int async)
     }
 
     if (H2_SESSION_ST_INIT == session->state) {
-        ap_update_child_status_from_conn(c->sbh, SERVER_BUSY_READ, c);
         if (!h2_protocol_is_acceptable_c1(c, session->r, 1)) {
-            update_child_status(session, SERVER_BUSY_READ,
-                                "inadequate security");
-            h2_session_shutdown(session,
-                                NGHTTP2_INADEQUATE_SECURITY, NULL, 1);
+            const char *msg = nghttp2_strerror(NGHTTP2_INADEQUATE_SECURITY);
+            update_child_status(session, SERVER_BUSY_READ, msg, NULL);
+            h2_session_shutdown(session, APR_EINVAL, msg, 1);
         }
         else {
-            update_child_status(session, SERVER_BUSY_READ, "init");
+            update_child_status(session, SERVER_BUSY_READ, "init", NULL);
             status = h2_session_start(session, &rv);
             ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, c,
                           H2_SSSN_LOG(APLOGNO(03079), session,
@@ -1736,7 +1745,7 @@ apr_status_t h2_session_process(h2_session *session, int async)
                           c->local_addr->port);
             if (status != APR_SUCCESS) {
                 h2_session_dispatch_event(session,
-                               H2_SESSION_EV_CONN_ERROR, 0, NULL);
+                               H2_SESSION_EV_CONN_ERROR, status, NULL);
             }
             else {
                 h2_session_dispatch_event(session, H2_SESSION_EV_INIT, 0, NULL);
@@ -1790,7 +1799,7 @@ apr_status_t h2_session_process(h2_session *session, int async)
 
         status = h2_c1_io_assure_flushed(&session->io);
         if (APR_SUCCESS != status) {
-            h2_session_dispatch_event(session, H2_SESSION_EV_CONN_ERROR, 0, NULL);
+            h2_session_dispatch_event(session, H2_SESSION_EV_CONN_ERROR, status, NULL);
         }
 
         switch (session->state) {
@@ -1826,7 +1835,7 @@ apr_status_t h2_session_process(h2_session *session, int async)
             status = h2_mplx_c1_poll(session->mplx, 0,
                                      on_stream_input, on_stream_output, session);
             if (APR_SUCCESS != status && !APR_STATUS_IS_TIMEUP(status)) {
-                h2_session_dispatch_event(session, H2_SESSION_EV_CONN_ERROR, 0, NULL);
+                h2_session_dispatch_event(session, H2_SESSION_EV_CONN_ERROR, status, NULL);
                 break;
             }
             h2_c1_read(session);
@@ -1835,7 +1844,7 @@ apr_status_t h2_session_process(h2_session *session, int async)
         case H2_SESSION_ST_WAIT:
             status = h2_c1_io_assure_flushed(&session->io);
             if (APR_SUCCESS != status) {
-                h2_session_dispatch_event(session, H2_SESSION_EV_CONN_ERROR, 0, NULL);
+                h2_session_dispatch_event(session, H2_SESSION_EV_CONN_ERROR, status, NULL);
                 break;
             }
             /* No IO happening and input is exhausted. Make sure we have
@@ -1844,11 +1853,11 @@ apr_status_t h2_session_process(h2_session *session, int async)
             status = h2_mplx_c1_poll(session->mplx, session->s->timeout,
                                      on_stream_input, on_stream_output, session);
             if (APR_STATUS_IS_TIMEUP(status)) {
-                h2_session_dispatch_event(session, H2_SESSION_EV_CONN_TIMEOUT, 0, "timeout");
+                h2_session_dispatch_event(session, H2_SESSION_EV_CONN_TIMEOUT, status, NULL);
                 break;
             }
             else if (APR_SUCCESS != status) {
-                h2_session_dispatch_event(session, H2_SESSION_EV_CONN_ERROR, 0, "error");
+                h2_session_dispatch_event(session, H2_SESSION_EV_CONN_ERROR, status, NULL);
                 break;
             }
             break;
@@ -1861,7 +1870,7 @@ apr_status_t h2_session_process(h2_session *session, int async)
             ap_log_cerror(APLOG_MARK, APLOG_ERR, APR_EGENERAL, c,
                           H2_SSSN_LOG(APLOGNO(03080), session,
                           "unknown state"));
-            h2_session_dispatch_event(session, H2_SESSION_EV_PROTO_ERROR, 0, NULL);
+            h2_session_dispatch_event(session, H2_SESSION_EV_PROTO_ERROR, APR_EGENERAL, NULL);
             break;
         }
     }
@@ -1872,11 +1881,27 @@ leaving:
                       H2_SSSN_MSG(session, "process returns")); 
     }
     
-    if ((session->state != H2_SESSION_ST_DONE)
-        && (APR_STATUS_IS_EOF(status)
+    if (session->state == H2_SESSION_ST_DONE) {
+        if (session->local.error) {
+            char buffer[128];
+            const char *msg;
+            if (session->local.error_msg) {
+                msg = session->local.error_msg;
+            }
+            else {
+                msg = apr_strerror(session->local.error, buffer, sizeof(buffer));
+            }
+            update_child_status(session, SERVER_CLOSING, msg, NULL);
+        }
+        else {
+            update_child_status(session, SERVER_CLOSING, "done", NULL);
+        }
+    }
+    else if (APR_STATUS_IS_EOF(status)
             || APR_STATUS_IS_ECONNRESET(status) 
-            || APR_STATUS_IS_ECONNABORTED(status))) {
-        h2_session_dispatch_event(session, H2_SESSION_EV_CONN_ERROR, 0, NULL);
+            || APR_STATUS_IS_ECONNABORTED(status)) {
+        h2_session_dispatch_event(session, H2_SESSION_EV_CONN_ERROR, status, NULL);
+        update_child_status(session, SERVER_CLOSING, "error", NULL);
     }
 
     return (session->state == H2_SESSION_ST_DONE)? APR_EOF : APR_SUCCESS;

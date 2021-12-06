@@ -342,9 +342,9 @@ receive:
             h2_util_bb_log(f->c, conn_ctx->stream_id, APLOG_TRACE2,
                         "c2 input recv raw", fctx->bb);
         }
-        if (h2_c2_logio_add_bytes_in) {
+        if (h2_c_logio_add_bytes_in) {
             apr_brigade_length(bb, 0, &bblen);
-            h2_c2_logio_add_bytes_in(f->c, bblen);
+            h2_c_logio_add_bytes_in(f->c, bblen);
         }
     }
     
@@ -419,7 +419,7 @@ static apr_status_t beam_out(conn_rec *c2, h2_conn_ctx_t *conn_ctx, apr_bucket_b
     apr_off_t written, header_len = 0;
     apr_status_t rv;
 
-    if (h2_c2_logio_add_bytes_out) {
+    if (h2_c_logio_add_bytes_out) {
         /* mod_logio wants to report the number of bytes  written in a
          * response, including header and footer fields. Since h2 converts
          * those during c1 processing into the HPACKed h2 HEADER frames,
@@ -440,8 +440,8 @@ static apr_status_t beam_out(conn_rec *c2, h2_conn_ctx_t *conn_ctx, apr_bucket_b
     if (APR_STATUS_IS_EAGAIN(rv)) {
         rv = APR_SUCCESS;
     }
-    if (written && h2_c2_logio_add_bytes_out) {
-        h2_c2_logio_add_bytes_out(c2, written + header_len);
+    if (written && h2_c_logio_add_bytes_out) {
+        h2_c_logio_add_bytes_out(c2, written + header_len);
     }
     return rv;
 }
@@ -464,15 +464,6 @@ static apr_status_t h2_c2_filter_out(ap_filter_t* f, apr_bucket_brigade* bb)
         f->c->aborted = 1;
     }
     return rv;
-}
-
-/* post config init */
-apr_status_t h2_c2_init(apr_pool_t *pool, server_rec *s)
-{
-    h2_c2_logio_add_bytes_in = APR_RETRIEVE_OPTIONAL_FN(ap_logio_add_bytes_in);
-    h2_c2_logio_add_bytes_out = APR_RETRIEVE_OPTIONAL_FN(ap_logio_add_bytes_out);
-
-    return APR_SUCCESS;
 }
 
 static apr_status_t c2_run_pre_connection(conn_rec *c2, apr_socket_t *csd)
@@ -607,8 +598,8 @@ static apr_status_t c2_process(h2_conn_ctx_t *conn_ctx, conn_rec *c)
 
     /* Add the raw bytes of the request (e.g. header frame lengths to
      * the logio for this request. */
-    if (req->raw_bytes && h2_c2_logio_add_bytes_in) {
-        h2_c2_logio_add_bytes_in(c, req->raw_bytes);
+    if (req->raw_bytes && h2_c_logio_add_bytes_in) {
+        h2_c_logio_add_bytes_in(c, req->raw_bytes);
     }
 
     ap_process_request(r);
@@ -709,9 +700,6 @@ static int h2_c2_hook_fixups(request_rec *r)
     }
     return DECLINED;
 }
-
-APR_OPTIONAL_FN_TYPE(ap_logio_add_bytes_in) *h2_c2_logio_add_bytes_in;
-APR_OPTIONAL_FN_TYPE(ap_logio_add_bytes_out) *h2_c2_logio_add_bytes_out;
 
 void h2_c2_register_hooks(void)
 {

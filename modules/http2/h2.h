@@ -114,6 +114,7 @@ typedef struct h2_session_props {
     int emitted_count;     /* the number of local streams sent */
     int emitted_max;       /* the highest local stream id sent */
     int error;             /* the last session error encountered */
+    const char *error_msg; /* the short message given on the error */
     unsigned int accepting : 1;     /* if the session is accepting new streams */
     unsigned int shutdown : 1;      /* if the final GOAWAY has been sent */
 } h2_session_props;

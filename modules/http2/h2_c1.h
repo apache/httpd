@@ -17,7 +17,12 @@
 #ifndef __mod_h2__h2_c1__
 #define __mod_h2__h2_c1__
 
+#include <http_core.h>
+
 struct h2_conn_ctx_t;
+
+extern APR_OPTIONAL_FN_TYPE(ap_logio_add_bytes_in) *h2_c_logio_add_bytes_in;
+extern APR_OPTIONAL_FN_TYPE(ap_logio_add_bytes_out) *h2_c_logio_add_bytes_out;
 
 /* Initialize this child process for h2 primary connection work,
  * to be called once during child init before multi processing

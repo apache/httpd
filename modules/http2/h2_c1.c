@@ -50,6 +50,9 @@ static struct h2_workers *workers;
 
 static int async_mpm;
 
+APR_OPTIONAL_FN_TYPE(ap_logio_add_bytes_in) *h2_c_logio_add_bytes_in;
+APR_OPTIONAL_FN_TYPE(ap_logio_add_bytes_out) *h2_c_logio_add_bytes_out;
+
 apr_status_t h2_c1_child_init(apr_pool_t *pool, server_rec *s)
 {
     apr_status_t status = APR_SUCCESS;
@@ -75,6 +78,9 @@ apr_status_t h2_c1_child_init(apr_pool_t *pool, server_rec *s)
                  minw, maxw, max_threads_per_child, idle_secs);
     workers = h2_workers_create(s, pool, minw, maxw, idle_secs);
  
+    h2_c_logio_add_bytes_in = APR_RETRIEVE_OPTIONAL_FN(ap_logio_add_bytes_in);
+    h2_c_logio_add_bytes_out = APR_RETRIEVE_OPTIONAL_FN(ap_logio_add_bytes_out);
+
     return h2_mplx_c1_child_init(pool, s);
 }
 

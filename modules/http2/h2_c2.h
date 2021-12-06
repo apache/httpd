@@ -50,12 +50,5 @@ void h2_c2_destroy(conn_rec *c2);
 apr_status_t h2_c2_process(conn_rec *c, apr_thread_t *thread, int worker_id);
 
 void h2_c2_register_hooks(void);
-/*
- * One time, post config initialization.
- */
-apr_status_t h2_c2_init(apr_pool_t *pool, server_rec *s);
-
-extern APR_OPTIONAL_FN_TYPE(ap_logio_add_bytes_in) *h2_c2_logio_add_bytes_in;
-extern APR_OPTIONAL_FN_TYPE(ap_logio_add_bytes_out) *h2_c2_logio_add_bytes_out;
 
 #endif /* defined(__mod_h2__h2_c2__) */
