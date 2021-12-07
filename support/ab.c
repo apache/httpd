@@ -582,6 +582,8 @@ static void ssl_state_cb(const SSL *s, int w, int r)
     }
 }
 
+#if OPENSSL_VERSION_NUMBER < 0x10101000
+
 #ifndef RAND_MAX
 #define RAND_MAX INT_MAX
 #endif
@@ -627,6 +629,9 @@ static void ssl_rand_seed(void)
     n = ssl_rand_choosenum(0, sizeof(stackdata)-128-1);
     RAND_seed(stackdata+n, 128);
 }
+#else
+#define ssl_rand_seed() /* noop */
+#endif
 
 static int ssl_print_connection_info(BIO *bio, SSL *ssl)
 {
@@ -2640,6 +2645,16 @@ int main(int argc, const char * const argv[])
     bio_out=BIO_new_fp(stdout,BIO_NOCLOSE);
     bio_err=BIO_new_fp(stderr,BIO_NOCLOSE);
 
+#if OPENSSL_VERSION_NUMBER >= 0x10101000
+    if (RAND_status() == 0) {
+        fprintf(stderr, "%s: Error: Crypto library PRNG does not contain "
+                "sufficient randomness.\n"
+                "%s: Build the library with a suitable entropy source configured.\n",
+                argv[0], argv[0]);
+        exit(1);
+    }
+#endif
+    
     if (!(ssl_ctx = SSL_CTX_new(meth))) {
         BIO_printf(bio_err, "Could not initialize SSL Context.\n");
         ERR_print_errors(bio_err);
