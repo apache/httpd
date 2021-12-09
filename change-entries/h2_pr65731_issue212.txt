@@ -1,0 +1,14 @@
+  *) mod_http2: fixes 2 regressions in server limit handling.
+     1. When reaching server limits, such as MaxRequestsPerChild, the
+        HTTP/2 connection send a GOAWAY frame much too early on new
+        connections, leading to invalid protocol state and a client
+        failing the request. See PR65731.
+        The module now initializes the HTTP/2 protocol correctly and
+        allows the client to submit one request before the shutdown
+        via a GOAWAY frame is being announced.
+     2. A regression in v1.15.24 was fixed that could lead to httpd
+        child processes not being terminated on a graceful reload or
+        when reaching MaxConnectionsPerChild. When unprocessed h2
+        requests were queued at the time, these could stall.
+        See <https://github.com/icing/mod_h2/issues/212>.
+     [Stefan Eissing]
