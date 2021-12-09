@@ -85,6 +85,7 @@ class H2TestEnv(HttpdTestEnv):
             'AH01630',
             'AH00135',
             'AH02261',  # Re-negotiation handshake failed (our test_101)
+            'AH03490',  # scoreboard full, happens on limit tests
         ])
         self.httpd_error_log.add_ignored_patterns([
             re.compile(r'.*malformed header from script \'hecho.py\': Bad header: x.*'),

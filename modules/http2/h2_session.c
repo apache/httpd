@@ -1755,12 +1755,22 @@ apr_status_t h2_session_process(h2_session *session, int async)
 
     while (session->state != H2_SESSION_ST_DONE) {
 
-        if (session->local.accepting 
+        /* PR65731: we may get a new connection to process while the
+         * MPM already is stopping. For example due to having reached
+         * MaxRequestsPerChild limit.
+         * Since this is supposed to handle things gracefully, we need to:
+         * a) fully initialize the session before GOAWAYing
+         * b) give the client the chance to submit at least one request
+         */
+        if (session->state != H2_SESSION_ST_INIT /* no longer intializing */
+            && session->local.accepted_max > 0   /* have gotten at least one stream */
+            && session->local.accepting          /* have not already locally shut down */
             && !ap_mpm_query(AP_MPMQ_MPM_STATE, &mpm_state)) {
             if (mpm_state == AP_MPMQ_STOPPING) {
                 h2_session_dispatch_event(session, H2_SESSION_EV_MPM_STOPPING, 0, NULL);
             }
         }
+
         session->status[0] = '\0';
         
         if (h2_session_want_send(session)) {
