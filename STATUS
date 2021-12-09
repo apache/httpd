@@ -208,11 +208,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      ylavic: updated with r1894291 for correctness of perform_idle_server_maintenance()
              w.r.t. num_buckets > 1 and ease merging of r1895553, with r1895550 for
              correctness of active_daemons used in r1895553 and r1895630.
+
+  *) mod_http2: fixes PR65731 and https://github.com/icing/mod_h2/issues/212
      trunk patch: na, fixed on 2.4.x source base
      backport PR: https://github.com/apache/httpd/pull/281
      +1: icing,
-
-  *) mod_http2: fixes PR65731 and https://github.com/icing/mod_h2/issues/212
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
