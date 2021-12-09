@@ -4,12 +4,12 @@ Changes with Apache 2.5.1
   *) mod_proxy_connect: Honor the smallest of the backend or client timeout
      while tunneling.  [Yann Ylavic]
 
-  * mod_http2: a regression in v1.15.24 of the modules was fixed that
-    could lead to httpd child processes not being terminated on a
-    graceful reload or when reaching MaxConnectionsPerChild.
-    When unprocessed h2 requests were queued at the time, these could stall.
-    See <https://github.com/icing/mod_h2/issues/212>.
-    [@hansborr, @famzah, Stefan Eissing]
+  *) mod_http2: a regression in v1.15.24 of the modules was fixed that
+     could lead to httpd child processes not being terminated on a
+     graceful reload or when reaching MaxConnectionsPerChild.
+     When unprocessed h2 requests were queued at the time, these could stall.
+     See <https://github.com/icing/mod_h2/issues/212>.
+     [@hansborr, @famzah, Stefan Eissing]
 
   *) mod_proxy_uwsgi: Remove duplicate slashes at the beginning of PATH_INFO.
      PR 65616.  [Ruediger Pluem]
@@ -27,35 +27,35 @@ Changes with Apache 2.5.1
      404 instead of a DirectorySlash redirect. [Eric Covener]
 
   *) mod_md: adding v2.4.8 with the following changes
-    - Added support for ACME External Account Binding (EAB).
-      Use the new directive `MDExternalAccountBinding` to provide the
-      server with the value for key identifier and hmac as provided by
-      your CA.
-      While working on some servers, EAB handling is not uniform
-      across CAs. First tests with a Sectigo Certificate Manager in
-      demo mode are successful. But ZeroSSL, for example, seems to
-      regard EAB values as a one-time-use-only thing, which makes them
-      fail if you create a seconde account or retry the creation of the
-      first account with the same EAB.
-    - The directive 'MDCertificateAuthority' now checks if its parameter
-      is a http/https url or one of a set of known names. Those are
-      'LetsEncrypt', 'LetsEncrypt-Test', 'Buypass' and 'Buypass-Test'
-      for now and they are not case-sensitive.
-      The default of LetsEncrypt is unchanged.
-    - `MDContactEmail` can now be specified inside a `<MDomain dnsname>`
-      section.
-    - Treating 401 HTTP status codes for orders like 403, since some ACME
-      servers seem to prefer that for accessing oders from other accounts.
-    - When retrieving certificate chains, try to read the repsonse even
-      if the HTTP Content-Type is unrecognized.
-    - Fixed a bug that reset the error counter of a certificate renewal
-      and prevented the increasing delays in further attempts.
-    - Fixed the renewal process giving up every time on an already existing
-      order with some invalid domains. Now, if such are seen in a previous
-      order, a new order is created for a clean start over again.
-      See <https://github.com/icing/mod_md/issues/268>
-    - Fixed a mixup in md-status handler when static certificate files
-      and renewal was configured at the same time.
+     - Added support for ACME External Account Binding (EAB).
+       Use the new directive `MDExternalAccountBinding` to provide the
+       server with the value for key identifier and hmac as provided by
+       your CA.
+       While working on some servers, EAB handling is not uniform
+       across CAs. First tests with a Sectigo Certificate Manager in
+       demo mode are successful. But ZeroSSL, for example, seems to
+       regard EAB values as a one-time-use-only thing, which makes them
+       fail if you create a seconde account or retry the creation of the
+       first account with the same EAB.
+     - The directive 'MDCertificateAuthority' now checks if its parameter
+       is a http/https url or one of a set of known names. Those are
+       'LetsEncrypt', 'LetsEncrypt-Test', 'Buypass' and 'Buypass-Test'
+       for now and they are not case-sensitive.
+       The default of LetsEncrypt is unchanged.
+     - `MDContactEmail` can now be specified inside a `<MDomain dnsname>`
+       section.
+     - Treating 401 HTTP status codes for orders like 403, since some ACME
+       servers seem to prefer that for accessing oders from other accounts.
+     - When retrieving certificate chains, try to read the repsonse even
+       if the HTTP Content-Type is unrecognized.
+     - Fixed a bug that reset the error counter of a certificate renewal
+       and prevented the increasing delays in further attempts.
+     - Fixed the renewal process giving up every time on an already existing
+       order with some invalid domains. Now, if such are seen in a previous
+       order, a new order is created for a clean start over again.
+       See <https://github.com/icing/mod_md/issues/268>
+     - Fixed a mixup in md-status handler when static certificate files
+       and renewal was configured at the same time.
 
   *) mod_http2:
      - Fixed an issue since 1.15.24 that "Server" headers in proxied requests
