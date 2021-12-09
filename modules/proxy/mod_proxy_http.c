@@ -1539,9 +1539,6 @@ int ap_proxy_http_process_response(proxy_http_req_t *req)
             /* Let proxy tunnel forward everything within this thread */
             req->tunnel->timeout = req->idle_timeout;
             status = ap_proxy_tunnel_run(req->tunnel);
-            if (ap_is_HTTP_ERROR(status)) {
-                r->status = status;
-            }
 
             /* Report bytes exchanged by the backend */
             backend->worker->s->read +=
