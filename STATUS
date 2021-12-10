@@ -198,7 +198,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   *) mod_http2: fixes PR65731 and https://github.com/icing/mod_h2/issues/212
      trunk patch: na, fixed on 2.4.x source base
      backport PR: https://github.com/apache/httpd/pull/281
-     +1: icing,
+     +1: icing, minfrin
 
   *) mod_ssl: Fix build failure due to ERR_GET_FUNC removal in OpenSSL v3.
      trunk patch: http://svn.apache.org/r1891138
