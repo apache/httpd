@@ -165,7 +165,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      Trunk version of patch:
         https://svn.apache.org/r1879888
      Backport version for 2.4.x of patch:
-      https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/httpd-2.4-dav-ns.patch
+      https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/httpd-2.4-dav-ns2.patch
      +1: minfrin
 
   *) mod_dav: Some DAV extensions, like CalDAV, specify both document
