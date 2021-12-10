@@ -584,7 +584,6 @@ static long bio_filter_in_ctrl(BIO *bio, int cmd, long num, void *ptr)
     ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, inctx->f->c,
                   "BUG: bio_filter_in_ctrl() should not be called with cmd=%i",
                   cmd);
-    AP_DEBUG_ASSERT(0);
     return 0;
 }
 
