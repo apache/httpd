@@ -126,6 +126,7 @@
   <modulefile>mod_suexec.xml</modulefile>
   <modulefile>mod_syslog.xml</modulefile>
   <modulefile>mod_systemd.xml</modulefile>
+  <modulefile>mod_tls.xml</modulefile>
   <modulefile>mod_unique_id.xml</modulefile>
   <modulefile>mod_unixd.xml</modulefile>
   <modulefile>mod_userdir.xml</modulefile>
