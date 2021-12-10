@@ -144,12 +144,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) core: Be safe with ap_lingering_close() called with a socket NULL-ed by
-     a third-party module.  PR 65627.
-     trunk patch: http://svn.apache.org/r1894171
-     backport PR: https://github.com/apache/httpd/pull/277
-     2.4.x patch: svn merge -c 1894171 ^/httpd/httpd/trunk .
-     +1: ylavic, icing, rpluem
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
