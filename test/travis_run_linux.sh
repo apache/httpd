@@ -65,6 +65,11 @@ if test -v TEST_MOD_TLS; then
   CONFIG="$CONFIG --with-tls --with-rustls=$PREFIX"
 fi
 
+if test -v TEST_OPENSSL3; then
+    CONFIG="$CONFIG --with-ssl=$HOME/root/openssl3"
+    export LD_LIBRARY_PATH=$HOME/root/openssl3/lib:$HOME/root/openssl3/lib64
+fi
+
 srcdir=$PWD
 
 if test -v TEST_VPATH; then
@@ -129,6 +134,9 @@ if ! test -v SKIP_TESTING; then
     fi
 
     if test -v TEST_SSL -a $RV -eq 0; then
+        # Log mod_ssl linkage.
+        ldd $PREFIX/modules/mod_ssl.so
+
         pushd test/perl-framework
             # Test loading encrypted private keys
             ./t/TEST -defines "TEST_SSL_DES3_KEY TEST_SSL_PASSPHRASE_EXEC" t/ssl

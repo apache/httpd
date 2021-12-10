@@ -113,8 +113,27 @@ if test -v TEST_SSL; then
     popd
 fi
 
+if test -v TEST_OPENSSL3; then
+    # See if the required version is cached.
+    if ! test -f $HOME/root/openssl-is-${TEST_OPENSSL3}; then
+        mkdir -p build/openssl
+        pushd build/openssl
+           curl "https://www.openssl.org/source/openssl-${TEST_OPENSSL3}.tar.gz" |
+              tar -xzf -
+           cd openssl-${TEST_OPENSSL3}
+           ./Configure --prefix=$HOME/root/openssl3 shared no-tests
+           make $MFLAGS
+           make install_sw
+           touch $HOME/root/openssl-is-${TEST_OPENSSL3}
+       popd
+    fi
+    ### should fail if trying to use system APR/OpenSSL here?
+    APR_CONFIG="${APR_CONFIG} --with-openssl=$HOME/root/openssl3"
+fi
+
 if test -v APR_VERSION; then
     install_apx apr ${APR_VERSION} "${APR_CONFIG}"
+    ldd $HOME/root/apr-${APR_VERSION}/lib/libapr-?.so || true
     APU_CONFIG="$APU_CONFIG --with-apr=$HOME/root/apr-${APR_VERSION}"
 fi
 
