@@ -65,6 +65,11 @@ if test -v TEST_MOD_TLS; then
   CONFIG="$CONFIG --with-tls --with-rustls=$PREFIX"
 fi
 
+if test -v TEST_OPENSSL3; then
+    CONFIG="$CONFIG --with-ssl=$HOME/root/openssl3"
+    export LD_LIBRARY_PATH=$HOME/root/openssl3/lib:$HOME/root/openssl3/lib64
+fi
+
 srcdir=$PWD
 
 if test -v TEST_VPATH; then
@@ -134,6 +139,9 @@ if ! test -v SKIP_TESTING; then
             ./t/TEST -defines "TEST_SSL_DES3_KEY TEST_SSL_PASSPHRASE_EXEC" t/ssl
             RV=$?
 
+            # Log the OpenSSL version.
+            grep 'mod_ssl.*compiled against' t/logs/error_log | tail -n 1
+            
             # Test various session cache backends
             for cache in shmcb redis:localhost:6379 memcache:localhost:11211; do
                 test $RV -eq 0 || break

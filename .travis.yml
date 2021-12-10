@@ -265,6 +265,11 @@ jobs:
            TEST_MALLOC=1 TEST_SSL=1
            CLEAR_CACHE=1
     # -------------------------------------------------------------------------
+    - name: Linux Ubuntu, Minimal module set, OpenSSL 3.x
+      env: APR_VERSION=trunk APR_CONFIG="--without-pgsql --without-mysql --without-odbc --with-crypto"
+           CONFIG="--enable-mods-shared=ssl --with-mpm=event"
+           TEST_MALLOC=1 TEST_SSL=1 TEST_OPENSSL3=3.0.0
+    # -------------------------------------------------------------------------
     - if: *condition_not_24x
       name: Linux Ubuntu, MPMs [event, worker], core + HTTP/2 test suite
       dist: focal
