@@ -138,6 +138,7 @@ CURRENT RELEASE NOTES:
     . routine APLOGNO() backports
     . .gdbinit
     . Travis integration: .travis.yml and test/travis*.sh
+    . mod_tls
 
 RELEASE SHOWSTOPPERS:
 
