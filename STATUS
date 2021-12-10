@@ -274,23 +274,6 @@ PATCHES/ISSUES THAT ARE BEING WORKED
      +1: ylavic,
      ylavic: still being discussed on dev@
 
-  *) mod_dav: Allow other modules to become providers and add ACLs
-     to the DAV response.
-     trunk patch: http://svn.apache.org/r1748322
-                  http://svn.apache.org/r1824590
-                  http://svn.apache.org/r1824596
-     2.4.x: trunk works modulo CHANGES/MMN/log-message
-     +1: minfrin, jim
-     -1: rpluem: While we allow extensions of structures at the end in general
-                 this is a specific case where the the design of the mod_dav
-                 API clashes with this approach, as the API requires consumers
-                 to create the public structs on their own, something we do
-                 not "allow/encourage" otherwise in order to be able to do the
-                 structure extension. I don't want to see consumers of this API
-                 suffer from the clash we created.
-                 See also:
-                 https://lists.apache.org/thread.html/b924afe0fcc58a8636b753e630421bf6dc2080653a79575fd5fd641a@%3Cdev.httpd.apache.org%3E
-
   *) http: Don't remove the Content-Length of zero from a HEAD response if
      it comes from an origin server, module or script. Allow the previous
      behaviour (for legacy/buggy modules only, not origin) by also backporting
