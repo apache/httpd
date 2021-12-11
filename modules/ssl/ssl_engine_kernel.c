@@ -1685,7 +1685,6 @@ const authz_provider ssl_authz_provider_verify_client =
 **  _________________________________________________________________
 */
 
-#if MODSSL_USE_OPENSSL_PRE_1_1_API
 /*
  * Hand out standard DH parameters, based on the authentication strength
  */
@@ -1731,7 +1730,6 @@ DH *ssl_callback_TmpDH(SSL *ssl, int export, int keylen)
 
     return modssl_get_dh_params(keylen);
 }
-#endif
 
 /*
  * This OpenSSL callback function is called when OpenSSL
@@ -2616,11 +2614,7 @@ int ssl_callback_SessionTicket(SSL *ssl,
                                unsigned char *keyname,
                                unsigned char *iv,
                                EVP_CIPHER_CTX *cipher_ctx,
-#if OPENSSL_VERSION_NUMBER < 0x30000000L
-                               HMAC_CTX *hmac_ctx,
-#else
-                               EVP_MAC_CTX *mac_ctx,
-#endif
+                               HMAC_CTX *hctx,
                                int mode)
 {
     conn_rec *c = (conn_rec *)SSL_get_app_data(ssl);
@@ -2646,13 +2640,7 @@ int ssl_callback_SessionTicket(SSL *ssl,
         }
         EVP_EncryptInit_ex(cipher_ctx, EVP_aes_128_cbc(), NULL,
                            ticket_key->aes_key, iv);
-
-#if OPENSSL_VERSION_NUMBER < 0x30000000L
-        HMAC_Init_ex(hmac_ctx, ticket_key->hmac_secret, 16,
-                     tlsext_tick_md(), NULL);
-#else
-        EVP_MAC_CTX_set_params(mac_ctx, ticket_key->mac_params);
-#endif
+        HMAC_Init_ex(hctx, ticket_key->hmac_secret, 16, tlsext_tick_md(), NULL);
 
         ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, APLOGNO(02289)
                       "TLS session ticket key for %s successfully set, "
@@ -2673,13 +2661,7 @@ int ssl_callback_SessionTicket(SSL *ssl,
 
         EVP_DecryptInit_ex(cipher_ctx, EVP_aes_128_cbc(), NULL,
                            ticket_key->aes_key, iv);
-
-#if OPENSSL_VERSION_NUMBER < 0x30000000L
-        HMAC_Init_ex(hmac_ctx, ticket_key->hmac_secret, 16,
-                     tlsext_tick_md(), NULL);
-#else
-        EVP_MAC_CTX_set_params(mac_ctx, ticket_key->mac_params);
-#endif
+        HMAC_Init_ex(hctx, ticket_key->hmac_secret, 16, tlsext_tick_md(), NULL);
 
         ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, APLOGNO(02290)
                       "TLS session ticket key for %s successfully set, "

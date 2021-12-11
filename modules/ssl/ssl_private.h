@@ -89,9 +89,6 @@
 /* must be defined before including ssl.h */
 #define OPENSSL_NO_SSL_INTERN
 #endif
-#if OPENSSL_VERSION_NUMBER >= 0x30000000
-#include <openssl/core_names.h>
-#endif
 #include <openssl/ssl.h>
 #include <openssl/err.h>
 #include <openssl/x509.h>
@@ -137,12 +134,13 @@
         SSL_CTX_ctrl(ctx, SSL_CTRL_SET_MIN_PROTO_VERSION, version, NULL)
 #define SSL_CTX_set_max_proto_version(ctx, version) \
         SSL_CTX_ctrl(ctx, SSL_CTRL_SET_MAX_PROTO_VERSION, version, NULL)
-#endif /* LIBRESSL_VERSION_NUMBER < 0x2060000f */
+#elif LIBRESSL_VERSION_NUMBER < 0x2070000f
 /* LibreSSL before 2.7 declares OPENSSL_VERSION_NUMBER == 2.0 but does not
  * include most changes from OpenSSL >= 1.1 (new functions, macros, 
  * deprecations, ...), so we have to work around this...
  */
-#define MODSSL_USE_OPENSSL_PRE_1_1_API (LIBRESSL_VERSION_NUMBER < 0x2070000f)
+#define MODSSL_USE_OPENSSL_PRE_1_1_API (1)
+#endif /* LIBRESSL_VERSION_NUMBER < 0x2060000f */
 #else /* defined(LIBRESSL_VERSION_NUMBER) */
 #define MODSSL_USE_OPENSSL_PRE_1_1_API (OPENSSL_VERSION_NUMBER < 0x10100000L)
 #endif
@@ -683,11 +681,7 @@ typedef struct {
 typedef struct {
     const char *file_path;
     unsigned char key_name[16];
-#if OPENSSL_VERSION_NUMBER < 0x30000000L
     unsigned char hmac_secret[16];
-#else
-    OSSL_PARAM mac_params[3];
-#endif
     unsigned char aes_key[16];
 } modssl_ticket_key_t;
 #endif
@@ -951,16 +945,8 @@ int          ssl_callback_ServerNameIndication(SSL *, int *, modssl_ctx_t *);
 int          ssl_callback_ClientHello(SSL *, int *, void *);
 #endif
 #ifdef HAVE_TLS_SESSION_TICKETS
-int ssl_callback_SessionTicket(SSL *ssl,
-                               unsigned char *keyname,
-                               unsigned char *iv,
-                               EVP_CIPHER_CTX *cipher_ctx,
-#if OPENSSL_VERSION_NUMBER < 0x30000000L
-                               HMAC_CTX *hmac_ctx,
-#else
-                               EVP_MAC_CTX *mac_ctx,
-#endif
-                               int mode);
+int         ssl_callback_SessionTicket(SSL *, unsigned char *, unsigned char *,
+                                       EVP_CIPHER_CTX *, HMAC_CTX *, int);
 #endif
 
 #ifdef HAVE_TLS_ALPN
@@ -1138,12 +1124,10 @@ void ssl_init_ocsp_certificates(server_rec *s, modssl_ctx_t *mctx);
 
 #endif
 
-#if MODSSL_USE_OPENSSL_PRE_1_1_API
 /* Retrieve DH parameters for given key length.  Return value should
  * be treated as unmutable, since it is stored in process-global
  * memory. */
 DH *modssl_get_dh_params(unsigned keylen);
-#endif
 
 /* Returns non-zero if the request was made over SSL/TLS.  If sslconn
  * is non-NULL and the request is using SSL/TLS, sets *sslconn to the

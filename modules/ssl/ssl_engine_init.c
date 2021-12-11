@@ -91,6 +91,7 @@ static int DH_set0_pqg(DH *dh, BIGNUM *p, BIGNUM *q, BIGNUM *g)
 
     return 1;
 }
+#endif
 
 /*
  * Grab well-defined DH parameters from OpenSSL, see the BN_get_rfc*
@@ -170,7 +171,6 @@ DH *modssl_get_dh_params(unsigned keylen)
         
     return NULL; /* impossible to reach. */
 }
-#endif
 
 static void ssl_add_version_components(apr_pool_t *ptemp, apr_pool_t *pconf,
                                        server_rec *s)
@@ -440,9 +440,8 @@ apr_status_t ssl_init_Module(apr_pool_t *p, apr_pool_t *plog,
 
     modssl_init_app_data2_idx(); /* for modssl_get_app_data2() at request time */
 
-#if MODSSL_USE_OPENSSL_PRE_1_1_API
     init_dh_params();
-#else
+#if !MODSSL_USE_OPENSSL_PRE_1_1_API
     init_bio_methods();
 #endif
 
@@ -863,34 +862,13 @@ static void ssl_init_ctx_callbacks(server_rec *s,
 {
     SSL_CTX *ctx = mctx->ssl_ctx;
 
-#if MODSSL_USE_OPENSSL_PRE_1_1_API
-    /* Note that for OpenSSL>=1.1, auto selection is enabled via
-     * SSL_CTX_set_dh_auto(,1) if no parameter is configured. */
     SSL_CTX_set_tmp_dh_callback(ctx,  ssl_callback_TmpDH);
-#endif
 
     SSL_CTX_set_info_callback(ctx, ssl_callback_Info);
 
 #ifdef HAVE_TLS_ALPN
     SSL_CTX_set_alpn_select_cb(ctx, ssl_callback_alpn_select, NULL);
 #endif
-}
-
-static APR_INLINE
-int modssl_CTX_load_verify_locations(SSL_CTX *ctx,
-                                     const char *file,
-                                     const char *path)
-{
-#if OPENSSL_VERSION_NUMBER < 0x30000000L
-    if (!SSL_CTX_load_verify_locations(ctx, file, path))
-        return 0;
-#else
-    if (file && !SSL_CTX_load_verify_file(ctx, file))
-        return 0;
-    if (path && !SSL_CTX_load_verify_dir(ctx, path))
-        return 0;
-#endif
-    return 1;
 }
 
 static apr_status_t ssl_init_ctx_verify(server_rec *s,
@@ -933,8 +911,10 @@ static apr_status_t ssl_init_ctx_verify(server_rec *s,
         ap_log_error(APLOG_MARK, APLOG_TRACE1, 0, s,
                      "Configuring client authentication");
 
-        if (!modssl_CTX_load_verify_locations(ctx, mctx->auth.ca_cert_file,
-                                                   mctx->auth.ca_cert_path)) {
+        if (!SSL_CTX_load_verify_locations(ctx,
+                                           mctx->auth.ca_cert_file,
+                                           mctx->auth.ca_cert_path))
+        {
             ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(01895)
                     "Unable to configure verify locations "
                     "for client authentication");
@@ -1019,23 +999,6 @@ static apr_status_t ssl_init_ctx_cipher_suite(server_rec *s,
     return APR_SUCCESS;
 }
 
-static APR_INLINE
-int modssl_X509_STORE_load_locations(X509_STORE *store,
-                                     const char *file,
-                                     const char *path)
-{
-#if OPENSSL_VERSION_NUMBER < 0x30000000L
-    if (!X509_STORE_load_locations(store, file, path))
-        return 0;
-#else
-    if (file && !X509_STORE_load_file(store, file))
-        return 0;
-    if (path && !X509_STORE_load_path(store, path))
-        return 0;
-#endif
-    return 1;
-}
-
 static apr_status_t ssl_init_ctx_crl(server_rec *s,
                                      apr_pool_t *p,
                                      apr_pool_t *ptemp,
@@ -1074,8 +1037,8 @@ static apr_status_t ssl_init_ctx_crl(server_rec *s,
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(01900)
                  "Configuring certificate revocation facility");
 
-    if (!store || !modssl_X509_STORE_load_locations(store, mctx->crl_file,
-                                                           mctx->crl_path)) {
+    if (!store || !X509_STORE_load_locations(store, mctx->crl_file,
+                                             mctx->crl_path)) {
         ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(01901)
                      "Host %s: unable to configure X.509 CRL storage "
                      "for certificate revocation", mctx->sc->vhost_id);
@@ -1304,31 +1267,6 @@ static int ssl_no_passwd_prompt_cb(char *buf, int size, int rwflag,
    return 0;
 }
 
-static APR_INLINE int modssl_DH_bits(DH *dh)
-{
-#if OPENSSL_VERSION_NUMBER < 0x30000000L
-    return DH_bits(dh);
-#else
-    return BN_num_bits(DH_get0_p(dh));
-#endif
-}
-
-/* SSL_CTX_use_PrivateKey_file() can fail either because the private
- * key was encrypted, or due to a mismatch between an already-loaded
- * cert and the key - a common misconfiguration - from calling
- * X509_check_private_key().  This macro is passed the last error code
- * off the OpenSSL stack and evaluates to true only for the first
- * case.  With OpenSSL < 3 the second case is identifiable by the
- * function code, but function codes are not used from 3.0. */
-#if OPENSSL_VERSION_NUMBER < 0x30000000L
-#define CHECK_PRIVKEY_ERROR(ec) (ERR_GET_FUNC(ec) != X509_F_X509_CHECK_PRIVATE_KEY)
-#else
-#define CHECK_PRIVKEY_ERROR(ec) (ERR_GET_LIB(ec) != ERR_LIB_X509            \
-                                 || (ERR_GET_REASON(ec) != X509_R_KEY_TYPE_MISMATCH \
-                                     && ERR_GET_REASON(ec) != X509_R_KEY_VALUES_MISMATCH \
-                                     && ERR_GET_REASON(ec) != X509_R_UNKNOWN_KEY_TYPE))
-#endif
-
 static apr_status_t ssl_init_server_certs(server_rec *s,
                                           apr_pool_t *p,
                                           apr_pool_t *ptemp,
@@ -1339,7 +1277,7 @@ static apr_status_t ssl_init_server_certs(server_rec *s,
     const char *vhost_id = mctx->sc->vhost_id, *key_id, *certfile, *keyfile;
     int i;
     X509 *cert;
-    DH *dh;
+    DH *dhparams;
 #ifdef HAVE_ECC
     EC_GROUP *ecparams = NULL;
     int nid;
@@ -1434,7 +1372,8 @@ static apr_status_t ssl_init_server_certs(server_rec *s,
         }
         else if ((SSL_CTX_use_PrivateKey_file(mctx->ssl_ctx, keyfile,
                                               SSL_FILETYPE_PEM) < 1)
-                 && CHECK_PRIVKEY_ERROR(ERR_peek_last_error())) {
+                 && (ERR_GET_FUNC(ERR_peek_last_error())
+                     != X509_F_X509_CHECK_PRIVATE_KEY)) {
             ssl_asn1_t *asn1;
             const unsigned char *ptr;
 
@@ -1523,22 +1462,13 @@ static apr_status_t ssl_init_server_certs(server_rec *s,
      */
     certfile = APR_ARRAY_IDX(mctx->pks->cert_files, 0, const char *);
     if (certfile && !modssl_is_engine_id(certfile)
-        && (dh = ssl_dh_GetParamFromFile(certfile))) {
-        /* ### This should be replaced with SSL_CTX_set0_tmp_dh_pkey()
-         * for OpenSSL 3.0+. */
-        SSL_CTX_set_tmp_dh(mctx->ssl_ctx, dh);
+        && (dhparams = ssl_dh_GetParamFromFile(certfile))) {
+        SSL_CTX_set_tmp_dh(mctx->ssl_ctx, dhparams);
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(02540)
                      "Custom DH parameters (%d bits) for %s loaded from %s",
-                     modssl_DH_bits(dh), vhost_id, certfile);
-        DH_free(dh);
+                     DH_bits(dhparams), vhost_id, certfile);
+        DH_free(dhparams);
     }
-#if !MODSSL_USE_OPENSSL_PRE_1_1_API
-    else {
-        /* If no parameter is manually configured, enable auto
-         * selection. */
-        SSL_CTX_set_dh_auto(mctx->ssl_ctx, 1);
-    }
-#endif
 
 #ifdef HAVE_ECC
     /*
@@ -1588,7 +1518,6 @@ static apr_status_t ssl_init_ticket_key(server_rec *s,
     char buf[TLSEXT_TICKET_KEY_LEN];
     char *path;
     modssl_ticket_key_t *ticket_key = mctx->ticket_key;
-    int res;
 
     if (!ticket_key->file_path) {
         return APR_SUCCESS;
@@ -1616,22 +1545,11 @@ static apr_status_t ssl_init_ticket_key(server_rec *s,
     }
 
     memcpy(ticket_key->key_name, buf, 16);
-    memcpy(ticket_key->aes_key, buf + 32, 16);
-#if OPENSSL_VERSION_NUMBER < 0x30000000L
     memcpy(ticket_key->hmac_secret, buf + 16, 16);
-    res = SSL_CTX_set_tlsext_ticket_key_cb(mctx->ssl_ctx,
-                                           ssl_callback_SessionTicket);
-#else
-    ticket_key->mac_params[0] =
-        OSSL_PARAM_construct_octet_string(OSSL_MAC_PARAM_KEY, buf + 16, 16);
-    ticket_key->mac_params[1] =
-        OSSL_PARAM_construct_utf8_string(OSSL_MAC_PARAM_DIGEST, "sha256", 0);
-    ticket_key->mac_params[2] =
-        OSSL_PARAM_construct_end();
-    res = SSL_CTX_set_tlsext_ticket_key_evp_cb(mctx->ssl_ctx,
-                                               ssl_callback_SessionTicket);
-#endif
-    if (!res) {
+    memcpy(ticket_key->aes_key, buf + 32, 16);
+
+    if (!SSL_CTX_set_tlsext_ticket_key_cb(mctx->ssl_ctx,
+                                          ssl_callback_SessionTicket)) {
         ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(01913)
                      "Unable to initialize TLS session ticket key callback "
                      "(incompatible OpenSSL version?)");
@@ -1762,7 +1680,7 @@ static apr_status_t ssl_init_proxy_certs(server_rec *s,
         return ssl_die(s);
     }
 
-    modssl_X509_STORE_load_locations(store, pkp->ca_cert_file, NULL);
+    X509_STORE_load_locations(store, pkp->ca_cert_file, NULL);
 
     for (n = 0; n < ncerts; n++) {
         int i;
@@ -2359,11 +2277,10 @@ apr_status_t ssl_init_ModuleKill(void *data)
 
     }
 
-#if MODSSL_USE_OPENSSL_PRE_1_1_API
-    free_dh_params();
-#else
+#if !MODSSL_USE_OPENSSL_PRE_1_1_API
     free_bio_methods();
 #endif
+    free_dh_params();
 
     return APR_SUCCESS;
 }
