@@ -188,7 +188,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         https://svn.apache.org/r1879888
      Backport version for 2.4.x of patch:
       https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/httpd-2.4-dav-ns2.patch
-     +1: minfrin
+     +1: minfrin, ylavic (by inspection),
 
   *) mod_dav: Some DAV extensions, like CalDAV, specify both document
      elements and property elements that need to be taken into account
@@ -201,7 +201,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         https://svn.apache.org/r1893644
      Backport version for 2.4.x of patch:
         https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/httpd-2.4-dav-element2.patch
-     +1: minfrin
+     +1: minfrin, ylavic (by inspection),
 
   *) mpm_event: Restart stopping of idle children after a load peak. PR 65626.
      trunk patch: http://svn.apache.org/r1894285
