@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.52
 
+  *) mpm_event: Restart stopping of idle children after a load peak. PR 65626.
+     [Yann Ylavic, Ruediger Pluem]
+
   *) mod_http2: fixes 2 regressions in server limit handling.
      1. When reaching server limits, such as MaxRequestsPerChild, the
         HTTP/2 connection send a GOAWAY frame much too early on new
