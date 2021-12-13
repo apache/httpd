@@ -145,18 +145,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_dav: Some DAV extensions, like CalDAV, specify both document
-     elements and property elements that need to be taken into account
-     when generating a property. The document element and property element
-     are made available in the dav_liveprop_elem structure by calling
-     dav_get_liveprop_element().
-     Trunk version of patch:
-        https://svn.apache.org/r1879889
-        https://svn.apache.org/r1893643
-        https://svn.apache.org/r1893644
-     Backport version for 2.4.x of patch:
-        https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/httpd-2.4-dav-element2.patch
-     +1: minfrin, ylavic (by inspection), icing (by inspection)
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
