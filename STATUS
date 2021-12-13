@@ -145,10 +145,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_http2: fixes PR65731 and https://github.com/icing/mod_h2/issues/212
-     trunk patch: na, fixed on 2.4.x source base
-     backport PR: https://github.com/apache/httpd/pull/281
-     +1: icing, minfrin, ylavic
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
