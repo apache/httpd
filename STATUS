@@ -145,6 +145,14 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) mod_proxy_connect, mod_proxy: Do not change the status code after we
+     already sent it to the client.
+     Trunk version of patch:
+        https://svn.apache.org/r1895715
+     Backport version for 2.4.x of patch:
+       https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/283.diff
+     Can be applied via apply_backport_pr.sh 283
+     +1: rpluem, icing, minfrin
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
@@ -175,14 +183,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      backported together with it. The other three revisions look fine.
      minfrin: Tried r1586542 but got conflicts. Other revs were fine.
 
-  *) mod_proxy_connect, mod_proxy: Do not change the status code after we
-     already sent it to the client.
-     Trunk version of patch:
-        https://svn.apache.org/r1895715
-     Backport version for 2.4.x of patch:
-       https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/283.diff
-     Can be applied via apply_backport_pr.sh 283
-     +1: rpluem, icing, 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
