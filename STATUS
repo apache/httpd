@@ -146,7 +146,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
 
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -160,14 +159,18 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      is not the right fix, then it should be removed from trunk.
      Putting it here is a way to revive the discussion
 
-  *) mod_dav: Add utility functions dav_validate_root_ns(),
-     dav_find_child_ns(), dav_find_next_ns(), dav_find_attr_ns() and
-     dav_find_attr() so that other modules get to play too.
+  *) mod_dav: Some DAV extensions, like CalDAV, specify both document
+     elements and property elements that need to be taken into account
+     when generating a property. The document element and property element
+     are made available in the dav_liveprop_elem structure by calling
+     dav_get_liveprop_element().
      Trunk version of patch:
-        https://svn.apache.org/r1879888
+        https://svn.apache.org/r1879889
+        https://svn.apache.org/r1893643
+        https://svn.apache.org/r1893644
      Backport version for 2.4.x of patch:
-      https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/httpd-2.4-dav-ns2.patch
-     +1: minfrin, ylavic (by inspection),
+        https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/httpd-2.4-dav-element2.patch
+     +1: minfrin, ylavic (by inspection)
 
   *) Easy backports:
      - mod_deflate: be explicit when setting c->etag_opt = AP_DEFLATE_ETAG_ADDSUFFIX
