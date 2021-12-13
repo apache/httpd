@@ -383,7 +383,7 @@ request_rec *h2_create_request_rec(const h2_request *req, conn_rec *c)
     ap_add_input_filter_handle(ap_http_input_filter_handle,
                                NULL, r, r->connection);
     
-    if ((access_status = ap_run_post_read_request(r))) {
+    if ((access_status = ap_post_read_request(r))) {
         /* Request check post hooks failed. An example of this would be a
          * request for a vhost where h2 is disabled --> 421.
          */

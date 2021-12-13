@@ -781,13 +781,13 @@ static int proxy_detect(request_rec *r)
 
     /* Ick... msvc (perhaps others) promotes ternary short results to int */
 
-    if (conf->req && r->parsed_uri.scheme) {
+    if (conf->req && r->parsed_uri.scheme && r->parsed_uri.hostname) {
         /* but it might be something vhosted */
-        if (!(r->parsed_uri.hostname
-              && !ap_cstr_casecmp(r->parsed_uri.scheme, ap_http_scheme(r))
-              && ap_matches_request_vhost(r, r->parsed_uri.hostname,
-                                          (apr_port_t)(r->parsed_uri.port_str ? r->parsed_uri.port
-                                                       : ap_default_port(r))))) {
+        if (ap_cstr_casecmp(r->parsed_uri.scheme, ap_http_scheme(r)) != 0
+            || !ap_matches_request_vhost(r, r->parsed_uri.hostname,
+                                         (apr_port_t)(r->parsed_uri.port_str
+                                                      ? r->parsed_uri.port
+                                                      : ap_default_port(r)))) {
             r->proxyreq = PROXYREQ_PROXY;
             r->uri = r->unparsed_uri;
             r->filename = apr_pstrcat(r->pool, "proxy:", r->uri, NULL);

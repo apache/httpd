@@ -695,6 +695,7 @@
  * 20210926.0 (2.5.1-dev)  Add dav_get_liveprop_element(), remove DAV_PROP_ELEMENT.
  * 20210926.1 (2.5.1-dev)  Add ap_unescape_url_ex() and deprecate
  *                         AP_NORMALIZE_DROP_PARAMETERS
+ * 20210926.2 (2.5.1-dev)  Add ap_post_read_request()
  * 
  */
 
@@ -703,7 +704,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20210926
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 1             /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 2             /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a

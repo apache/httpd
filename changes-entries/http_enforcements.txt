@@ -1,0 +1,3 @@
+  *) http: Enforce that fully qualified uri-paths not to be forward-proxied
+     have an http(s) scheme, and that the ones to be forward proxied have a
+     hostname, per HTTP specifications.  [Yann Ylavic]
