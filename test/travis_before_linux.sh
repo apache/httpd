@@ -111,11 +111,40 @@ if test -v TEST_SSL; then
     popd
 fi
 
+if test -v TEST_OPENSSL3; then
+    # Build the requested version of OpenSSL if it's not already
+    # installed in the cached ~/root
+    if ! test -f $HOME/root/openssl-is-${TEST_OPENSSL3}; then
+        mkdir -p build/openssl
+        pushd build/openssl
+           curl "https://www.openssl.org/source/openssl-${TEST_OPENSSL3}.tar.gz" |
+              tar -xzf -
+           cd openssl-${TEST_OPENSSL3}
+           ./Configure --prefix=$HOME/root/openssl3 shared no-tests
+           make $MFLAGS
+           make install_sw
+           touch $HOME/root/openssl-is-${TEST_OPENSSL3}
+       popd
+    fi
+
+    # Point APR/APR-util at the installed version of OpenSSL.
+    if test -v APU_VERSION; then
+        APU_CONFIG="${APU_CONFIG} --with-openssl=$HOME/root/openssl3"
+    elif test -v APR_VERSION; then
+        APR_CONFIG="${APR_CONFIG} --with-openssl=$HOME/root/openssl3"
+    else
+        : Non-system APR/APR-util must be used to build with OpenSSL 3 to avoid mismatch with system libraries
+        exit 1
+    fi
+fi
+
 if test -v APR_VERSION; then
     install_apx apr ${APR_VERSION} "${APR_CONFIG}"
+    ldd $HOME/root/apr-${APR_VERSION}/lib/libapr-?.so || true
     APU_CONFIG="$APU_CONFIG --with-apr=$HOME/root/apr-${APR_VERSION}"
 fi
 
 if test -v APU_VERSION; then
     install_apx apr-util ${APU_VERSION} "${APU_CONFIG}" --with-apr=$HOME/build/apr-${APR_VERSION}
+    ldd $HOME/root/apr-util-${APU_VERSION}/lib/libaprutil-?.so || true
 fi

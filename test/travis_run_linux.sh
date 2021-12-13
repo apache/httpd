@@ -51,6 +51,11 @@ else
     CONFIG="$CONFIG --with-apr-util=/usr"
 fi
 
+if test -v TEST_OPENSSL3; then
+    CONFIG="$CONFIG --with-ssl=$HOME/root/openssl3"
+    export LD_LIBRARY_PATH=$HOME/root/openssl3/lib:$HOME/root/openssl3/lib64
+fi
+
 srcdir=$PWD
 
 if test -v TEST_VPATH; then
