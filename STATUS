@@ -195,6 +195,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      +1: jailletc36, 
      rpluem: r1586543 requires r1586542 backported first and should possiblyi
      backported together with it. The other three revisions look fine.
+     minfrin: Tried r1586542 but got conflicts. Other revs were fine.
+
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
