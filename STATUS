@@ -150,19 +150,16 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
   *) Easy backports:
-     - mod_deflate: be explicit when setting c->etag_opt = AP_DEFLATE_ETAG_ADDSUFFIX
      - mod_proxy_balancer: add missing spaces in HTML output
      - mod_proxy_http: Avoid a double call to apr_table_get()
      - mod_ssl: Fix some typo and doxygen issues
-     trunk patch: http://svn.apache.org/r1586543
-                  http://svn.apache.org/r1889494
+     trunk patch: http://svn.apache.org/r1889494
                   http://svn.apache.org/r1892563
                   http://svn.apache.org/r1892917
-     2.4.x patch: svn merge -c 1586543,1889494,1892563,1892917 ^/httpd/httpd/trunk .
+     2.4.x patch: svn merge -c 1889494,1892563,1892917 ^/httpd/httpd/trunk .
      +1: jailletc36, 
-     rpluem: r1586543 requires r1586542 backported first and should possiblyi
-     backported together with it. The other three revisions look fine.
-     minfrin: Tried r1586542 but got conflicts. Other revs were fine.
+     rpluem: The other three revisions look fine.
+     minfrin: Other revs were fine.
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
