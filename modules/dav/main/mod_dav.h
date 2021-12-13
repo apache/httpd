@@ -907,6 +907,14 @@ struct dav_hooks_liveprop
     ** property, and does not want it handled as a dead property, it should
     ** return DAV_PROP_INSERT_NOTSUPP.
     **
+    ** Some DAV extensions, like CalDAV, specify both document elements
+    ** and property elements that need to be taken into account when
+    ** generating a property. The document element and property element
+    ** are made available in the dav_liveprop_elem structure under the
+    ** resource, accessible as follows:
+    **
+    ** dav_get_liveprop_element(resource);
+    **
     ** Returns one of DAV_PROP_INSERT_* based on what happened.
     **
     ** ### we may need more context... ie. the lock database
@@ -1053,6 +1061,18 @@ DAV_DECLARE(long) dav_get_liveprop_ns_count(void);
 /* ### docco */
 DAV_DECLARE(void) dav_add_all_liveprop_xmlns(apr_pool_t *p,
                                              apr_text_header *phdr);
+
+typedef struct {
+    const apr_xml_doc *doc;
+    const apr_xml_elem *elem;
+} dav_liveprop_elem;
+
+/*
+ ** When calling insert_prop(), the associated request element and
+ ** document is accessible using the following call.
+ */
+DAV_DECLARE(dav_liveprop_elem *) dav_get_liveprop_element(const dav_resource
+                                                          *resource);
 
 /*
 ** The following three functions are part of mod_dav's internal handling

@@ -584,6 +584,8 @@
  * 20120211.119 (2.4.51-dev) Add dav_validate_root_ns(), dav_find_child_ns(),
  *                           dav_find_next_ns(), dav_find_attr_ns() and
  *                           dav_find_attr().
+ * 20120211.120 (2.4.51-dev) Add dav_liveprop_elem structure and
+ *                           dav_get_liveprop_element().
  * 
  */
 
@@ -592,7 +594,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20120211
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 119                 /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 120                 /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a

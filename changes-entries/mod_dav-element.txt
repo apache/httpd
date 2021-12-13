@@ -1,0 +1,8 @@
+
+  *) mod_dav: Some DAV extensions, like CalDAV, specify both document
+     elements and property elements that need to be taken into account
+     when generating a property. The document element and property element
+     are made available in the dav_liveprop_elem structure by calling
+     dav_get_liveprop_element(). [Graham Leggett]
+
+
