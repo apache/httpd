@@ -19,7 +19,9 @@ Changes with Apache 2.4.52
         See <https://github.com/icing/mod_h2/issues/212>.
      [Stefan Eissing]
 
-  *) mod_ssl: Add build support for OpenSSL v3. [Joe Orton, Stefan Eissing]
+  *) mod_ssl: Add build support for OpenSSL v3. [Rainer Jung,
+     Stefan Fritsch, Yann Ylavic, Stefan Eissing, Joe Orton,
+     Giovanni Bechis]
 
   *) mod_proxy_connect: Honor the smallest of the backend or client timeout
      while tunneling.  [Yann Ylavic]
