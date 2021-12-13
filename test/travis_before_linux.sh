@@ -126,12 +126,16 @@ if test -v TEST_OPENSSL3; then
            touch $HOME/root/openssl-is-${TEST_OPENSSL3}
        popd
     fi
-    # Point APR at the installed version of OpenSSL.
-    if ! test -v APR_VERSION; then
-        : APR version must be specified to build with OpenSSL 3 to avoid mismatch with system libssl/crypto
-       exit 1
+
+    # Point APR/APR-util at the installed version of OpenSSL.
+    if test -v APU_VERSION; then
+        APU_CONFIG="${APU_CONFIG} --with-openssl=$HOME/root/openssl3"
+    elif test -v APR_VERSION; then
+        APR_CONFIG="${APR_CONFIG} --with-openssl=$HOME/root/openssl3"
+    else
+        : Non-system APR/APR-util must be used to build with OpenSSL 3 to avoid mismatch with system libraries
+        exit 1
     fi
-    APR_CONFIG="${APR_CONFIG} --with-openssl=$HOME/root/openssl3"
 fi
 
 if test -v APR_VERSION; then
@@ -142,4 +146,5 @@ fi
 
 if test -v APU_VERSION; then
     install_apx apr-util ${APU_VERSION} "${APU_CONFIG}" --with-apr=$HOME/build/apr-${APR_VERSION}
+    ldd $HOME/root/apr-util-${APU_VERSION}/lib/libaprutil-?.so || true
 fi
