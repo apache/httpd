@@ -472,9 +472,12 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
         }
         else if (!ctx->seen_data) {
             int saved_status = f->r->status;
+            const char *saved_status_line = f->r->status_line;
             f->r->status = HTTP_CONTINUE;
+            f->r->status_line = NULL;
             ap_send_interim_response(f->r, 0);
             AP_DEBUG_ASSERT(!f->r->expecting_100);
+            f->r->status_line = saved_status_line;
             f->r->status = saved_status;
         }
         else {
