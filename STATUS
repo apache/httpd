@@ -202,7 +202,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      current status code of the request. PR 65725
      trunk patch: http://svn.apache.org/r1895719
      2.4.x patch: svn merge -c 1895719 ^/httpd/httpd/trunk .
-     +1: ylavic, 
+     +1: ylavic, rpluem
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
