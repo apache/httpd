@@ -145,6 +145,12 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) mod_http: Correctly sent a 100 Continue status code when sending an interim
+     response as result of an Expect: 100-Continue in the request and not the
+     current status code of the request. PR 65725
+     trunk patch: http://svn.apache.org/r1895719
+     2.4.x patch: svn merge -c 1895719 ^/httpd/httpd/trunk .
+     +1: ylavic, rpluem, icing
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
@@ -174,13 +180,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      rpluem: r1586543 requires r1586542 backported first and should possiblyi
      backported together with it. The other three revisions look fine.
      minfrin: Tried r1586542 but got conflicts. Other revs were fine.
-
-  *) mod_http: Correctly sent a 100 Continue status code when sending an interim
-     response as result of an Expect: 100-Continue in the request and not the
-     current status code of the request. PR 65725
-     trunk patch: http://svn.apache.org/r1895719
-     2.4.x patch: svn merge -c 1895719 ^/httpd/httpd/trunk .
-     +1: ylavic, rpluem
 
   *) mod_proxy_connect, mod_proxy: Do not change the status code after we
      already sent it to the client.
