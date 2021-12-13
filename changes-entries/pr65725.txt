@@ -1,3 +1,0 @@
-  *) mod_http: Correctly sent a 100 Continue status code when sending an interim
-     response as result of an Expect: 100-Continue in the request and not the
-     current status code of the request. PR 65725 [Ruediger Pluem]

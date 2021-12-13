@@ -1,6 +1,0 @@
-
-  *) mod_dav: Add utility functions dav_validate_root_ns(),
-     dav_find_child_ns(), dav_find_next_ns(), dav_find_attr_ns() and
-     dav_find_attr() so that other modules get to play too.
-     [Graham Leggett]
-
