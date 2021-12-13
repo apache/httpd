@@ -66,6 +66,7 @@ fi
 
 if ! test -v SKIP_TESTING; then
     set +e
+    RV=0
 
     if test -v TEST_MALLOC; then
         # Enable enhanced glibc malloc debugging, see mallopt(3)
@@ -84,24 +85,26 @@ if ! test -v SKIP_TESTING; then
     # Try to keep all potential coredumps from all processes
     sudo sysctl -w kernel.core_uses_pid=1 2>/dev/null || true
 
-    if test -v WITH_TEST_SUITE; then
-        make check TESTS="${TESTS}" TEST_CONFIG="${TEST_ARGS}"
-        RV=$?
-    else
-        test -v TEST_INSTALL || make install
-        pushd test/perl-framework
-            perl Makefile.PL -apxs $PREFIX/bin/apxs
-            make test APACHE_TEST_EXTRA_ARGS="${TEST_ARGS} ${TESTS}"
+    if ! test -v NO_TEST_FRAMEWORK; then
+        if test -v WITH_TEST_SUITE; then
+            make check TESTS="${TESTS}" TEST_CONFIG="${TEST_ARGS}"
             RV=$?
-        popd
+        else
+            test -v TEST_INSTALL || make install
+            pushd test/perl-framework
+                perl Makefile.PL -apxs $PREFIX/bin/apxs
+                make test APACHE_TEST_EXTRA_ARGS="${TEST_ARGS} ${TESTS}"
+                RV=$?
+            popd
+        fi
+
+        # Skip further testing if a core dump was created during the test
+        # suite run above.
+        if test $RV -eq 0 && test -n "`ls test/perl-framework/t/core{,.*} 2>/dev/null`"; then
+            RV=4
+        fi
     fi
 
-    # Skip further testing if a core dump was created during the test
-    # suite run above.
-    if test $RV -eq 0 && ls test/perl-framework/t/core test/perl-framework/t/core.* &>/dev/null; then
-        RV=4
-    fi            
-    
     if test -v TEST_SSL -a $RV -eq 0; then
         pushd test/perl-framework
             # Test loading encrypted private keys
@@ -136,6 +139,12 @@ if ! test -v SKIP_TESTING; then
            RV=$?
            ./t/TEST -stop
         popd
+    fi
+
+    if test -v TEST_H2 -a $RV -eq 0; then
+        # Run HTTP/2 tests.
+        py.test-3 test/modules/http2
+        RV=$?
     fi
 
     # Catch cases where abort()s get logged to stderr by libraries but
