@@ -1286,19 +1286,29 @@ ProxyPass "/example" "http://backend.example.com" max=20 ttl=120 retry=300
     <tr><td>mapping</td>
         <td>-</td>
         <td><p>Type of mapping between the <var>path</var> and the <var>url</var>.
-        This determines the normalization and/or (non-)decoding that <module>mod_proxy</module> will
-        apply to the request's <var>uri-path</var> to match the <var>path</var>. If/when the mapping
-        matches, the request <var>uri-path</var> is committed such that <code>&lt;Location</code>
-        and other directory contexts using a path will match according to the same mapping.</p>
-        <p>The <code>encoded</code> mapping avoids the %-decoding of the <var>uri-path</var> such that
-        one can match for instance <code>/some%2furi%2fpath%2fwith%2fslash</code> in a <code>ProxyPass</code>
-        or <code>&lt;Location</code> context.</p>
-        <p>The <code>servlet</code> mapping refers to the one defined by the Servlet specification, which
-        is for instance applied by Apache Tomcat for servlet containers (notably the path parameters are
-        ignored for the mapping). An <var>uri-path</var> like <code>/some;foo/path</code> is then mapped
-        as <code>/some/path</code> and thus matches <code>&lt;Location /some/path&gt;</code> or
-        <code>ProxyPass "/some/path" "https://tomcat.example.com"</code> regardless of the requested
-        path parameters.</p>
+        This determines the normalization and/or (non-)decoding that <module>mod_proxy</module>
+        will apply to the requested <var>uri-path</var> before matching the <var>path</var>. If
+        a mapping matches, it's committed to the <var>uri-path</var> such that all the directory
+        contexts that use a path (like <code>&lt;Location&gt;</code>) will be matched using the
+        same mapping.
+        <p><code>mapping=encoded</code> prevents the %-decoding of the <var>uri-path</var> so
+        that one can match for instance <code>/some%2furi%2fpath%2fwith%2fslash</code> in a
+        <code>ProxyPass</code> or in a <code>&lt;Location&gt;</code> context.</p>
+        <p><code>mapping=servlet</code> refers to the normalization defined by the Servlet
+        specification, which is for instance applied by Apache Tomcat for servlet containers
+        (notably the path parameters are ignored for the mapping). An <var>uri-path</var> like
+        <code>/some;foo/path</code> is then mapped as <code>/some/path</code> hence matches:</p>
+        <p><code>  &lt;Location /some/path&gt;</code> or:</p>
+        <p><code>  ProxyPass "/some/path" "https://tomcat.example.com/some/path"</code></p>
+        <p>regardless of the requested path parameters.</p>
+    <note><title>Note</title>
+        <p>It is recommended to use the same mapping on the Apache httpd side than the one
+        used on the backend side. For instance when configuring authorizations in
+        <code>&lt;Location&gt;</code> blocks for paths that are mapped by <module>mod_proxy</module>
+        to some servlet containers (like applications running on Apache Tomcat), one should
+        use the <code>mapping=servlet</code> setting to prevent path parameters and alike from
+        interfering with the authorizations that are to be enforced in by the Apache httpd.</p>
+    </note>
     </td></tr>
 
     </table>
