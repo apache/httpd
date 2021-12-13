@@ -150,16 +150,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
-  *) mod_xml2enc: Correctly handle Microsoft OOXML documents.  PR 64339
-     trunk patch: http://svn.apache.org/r1884505
-     2.4.x patch: svn merge -c 1884505 ^/httpd/httpd/trunk .
-     +1: 
-     jailletc36: there has been some discussion about how to fix the issue.
-     I'm not sure that the commit above is the best solution
-     and other alternatives have been discussed in PR 64339.  If r1884505
-     is not the right fix, then it should be removed from trunk.
-     Putting it here is a way to revive the discussion
-
   *) Easy backports:
      - mod_deflate: be explicit when setting c->etag_opt = AP_DEFLATE_ETAG_ADDSUFFIX
      - mod_proxy_balancer: add missing spaces in HTML output
@@ -175,9 +165,24 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      backported together with it. The other three revisions look fine.
      minfrin: Tried r1586542 but got conflicts. Other revs were fine.
 
+  *) OpenSSL autoconf detection improvement
+     trunk patch: http://svn.apache.org/r1834497
+     2.4.x patch: svn merge -c 1834497 ^/httpd/httpd/trunk .
+     +1: jorton,
+
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
+
+  *) mod_xml2enc: Correctly handle Microsoft OOXML documents.  PR 64339
+     trunk patch: http://svn.apache.org/r1884505
+     2.4.x patch: svn merge -c 1884505 ^/httpd/httpd/trunk .
+     +1: 
+     jailletc36: there has been some discussion about how to fix the issue.
+     I'm not sure that the commit above is the best solution
+     and other alternatives have been discussed in PR 64339.  If r1884505
+     is not the right fix, then it should be removed from trunk.
+     Putting it here is a way to revive the discussion
 
   *) mod_http2: sync with trunk
      - Fixed an issue since 1.15.24 that "Server" headers in proxied requests
