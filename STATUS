@@ -217,6 +217,18 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
              w.r.t. num_buckets > 1 and ease merging of r1895553, with r1895550 for
              correctness of active_daemons used in r1895553 and r1895630.
 
+  *) Easy backports:
+     - mod_deflate: be explicit when setting c->etag_opt = AP_DEFLATE_ETAG_ADDSUFFIX
+     - mod_proxy_balancer: add missing spaces in HTML output
+     - mod_proxy_http: Avoid a double call to apr_table_get()
+     - mod_ssl: Fix some typo and doxygen issues
+     trunk patch: http://svn.apache.org/r1586543
+                  http://svn.apache.org/r1889494
+                  http://svn.apache.org/r1892563
+                  http://svn.apache.org/r1892917
+     2.4.x patch: svn merge -c 1586543,1889494,1892563,1892917 ^/httpd/httpd/trunk .
+     +1: jailletc36, 
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
