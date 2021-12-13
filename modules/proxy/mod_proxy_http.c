@@ -1498,20 +1498,6 @@ int ap_proxy_http_process_response(proxy_http_req_t *req)
 
             /* Let proxy tunnel forward everything */
             status = ap_proxy_tunnel_run(tunnel);
-            if (ap_is_HTTP_ERROR(status)) {
-                /* Tunnel always return HTTP_GATEWAY_TIME_OUT on timeout,
-                 * but we can differentiate between client and backend here.
-                 */
-                if (status == HTTP_GATEWAY_TIME_OUT
-                        && tunnel->timeout == client_timeout) {
-                    status = HTTP_REQUEST_TIME_OUT;
-                }
-            }
-            else {
-                /* Update r->status for custom log */
-                status = HTTP_SWITCHING_PROTOCOLS;
-            }
-            r->status = status;
 
             /* We are done with both connections */
             return DONE;
