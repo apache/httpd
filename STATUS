@@ -212,7 +212,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1895630
      backport PR: https://github.com/apache/httpd/pull/276
      2.4.x patch: https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/276.patch
-     +1: ylavic,
+     +1: ylavic, rpluem
      ylavic: updated with r1894291 for correctness of perform_idle_server_maintenance()
              w.r.t. num_buckets > 1 and ease merging of r1895553, with r1895550 for
              correctness of active_daemons used in r1895553 and r1895630.
@@ -228,6 +228,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1892917
      2.4.x patch: svn merge -c 1586543,1889494,1892563,1892917 ^/httpd/httpd/trunk .
      +1: jailletc36, 
+     rpluem: r1586543 requires r1586542 backported first and should possiblyi
+     backported together with it. The other three revisions look fine.
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
