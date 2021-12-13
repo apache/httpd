@@ -123,6 +123,7 @@ if ! test -v SKIP_TESTING; then
                 if test $RV -eq 0 -a $SRV -ne 0; then
                     RV=$SRV
                 fi
+            done
         popd
     fi
 
