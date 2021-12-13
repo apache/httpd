@@ -145,6 +145,10 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) OpenSSL autoconf detection improvement
+     trunk patch: http://svn.apache.org/r1834497
+     2.4.x patch: svn merge -c 1834497 ^/httpd/httpd/trunk .
+     +1: jorton, ylavic, minfrin
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
@@ -164,11 +168,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      rpluem: r1586543 requires r1586542 backported first and should possiblyi
      backported together with it. The other three revisions look fine.
      minfrin: Tried r1586542 but got conflicts. Other revs were fine.
-
-  *) OpenSSL autoconf detection improvement
-     trunk patch: http://svn.apache.org/r1834497
-     2.4.x patch: svn merge -c 1834497 ^/httpd/httpd/trunk .
-     +1: jorton, ylavic,
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
