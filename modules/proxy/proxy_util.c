@@ -1742,6 +1742,9 @@ PROXY_DECLARE(proxy_worker *) ap_proxy_get_worker_ex(apr_pool_t *p,
     }
 
     url = ap_proxy_de_socketfy(p, url);
+    if (!url) {
+        return NULL;
+    }
 
     c = ap_strchr_c(url, ':');
     if (c == NULL || c[1] != '/' || c[2] != '/' || c[3] == '\0') {
