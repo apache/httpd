@@ -107,11 +107,11 @@ jobs:
     - name: Linux Ubuntu, Shared MPMs, all-modules
       env: CONFIG="--enable-mods-shared=reallyall --enable-mpms-shared=all"
     # -------------------------------------------------------------------------
-    - name: Linux Ubuntu, GCC 7 maintainer-mode w/-Werror
+    - name: Linux Ubuntu, GCC 7 maintainer-mode w/-Werror, install + VPATH
       os: linux
       env: CONFIG="--enable-mods-shared=reallyall --enable-maintainer-mode"
            NOTEST_CFLAGS='-Werror -O2' CC=gcc-7
-           SKIP_TESTING=1
+           TEST_VPATH=1 TEST_INSTALL=1 SKIP_TESTING=1
     # -------------------------------------------------------------------------
     - name: Linux Ubuntu, Event MPM, all-modules, mod_cgid only
       env: CONFIG="--enable-mods-shared=reallyall --with-mpm=event --disable-cgi"
