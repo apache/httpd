@@ -145,24 +145,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_ssl: Updates to support OpenSSL 3.x
-     trunk patch: https://svn.apache.org/r1519264
-                  https://svn.apache.org/r1737657
-                  https://svn.apache.org/r1876934
-                  https://svn.apache.org/r1876936
-                  https://svn.apache.org/r1876938
-                  https://svn.apache.org/r1890067
-                  https://svn.apache.org/r1890076
-                  https://svn.apache.org/r1891138
-                  https://svn.apache.org/r1893876
-                  https://svn.apache.org/r1893964
-                  https://svn.apache.org/r1894716
-                  https://svn.apache.org/r1895774
-     backport PR: https://github.com/apache/httpd/pull/258
-     2.4.x patch: https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/258.patch
-                  or https://people.apache.org/~jorton/mod_ssl-openssl3.patch
-     +1: jorton, minfrin, ylavic
-
   *) mod_http2: fixes PR65731 and https://github.com/icing/mod_h2/issues/212
      trunk patch: na, fixed on 2.4.x source base
      backport PR: https://github.com/apache/httpd/pull/281

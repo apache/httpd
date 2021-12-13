@@ -1,6 +1,8 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.52
 
+  *) mod_ssl: Add build support for OpenSSL v3. [Joe Orton, Stefan Eissing]
+
   *) mod_proxy_connect: Honor the smallest of the backend or client timeout
      while tunneling.  [Yann Ylavic]
 
