@@ -2041,6 +2041,7 @@ static const char *
     struct proxy_alias *new;
     char *f = cmd->path;
     char *r = NULL;
+    const char *real;
     char *word;
     apr_table_t *params = apr_table_make(cmd->pool, 5);
     const apr_array_header_t *arr;
@@ -2127,6 +2128,10 @@ static const char *
     if (r == NULL) {
         return "ProxyPass|ProxyPassMatch needs a path when not defined in a location";
     }
+    if (!(real = ap_proxy_de_socketfy(cmd->temp_pool, r))) {
+        return "ProxyPass|ProxyPassMatch uses an invalid \"unix:\" URL";
+    }
+
 
     /* if per directory, save away the single alias */
     if (cmd->path) {
@@ -2143,7 +2148,7 @@ static const char *
     }
 
     new->fake = apr_pstrdup(cmd->pool, f);
-    new->real = apr_pstrdup(cmd->pool, ap_proxy_de_socketfy(cmd->pool, r));
+    new->real = apr_pstrdup(cmd->pool, real);
     new->flags = flags;
     if (worker_type & AP_PROXY_WORKER_IS_MATCH) {
         new->regex = ap_pregcomp(cmd->pool, f, AP_REG_EXTENDED);
@@ -2696,6 +2701,7 @@ static const char *add_member(cmd_parms *cmd, void *dummy, const char *arg)
     proxy_worker *worker;
     char *path = cmd->path;
     char *name = NULL;
+    const char *real;
     char *word;
     apr_table_t *params = apr_table_make(cmd->pool, 5);
     const apr_array_header_t *arr;
@@ -2736,6 +2742,9 @@ static const char *add_member(cmd_parms *cmd, void *dummy, const char *arg)
         return "BalancerMember must define balancer name when outside <Proxy > section";
     if (!name)
         return "BalancerMember must define remote proxy server";
+    if (!(real = ap_proxy_de_socketfy(cmd->temp_pool, name))) {
+        return "BalancerMember uses an invalid \"unix:\" URL";
+    }
 
     ap_str_tolower(path);   /* lowercase scheme://hostname */
 
@@ -2748,8 +2757,7 @@ static const char *add_member(cmd_parms *cmd, void *dummy, const char *arg)
     }
 
     /* Try to find existing worker */
-    worker = ap_proxy_get_worker(cmd->temp_pool, balancer, conf,
-                                 ap_proxy_de_socketfy(cmd->temp_pool, name));
+    worker = ap_proxy_get_worker(cmd->temp_pool, balancer, conf, real);
     if (!worker) {
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, cmd->server, APLOGNO(01147)
                      "Defining worker '%s' for balancer '%s'",
@@ -2846,9 +2854,14 @@ static const char *
         }
     }
     else {
+        const char *real;
+
+        if (!(real = ap_proxy_de_socketfy(cmd->temp_pool, name))) {
+            return "ProxySet uses an invalid \"unix:\" URL";
+        }
+
         worker = ap_proxy_get_worker_ex(cmd->temp_pool, NULL, conf,
-                                        ap_proxy_de_socketfy(cmd->temp_pool, name),
-                                        worker_type);
+                                        real, worker_type);
         if (!worker) {
             if (in_proxy_section) {
                 err = ap_proxy_define_worker_ex(cmd->pool, &worker, NULL,
@@ -2991,9 +3004,14 @@ static const char *proxysection(cmd_parms *cmd, void *mconfig, const char *arg)
             }
         }
         else {
+            const char *real;
+
+            if (!(real = ap_proxy_de_socketfy(cmd->temp_pool, conf->p))) {
+                return "<Proxy/ProxyMatch > uses an invalid \"unix:\" URL";
+            }
+
             worker = ap_proxy_get_worker_ex(cmd->temp_pool, NULL, sconf,
-                                            ap_proxy_de_socketfy(cmd->temp_pool, conf->p),
-                                            worker_type);
+                                            real, worker_type);
             if (!worker) {
                 err = ap_proxy_define_worker_ex(cmd->pool, &worker, NULL, sconf,
                                                 conf->p, worker_type);
