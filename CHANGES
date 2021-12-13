@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.52
 
+  *) OpenSSL autoconf detection improvement: pick up openssl.pc in the
+     specified openssl path. [Joe Orton]
+
   *) mod_proxy_connect, mod_proxy: Do not change the status code after we
      already sent it to the client.
 
