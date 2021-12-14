@@ -13,17 +13,18 @@ libexecdir = @libexecdir@
 apr_bindir = @APR_BINDIR@
 apxs = @bindir@/apxs
 apachectl = @sbindir@/apachectl
-dso_modules = @DSO_MODULES@
 
 [httpd]
 version = @HTTPD_VERSION@
 name = @progname@
+dso_modules = @DSO_MODULES@
+static_modules = @STATIC_MODULES@
 
 [test]
-http_port = 40001
-https_port = 40002
+gen_dir = @abs_srcdir@/../gen
+http_port = 5002
+https_port = 5001
+proxy_port = 5003
 http_tld = tests.httpd.apache.org
 test_dir = @abs_srcdir@
 test_src_dir = @abs_srcdir@
-server_dir = @abs_srcdir@/gen/apache
-gen_dir = @abs_srcdir@/gen

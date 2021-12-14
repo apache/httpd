@@ -2,21 +2,20 @@ from datetime import timedelta
 
 import pytest
 
-from h2_conf import HttpdConf
-from h2_curl import CurlPiper
+from .env import H2Conf
+from pyhttpd.curl import CurlPiper
 
 
 class TestBuffering:
 
     @pytest.fixture(autouse=True, scope='class')
     def _class_scope(self, env):
-        env.setup_data_1k_1m()
-        conf = HttpdConf(env)
+        conf = H2Conf(env)
         conf.add_vhost_cgi(h2proxy_self=True).install()
         assert env.apache_restart() == 0
 
     @pytest.mark.skip(reason="this test shows unreliable jitter")
-    def test_712_01(self, env):
+    def test_h2_712_01(self, env):
         # test gRPC like requests that do not end, but give answers, see #207
         #
         # this test works like this:
@@ -37,8 +36,8 @@ class TestBuffering:
         piper = CurlPiper(env=env, url=url)
         piper.stutter_check(chunks, stutter)
 
-    @pytest.mark.skipif(True, reason="new feature in upcoming http2")
-    def test_712_02(self, env):
+    @pytest.mark.skip(reason="only in 2.5.x")
+    def test_h2_712_02(self, env):
         # same as 712_01 but via mod_proxy_http2
         #
         url = env.mkurl("https", "cgi", "/h2proxy/h2test/echo")
@@ -48,8 +47,8 @@ class TestBuffering:
         piper = CurlPiper(env=env, url=url)
         piper.stutter_check(chunks, stutter)
 
-    @pytest.mark.skipif(True, reason="new feature in upcoming http2")
-    def test_712_03(self, env):
+    @pytest.mark.skip(reason="only in 2.5.x")
+    def test_h2_712_03(self, env):
         # same as 712_02 but with smaller chunks
         #
         url = env.mkurl("https", "cgi", "/h2proxy/h2test/echo")

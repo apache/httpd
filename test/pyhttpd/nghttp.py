@@ -6,7 +6,7 @@ from typing import Dict
 
 from urllib.parse import urlparse
 
-from h2_result import ExecResult
+from .result import ExecResult
 
 
 def _get_path(x):
@@ -182,7 +182,7 @@ class Nghttp:
         main_stream = 99999999999
         for sid in streams:
             s = streams[sid]
-            if ":status" in s["response"]["header"]:
+            if "header" in s["response"] and ":status" in s["response"]["header"]:
                 s["response"]["status"] = int(s["response"]["header"][":status"])
             if (sid % 2) == 1 and sid < main_stream:
                 main_stream = sid
@@ -284,5 +284,6 @@ Content-Transfer-Encoding: binary
         print(("execute: %s" % " ".join(args)))
         start = datetime.now()
         p = subprocess.run(args, stderr=subprocess.PIPE, stdout=subprocess.PIPE)
-        return ExecResult(exit_code=p.returncode, stdout=p.stdout, stderr=p.stderr,
+        return ExecResult(args=args, exit_code=p.returncode,
+                          stdout=p.stdout, stderr=p.stderr,
                           duration=datetime.now() - start)

@@ -1,0 +1,60 @@
+ServerName localhost
+ServerRoot "${server_dir}"
+
+Include "conf/modules.conf"
+
+DocumentRoot "${server_dir}/htdocs"
+
+<IfModule log_config_module>
+    LogFormat "%h %l %u %t \"%r\" %>s %O \"%{Referer}i\" \"%{User-Agent}i\" %k" combined
+    LogFormat "%h %l %u %t \"%r\" %>s %b" common
+    CustomLog "logs/access_log" combined
+
+</IfModule>
+
+TypesConfig "${gen_dir}/apache/conf/mime.types"
+
+Listen ${http_port}
+Listen ${https_port}
+
+<IfModule mod_ssl.c>
+    # provide some default
+    SSLSessionCache "shmcb:ssl_gcache_data(32000)"
+</IfModule>
+
+# Insert our test specific configuration before the first vhost,
+# so that its vhosts can be the default one. This is relevant in
+# certain behaviours, such as protocol selection during SSL ALPN
+# negotiation.
+#
+Include "conf/test.conf"
+
+RequestReadTimeout header=10 body=10
+
+<IfModule deflate_module>
+  AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css
+</IfModule>
+<IfModule brotli_module>
+  AddOutputFilterByType BROTLI_COMPRESS text/html text/plain text/xml text/css
+</IfModule>
+
+<VirtualHost *:${http_port}>
+    ServerName ${http_tld}
+    ServerAlias www.${http_tld}
+    <IfModule ssl_module>
+      SSLEngine off
+    </IfModule>
+    DocumentRoot "${server_dir}/htdocs"
+</VirtualHost>
+
+<Directory "${server_dir}/htdocs/cgi">
+    Options Indexes FollowSymLinks
+    AllowOverride None
+    Require all granted
+
+    AddHandler cgi-script .py
+    AddHandler cgi-script .cgi
+    Options +ExecCGI
+</Directory>
+
+
