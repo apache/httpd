@@ -1814,13 +1814,13 @@ static void balancer_display_page(request_rec *r, proxy_server_conf *conf,
                 ap_rputs("<tr><td>Expr</td><td><select name='w_he'>\n", r);
                 hc_select_exprs_f(r, wsel->s->hcexpr);
                 ap_rputs("</select>\n</td></tr>\n", r);
-                ap_rprintf(r, "<tr><td>Interval (ms)</td><td><input name='w_hi' id='w_hi' type='text'"
+                ap_rprintf(r, "<tr><td>Interval (ms)</td><td><input name='w_hi' id='w_hi' type='text' "
                            "value='%" APR_TIME_T_FMT "'></td></tr>\n", apr_time_as_msec(wsel->s->interval));
-                ap_rprintf(r, "<tr><td>Passes trigger</td><td><input name='w_hp' id='w_hp' type='text'"
+                ap_rprintf(r, "<tr><td>Passes trigger</td><td><input name='w_hp' id='w_hp' type='text' "
                            "value='%d'></td></tr>\n", wsel->s->passes);
-                ap_rprintf(r, "<tr><td>Fails trigger)</td><td><input name='w_hf' id='w_hf' type='text'"
+                ap_rprintf(r, "<tr><td>Fails trigger)</td><td><input name='w_hf' id='w_hf' type='text' "
                            "value='%d'></td></tr>\n", wsel->s->fails);
-                ap_rprintf(r, "<tr><td>HC uri</td><td><input name='w_hu' id='w_hu' type='text'"
+                ap_rprintf(r, "<tr><td>HC uri</td><td><input name='w_hu' id='w_hu' type='text' "
                            "value=\"%s\"></td></tr>\n", ap_escape_html(r->pool, wsel->s->hcuri));
                 ap_rputs("</table>\n</td></tr>\n", r);
             }
