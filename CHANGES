@@ -1,6 +1,24 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+
+
+
+  *) http: Enforce that fully qualified uri-paths not to be forward-proxied
+     have an http(s) scheme, and that the ones to be forward proxied have a
+     hostname, per HTTP specifications.  [Ruediger Pluem, Yann Ylavic]
+
+  *) mod_http2: fixed a bug in v2.0.0 that could lead to an infinite
+     loop when clients close connections prematurely.
+     Enhanced the scoreboard status updates on h2 connections for
+     mod_status. 'server-status' now gives a better idea what the
+     connection is working on.
+     [Stefan Eissing]
+
+  *) mod_http: Correctly sent a 100 Continue status code when sending an interim
+     response as result of an Expect: 100-Continue in the request and not the
+     current status code of the request. PR 65725 [Ruediger Pluem]
+
   *) mod_proxy_connect: Honor the smallest of the backend or client timeout
      while tunneling.  [Yann Ylavic]
 

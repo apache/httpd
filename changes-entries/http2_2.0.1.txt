@@ -1,6 +1,0 @@
-  *) mod_http2: fixed a bug in v2.0.0 that could lead to an infinite
-     loop when clients close connections prematurely.
-     Enhanced the scoreboard status updates on h2 connections for
-     mod_status. 'server-status' now gives a better idea what the
-     connection is working on.
-     [Stefan Eissing]
