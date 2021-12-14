@@ -145,10 +145,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-
-PATCHES PROPOSED TO BACKPORT FROM TRUNK:
-  [ New proposals should be added at the end of the list ]
-
   *) http: Enforce that fully qualified uri-paths not to be forward-proxied
      have an http(s) scheme, and that the ones to be forward proxied have a
      hostname, per HTTP specifications.
@@ -157,6 +153,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/286.patch
      backport PR: https://github.com/apache/httpd/pull/286
      +1: ylavic, minfrin, gbechis
+
+PATCHES PROPOSED TO BACKPORT FROM TRUNK:
+  [ New proposals should be added at the end of the list ]
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
