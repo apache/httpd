@@ -145,18 +145,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) Easy backports:
-     - mod_proxy_balancer: add missing spaces in HTML output
-     - mod_proxy_http: Avoid a double call to apr_table_get()
-     - mod_ssl: Fix some typo and doxygen issues
-     trunk patch: http://svn.apache.org/r1889494
-                  http://svn.apache.org/r1892563
-                  http://svn.apache.org/r1892917
-     2.4.x patch: svn merge -c 1889494,1892563,1892917 ^/httpd/httpd/trunk .
-     +1: jailletc36, ylavic, icing
-     rpluem: The other three revisions look fine.
-     minfrin: Other revs were fine.
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
