@@ -156,7 +156,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1895921
      2.4.x patch: https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/286.patch
      backport PR: https://github.com/apache/httpd/pull/286
-     +1: ylavic,
+     +1: ylavic, minfrin
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
