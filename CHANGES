@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.52
 
+  *) http: Enforce that fully qualified uri-paths not to be forward-proxied
+     have an http(s) scheme, and that the ones to be forward proxied have a
+     hostname, per HTTP specifications.  [Ruediger Pluem, Yann Ylavic]
+
   *) OpenSSL autoconf detection improvement: pick up openssl.pc in the
      specified openssl path. [Joe Orton]
 
