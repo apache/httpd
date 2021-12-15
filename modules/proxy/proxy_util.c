@@ -2335,7 +2335,6 @@ PROXY_DECLARE(int) ap_proxy_pre_request(proxy_worker **worker,
             ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r,
                           "%s: found worker %s for %s",
                           (*worker)->s->scheme, (*worker)->s->name, *url);
-            *balancer = NULL;
             if (!forward && !fix_uds_filename(r, url)) {
                 return HTTP_INTERNAL_SERVER_ERROR;
             }
@@ -2345,7 +2344,6 @@ PROXY_DECLARE(int) ap_proxy_pre_request(proxy_worker **worker,
             if (conf->forward) {
                 ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r,
                               "*: found forward proxy worker for %s", *url);
-                *balancer = NULL;
                 *worker = conf->forward;
                 access_status = OK;
                 /*
@@ -2359,8 +2357,8 @@ PROXY_DECLARE(int) ap_proxy_pre_request(proxy_worker **worker,
         else if (r->proxyreq == PROXYREQ_REVERSE) {
             if (conf->reverse) {
                 ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r,
-                              "*: using default reverse proxy worker for %s (no keepalive)", *url);
-                *balancer = NULL;
+                              "*: using default reverse proxy worker for %s "
+                              "(no keepalive)", *url);
                 *worker = conf->reverse;
                 access_status = OK;
                 /*
