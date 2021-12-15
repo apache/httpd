@@ -274,7 +274,7 @@ jobs:
     - name: Linux Ubuntu, APR trunk, minimal module set, OpenSSL 3.x -Werror
       if: *condition_not_24x
       env: APR_VERSION=trunk APR_CONFIG="--without-pgsql --without-mysql --without-odbc --with-crypto"
-           CONFIG="--enable-mods-shared=ssl --with-mpm=event"
+           CONFIG="--enable-mods-shared=ssl --enable-maintainer-mode --with-mpm=event"
            TEST_OPENSSL3=3.0.1 SKIP_TESTING=1
            NOTEST_CFLAGS="-Werror -Wno-deprecated-declarations"
     # -------------------------------------------------------------------------
