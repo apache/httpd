@@ -92,7 +92,7 @@ static const char *ssl_var_lookup_ssl_cert_data(apr_pool_t *p, X509 *xs,
         BIO_set_flags(b64, BIO_FLAGS_BASE64_NO_NL);
         b64 = BIO_push(b64, bio);
         i2d_X509_bio(b64, xs);
-        BIO_flush(b64); /* ensures trailing bytes are padded */
+        (void)BIO_flush(b64); /* ensures trailing bytes are padded */
         BIO_pop(b64);
         BIO_free(b64);
     }
