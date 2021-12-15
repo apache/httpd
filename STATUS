@@ -148,6 +148,14 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
+  *) mod_proxy: Don't prevent forwarding URIs w/ no hostname.
+                (fix for r1895955 already in 2.4.x)
+     trunk patch: http://svn.apache.org/r1895981
+                  http://svn.apache.org/r1895986
+     2.4.x patch: svn merge -c 1895981,1895986 ^/httpd/httpd/trunk .
+     backport PR: https://github.com/apache/httpd/pull/287
+     +1: ylavic,
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
