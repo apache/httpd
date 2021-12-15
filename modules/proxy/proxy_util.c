@@ -1734,9 +1734,11 @@ PROXY_DECLARE(proxy_worker *) ap_proxy_get_worker_ex(apr_pool_t *p,
         return NULL;
     }
 
-    url = ap_proxy_de_socketfy(p, url);
-    if (!url) {
-        return NULL;
+    if (!(mask & AP_PROXY_WORKER_NO_UDS)) {
+        url = ap_proxy_de_socketfy(p, url);
+        if (!url) {
+            return NULL;
+        }
     }
 
     c = ap_strchr_c(url, ':');
@@ -2319,18 +2321,20 @@ PROXY_DECLARE(int) ap_proxy_pre_request(proxy_worker **worker,
 
     access_status = proxy_run_pre_request(worker, balancer, r, conf, url);
     if (access_status == DECLINED && *balancer == NULL) {
-        *worker = ap_proxy_get_worker(r->pool, NULL, conf, *url);
+        const int forward = (r->proxyreq == PROXYREQ_PROXY);
+        *worker = ap_proxy_get_worker_ex(r->pool, NULL, conf, *url,
+                                         forward ? AP_PROXY_WORKER_NO_UDS : 0);
         if (*worker) {
             ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r,
                           "%s: found worker %s for %s",
                           (*worker)->s->scheme, (*worker)->s->name, *url);
             *balancer = NULL;
-            if (!fix_uds_filename(r, url)) {
+            if (!forward && !fix_uds_filename(r, url)) {
                 return HTTP_INTERNAL_SERVER_ERROR;
             }
             access_status = OK;
         }
-        else if (r->proxyreq == PROXYREQ_PROXY) {
+        else if (forward) {
             if (conf->forward) {
                 ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r,
                               "*: found forward proxy worker for %s", *url);
