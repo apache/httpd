@@ -51,6 +51,20 @@ else
     CONFIG="$CONFIG --with-apr-util=/usr"
 fi
 
+# Since librustls is not a package (yet) on any platform, we
+# build the version we want from source
+if test -v TEST_MOD_TLS; then
+  RUSTLS_HOME="$HOME/build/rustls-ffi"
+  RUSTLS_VERSION="v0.8.2"
+  git clone https://github.com/rustls/rustls-ffi.git "$RUSTLS_HOME"
+  pushd "$RUSTLS_HOME"
+    git fetch origin
+    git checkout tags/$RUSTLS_VERSION
+    make install DESTDIR="$PREFIX"
+  popd
+  CONFIG="$CONFIG --with-tls --with-rustls=$PREFIX"
+fi
+
 if test -v TEST_OPENSSL3; then
     CONFIG="$CONFIG --with-ssl=$HOME/root/openssl3"
     export LD_LIBRARY_PATH=$HOME/root/openssl3/lib:$HOME/root/openssl3/lib64
