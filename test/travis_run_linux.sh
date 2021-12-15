@@ -151,6 +151,45 @@ if ! test -v SKIP_TESTING; then
         popd
     fi
 
+    if test -v TEST_CORE -a $RV -eq 0; then
+        # Run HTTP/2 tests.
+        MPM=event py.test-3 test/modules/core
+        RV=$?
+    fi
+
+    if test -v TEST_H2 -a $RV -eq 0; then
+        # Run HTTP/2 tests.
+        MPM=event py.test-3 test/modules/http2
+        RV=$?
+        if test $RV -eq 0; then
+          MPM=worker py.test-3 test/modules/http2
+          RV=$?
+        fi
+    fi
+
+    if test -v TEST_MD -a $RV -eq 0; then
+        # Run ACME tests.
+        # need the go based pebble as ACME test server
+        # which is a package on debian sid, but not on focal
+        export GOROOT=/usr/lib/go-1.14
+        export GOPATH=${PREFIX}/gocode
+        mkdir -p "${GOPATH}"
+        export PATH="${GOROOT}/bin:${GOPATH}/bin:${PATH}"
+        go get -u github.com/letsencrypt/pebble/...
+        (cd $GOPATH/src/github.com/letsencrypt/pebble && go install ./...)
+
+        py.test-3 test/modules/md
+        RV=$?
+    fi
+
+    if test -v TEST_MOD_TLS -a $RV -eq 0; then
+        # Run mod_tls tests. The underlying librustls was build
+        # and installed before we configured the server (see top of file).
+        # This will be replaved once librustls is available as a package.
+        py.test-3 test/modules/tls
+        RV=$?
+    fi
+
     # Catch cases where abort()s get logged to stderr by libraries but
     # only cause child processes to terminate e.g. during shutdown,
     # which may not otherwise trigger test failures.

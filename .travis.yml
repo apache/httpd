@@ -277,6 +277,105 @@ jobs:
            CONFIG="--enable-mods-shared=ssl --with-mpm=event"
            TEST_SSL=1 TEST_OPENSSL3=3.0.0
     # -------------------------------------------------------------------------
+    - name: Linux Ubuntu, MPMs [event, worker], core + HTTP/2 test suite
+      dist: focal
+      env: APR_VERSION=1.7.0
+           APU_VERSION=1.6.1 APU_CONFIG="--with-crypto"
+           CONFIG="--enable-mods-shared=reallyall --with-mpm=event --enable-mpms-shared=all"
+           NO_TEST_FRAMEWORK=1 TEST_INSTALL=1 TEST_H2=1 TEST_CORE=1
+      addons:
+        apt:
+          sources:
+            - sourceline: 'deb http://archive.ubuntu.com/ubuntu $(lsb_release -sc) universe'
+          packages:
+            - cpanminus
+            - libtool-bin
+            - libapr1-dev
+            - libaprutil1-dev
+            - perl-doc
+            - liblua5.3-dev
+            - libbrotli-dev
+            - libcurl4-openssl-dev
+            - libsystemd-dev
+            - libnghttp2-dev
+            - libjansson-dev
+            - libpcre2-dev
+            - libldap2-dev
+            - ldap-utils
+            - gdb
+            - curl
+            - python3-pytest
+            - nghttp2-client
+            - python3-cryptography
+            - python3-requests
+    # -------------------------------------------------------------------------
+    - name: Linux Ubuntu, event MPM, ACME test suite
+      dist: focal
+      env: APR_VERSION=1.7.0
+           APU_VERSION=1.6.1 APU_CONFIG="--with-crypto"
+           CONFIG="--enable-mods-shared=reallyall --with-mpm=event --enable-mpms-shared=event"
+           NO_TEST_FRAMEWORK=1 TEST_INSTALL=1 TEST_MD=1
+      addons:
+        apt:
+          sources:
+            - sourceline: 'deb http://archive.ubuntu.com/ubuntu $(lsb_release -sc) universe'
+          packages:
+            - cpanminus
+            - libtool-bin
+            - libapr1-dev
+            - libaprutil1-dev
+            - perl-doc
+            - liblua5.3-dev
+            - libbrotli-dev
+            - libcurl4-openssl-dev
+            - libsystemd-dev
+            - libnghttp2-dev
+            - libjansson-dev
+            - libpcre2-dev
+            - libldap2-dev
+            - ldap-utils
+            - gdb
+            - curl
+            - python3-pytest
+            - nghttp2-client
+            - python3-cryptography
+            - python3-requests
+            - golang-1.14
+    # -------------------------------------------------------------------------
+    - name: Linux Ubuntu, event MPM, MOD_TLS test suite
+      dist: focal
+      env: APR_VERSION=1.7.0
+           APU_VERSION=1.6.1 APU_CONFIG="--with-crypto"
+           CONFIG="--enable-mods-shared=reallyall --with-mpm=event --enable-mpms-shared=event"
+           NO_TEST_FRAMEWORK=1 TEST_INSTALL=1 TEST_MOD_TLS=1
+      addons:
+        apt:
+          sources:
+            - sourceline: 'deb http://archive.ubuntu.com/ubuntu $(lsb_release -sc) universe'
+          packages:
+            - cpanminus
+            - libtool-bin
+            - libapr1-dev
+            - libaprutil1-dev
+            - perl-doc
+            - liblua5.3-dev
+            - libbrotli-dev
+            - libcurl4-openssl-dev
+            - libsystemd-dev
+            - libnghttp2-dev
+            - libjansson-dev
+            - libpcre2-dev
+            - libldap2-dev
+            - ldap-utils
+            - gdb
+            - curl
+            - python3-pytest
+            - nghttp2-client
+            - python3-cryptography
+            - python3-requests
+            - cargo
+            - cbindgen
+    # -------------------------------------------------------------------------
     - name: Linux Ubuntu, APR 1.7.0, APR-util 1.6.1, LDAP
       env: APR_VERSION=1.7.0
            APU_VERSION=1.6.1 APU_CONFIG="--with-crypto --with-ldap"
