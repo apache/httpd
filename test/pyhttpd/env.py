@@ -570,7 +570,7 @@ class HttpdTestEnv:
         if not isinstance(urls, list):
             urls = [urls]
         u = urlparse(urls[0])
-        assert u.hostname, f"hostname not in url: {urls[0]}"
+        #assert u.hostname, f"hostname not in url: {urls[0]}"
         headerfile = f"{self.gen_dir}/curl.headers.{self._curl_headerfiles_n}"
         self._curl_headerfiles_n += 1
 
@@ -583,12 +583,12 @@ class HttpdTestEnv:
             args.append('--insecure')
         elif options and "--cacert" in options:
             pass
-        else:
+        elif u.hostname:
             ca_pem = self.get_ca_pem_file(u.hostname)
             if ca_pem:
                 args.extend(["--cacert", ca_pem])
 
-        if force_resolve and u.hostname != 'localhost' \
+        if force_resolve and u.hostname and u.hostname != 'localhost' \
                 and u.hostname != self._httpd_addr \
                 and not re.match(r'^(\d+|\[|:).*', u.hostname):
             assert u.port, f"port not in url: {urls[0]}"
