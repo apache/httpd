@@ -166,6 +166,7 @@ cgivar	mod/core.html#cgivar
 charsetdefault	mod/mod_charset_lite.html#charsetdefault
 charsetoptions	mod/mod_charset_lite.html#charsetoptions
 charsetsourceenc	mod/mod_charset_lite.html#charsetsourceenc
+checkbasenamematch	mod/mod_speling.html#checkbasenamematch
 checkcaseonly	mod/mod_speling.html#checkcaseonly
 checkspelling	mod/mod_speling.html#checkspelling
 chrootdir	mod/mod_unixd.html#chrootdir
@@ -243,6 +244,8 @@ filterdeclare	mod/mod_filter.html#filterdeclare
 filterprotocol	mod/mod_filter.html#filterprotocol
 filterprovider	mod/mod_filter.html#filterprovider
 filtertrace	mod/mod_filter.html#filtertrace
+flushmaxpipelined	mod/core.html#flushmaxpipelined
+flushmaxthreshold	mod/core.html#flushmaxthreshold
 forcelanguagepriority	mod/mod_negotiation.html#forcelanguagepriority
 forcetype	mod/core.html#forcetype
 forensiclog	mod/mod_log_forensic.html#forensiclog
@@ -258,6 +261,7 @@ h2maxworkeridleseconds	mod/mod_http2.html#h2maxworkeridleseconds
 h2maxworkers	mod/mod_http2.html#h2maxworkers
 h2minworkers	mod/mod_http2.html#h2minworkers
 h2moderntlsonly	mod/mod_http2.html#h2moderntlsonly
+h2outputbuffering	mod/mod_http2.html#h2outputbuffering
 h2padding	mod/mod_http2.html#h2padding
 h2push	mod/mod_http2.html#h2push
 h2pushdiarysize	mod/mod_http2.html#h2pushdiarysize
@@ -355,6 +359,7 @@ luahookfixups	mod/mod_lua.html#luahookfixups
 luahookinsertfilter	mod/mod_lua.html#luahookinsertfilter
 luahooklog	mod/mod_lua.html#luahooklog
 luahookmaptostorage	mod/mod_lua.html#luahookmaptostorage
+luahookpretranslate	mod/mod_lua.html#luahookpretranslate
 luahooktranslatename	mod/mod_lua.html#luahooktranslatename
 luahooktypechecker	mod/mod_lua.html#luahooktypechecker
 luainherit	mod/mod_lua.html#luainherit
@@ -391,6 +396,7 @@ mdcertificatestatus	mod/mod_md.html#mdcertificatestatus
 mdchallengedns01	mod/mod_md.html#mdchallengedns01
 mdcontactemail	mod/mod_md.html#mdcontactemail
 mddrivemode	mod/mod_md.html#mddrivemode
+mdexternalaccountbinding	mod/mod_md.html#mdexternalaccountbinding
 mdhttpproxy	mod/mod_md.html#mdhttpproxy
 mdmember	mod/mod_md.html#mdmember
 mdmembers	mod/mod_md.html#mdmembers
@@ -491,7 +497,9 @@ proxysourceaddress	mod/mod_proxy.html#proxysourceaddress
 proxystatus	mod/mod_proxy.html#proxystatus
 proxytimeout	mod/mod_proxy.html#proxytimeout
 proxyvia	mod/mod_proxy.html#proxyvia
+proxywebsocketfallbacktoproxyhttp	mod/mod_proxy_wstunnel.html#proxywebsocketfallbacktoproxyhttp
 qualifyredirecturl	mod/core.html#qualifyredirecturl
+readbuffersize	mod/core.html#readbuffersize
 readmename	mod/mod_autoindex.html#readmename
 receivebuffersize	mod/mpm_common.html#receivebuffersize
 redirect	mod/mod_alias.html#redirect
@@ -664,6 +672,7 @@ sslverifyclient	mod/mod_ssl.html#sslverifyclient
 sslverifydepth	mod/mod_ssl.html#sslverifydepth
 startservers	mod/mpm_common.html#startservers
 startthreads	mod/mpm_common.html#startthreads
+stricthostcheck	mod/core.html#stricthostcheck
 substitute	mod/mod_substitute.html#substitute
 substituteinheritbefore	mod/mod_substitute.html#substituteinheritbefore
 substitutemaxlinelength	mod/mod_substitute.html#substitutemaxlinelength
@@ -673,6 +682,21 @@ threadlimit	mod/mpm_common.html#threadlimit
 threadsperchild	mod/mpm_common.html#threadsperchild
 threadstacksize	mod/mpm_common.html#threadstacksize
 timeout	mod/core.html#timeout
+tlscertificate	mod/mod_tls.html#tlscertificate
+tlsciphersprefer	mod/mod_tls.html#tlsciphersprefer
+tlscipherssuppress	mod/mod_tls.html#tlscipherssuppress
+tlsengine	mod/mod_tls.html#tlsengine
+tlshonorclientorder	mod/mod_tls.html#tlshonorclientorder
+tlsoptions	mod/mod_tls.html#tlsoptions
+tlsprotocol	mod/mod_tls.html#tlsprotocol
+tlsproxyca	mod/mod_tls.html#tlsproxyca
+tlsproxycipherprefer	mod/mod_tls.html#tlsproxycipherprefer
+tlsproxyciphersuppress	mod/mod_tls.html#tlsproxyciphersuppress
+tlsproxyengine	mod/mod_tls.html#tlsproxyengine
+tlsproxymachinecertificate	mod/mod_tls.html#tlsproxymachinecertificate
+tlsproxyprotocol	mod/mod_tls.html#tlsproxyprotocol
+tlssessioncache	mod/mod_tls.html#tlssessioncache
+tlsstrictsni	mod/mod_tls.html#tlsstrictsni
 traceenable	mod/core.html#traceenable
 transferlog	mod/mod_log_config.html#transferlog
 typesconfig	mod/mod_mime.html#typesconfig
