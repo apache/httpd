@@ -1290,7 +1290,7 @@ ProxyPass "/example" "http://backend.example.com" max=20 ttl=120 retry=300
         will apply to the requested <var>uri-path</var> before matching the <var>path</var>. If
         a mapping matches, it's committed to the <var>uri-path</var> such that all the directory
         contexts that use a path (like <code>&lt;Location&gt;</code>) will be matched using the
-        same mapping.
+        same mapping.</p>
         <p><code>mapping=encoded</code> prevents the %-decoding of the <var>uri-path</var> so
         that one can match for instance <code>/some%2furi%2fpath%2fwith%2fslash</code> in a
         <code>ProxyPass</code> or in a <code>&lt;Location&gt;</code> context.</p>
