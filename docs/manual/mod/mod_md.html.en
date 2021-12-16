@@ -300,6 +300,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#mdchallengedns01">MDChallengeDns01</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mdcontactemail">MDContactEmail</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mddrivemode">MDDriveMode</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#mdexternalaccountbinding">MDExternalAccountBinding</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mdhttpproxy">MDHttpProxy</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mdmember">MDMember</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mdmembers">MDMembers</a></li>
@@ -631,6 +632,46 @@
 </table>
             <p>This directive exists for backward compatibility as the old name for
             <code class="directive"><a href="#mdrenewmode">MDRenewMode</a></code>.
+            </p>
+        
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="MDExternalAccountBinding" id="MDExternalAccountBinding">MDExternalAccountBinding</a> <a name="mdexternalaccountbinding" id="mdexternalaccountbinding">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td /></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>MDExternalAccountBinding <var>key-id</var> <var>hmac-64</var> | none | <var>file</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>MDExternalAccountBinding none</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_md</td></tr>
+</table>
+            <p>
+                Configure values for ACME "External Account Binding", a feature
+                of the ACME standard that allows clients to bind registrations
+                to an existing customer account on ACME servers.
+            </p>
+            <p>
+                Let's Encrypt does not require those, but other ACME CAs do.
+                Check with your ACME CA if you need those and how to obtain the
+                values. They are two strings, a key identifier and a base64 encoded
+                'hmac' value.
+            </p>
+            <p>
+                You can configure those globally or for a specific MDomain. Since
+                these values allow anyone to register under the same account, it is
+                adivsable to give the configuration file restricted permissions,
+                e.g. root only.
+            </p>
+            <p>
+                The value can also be taken from a JSON file, to keep more open
+                permissions on the server configuration and restrict the ones on that
+                file. The JSON itself is:
+            </p>
+            <div class="example"><h3>EAB JSON Example file</h3><pre class="prettyprint lang-config">{"kid": "kid-1", "hmac": "zWND..."}</pre>
+</div>
+            <p>
+                If you change EAB values, the new ones will be used when the next
+                certificate renewal is due.
             </p>
         
 </div>
