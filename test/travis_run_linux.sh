@@ -60,6 +60,8 @@ if test -v TEST_MOD_TLS; then
   pushd "$RUSTLS_HOME"
     git fetch origin
     git checkout tags/$RUSTLS_VERSION
+    # force an update to cbindgen as focal seems to deliver v0.12.1
+    cargo install --force cbindgen
     make install DESTDIR="$PREFIX"
   popd
   CONFIG="$CONFIG --with-tls --with-rustls=$PREFIX"
