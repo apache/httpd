@@ -1292,23 +1292,28 @@ ProxyPass "/example" "http://backend.example.com" max=20 ttl=120 retry=300
         contexts that use a path (like <code>&lt;Location&gt;</code>) will be matched using the
         same mapping.</p>
         <p><code>mapping=encoded</code> prevents the %-decoding of the <var>uri-path</var> so
-        that one can match for instance <code>/some%2furi%2fpath%2fwith%2fslash</code> in a
-        <code>ProxyPass</code> or in a <code>&lt;Location&gt;</code> context.</p>
+        that one can use for instance configurations like:</p>
+        <highlight language="config">ProxyPass "/special%3Fsegment" "https://example.com/special%3Fsegment" mapping=encoded</highlight>
+        <highlight language="config">&lt;Location "/special%3Fsegment"&gt;
+  Require ip 172.17.2.0/24
+&lt;/Location&gt;</highlight>
         <p><code>mapping=servlet</code> refers to the normalization defined by the Servlet
         specification, which is for instance applied by Apache Tomcat for servlet containers
         (notably the path parameters are ignored for the mapping). An <var>uri-path</var> like
-        <code>/some;foo/path</code> is then mapped as <code>/some/path</code> hence matches:</p>
-        <p><code>  &lt;Location /some/path&gt;</code> or:</p>
-        <p><code>  ProxyPass "/some/path" "https://tomcat.example.com/some/path"</code></p>
-        <p>regardless of the requested path parameters.</p>
-    <note><title>Note</title>
-        <p>It is recommended to use the same mapping on the Apache httpd side than the one
-        used on the backend side. For instance when configuring authorizations in
-        <code>&lt;Location&gt;</code> blocks for paths that are mapped by <module>mod_proxy</module>
-        to some servlet containers (like applications running on Apache Tomcat), one should
-        use the <code>mapping=servlet</code> setting to prevent path parameters and alike from
-        interfering with the authorizations that are to be enforced in by the Apache httpd.</p>
-    </note>
+        <code>/some;foo/path</code> is then mapped as <code>/some/path</code> hence matches any
+        of the below regardless of the requested path parameters:</p>
+        <highlight language="config">ProxyPass "/some/path" "https://servlet.example.com/some/path" mapping=servlet</highlight>
+        <highlight language="config">&lt;Location "/some/path"&gt;
+  Require valid-user
+&lt;/Location&gt;</highlight>
+        <note><title>Note</title>
+            <p>It is recommended to use the same mapping on the Apache httpd side than the one
+            used on the backend side. For instance when configuring authorizations in
+            <code>&lt;Location&gt;</code> blocks for paths that are mapped by <module>mod_proxy</module>
+            to some servlet containers (like applications running on Apache Tomcat), one should
+            use the <code>mapping=servlet</code> setting to prevent path parameters and alike from
+            interfering with the authorizations that are to be enforced in by the Apache httpd.</p>
+        </note>
     </td></tr>
 
     </table>
