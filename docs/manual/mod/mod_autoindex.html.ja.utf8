@@ -105,6 +105,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#addiconbytype">AddIconByType</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#defaulticon">DefaultIcon</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#headername">HeaderName</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#indexforbiddenreturn404">IndexForbiddenReturn404</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#indexheadinsert">IndexHeadInsert</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#indexignore">IndexIgnore</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#indexignorereset">IndexIgnoreReset</a></li>
@@ -547,6 +548,20 @@ MIME タイプによって選択</td></tr>
     を設定して、これらのタグが繰り返されないようにしたいと思うでしょう。</p>
 
 </div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="IndexForbiddenReturn404" id="IndexForbiddenReturn404">IndexForbiddenReturn404</a> <a name="indexforbiddenreturn404" id="indexforbiddenreturn404">ディレクティブ</a> <a title="Permanent link" href="#indexforbiddenreturn404" class="permalink">&para;</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>Return an HTTP 404 error instead of Forbidden when options 
+don't permit directory listing</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>IndexForbiddenReturn404 On|Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト, ディレクトリ, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">上書き:</a></th><td>Indexes</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_autoindex</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">互換性:</a></th><td>Added in 2.5.1</td></tr>
+</table><p>このディレクティブの解説文書は
+            まだ翻訳されていません。英語版をご覧ください。
+            </p></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="IndexHeadInsert" id="IndexHeadInsert">IndexHeadInsert</a> <a name="indexheadinsert" id="indexheadinsert">ディレクティブ</a> <a title="Permanent link" href="#indexheadinsert" class="permalink">&para;</a></h2>
 <table class="directive">

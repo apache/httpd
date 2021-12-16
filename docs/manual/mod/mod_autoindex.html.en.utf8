@@ -96,6 +96,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#addiconbytype">AddIconByType</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#defaulticon">DefaultIcon</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#headername">HeaderName</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#indexforbiddenreturn404">IndexForbiddenReturn404</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#indexheadinsert">IndexHeadInsert</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#indexignore">IndexIgnore</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#indexignorereset">IndexIgnoreReset</a></li>
@@ -494,6 +495,23 @@ of the index listing</td></tr>
 <ul>
 <li><code class="directive"><a href="#readmename">ReadmeName</a></code></li>
 </ul>
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="IndexForbiddenReturn404" id="IndexForbiddenReturn404">IndexForbiddenReturn404</a> <a name="indexforbiddenreturn404" id="indexforbiddenreturn404">Directive</a> <a title="Permanent link" href="#indexforbiddenreturn404" class="permalink">&para;</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Return an HTTP 404 error instead of Forbidden when options 
+don't permit directory listing</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>IndexForbiddenReturn404 On|Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>Indexes</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_autoindex</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Added in 2.5.1</td></tr>
+</table>
+    <p>The <code class="directive">IndexForbiddenReturn404</code> directive controls whether 
+    this module returns an HTTP 404 status code instead of an HTTP 403 status code when the
+    <code class="directive">Options</code> does not allow indexes to be returned.  </p>
+
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="IndexHeadInsert" id="IndexHeadInsert">IndexHeadInsert</a> <a name="indexheadinsert" id="indexheadinsert">Directive</a> <a title="Permanent link" href="#indexheadinsert" class="permalink">&para;</a></h2>

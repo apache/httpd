@@ -1437,9 +1437,30 @@ ProxyPass "/mirror/foo"   "http://backend.example.com"</pre>
     </td></tr>
     <tr><td>mapping</td>
         <td>-</td>
-        <td><p>Mapping to process the <var>url</var> before choosing a Worker/Balancer.
-        'servlet' maps like a servlet container (like jk_servlet_normalize), use with Apache Tomcat for example.
-        'encoded' maps it encoded.</p>
+        <td><p>Type of mapping between the <var>path</var> and the <var>url</var>.
+        This determines the normalization and/or (non-)decoding that <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code>
+        will apply to the requested <var>uri-path</var> before matching the <var>path</var>. If
+        a mapping matches, it's committed to the <var>uri-path</var> such that all the directory
+        contexts that use a path (like <code>&lt;Location&gt;</code>) will be matched using the
+        same mapping.</p>
+        <p><code>mapping=encoded</code> prevents the %-decoding of the <var>uri-path</var> so
+        that one can match for instance <code>/some%2furi%2fpath%2fwith%2fslash</code> in a
+        <code>ProxyPass</code> or in a <code>&lt;Location&gt;</code> context.</p>
+        <p><code>mapping=servlet</code> refers to the normalization defined by the Servlet
+        specification, which is for instance applied by Apache Tomcat for servlet containers
+        (notably the path parameters are ignored for the mapping). An <var>uri-path</var> like
+        <code>/some;foo/path</code> is then mapped as <code>/some/path</code> hence matches:</p>
+        <p><code>  &lt;Location /some/path&gt;</code> or:</p>
+        <p><code>  ProxyPass "/some/path" "https://tomcat.example.com/some/path"</code></p>
+        <p>regardless of the requested path parameters.</p>
+    <div class="note"><h3>Note</h3>
+        <p>It is recommended to use the same mapping on the Apache httpd side than the one
+        used on the backend side. For instance when configuring authorizations in
+        <code>&lt;Location&gt;</code> blocks for paths that are mapped by <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code>
+        to some servlet containers (like applications running on Apache Tomcat), one should
+        use the <code>mapping=servlet</code> setting to prevent path parameters and alike from
+        interfering with the authorizations that are to be enforced in by the Apache httpd.</p>
+    </div>
     </td></tr>
 
     </table>
