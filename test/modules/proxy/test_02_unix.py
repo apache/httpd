@@ -27,7 +27,7 @@ class UDSFaker:
                 raise
         self._socket = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
         self._socket.bind(self._uds_path)
-        self._thread = Thread(target=process, args=[self])
+        self._thread = Thread(target=process, daemon=True, args=[self])
         self._thread.start()
 
     def stop(self):
