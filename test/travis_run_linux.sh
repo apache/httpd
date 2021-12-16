@@ -187,6 +187,12 @@ if ! test -v SKIP_TESTING; then
         RV=$?
     fi
 
+    if test -v TEST_PROXY -a $RV -eq 0; then
+        # Run proxy tests.
+        py.test-3 test/modules/proxy
+        RV=$?
+    fi
+
     if test -v TEST_H2 -a $RV -eq 0; then
         # Run HTTP/2 tests.
         MPM=event py.test-3 test/modules/http2
