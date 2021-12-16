@@ -148,7 +148,7 @@ RELEASE SHOWSTOPPERS:
                   http://svn.apache.org/r1895986
      2.4.x patch: svn merge -c 1895981,1895986 ^/httpd/httpd/trunk .
      backport PR: https://github.com/apache/httpd/pull/287
-     +1: ylavic,
+     +1: ylavic, rpluem
 
   *) mod_lua: Improve error handling
      Trunk version of patch:
