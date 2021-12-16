@@ -150,17 +150,17 @@ RELEASE SHOWSTOPPERS:
      backport PR: https://github.com/apache/httpd/pull/287
      +1: ylavic, rpluem
 
+
+PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
+  [ start all new proposals below, under PATCHES PROPOSED. ]
+
   *) mod_lua: Improve error handling
      Trunk version of patch:
         https://svn.apache.org/r1895970
      Backport version for 2.4.x of patch:
       Trunk version of patch works
       svn merge -c 1895970 ^/httpd/httpd/trunk .
-     +1: rpluem, ylavic
-
-
-PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
-  [ start all new proposals below, under PATCHES PROPOSED. ]
+     +1: rpluem, ylavic, icing
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
