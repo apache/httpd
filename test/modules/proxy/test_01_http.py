@@ -48,6 +48,7 @@ class TestProxyHttp:
         assert r.json['host'] == seen
 
     @pytest.mark.parametrize(["via", "seen"], [
+        ["reverse", "test1"],
         ["forward", "test2"],
         ["mixed", "generic"],
     ])
