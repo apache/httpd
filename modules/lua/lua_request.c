@@ -410,6 +410,7 @@ static int req_parsebody(lua_State *L)
             if (end == NULL) break;
             key = (char *) apr_pcalloc(r->pool, 256);
             filename = (char *) apr_pcalloc(r->pool, 256);
+            if (end - crlf <= 8) break;
             vlen = end - crlf - 8;
             buffer = (char *) apr_pcalloc(r->pool, vlen+1);
             memcpy(buffer, crlf + 4, vlen);
