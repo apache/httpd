@@ -5,8 +5,8 @@ Changes with Apache 2.4.52
      have an http(s) scheme, and that the ones to be forward proxied have a
      hostname, per HTTP specifications.  [Ruediger Pluem, Yann Ylavic]
 
-  *) OpenSSL autoconf detection improvement: pick up openssl.pc in the
-     specified openssl path. [Joe Orton]
+  *) configure: OpenSSL detection will now use pkg-config data from
+     .../lib64/ within the --with-ssl path. [Jean-Frederic Clere]
 
   *) mod_proxy_connect, mod_proxy: Do not change the status code after we
      already sent it to the client.
