@@ -3,6 +3,18 @@ Apache httpd pytest suite
 Using pytest (<https://docs.pytest.org/en/6.2.x/>) and a Python >= 3.8
 for a more flexible testing of Apache httpd.
 
+Install
+-------
+If not already installed, you will need to install 'pytest' and 'OpenSSL' for
+python:
+> apt install python3-pip
+> pip install -U pytest
+> pip install -U pyopenssl
+
+And for 'h2load':
+> apt install nghttp2-client
+
+
 Usage
 -----
 In your httpd source checkout, do:
