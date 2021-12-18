@@ -43,7 +43,7 @@
 	Ce module permet de gérer les propriétés courantes des domaines pour un
 	ou plusieurs serveurs virtuels. Il fournit deux fonctionnalités
 	principales : la première permet la supervision et le renouvellement des
-	certificats https: via le protocole ACME (<a href="https://tools.ietf.org/html/rfc8555">RFC 8555</a>). Le module
+	certificats TLS via le protocole ACME (<a href="https://tools.ietf.org/html/rfc8555">RFC 8555</a>). Le module
 	effectue le renouvellement des certificats avant leur expiration
 	afin d'éviter une interruption des services internet. Il est possible de
 	monitorer l'état de tous les certificats gérés par mod_md et de configurer
@@ -735,6 +735,8 @@
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_md</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.52 du serveur HTTP
+	Apache</td></tr>
 </table>
             <p>
                 Cette directive permet de définir des valeurs pour associer des
