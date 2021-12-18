@@ -30,8 +30,6 @@
 <a href="../fr/mod/mod_proxy.html" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_proxy.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Serveur mandataire/passerelle multi-protocole</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>proxy_module</td></tr>
@@ -1559,6 +1557,50 @@ ProxyPass "/mirror/foo" "http://backend.example.com"</pre>
         <td><p>Le protocol accepté par <code class="module"><a href="../mod/mod_proxy_wstunnel.html">mod_proxy_wstunnel</a></code> dans
 	l'en-tête Upgrade. Voir	la documentation de ce module pour plus de
 	détails.</p>
+    </td></tr>
+    <tr><td>mapping</td>
+        <td>-</td>
+        <td><p>Type de mappage entre le <var>chemin</var> et l'<var>url</var>.
+	Détermine la normalisation et/ou le (non-)décodage que
+	<code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> appliquera au <var>chemin de l'uri</var>
+	demandé avant de rechercher une correspondance avec le <var>chemin</var>.
+	Si un mappage correspond, il est appliqué au <var>chemin de l'uri</var>
+	de façon à ce que tous les contextes de répertoire qui utilisent un
+	chemin (comme <code>&lt;Location&gt;</code>) fassent l'objet d'une
+	recherche de correspondance en utilisant le même mappage.</p>
+        <p><code>mapping=encoded</code> empêche le décodage des caractères %
+	contenus dans le <var>chemin de l'uri</var> de façon à ce que l'on
+	puisse par exemple utiliser des configurations telles que&nbsp;:</p>
+        <pre class="prettyprint lang-config">ProxyPass "/special%3Fsegment" "https://example.com/special%3Fsegment" mapping=encoded</pre>
+
+        <pre class="prettyprint lang-config">&lt;Location "/special%3Fsegment"&gt;
+  Require ip 172.17.2.0/24
+&lt;/Location&gt;</pre>
+
+        <p><code>mapping=servlet</code> se réfère à la normalisation définie par
+	la spécification de la Servlet qui sera par exemple appliquée par Apache
+	Tomcat pour les conteneurs de servlet (en particulier, les paramètres du
+	chemin sont ignorés pour le mappage). Un <var>chemin d'uri</var> comme
+	<code>/some;foo/path</code> sera alors mappé comme
+	<code>/some/path</code> et correspondra donc à tout ce qui suit sans
+	tenir compte des paramètres du chemin demandé&nbsp;:</p>
+        <pre class="prettyprint lang-config">ProxyPass "/some/path" "https://servlet.example.com/some/path" mapping=servlet</pre>
+
+        <pre class="prettyprint lang-config">&lt;Location "/some/path"&gt;
+  Require valid-user
+&lt;/Location&gt;</pre>
+
+        <div class="note"><h3>Note</h3>
+            <p>Il est recommandé d'utiliser le même mappage côté Apache httpd
+	    que celui utilisé côté arrière-plan. Par exemple, lors de la
+	    configuration des autorisations dans les sections
+	    <code>&lt;Location&gt;</code> pour des chemins mappés par
+	    <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> comme conteneurs de servlet (comme les
+	    applications s'exécutant sous Apache Tomcat), on doit utiliser la
+	    définition <code>mapping=servlet</code> pour éviter que les
+	    paramètres du chemin et similaires n'interfèrent avec les
+	    autorisations qui doivent être définies par Apache httpd.</p>
+        </div>
     </td></tr>
 
     </table>
