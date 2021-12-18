@@ -2,7 +2,7 @@
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
-<!-- English Revision: 1895289 -->
+<!-- English Revision: 1896106 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -37,7 +37,7 @@
 	Ce module permet de gérer les propriétés courantes des domaines pour un
 	ou plusieurs serveurs virtuels. Il fournit deux fonctionnalités
 	principales : la première permet la supervision et le renouvellement des
-	certificats https: via le protocole ACME (<a
+	certificats TLS via le protocole ACME (<a
 	href="https://tools.ietf.org/html/rfc8555">RFC 8555</a>). Le module
 	effectue le renouvellement des certificats avant leur expiration
 	afin d'éviter une interruption des services internet. Il est possible de
@@ -1546,6 +1546,8 @@ MDMessageCmd /etc/apache/md-message
         <contextlist>
             <context>server config</context>
         </contextlist>
+	<compatibility>Disponible à partir de la version 2.4.52 du serveur HTTP
+	Apache</compatibility>
         <usage>
             <p>
                 Cette directive permet de définir des valeurs pour associer des
