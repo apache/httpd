@@ -1,5 +1,32 @@
                                                          -*- coding: utf-8 -*-
+Changes with Apache 2.4.53
+
 Changes with Apache 2.4.52
+
+  *) SECURITY: CVE-2021-44790: Possible buffer overflow when parsing
+     multipart content in mod_lua of Apache HTTP Server 2.4.51 and
+     earlier (cve.mitre.org)
+     A carefully crafted request body can cause a buffer overflow in
+     the mod_lua multipart parser (r:parsebody() called from Lua
+     scripts).
+     The Apache httpd team is not aware of an exploit for the
+     vulnerabilty though it might be possible to craft one.
+     This issue affects Apache HTTP Server 2.4.51 and earlier.
+     Credits: Chamal
+
+  *) SECURITY: CVE-2021-44224: Possible NULL dereference or SSRF in
+     forward proxy configurations in Apache HTTP Server 2.4.51 and
+     earlier (cve.mitre.org)
+     A crafted URI sent to httpd configured as a forward proxy
+     (ProxyRequests on) can cause a crash (NULL pointer dereference)
+     or, for configurations mixing forward and reverse proxy
+     declarations, can allow for requests to be directed to a
+     declared Unix Domain Socket endpoint (Server Side Request
+     Forgery).
+     This issue affects Apache HTTP Server 2.4.7 up to 2.4.51
+     (included).
+     Credits: 漂亮鼠
+     TengMA(@Te3t123)
 
   *) http: Enforce that fully qualified uri-paths not to be forward-proxied
      have an http(s) scheme, and that the ones to be forward proxied have a

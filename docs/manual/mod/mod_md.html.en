@@ -40,7 +40,7 @@
 
         <p>
         This module manages common properties of domains for one or more virtual hosts. 
-        Its serves two main purposes: for one, supervise/renew https: certificates via the 
+        Its serves two main purposes: for one, supervise/renew TLS certificates via the 
         ACME protocol (<a href="https://tools.ietf.org/html/rfc8555">RFC 8555</a>). 
         Certificates will be renewed by the module ahead of their expiration to account 
         for disruption in internet services. There are ways to monitor the status of all 
@@ -272,9 +272,9 @@
                 your server cannot provide the client with the data and the client browser
                 cannot get it as well, since the OCSP service is not responding. 
             </p><p>
-                The implementation in mod_md will have peristed it, load it again after
+                The implementation in mod_md will have persisted it, load it again after
                 restart and have it available for incoming connections. A day or two before
-                this information expires, it will renew it, making it able to copy with
+                this information expires, it will renew it, making it able to cope with
                 a long OCSP service downtime.
             </p><p>
                 Due to backward compatibility, the existing implementation in mod_ssl could
@@ -644,6 +644,7 @@
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_md</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in version 2.4.52 and later</td></tr>
 </table>
             <p>
                 Configure values for ACME "External Account Binding", a feature
