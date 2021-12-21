@@ -369,12 +369,13 @@ PROXY_WORKER_HC_FAIL )
 #define PROXY_WORKER_MAX_SCHEME_SIZE     16
 #define PROXY_WORKER_MAX_ROUTE_SIZE      96
 #define PROXY_BALANCER_MAX_ROUTE_SIZE    64
-#define PROXY_WORKER_MAX_NAME_SIZE      256
+#define PROXY_WORKER_MAX_NAME_SIZE      384
 #define PROXY_BALANCER_MAX_NAME_SIZE     64
 #define PROXY_WORKER_MAX_HOSTNAME_SIZE   96
 #define PROXY_BALANCER_MAX_HOSTNAME_SIZE 64
 #define PROXY_BALANCER_MAX_STICKY_SIZE   64
 #define PROXY_WORKER_MAX_SECRET_SIZE     64
+#define PROXY_WORKER_UDS_PATH_SIZE      256
 
 #define PROXY_RFC1035_HOSTNAME_SIZE	256
 
@@ -417,7 +418,7 @@ typedef struct {
     char      route[PROXY_WORKER_MAX_ROUTE_SIZE];     /* balancing route */
     char      redirect[PROXY_WORKER_MAX_ROUTE_SIZE];  /* temporary balancing redirection route */
     char      flusher[PROXY_WORKER_MAX_SCHEME_SIZE];  /* flush provider used by mod_proxy_fdpass */
-    char      uds_path[PROXY_WORKER_MAX_NAME_SIZE];   /* path to worker's unix domain socket if applicable */
+    char      uds_path[PROXY_WORKER_UDS_PATH_SIZE];   /* path to worker's unix domain socket if applicable */
     char      hcuri[PROXY_WORKER_MAX_ROUTE_SIZE];     /* health check uri */
     char      hcexpr[PROXY_WORKER_MAX_SCHEME_SIZE];   /* name of condition expr for health check */
     char      secret[PROXY_WORKER_MAX_SECRET_SIZE]; /* authentication secret (e.g. AJP13) */

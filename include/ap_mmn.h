@@ -696,15 +696,17 @@
  * 20210926.1 (2.5.1-dev)  Add ap_unescape_url_ex() and deprecate
  *                         AP_NORMALIZE_DROP_PARAMETERS
  * 20210926.2 (2.5.1-dev)  Add ap_post_read_request()
+ * 20211221.0 (2.5.1-dev)  Bump PROXY_WORKER_MAX_NAME_SIZE from 256 to 384,
+ *                         add PROXY_WORKER_UDS_PATH_SIZE.
  * 
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503235UL /* "AP25" */
 
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
-#define MODULE_MAGIC_NUMBER_MAJOR 20210926
+#define MODULE_MAGIC_NUMBER_MAJOR 20211221
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 2             /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 0             /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a
