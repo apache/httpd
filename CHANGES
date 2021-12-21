@@ -36,7 +36,7 @@ Changes with Apache 2.4.52
      .../lib64/ within the --with-ssl path. [Jean-Frederic Clere]
 
   *) mod_proxy_connect, mod_proxy: Do not change the status code after we
-     already sent it to the client.
+     already sent it to the client. [Ruediger Pluem]
 
   *) mod_http: Correctly sent a 100 Continue status code when sending an interim
      response as result of an Expect: 100-Continue in the request and not the
