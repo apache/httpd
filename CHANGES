@@ -1587,6 +1587,9 @@ Changes with Apache 2.4.30 (not released)
      mod_http2: Potential crash w/ mod_http2.
      [Stefan Eissing]
 
+  *) mod_proxy: Provide an RFC1035 compliant version of the hostname in the
+     proxy_worker_shared structure. PR62085 [Graham Leggett]
+
   *) mod_proxy: Worker schemes and hostnames which are too large are no
      longer fatal errors; it is logged and the truncated values are stored.
      [Jim Jagielski]
