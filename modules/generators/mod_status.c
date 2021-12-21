@@ -188,6 +188,7 @@ static int status_handler(request_rec *r)
     int j, i, res, written;
     int ready;
     int busy;
+    int dead;
     unsigned long count;
     unsigned long lres, my_lres, conn_lres;
     apr_off_t bytes, my_bytes, conn_bytes;
@@ -211,6 +212,8 @@ static int status_handler(request_rec *r)
     float tick;
     int times_per_thread;
 #endif
+    ap_sload_t sload;
+    ap_mon_snap_t snap;
 
     if (strcmp(r->handler, STATUS_MAGIC_TYPE) && strcmp(r->handler,
             "server-status")) {
@@ -233,6 +236,7 @@ static int status_handler(request_rec *r)
 
     ready = 0;
     busy = 0;
+    dead = 0;
     count = 0;
     bcount = 0;
     kbcount = 0;
@@ -252,6 +256,8 @@ static int status_handler(request_rec *r)
         thread_idle_buffer = apr_palloc(r->pool, server_limit * sizeof(int));
         thread_busy_buffer = apr_palloc(r->pool, server_limit * sizeof(int));
     }
+
+    ap_get_mon_snap(&snap, &sload);
 
     nowtime = apr_time_now();
 #ifdef HAVE_TIMES
@@ -350,6 +356,8 @@ static int status_handler(request_rec *r)
                         else
                             thread_busy_buffer[i]++;
                     }
+                } else {
+                    dead++;
                 }
             }
 
@@ -474,7 +482,6 @@ static int status_handler(request_rec *r)
     }
 
     if (ap_extended_status) {
-        clock_t cpu = gu + gs + gcu + gcs + tu + ts + tcu + tcs;
         if (short_report) {
             ap_rprintf(r, "Total Accesses: %lu\nTotal kBytes: %"
                        APR_OFF_T_FMT "\nTotal Duration: %"
@@ -486,25 +493,25 @@ static int status_handler(request_rec *r)
             ap_rprintf(r, "CPUUser: %g\nCPUSystem: %g\nCPUChildrenUser: %g\nCPUChildrenSystem: %g\n",
                        (gu + tu) / tick, (gs + ts) / tick, (gcu + tcu) / tick, (gcs + tcs) / tick);
 
-            if (cpu)
-                ap_rprintf(r, "CPULoad: %g\n",
-                           cpu / tick / up_time * 100.);
+            ap_rprintf(r, "CPUPct: %.4g\n", snap.cpu_load);
 #endif
 
             ap_rprintf(r, "Uptime: %ld\n", (long) (up_time));
-            if (up_time > 0) {
-                ap_rprintf(r, "ReqPerSec: %g\n",
-                           (float) count / (float) up_time);
-
-                ap_rprintf(r, "BytesPerSec: %g\n",
-                           KBYTE * (float) kbcount / (float) up_time);
-            }
-            if (count > 0) {
-                ap_rprintf(r, "BytesPerReq: %g\n",
-                           KBYTE * (float) kbcount / (float) count);
-                ap_rprintf(r, "DurationPerReq: %g\n",
-                           (float) apr_time_as_msec(duration_global) / (float) count);
-            }
+            ap_rvputs(r, "LastSnap: ",
+                      ap_ht_time(r->pool, sload.timestamp, DEFAULT_TIME_FORMAT, 0),
+                      "\n", NULL);
+            ap_rprintf(r, "LastSnapEpoch: %" APR_TIME_T_FMT "\n",
+                       apr_time_as_msec(sload.timestamp));
+            ap_rprintf(r, "SnapInterval: %" APR_TIME_T_FMT "\n",
+                       apr_time_as_msec(snap.interval));
+            ap_rprintf(r, "BusyPct: %d\n", sload.busy);
+            ap_rprintf(r, "IdlePct: %d\n", sload.idle);
+            ap_rprintf(r, "DeadPct: %d\n", sload.dead);
+            ap_rprintf(r, "ReqPerSec: %.4g\n", snap.acc_per_sec);
+            ap_rprintf(r, "BytesPerSec: %.4g\n", snap.bytes_per_sec);
+            ap_rprintf(r, "BytesPerReq: %.4g\n", snap.bytes_per_acc);
+            ap_rprintf(r, "DurationPerReq: %.4g\n", snap.ms_per_acc);
+            ap_rprintf(r, "AvgConcurrency: %.4g\n", snap.average_concurrency);
         }
         else { /* !short_report */
             ap_rprintf(r, "<dt>Total accesses: %lu - Total Traffic: ", count);
@@ -517,41 +524,34 @@ static int status_handler(request_rec *r)
             ap_rprintf(r, "<dt>CPU Usage: u%g s%g cu%g cs%g",
                        (gu + tu) / tick, (gs + ts) / tick, (gcu + tcu) / tick, (gcs + tcs) / tick);
 
-            if (cpu)
-                ap_rprintf(r, " - %.3g%% CPU load</dt>\n",
-                           cpu / tick / up_time * 100.);
-            else
-                ap_rputs("</dt>\n", r);
+            ap_rprintf(r, " - %.4g%% CPU load</dt>\n", snap.cpu_load);
 #endif
 
-            ap_rputs("<dt>", r);
-            if (up_time > 0) {
-                ap_rprintf(r, "%.3g requests/sec - ",
-                           (float) count / (float) up_time);
+            ap_rvputs(r, "<dt>Last snap ",
+                      ap_ht_time(r->pool, sload.timestamp, DEFAULT_TIME_FORMAT, 0),
+                      NULL);
+            ap_rprintf(r, " (%" APR_TIME_T_FMT ")",
+                       apr_time_as_msec(sload.timestamp));
+            ap_rprintf(r, ", interval %" APR_TIME_T_FMT "ms</dt>\n",
+                       apr_time_as_msec(snap.interval));
+            ap_rprintf(r, "<dt>%d%% busy", sload.busy);
+            ap_rprintf(r, " - %d%% idle", sload.idle);
+            ap_rprintf(r, " - %d%% dead</dt>\n", sload.dead);
 
-                format_byte_out(r, (unsigned long)(KBYTE * (float) kbcount
-                                                   / (float) up_time));
-                ap_rputs("/second", r);
-            }
-
-            if (count > 0) {
-                if (up_time > 0)
-                    ap_rputs(" - ", r);
-                format_byte_out(r, (unsigned long)(KBYTE * (float) kbcount
-                                                   / (float) count));
-                ap_rprintf(r, "/request - %g ms/request",
-                (float) apr_time_as_msec(duration_global) / (float) count);
-            }
-
-            ap_rputs("</dt>\n", r);
+            ap_rprintf(r, "<dt>%.4g requests/sec - ", snap.acc_per_sec);
+            format_byte_out(r, (unsigned long)(snap.bytes_per_sec));
+            ap_rputs("/second - ", r);
+            format_byte_out(r, (unsigned long)(snap.bytes_per_acc));
+            ap_rprintf(r, "/request - %.4g ms/request - %.4g avg concurrency</dt>\n",
+                       snap.ms_per_acc, snap.average_concurrency);
         } /* short_report */
     } /* ap_extended_status */
 
     if (!short_report)
         ap_rprintf(r, "<dt>%d requests currently being processed, "
-                      "%d idle workers</dt>\n", busy, ready);
+                      "%d idle workers, %d dead workers</dt>\n", busy, ready, dead);
     else
-        ap_rprintf(r, "BusyWorkers: %d\nIdleWorkers: %d\n", busy, ready);
+        ap_rprintf(r, "BusyWorkers: %d\nIdleWorkers: %d\nDeadWorkers: %d\n", busy, ready, dead);
 
     if (!short_report)
         ap_rputs("</dl>", r);

@@ -64,35 +64,37 @@ static int systemd_pre_mpm(apr_pool_t *p, ap_scoreboard_e sb_type)
     sd_notifyf(0, "READY=1\n"
                "STATUS=Processing requests...\n"
                "MAINPID=%" APR_PID_T_FMT, getpid());
-
     return OK;
 }
 
 static int systemd_monitor(apr_pool_t *p, server_rec *s)
 {
     ap_sload_t sload;
-    apr_interval_time_t up_time;
+    ap_mon_snap_t snap;
     char bps[5];
+    char bpr[5];
 
     if (!ap_extended_status) {
         /* Nothing useful to report with ExtendedStatus disabled. */
         return DECLINED;
     }
     
-    ap_get_sload(&sload);
-    /* up_time in seconds */
-    up_time = (apr_uint32_t) apr_time_sec(apr_time_now() -
-                               ap_scoreboard_image->global->restart_time);
-
-    apr_strfsize((unsigned long)((float) (sload.bytes_served)
-                                 / (float) up_time), bps);
-
+    ap_get_mon_snap(&snap, &sload);
+    apr_strfsize((apr_off_t)snap.bytes_per_sec, bps);
+    apr_strfsize((apr_off_t)snap.bytes_per_acc, bpr);
     sd_notifyf(0, "READY=1\n"
-               "STATUS=Total requests: %lu; Idle/Busy workers %d/%d;"
-               "Requests/sec: %.3g; Bytes served/sec: %sB/sec\n",
-               sload.access_count, sload.idle, sload.busy,
-               ((float) sload.access_count) / (float) up_time, bps);
-
+               "STATUS=Pct Idle workers %d; Pct Busy workers %d; "
+               "Pct Dead workers %d; "
+               "Requests/sec: %.3g; Bytes served/sec: %sB/sec; "
+               "Bytes served/request: %sB/req; "
+               "Avg Duration(ms): %.3g; Avg Concurrency: %.3g; "
+               "Cpu Pct: %.3g\n",
+               sload.idle, sload.busy,
+               sload.dead,
+               snap.acc_per_sec, bps, bpr,
+               snap.ms_per_acc,
+               snap.average_concurrency,
+               snap.cpu_load);
     return DECLINED;
 }
 
