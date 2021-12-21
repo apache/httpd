@@ -3230,7 +3230,7 @@ static int proxy_status_hook(request_rec *r, int flags)
             }
             else {
                 ap_rprintf(r, "ProxyBalancer[%d]Worker[%d]Name: %s\n",
-                           i, n, (*worker)->s->name);
+                           i, n, (*worker)->s->name_ex);
                 ap_rprintf(r, "ProxyBalancer[%d]Worker[%d]Status: %s\n",
                            i, n, ap_proxy_parse_wstatus(r->pool, *worker));
                 ap_rprintf(r, "ProxyBalancer[%d]Worker[%d]Elected: %"
@@ -3311,13 +3311,14 @@ static void child_init(apr_pool_t *p, server_rec *s)
                                    "http://www.apache.org", 0);
             conf->forward = forward;
             PROXY_STRNCPY(conf->forward->s->name,     "proxy:forward");
+            PROXY_STRNCPY(conf->forward->s->name_ex,  "proxy:forward");
             PROXY_STRNCPY(conf->forward->s->hostname, "*"); /* for compatibility */
             PROXY_STRNCPY(conf->forward->s->hostname_ex, "*");
             PROXY_STRNCPY(conf->forward->s->scheme,   "*");
             conf->forward->hash.def = conf->forward->s->hash.def =
-                ap_proxy_hashfunc(conf->forward->s->name, PROXY_HASHFUNC_DEFAULT);
+                ap_proxy_hashfunc(conf->forward->s->name_ex, PROXY_HASHFUNC_DEFAULT);
              conf->forward->hash.fnv = conf->forward->s->hash.fnv =
-                ap_proxy_hashfunc(conf->forward->s->name, PROXY_HASHFUNC_FNV);
+                ap_proxy_hashfunc(conf->forward->s->name_ex, PROXY_HASHFUNC_FNV);
             /* Do not disable worker in case of errors */
             conf->forward->s->status |= PROXY_WORKER_IGNORE_ERRORS;
             /* Mark as the "generic" worker */
@@ -3330,13 +3331,14 @@ static void child_init(apr_pool_t *p, server_rec *s)
             ap_proxy_define_worker(conf->pool, &reverse, NULL, NULL,
                                    "http://www.apache.org", 0);
             PROXY_STRNCPY(reverse->s->name,     "proxy:reverse");
+            PROXY_STRNCPY(reverse->s->name_ex,  "proxy:reverse");
             PROXY_STRNCPY(reverse->s->hostname, "*"); /* for compatibility */
             PROXY_STRNCPY(reverse->s->hostname_ex, "*");
             PROXY_STRNCPY(reverse->s->scheme,   "*");
             reverse->hash.def = reverse->s->hash.def =
-                ap_proxy_hashfunc(reverse->s->name, PROXY_HASHFUNC_DEFAULT);
+                ap_proxy_hashfunc(reverse->s->name_ex, PROXY_HASHFUNC_DEFAULT);
             reverse->hash.fnv = reverse->s->hash.fnv =
-                ap_proxy_hashfunc(reverse->s->name, PROXY_HASHFUNC_FNV);
+                ap_proxy_hashfunc(reverse->s->name_ex, PROXY_HASHFUNC_FNV);
             /* Do not disable worker in case of errors */
             reverse->s->status |= PROXY_WORKER_IGNORE_ERRORS;
             /* Mark as the "generic" worker */
