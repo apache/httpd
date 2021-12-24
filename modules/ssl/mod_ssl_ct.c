@@ -2967,6 +2967,7 @@ static const char *ct_static_scts(cmd_parms *cmd, void *x, const char *cert_fn,
     
     cert = PEM_read_X509(pemfile, NULL, NULL, NULL);
     if (!cert) {
+        fclose(pemfile);
         return apr_psprintf(p, "could not read certificate from file %s",
                             cert_fn);
     }
