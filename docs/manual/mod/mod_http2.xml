@@ -271,7 +271,7 @@ H2Direct on
             </p>
             <p> 
                 Link headers in responses are either set by the application or
-                can be configured via <directive>H2PushResource</directive> or
+                can be configured via <directive module="mod_http2">H2PushResource</directive> or
                 using <module>mod_headers</module> as:
             </p>
             <example><title>mod_headers example</title>
@@ -348,7 +348,7 @@ H2Push off
     <directivesynopsis>
         <name>H2PushPriority</name>
         <description>H2 Server Push Priority</description>
-        <syntax>H2PushPriority <em>mime-type</em> [after|before|interleaved] [weight]</syntax>
+        <syntax>H2PushPriority <em>mime-type</em> [after|before|interleaved] [<em>weight</em>]</syntax>
         <default>H2PushPriority * After 16</default>
         <contextlist>
             <context>server config</context>
@@ -881,7 +881,7 @@ H2TLSCoolDownSecs 0
     <directivesynopsis>
         <name>H2PushResource</name>
         <description>Declares resources for early pushing to the client</description>
-        <syntax>H2PushResource [add] path [critical]</syntax>
+        <syntax>H2PushResource [add] <em>path</em> [critical]</syntax>
         <contextlist>
             <context>server config</context>
             <context>virtual host</context>
@@ -937,7 +937,8 @@ H2TLSCoolDownSecs 0
             </p>
             <p>
                 When set to <code>on</code>, PUSH resources announced with
-                <code>H2PushResource</code> will trigger an interim 103 response
+                <directive module="mod_http2">H2PushResource</directive> will
+                trigger an interim 103 response
                 before the final response. The 103 response will carry <code>Link</code>
                 headers that advise the <code>preload</code> of such resources. 
             </p>
@@ -947,7 +948,7 @@ H2TLSCoolDownSecs 0
     <directivesynopsis>
         <name>H2Padding</name>
         <description>Determine the range of padding bytes added to payload frames</description>
-        <syntax>H2Padding numbits</syntax>
+        <syntax>H2Padding <em>numbits</em></syntax>
         <default>H2Padding 0</default>
         <contextlist>
             <context>server config</context>
@@ -985,7 +986,7 @@ H2TLSCoolDownSecs 0
     <directivesynopsis>
         <name>H2OutputBuffering</name>
         <description>Determine buffering behaviour of output</description>
-        <syntax>H2OutputBuffering on/off</syntax>
+        <syntax>H2OutputBuffering on|off</syntax>
         <default>H2OutputBuffering on</default>
         <contextlist>
             <context>server config</context>
@@ -995,7 +996,7 @@ H2TLSCoolDownSecs 0
         
         <usage>
             <p>
-                The option 'H2OutputBuffering on/off' controls the buffering of stream output.
+                The directive <directive>H2OutputBuffering</directive> controls the buffering of stream output.
                 The default is on, which is the behaviour of previous versions. When off, all
                 bytes are made available immediately to the main connection for sending them
                 out to the client. This fixes interop issues with certain flavours of gRPC.
