@@ -47,7 +47,7 @@
             directive have been kept mostly similar to <module>mod_ssl</module> ones.
         </p>
     </summary>
-    <section>
+    <section id="vhost_context">
         <title>TLS in a VirtualHost context</title>
         <highlight language="config">
 Listen 443
@@ -71,7 +71,7 @@ TLSEngine 443
         </p>
     </section>
 
-        <section><title>Feature Comparison with mod_ssl</title>
+        <section id="comparison"><title>Feature Comparison with mod_ssl</title>
         <p>
             The table below gives a comparison of feature between
             <module>mod_ssl</module> and mod_tls. If a feature of <module>mod_ssl</module> is no listed here,
@@ -107,7 +107,7 @@ TLSEngine 443
     	</p>
         </section>
 
-        <section><title>TLS Protocols</title>
+        <section id="protocols"><title>TLS Protocols</title>
         <p>
             mod_tls supports TLS protocol version 1.2 and 1.3. Should there ever be
             a version 1.4 and <code>rustls</code> supports it, it will be available as well.
@@ -124,7 +124,7 @@ TLSProtocol TLSv1.3+
     	</p>
         </section>
 
-        <section><title>TLS Ciphers</title>
+        <section id="ciphers"><title>TLS Ciphers</title>
         <p>
             The list of TLS ciphers supported in the <code>rustls</code> library,
             can be found <a href="https://docs.rs/rustls/">here</a>. All TLS v1.3
@@ -184,7 +184,7 @@ TLSCipherSuppress ECDHE-ECDSA-AES256-SHA384
         </p>
         </section>
 
-        <section><title>Virtual Hosts</title>
+        <section id="vhosts"><title>Virtual Hosts</title>
         <p>
             mod_tls uses the SNI (Server Name Indicator) to select one of the
             configured virtual hosts that match the port being served. Should
@@ -223,7 +223,7 @@ TLSEngine 443
     	</p>
         </section>
 
-        <section><title>ACME Certificates</title>
+        <section id="ACME"><title>ACME Certificates</title>
         <p>
             ACME certificates via <module>mod_md</module> are supported, just as
             for <module>mod_ssl</module>. A minimal configuration:
@@ -240,7 +240,7 @@ MDomain example.net
         </highlight>
         </section>
 
-        <section><title>OCSP Stapling</title>
+        <section id="OCSP"><title>OCSP Stapling</title>
         <p>
             mod_tls has no own implementation to retrieve OCSP information for
             a certificate. However, it will use such for Stapling if it is provided
@@ -249,7 +249,7 @@ MDomain example.net
         </p>
         </section>
 
-        <section><title>TLS Variables</title>
+        <section id="variables"><title>TLS Variables</title>
         <p>
             Via the directive <code>TLSOptions</code>, several variables
             are placed into the environment of requests and can be inspected, for
@@ -279,7 +279,7 @@ MDomain example.net
         </p>
         </section>
 
-        <section><title>Client Certificates</title>
+        <section id="certificates"><title>Client Certificates</title>
         <p>
             While <code>rustls</code> supports client certificates in principle, parts
             of the infrastructure to make <em>use</em> of these in a server are not
