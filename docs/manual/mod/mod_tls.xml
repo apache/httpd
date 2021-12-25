@@ -346,6 +346,7 @@ MDomain example.net
         <name>TLSProtocol</name>
         <description>specifies the minimum version of the TLS protocol to use.</description>
         <syntax>TLSProtocol <em>version</em>+</syntax>
+        <default>TLSProtocol v1.2+</default>
         <contextlist>
             <context>server config</context>
             <context>virtual host</context>
@@ -414,16 +415,17 @@ TLSCiphersSuppress ECDHE-ECDSA-CHACHA20-POLY1305
 
     <directivesynopsis>
         <name>TLSHonorClientOrder</name>
-        <description></description>
+        <description>determines if the order of ciphers supported by the client is honored</description>
         <syntax>TLSHonorClientOrder on|off</syntax>
+        <default>TLSHonorClientOrder on</default>
         <contextlist>
             <context>server config</context>
             <context>virtual host</context>
         </contextlist>
         <usage>
             <p>
-                TLSHonorClientOrder determines if the order of ciphers
-                supported by the client is honored. This is `on` by default.
+                <directive>TLSHonorClientOrder</directive> determines if the order of ciphers
+                supported by the client is honored.
             </p><p>
             </p>
         </usage>
@@ -517,6 +519,7 @@ TLSCiphersSuppress ECDHE-ECDSA-CHACHA20-POLY1305
         <name>TLSProxyProtocol</name>
         <description>specifies the minimum version of the TLS protocol to use in proxy connections.</description>
         <syntax>TLSProxyProtocol <em>version</em>+</syntax>
+        <default>TLSProxyProtocol v1.2+</default>
         <contextlist>
             <context>server config</context>
             <context>virtual host</context>
@@ -595,12 +598,13 @@ TLSCiphersSuppress ECDHE-ECDSA-CHACHA20-POLY1305
         <name>TLSStrictSNI</name>
         <description>enforces exact matches of client server indicators (SNI) against host names.</description>
         <syntax>TLSStrictSNI on|off</syntax>
+        <default>TLSStrictSNI on</default>
         <contextlist>
             <context>server config</context>
         </contextlist>
         <usage>
             <p>
-                Client connections using SNI will be unsuccessful if no match is found. This is `on` by default.
+                Client connections using SNI will be unsuccessful if no match is found.
             </p>
         </usage>
     </directivesynopsis>
