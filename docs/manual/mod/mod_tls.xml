@@ -47,7 +47,7 @@
             directive have been kept mostly similar to <module>mod_ssl</module> ones.
         </p>
     </summary>
-    <section>
+    <section id="vhost_context">
         <title>TLS in a VirtualHost context</title>
         <highlight language="config">
 Listen 443
@@ -71,7 +71,7 @@ TLSEngine 443
         </p>
     </section>
 
-        <section><title>Feature Comparison with mod_ssl</title>
+        <section id="comparison"><title>Feature Comparison with mod_ssl</title>
         <p>
             The table below gives a comparison of feature between
             <module>mod_ssl</module> and mod_tls. If a feature of <module>mod_ssl</module> is no listed here,
@@ -89,7 +89,7 @@ TLSEngine 443
 <tr><td>SNI Virtual Hosts</td><td>yes</td><td>yes</td><td></td></tr>
 <tr><td>Client Certificates</td><td>yes</td><td>no</td><td></td></tr>
 <tr><td>Machine Certificates for Backend</td><td>yes</td><td>yes</td><td></td></tr>
-<tr><td>OCSP Stapling</td><td>yes</td><td>yes*</td><td>*)via mod_md</td></tr>
+<tr><td>OCSP Stapling</td><td>yes</td><td>yes*</td><td>*)via <module>mod_md</module></td></tr>
 <tr><td>Backend OCSP check</td><td>yes</td><td>no*</td><td>*)stapling will be verified</td></tr>
 <tr><td>TLS version to allow</td><td>min-max</td><td>min</td><td></td></tr>
 <tr><td>TLS ciphers</td><td>exclusive list</td><td>preferred/suppressed</td><td></td></tr>
@@ -107,7 +107,7 @@ TLSEngine 443
     	</p>
         </section>
 
-        <section><title>TLS Protocols</title>
+        <section id="protocols"><title>TLS Protocols</title>
         <p>
             mod_tls supports TLS protocol version 1.2 and 1.3. Should there ever be
             a version 1.4 and <code>rustls</code> supports it, it will be available as well.
@@ -124,7 +124,7 @@ TLSProtocol TLSv1.3+
     	</p>
         </section>
 
-        <section><title>TLS Ciphers</title>
+        <section id="ciphers"><title>TLS Ciphers</title>
         <p>
             The list of TLS ciphers supported in the <code>rustls</code> library,
             can be found <a href="https://docs.rs/rustls/">here</a>. All TLS v1.3
@@ -184,14 +184,15 @@ TLSCipherSuppress ECDHE-ECDSA-AES256-SHA384
         </p>
         </section>
 
-        <section><title>Virtual Hosts</title>
+        <section id="vhosts"><title>Virtual Hosts</title>
         <p>
             mod_tls uses the SNI (Server Name Indicator) to select one of the
             configured virtual hosts that match the port being served. Should
             the client not provide an SNI, the <em>first</em> configured
             virtual host will be selected. If the client <em>does</em> provide
             an SNI (as all today's clients do), it <em>must</em> match one
-            virtual host (<code>ServerName</code> or <code>ServerAlias</code>)
+            virtual host (<directive module="core">ServerName</directive> or
+            <directive module="core">ServerAlias</directive>)
             or the connection will fail.
         </p>
         <p>
@@ -223,7 +224,7 @@ TLSEngine 443
     	</p>
         </section>
 
-        <section><title>ACME Certificates</title>
+        <section id="ACME"><title>ACME Certificates</title>
         <p>
             ACME certificates via <module>mod_md</module> are supported, just as
             for <module>mod_ssl</module>. A minimal configuration:
@@ -240,7 +241,7 @@ MDomain example.net
         </highlight>
         </section>
 
-        <section><title>OCSP Stapling</title>
+        <section id="OCSP"><title>OCSP Stapling</title>
         <p>
             mod_tls has no own implementation to retrieve OCSP information for
             a certificate. However, it will use such for Stapling if it is provided
@@ -249,15 +250,15 @@ MDomain example.net
         </p>
         </section>
 
-        <section><title>TLS Variables</title>
+        <section id="variables"><title>TLS Variables</title>
         <p>
-            Via the directive <code>TLSOptions</code>, several variables
+            Via the directive <directive module="mod_tls">TLSOptions</directive>, several variables
             are placed into the environment of requests and can be inspected, for
             example in a CGI script.
         </p>
         <p>
             The variable names are given by <module>mod_ssl</module>. Note that these
-            are only a subset of the many variables that mod_ssl exposes.
+            are only a subset of the many variables that <module>mod_ssl</module> exposes.
     	</p>
         <table>
             <tr><th>Variable</th><th>TLSOption</th><th>Description</th></tr>
@@ -279,7 +280,7 @@ MDomain example.net
         </p>
         </section>
 
-        <section><title>Client Certificates</title>
+        <section id="certificates"><title>Client Certificates</title>
         <p>
             While <code>rustls</code> supports client certificates in principle, parts
             of the infrastructure to make <em>use</em> of these in a server are not
@@ -300,15 +301,17 @@ MDomain example.net
     <directivesynopsis>
         <name>TLSEngine</name>
         <description>defines on which address+port the module shall handle incoming connections.</description>
-        <syntax>TLSEngine [address:]port</syntax>
+        <syntax>TLSEngine [<em>address</em>:]<em>port</em></syntax>
         <contextlist>
             <context>server config</context>
         </contextlist>
         <usage>
             <p>
-                This is set on a global level, not in individual `VirtualHost`s.
-                It will affect all `VirtualHost` that match the specified address/port.
-                You can use `TLSEngine` several times to use more than one address/port.
+                This is set on a global level, not in individual <directive module="core"
+                type="section">VirtualHost</directive>s.
+                It will affect all <directive module="core" type="section">VirtualHost</directive>
+                that match the specified address/port.
+                You can use <directive>TLSEngine</directive> several times to use more than one address/port.
             </p><p>
             </p>
             <example><title>Example</title>
@@ -326,7 +329,7 @@ MDomain example.net
     <directivesynopsis>
         <name>TLSCertificate</name>
         <description>adds a certificate and key (PEM encoded) to a server/virtual host.</description>
-        <syntax>TLSCertificate cert_file [key_file]</syntax>
+        <syntax>TLSCertificate <em>cert_file</em> [<em>key_file</em>]</syntax>
         <contextlist>
             <context>server config</context>
             <context>virtual host</context>
@@ -345,7 +348,8 @@ MDomain example.net
     <directivesynopsis>
         <name>TLSProtocol</name>
         <description>specifies the minimum version of the TLS protocol to use.</description>
-        <syntax>TLSProtocol version+</syntax>
+        <syntax>TLSProtocol <em>version</em>+</syntax>
+        <default>TLSProtocol v1.2+</default>
         <contextlist>
             <context>server config</context>
             <context>virtual host</context>
@@ -360,7 +364,7 @@ MDomain example.net
     <directivesynopsis>
         <name>TLSCiphersPrefer</name>
         <description>defines ciphers that are preferred.</description>
-        <syntax>TLSCiphersPrefer cipher(-list)</syntax>
+        <syntax>TLSCiphersPrefer <em>cipher(-list)</em></syntax>
         <contextlist>
             <context>server config</context>
             <context>virtual host</context>
@@ -388,7 +392,7 @@ TLSCiphersPrefer ECDHE-ECDSA-AES256-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305
     <directivesynopsis>
         <name>TLSCiphersSuppress</name>
         <description>defines ciphers that are not to be used.</description>
-        <syntax>TLSCiphersSuppress cipher(-list)</syntax>
+        <syntax>TLSCiphersSuppress <em>cipher(-list)</em></syntax>
         <contextlist>
             <context>server config</context>
             <context>virtual host</context>
@@ -414,16 +418,17 @@ TLSCiphersSuppress ECDHE-ECDSA-CHACHA20-POLY1305
 
     <directivesynopsis>
         <name>TLSHonorClientOrder</name>
-        <description></description>
+        <description>determines if the order of ciphers supported by the client is honored</description>
         <syntax>TLSHonorClientOrder on|off</syntax>
+        <default>TLSHonorClientOrder on</default>
         <contextlist>
             <context>server config</context>
             <context>virtual host</context>
         </contextlist>
         <usage>
             <p>
-                TLSHonorClientOrder determines if the order of ciphers
-                supported by the client is honored. This is `on` by default.
+                <directive>TLSHonorClientOrder</directive> determines if the order of ciphers
+                supported by the client is honored.
             </p><p>
             </p>
         </usage>
@@ -432,7 +437,7 @@ TLSCiphersSuppress ECDHE-ECDSA-CHACHA20-POLY1305
     <directivesynopsis>
         <name>TLSOptions</name>
         <description>enables SSL variables for requests.</description>
-        <syntax>TLSOptions [+|-]option</syntax>
+        <syntax>TLSOptions [+|-]<em>option</em></syntax>
         <contextlist>
             <context>server config</context>
             <context>virtual host</context>
@@ -441,7 +446,8 @@ TLSCiphersSuppress ECDHE-ECDSA-CHACHA20-POLY1305
         </contextlist>
         <usage>
             <p>
-                TLSOptions is analog to `SSLOptions` in <module>mod_ssl</module>.
+                <directive>TLSOptions</directive> is analog to <directive
+                module="mod_ssl">SSLOptions</directive> in <module>mod_ssl</module>.
                 It can be set per directory/location and `option` can be:
             </p>
             <ul>
@@ -458,7 +464,7 @@ TLSCiphersSuppress ECDHE-ECDSA-CHACHA20-POLY1305
                 Therefore most variables are not set by default.
             </p>
             <p>
-                You can configure `TLSOptions` per location or generally on a
+                You can configure <directive>TLSOptions</directive> per location or generally on a
                 server/virtual host. Prefixing an option with `-` disables this
                 option while leaving others unchanged.
                 A `+` prefix is the same as writing the option without one.
@@ -489,10 +495,12 @@ TLSCiphersSuppress ECDHE-ECDSA-CHACHA20-POLY1305
         </contextlist>
         <usage>
             <p>
-                `TLSProxyEngine on|off` is analog to `SSLProxyEngine` in <module>mod_ssl</module>.
+                <directive>TLSProxyEngine</directive> is analog to <directive
+                module="mod_ssl">SSLProxyEngine</directive> in <module>mod_ssl</module>.
             </p><p>
-                This can be used in a server/virtual host or `&lt;Proxy>` section to
-                enable the module for outgoing connections using `mod_proxy`.
+                This can be used in a server/virtual host or <directive module="mod_proxy"
+                type="section">Proxy</directive> section to
+                enable the module for outgoing connections using <module>mod_proxy</module>.
             </p>
         </usage>
     </directivesynopsis>
@@ -500,7 +508,7 @@ TLSCiphersSuppress ECDHE-ECDSA-CHACHA20-POLY1305
     <directivesynopsis>
         <name>TLSProxyCA</name>
         <description>sets the root certificates to validate the backend server with.</description>
-        <syntax>TLSProxyCA file.pem</syntax>
+        <syntax>TLSProxyCA <em>file.pem</em></syntax>
         <contextlist>
             <context>server config</context>
             <context>virtual host</context>
@@ -508,7 +516,7 @@ TLSCiphersSuppress ECDHE-ECDSA-CHACHA20-POLY1305
         </contextlist>
         <usage>
             <p>
-                `TLSProxyEngine on|off` is analog to `SSLProxyCACertificatePath` in <module>mod_ssl</module>.
+
             </p>
         </usage>
     </directivesynopsis>
@@ -516,7 +524,8 @@ TLSCiphersSuppress ECDHE-ECDSA-CHACHA20-POLY1305
     <directivesynopsis>
         <name>TLSProxyProtocol</name>
         <description>specifies the minimum version of the TLS protocol to use in proxy connections.</description>
-        <syntax>TLSProxyProtocol version+</syntax>
+        <syntax>TLSProxyProtocol <em>version</em>+</syntax>
+        <default>TLSProxyProtocol v1.2+</default>
         <contextlist>
             <context>server config</context>
             <context>virtual host</context>
@@ -530,9 +539,9 @@ TLSCiphersSuppress ECDHE-ECDSA-CHACHA20-POLY1305
     </directivesynopsis>
 
     <directivesynopsis>
-        <name>TLSProxyCipherPrefer</name>
+        <name>TLSProxyCiphersPrefer</name>
         <description>defines ciphers that are preferred for a proxy connection.</description>
-        <syntax>TLSProxyCipherPrefer cipher(-list)</syntax>
+        <syntax>TLSProxyCiphersPrefer <em>cipher(-list)</em></syntax>
         <contextlist>
             <context>server config</context>
             <context>virtual host</context>
@@ -549,9 +558,9 @@ TLSCiphersSuppress ECDHE-ECDSA-CHACHA20-POLY1305
     </directivesynopsis>
 
     <directivesynopsis>
-        <name>TLSProxyCipherSuppress</name>
+        <name>TLSProxyCiphersSuppress</name>
         <description>defines ciphers that are not to be used for a proxy connection.</description>
-        <syntax>TLSProxyCipherSuppress cipher(-list)</syntax>
+        <syntax>TLSProxyCiphersSuppress <em>cipher(-list)</em></syntax>
         <contextlist>
             <context>server config</context>
             <context>virtual host</context>
@@ -570,7 +579,7 @@ TLSCiphersSuppress ECDHE-ECDSA-CHACHA20-POLY1305
     <directivesynopsis>
         <name>TLSProxyMachineCertificate</name>
         <description>adds a certificate and key file (PEM encoded) to a proxy setup.</description>
-        <syntax>TLSProxyMachineCertificate cert_file [key_file]</syntax>
+        <syntax>TLSProxyMachineCertificate <em>cert_file</em> [<em>key_file</em>]</syntax>
         <contextlist>
             <context>server config</context>
             <context>virtual host</context>
@@ -595,12 +604,13 @@ TLSCiphersSuppress ECDHE-ECDSA-CHACHA20-POLY1305
         <name>TLSStrictSNI</name>
         <description>enforces exact matches of client server indicators (SNI) against host names.</description>
         <syntax>TLSStrictSNI on|off</syntax>
+        <default>TLSStrictSNI on</default>
         <contextlist>
             <context>server config</context>
         </contextlist>
         <usage>
             <p>
-                Client connections using SNI will be unsuccessful if no match is found. This is `on` by default.
+                Client connections using SNI will be unsuccessful if no match is found.
             </p>
         </usage>
     </directivesynopsis>
@@ -608,7 +618,7 @@ TLSCiphersSuppress ECDHE-ECDSA-CHACHA20-POLY1305
     <directivesynopsis>
         <name>TLSSessionCache</name>
         <description>specifies the cache for TLS session resumption.</description>
-        <syntax>TLSSessionCache cache-spec</syntax>
+        <syntax>TLSSessionCache <em>cache-spec</em></syntax>
         <contextlist>
             <context>server config</context>
         </contextlist>
@@ -616,7 +626,8 @@ TLSCiphersSuppress ECDHE-ECDSA-CHACHA20-POLY1305
             <p>
                 This uses a cache on the server side to allow clients to resume connections.
             </p><p>
-            You can set this to `none` or define a cache as in the `SSLSessionCache`
+            You can set this to `none` or define a cache as in the <directive
+            module="mod_ssl">SSLSessionCache</directive>
             directive of <module>mod_ssl</module>.
             </p><p>
             If not configured, `mod_tls` will try to create a shared memory cache on its own,
