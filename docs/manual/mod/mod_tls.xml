@@ -89,7 +89,7 @@ TLSEngine 443
 <tr><td>SNI Virtual Hosts</td><td>yes</td><td>yes</td><td></td></tr>
 <tr><td>Client Certificates</td><td>yes</td><td>no</td><td></td></tr>
 <tr><td>Machine Certificates for Backend</td><td>yes</td><td>yes</td><td></td></tr>
-<tr><td>OCSP Stapling</td><td>yes</td><td>yes*</td><td>*)via mod_md</td></tr>
+<tr><td>OCSP Stapling</td><td>yes</td><td>yes*</td><td>*)via <module>mod_md</module></td></tr>
 <tr><td>Backend OCSP check</td><td>yes</td><td>no*</td><td>*)stapling will be verified</td></tr>
 <tr><td>TLS version to allow</td><td>min-max</td><td>min</td><td></td></tr>
 <tr><td>TLS ciphers</td><td>exclusive list</td><td>preferred/suppressed</td><td></td></tr>
@@ -191,7 +191,8 @@ TLSCipherSuppress ECDHE-ECDSA-AES256-SHA384
             the client not provide an SNI, the <em>first</em> configured
             virtual host will be selected. If the client <em>does</em> provide
             an SNI (as all today's clients do), it <em>must</em> match one
-            virtual host (<code>ServerName</code> or <code>ServerAlias</code>)
+            virtual host (<directive module="core">ServerName</directive> or
+            <directive module="core">ServerAlias</directive>)
             or the connection will fail.
         </p>
         <p>
@@ -251,7 +252,7 @@ MDomain example.net
 
         <section id="variables"><title>TLS Variables</title>
         <p>
-            Via the directive <code>TLSOptions</code>, several variables
+            Via the directive <directive module="mod_tls">TLSOptions</directive>, several variables
             are placed into the environment of requests and can be inspected, for
             example in a CGI script.
         </p>
@@ -306,9 +307,11 @@ MDomain example.net
         </contextlist>
         <usage>
             <p>
-                This is set on a global level, not in individual `VirtualHost`s.
-                It will affect all `VirtualHost` that match the specified address/port.
-                You can use `TLSEngine` several times to use more than one address/port.
+                This is set on a global level, not in individual <directive module="core"
+                type="section">VirtualHost</directive>s.
+                It will affect all <directive module="core" type="section">VirtualHost</directive>
+                that match the specified address/port.
+                You can use <directive>TLSEngine</directive> several times to use more than one address/port.
             </p><p>
             </p>
             <example><title>Example</title>
@@ -443,7 +446,8 @@ TLSCiphersSuppress ECDHE-ECDSA-CHACHA20-POLY1305
         </contextlist>
         <usage>
             <p>
-                TLSOptions is analog to `SSLOptions` in <module>mod_ssl</module>.
+                <directive>TLSOptions</directive> is analog to <directive
+                module="mod_ssl">SSLOptions</directive> in <module>mod_ssl</module>.
                 It can be set per directory/location and `option` can be:
             </p>
             <ul>
@@ -460,7 +464,7 @@ TLSCiphersSuppress ECDHE-ECDSA-CHACHA20-POLY1305
                 Therefore most variables are not set by default.
             </p>
             <p>
-                You can configure `TLSOptions` per location or generally on a
+                You can configure <directive>TLSOptions</directive> per location or generally on a
                 server/virtual host. Prefixing an option with `-` disables this
                 option while leaving others unchanged.
                 A `+` prefix is the same as writing the option without one.
@@ -491,9 +495,11 @@ TLSCiphersSuppress ECDHE-ECDSA-CHACHA20-POLY1305
         </contextlist>
         <usage>
             <p>
-                `TLSProxyEngine on|off` is analog to `SSLProxyEngine` in <module>mod_ssl</module>.
+                <directive>TLSProxyEngine</directive> is analog to <directive
+                module="mod_ssl">SSLProxyEngine</directive> in <module>mod_ssl</module>.
             </p><p>
-                This can be used in a server/virtual host or `&lt;Proxy>` section to
+                This can be used in a server/virtual host or <directive module="mod_proxy"
+                type="section">Proxy</directive> section to
                 enable the module for outgoing connections using <module>mod_proxy</module>.
             </p>
         </usage>
@@ -620,7 +626,8 @@ TLSCiphersSuppress ECDHE-ECDSA-CHACHA20-POLY1305
             <p>
                 This uses a cache on the server side to allow clients to resume connections.
             </p><p>
-            You can set this to `none` or define a cache as in the `SSLSessionCache`
+            You can set this to `none` or define a cache as in the <directive
+            module="mod_ssl">SSLSessionCache</directive>
             directive of <module>mod_ssl</module>.
             </p><p>
             If not configured, `mod_tls` will try to create a shared memory cache on its own,
