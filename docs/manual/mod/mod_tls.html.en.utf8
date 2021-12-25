@@ -55,15 +55,15 @@
     </div>
 <div id="quickview"><h3>Topics</h3>
 <ul id="topics">
-<li><img alt="" src="../images/down.gif" /> TLS in a VirtualHost context</li>
-<li><img alt="" src="../images/down.gif" /> Feature Comparison with mod_ssl</li>
-<li><img alt="" src="../images/down.gif" /> TLS Protocols</li>
-<li><img alt="" src="../images/down.gif" /> TLS Ciphers</li>
-<li><img alt="" src="../images/down.gif" /> Virtual Hosts</li>
-<li><img alt="" src="../images/down.gif" /> ACME Certificates</li>
-<li><img alt="" src="../images/down.gif" /> OCSP Stapling</li>
-<li><img alt="" src="../images/down.gif" /> TLS Variables</li>
-<li><img alt="" src="../images/down.gif" /> Client Certificates</li>
+<li><img alt="" src="../images/down.gif" /> <a href="#vhost_context">TLS in a VirtualHost context</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#comparison">Feature Comparison with mod_ssl</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#protocols">TLS Protocols</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#ciphers">TLS Ciphers</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#vhosts">Virtual Hosts</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#ACME">ACME Certificates</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#OCSP">OCSP Stapling</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#variables">TLS Variables</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#certificates">Client Certificates</a></li>
 </ul><h3 class="directives">Directives</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#tlscertificate">TLSCertificate</a></li>
@@ -74,8 +74,8 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#tlsoptions">TLSOptions</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#tlsprotocol">TLSProtocol</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#tlsproxyca">TLSProxyCA</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#tlsproxycipherprefer">TLSProxyCipherPrefer</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#tlsproxyciphersuppress">TLSProxyCipherSuppress</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#tlsproxyciphersprefer">TLSProxyCiphersPrefer</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#tlsproxycipherssuppress">TLSProxyCiphersSuppress</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#tlsproxyengine">TLSProxyEngine</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#tlsproxymachinecertificate">TLSProxyMachineCertificate</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#tlsproxyprotocol">TLSProxyProtocol</a></li>
@@ -87,7 +87,7 @@
 <li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2>TLS in a VirtualHost context</h2>
+<h2><a name="vhost_context" id="vhost_context">TLS in a VirtualHost context</a> <a title="Permanent link" href="#vhost_context" class="permalink">&para;</a></h2>
         
         <pre class="prettyprint lang-config">Listen 443
 TLSEngine 443
@@ -110,7 +110,7 @@ TLSEngine 443
         </p>
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2>Feature Comparison with mod_ssl</h2>
+<h2><a name="comparison" id="comparison">Feature Comparison with mod_ssl</a> <a title="Permanent link" href="#comparison" class="permalink">&para;</a></h2>
         <p>
             The table below gives a comparison of feature between
             <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> and mod_tls. If a feature of <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> is no listed here,
@@ -128,7 +128,7 @@ TLSEngine 443
 <tr><td>SNI Virtual Hosts</td><td>yes</td><td>yes</td><td /></tr>
 <tr><td>Client Certificates</td><td>yes</td><td>no</td><td /></tr>
 <tr><td>Machine Certificates for Backend</td><td>yes</td><td>yes</td><td /></tr>
-<tr><td>OCSP Stapling</td><td>yes</td><td>yes*</td><td>*)via mod_md</td></tr>
+<tr><td>OCSP Stapling</td><td>yes</td><td>yes*</td><td>*)via <code class="module"><a href="../mod/mod_md.html">mod_md</a></code></td></tr>
 <tr><td>Backend OCSP check</td><td>yes</td><td>no*</td><td>*)stapling will be verified</td></tr>
 <tr><td>TLS version to allow</td><td>min-max</td><td>min</td><td /></tr>
 <tr><td>TLS ciphers</td><td>exclusive list</td><td>preferred/suppressed</td><td /></tr>
@@ -146,7 +146,7 @@ TLSEngine 443
     	</p>
         </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2>TLS Protocols</h2>
+<h2><a name="protocols" id="protocols">TLS Protocols</a> <a title="Permanent link" href="#protocols" class="permalink">&para;</a></h2>
         <p>
             mod_tls supports TLS protocol version 1.2 and 1.3. Should there ever be
             a version 1.4 and <code>rustls</code> supports it, it will be available as well.
@@ -162,7 +162,7 @@ TLSEngine 443
     	</p>
         </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2>TLS Ciphers</h2>
+<h2><a name="ciphers" id="ciphers">TLS Ciphers</a> <a title="Permanent link" href="#ciphers" class="permalink">&para;</a></h2>
         <p>
             The list of TLS ciphers supported in the <code>rustls</code> library,
             can be found <a href="https://docs.rs/rustls/">here</a>. All TLS v1.3
@@ -220,14 +220,15 @@ TLSCiphersPrefer ECDHE-ECDSA-AES256-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305</pre>
         </p>
         </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2>Virtual Hosts</h2>
+<h2><a name="vhosts" id="vhosts">Virtual Hosts</a> <a title="Permanent link" href="#vhosts" class="permalink">&para;</a></h2>
         <p>
             mod_tls uses the SNI (Server Name Indicator) to select one of the
             configured virtual hosts that match the port being served. Should
             the client not provide an SNI, the <em>first</em> configured
             virtual host will be selected. If the client <em>does</em> provide
             an SNI (as all today's clients do), it <em>must</em> match one
-            virtual host (<code>ServerName</code> or <code>ServerAlias</code>)
+            virtual host (<code class="directive"><a href="../mod/core.html#servername">ServerName</a></code> or
+            <code class="directive"><a href="../mod/core.html#serveralias">ServerAlias</a></code>)
             or the connection will fail.
         </p>
         <p>
@@ -258,7 +259,7 @@ TLSEngine 443
     	</p>
         </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2>ACME Certificates</h2>
+<h2><a name="ACME" id="ACME">ACME Certificates</a> <a title="Permanent link" href="#ACME" class="permalink">&para;</a></h2>
         <p>
             ACME certificates via <code class="module"><a href="../mod/mod_md.html">mod_md</a></code> are supported, just as
             for <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code>. A minimal configuration:
@@ -274,7 +275,7 @@ MDomain example.net
 
         </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2>OCSP Stapling</h2>
+<h2><a name="OCSP" id="OCSP">OCSP Stapling</a> <a title="Permanent link" href="#OCSP" class="permalink">&para;</a></h2>
         <p>
             mod_tls has no own implementation to retrieve OCSP information for
             a certificate. However, it will use such for Stapling if it is provided
@@ -283,15 +284,15 @@ MDomain example.net
         </p>
         </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2>TLS Variables</h2>
+<h2><a name="variables" id="variables">TLS Variables</a> <a title="Permanent link" href="#variables" class="permalink">&para;</a></h2>
         <p>
-            Via the directive <code>TLSOptions</code>, several variables
+            Via the directive <code class="directive"><a href="#tlsoptions">TLSOptions</a></code>, several variables
             are placed into the environment of requests and can be inspected, for
             example in a CGI script.
         </p>
         <p>
             The variable names are given by <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code>. Note that these
-            are only a subset of the many variables that mod_ssl exposes.
+            are only a subset of the many variables that <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> exposes.
     	</p>
         <table>
             <tr><th>Variable</th><th>TLSOption</th><th>Description</th></tr>
@@ -313,7 +314,7 @@ MDomain example.net
         </p>
         </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2>Client Certificates</h2>
+<h2><a name="certificates" id="certificates">Client Certificates</a> <a title="Permanent link" href="#certificates" class="permalink">&para;</a></h2>
         <p>
             While <code>rustls</code> supports client certificates in principle, parts
             of the infrastructure to make <em>use</em> of these in a server are not
@@ -334,7 +335,7 @@ MDomain example.net
 <div class="directive-section"><h2><a name="TLSCertificate" id="TLSCertificate">TLSCertificate</a> <a name="tlscertificate" id="tlscertificate">Directive</a> <a title="Permanent link" href="#tlscertificate" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>adds a certificate and key (PEM encoded) to a server/virtual host.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>TLSCertificate cert_file [key_file]</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>TLSCertificate <em>cert_file</em> [<em>key_file</em>]</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_tls</td></tr>
@@ -352,7 +353,7 @@ MDomain example.net
 <div class="directive-section"><h2><a name="TLSCiphersPrefer" id="TLSCiphersPrefer">TLSCiphersPrefer</a> <a name="tlsciphersprefer" id="tlsciphersprefer">Directive</a> <a title="Permanent link" href="#tlsciphersprefer" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>defines ciphers that are preferred.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>TLSCiphersPrefer cipher(-list)</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>TLSCiphersPrefer <em>cipher(-list)</em></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_tls</td></tr>
@@ -376,7 +377,7 @@ MDomain example.net
 <div class="directive-section"><h2><a name="TLSCiphersSuppress" id="TLSCiphersSuppress">TLSCiphersSuppress</a> <a name="tlscipherssuppress" id="tlscipherssuppress">Directive</a> <a title="Permanent link" href="#tlscipherssuppress" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>defines ciphers that are not to be used.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>TLSCiphersSuppress cipher(-list)</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>TLSCiphersSuppress <em>cipher(-list)</em></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_tls</td></tr>
@@ -399,15 +400,16 @@ MDomain example.net
 <div class="directive-section"><h2><a name="TLSEngine" id="TLSEngine">TLSEngine</a> <a name="tlsengine" id="tlsengine">Directive</a> <a title="Permanent link" href="#tlsengine" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>defines on which address+port the module shall handle incoming connections.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>TLSEngine [address:]port</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>TLSEngine [<em>address</em>:]<em>port</em></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_tls</td></tr>
 </table>
             <p>
-                This is set on a global level, not in individual `VirtualHost`s.
-                It will affect all `VirtualHost` that match the specified address/port.
-                You can use `TLSEngine` several times to use more than one address/port.
+                This is set on a global level, not in individual <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>s.
+                It will affect all <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>
+                that match the specified address/port.
+                You can use <code class="directive">TLSEngine</code> several times to use more than one address/port.
             </p><p>
             </p>
             <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">TLSEngine 443</pre>
@@ -421,15 +423,16 @@ MDomain example.net
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="TLSHonorClientOrder" id="TLSHonorClientOrder">TLSHonorClientOrder</a> <a name="tlshonorclientorder" id="tlshonorclientorder">Directive</a> <a title="Permanent link" href="#tlshonorclientorder" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td /></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>determines if the order of ciphers supported by the client is honored</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>TLSHonorClientOrder on|off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>TLSHonorClientOrder on</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_tls</td></tr>
 </table>
             <p>
-                TLSHonorClientOrder determines if the order of ciphers
-                supported by the client is honored. This is `on` by default.
+                <code class="directive">TLSHonorClientOrder</code> determines if the order of ciphers
+                supported by the client is honored.
             </p><p>
             </p>
         
@@ -438,13 +441,13 @@ MDomain example.net
 <div class="directive-section"><h2><a name="TLSOptions" id="TLSOptions">TLSOptions</a> <a name="tlsoptions" id="tlsoptions">Directive</a> <a title="Permanent link" href="#tlsoptions" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>enables SSL variables for requests.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>TLSOptions [+|-]option</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>TLSOptions [+|-]<em>option</em></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_tls</td></tr>
 </table>
             <p>
-                TLSOptions is analog to `SSLOptions` in <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code>.
+                <code class="directive">TLSOptions</code> is analog to <code class="directive"><a href="../mod/mod_ssl.html#ssloptions">SSLOptions</a></code> in <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code>.
                 It can be set per directory/location and `option` can be:
             </p>
             <ul>
@@ -461,7 +464,7 @@ MDomain example.net
                 Therefore most variables are not set by default.
             </p>
             <p>
-                You can configure `TLSOptions` per location or generally on a
+                You can configure <code class="directive">TLSOptions</code> per location or generally on a
                 server/virtual host. Prefixing an option with `-` disables this
                 option while leaving others unchanged.
                 A `+` prefix is the same as writing the option without one.
@@ -481,7 +484,8 @@ MDomain example.net
 <div class="directive-section"><h2><a name="TLSProtocol" id="TLSProtocol">TLSProtocol</a> <a name="tlsprotocol" id="tlsprotocol">Directive</a> <a title="Permanent link" href="#tlsprotocol" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>specifies the minimum version of the TLS protocol to use.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>TLSProtocol version+</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>TLSProtocol <em>version</em>+</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>TLSProtocol v1.2+</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_tls</td></tr>
@@ -495,21 +499,21 @@ MDomain example.net
 <div class="directive-section"><h2><a name="TLSProxyCA" id="TLSProxyCA">TLSProxyCA</a> <a name="tlsproxyca" id="tlsproxyca">Directive</a> <a title="Permanent link" href="#tlsproxyca" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>sets the root certificates to validate the backend server with.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>TLSProxyCA file.pem</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>TLSProxyCA <em>file.pem</em></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, proxy section</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_tls</td></tr>
 </table>
             <p>
-                `TLSProxyEngine on|off` is analog to `SSLProxyCACertificatePath` in <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code>.
+
             </p>
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="TLSProxyCipherPrefer" id="TLSProxyCipherPrefer">TLSProxyCipherPrefer</a> <a name="tlsproxycipherprefer" id="tlsproxycipherprefer">Directive</a> <a title="Permanent link" href="#tlsproxycipherprefer" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="TLSProxyCiphersPrefer" id="TLSProxyCiphersPrefer">TLSProxyCiphersPrefer</a> <a name="tlsproxyciphersprefer" id="tlsproxyciphersprefer">Directive</a> <a title="Permanent link" href="#tlsproxyciphersprefer" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>defines ciphers that are preferred for a proxy connection.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>TLSProxyCipherPrefer cipher(-list)</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>TLSProxyCiphersPrefer <em>cipher(-list)</em></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, proxy section</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_tls</td></tr>
@@ -523,10 +527,10 @@ MDomain example.net
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="TLSProxyCipherSuppress" id="TLSProxyCipherSuppress">TLSProxyCipherSuppress</a> <a name="tlsproxyciphersuppress" id="tlsproxyciphersuppress">Directive</a> <a title="Permanent link" href="#tlsproxyciphersuppress" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="TLSProxyCiphersSuppress" id="TLSProxyCiphersSuppress">TLSProxyCiphersSuppress</a> <a name="tlsproxycipherssuppress" id="tlsproxycipherssuppress">Directive</a> <a title="Permanent link" href="#tlsproxycipherssuppress" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>defines ciphers that are not to be used for a proxy connection.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>TLSProxyCipherSuppress cipher(-list)</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>TLSProxyCiphersSuppress <em>cipher(-list)</em></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, proxy section</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_tls</td></tr>
@@ -549,10 +553,10 @@ MDomain example.net
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_tls</td></tr>
 </table>
             <p>
-                `TLSProxyEngine on|off` is analog to `SSLProxyEngine` in <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code>.
+                <code class="directive">TLSProxyEngine</code> is analog to <code class="directive"><a href="../mod/mod_ssl.html#sslproxyengine">SSLProxyEngine</a></code> in <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code>.
             </p><p>
-                This can be used in a server/virtual host or `&lt;Proxy&gt;` section to
-                enable the module for outgoing connections using `mod_proxy`.
+                This can be used in a server/virtual host or <code class="directive"><a href="../mod/mod_proxy.html#proxy">&lt;Proxy&gt;</a></code> section to
+                enable the module for outgoing connections using <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code>.
             </p>
         
 </div>
@@ -560,7 +564,7 @@ MDomain example.net
 <div class="directive-section"><h2><a name="TLSProxyMachineCertificate" id="TLSProxyMachineCertificate">TLSProxyMachineCertificate</a> <a name="tlsproxymachinecertificate" id="tlsproxymachinecertificate">Directive</a> <a title="Permanent link" href="#tlsproxymachinecertificate" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>adds a certificate and key file (PEM encoded) to a proxy setup.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>TLSProxyMachineCertificate cert_file [key_file]</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>TLSProxyMachineCertificate <em>cert_file</em> [<em>key_file</em>]</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, proxy section</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_tls</td></tr>
@@ -582,7 +586,8 @@ MDomain example.net
 <div class="directive-section"><h2><a name="TLSProxyProtocol" id="TLSProxyProtocol">TLSProxyProtocol</a> <a name="tlsproxyprotocol" id="tlsproxyprotocol">Directive</a> <a title="Permanent link" href="#tlsproxyprotocol" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>specifies the minimum version of the TLS protocol to use in proxy connections.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>TLSProxyProtocol version+</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>TLSProxyProtocol <em>version</em>+</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>TLSProxyProtocol v1.2+</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, proxy section</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_tls</td></tr>
@@ -596,7 +601,7 @@ MDomain example.net
 <div class="directive-section"><h2><a name="TLSSessionCache" id="TLSSessionCache">TLSSessionCache</a> <a name="tlssessioncache" id="tlssessioncache">Directive</a> <a title="Permanent link" href="#tlssessioncache" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>specifies the cache for TLS session resumption.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>TLSSessionCache cache-spec</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>TLSSessionCache <em>cache-spec</em></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_tls</td></tr>
@@ -604,7 +609,7 @@ MDomain example.net
             <p>
                 This uses a cache on the server side to allow clients to resume connections.
             </p><p>
-            You can set this to `none` or define a cache as in the `SSLSessionCache`
+            You can set this to `none` or define a cache as in the <code class="directive"><a href="../mod/mod_ssl.html#sslsessioncache">SSLSessionCache</a></code>
             directive of <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code>.
             </p><p>
             If not configured, `mod_tls` will try to create a shared memory cache on its own,
@@ -618,12 +623,13 @@ MDomain example.net
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>enforces exact matches of client server indicators (SNI) against host names.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>TLSStrictSNI on|off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>TLSStrictSNI on</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_tls</td></tr>
 </table>
             <p>
-                Client connections using SNI will be unsuccessful if no match is found. This is `on` by default.
+                Client connections using SNI will be unsuccessful if no match is found.
             </p>
         
 </div>
