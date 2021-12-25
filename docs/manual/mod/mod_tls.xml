@@ -530,9 +530,9 @@ TLSCiphersSuppress ECDHE-ECDSA-CHACHA20-POLY1305
     </directivesynopsis>
 
     <directivesynopsis>
-        <name>TLSProxyCipherPrefer</name>
+        <name>TLSProxyCiphersPrefer</name>
         <description>defines ciphers that are preferred for a proxy connection.</description>
-        <syntax>TLSProxyCipherPrefer cipher(-list)</syntax>
+        <syntax>TLSProxyCiphersPrefer <em>cipher(-list)</em></syntax>
         <contextlist>
             <context>server config</context>
             <context>virtual host</context>
@@ -549,9 +549,9 @@ TLSCiphersSuppress ECDHE-ECDSA-CHACHA20-POLY1305
     </directivesynopsis>
 
     <directivesynopsis>
-        <name>TLSProxyCipherSuppress</name>
+        <name>TLSProxyCiphersSuppress</name>
         <description>defines ciphers that are not to be used for a proxy connection.</description>
-        <syntax>TLSProxyCipherSuppress cipher(-list)</syntax>
+        <syntax>TLSProxyCiphersSuppress <em>cipher(-list)</em></syntax>
         <contextlist>
             <context>server config</context>
             <context>virtual host</context>
