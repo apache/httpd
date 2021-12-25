@@ -778,7 +778,7 @@ static apr_status_t init_outgoing_connection(conn_rec *c)
     hostname = apr_table_get(c->notes, "proxy-request-hostname");
     alpn_note = apr_table_get(c->notes, "proxy-request-alpn-protos");
     ap_log_error(APLOG_MARK, APLOG_TRACE1, 0, c->base_server,
-        "setup_outgoing: to %s [ALPN: %s] from configration in %s"
+        "setup_outgoing: to %s [ALPN: %s] from configuration in %s"
         " using CA %s", hostname, alpn_note, pc->defined_in->server_hostname, pc->proxy_ca);
 
     rv = get_proxy_ciphers(&ciphersuites, c->pool, pc);
@@ -1185,7 +1185,7 @@ apr_status_t tls_core_conn_seen_client_hello(conn_rec *c)
     int sni_match = 0;
 
     /* The initial rustls generic session has been fed the client hello and
-     * we have extraced SNI and ALPN values (so present).
+     * we have extracted SNI and ALPN values (so present).
      * Time to select the actual server_rec and application protocol that
      * will be used on this connection. */
     ap_assert(cc);

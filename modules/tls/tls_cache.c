@@ -302,7 +302,7 @@ apr_status_t tls_cache_init_server(
     tls_conf_server_t *sc = tls_conf_server_get(s);
 
     if (sc && sc->global->session_cache) {
-        ap_log_error(APLOG_MARK, APLOG_TRACE3, 0, s, "adding session persistance to rustls");
+        ap_log_error(APLOG_MARK, APLOG_TRACE3, 0, s, "adding session persistence to rustls");
         rustls_server_config_builder_set_persistence(
             builder, tls_cache_get, tls_cache_put);
     }

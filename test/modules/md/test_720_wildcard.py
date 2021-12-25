@@ -1,4 +1,4 @@
-# test wildcard certifcates
+# test wildcard certificates
 import os
 
 import pytest

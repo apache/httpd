@@ -90,7 +90,7 @@ class TestAutov2:
     # use a curve unsupported by LE
     # only works with mod_ssl as rustls refuses to load such a weak key
     @pytest.mark.skipif(MDTestEnv.get_ssl_module() != "mod_ssl", reason="only for mod_ssl")
-    @pytest.mark.skipif(MDTestEnv.get_acme_server() != 'boulder', reason="onyl boulder rejects this")
+    @pytest.mark.skipif(MDTestEnv.get_acme_server() != 'boulder', reason="only boulder rejects this")
     def test_md_810_004(self, env):
         domain = self.test_domain
         # generate config with one MD

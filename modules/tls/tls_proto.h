@@ -28,7 +28,7 @@
  */
 typedef struct {
     apr_uint16_t id;      /* IANA 16-bit assigned value as used on the wire */
-    const char *name;     /* IANA given name of hte cipher */
+    const char *name;     /* IANA given name of the cipher */
     const char *alias;    /* Optional, commonly known alternate name */
 } tls_cipher_t;
 
@@ -52,19 +52,19 @@ struct tls_proto_conf_t {
 tls_proto_conf_t *tls_proto_init(apr_pool_t *p, server_rec *s);
 
 /**
- * Called during pre-config phase to start intialization
+ * Called during pre-config phase to start initialization
  * of the tls protocol configuration.
  */
 apr_status_t tls_proto_pre_config(apr_pool_t *pool, apr_pool_t *ptemp);
 
 /**
- * Called during post-config phase to conclude the intialization
+ * Called during post-config phase to conclude the initialization
  * of the tls protocol configuration.
  */
 apr_status_t tls_proto_post_config(apr_pool_t *p, apr_pool_t *ptemp, server_rec *s);
 
 /**
- * Get the TLS protocol identifer (as used on the wire) for the TLS
+ * Get the TLS protocol identifier (as used on the wire) for the TLS
  * protocol of the given name. Returns 0 if protocol is unknown.
  */
 apr_uint16_t tls_proto_get_version_by_name(tls_proto_conf_t *conf, const char *name);
@@ -97,7 +97,7 @@ int tls_proto_is_cipher_supported(tls_proto_conf_t *conf, apr_uint16_t cipher);
 
 /**
  * Get the name of a TLS cipher for the IANA assigned 16bit value. This will
- * return the name in the protocol configuation, if the cipher is known, and
+ * return the name in the protocol configuration, if the cipher is known, and
  * create the string `TLS_CIPHER_0x%04x` for the 16bit cipher value.
  */
 const char *tls_proto_get_cipher_name(
