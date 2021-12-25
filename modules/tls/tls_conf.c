@@ -745,7 +745,7 @@ const command_rec tls_conf_cmds[] = {
     AP_INIT_TAKE1("TLSHonorClientOrder", tls_conf_set_honor_client_order, NULL, RSRC_CONF,
         "Set 'on' to have the server honor client preferences in cipher suites, default off."),
     AP_INIT_TAKE1("TLSEngine", tls_conf_add_engine, NULL, RSRC_CONF,
-        "Specify an adress+port where the module shall handle incoming TLS connections."),
+        "Specify an address+port where the module shall handle incoming TLS connections."),
     AP_INIT_TAKE_ARGV("TLSOptions", tls_conf_set_options, NULL, OR_OPTIONS,
         "En-/disables optional features in the module."),
     AP_INIT_TAKE1("TLSProtocol", tls_conf_set_protocol, NULL, RSRC_CONF,

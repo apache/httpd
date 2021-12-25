@@ -235,7 +235,7 @@ static apr_status_t filter_recv_client_hello(tls_filter_ctx_t *fctx)
         bb_tmp = fctx->fin_tls_bb; /* data we have yet to feed to rustls */
         fctx->fin_tls_bb = fctx->fin_tls_buffer_bb; /* data we already fed to the pre_session */
         fctx->fin_tls_buffer_bb = NULL;
-        APR_BRIGADE_CONCAT(fctx->fin_tls_bb, bb_tmp); /* all tls data from the cleint so far, reloaded */
+        APR_BRIGADE_CONCAT(fctx->fin_tls_bb, bb_tmp); /* all tls data from the client so far, reloaded */
         apr_brigade_destroy(bb_tmp);
         rv = APR_SUCCESS;
     }

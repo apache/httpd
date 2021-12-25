@@ -275,7 +275,7 @@ apr_status_t tls_util_brigade_split_line(
     if (APR_SUCCESS != rv) goto cleanup;
     apr_brigade_length(dest, 0, &nend);
     /* apr_brigade_split_line() has the nasty habit of leaving a 0-length bucket
-     * at the start of the brigade when it transfered the whole content. Get rid of it.
+     * at the start of the brigade when it transferred the whole content. Get rid of it.
      */
     if (!APR_BRIGADE_EMPTY(src)) {
          apr_bucket *b = APR_BRIGADE_FIRST(src);

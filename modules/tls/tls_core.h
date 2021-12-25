@@ -118,7 +118,7 @@ void tls_core_conn_bind(conn_rec *c, ap_conf_vector_t *dir_conf);
 void tls_core_conn_disable(conn_rec *c);
 
 /**
- * Initialiaze the tls_conf_connt_t for the connection
+ * Initialize the tls_conf_connt_t for the connection
  * and decide if TLS is enabled or not.
  * @return OK if enabled, DECLINED otherwise
  */

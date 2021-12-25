@@ -82,9 +82,9 @@ const apr_array_header_t *tls_util_array_uint16_remove(
 
 /**
  * Transfer up to <length> bytes from <src> to <dest>, including all
- * encountered meta data buckets. The transfered buckets/data are
+ * encountered meta data buckets. The transferred buckets/data are
  * removed from <src>.
- * Return the actual byte count transfered in <pnout>.
+ * Return the actual byte count transferred in <pnout>.
  */
 apr_status_t tls_util_brigade_transfer(
     apr_bucket_brigade *dest, apr_bucket_brigade *src, apr_off_t length,

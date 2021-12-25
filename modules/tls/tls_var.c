@@ -317,7 +317,7 @@ static void add_vars(apr_table_t *env, conn_rec *c, server_rec *s, request_rec *
     ctx.c = c;
     ctx.r = r;
     ctx.cc = tls_conf_conn_get(c->master? c->master : c);
-    /* Can we re-use teh precomputed connection values? */
+    /* Can we re-use the precomputed connection values? */
     overlap = (r && ctx.cc->subprocess_env && r->server == ctx.cc->server);
     if (overlap) {
         apr_table_overlap(env, ctx.cc->subprocess_env, APR_OVERLAP_TABLES_SET);
@@ -336,7 +336,7 @@ static void add_vars(apr_table_t *env, conn_rec *c, server_rec *s, request_rec *
         }
     }
     else if (overlap && sdc->std_env_vars == TLS_FLAG_TRUE) {
-        /* Remove variables added on connection init that are disbled here */
+        /* Remove variables added on connection init that are disabled here */
         for (i = 0; i < TLS_DIM(StdEnvVars); ++i) {
             apr_table_unset(env, StdEnvVars[i]);
         }
@@ -348,7 +348,7 @@ static void add_vars(apr_table_t *env, conn_rec *c, server_rec *s, request_rec *
         }
     }
     else if (overlap && sdc->std_env_vars == TLS_FLAG_TRUE) {
-        /* Remove variables added on connection init that are disbled here */
+        /* Remove variables added on connection init that are disabled here */
         for (i = 0; i < TLS_DIM(ExportCertVars); ++i) {
             apr_table_unset(env, ExportCertVars[i]);
         }

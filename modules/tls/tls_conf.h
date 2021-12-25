@@ -64,7 +64,7 @@ typedef enum {
  * and then readonly.
  */
 typedef struct {
-    server_rec *ap_server;            /* the gobal server we initialized on */
+    server_rec *ap_server;            /* the global server we initialized on */
     const char *module_version;
     const char *crustls_version;
 
