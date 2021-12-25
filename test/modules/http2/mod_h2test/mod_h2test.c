@@ -220,7 +220,7 @@ static int h2test_delay_handler(request_rec *r)
 
 cleanup:
     ap_log_rerror(APLOG_MARK, APLOG_TRACE1, rv, r,
-                  "delay_handler: request cleanup, r->status=%d, aborte=%d",
+                  "delay_handler: request cleanup, r->status=%d, aborted=%d",
                   r->status, c->aborted);
     if (rv == APR_SUCCESS
         || r->status != HTTP_OK

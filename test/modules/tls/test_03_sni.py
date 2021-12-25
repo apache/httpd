@@ -36,7 +36,7 @@ class TestSni:
         assert r.exit_code != 0
 
     def test_03_sni_request_other_same_config(self, env):
-        # do we see the first vhost respone for another domain with different certs?
+        # do we see the first vhost response for another domain with different certs?
         r = env.tls_get(env.domain_a, "/index.json", options=[
             "-vvvv", "--header", "Host: {0}".format(env.domain_b)
         ])
@@ -49,7 +49,7 @@ class TestSni:
         if env.curl_supports_tls_1_3():
             # can't do this test then
             return
-        # do we see the first vhost respone for an unknown domain?
+        # do we see the first vhost response for an unknown domain?
         conf = TlsTestConf(env=env, extras={
             env.domain_a: "TLSProtocol TLSv1.2+",
             env.domain_b: "TLSProtocol TLSv1.3+"

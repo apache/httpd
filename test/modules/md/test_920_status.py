@@ -217,13 +217,13 @@ Protocols h2 http/1.1 acme-tls/1
         conf.install()
         assert env.apache_restart() == 0
         assert env.await_completion([domain], restart=False)
-        # In the stats JSON, we excpect 2 certificates under 'renewal'
+        # In the stats JSON, we expect 2 certificates under 'renewal'
         stat = env.get_md_status(domain)
         assert 'renewal' in stat
         assert 'cert' in stat['renewal']
         assert 'rsa' in stat['renewal']['cert']
         assert 'secp256r1' in stat['renewal']['cert']
-        # In /.httpd/certificate-status 'renewal' we excpect 2 certificates
+        # In /.httpd/certificate-status 'renewal' we expect 2 certificates
         status = env.get_certificate_status(domain)
         assert 'renewal' in status
         assert 'cert' in status['renewal']

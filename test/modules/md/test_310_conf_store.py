@@ -752,7 +752,7 @@ class TestConf:
 
         # setup: drive it
         r = env.a2md(["-v", "drive", name])
-        assert r.exit_code == 0, "drive not successfull: {0}".format(r.stderr)
+        assert r.exit_code == 0, "drive not successful: {0}".format(r.stderr)
         assert env.a2md(["list", name]).json['output'][0]['state'] == env.MD_S_COMPLETE
 
         # remove one domain -> status stays COMPLETE

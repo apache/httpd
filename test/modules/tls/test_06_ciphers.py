@@ -175,7 +175,7 @@ class TestCiphers:
         env.apache_restart()
 
     def test_06_ciphers_pref_unsupported(self, env):
-        # a warning on prefering a known, but not supported cipher
+        # a warning on preferring a known, but not supported cipher
         env.httpd_error_log.ignore_recent()
         conf = TlsTestConf(env=env, extras={
             env.domain_b: "TLSCiphersPrefer TLS_NULL_WITH_NULL_NULL"

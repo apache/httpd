@@ -87,7 +87,7 @@ class TestPush:
         assert 1 == len(promises)
         assert '/006/006.js' == promises[0]["request"]["header"][":path"]
 
-    # 2 Links, only one with correct rel attribue
+    # 2 Links, only one with correct rel attribute
     def test_h2_400_03(self, env):
         url = env.mkurl("https", "push", "/006-push3.html")
         r = env.nghttp().get(url)

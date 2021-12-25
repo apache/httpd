@@ -180,7 +180,7 @@ CustomLog logs/test_004_30 issue_203
         assert log_h2_full['bytes_rx_I'] > 0
         assert log_h2_full['bytes_resp_B'] == full_length
         assert log_h2_full['bytes_tx_O'] > full_length
-        assert log_h1['bytes_rx_I'] > 0         # input bytes recieved
+        assert log_h1['bytes_rx_I'] > 0         # input bytes received
         assert log_h1['bytes_resp_B'] == chunk  # response bytes sent (payload)
         assert log_h1['bytes_tx_O'] > chunk     # output bytes sent
         assert log_h2['bytes_rx_I'] > 0
