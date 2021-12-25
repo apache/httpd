@@ -10,7 +10,7 @@ Changes with Apache 2.4.52
      the mod_lua multipart parser (r:parsebody() called from Lua
      scripts).
      The Apache httpd team is not aware of an exploit for the
-     vulnerabilty though it might be possible to craft one.
+     vulnerability though it might be possible to craft one.
      This issue affects Apache HTTP Server 2.4.51 and earlier.
      Credits: Chamal
 
@@ -108,7 +108,7 @@ Changes with Apache 2.4.52
       section.
     - Treating 401 HTTP status codes for orders like 403, since some ACME
       servers seem to prefer that for accessing oders from other accounts.
-    - When retrieving certificate chains, try to read the repsonse even
+    - When retrieving certificate chains, try to read the response even
       if the HTTP Content-Type is unrecognized.
     - Fixed a bug that reset the error counter of a certificate renewal
       and prevented the increasing delays in further attempts.
@@ -140,7 +140,7 @@ Changes with Apache 2.4.51
      If files outside of these directories are not protected by the
      usual default configuration "require all denied", these requests
      can succeed. If CGI scripts are also enabled for these aliased
-     pathes, this could allow for remote code execution.
+     paths, this could allow for remote code execution.
      This issue only affects Apache 2.4.49 and Apache 2.4.50 and not
      earlier versions.
      Credits: Reported by Juan Escobar from Dreamlab Technologies,
@@ -232,7 +232,7 @@ Changes with Apache 2.4.50
 Changes with Apache 2.4.49
 
   *) SECURITY: CVE-2021-40438 (cve.mitre.org)
-     mod_proxy: Server Side Request Forgery (SSRF) vulnerabilty [Yann Ylavic]
+     mod_proxy: Server Side Request Forgery (SSRF) vulnerability [Yann Ylavic]
 
   *) SECURITY: CVE-2021-39275 (cve.mitre.org)
      core: ap_escape_quotes buffer overflow
@@ -309,7 +309,7 @@ Changes with Apache 2.4.49
      fails.
      An exception is the proposal of "http/1.1" where it is
      accepted if the remote server did not answer ALPN with
-     a selected protocol. This accomodates for hosts that do
+     a selected protocol. This accommodates for hosts that do
      not observe/support ALPN and speak http/1.x be default.
 
   *) mod_proxy: Fix possible reuse/merging of Proxy(Pass)Match worker instances
