@@ -257,7 +257,7 @@ MDomain example.net
         </p>
         <p>
             The variable names are given by <module>mod_ssl</module>. Note that these
-            are only a subset of the many variables that mod_ssl exposes.
+            are only a subset of the many variables that <module>mod_ssl</module> exposes.
     	</p>
         <table>
             <tr><th>Variable</th><th>TLSOption</th><th>Description</th></tr>
@@ -300,7 +300,7 @@ MDomain example.net
     <directivesynopsis>
         <name>TLSEngine</name>
         <description>defines on which address+port the module shall handle incoming connections.</description>
-        <syntax>TLSEngine [address:]port</syntax>
+        <syntax>TLSEngine [<em>address</em>:]<em>port</em></syntax>
         <contextlist>
             <context>server config</context>
         </contextlist>
@@ -326,7 +326,7 @@ MDomain example.net
     <directivesynopsis>
         <name>TLSCertificate</name>
         <description>adds a certificate and key (PEM encoded) to a server/virtual host.</description>
-        <syntax>TLSCertificate cert_file [key_file]</syntax>
+        <syntax>TLSCertificate <em>cert_file</em> [<em>key_file</em>]</syntax>
         <contextlist>
             <context>server config</context>
             <context>virtual host</context>
@@ -345,7 +345,7 @@ MDomain example.net
     <directivesynopsis>
         <name>TLSProtocol</name>
         <description>specifies the minimum version of the TLS protocol to use.</description>
-        <syntax>TLSProtocol version+</syntax>
+        <syntax>TLSProtocol <em>version</em>+</syntax>
         <contextlist>
             <context>server config</context>
             <context>virtual host</context>
@@ -360,7 +360,7 @@ MDomain example.net
     <directivesynopsis>
         <name>TLSCiphersPrefer</name>
         <description>defines ciphers that are preferred.</description>
-        <syntax>TLSCiphersPrefer cipher(-list)</syntax>
+        <syntax>TLSCiphersPrefer <em>cipher(-list)</em></syntax>
         <contextlist>
             <context>server config</context>
             <context>virtual host</context>
@@ -388,7 +388,7 @@ TLSCiphersPrefer ECDHE-ECDSA-AES256-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305
     <directivesynopsis>
         <name>TLSCiphersSuppress</name>
         <description>defines ciphers that are not to be used.</description>
-        <syntax>TLSCiphersSuppress cipher(-list)</syntax>
+        <syntax>TLSCiphersSuppress <em>cipher(-list)</em></syntax>
         <contextlist>
             <context>server config</context>
             <context>virtual host</context>
@@ -432,7 +432,7 @@ TLSCiphersSuppress ECDHE-ECDSA-CHACHA20-POLY1305
     <directivesynopsis>
         <name>TLSOptions</name>
         <description>enables SSL variables for requests.</description>
-        <syntax>TLSOptions [+|-]option</syntax>
+        <syntax>TLSOptions [+|-]<em>option</em></syntax>
         <contextlist>
             <context>server config</context>
             <context>virtual host</context>
@@ -492,7 +492,7 @@ TLSCiphersSuppress ECDHE-ECDSA-CHACHA20-POLY1305
                 `TLSProxyEngine on|off` is analog to `SSLProxyEngine` in <module>mod_ssl</module>.
             </p><p>
                 This can be used in a server/virtual host or `&lt;Proxy>` section to
-                enable the module for outgoing connections using `mod_proxy`.
+                enable the module for outgoing connections using <module>mod_proxy</module>.
             </p>
         </usage>
     </directivesynopsis>
@@ -500,7 +500,7 @@ TLSCiphersSuppress ECDHE-ECDSA-CHACHA20-POLY1305
     <directivesynopsis>
         <name>TLSProxyCA</name>
         <description>sets the root certificates to validate the backend server with.</description>
-        <syntax>TLSProxyCA file.pem</syntax>
+        <syntax>TLSProxyCA <em>file.pem</em></syntax>
         <contextlist>
             <context>server config</context>
             <context>virtual host</context>
@@ -508,7 +508,7 @@ TLSCiphersSuppress ECDHE-ECDSA-CHACHA20-POLY1305
         </contextlist>
         <usage>
             <p>
-                `TLSProxyEngine on|off` is analog to `SSLProxyCACertificatePath` in <module>mod_ssl</module>.
+
             </p>
         </usage>
     </directivesynopsis>
@@ -516,7 +516,7 @@ TLSCiphersSuppress ECDHE-ECDSA-CHACHA20-POLY1305
     <directivesynopsis>
         <name>TLSProxyProtocol</name>
         <description>specifies the minimum version of the TLS protocol to use in proxy connections.</description>
-        <syntax>TLSProxyProtocol version+</syntax>
+        <syntax>TLSProxyProtocol <em>version</em>+</syntax>
         <contextlist>
             <context>server config</context>
             <context>virtual host</context>
@@ -570,7 +570,7 @@ TLSCiphersSuppress ECDHE-ECDSA-CHACHA20-POLY1305
     <directivesynopsis>
         <name>TLSProxyMachineCertificate</name>
         <description>adds a certificate and key file (PEM encoded) to a proxy setup.</description>
-        <syntax>TLSProxyMachineCertificate cert_file [key_file]</syntax>
+        <syntax>TLSProxyMachineCertificate <em>cert_file</em> [<em>key_file</em>]</syntax>
         <contextlist>
             <context>server config</context>
             <context>virtual host</context>
@@ -608,7 +608,7 @@ TLSCiphersSuppress ECDHE-ECDSA-CHACHA20-POLY1305
     <directivesynopsis>
         <name>TLSSessionCache</name>
         <description>specifies the cache for TLS session resumption.</description>
-        <syntax>TLSSessionCache cache-spec</syntax>
+        <syntax>TLSSessionCache <em>cache-spec</em></syntax>
         <contextlist>
             <context>server config</context>
         </contextlist>
