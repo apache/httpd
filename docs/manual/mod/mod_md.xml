@@ -679,7 +679,7 @@ MDPortMap http:- https:8433
                 the module will obtain a certificate for each key.
             </p><p>
                 For example, you may configure an RSA and an Elliptic Curve (EC) key, so
-                that 2 certicates are created for a domain. On a client connection, the first
+                that 2 certificates are created for a domain. On a client connection, the first
                 one supported by the client will then be used.
             </p><p>
                 Since EC keys and certificates are smaller, you might want to offer
@@ -1060,7 +1060,8 @@ MDMessageCmd /etc/apache/md-message
                 DNS name in a MDomain. Cluster setups may use this event to distribute
                 challenge files to all nodes in a cluster.
             </p><p>
-                ocsp-errored happens when MDStapling is enabled for a domain, this indicates
+                ocsp-errored happens when <directive module="mod_md">MDStapling</directive>
+                is enabled for a domain, this indicates
                 that an error was encountered retrieving the OCSP response from the
                 Certificate Authority. mod_md will continue trying.
             </p>
