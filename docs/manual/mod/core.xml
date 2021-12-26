@@ -2042,12 +2042,12 @@ to the network</description>
 <usage>
     <p>This directive allows to configure the maximum number of pipelined
     responses, which remain pending so long as pipelined request are received.
-    When the limit is reached, reponses are forcibly flushed to the network in
+    When the limit is reached, responses are forcibly flushed to the network in
     blocking mode, until passing under the limit again.</p>
 
     <p><directive>FlushMaxPipelined</directive> helps constraining memory
-    usage. When set to <var>0</var> pipelining is disabled, when set to
-    <var>-1</var> there is no limit (<directive>FlushMaxThreshold</directive>
+    usage. When set to <code>0</code> pipelining is disabled, when set to
+    <code>-1</code> there is no limit (<directive module="core">FlushMaxThreshold</directive>
     still applies).</p>
 </usage>
 </directivesynopsis>
@@ -2056,7 +2056,7 @@ to the network</description>
 <name>FlushMaxThreshold</name>
 <description>Threshold above which pending data are flushed to the
 network</description>
-<syntax>FlushMaxThreshold<var>number-of-bytes</var></syntax>
+<syntax>FlushMaxThreshold <var>number-of-bytes</var></syntax>
 <default>FlushMaxThreshold 65536</default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
@@ -2068,7 +2068,7 @@ network</description>
     the network in blocking mode, until passing under the limit again.</p>
 
     <p><directive>FlushMaxThreshold</directive> helps constraining memory
-    usage. When set to <var>0</var> or a too small value there are actually
+    usage. When set to <code>0</code> or a too small value there are actually
     no pending data, but for threaded MPMs there can be more threads busy
     waiting for the network thus less ones available to handle the other
     simultaneous connections.</p>
