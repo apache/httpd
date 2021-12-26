@@ -334,7 +334,7 @@ static apr_status_t cha_tls_alpn_01_setup(md_acme_authz_cha_t *cha, md_acme_auth
 
     /* Create a "tls-alpn-01" certificate for the domain we want to authenticate.
      * The server will need to answer a TLS connection with SNI == authz->domain
-     * and ALPN procotol "acme-tls/1" with this certificate.
+     * and ALPN protocol "acme-tls/1" with this certificate.
      */
     md_data_init_str(&data, cha->key_authz);
     rv = md_crypt_sha256_digest_hex(&token, p, &data);
