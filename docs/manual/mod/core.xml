@@ -548,8 +548,8 @@ AllowOverride AuthConfig
 AllowOverrideList CookieTracking CookieName
     </highlight>
 
-    <p>In the example above, <directive module="core">AllowOverride
-    </directive> grants permission to the <code>AuthConfig</code>
+    <p>In the example above, <directive module="core">AllowOverride</directive>
+    grants permission to the <code>AuthConfig</code>
     directive grouping and <directive>AllowOverrideList</directive> grants
     permission to only two directives from the <code>FileInfo</code> directive
     grouping. All others will cause an internal server error.</p>
@@ -2020,12 +2020,12 @@ to the network</description>
 <usage>
     <p>This directive allows to configure the maximum number of pipelined
     responses, which remain pending so long as pipelined request are received.
-    When the limit is reached, reponses are forcibly flushed to the network in
+    When the limit is reached, responses are forcibly flushed to the network in
     blocking mode, until passing under the limit again.</p>
 
     <p><directive>FlushMaxPipelined</directive> helps constraining memory
-    usage. When set to <var>0</var> pipelining is disabled, when set to
-    <var>-1</var> there is no limit (<directive>FlushMaxThreshold</directive>
+    usage. When set to <code>0</code> pipelining is disabled, when set to
+    <code>-1</code> there is no limit (<directive module="core">FlushMaxThreshold</directive>
     still applies).</p>
 </usage>
 </directivesynopsis>
@@ -2034,7 +2034,7 @@ to the network</description>
 <name>FlushMaxThreshold</name>
 <description>Threshold above which pending data are flushed to the
 network</description>
-<syntax>FlushMaxThreshold<var>number-of-bytes</var></syntax>
+<syntax>FlushMaxThreshold <var>number-of-bytes</var></syntax>
 <default>FlushMaxThreshold 65536</default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
@@ -2046,7 +2046,7 @@ network</description>
     the network in blocking mode, until passing under the limit again.</p>
 
     <p><directive>FlushMaxThreshold</directive> helps constraining memory
-    usage. When set to <var>0</var> or a too small value there are actually
+    usage. When set to <code>0</code> or a too small value there are actually
     no pending data, but for threaded MPMs there can be more threads busy
     waiting for the network thus less ones available to handle the other
     simultaneous connections.</p>
@@ -2342,7 +2342,13 @@ if file exists at startup</description>
     the path will be checked relative to the compiled-in server root or
     the server root passed in on the command line via the <code>-d</code>
     parameter.</p>
-    
+
+    <note type="warning"><title>Warning</title>
+    In 2.4.34, it is not possible to specify a <var>filename</var>
+    with surrounding quotes. This would generate a parsing error at start-up.
+    The main impact is that filenames with spaces can't be used.
+    This behavior is fixed in 2.4.35.</note>
+
 </usage>
 </directivesynopsis>
 
@@ -4351,18 +4357,18 @@ of a request or the last 63, assuming the request itself is greater than
 <compatibility>Available in Apache httpd 2.2.7 and later.</compatibility>
 
 <usage>
-    <p>mod_status with <code>ExtendedStatus On</code>
+    <p><module>mod_status</module> with <code>ExtendedStatus On</code>
     displays the actual request being handled.
     For historical purposes, only 63 characters of the request
     are actually stored for display purposes. This directive
-    controls whether the 1st 63 characters are stored (the previous
+    controls whether the first 63 characters are stored (the previous
     behavior and the default) or if the last 63 characters are. This
     is only applicable, of course, if the length of the request is
     64 characters or greater.</p>
 
     <p>If Apache httpd is handling <code
     >GET&nbsp;/disk1/storage/apache/htdocs/images/imagestore1/food/apples.jpg&nbsp;HTTP/1.1</code
-    > mod_status displays as follows:
+    > <module>mod_status</module> displays as follows:
     </p>
 
     <table border="1">
@@ -4689,7 +4695,6 @@ header</description>
     disabling the Server: header does nothing at all to make your
     server more secure. The idea of "security through obscurity"
     is a myth and leads to a false sense of safety.</note>
-
 </usage>
 <seealso><directive module="core">ServerSignature</directive></seealso>
 </directivesynopsis>
