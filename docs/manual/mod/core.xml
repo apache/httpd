@@ -771,8 +771,6 @@ DefaultType None
     send the response without a Content-Type header field and the
     recipient may attempt to guess the media type.</p>
 </usage>
-<seealso><directive module="core">UnDefine</directive></seealso>
-<seealso><directive module="core">IfDefine</directive></seealso>
 </directivesynopsis>
 
 <directivesynopsis>
@@ -816,6 +814,8 @@ DocumentRoot "/var/www/${servername}/htdocs"
          directives, beyond any enclosing virtual host.</p>
     </note>
 </usage>
+<seealso><directive module="core">UnDefine</directive></seealso>
+<seealso><directive module="core">IfDefine</directive></seealso>
 </directivesynopsis>
 
 <directivesynopsis type="section">
