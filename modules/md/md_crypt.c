@@ -1518,7 +1518,7 @@ apr_status_t md_cert_chain_read_http(struct apr_array_header_t *chain,
         rv = md_cert_read_chain(chain, res->req->pool, data, data_len);
         if (APR_SUCCESS == rv && chain->nelts == 0) {
             md_log_perror(MD_LOG_MARK, MD_LOG_ERR, 0, p,
-                "certificiate chain response did not contain any certificates "
+                "certificate chain response did not contain any certificates "
                 "(suspicious content-type: %s)", ct);
             rv = APR_ENOENT;
         }

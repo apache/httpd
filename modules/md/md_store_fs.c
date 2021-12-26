@@ -240,8 +240,8 @@ static apr_status_t read_store_file(md_store_fs_t *s_fs, const char *fname,
             if (APR_SUCCESS == rv) {
                 md_json_setn(MD_STORE_VERSION, json, MD_KEY_STORE, MD_KEY_VERSION, NULL);
                 rv = md_json_freplace(json, ptemp, MD_JSON_FMT_INDENT, fname, MD_FPROT_F_UONLY);
-           }
-           md_log_perror(MD_LOG_MARK, MD_LOG_INFO, rv, p, "migrated store");
+            }
+            md_log_perror(MD_LOG_MARK, MD_LOG_INFO, rv, p, "migrated store");
         } 
     }
     return rv;

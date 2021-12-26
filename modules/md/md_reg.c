@@ -243,7 +243,7 @@ static apr_status_t state_init(md_reg_t *reg, apr_pool_t *p, md_t *md)
         }
         else {
             state = MD_S_ERROR;
-            state_descr = "error intializing";
+            state_descr = "error initializing";
             md_log_perror(MD_LOG_MARK, MD_LOG_WARNING, rv, p, "md{%s}: error", md->name);
             goto cleanup;
         }
