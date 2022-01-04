@@ -2946,13 +2946,6 @@ depends on the OpenSSL version being used for <module>mod_ssl</module>
 names, see the section <em>Supported configuration file commands</em> in the
 <a href="http://www.openssl.org/docs/man1.0.2/ssl/SSL_CONF_cmd.html#SUPPORTED-CONFIGURATION-FILE-COMMANDS">SSL_CONF_cmd(3)</a> manual page for OpenSSL.</p>
 
-<p>Some of the <directive>SSLOpenSSLConfCmd</directive> commands can be used
-as an alternative to existing directives (such as
-<directive module="mod_ssl">SSLCipherSuite</directive> or
-<directive module="mod_ssl">SSLProtocol</directive>),
-though it should be noted that the syntax / allowable values for the parameters
-may sometimes differ.</p>
-
 <example><title>Examples</title>
 <highlight language="config">
 SSLOpenSSLConfCmd Options -SessionTicket,ServerPreference
@@ -2962,6 +2955,23 @@ SSLOpenSSLConfCmd Protocol "-ALL, TLSv1.2"
 SSLOpenSSLConfCmd SignatureAlgorithms RSA+SHA384:ECDSA+SHA256
 </highlight>
 </example>
+
+<note type="warning"><title>Compatibility and Stability
+warning</title>
+
+<p>Some of the <directive>SSLOpenSSLConfCmd</directive> commands can be used
+as an alternative to existing directives (such as
+<directive module="mod_ssl">SSLCipherSuite</directive> or
+<directive module="mod_ssl">SSLProtocol</directive>),
+though the syntax / allowable values for the parameters may sometimes differ.</p>
+
+<p>It is recommended that directives provided by mod_ssl are used
+where available to configure OpenSSL, and
+<directive>SSLOpenSSLConfCmd</directive> is only used for features of
+OpenSSL which are not configurable by mod_ssl.  It is possible that
+mod_ssl behaviour will change across versions of httpd where
+<directive>SSLOpenSSLConfCmd</directive> is used.</p>
+</note>
 </usage>
 </directivesynopsis>
 
