@@ -116,6 +116,11 @@ if ! test -v SKIP_TESTING; then
     sudo sysctl -w kernel.core_uses_pid=1 2>/dev/null || true
 
     if ! test -v NO_TEST_FRAMEWORK; then
+        if ! test -v TEST_OPENSSL3; then
+            #### this test started failing in Dec 2021 for unknown reasons
+            rm -f test/perl-framework/t/ssl/ocsp.t
+        fi
+
         if test -v WITH_TEST_SUITE; then
             make check TESTS="${TESTS}" TEST_CONFIG="${TEST_ARGS}"
             RV=$?
@@ -133,11 +138,6 @@ if ! test -v SKIP_TESTING; then
         if test $RV -eq 0 && test -n "`ls test/perl-framework/t/core{,.*} 2>/dev/null`"; then
             RV=4
         fi
-    fi
-
-    if ! test -v TEST_OPENSSL3; then
-        #### this test started failing in Dec 2021 for unknown reasons
-        rm -f test/perl-framework/t/ssl/ocsp.t
     fi
     
     if test -v TEST_SSL -a $RV -eq 0; then
