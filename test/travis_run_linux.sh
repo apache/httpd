@@ -185,7 +185,8 @@ if ! test -v SKIP_TESTING; then
     fi
 
     if test $RV -ne 0 && test -f test/perl-framework/t/logs/error_log; then
-        grep -v ':\(debug\|trace[12345678]\)\]' test/perl-framework/t/logs/error_log
+        #grep -v ':\(debug\|trace[12345678]\)\]' test/perl-framework/t/logs/error_log
+        cat test/perl-framework/t/logs/error_log
     fi
 
     if test -v TEST_CORE -a $RV -eq 0; then

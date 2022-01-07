@@ -248,6 +248,7 @@ jobs:
       env: APR_VERSION=1.7.x APR_CONFIG="--enable-pool-debug"
            APU_VERSION=1.7.x APU_CONFIG="--with-crypto --with-ldap"
            CONFIG="--enable-mods-shared=reallyall --enable-mpms-shared=all --with-mpm=event"
+           TESTS="t/ssl/ocsp.t" TEST_ARGS="-verbose -trace=debug"
            TEST_MALLOC=1 TEST_SSL=1
            CLEAR_CACHE=1
     # -------------------------------------------------------------------------
