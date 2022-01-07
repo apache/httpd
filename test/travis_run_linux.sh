@@ -250,7 +250,8 @@ if ! test -v SKIP_TESTING; then
     # --enable-thread-debug when an APR pool concurrency check aborts
 
     for phrase in 'Segmentation fault' 'glibc detected' 'pool concurrency check:' 'Assertion.*failed'; do
-        if grep -q "$phrase" test/perl-framework/t/logs/error_log; then
+        # Ignore IO/debug logs
+        if grep -v ':\(debug\|trace[12345678]\)\]' test/perl-framework/t/logs/error_log | grep -q "$phrase"; then
             grep --color=always -C5 "$phrase" test/perl-framework/t/logs/error_log
             RV=2
         fi
