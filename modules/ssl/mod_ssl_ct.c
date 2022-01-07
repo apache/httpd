@@ -2966,13 +2966,12 @@ static const char *ct_static_scts(cmd_parms *cmd, void *x, const char *cert_fn,
     }
     
     cert = PEM_read_X509(pemfile, NULL, NULL, NULL);
+    fclose(pemfile);
+
     if (!cert) {
-        fclose(pemfile);
         return apr_psprintf(p, "could not read certificate from file %s",
                             cert_fn);
     }
-
-    fclose(pemfile);
 
     fingerprint = get_cert_fingerprint(p, cert);
     X509_free(cert);
