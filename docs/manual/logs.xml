@@ -680,14 +680,16 @@ CustomLog "logs/access_log" comonvhost
       <modulelist>
         <module>mod_logio</module>
         <module>mod_log_config</module>
+        <module>mod_log_debug</module>
         <module>mod_log_forensic</module>
         <module>mod_cgi</module>
       </modulelist>
 
       <directivelist>
-        <directive module="mod_log_config">LogFormat</directive>
         <directive module="mod_log_config">BufferedLogs</directive>
         <directive module="mod_log_forensic">ForensicLog</directive>
+        <directive module="mod_log_config">LogFormat</directive>
+        <directive module="mod_log_debug">LogMessage</directive>
         <directive module="mpm_common">PidFile</directive>
         <directive module="mod_cgi">ScriptLog</directive>
         <directive module="mod_cgi">ScriptLogBuffer</directive>
@@ -737,6 +739,14 @@ CustomLog "logs/access_log" comonvhost
       This should only be used in testing - not for live servers.
       More information is available in the <a
       href="mod/mod_cgi.html">mod_cgi</a> documentation.</p>
+    </section>
+
+    <section id="debug">
+        <title>Configurable debug logging</title>
+
+        <p>The <directive module="mod_log_debug">LogMessage</directive> 
+        lets you create your own custom log messages to aid in debugging.
+        </p>
     </section>
 
   </section>
