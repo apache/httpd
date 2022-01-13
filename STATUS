@@ -178,6 +178,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
              for internal users of this api; not sure if performance
              impact is significant from using malloc here.
 
+  *) mpm_event: Fix a possible listener deadlock on heavy load when restarting
+     and/or reaching MaxConnectionsPerChild.  PR 65769.
+     Trunk version of patch:
+        https://svn.apache.org/r1896505
+     Backport version for 2.4.x of patch:
+      Trunk version of patch works
+      svn merge -c 1896505 ^/httpd/httpd/trunk .
+     +1: rpluem,
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
