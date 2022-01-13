@@ -92,6 +92,7 @@ fi
 
 if ! test -v SKIP_TESTING; then
     set +e
+    RV=0
 
     if test -v TEST_MALLOC; then
         # Enable enhanced glibc malloc debugging, see mallopt(3)
@@ -110,11 +111,6 @@ if ! test -v SKIP_TESTING; then
     # Try to keep all potential coredumps from all processes
     sudo sysctl -w kernel.core_uses_pid=1 2>/dev/null || true
 
-    if ! test -v TEST_OPENSSL3; then
-        #### this test started failing in Dec 2021 for unknown reasons
-        rm -f test/perl-framework/t/ssl/ocsp.t
-    fi
-
     if test -v WITH_TEST_SUITE; then
         make check TESTS="${TESTS}" TEST_CONFIG="${TEST_ARGS}"
         RV=$?
@@ -129,10 +125,10 @@ if ! test -v SKIP_TESTING; then
 
     # Skip further testing if a core dump was created during the test
     # suite run above.
-    if test $RV -eq 0 && ls test/perl-framework/t/core test/perl-framework/t/core.* &>/dev/null; then
+    if test $RV -eq 0 && test -n "`ls test/perl-framework/t/core{,.*} 2>/dev/null`"; then
         RV=4
-    fi            
-    
+    fi
+
     if test -v TEST_SSL -a $RV -eq 0; then
         pushd test/perl-framework
             # Test loading encrypted private keys
@@ -168,6 +164,10 @@ if ! test -v SKIP_TESTING; then
            RV=$?
            ./t/TEST -stop
         popd
+    fi
+
+    if test $RV -ne 0 && test -f test/perl-framework/t/logs/error_log; then
+        grep -v ':\(debug\|trace[12345678]\)\]' test/perl-framework/t/logs/error_log
     fi
 
     if test -v TEST_CORE -a $RV -eq 0; then
@@ -221,18 +221,19 @@ if ! test -v SKIP_TESTING; then
     # --enable-thread-debug when an APR pool concurrency check aborts
 
     for phrase in 'Segmentation fault' 'glibc detected' 'pool concurrency check:' 'Assertion.*failed'; do
-        if grep -q "$phrase" test/perl-framework/t/logs/error_log; then
+        # Ignore IO/debug logs
+        if grep -v ':\(debug\|trace[12345678]\)\]' test/perl-framework/t/logs/error_log | grep -q "$phrase"; then
             grep --color=always -C5 "$phrase" test/perl-framework/t/logs/error_log
             RV=2
         fi
     done
 
-    if test -v TEST_UBSAN && ls ubsan.log.* &> /dev/null; then
+    if test -v TEST_UBSAN && test -n "`ls ubsan.log.* 2>/dev/null`"; then
         cat ubsan.log.*
         RV=3
     fi
 
-    if test -v TEST_ASAN && ls asan.log.* &> /dev/null; then
+    if test -v TEST_ASAN && test -n "`ls asan.log.* 2>/dev/null`"; then
         cat asan.log.*
 
         # ASan can report memory leaks, fail on errors only
@@ -241,8 +242,7 @@ if ! test -v SKIP_TESTING; then
         fi
     fi
 
-    shopt -s nullglob 
-    for core in test/perl-framework/t/core* ; do
+    for core in `ls test/perl-framework/t/core{,.*} 2>/dev/null`; do
         gdb -ex 'thread apply all backtrace full' -batch ./httpd "$core"
         RV=5
     done
