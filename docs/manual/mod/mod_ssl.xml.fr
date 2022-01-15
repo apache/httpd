@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1884552 -->
+<!-- English Revision: 1896664 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -3333,12 +3333,7 @@ section <em>Supported configuration file commands</em> de la page de
 manuel d'OpenSSL <a
 href="http://www.openssl.org/docs/man1.0.2/ssl/SSL_CONF_cmd.html#SUPPORTED-CONFIGURATION-FILE-COMMANDS">SSL_CONF_cmd(3)</a>.</p>
 
-<p>Certaines commandes peuvent remplacer des directives existantes
-(comme <directive module="mod_ssl">SSLCipherSuite</directive> ou
-<directive module="mod_ssl">SSLProtocol</directive>) ; notez cependant
-que la syntaxe et/ou les valeurs possibles peuvent différer.</p>
-
-<example><title>Examples</title>
+<example><title>Exemples</title>
 <highlight language="config">
 SSLOpenSSLConfCmd Options -SessionTicket,ServerPreference
 SSLOpenSSLConfCmd ECDHParameters brainpoolP256r1
@@ -3347,6 +3342,23 @@ SSLOpenSSLConfCmd Protocol "-ALL, TLSv1.2"
 SSLOpenSSLConfCmd SignatureAlgorithms RSA+SHA384:ECDSA+SHA256
 </highlight>
 </example>
+
+<note type="warning"><title>Avertissement à propos de la compatibilité et de la
+stabilité</title>
+
+<p>Certaines commandes de la directive <directive>SSLOpenSSLConfCmd</directive>
+peuvent être utilisées comme alternatives à certaines directives existantes
+comme <directive module="mod_ssl">SSLCipherSuite</directive> ou <directive
+module="mod_ssl">SSLProtocol</directive>), bien que la syntaxe et les valeurs
+autorisées des paramètres puissent parfois être différentes.</p>
+
+<p>Pour configurer OpenSSL, il est recommandé d'utiliser les directives fournies
+par mod_ssl, losqu'elles sont disponibles, et de n'utiliser
+<directive>SSLOpenSSLConfCmd</directive> que pour les fonctionnalités d'OpenSSL
+non configurables par mod_ssl. Il est possible que le comportement de mod_ssl
+évolue avec les versions de httpd où <directive>SSLOpenSSLConfCmd</directive>
+sera utilisé.</p>
+</note>
 </usage>
 </directivesynopsis>
 

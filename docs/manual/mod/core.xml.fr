@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1890424:1896414 (outdated) -->
+<!-- English Revision: 1896414 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -837,8 +837,6 @@ DESACTIVÉS à partir de la version 2.3.0.</compatibility>
     Content-Type, et le destinataire devra déterminer lui-même le type
     de médium.</p>
 </usage>
-<seealso><directive module="core">UnDefine</directive></seealso>
-<seealso><directive module="core">IfDefine</directive></seealso>
 </directivesynopsis>
 
 <directivesynopsis>
@@ -884,6 +882,8 @@ DESACTIVÉS à partir de la version 2.3.0.</compatibility>
     ultérieure, au delà de tout bloc VirtualHost.</p>
     </note>
 </usage>
+<seealso><directive module="core">UnDefine</directive></seealso>
+<seealso><directive module="core">IfDefine</directive></seealso>
 </directivesynopsis>
 
 <directivesynopsis type="section">
@@ -2231,9 +2231,9 @@ elles sont envoyées sur le réseau</description>
     dessous de la limite.</p>
 
     <p>La directive <directive>FlushMaxPipelined</directive> permet de limiter
-    la consommation de mémoire. Lorsqu'elle est définie à <var>0</var>, le
-    pipelining est désactivé, et lorsqu'elle est définie à <var>-1</var>, il n'y
-    a plus de limite (mais la directive <directive>FlushMaxThreshold</directive>
+    la consommation de mémoire. Lorsqu'elle est définie à <code>0</code>, le
+    pipelining est désactivé, et lorsqu'elle est définie à <code>-1</code>, il n'y
+    a plus de limite (mais la directive <directive module="core">FlushMaxThreshold</directive>
     s'applique quand-même).</p>
 </usage>
 </directivesynopsis>
@@ -2242,7 +2242,7 @@ elles sont envoyées sur le réseau</description>
 <name>FlushMaxThreshold</name>
 <description>Seuil au-delà duquel les données en attente sont envoyées sur le
 réseau</description>
-<syntax>FlushMaxThreshold<var>number-of-bytes</var></syntax>
+<syntax>FlushMaxThreshold <var>number-of-bytes</var></syntax>
 <default>FlushMaxThreshold 65536</default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
@@ -2255,7 +2255,7 @@ réseau</description>
     dessous du seuil spécifié.</p>
 
     <p>La directive <directive>FlushMaxThreshold</directive> permet de limiter
-    la consommation de mémoire. Lorsqu'elle est définie à <var>0</var> ou à une
+    la consommation de mémoire. Lorsqu'elle est définie à <code>0</code> ou à une
     valeur trop petite, aucune donnée n'est mise en attente, mais dans le cas
     des MPMs threadés, il peut alors y avoir plus de threads occupés en attente du
     réseau, ce qui diminue d'autant le nombre de threads disponibles pour

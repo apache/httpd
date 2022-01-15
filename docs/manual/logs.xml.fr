@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 1741842 -->
+<!-- English Revision: 1896911 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -719,13 +719,15 @@ CustomLog "logs/access_log" comonvhost
       <modulelist>
         <module>mod_logio</module>
 	<module>mod_log_config</module>
+	<module>mod_log_debug</module>
         <module>mod_log_forensic</module>
         <module>mod_cgi</module>
       </modulelist>
       <directivelist>
-        <directive module="mod_log_config">LogFormat</directive>
 	<directive module="mod_log_config">BufferedLogs</directive>
         <directive module="mod_log_forensic">ForensicLog</directive>
+	<directive module="mod_log_config">LogFormat</directive>
+        <directive module="mod_log_debug">LogMessage</directive>
         <directive module="mpm_common">PidFile</directive>
         <directive module="mod_cgi">ScriptLog</directive>
         <directive module="mod_cgi">ScriptLogBuffer</directive>
@@ -775,6 +777,15 @@ CustomLog "logs/access_log" comonvhost
       utilisée que pendant la phase de test, et en aucun cas sur un
       serveur en production. Vous trouverez plus d'informations dans la
       documentation du module <a href="mod/mod_cgi.html">mod_cgi</a>.</p>
+    </section>
+
+    <section id="debug">
+        <title>Journalisation de débogage configurable</title>
+
+        <p>La directive <directive module="mod_log_debug">LogMessage</directive>
+	vous permet de créer vos propres messages de journalisation
+	personnalisés pour faciliter vos opérations de débogage.
+        </p>
     </section>
     
   </section>

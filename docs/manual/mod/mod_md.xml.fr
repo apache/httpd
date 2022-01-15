@@ -2,7 +2,7 @@
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
-<!-- English Revision: 1896105:1896411 (outdated) -->
+<!-- English Revision: 1896411 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -1255,11 +1255,12 @@ MDMessageCmd /etc/apache/md-message
 		configurations de clusters peuvent utiliser cet évènement pour
 		distribuer les fichiers de vérification à tous les noeuds.
             </p><p>
-                Un évènement de type ocsp-errored est déclenché lorsque le
-		MDStapling est activé pour un domaine, et indique qu'une erreur
-		s'est produite en essayant d'obtenir la réponse OCSP  de
-		l'autorité de certification. mod_md essaiera à nouveau d'obtenir
-		cette réponse.		
+		Un évènement de type ocsp-errored est déclenché lorsque le
+		<directive module="mod_md">MDStapling</directive> est activé
+		pour un domaine, et indique qu'une erreur s'est produite en
+		essayant d'obtenir la réponse OCSP  de l'autorité de
+		certification. mod_md essaiera à nouveau d'obtenir cette
+		réponse.		
             </p>
         </usage>
     </directivesynopsis>
