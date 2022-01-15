@@ -187,6 +187,16 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       svn merge -c 1896505 ^/httpd/httpd/trunk .
      +1: rpluem, ylavic, gbechis
 
+  *) dbm: Split the loading of a dbm driver from the opening of a dbm file. When
+     an attempt to load a dbm driver fails, log clearly which driver triggered
+     the error (not "default"), and what the error was.
+     Trunk version of patch:
+        https://svn.apache.org/r1891019
+     Backport version for 2.4.x of patch:
+        https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/httpd-dbm.patch
+     +1: minfrin
+
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
