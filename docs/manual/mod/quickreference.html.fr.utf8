@@ -623,7 +623,7 @@ connexion.</td></tr>
 <tr><td><a href="mod_firehose.html#firehoserequestoutput">FirehoseRequestOutput <var>[ block | nonblock ]</var> <var>filename</var></a></td><td></td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Capture le trafic sortant du serveur à chaque requête</td></tr>
 <tr class="odd"><td><a href="core.html#flushmaxpipelined">FlushMaxPipelined <var>number</var></a></td><td> 5 </td><td>sv</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Nombre maximal de réponses en attente (pipelined) au-delà duquel
 elles sont envoyées sur le réseau</td></tr>
-<tr><td><a href="core.html#flushmaxthreshold">FlushMaxThreshold<var>number-of-bytes</var></a></td><td> 65536 </td><td>sv</td><td>C</td></tr><tr><td class="descr" colspan="4">Seuil au-delà duquel les données en attente sont envoyées sur le
+<tr><td><a href="core.html#flushmaxthreshold">FlushMaxThreshold <var>number-of-bytes</var></a></td><td> 65536 </td><td>sv</td><td>C</td></tr><tr><td class="descr" colspan="4">Seuil au-delà duquel les données en attente sont envoyées sur le
 réseau</td></tr>
 <tr class="odd"><td><a href="mod_negotiation.html#forcelanguagepriority">ForceLanguagePriority None|Prefer|Fallback [Prefer|Fallback]</a></td><td> Prefer </td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Action à entreprendre si un document acceptable unique
 n'est pas trouvé</td></tr>
@@ -652,13 +652,13 @@ requêtes</td></tr>
 	enfant.</td></tr>
 <tr class="odd"><td><a href="mod_http2.html#h2moderntlsonly">H2ModernTLSOnly on|off</a></td><td> on </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Impose les connexions HTTP/2 en mode "TLS moderne"
 	seulement</td></tr>
-<tr><td><a href="mod_http2.html#h2outputbuffering">H2OutputBuffering on/off</a></td><td> on </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Contrôle la mise en tampon du flux de sortie</td></tr>
-<tr class="odd"><td><a href="mod_http2.html#h2padding">H2Padding numbits</a></td><td> 0 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Spécifie un intervalle de nombres d'octets de bourrage à
+<tr><td><a href="mod_http2.html#h2outputbuffering">H2OutputBuffering on|off</a></td><td> on </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Contrôle la mise en tampon du flux de sortie</td></tr>
+<tr class="odd"><td><a href="mod_http2.html#h2padding">H2Padding <em>numbits</em></a></td><td> 0 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Spécifie un intervalle de nombres d'octets de bourrage à
 	ajouter aux trames utiles</td></tr>
 <tr><td><a href="mod_http2.html#h2push">H2Push on|off</a></td><td> on </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Activation/désactivation du server push H2</td></tr>
 <tr class="odd"><td><a href="mod_http2.html#h2pushdiarysize">H2PushDiarySize n</a></td><td> 256 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Taille du journal des Pushes H2</td></tr>
-<tr><td><a href="mod_http2.html#h2pushpriority">H2PushPriority mime-type [after|before|interleaved] [weight]</a></td><td> * After 16 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Priorité des pushes H2</td></tr>
-<tr class="odd"><td><a href="mod_http2.html#h2pushresource">H2PushResource [add] path [critical]</a></td><td></td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Déclare des ressources à proposer ("pusher") au client</td></tr>
+<tr><td><a href="mod_http2.html#h2pushpriority">H2PushPriority <em>mime-type</em> [after|before|interleaved] [<em>weight</em>]</a></td><td> * After 16 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Priorité des pushes H2</td></tr>
+<tr class="odd"><td><a href="mod_http2.html#h2pushresource">H2PushResource [add] <em>path</em> [critical]</a></td><td></td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Déclare des ressources à proposer ("pusher") au client</td></tr>
 <tr><td><a href="mod_http2.html#h2serializeheaders">H2SerializeHeaders on|off</a></td><td> off </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Active/désactive la sérialisation du traitement des
 	requêtes/réponses</td></tr>
 <tr class="odd"><td><a href="mod_http2.html#h2streammaxmemsize">H2StreamMaxMemSize <em>bytes</em></a></td><td> 65536 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Quantité maximale de données en sortie mises en tampon par
@@ -1572,21 +1572,21 @@ enfant</td></tr>
 traitent les connexions clients</td></tr>
 <tr class="odd"><td><a href="core.html#timeout">TimeOut <var>time-interval</var>[s]</a></td><td> 60 </td><td>sv</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Temps pendant lequel le serveur va attendre certains
 évènements avant de considérer qu'une requête a échoué</td></tr>
-<tr><td><a href="mod_tls.html#tlscertificate">TLSCertificate cert_file [key_file]</a></td><td></td><td>sv</td><td>X</td></tr><tr><td class="descr" colspan="4">adds a certificate and key (PEM encoded) to a server/virtual host.</td></tr>
-<tr class="odd"><td><a href="mod_tls.html#tlsciphersprefer">TLSCiphersPrefer cipher(-list)</a></td><td></td><td>sv</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">defines ciphers that are preferred.</td></tr>
-<tr><td><a href="mod_tls.html#tlscipherssuppress">TLSCiphersSuppress cipher(-list)</a></td><td></td><td>sv</td><td>X</td></tr><tr><td class="descr" colspan="4">defines ciphers that are not to be used.</td></tr>
-<tr class="odd"><td><a href="mod_tls.html#tlsengine">TLSEngine [address:]port</a></td><td></td><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">defines on which address+port the module shall handle incoming connections.</td></tr>
-<tr><td><a href="mod_tls.html#tlshonorclientorder">TLSHonorClientOrder on|off</a></td><td></td><td>sv</td><td>X</td></tr><tr><td class="descr" colspan="4">-</td></tr>
-<tr class="odd"><td><a href="mod_tls.html#tlsoptions">TLSOptions [+|-]option</a></td><td></td><td>svdh</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">enables SSL variables for requests.</td></tr>
-<tr><td><a href="mod_tls.html#tlsprotocol">TLSProtocol version+</a></td><td></td><td>sv</td><td>X</td></tr><tr><td class="descr" colspan="4">specifies the minimum version of the TLS protocol to use.</td></tr>
-<tr class="odd"><td><a href="mod_tls.html#tlsproxyca">TLSProxyCA file.pem</a></td><td></td><td>sv</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">sets the root certificates to validate the backend server with.</td></tr>
-<tr><td><a href="mod_tls.html#tlsproxycipherprefer">TLSProxyCipherPrefer cipher(-list)</a></td><td></td><td>sv</td><td>X</td></tr><tr><td class="descr" colspan="4">defines ciphers that are preferred for a proxy connection.</td></tr>
-<tr class="odd"><td><a href="mod_tls.html#tlsproxyciphersuppress">TLSProxyCipherSuppress cipher(-list)</a></td><td></td><td>sv</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">defines ciphers that are not to be used for a proxy connection.</td></tr>
+<tr><td><a href="mod_tls.html#tlscertificate">TLSCertificate <em>cert_file</em> [<em>key_file</em>]</a></td><td></td><td>sv</td><td>X</td></tr><tr><td class="descr" colspan="4">adds a certificate and key (PEM encoded) to a server/virtual host.</td></tr>
+<tr class="odd"><td><a href="mod_tls.html#tlsciphersprefer">TLSCiphersPrefer <em>cipher(-list)</em></a></td><td></td><td>sv</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">defines ciphers that are preferred.</td></tr>
+<tr><td><a href="mod_tls.html#tlscipherssuppress">TLSCiphersSuppress <em>cipher(-list)</em></a></td><td></td><td>sv</td><td>X</td></tr><tr><td class="descr" colspan="4">defines ciphers that are not to be used.</td></tr>
+<tr class="odd"><td><a href="mod_tls.html#tlsengine">TLSEngine [<em>address</em>:]<em>port</em></a></td><td></td><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">defines on which address+port the module shall handle incoming connections.</td></tr>
+<tr><td><a href="mod_tls.html#tlshonorclientorder">TLSHonorClientOrder on|off</a></td><td> on </td><td>sv</td><td>X</td></tr><tr><td class="descr" colspan="4">determines if the order of ciphers supported by the client is honored</td></tr>
+<tr class="odd"><td><a href="mod_tls.html#tlsoptions">TLSOptions [+|-]<em>option</em></a></td><td></td><td>svdh</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">enables SSL variables for requests.</td></tr>
+<tr><td><a href="mod_tls.html#tlsprotocol">TLSProtocol <em>version</em>+</a></td><td> v1.2+ </td><td>sv</td><td>X</td></tr><tr><td class="descr" colspan="4">specifies the minimum version of the TLS protocol to use.</td></tr>
+<tr class="odd"><td><a href="mod_tls.html#tlsproxyca">TLSProxyCA <em>file.pem</em></a></td><td></td><td>sv</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">sets the root certificates to validate the backend server with.</td></tr>
+<tr><td><a href="mod_tls.html#tlsproxyciphersprefer">TLSProxyCiphersPrefer <em>cipher(-list)</em></a></td><td></td><td>sv</td><td>X</td></tr><tr><td class="descr" colspan="4">defines ciphers that are preferred for a proxy connection.</td></tr>
+<tr class="odd"><td><a href="mod_tls.html#tlsproxycipherssuppress">TLSProxyCiphersSuppress <em>cipher(-list)</em></a></td><td></td><td>sv</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">defines ciphers that are not to be used for a proxy connection.</td></tr>
 <tr><td><a href="mod_tls.html#tlsproxyengine">TLSProxyEngine on|off</a></td><td></td><td>sv</td><td>X</td></tr><tr><td class="descr" colspan="4">enables TLS for backend connections.</td></tr>
-<tr class="odd"><td><a href="mod_tls.html#tlsproxymachinecertificate">TLSProxyMachineCertificate cert_file [key_file]</a></td><td></td><td>sv</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">adds a certificate and key file (PEM encoded) to a proxy setup.</td></tr>
-<tr><td><a href="mod_tls.html#tlsproxyprotocol">TLSProxyProtocol version+</a></td><td></td><td>sv</td><td>X</td></tr><tr><td class="descr" colspan="4">specifies the minimum version of the TLS protocol to use in proxy connections.</td></tr>
-<tr class="odd"><td><a href="mod_tls.html#tlssessioncache">TLSSessionCache cache-spec</a></td><td></td><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">specifies the cache for TLS session resumption.</td></tr>
-<tr><td><a href="mod_tls.html#tlsstrictsni">TLSStrictSNI on|off</a></td><td></td><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">enforces exact matches of client server indicators (SNI) against host names.</td></tr>
+<tr class="odd"><td><a href="mod_tls.html#tlsproxymachinecertificate">TLSProxyMachineCertificate <em>cert_file</em> [<em>key_file</em>]</a></td><td></td><td>sv</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">adds a certificate and key file (PEM encoded) to a proxy setup.</td></tr>
+<tr><td><a href="mod_tls.html#tlsproxyprotocol">TLSProxyProtocol <em>version</em>+</a></td><td> v1.2+ </td><td>sv</td><td>X</td></tr><tr><td class="descr" colspan="4">specifies the minimum version of the TLS protocol to use in proxy connections.</td></tr>
+<tr class="odd"><td><a href="mod_tls.html#tlssessioncache">TLSSessionCache <em>cache-spec</em></a></td><td></td><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">specifies the cache for TLS session resumption.</td></tr>
+<tr><td><a href="mod_tls.html#tlsstrictsni">TLSStrictSNI on|off</a></td><td> on </td><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">enforces exact matches of client server indicators (SNI) against host names.</td></tr>
 <tr class="odd"><td><a href="core.html#traceenable">TraceEnable <var>[on|off|extended]</var></a></td><td> on </td><td>sv</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Détermine le comportement des requêtes
 <code>TRACE</code></td></tr>
 <tr><td><a href="mod_log_config.html#transferlog">TransferLog <var>fichier</var>|<var>pipe</var></a></td><td></td><td>sv</td><td>B</td></tr><tr><td class="descr" colspan="4">Spécifie l'emplacement d'un fichier journal</td></tr>

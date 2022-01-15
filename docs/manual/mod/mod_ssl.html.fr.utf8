@@ -1471,16 +1471,27 @@ prérequis). Pour obtenir la liste des commandes supportées, voir la
 section <em>Supported configuration file commands</em> de la page de
 manuel d'OpenSSL <a href="http://www.openssl.org/docs/man1.0.2/ssl/SSL_CONF_cmd.html#SUPPORTED-CONFIGURATION-FILE-COMMANDS">SSL_CONF_cmd(3)</a>.</p>
 
-<p>Certaines commandes peuvent remplacer des directives existantes
-(comme <code class="directive"><a href="#sslciphersuite">SSLCipherSuite</a></code> ou
-<code class="directive"><a href="#sslprotocol">SSLProtocol</a></code>) ; notez cependant
-que la syntaxe et/ou les valeurs possibles peuvent différer.</p>
-
-<div class="example"><h3>Examples</h3><pre class="prettyprint lang-config">SSLOpenSSLConfCmd Options -SessionTicket,ServerPreference
+<div class="example"><h3>Exemples</h3><pre class="prettyprint lang-config">SSLOpenSSLConfCmd Options -SessionTicket,ServerPreference
 SSLOpenSSLConfCmd ECDHParameters brainpoolP256r1
 SSLOpenSSLConfCmd ServerInfoFile "/usr/local/apache2/conf/server-info.pem"
 SSLOpenSSLConfCmd Protocol "-ALL, TLSv1.2"
 SSLOpenSSLConfCmd SignatureAlgorithms RSA+SHA384:ECDSA+SHA256</pre>
+</div>
+
+<div class="warning"><h3>Avertissement à propos de la compatibilité et de la
+stabilité</h3>
+
+<p>Certaines commandes de la directive <code class="directive">SSLOpenSSLConfCmd</code>
+peuvent être utilisées comme alternatives à certaines directives existantes
+comme <code class="directive"><a href="#sslciphersuite">SSLCipherSuite</a></code> ou <code class="directive"><a href="#sslprotocol">SSLProtocol</a></code>), bien que la syntaxe et les valeurs
+autorisées des paramètres puissent parfois être différentes.</p>
+
+<p>Pour configurer OpenSSL, il est recommandé d'utiliser les directives fournies
+par mod_ssl, losqu'elles sont disponibles, et de n'utiliser
+<code class="directive">SSLOpenSSLConfCmd</code> que pour les fonctionnalités d'OpenSSL
+non configurables par mod_ssl. Il est possible que le comportement de mod_ssl
+évolue avec les versions de httpd où <code class="directive">SSLOpenSSLConfCmd</code>
+sera utilisé.</p>
 </div>
 
 </div>

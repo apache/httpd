@@ -909,11 +909,12 @@
 		configurations de clusters peuvent utiliser cet évènement pour
 		distribuer les fichiers de vérification à tous les noeuds.
             </p><p>
-                Un évènement de type ocsp-errored est déclenché lorsque le
-		MDStapling est activé pour un domaine, et indique qu'une erreur
-		s'est produite en essayant d'obtenir la réponse OCSP  de
-		l'autorité de certification. mod_md essaiera à nouveau d'obtenir
-		cette réponse.		
+		Un évènement de type ocsp-errored est déclenché lorsque le
+		<code class="directive"><a href="#mdstapling">MDStapling</a></code> est activé
+		pour un domaine, et indique qu'une erreur s'est produite en
+		essayant d'obtenir la réponse OCSP  de l'autorité de
+		certification. mod_md essaiera à nouveau d'obtenir cette
+		réponse.		
             </p>
         
 </div>
