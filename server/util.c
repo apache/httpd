@@ -3539,11 +3539,12 @@ static const unsigned char ucharmap[256] = {
 
 AP_DECLARE(int) ap_cstr_casecmp(const char *s1, const char *s2)
 {
-    apr_size_t i = 0;
-    for (;; ++i) {
-        const int c1 = ucharmap[(unsigned char)s1[i]];
-        const int c2 = ucharmap[(unsigned char)s2[i]];
-        /* Not necessary to test for !c2, this is caught by c1 != c2 */
+    const unsigned char *u1 = (const unsigned char *)s1;
+    const unsigned char *u2 = (const unsigned char *)s2;
+    for (;;) {
+        const int c1 = ucharmap[*u1++];
+        const int c2 = ucharmap[*u2++];
+        /* Not necessary to test for !c2, this is caught by c1 == c2 */
         if (c1 != c2 || !c1)
             return c1 - c2;
     }
@@ -3551,11 +3552,12 @@ AP_DECLARE(int) ap_cstr_casecmp(const char *s1, const char *s2)
 
 AP_DECLARE(int) ap_cstr_casecmpn(const char *s1, const char *s2, apr_size_t n)
 {
-    apr_size_t i = 0;
-    for (; i < n; ++i) {
-        const int c1 = ucharmap[(unsigned char)s1[i]];
-        const int c2 = ucharmap[(unsigned char)s2[i]];
-        /* Not necessary to test for !c2, this is caught by c1 != c2 */
+    const unsigned char *u1 = (const unsigned char *)s1;
+    const unsigned char *u2 = (const unsigned char *)s2;
+    while (n--) {
+        const int c1 = ucharmap[*u1++];
+        const int c2 = ucharmap[*u2++];
+        /* Not necessary to test for !c2, this is caught by c1 == c2 */
         if (c1 != c2 || !c1)
             return c1 - c2;
     }
