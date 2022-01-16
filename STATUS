@@ -219,6 +219,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/httpd-2.4-ldap-search.patch
      +1: minfrin
 
+  *) mod_authn_core: Add expression support to AuthName and AuthType.
+     Trunk version of patch:
+        https://svn.apache.org/r1663123
+        https://svn.apache.org/r1670431
+     Backport version for 2.4.x of patch:
+        https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/httpd-2.4-authn-expr.patch
+     +1: minfrin
+
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
