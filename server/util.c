@@ -3542,11 +3542,11 @@ AP_DECLARE(int) ap_cstr_casecmp(const char *s1, const char *s2)
     const unsigned char *u1 = (const unsigned char *)s1;
     const unsigned char *u2 = (const unsigned char *)s2;
     for (;;) {
-        const int c1 = ucharmap[*u1++];
         const int c2 = ucharmap[*u2++];
-        /* Not necessary to test for !c2, this is caught by c1 == c2 */
-        if (c1 != c2 || !c1)
-            return c1 - c2;
+        const int cmp = (int)ucharmap[*u1++] - c2;
+        /* Not necessary to test for !c1, this is caught by cmp */
+        if (cmp || !c2)
+            return cmp;
     }
 }
 
@@ -3555,11 +3555,11 @@ AP_DECLARE(int) ap_cstr_casecmpn(const char *s1, const char *s2, apr_size_t n)
     const unsigned char *u1 = (const unsigned char *)s1;
     const unsigned char *u2 = (const unsigned char *)s2;
     while (n--) {
-        const int c1 = ucharmap[*u1++];
         const int c2 = ucharmap[*u2++];
-        /* Not necessary to test for !c2, this is caught by c1 == c2 */
-        if (c1 != c2 || !c1)
-            return c1 - c2;
+        const int cmp = (int)ucharmap[*u1++] - c2;
+        /* Not necessary to test for !c1, this is caught by cmp */
+        if (cmp || !c2)
+            return cmp;
     }
     return 0;
 }
