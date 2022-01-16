@@ -4,7 +4,7 @@ dnl
 dnl     Use ./buildconf to produce a configure script
 dnl
 
-AC_PREREQ(2.50)
+AC_PREREQ(2.60)
 AC_INIT(ABOUT_APACHE)
 
 AC_CONFIG_HEADER(include/ap_config_auto.h)
