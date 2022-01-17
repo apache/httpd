@@ -528,6 +528,11 @@ static APR_INLINE int connections_above_limit(int *busy)
     return 1;
 }
 
+static APR_INLINE int should_enable_listensocks(void)
+{
+    return !dying && listeners_disabled() && !connections_above_limit(NULL);
+}
+
 static void close_socket_nonblocking_(apr_socket_t *csd,
                                       const char *from, int line)
 {
@@ -774,7 +779,7 @@ static apr_status_t decrement_connection_count(void *cs_)
     is_last_connection = !apr_atomic_dec32(&connection_count);
     if (listener_is_wakeable
             && ((is_last_connection && listener_may_exit)
-                || (listeners_disabled() && !connections_above_limit(NULL)))) {
+                || should_enable_listensocks())) {
         apr_pollset_wakeup(event_pollset);
     }
     if (dying) {
@@ -2002,9 +2007,7 @@ do_maintenance:
             }
         }
 
-        if (listeners_disabled()
-                && !workers_were_busy
-                && !connections_above_limit(NULL)) {
+        if (!workers_were_busy && should_enable_listensocks()) {
             enable_listensocks();
         }
     } /* listener main loop */
@@ -2066,7 +2069,7 @@ static void *APR_THREAD_FUNC worker_thread(apr_thread_t * thd, void *dummy)
     ap_update_child_status_from_indexes(process_slot, thread_slot,
                                         SERVER_STARTING, NULL);
 
-    while (!workers_may_exit) {
+    for (;;) {
         apr_socket_t *csd = NULL;
         event_conn_state_t *cs;
         timer_event_t *te = NULL;
@@ -2080,6 +2083,12 @@ static void *APR_THREAD_FUNC worker_thread(apr_thread_t * thd, void *dummy)
                              "shutdown process gracefully.");
                 signal_threads(ST_GRACEFUL);
                 break;
+            }
+            /* A new idler may have changed connections_above_limit(),
+             * let the listener know and decide.
+             */
+            if (listener_is_wakeable && should_enable_listensocks()) {
+                apr_pollset_wakeup(event_pollset);
             }
             is_idle = 1;
         }
@@ -3045,7 +3054,7 @@ static void server_main_loop(int remaining_children_to_start)
 
                 event_note_child_killed(child_slot, 0, 0);
                 ps = &ap_scoreboard_image->parent[child_slot];
-                if (!ps->quiescing)
+                if (ps->quiescing != 2)
                     retained->active_daemons--;
                 ps->quiescing = 0;
                 /* NOTE: We don't dec in the (child_slot < 0) case! */
