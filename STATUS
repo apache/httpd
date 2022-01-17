@@ -147,6 +147,15 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) mpm_event: Fix a possible listener deadlock on heavy load when restarting
+     and/or reaching MaxConnectionsPerChild.  PR 65769.
+     Trunk version of patch:
+        https://svn.apache.org/r1896505
+     Backport version for 2.4.x of patch:
+      Trunk version of patch works
+      svn merge -c 1896505 ^/httpd/httpd/trunk .
+     +1: rpluem, ylavic, gbechis
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -177,15 +186,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      jorton: Adding ap_pregexec/_len which pass a pool would also work
              for internal users of this api; not sure if performance
              impact is significant from using malloc here.
-
-  *) mpm_event: Fix a possible listener deadlock on heavy load when restarting
-     and/or reaching MaxConnectionsPerChild.  PR 65769.
-     Trunk version of patch:
-        https://svn.apache.org/r1896505
-     Backport version for 2.4.x of patch:
-      Trunk version of patch works
-      svn merge -c 1896505 ^/httpd/httpd/trunk .
-     +1: rpluem, ylavic, gbechis
 
   *) dbm: Split the loading of a dbm driver from the opening of a dbm file. When
      an attempt to load a dbm driver fails, log clearly which driver triggered
