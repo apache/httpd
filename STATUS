@@ -164,7 +164,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          http://svn.apache.org/r1881478
      summarized/conflicts resolved:
          https://gist.github.com/wrowe/73f655d13bbe0f12030aa4557e804d8a
-     +1: wrowe
+     +1: wrowe, rpluem
      wrowe notes that the current code drops optimizations, owing to the fact
      that the ovector is a required allocation and is no longer allocated on
      the stack, by design.  The correct fix is an apr userdata allocation on
