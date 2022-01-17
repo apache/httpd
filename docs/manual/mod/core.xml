@@ -926,6 +926,20 @@ named file-system directory, sub-directories, and their contents.</description>
     the corresponding <directive type="section">Directory</directive> will
     be applied.</p>
 
+    <p>Some modules require the directory-path prefix in order to do their work,
+    and when a regular expression is provided the directory-path is no longer
+    available. From 2.5.1 onwards, an expression can be specified in addition
+    to the regular expression that resolves to the directory-path prefix. This
+    can allow complex mappings from the URL space to an effective directory.
+    This funcionality is identical to that provided by the
+    <directive>DirectoryMatch</directive> directive below.</p>
+
+    <highlight language="config">
+&lt;Directory ~ /home/%{env:MATCH_PARTITIONNAME}/dav/ ^/dav/(?&lt;PARTITIONNAME&gt;[^/]+)/&gt;
+    Dav on
+&lt;/Directory&gt;
+    </highlight>
+
    <p><strong>Note that the default access for
     <code>&lt;Directory "/"&gt;</code> is to permit all access.
     This means that Apache httpd will serve any file mapped from an URL. It is
@@ -959,7 +973,7 @@ named file-system directory, sub-directories, and their contents.</description>
 <name>DirectoryMatch</name>
 <description>Enclose directives that apply to
 the contents of file-system directories matching a regular expression.</description>
-<syntax>&lt;DirectoryMatch <var>regex</var>&gt;
+<syntax>&lt;DirectoryMatch [<var>expr</var>] <var>regex</var>&gt;
 ... &lt;/DirectoryMatch&gt;</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
@@ -1005,6 +1019,18 @@ the contents of file-system directories matching a regular expression.</descript
     <highlight language="config">
 &lt;DirectoryMatch "^/var/www/combined/(?&lt;sitename&gt;[^/]+)"&gt;
     Require ldap-group cn=%{env:MATCH_SITENAME},ou=combined,o=Example
+&lt;/DirectoryMatch&gt;
+    </highlight>
+
+    <p>Some modules require the directory-path prefix in order to do their work,
+    and when a regular expression is provided the directory-path is no longer
+    available. From 2.5.1 onwards, an expression can be specified in addition
+    to the regular expression that resolves to the directory-path prefix. This
+    can allow complex mappings from the URL space to an effective directory.</p>
+
+    <highlight language="config">
+&lt;DirectoryMatch /home/%{env:MATCH_PARTITIONNAME}/dav/ ^/dav/(?&lt;PARTITIONNAME&gt;[^/]+)/&gt;
+    Dav on
 &lt;/DirectoryMatch&gt;
     </highlight>
 </usage>
@@ -3172,6 +3198,19 @@ URLs</description>
 &lt;/Location&gt;
     </highlight>
 
+    <p>Some modules require the URL-path prefix in order to do their work, and when
+    a regular expression is provided the URL-path is no longer available. From
+    2.5.1 onwards, an expression can be specified in addition to the regular
+    expression that resolves to the URL-path prefix. This can allow complex
+    mappings from the URL space to an effective path. This funcionality is identical
+    to that provided by the <directive>LocationMatch</directive> directive below.</p>
+
+    <highlight language="config">
+&lt;Location ~ /dav/%{env:MATCH_PARTITIONNAME} ^/dav/(?&lt;PARTITIONNAME&gt;[^/]+)/&gt;
+    Dav on
+&lt;/Location&gt;
+    </highlight>
+
     <note><title>Note about / (slash)</title>
       <p>The slash character has special meaning depending on where in a
       URL it appears. People may be used to its behavior in the filesystem
@@ -3207,7 +3246,7 @@ URLs</description>
 <description>Applies the enclosed directives only to regular-expression
 matching URLs</description>
 <syntax>&lt;LocationMatch
-    <var>regex</var>&gt; ... &lt;/LocationMatch&gt;</syntax>
+    [<var>expr</var>] <var>regex</var>&gt; ... &lt;/LocationMatch&gt;</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 
@@ -3247,6 +3286,18 @@ matching URLs</description>
     <highlight language="config">
 &lt;LocationMatch "^/combined/(?&lt;sitename&gt;[^/]+)"&gt;
     Require ldap-group cn=%{env:MATCH_SITENAME},ou=combined,o=Example
+&lt;/LocationMatch&gt;
+    </highlight>
+
+    <p>Some modules require the URL-path prefix in order to do their work, and when
+    a regular expression is provided the URL-path is no longer available. From
+    2.5.1 onwards, an expression can be specified in addition to the regular
+    expression that resolves to the URL-path prefix. This can allow complex
+    mappings from the URL space to an effective path.</p>
+
+    <highlight language="config">
+&lt;LocationMatch /dav/%{env:MATCH_PARTITIONNAME} ^/dav/(?&lt;PARTITIONNAME&gt;[^/]+)/&gt;
+    Dav on
 &lt;/LocationMatch&gt;
     </highlight>
 

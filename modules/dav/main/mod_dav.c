@@ -83,6 +83,7 @@ typedef struct {
     const char *dir;
     int locktimeout;
     int allow_depthinfinity;
+    const ap_expr_info_t *dir_expr;
 
 } dav_dir_conf;
 
@@ -203,6 +204,7 @@ static void *dav_merge_dir_config(apr_pool_t *p, void *base, void *overrides)
     newconf->dir = DAV_INHERIT_VALUE(parent, child, dir);
     newconf->allow_depthinfinity = DAV_INHERIT_VALUE(parent, child,
                                                      allow_depthinfinity);
+    newconf->dir_expr = DAV_INHERIT_VALUE(parent, child, dir_expr);
 
     return newconf;
 }
@@ -279,6 +281,18 @@ static const char *dav_cmd_dav(cmd_parms *cmd, void *config, const char *arg1)
             return apr_psprintf(cmd->pool,
                                 "Unknown DAV provider: %s",
                                 conf->provider_name);
+        }
+    }
+
+    if (!conf->dir_expr) {
+        const char *expr_err = NULL;
+
+        conf->dir_expr = ap_expr_parse_cmd(cmd, conf->dir, AP_EXPR_FLAG_STRING_RESULT,
+                &expr_err, NULL);
+        if (expr_err) {
+            return apr_pstrcat(cmd->temp_pool,
+                    "Cannot parse Directory/Location expression '", conf->dir, "': ",
+                    expr_err, NULL);
         }
     }
 
@@ -723,6 +737,57 @@ static int dav_get_overwrite(request_rec *r)
     return -1;
 }
 
+static int uripath_is_canonical(const char *uripath)
+{
+    const char *dot_pos, *ptr = uripath;
+    apr_size_t i, len;
+    unsigned pattern = 0;
+
+    /* URIPATH is canonical if it has:
+     *  - no '.' segments
+     *  - no closing '/'
+     *  - no '//'
+     */
+
+    if (ptr[0] == '.'
+            && (ptr[1] == '/' || ptr[1] == '\0'
+                    || (ptr[1] == '.' && (ptr[2] == '/' || ptr[2] == '\0')))) {
+        return 0;
+    }
+
+    /* valid special cases */
+    len = strlen(ptr);
+    if (len < 2) {
+        return 1;
+    }
+
+    /* invalid endings */
+    if (ptr[len - 1] == '/' || (ptr[len - 1] == '.' && ptr[len - 2] == '/')) {
+        return 0;
+    }
+
+    /* '.' are rare. So, search for them globally. There will often be no
+     * more than one hit.  Also note that we already checked for invalid
+     * starts and endings, i.e. we only need to check for "/./"
+     */
+    for (dot_pos = memchr(ptr, '.', len); dot_pos;
+            dot_pos = strchr(dot_pos + 1, '.')) {
+        if (dot_pos > ptr && dot_pos[-1] == '/' && dot_pos[1] == '/') {
+            return 0;
+        }
+    }
+
+    /* Now validate the rest of the path. */
+    for (i = 0; i < len - 1; ++i) {
+        pattern = ((pattern & 0xff) << 8) + (unsigned char) ptr[i];
+        if (pattern == 0x101 * (unsigned char) ('/')) {
+            return 0;
+        }
+    }
+
+    return 1;
+}
+
 /* resolve a request URI to a resource descriptor.
  *
  * If label_allowed != 0, then allow the request target to be altered by
@@ -737,6 +802,7 @@ DAV_DECLARE(dav_error *) dav_get_resource(request_rec *r, int label_allowed,
 {
     dav_dir_conf *conf;
     const char *label = NULL;
+    const char *dir;
     dav_error *err;
 
     /* if the request target can be overridden, get any target selector */
@@ -753,9 +819,34 @@ DAV_DECLARE(dav_error *) dav_get_resource(request_rec *r, int label_allowed,
                              ap_escape_html(r->pool, r->uri)));
     }
 
+    if (conf->dir_expr) {
+        const char *err = NULL;
+
+        dir = ap_expr_str_exec(r, conf->dir_expr, &err);
+        if (err) {
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(10367)
+                    "Director/Location expression '%s' could not be parsed: %s", conf->dir, err);
+            return dav_new_error(r->pool, HTTP_INTERNAL_SERVER_ERROR, 0, 0,
+                                 apr_psprintf(r->pool,
+                                 "Directory/Location expression could not be parsed: %s", err));
+        }
+
+        /* safety check - is our path canonical? */
+        if (!uripath_is_canonical(dir)) {
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(10368)
+                    "Directory/Location is not canonical ('.', '..' and '//' not allowed): %s", dir);
+            return dav_new_error(r->pool, HTTP_BAD_REQUEST, 0, 0,
+                    apr_psprintf(r->pool, "Directory/Location is not canonical for: %s",
+                            ap_escape_html(r->pool, r->uri)));
+        }
+
+    }
+    else {
+        dir = conf->dir;
+    }
+
     /* resolve the resource */
-    err = (*conf->provider->repos->get_resource)(r, conf->dir,
-                                                 label, use_checked_in,
+    err = (*conf->provider->repos->get_resource)(r, dir, label, use_checked_in,
                                                  res_p);
     if (err != NULL) {
         err = dav_push_error(r->pool, err->status, 0,
