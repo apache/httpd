@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.53
 
+  *) mpm_event: Fix a possible listener deadlock on heavy load when restarting
+     and/or reaching MaxConnectionsPerChild.  PR 65769.  [Yann Ylavic]
+
 Changes with Apache 2.4.52
 
   *) SECURITY: CVE-2021-44790: Possible buffer overflow when parsing
