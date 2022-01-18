@@ -771,7 +771,7 @@ static int uripath_is_canonical(const char *uripath)
      * starts and endings, i.e. we only need to check for "/./"
      */
     for (dot_pos = memchr(ptr, '.', len); dot_pos;
-            dot_pos = strchr(dot_pos + 1, '.')) {
+            dot_pos = ap_strchr_c(dot_pos + 1, '.')) {
         if (dot_pos > ptr && dot_pos[-1] == '/' && dot_pos[1] == '/') {
             return 0;
         }
