@@ -50,6 +50,9 @@
 #ifdef HAVE_SYS_PRCTL_H
 #include <sys/prctl.h>
 #endif
+#ifdef HAVE_SYS_PROCCTL_H
+#include <sys/procctl.h>
+#endif
 
 #ifndef DEFAULT_USER
 #define DEFAULT_USER "#-1"
@@ -195,6 +198,19 @@ AP_DECLARE(int) ap_unixd_setup_child(void)
         if (prctl(PR_SET_DUMPABLE, 1)) {
             rv = errno;
             ap_log_error(APLOG_MARK, APLOG_ALERT, errno, NULL, APLOGNO(02163)
+                         "set dumpable failed - this child will not coredump"
+                         " after software errors");
+            return rv;
+        }
+    }
+#endif
+#if defined(HAVE_PROCCTL) && defined(PROC_TRACE_CTL)
+    /* FreeBSD 11 and above */
+    if (ap_coredumpdir_configured) {
+        int enablecoredump = PROC_TRACE_CTL_ENABLE;
+        if (procctl(P_PID, 0, PROC_TRACE_CTL, &enablecoredump) != 0) {
+            rv = errno;
+            ap_log_error(APLOG_MARK, APLOG_ALERT, errno, NULL, APLOGNO(10369)
                          "set dumpable failed - this child will not coredump"
                          " after software errors");
             return rv;
