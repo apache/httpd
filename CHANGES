@@ -1,11 +1,6 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
-  *) core: Allow an optional expression to be specified for an effective
-     path in the DirectoryMatch and LocationMatch directives. This allows
-     modules like mod_dav to map URLs to URL spaces or to directories on
-     the filesystem. [Graham Leggett]
-
   *) http: Enforce that fully qualified uri-paths not to be forward-proxied
      have an http(s) scheme, and that the ones to be forward proxied have a
      hostname, per HTTP specifications.  [Ruediger Pluem, Yann Ylavic]

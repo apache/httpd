@@ -2506,7 +2506,6 @@ static const char *dirsection(cmd_parms *cmd, void *mconfig, const char *arg)
     char *old_path = cmd->path;
     core_dir_config *conf;
     ap_conf_vector_t *new_dir_conf = ap_create_per_dir_config(cmd->pool);
-    const char *regex;
     ap_regex_t *r = NULL;
     const command_rec *thiscmd = cmd->cmd;
 
@@ -2530,20 +2529,15 @@ static const char *dirsection(cmd_parms *cmd, void *mconfig, const char *arg)
 
     if (!strcmp(cmd->path, "~")) {
         cmd->path = ap_getword_conf(cmd->pool, &arg);
-        if (!*cmd->path) {
-            return "<Directory ~ > block must specify a regex";
-        }
-        regex = ap_getword_conf(cmd->pool, &arg);
-        r = ap_pregcomp(cmd->pool, *regex ? regex : cmd->path,
-                AP_REG_EXTENDED | USE_ICASE);
+        if (!cmd->path)
+            return "<Directory ~ > block must specify a path";
+        r = ap_pregcomp(cmd->pool, cmd->path, AP_REG_EXTENDED|USE_ICASE);
         if (!r) {
             return "Regex could not be compiled";
         }
     }
     else if (thiscmd->cmd_data) { /* <DirectoryMatch> */
-        regex = ap_getword_conf(cmd->pool, &arg);
-        r = ap_pregcomp(cmd->pool, *regex ? regex : cmd->path,
-                AP_REG_EXTENDED | USE_ICASE);
+        r = ap_pregcomp(cmd->pool, cmd->path, AP_REG_EXTENDED|USE_ICASE);
         if (!r) {
             return "Regex could not be compiled";
         }
@@ -2605,8 +2599,8 @@ static const char *dirsection(cmd_parms *cmd, void *mconfig, const char *arg)
     ap_add_per_dir_conf(cmd->server, new_dir_conf);
 
     if (*arg != '\0') {
-        return apr_pstrcat(cmd->pool, "Additional ", thiscmd->name,
-                           "> arguments not (yet) supported: ", arg, NULL);
+        return apr_pstrcat(cmd->pool, "Multiple ", thiscmd->name,
+                           "> arguments not (yet) supported.", NULL);
     }
 
     cmd->path = old_path;
@@ -2622,7 +2616,6 @@ static const char *urlsection(cmd_parms *cmd, void *mconfig, const char *arg)
     int old_overrides = cmd->override;
     char *old_path = cmd->path;
     core_dir_config *conf;
-    const char *regex;
     ap_regex_t *r = NULL;
     const command_rec *thiscmd = cmd->cmd;
     ap_conf_vector_t *new_url_conf = ap_create_per_dir_config(cmd->pool);
@@ -2645,21 +2638,14 @@ static const char *urlsection(cmd_parms *cmd, void *mconfig, const char *arg)
     cmd->override = OR_ALL|ACCESS_CONF;
 
     if (thiscmd->cmd_data) { /* <LocationMatch> */
-        regex = ap_getword_conf(cmd->pool, &arg);
-        r = ap_pregcomp(cmd->pool, *regex ? regex : cmd->path,
-                AP_REG_EXTENDED);
+        r = ap_pregcomp(cmd->pool, cmd->path, AP_REG_EXTENDED);
         if (!r) {
             return "Regex could not be compiled";
         }
     }
     else if (!strcmp(cmd->path, "~")) {
         cmd->path = ap_getword_conf(cmd->pool, &arg);
-        if (!*cmd->path) {
-            return "<Location ~ > block must specify a regex";
-        }
-        regex = ap_getword_conf(cmd->pool, &arg);
-        r = ap_pregcomp(cmd->pool, *regex ? regex : cmd->path,
-                AP_REG_EXTENDED);
+        r = ap_pregcomp(cmd->pool, cmd->path, AP_REG_EXTENDED);
         if (!r) {
             return "Regex could not be compiled";
         }
@@ -2685,8 +2671,8 @@ static const char *urlsection(cmd_parms *cmd, void *mconfig, const char *arg)
     ap_add_per_url_conf(cmd->server, new_url_conf);
 
     if (*arg != '\0') {
-        return apr_pstrcat(cmd->pool, "Additional ", thiscmd->name,
-                           "> arguments not (yet) supported: ", arg, NULL);
+        return apr_pstrcat(cmd->pool, "Multiple ", thiscmd->name,
+                           "> arguments not (yet) supported.", NULL);
     }
 
     cmd->path = old_path;
@@ -2702,7 +2688,6 @@ static const char *filesection(cmd_parms *cmd, void *mconfig, const char *arg)
     int old_overrides = cmd->override;
     char *old_path = cmd->path;
     core_dir_config *conf;
-    const char *regex;
     ap_regex_t *r = NULL;
     const command_rec *thiscmd = cmd->cmd;
     ap_conf_vector_t *new_file_conf = ap_create_per_dir_config(cmd->pool);
@@ -2730,18 +2715,14 @@ static const char *filesection(cmd_parms *cmd, void *mconfig, const char *arg)
     }
 
     if (thiscmd->cmd_data) { /* <FilesMatch> */
-        regex = ap_getword_conf(cmd->pool, &arg);
-        r = ap_pregcomp(cmd->pool, *regex ? regex : cmd->path,
-                AP_REG_EXTENDED | USE_ICASE);
+        r = ap_pregcomp(cmd->pool, cmd->path, AP_REG_EXTENDED|USE_ICASE);
         if (!r) {
             return "Regex could not be compiled";
         }
     }
     else if (!strcmp(cmd->path, "~")) {
         cmd->path = ap_getword_conf(cmd->pool, &arg);
-        regex = ap_getword_conf(cmd->pool, &arg);
-        r = ap_pregcomp(cmd->pool, *regex ? regex : cmd->path,
-                AP_REG_EXTENDED | USE_ICASE);
+        r = ap_pregcomp(cmd->pool, cmd->path, AP_REG_EXTENDED|USE_ICASE);
         if (!r) {
             return "Regex could not be compiled";
         }
@@ -2777,8 +2758,8 @@ static const char *filesection(cmd_parms *cmd, void *mconfig, const char *arg)
     ap_add_file_conf(cmd->pool, (core_dir_config *)mconfig, new_file_conf);
 
     if (*arg != '\0') {
-        return apr_pstrcat(cmd->pool, "Additional ", thiscmd->name,
-                           "> arguments not (yet) supported: ", arg, NULL);
+        return apr_pstrcat(cmd->pool, "Multiple ", thiscmd->name,
+                           "> arguments not (yet) supported.", NULL);
     }
 
     cmd->path = old_path;
@@ -2864,8 +2845,8 @@ static const char *ifsection(cmd_parms *cmd, void *mconfig, const char *arg)
         return errmsg;
 
     if (*arg != '\0') {
-        return apr_pstrcat(cmd->pool, "Additional ", thiscmd->name,
-                           "> arguments not supported: ", arg, NULL);
+        return apr_pstrcat(cmd->pool, "Multiple ", thiscmd->name,
+                           "> arguments not supported.", NULL);
     }
 
     cmd->path = old_path;
