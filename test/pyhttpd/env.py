@@ -632,9 +632,6 @@ class HttpdTestEnv:
 
     def curl_raw(self, urls, timeout=10, options=None, insecure=False,
                  force_resolve=True):
-        xopt = ['-vvvv']
-        if options:
-            xopt.extend(options)
         args, headerfile = self.curl_complete_args(
             urls=urls, timeout=timeout, options=options, insecure=insecure,
             force_resolve=force_resolve)

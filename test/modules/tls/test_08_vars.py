@@ -1,9 +1,9 @@
 import re
-from datetime import timedelta
 
 import pytest
 
 from .conf import TlsTestConf
+from .env import TlsTestEnv
 
 
 class TestVars:
@@ -22,13 +22,10 @@ class TestVars:
 
     def test_08_vars_root(self, env):
         # in domain_b root, the StdEnvVars is switch on
-        if env.curl_supports_tls_1_3():
-            exp_proto = "TLSv1.3"
-            exp_cipher = "TLS_AES_256_GCM_SHA384"
-        else:
-            exp_proto = "TLSv1.2"
-            exp_cipher = "TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384"
-        r = env.tls_get(env.domain_b, "/vars.py")
+        exp_proto = "TLSv1.2"
+        exp_cipher = "TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384"
+        options = [ '--tls-max', '1.2']
+        r = env.tls_get(env.domain_b, "/vars.py", options=options)
         assert r.exit_code == 0, r.stderr
         assert r.json == {
             'https': 'on',
@@ -37,7 +34,7 @@ class TestVars:
             'ssl_protocol': exp_proto,
             # this will vary by client potentially
             'ssl_cipher': exp_cipher,
-        }, r.stdout
+        }
 
     @pytest.mark.parametrize("name, value", [
         ("SERVER_NAME", "b.mod-tls.test"),

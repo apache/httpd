@@ -3,6 +3,7 @@ from datetime import timedelta
 import pytest
 
 from .conf import TlsTestConf
+from .env import TlsTestEnv
 
 
 class TestSni:
@@ -13,7 +14,6 @@ class TestSni:
         conf.add_tls_vhosts(domains=[env.domain_a, env.domain_b])
         conf.install()
         assert env.apache_restart() == 0
-        env.curl_supports_tls_1_3()  # init
 
     @pytest.fixture(autouse=True, scope='function')
     def _function_scope(self, env):
@@ -46,9 +46,6 @@ class TestSni:
         assert r.response['status'] == 421
 
     def test_03_sni_request_other_other_honor(self, env):
-        if env.curl_supports_tls_1_3():
-            # can't do this test then
-            return
         # do we see the first vhost response for an unknown domain?
         conf = TlsTestConf(env=env, extras={
             env.domain_a: "TLSProtocol TLSv1.2+",
@@ -58,7 +55,7 @@ class TestSni:
         conf.install()
         assert env.apache_restart() == 0
         r = env.tls_get(env.domain_a, "/index.json", options=[
-            "-vvvv", "--header", "Host: {0}".format(env.domain_b)
+            "-vvvv", "--tls-max", "1.2", "--header", "Host: {0}".format(env.domain_b)
         ])
         # request denied
         assert r.exit_code == 0

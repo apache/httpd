@@ -92,6 +92,7 @@ class H2TestEnv(HttpdTestEnv):
             re.compile(r'.*:tls_post_process_client_hello:.*'),
             re.compile(r'.*:tls_process_client_certificate:.*'),
             re.compile(r'.*have incompatible TLS configurations.'),
+            re.compile(r'.*SSL Library Error: error:0A0000C[17]:.*'),
         ])
 
     def setup_httpd(self, setup: HttpdTestSetup = None):
