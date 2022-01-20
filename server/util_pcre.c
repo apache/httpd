@@ -53,10 +53,9 @@ POSSIBILITY OF SUCH DAMAGE.
 */
 
 #include "httpd.h"
-#include "apr_version.h"
-#include "apr_portable.h"
 #include "apr_strings.h"
 #include "apr_tables.h"
+#include "apr_thread_proc.h"
 
 #ifdef HAVE_PCRE2
 #define PCRE2_CODE_UNIT_WIDTH 8
@@ -311,7 +310,7 @@ static match_data_pt get_match_data(apr_size_t size,
 #ifdef HAVE_PCRE2
     *ovector = pcre2_get_ovector_pointer(tls->data);
 #else
-    *vector = tls->data;
+    *ovector = tls->data;
 #endif
     return tls->data;
 }
@@ -333,7 +332,9 @@ static match_data_pt get_match_data(apr_size_t size,
 
 #ifdef HAVE_PCRE2
     data = pcre2_match_data_create(size, NULL);
-    *ovector = pcre2_get_ovector_pointer(data);
+    if (data) {
+        *ovector = pcre2_get_ovector_pointer(data);
+    }
 #else
     if (size > POSIX_MALLOC_THRESHOLD) {
         data = malloc(size * sizeof(int) * 3);
