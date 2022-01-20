@@ -53,6 +53,8 @@ POSSIBILITY OF SUCH DAMAGE.
 */
 
 #include "httpd.h"
+#include "apr_version.h"
+#include "apr_portable.h"
 #include "apr_strings.h"
 #include "apr_tables.h"
 
@@ -263,7 +265,122 @@ AP_DECLARE(int) ap_regcomp(ap_regex_t * preg, const char *pattern, int cflags)
  * ints. However, if the number of possible capturing brackets is small, use a
  * block of store on the stack, to reduce the use of malloc/free. The threshold
  * is in a macro that can be changed at configure time.
+ * Yet more unfortunately, PCRE2 wants an opaque context by providing the API
+ * to allocate and free it, so to minimize these calls we maintain one opaque
+ * context per thread (in Thread Local Storage, TLS) grown as needed, and while
+ * at it we do the same for PCRE1 ints vectors. Note that this requires a fast
+ * TLS mechanism to be worth it, which is the case of apr_thread_data_get/set()
+ * from/to apr_thread_current() when APR_HAS_THREAD_LOCAL; otherwise we'll do
+ * the allocation and freeing for each ap_regexec().
  */
+
+#ifdef HAVE_PCRE2
+typedef pcre2_match_data* match_data_pt;
+typedef size_t*           match_vector_pt;
+#else
+typedef int*              match_data_pt;
+typedef int*              match_vector_pt;
+#endif
+
+#if APR_HAS_THREAD_LOCAL
+
+static match_data_pt get_match_data(apr_size_t size,
+                                    match_vector_pt *ovector,
+                                    match_vector_pt small_vector)
+{
+    apr_thread_t *current;
+    struct {
+        match_data_pt data;
+        apr_size_t size;
+    } *tls = NULL;
+
+    /* APR_HAS_THREAD_LOCAL garantees this works */
+    current = apr_thread_current();
+    ap_assert(current != NULL);
+
+    apr_thread_data_get((void **)&tls, "apreg", current);
+    if (!tls || tls->size < size) {
+        apr_pool_t *tp = apr_thread_pool_get(current);
+        if (tls) {
+#ifdef HAVE_PCRE2
+            pcre2_match_data_free(tls->data); /* NULL safe */
+#endif
+        }
+        else {
+            tls = apr_pcalloc(tp, sizeof(*tls));
+            apr_thread_data_set(tls, "apreg", NULL, current);
+        }
+        tls->size *= 2;
+        if (tls->size < size) {
+            tls->size = size;
+            if (tls->size < POSIX_MALLOC_THRESHOLD) {
+                tls->size = POSIX_MALLOC_THRESHOLD;
+            }
+        }
+#ifdef HAVE_PCRE2
+        tls->data = pcre2_match_data_create(tls->size, NULL);
+#else
+        tls->data = apr_palloc(tp, tls->size * sizeof(int) * 3);
+#endif
+        if (!tls->data) {
+            tls->size = 0;
+            return NULL;
+        }
+    }
+
+#ifdef HAVE_PCRE2
+    *ovector = pcre2_get_ovector_pointer(tls->data);
+#else
+    *vector = tls->data;
+#endif
+    return tls->data;
+}
+
+/* Nothing to put back with thread local */
+static APR_INLINE void put_match_data(match_data_pt data,
+                                      apr_size_t size)
+{ }
+
+#else /* !APR_HAS_THREAD_LOCAL */
+
+/* Always allocate/free without thread local */
+
+static match_data_pt get_match_data(apr_size_t size,
+                                    match_vector_pt *ovector,
+                                    match_vector_pt small_vector)
+{
+    match_data_pt data;
+
+#ifdef HAVE_PCRE2
+    data = pcre2_match_data_create(size, NULL);
+    *ovector = pcre2_get_ovector_pointer(data);
+#else
+    if (size > POSIX_MALLOC_THRESHOLD) {
+        data = malloc(size * sizeof(int) * 3);
+    }
+    else {
+        data = small_vector;
+    }
+    *ovector = data;
+#endif
+
+    return data;
+}
+
+static APR_INLINE void put_match_data(match_data_pt data,
+                                      apr_size_t size)
+{
+#ifdef HAVE_PCRE2
+    pcre2_match_data_free(data);
+#else
+    if (size > POSIX_MALLOC_THRESHOLD) {
+        free(data);
+    }
+#endif
+}
+
+#endif /* !APR_HAS_THREAD_LOCAL */
+
 AP_DECLARE(int) ap_regexec(const ap_regex_t *preg, const char *string,
                            apr_size_t nmatch, ap_regmatch_t *pmatch,
                            int eflags)
@@ -278,15 +395,19 @@ AP_DECLARE(int) ap_regexec_len(const ap_regex_t *preg, const char *buff,
 {
     int rc;
     int options = 0;
-    apr_size_t nlim;
-#ifdef HAVE_PCRE2
-    pcre2_match_data *matchdata;
-    size_t *ovector;
+    match_vector_pt ovector = NULL;
+    apr_size_t nlim = ((apr_size_t)preg->re_nsub + 1) > nmatch
+                    ? ((apr_size_t)preg->re_nsub + 1) : nmatch;
+#if defined(HAVE_PCRE2) || APR_HAS_THREAD_LOCAL
+    match_data_pt data = get_match_data(nlim, &ovector, NULL);
 #else
-    int small_ovector[POSIX_MALLOC_THRESHOLD * 3];
-    int allocated_ovector = 0;
-    int *ovector = NULL;
+    int small_vector[POSIX_MALLOC_THRESHOLD * 3];
+    match_data_pt data = get_match_data(nlim, &ovector, small_vector);
 #endif
+
+    if (!data) {
+        return AP_REG_ESPACE;
+    }
 
     if ((eflags & AP_REG_NOTBOL) != 0)
         options |= PCREn(NOTBOL);
@@ -298,61 +419,30 @@ AP_DECLARE(int) ap_regexec_len(const ap_regex_t *preg, const char *buff,
         options |= PCREn(ANCHORED);
 
 #ifdef HAVE_PCRE2
-    /* TODO: create a generic TLS matchdata buffer of some nmatch limit,
-     * e.g. 10 matches, to avoid a malloc-per-call. If it must be allocated,
-     * implement a general context using palloc and no free implementation.
-     */
-    nlim = ((apr_size_t)preg->re_nsub + 1) > nmatch
-         ? ((apr_size_t)preg->re_nsub + 1) : nmatch;
-    matchdata = pcre2_match_data_create(nlim, NULL);
-    if (matchdata == NULL)
-        return AP_REG_ESPACE;
-    ovector = pcre2_get_ovector_pointer(matchdata);
     rc = pcre2_match((const pcre2_code *)preg->re_pcre,
                      (const unsigned char *)buff, len,
-                     0, options, matchdata, NULL);
-    if (rc == 0)
-        rc = nlim;            /* All captured slots were filled in */
+                     0, options, data, NULL);
 #else
-    if (nmatch > 0) {
-        if (nmatch <= POSIX_MALLOC_THRESHOLD) {
-            ovector = &(small_ovector[0]);
-        }
-        else {
-            ovector = (int *)malloc(sizeof(int) * nmatch * 3);
-            if (ovector == NULL)
-                return AP_REG_ESPACE;
-            allocated_ovector = 1;
-        }
-    }
     rc = pcre_exec((const pcre *)preg->re_pcre, NULL, buff, (int)len,
-                   0, options, ovector, nmatch * 3);
-    if (rc == 0)
-        rc = nmatch;            /* All captured slots were filled in */
+                   0, options, ovector, nlim * 3);
 #endif
 
     if (rc >= 0) {
-        apr_size_t i;
-        nlim = (apr_size_t)rc < nmatch ? (apr_size_t)rc : nmatch;
-        for (i = 0; i < nlim; i++) {
+        apr_size_t n, i;
+        if (rc == 0)
+            rc = nlim; /* All captured slots were filled in */
+        n = (apr_size_t)rc < nmatch ? (apr_size_t)rc : nmatch;
+        for (i = 0; i < n; i++) {
             pmatch[i].rm_so = ovector[i * 2];
             pmatch[i].rm_eo = ovector[i * 2 + 1];
         }
         for (; i < nmatch; i++)
             pmatch[i].rm_so = pmatch[i].rm_eo = -1;
-    }
-
-#ifdef HAVE_PCRE2
-    pcre2_match_data_free(matchdata);
-#else
-    if (allocated_ovector)
-        free(ovector);
-#endif
-
-    if (rc >= 0) {
+        put_match_data(data, nlim);
         return 0;
     }
     else {
+        put_match_data(data, nlim);
 #ifdef HAVE_PCRE2
         if (rc <= PCRE2_ERROR_UTF8_ERR1 && rc >= PCRE2_ERROR_UTF8_ERR21)
             return AP_REG_INVARG;
