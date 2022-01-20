@@ -262,7 +262,7 @@ typedef int*              match_data_pt;
 typedef int*              match_vector_pt;
 #endif
 
-#if APR_HAS_THREAD_LOCAL
+#ifdef APR_HAS_THREAD_LOCAL
 
 static match_data_pt get_match_data(apr_size_t size,
                                     match_vector_pt *ovector,
@@ -378,7 +378,7 @@ AP_DECLARE(int) ap_regexec_len(const ap_regex_t *preg, const char *buff,
     match_vector_pt ovector = NULL;
     apr_size_t nlim = ((apr_size_t)preg->re_nsub + 1) > nmatch
                     ? ((apr_size_t)preg->re_nsub + 1) : nmatch;
-#if defined(HAVE_PCRE2) || APR_HAS_THREAD_LOCAL
+#if defined(HAVE_PCRE2) || defined(APR_HAS_THREAD_LOCAL)
     match_data_pt data = get_match_data(nlim, &ovector, NULL);
 #else
     int small_vector[POSIX_MALLOC_THRESHOLD * 3];
