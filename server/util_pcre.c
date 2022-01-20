@@ -318,14 +318,6 @@ void free_match_data(match_data_pt data, apr_size_t size)
 #endif
 }
 
-static APR_INLINE
-void put_match_data(match_data_pt data, apr_size_t size, int to_free)
-{
-    if (to_free) {
-        free_match_data(data, size);
-    }
-}
-
 #ifdef APR_HAS_THREAD_LOCAL
 
 static match_data_pt get_match_data(apr_size_t size,
@@ -340,7 +332,7 @@ static match_data_pt get_match_data(apr_size_t size,
     } *tls = NULL;
 
     /* Even though APR_HAS_THREAD_LOCAL is compiled in we may still be
-     * called by non a apr_thread_t thread, let's fall back to alloc/free
+     * called by a native/non-apr thread, let's fall back to alloc/free
      * in this case.
      */
     current = apr_thread_current();
@@ -352,15 +344,11 @@ static match_data_pt get_match_data(apr_size_t size,
     apr_thread_data_get((void **)&tls, "apreg", current);
     if (!tls || tls->size < size) {
         apr_pool_t *tp = apr_thread_pool_get(current);
-        if (tls) {
-#ifdef HAVE_PCRE2
-            pcre2_match_data_free(tls->data); /* NULL safe */
-#endif
-        }
-        else {
+        if (!tls) {
             tls = apr_pcalloc(tp, sizeof(*tls));
             apr_thread_data_set(tls, "apreg", NULL, current);
         }
+
         tls->size *= 2;
         if (tls->size < size) {
             tls->size = size;
@@ -368,15 +356,17 @@ static match_data_pt get_match_data(apr_size_t size,
                 tls->size = POSIX_MALLOC_THRESHOLD;
             }
         }
+
 #ifdef HAVE_PCRE2
+        pcre2_match_data_free(tls->data); /* NULL safe */
         tls->data = pcre2_match_data_create(tls->size, NULL);
-#else
-        tls->data = apr_palloc(tp, tls->size * sizeof(int) * 3);
-#endif
         if (!tls->data) {
             tls->size = 0;
             return NULL;
         }
+#else
+        tls->data = apr_palloc(tp, tls->size * sizeof(int) * 3);
+#endif
     }
 
 #ifdef HAVE_PCRE2
@@ -416,7 +406,7 @@ AP_DECLARE(int) ap_regexec_len(const ap_regex_t *preg, const char *buff,
     int options = 0, to_free = 0;
     match_vector_pt ovector = NULL;
     apr_size_t ncaps = (apr_size_t)preg->re_nsub + 1;
-#if defined(HAVE_PCRE2) || defined(APR_HAS_THREAD_LOCAL)
+#ifdef HAVE_PCRE2
     match_data_pt data = get_match_data(ncaps, &ovector, NULL,
                                         &to_free);
 #else
@@ -457,11 +447,15 @@ AP_DECLARE(int) ap_regexec_len(const ap_regex_t *preg, const char *buff,
         }
         for (; i < nmatch; i++)
             pmatch[i].rm_so = pmatch[i].rm_eo = -1;
-        put_match_data(data, ncaps, to_free);
+        if (to_free) {
+            free_match_data(data, ncaps);
+        }
         return 0;
     }
     else {
-        put_match_data(data, ncaps, to_free);
+        if (to_free) {
+            free_match_data(data, ncaps);
+        }
 #ifdef HAVE_PCRE2
         if (rc <= PCRE2_ERROR_UTF8_ERR1 && rc >= PCRE2_ERROR_UTF8_ERR21)
             return AP_REG_INVARG;
