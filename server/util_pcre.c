@@ -343,7 +343,7 @@ static match_data_pt get_match_data(apr_size_t size,
      * called by non a apr_thread_t thread, let's fall back to alloc/free
      * in this case.
      */
-    current = ap_thread_current();
+    current = apr_thread_current();
     if (!current) {
         *to_free = 1;
         return alloc_match_data(size, ovector, small_vector);
