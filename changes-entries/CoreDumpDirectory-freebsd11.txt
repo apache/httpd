@@ -1,0 +1,2 @@
+  *) mod_unixd: CoreDumpDirectory requires enabling tracing on FreeBSD 11+.
+     PR 65819.  [David CARLIER <devnexen gmail.com>]

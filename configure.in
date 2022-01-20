@@ -476,6 +476,7 @@ pwd.h \
 grp.h \
 strings.h \
 sys/prctl.h \
+sys/procctl.h \
 sys/processor.h \
 sys/sem.h \
 sys/sdt.h \
@@ -533,6 +534,7 @@ getgrnam \
 initgroups \
 bindprocessor \
 prctl \
+procctl \
 timegm \
 getpgid \
 fopen64 \
