@@ -396,13 +396,12 @@ AP_DECLARE(int) ap_regexec_len(const ap_regex_t *preg, const char *buff,
     int rc;
     int options = 0;
     match_vector_pt ovector = NULL;
-    apr_size_t nlim = ((apr_size_t)preg->re_nsub + 1) > nmatch
-                    ? ((apr_size_t)preg->re_nsub + 1) : nmatch;
+    apr_size_t ncaps = (apr_size_t)preg->re_nsub + 1;
 #if defined(HAVE_PCRE2) || defined(APR_HAS_THREAD_LOCAL)
-    match_data_pt data = get_match_data(nlim, &ovector, NULL);
+    match_data_pt data = get_match_data(ncaps, &ovector, NULL);
 #else
     int small_vector[POSIX_MALLOC_THRESHOLD * 3];
-    match_data_pt data = get_match_data(nlim, &ovector, small_vector);
+    match_data_pt data = get_match_data(ncaps, &ovector, small_vector);
 #endif
 
     if (!data) {
@@ -424,25 +423,26 @@ AP_DECLARE(int) ap_regexec_len(const ap_regex_t *preg, const char *buff,
                      0, options, data, NULL);
 #else
     rc = pcre_exec((const pcre *)preg->re_pcre, NULL, buff, (int)len,
-                   0, options, ovector, nlim * 3);
+                   0, options, ovector, ncaps * 3);
 #endif
 
     if (rc >= 0) {
-        apr_size_t n, i;
+        apr_size_t n = rc, i;
         if (rc == 0)
-            rc = nlim; /* All captured slots were filled in */
-        n = (apr_size_t)rc < nmatch ? (apr_size_t)rc : nmatch;
+            rc = ncaps; /* All captured slots were filled in */
+        else if (n > nmatch)
+            n = nmatch;
         for (i = 0; i < n; i++) {
             pmatch[i].rm_so = ovector[i * 2];
             pmatch[i].rm_eo = ovector[i * 2 + 1];
         }
         for (; i < nmatch; i++)
             pmatch[i].rm_so = pmatch[i].rm_eo = -1;
-        put_match_data(data, nlim);
+        put_match_data(data, ncaps);
         return 0;
     }
     else {
-        put_match_data(data, nlim);
+        put_match_data(data, ncaps);
 #ifdef HAVE_PCRE2
         if (rc <= PCRE2_ERROR_UTF8_ERR1 && rc >= PCRE2_ERROR_UTF8_ERR21)
             return AP_REG_INVARG;
