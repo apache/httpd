@@ -795,8 +795,8 @@
 <li><a href="mod_tls.html#tlsoptions">TLSOptions</a></li>
 <li><a href="mod_tls.html#tlsprotocol">TLSProtocol</a></li>
 <li><a href="mod_tls.html#tlsproxyca">TLSProxyCA</a></li>
-<li><a href="mod_tls.html#tlsproxycipherprefer">TLSProxyCipherPrefer</a></li>
-<li><a href="mod_tls.html#tlsproxyciphersuppress">TLSProxyCipherSuppress</a></li>
+<li><a href="mod_tls.html#tlsproxyciphersprefer">TLSProxyCiphersPrefer</a></li>
+<li><a href="mod_tls.html#tlsproxycipherssuppress">TLSProxyCiphersSuppress</a></li>
 <li><a href="mod_tls.html#tlsproxyengine">TLSProxyEngine</a></li>
 <li><a href="mod_tls.html#tlsproxymachinecertificate">TLSProxyMachineCertificate</a></li>
 <li><a href="mod_tls.html#tlsproxyprotocol">TLSProxyProtocol</a></li>
