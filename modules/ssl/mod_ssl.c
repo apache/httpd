@@ -30,6 +30,7 @@
 #include "util_md5.h"
 #include "util_mutex.h"
 #include "ap_provider.h"
+#include "ap_mpm.h"
 #include "http_config.h"
 
 #include "mod_proxy.h" /* for proxy_hook_section_post_config() */
@@ -691,6 +692,8 @@ static int ssl_hook_process_connection(conn_rec* c)
 {
     SSLConnRec *sslconn = myConnConfig(c);
 
+    int status = DECLINED;
+
     if (sslconn && !sslconn->disabled) {
         /* On an active SSL connection, let the input filters initialize
          * themselves which triggers the handshake, which again triggers
@@ -698,13 +701,48 @@ static int ssl_hook_process_connection(conn_rec* c)
          */
         apr_bucket_brigade* temp;
 
+        int async_mpm = 0;
+
         temp = apr_brigade_create(c->pool, c->bucket_alloc);
-        ap_get_brigade(c->input_filters, temp,
-                       AP_MODE_INIT, APR_BLOCK_READ, 0);
+
+        if (ap_mpm_query(AP_MPMQ_IS_ASYNC, &async_mpm) != APR_SUCCESS) {
+            async_mpm = 0;
+        }
+
+        if (async_mpm) {
+
+            /* Take advantage of an async MPM. If we see an EAGAIN,
+             * loop round and don't block.
+             */
+            apr_status_t rv;
+
+            rv = ap_get_brigade(c->input_filters, temp,
+                           AP_MODE_INIT, APR_NONBLOCK_READ, 0);
+
+            if (rv == APR_SUCCESS) {
+                /* great news, lets continue */
+                status = DECLINED;
+            }
+            else if (rv == APR_EAGAIN) {
+                /* we've been asked to come around again, don't block */
+                status = OK;
+            }
+            else {
+                /* we failed, give up */
+                status = DONE;
+
+                c->aborted = 1;
+            }
+        }
+        else {
+            ap_get_brigade(c->input_filters, temp,
+                           AP_MODE_INIT, APR_BLOCK_READ, 0);
+        }
+
         apr_brigade_destroy(temp);
     }
-    
-    return DECLINED;
+
+    return status;
 }
 
 /*

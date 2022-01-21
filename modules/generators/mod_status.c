@@ -557,7 +557,7 @@ static int status_handler(request_rec *r)
         ap_rputs("</dl>", r);
 
     if (is_async) {
-        int write_completion = 0, lingering_close = 0, keep_alive = 0,
+        int read_line = 0, write_completion = 0, lingering_close = 0, keep_alive = 0,
             connections = 0, stopping = 0, procs = 0;
         /*
          * These differ from 'busy' and 'ready' in how gracefully finishing
@@ -574,11 +574,12 @@ static int status_handler(request_rec *r)
                          "<th colspan=\"3\">Async connections</th></tr>\n"
                      "<tr><th>total</th><th>accepting</th>"
                          "<th>busy</th><th>idle</th>"
-                         "<th>writing</th><th>keep-alive</th><th>closing</th></tr>\n", r);
+                         "<th>reading</th><th>writing</th><th>keep-alive</th><th>closing</th></tr>\n", r);
         for (i = 0; i < server_limit; ++i) {
             ps_record = ap_get_scoreboard_process(i);
             if (ps_record->pid) {
                 connections      += ps_record->connections;
+                read_line        += ps_record->read_line;
                 write_completion += ps_record->write_completion;
                 keep_alive       += ps_record->keep_alive;
                 lingering_close  += ps_record->lingering_close;
@@ -600,7 +601,7 @@ static int status_handler(request_rec *r)
                                       "<td>%s%s</td>"
                                       "<td>%u</td><td>%s</td>"
                                       "<td>%u</td><td>%u</td>"
-                                      "<td>%u</td><td>%u</td><td>%u</td>"
+                                      "<td>%u</td><td>%u</td><td>%u</td><td>%u</td>"
                                       "</tr>\n",
                                i, ps_record->pid,
                                dying, old,
@@ -608,6 +609,7 @@ static int status_handler(request_rec *r)
                                ps_record->not_accepting ? "no" : "yes",
                                thread_busy_buffer[i],
                                thread_idle_buffer[i],
+                               ps_record->read_line,
                                ps_record->write_completion,
                                ps_record->keep_alive,
                                ps_record->lingering_close);
@@ -619,12 +621,12 @@ static int status_handler(request_rec *r)
                           "<td>%d</td><td>%d</td>"
                           "<td>%d</td><td>&nbsp;</td>"
                           "<td>%d</td><td>%d</td>"
-                          "<td>%d</td><td>%d</td><td>%d</td>"
+                          "<td>%d</td><td>%d</td><td>%d</td><td>%d</td>"
                           "</tr>\n</table>\n",
                           procs, stopping,
                           connections,
                           busy_workers, idle_workers,
-                          write_completion, keep_alive, lingering_close);
+                          read_line, write_completion, keep_alive, lingering_close);
         }
         else {
             ap_rprintf(r, "Processes: %d\n"
@@ -632,13 +634,14 @@ static int status_handler(request_rec *r)
                           "BusyWorkers: %d\n"
                           "IdleWorkers: %d\n"
                           "ConnsTotal: %d\n"
+                          "ConnsAsyncReading: %d\n"
                           "ConnsAsyncWriting: %d\n"
                           "ConnsAsyncKeepAlive: %d\n"
                           "ConnsAsyncClosing: %d\n",
                           procs, stopping,
                           busy_workers, idle_workers,
                           connections,
-                          write_completion, keep_alive, lingering_close);
+                          read_line, write_completion, keep_alive, lingering_close);
         }
     }
 

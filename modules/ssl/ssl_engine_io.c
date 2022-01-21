@@ -1489,10 +1489,21 @@ static apr_status_t ssl_io_filter_handshake(ssl_filter_ctx_t *filter_ctx)
         }
         else if (ssl_err == SSL_ERROR_WANT_READ) {
             /*
-             * This is in addition to what was present earlier. It is
-             * borrowed from openssl_state_machine.c [mod_tls].
-             * TBD.
+             * Call us back when ready to read *\/
              */
+            ap_log_cerror(APLOG_MARK, APLOG_TRACE6, 0, outctx->c,
+                          "Want read during nonblocking accept");
+            outctx->c->cs->sense = CONN_SENSE_WANT_READ;
+            outctx->rc = APR_EAGAIN;
+            return APR_EAGAIN;
+        }
+        else if (ssl_err == SSL_ERROR_WANT_WRITE) {
+            /*
+             * Call us back when ready to write *\/
+             */
+            ap_log_cerror(APLOG_MARK, APLOG_TRACE6, 0, outctx->c,
+                          "Want write during nonblocking accept");
+            outctx->c->cs->sense = CONN_SENSE_WANT_WRITE;
             outctx->rc = APR_EAGAIN;
             return APR_EAGAIN;
         }
