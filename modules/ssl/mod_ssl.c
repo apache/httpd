@@ -29,6 +29,7 @@
 #include "util_md5.h"
 #include "util_mutex.h"
 #include "ap_provider.h"
+#include "ap_mpm.h"
 #include "http_config.h"
 
 #include "mod_proxy.h" /* for proxy_hook_section_post_config() */
@@ -694,6 +695,7 @@ static int ssl_hook_pre_connection(conn_rec *c, void *csd)
 static int ssl_hook_process_connection(conn_rec* c)
 {
     SSLConnRec *sslconn = myConnConfig(c);
+    int status = DECLINED;
 
     if (sslconn && !sslconn->disabled) {
         /* On an active SSL connection, let the input filters initialize
@@ -701,25 +703,36 @@ static int ssl_hook_process_connection(conn_rec* c)
          * all kinds of useful things such as SNI and ALPN.
          */
         apr_bucket_brigade* temp;
+        int async_mpm = 0;
         apr_status_t rv;
 
-        temp = apr_brigade_create(c->pool, c->bucket_alloc);
-        rv = ap_get_brigade(c->input_filters, temp,
-                            AP_MODE_INIT, APR_BLOCK_READ, 0);
-        apr_brigade_destroy(temp);
+        if (ap_mpm_query(AP_MPMQ_IS_ASYNC, &async_mpm) != APR_SUCCESS) {
+            async_mpm = 0;
+        }
 
-        if (APR_SUCCESS != APR_SUCCESS) {
-            if (c->cs) {
-                c->cs->state = CONN_STATE_LINGER;
-            }
-            ap_log_cerror(APLOG_MARK, APLOG_ERR, rv, c, APLOGNO(10373)
-                          "SSL handshake was not completed, "
-                          "closing connection");
-            return OK;
+        temp = ap_acquire_brigade(c);
+        rv = ap_get_brigade(c->input_filters, temp, AP_MODE_INIT,
+                            async_mpm ? APR_NONBLOCK_READ : APR_BLOCK_READ,
+                            0);
+        ap_release_brigade(c, temp);
+
+        if (rv == APR_SUCCESS) {
+            /* great news, lets continue */
+        }
+        else if (async_mpm && APR_STATUS_IS_EAGAIN(rv)) {
+            /* Take advantage of an async MPM. If we see an EAGAIN,
+             * loop round and don't block.
+             */
+            status = OK;
+        }
+        else {
+            /* we failed, give up */
+            c->aborted = 1;
+            status = DONE;
         }
     }
-    
-    return DECLINED;
+
+    return status;
 }
 
 /*
