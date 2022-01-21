@@ -609,6 +609,7 @@
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_md</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in version 2.4.42 and later</td></tr>
 </table>
             <p>
                 The ACME protocol requires you to give a contact url when you sign up. Currently, 
@@ -792,7 +793,8 @@
                 DNS name in a MDomain. Cluster setups may use this event to distribute
                 challenge files to all nodes in a cluster.
             </p><p>
-                ocsp-errored happens when MDStapling is enabled for a domain, this indicates
+                ocsp-errored happens when <code class="directive"><a href="#mdstapling">MDStapling</a></code>
+                is enabled for a domain, this indicates
                 that an error was encountered retrieving the OCSP response from the
                 Certificate Authority. mod_md will continue trying.
             </p>
@@ -1006,7 +1008,7 @@ MDomain example2.org auto
                 the module will obtain a certificate for each key.
             </p><p>
                 For example, you may configure an RSA and an Elliptic Curve (EC) key, so
-                that 2 certicates are created for a domain. On a client connection, the first
+                that 2 certificates are created for a domain. On a client connection, the first
                 one supported by the client will then be used.
             </p><p>
                 Since EC keys and certificates are smaller, you might want to offer

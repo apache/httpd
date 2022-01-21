@@ -1281,6 +1281,7 @@ MDMessageCmd /etc/apache/md-message
         <contextlist>
             <context>server config</context>
         </contextlist>
+        <compatibility>Available in version 2.4.42 and later</compatibility>
         <usage>
             <p>
                 The ACME protocol requires you to give a contact url when you sign up. Currently, 
