@@ -187,6 +187,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      Backport version for 2.4.x of patch:
         https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/httpd-dbm.patch
      +1: minfrin
+     jailletc36: part of r1891023 is needed to fill some APLOGNO()
 
   *) Add the ldap function to the expression API, allowing LDAP filters and
      distinguished names based on expressions to be escaped correctly to
@@ -210,6 +211,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      Backport version for 2.4.x of patch:
         https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/httpd-2.4-ldap-search.patch
      +1: minfrin
+     jailletc36: r1745033 seems related and should in included
 
   *) mod_authn_core: Add expression support to AuthName and AuthType.
      Trunk version of patch:
