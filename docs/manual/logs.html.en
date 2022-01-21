@@ -191,14 +191,11 @@
     the contents of the logs. This section describes how to configure the server
     to record information in the access log.</p>
 
-    <p>Of course, storing the information in the access log is only
+    <p>Storing the information in the access log is only
     the start of log management. The next step is to analyze this
     information to produce useful statistics. Log analysis in
     general is beyond the scope of this document, and not really
-    part of the job of the web server itself. For more information
-    about this topic, and for applications which perform log
-    analysis, check the <a href="http://dmoz.org/Computers/Software/Internet/Site_Management/Log_Analysis/">
-    Open Directory</a>.
+    part of the job of the web server itself.
     </p>
 
     <p>Various versions of Apache httpd have used other modules and
@@ -476,7 +473,7 @@ LogFormat "%!200,304,302{Referer}i" refererlog</pre>
       logged if the HTTP status code is 400 or 501. In other cases, a
       literal "-" will be logged instead. Likewise, in the second
       example, the <code>Referer</code> will be logged if the HTTP
-      status code is <strong>not</strong> 200, 204, or 302. (Note the
+      status code is <strong>not</strong> 200, 304, or 302. (Note the
       "!" before the status codes.</p>
 
       <p>Although we have just shown that conditional logging is very
