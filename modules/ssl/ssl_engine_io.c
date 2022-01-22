@@ -323,6 +323,7 @@ typedef struct {
 } char_buffer_t;
 
 typedef struct {
+    conn_rec *c;
     SSL *ssl;
     BIO *bio_out;
     ap_filter_t *f;
@@ -795,6 +796,28 @@ static apr_status_t ssl_io_input_read(bio_filter_in_ctx_t *inctx,
                  * (This is usually the case when the client forces an SSL
                  * renegotiation which is handled implicitly by OpenSSL.)
                  */
+                inctx->c->cs->sense = CONN_SENSE_WANT_READ;
+                inctx->rc = APR_EAGAIN;
+
+                if (*len > 0) {
+                    inctx->rc = APR_SUCCESS;
+                    break;
+                }
+                if (inctx->block == APR_NONBLOCK_READ) {
+                    break;
+                }
+                continue;  /* Blocking and nothing yet?  Try again. */
+            }
+            if (ssl_err == SSL_ERROR_WANT_WRITE) {
+                /*
+                 * If OpenSSL wants to write during read, and we were
+                 * nonblocking, report as an EAGAIN.  Otherwise loop,
+                 * pulling more data from network filter.
+                 *
+                 * (This is usually the case when the client forces an SSL
+                 * renegotiation which is handled implicitly by OpenSSL.)
+                 */
+                inctx->c->cs->sense = CONN_SENSE_WANT_WRITE;
                 inctx->rc = APR_EAGAIN;
 
                 if (*len > 0) {
@@ -2303,6 +2326,7 @@ static void ssl_io_input_add_filter(ssl_filter_ctx_t *filter_ctx, conn_rec *c,
 #endif
     BIO_set_data(filter_ctx->pbioRead, (void *)inctx);
 
+    inctx->c = c;
     inctx->ssl = ssl;
     inctx->bio_out = filter_ctx->pbioWrite;
     inctx->f = filter_ctx->pInputFilter;
