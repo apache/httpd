@@ -727,7 +727,9 @@ static int ssl_hook_process_connection(conn_rec* c)
         }
         else {
             /* we failed, give up */
-            c->aborted = 1;
+            if (c->cs) {
+                c->cs->state = CONN_STATE_LINGER;
+            }
             status = DONE;
         }
     }
