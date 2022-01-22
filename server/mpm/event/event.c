@@ -2310,7 +2310,7 @@ do_maintenance:
             }
             /* Step 2: read line timeouts */
             process_timeout_queue(read_line_q, now,
-                                  defer_lingering_close);
+                                  shutdown_connection);
             /* Step 3: write completion timeouts */
             process_timeout_queue(write_completion_q, now,
                                   defer_lingering_close);
