@@ -731,10 +731,10 @@ static int ssl_hook_process_connection(conn_rec* c)
             }
             else {
                 /* we failed, give up */
-                status = DONE;
 
                 cs->state = CONN_STATE_LINGER;
 
+                status = OK;
             }
         }
         else {
