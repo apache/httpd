@@ -730,7 +730,7 @@ static int ssl_hook_process_connection(conn_rec* c)
             if (c->cs) {
                 c->cs->state = CONN_STATE_LINGER;
             }
-            status = DONE;
+            status = OK;
         }
     }
 
