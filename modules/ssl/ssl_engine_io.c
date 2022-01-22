@@ -796,7 +796,9 @@ static apr_status_t ssl_io_input_read(bio_filter_in_ctx_t *inctx,
                  * (This is usually the case when the client forces an SSL
                  * renegotiation which is handled implicitly by OpenSSL.)
                  */
-                inctx->c->cs->sense = CONN_SENSE_WANT_READ;
+                if (inctx->c->cs) {
+                    inctx->c->cs->sense = CONN_SENSE_WANT_READ;
+                }
                 inctx->rc = APR_EAGAIN;
 
                 if (*len > 0) {
@@ -817,7 +819,9 @@ static apr_status_t ssl_io_input_read(bio_filter_in_ctx_t *inctx,
                  * (This is usually the case when the client forces an SSL
                  * renegotiation which is handled implicitly by OpenSSL.)
                  */
-                inctx->c->cs->sense = CONN_SENSE_WANT_WRITE;
+                if (inctx->c->cs) {
+                    inctx->c->cs->sense = CONN_SENSE_WANT_WRITE;
+                }
                 inctx->rc = APR_EAGAIN;
 
                 if (*len > 0) {
@@ -983,7 +987,9 @@ static apr_status_t ssl_filter_write(ap_filter_t *f,
              * (This is usually the case when the client forces an SSL
              * renegotiation which is handled implicitly by OpenSSL.)
              */
-            outctx->c->cs->sense = CONN_SENSE_WANT_READ;
+            if (outctx->c->cs) {
+                outctx->c->cs->sense = CONN_SENSE_WANT_READ;
+            }
             outctx->rc = APR_EAGAIN;
             ap_log_cerror(APLOG_MARK, APLOG_TRACE6, 0, outctx->c,
                           "Want read during nonblocking write");
@@ -1516,7 +1522,9 @@ static apr_status_t ssl_io_filter_handshake(ssl_filter_ctx_t *filter_ctx)
              */
             ap_log_cerror(APLOG_MARK, APLOG_TRACE6, 0, outctx->c,
                           "Want read during nonblocking accept");
-            outctx->c->cs->sense = CONN_SENSE_WANT_READ;
+        	if (outctx->c->cs) {
+                outctx->c->cs->sense = CONN_SENSE_WANT_READ;
+        	}
             outctx->rc = APR_EAGAIN;
             return APR_EAGAIN;
         }
@@ -1526,7 +1534,9 @@ static apr_status_t ssl_io_filter_handshake(ssl_filter_ctx_t *filter_ctx)
              */
             ap_log_cerror(APLOG_MARK, APLOG_TRACE6, 0, outctx->c,
                           "Want write during nonblocking accept");
-            outctx->c->cs->sense = CONN_SENSE_WANT_WRITE;
+        	if (outctx->c->cs) {
+                outctx->c->cs->sense = CONN_SENSE_WANT_WRITE;
+        	}
             outctx->rc = APR_EAGAIN;
             return APR_EAGAIN;
         }
@@ -2361,13 +2371,6 @@ void ssl_io_filter_init(conn_rec *c, request_rec *r, SSL *ssl)
     filter_ctx->pbioWrite       = BIO_new(bio_filter_out_method);
 #endif
     BIO_set_data(filter_ctx->pbioWrite, (void *)bio_filter_out_ctx_new(filter_ctx, c));
-
-    /* write is non blocking for the benefit of async mpm */
-    if (c->cs) {
-        BIO_set_nbio(filter_ctx->pbioWrite, 1);
-        ap_log_cerror(APLOG_MARK, APLOG_TRACE7, 0, c,
-                      "Enabling non-blocking writes");
-    }
 
     ssl_io_input_add_filter(filter_ctx, c, r, ssl);
 
