@@ -714,6 +714,8 @@ static int ssl_hook_process_connection(conn_rec* c)
             /* Take advantage of an async MPM. If we see an EAGAIN,
              * loop round and don't block.
              */
+            conn_state_t *cs = c->cs;
+
             apr_status_t rv;
 
             rv = ap_get_brigade(c->input_filters, temp,
@@ -731,7 +733,8 @@ static int ssl_hook_process_connection(conn_rec* c)
                 /* we failed, give up */
                 status = DONE;
 
-                c->aborted = 1;
+                cs->state = CONN_STATE_LINGER;
+
             }
         }
         else {

@@ -1434,7 +1434,7 @@ static void start_connect(struct connection * c)
     }
 #endif
     if ((rv = apr_socket_connect(c->aprsock, destsa)) != APR_SUCCESS) {
-        if (APR_STATUS_IS_EINPROGRESS(rv)) {
+        if (APR_STATUS_IS_EINPROGRESS(rv) || APR_STATUS_IS_EINTR(rv)) {
             set_conn_state(c, STATE_CONNECTING);
             c->rwrite = 0;
             return;
