@@ -2,7 +2,7 @@
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
-<!-- English Revision: 1896411 -->
+<!-- English Revision: 1897297 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -1522,6 +1522,8 @@ MDMessageCmd /etc/apache/md-message
         <contextlist>
             <context>server config</context>
         </contextlist>
+	<compatibility>Disponible à partir de la version 2.4.42 du serveur HTTP
+	Apache</compatibility>
         <usage>
             <p>
                 Lors de votre inscription, vous devez fournir une url de contact
