@@ -982,15 +982,19 @@ static void process_lingering_close(event_conn_state_t *cs);
 
 static void update_reqevents_from_sense(event_conn_state_t *cs, int sense)
 {
-    if (sense < 0) {
-        sense = cs->pub.sense;
-    }
+	/* has the desired sense been overridden? */
+	if (cs->pub.sense != CONN_SENSE_DEFAULT) {
+		sense = cs->pub.sense;
+	}
+
+	/* read or write */
     if (sense == CONN_SENSE_WANT_READ) {
         cs->pfd.reqevents = APR_POLLIN | APR_POLLHUP;
     }
-    else {
+    else if (sense == CONN_SENSE_WANT_WRITE) {
         cs->pfd.reqevents = APR_POLLOUT;
     }
+
     /* POLLERR is usually returned event only, but some pollset
      * backends may require it in reqevents to do the right thing,
      * so it shouldn't hurt (ignored otherwise).
@@ -1037,6 +1041,7 @@ static void process_socket(apr_thread_t *thd, apr_pool_t * p, apr_socket_t * soc
                                       &mpm_event_module);
         cs->pfd.desc_type = APR_POLL_SOCKET;
         cs->pfd.desc.s = sock;
+        cs->pub.sense = CONN_SENSE_DEFAULT;
         update_reqevents_from_sense(cs, CONN_SENSE_WANT_READ);
         pt->type = PT_CSD;
         pt->baton = cs;
@@ -1067,7 +1072,6 @@ static void process_socket(apr_thread_t *thd, apr_pool_t * p, apr_socket_t * soc
          */
         cs->pub.state = CONN_STATE_READ_REQUEST_LINE;
 
-        cs->pub.sense = CONN_SENSE_DEFAULT;
         rc = OK;
     }
     else {
@@ -1172,7 +1176,7 @@ read_request:
         notify_suspend(cs);
 
         /* Add work to pollset. */
-        update_reqevents_from_sense(cs, -1);
+        update_reqevents_from_sense(cs, CONN_SENSE_WANT_READ);
         apr_thread_mutex_lock(timeout_mutex);
         TO_QUEUE_APPEND(cs->sc->rl_q, cs);
         rv = apr_pollset_add(event_pollset, &cs->pfd);
@@ -1213,7 +1217,7 @@ read_request:
             cs->queue_timestamp = apr_time_now();
             notify_suspend(cs);
 
-            update_reqevents_from_sense(cs, -1);
+            update_reqevents_from_sense(cs, CONN_SENSE_WANT_WRITE);
             apr_thread_mutex_lock(timeout_mutex);
             TO_QUEUE_APPEND(cs->sc->wc_q, cs);
             rv = apr_pollset_add(event_pollset, &cs->pfd);
@@ -1319,7 +1323,7 @@ static apr_status_t event_resume_suspended (conn_rec *c)
         cs->pub.state = CONN_STATE_WRITE_COMPLETION;
         notify_suspend(cs);
 
-        update_reqevents_from_sense(cs, -1);
+        update_reqevents_from_sense(cs, CONN_SENSE_WANT_WRITE);
         apr_thread_mutex_lock(timeout_mutex);
         TO_QUEUE_APPEND(cs->sc->wc_q, cs);
         apr_pollset_add(event_pollset, &cs->pfd);
@@ -1777,6 +1781,7 @@ static void process_lingering_close(event_conn_state_t *cs)
     }
 
     /* (Re)queue the connection to come back when readable */
+    cs->pub.sense = CONN_SENSE_DEFAULT;
     update_reqevents_from_sense(cs, CONN_SENSE_WANT_READ);
     q = (cs->pub.state == CONN_STATE_LINGER_SHORT) ? short_linger_q : linger_q;
     apr_thread_mutex_lock(timeout_mutex);
