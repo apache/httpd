@@ -1184,7 +1184,7 @@ read_request:
             AP_DEBUG_ASSERT(0);
             TO_QUEUE_REMOVE(cs->sc->rl_q, cs);
             apr_thread_mutex_unlock(timeout_mutex);
-            ap_log_error(APLOG_MARK, APLOG_ERR, rv, ap_server_conf, APLOGNO()
+            ap_log_error(APLOG_MARK, APLOG_ERR, rv, ap_server_conf, APLOGNO(10374)
                          "process_socket: apr_pollset_add failure for "
                          "read request line");
             close_connection(cs);
