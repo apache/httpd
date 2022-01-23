@@ -300,16 +300,27 @@ void free_match_data(match_data_pt data, apr_size_t size)
 
 #ifdef APR_HAS_THREAD_LOCAL
 
+struct apreg_tls {
+    match_data_pt data;
+    apr_size_t size;
+};
+
+#ifdef HAVE_PCRE2
+static apr_status_t apreg_tls_cleanup(void *arg)
+{
+    struct apreg_tls *tls = arg;
+    pcre2_match_data_free(tls->data); /* NULL safe */
+    return APR_SUCCESS;
+}
+#endif
+
 static match_data_pt get_match_data(apr_size_t size,
                                     match_vector_pt *ovector,
                                     match_vector_pt small_vector,
                                     int *to_free)
 {
     apr_thread_t *current;
-    struct {
-        match_data_pt data;
-        apr_size_t size;
-    } *tls = NULL;
+    struct apreg_tls *tls = NULL;
 
     /* Even though APR_HAS_THREAD_LOCAL is compiled in we may still be
      * called by a native/non-apr thread, let's fall back to alloc/free
@@ -326,7 +337,11 @@ static match_data_pt get_match_data(apr_size_t size,
         apr_pool_t *tp = apr_thread_pool_get(current);
         if (!tls) {
             tls = apr_pcalloc(tp, sizeof(*tls));
+#ifdef HAVE_PCRE2
+            apr_thread_data_set(tls, "apreg", apreg_tls_cleanup, current);
+#else
             apr_thread_data_set(tls, "apreg", NULL, current);
+#endif
         }
 
         tls->size *= 2;
