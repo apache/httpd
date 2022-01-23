@@ -718,15 +718,29 @@ static int ssl_hook_process_connection(conn_rec* c)
 
         if (rv == APR_SUCCESS) {
             /* great news, lets continue */
+            ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, APLOGNO(10370)
+                          "SSL handshake completed, continuing");
+        }
+        else if (rv == APR_EGENERAL) {
+            /* Plain HTTP spoken on https port, mod_ssl wants to be called
+             * without AP_MODE_INIT.
+             */
+            ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, APLOGNO(10371)
+                          "SSL handshake with plain HTTP, continuing");
         }
         else if (async_mpm && APR_STATUS_IS_EAGAIN(rv)) {
             /* Take advantage of an async MPM. If we see an EAGAIN,
              * loop round and don't block.
              */
+            ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, APLOGNO(10372)
+                          "SSL handshake in progress, try again later");
             status = OK;
         }
         else {
             /* we failed, give up */
+            ap_log_cerror(APLOG_MARK, APLOG_INFO, rv, c, APLOGNO(10373)
+                          "SSL handshake was not completed, "
+                          "closing connection");
             if (c->cs) {
                 c->cs->state = CONN_STATE_LINGER;
             }
