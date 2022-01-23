@@ -723,16 +723,36 @@ static int ssl_hook_process_connection(conn_rec* c)
 
             if (rv == APR_SUCCESS) {
                 /* great news, lets continue */
+
+                ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, APLOGNO(10370)
+                              "SSL handshake completed, continuing");
+
                 status = DECLINED;
             }
             else if (rv == APR_EAGAIN) {
                 /* we've been asked to come around again, don't block */
-                status = OK;
+
+                ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, APLOGNO(10371)
+                              "SSL handshake in progress, continuing");
+
+            	status = OK;
+            }
+            else if (rv == APR_EGENERAL) {
+                /* handshake error, but mod_ssl handled it */
+
+                ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, APLOGNO(10372)
+                              "SSL handshake failed, returning error response");
+
+            	status = DECLINED;
             }
             else {
                 /* we failed, give up */
 
                 cs->state = CONN_STATE_LINGER;
+
+                ap_log_cerror(APLOG_MARK, APLOG_ERR, rv, c, APLOGNO(10373)
+                              "SSL handshake was not completed, "
+                              "closing connection");
 
                 status = OK;
             }
