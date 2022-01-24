@@ -721,7 +721,7 @@ static int ssl_hook_process_connection(conn_rec* c)
             ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, APLOGNO(10370)
                           "SSL handshake completed, continuing");
         }
-        else if (rv == APR_EGENERAL) {
+        else if (rv == MODSSL_ERROR_HTTP_ON_HTTPS) {
             /* Plain HTTP spoken on https port, mod_ssl wants to be called
              * without AP_MODE_INIT.
              */

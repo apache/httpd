@@ -979,10 +979,6 @@ static apr_status_t ssl_filter_write(ap_filter_t *f,
                                sizeof(HTTP_ON_HTTPS_PORT) - 1, \
                                alloc)
 
-/* Custom apr_status_t error code, used when a plain HTTP request is
- * received on an SSL port. */
-#define MODSSL_ERROR_HTTP_ON_HTTPS (APR_OS_START_USERERR + 0)
-
 /* Custom apr_status_t error code, used when the proxy cannot
  * establish an outgoing SSL connection. */
 #define MODSSL_ERROR_BAD_GATEWAY (APR_OS_START_USERERR + 1)
@@ -1018,7 +1014,7 @@ static apr_status_t ssl_io_filter_error(bio_filter_in_ctx_t *inctx,
             f->c->keepalive = AP_CONN_CLOSE;
             if (is_init) {
                 sslconn->non_ssl_request = NON_SSL_SEND_REQLINE;
-                return AP_FILTER_ERROR;
+                return MODSSL_ERROR_HTTP_ON_HTTPS;
             }
             sslconn->non_ssl_request = NON_SSL_SEND_HDR_SEP;
 
