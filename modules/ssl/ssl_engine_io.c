@@ -1453,9 +1453,9 @@ static apr_status_t ssl_io_filter_handshake(ssl_filter_ctx_t *filter_ctx)
              */
             ap_log_cerror(APLOG_MARK, APLOG_TRACE6, 0, outctx->c,
                           "Want read during nonblocking accept");
-        	if (outctx->c->cs) {
+            if (outctx->c->cs) {
                 outctx->c->cs->sense = CONN_SENSE_WANT_READ;
-        	}
+            }
             outctx->rc = APR_EAGAIN;
             return APR_EAGAIN;
         }
@@ -1465,9 +1465,9 @@ static apr_status_t ssl_io_filter_handshake(ssl_filter_ctx_t *filter_ctx)
              */
             ap_log_cerror(APLOG_MARK, APLOG_TRACE6, 0, outctx->c,
                           "Want write during nonblocking accept");
-        	if (outctx->c->cs) {
+            if (outctx->c->cs) {
                 outctx->c->cs->sense = CONN_SENSE_WANT_WRITE;
-        	}
+            }
             outctx->rc = APR_EAGAIN;
             return APR_EAGAIN;
         }
