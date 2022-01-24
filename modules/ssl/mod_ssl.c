@@ -701,15 +701,15 @@ static int ssl_hook_process_connection(conn_rec* c)
          */
         apr_bucket_brigade* temp;
 
-        int async_mpm = 0;
+        int again_mpm = 0;
 
         temp = apr_brigade_create(c->pool, c->bucket_alloc);
 
-        if (ap_mpm_query(AP_MPMQ_IS_ASYNC, &async_mpm) != APR_SUCCESS) {
-            async_mpm = 0;
+        if (ap_mpm_query(AP_MPMQ_CAN_AGAIN, &again_mpm) != APR_SUCCESS) {
+            again_mpm = 0;
         }
 
-        if (async_mpm) {
+        if (again_mpm) {
 
             /* Take advantage of an async MPM. If we see an EAGAIN,
              * loop round and don't block.
@@ -735,7 +735,7 @@ static int ssl_hook_process_connection(conn_rec* c)
                 ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, APLOGNO(10371)
                               "SSL handshake in progress, continuing");
 
-            	status = OK;
+            	status = AGAIN;
             }
             else if (rv == AP_FILTER_ERROR) {
                 /* handshake error, but mod_ssl handled it */

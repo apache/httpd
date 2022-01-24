@@ -3,8 +3,9 @@ Changes with Apache 2.5.1
 
   *) event: Add support for non blocking behaviour in the
      CONN_STATE_READ_REQUEST_LINE phase, in addition to the existing
-     CONN_STATE_WRITE_COMPLETION phase. Update mod_ssl to perform non blocking
-     TLS handshakes. [Graham Leggett]
+     CONN_STATE_WRITE_COMPLETION phase. Add AP_MPM_CAN_AGAIN and AGAIN to
+     signal to the MPM that non blocking behaviour is requested. Update
+     mod_ssl to perform non blocking TLS handshakes. [Graham Leggett]
 
   *) http: Enforce that fully qualified uri-paths not to be forward-proxied
      have an http(s) scheme, and that the ones to be forward proxied have a

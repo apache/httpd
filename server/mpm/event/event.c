@@ -734,6 +734,9 @@ static int event_query(int query_code, int *result, apr_status_t *rv)
     case AP_MPMQ_CAN_POLL:
         *result = 1;
         break;
+    case AP_MPMQ_CAN_AGAIN:
+        *result = 1;
+        break;
     default:
         *rv = APR_ENOTIMPL;
         break;
@@ -1122,6 +1125,8 @@ read_request:
     /*
      * The process_connection hooks above should set the connection state
      * appropriately upon return, for event MPM to either:
+     * - call the hooks again after waiting for a read or write, or react to an
+     *   overridden CONN_SENSE_WANT_READ / CONN_SENSE_WANT_WRITE.
      * - do lingering close (CONN_STATE_LINGER),
      * - wait for readability of the next request with respect to the keepalive
      *   timeout (state CONN_STATE_CHECK_REQUEST_LINE_READABLE),
@@ -1147,12 +1152,12 @@ read_request:
      * while this was expected to do lingering close unconditionally with
      * worker or prefork MPMs for instance.
      */
-    if (rc != OK || (cs->pub.state >= CONN_STATE_NUM)
+    if (rc != AGAIN && (
+        rc != OK || (cs->pub.state >= CONN_STATE_NUM)
                  || (cs->pub.state < CONN_STATE_LINGER
-                     && cs->pub.state != CONN_STATE_READ_REQUEST_LINE
                      && cs->pub.state != CONN_STATE_WRITE_COMPLETION
                      && cs->pub.state != CONN_STATE_CHECK_REQUEST_LINE_READABLE
-                     && cs->pub.state != CONN_STATE_SUSPENDED)) {
+                     && cs->pub.state != CONN_STATE_SUSPENDED))) {
         ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, APLOGNO(10111)
                       "process_socket: connection processing %s: closing",
                       rc ? apr_psprintf(c->pool, "returned error %i", rc)
