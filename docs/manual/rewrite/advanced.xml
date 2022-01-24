@@ -78,7 +78,7 @@ configuration.</note>
 <example>
 user1  physical_host_of_user1<br />
 user2  physical_host_of_user2<br />
-:      :
+# ... and so on
 </example>
 
   <p>We put this into a <code>map.users-to-hosts</code> file. The
@@ -108,7 +108,8 @@ RewriteRule   "^/u/([^/]+)/?(.*)" "http://${users-to-hosts:$1|server0}/u/$1/$2"
   </dl>
 
   <p>See the <directive module="mod_rewrite">RewriteMap</directive>
-  documentation for more discussion of the syntax of this directive.</p>
+  documentation and the <a href="./rewritemap.html">RewriteMap HowTo</a>
+  for more discussion of the syntax of this directive.</p>
 
 </section>
 
