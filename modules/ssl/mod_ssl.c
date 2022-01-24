@@ -737,7 +737,7 @@ static int ssl_hook_process_connection(conn_rec* c)
 
             	status = OK;
             }
-            else if (rv == APR_EGENERAL) {
+            else if (rv == AP_FILTER_ERROR) {
                 /* handshake error, but mod_ssl handled it */
 
                 ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, APLOGNO(10372)

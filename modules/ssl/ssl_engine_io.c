@@ -1083,7 +1083,7 @@ static apr_status_t ssl_io_filter_error(bio_filter_in_ctx_t *inctx,
             f->c->keepalive = AP_CONN_CLOSE;
             if (is_init) {
                 sslconn->non_ssl_request = NON_SSL_SEND_REQLINE;
-                return APR_EGENERAL;
+                return AP_FILTER_ERROR;
             }
             sslconn->non_ssl_request = NON_SSL_SEND_HDR_SEP;
 
