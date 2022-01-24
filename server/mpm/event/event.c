@@ -985,12 +985,12 @@ static void process_lingering_close(event_conn_state_t *cs);
 
 static void update_reqevents_from_sense(event_conn_state_t *cs, int sense)
 {
-	/* has the desired sense been overridden? */
-	if (cs->pub.sense != CONN_SENSE_DEFAULT) {
-		sense = cs->pub.sense;
-	}
+    /* has the desired sense been overridden? */
+    if (cs->pub.sense != CONN_SENSE_DEFAULT) {
+        sense = cs->pub.sense;
+    }
 
-	/* read or write */
+    /* read or write */
     if (sense == CONN_SENSE_WANT_READ) {
         cs->pfd.reqevents = APR_POLLIN | APR_POLLHUP;
     }
