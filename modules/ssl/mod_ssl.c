@@ -703,16 +703,16 @@ static int ssl_hook_process_connection(conn_rec* c)
          * all kinds of useful things such as SNI and ALPN.
          */
         apr_bucket_brigade* temp;
-        int async_mpm = 0;
+        int again_mpm = 0;
         apr_status_t rv;
 
-        if (ap_mpm_query(AP_MPMQ_IS_ASYNC, &async_mpm) != APR_SUCCESS) {
-            async_mpm = 0;
+        if (ap_mpm_query(AP_MPMQ_CAN_AGAIN, &again_mpm) != APR_SUCCESS) {
+            again_mpm = 0;
         }
 
         temp = ap_acquire_brigade(c);
         rv = ap_get_brigade(c->input_filters, temp, AP_MODE_INIT,
-                            async_mpm ? APR_NONBLOCK_READ : APR_BLOCK_READ,
+                            again_mpm ? APR_NONBLOCK_READ : APR_BLOCK_READ,
                             0);
         ap_release_brigade(c, temp);
 
@@ -728,13 +728,13 @@ static int ssl_hook_process_connection(conn_rec* c)
             ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, APLOGNO(10371)
                           "SSL handshake with plain HTTP, continuing");
         }
-        else if (async_mpm && APR_STATUS_IS_EAGAIN(rv)) {
+        else if (again_mpm && APR_STATUS_IS_EAGAIN(rv)) {
             /* Take advantage of an async MPM. If we see an EAGAIN,
              * loop round and don't block.
              */
             ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, APLOGNO(10372)
                           "SSL handshake in progress, try again later");
-            status = OK;
+            status = AGAIN;
         }
         else {
             /* we failed, give up */

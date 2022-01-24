@@ -465,6 +465,9 @@ AP_DECLARE(const char *) ap_get_server_built(void);
                                  */
 #define SUSPENDED -3 /**< Module will handle the remainder of the request.
                       * The core will never invoke the request again, */
+#define AGAIN -4                /**< Module wants to be called again when
+                                  *  more data is availble.
+                                  */
 
 /** Returned by the bottom-most filter if no data was written.
  *  @see ap_pass_brigade(). */
