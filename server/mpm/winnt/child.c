@@ -934,7 +934,7 @@ void child_main(apr_pool_t *pconf, DWORD parent_pid)
                 || apr_threadattr_detach_set(main_thd_attr, 1)
                 || ap_thread_current_create(&main_thd, main_thd_attr,
                                             pchild)) {
-            ap_log_error(APLOG_MARK, APLOG_EMERG, 0, ap_server_conf, APLOGNO()
+            ap_log_error(APLOG_MARK, APLOG_EMERG, 0, ap_server_conf, APLOGNO(10376)
                          "Couldn't initialize child main thread");
             exit(APEXIT_CHILDINIT);
         }
