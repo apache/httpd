@@ -299,7 +299,7 @@ static void reset_process_pconf(process_rec *process)
     apr_pool_pre_cleanup_register(process->pconf, NULL, deregister_all_hooks);
 }
 
-#ifdef APR_HAS_THREAD_LOCAL
+#if APR_HAS_THREAD_LOCAL
 static apr_status_t main_thread_exit_cleanup(void *arg)
 {
     apr_thread_t *thd = arg;
@@ -359,7 +359,7 @@ static process_rec *init_process(int *argc, const char * const * *argv)
     process->argv = *argv;
     process->short_name = apr_filepath_name_get((*argv)[0]);
 
-#ifdef APR_HAS_THREAD_LOCAL
+#if APR_HAS_THREAD_LOCAL
     /* Create an apr_thread_t for the main thread to set up its
      * Thread Local Storage. Since it's detached and it won't
      * apr_thread_exit(), destroy its pool before exiting via

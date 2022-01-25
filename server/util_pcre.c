@@ -298,7 +298,7 @@ void free_match_data(match_data_pt data, apr_size_t size)
 #endif
 }
 
-#ifdef APR_HAS_THREAD_LOCAL
+#if APR_HAS_THREAD_LOCAL
 
 struct apreg_tls {
     match_data_pt data;
@@ -322,9 +322,8 @@ static match_data_pt get_match_data(apr_size_t size,
     apr_thread_t *current;
     struct apreg_tls *tls = NULL;
 
-    /* Even though APR_HAS_THREAD_LOCAL is compiled in we may still be
-     * called by a native/non-apr thread, let's fall back to alloc/free
-     * in this case.
+    /* Even though APR_HAS_THREAD_LOCAL, we may still be called by a
+     * native/non-apr thread, let's fall back to alloc/free in this case.
      */
     current = apr_thread_current();
     if (!current) {
