@@ -700,7 +700,9 @@
  *                         add PROXY_WORKER_UDS_PATH_SIZE.
  * 20211221.1 (2.5.1-dev)  Add read_line to scoreboard.
  * 20211221.2 (2.5.1-dev)  Add AGAIN, AP_MPMQ_CAN_AGAIN.
- * 
+ * 20211221.3 (2.5.1-dev)  Add ap_thread_create(), ap_thread_current_create()
+ *                         and ap_thread_current()
+ *
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503235UL /* "AP25" */
@@ -708,7 +710,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20211221
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 2             /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 3             /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a

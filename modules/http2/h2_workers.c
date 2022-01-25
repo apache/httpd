@@ -100,8 +100,8 @@ static apr_status_t activate_slot(h2_workers *workers, h2_slot *slot)
      * to the idle queue */
     apr_atomic_inc32(&workers->worker_count);
     slot->timed_out = 0;
-    rv = apr_thread_create(&slot->thread, workers->thread_attr,
-                               slot_run, slot, workers->pool);
+    rv = ap_thread_create(&slot->thread, workers->thread_attr,
+                          slot_run, slot, workers->pool);
     if (rv != APR_SUCCESS) {
         apr_atomic_dec32(&workers->worker_count);
     }

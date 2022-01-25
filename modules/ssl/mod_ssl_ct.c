@@ -1123,8 +1123,8 @@ static int daemon_thread_start(apr_pool_t *pconf, server_rec *s_main)
 
     apr_pool_create(&pdaemon, pconf);
     apr_pool_tag(pdaemon, "sct_daemon");
-    rv = apr_thread_create(&daemon_thread, NULL, sct_daemon_thread, s_main,
-                           pconf);
+    rv = ap_thread_create(&daemon_thread, NULL, sct_daemon_thread, s_main,
+                          pconf);
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s_main,
                      APLOGNO(02709) "could not create " DAEMON_THREAD_NAME 
@@ -2522,7 +2522,7 @@ static void ssl_ct_child_init(apr_pool_t *p, server_rec *s)
         exit(APEXIT_CHILDSICK);
     }
 
-    rv = apr_thread_create(&service_thread, NULL, run_service_thread, s, p);
+    rv = ap_thread_create(&service_thread, NULL, run_service_thread, s, p);
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s,
                      APLOGNO(02745) "could not create " SERVICE_THREAD_NAME
