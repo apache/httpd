@@ -3202,7 +3202,10 @@ AP_DECLARE(apr_status_t) ap_thread_current_create(apr_thread_t **current,
     apr_allocator_t *allocator;
     apr_pool_t *p;
 
-    *current = NULL;
+    *current = ap_thread_current();
+    if (*current) {
+        return APR_EEXIST;
+    }
 
     rv = apr_allocator_create(&allocator);
     if (rv != APR_SUCCESS) {
@@ -3228,6 +3231,13 @@ AP_DECLARE(apr_status_t) ap_thread_current_create(apr_thread_t **current,
     current_thread = *current;
 #endif
     return APR_SUCCESS;
+}
+
+AP_DECLARE(void) ap_thread_current_after_fork(void)
+{
+#if AP_HAS_THREAD_LOCAL
+    current_thread = NULL;
+#endif
 }
 
 AP_DECLARE(apr_thread_t *) ap_thread_current(void)
