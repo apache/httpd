@@ -3261,7 +3261,7 @@ AP_DECLARE(void *) ap_realloc(void *ptr, size_t size)
     return p;
 }
 
-#if !APR_VERSION_AT_LEAST(1,8,0)
+#if APR_HAS_THREADS && !APR_VERSION_AT_LEAST(1,8,0)
 
 #if AP_HAS_THREAD_LOCAL
 struct thread_ctx {

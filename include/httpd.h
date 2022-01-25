@@ -2564,6 +2564,8 @@ AP_DECLARE(void *) ap_realloc(void *ptr, size_t size)
                    AP_FN_ATTR_WARN_UNUSED_RESULT
                    AP_FN_ATTR_ALLOC_SIZE(2);
 
+#if APR_HAS_THREADS
+
 #if APR_VERSION_AT_LEAST(1,8,0)
 
 /**
@@ -2579,9 +2581,8 @@ AP_DECLARE(void *) ap_realloc(void *ptr, size_t size)
 #define ap_thread_current           apr_thread_current
 #define ap_thread_current_create    apr_thread_current_create
 
-#else /* !APR_VERSION_AT_LEAST(1,8,0) */
+#else  /* !APR_VERSION_AT_LEAST(1,8,0) */
 
-#if APR_HAS_THREADS
 /**
  * AP_THREAD_LOCAL keyword mapping the compiler's.
  */
@@ -2594,7 +2595,6 @@ AP_DECLARE(void *) ap_realloc(void *ptr, size_t size)
 #elif defined(WIN32) && defined(_MSC_VER)
 #define AP_THREAD_LOCAL __declspec(thread)
 #endif
-#endif /* APR_HAS_THREADS */
 
 #ifndef AP_THREAD_LOCAL
 #define AP_HAS_THREAD_LOCAL 0
@@ -2612,6 +2612,12 @@ AP_DECLARE(apr_status_t) ap_thread_current_create(apr_thread_t **current,
 AP_DECLARE(apr_thread_t *) ap_thread_current(void);
 
 #endif /* !APR_VERSION_AT_LEAST(1,8,0) */
+
+#else  /* !APR_HAS_THREADS */
+
+#define AP_HAS_THREAD_LOCAL 0
+
+#endif /* !APR_HAS_THREADS */
 
 /**
  * Get server load params
