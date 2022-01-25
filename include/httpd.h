@@ -2572,14 +2572,15 @@ AP_DECLARE(void *) ap_realloc(void *ptr, size_t size)
  * APR 1.8+ implement those already.
  */
 #if APR_HAS_THREAD_LOCAL
-#define AP_HAS_THREAD_LOCAL         1
-#define AP_THREAD_LOCAL             APR_THREAD_LOCAL
+#define AP_HAS_THREAD_LOCAL 1
+#define AP_THREAD_LOCAL     APR_THREAD_LOCAL
 #else
-#define AP_HAS_THREAD_LOCAL         0
+#define AP_HAS_THREAD_LOCAL 0
 #endif
-#define ap_thread_create            apr_thread_create
-#define ap_thread_current           apr_thread_current
-#define ap_thread_current_create    apr_thread_current_create
+#define ap_thread_create                apr_thread_create
+#define ap_thread_current               apr_thread_current
+#define ap_thread_current_create        apr_thread_current_create
+#define ap_thread_current_after_fork    apr_thread_current_after_fork
 
 #else  /* !APR_VERSION_AT_LEAST(1,8,0) */
 
@@ -2609,6 +2610,7 @@ AP_DECLARE(apr_status_t) ap_thread_create(apr_thread_t **thread,
 AP_DECLARE(apr_status_t) ap_thread_current_create(apr_thread_t **current,
                                                   apr_threadattr_t *attr,
                                                   apr_pool_t *pool);
+AP_DECLARE(void) ap_thread_current_after_fork(void);
 AP_DECLARE(apr_thread_t *) ap_thread_current(void);
 
 #endif /* !APR_VERSION_AT_LEAST(1,8,0) */
