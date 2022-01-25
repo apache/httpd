@@ -2201,11 +2201,11 @@ static void create_listener_thread(thread_starter * ts)
     my_info = (proc_info *) ap_malloc(sizeof(proc_info));
     my_info->pslot = my_child_num;
     my_info->tslot = -1;      /* listener thread doesn't have a thread slot */
-    rv = apr_thread_create(&ts->listener, thread_attr, listener_thread,
-                           my_info, pruntime);
+    rv = ap_thread_create(&ts->listener, thread_attr, listener_thread,
+                          my_info, pruntime);
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ALERT, rv, ap_server_conf, APLOGNO(00474)
-                     "apr_thread_create: unable to create listener thread");
+                     "ap_thread_create: unable to create listener thread");
         /* let the parent decide how bad this really is */
         clean_child_exit(APEXIT_CHILDSICK);
     }
@@ -2396,12 +2396,12 @@ static void *APR_THREAD_FUNC start_threads(apr_thread_t * thd, void *dummy)
             /* We let each thread update its own scoreboard entry.  This is
              * done because it lets us deal with tid better.
              */
-            rv = apr_thread_create(&threads[i], thread_attr,
-                                   worker_thread, my_info, pruntime);
+            rv = ap_thread_create(&threads[i], thread_attr,
+                                  worker_thread, my_info, pruntime);
             if (rv != APR_SUCCESS) {
                 ap_log_error(APLOG_MARK, APLOG_ALERT, rv, ap_server_conf,
                              APLOGNO(03104)
-                             "apr_thread_create: unable to create worker thread");
+                             "ap_thread_create: unable to create worker thread");
                 /* let the parent decide how bad this really is */
                 clean_child_exit(APEXIT_CHILDSICK);
             }
@@ -2514,6 +2514,15 @@ static void join_start_thread(apr_thread_t * start_thread_id)
     }
 }
 
+#if AP_HAS_THREAD_LOCAL
+static apr_status_t main_thread_cleanup(void *arg)
+{
+    apr_thread_t *thd = arg;
+    apr_pool_destroy(apr_thread_pool_get(thd));
+    return APR_SUCCESS;
+}
+#endif
+
 static void child_main(int child_num_arg, int child_bucket)
 {
     apr_thread_t **threads;
@@ -2535,6 +2544,28 @@ static void child_main(int child_num_arg, int child_bucket)
      */
     apr_pool_create(&pchild, pconf);
     apr_pool_tag(pchild, "pchild");
+
+#if AP_HAS_THREAD_LOCAL
+    /* Create an apr_thread_t for the main child thread to set up its
+     * Thread Local Storage. Since it's detached and it won't
+     * apr_thread_exit(), destroy its pool before exiting via
+     * a pchild cleanup
+     */
+    if (!one_process) {
+        apr_thread_t *main_thd = NULL;
+        apr_threadattr_t *main_thd_attr = NULL;
+        if (apr_threadattr_create(&main_thd_attr, pchild)
+                || apr_threadattr_detach_set(main_thd_attr, 1)
+                || ap_thread_current_create(&main_thd, main_thd_attr,
+                                            pchild)) {
+            ap_log_error(APLOG_MARK, APLOG_EMERG, 0, ap_server_conf, APLOGNO()
+                         "Couldn't initialize child main thread");
+            clean_child_exit(APEXIT_CHILDFATAL);
+        }
+        apr_pool_cleanup_register(pchild, main_thd, main_thread_cleanup,
+                                  apr_pool_cleanup_null);
+    }
+#endif
 
     /* close unused listeners and pods */
     for (i = 0; i < retained->mpm->num_buckets; i++) {
@@ -2605,11 +2636,11 @@ static void child_main(int child_num_arg, int child_bucket)
     ts->child_num_arg = child_num_arg;
     ts->threadattr = thread_attr;
 
-    rv = apr_thread_create(&start_thread_id, thread_attr, start_threads,
-                           ts, pchild);
+    rv = ap_thread_create(&start_thread_id, thread_attr, start_threads,
+                          ts, pchild);
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ALERT, rv, ap_server_conf, APLOGNO(00480)
-                     "apr_thread_create: unable to create worker thread");
+                     "ap_thread_create: unable to create worker thread");
         /* let the parent decide how bad this really is */
         clean_child_exit(APEXIT_CHILDSICK);
     }

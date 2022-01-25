@@ -587,7 +587,9 @@
  * 20120211.120 (2.4.51-dev) Add dav_liveprop_elem structure and
  *                           dav_get_liveprop_element().
  * 20120211.121 (2.4.51-dev) Add ap_post_read_request()
- * 
+ * 20120211.122 (2.4.51-dev) Add ap_thread_create(), ap_thread_current_create()
+ *                           and ap_thread_current()
+ *
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */
@@ -595,7 +597,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20120211
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 121                 /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 122                 /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a

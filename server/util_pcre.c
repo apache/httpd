@@ -249,7 +249,7 @@ AP_DECLARE(int) ap_regcomp(ap_regex_t * preg, const char *pattern, int cflags)
  * context per thread (in Thread Local Storage, TLS) grown as needed, and while
  * at it we do the same for PCRE1 ints vectors. Note that this requires a fast
  * TLS mechanism to be worth it, which is the case of apr_thread_data_get/set()
- * from/to apr_thread_current() when APR_HAS_THREAD_LOCAL; otherwise we'll do
+ * from/to ap_thread_current() when AP_HAS_THREAD_LOCAL; otherwise we'll do
  * the allocation and freeing for each ap_regexec().
  */
 
@@ -298,7 +298,7 @@ void free_match_data(match_data_pt data, apr_size_t size)
 #endif
 }
 
-#if APR_HAS_THREAD_LOCAL
+#if AP_HAS_THREAD_LOCAL
 
 struct apreg_tls {
     match_data_pt data;
@@ -322,10 +322,10 @@ static match_data_pt get_match_data(apr_size_t size,
     apr_thread_t *current;
     struct apreg_tls *tls = NULL;
 
-    /* Even though APR_HAS_THREAD_LOCAL, we may still be called by a
+    /* Even though AP_HAS_THREAD_LOCAL, we may still be called by a
      * native/non-apr thread, let's fall back to alloc/free in this case.
      */
-    current = apr_thread_current();
+    current = ap_thread_current();
     if (!current) {
         *to_free = 1;
         return alloc_match_data(size, ovector, small_vector);
@@ -371,7 +371,7 @@ static match_data_pt get_match_data(apr_size_t size,
     return tls->data;
 }
 
-#else /* !APR_HAS_THREAD_LOCAL */
+#else /* !AP_HAS_THREAD_LOCAL */
 
 static APR_INLINE match_data_pt get_match_data(apr_size_t size,
                                                match_vector_pt *ovector,
@@ -382,7 +382,7 @@ static APR_INLINE match_data_pt get_match_data(apr_size_t size,
     return alloc_match_data(size, ovector, small_vector);
 }
 
-#endif /* !APR_HAS_THREAD_LOCAL */
+#endif /* !AP_HAS_THREAD_LOCAL */
 
 AP_DECLARE(int) ap_regexec(const ap_regex_t *preg, const char *string,
                            apr_size_t nmatch, ap_regmatch_t *pmatch,

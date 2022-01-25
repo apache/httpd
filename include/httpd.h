@@ -47,6 +47,7 @@
 #include "ap_release.h"
 
 #include "apr.h"
+#include "apr_version.h"
 #include "apr_general.h"
 #include "apr_tables.h"
 #include "apr_pools.h"
@@ -2409,6 +2410,55 @@ AP_DECLARE(void *) ap_calloc(size_t nelem, size_t size)
 AP_DECLARE(void *) ap_realloc(void *ptr, size_t size)
                    AP_FN_ATTR_WARN_UNUSED_RESULT
                    AP_FN_ATTR_ALLOC_SIZE(2);
+
+#if APR_VERSION_AT_LEAST(1,8,0)
+
+/**
+ * APR 1.8+ implement those already.
+ */
+#if APR_HAS_THREAD_LOCAL
+#define AP_HAS_THREAD_LOCAL         1
+#define AP_THREAD_LOCAL             APR_THREAD_LOCAL
+#else
+#define AP_HAS_THREAD_LOCAL         0
+#endif
+#define ap_thread_create            apr_thread_create
+#define ap_thread_current           apr_thread_current
+#define ap_thread_current_create    apr_thread_current_create
+
+#else /* !APR_VERSION_AT_LEAST(1,8,0) */
+
+#if APR_HAS_THREADS
+/**
+ * AP_THREAD_LOCAL keyword mapping the compiler's.
+ */
+#if defined(__cplusplus) && __cplusplus >= 201103L
+#define AP_THREAD_LOCAL thread_local
+#elif defined(__STDC_VERSION__) && __STDC_VERSION__ >= 201112
+#define AP_THREAD_LOCAL _Thread_local
+#elif defined(__GNUC__) /* works for clang too */
+#define AP_THREAD_LOCAL __thread
+#elif defined(WIN32) && defined(_MSC_VER)
+#define AP_THREAD_LOCAL __declspec(thread)
+#endif
+#endif /* APR_HAS_THREADS */
+
+#ifndef AP_THREAD_LOCAL
+#define AP_HAS_THREAD_LOCAL 0
+#define ap_thread_create apr_thread_create
+#else /* AP_THREAD_LOCAL */
+#define AP_HAS_THREAD_LOCAL 1
+AP_DECLARE(apr_status_t) ap_thread_create(apr_thread_t **thread, 
+                                          apr_threadattr_t *attr, 
+                                          apr_thread_start_t func, 
+                                          void *data, apr_pool_t *pool);
+#endif /* AP_THREAD_LOCAL */
+AP_DECLARE(apr_status_t) ap_thread_current_create(apr_thread_t **current,
+                                                  apr_threadattr_t *attr,
+                                                  apr_pool_t *pool);
+AP_DECLARE(apr_thread_t *) ap_thread_current(void);
+
+#endif /* !APR_VERSION_AT_LEAST(1,8,0) */
 
 /**
  * Get server load params

@@ -391,11 +391,19 @@ static void child_sigmask(sigset_t *new_mask, sigset_t *old_mask)
 }
 #endif
 
+#if AP_HAS_THREAD_LOCAL
+static apr_status_t main_thread_cleanup(void *arg)
+{
+    apr_thread_t *thd = arg;
+    apr_pool_destroy(apr_thread_pool_get(thd));
+    return APR_SUCCESS;
+}
+#endif
+
 static void child_main(int child_num_arg, int child_bucket)
 {
 #if APR_HAS_THREADS
     apr_thread_t *thd = NULL;
-    apr_os_thread_t osthd;
     sigset_t sig_mask;
 #endif
     apr_pool_t *ptrans;
@@ -427,9 +435,36 @@ static void child_main(int child_num_arg, int child_bucket)
     apr_allocator_owner_set(allocator, pchild);
     apr_pool_tag(pchild, "pchild");
 
+#if AP_HAS_THREAD_LOCAL
+    /* Create an apr_thread_t for the main child thread to set up its
+     * Thread Local Storage. Since it's detached and it won't
+     * apr_thread_exit(), destroy its pool before exiting via
+     * a pchild cleanup
+     */
+    if (one_process) {
+        thd = ap_thread_current();
+    }
+    else {
+        apr_threadattr_t *main_thd_attr = NULL;
+        if (apr_threadattr_create(&main_thd_attr, pchild)
+                || apr_threadattr_detach_set(main_thd_attr, 1)
+                || ap_thread_current_create(&thd, main_thd_attr,
+                                            pchild)) {
+            ap_log_error(APLOG_MARK, APLOG_EMERG, 0, ap_server_conf, APLOGNO()
+                         "Couldn't initialize child main thread");
+            clean_child_exit(APEXIT_CHILDFATAL);
+        }
+        apr_pool_cleanup_register(pchild, thd, main_thread_cleanup,
+                                  apr_pool_cleanup_null);
+    }
+#elif APR_HAS_THREADS
+    {
+        apr_os_thread_t osthd = apr_os_thread_current();
+        apr_os_thread_put(&thd, &osthd, pchild);
+    }
+#endif
 #if APR_HAS_THREADS
-    osthd = apr_os_thread_current();
-    apr_os_thread_put(&thd, &osthd, pchild);
+    ap_assert(thd != NULL);
 #endif
 
     apr_pool_create(&ptrans, pchild);
