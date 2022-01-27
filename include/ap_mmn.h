@@ -587,7 +587,7 @@
  * 20120211.120 (2.4.51-dev) Add dav_liveprop_elem structure and
  *                           dav_get_liveprop_element().
  * 20120211.121 (2.4.51-dev) Add ap_post_read_request()
- * 20120211.122 (2.4.51-dev) Add ap_thread_create(), ap_thread_current_create()
+ * 20120211.122 (2.4.51-dev) Add ap_thread_create(), ap_thread_main_create()
  *                           and ap_thread_current()
  *
  */
