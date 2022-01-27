@@ -2699,6 +2699,15 @@ static void setup_threads_runtime(void)
         pfd = &listener_pollfd[i];
 
         pfd->reqevents = APR_POLLIN | APR_POLLHUP | APR_POLLERR;
+#ifdef APR_POLLEXCL
+        /* If APR_POLLEXCL is available, use it to prevent the thundering
+         * herd issue. The listening sockets are potentially polled by all
+         * the children at the same time, when new connections arrive this
+         * avoids all of them to be woken up while most would get EAGAIN
+         * on accept().
+         */
+        pfd->reqevents |= APR_POLLEXCL;
+#endif
         pfd->desc_type = APR_POLL_SOCKET;
         pfd->desc.s = lr->sd;
 
