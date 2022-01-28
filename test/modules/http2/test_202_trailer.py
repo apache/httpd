@@ -26,12 +26,12 @@ class TestTrailers:
         url = env.mkurl("https", "cgi", "/echo.py")
         fpath = os.path.join(env.gen_dir, "data-1k")
         r = env.nghttp().upload(url, fpath, options=["--trailer", "test: 1"])
-        assert 300 > r.response["status"]
-        assert 1000 == len(r.response["body"])
+        assert r.response["status"] < 300
+        assert len(r.response["body"]) == 1000
 
         r = env.nghttp().upload(url, fpath, options=["--trailer", "test: 1b", "--trailer", "XXX: test"])
-        assert 300 > r.response["status"]
-        assert 1000 == len(r.response["body"])
+        assert r.response["status"] < 300
+        assert len(r.response["body"]) == 1000
 
     # check if the server survives a trailer without content-length
     def test_h2_202_02(self, env):

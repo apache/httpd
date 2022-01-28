@@ -34,16 +34,6 @@
 struct h2_headers;
 struct h2_response_parser;
 
-apr_status_t h2_c2_filter_catch_h1_out(ap_filter_t* f, apr_bucket_brigade* bb);
-
-apr_status_t h2_c2_filter_response_out(ap_filter_t *f, apr_bucket_brigade *bb);
-
-apr_status_t h2_c2_filter_request_in(ap_filter_t* f,
-                                  apr_bucket_brigade* brigade,
-                                  ap_input_mode_t mode,
-                                  apr_read_type_e block,
-                                  apr_off_t readbytes);
-
-apr_status_t h2_c2_filter_trailers_out(ap_filter_t *f, apr_bucket_brigade *bb);
+apr_status_t h2_c2_filter_notes_out(ap_filter_t *f, apr_bucket_brigade *bb);
 
 #endif /* defined(__mod_h2__h2_c2_filter__) */

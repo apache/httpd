@@ -86,6 +86,9 @@ class H2TestEnv(HttpdTestEnv):
             'AH00135',
             'AH02261',  # Re-negotiation handshake failed (our test_101)
             'AH03490',  # scoreboard full, happens on limit tests
+            'AH02429',  # invalid chars in response header names, see test_h2_200
+            'AH02430',   # invalid chars in response header values, see test_h2_200
+            'AH10373',  # SSL errors on uncompleted handshakes, see test_h2_105
         ])
         self.httpd_error_log.add_ignored_patterns([
             re.compile(r'.*malformed header from script \'hecho.py\': Bad header: x.*'),
@@ -103,6 +106,9 @@ class H2Conf(HttpdConf):
 
     def __init__(self, env: HttpdTestEnv, extras: Dict[str, Any] = None):
         super().__init__(env=env, extras=HttpdConf.merge_extras(extras, {
+            "base": [
+                "LogLevel http:trace4",
+            ],
             f"cgi.{env.http_tld}": [
                 "SSLOptions +StdEnvVars",
                 "AddHandler cgi-script .py",

@@ -22,6 +22,7 @@
 #include <httpd.h>
 #include <http_core.h>
 #include <http_connection.h>
+#include <http_protocol.h>
 #include <http_log.h>
 
 #include <nghttp2/nghttp2.h>
@@ -35,7 +36,6 @@
 #include "h2_mplx.h"
 #include "h2_push.h"
 #include "h2_request.h"
-#include "h2_headers.h"
 #include "h2_session.h"
 #include "h2_stream.h"
 #include "h2_c2.h"
@@ -240,15 +240,12 @@ static apr_status_t close_input(h2_stream *stream)
     if (!stream->rst_error
         && stream->trailers_in
         && !apr_is_empty_table(stream->trailers_in)) {
-        h2_headers *r;
-        
         ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, stream->session->c1,
                       H2_STRM_MSG(stream, "adding trailers"));
-        r = h2_headers_create(HTTP_OK, stream->trailers_in, NULL,
-            stream->in_trailer_octets, stream->pool);
-        stream->trailers_in = NULL;
-        b = h2_bucket_headers_create(c->bucket_alloc, r);
+        b = ap_bucket_headers_create(0, NULL, stream->trailers_in,
+                                     NULL, stream->pool, c->bucket_alloc);
         input_append_bucket(stream, b);
+        stream->trailers_in = NULL;
     }
 
     stream->input_closed = 1;
@@ -799,7 +796,7 @@ static apr_bucket *get_first_headers_bucket(apr_bucket_brigade *bb)
     if (bb) {
         apr_bucket *b = APR_BRIGADE_FIRST(bb);
         while (b != APR_BRIGADE_SENTINEL(bb)) {
-            if (H2_BUCKET_IS_HEADERS(b)) {
+            if (AP_BUCKET_IS_HEADERS(b)) {
                 return b;
             }
             b = APR_BUCKET_NEXT(b);
@@ -878,7 +875,7 @@ cleanup:
 
 static int bucket_pass_to_c1(apr_bucket *b)
 {
-    return !H2_BUCKET_IS_HEADERS(b) && !APR_BUCKET_IS_EOS(b);
+    return !AP_BUCKET_IS_HEADERS(b) && !APR_BUCKET_IS_EOS(b);
 }
 
 apr_status_t h2_stream_read_to(h2_stream *stream, apr_bucket_brigade *bb, 
@@ -899,7 +896,7 @@ apr_status_t h2_stream_read_to(h2_stream *stream, apr_bucket_brigade *bb,
 static apr_status_t buffer_output_process_headers(h2_stream *stream)
 {
     conn_rec *c1 = stream->session->c1;
-    h2_headers *headers = NULL;
+    ap_bucket_headers *headers = NULL;
     apr_status_t rv = APR_EAGAIN;
     int ngrv = 0, is_empty;
     h2_ngheader *nh = NULL;
@@ -911,8 +908,8 @@ static apr_status_t buffer_output_process_headers(h2_stream *stream)
     while (b != APR_BRIGADE_SENTINEL(stream->out_buffer)) {
         e = APR_BUCKET_NEXT(b);
         if (APR_BUCKET_IS_METADATA(b)) {
-            if (H2_BUCKET_IS_HEADERS(b)) {
-                headers = h2_bucket_headers_get(b);
+            if (AP_BUCKET_IS_HEADERS(b)) {
+                headers = b->data;
                 APR_BUCKET_REMOVE(b);
                 apr_bucket_destroy(b);
                 ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, c1,
@@ -955,6 +952,20 @@ static apr_status_t buffer_output_process_headers(h2_stream *stream)
     }
     else {
         nghttp2_data_provider provider, *pprovider = NULL;
+
+        if (headers->status == HTTP_FORBIDDEN && headers->notes) {
+            const char *cause = apr_table_get(headers->notes, "ssl-renegotiate-forbidden");
+            if (cause) {
+                /* This request triggered a TLS renegotiation that is not allowed
+                 * in HTTP/2. Tell the client that it should use HTTP/1.1 for this.
+                 */
+                ap_log_cerror(APLOG_MARK, APLOG_DEBUG, headers->status, c1,
+                              H2_STRM_LOG(APLOGNO(03061), stream,
+                              "renegotiate forbidden, cause: %s"), cause);
+                h2_stream_rst(stream, H2_ERR_HTTP_1_1_REQUIRED);
+                goto cleanup;
+            }
+        }
 
         ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c1,
                       H2_STRM_LOG(APLOGNO(03073), stream,
@@ -1002,7 +1013,7 @@ static apr_status_t buffer_output_process_headers(h2_stream *stream)
             rv = APR_SUCCESS;
             goto cleanup;
         }
-        if (h2_headers_are_final_response(headers)) {
+        if (headers->status >= 200) {
             stream->response = headers;
         }
 
@@ -1057,7 +1068,7 @@ cleanup:
     return rv;
 }
 
-apr_status_t h2_stream_submit_pushes(h2_stream *stream, h2_headers *response)
+apr_status_t h2_stream_submit_pushes(h2_stream *stream, ap_bucket_headers *response)
 {
     apr_status_t status = APR_SUCCESS;
     apr_array_header_t *pushes;
@@ -1086,7 +1097,7 @@ apr_table_t *h2_stream_get_trailers(h2_stream *stream)
 }
 
 const h2_priority *h2_stream_get_priority(h2_stream *stream, 
-                                          h2_headers *response)
+                                          ap_bucket_headers *response)
 {
     if (response && stream->initiated_on) {
         const char *ctype = apr_table_get(response->headers, "content-type");
@@ -1196,7 +1207,7 @@ static apr_off_t buffer_output_data_to_send(h2_stream *stream, int *peos)
                     *peos = 1;
                     break;
                 }
-                else if (H2_BUCKET_IS_HEADERS(b)) {
+                else if (AP_BUCKET_IS_HEADERS(b)) {
                     break;
                 }
             }

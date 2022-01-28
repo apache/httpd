@@ -17,6 +17,7 @@
 #ifndef __mod_h2__h2_util__
 #define __mod_h2__h2_util__
 
+#include <http_protocol.h>
 #include <nghttp2/nghttp2.h>
 
 /*******************************************************************************
@@ -403,9 +404,9 @@ typedef struct h2_ngheader {
 } h2_ngheader;
 
 apr_status_t h2_res_create_ngtrailer(h2_ngheader **ph, apr_pool_t *p, 
-                                     struct h2_headers *headers); 
+                                     ap_bucket_headers *headers);
 apr_status_t h2_res_create_ngheader(h2_ngheader **ph, apr_pool_t *p, 
-                                    struct h2_headers *headers); 
+                                    ap_bucket_headers *headers);
 apr_status_t h2_req_create_ngheader(h2_ngheader **ph, apr_pool_t *p, 
                                     const struct h2_request *req);
 
@@ -529,5 +530,11 @@ void h2_util_drain_pipe(apr_file_t *pipe);
  * Wait on data arriving on a pipe.
  */
 apr_status_t h2_util_wait_on_pipe(apr_file_t *pipe);
+
+/**
+ * Give an estimate of the length of the header fields,
+ * without compression or other formatting decorations.
+ */
+apr_size_t headers_length_estimate(ap_bucket_headers *hdrs);
 
 #endif /* defined(__mod_h2__h2_util__) */

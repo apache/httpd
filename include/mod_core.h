@@ -38,10 +38,9 @@
 extern "C" {
 #endif
 
-/* Handles for core filters */
+/* Handles for generic HTTP core filters */
 AP_DECLARE_DATA extern ap_filter_rec_t *ap_http_input_filter_handle;
 AP_DECLARE_DATA extern ap_filter_rec_t *ap_http_header_filter_handle;
-AP_DECLARE_DATA extern ap_filter_rec_t *ap_chunk_filter_handle;
 AP_DECLARE_DATA extern ap_filter_rec_t *ap_http_outerror_filter_handle;
 AP_DECLARE_DATA extern ap_filter_rec_t *ap_byterange_filter_handle;
 
@@ -52,12 +51,29 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
                             ap_input_mode_t mode, apr_read_type_e block,
                             apr_off_t readbytes);
 
-/* HTTP/1.1 chunked transfer encoding filter. */
-apr_status_t ap_http_chunk_filter(ap_filter_t *f, apr_bucket_brigade *b);
-
 /* Filter to handle any error buckets on output */
 apr_status_t ap_http_outerror_filter(ap_filter_t *f,
                                      apr_bucket_brigade *b);
+
+/* Handles for HTTP/1.x core filters */
+AP_DECLARE_DATA extern ap_filter_rec_t *ap_http1_transcode_out_filter_handle;
+AP_DECLARE_DATA extern ap_filter_rec_t *ap_chunk_filter_handle;
+AP_DECLARE_DATA extern ap_filter_rec_t *ap_http1_transcode_in_filter_handle;
+
+/* HTTP/1.x input transcoding of status/headers filter. */
+apr_status_t ap_http1_transcode_in_filter(ap_filter_t *f,
+                                          apr_bucket_brigade *b,
+                                          ap_input_mode_t mode,
+                                          apr_read_type_e block,
+                                          apr_off_t readbytes);
+
+/* HTTP/1.x output transcoding of status/headers filter. */
+apr_status_t ap_http1_transcode_out_filter(ap_filter_t *f,
+                                           apr_bucket_brigade *b);
+
+/* HTTP/1.1 chunked transfer encoding output filter. */
+apr_status_t ap_http_chunk_filter(ap_filter_t *f,
+                                  apr_bucket_brigade *b);
 
 char *ap_response_code_string(request_rec *r, int error_index);
 

@@ -684,11 +684,13 @@ SET(LIBHTTPD_SOURCES
   modules/arch/win32/mod_win32.c
   modules/core/mod_so.c
   modules/http/byterange_filter.c
-  modules/http/chunk_filter.c
   modules/http/http_core.c
   modules/http/http_filters.c
   modules/http/http_protocol.c
   modules/http/http_request.c
+  modules/http1/http1_core.c
+  modules/http1/http1_filters.c
+  modules/http1/chunk_filter.c
   os/win32/ap_regkey.c
   os/win32/util_win32.c
   server/buildmark.c
@@ -699,6 +701,7 @@ SET(LIBHTTPD_SOURCES
   server/eoc_bucket.c
   server/eor_bucket.c
   server/error_bucket.c
+  server/headers_bucket.c
   server/listen.c
   server/log.c
   server/mpm/winnt/child.c

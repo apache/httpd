@@ -637,10 +637,13 @@ transfer:
             else if (APR_BUCKET_IS_FLUSH(bsender)) {
                 brecv = apr_bucket_flush_create(bb->bucket_alloc);
             }
+            else if (AP_BUCKET_IS_HEADERS(bsender)) {
+                brecv = ap_bucket_headers_clone(bsender, bb->p, bb->bucket_alloc);
+            }
             else if (AP_BUCKET_IS_ERROR(bsender)) {
-                ap_bucket_error *eb = (ap_bucket_error *)bsender;
+                ap_bucket_error *eb = bsender->data;
                 brecv = ap_bucket_error_create(eb->status, eb->data,
-                                                bb->p, bb->bucket_alloc);
+                                               bb->p, bb->bucket_alloc);
             }
             else {
                 /* Does someone else know how to make a proxy for

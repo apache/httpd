@@ -1590,21 +1590,21 @@ static apr_status_t ngheader_create(h2_ngheader **ph, apr_pool_t *p,
     return ctx.status;
 }
 
-static int is_unsafe(h2_headers *h)
+static int is_unsafe(ap_bucket_headers *h)
 {
-    const char *v = apr_table_get(h->notes, H2_HDR_CONFORMANCE);
+    const char *v = h->notes? apr_table_get(h->notes, H2_HDR_CONFORMANCE) : NULL;
     return (v && !strcmp(v, H2_HDR_CONFORMANCE_UNSAFE));
 }
 
 apr_status_t h2_res_create_ngtrailer(h2_ngheader **ph, apr_pool_t *p, 
-                                    h2_headers *headers)
+                                    ap_bucket_headers *headers)
 {
     return ngheader_create(ph, p, is_unsafe(headers), 
                            0, NULL, NULL, headers->headers);
 }
                                      
 apr_status_t h2_res_create_ngheader(h2_ngheader **ph, apr_pool_t *p,
-                                    h2_headers *headers) 
+                                    ap_bucket_headers *headers)
 {
     const char *keys[] = {
         ":status"
@@ -1912,3 +1912,18 @@ apr_status_t h2_util_wait_on_pipe(apr_file_t *pipe)
 
     return apr_file_read(pipe, rb, &nr);
 }
+
+static int add_header_lengths(void *ctx, const char *name, const char *value)
+{
+    apr_size_t *plen = ctx;
+    *plen += strlen(name) + strlen(value);
+    return 1;
+}
+
+apr_size_t headers_length_estimate(ap_bucket_headers *hdrs)
+{
+    apr_size_t len = 0;
+    apr_table_do(add_header_lengths, &len, hdrs->headers, NULL);
+    return len;
+}
+

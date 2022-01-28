@@ -33,6 +33,7 @@ AP_DECLARE_DATA module *ap_prelinked_modules[] = {
   &win32_module,
   &mpm_winnt_module,
   &http_module,
+  &http1_module,
   &so_module,
   NULL
 };
@@ -42,6 +43,7 @@ ap_module_symbol_t ap_prelinked_module_symbols[] = {
   {"win32_module", &win32_module},
   {"mpm_winnt_module", &mpm_winnt_module},
   {"http_module", &http_module},
+  {"http1_module", &http1_module},
   {"so_module", &so_module},
   {NULL, NULL}
 };

@@ -48,6 +48,7 @@ module *ap_prelinked_modules[] = {
   &core_module, /* core must come first */
   &mpm_netware_module,
   &http_module,
+  &http1_module,
   &so_module,
   &mime_module,
   &authn_core_module,
@@ -72,6 +73,7 @@ ap_module_symbol_t ap_prelinked_module_symbols[] = {
   {"core_module", &core_module},
   {"mpm_netware_module", &mpm_netware_module},
   {"http_module", &http_module},
+  {"http1_module", &http1_module},
   {"so_module", &so_module},
   {"mime_module", &mime_module},
   {"authn_core_module", &authn_core_module},

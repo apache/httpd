@@ -364,4 +364,7 @@ Release
 # Intellij
 /.idea/
 
-
+# pytest
+test/__pycache__
+test/*/__pycache__
+test/*/*/__pycache__
