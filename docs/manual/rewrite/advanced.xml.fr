@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 1867994 -->
+<!-- English Revision: 1897426 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -78,7 +78,7 @@ correspondance</a></seealso>
 <example>
 utilisateur1  serveur_physique_utilisateur1<br />
 utilisateur2  serveur_physique_utilisateur2<br />
-:      :
+# etc ...
 </example>
 
   <p>Tout ceci est enregistr&eacute; dans un fichier
@@ -111,7 +111,8 @@ RewriteRule   "^/u/([^/]+)/?(.*)" "http://${users-to-hosts:$1|server0}/u/$1/$2"
   </dl>
 
   <p>Voir la documentation de <directive
-  module="mod_rewrite">RewriteMap</directive> pour une description plus
+  module="mod_rewrite">RewriteMap</directive> et le <a
+  href="./rewritemap.html">RewriteMap HowTo</a> pour une description plus
   approfondie de la syntaxe de cette directive.</p>
 
 </section>
