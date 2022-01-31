@@ -227,9 +227,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         https://svn.apache.org/r1897182
         https://svn.apache.org/r1897614
         https://svn.apache.org/r1897615
+        https://svn.apache.org/r1897619
      Backport version for 2.4.x of patch:
       Trunk version of patch works
-      svn merge -c 1897182,1897614,1897615 ^/httpd/httpd/trunk .
+      svn merge -c 1897182,1897614,1897615,1897619 ^/httpd/httpd/trunk .
      +1: rpluem,
 
 
