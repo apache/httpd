@@ -524,6 +524,9 @@ static int cgi_handle_response(request_rec *r, int nph, apr_bucket_brigade *bb,
         }
         r->output_filters = r->proto_output_filters = cur;
 
+        /* Dunno about the reusability of the connection either, so don't */
+        r->connection->keepalive = AP_CONN_CLOSE;
+
         rv = ap_pass_brigade(r->output_filters, bb);
     }
 

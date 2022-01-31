@@ -700,7 +700,7 @@
  *                         add PROXY_WORKER_UDS_PATH_SIZE.
  * 20211221.1 (2.5.1-dev)  Add read_line to scoreboard.
  * 20211221.2 (2.5.1-dev)  Add AGAIN, AP_MPMQ_CAN_AGAIN.
- * 20211221.3 (2.5.1-dev)  Add ap_thread_create(), ap_thread_current_create()
+ * 20211221.3 (2.5.1-dev)  Add ap_thread_create(), ap_thread_main_create()
  *                         and ap_thread_current()
  *
  */
