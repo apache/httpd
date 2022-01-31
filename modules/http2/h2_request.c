@@ -186,12 +186,14 @@ apr_status_t h2_request_end_headers(h2_request *req, apr_pool_t *pool, int eos, 
         apr_table_setn(req->headers, "Host", req->authority);
     }
 
-    s = apr_table_get(req->headers, "Content-Length");
-    if (!s && apr_table_get(req->headers, "Content-Type")) {
-        /* If we have a content-type, but already seen eos, no more
-         * data will come. Signal a zero content length explicitly.
-         */
-        apr_table_setn(req->headers, "Content-Length", "0");
+    if (eos) {
+        s = apr_table_get(req->headers, "Content-Length");
+        if (!s && apr_table_get(req->headers, "Content-Type")) {
+            /* If we have a content-type, but already seen eos, no more
+             * data will come. Signal a zero content length explicitly.
+             */
+            apr_table_setn(req->headers, "Content-Length", "0");
+        }
     }
     req->raw_bytes += raw_bytes;
 

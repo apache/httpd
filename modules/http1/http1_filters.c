@@ -287,6 +287,8 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http1_transcode_out_filter(ap_filter_t *
     apr_bucket *e, *next = NULL;
     response_filter_ctx *ctx = f->ctx;
     apr_status_t rv = APR_SUCCESS;
+    core_server_config *conf = ap_get_core_module_config(r->server->module_config);
+    int strict = (conf->http_conformance != AP_HTTP_CONFORMANCE_UNSAFE);
 
     AP_DEBUG_ASSERT(!r->main);
 
@@ -294,7 +296,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http1_transcode_out_filter(ap_filter_t *
         ctx = f->ctx = apr_pcalloc(r->pool, sizeof(*ctx));
     }
 
-    ap_log_rerror(APLOG_MARK, APLOG_TRACE3, 0, r,
+    ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r,
                   "ap_http1_transcode_out_filter start, final_sent=%d",
                   ctx->final_response_sent);
     for (e = APR_BRIGADE_FIRST(b);
@@ -315,15 +317,21 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http1_transcode_out_filter(ap_filter_t *
             else if (AP_BUCKET_IS_HEADERS(e)) {
                 ap_bucket_headers *hdrs = e->data;
 
-                ap_log_rerror(APLOG_MARK, APLOG_TRACE3, 0, r,
+                ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r,
                               "ap_http1_transcode_out_filter seeing headers bucket status=%d",
                               hdrs->status);
                 if (!hdrs->status) {
                     /* footer, is either processed in chunk filter
                      * or ignored otherwise. never processed here. */
                 }
-                else if (hdrs->status < 100) {
+                else if (strict && hdrs->status < 100) {
                     /* error, not a valid http status */
+                    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO()
+                                  "ap_http1_transcode_out_filter seeing headers "
+                                  "status=%d in strict mode",
+                                  hdrs->status);
+                    rv = AP_FILTER_ERROR;
+                    goto cleanup;
                 }
                 else if (ctx->final_response_sent) {
                     /* already sent the final response for the request.
@@ -331,11 +339,18 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http1_transcode_out_filter(ap_filter_t *
                      * while handling the response body?
                      * question: should we discard everything after this?
                      */
+                    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO()
+                                  "ap_http1_transcode_out_filter seeing headers "
+                                  "status=%d after final response already sent",
+                                  hdrs->status);
+                    rv = AP_FILTER_ERROR;
+                    goto cleanup;
                 }
                 else {
                     /* a response status to transcode, might be final or interim
                      */
-                    ctx->final_response_sent = (hdrs->status >= 200);
+                    ctx->final_response_sent = (hdrs->status >= 200)
+                        || (!strict && hdrs->status < 100);
                     ctx->final_header_only = ctx->final_response_sent &&
                                              (r->header_only || AP_STATUS_IS_HEADER_ONLY(hdrs->status));
 
@@ -360,7 +375,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http1_transcode_out_filter(ap_filter_t *
                          */
                         rv = ap_pass_brigade(f->next, b);
                         apr_brigade_cleanup(b);
-                        ap_log_rerror(APLOG_MARK, APLOG_TRACE3, rv, r,
+                        ap_log_rerror(APLOG_MARK, APLOG_TRACE2, rv, r,
                                       "ap_http1_transcode_out_filter passed brigade before chunking");
                         if (APR_SUCCESS != rv) {
                             apr_brigade_cleanup(ctx->tmpbb);
@@ -373,13 +388,14 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http1_transcode_out_filter(ap_filter_t *
                 }
             }
         }
-        else if (!ctx->final_response_sent) {
+        else if (!ctx->final_response_sent && strict) {
             /* data buckets before seeing the final response are in error.
              */
             ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                           "ap_http1_transcode_out_filter seeing data before headers, %ld bytes ",
                           (long)e->length);
-            return AP_FILTER_ERROR;
+            rv = AP_FILTER_ERROR;
+            goto cleanup;
         }
         else if (ctx->final_header_only) {
             apr_bucket_delete(e);
@@ -388,7 +404,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http1_transcode_out_filter(ap_filter_t *
 
 pass:
     rv = ap_pass_brigade(f->next, b);
-    ap_log_rerror(APLOG_MARK, APLOG_TRACE3, rv, r,
+    ap_log_rerror(APLOG_MARK, APLOG_TRACE2, rv, r,
                   "ap_http1_transcode_out_filter passed brigade");
 cleanup:
     return rv;

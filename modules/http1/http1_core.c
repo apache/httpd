@@ -38,21 +38,19 @@ AP_DECLARE_DATA ap_filter_rec_t *ap_http1_transcode_out_filter_handle;
 AP_DECLARE_DATA ap_filter_rec_t *ap_http1_transcode_in_filter_handle;
 
 
-static int http1_create_request(request_rec *r)
+static void http1_pre_read_request(request_rec *r, conn_rec *c)
 {
     if (!r->main && !r->prev
-        && !strcmp(AP_PROTOCOL_HTTP1, ap_get_protocol(r->connection))) {
+        && !strcmp(AP_PROTOCOL_HTTP1, ap_get_protocol(c))) {
         ap_add_output_filter_handle(ap_http1_transcode_out_filter_handle,
                                     NULL, r, r->connection);
     }
-
-    return OK;
 }
 
 
 static void register_hooks(apr_pool_t *p)
 {
-    ap_hook_create_request(http1_create_request, NULL, NULL, APR_HOOK_REALLY_LAST);
+    ap_hook_pre_read_request(http1_pre_read_request, NULL, NULL, APR_HOOK_REALLY_LAST);
 
     ap_http1_transcode_out_filter_handle =
         ap_register_output_filter("HTTP1_TRANSCODE_OUT", ap_http1_transcode_out_filter,

@@ -64,7 +64,7 @@ class H2TestEnv(HttpdTestEnv):
                              "H2MaxWorkers 64",
                              "Protocols h2 http/1.1 h2c",
                          ])
-        self.add_httpd_log_modules(["http2", "proxy_http2", "h2test"])
+        self.add_httpd_log_modules(["http2", "proxy_http2", "h2test", "proxy", "proxy_http"])
         self.add_cert_specs([
             CertificateSpec(domains=[
                 f"push.{self._http_tld}",
