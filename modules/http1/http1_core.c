@@ -47,10 +47,21 @@ static void http1_pre_read_request(request_rec *r, conn_rec *c)
     }
 }
 
+static int http1_post_read_request(request_rec *r)
+{
+    if (r->proto_num < HTTP_VERSION(2,0) && r->proto_num >= HTTP_VERSION(1,0)) {
+        if (apr_table_get(r->headers_in, "Transfer-Encoding")) {
+            apr_table_setn(r->notes, AP_NOTE_REQUEST_BODY_INDETERMINATE, "1");
+        }
+    }
+    return OK;
+}
+
 
 static void register_hooks(apr_pool_t *p)
 {
     ap_hook_pre_read_request(http1_pre_read_request, NULL, NULL, APR_HOOK_REALLY_LAST);
+    ap_hook_post_read_request(http1_post_read_request, NULL, NULL, APR_HOOK_REALLY_LAST);
 
     ap_http1_transcode_out_filter_handle =
         ap_register_output_filter("HTTP1_TRANSCODE_OUT", ap_http1_transcode_out_filter,

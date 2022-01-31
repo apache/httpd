@@ -692,8 +692,8 @@ static int h2_c2_hook_post_read_request(request_rec *r)
                       "h2_c2(%s-%d): adding request filters",
                       conn_ctx->id, conn_ctx->stream_id);
 
-        if (conn_ctx->beam_in) {
-            apr_table_setn(r->notes, AP_NOTE_HTTP_REQUEST_BODY, "1");
+        if (conn_ctx->beam_in && !apr_table_get(r->headers_in, "Content-Length")) {
+            apr_table_setn(r->notes, AP_NOTE_REQUEST_BODY_INDETERMINATE, "1");
         }
 
         /* setup the correct filters to process the request for h2 */

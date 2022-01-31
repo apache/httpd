@@ -874,26 +874,22 @@ AP_DECLARE(int) ap_discard_request_body(request_rec *r)
 
 AP_DECLARE(int) ap_setup_client_block(request_rec *r, int read_policy)
 {
-    const char *tenc = apr_table_get(r->headers_in, "Transfer-Encoding");
     const char *lenp = apr_table_get(r->headers_in, "Content-Length");
-    const char *note = apr_table_get(r->notes, AP_NOTE_HTTP_REQUEST_BODY);
 
     r->read_body = read_policy;
     r->read_chunked = 0;
     r->remaining = 0;
 
-    if (tenc) {
-        if (ap_cstr_casecmp(tenc, "chunked")) {
-            ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(01592)
-                          "Unknown Transfer-Encoding %s", tenc);
-            return HTTP_NOT_IMPLEMENTED;
-        }
+    if (apr_table_get(r->notes, AP_NOTE_REQUEST_BODY_INDETERMINATE)) {
+        /* Protocols like HTTP/2 can carry bodies without length and
+         * HTTP/1.1 has chunked encoding signalled via this note.
+         */
         if (r->read_body == REQUEST_CHUNKED_ERROR) {
             ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(01593)
-                          "chunked Transfer-Encoding forbidden: %s", r->uri);
+                          "indeterminate request body length forbidden: %s", r->uri);
+            r->read_chunked = 0;
             return (lenp) ? HTTP_BAD_REQUEST : HTTP_LENGTH_REQUIRED;
         }
-
         r->read_chunked = 1;
     }
     else if (lenp) {
@@ -903,11 +899,6 @@ AP_DECLARE(int) ap_setup_client_block(request_rec *r, int read_policy)
                           "Invalid Content-Length '%s'", lenp);
             return HTTP_BAD_REQUEST;
         }
-    }
-    else if (note && !strcmp(note, "1")) {
-        /* Protocols like HTTP/2 can carry bodies without length and
-         * chunked encoding. */
-        r->read_chunked = 1;
     }
 
     if ((r->read_body == REQUEST_NO_BODY)

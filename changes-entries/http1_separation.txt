@@ -13,10 +13,17 @@
      - ap_send_interim_response() now generates a HEADERS bucket
        and sends it through the protocol output filters of a request.
      - there are still several code locations in the server where
-
-     "Transfer-Encoding" headers are checked to determine if
-     a request has a body in absence of a "Content-Length". This
-     does not hold for HTTP/2. A AP_NOTE_HTTP_REQUEST_BODY can
-     be set in r->notes to "1" to override this, but not all
-     checks have been adjusted so far. ongoing.
+     - several "Transfer-Encoding" checks have been moved from
+       generic HTTP handling into mod_http1.
+       A new note AP_NOTE_REQUEST_BODY_INDETERMINATE has been
+       introduced that, when present in r->notes, indicates that
+       the length of a request body is not known.
+     - mod_http1 sets AP_NOTE_REQUEST_BODY_INDETERMINATE on requests
+       that carry a "Transfer-Encoding" header, even when
+       "Content-Length" is present, as in HTTP/1.1 the former takes
+       precendence.
+     - mod_http2 sets AP_NOTE_REQUEST_BODY_INDETERMINATE only on
+       requests that do not have a "Content-Length" and have not
+       been announced as empty via an early EOS flag in the request
+       header frames.
 

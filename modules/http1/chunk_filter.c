@@ -512,6 +512,7 @@ apr_status_t ap_http1_transcode_in_filter(ap_filter_t *f,
                  */
                 ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, f->r, APLOGNO(01585)
                               "Unknown Transfer-Encoding: %s", tenc);
+                ap_die(HTTP_NOT_IMPLEMENTED, f->r);
                 return APR_EGENERAL;
             }
             lenp = NULL;

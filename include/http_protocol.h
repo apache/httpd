@@ -544,13 +544,12 @@ AP_DECLARE(const char *) ap_get_status_line_ex(apr_pool_t *p, int status);
 /* Reading a block of data from the client connection (e.g., POST arg) */
 
 /**
- * Name of entry in r->notes that indicates a request has a body.
- * Should carry "1" to indicate that a request body is to be read,
- * even if "Content-Length" and "Transfer-Encoding: chunked" are
- * missing. There are protocols like HTTP/2 that have neither of
- * those.
+ * Name of entry in r->notes that indicates a request has a body
+ * of indeterminate length, e.g. no Content-Length given, but needs
+ * to be read. This happens on HTTP/1.1 chunked encodings and
+ * HTTP/2 requests.
  */
-#define AP_NOTE_HTTP_REQUEST_BODY       "http-request-body"
+#define AP_NOTE_REQUEST_BODY_INDETERMINATE     "request-body-indeterminate"
 
 /**
  * Setup the client to allow Apache to read the request body.
