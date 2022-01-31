@@ -487,18 +487,12 @@ static apr_bucket *create_response_headers(request_rec *r, apr_bucket_alloc_t *b
 
     /* determine the protocol and whether we should use keepalives. */
     basic_http_header_check(r);
-    ap_set_keepalive(r);
 
     if (AP_STATUS_IS_HEADER_ONLY(r->status)) {
-        apr_table_unset(r->headers_out, "Transfer-Encoding");
         apr_table_unset(r->headers_out, "Content-Length");
         r->content_type = r->content_encoding = NULL;
         r->content_languages = NULL;
         r->clength = r->chunked = 0;
-    }
-    else if (r->chunked) {
-        apr_table_mergen(r->headers_out, "Transfer-Encoding", "chunked");
-        apr_table_unset(r->headers_out, "Content-Length");
     }
 
     ctype = ap_make_content_type(r, r->content_type);

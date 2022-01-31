@@ -690,6 +690,7 @@ SET(LIBHTTPD_SOURCES
   modules/http/http_request.c
   modules/http1/http1_core.c
   modules/http1/http1_filters.c
+  modules/http1/http1_protocol.c
   modules/http1/chunk_filter.c
   os/win32/ap_regkey.c
   os/win32/util_win32.c

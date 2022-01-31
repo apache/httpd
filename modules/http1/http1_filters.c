@@ -43,6 +43,7 @@
 #include "util_time.h"
 
 #include "mod_core.h"
+#include "mod_http1.h"
 
 
 APLOG_USE_MODULE(http1);
@@ -162,13 +163,13 @@ static int form_header_field(header_struct *h,
 
 /* fill "bb" with a barebones/initial HTTP response header */
 static void basic_http_header(request_rec *r, apr_bucket_brigade *bb,
-                              const char *protocol)
+                              ap_bucket_headers *resp, const char *protocol)
 {
     char *date = NULL;
     const char *proxy_date = NULL;
     const char *server = NULL;
     const char *us = ap_get_server_banner();
-    const char *status_line = r->status_line;
+    const char *status_line;
     header_struct h;
     struct iovec vec[4];
 
@@ -178,8 +179,11 @@ static void basic_http_header(request_rec *r, apr_bucket_brigade *bb,
     }
 
     /* Output the HTTP/1.x Status-Line and the Date and Server fields */
-    if (status_line == NULL) {
-        status_line = ap_get_status_line_ex(r->pool, r->status);
+    if (resp->reason) {
+        status_line =  apr_psprintf(r->pool, "%d %s", resp->status, resp->reason);
+    }
+    else {
+        status_line = ap_get_status_line_ex(r->pool, resp->status);
     }
 
     vec[0].iov_base = (void *)protocol;
@@ -210,7 +214,7 @@ static void basic_http_header(request_rec *r, apr_bucket_brigade *bb,
      * generate a new server header / date header
      */
     if (r->proxyreq != PROXYREQ_NONE) {
-        proxy_date = apr_table_get(r->headers_out, "Date");
+        proxy_date = apr_table_get(resp->headers, "Date");
         if (!proxy_date) {
             /*
              * proxy_date needs to be const. So use date for the creation of
@@ -220,7 +224,7 @@ static void basic_http_header(request_rec *r, apr_bucket_brigade *bb,
             date = apr_palloc(r->pool, APR_RFC822_DATE_LEN);
             ap_recent_rfc822_date(date, r->request_time);
         }
-        server = apr_table_get(r->headers_out, "Server");
+        server = apr_table_get(resp->headers, "Server");
     }
     else {
         date = apr_palloc(r->pool, APR_RFC822_DATE_LEN);
@@ -253,9 +257,9 @@ static void basic_http_header(request_rec *r, apr_bucket_brigade *bb,
 
 
     /* unset so we don't send them again */
-    apr_table_unset(r->headers_out, "Date");        /* Avoid bogosity */
+    apr_table_unset(resp->headers, "Date");        /* Avoid bogosity */
     if (server) {
-        apr_table_unset(r->headers_out, "Server");
+        apr_table_unset(resp->headers, "Server");
     }
 }
 
@@ -272,6 +276,7 @@ static const char *get_response_protocol(request_rec *r)
         return AP_SERVER_PROTOCOL;
     }
 }
+
 
 typedef struct response_filter_ctx {
     int final_response_sent;
@@ -315,21 +320,21 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http1_transcode_out_filter(ap_filter_t *
                 goto pass;
             }
             else if (AP_BUCKET_IS_HEADERS(e)) {
-                ap_bucket_headers *hdrs = e->data;
+                ap_bucket_headers *resp = e->data;
 
                 ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r,
                               "ap_http1_transcode_out_filter seeing headers bucket status=%d",
-                              hdrs->status);
-                if (!hdrs->status) {
+                              resp->status);
+                if (!resp->status) {
                     /* footer, is either processed in chunk filter
                      * or ignored otherwise. never processed here. */
                 }
-                else if (strict && hdrs->status < 100) {
+                else if (strict && resp->status < 100) {
                     /* error, not a valid http status */
                     ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO()
                                   "ap_http1_transcode_out_filter seeing headers "
                                   "status=%d in strict mode",
-                                  hdrs->status);
+                                  resp->status);
                     rv = AP_FILTER_ERROR;
                     goto cleanup;
                 }
@@ -342,17 +347,17 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http1_transcode_out_filter(ap_filter_t *
                     ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO()
                                   "ap_http1_transcode_out_filter seeing headers "
                                   "status=%d after final response already sent",
-                                  hdrs->status);
+                                  resp->status);
                     rv = AP_FILTER_ERROR;
                     goto cleanup;
                 }
                 else {
                     /* a response status to transcode, might be final or interim
                      */
-                    ctx->final_response_sent = (hdrs->status >= 200)
-                        || (!strict && hdrs->status < 100);
+                    ctx->final_response_sent = (resp->status >= 200)
+                        || (!strict && resp->status < 100);
                     ctx->final_header_only = ctx->final_response_sent &&
-                                             (r->header_only || AP_STATUS_IS_HEADER_ONLY(hdrs->status));
+                                             (r->header_only || AP_STATUS_IS_HEADER_ONLY(resp->status));
 
                     if (!ctx->tmpbb) {
                         ctx->tmpbb = apr_brigade_create(r->pool, c->bucket_alloc);
@@ -361,10 +366,20 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http1_transcode_out_filter(ap_filter_t *
                         apr_brigade_split_ex(b, next, ctx->tmpbb);
                     }
 
-                    basic_http_header(r, b, get_response_protocol(r));
-                    if (hdrs->headers) {
-                        append_http1_headers(b, r, hdrs->headers);
+                    if (ctx->final_response_sent) {
+                        http1_set_keepalive(r, resp);
+
+                        if (AP_STATUS_IS_HEADER_ONLY(resp->status)) {
+                            apr_table_unset(resp->headers, "Transfer-Encoding");
+                        }
+                        else if (r->chunked) {
+                            apr_table_mergen(resp->headers, "Transfer-Encoding", "chunked");
+                            apr_table_unset(resp->headers, "Content-Length");
+                        }
                     }
+
+                    basic_http_header(r, b, resp, get_response_protocol(r));
+                    append_http1_headers(b, r, resp->headers);
                     terminate_http1_header(b);
 
                     apr_bucket_delete(e);

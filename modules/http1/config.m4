@@ -2,7 +2,7 @@ dnl modules enabled in this directory by default
 
 APACHE_MODPATH_INIT(http1)
 
-http_objects="http1_core.lo http1_filters.lo chunk_filter.lo"
+http_objects="http1_core.lo http1_filters.lo http1_protocol.lo chunk_filter.lo"
 
 dnl mod_http1 should only be built as a static module for now.
 dnl this will hopefully be "fixed" at some point in the future by
