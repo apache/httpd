@@ -87,7 +87,7 @@ class H2TestEnv(HttpdTestEnv):
             'AH02261',  # Re-negotiation handshake failed (our test_101)
             'AH03490',  # scoreboard full, happens on limit tests
             'AH02429',  # invalid chars in response header names, see test_h2_200
-            'AH02430',   # invalid chars in response header values, see test_h2_200
+            'AH02430',  # invalid chars in response header values, see test_h2_200
             'AH10373',  # SSL errors on uncompleted handshakes, see test_h2_105
         ])
         self.httpd_error_log.add_ignored_patterns([
