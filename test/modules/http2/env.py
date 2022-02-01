@@ -64,7 +64,7 @@ class H2TestEnv(HttpdTestEnv):
                              "H2MaxWorkers 64",
                              "Protocols h2 http/1.1 h2c",
                          ])
-        self.add_httpd_log_modules(["http2", "proxy_http2", "h2test"])
+        self.add_httpd_log_modules(["http2", "proxy_http2", "h2test", "proxy", "proxy_http"])
         self.add_cert_specs([
             CertificateSpec(domains=[
                 f"push.{self._http_tld}",
@@ -86,6 +86,9 @@ class H2TestEnv(HttpdTestEnv):
             'AH00135',
             'AH02261',  # Re-negotiation handshake failed (our test_101)
             'AH03490',  # scoreboard full, happens on limit tests
+            'AH02429',  # invalid chars in response header names, see test_h2_200
+            'AH02430',  # invalid chars in response header values, see test_h2_200
+            'AH10373',  # SSL errors on uncompleted handshakes, see test_h2_105
         ])
         self.httpd_error_log.add_ignored_patterns([
             re.compile(r'.*malformed header from script \'hecho.py\': Bad header: x.*'),

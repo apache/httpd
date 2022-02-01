@@ -171,8 +171,6 @@ class HttpdConf(object):
         self.add("AddHandler cgi-script .py")
         self.add_proxies("cgi", proxy_self=proxy_self, h2proxy_self=h2proxy_self)
         self.end_vhost()
-        self.add("LogLevel proxy:info")
-        self.add("LogLevel proxy_http:info")
         return self
 
     @staticmethod

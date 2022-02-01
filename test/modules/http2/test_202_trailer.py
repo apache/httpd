@@ -26,40 +26,40 @@ class TestTrailers:
         url = env.mkurl("https", "cgi", "/echo.py")
         fpath = os.path.join(env.gen_dir, "data-1k")
         r = env.nghttp().upload(url, fpath, options=["--trailer", "test: 1"])
-        assert 300 > r.response["status"]
-        assert 1000 == len(r.response["body"])
+        assert r.response["status"] < 300
+        assert len(r.response["body"]) == 1000
 
         r = env.nghttp().upload(url, fpath, options=["--trailer", "test: 1b", "--trailer", "XXX: test"])
-        assert 300 > r.response["status"]
-        assert 1000 == len(r.response["body"])
+        assert r.response["status"] < 300
+        assert len(r.response["body"]) == 1000
 
     # check if the server survives a trailer without content-length
     def test_h2_202_02(self, env):
         url = env.mkurl("https", "cgi", "/echo.py")
         fpath = os.path.join(env.gen_dir, "data-1k")
         r = env.nghttp().upload(url, fpath, options=["--trailer", "test: 2", "--no-content-length"])
-        assert 300 > r.response["status"]
-        assert 1000 == len(r.response["body"])
+        assert r.response["status"] < 300
+        assert len(r.response["body"]) == 1000
 
     # check if echoing request headers in response from GET works
     def test_h2_202_03(self, env):
         url = env.mkurl("https", "cgi", "/echohd.py?name=X")
         r = env.nghttp().get(url, options=["--header", "X: 3"])
-        assert 300 > r.response["status"]
-        assert b"X: 3\n" == r.response["body"]
+        assert r.response["status"] < 300
+        assert r.response["body"] == b"X: 3\n"
 
     # check if echoing request headers in response from POST works
     def test_h2_202_03b(self, env):
         url = env.mkurl("https", "cgi", "/echohd.py?name=X")
         r = env.nghttp().post_name(url, "Y", options=["--header", "X: 3b"])
-        assert 300 > r.response["status"]
-        assert b"X: 3b\n" == r.response["body"]
+        assert r.response["status"] < 300
+        assert r.response["body"] == b"X: 3b\n"
 
     # check if echoing request headers in response from POST works, but trailers are not seen
     # This is the way CGI invocation works.
     def test_h2_202_04(self, env):
         url = env.mkurl("https", "cgi", "/echohd.py?name=X")
         r = env.nghttp().post_name(url, "Y", options=["--header", "X: 4a", "--trailer", "X: 4b"])
-        assert 300 > r.response["status"]
-        assert b"X: 4a\n" == r.response["body"]
+        assert r.response["status"] < 300
+        assert r.response["body"] == b"X: 4a\n"
 
