@@ -73,6 +73,9 @@
 #ifdef HAVE_SYS_PROCESSOR_H
 #include <sys/processor.h>      /* for bindprocessor() */
 #endif
+#ifdef HAVE_TIME_H
+#include <time.h>               /* for clock_gettime() */
+#endif
 
 #if !APR_HAS_THREADS
 #error The Event MPM requires APR threads, but they are unavailable.
@@ -336,6 +339,93 @@ static APR_INLINE const char *cs_state_str(event_conn_state_t *cs)
  */
 static event_conn_state_t *volatile defer_linger_chain;
 
+#define USE_CLOCK_COARSE 0  /* not for now */
+#if HAVE_CLOCK_GETTIME && defined(CLOCK_MONOTONIC)            /* POSIX */
+static clockid_t event_clockid;
+#elif HAVE_CLOCK_GETTIME_NSEC_NP && defined(CLOCK_UPTIME_RAW) /* Newer OSX */
+/* All #include'd by <time.h> already */
+#elif HAVE_MACH_MACH_TIME_H                                   /* Older OSX */
+#include <mach/mach_time.h>
+#endif
+
+static void event_time_init(void)
+{
+#if HAVE_CLOCK_GETTIME && defined(CLOCK_MONOTONIC)
+    event_clockid = (clockid_t)-1;
+
+#if HAVE_CLOCK_GETRES && defined(CLOCK_MONOTONIC_COARSE) && USE_CLOCK_COARSE
+    if (event_clockid == (clockid_t)-1) {
+        struct timespec ts;
+        if (clock_getres(CLOCK_MONOTONIC_COARSE, &ts) == 0) {
+            apr_time_t res = apr_time_from_sec(ts.tv_sec) + ts.tv_nsec / 1000;
+            if (res <= TIMERS_FUDGE_TIMEOUT) {
+                event_clockid = CLOCK_MONOTONIC_COARSE;
+            }
+        }
+    }
+#endif /* CLOCK_MONOTONIC_COARSE */
+
+#if HAVE_CLOCK_GETRES && defined(CLOCK_MONOTONIC_FAST) && USE_CLOCK_COARSE
+    if (event_clockid == (clockid_t)-1) {
+        struct timespec ts;
+        if (clock_getres(CLOCK_MONOTONIC_FAST, &ts) == 0) {
+            apr_time_t res = apr_time_from_sec(ts.tv_sec) + ts.tv_nsec / 1000;
+            if (res <= TIMERS_FUDGE_TIMEOUT) {
+                event_clockid = CLOCK_MONOTONIC_FAST;
+            }
+        }
+    }
+#endif /* CLOCK_MONOTONIC_FAST */
+
+#if HAVE_CLOCK_GETRES && defined(CLOCK_MONOTONIC_RAW_APPROX) && USE_CLOCK_COARSE
+    if (event_clockid == (clockid_t)-1) {
+        struct timespec ts;
+        if (clock_getres(CLOCK_MONOTONIC_RAW_APPROX, &ts) == 0) {
+            apr_time_t res = apr_time_from_sec(ts.tv_sec) + ts.tv_nsec / 1000;
+            if (res <= TIMERS_FUDGE_TIMEOUT) {
+                event_clockid = CLOCK_MONOTONIC_RAW_APPROX;
+            }
+        }
+    }
+#endif /* CLOCK_MONOTONIC_RAW_APPROX */
+
+    if (event_clockid == (clockid_t)-1) {
+#if defined(CLOCK_MONOTONIC_RAW)
+        event_clockid = CLOCK_MONOTONIC_RAW;
+#else
+        event_clockid = CLOCK_MONOTONIC;
+#endif
+    }
+
+#endif /* HAVE_CLOCK_GETTIME */
+}
+
+static apr_time_t event_time_now(void)
+{
+#if HAVE_CLOCK_GETTIME && defined(CLOCK_MONOTONIC)
+
+    struct timespec ts;
+    clock_gettime(event_clockid, &ts);
+    return apr_time_from_sec(ts.tv_sec) + ts.tv_nsec / 1000;
+
+#elif HAVE_CLOCK_GETTIME_NSEC_NP && defined(CLOCK_UPTIME_RAW)
+
+    return clock_gettime_nsec_np(CLOCK_UPTIME_RAW) / 1000;
+
+#elif HAVE_MACH_MACH_TIME_H
+
+    mach_timebase_info_data_t ti;
+    mach_timebase_info(&ti);
+    return mach_continuous_time() * ti.numer / ti.denom / 1000;
+
+#else
+
+    /* XXX: not monotonic, still some platform to care about? */
+    return apr_time_now();
+
+#endif
+}
+
 APR_RING_HEAD(timeout_head_t, event_conn_state_t);
 struct timeout_queue {
     struct timeout_head_t head;
@@ -375,7 +465,7 @@ static void TO_QUEUE_APPEND(struct timeout_queue *q, event_conn_state_t *cs)
     ap_assert(q && !cs->q);
 
     cs->q = q;
-    cs->queue_timestamp = apr_time_now();
+    cs->queue_timestamp = event_time_now();
     APR_RING_INSERT_TAIL(&q->head, cs, event_conn_state_t, timeout_list);
     ++*q->total;
     ++q->count;
@@ -1786,7 +1876,7 @@ static timer_event_t *get_timer_event(apr_time_t timeout,
                                       apr_array_header_t *pfds)
 {
     timer_event_t *te;
-    apr_time_t now = (timeout < 0) ? 0 : apr_time_now();
+    apr_time_t now = (timeout < 0) ? 0 : event_time_now();
 
     /* oh yeah, and make locking smarter/fine grained. */
 
@@ -2158,7 +2248,7 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
     int have_idle_worker = 0;
     apr_time_t last_log;
 
-    last_log = apr_time_now();
+    last_log = event_time_now();
     free(ti);
 
 #if HAVE_SERF
@@ -2207,7 +2297,7 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
         }
 
         if (APLOGtrace6(ap_server_conf)) {
-            now = apr_time_now();
+            now = event_time_now();
             /* trace log status every second */
             if (now - last_log > apr_time_from_sec(1)) {
                 ap_log_error(APLOG_MARK, APLOG_TRACE6, 0, ap_server_conf,
@@ -2240,7 +2330,7 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
          * up occurs, otherwise periodic checks (maintenance, shutdown, ...)
          * must be performed.
          */
-        now = apr_time_now();
+        now = event_time_now();
         timeout = -1;
 
         /* Push expired timers to a worker, the first remaining one (if any)
@@ -2333,7 +2423,7 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
 
         if (APLOGtrace7(ap_server_conf)) {
             apr_time_t old_now = now;
-            now = apr_time_now();
+            now = event_time_now();
 
             ap_log_error(APLOG_MARK, APLOG_TRACE7, rc, ap_server_conf,
                          "pollset: have #%i time=%" APR_TIME_T_FMT "/%" APR_TIME_T_FMT
@@ -2549,7 +2639,7 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
          */
         next_expiry = queues_next_expiry;
 do_maintenance:
-        if (next_expiry && next_expiry <= (now = apr_time_now())) {
+        if (next_expiry && next_expiry <= (now = event_time_now())) {
             ap_log_error(APLOG_MARK, APLOG_TRACE7, 0, ap_server_conf,
                          "queues maintenance: expired=%" APR_TIME_T_FMT,
                          next_expiry > 0 ? now - next_expiry : -1);
@@ -3257,7 +3347,7 @@ static void child_main(int child_num_arg, int child_bucket)
     }
 
     /* For rand() users (e.g. skiplist). */
-    srand((unsigned int)apr_time_now());
+    srand((unsigned int)event_time_now());
 
     ap_run_child_init(pchild, ap_server_conf);
 
@@ -4057,7 +4147,7 @@ static int event_run(apr_pool_t * _pconf, apr_pool_t * plog, server_rec * s)
         }
 
         if (ap_graceful_shutdown_timeout) {
-            cutoff = apr_time_now() +
+            cutoff = event_time_now() +
                      apr_time_from_sec(ap_graceful_shutdown_timeout);
         }
 
@@ -4079,7 +4169,7 @@ static int event_run(apr_pool_t * _pconf, apr_pool_t * plog, server_rec * s)
                 }
             }
         } while (!retained->mpm->shutdown_pending && active_children &&
-                 (!ap_graceful_shutdown_timeout || apr_time_now() < cutoff));
+                 (!ap_graceful_shutdown_timeout || event_time_now() < cutoff));
 
         /* We might be here because we received SIGTERM, either
          * way, try and make sure that all of our processes are
@@ -4209,6 +4299,8 @@ static int event_pre_config(apr_pool_t * pconf, apr_pool_t * plog,
         no_detach = ap_exists_config_define("NO_DETACH");
         foreground = ap_exists_config_define("FOREGROUND");
     }
+
+    event_time_init();
 
     retained = ap_retained_data_get(userdata_key);
     if (!retained) {
