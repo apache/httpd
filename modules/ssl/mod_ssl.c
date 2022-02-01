@@ -731,7 +731,7 @@ static int ssl_hook_process_connection(conn_rec* c)
                 /* we've been asked to come around again, don't block */
 
                 ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, APLOGNO(10371)
-                              "SSL handshake in progress, continuing");
+                              "SSL handshake in progress, try again later");
 
                 status = AGAIN;
             }

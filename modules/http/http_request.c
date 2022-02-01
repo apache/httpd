@@ -444,7 +444,8 @@ void ap_process_async_request(request_rec *r)
         const apr_array_header_t *t_h = apr_table_elts(r->headers_in);
         const apr_table_entry_t *t_elt = (apr_table_entry_t *)t_h->elts;
         ap_log_rerror(APLOG_MARK, APLOG_TRACE4, 0, r,
-                      "Headers received from client:");
+                      "Header received from client:");
+        ap_log_rerror(APLOG_MARK, APLOG_TRACE4, 0, r, "  %s", r->the_request);
         for (i = 0; i < t_h->nelts; i++, t_elt++) {
             ap_log_rerror(APLOG_MARK, APLOG_TRACE4, 0, r, "  %s: %s",
                           ap_escape_logitem(r->pool, t_elt->key),
