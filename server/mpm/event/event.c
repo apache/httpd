@@ -266,6 +266,8 @@ struct event_conn_state_t {
     apr_time_t queue_timestamp;
     /** the timeout queue for this entry */
     struct timeout_queue *q;
+    /** the timer event for this entry */
+    timer_event_t *te;
 
     /*
      * when queued to workers
@@ -639,6 +641,7 @@ struct event_srv_cfg_s {
     struct timeout_queue *process_q,
                          *completion_q,
                          *keepalive_q;
+    server_rec *s; /* backref */
 };
 
 #define ID_FROM_CHILD_THREAD(c, t)    ((c * thread_limit) + t)
@@ -1263,7 +1266,7 @@ static int event_post_read_request(request_rec *r)
 }
 
 static int pollset_add_at(event_conn_state_t *cs, int sense,
-                          struct timeout_queue *q,
+                          struct timeout_queue *q, timer_event_t *te,
                           const char *at, int line)
 {
     apr_status_t rv;
@@ -1272,11 +1275,11 @@ static int pollset_add_at(event_conn_state_t *cs, int sense,
                   "pollset: add %s=%" APR_TIME_T_FMT " events=%x"
                   " for connection %" CS_FMT " at %s:%i",
                   (q) ? "q" : "t",
-                  (q) ? q->timeout : -1,
+                  (q) ? q->timeout : (te) ? te->timeout : -1,
                   (int)cs->pfd.reqevents,
                   CS_ARG(cs), at, line);
 
-    ap_assert(cs->q == NULL && q != NULL);
+    ap_assert(cs->q == NULL && cs->te == NULL && ((q != NULL) ^ (te != NULL)));
 
     set_conn_state_sense(cs, sense);
 
@@ -1284,11 +1287,19 @@ static int pollset_add_at(event_conn_state_t *cs, int sense,
         apr_thread_mutex_lock(timeout_mutex);
         TO_QUEUE_APPEND(q, cs);
     }
+    else {
+        cs->te = te;
+    }
+
     rv = apr_pollset_add(event_pollset, &cs->pfd);
     if (rv != APR_SUCCESS) {
         if (q) {
             TO_QUEUE_REMOVE(q, cs);
             apr_thread_mutex_unlock(timeout_mutex);
+        }
+        else {
+            te->canceled = 1;
+            cs->te = NULL;
         }
 
         /* close_worker_sockets() may have closed it already */
@@ -1309,8 +1320,8 @@ static int pollset_add_at(event_conn_state_t *cs, int sense,
     }
     return 1;
 }
-#define pollset_add(cs, sense, q) \
-    pollset_add_at((cs), (sense), (q), __FUNCTION__, __LINE__)
+#define pollset_add(cs, sense, q, te) \
+    pollset_add_at((cs), (sense), (q), (te), __FUNCTION__, __LINE__)
 
 static int pollset_del_at(event_conn_state_t *cs, int locked,
                           const char *at, int line)
@@ -1321,11 +1332,11 @@ static int pollset_del_at(event_conn_state_t *cs, int locked,
                   "pollset: del %s=%" APR_TIME_T_FMT " events=%x"
                   " for connection %" CS_FMT " at %s:%i",
                   (cs->q) ? "q" : "t",
-                  (cs->q) ? cs->q->timeout : -1,
+                  (cs->q) ? cs->q->timeout : (cs->te ? cs->te->timeout : -1),
                   (int)cs->pfd.reqevents,
                   CS_ARG(cs), at, line);
 
-    ap_assert(cs->q != NULL);
+    ap_assert((cs->q != NULL) ^ (cs->te != NULL));
 
     if (cs->q) {
         if (!locked) {
@@ -1335,6 +1346,10 @@ static int pollset_del_at(event_conn_state_t *cs, int locked,
         if (!locked) {
             apr_thread_mutex_unlock(timeout_mutex);
         }
+    }
+    else {
+        cs->te->canceled = 1;
+        cs->te = NULL;
     }
 
     /*
@@ -1359,6 +1374,11 @@ static int pollset_del_at(event_conn_state_t *cs, int locked,
     pollset_del_at((cs), (locked), __FUNCTION__, __LINE__)
 
 /* Forward declare */
+static timer_event_t *get_timer_event(apr_time_t timeout,
+                                      ap_mpm_callback_fn_t *cbfn,
+                                      void *baton,
+                                      int insert,
+                                      apr_array_header_t *pfds);
 static void process_lingering_close(event_conn_state_t *cs);
 
 static event_conn_state_t *make_conn_state(apr_pool_t *p, apr_socket_t *csd)
@@ -1559,6 +1579,10 @@ read_request:
     }
 
     if (cs->pub.state == CONN_STATE_PROCESS) {
+        apr_interval_time_t timeout;
+        struct timeout_queue *q = NULL;
+        timer_event_t *te = NULL;
+
         ap_update_child_status(cs->sbh, SERVER_BUSY_READ, NULL);
 
         /* It greatly simplifies the logic to use a single timeout value per q
@@ -1571,7 +1595,22 @@ read_request:
          */
         notify_suspend(cs);
 
-        if (pollset_add(cs, CONN_SENSE_WANT_READ, cs->sc->process_q)) {
+        /* If the connection timeout is actually different than the process_q's,
+         * use a timer event to honor it (e.g. mod_reqtimeout may enforce its
+         * own timeouts per request stage).
+         */
+        timeout = ap_get_connection_timeout(c, cs->sc->s);
+        if (timeout >= 0 && timeout != cs->sc->process_q->timeout) {
+            /* Prevent the timer from firing before the pollset is updated */
+            if (timeout < TIMERS_FUDGE_TIMEOUT) {
+                timeout = TIMERS_FUDGE_TIMEOUT;
+            }
+            te = get_timer_event(timeout, NULL, cs, 1, NULL);
+        }
+        else {
+            q = cs->sc->process_q;
+        }
+        if (pollset_add(cs, CONN_SENSE_WANT_READ, q, te)) {
             return;
         }
 
@@ -1601,7 +1640,8 @@ read_request:
              */
             notify_suspend(cs);
 
-            if (pollset_add(cs, CONN_SENSE_WANT_WRITE, cs->sc->completion_q)) {
+            if (pollset_add(cs, CONN_SENSE_WANT_WRITE,
+                            cs->sc->completion_q, NULL)) {
                 return;
             }
 
@@ -1644,7 +1684,8 @@ read_request:
         notify_suspend(cs);
 
         cs->pub.sense = CONN_SENSE_DEFAULT;
-        if (pollset_add(cs, CONN_SENSE_WANT_READ, cs->ka_sc->keepalive_q)) {
+        if (pollset_add(cs, CONN_SENSE_WANT_READ,
+                        cs->ka_sc->keepalive_q, NULL)) {
             return;
         }
 
@@ -1683,7 +1724,8 @@ static apr_status_t event_resume_suspended (conn_rec *c)
 
     if (cs->pub.state < CONN_STATE_LINGER) {
         cs->pub.state = CONN_STATE_COMPLETION;
-        if (pollset_add(cs, CONN_SENSE_WANT_WRITE, cs->sc->completion_q)) {
+        if (pollset_add(cs, CONN_SENSE_WANT_WRITE,
+                        cs->sc->completion_q, NULL)) {
             return APR_SUCCESS;
         }
 
@@ -1930,6 +1972,7 @@ static timer_event_t *get_timer_event(apr_time_t timeout,
     te->cbfunc = cbfn;
     te->baton = baton;
     te->when = now + timeout;
+    te->timeout = timeout;
     te->pfds = pfds;
 
     if (insert) {
@@ -2156,7 +2199,7 @@ static void process_lingering_close(event_conn_state_t *cs)
     /* (Re)queue the connection to come back when readable */
     cs->pub.sense = CONN_SENSE_DEFAULT;
     q = (cs->pub.state == CONN_STATE_LINGER_SHORT) ? short_linger_q : linger_q;
-    if (!pollset_add(cs, CONN_SENSE_WANT_READ, q)) {
+    if (!pollset_add(cs, CONN_SENSE_WANT_READ, q, NULL)) {
         close_connection(cs);
     }
 }
@@ -2208,7 +2251,6 @@ static void process_timeout_queue(struct timeout_queue *q, apr_time_t expiry,
                 break;
             }
 
-            TO_QUEUE_REMOVE(qp, cs);
             if (!pollset_del(cs, 1)) {
                 kill_connection(cs, APR_EGENERAL);
                 continue;
@@ -2374,14 +2416,23 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
             apr_thread_mutex_lock(g_timer_skiplist_mtx);
             while ((te = apr_skiplist_peek(timer_skiplist))) {
                 if (te->when > now) {
-                    timers_next_expiry = te->when;
-                    timeout = te->when - now;
                     break;
                 }
                 apr_skiplist_pop(timer_skiplist, NULL);
 
                 if (te->canceled) {
                     put_timer_event(te, 1);
+                    continue;
+                }
+
+                if (!te->cbfunc) {
+                    cs = te->baton;
+                    put_timer_event(te, 1);
+                    ap_assert(cs && cs->te == te);
+                    ap_log_cerror(APLOG_MARK, APLOG_TRACE6, 0, cs->c,
+                                  "timed out connection %" CS_FMT, CS_ARG(cs));
+                    (void)pollset_del(cs, 0);
+                    kill_connection(cs, APR_TIMEUP);
                     continue;
                 }
 
@@ -4418,6 +4469,7 @@ static int event_post_config(apr_pool_t *pconf, apr_pool_t *plog,
     for (; s; s = s->next) {
         event_srv_cfg *sc = apr_pcalloc(pconf, sizeof *sc);
         ap_set_module_config(s->module_config, &mpm_event_module, sc);
+        sc->s = s; /* backref */
 
         sc->process_q = TO_QUEUE_CHAIN(pconf, "process", s->timeout,
                                        &process_q, process_h, ptemp);
