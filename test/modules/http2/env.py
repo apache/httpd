@@ -106,9 +106,6 @@ class H2Conf(HttpdConf):
 
     def __init__(self, env: HttpdTestEnv, extras: Dict[str, Any] = None):
         super().__init__(env=env, extras=HttpdConf.merge_extras(extras, {
-            "base": [
-                "LogLevel http:trace4",
-            ],
             f"cgi.{env.http_tld}": [
                 "SSLOptions +StdEnvVars",
                 "AddHandler cgi-script .py",
