@@ -247,6 +247,8 @@ struct event_conn_state_t {
     request_rec *r;
     /** server config this struct refers to */
     event_srv_cfg *sc;
+    /** server config this struct refers to during keepalive */
+    event_srv_cfg *ka_sc;
     /** scoreboard handle for the conn_rec */
     ap_sb_handle_t *sbh;
     /** bucket allocator */
@@ -1130,18 +1132,23 @@ static int event_post_read_request(request_rec *r)
     event_conn_state_t *cs = ap_get_module_config(c->conn_config,
                                                   &mpm_event_module);
 
+    /* Use Timeout from the request's server. */
+    cs->sc = ap_get_module_config(r->server->module_config,
+                                  &mpm_event_module);
+
     /* To preserve legacy behaviour (consistent with other MPMs), use
-     * the keepalive timeout from the base server (first on this IP:port)
-     * when none is explicitly configured on this server.
+     * KeepaliveTimeout from the base server (first on this IP:port)
+     * when none is explicitly configured on this server. Otherwise
+     * use the one from the request's server.
      */
-    if (r->server->keep_alive_timeout_set) {
-        cs->sc = ap_get_module_config(r->server->module_config,
-                                      &mpm_event_module);
+    if (!r->server->keep_alive_timeout_set) {
+        cs->ka_sc = ap_get_module_config(c->base_server->module_config,
+                                         &mpm_event_module);
     }
     else {
-        cs->sc = ap_get_module_config(c->base_server->module_config,
-                                      &mpm_event_module);
+        cs->ka_sc = cs->sc;
     }
+
     return OK;
 }
 
@@ -1253,8 +1260,8 @@ static event_conn_state_t *make_conn_state(apr_pool_t *p, apr_socket_t *csd)
     cs->pfd.desc_type = APR_POLL_SOCKET;
     cs->pfd.desc.s = csd;
 
-    cs->sc = ap_get_module_config(ap_server_conf->module_config,
-                                  &mpm_event_module);
+    cs->sc = cs->ka_sc = ap_get_module_config(ap_server_conf->module_config,
+                                              &mpm_event_module);
 
     /**
      * XXX If the platform does not have a usable way of bundling
@@ -1527,7 +1534,7 @@ read_request:
         notify_suspend(cs);
 
         cs->pub.sense = CONN_SENSE_DEFAULT;
-        if (pollset_add(cs, CONN_SENSE_WANT_READ, cs->sc->ka_q)) {
+        if (pollset_add(cs, CONN_SENSE_WANT_READ, cs->ka_sc->ka_q)) {
             return;
         }
 
