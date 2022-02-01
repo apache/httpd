@@ -171,6 +171,11 @@ AP_DECLARE(conn_rec *) ap_create_connection(apr_pool_t *p,
                                             apr_bucket_alloc_t *alloc,
                                             unsigned int outgoing);
 
+AP_DECLARE_HOOK(int, min_connection_timeout,
+                (conn_rec *c, server_rec *s, apr_interval_time_t *min_timeout))
+
+AP_DECLARE(apr_interval_time_t) ap_get_connection_timeout(conn_rec *c,
+                                                          server_rec *s);
 
 /** End Of Connection (EOC) bucket */
 AP_DECLARE_DATA extern const apr_bucket_type_t ap_bucket_type_eoc;
