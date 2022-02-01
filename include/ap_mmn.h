@@ -723,6 +723,8 @@
  * 20211221.17 (2.5.1-dev) Add AGAIN, AP_MPMQ_CAN_AGAIN.
  * 20211221.18 (2.5.1-dev) Add ap_check_input_pending() and
  *                         ap_check_output_pending()
+ * 20211221.19 (2.5.1-dev) Add min_connection_timeout hook and
+ *                         ap_get_connection_timeout()
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503235UL /* "AP25" */
@@ -730,7 +732,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20211221
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 18             /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 19             /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a

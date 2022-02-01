@@ -45,6 +45,7 @@ typedef struct
     int max_timeout;        /* max timeout in secs */
     int min_rate;           /* min rate in bytes/s */
     apr_time_t rate_factor; /* scale factor (#usecs per min_rate) */
+    apr_interval_time_t server_timeout; /* server timeout at this stage */
 } reqtimeout_stage_t;
 
 typedef struct
@@ -59,6 +60,7 @@ typedef struct
 {
     apr_time_t timeout_at;
     apr_time_t max_timeout_at;
+    apr_interval_time_t time_left;
     reqtimeout_stage_t cur_stage;
     int in_keep_alive;
     char *type;
@@ -74,34 +76,45 @@ static int default_body_rate_factor;
 static void extend_timeout(reqtimeout_con_cfg *ccfg, apr_bucket_brigade *bb)
 {
     apr_off_t len;
+    apr_time_t old_timeout_at;
     apr_time_t new_timeout_at;
 
     if (apr_brigade_length(bb, 0, &len) != APR_SUCCESS || len <= 0)
         return;
 
-    new_timeout_at = ccfg->timeout_at + len * ccfg->cur_stage.rate_factor;
+    old_timeout_at = ccfg->timeout_at;
+    new_timeout_at = old_timeout_at + len * ccfg->cur_stage.rate_factor;
     if (ccfg->max_timeout_at > 0 && new_timeout_at > ccfg->max_timeout_at) {
         ccfg->timeout_at = ccfg->max_timeout_at;
     }
     else {
         ccfg->timeout_at = new_timeout_at;
     }
+
+    ccfg->time_left += new_timeout_at - old_timeout_at;
+    if (ccfg->time_left > ccfg->cur_stage.server_timeout) {
+        ccfg->time_left = ccfg->cur_stage.server_timeout;
+    }
 }
 
-static apr_status_t check_time_left(reqtimeout_con_cfg *ccfg,
-                                    apr_time_t *time_left_p,
-                                    apr_time_t now)
+static apr_status_t check_and_update_time_left(reqtimeout_con_cfg *ccfg,
+                                               apr_time_t now)
 {
     if (!now)
         now = apr_time_now();
-    *time_left_p = ccfg->timeout_at - now;
-    if (*time_left_p <= 0)
+
+    ccfg->time_left = ccfg->timeout_at - now;
+    if (ccfg->time_left <= 0)
         return APR_TIMEUP;
 
-    if (*time_left_p < apr_time_from_sec(1)) {
-        *time_left_p = apr_time_from_sec(1);
+    if (ccfg->time_left < apr_time_from_sec(1)) {
+        ccfg->time_left = apr_time_from_sec(1);
     }
-    return APR_SUCCESS;
+    else if (ccfg->time_left > ccfg->cur_stage.server_timeout) {
+        ccfg->time_left = ccfg->cur_stage.server_timeout;
+    }
+
+    return apr_socket_timeout_set(ccfg->socket, ccfg->time_left);
 }
 
 static apr_status_t have_lf_or_eos(apr_bucket_brigade *bb)
@@ -168,16 +181,14 @@ static apr_status_t brigade_append(apr_bucket_brigade *bbOut, apr_bucket_brigade
 }
 
 
-#define MIN(x,y) ((x) < (y) ? (x) : (y))
 static apr_status_t reqtimeout_filter(ap_filter_t *f,
                                       apr_bucket_brigade *bb,
                                       ap_input_mode_t mode,
                                       apr_read_type_e block,
                                       apr_off_t readbytes)
 {
-    apr_time_t time_left;
-    apr_time_t now = 0;
     apr_status_t rv;
+    apr_time_t now = 0;
     apr_interval_time_t saved_sock_timeout = UNSET;
     reqtimeout_con_cfg *ccfg = f->ctx;
 
@@ -198,11 +209,11 @@ static apr_status_t reqtimeout_filter(ap_filter_t *f,
         /* set new timeout */
         now = apr_time_now();
         ccfg->timeout_at = now + apr_time_from_sec(ccfg->cur_stage.timeout);
-        ccfg->cur_stage.timeout = 0;
         if (ccfg->cur_stage.max_timeout > 0) {
             ccfg->max_timeout_at = now + apr_time_from_sec(ccfg->cur_stage.max_timeout);
             ccfg->cur_stage.max_timeout = 0;
         }
+        ccfg->cur_stage.timeout = 0;
     }
     else if (ccfg->timeout_at == 0) {
         /* no timeout set, or in between requests */
@@ -213,39 +224,30 @@ static apr_status_t reqtimeout_filter(ap_filter_t *f,
         ccfg->socket = ap_get_conn_socket(f->c);
     }
 
-    rv = check_time_left(ccfg, &time_left, now);
-    if (rv != APR_SUCCESS)
-        goto out;
-
-    if (block == APR_NONBLOCK_READ || mode == AP_MODE_EATCRLF) {
-        rv = ap_get_brigade(f->next, bb, mode, block, readbytes);
-        if (ccfg->cur_stage.rate_factor && rv == APR_SUCCESS) {
-            extend_timeout(ccfg, bb);
-        }
-        return rv;
-    }
-
     rv = apr_socket_timeout_get(ccfg->socket, &saved_sock_timeout);
     AP_DEBUG_ASSERT(rv == APR_SUCCESS);
 
-    rv = apr_socket_timeout_set(ccfg->socket, MIN(time_left, saved_sock_timeout));
-    AP_DEBUG_ASSERT(rv == APR_SUCCESS);
+    rv = check_and_update_time_left(ccfg, now);
+    if (rv != APR_SUCCESS)
+        goto cleanup;
 
-    if (mode == AP_MODE_GETLINE) {
+    if (mode == AP_MODE_GETLINE && block == APR_BLOCK_READ) {
+        apr_off_t remaining = HUGE_STRING_LEN;
+#if APR_MAJOR_VERSION < 2
+        apr_int32_t nsds;
+        apr_interval_time_t poll_timeout;
+        apr_pollfd_t pollset;
+        pollset.p = NULL;
+#endif
+
         /*
          * For a blocking AP_MODE_GETLINE read, apr_brigade_split_line()
          * would loop until a whole line has been read. As this would make it
          * impossible to enforce a total timeout, we only do non-blocking
          * reads.
          */
-        apr_off_t remaining = HUGE_STRING_LEN;
         do {
             apr_off_t bblen;
-#if APR_MAJOR_VERSION < 2
-            apr_int32_t nsds;
-            apr_interval_time_t poll_timeout;
-            apr_pollfd_t pollset;
-#endif
 
             rv = ap_get_brigade(f->next, bb, AP_MODE_GETLINE, APR_NONBLOCK_READ, remaining);
             if (rv != APR_SUCCESS && !APR_STATUS_IS_EAGAIN(rv)) {
@@ -282,10 +284,12 @@ static apr_status_t reqtimeout_filter(ap_filter_t *f,
 
             /* ... and wait for more */
 #if APR_MAJOR_VERSION < 2
-            pollset.p = f->c->pool;
-            pollset.desc_type = APR_POLL_SOCKET;
-            pollset.reqevents = APR_POLLIN|APR_POLLHUP;
-            pollset.desc.s = ccfg->socket;
+            if (pollset.p == NULL) {
+                pollset.p = f->c->pool;
+                pollset.desc_type = APR_POLL_SOCKET;
+                pollset.reqevents = APR_POLLIN | APR_POLLHUP | APR_POLLERR;
+                pollset.desc.s = ccfg->socket;
+            }
             apr_socket_timeout_get(ccfg->socket, &poll_timeout);
             rv = apr_poll(&pollset, 1, &nsds, poll_timeout);
 #else
@@ -294,13 +298,9 @@ static apr_status_t reqtimeout_filter(ap_filter_t *f,
             if (rv != APR_SUCCESS)
                 break;
 
-            rv = check_time_left(ccfg, &time_left, 0);
+            rv = check_and_update_time_left(ccfg, 0);
             if (rv != APR_SUCCESS)
                 break;
-
-            rv = apr_socket_timeout_set(ccfg->socket,
-                                   MIN(time_left, saved_sock_timeout));
-            AP_DEBUG_ASSERT(rv == APR_SUCCESS);
 
         } while (1);
 
@@ -310,19 +310,21 @@ static apr_status_t reqtimeout_filter(ap_filter_t *f,
     }
     else { /* mode != AP_MODE_GETLINE */
         rv = ap_get_brigade(f->next, bb, mode, block, readbytes);
+        
         /* Don't extend the timeout in speculative mode, wait for
          * the real (relevant) bytes to be asked later, within the
          * currently allotted time.
          */
-        if (ccfg->cur_stage.rate_factor && rv == APR_SUCCESS
-                && mode != AP_MODE_SPECULATIVE) {
+        if (rv == APR_SUCCESS
+                && mode != AP_MODE_SPECULATIVE
+                && ccfg->cur_stage.rate_factor) {
             extend_timeout(ccfg, bb);
         }
     }
 
+cleanup:
     apr_socket_timeout_set(ccfg->socket, saved_sock_timeout);
 
-out:
     if (APR_STATUS_IS_TIMEUP(rv)) {
         ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, f->c, APLOGNO(01382)
                       "Request %s read timeout", ccfg->type);
@@ -353,7 +355,7 @@ static apr_status_t reqtimeout_eor(ap_filter_t *f, apr_bucket_brigade *bb)
     return ap_pass_brigade(f->next, bb);
 }
 
-#define INIT_STAGE(cfg, ccfg, stage) do { \
+#define INIT_STAGE(cfg, ccfg, stage, s_timeout) do { \
     if (cfg->stage.timeout != UNSET) { \
         ccfg->cur_stage.timeout     = cfg->stage.timeout; \
         ccfg->cur_stage.max_timeout = cfg->stage.max_timeout; \
@@ -364,6 +366,8 @@ static apr_status_t reqtimeout_eor(ap_filter_t *f, apr_bucket_brigade *bb)
         ccfg->cur_stage.max_timeout = MRT_DEFAULT_##stage##_MAX_TIMEOUT; \
         ccfg->cur_stage.rate_factor = default_##stage##_rate_factor; \
     } \
+    ccfg->cur_stage.server_timeout = s_timeout; \
+    ccfg->time_left = ccfg->cur_stage.timeout; \
 } while (0)
 
 static int reqtimeout_init(conn_rec *c)
@@ -392,7 +396,7 @@ static int reqtimeout_init(conn_rec *c)
 
         ccfg->type = "handshake";
         if (cfg->handshake.timeout > 0) {
-            INIT_STAGE(cfg, ccfg, handshake);
+            INIT_STAGE(cfg, ccfg, handshake, c->base_server->timeout);
         }
     }
 
@@ -422,7 +426,7 @@ static void reqtimeout_before_header(request_rec *r, conn_rec *c)
     ccfg->timeout_at = 0;
     ccfg->max_timeout_at = 0;
     ccfg->in_keep_alive = (c->keepalives > 0);
-    INIT_STAGE(cfg, ccfg, header);
+    INIT_STAGE(cfg, ccfg, header, c->base_server->timeout);
 }
 
 static int reqtimeout_before_body(request_rec *r)
@@ -447,9 +451,29 @@ static int reqtimeout_before_body(request_rec *r)
         ccfg->cur_stage.timeout = 0;
     }
     else {
-        INIT_STAGE(cfg, ccfg, body);
+        INIT_STAGE(cfg, ccfg, body, r->server->timeout);
     }
     return OK;
+}
+
+static int reqtimeout_min_timeout(conn_rec *c, server_rec *s/*unused*/,
+                                  apr_interval_time_t *min_timeout)
+{
+    reqtimeout_con_cfg *ccfg = ap_get_module_config(c->conn_config,
+                                                    &reqtimeout_module);
+    reqtimeout_stage_t *stage = &ccfg->cur_stage;
+
+    if (stage->timeout > 0 || ccfg->timeout_at) {
+        if (ccfg->time_left <= 0) {
+            *min_timeout = 0;
+        }
+        else if (*min_timeout < 0 || *min_timeout > ccfg->time_left) {
+            *min_timeout = ccfg->time_left;
+        }
+        return OK;
+    }
+
+    return DECLINED;
 }
 
 #define UNSET_STAGE(cfg, stage) do { \
@@ -636,6 +660,9 @@ static void reqtimeout_hooks(apr_pool_t *pool)
                              APR_HOOK_MIDDLE);
     ap_hook_post_read_request(reqtimeout_before_body, NULL, NULL,
                               APR_HOOK_MIDDLE);
+
+    ap_hook_min_connection_timeout(reqtimeout_min_timeout, NULL, NULL,
+                                   APR_HOOK_MIDDLE);
 
 #if MRT_DEFAULT_handshake_MIN_RATE
     default_handshake_rate_factor = apr_time_from_sec(1) /
