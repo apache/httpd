@@ -73,6 +73,9 @@
 #ifdef HAVE_SYS_PROCESSOR_H
 #include <sys/processor.h>      /* for bindprocessor() */
 #endif
+#ifdef HAVE_TIME_H
+#include <time.h>               /* for clock_gettime() */
+#endif
 
 #if !APR_HAS_THREADS
 #error The Event MPM requires APR threads, but they are unavailable.
@@ -328,6 +331,23 @@ static struct timeout_queue *read_line_q,
                             *pending_q;
 static volatile apr_time_t  queues_next_expiry;
 
+#ifndef MONOTONIC_CLOCK_IN_USE
+#if defined(HAVE_CLOCK_GETTIME) && defined(CLOCK_MONOTONIC)
+#define MONOTONIC_CLOCK_IN_USE CLOCK_MONOTONIC
+#endif
+#endif
+
+static APR_INLINE apr_time_t event_time_now(void)
+{
+#ifdef MONOTONIC_CLOCK_IN_USE
+    struct timespec ts;
+    clock_gettime(MONOTONIC_CLOCK_IN_USE, &ts);
+    return apr_time_from_sec(ts.tv_sec) + ts.tv_nsec / 1000;
+#else
+    return apr_time_now();
+#endif
+}
+
 static APR_INLINE int TIMEOUT_EXPIRED(apr_time_t now,
                                       apr_time_t timestamp,
                                       apr_interval_time_t timeout)
@@ -336,12 +356,14 @@ static APR_INLINE int TIMEOUT_EXPIRED(apr_time_t now,
     if (!now || now >= timestamp + timeout)
         return 1;
 
+#ifndef MONOTONIC_CLOCK_IN_USE
     /* No entry should be registered after now + timeout in normal
      * circonstances, expire them. This means the clock went in the
      * past (i.e. not monotonic).
      */
     if (timestamp > now + timeout)
         return 1;
+#endif
 
     return 0;
 }
@@ -1372,7 +1394,7 @@ read_request:
          * timeout today.  With a normal client, the socket will be readable in
          * a few milliseconds anyway.
          */
-        cs->queue_timestamp = apr_time_now();
+        cs->queue_timestamp = event_time_now();
         notify_suspend(cs);
 
         /* Add work to pollset. */
@@ -1415,7 +1437,7 @@ read_request:
              * Set a read/write timeout for this connection, and let the
              * event thread poll for read/writeability.
              */
-            cs->queue_timestamp = apr_time_now();
+            cs->queue_timestamp = event_time_now();
             notify_suspend(cs);
 
             update_reqevents_from_sense(cs, CONN_SENSE_WANT_WRITE);
@@ -1450,7 +1472,7 @@ read_request:
          * timeout today.  With a normal client, the socket will be readable in
          * a few milliseconds anyway.
          */
-        cs->queue_timestamp = apr_time_now();
+        cs->queue_timestamp = event_time_now();
         notify_suspend(cs);
 
         /* Add work to pollset. */
@@ -1490,7 +1512,7 @@ static apr_status_t event_resume_suspended (conn_rec *c)
     c->suspended_baton = NULL;
 
     if (cs->pub.state < CONN_STATE_LINGER) {
-        cs->queue_timestamp = apr_time_now();
+        cs->queue_timestamp = event_time_now();
         cs->pub.state = CONN_STATE_WRITE_COMPLETION;
         notify_suspend(cs);
 
@@ -1743,7 +1765,7 @@ static timer_event_t * event_get_timer_event(apr_time_t t,
                                              apr_array_header_t *pfds)
 {
     timer_event_t *te;
-    apr_time_t now = (t < 0) ? 0 : apr_time_now();
+    apr_time_t now = (t < 0) ? 0 : event_time_now();
 
     /* oh yeah, and make locking smarter/fine grained. */
 
@@ -1938,7 +1960,7 @@ static void process_lingering_close(event_conn_state_t *cs)
             return;
         }
 
-        cs->queue_timestamp = apr_time_now();
+        cs->queue_timestamp = event_time_now();
         /* Clear APR_INCOMPLETE_READ if it was ever set, we'll do the poll()
          * at the listener only from now, if needed.
          */
@@ -2044,7 +2066,7 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
     int have_idle_worker = 0;
     apr_time_t last_log;
 
-    last_log = apr_time_now();
+    last_log = event_time_now();
     free(ti);
 
 #if HAVE_SERF
@@ -2090,13 +2112,13 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
              * faster.
              */
             if (first_close) {
-                time1 = time2 = apr_time_now();
+                time1 = time2 = event_time_now();
                 goto do_maintenance; /* with expiry == -1 */
             }
         }
 
         if (APLOGtrace6(ap_server_conf)) {
-            apr_time_t now = apr_time_now();
+            apr_time_t now = event_time_now();
             /* trace log status every second */
             if (now - last_log > apr_time_from_sec(1)) {
                 last_log = now;
@@ -2134,14 +2156,14 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
          * up occurs, otherwise periodic checks (maintenance, shutdown, ...)
          * must be performed.
          */
-        time1 = apr_time_now();
+        time1 = event_time_now();
         timeout = -1;
 
         /* Push expired timers to a worker, the first remaining one determines
          * the maximum time to poll() below, if any.
          */
         expiry = timers_next_expiry;
-        if (expiry && expiry <= time1) {
+        if (expiry && expiry <= time1) { /* XXX: not clock backward safe */
             apr_thread_mutex_lock(g_timer_skiplist_mtx);
             while ((te = apr_skiplist_peek(timer_skiplist))) {
                 if (te->when > time1) {
@@ -2238,7 +2260,7 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
          * everything below since it's all non-(indefinitely-)blocking
          * code.
          */
-        time2 = apr_time_now();
+        time2 = event_time_now();
 
         ap_log_error(APLOG_MARK, APLOG_TRACE7, rc, ap_server_conf,
                      "pollset: got #%i in time=%" APR_TIME_T_FMT "/%" APR_TIME_T_FMT
@@ -3929,7 +3951,7 @@ static int event_run(apr_pool_t * _pconf, apr_pool_t * plog, server_rec * s)
         }
 
         if (ap_graceful_shutdown_timeout) {
-            cutoff = apr_time_now() +
+            cutoff = event_time_now() +
                      apr_time_from_sec(ap_graceful_shutdown_timeout);
         }
 
@@ -3951,7 +3973,7 @@ static int event_run(apr_pool_t * _pconf, apr_pool_t * plog, server_rec * s)
                 }
             }
         } while (!retained->mpm->shutdown_pending && active_children &&
-                 (!ap_graceful_shutdown_timeout || apr_time_now() < cutoff));
+                 (!ap_graceful_shutdown_timeout || event_time_now() < cutoff));
 
         /* We might be here because we received SIGTERM, either
          * way, try and make sure that all of our processes are
