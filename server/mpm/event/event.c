@@ -326,6 +326,24 @@ static struct timeout_queue *read_line_q,
                             *pending_q;
 static volatile apr_time_t  queues_next_expiry;
 
+static APR_INLINE int TIMEOUT_EXPIRED(apr_time_t now,
+                                      apr_time_t timestamp,
+                                      apr_interval_time_t timeout)
+{
+    /* Zero 'now' means expire them all. */
+    if (!now || now >= timestamp + timeout)
+        return 1;
+
+    /* No entry should be registered after now + timeout in normal
+     * circonstances, expire them. This means the clock went in the
+     * past (i.e. not monotonic).
+     */
+    if (timestamp > now + timeout)
+        return 1;
+
+    return 0;
+}
+
 /* Prevent extra poll/wakeup calls for timeouts close in the future (queues
  * have the granularity of a second anyway).
  * XXX: Wouldn't 0.5s (instead of 0.1s) be "enough"?
@@ -1950,43 +1968,30 @@ static void process_lingering_close(event_conn_state_t *cs)
     pollset_add(cs, q);
 }
 
-/* call 'func' for all elements of 'q' above 'expiry'.
+/* call 'func' for all elements of 'q' reaching 'now'.
  * Pre-condition: timeout_mutex must already be locked
  * Post-condition: timeout_mutex will be locked again
  */
-static void process_timeout_queue(struct timeout_queue *q, apr_time_t expiry,
+static void process_timeout_queue(struct timeout_queue *q, apr_time_t now,
                                   int (*func)(event_conn_state_t *))
 {
-    apr_uint32_t total = 0, count;
-    event_conn_state_t *first, *cs, *last;
-    struct event_conn_state_t trash;
     struct timeout_queue *qp;
 
     if (!*q->total) {
         return;
     }
 
-    APR_RING_INIT(&trash.timeout_list, event_conn_state_t, timeout_list);
     for (qp = q; qp; qp = qp->next) {
-        count = 0;
-        cs = first = last = APR_RING_FIRST(&qp->head);
-        while (cs != APR_RING_SENTINEL(&qp->head, event_conn_state_t,
-                                       timeout_list)) {
-            /* Trash the entry if:
-             * - no expiry was given (zero means all), or
-             * - it expired (according to the queue timeout), or
-             * - the system clock skewed in the past: no entry should be
-             *   registered above the given expiry (~now) + the queue
-             *   timeout, we won't keep any here (eg. for centuries).
-             *
-             * Otherwise stop, no following entry will match thanks to the
-             * single timeout per queue (entries are added to the end!).
-             * This allows maintenance in O(1).
+        while (!APR_RING_EMPTY(&qp->head, event_conn_state_t, timeout_list)) {
+            event_conn_state_t *cs = APR_RING_FIRST(&qp->head);
+
+            /* Stop if this entry did not expire, no following one will
+             * thanks to the single timeout per queue (latest entries are
+             * added to the tail).
              */
-            if (expiry && cs->queue_timestamp + qp->timeout > expiry
-                       && cs->queue_timestamp < expiry + qp->timeout) {
+            if (!TIMEOUT_EXPIRED(now, cs->queue_timestamp, qp->timeout)) {
                 /* Since this is the next expiring entry of this queue, update
-                 * the global queues_next_expiry if it's later than this one.
+                 * the global queues_next_expiry if it expires after this one.
                  */
                 apr_time_t elem_expiry = cs->queue_timestamp + qp->timeout;
                 apr_time_t next_expiry = queues_next_expiry;
@@ -2003,43 +2008,10 @@ static void process_timeout_queue(struct timeout_queue *q, apr_time_t expiry,
                 continue;
             }
 
-            if (cs == first) {
-                APR_RING_INSERT_HEAD(&qp->head, cs, event_conn_state_t,
-                                     timeout_list);
-            }
-            else {
-                APR_RING_INSERT_AFTER(last, cs, timeout_list);
-            }
-            ++*qp->total;
-            ++qp->count;
-
-            last = cs;
-            cs = APR_RING_NEXT(cs, timeout_list);
-            count++;
+            /* The callback will move/trash it. */
+            (void)func(cs);
         }
-        if (!count)
-            continue;
-
-        APR_RING_UNSPLICE(first, last, timeout_list);
-        APR_RING_SPLICE_TAIL(&trash.timeout_list, first, last, event_conn_state_t,
-                             timeout_list);
-        AP_DEBUG_ASSERT(*q->total >= count && qp->count >= count);
-        *q->total -= count;
-        qp->count -= count;
-        total += count;
     }
-    if (!total)
-        return;
-
-    apr_thread_mutex_unlock(timeout_mutex);
-    first = APR_RING_FIRST(&trash.timeout_list);
-    do {
-        cs = APR_RING_NEXT(first, timeout_list);
-        TO_QUEUE_ELEM_INIT(first);
-        func(first);
-        first = cs;
-    } while (--total);
-    apr_thread_mutex_lock(timeout_mutex);
 }
 
 static void process_keepalive_queue(apr_time_t expiry)
@@ -2085,7 +2057,7 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
         apr_int32_t num = 0;
         apr_interval_time_t timeout;
         socket_callback_baton_t *user_chain;
-        apr_time_t now, expiry = -1;
+        apr_time_t time1, time2, expiry = -1;
         int workers_were_busy = 0;
 
         if (conns_this_child <= 0) {
@@ -2111,12 +2083,13 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
              * faster.
              */
             if (first_close) {
+                time1 = time2 = apr_time_now();
                 goto do_maintenance; /* with expiry == -1 */
             }
         }
 
         if (APLOGtrace6(ap_server_conf)) {
-            now = apr_time_now();
+            apr_time_t now = apr_time_now();
             /* trace log status every second */
             if (now - last_log > apr_time_from_sec(1)) {
                 last_log = now;
@@ -2154,17 +2127,17 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
          * up occurs, otherwise periodic checks (maintenance, shutdown, ...)
          * must be performed.
          */
-        now = apr_time_now();
+        time1 = apr_time_now();
         timeout = -1;
 
         /* Push expired timers to a worker, the first remaining one determines
          * the maximum time to poll() below, if any.
          */
         expiry = timers_next_expiry;
-        if (expiry && expiry <= now) {
+        if (expiry && expiry <= time1) {
             apr_thread_mutex_lock(g_timer_skiplist_mtx);
             while ((te = apr_skiplist_peek(timer_skiplist))) {
-                if (te->when > now) {
+                if (te->when > time1) {
                     break;
                 }
                 apr_skiplist_pop(timer_skiplist, NULL);
@@ -2205,15 +2178,15 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
             apr_thread_mutex_unlock(g_timer_skiplist_mtx);
         }
         if (expiry) {
-            timeout = expiry > now ? expiry - now : 0;
+            timeout = expiry > time1 ? expiry - time1 : 0;
         }
 
         /* Same for queues, use their next expiry, if any. */
         expiry = queues_next_expiry;
         if (expiry && (timeout < 0
-                       || expiry <= now
-                       || timeout > expiry - now)) {
-            timeout = expiry > now ? expiry - now : 0;
+                       || expiry <= time1
+                       || timeout > expiry - time1)) {
+            timeout = expiry > time1 ? expiry - time1 : 0;
         }
 
         /* When non-wakeable, don't wait more than 100 ms, in any case. */
@@ -2238,8 +2211,8 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
                      " timers_timeout=%" APR_TIME_T_FMT
                      " exit=%d/%d conns=%d",
                      timeout,
-                     queues_next_expiry ? queues_next_expiry - now : -1,
-                     timers_next_expiry ? timers_next_expiry - now : -1,
+                     queues_next_expiry ? queues_next_expiry - time1 : -1,
+                     timers_next_expiry ? timers_next_expiry - time1 : -1,
                      listener_may_exit, dying, apr_atomic_read32(&connection_count));
 
         rc = apr_pollset_poll(event_pollset, timeout, &num, &out_pfd);
@@ -2254,20 +2227,21 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
             num = 0;
         }
 
-        if (APLOGtrace7(ap_server_conf)) {
-            apr_time_t old_now = now;
-            now = apr_time_now();
+        /* Fetch the current time once after polling and use it for
+         * everything below since it's all non-(indefinitely-)blocking
+         * code.
+         */
+        time2 = apr_time_now();
 
-            ap_log_error(APLOG_MARK, APLOG_TRACE7, rc, ap_server_conf,
-                         "pollset: got #%i in time=%" APR_TIME_T_FMT "/%" APR_TIME_T_FMT
-                         " queues_timeout=%" APR_TIME_T_FMT
-                         " timers_timeout=%" APR_TIME_T_FMT
-                         " exit=%d/%d conns=%d",
-                         (int)num, now - old_now, timeout,
-                         queues_next_expiry ? queues_next_expiry - now : -1,
-                         timers_next_expiry ? timers_next_expiry - now : -1,
-                         listener_may_exit, dying, apr_atomic_read32(&connection_count));
-        }
+        ap_log_error(APLOG_MARK, APLOG_TRACE7, rc, ap_server_conf,
+                     "pollset: got #%i in time=%" APR_TIME_T_FMT "/%" APR_TIME_T_FMT
+                     " queues_timeout=%" APR_TIME_T_FMT
+                     " timers_timeout=%" APR_TIME_T_FMT
+                     " exit=%d/%d conns=%d",
+                     (int)num, time2 - time1, timeout,
+                     queues_next_expiry ? queues_next_expiry - time2 : -1,
+                     timers_next_expiry ? timers_next_expiry - time2 : -1,
+                     listener_may_exit, dying, apr_atomic_read32(&connection_count));
 
         /* XXX possible optimization: stash the current time for use as
          * r->request_time for new requests or queues maintenance
@@ -2319,7 +2293,7 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
                  */
                 get_worker(&have_idle_worker, &workers_were_busy);
                 if (!have_idle_worker) {
-                    push2pending(cs, now);
+                    push2pending(cs, time2);
                 }
                 else if (push2worker(cs) == APR_SUCCESS) {
                     have_idle_worker = 0;
@@ -2410,7 +2384,7 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
                          */
                         get_worker(&have_idle_worker, &workers_were_busy);
                         if (!have_idle_worker) {
-                            push2pending(cs, now);
+                            push2pending(cs, time2);
                         }
                         else if (push2worker(cs) == APR_SUCCESS) {
                             have_idle_worker = 0;
@@ -2472,14 +2446,18 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
          * adding to the queues (in workers) can only decrease this expiry,
          * while latest ones are only taken into account here (in listener)
          * during queues' processing, with the lock held. This works both
-         * with and without wake-ability.
+         * with and without wake-ability. The now timestamp may have drifted
+         * a bit since it was fetched but even if the real "now" went below
+         * "expiry" in the meantime the next poll() will return immediately
+         * thus the maintenance will happen then.
          */
         expiry = queues_next_expiry;
 do_maintenance:
-        if (expiry && expiry < (now = apr_time_now())) {
+        if (expiry && expiry <= time2) {
             ap_log_error(APLOG_MARK, APLOG_TRACE7, 0, ap_server_conf,
                          "queues maintenance: timeout=%" APR_TIME_T_FMT,
-                         expiry > 0 ? expiry - now : -1);
+                         expiry > 0 ? expiry - time2 : -1);
+
             apr_thread_mutex_lock(timeout_mutex);
 
             /* Steps below will recompute this. */
@@ -2490,31 +2468,31 @@ do_maintenance:
                 process_keepalive_queue(0); /* kill'em all \m/ */
             }
             else {
-                process_keepalive_queue(now);
+                process_keepalive_queue(time2);
             }
             /* Step 2: read line timeouts */
-            process_timeout_queue(read_line_q, now,
+            process_timeout_queue(read_line_q, time2,
                                   shutdown_connection);
             /* Step 3: write completion timeouts */
-            process_timeout_queue(write_completion_q, now,
+            process_timeout_queue(write_completion_q, time2,
                                   defer_lingering_close);
             /* Step 4: (normal) lingering close completion timeouts */
             if (dying && linger_q->timeout > short_linger_q->timeout) {
                 /* Dying, force short timeout for normal lingering close */
                 linger_q->timeout = short_linger_q->timeout;
             }
-            process_timeout_queue(linger_q, now, shutdown_connection);
+            process_timeout_queue(linger_q, time2, shutdown_connection);
             /* Step 5: (short) lingering close completion timeouts */
-            process_timeout_queue(short_linger_q, now, shutdown_connection);
-            /* Step 6: pending connections timeouts */
-            process_timeout_queue(pending_q, now, shutdown_connection);
+            process_timeout_queue(short_linger_q, time2, shutdown_connection);
+            /* Step 6: pending completion timeouts */
+            process_timeout_queue(pending_q, time2, shutdown_connection);
 
             expiry = queues_next_expiry;
             apr_thread_mutex_unlock(timeout_mutex);
 
             ap_log_error(APLOG_MARK, APLOG_TRACE7, 0, ap_server_conf,
                          "queues maintained: timeout=%" APR_TIME_T_FMT,
-                         expiry > 0 ? expiry - now : -1);
+                         expiry > 0 ? expiry - time2 : -1);
 
             ps->keep_alive = apr_atomic_read32(keepalive_q->total);
             ps->read_line = apr_atomic_read32(read_line_q->total);
