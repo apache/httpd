@@ -642,9 +642,7 @@ int ssl_init_ssl_connection(conn_rec *c, request_rec *r)
 
     SSL_set_verify_result(ssl, X509_V_OK);
 
-    ssl_io_filter_init(c, r, ssl);
-
-    return APR_SUCCESS;
+    return ssl_io_filter_init(c, r, ssl);
 }
 
 static const char *ssl_hook_http_scheme(const request_rec *r)
