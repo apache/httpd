@@ -152,6 +152,8 @@
 #define apr_time_from_msec(x) (x * 1000)
 #endif
 
+#define MAX_SECS_PENDING   30
+
 #ifndef MAX_SECS_TO_LINGER
 #define MAX_SECS_TO_LINGER 30
 #endif
@@ -314,12 +316,14 @@ struct timeout_queue {
  *   keepalive_q        uses vhost's KeepAliveTimeOut
  *   linger_q           uses MAX_SECS_TO_LINGER
  *   short_linger_q     uses SECONDS_TO_LINGER
+ *   pending_q          uses MAX_SECS_PENDING
  */
 static struct timeout_queue *read_line_q,
                             *write_completion_q,
                             *keepalive_q,
                             *linger_q,
-                            *short_linger_q;
+                            *short_linger_q,
+                            *pending_q;
 static volatile apr_time_t  queues_next_expiry;
 
 /* Prevent extra poll/wakeup calls for timeouts close in the future (queues
@@ -548,11 +552,11 @@ static apr_socket_t **worker_sockets;
 
 static volatile apr_uint32_t listensocks_disabled;
 
-static void disable_listensocks(void)
+static int disable_listensocks(void)
 {
     int i;
     if (apr_atomic_cas32(&listensocks_disabled, 1, 0) != 0) {
-        return;
+        return 0;
     }
     if (event_pollset) {
         for (i = 0; i < num_listensocks; i++) {
@@ -560,14 +564,15 @@ static void disable_listensocks(void)
         }
     }
     ap_scoreboard_image->parent[ap_child_slot].not_accepting = 1;
+    return 1;
 }
 
-static void enable_listensocks(void)
+static int enable_listensocks(void)
 {
     int i;
     if (listener_may_exit
             || apr_atomic_cas32(&listensocks_disabled, 0, 1) != 1) {
-        return;
+        return 0;
     }
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO(00457)
                  "Accepting new connections again: "
@@ -585,6 +590,7 @@ static void enable_listensocks(void)
      * XXX: the parent may kill some processes off too soon.
      */
     ap_scoreboard_image->parent[ap_child_slot].not_accepting = 0;
+    return 1;
 }
 
 static APR_INLINE apr_uint32_t listeners_disabled(void)
@@ -1167,6 +1173,39 @@ static void update_reqevents_from_sense(event_conn_state_t *cs, int sense)
     cs->pub.sense = CONN_SENSE_DEFAULT;
 }
 
+static event_conn_state_t *make_conn_state(apr_pool_t *p, apr_socket_t *csd)
+{
+    event_conn_state_t *cs = apr_pcalloc(p, sizeof(*cs));
+
+    cs->p = p;
+    cs->pfd.desc.s = csd;
+    cs->pfd.desc_type = APR_POLL_SOCKET;
+    APR_RING_ELEM_INIT(cs, timeout_list);
+
+    cs->sc = ap_get_module_config(ap_server_conf->module_config,
+                                  &mpm_event_module);
+
+    /**
+     * XXX If the platform does not have a usable way of bundling
+     * accept() with a socket readability check, like Win32,
+     * and there are measurable delays before the
+     * socket is readable due to the first data packet arriving,
+     * it might be better to create the cs on the listener thread
+     * with the state set to CONN_STATE_CHECK_REQUEST_LINE_READABLE
+     *
+     * FreeBSD users will want to enable the HTTP accept filter
+     * module in their kernel for the highest performance
+     * When the accept filter is active, sockets are kept in the
+     * kernel until a HTTP request is received.
+     */
+    cs->pub.state = CONN_STATE_READ_REQUEST_LINE;
+
+    apr_atomic_inc32(&connection_count);
+    apr_pool_cleanup_register(p, cs, decrement_connection_count,
+                              apr_pool_cleanup_null);
+    return cs;
+}
+
 /*
  * process one connection in the worker
  */
@@ -1179,9 +1218,12 @@ static void process_socket(apr_thread_t *thd, apr_pool_t * p, apr_socket_t * soc
     int clogging = 0, from_wc_q = 0;
     int rc = OK;
 
-    if (cs == NULL) {           /* This is a new connection */
-        listener_poll_type *pt = apr_pcalloc(p, sizeof(*pt));
-        cs = apr_pcalloc(p, sizeof(event_conn_state_t));
+    if (!cs || !cs->c) {        /* This is a new connection */
+        listener_poll_type *pt;
+
+        if (cs == NULL) {
+            cs = make_conn_state(p, sock);
+        }
         cs->bucket_alloc = apr_bucket_alloc_create(p);
         ap_create_sb_handle(&cs->sbh, p, my_child_num, my_thread_num);
         c = ap_run_create_connection(p, ap_server_conf, sock,
@@ -1190,25 +1232,18 @@ static void process_socket(apr_thread_t *thd, apr_pool_t * p, apr_socket_t * soc
             ap_queue_info_push_pool(worker_queue_info, p);
             return;
         }
-        apr_atomic_inc32(&connection_count);
-        apr_pool_cleanup_register(c->pool, cs, decrement_connection_count,
-                                  apr_pool_cleanup_null);
         ap_set_module_config(c->conn_config, &mpm_event_module, cs);
         c->current_thread = thd;
         c->cs = &cs->pub;
         cs->c = c;
         cs->p = p;
-        cs->sc = ap_get_module_config(ap_server_conf->module_config,
-                                      &mpm_event_module);
-        cs->pfd.desc_type = APR_POLL_SOCKET;
-        cs->pfd.desc.s = sock;
         cs->pub.sense = CONN_SENSE_DEFAULT;
         update_reqevents_from_sense(cs, CONN_SENSE_WANT_READ);
+        pt = apr_pcalloc(p, sizeof(*pt));
         pt->type = PT_CSD;
         pt->baton = cs;
         cs->pfd.client_data = pt;
         apr_pool_pre_cleanup_register(p, cs, ptrans_pre_cleanup);
-        TO_QUEUE_ELEM_INIT(cs);
 
         ap_update_vhost_given_ip(c);
 
@@ -1217,22 +1252,6 @@ static void process_socket(apr_thread_t *thd, apr_pool_t * p, apr_socket_t * soc
             ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, APLOGNO(00469)
                           "process_socket: connection aborted");
         }
-
-        /**
-         * XXX If the platform does not have a usable way of bundling
-         * accept() with a socket readability check, like Win32,
-         * and there are measurable delays before the
-         * socket is readable due to the first data packet arriving,
-         * it might be better to create the cs on the listener thread
-         * with the state set to CONN_STATE_CHECK_REQUEST_LINE_READABLE
-         *
-         * FreeBSD users will want to enable the HTTP accept filter
-         * module in their kernel for the highest performance
-         * When the accept filter is active, sockets are kept in the
-         * kernel until a HTTP request is received.
-         */
-        cs->pub.state = CONN_STATE_READ_REQUEST_LINE;
-
         rc = OK;
     }
     else {
@@ -1603,10 +1622,11 @@ static apr_status_t push_timer2worker(timer_event_t* te)
  * Pre-condition: cs is neither in event_pollset nor a timeout queue
  * this function may only be called by the listener
  */
-static apr_status_t push2worker(event_conn_state_t *cs, apr_socket_t *csd,
-                                apr_pool_t *ptrans)
+static apr_status_t push2worker(event_conn_state_t *cs)
 {
     apr_status_t rc;
+    apr_pool_t *ptrans = NULL;
+    apr_socket_t *csd = NULL;
 
     if (cs) {
         ptrans = cs->p;
@@ -1637,16 +1657,34 @@ static apr_status_t push2worker(event_conn_state_t *cs, apr_socket_t *csd,
     return rc;
 }
 
+static void push2pending(event_conn_state_t *cs, apr_time_t now)
+{
+    ap_log_cerror(APLOG_MARK, APLOG_TRACE6, 0, cs->c,
+                  "pushing pending connection %" CS_FMT, CS_ARG(cs));
+
+    /* Kindle the fire by not accepting new connections until
+     * the situation settles. New idling workers will test for
+     * should_enable_listensocks() to recover when possible.
+     */
+    if (disable_listensocks()) {
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf,
+                     "No idle worker, not accepting new conns "
+                     "in this process");
+    }
+
+    cs->queue_timestamp = now;
+    apr_thread_mutex_lock(timeout_mutex);
+    TO_QUEUE_APPEND(pending_q, cs);
+    apr_thread_mutex_unlock(timeout_mutex);
+}
+
 /* get_worker:
  *     If *have_idle_worker_p == 0, reserve a worker thread, and set
  *     *have_idle_worker_p = 1.
  *     If *have_idle_worker_p is already 1, will do nothing.
- *     If blocking == 1, block if all workers are currently busy.
  *     If no worker was available immediately, will set *all_busy to 1.
- *     XXX: If there are no workers, we should not block immediately but
- *     XXX: close all keep-alive connections first.
  */
-static void get_worker(int *have_idle_worker_p, int blocking, int *all_busy)
+static void get_worker(int *have_idle_worker_p, int *all_busy)
 {
     apr_status_t rc;
 
@@ -1657,15 +1695,11 @@ static void get_worker(int *have_idle_worker_p, int blocking, int *all_busy)
         return;
     }
 
-    if (blocking)
-        rc = ap_queue_info_wait_for_idler(worker_queue_info, all_busy);
-    else
-        rc = ap_queue_info_try_get_idler(worker_queue_info);
-
+    rc = ap_queue_info_try_get_idler(worker_queue_info);
     if (rc == APR_SUCCESS || APR_STATUS_IS_EOF(rc)) {
         *have_idle_worker_p = 1;
     }
-    else if (!blocking && rc == APR_EAGAIN) {
+    else if (rc == APR_EAGAIN) {
         *all_busy = 1;
     }
     else {
@@ -2280,10 +2314,6 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
         for (user_chain = NULL; num > 0; --num, ++out_pfd) {
             listener_poll_type *pt = (listener_poll_type *) out_pfd->client_data;
             if (pt->type == PT_CSD) {
-                /* don't wait for a worker for a keepalive request or
-                 * lingering close processing. */
-                int blocking = 0;
-
                 /* one of the sockets is readable */
                 cs = (event_conn_state_t *)pt->baton;
 
@@ -2294,9 +2324,6 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
 
                 case CONN_STATE_READ_REQUEST_LINE:
                 case CONN_STATE_WRITE_COMPLETION:
-                     blocking = 1;
-                     break;
-
                 case CONN_STATE_LINGER_NORMAL:
                 case CONN_STATE_LINGER_SHORT:
                     break;
@@ -2324,21 +2351,16 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
                     continue;
                 }
 
-                {
-                    /* If we don't get a worker immediately (nonblocking), we
-                     * close the connection; the client can re-connect to a
-                     * different process for keepalive, and for lingering close
-                     * the connection will be shutdown so the choice is to favor
-                     * incoming/alive connections.
-                     */
-                    get_worker(&have_idle_worker, blocking,
-                               &workers_were_busy);
-                    if (!have_idle_worker) {
-                        shutdown_connection(cs);
-                    }
-                    else if (push2worker(cs, NULL, NULL) == APR_SUCCESS) {
-                        have_idle_worker = 0;
-                    }
+                /* If we can't get a worker immediately (nonblocking),
+                 * push to the pending queue for the next idle worker
+                 * to take it.
+                 */
+                get_worker(&have_idle_worker, &workers_were_busy);
+                if (!have_idle_worker) {
+                    push2pending(cs, now);
+                }
+                else if (push2worker(cs) == APR_SUCCESS) {
+                    have_idle_worker = 0;
                 }
             }
             else if (pt->type == PT_ACCEPT && !listeners_disabled()) {
@@ -2393,7 +2415,6 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
                         }
                     }
 
-                    get_worker(&have_idle_worker, 1, &workers_were_busy);
                     rc = lr->accept_func(&csd, lr, ptrans);
 
                     /* later we trash rv and rely on csd to indicate
@@ -2413,7 +2434,23 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
 
                     if (csd != NULL) {
                         conns_this_child--;
-                        if (push2worker(NULL, csd, ptrans) == APR_SUCCESS) {
+
+                        /* Create and account for the connection from here, or
+                         * a graceful shutdown happening before it's processed
+                         * would consider it does not exist and could exit the
+                         * child too early.
+                         */
+                        cs = make_conn_state(ptrans, csd);
+
+                        /* If we can't get a worker immediately (nonblocking),
+                         * push to the pending queue for the next idle worker
+                         * to take it.
+                         */
+                        get_worker(&have_idle_worker, &workers_were_busy);
+                        if (!have_idle_worker) {
+                            push2pending(cs, now);
+                        }
+                        else if (push2worker(cs) == APR_SUCCESS) {
                             have_idle_worker = 0;
                         }
                     }
@@ -2507,6 +2544,8 @@ do_maintenance:
             process_timeout_queue(linger_q, now, shutdown_connection);
             /* Step 5: (short) lingering close completion timeouts */
             process_timeout_queue(short_linger_q, now, shutdown_connection);
+            /* Step 6: pending connections timeouts */
+            process_timeout_queue(pending_q, now, shutdown_connection);
 
             expiry = queues_next_expiry;
             apr_thread_mutex_unlock(timeout_mutex);
@@ -2540,10 +2579,10 @@ do_maintenance:
          * waits (possibly indefinitely) in poll().
          */
         if (defer_linger_chain) {
-            get_worker(&have_idle_worker, 0, &workers_were_busy);
+            get_worker(&have_idle_worker, &workers_were_busy);
             if (have_idle_worker
                     && defer_linger_chain /* re-test */
-                    && push2worker(NULL, NULL, NULL) == APR_SUCCESS) {
+                    && push2worker(NULL) == APR_SUCCESS) {
                 have_idle_worker = 0;
             }
         }
@@ -2720,6 +2759,25 @@ static void *APR_THREAD_FUNC worker_thread(apr_thread_t * thd, void *dummy)
 
             ap_log_cerror(APLOG_MARK, APLOG_TRACE6, 0, cs->c,
                           "deferred close for connection %" CS_FMT, CS_ARG(cs));
+
+            worker_sockets[thread_slot] = csd = cs_sd(cs);
+            process_socket(thd, cs->p, csd, cs, process_slot, thread_slot);
+            worker_sockets[thread_slot] = NULL;
+        }
+
+        while (!workers_may_exit && apr_atomic_read32(pending_q->total)) {
+            apr_thread_mutex_lock(timeout_mutex);
+            cs = APR_RING_FIRST(&pending_q->head);
+            if (cs == APR_RING_SENTINEL(&pending_q->head, event_conn_state_t,
+                                        timeout_list)) {
+                apr_thread_mutex_unlock(timeout_mutex);
+                break;
+            }
+            TO_QUEUE_REMOVE(pending_q, cs);
+            apr_thread_mutex_unlock(timeout_mutex);
+
+            ap_log_cerror(APLOG_MARK, APLOG_TRACE6, 0, cs->c,
+                          "pulled pending connection %" CS_FMT, CS_ARG(cs));
 
             worker_sockets[thread_slot] = csd = cs_sd(cs);
             process_socket(thd, cs->p, csd, cs, process_slot, thread_slot);
@@ -4177,6 +4235,8 @@ static int event_post_config(apr_pool_t *pconf, apr_pool_t *plog,
                              NULL);
     short_linger_q = TO_QUEUE_MAKE(pconf, apr_time_from_sec(SECONDS_TO_LINGER),
                                    NULL);
+    pending_q = TO_QUEUE_MAKE(pconf, apr_time_from_sec(MAX_SECS_PENDING),
+                              NULL);
 
     for (; s; s = s->next) {
         event_srv_cfg *sc = apr_pcalloc(pconf, sizeof *sc);
