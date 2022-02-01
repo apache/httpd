@@ -35,6 +35,7 @@ APR_HOOK_STRUCT(
             APR_HOOK_LINK(process_connection)
             APR_HOOK_LINK(pre_connection)
             APR_HOOK_LINK(pre_close_connection)
+            APR_HOOK_LINK(min_connection_timeout)
 )
 AP_IMPLEMENT_HOOK_RUN_FIRST(conn_rec *,create_connection,
                             (apr_pool_t *p, server_rec *server, apr_socket_t *csd, long conn_id, void *sbh, apr_bucket_alloc_t *alloc),
@@ -42,6 +43,9 @@ AP_IMPLEMENT_HOOK_RUN_FIRST(conn_rec *,create_connection,
 AP_IMPLEMENT_HOOK_RUN_FIRST(int,process_connection,(conn_rec *c),(c),DECLINED)
 AP_IMPLEMENT_HOOK_RUN_ALL(int,pre_connection,(conn_rec *c, void *csd),(c, csd),OK,DECLINED)
 AP_IMPLEMENT_HOOK_RUN_ALL(int,pre_close_connection,(conn_rec *c),(c),OK,DECLINED)
+AP_IMPLEMENT_HOOK_RUN_ALL(int,min_connection_timeout,
+                          (conn_rec *c, server_rec *s, apr_interval_time_t *min_timeout),
+                          (c, s, min_timeout),OK,DECLINED)
 
 AP_DECLARE(conn_rec *) ap_create_connection(apr_pool_t *p,
                                             server_rec *server,
@@ -239,4 +243,16 @@ AP_CORE_DECLARE(void) ap_process_connection(conn_rec *c, void *csd)
     if (!c->aborted) {
         ap_run_process_connection(c);
     }
+}
+
+AP_DECLARE(apr_interval_time_t) ap_get_connection_timeout(conn_rec *c,
+                                                          server_rec *s)
+{
+    apr_interval_time_t timeout = -1;
+
+    if (ap_run_min_connection_timeout(c, s, &timeout) != OK || timeout < 0) {
+        timeout = (s) ? s->timeout : c->base_server->timeout;
+    }
+
+    return timeout;
 }
