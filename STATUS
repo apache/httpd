@@ -147,10 +147,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-
-PATCHES PROPOSED TO BACKPORT FROM TRUNK:
-  [ New proposals should be added at the end of the list ]
-
   *) Support PCRE2 (10.x) in place of PCRE (8.x).
      Submitted by: wrowe, Petr Pisar [ppisar redhat.com], rjung
      trunk patches:
@@ -164,7 +160,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          http://svn.apache.org/r1881478
      summarized/conflicts resolved:
          https://gist.github.com/wrowe/73f655d13bbe0f12030aa4557e804d8a
-     +1: wrowe, rpluem
+     +1: wrowe, rpluem, ylavic
      wrowe notes that the current code drops optimizations, owing to the fact
      that the ovector is a required allocation and is no longer allocated on
      the stack, by design.  The correct fix is an apr userdata allocation on
@@ -178,6 +174,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      jorton: Adding ap_pregexec/_len which pass a pool would also work
              for internal users of this api; not sure if performance
              impact is significant from using malloc here.
+     ylavic: A follow up backport (based on this one) using thread locals to
+             reuse ap_regex*() contexts: https://github.com/apache/httpd/pull/289
+
+
+PATCHES PROPOSED TO BACKPORT FROM TRUNK:
+  [ New proposals should be added at the end of the list ]
 
   *) dbm: Split the loading of a dbm driver from the opening of a dbm file. When
      an attempt to load a dbm driver fails, log clearly which driver triggered
