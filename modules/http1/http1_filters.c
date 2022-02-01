@@ -162,8 +162,10 @@ static int form_header_field(header_struct *h,
 }
 
 /* fill "bb" with a barebones/initial HTTP response header */
-static void basic_http_header(request_rec *r, apr_bucket_brigade *bb,
-                              ap_bucket_headers *resp, const char *protocol)
+static void append_http1_response_head(request_rec *r,
+                                       ap_bucket_headers *resp,
+                                       const char *protocol,
+                                       apr_bucket_brigade *bb)
 {
     char *date = NULL;
     const char *proxy_date = NULL;
@@ -263,24 +265,28 @@ static void basic_http_header(request_rec *r, apr_bucket_brigade *bb,
     }
 }
 
-static const char *get_response_protocol(request_rec *r)
+static void append_http1_response(request_rec *r,
+                                  ap_bucket_headers *resp,
+                                  apr_bucket_brigade *b)
 {
+    const char *proto = AP_SERVER_PROTOCOL;
+
     /* kludge around broken browsers when indicated by force-response-1.0
      */
     if (r->proto_num == HTTP_VERSION(1,0)
         && apr_table_get(r->subprocess_env, "force-response-1.0")) {
         r->connection->keepalive = AP_CONN_CLOSE;
-        return "HTTP/1.0";
+        proto = "HTTP/1.0";
     }
-    else {
-        return AP_SERVER_PROTOCOL;
-    }
+    append_http1_response_head(r, resp, proto, b);
+    append_http1_headers(b, r, resp->headers);
+    terminate_http1_header(b);
 }
 
 
 typedef struct response_filter_ctx {
-    int final_response_sent;
-    int final_header_only;
+    int final_response_sent;    /* strict: a response status >= 200 was sent */
+    int discard_body;           /* the response is header only, discard body */
     apr_bucket_brigade *tmpbb;
 } response_filter_ctx;
 
@@ -301,9 +307,6 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http1_transcode_out_filter(ap_filter_t *
         ctx = f->ctx = apr_pcalloc(r->pool, sizeof(*ctx));
     }
 
-    ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r,
-                  "ap_http1_transcode_out_filter start, final_sent=%d",
-                  ctx->final_response_sent);
     for (e = APR_BRIGADE_FIRST(b);
          e != APR_BRIGADE_SENTINEL(b);
          e = next)
@@ -340,9 +343,6 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http1_transcode_out_filter(ap_filter_t *
                 }
                 else if (ctx->final_response_sent) {
                     /* already sent the final response for the request.
-                     * did someone try to send an error or send an interim
-                     * while handling the response body?
-                     * question: should we discard everything after this?
                      */
                     ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO()
                                   "ap_http1_transcode_out_filter seeing headers "
@@ -356,8 +356,8 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http1_transcode_out_filter(ap_filter_t *
                      */
                     ctx->final_response_sent = (resp->status >= 200)
                         || (!strict && resp->status < 100);
-                    ctx->final_header_only = ctx->final_response_sent &&
-                                             (r->header_only || AP_STATUS_IS_HEADER_ONLY(resp->status));
+                    ctx->discard_body = ctx->final_response_sent &&
+                        (r->header_only || AP_STATUS_IS_HEADER_ONLY(resp->status));
 
                     if (!ctx->tmpbb) {
                         ctx->tmpbb = apr_brigade_create(r->pool, c->bucket_alloc);
@@ -378,11 +378,9 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http1_transcode_out_filter(ap_filter_t *
                         }
                     }
 
-                    basic_http_header(r, b, resp, get_response_protocol(r));
-                    append_http1_headers(b, r, resp->headers);
-                    terminate_http1_header(b);
-
+                    append_http1_response(r, resp, b);
                     apr_bucket_delete(e);
+
                     if (ctx->final_response_sent && r->chunked) {
                         /* We can't add this filter until we have already sent the headers.
                          * If we add it before this point, then the headers will be chunked
@@ -412,15 +410,13 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http1_transcode_out_filter(ap_filter_t *
             rv = AP_FILTER_ERROR;
             goto cleanup;
         }
-        else if (ctx->final_header_only) {
+        else if (ctx->discard_body) {
             apr_bucket_delete(e);
         }
     }
 
 pass:
     rv = ap_pass_brigade(f->next, b);
-    ap_log_rerror(APLOG_MARK, APLOG_TRACE2, rv, r,
-                  "ap_http1_transcode_out_filter passed brigade");
 cleanup:
     return rv;
 }

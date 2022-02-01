@@ -85,6 +85,8 @@ struct h2_stream {
     
     struct h2_bucket_beam *output;
     apr_bucket_brigade *out_buffer;
+    unsigned int output_eos : 1; /* output EOS in buffer/sent */
+    unsigned int sent_trailers : 1; /* trailers have been submitted */
 
     int rst_error;              /* stream error for RST_STREAM */
     unsigned int aborted   : 1; /* was aborted */

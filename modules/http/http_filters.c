@@ -837,7 +837,7 @@ AP_DECLARE(int) ap_discard_request_body(request_rec *r)
 
 /* Here we deal with getting the request message body from the client.
  * Whether or not the request contains a body is signaled by the presence
- * of a non-zero Content-Length or by a Transfer-Encoding: chunked.
+ * of a non-zero Content-Length or by AP_NOTE_REQUEST_BODY_INDETERMINATE.
  *
  * Note that this is more complicated than it was in Apache 1.1 and prior
  * versions, because chunked support means that the module does less.

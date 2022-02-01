@@ -1497,11 +1497,11 @@ static int proxy_handler(request_rec *r)
                             goto cleanup;
                         }
                         /*
-                         * Transfer-Encoding was set as input header, so we had
-                         * a request body. We cannot retry with a direct
+                         * If we had a request body of indeterminate length (e.g.
+                         * Transfer-Encoding in http/1.1), we cannot retry with a direct
                          * connection for the same reason as above.
                          */
-                        if (apr_table_get(r->headers_in, "Transfer-Encoding")) {
+                        if (apr_table_get(r->notes, AP_NOTE_REQUEST_BODY_INDETERMINATE)) {
                             goto cleanup;
                         }
                     }

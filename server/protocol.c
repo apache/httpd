@@ -1518,7 +1518,7 @@ request_rec *ap_read_request(conn_rec *conn)
     apply_server_config(r);
 
     if (!r->assbackwards) {
-        const char *tenc, *clen;
+        const char *clen;
 
         ap_get_mime_headers_core(r, tmp_bb);
         apr_brigade_cleanup(tmp_bb);
@@ -1539,38 +1539,6 @@ request_rec *ap_read_request(conn_rec *conn)
                               "(%s): %s", clen, r->uri);
                 access_status = HTTP_BAD_REQUEST;
                 goto die_unusable_input;
-            }
-        }
-
-        tenc = apr_table_get(r->headers_in, "Transfer-Encoding");
-        if (tenc) {
-            /* https://tools.ietf.org/html/rfc7230
-             * Section 3.3.3.3: "If a Transfer-Encoding header field is
-             * present in a request and the chunked transfer coding is not
-             * the final encoding ...; the server MUST respond with the 400
-             * (Bad Request) status code and then close the connection".
-             */
-            if (!ap_is_chunked(r->pool, tenc)) {
-                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02539)
-                              "client sent unknown Transfer-Encoding "
-                              "(%s): %s", tenc, r->uri);
-                access_status = HTTP_BAD_REQUEST;
-                goto die_unusable_input;
-            }
-
-            /* https://tools.ietf.org/html/rfc7230
-             * Section 3.3.3.3: "If a message is received with both a
-             * Transfer-Encoding and a Content-Length header field, the
-             * Transfer-Encoding overrides the Content-Length. ... A sender
-             * MUST remove the received Content-Length field".
-             */
-            if (clen) {
-                apr_table_unset(r->headers_in, "Content-Length");
-
-                /* Don't reuse this connection anyway to avoid confusion with
-                 * intermediaries and request/reponse spltting.
-                 */
-                conn->keepalive = AP_CONN_CLOSE;
             }
         }
     }
@@ -1721,7 +1689,7 @@ AP_DECLARE(void) ap_set_sub_req_protocol(request_rec *rnew,
      * if so, make sure the subrequest doesn't inherit body headers
      */
     if (!r->kept_body && (apr_table_get(r->headers_in, "Content-Length")
-        || apr_table_get(r->headers_in, "Transfer-Encoding"))) {
+        || apr_table_get(r->notes, AP_NOTE_REQUEST_BODY_INDETERMINATE))) {
         strip_headers_request_body(rnew);
     }
     rnew->subprocess_env  = apr_table_copy(rnew->pool, r->subprocess_env);

@@ -22,6 +22,7 @@
 
 #include "httpd.h"
 #include "http_core.h"
+#include "http_log.h"
 #include "http_protocol.h"   /* For index_of_response().  Grump. */
 #include "http_request.h"
 
@@ -49,9 +50,40 @@ static void http1_pre_read_request(request_rec *r, conn_rec *c)
 
 static int http1_post_read_request(request_rec *r)
 {
+    const char *tenc;
+
     if (r->proto_num < HTTP_VERSION(2,0) && r->proto_num >= HTTP_VERSION(1,0)) {
-        if (apr_table_get(r->headers_in, "Transfer-Encoding")) {
+        tenc = apr_table_get(r->headers_in, "Transfer-Encoding");
+        if (tenc) {
             apr_table_setn(r->notes, AP_NOTE_REQUEST_BODY_INDETERMINATE, "1");
+
+            /* https://tools.ietf.org/html/rfc7230
+             * Section 3.3.3.3: "If a Transfer-Encoding header field is
+             * present in a request and the chunked transfer coding is not
+             * the final encoding ...; the server MUST respond with the 400
+             * (Bad Request) status code and then close the connection".
+             */
+            if (!ap_is_chunked(r->pool, tenc)) {
+                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02539)
+                              "client sent unknown Transfer-Encoding "
+                              "(%s): %s", tenc, r->uri);
+                return HTTP_BAD_REQUEST;
+            }
+
+            /* https://tools.ietf.org/html/rfc7230
+             * Section 3.3.3.3: "If a message is received with both a
+             * Transfer-Encoding and a Content-Length header field, the
+             * Transfer-Encoding overrides the Content-Length. ... A sender
+             * MUST remove the received Content-Length field".
+             */
+            if (apr_table_get(r->headers_in, "Content-Length")) {
+                apr_table_unset(r->headers_in, "Content-Length");
+
+                /* Don't reuse this connection anyway to avoid confusion with
+                 * intermediaries and request/reponse spltting.
+                 */
+                r->connection->keepalive = AP_CONN_CLOSE;
+            }
         }
     }
     return OK;

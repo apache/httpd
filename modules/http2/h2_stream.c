@@ -840,13 +840,18 @@ static apr_status_t buffer_output_receive(h2_stream *stream)
         goto cleanup;
     }
 
-    H2_STREAM_OUT_LOG(APLOG_TRACE2, stream, "pre");
-    rv = h2_beam_receive(stream->output, stream->session->c1, stream->out_buffer,
-                         APR_NONBLOCK_READ, stream->session->max_stream_mem - buf_len);
-    if (APR_SUCCESS != rv) {
-        ap_log_cerror(APLOG_MARK, APLOG_TRACE1, rv, c1,
-                      H2_STRM_MSG(stream, "out_buffer, receive unsuccessful"));
-        goto cleanup;
+    if (stream->output_eos) {
+        rv = APR_BRIGADE_EMPTY(stream->out_buffer)? APR_EOF : APR_SUCCESS;
+    }
+    else {
+        H2_STREAM_OUT_LOG(APLOG_TRACE2, stream, "pre");
+        rv = h2_beam_receive(stream->output, stream->session->c1, stream->out_buffer,
+                             APR_NONBLOCK_READ, stream->session->max_stream_mem - buf_len);
+        if (APR_SUCCESS != rv) {
+            ap_log_cerror(APLOG_MARK, APLOG_TRACE1, rv, c1,
+                          H2_STRM_MSG(stream, "out_buffer, receive unsuccessful"));
+            goto cleanup;
+        }
     }
 
     /* get rid of buckets we have no need for */
@@ -858,6 +863,9 @@ static apr_status_t buffer_output_receive(h2_stream *stream)
                 if (APR_BUCKET_IS_FLUSH(b)) {  /* we flush any c1 data already */
                     APR_BUCKET_REMOVE(b);
                     apr_bucket_destroy(b);
+                }
+                else if (APR_BUCKET_IS_EOS(b)) {
+                    stream->output_eos = 1;
                 }
             }
             else if (b->length == 0) {  /* zero length data */
@@ -945,6 +953,7 @@ static apr_status_t buffer_output_process_headers(h2_stream *stream)
         }
 
         ngrv = nghttp2_submit_trailer(stream->session->ngh2, stream->id, nh->nv, nh->nvlen);
+        stream->sent_trailers = 1;
     }
     else if (headers->status < 100) {
         h2_stream_rst(stream, headers->status);
@@ -1192,7 +1201,7 @@ apr_status_t h2_stream_in_consumed(h2_stream *stream, apr_off_t amount)
     return APR_SUCCESS;   
 }
 
-static apr_off_t buffer_output_data_to_send(h2_stream *stream, int *peos)
+static apr_off_t output_data_buffered(h2_stream *stream, int *peos)
 {
     /* How much data do we have in our buffers that we can write? */
     apr_off_t buf_len = 0;
@@ -1288,7 +1297,7 @@ static ssize_t stream_data_cb(nghttp2_session *ng2s,
     }
 
     /* How much data do we have in our buffers that we can write? */
-    buf_len = buffer_output_data_to_send(stream, &eos);
+    buf_len = output_data_buffered(stream, &eos);
     if (buf_len < length && !eos) {
         /* read more? */
         ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, c1,
@@ -1296,7 +1305,7 @@ static ssize_t stream_data_cb(nghttp2_session *ng2s,
                       session->id, (int)stream_id, (long)length, (long)buf_len);
         rv = buffer_output_receive(stream);
         /* process all headers sitting at the buffer head. */
-        while (APR_SUCCESS == rv) {
+        while (APR_SUCCESS == rv && !eos && !stream->sent_trailers) {
             rv = buffer_output_process_headers(stream);
             if (APR_SUCCESS != rv && APR_EAGAIN != rv) {
                 ap_log_cerror(APLOG_MARK, APLOG_ERR, rv, c1,
@@ -1304,16 +1313,19 @@ static ssize_t stream_data_cb(nghttp2_session *ng2s,
                               "data_cb, error processing headers"));
                 return NGHTTP2_ERR_CALLBACK_FAILURE;
             }
-            buf_len = buffer_output_data_to_send(stream, &eos);
+            buf_len = output_data_buffered(stream, &eos);
         }
 
-        if (APR_EOF == rv) {
-            eos = 1;
-        }
-        else if (APR_SUCCESS != rv && !APR_STATUS_IS_EAGAIN(rv)) {
+        if (APR_SUCCESS != rv && !APR_STATUS_IS_EAGAIN(rv)) {
             ap_log_cerror(APLOG_MARK, APLOG_ERR, rv, c1,
                           H2_STRM_LOG(APLOGNO(02938), stream, "data_cb, reading data"));
             return NGHTTP2_ERR_CALLBACK_FAILURE;
+        }
+
+        if (stream->sent_trailers) {
+            AP_DEBUG_ASSERT(eos);
+            AP_DEBUG_ASSERT(buf_len == 0);
+            return NGHTTP2_ERR_DEFERRED;
         }
     }
 
