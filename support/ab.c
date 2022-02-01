@@ -1420,7 +1420,11 @@ static void start_connect(struct connection * c)
         }
         ssl_rand_seed();
         apr_os_sock_get(&fd, c->aprsock);
-        bio = BIO_new_socket(fd, BIO_NOCLOSE);
+        if((bio = BIO_new_socket(fd, BIO_NOCLOSE)) == NULL) {
+            BIO_printf(bio_err, "BIO_new_socket failed.\n");
+            ERR_print_errors(bio_err);
+            exit(1);
+        }
         BIO_set_nbio(bio, 1);
         SSL_set_bio(c->ssl, bio, bio);
         SSL_set_connect_state(c->ssl);
@@ -2679,8 +2683,14 @@ int main(int argc, const char * const argv[])
 #endif
     SSL_load_error_strings();
     SSL_library_init();
-    bio_out=BIO_new_fp(stdout,BIO_NOCLOSE);
-    bio_err=BIO_new_fp(stderr,BIO_NOCLOSE);
+    if(!(bio_out = BIO_new_fp(stdout,BIO_NOCLOSE))) {
+      fprintf(stderr, "%s: Cannot allocate memory", argv[0]);
+      exit(1);
+    }
+    if(!(bio_err = BIO_new_fp(stderr,BIO_NOCLOSE))) {
+      fprintf(stderr, "%s: Cannot allocate memory", argv[0]);
+      exit(1);
+    }
 
 #if OPENSSL_VERSION_NUMBER >= 0x10101000
     if (RAND_status() == 0) {
