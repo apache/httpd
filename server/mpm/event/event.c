@@ -1751,25 +1751,17 @@ static volatile apr_time_t timers_next_expiry;
  */
 #define EVENT_FUDGE_FACTOR apr_time_from_msec(10)
 
-/* The following compare function is used by apr_skiplist_insert() to keep the
- * elements (timers) sorted and provide O(log n) complexity (this is also true
- * for apr_skiplist_{find,remove}(), but those are not used in MPM event where
- * inserted timers are not searched nor removed, but with apr_skiplist_pop()
- * which does use any compare function).  It is meant to return 0 when a == b,
- * <0 when a < b, and >0 when a > b.  However apr_skiplist_insert() will not
- * add duplicates (i.e. a == b), and apr_skiplist_add() is only available in
- * APR 1.6, yet multiple timers could possibly be created in the same micro-
- * second (duplicates with regard to apr_time_t); therefore we implement the
- * compare function to return +1 instead of 0 when compared timers are equal,
- * thus duplicates are still added after each other (in order of insertion).
+/* The timer_comp() function is used by apr_skiplist_insert() to keep the
+ * elements/timers sorted, but it should never return 0 because inserting
+ * duplicates fails (apr_skiplist_add() would allow this but it's not available
+ * before APR 1.6). Thus duplicates are sorted by order of insertion and timers
+ * are never equal for the skiplist (not an issue because MPM event does not
+ * use apr_skiplist_{find,remove}() but apr_skiplist_pop() only).
  */
 static int timer_comp(void *a, void *b)
 {
-    apr_time_t t1 = (apr_time_t) ((timer_event_t *)a)->when;
-    apr_time_t t2 = (apr_time_t) ((timer_event_t *)b)->when;
-    AP_DEBUG_ASSERT(t1);
-    AP_DEBUG_ASSERT(t2);
-    return ((t1 < t2) ? -1 : 1);
+    const timer_event_t *ta = a, *tb = b;
+    return (ta->when < tb->when) ? -1 : 1;
 }
 
 static apr_thread_mutex_t *g_timer_skiplist_mtx;
