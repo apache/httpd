@@ -416,7 +416,8 @@ static void TO_QUEUE_REMOVE(struct timeout_queue *q, event_conn_state_t *el)
     --q->count;
 }
 
-static struct timeout_queue *TO_QUEUE_MAKE(apr_pool_t *p, apr_time_t t,
+static struct timeout_queue *TO_QUEUE_MAKE(apr_pool_t *p,
+                                           apr_interval_time_t t,
                                            struct timeout_queue *ref)
 {
     struct timeout_queue *q;
@@ -429,8 +430,23 @@ static struct timeout_queue *TO_QUEUE_MAKE(apr_pool_t *p, apr_time_t t,
     return q;
 }
 
-#define TO_QUEUE_ELEM_INIT(el) \
-    APR_RING_ELEM_INIT((el), timeout_list)
+static struct timeout_queue *TO_QUEUE_CHAIN(apr_pool_t *p,
+                                            apr_interval_time_t t,
+                                            struct timeout_queue **ref,
+                                            apr_hash_t *ht, apr_pool_t *hp)
+{
+    struct timeout_queue *q = apr_hash_get(ht, &t, sizeof t);
+
+    if (!q) {
+        q = TO_QUEUE_MAKE(p, t, *ref);
+        q->next = *ref;
+        *ref = q;
+
+        apr_hash_set(ht, apr_pmemdup(hp, &t, sizeof t), sizeof t, q);
+    }
+
+    return q;
+}
 
 #if HAVE_SERF
 typedef struct {
@@ -4185,20 +4201,16 @@ static int event_pre_config(apr_pool_t * pconf, apr_pool_t * plog,
 static int event_post_config(apr_pool_t *pconf, apr_pool_t *plog,
                              apr_pool_t *ptemp, server_rec *s)
 {
-    struct {
-        struct timeout_queue *tail, *q;
-        apr_hash_t *hash;
-    } rl, wc, ka;
+    apr_hash_t *rl_h, *wc_h, *ka_h;
 
     /* Not needed in pre_config stage */
     if (ap_state_query(AP_SQ_MAIN_STATE) == AP_SQ_MS_CREATE_PRE_CONFIG) {
         return OK;
     }
 
-    rl.tail = wc.tail = ka.tail = NULL;
-    rl.hash = apr_hash_make(ptemp);
-    wc.hash = apr_hash_make(ptemp);
-    ka.hash = apr_hash_make(ptemp);
+    rl_h = apr_hash_make(ptemp);
+    wc_h = apr_hash_make(ptemp);
+    ka_h = apr_hash_make(ptemp);
 
     linger_q = TO_QUEUE_MAKE(pconf, apr_time_from_sec(MAX_SECS_TO_LINGER),
                              NULL);
@@ -4213,54 +4225,12 @@ static int event_post_config(apr_pool_t *pconf, apr_pool_t *plog,
         ap_set_module_config(s->module_config, &mpm_event_module, sc);
         sc->s = s; /* backref */
 
-        if (!wc.tail) {
-
-            /* The main server uses the global queues */
-
-            rl.q = TO_QUEUE_MAKE(pconf, s->timeout, NULL);
-            apr_hash_set(rl.hash, &s->timeout, sizeof s->timeout, rl.q);
-            rl.tail = read_line_q = rl.q;
-
-            wc.q = TO_QUEUE_MAKE(pconf, s->timeout, NULL);
-            apr_hash_set(wc.hash, &s->timeout, sizeof s->timeout, wc.q);
-            wc.tail = write_completion_q = wc.q;
-
-            ka.q = TO_QUEUE_MAKE(pconf, s->keep_alive_timeout, NULL);
-            apr_hash_set(ka.hash, &s->keep_alive_timeout,
-                         sizeof s->keep_alive_timeout, ka.q);
-            ka.tail = keepalive_q = ka.q;
-        }
-        else {
-
-            /* The vhosts use any existing queue with the same timeout,
-             * or their own queue(s) if there isn't */
-
-            rl.q = apr_hash_get(rl.hash, &s->timeout, sizeof s->timeout);
-            if (!rl.q) {
-                rl.q = TO_QUEUE_MAKE(pconf, s->timeout, rl.tail);
-                apr_hash_set(rl.hash, &s->timeout, sizeof s->timeout, rl.q);
-                rl.tail = rl.tail->next = rl.q;
-            }
-
-            wc.q = apr_hash_get(wc.hash, &s->timeout, sizeof s->timeout);
-            if (!wc.q) {
-                wc.q = TO_QUEUE_MAKE(pconf, s->timeout, wc.tail);
-                apr_hash_set(wc.hash, &s->timeout, sizeof s->timeout, wc.q);
-                wc.tail = wc.tail->next = wc.q;
-            }
-
-            ka.q = apr_hash_get(ka.hash, &s->keep_alive_timeout,
-                                sizeof s->keep_alive_timeout);
-            if (!ka.q) {
-                ka.q = TO_QUEUE_MAKE(pconf, s->keep_alive_timeout, ka.tail);
-                apr_hash_set(ka.hash, &s->keep_alive_timeout,
-                             sizeof s->keep_alive_timeout, ka.q);
-                ka.tail = ka.tail->next = ka.q;
-            }
-        }
-        sc->rl_q = rl.q;
-        sc->wc_q = wc.q;
-        sc->ka_q = ka.q;
+        sc->rl_q = TO_QUEUE_CHAIN(pconf, s->timeout, &read_line_q,
+                                  rl_h, ptemp);
+        sc->wc_q = TO_QUEUE_CHAIN(pconf, s->timeout, &write_completion_q,
+                                  wc_h, ptemp);
+        sc->ka_q = TO_QUEUE_CHAIN(pconf, s->keep_alive_timeout, &keepalive_q,
+                                  ka_h, ptemp);
     }
 
     return OK;
