@@ -254,7 +254,45 @@ struct event_conn_state_t {
     struct event_conn_state_t *chain;
     /** Is lingering close from defer_lingering_close()? */
     int deferred_linger;
+    /** When idle, attached queue */
+    struct timeout_queue *q;
 };
+
+static APR_INLINE apr_socket_t *cs_sd(event_conn_state_t *cs)
+{
+    return cs->pfd.desc.s;
+}
+static APR_INLINE int cs_fd(event_conn_state_t *cs)
+{
+    apr_os_sock_t fd = -1;
+    apr_os_sock_get(&fd, cs_sd(cs));
+    return fd;
+}
+static APR_INLINE const char *cs_state_str(event_conn_state_t *cs)
+{
+    switch (cs->pub.state) {
+    case CONN_STATE_CHECK_REQUEST_LINE_READABLE:
+        return "CHECK_REQUEST_LINE_READABLE";
+    case CONN_STATE_READ_REQUEST_LINE:
+        return "READ_REQUEST_LINE";
+    case CONN_STATE_HANDLER:
+        return "HANDLER";
+    case CONN_STATE_WRITE_COMPLETION:
+        return "WRITE_COMPLETION";
+    case CONN_STATE_SUSPENDED:
+        return "SUSPENDED";
+    case CONN_STATE_LINGER:
+        return "LINGER";
+    case CONN_STATE_LINGER_NORMAL:
+        return "LINGER_NORMAL";
+    case CONN_STATE_LINGER_SHORT:
+        return "LINGER_SHORT";
+    default:
+        return "??";
+    }
+}
+#define CS_FMT     "i:%pp:%s"
+#define CS_ARG(cs) cs_fd(cs), cs_sd(cs), cs_state_str(cs)
 
 APR_RING_HEAD(timeout_head_t, event_conn_state_t);
 
@@ -296,6 +334,9 @@ static void TO_QUEUE_APPEND(struct timeout_queue *q, event_conn_state_t *el)
     apr_time_t elem_expiry;
     apr_time_t next_expiry;
 
+    ap_assert(q && el->q == NULL);
+    el->q = q;
+
     APR_RING_INSERT_TAIL(&q->head, el, event_conn_state_t, timeout_list);
     ++*q->total;
     ++q->count;
@@ -317,6 +358,9 @@ static void TO_QUEUE_APPEND(struct timeout_queue *q, event_conn_state_t *el)
 
 static void TO_QUEUE_REMOVE(struct timeout_queue *q, event_conn_state_t *el)
 {
+    ap_assert(q && el->q == q);
+    el->q = NULL;
+
     APR_RING_REMOVE(el, timeout_list);
     APR_RING_ELEM_INIT(el, timeout_list);
     --*q->total;
@@ -569,16 +613,15 @@ static APR_INLINE int should_enable_listensocks(void)
     return !dying && listeners_disabled() && !connections_above_limit(NULL);
 }
 
-static void close_socket_nonblocking_(apr_socket_t *csd,
-                                      const char *from, int line)
+static void close_socket_at(apr_socket_t *csd, const char *at, int line)
 {
     apr_status_t rv;
     apr_os_sock_t fd = -1;
 
     /* close_worker_sockets() may have closed it already */
     rv = apr_os_sock_get(&fd, csd);
-    ap_log_error(APLOG_MARK, APLOG_TRACE8, 0, ap_server_conf,
-                "closing socket %i/%pp from %s:%i", (int)fd, csd, from, line);
+    ap_log_error(APLOG_MARK, APLOG_TRACE7, 0, ap_server_conf,
+                "closing socket %i:%pp at %s:%i", (int)fd, csd, at, line);
     if (rv == APR_SUCCESS && fd == -1) {
         return;
     }
@@ -591,8 +634,8 @@ static void close_socket_nonblocking_(apr_socket_t *csd,
         AP_DEBUG_ASSERT(0);
     }
 }
-#define close_socket_nonblocking(csd) \
-    close_socket_nonblocking_(csd, __FUNCTION__, __LINE__)
+#define close_socket(csd) \
+    close_socket_at(csd, __FUNCTION__, __LINE__)
 
 static void close_worker_sockets(void)
 {
@@ -601,15 +644,16 @@ static void close_worker_sockets(void)
         apr_socket_t *csd = worker_sockets[i];
         if (csd) {
             worker_sockets[i] = NULL;
-            close_socket_nonblocking(csd);
+            close_socket(csd);
         }
     }
 }
 
-static void wakeup_listener(void)
+static void shutdown_listener(void)
 {
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf,
-                 "wake up listener%s", listener_may_exit ? " again" : "");
+                 "shutting down listener%s",
+                 listener_may_exit ? " again" : "");
 
     listener_may_exit = 1;
     disable_listensocks();
@@ -661,7 +705,7 @@ static void signal_threads(int mode)
     /* in case we weren't called from the listener thread, wake up the
      * listener thread
      */
-    wakeup_listener();
+    shutdown_listener();
 
     /* for ungraceful termination, let the workers exit now;
      * for graceful termination, the listener thread will notify the
@@ -806,8 +850,8 @@ static apr_status_t decrement_connection_count(void *cs_)
 {
     int is_last_connection;
     event_conn_state_t *cs = cs_;
-    ap_log_cerror(APLOG_MARK, APLOG_TRACE8, 0, cs->c,
-                  "cleanup connection from state %i", (int)cs->pub.state);
+    ap_log_error(APLOG_MARK, APLOG_TRACE7, 0, ap_server_conf,
+                 "cleanup connection %pp", cs);
     switch (cs->pub.state) {
         case CONN_STATE_LINGER:
         case CONN_STATE_LINGER_NORMAL:
@@ -860,7 +904,7 @@ static void notify_resume(event_conn_state_t *cs, int cleanup)
 static int defer_lingering_close(event_conn_state_t *cs)
 {
     ap_log_cerror(APLOG_MARK, APLOG_TRACE6, 0, cs->c,
-                  "deferring close from state %i", (int)cs->pub.state);
+                  "deferring close for connection %" CS_FMT, CS_ARG(cs));
 
     /* The connection is not shutdown() yet strictly speaking, but it's not
      * in any queue nor handled by a worker either (will be very soon), so
@@ -887,14 +931,30 @@ static int defer_lingering_close(event_conn_state_t *cs)
  * Pre-condition: nonblocking, can be called from anywhere provided cs is not
  *                in any timeout queue or in the pollset.
  */
-static void close_connection(event_conn_state_t *cs)
+static void close_connection_at(event_conn_state_t *cs,
+                                const char *at, int line)
 {
     ap_log_cerror(APLOG_MARK, APLOG_TRACE6, 0, cs->c,
-                  "closing connection from state %i", (int)cs->pub.state);
+                  "closing connection %" CS_FMT " at %s:%i",
+                  CS_ARG(cs), at, line);
 
-    close_socket_nonblocking(cs->pfd.desc.s);
+    close_socket(cs_sd(cs));
     ap_queue_info_push_pool(worker_queue_info, cs->p);
 }
+#define close_connection(cs) \
+    close_connection_at((cs), __FUNCTION__, __LINE__)
+
+static void abort_connection_at(event_conn_state_t *cs, apr_status_t status,
+                                const char *at, int line)
+{
+    ap_log_cerror(APLOG_MARK, APLOG_INFO, status, cs->c, APLOGNO(10379)
+                  "aborting connection %" CS_FMT " at %s:%i",
+                  CS_ARG(cs), at, line);
+
+    close_connection(cs);
+}
+#define abort_connection(cs, status) \
+    abort_connection_at((cs), (status), __FUNCTION__, __LINE__)
 
 /* Shutdown the connection in case of timeout, error or resources shortage.
  * This starts short lingering close if not already there, or directly closes
@@ -980,6 +1040,83 @@ static int event_post_read_request(request_rec *r)
     return OK;
 }
 
+static int pollset_add_at(event_conn_state_t *cs, struct timeout_queue *q,
+                          const char *at, int line)
+{
+    apr_status_t rv;
+
+    ap_log_cerror(APLOG_MARK, APLOG_TRACE7, 0, cs->c,
+                  "pollset: add %s=%" APR_TIME_T_FMT " events=%x for %" CS_FMT " at %s:%i",
+                  (q) ? "q" : "t", (q) ? q->timeout : -1,
+                  (int)cs->pfd.reqevents, CS_ARG(cs), at, line);
+
+    if (q) {
+        apr_thread_mutex_lock(timeout_mutex);
+        TO_QUEUE_APPEND(q, cs);
+    }
+    rv = apr_pollset_add(event_pollset, &cs->pfd);
+    if (rv != APR_SUCCESS && !APR_STATUS_IS_EEXIST(rv)) {
+        AP_DEBUG_ASSERT(0);
+        if (q) {
+            TO_QUEUE_REMOVE(q, cs);
+            apr_thread_mutex_unlock(timeout_mutex);
+        }
+        ap_log_cerror(APLOG_MARK, APLOG_ERR, rv, cs->c, APLOGNO(03093)
+                      "pollset add failed for connection %" CS_FMT " at %s:%i",
+                      CS_ARG(cs), at, line);
+        abort_connection(cs, rv);
+        signal_threads(ST_GRACEFUL);
+        return 0;
+    }
+    if (q) {
+        apr_thread_mutex_unlock(timeout_mutex);
+    }
+
+    return 1;
+}
+#define pollset_add(cs, q) \
+    pollset_add_at((cs), (q), __FUNCTION__, __LINE__)
+
+static int pollset_del_at(event_conn_state_t *cs,
+                          const char *at, int line)
+{
+    apr_status_t rv;
+    struct timeout_queue *q = cs->q;
+
+    ap_log_cerror(APLOG_MARK, APLOG_TRACE7, 0, cs->c,
+                  "pollset: del %s=%" APR_TIME_T_FMT " events=%x for %" CS_FMT " at %s:%i",
+                  (q) ? "q" : "t", (q) ? q->timeout : -1,
+                  (int)cs->pfd.reqevents, CS_ARG(cs), at, line);
+
+    if (q) {
+        apr_thread_mutex_lock(timeout_mutex);
+        TO_QUEUE_REMOVE(q, cs);
+    }
+    rv = apr_pollset_remove(event_pollset, &cs->pfd);
+    if (q) {
+        apr_thread_mutex_unlock(timeout_mutex);
+    }
+    /*
+     * Some of the pollset backends, like KQueue or Epoll
+     * automagically remove the FD if the socket is closed,
+     * therefore, we can accept _SUCCESS or _NOTFOUND,
+     * and we still want to keep going
+     */
+    if (rv != APR_SUCCESS && !APR_STATUS_IS_NOTFOUND(rv)) {
+        AP_DEBUG_ASSERT(0);
+        ap_log_cerror(APLOG_MARK, APLOG_ERR, rv, cs->c, APLOGNO(03094)
+                      "pollset remove failed for connection %" CS_FMT " at %s:%i",
+                      CS_ARG(cs), at, line);
+        abort_connection(cs, rv);
+        signal_threads(ST_GRACEFUL);
+        return 0;
+    }
+
+    return 1;
+}
+#define pollset_del(cs) \
+    pollset_del_at((cs), __FUNCTION__, __LINE__)
+
 /* Forward declare */
 static void process_lingering_close(event_conn_state_t *cs);
 
@@ -1018,7 +1155,6 @@ static void process_socket(apr_thread_t *thd, apr_pool_t * p, apr_socket_t * soc
     conn_rec *c;
     long conn_id = ID_FROM_CHILD_THREAD(my_child_num, my_thread_num);
     int clogging = 0, from_wc_q = 0;
-    apr_status_t rv;
     int rc = OK;
 
     if (cs == NULL) {           /* This is a new connection */
@@ -1086,6 +1222,9 @@ static void process_socket(apr_thread_t *thd, apr_pool_t * p, apr_socket_t * soc
         c->id = conn_id;
     }
 
+    ap_log_cerror(APLOG_MARK, APLOG_TRACE6, 0, cs->c,
+                  "processing connection %" CS_FMT, CS_ARG(cs));
+
     if (c->aborted) {
         /* do lingering close below */
         cs->pub.state = CONN_STATE_LINGER;
@@ -1152,12 +1291,13 @@ read_request:
      * while this was expected to do lingering close unconditionally with
      * worker or prefork MPMs for instance.
      */
-    if (rc != AGAIN && (
-        rc != OK || (cs->pub.state >= CONN_STATE_NUM)
-                 || (cs->pub.state < CONN_STATE_LINGER
-                     && cs->pub.state != CONN_STATE_WRITE_COMPLETION
-                     && cs->pub.state != CONN_STATE_CHECK_REQUEST_LINE_READABLE
-                     && cs->pub.state != CONN_STATE_SUSPENDED))) {
+    if (rc != AGAIN
+        && (rc != OK
+            || (cs->pub.state < CONN_STATE_LINGER
+                && cs->pub.state != CONN_STATE_WRITE_COMPLETION
+                && cs->pub.state != CONN_STATE_CHECK_REQUEST_LINE_READABLE
+                && cs->pub.state != CONN_STATE_SUSPENDED)
+            || (cs->pub.state >= CONN_STATE_NUM))) {
         ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, APLOGNO(10111)
                       "process_socket: connection processing %s: closing",
                       rc ? apr_psprintf(c->pool, "returned error %i", rc)
@@ -1182,22 +1322,7 @@ read_request:
 
         /* Add work to pollset. */
         update_reqevents_from_sense(cs, CONN_SENSE_WANT_READ);
-        apr_thread_mutex_lock(timeout_mutex);
-        TO_QUEUE_APPEND(cs->sc->rl_q, cs);
-        rv = apr_pollset_add(event_pollset, &cs->pfd);
-        if (rv != APR_SUCCESS && !APR_STATUS_IS_EEXIST(rv)) {
-            AP_DEBUG_ASSERT(0);
-            TO_QUEUE_REMOVE(cs->sc->rl_q, cs);
-            apr_thread_mutex_unlock(timeout_mutex);
-            ap_log_error(APLOG_MARK, APLOG_ERR, rv, ap_server_conf, APLOGNO(10374)
-                         "process_socket: apr_pollset_add failure for "
-                         "read request line");
-            close_connection(cs);
-            signal_threads(ST_GRACEFUL);
-        }
-        else {
-            apr_thread_mutex_unlock(timeout_mutex);
-        }
+        pollset_add(cs, cs->sc->rl_q);
         return;
     }
 
@@ -1223,22 +1348,7 @@ read_request:
             notify_suspend(cs);
 
             update_reqevents_from_sense(cs, CONN_SENSE_WANT_WRITE);
-            apr_thread_mutex_lock(timeout_mutex);
-            TO_QUEUE_APPEND(cs->sc->wc_q, cs);
-            rv = apr_pollset_add(event_pollset, &cs->pfd);
-            if (rv != APR_SUCCESS && !APR_STATUS_IS_EEXIST(rv)) {
-                AP_DEBUG_ASSERT(0);
-                TO_QUEUE_REMOVE(cs->sc->wc_q, cs);
-                apr_thread_mutex_unlock(timeout_mutex);
-                ap_log_error(APLOG_MARK, APLOG_ERR, rv, ap_server_conf, APLOGNO(03465)
-                             "process_socket: apr_pollset_add failure for "
-                             "write completion");
-                close_connection(cs);
-                signal_threads(ST_GRACEFUL);
-            }
-            else {
-                apr_thread_mutex_unlock(timeout_mutex);
-            }
+            pollset_add(cs, cs->sc->wc_q);
             return;
         }
         if (pending != DECLINED
@@ -1274,22 +1384,7 @@ read_request:
 
         /* Add work to pollset. */
         update_reqevents_from_sense(cs, CONN_SENSE_WANT_READ);
-        apr_thread_mutex_lock(timeout_mutex);
-        TO_QUEUE_APPEND(cs->sc->ka_q, cs);
-        rv = apr_pollset_add(event_pollset, &cs->pfd);
-        if (rv != APR_SUCCESS && !APR_STATUS_IS_EEXIST(rv)) {
-            AP_DEBUG_ASSERT(0);
-            TO_QUEUE_REMOVE(cs->sc->ka_q, cs);
-            apr_thread_mutex_unlock(timeout_mutex);
-            ap_log_error(APLOG_MARK, APLOG_ERR, rv, ap_server_conf, APLOGNO(03093)
-                         "process_socket: apr_pollset_add failure for "
-                         "keep alive");
-            close_connection(cs);
-            signal_threads(ST_GRACEFUL);
-        }
-        else {
-            apr_thread_mutex_unlock(timeout_mutex);
-        }
+        pollset_add(cs, cs->sc->ka_q);
         return;
     }
 
@@ -1329,10 +1424,7 @@ static apr_status_t event_resume_suspended (conn_rec *c)
         notify_suspend(cs);
 
         update_reqevents_from_sense(cs, CONN_SENSE_WANT_WRITE);
-        apr_thread_mutex_lock(timeout_mutex);
-        TO_QUEUE_APPEND(cs->sc->wc_q, cs);
-        apr_pollset_add(event_pollset, &cs->pfd);
-        apr_thread_mutex_unlock(timeout_mutex);
+        pollset_add(cs, cs->sc->wc_q);
     }
     else {
         cs->pub.state = CONN_STATE_LINGER;
@@ -1352,22 +1444,16 @@ static void check_infinite_requests(void)
                      "Stopping process due to MaxConnectionsPerChild");
         signal_threads(ST_GRACEFUL);
     }
-    else {
-        /* keep going */
-        conns_this_child = APR_INT32_MAX;
-    }
 }
 
-static int close_listeners(int *closed)
+static void close_listeners(void)
 {
-    ap_log_error(APLOG_MARK, APLOG_TRACE6, 0, ap_server_conf,
-                 "clos%s listeners (connection_count=%u)",
-                 *closed ? "ed" : "ing", apr_atomic_read32(&connection_count));
-    if (!*closed) {
         int i;
 
+        ap_log_error(APLOG_MARK, APLOG_TRACE5, 0, ap_server_conf,
+                     "closing listening sockets");
+
         ap_close_listeners_ex(my_bucket->listeners);
-        *closed = 1; /* once */
 
         dying = 1;
         ap_scoreboard_image->parent[ap_child_slot].quiescing = 1;
@@ -1380,10 +1466,6 @@ static int close_listeners(int *closed)
 
         ap_queue_info_free_idle_pools(worker_queue_info);
         ap_queue_interrupt_all(worker_queue);
-
-        return 1;
-    }
-    return 0;
 }
 
 static void unblock_signal(int sig)
@@ -1466,9 +1548,10 @@ static apr_status_t push2worker(event_conn_state_t *cs, apr_socket_t *csd,
     apr_status_t rc;
 
     if (cs) {
-        csd = cs->pfd.desc.s;
         ptrans = cs->p;
+        csd = cs_sd(cs);
     }
+
     rc = ap_queue_push_socket(worker_queue, csd, cs, ptrans);
     if (rc != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, rc, ap_server_conf, APLOGNO(00471)
@@ -1477,11 +1560,11 @@ static apr_status_t push2worker(event_conn_state_t *cs, apr_socket_t *csd,
          * socket to a worker
          */
         if (cs) {
-            shutdown_connection(cs);
+            abort_connection(cs, rc);
         }
         else {
             if (csd) {
-                close_socket_nonblocking(csd);
+                close_socket(csd);
             }
             if (ptrans) {
                 ap_queue_info_push_pool(worker_queue_info, ptrans);
@@ -1739,7 +1822,8 @@ static void process_lingering_close(event_conn_state_t *cs)
     struct timeout_queue *q;
 
     ap_log_cerror(APLOG_MARK, APLOG_TRACE6, 0, cs->c,
-                  "lingering close from state %i", (int)cs->pub.state);
+                  "lingering close connection %" CS_FMT, CS_ARG(cs));
+
     AP_DEBUG_ASSERT(cs->pub.state >= CONN_STATE_LINGER);
 
     if (cs->pub.state == CONN_STATE_LINGER) {
@@ -1789,20 +1873,7 @@ static void process_lingering_close(event_conn_state_t *cs)
     cs->pub.sense = CONN_SENSE_DEFAULT;
     update_reqevents_from_sense(cs, CONN_SENSE_WANT_READ);
     q = (cs->pub.state == CONN_STATE_LINGER_SHORT) ? short_linger_q : linger_q;
-    apr_thread_mutex_lock(timeout_mutex);
-    TO_QUEUE_APPEND(q, cs);
-    rv = apr_pollset_add(event_pollset, &cs->pfd);
-    if (rv != APR_SUCCESS && !APR_STATUS_IS_EEXIST(rv)) {
-        AP_DEBUG_ASSERT(0);
-        TO_QUEUE_REMOVE(q, cs);
-        apr_thread_mutex_unlock(timeout_mutex);
-        ap_log_error(APLOG_MARK, APLOG_ERR, rv, ap_server_conf, APLOGNO(03092)
-                     "process_lingering_close: apr_pollset_add failure");
-        close_connection(cs);
-        signal_threads(ST_GRACEFUL);
-        return;
-    }
-    apr_thread_mutex_unlock(timeout_mutex);
+    pollset_add(cs, q);
 }
 
 /* call 'func' for all elements of 'q' above 'expiry'.
@@ -1816,7 +1887,6 @@ static void process_timeout_queue(struct timeout_queue *q, apr_time_t expiry,
     event_conn_state_t *first, *cs, *last;
     struct event_conn_state_t trash;
     struct timeout_queue *qp;
-    apr_status_t rv;
 
     if (!*q->total) {
         return;
@@ -1853,13 +1923,23 @@ static void process_timeout_queue(struct timeout_queue *q, apr_time_t expiry,
                 break;
             }
 
-            last = cs;
-            rv = apr_pollset_remove(event_pollset, &cs->pfd);
-            if (rv != APR_SUCCESS && !APR_STATUS_IS_NOTFOUND(rv)) {
-                AP_DEBUG_ASSERT(0);
-                ap_log_cerror(APLOG_MARK, APLOG_ERR, rv, cs->c, APLOGNO(00473)
-                              "apr_pollset_remove failed");
+            TO_QUEUE_REMOVE(qp, cs);
+            if (!pollset_del(cs)) {
+                /* connection closed and graceful raised already */
+                continue;
             }
+
+            if (cs == first) {
+                APR_RING_INSERT_HEAD(&qp->head, cs, event_conn_state_t,
+                                     timeout_list);
+            }
+            else {
+                APR_RING_INSERT_AFTER(last, cs, timeout_list);
+            }
+            ++*qp->total;
+            ++qp->count;
+
+            last = cs;
             cs = APR_RING_NEXT(cs, timeout_list);
             count++;
         }
@@ -1907,7 +1987,7 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
     proc_info *ti = dummy;
     int process_slot = ti->pslot;
     struct process_score *ps = ap_get_scoreboard_process(process_slot);
-    int closed = 0;
+    int listeners_closed = 0;
     int have_idle_worker = 0;
     apr_time_t last_log;
 
@@ -1933,11 +2013,18 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
         apr_time_t now, expiry = -1;
         int workers_were_busy = 0;
 
-        if (conns_this_child <= 0)
+        if (conns_this_child <= 0) {
+            /* Signal (eventually) and keep going */
             check_infinite_requests();
+            conns_this_child = APR_INT32_MAX;
+        }
 
         if (listener_may_exit) {
-            int first_close = close_listeners(&closed);
+            int first_close = !listeners_closed;
+            if (first_close) {
+                listeners_closed = 1; /* once */
+                close_listeners();
+            }
 
             if (terminate_mode == ST_UNGRACEFUL
                 || apr_atomic_read32(&connection_count) == 0)
@@ -2053,11 +2140,14 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
         }
 
         ap_log_error(APLOG_MARK, APLOG_TRACE7, 0, ap_server_conf,
-                     "polling with timeout=%" APR_TIME_T_FMT
+                     "pollset: wait for timeout=%" APR_TIME_T_FMT
                      " queues_timeout=%" APR_TIME_T_FMT
-                     " timers_timeout=%" APR_TIME_T_FMT,
-                     timeout, queues_next_expiry - now,
-                     timers_next_expiry - now);
+                     " timers_timeout=%" APR_TIME_T_FMT
+                     " exit=%d/%d conns=%d",
+                     timeout,
+                     queues_next_expiry ? queues_next_expiry - now : -1,
+                     timers_next_expiry ? timers_next_expiry - now : -1,
+                     listener_may_exit, dying, apr_atomic_read32(&connection_count));
 
         rc = apr_pollset_poll(event_pollset, timeout, &num, &out_pfd);
         if (rc != APR_SUCCESS) {
@@ -2072,52 +2162,45 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
         }
 
         if (APLOGtrace7(ap_server_conf)) {
+            apr_time_t old_now = now;
             now = apr_time_now();
+
             ap_log_error(APLOG_MARK, APLOG_TRACE7, rc, ap_server_conf,
-                         "polled with num=%u exit=%d/%d conns=%d"
+                         "pollset: got #%i in time=%" APR_TIME_T_FMT "/%" APR_TIME_T_FMT
                          " queues_timeout=%" APR_TIME_T_FMT
-                         " timers_timeout=%" APR_TIME_T_FMT,
-                         num, listener_may_exit, dying,
-                         apr_atomic_read32(&connection_count),
-                         queues_next_expiry - now, timers_next_expiry - now);
+                         " timers_timeout=%" APR_TIME_T_FMT
+                         " exit=%d/%d conns=%d",
+                         (int)num, now - old_now, timeout,
+                         queues_next_expiry ? queues_next_expiry - now : -1,
+                         timers_next_expiry ? timers_next_expiry - now : -1,
+                         listener_may_exit, dying, apr_atomic_read32(&connection_count));
         }
 
         /* XXX possible optimization: stash the current time for use as
          * r->request_time for new requests or queues maintenance
          */
 
-        for (user_chain = NULL; num; --num, ++out_pfd) {
+        for (user_chain = NULL; num > 0; --num, ++out_pfd) {
             listener_poll_type *pt = (listener_poll_type *) out_pfd->client_data;
             if (pt->type == PT_CSD) {
                 /* one of the sockets is readable */
                 event_conn_state_t *cs = (event_conn_state_t *) pt->baton;
-                struct timeout_queue *remove_from_q = NULL;
                 /* don't wait for a worker for a keepalive request or
                  * lingering close processing. */
                 int blocking = 0;
 
                 switch (cs->pub.state) {
+                case CONN_STATE_CHECK_REQUEST_LINE_READABLE:
+                    cs->pub.state = CONN_STATE_READ_REQUEST_LINE;
+                    break;
+
                 case CONN_STATE_READ_REQUEST_LINE:
-                     remove_from_q = cs->sc->rl_q;
+                case CONN_STATE_WRITE_COMPLETION:
                      blocking = 1;
                      break;
 
-                case CONN_STATE_WRITE_COMPLETION:
-                    remove_from_q = cs->sc->wc_q;
-                    blocking = 1;
-                    break;
-
-                case CONN_STATE_CHECK_REQUEST_LINE_READABLE:
-                    cs->pub.state = CONN_STATE_READ_REQUEST_LINE;
-                    remove_from_q = cs->sc->ka_q;
-                    break;
-
                 case CONN_STATE_LINGER_NORMAL:
-                    remove_from_q = linger_q;
-                    break;
-
                 case CONN_STATE_LINGER_SHORT:
-                    remove_from_q = short_linger_q;
                     break;
 
                 default:
@@ -2128,26 +2211,13 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
                     ap_assert(0);
                 }
 
-                if (remove_from_q) {
-                    apr_thread_mutex_lock(timeout_mutex);
-                    TO_QUEUE_REMOVE(remove_from_q, cs);
-                    rc = apr_pollset_remove(event_pollset, &cs->pfd);
-                    apr_thread_mutex_unlock(timeout_mutex);
-                    /*
-                     * Some of the pollset backends, like KQueue or Epoll
-                     * automagically remove the FD if the socket is closed,
-                     * therefore, we can accept _SUCCESS or _NOTFOUND,
-                     * and we still want to keep going
-                     */
-                    if (rc != APR_SUCCESS && !APR_STATUS_IS_NOTFOUND(rc)) {
-                        AP_DEBUG_ASSERT(0);
-                        ap_log_error(APLOG_MARK, APLOG_ERR, rc, ap_server_conf,
-                                     APLOGNO(03094) "pollset remove failed");
-                        close_connection(cs);
-                        signal_threads(ST_GRACEFUL);
-                        break;
-                    }
+                ap_assert(cs->q != NULL);
+                if (!pollset_del(cs)) {
+                    /* connection closed and graceful raised already */
+                    continue;
+                }
 
+                {
                     /* If we don't get a worker immediately (nonblocking), we
                      * close the connection; the client can re-connect to a
                      * different process for keepalive, and for lingering close
@@ -2177,11 +2247,9 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
                     disable_listensocks();
                     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf,
                                  APLOGNO(03269)
-                                 "Too many open connections (%u), "
+                                 "Too many open connections (%u, %u idlers), "
                                  "not accepting new conns in this process",
-                                 apr_atomic_read32(&connection_count));
-                    ap_log_error(APLOG_MARK, APLOG_TRACE1, 0, ap_server_conf,
-                                 "Idle workers: %u",
+                                 apr_atomic_read32(&connection_count),
                                  ap_queue_info_num_idlers(worker_queue_info));
                 }
                 else if (!listener_may_exit) {
@@ -2304,7 +2372,7 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
 do_maintenance:
         if (expiry && expiry < (now = apr_time_now())) {
             ap_log_error(APLOG_MARK, APLOG_TRACE7, 0, ap_server_conf,
-                         "queues maintenance with timeout=%" APR_TIME_T_FMT,
+                         "queues maintenance: timeout=%" APR_TIME_T_FMT,
                          expiry > 0 ? expiry - now : -1);
             apr_thread_mutex_lock(timeout_mutex);
 
@@ -2335,7 +2403,7 @@ do_maintenance:
 
             apr_thread_mutex_unlock(timeout_mutex);
             ap_log_error(APLOG_MARK, APLOG_TRACE7, 0, ap_server_conf,
-                         "queues maintained with timeout=%" APR_TIME_T_FMT,
+                         "queues maintained: timeout=%" APR_TIME_T_FMT,
                          queues_next_expiry > now ? queues_next_expiry - now
                                                   : -1);
 
@@ -2377,6 +2445,9 @@ do_maintenance:
         }
     } /* listener main loop */
 
+    ap_log_error(APLOG_MARK, APLOG_TRACE5, 0, ap_server_conf,
+                 "listener thread exiting");
+
     ap_queue_term(worker_queue);
 
     apr_thread_exit(thd, APR_SUCCESS);
@@ -2389,23 +2460,24 @@ do_maintenance:
  *
  * return 1 if thread should exit, 0 if it should continue running.
  */
-static int worker_thread_should_exit_early(void)
+static int worker_thread_should_exit_early(int slot)
 {
     for (;;) {
         apr_uint32_t conns = apr_atomic_read32(&connection_count);
-        apr_uint32_t dead = apr_atomic_read32(&threads_shutdown);
-        apr_uint32_t newdead;
+        apr_uint32_t deads = apr_atomic_read32(&threads_shutdown);
 
-        AP_DEBUG_ASSERT(dead <= threads_per_child);
-        if (conns >= threads_per_child - dead)
+        AP_DEBUG_ASSERT(deads < threads_per_child);
+        if (conns >= threads_per_child - deads)
             return 0;
 
-        newdead = dead + 1;
-        if (apr_atomic_cas32(&threads_shutdown, newdead, dead) == dead) {
+        if (apr_atomic_cas32(&threads_shutdown, deads + 1, deads) == deads) {
             /*
              * No other thread has exited in the mean time, safe to exit
              * this one.
              */
+            ap_log_error(APLOG_MARK, APLOG_TRACE5, 0, ap_server_conf,
+                         "worker thread %i/%i-%i should exit (%i conns)",
+                         slot, threads_per_child, deads + 1, conns);
             return 1;
         }
     }
@@ -2464,9 +2536,12 @@ static void *APR_THREAD_FUNC worker_thread(apr_thread_t * thd, void *dummy)
                                                   : SERVER_READY, NULL);
       worker_pop:
         if (workers_may_exit) {
+            ap_log_error(APLOG_MARK, APLOG_TRACE5, 0, ap_server_conf,
+                         "worker thread %i/%i may exit",
+                         thread_slot, threads_per_child);
             break;
         }
-        if (dying && worker_thread_should_exit_early()) {
+        if (dying && worker_thread_should_exit_early(thread_slot)) {
             break;
         }
 
@@ -2478,6 +2553,9 @@ static void *APR_THREAD_FUNC worker_thread(apr_thread_t * thd, void *dummy)
              * connections accepted by this server process have been handled.
              */
             if (APR_STATUS_IS_EOF(rv)) {
+                ap_log_error(APLOG_MARK, APLOG_TRACE5, 0, ap_server_conf,
+                             "worker thread %i/%i queue terminated",
+                             thread_slot, threads_per_child);
                 break;
             }
             /* We get APR_EINTR whenever ap_queue_pop_*() has been interrupted
@@ -2532,7 +2610,10 @@ static void *APR_THREAD_FUNC worker_thread(apr_thread_t * thd, void *dummy)
             cs->chain = NULL;
             AP_DEBUG_ASSERT(cs->pub.state == CONN_STATE_LINGER);
 
-            worker_sockets[thread_slot] = csd = cs->pfd.desc.s;
+            ap_log_cerror(APLOG_MARK, APLOG_TRACE6, 0, cs->c,
+                          "deferred close for connection %" CS_FMT, CS_ARG(cs));
+
+            worker_sockets[thread_slot] = csd = cs_sd(cs);
             process_socket(thd, cs->p, csd, cs, process_slot, thread_slot);
             worker_sockets[thread_slot] = NULL;
         }
@@ -2847,7 +2928,7 @@ static void join_workers(apr_thread_t * listener, apr_thread_t ** threads)
             /* listener has not stopped accepting yet */
             ap_log_error(APLOG_MARK, APLOG_TRACE1, 0, ap_server_conf,
                          "listener has not stopped accepting yet (%d iter)", iter);
-            wakeup_listener();
+            shutdown_listener();
         }
         if (iter > 10) {
             ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO(00475)
@@ -2863,6 +2944,9 @@ static void join_workers(apr_thread_t * listener, apr_thread_t ** threads)
     }
 
     for (i = 0; i < threads_per_child; i++) {
+        ap_log_error(APLOG_MARK, APLOG_TRACE5, 0, ap_server_conf,
+                     "apr_thread_join: joining thread %pp (%i/%i)",
+                     threads[i], i, threads_per_child);
         if (threads[i]) {       /* if we ever created this thread */
             rv = apr_thread_join(&thread_rv, threads[i]);
             if (rv != APR_SUCCESS) {
