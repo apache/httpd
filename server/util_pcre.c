@@ -283,16 +283,12 @@ typedef int*              match_vector_pt;
 
 static APR_INLINE
 match_data_pt alloc_match_data(apr_size_t size,
-                               match_vector_pt *ovector,
                                match_vector_pt small_vector)
 {
     match_data_pt data;
 
 #ifdef HAVE_PCRE2
     data = pcre2_match_data_create(size, NULL);
-    if (data) {
-        *ovector = pcre2_get_ovector_pointer(data);
-    }
 #else
     if (size > POSIX_MALLOC_THRESHOLD) {
         data = malloc(size * sizeof(int) * 3);
@@ -300,7 +296,6 @@ match_data_pt alloc_match_data(apr_size_t size,
     else {
         data = small_vector;
     }
-    *ovector = data;
 #endif
 
     return data;
@@ -335,7 +330,6 @@ static apr_status_t apreg_tls_cleanup(void *arg)
 #endif
 
 static match_data_pt get_match_data(apr_size_t size,
-                                    match_vector_pt *ovector,
                                     match_vector_pt small_vector,
                                     int *to_free)
 {
@@ -348,7 +342,7 @@ static match_data_pt get_match_data(apr_size_t size,
     current = ap_thread_current();
     if (!current) {
         *to_free = 1;
-        return alloc_match_data(size, ovector, small_vector);
+        return alloc_match_data(size, small_vector);
     }
 
     apr_thread_data_get((void **)&tls, "apreg", current);
@@ -383,23 +377,17 @@ static match_data_pt get_match_data(apr_size_t size,
 #endif
     }
 
-#ifdef HAVE_PCRE2
-    *ovector = pcre2_get_ovector_pointer(tls->data);
-#else
-    *ovector = tls->data;
-#endif
     return tls->data;
 }
 
 #else /* !AP_HAS_THREAD_LOCAL */
 
 static APR_INLINE match_data_pt get_match_data(apr_size_t size,
-                                               match_vector_pt *ovector,
                                                match_vector_pt small_vector,
                                                int *to_free)
 {
     *to_free = 1;
-    return alloc_match_data(size, ovector, small_vector);
+    return alloc_match_data(size, small_vector);
 }
 
 #endif /* !AP_HAS_THREAD_LOCAL */
@@ -421,12 +409,10 @@ AP_DECLARE(int) ap_regexec_len(const ap_regex_t *preg, const char *buff,
     match_vector_pt ovector = NULL;
     apr_size_t ncaps = (apr_size_t)preg->re_nsub + 1;
 #ifdef HAVE_PCRE2
-    match_data_pt data = get_match_data(ncaps, &ovector, NULL,
-                                        &to_free);
+    match_data_pt data = get_match_data(ncaps, NULL, &to_free);
 #else
     int small_vector[POSIX_MALLOC_THRESHOLD * 3];
-    match_data_pt data = get_match_data(ncaps, &ovector, small_vector,
-                                        &to_free);
+    match_data_pt data = get_match_data(ncaps, small_vector, &to_free);
 #endif
 
     if (!data) {
@@ -442,7 +428,9 @@ AP_DECLARE(int) ap_regexec_len(const ap_regex_t *preg, const char *buff,
     rc = pcre2_match((const pcre2_code *)preg->re_pcre,
                      (const unsigned char *)buff, len,
                      0, options, data, NULL);
+    ovector = pcre2_get_ovector_pointer(data);
 #else
+    ovector = data;
     rc = pcre_exec((const pcre *)preg->re_pcre, NULL, buff, (int)len,
                    0, options, ovector, ncaps * 3);
 #endif
