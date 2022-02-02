@@ -22,3 +22,13 @@ class TestTrailers:
         assert r.exit_code == 0, f"{r}"
         assert 200 <= r.response["status"] < 300
         assert r.response["trailer"]["h1test-add-trailer"] == "005_01"
+
+    # check that we get out trailers through the proxy
+    def test_h1_005_02(self, env):
+        url = env.mkurl("https", "cgi", "/proxy/h1test/echo")
+        host = f"cgi.{env.http_tld}"
+        fpath = os.path.join(env.gen_dir, "data-1k")
+        r = env.curl_upload(url, fpath, options=["--header", "Add-Trailer: 005_01"])
+        assert r.exit_code == 0, f"{r}"
+        assert 200 <= r.response["status"] < 300
+        assert r.response["trailer"]["h1test-add-trailer"] == "005_01"
