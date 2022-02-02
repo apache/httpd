@@ -2612,7 +2612,7 @@ AP_DECLARE(apr_status_t) ap_thread_create(apr_thread_t **thread,
 
 AP_DECLARE(apr_status_t) ap_thread_current_create(apr_thread_t **current,
                                                   apr_threadattr_t *attr,
-                                                  apr_pool_t *pool)
+                                                  apr_pool_t *pool);
 AP_DECLARE(void) ap_thread_current_after_fork(void);
 AP_DECLARE(apr_thread_t *) ap_thread_current(void);
 
