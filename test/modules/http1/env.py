@@ -21,7 +21,23 @@ class H1TestSetup(HttpdTestSetup):
 
     def make(self):
         super().make()
+        self._add_h1test()
         self._setup_data_1k_1m()
+
+    def _add_h1test(self):
+        local_dir = os.path.dirname(inspect.getfile(H1TestSetup))
+        p = subprocess.run([self.env.apxs, '-c', 'mod_h1test.c'],
+                           capture_output=True,
+                           cwd=os.path.join(local_dir, 'mod_h1test'))
+        rv = p.returncode
+        if rv != 0:
+            log.error(f"compiling md_h1test failed: {p.stderr}")
+            raise Exception(f"compiling md_h1test failed: {p.stderr}")
+
+        modules_conf = os.path.join(self.env.server_dir, 'conf/modules.conf')
+        with open(modules_conf, 'a') as fd:
+            # load our test module which is not installed
+            fd.write(f"LoadModule h1test_module   \"{local_dir}/mod_h1test/.libs/mod_h1test.so\"\n")
 
     def _setup_data_1k_1m(self):
         s90 = "01234567890123456789012345678901234567890123456789012345678901234567890123456789012345678\n"
@@ -64,5 +80,8 @@ class H1Conf(HttpdConf):
             f"cgi.{env.http_tld}": [
                 "SSLOptions +StdEnvVars",
                 "AddHandler cgi-script .py",
+                "<Location \"/h1test/echo\">",
+                "    SetHandler h1test-echo",
+                "</Location>",
             ]
         }))

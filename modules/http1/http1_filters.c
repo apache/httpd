@@ -51,9 +51,9 @@ APLOG_USE_MODULE(http1);
 
 /* Send a request's HTTP response headers to the client.
  */
-static apr_status_t append_http1_headers(apr_bucket_brigade *bb,
-                                         request_rec *r,
-                                         apr_table_t *headers)
+apr_status_t http1_append_headers(apr_bucket_brigade *bb,
+                                  request_rec *r,
+                                  apr_table_t *headers)
 {
     const apr_array_header_t *elts;
     const apr_table_entry_t *t_elt;
@@ -111,7 +111,7 @@ static apr_status_t append_http1_headers(apr_bucket_brigade *bb,
 #endif
 }
 
-static void terminate_http1_header(apr_bucket_brigade *bb)
+void http1_terminate_header(apr_bucket_brigade *bb)
 {
     char crlf[] = CRLF;
     apr_size_t buflen;
@@ -279,8 +279,8 @@ static void append_http1_response(request_rec *r,
         proto = "HTTP/1.0";
     }
     append_http1_response_head(r, resp, proto, b);
-    append_http1_headers(b, r, resp->headers);
-    terminate_http1_header(b);
+    http1_append_headers(b, r, resp->headers);
+    http1_terminate_header(b);
 }
 
 
@@ -389,7 +389,8 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http1_transcode_out_filter(ap_filter_t *
                         rv = ap_pass_brigade(f->next, b);
                         apr_brigade_cleanup(b);
                         ap_log_rerror(APLOG_MARK, APLOG_TRACE2, rv, r,
-                                      "ap_http1_transcode_out_filter passed brigade before chunking");
+                                      "ap_http1_transcode_out_filter passed response"
+                                      ", add CHUNK filter");
                         if (APR_SUCCESS != rv) {
                             apr_brigade_cleanup(ctx->tmpbb);
                             goto cleanup;

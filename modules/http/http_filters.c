@@ -578,9 +578,6 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f,
     int recursive_error = 0;
 
     AP_DEBUG_ASSERT(!r->main);
-    ap_log_rerror(APLOG_MARK, APLOG_TRACE3, 0, r,
-                  "ap_http_header_filter start, r->status %d",
-                  r->status);
 
     if (!ctx) {
         ctx = f->ctx = apr_pcalloc(r->pool, sizeof(header_filter_ctx));

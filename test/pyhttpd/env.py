@@ -602,32 +602,56 @@ class HttpdTestEnv:
 
     def curl_parse_headerfile(self, headerfile: str, r: ExecResult = None) -> ExecResult:
         lines = open(headerfile).readlines()
-        exp_stat = True
         if r is None:
             r = ExecResult(args=[], exit_code=0, stdout=b'', stderr=b'')
-        header = {}
+
+        response = None
+        def fin_response(response):
+            if response:
+                r.add_response(response)
+
+        expected = ['status']
         for line in lines:
-            if exp_stat:
+            if re.match(r'^$', line):
+                if 'trailer' in expected:
+                    # end of trailers
+                    fin_response(response)
+                    response = None
+                    expected = ['status']
+                elif 'header' in expected:
+                    # end of header, another status or trailers might follow
+                    expected = ['status', 'trailer']
+                else:
+                    assert False, f"unexpected line: {line}"
+                continue
+            if 'status' in expected:
                 log.debug("reading 1st response line: %s", line)
                 m = re.match(r'^(\S+) (\d+) (.*)$', line)
-                assert m
-                r.add_response({
-                    "protocol": m.group(1),
-                    "status": int(m.group(2)),
-                    "description": m.group(3),
-                    "body": r.outraw
-                })
-                exp_stat = False
-                header = {}
-            elif re.match(r'^$', line):
-                exp_stat = True
-            else:
-                log.debug("reading header line: %s", line)
+                if m:
+                    fin_response(response)
+                    response = {
+                        "protocol": m.group(1),
+                        "status": int(m.group(2)),
+                        "description": m.group(3),
+                        "header": {},
+                        "trailer": {},
+                        "body": r.outraw
+                    }
+                    expected = ['header']
+                    continue
+            if 'trailer' in expected:
                 m = re.match(r'^([^:]+):\s*(.*)$', line)
-                assert m
-                header[m.group(1).lower()] = m.group(2)
-        if r.response:
-            r.response["header"] = header
+                if m:
+                    response['trailer'][m.group(1).lower()] = m.group(2)
+                    continue
+            if 'header' in expected:
+                m = re.match(r'^([^:]+):\s*(.*)$', line)
+                if m:
+                    response['header'][m.group(1).lower()] = m.group(2)
+                    continue
+            assert False, f"unexpected line: {line}"
+
+        fin_response(response)
         return r
 
     def curl_raw(self, urls, timeout=10, options=None, insecure=False,

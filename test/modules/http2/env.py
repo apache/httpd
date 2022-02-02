@@ -109,6 +109,12 @@ class H2Conf(HttpdConf):
             f"cgi.{env.http_tld}": [
                 "SSLOptions +StdEnvVars",
                 "AddHandler cgi-script .py",
+                "<Location \"/h2test/echo\">",
+                "    SetHandler h2test-echo",
+                "</Location>",
+                "<Location \"/h2test/delay\">",
+                "    SetHandler h2test-delay",
+                "</Location>",
             ]
         }))
 

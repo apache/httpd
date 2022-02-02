@@ -4,20 +4,12 @@ import pytest
 from .env import H2Conf
 
 
-def setup_data(env):
-    s100 = "012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678\n"
-    with open(os.path.join(env.gen_dir, "data-1k"), 'w') as f:
-        for i in range(10):
-            f.write(s100)
-
-
 # The trailer tests depend on "nghttp" as no other client seems to be able to send those
 # rare things.
 class TestTrailers:
 
     @pytest.fixture(autouse=True, scope='class')
     def _class_scope(self, env):
-        setup_data(env)
         H2Conf(env).add_vhost_cgi(h2proxy_self=True).install()
         assert env.apache_restart() == 0
 
