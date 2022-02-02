@@ -313,7 +313,7 @@ void free_match_data(match_data_pt data, apr_size_t size)
 #endif
 }
 
-#if AP_HAS_THREAD_LOCAL
+#if AP_HAS_THREAD_LOCAL && !defined(APREG_NO_THREAD_LOCAL)
 
 struct apreg_tls {
     match_data_pt data;
@@ -380,7 +380,7 @@ static match_data_pt get_match_data(apr_size_t size,
     return tls->data;
 }
 
-#else /* !AP_HAS_THREAD_LOCAL */
+#else /* AP_HAS_THREAD_LOCAL && !defined(APREG_NO_THREAD_LOCAL) */
 
 static APR_INLINE match_data_pt get_match_data(apr_size_t size,
                                                match_vector_pt small_vector,
@@ -390,7 +390,7 @@ static APR_INLINE match_data_pt get_match_data(apr_size_t size,
     return alloc_match_data(size, small_vector);
 }
 
-#endif /* !AP_HAS_THREAD_LOCAL */
+#endif /* AP_HAS_THREAD_LOCAL && !defined(APREG_NO_THREAD_LOCAL) */
 
 AP_DECLARE(int) ap_regexec(const ap_regex_t *preg, const char *string,
                            apr_size_t nmatch, ap_regmatch_t *pmatch,

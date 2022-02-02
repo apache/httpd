@@ -2413,7 +2413,7 @@ AP_DECLARE(void *) ap_realloc(void *ptr, size_t size)
 
 #if APR_HAS_THREADS
 
-#if APR_VERSION_AT_LEAST(1,8,0)
+#if APR_VERSION_AT_LEAST(1,8,0) && !defined(AP_NO_THREAD_LOCAL)
 
 /**
  * APR 1.8+ implement those already.
@@ -2428,8 +2428,9 @@ AP_DECLARE(void *) ap_realloc(void *ptr, size_t size)
 #define ap_thread_current               apr_thread_current
 #define ap_thread_current_after_fork    apr_thread_current_after_fork
 
-#else  /* !APR_VERSION_AT_LEAST(1,8,0) */
+#else /* APR_VERSION_AT_LEAST(1,8,0) && !defined(AP_NO_THREAD_LOCAL) */
 
+#ifndef AP_NO_THREAD_LOCAL
 /**
  * AP_THREAD_LOCAL keyword mapping the compiler's.
  */
@@ -2442,6 +2443,7 @@ AP_DECLARE(void *) ap_realloc(void *ptr, size_t size)
 #elif defined(WIN32) && defined(_MSC_VER)
 #define AP_THREAD_LOCAL __declspec(thread)
 #endif
+#endif /* ndef AP_NO_THREAD_LOCAL */
 
 #ifndef AP_THREAD_LOCAL
 #define AP_HAS_THREAD_LOCAL 0
@@ -2457,16 +2459,16 @@ AP_DECLARE(apr_status_t) ap_thread_create(apr_thread_t **thread,
 AP_DECLARE(void) ap_thread_current_after_fork(void);
 AP_DECLARE(apr_thread_t *) ap_thread_current(void);
 
-#endif /* !APR_VERSION_AT_LEAST(1,8,0) */
+#endif /* APR_VERSION_AT_LEAST(1,8,0) && !defined(AP_NO_THREAD_LOCAL) */
 
 AP_DECLARE(apr_status_t) ap_thread_main_create(apr_thread_t **thread,
                                                apr_pool_t *pool);
 
-#else  /* !APR_HAS_THREADS */
+#else  /* APR_HAS_THREADS */
 
 #define AP_HAS_THREAD_LOCAL 0
 
-#endif /* !APR_HAS_THREADS */
+#endif /* APR_HAS_THREADS */
 
 /**
  * Get server load params
