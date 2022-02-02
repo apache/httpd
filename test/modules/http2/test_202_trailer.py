@@ -10,7 +10,10 @@ class TestTrailers:
 
     @pytest.fixture(autouse=True, scope='class')
     def _class_scope(self, env):
-        H2Conf(env).add_vhost_cgi(h2proxy_self=True).install()
+        conf = H2Conf(env)
+        conf.add_vhost_cgi(h2proxy_self=True, proxy_self=True)
+        conf.add("LogLevel http1:trace4 http:trace4 http2:trace4")
+        conf.install()
         assert env.apache_restart() == 0
 
     # check if the server survives a trailer or two
@@ -69,6 +72,24 @@ class TestTrailers:
         url = env.mkurl("https", "cgi", "/h2test/echo")
         fpath = os.path.join(env.gen_dir, "data-1k")
         r = env.nghttp().upload(url, fpath, options=["--trailer", "test: 6", "--no-content-length"])
+        assert r.response["status"] < 300
+        assert len(r.response["body"]) == 1000
+        assert r.response["trailer"]["h2test-trailers-in"] == "1"
+
+    # check that we get trailers out though h1 proxy
+    def test_h2_202_07(self, env):
+        url = env.mkurl("https", "cgi", "/proxy/h2test/echo")
+        fpath = os.path.join(env.gen_dir, "data-1k")
+        r = env.nghttp().upload(url, fpath, options=["--trailer", "test: 6"])
+        assert r.response["status"] < 300
+        assert len(r.response["body"]) == 1000
+        assert r.response["trailer"]["h2test-trailers-in"] == "1"
+
+    # check that we get trailers out though h2 proxy
+    def test_h2_202_08(self, env):
+        url = env.mkurl("https", "cgi", "/h2proxy/h2test/echo")
+        fpath = os.path.join(env.gen_dir, "data-1k")
+        r = env.nghttp().upload(url, fpath, options=["--trailer", "test: 6"])
         assert r.response["status"] < 300
         assert len(r.response["body"]) == 1000
         assert r.response["trailer"]["h2test-trailers-in"] == "1"

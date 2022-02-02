@@ -211,24 +211,7 @@ apr_status_t ap_http_chunk_filter(ap_filter_t *f, apr_bucket_brigade *b)
          * now.
          */
         if (eos && !ctx->bad_gateway_seen) {
-            if (!ctx->trailers || apr_is_empty_table(ctx->trailers)) {
-                ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, f->r,
-                              "ap_http_chunk_filter sending empty end chunk");
-                e = apr_bucket_immortal_create(ZERO_ASCII CRLF_ASCII
-                                               /* <trailers> */
-                                               CRLF_ASCII, 5, c->bucket_alloc);
-                APR_BUCKET_INSERT_BEFORE(eos, e);
-            }
-            else {
-                const char *line = ZERO_ASCII CRLF_ASCII;
-                ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, f->r,
-                              "ap_http_chunk_filter sending end chunk with trailers");
-                more = apr_brigade_split_ex(b, eos, tmp);
-                apr_brigade_write(b, NULL, NULL, line, strlen(line));
-                http1_append_headers(b, f->r, ctx->trailers);
-                http1_terminate_header(b);
-                APR_BRIGADE_CONCAT(b, more);
-            }
+            ap_http1_add_end_chunk(b, eos, f->r, ctx->trailers);
         }
 
         /* pass the brigade to the next filter. */

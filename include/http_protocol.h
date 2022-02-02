@@ -1139,6 +1139,18 @@ AP_DECLARE(void) ap_finalize_sub_req_protocol(request_rec *sub_r);
 AP_DECLARE(void) ap_send_interim_response(request_rec *r, int send_headers);
 
 
+/**
+ * Insert/Append the last chunk in a HTTP/1.1 Transfer-Encoding chunked.
+ * @param b the brigade to add the chunk to
+ * @param eos the bucket before to add or NULL for insert at tail
+ * @param r the request handled
+ * @param trailers table of trailers or NULL
+ */
+AP_DECLARE(void) ap_http1_add_end_chunk(apr_bucket_brigade *b,
+                                        apr_bucket *eos,
+                                        request_rec *r,
+                                        apr_table_t *trailers);
+
 #ifdef __cplusplus
 }
 #endif

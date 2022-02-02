@@ -80,6 +80,39 @@ static int is_mpm_running(void)
 }
 
 
+AP_DECLARE(void) ap_http1_add_end_chunk(apr_bucket_brigade *b,
+                                        apr_bucket *eos,
+                                        request_rec *r,
+                                        apr_table_t *trailers)
+{
+    if (!trailers || apr_is_empty_table(trailers)) {
+        apr_bucket *e;
+
+        ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r,
+                      "append empty end chunk");
+        e = apr_bucket_immortal_create(ZERO_ASCII CRLF_ASCII
+                                       CRLF_ASCII, 5, b->bucket_alloc);
+        if (eos) {
+            APR_BUCKET_INSERT_BEFORE(eos, e);
+        }
+        else {
+            APR_BRIGADE_INSERT_TAIL(b, e);
+        }
+    }
+    else {
+        apr_bucket_brigade *tmp;
+
+        ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r,
+                      "append end chunk with trailers");
+        tmp = eos? apr_brigade_split_ex(b, eos, NULL) : NULL;
+        apr_brigade_write(b, NULL, NULL, ZERO_ASCII CRLF_ASCII, 3);
+        http1_append_headers(b, r, trailers);
+        http1_terminate_header(b);
+        if (tmp) APR_BRIGADE_CONCAT(b, tmp);
+    }
+}
+
+
 int http1_set_keepalive(request_rec *r, ap_bucket_headers *resp)
 {
     int ka_sent, left, wimpy;

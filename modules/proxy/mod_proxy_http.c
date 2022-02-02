@@ -455,14 +455,7 @@ static int stream_reqbody(proxy_http_req_t *req)
                     APR_BRIGADE_INSERT_TAIL(input_brigade, e);
                 }
                 if (seen_eos) {
-                    /*
-                     * Append the tailing 0-size chunk
-                     */
-                    e = apr_bucket_immortal_create(ZERO_ASCII CRLF_ASCII
-                                                   /* <trailers> */
-                                                   CRLF_ASCII,
-                                                   5, bucket_alloc);
-                    APR_BRIGADE_INSERT_TAIL(input_brigade, e);
+                    ap_http1_add_end_chunk(input_brigade, NULL, r, r->trailers_in);
                 }
             }
             else if (rb_method == RB_STREAM_CL
@@ -647,7 +640,13 @@ static int ap_proxy_http_prefetch(proxy_http_req_t *req,
      * entire request body to memory or temporary file (above MAX_MEM_SPOOL),
      * such that we finally know its length => RB_SPOOL_CL.
      */
-    if (!APR_BRIGADE_EMPTY(input_brigade)
+    if (!req->force10
+        && (!apr_is_empty_table(r->trailers_in)
+            || apr_table_get(r->headers_in, "Trailer"))) {
+        /* only way to forward trailers is to chunk */
+        req->rb_method = RB_STREAM_CHUNKED;
+    }
+    else if (!APR_BRIGADE_EMPTY(input_brigade)
         && APR_BUCKET_IS_EOS(APR_BRIGADE_LAST(input_brigade))) {
         /* The whole thing fit, so our decision is trivial, use
          * the filtered bytes read from the client for the request

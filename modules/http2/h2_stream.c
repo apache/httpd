@@ -787,6 +787,20 @@ apr_status_t h2_stream_end_headers(h2_stream *stream, int eos, size_t raw_bytes)
             /* keep on returning APR_SUCCESS, so that we send a HTTP response and
              * do not RST the stream. */
         }
+
+        if (APLOGctrace4(stream->session->c1)) {
+            int i;
+            const apr_array_header_t *t_h = apr_table_elts(stream->request->headers);
+            const apr_table_entry_t *t_elt = (apr_table_entry_t *)t_h->elts;
+            ap_log_cerror(APLOG_MARK, APLOG_TRACE4, 0, stream->session->c1,
+                          H2_STRM_MSG(stream,"headers received from client:"));
+            for (i = 0; i < t_h->nelts; i++, t_elt++) {
+                ap_log_cerror(APLOG_MARK, APLOG_TRACE4, 0, stream->session->c1,
+                              H2_STRM_MSG(stream, "  %s: %s"),
+                              ap_escape_logitem(stream->pool, t_elt->key),
+                              ap_escape_logitem(stream->pool, t_elt->val));
+            }
+        }
     }
     return status;
 }

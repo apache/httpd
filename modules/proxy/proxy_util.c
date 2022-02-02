@@ -4083,7 +4083,12 @@ PROXY_DECLARE(int) ap_proxy_create_hdrbrgd(apr_pool_t *p,
              */
             || !ap_cstr_casecmp(headers_in[counter].key, "Keep-Alive")
             || !ap_cstr_casecmp(headers_in[counter].key, "TE")
-            || !ap_cstr_casecmp(headers_in[counter].key, "Trailer")
+
+            /* FIXME: since we now handle r->trailers_in on forwarding
+             * request bodies, it seems unwise to clear any Trailer
+             * header present. Is this the correct thing now?
+             */
+            || (!fpr1 && !ap_cstr_casecmp(headers_in[counter].key, "Trailer"))
             || !ap_cstr_casecmp(headers_in[counter].key, "Upgrade")
 
             ) {
