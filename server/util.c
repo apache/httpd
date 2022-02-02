@@ -3200,9 +3200,9 @@ AP_DECLARE(apr_status_t) ap_thread_create(apr_thread_t **thread,
 
 #endif /* AP_HAS_THREAD_LOCAL */
 
-static apr_status_t ap_thread_current_create(apr_thread_t **current,
-                                             apr_threadattr_t *attr,
-                                             apr_pool_t *pool)
+AP_DECLARE(apr_status_t) ap_thread_current_create(apr_thread_t **current,
+                                                  apr_threadattr_t *attr,
+                                                  apr_pool_t *pool)
 {
     apr_status_t rv;
     apr_abortfunc_t abort_fn = apr_pool_abort_get(pool);
