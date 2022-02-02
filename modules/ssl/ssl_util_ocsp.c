@@ -36,6 +36,9 @@ static BIO *serialize_request(OCSP_REQUEST *req, const apr_uri_t *uri,
     len = i2d_OCSP_REQUEST(req, NULL);
 
     bio = BIO_new(BIO_s_mem());
+    if(bio == NULL) {
+      return NULL;
+    }
 
     BIO_printf(bio, "POST ");
     /* Use full URL instead of URI in case of a request through a proxy */

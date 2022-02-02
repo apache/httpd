@@ -1010,7 +1010,7 @@ void         modssl_callback_keylog(const SSL *ssl, const char *line);
 #endif
 
 /**  I/O  */
-void         ssl_io_filter_init(conn_rec *, request_rec *r, SSL *);
+apr_status_t ssl_io_filter_init(conn_rec *, request_rec *r, SSL *);
 void         ssl_io_filter_register(apr_pool_t *);
 long         ssl_io_data_cb(BIO *, int, const char *, int, long, long);
 

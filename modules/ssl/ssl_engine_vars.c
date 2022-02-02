@@ -1157,6 +1157,11 @@ apr_array_header_t *ssl_ext_list(apr_pool_t *p, conn_rec *c, int peer,
 
         if (OBJ_cmp(X509_EXTENSION_get_object(ext), oid) == 0) {
             BIO *bio = BIO_new(BIO_s_mem());
+            if(bio == NULL) {
+              X509_free(xs);
+              ASN1_OBJECT_free(oid);
+              return NULL;
+            }
 
             /* We want to obtain a string representation of the extensions
              * value and add it to the array we're building.

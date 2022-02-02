@@ -3263,11 +3263,11 @@ AP_DECLARE(void *) ap_realloc(void *ptr, size_t size)
 
 #if APR_HAS_THREADS
 
-#if APR_VERSION_AT_LEAST(1,8,0)
+#if APR_VERSION_AT_LEAST(1,8,0) && !defined(AP_NO_THREAD_LOCAL)
 
 #define ap_thread_current_create apr_thread_current_create
 
-#else  /* !APR_VERSION_AT_LEAST(1,8,0) */
+#else /* APR_VERSION_AT_LEAST(1,8,0) && !defined(AP_NO_THREAD_LOCAL) */
 
 #if AP_HAS_THREAD_LOCAL
 
@@ -3300,9 +3300,9 @@ AP_DECLARE(apr_status_t) ap_thread_create(apr_thread_t **thread,
 
 #endif /* AP_HAS_THREAD_LOCAL */
 
-static apr_status_t ap_thread_current_create(apr_thread_t **current,
-                                             apr_threadattr_t *attr,
-                                             apr_pool_t *pool)
+AP_DECLARE(apr_status_t) ap_thread_current_create(apr_thread_t **current,
+                                                  apr_threadattr_t *attr,
+                                                  apr_pool_t *pool)
 {
     apr_status_t rv;
     apr_abortfunc_t abort_fn = apr_pool_abort_get(pool);
@@ -3357,7 +3357,7 @@ AP_DECLARE(apr_thread_t *) ap_thread_current(void)
 #endif
 }
 
-#endif /* !APR_VERSION_AT_LEAST(1,8,0) */
+#endif /* APR_VERSION_AT_LEAST(1,8,0) && !defined(AP_NO_THREAD_LOCAL) */
 
 static apr_status_t main_thread_cleanup(void *arg)
 {

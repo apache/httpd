@@ -397,9 +397,9 @@ static process_rec *init_process(int *argc, const char * const * *argv)
         if ((rv = ap_thread_main_create(&thd, process->pool))) {
             char ctimebuff[APR_CTIME_LEN];
             apr_ctime(ctimebuff, apr_time_now());
-            fprintf(stderr, "[%s] [crit] (%d) %s: %s failed "
-                            "to initialize thread context (%i), exiting\n",
-                            ctimebuff, stat, (*argv)[0], failed, rv);
+            fprintf(stderr, "[%s] [crit] (%d) %s: failed "
+                            "to initialize thread context, exiting\n",
+                            ctimebuff, rv, (*argv)[0]);
             apr_terminate();
             exit(1);
         }

@@ -2320,7 +2320,7 @@ static apr_status_t ssl_io_filter_buffer(ap_filter_t *f,
 /* The request_rec pointer is passed in here only to ensure that the
  * filter chain is modified correctly when doing a TLS upgrade.  It
  * must *not* be used otherwise. */
-static void ssl_io_input_add_filter(ssl_filter_ctx_t *filter_ctx, conn_rec *c,
+static apr_status_t ssl_io_input_add_filter(ssl_filter_ctx_t *filter_ctx, conn_rec *c,
                                     request_rec *r, SSL *ssl)
 {
     bio_filter_in_ctx_t *inctx;
@@ -2334,6 +2334,9 @@ static void ssl_io_input_add_filter(ssl_filter_ctx_t *filter_ctx, conn_rec *c,
 #else
     filter_ctx->pbioRead = BIO_new(bio_filter_in_method);
 #endif
+    if(filter_ctx->pbioRead == NULL) {
+      return APR_ENOMEM;
+    }
     BIO_set_data(filter_ctx->pbioRead, (void *)inctx);
 
     inctx->c = c;
@@ -2347,14 +2350,16 @@ static void ssl_io_input_add_filter(ssl_filter_ctx_t *filter_ctx, conn_rec *c,
     inctx->block = APR_BLOCK_READ;
     inctx->pool = c->pool;
     inctx->filter_ctx = filter_ctx;
+    return APR_SUCCESS;
 }
 
 /* The request_rec pointer is passed in here only to ensure that the
  * filter chain is modified correctly when doing a TLS upgrade.  It
  * must *not* be used otherwise. */
-void ssl_io_filter_init(conn_rec *c, request_rec *r, SSL *ssl)
+apr_status_t ssl_io_filter_init(conn_rec *c, request_rec *r, SSL *ssl)
 {
     ssl_filter_ctx_t *filter_ctx;
+    apr_status_t rv = APR_SUCCESS;
 
     filter_ctx = apr_palloc(c->pool, sizeof(ssl_filter_ctx_t));
 
@@ -2370,9 +2375,15 @@ void ssl_io_filter_init(conn_rec *c, request_rec *r, SSL *ssl)
 #else
     filter_ctx->pbioWrite       = BIO_new(bio_filter_out_method);
 #endif
+    if(filter_ctx->pbioWrite == NULL) {
+      return APR_ENOMEM;
+    }
     BIO_set_data(filter_ctx->pbioWrite, (void *)bio_filter_out_ctx_new(filter_ctx, c));
 
-    ssl_io_input_add_filter(filter_ctx, c, r, ssl);
+    rv = ssl_io_input_add_filter(filter_ctx, c, r, ssl);
+    if(rv != APR_SUCCESS) {
+      return rv;
+    }
 
     SSL_set_bio(ssl, filter_ctx->pbioRead, filter_ctx->pbioWrite);
     filter_ctx->pssl            = ssl;
@@ -2391,7 +2402,7 @@ void ssl_io_filter_init(conn_rec *c, request_rec *r, SSL *ssl)
         }
     }
 
-    return;
+    return APR_SUCCESS;
 }
 
 void ssl_io_filter_register(apr_pool_t *p)
