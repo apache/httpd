@@ -183,6 +183,13 @@ if ! test -v SKIP_TESTING; then
         grep -v ':\(debug\|trace[12345678]\)\]' test/perl-framework/t/logs/error_log
     fi
 
+    if test -v TEST_H2 -a $RV -eq 0; then
+        MPM=event py.test-3 -vvv test/modules/http2 -k test_712_buffering
+        if test $? -ne 0; then
+            cat test/gen/apache/logs/error_log
+        fi
+    fi
+
     if test -v TEST_CORE -a $RV -eq 0; then
         # Run HTTP/2 tests.
         MPM=event py.test-3 test/modules/core

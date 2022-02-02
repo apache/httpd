@@ -11,6 +11,11 @@ class TestBuffering:
     @pytest.fixture(autouse=True, scope='class')
     def _class_scope(self, env):
         conf = H2Conf(env)
+        conf.add("LogLevel trace5 {mpm}:trace8 ssl:trace6 dumpio:trace7\n".format(mpm=env.mpm_module))
+        conf.add("""
+            DumpioOutput on
+            DumpioInput on
+            """)
         conf.add_vhost_cgi(h2proxy_self=True).install()
         assert env.apache_restart() == 0
 
