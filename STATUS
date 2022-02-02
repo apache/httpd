@@ -176,6 +176,7 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
              impact is significant from using malloc here.
      ylavic: A follow up backport (based on this one) using thread locals to
              reuse ap_regex*() contexts: https://github.com/apache/httpd/pull/289
+     rpluem: +1 on PR 289 as well.
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
