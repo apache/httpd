@@ -26,4 +26,5 @@
        requests that do not have a "Content-Length" and have not
        been announced as empty via an early EOS flag in the request
        header frames.
-
+     - mod_proxy: passes trailers in both directions if not forced
+       to HTTP/1.0.

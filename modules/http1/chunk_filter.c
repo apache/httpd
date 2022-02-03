@@ -469,11 +469,11 @@ static apr_status_t read_chunked_trailers(http_ctx_t *ctx, ap_filter_t *f,
  * be inserted/used after the headers are successfully parsed
  * on a HTTP/1.x connection.
  */
-apr_status_t ap_http1_transcode_in_filter(ap_filter_t *f,
-                                          apr_bucket_brigade *b,
-                                          ap_input_mode_t mode,
-                                          apr_read_type_e block,
-                                          apr_off_t readbytes)
+apr_status_t ap_http1_request_in_filter(ap_filter_t *f,
+                                        apr_bucket_brigade *b,
+                                        ap_input_mode_t mode,
+                                        apr_read_type_e block,
+                                        apr_off_t readbytes)
 {
     core_server_config *conf =
         (core_server_config *) ap_get_module_config(f->r->server->module_config,

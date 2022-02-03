@@ -1544,7 +1544,7 @@ request_rec *ap_read_request(conn_rec *conn)
     }
 
     /*
-     * Add the HTTP_IN and HTTP1_TRANSCODE_IN filters here to ensure that
+     * Add the HTTP_IN and HTTP1_REQUEST_IN filters here to ensure that
      * ap_discard_request_body called by ap_die and by ap_send_error_response
      * works correctly on status codes that do not cause the connection
      * to be dropped and in situations where the connection should be
@@ -1552,7 +1552,7 @@ request_rec *ap_read_request(conn_rec *conn)
      */
     ap_add_input_filter_handle(ap_http_input_filter_handle,
                                NULL, r, r->connection);
-    ap_add_input_filter_handle(ap_http1_transcode_in_filter_handle,
+    ap_add_input_filter_handle(ap_http1_request_in_filter_handle,
                                NULL, r, r->connection);
 
     /* Validate Host/Expect headers and select vhost. */

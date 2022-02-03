@@ -218,8 +218,8 @@ typedef struct response_filter_ctx {
     apr_bucket_brigade *tmpbb;
 } response_filter_ctx;
 
-AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http1_transcode_out_filter(ap_filter_t *f,
-                                                                   apr_bucket_brigade *b)
+AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http1_response_out_filter(ap_filter_t *f,
+                                                                  apr_bucket_brigade *b)
 {
     request_rec *r = f->r;
     conn_rec *c = r->connection;
