@@ -540,8 +540,7 @@ static void terminate_headers(proxy_http_req_t *req)
     }
 
     /* add empty line at the end of the headers */
-    e = apr_bucket_immortal_create(CRLF_ASCII, 2, bucket_alloc);
-    APR_BRIGADE_INSERT_TAIL(req->header_brigade, e);
+    ap_http1_terminate_header(req->header_brigade);
 }
 
 static int ap_proxy_http_prefetch(proxy_http_req_t *req,

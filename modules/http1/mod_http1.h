@@ -22,14 +22,3 @@
  */
 int http1_set_keepalive(request_rec *r, ap_bucket_headers *resp);
 
-/**
- * Append the headers in HTTP/1.1 format to the brigade.
- */
-apr_status_t http1_append_headers(apr_bucket_brigade *bb,
-                                  request_rec *r,
-                                  apr_table_t *headers);
-
-/**
- * Append the header terminating CRLF line to the brigade
- */
-void http1_terminate_header(apr_bucket_brigade *bb);

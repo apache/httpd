@@ -1138,6 +1138,21 @@ AP_DECLARE(void) ap_finalize_sub_req_protocol(request_rec *sub_r);
  */
 AP_DECLARE(void) ap_send_interim_response(request_rec *r, int send_headers);
 
+/**
+ * Append the headers in HTTP/1.1 format to the brigade.
+ * @param b the brigade to append to
+ * @param r the reqeust this is done for (pool and logging)
+ * @param headers the headers to append
+ */
+AP_DECLARE(apr_status_t) ap_http1_append_headers(apr_bucket_brigade *b,
+                                                 request_rec *r,
+                                                 apr_table_t *headers);
+
+/**
+ * Append the HTTP/1.1 header termination (empty CRLF) to the brigade.
+ * @param b the brigade to append to
+ */
+AP_DECLARE(apr_status_t) ap_http1_terminate_header(apr_bucket_brigade *b);
 
 /**
  * Insert/Append the last chunk in a HTTP/1.1 Transfer-Encoding chunked.
