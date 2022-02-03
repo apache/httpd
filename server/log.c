@@ -914,16 +914,30 @@ static int do_errorlog_default(const ap_errorlog_info *info, char *buf,
      * a scoreboard handle, it is likely a client.
      */
     if (info->r) {
-        len += apr_snprintf(buf + len, buflen - len, "[%s %s:%d] ",
+        apr_os_sock_t fd = -1;
+        apr_socket_t *csd = ap_get_conn_socket(info->r->connection);
+        if (csd) {
+            apr_os_sock_get(&fd, csd);
+        }
+
+        len += apr_snprintf(buf + len, buflen - len, "[%s %s:%d/%d] ",
                             info->r->connection->outgoing ? "remote" : "client",
                             info->r->useragent_ip,
-                            info->r->useragent_addr ? info->r->useragent_addr->port : 0);
+                            info->r->useragent_addr ? info->r->useragent_addr->port : 0,
+                            (int)fd);
     }
     else if (info->c) {
-        len += apr_snprintf(buf + len, buflen - len, "[%s %s:%d] ",
+        apr_os_sock_t fd = -1;
+        apr_socket_t *csd = ap_get_conn_socket((conn_rec *)info->c);
+        if (csd) {
+            apr_os_sock_get(&fd, csd);
+        }
+
+        len += apr_snprintf(buf + len, buflen - len, "[%s %s:%d/%d] ",
                             info->c->outgoing ? "remote" : "client",
                             info->c->client_ip,
-                            info->c->client_addr ? info->c->client_addr->port : 0);
+                            info->c->client_addr ? info->c->client_addr->port : 0,
+                            (int)fd);
     }
 
     /* the actual error message */
