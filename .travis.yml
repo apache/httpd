@@ -292,6 +292,7 @@ jobs:
            APU_VERSION=1.6.1 APU_CONFIG="--with-crypto"
            CONFIG="--enable-mods-shared=reallyall --with-mpm=event --enable-mpms-shared=all"
            NO_TEST_FRAMEWORK=1 TEST_INSTALL=1 TEST_H2=1 TEST_CORE=1 TEST_PROXY=1
+           NOTEST_CFLAGS="-DAP_DEBUG"
       addons:
         apt:
           sources:
