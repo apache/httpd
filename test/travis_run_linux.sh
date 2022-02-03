@@ -114,6 +114,7 @@ if ! test -v SKIP_TESTING; then
 
     # Try to keep all potential coredumps from all processes
     sudo sysctl -w kernel.core_uses_pid=1 2>/dev/null || true
+    ulimit -c unlimited 2>/dev/null || true
 
     if ! test -v NO_TEST_FRAMEWORK; then
         if test -v WITH_TEST_SUITE; then
@@ -273,7 +274,7 @@ if ! test -v SKIP_TESTING; then
         fi
     fi
 
-    for core in `ls test/perl-framework/t/core{,.*} 2>/dev/null`; do
+    for core in `ls test/perl-framework/t/core{,.*} test/gen/apache/core{,.*} 2>/dev/null`; do
         gdb -ex 'thread apply all backtrace full' -batch ./httpd "$core"
         RV=5
     done

@@ -443,6 +443,7 @@ class HttpdTestEnv:
         with open(self._test_conf, 'w') as fd:
             fd.write('\n'.join(self._httpd_base_conf))
             fd.write('\n')
+            fd.write(f"CoreDumpDirectory {self._server_dir}\n")
             if self._verbosity >= 2:
                 fd.write(f"LogLevel core:trace5 {self.mpm_module}:trace5\n")
             if self._log_interesting:
