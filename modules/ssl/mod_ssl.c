@@ -30,6 +30,7 @@
 #include "util_md5.h"
 #include "util_mutex.h"
 #include "ap_provider.h"
+#include "ap_mpm.h"
 #include "http_config.h"
 
 #include "mod_proxy.h" /* for proxy_hook_section_post_config() */
@@ -689,31 +690,80 @@ static int ssl_hook_process_connection(conn_rec* c)
 {
     SSLConnRec *sslconn = myConnConfig(c);
 
+    int status = DECLINED;
+
     if (sslconn && !sslconn->disabled) {
         /* On an active SSL connection, let the input filters initialize
          * themselves which triggers the handshake, which again triggers
          * all kinds of useful things such as SNI and ALPN.
          */
         apr_bucket_brigade* temp;
-        apr_status_t rv;
+
+        int again_mpm = 0;
 
         temp = apr_brigade_create(c->pool, c->bucket_alloc);
-        rv = ap_get_brigade(c->input_filters, temp,
-                            AP_MODE_INIT, APR_BLOCK_READ, 0);
-        apr_brigade_destroy(temp);
 
-        if (APR_SUCCESS != APR_SUCCESS) {
-            if (c->cs) {
-                c->cs->state = CONN_STATE_LINGER;
-            }
-            ap_log_cerror(APLOG_MARK, APLOG_ERR, rv, c, APLOGNO(10373)
-                          "SSL handshake was not completed, "
-                          "closing connection");
-            return OK;
+        if (ap_mpm_query(AP_MPMQ_CAN_AGAIN, &again_mpm) != APR_SUCCESS) {
+            again_mpm = 0;
         }
+
+        if (again_mpm) {
+
+            /* Take advantage of an async MPM. If we see an EAGAIN,
+             * loop round and don't block.
+             */
+            conn_state_t *cs = c->cs;
+
+            apr_status_t rv;
+
+            rv = ap_get_brigade(c->input_filters, temp,
+                           AP_MODE_INIT, APR_NONBLOCK_READ, 0);
+
+            if (rv == APR_SUCCESS) {
+                /* great news, lets continue */
+
+                ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, APLOGNO(10370)
+                              "SSL handshake completed, continuing");
+
+                status = DECLINED;
+            }
+            else if (rv == APR_EAGAIN) {
+                /* we've been asked to come around again, don't block */
+
+                ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, APLOGNO(10371)
+                              "SSL handshake in progress, continuing");
+
+                status = AGAIN;
+            }
+            else if (rv == AP_FILTER_ERROR) {
+                /* handshake error, but mod_ssl handled it */
+
+                ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, APLOGNO(10372)
+                              "SSL handshake failed, returning error response");
+
+                status = DECLINED;
+            }
+            else {
+                /* we failed, give up */
+
+                cs->state = CONN_STATE_LINGER;
+
+                ap_log_cerror(APLOG_MARK, APLOG_ERR, rv, c, APLOGNO(10373)
+                              "SSL handshake was not completed, "
+                              "closing connection");
+
+                status = OK;
+            }
+        }
+        else {
+            ap_get_brigade(c->input_filters, temp,
+                           AP_MODE_INIT, APR_BLOCK_READ, 0);
+        }
+
+        apr_brigade_destroy(temp);
     }
-    
-    return DECLINED;
+
+    return status;
 }
 
 /*
