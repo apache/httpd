@@ -574,12 +574,10 @@
                 section to influence the number for all connections to that virtual host. 
             </p>
             <p>
-                The push diary records a digest (currently using a 64 bit number) of pushed
+                The push diary records a digest of pushed
                 resources (their URL) to avoid duplicate pushes on the same connection.
                 These value are not persisted, so clients opening a new connection
-                will experience known pushes again. There is ongoing work to enable
-                a client to disclose a digest of the resources it already has, so
-                the diary maybe initialized by the client on each connection setup.
+                will experience known pushes again.
             </p>
             <p>
                 If the maximum size is reached, newer entries replace the oldest
