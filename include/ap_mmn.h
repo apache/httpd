@@ -698,8 +698,6 @@
  * 20210926.2 (2.5.1-dev)  Add ap_post_read_request()
  * 20211221.0 (2.5.1-dev)  Bump PROXY_WORKER_MAX_NAME_SIZE from 256 to 384,
  *                         add PROXY_WORKER_UDS_PATH_SIZE.
- * 20211221.1 (2.5.1-dev)  Add read_line to scoreboard.
- * 20211221.2 (2.5.1-dev)  Add AGAIN, AP_MPMQ_CAN_AGAIN.
  * 20211221.3 (2.5.1-dev)  Add ap_thread_create(), ap_thread_main_create()
  *                         and ap_thread_current()
  *

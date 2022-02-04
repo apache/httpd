@@ -237,11 +237,7 @@ typedef enum {
                                  * know if it worked yet
                                  */
     STATE_CONNECTED,            /* we know TCP connect completed */
-#ifdef USE_SSL
-    STATE_HANDSHAKE,            /* in the handshake phase */
-#endif
-    STATE_WRITE,                /* in the write phase */
-    STATE_READ                  /* in the read phase */
+    STATE_READ
 } connect_state_e;
 
 #define CBUFFSIZE (8192)
@@ -524,13 +520,21 @@ static void set_polled_events(struct connection *c, apr_int16_t new_reqevents)
     }
 }
 
-static void set_conn_state(struct connection *c, connect_state_e new_state,
-        apr_int16_t events)
+static void set_conn_state(struct connection *c, connect_state_e new_state)
 {
+    apr_int16_t events_by_state[] = {
+        0,           /* for STATE_UNCONNECTED */
+        APR_POLLOUT, /* for STATE_CONNECTING */
+        APR_POLLIN,  /* for STATE_CONNECTED; we don't poll in this state,
+                      * so prepare for polling in the following state --
+                      * STATE_READ
+                      */
+        APR_POLLIN   /* for STATE_READ */
+    };
 
     c->state = new_state;
 
-    set_polled_events(c, events);
+    set_polled_events(c, events_by_state[new_state]);
 }
 
 /* --------------------------------------------------------- */
@@ -703,7 +707,7 @@ static void ssl_print_info(struct connection *c)
     }
     ssl_print_connection_info(bio_err,c->ssl);
     SSL_SESSION_print(bio_err, SSL_get_session(c->ssl));
-}
+    }
 
 static void ssl_proceed_handshake(struct connection *c)
 {
@@ -779,19 +783,14 @@ static void ssl_proceed_handshake(struct connection *c)
             }
 #endif
             write_request(c);
-
             do_next = 0;
             break;
         case SSL_ERROR_WANT_READ:
-
-            set_conn_state(c, STATE_HANDSHAKE, APR_POLLIN);
-
+            set_polled_events(c, APR_POLLIN);
             do_next = 0;
             break;
         case SSL_ERROR_WANT_WRITE:
-
-            set_conn_state(c, STATE_HANDSHAKE, APR_POLLOUT);
-
+            set_polled_events(c, APR_POLLOUT);
             do_next = 0;
             break;
         case SSL_ERROR_WANT_CONNECT:
@@ -811,6 +810,9 @@ static void ssl_proceed_handshake(struct connection *c)
 
 static void write_request(struct connection * c)
 {
+    if (started >= requests) {
+        return;
+    }
 
     do {
         apr_time_t tnow;
@@ -843,14 +845,10 @@ static void write_request(struct connection * c)
             if (e <= 0) {
                 switch (SSL_get_error(c->ssl, e)) {
                 case SSL_ERROR_WANT_READ:
-
-                    set_conn_state(c, STATE_WRITE, APR_POLLIN);
-
+                    set_polled_events(c, APR_POLLIN);
                     break;
                 case SSL_ERROR_WANT_WRITE:
-
-                    set_conn_state(c, STATE_WRITE, APR_POLLOUT);
-
+                    set_polled_events(c, APR_POLLOUT);
                     break;
                 default:
                     BIO_printf(bio_err, "SSL write failed - closing connection\n");
@@ -873,7 +871,7 @@ static void write_request(struct connection * c)
                     close_connection(c);
                 }
                 else {
-                    set_conn_state(c, STATE_WRITE, APR_POLLOUT);
+                    set_polled_events(c, APR_POLLOUT);
                 }
                 return;
             }
@@ -885,8 +883,7 @@ static void write_request(struct connection * c)
 
     c->endwrite = lasttime = apr_time_now();
     started++;
-
-    set_conn_state(c, STATE_READ, APR_POLLIN);
+    set_conn_state(c, STATE_READ);
 }
 
 /* --------------------------------------------------------- */
@@ -1358,9 +1355,8 @@ static void start_connect(struct connection * c)
 {
     apr_status_t rv;
 
-    if (!(started < requests)) {
+    if (!(started < requests))
         return;
-    }
 
     c->read = 0;
     c->bread = 0;
@@ -1443,12 +1439,12 @@ static void start_connect(struct connection * c)
 #endif
     if ((rv = apr_socket_connect(c->aprsock, destsa)) != APR_SUCCESS) {
         if (APR_STATUS_IS_EINPROGRESS(rv)) {
-            set_conn_state(c, STATE_CONNECTING, APR_POLLOUT);
+            set_conn_state(c, STATE_CONNECTING);
             c->rwrite = 0;
             return;
         }
         else {
-            set_conn_state(c, STATE_UNCONNECTED, 0);
+            set_conn_state(c, STATE_UNCONNECTED);
             apr_socket_close(c->aprsock);
             if (good == 0 && destsa->next) {
                 destsa = destsa->next;
@@ -1469,6 +1465,7 @@ static void start_connect(struct connection * c)
     }
 
     /* connected first time */
+    set_conn_state(c, STATE_CONNECTED);
 #ifdef USE_SSL
     if (c->ssl) {
         ssl_proceed_handshake(c);
@@ -1516,7 +1513,7 @@ static void close_connection(struct connection * c)
         }
     }
 
-    set_conn_state(c, STATE_UNCONNECTED, 0);
+    set_conn_state(c, STATE_UNCONNECTED);
 #ifdef USE_SSL
     if (c->ssl) {
         SSL_shutdown(c->ssl);
@@ -1574,14 +1571,10 @@ read_more:
                 return;
             }
             else if (scode == SSL_ERROR_WANT_READ) {
-
-                set_conn_state(c, STATE_READ, APR_POLLIN);
-
+                set_polled_events(c, APR_POLLIN);
             }
             else if (scode == SSL_ERROR_WANT_WRITE) {
-
-                set_conn_state(c, STATE_READ, APR_POLLOUT);
-
+                set_polled_events(c, APR_POLLOUT);
             }
             else {
                 /* some fatal error: */
@@ -1675,7 +1668,7 @@ read_more:
             }
             else {
             /* header is in invalid or too big - close connection */
-                set_conn_state(c, STATE_UNCONNECTED, 0);
+                set_conn_state(c, STATE_UNCONNECTED);
                 apr_socket_close(c->aprsock);
                 err_response++;
                 if (bad++ > 10) {
@@ -1765,13 +1758,7 @@ read_more:
         goto read_more;
     }
 
-    /* are we done? */
-    if (started >= requests && (c->bread >= c->length)) {
-        close_connection(c);
-    }
-
-    /* are we keepalive? if so, reuse existing connection */
-    else if (c->keepalive && (c->bread >= c->length)) {
+    if (c->keepalive && (c->bread >= c->length)) {
         /* finished a keep-alive connection */
         good++;
         /* save out time */
@@ -1803,7 +1790,7 @@ read_more:
         c->read = c->bread = 0;
         /* zero connect time with keep-alive */
         c->start = c->connect = lasttime = apr_time_now();
-
+        set_conn_state(c, STATE_CONNECTED);
         write_request(c);
     }
 }
@@ -1993,7 +1980,6 @@ static void test(void)
         do {
             status = apr_pollset_poll(readbits, aprtimeout, &n, &pollresults);
         } while (APR_STATUS_IS_EINTR(status));
-
         if (status != APR_SUCCESS)
             apr_err("apr_pollset_poll", status);
 
@@ -2029,23 +2015,8 @@ static void test(void)
              * connection is done and we loop here endlessly calling
              * apr_poll().
              */
-            if ((rtnev & APR_POLLIN) || (rtnev & APR_POLLPRI) || (rtnev & APR_POLLHUP)) {
-
-                switch (c->state) {
-#ifdef USE_SSL
-                case STATE_HANDSHAKE:
-                    ssl_proceed_handshake(c);
-                    break;
-#endif
-                case STATE_WRITE:
-                    write_request(c);
-                    break;
-                case STATE_READ:
-                    read_connection(c);
-                    break;
-                }
-
-            }
+            if ((rtnev & APR_POLLIN) || (rtnev & APR_POLLPRI) || (rtnev & APR_POLLHUP))
+                read_connection(c);
             if ((rtnev & APR_POLLERR) || (rtnev & APR_POLLNVAL)) {
                 if (destsa->next && c->state == STATE_CONNECTING && good == 0) {
                     destsa = destsa->next;
@@ -2069,7 +2040,7 @@ static void test(void)
                     /* call connect() again to detect errors */
                     rv = apr_socket_connect(c->aprsock, destsa);
                     if (rv != APR_SUCCESS) {
-                        set_conn_state(c, STATE_UNCONNECTED, 0);
+                        set_conn_state(c, STATE_UNCONNECTED);
                         apr_socket_close(c->aprsock);
                         err_conn++;
                         if (bad++ > 10) {
@@ -2081,7 +2052,7 @@ static void test(void)
                         continue;
                     }
                     else {
-
+                        set_conn_state(c, STATE_CONNECTED);
 #ifdef USE_SSL
                         if (c->ssl)
                             ssl_proceed_handshake(c);
@@ -2089,24 +2060,16 @@ static void test(void)
 #endif
                         write_request(c);
                     }
-
                 }
                 else {
-
-                    switch (c->state) {
-#ifdef USE_SSL
-                    case STATE_HANDSHAKE:
-                        ssl_proceed_handshake(c);
-                        break;
-#endif
-                    case STATE_WRITE:
-                        write_request(c);
-                        break;
-                    case STATE_READ:
+                    /* POLLOUT is one shot */
+                    set_polled_events(c, APR_POLLIN);
+                    if (c->state == STATE_READ) {
                         read_connection(c);
-                        break;
                     }
-
+                    else {
+                        write_request(c);
+                    }
                 }
             }
         }
@@ -2729,7 +2692,7 @@ int main(int argc, const char * const argv[])
     if (ssl_cert != NULL) {
         if (SSL_CTX_use_certificate_chain_file(ssl_ctx, ssl_cert) <= 0) {
             BIO_printf(bio_err, "unable to get certificate from '%s'\n",
-                    ssl_cert);
+            		ssl_cert);
             ERR_print_errors(bio_err);
             exit(1);
         }

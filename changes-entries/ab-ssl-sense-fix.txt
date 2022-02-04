@@ -1,5 +1,0 @@
-  *) ab: Respond appropriately to SSL_ERROR_WANT_READ and SSL_ERROR_WANT_WRITE.
-     Previously the correct event was polled for, but the response to the poll
-     would call write instead of read, and read instead of write. PR 55952
-     [Graham Leggett]
-
