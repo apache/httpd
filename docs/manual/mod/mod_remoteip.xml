@@ -237,7 +237,10 @@ RemoteIPProxiesHeader X-Forwarded-By
     send the header every time it opens a connection or the connection will
     be aborted unless it is in the list of disabled hosts provided by the
     <directive module="mod_remoteip">RemoteIPProxyProtocolExceptions</directive>
-    directive.</p>
+    directive. Alternatively, if the
+    <directive module="mod_remoteip">RemoteIPProxyProtocolOnly</directive>
+    directive is used, a PROXY protocol header will only be required from
+    the specified clients.</p>
 
     <p>While this directive may be specified in any virtual host, it is
     important to understand that because the PROXY protocol is connection
@@ -290,6 +293,27 @@ Listen 8080
     permit other clients to connect without it. This directive allows a server 
     administrator to configure a single host or CIDR range of hosts that may do
     so.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>RemoteIPProxyProtocolOnly</name>
+<description>Enable processing of PROXY header for only certain hosts or networks</description>
+<syntax>RemoteIPProxyProtocolOnly host|range [host|range] [host|range]</syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+<compatibility>RemoteIPProxyProtocolOnly is only available in httpd UNRELEASED and newer</compatibility>
+
+<usage>
+    <p>The <directive>RemoteIPProxyProtocolOnly</directive> directive enables or
+    disables the reading and handling of the PROXY protocol connection header.
+    Only clients configured with this directive (and not excluded with
+    <directive module="mod_remoteip">RemoteIPProxyProtocolExceptions</directive>)
+    will be required to provide a PROXY protocol header.
+    This configuration can be desirable if a set of proxy hosts connect to the
+    server, but other clients also connect directly to the server bypassing the
+    proxy. In this case you could configure the server to only accept PROXY
+    protocol from the IP addresses of the proxy servers.</p>
 </usage>
 </directivesynopsis>
 
