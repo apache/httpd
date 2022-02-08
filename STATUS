@@ -272,6 +272,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
              this one (I'd have to rebase the github PR first).
      ylavic: Can someone test this on Windows too?
 
+  *) mod_proxy: Bump shared worker name to 384 chars. PR 53218
+     trunk patch: http://svn.apache.org/r1896253
+     2.4.x patch: https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/288.diff
+                  (PR: https://github.com/apache/httpd/pull/288)
+     ylavic: r1896253 made compatible with 2.4.x where we can't change the
+             layout/size of the existing proxy_worker_shared fields.
+
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
