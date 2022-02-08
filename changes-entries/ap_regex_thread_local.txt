@@ -1,2 +1,0 @@
-  *) ap_regex: Use Thread Local Storage (TLS) to recycle ap_regexec() buffers
-     when an efficient TLS implementation is available. [Yann Ylavic]

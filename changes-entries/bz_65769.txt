@@ -1,2 +1,0 @@
-  *) mpm_event: Fix a possible listener deadlock on heavy load when restarting
-     and/or reaching MaxConnectionsPerChild.  PR 65769.  [Yann Ylavic]
