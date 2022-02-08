@@ -1,4 +1,4 @@
-# test wildcard certificates
+# test wildcard certifcates
 import os
 
 import pytest
@@ -25,9 +25,7 @@ class TestWildcard:
         env.clear_store()
         self.test_domain = env.get_request_domain(request)
 
-    # -----------------------------------------------------------------------------------------------
     # test case: a wildcard certificate with ACMEv2, no dns-01 supported
-    #
     def test_md_720_001(self, env):
         domain = self.test_domain
         
@@ -47,9 +45,7 @@ class TestWildcard:
         assert md['renewal']['errors'] > 0
         assert md['renewal']['last']['problem'] == 'challenge-mismatch'
 
-    # -----------------------------------------------------------------------------------------------
-    # test case: a wildcard certificate with ACMEv2, only dns-01 configured, invalid command path 
-    #
+    # test case: a wildcard certificate with ACMEv2, only dns-01 configured, invalid command path
     def test_md_720_002(self, env):
         dns01cmd = os.path.join(env.test_dir, "../modules/md/dns01-not-found.py")
 
@@ -96,9 +92,7 @@ class TestWildcard:
         for domain in domains:
             assert domain in altnames
 
-    # -----------------------------------------------------------------------------------------------
-    # test case: a wildcard certificate with ACMEv2, only dns-01 configured, invalid command option 
-    #
+    # test case: a wildcard certificate with ACMEv2, only dns-01 configured, invalid command option
     def test_md_720_003(self, env):
         dns01cmd = os.path.join(env.test_dir, "../modules/md/dns01.py fail")
         domain = self.test_domain
@@ -120,9 +114,7 @@ class TestWildcard:
         assert md['renewal']['errors'] > 0
         assert md['renewal']['last']['problem'] == 'challenge-setup-failure'
 
-    # -----------------------------------------------------------------------------------------------
-    # test case: a wildcard name certificate with ACMEv2, only dns-01 configured 
-    #
+    # test case: a wildcard name certificate with ACMEv2, only dns-01 configured
     def test_md_720_004(self, env):
         dns01cmd = os.path.join(env.test_dir, "../modules/md/dns01.py")
         domain = self.test_domain
@@ -147,9 +139,7 @@ class TestWildcard:
         for domain in domains:
             assert domain in altnames
 
-    # -----------------------------------------------------------------------------------------------
     # test case: a wildcard name and 2nd normal vhost, not overlapping
-    #
     def test_md_720_005(self, env):
         dns01cmd = os.path.join(env.test_dir, "../modules/md/dns01.py")
         domain = self.test_domain
@@ -176,7 +166,6 @@ class TestWildcard:
         for domain in domains:
             assert domain in altnames
 
-    # -----------------------------------------------------------------------------------------------
     # test case: a wildcard name and 2nd normal vhost, overlapping
     def test_md_720_006(self, env):
         dns01cmd = os.path.join(env.test_dir, "../modules/md/dns01.py")
@@ -205,7 +194,6 @@ class TestWildcard:
         for domain in [domain, dwild]:
             assert domain in altnames
 
-    # -----------------------------------------------------------------------------------------------
     # test case: a MDomain with just a wildcard, see #239
     def test_md_720_007(self, env):
         dns01cmd = os.path.join(env.test_dir, "../modules/md/dns01.py")
@@ -231,3 +219,36 @@ class TestWildcard:
         cert_a = env.get_cert(wwwdomain)
         altnames = cert_a.get_san_list()
         assert domains == altnames
+
+    # test case: a plain name, only dns-01 configured,
+    # http-01 should not be intercepted. See #279
+    def test_md_720_008(self, env):
+        dns01cmd = os.path.join(env.test_dir, "../modules/md/dns01.py")
+        domain = self.test_domain
+        domains = [domain]
+
+        conf = MDConf(env)
+        conf.add("MDCAChallenges dns-01")
+        conf.add(f"MDChallengeDns01 {dns01cmd}")
+        conf.add_md(domains)
+        conf.add_vhost(domains)
+        conf.add("LogLevel http:trace4")
+        conf.install()
+
+        challengedir = os.path.join(env.server_dir, "htdocs/test1/.well-known/acme-challenge")
+        env.mkpath(challengedir)
+        content = b'not a challenge'
+        with open(os.path.join(challengedir, "123456"), "wb") as fd:
+            fd.write(content)
+
+        # restart, check that md is in store
+        assert env.apache_restart() == 0
+        env.check_md(domains)
+        # await drive completion
+        assert env.await_completion([domain], restart=False)
+        # access a fake http-01 challenge on the domain
+        r = env.curl_get(f"http://{domain}:{env.http_port}/.well-known/acme-challenge/123456")
+        assert r.response['status'] == 200
+        assert r.response['body'] == content
+        assert env.apache_restart() == 0
+        env.check_md_complete(domain)

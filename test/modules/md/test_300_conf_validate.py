@@ -342,3 +342,26 @@ class TestConf:
         md = env.get_md_status(domain)
         assert md['ca']['url'] == url
 
+    # vhost on another address, see #278
+    def test_md_300_026(self, env):
+        assert env.apache_stop() == 0
+        conf = MDConf(env)
+        domain = f"t300_026.{env.http_tld}"
+        conf.add(f"""
+            MDomain {domain}
+            """)
+        conf.add_vhost(port=env.http_port, domains=[domain], with_ssl=False)
+        conf.add(f"""
+            <VirtualHost 10.0.0.1:{env.https_port}>
+              ServerName {domain}
+              ServerAlias xxx.{env.http_tld}
+              SSLEngine on
+            </VirtualHost>
+            <VirtualHost 10.0.0.1:12345>
+              ServerName {domain}
+              SSLEngine on
+            </VirtualHost>
+            """)
+        conf.install()
+        assert env.apache_restart() == 0
+
