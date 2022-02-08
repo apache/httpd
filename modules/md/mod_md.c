@@ -1359,6 +1359,15 @@ static int md_http_challenge_pr(request_rec *r)
             name = r->parsed_uri.path + sizeof(ACME_CHALLENGE_PREFIX)-1;
             reg = sc && sc->mc? sc->mc->reg : NULL;
 
+            if (md && md->ca_challenges
+                && md_array_str_index(md->ca_challenges, MD_AUTHZ_CHA_HTTP_01, 0, 1) < 0) {
+                /* The MD this challenge is for does not allow http-01 challanges,
+                 * we have to decline. See #279 for a setup example where this
+                 * is necessary.
+                 */
+                return DECLINED;
+            }
+
             if (strlen(name) && !ap_strchr_c(name, '/') && reg) {
                 md_store_t *store = md_reg_store_get(reg);
 
