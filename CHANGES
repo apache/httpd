@@ -1,6 +1,11 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.53
 
+  *) mod_md: the status description in MDomain's JSON, exposed in the
+     md-status handler (if configured) did sometimes not carry the correct
+     message when certificates needed renew.
+     [Stefan Eissing]
+
   *) mpm_event: Fix a possible listener deadlock on heavy load when restarting
      and/or reaching MaxConnectionsPerChild.  PR 65769.  [Yann Ylavic]
 
