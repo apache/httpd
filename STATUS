@@ -274,6 +274,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
   *) mod_proxy: Bump shared worker name to 384 chars. PR 53218
      trunk patch: http://svn.apache.org/r1896253
+                  http://svn.apache.org/r1897859 (CHANGES entry, not in patch)
      2.4.x patch: https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/288.diff
                   (PR: https://github.com/apache/httpd/pull/288)
      ylavic: r1896253 made compatible with 2.4.x where we can't change the
