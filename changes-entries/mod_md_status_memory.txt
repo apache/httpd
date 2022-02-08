@@ -1,0 +1,4 @@
+  *) mod_md: the status description in MDomain's JSON, exposed in the
+     md-status handler (if configure) did sometimes not carry the correct
+     message when certificates needed renew.
+     [Stefan Eissing]
