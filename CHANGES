@@ -15,7 +15,7 @@ Changes with Apache 2.5.1
   *) ap_regex: Use Thread Local Storage (TLS) to recycle ap_regexec() buffers
      when an efficient TLS implementation is available. [Yann Ylavic]
 
-  *) mom_reqtimeout: Fix missing handshake= timeout enforcement.  [Yann Ylavic]
+  *) mod_reqtimeout: Fix missing handshake= timeout enforcement.  [Yann Ylavic]
 
   *) mod_dav: Fix regression when gathering properties which could lead to huge
      memory consumption proportional to the number of resources.
