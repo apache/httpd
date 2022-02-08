@@ -1,0 +1,3 @@
+  *) mod_http2: when a h2 request carries a ':scheme' pseudoheader,
+    it gives a 400 response if the scheme does not match the
+    connection. Fixes <https://github.com/icing/mod_h2/issues/230>.
