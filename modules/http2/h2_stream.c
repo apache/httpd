@@ -792,7 +792,7 @@ apr_status_t h2_stream_end_headers(h2_stream *stream, int eos, size_t raw_bytes)
         if (stream->rtmp->scheme && strcasecmp(stream->rtmp->scheme,
             ap_ssl_conn_is_ssl(stream->session->c1)? "https" : "http")) {
                 ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, stream->session->c1,
-                              H2_STRM_LOG(APLOGNO(), stream,"Request :scheme '%s' and "
+                              H2_STRM_LOG(APLOGNO(10379), stream,"Request :scheme '%s' and "
                               "connection do not match."), stream->rtmp->scheme);
             set_error_response(stream, HTTP_BAD_REQUEST);
         }
