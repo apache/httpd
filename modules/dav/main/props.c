@@ -728,9 +728,15 @@ DAV_DECLARE(dav_get_props_result) dav_get_props(dav_propdb *propdb,
     /* we lose both the document and the element when calling (insert_prop),
      * make these available in the pool.
      */
-    element = apr_pcalloc(propdb->resource->pool, sizeof(dav_liveprop_elem));
+    element = dav_get_liveprop_element(propdb->resource);
+    if (!element) {
+        element = apr_pcalloc(propdb->resource->pool, sizeof(dav_liveprop_elem));
+        apr_pool_userdata_setn(element, DAV_PROP_ELEMENT, NULL, propdb->resource->pool);
+    }
+    else {
+        memset(element, 0, sizeof(dav_liveprop_elem));
+    }
     element->doc = doc;
-    apr_pool_userdata_setn(element, DAV_PROP_ELEMENT, NULL, propdb->resource->pool);
 
     /* ### NOTE: we should pass in TWO buffers -- one for keys, one for
        the marks */
