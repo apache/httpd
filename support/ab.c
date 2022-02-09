@@ -273,6 +273,7 @@ struct connection {
                beginread,       /* First byte of input */
                done;            /* Connection closed */
 
+    apr_uint64_t keptalive;     /* subsequent keepalive requests */
     int socknum;
 #ifdef USE_SSL
     SSL *ssl;
@@ -738,6 +739,7 @@ static void ssl_proceed_handshake(struct connection *c)
 
     while (do_next) {
         int ret, ecode;
+        apr_status_t status;
 
         ret = SSL_do_handshake(c->ssl);
         ecode = SSL_get_error(c->ssl, ret);
@@ -825,7 +827,9 @@ static void ssl_proceed_handshake(struct connection *c)
         case SSL_ERROR_SSL:
         case SSL_ERROR_SYSCALL:
             /* Unexpected result */
-            BIO_printf(bio_err, "SSL handshake failed (%d).\n", ecode);
+            status = apr_get_netos_error();
+            BIO_printf(bio_err, "SSL handshake failed (%d): %s\n", ecode,
+                    apr_psprintf(c->ctx, "%pm", &status));
             ERR_print_errors(bio_err);
             close_connection(c);
             do_next = 0;
@@ -1406,6 +1410,7 @@ static void start_connect(struct connection * c)
     c->cbx = 0;
     c->gotheader = 0;
     c->rwrite = 0;
+    c->keptalive = 0;
     if (c->ctx) {
         apr_pool_clear(c->ctx);
     }
@@ -1528,9 +1533,10 @@ static void start_connect(struct connection * c)
 
 static void close_connection(struct connection * c)
 {
-    if (c->read == 0 && c->keepalive) {
+    if (c->read == 0 && c->keptalive) {
         /*
          * server has legitimately shut down an idle keep alive request
+         * as per RFC7230 6.3.1.
          */
         if (good)
             good--;     /* connection never happened */
@@ -1850,6 +1856,8 @@ read_more:
         c->read = c->bread = 0;
         /* zero connect time with keep-alive */
         c->start = c->connect = lasttime = apr_time_now();
+
+        c->keptalive++;
 
         write_request(c);
     }
