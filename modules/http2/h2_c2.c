@@ -574,8 +574,8 @@ static apr_status_t c2_process(h2_conn_ctx_t *conn_ctx, conn_rec *c)
     }
 
     ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, c,
-                  "h2_c2(%s-%d): created request_rec",
-                  conn_ctx->id, conn_ctx->stream_id);
+                  "h2_c2(%s-%d): created request_rec for %s",
+                  conn_ctx->id, conn_ctx->stream_id, r->the_request);
     conn_ctx->server = r->server;
 
     /* the request_rec->server carries the timeout value that applies */
