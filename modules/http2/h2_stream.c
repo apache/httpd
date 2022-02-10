@@ -830,7 +830,7 @@ apr_status_t h2_stream_end_headers(h2_stream *stream, int eos, size_t raw_bytes)
     if (!ap_cstr_casecmp(req->method, "CONNECT")) {
         if (req->scheme || req->path) {
             ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, stream->session->c1,
-                          H2_STRM_LOG(APLOGNO(), stream, "Request to CONNECT "
+                          H2_STRM_LOG(APLOGNO(10384), stream, "Request to CONNECT "
                           "with :scheme or :path specified, sending 400 answer"));
             set_error_response(stream, HTTP_BAD_REQUEST);
             goto cleanup;
@@ -839,7 +839,7 @@ apr_status_t h2_stream_end_headers(h2_stream *stream, int eos, size_t raw_bytes)
     else if (is_http_or_https) {
         if (!req->path) {
             ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, stream->session->c1,
-                          H2_STRM_LOG(APLOGNO(), stream, "Request for http(s) "
+                          H2_STRM_LOG(APLOGNO(10385), stream, "Request for http(s) "
                           "resource without :path, sending 400 answer"));
             set_error_response(stream, HTTP_BAD_REQUEST);
             goto cleanup;
