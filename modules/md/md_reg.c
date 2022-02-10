@@ -208,7 +208,12 @@ static apr_status_t state_init(md_reg_t *reg, apr_pool_t *p, md_t *md)
 
     if (md->renew_window == NULL) md->renew_window = reg->renew_window;
     if (md->warn_window == NULL) md->warn_window = reg->warn_window;
-    
+
+    if (md->domains && md->domains->pool != p) {
+        md_log_perror(MD_LOG_MARK, MD_LOG_ERR, 0, p,
+                      "md{%s}: state_init called with foreign pool", md->name);
+    }
+
     for (i = 0; i < md_cert_count(md); ++i) {
         spec = md_pkeys_spec_get(md->pks, i);
         md_log_perror(MD_LOG_MARK, MD_LOG_TRACE2, rv, p,
@@ -902,7 +907,7 @@ apr_status_t md_reg_sync_finish(md_reg_t *reg, md_t *md, apr_pool_t *p, apr_pool
         md->ca_proto = MD_PROTO_ACME; 
     }
     
-    rv = state_init(reg, ptemp, md);
+    rv = state_init(reg, p, md);
     if (APR_SUCCESS != rv) goto leave;
     
     md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, rv, ptemp, "loading md %s", md->name);

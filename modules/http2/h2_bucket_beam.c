@@ -276,11 +276,13 @@ static void h2_blist_cleanup(h2_blist *bl)
 
 static void recv_buffer_cleanup(h2_bucket_beam *beam)
 {
-    if (beam->recv_buffer && !APR_BRIGADE_EMPTY(beam->recv_buffer)) {
-        apr_bucket_brigade *bb = beam->recv_buffer;
+    apr_bucket_brigade *bb = beam->recv_buffer;
+
+    beam->recv_buffer = NULL;
+
+    if (bb && !APR_BRIGADE_EMPTY(bb)) {
         apr_off_t bblen = 0;
         
-        beam->recv_buffer = NULL;
         apr_brigade_length(bb, 0, &bblen);
         beam->recv_bytes += bblen;
         
@@ -297,27 +299,48 @@ static void recv_buffer_cleanup(h2_bucket_beam *beam)
     }
 }
 
-static apr_status_t beam_cleanup(h2_bucket_beam *beam, int from_pool)
+static void beam_shutdown(h2_bucket_beam *beam, apr_shutdown_how_e how)
 {
-    beam->cons_io_cb = NULL;
-    beam->recv_cb = NULL;
+    if (!beam->pool) {
+        /* pool being cleared already */
+        return;
+    }
 
-    h2_blist_cleanup(&beam->buckets_to_send);
-    recv_buffer_cleanup(beam);
-    purge_consumed_buckets(beam);
-    return APR_SUCCESS;
+    /* shutdown both receiver and sender? */
+    if (how == APR_SHUTDOWN_READWRITE) {
+        beam->cons_io_cb = NULL;
+        beam->recv_cb = NULL;
+    }
+
+    /* shutdown receiver (or both)? */
+    if (how != APR_SHUTDOWN_WRITE) {
+        recv_buffer_cleanup(beam);
+        beam->recv_cb = NULL;
+    }
+
+    /* shutdown sender (or both)? */
+    if (how != APR_SHUTDOWN_READ) {
+        h2_blist_cleanup(&beam->buckets_to_send);
+        purge_consumed_buckets(beam);
+    }
 }
 
-static apr_status_t beam_pool_cleanup(void *data)
+static apr_status_t beam_cleanup(void *data)
 {
-    return beam_cleanup(data, 1);
+    h2_bucket_beam *beam = data;
+    beam_shutdown(beam, APR_SHUTDOWN_READWRITE);
+    beam->pool = NULL; /* the pool is clearing now */
+    return APR_SUCCESS;
 }
 
 apr_status_t h2_beam_destroy(h2_bucket_beam *beam, conn_rec *c)
 {
-    apr_pool_cleanup_kill(beam->pool, beam, beam_pool_cleanup);
-    H2_BEAM_LOG(beam, c, APLOG_TRACE2, 0, "destroy", NULL);
-    return beam_cleanup(beam, 0);
+    if (beam->pool) {
+        H2_BEAM_LOG(beam, c, APLOG_TRACE2, 0, "destroy", NULL);
+        apr_pool_cleanup_run(beam->pool, beam, beam_cleanup);
+    }
+    H2_BEAM_LOG(beam, c, APLOG_TRACE2, 0, "destroyed", NULL);
+    return APR_SUCCESS;
 }
 
 apr_status_t h2_beam_create(h2_bucket_beam **pbeam, conn_rec *from,
@@ -346,7 +369,7 @@ apr_status_t h2_beam_create(h2_bucket_beam **pbeam, conn_rec *from,
     if (APR_SUCCESS != rv) goto cleanup;
     rv = apr_thread_cond_create(&beam->change, pool);
     if (APR_SUCCESS != rv) goto cleanup;
-    apr_pool_pre_cleanup_register(pool, beam, beam_pool_cleanup);
+    apr_pool_pre_cleanup_register(pool, beam, beam_cleanup);
 
 cleanup:
     H2_BEAM_LOG(beam, from, APLOG_TRACE2, rv, "created", NULL);
@@ -405,15 +428,14 @@ void h2_beam_abort(h2_bucket_beam *beam, conn_rec *c)
             beam->was_empty_cb(beam->was_empty_ctx, beam);
         }
         /* no more consumption reporting to sender */
-        beam->cons_io_cb = NULL;
-        beam->cons_ctx = NULL;
-        purge_consumed_buckets(beam);
-        h2_blist_cleanup(&beam->buckets_to_send);
         report_consumption(beam, 1);
+        beam->cons_ctx = NULL;
+
+        beam_shutdown(beam, APR_SHUTDOWN_WRITE);
     }
     else {
         /* receiver aborts */
-        recv_buffer_cleanup(beam);
+        beam_shutdown(beam, APR_SHUTDOWN_READ);
     }
     apr_thread_cond_broadcast(beam->change);
     apr_thread_mutex_unlock(beam->lock);
@@ -436,6 +458,8 @@ static apr_status_t append_bucket(h2_bucket_beam *beam,
         rv = APR_ECONNABORTED;
         goto cleanup;
     }
+
+    ap_assert(beam->pool);
 
     b = APR_BRIGADE_FIRST(bb);
     if (APR_BUCKET_IS_METADATA(b)) {
@@ -536,6 +560,8 @@ apr_status_t h2_beam_send(h2_bucket_beam *beam, conn_rec *from,
     apr_size_t space_left = 0;
     int was_empty;
 
+    ap_assert(beam->pool);
+
     /* Called from the sender thread to add buckets to the beam */
     apr_thread_mutex_lock(beam->lock);
     ap_assert(beam->from == from);
@@ -599,10 +625,12 @@ apr_status_t h2_beam_receive(h2_bucket_beam *beam,
 
 transfer:
     if (beam->aborted) {
-        recv_buffer_cleanup(beam);
+        beam_shutdown(beam, APR_SHUTDOWN_READ);
         rv = APR_ECONNABORTED;
         goto leave;
     }
+
+    ap_assert(beam->pool);
 
     /* transfer enough buckets from our receiver brigade, if we have one */
     while (remain >= 0

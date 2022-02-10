@@ -211,3 +211,19 @@ content-type: text/html
         assert 1024 == len(r.response["body"])
         assert "content-length" in h
         assert clen == h["content-length"]
+
+    # use an invalid scheme
+    def test_h2_003_51(self, env):
+        url = env.mkurl("https", "cgi", "/")
+        opt = ["-H:scheme: invalid"]
+        r = env.nghttp().get(url, options=opt)
+        assert r.exit_code == 0, r
+        assert r.response['status'] == 400
+
+    # use an differing scheme, but one that is acceptable
+    def test_h2_003_52(self, env):
+        url = env.mkurl("https", "cgi", "/")
+        opt = ["-H:scheme: http"]
+        r = env.nghttp().get(url, options=opt)
+        assert r.exit_code == 0, r
+        assert r.response['status'] == 200

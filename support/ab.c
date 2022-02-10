@@ -128,6 +128,7 @@
 #include "apr_strings.h"
 #include "apr_network_io.h"
 #include "apr_file_io.h"
+#include "apr_ring.h"
 #include "apr_time.h"
 #include "apr_getopt.h"
 #include "apr_general.h"
@@ -246,11 +247,16 @@ typedef enum {
 
 #define CBUFFSIZE (8192)
 
+typedef struct connection connection;
+
 struct connection {
+    APR_RING_ENTRY(connection) delay_list;
+    void (*delay_fn)(struct connection *);
     apr_pool_t *ctx;
     apr_socket_t *aprsock;
     apr_pollfd_t pollfd;
     int state;
+    apr_time_t delay;
     apr_size_t read;            /* amount of bytes read */
     apr_size_t bread;           /* amount of body read */
     apr_size_t rwrite, rwrote;  /* keep pointers in what we write - across
@@ -267,6 +273,7 @@ struct connection {
                beginread,       /* First byte of input */
                done;            /* Connection closed */
 
+    apr_uint64_t keptalive;     /* subsequent keepalive requests */
     int socknum;
 #ifdef USE_SSL
     SSL *ssl;
@@ -279,6 +286,10 @@ struct data {
     apr_interval_time_t ctime;    /* time to connect */
     apr_interval_time_t time;     /* time for connection */
 };
+
+APR_RING_HEAD(delay_head_t, connection);
+
+struct delay_head_t delay_head;
 
 #define ap_min(a,b) (((a)<(b))?(a):(b))
 #define ap_max(a,b) (((a)>(b))?(a):(b))
@@ -296,6 +307,7 @@ int send_body = 0;      /* non-zero if sending body with request */
 int requests = 1;       /* Number of requests to make */
 int heartbeatres = 100; /* How often do we say we're alive */
 int concurrency = 1;    /* Number of multiple requests to make */
+int concurrent = 0;     /* Number of multiple requests actually made */
 int percentile = 1;     /* Show percentile served */
 int nolength = 0;       /* Accept variable document length */
 int confidence = 1;     /* Show confidence estimator and warnings */
@@ -324,6 +336,7 @@ const char *fullurl;
 const char *colonhost;
 int isproxy = 0;
 apr_interval_time_t aprtimeout = apr_time_from_sec(30); /* timeout value */
+apr_interval_time_t ramp = apr_time_from_msec(0); /* ramp delay */
 
 /* overrides for ab-generated common headers */
 const char *opt_host;   /* which optional "Host:" header specified, if any */
@@ -399,6 +412,9 @@ apr_xlate_t *from_ascii, *to_ascii;
 static void write_request(struct connection * c);
 static void close_connection(struct connection * c);
 
+static void output_html_results(void);
+static void output_results(int sig);
+
 /* --------------------------------------------------------- */
 
 /* simple little function to write an error string and exit */
@@ -408,6 +424,12 @@ static void err(const char *s)
     fprintf(stderr, "%s\n", s);
     if (done)
         printf("Total of %d requests completed\n" , done);
+
+    if (use_html)
+        output_html_results();
+    else
+        output_results(0);
+
     exit(1);
 }
 
@@ -422,6 +444,12 @@ static void apr_err(const char *s, apr_status_t rv)
         s, apr_strerror(rv, buf, sizeof buf), rv);
     if (done)
         printf("Total of %d requests completed\n" , done);
+
+    if (use_html)
+        output_html_results();
+    else
+        output_results(0);
+
     exit(rv);
 }
 
@@ -711,6 +739,7 @@ static void ssl_proceed_handshake(struct connection *c)
 
     while (do_next) {
         int ret, ecode;
+        apr_status_t status;
 
         ret = SSL_do_handshake(c->ssl);
         ecode = SSL_get_error(c->ssl, ret);
@@ -798,7 +827,9 @@ static void ssl_proceed_handshake(struct connection *c)
         case SSL_ERROR_SSL:
         case SSL_ERROR_SYSCALL:
             /* Unexpected result */
-            BIO_printf(bio_err, "SSL handshake failed (%d).\n", ecode);
+            status = apr_get_netos_error();
+            BIO_printf(bio_err, "SSL handshake failed (%d): %s\n", ecode,
+                    apr_psprintf(c->ctx, "%pm", &status));
             ERR_print_errors(bio_err);
             close_connection(c);
             do_next = 0;
@@ -967,6 +998,8 @@ static void output_results(int sig)
         printf("Document Length:        %" APR_SIZE_T_FMT " bytes\n", doclen);
     printf("\n");
     printf("Concurrency Level:      %d\n", concurrency);
+    printf("Concurrency achieved:   %d\n", concurrent);
+    printf("Rampup delay:           %" APR_TIME_T_FMT " [ms]\n", apr_time_as_msec(ramp));
     printf("Time taken for tests:   %.3f seconds\n", timetaken);
     printf("Complete requests:      %d\n", done);
     printf("Failed requests:        %d\n", bad);
@@ -1247,6 +1280,12 @@ static void output_html_results(void)
     printf("<tr %s><th colspan=2 %s>Concurrency Level:</th>"
        "<td colspan=2 %s>%d</td></tr>\n",
        trstring, tdstring, tdstring, concurrency);
+    printf("<tr %s><th colspan=2 %s>Concurrency achieved:</th>"
+       "<td colspan=2 %s>%d</td></tr>\n",
+       trstring, tdstring, tdstring, concurrent);
+    printf("<tr %s><th colspan=2 %s>Rampup delay:</th>"
+       "<td colspan=2 %s>%" APR_TIME_T_FMT " [ms]</td></tr>\n",
+       trstring, tdstring, tdstring, apr_time_as_msec(ramp));
     printf("<tr %s><th colspan=2 %s>Time taken for tests:</th>"
        "<td colspan=2 %s>%.3f seconds</td></tr>\n",
        trstring, tdstring, tdstring, timetaken);
@@ -1362,16 +1401,25 @@ static void start_connect(struct connection * c)
         return;
     }
 
+    c->delay = 0;
+    c->delay_fn = NULL;
+
     c->read = 0;
     c->bread = 0;
     c->keepalive = 0;
     c->cbx = 0;
     c->gotheader = 0;
     c->rwrite = 0;
-    if (c->ctx)
+    c->keptalive = 0;
+    if (c->ctx) {
         apr_pool_clear(c->ctx);
-    else
+    }
+    else {
         apr_pool_create(&c->ctx, cntxt);
+        concurrent++;
+    }
+
+    APR_RING_ELEM_INIT((c), delay_list);
 
     if ((rv = apr_socket_create(&c->aprsock, destsa->family,
                 SOCK_STREAM, 0, c->ctx)) != APR_SUCCESS) {
@@ -1485,9 +1533,10 @@ static void start_connect(struct connection * c)
 
 static void close_connection(struct connection * c)
 {
-    if (c->read == 0 && c->keepalive) {
+    if (c->read == 0 && c->keptalive) {
         /*
          * server has legitimately shut down an idle keep alive request
+         * as per RFC7230 6.3.1.
          */
         if (good)
             good--;     /* connection never happened */
@@ -1747,9 +1796,13 @@ read_more:
             /* We have received the header, so we know this destination socket
              * address is working, so initialize all remaining requests. */
             if (!requests_initialized) {
+                apr_time_t now = apr_time_now();
                 for (i = 1; i < concurrency; i++) {
                     con[i].socknum = i;
-                    start_connect(&con[i]);
+                    con[i].delay = now + (i * ramp);
+                    con[i].delay_fn = &start_connect;
+
+                    APR_RING_INSERT_TAIL(&delay_head, &con[i], connection, delay_list);
                 }
                 requests_initialized = 1;
             }
@@ -1803,6 +1856,8 @@ read_more:
         c->read = c->bread = 0;
         /* zero connect time with keep-alive */
         c->start = c->connect = lasttime = apr_time_now();
+
+        c->keptalive++;
 
         write_request(c);
     }
@@ -1988,14 +2043,36 @@ static void test(void)
     do {
         apr_int32_t n;
         const apr_pollfd_t *pollresults, *pollfd;
+        apr_interval_time_t t = aprtimeout;
+        apr_time_t now = apr_time_now();
 
-        n = concurrency;
+        while (!APR_RING_EMPTY(&delay_head, connection, delay_list)) {
+
+            struct connection *c = APR_RING_FIRST(&delay_head);
+
+            if (c->delay <= now) {
+                APR_RING_REMOVE(c, delay_list);
+                c->delay = 0;
+                c->delay_fn(c);
+            }
+            else {
+                t = c->delay - now;
+                break;
+            }
+        };
+
+        n = concurrent;
         do {
-            status = apr_pollset_poll(readbits, aprtimeout, &n, &pollresults);
+            status = apr_pollset_poll(readbits, t, &n, &pollresults);
         } while (APR_STATUS_IS_EINTR(status));
 
-        if (status != APR_SUCCESS)
+        if (APR_STATUS_IS_TIMEUP(status) &&
+                !APR_RING_EMPTY(&delay_head, connection, delay_list)) {
+            continue;
+        }
+        else if (status != APR_SUCCESS) {
             apr_err("apr_pollset_poll", status);
+        }
 
         for (i = 0, pollfd = pollresults; i < n; i++, pollfd++) {
             struct connection *c;
@@ -2160,6 +2237,8 @@ static void usage(const char *progname)
     fprintf(stderr, "                    This implies -n 50000\n");
     fprintf(stderr, "    -s timeout      Seconds to max. wait for each response\n");
     fprintf(stderr, "                    Default is 30 seconds\n");
+    fprintf(stderr, "    -R rampdelay    Milliseconds in between each new connection when starting up\n");
+    fprintf(stderr, "                    Default is no delay\n");
     fprintf(stderr, "    -b windowsize   Size of TCP send/receive buffer, in bytes\n");
     fprintf(stderr, "    -B address      Address to bind to when making outgoing connections\n");
     fprintf(stderr, "    -p postfile     File containing data to POST. Remember also to set -T\n");
@@ -2386,8 +2465,10 @@ int main(int argc, const char * const argv[])
 
     myhost = NULL; /* 0.0.0.0 or :: */
 
+    APR_RING_INIT(&delay_head, connection, delay_list);
+
     apr_getopt_init(&opt, cntxt, argc, argv);
-    while ((status = apr_getopt(opt, "n:c:t:s:b:T:p:u:v:lrkVhwiIx:y:z:C:H:P:A:g:X:de:SqB:m:"
+    while ((status = apr_getopt(opt, "n:c:t:s:b:T:p:u:v:lrkVhwiIx:y:z:C:H:P:A:g:X:de:SqB:m:R:"
 #ifdef USE_SSL
             "Z:f:E:"
 #endif
@@ -2430,6 +2511,9 @@ int main(int argc, const char * const argv[])
                 break;
             case 's':
                 aprtimeout = apr_time_from_sec(atoi(opt_arg)); /* timeout value */
+                break;
+            case 'R':
+                ramp = apr_time_from_msec(atoi(opt_arg)); /* ramp delay */
                 break;
             case 'p':
                 if (method != NO_METH)

@@ -1,0 +1,5 @@
+  *) ab: Fix the detection for when the server performed a legitimate
+     connection close as per RFC7230 6.3.1. We must check whedther the
+     connection was previously kept alive, and not whether the current
+     closed request is keepalive. [Graham Leggett]
+

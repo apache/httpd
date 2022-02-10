@@ -44,7 +44,6 @@ class TestTimeout:
         sock.close()
 
     # Check that mod_reqtimeout handshake setting takes effect
-    @pytest.mark.skip(reason="SSL handshake timeout currently broken")
     def test_h2_105_02(self, env):
         conf = H2Conf(env)
         conf.add("LogLevel ssl:trace8 core:trace8 reqtimeout:trace4")

@@ -1,11 +1,31 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
-  *) event: Add support for non blocking behaviour in the
-     CONN_STATE_READ_REQUEST_LINE phase, in addition to the existing
-     CONN_STATE_WRITE_COMPLETION phase. Add AP_MPM_CAN_AGAIN and AGAIN to
-     signal to the MPM that non blocking behaviour is requested. Update
-     mod_ssl to perform non blocking TLS handshakes. [Graham Leggett]
+  *) mod_md: the status description in MDomain's JSON, exposed in the
+     md-status handler (if configure) did sometimes not carry the correct
+     message when certificates needed renew.
+     [Stefan Eissing]
+
+  *) mod_tls: Fix a linkage issue with rustls when compiled
+     with rust 1.55, 1.56 or 1.57. This prevents the loading
+     of the module because of an undefined symbol: fmaf
+     See https://github.com/rustls/rustls-ffi/issues/133
+     [Christophe Jaillet]
+
+  *) ap_regex: Use Thread Local Storage (TLS) to recycle ap_regexec() buffers
+     when an efficient TLS implementation is available. [Yann Ylavic]
+
+  *) mod_reqtimeout: Fix missing handshake= timeout enforcement.  [Yann Ylavic]
+
+  *) mod_dav: Fix regression when gathering properties which could lead to huge
+     memory consumption proportional to the number of resources.
+     [Evgeny Kotkov, Ruediger Pluem]
+
+  *) mod_unixd: CoreDumpDirectory requires enabling tracing on FreeBSD 11+.
+     PR 65819.  [David CARLIER <devnexen gmail.com>]
+
+  *) mpm_event: Fix a possible listener deadlock on heavy load when restarting
+     and/or reaching MaxConnectionsPerChild.  PR 65769.  [Yann Ylavic]
 
   *) http: Enforce that fully qualified uri-paths not to be forward-proxied
      have an http(s) scheme, and that the ones to be forward proxied have a
