@@ -40,64 +40,65 @@ Apache</title>
 
 <section id="synopsis"><title>Syntaxe</title>
     <p><code><strong>ab</strong>
-    [ -<strong>A</strong> <var>nom-utilisateur</var>:<var>mot-de-passe</var> ]
-    [ -<strong>b</strong> <var>taille-tampon</var> ]
-    [ -<strong>B</strong> <var>adresse-locale</var> ]
+    [ -<strong>A</strong> <var>nom utilisateur</var>:<var>mot de passe</var> ]
+    [ -<strong>b</strong> <var>taille tampon</var> ]
+    [ -<strong>B</strong> <var>adresse locale</var> ]
     [ -<strong>c</strong> <var>simultanéité</var> ]
-    [ -<strong>C</strong> <var>nom-cookie</var>=<var>valeur</var> ]
+    [ -<strong>C</strong> <var>nom cookie</var>=<var>valeur</var> ]
     [ -<strong>d</strong> ]
-    [ -<strong>e</strong> <var>fichier-csv</var> ]
+    [ -<strong>e</strong> <var>fichier csv</var> ]
     [ -<strong>E</strong> <var>fichier du certificat client</var> ]
     [ -<strong>f</strong> <var>protocole</var> ]
-    [ -<strong>g</strong> <var>fichier-gnuplot</var> ]
+    [ -<strong>g</strong> <var>fichier gnuplot</var> ]
     [ -<strong>h</strong> ]
-    [ -<strong>H</strong> <var>en-tête-personnalisé</var> ]
+    [ -<strong>H</strong> <var>en-tête personnalisé</var> ]
     [ -<strong>i</strong> ]
     [ -<strong>k</strong> ]
     [ -<strong>l</strong> ]
-    [ -<strong>m</strong> <var>HTTP-method</var> ]
+    [ -<strong>m</strong> <var>méthode HTTP</var> ]
     [ -<strong>n</strong> <var>requêtes</var> ]
-    [ -<strong>p</strong> <var>fichier-POST</var> ]
+    [ -<strong>p</strong> <var>fichier POST</var> ]
     [ -<strong>P</strong>
-    <var>nom-utilisateur-mandataire</var>:<var>mot-de-passe</var> ]
+    <var>nom utilisateur mandataire</var>:<var>mot de passe</var> ]
     [ -<strong>q</strong> ]
     [ -<strong>r</strong> ]
-    [ -<strong>s</strong> <var>timeout</var> ]
+    [ -<strong>R</strong> <var>délai nouvelle connexion</var> ]
+    [ -<strong>s</strong> <var>délai</var> ]
     [ -<strong>S</strong> ]
-    [ -<strong>t</strong> <var>limite-de-durée</var> ]
-    [ -<strong>T</strong> <var>type-de-contenu</var> ]
+    [ -<strong>t</strong> <var>limite de durée</var> ]
+    [ -<strong>T</strong> <var>type de contenu</var> ]
     [ -<strong>u</strong> <var>fichier PUT</var> ]
     [ -<strong>v</strong> <var>verbosité</var>]
     [ -<strong>V</strong> ]
     [ -<strong>w</strong> ]
-    [ -<strong>x</strong> <var>&lt;table&gt;-attributs</var> ]
+    [ -<strong>x</strong> <var>attributs &lt;table&gt;</var> ]
     [ -<strong>X</strong> <var>mandataire</var>[:<var>port</var>] ]
-    [ -<strong>y</strong> <var>&lt;tr&gt;-attributs</var> ]
-    [ -<strong>z</strong> <var>&lt;td&gt;-attributs</var> ]
-    [ -<strong>Z</strong> <var>algorithme-chiffrement</var> ]
-    [http[s]://]<var>nom-serveur</var>[:<var>port</var>]/<var>chemin</var></code></p>
+    [ -<strong>y</strong> <var>attributs &lt;tr&gt;</var> ]
+    [ -<strong>z</strong> <var>attributs &lt;td&gt;</var> ]
+    [ -<strong>Z</strong> <var>algorithme chiffrement</var> ]
+    [http[s]://]<var>nom serveur</var>[:<var>port</var>]/<var>chemin</var></code></p>
 </section>
 
 <section id="options"><title>Options</title>
     <dl>
-    <dt><code>-A <var>nom-utilisateur</var>:<var>mot-de-passe</var></code></dt>
+    <dt><code>-A <var>nom utilisateur</var>:<var>mot de passe</var></code></dt>
     <dd>Fournit le support d'une authentification de base vers le
-    serveur. Les nom-utilisateur et mot-de-passe sont séparés par un
+    serveur. Les nom utilisateur et mot de passe sont séparés par un
     seul caractère <code>:</code> et transmis sous forme codée base64.
     La chaîne est envoyée que le serveur en ait besoin ou non (qu'il ait
     renvoyé un code "401 authentication needed" ou non).</dd>
 
-    <dt><code>-b <var>taille-tampon</var></code></dt>
+    <dt><code>-b <var>taille tampon</var></code></dt>
     <dd>Taille du tampon d'émission/réception TCP, en octets.</dd>
 
-    <dt><code>-B <var>adresse-locale</var></code></dt>
+    <dt><code>-B <var>adress -locale</var></code></dt>
     <dd>Adresse à laquelle se rattacher lors des connexions sortantes.</dd>
 
     <dt><code>-c <var>simultanéité</var></code></dt>
     <dd>Nombre de requêtes à effectuer simultanément. Par défaut, une
     seule requête est effectuée à la fois.</dd>
 
-    <dt><code>-C <var>nom-cookie</var>=<var>valeur</var></code></dt>
+    <dt><code>-C <var>nom cookie</var>=<var>valeur</var></code></dt>
     <dd>Ajoute une ligne <code>Cookie:</code> à la requête. L'argument
     se présente en général sous la forme d'une
     paire <code><var>nom</var>=<var>valeur</var></code>. Ce champ peut
@@ -108,7 +109,7 @@ Apache</title>
     <dd>N'affiche pas le "pourcentage servi dans la table XX [ms]".
     (support de l'héritage).</dd>
 
-    <dt><code>-e <var>fichier-csv</var></code></dt>
+    <dt><code>-e <var>fichier csv</var></code></dt>
     <dd>Enregistre des valeurs séparées par des virgules (CSV) dans un
     fichier, indiquant pour chaque pourcentage (de 1% à 100 %), le temps
     (en millisecondes) mis pour servir ce pourcentage de requêtes. Ce
@@ -127,7 +128,7 @@ Apache</title>
     TLS1.1 et TLS1.2 sont supportés à partir de la version 2.4.4 du
     serveur HTTP Apache.</dd>
 
-    <dt><code>-g <var>fichier-gnuplot</var></code></dt>
+    <dt><code>-g <var>fichier gnuplot</var></code></dt>
     <dd>Enregistre toutes les valeurs mesurées dans un fichier 'gnuplot'
     ou TSV (valeurs séparées par des tabulations). Ce fichier peut être
     facilement importé dans des programmes comme Gnuplot, IDL,
@@ -137,7 +138,7 @@ Apache</title>
     <dt><code>-h</code></dt>
     <dd>Affiche une aide à propos de l'utilisation du programme.</dd>
 
-    <dt><code>-H <var>en-tête-personnalisé</var></code></dt>
+    <dt><code>-H <var>en-tête personnalisé</var></code></dt>
     <dd>Ajoute des en-têtes supplémentaires à la requête. L'argument se
     présente sous la forme d'une ligne d'en-tête valide, autrement dit
     une paire champ/valeur séparés par un caractère ':' (par exemple
@@ -160,7 +161,7 @@ Apache</title>
     Disponible à partir de la version 2.4.7 du serveur HTTP Apache.
     </dd>
 
-    <dt><code>-m <var>HTTP-method</var></code></dt>
+    <dt><code>-m <var>méthode HTTP</var></code></dt>
     <dd>Méthode HTTP personnalisée à utiliser pour les requêtes.<br />
     Disponible à partir de la version 2.4.10 du serveur HTTP
     Apache.</dd>
@@ -170,11 +171,11 @@ Apache</title>
     Par défaut, une seule requête est effectuée, ce qui ne permet pas
     d'obtenir des résultats représentatifs.</dd>
 
-    <dt><code>-p <var>fichier-POST</var></code></dt>
+    <dt><code>-p <var>fichier POST</var></code></dt>
     <dd>Fichier contenant les données pour les requêtes POST.
     Assurez-vous de spécifier aussi le paramètre <code>-T</code>.</dd>
 
-    <dt><code>-P <var>nom-utilisateur-mandataire</var>:<var>mot-de-passe</var></code></dt>
+    <dt><code>-P <var>nom utilisateur mandataire</var>:<var>mot de passe</var></code></dt>
     <dd>Fournit les informations d'authentification basique pour un
     mandataire en-route. Les nom d'utilisateur et mot de passe sont
     séparés par un simple caractère <code>:</code> et envoyés sur le
@@ -191,6 +192,18 @@ Apache</title>
     <dt><code>-r</code></dt>
     <dd>Ne s'arrête pas en cas d'erreur de réception du socket.</dd>
 
+    <dt><code>-R <var>délai nouvelle connexion</var></code></dt>
+    <dd>Nombre de millisecondes entre chaque nouvelle connexion au démarrage.
+    Par défaut, il n'y a pas de délai. Démarrer trop de connexions simultanées
+    peut déclencher une protection contre les dénis de service au niveau du
+    réseau, ce qui peut fausser les résultats du test. Introduire un délai entre
+    les démarrages des connexions simultanées permet de contourner ce problème.
+    Le test peut se terminer avant que la montée en puissance des connexions
+    simultanées ne soit achevée. Si c'est le cas, le nombre total de connexions
+    simultanées établies sera indiqué dans les résultats.
+    <br />
+    Disponible à partir de la version 2.5.1 du serveur HTTP Apache.</dd>
+
     <dt><code>-s <var>timeout</var></code></dt>
     <dd>Temps maximum d'attente en secondes du socket avant de considérer
     le délai comme dépassé. La valeur par défaut est de 30 secondes.<br />
@@ -205,14 +218,14 @@ Apache</title>
     affichées (support de l'héritage).</dd>
     <!-- dernière phrase à confirmer -->
 
-    <dt><code>-t <var>limite-durée</var></code></dt>
+    <dt><code>-t <var>limite durée</var></code></dt>
     <dd>Durée maximale en secondes du test de performances. Ceci
     implique un <code>-n 50000</code> en interne. Utilisez cette option
     si vous souhaitez tester les performances du serveur pendant une
     durée fixée à l'avance. Par défaut, il n'y a pas de limite de
     durée.</dd>
 
-    <dt><code>-T <var>type-contenu</var></code></dt>
+    <dt><code>-T <var>type contenu</var></code></dt>
     <dd>Valeur de l'en-tête Content-type à utiliser pour les données
     POST/PUT, par exemple
     <code>application/x-www-form-urlencoded</code>.
@@ -236,7 +249,7 @@ Apache</title>
     <dd>Affiche les résultats dans des tables HTML. La table par défaut
     comporte deux colonnes sur fond blanc.</dd>
 
-    <dt><code>-x <var>&lt;table&gt;-attributs</var></code></dt>
+    <dt><code>-x <var>attributs &lt;table&gt;</var></code></dt>
     <dd>La chaîne à utiliser comme attributs pour
     <code>&lt;table&gt;</code>. Les attributs sont insérés
     <code>&lt;table <var>ici</var> &gt;</code>.</dd>
@@ -244,15 +257,15 @@ Apache</title>
     <dt><code>-X <var>mandataire</var>[:<var>port</var>]</code></dt>
     <dd>Utilise un serveur mandataire pour les requêtes.</dd>
 
-    <dt><code>-y <var>&lt;tr&gt;-attributs</var></code></dt>
+    <dt><code>-y <var>attributs &lt;tr&gt;</var></code></dt>
     <dd>La chaîne à utiliser comme attributs pour
     <code>&lt;tr&gt;</code>.</dd>
 
-    <dt><code>-z <var>&lt;td&gt;-attributs</var></code></dt>
+    <dt><code>-z <var>attributs &lt;td&gt;</var></code></dt>
     <dd>La chaîne à utiliser comme attributs pour
     <code>&lt;td&gt;</code>.</dd>
 
-    <dt><code>-Z <var>algorithme-chiffrement</var></code></dt>
+    <dt><code>-Z <var>algorithme chiffrement</var></code></dt>
     <dd>Spécifie l'algorithme de chiffrement SSL/TLS (Voir les
     algorithme de chiffrement openssl).</dd>
     </dl>
