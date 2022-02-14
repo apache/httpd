@@ -316,24 +316,69 @@ DAV_DECLARE(dav_lookup_result) dav_lookup_uri(const char *uri,
 */
 
 /* validate that the root element uses a given DAV: tagname (TRUE==valid) */
+DAV_DECLARE(int) dav_validate_root_ns(const apr_xml_doc *doc,
+                                      int ns, const char *tagname)
+{
+    return doc->root &&
+        doc->root->ns == ns &&
+        strcmp(doc->root->name, tagname) == 0;
+}
+
+/* validate that the root element uses a given DAV: tagname (TRUE==valid) */
 DAV_DECLARE(int) dav_validate_root(const apr_xml_doc *doc,
                                    const char *tagname)
 {
-    return doc->root &&
-        doc->root->ns == APR_XML_NS_DAV_ID &&
-        strcmp(doc->root->name, tagname) == 0;
+	return dav_validate_root_ns(doc, APR_XML_NS_DAV_ID, tagname);
+}
+
+/* find and return the next child with a tagname in the given namespace */
+DAV_DECLARE(apr_xml_elem *) dav_find_next_ns(const apr_xml_elem *elem,
+                                             int ns, const char *tagname)
+{
+    apr_xml_elem *child = elem->next;
+
+    for (; child; child = child->next)
+        if (child->ns == ns && !strcmp(child->name, tagname))
+            return child;
+    return NULL;
+}
+
+/* find and return the (unique) child with a tagname in the given namespace */
+DAV_DECLARE(apr_xml_elem *) dav_find_child_ns(const apr_xml_elem *elem,
+                                              int ns, const char *tagname)
+{
+    apr_xml_elem *child = elem->first_child;
+
+    for (; child; child = child->next)
+        if (child->ns == ns && !strcmp(child->name, tagname))
+            return child;
+    return NULL;
 }
 
 /* find and return the (unique) child with a given DAV: tagname */
 DAV_DECLARE(apr_xml_elem *) dav_find_child(const apr_xml_elem *elem,
                                            const char *tagname)
 {
-    apr_xml_elem *child = elem->first_child;
+	return dav_find_child_ns(elem, APR_XML_NS_DAV_ID, tagname);
+}
 
-    for (; child; child = child->next)
-        if (child->ns == APR_XML_NS_DAV_ID && !strcmp(child->name, tagname))
-            return child;
+/* find and return the attribute with a name in the given namespace */
+DAV_DECLARE(apr_xml_attr *) dav_find_attr_ns(const apr_xml_elem *elem,
+                                             int ns, const char *attrname)
+{
+    apr_xml_attr *attr = elem->attr;
+
+    for (; attr; attr = attr->next)
+        if (attr->ns == ns && !strcmp(attr->name, attrname))
+            return attr;
     return NULL;
+}
+
+/* find and return the attribute with a given DAV: tagname */
+DAV_DECLARE(apr_xml_attr *) dav_find_attr(const apr_xml_elem *elem,
+                                          const char *attrname)
+{
+	return dav_find_attr_ns(elem, APR_XML_NS_DAV_ID, attrname);
 }
 
 /* gather up all the CDATA into a single string */

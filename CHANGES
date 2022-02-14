@@ -1,5 +1,97 @@
                                                          -*- coding: utf-8 -*-
+Changes with Apache 2.4.53
+
+  *) mod_md: the status description in MDomain's JSON, exposed in the
+     md-status handler (if configured) did sometimes not carry the correct
+     message when certificates needed renew.
+     [Stefan Eissing]
+
+  *) mpm_event: Fix a possible listener deadlock on heavy load when restarting
+     and/or reaching MaxConnectionsPerChild.  PR 65769.  [Yann Ylavic]
+
 Changes with Apache 2.4.52
+
+  *) SECURITY: CVE-2021-44790: Possible buffer overflow when parsing
+     multipart content in mod_lua of Apache HTTP Server 2.4.51 and
+     earlier (cve.mitre.org)
+     A carefully crafted request body can cause a buffer overflow in
+     the mod_lua multipart parser (r:parsebody() called from Lua
+     scripts).
+     The Apache httpd team is not aware of an exploit for the
+     vulnerability though it might be possible to craft one.
+     This issue affects Apache HTTP Server 2.4.51 and earlier.
+     Credits: Chamal
+
+  *) SECURITY: CVE-2021-44224: Possible NULL dereference or SSRF in
+     forward proxy configurations in Apache HTTP Server 2.4.51 and
+     earlier (cve.mitre.org)
+     A crafted URI sent to httpd configured as a forward proxy
+     (ProxyRequests on) can cause a crash (NULL pointer dereference)
+     or, for configurations mixing forward and reverse proxy
+     declarations, can allow for requests to be directed to a
+     declared Unix Domain Socket endpoint (Server Side Request
+     Forgery).
+     This issue affects Apache HTTP Server 2.4.7 up to 2.4.51
+     (included).
+     Credits: 漂亮鼠
+     TengMA(@Te3t123)
+
+  *) http: Enforce that fully qualified uri-paths not to be forward-proxied
+     have an http(s) scheme, and that the ones to be forward proxied have a
+     hostname, per HTTP specifications.  [Ruediger Pluem, Yann Ylavic]
+
+  *) configure: OpenSSL detection will now use pkg-config data from
+     .../lib64/ within the --with-ssl path. [Jean-Frederic Clere]
+
+  *) mod_proxy_connect, mod_proxy: Do not change the status code after we
+     already sent it to the client. [Ruediger Pluem]
+
+  *) mod_http: Correctly sent a 100 Continue status code when sending an interim
+     response as result of an Expect: 100-Continue in the request and not the
+     current status code of the request. PR 65725 [Ruediger Pluem]
+
+  *) mod_dav: Some DAV extensions, like CalDAV, specify both document
+     elements and property elements that need to be taken into account
+     when generating a property. The document element and property element
+     are made available in the dav_liveprop_elem structure by calling
+     dav_get_liveprop_element(). [Graham Leggett]
+
+  *) mod_dav: Add utility functions dav_validate_root_ns(),
+     dav_find_child_ns(), dav_find_next_ns(), dav_find_attr_ns() and
+     dav_find_attr() so that other modules get to play too.
+     [Graham Leggett]
+
+  *) mpm_event: Restart stopping of idle children after a load peak. PR 65626.
+     [Yann Ylavic, Ruediger Pluem]
+
+  *) mod_http2: fixes 2 regressions in server limit handling.
+     1. When reaching server limits, such as MaxRequestsPerChild, the
+        HTTP/2 connection send a GOAWAY frame much too early on new
+        connections, leading to invalid protocol state and a client
+        failing the request. See PR65731.
+        The module now initializes the HTTP/2 protocol correctly and
+        allows the client to submit one request before the shutdown
+        via a GOAWAY frame is being announced.
+     2. A regression in v1.15.24 was fixed that could lead to httpd
+        child processes not being terminated on a graceful reload or
+        when reaching MaxConnectionsPerChild. When unprocessed h2
+        requests were queued at the time, these could stall.
+        See <https://github.com/icing/mod_h2/issues/212>.
+     [Stefan Eissing]
+
+  *) mod_ssl: Add build support for OpenSSL v3. [Rainer Jung,
+     Stefan Fritsch, Yann Ylavic, Stefan Eissing, Joe Orton,
+     Giovanni Bechis]
+
+  *) mod_proxy_connect: Honor the smallest of the backend or client timeout
+     while tunneling.  [Yann Ylavic]
+
+  *) mod_proxy: SetEnv proxy-nohalfclose (or alike) allows to disable TCP
+     half-close forwarding when tunneling protocols.  [Yann Ylavic]
+
+  *) core: Be safe with ap_lingering_close() called with a socket NULL-ed by
+     a third-party module.  PR 65627.
+     [acmondor <bz.apache.org acmondor.ca>, Yann Ylavic]
 
   *) mod_md: Fix memory leak in case of failures to load the private key.
      PR 65620 [ Filipe Casal <filipe.casal@trailofbits.com> ]
@@ -24,7 +116,7 @@ Changes with Apache 2.4.52
       section.
     - Treating 401 HTTP status codes for orders like 403, since some ACME
       servers seem to prefer that for accessing oders from other accounts.
-    - When retrieving certificate chains, try to read the repsonse even
+    - When retrieving certificate chains, try to read the response even
       if the HTTP Content-Type is unrecognized.
     - Fixed a bug that reset the error counter of a certificate renewal
       and prevented the increasing delays in further attempts.
@@ -56,7 +148,7 @@ Changes with Apache 2.4.51
      If files outside of these directories are not protected by the
      usual default configuration "require all denied", these requests
      can succeed. If CGI scripts are also enabled for these aliased
-     pathes, this could allow for remote code execution.
+     paths, this could allow for remote code execution.
      This issue only affects Apache 2.4.49 and Apache 2.4.50 and not
      earlier versions.
      Credits: Reported by Juan Escobar from Dreamlab Technologies,
@@ -148,7 +240,7 @@ Changes with Apache 2.4.50
 Changes with Apache 2.4.49
 
   *) SECURITY: CVE-2021-40438 (cve.mitre.org)
-     mod_proxy: Server Side Request Forgery (SSRF) vulnerabilty [Yann Ylavic]
+     mod_proxy: Server Side Request Forgery (SSRF) vulnerability [Yann Ylavic]
 
   *) SECURITY: CVE-2021-39275 (cve.mitre.org)
      core: ap_escape_quotes buffer overflow
@@ -225,7 +317,7 @@ Changes with Apache 2.4.49
      fails.
      An exception is the proposal of "http/1.1" where it is
      accepted if the remote server did not answer ALPN with
-     a selected protocol. This accomodates for hosts that do
+     a selected protocol. This accommodates for hosts that do
      not observe/support ALPN and speak http/1.x be default.
 
   *) mod_proxy: Fix possible reuse/merging of Proxy(Pass)Match worker instances
@@ -1502,6 +1594,9 @@ Changes with Apache 2.4.30 (not released)
   *) SECURITY: CVE-2018-1302 (cve.mitre.org)
      mod_http2: Potential crash w/ mod_http2.
      [Stefan Eissing]
+
+  *) mod_proxy: Provide an RFC1035 compliant version of the hostname in the
+     proxy_worker_shared structure. PR62085 [Graham Leggett]
 
   *) mod_proxy: Worker schemes and hostnames which are too large are no
      longer fatal errors; it is logged and the truncated values are stored.

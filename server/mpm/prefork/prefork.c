@@ -1288,7 +1288,6 @@ static int prefork_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp
     if (!retained) {
         retained = ap_retained_data_create(userdata_key, sizeof(*retained));
         retained->mpm = ap_unixd_mpm_get_retained_data();
-        retained->max_daemons_limit = -1;
         retained->idle_spawn_rate = 1;
     }
     retained->mpm->mpm_state = AP_MPMQ_STARTING;

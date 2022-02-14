@@ -2,7 +2,7 @@
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
-<!-- English Revision: 1889959 -->
+<!-- English Revision: 1897298 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -37,7 +37,7 @@
 	Ce module permet de gérer les propriétés courantes des domaines pour un
 	ou plusieurs serveurs virtuels. Il fournit deux fonctionnalités
 	principales : la première permet la supervision et le renouvellement des
-	certificats https: via le protocole ACME (<a
+	certificats TLS via le protocole ACME (<a
 	href="https://tools.ietf.org/html/rfc8555">RFC 8555</a>). Le module
 	effectue le renouvellement des certificats avant leur expiration
 	afin d'éviter une interruption des services internet. Il est possible de
@@ -1255,11 +1255,12 @@ MDMessageCmd /etc/apache/md-message
 		configurations de clusters peuvent utiliser cet évènement pour
 		distribuer les fichiers de vérification à tous les noeuds.
             </p><p>
-                Un évènement de type ocsp-errored est déclenché lorsque le
-		MDStapling est activé pour un domaine, et indique qu'une erreur
-		s'est produite en essayant d'obtenir la réponse OCSP  de
-		l'autorité de certification. mod_md essaiera à nouveau d'obtenir
-		cette réponse.		
+		Un évènement de type ocsp-errored est déclenché lorsque le
+		<directive module="mod_md">MDStapling</directive> est activé
+		pour un domaine, et indique qu'une erreur s'est produite en
+		essayant d'obtenir la réponse OCSP  de l'autorité de
+		certification. mod_md essaiera à nouveau d'obtenir cette
+		réponse.		
             </p>
         </usage>
     </directivesynopsis>
@@ -1521,6 +1522,8 @@ MDMessageCmd /etc/apache/md-message
         <contextlist>
             <context>server config</context>
         </contextlist>
+	<compatibility>Disponible à partir de la version 2.4.42 du serveur HTTP
+	Apache</compatibility>
         <usage>
             <p>
                 Lors de votre inscription, vous devez fournir une url de contact
@@ -1537,5 +1540,56 @@ MDMessageCmd /etc/apache/md-message
             </p>
         </usage>
     </directivesynopsis>
+
+    <directivesynopsis>
+        <name>MDExternalAccountBinding</name>
+        <description></description>
+        <syntax>MDExternalAccountBinding <var>key-id</var> <var>hmac-64</var> | none | <var>file</var></syntax>
+        <default>MDExternalAccountBinding none</default>
+        <contextlist>
+            <context>server config</context>
+        </contextlist>
+	<compatibility>Disponible à partir de la version 2.4.52 du serveur HTTP
+	Apache</compatibility>
+        <usage>
+            <p>
+                Cette directive permet de définir des valeurs pour associer des
+		comptes externes avec ACME ("External Account Binding") ; c'est
+		une fonctionnalité de la norme ACME qui permet à des clients
+		d'associer des inscriptions à un compte client existant sur les
+		serveurs ACME.
+            </p>
+            <p>
+		Certains CAs ACME ont besoin de ces valeurs, mais ce n'est pas
+		le cas pour Let's Encrypt. Vérifiez avec votre CA ACME si vous
+		avez besoin de ces valeurs et la manière de les obtenir. Ces
+		dernières se composent de deux chaînes : un identifiant de clé
+		et une valeur 'hmac' codée en base64.
+            </p>
+            <p>
+		Vous pouvez définir ces valeurs de manière globale ou pour un
+		MDomain spécifique. Comme ces valeurs permettent à n'importe qui
+		de s'inscrire sous le même compte, il est conseillé de
+		restreindre les permissions d'accès au fichier de configuration
+		(à root seulement, par exemple).
+            </p>
+            <p>
+                Les valeurs peuvent aussi être extraites d'un fichier JSON pour
+		conserver l'ouverture des permissions au niveau de la
+		configuration du serveur et restreindre celles de ce fichier. Le
+		fichier JSON sera du style :
+            </p>
+            <example><title>Exemple de fichier EAB JSON</title>
+                <highlight language="config">
+{"kid": "kid-1", "hmac": "zWND..."}
+                </highlight>
+            </example>
+            <p>
+                Si vous modifiez les valeurs EAB, ce sont les nouvelles valeurs
+		qui seront utilisées lors du prochain renouvellement de
+		certificat.
+             </p>
+        </usage>
+    </directivesynopsis>    
 
 </modulesynopsis>

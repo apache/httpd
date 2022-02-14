@@ -169,7 +169,7 @@ retry:
     if (APR_SUCCESS != rv) goto leave;
     
     if (!ad->order->certificate) {
-        md_result_set(result, APR_EINVAL, "Order valid, but certifiate url is missing.");
+        md_result_set(result, APR_EINVAL, "Order valid, but certificate url is missing.");
         goto leave;
     }
     md_result_set(result, APR_SUCCESS, NULL);

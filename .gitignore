@@ -342,6 +342,9 @@ Release
 /support/win32/ApacheMonitorVer.rc
 
 # /test/
+__pycache__
+test/gen
+test/pyhttpd/config.ini
 /test/a.out
 /test/time-FCNTL
 /test/time-FLOCK

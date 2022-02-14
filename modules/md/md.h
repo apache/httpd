@@ -95,7 +95,7 @@ struct md_t {
     struct apr_array_header_t *cert_files; /* != NULL iff pubcerts explicitly configured */
     struct apr_array_header_t *pkey_files; /* != NULL iff privkeys explicitly configured */
     const char *ca_eab_kid;         /* optional KEYID for external account binding */
-    const char *ca_eab_hmac;        /* optional HMAC for external accont binding */
+    const char *ca_eab_hmac;        /* optional HMAC for external account binding */
 
     md_state_t state;               /* state of this MD */
     const char *state_descr;        /* description of state of NULL */

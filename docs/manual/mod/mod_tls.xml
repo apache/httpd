@@ -1,0 +1,640 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
+<!-- $LastChangedRevision: 1895285 $ -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+ http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+ -->
+
+<modulesynopsis metafile="mod_tls.xml.meta">
+
+    <name>mod_tls</name>
+    <description>TLS v1.2 and v1.3 implemented in memory-safe Rust via
+        the rustls library
+    </description>
+    <status>Experimental</status>
+    <sourcefile>mod_tls.c</sourcefile>
+    <identifier>tls_module</identifier>
+    <compatibility>Available in version 2.4.52 and later</compatibility>
+    <summary>
+        <p>
+            mod_tls is an alternative to <module>mod_ssl</module> for providing https to a server.
+            It's feature set is a subset, described in more detail below. It can
+            be used as a companion to <module>mod_ssl</module>, e.g. both modules can be loaded at
+            the same time.
+        </p><p>
+            mod_tls, being written in C, used the Rust implementation of TLS named
+            <a href="https://github.com/rustls/rustls">rustls</a> via its C interface
+            <a href="https://github.com/rustls/rustls-ffi">rustls-ffi</a>. This gives
+            <em>memory safe</em> cryptography and protocol handling at comparable
+            performance.
+        </p><p>
+            It can be configured for frontend and backend connections. The configuration
+            directive have been kept mostly similar to <module>mod_ssl</module> ones.
+        </p>
+    </summary>
+    <section id="vhost_context">
+        <title>TLS in a VirtualHost context</title>
+        <highlight language="config">
+Listen 443
+TLSEngine 443
+
+&lt;VirtualHost *:443>
+  ServerName example.net
+  TLSCertificate file_with_certificate.pem file_with_key.pem
+  ...
+&lt;/VirtualHost>
+        </highlight>
+        <p>
+            The above is a minimal configuration. Instead of enabling mod_tls
+            in every virtual host, the port for incoming TLS connections is
+            specified.
+        </p><p>
+            You cannot mix virtual hosts with <module>mod_ssl</module> and mod_tls on the same
+            port. It's either or. SNI and ALPN are supported. You may use several
+            virtual hosts on the same port and a mix of protocols like http/1.1
+            and h2.
+        </p>
+    </section>
+
+        <section id="comparison"><title>Feature Comparison with mod_ssl</title>
+        <p>
+            The table below gives a comparison of feature between
+            <module>mod_ssl</module> and mod_tls. If a feature of <module>mod_ssl</module> is no listed here,
+            it is not supported by mod_tls. The one difference, probably most relevant
+            is the lack for client certificate support in the current version of
+            mod_tls.
+        </p>
+            <table>
+                <tr><th>Feature</th><th>mod_ssl</th><th>mod_tls</th><th>Comment</th></tr>
+<tr><td>Frontend TLS</td><td>yes</td><td>yes</td><td></td></tr>
+<tr><td>Backend TLS</td><td>yes</td><td>yes</td><td></td></tr>
+<tr><td>TLS v1.3</td><td>yes*</td><td>yes</td><td>*)with recent OpenSSL</td></tr>
+<tr><td>TLS v1.2</td><td>yes</td><td>yes</td><td></td></tr>
+<tr><td>TLS v1.0</td><td>yes*</td><td>no</td><td>*)if enabled in OpenSSL</td></tr>
+<tr><td>SNI Virtual Hosts</td><td>yes</td><td>yes</td><td></td></tr>
+<tr><td>Client Certificates</td><td>yes</td><td>no</td><td></td></tr>
+<tr><td>Machine Certificates for Backend</td><td>yes</td><td>yes</td><td></td></tr>
+<tr><td>OCSP Stapling</td><td>yes</td><td>yes*</td><td>*)via <module>mod_md</module></td></tr>
+<tr><td>Backend OCSP check</td><td>yes</td><td>no*</td><td>*)stapling will be verified</td></tr>
+<tr><td>TLS version to allow</td><td>min-max</td><td>min</td><td></td></tr>
+<tr><td>TLS ciphers</td><td>exclusive list</td><td>preferred/suppressed</td><td></td></tr>
+<tr><td>TLS cipher ordering</td><td>client/server</td><td>client/server</td><td></td></tr>
+<tr><td>TLS sessions</td><td>yes</td><td>yes</td><td></td></tr>
+<tr><td>SNI strictness</td><td>default no</td><td>default yes</td><td></td></tr>
+<tr><td>Option EnvVars</td><td>exhaustive</td><td>limited*</td><td>*)see var list</td></tr>
+<tr><td>Option ExportCertData</td><td>client+server</td><td>server</td><td></td></tr>
+<tr><td>Backend CA</td><td>file/dir</td><td>file</td><td></td></tr>
+<tr><td>Revocation CRLs</td><td>yes</td><td>no</td><td></td></tr>
+<tr><td>TLS Renegotiation</td><td>yes*</td><td>no</td><td>*)in TLS v1.2</td></tr>
+<tr><td>Encrypted Cert Keys</td><td>yes</td><td>no</td><td></td></tr>
+            </table>
+        <p>
+    	</p>
+        </section>
+
+        <section id="protocols"><title>TLS Protocols</title>
+        <p>
+            mod_tls supports TLS protocol version 1.2 and 1.3. Should there ever be
+            a version 1.4 and <code>rustls</code> supports it, it will be available as well.
+        </p>
+        <p>
+            In mod_tls, you configure the <em>minimum</em> version to use, never the maximum:
+        </p>
+        <highlight language="config">
+TLSProtocol TLSv1.3+
+        </highlight>
+        <p>
+            This allows only version 1.3 and whatever may be its successor one day when talking
+            to your server or to a particular virtual host.
+    	</p>
+        </section>
+
+        <section id="ciphers"><title>TLS Ciphers</title>
+        <p>
+            The list of TLS ciphers supported in the <code>rustls</code> library,
+            can be found <a href="https://docs.rs/rustls/">here</a>. All TLS v1.3
+            ciphers are supported. For TLS v1.2, only ciphers that rustls considers
+            secure are available.
+        </p><p>
+            mod_tls supports the following names for TLS ciphers:
+        </p>
+        <ol>
+            <li>
+                The <a href="https://www.iana.org/assignments/tls-parameters/tls-parameters.xhtml#tls-parameters-4">IANA assigned name</a>
+                which uses `_` to separate parts. Example: <code>TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA384</code>
+            </li>
+            <li>
+                The OpenSSL name, using `-` as separator (for 1.2). Example: <code>ECDHE-ECDSA-AES256-SHA384</code>.
+                Such names often appear in documentation. `mod_tls` defines them for all TLS v1.2 ciphers.
+                For TLS v1.3 ciphers, names starting with <code>TLS13_</code> are also supported.
+            </li>
+            <li>
+                The <a href="https://www.iana.org/assignments/tls-parameters/tls-parameters.xhtml#tls-parameters-4">IANA assigned identifier</a>,
+                which is a 16-bit numeric value. Example: <code>0xc024</code>.
+                You can use this in configurations as <code>TLS_CIPHER_0xc024</code>.
+            </li>
+        </ol>
+        <p>
+            You can configure a preference for ciphers, which means they will be used
+            for clients that support them. If you do not configure a preference, <code>rustls</code>
+            will use the one that it considers best. This is recommended.
+        </p>
+        <p>
+            Should you nevertheless have the need to prefer one cipher over another, you
+            may configure it like this:
+        </p>
+        <highlight language="config">
+TLSCiphersPrefer ECDHE-ECDSA-AES256-SHA384
+# or several
+TLSCiphersPrefer ECDHE-ECDSA-AES256-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305
+        </highlight>
+        <p>
+            If you name a cipher that is unknown, the configuration will fail.
+            If you name a cipher is not supported by <code>rustls</code> (or no
+            longer supported in an updated version of <code>rustls</code> for security
+            reasons), mod_tls will log a <code>WARNING</code>, but continue to work.
+    	</p>
+        <p>
+            A similar mechanism exists, if you want to disable a particular cipher:
+        </p>
+        <highlight language="config">
+TLSCipherSuppress ECDHE-ECDSA-AES256-SHA384
+        </highlight>
+        <p>
+            A suppressed cipher will not longer be used.
+            If you name a cipher that is unknown, the configuration will fail.
+            If you name a cipher is not supported by <code>rustls</code> (or no
+            longer supported in an updated version of <code>rustls</code> for security
+            reasons), mod_tls will log a <code>WARNING</code>, but continue to work.
+        </p>
+        </section>
+
+        <section id="vhosts"><title>Virtual Hosts</title>
+        <p>
+            mod_tls uses the SNI (Server Name Indicator) to select one of the
+            configured virtual hosts that match the port being served. Should
+            the client not provide an SNI, the <em>first</em> configured
+            virtual host will be selected. If the client <em>does</em> provide
+            an SNI (as all today's clients do), it <em>must</em> match one
+            virtual host (<directive module="core">ServerName</directive> or
+            <directive module="core">ServerAlias</directive>)
+            or the connection will fail.
+        </p>
+        <p>
+            As with <module>mod_ssl</module>, you may specify ciphers and protocol
+            versions for the base server (global) and/or individual virtual hosts
+            that are selected via SNI by the client.
+        </p>
+        <highlight language="config">
+Listen 443
+TLSEngine 443
+
+&lt;VirtualHost *:443>
+  ServerName example1.net
+  TLSCertificate example1-cert.pem
+  ...
+&lt;/VirtualHost>
+
+&lt;VirtualHost *:443>
+  ServerName example2.net
+  TLSCertificate example2-cert.pem
+  ...
+  TLSProtocol v1.3+
+&lt;/VirtualHost>
+        </highlight>
+        <p>
+            The example above show different TLS settings for virtual hosts on the
+            same port. This is supported. <code>example1</code> can be contacted via
+            all TLS versions and <code>example2</code> only allows v1.3 or later.
+    	</p>
+        </section>
+
+        <section id="ACME"><title>ACME Certificates</title>
+        <p>
+            ACME certificates via <module>mod_md</module> are supported, just as
+            for <module>mod_ssl</module>. A minimal configuration:
+        </p>
+        <highlight language="config">
+Listen 443
+TLSEngine 443
+MDomain example.net
+
+&lt;VirtualHost *:443>
+  ServerName example.net
+  ...
+&lt;/VirtualHost>
+        </highlight>
+        </section>
+
+        <section id="OCSP"><title>OCSP Stapling</title>
+        <p>
+            mod_tls has no own implementation to retrieve OCSP information for
+            a certificate. However, it will use such for Stapling if it is provided
+            by <module>mod_md</module>. See <module>mod_md</module>'s documentation
+            on how to enable this.
+        </p>
+        </section>
+
+        <section id="variables"><title>TLS Variables</title>
+        <p>
+            Via the directive <directive module="mod_tls">TLSOptions</directive>, several variables
+            are placed into the environment of requests and can be inspected, for
+            example in a CGI script.
+        </p>
+        <p>
+            The variable names are given by <module>mod_ssl</module>. Note that these
+            are only a subset of the many variables that <module>mod_ssl</module> exposes.
+    	</p>
+        <table>
+            <tr><th>Variable</th><th>TLSOption</th><th>Description</th></tr>
+            <tr><td>SSL_TLS_SNI</td><td>*</td><td>the server name indicator (SNI) send by the client</td></tr>
+            <tr><td>SSL_PROTOCOL</td><td>*</td><td>the TLS protocol negotiated</td></tr>
+            <tr><td>SSL_CIPHER</td><td>*</td><td>the name of the TLS cipher negotiated</td></tr>
+            <tr><td>SSL_VERSION_INTERFACE</td><td>StdEnvVars</td><td>the module version</td></tr>
+            <tr><td>SSL_VERSION_LIBRARY</td><td>StdEnvVars</td><td>the rustls-ffi version</td></tr>
+            <tr><td>SSL_SECURE_RENEG</td><td>StdEnvVars</td><td>always `false`</td></tr>
+            <tr><td>SSL_COMPRESS_METHOD</td><td>StdEnvVars</td><td>always `false`</td></tr>
+            <tr><td>SSL_CIPHER_EXPORT</td><td>StdEnvVars</td><td>always `false`</td></tr>
+            <tr><td>SSL_CLIENT_VERIFY</td><td>StdEnvVars</td><td>always `false`</td></tr>
+            <tr><td>SSL_SESSION_RESUMED</td><td>StdEnvVars</td><td>either `Resumed` if a known TLS session id was presented by the client or `Initial` otherwise</td></tr>
+            <tr><td>SSL_SERVER_CERT</td><td>ExportCertData</td><td>the selected server certificate in PEM format</td></tr>
+        </table>
+        <p>
+           The variable <code>SSL_SESSION_ID</code> is intentionally not supported as
+            it contains sensitive information.
+        </p>
+        </section>
+
+        <section id="certificates"><title>Client Certificates</title>
+        <p>
+            While <code>rustls</code> supports client certificates in principle, parts
+            of the infrastructure to make <em>use</em> of these in a server are not
+            offered.
+        </p>
+        <p>
+            Among these features are: revocation lists, inspection of certificate
+            extensions and the matched issuer chain for OCSP validation. Without these,
+            revocation of client certificates is not possible. Offering authentication
+            without revocation is not considered an option.
+        </p>
+        <p>
+            Work will continue on this and client certificate support may become
+            available in a future release.
+        </p>
+        </section>
+
+    <directivesynopsis>
+        <name>TLSEngine</name>
+        <description>defines on which address+port the module shall handle incoming connections.</description>
+        <syntax>TLSEngine [<em>address</em>:]<em>port</em></syntax>
+        <contextlist>
+            <context>server config</context>
+        </contextlist>
+        <usage>
+            <p>
+                This is set on a global level, not in individual <directive module="core"
+                type="section">VirtualHost</directive>s.
+                It will affect all <directive module="core" type="section">VirtualHost</directive>
+                that match the specified address/port.
+                You can use <directive>TLSEngine</directive> several times to use more than one address/port.
+            </p><p>
+            </p>
+            <example><title>Example</title>
+                <highlight language="config">
+                    TLSEngine 443
+                </highlight>
+            </example>
+            <p>
+                The example tells mod_tls to handle incoming connection on port 443 for
+                all listeners.
+            </p>
+        </usage>
+    </directivesynopsis>
+
+    <directivesynopsis>
+        <name>TLSCertificate</name>
+        <description>adds a certificate and key (PEM encoded) to a server/virtual host.</description>
+        <syntax>TLSCertificate <em>cert_file</em> [<em>key_file</em>]</syntax>
+        <contextlist>
+            <context>server config</context>
+            <context>virtual host</context>
+        </contextlist>
+        <usage>
+            <p>
+                If you do not specify a separate key file, the key is assumed to also be
+                found in the first file. You may add more than one certificate to a
+                server/virtual host. The first certificate suitable for a client is then chosen.
+            </p><p>
+                The path can be specified relative to the server root.
+            </p>
+        </usage>
+    </directivesynopsis>
+
+    <directivesynopsis>
+        <name>TLSProtocol</name>
+        <description>specifies the minimum version of the TLS protocol to use.</description>
+        <syntax>TLSProtocol <em>version</em>+</syntax>
+        <default>TLSProtocol v1.2+</default>
+        <contextlist>
+            <context>server config</context>
+            <context>virtual host</context>
+        </contextlist>
+        <usage>
+            <p>
+                The default is `v1.2+`. Settings this to `v1.3+` would disable TLSv1.2.
+            </p>
+        </usage>
+    </directivesynopsis>
+
+    <directivesynopsis>
+        <name>TLSCiphersPrefer</name>
+        <description>defines ciphers that are preferred.</description>
+        <syntax>TLSCiphersPrefer <em>cipher(-list)</em></syntax>
+        <contextlist>
+            <context>server config</context>
+            <context>virtual host</context>
+        </contextlist>
+        <usage>
+            <p>
+                This will not disable any ciphers supported by `rustls`. If you
+                specify a cipher that is completely unknown, the configuration will
+                fail. If you specify a cipher that is known but not supported by `rustls`,
+                a warning will be logged but the server will continue.
+            </p><p>
+            </p>
+            <example><title>Example</title>
+                <highlight language="config">
+TLSCiphersPrefer ECDHE-ECDSA-AES256-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305
+                </highlight>
+            </example>
+            <p>
+                The example gives 2 ciphers preference over others, in the
+                order they are mentioned.
+            </p>
+        </usage>
+    </directivesynopsis>
+
+    <directivesynopsis>
+        <name>TLSCiphersSuppress</name>
+        <description>defines ciphers that are not to be used.</description>
+        <syntax>TLSCiphersSuppress <em>cipher(-list)</em></syntax>
+        <contextlist>
+            <context>server config</context>
+            <context>virtual host</context>
+        </contextlist>
+        <usage>
+            <p>
+                This will not disable any unmentioned ciphers supported by `rustls`.
+                If you specify a cipher that is completely unknown, the configuration will fail.
+                If you specify a cipher that is known but not supported by `rustls`,
+                a warning will be logged but the server will continue.
+            </p><p>
+            </p>
+            <example><title>Example</title>
+                <highlight language="config">
+TLSCiphersSuppress ECDHE-ECDSA-CHACHA20-POLY1305
+                </highlight>
+            </example>
+            <p>
+                The example removes a cipher for use in connections.
+            </p>
+        </usage>
+    </directivesynopsis>
+
+    <directivesynopsis>
+        <name>TLSHonorClientOrder</name>
+        <description>determines if the order of ciphers supported by the client is honored</description>
+        <syntax>TLSHonorClientOrder on|off</syntax>
+        <default>TLSHonorClientOrder on</default>
+        <contextlist>
+            <context>server config</context>
+            <context>virtual host</context>
+        </contextlist>
+        <usage>
+            <p>
+                <directive>TLSHonorClientOrder</directive> determines if the order of ciphers
+                supported by the client is honored.
+            </p><p>
+            </p>
+        </usage>
+    </directivesynopsis>
+
+    <directivesynopsis>
+        <name>TLSOptions</name>
+        <description>enables SSL variables for requests.</description>
+        <syntax>TLSOptions [+|-]<em>option</em></syntax>
+        <contextlist>
+            <context>server config</context>
+            <context>virtual host</context>
+            <context>directory</context>
+            <context>.htaccess</context>
+        </contextlist>
+        <usage>
+            <p>
+                <directive>TLSOptions</directive> is analog to <directive
+                module="mod_ssl">SSLOptions</directive> in <module>mod_ssl</module>.
+                It can be set per directory/location and `option` can be:
+            </p>
+            <ul>
+                <li>`StdEnvVars`: adds more variables to the requests environment,
+                    as forwarded for example to CGI processing and other applications.
+                </li>
+                <li>`ExportCertData`: adds certificate related variables to the request environment.
+                </li>
+                <li>`Defaults`: resets all options to their default values.</li>
+            </ul>
+            <p>
+                Adding variables to a request environment adds overhead, especially
+                when certificates need to be inspected and fields extracted.
+                Therefore most variables are not set by default.
+            </p>
+            <p>
+                You can configure <directive>TLSOptions</directive> per location or generally on a
+                server/virtual host. Prefixing an option with `-` disables this
+                option while leaving others unchanged.
+                A `+` prefix is the same as writing the option without one.
+            </p>
+            <p>
+                The `Defaults` value can be used to reset any options that are
+                inherited from other locations or the virtual host/server.
+            </p>
+            <example><title>Example</title>
+                <highlight language="config">
+&lt;Location /myplace/app>
+  TLSOptions Defaults StdEnvVars
+  ...
+&lt;/Location>
+                </highlight>
+            </example>
+        </usage>
+    </directivesynopsis>
+
+    <directivesynopsis>
+        <name>TLSProxyEngine</name>
+        <description>enables TLS for backend connections.</description>
+        <syntax>TLSProxyEngine on|off</syntax>
+        <contextlist>
+            <context>server config</context>
+            <context>virtual host</context>
+            <context>proxy section</context>
+        </contextlist>
+        <usage>
+            <p>
+                <directive>TLSProxyEngine</directive> is analog to <directive
+                module="mod_ssl">SSLProxyEngine</directive> in <module>mod_ssl</module>.
+            </p><p>
+                This can be used in a server/virtual host or <directive module="mod_proxy"
+                type="section">Proxy</directive> section to
+                enable the module for outgoing connections using <module>mod_proxy</module>.
+            </p>
+        </usage>
+    </directivesynopsis>
+
+    <directivesynopsis>
+        <name>TLSProxyCA</name>
+        <description>sets the root certificates to validate the backend server with.</description>
+        <syntax>TLSProxyCA <em>file.pem</em></syntax>
+        <contextlist>
+            <context>server config</context>
+            <context>virtual host</context>
+            <context>proxy section</context>
+        </contextlist>
+        <usage>
+            <p>
+
+            </p>
+        </usage>
+    </directivesynopsis>
+
+    <directivesynopsis>
+        <name>TLSProxyProtocol</name>
+        <description>specifies the minimum version of the TLS protocol to use in proxy connections.</description>
+        <syntax>TLSProxyProtocol <em>version</em>+</syntax>
+        <default>TLSProxyProtocol v1.2+</default>
+        <contextlist>
+            <context>server config</context>
+            <context>virtual host</context>
+            <context>proxy section</context>
+        </contextlist>
+        <usage>
+            <p>
+                The default is `v1.2+`. Settings this to `v1.3+` would disable TLSv1.2.
+            </p>
+        </usage>
+    </directivesynopsis>
+
+    <directivesynopsis>
+        <name>TLSProxyCiphersPrefer</name>
+        <description>defines ciphers that are preferred for a proxy connection.</description>
+        <syntax>TLSProxyCiphersPrefer <em>cipher(-list)</em></syntax>
+        <contextlist>
+            <context>server config</context>
+            <context>virtual host</context>
+            <context>proxy section</context>
+        </contextlist>
+        <usage>
+            <p>
+                This will not disable any ciphers supported by `rustls`.
+                If you specify a cipher that is completely unknown, the configuration will fail.
+                If you specify a cipher that is known but not supported by `rustls`,
+                a warning will be logged but the server will continue.
+            </p>
+        </usage>
+    </directivesynopsis>
+
+    <directivesynopsis>
+        <name>TLSProxyCiphersSuppress</name>
+        <description>defines ciphers that are not to be used for a proxy connection.</description>
+        <syntax>TLSProxyCiphersSuppress <em>cipher(-list)</em></syntax>
+        <contextlist>
+            <context>server config</context>
+            <context>virtual host</context>
+            <context>proxy section</context>
+        </contextlist>
+        <usage>
+            <p>
+                This will not disable any unmentioned ciphers supported by `rustls`.
+                If you specify a cipher that is completely unknown, the configuration will fail.
+                If you specify a cipher that is known but not supported by `rustls`,
+                a warning will be logged but the server will continue.
+            </p>
+        </usage>
+    </directivesynopsis>
+
+    <directivesynopsis>
+        <name>TLSProxyMachineCertificate</name>
+        <description>adds a certificate and key file (PEM encoded) to a proxy setup.</description>
+        <syntax>TLSProxyMachineCertificate <em>cert_file</em> [<em>key_file</em>]</syntax>
+        <contextlist>
+            <context>server config</context>
+            <context>virtual host</context>
+            <context>proxy section</context>
+        </contextlist>
+        <usage>
+            <p>
+                The certificate is used to authenticate against a proxied backend server.
+            </p><p>
+                If you do not specify a separate key file, the key is assumed to also be
+                found in the first file. You may add more than one certificate to a proxy
+                setup. The first certificate suitable for a proxy connection to a backend
+                is then chosen by <code>rustls</code>.
+            </p>
+            <p>
+                The path can be specified relative to the server root.
+            </p>
+        </usage>
+    </directivesynopsis>
+
+    <directivesynopsis>
+        <name>TLSStrictSNI</name>
+        <description>enforces exact matches of client server indicators (SNI) against host names.</description>
+        <syntax>TLSStrictSNI on|off</syntax>
+        <default>TLSStrictSNI on</default>
+        <contextlist>
+            <context>server config</context>
+        </contextlist>
+        <usage>
+            <p>
+                Client connections using SNI will be unsuccessful if no match is found.
+            </p>
+        </usage>
+    </directivesynopsis>
+
+    <directivesynopsis>
+        <name>TLSSessionCache</name>
+        <description>specifies the cache for TLS session resumption.</description>
+        <syntax>TLSSessionCache <em>cache-spec</em></syntax>
+        <contextlist>
+            <context>server config</context>
+        </contextlist>
+        <usage>
+            <p>
+                This uses a cache on the server side to allow clients to resume connections.
+            </p><p>
+            You can set this to `none` or define a cache as in the <directive
+            module="mod_ssl">SSLSessionCache</directive>
+            directive of <module>mod_ssl</module>.
+            </p><p>
+            If not configured, `mod_tls` will try to create a shared memory cache on its own,
+            using `shmcb:tls/session-cache` as specification.
+            Should that fail, a warning is logged, but the server continues.
+            </p>
+        </usage>
+    </directivesynopsis>
+
+</modulesynopsis>

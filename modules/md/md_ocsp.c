@@ -449,7 +449,7 @@ static void ocsp_get_meta(md_ocsp_cert_stat_t *pstat, md_timeperiod_t *pvalid,
 {
     apr_thread_mutex_lock(reg->mutex);
     if (ostat->resp_der.len <= 0) {
-        /* No resonse known, check the store if out watchdog retrieved one 
+        /* No response known, check the store if out watchdog retrieved one 
          * in the meantime. */
         ocsp_status_refresh(ostat, p);
     }
@@ -640,7 +640,7 @@ static apr_status_t ostat_on_resp(const md_http_response_t *resp, void *baton)
     switch ((n = OCSP_check_nonce(ostat->ocsp_req, basic_resp))) {
         case 1:
             md_log_perror(MD_LOG_MARK, MD_LOG_TRACE3, 0, req->pool,
-                          "req[%d]: OCSP respoonse nonce does match", req->id);
+                          "req[%d]: OCSP response nonce does match", req->id);
             break;
         case 0:
             rv = APR_EINVAL;
@@ -650,7 +650,7 @@ static apr_status_t ostat_on_resp(const md_http_response_t *resp, void *baton)
             
         case -1:
             md_log_perror(MD_LOG_MARK, MD_LOG_TRACE3, 0, req->pool,
-                          "req[%d]: OCSP respoonse did not return the nonce", req->id);
+                          "req[%d]: OCSP response did not return the nonce", req->id);
             break;
         default:
             break;

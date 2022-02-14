@@ -24,7 +24,7 @@
               xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                   xmlns="http://www.w3.org/1999/xhtml">
 
-<xsl:output method="text" encoding="ISO-8859-1" indent="no" />
+<xsl:output method="text" encoding="utf-8" indent="no" />
 
 <!-- Constants used for case translation -->
 <xsl:variable name="lowercase" select="'abcdefghijklmnopqrstuvwxyz'" />

@@ -844,8 +844,8 @@ if test -d ./test; then
     APACHE_FAST_OUTPUT(test/Makefile)
 fi
 if test -d ./test/modules/http2; then
-    APACHE_FAST_OUTPUT(test/modules/http2/Makefile)
-    AC_CONFIG_FILES([test/modules/http2/config.ini])
+    APACHE_FAST_OUTPUT(test/Makefile)
+    AC_CONFIG_FILES([test/pyhttpd/config.ini])
 fi
 
 dnl ## Finalize the variables

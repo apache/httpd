@@ -714,7 +714,7 @@ static apr_status_t update_directory(const md_http_response_t *res, void *data)
         /* RFC 8555 only requires "directory" and "newNonce" resources.
          * mod_md uses "newAccount" and "newOrder" so check for them.
          * But mod_md does not use the "revokeCert" or "keyChange"
-         * resources, so tolerate the absense of those keys.  In the
+         * resources, so tolerate the absence of those keys.  In the
          * future if mod_md implements revocation or key rollover then
          * the use of those features should be predicated on the
          * server's advertised capabilities. */

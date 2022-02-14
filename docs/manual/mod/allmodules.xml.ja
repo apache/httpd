@@ -119,6 +119,7 @@
   <modulefile>mod_substitute.xml</modulefile>
   <modulefile>mod_suexec.xml.ja</modulefile>
   <modulefile>mod_systemd.xml</modulefile>
+  <modulefile>mod_tls.xml</modulefile>
   <modulefile>mod_unique_id.xml.ja</modulefile>
   <modulefile>mod_unixd.xml</modulefile>
   <modulefile>mod_userdir.xml.ja</modulefile>

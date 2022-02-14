@@ -29,7 +29,8 @@ Release history:
     [NOTE that x.{odd}.z versions are strictly Alpha/Beta releases,
           while x.{even}.z versions are Stable/GA releases.]
 
-    2.4.52  : In development
+    2.4.53  : In development
+    2.4.52  : Released on December 20, 2021
     2.4.51  : Released on October 07, 2021
     2.4.50  : Released on October 04, 2021
     2.4.49  : Released on September 16, 2021
@@ -138,15 +139,138 @@ CURRENT RELEASE NOTES:
     . routine APLOGNO() backports
     . .gdbinit
     . Travis integration: .travis.yml and test/travis*.sh
+    . mod_tls
 
 RELEASE SHOWSTOPPERS:
+
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) Support PCRE2 (10.x) in place of PCRE (8.x).
+     Submitted by: wrowe, Petr Pisar [ppisar redhat.com], rjung
+     trunk patches:
+         http://svn.apache.org/r1773454
+         http://svn.apache.org/r1773741
+         http://svn.apache.org/r1773742
+         http://svn.apache.org/r1773839
+         http://svn.apache.org/r1773870
+         http://svn.apache.org/r1773882
+         http://svn.apache.org/r1814662
+         http://svn.apache.org/r1881478
+     summarized/conflicts resolved:
+         https://gist.github.com/wrowe/73f655d13bbe0f12030aa4557e804d8a
+     +1: wrowe, rpluem, ylavic
+     wrowe notes that the current code drops optimizations, owing to the fact
+     that the ovector is a required allocation and is no longer allocated on
+     the stack, by design.  The correct fix is an apr userdata allocation on
+     the appropriate pool, which would be thread-safe, but the actual API of
+     ap_regexec[_len]() offers us no pool and isn't suitable for httpd-2.4.x.
+     At this time, PCRE 8.45 is EOL and will not receive security updates,
+     and taking ovector and other arrays off the stack was in direct reaction
+     to the patterns of abuse of previous pcre exploits. So this patch doesn't
+     wait for httpd-2.4 to be retired, it will need to be adopted without the
+     existing optimiation.
+     jorton: Adding ap_pregexec/_len which pass a pool would also work
+             for internal users of this api; not sure if performance
+             impact is significant from using malloc here.
+     ylavic: A follow up backport (based on this one) using thread locals to
+             reuse ap_regex*() contexts: https://github.com/apache/httpd/pull/289
+             Proposed for backport below, in place of or after this one.
+     rpluem: +1 on PR 289 as well.
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
+
+  *) dbm: Split the loading of a dbm driver from the opening of a dbm file. When
+     an attempt to load a dbm driver fails, log clearly which driver triggered
+     the error (not "default"), and what the error was.
+     Trunk version of patch:
+        https://svn.apache.org/r1891019
+     Backport version for 2.4.x of patch:
+        https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/httpd-dbm.patch
+     +1: minfrin
+     jailletc36: part of r1891023 is needed to fill some APLOGNO()
+
+  *) Add the ldap function to the expression API, allowing LDAP filters and
+     distinguished names based on expressions to be escaped correctly to
+     guard against LDAP injection.
+     Trunk version of patch:
+        https://svn.apache.org/r1589986
+        https://svn.apache.org/r1589995
+        https://svn.apache.org/r1633528
+     Backport version for 2.4.x of patch:
+        https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/httpd-2.4-ldap-expr.patch
+     +1: minfrin
+
+  *) Add the ldap-search option to mod_authnz_ldap, allowing authorization
+     to be based on arbitrary expressions that do not include the username.
+     Make sure that when ldap searches are too long, we explicitly log the
+     error.
+     Trunk version of patch:
+        https://svn.apache.org/r1589993
+        https://svn.apache.org/r1591012
+        https://svn.apache.org/r1596108
+     Backport version for 2.4.x of patch:
+        https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/httpd-2.4-ldap-search.patch
+     +1: minfrin
+     jailletc36: r1745033 seems related and should in included
+
+  *) mod_authn_core: Add expression support to AuthName and AuthType.
+     Trunk version of patch:
+        https://svn.apache.org/r1663123
+        https://svn.apache.org/r1670431
+     Backport version for 2.4.x of patch:
+        https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/httpd-2.4-authn-expr.patch
+     +1: minfrin
+
+  *) Support PCRE2 with buffers reuse through Thread Local Storage.
+     trunk patches:
+         http://svn.apache.org/r1897240
+         http://svn.apache.org/r1897241
+         http://svn.apache.org/r1897242
+         http://svn.apache.org/r1897244
+         http://svn.apache.org/r1897248
+         http://svn.apache.org/r1897250
+         http://svn.apache.org/r1897260
+         http://svn.apache.org/r1897261
+         http://svn.apache.org/r1897263
+         http://svn.apache.org/r1897386
+         http://svn.apache.org/r1897459
+         http://svn.apache.org/r1897460
+         http://svn.apache.org/r1897461
+         http://svn.apache.org/r1897462
+         http://svn.apache.org/r1897472
+         http://svn.apache.org/r1897543
+         http://svn.apache.org/r1612934
+         http://svn.apache.org/r1612940
+         http://svn.apache.org/r1613189
+         http://svn.apache.org/r1897651
+         http://svn.apache.org/r1897680
+         http://svn.apache.org/r1897689
+         http://svn.apache.org/r1897691
+         http://svn.apache.org/r1897692
+     2.4.x patches:
+         https://github.com/apache/httpd/pull/289.diff
+         (PR: https://github.com/apache/httpd/pull/289)
+     +1: ylavic, rpluem,
+     ylavic: This backport proposal inludes the PCRE2 backport already accepted,
+             we can apply this one instead or the original one first and then
+             this one (I'd have to rebase the github PR first).
+     ylavic: Can someone test this on Windows too?
+
+  *) mod_proxy: Bump shared worker name to 384 chars. PR 53218
+     trunk patch: http://svn.apache.org/r1896253
+                  http://svn.apache.org/r1897859 (CHANGES entry, not in patch)
+     2.4.x patch: https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/288.diff
+                  (PR: https://github.com/apache/httpd/pull/288)
+     ylavic: r1896253 made compatible with 2.4.x where we can't change the
+             layout/size of the existing proxy_worker_shared fields.
+
+
+PATCHES/ISSUES THAT ARE BEING WORKED
+  [ New entries should be added at the START of the list ]
 
   *) mod_xml2enc: Correctly handle Microsoft OOXML documents.  PR 64339
      trunk patch: http://svn.apache.org/r1884505
@@ -157,28 +281,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      and other alternatives have been discussed in PR 64339.  If r1884505
      is not the right fix, then it should be removed from trunk.
      Putting it here is a way to revive the discussion
-
-  *) mod_dav: Add utility functions dav_validate_root_ns(),
-     dav_find_child_ns(), dav_find_next_ns(), dav_find_attr_ns() and
-     dav_find_attr() so that other modules get to play too.
-     Trunk version of patch:
-        https://svn.apache.org/r1879888
-     Backport version for 2.4.x of patch:
-      https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/httpd-2.4-dav-ns.patch
-     +1: minfrin
-
-  *) mod_dav: Some DAV extensions, like CalDAV, specify both document
-     elements and property elements that need to be taken into account
-     when generating a property. The document element and property element
-     are made available in the dav_liveprop_elem structure by calling
-     dav_get_liveprop_element().
-     Trunk version of patch:
-        https://svn.apache.org/r1879889
-        https://svn.apache.org/r1893643
-        https://svn.apache.org/r1893644
-     Backport version for 2.4.x of patch:
-        https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/httpd-2.4-dav-element.patch
-     +1: minfrin
 
   *) mod_http2: sync with trunk
      - Fixed an issue since 1.15.24 that "Server" headers in proxied requests
@@ -201,6 +303,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        graceful reload or when reaching MaxConnectionsPerChild.
        When unprocessed h2 requests were queued at the time, these could stall.
        See <https://github.com/icing/mod_h2/issues/212>.
+     - fix logic for non-proxy Server and Date response headers. [ylavic]
+     - The pollset implemenation is only enabled when APR >= 1.6 is detected.
      Trunk version of patch:
         https://svn.apache.org/r1894163
         https://svn.apache.org/r1894169
@@ -217,35 +321,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         https://svn.apache.org/r1894252
         https://svn.apache.org/r1894728
         https://svn.apache.org/r1894949
+        https://svn.apache.org/r1895336
+        https://svn.apache.org/r1895349
      Backport version for 2.4.x of patch:
        PR: https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/275.diff
-     +1: icing, 
-
-  *) mpm_event: Restart stopping of idle children after a load peak. PR 65626.
-     trunk patch: http://svn.apache.org/r1894285
-                  http://svn.apache.org/r1894286
-     backport PR: https://github.com/apache/httpd/pull/276
-     2.4.x patch: svn merge -c 1894285,1894286 ^/httpd/httpd/trunk .
-     +1: ylavic, icing,
-
-  *) core: Be safe with ap_lingering_close() called with a socket NULL-ed by
-     a third-party module.  PR 65627.
-     trunk patch: http://svn.apache.org/r1894171
-     backport PR: https://github.com/apache/httpd/pull/277
-     2.4.x patch: svn merge -c 1894171 ^/httpd/httpd/trunk .
-     +1: ylavic, icing, 
-
-  *) mod_proxy_connect: Honor the smallest of the backend or client timeout
-     while tunneling, and handle "proxy-nohalfclose" as opt-out for hlaf-close
-     tunneling. PR 65631, 65662, 65689.
-     trunk patch: http://svn.apache.org/r1894290
-                  http://svn.apache.org/r1895304
-     backport PR: https://github.com/apache/httpd/pull/278
-     2.4.x patch: https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/278.patch
-     +1: ylavic,
-
-PATCHES/ISSUES THAT ARE BEING WORKED
-  [ New entries should be added at the START of the list ]
+     +1: icing,
 
   *) core: Initialize the request fields on read failure to avoid NULLs.
      trunk patch: http://svn.apache.org/r1893030
@@ -253,23 +333,6 @@ PATCHES/ISSUES THAT ARE BEING WORKED
      2.4.x patch: svn merge -c 1893030,1893044 ^/httpd/httpd/trunk .
      +1: ylavic,
      ylavic: still being discussed on dev@
-
-  *) mod_dav: Allow other modules to become providers and add ACLs
-     to the DAV response.
-     trunk patch: http://svn.apache.org/r1748322
-                  http://svn.apache.org/r1824590
-                  http://svn.apache.org/r1824596
-     2.4.x: trunk works modulo CHANGES/MMN/log-message
-     +1: minfrin, jim
-     -1: rpluem: While we allow extensions of structures at the end in general
-                 this is a specific case where the the design of the mod_dav
-                 API clashes with this approach, as the API requires consumers
-                 to create the public structs on their own, something we do
-                 not "allow/encourage" otherwise in order to be able to do the
-                 structure extension. I don't want to see consumers of this API
-                 suffer from the clash we created.
-                 See also:
-                 https://lists.apache.org/thread.html/b924afe0fcc58a8636b753e630421bf6dc2080653a79575fd5fd641a@%3Cdev.httpd.apache.org%3E
 
   *) http: Don't remove the Content-Length of zero from a HEAD response if
      it comes from an origin server, module or script. Allow the previous
@@ -312,28 +375,6 @@ PATCHES/ISSUES THAT ARE BEING WORKED
              make it nonblocking (by default)?
         jim: Non-blocking seems the best way to handle...
 
-   * Support PCRE2 (10.x) in place of PCRE (8.x).
-     Submitted by: wrowe, Petr Pisar [ppisar redhat.com]
-     trunk patches:
-         http://svn.apache.org/r1773454
-         http://svn.apache.org/r1773741
-         http://svn.apache.org/r1773742
-         http://svn.apache.org/r1773839
-         http://svn.apache.org/r1773870
-         http://svn.apache.org/r1773882
-     wrowe notes that the current code is too inefficient, owing to the fact
-     that the ovector is a required allocation and is no longer allocated on
-     the stack, by design. The correct fix is an apr userdata allocation on
-     the appropriate pool, which would be thread-safe, but the actual API of
-     ap_regexec[_len]() offers us no pool. We cannot associate that pool with
-     the ap_regex_t, because a single regex may be used by many threads in
-     parallel and is not thread-safe beyond initialization.
-     So the only fix allowing us to use PCRE 10 in httpd 2.4 would be to write
-     this as a thread safe storage buffer for the majority of cases (<10 $args)
-     and we don't have a portable tls mechanism to do so.
-     jorton: Adding ap_pregexec/_len which pass a pool would also work
-             for internal users of this api; not sure if performance
-             impact is significant from using malloc here.
 
 PATCHES/ISSUES THAT ARE STALLED
 

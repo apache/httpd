@@ -647,9 +647,9 @@ AllowOverrideList CookieTracking CookieName</pre>
 
     <p>Dans l'exemple ci-dessus, la directive <code class="directive"><a href="#allowoverride">AllowOverride</a></code> autorise les directives du
     groupement <code>AuthConfig</code>, et
-    <code class="directive">AllowOverrideList</code> n'autorise que deux
-    directives du groupement <code>FileInfo</code>. Toutes les autres
-    provoqueront une erreur interne du serveur.</p>
+    <code class="directive">AllowOverrideList</code> n'autorise que deux directives du
+    groupement <code>FileInfo</code>. Toutes les autres provoqueront une erreur
+    interne du serveur.</p>
 
 <h3>Voir aussi</h3>
 <ul>
@@ -2035,9 +2035,9 @@ elles sont envoyées sur le réseau</td></tr>
     dessous de la limite.</p>
 
     <p>La directive <code class="directive">FlushMaxPipelined</code> permet de limiter
-    la consommation de mémoire. Lorsqu'elle est définie à <var>0</var>, le
-    pipelining est désactivé, et lorsqu'elle est définie à <var>-1</var>, il n'y
-    a plus de limite (mais la directive <code class="directive">FlushMaxThreshold</code>
+    la consommation de mémoire. Lorsqu'elle est définie à <code>0</code>, le
+    pipelining est désactivé, et lorsqu'elle est définie à <code>-1</code>, il n'y
+    a plus de limite (mais la directive <code class="directive"><a href="#flushmaxthreshold">FlushMaxThreshold</a></code>
     s'applique quand-même).</p>
 
 </div>
@@ -2046,7 +2046,7 @@ elles sont envoyées sur le réseau</td></tr>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Seuil au-delà duquel les données en attente sont envoyées sur le
 réseau</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>FlushMaxThreshold<var>number-of-bytes</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>FlushMaxThreshold <var>number-of-bytes</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>FlushMaxThreshold 65536</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Noyau httpd</td></tr>
@@ -2059,7 +2059,7 @@ réseau</td></tr>
     dessous du seuil spécifié.</p>
 
     <p>La directive <code class="directive">FlushMaxThreshold</code> permet de limiter
-    la consommation de mémoire. Lorsqu'elle est définie à <var>0</var> ou à une
+    la consommation de mémoire. Lorsqu'elle est définie à <code>0</code> ou à une
     valeur trop petite, aucune donnée n'est mise en attente, mais dans le cas
     des MPMs threadés, il peut alors y avoir plus de threads occupés en attente du
     réseau, ce qui diminue d'autant le nombre de threads disponibles pour
@@ -2539,6 +2539,12 @@ existe au démarrage</td></tr>
     <var>filename</var> sera relatif au répertoire racine par défaut du serveur
     ou au répertoire racine passé dans la ligne de commande via l'option
     <code>-d</code>.</p>
+
+    <div class="warning"><h3>Avertissement</h3>
+    Avec la version 2.4.34, il est interdit de spécifier un <var>filename</var>
+    entouré de guillemets. Ceci provoquerait une erreur de syntaxe au démarrage.
+    Il est donc impossible de spécifier des noms de fichiers contenant des
+    espaces, mais ce défaut a été corrigé à partir de la version 2.4.35.</div>
     
 
 </div>
@@ -4714,7 +4720,7 @@ elle-même possède plus de 63 caractères.</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.2.7
 d'Apache httpd.</td></tr>
 </table>
-    <p>Avec <code>ExtendedStatus On</code>, mod_status affiche la
+    <p>Avec <code>ExtendedStatus On</code>, <code class="module"><a href="../mod/mod_status.html">mod_status</a></code> affiche la
     véritable requête en cours de traitement. Pour des raisons
     historiques, seuls 63 caractères de la requête sont réellement
     stockés à des fins d'affichage. Cette directive permet de déterminer
@@ -4724,7 +4730,7 @@ d'Apache httpd.</td></tr>
     si la taille de la requête est de 64 caractères ou plus.</p>
 
     <p>Si Apache httpd traite la requête <code>GET&nbsp;/disque1/stockage/apache/htdocs/images/rep-images1/nourriture/pommes.jpg&nbsp;HTTP/1.1</code>
-    , l'affichage de la requête par mod_status se présentera comme suit :
+    , l'affichage de la requête par <code class="module"><a href="../mod/mod_status.html">mod_status</a></code> se présentera comme suit :
     </p>
 
     <table class="bordered">

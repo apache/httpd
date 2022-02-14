@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1890425 -->
+<!-- English Revision: 1896415 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -595,9 +595,9 @@ AllowOverrideList CookieTracking CookieName
     <p>Dans l'exemple ci-dessus, la directive <directive
     module="core">AllowOverride</directive> autorise les directives du
     groupement <code>AuthConfig</code>, et
-    <directive>AllowOverrideList</directive> n'autorise que deux
-    directives du groupement <code>FileInfo</code>. Toutes les autres
-    provoqueront une erreur interne du serveur.</p>
+    <directive>AllowOverrideList</directive> n'autorise que deux directives du
+    groupement <code>FileInfo</code>. Toutes les autres provoqueront une erreur
+    interne du serveur.</p>
 </usage>
 
 <seealso><directive module="core">AccessFileName</directive></seealso>
@@ -2207,9 +2207,9 @@ elles sont envoyées sur le réseau</description>
     dessous de la limite.</p>
 
     <p>La directive <directive>FlushMaxPipelined</directive> permet de limiter
-    la consommation de mémoire. Lorsqu'elle est définie à <var>0</var>, le
-    pipelining est désactivé, et lorsqu'elle est définie à <var>-1</var>, il n'y
-    a plus de limite (mais la directive <directive>FlushMaxThreshold</directive>
+    la consommation de mémoire. Lorsqu'elle est définie à <code>0</code>, le
+    pipelining est désactivé, et lorsqu'elle est définie à <code>-1</code>, il n'y
+    a plus de limite (mais la directive <directive module="core">FlushMaxThreshold</directive>
     s'applique quand-même).</p>
 </usage>
 </directivesynopsis>
@@ -2218,7 +2218,7 @@ elles sont envoyées sur le réseau</description>
 <name>FlushMaxThreshold</name>
 <description>Seuil au-delà duquel les données en attente sont envoyées sur le
 réseau</description>
-<syntax>FlushMaxThreshold<var>number-of-bytes</var></syntax>
+<syntax>FlushMaxThreshold <var>number-of-bytes</var></syntax>
 <default>FlushMaxThreshold 65536</default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
@@ -2231,7 +2231,7 @@ réseau</description>
     dessous du seuil spécifié.</p>
 
     <p>La directive <directive>FlushMaxThreshold</directive> permet de limiter
-    la consommation de mémoire. Lorsqu'elle est définie à <var>0</var> ou à une
+    la consommation de mémoire. Lorsqu'elle est définie à <code>0</code> ou à une
     valeur trop petite, aucune donnée n'est mise en attente, mais dans le cas
     des MPMs threadés, il peut alors y avoir plus de threads occupés en attente du
     réseau, ce qui diminue d'autant le nombre de threads disponibles pour
@@ -2550,6 +2550,12 @@ existe au démarrage</description>
     <var>filename</var> sera relatif au répertoire racine par défaut du serveur
     ou au répertoire racine passé dans la ligne de commande via l'option
     <code>-d</code>.</p>
+
+    <note type="warning"><title>Avertissement</title>
+    Avec la version 2.4.34, il est interdit de spécifier un <var>filename</var>
+    entouré de guillemets. Ceci provoquerait une erreur de syntaxe au démarrage.
+    Il est donc impossible de spécifier des noms de fichiers contenant des
+    espaces, mais ce défaut a été corrigé à partir de la version 2.4.35.</note>
     
 </usage>
 </directivesynopsis>
@@ -4697,7 +4703,7 @@ elle-même possède plus de 63 caractères.</description>
 d'Apache httpd.</compatibility>
 
 <usage>
-    <p>Avec <code>ExtendedStatus On</code>, mod_status affiche la
+    <p>Avec <code>ExtendedStatus On</code>, <module>mod_status</module> affiche la
     véritable requête en cours de traitement. Pour des raisons
     historiques, seuls 63 caractères de la requête sont réellement
     stockés à des fins d'affichage. Cette directive permet de déterminer
@@ -4708,7 +4714,7 @@ d'Apache httpd.</compatibility>
 
     <p>Si Apache httpd traite la requête <code
     >GET&nbsp;/disque1/stockage/apache/htdocs/images/rep-images1/nourriture/pommes.jpg&nbsp;HTTP/1.1</code>
-    , l'affichage de la requête par mod_status se présentera comme suit :
+    , l'affichage de la requête par <module>mod_status</module> se présentera comme suit :
     </p>
 
     <table border="1">

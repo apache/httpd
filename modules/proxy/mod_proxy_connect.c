@@ -354,8 +354,6 @@ static int proxy_connect_handler(request_rec *r, proxy_worker *worker,
         if (proxyport && !tunnel->replied) {
             return rc;
         }
-        /* Custom log may need this, still */
-        r->status = rc;
     }
 
     /*

@@ -28,11 +28,17 @@ The Travis scripts use the following environment variables:
 * SKIP_TESTING - if set, the Perl test framework is not run for the
   build.
 
-* TEST_UBSAN - set for builds using UBSan ("Undefined Behaviour Sanitizer")
+* TEST_UBSAN - set for job using UBSan ("Undefined Behaviour Sanitizer")
 
-* TEST_MALLOC - set for builds using enhanced malloc debugging.
+* TEST_MALLOC - set for job using enhanced malloc debugging.
 
-* TEST_LDAP - set for builds with slapd running
+* TEST_INSTALL - set for job testing "make install"
+
+* TEST_VPATH - set for job testing srcdir!=builddir 
+
+* TEST_LDAP - set for job with slapd, running LDAP tests
+
+* TEST_SSL - set for job with SSL/TLS testing variants
 
 * TESTS - a list of Perl framework tests to run
 
@@ -54,13 +60,10 @@ TODO list
 * Windows build
 * clang-on-Linux build
 * Use containers for non-Ubuntu-based Linux testing
-* VPATH builds
 * sanity checks for use of APLOGNO() - empty arguments, accidental duplicates, etc.
  - not sure how exactly
 * Known test failures
  - "apt-get install" timeout/fails - workaround by moving apt install to before_script phase?
- - t/apache/rwrite.t, t/apache/pass_brigade.t
-   see msg <CAKQ1sVMbDcUouu+_bfp8T5HO5+=ORWhLx361+b4qyLux5xyhwA@mail.gmail.com> etc
 
 Testing from a Feature Branch
 -----------------------------
@@ -70,7 +73,7 @@ tested in the same way that trunk is in Travis, so this workflow is
 available for those familiar with using Subversion and the standard
 ASF/httpd repository layout.
 
-Tested branches are listed at: https://travis-ci.org/apache/httpd/branches
+Tested branches are listed at: https://travis-ci.org/github/apache/httpd/branches
 
 Travis will also run the tests for a PR filed against the httpd Github
 repository at https://github.com/apache/httpd or from a fork of this
@@ -97,7 +100,7 @@ https://github.com/apache/httpd/compare/trunk...$USERNAME:trunk
 
 Once a PR has been created, travis will run the tests and link the
 results from a PR comment. All tested PRs are listed here:
-https://travis-ci.org/apache/httpd/pull_requests
+https://travis-ci.org/github/apache/httpd/pull_requests
 
 To merge from github back to SVN trunk, create a patch from e.g.:
 

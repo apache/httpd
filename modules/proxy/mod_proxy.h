@@ -750,6 +750,7 @@ PROXY_DECLARE(int) ap_proxy_worker_can_upgrade(apr_pool_t *p,
 #define AP_PROXY_WORKER_IS_PREFIX   (1u << 0)
 #define AP_PROXY_WORKER_IS_MATCH    (1u << 1)
 #define AP_PROXY_WORKER_IS_MALLOCED (1u << 2)
+#define AP_PROXY_WORKER_NO_UDS      (1u << 3)
 
 /**
  * Get the worker from proxy configuration, looking for either PREFIXED or
@@ -1335,7 +1336,8 @@ typedef struct {
     struct proxy_tunnel_conn *client,
                              *origin;
     apr_size_t read_buf_size;
-    int replied;
+    int replied; /* TODO 2.5+: one bit to merge in below bitmask */
+    unsigned int nohalfclose :1;
 } proxy_tunnel_rec;
 
 /**

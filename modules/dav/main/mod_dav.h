@@ -577,8 +577,22 @@ DAV_DECLARE(int) dav_get_depth(request_rec *r, int def_depth);
 
 DAV_DECLARE(int) dav_validate_root(const apr_xml_doc *doc,
                                    const char *tagname);
+DAV_DECLARE(int) dav_validate_root_ns(const apr_xml_doc *doc,
+                                      int ns, const char *tagname);
 DAV_DECLARE(apr_xml_elem *) dav_find_child(const apr_xml_elem *elem,
                                            const char *tagname);
+DAV_DECLARE(apr_xml_elem *) dav_find_child_ns(const apr_xml_elem *elem,
+                                              int ns, const char *tagname);
+DAV_DECLARE(apr_xml_elem *) dav_find_next_ns(const apr_xml_elem *elem,
+                                             int ns, const char *tagname);
+
+/* find and return the attribute with a name in the given namespace */
+DAV_DECLARE(apr_xml_attr *) dav_find_attr_ns(const apr_xml_elem *elem,
+                                             int ns, const char *attrname);
+
+/* find and return the attribute with a given DAV: tagname */
+DAV_DECLARE(apr_xml_attr *) dav_find_attr(const apr_xml_elem *elem,
+                                          const char *attrname);
 
 /* gather up all the CDATA into a single string */
 DAV_DECLARE(const char *) dav_xml_get_cdata(const apr_xml_elem *elem, apr_pool_t *pool,
@@ -893,6 +907,14 @@ struct dav_hooks_liveprop
     ** property, and does not want it handled as a dead property, it should
     ** return DAV_PROP_INSERT_NOTSUPP.
     **
+    ** Some DAV extensions, like CalDAV, specify both document elements
+    ** and property elements that need to be taken into account when
+    ** generating a property. The document element and property element
+    ** are made available in the dav_liveprop_elem structure under the
+    ** resource, accessible as follows:
+    **
+    ** dav_get_liveprop_element(resource);
+    **
     ** Returns one of DAV_PROP_INSERT_* based on what happened.
     **
     ** ### we may need more context... ie. the lock database
@@ -1039,6 +1061,18 @@ DAV_DECLARE(long) dav_get_liveprop_ns_count(void);
 /* ### docco */
 DAV_DECLARE(void) dav_add_all_liveprop_xmlns(apr_pool_t *p,
                                              apr_text_header *phdr);
+
+typedef struct {
+    const apr_xml_doc *doc;
+    const apr_xml_elem *elem;
+} dav_liveprop_elem;
+
+/*
+ ** When calling insert_prop(), the associated request element and
+ ** document is accessible using the following call.
+ */
+DAV_DECLARE(dav_liveprop_elem *) dav_get_liveprop_element(const dav_resource
+                                                          *resource);
 
 /*
 ** The following three functions are part of mod_dav's internal handling

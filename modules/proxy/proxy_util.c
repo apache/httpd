@@ -1741,7 +1741,12 @@ PROXY_DECLARE(proxy_worker *) ap_proxy_get_worker_ex(apr_pool_t *p,
         return NULL;
     }
 
-    url = ap_proxy_de_socketfy(p, url);
+    if (!(mask & AP_PROXY_WORKER_NO_UDS)) {
+        url = ap_proxy_de_socketfy(p, url);
+        if (!url) {
+            return NULL;
+        }
+    }
 
     c = ap_strchr_c(url, ':');
     if (c == NULL || c[1] != '/' || c[2] != '/' || c[3] == '\0') {
@@ -2323,22 +2328,22 @@ PROXY_DECLARE(int) ap_proxy_pre_request(proxy_worker **worker,
 
     access_status = proxy_run_pre_request(worker, balancer, r, conf, url);
     if (access_status == DECLINED && *balancer == NULL) {
-        *worker = ap_proxy_get_worker(r->pool, NULL, conf, *url);
+        const int forward = (r->proxyreq == PROXYREQ_PROXY);
+        *worker = ap_proxy_get_worker_ex(r->pool, NULL, conf, *url,
+                                         forward ? AP_PROXY_WORKER_NO_UDS : 0);
         if (*worker) {
             ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r,
                           "%s: found worker %s for %s",
                           (*worker)->s->scheme, (*worker)->s->name, *url);
-            *balancer = NULL;
-            if (!fix_uds_filename(r, url)) {
+            if (!forward && !fix_uds_filename(r, url)) {
                 return HTTP_INTERNAL_SERVER_ERROR;
             }
             access_status = OK;
         }
-        else if (r->proxyreq == PROXYREQ_PROXY) {
+        else if (forward) {
             if (conf->forward) {
                 ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r,
                               "*: found forward proxy worker for %s", *url);
-                *balancer = NULL;
                 *worker = conf->forward;
                 access_status = OK;
                 /*
@@ -2352,8 +2357,8 @@ PROXY_DECLARE(int) ap_proxy_pre_request(proxy_worker **worker,
         else if (r->proxyreq == PROXYREQ_REVERSE) {
             if (conf->reverse) {
                 ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r,
-                              "*: using default reverse proxy worker for %s (no keepalive)", *url);
-                *balancer = NULL;
+                              "*: using default reverse proxy worker for %s "
+                              "(no keepalive)", *url);
                 *worker = conf->reverse;
                 access_status = OK;
                 /*
@@ -4673,6 +4678,7 @@ PROXY_DECLARE(apr_status_t) ap_proxy_tunnel_create(proxy_tunnel_rec **ptunnel,
 {
     apr_status_t rv;
     conn_rec *c_i = r->connection;
+    apr_interval_time_t timeout = -1;
     proxy_tunnel_rec *tunnel;
 
     *ptunnel = NULL;
@@ -4712,6 +4718,13 @@ PROXY_DECLARE(apr_status_t) ap_proxy_tunnel_create(proxy_tunnel_rec **ptunnel,
     tunnel->origin->pfd->desc.s = ap_get_conn_socket(c_o);
     tunnel->origin->pfd->client_data = tunnel->origin;
 
+    /* Defaults to the smallest timeout of both connections */
+    apr_socket_timeout_get(tunnel->client->pfd->desc.s, &timeout);
+    apr_socket_timeout_get(tunnel->origin->pfd->desc.s, &tunnel->timeout);
+    if (timeout >= 0 && (tunnel->timeout < 0 || tunnel->timeout > timeout)) {
+        tunnel->timeout = timeout;
+    }
+
     /* We should be nonblocking from now on the sockets */
     apr_socket_opt_set(tunnel->client->pfd->desc.s, APR_SO_NONBLOCK, 1);
     apr_socket_opt_set(tunnel->origin->pfd->desc.s, APR_SO_NONBLOCK, 1);
@@ -4732,6 +4745,11 @@ PROXY_DECLARE(apr_status_t) ap_proxy_tunnel_create(proxy_tunnel_rec **ptunnel,
     /* Won't be reused after tunneling */
     c_i->keepalive = AP_CONN_CLOSE;
     c_o->keepalive = AP_CONN_CLOSE;
+
+    /* Disable half-close forwarding for this request? */
+    if (apr_table_get(r->subprocess_env, "proxy-nohalfclose")) {
+        tunnel->nohalfclose = 1;
+    }
 
     /* Start with POLLOUT and let ap_proxy_tunnel_run() schedule both
      * directions when there are no output data pending (anymore).
@@ -4838,6 +4856,12 @@ static int proxy_tunnel_forward(proxy_tunnel_rec *tunnel,
             ap_log_rerror(APLOG_MARK, APLOG_TRACE3, 0, tunnel->r,
                           "proxy: %s: %s read shutdown",
                           tunnel->scheme, in->name);
+            if (tunnel->nohalfclose) {
+                /* No half-close forwarding, we are done both ways as
+                 * soon as one side shuts down.
+                 */
+                return DONE;
+            }
             in->down_in = 1;
         }
         else {
@@ -4854,7 +4878,7 @@ static int proxy_tunnel_forward(proxy_tunnel_rec *tunnel,
 
 PROXY_DECLARE(int) ap_proxy_tunnel_run(proxy_tunnel_rec *tunnel)
 {
-    int rc = OK;
+    int status = OK, rc;
     request_rec *r = tunnel->r;
     apr_pollset_t *pollset = tunnel->pollset;
     struct proxy_tunnel_conn *client = tunnel->client,
@@ -4889,14 +4913,14 @@ PROXY_DECLARE(int) ap_proxy_tunnel_run(proxy_tunnel_rec *tunnel)
                               "(client=%hx, origin=%hx)",
                               scheme, client->pfd->reqevents,
                               origin->pfd->reqevents);
-                rc = HTTP_GATEWAY_TIME_OUT;
+                status = HTTP_GATEWAY_TIME_OUT;
             }
             else {
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(10214)
                               "proxy: %s: polling failed", scheme);
-                rc = HTTP_INTERNAL_SERVER_ERROR;
+                status = HTTP_INTERNAL_SERVER_ERROR;
             }
-            return rc;
+            goto done;
         }
 
         ap_log_rerror(APLOG_MARK, APLOG_TRACE8, 0, r, APLOGNO(10215)
@@ -4915,7 +4939,8 @@ PROXY_DECLARE(int) ap_proxy_tunnel_run(proxy_tunnel_rec *tunnel)
                     && pfd->desc.s != origin->pfd->desc.s) {
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(10222)
                               "proxy: %s: unknown socket in pollset", scheme);
-                return HTTP_INTERNAL_SERVER_ERROR;
+                status = HTTP_INTERNAL_SERVER_ERROR;
+                goto done;
             }
 
             if (!(pfd->rtnevents & (APR_POLLIN  | APR_POLLOUT |
@@ -4924,7 +4949,8 @@ PROXY_DECLARE(int) ap_proxy_tunnel_run(proxy_tunnel_rec *tunnel)
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(10220)
                               "proxy: %s: polling events error (%x)",
                               scheme, pfd->rtnevents);
-                return HTTP_INTERNAL_SERVER_ERROR;
+                status = HTTP_INTERNAL_SERVER_ERROR;
+                goto done;
             }
 
             /* We want to write if we asked for POLLOUT and got:
@@ -4954,7 +4980,8 @@ PROXY_DECLARE(int) ap_proxy_tunnel_run(proxy_tunnel_rec *tunnel)
                     ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(10221)
                                   "proxy: %s: %s flushing failed (%i)",
                                   scheme, out->name, rc);
-                    return rc;
+                    status = rc;
+                    goto done;
                 }
 
                 /* No more pending data. If the other side is not readable
@@ -4984,7 +5011,8 @@ PROXY_DECLARE(int) ap_proxy_tunnel_run(proxy_tunnel_rec *tunnel)
                      */
                     rc = proxy_tunnel_forward(tunnel, in);
                     if (rc != OK) {
-                        return rc;
+                        status = rc;
+                        goto done;
                     }
                 }
             }
@@ -4999,15 +5027,20 @@ PROXY_DECLARE(int) ap_proxy_tunnel_run(proxy_tunnel_rec *tunnel)
                         || !(pfd->rtnevents & APR_POLLOUT))) {
                 rc = proxy_tunnel_forward(tunnel, tc);
                 if (rc != OK) {
-                    return rc;
+                    status = rc;
+                    goto done;
                 }
             }
         }
     } while (!client->down_out || !origin->down_out);
 
+done:
     ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r, APLOGNO(10223)
-                  "proxy: %s: tunnel finished", scheme);
-    return OK;
+                  "proxy: %s: tunneling returns (%i)", scheme, status);
+    if (status == DONE) {
+        status = OK;
+    }
+    return status;
 }
 
 PROXY_DECLARE (const char *) ap_proxy_show_hcmethod(hcmethod_t method)

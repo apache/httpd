@@ -167,8 +167,6 @@ static int ap_daemons_to_start = 0;         /* StartServers */
 static int min_spare_threads = 0;           /* MinSpareThreads */
 static int max_spare_threads = 0;           /* MaxSpareThreads */
 static int active_daemons_limit = 0;        /* MaxRequestWorkers / ThreadsPerChild */
-static int active_daemons = 0;              /* workers that still active, i.e. are
-                                               not shutting down gracefully */
 static int max_workers = 0;                 /* MaxRequestWorkers */
 static int server_limit = 0;                /* ServerLimit */
 static int thread_limit = 0;                /* ThreadLimit */
@@ -389,7 +387,10 @@ typedef struct event_retained_data {
      * Not kept up-to-date when shutdown is pending.
      */
     int total_daemons;
-
+    /*
+     * Workers that still active, i.e. are not shutting down gracefully.
+     */
+    int active_daemons;
     /*
      * idle_spawn_rate is the number of children that will be spawned on the
      * next maintenance cycle if there aren't enough idle servers.  It is
@@ -525,6 +526,11 @@ static APR_INLINE int connections_above_limit(int *busy)
         *busy = 1;
     }
     return 1;
+}
+
+static APR_INLINE int should_enable_listensocks(void)
+{
+    return !dying && listeners_disabled() && !connections_above_limit(NULL);
 }
 
 static void close_socket_nonblocking_(apr_socket_t *csd,
@@ -773,7 +779,7 @@ static apr_status_t decrement_connection_count(void *cs_)
     is_last_connection = !apr_atomic_dec32(&connection_count);
     if (listener_is_wakeable
             && ((is_last_connection && listener_may_exit)
-                || (listeners_disabled() && !connections_above_limit(NULL)))) {
+                || should_enable_listensocks())) {
         apr_pollset_wakeup(event_pollset);
     }
     if (dying) {
@@ -2001,9 +2007,7 @@ do_maintenance:
             }
         }
 
-        if (listeners_disabled()
-                && !workers_were_busy
-                && !connections_above_limit(NULL)) {
+        if (!workers_were_busy && should_enable_listensocks()) {
             enable_listensocks();
         }
     } /* listener main loop */
@@ -2065,7 +2069,7 @@ static void *APR_THREAD_FUNC worker_thread(apr_thread_t * thd, void *dummy)
     ap_update_child_status_from_indexes(process_slot, thread_slot,
                                         SERVER_STARTING, NULL);
 
-    while (!workers_may_exit) {
+    for (;;) {
         apr_socket_t *csd = NULL;
         event_conn_state_t *cs;
         timer_event_t *te = NULL;
@@ -2079,6 +2083,12 @@ static void *APR_THREAD_FUNC worker_thread(apr_thread_t * thd, void *dummy)
                              "shutdown process gracefully.");
                 signal_threads(ST_GRACEFUL);
                 break;
+            }
+            /* A new idler may have changed connections_above_limit(),
+             * let the listener know and decide.
+             */
+            if (listener_is_wakeable && should_enable_listensocks()) {
+                apr_pollset_wakeup(event_pollset);
             }
             is_idle = 1;
         }
@@ -2759,7 +2769,7 @@ static int make_child(server_rec * s, int slot, int bucket)
     ap_scoreboard_image->parent[slot].quiescing = 0;
     ap_scoreboard_image->parent[slot].not_accepting = 0;
     event_note_child_started(slot, pid);
-    active_daemons++;
+    retained->active_daemons++;
     retained->total_daemons++;
     return 0;
 }
@@ -2780,41 +2790,39 @@ static void startup_children(int number_to_start)
     }
 }
 
-static void perform_idle_server_maintenance(int child_bucket, int num_buckets)
+static void perform_idle_server_maintenance(int child_bucket)
 {
-    int i, j;
+    int num_buckets = retained->mpm->num_buckets;
     int idle_thread_count = 0;
-    worker_score *ws;
     process_score *ps;
     int free_length = 0;
     int free_slots[MAX_SPAWN_RATE];
     int last_non_dead = -1;
     int active_thread_count = 0;
+    int i, j;
 
     for (i = 0; i < server_limit; ++i) {
-        /* Initialization to satisfy the compiler. It doesn't know
-         * that threads_per_child is always > 0 */
-        int status = SERVER_DEAD;
-        int child_threads_active = 0;
-        int bucket = i % num_buckets;
-
+        if (num_buckets > 1 && (i % num_buckets) != child_bucket) {
+            /* We only care about child_bucket in this call */
+            continue;
+        }
         if (i >= retained->max_daemons_limit &&
             free_length == retained->idle_spawn_rate[child_bucket]) {
             /* short cut if all active processes have been examined and
              * enough empty scoreboard slots have been found
              */
-
             break;
         }
+
         ps = &ap_scoreboard_image->parent[i];
         if (ps->pid != 0) {
+            int child_threads_active = 0;
             if (ps->quiescing == 1) {
                 ps->quiescing = 2;
-                active_daemons--;
+                retained->active_daemons--;
             }
             for (j = 0; j < threads_per_child; j++) {
-                ws = &ap_scoreboard_image->servers[i][j];
-                status = ws->status;
+                int status = ap_scoreboard_image->servers[i][j].status;
 
                 /* We consider a starting server as idle because we started it
                  * at least a cycle ago, and if it still hasn't finished starting
@@ -2823,25 +2831,25 @@ static void perform_idle_server_maintenance(int child_bucket, int num_buckets)
                  * This depends on the ordering of SERVER_READY and SERVER_STARTING.
                  */
                 if (status <= SERVER_READY && !ps->quiescing && !ps->not_accepting
-                    && ps->generation == retained->mpm->my_generation
-                    && bucket == child_bucket)
-                {
+                    && ps->generation == retained->mpm->my_generation) {
                     ++idle_thread_count;
                 }
                 if (status >= SERVER_READY && status < SERVER_GRACEFUL) {
                     ++child_threads_active;
                 }
             }
+            active_thread_count += child_threads_active;
+            if (child_threads_active == threads_per_child) {
+                had_healthy_child = 1;
+            }
             last_non_dead = i;
         }
-        active_thread_count += child_threads_active;
-        if (!ps->pid
-                && bucket == child_bucket
-                && free_length < retained->idle_spawn_rate[child_bucket])
+        else if (free_length < retained->idle_spawn_rate[child_bucket]) {
             free_slots[free_length++] = i;
-        else if (child_threads_active == threads_per_child)
-            had_healthy_child = 1;
+        }
     }
+
+    retained->max_daemons_limit = last_non_dead + 1;
 
     if (retained->sick_child_detected) {
         if (had_healthy_child) {
@@ -2850,6 +2858,10 @@ static void perform_idle_server_maintenance(int child_bucket, int num_buckets)
              * problem will be resolved.
              */
             retained->sick_child_detected = 0;
+        }
+        else if (child_bucket < num_buckets - 1) {
+            /* check for had_healthy_child up to the last child bucket */
+            return;
         }
         else {
             /* looks like a basket case, as no child ever fully initialized; give up.
@@ -2866,18 +2878,16 @@ static void perform_idle_server_maintenance(int child_bucket, int num_buckets)
         }
     }
 
-    retained->max_daemons_limit = last_non_dead + 1;
-
-    if (idle_thread_count > max_spare_threads / num_buckets)
-    {
+    if (idle_thread_count > max_spare_threads / num_buckets) {
         /*
          * Child processes that we ask to shut down won't die immediately
          * but may stay around for a long time when they finish their
          * requests. If the server load changes many times, many such
          * gracefully finishing processes may accumulate, filling up the
          * scoreboard. To avoid running out of scoreboard entries, we
-         * don't shut down more processes when the total number of processes
-         * is high.
+         * don't shut down more processes if there are stopping ones
+         * already (i.e. active_daemons != total_daemons) and not enough
+         * slack space in the scoreboard for a graceful restart.
          *
          * XXX It would be nice if we could
          * XXX - kill processes without keepalive connections first
@@ -2885,22 +2895,29 @@ static void perform_idle_server_maintenance(int child_bucket, int num_buckets)
          * XXX   depending on server load, later be able to resurrect them
          *       or kill them
          */
-        if (retained->total_daemons <= active_daemons_limit &&
-            retained->total_daemons < server_limit) {
-            /* Kill off one child */
+        int do_kill = (retained->active_daemons == retained->total_daemons
+                       || (server_limit - retained->total_daemons >
+                           active_daemons_limit));
+        ap_log_error(APLOG_MARK, APLOG_TRACE5, 0, ap_server_conf,
+                     "%shutting down one child: "
+                     "active daemons %d / active limit %d / "
+                     "total daemons %d / ServerLimit %d / "
+                     "idle threads %d / max workers %d",
+                     (do_kill) ? "S" : "Not s",
+                     retained->active_daemons, active_daemons_limit,
+                     retained->total_daemons, server_limit,
+                     idle_thread_count, max_workers);
+        if (do_kill) {
             ap_mpm_podx_signal(all_buckets[child_bucket].pod,
                                AP_MPM_PODX_GRACEFUL);
-            retained->idle_spawn_rate[child_bucket] = 1;
-        } else {
-            ap_log_error(APLOG_MARK, APLOG_TRACE5, 0, ap_server_conf,
-                         "Not shutting down child: total daemons %d / "
-                         "active limit %d / ServerLimit %d",
-                         retained->total_daemons, active_daemons_limit,
-                         server_limit);
         }
+        else {
+            /* Wait for dying daemon(s) to exit */
+        }
+        retained->idle_spawn_rate[child_bucket] = 1;
     }
     else if (idle_thread_count < min_spare_threads / num_buckets) {
-        if (active_thread_count >= max_workers) {
+        if (active_thread_count >= max_workers / num_buckets) {
             if (0 == idle_thread_count) { 
                 if (!retained->maxclients_reported) {
                     ap_log_error(APLOG_MARK, APLOG_ERR, 0, ap_server_conf, APLOGNO(00484)
@@ -2931,16 +2948,16 @@ static void perform_idle_server_maintenance(int child_bucket, int num_buckets)
             if (free_length > retained->idle_spawn_rate[child_bucket]) {
                 free_length = retained->idle_spawn_rate[child_bucket];
             }
-            if (free_length + active_daemons > active_daemons_limit) {
-                if (active_daemons < active_daemons_limit) {
-                    free_length = active_daemons_limit - active_daemons;
+            if (free_length + retained->active_daemons > active_daemons_limit) {
+                if (retained->active_daemons < active_daemons_limit) {
+                    free_length = active_daemons_limit - retained->active_daemons;
                 }
                 else {
                     ap_log_error(APLOG_MARK, APLOG_TRACE1, 0, ap_server_conf,
                                  "server is at active daemons limit, spawning "
                                  "of %d children cancelled: %d/%d active, "
                                  "rate %d", free_length,
-                                 active_daemons, active_daemons_limit,
+                                 retained->active_daemons, active_daemons_limit,
                                  retained->idle_spawn_rate[child_bucket]);
                     free_length = 0;
                 }
@@ -2953,14 +2970,14 @@ static void perform_idle_server_maintenance(int child_bucket, int num_buckets)
                              "spawning %d children, there are around %d idle "
                              "threads, %d active children, and %d children "
                              "that are shutting down", free_length,
-                             idle_thread_count, active_daemons,
+                             idle_thread_count, retained->active_daemons,
                              retained->total_daemons);
             }
             for (i = 0; i < free_length; ++i) {
                 ap_log_error(APLOG_MARK, APLOG_TRACE5, 0, ap_server_conf,
                              "Spawning new child: slot %d active / "
                              "total daemons: %d/%d",
-                             free_slots[i], active_daemons,
+                             free_slots[i], retained->active_daemons,
                              retained->total_daemons);
                 make_child(ap_server_conf, free_slots[i], child_bucket);
             }
@@ -2981,8 +2998,9 @@ static void perform_idle_server_maintenance(int child_bucket, int num_buckets)
     }
 }
 
-static void server_main_loop(int remaining_children_to_start, int num_buckets)
+static void server_main_loop(int remaining_children_to_start)
 {
+    int num_buckets = retained->mpm->num_buckets;
     int child_slot;
     apr_exit_why_e exitwhy;
     int status, processed_status;
@@ -3036,8 +3054,8 @@ static void server_main_loop(int remaining_children_to_start, int num_buckets)
 
                 event_note_child_killed(child_slot, 0, 0);
                 ps = &ap_scoreboard_image->parent[child_slot];
-                if (!ps->quiescing)
-                    active_daemons--;
+                if (ps->quiescing != 2)
+                    retained->active_daemons--;
                 ps->quiescing = 0;
                 /* NOTE: We don't dec in the (child_slot < 0) case! */
                 retained->total_daemons--;
@@ -3091,7 +3109,7 @@ static void server_main_loop(int remaining_children_to_start, int num_buckets)
         }
 
         for (i = 0; i < num_buckets; i++) {
-            perform_idle_server_maintenance(i, num_buckets);
+            perform_idle_server_maintenance(i);
         }
     }
 }
@@ -3168,7 +3186,7 @@ static int event_run(apr_pool_t * _pconf, apr_pool_t * plog, server_rec * s)
 
     retained->mpm->mpm_state = AP_MPMQ_RUNNING;
 
-    server_main_loop(remaining_children_to_start, num_buckets);
+    server_main_loop(remaining_children_to_start);
     retained->mpm->mpm_state = AP_MPMQ_STOPPING;
 
     if (retained->mpm->shutdown_pending && retained->mpm->is_ungraceful) {
@@ -3297,8 +3315,6 @@ static int event_run(apr_pool_t * _pconf, apr_pool_t * plog, server_rec * s)
         ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, ap_server_conf, APLOGNO(00494)
                      "SIGHUP received.  Attempting to restart");
     }
-
-    active_daemons = 0;
 
     return OK;
 }
@@ -3466,7 +3482,6 @@ static int event_pre_config(apr_pool_t * pconf, apr_pool_t * plog,
     if (!retained) {
         retained = ap_retained_data_create(userdata_key, sizeof(*retained));
         retained->mpm = ap_unixd_mpm_get_retained_data();
-        retained->max_daemons_limit = -1;
         if (retained->mpm->module_loads) {
             test_atomics = 1;
         }

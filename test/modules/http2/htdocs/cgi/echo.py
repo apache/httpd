@@ -9,6 +9,7 @@ for line in sys.stdin:
     
 # Just echo what we get
 print("Status: 200")
+print(f"Request-Length: {len(content)}")
 print("Content-Type: application/data\n")
 sys.stdout.write(content)
 

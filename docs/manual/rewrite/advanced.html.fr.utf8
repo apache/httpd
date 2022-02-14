@@ -78,7 +78,7 @@ correspondance</a></li><li><a href="access.html">Contrôler l'accès</a></li><li
 <div class="example"><p><code>
 utilisateur1  serveur_physique_utilisateur1<br />
 utilisateur2  serveur_physique_utilisateur2<br />
-:      :
+# etc ...
 </code></p></div>
 
   <p>Tout ceci est enregistré dans un fichier
@@ -109,7 +109,7 @@ RewriteRule   "^/u/([^/]+)/?(.*)" "http://${users-to-hosts:$1|server0}/u/$1/$2"<
     </dd>
   </dl>
 
-  <p>Voir la documentation de <code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code> pour une description plus
+  <p>Voir la documentation de <code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code> et le <a href="./rewritemap.html">RewriteMap HowTo</a> pour une description plus
   approfondie de la syntaxe de cette directive.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
