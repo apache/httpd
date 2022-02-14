@@ -14,4 +14,5 @@
        by the internal HTTP/1.1 protocol handler and was introduced to avoid
        potential incompatibilities during the introduction of HTTP/2.
      - Removed the abort/redo of tasks when mood swings lower the active limit.
+     - Improved reliability of nghttp client test cases.
      [Ruediger Pluem, daum3ns, Stefan Eissing]
