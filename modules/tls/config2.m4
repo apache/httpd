@@ -144,6 +144,19 @@ is usually linked shared and requires loading. ], $tls_objs, , most, [
                 MOD_TLS_LINK_LIBS="-lrustls"
                 ;;
            esac
+
+           # Some rustls versions need an extra -lm when linked
+           # See https://github.com/rustls/rustls-ffi/issues/133
+           rustls_version=`rustc --version`
+           case "$rustls_version" in
+              *1.55*) need_lm="yes" ;;
+              *1.56*) need_lm="yes" ;;
+              *1.57*) need_lm="yes" ;;
+           esac
+           if test "$need_lm" = "yes" ; then
+                MOD_TLS_LINK_LIBS="$MOD_TLS_LINK_LIBS -lm"
+           fi
+
            # The only symbol which needs to be exported is the module
            # structure, so ask libtool to hide everything else:
            APR_ADDTO(MOD_TLS_LDADD, [$MOD_TLS_LINK_LIBS -export-symbols-regex tls_module])
