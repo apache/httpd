@@ -91,6 +91,7 @@ typedef struct h2_session {
     struct h2_stream_monitor *monitor;/* monitor callbacks for streams */
     int open_streams;               /* number of streams processing */
 
+    int streams_done;               /* number of http/2 streams handled */
     int responses_submitted;        /* number of http/2 responses submitted */
     int streams_reset;              /* number of http/2 streams reset by client */
     int pushes_promised;            /* number of http/2 push promises submitted */

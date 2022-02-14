@@ -30,6 +30,7 @@
 #include "h2_private.h"
 #include "h2_bucket_eos.h"
 #include "h2_config.h"
+#include "h2_c1.h"
 #include "h2_c1_io.h"
 #include "h2_protocol.h"
 #include "h2_session.h"
@@ -137,35 +138,37 @@ static void h2_c1_io_bb_log(conn_rec *c, int stream_id, int level,
     }
 
 
-apr_status_t h2_c1_io_init(h2_c1_io *io, conn_rec *c, server_rec *s)
+apr_status_t h2_c1_io_init(h2_c1_io *io, h2_session *session)
 {
-    io->c              = c;
-    io->output         = apr_brigade_create(c->pool, c->bucket_alloc);
-    io->is_tls         = ap_ssl_conn_is_ssl(c);
+    conn_rec *c = session->c1;
+
+    io->session = session;
+    io->output = apr_brigade_create(c->pool, c->bucket_alloc);
+    io->is_tls = ap_ssl_conn_is_ssl(session->c1);
     io->buffer_output  = io->is_tls;
-    io->flush_threshold = 4 * (apr_size_t)h2_config_sgeti64(s, H2_CONF_STREAM_MAX_MEM);
+    io->flush_threshold = 4 * (apr_size_t)h2_config_sgeti64(session->s, H2_CONF_STREAM_MAX_MEM);
 
     if (io->buffer_output) {
         /* This is what we start with, 
          * see https://issues.apache.org/jira/browse/TS-2503 
          */
-        io->warmup_size    = h2_config_sgeti64(s, H2_CONF_TLS_WARMUP_SIZE);
-        io->cooldown_usecs = (h2_config_sgeti(s, H2_CONF_TLS_COOLDOWN_SECS)
+        io->warmup_size = h2_config_sgeti64(session->s, H2_CONF_TLS_WARMUP_SIZE);
+        io->cooldown_usecs = (h2_config_sgeti(session->s, H2_CONF_TLS_COOLDOWN_SECS)
                               * APR_USEC_PER_SEC);
         io->cooldown_usecs = 0;
-        io->write_size     = (io->cooldown_usecs > 0?
-                              WRITE_SIZE_INITIAL : WRITE_SIZE_MAX); 
+        io->write_size = (io->cooldown_usecs > 0?
+                          WRITE_SIZE_INITIAL : WRITE_SIZE_MAX);
     }
     else {
-        io->warmup_size    = 0;
+        io->warmup_size = 0;
         io->cooldown_usecs = 0;
-        io->write_size     = 0;
+        io->write_size = 0;
     }
 
     if (APLOGctrace1(c)) {
-        ap_log_cerror(APLOG_MARK, APLOG_TRACE4, 0, io->c,
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE4, 0, c,
                       "h2_c1_io(%ld): init, buffering=%d, warmup_size=%ld, "
-                      "cd_secs=%f", io->c->id, io->buffer_output, 
+                      "cd_secs=%f", c->id, io->buffer_output,
                       (long)io->warmup_size,
                       ((double)io->cooldown_usecs/APR_USEC_PER_SEC));
     }
@@ -178,7 +181,7 @@ static void append_scratch(h2_c1_io *io)
     if (io->scratch && io->slen > 0) {
         apr_bucket *b = apr_bucket_heap_create(io->scratch, io->slen,
                                                apr_bucket_free,
-                                               io->c->bucket_alloc);
+                                               io->session->c1->bucket_alloc);
         APR_BRIGADE_INSERT_TAIL(io->output, b);
         io->buffered_len += io->slen;
         io->scratch = NULL;
@@ -194,7 +197,7 @@ static apr_size_t assure_scratch_space(h2_c1_io *io) {
     if (!io->scratch) {
         /* we control the size and it is larger than what buckets usually
          * allocate. */
-        io->scratch = apr_bucket_alloc(io->write_size, io->c->bucket_alloc);
+        io->scratch = apr_bucket_alloc(io->write_size, io->session->c1->bucket_alloc);
         io->ssize = io->write_size;
         io->slen = 0;
         remain = io->ssize;
@@ -235,9 +238,9 @@ static apr_status_t read_to_scratch(h2_c1_io *io, apr_bucket *b)
         io->slen += len;
     }
     else if (APR_BUCKET_IS_MMAP(b)) {
-        ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, io->c,
+        ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, io->session->c1,
                       "h2_c1_io(%ld): seeing mmap bucket of size %ld, scratch remain=%ld",
-                      io->c->id, (long)b->length, (long)(io->ssize - io->slen));
+                      io->session->c1->id, (long)b->length, (long)(io->ssize - io->slen));
         status = apr_bucket_read(b, &data, &len, APR_BLOCK_READ);
         if (status == APR_SUCCESS) {
             memcpy(io->scratch+io->slen, data, len);
@@ -256,14 +259,14 @@ static apr_status_t read_to_scratch(h2_c1_io *io, apr_bucket *b)
 
 static apr_status_t pass_output(h2_c1_io *io, int flush)
 {
-    conn_rec *c = io->c;
+    conn_rec *c = io->session->c1;
     apr_off_t bblen;
     apr_status_t rv;
     
     append_scratch(io);
     if (flush) {
         if (!APR_BUCKET_IS_FLUSH(APR_BRIGADE_LAST(io->output))) {
-            apr_bucket *b = apr_bucket_flush_create(io->c->bucket_alloc);
+            apr_bucket *b = apr_bucket_flush_create(c->bucket_alloc);
             APR_BRIGADE_INSERT_TAIL(io->output, b);
         }
     }
@@ -271,7 +274,6 @@ static apr_status_t pass_output(h2_c1_io *io, int flush)
         return APR_SUCCESS;
     }
     
-    ap_update_child_status(c->sbh, SERVER_BUSY_WRITE, NULL);
     io->unflushed = !APR_BUCKET_IS_FLUSH(APR_BRIGADE_LAST(io->output));
     apr_brigade_length(io->output, 0, &bblen);
     C1_IO_BB_LOG(c, 0, APLOG_TRACE2, "out", io->output);
@@ -281,6 +283,7 @@ static apr_status_t pass_output(h2_c1_io *io, int flush)
 
     io->buffered_len = 0;
     io->bytes_written += (apr_size_t)bblen;
+
     if (io->write_size < WRITE_SIZE_MAX
          && io->bytes_written >= io->warmup_size) {
         /* connection is hot, use max size */
@@ -346,9 +349,9 @@ apr_status_t h2_c1_io_add_data(h2_c1_io *io, const char *data, size_t length)
     apr_status_t status = APR_SUCCESS;
     apr_size_t remain;
     
-    ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, io->c,
+    ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, io->session->c1,
                   "h2_c1_io(%ld): adding %ld data bytes",
-                  io->c->id, (long)length);
+                  io->session->c1->id, (long)length);
     if (io->buffer_output) {
         while (length > 0) {
             remain = assure_scratch_space(io);
@@ -408,7 +411,7 @@ apr_status_t h2_c1_io_append(h2_c1_io *io, apr_bucket_brigade *bb)
         }
         else {
             /* no buffering, forward buckets setaside on flush */
-            apr_bucket_setaside(b, io->c->pool);
+            apr_bucket_setaside(b, io->session->c1->pool);
             APR_BUCKET_REMOVE(b);
             APR_BRIGADE_INSERT_TAIL(io->output, b);
             io->buffered_len += b->length;

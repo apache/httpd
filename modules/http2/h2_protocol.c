@@ -460,7 +460,7 @@ int h2_protocol_is_acceptable_c1(conn_rec *c, request_rec *r, int require_all)
             return 0;
         }
 
-        if (!strcmp("TLSv1.2", val)) {
+        if (val && !strcmp("TLSv1.2", val)) {
             /* Check TLS cipher blacklist, defined pre-TLSv1.3, so only
              * checking for 1.2 */
             val = ap_ssl_var_lookup(pool, s, c, NULL, "SSL_CIPHER");

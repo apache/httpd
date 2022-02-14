@@ -16,7 +16,11 @@
  
 #include <assert.h>
 
-#include <apr_strings.h>
+#include "apr.h"
+#include "apr_strings.h"
+#include "apr_lib.h"
+#include "apr_strmatch.h"
+
 #include <ap_mmn.h>
 
 #include <httpd.h>
@@ -25,6 +29,7 @@
 #include <http_protocol.h>
 #include <http_request.h>
 #include <http_log.h>
+#include <http_ssl.h>
 #include <http_vhost.h>
 #include <util_filter.h>
 #include <ap_mpm.h>
@@ -170,7 +175,7 @@ apr_status_t h2_request_add_header(h2_request *req, apr_pool_t *pool,
 apr_status_t h2_request_end_headers(h2_request *req, apr_pool_t *pool, int eos, size_t raw_bytes)
 {
     const char *s;
-    
+
     /* rfc7540, ch. 8.1.2.3:
      * - if we have :authority, it overrides any Host header 
      * - :authority MUST be omitted when converting h1->h2, so we
@@ -295,9 +300,30 @@ request_rec *h2_create_request_rec(const h2_request *req, conn_rec *c)
 
     /* Time to populate r with the data we have. */
     r->request_time = req->request_time;
-    r->the_request = apr_psprintf(r->pool, "%s %s HTTP/2.0",
-                                  req->method, req->path ? req->path : "");
-    r->headers_in = apr_table_clone(r->pool, req->headers);
+    AP_DEBUG_ASSERT(req->authority);
+    if (req->scheme && (ap_cstr_casecmp(req->scheme,
+                        ap_ssl_conn_is_ssl(c->master? c->master : c)? "https" : "http")
+                        || !ap_cstr_casecmp("CONNECT", req->method))) {
+        /* Client sent a non-matching ':scheme' pseudo header. Forward this
+         * via an absolute URI in the request line.
+         */
+        r->the_request = apr_psprintf(r->pool, "%s %s://%s%s HTTP/2.0",
+                                      req->method, req->scheme, req->authority,
+                                      req->path ? req->path : "");
+    }
+    else if (req->path) {
+        r->the_request = apr_psprintf(r->pool, "%s %s HTTP/2.0",
+                                      req->method, req->path);
+    }
+    else {
+        /* We should only come here on a request that is errored already.
+         * create a request line that passes parsing, we'll die anyway.
+         */
+        AP_DEBUG_ASSERT(req->http_status != H2_HTTP_STATUS_UNSET);
+        r->the_request = apr_psprintf(r->pool, "%s / HTTP/2.0", req->method);
+    }
+
+    r->headers_in = apr_table_copy(r->pool, req->headers);
 
     /* Start with r->hostname = NULL, ap_check_request_header() will get it
      * form Host: header, otherwise we get complains about port numbers.
@@ -399,6 +425,8 @@ request_rec *h2_create_request_rec(const h2_request *req, conn_rec *c)
     return r;
 
 die:
+    ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, c,
+                  "ap_die(%d) for %s", access_status, r->the_request);
     ap_die(access_status, r);
 
     /* ap_die() sent the response through the output filters, we must now

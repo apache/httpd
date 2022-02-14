@@ -1,0 +1,7 @@
+  *) mod_http2: :scheme pseudo-header values, not matching the
+     connection scheme, are forwarded via absolute uris to the
+     http protocol processing to preserve semantics of the request.
+     Checks on combinations of pseudo-headers values/absence
+     have been added as described in RFC 7540.
+     Fixes <https://github.com/icing/mod_h2/issues/230>.
+     [Stefan Eissing]

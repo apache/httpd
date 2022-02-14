@@ -27,7 +27,7 @@ struct h2_session;
  * directly without copying.
  */
 typedef struct {
-    conn_rec *c;
+    struct h2_session *session;
     apr_bucket_brigade *output;
 
     int is_tls;
@@ -50,7 +50,7 @@ typedef struct {
     apr_size_t slen;
 } h2_c1_io;
 
-apr_status_t h2_c1_io_init(h2_c1_io *io, conn_rec *c, server_rec *s);
+apr_status_t h2_c1_io_init(h2_c1_io *io, struct h2_session *session);
 
 /**
  * Append data to the buffered output.

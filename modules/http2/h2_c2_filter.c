@@ -32,6 +32,7 @@
 #include "h2_private.h"
 #include "h2_conn_ctx.h"
 #include "h2_headers.h"
+#include "h2_c1.h"
 #include "h2_c2_filter.h"
 #include "h2_c2.h"
 #include "h2_mplx.h"
@@ -846,8 +847,8 @@ apr_status_t h2_c2_filter_request_in(ap_filter_t* f,
                 apr_bucket_destroy(b);
                 ap_remove_input_filter(f);
                 
-                if (headers->raw_bytes && h2_c2_logio_add_bytes_in) {
-                    h2_c2_logio_add_bytes_in(f->c, headers->raw_bytes);
+                if (headers->raw_bytes && h2_c_logio_add_bytes_in) {
+                    h2_c_logio_add_bytes_in(f->c, headers->raw_bytes);
                 }
                 break;
             }
