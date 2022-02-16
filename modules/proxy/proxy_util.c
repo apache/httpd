@@ -4718,10 +4718,10 @@ PROXY_DECLARE(apr_status_t) ap_proxy_tunnel_create(proxy_tunnel_rec **ptunnel,
     tunnel->origin->pfd->desc.s = ap_get_conn_socket(c_o);
     tunnel->origin->pfd->client_data = tunnel->origin;
 
-    /* Defaults to the smallest timeout of both connections */
+    /* Defaults to the biggest timeout of both connections */
     apr_socket_timeout_get(tunnel->client->pfd->desc.s, &timeout);
     apr_socket_timeout_get(tunnel->origin->pfd->desc.s, &tunnel->timeout);
-    if (timeout >= 0 && (tunnel->timeout < 0 || tunnel->timeout > timeout)) {
+    if (timeout >= 0 && (tunnel->timeout < 0 || tunnel->timeout < timeout)) {
         tunnel->timeout = timeout;
     }
 
