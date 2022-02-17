@@ -274,20 +274,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c 1898146 ^/httpd/httpd/trunk .
      +1: icing
      
-
-PATCHES/ISSUES THAT ARE BEING WORKED
-  [ New entries should be added at the START of the list ]
-
-  *) mod_xml2enc: Correctly handle Microsoft OOXML documents.  PR 64339
-     trunk patch: http://svn.apache.org/r1884505
-     2.4.x patch: svn merge -c 1884505 ^/httpd/httpd/trunk .
-     +1: 
-     jailletc36: there has been some discussion about how to fix the issue.
-     I'm not sure that the commit above is the best solution
-     and other alternatives have been discussed in PR 64339.  If r1884505
-     is not the right fix, then it should be removed from trunk.
-     Putting it here is a way to revive the discussion
-
   *) mod_http2: sync with trunk
      - Fixed an issue since 1.15.24 that "Server" headers in proxied requests
        were overwritten instead of preserved. [PR by @daum3ns]
@@ -329,9 +315,25 @@ PATCHES/ISSUES THAT ARE BEING WORKED
         https://svn.apache.org/r1894949
         https://svn.apache.org/r1895336
         https://svn.apache.org/r1895349
+        https://svn.apache.org/r1895724
+        https://svn.apache.org/r1895614
      Backport version for 2.4.x of patch:
        PR: https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/275.diff
      +1: icing,
+
+
+PATCHES/ISSUES THAT ARE BEING WORKED
+  [ New entries should be added at the START of the list ]
+
+  *) mod_xml2enc: Correctly handle Microsoft OOXML documents.  PR 64339
+     trunk patch: http://svn.apache.org/r1884505
+     2.4.x patch: svn merge -c 1884505 ^/httpd/httpd/trunk .
+     +1: 
+     jailletc36: there has been some discussion about how to fix the issue.
+     I'm not sure that the commit above is the best solution
+     and other alternatives have been discussed in PR 64339.  If r1884505
+     is not the right fix, then it should be removed from trunk.
+     Putting it here is a way to revive the discussion
 
   *) core: Initialize the request fields on read failure to avoid NULLs.
      trunk patch: http://svn.apache.org/r1893030
