@@ -97,7 +97,7 @@ apr_status_t h2_request_rcreate(h2_request **preq, apr_pool_t *pool,
     if (!ap_strchr_c(authority, ':')) {
         if (r->parsed_uri.port_str) {
             /* Yes, it was there, add it again. */
-            authority = apr_psprintf(pool, "%s:%s", authority, r->parsed_uri.port_str);
+            authority = apr_pstrcat(pool, authority, ":", r->parsed_uri.port_str, NULL);
         }
         else if (!r->parsed_uri.hostname && r->server && r->server->port) {
             /* If there was no hostname in the parsed URL, the URL was relative.
