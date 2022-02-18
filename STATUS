@@ -190,8 +190,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         https://svn.apache.org/r1891019
      Backport version for 2.4.x of patch:
         https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/httpd-dbm.patch
-     +1: minfrin
+     +1: minfrin, icing
      jailletc36: part of r1891023 is needed to fill some APLOGNO()
+     icing: seems there is some potential to wrap this into a common function?
 
   *) Add the ldap function to the expression API, allowing LDAP filters and
      distinguished names based on expressions to be escaped correctly to
@@ -202,7 +203,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         https://svn.apache.org/r1633528
      Backport version for 2.4.x of patch:
         https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/httpd-2.4-ldap-expr.patch
-     +1: minfrin
+     +1: minfrin, icing
 
   *) Add the ldap-search option to mod_authnz_ldap, allowing authorization
      to be based on arbitrary expressions that do not include the username.
