@@ -573,7 +573,9 @@ DIGIT       ::= &lt;any US-ASCII digit "0".."9"&gt;</pre>
 <tr><td><code>ldap</code></td>
         <td>Echappe les caractères selon la RFC4514 (Echappement des
 	noms distinctifs LDAP - DN) et la RFC4515 (Echappement des
-	filtres LDAP).</td><td /></tr>
+	filtres LDAP).<br />
+	Disponible à partir de la version 2.4.53 du serveur HTTP
+	Apache.</td><td /></tr>
 <tr class="odd"><td><code>replace</code></td>
         <td>replace(chaîne, "from", "to") remplace dans la chaîne
 	spécifiée toutes les occurrences de "from" par "to". Le premier
