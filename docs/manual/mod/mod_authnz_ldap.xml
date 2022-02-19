@@ -519,6 +519,16 @@ Require ldap-filter "&amp;(cell=*)(department=marketing)"
     <code>ldap-attribute</code> will be faster than the search operation
     used by <code>ldap-filter</code> especially within a large directory.</p>
 
+    <p>When using an <a href="../expr.html">expression</a> within the filter, care
+    must be taken to ensure that LDAP filters are escaped correctly to guard against
+    LDAP injection. The ldap function can be used for this purpose.</p>
+
+<highlight language="config">
+&lt;LocationMatch ^/dav/(?<SITENAME>[^/]+)/&gt;
+  Require ldap-filter (memberOf=cn=%{ldap:%{unescape:%{env:MATCH_SITENAME}},ou=Websites,o=Example)
+&lt;/LocationMatch&gt;
+</highlight>
+
 </section>
 
 </section>

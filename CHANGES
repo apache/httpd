@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.53
 
+  *) Add the ldap function to the expression API, allowing LDAP filters and
+     distinguished names based on expressions to be escaped correctly to
+     guard against LDAP injection. [Graham Leggett]
+
   *) mod_md: the status description in MDomain's JSON, exposed in the
      md-status handler (if configured) did sometimes not carry the correct
      message when certificates needed renew.

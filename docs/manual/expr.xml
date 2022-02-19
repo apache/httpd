@@ -523,6 +523,9 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
     <tr><td><code>filesize</code></td>
         <td>Return size of a file (or 0 if file does not exist or is not
             regular file)</td><td>restricted</td></tr>
+    <tr><td><code>ldap</code></td>
+        <td>Escape characters as required by LDAP distinguished name escaping
+            (RFC4514) and LDAP filter escaping (RFC4515).</td><td></td></tr>
 
     </table>
 
