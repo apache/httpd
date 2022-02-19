@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1853665 -->
+<!-- English Revision: 1898217 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -578,6 +578,17 @@ Require ldap-dn cn=Barbara Jenson, o=Example
     rapide que l'opération de recherche effectuée par
     <code>ldap-filter</code>, en particulier dans le cas d'un annuaire
     LDAP de grande taille.</p>
+
+     <p>Lorsqu'on utilise une <a href="../expr.html">expression</a> dans un
+     filtre, il faut s'assurer que les filtres LDAP sont correctement échappés
+     afin de se prémunir contre toute injection LDAP. Pour ce faire,
+     il est possible d'utiliser la fonction <strong>ldap</strong>.</p>
+
+<highlight language="config">
+&lt;LocationMatch ^/dav/(?&lt;SITENAME&gt;[^/]+)/&gt;
+  Require ldap-filter (memberOf=cn=%{ldap:%{unescape:%{env:MATCH_SITENAME}},ou=Websites,o=Example)
+&lt;/LocationMatch&gt;
+</highlight>
 
 </section>
 
