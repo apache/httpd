@@ -31,11 +31,6 @@
 #include <unistd.h>         /* for getpid() */
 #endif
 
-#if (APR_MAJOR_VERSION < 1)
-#undef apr_socket_create
-#define apr_socket_create apr_socket_create_ex
-#endif
-
 #if APR_HAVE_SYS_UN_H
 #include <sys/un.h>
 #endif
