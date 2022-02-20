@@ -332,11 +332,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         - mod_socache_memcache
         - mod_authn_dbd
         - mod_log_config
+        - mod_proxy_ftp and proxy-util
      trunk patch:
           https://svn.apache.org/r1897325
           https://svn.apache.org/r1897326
           https://svn.apache.org/r1897329
-     2.4.x patch: svn merge -c 1897325,1897326,1897329 ^/httpd/httpd/trunk .
+          https://svn.apache.org/r1898255
+     2.4.x patch: svn merge -c 1897325,1897326,1897329,1898255 ^/httpd/httpd/trunk .
      +1: jailletc36
 
 PATCHES/ISSUES THAT ARE BEING WORKED
