@@ -327,6 +327,18 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c 1881379,1892422,1893011,1897270,1897271 ^/httpd/httpd/trunk .
      +1: jailletc36
 
+  *) APR and APU must be at least 1.3 to be able to configure and build httpd 2.4.x.
+     So remove some osbolete #if in the source code.
+        - mod_socache_memcache
+        - mod_authn_dbd
+        - mod_log_config
+     trunk patch:
+          https://svn.apache.org/r1897325
+          https://svn.apache.org/r1897326
+          https://svn.apache.org/r1897329
+     2.4.x patch: svn merge -c 1897325,1897326,1897329 ^/httpd/httpd/trunk .
+     +1: jailletc36
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
