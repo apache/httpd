@@ -524,7 +524,7 @@ Require ldap-filter "&amp;(cell=*)(department=marketing)"
     LDAP injection. The ldap function can be used for this purpose.</p>
 
 <highlight language="config">
-&lt;LocationMatch ^/dav/(?<SITENAME>[^/]+)/&gt;
+&lt;LocationMatch ^/dav/(?&lt;SITENAME&gt;[^/]+)/&gt;
   Require ldap-filter (memberOf=cn=%{ldap:%{unescape:%{env:MATCH_SITENAME}},ou=Websites,o=Example)
 &lt;/LocationMatch&gt;
 </highlight>
