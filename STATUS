@@ -208,11 +208,12 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.4.x patches:
          https://github.com/apache/httpd/pull/289.diff
          (PR: https://github.com/apache/httpd/pull/289)
-     +1: ylavic, rpluem, covener
+     +1: ylavic, rpluem, covener, steffenal
      ylavic: This backport proposal inludes the PCRE2 backport already accepted,
              we can apply this one instead or the original one first and then
              this one (I'd have to rebase the github PR first).
      ylavic: Can someone test this on Windows too?
+     steffenal: Tested on win32 and win64, looks all fine
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
