@@ -325,7 +325,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
           https://svn.apache.org/r1897270
           https://svn.apache.org/r1897271
      2.4.x patch: svn merge -c 1881379,1892422,1893011,1897270,1897271 ^/httpd/httpd/trunk .
-     +1: jailletc36
+     +1: jailletc36, icing
 
   *) APR and APU must be at least 1.3 to be able to configure and build httpd 2.4.x.
      So remove some osbolete #if in the source code.
@@ -339,7 +339,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
           https://svn.apache.org/r1897329
           https://svn.apache.org/r1898255
      2.4.x patch: svn merge -c 1897325,1897326,1897329,1898255 ^/httpd/httpd/trunk .
-     +1: jailletc36
+     +1: jailletc36, icing
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
