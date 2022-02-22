@@ -905,6 +905,7 @@ void child_main(apr_pool_t *pconf, DWORD parent_pid)
     int rv;
     int i;
     int num_events;
+    int graceful_shutdown = 0;
 
     /* Get a sub context for global allocations in this child, so that
      * we can have cleanups occur when the child exits.
@@ -1114,6 +1115,7 @@ void child_main(apr_pool_t *pconf, DWORD parent_pid)
             ap_log_error(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS, ap_server_conf, APLOGNO(00357)
                          "Child: Exit event signaled. Child process is "
                          "ending.");
+            graceful_shutdown = 1;
             break;
         }
         else if (cld == 2) {
@@ -1132,6 +1134,7 @@ void child_main(apr_pool_t *pconf, DWORD parent_pid)
                          "MaxConnectionsPerChild. Signaling the parent to "
                          "restart a new child process.");
             ap_signal_parent(SIGNAL_PARENT_RESTART);
+            graceful_shutdown = 1;
             break;
         }
     }
@@ -1157,6 +1160,10 @@ void child_main(apr_pool_t *pconf, DWORD parent_pid)
      * already accepted connections.
      */
     SetEvent(listener_shutdown_event);
+
+    /* Notify anyone interested that this child is stopping.
+     */
+    ap_run_child_stopping(pchild, graceful_shutdown);
 
     Sleep(1000);
 
