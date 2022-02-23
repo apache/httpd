@@ -50,7 +50,7 @@ struct ap_watchdog_t
     apr_proc_mutex_t     *mutex;
     const char           *name;
     watchdog_list_t      *callbacks;
-    volatile int          is_running;
+    apr_uint32_t          is_running;
     int                   singleton;
     int                   active;
     apr_interval_time_t   step;
@@ -81,7 +81,7 @@ static apr_status_t wd_worker_cleanup(void *data)
     if (apr_atomic_read32(&w->thread_started) != 1)
         return APR_SUCCESS;
 
-    if (w->is_running) {
+    if (apr_atomic_read32(&w->is_running)) {
         watchdog_list_t *wl = w->callbacks;
         while (wl) {
             if (wl->status == APR_SUCCESS) {
@@ -93,7 +93,7 @@ static apr_status_t wd_worker_cleanup(void *data)
             wl = wl->next;
         }
     }
-    w->is_running = 0;
+    apr_atomic_set32(&w->is_running, 0);
     apr_thread_join(&rv, w->thread);
     return rv;
 }
@@ -115,12 +115,12 @@ static void* APR_THREAD_FUNC wd_worker(apr_thread_t *thread, void *data)
     apr_pool_t *temp_pool = NULL;
 
     w->pool = apr_thread_pool_get(thread);
-    w->is_running = 1;
+    apr_atomic_set32(&w->is_running, 1);
 
     apr_atomic_set32(&w->thread_started, 1); /* thread started */
 
     if (w->mutex) {
-        while (w->is_running) {
+        while (apr_atomic_read32(&w->is_running)) {
             rv = apr_proc_mutex_trylock(w->mutex);
             if (rv == APR_SUCCESS) {
                 if (probed) {
@@ -130,7 +130,8 @@ static void* APR_THREAD_FUNC wd_worker(apr_thread_t *thread, void *data)
                      * our child didn't yet received
                      * the shutdown signal.
                      */
-                    for (probed = 10; w->is_running && probed > 0; --probed) {
+                    for (probed = 10; apr_atomic_read32(&w->is_running)
+                                      && probed > 0; --probed) {
                         apr_sleep(AP_WD_TM_INTERVAL);
                     }
                 }
@@ -145,14 +146,14 @@ static void* APR_THREAD_FUNC wd_worker(apr_thread_t *thread, void *data)
     apr_pool_create(&temp_pool, w->pool);
     apr_pool_tag(temp_pool, "wd_running");
 
-    if (w->is_running) {
+    if (apr_atomic_read32(&w->is_running)) {
         watchdog_list_t *wl = w->callbacks;
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, wd_server_conf->s,
                      APLOGNO(02972) "%sWatchdog (%s) running",
                      w->singleton ? "Singleton " : "", w->name);
         apr_time_clock_hires(w->pool);
         if (wl) {
-            while (wl && w->is_running) {
+            while (wl && apr_atomic_read32(&w->is_running)) {
                 /* Execute watchdog callback */
                 wl->status = (*wl->callback_fn)(AP_WATCHDOG_STATE_STARTING,
                                                 (void *)wl->data, temp_pool);
@@ -167,16 +168,16 @@ static void* APR_THREAD_FUNC wd_worker(apr_thread_t *thread, void *data)
     }
 
     /* Main execution loop */
-    while (w->is_running) {
+    while (apr_atomic_read32(&w->is_running)) {
         apr_time_t curr;
         watchdog_list_t *wl = w->callbacks;
 
         apr_sleep(AP_WD_TM_SLICE);
-        if (!w->is_running) {
+        if (!apr_atomic_read32(&w->is_running)) {
             break;
         }
         curr = apr_time_now() - AP_WD_TM_SLICE;
-        while (wl && w->is_running) {
+        while (wl && apr_atomic_read32(&w->is_running)) {
             if (wl->status == APR_SUCCESS) {
                 wl->step += (apr_time_now() - curr);
                 if (wl->step >= wl->interval) {
@@ -188,7 +189,7 @@ static void* APR_THREAD_FUNC wd_worker(apr_thread_t *thread, void *data)
             }
             wl = wl->next;
         }
-        if (w->is_running && w->callbacks == NULL) {
+        if (apr_atomic_read32(&w->is_running) && w->callbacks == NULL) {
             /* This is hook mode watchdog
              * running on WatchogInterval
              */
@@ -574,13 +575,13 @@ static void wd_child_stopping(apr_pool_t *pool, int graceful)
                                         AP_WATCHDOG_CVERSION))) {
         const ap_list_provider_names_t *wn;
         int i;
-        
+
         wn = (ap_list_provider_names_t *)wl->elts;
         for (i = 0; i < wl->nelts; i++) {
             ap_watchdog_t *w = ap_lookup_provider(AP_WATCHDOG_PGROUP,
                                                   wn[i].provider_name,
                                                   AP_WATCHDOG_CVERSION);
-            w->is_running = 0;
+            apr_atomic_set32(&w->is_running, 0);
         }
     }
 }
