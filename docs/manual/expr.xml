@@ -517,9 +517,11 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
     <tr><td><code>file</code></td>
         <td>Read contents from a file (including line endings, when present)
         </td><td>restricted</td></tr>
+        <!-- Not in 2.4 yet
     <tr><td><code>filemod</code></td>
         <td>Return last modification time of a file (or 0 if file does not exist
             or is not regular file)</td><td>restricted</td></tr>
+        -->
     <tr><td><code>filesize</code></td>
         <td>Return size of a file (or 0 if file does not exist or is not
             regular file)</td><td>restricted</td></tr>
