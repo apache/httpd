@@ -1339,6 +1339,16 @@ AP_DECLARE_HOOK(void,test_config,(apr_pool_t *pconf, server_rec *s))
 
 /**
  * Run the post_config function for each module
+ *
+ * The function might be called multiple times.  @a pconf, @a plog, and
+ * @a ptemp may be cleared and/or destroyed between calls.
+ *
+ * The function will be called zero or one times with the server's state being
+ * #AP_SQ_MS_CREATE_PRE_CONFIG, and will be called one or more times with
+ * the server's state being #AP_SQ_MS_CREATE_CONFIG.
+ *
+ * @see ap_state_query(), #AP_SQ_MAIN_STATE
+ *
  * @param pconf The config pool
  * @param plog The logging streams pool
  * @param ptemp The temporary pool
