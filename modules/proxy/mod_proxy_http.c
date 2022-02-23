@@ -1485,10 +1485,10 @@ int ap_proxy_http_process_response(proxy_http_req_t *req)
                 return HTTP_INTERNAL_SERVER_ERROR;
             }
 
-            /* Set timeout to the lowest configured for client or backend */
+            /* Set timeout to the highest configured for client or backend */
             apr_socket_timeout_get(backend->sock, &backend_timeout);
             apr_socket_timeout_get(ap_get_conn_socket(c), &client_timeout);
-            if (backend_timeout >= 0 && backend_timeout < client_timeout) {
+            if (backend_timeout >= 0 && backend_timeout > client_timeout) {
                 tunnel->timeout = backend_timeout;
             }
             else {
