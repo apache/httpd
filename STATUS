@@ -215,21 +215,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      ylavic: Can someone test this on Windows too?
      steffenal: Tested on win32 and win64, looks all fine
 
-  *) Easy patches: synch 2.4.x and trunk
-         - mod_ssl: Fix a few warnings on 64 bits windows compilation
-         - ap_escape_quotes(): Remove unneeded checks to improve performance
-         - test/time-sem.c: unlock the accept mutex before exiting (error conditions)
-         - mod_ext_filter: Fix a spurious -1 used as a APR_SIZE_T_FMT in an error message
-         - mod_sed: fix some format string (s/lld/APR_INT64_T_FMT/)
-     trunk patch:
-          https://svn.apache.org/r1881379
-          https://svn.apache.org/r1892422
-          https://svn.apache.org/r1893011
-          https://svn.apache.org/r1897270
-          https://svn.apache.org/r1897271
-     2.4.x patch: svn merge -c 1881379,1892422,1893011,1897270,1897271 ^/httpd/httpd/trunk .
-     +1: jailletc36, icing, rpluem
-
   *) APR and APU must be at least 1.3 to be able to configure and build httpd 2.4.x.
      So remove some osbolete #if in the source code.
         - mod_socache_memcache
