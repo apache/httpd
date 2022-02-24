@@ -72,37 +72,16 @@ static apr_interval_time_t wd_interval = AP_WD_TM_INTERVAL;
 static int mpm_is_forked = AP_MPMQ_NOT_SUPPORTED;
 static const char *wd_proc_mutex_type = "watchdog-callback";
 
-static void wd_worker_stop(ap_watchdog_t *w)
-{
-    /* Do nothing if the thread wasn't started. */
-    if (apr_atomic_read32(&w->thread_started) != 1)
-        return;
-
-    if (apr_atomic_read32(&w->is_running)) {
-        watchdog_list_t *wl = w->callbacks;
-        while (wl) {
-            if (wl->status == APR_SUCCESS) {
-                /* Execute watchdog callback with STOPPING state */
-                (*wl->callback_fn)(AP_WATCHDOG_STATE_STOPPING,
-                                    (void *)wl->data, w->pool);
-                wl->status = APR_EOF;
-            }
-            wl = wl->next;
-        }
-    }
-    apr_atomic_set32(&w->is_running, 0);
-}
-
 static apr_status_t wd_worker_cleanup(void *data)
 {
     apr_status_t rv;
     ap_watchdog_t *w = (ap_watchdog_t *)data;
 
-    /* Do nothing if the thread wasn't started. */
+    /* Do nothing if the thread wasn't started or has terminated. */
     if (apr_atomic_read32(&w->thread_started) != 1)
         return APR_SUCCESS;
 
-    wd_worker_stop(w);
+    apr_atomic_set32(&w->is_running, 0);
     apr_thread_join(&rv, w->thread);
     return rv;
 }
@@ -228,6 +207,7 @@ static void* APR_THREAD_FUNC wd_worker(apr_thread_t *thread, void *data)
         while (wl) {
             if (wl->status == APR_SUCCESS) {
                 /* Execute watchdog callback with STOPPING state */
+                wl->status = APR_EOF;
                 (*wl->callback_fn)(AP_WATCHDOG_STATE_STOPPING,
                                    (void *)wl->data, w->pool);
             }
@@ -590,7 +570,7 @@ static void wd_child_stopping(apr_pool_t *pool, int graceful)
             ap_watchdog_t *w = ap_lookup_provider(AP_WATCHDOG_PGROUP,
                                                   wn[i].provider_name,
                                                   AP_WATCHDOG_CVERSION);
-            wd_worker_stop(w);
+            apr_atomic_set32(&w->is_running, 0);
         }
     }
 }
