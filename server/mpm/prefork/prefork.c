@@ -225,12 +225,12 @@ static void clean_child_exit(int code)
     apr_signal(SIGTERM, SIG_IGN);
 
     retained->mpm->mpm_state = AP_MPMQ_STOPPING;
-    if (code == 0) {
-        ap_run_child_stopping(pchild, 0);
-    }
 
     if (pchild) {
-        ap_run_child_stopped(pchild, 0);
+        if (code == 0) {
+            ap_run_child_stopping(pchild, 0);
+            ap_run_child_stopped(pchild, 0);
+        }
         apr_pool_destroy(pchild);
         /*
          * Be safe in case someone still uses afterwards or we get here again.
