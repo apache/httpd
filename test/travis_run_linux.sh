@@ -61,8 +61,9 @@ if test -v TEST_MOD_TLS; then
     git fetch origin
     git checkout tags/$RUSTLS_VERSION
     # force an update to cbindgen as focal seems to deliver v0.12.1
+    # always something changes with rust/cargo every few weeks, sigh.
     cargo install --force cbindgen
-    make install DESTDIR="$PREFIX"
+    PATH="${HOME}/.cargo/bin:${PATH}" make install DESTDIR="$PREFIX"
   popd
   CONFIG="$CONFIG --with-tls --with-rustls=$PREFIX"
 fi
