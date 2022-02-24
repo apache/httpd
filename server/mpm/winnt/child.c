@@ -1262,6 +1262,8 @@ void child_main(apr_pool_t *pconf, DWORD parent_pid)
     ap_log_error(APLOG_MARK, APLOG_NOTICE, APR_SUCCESS, ap_server_conf, APLOGNO(00364)
                  "Child: All worker threads have exited.");
 
+    ap_run_child_stopped(pchild, graceful_shutdown);
+
     apr_thread_mutex_destroy(child_lock);
     apr_thread_mutex_destroy(ctxpool_lock);
     CloseHandle(ctxpool_wait_event);

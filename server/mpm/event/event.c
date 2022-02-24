@@ -775,6 +775,7 @@ static void clean_child_exit(int code)
     }
 
     if (pchild) {
+        ap_run_child_stopped(pchild, terminate_mode == ST_GRACEFUL);
         apr_pool_destroy(pchild);
     }
 

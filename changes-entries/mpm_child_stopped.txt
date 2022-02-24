@@ -1,0 +1,5 @@
+  * core/mpm: add hook 'child_stopped` that gets called when the MPM has
+    stopped all processing in a child process. This is when all running
+    threads shall be stopped and joined.
+    [Stefan Eissing]
+

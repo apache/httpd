@@ -512,12 +512,28 @@ AP_DECLARE_HOOK(void, resume_connection,
                 (conn_rec *c, request_rec *r))
 
 /**
- * Notification that the child is stopping. If graceful, ongoing
- * requests will be served.
+ * Notification that the child is stopping. No new requests
+ * or other tasks to be started.
+ * If graceful, already started requests/tasks should be
+ * processed normally.
  * @param pchild The child pool
  * @param graceful != 0 iff this is a graceful shutdown.
  */
 AP_DECLARE_HOOK(void, child_stopping,
+                (apr_pool_t *pchild, int graceful))
+
+/**
+ * Notification that the child has stopped processing
+ * requests completely. Any running threads should be
+ * shut down now.
+ * Ideally, when this hook completes, no more threads
+ * are running in the child process.
+ * Note that de-allocation of global resources should
+ * be run via memory pool destroy callback after this.
+ * @param pchild The child pool
+ * @param graceful != 0 iff this is a graceful shutdown.
+ */
+AP_DECLARE_HOOK(void, child_stopped,
                 (apr_pool_t *pchild, int graceful))
 
 /* mutex type string for accept mutex, if any; MPMs should use the

@@ -230,6 +230,7 @@ static void clean_child_exit(int code)
     }
 
     if (pchild) {
+        ap_run_child_stopped(pchild, 0);
         apr_pool_destroy(pchild);
         /*
          * Be safe in case someone still uses afterwards or we get here again.
