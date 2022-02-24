@@ -1,0 +1,4 @@
+  *) mod_watchdog: use the `child_stopping` and `child_stopped` hooks
+     to shutdown workers before pool destruction releases global
+     resources and libraries.
+     [Stefan Eissing]

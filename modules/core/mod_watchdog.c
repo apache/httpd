@@ -72,14 +72,11 @@ static apr_interval_time_t wd_interval = AP_WD_TM_INTERVAL;
 static int mpm_is_forked = AP_MPMQ_NOT_SUPPORTED;
 static const char *wd_proc_mutex_type = "watchdog-callback";
 
-static apr_status_t wd_worker_cleanup(void *data)
+static void wd_worker_stop(ap_watchdog_t *w)
 {
-    apr_status_t rv;
-    ap_watchdog_t *w = (ap_watchdog_t *)data;
-
     /* Do nothing if the thread wasn't started. */
     if (apr_atomic_read32(&w->thread_started) != 1)
-        return APR_SUCCESS;
+        return;
 
     if (apr_atomic_read32(&w->is_running)) {
         watchdog_list_t *wl = w->callbacks;
@@ -94,6 +91,18 @@ static apr_status_t wd_worker_cleanup(void *data)
         }
     }
     apr_atomic_set32(&w->is_running, 0);
+}
+
+static apr_status_t wd_worker_cleanup(void *data)
+{
+    apr_status_t rv;
+    ap_watchdog_t *w = (ap_watchdog_t *)data;
+
+    /* Do nothing if the thread wasn't started. */
+    if (apr_atomic_read32(&w->thread_started) != 1)
+        return APR_SUCCESS;
+
+    wd_worker_stop(w);
     apr_thread_join(&rv, w->thread);
     return rv;
 }
@@ -561,7 +570,7 @@ static void wd_child_init_hook(apr_pool_t *p, server_rec *s)
 /*--------------------------------------------------------------------------*/
 /*                                                                          */
 /* Child stopping hook.                                                     */
-/* Shutdown watchdog threads                                                */
+/* Do not run new watchdog tasks.                                           */
 /*                                                                          */
 /*--------------------------------------------------------------------------*/
 static void wd_child_stopping(apr_pool_t *pool, int graceful)
@@ -581,7 +590,35 @@ static void wd_child_stopping(apr_pool_t *pool, int graceful)
             ap_watchdog_t *w = ap_lookup_provider(AP_WATCHDOG_PGROUP,
                                                   wn[i].provider_name,
                                                   AP_WATCHDOG_CVERSION);
-            apr_atomic_set32(&w->is_running, 0);
+            wd_worker_stop(w);
+        }
+    }
+}
+
+/*--------------------------------------------------------------------------*/
+/*                                                                          */
+/* Child stopped hook.                                                      */
+/* Terminate/join all watchdog threads                                      */
+/*                                                                          */
+/*--------------------------------------------------------------------------*/
+static void wd_child_stopped(apr_pool_t *pool, int graceful)
+{
+    const apr_array_header_t *wl;
+
+    if (!wd_server_conf->child_workers) {
+        return;
+    }
+    if ((wl = ap_list_provider_names(pool, AP_WATCHDOG_PGROUP,
+                                        AP_WATCHDOG_CVERSION))) {
+        const ap_list_provider_names_t *wn;
+        int i;
+
+        wn = (ap_list_provider_names_t *)wl->elts;
+        for (i = 0; i < wl->nelts; i++) {
+            ap_watchdog_t *w = ap_lookup_provider(AP_WATCHDOG_PGROUP,
+                                                  wn[i].provider_name,
+                                                  AP_WATCHDOG_CVERSION);
+            wd_worker_cleanup(w);
         }
     }
 }
@@ -663,14 +700,20 @@ static void wd_register_hooks(apr_pool_t *p)
                        NULL,
                        APR_HOOK_MIDDLE);
 
-#if AP_MODULE_MAGIC_AT_LEAST(20120211, 110)
     /* Child is stopping hook
      */
     ap_hook_child_stopping(wd_child_stopping,
                            NULL,
                            NULL,
                            APR_HOOK_MIDDLE);
-#endif
+
+    /* Child has stopped hook
+     */
+    ap_hook_child_stopping(wd_child_stopped,
+                           NULL,
+                           NULL,
+                           APR_HOOK_MIDDLE);
+
     APR_REGISTER_OPTIONAL_FN(ap_watchdog_get_instance);
     APR_REGISTER_OPTIONAL_FN(ap_watchdog_register_callback);
     APR_REGISTER_OPTIONAL_FN(ap_watchdog_set_callback_interval);
