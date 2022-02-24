@@ -655,8 +655,7 @@ static apr_status_t drain_available_output(ap_filter_t *f,
         if (rv && !APR_STATUS_IS_EAGAIN(rv))
            lvl = APLOG_DEBUG;
         ap_log_rerror(APLOG_MARK, lvl, rv, r, APLOGNO(01460)
-                      "apr_file_read(child output), len %" APR_SIZE_T_FMT,
-                      !rv ? len : -1);
+                      "apr_file_read(child output), len %" APR_SIZE_T_FMT, len);
         if (rv != APR_SUCCESS) {
             return rv;
         }
@@ -810,8 +809,7 @@ static int ef_unified_filter(ap_filter_t *f, apr_bucket_brigade *bb)
         if (rv && !APR_STATUS_IS_EOF(rv) && !APR_STATUS_IS_EAGAIN(rv))
             lvl = APLOG_ERR;
         ap_log_rerror(APLOG_MARK, lvl, rv, r, APLOGNO(01466)
-                      "apr_file_read(child output), len %" APR_SIZE_T_FMT,
-                      !rv ? len : -1);
+                      "apr_file_read(child output), len %" APR_SIZE_T_FMT, len);
         if (APR_STATUS_IS_EAGAIN(rv)) {
             if (eos) {
                 /* should not occur, because we have an APR timeout in place */

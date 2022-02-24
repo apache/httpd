@@ -630,7 +630,8 @@ static char *ssl_var_lookup_ssl_cert_dn(apr_pool_t *p, X509_NAME *xsname,
 
 static char *ssl_var_lookup_ssl_cert_san(apr_pool_t *p, X509 *xs, char *var)
 {
-    int type, numlen;
+    int type;
+    apr_size_t numlen;
     const char *onf = NULL;
     apr_array_header_t *entries;
 
