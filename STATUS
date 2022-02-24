@@ -215,20 +215,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      ylavic: Can someone test this on Windows too?
      steffenal: Tested on win32 and win64, looks all fine
 
-  *) APR and APU must be at least 1.3 to be able to configure and build httpd 2.4.x.
-     So remove some osbolete #if in the source code.
-        - mod_socache_memcache
-        - mod_authn_dbd
-        - mod_log_config
-        - mod_proxy_ftp and proxy-util
-     trunk patch:
-          https://svn.apache.org/r1897325
-          https://svn.apache.org/r1897326
-          https://svn.apache.org/r1897329
-          https://svn.apache.org/r1898255
-     2.4.x patch: svn merge -c 1897325,1897326,1897329,1898255 ^/httpd/httpd/trunk .
-     +1: jailletc36, icing, rpluem
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
