@@ -926,7 +926,10 @@ static int ssl_hook_Access_classic(request_rec *r, SSLSrvConfigRec *sc, SSLDirCo
             }
 
             cert_store_ctx = X509_STORE_CTX_new();
-            X509_STORE_CTX_init(cert_store_ctx, cert_store, cert, cert_stack);
+            if (!X509_STORE_CTX_init(cert_store_ctx, cert_store, cert, cert_stack)) {
+                X509_STORE_CTX_free(cert_store_ctx);
+                return HTTP_FORBIDDEN;
+            }
             depth = SSL_get_verify_depth(ssl);
 
             if (depth >= 0) {
