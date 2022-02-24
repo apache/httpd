@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.53
 
+  *) Support pcre2 (10.x) library in place of the now end-of-life pcre (8.x)
+     for regular expression evaluation. This depends on locating pcre2-config.
+     [William Rowe, Petr Pisar <ppisar redhat.com>, Rainer Jung]
+
   *) Add the ldap function to the expression API, allowing LDAP filters and
      distinguished names based on expressions to be escaped correctly to
      guard against LDAP injection. [Graham Leggett]

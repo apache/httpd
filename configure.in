@@ -214,28 +214,33 @@ fi
 
 AC_ARG_WITH(pcre,
 APACHE_HELP_STRING(--with-pcre=PATH,Use external PCRE library))
-
-AC_PATH_PROG(PCRE_CONFIG, pcre-config, false)
-if test -d "$with_pcre" && test -x "$with_pcre/bin/pcre-config"; then
-   PCRE_CONFIG=$with_pcre/bin/pcre-config
-elif test -x "$with_pcre"; then
-   PCRE_CONFIG=$with_pcre
+if test "x$with_pcre" = "x" || test "$with_pcre" = "yes"; then
+  with_pcre="$PATH"
+else if which $with_pcre 2>/dev/null; then :; else
+  with_pcre="$with_pcre/bin:$with_pcre"
+fi
 fi
 
-if test "$PCRE_CONFIG" != "false"; then
+AC_CHECK_TARGET_TOOLS(PCRE_CONFIG, [pcre2-config pcre-config],
+                      [`which $with_pcre 2>/dev/null`], $with_pcre)
+
+if test "x$PCRE_CONFIG" != "x"; then
   if $PCRE_CONFIG --version >/dev/null 2>&1; then :; else
-    AC_MSG_ERROR([Did not find pcre-config script at $PCRE_CONFIG])
+    AC_MSG_ERROR([Did not find working script at $PCRE_CONFIG])
   fi
   case `$PCRE_CONFIG --version` in
+  [1[0-9].*])
+    AC_DEFINE(HAVE_PCRE2, 1, [Detected PCRE2]) 
+    ;;
   [[1-5].*])
     AC_MSG_ERROR([Need at least pcre version 6.0])
     ;;
   esac
   AC_MSG_NOTICE([Using external PCRE library from $PCRE_CONFIG])
   APR_ADDTO(PCRE_INCLUDES, [`$PCRE_CONFIG --cflags`])
-  APR_ADDTO(PCRE_LIBS, [`$PCRE_CONFIG --libs`])
+  APR_ADDTO(PCRE_LIBS, [`$PCRE_CONFIG --libs8 2>/dev/null || $PCRE_CONFIG --libs`])
 else
-  AC_MSG_ERROR([pcre-config for libpcre not found. PCRE is required and available from http://pcre.org/])
+  AC_MSG_ERROR([pcre(2)-config for libpcre not found. PCRE is required and available from http://pcre.org/])
 fi
 APACHE_SUBST(PCRE_LIBS)
 
@@ -262,6 +267,24 @@ APR_ADDTO(INCLUDES, $APU_INCLUDES)
 
 dnl Add in path to PCRE includes
 APR_ADDTO(INCLUDES, $PCRE_INCLUDES)
+
+save_CPPFLAGS="$CPPFLAGS"
+CPPFLAGS="$CPPFLAGS $PCRE_INCLUDES"
+AC_EGREP_CPP(yes,
+[
+#ifdef HAVE_PCRE2
+yes
+#else
+#include <pcre.h>
+#ifdef PCRE_DUPNAMES
+yes
+#endif
+#endif
+],pcre_have_dupnames=yes,pcre_have_dupnames=no)
+if test "$pcre_have_dupnames" != "yes"; then
+    AC_MSG_ERROR([pcre version does not support PCRE_DUPNAMES])
+fi
+CPPFLAGS="$save_CPPFLAGS"
 
 AC_MSG_NOTICE([])
 AC_MSG_NOTICE([Applying OS-specific hints for httpd...])

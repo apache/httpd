@@ -147,38 +147,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) Support PCRE2 (10.x) in place of PCRE (8.x).
-     Submitted by: wrowe, Petr Pisar [ppisar redhat.com], rjung
-     trunk patches:
-         http://svn.apache.org/r1773454
-         http://svn.apache.org/r1773741
-         http://svn.apache.org/r1773742
-         http://svn.apache.org/r1773839
-         http://svn.apache.org/r1773870
-         http://svn.apache.org/r1773882
-         http://svn.apache.org/r1814662
-         http://svn.apache.org/r1881478
-     summarized/conflicts resolved:
-         https://gist.github.com/wrowe/73f655d13bbe0f12030aa4557e804d8a
-     +1: wrowe, rpluem, ylavic
-     wrowe notes that the current code drops optimizations, owing to the fact
-     that the ovector is a required allocation and is no longer allocated on
-     the stack, by design.  The correct fix is an apr userdata allocation on
-     the appropriate pool, which would be thread-safe, but the actual API of
-     ap_regexec[_len]() offers us no pool and isn't suitable for httpd-2.4.x.
-     At this time, PCRE 8.45 is EOL and will not receive security updates,
-     and taking ovector and other arrays off the stack was in direct reaction
-     to the patterns of abuse of previous pcre exploits. So this patch doesn't
-     wait for httpd-2.4 to be retired, it will need to be adopted without the
-     existing optimiation.
-     jorton: Adding ap_pregexec/_len which pass a pool would also work
-             for internal users of this api; not sure if performance
-             impact is significant from using malloc here.
-     ylavic: A follow up backport (based on this one) using thread locals to
-             reuse ap_regex*() contexts: https://github.com/apache/httpd/pull/289
-             Proposed for backport below, in place of or after this one.
-     rpluem: +1 on PR 289 as well.
-
   *) Support PCRE2 with buffers reuse through Thread Local Storage.
      trunk patches:
          http://svn.apache.org/r1897240
@@ -208,7 +176,7 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.4.x patches:
          https://github.com/apache/httpd/pull/289.diff
          (PR: https://github.com/apache/httpd/pull/289)
-     +1: ylavic, rpluem, covener, steffenal
+     +1: ylavic, rpluem, covener, steffenal, wrowe
      ylavic: This backport proposal inludes the PCRE2 backport already accepted,
              we can apply this one instead or the original one first and then
              this one (I'd have to rebase the github PR first).
