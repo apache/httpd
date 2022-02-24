@@ -1104,6 +1104,10 @@ static int dump_extn_value(BIO *bio, ASN1_OCTET_STRING *str)
     ASN1_STRING *ret = ASN1_STRING_new();
     int rv = 0;
 
+    if(!ret) {
+      return rv;
+    }
+
     /* This allows UTF8String, IA5String, VisibleString, or BMPString;
      * conversion to UTF-8 is forced. */
     if (d2i_DISPLAYTEXT(&ret, &pp, str->length)) {
