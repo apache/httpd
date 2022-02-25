@@ -35,6 +35,7 @@ class HttpdTestSetup:
         "logio",
         "unixd",
         "version",
+        "watchdog",
         "authn_core",
         "authz_host",
         "authz_groupfile",

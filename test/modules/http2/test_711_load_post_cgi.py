@@ -1,9 +1,10 @@
 import pytest
 import os
 
-from .env import H2Conf
+from .env import H2Conf, H2TestEnv
 
 
+@pytest.mark.skipif(condition=H2TestEnv.is_unsupported, reason="mod_http2 not supported here")
 class TestLoadCgi:
 
     @pytest.fixture(autouse=True, scope='class')
