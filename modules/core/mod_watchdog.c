@@ -78,11 +78,13 @@ static apr_status_t wd_worker_cleanup(void *data)
     ap_watchdog_t *w = (ap_watchdog_t *)data;
 
     /* Do nothing if the thread wasn't started or has terminated. */
-    if (apr_atomic_read32(&w->thread_started) != 1)
+    if (!w->thread || apr_atomic_read32(&w->thread_started) != 1)
         return APR_SUCCESS;
 
+    AP_DEBUG_ASSERT(w->thread);
     apr_atomic_set32(&w->is_running, 0);
     apr_thread_join(&rv, w->thread);
+    w->thread = NULL;
     return rv;
 }
 
@@ -557,6 +559,8 @@ static void wd_child_stopping(apr_pool_t *pool, int graceful)
 {
     const apr_array_header_t *wl;
 
+    ap_log_error(APLOG_MARK, APLOG_TRACE1, 0, wd_server_conf->s,
+                 "child stopping graceful=%d", graceful);
     if (!wd_server_conf->child_workers) {
         return;
     }
@@ -585,6 +589,8 @@ static void wd_child_stopped(apr_pool_t *pool, int graceful)
 {
     const apr_array_header_t *wl;
 
+    ap_log_error(APLOG_MARK, APLOG_TRACE1, 0, wd_server_conf->s,
+                 "child stopped, joining watchdog threads");
     if (!wd_server_conf->child_workers) {
         return;
     }
@@ -598,9 +604,14 @@ static void wd_child_stopped(apr_pool_t *pool, int graceful)
             ap_watchdog_t *w = ap_lookup_provider(AP_WATCHDOG_PGROUP,
                                                   wn[i].provider_name,
                                                   AP_WATCHDOG_CVERSION);
+            ap_log_error(APLOG_MARK, APLOG_TRACE1, 0, wd_server_conf->s,
+                         "%sWatchdog (%s) stopping now",
+                         w->singleton ? "Singleton " : "", w->name);
             wd_worker_cleanup(w);
         }
     }
+    ap_log_error(APLOG_MARK, APLOG_TRACE1, 0, wd_server_conf->s,
+                 "child stopped, watchdogs stopped");
 }
 
 /*--------------------------------------------------------------------------*/
@@ -689,10 +700,10 @@ static void wd_register_hooks(apr_pool_t *p)
 
     /* Child has stopped hook
      */
-    ap_hook_child_stopping(wd_child_stopped,
-                           NULL,
-                           NULL,
-                           APR_HOOK_MIDDLE);
+    ap_hook_child_stopped(wd_child_stopped,
+                          NULL,
+                          NULL,
+                          APR_HOOK_MIDDLE);
 
     APR_REGISTER_OPTIONAL_FN(ap_watchdog_get_instance);
     APR_REGISTER_OPTIONAL_FN(ap_watchdog_register_callback);
