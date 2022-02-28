@@ -726,6 +726,40 @@ static apr_status_t pass_data_to_filter(ap_filter_t *f, const char *data,
     return rv;
 }
 
+/* check_filter_process_on_eos():
+ *
+ * if we hit end-of-stream, check the exit status of the filter process, and log
+ * an appropriate message if it failed
+ */
+static apr_status_t check_filter_process_on_eos(ef_ctx_t *ctx, request_rec *r)
+{
+    if (ctx->hit_eos) {
+        int exitcode;
+        apr_exit_why_e exitwhy;
+        apr_status_t waitret = apr_proc_wait(ctx->proc, &exitcode, &exitwhy,
+                                             APR_WAIT);
+        if (waitret != APR_CHILD_DONE) {
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, waitret, r,
+                          "apr_proc_wait() failed, uri=%s", r->uri);
+            return waitret;
+        }
+        else if (exitwhy != APR_PROC_EXIT) {
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, APR_SUCCESS, r,
+                          "child process %s killed by signal %d, uri=%s",
+                          ctx->filter->command, exitcode, r->uri);
+            return HTTP_INTERNAL_SERVER_ERROR;
+        }
+        else if (exitcode != 0) {
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, APR_SUCCESS, r,
+                          "child process %s exited with non-zero status %d, "
+                          "uri=%s", ctx->filter->command, exitcode, r->uri);
+            return HTTP_INTERNAL_SERVER_ERROR;
+        }
+    }
+
+    return APR_SUCCESS;
+}
+
 /* ef_unified_filter:
  *
  * runs the bucket brigade bb through the filter and puts the result into
@@ -880,6 +914,11 @@ static apr_status_t ef_output_filter(ap_filter_t *f, apr_bucket_brigade *bb)
     if (rv != APR_SUCCESS) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(01468)
                       "ef_unified_filter() failed");
+        return rv;
+    }
+
+    if ((rv = check_filter_process_on_eos(ctx, r)) != APR_SUCCESS) {
+        return rv;
     }
 
     if ((rv = ap_pass_brigade(f->next, bb)) != APR_SUCCESS) {
@@ -939,7 +978,13 @@ static apr_status_t ef_input_filter(ap_filter_t *f, apr_bucket_brigade *bb,
     }
 
     rv = ef_unified_filter(f, bb);
-    return rv;
+    if (rv != APR_SUCCESS) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, f->r, APLOGNO(01468)
+                      "ef_unified_filter() failed");
+        return rv;
+    }
+
+    return check_filter_process_on_eos(ctx, f->r);
 }
 
 AP_DECLARE_MODULE(ext_filter) =
