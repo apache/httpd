@@ -147,41 +147,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) Support PCRE2 with buffers reuse through Thread Local Storage.
-     trunk patches:
-         http://svn.apache.org/r1897240
-         http://svn.apache.org/r1897241
-         http://svn.apache.org/r1897242
-         http://svn.apache.org/r1897244
-         http://svn.apache.org/r1897248
-         http://svn.apache.org/r1897250
-         http://svn.apache.org/r1897260
-         http://svn.apache.org/r1897261
-         http://svn.apache.org/r1897263
-         http://svn.apache.org/r1897386
-         http://svn.apache.org/r1897459
-         http://svn.apache.org/r1897460
-         http://svn.apache.org/r1897461
-         http://svn.apache.org/r1897462
-         http://svn.apache.org/r1897472
-         http://svn.apache.org/r1897543
-         http://svn.apache.org/r1612934
-         http://svn.apache.org/r1612940
-         http://svn.apache.org/r1613189
-         http://svn.apache.org/r1897651
-         http://svn.apache.org/r1897680
-         http://svn.apache.org/r1897689
-         http://svn.apache.org/r1897691
-         http://svn.apache.org/r1897692
-     2.4.x patches:
-         https://github.com/apache/httpd/pull/289.diff
-         (PR: https://github.com/apache/httpd/pull/289)
-     +1: ylavic, rpluem, covener, steffenal, wrowe
-     ylavic: This backport proposal inludes the PCRE2 backport already accepted,
-             we can apply this one instead or the original one first and then
-             this one (I'd have to rebase the github PR first).
-     ylavic: Can someone test this on Windows too?
-     steffenal: Tested on win32 and win64, looks all fine
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
