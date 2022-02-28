@@ -2201,11 +2201,11 @@ static void create_listener_thread(thread_starter * ts)
     my_info = (proc_info *) ap_malloc(sizeof(proc_info));
     my_info->pslot = my_child_num;
     my_info->tslot = -1;      /* listener thread doesn't have a thread slot */
-    rv = apr_thread_create(&ts->listener, thread_attr, listener_thread,
-                           my_info, pruntime);
+    rv = ap_thread_create(&ts->listener, thread_attr, listener_thread,
+                          my_info, pruntime);
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ALERT, rv, ap_server_conf, APLOGNO(00474)
-                     "apr_thread_create: unable to create listener thread");
+                     "ap_thread_create: unable to create listener thread");
         /* let the parent decide how bad this really is */
         clean_child_exit(APEXIT_CHILDSICK);
     }
@@ -2396,12 +2396,12 @@ static void *APR_THREAD_FUNC start_threads(apr_thread_t * thd, void *dummy)
             /* We let each thread update its own scoreboard entry.  This is
              * done because it lets us deal with tid better.
              */
-            rv = apr_thread_create(&threads[i], thread_attr,
-                                   worker_thread, my_info, pruntime);
+            rv = ap_thread_create(&threads[i], thread_attr,
+                                  worker_thread, my_info, pruntime);
             if (rv != APR_SUCCESS) {
                 ap_log_error(APLOG_MARK, APLOG_ALERT, rv, ap_server_conf,
                              APLOGNO(03104)
-                             "apr_thread_create: unable to create worker thread");
+                             "ap_thread_create: unable to create worker thread");
                 /* let the parent decide how bad this really is */
                 clean_child_exit(APEXIT_CHILDSICK);
             }
@@ -2536,6 +2536,17 @@ static void child_main(int child_num_arg, int child_bucket)
     apr_pool_create(&pchild, pconf);
     apr_pool_tag(pchild, "pchild");
 
+#if AP_HAS_THREAD_LOCAL
+    if (!one_process) {
+        apr_thread_t *thd = NULL;
+        if ((rv = ap_thread_main_create(&thd, pchild))) {
+            ap_log_error(APLOG_MARK, APLOG_EMERG, rv, ap_server_conf, APLOGNO(10377)
+                         "Couldn't initialize child main thread");
+            clean_child_exit(APEXIT_CHILDFATAL);
+        }
+    }
+#endif
+
     /* close unused listeners and pods */
     for (i = 0; i < retained->mpm->num_buckets; i++) {
         if (i != child_bucket) {
@@ -2605,11 +2616,11 @@ static void child_main(int child_num_arg, int child_bucket)
     ts->child_num_arg = child_num_arg;
     ts->threadattr = thread_attr;
 
-    rv = apr_thread_create(&start_thread_id, thread_attr, start_threads,
-                           ts, pchild);
+    rv = ap_thread_create(&start_thread_id, thread_attr, start_threads,
+                          ts, pchild);
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ALERT, rv, ap_server_conf, APLOGNO(00480)
-                     "apr_thread_create: unable to create worker thread");
+                     "ap_thread_create: unable to create worker thread");
         /* let the parent decide how bad this really is */
         clean_child_exit(APEXIT_CHILDSICK);
     }
@@ -2744,6 +2755,10 @@ static int make_child(server_rec * s, int slot, int bucket)
     }
 
     if (!pid) {
+#if AP_HAS_THREAD_LOCAL
+        ap_thread_current_after_fork();
+#endif
+
         my_bucket = &all_buckets[bucket];
 
 #ifdef HAVE_BINDPROCESSOR

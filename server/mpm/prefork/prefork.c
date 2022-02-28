@@ -395,7 +395,6 @@ static void child_main(int child_num_arg, int child_bucket)
 {
 #if APR_HAS_THREADS
     apr_thread_t *thd = NULL;
-    apr_os_thread_t osthd;
     sigset_t sig_mask;
 #endif
     apr_pool_t *ptrans;
@@ -427,9 +426,23 @@ static void child_main(int child_num_arg, int child_bucket)
     apr_allocator_owner_set(allocator, pchild);
     apr_pool_tag(pchild, "pchild");
 
+#if AP_HAS_THREAD_LOCAL
+    if (one_process) {
+        thd = ap_thread_current();
+    }
+    else if ((status = ap_thread_main_create(&thd, pchild))) {
+        ap_log_error(APLOG_MARK, APLOG_EMERG, status, ap_server_conf, APLOGNO(10378)
+                     "Couldn't initialize child main thread");
+        clean_child_exit(APEXIT_CHILDFATAL);
+    }
+#elif APR_HAS_THREADS
+    {
+        apr_os_thread_t osthd = apr_os_thread_current();
+        apr_os_thread_put(&thd, &osthd, pchild);
+    }
+#endif
 #if APR_HAS_THREADS
-    osthd = apr_os_thread_current();
-    apr_os_thread_put(&thd, &osthd, pchild);
+    ap_assert(thd != NULL);
 #endif
 
     apr_pool_create(&ptrans, pchild);
@@ -722,6 +735,10 @@ static int make_child(server_rec *s, int slot)
     }
 
     if (!pid) {
+#if AP_HAS_THREAD_LOCAL
+        ap_thread_current_after_fork();
+#endif
+
         my_bucket = &all_buckets[bucket];
 
 #ifdef HAVE_BINDPROCESSOR

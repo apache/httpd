@@ -3161,6 +3161,135 @@ AP_DECLARE(void *) ap_realloc(void *ptr, size_t size)
     return p;
 }
 
+#if APR_HAS_THREADS
+
+#if APR_VERSION_AT_LEAST(1,8,0) && !defined(AP_NO_THREAD_LOCAL)
+
+#define ap_thread_current_create apr_thread_current_create
+
+#else /* APR_VERSION_AT_LEAST(1,8,0) && !defined(AP_NO_THREAD_LOCAL) */
+
+#if AP_HAS_THREAD_LOCAL
+
+struct thread_ctx {
+    apr_thread_start_t func;
+    void *data;
+};
+
+static AP_THREAD_LOCAL apr_thread_t *current_thread = NULL;
+
+static void *APR_THREAD_FUNC thread_start(apr_thread_t *thread, void *data)
+{
+    struct thread_ctx *ctx = data;
+
+    current_thread = thread;
+    return ctx->func(thread, ctx->data);
+}
+
+AP_DECLARE(apr_status_t) ap_thread_create(apr_thread_t **thread, 
+                                          apr_threadattr_t *attr, 
+                                          apr_thread_start_t func, 
+                                          void *data, apr_pool_t *pool)
+{
+    struct thread_ctx *ctx = apr_palloc(pool, sizeof(*ctx));
+
+    ctx->func = func;
+    ctx->data = data;
+    return apr_thread_create(thread, attr, thread_start, ctx, pool);
+}
+
+#endif /* AP_HAS_THREAD_LOCAL */
+
+AP_DECLARE(apr_status_t) ap_thread_current_create(apr_thread_t **current,
+                                                  apr_threadattr_t *attr,
+                                                  apr_pool_t *pool)
+{
+    apr_status_t rv;
+    apr_abortfunc_t abort_fn = apr_pool_abort_get(pool);
+    apr_allocator_t *allocator;
+    apr_os_thread_t osthd;
+    apr_pool_t *p;
+
+    *current = ap_thread_current();
+    if (*current) {
+        return APR_EEXIST;
+    }
+
+    rv = apr_allocator_create(&allocator);
+    if (rv != APR_SUCCESS) {
+        if (abort_fn)
+            abort_fn(rv);
+        return rv;
+    }
+    rv = apr_pool_create_unmanaged_ex(&p, abort_fn, allocator);
+    if (rv != APR_SUCCESS) {
+        apr_allocator_destroy(allocator);
+        return rv;
+    }
+    apr_allocator_owner_set(allocator, p);
+
+    osthd = apr_os_thread_current();
+    rv = apr_os_thread_put(current, &osthd, p);
+    if (rv != APR_SUCCESS) {
+        apr_pool_destroy(p);
+        return rv;
+    }
+
+#if AP_HAS_THREAD_LOCAL
+    current_thread = *current;
+#endif
+    return APR_SUCCESS;
+}
+
+AP_DECLARE(void) ap_thread_current_after_fork(void)
+{
+#if AP_HAS_THREAD_LOCAL
+    current_thread = NULL;
+#endif
+}
+
+AP_DECLARE(apr_thread_t *) ap_thread_current(void)
+{
+#if AP_HAS_THREAD_LOCAL
+    return current_thread;
+#else
+    return NULL;
+#endif
+}
+
+#endif /* APR_VERSION_AT_LEAST(1,8,0) && !defined(AP_NO_THREAD_LOCAL) */
+
+static apr_status_t main_thread_cleanup(void *arg)
+{
+    apr_thread_t *thd = arg;
+    apr_pool_destroy(apr_thread_pool_get(thd));
+    return APR_SUCCESS;
+}
+
+AP_DECLARE(apr_status_t) ap_thread_main_create(apr_thread_t **thread,
+                                               apr_pool_t *pool)
+{
+    apr_status_t rv;
+    apr_threadattr_t *attr = NULL;
+
+    /* Create an apr_thread_t for the main child thread to set up its Thread
+     * Local Storage. Since it's detached and won't apr_thread_exit(), destroy
+     * its pool before exiting via a cleanup of the given pool.
+     */
+    if ((rv = apr_threadattr_create(&attr, pool))
+            || (rv = apr_threadattr_detach_set(attr, 1))
+            || (rv = ap_thread_current_create(thread, attr, pool))) {
+        *thread = NULL;
+        return rv;
+    }
+
+    apr_pool_cleanup_register(pool, *thread, main_thread_cleanup,
+                              apr_pool_cleanup_null);
+    return APR_SUCCESS;
+}
+
+#endif /* APR_HAS_THREADS */
+
 AP_DECLARE(void) ap_get_sload(ap_sload_t *ld)
 {
     int i, j, server_limit, thread_limit;
