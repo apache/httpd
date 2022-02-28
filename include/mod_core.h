@@ -56,16 +56,7 @@ apr_status_t ap_http_outerror_filter(ap_filter_t *f,
                                      apr_bucket_brigade *b);
 
 /* Handles for HTTP/1.x core filters */
-AP_DECLARE_DATA extern ap_filter_rec_t *ap_http1_response_out_filter_handle;
 AP_DECLARE_DATA extern ap_filter_rec_t *ap_chunk_filter_handle;
-AP_DECLARE_DATA extern ap_filter_rec_t *ap_http1_request_in_filter_handle;
-
-/* HTTP/1.x input transcoding of status/headers filter. */
-apr_status_t ap_http1_request_in_filter(ap_filter_t *f,
-                                        apr_bucket_brigade *b,
-                                        ap_input_mode_t mode,
-                                        apr_read_type_e block,
-                                        apr_off_t readbytes);
 
 /* HTTP/1.x output transcoding of status/headers filter. */
 apr_status_t ap_http1_response_out_filter(ap_filter_t *f,

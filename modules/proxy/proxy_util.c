@@ -815,7 +815,7 @@ PROXY_DECLARE(int) ap_proxy_checkproxyblock(request_rec *r, proxy_server_conf *c
 PROXY_DECLARE(int) ap_proxy_pre_http_request(conn_rec *c, request_rec *r)
 {
     ap_add_input_filter("HTTP_IN", NULL, r, c);
-    ap_add_input_filter("HTTP1_REQUEST_IN", NULL, r, c);
+    ap_add_input_filter("HTTP1_BODY_IN", NULL, r, c);
     return OK;
 }
 

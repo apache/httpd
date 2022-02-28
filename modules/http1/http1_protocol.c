@@ -317,3 +317,272 @@ AP_DECLARE(int) ap_set_keepalive(request_rec *r)
     return http1_set_keepalive(r, &resp);
 }
 
+int http1_write_header_field(http1_out_ctx_t *out,
+                             const char *fieldname, const char *fieldval)
+{
+#if APR_CHARSET_EBCDIC
+    char *headfield;
+    apr_size_t len;
+
+    headfield = apr_pstrcat(out->pool, fieldname, ": ", fieldval, CRLF, NULL);
+    len = strlen(headfield);
+
+    ap_xlate_proto_to_ascii(headfield, len);
+    apr_brigade_write(out->bb, NULL, NULL, headfield, len);
+#else
+    struct iovec vec[4];
+    struct iovec *v = vec;
+    v->iov_base = (void *)fieldname;
+    v->iov_len = strlen(fieldname);
+    v++;
+    v->iov_base = ": ";
+    v->iov_len = sizeof(": ") - 1;
+    v++;
+    v->iov_base = (void *)fieldval;
+    v->iov_len = strlen(fieldval);
+    v++;
+    v->iov_base = CRLF;
+    v->iov_len = sizeof(CRLF) - 1;
+    apr_brigade_writev(out->bb, NULL, NULL, vec, 4);
+#endif /* !APR_CHARSET_EBCDIC */
+    return 1;
+}
+
+/* fill "bb" with a barebones/initial HTTP response header */
+static void http1_append_response_head(request_rec *r,
+                                       ap_bucket_headers *resp,
+                                       const char *protocol,
+                                       apr_bucket_brigade *bb)
+{
+    char *date = NULL;
+    const char *proxy_date = NULL;
+    const char *server = NULL;
+    const char *us = ap_get_server_banner();
+    const char *status_line;
+    http1_out_ctx_t out;
+    struct iovec vec[4];
+
+    if (r->assbackwards) {
+        /* there are no headers to send */
+        return;
+    }
+
+    /* Output the HTTP/1.x Status-Line and the Date and Server fields */
+    if (resp->reason) {
+        status_line =  apr_psprintf(r->pool, "%d %s", resp->status, resp->reason);
+    }
+    else {
+        status_line = ap_get_status_line_ex(r->pool, resp->status);
+    }
+
+    vec[0].iov_base = (void *)protocol;
+    vec[0].iov_len  = strlen(protocol);
+    vec[1].iov_base = (void *)" ";
+    vec[1].iov_len  = sizeof(" ") - 1;
+    vec[2].iov_base = (void *)(status_line);
+    vec[2].iov_len  = strlen(status_line);
+    vec[3].iov_base = (void *)CRLF;
+    vec[3].iov_len  = sizeof(CRLF) - 1;
+#if APR_CHARSET_EBCDIC
+    {
+        char *tmp;
+        apr_size_t len;
+        tmp = apr_pstrcatv(r->pool, vec, 4, &len);
+        ap_xlate_proto_to_ascii(tmp, len);
+        apr_brigade_write(bb, NULL, NULL, tmp, len);
+    }
+#else
+    apr_brigade_writev(bb, NULL, NULL, vec, 4);
+#endif
+
+    out.pool = r->pool;
+    out.bb = bb;
+
+    /*
+     * keep the set-by-proxy server and date headers, otherwise
+     * generate a new server header / date header
+     */
+    if (r->proxyreq != PROXYREQ_NONE) {
+        proxy_date = apr_table_get(resp->headers, "Date");
+        if (!proxy_date) {
+            /*
+             * proxy_date needs to be const. So use date for the creation of
+             * our own Date header and pass it over to proxy_date later to
+             * avoid a compiler warning.
+             */
+            date = apr_palloc(r->pool, APR_RFC822_DATE_LEN);
+            ap_recent_rfc822_date(date, r->request_time);
+        }
+        server = apr_table_get(resp->headers, "Server");
+    }
+    else {
+        date = apr_palloc(r->pool, APR_RFC822_DATE_LEN);
+        ap_recent_rfc822_date(date, r->request_time);
+    }
+
+    http1_write_header_field(&out, "Date", proxy_date ? proxy_date : date );
+
+    if (!server && *us)
+        server = us;
+    if (server)
+        http1_write_header_field(&out, "Server", server);
+
+    if (APLOGrtrace3(r)) {
+        ap_log_rerror(APLOG_MARK, APLOG_TRACE3, 0, r,
+                      "Response sent with status %d%s",
+                      r->status,
+                      APLOGrtrace4(r) ? ", headers:" : "");
+
+        /*
+         * Date and Server are less interesting, use TRACE5 for them while
+         * using TRACE4 for the other headers.
+         */
+        ap_log_rerror(APLOG_MARK, APLOG_TRACE5, 0, r, "  Date: %s",
+                      proxy_date ? proxy_date : date );
+        if (server)
+            ap_log_rerror(APLOG_MARK, APLOG_TRACE5, 0, r, "  Server: %s",
+                          server);
+    }
+
+
+    /* unset so we don't send them again */
+    apr_table_unset(resp->headers, "Date");        /* Avoid bogosity */
+    if (server) {
+        apr_table_unset(resp->headers, "Server");
+    }
+}
+
+void http1_write_response(request_rec *r,
+                          ap_bucket_headers *resp,
+                          apr_bucket_brigade *bb)
+{
+    const char *proto = AP_SERVER_PROTOCOL;
+
+    /* kludge around broken browsers when indicated by force-response-1.0
+     */
+    if (r->proto_num == HTTP_VERSION(1,0)
+        && apr_table_get(r->subprocess_env, "force-response-1.0")) {
+        r->connection->keepalive = AP_CONN_CLOSE;
+        proto = "HTTP/1.0";
+    }
+    http1_append_response_head(r, resp, proto, bb);
+    ap_http1_append_headers(bb, r, resp->headers);
+    ap_http1_terminate_header(bb);
+}
+
+AP_DECLARE_NONSTD(int) ap_send_http_trace(request_rec *r)
+{
+    core_server_config *conf;
+    int rv;
+    apr_bucket_brigade *bb;
+    http1_out_ctx_t out;
+    apr_bucket *b;
+    int body;
+    char *bodyread = NULL, *bodyoff;
+    apr_size_t bodylen = 0;
+    apr_size_t bodybuf;
+    long res = -1; /* init to avoid gcc -Wall warning */
+
+    if (r->method_number != M_TRACE) {
+        return DECLINED;
+    }
+
+    /* Get the original request */
+    while (r->prev) {
+        r = r->prev;
+    }
+    conf = ap_get_core_module_config(r->server->module_config);
+
+    if (conf->trace_enable == AP_TRACE_DISABLE) {
+        apr_table_setn(r->notes, "error-notes",
+                      "TRACE denied by server configuration");
+        return HTTP_METHOD_NOT_ALLOWED;
+    }
+
+    if (conf->trace_enable == AP_TRACE_EXTENDED)
+        /* XXX: should be = REQUEST_CHUNKED_PASS */
+        body = REQUEST_CHUNKED_DECHUNK;
+    else
+        body = REQUEST_NO_BODY;
+
+    if ((rv = ap_setup_client_block(r, body))) {
+        if (rv == HTTP_REQUEST_ENTITY_TOO_LARGE)
+            apr_table_setn(r->notes, "error-notes",
+                          "TRACE with a request body is not allowed");
+        return rv;
+    }
+
+    if (ap_should_client_block(r)) {
+
+        if (r->remaining > 0) {
+            if (r->remaining > 65536) {
+                apr_table_setn(r->notes, "error-notes",
+                       "Extended TRACE request bodies cannot exceed 64k\n");
+                return HTTP_REQUEST_ENTITY_TOO_LARGE;
+            }
+            /* always 32 extra bytes to catch chunk header exceptions */
+            bodybuf = (apr_size_t)r->remaining + 32;
+        }
+        else {
+            /* Add an extra 8192 for chunk headers */
+            bodybuf = 73730;
+        }
+
+        bodyoff = bodyread = apr_palloc(r->pool, bodybuf);
+
+        /* only while we have enough for a chunked header */
+        while ((!bodylen || bodybuf >= 32) &&
+               (res = ap_get_client_block(r, bodyoff, bodybuf)) > 0) {
+            bodylen += res;
+            bodybuf -= res;
+            bodyoff += res;
+        }
+        if (res > 0 && bodybuf < 32) {
+            /* discard_rest_of_request_body into our buffer */
+            while (ap_get_client_block(r, bodyread, bodylen) > 0)
+                ;
+            apr_table_setn(r->notes, "error-notes",
+                   "Extended TRACE request bodies cannot exceed 64k\n");
+            return HTTP_REQUEST_ENTITY_TOO_LARGE;
+        }
+
+        if (res < 0) {
+            return HTTP_BAD_REQUEST;
+        }
+    }
+
+    ap_set_content_type(r, "message/http");
+
+    /* Now we recreate the request, and echo it back */
+
+    bb = apr_brigade_create(r->pool, r->connection->bucket_alloc);
+#if APR_CHARSET_EBCDIC
+    {
+        char *tmp;
+        apr_size_t len;
+        len = strlen(r->the_request);
+        tmp = apr_pmemdup(r->pool, r->the_request, len);
+        ap_xlate_proto_to_ascii(tmp, len);
+        apr_brigade_putstrs(bb, NULL, NULL, tmp, CRLF_ASCII, NULL);
+    }
+#else
+    apr_brigade_putstrs(bb, NULL, NULL, r->the_request, CRLF, NULL);
+#endif
+    out.pool = r->pool;
+    out.bb = bb;
+    apr_table_do((int (*) (void *, const char *, const char *))
+                 http1_write_header_field, (void *) &out, r->headers_in, NULL);
+    apr_brigade_puts(bb, NULL, NULL, CRLF_ASCII);
+
+    /* If configured to accept a body, echo the body */
+    if (bodylen) {
+        b = apr_bucket_pool_create(bodyread, bodylen,
+                                   r->pool, bb->bucket_alloc);
+        APR_BRIGADE_INSERT_TAIL(bb, b);
+    }
+
+    ap_pass_brigade(r->output_filters,  bb);
+
+    return DONE;
+}
+
