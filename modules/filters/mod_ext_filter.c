@@ -739,18 +739,18 @@ static apr_status_t check_filter_process_on_eos(ef_ctx_t *ctx, request_rec *r)
         apr_status_t waitret = apr_proc_wait(ctx->proc, &exitcode, &exitwhy,
                                              APR_WAIT);
         if (waitret != APR_CHILD_DONE) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, waitret, r,
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, waitret, r, APLOGNO(10386)
                           "apr_proc_wait() failed, uri=%s", r->uri);
             return waitret;
         }
         else if (exitwhy != APR_PROC_EXIT) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, APR_SUCCESS, r,
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, APR_SUCCESS, r, APLOGNO(10387)
                           "child process %s killed by signal %d, uri=%s",
                           ctx->filter->command, exitcode, r->uri);
             return HTTP_INTERNAL_SERVER_ERROR;
         }
         else if (exitcode != 0) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, APR_SUCCESS, r,
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, APR_SUCCESS, r, APLOGNO(10388)
                           "child process %s exited with non-zero status %d, "
                           "uri=%s", ctx->filter->command, exitcode, r->uri);
             return HTTP_INTERNAL_SERVER_ERROR;
@@ -979,7 +979,7 @@ static apr_status_t ef_input_filter(ap_filter_t *f, apr_bucket_brigade *bb,
 
     rv = ef_unified_filter(f, bb);
     if (rv != APR_SUCCESS) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, f->r, APLOGNO(01468)
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, f->r, APLOGNO(10389)
                       "ef_unified_filter() failed");
         return rv;
     }
