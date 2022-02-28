@@ -659,15 +659,11 @@
 		de pushes pour le serveur virtuel considéré.
             </p>
             <p>
-                Le journal des pushes enregistre un condensé (sous la forme d'un
-		nombre de 64 bits) des ressources préchargées (leurs URLs) afin
-		d'éviter les duplications de pushes pour une même connexion.
-		Cependant, ces données ne sont pas conservées, et les clients
-		qui ouvrent une nouvelle connexion se verront à nouveau affecter les
-		mêmes pushes. A ce titre, une étude est en cours pour permettre
-		au client de supprimer le condensé des ressources qu'il possède
-		déjà, et par là-même de réinitialiser le journal des pushes à
-		chaque nouvelle connexion.
+		Le journal des pushes enregistre un condensé des ressources
+		préchargées (leurs URLs) afin d'éviter les duplications de
+		pushes pour une même connexion.  Cependant, ces données ne sont
+		pas conservées, et les clients qui ouvrent une nouvelle
+		connexion se verront à nouveau affecter les mêmes pushes. 
             </p>
             <p>
                 Si la taille maximale est atteinte, les nouvelles entrées

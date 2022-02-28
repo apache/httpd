@@ -57,6 +57,11 @@ class H2TestSetup(HttpdTestSetup):
 
 class H2TestEnv(HttpdTestEnv):
 
+    @classmethod
+    def is_unsupported(cls):
+        mpm_module = f"mpm_{os.environ['MPM']}" if 'MPM' in os.environ else 'mpm_event'
+        return mpm_module in ['mpm_prefork']
+
     def __init__(self, pytestconfig=None):
         super().__init__(pytestconfig=pytestconfig)
         self.add_httpd_conf([

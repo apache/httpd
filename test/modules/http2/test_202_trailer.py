@@ -1,11 +1,12 @@
 import os
 import pytest
 
-from .env import H2Conf
+from .env import H2Conf, H2TestEnv
 
 
 # The trailer tests depend on "nghttp" as no other client seems to be able to send those
 # rare things.
+@pytest.mark.skipif(condition=H2TestEnv.is_unsupported, reason="mod_http2 not supported here")
 class TestTrailers:
 
     @pytest.fixture(autouse=True, scope='class')

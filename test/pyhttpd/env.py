@@ -35,6 +35,7 @@ class HttpdTestSetup:
         "logio",
         "unixd",
         "version",
+        "watchdog",
         "authn_core",
         "authz_host",
         "authz_groupfile",
@@ -77,7 +78,8 @@ class HttpdTestSetup:
     def make(self):
         self._make_dirs()
         self._make_conf()
-        if self.env.mpm_module is not None:
+        if self.env.mpm_module is not None \
+                and self.env.mpm_module in self.env.mpm_modules:
             self.add_modules([self.env.mpm_module])
         if self.env.ssl_module is not None:
             self.add_modules([self.env.ssl_module])
@@ -134,10 +136,10 @@ class HttpdTestSetup:
                 mod_path = os.path.join(self.env.libexec_dir, f"mod_{m}.so")
                 if os.path.isfile(mod_path):
                     fd.write(f"LoadModule {m}_module   \"{mod_path}\"\n")
-                elif m in self.env.static_modules:
-                    fd.write(f"#built static: LoadModule {m}_module   \"{mod_path}\"\n")
-                else:
+                elif m in self.env.dso_modules:
                     missing_mods.append(m)
+                else:
+                    fd.write(f"#built static: LoadModule {m}_module   \"{mod_path}\"\n")
                 loaded.add(m)
         if len(missing_mods) > 0:
             raise Exception(f"Unable to find modules: {missing_mods} "
@@ -203,7 +205,7 @@ class HttpdTestEnv:
         self._apachectl_stderr = None
 
         self._dso_modules = self.config.get('httpd', 'dso_modules').split(' ')
-        self._static_modules = self.config.get('httpd', 'static_modules').split(' ')
+        self._mpm_modules = self.config.get('httpd', 'mpm_modules').split(' ')
         self._mpm_module = f"mpm_{os.environ['MPM']}" if 'MPM' in os.environ else 'mpm_event'
         self._ssl_module = self.get_ssl_module()
         if len(self._ssl_module.strip()) == 0:
@@ -337,8 +339,8 @@ class HttpdTestEnv:
         return self._dso_modules
 
     @property
-    def static_modules(self) -> List[str]:
-        return self._static_modules
+    def mpm_modules(self) -> List[str]:
+        return self._mpm_modules
 
     @property
     def server_conf_dir(self) -> str:

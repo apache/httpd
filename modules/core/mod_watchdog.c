@@ -21,6 +21,7 @@
 #include "mod_watchdog.h"
 #include "ap_provider.h"
 #include "ap_mpm.h"
+#include "mpm_common.h"
 #include "http_core.h"
 #include "util_mutex.h"
 
@@ -49,7 +50,7 @@ struct ap_watchdog_t
     apr_proc_mutex_t     *mutex;
     const char           *name;
     watchdog_list_t      *callbacks;
-    int                   is_running;
+    apr_uint32_t          is_running;
     int                   singleton;
     int                   active;
     apr_interval_time_t   step;
@@ -76,24 +77,14 @@ static apr_status_t wd_worker_cleanup(void *data)
     apr_status_t rv;
     ap_watchdog_t *w = (ap_watchdog_t *)data;
 
-    /* Do nothing if the thread wasn't started. */
-    if (apr_atomic_read32(&w->thread_started) != 1)
+    /* Do nothing if the thread wasn't started or has terminated. */
+    if (!w->thread || apr_atomic_read32(&w->thread_started) != 1)
         return APR_SUCCESS;
 
-    if (w->is_running) {
-        watchdog_list_t *wl = w->callbacks;
-        while (wl) {
-            if (wl->status == APR_SUCCESS) {
-                /* Execute watchdog callback with STOPPING state */
-                (*wl->callback_fn)(AP_WATCHDOG_STATE_STOPPING,
-                                    (void *)wl->data, w->pool);
-                wl->status = APR_EOF;
-            }
-            wl = wl->next;
-        }
-    }
-    w->is_running = 0;
+    AP_DEBUG_ASSERT(w->thread);
+    apr_atomic_set32(&w->is_running, 0);
     apr_thread_join(&rv, w->thread);
+    w->thread = NULL;
     return rv;
 }
 
@@ -111,24 +102,15 @@ static void* APR_THREAD_FUNC wd_worker(apr_thread_t *thread, void *data)
     int locked = 0;
     int probed = 0;
     int inited = 0;
-    int mpmq_s = 0;
     apr_pool_t *temp_pool = NULL;
 
     w->pool = apr_thread_pool_get(thread);
-    w->is_running = 1;
+    apr_atomic_set32(&w->is_running, 1);
 
     apr_atomic_set32(&w->thread_started, 1); /* thread started */
 
     if (w->mutex) {
-        while (w->is_running) {
-            if (ap_mpm_query(AP_MPMQ_MPM_STATE, &mpmq_s) != APR_SUCCESS) {
-                w->is_running = 0;
-                break;
-            }
-            if (mpmq_s == AP_MPMQ_STOPPING) {
-                w->is_running = 0;
-                break;
-            }
+        while (apr_atomic_read32(&w->is_running)) {
             rv = apr_proc_mutex_trylock(w->mutex);
             if (rv == APR_SUCCESS) {
                 if (probed) {
@@ -138,18 +120,9 @@ static void* APR_THREAD_FUNC wd_worker(apr_thread_t *thread, void *data)
                      * our child didn't yet received
                      * the shutdown signal.
                      */
-                    probed = 10;
-                    while (w->is_running && probed > 0) {
+                    for (probed = 10; apr_atomic_read32(&w->is_running)
+                                      && probed > 0; --probed) {
                         apr_sleep(AP_WD_TM_INTERVAL);
-                        probed--;
-                        if (ap_mpm_query(AP_MPMQ_MPM_STATE, &mpmq_s) != APR_SUCCESS) {
-                            w->is_running = 0;
-                            break;
-                        }
-                        if (mpmq_s == AP_MPMQ_STOPPING) {
-                            w->is_running = 0;
-                            break;
-                        }
                     }
                 }
                 locked = 1;
@@ -163,14 +136,14 @@ static void* APR_THREAD_FUNC wd_worker(apr_thread_t *thread, void *data)
     apr_pool_create(&temp_pool, w->pool);
     apr_pool_tag(temp_pool, "wd_running");
 
-    if (w->is_running) {
+    if (apr_atomic_read32(&w->is_running)) {
         watchdog_list_t *wl = w->callbacks;
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, wd_server_conf->s,
                      APLOGNO(02972) "%sWatchdog (%s) running",
                      w->singleton ? "Singleton " : "", w->name);
         apr_time_clock_hires(w->pool);
         if (wl) {
-            while (wl && w->is_running) {
+            while (wl && apr_atomic_read32(&w->is_running)) {
                 /* Execute watchdog callback */
                 wl->status = (*wl->callback_fn)(AP_WATCHDOG_STATE_STARTING,
                                                 (void *)wl->data, temp_pool);
@@ -185,22 +158,16 @@ static void* APR_THREAD_FUNC wd_worker(apr_thread_t *thread, void *data)
     }
 
     /* Main execution loop */
-    while (w->is_running) {
+    while (apr_atomic_read32(&w->is_running)) {
         apr_time_t curr;
         watchdog_list_t *wl = w->callbacks;
 
         apr_sleep(AP_WD_TM_SLICE);
-        if (ap_mpm_query(AP_MPMQ_MPM_STATE, &mpmq_s) != APR_SUCCESS) {
-            w->is_running = 0;
-        }
-        if (mpmq_s == AP_MPMQ_STOPPING) {
-            w->is_running = 0;
-        }
-        if (!w->is_running) {
+        if (!apr_atomic_read32(&w->is_running)) {
             break;
         }
         curr = apr_time_now() - AP_WD_TM_SLICE;
-        while (wl && w->is_running) {
+        while (wl && apr_atomic_read32(&w->is_running)) {
             if (wl->status == APR_SUCCESS) {
                 wl->step += (apr_time_now() - curr);
                 if (wl->step >= wl->interval) {
@@ -208,17 +175,11 @@ static void* APR_THREAD_FUNC wd_worker(apr_thread_t *thread, void *data)
                     /* Execute watchdog callback */
                     wl->status = (*wl->callback_fn)(AP_WATCHDOG_STATE_RUNNING,
                                                     (void *)wl->data, temp_pool);
-                    if (ap_mpm_query(AP_MPMQ_MPM_STATE, &mpmq_s) != APR_SUCCESS) {
-                        w->is_running = 0;
-                    }
-                    if (mpmq_s == AP_MPMQ_STOPPING) {
-                        w->is_running = 0;
-                    }
                 }
             }
             wl = wl->next;
         }
-        if (w->is_running && w->callbacks == NULL) {
+        if (apr_atomic_read32(&w->is_running) && w->callbacks == NULL) {
             /* This is hook mode watchdog
              * running on WatchogInterval
              */
@@ -248,6 +209,7 @@ static void* APR_THREAD_FUNC wd_worker(apr_thread_t *thread, void *data)
         while (wl) {
             if (wl->status == APR_SUCCESS) {
                 /* Execute watchdog callback with STOPPING state */
+                wl->status = APR_EOF;
                 (*wl->callback_fn)(AP_WATCHDOG_STATE_STOPPING,
                                    (void *)wl->data, w->pool);
             }
@@ -261,6 +223,7 @@ static void* APR_THREAD_FUNC wd_worker(apr_thread_t *thread, void *data)
     if (locked)
         apr_proc_mutex_unlock(w->mutex);
     apr_thread_exit(w->thread, APR_SUCCESS);
+    apr_atomic_set32(&w->thread_started, 0); /* thread done */
 
     return NULL;
 }
@@ -588,6 +551,71 @@ static void wd_child_init_hook(apr_pool_t *p, server_rec *s)
 
 /*--------------------------------------------------------------------------*/
 /*                                                                          */
+/* Child stopping hook.                                                     */
+/* Do not run new watchdog tasks.                                           */
+/*                                                                          */
+/*--------------------------------------------------------------------------*/
+static void wd_child_stopping(apr_pool_t *pool, int graceful)
+{
+    const apr_array_header_t *wl;
+
+    ap_log_error(APLOG_MARK, APLOG_TRACE1, 0, wd_server_conf->s,
+                 "child stopping graceful=%d", graceful);
+    if (!wd_server_conf->child_workers) {
+        return;
+    }
+    if ((wl = ap_list_provider_names(pool, AP_WATCHDOG_PGROUP,
+                                        AP_WATCHDOG_CVERSION))) {
+        const ap_list_provider_names_t *wn;
+        int i;
+
+        wn = (ap_list_provider_names_t *)wl->elts;
+        for (i = 0; i < wl->nelts; i++) {
+            ap_watchdog_t *w = ap_lookup_provider(AP_WATCHDOG_PGROUP,
+                                                  wn[i].provider_name,
+                                                  AP_WATCHDOG_CVERSION);
+            apr_atomic_set32(&w->is_running, 0);
+        }
+    }
+}
+
+/*--------------------------------------------------------------------------*/
+/*                                                                          */
+/* Child stopped hook.                                                      */
+/* Terminate/join all watchdog threads                                      */
+/*                                                                          */
+/*--------------------------------------------------------------------------*/
+static void wd_child_stopped(apr_pool_t *pool, int graceful)
+{
+    const apr_array_header_t *wl;
+
+    ap_log_error(APLOG_MARK, APLOG_TRACE1, 0, wd_server_conf->s,
+                 "child stopped, joining watchdog threads");
+    if (!wd_server_conf->child_workers) {
+        return;
+    }
+    if ((wl = ap_list_provider_names(pool, AP_WATCHDOG_PGROUP,
+                                        AP_WATCHDOG_CVERSION))) {
+        const ap_list_provider_names_t *wn;
+        int i;
+
+        wn = (ap_list_provider_names_t *)wl->elts;
+        for (i = 0; i < wl->nelts; i++) {
+            ap_watchdog_t *w = ap_lookup_provider(AP_WATCHDOG_PGROUP,
+                                                  wn[i].provider_name,
+                                                  AP_WATCHDOG_CVERSION);
+            ap_log_error(APLOG_MARK, APLOG_TRACE1, 0, wd_server_conf->s,
+                         "%sWatchdog (%s) stopping now",
+                         w->singleton ? "Singleton " : "", w->name);
+            wd_worker_cleanup(w);
+        }
+    }
+    ap_log_error(APLOG_MARK, APLOG_TRACE1, 0, wd_server_conf->s,
+                 "child stopped, watchdogs stopped");
+}
+
+/*--------------------------------------------------------------------------*/
+/*                                                                          */
 /* WatchdogInterval directive                                               */
 /*                                                                          */
 /*--------------------------------------------------------------------------*/
@@ -662,6 +690,20 @@ static void wd_register_hooks(apr_pool_t *p)
                        after_mpm,
                        NULL,
                        APR_HOOK_MIDDLE);
+
+    /* Child is stopping hook
+     */
+    ap_hook_child_stopping(wd_child_stopping,
+                           NULL,
+                           NULL,
+                           APR_HOOK_MIDDLE);
+
+    /* Child has stopped hook
+     */
+    ap_hook_child_stopped(wd_child_stopped,
+                          NULL,
+                          NULL,
+                          APR_HOOK_MIDDLE);
 
     APR_REGISTER_OPTIONAL_FN(ap_watchdog_get_instance);
     APR_REGISTER_OPTIONAL_FN(ap_watchdog_register_callback);

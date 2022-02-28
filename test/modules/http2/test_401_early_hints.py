@@ -1,9 +1,10 @@
 import pytest
 
-from .env import H2Conf
+from .env import H2Conf, H2TestEnv
 
 
 # The push tests depend on "nghttp"
+@pytest.mark.skipif(condition=H2TestEnv.is_unsupported, reason="mod_http2 not supported here")
 class TestEarlyHints:
 
     @pytest.fixture(autouse=True, scope='class')

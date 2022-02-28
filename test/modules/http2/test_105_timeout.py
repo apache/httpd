@@ -3,10 +3,11 @@ import time
 
 import pytest
 
-from .env import H2Conf
+from .env import H2Conf, H2TestEnv
 from pyhttpd.curl import CurlPiper
 
 
+@pytest.mark.skipif(condition=H2TestEnv.is_unsupported, reason="mod_http2 not supported here")
 class TestTimeout:
 
     # Check that base servers 'Timeout' setting is observed on SSL handshake

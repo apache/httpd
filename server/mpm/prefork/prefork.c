@@ -218,18 +218,19 @@ static void prefork_note_child_started(int slot, pid_t pid)
 }
 
 /* a clean exit from a child with proper cleanup */
-static void clean_child_exit(int code) __attribute__ ((noreturn));
-static void clean_child_exit(int code)
+static void clean_child_exit_ex(int code, int from_signal) __attribute__ ((noreturn));
+static void clean_child_exit_ex(int code, int from_signal)
 {
     apr_signal(SIGHUP, SIG_IGN);
     apr_signal(SIGTERM, SIG_IGN);
 
     retained->mpm->mpm_state = AP_MPMQ_STOPPING;
-    if (code == 0) {
-        ap_run_child_stopping(pchild, 0);
-    }
 
     if (pchild) {
+        if (!code && !from_signal) {
+            ap_run_child_stopping(pchild, !retained->mpm->is_ungraceful);
+            ap_run_child_stopped(pchild, !retained->mpm->is_ungraceful);
+        }
         apr_pool_destroy(pchild);
         /*
          * Be safe in case someone still uses afterwards or we get here again.
@@ -245,6 +246,13 @@ static void clean_child_exit(int code)
     ap_mpm_pod_close(my_bucket->pod);
     chdir_for_gprof();
     exit(code);
+}
+
+/* a clean exit from a child with proper cleanup */
+static void clean_child_exit(int code) __attribute__ ((noreturn));
+static void clean_child_exit(int code)
+{
+    clean_child_exit_ex(code, 0);
 }
 
 static apr_status_t accept_mutex_on(void)
@@ -363,7 +371,7 @@ static const char *prefork_get_name(void)
 
 static void just_die(int sig)
 {
-    clean_child_exit(0);
+    clean_child_exit_ex(0, 1);
 }
 
 /* volatile because it's updated from a signal handler */

@@ -3,6 +3,7 @@ import pytest
 from .env import H2Conf, H2TestEnv
 
 
+@pytest.mark.skipif(condition=H2TestEnv.is_unsupported, reason="mod_http2 not supported here")
 @pytest.mark.skipif(not H2TestEnv().h2load_is_at_least('1.41.0'),
                     reason="h2load misses --connect-to option")
 class TestLoadGet:

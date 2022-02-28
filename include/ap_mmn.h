@@ -700,6 +700,8 @@
  *                         add PROXY_WORKER_UDS_PATH_SIZE.
  * 20211221.3 (2.5.1-dev)  Add ap_thread_create(), ap_thread_main_create()
  *                         and ap_thread_current()
+ * 20211221.4 (2.5.1-dev)  Add hook child_stopped to get informed that a child
+ *                         has stopped processing any requests.
  *
  */
 
@@ -708,7 +710,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20211221
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 3             /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 4             /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a

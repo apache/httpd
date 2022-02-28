@@ -18,7 +18,7 @@ apachectl = @sbindir@/apachectl
 version = @HTTPD_VERSION@
 name = @progname@
 dso_modules = @DSO_MODULES@
-static_modules = @STATIC_MODULES@
+mpm_modules = @MPM_MODULES@
 
 [test]
 gen_dir = @abs_srcdir@/../gen

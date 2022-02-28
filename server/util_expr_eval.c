@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-/*                      _             _
+/*
  *  ap_expr_eval.c, based on ssl_expr_eval.c from mod_ssl
  */
 
@@ -124,7 +124,6 @@ static const char *ap_expr_list_pstrcat(apr_pool_t *p,
         for (i = 0; i < n; ++i) {
             val = APR_ARRAY_IDX(list, i, const char*);
             vlen = strlen(val);
-            ap_varbuf_grow(&vb, vlen + slen + 1);
             ap_varbuf_strmemcat(&vb, val, vlen);
             ap_varbuf_strmemcat(&vb, sep, slen);
         }

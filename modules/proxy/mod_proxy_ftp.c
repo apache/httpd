@@ -23,11 +23,6 @@
 #endif
 #include "apr_version.h"
 
-#if (APR_MAJOR_VERSION < 1)
-#undef apr_socket_create
-#define apr_socket_create apr_socket_create_ex
-#endif
-
 #define AUTODETECT_PWD
 /* Automatic timestamping (Last-Modified header) based on MDTM is used if:
  * 1) the FTP server supports the MDTM command and

@@ -78,7 +78,8 @@
     APR_HOOK_LINK(input_pending) \
     APR_HOOK_LINK(suspend_connection) \
     APR_HOOK_LINK(resume_connection) \
-    APR_HOOK_LINK(child_stopping)
+    APR_HOOK_LINK(child_stopping) \
+    APR_HOOK_LINK(child_stopped)
 
 #if AP_ENABLE_EXCEPTION_HOOK
 APR_HOOK_STRUCT(
@@ -138,6 +139,9 @@ AP_IMPLEMENT_HOOK_VOID(resume_connection,
                        (conn_rec *c, request_rec *r),
                        (c, r))
 AP_IMPLEMENT_HOOK_VOID(child_stopping,
+                       (apr_pool_t *pchild, int graceful),
+                       (pchild, graceful))
+AP_IMPLEMENT_HOOK_VOID(child_stopped,
                        (apr_pool_t *pchild, int graceful),
                        (pchild, graceful))
 
