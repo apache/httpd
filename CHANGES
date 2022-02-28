@@ -1,6 +1,15 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.53
 
+  * mod_md) do not interfere with requests to /.well-known/acme-challenge/
+    resources if challenge type 'http-01' is not configured for a domain.
+    Fixes <https://github.com/icing/mod_md/issues/279>.
+    [Stefan Eissing]
+
+  *) mod_dav: Fix regression when gathering properties which could lead to huge
+     memory consumption proportional to the number of resources.
+     [Evgeny Kotkov, Ruediger Pluem]
+
   *) Support pcre2 (10.x) library in place of the now end-of-life pcre (8.x)
      for regular expression evaluation. This depends on locating pcre2-config.
      [William Rowe, Petr Pisar <ppisar redhat.com>, Rainer Jung]

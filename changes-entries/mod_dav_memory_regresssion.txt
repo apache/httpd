@@ -1,3 +1,0 @@
-  *) mod_dav: Fix regression when gathering properties which could lead to huge
-     memory consumption proportional to the number of resources.
-     [Evgeny Kotkov, Ruediger Pluem]
