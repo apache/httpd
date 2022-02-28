@@ -197,7 +197,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1898146
                   http://svn.apache.org/r1898173
      2.4.x patch: svn merge -c 1898146,1898173 ^/httpd/httpd/trunk .
-     +1: icing
+     +1: icing, ylavic,
      
   *) mod_http2: sync with trunk
      - Fixed an issue since 1.15.24 that "Server" headers in proxied requests
@@ -256,7 +256,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      Backport version for 2.4.x of patch:
        https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/295.diff
      Can be applied via apply_backport_pr.sh 295
-     +1: rpluem,
+     +1: rpluem, ylavic,
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
