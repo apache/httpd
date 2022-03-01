@@ -161,6 +161,13 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http1_response_out_filter(ap_filter_t *f
                     }
 
                     APR_BRIGADE_CONCAT(b, ctx->tmpbb);
+
+                    if (resp->status == 101) {
+                        /* switched to another protocol, get out of the way */
+                        AP_DEBUG_ASSERT(!r->chunked);
+                        ap_remove_output_filter(f);
+                        goto pass;
+                    }
                 }
             }
         }
