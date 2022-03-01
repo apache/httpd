@@ -4660,6 +4660,7 @@ static int hook_uri2file(request_rec *r)
     unsigned int port;
     int rulestatus;
     void *skipdata;
+    char *ofilename;
     const char *oargs;
 
     /*
@@ -4713,7 +4714,10 @@ static int hook_uri2file(request_rec *r)
     /*
      *  remember the original query string for later check, since we don't
      *  want to apply URL-escaping when no substitution has changed it.
+     *  also, we'll restore original r->filename if we decline this
+     *  request.
      */
+    ofilename = r->filename;
     oargs = r->args;
 
     /*
@@ -4756,13 +4760,15 @@ static int hook_uri2file(request_rec *r)
     apr_table_setn(r->subprocess_env, ENVVAR_SCRIPT_URI, var);
 
     if (!(saved_rulestatus = apr_table_get(r->notes,"mod_rewrite_rewritten"))) {
-        /* if filename was not initially set,
-         * we start with the requested URI
+        /* If r->filename was not initially set or if it's a pre_trans reverse
+         * "proxy:" scheme, we start with the requested URI.
          */
-        if (r->filename == NULL) {
+        if (r->filename == NULL || (r->proxyreq == PROXYREQ_REVERSE &&
+                                    strncmp(r->filename, "proxy:", 6) == 0)) {
             r->filename = apr_pstrdup(r->pool, r->uri);
-            rewritelog(r, 2, NULL, "init rewrite engine with requested uri %s",
-                       r->filename);
+            rewritelog(r, 2, NULL, "init rewrite engine with requested uri "
+                       "%s. Original filename = %s", r->filename,
+                       (ofilename) ? ofilename : "n/a");
         }
         else {
             rewritelog(r, 2, NULL, "init rewrite engine with passed filename "
@@ -4786,6 +4792,7 @@ static int hook_uri2file(request_rec *r)
     if (rulestatus) {
         unsigned skip;
         apr_size_t flen;
+        int to_proxyreq;
 
         if (ACTION_STATUS == rulestatus) {
             int n = r->status;
@@ -4795,7 +4802,19 @@ static int hook_uri2file(request_rec *r)
         }
 
         flen = r->filename ? strlen(r->filename) : 0;
-        if (flen > 6 && strncmp(r->filename, "proxy:", 6) == 0) {
+        to_proxyreq = (flen > 6 && strncmp(r->filename, "proxy:", 6) == 0);
+
+        /* If a pre_trans reverse "proxy:" filename gets rewritten to
+         * a non-proxy one this is not a proxy request anymore.
+         */
+        if (r->proxyreq == PROXYREQ_REVERSE && !to_proxyreq) {
+            if (r->handler && strcmp(r->handler, "proxy-server") == 0) {
+                r->handler = NULL;
+            }
+            r->proxyreq = PROXYREQ_NONE;
+        }
+
+        if (to_proxyreq) {
             /* it should be go on as an internal proxy request */
 
             /* check if the proxy module is enabled, so
@@ -4962,7 +4981,9 @@ static int hook_uri2file(request_rec *r)
         }
     }
     else {
-        rewritelog(r, 1, NULL, "pass through %s", r->filename);
+        rewritelog(r, 1, NULL, "pass through %s, filename %s",
+                   r->filename, (ofilename) ? ofilename : "n/a");
+        r->filename = ofilename;
         return DECLINED;
     }
 }
@@ -5309,7 +5330,8 @@ static int hook_fixup(request_rec *r)
         }
     }
     else {
-        rewritelog(r, 1, dconf->directory, "pass through %s", r->filename);
+        rewritelog(r, 1, dconf->directory, "pass through %s, filename %s",
+                   r->filename, (ofilename) ? ofilename : "n/a");
         r->filename = ofilename;
         return DECLINED;
     }
