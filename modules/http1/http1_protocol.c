@@ -191,7 +191,7 @@ AP_DECLARE(void) ap_http1_add_end_chunk(apr_bucket_brigade *b,
 
 int http1_set_keepalive(request_rec *r, ap_bucket_response *resp)
 {
-    int ka_sent, left, wimpy;
+    int ka_sent, left = 0, wimpy;
     const char *conn;
 
     if (r->proto_num >= HTTP_VERSION(2,0)) {
