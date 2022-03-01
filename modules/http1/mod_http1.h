@@ -20,7 +20,7 @@
  * @param r the request being processed
  * @param resp the response being sent
  */
-int http1_set_keepalive(request_rec *r, ap_bucket_headers *resp);
+int http1_set_keepalive(request_rec *r, ap_bucket_response *resp);
 
 /**
  * Context for writing out HTTP/1 protocol fields, such as headers.
@@ -43,8 +43,14 @@ int http1_write_header_field(http1_out_ctx_t *out,
  * Write a response `resp` for request `r` in HTTP/1.x format to brigade `bb`.
  */
 void http1_write_response(request_rec *r,
-                          ap_bucket_headers *resp,
+                          ap_bucket_response *resp,
                           apr_bucket_brigade *bb);
+
+apr_status_t http1_request_in_filter(ap_filter_t *f,
+                                     apr_bucket_brigade *bb,
+                                     ap_input_mode_t mode,
+                                     apr_read_type_e block,
+                                     apr_off_t readbytes);
 
 /* This is the HTTP1_BODY_IN filter for HTTP/1.x requests
  * and responses from proxied servers (mod_proxy).

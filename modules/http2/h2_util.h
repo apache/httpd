@@ -406,7 +406,7 @@ typedef struct h2_ngheader {
 apr_status_t h2_res_create_ngtrailer(h2_ngheader **ph, apr_pool_t *p, 
                                      ap_bucket_headers *headers);
 apr_status_t h2_res_create_ngheader(h2_ngheader **ph, apr_pool_t *p, 
-                                    ap_bucket_headers *headers);
+                                    ap_bucket_response *response);
 apr_status_t h2_req_create_ngheader(h2_ngheader **ph, apr_pool_t *p, 
                                     const struct h2_request *req);
 
@@ -536,5 +536,11 @@ apr_status_t h2_util_wait_on_pipe(apr_file_t *pipe);
  * without compression or other formatting decorations.
  */
 apr_size_t headers_length_estimate(ap_bucket_headers *hdrs);
+
+/**
+ * Give an estimate of the length of the response meta data size,
+ * without compression or other formatting decorations.
+ */
+apr_size_t response_length_estimate(ap_bucket_response *resp);
 
 #endif /* defined(__mod_h2__h2_util__) */

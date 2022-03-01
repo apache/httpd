@@ -189,7 +189,7 @@ AP_DECLARE(void) ap_http1_add_end_chunk(apr_bucket_brigade *b,
 }
 
 
-int http1_set_keepalive(request_rec *r, ap_bucket_headers *resp)
+int http1_set_keepalive(request_rec *r, ap_bucket_response *resp)
 {
     int ka_sent, left, wimpy;
     const char *conn;
@@ -308,7 +308,7 @@ update_keepalives:
 
 AP_DECLARE(int) ap_set_keepalive(request_rec *r)
 {
-    ap_bucket_headers resp;
+    ap_bucket_response resp;
 
     memset(&resp, 0, sizeof(resp));
     resp.status = r->status;
@@ -350,7 +350,7 @@ int http1_write_header_field(http1_out_ctx_t *out,
 
 /* fill "bb" with a barebones/initial HTTP response header */
 static void http1_append_response_head(request_rec *r,
-                                       ap_bucket_headers *resp,
+                                       ap_bucket_response *resp,
                                        const char *protocol,
                                        apr_bucket_brigade *bb)
 {
@@ -453,7 +453,7 @@ static void http1_append_response_head(request_rec *r,
 }
 
 void http1_write_response(request_rec *r,
-                          ap_bucket_headers *resp,
+                          ap_bucket_response *resp,
                           apr_bucket_brigade *bb)
 {
     const char *proto = AP_SERVER_PROTOCOL;

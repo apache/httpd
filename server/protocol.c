@@ -2383,9 +2383,9 @@ AP_DECLARE(void) ap_send_interim_response(request_rec *r, int send_headers)
     if (r->status_line && strlen(r->status_line) > 4) {
         reason = r->status_line + 4;
     }
-    b = ap_bucket_headers_create(r->status, reason,
-                                 send_headers? r->headers_out : NULL,
-                                 r->notes, r->pool, r->connection->bucket_alloc);
+    b = ap_bucket_response_create(r->status, reason,
+                                  send_headers? r->headers_out : NULL,
+                                  r->notes, r->pool, r->connection->bucket_alloc);
     APR_BRIGADE_INSERT_TAIL(bb, b);
     if (send_headers) {
         apr_table_clear(r->headers_out);

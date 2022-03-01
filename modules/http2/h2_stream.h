@@ -76,7 +76,7 @@ struct h2_stream {
     apr_table_t *trailers_in;   /* optional, incoming trailers */
     int request_headers_added;  /* number of request headers added */
 
-    struct ap_bucket_headers *response; /* the final, non-interim response or NULL */
+    struct ap_bucket_response *response; /* the final, non-interim response or NULL */
 
     struct h2_bucket_beam *input;
     apr_bucket_brigade *in_buffer;
@@ -271,13 +271,13 @@ apr_table_t *h2_stream_get_trailers(h2_stream *stream);
  *
  * @param stream the stream for which to submit
  */
-apr_status_t h2_stream_submit_pushes(h2_stream *stream, ap_bucket_headers *response);
+apr_status_t h2_stream_submit_pushes(h2_stream *stream, ap_bucket_response *response);
 
 /**
  * Get priority information set for this stream.
  */
 const struct h2_priority *h2_stream_get_priority(h2_stream *stream, 
-                                                 ap_bucket_headers *response);
+                                                 ap_bucket_response *response);
 
 /**
  * Return a textual representation of the stream state as in RFC 7540

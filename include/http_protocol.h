@@ -1036,27 +1036,88 @@ AP_DECLARE(apr_bucket *) ap_bucket_error_create(int error, const char *buf,
                                                 apr_bucket_alloc_t *list);
 
 /** @see ap_bucket_type_headers */
+typedef struct ap_bucket_response ap_bucket_response;
+
+/**
+ * @struct ap_bucket_response
+ * @brief  A bucket referring to a HTTP response
+ *
+ */
+struct ap_bucket_response {
+    /** Number of buckets using this memory */
+    apr_bucket_refcount refcount;
+    int status; /* The status code */
+    const char *reason; /* The optional HTTP reason for the status. */
+    apr_table_t *headers; /* The response headers */
+    apr_table_t *notes; /* internal notes about the response */
+};
+
+/** @see ap_bucket_type_headers */
+AP_DECLARE_DATA extern const apr_bucket_type_t ap_bucket_type_response;
+
+/**
+ * Determine if a bucket is a response bucket
+ * @param e The bucket to inspect
+ * @return true or false
+ */
+#define AP_BUCKET_IS_RESPONSE(e)         (e->type == &ap_bucket_type_response)
+
+/**
+ * Make the bucket passed in a response bucket
+ * @param b The bucket to make into a response bucket
+ * @param status The HTTP status code of the response.
+ * @param reason textual description of status, can be NULL.
+ * @param headers the table of response headers.
+ * @param notes internal notes on the response
+ * @param p A pool to allocate out of.
+ * @return The new bucket, or NULL if allocation failed
+ */
+AP_DECLARE(apr_bucket *) ap_bucket_response_make(apr_bucket *b, int status,
+            const char *reason, apr_table_t *headers,
+            apr_table_t *notes, apr_pool_t *p);
+
+/**
+ * Create a bucket referring to a HTTP response.
+ * @param status The HTTP status code.
+ * @param reason textual description of status, can be NULL.
+ * @param headers the HTTP response headers.
+ * @param notes internal notes on the response
+ * @param p A pool to allocate the error string out of.
+ * @param list The bucket allocator from which to allocate the bucket
+ * @return The new bucket, or NULL if allocation failed
+ */
+AP_DECLARE(apr_bucket *) ap_bucket_response_create(
+            int status, const char *reason,
+            apr_table_t *headers,
+            apr_table_t *notes,
+            apr_pool_t *p,
+            apr_bucket_alloc_t *list);
+
+/**
+ * Clone a RESPONSE bucket into another pool/bucket_alloc that may
+ * have a separate lifetime than the source bucket/pool.
+ * @param source the header bucket to clone
+ * @param p A pool to allocate the data out of.
+ * @param list The bucket allocator from which to allocate the bucket
+ * @return The new bucket, or NULL if allocation failed
+ */
+AP_DECLARE(apr_bucket *) ap_bucket_response_clone(apr_bucket *source,
+                                                  apr_pool_t *p,
+                                                  apr_bucket_alloc_t *list);
+
+/** @see ap_bucket_type_headers */
 typedef struct ap_bucket_headers ap_bucket_headers;
 
 /**
- * @struct ap_bucket_error
- * @brief  A bucket referring to an HTTP error
+ * @struct ap_bucket_headers
+ * @brief  A bucket referring to an HTTP header set
  *
- * This bucket can be passed down the filter stack to indicate that an
- * HTTP error occurred while running a filter.  In order for this bucket
- * to be used successfully, it MUST be sent as the first bucket in the
- * first brigade to be sent from a given filter.
  */
 struct ap_bucket_headers {
     /** Number of buckets using this memory */
     apr_bucket_refcount refcount;
-    /** The status code or 0 */
-    int status;
-    /** The optional HTTP reason for the status. */
-    const char *reason;
     /** The headers */
     apr_table_t *headers;
-    apr_table_t *notes;
 };
 
 /** @see ap_bucket_type_headers */
@@ -1072,30 +1133,21 @@ AP_DECLARE_DATA extern const apr_bucket_type_t ap_bucket_type_headers;
 /**
  * Make the bucket passed in a headers bucket
  * @param b The bucket to make into a headers bucket
- * @param status The HTTP status code to put in the bucket, can be 0.
- * @param reason textual description of status, can be NULL.
  * @param headers the table of headers.
- * @param notes on how to handle the headers
  * @param p A pool to allocate out of.
  * @return The new bucket, or NULL if allocation failed
  */
-AP_DECLARE(apr_bucket *) ap_bucket_headers_make(apr_bucket *b, int status,
-                const char *reason, apr_table_t *headers,
-                apr_table_t *notes, apr_pool_t *p);
+AP_DECLARE(apr_bucket *) ap_bucket_headers_make(apr_bucket *b,
+                apr_table_t *headers, apr_pool_t *p);
 
 /**
- * Create a bucket referring to a table of HTTP headers with optional status code.
- * @param status The HTTP status code to put in the bucket, can be 0.
- * @param reason textual description of status, can be NULL.
+ * Create a bucket referring to a table of HTTP headers.
  * @param headers the HTTP headers in the bucket.
- * @param notes on how to handle the headers
  * @param p A pool to allocate the error string out of.
  * @param list The bucket allocator from which to allocate the bucket
  * @return The new bucket, or NULL if allocation failed
  */
-AP_DECLARE(apr_bucket *) ap_bucket_headers_create(int status, const char *reason,
-                                                  apr_table_t *headers,
-                                                  apr_table_t *notes,
+AP_DECLARE(apr_bucket *) ap_bucket_headers_create(apr_table_t *headers,
                                                   apr_pool_t *p,
                                                   apr_bucket_alloc_t *list);
 

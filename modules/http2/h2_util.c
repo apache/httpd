@@ -1590,7 +1590,7 @@ static apr_status_t ngheader_create(h2_ngheader **ph, apr_pool_t *p,
     return ctx.status;
 }
 
-static int is_unsafe(ap_bucket_headers *h)
+static int is_unsafe(ap_bucket_response *h)
 {
     const char *v = h->notes? apr_table_get(h->notes, H2_HDR_CONFORMANCE) : NULL;
     return (v && !strcmp(v, H2_HDR_CONFORMANCE_UNSAFE));
@@ -1599,21 +1599,21 @@ static int is_unsafe(ap_bucket_headers *h)
 apr_status_t h2_res_create_ngtrailer(h2_ngheader **ph, apr_pool_t *p, 
                                     ap_bucket_headers *headers)
 {
-    return ngheader_create(ph, p, is_unsafe(headers), 
+    return ngheader_create(ph, p, 0,
                            0, NULL, NULL, headers->headers);
 }
                                      
 apr_status_t h2_res_create_ngheader(h2_ngheader **ph, apr_pool_t *p,
-                                    ap_bucket_headers *headers)
+                                    ap_bucket_response *response)
 {
     const char *keys[] = {
         ":status"
     };
     const char *values[] = {
-        apr_psprintf(p, "%d", headers->status)
+        apr_psprintf(p, "%d", response->status)
     };
-    return ngheader_create(ph, p, is_unsafe(headers),  
-                           H2_ALEN(keys), keys, values, headers->headers);
+    return ngheader_create(ph, p, is_unsafe(response),
+                           H2_ALEN(keys), keys, values, response->headers);
 }
 
 apr_status_t h2_req_create_ngheader(h2_ngheader **ph, apr_pool_t *p, 
@@ -1927,3 +1927,9 @@ apr_size_t headers_length_estimate(ap_bucket_headers *hdrs)
     return len;
 }
 
+apr_size_t response_length_estimate(ap_bucket_response *resp)
+{
+    apr_size_t len = 3 + 1 + 8 + (resp->reason? strlen(resp->reason) : 10);
+    apr_table_do(add_header_lengths, &len, resp->headers, NULL);
+    return len;
+}

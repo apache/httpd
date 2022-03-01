@@ -112,7 +112,7 @@ apr_status_t ap_http_chunk_filter(ap_filter_t *f, apr_bucket_brigade *b)
                 }
                 if (AP_BUCKET_IS_HEADERS(e)) {
                     ap_bucket_headers *hdrs = e->data;
-                    if (!hdrs->status && !apr_is_empty_table(hdrs->headers)) {
+                    if (!apr_is_empty_table(hdrs->headers)) {
                         if (!ctx->trailers) {
                             ctx->trailers = apr_table_make(f->r->pool, 5);
                         }
@@ -441,8 +441,7 @@ static apr_status_t read_chunked_trailers(http_ctx_t *ctx, ap_filter_t *f,
         r->status = saved_status;
 
         if (!apr_is_empty_table(trailers)) {
-            e = ap_bucket_headers_create(0, NULL, trailers,
-                                         NULL, r->pool, b->bucket_alloc);
+            e = ap_bucket_headers_create(trailers, r->pool, b->bucket_alloc);
             APR_BRIGADE_INSERT_TAIL(b, e);
         }
         e = apr_bucket_eos_create(f->c->bucket_alloc);

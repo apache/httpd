@@ -45,7 +45,7 @@ apr_status_t h2_c2_filter_notes_out(ap_filter_t *f, apr_bucket_brigade *bb)
 {
     apr_bucket *b;
     request_rec *r_prev;
-    ap_bucket_headers *hdrs;
+    ap_bucket_response *resp;
     const char *err;
 
     if (!f->r) {
@@ -56,9 +56,9 @@ apr_status_t h2_c2_filter_notes_out(ap_filter_t *f, apr_bucket_brigade *bb)
          b != APR_BRIGADE_SENTINEL(bb);
          b = APR_BUCKET_NEXT(b))
     {
-        if (AP_BUCKET_IS_HEADERS(b)) {
-            hdrs = b->data;
-            if (hdrs->status >= 400 && f->r->prev) {
+        if (AP_BUCKET_IS_RESPONSE(b)) {
+            resp = b->data;
+            if (resp->status >= 400 && f->r->prev) {
                 /* Error responses are commonly handled via internal
                  * redirects to error documents. That creates a new
                  * request_rec with 'prev' set to the original.
@@ -69,19 +69,18 @@ apr_status_t h2_c2_filter_notes_out(ap_filter_t *f, apr_bucket_brigade *bb)
                 for (r_prev = f->r; r_prev != NULL; r_prev = r_prev->prev) {
                     if ((err = apr_table_get(r_prev->notes, "ssl-renegotiate-forbidden"))) {
                         if (r_prev != f->r) {
-                            apr_table_setn(hdrs->notes, "ssl-renegotiate-forbidden", err);
+                            apr_table_setn(resp->notes, "ssl-renegotiate-forbidden", err);
                         }
                         break;
                     }
                 }
             }
-            else if (hdrs->status
-                && h2_config_rgeti(f->r, H2_CONF_PUSH) == 0
-                && h2_config_sgeti(f->r->server, H2_CONF_PUSH) != 0) {
+            else if (h2_config_rgeti(f->r, H2_CONF_PUSH) == 0
+                     && h2_config_sgeti(f->r->server, H2_CONF_PUSH) != 0) {
                 /* location configuration turns off H2 PUSH handling */
                 ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, f->c,
                               "h2_c2_filter_notes_out, turning PUSH off");
-                apr_table_setn(hdrs->notes, H2_PUSH_MODE_NOTE, "0");
+                apr_table_setn(resp->notes, H2_PUSH_MODE_NOTE, "0");
             }
         }
     }

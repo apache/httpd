@@ -428,6 +428,9 @@ static apr_status_t beam_out(conn_rec *c2, h2_conn_ctx_t *conn_ctx, apr_bucket_b
         for (b = APR_BRIGADE_FIRST(bb);
              b != APR_BRIGADE_SENTINEL(bb);
              b = APR_BUCKET_NEXT(b)) {
+            if (AP_BUCKET_IS_RESPONSE(b)) {
+                header_len += (apr_off_t)response_length_estimate(b->data);
+           }
             if (AP_BUCKET_IS_HEADERS(b)) {
                 header_len += (apr_off_t)headers_length_estimate(b->data);
             }
@@ -457,9 +460,9 @@ static apr_status_t h2_c2_filter_out(ap_filter_t* f, apr_bucket_brigade* bb)
              e != APR_BRIGADE_SENTINEL(bb);
              e = APR_BUCKET_NEXT(e))
         {
-            if (AP_BUCKET_IS_HEADERS(e)) {
-                ap_bucket_headers *hdrs = e->data;
-                if (hdrs->status >= 200) {
+            if (AP_BUCKET_IS_RESPONSE(e)) {
+                ap_bucket_response *resp = e->data;
+                if (resp->status >= 200) {
                     conn_ctx->has_final_response = 1;
                     break;
                 }

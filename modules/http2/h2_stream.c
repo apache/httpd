@@ -246,8 +246,8 @@ static apr_status_t close_input(h2_stream *stream)
         && !apr_is_empty_table(stream->trailers_in)) {
         ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, stream->session->c1,
                       H2_STRM_MSG(stream, "adding trailers"));
-        b = ap_bucket_headers_create(0, NULL, stream->trailers_in,
-                                     NULL, stream->pool, c->bucket_alloc);
+        b = ap_bucket_headers_create(stream->trailers_in,
+                                     stream->pool, c->bucket_alloc);
         input_append_bucket(stream, b);
         stream->trailers_in = NULL;
     }
@@ -880,12 +880,12 @@ cleanup:
     return status;
 }
 
-static apr_bucket *get_first_headers_bucket(apr_bucket_brigade *bb)
+static apr_bucket *get_first_response_bucket(apr_bucket_brigade *bb)
 {
     if (bb) {
         apr_bucket *b = APR_BRIGADE_FIRST(bb);
         while (b != APR_BRIGADE_SENTINEL(bb)) {
-            if (AP_BUCKET_IS_HEADERS(b)) {
+            if (AP_BUCKET_IS_RESPONSE(b)) {
                 return b;
             }
             b = APR_BUCKET_NEXT(b);
@@ -972,7 +972,9 @@ cleanup:
 
 static int bucket_pass_to_c1(apr_bucket *b)
 {
-    return !AP_BUCKET_IS_HEADERS(b) && !APR_BUCKET_IS_EOS(b);
+    return !AP_BUCKET_IS_RESPONSE(b)
+           && !AP_BUCKET_IS_HEADERS(b)
+           && !APR_BUCKET_IS_EOS(b);
 }
 
 apr_status_t h2_stream_read_to(h2_stream *stream, apr_bucket_brigade *bb, 
@@ -993,6 +995,7 @@ apr_status_t h2_stream_read_to(h2_stream *stream, apr_bucket_brigade *bb,
 static apr_status_t buffer_output_process_headers(h2_stream *stream)
 {
     conn_rec *c1 = stream->session->c1;
+    ap_bucket_response *resp = NULL;
     ap_bucket_headers *headers = NULL;
     apr_status_t rv = APR_EAGAIN;
     int ngrv = 0, is_empty;
@@ -1005,13 +1008,22 @@ static apr_status_t buffer_output_process_headers(h2_stream *stream)
     while (b != APR_BRIGADE_SENTINEL(stream->out_buffer)) {
         e = APR_BUCKET_NEXT(b);
         if (APR_BUCKET_IS_METADATA(b)) {
-            if (AP_BUCKET_IS_HEADERS(b)) {
+            if (AP_BUCKET_IS_RESPONSE(b)) {
+                resp = b->data;
+                APR_BUCKET_REMOVE(b);
+                apr_bucket_destroy(b);
+                ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, c1,
+                              H2_STRM_MSG(stream, "process response %d"),
+                              resp->status);
+                b = e;
+                break;
+            }
+            else if (AP_BUCKET_IS_HEADERS(b)) {
                 headers = b->data;
                 APR_BUCKET_REMOVE(b);
                 apr_bucket_destroy(b);
                 ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, c1,
-                              H2_STRM_MSG(stream, "process headers, response %d"),
-                              headers->status);
+                              H2_STRM_MSG(stream, "process headers"));
                 b = e;
                 break;
             }
@@ -1027,37 +1039,22 @@ static apr_status_t buffer_output_process_headers(h2_stream *stream)
         }
         b = e;
     }
-    if (!headers) goto cleanup;
 
-    if (stream->response) {
-        rv = h2_res_create_ngtrailer(&nh, stream->pool, headers);
-        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, rv, c1,
-                      H2_STRM_LOG(APLOGNO(03072), stream, "submit %d trailers"),
-                      (int)nh->nvlen);
-        if (APR_SUCCESS != rv) {
-            ap_log_cerror(APLOG_MARK, APLOG_DEBUG, rv, c1,
-                          H2_STRM_LOG(APLOGNO(10024), stream, "invalid trailers"));
-            h2_stream_rst(stream, NGHTTP2_PROTOCOL_ERROR);
+    if (resp) {
+        nghttp2_data_provider provider, *pprovider = NULL;
+
+        if (resp->status < 100) {
+            h2_stream_rst(stream, resp->status);
             goto cleanup;
         }
 
-        ngrv = nghttp2_submit_trailer(stream->session->ngh2, stream->id, nh->nv, nh->nvlen);
-        stream->sent_trailers = 1;
-    }
-    else if (headers->status < 100) {
-        h2_stream_rst(stream, headers->status);
-        goto cleanup;
-    }
-    else {
-        nghttp2_data_provider provider, *pprovider = NULL;
-
-        if (headers->status == HTTP_FORBIDDEN && headers->notes) {
-            const char *cause = apr_table_get(headers->notes, "ssl-renegotiate-forbidden");
+        if (resp->status == HTTP_FORBIDDEN && resp->notes) {
+            const char *cause = apr_table_get(resp->notes, "ssl-renegotiate-forbidden");
             if (cause) {
                 /* This request triggered a TLS renegotiation that is not allowed
                  * in HTTP/2. Tell the client that it should use HTTP/1.1 for this.
                  */
-                ap_log_cerror(APLOG_MARK, APLOG_DEBUG, headers->status, c1,
+                ap_log_cerror(APLOG_MARK, APLOG_DEBUG, resp->status, c1,
                               H2_STRM_LOG(APLOGNO(03061), stream,
                               "renegotiate forbidden, cause: %s"), cause);
                 h2_stream_rst(stream, H2_ERR_HTTP_1_1_REQUIRED);
@@ -1067,7 +1064,7 @@ static apr_status_t buffer_output_process_headers(h2_stream *stream)
 
         ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c1,
                       H2_STRM_LOG(APLOGNO(03073), stream,
-                      "submit response %d"), headers->status);
+                      "submit response %d"), resp->status);
 
         /* If this stream is not a pushed one itself,
          * and HTTP/2 server push is enabled here,
@@ -1076,7 +1073,7 @@ static apr_status_t buffer_output_process_headers(h2_stream *stream)
          * -> find and perform any pushes on this stream
          *    *before* we submit the stream response itself.
          *    This helps clients avoid opening new streams on Link
-         *    headers that get pushed right afterwards.
+         *    resp that get pushed right afterwards.
          *
          * *) the response code is relevant, as we do not want to
          *    make pushes on 401 or 403 codes and friends.
@@ -1088,31 +1085,31 @@ static apr_status_t buffer_output_process_headers(h2_stream *stream)
             && !stream->response
             && stream->request && stream->request->method
             && !strcmp("GET", stream->request->method)
-            && (headers->status < 400)
-            && (headers->status != 304)
+            && (resp->status < 400)
+            && (resp->status != 304)
             && h2_session_push_enabled(stream->session)) {
             /* PUSH is possible and enabled on server, unless the request
              * denies it, submit resources to push */
-            const char *s = apr_table_get(headers->notes, H2_PUSH_MODE_NOTE);
+            const char *s = apr_table_get(resp->notes, H2_PUSH_MODE_NOTE);
             if (!s || strcmp(s, "0")) {
-                h2_stream_submit_pushes(stream, headers);
+                h2_stream_submit_pushes(stream, resp);
             }
         }
 
         if (!stream->pref_priority) {
-            stream->pref_priority = h2_stream_get_priority(stream, headers);
+            stream->pref_priority = h2_stream_get_priority(stream, resp);
         }
         h2_session_set_prio(stream->session, stream, stream->pref_priority);
 
-        if (headers->status == 103
+        if (resp->status == 103
             && !h2_config_sgeti(stream->session->s, H2_CONF_EARLY_HINTS)) {
             /* suppress sending this to the client, it might have triggered
              * pushes and served its purpose nevertheless */
             rv = APR_SUCCESS;
             goto cleanup;
         }
-        if (headers->status >= 200) {
-            stream->response = headers;
+        if (resp->status >= 200) {
+            stream->response = resp;
         }
 
         /* Do we know if this stream has no response body? */
@@ -1137,7 +1134,7 @@ static apr_status_t buffer_output_process_headers(h2_stream *stream)
             pprovider = &provider;
         }
 
-        rv = h2_res_create_ngheader(&nh, stream->pool, headers);
+        rv = h2_res_create_ngheader(&nh, stream->pool, resp);
         if (APR_SUCCESS != rv) {
             ap_log_cerror(APLOG_MARK, APLOG_DEBUG, rv, c1,
                           H2_STRM_LOG(APLOGNO(10025), stream, "invalid response"));
@@ -1153,6 +1150,25 @@ static apr_status_t buffer_output_process_headers(h2_stream *stream)
             ++stream->session->responses_submitted;
         }
     }
+    else if (headers) {
+        if (!stream->response) {
+            h2_stream_rst(stream, HTTP_INTERNAL_SERVER_ERROR);
+            goto cleanup;
+        }
+        rv = h2_res_create_ngtrailer(&nh, stream->pool, headers);
+        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, rv, c1,
+                      H2_STRM_LOG(APLOGNO(03072), stream, "submit %d trailers"),
+                      (int)nh->nvlen);
+        if (APR_SUCCESS != rv) {
+            ap_log_cerror(APLOG_MARK, APLOG_DEBUG, rv, c1,
+                          H2_STRM_LOG(APLOGNO(10024), stream, "invalid trailers"));
+            h2_stream_rst(stream, NGHTTP2_PROTOCOL_ERROR);
+            goto cleanup;
+        }
+
+        ngrv = nghttp2_submit_trailer(stream->session->ngh2, stream->id, nh->nv, nh->nvlen);
+        stream->sent_trailers = 1;
+    }
 
 cleanup:
     if (nghttp2_is_fatal(ngrv)) {
@@ -1166,7 +1182,7 @@ cleanup:
     return rv;
 }
 
-apr_status_t h2_stream_submit_pushes(h2_stream *stream, ap_bucket_headers *response)
+apr_status_t h2_stream_submit_pushes(h2_stream *stream, ap_bucket_response *response)
 {
     apr_status_t status = APR_SUCCESS;
     apr_array_header_t *pushes;
@@ -1195,7 +1211,7 @@ apr_table_t *h2_stream_get_trailers(h2_stream *stream)
 }
 
 const h2_priority *h2_stream_get_priority(h2_stream *stream, 
-                                          ap_bucket_headers *response)
+                                          ap_bucket_response *response)
 {
     if (response && stream->initiated_on) {
         const char *ctype = apr_table_get(response->headers, "content-type");
@@ -1213,7 +1229,7 @@ int h2_stream_is_ready(h2_stream *stream)
     if (stream->response) {
         return 1;
     }
-    else if (stream->out_buffer && get_first_headers_bucket(stream->out_buffer)) {
+    else if (stream->out_buffer && get_first_response_bucket(stream->out_buffer)) {
         return 1;
     }
     return 0;
@@ -1304,6 +1320,9 @@ static apr_off_t output_data_buffered(h2_stream *stream, int *peos)
             if (APR_BUCKET_IS_METADATA(b)) {
                 if (APR_BUCKET_IS_EOS(b)) {
                     *peos = 1;
+                    break;
+                }
+                else if (AP_BUCKET_IS_RESPONSE(b)) {
                     break;
                 }
                 else if (AP_BUCKET_IS_HEADERS(b)) {

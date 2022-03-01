@@ -88,17 +88,13 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http1_response_out_filter(ap_filter_t *f
                 ap_remove_output_filter(f);
                 goto pass;
             }
-            else if (AP_BUCKET_IS_HEADERS(e)) {
-                ap_bucket_headers *resp = e->data;
+            else if (AP_BUCKET_IS_RESPONSE(e)) {
+                ap_bucket_response *resp = e->data;
 
                 ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r,
                               "ap_http1_transcode_out_filter seeing headers bucket status=%d",
                               resp->status);
-                if (!resp->status) {
-                    /* footer, is either processed in chunk filter
-                     * or ignored otherwise. never processed here. */
-                }
-                else if (strict && resp->status < 100) {
+                if (strict && resp->status < 100) {
                     /* error, not a valid http status */
                     ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO()
                                   "ap_http1_transcode_out_filter seeing headers "
@@ -188,3 +184,149 @@ cleanup:
     return rv;
 }
 
+typedef struct request_filter_ctx {
+    request_rec *r;
+    enum
+    {
+        REQ_LINE, /* reading 1st request line */
+        REQ_HEADERS, /* reading header lines */
+        REQ_BODY, /* reading body follows, terminal */
+        REQ_ERROR, /* failed, terminal */
+    } state;
+
+    apr_bucket_brigade *tmpbb;
+} request_filter_ctx;
+
+static apr_status_t read_request_line(request_filter_ctx *ctx, apr_bucket_brigade *bb)
+{
+    apr_size_t len;
+    int num_blank_lines = DEFAULT_LIMIT_BLANK_LINES;
+    core_server_config *conf = ap_get_core_module_config(ctx->r->server->module_config);
+    int strict = (conf->http_conformance != AP_HTTP_CONFORMANCE_UNSAFE);
+    apr_status_t rv;
+
+    /* Read past empty lines until we get a real request line,
+     * a read error, the connection closes (EOF), or we timeout.
+     *
+     * We skip empty lines because browsers have to tack a CRLF on to the end
+     * of POSTs to support old CERN webservers.  But note that we may not
+     * have flushed any previous response completely to the client yet.
+     * We delay the flush as long as possible so that we can improve
+     * performance for clients that are pipelining requests.  If a request
+     * is pipelined then we won't block during the (implicit) read() below.
+     * If the requests aren't pipelined, then the client is still waiting
+     * for the final buffer flush from us, and we will block in the implicit
+     * read().  B_SAFEREAD ensures that the BUFF layer flushes if it will
+     * have to block during a read.
+     */
+    do {
+        /* ensure ap_rgetline allocates memory each time thru the loop
+         * if there are empty lines
+         */
+        ctx->r->the_request = NULL;
+        rv = ap_rgetline(&(ctx->r->the_request), (apr_size_t)(ctx->r->server->limit_req_line + 2),
+                         &len, ctx->r, strict ? AP_GETLINE_CRLF : 0, bb);
+
+        if (rv != APR_SUCCESS) {
+            return rv;
+        }
+        else if (len > 0) {
+            /* got the line in ctx->r->the_request */
+            return APR_SUCCESS;
+        }
+    } while (--num_blank_lines >= 0);
+    /* too many blank lines */
+    return APR_EINVAL;
+}
+
+apr_status_t http1_request_in_filter(ap_filter_t *f,
+                                     apr_bucket_brigade *bb,
+                                     ap_input_mode_t mode,
+                                     apr_read_type_e block,
+                                     apr_off_t readbytes)
+{
+    apr_bucket *e;
+    request_filter_ctx *ctx = f->ctx;
+    apr_status_t rv = APR_SUCCESS;
+    int http_status = HTTP_OK;
+
+    /* just get out of the way for things we don't want to handle. */
+    if (mode != AP_MODE_READBYTES && mode != AP_MODE_GETLINE) {
+        return ap_get_brigade(f->next, bb, mode, block, readbytes);
+    }
+
+    if (!ctx) {
+        f->ctx = ctx = apr_pcalloc(f->r->pool, sizeof(*ctx));
+        ctx->r = f->r;
+        ctx->state = REQ_LINE;
+    }
+
+    while (APR_SUCCESS == rv) {
+        switch (ctx->state) {
+        case REQ_LINE:
+            ap_log_rerror(APLOG_MARK, APLOG_TRACE3, 0, f->r,
+                          "ap_http1_request_in_filter: read request line");
+            if ((rv = read_request_line(ctx, bb)) != APR_SUCCESS) {
+                /* certain failures are answered with a HTTP error bucket
+                 * and are terminal for parsing a request */
+                if (APR_STATUS_IS_ENOSPC(rv)) {
+                    http_status = HTTP_REQUEST_URI_TOO_LARGE;
+                }
+                else if (APR_STATUS_IS_TIMEUP(rv)) {
+                    http_status = HTTP_REQUEST_TIME_OUT;
+                }
+                else if (APR_STATUS_IS_BADARG(rv)) {
+                    http_status = HTTP_BAD_REQUEST;
+                }
+                else if (APR_STATUS_IS_EINVAL(rv)) {
+                    http_status = HTTP_BAD_REQUEST;
+                }
+                goto cleanup;
+            }
+            else if (!ap_parse_request_line(f->r)) {
+                AP_DEBUG_ASSERT(f->r->status && f->r->status != HTTP_OK);
+                http_status = f->r->status;
+                goto cleanup;
+            }
+            /* got the request line and it looked to contain what we need */
+            ctx->state = REQ_HEADERS;
+            break;
+
+        case REQ_HEADERS:
+            ap_get_mime_headers_core(f->r, bb);
+            if (f->r->status != HTTP_OK) {
+                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, f->r, APLOGNO(00567)
+                              "request failed: error reading the headers");
+                http_status = f->r->status;
+                goto cleanup;
+            }
+            else {
+                /* TODO: insert meta HEADERS bucket with all info and return */
+                ctx->state = REQ_BODY;
+                goto cleanup;
+            }
+            break;
+
+        case REQ_BODY:
+            /* we should really get out of the way */
+            rv = ap_get_brigade(f->next, bb, mode, block, readbytes);
+            goto cleanup;
+
+        case REQ_ERROR:
+        default:
+            rv = APR_EINVAL;
+            goto cleanup;
+        }
+    } /* while(APR_SUCCESS == rv) */
+
+cleanup:
+    if (http_status != HTTP_OK) {
+        apr_brigade_cleanup(bb);
+        e = ap_bucket_error_create(http_status, NULL, f->r->pool,
+                                   f->c->bucket_alloc);
+        APR_BRIGADE_INSERT_TAIL(bb, e);
+        ctx->state = REQ_ERROR;
+        return APR_SUCCESS;
+    }
+    return rv;
+}

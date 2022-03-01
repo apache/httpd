@@ -538,16 +538,15 @@ static apr_bucket *create_response_headers(request_rec *r, apr_bucket_alloc_t *b
     /* r->headers_out fully prepared. Create a headers bucket
      * containing the response to send down the filter chain.
      */
-    return ap_bucket_headers_create(r->status, get_status_reason(r->status_line),
-                                    r->headers_out, r->notes, r->pool, bucket_alloc);
+    return ap_bucket_response_create(r->status, get_status_reason(r->status_line),
+                                     r->headers_out, r->notes, r->pool, bucket_alloc);
 }
 
 static apr_bucket *create_response_trailers(request_rec *r, apr_bucket_alloc_t *bucket_alloc)
 {
     if (r->trailers_out && !apr_is_empty_table(r->trailers_out)) {
         ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r, "sending trailers");
-        return ap_bucket_headers_create(0, NULL, r->trailers_out,
-                                        r->notes, r->pool, bucket_alloc);
+        return ap_bucket_headers_create(r->trailers_out, r->pool, bucket_alloc);
     }
     return NULL;
 }
@@ -611,7 +610,9 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f,
             eb = e->data;
             continue;
         }
-        if (AP_BUCKET_IS_HEADERS(e) || APR_BUCKET_IS_FLUSH(e)) {
+        if (AP_BUCKET_IS_RESPONSE(e)
+            || AP_BUCKET_IS_HEADERS(e)
+            || APR_BUCKET_IS_FLUSH(e)) {
             continue;
         }
         /*
