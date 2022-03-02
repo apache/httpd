@@ -446,7 +446,7 @@ static const char *get_status_reason(const char *status_line)
     return NULL;
 }
 
-static apr_bucket *create_response_headers(request_rec *r, apr_bucket_alloc_t *bucket_alloc)
+static apr_bucket *create_response_bucket(request_rec *r, apr_bucket_alloc_t *bucket_alloc)
 {
     const char *ctype;
 
@@ -542,7 +542,7 @@ static apr_bucket *create_response_headers(request_rec *r, apr_bucket_alloc_t *b
                                      r->headers_out, r->notes, r->pool, bucket_alloc);
 }
 
-static apr_bucket *create_response_trailers(request_rec *r, apr_bucket_alloc_t *bucket_alloc)
+static apr_bucket *create_trailers_bucket(request_rec *r, apr_bucket_alloc_t *bucket_alloc)
 {
     if (r->trailers_out && !apr_is_empty_table(r->trailers_out)) {
         ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r, "sending trailers");
@@ -556,12 +556,14 @@ AP_DECLARE(void) ap_basic_http_header(request_rec *r, apr_bucket_brigade *bb)
     apr_bucket *b;
 
     basic_http_header_check(r);
-    b = create_response_headers(r, bb->bucket_alloc);
+    b = create_response_bucket(r, bb->bucket_alloc);
     APR_BRIGADE_INSERT_TAIL(bb, b);
 }
 
 typedef struct header_filter_ctx {
-    int headers_sent;
+    int final_status;
+    int final_header_only;
+    int dying;
 } header_filter_ctx;
 
 AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f,
@@ -569,8 +571,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f,
 {
     request_rec *r = f->r;
     conn_rec *c = r->connection;
-    int header_only = (r->header_only || AP_STATUS_IS_HEADER_ONLY(r->status));
-    apr_bucket *e, *next, *hb, *content = NULL, *eos = NULL;
+    apr_bucket *e, *respb = NULL, *trigger = NULL, *eos = NULL;
     header_filter_ctx *ctx = f->ctx;
     ap_bucket_error *eb = NULL;
     apr_status_t rv = APR_SUCCESS;
@@ -581,9 +582,10 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f,
     if (!ctx) {
         ctx = f->ctx = apr_pcalloc(r->pool, sizeof(header_filter_ctx));
     }
-    else if (ctx->headers_sent) {
-        /* Eat body if response must not have one. */
-        if (header_only) {
+
+    if (ctx->final_status) {
+        /* Sent the final status, eat body if response must not have one. */
+        if (ctx->final_header_only) {
             /* Still next filters may be waiting for EOS, so pass it (alone)
              * when encountered and be done with this filter.
              */
@@ -599,114 +601,142 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f,
             return rv;
         }
     }
+    else {
+        /* Determine if it is time to insert the response bucket for
+         * the request. Request handlers just write content or an EOS
+         * and that needs to take the current state of request_rec to
+         * send on status and headers as a response bucket.
+         *
+         * But we also send interim responses (as response buckets)
+         * through this filter and that must not trigger generating
+         * an additional response bucket.
+         *
+         * Waiting on a DATA/ERROR/EOS bucket alone is not enough,
+         * unfortunately, as some handlers trigger response generation
+         * by just writing a FLUSH (see mod_lua's websocket for example).
+         */
+        for (e = APR_BRIGADE_FIRST(b);
+             e != APR_BRIGADE_SENTINEL(b) && !trigger;
+             e = APR_BUCKET_NEXT(e))
+        {
+            if (AP_BUCKET_IS_RESPONSE(e)) {
+                /* remember the last one if there are many. */
+                respb = e;
+            }
+            else if (APR_BUCKET_IS_FLUSH(e)) {
+                /* flush without response bucket triggers */
+                if (!respb) trigger = e;
+            }
+            else if (APR_BUCKET_IS_EOS(e)) {
+                trigger = e;
+            }
+            else if (AP_BUCKET_IS_ERROR(e)) {
+                /* Need to handle this below via ap_die() */
+                break;
+            }
+            else {
+                /* First content bucket, always triggering the response.*/
+                trigger = e;
+            }
+        }
 
+        if (respb) {
+            ap_bucket_response *resp = respb->data;
+            if (resp->status >= 200 || resp->status == 101) {
+                /* Someone is passing the final response, remember it
+                 * so we no longer generate one. */
+                ctx->final_status = resp->status;
+                ctx->final_header_only = AP_STATUS_IS_HEADER_ONLY(resp->status);
+            }
+        }
+
+        if (trigger && !ctx->final_status) {
+            ap_log_rerror(APLOG_MARK, APLOG_TRACE3, 0, r,
+                          "ap_http_header_filter prep response status %d",
+                          r->status);
+            if (!check_headers(r)) {
+                /* We may come back here from ap_die() below,
+                 * so clear anything from this response.
+                 */
+                apr_table_clear(r->headers_out);
+                apr_table_clear(r->err_headers_out);
+                apr_brigade_cleanup(b);
+
+                /* Don't recall ap_die() if we come back here (from its own internal
+                 * redirect or error response), otherwise we can end up in infinite
+                 * recursion; better fall through with 500, minimal headers and an
+                 * empty body (EOS only).
+                 */
+                if (!check_headers_recursion(r)) {
+                    ap_die(HTTP_INTERNAL_SERVER_ERROR, r);
+                    return AP_FILTER_ERROR;
+                }
+                r->status = HTTP_INTERNAL_SERVER_ERROR;
+                e = ap_bucket_eoc_create(c->bucket_alloc);
+                APR_BRIGADE_INSERT_TAIL(b, e);
+                e = apr_bucket_eos_create(c->bucket_alloc);
+                APR_BRIGADE_INSERT_TAIL(b, e);
+                r->content_type = r->content_encoding = NULL;
+                r->content_languages = NULL;
+                ap_set_content_length(r, 0);
+                recursive_error = 1;
+            }
+            respb = create_response_bucket(r, b->bucket_alloc);
+            APR_BUCKET_INSERT_BEFORE(trigger, respb);
+            ctx->final_status = r->status;
+            ctx->final_header_only = (r->header_only || AP_STATUS_IS_HEADER_ONLY(r->status));
+            r->sent_bodyct = 1;         /* Whatever follows is real body stuff... */
+        }
+    }
+
+    /* Look for ERROR/EOC/EOS that require special handling. */
     for (e = APR_BRIGADE_FIRST(b);
          e != APR_BRIGADE_SENTINEL(b);
-         e = next)
+         e = APR_BUCKET_NEXT(e))
     {
-        next = APR_BUCKET_NEXT(e);
-
-        if (AP_BUCKET_IS_ERROR(e) && !eb) {
-            eb = e->data;
-            continue;
-        }
-        if (AP_BUCKET_IS_RESPONSE(e)
-            || AP_BUCKET_IS_HEADERS(e)
-            || APR_BUCKET_IS_FLUSH(e)) {
-            continue;
-        }
-        /*
-         * If we see an EOC bucket it is a signal that we should get out
-         * of the way doing nothing.
-         */
-        if (AP_BUCKET_IS_EOC(e)) {
-            ap_remove_output_filter(f);
-            return ap_pass_brigade(f->next, b);
-        }
-        /* A content bucket triggering the response. Could be DATA, could
-         * be EOS/EOR. If we see this and have not already send the response
-         * headers, we need to do so before this bucket.
-         */
-        if (!content) {
-            content = e;
-        }
-        if (APR_BUCKET_IS_EOS(e) && !eos) {
-            eos = e;
-            break;
-        }
-    }
-
-    ap_log_rerror(APLOG_MARK, APLOG_TRACE3, 0, r,
-                  "ap_http_header_filter inspected brigade, content=%d, error=%d, eos=%d",
-                  !!content, !!eb, !!eos);
-
-    if (!ctx->headers_sent && content && !eb) {
-        if (!check_headers(r)) {
-            /* We may come back here from ap_die() below,
-             * so clear anything from this response.
-             */
-            apr_table_clear(r->headers_out);
-            apr_table_clear(r->err_headers_out);
-            apr_brigade_cleanup(b);
-
-            /* Don't recall ap_die() if we come back here (from its own internal
-             * redirect or error response), otherwise we can end up in infinite
-             * recursion; better fall through with 500, minimal headers and an
-             * empty body (EOS only).
-             */
-            if (!check_headers_recursion(r)) {
-                ap_die(HTTP_INTERNAL_SERVER_ERROR, r);
+        if (APR_BUCKET_IS_METADATA(e)) {
+            if (APR_BUCKET_IS_EOS(e)) {
+                if (!eos) eos = e;
+            }
+            else if (AP_BUCKET_IS_EOC(e)) {
+                /* If we see an EOC bucket it is a signal that we should get out
+                 * of the way doing nothing.
+                 */
+                ap_remove_output_filter(f);
+                return ap_pass_brigade(f->next, b);
+            }
+            else if (AP_BUCKET_IS_ERROR(e)) {
+                int status;
+                eb = e->data;
+                status = eb->status;
+                apr_brigade_cleanup(b);
+                ap_log_rerror(APLOG_MARK, APLOG_TRACE3, 0, r,
+                              "ap_http_header_filter error bucket, die with %d and error",
+                              status);
+                /* This will invoke us again */
+                ctx->dying = 1;
+                ap_die(status, r);
                 return AP_FILTER_ERROR;
             }
-            r->status = HTTP_INTERNAL_SERVER_ERROR;
-            e = ap_bucket_eoc_create(c->bucket_alloc);
-            APR_BRIGADE_INSERT_TAIL(b, e);
-            e = apr_bucket_eos_create(c->bucket_alloc);
-            APR_BRIGADE_INSERT_TAIL(b, e);
-            r->content_type = r->content_encoding = NULL;
-            r->content_languages = NULL;
-            ap_set_content_length(r, 0);
-            recursive_error = 1;
         }
     }
-    else if (eb) {
-        int status;
-        status = eb->status;
-        apr_brigade_cleanup(b);
-        ap_die(status, r);
-        return AP_FILTER_ERROR;
-    }
 
-    if (!content) {
-        /* brigade contains nothing that triggers generating
-         * the response headers. Might be an interim response.
-         * Just forward and stay active.
-         */
-        rv = ap_pass_brigade(f->next, b);
-        goto out;
-    }
-    else if (r->assbackwards) {
+    if (r->assbackwards) {
         r->sent_bodyct = 1;
         ap_remove_output_filter(f);
         rv = ap_pass_brigade(f->next, b);
         goto out;
     }
 
-    if (!ctx->headers_sent && content) {
-        ap_log_rerror(APLOG_MARK, APLOG_TRACE3, 0, r,
-                      "ap_http_header_filter prep response status %d",
-                      r->status);
-        hb = create_response_headers(r, b->bucket_alloc);
-        APR_BUCKET_INSERT_BEFORE(content, hb);
-        ctx->headers_sent = 1;
-        r->sent_bodyct = 1;         /* Whatever follows is real body stuff... */
-    }
-
     if (eos) {
-        hb = create_response_trailers(r, b->bucket_alloc);
-        if (hb) {
-            APR_BUCKET_INSERT_BEFORE(eos, hb);
+        e = create_trailers_bucket(r, b->bucket_alloc);
+        if (e) {
+            APR_BUCKET_INSERT_BEFORE(eos, e);
         }
+        ap_remove_output_filter(f);
+    }
+    else if (ctx->final_status == 101) {
+        /* switching protocol, whatever comes next is not HTTP/1.x */
         ap_remove_output_filter(f);
     }
 

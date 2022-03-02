@@ -92,7 +92,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http1_response_out_filter(ap_filter_t *f
                 ap_bucket_response *resp = e->data;
 
                 ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r,
-                              "ap_http1_transcode_out_filter seeing headers bucket status=%d",
+                              "ap_http1_transcode_out_filter seeing response bucket status=%d",
                               resp->status);
                 if (strict && resp->status < 100) {
                     /* error, not a valid http status */
