@@ -158,7 +158,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         https://svn.apache.org/r1891019
      Backport version for 2.4.x of patch:
         https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/httpd-dbm.patch
-     +1: minfrin, icing
+     +1: minfrin, icing, jim
      jailletc36: part of r1891023 is needed to fill some APLOGNO()
      icing: seems there is some potential to wrap this into a common function?
 
@@ -172,7 +172,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         https://svn.apache.org/r1596108
      Backport version for 2.4.x of patch:
         https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/httpd-2.4-ldap-search.patch
-     +1: minfrin
+     +1: minfrin, jim,
      jailletc36: r1745033 seems related and should in included
 
   *) mod_authn_core: Add expression support to AuthName and AuthType.
@@ -181,7 +181,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         https://svn.apache.org/r1670431
      Backport version for 2.4.x of patch:
         https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/httpd-2.4-authn-expr.patch
-     +1: minfrin
+     +1: minfrin, jim,
 
   *) mod_proxy: Bump shared worker name to 384 chars. PR 53218
      trunk patch: http://svn.apache.org/r1896253
@@ -190,15 +190,15 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   (PR: https://github.com/apache/httpd/pull/288)
      ylavic: r1896253 made compatible with 2.4.x where we can't change the
              layout/size of the existing proxy_worker_shared fields.
-     +1: ylavic, icing
+     +1: ylavic, icing, jim
 
   *) mod_http2: preserve the port number given in a HTTP/1.1
      request that was Upgraded to HTTP/2. Fixes PR65881.
      trunk patch: http://svn.apache.org/r1898146
                   http://svn.apache.org/r1898173
      2.4.x patch: svn merge -c 1898146,1898173 ^/httpd/httpd/trunk .
-     +1: icing, ylavic,
-     
+     +1: icing, ylavic, jim
+
   *) mod_http2: sync with trunk
      - Fixed an issue since 1.15.24 that "Server" headers in proxied requests
        were overwritten instead of preserved. [PR by @daum3ns]
@@ -244,7 +244,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         https://svn.apache.org/r1895614
      Backport version for 2.4.x of patch:
        PR: https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/275.diff
-     +1: icing,
+     +1: icing, jim,
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
@@ -253,7 +253,7 @@ PATCHES/ISSUES THAT ARE BEING WORKED
   *) mod_xml2enc: Correctly handle Microsoft OOXML documents.  PR 64339
      trunk patch: http://svn.apache.org/r1884505
      2.4.x patch: svn merge -c 1884505 ^/httpd/httpd/trunk .
-     +1: 
+     +1:
      jailletc36: there has been some discussion about how to fix the issue.
      I'm not sure that the commit above is the best solution
      and other alternatives have been discussed in PR 64339.  If r1884505
