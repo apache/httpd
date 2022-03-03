@@ -147,18 +147,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_proxy: Use the maxium of front end and backend timeouts instead of the
-     minimum when tunneling requests (websockets, CONNECT requests).
-     Backend timeouts can be configured more selectively (per worker if needed)
-     as front end timeouts and typically the backend timeouts reflect the
-     application requirements better.  PR 65886
-     Trunk version of patch:
-        https://svn.apache.org/r1898127
-     Backport version for 2.4.x of patch:
-       https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/295.diff
-     Can be applied via apply_backport_pr.sh 295
-     +1: rpluem, ylavic, icing
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
