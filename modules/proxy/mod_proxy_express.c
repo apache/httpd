@@ -19,6 +19,11 @@
 
 module AP_MODULE_DECLARE_DATA proxy_express_module;
 
+#include "apr_version.h"
+#if !APR_VERSION_AT_LEAST(2,0,0)
+#include "apu_version.h"
+#endif
+
 static int proxy_available = 0;
 
 typedef struct {
@@ -115,6 +120,10 @@ static int xlate_name(request_rec *r)
     struct proxy_alias *ralias;
     proxy_dir_conf *dconf;
     express_server_conf *sconf;
+#if APU_MAJOR_VERSION > 1 || (APU_MAJOR_VERSION == 1 && APU_MINOR_VERSION >= 7)
+    const apr_dbm_driver_t *driver;
+    const apu_err_t *err;
+#endif
 
     sconf = ap_get_module_config(r->server->module_config, &proxy_express_module);
     dconf = ap_get_module_config(r->per_dir_config, &proxy_module);
@@ -132,11 +141,31 @@ static int xlate_name(request_rec *r)
     ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01002)
                   "proxy_express: Opening DBM file: %s (%s)",
                   sconf->dbmfile, sconf->dbmtype);
+
+#if APU_MAJOR_VERSION > 1 || (APU_MAJOR_VERSION == 1 && APU_MINOR_VERSION >= 7)
+    rv = apr_dbm_get_driver(&driver, sconf->dbmtype, &err, r->pool);
+    if (rv != APR_SUCCESS) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
+                     APLOGNO() "The dbm library '%s' could not be loaded: %s (%s: %d)",
+                     sconf->dbmtype, err->msg, err->reason, err->rc);
+        return DECLINED;
+    }
+
+    rv = apr_dbm_open2(&db, driver, sconf->dbmfile, APR_DBM_READONLY,
+                         APR_OS_DEFAULT, r->pool);
+    if (rv != APR_SUCCESS) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
+                     APLOGNO() "The '%s' file '%s' could not be loaded",
+                     sconf->dbmtype, sconf->dbmfile);
+        return DECLINED;
+    }
+#else
     rv = apr_dbm_open_ex(&db, sconf->dbmtype, sconf->dbmfile, APR_DBM_READONLY,
                          APR_OS_DEFAULT, r->pool);
     if (rv != APR_SUCCESS) {
         return DECLINED;
     }
+#endif
 
     name = ap_get_server_name(r);
     ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01003)
