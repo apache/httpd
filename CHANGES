@@ -1,6 +1,12 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.53
 
+  *) mod_proxy: Use the maxium of front end and backend timeouts instead of the
+     minimum when tunneling requests (websockets, CONNECT requests).
+     Backend timeouts can be configured more selectively (per worker if needed)
+     as front end timeouts and typically the backend timeouts reflect the
+     application requirements better.  PR 65886 [Ruediger Pluem]
+
   *) ap_regex: Use Thread Local Storage (TLS) to recycle ap_regexec() buffers
      when an efficient TLS implementation is available. [Yann Ylavic]
 
