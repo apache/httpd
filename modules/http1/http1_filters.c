@@ -96,7 +96,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http1_response_out_filter(ap_filter_t *f
                               resp->status);
                 if (strict && resp->status < 100) {
                     /* error, not a valid http status */
-                    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO()
+                    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(10386)
                                   "ap_http1_transcode_out_filter seeing headers "
                                   "status=%d in strict mode",
                                   resp->status);
@@ -106,7 +106,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http1_response_out_filter(ap_filter_t *f
                 else if (ctx->final_response_sent) {
                     /* already sent the final response for the request.
                      */
-                    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO()
+                    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(10387)
                                   "ap_http1_transcode_out_filter seeing headers "
                                   "status=%d after final response already sent",
                                   resp->status);
