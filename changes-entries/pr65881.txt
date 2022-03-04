@@ -1,0 +1,3 @@
+  *) mod_http2: preserve the port number given in a HTTP/1.1
+     request that was Upgraded to HTTP/2. Fixes PR65881.
+     [Stefan Eissing]
