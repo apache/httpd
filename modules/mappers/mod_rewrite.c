@@ -55,6 +55,12 @@
 #include "apr_global_mutex.h"
 #include "apr_dbm.h"
 #include "apr_dbd.h"
+
+#include "apr_version.h"
+#if !APR_VERSION_AT_LEAST(2,0,0)
+#include "apu_version.h"
+#endif
+
 #include "mod_dbd.h"
 
 #if APR_HAS_THREADS
@@ -1357,12 +1363,31 @@ static char *lookup_map_txtfile(request_rec *r, const char *file, char *key)
 static char *lookup_map_dbmfile(request_rec *r, const char *file,
                                 const char *dbmtype, char *key)
 {
+#if APU_MAJOR_VERSION > 1 || (APU_MAJOR_VERSION == 1 && APU_MINOR_VERSION >= 7)
+    const apr_dbm_driver_t *driver;
+    const apu_err_t *err;
+#endif
     apr_dbm_t *dbmfp = NULL;
     apr_datum_t dbmkey;
     apr_datum_t dbmval;
     char *value;
     apr_status_t rv;
 
+#if APU_MAJOR_VERSION > 1 || (APU_MAJOR_VERSION == 1 && APU_MINOR_VERSION >= 7)
+    if ((rv = apr_dbm_get_driver(&driver, dbmtype, &err,
+            r->pool)) != APR_SUCCESS) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(10287)
+                "mod_rewrite: can't load DBM library '%s': %s",
+                     err->reason, err->msg);
+        return NULL;
+    }
+    if ((rv = apr_dbm_open2(&dbmfp, driver, file, APR_DBM_READONLY,
+                              APR_OS_DEFAULT, r->pool)) != APR_SUCCESS) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(00656)
+                      "mod_rewrite: can't open DBM RewriteMap %s", file);
+        return NULL;
+    }
+#else
     if ((rv = apr_dbm_open_ex(&dbmfp, dbmtype, file, APR_DBM_READONLY,
                               APR_OS_DEFAULT, r->pool)) != APR_SUCCESS)
     {
@@ -1370,6 +1395,7 @@ static char *lookup_map_dbmfile(request_rec *r, const char *file,
                       "mod_rewrite: can't open DBM RewriteMap %s", file);
         return NULL;
     }
+#endif
 
     dbmkey.dptr  = key;
     dbmkey.dsize = strlen(key);

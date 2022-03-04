@@ -26,8 +26,14 @@
 #define APR_WANT_MEMFUNC
 #include "apr_want.h"
 
+#include "apr_version.h"
+#if !APR_VERSION_AT_LEAST(2,0,0)
+#include "apu_version.h"
+#endif
+
 #include "httpd.h"
 #include "http_log.h"
+#include "http_main.h"      /* for ap_server_conf */
 
 #include "mod_dav.h"
 
@@ -311,16 +317,36 @@ static int dav_generic_compare_locktoken(const dav_locktoken *lt1,
  */
 static dav_error * dav_generic_really_open_lockdb(dav_lockdb *lockdb)
 {
+#if APU_MAJOR_VERSION > 1 || (APU_MAJOR_VERSION == 1 && APU_MINOR_VERSION >= 7)
+    const apr_dbm_driver_t *driver;
+    const apu_err_t *er;
+#endif
     dav_error *err;
-    apr_status_t status;
+    apr_status_t status = APR_SUCCESS;
 
     if (lockdb->info->opened) {
         return NULL;
     }
 
+#if APU_MAJOR_VERSION > 1 || (APU_MAJOR_VERSION == 1 && APU_MINOR_VERSION >= 7)
+    status = apr_dbm_get_driver(&driver, NULL, &er, lockdb->info->pool);
+
+    if (status) {
+        ap_log_error(APLOG_MARK, APLOG_ERR, status, ap_server_conf, APLOGNO(10288)
+                     "mod_dav_lock: The DBM library '%s' could not be loaded: %s",
+                             er->reason, er->msg);
+        return dav_new_error(lockdb->info->pool, HTTP_INTERNAL_SERVER_ERROR, 1,
+                status, "Could not load library for property database.");
+    }
+
+    status = apr_dbm_open2(&lockdb->info->db, driver, lockdb->info->lockdb_path,
+                          lockdb->ro ? APR_DBM_READONLY : APR_DBM_RWCREATE,
+                          APR_OS_DEFAULT, lockdb->info->pool);
+#else
     status = apr_dbm_open(&lockdb->info->db, lockdb->info->lockdb_path,
                           lockdb->ro ? APR_DBM_READONLY : APR_DBM_RWCREATE,
                           APR_OS_DEFAULT, lockdb->info->pool);
+#endif
 
     if (status) {
         err = dav_generic_dbm_new_error(lockdb->info->db, lockdb->info->pool,

@@ -18,6 +18,12 @@
 #include "apr_file_io.h"
 #include "apr_strings.h"
 #include "apr_buckets.h"
+
+#include "apr_version.h"
+#if !APR_VERSION_AT_LEAST(2,0,0)
+#include "apu_version.h"
+#endif
+
 #include "httpd.h"
 #include "http_config.h"
 #include "http_log.h"

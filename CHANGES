@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.53
 
+  *) dbm: Split the loading of a dbm driver from the opening of a dbm file. When
+     an attempt to load a dbm driver fails, log clearly which driver triggered
+     the error (not "default"), and what the error was. [Graham Leggett]
+
   *) mod_proxy: Use the maxium of front end and backend timeouts instead of the
      minimum when tunneling requests (websockets, CONNECT requests).
      Backend timeouts can be configured more selectively (per worker if needed)
