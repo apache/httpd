@@ -371,6 +371,7 @@ PROXY_WORKER_HC_FAIL )
 #define PROXY_WORKER_MAX_SECRET_SIZE     64
 
 #define PROXY_RFC1035_HOSTNAME_SIZE	256
+#define PROXY_WORKER_EXT_NAME_SIZE      384
 
 /* RFC-1035 mentions limits of 255 for host-names and 253 for domain-names,
  * dotted together(?) this would fit the below size (+ trailing NUL).
@@ -473,6 +474,7 @@ typedef struct {
     apr_size_t   response_field_size; /* Size of proxy response buffer in bytes. */
     unsigned int response_field_size_set:1;
     char      secret[PROXY_WORKER_MAX_SECRET_SIZE]; /* authentication secret (e.g. AJP13) */
+    char      name_ex[PROXY_WORKER_EXT_NAME_SIZE]; /* Extended name (>96 chars for 2.4.x) */
 } proxy_worker_shared;
 
 #define ALIGNED_PROXY_WORKER_SHARED_SIZE (APR_ALIGN_DEFAULT(sizeof(proxy_worker_shared)))

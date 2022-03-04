@@ -421,7 +421,7 @@ static int rewrite_url(request_rec *r, proxy_worker *worker,
                              NULL));
     }
 
-    *url = apr_pstrcat(r->pool, worker->s->name, path, NULL);
+    *url = apr_pstrcat(r->pool, worker->s->name_ex, path, NULL);
 
     return OK;
 }
@@ -618,7 +618,7 @@ static int proxy_balancer_pre_request(proxy_worker **worker,
     apr_table_setn(r->subprocess_env,
                    "BALANCER_NAME", (*balancer)->s->name);
     apr_table_setn(r->subprocess_env,
-                   "BALANCER_WORKER_NAME", (*worker)->s->name);
+                   "BALANCER_WORKER_NAME", (*worker)->s->name_ex);
     apr_table_setn(r->subprocess_env,
                    "BALANCER_WORKER_ROUTE", (*worker)->s->route);
 
@@ -641,7 +641,7 @@ static int proxy_balancer_pre_request(proxy_worker **worker,
     }
     ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01172)
                   "%s: worker (%s) rewritten to %s",
-                  (*balancer)->s->name, (*worker)->s->name, *url);
+                  (*balancer)->s->name, (*worker)->s->name_ex, *url);
 
     return access_status;
 }
@@ -1722,7 +1722,7 @@ static void balancer_display_page(request_rec *r, proxy_server_conf *conf,
                 ap_rvputs(r, "<tr>\n<td><a href=\"",
                           ap_escape_uri(r->pool, r->uri), "?b=",
                           balancer->s->name + sizeof(BALANCER_PREFIX) - 1, "&amp;w=",
-                          ap_escape_uri(r->pool, worker->s->name),
+                          ap_escape_uri(r->pool, worker->s->name_ex),
                           "&amp;nonce=", balancer->s->nonce,
                           "\">", NULL);
                 ap_rvputs(r, (*worker->s->uds_path ? "<i>" : ""), ap_proxy_worker_name(r->pool, worker),
@@ -1826,7 +1826,7 @@ static void balancer_display_page(request_rec *r, proxy_server_conf *conf,
             }
             ap_rputs("<tr><td colspan='2'><input type=submit value='Submit'></td></tr>\n", r);
             ap_rvputs(r, "</table>\n<input type=hidden name='w' id='w' ",  NULL);
-            ap_rvputs(r, "value=\"", ap_escape_uri(r->pool, wsel->s->name), "\">\n", NULL);
+            ap_rvputs(r, "value=\"", ap_escape_uri(r->pool, wsel->s->name_ex), "\">\n", NULL);
             ap_rvputs(r, "<input type=hidden name='b' id='b' ", NULL);
             ap_rvputs(r, "value=\"", ap_escape_html(r->pool, bsel->s->name + sizeof(BALANCER_PREFIX) - 1),
                       "\">\n", NULL);
