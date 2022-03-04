@@ -1,10 +1,6 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.53
 
-  *) dbm: Split the loading of a dbm driver from the opening of a dbm file. When
-    an attempt to load a dbm driver fails, log clearly which driver triggered
-    the error (not "default"), and what the error was. [Graham Leggett]
-
   *) mod_proxy: Use the maxium of front end and backend timeouts instead of the
      minimum when tunneling requests (websockets, CONNECT requests).
      Backend timeouts can be configured more selectively (per worker if needed)
@@ -613,7 +609,7 @@ Changes with Apache 2.4.47
   *) mod_ssl: Improve the coalescing filter to buffer into larger TLS
      records, and avoid revealing the HTTP header size via TLS record
      boundaries (for common response generators).
-     [Joe Orton, Ruediger Pluem]
+     [Joe Orton, Ruediger Pluem]     
 
   *) mod_proxy_hcheck: Don't pile up health checks if the previous one did
      not finish before hcinterval.  PR 63010.  [Yann Ylavic]
@@ -634,7 +630,7 @@ Changes with Apache 2.4.47
      allowing for (non-)Upgrade negotiation with the origin server.
      [Yann Ylavic]
 
-  *) mod_proxy: Allow ProxyErrorOverride to be restricted to specific status
+  *) mod_proxy: Allow ProxyErrorOverride to be restricted to specific status 
      codes.  PR63628. [Martin Drößler <mail martindroessler.de>]
 
   *) core: Add ReadBufferSize, FlushMaxThreshold and FlushMaxPipelined
@@ -667,7 +663,7 @@ Changes with Apache 2.4.47
   *) mod_rewrite: Extend the [CO] (cookie) flag of RewriteRule to accept a
      SameSite attribute. [Eric Covener]
 
-  *) mod_proxy: Add proxy check_trans hook.  This allows proxy
+  *) mod_proxy: Add proxy check_trans hook.  This allows proxy 
      modules to decline request handling at early stage.
 
   *) mod_proxy_wstunnel: Decline requests without an Upgrade
@@ -722,10 +718,10 @@ Changes with Apache 2.4.44
   *) mod_proxy_uwsgi: Error out on HTTP header larger than 16K (hard
      protocol limit).  [Yann Ylavic]
 
-  *) mod_http2:
-     Fixes <https://github.com/icing/mod_h2/issues/200>:
+  *) mod_http2: 
+     Fixes <https://github.com/icing/mod_h2/issues/200>: 
      "LimitRequestFields 0" now disables the limit, as documented.
-     Fixes <https://github.com/icing/mod_h2/issues/201>:
+     Fixes <https://github.com/icing/mod_h2/issues/201>: 
      Do not count repeated headers with same name against the field
      count limit. The are merged internally, as if sent in a single HTTP/1 line.
      [Stefan Eissing]
@@ -792,7 +788,7 @@ Changes with Apache 2.4.42
 
   *) mod_proxy_http: Fix the forwarding of requests with content body when a
      balancer member is unavailable; the retry on the next member was issued
-     with an empty body (regression introduced in 2.4.41). PR63891.
+     with an empty body (regression introduced in 2.4.41). PR63891. 
      [Yann Ylavic]
 
   *) core: Use a temporary file when writing the pid file, avoiding
@@ -810,7 +806,7 @@ Changes with Apache 2.4.42
   *) mod_authz_groupfile: Drop AH01666 from loglevel "error" to "info".
      PR64172.
 
-  *) mod_usertrack: Add CookieSameSite, CookieHTTPOnly, and CookieSecure
+  *) mod_usertrack: Add CookieSameSite, CookieHTTPOnly, and CookieSecure 
      to allow customization of the usertrack cookie. PR64077.
      [Prashant Keshvani <prashant2400 gmail.com>, Eric Covener]
 
@@ -849,7 +845,7 @@ Changes with Apache 2.4.42
        allow for use in <If> and <Macro> sections. If all possible variations lead to the configuration
        you wanted in the first place, is another matter.
      [Michael Kaufmann <mail michael-kaufmann.ch>, Timothe Litt (@tlhackque),
-      Michal Karm Babacek (@Karm), Stefan Eissing (@icing)]
+      Michal Karm Babacek (@Karm), Stefan Eissing (@icing)] 
 
   *) test: Added continuous testing with Travis CI.
      This tests various scenarios on Ubuntu with the full test suite.
@@ -878,18 +874,18 @@ Changes with Apache 2.4.42
      r:notes_table, r:subprocess_env_table as read-only native table alternatives
      that can be iterated over. [Eric Covener]
 
-  *) mod_http2: Fixed rare cases where a h2 worker could deadlock the main connection.
+  *) mod_http2: Fixed rare cases where a h2 worker could deadlock the main connection. 
      [Yann Ylavic, Stefan Eissing]
 
-  *) mod_lua: Accept nil assignments to the exposed tables (r.subprocess_env,
-     r.headers_out, etc) to remove the key from the table. PR63971.
+  *) mod_lua: Accept nil assignments to the exposed tables (r.subprocess_env, 
+     r.headers_out, etc) to remove the key from the table. PR63971. 
      [Eric Covener]
 
   *) mod_http2: Fixed interaction with mod_reqtimeout. A loaded mod_http2 was disabling the
-     ssl handshake timeouts. Also, fixed a mistake of the last version that made `H2Direct`
+     ssl handshake timeouts. Also, fixed a mistake of the last version that made `H2Direct` 
      always `on`, regardless of configuration. Found and reported by
      <Armin.Abfalterer@united-security-providers.ch> and
-     <Marcial.Rion@united-security-providers.ch>. [Stefan Eissing]
+     <Marcial.Rion@united-security-providers.ch>. [Stefan Eissing] 
 
   *) mod_http2: Multiple field length violations in the same request no longer cause
      several log entries to be written. [@mkauf]
@@ -899,7 +895,7 @@ Changes with Apache 2.4.42
 
   *) mod_proxy_html, mod_xml2enc: Fix build issues with macOS due to r1864469
      [Jim Jagielski]
-
+ 
   *) mod_authn_socache: Increase the maximum length of strings that can be cached by
      the module from 100 to 256.  PR 62149 [<thorsten.meinl knime.com>]
 
@@ -913,7 +909,7 @@ Changes with Apache 2.4.42
   *) mod_deflate, mod_brotli: honor "Accept-Encoding: foo;q=0" as per RFC 7231; which
      means 'foo' is "not acceptable".  PR 58158 [Chistophe Jaillet]
 
-  *) mod_md v2.2.3:
+  *) mod_md v2.2.3: 
      - Configuring MDCAChallenges replaces any previous existing challenge configuration. It
        had been additive before which was not the intended behaviour. [@mkauf]
      - Fixing order of ACME challenges used when nothing else configured. Code now behaves as
@@ -936,7 +932,7 @@ Changes with Apache 2.4.42
      locations or formats.
      [Stefan Eissing]
 
-  *) mod_proxy_balancer: Fix case-sensitive referer check related to CSRF/XSS
+  *) mod_proxy_balancer: Fix case-sensitive referer check related to CSRF/XSS 
      protection. PR 63688. [Armin Abfalterer <a.abfalterer gmail.com>]
 
 Changes with Apache 2.4.41
@@ -972,7 +968,7 @@ Changes with Apache 2.4.41
         leading to crashes. The memory copied is that of the configured push
         link header values, not data supplied by the client. [Stefan Eissing]
 
-  *) mod_proxy_balancer: Improve balancer-manager protection against
+  *) mod_proxy_balancer: Improve balancer-manager protection against 
      XSS/XSRF attacks from trusted users.  [Joe Orton,
      Niels Heinen <heinenn google.com>]
 
@@ -988,7 +984,7 @@ Changes with Apache 2.4.41
 
 Changes with Apache 2.4.40
 
-  *) core, mod_rewrite: Set PCRE_DOTALL by default. Revert via
+  *) core, mod_rewrite: Set PCRE_DOTALL by default. Revert via 
      RegexDefaultOptions -DOTALL [Yann Ylavic]
 
   *) core: Remove request details from built-in error documents [Eric Covener]
@@ -1020,13 +1016,13 @@ Changes with Apache 2.4.40
      other modules want to provide those. Falls back to own implementation with
      same behaviour as before.
      [Stefan Eissing]
-
+  
   *) mod_md: new features
      - protocol
        - supports the ACMEv2 protocol. It is the default and will be used on the next
          certificate renewal, unless another "MDCertificateAuthority" is configured
        - ACMEv2 endpoints use the GET via empty POST way of accessing resources, see
-         announcement by Let's Encrypt:
+         announcement by Let's Encrypt:       
          https://community.letsencrypt.org/t/acme-v2-scheduled-deprecation-of-unauthenticated-resource-gets/74380
      - challenges
        - new challenge method 'tls-alpn-01' implemented
@@ -1138,41 +1134,41 @@ Changes with Apache 2.4.39
   *) core: new configuration option 'MergeSlashes on|off' that controls handling of
      multiple, consecutive slash ('/') characters in the path component of the request URL.
      [Eric Covener]
-
+     
   *) mod_http2: when SSL renegotiation is inhibited and a 403 ErrorDocument is
      in play, the proper HTTP/2 stream reset did not trigger with H2_ERR_HTTP_1_1_REQUIRED.
-     Fixed. [Michael Kaufmann]
+     Fixed. [Michael Kaufmann] 
 
-  *) mod_http2: new configuration directive: `H2Padding numbits` to control
+  *) mod_http2: new configuration directive: `H2Padding numbits` to control 
      padding of HTTP/2 payload frames. 'numbits' is a number from 0-8,
      controlling the range of padding bytes added to a frame. The actual number
      added is chosen randomly per frame. This applies to HEADERS, DATA and PUSH_PROMISE
-     frames equally. The default continues to be 0, e.g. no padding. [Stefan Eissing]
-
+     frames equally. The default continues to be 0, e.g. no padding. [Stefan Eissing] 
+  
   *) mod_http2: ripping out all the h2_req_engine internal features now that mod_proxy_http2
      has no more need for it. Optional functions are still declared but no longer implemented.
      While previous mod_proxy_http2 will work with this, it is recommended to run the matching
      versions of both modules. [Stefan Eissing]
-
+  
   *) mod_proxy_http2: changed mod_proxy_http2 implementation and fixed several bugs which
      resolve PR63170. The proxy module does now a single h2 request on the (reused)
      connection and returns. [Stefan Eissing]
-
-  *) mod_http2/mod_proxy_http2: proxy_http2 checks correct master connection aborted status
+  
+  *) mod_http2/mod_proxy_http2: proxy_http2 checks correct master connection aborted status 
      to trigger immediate shutdown of backend connections. This is now always signalled
-     by mod_http2 when the the session is being released.
+     by mod_http2 when the the session is being released. 
      proxy_http2 now only sends a PING frame to the backend when there is not already one
      in flight. [Stefan Eissing]
 
-  *) mod_proxy_http2: fixed an issue where a proxy_http2 handler entered an infinite
-     loop when encountering certain errors on the backend connection.
+  *) mod_proxy_http2: fixed an issue where a proxy_http2 handler entered an infinite 
+     loop when encountering certain errors on the backend connection. 
      See <https://bz.apache.org/bugzilla/show_bug.cgi?id=63170>. [Stefan Eissing]
 
-  *) mod_http2: Configuration directives H2Push and H2Upgrade can now be specified per
+  *) mod_http2: Configuration directives H2Push and H2Upgrade can now be specified per 
      Location/Directory, e.g. disabling PUSH for a specific set of resources. [Stefan Eissing]
 
   *) mod_http2: HEAD requests to some module such as mod_cgid caused the stream to
-     terminate improperly and cause a HTTP/2 PROTOCOL_ERROR.
+     terminate improperly and cause a HTTP/2 PROTOCOL_ERROR. 
      Fixes <https://github.com/icing/mod_h2/issues/167>. [Michael Kaufmann]
 
   *) http: Fix possible empty response with mod_ratelimit for HEAD requests.
@@ -1220,13 +1216,13 @@ Changes with Apache 2.4.38
 
   *) mod_negotiation: Treat LanguagePriority as case-insensitive to match
      AddLanguage behavior and HTTP specification. PR 39730 [Christophe Jaillet]
-
+  
   *) mod_md: incorrect behaviour when synchronizing ongoing ACME challenges
      have been fixed. [Michael Kaufmann, Stefan Eissing]
-
+  
   *) mod_setenvif: We can have expressions that become true if a regex pattern
      in the expression does NOT match. In this case val is NULL
-     and we should just set the value for the environment variable
+     and we should just set the value for the environment variable 
      like in the pattern case. [Ruediger Pluem]
 
   *) mod_session: Always decode session attributes early. [Hank Ibell]
@@ -1235,7 +1231,7 @@ Changes with Apache 2.4.38
      multiple environment variables are specified in a directive. [Hank Ibell]
 
   *) mod_rewrite: Only create the global mutex used by "RewriteMap prg:" when
-     this type of map is present in the configuration.  PR62311.
+     this type of map is present in the configuration.  PR62311.  
      [Hank Ibell <hwibell gmail.com>]
 
   *) mod_dav: Fix invalid Location header when a resource is created by
@@ -1259,7 +1255,7 @@ Changes with Apache 2.4.38
   *) mod_proxy: If ProxyPassReverse is used for reverse mapping of relative
      redirects, subsequent ProxyPassReverse statements, whether they are
      relative or absolute, may fail.  PR 60408.  [Peter Haworth <pmh1wheel gmail.com>]
-
+  
   *) mod_lua: Now marked as a stable module [https://s.apache.org/Xnh1]
 
 Changes with Apache 2.4.37
@@ -1288,9 +1284,9 @@ Changes with Apache 2.4.36
      [Eric Covener]
 
   *) mod_http2: adding defensive code for stream EOS handling, in case the request handler
-     missed to signal it the normal way (eos buckets). Addresses github issues
+     missed to signal it the normal way (eos buckets). Addresses github issues 
      https://github.com/icing/mod_h2/issues/164, https://github.com/icing/mod_h2/issues/167
-     and https://github.com/icing/mod_h2/issues/170. [Stefan Eissing]
+     and https://github.com/icing/mod_h2/issues/170. [Stefan Eissing] 
 
   *) ab: Add client certificate support.  PR 55774.  [Graham Leggett]
 
@@ -1368,7 +1364,7 @@ Changes with Apache 2.4.35
   *) mod_watchdog: Correct some log messages.  [Rainer Jung]
 
   *) mod_md: When the last domain name from an MD is moved to another one,
-     that now empty MD gets moved to the store archive. PR 62572.
+     that now empty MD gets moved to the store archive. PR 62572. 
      [Stefan Eissing]
 
   *) mod_ssl: Fix merging of SSLOCSPOverrideResponder.  [Jeff Trawick,

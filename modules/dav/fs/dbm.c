@@ -127,30 +127,11 @@ void dav_fs_ensure_state_dir(apr_pool_t * p, const char *dirname)
 dav_error * dav_dbm_open_direct(apr_pool_t *p, const char *pathname, int ro,
                                 dav_db **pdb)
 {
-#if APU_MAJOR_VERSION > 1 || (APU_MAJOR_VERSION == 1 && APU_MINOR_VERSION >= 7)
-    const apr_dbm_driver_t *driver;
-    const apu_err_t *err;
-#endif
-    apr_dbm_t *file = NULL;
     apr_status_t status;
+    apr_dbm_t *file = NULL;
 
     *pdb = NULL;
 
-#if APU_MAJOR_VERSION > 1 || (APU_MAJOR_VERSION == 1 && APU_MINOR_VERSION >= 7)
-    if ((status = apr_dbm_get_driver(&driver, NULL, &err, p)) != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, status, ap_server_conf, APLOGNO()
-                     "mod_dav_fs: The DBM library '%s' could not be loaded: %s",
-                             err->reason, err->msg);
-        return dav_new_error(p, HTTP_INTERNAL_SERVER_ERROR, 1, status,
-                "Could not load library for property database.");
-    }
-    if ((status = apr_dbm_open2(&file, driver, pathname,
-                               ro ? APR_DBM_READONLY : APR_DBM_RWCREATE,
-                               APR_OS_DEFAULT, p))
-                               != APR_SUCCESS && !ro) {
-        return dav_fs_dbm_error(NULL, p, status);
-    }
-#else
     if ((status = apr_dbm_open(&file, pathname,
                                ro ? APR_DBM_READONLY : APR_DBM_RWCREATE,
                                APR_OS_DEFAULT, p))
@@ -162,7 +143,6 @@ dav_error * dav_dbm_open_direct(apr_pool_t *p, const char *pathname, int ro,
            and we need to write */
         return dav_fs_dbm_error(NULL, p, status);
     }
-#endif
 
     /* may be NULL if we tried to open a non-existent db as read-only */
     if (file != NULL) {
