@@ -147,17 +147,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) dbm: Split the loading of a dbm driver from the opening of a dbm file. When
-     an attempt to load a dbm driver fails, log clearly which driver triggered
-     the error (not "default"), and what the error was.
-     Trunk version of patch:
-        https://svn.apache.org/r1891019
-     Backport version for 2.4.x of patch:
-        https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/httpd-dbm.patch
-     +1: minfrin, icing, jim
-     jailletc36: part of r1891023 is needed to fill some APLOGNO()
-     icing: seems there is some potential to wrap this into a common function?
-
   *) mod_proxy: Bump shared worker name to 384 chars. PR 53218
      trunk patch: http://svn.apache.org/r1896253
                   http://svn.apache.org/r1897859 (CHANGES entry, not in patch)
