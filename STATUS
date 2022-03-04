@@ -156,13 +156,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
              layout/size of the existing proxy_worker_shared fields.
      +1: ylavic, icing, jim
 
-  *) mod_http2: preserve the port number given in a HTTP/1.1
-     request that was Upgraded to HTTP/2. Fixes PR65881.
-     trunk patch: http://svn.apache.org/r1898146
-                  http://svn.apache.org/r1898173
-     2.4.x patch: svn merge -c 1898146,1898173 ^/httpd/httpd/trunk .
-     +1: icing, ylavic, jim
-
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
