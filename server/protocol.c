@@ -699,7 +699,7 @@ static void ra_log_error(ra_error error, request_rec *r)
         ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02401)
                       "HTTP Request: Rejected HTTP/0.9 request");
     else if (error == ra_badprotocol)
-        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO()
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(10388)
                       "HTTP Request: Unrecognized protocol '%.*s' "
                       "(perhaps whitespace was injected?)",
                       field_name_len(r->protocol), r->protocol);
@@ -1330,7 +1330,7 @@ request_rec *ap_read_request(conn_rec *conn)
     }
 
     if (!breq) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO()
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(10389)
                       "request failed: neither request bucket nor error at start of input");
         access_status = HTTP_INTERNAL_SERVER_ERROR;
         goto die_unusable_input;
