@@ -37,6 +37,7 @@
 /* Handles for core http/1.x filters */
 AP_DECLARE_DATA ap_filter_rec_t *ap_chunk_filter_handle;
 AP_DECLARE_DATA ap_filter_rec_t *ap_http1_response_out_filter_handle;
+AP_DECLARE_DATA ap_filter_rec_t *http1_request_in_filter_handle;
 AP_DECLARE_DATA ap_filter_rec_t *http1_body_in_filter_handle;
 
 
@@ -44,6 +45,10 @@ static void http1_pre_read_request(request_rec *r, conn_rec *c)
 {
     if (!r->main && !r->prev
         && !strcmp(AP_PROTOCOL_HTTP1, ap_get_protocol(c))) {
+        if (r->proxyreq == PROXYREQ_NONE) {
+            ap_add_input_filter_handle(http1_request_in_filter_handle,
+                                       NULL, r, r->connection);
+        }
         ap_add_output_filter_handle(ap_http1_response_out_filter_handle,
                                     NULL, r, r->connection);
     }
@@ -118,6 +123,9 @@ static void register_hooks(apr_pool_t *p)
     ap_chunk_filter_handle =
         ap_register_output_filter("CHUNK", ap_http_chunk_filter,
                                   NULL, AP_FTYPE_TRANSCODE + 1);
+    http1_request_in_filter_handle =
+        ap_register_input_filter("HTTP1_REQUEST_IN", http1_request_in_filter,
+                                 NULL, AP_FTYPE_TRANSCODE);
     http1_body_in_filter_handle =
         ap_register_input_filter("HTTP1_BODY_IN", http1_body_in_filter,
                                  NULL, AP_FTYPE_TRANSCODE);

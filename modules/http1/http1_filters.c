@@ -192,7 +192,6 @@ cleanup:
 }
 
 typedef struct request_filter_ctx {
-    request_rec *r;
     enum
     {
         REQ_LINE, /* reading 1st request line */
@@ -201,7 +200,11 @@ typedef struct request_filter_ctx {
         REQ_ERROR, /* failed, terminal */
     } state;
 
-    apr_bucket_brigade *tmpbb;
+    request_rec *r;
+    char *request_line;
+    char *method;
+    char *uri;
+    char *protocol;
 } request_filter_ctx;
 
 static apr_status_t read_request_line(request_filter_ctx *ctx, apr_bucket_brigade *bb)
@@ -230,8 +233,9 @@ static apr_status_t read_request_line(request_filter_ctx *ctx, apr_bucket_brigad
         /* ensure ap_rgetline allocates memory each time thru the loop
          * if there are empty lines
          */
-        ctx->r->the_request = NULL;
-        rv = ap_rgetline(&(ctx->r->the_request), (apr_size_t)(ctx->r->server->limit_req_line + 2),
+        ctx->request_line = NULL;
+        len = 0;
+        rv = ap_rgetline(&ctx->request_line, (apr_size_t)(ctx->r->server->limit_req_line + 2),
                          &len, ctx->r, strict ? AP_GETLINE_CRLF : 0, bb);
 
         if (rv != APR_SUCCESS) {
@@ -246,12 +250,28 @@ static apr_status_t read_request_line(request_filter_ctx *ctx, apr_bucket_brigad
     return APR_EINVAL;
 }
 
+static void sanitize_brigade(apr_bucket_brigade *bb)
+{
+    apr_bucket *e, *next;
+
+    for (e = APR_BRIGADE_FIRST(bb);
+         e != APR_BRIGADE_SENTINEL(bb);
+         e = next)
+    {
+        next = APR_BUCKET_NEXT(e);
+        if (!APR_BUCKET_IS_METADATA(e) && e->length == 0) {
+            apr_bucket_delete(e);
+        }
+    }
+}
+
 apr_status_t http1_request_in_filter(ap_filter_t *f,
                                      apr_bucket_brigade *bb,
                                      ap_input_mode_t mode,
                                      apr_read_type_e block,
                                      apr_off_t readbytes)
 {
+    request_rec *r = f->r;
     apr_bucket *e;
     request_filter_ctx *ctx = f->ctx;
     apr_status_t rv = APR_SUCCESS;
@@ -263,19 +283,22 @@ apr_status_t http1_request_in_filter(ap_filter_t *f,
     }
 
     if (!ctx) {
-        f->ctx = ctx = apr_pcalloc(f->r->pool, sizeof(*ctx));
-        ctx->r = f->r;
+        f->ctx = ctx = apr_pcalloc(r->pool, sizeof(*ctx));
+        ctx->r = r;
         ctx->state = REQ_LINE;
     }
+
+    /* This filter needs to get out of the way of read_request_line() */
+    ap_remove_input_filter(f);
 
     while (APR_SUCCESS == rv) {
         switch (ctx->state) {
         case REQ_LINE:
-            ap_log_rerror(APLOG_MARK, APLOG_TRACE3, 0, f->r,
-                          "ap_http1_request_in_filter: read request line");
             if ((rv = read_request_line(ctx, bb)) != APR_SUCCESS) {
                 /* certain failures are answered with a HTTP error bucket
                  * and are terminal for parsing a request */
+                ctx->method = ctx->uri = "-";
+                ctx->protocol = "HTTP/1.0";
                 if (APR_STATUS_IS_ENOSPC(rv)) {
                     http_status = HTTP_REQUEST_URI_TOO_LARGE;
                 }
@@ -290,9 +313,10 @@ apr_status_t http1_request_in_filter(ap_filter_t *f,
                 }
                 goto cleanup;
             }
-            else if (!ap_parse_request_line(f->r)) {
-                AP_DEBUG_ASSERT(f->r->status && f->r->status != HTTP_OK);
-                http_status = f->r->status;
+
+            if (!ap_tokenize_request_line(r, ctx->request_line,
+                                          &ctx->method, &ctx->uri, &ctx->protocol)) {
+                http_status = HTTP_BAD_REQUEST;
                 goto cleanup;
             }
             /* got the request line and it looked to contain what we need */
@@ -300,22 +324,30 @@ apr_status_t http1_request_in_filter(ap_filter_t *f,
             break;
 
         case REQ_HEADERS:
-            ap_get_mime_headers_core(f->r, bb);
-            if (f->r->status != HTTP_OK) {
-                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, f->r, APLOGNO(00567)
+            ap_get_mime_headers_core(r, bb);
+            if (r->status != HTTP_OK) {
+                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(00567)
                               "request failed: error reading the headers");
-                http_status = f->r->status;
+                http_status = r->status;
                 goto cleanup;
             }
-            else {
-                /* TODO: insert meta HEADERS bucket with all info and return */
-                ctx->state = REQ_BODY;
-                goto cleanup;
-            }
-            break;
+            /* append REQUEST bucket and return */
+            e = ap_bucket_request_createn(ctx->method, ctx->uri,
+                                          ctx->protocol, r->headers_in,
+                                          r->pool, r->connection->bucket_alloc);
+            /* reading may leave 0 length data buckets in the brigade,
+             * get rid of those. */
+            sanitize_brigade(bb);
+            APR_BRIGADE_INSERT_HEAD(bb, e);
+            ctx->state = REQ_BODY;
+            ap_log_rerror(APLOG_MARK, APLOG_TRACE1, rv, r,
+                          "http1 request and headers parsed: %s %s %s",
+                          ctx->method, ctx->uri, ctx->protocol);
+            goto cleanup;
 
         case REQ_BODY:
-            /* we should really get out of the way */
+            /* we should not come here */
+            AP_DEBUG_ASSERT(0);
             rv = ap_get_brigade(f->next, bb, mode, block, readbytes);
             goto cleanup;
 
@@ -328,8 +360,10 @@ apr_status_t http1_request_in_filter(ap_filter_t *f,
 
 cleanup:
     if (http_status != HTTP_OK) {
+        ap_log_rerror(APLOG_MARK, APLOG_TRACE3, 0, r,
+                      "failed reading request line, returning error bucket %d", http_status);
         apr_brigade_cleanup(bb);
-        e = ap_bucket_error_create(http_status, NULL, f->r->pool,
+        e = ap_bucket_error_create(http_status, NULL, r->pool,
                                    f->c->bucket_alloc);
         APR_BRIGADE_INSERT_TAIL(bb, e);
         ctx->state = REQ_ERROR;

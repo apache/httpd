@@ -68,6 +68,31 @@ AP_DECLARE(request_rec *) ap_create_request(conn_rec *c);
 request_rec *ap_read_request(conn_rec *c);
 
 /**
+ * Tokenize a HTTP/x.x request line.
+ * @param r the request for which to parse the line
+ * @param line the line to tokenize, will be written to.
+ * @param pmethod the parsed method on return
+ * @param puri the parsed uri on return
+ * @param pprotocol the parsed protocol on return
+ * @return 1 on success, 0 on failure
+ */
+AP_DECLARE(int) ap_tokenize_request_line(request_rec *r, char *line,
+                                         char **pmethod, char **puri,
+                                         char **pprotocol);
+
+/**
+ * Assign the method, uri and protocol to the request.
+ * @param r The current request
+ * @param method the HTTP method
+ * @param uri the request uri
+ * @param protocol the request protocol
+ * @return 1 on success, 0 on failure
+ */
+AP_DECLARE(int) ap_assign_request(request_rec *r,
+                                  const char *method, const char *uri,
+                                  const char *protocol);
+
+/**
  * Parse and validate the request line.
  * @param r The current request
  * @return 1 on success, 0 on failure
@@ -1035,7 +1060,122 @@ AP_DECLARE(apr_bucket *) ap_bucket_error_create(int error, const char *buf,
                                                 apr_pool_t *p,
                                                 apr_bucket_alloc_t *list);
 
-/** @see ap_bucket_type_headers */
+/** @see ap_bucket_type_request */
+typedef struct ap_bucket_request ap_bucket_request;
+
+/**
+ * @struct ap_bucket_request
+ * @brief  A bucket referring to a HTTP request
+ *
+ */
+struct ap_bucket_request {
+    /** Number of buckets using this memory */
+    apr_bucket_refcount refcount;
+    const char *method; /* request method */
+    const char *uri; /* request uri */
+    const char *protocol; /* request protocol */
+    apr_table_t *headers; /* request headers */
+};
+
+/** @see ap_bucket_type_request */
+AP_DECLARE_DATA extern const apr_bucket_type_t ap_bucket_type_request;
+
+/**
+ * Determine if a bucket is a request bucket
+ * @param e The bucket to inspect
+ * @return true or false
+ */
+#define AP_BUCKET_IS_REQUEST(e)         (e->type == &ap_bucket_type_request)
+
+/**
+ * Make the bucket passed in a request bucket
+ * Copies all parameters to the given pool.
+ * @param b The bucket to make into a request bucket
+ * @param method the HTTP method
+ * @param uri the uri requested
+ * @param protocol the protocol requested
+ * @param headers the table of response headers.
+ * @param p A pool to allocate out of.
+ * @return The new bucket, or NULL if allocation failed
+ */
+AP_DECLARE(apr_bucket *) ap_bucket_request_make(
+            apr_bucket *b,
+            const char *method,
+            const char *uri,
+            const char *protocol,
+            apr_table_t *headers,
+            apr_pool_t *p);
+
+/**
+ * Make the bucket passed in a request bucket
+ * Uses all paramters without copying.
+ * @param b The bucket to make into a request bucket
+ * @param method the HTTP method
+ * @param uri the uri requested
+ * @param protocol the protocol requested
+ * @param headers the table of response headers.
+ * @param p A pool to allocate out of.
+ * @return The new bucket, or NULL if allocation failed
+ */
+AP_DECLARE(apr_bucket *) ap_bucket_request_maken(
+            apr_bucket *b,
+            const char *method,
+            const char *uri,
+            const char *protocol,
+            apr_table_t *headers,
+            apr_pool_t *p);
+
+/**
+ * Create a bucket referring to a HTTP request.
+ * Copies all parameters to the given pool.
+ * @param method the HTTP method
+ * @param uri the uri requested
+ * @param protocol the protocol requested
+ * @param headers the table of response headers.
+ * @param p A pool to allocate the error string out of.
+ * @param list The bucket allocator from which to allocate the bucket
+ * @return The new bucket, or NULL if allocation failed
+ */
+AP_DECLARE(apr_bucket *) ap_bucket_request_create(
+            const char *method,
+            const char *uri,
+            const char *protocol,
+            apr_table_t *headers,
+            apr_pool_t *p,
+            apr_bucket_alloc_t *list);
+
+/**
+ * Create a bucket referring to a HTTP request.
+ * Uses all paramters without copying.
+ * @param method the HTTP method
+ * @param uri the uri requested
+ * @param protocol the protocol requested
+ * @param headers the HTTP response headers.
+ * @param p A pool to allocate the error string out of.
+ * @param list The bucket allocator from which to allocate the bucket
+ * @return The new bucket, or NULL if allocation failed
+ */
+AP_DECLARE(apr_bucket *) ap_bucket_request_createn(
+            const char *method,
+            const char *uri,
+            const char *protocol,
+            apr_table_t *headers,
+            apr_pool_t *p,
+            apr_bucket_alloc_t *list);
+
+/**
+ * Clone a request bucket into another pool/bucket_alloc that may
+ * have a separate lifetime than the source bucket/pool.
+ * @param source the request bucket to clone
+ * @param p A pool to allocate the data out of.
+ * @param list The bucket allocator from which to allocate the bucket
+ * @return The new bucket, or NULL if allocation failed
+ */
+AP_DECLARE(apr_bucket *) ap_bucket_request_clone(apr_bucket *source,
+                                                  apr_pool_t *p,
+                                                  apr_bucket_alloc_t *list);
+
+/** @see ap_bucket_type_response */
 typedef struct ap_bucket_response ap_bucket_response;
 
 /**
@@ -1096,7 +1236,7 @@ AP_DECLARE(apr_bucket *) ap_bucket_response_create(
 /**
  * Clone a RESPONSE bucket into another pool/bucket_alloc that may
  * have a separate lifetime than the source bucket/pool.
- * @param source the header bucket to clone
+ * @param source the response bucket to clone
  * @param p A pool to allocate the data out of.
  * @param list The bucket allocator from which to allocate the bucket
  * @return The new bucket, or NULL if allocation failed

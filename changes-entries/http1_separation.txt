@@ -1,16 +1,17 @@
   *) mod_http: separating the HTTP semantic handling from the HTTP/1.x
      serialization (transcoding) handling by splitting filters.
-     - new HEADERS bucket type that carries an optional status code
-       and reason string, optional headers and notes tables.
-       TRANSCODE filters are converting protocol version specific
-       input to HEADERS buckets. And HEADERS output buckets into
-       the wire format for the headers.
+     - new REQUEST/RESPONSE/HEADERS bucket types that carry the
+       meta information about a HTTP request or response or trailers.
+       TRANSCODE input filters convert protocol version specific
+       bytes to REQUEST/HEADER buckets.
+       TRANSCODE output filters convert REPONSE/HEADER buckets into
+       the byte format suitable for the HTTP protocol version.
      - new module mod_http1 that has the new transcoding filters.
        also linked statically, just like mod_http.
      - "chunked" encoding handled in mod_http1 TRANSCODE filters.
      - Response header check and completion done in mod_http
        filter for all HTTP procotol versions.
-     - ap_send_interim_response() now generates a HEADERS bucket
+     - ap_send_interim_response() now generates a RESPONSE bucket
        and sends it through the protocol output filters of a request.
      - there are still several code locations in the server where
      - several "Transfer-Encoding" checks have been moved from

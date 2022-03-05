@@ -1,4 +1,6 @@
 import re
+import socket
+
 import pytest
 
 from .env import H1Conf
@@ -18,7 +20,7 @@ class TestGet:
     # check SSL environment variables from CGI script
     def test_h1_003_01(self, env):
         url = env.mkurl("https", "cgi", "/hello.py")
-        r = env.curl_get(url, 5, options=["--tlsv1.2"])
+        r = env.curl_get(url)
         assert r.response["status"] == 200
         assert r.response["json"]["protocol"] == "HTTP/1.1"
         assert r.response["json"]["https"] == "on"

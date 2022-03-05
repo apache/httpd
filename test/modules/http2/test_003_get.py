@@ -150,7 +150,7 @@ content-type: text/html
         h = r.response["header"]
         assert "last-modified" in h
         lastmod = h["last-modified"]
-        r = env.curl_get(url, 5, options=['-H', ("if-modified-since: %s" % lastmod)])
+        r = env.curl_get(url, 5, options=['-H', f"if-modified-since: {lastmod}"])
         assert 304 == r.response["status"]
 
     # test conditionals: if-etag
@@ -165,7 +165,7 @@ content-type: text/html
         h = r.response["header"]
         assert "etag" in h
         etag = h["etag"]
-        r = env.curl_get(url, 5, options=['-H', ("if-none-match: %s" % etag)])
+        r = env.curl_get(url, 5, options=['-H', f"if-none-match: {etag}"])
         assert 304 == r.response["status"]
 
     # test various response body lengths to work correctly 

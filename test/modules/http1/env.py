@@ -62,6 +62,7 @@ class H1TestEnv(HttpdTestEnv):
         self.add_httpd_log_modules(["http", "http1", "core"])
 
         self.httpd_error_log.set_ignored_lognos([
+            'AH00135', # unsafe/strict tests send invalid methods
         ])
         self.httpd_error_log.add_ignored_patterns([
         ])

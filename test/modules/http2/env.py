@@ -66,10 +66,11 @@ class H2TestEnv(HttpdTestEnv):
     def __init__(self, pytestconfig=None):
         super().__init__(pytestconfig=pytestconfig)
         self.add_httpd_conf([
-                             "H2MinWorkers 1",
-                             "H2MaxWorkers 64",
-                             "Protocols h2 http/1.1 h2c",
-                         ])
+            "H2MinWorkers 1",
+            "H2MaxWorkers 64",
+            "Protocols h2 http/1.1 h2c",
+            "LogLevel http:trace4 http1:trace4",
+        ])
         self.add_httpd_log_modules(["http2", "proxy_http2", "h2test", "proxy", "proxy_http"])
         self.add_cert_specs([
             CertificateSpec(domains=[
