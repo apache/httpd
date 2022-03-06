@@ -67,7 +67,7 @@ by commas.</p>
 
 
 <p>Each flag (with a few exceptions) has a short form, such as
-<code>CO</code>, as well as a longer form, such as <code>cookie</code>. 
+<code>CO</code>, as well as a longer form, such as <code>cookie</code>.
 While it is most common to use
 the short form, it is recommended that you familiarize yourself with the
 long form, so that you remember what each flag is supposed to do.
@@ -203,7 +203,7 @@ browsers that support this feature.</dd>
 <dt>samesite</dt>
 <dd>If set to anything other than <code>false</code> or <code>0</code>, the <code>SameSite</code>
 attribute is set to the specified value.  Typical values are <code>None</code>,
-<code>Lax</code>, and <code>Strict</code>.Available in 2.5.1 and later.</dd>
+<code>Lax</code>, and <code>Strict</code>. Available in 2.4.47 and later.</dd>
 </dl>
 
 
@@ -441,7 +441,7 @@ pattern still matches (i.e., while the URI still contains an
 <code>A</code> with a <code>B</code>).</p>
 
 <p>In 2.4.8 and later, this module returns an error after 32,000 iterations to
-protect against unintended looping.  An alternative maximum number of 
+protect against unintended looping.  An alternative maximum number of
 iterations can be specified by adding to the N flag.  </p>
 <pre class="prettyprint lang-config"># Be willing to replace 1 character in each pass of the loop
 RewriteRule "(.+)[&gt;&lt;;]$" "$1" [N=64000]

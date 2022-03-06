@@ -894,7 +894,7 @@ ProxyDomain     ".example.com"</pre>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>The list of status codes was added in 2.5.1</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>The list of status codes was added in 2.4.47</td></tr>
 </table>
     <p>This directive is useful for reverse-proxy setups where you want to
     have a common look and feel on the error pages seen by the end user.
