@@ -2005,7 +2005,7 @@ header for proxied requests</description>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context>
 </contextlist>
-<compatibility>The list of status codes was added in 2.5.1</compatibility>
+<compatibility>The list of status codes was added in 2.4.47</compatibility>
 
 <usage>
     <p>This directive is useful for reverse-proxy setups where you want to
