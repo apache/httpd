@@ -218,7 +218,7 @@ accomplish.</p>
 <p><module>mod_rewrite</module> is frequently used to take a particular
 action based on the presence or absence of a particular environment
 variable or request header. This can be done more efficiently using the
-<directive module="core" type="section">If</directive>.</p>
+<directive module="core" type="section">If</directive> directive.</p>
 
 <p>Consider, for example, the common scenario where
 <directive>RewriteRule</directive> is used to enforce a canonical
