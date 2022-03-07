@@ -36,4 +36,10 @@ struct h2_response_parser;
 
 apr_status_t h2_c2_filter_notes_out(ap_filter_t *f, apr_bucket_brigade *bb);
 
+apr_status_t h2_c2_filter_request_in(ap_filter_t *f,
+                                     apr_bucket_brigade *bb,
+                                     ap_input_mode_t mode,
+                                     apr_read_type_e block,
+                                     apr_off_t readbytes);
+
 #endif /* defined(__mod_h2__h2_c2_filter__) */

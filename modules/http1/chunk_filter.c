@@ -482,8 +482,6 @@ apr_status_t http1_body_in_filter(ap_filter_t *f,
         return ap_get_brigade(f->next, b, mode, block, readbytes);
     }
 
-    ap_log_rerror(APLOG_MARK, APLOG_TRACE3, 0, f->r,
-                  "ap_http1_transcode_in_filter: start read");
     if (!ctx) {
         const char *tenc, *lenp;
         f->ctx = ctx = apr_pcalloc(f->r->pool, sizeof(*ctx));

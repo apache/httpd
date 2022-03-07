@@ -287,6 +287,27 @@ static request_rec *my_ap_create_request(conn_rec *c)
 }
 #endif
 
+apr_bucket *h2_request_create_bucket(const h2_request *req, request_rec *r)
+{
+    conn_rec *c = r->connection;
+    apr_table_t *headers = apr_table_copy(r->pool, req->headers);
+    const char *uri = req->path;
+
+    AP_DEBUG_ASSERT(req->authority);
+    if (req->scheme && (ap_cstr_casecmp(req->scheme,
+                        ap_ssl_conn_is_ssl(c->master? c->master : c)? "https" : "http")
+                        || !ap_cstr_casecmp("CONNECT", req->method))) {
+        /* Client sent a non-matching ':scheme' pseudo header or CONNECT.
+         * In this case, we use an absolute URI.
+         */
+        uri = apr_psprintf(r->pool, "%s://%s%s",
+                           req->scheme, req->authority, req->path ? req->path : "");
+    }
+
+    return ap_bucket_request_create(req->method, uri, "HTTP/2.0", headers,
+                                    r->pool, c->bucket_alloc);
+}
+
 request_rec *h2_create_request_rec(const h2_request *req, conn_rec *c)
 {
     int access_status = HTTP_OK;    

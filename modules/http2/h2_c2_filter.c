@@ -88,3 +88,39 @@ pass:
     return ap_pass_brigade(f->next, bb);
 }
 
+apr_status_t h2_c2_filter_request_in(ap_filter_t *f,
+                                     apr_bucket_brigade *bb,
+                                     ap_input_mode_t mode,
+                                     apr_read_type_e block,
+                                     apr_off_t readbytes)
+{
+    h2_conn_ctx_t *conn_ctx;
+    apr_bucket *b;
+
+    /* just get out of the way for things we don't want to handle. */
+    if (mode != AP_MODE_READBYTES && mode != AP_MODE_GETLINE) {
+        return ap_get_brigade(f->next, bb, mode, block, readbytes);
+    }
+
+    /* This filter is a one-time wonder */
+    ap_remove_input_filter(f);
+
+    if (f->c->master && (conn_ctx = h2_conn_ctx_get(f->c)) && conn_ctx->stream_id) {
+        if (conn_ctx->request->http_status != H2_HTTP_STATUS_UNSET) {
+            /* error was encountered preparing this request */
+            b = ap_bucket_error_create(conn_ctx->request->http_status, NULL, f->r->pool,
+                                       f->c->bucket_alloc);
+            APR_BRIGADE_INSERT_TAIL(bb, b);
+            return APR_SUCCESS;
+        }
+        b = h2_request_create_bucket(conn_ctx->request, f->r);
+        APR_BRIGADE_INSERT_TAIL(bb, b);
+        if (!conn_ctx->beam_in) {
+            b = apr_bucket_eos_create(f->c->bucket_alloc);
+            APR_BRIGADE_INSERT_TAIL(bb, b);
+        }
+        return APR_SUCCESS;
+    }
+
+    return ap_get_brigade(f->next, bb, mode, block, readbytes);
+}

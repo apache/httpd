@@ -125,27 +125,6 @@ static int h2_post_config(apr_pool_t *p, apr_pool_t *plog,
                  myfeats.dyn_windows? "+DWINS"  : "",
                  ngh2?                ngh2->version_str : "unknown");
     
-    switch (h2_conn_mpm_type()) {
-        case H2_MPM_SIMPLE:
-        case H2_MPM_MOTORZ:
-        case H2_MPM_NETWARE:
-        case H2_MPM_WINNT:
-            /* not sure we need something extra for those. */
-            break;
-        case H2_MPM_EVENT:
-        case H2_MPM_WORKER:
-            /* all fine, we know these ones */
-            break;
-        case H2_MPM_PREFORK:
-            /* ok, we now know how to handle that one */
-            break;
-        case H2_MPM_UNKNOWN:
-            /* ??? */
-            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(03091)
-                         "post_config: mpm type unknown");
-            break;
-    }
-    
     if (!h2_mpm_supported() && !mpm_warned) {
         mpm_warned = 1;
         ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s, APLOGNO(10034)

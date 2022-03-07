@@ -668,6 +668,9 @@ transfer:
             else if (AP_BUCKET_IS_RESPONSE(bsender)) {
                 brecv = ap_bucket_response_clone(bsender, bb->p, bb->bucket_alloc);
             }
+            else if (AP_BUCKET_IS_REQUEST(bsender)) {
+                brecv = ap_bucket_request_clone(bsender, bb->p, bb->bucket_alloc);
+            }
             else if (AP_BUCKET_IS_HEADERS(bsender)) {
                 brecv = ap_bucket_headers_clone(bsender, bb->p, bb->bucket_alloc);
             }

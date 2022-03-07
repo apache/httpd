@@ -81,8 +81,6 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
         f->ctx = ctx = apr_pcalloc(f->r->pool, sizeof(*ctx));
     }
 
-    ap_log_rerror(APLOG_MARK, APLOG_TRACE3, 0, r,
-                  "ap_http_in_filter: start read");
     /* Since we're about to read data, send 100-Continue if needed.
      * Only valid on chunked and C-L bodies where the C-L is > 0.
      *
@@ -181,8 +179,6 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
     }
 
 cleanup:
-    ap_log_rerror(APLOG_MARK, APLOG_TRACE3, rv, r,
-                  "ap_http_in_filter: return");
     return rv;
 }
 
@@ -741,8 +737,6 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f,
     }
 
     rv = ap_pass_brigade(f->next, b);
-    ap_log_rerror(APLOG_MARK, APLOG_TRACE3, rv, r,
-                  "ap_http_header_filter passed brigade");
 out:
     if (recursive_error) {
         return AP_FILTER_ERROR;
