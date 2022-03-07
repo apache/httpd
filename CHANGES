@@ -1,6 +1,12 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.53
 
+  *) core: Make sure and check that LimitXMLRequestBody fits in system memory.
+     [Ruediger Pluem, Yann Ylavic]
+
+  *) core: Simpler connection close logic if discarding the request body fails.
+     [Yann Ylavic, Ruediger Pluem]
+
   *) mod_http2: preserve the port number given in a HTTP/1.1
      request that was Upgraded to HTTP/2. Fixes PR65881.
      [Stefan Eissing]

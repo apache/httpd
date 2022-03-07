@@ -1,2 +1,0 @@
-  *) core: Make sure and check that LimitXMLRequestBody fits in system memory.
-     [Ruediger Pluem, Yann Ylavic]

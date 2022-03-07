@@ -1,2 +1,0 @@
-  *) core: Simpler connection close logic if discarding the request body fails.
-     [Yann Ylavic, Ruediger Pluem]
