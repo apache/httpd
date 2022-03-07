@@ -1639,7 +1639,7 @@ to the network</td></tr>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Descripci&#243;n:</a></th><td>Threshold above which pending data are flushed to the
 network</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Sintaxis:</a></th><td><code>FlushMaxThreshold<var>number-of-bytes</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Sintaxis:</a></th><td><code>FlushMaxThreshold <var>number-of-bytes</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Valor por defecto:</a></th><td><code>FlushMaxThreshold 65536</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexto:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Estado:</a></th><td>Core</td></tr>
