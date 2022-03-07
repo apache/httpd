@@ -51,7 +51,7 @@ typedef struct sed_filter_ctxt
     apr_bucket_brigade *bbinp;
     char *outbuf;
     char *curoutbuf;
-    int bufsize;
+    apr_size_t bufsize;
     apr_pool_t *tpool;
     int numbuckets;
 } sed_filter_ctxt;
@@ -100,7 +100,7 @@ static void alloc_outbuf(sed_filter_ctxt* ctx)
 /* append_bucket
  * Allocate a new bucket from buf and sz and append to ctx->bb
  */
-static apr_status_t append_bucket(sed_filter_ctxt* ctx, char* buf, int sz)
+static apr_status_t append_bucket(sed_filter_ctxt* ctx, char* buf, apr_size_t sz)
 {
     apr_status_t status = APR_SUCCESS;
     apr_bucket *b;
@@ -133,7 +133,7 @@ static apr_status_t append_bucket(sed_filter_ctxt* ctx, char* buf, int sz)
  */
 static apr_status_t flush_output_buffer(sed_filter_ctxt *ctx)
 {
-    int size = ctx->curoutbuf - ctx->outbuf;
+    apr_size_t size = ctx->curoutbuf - ctx->outbuf;
     char *out;
     apr_status_t status = APR_SUCCESS;
     if ((ctx->outbuf == NULL) || (size <=0))
@@ -147,12 +147,12 @@ static apr_status_t flush_output_buffer(sed_filter_ctxt *ctx)
 /* This is a call back function. When libsed wants to generate the output,
  * this function will be invoked.
  */
-static apr_status_t sed_write_output(void *dummy, char *buf, int sz)
+static apr_status_t sed_write_output(void *dummy, char *buf, apr_size_t sz)
 {
     /* dummy is basically filter context. Context is passed during invocation
      * of sed_eval_buffer
      */
-    int remainbytes = 0;
+    apr_size_t remainbytes = 0;
     apr_status_t status = APR_SUCCESS;
     sed_filter_ctxt *ctx = (sed_filter_ctxt *) dummy;
     if (ctx->outbuf == NULL) {
