@@ -71,7 +71,7 @@ static apr_status_t dosub(sed_eval_t *eval, char *rhsbuf, int n,
 static char *place(sed_eval_t *eval, char *asp, char *al1, char *al2);
 static apr_status_t command(sed_eval_t *eval, sed_reptr_t *ipc,
                             step_vars_storage *step_vars);
-static apr_status_t wline(sed_eval_t *eval, char *buf, int sz);
+static apr_status_t wline(sed_eval_t *eval, char *buf, apr_size_t sz);
 static apr_status_t arout(sed_eval_t *eval);
 
 static void eval_errf(sed_eval_t *eval, const char *fmt, ...)
@@ -92,11 +92,11 @@ static void eval_errf(sed_eval_t *eval, const char *fmt, ...)
  * grow_buffer
  */
 static void grow_buffer(apr_pool_t *pool, char **buffer,
-                        char **spend, unsigned int *cursize,
-                        unsigned int newsize)
+                        char **spend, apr_size_t *cursize,
+                        apr_size_t newsize)
 {
     char* newbuffer = NULL;
-    int spendsize = 0;
+    apr_size_t spendsize = 0;
     if (*cursize >= newsize)
         return;
     /* Avoid number of times realloc is called. It could cause huge memory
@@ -124,7 +124,7 @@ static void grow_buffer(apr_pool_t *pool, char **buffer,
 /*
  * grow_line_buffer
  */
-static void grow_line_buffer(sed_eval_t *eval, int newsize)
+static void grow_line_buffer(sed_eval_t *eval, apr_size_t newsize)
 {
     grow_buffer(eval->pool, &eval->linebuf, &eval->lspend,
                 &eval->lsize, newsize);
@@ -133,7 +133,7 @@ static void grow_line_buffer(sed_eval_t *eval, int newsize)
 /*
  * grow_hold_buffer
  */
-static void grow_hold_buffer(sed_eval_t *eval, int newsize)
+static void grow_hold_buffer(sed_eval_t *eval, apr_size_t newsize)
 {
     grow_buffer(eval->pool, &eval->holdbuf, &eval->hspend,
                 &eval->hsize, newsize);
@@ -142,7 +142,7 @@ static void grow_hold_buffer(sed_eval_t *eval, int newsize)
 /*
  * grow_gen_buffer
  */
-static void grow_gen_buffer(sed_eval_t *eval, int newsize,
+static void grow_gen_buffer(sed_eval_t *eval, apr_size_t newsize,
                             char **gspend)
 {
     if (gspend == NULL) {
@@ -156,9 +156,9 @@ static void grow_gen_buffer(sed_eval_t *eval, int newsize,
 /*
  * appendmem_to_linebuf
  */
-static void appendmem_to_linebuf(sed_eval_t *eval, const char* sz, int len)
+static void appendmem_to_linebuf(sed_eval_t *eval, const char* sz, apr_size_t len)
 {
-    unsigned int reqsize = (eval->lspend - eval->linebuf) + len;
+    apr_size_t reqsize = (eval->lspend - eval->linebuf) + len;
     if (eval->lsize < reqsize) {
         grow_line_buffer(eval, reqsize);
     }
@@ -169,21 +169,36 @@ static void appendmem_to_linebuf(sed_eval_t *eval, const char* sz, int len)
 /*
  * append_to_linebuf
  */
-static void append_to_linebuf(sed_eval_t *eval, const char* sz)
+static void append_to_linebuf(sed_eval_t *eval, const char* sz,
+                              step_vars_storage *step_vars)
 {
-    int len = strlen(sz);
+    apr_size_t len = strlen(sz);
+    char *old_linebuf = eval->linebuf;
     /* Copy string including null character */
     appendmem_to_linebuf(eval, sz, len + 1);
     --eval->lspend; /* lspend will now point to NULL character */
+    /* Sync step_vars after a possible linebuf expansion */
+    if (step_vars && old_linebuf != eval->linebuf) {
+        if (step_vars->loc1) {
+            step_vars->loc1 = step_vars->loc1 - old_linebuf + eval->linebuf;
+        }
+        if (step_vars->loc2) {
+            step_vars->loc2 = step_vars->loc2 - old_linebuf + eval->linebuf;
+        }
+        if (step_vars->locs) {
+            step_vars->locs = step_vars->locs - old_linebuf + eval->linebuf;
+        }
+    }
 }
 
 /*
  * copy_to_linebuf
  */
-static void copy_to_linebuf(sed_eval_t *eval, const char* sz)
+static void copy_to_linebuf(sed_eval_t *eval, const char* sz,
+                            step_vars_storage *step_vars)
 {
     eval->lspend = eval->linebuf;
-    append_to_linebuf(eval, sz);
+    append_to_linebuf(eval, sz, step_vars);
 }
 
 /*
@@ -191,8 +206,8 @@ static void copy_to_linebuf(sed_eval_t *eval, const char* sz)
  */
 static void append_to_holdbuf(sed_eval_t *eval, const char* sz)
 {
-    int len = strlen(sz);
-    unsigned int reqsize = (eval->hspend - eval->holdbuf) + len + 1;
+    apr_size_t len = strlen(sz);
+    apr_size_t reqsize = (eval->hspend - eval->holdbuf) + len + 1;
     if (eval->hsize <= reqsize) {
         grow_hold_buffer(eval, reqsize);
     }
@@ -215,8 +230,8 @@ static void copy_to_holdbuf(sed_eval_t *eval, const char* sz)
  */
 static void append_to_genbuf(sed_eval_t *eval, const char* sz, char **gspend)
 {
-    int len = strlen(sz);
-    unsigned int reqsize = (*gspend - eval->genbuf) + len + 1;
+    apr_size_t len = strlen(sz);
+    apr_size_t reqsize = (*gspend - eval->genbuf) + len + 1;
     if (eval->gsize < reqsize) {
         grow_gen_buffer(eval, reqsize, gspend);
     }
@@ -230,8 +245,8 @@ static void append_to_genbuf(sed_eval_t *eval, const char* sz, char **gspend)
  */
 static void copy_to_genbuf(sed_eval_t *eval, const char* sz)
 {
-    int len = strlen(sz);
-    unsigned int reqsize = len + 1;
+    apr_size_t len = strlen(sz);
+    apr_size_t reqsize = len + 1;
     if (eval->gsize < reqsize) {
         grow_gen_buffer(eval, reqsize, NULL);
     }
@@ -353,7 +368,7 @@ apr_status_t sed_eval_file(sed_eval_t *eval, apr_file_t *fin, void *fout)
 /*
  * sed_eval_buffer
  */
-apr_status_t sed_eval_buffer(sed_eval_t *eval, const char *buf, int bufsz, void *fout)
+apr_status_t sed_eval_buffer(sed_eval_t *eval, const char *buf, apr_size_t bufsz, void *fout)
 {
     apr_status_t rv;
 
@@ -383,7 +398,7 @@ apr_status_t sed_eval_buffer(sed_eval_t *eval, const char *buf, int bufsz, void 
 
     while (bufsz) {
         char *n;
-        int llen;
+        apr_size_t llen;
 
         n = memchr(buf, '\n', bufsz);
         if (n == NULL)
@@ -442,7 +457,7 @@ apr_status_t sed_finalize_eval(sed_eval_t *eval, void *fout)
              * buffer is not a newline.
              */
             /* Assure space for NULL */
-            append_to_linebuf(eval, "");
+            append_to_linebuf(eval, "", NULL);
         }
 
         *eval->lspend = '\0';
@@ -666,7 +681,7 @@ static apr_status_t dosub(sed_eval_t *eval, char *rhsbuf, int n,
     lp = step_vars->loc2;
     step_vars->loc2 = sp - eval->genbuf + eval->linebuf;
     append_to_genbuf(eval, lp, &sp);
-    copy_to_linebuf(eval, eval->genbuf);
+    copy_to_linebuf(eval, eval->genbuf, step_vars);
     return rv;
 }
 
@@ -676,8 +691,8 @@ static apr_status_t dosub(sed_eval_t *eval, char *rhsbuf, int n,
 static char *place(sed_eval_t *eval, char *asp, char *al1, char *al2)
 {
     char *sp = asp;
-    int n = al2 - al1;
-    unsigned int reqsize = (sp - eval->genbuf) + n + 1;
+    apr_size_t n = al2 - al1;
+    apr_size_t reqsize = (sp - eval->genbuf) + n + 1;
 
     if (eval->gsize < reqsize) {
         grow_gen_buffer(eval, reqsize, &sp);
@@ -735,7 +750,7 @@ static apr_status_t command(sed_eval_t *eval, sed_reptr_t *ipc,
             }
 
             p1++;
-            copy_to_linebuf(eval, p1);
+            copy_to_linebuf(eval, p1, step_vars);
             eval->jflag++;
             break;
 
@@ -745,12 +760,12 @@ static apr_status_t command(sed_eval_t *eval, sed_reptr_t *ipc,
             break;
 
         case GCOM:
-            copy_to_linebuf(eval, eval->holdbuf);
+            copy_to_linebuf(eval, eval->holdbuf, step_vars);
             break;
 
         case CGCOM:
-            append_to_linebuf(eval, "\n");
-            append_to_linebuf(eval, eval->holdbuf);
+            append_to_linebuf(eval, "\n", step_vars);
+            append_to_linebuf(eval, eval->holdbuf, step_vars);
             break;
 
         case HCOM:
@@ -881,7 +896,7 @@ static apr_status_t command(sed_eval_t *eval, sed_reptr_t *ipc,
                 if (rv != APR_SUCCESS)
                     return rv;
             }
-            append_to_linebuf(eval, "\n");
+            append_to_linebuf(eval, "\n", step_vars);
             eval->pending = ipc->next;
             break;
 
@@ -956,7 +971,7 @@ static apr_status_t command(sed_eval_t *eval, sed_reptr_t *ipc,
 
         case XCOM:
             copy_to_genbuf(eval, eval->linebuf);
-            copy_to_linebuf(eval, eval->holdbuf);
+            copy_to_linebuf(eval, eval->holdbuf, step_vars);
             copy_to_holdbuf(eval, eval->genbuf);
             break;
 
@@ -1013,7 +1028,7 @@ static apr_status_t arout(sed_eval_t *eval)
 /*
  * wline
  */
-static apr_status_t wline(sed_eval_t *eval, char *buf, int sz)
+static apr_status_t wline(sed_eval_t *eval, char *buf, apr_size_t sz)
 {
     apr_status_t rv = APR_SUCCESS;
     rv = eval->writefn(eval->fout, buf, sz);
