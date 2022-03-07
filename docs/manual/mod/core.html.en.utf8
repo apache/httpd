@@ -3021,12 +3021,18 @@ from the client</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
 </table>
-    <p>Limit (in bytes) on maximum size of an XML-based request
-    body. A value of <code>0</code> will disable any checking.</p>
-
+    <p>Limit (in bytes) on the maximum size of an XML-based request
+    body. A value of <code>0</code> will apply a hard limit (depending on
+    32bit vs 64bit system) allowing for XML escaping within the bounds of
+    the system addressable memory, but it exists for compatibility only
+    and is not recommended since it does not account for memory consumed
+    elsewhere or concurrent requests, which might result in an overall
+    system out-of-memory.
+    </p>
     <p>Example:</p>
 
-    <pre class="prettyprint lang-config">LimitXMLRequestBody 0</pre>
+    <pre class="prettyprint lang-config"># Limit of 1 MiB
+LimitXMLRequestBody 1073741824</pre>
 
 
 

@@ -19,7 +19,7 @@
 .el .ne 3
 .IP "\\$1" \\$2
 ..
-.TH "AB" 1 "2018-09-27" "Apache HTTP Server" "ab"
+.TH "AB" 1 "2022-03-07" "Apache HTTP Server" "ab"
 
 .SH NAME
 ab \- Apache HTTP server benchmarking tool
@@ -27,7 +27,7 @@ ab \- Apache HTTP server benchmarking tool
 .SH "SYNOPSIS"
  
 .PP
-\fB\fBab\fR [ -\fBA\fR \fIauth-username\fR:\fIpassword\fR ] [ -\fBb\fR \fIwindowsize\fR ] [ -\fBB\fR \fIlocal-address\fR ] [ -\fBc\fR \fIconcurrency\fR ] [ -\fBC\fR \fIcookie-name\fR=\fIvalue\fR ] [ -\fBd\fR ] [ -\fBe\fR \fIcsv-file\fR ] [ -\fBE\fR \fIclient-certificate file\fR ] [ -\fBf\fR \fIprotocol\fR ] [ -\fBg\fR \fIgnuplot-file\fR ] [ -\fBh\fR ] [ -\fBH\fR \fIcustom-header\fR ] [ -\fBi\fR ] [ -\fBk\fR ] [ -\fBl\fR ] [ -\fBm\fR \fIHTTP-method\fR ] [ -\fBn\fR \fIrequests\fR ] [ -\fBp\fR \fIPOST-file\fR ] [ -\fBP\fR \fIproxy-auth-username\fR:\fIpassword\fR ] [ -\fBq\fR ] [ -\fBr\fR ] [ -\fBs\fR \fItimeout\fR ] [ -\fBS\fR ] [ -\fBt\fR \fItimelimit\fR ] [ -\fBT\fR \fIcontent-type\fR ] [ -\fBu\fR \fIPUT-file\fR ] [ -\fBv\fR \fIverbosity\fR] [ -\fBV\fR ] [ -\fBw\fR ] [ -\fBx\fR \fI<table>-attributes\fR ] [ -\fBX\fR \fIproxy\fR[:\fIport\fR] ] [ -\fBy\fR \fI<tr>-attributes\fR ] [ -\fBz\fR \fI<td>-attributes\fR ] [ -\fBZ\fR \fIciphersuite\fR ] [http[s]://]\fIhostname\fR[:\fIport\fR]/\fIpath\fR\fR
+\fB\fBab\fR [ -\fBA\fR \fIauth-username\fR:\fIpassword\fR ] [ -\fBb\fR \fIwindowsize\fR ] [ -\fBB\fR \fIlocal-address\fR ] [ -\fBc\fR \fIconcurrency\fR ] [ -\fBC\fR \fIcookie-name\fR=\fIvalue\fR ] [ -\fBd\fR ] [ -\fBe\fR \fIcsv-file\fR ] [ -\fBE\fR \fIclient-certificate file\fR ] [ -\fBf\fR \fIprotocol\fR ] [ -\fBg\fR \fIgnuplot-file\fR ] [ -\fBh\fR ] [ -\fBH\fR \fIcustom-header\fR ] [ -\fBi\fR ] [ -\fBk\fR ] [ -\fBl\fR ] [ -\fBm\fR \fIHTTP-method\fR ] [ -\fBn\fR \fIrequests\fR ] [ -\fBp\fR \fIPOST-file\fR ] [ -\fBP\fR \fIproxy-auth-username\fR:\fIpassword\fR ] [ -\fBq\fR ] [ -\fBr\fR ] [ -\fBR\fR \fIrampdelay\fR ] [ -\fBs\fR \fItimeout\fR ] [ -\fBS\fR ] [ -\fBt\fR \fItimelimit\fR ] [ -\fBT\fR \fIcontent-type\fR ] [ -\fBu\fR \fIPUT-file\fR ] [ -\fBv\fR \fIverbosity\fR] [ -\fBV\fR ] [ -\fBw\fR ] [ -\fBx\fR \fI<table>-attributes\fR ] [ -\fBX\fR \fIproxy\fR[:\fIport\fR] ] [ -\fBy\fR \fI<tr>-attributes\fR ] [ -\fBz\fR \fI<td>-attributes\fR ] [ -\fBZ\fR \fIciphersuite\fR ] [http[s]://]\fIhostname\fR[:\fIport\fR]/\fIpath\fR\fR
  
 
 .SH "SUMMARY"
@@ -102,6 +102,9 @@ When processing more than 150 requests, \fBab\fR outputs a progress count on \fB
 .TP
 \fB-r\fR
 Don't exit on socket receive errors\&.  
+.TP
+\fB-R \fIrampdelay\fR\fR
+Milliseconds in between each new connection when starting up\&. Default is no delay\&. Starting too many concurrent connections at once can trigger denial of service protection on the network, which limits the effectiveness of the test\&. Introducing a delay between starting each concurrent connection can work around this problem\&. The test may complete before full ramp up of concurrent connections is achieved\&. If this happens, the total number of concurrent connections achieved is noted in the results\&. Available in 2\&.5\&.1 and later\&.  
 .TP
 \fB-s \fItimeout\fR\fR
 Maximum number of seconds to wait before the socket times out\&. Default is 30 seconds\&. Available in 2\&.4\&.4 and later\&.  
