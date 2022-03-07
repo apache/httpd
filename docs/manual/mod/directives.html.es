@@ -735,8 +735,8 @@
 <li><a href="mod_tls.html#tlsoptions">TLSOptions</a></li>
 <li><a href="mod_tls.html#tlsprotocol">TLSProtocol</a></li>
 <li><a href="mod_tls.html#tlsproxyca">TLSProxyCA</a></li>
-<li><a href="mod_tls.html#tlsproxycipherprefer">TLSProxyCipherPrefer</a></li>
-<li><a href="mod_tls.html#tlsproxyciphersuppress">TLSProxyCipherSuppress</a></li>
+<li><a href="mod_tls.html#tlsproxyciphersprefer">TLSProxyCiphersPrefer</a></li>
+<li><a href="mod_tls.html#tlsproxycipherssuppress">TLSProxyCiphersSuppress</a></li>
 <li><a href="mod_tls.html#tlsproxyengine">TLSProxyEngine</a></li>
 <li><a href="mod_tls.html#tlsproxymachinecertificate">TLSProxyMachineCertificate</a></li>
 <li><a href="mod_tls.html#tlsproxyprotocol">TLSProxyProtocol</a></li>
@@ -797,7 +797,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/2.4/mod/directives.html'
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2021 The Apache Software Foundation.<br />Licencia bajo los t&#233;rminos de la <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2022 The Apache Software Foundation.<br />Licencia bajo los t&#233;rminos de la <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">M&#243;dulos</a> | <a href="../mod/directives.html">Directivas</a> | <a href="http://wiki.apache.org/httpd/FAQ">Preguntas Frecuentes</a> | <a href="../glossary.html">Glosario</a> | <a href="../sitemap.html">Mapa del sitio web</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

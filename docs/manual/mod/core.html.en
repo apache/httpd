@@ -620,8 +620,8 @@ AllowOverrideList Redirect RedirectMatch</pre>
 AllowOverrideList CookieTracking CookieName</pre>
 
 
-    <p>In the example above, <code class="directive"><a href="#allowoverride">AllowOverride
-    </a></code> grants permission to the <code>AuthConfig</code>
+    <p>In the example above, <code class="directive"><a href="#allowoverride">AllowOverride</a></code>
+    grants permission to the <code>AuthConfig</code>
     directive grouping and <code class="directive">AllowOverrideList</code> grants
     permission to only two directives from the <code>FileInfo</code> directive
     grouping. All others will cause an internal server error.</p>
@@ -1902,12 +1902,12 @@ to the network</td></tr>
 </table>
     <p>This directive allows to configure the maximum number of pipelined
     responses, which remain pending so long as pipelined request are received.
-    When the limit is reached, reponses are forcibly flushed to the network in
+    When the limit is reached, responses are forcibly flushed to the network in
     blocking mode, until passing under the limit again.</p>
 
     <p><code class="directive">FlushMaxPipelined</code> helps constraining memory
-    usage. When set to <var>0</var> pipelining is disabled, when set to
-    <var>-1</var> there is no limit (<code class="directive">FlushMaxThreshold</code>
+    usage. When set to <code>0</code> pipelining is disabled, when set to
+    <code>-1</code> there is no limit (<code class="directive"><a href="#flushmaxthreshold">FlushMaxThreshold</a></code>
     still applies).</p>
 
 </div>
@@ -1916,7 +1916,7 @@ to the network</td></tr>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Threshold above which pending data are flushed to the
 network</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>FlushMaxThreshold<var>number-of-bytes</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>FlushMaxThreshold <var>number-of-bytes</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>FlushMaxThreshold 65536</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
@@ -1928,7 +1928,7 @@ network</td></tr>
     the network in blocking mode, until passing under the limit again.</p>
 
     <p><code class="directive">FlushMaxThreshold</code> helps constraining memory
-    usage. When set to <var>0</var> or a too small value there are actually
+    usage. When set to <code>0</code> or a too small value there are actually
     no pending data, but for threaded MPMs there can be more threads busy
     waiting for the network thus less ones available to handle the other
     simultaneous connections.</p>
@@ -2376,7 +2376,13 @@ if file exists at startup</td></tr>
     the path will be checked relative to the compiled-in server root or
     the server root passed in on the command line via the <code>-d</code>
     parameter.</p>
-    
+
+    <div class="warning"><h3>Warning</h3>
+    In 2.4.34, it is not possible to specify a <var>filename</var>
+    with surrounding quotes. This would generate a parsing error at start-up.
+    The main impact is that filenames with spaces can't be used.
+    This behavior is fixed in 2.4.35.</div>
+
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -2977,12 +2983,18 @@ from the client</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
 </table>
-    <p>Limit (in bytes) on maximum size of an XML-based request
-    body. A value of <code>0</code> will disable any checking.</p>
-
+    <p>Limit (in bytes) on the maximum size of an XML-based request
+    body. A value of <code>0</code> will apply a hard limit (depending on
+    32bit vs 64bit system) allowing for XML escaping within the bounds of
+    the system addressable memory, but it exists for compatibility only
+    and is not recommended since it does not account for memory consumed
+    elsewhere or concurrent requests, which might result in an overall
+    system out-of-memory.
+    </p>
     <p>Example:</p>
 
-    <pre class="prettyprint lang-config">LimitXMLRequestBody 0</pre>
+    <pre class="prettyprint lang-config"># Limit of 1 MiB
+LimitXMLRequestBody 1073741824</pre>
 
 
 
@@ -4392,16 +4404,16 @@ of a request or the last 63, assuming the request itself is greater than
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache httpd 2.2.7 and later.</td></tr>
 </table>
-    <p>mod_status with <code>ExtendedStatus On</code>
+    <p><code class="module"><a href="../mod/mod_status.html">mod_status</a></code> with <code>ExtendedStatus On</code>
     displays the actual request being handled.
     For historical purposes, only 63 characters of the request
     are actually stored for display purposes. This directive
-    controls whether the 1st 63 characters are stored (the previous
+    controls whether the first 63 characters are stored (the previous
     behavior and the default) or if the last 63 characters are. This
     is only applicable, of course, if the length of the request is
     64 characters or greater.</p>
 
-    <p>If Apache httpd is handling <code>GET&nbsp;/disk1/storage/apache/htdocs/images/imagestore1/food/apples.jpg&nbsp;HTTP/1.1</code> mod_status displays as follows:
+    <p>If Apache httpd is handling <code>GET&nbsp;/disk1/storage/apache/htdocs/images/imagestore1/food/apples.jpg&nbsp;HTTP/1.1</code> <code class="module"><a href="../mod/mod_status.html">mod_status</a></code> displays as follows:
     </p>
 
     <table class="bordered">
@@ -4727,7 +4739,6 @@ header</td></tr>
     disabling the Server: header does nothing at all to make your
     server more secure. The idea of "security through obscurity"
     is a myth and leads to a false sense of safety.</div>
-
 
 <h3>See also</h3>
 <ul>
@@ -5257,7 +5268,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/2.4/mod/core.html';
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2021 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2022 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
