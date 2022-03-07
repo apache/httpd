@@ -3021,7 +3021,7 @@ LimitRequestLine 4094
     and is not recommended since it does not account for memory consumed
     elsewhere or concurrent requests, which might result in an overall
     system out-of-memory.
-
+    </p>
     <p>Example:</p>
 
     <highlight language="config">
