@@ -1,1 +1,0 @@
-  *) mod_proxy: Allow for larger worker name.  PR 53218.  [Yann Ylavic]

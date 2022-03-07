@@ -1,6 +1,12 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.53
 
+  *) mod_http2: preserve the port number given in a HTTP/1.1
+     request that was Upgraded to HTTP/2. Fixes PR65881.
+     [Stefan Eissing]
+
+  *) mod_proxy: Allow for larger worker name.  PR 53218.  [Yann Ylavic]
+
   *) dbm: Split the loading of a dbm driver from the opening of a dbm file. When
      an attempt to load a dbm driver fails, log clearly which driver triggered
      the error (not "default"), and what the error was. [Graham Leggett]
