@@ -1,2 +1,0 @@
-  *) mod_proxy: Bump limit of proxy workers names to 384 characters.  PR 53218
-     [Yann Ylavic]

@@ -1,6 +1,66 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) ab: Add an optional ramp delay when starting concurrent connections so
+     as to not trigger denial of service protection in the network. Report
+     levels of concurrency achieved in cases where the test completes before
+     full concurrency is achieved. [Graham Leggett]
+
+  *) mod_http2: preserve the port number given in a HTTP/1.1
+     request that was Upgraded to HTTP/2. Fixes PR65881.
+     [Stefan Eissing]
+
+  *) mod_http2: :scheme pseudo-header values, not matching the
+     connection scheme, are forwarded via absolute uris to the
+     http protocol processing to preserve semantics of the request.
+     Checks on combinations of pseudo-headers values/absence
+     have been added as described in RFC 7540.
+     Fixes <https://github.com/icing/mod_h2/issues/230>.
+     [Stefan Eissing]
+
+  *) core/mpm: add hook 'child_stopped` that gets called when the MPM has
+     stopped all processing in a child process. This is when all running
+     threads shall be stopped and joined.
+     [Stefan Eissing]
+
+  *) core: Make sure and check that LimitXMLRequestBody fits in system memory.
+     [Ruediger Pluem, Yann Ylavic]
+
+  *) ab: Fix the detection for when the server performed a legitimate
+     connection close as per RFC7230 6.3.1. We must check whedther the
+     connection was previously kept alive, and not whether the current
+     closed request is keepalive. [Graham Leggett]
+
+  *) mod_rewrite: Make URI-to-filename rewrites work transparently with
+     proxy early mappings (mapping=servlet/decoded).  [Yann Ylavic]
+
+  *) mod_md: do not interfere with requests to /.well-known/acme-challenge/
+     resources if challenge type 'http-01' is not configured for a domain.
+     Fixes <https://github.com/icing/mod_md/issues/279>.
+     [Stefan Eissing]
+
+  *) mod_proxy: Bump limit of proxy workers names to 384 characters.  PR 53218
+     [Yann Ylavic]
+
+  *) core: Simpler connection close logic if discarding the request body fails.
+     [Yann Ylavic, Ruediger Pluem]
+
+  *) mod_proxy: Use the maxium of front end and backend timeouts instead of the
+     minimum when tunneling requests (websockets, CONNECT requests).
+     Backend timeouts can be configured more selectively (per worker if needed)
+     as front end timeouts and typically the backend timeouts reflect the
+     application requirements better.  PR 65886 [Ruediger Pluem]
+
+  *) mod_watchdog: use the `child_stopping` and `child_stopped` hooks
+     to shutdown workers before pool destruction releases global
+     resources and libraries.
+     [Stefan Eissing]
+
+  *) ab: Respond appropriately to SSL_ERROR_WANT_READ and SSL_ERROR_WANT_WRITE.
+     Previously the correct event was polled for, but the response to the poll
+     would call write instead of read, and read instead of write. PR 55952
+     [Graham Leggett]
+
   *) mod_md: the status description in MDomain's JSON, exposed in the
      md-status handler (if configure) did sometimes not carry the correct
      message when certificates needed renew.
