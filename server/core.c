@@ -73,6 +73,8 @@
 /* LimitXMLRequestBody handling */
 #define AP_LIMIT_UNSET                  ((long) -1)
 #define AP_DEFAULT_LIMIT_XML_BODY       ((apr_size_t)1000000)
+/* Hard limit for ap_escape_html2() */
+#define AP_MAX_LIMIT_XML_BODY           ((apr_size_t)(APR_SIZE_MAX / 6 - 1))
 
 #define AP_MIN_SENDFILE_BYTES           (256)
 
@@ -3888,6 +3890,11 @@ static const char *set_limit_xml_req_body(cmd_parms *cmd, void *conf_,
     if (conf->limit_xml_body < 0)
         return "LimitXMLRequestBody requires a non-negative integer.";
 
+    /* zero is AP_MAX_LIMIT_XML_BODY (implicitly) */
+    if ((apr_size_t)conf->limit_xml_body > AP_MAX_LIMIT_XML_BODY)
+        return apr_psprintf(cmd->pool, "LimitXMLRequestBody must not exceed "
+                            "%" APR_SIZE_T_FMT, AP_MAX_LIMIT_XML_BODY);
+
     return NULL;
 }
 
@@ -3976,6 +3983,8 @@ AP_DECLARE(apr_size_t) ap_get_limit_xml_body(const request_rec *r)
     conf = ap_get_core_module_config(r->per_dir_config);
     if (conf->limit_xml_body == AP_LIMIT_UNSET)
         return AP_DEFAULT_LIMIT_XML_BODY;
+    if (conf->limit_xml_body == 0)
+        return AP_MAX_LIMIT_XML_BODY;
 
     return (apr_size_t)conf->limit_xml_body;
 }

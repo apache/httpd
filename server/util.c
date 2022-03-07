@@ -2152,11 +2152,14 @@ AP_DECLARE(char *) ap_escape_urlencoded(apr_pool_t *p, const char *buffer)
 
 AP_DECLARE(char *) ap_escape_html2(apr_pool_t *p, const char *s, int toasc)
 {
-    int i, j;
+    apr_size_t i, j;
     char *x;
 
     /* first, count the number of extra characters */
-    for (i = 0, j = 0; s[i] != '\0'; i++)
+    for (i = 0, j = 0; s[i] != '\0'; i++) {
+        if (i + j > APR_SIZE_MAX - 6) {
+            abort();
+        }
         if (s[i] == '<' || s[i] == '>')
             j += 3;
         else if (s[i] == '&')
@@ -2165,6 +2168,7 @@ AP_DECLARE(char *) ap_escape_html2(apr_pool_t *p, const char *s, int toasc)
             j += 5;
         else if (toasc && !apr_isascii(s[i]))
             j += 5;
+    }
 
     if (j == 0)
         return apr_pstrmemdup(p, s, i);
