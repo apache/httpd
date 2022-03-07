@@ -94,24 +94,25 @@ apr_status_t h2_request_rcreate(h2_request **preq, apr_pool_t *pool,
      * the URL for the request. r->hostname has stripped any port info that
      * might have been present. Do we need to add it?
      */
-    if (!ap_strchr_c(authority, ':')) {
-        if (r->parsed_uri.port_str) {
-            /* Yes, it was there, add it again. */
-            authority = apr_pstrcat(pool, authority, ":", r->parsed_uri.port_str, NULL);
-        }
-        else if (!r->parsed_uri.hostname && r->server && r->server->port) {
-            /* If there was no hostname in the parsed URL, the URL was relative.
-             * In that case, we restore port from our server->port, if it
-             * is known and not the default port for the scheme. */
-            apr_port_t defport = apr_uri_port_of_scheme(scheme);
-            if (defport != r->server->port) {
-                /* port info missing and port is not default for scheme: append */
-                authority = apr_psprintf(pool, "%s:%d", authority,
-                                         (int)r->server->port);
-            }
+    if (r->parsed_uri.port_str) {
+        /* Yes, it was there, add it again. */
+        authority = apr_pstrcat(pool, authority, ":", r->parsed_uri.port_str, NULL);
+    }
+    else if (r->parsed_uri.hostname) {
+        /* client sent an absolute URI, with no port in the authority.
+         * Use that also in the h2 request. */
+    }
+    else {
+        /* request came in as relative uri, meaning the client did not specify
+         * a port number and we have to guess which one to use. */
+        apr_port_t defport = apr_uri_port_of_scheme(scheme);
+        apr_port_t port = ap_get_server_port(r);
+
+        if (defport != port) {
+            authority = apr_psprintf(pool, "%s:%d", authority, (int)port);
         }
     }
-    
+
     req = apr_pcalloc(pool, sizeof(*req));
     req->method      = apr_pstrdup(pool, r->method);
     req->scheme      = scheme;
