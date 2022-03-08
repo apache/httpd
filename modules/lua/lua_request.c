@@ -244,7 +244,8 @@ static int lua_read_body(request_rec *r, const char **rbuf, apr_off_t *size,
     if (ap_should_client_block(r)) {
 
         /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-        apr_off_t    len_read, rpos = 0;
+        apr_off_t    len_read = -1;
+        apr_off_t    rpos = 0;
         apr_off_t length = r->remaining;
         /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
