@@ -796,9 +796,9 @@ AP_DECLARE(int) ap_map_http_request_error(apr_status_t rv, int status)
  */
 AP_DECLARE(int) ap_discard_request_body(request_rec *r)
 {
+    int rc = OK;
+    conn_rec *c = r->connection;
     apr_bucket_brigade *bb;
-    int seen_eos;
-    apr_status_t rv;
 
     /* Sometimes we'll get in a state where the input handling has
      * detected an error where we want to drop the connection, so if
@@ -807,54 +807,57 @@ AP_DECLARE(int) ap_discard_request_body(request_rec *r)
      *
      * This function is also a no-op on a subrequest.
      */
-    if (r->main || r->connection->keepalive == AP_CONN_CLOSE ||
-        ap_status_drops_connection(r->status)) {
+    if (r->main || c->keepalive == AP_CONN_CLOSE) {
+        return OK;
+    }
+    if (ap_status_drops_connection(r->status)) {
+        c->keepalive = AP_CONN_CLOSE;
         return OK;
     }
 
     bb = apr_brigade_create(r->pool, r->connection->bucket_alloc);
-    seen_eos = 0;
-    do {
-        apr_bucket *bucket;
+    for (;;) {
+        apr_status_t rv;
 
         rv = ap_get_brigade(r->input_filters, bb, AP_MODE_READBYTES,
                             APR_BLOCK_READ, HUGE_STRING_LEN);
-
         if (rv != APR_SUCCESS) {
-            apr_brigade_destroy(bb);
-            return ap_map_http_request_error(rv, HTTP_BAD_REQUEST);
+            rc = ap_map_http_request_error(rv, HTTP_BAD_REQUEST);
+            goto cleanup;
         }
 
-        for (bucket = APR_BRIGADE_FIRST(bb);
-             bucket != APR_BRIGADE_SENTINEL(bb);
-             bucket = APR_BUCKET_NEXT(bucket))
-        {
-            const char *data;
-            apr_size_t len;
+        while (!APR_BRIGADE_EMPTY(bb)) {
+            apr_bucket *b = APR_BRIGADE_FIRST(bb);
 
-            if (APR_BUCKET_IS_EOS(bucket)) {
-                seen_eos = 1;
-                break;
+            if (APR_BUCKET_IS_EOS(b)) {
+                goto cleanup;
             }
 
-            /* These are metadata buckets. */
-            if (bucket->length == 0) {
-                continue;
-            }
-
-            /* We MUST read because in case we have an unknown-length
-             * bucket or one that morphs, we want to exhaust it.
+            /* There is no need to read empty or metadata buckets or
+             * buckets of known length, but we MUST read buckets of
+             * unknown length in order to exhaust them.
              */
-            rv = apr_bucket_read(bucket, &data, &len, APR_BLOCK_READ);
-            if (rv != APR_SUCCESS) {
-                apr_brigade_destroy(bb);
-                return HTTP_BAD_REQUEST;
-            }
-        }
-        apr_brigade_cleanup(bb);
-    } while (!seen_eos);
+            if (b->length == (apr_size_t)-1) {
+                apr_size_t len;
+                const char *data;
 
-    return OK;
+                rv = apr_bucket_read(b, &data, &len, APR_BLOCK_READ);
+                if (rv != APR_SUCCESS) {
+                    rc = HTTP_BAD_REQUEST;
+                    goto cleanup;
+                }
+            }
+
+            apr_bucket_delete(b);
+        }
+    }
+
+cleanup:
+    apr_brigade_cleanup(bb);
+    if (rc != OK) {
+        c->keepalive = AP_CONN_CLOSE;
+    }
+    return rc;
 }
 
 /* Here we deal with getting the request message body from the client.

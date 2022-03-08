@@ -1,4 +1,0 @@
-  * mod_md) do not interfere with requests to /.well-known/acme-challenge/
-    resources if challenge type 'http-01' is not configured for a domain.
-    Fixes <https://github.com/icing/mod_md/issues/279>.
-    [Stefan Eissing]

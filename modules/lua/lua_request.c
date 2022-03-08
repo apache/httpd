@@ -235,14 +235,16 @@ static int lua_read_body(request_rec *r, const char **rbuf, apr_off_t *size,
 {
     int rc = OK;
 
+    *rbuf = NULL;
+    *size = 0;
+
     if ((rc = ap_setup_client_block(r, REQUEST_CHUNKED_ERROR))) {
         return (rc);
     }
     if (ap_should_client_block(r)) {
 
         /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-        char         argsbuffer[HUGE_STRING_LEN];
-        apr_off_t    rsize, len_read, rpos = 0;
+        apr_off_t    len_read, rpos = 0;
         apr_off_t length = r->remaining;
         /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
@@ -250,18 +252,18 @@ static int lua_read_body(request_rec *r, const char **rbuf, apr_off_t *size,
             return APR_EINCOMPLETE; /* Only room for incomplete data chunk :( */
         }
         *rbuf = (const char *) apr_pcalloc(r->pool, (apr_size_t) (length + 1));
-        *size = length;
-        while ((len_read = ap_get_client_block(r, argsbuffer, sizeof(argsbuffer))) > 0) {
-            if ((rpos + len_read) > length) {
-                rsize = length - rpos;
-            }
-            else {
-                rsize = len_read;
-            }
-
-            memcpy((char *) *rbuf + rpos, argsbuffer, (size_t) rsize);
-            rpos += rsize;
+        while ((rpos < length)
+               && (len_read = ap_get_client_block(r, (char *) *rbuf + rpos,
+                                               length - rpos)) > 0) {
+            rpos += len_read;
         }
+        if (len_read < 0) {
+            return APR_EINCOMPLETE;
+        }
+        *size = rpos;
+    }
+    else {
+        rc = DONE;
     }
 
     return (rc);
@@ -277,6 +279,8 @@ static int lua_read_body(request_rec *r, const char **rbuf, apr_off_t *size,
 static apr_status_t lua_write_body(request_rec *r, apr_file_t *file, apr_off_t *size)
 {
     apr_status_t rc = OK;
+
+    *size = 0;
 
     if ((rc = ap_setup_client_block(r, REQUEST_CHUNKED_ERROR)))
         return rc;
@@ -302,6 +306,9 @@ static apr_status_t lua_write_body(request_rec *r, apr_file_t *file, apr_off_t *
                 return rc;
             rpos += rsize;
         }
+    }
+    else {
+        rc = DONE;
     }
 
     return rc;

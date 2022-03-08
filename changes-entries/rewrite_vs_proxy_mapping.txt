@@ -1,2 +1,0 @@
-  *) mod_rewrite: Make URI-to-filename rewrites work transparently with
-     proxy early mappings (mapping=servlet/decoded).  [Yann Ylavic]
