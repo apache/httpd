@@ -145,11 +145,6 @@ apr_status_t h2_mplx_c1_process(h2_mplx *m,
                                 struct h2_session *session,
                                 int *pstream_count);
 
-apr_status_t h2_mplx_c1_fwd_input(h2_mplx *m, struct h2_iqueue *input_pending,
-                                  h2_stream_get_fn *get_stream,
-                                  struct h2_session *session);
-
-
 /**
  * Stream priorities have changed, reschedule pending requests.
  * 
@@ -190,6 +185,15 @@ apr_status_t h2_mplx_c1_streams_do(h2_mplx *m, h2_mplx_stream_cb *cb, void *ctx)
  * queue.
  */
 apr_status_t h2_mplx_c1_client_rst(h2_mplx *m, int stream_id);
+
+/**
+ * Input for stream has been closed. Notify a possibly started
+ * and waiting stream by sending an EOS.
+ * @param m the mplx
+ * @param stream_id the closed stream
+ * @return APR_SUCCESS iff EOS was sent, APR_EAGAIN if not necessary
+ */
+apr_status_t h2_mplx_c1_input_closed(h2_mplx *m, int stream_id);
 
 /**
  * Get readonly access to a stream for a secondary connection.

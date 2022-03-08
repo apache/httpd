@@ -878,7 +878,6 @@ apr_status_t h2_session_create(h2_session **psession, conn_rec *c, request_rec *
     session->max_stream_count = h2_config_sgeti(s, H2_CONF_MAX_STREAMS);
     session->max_stream_mem = h2_config_sgeti(s, H2_CONF_STREAM_MAX_MEM);
     
-    session->in_pending = h2_iq_create(session->pool, (int)session->max_stream_count);
     session->out_c1_blocked = h2_iq_create(session->pool, (int)session->max_stream_count);
     session->ready_to_process = h2_iq_create(session->pool, (int)session->max_stream_count);
 
@@ -1634,7 +1633,7 @@ static void on_stream_event(void *ctx, h2_stream *stream, h2_stream_event_t ev)
     h2_session *session = ctx;
     switch (ev) {
         case H2_SEV_IN_DATA_PENDING:
-            h2_iq_append(session->in_pending, stream->id);
+            session->input_flushed = 1;
             break;
         case H2_SEV_OUT_C1_BLOCK:
             h2_iq_append(session->out_c1_blocked, stream->id);
@@ -1786,10 +1785,9 @@ apr_status_t h2_session_process(h2_session *session, int async)
             transit(session, "scheduled stream", H2_SESSION_ST_BUSY);
         }
 
-        if (!h2_iq_empty(session->in_pending)) {
-            h2_mplx_c1_fwd_input(session->mplx, session->in_pending,
-                                 get_stream, session);
+        if (session->input_flushed) {
             transit(session, "forwarded input", H2_SESSION_ST_BUSY);
+            session->input_flushed = 0;
         }
 
         if (!h2_iq_empty(session->out_c1_blocked)) {

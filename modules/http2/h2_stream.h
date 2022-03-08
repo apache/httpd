@@ -214,8 +214,6 @@ apr_status_t h2_stream_recv_frame(h2_stream *stream, int frame_type, int flags, 
 apr_status_t h2_stream_recv_DATA(h2_stream *stream, uint8_t flags,
                                  const uint8_t *data, size_t len);
 
-apr_status_t h2_stream_flush_input(h2_stream *stream);
-
 /**
  * Reset the stream. Stream write/reads will return errors afterwards.
  *

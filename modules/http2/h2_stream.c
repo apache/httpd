@@ -197,19 +197,42 @@ static void H2_STREAM_OUT_LOG(int lvl, h2_stream *s, const char *tag)
 
 apr_status_t h2_stream_setup_input(h2_stream *stream)
 {
-    if (stream->input == NULL) {
-        int empty = (stream->input_closed
-                     && (!stream->in_buffer 
-                         || APR_BRIGADE_EMPTY(stream->in_buffer)));
-        if (!empty) {
-            ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, stream->session->c1,
-                          H2_STRM_MSG(stream, "setup input beam"));
-            h2_beam_create(&stream->input, stream->session->c1,
-                           stream->pool, stream->id,
-                           "input", 0, stream->session->s->timeout);
-        }
-    }
+    /* already done? */
+    if (stream->input != NULL) goto cleanup;
+    /* if already closed and nothing was every sent, leave it */
+    if (stream->input_closed && !stream->in_buffer) goto cleanup;
+
+    ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, stream->session->c1,
+                  H2_STRM_MSG(stream, "setup input beam"));
+    h2_beam_create(&stream->input, stream->session->c1,
+                   stream->pool, stream->id,
+                   "input", 0, stream->session->s->timeout);
+cleanup:
     return APR_SUCCESS;
+}
+
+static apr_status_t input_flush(h2_stream *stream)
+{
+    apr_status_t status = APR_SUCCESS;
+    apr_off_t written;
+
+    if (!stream->in_buffer) goto cleanup;
+
+    ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, stream->session->c1,
+                  H2_STRM_MSG(stream, "flush input"));
+    if (!stream->input) {
+        h2_stream_setup_input(stream);
+    }
+    status = h2_beam_send(stream->input, stream->session->c1,
+                          stream->in_buffer, APR_BLOCK_READ, &written);
+    stream->in_last_write = apr_time_now();
+    if (APR_SUCCESS != status && stream->state == H2_SS_CLOSED_L) {
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE2, status, stream->session->c1,
+                      H2_STRM_MSG(stream, "send input error"));
+        h2_stream_dispatch(stream, H2_SEV_IN_ERROR);
+    }
+cleanup:
+    return status;
 }
 
 static void input_append_bucket(h2_stream *stream, apr_bucket *b)
@@ -253,10 +276,17 @@ static apr_status_t close_input(h2_stream *stream)
     }
 
     stream->input_closed = 1;
-    if (stream->in_buffer || stream->input) {
+    if (stream->in_buffer) {
         b = apr_bucket_eos_create(c->bucket_alloc);
         input_append_bucket(stream, b);
+        input_flush(stream);
         h2_stream_dispatch(stream, H2_SEV_IN_DATA_PENDING);
+    }
+    else {
+        rv = h2_mplx_c1_input_closed(stream->session->mplx, stream->id);
+        if (APR_SUCCESS == rv) {
+            h2_stream_dispatch(stream, H2_SEV_IN_DATA_PENDING);
+        }
     }
 cleanup:
     return rv;
@@ -473,29 +503,6 @@ leave:
     return status;
 }
 
-apr_status_t h2_stream_flush_input(h2_stream *stream)
-{
-    apr_status_t status = APR_SUCCESS;
-    apr_off_t written;
-
-    ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, stream->session->c1,
-                  H2_STRM_MSG(stream, "flush input"));
-    if (stream->in_buffer && !APR_BRIGADE_EMPTY(stream->in_buffer)) {
-        if (!stream->input) {
-            h2_stream_setup_input(stream);
-        }
-        status = h2_beam_send(stream->input, stream->session->c1,
-                              stream->in_buffer, APR_BLOCK_READ, &written);
-        stream->in_last_write = apr_time_now();
-        if (APR_SUCCESS != status && stream->state == H2_SS_CLOSED_L) {
-            ap_log_cerror(APLOG_MARK, APLOG_TRACE2, status, stream->session->c1,
-                          H2_STRM_MSG(stream, "send input error"));
-            h2_stream_dispatch(stream, H2_SEV_IN_ERROR);
-        }
-    }
-    return status;
-}
-
 apr_status_t h2_stream_recv_DATA(h2_stream *stream, uint8_t flags,
                                     const uint8_t *data, size_t len)
 {
@@ -516,6 +523,7 @@ apr_status_t h2_stream_recv_DATA(h2_stream *stream, uint8_t flags,
         }
         stream->in_data_octets += len;
         input_append_data(stream, (const char*)data, len);
+        input_flush(stream);
         h2_stream_dispatch(stream, H2_SEV_IN_DATA_PENDING);
     }
     return status;
@@ -569,12 +577,16 @@ void h2_stream_destroy(h2_stream *stream)
 
 void h2_stream_rst(h2_stream *stream, int error_code)
 {
+    h2_conn_ctx_t *c2_ctx = h2_conn_ctx_get(stream->c2);
+
     stream->rst_error = error_code;
-    if (stream->input) {
-        h2_beam_abort(stream->input, stream->session->c1);
-    }
-    if (stream->output) {
-        h2_beam_abort(stream->output, stream->session->c1);
+    if (c2_ctx) {
+        if (c2_ctx->beam_in) {
+            h2_beam_abort(c2_ctx->beam_in, stream->session->c1);
+        }
+        if (c2_ctx->beam_out) {
+            h2_beam_abort(c2_ctx->beam_out, stream->session->c1);
+        }
     }
     ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, stream->session->c1,
                   H2_STRM_MSG(stream, "reset, error=%d"), error_code);

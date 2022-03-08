@@ -27,16 +27,7 @@ struct apr_thread_cond_t;
  * across threads with as little copying as possible.
  */
 
-typedef void h2_beam_mutex_leave(struct apr_thread_mutex_t *lock);
-
-typedef struct {
-    apr_thread_mutex_t *mutex;
-    h2_beam_mutex_leave *leave;
-} h2_beam_lock;
-
 typedef struct h2_bucket_beam h2_bucket_beam;
-
-typedef apr_status_t h2_beam_mutex_enter(void *ctx, h2_beam_lock *pbl);
 
 typedef void h2_beam_io_callback(void *ctx, h2_bucket_beam *beam,
                                  apr_off_t bytes);
@@ -45,6 +36,8 @@ typedef void h2_beam_ev_callback(void *ctx, h2_bucket_beam *beam);
 /**
  * h2_blist can hold a list of buckets just like apr_bucket_brigade, but
  * does not to any allocations or related features.
+ * This makes it safe to manipulate from a thread holding the bucket lock,
+ * irregardless of where the pool or bucket_alloc is from.
  */
 typedef struct {
     APR_RING_HEAD(h2_bucket_list, apr_bucket) list;

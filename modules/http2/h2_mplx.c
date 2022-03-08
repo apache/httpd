@@ -123,16 +123,18 @@ static void c1c2_stream_joined(h2_mplx *m, h2_stream *stream)
 
 static void m_stream_cleanup(h2_mplx *m, h2_stream *stream)
 {
-    h2_conn_ctx_t *c2_ctx = stream->c2? h2_conn_ctx_get(stream->c2) : NULL;
+    h2_conn_ctx_t *c2_ctx = h2_conn_ctx_get(stream->c2);
 
     ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, m->c1,
                   H2_STRM_MSG(stream, "cleanup, unsubscribing from beam events"));
-    if (stream->output) {
-        h2_beam_on_was_empty(stream->output, NULL, NULL);
-    }
-    if (stream->input) {
-        h2_beam_on_received(stream->input, NULL, NULL);
-        h2_beam_on_consumed(stream->input, NULL, NULL);
+    if (c2_ctx) {
+        if (c2_ctx->beam_out) {
+            h2_beam_on_was_empty(c2_ctx->beam_out, NULL, NULL);
+        }
+        if (c2_ctx->beam_in) {
+            h2_beam_on_received(c2_ctx->beam_in, NULL, NULL);
+            h2_beam_on_consumed(c2_ctx->beam_in, NULL, NULL);
+        }
     }
 
     ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, m->c1,
@@ -154,11 +156,11 @@ static void m_stream_cleanup(h2_mplx *m, h2_stream *stream)
                           H2_STRM_MSG(stream, "cleanup, c2 is running, abort"));
             /* c2 is still running */
             stream->c2->aborted = 1;
-            if (stream->input) {
-                h2_beam_abort(stream->input, m->c1);
+            if (c2_ctx->beam_in) {
+                h2_beam_abort(c2_ctx->beam_in, m->c1);
             }
-            if (stream->output) {
-                h2_beam_abort(stream->output, m->c1);
+            if (c2_ctx->beam_out) {
+                h2_beam_abort(c2_ctx->beam_out, m->c1);
             }
             ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, m->c1,
                           H2_STRM_MSG(stream, "cleanup, c2 is done, move to shold"));
@@ -353,10 +355,11 @@ static int m_unexpected_stream_iter(void *ctx, void *val) {
 static int m_stream_cancel_iter(void *ctx, void *val) {
     h2_mplx *m = ctx;
     h2_stream *stream = val;
+    h2_conn_ctx_t *c2_ctx = h2_conn_ctx_get(stream->c2);
 
     /* disable input consumed reporting */
-    if (stream->input) {
-        h2_beam_abort(stream->input, m->c1);
+    if (c2_ctx && c2_ctx->beam_in) {
+        h2_beam_abort(c2_ctx->beam_in, m->c1);
     }
     /* take over event monitoring */
     h2_stream_set_monitor(stream, NULL);
@@ -661,27 +664,6 @@ apr_status_t h2_mplx_c1_process(h2_mplx *m,
     return rv;
 }
 
-apr_status_t h2_mplx_c1_fwd_input(h2_mplx *m, struct h2_iqueue *input_pending,
-                                  h2_stream_get_fn *get_stream,
-                                  struct h2_session *session)
-{
-    int sid;
-
-    H2_MPLX_ENTER(m);
-
-    while ((sid = h2_iq_shift(input_pending)) > 0) {
-        h2_stream *stream = get_stream(session, sid);
-        if (stream) {
-            H2_MPLX_LEAVE(m);
-            h2_stream_flush_input(stream);
-            H2_MPLX_ENTER(m);
-        }
-    }
-
-    H2_MPLX_LEAVE(m);
-    return APR_SUCCESS;
-}
-
 static void c2_beam_input_write_notify(void *ctx, h2_bucket_beam *beam)
 {
     conn_rec *c = ctx;
@@ -781,7 +763,7 @@ static apr_status_t c2_setup_io(h2_mplx *m, conn_rec *c2, h2_stream *stream)
     conn_ctx->pfd_out_prod.reqevents = APR_POLLIN | APR_POLLERR | APR_POLLHUP;
     conn_ctx->pfd_out_prod.client_data = conn_ctx;
 
-    if (stream->input) {
+    if (conn_ctx->beam_in) {
         if (!conn_ctx->pipe_in_prod[H2_PIPE_OUT]) {
             action = "create input write pipe";
             rv = apr_file_pipe_create_pools(&conn_ctx->pipe_in_prod[H2_PIPE_OUT],
@@ -1072,6 +1054,31 @@ apr_status_t h2_mplx_c1_client_rst(h2_mplx *m, int stream_id)
     return status;
 }
 
+apr_status_t h2_mplx_c1_input_closed(h2_mplx *m, int stream_id)
+{
+    h2_stream *stream;
+    h2_conn_ctx_t *c2_ctx;
+    apr_status_t status = APR_EAGAIN;
+
+    H2_MPLX_ENTER_ALWAYS(m);
+    stream = h2_ihash_get(m->streams, stream_id);
+    if (stream && (c2_ctx = h2_conn_ctx_get(stream->c2))) {
+        if (c2_ctx->beam_in) {
+            apr_bucket_brigade *tmp =apr_brigade_create(
+                stream->pool, m->c1->bucket_alloc);
+            apr_bucket *eos = apr_bucket_eos_create(m->c1->bucket_alloc);
+            apr_off_t written;
+
+            APR_BRIGADE_INSERT_TAIL(tmp, eos);
+            status = h2_beam_send(c2_ctx->beam_in, m->c1,
+                      tmp, APR_BLOCK_READ, &written);
+            apr_brigade_destroy(tmp);
+        }
+    }
+    H2_MPLX_LEAVE(m);
+    return status;
+}
+
 static apr_status_t mplx_pollset_create(h2_mplx *m)
 {
     int max_pdfs;
@@ -1161,7 +1168,7 @@ static apr_status_t mplx_pollset_poll(h2_mplx *m, apr_interval_time_t timeout,
             if (m->streams_to_poll->nelts) {
                 for (i = 0; i < m->streams_to_poll->nelts; ++i) {
                     stream = APR_ARRAY_IDX(m->streams_to_poll, i, h2_stream*);
-                    if (stream && stream->c2 && (conn_ctx = h2_conn_ctx_get(stream->c2))) {
+                    if (stream && (conn_ctx = h2_conn_ctx_get(stream->c2))) {
                         mplx_pollset_add(m, conn_ctx);
                     }
                 }
