@@ -168,21 +168,29 @@ static apr_status_t sed_write_output(void *dummy, char *buf, apr_size_t sz)
         }
         /* buffer is now full */
         status = append_bucket(ctx, ctx->outbuf, ctx->bufsize);
-        /* old buffer is now used so allocate new buffer */
-        alloc_outbuf(ctx);
-        /* if size is bigger than the allocated buffer directly add to output
-         * brigade */
-        if ((status == APR_SUCCESS) && (sz >= ctx->bufsize)) {
-            char* newbuf = apr_pmemdup(ctx->tpool, buf, sz);
-            status = append_bucket(ctx, newbuf, sz);
-            /* pool might get clear after append_bucket */
-            if (ctx->outbuf == NULL) {
+        if (status == APR_SUCCESS) {
+            /* if size is bigger than the allocated buffer directly add to output
+             * brigade */
+            if (sz >= ctx->bufsize) {
+                char* newbuf = apr_pmemdup(ctx->tpool, buf, sz);
+                status = append_bucket(ctx, newbuf, sz);
+                if (status == APR_SUCCESS) {
+                    /* old buffer is now used so allocate new buffer */
+                    alloc_outbuf(ctx);
+                }
+                else {
+                    clear_ctxpool(ctx);
+                }
+            }
+            else {
+                /* old buffer is now used so allocate new buffer */
                 alloc_outbuf(ctx);
+                memcpy(ctx->curoutbuf, buf, sz);
+                ctx->curoutbuf += sz;
             }
         }
         else {
-            memcpy(ctx->curoutbuf, buf, sz);
-            ctx->curoutbuf += sz;
+            clear_ctxpool(ctx);
         }
     }
     else {
