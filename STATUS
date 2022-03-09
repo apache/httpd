@@ -143,6 +143,11 @@ CURRENT RELEASE NOTES:
 
 RELEASE SHOWSTOPPERS:
 
+  *) Improve detection of _Thread_local
+     trunk patch: https://svn.apache.org/r1898771
+     2.4.x patch: svn merge -c 1898771 ^/httpd/httpd/trunk .
+     +1: ylavic,
+
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
