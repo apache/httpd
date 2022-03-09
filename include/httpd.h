@@ -2437,7 +2437,9 @@ AP_DECLARE(void *) ap_realloc(void *ptr, size_t size)
  */
 #if defined(__cplusplus) && __cplusplus >= 201103L
 #define AP_THREAD_LOCAL thread_local
-#elif defined(__STDC_VERSION__) && __STDC_VERSION__ >= 201112
+#elif defined(__STDC_VERSION__) && __STDC_VERSION__ >= 201112 && \
+      (!defined(__GNUC__) || \
+      __GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 9))
 #define AP_THREAD_LOCAL _Thread_local
 #elif defined(__GNUC__) /* works for clang too */
 #define AP_THREAD_LOCAL __thread
