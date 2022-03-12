@@ -26,8 +26,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/rewrite/flags.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/rewrite/flags.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
 <p>Ce document décrit les drapeaux disponibles dans la directive
 <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>, en fournissant
@@ -230,7 +228,7 @@ fonctionnalité.</dd>
 <dd>S'il est différent de <code>false</code> ou <code>0</code>, l'attribut
 <code>SameSite</code> est défini à la valeur spécifiée. Les valeurs typiques
 sont <code>None</code>, <code>Lax</code> et <code>Strict</code>. Disponible à
-partir de la version 2.5.1 du serveur HTTP Apache.</dd>
+partir de la version 2.4.47 du serveur HTTP Apache.</dd>
 </dl>
 
 <p>Voici un exemple :</p>

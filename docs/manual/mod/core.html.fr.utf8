@@ -33,8 +33,6 @@
 <a href="../ja/mod/core.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../tr/mod/core.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Fonctionnalités de base du serveur HTTP Apache toujours
 disponibles</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Noyau httpd</td></tr></table>
@@ -3180,13 +3178,19 @@ XML</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Noyau httpd</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
 </table>
-    <p>Taille maximale (en octets) du corps d'une requête au format XML.
-    Une valeur de <code>0</code> signifie qu'aucune limite n'est
-    imposée.</p>
+    <p>Taille maximale (en octets) du corps d'une requête au format XML.  Une
+    valeur de <code>0</code> appliquera une limite physique (différente selon
+    que le système est sur 32 ou 64 bits) permettant à XML de s'étaler jusqu'aux
+    limites de la mémoire adressable du système, mais elle n'existe qu'à des
+    fins de compatibilité et il est déconseillé de l'utiliser car elle ne tient
+    pas compte de la mémoire consommée ailleurs et des requêtes simultanées, ce
+    qui pourrait provoquer un dépassement de mémoire global du système.
+    </p>
 
     <p>Exemple :</p>
 
-    <pre class="prettyprint lang-config">LimitXMLRequestBody 0</pre>
+    <pre class="prettyprint lang-config"># Limitation à 1 Mo
+LimitXMLRequestBody 1073741824</pre>
 
 
 
