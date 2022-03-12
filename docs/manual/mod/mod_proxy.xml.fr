@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1896064:1898657 (outdated) -->
+<!-- English Revision: 1898657 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -2315,7 +2315,7 @@ mandatés</description>
 <context>directory</context>
 </contextlist>
 <compatibility>La liste de codes d'états a été ajoutée à partir de la version
-2.5.1. du serveur HTTP Apache.</compatibility>
+2.4.47 du serveur HTTP Apache.</compatibility>
 
 <usage>
     <p>Cette directive est utile pour les configurations de mandataires

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1883696:1898648 (outdated) -->
+<!-- English Revision: 1898648 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -215,7 +215,7 @@ fonctionnalité.</dd>
 <dd>S'il est différent de <code>false</code> ou <code>0</code>, l'attribut
 <code>SameSite</code> est défini à la valeur spécifiée. Les valeurs typiques
 sont <code>None</code>, <code>Lax</code> et <code>Strict</code>. Disponible à
-partir de la version 2.5.1 du serveur HTTP Apache.</dd>
+partir de la version 2.4.47 du serveur HTTP Apache.</dd>
 </dl>
 
 <p>Voici un exemple :</p>
