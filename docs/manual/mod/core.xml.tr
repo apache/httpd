@@ -1,7 +1,7 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 1890425:1898704 (outdated) -->
+<!-- English Revision: 1898704 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
    Reviewed by: Orhan Berent <berent belgeler.gen.tr>
@@ -35,7 +35,7 @@
 <name>AcceptFilter</name>
 <description>Bir protokolün dinleyici soketleri için en iyilemeleri ayarlar
 </description>
-<syntax>AcceptFilter <var>protocol</var> <var>kabul_süzgeci</var></syntax>
+<syntax>AcceptFilter <code>protocol</code> <code>kabul_süzgeci</code></syntax>
 <contextlist><context>server config</context></contextlist>
 
 <usage>
@@ -62,7 +62,7 @@ AcceptFilter nntp none
     <p>Öntanımlı protokol isimleri port 443 için <code>https</code> ve tüm
       diğer portlar için <code>http</code>'dir. Dinlenmesi için başka bir port
       ile ilgili bir protokol belirtmek isterseniz <directive
-      module="mpm_common">Listen</directive> yönergesine <var>protokol</var>
+      module="mpm_common">Listen</directive> yönergesine <code>protokol</code>
       argümanını ekleyin.</p>
 
     <p>FreeBSD için öntanımlı değerler:</p>
@@ -203,7 +203,7 @@ AcceptFilter https connect
 <directivesynopsis>
 <name>AccessFileName</name>
 <description>Dağıtık yapılandırma dosyasının ismi belirtilir.</description>
-<syntax>AccessFileName <var>filename</var> [<var>filename</var>] ...</syntax>
+<syntax>AccessFileName <code>filename</code> [<code>filename</code>] ...</syntax>
 <default>AccessFileName .htaccess</default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
@@ -242,7 +242,7 @@ AccessFileName .acl
 <description>Bir yanıtın içerik türü <code>text/plain</code> veya
   <code>text/html</code> olduğunda eklenecek öntanımlı karakter kümesi
   parametresini belirler.</description>
-<syntax>AddDefaultCharset On|Off|<var>karküm</var></syntax>
+<syntax>AddDefaultCharset On|Off|<code>karküm</code></syntax>
 <default>AddDefaultCharset Off</default>
 <contextlist><context>server config</context>
 <context>virtual host</context><context>directory</context>
@@ -259,7 +259,7 @@ AccessFileName .acl
       Off</code> şeklinde bir atama bu işlevselliği iptal eder.
       <code>AddDefaultCharset On</code> ile bu işlevsellik etkin kılınmaktan
       başka <code>iso-8859-1</code> karakter kümesini öntanımlı olarak yanıta
-      eklenir. Yönergede <var>karküm</var> olarak belirtilecek değerler,
+      eklenir. Yönergede <code>karküm</code> olarak belirtilecek değerler,
       Genel Ağ ortam türlerinde (MIME türlerinde) kullanmak üzere <a
       href="http://www.iana.org/assignments/character-sets">IANA’da kayıtlı
       karakter kümesi değerleri</a>nden biri olmalıdır. Örnek:</p>
@@ -329,8 +329,8 @@ AddDefaultCharset utf-8
 <name>AllowOverride</name>
 <description><code>.htaccess</code> dosyalarında bulunmasına izin verilen
   yönerge türleri belirtilir.</description>
-<syntax>AllowOverride All|None|<var>yönerge-türü</var>
-[<var>yönerge-türü</var>] ...</syntax>
+<syntax>AllowOverride All|None|<code>yönerge-türü</code>
+[<code>yönerge-türü</code>] ...</syntax>
 <default>AllowOverride None (2.3.9 ve sonrası), AllowOverride All (2.3.8 ve öncesi)</default>
 <contextlist><context>directory</context></contextlist>
 
@@ -358,11 +358,11 @@ AddDefaultCharset utf-8
     <p>Bu yönergeye <code>All</code> değeri atanırsa, .htaccess <a
       href="directive-dict.html#Context">bağlamında</a> kullanılabilecek her
       yönergeye <code>.htaccess</code> dosyalarında izin verilir. (Hangi
-      <var>yönerge-türü</var> türü için hangi yönergelerin etkin olduğunu görmek
+      <code>yönerge-türü</code> türü için hangi yönergelerin etkin olduğunu görmek
       için <a href="overrides.html">.htaccess için Geçersizleştirme Sınıfları</a>
       sayfasına bakınız)</p>
 
-    <p><code><var>yönerge-türü</var></code> olarak aşağıdaki yönerge grup
+    <p><code><code>yönerge-türü</code></code> olarak aşağıdaki yönerge grup
       isimlerinden biri belirtilebilir:</p>
 
     <dl>
@@ -470,7 +470,7 @@ AddDefaultCharset utf-8
       </dd>
 
       <dt><a href="overrides.html#override-options"
-             >Options</a>[=<var>seçenek</var>,...]</dt>
+             >Options</a>[=<code>seçenek</code>,...]</dt>
 
       <dd>Dizinlere özgü özellikleri denetleyen
         <directive module="core">Options</directive> ve
@@ -523,8 +523,8 @@ AllowOverride AuthConfig Indexes
 <directivesynopsis>
 <name>AllowOverrideList</name>
 <description><code>.htaccess</code> dosyalarında izin verilecek yönergeler tek tek belirtilir</description>
-<syntax>AllowOverrideList None|<var>yönerge</var>
-[<var>yönerge-türü</var>] ...</syntax>
+<syntax>AllowOverrideList None|<code>yönerge</code>
+[<code>yönerge-türü</code>] ...</syntax>
 <default>AllowOverrideList None</default>
 <contextlist><context>directory</context></contextlist>
 
@@ -567,8 +567,8 @@ AllowOverride AuthConfig
 AllowOverrideList CookieTracking CookieName
     </highlight>
 
-    <p>Yukarıdaki örnekte <directive module="core">AllowOverride
-      </directive> yönergesi <code>AuthConfig</code> yönerge grubuna izin
+    <p>Yukarıdaki örnekte <directive module="core">AllowOverride</directive>
+      yönergesi <code>AuthConfig</code> yönerge grubuna izin
       verirken <directive>AllowOverrideList</directive> yönergesi
       <code>FileInfo</code> yönerge grubundan yalnız iki yönergeye izin
       vermektedir. Tüm diğerleri dahili bir sunucu hatasına sebep
@@ -585,7 +585,7 @@ AllowOverrideList CookieTracking CookieName
 <name>CGIMapExtension</name>
 <description>CGI betik yorumlayıcısını saptama tekniğini belirler.
 </description>
-<syntax>CGIMapExtension <var>cgi-yolu</var> <var>.uzantı</var></syntax>
+<syntax>CGIMapExtension <code>cgi-yolu</code> <code>.uzantı</code></syntax>
 <contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>FileInfo</override>
@@ -639,7 +639,7 @@ olarak aktarılmasını etkin kılar</description>
  <directivesynopsis>
 <name>CGIVar</name>
 <description>Bazı CGI değişkenlerinin nasıl atanacağını belirler</description>
-<syntax>CGIVar <var>değişken</var> <var>kural</var></syntax>
+<syntax>CGIVar <code>değişken</code> <code>kural</code></syntax>
 <contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>FileInfo</override>
@@ -705,7 +705,7 @@ olarak aktarılmasını etkin kılar</description>
 <directivesynopsis>
 <name>DefaultRuntimeDir</name>
 <description>Sunucunun çalışma anı dosyaları için temel dizin</description>
-<syntax>DefaultRuntimeDir <var>dizin-yolu</var></syntax>
+<syntax>DefaultRuntimeDir <code>dizin-yolu</code></syntax>
 <default>DefaultRuntimeDir DEFAULT_REL_RUNTIMEDIR (logs/)</default>
 <contextlist><context>server config</context></contextlist>
 <compatibility>Apache 2.4.2 ve sonrasında kullanılabilmektedir.
@@ -743,7 +743,7 @@ nasıl ayarlanacağını öğrenmek için:
 uyarı vermekten başka bir etkisi yoktur. Önceki sürümlerde, bu yönerge,
 sunucunun ortam türünü saptayamadığı durumda göndereceği öntanımlı ortam
 türünü belirlerdi.</description>
-<syntax>DefaultType <var>ortam-türü</var>|none</syntax>
+<syntax>DefaultType <code>ortam-türü</code>|none</syntax>
 <default>DefaultType none</default>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context>
@@ -775,7 +775,7 @@ DefaultType None
 <directivesynopsis>
 <name>Define</name>
 <description>Bir değişken tanımlar</description>
-<syntax>Define <var>değişken-ismi</var> [<var>değişken-değeri</var>]</syntax>
+<syntax>Define <code>değişken-ismi</code> [<code>değişken-değeri</code>]</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context></contextlist>
 
@@ -820,7 +820,7 @@ DocumentRoot "/var/www/${servername}/htdocs"
 <description>Sadece ismi belirtilen dosya sistemi dizininde ve bunun
   altdizinlerinde ve bunların içeriğinde uygulanacak bir yönerge grubunu
   sarmalar.</description>
-<syntax>&lt;Directory <var>dizin-yolu</var>&gt;
+<syntax>&lt;Directory <code>dizin-yolu</code>&gt;
 ... &lt;/Directory&gt;</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
@@ -831,7 +831,7 @@ DocumentRoot "/var/www/${servername}/htdocs"
       dizininde, bunun altdizinlerinde ve bu dizinlerin içindeki dosyalara
       uygulanacak bir yönerge grubunu
       sarmalamakta kullanılır. Bir dizin bağlamında kullanılabilecek her
-      yönergeye izin verilir. <var>dizin-yolu</var> bir dizinin tam yolu
+      yönergeye izin verilir. <code>dizin-yolu</code> bir dizinin tam yolu
       olabileceği gibi Unix kabuk tarzı bir dosya ismi eşleştirme kalıbı da
       olabilir. Kalıp dizgesinde, <code>?</code> herhangi bir tek karakterle,
       <code>*</code> herhangi bir karakter dizisiyle eşleşir. Ayrıca
@@ -852,7 +852,7 @@ DocumentRoot "/var/www/${servername}/htdocs"
       belirtilmedikçe bir ifadenin sonunu belirlediğinden bu gereklidir.</p>
 
     <note>
-      <p><var>dizin-yolu</var> argümanlarını belirtirken dikkatli
+      <p><code>dizin-yolu</code> argümanlarını belirtirken dikkatli
         olmalısınız: Apache httpd’nin dosyalara erişmekte kullandığı dosya
         sistemi yolu ile bire bir eşleşmelidir. Belli bir
         <code>&lt;Directory&gt;</code> dizinine uygulanan yönergeler, aynı
@@ -953,7 +953,7 @@ DocumentRoot "/var/www/${servername}/htdocs"
 <directivesynopsis type="section">
 <name>DirectoryMatch</name>
 <description>Bir düzenli ifade ile eşleşen dosya sistemi dizinlerinin içeriklerine uygulanacak bir yönerge grubunu sarmalar.</description>
-<syntax>&lt;DirectoryMatch <var>düzifd</var>&gt;
+<syntax>&lt;DirectoryMatch <code>düzifd</code>&gt;
 ... &lt;/DirectoryMatch&gt;</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
@@ -1016,7 +1016,7 @@ DocumentRoot "/var/www/${servername}/htdocs"
 <directivesynopsis>
 <name>DocumentRoot</name>
 <description>İstemciye görünür olan ana belge ağacının kök dizinini belirler.</description>
-<syntax>DocumentRoot <var>dizin-yolu</var></syntax>
+<syntax>DocumentRoot <code>dizin-yolu</code></syntax>
 <default>DocumentRoot "/usr/local/apache/htdocs"</default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
@@ -1033,7 +1033,7 @@ DocumentRoot "/usr/web"
 
     <p>yapılandırması ile <code>http://my.example.com/index.html</code>
       isteği <code>/usr/web/index.html</code> ile eşleştirilir.
-      <var>dizin-yolu</var> ile göreli dosya yolu belirtildiği takdirde belge
+      <code>dizin-yolu</code> ile göreli dosya yolu belirtildiği takdirde belge
       kök dizininin <directive  module="core">ServerRoot</directive> ile
       belirtilen sunucu kök dizinine göre belirtildiği varsayılır.</p>
 
@@ -1070,8 +1070,8 @@ DocumentRoot "/usr/web"
     </highlight>
 
     <p>Burada, <directive type="section">If</directive> yönergesi
-      <var>Host:</var> başlıksız HTTP/1.0 istekleriyle eşleşirken  <directive
-      type="section">Else</directive>  <var>Host:</var> başlıklılarla
+      <code>Host:</code> başlıksız HTTP/1.0 istekleriyle eşleşirken  <directive
+      type="section">Else</directive>  <code>Host:</code> başlıklılarla
       eşleşir.</p>
 
 </usage>
@@ -1090,7 +1090,7 @@ DocumentRoot "/usr/web"
 <name>ElseIf</name>
 <description>İçerdiği koşulun bir istek tarafınan sağlandığı ancak daha önceki bir <directive type="section" module="core">If</directive> veya
 <directive type="section">ElseIf</directive> bölümlerininkilerin sağlanmadığı durumda kapsadığı yönergelerin uygulanmasını sağlar</description>
-<syntax>&lt;ElseIf <var>ifade</var>&gt; ... &lt;/ElseIf&gt;</syntax>
+<syntax>&lt;ElseIf <code>ifade</code>&gt; ... &lt;/ElseIf&gt;</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
@@ -1380,7 +1380,7 @@ EnableSendfile On
 <directivesynopsis>
 <name>Error</name>
 <description>Özel bir hata iletisiyle yapılandırma çözümlemesini durdurur</description>
-<syntax>Error <var>ileti</var></syntax>
+<syntax>Error <code>ileti</code></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
@@ -1419,7 +1419,7 @@ EnableSendfile On
 <name>ErrorDocument</name>
 <description>Bir hata durumunda sunucunun istemciye ne döndüreceğini
   belirler.</description>
-<syntax>ErrorDocument <var>hata-kodu</var> <var>belge</var></syntax>
+<syntax>ErrorDocument <code>hata-kodu</code> <code>belge</code></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
@@ -1434,10 +1434,10 @@ EnableSendfile On
 
       <li>Özel bir ileti çıktılanır.</li>
 
-      <li>Sorunu/hatayı işleyecek yerel bir <var>URL-yoluna</var> dahili bir
+      <li>Sorunu/hatayı işleyecek yerel bir <code>URL-yoluna</code> dahili bir
         yönlendirme yapılır.</li>
 
-      <li>Sorunu/hatayı işleyecek harici bir <var>URL-yoluna</var>
+      <li>Sorunu/hatayı işleyecek harici bir <code>URL-yoluna</code>
         yönlendirme yapılır.</li>
     </ol>
 
@@ -1525,7 +1525,7 @@ ErrorDocument 404 /cgi-bin/bad_urls.pl
 <directivesynopsis>
 <name>ErrorLog</name>
 <description>Sunucunun hata günlüğünü tutacağı yeri belirler.</description>
-<syntax> ErrorLog <var>dosya-yolu</var>|syslog[:[<var>oluşum</var>][:<var>etiket</var>]]</syntax>
+<syntax> ErrorLog <code>dosya-yolu</code>|syslog[:[<code>oluşum</code>][:<code>etiket</code>]]</syntax>
 <default>ErrorLog logs/error_log (Unix) ErrorLog logs/error.log (Windows ve OS/2)</default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
@@ -1533,7 +1533,7 @@ ErrorDocument 404 /cgi-bin/bad_urls.pl
 <usage>
     <p><directive>ErrorLog</directive> yönergesi sunucunun saptadığı hataları
       kaydedeceği dosyanın ismini belirtmek için kullanılır.
-      <var>dosya-yolu</var> ile göreli dosya yolu belirtildiği takdirde
+      <code>dosya-yolu</code> ile göreli dosya yolu belirtildiği takdirde
       dizininin <directive  module="core">ServerRoot</directive> ile
       belirtilen sunucu kök dizinine göre belirtildiği varsayılır.</p>
 
@@ -1541,7 +1541,7 @@ ErrorDocument 404 /cgi-bin/bad_urls.pl
 ErrorLog "/var/log/httpd/error_log"
     </highlight>
 
-    <p><var>dosya-yolu</var> bir boru imi "<code>|</code>" ile başlatıldığı
+    <p><code>dosya-yolu</code> bir boru imi "<code>|</code>" ile başlatıldığı
       takdirde hata iletilerinin hata günlüğünü işleme sokacak komuta
       borulanacağı varsayılır.</p>
 
@@ -1555,15 +1555,15 @@ ErrorLog "|/usr/local/bin/httpd_errors"
     <p>Dosya adı yerine <code>syslog</code> kullanılırsa, sistem desteklediği
       takdirde günlük kaydı syslogd(8) üzerinden yürütülür. Öntanımlı olarak
       <code>local7</code> syslog oluşumu kullanılır. Bunu
-      <code>syslog:<var>oluşum</var></code> sözdizimini kullanarak
-      değiştirebilirsiniz. Buradaki <code><var>oluşum</var></code>
+      <code>syslog:<code>oluşum</code></code> sözdizimini kullanarak
+      değiştirebilirsiniz. Buradaki <code><code>oluşum</code></code>
       syslog.conf(5) kılavuz sayfasında belirtilen oluşum isimlerinden biri
       olabilir. Oluşum aslında küreseldir ve sanal konaklardan bazılarında
       değiştirilmişse, belirtilen en son oluşum tüm sunucuyu
-      etkileyecektir. <code><var>etiket</var></code> için de aynı kurallar
+      etkileyecektir. <code><code>etiket</code></code> için de aynı kurallar
       uygulanır. Genellikle, öntanımlı etiket olarak Apache çalıştırılabilirinin
       ismi olan <code>httpd</code> kullanılır. Öntanımlı etiketi
-      <code>syslog::<var>etiket</var></code> sözdizimini kullanarak
+      <code>syslog::<code>etiket</code></code> sözdizimini kullanarak
       değiştirebilirsiniz </p>
 
     <highlight language="config">
@@ -1592,7 +1592,7 @@ ErrorLog syslog::httpd.srv2
 <directivesynopsis>
 <name>ErrorLogFormat</name>
 <description>Hata günlüğü girdileri için biçem belirtimi</description>
-<syntax> ErrorLogFormat [connection|request] <var>biçem</var></syntax>
+<syntax> ErrorLogFormat [connection|request] <code>biçem</code></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 
@@ -1838,7 +1838,7 @@ ErrorLogFormat connection "[%{uc}t] [C:%{c}L] local\ %a remote\ %A"
 <directivesynopsis>
 <name>FileETag</name>
 <description>Duruk dosyalar için <code>ETag</code> HTTP yanıt başlığını oluşturmakta kullanılacak dosya özniteliklerini belirler.</description>
-<syntax>FileETag <var>bileşen</var> ...</syntax>
+<syntax>FileETag <code>bileşen</code> ...</syntax>
 <default>FileETag MTime Size</default>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context>
@@ -1902,7 +1902,7 @@ FileETag INode MTime Size
 <name>Files</name>
 <description>Dosya isimleriyle eşleşme halinde uygulanacak yönergeleri
   içerir.</description>
-<syntax>&lt;Files <var>dosya-adı</var>&gt; ... &lt;/Files&gt;</syntax>
+<syntax>&lt;Files <code>dosya-adı</code>&gt; ... &lt;/Files&gt;</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
@@ -1916,7 +1916,7 @@ FileETag INode MTime Size
       ile karşılaştırılabilir. Bir <code>&lt;/Files&gt;</code> yönergesi ile
       sonlandırılması gerekir. Bu bölüm içinde belirtilen yönergeler,
       <directive type="section">Files</directive> yönergesinde belirtilen
-      <var>dosya-adı</var>’nın son bileşeniyle (dizinler atıldıktan sonda
+      <code>dosya-adı</code>’nın son bileşeniyle (dizinler atıldıktan sonda
       kalan dosya ismi) eşleşen nesnelere uygulanır. <directive
       type="section">Files</directive> bölümleri yapılandırma dosyasında,
       <directive module="core" type="section">Directory</directive> bölümleri
@@ -1927,7 +1927,7 @@ FileETag INode MTime Size
       module="core">Directory</directive> bölümlerinin içinde uygulama
       alanını sınırlamak amacıyla kullanılabileceğine dikkat ediniz.</p>
 
-    <p><var>dosya-adı</var> argümanının bir dosya ismi veya bir dosya ismi
+    <p><code>dosya-adı</code> argümanının bir dosya ismi veya bir dosya ismi
       kalıbı içermesi gerekir. Bir dosya ismi kalıbındaki her <code>?</code>
       imi bir karakterle eşleştirilirken <code>*</code> imi karakter dizileri
       ile eşleştirilir.</p>
@@ -1973,7 +1973,7 @@ FileETag INode MTime Size
 <name>FilesMatch</name>
 <description>Düzenli ifadelerin dosya isimleriyle eşleşmesi halinde
   uygulanacak yönergeleri içerir.</description>
-<syntax>&lt;FilesMatch <var>düzifd</var>&gt; ... &lt;/FilesMatch&gt;</syntax>
+<syntax>&lt;FilesMatch <code>düzifd</code>&gt; ... &lt;/FilesMatch&gt;</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
@@ -2023,7 +2023,7 @@ FileETag INode MTime Size
  <directivesynopsis>
 <name>FlushMaxPipelined</name>
 <description>Ağa akıtılacak azami ardışık yanıt sayısı</description>
-<syntax>FlushMaxPipelined <var>sayı</var></syntax>
+<syntax>FlushMaxPipelined <code>sayı</code></syntax>
 <default>FlushMaxPipelined 5</default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
@@ -2036,8 +2036,8 @@ FileETag INode MTime Size
     boşaltılır.</p>
 
     <p><directive>FlushMaxPipelined</directive>, bellek kullanımını
-    kısıtlamaya yardımcı olur. <var>0</var> olarak ayarlandığında ardışık
-    düzen devre dışı bırakılır, <var>-1</var> olarak ayarlandığında sınır
+    kısıtlamaya yardımcı olur. <code>0</code> olarak ayarlandığında ardışık
+    düzen devre dışı bırakılır, <code>-1</code> olarak ayarlandığında sınır
     yoktur (<directive>FlushMaxThreshold</directive> hala geçerlidir).</p>
 </usage>
 </directivesynopsis>
@@ -2045,7 +2045,7 @@ FileETag INode MTime Size
 <directivesynopsis>
 <name>FlushMaxThreshold</name>
 <description>Bekleyen verilerin ağa boşaltılacağı eşik değer</description>
-<syntax>FlushMaxThreshold<var>bayt-sayısı</var></syntax>
+<syntax>FlushMaxThreshold <code>bayt-sayısı</code></syntax>
 <default>FlushMaxThreshold 65536</default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
@@ -2057,7 +2057,7 @@ FileETag INode MTime Size
     altına inene kadar engelleme kipinde ağa zorla boşaltılır.</p>
 
     <p><directive>FlushMaxThreshold</directive>, bellek kullanımını kısıtlamaya
-    yardımcı olur. <var>0</var>'a veya çok küçük bir değere ayarlandığında,
+    yardımcı olur. <code>0</code>'a veya çok küçük bir değere ayarlandığında,
     gerçekte hiç bekleyen veri yoktur, ancak iş parçacıklı MPM'ler için ağı
     bekleyen daha fazla iş parçacığı olabilir, dolayısıyla diğer eşzamanlı
     bağlantıları işlemek için daha az sayıda kullanılabilir.</p>
@@ -2068,7 +2068,7 @@ FileETag INode MTime Size
 <name>ForceType</name>
 <description>Bütün dosyaların belirtilen ortam türüyle sunulmasına
   sebep olur.</description>
-<syntax>ForceType <var>ortam-türü</var>|None</syntax>
+<syntax>ForceType <code>ortam-türü</code>|None</syntax>
 <contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>FileInfo</override>
@@ -2079,7 +2079,7 @@ FileETag INode MTime Size
       <directive type="section" module="core">Directory</directive>,
       <directive type="section" module="core">Location</directive> veya
       <directive type="section" module="core">Files</directive> bölümüne
-      yerleştirildiği zaman, eşleşen tüm dosyaların <var>ortam-türü</var> ile
+      yerleştirildiği zaman, eşleşen tüm dosyaların <code>ortam-türü</code> ile
       belirtilen içerik türüyle sunulmasına sebep olur. Örneğin, altında
       sadece GIF dosyaları bulunan bir dizininiz varsa ve bunlara tek tek
       <code>.gif</code> uzantısı belirtmek istemiyorsanız şu yapılandırmayı
@@ -2134,7 +2134,7 @@ ForceType image/gif
 <directivesynopsis>
 <name>GprofDir</name>
 <description>gmon.out ayrıntılı inceleme verisinin yazılacağı dizin</description>
-<syntax>GprofDir <var>/tmp/gprof/</var>|<var>/tmp/gprof/</var>%</syntax>
+<syntax>GprofDir <code>/tmp/gprof/</code>|<code>/tmp/gprof/</code>%</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 
@@ -2200,7 +2200,7 @@ ForceType image/gif
 <name>If</name>
 <description>Çalışma anında bir koşul bir istek tarafından yerine getirildiği
 takdirde uygulanacak yönergeleri barındırır.</description>
-<syntax>&lt;If <var>ifade</var>&gt; ... &lt;/If&gt;</syntax>
+<syntax>&lt;If <code>ifade</code>&gt; ... &lt;/If&gt;</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
@@ -2216,7 +2216,7 @@ takdirde uygulanacak yönergeleri barındırır.</description>
 &lt;If "-z req('Host')"&gt;
     </highlight>
 
-    <p>Bir <var>Host:</var> başlığı içermeyen HTTP/1.0 istekleriyle
+    <p>Bir <code>Host:</code> başlığı içermeyen HTTP/1.0 istekleriyle
       eşleşir. İfadeler, dizge karşılaştırması (<code>==</code>,
       <code>!=</code>, <code>&lt;</code>, ...), tamsayı karşılaştırması
       (<code>-eq</code>, <code>-ne</code>, ...) ve diğerleri (<code>-n</code>,
@@ -2263,7 +2263,7 @@ takdirde uygulanacak yönergeleri barındırır.</description>
 <name>IfDefine</name>
 <description>Başlatma sırasında bir doğruluk sınamasından sonra işleme
 sokulacak yönergeleri sarmalar.</description>
-<syntax>&lt;IfDefine [!]<var>parametre-adı</var>&gt; ...
+<syntax>&lt;IfDefine [!]<code>parametre-adı</code>&gt; ...
     &lt;/IfDefine&gt;</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context>
@@ -2271,30 +2271,30 @@ sokulacak yönergeleri sarmalar.</description>
 <override>All</override>
 
 <usage>
-    <p><code>&lt;IfDefine <var>sınama</var>&gt;...&lt;/IfDefine&gt;
+    <p><code>&lt;IfDefine <code>sınama</code>&gt;...&lt;/IfDefine&gt;
       </code> bölümü koşullu olarak işleme sokulacak yönergeleri içerir.
       Bir <directive type="section">IfDefine</directive> bölümü içindeki
-      yönergeler sadece <var>sınama</var> doğru sonuç verirse işleme sokulur.
+      yönergeler sadece <code>sınama</code> doğru sonuç verirse işleme sokulur.
       Aksi takdirde, bölüm içinde kalan her şey yok sayılır.</p>
 
     <p><directive type="section">IfDefine</directive> bölüm yönergesinde
-      <var>sınama</var> için belirtilebilecek iki biçim vardır:</p>
+      <code>sınama</code> için belirtilebilecek iki biçim vardır:</p>
 
     <ul>
-      <li><var>parametre-adı</var></li>
+      <li><code>parametre-adı</code></li>
 
-      <li><code>!</code><var>parametre-adı</var></li>
+      <li><code>!</code><code>parametre-adı</code></li>
     </ul>
 
     <p>Birinci durumda bölüm içinde kalan yönergeler sadece
-      <var>parametre-adı</var> ile belirtilen parametre tanımlı ise işleme
+      <code>parametre-adı</code> ile belirtilen parametre tanımlı ise işleme
       sokulur. İkinci durumda ise tersi yapılır, yani sadece
-      <var>parametre-adı</var> ile belirtilen parametre tanımlı
+      <code>parametre-adı</code> ile belirtilen parametre tanımlı
       <strong>değil</strong> ise yönergeler işleme sokulur.</p>
 
-    <p><var>parametre-adı</var> argümanı sunucu başlatılırken
+    <p><code>parametre-adı</code> argümanı sunucu başlatılırken
       <program>httpd</program> komut satırında
-      <code>-D<var>parametre</var></code> ile
+      <code>-D<code>parametre</code></code> ile
       veya <directive module="core">Define</directive> yönergesi ile
       belirtilerek tanımlı hale getirilebilir.</p>
 
@@ -2325,7 +2325,7 @@ sokulacak yönergeleri sarmalar.</description>
 <name>IfFile</name>
 <description>Başlatma sırasında bir dosyanın varlığı durumunda işleme
 sokulacak yönergeleri sarmalar.</description>
-<syntax>&lt;IfFile [!]<var>dosyaadı</var>&gt; ...
+<syntax>&lt;IfFile [!]<code>dosyaadı</code>&gt; ...
     &lt;/IfFile&gt;</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context>
@@ -2334,27 +2334,33 @@ sokulacak yönergeleri sarmalar.</description>
 <compatibility>2.4.34 ve sonrsında kullanılabilir.</compatibility>
 
 <usage>
-    <p><code>&lt;IfFile <var>dosyaadı</var>&gt;...&lt;/IfFile&gt;
+    <p><code>&lt;IfFile <code>dosyaadı</code>&gt;...&lt;/IfFile&gt;
     </code> bölümü bir dosyanın diskteki mevcudiyetine bağlı olarak
     çalıştırılacak yönergeleri belirtmekte kullanılır.
     <directive type="section">IfFile</directive> bölümü içindeki yönergeler
-    sadece diskte <var>dosyaadı</var> mevcutsa çalıştırılır. <var>dosyaadı</var>
-    mevcut değilse bölüm içindeki yönergeler yok sayılır. <var>dosyaadı</var>
+    sadece diskte <code>dosyaadı</code> mevcutsa çalıştırılır. <code>dosyaadı</code>
+    mevcut değilse bölüm içindeki yönergeler yok sayılır. <code>dosyaadı</code>
     sunucu kök dizinine göreli veya mutlak bir yol olarak belirtilebilir.</p>
 
     <p><directive type="section">IfFile</directive> bölüm yönergesindeki
-    <var>dosyaadı</var>, <directive type="section" module="core"
-    >IfDefine</directive> yönergesindeki <var>sınama</var> değişkenindeki gibi
-    ele alınır, yani <var>dosyaadı</var> bir ! ile öncelenirse bölüm içindeki
+    <code>dosyaadı</code>, <directive type="section" module="core"
+    >IfDefine</directive> yönergesindeki <code>sınama</code> değişkenindeki gibi
+    ele alınır, yani <code>dosyaadı</code> bir ! ile öncelenirse bölüm içindeki
     yonergeler dosyanın yokluğu durumunda çalıştırılır.
     </p>
 
-    <p>Göreli bir <var>dosyaadı</var> belirtilmişse sınama <directive
+    <p>Göreli bir <code>dosyaadı</code> belirtilmişse sınama <directive
     module="core">ServerRoot</directive> yönergesinde belirtilen dizinde göre
     yapılır. <directive type="section">IfFile</directive> yönergesinin
     <directive module="core">ServerRoot</directive> yönergesinde önce yer alması
     durumunda dosya yolu derleme sırasında kullanılan sunucu köküne veya komut
     satırında <code>-d</code> seçeneği ile belirtilen dizine göre sınanır.</p>
+
+    <note type="warning"><title>Uyarı</title>
+    2.4.34 sürümünde, <code>dosyaadı</code>'nı tırnak içinde belirtmek mümkün
+    değildi. Bu, başlatma sırasında çözümleme hatasına sebep oluyordu. Bunun
+    başlıca etkisi, boşluklu dosya adlarının kullanılamamasıdır. Bu sorun,
+    2.4.35 sürümünde düzeltildi.</note>
 
 </usage>
 </directivesynopsis>
@@ -2363,7 +2369,7 @@ sokulacak yönergeleri sarmalar.</description>
 <name>IfModule</name>
 <description>Belli bir modülün varlığına veya yokluğuna göre işleme sokulacak
 yönergeleri sarmalar.</description>
-<syntax>&lt;IfModule [!]<var>modül-dosyası</var>|<var>modül-betimleyici</var>&gt; ...
+<syntax>&lt;IfModule [!]<code>modül-dosyası</code>|<code>modül-betimleyici</code>&gt; ...
     &lt;/IfModule&gt;</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context>
@@ -2372,29 +2378,29 @@ yönergeleri sarmalar.</description>
 <compatibility>Modül betimleyiciler 2.1 sürümünde ve sonrası için geçerlidir.</compatibility>
 
 <usage>
-    <p><code>&lt;IfModule <var>sınama</var>&gt;...&lt;/IfModule&gt;</code>
+    <p><code>&lt;IfModule <code>sınama</code>&gt;...&lt;/IfModule&gt;</code>
       bölümü belli bir modülün varlığına veya yokluğuna göre işleme sokulacak
       yönergeleri içerir. Bir <directive type="section">IfModule</directive>
-      bölümü içindeki yönergeler sadece <var>sınama</var> doğru sonuç verirse
+      bölümü içindeki yönergeler sadece <code>sınama</code> doğru sonuç verirse
       işleme sokulur. Aksi takdirde, bölüm içinde kalan her şey yok sayılır.</p>
 
     <p><directive type="section">IfModule</directive> bölüm yönergesinde
-      <var>sınama</var> için belirtilebilecek iki biçim vardır:</p>
+      <code>sınama</code> için belirtilebilecek iki biçim vardır:</p>
 
     <ul>
-      <li><var>modül</var></li>
+      <li><code>modül</code></li>
 
-      <li>!<var>modül</var></li>
+      <li>!<code>modül</code></li>
     </ul>
 
-    <p>Birinci durumda bölüm içinde kalan yönergeler sadece <var>modül</var>
+    <p>Birinci durumda bölüm içinde kalan yönergeler sadece <code>modül</code>
       ile belirtilen modül Apache httpd içine dahil edilmişse veya
       <directive module="mod_so">LoadModule</directive> yönergesi ile devingen
       olarak yüklenmişse işleme sokulur. İkinci durumda ise tersi yapılır, yani
-      sadece <var>modül</var> içerilmiş <strong>değil</strong> ise yönergeler
+      sadece <code>modül</code> içerilmiş <strong>değil</strong> ise yönergeler
       işleme sokulur.</p>
 
-    <p><var>modül</var> argümanında bir modül betimleyici veya modülün derleme
+    <p><code>modül</code> argümanında bir modül betimleyici veya modülün derleme
       sırasındaki dosya adı belirtilebilir. Örneğin, <code>rewrite_module</code>
       bir betimleyici, <code>mod_rewrite.c</code> ise bir dosya ismidir. Eğer
       modül çok sayıda kaynak dosyasından oluşuyorsa
@@ -2415,7 +2421,7 @@ yönergeleri sarmalar.</description>
 <directivesynopsis type="section">
 <name>IfDirective</name>
 <description>Belirtilen yönerge adının varlığı veya yokluğuna bağlı olarak çalıştırılacak yönergeleri sarmalar.</description>
-<syntax>&lt;IfDirective [!]<var>yönerge-adı</var>&gt; ...
+<syntax>&lt;IfDirective [!]<code>yönerge-adı</code>&gt; ...
     &lt;/IfDirective&gt;</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context>
@@ -2424,17 +2430,17 @@ yönergeleri sarmalar.</description>
 <compatibility>2.4.34 ve sonrasında kullanılabilir.</compatibility>
 
 <usage>
-    <p><code>&lt;IfDirective <var>yönerge-adı</var>&gt;
+    <p><code>&lt;IfDirective <code>yönerge-adı</code>&gt;
     ...&lt;/IfDirective&gt;</code> bölümü içindeki yönergeler
-    <var>yönerge-adı</var> ile belirtilen yönerge mevcutsa çalıştırılır yoksa
+    <code>yönerge-adı</code> ile belirtilen yönerge mevcutsa çalıştırılır yoksa
     yok sayılır.</p>
 
     <p><directive type="section">IfDirective</directive> yönergenide sınama iki türlü yapılır:</p>
 
     <ul>
-      <li><var>yönerge-adı</var></li>
+      <li><code>yönerge-adı</code></li>
 
-      <li>!<var>yönerge-adı</var></li>
+      <li>!<code>yönerge-adı</code></li>
     </ul>
 
     <p>İlk durumda bölüm içinde kalan yönergeler, yönerge başlangıç satırına
@@ -2455,7 +2461,7 @@ yönergeleri sarmalar.</description>
 <directivesynopsis type="section">
 <name>IfSection</name>
 <description>Belirtilen bölüm adının varlığı veya yokluğuna bağlı olarak çalıştırılacak yönergeleri sarmalar.</description>
-<syntax>&lt;IfSection [!]<var>bölüm-adı</var>&gt; ...
+<syntax>&lt;IfSection [!]<code>bölüm-adı</code>&gt; ...
     &lt;/IfSection&gt;</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context>
@@ -2464,24 +2470,24 @@ yönergeleri sarmalar.</description>
 <compatibility>2.4.34 ve sonrasında kullanılabilir.</compatibility>
 
 <usage>
-    <p><code>&lt;IfSection <var>bölüm-adı</var>&gt;
+    <p><code>&lt;IfSection <code>bölüm-adı</code>&gt;
     ...&lt;/IfSection&gt;</code> bölümü içindeki yönergeler
-    <var>bölüm-adı</var> ile belirtilen bölüm mevcutsa çalıştırılır yoksa
+    <code>bölüm-adı</code> ile belirtilen bölüm mevcutsa çalıştırılır yoksa
     yok sayılır. Bir bölüm yönergesi "&lt;" ile öncelenmiş bir yönerge adına
     sahip olmalı ve <directive type="section">VirtualHost</directive> gibi başka
     yönergeleri sarmalayan bir yönerge olmalıdır.</p>
 
     <p><directive type="section">IfSection</directive> bölümü içindeki
-    yönergeler sadece <var>sınama</var> doğru ise çalıştırılır,
-    <var>sınama</var> yanlışsa çalıştırılmaz.</p>
+    yönergeler sadece <code>sınama</code> doğru ise çalıştırılır,
+    <code>sınama</code> yanlışsa çalıştırılmaz.</p>
 
-    <p><var>bölüm-adı</var> başında "&lt;" veya sonunda "&gt;" olmaksızın
+    <p><code>bölüm-adı</code> başında "&lt;" veya sonunda "&gt;" olmaksızın
     belirtilmelidir. <directive type="section">IfSection</directive>
-    yönergesindeki <var>bölüm-adı</var> iki türlü ele alınır:</p>
+    yönergesindeki <code>bölüm-adı</code> iki türlü ele alınır:</p>
 
     <ul>
-      <li><var>bölüm-adı</var></li>
-      <li>!<var>bölüm-adı</var></li>
+      <li><code>bölüm-adı</code></li>
+      <li>!<code>bölüm-adı</code></li>
     </ul>
 
     <p>İlk durumda bölüm içinde kalan yönergeler, yönerge başlangıç satırına
@@ -2512,7 +2518,7 @@ yönergeleri sarmalar.</description>
 <name>Include</name>
 <description>Sunucu yapılandırma dosyalarının başka dosyaları içermesini sağlar.
 </description>
-<syntax>Include <var>dosya-yolu</var>|<var>dizin-yolu</var>|<var>joker</var></syntax>
+<syntax>Include <code>dosya-yolu</code>|<code>dizin-yolu</code>|<code>joker</code></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context>
 </contextlist>
@@ -2582,7 +2588,7 @@ IncludeOptional conf/vhosts/*/*.conf
  <directivesynopsis>
 <name>IncludeOptional</name>
 <description>Diğer yapılandırma dosyalarının sunucu yapılandırma dosyasına dahil edilmesini sağlar</description>
-<syntax>IncludeOptional <var>dosya-yolu</var>|<var>dizin-yolu</var>|<var>joker</var></syntax>
+<syntax>IncludeOptional <code>dosya-yolu</code>|<code>dizin-yolu</code>|<code>joker</code></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context>
 </contextlist>
@@ -2643,7 +2649,7 @@ IncludeOptional conf/vhosts/*/*.conf
 <name>KeepAliveTimeout</name>
 <description>Bir kalıcı bağlantıda sunucunun bir sonraki isteği bekleme süresi
 </description>
-<syntax>KeepAliveTimeout <var>sayı</var>[ms]</syntax>
+<syntax>KeepAliveTimeout <code>sayı</code>[ms]</syntax>
 <default>KeepAliveTimeout 5</default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
@@ -2670,7 +2676,7 @@ IncludeOptional conf/vhosts/*/*.conf
 <name>Limit</name>
 <description>Erişimi sınırlanacak HTTP yöntemleri için erişim sınırlayıcıları
 sarmalar.</description>
-<syntax>&lt;Limit <var>yöntem</var> [<var>yöntem</var>] ... &gt; ...
+<syntax>&lt;Limit <code>yöntem</code> [<code>yöntem</code>] ... &gt; ...
     &lt;/Limit&gt;</syntax>
 <contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
@@ -2750,7 +2756,7 @@ sarmalar.</description>
 <name>LimitExcept</name>
 <description>İsimleri belirtilenler dışında kalan HTTP yöntemleri için
 kullanılacak erişim sınırlayıcıları sarmalar.</description>
-<syntax>&lt;LimitExcept <var>yöntem</var> [<var>yöntem</var>] ... &gt; ...
+<syntax>&lt;LimitExcept <code>yöntem</code> [<code>yöntem</code>] ... &gt; ...
     &lt;/LimitExcept&gt;</syntax>
 <contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
@@ -2781,7 +2787,7 @@ kullanılacak erişim sınırlayıcıları sarmalar.</description>
 <name>LimitInternalRecursion</name>
 <description>Dahili yönlendirmelerin ve istek içi isteklerin azami sayısını
 belirler.</description>
-<syntax>LimitInternalRecursion <var>sayı</var> [<var>sayı</var>]</syntax>
+<syntax>LimitInternalRecursion <code>sayı</code> [<code>sayı</code>]</syntax>
 <default>LimitInternalRecursion 10</default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
@@ -2802,10 +2808,10 @@ belirler.</description>
       ortaya çıkarlar.</p>
 
     <p>Yönerge her istek için değerlendirmeye alınacak iki farklı sınırlama
-      için kullanılabilir. İlk <var>sayı</var> ardarda gelebilen dahili
-      yönlendirmelerin azami sayısını, ikinci <var>sayı</var> ise istek içi
+      için kullanılabilir. İlk <code>sayı</code> ardarda gelebilen dahili
+      yönlendirmelerin azami sayısını, ikinci <code>sayı</code> ise istek içi
       isteklerin ne kadar iç içe olabileceğini belirler. Tek bir
-      <var>sayı</var> belirtilirse iki sınırlama için de aynı değer
+      <code>sayı</code> belirtilirse iki sınırlama için de aynı değer
       kullanılır.</p>
 
     <highlight language="config">
@@ -2818,7 +2824,7 @@ LimitInternalRecursion 5
 <name>LimitRequestBody</name>
 <description>İstemci tarafından gönderilen HTTP istek gövdesinin toplam
 uzunluğunu sınırlar.</description>
-<syntax>LimitRequestBody <var>bayt-sayısı</var></syntax>
+<syntax>LimitRequestBody <code>bayt-sayısı</code></syntax>
 <default>LimitRequestBody 0</default>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context>
@@ -2866,12 +2872,12 @@ LimitRequestBody 102400
 <name>LimitRequestFields</name>
 <description>İstemciden kabul edilecek HTTP isteği başlık alanlarının sayısını
 sınırlar.</description>
-<syntax>LimitRequestFields <var>sayı</var></syntax>
+<syntax>LimitRequestFields <code>sayı</code></syntax>
 <default>LimitRequestFields 100</default>
 <contextlist><context>server config</context><context>virtual host</context></contextlist>
 
 <usage>
-    <p><var>sayı</var>ya 0 atanması sınırsız anlamına gelir.
+    <p><code>sayı</code>ya 0 atanması sınırsız anlamına gelir.
       Öntanımlı değer bir derleme zamanı sabiti olan
       <code>DEFAULT_LIMIT_REQUEST_FIELDS</code> ile belirlenir (dağıtımla gelen
       değeri 100’dür).</p>
@@ -2911,7 +2917,7 @@ LimitRequestFields 50
 <name>LimitRequestFieldSize</name>
 <description>İstemciden kabul edilecek HTTP isteği başlık uzunluğunu sınırlar.
 </description>
-<syntax>LimitRequestFieldSize <var>bayt-sayısı</var></syntax>
+<syntax>LimitRequestFieldSize <code>bayt-sayısı</code></syntax>
 <default>LimitRequestFieldSize 8190</default>
 <contextlist><context>server config</context><context>virtual host</context></contextlist>
 
@@ -2954,7 +2960,7 @@ LimitRequestFieldSize 4094
 <name>LimitRequestLine</name>
 <description>İstemciden kabul edilecek HTTP istek satırının uzunluğunu sınırlar.
 </description>
-<syntax>LimitRequestLine <var>bayt-sayısı</var></syntax>
+<syntax>LimitRequestLine <code>bayt-sayısı</code></syntax>
 <default>LimitRequestLine 8190</default>
 <contextlist><context>server config</context><context>virtual host</context></contextlist>
 
@@ -2994,21 +3000,26 @@ LimitRequestLine 4094
 <directivesynopsis>
 <name>LimitXMLRequestBody</name>
 <description>Bir XML temelli istek gövdesinin uzunluğunu sınırlar.</description>
-<syntax>LimitXMLRequestBody <var>bayt-sayısı</var></syntax>
+<syntax>LimitXMLRequestBody <code>bayt-sayısı</code></syntax>
 <default>LimitXMLRequestBody 1000000</default>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
 <override>All</override>
 
 <usage>
-    <p>Bir  XML temelli istek gövdesinin azami bayt sayısını belirler. Değer
-      olarak <code>0</code> belirtildiğinde herhangi bir boyut sınaması
-      yapılmaz.</p>
+    <p>Bir  XML temelli istek gövdesinin azami bayt sayısını belirler.
+     <code>0</code> değeri, XML'in sistem adreslenebilir belleğinin sınırları
+     içinde sarmalanmasına izin veren (32bit ve 64bit sisteme bağlı olarak)
+     katı bir sınırlama uygular, ancak yalnızca uyumluluk için vardır ve
+     önerilmez, çünkü genel sistemde belleğin yetersiz kalmasına neden
+     olabilecek eşzamanlı istekleri veya başka bir yerde tüketilen belleği
+     hesaba katmaz.</p>
 
     <p>Örnek:</p>
 
     <highlight language="config">
-LimitXMLRequestBody 0
+# 1 MiB'lık sınırlama
+LimitXMLRequestBody 1073741824
     </highlight>
 
 </usage>
@@ -3018,7 +3029,7 @@ LimitXMLRequestBody 0
 <name>Location</name>
 <description>İçerdiği yönergeler sadece eşleşen URL’lere uygulanır.
 </description>
-<syntax>&lt;Location <var>URL-yolu</var>|<var>URL</var>&gt; ...
+<syntax>&lt;Location <code>URL-yolu</code>|<code>URL</code>&gt; ...
 &lt;/Location&gt;</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
@@ -3171,7 +3182,7 @@ LimitXMLRequestBody 0
 <description>İçerdiği yönergeler sadece düzenli ifadelerle eşleşen URL’lere
 uygulanır.</description>
 <syntax>&lt;LocationMatch
-    <var>düzifade</var>&gt; ... &lt;/LocationMatch&gt;</syntax>
+    <code>düzifade</code>&gt; ... &lt;/LocationMatch&gt;</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 
@@ -3251,8 +3262,8 @@ uygulanır.</description>
 <directivesynopsis>
 <name>LogLevel</name>
 <description>Hata günlüklerinin ayrıntı seviyesini belirler.</description>
-<syntax>LogLevel [<var>modül</var>:]<var>seviye</var>
-    [<var>modül</var>:<var>seviye</var>] ...
+<syntax>LogLevel [<code>modül</code>:]<code>seviye</code>
+    [<code>modül</code>:<code>seviye</code>] ...
 </syntax>
 <default>LogLevel warn</default>
 <contextlist><context>server config</context><context>virtual host</context>
@@ -3265,7 +3276,7 @@ uygulanır.</description>
     <p><directive>LogLevel</directive> yönergesi hata günlüklerine kaydedilen
       hata iletilerinde hangi ayrıntılara yer verileceğini belirler (<directive
       module="core">ErrorLog</directive> yönergesine bakınız). En yüksek önem
-      derecesinden başlayarak olası <var>seviye</var> değerleri aşağıda
+      derecesinden başlayarak olası <code>seviye</code> değerleri aşağıda
       sıralanmıştır:</p>
 
     <table border="1">
@@ -3440,7 +3451,7 @@ LogLevel info
 <directivesynopsis>
 <name>MaxKeepAliveRequests</name>
 <description>Bir kalıcı bağlantıda izin verilen istek sayısı</description>
-<syntax>MaxKeepAliveRequests <var>sayı</var></syntax>
+<syntax>MaxKeepAliveRequests <code>sayı</code></syntax>
 <default>MaxKeepAliveRequests 100</default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
@@ -3464,7 +3475,7 @@ MaxKeepAliveRequests 500
 <name>MaxRanges</name>
 <description>Özkaynağın tamamını döndürmeden önce izin verilen aralık sayısı</description>
 <syntax>MaxRanges default | unlimited | none |
-  <var>aralık-sayısı</var></syntax>
+  <code>aralık-sayısı</code></syntax>
 <default>MaxRanges 200</default>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context>
@@ -3489,7 +3500,7 @@ MaxKeepAliveRequests 500
       <dd>Sunucunun sağlamaya gönüllü olacağı HTTP Range'lerinin sayısı
         sınırlanmaz.</dd>
 
-      <dt><var>aralık-sayısı</var></dt>
+      <dt><code>aralık-sayısı</code></dt>
       <dd>Sunucunun sağlamaya gönüllü olacağı HTTP Range'lerinin azami
         sayısını ifade eden pozitif bir tamsayı.</dd>
     </dl>
@@ -3501,7 +3512,7 @@ MaxKeepAliveRequests 500
 <description>Özkaynağın tamamını döndürmeden önce izin verilen üst üste binen
     aralık sayısı (<code>100-200,150-300</code> gibi)</description>
 <syntax>MaxRangeOverlaps default | unlimited | none |
-  <var>aralık-sayısı</var></syntax>
+  <code>aralık-sayısı</code></syntax>
 <default>MaxRangeOverlaps 20</default>
 <contextlist><context>server config</context><context>virtual host</context>
     <context>directory</context>
@@ -3527,7 +3538,7 @@ MaxKeepAliveRequests 500
         <dd>Sunucunun sağlamaya gönüllü olacağı üst üste binen HTTP
           Range'lerinin sayısı sınırlanmaz.</dd>
 
-        <dt><var>aralık sayısı</var></dt>
+        <dt><code>aralık sayısı</code></dt>
         <dd>Sunucunun sağlamaya gönüllü olacağı üst üste binen HTTP
           Range'lerinin azami sayısını ifade eden pozitif bir tamsayı.</dd>
     </dl>
@@ -3539,7 +3550,7 @@ MaxKeepAliveRequests 500
 <description>Özkaynağın tamamını döndürmeden önce izin verilen ters sıralı
     aralık sayısı (<code>100-200,50-70</code> gibi)</description>
 <syntax>MaxRangeReversals default | unlimited | none |
-    <var>aralık-sayısı</var></syntax>
+    <code>aralık-sayısı</code></syntax>
 <default>MaxRangeReversals 20</default>
 <contextlist><context>server config</context><context>virtual host</context>
     <context>directory</context>
@@ -3565,7 +3576,7 @@ MaxKeepAliveRequests 500
         <dd>Sunucunun sağlamaya gönüllü olacağı ters sıralı HTTP
           Range'lerinin sayısı sınırlanmaz.</dd>
 
-        <dt><var>aralık-sayısı</var></dt>
+        <dt><code>aralık-sayısı</code></dt>
         <dd>Sunucunun sağlamaya gönüllü olacağı ters sıralı HTTP
           Range'lerinin azami sayısını ifade eden pozitif bir tamsayı.</dd>
     </dl>
@@ -3575,7 +3586,7 @@ MaxKeepAliveRequests 500
 <directivesynopsis>
 <name>Mutex</name>
 <description>Muteks mekanizmasını ve kilit dosyası dizinini tüm muteksler veya belirtilenler için yapılandırır</description>
-<syntax>Mutex <var>mekanizma</var> [default|<var>muteks-ismi</var>] ... [OmitPID]</syntax>
+<syntax>Mutex <code>mekanizma</code> [default|<code>muteks-ismi</code>] ... [OmitPID]</syntax>
 <default>Mutex default</default>
 <contextlist><context>server config</context></contextlist>
 <compatibility>Apache HTTP Sunucusunun 2.3.4 ve sonraki sürümlerinde
@@ -3796,7 +3807,7 @@ Mutex fcntl:/var/httpd/locks mpm-accept
 <directivesynopsis>
 <name>NameVirtualHost</name>
 <description>ÖNERİLMİYOR: İsme dayalı sanal konaklar için IP adresi belirtir</description>
-<syntax>NameVirtualHost <var>adres</var>[:<var>port</var>]</syntax>
+<syntax>NameVirtualHost <code>adres</code>[:<code>port</code>]</syntax>
 <contextlist><context>server config</context></contextlist>
 
 <usage>
@@ -3817,7 +3828,7 @@ Mutex fcntl:/var/httpd/locks mpm-accept
 <description>Belli bir dizinde geçerli olacak özellikleri yapılandırır.
 </description>
 <syntax>Options
-    [+|-]<var>seçenek</var> [[+|-]<var>seçenek</var>] ...</syntax>
+    [+|-]<code>seçenek</code> [[+|-]<code>seçenek</code>] ...</syntax>
 <default>Options FollowSymlinks</default>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context>
@@ -3830,7 +3841,7 @@ Mutex fcntl:/var/httpd/locks mpm-accept
        sunucu özelliklerinin etkin olacağını (veya olmayacağını)
        belirler.</p>
 
-    <p><var>seçenek</var> olarak hiçbir ek özellik etkin olmayacaksa
+    <p><code>seçenek</code> olarak hiçbir ek özellik etkin olmayacaksa
       <code>None</code>, aksi takdirde aşağıdakilerden biri veya bir kaçı
       belirtilir:</p>
 
@@ -3961,7 +3972,7 @@ Mutex fcntl:/var/httpd/locks mpm-accept
  <directivesynopsis>
 <name>Protocol</name>
 <description>Dinlenen bir soket için protokol</description>
-<syntax>Protocol <var>protokol</var></syntax>
+<syntax>Protocol <code>protokol</code></syntax>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
 <compatibility>Apache httpd 2.1.5 ve sonrasında kullanılabilmektedir.
@@ -4000,7 +4011,7 @@ Protocol https
 <directivesynopsis>
 <name>Protocols</name>
 <description>Sunucu/sanal konak için kullanılabilecek protokoller</description>
-<syntax>Protocols <var>protokol</var> ...</syntax>
+<syntax>Protocols <code>protokol</code> ...</syntax>
 <default>Protocols http/1.1</default>
 <contextlist><context>server config</context><context>virtual host</context></contextlist>
 <compatibility>Sadece Apache 2.4.17 ve sonrasında kullanılabilir.</compatibility>
@@ -4070,7 +4081,7 @@ Protocols h2 http/1.1
 <directivesynopsis>
 <name>ReadBufferSize</name>
 <description>Veriyi okumakta kullanılacak tampon sayısı</description>
-<syntax>ReadBufferSize <var>bayt-sayısı</var></syntax>
+<syntax>ReadBufferSize <code>bayt-sayısı</code></syntax>
 <default>ReadBufferSize 8192</default>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context></contextlist>
@@ -4082,14 +4093,14 @@ Protocols h2 http/1.1
 
     <p>Daha büyük bir arabellek, daha büyük verilerle başarımı artırabilir,
     ancak bağlantı başına tüketilen bellek artar. Yapılandırılabilir en küçük
-    boyut <var>1024</var>'tür.</p>
+    boyut <code>1024</code>'tür.</p>
 </usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>RegexDefaultOptions</name>
 <description>Regex düzenli ifadeleri için öntanımlı/küresel seçenekleri yapılandırır</description>
-<syntax>RegexDefaultOptions [none] [+|-]<var>seçenek</var> [[+|-]<var>seçenek</var>] ...</syntax>
+<syntax>RegexDefaultOptions [none] [+|-]<code>seçenek</code> [[+|-]<code>seçenek</code>] ...</syntax>
 <default>RegexDefaultOptions DOTALL DOLLAR_ENDONLY</default>
 <contextlist><context>server config</context></contextlist>
 <compatibility>Sadece Apache 2.4.30 ve sonrasında kullanılabilmektedir.</compatibility>
@@ -4106,7 +4117,7 @@ Protocols h2 http/1.1
         silerek onların yerini alır.<br />
         <code>none</code> ile önceden atanmış tüm seçenekler sıfırlanır.</p>
 
-        <p><var>seçenek</var> şunlardan biri olabilir:</p>
+        <p><code>seçenek</code> şunlardan biri olabilir:</p>
         <dl>
             <dt><code>ICASE</code></dt>
             <dd>Harf büyüklüğüne duyarlı eşleşmeler kullanılır.</dd>
@@ -4144,7 +4155,7 @@ RegexDefaultOptions none
 <name>RLimitCPU</name>
 <description>Apache httpd alt süreçleri tarafından çalıştırılan süreçlerin
   işlemci tüketimine sınırlama getirir.</description>
-<syntax>RLimitCPU <var>saniye</var>|max [<var>saniye</var>|max]</syntax>
+<syntax>RLimitCPU <code>saniye</code>|max [<code>saniye</code>|max]</syntax>
 <default>Bir değer belirtilmemiştir; işletim sistemi öntanımlıları kullanılır
 </default>
 <contextlist><context>server config</context><context>virtual host</context>
@@ -4176,7 +4187,7 @@ RegexDefaultOptions none
 <name>RLimitMEM</name>
 <description>Apache httpd alt süreçleri tarafından çalıştırılan süreçlerin
   bellek tüketimine sınırlama getirir.</description>
-<syntax>RLimitMEM <var>bayt-sayısı</var>|max [<var>bayt-sayısı</var>|max]
+<syntax>RLimitMEM <code>bayt-sayısı</code>|max [<code>bayt-sayısı</code>|max]
 </syntax>
 <default>Bir değer belirtilmemiştir; işletim sistemi öntanımlıları kullanılır
 </default>
@@ -4210,7 +4221,7 @@ RegexDefaultOptions none
 <name>RLimitNPROC</name>
 <description>Apache httpd alt süreçleri tarafından çalıştırılabilecek süreç
   sayısına sınırlama getirir.</description>
-<syntax>RLimitNPROC <var>sayı</var>|max [<var>sayı</var>|max]</syntax>
+<syntax>RLimitNPROC <code>sayı</code>|max [<code>sayı</code>|max]</syntax>
 <default>Bir değer belirtilmemiştir; işletim sistemi öntanımlıları kullanılır
 </default>
 <contextlist><context>server config</context><context>virtual host</context>
@@ -4348,7 +4359,7 @@ RegexDefaultOptions none
 <name>ServerAdmin</name>
 <description>Sunucunun hata iletilerinde istemciye göstereceği eposta adresi
 </description>
-<syntax>ServerAdmin <var>eposta-adresi</var>|<var>URL</var></syntax>
+<syntax>ServerAdmin <code>eposta-adresi</code>|<code>URL</code></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 
@@ -4379,7 +4390,7 @@ ServerAdmin www-admin@foo.example.com
 <description>İstekleri isme dayalı sanal konaklarla eşleştirilirken
 kullanılacak konak adları için başka isimler belirtebilmeyi sağlar.
 </description>
-<syntax>ServerAlias <var>konakadı</var> [<var>konakadı</var>] ...</syntax>
+<syntax>ServerAlias <code>konakadı</code> [<code>konakadı</code>] ...</syntax>
 <contextlist><context>virtual host</context></contextlist>
 
 <usage>
@@ -4419,7 +4430,7 @@ kullanılacak konak adları için başka isimler belirtebilmeyi sağlar.
 <directivesynopsis>
 <name>ServerName</name>
 <description>Sunucunun özdeşleşeceği konak ismi ve port.</description>
-<syntax>ServerName [<var>şema</var>://]<var>alan-adı</var>|<var>ip-adresi</var>[:<var>port</var>]
+<syntax>ServerName [<code>şema</code>://]<code>alan-adı</code>|<code>ip-adresi</code>[:<code>port</code>]
 </syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
@@ -4510,7 +4521,7 @@ ServerName www.example.com
 <directivesynopsis>
 <name>ServerPath</name>
 <description>Uyumsuz bir tarayıcı tarafından erişilmesi için bir isme dayalı sanal konak için meşru URL yolu</description>
-<syntax>ServerPath <var>URL-yolu</var></syntax>
+<syntax>ServerPath <code>URL-yolu</code></syntax>
 <contextlist><context>virtual host</context></contextlist>
 
 <usage>
@@ -4525,7 +4536,7 @@ ServerName www.example.com
 <directivesynopsis>
 <name>ServerRoot</name>
 <description>Sunucu yapılandırması için kök dizin</description>
-<syntax>ServerRoot <var>dizin-yolu</var></syntax>
+<syntax>ServerRoot <code>dizin-yolu</code></syntax>
 <default>ServerRoot /usr/local/apache</default>
 <contextlist><context>server config</context></contextlist>
 
@@ -4648,7 +4659,7 @@ ServerRoot "/home/httpd"
 <name>SetHandler</name>
 <description>Eşleşen tüm dosyaların belli bir eylemci tarafından işlenmesine
 sebep olur.</description>
-<syntax>SetHandler <var>eylemci-ismi</var>|none|<var>ifade</var></syntax>
+<syntax>SetHandler <code>eylemci-ismi</code>|none|<code>ifade</code></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
@@ -4659,7 +4670,7 @@ sebep olur.</description>
     <p>Bir <code>.htaccess</code> dosyasına veya bir <directive type="section"
       module="core">Directory</directive> ya da <directive type="section"
       module="core">Location</directive> bölümüne yerleştirildiğinde, eşleşen
-      tüm dosyaların, ismi <var>eylemci-ismi</var> ile belirtilen <a
+      tüm dosyaların, ismi <code>eylemci-ismi</code> ile belirtilen <a
       href="../handler.html">eylemci</a> tarafından çözümlenmesine sebep olur.
       Örneğin, bir dizin içindeki bütün dosyaların, uzantılarına bakılmaksızın
       birer imagemap kural dosyası olarak çözümlenmesini istersiniz, bu dizin
@@ -4718,7 +4729,7 @@ SetHandler imap-file
 <name>SetInputFilter</name>
 <description>POST girdilerini ve istemci isteklerini işleyecek süzgeçleri
 belirler.</description>
-<syntax>SetInputFilter <var>süzgeç</var>[;<var>süzgeç</var>...]</syntax>
+<syntax>SetInputFilter <code>süzgeç</code>[;<code>süzgeç</code>...]</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
@@ -4741,7 +4752,7 @@ belirler.</description>
 <directivesynopsis>
 <name>SetOutputFilter</name>
 <description>Sunucunun yanıtlarını işleyecek süzgeçleri belirler.</description>
-<syntax>SetOutputFilter <var>süzgeç</var>[;<var>süzgeç</var>...]</syntax>
+<syntax>SetOutputFilter <code>süzgeç</code>[;<code>süzgeç</code>...]</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
@@ -4773,7 +4784,7 @@ belirler.</description>
 <name>TimeOut</name>
 <description>Bir istek için başarısız olmadan önce belirli olayların
 gerçekleşmesi için sunucunun geçmesini bekleyeceği süre.</description>
-<syntax>TimeOut <var>saniye</var></syntax>
+<syntax>TimeOut <code>saniye</code></syntax>
 <default>TimeOut 60</default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
@@ -4811,7 +4822,7 @@ gerçekleşmesi için sunucunun geçmesini bekleyeceği süre.</description>
 <name>TraceEnable</name>
 <description><code>TRACE</code> isteklerinde davranış şeklini belirler
 </description>
-<syntax>TraceEnable <var>[on|off|extended]</var></syntax>
+<syntax>TraceEnable <code>[on|off|extended]</code></syntax>
 <default>TraceEnable on</default>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
@@ -4845,7 +4856,7 @@ gerçekleşmesi için sunucunun geçmesini bekleyeceği süre.</description>
 <directivesynopsis>
 <name>UnDefine</name>
 <description>Bir değişkeni tanımsız yapar</description>
-<syntax>UnDefine <var>değişken-ismi</var></syntax>
+<syntax>UnDefine <code>değişken-ismi</code></syntax>
 <contextlist><context>server config</context></contextlist>
 
 <usage>
@@ -4990,7 +5001,7 @@ gerçekleşmesi için sunucunun geçmesini bekleyeceği süre.</description>
 <name>VirtualHost</name>
 <description>Sadece belli bir konak ismine ve porta uygulanacak yönergeleri barındırır.</description>
 <syntax>&lt;VirtualHost
-    <var>adres</var>[:<var>port</var>] [<var>adres</var>[:<var>port</var>]]
+    <code>adres</code>[:<code>port</code>] [<code>adres</code>[:<code>port</code>]]
     ...&gt; ... &lt;/VirtualHost&gt;</syntax>
 <contextlist><context>server config</context></contextlist>
 
@@ -5001,7 +5012,7 @@ gerçekleşmesi için sunucunun geçmesini bekleyeceği süre.</description>
       kapsamında belirtilebilecek her yönerge kullanılabilir. Sunucu belli bir
       sanal konak üzerindeki bir belge için bir istek aldığında <directive
       type="section">VirtualHost</directive> bölümünde bulunan yapılandırma
-      yönergelerini kullanır. <var>adres</var> şunlardan biri olabilir,
+      yönergelerini kullanır. <code>adres</code> şunlardan biri olabilir,
       istemlik olarak ikinokta imi ve bir port numarası (veya *)
       eklenebilir:</p>
 
@@ -5144,7 +5155,7 @@ davranılır.</compatibility>
 <directivesynopsis>
 <name>RegisterHttpMethod</name>
 <description>Standart olmayan HTTP yöntemlerini devreye alır</description>
-<syntax>RegisterHttpMethod <var>yöntem</var> [<var>yöntem</var> [...]]</syntax>
+<syntax>RegisterHttpMethod <code>yöntem</code> [<code>yöntem</code> [...]]</syntax>
 <contextlist><context>server config</context></contextlist>
 <compatibility>Apache HTTP Sunucusunun 2.4.24 ve sonraki sürümlerinde kullanılabilmektedir.</compatibility>
 

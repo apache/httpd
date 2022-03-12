@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.tr.xsl"?>
-<!-- English Revision: 1741841:1897299 (outdated) -->
+<!-- English Revision: 1897299 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
    Reviewed by: Orhan Berent <berent belgeler.gen.tr>
@@ -197,14 +197,11 @@ LogLevel info rewrite:trace5
       bilgileri erişim günlüğüne kaydetmesi için nasıl yapılandırılacağından
       bahsedilecektir.</p>
 
-    <p>Şüphesiz, bilginin erişim günlüğünde saklanması günlük yönetiminde ilk
+    <p>Bilginin erişim günlüğünde saklanması günlük yönetiminde ilk
       adımı oluşturur.  Sonraki adım yararlı istatistikleri üretmek için bu
       bilgiyi incelemektir. Günlük incelemesi bu belgenin kapsamına dahil
-      değildir ve aslında bu işlem sunucunun yaptığı işlerden biri değildir.
-      Bu konu ve günlük incelemesi yapan uygulamalar hakkında daha ayrıntılı
-      bilgi edinmek için <a
-      href="http://dmoz.org/Computers/Software/Internet/Site_Management/Log_Analysis/"
-      >dmoz.org</a>'a bakınız.</p>
+      değildir ve aslında bu işlem sunucunun yaptığı işlerden biri
+      değildir.</p>
 
     <p>Apache httpd’nin çeşitli sürümlerinde erişim günlüklerini denetlemek
       için kullanılan diğer modüller ve yönergeler arasında mod_log_referer,
@@ -484,7 +481,7 @@ LogFormat "%!200,304,302{Referer}i" refererlog
 
       <p>Bu örnekte, HTTP durum kodu 400 veya 501 ise <code>User-agent</code>
         başlığı günlüklenecektir. Aksi takdirde, günlüğe bir "-" yazılacaktır.
-        Benzer şekilde ikinci örnekte, HTTP durum kodu 200, 204 veya 302
+        Benzer şekilde ikinci örnekte, HTTP durum kodu 200, 304 veya 302
         <strong>değilse</strong> (durum kodlarının öncesindeki "!" imine
         dikkat) <code>Referer</code> başlığı günlüklenecektir.</p>
 
