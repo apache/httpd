@@ -65,11 +65,11 @@
 </table></td></tr>
 </table>
 <table class="qref">
-<tr><td><a href="core.html#acceptfilter" id="A" name="A">AcceptFilter <var>protocol</var> <var>kabul_süzgeci</var></a></td><td></td><td>s</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Bir protokolün dinleyici soketleri için en iyilemeleri ayarlar
+<tr><td><a href="core.html#acceptfilter" id="A" name="A">AcceptFilter <code>protocol</code> <code>kabul_süzgeci</code></a></td><td></td><td>s</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Bir protokolün dinleyici soketleri için en iyilemeleri ayarlar
 </td></tr>
 <tr class="odd"><td><a href="core.html#acceptpathinfo">AcceptPathInfo On|Off|Default</a></td><td> Default </td><td>skdh</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Dosya isminden sonra belirtilen yol verisini kabul veya
   reddeder.</td></tr>
-<tr><td><a href="core.html#accessfilename">AccessFileName <var>filename</var> [<var>filename</var>] ...</a></td><td> .htaccess </td><td>sk</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Dağıtık yapılandırma dosyasının ismi belirtilir.</td></tr>
+<tr><td><a href="core.html#accessfilename">AccessFileName <code>filename</code> [<code>filename</code>] ...</a></td><td> .htaccess </td><td>sk</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Dağıtık yapılandırma dosyasının ismi belirtilir.</td></tr>
 <tr class="odd"><td><a href="mod_actions.html#action">Action <var>action-type</var> <var>cgi-script</var> [virtual]</a></td><td></td><td>skdh</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">Activates a CGI script for a particular handler or
 content-type</td></tr>
 <tr><td><a href="mod_autoindex.html#addalt">AddAlt <var>metin</var> <var>dosya</var> [<var>dosya</var>] ...</a></td><td></td><td>skdh</td><td>T</td></tr><tr><td class="descr" colspan="4">Dosyaya göre seçilen simgenin yerinde gösterilecek metni belirler.
@@ -83,7 +83,7 @@ metni belirler.</td></tr>
 <tr class="odd"><td><a href="mod_mime.html#addcharset">AddCharset <var>charset</var> <var>extension</var>
 [<var>extension</var>] ...</a></td><td></td><td>skdh</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">Maps the given filename extensions to the specified content
 charset</td></tr>
-<tr><td><a href="core.html#adddefaultcharset">AddDefaultCharset On|Off|<var>karküm</var></a></td><td> Off </td><td>skdh</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Bir yanıtın içerik türü <code>text/plain</code> veya
+<tr><td><a href="core.html#adddefaultcharset">AddDefaultCharset On|Off|<code>karküm</code></a></td><td> Off </td><td>skdh</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Bir yanıtın içerik türü <code>text/plain</code> veya
   <code>text/html</code> olduğunda eklenecek öntanımlı karakter kümesi
   parametresini belirler.</td></tr>
 <tr class="odd"><td><a href="mod_autoindex.html#adddescription">AddDescription <var>metin dosya</var> [<var>dosya</var>] ...</a></td><td></td><td>skdh</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">Bir dosya için gösterilecek açıklama belirtilir.</td></tr>
@@ -133,11 +133,11 @@ proxy</td></tr>
   verilmeyeceğini belirler.</td></tr>
 <tr><td><a href="mod_allowmethods.html#allowmethods">AllowMethods reset|<em>HTTP-method</em>
 [<em>HTTP-method</em>]...</a></td><td> reset </td><td>d</td><td>D</td></tr><tr><td class="descr" colspan="4">Restrict access to the listed HTTP methods</td></tr>
-<tr class="odd"><td><a href="core.html#allowoverride">AllowOverride All|None|<var>yönerge-türü</var>
-[<var>yönerge-türü</var>] ...</a></td><td> None (2.3.9 ve sonr +</td><td>d</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4"><code>.htaccess</code> dosyalarında bulunmasına izin verilen
+<tr class="odd"><td><a href="core.html#allowoverride">AllowOverride All|None|<code>yönerge-türü</code>
+[<code>yönerge-türü</code>] ...</a></td><td> None (2.3.9 ve sonr +</td><td>d</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4"><code>.htaccess</code> dosyalarında bulunmasına izin verilen
   yönerge türleri belirtilir.</td></tr>
-<tr><td><a href="core.html#allowoverridelist">AllowOverrideList None|<var>yönerge</var>
-[<var>yönerge-türü</var>] ...</a></td><td> None </td><td>d</td><td>Ç</td></tr><tr><td class="descr" colspan="4"><code>.htaccess</code> dosyalarında izin verilecek yönergeler tek tek belirtilir</td></tr>
+<tr><td><a href="core.html#allowoverridelist">AllowOverrideList None|<code>yönerge</code>
+[<code>yönerge-türü</code>] ...</a></td><td> None </td><td>d</td><td>Ç</td></tr><tr><td class="descr" colspan="4"><code>.htaccess</code> dosyalarında izin verilecek yönergeler tek tek belirtilir</td></tr>
 <tr class="odd"><td><a href="mod_authn_anon.html#anonymous">Anonymous <var>user</var> [<var>user</var>] ...</a></td><td></td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Specifies userIDs that are allowed access without
 password verification</td></tr>
 <tr><td><a href="mod_authn_anon.html#anonymous_logemail">Anonymous_LogEmail On|Off</a></td><td> On </td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Sets whether the password entered will be logged in the
@@ -337,11 +337,11 @@ cache</td></tr>
 <tr><td><a href="mod_cache.html#cachestoreprivate">CacheStorePrivate On|Off</a></td><td> Off </td><td>skdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Attempt to cache responses that the server has marked as private</td></tr>
 <tr class="odd"><td><a href="mod_cgid.html#cgidscripttimeout">CGIDScriptTimeout <var>time</var>[s|ms]</a></td><td></td><td>skdh</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">The length of time to wait for more output from the
 CGI program</td></tr>
-<tr><td><a href="core.html#cgimapextension">CGIMapExtension <var>cgi-yolu</var> <var>.uzantı</var></a></td><td></td><td>dh</td><td>Ç</td></tr><tr><td class="descr" colspan="4">CGI betik yorumlayıcısını saptama tekniğini belirler.
+<tr><td><a href="core.html#cgimapextension">CGIMapExtension <code>cgi-yolu</code> <code>.uzantı</code></a></td><td></td><td>dh</td><td>Ç</td></tr><tr><td class="descr" colspan="4">CGI betik yorumlayıcısını saptama tekniğini belirler.
 </td></tr>
 <tr class="odd"><td><a href="core.html#cgipassauth">CGIPassAuth On|Off</a></td><td> Off </td><td>dh</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">HTTP yetkilendirme başlıklarının betiklere CGI değişkenleri
 olarak aktarılmasını etkin kılar</td></tr>
-<tr><td><a href="core.html#cgivar">CGIVar <var>değişken</var> <var>kural</var></a></td><td></td><td>dh</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Bazı CGI değişkenlerinin nasıl atanacağını belirler</td></tr>
+<tr><td><a href="core.html#cgivar">CGIVar <code>değişken</code> <code>kural</code></a></td><td></td><td>dh</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Bazı CGI değişkenlerinin nasıl atanacağını belirler</td></tr>
 <tr class="odd"><td><a href="mod_charset_lite.html#charsetdefault">CharsetDefault <var>charset</var></a></td><td></td><td>skdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Charset to translate into</td></tr>
 <tr><td><a href="mod_charset_lite.html#charsetoptions">CharsetOptions <var>option</var> [<var>option</var>] ...</a></td><td> ImplicitAdd </td><td>skdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Configures charset translation behavior</td></tr>
 <tr class="odd"><td><a href="mod_charset_lite.html#charsetsourceenc">CharsetSourceEnc <var>charset</var></a></td><td></td><td>skdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Source charset of files</td></tr>
@@ -389,12 +389,12 @@ belirler.</td></tr>
 <tr><td><a href="mod_mime.html#defaultlanguage">DefaultLanguage <var>language-tag</var></a></td><td></td><td>skdh</td><td>T</td></tr><tr><td class="descr" colspan="4">Defines a default language-tag to be sent in the Content-Language
 header field for all resources in the current context that have not been
 assigned a language-tag by some other means.</td></tr>
-<tr class="odd"><td><a href="core.html#defaultruntimedir">DefaultRuntimeDir <var>dizin-yolu</var></a></td><td> DEFAULT_REL_RUNTIME +</td><td>s</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Sunucunun çalışma anı dosyaları için temel dizin</td></tr>
-<tr><td><a href="core.html#defaulttype">DefaultType <var>ortam-türü</var>|none</a></td><td> none </td><td>skdh</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Değeri <code>none</code> olduğu takdirde, bu yönergenin bir
+<tr class="odd"><td><a href="core.html#defaultruntimedir">DefaultRuntimeDir <code>dizin-yolu</code></a></td><td> DEFAULT_REL_RUNTIME +</td><td>s</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Sunucunun çalışma anı dosyaları için temel dizin</td></tr>
+<tr><td><a href="core.html#defaulttype">DefaultType <code>ortam-türü</code>|none</a></td><td> none </td><td>skdh</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Değeri <code>none</code> olduğu takdirde, bu yönergenin bir
 uyarı vermekten başka bir etkisi yoktur. Önceki sürümlerde, bu yönerge,
 sunucunun ortam türünü saptayamadığı durumda göndereceği öntanımlı ortam
 türünü belirlerdi.</td></tr>
-<tr class="odd"><td><a href="core.html#define">Define <var>değişken-ismi</var> [<var>değişken-değeri</var>]</a></td><td></td><td>skd</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Bir değişken tanımlar</td></tr>
+<tr class="odd"><td><a href="core.html#define">Define <code>değişken-ismi</code> [<code>değişken-değeri</code>]</a></td><td></td><td>skd</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Bir değişken tanımlar</td></tr>
 <tr><td><a href="mod_deflate.html#deflatebuffersize">DeflateBufferSize <var>value</var></a></td><td> 8096 </td><td>sk</td><td>E</td></tr><tr><td class="descr" colspan="4">Fragment size to be compressed at one time by zlib</td></tr>
 <tr class="odd"><td><a href="mod_deflate.html#deflatecompressionlevel">DeflateCompressionLevel <var>value</var></a></td><td></td><td>sk</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">How much compression do we apply to the output</td></tr>
 <tr><td><a href="mod_deflate.html#deflatefilternote">DeflateFilterNote [<var>type</var>] <var>notename</var></a></td><td></td><td>sk</td><td>E</td></tr><tr><td class="descr" colspan="4">Places the compression ratio in a note for logging</td></tr>
@@ -407,7 +407,7 @@ türünü belirlerdi.</td></tr>
 <tr><td><a href="mod_access_compat.html#deny"> Deny from all|<var>host</var>|env=[!]<var>env-variable</var>
 [<var>host</var>|env=[!]<var>env-variable</var>] ...</a></td><td></td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Controls which hosts are denied access to the
 server</td></tr>
-<tr class="odd"><td><a href="core.html#directory">&lt;Directory <var>dizin-yolu</var>&gt;
+<tr class="odd"><td><a href="core.html#directory">&lt;Directory <code>dizin-yolu</code>&gt;
 ... &lt;/Directory&gt;</a></td><td></td><td>sk</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Sadece ismi belirtilen dosya sistemi dizininde ve bunun
   altdizinlerinde ve bunların içeriğinde uygulanacak bir yönerge grubunu
   sarmalar.</td></tr>
@@ -420,15 +420,15 @@ server</td></tr>
 <var>3xx-kodu</var>
 </a></td><td> off </td><td>skdh</td><td>T</td></tr><tr><td class="descr" colspan="4">Dizin içerik listeleri için harici bir yönlendirme yapılandırır.
 </td></tr>
-<tr class="odd"><td><a href="core.html#directorymatch">&lt;DirectoryMatch <var>düzifd</var>&gt;
+<tr class="odd"><td><a href="core.html#directorymatch">&lt;DirectoryMatch <code>düzifd</code>&gt;
 ... &lt;/DirectoryMatch&gt;</a></td><td></td><td>sk</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Bir düzenli ifade ile eşleşen dosya sistemi dizinlerinin içeriklerine uygulanacak bir yönerge grubunu sarmalar.</td></tr>
 <tr><td><a href="mod_dir.html#directoryslash">DirectorySlash On|Off</a></td><td> On </td><td>skdh</td><td>T</td></tr><tr><td class="descr" colspan="4">Bölü çizgisi ile biten yönlendirmeleri açar/kapar.</td></tr>
-<tr class="odd"><td><a href="core.html#documentroot">DocumentRoot <var>dizin-yolu</var></a></td><td> "/usr/local/apache/ +</td><td>sk</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">İstemciye görünür olan ana belge ağacının kök dizinini belirler.</td></tr>
+<tr class="odd"><td><a href="core.html#documentroot">DocumentRoot <code>dizin-yolu</code></a></td><td> "/usr/local/apache/ +</td><td>sk</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">İstemciye görünür olan ana belge ağacının kök dizinini belirler.</td></tr>
 <tr><td><a href="mod_privileges.html#dtraceprivileges">DTracePrivileges On|Off</a></td><td> Off </td><td>s</td><td>D</td></tr><tr><td class="descr" colspan="4">Determines whether the privileges required by dtrace are enabled.</td></tr>
 <tr class="odd"><td><a href="mod_dumpio.html#dumpioinput">DumpIOInput On|Off</a></td><td> Off </td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Dump all input data to the error log</td></tr>
 <tr><td><a href="mod_dumpio.html#dumpiooutput">DumpIOOutput On|Off</a></td><td> Off </td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Dump all output data to the error log</td></tr>
 <tr class="odd"><td><a href="core.html#else" id="E" name="E">&lt;Else&gt; ... &lt;/Else&gt;</a></td><td></td><td>skdh</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Önceki bir <code class="directive"><a href="../mod/core.html#if">&lt;If&gt;</a></code> veya <code class="directive"><a href="../mod/core.html#elseif">&lt;ElseIf&gt;</a></code> bölümünün koşulu, çalışma anında bir istek tarafından yerine getirilmediği takdirde uygulanacak yönergeleri içerir</td></tr>
-<tr><td><a href="core.html#elseif">&lt;ElseIf <var>ifade</var>&gt; ... &lt;/ElseIf&gt;</a></td><td></td><td>skdh</td><td>Ç</td></tr><tr><td class="descr" colspan="4">İçerdiği koşulun bir istek tarafınan sağlandığı ancak daha önceki bir <code class="directive"><a href="../mod/core.html#if">&lt;If&gt;</a></code> veya
+<tr><td><a href="core.html#elseif">&lt;ElseIf <code>ifade</code>&gt; ... &lt;/ElseIf&gt;</a></td><td></td><td>skdh</td><td>Ç</td></tr><tr><td class="descr" colspan="4">İçerdiği koşulun bir istek tarafınan sağlandığı ancak daha önceki bir <code class="directive"><a href="../mod/core.html#if">&lt;If&gt;</a></code> veya
 <code class="directive">&lt;ElseIf&gt;</code> bölümlerininkilerin sağlanmadığı durumda kapsadığı yönergelerin uygulanmasını sağlar</td></tr>
 <tr class="odd"><td><a href="mpm_common.html#enableexceptionhook">EnableExceptionHook On|Off</a></td><td> Off </td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Bir çöküş sonrası olağandışılık eylemcilerini çalıştıracak
   kancayı etkin kılar.</td></tr>
@@ -436,11 +436,11 @@ server</td></tr>
   kılar.</td></tr>
 <tr class="odd"><td><a href="core.html#enablesendfile">EnableSendfile On|Off</a></td><td> Off </td><td>skdh</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Dosyaların istemciye tesliminde çekirdeğin dosya gönderme
   desteğinin kullanımını etkin kılar.</td></tr>
-<tr><td><a href="core.html#error">Error <var>ileti</var></a></td><td></td><td>skdh</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Özel bir hata iletisiyle yapılandırma çözümlemesini durdurur</td></tr>
-<tr class="odd"><td><a href="core.html#errordocument">ErrorDocument <var>hata-kodu</var> <var>belge</var></a></td><td></td><td>skdh</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Bir hata durumunda sunucunun istemciye ne döndüreceğini
+<tr><td><a href="core.html#error">Error <code>ileti</code></a></td><td></td><td>skdh</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Özel bir hata iletisiyle yapılandırma çözümlemesini durdurur</td></tr>
+<tr class="odd"><td><a href="core.html#errordocument">ErrorDocument <code>hata-kodu</code> <code>belge</code></a></td><td></td><td>skdh</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Bir hata durumunda sunucunun istemciye ne döndüreceğini
   belirler.</td></tr>
-<tr><td><a href="core.html#errorlog"> ErrorLog <var>dosya-yolu</var>|syslog[:[<var>oluşum</var>][:<var>etiket</var>]]</a></td><td> logs/error_log (Uni +</td><td>sk</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Sunucunun hata günlüğünü tutacağı yeri belirler.</td></tr>
-<tr class="odd"><td><a href="core.html#errorlogformat"> ErrorLogFormat [connection|request] <var>biçem</var></a></td><td></td><td>sk</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Hata günlüğü girdileri için biçem belirtimi</td></tr>
+<tr><td><a href="core.html#errorlog"> ErrorLog <code>dosya-yolu</code>|syslog[:[<code>oluşum</code>][:<code>etiket</code>]]</a></td><td> logs/error_log (Uni +</td><td>sk</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Sunucunun hata günlüğünü tutacağı yeri belirler.</td></tr>
+<tr class="odd"><td><a href="core.html#errorlogformat"> ErrorLogFormat [connection|request] <code>biçem</code></a></td><td></td><td>sk</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Hata günlüğü girdileri için biçem belirtimi</td></tr>
 <tr><td><a href="mod_example_hooks.html#example">Example</a></td><td></td><td>skdh</td><td>D</td></tr><tr><td class="descr" colspan="4">Demonstration directive to illustrate the Apache module
 API</td></tr>
 <tr class="odd"><td><a href="mod_expires.html#expiresactive">ExpiresActive On|Off</a></td><td> Off </td><td>skdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Enables generation of <code>Expires</code>
@@ -454,10 +454,10 @@ by MIME type</td></tr>
 <tr><td><a href="mod_ext_filter.html#extfilteroptions">ExtFilterOptions <var>option</var> [<var>option</var>] ...</a></td><td> NoLogStderr </td><td>d</td><td>E</td></tr><tr><td class="descr" colspan="4">Configure <code class="module"><a href="../mod/mod_ext_filter.html">mod_ext_filter</a></code> options</td></tr>
 <tr class="odd"><td><a href="mod_dir.html#fallbackresource" id="F" name="F">FallbackResource disabled | <var>yerel-url</var></a></td><td></td><td>skdh</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">Bir dosya ile eşleşmeyen istekler için öntanımlı URL tanımlar
 </td></tr>
-<tr><td><a href="core.html#fileetag">FileETag <var>bileşen</var> ...</a></td><td> MTime Size </td><td>skdh</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Duruk dosyalar için <code>ETag</code> HTTP yanıt başlığını oluşturmakta kullanılacak dosya özniteliklerini belirler.</td></tr>
-<tr class="odd"><td><a href="core.html#files">&lt;Files <var>dosya-adı</var>&gt; ... &lt;/Files&gt;</a></td><td></td><td>skdh</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Dosya isimleriyle eşleşme halinde uygulanacak yönergeleri
+<tr><td><a href="core.html#fileetag">FileETag <code>bileşen</code> ...</a></td><td> MTime Size </td><td>skdh</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Duruk dosyalar için <code>ETag</code> HTTP yanıt başlığını oluşturmakta kullanılacak dosya özniteliklerini belirler.</td></tr>
+<tr class="odd"><td><a href="core.html#files">&lt;Files <code>dosya-adı</code>&gt; ... &lt;/Files&gt;</a></td><td></td><td>skdh</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Dosya isimleriyle eşleşme halinde uygulanacak yönergeleri
   içerir.</td></tr>
-<tr><td><a href="core.html#filesmatch">&lt;FilesMatch <var>düzifd</var>&gt; ... &lt;/FilesMatch&gt;</a></td><td></td><td>skdh</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Düzenli ifadelerin dosya isimleriyle eşleşmesi halinde
+<tr><td><a href="core.html#filesmatch">&lt;FilesMatch <code>düzifd</code>&gt; ... &lt;/FilesMatch&gt;</a></td><td></td><td>skdh</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Düzenli ifadelerin dosya isimleriyle eşleşmesi halinde
   uygulanacak yönergeleri içerir.</td></tr>
 <tr class="odd"><td><a href="mod_filter.html#filterchain">FilterChain [+=-@!]<var>filter-name</var> <var>...</var></a></td><td></td><td>skdh</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">Configure the filter chain</td></tr>
 <tr><td><a href="mod_filter.html#filterdeclare">FilterDeclare <var>filter-name</var> <var>[type]</var></a></td><td></td><td>skdh</td><td>T</td></tr><tr><td class="descr" colspan="4">Declare a smart filter</td></tr>
@@ -467,18 +467,18 @@ by MIME type</td></tr>
  <var>expression</var></a></td><td></td><td>skdh</td><td>T</td></tr><tr><td class="descr" colspan="4">Register a content filter</td></tr>
 <tr class="odd"><td><a href="mod_filter.html#filtertrace">FilterTrace <var>filter-name</var> <var>level</var></a></td><td></td><td>skd</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">Get debug/diagnostic information from
     <code class="module"><a href="../mod/mod_filter.html">mod_filter</a></code></td></tr>
-<tr><td><a href="core.html#flushmaxpipelined">FlushMaxPipelined <var>sayı</var></a></td><td> 5 </td><td>sk</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Ağa akıtılacak azami ardışık yanıt sayısı</td></tr>
-<tr class="odd"><td><a href="core.html#flushmaxthreshold">FlushMaxThreshold<var>bayt-sayısı</var></a></td><td> 65536 </td><td>sk</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Bekleyen verilerin ağa boşaltılacağı eşik değer</td></tr>
+<tr><td><a href="core.html#flushmaxpipelined">FlushMaxPipelined <code>sayı</code></a></td><td> 5 </td><td>sk</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Ağa akıtılacak azami ardışık yanıt sayısı</td></tr>
+<tr class="odd"><td><a href="core.html#flushmaxthreshold">FlushMaxThreshold <code>bayt-sayısı</code></a></td><td> 65536 </td><td>sk</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Bekleyen verilerin ağa boşaltılacağı eşik değer</td></tr>
 <tr><td><a href="mod_negotiation.html#forcelanguagepriority">ForceLanguagePriority None|Prefer|Fallback [Prefer|Fallback]</a></td><td> Prefer </td><td>skdh</td><td>T</td></tr><tr><td class="descr" colspan="4">Action to take if a single acceptable document is not
 found</td></tr>
-<tr class="odd"><td><a href="core.html#forcetype">ForceType <var>ortam-türü</var>|None</a></td><td></td><td>dh</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Bütün dosyaların belirtilen ortam türüyle sunulmasına
+<tr class="odd"><td><a href="core.html#forcetype">ForceType <code>ortam-türü</code>|None</a></td><td></td><td>dh</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Bütün dosyaların belirtilen ortam türüyle sunulmasına
   sebep olur.</td></tr>
 <tr><td><a href="mod_log_forensic.html#forensiclog">ForensicLog <var>dosya-adı</var>|<var>borulu-süreç</var></a></td><td></td><td>sk</td><td>E</td></tr><tr><td class="descr" colspan="4">Adli günlük için dosya ismini belirler.</td></tr>
 <tr class="odd"><td><a href="mod_log_config.html#globallog" id="G" name="G">GlobalLog  <var>dosya</var>|<var>boru</var>|<var>sağlayıcı</var>
 <var>biçem</var>|<var>takma_ad</var>
 [env=[!]<var>ortam_değişkeni</var>|
 expr=<var>ifade</var>]</a></td><td></td><td>s</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">Günlük dosyasının ismini ve biçemini belirler</td></tr>
-<tr><td><a href="core.html#gprofdir">GprofDir <var>/tmp/gprof/</var>|<var>/tmp/gprof/</var>%</a></td><td></td><td>sk</td><td>Ç</td></tr><tr><td class="descr" colspan="4">gmon.out ayrıntılı inceleme verisinin yazılacağı dizin</td></tr>
+<tr><td><a href="core.html#gprofdir">GprofDir <code>/tmp/gprof/</code>|<code>/tmp/gprof/</code>%</a></td><td></td><td>sk</td><td>Ç</td></tr><tr><td class="descr" colspan="4">gmon.out ayrıntılı inceleme verisinin yazılacağı dizin</td></tr>
 <tr class="odd"><td><a href="mpm_common.html#gracefulshutdowntimeout">GracefulShutdownTimeout <var>saniye</var></a></td><td> 0 </td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Sunucunun nazikçe kapatılmasının ardından ana süreç çıkana kadar
   geçecek süre için bir zaman aşımı belirler.</td></tr>
 <tr><td><a href="mod_unixd.html#group">Group <var>unix-grubu</var></a></td><td> #-1 </td><td>s</td><td>T</td></tr><tr><td class="descr" colspan="4">İsteklere yanıt verecek sunucunun ait olacağı grubu belirler.</td></tr>
@@ -521,20 +521,20 @@ heartbeat requests to this server</td></tr>
 <tr><td><a href="mod_ident.html#identitycheck" id="I" name="I">IdentityCheck On|Off</a></td><td> Off </td><td>skd</td><td>E</td></tr><tr><td class="descr" colspan="4">Enables logging of the RFC 1413 identity of the remote
 user</td></tr>
 <tr class="odd"><td><a href="mod_ident.html#identitychecktimeout">IdentityCheckTimeout <var>seconds</var></a></td><td> 30 </td><td>skd</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Determines the timeout duration for ident requests</td></tr>
-<tr><td><a href="core.html#if">&lt;If <var>ifade</var>&gt; ... &lt;/If&gt;</a></td><td></td><td>skdh</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Çalışma anında bir koşul bir istek tarafından yerine getirildiği
+<tr><td><a href="core.html#if">&lt;If <code>ifade</code>&gt; ... &lt;/If&gt;</a></td><td></td><td>skdh</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Çalışma anında bir koşul bir istek tarafından yerine getirildiği
 takdirde uygulanacak yönergeleri barındırır.</td></tr>
-<tr class="odd"><td><a href="core.html#ifdefine">&lt;IfDefine [!]<var>parametre-adı</var>&gt; ...
+<tr class="odd"><td><a href="core.html#ifdefine">&lt;IfDefine [!]<code>parametre-adı</code>&gt; ...
     &lt;/IfDefine&gt;</a></td><td></td><td>skdh</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Başlatma sırasında bir doğruluk sınamasından sonra işleme
 sokulacak yönergeleri sarmalar.</td></tr>
-<tr><td><a href="core.html#ifdirective">&lt;IfDirective [!]<var>yönerge-adı</var>&gt; ...
+<tr><td><a href="core.html#ifdirective">&lt;IfDirective [!]<code>yönerge-adı</code>&gt; ...
     &lt;/IfDirective&gt;</a></td><td></td><td>skdh</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Belirtilen yönerge adının varlığı veya yokluğuna bağlı olarak çalıştırılacak yönergeleri sarmalar.</td></tr>
-<tr class="odd"><td><a href="core.html#iffile">&lt;IfFile [!]<var>dosyaadı</var>&gt; ...
+<tr class="odd"><td><a href="core.html#iffile">&lt;IfFile [!]<code>dosyaadı</code>&gt; ...
     &lt;/IfFile&gt;</a></td><td></td><td>skdh</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Başlatma sırasında bir dosyanın varlığı durumunda işleme
 sokulacak yönergeleri sarmalar.</td></tr>
-<tr><td><a href="core.html#ifmodule">&lt;IfModule [!]<var>modül-dosyası</var>|<var>modül-betimleyici</var>&gt; ...
+<tr><td><a href="core.html#ifmodule">&lt;IfModule [!]<code>modül-dosyası</code>|<code>modül-betimleyici</code>&gt; ...
     &lt;/IfModule&gt;</a></td><td></td><td>skdh</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Belli bir modülün varlığına veya yokluğuna göre işleme sokulacak
 yönergeleri sarmalar.</td></tr>
-<tr class="odd"><td><a href="core.html#ifsection">&lt;IfSection [!]<var>bölüm-adı</var>&gt; ...
+<tr class="odd"><td><a href="core.html#ifsection">&lt;IfSection [!]<code>bölüm-adı</code>&gt; ...
     &lt;/IfSection&gt;</a></td><td></td><td>skdh</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Belirtilen bölüm adının varlığı veya yokluğuna bağlı olarak çalıştırılacak yönergeleri sarmalar.</td></tr>
 <tr><td><a href="mod_version.html#ifversion">&lt;IfVersion [[!]<var>operator</var>] <var>version</var>&gt; ...
 &lt;/IfVersion&gt;</a></td><td></td><td>skdh</td><td>E</td></tr><tr><td class="descr" colspan="4">contains version dependent configuration</td></tr>
@@ -543,9 +543,9 @@ yönergeleri sarmalar.</td></tr>
 that are not explicitly mapped</td></tr>
 <tr class="odd"><td><a href="mod_imagemap.html#imapmenu">ImapMenu none|formatted|semiformatted|unformatted</a></td><td> formatted </td><td>skdh</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">Action if no coordinates are given when calling
 an imagemap</td></tr>
-<tr><td><a href="core.html#include">Include <var>dosya-yolu</var>|<var>dizin-yolu</var>|<var>joker</var></a></td><td></td><td>skd</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Sunucu yapılandırma dosyalarının başka dosyaları içermesini sağlar.
+<tr><td><a href="core.html#include">Include <code>dosya-yolu</code>|<code>dizin-yolu</code>|<code>joker</code></a></td><td></td><td>skd</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Sunucu yapılandırma dosyalarının başka dosyaları içermesini sağlar.
 </td></tr>
-<tr class="odd"><td><a href="core.html#includeoptional">IncludeOptional <var>dosya-yolu</var>|<var>dizin-yolu</var>|<var>joker</var></a></td><td></td><td>skd</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Diğer yapılandırma dosyalarının sunucu yapılandırma dosyasına dahil edilmesini sağlar</td></tr>
+<tr class="odd"><td><a href="core.html#includeoptional">IncludeOptional <code>dosya-yolu</code>|<code>dizin-yolu</code>|<code>joker</code></a></td><td></td><td>skd</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Diğer yapılandırma dosyalarının sunucu yapılandırma dosyasına dahil edilmesini sağlar</td></tr>
 <tr><td><a href="mod_autoindex.html#indexheadinsert">IndexHeadInsert <var>"imlenim ..."</var></a></td><td></td><td>skdh</td><td>T</td></tr><tr><td class="descr" colspan="4">Bir dizin sayfasının HEAD bölümüne metin yerleştirir.</td></tr>
 <tr class="odd"><td><a href="mod_autoindex.html#indexignore">IndexIgnore <var>dosya</var> [<var>dosya</var>] ...</a></td><td> "." </td><td>skdh</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">Dizin içerik listesinden gizlenecek dosyaların listesi belirtilir.
 </td></tr>
@@ -571,7 +571,7 @@ extensions</td></tr>
 <tr><td><a href="mod_isapi.html#isapireadaheadbuffer">ISAPIReadAheadBuffer <var>size</var></a></td><td> 49152 </td><td>skdh</td><td>T</td></tr><tr><td class="descr" colspan="4">Size of the Read Ahead Buffer sent to ISAPI
 extensions</td></tr>
 <tr class="odd"><td><a href="core.html#keepalive" id="K" name="K">KeepAlive On|Off</a></td><td> On </td><td>sk</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">HTTP kalıcı bağlantılarını etkin kılar</td></tr>
-<tr><td><a href="core.html#keepalivetimeout">KeepAliveTimeout <var>sayı</var>[ms]</a></td><td> 5 </td><td>sk</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Bir kalıcı bağlantıda sunucunun bir sonraki isteği bekleme süresi
+<tr><td><a href="core.html#keepalivetimeout">KeepAliveTimeout <code>sayı</code>[ms]</a></td><td> 5 </td><td>sk</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Bir kalıcı bağlantıda sunucunun bir sonraki isteği bekleme süresi
 </td></tr>
 <tr class="odd"><td><a href="mod_request.html#keptbodysize">KeptBodySize <var>azami_bayt_sayısı</var></a></td><td> 0 </td><td>d</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">mod_include gibi süzgeçler tarafından kullanılma olasılığına karşı
 istek gövdesi iptal edilmek yerine belirtilen azami boyutta tutulur.
@@ -602,23 +602,23 @@ connection client certificates.</td></tr>
 Certificate Authority or global client certificates</td></tr>
 <tr class="odd"><td><a href="mod_ldap.html#ldaptrustedmode">LDAPTrustedMode <var>type</var></a></td><td></td><td>sk</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Specifies the SSL/TLS mode to be used when connecting to an LDAP server.</td></tr>
 <tr><td><a href="mod_ldap.html#ldapverifyservercert">LDAPVerifyServerCert On|Off</a></td><td> On </td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Force server certificate verification</td></tr>
-<tr class="odd"><td><a href="core.html#limit">&lt;Limit <var>yöntem</var> [<var>yöntem</var>] ... &gt; ...
+<tr class="odd"><td><a href="core.html#limit">&lt;Limit <code>yöntem</code> [<code>yöntem</code>] ... &gt; ...
     &lt;/Limit&gt;</a></td><td></td><td>dh</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Erişimi sınırlanacak HTTP yöntemleri için erişim sınırlayıcıları
 sarmalar.</td></tr>
-<tr><td><a href="core.html#limitexcept">&lt;LimitExcept <var>yöntem</var> [<var>yöntem</var>] ... &gt; ...
+<tr><td><a href="core.html#limitexcept">&lt;LimitExcept <code>yöntem</code> [<code>yöntem</code>] ... &gt; ...
     &lt;/LimitExcept&gt;</a></td><td></td><td>dh</td><td>Ç</td></tr><tr><td class="descr" colspan="4">İsimleri belirtilenler dışında kalan HTTP yöntemleri için
 kullanılacak erişim sınırlayıcıları sarmalar.</td></tr>
-<tr class="odd"><td><a href="core.html#limitinternalrecursion">LimitInternalRecursion <var>sayı</var> [<var>sayı</var>]</a></td><td> 10 </td><td>sk</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Dahili yönlendirmelerin ve istek içi isteklerin azami sayısını
+<tr class="odd"><td><a href="core.html#limitinternalrecursion">LimitInternalRecursion <code>sayı</code> [<code>sayı</code>]</a></td><td> 10 </td><td>sk</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Dahili yönlendirmelerin ve istek içi isteklerin azami sayısını
 belirler.</td></tr>
-<tr><td><a href="core.html#limitrequestbody">LimitRequestBody <var>bayt-sayısı</var></a></td><td> 0 </td><td>skdh</td><td>Ç</td></tr><tr><td class="descr" colspan="4">İstemci tarafından gönderilen HTTP istek gövdesinin toplam
+<tr><td><a href="core.html#limitrequestbody">LimitRequestBody <code>bayt-sayısı</code></a></td><td> 0 </td><td>skdh</td><td>Ç</td></tr><tr><td class="descr" colspan="4">İstemci tarafından gönderilen HTTP istek gövdesinin toplam
 uzunluğunu sınırlar.</td></tr>
-<tr class="odd"><td><a href="core.html#limitrequestfields">LimitRequestFields <var>sayı</var></a></td><td> 100 </td><td>sk</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">İstemciden kabul edilecek HTTP isteği başlık alanlarının sayısını
+<tr class="odd"><td><a href="core.html#limitrequestfields">LimitRequestFields <code>sayı</code></a></td><td> 100 </td><td>sk</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">İstemciden kabul edilecek HTTP isteği başlık alanlarının sayısını
 sınırlar.</td></tr>
-<tr><td><a href="core.html#limitrequestfieldsize">LimitRequestFieldSize <var>bayt-sayısı</var></a></td><td> 8190 </td><td>sk</td><td>Ç</td></tr><tr><td class="descr" colspan="4">İstemciden kabul edilecek HTTP isteği başlık uzunluğunu sınırlar.
+<tr><td><a href="core.html#limitrequestfieldsize">LimitRequestFieldSize <code>bayt-sayısı</code></a></td><td> 8190 </td><td>sk</td><td>Ç</td></tr><tr><td class="descr" colspan="4">İstemciden kabul edilecek HTTP isteği başlık uzunluğunu sınırlar.
 </td></tr>
-<tr class="odd"><td><a href="core.html#limitrequestline">LimitRequestLine <var>bayt-sayısı</var></a></td><td> 8190 </td><td>sk</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">İstemciden kabul edilecek HTTP istek satırının uzunluğunu sınırlar.
+<tr class="odd"><td><a href="core.html#limitrequestline">LimitRequestLine <code>bayt-sayısı</code></a></td><td> 8190 </td><td>sk</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">İstemciden kabul edilecek HTTP istek satırının uzunluğunu sınırlar.
 </td></tr>
-<tr><td><a href="core.html#limitxmlrequestbody">LimitXMLRequestBody <var>bayt-sayısı</var></a></td><td> 1000000 </td><td>skdh</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Bir XML temelli istek gövdesinin uzunluğunu sınırlar.</td></tr>
+<tr><td><a href="core.html#limitxmlrequestbody">LimitXMLRequestBody <code>bayt-sayısı</code></a></td><td> 1000000 </td><td>skdh</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Bir XML temelli istek gövdesinin uzunluğunu sınırlar.</td></tr>
 <tr class="odd"><td><a href="mpm_common.html#listen">Listen [<var>IP-adresi</var>:]<var>port-numarası</var>
   [<var>protokol</var>]</a></td><td></td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Sunucunun dinleyeceği IP adresini ve portu belirler.</td></tr>
 <tr><td><a href="mpm_common.html#listenbacklog">ListenBackLog <var>kuyruk-uzunluğu</var></a></td><td> 511 </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Bekleyen bağlantılar kuyruğunun azami uzunluğunu
@@ -628,18 +628,18 @@ sınırlar.</td></tr>
 </td></tr>
 <tr class="odd"><td><a href="mod_so.html#loadmodule">LoadModule <em>modül dosya-ismi</em></a></td><td></td><td>sk</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Belirtilen nesne dosyasını veya kütüphaneyi sunucu ile ilintiler
 ve etkin modül listesine ekler.</td></tr>
-<tr><td><a href="core.html#location">&lt;Location <var>URL-yolu</var>|<var>URL</var>&gt; ...
+<tr><td><a href="core.html#location">&lt;Location <code>URL-yolu</code>|<code>URL</code>&gt; ...
 &lt;/Location&gt;</a></td><td></td><td>sk</td><td>Ç</td></tr><tr><td class="descr" colspan="4">İçerdiği yönergeler sadece eşleşen URL’lere uygulanır.
 </td></tr>
 <tr class="odd"><td><a href="core.html#locationmatch">&lt;LocationMatch
-    <var>düzifade</var>&gt; ... &lt;/LocationMatch&gt;</a></td><td></td><td>sk</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">İçerdiği yönergeler sadece düzenli ifadelerle eşleşen URL’lere
+    <code>düzifade</code>&gt; ... &lt;/LocationMatch&gt;</a></td><td></td><td>sk</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">İçerdiği yönergeler sadece düzenli ifadelerle eşleşen URL’lere
 uygulanır.</td></tr>
 <tr><td><a href="mod_log_config.html#logformat">LogFormat <var>biçem</var>|<var>takma-ad</var>
 [<var>takma-ad</var>]</a></td><td> "%h %l %u %t \"%r\" +</td><td>sk</td><td>T</td></tr><tr><td class="descr" colspan="4">Bir günlük dosyasında kullanılmak üzere girdi biçemi tanımlar.
 </td></tr>
 <tr class="odd"><td><a href="mod_logio.html#logiotrackttfb">LogIOTrackTTFB ON|OFF</a></td><td> OFF </td><td>skdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">İlk baytın yazılmasına kadar geçen süreyi izler</td></tr>
-<tr><td><a href="core.html#loglevel">LogLevel [<var>modül</var>:]<var>seviye</var>
-    [<var>modül</var>:<var>seviye</var>] ...
+<tr><td><a href="core.html#loglevel">LogLevel [<code>modül</code>:]<code>seviye</code>
+    [<code>modül</code>:<code>seviye</code>] ...
 </a></td><td> warn </td><td>skd</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Hata günlüklerinin ayrıntı seviyesini belirler.</td></tr>
 <tr class="odd"><td><a href="mod_log_debug.html#logmessage">LogMessage <var>message</var>
 [hook=<var>hook</var>] [expr=<var>expression</var>]
@@ -675,17 +675,17 @@ processing</td></tr>
 ... &lt;/Macro&gt;</a></td><td></td><td>skd</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">Define a configuration file macro</td></tr>
 <tr><td><a href="mpm_common.html#maxconnectionsperchild">MaxConnectionsPerChild <var>sayı</var></a></td><td> 0 </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Tek bir çocuk sürecin ömrü boyunca işleme sokabileceği istek
   sayısını sınırlamakta kullanılır.</td></tr>
-<tr class="odd"><td><a href="core.html#maxkeepaliverequests">MaxKeepAliveRequests <var>sayı</var></a></td><td> 100 </td><td>sk</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Bir kalıcı bağlantıda izin verilen istek sayısı</td></tr>
+<tr class="odd"><td><a href="core.html#maxkeepaliverequests">MaxKeepAliveRequests <code>sayı</code></a></td><td> 100 </td><td>sk</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Bir kalıcı bağlantıda izin verilen istek sayısı</td></tr>
 <tr><td><a href="mpm_common.html#maxmemfree">MaxMemFree <var>kB-sayısı</var></a></td><td> 2048 </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4"><code>free()</code> çağrılmaksızın ana bellek ayırıcının
   ayırmasına izin verilen azami bellek miktarını belirler.</td></tr>
 <tr class="odd"><td><a href="core.html#maxrangeoverlaps">MaxRangeOverlaps default | unlimited | none |
-  <var>aralık-sayısı</var></a></td><td> 20 </td><td>skd</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Özkaynağın tamamını döndürmeden önce izin verilen üst üste binen
+  <code>aralık-sayısı</code></a></td><td> 20 </td><td>skd</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Özkaynağın tamamını döndürmeden önce izin verilen üst üste binen
     aralık sayısı (<code>100-200,150-300</code> gibi)</td></tr>
 <tr><td><a href="core.html#maxrangereversals">MaxRangeReversals default | unlimited | none |
-    <var>aralık-sayısı</var></a></td><td> 20 </td><td>skd</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Özkaynağın tamamını döndürmeden önce izin verilen ters sıralı
+    <code>aralık-sayısı</code></a></td><td> 20 </td><td>skd</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Özkaynağın tamamını döndürmeden önce izin verilen ters sıralı
     aralık sayısı (<code>100-200,50-70</code> gibi)</td></tr>
 <tr class="odd"><td><a href="core.html#maxranges">MaxRanges default | unlimited | none |
-  <var>aralık-sayısı</var></a></td><td> 200 </td><td>skd</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Özkaynağın tamamını döndürmeden önce izin verilen aralık sayısı</td></tr>
+  <code>aralık-sayısı</code></a></td><td> 200 </td><td>skd</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Özkaynağın tamamını döndürmeden önce izin verilen aralık sayısı</td></tr>
 <tr><td><a href="mpm_common.html#maxrequestworkers">MaxRequestWorkers <var>sayı</var></a></td><td></td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Aynı anda işleme sokulacak azami bağlantı sayısı</td></tr>
 <tr class="odd"><td><a href="prefork.html#maxspareservers">MaxSpareServers <var>sayı</var></a></td><td> 10 </td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Boştaki çocuk süreçlerin azami sayısı</td></tr>
 <tr><td><a href="mpm_common.html#maxsparethreads">MaxSpareThreads <var>number</var></a></td><td></td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Boştaki azami evre sayısını belirler</td></tr>
@@ -747,14 +747,14 @@ components as part of the filename</td></tr>
 <tr class="odd"><td><a href="mod_mime.html#multiviewsmatch">MultiviewsMatch Any|NegotiatedOnly|Filters|Handlers
 [Handlers|Filters]</a></td><td> NegotiatedOnly </td><td>skdh</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">The types of files that will be included when searching for
 a matching file with MultiViews</td></tr>
-<tr><td><a href="core.html#mutex">Mutex <var>mekanizma</var> [default|<var>muteks-ismi</var>] ... [OmitPID]</a></td><td> default </td><td>s</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Muteks mekanizmasını ve kilit dosyası dizinini tüm muteksler veya belirtilenler için yapılandırır</td></tr>
-<tr class="odd"><td><a href="core.html#namevirtualhost" id="N" name="N">NameVirtualHost <var>adres</var>[:<var>port</var>]</a></td><td></td><td>s</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">ÖNERİLMİYOR: İsme dayalı sanal konaklar için IP adresi belirtir</td></tr>
+<tr><td><a href="core.html#mutex">Mutex <code>mekanizma</code> [default|<code>muteks-ismi</code>] ... [OmitPID]</a></td><td> default </td><td>s</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Muteks mekanizmasını ve kilit dosyası dizinini tüm muteksler veya belirtilenler için yapılandırır</td></tr>
+<tr class="odd"><td><a href="core.html#namevirtualhost" id="N" name="N">NameVirtualHost <code>adres</code>[:<code>port</code>]</a></td><td></td><td>s</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">ÖNERİLMİYOR: İsme dayalı sanal konaklar için IP adresi belirtir</td></tr>
 <tr><td><a href="mod_proxy.html#noproxy">NoProxy <var>host</var> [<var>host</var>] ...</a></td><td></td><td>sk</td><td>E</td></tr><tr><td class="descr" colspan="4">Hosts, domains, or networks that will be connected to
 directly</td></tr>
 <tr class="odd"><td><a href="mod_nw_ssl.html#nwssltrustedcerts">NWSSLTrustedCerts <var>filename</var> [<var>filename</var>] ...</a></td><td></td><td>s</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">List of additional client certificates</td></tr>
 <tr><td><a href="mod_nw_ssl.html#nwsslupgradeable">NWSSLUpgradeable [<var>IP-address</var>:]<var>portnumber</var></a></td><td></td><td>s</td><td>T</td></tr><tr><td class="descr" colspan="4">Allows a connection to be upgraded to an SSL connection upon request</td></tr>
 <tr class="odd"><td><a href="core.html#options" id="O" name="O">Options
-    [+|-]<var>seçenek</var> [[+|-]<var>seçenek</var>] ...</a></td><td> FollowSymlinks </td><td>skdh</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Belli bir dizinde geçerli olacak özellikleri yapılandırır.
+    [+|-]<code>seçenek</code> [[+|-]<code>seçenek</code>] ...</a></td><td> FollowSymlinks </td><td>skdh</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Belli bir dizinde geçerli olacak özellikleri yapılandırır.
 </td></tr>
 <tr><td><a href="mod_access_compat.html#order"> Order <var>ordering</var></a></td><td> Deny,Allow </td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Controls the default access state and the order in which
 <code class="directive">Allow</code> and <code class="directive">Deny</code> are
@@ -765,9 +765,9 @@ evaluated.</td></tr>
 <tr class="odd"><td><a href="mpm_common.html#pidfile">PidFile <var>dosya</var></a></td><td> logs/httpd.pid </td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Ana sürecin süreç kimliğinin (PID) kaydedileceği dosyayı belirler.</td></tr>
 <tr><td><a href="mod_privileges.html#privilegesmode">PrivilegesMode FAST|SECURE|SELECTIVE</a></td><td> FAST </td><td>skd</td><td>D</td></tr><tr><td class="descr" colspan="4">Trade off processing speed and efficiency vs security against
 malicious privileges-aware code.</td></tr>
-<tr class="odd"><td><a href="core.html#protocol">Protocol <var>protokol</var></a></td><td></td><td>sk</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Dinlenen bir soket için protokol</td></tr>
+<tr class="odd"><td><a href="core.html#protocol">Protocol <code>protokol</code></a></td><td></td><td>sk</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Dinlenen bir soket için protokol</td></tr>
 <tr><td><a href="mod_echo.html#protocolecho">ProtocolEcho On|Off</a></td><td> Off </td><td>sk</td><td>D</td></tr><tr><td class="descr" colspan="4">Turn the echo server on or off</td></tr>
-<tr class="odd"><td><a href="core.html#protocols">Protocols <var>protokol</var> ...</a></td><td> http/1.1 </td><td>sk</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Sunucu/sanal konak için kullanılabilecek protokoller</td></tr>
+<tr class="odd"><td><a href="core.html#protocols">Protocols <code>protokol</code> ...</a></td><td> http/1.1 </td><td>sk</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Sunucu/sanal konak için kullanılabilecek protokoller</td></tr>
 <tr><td><a href="core.html#protocolshonororder">ProtocolsHonorOrder On|Off</a></td><td> On </td><td>sk</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Uzlaşma sırasında protokollerin öncelik sırasını belirler</td></tr>
 <tr class="odd"><td><a href="mod_proxy.html#proxy">&lt;Proxy <var>wildcard-url</var>&gt; ...&lt;/Proxy&gt;</a></td><td></td><td>sk</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Container for directives applied to proxied resources</td></tr>
 <tr><td><a href="mod_proxy.html#proxy100continue">Proxy100Continue Off|On</a></td><td> On </td><td>skd</td><td>E</td></tr><tr><td class="descr" colspan="4">Forward 100-continue expectation to the origin server</td></tr>
@@ -850,7 +850,7 @@ header for proxied requests</td></tr>
 <tr class="odd"><td><a href="mod_proxy_wstunnel.html#proxywebsocketfallbacktoproxyhttp">ProxyWebsocketFallbackToProxyHttp On|Off</a></td><td> On </td><td>sk</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Instructs this module to let <code class="module"><a href="../mod/mod_proxy_http.html">mod_proxy_http</a></code> handle the request</td></tr>
 <tr><td><a href="core.html#qualifyredirecturl" id="Q" name="Q">QualifyRedirectURL On|Off</a></td><td> Off </td><td>skd</td><td>Ç</td></tr><tr><td class="descr" colspan="4">REDIRECT_URL ortam değişkeninin tamamen nitelenmiş olup
 olmayacağını denetler</td></tr>
-<tr class="odd"><td><a href="core.html#readbuffersize" id="R" name="R">ReadBufferSize <var>bayt-sayısı</var></a></td><td> 8192 </td><td>skd</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Veriyi okumakta kullanılacak tampon sayısı</td></tr>
+<tr class="odd"><td><a href="core.html#readbuffersize" id="R" name="R">ReadBufferSize <code>bayt-sayısı</code></a></td><td> 8192 </td><td>skd</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Veriyi okumakta kullanılacak tampon sayısı</td></tr>
 <tr><td><a href="mod_autoindex.html#readmename">ReadmeName <var>dosya-ismi</var></a></td><td></td><td>skdh</td><td>T</td></tr><tr><td class="descr" colspan="4">Dizin listesinin sonuna yerleştirilecek dosyanın ismini
 belirler.</td></tr>
 <tr class="odd"><td><a href="mpm_common.html#receivebuffersize">ReceiveBufferSize <var>bayt-sayısı</var></a></td><td> 0 </td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">TCP alım tamponu boyu</td></tr>
@@ -867,8 +867,8 @@ URL’ye yönlendirir.</td></tr>
 <tr><td><a href="mod_socache_redis.html#redisconnpoolttl">RedisConnPoolTTL <em>num</em>[<em>units</em>]</a></td><td> 15s </td><td>sk</td><td>E</td></tr><tr><td class="descr" colspan="4">TTL used for the connection pool with the Redis server(s)</td></tr>
 <tr class="odd"><td><a href="mod_socache_redis.html#redistimeout">RedisTimeout <em>num</em>[<em>units</em>]</a></td><td> 5s </td><td>sk</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">R/W timeout used for the connection with the Redis server(s)</td></tr>
 <tr><td><a href="mod_reflector.html#reflectorheader">ReflectorHeader <var>inputheader</var> <var>[outputheader]</var></a></td><td></td><td>skdh</td><td>T</td></tr><tr><td class="descr" colspan="4">Reflect an input header to the output headers</td></tr>
-<tr class="odd"><td><a href="core.html#regexdefaultoptions">RegexDefaultOptions [none] [+|-]<var>seçenek</var> [[+|-]<var>seçenek</var>] ...</a></td><td> DOTALL DOLLAR_ENDON +</td><td>s</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Regex düzenli ifadeleri için öntanımlı/küresel seçenekleri yapılandırır</td></tr>
-<tr><td><a href="core.html#registerhttpmethod">RegisterHttpMethod <var>yöntem</var> [<var>yöntem</var> [...]]</a></td><td></td><td>s</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Standart olmayan HTTP yöntemlerini devreye alır</td></tr>
+<tr class="odd"><td><a href="core.html#regexdefaultoptions">RegexDefaultOptions [none] [+|-]<code>seçenek</code> [[+|-]<code>seçenek</code>] ...</a></td><td> DOTALL DOLLAR_ENDON +</td><td>s</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Regex düzenli ifadeleri için öntanımlı/küresel seçenekleri yapılandırır</td></tr>
+<tr><td><a href="core.html#registerhttpmethod">RegisterHttpMethod <code>yöntem</code> [<code>yöntem</code> [...]]</a></td><td></td><td>s</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Standart olmayan HTTP yöntemlerini devreye alır</td></tr>
 <tr class="odd"><td><a href="mod_remoteip.html#remoteipheader">RemoteIPHeader <var>header-field</var></a></td><td></td><td>sk</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">Declare the header field which should be parsed for useragent IP addresses</td></tr>
 <tr><td><a href="mod_remoteip.html#remoteipinternalproxy">RemoteIPInternalProxy <var>proxy-ip</var>|<var>proxy-ip/subnet</var>|<var>hostname</var> ...</a></td><td></td><td>sk</td><td>T</td></tr><tr><td class="descr" colspan="4">Declare client intranet IP addresses trusted to present the RemoteIPHeader value</td></tr>
 <tr class="odd"><td><a href="mod_remoteip.html#remoteipinternalproxylist">RemoteIPInternalProxyList <var>filename</var></a></td><td></td><td>sk</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">Declare client intranet IP addresses trusted to present the RemoteIPHeader value</td></tr>
@@ -930,12 +930,12 @@ must succeed for the enclosing directive to not fail.</td></tr>
 <tr><td><a href="mod_rewrite.html#rewriteoptions">RewriteOptions <var>Options</var></a></td><td></td><td>skdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Sets some special options for the rewrite engine</td></tr>
 <tr class="odd"><td><a href="mod_rewrite.html#rewriterule">RewriteRule
       <em>Pattern</em> <em>Substitution</em> [<em>flags</em>]</a></td><td></td><td>skdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Defines rules for the rewriting engine</td></tr>
-<tr><td><a href="core.html#rlimitcpu">RLimitCPU <var>saniye</var>|max [<var>saniye</var>|max]</a></td><td></td><td>skdh</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Apache httpd alt süreçleri tarafından çalıştırılan süreçlerin
+<tr><td><a href="core.html#rlimitcpu">RLimitCPU <code>saniye</code>|max [<code>saniye</code>|max]</a></td><td></td><td>skdh</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Apache httpd alt süreçleri tarafından çalıştırılan süreçlerin
   işlemci tüketimine sınırlama getirir.</td></tr>
-<tr class="odd"><td><a href="core.html#rlimitmem">RLimitMEM <var>bayt-sayısı</var>|max [<var>bayt-sayısı</var>|max]
+<tr class="odd"><td><a href="core.html#rlimitmem">RLimitMEM <code>bayt-sayısı</code>|max [<code>bayt-sayısı</code>|max]
 </a></td><td></td><td>skdh</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Apache httpd alt süreçleri tarafından çalıştırılan süreçlerin
   bellek tüketimine sınırlama getirir.</td></tr>
-<tr><td><a href="core.html#rlimitnproc">RLimitNPROC <var>sayı</var>|max [<var>sayı</var>|max]</a></td><td></td><td>skdh</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Apache httpd alt süreçleri tarafından çalıştırılabilecek süreç
+<tr><td><a href="core.html#rlimitnproc">RLimitNPROC <code>sayı</code>|max [<code>sayı</code>|max]</a></td><td></td><td>skdh</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Apache httpd alt süreçleri tarafından çalıştırılabilecek süreç
   sayısına sınırlama getirir.</td></tr>
 <tr class="odd"><td><a href="mod_access_compat.html#satisfy" id="S" name="S">Satisfy Any|All</a></td><td> All </td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Interaction between host-level access control and
 user authentication</td></tr>
@@ -961,16 +961,16 @@ the cgi daemon</td></tr>
   ilk 63 karakteri mi yoksa son 63 karakteri mi göstereceğini
   belirler.</td></tr>
 <tr class="odd"><td><a href="mpm_common.html#sendbuffersize">SendBufferSize <var>bayt-sayısı</var></a></td><td> 0 </td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">TCP tamponu boyu</td></tr>
-<tr><td><a href="core.html#serveradmin">ServerAdmin <var>eposta-adresi</var>|<var>URL</var></a></td><td></td><td>sk</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Sunucunun hata iletilerinde istemciye göstereceği eposta adresi
+<tr><td><a href="core.html#serveradmin">ServerAdmin <code>eposta-adresi</code>|<code>URL</code></a></td><td></td><td>sk</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Sunucunun hata iletilerinde istemciye göstereceği eposta adresi
 </td></tr>
-<tr class="odd"><td><a href="core.html#serveralias">ServerAlias <var>konakadı</var> [<var>konakadı</var>] ...</a></td><td></td><td>k</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">İstekleri isme dayalı sanal konaklarla eşleştirilirken
+<tr class="odd"><td><a href="core.html#serveralias">ServerAlias <code>konakadı</code> [<code>konakadı</code>] ...</a></td><td></td><td>k</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">İstekleri isme dayalı sanal konaklarla eşleştirilirken
 kullanılacak konak adları için başka isimler belirtebilmeyi sağlar.
 </td></tr>
 <tr><td><a href="mpm_common.html#serverlimit">ServerLimit <var>sayı</var></a></td><td></td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Ayarlanabilir süreç sayısının üst sınırını belirler.</td></tr>
-<tr class="odd"><td><a href="core.html#servername">ServerName [<var>şema</var>://]<var>alan-adı</var>|<var>ip-adresi</var>[:<var>port</var>]
+<tr class="odd"><td><a href="core.html#servername">ServerName [<code>şema</code>://]<code>alan-adı</code>|<code>ip-adresi</code>[:<code>port</code>]
 </a></td><td></td><td>sk</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Sunucunun özdeşleşeceği konak ismi ve port.</td></tr>
-<tr><td><a href="core.html#serverpath">ServerPath <var>URL-yolu</var></a></td><td></td><td>k</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Uyumsuz bir tarayıcı tarafından erişilmesi için bir isme dayalı sanal konak için meşru URL yolu</td></tr>
-<tr class="odd"><td><a href="core.html#serverroot">ServerRoot <var>dizin-yolu</var></a></td><td> /usr/local/apache </td><td>s</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Sunucu yapılandırması için kök dizin</td></tr>
+<tr><td><a href="core.html#serverpath">ServerPath <code>URL-yolu</code></a></td><td></td><td>k</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Uyumsuz bir tarayıcı tarafından erişilmesi için bir isme dayalı sanal konak için meşru URL yolu</td></tr>
+<tr class="odd"><td><a href="core.html#serverroot">ServerRoot <code>dizin-yolu</code></a></td><td> /usr/local/apache </td><td>s</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Sunucu yapılandırması için kök dizin</td></tr>
 <tr><td><a href="core.html#serversignature">ServerSignature On|Off|EMail</a></td><td> Off </td><td>skdh</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Sunucu tarafından üretilen belgelerin dipnotunu ayarlar.
 </td></tr>
 <tr class="odd"><td><a href="core.html#servertokens">ServerTokens Major|Minor|Min[imal]|Prod[uctOnly]|OS|Full</a></td><td> Full </td><td>s</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4"><code>Server</code> HTTP yanıt başlığını yapılandırır.
@@ -1011,11 +1011,11 @@ the session being updated</td></tr>
     düzifd [!]ort-değişkeni</em>[=<em>değer</em>]
     [[!]<em>ort-değişkeni</em>[=<em>değer</em>]] ...</a></td><td></td><td>skdh</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">Ortam değişkenlerini isteğin özniteliklerinde harf büyüklüğüne
 bağlı olmaksızın yapılmış tanımlara göre atar.</td></tr>
-<tr><td><a href="core.html#sethandler">SetHandler <var>eylemci-ismi</var>|none|<var>ifade</var></a></td><td></td><td>skdh</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Eşleşen tüm dosyaların belli bir eylemci tarafından işlenmesine
+<tr><td><a href="core.html#sethandler">SetHandler <code>eylemci-ismi</code>|none|<code>ifade</code></a></td><td></td><td>skdh</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Eşleşen tüm dosyaların belli bir eylemci tarafından işlenmesine
 sebep olur.</td></tr>
-<tr class="odd"><td><a href="core.html#setinputfilter">SetInputFilter <var>süzgeç</var>[;<var>süzgeç</var>...]</a></td><td></td><td>skdh</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">POST girdilerini ve istemci isteklerini işleyecek süzgeçleri
+<tr class="odd"><td><a href="core.html#setinputfilter">SetInputFilter <code>süzgeç</code>[;<code>süzgeç</code>...]</a></td><td></td><td>skdh</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">POST girdilerini ve istemci isteklerini işleyecek süzgeçleri
 belirler.</td></tr>
-<tr><td><a href="core.html#setoutputfilter">SetOutputFilter <var>süzgeç</var>[;<var>süzgeç</var>...]</a></td><td></td><td>skdh</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Sunucunun yanıtlarını işleyecek süzgeçleri belirler.</td></tr>
+<tr><td><a href="core.html#setoutputfilter">SetOutputFilter <code>süzgeç</code>[;<code>süzgeç</code>...]</a></td><td></td><td>skdh</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Sunucunun yanıtlarını işleyecek süzgeçleri belirler.</td></tr>
 <tr class="odd"><td><a href="mod_include.html#ssiendtag">SSIEndTag <var>tag</var></a></td><td> "--&gt;" </td><td>sk</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">String that ends an include element</td></tr>
 <tr><td><a href="mod_include.html#ssierrormsg">SSIErrorMsg <var>message</var></a></td><td> "[an error occurred +</td><td>skdh</td><td>T</td></tr><tr><td class="descr" colspan="4">Error message displayed when there is an SSI
 error</td></tr>
@@ -1142,7 +1142,7 @@ listelenmesini gerektirip gerektirmediğini denetler</td></tr>
   belirler.</td></tr>
 <tr><td><a href="mpm_common.html#threadstacksize">ThreadStackSize <var>boyut</var></a></td><td></td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">İstemci bağlantılarını elde eden evreler tarafından kullanılan
   yığıtın bayt cinsinden uzunluğunu belirler.</td></tr>
-<tr class="odd"><td><a href="core.html#timeout">TimeOut <var>saniye</var></a></td><td> 60 </td><td>sk</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Bir istek için başarısız olmadan önce belirli olayların
+<tr class="odd"><td><a href="core.html#timeout">TimeOut <code>saniye</code></a></td><td> 60 </td><td>sk</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Bir istek için başarısız olmadan önce belirli olayların
 gerçekleşmesi için sunucunun geçmesini bekleyeceği süre.</td></tr>
 <tr><td><a href="mod_tls.html#tlscertificate">TLSCertificate <em>cert_file</em> [<em>key_file</em>]</a></td><td></td><td>sk</td><td>D</td></tr><tr><td class="descr" colspan="4">adds a certificate and key (PEM encoded) to a server/virtual host.</td></tr>
 <tr class="odd"><td><a href="mod_tls.html#tlsciphersprefer">TLSCiphersPrefer <em>cipher(-list)</em></a></td><td></td><td>sk</td><td>D</td></tr><tr class="odd"><td class="descr" colspan="4">defines ciphers that are preferred.</td></tr>
@@ -1159,12 +1159,12 @@ gerçekleşmesi için sunucunun geçmesini bekleyeceği süre.</td></tr>
 <tr><td><a href="mod_tls.html#tlsproxyprotocol">TLSProxyProtocol <em>version</em>+</a></td><td> v1.2+ </td><td>skv</td><td>D</td></tr><tr><td class="descr" colspan="4">specifies the minimum version of the TLS protocol to use in proxy connections.</td></tr>
 <tr class="odd"><td><a href="mod_tls.html#tlssessioncache">TLSSessionCache <em>cache-spec</em></a></td><td></td><td>s</td><td>D</td></tr><tr class="odd"><td class="descr" colspan="4">specifies the cache for TLS session resumption.</td></tr>
 <tr><td><a href="mod_tls.html#tlsstrictsni">TLSStrictSNI on|off</a></td><td> on </td><td>s</td><td>D</td></tr><tr><td class="descr" colspan="4">enforces exact matches of client server indicators (SNI) against host names.</td></tr>
-<tr class="odd"><td><a href="core.html#traceenable">TraceEnable <var>[on|off|extended]</var></a></td><td> on </td><td>sk</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4"><code>TRACE</code> isteklerinde davranış şeklini belirler
+<tr class="odd"><td><a href="core.html#traceenable">TraceEnable <code>[on|off|extended]</code></a></td><td> on </td><td>sk</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4"><code>TRACE</code> isteklerinde davranış şeklini belirler
 </td></tr>
 <tr><td><a href="mod_log_config.html#transferlog">TransferLog <var>dosya</var>|<var>borulu-süreç</var>
 [<var>takma-ad</var>]</a></td><td></td><td>sk</td><td>T</td></tr><tr><td class="descr" colspan="4">Bir günlük dosyasının yerini belirtir.</td></tr>
 <tr class="odd"><td><a href="mod_mime.html#typesconfig">TypesConfig <var>file-path</var></a></td><td> conf/mime.types </td><td>s</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">The location of the <code>mime.types</code> file</td></tr>
-<tr><td><a href="core.html#undefine" id="U" name="U">UnDefine <var>değişken-ismi</var></a></td><td></td><td>s</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Bir değişkeni tanımsız yapar</td></tr>
+<tr><td><a href="core.html#undefine" id="U" name="U">UnDefine <code>değişken-ismi</code></a></td><td></td><td>s</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Bir değişkeni tanımsız yapar</td></tr>
 <tr class="odd"><td><a href="mod_macro.html#undefmacro">UndefMacro <var>name</var></a></td><td></td><td>skd</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">Undefine a macro</td></tr>
 <tr><td><a href="mod_env.html#unsetenv">UnsetEnv <var>ortam-değişkeni</var> [<var>ortam-değişkeni</var>]
 ...</a></td><td></td><td>skdh</td><td>T</td></tr><tr><td class="descr" colspan="4">Ortamdaki değişkenleri tanımsız hale getirir.</td></tr>
@@ -1191,7 +1191,7 @@ for the virtualhost.</td></tr>
 <tr class="odd"><td><a href="mod_vhost_alias.html#virtualdocumentrootip">VirtualDocumentRootIP <em>hesaplanan-dizin</em>|none</a></td><td> none </td><td>sk</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Bir sanal konağın belge kök dizinini devingen olarak yapılandırır.
 </td></tr>
 <tr><td><a href="core.html#virtualhost">&lt;VirtualHost
-    <var>adres</var>[:<var>port</var>] [<var>adres</var>[:<var>port</var>]]
+    <code>adres</code>[:<code>port</code>] [<code>adres</code>[:<code>port</code>]]
     ...&gt; ... &lt;/VirtualHost&gt;</a></td><td></td><td>s</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Sadece belli bir konak ismine ve porta uygulanacak yönergeleri barındırır.</td></tr>
 <tr class="odd"><td><a href="mod_vhost_alias.html#virtualscriptalias">VirtualScriptAlias <em>hesaplanan-dizin</em>|none</a></td><td> none </td><td>sk</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Bir sanal konağın CGI dizinini devingen olarak yapılandırır.
 </td></tr>

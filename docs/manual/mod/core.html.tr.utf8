@@ -33,7 +33,6 @@
 <a href="../ja/mod/core.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../tr/mod/core.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Açıklama:</a></th><td>Apache HTTP Sunucusunda daima mevcut olan çekirdek
  özellikler</td></tr>
 <tr><th><a href="module-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr></table>
@@ -144,7 +143,7 @@
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Bir protokolün dinleyici soketleri için en iyilemeleri ayarlar
 </td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>AcceptFilter <var>protocol</var> <var>kabul_süzgeci</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>AcceptFilter <code>protocol</code> <code>kabul_süzgeci</code></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>core</td></tr>
@@ -168,7 +167,7 @@
 
     <p>Öntanımlı protokol isimleri port 443 için <code>https</code> ve tüm
       diğer portlar için <code>http</code>'dir. Dinlenmesi için başka bir port
-      ile ilgili bir protokol belirtmek isterseniz <code class="directive"><a href="../mod/mpm_common.html#listen">Listen</a></code> yönergesine <var>protokol</var>
+      ile ilgili bir protokol belirtmek isterseniz <code class="directive"><a href="../mod/mpm_common.html#listen">Listen</a></code> yönergesine <code>protokol</code>
       argümanını ekleyin.</p>
 
     <p>FreeBSD için öntanımlı değerler:</p>
@@ -297,7 +296,7 @@ AcceptFilter https connect</pre>
 <div class="directive-section"><h2><a name="AccessFileName" id="AccessFileName">AccessFileName</a> <a name="accessfilename" id="accessfilename">Yönergesi</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Dağıtık yapılandırma dosyasının ismi belirtilir.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>AccessFileName <var>filename</var> [<var>filename</var>] ...</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>AccessFileName <code>filename</code> [<code>filename</code>] ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Öntanımlı:</a></th><td><code>AccessFileName .htaccess</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr>
@@ -336,7 +335,7 @@ AcceptFilter https connect</pre>
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Bir yanıtın içerik türü <code>text/plain</code> veya
   <code>text/html</code> olduğunda eklenecek öntanımlı karakter kümesi
   parametresini belirler.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>AddDefaultCharset On|Off|<var>karküm</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>AddDefaultCharset On|Off|<code>karküm</code></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Öntanımlı:</a></th><td><code>AddDefaultCharset Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak, dizin, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Geçersizleştirme:</a></th><td>FileInfo</td></tr>
@@ -352,7 +351,7 @@ AcceptFilter https connect</pre>
       Off</code> şeklinde bir atama bu işlevselliği iptal eder.
       <code>AddDefaultCharset On</code> ile bu işlevsellik etkin kılınmaktan
       başka <code>iso-8859-1</code> karakter kümesini öntanımlı olarak yanıta
-      eklenir. Yönergede <var>karküm</var> olarak belirtilecek değerler,
+      eklenir. Yönergede <code>karküm</code> olarak belirtilecek değerler,
       Genel Ağ ortam türlerinde (MIME türlerinde) kullanmak üzere <a href="http://www.iana.org/assignments/character-sets">IANA’da kayıtlı
       karakter kümesi değerleri</a>nden biri olmalıdır. Örnek:</p>
 
@@ -426,8 +425,8 @@ AcceptFilter https connect</pre>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td><code>.htaccess</code> dosyalarında bulunmasına izin verilen
   yönerge türleri belirtilir.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>AllowOverride All|None|<var>yönerge-türü</var>
-[<var>yönerge-türü</var>] ...</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>AllowOverride All|None|<code>yönerge-türü</code>
+[<code>yönerge-türü</code>] ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Öntanımlı:</a></th><td><code>AllowOverride None (2.3.9 ve sonrası), AllowOverride All (2.3.8 ve öncesi)</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>dizin</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr>
@@ -451,11 +450,11 @@ AcceptFilter https connect</pre>
 
     <p>Bu yönergeye <code>All</code> değeri atanırsa, .htaccess <a href="directive-dict.html#Context">bağlamında</a> kullanılabilecek her
       yönergeye <code>.htaccess</code> dosyalarında izin verilir. (Hangi
-      <var>yönerge-türü</var> türü için hangi yönergelerin etkin olduğunu görmek
+      <code>yönerge-türü</code> türü için hangi yönergelerin etkin olduğunu görmek
       için <a href="overrides.html">.htaccess için Geçersizleştirme Sınıfları</a>
       sayfasına bakınız)</p>
 
-    <p><code><var>yönerge-türü</var></code> olarak aşağıdaki yönerge grup
+    <p><code><code>yönerge-türü</code></code> olarak aşağıdaki yönerge grup
       isimlerinden biri belirtilebilir:</p>
 
     <dl>
@@ -561,7 +560,7 @@ AcceptFilter https connect</pre>
       </div>
       </dd>
 
-      <dt><a href="overrides.html#override-options">Options</a>[=<var>seçenek</var>,...]</dt>
+      <dt><a href="overrides.html#override-options">Options</a>[=<code>seçenek</code>,...]</dt>
 
       <dd>Dizinlere özgü özellikleri denetleyen
         <code class="directive"><a href="#options">Options</a></code> ve
@@ -614,8 +613,8 @@ AcceptFilter https connect</pre>
 <div class="directive-section"><h2><a name="AllowOverrideList" id="AllowOverrideList">AllowOverrideList</a> <a name="allowoverridelist" id="allowoverridelist">Yönergesi</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td><code>.htaccess</code> dosyalarında izin verilecek yönergeler tek tek belirtilir</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>AllowOverrideList None|<var>yönerge</var>
-[<var>yönerge-türü</var>] ...</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>AllowOverrideList None|<code>yönerge</code>
+[<code>yönerge-türü</code>] ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Öntanımlı:</a></th><td><code>AllowOverrideList None</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>dizin</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr>
@@ -652,8 +651,8 @@ AllowOverrideList Redirect RedirectMatch</pre>
 AllowOverrideList CookieTracking CookieName</pre>
 
 
-    <p>Yukarıdaki örnekte <code class="directive"><a href="#allowoverride">AllowOverride
-      </a></code> yönergesi <code>AuthConfig</code> yönerge grubuna izin
+    <p>Yukarıdaki örnekte <code class="directive"><a href="#allowoverride">AllowOverride</a></code>
+      yönergesi <code>AuthConfig</code> yönerge grubuna izin
       verirken <code class="directive">AllowOverrideList</code> yönergesi
       <code>FileInfo</code> yönerge grubundan yalnız iki yönergeye izin
       vermektedir. Tüm diğerleri dahili bir sunucu hatasına sebep
@@ -672,7 +671,7 @@ AllowOverrideList CookieTracking CookieName</pre>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>CGI betik yorumlayıcısını saptama tekniğini belirler.
 </td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>CGIMapExtension <var>cgi-yolu</var> <var>.uzantı</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>CGIMapExtension <code>cgi-yolu</code> <code>.uzantı</code></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>dizin, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Geçersizleştirme:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr>
@@ -726,7 +725,7 @@ olarak aktarılmasını etkin kılar</td></tr>
 <div class="directive-section"><h2><a name="CGIVar" id="CGIVar">CGIVar</a> <a name="cgivar" id="cgivar">Yönergesi</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Bazı CGI değişkenlerinin nasıl atanacağını belirler</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>CGIVar <var>değişken</var> <var>kural</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>CGIVar <code>değişken</code> <code>kural</code></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>dizin, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Geçersizleştirme:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr>
@@ -790,7 +789,7 @@ olarak aktarılmasını etkin kılar</td></tr>
 <div class="directive-section"><h2><a name="DefaultRuntimeDir" id="DefaultRuntimeDir">DefaultRuntimeDir</a> <a name="defaultruntimedir" id="defaultruntimedir">Yönergesi</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Sunucunun çalışma anı dosyaları için temel dizin</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>DefaultRuntimeDir <var>dizin-yolu</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>DefaultRuntimeDir <code>dizin-yolu</code></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Öntanımlı:</a></th><td><code>DefaultRuntimeDir DEFAULT_REL_RUNTIMEDIR (logs/)</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr>
@@ -831,7 +830,7 @@ nasıl ayarlanacağını öğrenmek için:
 uyarı vermekten başka bir etkisi yoktur. Önceki sürümlerde, bu yönerge,
 sunucunun ortam türünü saptayamadığı durumda göndereceği öntanımlı ortam
 türünü belirlerdi.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>DefaultType <var>ortam-türü</var>|none</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>DefaultType <code>ortam-türü</code>|none</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Öntanımlı:</a></th><td><code>DefaultType none</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak, dizin, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Geçersizleştirme:</a></th><td>FileInfo</td></tr>
@@ -861,7 +860,7 @@ için iptal edilmiştir.</td></tr>
 <div class="directive-section"><h2><a name="Define" id="Define">Define</a> <a name="define" id="define">Yönergesi</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Bir değişken tanımlar</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>Define <var>değişken-ismi</var> [<var>değişken-değeri</var>]</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>Define <code>değişken-ismi</code> [<code>değişken-değeri</code>]</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak, dizin</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>core</td></tr>
@@ -908,7 +907,7 @@ DocumentRoot "/var/www/${servername}/htdocs"</pre>
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Sadece ismi belirtilen dosya sistemi dizininde ve bunun
   altdizinlerinde ve bunların içeriğinde uygulanacak bir yönerge grubunu
   sarmalar.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>&lt;Directory <var>dizin-yolu</var>&gt;
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>&lt;Directory <code>dizin-yolu</code>&gt;
 ... &lt;/Directory&gt;</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr>
@@ -919,7 +918,7 @@ DocumentRoot "/var/www/${servername}/htdocs"</pre>
       dizininde, bunun altdizinlerinde ve bu dizinlerin içindeki dosyalara
       uygulanacak bir yönerge grubunu
       sarmalamakta kullanılır. Bir dizin bağlamında kullanılabilecek her
-      yönergeye izin verilir. <var>dizin-yolu</var> bir dizinin tam yolu
+      yönergeye izin verilir. <code>dizin-yolu</code> bir dizinin tam yolu
       olabileceği gibi Unix kabuk tarzı bir dosya ismi eşleştirme kalıbı da
       olabilir. Kalıp dizgesinde, <code>?</code> herhangi bir tek karakterle,
       <code>*</code> herhangi bir karakter dizisiyle eşleşir. Ayrıca
@@ -939,7 +938,7 @@ DocumentRoot "/var/www/${servername}/htdocs"</pre>
       belirtilmedikçe bir ifadenin sonunu belirlediğinden bu gereklidir.</p>
 
     <div class="note">
-      <p><var>dizin-yolu</var> argümanlarını belirtirken dikkatli
+      <p><code>dizin-yolu</code> argümanlarını belirtirken dikkatli
         olmalısınız: Apache httpd’nin dosyalara erişmekte kullandığı dosya
         sistemi yolu ile bire bir eşleşmelidir. Belli bir
         <code>&lt;Directory&gt;</code> dizinine uygulanan yönergeler, aynı
@@ -1033,7 +1032,7 @@ DocumentRoot "/var/www/${servername}/htdocs"</pre>
 <div class="directive-section"><h2><a name="DirectoryMatch" id="DirectoryMatch">&lt;DirectoryMatch&gt;</a> <a name="directorymatch" id="directorymatch">Yönergesi</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Bir düzenli ifade ile eşleşen dosya sistemi dizinlerinin içeriklerine uygulanacak bir yönerge grubunu sarmalar.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>&lt;DirectoryMatch <var>düzifd</var>&gt;
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>&lt;DirectoryMatch <code>düzifd</code>&gt;
 ... &lt;/DirectoryMatch&gt;</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr>
@@ -1093,7 +1092,7 @@ DocumentRoot "/var/www/${servername}/htdocs"</pre>
 <div class="directive-section"><h2><a name="DocumentRoot" id="DocumentRoot">DocumentRoot</a> <a name="documentroot" id="documentroot">Yönergesi</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>İstemciye görünür olan ana belge ağacının kök dizinini belirler.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>DocumentRoot <var>dizin-yolu</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>DocumentRoot <code>dizin-yolu</code></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Öntanımlı:</a></th><td><code>DocumentRoot "/usr/local/apache/htdocs"</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr>
@@ -1109,7 +1108,7 @@ DocumentRoot "/var/www/${servername}/htdocs"</pre>
 
     <p>yapılandırması ile <code>http://my.example.com/index.html</code>
       isteği <code>/usr/web/index.html</code> ile eşleştirilir.
-      <var>dizin-yolu</var> ile göreli dosya yolu belirtildiği takdirde belge
+      <code>dizin-yolu</code> ile göreli dosya yolu belirtildiği takdirde belge
       kök dizininin <code class="directive"><a href="#serverroot">ServerRoot</a></code> ile
       belirtilen sunucu kök dizinine göre belirtildiği varsayılır.</p>
 
@@ -1147,7 +1146,7 @@ DocumentRoot "/var/www/${servername}/htdocs"</pre>
 
 
     <p>Burada, <code class="directive">&lt;If&gt;</code> yönergesi
-      <var>Host:</var> başlıksız HTTP/1.0 istekleriyle eşleşirken  <code class="directive">&lt;Else&gt;</code>  <var>Host:</var> başlıklılarla
+      <code>Host:</code> başlıksız HTTP/1.0 istekleriyle eşleşirken  <code class="directive">&lt;Else&gt;</code>  <code>Host:</code> başlıklılarla
       eşleşir.</p>
 
 
@@ -1169,7 +1168,7 @@ DocumentRoot "/var/www/${servername}/htdocs"</pre>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>İçerdiği koşulun bir istek tarafınan sağlandığı ancak daha önceki bir <code class="directive"><a href="#if">&lt;If&gt;</a></code> veya
 <code class="directive">&lt;ElseIf&gt;</code> bölümlerininkilerin sağlanmadığı durumda kapsadığı yönergelerin uygulanmasını sağlar</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>&lt;ElseIf <var>ifade</var>&gt; ... &lt;/ElseIf&gt;</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>&lt;ElseIf <code>ifade</code>&gt; ... &lt;/ElseIf&gt;</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak, dizin, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Geçersizleştirme:</a></th><td>All</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr>
@@ -1329,7 +1328,7 @@ DocumentRoot "/var/www/${servername}/htdocs"</pre>
 <div class="directive-section"><h2><a name="Error" id="Error">Error</a> <a name="error" id="error">Yönergesi</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Özel bir hata iletisiyle yapılandırma çözümlemesini durdurur</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>Error <var>ileti</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>Error <code>ileti</code></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak, dizin, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>core</td></tr>
@@ -1366,7 +1365,7 @@ DocumentRoot "/var/www/${servername}/htdocs"</pre>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Bir hata durumunda sunucunun istemciye ne döndüreceğini
   belirler.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>ErrorDocument <var>hata-kodu</var> <var>belge</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>ErrorDocument <code>hata-kodu</code> <code>belge</code></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak, dizin, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Geçersizleştirme:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr>
@@ -1380,10 +1379,10 @@ DocumentRoot "/var/www/${servername}/htdocs"</pre>
 
       <li>Özel bir ileti çıktılanır.</li>
 
-      <li>Sorunu/hatayı işleyecek yerel bir <var>URL-yoluna</var> dahili bir
+      <li>Sorunu/hatayı işleyecek yerel bir <code>URL-yoluna</code> dahili bir
         yönlendirme yapılır.</li>
 
-      <li>Sorunu/hatayı işleyecek harici bir <var>URL-yoluna</var>
+      <li>Sorunu/hatayı işleyecek harici bir <code>URL-yoluna</code>
         yönlendirme yapılır.</li>
     </ol>
 
@@ -1468,7 +1467,7 @@ ErrorDocument 403 /errors/forbidden.pl?referrer=%{escape:%{HTTP_REFERER}}</pre>
 <div class="directive-section"><h2><a name="ErrorLog" id="ErrorLog">ErrorLog</a> <a name="errorlog" id="errorlog">Yönergesi</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Sunucunun hata günlüğünü tutacağı yeri belirler.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code> ErrorLog <var>dosya-yolu</var>|syslog[:[<var>oluşum</var>][:<var>etiket</var>]]</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code> ErrorLog <code>dosya-yolu</code>|syslog[:[<code>oluşum</code>][:<code>etiket</code>]]</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Öntanımlı:</a></th><td><code>ErrorLog logs/error_log (Unix) ErrorLog logs/error.log (Windows ve OS/2)</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr>
@@ -1476,14 +1475,14 @@ ErrorDocument 403 /errors/forbidden.pl?referrer=%{escape:%{HTTP_REFERER}}</pre>
 </table>
     <p><code class="directive">ErrorLog</code> yönergesi sunucunun saptadığı hataları
       kaydedeceği dosyanın ismini belirtmek için kullanılır.
-      <var>dosya-yolu</var> ile göreli dosya yolu belirtildiği takdirde
+      <code>dosya-yolu</code> ile göreli dosya yolu belirtildiği takdirde
       dizininin <code class="directive"><a href="#serverroot">ServerRoot</a></code> ile
       belirtilen sunucu kök dizinine göre belirtildiği varsayılır.</p>
 
     <pre class="prettyprint lang-config">ErrorLog "/var/log/httpd/error_log"</pre>
 
 
-    <p><var>dosya-yolu</var> bir boru imi "<code>|</code>" ile başlatıldığı
+    <p><code>dosya-yolu</code> bir boru imi "<code>|</code>" ile başlatıldığı
       takdirde hata iletilerinin hata günlüğünü işleme sokacak komuta
       borulanacağı varsayılır.</p>
 
@@ -1496,15 +1495,15 @@ ErrorDocument 403 /errors/forbidden.pl?referrer=%{escape:%{HTTP_REFERER}}</pre>
     <p>Dosya adı yerine <code>syslog</code> kullanılırsa, sistem desteklediği
       takdirde günlük kaydı syslogd(8) üzerinden yürütülür. Öntanımlı olarak
       <code>local7</code> syslog oluşumu kullanılır. Bunu
-      <code>syslog:<var>oluşum</var></code> sözdizimini kullanarak
-      değiştirebilirsiniz. Buradaki <code><var>oluşum</var></code>
+      <code>syslog:<code>oluşum</code></code> sözdizimini kullanarak
+      değiştirebilirsiniz. Buradaki <code><code>oluşum</code></code>
       syslog.conf(5) kılavuz sayfasında belirtilen oluşum isimlerinden biri
       olabilir. Oluşum aslında küreseldir ve sanal konaklardan bazılarında
       değiştirilmişse, belirtilen en son oluşum tüm sunucuyu
-      etkileyecektir. <code><var>etiket</var></code> için de aynı kurallar
+      etkileyecektir. <code><code>etiket</code></code> için de aynı kurallar
       uygulanır. Genellikle, öntanımlı etiket olarak Apache çalıştırılabilirinin
       ismi olan <code>httpd</code> kullanılır. Öntanımlı etiketi
-      <code>syslog::<var>etiket</var></code> sözdizimini kullanarak
+      <code>syslog::<code>etiket</code></code> sözdizimini kullanarak
       değiştirebilirsiniz </p>
 
     <pre class="prettyprint lang-config">ErrorLog syslog:user
@@ -1534,7 +1533,7 @@ ErrorLog syslog::httpd.srv2</pre>
 <div class="directive-section"><h2><a name="ErrorLogFormat" id="ErrorLogFormat">ErrorLogFormat</a> <a name="errorlogformat" id="errorlogformat">Yönergesi</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Hata günlüğü girdileri için biçem belirtimi</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code> ErrorLogFormat [connection|request] <var>biçem</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code> ErrorLogFormat [connection|request] <code>biçem</code></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>core</td></tr>
@@ -1743,7 +1742,7 @@ ErrorLogFormat connection "[%{uc}t] [C:%{c}L] local\ %a remote\ %A"</pre>
 <div class="directive-section"><h2><a name="FileETag" id="FileETag">FileETag</a> <a name="fileetag" id="fileetag">Yönergesi</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Duruk dosyalar için <code>ETag</code> HTTP yanıt başlığını oluşturmakta kullanılacak dosya özniteliklerini belirler.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>FileETag <var>bileşen</var> ...</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>FileETag <code>bileşen</code> ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Öntanımlı:</a></th><td><code>FileETag MTime Size</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak, dizin, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Geçersizleştirme:</a></th><td>FileInfo</td></tr>
@@ -1805,7 +1804,7 @@ ErrorLogFormat connection "[%{uc}t] [C:%{c}L] local\ %a remote\ %A"</pre>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Dosya isimleriyle eşleşme halinde uygulanacak yönergeleri
   içerir.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>&lt;Files <var>dosya-adı</var>&gt; ... &lt;/Files&gt;</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>&lt;Files <code>dosya-adı</code>&gt; ... &lt;/Files&gt;</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak, dizin, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Geçersizleştirme:</a></th><td>All</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr>
@@ -1818,14 +1817,14 @@ ErrorLogFormat connection "[%{uc}t] [C:%{c}L] local\ %a remote\ %A"</pre>
       ile karşılaştırılabilir. Bir <code>&lt;/Files&gt;</code> yönergesi ile
       sonlandırılması gerekir. Bu bölüm içinde belirtilen yönergeler,
       <code class="directive">&lt;Files&gt;</code> yönergesinde belirtilen
-      <var>dosya-adı</var>’nın son bileşeniyle (dizinler atıldıktan sonda
+      <code>dosya-adı</code>’nın son bileşeniyle (dizinler atıldıktan sonda
       kalan dosya ismi) eşleşen nesnelere uygulanır. <code class="directive">&lt;Files&gt;</code> bölümleri yapılandırma dosyasında,
       <code class="directive"><a href="#directory">&lt;Directory&gt;</a></code> bölümleri
       ve <code>.htaccess</code> dosyaları okunduktan sonra fakat <code class="directive"><a href="#location">&lt;Location&gt;</a></code> yönergelerinden önce
       göründükleri sıraya göre işleme sokulurlar. <code class="directive">&lt;Files&gt;</code> bölümlerinin <code class="directive"><a href="#directory">&lt;Directory&gt;</a></code> bölümlerinin içinde uygulama
       alanını sınırlamak amacıyla kullanılabileceğine dikkat ediniz.</p>
 
-    <p><var>dosya-adı</var> argümanının bir dosya ismi veya bir dosya ismi
+    <p><code>dosya-adı</code> argümanının bir dosya ismi veya bir dosya ismi
       kalıbı içermesi gerekir. Bir dosya ismi kalıbındaki her <code>?</code>
       imi bir karakterle eşleştirilirken <code>*</code> imi karakter dizileri
       ile eşleştirilir.</p>
@@ -1871,7 +1870,7 @@ ErrorLogFormat connection "[%{uc}t] [C:%{c}L] local\ %a remote\ %A"</pre>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Düzenli ifadelerin dosya isimleriyle eşleşmesi halinde
   uygulanacak yönergeleri içerir.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>&lt;FilesMatch <var>düzifd</var>&gt; ... &lt;/FilesMatch&gt;</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>&lt;FilesMatch <code>düzifd</code>&gt; ... &lt;/FilesMatch&gt;</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak, dizin, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Geçersizleştirme:</a></th><td>All</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr>
@@ -1917,7 +1916,7 @@ ErrorLogFormat connection "[%{uc}t] [C:%{c}L] local\ %a remote\ %A"</pre>
 <div class="directive-section"><h2><a name="FlushMaxPipelined" id="FlushMaxPipelined">FlushMaxPipelined</a> <a name="flushmaxpipelined" id="flushmaxpipelined">Yönergesi</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Ağa akıtılacak azami ardışık yanıt sayısı</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>FlushMaxPipelined <var>sayı</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>FlushMaxPipelined <code>sayı</code></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Öntanımlı:</a></th><td><code>FlushMaxPipelined 5</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr>
@@ -1930,8 +1929,8 @@ ErrorLogFormat connection "[%{uc}t] [C:%{c}L] local\ %a remote\ %A"</pre>
     boşaltılır.</p>
 
     <p><code class="directive">FlushMaxPipelined</code>, bellek kullanımını
-    kısıtlamaya yardımcı olur. <var>0</var> olarak ayarlandığında ardışık
-    düzen devre dışı bırakılır, <var>-1</var> olarak ayarlandığında sınır
+    kısıtlamaya yardımcı olur. <code>0</code> olarak ayarlandığında ardışık
+    düzen devre dışı bırakılır, <code>-1</code> olarak ayarlandığında sınır
     yoktur (<code class="directive">FlushMaxThreshold</code> hala geçerlidir).</p>
 
 </div>
@@ -1939,7 +1938,7 @@ ErrorLogFormat connection "[%{uc}t] [C:%{c}L] local\ %a remote\ %A"</pre>
 <div class="directive-section"><h2><a name="FlushMaxThreshold" id="FlushMaxThreshold">FlushMaxThreshold</a> <a name="flushmaxthreshold" id="flushmaxthreshold">Yönergesi</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Bekleyen verilerin ağa boşaltılacağı eşik değer</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>FlushMaxThreshold<var>bayt-sayısı</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>FlushMaxThreshold <code>bayt-sayısı</code></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Öntanımlı:</a></th><td><code>FlushMaxThreshold 65536</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr>
@@ -1951,7 +1950,7 @@ ErrorLogFormat connection "[%{uc}t] [C:%{c}L] local\ %a remote\ %A"</pre>
     altına inene kadar engelleme kipinde ağa zorla boşaltılır.</p>
 
     <p><code class="directive">FlushMaxThreshold</code>, bellek kullanımını kısıtlamaya
-    yardımcı olur. <var>0</var>'a veya çok küçük bir değere ayarlandığında,
+    yardımcı olur. <code>0</code>'a veya çok küçük bir değere ayarlandığında,
     gerçekte hiç bekleyen veri yoktur, ancak iş parçacıklı MPM'ler için ağı
     bekleyen daha fazla iş parçacığı olabilir, dolayısıyla diğer eşzamanlı
     bağlantıları işlemek için daha az sayıda kullanılabilir.</p>
@@ -1962,7 +1961,7 @@ ErrorLogFormat connection "[%{uc}t] [C:%{c}L] local\ %a remote\ %A"</pre>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Bütün dosyaların belirtilen ortam türüyle sunulmasına
   sebep olur.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>ForceType <var>ortam-türü</var>|None</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>ForceType <code>ortam-türü</code>|None</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>dizin, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Geçersizleştirme:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr>
@@ -1973,7 +1972,7 @@ ErrorLogFormat connection "[%{uc}t] [C:%{c}L] local\ %a remote\ %A"</pre>
       <code class="directive"><a href="#directory">&lt;Directory&gt;</a></code>,
       <code class="directive"><a href="#location">&lt;Location&gt;</a></code> veya
       <code class="directive"><a href="#files">&lt;Files&gt;</a></code> bölümüne
-      yerleştirildiği zaman, eşleşen tüm dosyaların <var>ortam-türü</var> ile
+      yerleştirildiği zaman, eşleşen tüm dosyaların <code>ortam-türü</code> ile
       belirtilen içerik türüyle sunulmasına sebep olur. Örneğin, altında
       sadece GIF dosyaları bulunan bir dizininiz varsa ve bunlara tek tek
       <code>.gif</code> uzantısı belirtmek istemiyorsanız şu yapılandırmayı
@@ -2026,7 +2025,7 @@ ErrorLogFormat connection "[%{uc}t] [C:%{c}L] local\ %a remote\ %A"</pre>
 <div class="directive-section"><h2><a name="GprofDir" id="GprofDir">GprofDir</a> <a name="gprofdir" id="gprofdir">Yönergesi</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>gmon.out ayrıntılı inceleme verisinin yazılacağı dizin</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>GprofDir <var>/tmp/gprof/</var>|<var>/tmp/gprof/</var>%</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>GprofDir <code>/tmp/gprof/</code>|<code>/tmp/gprof/</code>%</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>core</td></tr>
@@ -2212,7 +2211,7 @@ ErrorLogFormat connection "[%{uc}t] [C:%{c}L] local\ %a remote\ %A"</pre>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Çalışma anında bir koşul bir istek tarafından yerine getirildiği
 takdirde uygulanacak yönergeleri barındırır.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>&lt;If <var>ifade</var>&gt; ... &lt;/If&gt;</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>&lt;If <code>ifade</code>&gt; ... &lt;/If&gt;</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak, dizin, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Geçersizleştirme:</a></th><td>All</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr>
@@ -2226,7 +2225,7 @@ takdirde uygulanacak yönergeleri barındırır.</td></tr>
     <pre class="prettyprint lang-config">&lt;If "-z req('Host')"&gt;</pre>
 
 
-    <p>Bir <var>Host:</var> başlığı içermeyen HTTP/1.0 istekleriyle
+    <p>Bir <code>Host:</code> başlığı içermeyen HTTP/1.0 istekleriyle
       eşleşir. İfadeler, dizge karşılaştırması (<code>==</code>,
       <code>!=</code>, <code>&lt;</code>, ...), tamsayı karşılaştırması
       (<code>-eq</code>, <code>-ne</code>, ...) ve diğerleri (<code>-n</code>,
@@ -2274,37 +2273,37 @@ takdirde uygulanacak yönergeleri barındırır.</td></tr>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Başlatma sırasında bir doğruluk sınamasından sonra işleme
 sokulacak yönergeleri sarmalar.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>&lt;IfDefine [!]<var>parametre-adı</var>&gt; ...
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>&lt;IfDefine [!]<code>parametre-adı</code>&gt; ...
     &lt;/IfDefine&gt;</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak, dizin, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Geçersizleştirme:</a></th><td>All</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>core</td></tr>
 </table>
-    <p><code>&lt;IfDefine <var>sınama</var>&gt;...&lt;/IfDefine&gt;
+    <p><code>&lt;IfDefine <code>sınama</code>&gt;...&lt;/IfDefine&gt;
       </code> bölümü koşullu olarak işleme sokulacak yönergeleri içerir.
       Bir <code class="directive">&lt;IfDefine&gt;</code> bölümü içindeki
-      yönergeler sadece <var>sınama</var> doğru sonuç verirse işleme sokulur.
+      yönergeler sadece <code>sınama</code> doğru sonuç verirse işleme sokulur.
       Aksi takdirde, bölüm içinde kalan her şey yok sayılır.</p>
 
     <p><code class="directive">&lt;IfDefine&gt;</code> bölüm yönergesinde
-      <var>sınama</var> için belirtilebilecek iki biçim vardır:</p>
+      <code>sınama</code> için belirtilebilecek iki biçim vardır:</p>
 
     <ul>
-      <li><var>parametre-adı</var></li>
+      <li><code>parametre-adı</code></li>
 
-      <li><code>!</code><var>parametre-adı</var></li>
+      <li><code>!</code><code>parametre-adı</code></li>
     </ul>
 
     <p>Birinci durumda bölüm içinde kalan yönergeler sadece
-      <var>parametre-adı</var> ile belirtilen parametre tanımlı ise işleme
+      <code>parametre-adı</code> ile belirtilen parametre tanımlı ise işleme
       sokulur. İkinci durumda ise tersi yapılır, yani sadece
-      <var>parametre-adı</var> ile belirtilen parametre tanımlı
+      <code>parametre-adı</code> ile belirtilen parametre tanımlı
       <strong>değil</strong> ise yönergeler işleme sokulur.</p>
 
-    <p><var>parametre-adı</var> argümanı sunucu başlatılırken
+    <p><code>parametre-adı</code> argümanı sunucu başlatılırken
       <code class="program"><a href="../programs/httpd.html">httpd</a></code> komut satırında
-      <code>-D<var>parametre</var></code> ile
+      <code>-D<code>parametre</code></code> ile
       veya <code class="directive"><a href="#define">Define</a></code> yönergesi ile
       belirtilerek tanımlı hale getirilebilir.</p>
 
@@ -2333,7 +2332,7 @@ sokulacak yönergeleri sarmalar.</td></tr>
 <div class="directive-section"><h2><a name="IfDirective" id="IfDirective">&lt;IfDirective&gt;</a> <a name="ifdirective" id="ifdirective">Yönergesi</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Belirtilen yönerge adının varlığı veya yokluğuna bağlı olarak çalıştırılacak yönergeleri sarmalar.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>&lt;IfDirective [!]<var>yönerge-adı</var>&gt; ...
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>&lt;IfDirective [!]<code>yönerge-adı</code>&gt; ...
     &lt;/IfDirective&gt;</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak, dizin, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Geçersizleştirme:</a></th><td>All</td></tr>
@@ -2341,17 +2340,17 @@ sokulacak yönergeleri sarmalar.</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>core</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Uyumluluk:</a></th><td>2.4.34 ve sonrasında kullanılabilir.</td></tr>
 </table>
-    <p><code>&lt;IfDirective <var>yönerge-adı</var>&gt;
+    <p><code>&lt;IfDirective <code>yönerge-adı</code>&gt;
     ...&lt;/IfDirective&gt;</code> bölümü içindeki yönergeler
-    <var>yönerge-adı</var> ile belirtilen yönerge mevcutsa çalıştırılır yoksa
+    <code>yönerge-adı</code> ile belirtilen yönerge mevcutsa çalıştırılır yoksa
     yok sayılır.</p>
 
     <p><code class="directive">&lt;IfDirective&gt;</code> yönergenide sınama iki türlü yapılır:</p>
 
     <ul>
-      <li><var>yönerge-adı</var></li>
+      <li><code>yönerge-adı</code></li>
 
-      <li>!<var>yönerge-adı</var></li>
+      <li>!<code>yönerge-adı</code></li>
     </ul>
 
     <p>İlk durumda bölüm içinde kalan yönergeler, yönerge başlangıç satırına
@@ -2376,7 +2375,7 @@ sokulacak yönergeleri sarmalar.</td></tr>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Başlatma sırasında bir dosyanın varlığı durumunda işleme
 sokulacak yönergeleri sarmalar.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>&lt;IfFile [!]<var>dosyaadı</var>&gt; ...
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>&lt;IfFile [!]<code>dosyaadı</code>&gt; ...
     &lt;/IfFile&gt;</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak, dizin, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Geçersizleştirme:</a></th><td>All</td></tr>
@@ -2384,25 +2383,31 @@ sokulacak yönergeleri sarmalar.</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>core</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Uyumluluk:</a></th><td>2.4.34 ve sonrsında kullanılabilir.</td></tr>
 </table>
-    <p><code>&lt;IfFile <var>dosyaadı</var>&gt;...&lt;/IfFile&gt;
+    <p><code>&lt;IfFile <code>dosyaadı</code>&gt;...&lt;/IfFile&gt;
     </code> bölümü bir dosyanın diskteki mevcudiyetine bağlı olarak
     çalıştırılacak yönergeleri belirtmekte kullanılır.
     <code class="directive">&lt;IfFile&gt;</code> bölümü içindeki yönergeler
-    sadece diskte <var>dosyaadı</var> mevcutsa çalıştırılır. <var>dosyaadı</var>
-    mevcut değilse bölüm içindeki yönergeler yok sayılır. <var>dosyaadı</var>
+    sadece diskte <code>dosyaadı</code> mevcutsa çalıştırılır. <code>dosyaadı</code>
+    mevcut değilse bölüm içindeki yönergeler yok sayılır. <code>dosyaadı</code>
     sunucu kök dizinine göreli veya mutlak bir yol olarak belirtilebilir.</p>
 
     <p><code class="directive">&lt;IfFile&gt;</code> bölüm yönergesindeki
-    <var>dosyaadı</var>, <code class="directive"><a href="#ifdefine">&lt;IfDefine&gt;</a></code> yönergesindeki <var>sınama</var> değişkenindeki gibi
-    ele alınır, yani <var>dosyaadı</var> bir ! ile öncelenirse bölüm içindeki
+    <code>dosyaadı</code>, <code class="directive"><a href="#ifdefine">&lt;IfDefine&gt;</a></code> yönergesindeki <code>sınama</code> değişkenindeki gibi
+    ele alınır, yani <code>dosyaadı</code> bir ! ile öncelenirse bölüm içindeki
     yonergeler dosyanın yokluğu durumunda çalıştırılır.
     </p>
 
-    <p>Göreli bir <var>dosyaadı</var> belirtilmişse sınama <code class="directive"><a href="#serverroot">ServerRoot</a></code> yönergesinde belirtilen dizinde göre
+    <p>Göreli bir <code>dosyaadı</code> belirtilmişse sınama <code class="directive"><a href="#serverroot">ServerRoot</a></code> yönergesinde belirtilen dizinde göre
     yapılır. <code class="directive">&lt;IfFile&gt;</code> yönergesinin
     <code class="directive"><a href="#serverroot">ServerRoot</a></code> yönergesinde önce yer alması
     durumunda dosya yolu derleme sırasında kullanılan sunucu köküne veya komut
     satırında <code>-d</code> seçeneği ile belirtilen dizine göre sınanır.</p>
+
+    <div class="warning"><h3>Uyarı</h3>
+    2.4.34 sürümünde, <code>dosyaadı</code>'nı tırnak içinde belirtmek mümkün
+    değildi. Bu, başlatma sırasında çözümleme hatasına sebep oluyordu. Bunun
+    başlıca etkisi, boşluklu dosya adlarının kullanılamamasıdır. Bu sorun,
+    2.4.35 sürümünde düzeltildi.</div>
 
 
 </div>
@@ -2411,7 +2416,7 @@ sokulacak yönergeleri sarmalar.</td></tr>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Belli bir modülün varlığına veya yokluğuna göre işleme sokulacak
 yönergeleri sarmalar.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>&lt;IfModule [!]<var>modül-dosyası</var>|<var>modül-betimleyici</var>&gt; ...
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>&lt;IfModule [!]<code>modül-dosyası</code>|<code>modül-betimleyici</code>&gt; ...
     &lt;/IfModule&gt;</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak, dizin, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Geçersizleştirme:</a></th><td>All</td></tr>
@@ -2419,29 +2424,29 @@ yönergeleri sarmalar.</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>core</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Uyumluluk:</a></th><td>Modül betimleyiciler 2.1 sürümünde ve sonrası için geçerlidir.</td></tr>
 </table>
-    <p><code>&lt;IfModule <var>sınama</var>&gt;...&lt;/IfModule&gt;</code>
+    <p><code>&lt;IfModule <code>sınama</code>&gt;...&lt;/IfModule&gt;</code>
       bölümü belli bir modülün varlığına veya yokluğuna göre işleme sokulacak
       yönergeleri içerir. Bir <code class="directive">&lt;IfModule&gt;</code>
-      bölümü içindeki yönergeler sadece <var>sınama</var> doğru sonuç verirse
+      bölümü içindeki yönergeler sadece <code>sınama</code> doğru sonuç verirse
       işleme sokulur. Aksi takdirde, bölüm içinde kalan her şey yok sayılır.</p>
 
     <p><code class="directive">&lt;IfModule&gt;</code> bölüm yönergesinde
-      <var>sınama</var> için belirtilebilecek iki biçim vardır:</p>
+      <code>sınama</code> için belirtilebilecek iki biçim vardır:</p>
 
     <ul>
-      <li><var>modül</var></li>
+      <li><code>modül</code></li>
 
-      <li>!<var>modül</var></li>
+      <li>!<code>modül</code></li>
     </ul>
 
-    <p>Birinci durumda bölüm içinde kalan yönergeler sadece <var>modül</var>
+    <p>Birinci durumda bölüm içinde kalan yönergeler sadece <code>modül</code>
       ile belirtilen modül Apache httpd içine dahil edilmişse veya
       <code class="directive"><a href="../mod/mod_so.html#loadmodule">LoadModule</a></code> yönergesi ile devingen
       olarak yüklenmişse işleme sokulur. İkinci durumda ise tersi yapılır, yani
-      sadece <var>modül</var> içerilmiş <strong>değil</strong> ise yönergeler
+      sadece <code>modül</code> içerilmiş <strong>değil</strong> ise yönergeler
       işleme sokulur.</p>
 
-    <p><var>modül</var> argümanında bir modül betimleyici veya modülün derleme
+    <p><code>modül</code> argümanında bir modül betimleyici veya modülün derleme
       sırasındaki dosya adı belirtilebilir. Örneğin, <code>rewrite_module</code>
       bir betimleyici, <code>mod_rewrite.c</code> ise bir dosya ismidir. Eğer
       modül çok sayıda kaynak dosyasından oluşuyorsa
@@ -2461,7 +2466,7 @@ yönergeleri sarmalar.</td></tr>
 <div class="directive-section"><h2><a name="IfSection" id="IfSection">&lt;IfSection&gt;</a> <a name="ifsection" id="ifsection">Yönergesi</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Belirtilen bölüm adının varlığı veya yokluğuna bağlı olarak çalıştırılacak yönergeleri sarmalar.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>&lt;IfSection [!]<var>bölüm-adı</var>&gt; ...
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>&lt;IfSection [!]<code>bölüm-adı</code>&gt; ...
     &lt;/IfSection&gt;</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak, dizin, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Geçersizleştirme:</a></th><td>All</td></tr>
@@ -2469,24 +2474,24 @@ yönergeleri sarmalar.</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>core</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Uyumluluk:</a></th><td>2.4.34 ve sonrasında kullanılabilir.</td></tr>
 </table>
-    <p><code>&lt;IfSection <var>bölüm-adı</var>&gt;
+    <p><code>&lt;IfSection <code>bölüm-adı</code>&gt;
     ...&lt;/IfSection&gt;</code> bölümü içindeki yönergeler
-    <var>bölüm-adı</var> ile belirtilen bölüm mevcutsa çalıştırılır yoksa
+    <code>bölüm-adı</code> ile belirtilen bölüm mevcutsa çalıştırılır yoksa
     yok sayılır. Bir bölüm yönergesi "&lt;" ile öncelenmiş bir yönerge adına
     sahip olmalı ve <code class="directive">&lt;VirtualHost&gt;</code> gibi başka
     yönergeleri sarmalayan bir yönerge olmalıdır.</p>
 
     <p><code class="directive">&lt;IfSection&gt;</code> bölümü içindeki
-    yönergeler sadece <var>sınama</var> doğru ise çalıştırılır,
-    <var>sınama</var> yanlışsa çalıştırılmaz.</p>
+    yönergeler sadece <code>sınama</code> doğru ise çalıştırılır,
+    <code>sınama</code> yanlışsa çalıştırılmaz.</p>
 
-    <p><var>bölüm-adı</var> başında "&lt;" veya sonunda "&gt;" olmaksızın
+    <p><code>bölüm-adı</code> başında "&lt;" veya sonunda "&gt;" olmaksızın
     belirtilmelidir. <code class="directive">&lt;IfSection&gt;</code>
-    yönergesindeki <var>bölüm-adı</var> iki türlü ele alınır:</p>
+    yönergesindeki <code>bölüm-adı</code> iki türlü ele alınır:</p>
 
     <ul>
-      <li><var>bölüm-adı</var></li>
-      <li>!<var>bölüm-adı</var></li>
+      <li><code>bölüm-adı</code></li>
+      <li>!<code>bölüm-adı</code></li>
     </ul>
 
     <p>İlk durumda bölüm içinde kalan yönergeler, yönerge başlangıç satırına
@@ -2519,7 +2524,7 @@ yönergeleri sarmalar.</td></tr>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Sunucu yapılandırma dosyalarının başka dosyaları içermesini sağlar.
 </td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>Include <var>dosya-yolu</var>|<var>dizin-yolu</var>|<var>joker</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>Include <code>dosya-yolu</code>|<code>dizin-yolu</code>|<code>joker</code></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak, dizin</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>core</td></tr>
@@ -2586,7 +2591,7 @@ Include conf/vhosts/*.conf</pre>
 <div class="directive-section"><h2><a name="IncludeOptional" id="IncludeOptional">IncludeOptional</a> <a name="includeoptional" id="includeoptional">Yönergesi</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Diğer yapılandırma dosyalarının sunucu yapılandırma dosyasına dahil edilmesini sağlar</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>IncludeOptional <var>dosya-yolu</var>|<var>dizin-yolu</var>|<var>joker</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>IncludeOptional <code>dosya-yolu</code>|<code>dizin-yolu</code>|<code>joker</code></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak, dizin</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>core</td></tr>
@@ -2649,7 +2654,7 @@ Include conf/vhosts/*.conf</pre>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Bir kalıcı bağlantıda sunucunun bir sonraki isteği bekleme süresi
 </td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>KeepAliveTimeout <var>sayı</var>[ms]</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>KeepAliveTimeout <code>sayı</code>[ms]</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Öntanımlı:</a></th><td><code>KeepAliveTimeout 5</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr>
@@ -2676,7 +2681,7 @@ Include conf/vhosts/*.conf</pre>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Erişimi sınırlanacak HTTP yöntemleri için erişim sınırlayıcıları
 sarmalar.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>&lt;Limit <var>yöntem</var> [<var>yöntem</var>] ... &gt; ...
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>&lt;Limit <code>yöntem</code> [<code>yöntem</code>] ... &gt; ...
     &lt;/Limit&gt;</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>dizin, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Geçersizleştirme:</a></th><td>AuthConfig, Limit</td></tr>
@@ -2746,7 +2751,7 @@ sarmalar.</td></tr>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>İsimleri belirtilenler dışında kalan HTTP yöntemleri için
 kullanılacak erişim sınırlayıcıları sarmalar.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>&lt;LimitExcept <var>yöntem</var> [<var>yöntem</var>] ... &gt; ...
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>&lt;LimitExcept <code>yöntem</code> [<code>yöntem</code>] ... &gt; ...
     &lt;/LimitExcept&gt;</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>dizin, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Geçersizleştirme:</a></th><td>AuthConfig, Limit</td></tr>
@@ -2774,7 +2779,7 @@ kullanılacak erişim sınırlayıcıları sarmalar.</td></tr>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Dahili yönlendirmelerin ve istek içi isteklerin azami sayısını
 belirler.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>LimitInternalRecursion <var>sayı</var> [<var>sayı</var>]</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>LimitInternalRecursion <code>sayı</code> [<code>sayı</code>]</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Öntanımlı:</a></th><td><code>LimitInternalRecursion 10</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr>
@@ -2794,10 +2799,10 @@ belirler.</td></tr>
       ortaya çıkarlar.</p>
 
     <p>Yönerge her istek için değerlendirmeye alınacak iki farklı sınırlama
-      için kullanılabilir. İlk <var>sayı</var> ardarda gelebilen dahili
-      yönlendirmelerin azami sayısını, ikinci <var>sayı</var> ise istek içi
+      için kullanılabilir. İlk <code>sayı</code> ardarda gelebilen dahili
+      yönlendirmelerin azami sayısını, ikinci <code>sayı</code> ise istek içi
       isteklerin ne kadar iç içe olabileceğini belirler. Tek bir
-      <var>sayı</var> belirtilirse iki sınırlama için de aynı değer
+      <code>sayı</code> belirtilirse iki sınırlama için de aynı değer
       kullanılır.</p>
 
     <pre class="prettyprint lang-config">LimitInternalRecursion 5</pre>
@@ -2809,7 +2814,7 @@ belirler.</td></tr>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>İstemci tarafından gönderilen HTTP istek gövdesinin toplam
 uzunluğunu sınırlar.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>LimitRequestBody <var>bayt-sayısı</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>LimitRequestBody <code>bayt-sayısı</code></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Öntanımlı:</a></th><td><code>LimitRequestBody 0</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak, dizin, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Geçersizleştirme:</a></th><td>All</td></tr>
@@ -2855,13 +2860,13 @@ uzunluğunu sınırlar.</td></tr>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>İstemciden kabul edilecek HTTP isteği başlık alanlarının sayısını
 sınırlar.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>LimitRequestFields <var>sayı</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>LimitRequestFields <code>sayı</code></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Öntanımlı:</a></th><td><code>LimitRequestFields 100</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>core</td></tr>
 </table>
-    <p><var>sayı</var>ya 0 atanması sınırsız anlamına gelir.
+    <p><code>sayı</code>ya 0 atanması sınırsız anlamına gelir.
       Öntanımlı değer bir derleme zamanı sabiti olan
       <code>DEFAULT_LIMIT_REQUEST_FIELDS</code> ile belirlenir (dağıtımla gelen
       değeri 100’dür).</p>
@@ -2900,7 +2905,7 @@ sınırlar.</td></tr>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>İstemciden kabul edilecek HTTP isteği başlık uzunluğunu sınırlar.
 </td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>LimitRequestFieldSize <var>bayt-sayısı</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>LimitRequestFieldSize <code>bayt-sayısı</code></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Öntanımlı:</a></th><td><code>LimitRequestFieldSize 8190</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr>
@@ -2943,7 +2948,7 @@ sınırlar.</td></tr>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>İstemciden kabul edilecek HTTP istek satırının uzunluğunu sınırlar.
 </td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>LimitRequestLine <var>bayt-sayısı</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>LimitRequestLine <code>bayt-sayısı</code></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Öntanımlı:</a></th><td><code>LimitRequestLine 8190</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr>
@@ -2983,20 +2988,25 @@ sınırlar.</td></tr>
 <div class="directive-section"><h2><a name="LimitXMLRequestBody" id="LimitXMLRequestBody">LimitXMLRequestBody</a> <a name="limitxmlrequestbody" id="limitxmlrequestbody">Yönergesi</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Bir XML temelli istek gövdesinin uzunluğunu sınırlar.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>LimitXMLRequestBody <var>bayt-sayısı</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>LimitXMLRequestBody <code>bayt-sayısı</code></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Öntanımlı:</a></th><td><code>LimitXMLRequestBody 1000000</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak, dizin, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Geçersizleştirme:</a></th><td>All</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>core</td></tr>
 </table>
-    <p>Bir  XML temelli istek gövdesinin azami bayt sayısını belirler. Değer
-      olarak <code>0</code> belirtildiğinde herhangi bir boyut sınaması
-      yapılmaz.</p>
+    <p>Bir  XML temelli istek gövdesinin azami bayt sayısını belirler.
+     <code>0</code> değeri, XML'in sistem adreslenebilir belleğinin sınırları
+     içinde sarmalanmasına izin veren (32bit ve 64bit sisteme bağlı olarak)
+     katı bir sınırlama uygular, ancak yalnızca uyumluluk için vardır ve
+     önerilmez, çünkü genel sistemde belleğin yetersiz kalmasına neden
+     olabilecek eşzamanlı istekleri veya başka bir yerde tüketilen belleği
+     hesaba katmaz.</p>
 
     <p>Örnek:</p>
 
-    <pre class="prettyprint lang-config">LimitXMLRequestBody 0</pre>
+    <pre class="prettyprint lang-config"># 1 MiB'lık sınırlama
+LimitXMLRequestBody 1073741824</pre>
 
 
 
@@ -3006,7 +3016,7 @@ sınırlar.</td></tr>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>İçerdiği yönergeler sadece eşleşen URL’lere uygulanır.
 </td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>&lt;Location <var>URL-yolu</var>|<var>URL</var>&gt; ...
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>&lt;Location <code>URL-yolu</code>|<code>URL</code>&gt; ...
 &lt;/Location&gt;</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr>
@@ -3152,7 +3162,7 @@ sınırlar.</td></tr>
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>İçerdiği yönergeler sadece düzenli ifadelerle eşleşen URL’lere
 uygulanır.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>&lt;LocationMatch
-    <var>düzifade</var>&gt; ... &lt;/LocationMatch&gt;</code></td></tr>
+    <code>düzifade</code>&gt; ... &lt;/LocationMatch&gt;</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>core</td></tr>
@@ -3228,8 +3238,8 @@ uygulanır.</td></tr>
 <div class="directive-section"><h2><a name="LogLevel" id="LogLevel">LogLevel</a> <a name="loglevel" id="loglevel">Yönergesi</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Hata günlüklerinin ayrıntı seviyesini belirler.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>LogLevel [<var>modül</var>:]<var>seviye</var>
-    [<var>modül</var>:<var>seviye</var>] ...
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>LogLevel [<code>modül</code>:]<code>seviye</code>
+    [<code>modül</code>:<code>seviye</code>] ...
 </code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Öntanımlı:</a></th><td><code>LogLevel warn</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak, dizin</td></tr>
@@ -3241,7 +3251,7 @@ uygulanır.</td></tr>
 </table>
     <p><code class="directive">LogLevel</code> yönergesi hata günlüklerine kaydedilen
       hata iletilerinde hangi ayrıntılara yer verileceğini belirler (<code class="directive"><a href="#errorlog">ErrorLog</a></code> yönergesine bakınız). En yüksek önem
-      derecesinden başlayarak olası <var>seviye</var> değerleri aşağıda
+      derecesinden başlayarak olası <code>seviye</code> değerleri aşağıda
       sıralanmıştır:</p>
 
     <table class="bordered">
@@ -3415,7 +3425,7 @@ LogLevel info ssl_module:warn</pre>
 <div class="directive-section"><h2><a name="MaxKeepAliveRequests" id="MaxKeepAliveRequests">MaxKeepAliveRequests</a> <a name="maxkeepaliverequests" id="maxkeepaliverequests">Yönergesi</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Bir kalıcı bağlantıda izin verilen istek sayısı</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>MaxKeepAliveRequests <var>sayı</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>MaxKeepAliveRequests <code>sayı</code></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Öntanımlı:</a></th><td><code>MaxKeepAliveRequests 100</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr>
@@ -3438,7 +3448,7 @@ LogLevel info ssl_module:warn</pre>
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Özkaynağın tamamını döndürmeden önce izin verilen üst üste binen
     aralık sayısı (<code>100-200,150-300</code> gibi)</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>MaxRangeOverlaps default | unlimited | none |
-  <var>aralık-sayısı</var></code></td></tr>
+  <code>aralık-sayısı</code></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Öntanımlı:</a></th><td><code>MaxRangeOverlaps 20</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak, dizin</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr>
@@ -3463,7 +3473,7 @@ LogLevel info ssl_module:warn</pre>
         <dd>Sunucunun sağlamaya gönüllü olacağı üst üste binen HTTP
           Range'lerinin sayısı sınırlanmaz.</dd>
 
-        <dt><var>aralık sayısı</var></dt>
+        <dt><code>aralık sayısı</code></dt>
         <dd>Sunucunun sağlamaya gönüllü olacağı üst üste binen HTTP
           Range'lerinin azami sayısını ifade eden pozitif bir tamsayı.</dd>
     </dl>
@@ -3475,7 +3485,7 @@ LogLevel info ssl_module:warn</pre>
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Özkaynağın tamamını döndürmeden önce izin verilen ters sıralı
     aralık sayısı (<code>100-200,50-70</code> gibi)</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>MaxRangeReversals default | unlimited | none |
-    <var>aralık-sayısı</var></code></td></tr>
+    <code>aralık-sayısı</code></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Öntanımlı:</a></th><td><code>MaxRangeReversals 20</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak, dizin</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr>
@@ -3500,7 +3510,7 @@ LogLevel info ssl_module:warn</pre>
         <dd>Sunucunun sağlamaya gönüllü olacağı ters sıralı HTTP
           Range'lerinin sayısı sınırlanmaz.</dd>
 
-        <dt><var>aralık-sayısı</var></dt>
+        <dt><code>aralık-sayısı</code></dt>
         <dd>Sunucunun sağlamaya gönüllü olacağı ters sıralı HTTP
           Range'lerinin azami sayısını ifade eden pozitif bir tamsayı.</dd>
     </dl>
@@ -3511,7 +3521,7 @@ LogLevel info ssl_module:warn</pre>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Özkaynağın tamamını döndürmeden önce izin verilen aralık sayısı</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>MaxRanges default | unlimited | none |
-  <var>aralık-sayısı</var></code></td></tr>
+  <code>aralık-sayısı</code></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Öntanımlı:</a></th><td><code>MaxRanges 200</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak, dizin</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr>
@@ -3535,7 +3545,7 @@ LogLevel info ssl_module:warn</pre>
       <dd>Sunucunun sağlamaya gönüllü olacağı HTTP Range'lerinin sayısı
         sınırlanmaz.</dd>
 
-      <dt><var>aralık-sayısı</var></dt>
+      <dt><code>aralık-sayısı</code></dt>
       <dd>Sunucunun sağlamaya gönüllü olacağı HTTP Range'lerinin azami
         sayısını ifade eden pozitif bir tamsayı.</dd>
     </dl>
@@ -3595,7 +3605,7 @@ LogLevel info ssl_module:warn</pre>
 <div class="directive-section"><h2><a name="Mutex" id="Mutex">Mutex</a> <a name="mutex" id="mutex">Yönergesi</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Muteks mekanizmasını ve kilit dosyası dizinini tüm muteksler veya belirtilenler için yapılandırır</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>Mutex <var>mekanizma</var> [default|<var>muteks-ismi</var>] ... [OmitPID]</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>Mutex <code>mekanizma</code> [default|<code>muteks-ismi</code>] ... [OmitPID]</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Öntanımlı:</a></th><td><code>Mutex default</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr>
@@ -3814,7 +3824,7 @@ Mutex fcntl:/var/httpd/locks mpm-accept</pre>
 <div class="directive-section"><h2><a name="NameVirtualHost" id="NameVirtualHost">NameVirtualHost</a> <a name="namevirtualhost" id="namevirtualhost">Yönergesi</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>ÖNERİLMİYOR: İsme dayalı sanal konaklar için IP adresi belirtir</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>NameVirtualHost <var>adres</var>[:<var>port</var>]</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>NameVirtualHost <code>adres</code>[:<code>port</code>]</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>core</td></tr>
@@ -3839,7 +3849,7 @@ Mutex fcntl:/var/httpd/locks mpm-accept</pre>
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Belli bir dizinde geçerli olacak özellikleri yapılandırır.
 </td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>Options
-    [+|-]<var>seçenek</var> [[+|-]<var>seçenek</var>] ...</code></td></tr>
+    [+|-]<code>seçenek</code> [[+|-]<code>seçenek</code>] ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Öntanımlı:</a></th><td><code>Options FollowSymlinks</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak, dizin, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Geçersizleştirme:</a></th><td>Options</td></tr>
@@ -3851,7 +3861,7 @@ Mutex fcntl:/var/httpd/locks mpm-accept</pre>
        sunucu özelliklerinin etkin olacağını (veya olmayacağını)
        belirler.</p>
 
-    <p><var>seçenek</var> olarak hiçbir ek özellik etkin olmayacaksa
+    <p><code>seçenek</code> olarak hiçbir ek özellik etkin olmayacaksa
       <code>None</code>, aksi takdirde aşağıdakilerden biri veya bir kaçı
       belirtilir:</p>
 
@@ -3970,7 +3980,7 @@ Mutex fcntl:/var/httpd/locks mpm-accept</pre>
 <div class="directive-section"><h2><a name="Protocol" id="Protocol">Protocol</a> <a name="protocol" id="protocol">Yönergesi</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Dinlenen bir soket için protokol</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>Protocol <var>protokol</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>Protocol <code>protokol</code></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>core</td></tr>
@@ -4010,7 +4020,7 @@ Mutex fcntl:/var/httpd/locks mpm-accept</pre>
 <div class="directive-section"><h2><a name="Protocols" id="Protocols">Protocols</a> <a name="protocols" id="protocols">Yönergesi</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Sunucu/sanal konak için kullanılabilecek protokoller</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>Protocols <var>protokol</var> ...</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>Protocols <code>protokol</code> ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Öntanımlı:</a></th><td><code>Protocols http/1.1</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr>
@@ -4113,7 +4123,7 @@ davranılır.</td></tr>
 <div class="directive-section"><h2><a name="ReadBufferSize" id="ReadBufferSize">ReadBufferSize</a> <a name="readbuffersize" id="readbuffersize">Yönergesi</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Veriyi okumakta kullanılacak tampon sayısı</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>ReadBufferSize <var>bayt-sayısı</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>ReadBufferSize <code>bayt-sayısı</code></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Öntanımlı:</a></th><td><code>ReadBufferSize 8192</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak, dizin</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr>
@@ -4125,14 +4135,14 @@ davranılır.</td></tr>
 
     <p>Daha büyük bir arabellek, daha büyük verilerle başarımı artırabilir,
     ancak bağlantı başına tüketilen bellek artar. Yapılandırılabilir en küçük
-    boyut <var>1024</var>'tür.</p>
+    boyut <code>1024</code>'tür.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="RegexDefaultOptions" id="RegexDefaultOptions">RegexDefaultOptions</a> <a name="regexdefaultoptions" id="regexdefaultoptions">Yönergesi</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Regex düzenli ifadeleri için öntanımlı/küresel seçenekleri yapılandırır</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>RegexDefaultOptions [none] [+|-]<var>seçenek</var> [[+|-]<var>seçenek</var>] ...</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>RegexDefaultOptions [none] [+|-]<code>seçenek</code> [[+|-]<code>seçenek</code>] ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Öntanımlı:</a></th><td><code>RegexDefaultOptions DOTALL DOLLAR_ENDONLY</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr>
@@ -4150,7 +4160,7 @@ davranılır.</td></tr>
         silerek onların yerini alır.<br />
         <code>none</code> ile önceden atanmış tüm seçenekler sıfırlanır.</p>
 
-        <p><var>seçenek</var> şunlardan biri olabilir:</p>
+        <p><code>seçenek</code> şunlardan biri olabilir:</p>
         <dl>
             <dt><code>ICASE</code></dt>
             <dd>Harf büyüklüğüne duyarlı eşleşmeler kullanılır.</dd>
@@ -4185,7 +4195,7 @@ RegexDefaultOptions none
 <div class="directive-section"><h2><a name="RegisterHttpMethod" id="RegisterHttpMethod">RegisterHttpMethod</a> <a name="registerhttpmethod" id="registerhttpmethod">Yönergesi</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Standart olmayan HTTP yöntemlerini devreye alır</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>RegisterHttpMethod <var>yöntem</var> [<var>yöntem</var> [...]]</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>RegisterHttpMethod <code>yöntem</code> [<code>yöntem</code> [...]]</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>core</td></tr>
@@ -4209,7 +4219,7 @@ RegexDefaultOptions none
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Apache httpd alt süreçleri tarafından çalıştırılan süreçlerin
   işlemci tüketimine sınırlama getirir.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>RLimitCPU <var>saniye</var>|max [<var>saniye</var>|max]</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>RLimitCPU <code>saniye</code>|max [<code>saniye</code>|max]</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Öntanımlı:</a></th><td><code>Bir değer belirtilmemiştir; işletim sistemi öntanımlıları kullanılır
 </code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak, dizin, .htaccess</td></tr>
@@ -4244,7 +4254,7 @@ RegexDefaultOptions none
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Apache httpd alt süreçleri tarafından çalıştırılan süreçlerin
   bellek tüketimine sınırlama getirir.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>RLimitMEM <var>bayt-sayısı</var>|max [<var>bayt-sayısı</var>|max]
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>RLimitMEM <code>bayt-sayısı</code>|max [<code>bayt-sayısı</code>|max]
 </code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Öntanımlı:</a></th><td><code>Bir değer belirtilmemiştir; işletim sistemi öntanımlıları kullanılır
 </code></td></tr>
@@ -4281,7 +4291,7 @@ RegexDefaultOptions none
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Apache httpd alt süreçleri tarafından çalıştırılabilecek süreç
   sayısına sınırlama getirir.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>RLimitNPROC <var>sayı</var>|max [<var>sayı</var>|max]</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>RLimitNPROC <code>sayı</code>|max [<code>sayı</code>|max]</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Öntanımlı:</a></th><td><code>Bir değer belirtilmemiştir; işletim sistemi öntanımlıları kullanılır
 </code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak, dizin, .htaccess</td></tr>
@@ -4420,7 +4430,7 @@ RegexDefaultOptions none
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Sunucunun hata iletilerinde istemciye göstereceği eposta adresi
 </td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>ServerAdmin <var>eposta-adresi</var>|<var>URL</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>ServerAdmin <code>eposta-adresi</code>|<code>URL</code></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>core</td></tr>
@@ -4450,7 +4460,7 @@ RegexDefaultOptions none
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>İstekleri isme dayalı sanal konaklarla eşleştirilirken
 kullanılacak konak adları için başka isimler belirtebilmeyi sağlar.
 </td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>ServerAlias <var>konakadı</var> [<var>konakadı</var>] ...</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>ServerAlias <code>konakadı</code> [<code>konakadı</code>] ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sanal konak</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>core</td></tr>
@@ -4490,7 +4500,7 @@ kullanılacak konak adları için başka isimler belirtebilmeyi sağlar.
 <div class="directive-section"><h2><a name="ServerName" id="ServerName">ServerName</a> <a name="servername" id="servername">Yönergesi</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Sunucunun özdeşleşeceği konak ismi ve port.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>ServerName [<var>şema</var>://]<var>alan-adı</var>|<var>ip-adresi</var>[:<var>port</var>]
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>ServerName [<code>şema</code>://]<code>alan-adı</code>|<code>ip-adresi</code>[:<code>port</code>]
 </code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr>
@@ -4580,7 +4590,7 @@ kullanılacak konak adları için başka isimler belirtebilmeyi sağlar.
 <div class="directive-section"><h2><a name="ServerPath" id="ServerPath">ServerPath</a> <a name="serverpath" id="serverpath">Yönergesi</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Uyumsuz bir tarayıcı tarafından erişilmesi için bir isme dayalı sanal konak için meşru URL yolu</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>ServerPath <var>URL-yolu</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>ServerPath <code>URL-yolu</code></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sanal konak</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>core</td></tr>
@@ -4599,7 +4609,7 @@ kullanılacak konak adları için başka isimler belirtebilmeyi sağlar.
 <div class="directive-section"><h2><a name="ServerRoot" id="ServerRoot">ServerRoot</a> <a name="serverroot" id="serverroot">Yönergesi</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Sunucu yapılandırması için kök dizin</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>ServerRoot <var>dizin-yolu</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>ServerRoot <code>dizin-yolu</code></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Öntanımlı:</a></th><td><code>ServerRoot /usr/local/apache</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr>
@@ -4726,7 +4736,7 @@ kullanılacak konak adları için başka isimler belirtebilmeyi sağlar.
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Eşleşen tüm dosyaların belli bir eylemci tarafından işlenmesine
 sebep olur.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>SetHandler <var>eylemci-ismi</var>|none|<var>ifade</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>SetHandler <code>eylemci-ismi</code>|none|<code>ifade</code></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak, dizin, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Geçersizleştirme:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr>
@@ -4734,7 +4744,7 @@ sebep olur.</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Uyumluluk:</a></th><td>ifade seçeneği 2.4.19 sürümünde eklendi</td></tr>
 </table>
     <p>Bir <code>.htaccess</code> dosyasına veya bir <code class="directive"><a href="#directory">&lt;Directory&gt;</a></code> ya da <code class="directive"><a href="#location">&lt;Location&gt;</a></code> bölümüne yerleştirildiğinde, eşleşen
-      tüm dosyaların, ismi <var>eylemci-ismi</var> ile belirtilen <a href="../handler.html">eylemci</a> tarafından çözümlenmesine sebep olur.
+      tüm dosyaların, ismi <code>eylemci-ismi</code> ile belirtilen <a href="../handler.html">eylemci</a> tarafından çözümlenmesine sebep olur.
       Örneğin, bir dizin içindeki bütün dosyaların, uzantılarına bakılmaksızın
       birer imagemap kural dosyası olarak çözümlenmesini istersiniz, bu dizin
       içindeki bir <code>.htaccess</code> dosyasına şöyle bir satır
@@ -4789,7 +4799,7 @@ sebep olur.</td></tr>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>POST girdilerini ve istemci isteklerini işleyecek süzgeçleri
 belirler.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>SetInputFilter <var>süzgeç</var>[;<var>süzgeç</var>...]</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>SetInputFilter <code>süzgeç</code>[;<code>süzgeç</code>...]</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak, dizin, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Geçersizleştirme:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr>
@@ -4813,7 +4823,7 @@ belirler.</td></tr>
 <div class="directive-section"><h2><a name="SetOutputFilter" id="SetOutputFilter">SetOutputFilter</a> <a name="setoutputfilter" id="setoutputfilter">Yönergesi</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Sunucunun yanıtlarını işleyecek süzgeçleri belirler.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>SetOutputFilter <var>süzgeç</var>[;<var>süzgeç</var>...]</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>SetOutputFilter <code>süzgeç</code>[;<code>süzgeç</code>...]</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak, dizin, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Geçersizleştirme:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr>
@@ -4880,7 +4890,7 @@ listelenmesini gerektirip gerektirmediğini denetler</td></tr>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Bir istek için başarısız olmadan önce belirli olayların
 gerçekleşmesi için sunucunun geçmesini bekleyeceği süre.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>TimeOut <var>saniye</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>TimeOut <code>saniye</code></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Öntanımlı:</a></th><td><code>TimeOut 60</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr>
@@ -4917,7 +4927,7 @@ gerçekleşmesi için sunucunun geçmesini bekleyeceği süre.</td></tr>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td><code>TRACE</code> isteklerinde davranış şeklini belirler
 </td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>TraceEnable <var>[on|off|extended]</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>TraceEnable <code>[on|off|extended]</code></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Öntanımlı:</a></th><td><code>TraceEnable on</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr>
@@ -4951,7 +4961,7 @@ gerçekleşmesi için sunucunun geçmesini bekleyeceği süre.</td></tr>
 <div class="directive-section"><h2><a name="UnDefine" id="UnDefine">UnDefine</a> <a name="undefine" id="undefine">Yönergesi</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Bir değişkeni tanımsız yapar</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>UnDefine <var>değişken-ismi</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>UnDefine <code>değişken-ismi</code></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>core</td></tr>
@@ -5103,7 +5113,7 @@ gerçekleşmesi için sunucunun geçmesini bekleyeceği süre.</td></tr>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Sadece belli bir konak ismine ve porta uygulanacak yönergeleri barındırır.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>&lt;VirtualHost
-    <var>adres</var>[:<var>port</var>] [<var>adres</var>[:<var>port</var>]]
+    <code>adres</code>[:<code>port</code>] [<code>adres</code>[:<code>port</code>]]
     ...&gt; ... &lt;/VirtualHost&gt;</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr>
@@ -5114,7 +5124,7 @@ gerçekleşmesi için sunucunun geçmesini bekleyeceği süre.</td></tr>
       uygulanacak yönergeleri sarmalamakta kullanılırlar. Bir sanal konak
       kapsamında belirtilebilecek her yönerge kullanılabilir. Sunucu belli bir
       sanal konak üzerindeki bir belge için bir istek aldığında <code class="directive">&lt;VirtualHost&gt;</code> bölümünde bulunan yapılandırma
-      yönergelerini kullanır. <var>adres</var> şunlardan biri olabilir,
+      yönergelerini kullanır. <code>adres</code> şunlardan biri olabilir,
       istemlik olarak ikinokta imi ve bir port numarası (veya *)
       eklenebilir:</p>
 
