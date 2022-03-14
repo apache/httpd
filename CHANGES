@@ -1,5 +1,38 @@
                                                          -*- coding: utf-8 -*-
+Changes with Apache 2.4.54
+
 Changes with Apache 2.4.53
+
+  *) SECURITY: CVE-2022-23943: mod_sed: Read/write beyond bounds
+     (cve.mitre.org)
+     Out-of-bounds Write vulnerability in mod_sed of Apache HTTP
+     Server allows an attacker to overwrite heap memory with possibly
+     attacker provided data.
+     This issue affects Apache HTTP Server 2.4 version 2.4.52 and
+     prior versions.
+     Credits: Ronald Crane (Zippenhop LLC)
+
+  *) SECURITY: CVE-2022-22721: core: Possible buffer overflow with
+     very large or unlimited LimitXMLRequestBody (cve.mitre.org)
+     If LimitXMLRequestBody is set to allow request bodies larger
+     than 350MB (defaults to 1M) on 32 bit systems an integer
+     overflow happens which later causes out of bounds writes.
+     This issue affects Apache HTTP Server 2.4.52 and earlier.
+     Credits: Anonymous working with Trend Micro Zero Day Initiative
+
+  *) SECURITY: CVE-2022-22720: HTTP request smuggling vulnerability
+     in Apache HTTP Server 2.4.52 and earlier (cve.mitre.org)
+     Apache HTTP Server 2.4.52 and earlier fails to close inbound
+     connection when errors are encountered discarding the request
+     body, exposing the server to HTTP Request Smuggling
+     Credits: James Kettle <james.kettle portswigger.net>
+
+  *) SECURITY: CVE-2022-22719: mod_lua Use of uninitialized value of
+     in r:parsebody (cve.mitre.org)
+     A carefully crafted request body can cause a read to a random
+     memory area which could cause the process to crash.
+     This issue affects Apache HTTP Server 2.4.52 and earlier.
+     Credits: Chamal De Silva
 
   *) core: Make sure and check that LimitXMLRequestBody fits in system memory.
      [Ruediger Pluem, Yann Ylavic]
