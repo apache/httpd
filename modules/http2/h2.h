@@ -26,6 +26,40 @@ struct h2_stream;
  * When apr pollsets can poll file descriptors (e.g. pipes),
  * we use it for polling stream input/output.
  */
+/* Disabel for now. Measurements on a macOS dev machine
+ * show up to 25% performance loss with pollsets. See
+ * 12 connection case with 2 requests in flight:
+ * 28124 req/s with pollsets vs. 38895 without.
+ *
+ * trunk (pollsets):
+ *  1k files, 1k size, *conn, 100k req, h2 (req/s)
+ *  max requests      1c      2c      6c     12c
+ * h2   1 100000    6045   11501   28090   29320
+ * h2   2 100000   10040   17425   28307   28124
+ * h2   6 100000   14107   19354   25256   23752
+ * h2  20 100000   16073   21376   22334   20671
+ * h1   1 100000    8009   15691   37003   44808
+ *
+ * trunk (no pollsets):
+ *  1k files, 1k size, *conn, 100k req, h2 (req/s)
+ *  max requests      1c      2c      6c     12c
+ * h2   1 100000    6330   12197   30259   37462
+ * h2   2 100000   10548   18694   35870   38895
+ * h2   6 100000   15988   23974   32073   27346
+ * h2  20 100000   17630   26481   30788   28301
+ * h1   1 100000    7996   15789   37108   45358
+ *
+ * My gut feeling is that there is just too much
+ * administrative overhead with removing/adding files
+ * to pollsets because secondary connection are
+ * used for only a single request in the current
+ * implementation.
+ *
+ * This needs to be revisisted when c2 connections
+ * are used for many consecutive requests where
+ * pollsets stay unchanged much longer.
+ */
+#define H2_NO_POLL_STREAMS        1
 #ifdef H2_NO_POLL_STREAMS
 #define H2_POLL_STREAMS           0
 #else
