@@ -16,6 +16,7 @@
  
 #include <assert.h>
 #include <apr_strings.h>
+#include <apr_atomic.h>
 
 #include <httpd.h>
 #include <http_core.h>
@@ -42,6 +43,7 @@ static h2_conn_ctx_t *ctx_create(conn_rec *c, const char *id)
     h2_conn_ctx_t *conn_ctx = apr_pcalloc(c->pool, sizeof(*conn_ctx));
     conn_ctx->id = id;
     conn_ctx->server = c->base_server;
+    apr_atomic_set32(&conn_ctx->started, 1);
     conn_ctx->started_at = apr_time_now();
 
     ap_set_module_config(c->conn_config, &http2_module, conn_ctx);
@@ -89,6 +91,7 @@ apr_status_t h2_conn_ctx_init_for_c2(h2_conn_ctx_t **pctx, conn_rec *c2,
     apr_pool_create(&conn_ctx->req_pool, c2->pool);
     apr_pool_tag(conn_ctx->req_pool, "H2_C2_REQ");
     conn_ctx->request = stream->request;
+    apr_atomic_set32(&conn_ctx->started, 1);
     conn_ctx->started_at = apr_time_now();
     conn_ctx->done = 0;
     conn_ctx->done_at = 0;

@@ -100,7 +100,8 @@ static void c1_input_consumed(void *ctx, h2_bucket_beam *beam, apr_off_t length)
 static int stream_is_running(h2_stream *stream)
 {
     h2_conn_ctx_t *conn_ctx = h2_conn_ctx_get(stream->c2);
-    return conn_ctx && conn_ctx->started_at != 0 && !conn_ctx->done;
+    return conn_ctx && apr_atomic_read32(&conn_ctx->started) != 0
+        && apr_atomic_read32(&conn_ctx->done) == 0;
 }
 
 int h2_mplx_c1_stream_is_running(h2_mplx *m, h2_stream *stream)
@@ -153,13 +154,7 @@ static void m_stream_cleanup(h2_mplx *m, h2_stream *stream)
             ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, m->c1,
                           H2_STRM_MSG(stream, "cleanup, c2 is running, abort"));
             /* c2 is still running */
-            stream->c2->aborted = 1;
-            if (stream->input) {
-                h2_beam_abort(stream->input, m->c1);
-            }
-            if (stream->output) {
-                h2_beam_abort(stream->output, m->c1);
-            }
+            h2_c2_abort(stream->c2, m->c1);
             ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, m->c1,
                           H2_STRM_MSG(stream, "cleanup, c2 is done, move to shold"));
             h2_ihash_add(m->shold, stream);
@@ -331,8 +326,9 @@ static int m_report_stream_iter(void *ctx, void *val) {
                       H2_STRM_MSG(stream, "->03198: %s %s %s"
                       "[started=%d/done=%d]"), 
                       conn_ctx->request->method, conn_ctx->request->authority,
-                      conn_ctx->request->path, conn_ctx->started_at != 0,
-                      conn_ctx->done);
+                      conn_ctx->request->path,
+                      (int)apr_atomic_read32(&conn_ctx->started),
+                      (int)apr_atomic_read32(&conn_ctx->done));
     }
     else {
         ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, m->c1, /* NO APLOGNO */
@@ -354,10 +350,6 @@ static int m_stream_cancel_iter(void *ctx, void *val) {
     h2_mplx *m = ctx;
     h2_stream *stream = val;
 
-    /* disable input consumed reporting */
-    if (stream->input) {
-        h2_beam_abort(stream->input, m->c1);
-    }
     /* take over event monitoring */
     h2_stream_set_monitor(stream, NULL);
     /* Reset, should transit to CLOSED state */
@@ -867,8 +859,8 @@ static void s_c2_done(h2_mplx *m, conn_rec *c2, h2_conn_ctx_t *conn_ctx)
     ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, c2,
                   "h2_mplx(%s-%d): c2 done", conn_ctx->id, conn_ctx->stream_id);
 
-    ap_assert(conn_ctx->done == 0);
-    conn_ctx->done = 1;
+    AP_DEBUG_ASSERT(apr_atomic_read32(&conn_ctx->done) == 0);
+    apr_atomic_set32(&conn_ctx->done, 1);
     conn_ctx->done_at = apr_time_now();
     ++c2->keepalives;
     /* From here on, the final handling of c2 is done by c1 processing.

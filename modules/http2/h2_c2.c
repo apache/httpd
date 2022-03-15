@@ -233,6 +233,21 @@ void h2_c2_destroy(conn_rec *c2)
     apr_pool_destroy(c2->pool);
 }
 
+void h2_c2_abort(conn_rec *c2, conn_rec *from)
+{
+    h2_conn_ctx_t *conn_ctx = h2_conn_ctx_get(c2);
+
+    AP_DEBUG_ASSERT(conn_ctx);
+    AP_DEBUG_ASSERT(conn_ctx->stream_id);
+    if (conn_ctx->beam_in) {
+        h2_beam_abort(conn_ctx->beam_in, from);
+    }
+    if (conn_ctx->beam_out) {
+        h2_beam_abort(conn_ctx->beam_out, from);
+    }
+    c2->aborted = 1;
+}
+
 typedef struct {
     apr_bucket_brigade *bb;       /* c2: data in holding area */
 } h2_c2_fctx_in_t;
@@ -458,10 +473,7 @@ static apr_status_t h2_c2_filter_out(ap_filter_t* f, apr_bucket_brigade* bb)
                   "h2_c2(%s-%d): output leave",
                   conn_ctx->id, conn_ctx->stream_id);
     if (APR_SUCCESS != rv) {
-        if (!conn_ctx->done) {
-            h2_beam_abort(conn_ctx->beam_out, f->c);
-        }
-        f->c->aborted = 1;
+        h2_c2_abort(f->c, f->c);
     }
     return rv;
 }
