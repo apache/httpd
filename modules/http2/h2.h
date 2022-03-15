@@ -59,7 +59,7 @@ struct h2_stream;
  * are used for many consecutive requests where
  * pollsets stay unchanged much longer.
  */
-#define H2_NO_POLL_STREAMS        1
+/*#define H2_NO_POLL_STREAMS        1*/
 #ifdef H2_NO_POLL_STREAMS
 #define H2_POLL_STREAMS           0
 #else

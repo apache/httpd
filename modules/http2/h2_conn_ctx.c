@@ -111,22 +111,8 @@ void h2_conn_ctx_clear_for_c2(conn_rec *c2)
         conn_ctx->req_pool = NULL;
         conn_ctx->beam_out = NULL;
     }
-    memset(&conn_ctx->pfd_in_drain, 0, sizeof(conn_ctx->pfd_in_drain));
     memset(&conn_ctx->pfd_out_prod, 0, sizeof(conn_ctx->pfd_out_prod));
     conn_ctx->beam_in = NULL;
-}
-
-void h2_conn_ctx_destroy(conn_rec *c)
-{
-    h2_conn_ctx_t *conn_ctx = h2_conn_ctx_get(c);
-
-    if (conn_ctx) {
-        if (conn_ctx->mplx_pool) {
-            apr_pool_destroy(conn_ctx->mplx_pool);
-            conn_ctx->mplx_pool = NULL;
-        }
-        ap_set_module_config(c->conn_config, &http2_module, NULL);
-    }
 }
 
 void h2_conn_ctx_set_timeout(h2_conn_ctx_t *conn_ctx, apr_interval_time_t timeout)

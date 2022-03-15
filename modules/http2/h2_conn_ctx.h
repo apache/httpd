@@ -48,12 +48,9 @@ struct h2_conn_ctx_t {
     struct h2_bucket_beam *beam_out; /* c2: data out, created from req_pool */
     struct h2_bucket_beam *beam_in;  /* c2: data in or NULL, borrowed from request stream */
 
-    apr_pool_t *mplx_pool;           /* c2: an mplx child pool for safe use inside mplx lock */
     apr_file_t *pipe_in_prod[2];     /* c2: input produced notification pipe */
-    apr_file_t *pipe_in_drain[2];    /* c2: input drained notification pipe */
     apr_file_t *pipe_out_prod[2];    /* c2: output produced notification pipe */
 
-    apr_pollfd_t pfd_in_drain;       /* c2: poll pipe_in_drain output */
     apr_pollfd_t pfd_out_prod;       /* c2: poll pipe_out_prod output */
 
     int has_final_response;          /* final HTTP response passed on out */
@@ -89,8 +86,6 @@ apr_status_t h2_conn_ctx_init_for_c2(h2_conn_ctx_t **pctx, conn_rec *c,
 void h2_conn_ctx_clear_for_c2(conn_rec *c2);
 
 void h2_conn_ctx_detach(conn_rec *c);
-
-void h2_conn_ctx_destroy(conn_rec *c);
 
 void h2_conn_ctx_set_timeout(h2_conn_ctx_t *conn_ctx, apr_interval_time_t timeout);
 

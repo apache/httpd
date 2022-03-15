@@ -83,11 +83,10 @@ struct h2_mplx {
     apr_array_header_t *streams_ev_in;
     apr_array_header_t *streams_ev_out;
 
-#if !H2_POLL_STREAMS
-    apr_thread_mutex_t *poll_lock; /* not the painter */
+    apr_thread_mutex_t *poll_lock; /* protect modifications of queues below */
     struct h2_iqueue *streams_input_read;  /* streams whose input has been read from */
     struct h2_iqueue *streams_output_written; /* streams whose output has been written to */
-#endif
+
     struct h2_workers *workers;     /* h2 workers process wide instance */
 
     request_rec *scratch_r;         /* pseudo request_rec for scoreboard reporting */
