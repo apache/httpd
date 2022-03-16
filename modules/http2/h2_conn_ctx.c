@@ -68,7 +68,8 @@ h2_conn_ctx_t *h2_conn_ctx_create_for_c1(conn_rec *c1, server_rec *s, const char
 }
 
 apr_status_t h2_conn_ctx_init_for_c2(h2_conn_ctx_t **pctx, conn_rec *c2,
-                                     struct h2_mplx *mplx, struct h2_stream *stream)
+                                     struct h2_mplx *mplx, struct h2_stream *stream,
+                                     struct h2_c2_transit *transit)
 {
     h2_conn_ctx_t *conn_ctx;
     apr_status_t rv = APR_SUCCESS;
@@ -87,6 +88,7 @@ apr_status_t h2_conn_ctx_init_for_c2(h2_conn_ctx_t **pctx, conn_rec *c2,
     }
 
     conn_ctx->mplx = mplx;
+    conn_ctx->transit = transit;
     conn_ctx->stream_id = stream->id;
     apr_pool_create(&conn_ctx->req_pool, c2->pool);
     apr_pool_tag(conn_ctx->req_pool, "H2_C2_REQ");
@@ -98,24 +100,6 @@ apr_status_t h2_conn_ctx_init_for_c2(h2_conn_ctx_t **pctx, conn_rec *c2,
 
     *pctx = conn_ctx;
     return rv;
-}
-
-void h2_conn_ctx_clear_for_c2(conn_rec *c2)
-{
-    h2_conn_ctx_t *conn_ctx;
-
-    ap_assert(c2->master);
-    conn_ctx = h2_conn_ctx_get(c2);
-    conn_ctx->stream_id = -1;
-    conn_ctx->request = NULL;
-
-    if (conn_ctx->req_pool) {
-        apr_pool_destroy(conn_ctx->req_pool);
-        conn_ctx->req_pool = NULL;
-        conn_ctx->beam_out = NULL;
-    }
-    memset(&conn_ctx->pfd_out_prod, 0, sizeof(conn_ctx->pfd_out_prod));
-    conn_ctx->beam_in = NULL;
 }
 
 void h2_conn_ctx_set_timeout(h2_conn_ctx_t *conn_ctx, apr_interval_time_t timeout)

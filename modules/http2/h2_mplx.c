@@ -26,6 +26,7 @@
 
 #include <httpd.h>
 #include <http_core.h>
+#include <http_connection.h>
 #include <http_log.h>
 
 #include <mpm_common.h>
@@ -68,6 +69,13 @@ static apr_status_t mplx_pollset_poll(h2_mplx *m, apr_interval_time_t timeout,
                             void *on_ctx);
 
 static apr_pool_t *pchild;
+
+/* APR callback invoked if allocation fails. */
+static int abort_on_oom(int retcode)
+{
+    ap_abort_on_oom();
+    return retcode; /* unreachable, hopefully. */
+}
 
 apr_status_t h2_mplx_c1_child_init(apr_pool_t *pool, server_rec *s)
 {
@@ -168,6 +176,63 @@ static void m_stream_cleanup(h2_mplx *m, h2_stream *stream)
     }
 }
 
+static h2_c2_transit *c2_transit_create(h2_mplx *m)
+{
+    apr_allocator_t *allocator;
+    apr_pool_t *ptrans;
+    h2_c2_transit *transit;
+    apr_status_t rv;
+
+    /* We create a pool with its own allocator to be used for
+     * processing a request. This is the only way to have the processing
+     * independent of its parent pool in the sense that it can work in
+     * another thread.
+     */
+
+    apr_allocator_create(&allocator);
+    apr_allocator_max_free_set(allocator, ap_max_mem_free);
+    rv = apr_pool_create_ex(&ptrans, m->pool, NULL, allocator);
+    if (rv != APR_SUCCESS) {
+        ap_log_cerror(APLOG_MARK, APLOG_ERR, rv, m->c1,
+                      APLOGNO(10004) "h2_mplx: create transit pool");
+        apr_allocator_destroy(allocator);
+        return NULL;
+    }
+
+    apr_allocator_owner_set(allocator, ptrans);
+    apr_pool_abort_set(abort_on_oom, ptrans);
+    apr_pool_tag(ptrans, "h2_c2_transit");
+
+    transit = apr_pcalloc(ptrans, sizeof(*transit));
+    transit->pool = ptrans;
+    transit->bucket_alloc = apr_bucket_alloc_create(ptrans);
+    return transit;
+}
+
+static void c2_transit_destroy(h2_c2_transit *transit)
+{
+    apr_pool_destroy(transit->pool);
+}
+
+static h2_c2_transit *c2_transit_get(h2_mplx *m)
+{
+    h2_c2_transit **ptransit = apr_array_pop(m->c2_transits);
+    if (ptransit) {
+        return *ptransit;
+    }
+    return c2_transit_create(m);
+}
+
+static void c2_transit_recycle(h2_mplx *m, h2_c2_transit *transit)
+{
+    if (m->c2_transits->nelts >= m->max_spare_transits) {
+        c2_transit_destroy(transit);
+    }
+    else {
+        APR_ARRAY_PUSH(m->c2_transits, h2_c2_transit*) = transit;
+    }
+}
+
 /**
  * A h2_mplx needs to be thread-safe *and* if will be called by
  * the h2_session thread *and* the h2_worker threads. Therefore:
@@ -261,6 +326,8 @@ h2_mplx *h2_mplx_c1_create(h2_stream *stream0, server_rec *s, apr_pool_t *parent
     mplx_pollset_add(m, conn_ctx);
 
     m->scratch_r = apr_pcalloc(m->pool, sizeof(*m->scratch_r));
+    m->max_spare_transits = 3;
+    m->c2_transits = apr_array_make(m->pool, m->max_spare_transits, sizeof(h2_c2_transit*));
 
     return m;
 
@@ -492,6 +559,10 @@ static void c1_purge_streams(h2_mplx *m)
             }
 
             h2_c2_destroy(c2);
+            if (c2_ctx->transit) {
+                c2_transit_recycle(m, c2_ctx->transit);
+                c2_ctx->transit = NULL;
+            }
         }
         h2_stream_destroy(stream);
     }
@@ -717,13 +788,13 @@ static void c2_beam_output_write_notify(void *ctx, h2_bucket_beam *beam)
     }
 }
 
-static apr_status_t c2_setup_io(h2_mplx *m, conn_rec *c2, h2_stream *stream)
+static apr_status_t c2_setup_io(h2_mplx *m, conn_rec *c2, h2_stream *stream, h2_c2_transit *transit)
 {
     h2_conn_ctx_t *conn_ctx;
     apr_status_t rv = APR_SUCCESS;
     const char *action = "init";
 
-    rv = h2_conn_ctx_init_for_c2(&conn_ctx, c2, m, stream);
+    rv = h2_conn_ctx_init_for_c2(&conn_ctx, c2, m, stream, transit);
     if (APR_SUCCESS != rv) goto cleanup;
 
     if (!conn_ctx->beam_out) {
@@ -785,9 +856,10 @@ cleanup:
 static conn_rec *s_next_c2(h2_mplx *m)
 {
     h2_stream *stream = NULL;
-    apr_status_t rv;
+    apr_status_t rv = APR_SUCCESS;
     int sid;
-    conn_rec *c2;
+    conn_rec *c2 = NULL;
+    h2_c2_transit *transit = NULL;
 
     while (!m->aborted && !stream && (m->processing_count < m->processing_limit)
            && (sid = h2_iq_shift(m->q)) > 0) {
@@ -801,27 +873,36 @@ static conn_rec *s_next_c2(h2_mplx *m)
                           "Current limit is %d and %d workers are in use.",
                           m->id, m->processing_limit, m->processing_count);
         }
-        return NULL;
+        goto cleanup;
     }
 
     if (sid > m->max_stream_id_started) {
         m->max_stream_id_started = sid;
     }
 
-    c2 = h2_c2_create(m->c1, m->pool);
+    transit = c2_transit_get(m);
+    if (!transit) goto cleanup;
+
+    c2 = ap_create_secondary_connection(transit->pool, m->c1, transit->bucket_alloc);
     ap_log_cerror(APLOG_MARK, APLOG_TRACE3, 0, m->c1,
                   H2_STRM_MSG(stream, "created new c2"));
 
-    rv = c2_setup_io(m, c2, stream);
-    if (APR_SUCCESS != rv) {
-        return NULL;
-    }
+    rv = c2_setup_io(m, c2, stream, transit);
+    if (APR_SUCCESS != rv) goto cleanup;
 
     stream->c2 = c2;
     ++m->processing_count;
     APR_ARRAY_PUSH(m->streams_to_poll, h2_stream *) = stream;
     apr_pollset_wakeup(m->pollset);
 
+cleanup:
+    if (APR_SUCCESS != rv && c2) {
+        h2_c2_destroy(c2);
+        c2 = NULL;
+    }
+    if (transit && !c2) {
+        c2_transit_recycle(m, transit);
+    }
     return c2;
 }
 

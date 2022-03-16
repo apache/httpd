@@ -44,6 +44,13 @@ struct h2_iqueue;
 
 #include <apr_queue.h>
 
+typedef struct h2_c2_transit h2_c2_transit;
+
+struct h2_c2_transit {
+    apr_pool_t *pool;
+    apr_bucket_alloc_t *bucket_alloc;
+};
+
 typedef struct h2_mplx h2_mplx;
 
 struct h2_mplx {
@@ -90,6 +97,9 @@ struct h2_mplx {
     struct h2_workers *workers;     /* h2 workers process wide instance */
 
     request_rec *scratch_r;         /* pseudo request_rec for scoreboard reporting */
+
+    apr_size_t max_spare_transits;   /* max number of transit pools idling */
+    apr_array_header_t *c2_transits; /* base pools for running c2 connections */
 };
 
 apr_status_t h2_mplx_c1_child_init(apr_pool_t *pool, server_rec *s);

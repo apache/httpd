@@ -41,7 +41,6 @@ int h2_mpm_supported(void);
  */
 apr_status_t h2_c2_child_init(apr_pool_t *pool, server_rec *s);
 
-conn_rec *h2_c2_create(conn_rec *c1, apr_pool_t *parent);
 void h2_c2_destroy(conn_rec *c2);
 
 /**

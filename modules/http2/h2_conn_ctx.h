@@ -22,6 +22,7 @@ struct h2_stream;
 struct h2_mplx;
 struct h2_bucket_beam;
 struct h2_response_parser;
+struct h2_c2_transit;
 
 #define H2_PIPE_OUT     0
 #define H2_PIPE_IN      1
@@ -40,6 +41,7 @@ struct h2_conn_ctx_t {
     const char *protocol;           /* c1: the protocol negotiated */
     struct h2_session *session;     /* c1: the h2 session established */
     struct h2_mplx *mplx;           /* c2: the multiplexer */
+    struct h2_c2_transit *transit;  /* c2: transit pool and bucket_alloc */
 
     int pre_conn_done;               /* has pre_connection setup run? */
     int stream_id;                  /* c1: 0, c2: stream id processed */
@@ -81,9 +83,8 @@ typedef struct h2_conn_ctx_t h2_conn_ctx_t;
 h2_conn_ctx_t *h2_conn_ctx_create_for_c1(conn_rec *c, server_rec *s, const char *protocol);
 
 apr_status_t h2_conn_ctx_init_for_c2(h2_conn_ctx_t **pctx, conn_rec *c,
-                                     struct h2_mplx *mplx, struct h2_stream *stream);
-
-void h2_conn_ctx_clear_for_c2(conn_rec *c2);
+                                     struct h2_mplx *mplx, struct h2_stream *stream,
+                                     struct h2_c2_transit *transit);
 
 void h2_conn_ctx_detach(conn_rec *c);
 
