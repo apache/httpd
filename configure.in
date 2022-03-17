@@ -1108,4 +1108,5 @@ AC_MSG_NOTICE([summary of build options:
     LDFLAGS:        ${APACHE_CONF_SEL_LDFLAGS}
     LIBS:           ${APACHE_CONF_SEL_LIBS}
     C preprocessor: ${APACHE_CONF_SEL_CPP}
+    Unit Tests:     ${UNITTEST_LIBS:-not enabled}
 ])

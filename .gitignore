@@ -357,6 +357,7 @@ Release
 /test/sni
 /test/httpdunit
 /test/httpdunit.cases
+/check/
 
 # /test/unit/
 /test/unit/*.tests

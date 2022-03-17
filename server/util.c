@@ -2615,7 +2615,7 @@ AP_DECLARE(void) ap_content_type_tolower(char *str)
  */
 AP_DECLARE(char *) ap_escape_quotes(apr_pool_t *p, const char *instring)
 {
-    int newlen = 0;
+    apr_ssize_t extra = 0;
     const char *inchr = instring;
     char *outchr, *outstring;
 
@@ -2624,9 +2624,8 @@ AP_DECLARE(char *) ap_escape_quotes(apr_pool_t *p, const char *instring)
      * string up by an extra byte each time we find an unescaped ".
      */
     while (*inchr != '\0') {
-        newlen++;
         if (*inchr == '"') {
-            newlen++;
+            extra++;
         }
         /*
          * If we find a slosh, and it's not the last byte in the string,
@@ -2634,11 +2633,15 @@ AP_DECLARE(char *) ap_escape_quotes(apr_pool_t *p, const char *instring)
          */
         else if ((*inchr == '\\') && (inchr[1] != '\0')) {
             inchr++;
-            newlen++;
         }
         inchr++;
     }
-    outstring = apr_palloc(p, newlen + 1);
+
+    if (!extra) {
+        return apr_pstrdup(p, instring);
+    }
+
+    outstring = apr_palloc(p, (inchr - instring) + extra + 1);
     inchr = instring;
     outchr = outstring;
     /*
