@@ -40,7 +40,7 @@ struct h2_slot {
     apr_thread_t *thread;
     apr_thread_mutex_t *lock;
     apr_thread_cond_t *not_idle;
-    apr_uint32_t timed_out;
+    /* atomic */ apr_uint32_t timed_out;
 };
 
 static h2_slot *pop_slot(h2_slot *volatile *phead) 
@@ -125,21 +125,22 @@ static apr_status_t add_worker(h2_workers *workers)
 
 static void wake_idle_worker(h2_workers *workers) 
 {
-    h2_slot *slot = pop_slot(&workers->idle);
-    if (slot) {
-        int timed_out;
-        apr_thread_mutex_lock(slot->lock);
-        if ((timed_out = apr_atomic_read32(&slot->timed_out)) == 0) {
+    h2_slot *slot;;
+    for (;;) {
+        slot = pop_slot(&workers->idle);
+        if (!slot) {
+            if (workers->dynamic && apr_atomic_read32(&workers->shutdown) == 0) {
+                add_worker(workers);
+            }
+            return;
+        }
+        if (!apr_atomic_read32(&slot->timed_out)) {
+            apr_thread_mutex_lock(slot->lock);
             apr_thread_cond_signal(slot->not_idle);
+            apr_thread_mutex_unlock(slot->lock);
+            return;
         }
-        apr_thread_mutex_unlock(slot->lock);
-        if (timed_out) {
-            slot_done(slot);
-            wake_idle_worker(workers);
-        }
-    }
-    else if (workers->dynamic && apr_atomic_read32(&workers->shutdown) == 0) {
-        add_worker(workers);
+        slot_done(slot);
     }
 }
 

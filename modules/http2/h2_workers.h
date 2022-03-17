@@ -39,10 +39,10 @@ struct h2_workers {
     int next_worker_id;
     apr_uint32_t max_workers;
     apr_uint32_t min_workers;
-    apr_uint32_t worker_count;
-    apr_uint32_t max_idle_secs;
-    apr_uint32_t aborted;
-    apr_uint32_t shutdown;
+    /* atomic */ apr_uint32_t worker_count;
+    /* atomic */ apr_uint32_t max_idle_secs;
+    /* atomic */ apr_uint32_t aborted;
+    /* atomic */ apr_uint32_t shutdown;
     int dynamic;
 
     apr_threadattr_t *thread_attr;

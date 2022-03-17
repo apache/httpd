@@ -58,9 +58,9 @@ struct h2_conn_ctx_t {
     int has_final_response;          /* final HTTP response passed on out */
     apr_status_t last_err;           /* APR_SUCCES or last error encountered in filters */
 
-    apr_uint32_t started;            /* c2: processing was started */
+    /* atomic */ apr_uint32_t started; /* c2: processing was started */
     apr_time_t started_at;           /* c2: when processing started */
-    apr_uint32_t done;               /* c2: processing has finished */
+    /* atomic */ apr_uint32_t done;  /* c2: processing has finished */
     apr_time_t done_at;              /* c2: when processing was done */
 };
 typedef struct h2_conn_ctx_t h2_conn_ctx_t;

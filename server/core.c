@@ -5525,7 +5525,7 @@ static conn_rec *core_create_secondary_conn(apr_pool_t *ptrans,
 {
     apr_pool_t *pool;
     conn_config_t *conn_config;
-    conn_rec *c = (conn_rec *) apr_pcalloc(ptrans, sizeof(conn_rec));
+    conn_rec *c = (conn_rec *) apr_pmemdup(ptrans, master, sizeof(*c));
 
     /* Got a connection structure, so initialize what fields we can
      * (the rest are zeroed out by pcalloc).
@@ -5533,8 +5533,7 @@ static conn_rec *core_create_secondary_conn(apr_pool_t *ptrans,
     apr_pool_create(&pool, ptrans);
     apr_pool_tag(pool, "secondary_conn");
 
-    /* first copy everything, then replace what is needed */
-    memcpy(c, master, sizeof(*c));
+    /* we copied everything, now replace what is different */
     c->master = master;
     c->pool = pool;
     c->bucket_alloc = alloc;
