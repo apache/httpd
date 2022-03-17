@@ -189,14 +189,17 @@ static h2_c2_transit *c2_transit_create(h2_mplx *m)
      * another thread.
      */
 
-    apr_allocator_create(&allocator);
-    apr_allocator_max_free_set(allocator, ap_max_mem_free);
-    rv = apr_pool_create_ex(&ptrans, m->pool, NULL, allocator);
+    rv = apr_allocator_create(&allocator);
+    if (rv == APR_SUCCESS) {
+        apr_allocator_max_free_set(allocator, ap_max_mem_free);
+        rv = apr_pool_create_ex(&ptrans, m->pool, NULL, allocator);
+    }
     if (rv != APR_SUCCESS) {
+        /* maybe the log goes through, maybe not. */
         ap_log_cerror(APLOG_MARK, APLOG_ERR, rv, m->c1,
                       APLOGNO(10004) "h2_mplx: create transit pool");
-        apr_allocator_destroy(allocator);
-        return NULL;
+        ap_abort_on_oom();
+        return NULL; /* should never be reached. */
     }
 
     apr_allocator_owner_set(allocator, ptrans);
@@ -881,9 +884,8 @@ static conn_rec *s_next_c2(h2_mplx *m)
     }
 
     transit = c2_transit_get(m);
-    if (!transit) goto cleanup;
-
     c2 = ap_create_secondary_connection(transit->pool, m->c1, transit->bucket_alloc);
+    if (!c2) goto cleanup;
     ap_log_cerror(APLOG_MARK, APLOG_TRACE3, 0, m->c1,
                   H2_STRM_MSG(stream, "created new c2"));
 
@@ -999,16 +1001,18 @@ static void s_c2_done(h2_mplx *m, conn_rec *c2, h2_conn_ctx_t *conn_ctx)
 void h2_mplx_worker_c2_done(conn_rec *c2, conn_rec **out_c2)
 {
     h2_conn_ctx_t *conn_ctx = h2_conn_ctx_get(c2);
-    h2_mplx *m;
+    h2_mplx *m = conn_ctx? conn_ctx->mplx : NULL;
 
-    if (!conn_ctx || !conn_ctx->mplx) return;
-    m = conn_ctx->mplx;
+    if (!m) {
+        if (out_c2) *out_c2 = NULL;
+        return;
+    }
 
     H2_MPLX_ENTER_ALWAYS(m);
 
     --m->processing_count;
     s_c2_done(m, c2, conn_ctx);
-    
+
     if (m->join_wait) {
         apr_thread_cond_signal(m->join_wait);
     }
