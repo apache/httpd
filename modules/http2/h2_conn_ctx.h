@@ -50,10 +50,8 @@ struct h2_conn_ctx_t {
     struct h2_bucket_beam *beam_out; /* c2: data out, created from req_pool */
     struct h2_bucket_beam *beam_in;  /* c2: data in or NULL, borrowed from request stream */
 
-    apr_file_t *pipe_in_prod[2];     /* c2: input produced notification pipe */
-    apr_file_t *pipe_out_prod[2];    /* c2: output produced notification pipe */
-
-    apr_pollfd_t pfd_out_prod;       /* c2: poll pipe_out_prod output */
+    apr_file_t *pipe_in[2];          /* c2: input produced notification pipe */
+    apr_pollfd_t pfd;                /* c1: poll socket input, c2: NUL */
 
     int has_final_response;          /* final HTTP response passed on out */
     apr_status_t last_err;           /* APR_SUCCES or last error encountered in filters */
