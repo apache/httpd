@@ -25,7 +25,7 @@ class TestLoadCgi:
         assert 0 == r.results["h2load"]["status"]["5xx"]
     
     # test POST on cgi, where input is read
-    def test_h2_711_10(self, env):
+    def test_h2_711_10(self, env, repeat):
         url = env.mkurl("https", "test1", "/echo.py")
         n = 100
         m = 5
@@ -40,7 +40,7 @@ class TestLoadCgi:
         self.check_h2load_ok(env, r, n)
 
     # test POST on cgi via http/1.1 proxy, where input is read
-    def test_h2_711_11(self, env):
+    def test_h2_711_11(self, env, repeat):
         url = env.mkurl("https", "test1", "/proxy/echo.py")
         n = 100
         m = 5
@@ -55,7 +55,7 @@ class TestLoadCgi:
         self.check_h2load_ok(env, r, n)
 
     # test POST on cgi via h2proxy, where input is read
-    def test_h2_711_12(self, env):
+    def test_h2_711_12(self, env, repeat):
         url = env.mkurl("https", "test1", "/h2proxy/echo.py")
         n = 100
         m = 5

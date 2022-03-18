@@ -151,6 +151,20 @@ AP_DECLARE_HOOK(int,pre_close_connection,(conn_rec *c))
 AP_DECLARE(int) ap_pre_connection(conn_rec *c, void *csd);
 
 /**
+ * create_secondary_connection is a RUN_FIRST hook which allows modules to create
+ * secondary connections. In general, you should not install filters with the
+ * create_secondary_connection hook. This hook should close the connection
+ * if it encounters a fatal error condition.
+ *
+ * @param p The pool for the secondary connection
+ * @param master The master connection this belongs to.
+ * @param alloc The bucket allocator to use for all bucket/brigade creations
+ * @return An allocated connection record or NULL.
+ */
+AP_DECLARE_HOOK(conn_rec *, create_secondary_connection,
+                (apr_pool_t *p, conn_rec *master, apr_bucket_alloc_t *alloc))
+
+/**
  * Create a new server/incoming or client/outgoing/proxy connection
  * @param p The pool from which to allocate the connection record
  * @param server The server record to create the connection too.
@@ -170,6 +184,17 @@ AP_DECLARE(conn_rec *) ap_create_connection(apr_pool_t *p,
                                             long conn_id, void *sbh,
                                             apr_bucket_alloc_t *alloc,
                                             unsigned int outgoing);
+
+/**
+ * Create a new secondary connection based on a master one.
+ * @param pool  The pool for the secondary connection
+ * @param master The master connection this belongs to.
+ * @param alloc The bucket allocator to use for all bucket/brigade creations
+ * @return An allocated connection record or NULL.
+ */
+AP_DECLARE(conn_rec *) ap_create_secondary_connection(apr_pool_t *pool,
+                                                      conn_rec *master,
+                                                      apr_bucket_alloc_t *alloc);
 
 
 /** End Of Connection (EOC) bucket */

@@ -41,8 +41,15 @@ int h2_mpm_supported(void);
  */
 apr_status_t h2_c2_child_init(apr_pool_t *pool, server_rec *s);
 
-conn_rec *h2_c2_create(conn_rec *c1, apr_pool_t *parent);
 void h2_c2_destroy(conn_rec *c2);
+
+/**
+ * Abort the I/O processing of a secondary connection. And
+ * in-/output beams will return errors and c2->aborted is set.
+ * @param c2 the secondary connection to abort
+ * @param from the connection this is invoked from
+ */
+void h2_c2_abort(conn_rec *c2, conn_rec *from);
 
 /**
  * Process a secondary connection for a HTTP/2 stream request.

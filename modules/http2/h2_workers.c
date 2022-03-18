@@ -40,7 +40,7 @@ struct h2_slot {
     apr_thread_t *thread;
     apr_thread_mutex_t *lock;
     apr_thread_cond_t *not_idle;
-    volatile apr_uint32_t timed_out;
+    /* atomic */ apr_uint32_t timed_out;
 };
 
 static h2_slot *pop_slot(h2_slot *volatile *phead) 
@@ -99,7 +99,7 @@ static apr_status_t activate_slot(h2_workers *workers, h2_slot *slot)
     /* thread will either immediately start work or add itself
      * to the idle queue */
     apr_atomic_inc32(&workers->worker_count);
-    slot->timed_out = 0;
+    apr_atomic_set32(&slot->timed_out, 0);
     rv = ap_thread_create(&slot->thread, workers->thread_attr,
                           slot_run, slot, workers->pool);
     if (rv != APR_SUCCESS) {
@@ -125,22 +125,22 @@ static apr_status_t add_worker(h2_workers *workers)
 
 static void wake_idle_worker(h2_workers *workers) 
 {
-    h2_slot *slot = pop_slot(&workers->idle);
-    if (slot) {
-        int timed_out = 0;
-        apr_thread_mutex_lock(slot->lock);
-        timed_out = slot->timed_out;
-        if (!timed_out) {
+    h2_slot *slot;;
+    for (;;) {
+        slot = pop_slot(&workers->idle);
+        if (!slot) {
+            if (workers->dynamic && apr_atomic_read32(&workers->shutdown) == 0) {
+                add_worker(workers);
+            }
+            return;
+        }
+        if (!apr_atomic_read32(&slot->timed_out)) {
+            apr_thread_mutex_lock(slot->lock);
             apr_thread_cond_signal(slot->not_idle);
+            apr_thread_mutex_unlock(slot->lock);
+            return;
         }
-        apr_thread_mutex_unlock(slot->lock);
-        if (timed_out) {
-            slot_done(slot);
-            wake_idle_worker(workers);
-        }
-    }
-    else if (workers->dynamic && !workers->shutdown) {
-        add_worker(workers);
+        slot_done(slot);
     }
 }
 
@@ -190,9 +190,10 @@ static int get_next(h2_slot *slot)
     int non_essential = slot->id >= workers->min_workers;
     apr_status_t rv;
 
-    while (!workers->aborted && !slot->timed_out) {
+    while (apr_atomic_read32(&workers->aborted) == 0
+        && apr_atomic_read32(&slot->timed_out) == 0) {
         ap_assert(slot->connection == NULL);
-        if (non_essential && workers->shutdown) {
+        if (non_essential && apr_atomic_read32(&workers->shutdown)) {
             /* Terminate non-essential worker on shutdown */
             break;
         }
@@ -208,14 +209,16 @@ static int get_next(h2_slot *slot)
         join_zombies(workers);
 
         apr_thread_mutex_lock(slot->lock);
-        if (!workers->aborted) {
+        if (apr_atomic_read32(&workers->aborted) == 0) {
+            apr_uint32_t idle_secs;
 
             push_slot(&workers->idle, slot);
-            if (non_essential && workers->max_idle_duration) {
+            if (non_essential
+                && (idle_secs = apr_atomic_read32(&workers->max_idle_secs))) {
                 rv = apr_thread_cond_timedwait(slot->not_idle, slot->lock,
-                                               workers->max_idle_duration);
+                                               apr_time_from_sec(idle_secs));
                 if (APR_TIMEUP == rv) {
-                    slot->timed_out = 1;
+                    apr_atomic_set32(&slot->timed_out, 1);
                 }
             }
             else {
@@ -237,7 +240,8 @@ static void slot_done(h2_slot *slot)
     /* If this worker is the last one exiting and the MPM child is stopping,
      * unblock workers_pool_cleanup().
      */
-    if (!apr_atomic_dec32(&workers->worker_count) && workers->aborted) {
+    if (!apr_atomic_dec32(&workers->worker_count)
+        && apr_atomic_read32(&workers->aborted)) {
         apr_thread_mutex_lock(workers->lock);
         apr_thread_cond_signal(workers->all_done);
         apr_thread_mutex_unlock(workers->lock);
@@ -254,7 +258,7 @@ static void* APR_THREAD_FUNC slot_run(apr_thread_t *thread, void *wctx)
         do {
             ap_assert(slot->connection != NULL);
             h2_c2_process(slot->connection, thread, slot->id);
-            if (!slot->workers->aborted &&
+            if (apr_atomic_read32(&slot->workers->aborted) == 0 &&
                 apr_atomic_read32(&slot->workers->worker_count) < slot->workers->max_workers) {
                 h2_mplx_worker_c2_done(slot->connection, &slot->connection);
             }
@@ -265,7 +269,7 @@ static void* APR_THREAD_FUNC slot_run(apr_thread_t *thread, void *wctx)
         } while (slot->connection);
     }
 
-    if (!slot->timed_out) {
+    if (apr_atomic_read32(&slot->timed_out) == 0) {
         slot_done(slot);
     }
 
@@ -294,8 +298,8 @@ static void workers_abort_idle(h2_workers *workers)
 {
     h2_slot *slot;
 
-    workers->shutdown = 1;
-    workers->aborted = 1;
+    apr_atomic_set32(&workers->shutdown, 1);
+    apr_atomic_set32(&workers->aborted, 1);
     h2_fifo_term(workers->mplxs);
 
     /* abort all idle slots */
@@ -379,12 +383,12 @@ h2_workers *h2_workers_create(server_rec *s, apr_pool_t *pchild,
     workers->pool = pool;
     workers->min_workers = min_workers;
     workers->max_workers = max_workers;
-    workers->max_idle_duration = apr_time_from_sec((idle_secs > 0)? idle_secs : 10);
+    workers->max_idle_secs = (idle_secs > 0)? idle_secs : 10;
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, workers->s,
                  "h2_workers: created with min=%d max=%d idle_timeout=%d sec",
                  workers->min_workers, workers->max_workers,
-                 (int)apr_time_sec(workers->max_idle_duration));
+                 (int)workers->max_idle_secs);
     /* FIXME: the fifo set we use here has limited capacity. Once the
      * set is full, connections with new requests do a wait.
      */
@@ -460,7 +464,7 @@ apr_status_t h2_workers_unregister(h2_workers *workers, struct h2_mplx *m)
 
 void h2_workers_graceful_shutdown(h2_workers *workers)
 {
-    workers->shutdown = 1;
-    workers->max_idle_duration = apr_time_from_sec(1);
+    apr_atomic_set32(&workers->shutdown, 1);
+    apr_atomic_set32(&workers->max_idle_secs, 1);
     wake_non_essential_workers(workers);
 }
