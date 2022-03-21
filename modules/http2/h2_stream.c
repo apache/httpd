@@ -577,16 +577,9 @@ void h2_stream_destroy(h2_stream *stream)
 
 void h2_stream_rst(h2_stream *stream, int error_code)
 {
-    h2_conn_ctx_t *c2_ctx = h2_conn_ctx_get(stream->c2);
-
     stream->rst_error = error_code;
-    if (c2_ctx) {
-        if (c2_ctx->beam_in) {
-            h2_beam_abort(c2_ctx->beam_in, stream->session->c1);
-        }
-        if (c2_ctx->beam_out) {
-            h2_beam_abort(c2_ctx->beam_out, stream->session->c1);
-        }
+    if (stream->c2) {
+        h2_c2_abort(stream->c2, stream->session->c1);
     }
     ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, stream->session->c1,
                   H2_STRM_MSG(stream, "reset, error=%d"), error_code);

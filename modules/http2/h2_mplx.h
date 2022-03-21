@@ -44,6 +44,13 @@ struct h2_iqueue;
 
 #include <apr_queue.h>
 
+typedef struct h2_c2_transit h2_c2_transit;
+
+struct h2_c2_transit {
+    apr_pool_t *pool;
+    apr_bucket_alloc_t *bucket_alloc;
+};
+
 typedef struct h2_mplx h2_mplx;
 
 struct h2_mplx {
@@ -79,18 +86,19 @@ struct h2_mplx {
     struct apr_thread_cond_t *join_wait;
     
     apr_pollset_t *pollset;         /* pollset for c1/c2 IO events */
-    apr_array_header_t *streams_to_poll; /* streams to add to the pollset */
     apr_array_header_t *streams_ev_in;
     apr_array_header_t *streams_ev_out;
 
-#if !H2_POLL_STREAMS
-    apr_thread_mutex_t *poll_lock; /* not the painter */
+    apr_thread_mutex_t *poll_lock; /* protect modifications of queues below */
     struct h2_iqueue *streams_input_read;  /* streams whose input has been read from */
     struct h2_iqueue *streams_output_written; /* streams whose output has been written to */
-#endif
+
     struct h2_workers *workers;     /* h2 workers process wide instance */
 
     request_rec *scratch_r;         /* pseudo request_rec for scoreboard reporting */
+
+    apr_size_t max_spare_transits;   /* max number of transit pools idling */
+    apr_array_header_t *c2_transits; /* base pools for running c2 connections */
 };
 
 apr_status_t h2_mplx_c1_child_init(apr_pool_t *pool, server_rec *s);

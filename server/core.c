@@ -147,6 +147,8 @@ typedef struct {
     struct ap_logconf log;
 } conn_log_config;
 
+static apr_socket_t *dummy_socket;
+
 static void *create_core_dir_config(apr_pool_t *a, char *dir)
 {
     core_dir_config *conf;
@@ -5517,6 +5519,54 @@ static conn_rec *core_create_conn(apr_pool_t *ptrans, server_rec *s,
     return c;
 }
 
+static conn_rec *core_create_secondary_conn(apr_pool_t *ptrans,
+                                            conn_rec *master,
+                                            apr_bucket_alloc_t *alloc)
+{
+    apr_pool_t *pool;
+    conn_config_t *conn_config;
+    conn_rec *c = (conn_rec *) apr_pmemdup(ptrans, master, sizeof(*c));
+
+    /* Got a connection structure, so initialize what fields we can
+     * (the rest are zeroed out by pcalloc).
+     */
+    apr_pool_create(&pool, ptrans);
+    apr_pool_tag(pool, "secondary_conn");
+
+    /* we copied everything, now replace what is different */
+    c->master = master;
+    c->pool = pool;
+    c->bucket_alloc = alloc;
+    c->conn_config = ap_create_conn_config(pool);
+    c->notes = apr_table_make(pool, 5);
+    c->slaves = apr_array_make(pool, 20, sizeof(conn_slave_rec *));
+    c->requests = apr_array_make(pool, 20, sizeof(request_rec *));
+    c->input_filters = NULL;
+    c->output_filters = NULL;
+    c->filter_conn_ctx = NULL;
+
+    /* prevent mpm_event from making wrong assumptions about this connection,
+     * like e.g. using its socket for an async read check. */
+    c->clogging_input_filters = 1;
+
+    c->log = NULL;
+    c->aborted = 0;
+    c->keepalives = 0;
+
+    /* FIXME: mpms (and maybe other) parts think that there is always
+     * a socket for a connection. We cannot use the master socket for
+     * secondary connections, as this gets modified (closed?) when
+     * the secondary connection terminates.
+     * There seem to be some checks for c->master necessary in other
+     * places.
+     */
+    conn_config = apr_pcalloc(pool, sizeof(*conn_config));
+    conn_config->socket = dummy_socket;
+    ap_set_core_module_config(c->conn_config, conn_config);
+
+    return c;
+}
+
 static int core_pre_connection(conn_rec *c, void *csd)
 {
     conn_config_t *conn_config;
@@ -5670,6 +5720,11 @@ static void core_child_init(apr_pool_t *pchild, server_rec *s)
      */
     proc.pid = getpid();
     apr_random_after_fork(&proc);
+
+    /* needed for secondary connections so people do not change the master
+     * connection socket. */
+    apr_socket_create(&dummy_socket, APR_INET, SOCK_STREAM,
+                      APR_PROTO_TCP, pchild);
 }
 
 static void core_optional_fn_retrieve(void)
@@ -5905,6 +5960,8 @@ static void register_hooks(apr_pool_t *p)
      */
     ap_hook_create_connection(core_create_conn, NULL, NULL,
                               APR_HOOK_REALLY_LAST);
+    ap_hook_create_secondary_connection(core_create_secondary_conn, NULL, NULL,
+                                        APR_HOOK_REALLY_LAST);
     ap_hook_pre_connection(core_pre_connection, NULL, NULL,
                            APR_HOOK_REALLY_LAST);
 

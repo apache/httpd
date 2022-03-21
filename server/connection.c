@@ -35,6 +35,7 @@ APR_HOOK_STRUCT(
             APR_HOOK_LINK(process_connection)
             APR_HOOK_LINK(pre_connection)
             APR_HOOK_LINK(pre_close_connection)
+            APR_HOOK_LINK(create_secondary_connection)
 )
 AP_IMPLEMENT_HOOK_RUN_FIRST(conn_rec *,create_connection,
                             (apr_pool_t *p, server_rec *server, apr_socket_t *csd, long conn_id, void *sbh, apr_bucket_alloc_t *alloc),
@@ -42,6 +43,9 @@ AP_IMPLEMENT_HOOK_RUN_FIRST(conn_rec *,create_connection,
 AP_IMPLEMENT_HOOK_RUN_FIRST(int,process_connection,(conn_rec *c),(c),DECLINED)
 AP_IMPLEMENT_HOOK_RUN_ALL(int,pre_connection,(conn_rec *c, void *csd),(c, csd),OK,DECLINED)
 AP_IMPLEMENT_HOOK_RUN_ALL(int,pre_close_connection,(conn_rec *c),(c),OK,DECLINED)
+AP_IMPLEMENT_HOOK_RUN_FIRST(conn_rec *,create_secondary_connection,
+                            (apr_pool_t *p, conn_rec *master, apr_bucket_alloc_t *alloc),
+                            (p, master, alloc), NULL)
 
 AP_DECLARE(conn_rec *) ap_create_connection(apr_pool_t *p,
                                             server_rec *server,
@@ -64,6 +68,13 @@ AP_DECLARE(conn_rec *) ap_create_connection(apr_pool_t *p,
     }
 
     return c;
+}
+
+AP_DECLARE(conn_rec *) ap_create_secondary_connection(apr_pool_t *p,
+                                                      conn_rec *master,
+                                                      apr_bucket_alloc_t *alloc)
+{
+    return ap_run_create_secondary_connection(p, master, alloc);
 }
 
 /*

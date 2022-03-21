@@ -122,12 +122,6 @@ int h2_mpm_supported(void)
     return mpm_supported;
 }
 
-static module *h2_conn_mpm_module(void)
-{
-    check_modules(0);
-    return mpm_module;
-}
-
 apr_status_t h2_c2_child_init(apr_pool_t *pool, server_rec *s)
 {
     check_modules(1);
@@ -135,93 +129,26 @@ apr_status_t h2_c2_child_init(apr_pool_t *pool, server_rec *s)
                              APR_PROTO_TCP, pool);
 }
 
-/* APR callback invoked if allocation fails. */
-static int abort_on_oom(int retcode)
-{
-    ap_abort_on_oom();
-    return retcode; /* unreachable, hopefully. */
-}
-
-conn_rec *h2_c2_create(conn_rec *c1, apr_pool_t *parent)
-{
-    apr_allocator_t *allocator;
-    apr_status_t status;
-    apr_pool_t *pool;
-    conn_rec *c2;
-    void *cfg;
-    module *mpm;
-
-    ap_assert(c1);
-    ap_log_cerror(APLOG_MARK, APLOG_TRACE3, 0, c1,
-                  "h2_c2: create for c1(%ld)", c1->id);
-
-    /* We create a pool with its own allocator to be used for
-     * processing a request. This is the only way to have the processing
-     * independent of its parent pool in the sense that it can work in
-     * another thread.
-     */
-    apr_allocator_create(&allocator);
-    apr_allocator_max_free_set(allocator, ap_max_mem_free);
-    status = apr_pool_create_ex(&pool, parent, NULL, allocator);
-    if (status != APR_SUCCESS) {
-        ap_log_cerror(APLOG_MARK, APLOG_ERR, status, c1,
-                      APLOGNO(10004) "h2_c2: create pool");
-        return NULL;
-    }
-    apr_allocator_owner_set(allocator, pool);
-    apr_pool_abort_set(abort_on_oom, pool);
-    apr_pool_tag(pool, "h2_c2_conn");
-
-    c2 = (conn_rec *) apr_palloc(pool, sizeof(conn_rec));
-    memcpy(c2, c1, sizeof(conn_rec));
-
-    c2->master                 = c1;
-    c2->pool                   = pool;
-    c2->conn_config            = ap_create_conn_config(pool);
-    c2->notes                  = apr_table_make(pool, 5);
-    c2->input_filters          = NULL;
-    c2->output_filters         = NULL;
-    c2->keepalives             = 0;
-#if AP_MODULE_MAGIC_AT_LEAST(20180903, 1)
-    c2->filter_conn_ctx        = NULL;
-#endif
-    c2->bucket_alloc           = apr_bucket_alloc_create(pool);
-#if !AP_MODULE_MAGIC_AT_LEAST(20180720, 1)
-    c2->data_in_input_filters  = 0;
-    c2->data_in_output_filters = 0;
-#endif
-    /* prevent mpm_event from making wrong assumptions about this connection,
-     * like e.g. using its socket for an async read check. */
-    c2->clogging_input_filters = 1;
-    c2->log                    = NULL;
-    c2->aborted                = 0;
-    /* We cannot install the master connection socket on the secondary, as
-     * modules mess with timeouts/blocking of the socket, with
-     * unwanted side effects to the master connection processing.
-     * Fortunately, since we never use the secondary socket, we can just install
-     * a single, process-wide dummy and everyone is happy.
-     */
-    ap_set_module_config(c2->conn_config, &core_module, dummy_socket);
-    /* TODO: these should be unique to this thread */
-    c2->sbh = NULL; /*c1->sbh;*/
-    /* TODO: not all mpm modules have learned about secondary connections yet.
-     * copy their config from master to secondary.
-     */
-    if ((mpm = h2_conn_mpm_module()) != NULL) {
-        cfg = ap_get_module_config(c1->conn_config, mpm);
-        ap_set_module_config(c2->conn_config, mpm, cfg);
-    }
-
-    ap_log_cerror(APLOG_MARK, APLOG_TRACE3, 0, c2,
-                  "h2_c2(%s): created", c2->log_id);
-    return c2;
-}
-
 void h2_c2_destroy(conn_rec *c2)
 {
     ap_log_cerror(APLOG_MARK, APLOG_TRACE3, 0, c2,
                   "h2_c2(%s): destroy", c2->log_id);
     apr_pool_destroy(c2->pool);
+}
+
+void h2_c2_abort(conn_rec *c2, conn_rec *from)
+{
+    h2_conn_ctx_t *conn_ctx = h2_conn_ctx_get(c2);
+
+    AP_DEBUG_ASSERT(conn_ctx);
+    AP_DEBUG_ASSERT(conn_ctx->stream_id);
+    if (conn_ctx->beam_in) {
+        h2_beam_abort(conn_ctx->beam_in, from);
+    }
+    if (conn_ctx->beam_out) {
+        h2_beam_abort(conn_ctx->beam_out, from);
+    }
+    c2->aborted = 1;
 }
 
 typedef struct {
@@ -278,12 +205,12 @@ static apr_status_t h2_c2_filter_in(ap_filter_t* f,
                           conn_ctx->id, conn_ctx->stream_id, block, (long)readbytes);
         }
         if (conn_ctx->beam_in) {
-            if (conn_ctx->pipe_in_prod[H2_PIPE_OUT]) {
+            if (conn_ctx->pipe_in[H2_PIPE_OUT]) {
 receive:
                 status = h2_beam_receive(conn_ctx->beam_in, f->c, fctx->bb, APR_NONBLOCK_READ,
                                          conn_ctx->mplx->stream_max_mem);
                 if (APR_STATUS_IS_EAGAIN(status) && APR_BLOCK_READ == block) {
-                    status = h2_util_wait_on_pipe(conn_ctx->pipe_in_prod[H2_PIPE_OUT]);
+                    status = h2_util_wait_on_pipe(conn_ctx->pipe_in[H2_PIPE_OUT]);
                     if (APR_SUCCESS == status) {
                         goto receive;
                     }
@@ -457,10 +384,7 @@ static apr_status_t h2_c2_filter_out(ap_filter_t* f, apr_bucket_brigade* bb)
                   "h2_c2(%s-%d): output leave",
                   conn_ctx->id, conn_ctx->stream_id);
     if (APR_SUCCESS != rv) {
-        if (!conn_ctx->done) {
-            h2_beam_abort(conn_ctx->beam_out, f->c);
-        }
-        f->c->aborted = 1;
+        h2_c2_abort(f->c, f->c);
     }
     return rv;
 }
