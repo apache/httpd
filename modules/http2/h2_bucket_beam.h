@@ -27,16 +27,7 @@ struct apr_thread_cond_t;
  * across threads with as little copying as possible.
  */
 
-typedef void h2_beam_mutex_leave(struct apr_thread_mutex_t *lock);
-
-typedef struct {
-    apr_thread_mutex_t *mutex;
-    h2_beam_mutex_leave *leave;
-} h2_beam_lock;
-
 typedef struct h2_bucket_beam h2_bucket_beam;
-
-typedef apr_status_t h2_beam_mutex_enter(void *ctx, h2_beam_lock *pbl);
 
 typedef void h2_beam_io_callback(void *ctx, h2_bucket_beam *beam,
                                  apr_off_t bytes);

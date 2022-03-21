@@ -19,19 +19,6 @@
 
 #include <http_core.h>
 
-typedef enum {
-    H2_MPM_UNKNOWN,
-    H2_MPM_WORKER,
-    H2_MPM_EVENT,
-    H2_MPM_PREFORK,
-    H2_MPM_MOTORZ,
-    H2_MPM_SIMPLE,
-    H2_MPM_NETWARE,
-    H2_MPM_WINNT,
-} h2_mpm_type_t;
-
-/* Returns the type of MPM module detected */
-h2_mpm_type_t h2_conn_mpm_type(void);
 const char *h2_conn_mpm_name(void);
 int h2_mpm_supported(void);
 

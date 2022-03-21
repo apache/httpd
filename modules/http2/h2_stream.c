@@ -197,18 +197,17 @@ static void H2_STREAM_OUT_LOG(int lvl, h2_stream *s, const char *tag)
 
 apr_status_t h2_stream_setup_input(h2_stream *stream)
 {
-    if (stream->input == NULL) {
-        int empty = (stream->input_closed
-                     && (!stream->in_buffer 
-                         || APR_BRIGADE_EMPTY(stream->in_buffer)));
-        if (!empty) {
-            ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, stream->session->c1,
-                          H2_STRM_MSG(stream, "setup input beam"));
-            h2_beam_create(&stream->input, stream->session->c1,
-                           stream->pool, stream->id,
-                           "input", 0, stream->session->s->timeout);
-        }
-    }
+    /* already done? */
+    if (stream->input != NULL) goto cleanup;
+    /* if already closed and nothing was every sent, leave it */
+    if (stream->input_closed && !stream->in_buffer) goto cleanup;
+
+    ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, stream->session->c1,
+                  H2_STRM_MSG(stream, "setup input beam"));
+    h2_beam_create(&stream->input, stream->session->c1,
+                   stream->pool, stream->id,
+                   "input", 0, stream->session->s->timeout);
+cleanup:
     return APR_SUCCESS;
 }
 

@@ -130,16 +130,18 @@ static void c1c2_stream_joined(h2_mplx *m, h2_stream *stream)
 
 static void m_stream_cleanup(h2_mplx *m, h2_stream *stream)
 {
-    h2_conn_ctx_t *c2_ctx = stream->c2? h2_conn_ctx_get(stream->c2) : NULL;
+    h2_conn_ctx_t *c2_ctx = h2_conn_ctx_get(stream->c2);
 
     ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, m->c1,
                   H2_STRM_MSG(stream, "cleanup, unsubscribing from beam events"));
-    if (stream->output) {
-        h2_beam_on_was_empty(stream->output, NULL, NULL);
-    }
-    if (stream->input) {
-        h2_beam_on_received(stream->input, NULL, NULL);
-        h2_beam_on_consumed(stream->input, NULL, NULL);
+    if (c2_ctx) {
+        if (c2_ctx->beam_out) {
+            h2_beam_on_was_empty(c2_ctx->beam_out, NULL, NULL);
+        }
+        if (c2_ctx->beam_in) {
+            h2_beam_on_received(c2_ctx->beam_in, NULL, NULL);
+            h2_beam_on_consumed(c2_ctx->beam_in, NULL, NULL);
+        }
     }
 
     ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, m->c1,
