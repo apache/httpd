@@ -58,11 +58,11 @@ h2_conn_ctx_t *h2_conn_ctx_create_for_c1(conn_rec *c1, server_rec *s, const char
     ctx->server = s;
     ctx->protocol = apr_pstrdup(c1->pool, protocol);
 
-    ctx->pfd_out_prod.desc_type = APR_POLL_SOCKET;
-    ctx->pfd_out_prod.desc.s = ap_get_conn_socket(c1);
-    apr_socket_opt_set(ctx->pfd_out_prod.desc.s, APR_SO_NONBLOCK, 1);
-    ctx->pfd_out_prod.reqevents = APR_POLLIN | APR_POLLERR | APR_POLLHUP;
-    ctx->pfd_out_prod.client_data = ctx;
+    ctx->pfd.desc_type = APR_POLL_SOCKET;
+    ctx->pfd.desc.s = ap_get_conn_socket(c1);
+    ctx->pfd.reqevents = APR_POLLIN | APR_POLLERR | APR_POLLHUP;
+    ctx->pfd.client_data = ctx;
+    apr_socket_opt_set(ctx->pfd.desc.s, APR_SO_NONBLOCK, 1);
 
     return ctx;
 }
@@ -107,14 +107,10 @@ void h2_conn_ctx_set_timeout(h2_conn_ctx_t *conn_ctx, apr_interval_time_t timeou
     if (conn_ctx->beam_out) {
         h2_beam_timeout_set(conn_ctx->beam_out, timeout);
     }
-    if (conn_ctx->pipe_out_prod[H2_PIPE_OUT]) {
-        apr_file_pipe_timeout_set(conn_ctx->pipe_out_prod[H2_PIPE_OUT], timeout);
-    }
-
     if (conn_ctx->beam_in) {
         h2_beam_timeout_set(conn_ctx->beam_in, timeout);
     }
-    if (conn_ctx->pipe_in_prod[H2_PIPE_OUT]) {
-        apr_file_pipe_timeout_set(conn_ctx->pipe_in_prod[H2_PIPE_OUT], timeout);
+    if (conn_ctx->pipe_in[H2_PIPE_OUT]) {
+        apr_file_pipe_timeout_set(conn_ctx->pipe_in[H2_PIPE_OUT], timeout);
     }
 }
