@@ -65,6 +65,8 @@ struct h2_bucket_beam {
     void *was_empty_ctx;
     h2_beam_ev_callback *recv_cb;      /* event: buckets were transfered in h2_beam_receive() */
     void *recv_ctx;
+    h2_beam_ev_callback *send_cb;      /* event: buckets were added in h2_beam_send() */
+    void *send_ctx;
 
     apr_off_t recv_bytes;             /* amount of bytes transferred in h2_beam_receive() */
     apr_off_t recv_bytes_reported;    /* amount of bytes reported as received via callback */
@@ -194,6 +196,17 @@ void h2_beam_on_consumed(h2_bucket_beam *beam,
  */
 void h2_beam_on_received(h2_bucket_beam *beam,
                          h2_beam_ev_callback *recv_cb, void *ctx);
+
+/**
+ * Register a call back from the sender side to be invoked when send
+ * has added buckets to the beam.
+ * Unregister by passing a NULL on_send_cb.
+ * @param beam the beam to set the callback on
+ * @param on_send_cb the callback to invoke after buckets were added
+ * @param ctx  the context to use in callback invocation
+ */
+void h2_beam_on_send(h2_bucket_beam *beam,
+                     h2_beam_ev_callback *on_send_cb, void *ctx);
 
 /**
  * Register a call back from the sender side to be invoked when send

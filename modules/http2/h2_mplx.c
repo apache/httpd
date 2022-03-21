@@ -139,6 +139,7 @@ static void m_stream_cleanup(h2_mplx *m, h2_stream *stream)
             h2_beam_on_was_empty(c2_ctx->beam_out, NULL, NULL);
         }
         if (c2_ctx->beam_in) {
+            h2_beam_on_send(c2_ctx->beam_in, NULL, NULL);
             h2_beam_on_received(c2_ctx->beam_in, NULL, NULL);
             h2_beam_on_consumed(c2_ctx->beam_in, NULL, NULL);
         }
@@ -796,7 +797,7 @@ static apr_status_t c2_setup_io(h2_mplx *m, conn_rec *c2, h2_stream *stream, h2_
 
     if (stream->input) {
         conn_ctx->beam_in = stream->input;
-        h2_beam_on_was_empty(stream->input, c2_beam_input_write_notify, c2);
+        h2_beam_on_send(stream->input, c2_beam_input_write_notify, c2);
         h2_beam_on_received(stream->input, c2_beam_input_read_notify, c2);
         h2_beam_on_consumed(stream->input, c1_input_consumed, stream);
     }
