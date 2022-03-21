@@ -32,9 +32,9 @@ apr_bucket * h2_bucket_headers_create(apr_bucket_alloc_t *list,
                                        
 h2_headers *h2_bucket_headers_get(apr_bucket *b);
 
-apr_bucket *h2_bucket_headers_beam(struct h2_bucket_beam *beam,
-                                    apr_bucket_brigade *dest,
-                                    const apr_bucket *src);
+apr_bucket *h2_bucket_headers_clone(apr_bucket *src,
+                                    apr_pool_t *p,
+                                    apr_bucket_alloc_t *list);
 
 /**
  * Create the headers from the given status and headers

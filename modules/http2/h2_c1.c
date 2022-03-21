@@ -327,8 +327,5 @@ void h2_c1_register_hooks(void)
     /* One last chance to properly say goodbye if we have not done so
      * already. */
     ap_hook_pre_close_connection(h2_c1_hook_pre_close, NULL, mod_ssl, APR_HOOK_LAST);
-
-    /* special bucket type transfer through a h2_bucket_beam */
-    h2_register_bucket_beamer(h2_bucket_headers_beam);
 }
 
