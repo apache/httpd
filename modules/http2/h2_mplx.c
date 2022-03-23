@@ -480,7 +480,6 @@ void h2_mplx_c1_destroy(h2_mplx *m)
             h2_ihash_iter(m->shold, m_report_stream_iter, m);
         }
     }
-    m->join_wait = NULL;
 
     /* 4. With all workers done, all streams should be in spurge */
     ap_assert(m->processing_count == 0);
@@ -614,20 +613,6 @@ apr_status_t h2_mplx_c1_reprioritize(h2_mplx *m, h2_stream_pri_cmp_fn *cmp,
     return status;
 }
 
-static void ms_register_if_needed(h2_mplx *m, int from_master)
-{
-    if (!m->aborted && !m->is_registered && !h2_iq_empty(m->q)) {
-        apr_status_t status = h2_workers_register(m->workers, m); 
-        if (status == APR_SUCCESS) {
-            m->is_registered = 1;
-        }
-        else if (from_master) {
-            ap_log_cerror(APLOG_MARK, APLOG_ERR, status, m->c1, APLOGNO(10021)
-                          "h2_mplx(%ld): register at workers", m->id);
-        }
-    }
-}
-
 static apr_status_t c1_process_stream(h2_mplx *m,
                                       h2_stream *stream,
                                       h2_stream_pri_cmp_fn *cmp,
@@ -670,17 +655,17 @@ cleanup:
     return rv;
 }
 
-apr_status_t h2_mplx_c1_process(h2_mplx *m,
-                                h2_iqueue *ready_to_process,
-                                h2_stream_get_fn *get_stream,
-                                h2_stream_pri_cmp_fn *stream_pri_cmp,
-                                h2_session *session,
-                                int *pstream_count)
+void h2_mplx_c1_process(h2_mplx *m,
+                        h2_iqueue *ready_to_process,
+                        h2_stream_get_fn *get_stream,
+                        h2_stream_pri_cmp_fn *stream_pri_cmp,
+                        h2_session *session,
+                        int *pstream_count)
 {
-    apr_status_t rv = APR_SUCCESS;
+    apr_status_t rv;
     int sid;
 
-    H2_MPLX_ENTER(m);
+    H2_MPLX_ENTER_ALWAYS(m);
 
     while ((sid = h2_iq_shift(ready_to_process)) > 0) {
         h2_stream *stream = get_stream(session, sid);
@@ -696,8 +681,18 @@ apr_status_t h2_mplx_c1_process(h2_mplx *m,
                           "h2_stream(%ld-%d): not found to process", m->id, sid);
         }
     }
-    ms_register_if_needed(m, 1);
+    if (!m->is_registered && !h2_iq_empty(m->q)) {
+        rv = h2_workers_register(m->workers, m);
+        if (rv == APR_SUCCESS) {
+            m->is_registered = 1;
+        }
+        else {
+            ap_log_cerror(APLOG_MARK, APLOG_ERR, rv, m->c1, APLOGNO(10021)
+                          "h2_mplx(%ld): register at workers", m->id);
+        }
+    }
     *pstream_count = (int)h2_ihash_count(m->streams);
+
 #if APR_POOL_DEBUG
     do {
         apr_size_t mem_g, mem_m, mem_s, mem_w, mem_c1;
@@ -715,7 +710,6 @@ apr_status_t h2_mplx_c1_process(h2_mplx *m,
 #endif
 
     H2_MPLX_LEAVE(m);
-    return rv;
 }
 
 apr_status_t h2_mplx_c1_fwd_input(h2_mplx *m, struct h2_iqueue *input_pending,
@@ -884,11 +878,9 @@ apr_status_t h2_mplx_worker_pop_c2(h2_mplx *m, conn_rec **out_c)
     *out_c = NULL;
     ap_assert(m);
     ap_assert(m->lock);
-    
-    if (APR_SUCCESS != (rv = apr_thread_mutex_lock(m->lock))) {
-        return rv;
-    }
-    
+
+    H2_MPLX_ENTER(m);
+
     if (m->aborted) {
         rv = APR_EOF;
     }
@@ -967,29 +959,18 @@ static void s_c2_done(h2_mplx *m, conn_rec *c2, h2_conn_ctx_t *conn_ctx)
     }
 }
 
-void h2_mplx_worker_c2_done(conn_rec *c2, conn_rec **out_c2)
+void h2_mplx_worker_c2_done(conn_rec *c2)
 {
     h2_conn_ctx_t *conn_ctx = h2_conn_ctx_get(c2);
-    h2_mplx *m = conn_ctx? conn_ctx->mplx : NULL;
+    h2_mplx *m;
 
-    if (!m) {
-        if (out_c2) *out_c2 = NULL;
-        return;
-    }
-
+    AP_DEBUG_ASSERT(conn_ctx);
+    m = conn_ctx->mplx;
     H2_MPLX_ENTER_ALWAYS(m);
 
     --m->processing_count;
     s_c2_done(m, c2, conn_ctx);
-
-    if (m->join_wait) {
-        apr_thread_cond_signal(m->join_wait);
-    }
-    if (out_c2) {
-        /* caller wants another connection to process */
-        *out_c2 = s_next_c2(m);
-    }
-    ms_register_if_needed(m, 0);
+    apr_thread_cond_signal(m->join_wait);
 
     H2_MPLX_LEAVE(m);
 }

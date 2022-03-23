@@ -255,18 +255,10 @@ static void* APR_THREAD_FUNC slot_run(apr_thread_t *thread, void *wctx)
     
     /* Get the next c2 from mplx to process. */
     while (get_next(slot)) {
-        do {
-            ap_assert(slot->connection != NULL);
-            h2_c2_process(slot->connection, thread, slot->id);
-            if (apr_atomic_read32(&slot->workers->aborted) == 0 &&
-                apr_atomic_read32(&slot->workers->worker_count) < slot->workers->max_workers) {
-                h2_mplx_worker_c2_done(slot->connection, &slot->connection);
-            }
-            else {
-                h2_mplx_worker_c2_done(slot->connection, NULL);
-                slot->connection = NULL;
-            }
-        } while (slot->connection);
+        ap_assert(slot->connection != NULL);
+        h2_c2_process(slot->connection, thread, slot->id);
+        h2_mplx_worker_c2_done(slot->connection);
+        slot->connection = NULL;
     }
 
     if (apr_atomic_read32(&slot->timed_out) == 0) {
