@@ -386,6 +386,9 @@ void h2_beam_abort(h2_bucket_beam *beam, conn_rec *c)
     beam->aborted = 1;
     if (c == beam->from) {
         /* sender aborts */
+        if (beam->send_cb) {
+            beam->send_cb(beam->send_ctx, beam);
+        }
         if (beam->was_empty_cb && buffer_is_empty(beam)) {
             beam->was_empty_cb(beam->was_empty_ctx, beam);
         }
@@ -541,6 +544,9 @@ apr_status_t h2_beam_send(h2_bucket_beam *beam, conn_rec *from,
              * Trigger event callbacks, so receiver can know there is something
              * to receive before we do a conditional wait. */
             purge_consumed_buckets(beam);
+            if (beam->send_cb) {
+                beam->send_cb(beam->send_ctx, beam);
+            }
             if (was_empty && beam->was_empty_cb) {
                 beam->was_empty_cb(beam->was_empty_ctx, beam);
             }
@@ -552,6 +558,9 @@ apr_status_t h2_beam_send(h2_bucket_beam *beam, conn_rec *from,
         }
     }
 
+    if (beam->send_cb && !buffer_is_empty(beam)) {
+        beam->send_cb(beam->send_ctx, beam);
+    }
     if (was_empty && beam->was_empty_cb && !buffer_is_empty(beam)) {
         beam->was_empty_cb(beam->was_empty_ctx, beam);
     }
@@ -762,6 +771,15 @@ void h2_beam_on_received(h2_bucket_beam *beam,
     apr_thread_mutex_lock(beam->lock);
     beam->recv_cb = recv_cb;
     beam->recv_ctx = ctx;
+    apr_thread_mutex_unlock(beam->lock);
+}
+
+void h2_beam_on_send(h2_bucket_beam *beam,
+                     h2_beam_ev_callback *send_cb, void *ctx)
+{
+    apr_thread_mutex_lock(beam->lock);
+    beam->send_cb = send_cb;
+    beam->send_ctx = ctx;
     apr_thread_mutex_unlock(beam->lock);
 }
 

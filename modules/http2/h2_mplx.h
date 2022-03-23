@@ -146,12 +146,12 @@ int h2_mplx_c1_stream_is_running(h2_mplx *m, struct h2_stream *stream);
  * @param cmp the stream priority compare function
  * @param pstream_count on return the number of streams active in mplx
  */
-apr_status_t h2_mplx_c1_process(h2_mplx *m,
-                                struct h2_iqueue *read_to_process,
-                                h2_stream_get_fn *get_stream,
-                                h2_stream_pri_cmp_fn *cmp,
-                                struct h2_session *session,
-                                int *pstream_count);
+void h2_mplx_c1_process(h2_mplx *m,
+                        struct h2_iqueue *read_to_process,
+                        h2_stream_get_fn *get_stream,
+                        h2_stream_pri_cmp_fn *cmp,
+                        struct h2_session *session,
+                        int *pstream_count);
 
 /**
  * Stream priorities have changed, reschedule pending requests.
@@ -217,12 +217,8 @@ apr_status_t h2_mplx_worker_pop_c2(h2_mplx *m, conn_rec **out_c2);
 
 /**
  * A h2 worker reports a secondary connection processing done.
- * If it is will to do more work for this mplx (this c1 connection),
- * it provides `out_c`. Otherwise it passes NULL.
  * @param c2 the secondary connection finished processing
- * @param out_c2 NULL or a pointer where to reveive the next
- *               secondary connection to process.
  */
-void h2_mplx_worker_c2_done(conn_rec *c2, conn_rec **out_c2);
+void h2_mplx_worker_c2_done(conn_rec *c2);
 
 #endif /* defined(__mod_h2__h2_mplx__) */
