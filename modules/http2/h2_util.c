@@ -543,9 +543,10 @@ int h2_iq_contains(h2_iqueue *q, int sid)
 
 struct h2_fifo {
     void **elems;
-    int nelems;
+    int capacity;
     int set;
-    int head;
+    int in;
+    int out;
     int count;
     int aborted;
     apr_thread_mutex_t *lock;
@@ -553,12 +554,7 @@ struct h2_fifo {
     apr_thread_cond_t  *not_full;
 };
 
-static int nth_index(h2_fifo *fifo, int n) 
-{
-    return (fifo->head + n) % fifo->nelems;
-}
-
-static apr_status_t fifo_destroy(void *data) 
+static apr_status_t fifo_destroy(void *data)
 {
     h2_fifo *fifo = data;
 
@@ -573,8 +569,8 @@ static int index_of(h2_fifo *fifo, void *elem)
 {
     int i;
     
-    for (i = 0; i < fifo->count; ++i) {
-        if (elem == fifo->elems[nth_index(fifo, i)]) {
+    for (i = fifo->out; i != fifo->in; i = (i + 1) % fifo->capacity) {
+        if (elem == fifo->elems[i]) {
             return i;
         }
     }
@@ -612,7 +608,7 @@ static apr_status_t create_int(h2_fifo **pfifo, apr_pool_t *pool,
     if (fifo->elems == NULL) {
         return APR_ENOMEM;
     }
-    fifo->nelems = capacity;
+    fifo->capacity = capacity;
     fifo->set = as_set;
     
     *pfifo = fifo;
@@ -645,7 +641,12 @@ apr_status_t h2_fifo_term(h2_fifo *fifo)
 
 int h2_fifo_count(h2_fifo *fifo)
 {
-    return fifo->count;
+    int n;
+
+    apr_thread_mutex_lock(fifo->lock);
+    n = fifo->count;
+    apr_thread_mutex_unlock(fifo->lock);
+    return n;
 }
 
 static apr_status_t check_not_empty(h2_fifo *fifo, int block)
@@ -672,9 +673,9 @@ static apr_status_t fifo_push_int(h2_fifo *fifo, void *elem, int block)
         /* set mode, elem already member */
         return APR_EEXIST;
     }
-    else if (fifo->count == fifo->nelems) {
+    else if (fifo->count == fifo->capacity) {
         if (block) {
-            while (fifo->count == fifo->nelems) {
+            while (fifo->count == fifo->capacity) {
                 if (fifo->aborted) {
                     return APR_EOF;
                 }
@@ -686,11 +687,13 @@ static apr_status_t fifo_push_int(h2_fifo *fifo, void *elem, int block)
         }
     }
     
-    ap_assert(fifo->count < fifo->nelems);
-    fifo->elems[nth_index(fifo, fifo->count)] = elem;
+    fifo->elems[fifo->in++] = elem;
+    if (fifo->in >= fifo->capacity) {
+        fifo->in -= fifo->capacity;
+    }
     ++fifo->count;
     if (fifo->count == 1) {
-        apr_thread_cond_broadcast(fifo->not_empty);
+        apr_thread_cond_signal(fifo->not_empty);
     }
     return APR_SUCCESS;
 }
@@ -719,18 +722,20 @@ apr_status_t h2_fifo_try_push(h2_fifo *fifo, void *elem)
 static apr_status_t pull_head(h2_fifo *fifo, void **pelem, int block)
 {
     apr_status_t rv;
+    int was_full;
     
     if ((rv = check_not_empty(fifo, block)) != APR_SUCCESS) {
         *pelem = NULL;
         return rv;
     }
-    *pelem = fifo->elems[fifo->head];
+    *pelem = fifo->elems[fifo->out++];
+    if (fifo->out >= fifo->capacity) {
+        fifo->out -= fifo->capacity;
+    }
+    was_full = (fifo->count == fifo->capacity);
     --fifo->count;
-    if (fifo->count > 0) {
-        fifo->head = nth_index(fifo, 1);
-        if (fifo->count+1 == fifo->nelems) {
-            apr_thread_cond_broadcast(fifo->not_full);
-        }
+    if (was_full) {
+        apr_thread_cond_broadcast(fifo->not_full);
     }
     return APR_SUCCESS;
 }
@@ -799,22 +804,47 @@ apr_status_t h2_fifo_remove(h2_fifo *fifo, void *elem)
     }
 
     if ((rv = apr_thread_mutex_lock(fifo->lock)) == APR_SUCCESS) {
-        int i, rc;
-        void *e;
-        
-        rc = 0;
-        for (i = 0; i < fifo->count; ++i) {
-            e = fifo->elems[nth_index(fifo, i)];
-            if (e == elem) {
-                ++rc;
-            }
-            else if (rc) {
-                fifo->elems[nth_index(fifo, i-rc)] = e;
+        int i, last_count = fifo->count;
+
+        for (i = fifo->out; i != fifo->in; i = (i + 1) % fifo->capacity) {
+            if (fifo->elems[i] == elem) {
+                --fifo->count;
+                if (i == fifo->out) {
+                    /* first element */
+                    ++fifo->out;
+                    if (fifo->out >= fifo->capacity) {
+                        fifo->out -= fifo->capacity;
+                    }
+                }
+                else if (i + 1 == fifo->in) {
+                    /* last element */
+                    --fifo->in;
+                    if (fifo->in < 0) {
+                        fifo->in += fifo->capacity;
+                    }
+                }
+                else if (i > fifo->out) {
+                    /* between out and in/capacity, move elements below up */
+                    memmove(&fifo->elems[fifo->out+1], &fifo->elems[fifo->out],
+                            (i - fifo->out) * sizeof(void*));
+                    ++fifo->out;
+                    if (fifo->out >= fifo->capacity) {
+                        fifo->out -= fifo->capacity;
+                    }
+                }
+                else {
+                    /* we wrapped around, move elements above down */
+                    memmove(&fifo->elems[i], &fifo->elems[i + 1],
+                            (fifo->in - i - 1) * sizeof(void*));
+                    --fifo->in;
+                    if (fifo->in < 0) {
+                        fifo->in += fifo->capacity;
+                    }
+                }
             }
         }
-        if (rc) {
-            fifo->count -= rc;
-            if (fifo->count + rc == fifo->nelems) {
+        if (fifo->count != last_count) {
+            if (last_count == fifo->capacity) {
                 apr_thread_cond_broadcast(fifo->not_full);
             }
             rv = APR_SUCCESS;
@@ -834,7 +864,7 @@ apr_status_t h2_fifo_remove(h2_fifo *fifo, void *elem)
 
 struct h2_ififo {
     int *elems;
-    int nelems;
+    int capacity;
     int set;
     int head;
     int count;
@@ -846,7 +876,7 @@ struct h2_ififo {
 
 static int inth_index(h2_ififo *fifo, int n) 
 {
-    return (fifo->head + n) % fifo->nelems;
+    return (fifo->head + n) % fifo->capacity;
 }
 
 static apr_status_t ififo_destroy(void *data) 
@@ -903,7 +933,7 @@ static apr_status_t icreate_int(h2_ififo **pfifo, apr_pool_t *pool,
     if (fifo->elems == NULL) {
         return APR_ENOMEM;
     }
-    fifo->nelems = capacity;
+    fifo->capacity = capacity;
     fifo->set = as_set;
     
     *pfifo = fifo;
@@ -963,9 +993,9 @@ static apr_status_t ififo_push_int(h2_ififo *fifo, int id, int block)
         /* set mode, elem already member */
         return APR_EEXIST;
     }
-    else if (fifo->count == fifo->nelems) {
+    else if (fifo->count == fifo->capacity) {
         if (block) {
-            while (fifo->count == fifo->nelems) {
+            while (fifo->count == fifo->capacity) {
                 if (fifo->aborted) {
                     return APR_EOF;
                 }
@@ -977,7 +1007,7 @@ static apr_status_t ififo_push_int(h2_ififo *fifo, int id, int block)
         }
     }
     
-    ap_assert(fifo->count < fifo->nelems);
+    ap_assert(fifo->count < fifo->capacity);
     fifo->elems[inth_index(fifo, fifo->count)] = id;
     ++fifo->count;
     if (fifo->count == 1) {
@@ -1019,7 +1049,7 @@ static apr_status_t ipull_head(h2_ififo *fifo, int *pi, int block)
     --fifo->count;
     if (fifo->count > 0) {
         fifo->head = inth_index(fifo, 1);
-        if (fifo->count+1 == fifo->nelems) {
+        if (fifo->count+1 == fifo->capacity) {
             apr_thread_cond_broadcast(fifo->not_full);
         }
     }
@@ -1099,7 +1129,7 @@ static apr_status_t ififo_remove(h2_ififo *fifo, int id)
         return APR_EAGAIN;
     }
     fifo->count -= rc;
-    if (fifo->count + rc == fifo->nelems) {
+    if (fifo->count + rc == fifo->capacity) {
         apr_thread_cond_broadcast(fifo->not_full);
     }
     return APR_SUCCESS;

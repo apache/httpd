@@ -682,11 +682,12 @@ void h2_mplx_c1_process(h2_mplx *m,
         }
     }
     if (!m->is_registered && !h2_iq_empty(m->q)) {
+        m->is_registered = 1;
+        H2_MPLX_LEAVE(m);
         rv = h2_workers_register(m->workers, m);
-        if (rv == APR_SUCCESS) {
-            m->is_registered = 1;
-        }
-        else {
+        H2_MPLX_ENTER_ALWAYS(m);
+        if (rv != APR_SUCCESS) {
+            m->is_registered = 0;
             ap_log_cerror(APLOG_MARK, APLOG_ERR, rv, m->c1, APLOGNO(10021)
                           "h2_mplx(%ld): register at workers", m->id);
         }
@@ -873,15 +874,11 @@ cleanup:
 
 apr_status_t h2_mplx_worker_pop_c2(h2_mplx *m, conn_rec **out_c)
 {
-    apr_status_t rv = APR_EOF;
-    
-    *out_c = NULL;
-    ap_assert(m);
-    ap_assert(m->lock);
+    apr_status_t rv;
 
-    H2_MPLX_ENTER(m);
-
+    H2_MPLX_ENTER_ALWAYS(m);
     if (m->aborted) {
+        *out_c = NULL;
         rv = APR_EOF;
     }
     else {
