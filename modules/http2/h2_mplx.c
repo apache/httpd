@@ -291,9 +291,6 @@ h2_mplx *h2_mplx_c1_create(h2_stream *stream0, server_rec *s, apr_pool_t *parent
                                      m->pool);
     if (APR_SUCCESS != status) goto failure;
 
-    status = apr_thread_cond_create(&m->join_wait, m->pool);
-    if (APR_SUCCESS != status) goto failure;
-
     m->max_streams = h2_config_sgeti(s, H2_CONF_MAX_STREAMS);
     m->stream_max_mem = h2_config_sgeti(s, H2_CONF_STREAM_MAX_MEM);
 
@@ -467,7 +464,11 @@ void h2_mplx_c1_destroy(h2_mplx *m)
     /* 3. while workers are busy on this connection, meaning they
      *    are processing streams from this connection, wait on them finishing
      *    in order to wake us and let us check again. 
-     *    Eventually, this has to succeed. */    
+     *    Eventually, this has to succeed. */
+    if (!m->join_wait) {
+        apr_thread_cond_create(&m->join_wait, m->pool);
+    }
+
     for (i = 0; h2_ihash_count(m->shold) > 0; ++i) {
         status = apr_thread_cond_timedwait(m->join_wait, m->lock, apr_time_from_sec(wait_secs));
         
@@ -967,7 +968,22 @@ void h2_mplx_worker_c2_done(conn_rec *c2)
 
     --m->processing_count;
     s_c2_done(m, c2, conn_ctx);
-    apr_thread_cond_signal(m->join_wait);
+    if (m->join_wait) apr_thread_cond_signal(m->join_wait);
+
+    if (!m->aborted && !m->is_registered
+        && (m->processing_count < m->processing_limit)
+        && !h2_iq_empty(m->q)) {
+        /* We have a limit on the amount of c2s we process at a time. When
+         * this is reached, we do no longer have things to do for h2 workers
+         * and they remove such an mplx from its queue.
+         * When a c2 is done, there might then be room for more processing
+         * and we need then to register this mplx at h2 workers again.
+         */
+        m->is_registered = 1;
+        H2_MPLX_LEAVE(m);
+        h2_workers_register(m->workers, m);
+        return;
+    }
 
     H2_MPLX_LEAVE(m);
 }
