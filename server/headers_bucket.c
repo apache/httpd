@@ -63,6 +63,7 @@ AP_DECLARE(apr_bucket *) ap_bucket_request_maken(
     ap_bucket_request *h;
 
     h = apr_bucket_alloc(sizeof(*h), b->list);
+    h->pool = p;
     h->method = method;
     h->uri = uri;
     h->protocol = protocol;
@@ -144,6 +145,7 @@ AP_DECLARE(apr_bucket *) ap_bucket_response_make(apr_bucket *b, int status,
     ap_bucket_response *h;
 
     h = apr_bucket_alloc(sizeof(*h), b->list);
+    h->pool = p;
     h->status = status;
     h->reason = reason? apr_pstrdup(p, reason) : NULL;
     h->headers = headers? apr_table_copy(p, headers) : apr_table_make(p, 5);
@@ -216,6 +218,7 @@ AP_DECLARE(apr_bucket *) ap_bucket_headers_make(apr_bucket *b,
     ap_bucket_headers *h;
 
     h = apr_bucket_alloc(sizeof(*h), b->list);
+    h->pool = p;
     h->headers = headers? apr_table_copy(p, headers) : apr_table_make(p, 5);
 
     b = apr_bucket_shared_make(b, h, 0, 0);

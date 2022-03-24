@@ -1295,6 +1295,8 @@ request_rec *ap_read_request(conn_rec *conn)
     apr_bucket_brigade *tmp_bb;
     apr_bucket *e;
     ap_bucket_request *breq = NULL;
+    const char *method, *uri, *protocol;
+    apr_table_t *headers;
     apr_status_t rv;
 
     request_rec *r = ap_create_request(conn);
@@ -1336,17 +1338,30 @@ request_rec *ap_read_request(conn_rec *conn)
         goto die_unusable_input;
     }
 
-    if (breq->headers) {
-        r->headers_in = breq->headers;
+    if (apr_pool_is_ancestor(r->pool, breq->pool)) {
+        method = breq->method;
+        uri = breq->uri;
+        protocol = breq->protocol;
+        headers = breq->headers;
+    }
+    else {
+        method = apr_pstrdup(r->pool, breq->method);
+        uri = apr_pstrdup(r->pool, breq->uri);
+        protocol = apr_pstrdup(r->pool, breq->protocol);
+        headers = breq->headers? apr_table_clone(r->pool, breq->headers) : NULL;
+    }
+
+    if (headers) {
+        r->headers_in = headers;
     }
     ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r,
                   "checking request: %s %s %s",
-                  breq->method, breq->uri, breq->protocol);
+                  method, uri, protocol);
 
-    if (!ap_assign_request(r, breq->method, breq->uri, breq->protocol)) {
+    if (!ap_assign_request(r, method, uri, protocol)) {
         apr_brigade_cleanup(tmp_bb);
         ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r,
-                      "error assigning request: %s %s", breq->method, breq->uri);
+                      "error assigning request: %s %s", method, uri);
         switch (r->status) {
         case HTTP_REQUEST_URI_TOO_LARGE:
         case HTTP_BAD_REQUEST:
@@ -1378,7 +1393,7 @@ request_rec *ap_read_request(conn_rec *conn)
     }
     apr_brigade_cleanup(tmp_bb);
     ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r,
-                  "request assigned: %s %s", breq->method, breq->uri);
+                  "request assigned: %s %s", method, uri);
 
     /* We may have been in keep_alive_timeout mode, so toggle back
      * to the normal timeout mode as we fetch the header lines,

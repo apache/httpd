@@ -1071,6 +1071,7 @@ typedef struct ap_bucket_request ap_bucket_request;
 struct ap_bucket_request {
     /** Number of buckets using this memory */
     apr_bucket_refcount refcount;
+    apr_pool_t *pool; /* pool that holds the contents, not for modification */
     const char *method; /* request method */
     const char *uri; /* request uri */
     const char *protocol; /* request protocol */
@@ -1186,6 +1187,7 @@ typedef struct ap_bucket_response ap_bucket_response;
 struct ap_bucket_response {
     /** Number of buckets using this memory */
     apr_bucket_refcount refcount;
+    apr_pool_t *pool; /* pool that holds the contents, not for modification */
     int status; /* The status code */
     const char *reason; /* The optional HTTP reason for the status. */
     apr_table_t *headers; /* The response headers */
@@ -1256,8 +1258,9 @@ typedef struct ap_bucket_headers ap_bucket_headers;
 struct ap_bucket_headers {
     /** Number of buckets using this memory */
     apr_bucket_refcount refcount;
-    /** The headers */
-    apr_table_t *headers;
+    apr_pool_t *pool; /* pool that holds the contents, not for modification */
+    apr_table_t *headers; /* The headers */
+
 };
 
 /** @see ap_bucket_type_headers */
