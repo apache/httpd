@@ -890,5 +890,9 @@ int main (int argc, const char * const argv[])
         }
     }
 
+    apr_pool_destroy(status.pool);
+    apr_pool_destroy(socket_out_status.pool);
+    apr_terminate();
+
     return 0; /* reached only at stdin EOF. */
 }
