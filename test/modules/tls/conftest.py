@@ -18,6 +18,19 @@ def pytest_report_header(config, startdir):
     )
 
 
+def pytest_addoption(parser):
+    parser.addoption("--repeat", action="store", type=int, default=1,
+                     help='Number of times to repeat each test')
+    parser.addoption("--all", action="store_true")
+
+
+def pytest_generate_tests(metafunc):
+    if "repeat" in metafunc.fixturenames:
+        count = int(metafunc.config.getoption("repeat"))
+        metafunc.fixturenames.append('tmp_ct')
+        metafunc.parametrize('repeat', range(count))
+
+
 @pytest.fixture(scope="package")
 def env(pytestconfig) -> TlsTestEnv:
     level = logging.INFO
