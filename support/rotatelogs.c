@@ -19,6 +19,8 @@
 #include "apr_strings.h"
 #include "apr_errno.h"
 #include "apr_file_io.h"
+#include "apr_network_io.h"
+#include "apr_portable.h"
 #include "apr_file_info.h"
 #include "apr_general.h"
 #include "apr_time.h"
@@ -72,9 +74,12 @@ struct rotate_config {
 #endif
     int num_files;
     int create_path;
+    int use_socket;
 };
 
 typedef struct rotate_status rotate_status_t;
+
+typedef struct socket_out_status socket_out_status_t;
 
 /* "adjusted_time_t" is used to store Unix time (seconds since epoch)
  * which has been adjusted for some timezone fudge factor.  It should
@@ -99,8 +104,17 @@ struct rotate_status {
     int fileNum;
 };
 
+struct socket_out_status {
+    apr_socket_t *sock;
+    apr_status_t rv;
+    apr_pool_t *pool; /* top-level pool */
+    const char *socket_out_path;
+    adjusted_time_t tRetry;
+};
+
 static rotate_config_t config;
 static rotate_status_t status;
+static socket_out_status_t socket_out_status;
 
 static void usage(const char *argv0, const char *reason)
 {
@@ -109,9 +123,9 @@ static void usage(const char *argv0, const char *reason)
     }
     fprintf(stderr,
 #if APR_FILES_AS_SOCKETS
-            "Usage: %s [-v] [-l] [-L linkname] [-p prog] [-f] [-D] [-t] [-e] [-c] [-n number] <logfile> "
+            "Usage: %s [-v] [-l] [-L linkname] [-p prog] [-f] [-D] [-t] [-e] [-c] [-n number] [-s socket] <logfile> "
 #else
-            "Usage: %s [-v] [-l] [-L linkname] [-p prog] [-f] [-D] [-t] [-e] [-n number] <logfile> "
+            "Usage: %s [-v] [-l] [-L linkname] [-p prog] [-f] [-D] [-t] [-e] [-n number] [-s socket] <logfile> "
 #endif
             "{<rotation time in seconds>|<rotation size>(B|K|M|G)} "
             "[offset minutes from UTC]\n\n",
@@ -150,6 +164,7 @@ static void usage(const char *argv0, const char *reason)
             "  -c       Create log even if it is empty.\n"
 #endif
             "  -n num   Rotate file by adding suffixes '.1', '.2', ..., '.num'.\n"
+            "  -s path  Log is written to socket. Fallback to file on error.\n"
             "\n"
             "The program for '-p' is invoked as \"[prog] <curfile> [<prevfile>]\"\n"
             "where <curfile> is the filename of the newly opened logfile, and\n"
@@ -214,6 +229,7 @@ static void dumpConfig (rotate_config_t *config)
     fprintf(stderr, "Rotation create empty logs:  %12s\n", config->create_empty ? "yes" : "no");
 #endif
     fprintf(stderr, "Rotation file name: %21s\n", config->szLogRoot);
+    fprintf(stderr, "Log to socket:            %12s\n", config->use_socket ? "yes" : "no");
     fprintf(stderr, "Post-rotation prog: %21s\n", config->postrotate_prog ? config->postrotate_prog : "not used");
 }
 
@@ -556,6 +572,80 @@ static const char *get_time_or_size(rotate_config_t *config,
     return NULL;
 }
 
+void postpone_output_socket_setup() {
+    apr_int32_t offset;
+    adjusted_time_t now, tRetry;
+    now = get_now(&config, &offset);
+    tRetry = now + 60;
+    socket_out_status.tRetry = tRetry;
+}
+
+void teardown_output_socket() {
+    socket_out_status.rv = -2;
+    apr_socket_close (socket_out_status.sock);
+}
+
+apr_status_t connect_output_socket() {
+    struct sockaddr_un unix_address;
+    struct sockaddr *ptradd;
+
+    apr_os_sock_t sock_fd;
+    apr_os_sock_get (&sock_fd, socket_out_status.sock);
+
+    unix_address.sun_family = PF_UNIX;
+    memcpy (unix_address.sun_path, socket_out_status.socket_out_path, strlen (socket_out_status.socket_out_path) + 1);
+    ptradd = (struct sockaddr *) &unix_address;
+    if (connect (sock_fd, ptradd, sizeof (unix_address)) != -1) {
+        return APR_SUCCESS;
+    }
+
+    teardown_output_socket();
+    postpone_output_socket_setup();
+    return -2;
+}
+
+apr_status_t setup_output_socket() {
+    int family, proto;
+    apr_status_t rv;
+
+    family = PF_UNIX;
+    proto = 0;
+
+    rv = apr_socket_create(&socket_out_status.sock, family, SOCK_STREAM, proto, socket_out_status.pool);
+
+    if (rv != APR_SUCCESS) {
+        //int err = errno;
+        postpone_output_socket_setup();
+        // TODO log
+        return rv;
+    }
+
+    rv = connect_output_socket();
+    // TODO debug log
+    return rv;
+}
+
+int write_output_socket(apr_socket_t *sock, const char *str, apr_size_t size) {
+    apr_size_t prevsize = size;
+    apr_status_t statcode;
+
+    if ((statcode = apr_socket_send(sock, str, &size)) != APR_SUCCESS) {
+        //TODO log
+        return -1;
+    }
+
+    return (prevsize == size) ? size : -1;
+}
+
+void retry_setup_output_socket() {
+    apr_int32_t offset;
+    adjusted_time_t now;
+    now = get_now(&config, &offset);
+    if(socket_out_status.tRetry < now) {
+        socket_out_status.rv = setup_output_socket();
+    }
+}
+
 int main (int argc, const char * const argv[])
 {
     char buf[BUFSIZE];
@@ -578,14 +668,16 @@ int main (int argc, const char * const argv[])
 
     memset(&config, 0, sizeof config);
     memset(&status, 0, sizeof status);
+    memset(&socket_out_status, 0, sizeof socket_out_status);
     status.rotateReason = ROTATE_NONE;
 
     apr_pool_create(&status.pool, NULL);
+    apr_pool_create(&socket_out_status.pool, NULL);
     apr_getopt_init(&opt, status.pool, argc, argv);
 #if APR_FILES_AS_SOCKETS
-    while ((rv = apr_getopt(opt, "lL:p:fDtvecn:", &c, &opt_arg)) == APR_SUCCESS) {
+    while ((rv = apr_getopt(opt, "lL:p:fDtvecn:s:", &c, &opt_arg)) == APR_SUCCESS) {
 #else
-    while ((rv = apr_getopt(opt, "lL:p:fDtven:", &c, &opt_arg)) == APR_SUCCESS) {
+    while ((rv = apr_getopt(opt, "lL:p:fDtven:s:", &c, &opt_arg)) == APR_SUCCESS) {
 #endif
         switch (c) {
         case 'l':
@@ -624,6 +716,11 @@ int main (int argc, const char * const argv[])
         case 'n':
             config.num_files = atoi(opt_arg);
             status.fileNum = -1;
+            break;
+        case 's':
+            config.use_socket = 1;
+            // TODO validate path not assume people are smart
+            socket_out_status.socket_out_path = opt_arg;
             break;
         }
     }
@@ -675,6 +772,10 @@ int main (int argc, const char * const argv[])
     if (apr_file_open_stdout(&f_stdout, status.pool) != APR_SUCCESS) {
         fprintf(stderr, "Unable to open stdout\n");
         exit(1);
+    }
+
+    if (config.use_socket) {
+        socket_out_status.rv = setup_output_socket();
     }
 
     /*
@@ -745,27 +846,41 @@ int main (int argc, const char * const argv[])
         }
 
         nWrite = nRead;
-        rv = apr_file_write_full(status.current.fd, buf, nWrite, &nWrite);
-        if (nWrite != nRead) {
-            apr_off_t cur_offset;
-            apr_pool_t *pool;
-            char *error;
-
-            cur_offset = 0;
-            if (apr_file_seek(status.current.fd, APR_CUR, &cur_offset) != APR_SUCCESS) {
-                cur_offset = -1;
+        if (config.use_socket) {
+            if(APR_SUCCESS != socket_out_status.rv) {
+                retry_setup_output_socket();
             }
-            status.nMessCount++;
-            apr_pool_create(&pool, status.pool);
-            error = apr_psprintf(pool, "Error %d writing to log file at offset %"
-                                 APR_OFF_T_FMT ". %10d messages lost (%pm)\n",
-                                 rv, cur_offset, status.nMessCount, &rv);
-
-            truncate_and_write_error(&status, error);
-            apr_pool_destroy(pool);
+            if(APR_SUCCESS == socket_out_status.rv) {
+                if (-1 == write_output_socket(socket_out_status.sock, buf, nWrite)) {
+                    //TODO log?
+                    teardown_output_socket();
+                    postpone_output_socket_setup();
+                }
+            }
         }
-        else {
-            status.nMessCount++;
+        if (!config.use_socket || APR_SUCCESS != socket_out_status.rv ) {
+            rv = apr_file_write_full(status.current.fd, buf, nWrite, &nWrite);
+            if (nWrite != nRead) {
+                apr_off_t cur_offset;
+                apr_pool_t *pool;
+                char *error;
+
+                cur_offset = 0;
+                if (apr_file_seek(status.current.fd, APR_CUR, &cur_offset) != APR_SUCCESS) {
+                    cur_offset = -1;
+                }
+                status.nMessCount++;
+                apr_pool_create(&pool, status.pool);
+                error = apr_psprintf(pool, "Error %d writing to log file at offset %"
+                APR_OFF_T_FMT
+                ". %10d messages lost (%pm)\n",
+                        rv, cur_offset, status.nMessCount, &rv);
+
+                truncate_and_write_error(&status, error);
+                apr_pool_destroy(pool);
+            } else {
+                status.nMessCount++;
+            }
         }
         if (config.echo) {
             if (apr_file_write_full(f_stdout, buf, nRead, NULL)) {
