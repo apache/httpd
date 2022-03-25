@@ -342,7 +342,7 @@ static void post_rotate(apr_pool_t *pool, struct logfile *newlog,
     }
 }
 
-/* After a error, truncate the current file and write out an error
+/* After an error, truncate the current file and write out an error
  * message, which must be contained in message.  The process is
  * terminated on failure.  */
 static void truncate_and_write_error(rotate_status_t *status, const char *message)
