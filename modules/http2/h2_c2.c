@@ -473,6 +473,12 @@ static int c2_post_read_request(request_rec *r)
     /* Now that the request_rec is fully initialized, set relevant params */
     conn_ctx->server = r->server;
     h2_conn_ctx_set_timeout(conn_ctx, r->server->timeout);
+    /* We only handle this one request on the connection and tell everyone
+     * that there is no need to keep it "clean" if something fails. Also,
+     * this prevents mod_reqtimeout from doing funny business with monitoring
+     * keepalive timeouts.
+     */
+    r->connection->keepalive = AP_CONN_CLOSE;
 
     if (conn_ctx->beam_in && !apr_table_get(r->headers_in, "Content-Length")) {
         apr_table_setn(r->notes, AP_NOTE_REQUEST_BODY_INDETERMINATE, "1");
