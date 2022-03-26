@@ -1808,7 +1808,7 @@ ProxyPass "/" "balancer://mycluster/" stickysession=JSESSIONID|jsessionid nofail
     souple, reportez-vous à la documentaion de la directive <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> et son drapeau
     <code>[P]</code>.</p>
 
-    <p>Le mot-clé optionnel <var>interpolate</var>, en combinaison avec la directive
+    <p>Le mot-clé optionnel <code>interpolate</code>, en combinaison avec la directive
     <code class="directive"><a href="#proxypassinterpolateenv">ProxyPassInterpolateEnv</a></code>, permet à ProxyPass
     d'interpoler les variables d'environnement à l'aide de la syntaxe
     <var>${VARNAME}</var>. Notez que de nombreuses variables
@@ -1875,7 +1875,7 @@ les configurations de mandataires inverses</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.2.9 d'Apache</td></tr>
 </table>
-    <p>Cette directive, ainsi que l'argument <var>interpolate</var> des
+    <p>Cette directive, ainsi que l'argument <code>interpolate</code> des
     directives <code class="directive">ProxyPass</code>,
     <code class="directive">ProxyPassReverse</code>,
     <code class="directive">ProxyPassReverseCookieDomain</code> et
@@ -1889,7 +1889,7 @@ les configurations de mandataires inverses</td></tr>
     <code class="directive">ProxyPassReverseCookiePath</code>, en leur indiquant
     de remplacer la chaîne <code>${nom_var}</code> dans les directives
     de configuration par la valeur de la variable d'environnement
-    <code>nom_var</code> (si l'option <var>interpolate</var> est
+    <code>nom_var</code> (si l'option <code>interpolate</code> est
     spécifiée).</p>
     <p>La partie protocole/hostname/port de <code class="directive">ProxyPass</code>
     peut contenir des variables, mais seulement celles qui sont accessibles au
@@ -1989,7 +1989,7 @@ du serveur local en utilisant des expressions rationnelles</td></tr>
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Ajuste l'URL dans les en-têtes de la réponse HTTP envoyée
 par un serveur mandaté en inverse</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ProxyPassReverse [<var>chemin</var>] <var>url</var>
-[<var>interpolate</var>]</code></td></tr>
+[interpolate]</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy</td></tr>
@@ -2048,13 +2048,11 @@ ProxyPassReverseCookiePath  "/"  "/mirror/foo/"</pre>
     <code class="directive"><a href="#proxypass">ProxyPass</a></code>
     correspondante.</p>
 
-    <p>Le mot-clé optionnel <var>interpolate</var>, en
-    combinaison avec la directive
-    <code class="directive">ProxyPassInterpolateEnv</code>, permet
-    l'interpolation des variables d'environnement spécifiées en
-    utilisant le format <var>${VARNAME}</var> Notez que l'interpolation
-    n'est pas supportée dans la partie protocole d'une URL.
-    </p>
+    <p>Le mot-clé optionnel <code>interpolate</code>, en combinaison avec la
+    directive <code class="directive"><a href="#proxypassinterpolateenv">ProxyPassInterpolateEnv</a></code>,
+    permet l'interpolation des variables d'environnement spécifiées en utilisant
+    le format <var>${VARNAME}</var> Notez que l'interpolation n'est pas
+    supportée dans la partie protocole d'une URL.  </p>
 
     <p>Lorsque cette directive est utilisée dans une section <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code>, le premier
     argument est omis et le répertoire local est obtenu à partir de
@@ -2076,7 +2074,7 @@ ProxyPassReverseCookiePath  "/"  "/mirror/foo/"</pre>
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Ajuste la chaîne correspondant au domaine dans les en-têtes
 Set-Cookie en provenance d'un serveur mandaté</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ProxyPassReverseCookieDomain <var>domaine-interne</var>
-<var>domaine-public</var> [<var>interpolate</var>]</code></td></tr>
+<var>domaine-public</var> [interpolate]</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy</td></tr>
@@ -2094,7 +2092,7 @@ réécrit la chaîne correspondant au domaine dans les en-têtes
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Ajuste la chaîne correspondant au chemin dans les en-têtes
 Set-Cookie en provenance d'un serveur mandaté</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ProxyPassReverseCookiePath <var>chemin-interne</var>
-<var>chemin-public</var> [<var>interpolate</var>]</code></td></tr>
+<var>chemin-public</var> [interpolate]</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy</td></tr>
@@ -2134,8 +2132,8 @@ du mandataire</td></tr>
 dans un contexte de répertoire depuis la version 2.3.3.</td></tr>
 </table>
     <p>Lorsqu'elle est activée, cette directive va transmettre l'en-tête
-    Host: de la requête entrante vers le serveur mandaté, au lieu du nom
-    d'hôte spécifié par la directive <code class="directive"><a href="#proxypass">ProxyPass</a></code>.</p>
+    <code>Host:</code> de la requête entrante vers le serveur mandaté, au lieu
+    du nom d'hôte spécifié par la directive <code class="directive"><a href="#proxypass">ProxyPass</a></code>.</p>
 
     <p>Cette directive est habituellement définie à <code>Off</code>.
     Elle est principalement utile dans les configurations particulières
