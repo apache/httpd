@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1898657 -->
+<!-- English Revision: 1899206 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -678,8 +678,8 @@ dans un contexte de répertoire depuis la version 2.3.3.</compatibility>
 
 <usage>
     <p>Lorsqu'elle est activée, cette directive va transmettre l'en-tête
-    Host: de la requête entrante vers le serveur mandaté, au lieu du nom
-    d'hôte spécifié par la directive <directive
+    <code>Host:</code> de la requête entrante vers le serveur mandaté, au lieu
+    du nom d'hôte spécifié par la directive <directive
     module="mod_proxy">ProxyPass</directive>.</p>
 
     <p>Cette directive est habituellement définie à <code>Off</code>.
@@ -1670,7 +1670,7 @@ ProxyPass "/" "balancer://hotcluster/"
     module="mod_rewrite">RewriteRule</directive> et son drapeau
     <code>[P]</code>.</p>
 
-    <p>Le mot-clé optionnel <var>interpolate</var>, en combinaison avec la directive
+    <p>Le mot-clé optionnel <code>interpolate</code>, en combinaison avec la directive
     <directive module="mod_proxy">ProxyPassInterpolateEnv</directive>, permet à ProxyPass
     d'interpoler les variables d'environnement à l'aide de la syntaxe
     <var>${VARNAME}</var>. Notez que de nombreuses variables
@@ -1792,7 +1792,7 @@ du serveur local en utilisant des expressions rationnelles</description>
 <description>Ajuste l'URL dans les en-têtes de la réponse HTTP envoyée
 par un serveur mandaté en inverse</description>
 <syntax>ProxyPassReverse [<var>chemin</var>] <var>url</var>
-[<var>interpolate</var>]</syntax>
+[interpolate]</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context>
 </contextlist>
@@ -1854,13 +1854,11 @@ ProxyPassReverseCookiePath  "/"  "/mirror/foo/"
     <directive module="mod_proxy">ProxyPass</directive>
     correspondante.</p>
 
-    <p>Le mot-clé optionnel <var>interpolate</var>, en
-    combinaison avec la directive
-    <directive>ProxyPassInterpolateEnv</directive>, permet
-    l'interpolation des variables d'environnement spécifiées en
-    utilisant le format <var>${VARNAME}</var> Notez que l'interpolation
-    n'est pas supportée dans la partie protocole d'une URL.
-    </p>
+    <p>Le mot-clé optionnel <code>interpolate</code>, en combinaison avec la
+    directive <directive module="mod_proxy">ProxyPassInterpolateEnv</directive>,
+    permet l'interpolation des variables d'environnement spécifiées en utilisant
+    le format <var>${VARNAME}</var> Notez que l'interpolation n'est pas
+    supportée dans la partie protocole d'une URL.  </p>
 
     <p>Lorsque cette directive est utilisée dans une section <directive
     type="section" module="core">Location</directive>, le premier
@@ -1886,7 +1884,7 @@ ProxyPassReverseCookiePath  "/"  "/mirror/foo/"
 <description>Ajuste la chaîne correspondant au domaine dans les en-têtes
 Set-Cookie en provenance d'un serveur mandaté</description>
 <syntax>ProxyPassReverseCookieDomain <var>domaine-interne</var>
-<var>domaine-public</var> [<var>interpolate</var>]</syntax>
+<var>domaine-public</var> [interpolate]</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context>
 </contextlist>
@@ -1905,7 +1903,7 @@ réécrit la chaîne correspondant au domaine dans les en-têtes
 <description>Ajuste la chaîne correspondant au chemin dans les en-têtes
 Set-Cookie en provenance d'un serveur mandaté</description>
 <syntax>ProxyPassReverseCookiePath <var>chemin-interne</var>
-<var>chemin-public</var> [<var>interpolate</var>]</syntax>
+<var>chemin-public</var> [interpolate]</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context>
 </contextlist>
@@ -2366,7 +2364,7 @@ les configurations de mandataires inverses</description>
 <compatibility>Disponible depuis la version 2.2.9 d'Apache</compatibility>
 
 <usage>
-    <p>Cette directive, ainsi que l'argument <var>interpolate</var> des
+    <p>Cette directive, ainsi que l'argument <code>interpolate</code> des
     directives <directive>ProxyPass</directive>,
     <directive>ProxyPassReverse</directive>,
     <directive>ProxyPassReverseCookieDomain</directive> et
@@ -2380,7 +2378,7 @@ les configurations de mandataires inverses</description>
     <directive>ProxyPassReverseCookiePath</directive>, en leur indiquant
     de remplacer la chaîne <code>${nom_var}</code> dans les directives
     de configuration par la valeur de la variable d'environnement
-    <code>nom_var</code> (si l'option <var>interpolate</var> est
+    <code>nom_var</code> (si l'option <code>interpolate</code> est
     spécifiée).</p>
     <p>La partie protocole/hostname/port de <directive>ProxyPass</directive>
     peut contenir des variables, mais seulement celles qui sont accessibles au
