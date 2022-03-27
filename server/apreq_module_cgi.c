@@ -516,6 +516,8 @@ static apr_status_t cgi_jar(apreq_handle_t *handle,
             if (val == NULL)
                 val = "";
             p = apreq_cookie_make(handle->pool, name, strlen(name), val, strlen(val));
+            if (p == NULL)
+                return APR_ENOMEM;
             apreq_cookie_tainted_on(p);
             apreq_value_table_add(&p->v, req->jar);
         }
@@ -606,6 +608,8 @@ static apreq_cookie_t *cgi_jar_get(apreq_handle_t *handle,
             if (val == NULL)
                 return NULL;
             p = apreq_cookie_make(handle->pool, name, strlen(name), val, strlen(val));
+            if (p == NULL)
+                return NULL;
             apreq_cookie_tainted_on(p);
             apreq_value_table_add(&p->v, req->jar);
             val = p->v.data;
