@@ -560,6 +560,8 @@ static apr_status_t cgi_args(apreq_handle_t *handle,
             if (val == NULL)
                 val = "";
             p = apreq_param_make(handle->pool, name, strlen(name), val, strlen(val));
+            if (p == NULL)
+                return APR_ENOMEM;
             apreq_param_tainted_on(p);
             apreq_value_table_add(&p->v, req->args);
             val = p->v.data;
@@ -638,6 +640,8 @@ static apreq_param_t *cgi_args_get(apreq_handle_t *handle,
             if (val == NULL)
                 return NULL;
             p = apreq_param_make(handle->pool, name, strlen(name), val, strlen(val));
+            if (p == NULL)
+                return NULL;
             apreq_param_tainted_on(p);
             apreq_value_table_add(&p->v, req->args);
             val = p->v.data;
@@ -674,6 +678,8 @@ static apr_status_t cgi_body(apreq_handle_t *handle,
             if (val == NULL)
                 val = "";
             p = apreq_param_make(handle->pool, name, strlen(name), val, strlen(val));
+            if (p == NULL)
+                return APR_ENOMEM;
             apreq_param_tainted_on(p);
             apreq_value_table_add(&p->v, req->body);
             val = p->v.data;
@@ -716,6 +722,8 @@ static apreq_param_t *cgi_body_get(apreq_handle_t *handle,
             if (val == NULL)
                 return NULL;
             p = apreq_param_make(handle->pool, name, strlen(name), val, strlen(val));
+            if (p == NULL)
+                return NULL;
             apreq_param_tainted_on(p);
             apreq_value_table_add(&p->v, req->body);
             val = p->v.data;

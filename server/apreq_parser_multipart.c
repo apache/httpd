@@ -472,6 +472,8 @@ APREQ_DECLARE_PARSER(apreq_parse_multipart)
 
                     param = apreq_param_make(pool, name, nlen,
                                              filename, flen);
+                    if (param == NULL)
+                        return APR_ENOMEM;
                     apreq_param_tainted_on(param);
                     param->info = ctx->info;
                     param->upload
@@ -505,6 +507,8 @@ APREQ_DECLARE_PARSER(apreq_parse_multipart)
                 nlen = strlen(name);
                 param = apreq_param_make(pool, name, nlen,
                                          filename, flen);
+                if (param == NULL)
+                    return APR_ENOMEM;
                 apreq_param_tainted_on(param);
                 param->info = ctx->info;
                 param->upload = apr_brigade_create(pool,
@@ -532,6 +536,8 @@ APREQ_DECLARE_PARSER(apreq_parse_multipart)
                 flen = 0;
                 param = apreq_param_make(pool, name, nlen,
                                          filename, flen);
+                if (param == NULL)
+                    return APR_ENOMEM;
                 apreq_param_tainted_on(param);
                 param->info = ctx->info;
                 param->upload = apr_brigade_create(pool,
@@ -569,6 +575,8 @@ APREQ_DECLARE_PARSER(apreq_parse_multipart)
                 param = apreq_param_make(pool, ctx->param_name,
                                          strlen(ctx->param_name),
                                          NULL, len);
+                if (param == NULL)
+                    return APR_ENOMEM;
                 apreq_param_tainted_on(param);
                 param->info = ctx->info;
 

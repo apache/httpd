@@ -84,6 +84,8 @@ static apr_status_t consume_header_line(apreq_param_t **p,
     int i, eol = 0;
 
     param = apreq_param_make(pool, NULL, nlen, NULL, vlen);
+    if (param == NULL)
+        return APR_ENOMEM;
     *(const apreq_value_t **)&v = &param->v;
 
     arr.pool     = pool;
