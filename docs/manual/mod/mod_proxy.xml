@@ -625,7 +625,7 @@ request</description>
 context in 2.3.3 and later.</compatibility>
 
 <usage>
-    <p>When enabled, this option will pass the Host: line from the incoming
+    <p>When enabled, this option will pass the <code>Host:</code> line from the incoming
     request to the proxied host, instead of the hostname specified in the
     <directive module="mod_proxy">ProxyPass</directive> line.</p>
 
@@ -1477,7 +1477,7 @@ ProxyPass "/" "balancer://hotcluster/"
     The optional <var>noquery</var> keyword (available in
     httpd 2.4.1 and later) prevents this.</p>
 
-    <p>The optional <var>interpolate</var> keyword, in combination with
+    <p>The optional <code>interpolate</code> keyword, in combination with
     <directive module="mod_proxy">ProxyPassInterpolateEnv</directive>, causes the ProxyPass
     to interpolate environment variables, using the syntax
     <var>${VARNAME}</var>.  Note that many of the standard CGI-derived
@@ -1584,7 +1584,7 @@ ProxyPassMatch "^/(.*\.gif)$" "http://backend.example.com:8000/$1"
 <description>Adjusts the URL in HTTP response headers sent from a reverse
 proxied server</description>
 <syntax>ProxyPassReverse [<var>path</var>] <var>url</var>
-[<var>interpolate</var>]</syntax>
+[interpolate]</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context>
 </contextlist>
@@ -1653,8 +1653,8 @@ ProxyPassReverseCookiePath  "/"  "/mirror/foo/"
     because it doesn't depend on a corresponding <directive module="mod_proxy"
     >ProxyPass</directive> directive.</p>
 
-    <p>The optional <var>interpolate</var> keyword, used together with
-    <directive>ProxyPassInterpolateEnv</directive>, enables interpolation
+    <p>The optional <code>interpolate</code> keyword, used together with
+    <directive module="mod_proxy">ProxyPassInterpolateEnv</directive>, enables interpolation
     of environment variables specified using the format <var>${VARNAME}</var>.
     Note that interpolation is not supported within the scheme portion of a
     URL.</p>
@@ -1680,7 +1680,7 @@ ProxyPassReverseCookiePath  "/"  "/mirror/foo/"
 <description>Adjusts the Domain string in Set-Cookie headers from a reverse-
 proxied server</description>
 <syntax>ProxyPassReverseCookieDomain <var>internal-domain</var>
-<var>public-domain</var> [<var>interpolate</var>]</syntax>
+<var>public-domain</var> [interpolate]</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context>
 </contextlist>
@@ -1698,7 +1698,7 @@ string in <code>Set-Cookie</code> headers.</p>
 <description>Adjusts the Path string in Set-Cookie headers from a reverse-
 proxied server</description>
 <syntax>ProxyPassReverseCookiePath <var>internal-path</var>
-<var>public-path</var> [<var>interpolate</var>]</syntax>
+<var>public-path</var> [interpolate]</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context>
 </contextlist>
@@ -2125,7 +2125,7 @@ header for proxied requests</description>
 </contextlist>
 
 <usage>
-    <p>This directive, together with the <var>interpolate</var> argument to
+    <p>This directive, together with the <code>interpolate</code> argument to
     <directive>ProxyPass</directive>, <directive>ProxyPassReverse</directive>,
     <directive>ProxyPassReverseCookieDomain</directive>, and
     <directive>ProxyPassReverseCookiePath</directive>,
@@ -2138,7 +2138,7 @@ header for proxied requests</description>
     <directive>ProxyPassReverseCookiePath</directive> directives
     and causes them to substitute the value of an environment
     variable <code>varname</code> for the string <code>${varname}</code>
-    in configuration directives if the <var>interpolate</var> option is set.</p>
+    in configuration directives if the <code>interpolate</code> option is set.</p>
     <p>The scheme/hostname/port portion of <directive>ProxyPass</directive> may
     contain variables, but only the ones available when the directive is parsed
     (for example, using <directive module="core">Define</directive>).
