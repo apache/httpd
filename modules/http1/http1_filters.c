@@ -314,8 +314,8 @@ apr_status_t http1_request_in_filter(ap_filter_t *f,
                 goto cleanup;
             }
 
-            if (!ap_tokenize_request_line(r, ctx->request_line,
-                                          &ctx->method, &ctx->uri, &ctx->protocol)) {
+            if (!http1_tokenize_request_line(r, ctx->request_line,
+                                             &ctx->method, &ctx->uri, &ctx->protocol)) {
                 http_status = HTTP_BAD_REQUEST;
                 goto cleanup;
             }

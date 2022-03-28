@@ -23,6 +23,19 @@
 int http1_set_keepalive(request_rec *r, ap_bucket_response *resp);
 
 /**
+ * Tokenize a HTTP/x.x request line.
+ * @param r the request for which to parse the line
+ * @param line the line to tokenize.
+ * @param pmethod the parsed method on return
+ * @param puri the parsed uri on return
+ * @param pprotocol the parsed protocol on return
+ * @return 1 on success, 0 on failure
+ */
+AP_DECLARE(int) http1_tokenize_request_line(request_rec *r, const char *line,
+                                            char **pmethod, char **puri,
+                                            char **pprotocol);
+
+/**
  * Context for writing out HTTP/1 protocol fields, such as headers.
  * Passed in iterators, for example.
  */

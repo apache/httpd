@@ -143,7 +143,9 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
         {
             next = APR_BUCKET_NEXT(e);
             if (!APR_BUCKET_IS_METADATA(e)) {
-                ctx->seen_data = (e->length != 0);
+                if (e->length != 0) {
+                    ctx->seen_data = 1;
+                }
                 if (ctx->at_trailers) {
                     /* DATA after trailers? Someone smuggling something? */
                     rv = AP_FILTER_ERROR;

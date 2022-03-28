@@ -575,7 +575,7 @@ apr_status_t http1_body_in_filter(ap_filter_t *f,
     /* sanity check in case we're read twice */
     if (ctx->at_eos) {
         ap_log_rerror(APLOG_MARK, APLOG_TRACE3, 0, f->r,
-                      "ap_http1_transcode_in_filter: return eos");
+                      "http1_body_in_filter: return eos");
         e = apr_bucket_eos_create(f->c->bucket_alloc);
         APR_BRIGADE_INSERT_TAIL(b, e);
         return APR_SUCCESS;

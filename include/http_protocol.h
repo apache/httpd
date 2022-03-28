@@ -68,19 +68,6 @@ AP_DECLARE(request_rec *) ap_create_request(conn_rec *c);
 request_rec *ap_read_request(conn_rec *c);
 
 /**
- * Tokenize a HTTP/x.x request line.
- * @param r the request for which to parse the line
- * @param line the line to tokenize, will be written to.
- * @param pmethod the parsed method on return
- * @param puri the parsed uri on return
- * @param pprotocol the parsed protocol on return
- * @return 1 on success, 0 on failure
- */
-AP_DECLARE(int) ap_tokenize_request_line(request_rec *r, char *line,
-                                         char **pmethod, char **puri,
-                                         char **pprotocol);
-
-/**
  * Assign the method, uri and protocol to the request.
  * @param r The current request
  * @param method the HTTP method

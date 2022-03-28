@@ -639,7 +639,7 @@ static void rrl_log_error(request_rec *r, rrl_error error, char *etoken)
         }\
     } while (0)
 
-static rrl_error http1_tokenize_request_line(
+static rrl_error tokenize_request_line(
         char *line, int strict,
         char **pmethod, char **puri, char **pprotocol,
         char **perror_token)
@@ -755,8 +755,8 @@ done:
     return e;
 }
 
-AP_DECLARE(int) ap_tokenize_request_line(
-        request_rec *r, char *line,
+int http1_tokenize_request_line(
+        request_rec *r, const char *line,
         char **pmethod, char **puri, char **pprotocol)
 {
     core_server_config *conf = ap_get_core_module_config(r->server->module_config);
@@ -766,9 +766,8 @@ AP_DECLARE(int) ap_tokenize_request_line(
 
     ap_log_rerror(APLOG_MARK, APLOG_TRACE4, 0, r,
                   "ap_tokenize_request_line: '%s'", line);
-    error = http1_tokenize_request_line(line, strict,
-                                        pmethod, puri, pprotocol,
-                                        &error_token);
+    error = tokenize_request_line(apr_pstrdup(r->pool, line), strict, pmethod,
+                                  puri, pprotocol, &error_token);
     ap_log_rerror(APLOG_MARK, APLOG_TRACE4, 0, r,
                   "ap_tokenize_request: error=%d, method=%s, uri=%s, protocol=%s",
                   error, *pmethod, *puri, *pprotocol);
@@ -783,7 +782,7 @@ AP_DECLARE(int) ap_parse_request_line(request_rec *r)
 {
     char *method, *uri, *protocol;
 
-    return ap_tokenize_request_line(r, r->the_request,
-                                    &method, &uri, &protocol)
+    return http1_tokenize_request_line(r, r->the_request,
+                                       &method, &uri, &protocol)
         && ap_assign_request(r, method, uri, protocol);
 }

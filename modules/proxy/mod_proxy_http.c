@@ -471,7 +471,7 @@ static int stream_reqbody(proxy_http_req_t *req)
                  * first bytes of the next request be part of the current one).
                  *
                  * It can't happen from the client connection here thanks to
-                 * ap_http1_transcode_in_filter(), but some module's filter may be playing
+                 * http1_body_in_filter(), but some module's filter may be playing
                  * bad games, hence the HTTP_INTERNAL_SERVER_ERROR.
                  */
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01086)
@@ -1281,7 +1281,7 @@ int ap_proxy_http_process_response(proxy_http_req_t *req)
 
             /*
              * Save a possible Transfer-Encoding header as we need it later for
-             * ap_http1_transcode_in_filter to know where to end.
+             * http1_body_in_filter to know where to end.
              */
             te = apr_table_get(r->headers_out, "Transfer-Encoding");
 
@@ -1646,13 +1646,13 @@ int ap_proxy_http_process_response(proxy_http_req_t *req)
             /* We need to copy the output headers and treat them as input
              * headers as well.  BUT, we need to do this before we remove
              * TE, so that they are preserved accordingly for
-             * ap_http1_transcode_in_filter to know where to end.
+             * http1_body_in_filter to know where to end.
              */
             backend->r->headers_in = apr_table_clone(backend->r->pool, r->headers_out);
             /*
              * Restore Transfer-Encoding header from response if we saved
              * one before and there is none left. We need it for the
-             * ap_http1_transcode_in_filter. See above.
+             * http1_body_in_filter. See above.
              */
             if (te && !apr_table_get(backend->r->headers_in, "Transfer-Encoding")) {
                 apr_table_add(backend->r->headers_in, "Transfer-Encoding", te);
