@@ -2778,8 +2778,7 @@ AP_DECLARE(int) ap_request_has_body(request_rec *r)
     const char *cls;
 
     return (!r->header_only
-            && (r->kept_body
-                || apr_table_get(r->notes, AP_NOTE_REQUEST_BODY_INDETERMINATE)
+            && (r->kept_body || r->body_indeterminate
                 || ((cls = apr_table_get(r->headers_in, "Content-Length"))
                     && ap_parse_strict_length(&cl, cls) && cl > 0)));
 }

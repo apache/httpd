@@ -1144,6 +1144,14 @@ struct request_rec {
      * the elements of this field.
      */
     ap_request_bnotes_t bnotes;
+    /** Indicates that the request has a body of unknown length and
+     * protocol handlers need to read it, even if only to discard the
+     * data. In HTTP/1.1 this is set on chunked transfer encodings, but
+     * newer HTTP versions can transfer such bodies by other means. The
+     * absence of a "Transfer-Encoding" header is no longer sufficient
+     * to conclude that no body is there.
+     */
+    int body_indeterminate;
 };
 
 /**

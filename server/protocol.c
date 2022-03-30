@@ -1556,8 +1556,8 @@ AP_DECLARE(void) ap_set_sub_req_protocol(request_rec *rnew,
     /* did the original request have a body?  (e.g. POST w/SSI tags)
      * if so, make sure the subrequest doesn't inherit body headers
      */
-    if (!r->kept_body && (apr_table_get(r->headers_in, "Content-Length")
-        || apr_table_get(r->notes, AP_NOTE_REQUEST_BODY_INDETERMINATE))) {
+    if (!r->kept_body
+        && (r->body_indeterminate || apr_table_get(r->headers_in, "Content-Length"))) {
         strip_headers_request_body(rnew);
     }
     rnew->subprocess_env  = apr_table_copy(rnew->pool, r->subprocess_env);

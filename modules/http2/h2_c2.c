@@ -481,7 +481,7 @@ static int c2_post_read_request(request_rec *r)
     r->connection->keepalive = AP_CONN_CLOSE;
 
     if (conn_ctx->beam_in && !apr_table_get(r->headers_in, "Content-Length")) {
-        apr_table_setn(r->notes, AP_NOTE_REQUEST_BODY_INDETERMINATE, "1");
+        r->body_indeterminate = 1;
     }
 
     if (h2_config_sgeti(conn_ctx->server, H2_CONF_COPY_FILES)) {

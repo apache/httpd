@@ -75,7 +75,7 @@ static int http1_post_read_request(request_rec *r)
         if (r->proto_num >= HTTP_VERSION(1,0)) {
             tenc = apr_table_get(r->headers_in, "Transfer-Encoding");
             if (tenc) {
-                apr_table_setn(r->notes, AP_NOTE_REQUEST_BODY_INDETERMINATE, "1");
+                r->body_indeterminate = 1;
 
                 /* https://tools.ietf.org/html/rfc7230
                  * Section 3.3.3.3: "If a Transfer-Encoding header field is

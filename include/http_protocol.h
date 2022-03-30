@@ -556,14 +556,6 @@ AP_DECLARE(const char *) ap_get_status_line_ex(apr_pool_t *p, int status);
 /* Reading a block of data from the client connection (e.g., POST arg) */
 
 /**
- * Name of entry in r->notes that indicates a request has a body
- * of indeterminate length, e.g. no Content-Length given, but needs
- * to be read. This happens on HTTP/1.1 chunked encodings and
- * HTTP/2 requests.
- */
-#define AP_NOTE_REQUEST_BODY_INDETERMINATE     "request-body-indeterminate"
-
-/**
  * Setup the client to allow Apache to read the request body.
  * @param r The current request
  * @param read_policy How the server should interpret a chunked

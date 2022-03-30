@@ -864,7 +864,7 @@ cleanup:
 
 /* Here we deal with getting the request message body from the client.
  * Whether or not the request contains a body is signaled by the presence
- * of a non-zero Content-Length or by AP_NOTE_REQUEST_BODY_INDETERMINATE.
+ * of a non-zero Content-Length or r->body_indeterminate.
  *
  * Note that this is more complicated than it was in Apache 1.1 and prior
  * versions, because chunked support means that the module does less.
@@ -907,7 +907,7 @@ AP_DECLARE(int) ap_setup_client_block(request_rec *r, int read_policy)
     r->read_chunked = 0;
     r->remaining = 0;
 
-    if (apr_table_get(r->notes, AP_NOTE_REQUEST_BODY_INDETERMINATE)) {
+    if (r->body_indeterminate) {
         /* Protocols like HTTP/2 can carry bodies without length and
          * HTTP/1.1 has chunked encoding signalled via this note.
          */

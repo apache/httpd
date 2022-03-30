@@ -1501,7 +1501,7 @@ static int proxy_handler(request_rec *r)
                          * Transfer-Encoding in http/1.1), we cannot retry with a direct
                          * connection for the same reason as above.
                          */
-                        if (apr_table_get(r->notes, AP_NOTE_REQUEST_BODY_INDETERMINATE)) {
+                        if (r->body_indeterminate) {
                             goto cleanup;
                         }
                     }
