@@ -163,6 +163,7 @@ typedef struct {
     int req;                /* true if proxy requests are enabled */
     int max_balancers;      /* maximum number of allowed balancers */
     int bgrowth;            /* number of post-config balancers can added */
+    int wbgrowth;            /* number of post-config work per balancer that can added */
     enum {
       via_off,
       via_on,
@@ -198,6 +199,7 @@ typedef struct {
     unsigned int proxy_status_set:1;
     unsigned int source_address_set:1;
     unsigned int bgrowth_set:1;
+    unsigned int wbgrowth_set:1;
     unsigned int bal_persist:1;
     unsigned int inherit:1;
     unsigned int inherit_set:1;

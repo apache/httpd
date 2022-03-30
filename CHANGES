@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) mod_proxy: Add WorkerBalancerGrowth to allow adding workers to
+     balancer created dynamically or via "empty" <Proxy balancer://../>
+     [Jean-Frederic Clere]
+
   *) ab: Add an optional ramp delay when starting concurrent connections so
      as to not trigger denial of service protection in the network. Report
      levels of concurrency achieved in cases where the test completes before

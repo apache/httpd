@@ -1633,6 +1633,8 @@ static void * create_proxy_config(apr_pool_t *p, server_rec *s)
     ps->ppinherit_set = 0;
     ps->bgrowth = 5;
     ps->bgrowth_set = 0;
+    ps->wbgrowth = 0;
+    ps->wbgrowth_set = 0;
     ps->req_set = 0;
     ps->recv_buffer_size = 0; /* this default was left unset for some reason */
     ps->recv_buffer_size_set = 0;
@@ -1789,6 +1791,8 @@ static void * merge_proxy_config(apr_pool_t *p, void *basev, void *overridesv)
     ps->req_set = overrides->req_set || base->req_set;
     ps->bgrowth = (overrides->bgrowth_set == 0) ? base->bgrowth : overrides->bgrowth;
     ps->bgrowth_set = overrides->bgrowth_set || base->bgrowth_set;
+    ps->wbgrowth = (overrides->wbgrowth_set == 0) ? base->wbgrowth : overrides->wbgrowth;
+    ps->wbgrowth_set = overrides->wbgrowth_set || base->wbgrowth_set;
     ps->max_balancers = overrides->max_balancers || base->max_balancers;
     ps->bal_persist = overrides->bal_persist;
     ps->recv_buffer_size = (overrides->recv_buffer_size_set == 0) ? base->recv_buffer_size : overrides->recv_buffer_size;
@@ -2664,6 +2668,21 @@ static const char *set_bgrowth(cmd_parms *parms, void *dummy, const char *arg)
     return NULL;
 }
 
+static const char *set_wbgrowth(cmd_parms *parms, void *dummy, const char *arg)
+{
+    proxy_server_conf *psf =
+    ap_get_module_config(parms->server->module_config, &proxy_module);
+
+    int growth = atoi(arg);
+    if (growth < 0 || growth > 1000) {
+        return "WorkerBalancerGrowth must be between 0 and 1000";
+    }
+    psf->wbgrowth = growth;
+    psf->wbgrowth_set = 1;
+
+    return NULL;
+}
+
 static const char *set_persist(cmd_parms *parms, void *dummy, int flag)
 {
     proxy_server_conf *psf =
@@ -3047,6 +3066,35 @@ static const char *proxysection(cmd_parms *cmd, void *mconfig, const char *arg)
                 return apr_pstrcat(cmd->temp_pool, thiscmd->name, " ", err, " ",
                                    word, "=", val, "; ", conf->p, NULL);
         }
+    } else {
+        /* we have an empty <Proxy/> */
+        if (!ap_strchr_c(conf->p, ':'))
+            return apr_pstrcat(cmd->pool, thiscmd->name,
+                               "> arguments are not supported for non url.",
+                               NULL);
+        if (ap_proxy_valid_balancer_name((char *)conf->p, 9)) {
+            balancer = ap_proxy_get_balancer(cmd->pool, sconf, conf->p, 0);
+            if (!balancer) {
+                err = ap_proxy_define_balancer(cmd->pool, &balancer,
+                                               sconf, conf->p, "/", 0);
+                if (err)
+                    return apr_pstrcat(cmd->temp_pool, thiscmd->name,
+                                       " ", err, NULL);
+            }
+            if (!balancer->section_config) {
+                balancer->section_config = new_dir_conf;
+            }
+            /* Allow to add members dynamically */
+            if (sconf->wbgrowth_set) {
+                balancer->growth = sconf->wbgrowth;
+                balancer->growth_set = 1;
+            } else {
+                return apr_pstrcat(cmd->temp_pool, thiscmd->name, "/> requires WorkerBalancerGrowth > 0.", NULL);
+            }
+        } else {
+            return apr_pstrcat(cmd->pool, thiscmd->name, " " ,conf->p,
+                               "> only balancer://balancername is supported.", NULL);
+        }
     }
 
     cmd->path = old_path;
@@ -3109,6 +3157,8 @@ static const command_rec proxy_cmds[] =
      "A balancer name and scheme with list of params"),
     AP_INIT_TAKE1("BalancerGrowth", set_bgrowth, NULL, RSRC_CONF,
      "Number of additional Balancers that can be added post-config"),
+    AP_INIT_TAKE1("WorkerBalancerGrowth", set_wbgrowth, NULL, RSRC_CONF,
+     "Number of additional Workers per Balancer that can be added post-config"),
     AP_INIT_FLAG("BalancerPersist", set_persist, NULL, RSRC_CONF,
      "on if the balancer should persist changes on reboot/restart made via the Balancer Manager"),
     AP_INIT_FLAG("BalancerInherit", set_inherit, NULL, RSRC_CONF,
