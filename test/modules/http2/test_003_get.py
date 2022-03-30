@@ -228,3 +228,12 @@ content-type: text/html
         r = env.nghttp().get(url, options=opt)
         assert r.exit_code == 0, r
         assert r.response['status'] == 200
+
+    # Test that we get a proper `Date` and `Server` headers on responses
+    def test_h2_003_60(self, env):
+        url = env.mkurl("https", "test1", "/index.html")
+        r = env.curl_get(url)
+        assert r.exit_code == 0, r
+        assert r.response['status'] == 200
+        assert 'date' in r.response['header']
+        assert 'server' in r.response['header']
