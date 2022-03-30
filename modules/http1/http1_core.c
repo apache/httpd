@@ -56,8 +56,7 @@ static void http1_pre_read_request(request_rec *r, conn_rec *c)
 
 static int http1_post_read_request_early(request_rec *r)
 {
-    if (!r->main && !r->prev
-        && !strcmp(AP_PROTOCOL_HTTP1, ap_get_protocol(r->connection))) {
+    if (!r->main && !r->prev && r->proto_num <= HTTP_VERSION(1,1)) {
         /* HTTP1_BODY_IN takes care of chunked encoding and content-length.
          */
         ap_add_input_filter_handle(http1_body_in_filter_handle,
@@ -70,8 +69,7 @@ static int http1_post_read_request(request_rec *r)
 {
     const char *tenc;
 
-    if (!r->main && !r->prev
-        && !strcmp(AP_PROTOCOL_HTTP1, ap_get_protocol(r->connection))) {
+    if (!r->main && !r->prev && r->proto_num <= HTTP_VERSION(1,1)) {
         if (r->proto_num >= HTTP_VERSION(1,0)) {
             tenc = apr_table_get(r->headers_in, "Transfer-Encoding");
             if (tenc) {
