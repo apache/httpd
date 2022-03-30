@@ -1306,6 +1306,13 @@ AP_DECLARE(void) ap_set_sub_req_protocol(request_rec *rnew, const request_rec *r
 AP_DECLARE(void) ap_finalize_sub_req_protocol(request_rec *sub_r);
 
 /**
+ * Set standard response headers, such as `Date` and `Server`
+ * in r->headers_out. Takes care of precedence of existing
+ * values from proxied requests.
+ */
+AP_DECLARE(void) ap_set_std_response_headers(request_rec *r);
+
+/**
  * Send an interim (HTTP 1xx) response immediately.
  * @param r The request
  * @param send_headers Whether to send&clear headers in r->headers_out

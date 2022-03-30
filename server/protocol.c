@@ -47,6 +47,7 @@
 #include "mod_core.h"
 #include "util_charset.h"
 #include "util_ebcdic.h"
+#include "util_time.h"
 #include "scoreboard.h"
 
 #if APR_HAVE_STDARG_H
@@ -2198,6 +2199,39 @@ AP_DECLARE(void) ap_set_last_modified(request_rec *r)
     }
 }
 
+AP_DECLARE(void) ap_set_std_response_headers(request_rec *r)
+{
+    const char *server = NULL, *date;
+    char *s;
+
+    /* On the final response, we make sure that `Date` and `Server`
+     * headers are present. When proxying requests, we pass through
+     * values for these, if present. Otherwise we replace them.
+     */
+
+    if (r->proxyreq != PROXYREQ_NONE) {
+        date = apr_table_get(r->headers_out, "Date");
+        if (!date) {
+            s = apr_palloc(r->pool, APR_RFC822_DATE_LEN);
+            ap_recent_rfc822_date(s, r->request_time);
+            date = s;
+        }
+        server = apr_table_get(r->headers_out, "Server");
+    }
+    else {
+        s = apr_palloc(r->pool, APR_RFC822_DATE_LEN);
+        ap_recent_rfc822_date(s, r->request_time);
+        date = s;
+    }
+
+    apr_table_setn(r->headers_out, "Date", date);
+
+    if (!server)
+        server = ap_get_server_banner();
+    if (server && *server)
+        apr_table_setn(r->headers_out, "Server", server);
+}
+
 AP_DECLARE(void) ap_send_interim_response(request_rec *r, int send_headers)
 {
     request_rec *rr;
@@ -2241,6 +2275,9 @@ AP_DECLARE(void) ap_send_interim_response(request_rec *r, int send_headers)
     ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r,
                   "ap_send_interim_response: send %d", r->status);
     bb = apr_brigade_create(r->pool, r->connection->bucket_alloc);
+    if (send_headers) {
+        ap_set_std_response_headers(r);
+    }
     if (r->status_line && strlen(r->status_line) > 4) {
         reason = r->status_line + 4;
     }

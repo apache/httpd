@@ -46,7 +46,6 @@
 #include "apr_date.h"           /* For apr_date_parse_http and APR_DATE_BAD */
 #include "util_charset.h"
 #include "util_ebcdic.h"
-#include "util_time.h"
 #include "ap_mpm.h"
 
 #include "mod_core.h"
@@ -354,10 +353,8 @@ static void http1_append_response_head(request_rec *r,
                                        const char *protocol,
                                        apr_bucket_brigade *bb)
 {
-    char *date = NULL;
-    const char *proxy_date = NULL;
+    const char *date = NULL;
     const char *server = NULL;
-    const char *us = ap_get_server_banner();
     const char *status_line;
     http1_out_ctx_t out;
     struct iovec vec[4];
@@ -398,34 +395,22 @@ static void http1_append_response_head(request_rec *r,
     out.pool = r->pool;
     out.bb = bb;
 
-    /*
-     * keep the set-by-proxy server and date headers, otherwise
-     * generate a new server header / date header
-     */
-    if (r->proxyreq != PROXYREQ_NONE) {
-        proxy_date = apr_table_get(resp->headers, "Date");
-        if (!proxy_date) {
-            /*
-             * proxy_date needs to be const. So use date for the creation of
-             * our own Date header and pass it over to proxy_date later to
-             * avoid a compiler warning.
-             */
-            date = apr_palloc(r->pool, APR_RFC822_DATE_LEN);
-            ap_recent_rfc822_date(date, r->request_time);
-        }
-        server = apr_table_get(resp->headers, "Server");
+    date = apr_table_get(resp->headers, "Date");
+    server = apr_table_get(resp->headers, "Server");
+    if (date) {
+        /* We always write that as first, just because we
+         * always did and some quirky clients might rely on that.
+         */
+        http1_write_header_field(&out, "Date", date);
+        apr_table_unset(resp->headers, "Date");
     }
-    else {
-        date = apr_palloc(r->pool, APR_RFC822_DATE_LEN);
-        ap_recent_rfc822_date(date, r->request_time);
-    }
-
-    http1_write_header_field(&out, "Date", proxy_date ? proxy_date : date );
-
-    if (!server && *us)
-        server = us;
-    if (server)
+    if (server) {
+        /* We always write that second, just because we
+         * always did and some quirky clients might rely on that.
+         */
         http1_write_header_field(&out, "Server", server);
+        apr_table_unset(resp->headers, "Server");
+    }
 
     if (APLOGrtrace3(r)) {
         ap_log_rerror(APLOG_MARK, APLOG_TRACE3, 0, r,
@@ -437,18 +422,12 @@ static void http1_append_response_head(request_rec *r,
          * Date and Server are less interesting, use TRACE5 for them while
          * using TRACE4 for the other headers.
          */
-        ap_log_rerror(APLOG_MARK, APLOG_TRACE5, 0, r, "  Date: %s",
-                      proxy_date ? proxy_date : date );
+        if (date)
+            ap_log_rerror(APLOG_MARK, APLOG_TRACE5, 0, r, "  Date: %s",
+                          date);
         if (server)
             ap_log_rerror(APLOG_MARK, APLOG_TRACE5, 0, r, "  Server: %s",
                           server);
-    }
-
-
-    /* unset so we don't send them again */
-    apr_table_unset(resp->headers, "Date");        /* Avoid bogosity */
-    if (server) {
-        apr_table_unset(resp->headers, "Server");
     }
 }
 

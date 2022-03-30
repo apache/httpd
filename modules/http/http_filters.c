@@ -458,6 +458,8 @@ static apr_bucket *create_response_bucket(request_rec *r, apr_bucket_alloc_t *bu
                                            r->headers_out);
     }
 
+    ap_set_std_response_headers(r);
+
     /*
      * Remove the 'Vary' header field if the client can't handle it.
      * Since this will have nasty effects on HTTP/1.1 caches, force
