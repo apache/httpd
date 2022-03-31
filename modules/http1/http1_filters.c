@@ -92,12 +92,12 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http1_response_out_filter(ap_filter_t *f
                 ap_bucket_response *resp = e->data;
 
                 ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r,
-                              "ap_http1_transcode_out_filter seeing response bucket status=%d",
+                              "ap_http1_response_out_filter seeing response bucket status=%d",
                               resp->status);
                 if (strict && resp->status < 100) {
                     /* error, not a valid http status */
                     ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(10386)
-                                  "ap_http1_transcode_out_filter seeing headers "
+                                  "ap_http1_response_out_filter seeing headers "
                                   "status=%d in strict mode",
                                   resp->status);
                     rv = AP_FILTER_ERROR;
@@ -107,7 +107,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http1_response_out_filter(ap_filter_t *f
                     /* already sent the final response for the request.
                      */
                     ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(10387)
-                                  "ap_http1_transcode_out_filter seeing headers "
+                                  "ap_http1_response_out_filter seeing headers "
                                   "status=%d after final response already sent",
                                   resp->status);
                     rv = AP_FILTER_ERROR;
@@ -151,7 +151,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http1_response_out_filter(ap_filter_t *f
                         rv = ap_pass_brigade(f->next, b);
                         apr_brigade_cleanup(b);
                         ap_log_rerror(APLOG_MARK, APLOG_TRACE2, rv, r,
-                                      "ap_http1_transcode_out_filter passed response"
+                                      "ap_http1_response_out_filter passed response"
                                       ", add CHUNK filter");
                         if (APR_SUCCESS != rv) {
                             apr_brigade_cleanup(ctx->tmpbb);
@@ -175,7 +175,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http1_response_out_filter(ap_filter_t *f
             /* data buckets before seeing the final response are in error.
              */
             ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-                          "ap_http1_transcode_out_filter seeing data before headers, %ld bytes ",
+                          "ap_http1_response_out_filter seeing data before headers, %ld bytes ",
                           (long)e->length);
             rv = AP_FILTER_ERROR;
             goto cleanup;
