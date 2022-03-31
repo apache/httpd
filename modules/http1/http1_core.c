@@ -123,7 +123,7 @@ static void register_hooks(apr_pool_t *p)
                                   NULL, AP_FTYPE_TRANSCODE + 1);
     http1_request_in_filter_handle =
         ap_register_input_filter("HTTP1_REQUEST_IN", http1_request_in_filter,
-                                 NULL, AP_FTYPE_TRANSCODE);
+                                 NULL, AP_FTYPE_PROTOCOL);
     http1_body_in_filter_handle =
         ap_register_input_filter("HTTP1_BODY_IN", http1_body_in_filter,
                                  NULL, AP_FTYPE_TRANSCODE);
