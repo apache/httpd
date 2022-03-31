@@ -1877,6 +1877,7 @@ apr_status_t ap_http_outerror_filter(ap_filter_t *f,
         }
         /* Detect EOC buckets and memorize this in the context. */
         if (AP_BUCKET_IS_EOC(e)) {
+            r->connection->keepalive = AP_CONN_CLOSE;
             ctx->seen_eoc = 1;
         }
     }
