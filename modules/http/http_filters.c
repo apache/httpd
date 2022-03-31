@@ -1802,6 +1802,7 @@ AP_DECLARE(long) ap_get_client_block(request_rec *r, char *buffer,
 /* Context struct for ap_http_outerror_filter */
 typedef struct {
     int seen_eoc;
+    int first_error;
 } outerror_filter_ctx_t;
 
 /* Filter to handle any error buckets on output */
@@ -1831,12 +1832,26 @@ apr_status_t ap_http_outerror_filter(ap_filter_t *f,
                 /* stream aborted and we have not ended it yet */
                 r->connection->keepalive = AP_CONN_CLOSE;
             }
+            /*
+             * Memorize the status code of the first error bucket for possible
+             * later use.
+             */
+            if (!ctx->first_error) {
+                ctx->first_error = ((ap_bucket_error *)(e->data))->status;
+            }
             continue;
         }
         /* Detect EOC buckets and memorize this in the context. */
         if (AP_BUCKET_IS_EOC(e)) {
             r->connection->keepalive = AP_CONN_CLOSE;
             ctx->seen_eoc = 1;
+            /* Set the request status to the status of the first error bucket.
+             * This should ensure that we log an appropriate status code in
+             * the access log.
+             */
+            if (ctx->first_error) {
+                r->status = ctx->first_error;
+            }
         }
     }
     /*
