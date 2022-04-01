@@ -525,6 +525,10 @@ SOURCE=.\server\error_bucket.c
 # End Source File
 # Begin Source File
 
+SOURCE=.\server\headers_bucket.c
+# End Source File
+# Begin Source File
+
 SOURCE=.\server\util.c
 # End Source File
 # Begin Source File

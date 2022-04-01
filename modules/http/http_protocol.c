@@ -1485,3 +1485,108 @@ AP_DECLARE(void) ap_clear_method_list(ap_method_list_t *l)
     l->method_list->nelts = 0;
 }
 
+/* Send a request's HTTP response headers to the client.
+ */
+AP_DECLARE(apr_status_t) ap_http1_append_headers(apr_bucket_brigade *bb,
+                                                 request_rec *r,
+                                                 apr_table_t *headers)
+{
+    const apr_array_header_t *elts;
+    const apr_table_entry_t *t_elt;
+    const apr_table_entry_t *t_end;
+    struct iovec *vec;
+    struct iovec *vec_next;
+
+    elts = apr_table_elts(headers);
+    if (elts->nelts == 0) {
+        return APR_SUCCESS;
+    }
+    t_elt = (const apr_table_entry_t *)(elts->elts);
+    t_end = t_elt + elts->nelts;
+    vec = (struct iovec *)apr_palloc(r->pool, 4 * elts->nelts *
+                                     sizeof(struct iovec));
+    vec_next = vec;
+
+    /* For each field, generate
+     *    name ": " value CRLF
+     */
+    do {
+        if (t_elt->key && t_elt->val) {
+            vec_next->iov_base = (void*)(t_elt->key);
+            vec_next->iov_len = strlen(t_elt->key);
+            vec_next++;
+            vec_next->iov_base = ": ";
+            vec_next->iov_len = sizeof(": ") - 1;
+            vec_next++;
+            vec_next->iov_base = (void*)(t_elt->val);
+            vec_next->iov_len = strlen(t_elt->val);
+            vec_next++;
+            vec_next->iov_base = CRLF;
+            vec_next->iov_len = sizeof(CRLF) - 1;
+            vec_next++;
+        }
+        t_elt++;
+    } while (t_elt < t_end);
+
+    if (APLOGrtrace4(r)) {
+        t_elt = (const apr_table_entry_t *)(elts->elts);
+        do {
+            ap_log_rerror(APLOG_MARK, APLOG_TRACE4, 0, r, "  %s: %s",
+                          t_elt->key, t_elt->val);
+            t_elt++;
+        } while (t_elt < t_end);
+    }
+
+#if APR_CHARSET_EBCDIC
+    {
+        apr_size_t len;
+        char *tmp = apr_pstrcatv(r->pool, vec, vec_next - vec, &len);
+        ap_xlate_proto_to_ascii(tmp, len);
+        return apr_brigade_write(bb, NULL, NULL, tmp, len);
+    }
+#else
+    return apr_brigade_writev(bb, NULL, NULL, vec, vec_next - vec);
+#endif
+}
+
+AP_DECLARE(apr_status_t) ap_http1_terminate_header(apr_bucket_brigade *bb)
+{
+    char crlf[] = CRLF;
+    apr_size_t buflen;
+
+    buflen = strlen(crlf);
+    ap_xlate_proto_to_ascii(crlf, buflen);
+    return apr_brigade_write(bb, NULL, NULL, crlf, buflen);
+}
+
+AP_DECLARE(void) ap_http1_add_end_chunk(apr_bucket_brigade *b,
+                                        apr_bucket *eos,
+                                        request_rec *r,
+                                        apr_table_t *trailers)
+{
+    if (!trailers || apr_is_empty_table(trailers)) {
+        apr_bucket *e;
+
+        ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r,
+                      "append empty end chunk");
+        e = apr_bucket_immortal_create(ZERO_ASCII CRLF_ASCII
+                                       CRLF_ASCII, 5, b->bucket_alloc);
+        if (eos) {
+            APR_BUCKET_INSERT_BEFORE(eos, e);
+        }
+        else {
+            APR_BRIGADE_INSERT_TAIL(b, e);
+        }
+    }
+    else {
+        apr_bucket_brigade *tmp;
+
+        ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r,
+                      "append end chunk with trailers");
+        tmp = eos? apr_brigade_split_ex(b, eos, NULL) : NULL;
+        apr_brigade_write(b, NULL, NULL, ZERO_ASCII CRLF_ASCII, 3);
+        ap_http1_append_headers(b, r, trailers);
+        ap_http1_terminate_header(b);
+        if (tmp) APR_BRIGADE_CONCAT(b, tmp);
+    }
+}

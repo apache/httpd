@@ -699,6 +699,7 @@ SET(LIBHTTPD_SOURCES
   server/eoc_bucket.c
   server/eor_bucket.c
   server/error_bucket.c
+  server/headers_bucket.c
   server/listen.c
   server/log.c
   server/mpm/winnt/child.c

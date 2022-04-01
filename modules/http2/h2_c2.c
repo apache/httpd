@@ -478,6 +478,16 @@ static apr_status_t c2_process(h2_conn_ctx_t *conn_ctx, conn_rec *c)
 
     /* the request_rec->server carries the timeout value that applies */
     h2_conn_ctx_set_timeout(conn_ctx, r->server->timeout);
+    /* We only handle this one request on the connection and tell everyone
+     * that there is no need to keep it "clean" if something fails. Also,
+     * this prevents mod_reqtimeout from doing funny business with monitoring
+     * keepalive timeouts.
+     */
+    r->connection->keepalive = AP_CONN_CLOSE;
+
+    if (conn_ctx->beam_in && !apr_table_get(r->headers_in, "Content-Length")) {
+        r->body_indeterminate = 1;
+    }
 
     if (h2_config_sgeti(conn_ctx->server, H2_CONF_COPY_FILES)) {
         ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, c,

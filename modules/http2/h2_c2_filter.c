@@ -668,139 +668,6 @@ apr_status_t h2_c2_filter_response_out(ap_filter_t *f, apr_bucket_brigade *bb)
 }
 
 
-struct h2_chunk_filter_t {
-    const char *id;
-    int eos_chunk_added;
-    apr_bucket_brigade *bbchunk;
-    apr_off_t chunked_total;
-};
-typedef struct h2_chunk_filter_t h2_chunk_filter_t;
-
-
-static void make_chunk(conn_rec *c, h2_chunk_filter_t *fctx, apr_bucket_brigade *bb,
-                       apr_bucket *first, apr_off_t chunk_len, 
-                       apr_bucket *tail)
-{
-    /* Surround the buckets [first, tail[ with new buckets carrying the
-     * HTTP/1.1 chunked encoding format. If tail is NULL, the chunk extends
-     * to the end of the brigade. */
-    char buffer[128];
-    apr_bucket *b;
-    apr_size_t len;
-    
-    len = (apr_size_t)apr_snprintf(buffer, H2_ALEN(buffer), 
-                                   "%"APR_UINT64_T_HEX_FMT"\r\n", (apr_uint64_t)chunk_len);
-    b = apr_bucket_heap_create(buffer, len, NULL, bb->bucket_alloc);
-    APR_BUCKET_INSERT_BEFORE(first, b);
-    b = apr_bucket_immortal_create("\r\n", 2, bb->bucket_alloc);
-    if (tail) {
-        APR_BUCKET_INSERT_BEFORE(tail, b);
-    }
-    else {
-        APR_BRIGADE_INSERT_TAIL(bb, b);
-    }
-    fctx->chunked_total += chunk_len;
-    ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, c,
-                  "h2_c2(%s): added chunk %ld, total %ld",
-                  fctx->id, (long)chunk_len, (long)fctx->chunked_total);
-}
-
-static int ser_header(void *ctx, const char *name, const char *value) 
-{
-    apr_bucket_brigade *bb = ctx;
-    apr_brigade_printf(bb, NULL, NULL, "%s: %s\r\n", name, value);
-    return 1;
-}
-
-static apr_status_t read_and_chunk(ap_filter_t *f, h2_conn_ctx_t *conn_ctx,
-                                   apr_read_type_e block) {
-    h2_chunk_filter_t *fctx = f->ctx;
-    request_rec *r = f->r;
-    apr_status_t status = APR_SUCCESS;
-
-    if (!fctx->bbchunk) {
-        fctx->bbchunk = apr_brigade_create(r->pool, f->c->bucket_alloc);
-    }
-    
-    if (APR_BRIGADE_EMPTY(fctx->bbchunk)) {
-        apr_bucket *b, *next, *first_data = NULL;
-        apr_bucket_brigade *tmp;
-        apr_off_t bblen = 0;
-
-        /* get more data from the lower layer filters. Always do this
-         * in larger pieces, since we handle the read modes ourself. */
-        status = ap_get_brigade(f->next, fctx->bbchunk,
-                                AP_MODE_READBYTES, block, conn_ctx->mplx->stream_max_mem);
-        if (status != APR_SUCCESS) {
-            return status;
-        }
-
-        for (b = APR_BRIGADE_FIRST(fctx->bbchunk);
-             b != APR_BRIGADE_SENTINEL(fctx->bbchunk);
-             b = next) {
-            next = APR_BUCKET_NEXT(b);
-            if (APR_BUCKET_IS_METADATA(b)) {
-                if (first_data) {
-                    make_chunk(f->c, fctx, fctx->bbchunk, first_data, bblen, b);
-                    first_data = NULL;
-                }
-                
-                if (H2_BUCKET_IS_HEADERS(b)) {
-                    h2_headers *headers = h2_bucket_headers_get(b);
-                    
-                    ap_assert(headers);
-                    ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r,
-                                  "h2_c2(%s-%d): receiving trailers",
-                                  conn_ctx->id, conn_ctx->stream_id);
-                    tmp = apr_brigade_split_ex(fctx->bbchunk, b, NULL);
-                    if (!apr_is_empty_table(headers->headers)) {
-                        status = apr_brigade_puts(fctx->bbchunk, NULL, NULL, "0\r\n");
-                        apr_table_do(ser_header, fctx->bbchunk, headers->headers, NULL);
-                        status = apr_brigade_puts(fctx->bbchunk, NULL, NULL, "\r\n");
-                    }
-                    else {
-                        status = apr_brigade_puts(fctx->bbchunk, NULL, NULL, "0\r\n\r\n");
-                    }
-                    r->trailers_in = apr_table_clone(r->pool, headers->headers);
-                    APR_BUCKET_REMOVE(b);
-                    apr_bucket_destroy(b);
-                    APR_BRIGADE_CONCAT(fctx->bbchunk, tmp);
-                    apr_brigade_destroy(tmp);
-                    fctx->eos_chunk_added = 1;
-                }
-                else if (APR_BUCKET_IS_EOS(b)) {
-                    ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r,
-                                  "h2_c2(%s-%d): receiving eos",
-                                  conn_ctx->id, conn_ctx->stream_id);
-                    if (!fctx->eos_chunk_added) {
-                        tmp = apr_brigade_split_ex(fctx->bbchunk, b, NULL);
-                        status = apr_brigade_puts(fctx->bbchunk, NULL, NULL, "0\r\n\r\n");
-                        APR_BRIGADE_CONCAT(fctx->bbchunk, tmp);
-                        apr_brigade_destroy(tmp);
-                    }
-                    fctx->eos_chunk_added = 0;
-                }
-            }
-            else if (b->length == 0) {
-                APR_BUCKET_REMOVE(b);
-                apr_bucket_destroy(b);
-            } 
-            else {
-                if (!first_data) {
-                    first_data = b;
-                    bblen = 0;
-                }
-                bblen += b->length;
-            }    
-        }
-        
-        if (first_data) {
-            make_chunk(f->c, fctx, fctx->bbchunk, first_data, bblen, NULL);
-        }            
-    }
-    return status;
-}
-
 apr_status_t h2_c2_filter_request_in(ap_filter_t* f,
                                   apr_bucket_brigade* bb,
                                   ap_input_mode_t mode,
@@ -808,7 +675,6 @@ apr_status_t h2_c2_filter_request_in(ap_filter_t* f,
                                   apr_off_t readbytes)
 {
     h2_conn_ctx_t *conn_ctx = h2_conn_ctx_get(f->c);
-    h2_chunk_filter_t *fctx = f->ctx;
     request_rec *r = f->r;
     apr_status_t status = APR_SUCCESS;
     apr_bucket *b, *next;
@@ -817,89 +683,36 @@ apr_status_t h2_c2_filter_request_in(ap_filter_t* f,
                                                     &core_module);
     ap_assert(conn_ctx);
 
-    if (!fctx) {
-        fctx = apr_pcalloc(r->pool, sizeof(*fctx));
-        fctx->id = apr_psprintf(r->pool, "%s-%d", conn_ctx->id, conn_ctx->stream_id);
-        f->ctx = fctx;
-    }
-
     ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, f->r,
                   "h2_c2(%s-%d): request input, exp=%d",
                   conn_ctx->id, conn_ctx->stream_id, r->expecting_100);
-    if (!conn_ctx->request->chunked) {
-        status = ap_get_brigade(f->next, bb, mode, block, readbytes);
-        /* pipe data through, just take care of trailers */
-        for (b = APR_BRIGADE_FIRST(bb); 
-             b != APR_BRIGADE_SENTINEL(bb); b = next) {
-            next = APR_BUCKET_NEXT(b);
-            if (H2_BUCKET_IS_HEADERS(b)) {
-                h2_headers *headers = h2_bucket_headers_get(b);
-                ap_assert(headers);
-                ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r,
-                              "h2_c2(%s-%d): receiving trailers",
-                              conn_ctx->id, conn_ctx->stream_id);
-                r->trailers_in = headers->headers;
-                if (conf && conf->merge_trailers == AP_MERGE_TRAILERS_ENABLE) {
-                    r->headers_in = apr_table_overlay(r->pool, r->headers_in,
-                                                      r->trailers_in);                    
-                }
-                APR_BUCKET_REMOVE(b);
-                apr_bucket_destroy(b);
-                ap_remove_input_filter(f);
-                
-                if (headers->raw_bytes && h2_c_logio_add_bytes_in) {
-                    h2_c_logio_add_bytes_in(f->c, headers->raw_bytes);
-                }
-                break;
-            }
-        }
-        return status;
-    }
 
-    /* Things are more complicated. The standard HTTP input filter, which
-     * does a lot what we do not want to duplicate, also cares about chunked
-     * transfer encoding and trailers.
-     * We need to simulate chunked encoding for it to be happy.
-     */
-    if ((status = read_and_chunk(f, conn_ctx, block)) != APR_SUCCESS) {
-        return status;
-    }
-    
-    if (mode == AP_MODE_EXHAUSTIVE) {
-        /* return all we have */
-        APR_BRIGADE_CONCAT(bb, fctx->bbchunk);
-    }
-    else if (mode == AP_MODE_READBYTES) {
-        status = h2_brigade_concat_length(bb, fctx->bbchunk, readbytes);
-    }
-    else if (mode == AP_MODE_SPECULATIVE) {
-        status = h2_brigade_copy_length(bb, fctx->bbchunk, readbytes);
-    }
-    else if (mode == AP_MODE_GETLINE) {
-        /* we are reading a single LF line, e.g. the HTTP headers. 
-         * this has the nasty side effect to split the bucket, even
-         * though it ends with CRLF and creates a 0 length bucket */
-        status = apr_brigade_split_line(bb, fctx->bbchunk, block, HUGE_STRING_LEN);
-        if (APLOGctrace1(f->c)) {
-            char buffer[1024];
-            apr_size_t len = sizeof(buffer)-1;
-            apr_brigade_flatten(bb, buffer, &len);
-            buffer[len] = 0;
-            ap_log_cerror(APLOG_MARK, APLOG_TRACE1, status, f->c,
-                          "h2_c2(%s-%d): getline: %s",
-                          conn_ctx->id, conn_ctx->stream_id, buffer);
+    status = ap_get_brigade(f->next, bb, mode, block, readbytes);
+    /* pipe data through, just take care of trailers */
+    for (b = APR_BRIGADE_FIRST(bb);
+         b != APR_BRIGADE_SENTINEL(bb); b = next) {
+        next = APR_BUCKET_NEXT(b);
+        if (H2_BUCKET_IS_HEADERS(b)) {
+            h2_headers *headers = h2_bucket_headers_get(b);
+            ap_assert(headers);
+            ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r,
+                          "h2_c2(%s-%d): receiving trailers",
+                          conn_ctx->id, conn_ctx->stream_id);
+            r->trailers_in = headers->headers;
+            if (conf && conf->merge_trailers == AP_MERGE_TRAILERS_ENABLE) {
+                r->headers_in = apr_table_overlay(r->pool, r->headers_in,
+                                                  r->trailers_in);
+            }
+            APR_BUCKET_REMOVE(b);
+            apr_bucket_destroy(b);
+            ap_remove_input_filter(f);
+
+            if (headers->raw_bytes && h2_c_logio_add_bytes_in) {
+                h2_c_logio_add_bytes_in(f->c, headers->raw_bytes);
+            }
+            break;
         }
     }
-    else {
-        /* Hmm, well. There is mode AP_MODE_EATCRLF, but we chose not
-         * to support it. Seems to work. */
-        ap_log_cerror(APLOG_MARK, APLOG_ERR, APR_ENOTIMPL, f->c,
-                      APLOGNO(02942) 
-                      "h2_c2, unsupported READ mode %d", mode);
-        status = APR_ENOTIMPL;
-    }
-    
-    h2_util_bb_log(f->c, conn_ctx->stream_id, APLOG_TRACE2, "returning input", bb);
     return status;
 }
 

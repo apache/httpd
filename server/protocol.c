@@ -47,6 +47,7 @@
 #include "mod_core.h"
 #include "util_charset.h"
 #include "util_ebcdic.h"
+#include "util_time.h"
 #include "scoreboard.h"
 
 #if APR_HAVE_STDARG_H
@@ -1465,6 +1466,18 @@ static void apply_server_config(request_rec *r)
     r->per_dir_config = r->server->lookup_defaults;
 }
 
+AP_DECLARE(int) ap_assign_request(request_rec *r,
+                                  const char *method, const char *uri,
+                                  const char *protocol)
+{
+    /* dummy, for now */
+    (void)r;
+    (void)method;
+    (void)uri;
+    (void)protocol;
+    return 0;
+}
+
 request_rec *ap_read_request(conn_rec *conn)
 {
     int access_status;
@@ -1583,6 +1596,14 @@ request_rec *ap_read_request(conn_rec *conn)
      */
     ap_add_input_filter_handle(ap_http_input_filter_handle,
                                NULL, r, r->connection);
+    if (r->proto_num <= HTTP_VERSION(1,1)) {
+        ap_add_input_filter_handle(ap_http1_body_in_filter_handle,
+                                   NULL, r, r->connection);
+        if (r->proto_num >= HTTP_VERSION(1,0)
+            && apr_table_get(r->headers_in, "Transfer-Encoding")) {
+            r->body_indeterminate = 1;
+        }
+    }
 
     /* Validate Host/Expect headers and select vhost. */
     if (!ap_check_request_header(r)) {
@@ -2384,6 +2405,38 @@ static int send_header(void *data, const char *key, const char *val)
      return 1;
  }
 #endif
+
+AP_DECLARE(void) ap_set_std_response_headers(request_rec *r)
+{
+    const char *server = NULL, *date;
+    char *s;
+
+    /* Before generating a response, we make sure that `Date` and `Server`
+     * headers are present. When proxying requests, we preserver existing
+     * values and replace them otherwise.
+     */
+    if (r->proxyreq != PROXYREQ_NONE) {
+        date = apr_table_get(r->headers_out, "Date");
+        if (!date) {
+            s = apr_palloc(r->pool, APR_RFC822_DATE_LEN);
+            ap_recent_rfc822_date(s, r->request_time);
+            date = s;
+        }
+        server = apr_table_get(r->headers_out, "Server");
+    }
+    else {
+        s = apr_palloc(r->pool, APR_RFC822_DATE_LEN);
+        ap_recent_rfc822_date(s, r->request_time);
+        date = s;
+    }
+
+    apr_table_setn(r->headers_out, "Date", date);
+
+    if (!server)
+        server = ap_get_server_banner();
+    if (server && *server)
+        apr_table_setn(r->headers_out, "Server", server);
+}
 
 AP_DECLARE(void) ap_send_interim_response(request_rec *r, int send_headers)
 {

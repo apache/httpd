@@ -19,6 +19,7 @@
  */
 
 #include "apr_strings.h"
+#include "apr_lib.h"
 #include "apr_thread_proc.h"    /* for RLIMIT stuff */
 
 #define APR_WANT_STRFUNC
@@ -28,6 +29,7 @@
 #include "http_config.h"
 #include "http_connection.h"
 #include "http_core.h"
+#include "http_log.h"
 #include "http_protocol.h"  /* For index_of_response().  Grump. */
 #include "http_request.h"
 
@@ -38,18 +40,27 @@
 
 #include "mod_core.h"
 
-/*
- * A pointer to this is used to memorize in the filter context that a bad
- * gateway error bucket had been seen. It is used as an invented unique pointer.
- */
-static char bad_gateway_seen;
+
+APLOG_USE_MODULE(http);
+
+
+typedef struct chunk_out_ctx {
+    int bad_gateway_seen;
+    apr_table_t *trailers;
+} chunk_out_ctx;
+
 
 apr_status_t ap_http_chunk_filter(ap_filter_t *f, apr_bucket_brigade *b)
 {
     conn_rec *c = f->r->connection;
+    chunk_out_ctx *ctx = f->ctx;
     apr_bucket_brigade *more, *tmp;
     apr_bucket *e;
     apr_status_t rv;
+
+    if (!ctx) {
+        ctx = f->ctx = apr_pcalloc(f->r->pool, sizeof(*ctx));
+    }
 
     for (more = tmp = NULL; b; b = more, more = NULL) {
         apr_off_t bytes = 0;
@@ -65,28 +76,43 @@ apr_status_t ap_http_chunk_filter(ap_filter_t *f, apr_bucket_brigade *b)
              e != APR_BRIGADE_SENTINEL(b);
              e = APR_BUCKET_NEXT(e))
         {
-            if (APR_BUCKET_IS_EOS(e)) {
-                /* there shouldn't be anything after the eos */
-                ap_remove_output_filter(f);
-                eos = e;
-                break;
-            }
-            if (AP_BUCKET_IS_ERROR(e) &&
-                (((ap_bucket_error *)(e->data))->status == HTTP_BAD_GATEWAY ||
-                 ((ap_bucket_error *)(e->data))->status == HTTP_GATEWAY_TIME_OUT)) {
-                /*
-                 * We had a broken backend. Memorize this in the filter
-                 * context.
-                 */
-                f->ctx = &bad_gateway_seen;
-                continue;
-            }
-            if (APR_BUCKET_IS_FLUSH(e)) {
-                flush = e;
-                if (e != APR_BRIGADE_LAST(b)) {
-                    more = apr_brigade_split_ex(b, APR_BUCKET_NEXT(e), tmp);
+            if (APR_BUCKET_IS_METADATA(e)) {
+                if (APR_BUCKET_IS_EOS(e)) {
+                    /* there shouldn't be anything after the eos */
+                    ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, f->r,
+                                  "ap_http_chunk_filter eos seen, removing filter");
+                    ap_remove_output_filter(f);
+                    eos = e;
+                    break;
                 }
-                break;
+                if (AP_BUCKET_IS_ERROR(e) &&
+                    (((ap_bucket_error *)(e->data))->status == HTTP_BAD_GATEWAY ||
+                     ((ap_bucket_error *)(e->data))->status == HTTP_GATEWAY_TIME_OUT)) {
+                    /*
+                     * We had a broken backend. Memorize this in the filter
+                     * context.
+                     */
+                    ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, f->r,
+                                  "ap_http_chunk_filter bad gateway error, suppressing end chunk");
+                    ctx->bad_gateway_seen = 1;
+                    continue;
+                }
+                if (APR_BUCKET_IS_FLUSH(e)) {
+                    flush = e;
+                    if (e != APR_BRIGADE_LAST(b)) {
+                        more = apr_brigade_split_ex(b, APR_BUCKET_NEXT(e), tmp);
+                    }
+                    break;
+                }
+                if (AP_BUCKET_IS_HEADERS(e)) {
+                    ap_bucket_headers *hdrs = e->data;
+                    if (!apr_is_empty_table(hdrs->headers)) {
+                        if (!ctx->trailers) {
+                            ctx->trailers = apr_table_make(f->r->pool, 5);
+                        }
+                        apr_table_overlap(ctx->trailers, hdrs->headers, APR_OVERLAP_TABLES_MERGE);
+                    }
+                }
             }
             else if (e->length == (apr_size_t)-1) {
                 /* unknown amount of data (e.g. a pipe) */
@@ -132,6 +158,9 @@ apr_status_t ap_http_chunk_filter(ap_filter_t *f, apr_bucket_brigade *b)
              * Insert the chunk header, specifying the number of bytes in
              * the chunk.
              */
+            ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, f->r,
+                          "ap_http_chunk_filter sending chunk of %"
+                          APR_UINT64_T_HEX_FMT " bytes", (apr_uint64_t)bytes);
             hdr_len = apr_snprintf(chunk_hdr, sizeof(chunk_hdr),
                                    "%" APR_UINT64_T_HEX_FMT CRLF, (apr_uint64_t)bytes);
             ap_xlate_proto_to_ascii(chunk_hdr, hdr_len);
@@ -175,12 +204,8 @@ apr_status_t ap_http_chunk_filter(ap_filter_t *f, apr_bucket_brigade *b)
          * marker above, but this is a bit more straight-forward for
          * now.
          */
-        if (eos && !f->ctx) {
-            /* XXX: (2) trailers ... does not yet exist */
-            e = apr_bucket_immortal_create(ZERO_ASCII CRLF_ASCII
-                                           /* <trailers> */
-                                           CRLF_ASCII, 5, c->bucket_alloc);
-            APR_BUCKET_INSERT_BEFORE(eos, e);
+        if (eos && !ctx->bad_gateway_seen) {
+            ap_http1_add_end_chunk(b, eos, f->r, ctx->trailers);
         }
 
         /* pass the brigade to the next filter. */
