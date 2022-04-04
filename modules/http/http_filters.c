@@ -1887,13 +1887,6 @@ apr_status_t ap_http_outerror_filter(ap_filter_t *f,
         if (AP_BUCKET_IS_EOC(e)) {
             r->connection->keepalive = AP_CONN_CLOSE;
             ctx->seen_eoc = 1;
-            /* Set the request status to the status of the first error bucket.
-             * This should ensure that we log an appropriate status code in
-             * the access log.
-             */
-            if (ctx->first_error) {
-                r->status = ctx->first_error;
-            }
         }
     }
     /*
@@ -1916,6 +1909,18 @@ apr_status_t ap_http_outerror_filter(ap_filter_t *f,
      *              EOS bucket.
      */
     if (ctx->seen_eoc) {
+        /*
+         * Set the request status to the status of the first error bucket.
+         * This should ensure that we log an appropriate status code in
+         * the access log.
+         * We need to set r->status on each call after we noticed an EOC as
+         * data bucket generators like ap_die might have changed the status
+         * code. But we know better in this case and insist on the status
+         * code that we have seen in the error bucket.
+         */
+        if (ctx->first_error) {
+            r->status = ctx->first_error;
+        }
         for (e = APR_BRIGADE_FIRST(b);
              e != APR_BRIGADE_SENTINEL(b);
              e = APR_BUCKET_NEXT(e))
