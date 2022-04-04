@@ -1320,6 +1320,16 @@ AP_DECLARE(void) ap_set_std_response_headers(request_rec *r);
 AP_DECLARE(void) ap_send_interim_response(request_rec *r, int send_headers);
 
 /**
+ * Append a header in HTTP/1.1 format to the brigade.
+ * @param b the brigade to append to
+ * @param p the pool to use
+ * @param name the name of the header field
+ * @param value the value of the header field
+ */
+AP_DECLARE(apr_status_t) ap_h1_append_header(apr_bucket_brigade *b,
+                                             apr_pool_t *pool,
+                                             const char *name, const char *value);
+/**
  * Append the headers in HTTP/1.1 format to the brigade.
  * @param b the brigade to append to
  * @param r the reqeust this is done for (pool and logging)

@@ -1485,8 +1485,22 @@ AP_DECLARE(void) ap_clear_method_list(ap_method_list_t *l)
     l->method_list->nelts = 0;
 }
 
-/* Send a request's HTTP response headers to the client.
- */
+AP_DECLARE(apr_status_t) ap_h1_append_header(apr_bucket_brigade *b,
+                                             apr_pool_t *p,
+                                             const char *name, const char *value)
+{
+    char *buf;
+    apr_size_t len;
+
+    if (!name || !*name || !value || !*value) {
+        return APR_SUCCESS;
+    }
+    buf = apr_pstrcat(p, name, ": ", value, CRLF, NULL);
+    len = strlen(buf);
+    ap_xlate_proto_to_ascii(buf, len);
+    return apr_brigade_write(b, NULL, NULL, buf, len);
+}
+
 AP_DECLARE(apr_status_t) ap_h1_append_headers(apr_bucket_brigade *bb,
                                               request_rec *r,
                                               apr_table_t *headers)

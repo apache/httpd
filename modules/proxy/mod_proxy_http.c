@@ -516,10 +516,6 @@ static int stream_reqbody(proxy_http_req_t *req)
 
 static void terminate_headers(proxy_http_req_t *req)
 {
-    apr_bucket_alloc_t *bucket_alloc = req->bucket_alloc;
-    apr_bucket *e;
-    char *buf;
-
     /*
      * Handle Connection: header if we do HTTP/1.1 request:
      * If we plan to close the backend connection sent Connection: close
@@ -527,28 +523,20 @@ static void terminate_headers(proxy_http_req_t *req)
      */
     if (!req->force10) {
         if (req->upgrade) {
-            buf = apr_pstrdup(req->p, "Connection: Upgrade" CRLF);
-            ap_xlate_proto_to_ascii(buf, strlen(buf));
-            e = apr_bucket_pool_create(buf, strlen(buf), req->p, bucket_alloc);
-            APR_BRIGADE_INSERT_TAIL(req->header_brigade, e);
-
             /* Tell the backend that it can upgrade the connection. */
-            buf = apr_pstrcat(req->p, "Upgrade: ", req->upgrade, CRLF, NULL);
+            ap_h1_append_header(req->header_brigade, req->p, "Connection", "Upgrade");
+            ap_h1_append_header(req->header_brigade, req->p, "Upgrade", req->upgrade);
         }
         else if (ap_proxy_connection_reusable(req->backend)) {
-            buf = apr_pstrdup(req->p, "Connection: Keep-Alive" CRLF);
+            ap_h1_append_header(req->header_brigade, req->p, "Connection", "Keep-Alive");
         }
         else {
-            buf = apr_pstrdup(req->p, "Connection: close" CRLF);
+            ap_h1_append_header(req->header_brigade, req->p, "Connection", "close");
         }
-        ap_xlate_proto_to_ascii(buf, strlen(buf));
-        e = apr_bucket_pool_create(buf, strlen(buf), req->p, bucket_alloc);
-        APR_BRIGADE_INSERT_TAIL(req->header_brigade, e);
     }
 
     /* add empty line at the end of the headers */
-    e = apr_bucket_immortal_create(CRLF_ASCII, 2, bucket_alloc);
-    APR_BRIGADE_INSERT_TAIL(req->header_brigade, e);
+    ap_h1_terminate_header(req->header_brigade);
 }
 
 static int ap_proxy_http_prefetch(proxy_http_req_t *req,

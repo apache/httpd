@@ -709,6 +709,7 @@
  *                         Add field `body_indeterminate` in request_rec
  *                         Add new http/1.x formatting helpers
  *                         Add ap_assign_request()
+ * 20211221.7 (2.5.1-dev)  Add ap_h1_append_header()
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503235UL /* "AP25" */
@@ -716,7 +717,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20211221
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 6             /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 7             /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a
