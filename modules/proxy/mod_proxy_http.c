@@ -455,14 +455,7 @@ static int stream_reqbody(proxy_http_req_t *req)
                     APR_BRIGADE_INSERT_TAIL(input_brigade, e);
                 }
                 if (seen_eos) {
-                    /*
-                     * Append the tailing 0-size chunk
-                     */
-                    e = apr_bucket_immortal_create(ZERO_ASCII CRLF_ASCII
-                                                   /* <trailers> */
-                                                   CRLF_ASCII,
-                                                   5, bucket_alloc);
-                    APR_BRIGADE_INSERT_TAIL(input_brigade, e);
+                    ap_h1_add_end_chunk(input_brigade, NULL, r, r->trailers_in);
                 }
             }
             else if (rb_method == RB_STREAM_CL

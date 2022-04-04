@@ -1312,6 +1312,15 @@ AP_DECLARE_NONSTD(int) ap_send_http_trace(request_rec *r)
     return DONE;
 }
 
+static apr_bucket *create_trailers_bucket(request_rec *r, apr_bucket_alloc_t *bucket_alloc)
+{
+    if (r->trailers_out && !apr_is_empty_table(r->trailers_out)) {
+        ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r, "sending trailers");
+        return ap_bucket_headers_create(r->trailers_out, r->pool, bucket_alloc);
+    }
+    return NULL;
+}
+
 typedef struct header_filter_ctx {
     int headers_sent;
 } header_filter_ctx;
@@ -1323,7 +1332,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f,
     conn_rec *c = r->connection;
     int header_only = (r->header_only || AP_STATUS_IS_HEADER_ONLY(r->status));
     const char *protocol = NULL;
-    apr_bucket *e;
+    apr_bucket *e, *eos = NULL;
     apr_bucket_brigade *b2;
     header_struct h;
     header_filter_ctx *ctx = f->ctx;
@@ -1362,6 +1371,10 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f,
     {
         if (AP_BUCKET_IS_ERROR(e) && !eb) {
             eb = e->data;
+            continue;
+        }
+        if (APR_BUCKET_IS_EOS(e)) {
+            if (!eos) eos = e;
             continue;
         }
         /*
@@ -1414,6 +1427,22 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f,
         ap_remove_output_filter(f);
         rv = ap_pass_brigade(f->next, b);
         goto out;
+    }
+
+    if (eos) {
+        /* on having seen EOS and added possible trailers, we
+         * can remove this filter.
+         */
+        e = create_trailers_bucket(r, b->bucket_alloc);
+        if (e) {
+            APR_BUCKET_INSERT_BEFORE(eos, e);
+        }
+        ap_remove_output_filter(f);
+    }
+
+    if (ctx->headers_sent) {
+        /* we did already the stuff below, just pass on */
+        return ap_pass_brigade(f->next, b);
     }
 
     /*
@@ -1545,11 +1574,6 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f,
         ap_add_output_filter("CHUNK", NULL, r, r->connection);
     }
 
-    /* Don't remove this filter until after we have added the CHUNK filter.
-     * Otherwise, f->next won't be the CHUNK filter and thus the first
-     * brigade won't be chunked properly.
-     */
-    ap_remove_output_filter(f);
     rv = ap_pass_brigade(f->next, b);
 out:
     if (recursive_error) {

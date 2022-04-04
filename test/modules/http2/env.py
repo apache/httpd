@@ -61,15 +61,15 @@ class H2TestEnv(HttpdTestEnv):
     @property
     def is_unsupported(cls):
         mpm_module = f"mpm_{os.environ['MPM']}" if 'MPM' in os.environ else 'mpm_event'
-        return mpm_module in ['mpm_prefork']
+        return mpm_module == 'mpm_prefork'
 
     def __init__(self, pytestconfig=None):
         super().__init__(pytestconfig=pytestconfig)
         self.add_httpd_conf([
-                             "H2MinWorkers 1",
-                             "H2MaxWorkers 64",
-                             "Protocols h2 http/1.1 h2c",
-                         ])
+            "H2MinWorkers 1",
+            "H2MaxWorkers 64",
+            "Protocols h2 http/1.1 h2c",
+        ])
         self.add_httpd_log_modules(["http2", "proxy_http2", "h2test", "proxy", "proxy_http"])
         self.add_cert_specs([
             CertificateSpec(domains=[
@@ -115,6 +115,12 @@ class H2Conf(HttpdConf):
             f"cgi.{env.http_tld}": [
                 "SSLOptions +StdEnvVars",
                 "AddHandler cgi-script .py",
+                "<Location \"/h2test/echo\">",
+                "    SetHandler h2test-echo",
+                "</Location>",
+                "<Location \"/h2test/delay\">",
+                "    SetHandler h2test-delay",
+                "</Location>",
             ]
         }))
 
