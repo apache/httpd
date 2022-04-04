@@ -1332,7 +1332,7 @@ AP_DECLARE(apr_status_t) ap_h1_append_header(apr_bucket_brigade *b,
 /**
  * Append the headers in HTTP/1.1 format to the brigade.
  * @param b the brigade to append to
- * @param r the reqeust this is done for (pool and logging)
+ * @param r the request this is done for (pool and logging)
  * @param headers the headers to append
  */
 AP_DECLARE(apr_status_t) ap_h1_append_headers(apr_bucket_brigade *b,
