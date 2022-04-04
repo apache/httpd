@@ -1944,7 +1944,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_h1_response_out_filter(ap_filter_t *f,
         else if (!ctx->final_response_sent && strict) {
             /* data buckets before seeing the final response are in error.
              */
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO()
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(10390)
                           "ap_http1_response_out_filter seeing data before headers, %ld bytes ",
                           (long)e->length);
             rv = AP_FILTER_ERROR;
