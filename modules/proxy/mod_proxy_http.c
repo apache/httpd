@@ -1360,6 +1360,14 @@ int ap_proxy_http_process_response(proxy_http_req_t *req)
                 backend->close = 1;
                 origin->keepalive = AP_CONN_CLOSE;
             }
+            else {
+                /*
+                 * Keep track of the number of keepalives we processed on this
+                 * connection.
+                 */
+                origin->keepalives++;
+            }
+
         } else {
             /* an http/0.9 response */
             backasswards = 1;
