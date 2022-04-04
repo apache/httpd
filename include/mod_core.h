@@ -31,6 +31,7 @@
 #include "apr_buckets.h"
 
 #include "httpd.h"
+#include "http_protocol.h"
 #include "util_filter.h"
 
 
@@ -56,6 +57,9 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
 apr_status_t ap_h1_body_in_filter(ap_filter_t *f, apr_bucket_brigade *b,
                                      ap_input_mode_t mode, apr_read_type_e block,
                                      apr_off_t readbytes);
+
+/* HTTP/1.1 response formatting filter. */
+apr_status_t ap_h1_response_out_filter(ap_filter_t *f, apr_bucket_brigade *b);
 
 /* HTTP/1.1 chunked transfer encoding filter. */
 apr_status_t ap_http_chunk_filter(ap_filter_t *f, apr_bucket_brigade *b);
@@ -99,6 +103,14 @@ AP_DECLARE_DATA extern const char *ap_multipart_boundary;
 AP_CORE_DECLARE(void) ap_init_rng(apr_pool_t *p);
 /* Update RNG state in parent after fork */
 AP_CORE_DECLARE(void) ap_random_parent_after_fork(void);
+
+/**
+ * Set the keepalive status for this request based on the response
+ * @param r The current request
+ * @param resp The response being send
+ * @return 1 if keepalive can be set, 0 otherwise
+ */
+AP_CORE_DECLARE(int) ap_h1_set_keepalive(request_rec *r, ap_bucket_response *resp);
 
 #ifdef __cplusplus
 }

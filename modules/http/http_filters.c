@@ -57,6 +57,9 @@
 
 APLOG_USE_MODULE(http);
 
+static apr_bucket *create_trailers_bucket(request_rec *r, apr_bucket_alloc_t *bucket_alloc);
+static apr_bucket *create_response_bucket(request_rec *r, apr_bucket_alloc_t *bucket_alloc);
+
 typedef struct http_filter_ctx
 {
     apr_off_t remaining;
@@ -942,67 +945,6 @@ static void fixup_vary(request_rec *r)
     }
 }
 
-/* Send a request's HTTP response headers to the client.
- */
-static apr_status_t send_all_header_fields(header_struct *h,
-                                           const request_rec *r)
-{
-    const apr_array_header_t *elts;
-    const apr_table_entry_t *t_elt;
-    const apr_table_entry_t *t_end;
-    struct iovec *vec;
-    struct iovec *vec_next;
-
-    elts = apr_table_elts(r->headers_out);
-    if (elts->nelts == 0) {
-        return APR_SUCCESS;
-    }
-    t_elt = (const apr_table_entry_t *)(elts->elts);
-    t_end = t_elt + elts->nelts;
-    vec = (struct iovec *)apr_palloc(h->pool, 4 * elts->nelts *
-                                     sizeof(struct iovec));
-    vec_next = vec;
-
-    /* For each field, generate
-     *    name ": " value CRLF
-     */
-    do {
-        vec_next->iov_base = (void*)(t_elt->key);
-        vec_next->iov_len = strlen(t_elt->key);
-        vec_next++;
-        vec_next->iov_base = ": ";
-        vec_next->iov_len = sizeof(": ") - 1;
-        vec_next++;
-        vec_next->iov_base = (void*)(t_elt->val);
-        vec_next->iov_len = strlen(t_elt->val);
-        vec_next++;
-        vec_next->iov_base = CRLF;
-        vec_next->iov_len = sizeof(CRLF) - 1;
-        vec_next++;
-        t_elt++;
-    } while (t_elt < t_end);
-
-    if (APLOGrtrace4(r)) {
-        t_elt = (const apr_table_entry_t *)(elts->elts);
-        do {
-            ap_log_rerror(APLOG_MARK, APLOG_TRACE4, 0, r, "  %s: %s",
-                          t_elt->key, t_elt->val);
-            t_elt++;
-        } while (t_elt < t_end);
-    }
-
-#if APR_CHARSET_EBCDIC
-    {
-        apr_size_t len;
-        char *tmp = apr_pstrcatv(r->pool, vec, vec_next - vec, &len);
-        ap_xlate_proto_to_ascii(tmp, len);
-        return apr_brigade_write(h->bb, NULL, NULL, tmp, len);
-    }
-#else
-    return apr_brigade_writev(h->bb, NULL, NULL, vec, vec_next - vec);
-#endif
-}
-
 /* Confirm that the status line is well-formed and matches r->status.
  * If they don't match, a filter may have negated the status line set by a
  * handler.
@@ -1040,8 +982,7 @@ static apr_status_t validate_status_line(request_rec *r)
  *
  * also prepare r->status_line.
  */
-static void basic_http_header_check(request_rec *r,
-                                    const char **protocol)
+static void basic_http_header_check(request_rec *r)
 {
     apr_status_t rv;
 
@@ -1069,131 +1010,15 @@ static void basic_http_header_check(request_rec *r,
         && apr_table_get(r->subprocess_env, "downgrade-1.0")) {
         r->proto_num = HTTP_VERSION(1,0);
     }
-
-    /* kludge around broken browsers when indicated by force-response-1.0
-     */
-    if (r->proto_num == HTTP_VERSION(1,0)
-        && apr_table_get(r->subprocess_env, "force-response-1.0")) {
-        *protocol = "HTTP/1.0";
-        r->connection->keepalive = AP_CONN_CLOSE;
-    }
-    else {
-        *protocol = AP_SERVER_PROTOCOL;
-    }
-
-}
-
-/* fill "bb" with a barebones/initial HTTP response header */
-static void basic_http_header(request_rec *r, apr_bucket_brigade *bb,
-                              const char *protocol)
-{
-    char *date = NULL;
-    const char *proxy_date = NULL;
-    const char *server = NULL;
-    const char *us = ap_get_server_banner();
-    header_struct h;
-    struct iovec vec[4];
-
-    if (r->assbackwards) {
-        /* there are no headers to send */
-        return;
-    }
-
-    /* Output the HTTP/1.x Status-Line and the Date and Server fields */
-
-    vec[0].iov_base = (void *)protocol;
-    vec[0].iov_len  = strlen(protocol);
-    vec[1].iov_base = (void *)" ";
-    vec[1].iov_len  = sizeof(" ") - 1;
-    vec[2].iov_base = (void *)(r->status_line);
-    vec[2].iov_len  = strlen(r->status_line);
-    vec[3].iov_base = (void *)CRLF;
-    vec[3].iov_len  = sizeof(CRLF) - 1;
-#if APR_CHARSET_EBCDIC
-    {
-        char *tmp;
-        apr_size_t len;
-        tmp = apr_pstrcatv(r->pool, vec, 4, &len);
-        ap_xlate_proto_to_ascii(tmp, len);
-        apr_brigade_write(bb, NULL, NULL, tmp, len);
-    }
-#else
-    apr_brigade_writev(bb, NULL, NULL, vec, 4);
-#endif
-
-    h.pool = r->pool;
-    h.bb = bb;
-
-    /*
-     * keep the set-by-proxy server and date headers, otherwise
-     * generate a new server header / date header
-     */
-    if (r->proxyreq != PROXYREQ_NONE) {
-        proxy_date = apr_table_get(r->headers_out, "Date");
-        if (!proxy_date) {
-            /*
-             * proxy_date needs to be const. So use date for the creation of
-             * our own Date header and pass it over to proxy_date later to
-             * avoid a compiler warning.
-             */
-            date = apr_palloc(r->pool, APR_RFC822_DATE_LEN);
-            ap_recent_rfc822_date(date, r->request_time);
-        }
-        server = apr_table_get(r->headers_out, "Server");
-    }
-    else {
-        date = apr_palloc(r->pool, APR_RFC822_DATE_LEN);
-        ap_recent_rfc822_date(date, r->request_time);
-    }
-
-    form_header_field(&h, "Date", proxy_date ? proxy_date : date );
-
-    if (!server && *us)
-        server = us;
-    if (server)
-        form_header_field(&h, "Server", server);
-
-    if (APLOGrtrace3(r)) {
-        ap_log_rerror(APLOG_MARK, APLOG_TRACE3, 0, r,
-                      "Response sent with status %d%s",
-                      r->status,
-                      APLOGrtrace4(r) ? ", headers:" : "");
-
-        /*
-         * Date and Server are less interesting, use TRACE5 for them while
-         * using TRACE4 for the other headers.
-         */
-        ap_log_rerror(APLOG_MARK, APLOG_TRACE5, 0, r, "  Date: %s",
-                      proxy_date ? proxy_date : date );
-        if (server)
-            ap_log_rerror(APLOG_MARK, APLOG_TRACE5, 0, r, "  Server: %s",
-                          server);
-    }
-
-
-    /* unset so we don't send them again */
-    apr_table_unset(r->headers_out, "Date");        /* Avoid bogosity */
-    if (server) {
-        apr_table_unset(r->headers_out, "Server");
-    }
 }
 
 AP_DECLARE(void) ap_basic_http_header(request_rec *r, apr_bucket_brigade *bb)
 {
-    const char *protocol = NULL;
+    apr_bucket *b;
 
-    basic_http_header_check(r, &protocol);
-    basic_http_header(r, bb, protocol);
-}
-
-static void terminate_header(apr_bucket_brigade *bb)
-{
-    char crlf[] = CRLF;
-    apr_size_t buflen;
-
-    buflen = strlen(crlf);
-    ap_xlate_proto_to_ascii(crlf, buflen);
-    apr_brigade_write(bb, NULL, NULL, crlf, buflen);
+    basic_http_header_check(r);
+    b = create_response_bucket(r, bb->bucket_alloc);
+    APR_BRIGADE_INSERT_TAIL(bb, b);
 }
 
 AP_DECLARE_NONSTD(int) ap_send_http_trace(request_rec *r)
@@ -1312,17 +1137,10 @@ AP_DECLARE_NONSTD(int) ap_send_http_trace(request_rec *r)
     return DONE;
 }
 
-static apr_bucket *create_trailers_bucket(request_rec *r, apr_bucket_alloc_t *bucket_alloc)
-{
-    if (r->trailers_out && !apr_is_empty_table(r->trailers_out)) {
-        ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r, "sending trailers");
-        return ap_bucket_headers_create(r->trailers_out, r->pool, bucket_alloc);
-    }
-    return NULL;
-}
-
 typedef struct header_filter_ctx {
-    int headers_sent;
+    int final_status;
+    int final_header_only;
+    int dying;
 } header_filter_ctx;
 
 AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f,
@@ -1330,13 +1148,8 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f,
 {
     request_rec *r = f->r;
     conn_rec *c = r->connection;
-    int header_only = (r->header_only || AP_STATUS_IS_HEADER_ONLY(r->status));
-    const char *protocol = NULL;
-    apr_bucket *e, *eos = NULL;
-    apr_bucket_brigade *b2;
-    header_struct h;
+    apr_bucket *e, *respb = NULL, *trigger = NULL, *eos = NULL;
     header_filter_ctx *ctx = f->ctx;
-    const char *ctype;
     ap_bucket_error *eb = NULL;
     apr_status_t rv = APR_SUCCESS;
     int recursive_error = 0;
@@ -1346,9 +1159,10 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f,
     if (!ctx) {
         ctx = f->ctx = apr_pcalloc(r->pool, sizeof(header_filter_ctx));
     }
-    else if (ctx->headers_sent) {
-        /* Eat body if response must not have one. */
-        if (header_only) {
+
+    if (ctx->final_status) {
+        /* Sent the final status, eat body if response must not have one. */
+        if (ctx->final_header_only) {
             /* Still next filters may be waiting for EOS, so pass it (alone)
              * when encountered and be done with this filter.
              */
@@ -1364,62 +1178,124 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f,
             return rv;
         }
     }
+    else {
+        /* Determine if it is time to insert the response bucket for
+         * the request. Request handlers just write content or an EOS
+         * and that needs to take the current state of request_rec to
+         * send on status and headers as a response bucket.
+         *
+         * But we also send interim responses (as response buckets)
+         * through this filter and that must not trigger generating
+         * an additional response bucket.
+         *
+         * Waiting on a DATA/ERROR/EOS bucket alone is not enough,
+         * unfortunately, as some handlers trigger response generation
+         * by just writing a FLUSH (see mod_lua's websocket for example).
+         */
+        for (e = APR_BRIGADE_FIRST(b);
+             e != APR_BRIGADE_SENTINEL(b) && !trigger;
+             e = APR_BUCKET_NEXT(e))
+        {
+            if (AP_BUCKET_IS_RESPONSE(e)) {
+                /* remember the last one if there are many. */
+                respb = e;
+            }
+            else if (APR_BUCKET_IS_FLUSH(e)) {
+                /* flush without response bucket triggers */
+                if (!respb) trigger = e;
+            }
+            else if (APR_BUCKET_IS_EOS(e)) {
+                trigger = e;
+            }
+            else if (AP_BUCKET_IS_ERROR(e)) {
+                /* Need to handle this below via ap_die() */
+                break;
+            }
+            else {
+                /* First content bucket, always triggering the response.*/
+                trigger = e;
+            }
+        }
 
+        if (respb) {
+            ap_bucket_response *resp = respb->data;
+            if (resp->status >= 200 || resp->status == 101) {
+                /* Someone is passing the final response, remember it
+                 * so we no longer generate one. */
+                ctx->final_status = resp->status;
+                ctx->final_header_only = AP_STATUS_IS_HEADER_ONLY(resp->status);
+            }
+        }
+
+        if (trigger && !ctx->final_status) {
+            ap_log_rerror(APLOG_MARK, APLOG_TRACE3, 0, r,
+                          "ap_http_header_filter prep response status %d",
+                          r->status);
+            if (!check_headers(r)) {
+                /* We may come back here from ap_die() below,
+                 * so clear anything from this response.
+                 */
+                apr_table_clear(r->headers_out);
+                apr_table_clear(r->err_headers_out);
+                apr_brigade_cleanup(b);
+
+                /* Don't recall ap_die() if we come back here (from its own internal
+                 * redirect or error response), otherwise we can end up in infinite
+                 * recursion; better fall through with 500, minimal headers and an
+                 * empty body (EOS only).
+                 */
+                if (!check_headers_recursion(r)) {
+                    ap_die(HTTP_INTERNAL_SERVER_ERROR, r);
+                    return AP_FILTER_ERROR;
+                }
+                r->status = HTTP_INTERNAL_SERVER_ERROR;
+                e = ap_bucket_eoc_create(c->bucket_alloc);
+                APR_BRIGADE_INSERT_TAIL(b, e);
+                e = apr_bucket_eos_create(c->bucket_alloc);
+                APR_BRIGADE_INSERT_TAIL(b, e);
+                r->content_type = r->content_encoding = NULL;
+                r->content_languages = NULL;
+                ap_set_content_length(r, 0);
+                recursive_error = 1;
+            }
+            respb = create_response_bucket(r, b->bucket_alloc);
+            APR_BUCKET_INSERT_BEFORE(trigger, respb);
+            ctx->final_status = r->status;
+            ctx->final_header_only = (r->header_only || AP_STATUS_IS_HEADER_ONLY(r->status));
+            r->sent_bodyct = 1;         /* Whatever follows is real body stuff... */
+        }
+    }
+
+    /* Look for ERROR/EOC/EOS that require special handling. */
     for (e = APR_BRIGADE_FIRST(b);
          e != APR_BRIGADE_SENTINEL(b);
          e = APR_BUCKET_NEXT(e))
     {
-        if (AP_BUCKET_IS_ERROR(e) && !eb) {
-            eb = e->data;
-            continue;
+        if (APR_BUCKET_IS_METADATA(e)) {
+            if (APR_BUCKET_IS_EOS(e)) {
+                if (!eos) eos = e;
+            }
+            else if (AP_BUCKET_IS_EOC(e)) {
+                /* If we see an EOC bucket it is a signal that we should get out
+                 * of the way doing nothing.
+                 */
+                ap_remove_output_filter(f);
+                return ap_pass_brigade(f->next, b);
+            }
+            else if (AP_BUCKET_IS_ERROR(e)) {
+                int status;
+                eb = e->data;
+                status = eb->status;
+                apr_brigade_cleanup(b);
+                ap_log_rerror(APLOG_MARK, APLOG_TRACE3, 0, r,
+                              "ap_http_header_filter error bucket, die with %d and error",
+                              status);
+                /* This will invoke us again */
+                ctx->dying = 1;
+                ap_die(status, r);
+                return AP_FILTER_ERROR;
+            }
         }
-        if (APR_BUCKET_IS_EOS(e)) {
-            if (!eos) eos = e;
-            continue;
-        }
-        /*
-         * If we see an EOC bucket it is a signal that we should get out
-         * of the way doing nothing.
-         */
-        if (AP_BUCKET_IS_EOC(e)) {
-            ap_remove_output_filter(f);
-            return ap_pass_brigade(f->next, b);
-        }
-    }
-
-    if (!ctx->headers_sent && !check_headers(r)) {
-        /* We may come back here from ap_die() below,
-         * so clear anything from this response.
-         */
-        apr_table_clear(r->headers_out);
-        apr_table_clear(r->err_headers_out);
-        apr_brigade_cleanup(b);
-
-        /* Don't recall ap_die() if we come back here (from its own internal
-         * redirect or error response), otherwise we can end up in infinite
-         * recursion; better fall through with 500, minimal headers and an
-         * empty body (EOS only).
-         */
-        if (!check_headers_recursion(r)) {
-            ap_die(HTTP_INTERNAL_SERVER_ERROR, r);
-            return AP_FILTER_ERROR;
-        }
-        r->status = HTTP_INTERNAL_SERVER_ERROR;
-        e = ap_bucket_eoc_create(c->bucket_alloc);
-        APR_BRIGADE_INSERT_TAIL(b, e);
-        e = apr_bucket_eos_create(c->bucket_alloc);
-        APR_BRIGADE_INSERT_TAIL(b, e);
-        r->content_type = r->content_encoding = NULL;
-        r->content_languages = NULL;
-        ap_set_content_length(r, 0);
-        recursive_error = 1;
-    }
-    else if (eb) {
-        int status;
-        status = eb->status;
-        apr_brigade_cleanup(b);
-        ap_die(status, r);
-        return AP_FILTER_ERROR;
     }
 
     if (r->assbackwards) {
@@ -1430,148 +1306,15 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f,
     }
 
     if (eos) {
-        /* on having seen EOS and added possible trailers, we
-         * can remove this filter.
-         */
         e = create_trailers_bucket(r, b->bucket_alloc);
         if (e) {
             APR_BUCKET_INSERT_BEFORE(eos, e);
         }
         ap_remove_output_filter(f);
     }
-
-    if (ctx->headers_sent) {
-        /* we did already the stuff below, just pass on */
-        return ap_pass_brigade(f->next, b);
-    }
-
-    /*
-     * Now that we are ready to send a response, we need to combine the two
-     * header field tables into a single table.  If we don't do this, our
-     * later attempts to set or unset a given fieldname might be bypassed.
-     */
-    if (!apr_is_empty_table(r->err_headers_out)) {
-        r->headers_out = apr_table_overlay(r->pool, r->err_headers_out,
-                                           r->headers_out);
-    }
-
-    /*
-     * Remove the 'Vary' header field if the client can't handle it.
-     * Since this will have nasty effects on HTTP/1.1 caches, force
-     * the response into HTTP/1.0 mode.
-     *
-     * Note: the force-response-1.0 should come before the call to
-     *       basic_http_header_check()
-     */
-    if (apr_table_get(r->subprocess_env, "force-no-vary") != NULL) {
-        apr_table_unset(r->headers_out, "Vary");
-        r->proto_num = HTTP_VERSION(1,0);
-        apr_table_setn(r->subprocess_env, "force-response-1.0", "1");
-    }
-    else {
-        fixup_vary(r);
-    }
-
-    /*
-     * Now remove any ETag response header field if earlier processing
-     * says so (such as a 'FileETag None' directive).
-     */
-    if (apr_table_get(r->notes, "no-etag") != NULL) {
-        apr_table_unset(r->headers_out, "ETag");
-    }
-
-    /* determine the protocol and whether we should use keepalives. */
-    basic_http_header_check(r, &protocol);
-    ap_set_keepalive(r);
-
-    if (AP_STATUS_IS_HEADER_ONLY(r->status)) {
-        apr_table_unset(r->headers_out, "Transfer-Encoding");
-        apr_table_unset(r->headers_out, "Content-Length");
-        r->content_type = r->content_encoding = NULL;
-        r->content_languages = NULL;
-        r->clength = r->chunked = 0;
-    }
-    else if (r->chunked) {
-        apr_table_mergen(r->headers_out, "Transfer-Encoding", "chunked");
-        apr_table_unset(r->headers_out, "Content-Length");
-    }
-
-    ctype = ap_make_content_type(r, r->content_type);
-    if (ctype) {
-        apr_table_setn(r->headers_out, "Content-Type", ctype);
-    }
-
-    if (r->content_encoding) {
-        apr_table_setn(r->headers_out, "Content-Encoding",
-                       r->content_encoding);
-    }
-
-    if (!apr_is_empty_array(r->content_languages)) {
-        int i;
-        char *token;
-        char **languages = (char **)(r->content_languages->elts);
-        const char *field = apr_table_get(r->headers_out, "Content-Language");
-
-        while (field && (token = ap_get_list_item(r->pool, &field)) != NULL) {
-            for (i = 0; i < r->content_languages->nelts; ++i) {
-                if (!ap_cstr_casecmp(token, languages[i]))
-                    break;
-            }
-            if (i == r->content_languages->nelts) {
-                *((char **) apr_array_push(r->content_languages)) = token;
-            }
-        }
-
-        field = apr_array_pstrcat(r->pool, r->content_languages, ',');
-        apr_table_setn(r->headers_out, "Content-Language", field);
-    }
-
-    /*
-     * Control cachability for non-cacheable responses if not already set by
-     * some other part of the server configuration.
-     */
-    if (r->no_cache && !apr_table_get(r->headers_out, "Expires")) {
-        char *date = apr_palloc(r->pool, APR_RFC822_DATE_LEN);
-        ap_recent_rfc822_date(date, r->request_time);
-        apr_table_addn(r->headers_out, "Expires", date);
-    }
-
-    b2 = apr_brigade_create(r->pool, c->bucket_alloc);
-    basic_http_header(r, b2, protocol);
-
-    h.pool = r->pool;
-    h.bb = b2;
-
-    send_all_header_fields(&h, r);
-
-    terminate_header(b2);
-
-    if (header_only) {
-        e = APR_BRIGADE_LAST(b);
-        if (e != APR_BRIGADE_SENTINEL(b) && APR_BUCKET_IS_EOS(e)) {
-            APR_BUCKET_REMOVE(e);
-            APR_BRIGADE_INSERT_TAIL(b2, e);
-            ap_remove_output_filter(f);
-        }
-        apr_brigade_cleanup(b);
-    }
-
-    rv = ap_pass_brigade(f->next, b2);
-    apr_brigade_cleanup(b2);
-    ctx->headers_sent = 1;
-
-    if (rv != APR_SUCCESS || header_only) {
-        goto out;
-    }
-
-    r->sent_bodyct = 1;         /* Whatever follows is real body stuff... */
-
-    if (r->chunked) {
-        /* We can't add this filter until we have already sent the headers.
-         * If we add it before this point, then the headers will be chunked
-         * as well, and that is just wrong.
-         */
-        ap_add_output_filter("CHUNK", NULL, r, r->connection);
+    else if (ctx->final_status == 101) {
+        /* switching protocol, whatever comes next is not HTTP/1.x */
+        ap_remove_output_filter(f);
     }
 
     rv = ap_pass_brigade(f->next, b);
@@ -1983,4 +1726,352 @@ apr_status_t ap_http_outerror_filter(ap_filter_t *f,
     }
 
     return ap_pass_brigade(f->next,  b);
+}
+
+
+/* fill "bb" with a barebones/initial HTTP/1.x response header */
+static void h1_append_response_head(request_rec *r,
+                                    ap_bucket_response *resp,
+                                    const char *protocol,
+                                    apr_bucket_brigade *bb)
+{
+    const char *date = NULL;
+    const char *server = NULL;
+    const char *status_line;
+    struct iovec vec[4];
+
+    if (r->assbackwards) {
+        /* there are no headers to send */
+        return;
+    }
+
+    /* Output the HTTP/1.x Status-Line and the Date and Server fields */
+    if (resp->reason) {
+        status_line =  apr_psprintf(r->pool, "%d %s", resp->status, resp->reason);
+    }
+    else {
+        status_line = ap_get_status_line_ex(r->pool, resp->status);
+    }
+
+    vec[0].iov_base = (void *)protocol;
+    vec[0].iov_len  = strlen(protocol);
+    vec[1].iov_base = (void *)" ";
+    vec[1].iov_len  = sizeof(" ") - 1;
+    vec[2].iov_base = (void *)(status_line);
+    vec[2].iov_len  = strlen(status_line);
+    vec[3].iov_base = (void *)CRLF;
+    vec[3].iov_len  = sizeof(CRLF) - 1;
+#if APR_CHARSET_EBCDIC
+    {
+        char *tmp;
+        apr_size_t len;
+        tmp = apr_pstrcatv(r->pool, vec, 4, &len);
+        ap_xlate_proto_to_ascii(tmp, len);
+        apr_brigade_write(bb, NULL, NULL, tmp, len);
+    }
+#else
+    apr_brigade_writev(bb, NULL, NULL, vec, 4);
+#endif
+
+    date = apr_table_get(resp->headers, "Date");
+    server = apr_table_get(resp->headers, "Server");
+    if (date) {
+        /* We always write that as first, just because we
+         * always did and some quirky clients might rely on that.
+         */
+        ap_h1_append_header(bb, r->pool, "Date", date);
+        apr_table_unset(resp->headers, "Date");
+    }
+    if (server) {
+        /* We always write that second, just because we
+         * always did and some quirky clients might rely on that.
+         */
+        ap_h1_append_header(bb, r->pool, "Server", server);
+        apr_table_unset(resp->headers, "Server");
+    }
+
+    if (APLOGrtrace3(r)) {
+        ap_log_rerror(APLOG_MARK, APLOG_TRACE3, 0, r,
+                      "Response sent with status %d%s",
+                      r->status,
+                      APLOGrtrace4(r) ? ", headers:" : "");
+
+        /*
+         * Date and Server are less interesting, use TRACE5 for them while
+         * using TRACE4 for the other headers.
+         */
+        if (date)
+            ap_log_rerror(APLOG_MARK, APLOG_TRACE5, 0, r, "  Date: %s",
+                          date);
+        if (server)
+            ap_log_rerror(APLOG_MARK, APLOG_TRACE5, 0, r, "  Server: %s",
+                          server);
+    }
+}
+
+typedef struct h1_response_ctx {
+    int final_response_sent;    /* strict: a response status >= 200 was sent */
+    int discard_body;           /* the response is header only, discard body */
+    apr_bucket_brigade *tmpbb;
+} h1_response_ctx;
+
+AP_CORE_DECLARE_NONSTD(apr_status_t) ap_h1_response_out_filter(ap_filter_t *f,
+                                                               apr_bucket_brigade *b)
+{
+    request_rec *r = f->r;
+    conn_rec *c = r->connection;
+    apr_bucket *e, *next = NULL;
+    h1_response_ctx *ctx = f->ctx;
+    apr_status_t rv = APR_SUCCESS;
+    core_server_config *conf = ap_get_core_module_config(r->server->module_config);
+    int strict = (conf->http_conformance != AP_HTTP_CONFORMANCE_UNSAFE);
+
+    AP_DEBUG_ASSERT(!r->main);
+
+    if (!ctx) {
+        ctx = f->ctx = apr_pcalloc(r->pool, sizeof(*ctx));
+    }
+
+    for (e = APR_BRIGADE_FIRST(b);
+         e != APR_BRIGADE_SENTINEL(b);
+         e = next)
+    {
+        next = APR_BUCKET_NEXT(e);
+
+        if (APR_BUCKET_IS_METADATA(e)) {
+
+            if (APR_BUCKET_IS_EOS(e)) {
+                if (!ctx->final_response_sent) {
+                    /* should not happen. do we generate a 500 here? */
+                }
+                ap_remove_output_filter(f);
+                goto pass;
+            }
+            else if (AP_BUCKET_IS_RESPONSE(e)) {
+                ap_bucket_response *resp = e->data;
+
+                ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r,
+                              "ap_http1_response_out_filter seeing response bucket status=%d",
+                              resp->status);
+                if (strict && resp->status < 100) {
+                    /* error, not a valid http status */
+                    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(10386)
+                                  "ap_http1_response_out_filter seeing headers "
+                                  "status=%d in strict mode",
+                                  resp->status);
+                    rv = AP_FILTER_ERROR;
+                    goto cleanup;
+                }
+                else if (ctx->final_response_sent) {
+                    /* already sent the final response for the request.
+                     */
+                    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(10387)
+                                  "ap_http1_response_out_filter seeing headers "
+                                  "status=%d after final response already sent",
+                                  resp->status);
+                    rv = AP_FILTER_ERROR;
+                    goto cleanup;
+                }
+                else {
+                    /* a response status to transcode, might be final or interim
+                     */
+                    const char *proto = AP_SERVER_PROTOCOL;
+
+                    ctx->final_response_sent = (resp->status >= 200)
+                        || (!strict && resp->status < 100);
+                    ctx->discard_body = ctx->final_response_sent &&
+                        (r->header_only || AP_STATUS_IS_HEADER_ONLY(resp->status));
+
+                    if (!ctx->tmpbb) {
+                        ctx->tmpbb = apr_brigade_create(r->pool, c->bucket_alloc);
+                    }
+                    if (next != APR_BRIGADE_SENTINEL(b)) {
+                        apr_brigade_split_ex(b, next, ctx->tmpbb);
+                    }
+
+                    if (ctx->final_response_sent) {
+                        ap_h1_set_keepalive(r, resp);
+
+                        if (AP_STATUS_IS_HEADER_ONLY(resp->status)) {
+                            apr_table_unset(resp->headers, "Transfer-Encoding");
+                        }
+                        else if (r->chunked) {
+                            apr_table_mergen(resp->headers, "Transfer-Encoding", "chunked");
+                            apr_table_unset(resp->headers, "Content-Length");
+                        }
+                    }
+
+                    /* kludge around broken browsers when indicated by force-response-1.0
+                     */
+                    if (r->proto_num == HTTP_VERSION(1,0)
+                        && apr_table_get(r->subprocess_env, "force-response-1.0")) {
+                        r->connection->keepalive = AP_CONN_CLOSE;
+                        proto = "HTTP/1.0";
+                    }
+                    h1_append_response_head(r, resp, proto, b);
+                    ap_h1_append_headers(b, r, resp->headers);
+                    ap_h1_terminate_header(b);
+                    apr_bucket_delete(e);
+
+                    if (ctx->final_response_sent && r->chunked) {
+                        /* We can't add this filter until we have already sent the headers.
+                         * If we add it before this point, then the headers will be chunked
+                         * as well, and that is just wrong.
+                         */
+                        rv = ap_pass_brigade(f->next, b);
+                        apr_brigade_cleanup(b);
+                        ap_log_rerror(APLOG_MARK, APLOG_TRACE2, rv, r,
+                                      "ap_http1_response_out_filter passed response"
+                                      ", add CHUNK filter");
+                        if (APR_SUCCESS != rv) {
+                            apr_brigade_cleanup(ctx->tmpbb);
+                            goto cleanup;
+                        }
+                        ap_add_output_filter("CHUNK", NULL, r, r->connection);
+                    }
+
+                    APR_BRIGADE_CONCAT(b, ctx->tmpbb);
+
+                    if (resp->status == 101) {
+                        /* switched to another protocol, get out of the way */
+                        AP_DEBUG_ASSERT(!r->chunked);
+                        ap_remove_output_filter(f);
+                        goto pass;
+                    }
+                }
+            }
+        }
+        else if (!ctx->final_response_sent && strict) {
+            /* data buckets before seeing the final response are in error.
+             */
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO()
+                          "ap_http1_response_out_filter seeing data before headers, %ld bytes ",
+                          (long)e->length);
+            rv = AP_FILTER_ERROR;
+            goto cleanup;
+        }
+        else if (ctx->discard_body) {
+            apr_bucket_delete(e);
+        }
+    }
+
+pass:
+    rv = ap_pass_brigade(f->next, b);
+cleanup:
+    return rv;
+}
+
+static const char *get_status_reason(const char *status_line)
+{
+    if (status_line && strlen(status_line) > 4) {
+        return status_line + 4;
+    }
+    return NULL;
+}
+
+static apr_bucket *create_response_bucket(request_rec *r, apr_bucket_alloc_t *bucket_alloc)
+{
+    const char *ctype;
+
+    /*
+     * Now that we are ready to send a response, we need to combine the two
+     * header field tables into a single table.  If we don't do this, our
+     * later attempts to set or unset a given fieldname might be bypassed.
+     */
+    if (!apr_is_empty_table(r->err_headers_out)) {
+        r->headers_out = apr_table_overlay(r->pool, r->err_headers_out,
+                                           r->headers_out);
+    }
+
+    ap_set_std_response_headers(r);
+
+    /*
+     * Remove the 'Vary' header field if the client can't handle it.
+     * Since this will have nasty effects on HTTP/1.1 caches, force
+     * the response into HTTP/1.0 mode.
+     *
+     * Note: the force-response-1.0 should come before the call to
+     *       basic_http_header_check()
+     */
+    if (apr_table_get(r->subprocess_env, "force-no-vary") != NULL) {
+        apr_table_unset(r->headers_out, "Vary");
+        r->proto_num = HTTP_VERSION(1,0);
+        apr_table_setn(r->subprocess_env, "force-response-1.0", "1");
+    }
+    else {
+        fixup_vary(r);
+    }
+
+    /*
+     * Now remove any ETag response header field if earlier processing
+     * says so (such as a 'FileETag None' directive).
+     */
+    if (apr_table_get(r->notes, "no-etag") != NULL) {
+        apr_table_unset(r->headers_out, "ETag");
+    }
+
+    /* determine the protocol and whether we should use keepalives. */
+    basic_http_header_check(r);
+
+    if (AP_STATUS_IS_HEADER_ONLY(r->status)) {
+        apr_table_unset(r->headers_out, "Content-Length");
+        r->content_type = r->content_encoding = NULL;
+        r->content_languages = NULL;
+        r->clength = r->chunked = 0;
+    }
+
+    ctype = ap_make_content_type(r, r->content_type);
+    if (ctype) {
+        apr_table_setn(r->headers_out, "Content-Type", ctype);
+    }
+
+    if (r->content_encoding) {
+        apr_table_setn(r->headers_out, "Content-Encoding",
+                       r->content_encoding);
+    }
+
+    if (!apr_is_empty_array(r->content_languages)) {
+        int i;
+        char *token;
+        char **languages = (char **)(r->content_languages->elts);
+        const char *field = apr_table_get(r->headers_out, "Content-Language");
+
+        while (field && (token = ap_get_list_item(r->pool, &field)) != NULL) {
+            for (i = 0; i < r->content_languages->nelts; ++i) {
+                if (!ap_cstr_casecmp(token, languages[i]))
+                    break;
+            }
+            if (i == r->content_languages->nelts) {
+                *((char **) apr_array_push(r->content_languages)) = token;
+            }
+        }
+
+        field = apr_array_pstrcat(r->pool, r->content_languages, ',');
+        apr_table_setn(r->headers_out, "Content-Language", field);
+    }
+
+    /*
+     * Control cachability for non-cacheable responses if not already set by
+     * some other part of the server configuration.
+     */
+    if (r->no_cache && !apr_table_get(r->headers_out, "Expires")) {
+        char *date = apr_palloc(r->pool, APR_RFC822_DATE_LEN);
+        ap_recent_rfc822_date(date, r->request_time);
+        apr_table_addn(r->headers_out, "Expires", date);
+    }
+
+    /* r->headers_out fully prepared. Create a headers bucket
+     * containing the response to send down the filter chain.
+     */
+    return ap_bucket_response_create(r->status, get_status_reason(r->status_line),
+                                     r->headers_out, r->notes, r->pool, bucket_alloc);
+}
+
+static apr_bucket *create_trailers_bucket(request_rec *r, apr_bucket_alloc_t *bucket_alloc)
+{
+    if (r->trailers_out && !apr_is_empty_table(r->trailers_out)) {
+        ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r, "sending trailers");
+        return ap_bucket_headers_create(r->trailers_out, r->pool, bucket_alloc);
+    }
+    return NULL;
 }
