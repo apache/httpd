@@ -157,12 +157,6 @@ class HttpdConf(object):
         self.start_vhost(domains=[domain, f"cgi-alias.{self.env.http_tld}"],
                          port=self.env.https_port, doc_root="htdocs/cgi")
         self.add_proxies("cgi", proxy_self=proxy_self, h2proxy_self=h2proxy_self)
-        self.add("<Location \"/h2test/echo\">")
-        self.add("    SetHandler h2test-echo")
-        self.add("</Location>")
-        self.add("<Location \"/h2test/delay\">")
-        self.add("    SetHandler h2test-delay")
-        self.add("</Location>")
         if domain in self._extras:
             self.add(self._extras[domain])
         self.end_vhost()

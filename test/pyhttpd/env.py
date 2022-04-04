@@ -1,3 +1,4 @@
+import importlib
 import inspect
 import logging
 import re
@@ -68,12 +69,16 @@ class HttpdTestSetup:
         self.env = env
         self._source_dirs = [os.path.dirname(inspect.getfile(HttpdTestSetup))]
         self._modules = HttpdTestSetup.MODULES.copy()
+        self._optional_modules = []
 
     def add_source_dir(self, source_dir):
         self._source_dirs.append(source_dir)
 
     def add_modules(self, modules: List[str]):
         self._modules.extend(modules)
+
+    def add_optional_modules(self, modules: List[str]):
+        self._optional_modules.extend(modules)
 
     def make(self):
         self._make_dirs()
@@ -141,6 +146,16 @@ class HttpdTestSetup:
                 else:
                     fd.write(f"#built static: LoadModule {m}_module   \"{mod_path}\"\n")
                 loaded.add(m)
+            for m in self._optional_modules:
+                match = re.match(r'^mod_(.+)$', m)
+                if match:
+                    m = match.group(1)
+                if m in loaded:
+                    continue
+                mod_path = os.path.join(self.env.libexec_dir, f"mod_{m}.so")
+                if os.path.isfile(mod_path):
+                    fd.write(f"LoadModule {m}_module   \"{mod_path}\"\n")
+                    loaded.add(m)
         if len(missing_mods) > 0:
             raise Exception(f"Unable to find modules: {missing_mods} "
                             f"DSOs: {self.env.dso_modules}")
@@ -167,9 +182,31 @@ class HttpdTestSetup:
 
 class HttpdTestEnv:
 
+    LIBEXEC_DIR = None
+
+    @classmethod
+    def has_python_package(cls, name: str) -> bool:
+        if name in sys.modules:
+            # already loaded
+            return True
+        elif (spec := importlib.util.find_spec(name)) is not None:
+            module = importlib.util.module_from_spec(spec)
+            sys.modules[name] = module
+            spec.loader.exec_module(module)
+            return True
+        else:
+            return False
+
     @classmethod
     def get_ssl_module(cls):
         return os.environ['SSL'] if 'SSL' in os.environ else 'mod_ssl'
+
+    @classmethod
+    def has_shared_module(cls, name):
+        if cls.LIBEXEC_DIR is None:
+            env = HttpdTestEnv()  # will initialized it
+        path = os.path.join(cls.LIBEXEC_DIR, f"mod_{name}.so")
+        return os.path.isfile(path)
 
     def __init__(self, pytestconfig=None):
         self._our_dir = os.path.dirname(inspect.getfile(Dummy))
@@ -180,8 +217,8 @@ class HttpdTestEnv:
         self._apxs = self.config.get('global', 'apxs')
         self._prefix = self.config.get('global', 'prefix')
         self._apachectl = self.config.get('global', 'apachectl')
-        self._libexec_dir = self.get_apxs_var('LIBEXECDIR')
-
+        if HttpdTestEnv.LIBEXEC_DIR is None:
+            HttpdTestEnv.LIBEXEC_DIR = self._libexec_dir = self.get_apxs_var('LIBEXECDIR')
         self._curl = self.config.get('global', 'curl_bin')
         self._nghttp = self.config.get('global', 'nghttp')
         if self._nghttp is None:
@@ -332,7 +369,7 @@ class HttpdTestEnv:
 
     @property
     def libexec_dir(self) -> str:
-        return self._libexec_dir
+        return HttpdTestEnv.LIBEXEC_DIR
 
     @property
     def dso_modules(self) -> List[str]:
@@ -604,32 +641,56 @@ class HttpdTestEnv:
 
     def curl_parse_headerfile(self, headerfile: str, r: ExecResult = None) -> ExecResult:
         lines = open(headerfile).readlines()
-        exp_stat = True
         if r is None:
             r = ExecResult(args=[], exit_code=0, stdout=b'', stderr=b'')
-        header = {}
+
+        response = None
+        def fin_response(response):
+            if response:
+                r.add_response(response)
+
+        expected = ['status']
         for line in lines:
-            if exp_stat:
+            if re.match(r'^$', line):
+                if 'trailer' in expected:
+                    # end of trailers
+                    fin_response(response)
+                    response = None
+                    expected = ['status']
+                elif 'header' in expected:
+                    # end of header, another status or trailers might follow
+                    expected = ['status', 'trailer']
+                else:
+                    assert False, f"unexpected line: {line}"
+                continue
+            if 'status' in expected:
                 log.debug("reading 1st response line: %s", line)
                 m = re.match(r'^(\S+) (\d+) (.*)$', line)
-                assert m
-                r.add_response({
-                    "protocol": m.group(1),
-                    "status": int(m.group(2)),
-                    "description": m.group(3),
-                    "body": r.outraw
-                })
-                exp_stat = False
-                header = {}
-            elif re.match(r'^$', line):
-                exp_stat = True
-            else:
-                log.debug("reading header line: %s", line)
+                if m:
+                    fin_response(response)
+                    response = {
+                        "protocol": m.group(1),
+                        "status": int(m.group(2)),
+                        "description": m.group(3),
+                        "header": {},
+                        "trailer": {},
+                        "body": r.outraw
+                    }
+                    expected = ['header']
+                    continue
+            if 'trailer' in expected:
                 m = re.match(r'^([^:]+):\s*(.*)$', line)
-                assert m
-                header[m.group(1).lower()] = m.group(2)
-        if r.response:
-            r.response["header"] = header
+                if m:
+                    response['trailer'][m.group(1).lower()] = m.group(2)
+                    continue
+            if 'header' in expected:
+                m = re.match(r'^([^:]+):\s*(.*)$', line)
+                if m:
+                    response['header'][m.group(1).lower()] = m.group(2)
+                    continue
+            assert False, f"unexpected line: {line}"
+
+        fin_response(response)
         return r
 
     def curl_raw(self, urls, timeout=10, options=None, insecure=False,

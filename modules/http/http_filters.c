@@ -254,21 +254,28 @@ static apr_status_t parse_chunk_size(http_ctx_t *ctx, const char *buffer,
 }
 
 static apr_status_t read_chunked_trailers(http_ctx_t *ctx, ap_filter_t *f,
-                                          apr_bucket_brigade *b, int merge)
+                                          apr_bucket_brigade *b)
 {
     int rv;
     apr_bucket *e;
     request_rec *r = f->r;
+    apr_table_t *trailers;
     apr_table_t *saved_headers_in = r->headers_in;
     int saved_status = r->status;
 
+    trailers = apr_table_make(r->pool, 5);
     r->status = HTTP_OK;
-    r->headers_in = r->trailers_in;
-    apr_table_clear(r->headers_in);
+    r->headers_in = trailers;
     ap_get_mime_headers(r);
+    r->headers_in = saved_headers_in;
 
-    if(r->status == HTTP_OK) {
+    if (r->status == HTTP_OK) {
         r->status = saved_status;
+
+        if (!apr_is_empty_table(trailers)) {
+            e = ap_bucket_headers_create(trailers, r->pool, b->bucket_alloc);
+            APR_BRIGADE_INSERT_TAIL(b, e);
+        }
         e = apr_bucket_eos_create(f->c->bucket_alloc);
         APR_BRIGADE_INSERT_TAIL(b, e);
         ctx->at_eos = 1;
@@ -284,16 +291,15 @@ static apr_status_t read_chunked_trailers(http_ctx_t *ctx, ap_filter_t *f,
         rv = APR_EINVAL;
     }
 
-    if(!merge) {
-        r->headers_in = saved_headers_in;
-    }
-    else {
-        r->headers_in = apr_table_overlay(r->pool, saved_headers_in,
-                r->trailers_in);
-    }
-
     return rv;
 }
+
+typedef struct h1_in_ctx_t
+{
+    unsigned int at_trailers:1;
+    unsigned int at_eos:1;
+    unsigned int seen_data:1;
+} h1_in_ctx_t;
 
 /* This is the HTTP_INPUT filter for HTTP requests and responses from
  * proxied servers (mod_proxy).  It handles chunked and content-length
@@ -303,6 +309,122 @@ static apr_status_t read_chunked_trailers(http_ctx_t *ctx, ap_filter_t *f,
 apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
                             ap_input_mode_t mode, apr_read_type_e block,
                             apr_off_t readbytes)
+{
+    apr_bucket *e, *next;
+    h1_in_ctx_t *ctx = f->ctx;
+    request_rec *r = f->r;
+    apr_status_t rv;
+
+    if (!ctx) {
+        f->ctx = ctx = apr_pcalloc(f->r->pool, sizeof(*ctx));
+    }
+
+    /* Since we're about to read data, send 100-Continue if needed.
+     * Only valid on chunked and C-L bodies where the C-L is > 0.
+     *
+     * If the read is to be nonblocking though, the caller may not want to
+     * handle this just now (e.g. mod_proxy_http), and is prepared to read
+     * nothing if the client really waits for 100 continue, so we don't
+     * send it now and wait for later blocking read.
+     *
+     * In any case, even if r->expecting remains set at the end of the
+     * request handling, ap_set_keepalive() will finally do the right
+     * thing (i.e. "Connection: close" the connection).
+     */
+    if (block == APR_BLOCK_READ
+            && r->expecting_100 && r->proto_num >= HTTP_VERSION(1,1)
+            && !(ctx->at_eos || r->eos_sent || r->bytes_sent)) {
+        if (!ap_is_HTTP_SUCCESS(r->status)) {
+            ap_log_rerror(APLOG_MARK, APLOG_TRACE3, 0, r,
+                          "ap_http_in_filter: status != OK, not sending 100-continue");
+            ctx->at_eos = 1; /* send EOS below */
+        }
+        else if (!ctx->seen_data) {
+            int saved_status = r->status;
+            const char *saved_status_line = r->status_line;
+            ap_log_rerror(APLOG_MARK, APLOG_TRACE3, 0, r,
+                          "ap_http_in_filter: sending 100-continue");
+            r->status = HTTP_CONTINUE;
+            r->status_line = NULL;
+            ap_send_interim_response(r, 0);
+            AP_DEBUG_ASSERT(!r->expecting_100);
+            r->status_line = saved_status_line;
+            r->status = saved_status;
+        }
+        else {
+            /* https://tools.ietf.org/html/rfc7231#section-5.1.1
+             *   A server MAY omit sending a 100 (Continue) response if it
+             *   has already received some or all of the message body for
+             *   the corresponding request [...]
+             */
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(10260)
+                          "request body already/partly received while "
+                          "100-continue is expected, omit sending interim "
+                          "response");
+            r->expecting_100 = 0;
+        }
+    }
+
+    /* sanity check in case we're read twice */
+    if (ctx->at_eos) {
+        e = apr_bucket_eos_create(f->c->bucket_alloc);
+        APR_BRIGADE_INSERT_TAIL(b, e);
+        rv = APR_SUCCESS;
+        goto cleanup;
+    }
+
+    rv = ap_get_brigade(f->next, b, mode, block, readbytes);
+    if (APR_SUCCESS == rv) {
+        for (e = APR_BRIGADE_FIRST(b);
+             e != APR_BRIGADE_SENTINEL(b);
+             e = next)
+        {
+            next = APR_BUCKET_NEXT(e);
+            if (!APR_BUCKET_IS_METADATA(e)) {
+                if (e->length != 0) {
+                    ctx->seen_data = 1;
+                }
+                if (ctx->at_trailers) {
+                    /* DATA after trailers? Someone smuggling something? */
+                    rv = AP_FILTER_ERROR;
+                    goto cleanup;
+                }
+                continue;
+            }
+            if (AP_BUCKET_IS_HEADERS(e)) {
+                /* trailers */
+                ap_bucket_headers * hdrs = e->data;
+
+                /* Allow multiple HEADERS buckets carrying trailers here,
+                 * will not happen from HTTP/1.x and current H2 implementation,
+                 * but is an option. */
+                ctx->at_trailers = 1;
+                if (!apr_is_empty_table(hdrs->headers)) {
+                    r->trailers_in = apr_table_overlay(r->pool, r->trailers_in, hdrs->headers);
+                }
+                apr_bucket_delete(e);
+            }
+            if (APR_BUCKET_IS_EOS(e)) {
+                ctx->at_eos = 1;
+                if (!apr_is_empty_table(r->trailers_in)) {
+                    core_server_config *conf = ap_get_module_config(
+                        r->server->module_config, &core_module);
+                    if (conf->merge_trailers == AP_MERGE_TRAILERS_ENABLE) {
+                        r->headers_in = apr_table_overlay(r->pool, r->headers_in, r->trailers_in);
+                    }
+                }
+                goto cleanup;
+            }
+        }
+    }
+
+cleanup:
+    return rv;
+}
+
+apr_status_t ap_h1_body_in_filter(ap_filter_t *f, apr_bucket_brigade *b,
+                                     ap_input_mode_t mode, apr_read_type_e block,
+                                     apr_off_t readbytes)
 {
     core_server_config *conf =
         (core_server_config *) ap_get_module_config(f->r->server->module_config,
@@ -360,6 +482,7 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
                  */
                 ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, f->r, APLOGNO(01585)
                               "Unknown Transfer-Encoding: %s", tenc);
+                ap_die(HTTP_NOT_IMPLEMENTED, f->r);
                 return APR_EGENERAL;
             }
             lenp = NULL;
@@ -404,51 +527,6 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
          */
         if (ctx->state == BODY_NONE && f->r->proxyreq != PROXYREQ_RESPONSE) {
             ctx->at_eos = 1; /* send EOS below */
-        }
-    }
-
-    /* Since we're about to read data, send 100-Continue if needed.
-     * Only valid on chunked and C-L bodies where the C-L is > 0.
-     *
-     * If the read is to be nonblocking though, the caller may not want to
-     * handle this just now (e.g. mod_proxy_http), and is prepared to read
-     * nothing if the client really waits for 100 continue, so we don't
-     * send it now and wait for later blocking read.
-     *
-     * In any case, even if r->expecting remains set at the end of the
-     * request handling, ap_set_keepalive() will finally do the right
-     * thing (i.e. "Connection: close" the connection).
-     */
-    if (block == APR_BLOCK_READ
-            && (ctx->state == BODY_CHUNK
-                || (ctx->state == BODY_LENGTH && ctx->remaining > 0))
-            && f->r->expecting_100 && f->r->proto_num >= HTTP_VERSION(1,1)
-            && !(ctx->at_eos || f->r->eos_sent || f->r->bytes_sent)) {
-        if (!ap_is_HTTP_SUCCESS(f->r->status)) {
-            ctx->state = BODY_NONE;
-            ctx->at_eos = 1; /* send EOS below */
-        }
-        else if (!ctx->seen_data) {
-            int saved_status = f->r->status;
-            const char *saved_status_line = f->r->status_line;
-            f->r->status = HTTP_CONTINUE;
-            f->r->status_line = NULL;
-            ap_send_interim_response(f->r, 0);
-            AP_DEBUG_ASSERT(!f->r->expecting_100);
-            f->r->status_line = saved_status_line;
-            f->r->status = saved_status;
-        }
-        else {
-            /* https://tools.ietf.org/html/rfc7231#section-5.1.1
-             *   A server MAY omit sending a 100 (Continue) response if it
-             *   has already received some or all of the message body for
-             *   the corresponding request [...]
-             */
-            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, f->r, APLOGNO(10260)
-                          "request body already/partly received while "
-                          "100-continue is expected, omit sending interim "
-                          "response");
-            f->r->expecting_100 = 0;
         }
     }
 
@@ -519,8 +597,7 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
 
             if (ctx->state == BODY_CHUNK_TRAILER) {
                 /* Treat UNSET as DISABLE - trailers aren't merged by default */
-                return read_chunked_trailers(ctx, f, b,
-                            conf->merge_trailers == AP_MERGE_TRAILERS_ENABLE);
+                return read_chunked_trailers(ctx, f, b);
             }
 
             break;
@@ -1235,6 +1312,15 @@ AP_DECLARE_NONSTD(int) ap_send_http_trace(request_rec *r)
     return DONE;
 }
 
+static apr_bucket *create_trailers_bucket(request_rec *r, apr_bucket_alloc_t *bucket_alloc)
+{
+    if (r->trailers_out && !apr_is_empty_table(r->trailers_out)) {
+        ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r, "sending trailers");
+        return ap_bucket_headers_create(r->trailers_out, r->pool, bucket_alloc);
+    }
+    return NULL;
+}
+
 typedef struct header_filter_ctx {
     int headers_sent;
 } header_filter_ctx;
@@ -1246,7 +1332,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f,
     conn_rec *c = r->connection;
     int header_only = (r->header_only || AP_STATUS_IS_HEADER_ONLY(r->status));
     const char *protocol = NULL;
-    apr_bucket *e;
+    apr_bucket *e, *eos = NULL;
     apr_bucket_brigade *b2;
     header_struct h;
     header_filter_ctx *ctx = f->ctx;
@@ -1285,6 +1371,10 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f,
     {
         if (AP_BUCKET_IS_ERROR(e) && !eb) {
             eb = e->data;
+            continue;
+        }
+        if (APR_BUCKET_IS_EOS(e)) {
+            if (!eos) eos = e;
             continue;
         }
         /*
@@ -1337,6 +1427,22 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f,
         ap_remove_output_filter(f);
         rv = ap_pass_brigade(f->next, b);
         goto out;
+    }
+
+    if (eos) {
+        /* on having seen EOS and added possible trailers, we
+         * can remove this filter.
+         */
+        e = create_trailers_bucket(r, b->bucket_alloc);
+        if (e) {
+            APR_BUCKET_INSERT_BEFORE(eos, e);
+        }
+        ap_remove_output_filter(f);
+    }
+
+    if (ctx->headers_sent) {
+        /* we did already the stuff below, just pass on */
+        return ap_pass_brigade(f->next, b);
     }
 
     /*
@@ -1468,11 +1574,6 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f,
         ap_add_output_filter("CHUNK", NULL, r, r->connection);
     }
 
-    /* Don't remove this filter until after we have added the CHUNK filter.
-     * Otherwise, f->next won't be the CHUNK filter and thus the first
-     * brigade won't be chunked properly.
-     */
-    ap_remove_output_filter(f);
     rv = ap_pass_brigade(f->next, b);
 out:
     if (recursive_error) {
@@ -1636,25 +1737,22 @@ cleanup:
 
 AP_DECLARE(int) ap_setup_client_block(request_rec *r, int read_policy)
 {
-    const char *tenc = apr_table_get(r->headers_in, "Transfer-Encoding");
     const char *lenp = apr_table_get(r->headers_in, "Content-Length");
 
     r->read_body = read_policy;
     r->read_chunked = 0;
     r->remaining = 0;
 
-    if (tenc) {
-        if (ap_cstr_casecmp(tenc, "chunked")) {
-            ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(01592)
-                          "Unknown Transfer-Encoding %s", tenc);
-            return HTTP_NOT_IMPLEMENTED;
-        }
+    if (r->body_indeterminate) {
+        /* Protocols like HTTP/2 can carry bodies without length and
+         * HTTP/1.1 has chunked encoding signalled via this note.
+         */
         if (r->read_body == REQUEST_CHUNKED_ERROR) {
             ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(01593)
-                          "chunked Transfer-Encoding forbidden: %s", r->uri);
+                          "indeterminate request body length forbidden: %s", r->uri);
+            r->read_chunked = 0;
             return (lenp) ? HTTP_BAD_REQUEST : HTTP_LENGTH_REQUIRED;
         }
-
         r->read_chunked = 1;
     }
     else if (lenp) {
@@ -1802,6 +1900,7 @@ AP_DECLARE(long) ap_get_client_block(request_rec *r, char *buffer,
 /* Context struct for ap_http_outerror_filter */
 typedef struct {
     int seen_eoc;
+    int first_error;
 } outerror_filter_ctx_t;
 
 /* Filter to handle any error buckets on output */
@@ -1831,10 +1930,18 @@ apr_status_t ap_http_outerror_filter(ap_filter_t *f,
                 /* stream aborted and we have not ended it yet */
                 r->connection->keepalive = AP_CONN_CLOSE;
             }
+            /*
+             * Memorize the status code of the first error bucket for possible
+             * later use.
+             */
+            if (!ctx->first_error) {
+                ctx->first_error = ((ap_bucket_error *)(e->data))->status;
+            }
             continue;
         }
         /* Detect EOC buckets and memorize this in the context. */
         if (AP_BUCKET_IS_EOC(e)) {
+            r->connection->keepalive = AP_CONN_CLOSE;
             ctx->seen_eoc = 1;
         }
     }
@@ -1858,6 +1965,18 @@ apr_status_t ap_http_outerror_filter(ap_filter_t *f,
      *              EOS bucket.
      */
     if (ctx->seen_eoc) {
+        /*
+         * Set the request status to the status of the first error bucket.
+         * This should ensure that we log an appropriate status code in
+         * the access log.
+         * We need to set r->status on each call after we noticed an EOC as
+         * data bucket generators like ap_die might have changed the status
+         * code. But we know better in this case and insist on the status
+         * code that we have seen in the error bucket.
+         */
+        if (ctx->first_error) {
+            r->status = ctx->first_error;
+        }
         e = APR_BRIGADE_FIRST(b);
         while (e != APR_BRIGADE_SENTINEL(b)) {
             apr_bucket *c = e;
