@@ -19,19 +19,6 @@
 
 #include <http_core.h>
 
-typedef enum {
-    H2_MPM_UNKNOWN,
-    H2_MPM_WORKER,
-    H2_MPM_EVENT,
-    H2_MPM_PREFORK,
-    H2_MPM_MOTORZ,
-    H2_MPM_SIMPLE,
-    H2_MPM_NETWARE,
-    H2_MPM_WINNT,
-} h2_mpm_type_t;
-
-/* Returns the type of MPM module detected */
-h2_mpm_type_t h2_conn_mpm_type(void);
 const char *h2_conn_mpm_name(void);
 int h2_mpm_supported(void);
 
@@ -41,8 +28,15 @@ int h2_mpm_supported(void);
  */
 apr_status_t h2_c2_child_init(apr_pool_t *pool, server_rec *s);
 
-conn_rec *h2_c2_create(conn_rec *c1, apr_pool_t *parent);
 void h2_c2_destroy(conn_rec *c2);
+
+/**
+ * Abort the I/O processing of a secondary connection. And
+ * in-/output beams will return errors and c2->aborted is set.
+ * @param c2 the secondary connection to abort
+ * @param from the connection this is invoked from
+ */
+void h2_c2_abort(conn_rec *c2, conn_rec *from);
 
 /**
  * Process a secondary connection for a HTTP/2 stream request.

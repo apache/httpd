@@ -38,19 +38,17 @@ struct h2_workers {
     
     int next_worker_id;
     apr_uint32_t max_workers;
-    volatile apr_uint32_t min_workers; /* is changed during graceful shutdown */
-    volatile apr_interval_time_t max_idle_duration; /* is changed during graceful shutdown */
-    
-    volatile int aborted;
-    volatile int shutdown;
+    apr_uint32_t min_workers;
+    /* atomic */ apr_uint32_t worker_count;
+    /* atomic */ apr_uint32_t max_idle_secs;
+    /* atomic */ apr_uint32_t aborted;
+    /* atomic */ apr_uint32_t shutdown;
     int dynamic;
 
     apr_threadattr_t *thread_attr;
     int nslots;
     struct h2_slot *slots;
-    
-    volatile apr_uint32_t worker_count;
-    
+
     struct h2_slot *free;
     struct h2_slot *idle;
     struct h2_slot *zombies;

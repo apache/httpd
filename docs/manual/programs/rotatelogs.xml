@@ -117,9 +117,16 @@ processed in real time by a further tool in the chain.</dd>
 <dd>Create log file for each interval, even if empty.</dd>
 
 <dt><code>-n <var>number-of-files</var></code></dt>
-<dd>Use a circular list of filenames without timestamps.
-With -n 3, the series of log files opened would be
-"logfile", "logfile.1", "logfile.2", then overwriting "logfile".<br />
+<dd>Use a circular list of filenames without timestamps. This option overwrites 
+log files at startup and during rotation.  With -n 3, the series of log 
+files opened would be "logfile", "logfile.1", "logfile.2", then overwriting 
+"logfile". 
+<br/>
+When this program first opens "logfile", the file will only be truncated if <code>-t</code> is also provided. Every subsequent rotation will
+always begin with truncation of the target file.  For size based rotation without <code>-t</code> and existing log files in place,
+this option may result in unintuitive behavior such as initial log entries being sent to "logfile.1", and entries in "logfile.1" not being preserved
+even if later "logfile.n" have not yet been used.
+<br/>
 Available in 2.4.5 and later.</dd>
 
 <dt><code><var>logfile</var></code></dt>

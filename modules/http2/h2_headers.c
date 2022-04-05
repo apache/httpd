@@ -98,18 +98,13 @@ const apr_bucket_type_t h2_bucket_type_headers = {
     apr_bucket_shared_copy
 };
 
-apr_bucket *h2_bucket_headers_beam(struct h2_bucket_beam *beam,
-                                    apr_bucket_brigade *dest,
-                                    const apr_bucket *src)
+apr_bucket *h2_bucket_headers_clone(apr_bucket *src, apr_pool_t *p, apr_bucket_alloc_t *list)
 {
-    if (H2_BUCKET_IS_HEADERS(src)) {
-        h2_headers *src_headers = ((h2_bucket_headers *)src->data)->headers;
-        apr_bucket *b = h2_bucket_headers_create(dest->bucket_alloc, 
-                                                 h2_headers_clone(dest->p, src_headers));
-        APR_BRIGADE_INSERT_TAIL(dest, b);
-        return b;
-    }
-    return NULL;
+    h2_headers *src_headers;
+
+    AP_DEBUG_ASSERT(H2_BUCKET_IS_HEADERS(src));
+    src_headers = ((h2_bucket_headers *)src->data)->headers;
+    return h2_bucket_headers_create(list, h2_headers_clone(p, src_headers));
 }
 
 

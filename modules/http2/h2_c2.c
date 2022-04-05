@@ -52,7 +52,6 @@
 #include "h2_util.h"
 
 
-static h2_mpm_type_t mpm_type = H2_MPM_UNKNOWN;
 static module *mpm_module;
 static int mpm_supported = 1;
 static apr_socket_t *dummy_socket;
@@ -67,22 +66,18 @@ static void check_modules(int force)
             module *m = ap_loaded_modules[i];
 
             if (!strcmp("event.c", m->name)) {
-                mpm_type = H2_MPM_EVENT;
                 mpm_module = m;
                 break;
             }
             else if (!strcmp("motorz.c", m->name)) {
-                mpm_type = H2_MPM_MOTORZ;
                 mpm_module = m;
                 break;
             }
             else if (!strcmp("mpm_netware.c", m->name)) {
-                mpm_type = H2_MPM_NETWARE;
                 mpm_module = m;
                 break;
             }
             else if (!strcmp("prefork.c", m->name)) {
-                mpm_type = H2_MPM_PREFORK;
                 mpm_module = m;
                 /* While http2 can work really well on prefork, it collides
                  * today's use case for prefork: running single-thread app engines
@@ -93,30 +88,21 @@ static void check_modules(int force)
                 break;
             }
             else if (!strcmp("simple_api.c", m->name)) {
-                mpm_type = H2_MPM_SIMPLE;
                 mpm_module = m;
                 mpm_supported = 0;
                 break;
             }
             else if (!strcmp("mpm_winnt.c", m->name)) {
-                mpm_type = H2_MPM_WINNT;
                 mpm_module = m;
                 break;
             }
             else if (!strcmp("worker.c", m->name)) {
-                mpm_type = H2_MPM_WORKER;
                 mpm_module = m;
                 break;
             }
         }
         checked = 1;
     }
-}
-
-h2_mpm_type_t h2_conn_mpm_type(void)
-{
-    check_modules(0);
-    return mpm_type;
 }
 
 const char *h2_conn_mpm_name(void)
@@ -131,12 +117,6 @@ int h2_mpm_supported(void)
     return mpm_supported;
 }
 
-static module *h2_conn_mpm_module(void)
-{
-    check_modules(0);
-    return mpm_module;
-}
-
 apr_status_t h2_c2_child_init(apr_pool_t *pool, server_rec *s)
 {
     check_modules(1);
@@ -144,93 +124,26 @@ apr_status_t h2_c2_child_init(apr_pool_t *pool, server_rec *s)
                              APR_PROTO_TCP, pool);
 }
 
-/* APR callback invoked if allocation fails. */
-static int abort_on_oom(int retcode)
-{
-    ap_abort_on_oom();
-    return retcode; /* unreachable, hopefully. */
-}
-
-conn_rec *h2_c2_create(conn_rec *c1, apr_pool_t *parent)
-{
-    apr_allocator_t *allocator;
-    apr_status_t status;
-    apr_pool_t *pool;
-    conn_rec *c2;
-    void *cfg;
-    module *mpm;
-
-    ap_assert(c1);
-    ap_log_cerror(APLOG_MARK, APLOG_TRACE3, 0, c1,
-                  "h2_c2: create for c1(%ld)", c1->id);
-
-    /* We create a pool with its own allocator to be used for
-     * processing a request. This is the only way to have the processing
-     * independent of its parent pool in the sense that it can work in
-     * another thread.
-     */
-    apr_allocator_create(&allocator);
-    apr_allocator_max_free_set(allocator, ap_max_mem_free);
-    status = apr_pool_create_ex(&pool, parent, NULL, allocator);
-    if (status != APR_SUCCESS) {
-        ap_log_cerror(APLOG_MARK, APLOG_ERR, status, c1,
-                      APLOGNO(10004) "h2_c2: create pool");
-        return NULL;
-    }
-    apr_allocator_owner_set(allocator, pool);
-    apr_pool_abort_set(abort_on_oom, pool);
-    apr_pool_tag(pool, "h2_c2_conn");
-
-    c2 = (conn_rec *) apr_palloc(pool, sizeof(conn_rec));
-    memcpy(c2, c1, sizeof(conn_rec));
-
-    c2->master                 = c1;
-    c2->pool                   = pool;
-    c2->conn_config            = ap_create_conn_config(pool);
-    c2->notes                  = apr_table_make(pool, 5);
-    c2->input_filters          = NULL;
-    c2->output_filters         = NULL;
-    c2->keepalives             = 0;
-#if AP_MODULE_MAGIC_AT_LEAST(20180903, 1)
-    c2->filter_conn_ctx        = NULL;
-#endif
-    c2->bucket_alloc           = apr_bucket_alloc_create(pool);
-#if !AP_MODULE_MAGIC_AT_LEAST(20180720, 1)
-    c2->data_in_input_filters  = 0;
-    c2->data_in_output_filters = 0;
-#endif
-    /* prevent mpm_event from making wrong assumptions about this connection,
-     * like e.g. using its socket for an async read check. */
-    c2->clogging_input_filters = 1;
-    c2->log                    = NULL;
-    c2->aborted                = 0;
-    /* We cannot install the master connection socket on the secondary, as
-     * modules mess with timeouts/blocking of the socket, with
-     * unwanted side effects to the master connection processing.
-     * Fortunately, since we never use the secondary socket, we can just install
-     * a single, process-wide dummy and everyone is happy.
-     */
-    ap_set_module_config(c2->conn_config, &core_module, dummy_socket);
-    /* TODO: these should be unique to this thread */
-    c2->sbh = NULL; /*c1->sbh;*/
-    /* TODO: not all mpm modules have learned about secondary connections yet.
-     * copy their config from master to secondary.
-     */
-    if ((mpm = h2_conn_mpm_module()) != NULL) {
-        cfg = ap_get_module_config(c1->conn_config, mpm);
-        ap_set_module_config(c2->conn_config, mpm, cfg);
-    }
-
-    ap_log_cerror(APLOG_MARK, APLOG_TRACE3, 0, c2,
-                  "h2_c2(%s): created", c2->log_id);
-    return c2;
-}
-
 void h2_c2_destroy(conn_rec *c2)
 {
     ap_log_cerror(APLOG_MARK, APLOG_TRACE3, 0, c2,
                   "h2_c2(%s): destroy", c2->log_id);
     apr_pool_destroy(c2->pool);
+}
+
+void h2_c2_abort(conn_rec *c2, conn_rec *from)
+{
+    h2_conn_ctx_t *conn_ctx = h2_conn_ctx_get(c2);
+
+    AP_DEBUG_ASSERT(conn_ctx);
+    AP_DEBUG_ASSERT(conn_ctx->stream_id);
+    if (conn_ctx->beam_in) {
+        h2_beam_abort(conn_ctx->beam_in, from);
+    }
+    if (conn_ctx->beam_out) {
+        h2_beam_abort(conn_ctx->beam_out, from);
+    }
+    c2->aborted = 1;
 }
 
 typedef struct {
@@ -246,7 +159,7 @@ static apr_status_t h2_c2_filter_in(ap_filter_t* f,
     h2_conn_ctx_t *conn_ctx;
     h2_c2_fctx_in_t *fctx = f->ctx;
     apr_status_t status = APR_SUCCESS;
-    apr_bucket *b, *next;
+    apr_bucket *b;
     apr_off_t bblen;
     const int trace1 = APLOGctrace1(f->c);
     apr_size_t rmax = ((readbytes <= APR_SIZE_MAX)? 
@@ -255,12 +168,6 @@ static apr_status_t h2_c2_filter_in(ap_filter_t* f,
     conn_ctx = h2_conn_ctx_get(f->c);
     ap_assert(conn_ctx);
 
-    if (trace1) {
-        ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, f->c,
-                      "h2_c2_in(%s-%d): read, mode=%d, block=%d, readbytes=%ld",
-                      conn_ctx->id, conn_ctx->stream_id, mode, block, (long)readbytes);
-    }
-    
     if (mode == AP_MODE_INIT) {
         return ap_get_brigade(f->c->input_filters, bb, mode, block, readbytes);
     }
@@ -269,6 +176,12 @@ static apr_status_t h2_c2_filter_in(ap_filter_t* f,
         return APR_ECONNABORTED;
     }
     
+    if (APLOGctrace1(f->c)) {
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, f->c,
+                      "h2_c2_in(%s-%d): read, mode=%d, block=%d, readbytes=%ld",
+                      conn_ctx->id, conn_ctx->stream_id, mode, block, (long)readbytes);
+    }
+
     if (!fctx) {
         fctx = apr_pcalloc(f->c->pool, sizeof(*fctx));
         f->ctx = fctx;
@@ -279,31 +192,21 @@ static apr_status_t h2_c2_filter_in(ap_filter_t* f,
         }
     }
     
-    /* Cleanup brigades from those nasty 0 length non-meta buckets
-     * that apr_brigade_split_line() sometimes produces. */
-    for (b = APR_BRIGADE_FIRST(fctx->bb);
-         b != APR_BRIGADE_SENTINEL(fctx->bb); b = next) {
-        next = APR_BUCKET_NEXT(b);
-        if (b->length == 0 && !APR_BUCKET_IS_METADATA(b)) {
-            apr_bucket_delete(b);
-        } 
-    }
-    
     while (APR_BRIGADE_EMPTY(fctx->bb)) {
         /* Get more input data for our request. */
-        if (trace1) {
-            ap_log_cerror(APLOG_MARK, APLOG_TRACE1, status, f->c,
+        if (APLOGctrace1(f->c)) {
+            ap_log_cerror(APLOG_MARK, APLOG_TRACE2, status, f->c,
                           "h2_c2_in(%s-%d): get more data from mplx, block=%d, "
                           "readbytes=%ld",
                           conn_ctx->id, conn_ctx->stream_id, block, (long)readbytes);
         }
         if (conn_ctx->beam_in) {
-            if (conn_ctx->pipe_in_prod[H2_PIPE_OUT]) {
+            if (conn_ctx->pipe_in[H2_PIPE_OUT]) {
 receive:
                 status = h2_beam_receive(conn_ctx->beam_in, f->c, fctx->bb, APR_NONBLOCK_READ,
                                          conn_ctx->mplx->stream_max_mem);
                 if (APR_STATUS_IS_EAGAIN(status) && APR_BLOCK_READ == block) {
-                    status = h2_util_wait_on_pipe(conn_ctx->pipe_in_prod[H2_PIPE_OUT]);
+                    status = h2_util_wait_on_pipe(conn_ctx->pipe_in[H2_PIPE_OUT]);
                     if (APR_SUCCESS == status) {
                         goto receive;
                     }
@@ -318,8 +221,8 @@ receive:
             status = APR_EOF;
         }
         
-        if (trace1) {
-            ap_log_cerror(APLOG_MARK, APLOG_TRACE2, status, f->c,
+        if (APLOGctrace3(f->c)) {
+            ap_log_cerror(APLOG_MARK, APLOG_TRACE3, status, f->c,
                           "h2_c2_in(%s-%d): read returned",
                           conn_ctx->id, conn_ctx->stream_id);
         }
@@ -338,8 +241,8 @@ receive:
             return status;
         }
 
-        if (trace1) {
-            h2_util_bb_log(f->c, conn_ctx->stream_id, APLOG_TRACE2,
+        if (APLOGctrace3(f->c)) {
+            h2_util_bb_log(f->c, conn_ctx->stream_id, APLOG_TRACE3,
                         "c2 input recv raw", fctx->bb);
         }
         if (h2_c_logio_add_bytes_in) {
@@ -359,8 +262,8 @@ receive:
     }
            
     if (APR_BRIGADE_EMPTY(fctx->bb)) {
-        if (trace1) {
-            ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, f->c,
+        if (APLOGctrace3(f->c)) {
+            ap_log_cerror(APLOG_MARK, APLOG_TRACE3, 0, f->c,
                           "h2_c2_in(%s-%d): no data",
                           conn_ctx->id, conn_ctx->stream_id);
         }
@@ -383,16 +286,14 @@ receive:
          * though it ends with CRLF and creates a 0 length bucket */
         status = apr_brigade_split_line(bb, fctx->bb, block,
                                         HUGE_STRING_LEN);
-        if (APLOGctrace1(f->c)) {
+        if (APLOGctrace3(f->c)) {
             char buffer[1024];
             apr_size_t len = sizeof(buffer)-1;
             apr_brigade_flatten(bb, buffer, &len);
             buffer[len] = 0;
-            if (trace1) {
-                ap_log_cerror(APLOG_MARK, APLOG_TRACE1, status, f->c,
-                              "h2_c2_in(%s-%d): getline: %s",
-                              conn_ctx->id, conn_ctx->stream_id, buffer);
-            }
+            ap_log_cerror(APLOG_MARK, APLOG_TRACE3, status, f->c,
+                          "h2_c2_in(%s-%d): getline: %s",
+                          conn_ctx->id, conn_ctx->stream_id, buffer);
         }
     }
     else {
@@ -405,9 +306,9 @@ receive:
         status = APR_ENOTIMPL;
     }
     
-    if (trace1) {
+    if (APLOGctrace3(f->c)) {
         apr_brigade_length(bb, 0, &bblen);
-        ap_log_cerror(APLOG_MARK, APLOG_TRACE1, status, f->c,
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE3, status, f->c,
                       "h2_c2_in(%s-%d): %ld data bytes",
                       conn_ctx->id, conn_ctx->stream_id, (long)bblen);
     }
@@ -458,10 +359,7 @@ static apr_status_t h2_c2_filter_out(ap_filter_t* f, apr_bucket_brigade* bb)
                   "h2_c2(%s-%d): output leave",
                   conn_ctx->id, conn_ctx->stream_id);
     if (APR_SUCCESS != rv) {
-        if (!conn_ctx->done) {
-            h2_beam_abort(conn_ctx->beam_out, f->c);
-        }
-        f->c->aborted = 1;
+        h2_c2_abort(f->c, f->c);
     }
     return rv;
 }
@@ -580,6 +478,16 @@ static apr_status_t c2_process(h2_conn_ctx_t *conn_ctx, conn_rec *c)
 
     /* the request_rec->server carries the timeout value that applies */
     h2_conn_ctx_set_timeout(conn_ctx, r->server->timeout);
+    /* We only handle this one request on the connection and tell everyone
+     * that there is no need to keep it "clean" if something fails. Also,
+     * this prevents mod_reqtimeout from doing funny business with monitoring
+     * keepalive timeouts.
+     */
+    r->connection->keepalive = AP_CONN_CLOSE;
+
+    if (conn_ctx->beam_in && !apr_table_get(r->headers_in, "Content-Length")) {
+        r->body_indeterminate = 1;
+    }
 
     if (h2_config_sgeti(conn_ctx->server, H2_CONF_COPY_FILES)) {
         ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, c,
@@ -691,13 +599,15 @@ static int h2_c2_hook_post_read_request(request_rec *r)
 
 static int h2_c2_hook_fixups(request_rec *r)
 {
-    /* secondary connection? */
-    if (r->connection->master) {
-        h2_conn_ctx_t *conn_ctx = h2_conn_ctx_get(r->connection);
-        if (conn_ctx) {
-            check_push(r, "late_fixup");
-        }
+    conn_rec *c2 = r->connection;
+    h2_conn_ctx_t *conn_ctx;
+
+    if (!c2->master || !(conn_ctx = h2_conn_ctx_get(c2)) || !conn_ctx->stream_id) {
+        return DECLINED;
     }
+
+    check_push(r, "late_fixup");
+
     return DECLINED;
 }
 

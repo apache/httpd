@@ -44,6 +44,13 @@ struct h2_iqueue;
 
 #include <apr_queue.h>
 
+typedef struct h2_c2_transit h2_c2_transit;
+
+struct h2_c2_transit {
+    apr_pool_t *pool;
+    apr_bucket_alloc_t *bucket_alloc;
+};
+
 typedef struct h2_mplx h2_mplx;
 
 struct h2_mplx {
@@ -79,18 +86,19 @@ struct h2_mplx {
     struct apr_thread_cond_t *join_wait;
     
     apr_pollset_t *pollset;         /* pollset for c1/c2 IO events */
-    apr_array_header_t *streams_to_poll; /* streams to add to the pollset */
     apr_array_header_t *streams_ev_in;
     apr_array_header_t *streams_ev_out;
 
-#if !H2_POLL_STREAMS
-    apr_thread_mutex_t *poll_lock; /* not the painter */
+    apr_thread_mutex_t *poll_lock; /* protect modifications of queues below */
     struct h2_iqueue *streams_input_read;  /* streams whose input has been read from */
     struct h2_iqueue *streams_output_written; /* streams whose output has been written to */
-#endif
+
     struct h2_workers *workers;     /* h2 workers process wide instance */
 
     request_rec *scratch_r;         /* pseudo request_rec for scoreboard reporting */
+
+    apr_size_t max_spare_transits;   /* max number of transit pools idling */
+    apr_array_header_t *c2_transits; /* base pools for running c2 connections */
 };
 
 apr_status_t h2_mplx_c1_child_init(apr_pool_t *pool, server_rec *s);
@@ -138,12 +146,12 @@ int h2_mplx_c1_stream_is_running(h2_mplx *m, struct h2_stream *stream);
  * @param cmp the stream priority compare function
  * @param pstream_count on return the number of streams active in mplx
  */
-apr_status_t h2_mplx_c1_process(h2_mplx *m,
-                                struct h2_iqueue *read_to_process,
-                                h2_stream_get_fn *get_stream,
-                                h2_stream_pri_cmp_fn *cmp,
-                                struct h2_session *session,
-                                int *pstream_count);
+void h2_mplx_c1_process(h2_mplx *m,
+                        struct h2_iqueue *read_to_process,
+                        h2_stream_get_fn *get_stream,
+                        h2_stream_pri_cmp_fn *cmp,
+                        struct h2_session *session,
+                        int *pstream_count);
 
 apr_status_t h2_mplx_c1_fwd_input(h2_mplx *m, struct h2_iqueue *input_pending,
                                   h2_stream_get_fn *get_stream,
@@ -205,12 +213,8 @@ apr_status_t h2_mplx_worker_pop_c2(h2_mplx *m, conn_rec **out_c2);
 
 /**
  * A h2 worker reports a secondary connection processing done.
- * If it is will to do more work for this mplx (this c1 connection),
- * it provides `out_c`. Otherwise it passes NULL.
  * @param c2 the secondary connection finished processing
- * @param out_c2 NULL or a pointer where to reveive the next
- *               secondary connection to process.
  */
-void h2_mplx_worker_c2_done(conn_rec *c2, conn_rec **out_c2);
+void h2_mplx_worker_c2_done(conn_rec *c2);
 
 #endif /* defined(__mod_h2__h2_mplx__) */

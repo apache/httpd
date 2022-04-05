@@ -131,9 +131,20 @@ opérations d'ouverture et de fermeture de fichiers.</dd>
 utile lorsque les journaux doivent être traités par un autre programme.</dd>
 
 <dt><code>-n <var>nombre-de-fichiers</var></code></dt>
-<dd>Utilise une liste circulaire de fichiers sans repères de temps. Avec
--n 3, la série de fichiers conservés sera "logfile",
-"logfile.1", "logfile.2" avec écrasement de "logfile".<br />
+<dd>Utilise une liste circulaire de noms de fichiers sans repères de temps.
+Cette option permet d'écraser des fichiers journaux au démarrage et au cours de
+la rotation. Avec -n 3, la série de fichiers conservés sera "logfile",
+"logfile.1", "logfile.2" avec écrasement de "logfile".
+<br />
+Lorsque ce programme ouvre «&nbsp;logfile&nbsp;», ce dernier sera seulement tronqué si
+l'option <code>-t</code> est aussi spécifiée. Toute rotation subséquente sera
+précédée d'une troncature du fichier cible. Dans le cas d'une rotation basée sur
+la taille sans l'option <code>-t</code> et si des fichiers journaux sont déjà en
+place, cette option peut provoquer des résultats inattendus comme l'envoi des
+entrées de journal initiales vers «&nbsp;logfile.1&nbsp;», les entrées de «&nbsp;logfile.1&nbsp;»
+n'étant pas conservées, même si des fichiers «&nbsp;logfile.n&nbsp;» n'ont pas encore été
+utilisés.
+<br />
 Disponible à partir de la version 2.4.5 du serveur HTTP Apache.</dd>
 
 <dt><code><var>fichier-journal</var></code></dt>

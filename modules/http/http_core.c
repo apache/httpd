@@ -36,6 +36,7 @@
 
 /* Handles for core filters */
 AP_DECLARE_DATA ap_filter_rec_t *ap_http_input_filter_handle;
+AP_DECLARE_DATA ap_filter_rec_t *ap_h1_body_in_filter_handle;
 AP_DECLARE_DATA ap_filter_rec_t *ap_http_header_filter_handle;
 AP_DECLARE_DATA ap_filter_rec_t *ap_chunk_filter_handle;
 AP_DECLARE_DATA ap_filter_rec_t *ap_http_outerror_filter_handle;
@@ -301,6 +302,9 @@ static void register_hooks(apr_pool_t *p)
     ap_http_input_filter_handle =
         ap_register_input_filter("HTTP_IN", ap_http_filter,
                                  NULL, AP_FTYPE_PROTOCOL);
+    ap_h1_body_in_filter_handle =
+        ap_register_input_filter("HTTP1_BODY_IN", ap_h1_body_in_filter,
+                                 NULL, AP_FTYPE_TRANSCODE);
     ap_http_header_filter_handle =
         ap_register_output_filter("HTTP_HEADER", ap_http_header_filter,
                                   NULL, AP_FTYPE_PROTOCOL);

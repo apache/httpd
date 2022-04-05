@@ -27,16 +27,7 @@ struct apr_thread_cond_t;
  * across threads with as little copying as possible.
  */
 
-typedef void h2_beam_mutex_leave(struct apr_thread_mutex_t *lock);
-
-typedef struct {
-    apr_thread_mutex_t *mutex;
-    h2_beam_mutex_leave *leave;
-} h2_beam_lock;
-
 typedef struct h2_bucket_beam h2_bucket_beam;
-
-typedef apr_status_t h2_beam_mutex_enter(void *ctx, h2_beam_lock *pbl);
 
 typedef void h2_beam_io_callback(void *ctx, h2_bucket_beam *beam,
                                  apr_off_t bytes);
@@ -74,6 +65,8 @@ struct h2_bucket_beam {
     void *was_empty_ctx;
     h2_beam_ev_callback *recv_cb;      /* event: buckets were transfered in h2_beam_receive() */
     void *recv_ctx;
+    h2_beam_ev_callback *send_cb;      /* event: buckets were added in h2_beam_send() */
+    void *send_ctx;
 
     apr_off_t recv_bytes;             /* amount of bytes transferred in h2_beam_receive() */
     apr_off_t recv_bytes_reported;    /* amount of bytes reported as received via callback */
@@ -206,6 +199,17 @@ void h2_beam_on_received(h2_bucket_beam *beam,
 
 /**
  * Register a call back from the sender side to be invoked when send
+ * has added buckets to the beam.
+ * Unregister by passing a NULL on_send_cb.
+ * @param beam the beam to set the callback on
+ * @param on_send_cb the callback to invoke after buckets were added
+ * @param ctx  the context to use in callback invocation
+ */
+void h2_beam_on_send(h2_bucket_beam *beam,
+                     h2_beam_ev_callback *on_send_cb, void *ctx);
+
+/**
+ * Register a call back from the sender side to be invoked when send
  * has added to a previously empty beam.
  * Unregister by passing a NULL was_empty_cb.
  * @param beam the beam to set the callback on
@@ -233,11 +237,5 @@ apr_off_t h2_beam_get_buffered(h2_bucket_beam *beam);
  * Get the memory used by the buffered buckets, approximately.
  */
 apr_off_t h2_beam_get_mem_used(h2_bucket_beam *beam);
-
-typedef apr_bucket *h2_bucket_beamer(h2_bucket_beam *beam,
-                                     apr_bucket_brigade *dest,
-                                     const apr_bucket *src);
-
-void h2_register_bucket_beamer(h2_bucket_beamer *beamer);
 
 #endif /* h2_bucket_beam_h */

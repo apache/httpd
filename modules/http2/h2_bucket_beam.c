@@ -28,6 +28,7 @@
 
 #include "h2_private.h"
 #include "h2_conn_ctx.h"
+#include "h2_headers.h"
 #include "h2_util.h"
 #include "h2_bucket_beam.h"
 
@@ -52,44 +53,6 @@
         APR_RING_PREPEND(&(a)->list, &(b)->list, apr_bucket, link);	\
     } while (0)
 
-
-/* registry for bucket converting `h2_bucket_beamer` functions */
-static apr_array_header_t *beamers;
-
-static apr_status_t cleanup_beamers(void *dummy)
-{
-    (void)dummy;
-    beamers = NULL;
-    return APR_SUCCESS;
-}
-
-void h2_register_bucket_beamer(h2_bucket_beamer *beamer)
-{
-    if (!beamers) {
-        apr_pool_cleanup_register(apr_hook_global_pool, NULL,
-                                  cleanup_beamers, apr_pool_cleanup_null);
-        beamers = apr_array_make(apr_hook_global_pool, 10, 
-                                 sizeof(h2_bucket_beamer*));
-    }
-    APR_ARRAY_PUSH(beamers, h2_bucket_beamer*) = beamer;
-}
-
-static apr_bucket *h2_beam_bucket(h2_bucket_beam *beam, 
-                                  apr_bucket_brigade *dest,
-                                  const apr_bucket *src)
-{
-    apr_bucket *b = NULL;
-    int i;
-    if (beamers) {
-        for (i = 0; i < beamers->nelts && b == NULL; ++i) {
-            h2_bucket_beamer *beamer;
-            
-            beamer = APR_ARRAY_IDX(beamers, i, h2_bucket_beamer*);
-            b = beamer(beam, dest, src);
-        }
-    }
-    return b;
-}
 
 static int is_empty(h2_bucket_beam *beam);
 static apr_off_t get_buffered_data_len(h2_bucket_beam *beam);
@@ -424,6 +387,9 @@ void h2_beam_abort(h2_bucket_beam *beam, conn_rec *c)
     beam->aborted = 1;
     if (c == beam->from) {
         /* sender aborts */
+        if (beam->send_cb) {
+            beam->send_cb(beam->send_ctx, beam);
+        }
         if (beam->was_empty_cb && buffer_is_empty(beam)) {
             beam->was_empty_cb(beam->was_empty_ctx, beam);
         }
@@ -579,6 +545,9 @@ apr_status_t h2_beam_send(h2_bucket_beam *beam, conn_rec *from,
              * Trigger event callbacks, so receiver can know there is something
              * to receive before we do a conditional wait. */
             purge_consumed_buckets(beam);
+            if (beam->send_cb) {
+                beam->send_cb(beam->send_ctx, beam);
+            }
             if (was_empty && beam->was_empty_cb) {
                 beam->was_empty_cb(beam->was_empty_ctx, beam);
             }
@@ -590,6 +559,9 @@ apr_status_t h2_beam_send(h2_bucket_beam *beam, conn_rec *from,
         }
     }
 
+    if (beam->send_cb && !buffer_is_empty(beam)) {
+        beam->send_cb(beam->send_ctx, beam);
+    }
     if (was_empty && beam->was_empty_cb && !buffer_is_empty(beam)) {
         beam->was_empty_cb(beam->was_empty_ctx, beam);
     }
@@ -665,21 +637,13 @@ transfer:
             else if (APR_BUCKET_IS_FLUSH(bsender)) {
                 brecv = apr_bucket_flush_create(bb->bucket_alloc);
             }
-            else if (AP_BUCKET_IS_ERROR(bsender)) {
-                ap_bucket_error *eb = (ap_bucket_error *)bsender;
-                brecv = ap_bucket_error_create(eb->status, eb->data,
-                                                bb->p, bb->bucket_alloc);
+            else if (H2_BUCKET_IS_HEADERS(bsender)) {
+                brecv = h2_bucket_headers_clone(bsender, bb->p, bb->bucket_alloc);
             }
-            else {
-                /* Does someone else know how to make a proxy for
-                 * the bucket? Ask the callbacks registered for this. */
-                brecv = h2_beam_bucket(beam, bb, bsender);
-                while (brecv && brecv != APR_BRIGADE_SENTINEL(bb)) {
-                    ++transferred;
-                    remain -= brecv->length;
-                    brecv = APR_BUCKET_NEXT(brecv);
-                }
-                brecv = NULL;
+            else if (AP_BUCKET_IS_ERROR(bsender)) {
+                ap_bucket_error *eb = bsender->data;
+                brecv = ap_bucket_error_create(eb->status, eb->data,
+                                               bb->p, bb->bucket_alloc);
             }
         }
         else if (bsender->length == 0) {
@@ -802,6 +766,15 @@ void h2_beam_on_received(h2_bucket_beam *beam,
     apr_thread_mutex_lock(beam->lock);
     beam->recv_cb = recv_cb;
     beam->recv_ctx = ctx;
+    apr_thread_mutex_unlock(beam->lock);
+}
+
+void h2_beam_on_send(h2_bucket_beam *beam,
+                     h2_beam_ev_callback *send_cb, void *ctx)
+{
+    apr_thread_mutex_lock(beam->lock);
+    beam->send_cb = send_cb;
+    beam->send_ctx = ctx;
     apr_thread_mutex_unlock(beam->lock);
 }
 
