@@ -1162,8 +1162,23 @@ int ap_proxy_http_process_response(proxy_http_req_t *req)
                 ap_pass_brigade(r->output_filters, bb);
                 /* Mark the backend connection for closing */
                 backend->close = 1;
-                /* Need to return OK to avoid sending an error message */
-                return OK;
+                if (origin->keepalives) {
+                    /* We already had a request on this backend connection and
+                     * might just have run into a keepalive race. Hence we
+                     * think positive and assume that the backend is fine and
+                     * we do not need to signal an error on backend side.
+                     */
+                    return OK;
+                }
+                /*
+                 * This happened on our first request on this connection to the
+                 * backend. This indicates something fishy with the backend.
+                 * Return HTTP_INTERNAL_SERVER_ERROR to signal an unrecoverable
+                 * server error. We do not worry about r->status code and a
+                 * possible error response here as the ap_http_outerror_filter
+                 * will fix all of this for us.
+                 */
+                return HTTP_INTERNAL_SERVER_ERROR;
             }
             if (!c->keepalives) {
                 ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01105)
