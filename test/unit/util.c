@@ -79,6 +79,41 @@ HTTPD_START_LOOP_TEST(find_token_correctly_parses_token_list, ap_test_token_case
 }
 END_TEST
 
+
+/*
+ * ap_escape_quotes()
+ */
+
+struct ap_escape_quotes_case {
+    const char *input;
+    const char *expected;
+};
+
+#define ESCQ    "\\\""
+
+const struct ap_escape_quotes_case ap_test_escape_quotes_cases[] = {
+    { "one", "one" },
+    { "o\"ne", "o"ESCQ"ne" },
+    { "o"ESCQ"ne", "o"ESCQ"ne" },
+    { "one\\", "one\\" },
+    { "o\\ne", "o\\ne" },
+    { "o\\"ESCQ"ne", "o\\\\"ESCQ"ne" }, /* 1st \ escapes 2nd, following '"' needs \ */
+};
+
+const size_t ap_test_escape_quotes_cases_len = sizeof(ap_test_escape_quotes_cases) /
+    sizeof(ap_test_escape_quotes_cases[0]);
+
+HTTPD_START_LOOP_TEST(check_escape_quotes, ap_test_escape_quotes_cases_len)
+{
+    const struct ap_escape_quotes_case *c = &ap_test_escape_quotes_cases[_i];
+    const char *result;
+
+    result = ap_escape_quotes(g_pool, c->input);
+    ck_assert_str_eq(result, c->expected);
+}
+END_TEST
+
+
 /*
  * Test Case Boilerplate
  */
