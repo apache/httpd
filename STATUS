@@ -174,6 +174,19 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/httpd-2.4-authn-expr.patch
      +1: minfrin, jim,
 
+  *) mod_lua: Don't skip apr_global_mutex_child_init() if !APR_HAS_THREADS
+     trunk patch: https://svn.apache.org/r1898453
+     2.4.x patch: svn merge -c 1898453 ^/httpd/httpd/trunk .
+     +1: jaillect36
+
+  *) core: make ap_escape_quotes() work correctly on strings
+     with more than MAX_INT/2 characters, counting quotes double.
+     2.4.x patch: svn merge -c 1899609 ^/httpd/httpd/trunk .
+     +1: icing
+
+PATCHES/ISSUES THAT ARE BEING WORKED
+  [ New entries should be added at the START of the list ]
+
   *) mod_http2: sync with trunk
      - Fixed an issue since 1.15.24 that "Server" headers in proxied requests
        were overwritten instead of preserved. [PR by @daum3ns]
@@ -220,14 +233,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      Backport version for 2.4.x of patch:
        PR: https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/275.diff
      +1: icing, jim,
-
-  *) mod_lua: Don't skip apr_global_mutex_child_init() if !APR_HAS_THREADS
-     trunk patch: https://svn.apache.org/r1898453
-     2.4.x patch: svn merge -c 1898453 ^/httpd/httpd/trunk .
-     +1: jaillect36
-
-PATCHES/ISSUES THAT ARE BEING WORKED
-  [ New entries should be added at the START of the list ]
 
   *) mod_xml2enc: Correctly handle Microsoft OOXML documents.  PR 64339
      trunk patch: http://svn.apache.org/r1884505
