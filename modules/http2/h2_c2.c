@@ -45,7 +45,6 @@
 #include "h2_protocol.h"
 #include "h2_mplx.h"
 #include "h2_request.h"
-#include "h2_headers.h"
 #include "h2_session.h"
 #include "h2_stream.h"
 #include "h2_c2.h"
@@ -55,6 +54,11 @@
 static module *mpm_module;
 static int mpm_supported = 1;
 static apr_socket_t *dummy_socket;
+
+static ap_filter_rec_t *c2_net_in_filter_handle;
+static ap_filter_rec_t *c2_net_out_filter_handle;
+static ap_filter_rec_t *c2_notes_out_filter_handle;
+
 
 static void check_modules(int force)
 {
@@ -330,8 +334,11 @@ static apr_status_t beam_out(conn_rec *c2, h2_conn_ctx_t *conn_ctx, apr_bucket_b
         for (b = APR_BRIGADE_FIRST(bb);
              b != APR_BRIGADE_SENTINEL(bb);
              b = APR_BUCKET_NEXT(b)) {
-            if (H2_BUCKET_IS_HEADERS(b)) {
-                header_len += (apr_off_t)h2_bucket_headers_headers_length(b);
+            if (AP_BUCKET_IS_RESPONSE(b)) {
+                header_len += (apr_off_t)response_length_estimate(b->data);
+            }
+            if (AP_BUCKET_IS_HEADERS(b)) {
+                header_len += (apr_off_t)headers_length_estimate(b->data);
             }
         }
     }
@@ -429,9 +436,8 @@ apr_status_t h2_c2_process(conn_rec *c2, apr_thread_t *thread, int worker_id)
         ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, c2,
                       "h2_c2(%s-%d), adding filters",
                       conn_ctx->id, conn_ctx->stream_id);
-        ap_add_input_filter("H2_C2_NET_IN", NULL, NULL, c2);
-        ap_add_output_filter("H2_C2_NET_CATCH_H1", NULL, NULL, c2);
-        ap_add_output_filter("H2_C2_NET_OUT", NULL, NULL, c2);
+        ap_add_input_filter_handle(c2_net_in_filter_handle, NULL, NULL, c2);
+        ap_add_output_filter_handle(c2_net_out_filter_handle, NULL, NULL, c2);
 
         c2_run_pre_connection(c2, ap_get_conn_socket(c2));
         conn_ctx->pre_conn_done = 1;
@@ -583,16 +589,7 @@ static int h2_c2_hook_post_read_request(request_rec *r)
         ap_log_rerror(APLOG_MARK, APLOG_TRACE3, 0, r,
                       "h2_c2(%s-%d): adding request filters",
                       conn_ctx->id, conn_ctx->stream_id);
-
-        /* setup the correct filters to process the request for h2 */
-        ap_add_input_filter("H2_C2_REQUEST_IN", NULL, r, r->connection);
-
-        /* replace the core http filter that formats response headers
-         * in HTTP/1 with our own that collects status and headers */
-        ap_remove_output_filter_byhandle(r->output_filters, "HTTP_HEADER");
-
-        ap_add_output_filter("H2_C2_RESPONSE_OUT", NULL, r, r->connection);
-        ap_add_output_filter("H2_C2_TRAILERS_OUT", NULL, r, r->connection);
+        ap_add_output_filter_handle(c2_notes_out_filter_handle, NULL, r, r->connection);
     }
     return DECLINED;
 }
@@ -623,18 +620,14 @@ void h2_c2_register_hooks(void)
     ap_hook_post_read_request(h2_c2_hook_post_read_request, NULL, NULL, APR_HOOK_REALLY_FIRST);
     ap_hook_fixups(h2_c2_hook_fixups, NULL, NULL, APR_HOOK_LAST);
 
-    ap_register_input_filter("H2_C2_NET_IN", h2_c2_filter_in,
-                             NULL, AP_FTYPE_NETWORK);
-    ap_register_output_filter("H2_C2_NET_OUT", h2_c2_filter_out,
-                              NULL, AP_FTYPE_NETWORK);
-    ap_register_output_filter("H2_C2_NET_CATCH_H1", h2_c2_filter_catch_h1_out,
-                              NULL, AP_FTYPE_NETWORK);
-
-    ap_register_input_filter("H2_C2_REQUEST_IN", h2_c2_filter_request_in,
-                             NULL, AP_FTYPE_PROTOCOL);
-    ap_register_output_filter("H2_C2_RESPONSE_OUT", h2_c2_filter_response_out,
-                              NULL, AP_FTYPE_PROTOCOL);
-    ap_register_output_filter("H2_C2_TRAILERS_OUT", h2_c2_filter_trailers_out,
-                              NULL, AP_FTYPE_PROTOCOL);
+    c2_net_in_filter_handle =
+        ap_register_input_filter("H2_C2_NET_IN", h2_c2_filter_in,
+                                 NULL, AP_FTYPE_NETWORK);
+    c2_net_out_filter_handle =
+        ap_register_output_filter("H2_C2_NET_OUT", h2_c2_filter_out,
+                                  NULL, AP_FTYPE_NETWORK);
+    c2_notes_out_filter_handle =
+        ap_register_output_filter("H2_C2_NOTES_OUT", h2_c2_filter_notes_out,
+                                  NULL, AP_FTYPE_PROTOCOL);
 }
 

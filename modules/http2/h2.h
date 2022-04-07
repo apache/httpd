@@ -203,14 +203,6 @@ struct h2_request {
  */
 #define H2_HTTP_STATUS_UNSET (0)
 
-typedef struct h2_headers h2_headers;
-struct h2_headers {
-    int         status;
-    apr_table_t *headers;
-    apr_table_t *notes;
-    apr_off_t   raw_bytes;      /* RAW network bytes that generated this request - if known. */
-};
-
 typedef apr_status_t h2_io_data_cb(void *ctx, const char *data, apr_off_t len);
 
 typedef int h2_stream_pri_cmp_fn(int stream_id1, int stream_id2, void *session);

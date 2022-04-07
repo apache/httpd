@@ -27,7 +27,6 @@ h2_c2.lo dnl
 h2_c2_filter.lo dnl
 h2_config.lo dnl
 h2_conn_ctx.lo dnl
-h2_headers.lo dnl
 h2_mplx.lo dnl
 h2_protocol.lo dnl
 h2_push.lo dnl

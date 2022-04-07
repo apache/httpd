@@ -36,7 +36,6 @@
 #include "h2_bucket_beam.h"
 #include "h2_config.h"
 #include "h2_conn_ctx.h"
-#include "h2_headers.h"
 #include "h2_mplx.h"
 #include "h2_session.h"
 #include "h2_stream.h"

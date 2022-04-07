@@ -22,6 +22,7 @@
 #include <http_core.h>
 #include <http_config.h>
 #include <http_log.h>
+#include <http_protocol.h>
 
 #include "h2_private.h"
 #include "h2_session.h"

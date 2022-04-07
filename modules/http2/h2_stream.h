@@ -26,18 +26,12 @@
  * connection to the client. The h2_session writes to the h2_stream,
  * adding HEADERS and DATA and finally an EOS. When headers are done,
  * h2_stream is scheduled for handling, which is expected to produce
- * a response h2_headers at least.
- * 
- * The h2_headers may be followed by more h2_headers (interim responses) and
- * by DATA frames read from the h2_stream until EOS is reached. Trailers
- * are send when a last h2_headers is received. This always closes the stream
- * output.
+ * RESPONSE buclets.
  */
 
 struct h2_mplx;
 struct h2_priority;
 struct h2_request;
-struct h2_headers;
 struct h2_session;
 struct h2_bucket_beam;
 
@@ -75,7 +69,7 @@ struct h2_stream {
     apr_table_t *trailers_in;   /* optional, incoming trailers */
     int request_headers_added;  /* number of request headers added */
 
-    struct h2_headers *response; /* the final, non-interim response or NULL */
+    ap_bucket_response *response; /* the final, non-interim response or NULL */
 
     struct h2_bucket_beam *input;
     apr_bucket_brigade *in_buffer;
@@ -84,6 +78,8 @@ struct h2_stream {
     
     struct h2_bucket_beam *output;
     apr_bucket_brigade *out_buffer;
+    unsigned int output_eos : 1; /* output EOS in buffer/sent */
+    unsigned int sent_trailers : 1; /* trailers have been submitted */
 
     int rst_error;              /* stream error for RST_STREAM */
     unsigned int aborted   : 1; /* was aborted */
@@ -268,13 +264,13 @@ apr_table_t *h2_stream_get_trailers(h2_stream *stream);
  *
  * @param stream the stream for which to submit
  */
-apr_status_t h2_stream_submit_pushes(h2_stream *stream, h2_headers *response);
+apr_status_t h2_stream_submit_pushes(h2_stream *stream, ap_bucket_response *response);
 
 /**
  * Get priority information set for this stream.
  */
 const struct h2_priority *h2_stream_get_priority(h2_stream *stream, 
-                                                 h2_headers *response);
+                                                 ap_bucket_response *response);
 
 /**
  * Return a textual representation of the stream state as in RFC 7540

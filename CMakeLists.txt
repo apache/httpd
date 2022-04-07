@@ -473,7 +473,7 @@ SET(mod_http2_extra_sources
   modules/http2/h2_c1.c              modules/http2/h2_c1_io.c
   modules/http2/h2_c2.c              modules/http2/h2_c2_filter.c
   modules/http2/h2_config.c          modules/http2/h2_conn_ctx.c
-  modules/http2/h2_headers.c         modules/http2/h2_mplx.c
+  modules/http2/h2_mplx.c
   modules/http2/h2_protocol.c        modules/http2/h2_push.c
   modules/http2/h2_request.c         modules/http2/h2_session.c
   modules/http2/h2_stream.c          modules/http2/h2_switch.c
