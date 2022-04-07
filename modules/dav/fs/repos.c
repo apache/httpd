@@ -567,8 +567,13 @@ static dav_error *dav_fs_copymoveset(int is_move, apr_pool_t *p,
 
     /* Get directory and filename for resources */
     /* ### should test these result values... */
-    (void) dav_fs_dir_file_name(src, &src_dir, &src_file);
-    (void) dav_fs_dir_file_name(dst, &dst_dir, &dst_file);
+    err = dav_fs_dir_file_name(src, &src_dir, &src_file);
+    if (err != NULL)
+        return err;
+
+    err = dav_fs_dir_file_name(dst, &dst_dir, &dst_file);
+    if (err != NULL)
+        return err;
 
     /* Get the corresponding state files for each resource */
     dav_dbm_get_statefiles(p, src_file, &src_state1, &src_state2);
@@ -616,11 +621,14 @@ static dav_error *dav_fs_deleteset(apr_pool_t *p, const dav_resource *resource)
     const char *state1;
     const char *state2;
     const char *pathname;
+    dav_error *err;
     apr_status_t status;
 
     /* Get directory, filename, and state-file names for the resource */
     /* ### should test this result value... */
-    (void) dav_fs_dir_file_name(resource, &dirpath, &fname);
+    err = dav_fs_dir_file_name(resource, &dirpath, &fname);
+    if (err != NULL)
+        return err;
     dav_dbm_get_statefiles(p, fname, &state1, &state2);
 
     /* build the propset pathname for the file */
