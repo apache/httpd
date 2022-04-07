@@ -213,15 +213,21 @@ static int is_mpm_running(void)
     return 1;
 }
 
-
-AP_DECLARE(int) ap_set_keepalive(request_rec *r)
+int ap_h1_set_keepalive(request_rec *r, ap_bucket_response *resp)
 {
-    int ka_sent = 0;
-    int left = r->server->keep_alive_max - r->connection->keepalives;
-    int wimpy = ap_find_token(r->pool,
-                              apr_table_get(r->headers_out, "Connection"),
-                              "close");
-    const char *conn = apr_table_get(r->headers_in, "Connection");
+    int ka_sent, left = 0, wimpy;
+    const char *conn;
+
+    if (r->proto_num >= HTTP_VERSION(2,0)) {
+        goto update_keepalives;
+    }
+
+    ka_sent = 0;
+    left = r->server->keep_alive_max - r->connection->keepalives;
+    wimpy = ap_find_token(r->pool,
+                          apr_table_get(resp->headers, "Connection"),
+                          "close");
+    conn = apr_table_get(r->headers_in, "Connection");
 
     /* The following convoluted conditional determines whether or not
      * the current connection should remain persistent after this response
@@ -255,18 +261,17 @@ AP_DECLARE(int) ap_set_keepalive(request_rec *r)
     if ((r->connection->keepalive != AP_CONN_CLOSE)
         && !r->expecting_100
         && (r->header_only
-            || AP_STATUS_IS_HEADER_ONLY(r->status)
-            || apr_table_get(r->headers_out, "Content-Length")
+            || AP_STATUS_IS_HEADER_ONLY(resp->status)
+            || apr_table_get(resp->headers, "Content-Length")
             || ap_is_chunked(r->pool,
-                                  apr_table_get(r->headers_out,
-                                                "Transfer-Encoding"))
+                             apr_table_get(resp->headers, "Transfer-Encoding"))
             || ((r->proto_num >= HTTP_VERSION(1,1))
                 && (r->chunked = 1))) /* THIS CODE IS CORRECT, see above. */
         && r->server->keep_alive
         && (r->server->keep_alive_timeout > 0)
         && ((r->server->keep_alive_max == 0)
             || (left > 0))
-        && !ap_status_drops_connection(r->status)
+        && !ap_status_drops_connection(resp->status)
         && !wimpy
         && !ap_find_token(r->pool, conn, "close")
         && (!apr_table_get(r->subprocess_env, "nokeepalive")
@@ -281,17 +286,17 @@ AP_DECLARE(int) ap_set_keepalive(request_rec *r)
         /* If they sent a Keep-Alive token, send one back */
         if (ka_sent) {
             if (r->server->keep_alive_max) {
-                apr_table_setn(r->headers_out, "Keep-Alive",
+                apr_table_setn(resp->headers, "Keep-Alive",
                        apr_psprintf(r->pool, "timeout=%d, max=%d",
                             (int)apr_time_sec(r->server->keep_alive_timeout),
                             left));
             }
             else {
-                apr_table_setn(r->headers_out, "Keep-Alive",
+                apr_table_setn(resp->headers, "Keep-Alive",
                       apr_psprintf(r->pool, "timeout=%d",
                             (int)apr_time_sec(r->server->keep_alive_timeout)));
             }
-            apr_table_mergen(r->headers_out, "Connection", "Keep-Alive");
+            apr_table_mergen(resp->headers, "Connection", "Keep-Alive");
         }
 
         return 1;
@@ -306,9 +311,10 @@ AP_DECLARE(int) ap_set_keepalive(request_rec *r)
      * to a HTTP/1.1 client. Better safe than sorry.
      */
     if (!wimpy) {
-        apr_table_mergen(r->headers_out, "Connection", "close");
+        apr_table_mergen(resp->headers, "Connection", "close");
     }
 
+update_keepalives:
     /*
      * If we had previously been a keepalive connection and this
      * is the last one, then bump up the number of keepalives
@@ -322,6 +328,17 @@ AP_DECLARE(int) ap_set_keepalive(request_rec *r)
     r->connection->keepalive = AP_CONN_CLOSE;
 
     return 0;
+}
+
+AP_DECLARE(int) ap_set_keepalive(request_rec *r)
+{
+    ap_bucket_response resp;
+
+    memset(&resp, 0, sizeof(resp));
+    resp.status = r->status;
+    resp.headers = r->headers_out;
+    resp.notes = r->notes;
+    return ap_h1_set_keepalive(r, &resp);
 }
 
 AP_DECLARE(ap_condition_e) ap_condition_if_match(request_rec *r,
@@ -1485,20 +1502,35 @@ AP_DECLARE(void) ap_clear_method_list(ap_method_list_t *l)
     l->method_list->nelts = 0;
 }
 
-AP_DECLARE(apr_status_t) ap_h1_append_header(apr_bucket_brigade *b,
-                                             apr_pool_t *p,
+AP_DECLARE(apr_status_t) ap_h1_append_header(apr_bucket_brigade *bb,
+                                             apr_pool_t *pool,
                                              const char *name, const char *value)
 {
-    char *buf;
+#if APR_CHARSET_EBCDIC
+    char *headfield;
     apr_size_t len;
 
-    if (!name || !*name || !value || !*value) {
-        return APR_SUCCESS;
-    }
-    buf = apr_pstrcat(p, name, ": ", value, CRLF, NULL);
-    len = strlen(buf);
-    ap_xlate_proto_to_ascii(buf, len);
-    return apr_brigade_write(b, NULL, NULL, buf, len);
+    headfield = apr_pstrcat(pool, name, ": ", value, CRLF, NULL);
+    len = strlen(headfield);
+
+    ap_xlate_proto_to_ascii(headfield, len);
+    return apr_brigade_write(bb, NULL, NULL, headfield, len);
+#else
+    struct iovec vec[4];
+    struct iovec *v = vec;
+    v->iov_base = (void *)name;
+    v->iov_len = strlen(name);
+    v++;
+    v->iov_base = ": ";
+    v->iov_len = sizeof(": ") - 1;
+    v++;
+    v->iov_base = (void *)value;
+    v->iov_len = strlen(value);
+    v++;
+    v->iov_base = CRLF;
+    v->iov_len = sizeof(CRLF) - 1;
+    return apr_brigade_writev(bb, NULL, NULL, vec, 4);
+#endif /* !APR_CHARSET_EBCDIC */
 }
 
 AP_DECLARE(apr_status_t) ap_h1_append_headers(apr_bucket_brigade *bb,

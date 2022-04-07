@@ -2386,26 +2386,6 @@ typedef struct hdr_ptr {
 } hdr_ptr;
 
  
-#if APR_CHARSET_EBCDIC
-static int send_header(void *data, const char *key, const char *val)
-{
-    char *header_line = NULL;
-    hdr_ptr *hdr = (hdr_ptr*)data;
-
-    header_line = apr_pstrcat(hdr->bb->p, key, ": ", val, CRLF, NULL);
-    ap_xlate_proto_to_ascii(header_line, strlen(header_line));
-    ap_fputs(hdr->f, hdr->bb, header_line);
-    return 1;
-}
-#else
-static int send_header(void *data, const char *key, const char *val)
-{
-     ap_fputstrs(((hdr_ptr*)data)->f, ((hdr_ptr*)data)->bb,
-                 key, ": ", val, CRLF, NULL);
-     return 1;
- }
-#endif
-
 AP_DECLARE(void) ap_set_std_response_headers(request_rec *r)
 {
     const char *server = NULL, *date;
@@ -2440,10 +2420,10 @@ AP_DECLARE(void) ap_set_std_response_headers(request_rec *r)
 
 AP_DECLARE(void) ap_send_interim_response(request_rec *r, int send_headers)
 {
-    hdr_ptr x;
-    char *response_line = NULL;
-    const char *status_line;
     request_rec *rr;
+    apr_bucket *b;
+    apr_bucket_brigade *bb;
+    const char *reason = NULL;
 
     if (r->proto_num < HTTP_VERSION(1,1)) {
         /* don't send interim response to HTTP/1.0 Client */
@@ -2473,26 +2453,26 @@ AP_DECLARE(void) ap_send_interim_response(request_rec *r, int send_headers)
         }
     }
 
-    status_line = r->status_line;
-    if (status_line == NULL) {
-        status_line = ap_get_status_line_ex(r->pool, r->status);
-    }
-    response_line = apr_pstrcat(r->pool,
-                                AP_SERVER_PROTOCOL " ", status_line, CRLF,
-                                NULL);
-    ap_xlate_proto_to_ascii(response_line, strlen(response_line));
-
-    x.f = r->connection->output_filters;
-    x.bb = apr_brigade_create(r->pool, r->connection->bucket_alloc);
-
-    ap_fputs(x.f, x.bb, response_line);
+    ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r,
+                  "ap_send_interim_response: send %d", r->status);
+    bb = apr_brigade_create(r->pool, r->connection->bucket_alloc);
     if (send_headers) {
-        apr_table_do(send_header, &x, r->headers_out, NULL);
+        ap_set_std_response_headers(r);
+    }
+    if (r->status_line && strlen(r->status_line) > 4) {
+        reason = r->status_line + 4;
+    }
+    b = ap_bucket_response_create(r->status, reason,
+                                  send_headers? r->headers_out : NULL,
+                                  r->notes, r->pool, r->connection->bucket_alloc);
+    APR_BRIGADE_INSERT_TAIL(bb, b);
+    if (send_headers) {
         apr_table_clear(r->headers_out);
     }
-    ap_fputs(x.f, x.bb, CRLF_ASCII);
-    ap_fflush(x.f, x.bb);
-    apr_brigade_destroy(x.bb);
+    b = apr_bucket_flush_create(r->connection->bucket_alloc);
+    APR_BRIGADE_INSERT_TAIL(bb, b);
+    ap_pass_brigade(r->proto_output_filters, bb);
+    apr_brigade_destroy(bb);
 }
 
 /*
