@@ -1895,8 +1895,10 @@ static const char *set_override(cmd_parms *cmd, void *d_, const char *l)
         }
         else if (!ap_cstr_casecmp(k, "Options")) {
             d->override |= OR_OPTIONS;
-            if (v)
-                set_allow_opts(cmd, &(d->override_opts), v);
+            if (v) {
+                if ((err = set_allow_opts(cmd, &(d->override_opts), v)) != NULL)
+                    return err;
+	    }
             else
                 d->override_opts = OPT_ALL;
         }
