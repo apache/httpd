@@ -58,8 +58,8 @@ typedef struct {
     apr_size_t count;
 } stream_iter_ctx;
 
-static apr_status_t s_mplx_be_happy(h2_mplx *m, conn_rec *c, h2_conn_ctx_t *conn_ctx);
-static apr_status_t m_be_annoyed(h2_mplx *m);
+static void s_mplx_be_happy(h2_mplx *m, conn_rec *c, h2_conn_ctx_t *conn_ctx);
+static void m_be_annoyed(h2_mplx *m);
 
 static apr_status_t mplx_pollset_create(h2_mplx *m);
 static apr_status_t mplx_pollset_poll(h2_mplx *m, apr_interval_time_t timeout,
@@ -921,7 +921,7 @@ static void s_c2_done(h2_mplx *m, conn_rec *c2, h2_conn_ctx_t *conn_ctx)
                       conn_ctx->id, conn_ctx->stream_id);
         c2->aborted = 1;
     }
-    else if (!c2->aborted && conn_ctx->started_at > m->last_mood_change) {
+    else if (!c2->aborted) {
         s_mplx_be_happy(m, c2, conn_ctx);
     }
     
@@ -993,55 +993,54 @@ void h2_mplx_worker_c2_done(conn_rec *c2)
  * h2_mplx DoS protection
  ******************************************************************************/
 
-static apr_status_t s_mplx_be_happy(h2_mplx *m, conn_rec *c, h2_conn_ctx_t *conn_ctx)
+static void s_mplx_be_happy(h2_mplx *m, conn_rec *c, h2_conn_ctx_t *conn_ctx)
 {
     apr_time_t now;            
 
-    --m->irritations_since;
-    now = apr_time_now();
     if (m->processing_limit < m->processing_max
-        && (now - m->last_mood_change >= m->mood_update_interval
-            || m->irritations_since < -m->processing_limit)) {
-        m->processing_limit = H2MIN(m->processing_limit * 2, m->processing_max);
-        m->last_mood_change = now;
-        m->irritations_since = 0;
-        ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, c,
-                      "h2_mplx(%ld): mood update, increasing worker limit to %d",
-                      m->id, m->processing_limit);
+        && conn_ctx->started_at > m->last_mood_change) {
+        --m->irritations_since;
+        if (m->processing_limit < m->processing_max
+            && ((now = apr_time_now()) - m->last_mood_change >= m->mood_update_interval
+                || m->irritations_since < -m->processing_limit)) {
+            m->processing_limit = H2MIN(m->processing_limit * 2, m->processing_max);
+            m->last_mood_change = now;
+            m->irritations_since = 0;
+            ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, c,
+                          "h2_mplx(%ld): mood update, increasing worker limit to %d",
+                          m->id, m->processing_limit);
+        }
     }
-    return APR_SUCCESS;
 }
 
-static apr_status_t m_be_annoyed(h2_mplx *m)
+static void m_be_annoyed(h2_mplx *m)
 {
-    apr_status_t status = APR_SUCCESS;
-    apr_time_t now;            
+    apr_time_t now;
 
-    ++m->irritations_since;
-    now = apr_time_now();
-    if (m->processing_limit > 2 &&
-        ((now - m->last_mood_change >= m->mood_update_interval)
-         || (m->irritations_since >= m->processing_limit))) {
-            
-        if (m->processing_limit > 16) {
-            m->processing_limit = 16;
+    if (m->processing_limit > 2) {
+        ++m->irritations_since;
+        if (((now = apr_time_now()) - m->last_mood_change >= m->mood_update_interval)
+            || (m->irritations_since >= m->processing_limit)) {
+
+            if (m->processing_limit > 16) {
+                m->processing_limit = 16;
+            }
+            else if (m->processing_limit > 8) {
+                m->processing_limit = 8;
+            }
+            else if (m->processing_limit > 4) {
+                m->processing_limit = 4;
+            }
+            else if (m->processing_limit > 2) {
+                m->processing_limit = 2;
+            }
+            m->last_mood_change = now;
+            m->irritations_since = 0;
+            ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, m->c1,
+                          "h2_mplx(%ld): mood update, decreasing worker limit to %d",
+                          m->id, m->processing_limit);
         }
-        else if (m->processing_limit > 8) {
-            m->processing_limit = 8;
-        }
-        else if (m->processing_limit > 4) {
-            m->processing_limit = 4;
-        }
-        else if (m->processing_limit > 2) {
-            m->processing_limit = 2;
-        }
-        m->last_mood_change = now;
-        m->irritations_since = 0;
-        ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, m->c1,
-                      "h2_mplx(%ld): mood update, decreasing worker limit to %d",
-                      m->id, m->processing_limit);
     }
-    return status;
 }
 
 /*******************************************************************************
@@ -1078,7 +1077,7 @@ apr_status_t h2_mplx_c1_client_rst(h2_mplx *m, int stream_id)
     H2_MPLX_ENTER_ALWAYS(m);
     stream = h2_ihash_get(m->streams, stream_id);
     if (stream && !reset_is_acceptable(stream)) {
-        status = m_be_annoyed(m);
+        m_be_annoyed(m);
     }
     H2_MPLX_LEAVE(m);
     return status;
