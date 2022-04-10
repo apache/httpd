@@ -35,10 +35,6 @@
 #include <unistd.h>
 #endif
 
-#ifdef HAVE_SYSTEMD
-#include <systemd/sd-daemon.h>
-#endif
-
 /* we know core's module_index is 0 */
 #undef APLOG_MODULE_INDEX
 #define APLOG_MODULE_INDEX AP_CORE_MODULE_INDEX
@@ -309,34 +305,6 @@ static apr_status_t close_listeners_on_exec(void *v)
 
 #ifdef HAVE_SYSTEMD
 
-static int find_systemd_socket(process_rec * process, apr_port_t port)
-{
-    int fdcount, fd;
-    int sdc = sd_listen_fds(0);
-
-    if (sdc < 0) {
-        ap_log_perror(APLOG_MARK, APLOG_CRIT, sdc, process->pool, APLOGNO(02486)
-                      "find_systemd_socket: Error parsing environment, sd_listen_fds returned %d",
-                      sdc);
-        return -1;
-    }
-
-    if (sdc == 0) {
-        ap_log_perror(APLOG_MARK, APLOG_CRIT, sdc, process->pool, APLOGNO(02487)
-                      "find_systemd_socket: At least one socket must be set.");
-        return -1;
-    }
-
-    fdcount = atoi(getenv("LISTEN_FDS"));
-    for (fd = SD_LISTEN_FDS_START; fd < SD_LISTEN_FDS_START + fdcount; fd++) {
-        if (sd_is_socket_inet(fd, 0, 0, -1, port) > 0) {
-            return fd;
-        }
-    }
-
-    return -1;
-}
-
 static apr_status_t alloc_systemd_listener(process_rec * process,
                                            int fd, const char *proto,
                                            ap_listen_rec **out_rec)
@@ -395,6 +363,14 @@ static const char *set_systemd_listener(process_rec *process, apr_port_t port,
 {
     ap_listen_rec *last, *new;
     apr_status_t rv;
+    APR_OPTIONAL_FN_TYPE(ap_find_systemd_socket) *find_systemd_socket;
+
+    find_systemd_socket = APR_RETRIEVE_OPTIONAL_FN(ap_find_systemd_socket);
+
+    if (!find_systemd_socket)
+       return "Systemd socket activation is used, but mod_systemd is probably "
+               "not loaded";
+
     int fd = find_systemd_socket(process, port);
     if (fd < 0) {
         return "Systemd socket activation is used, but this port is not "
@@ -420,7 +396,6 @@ static const char *set_systemd_listener(process_rec *process, apr_port_t port,
 
     return NULL;
 }
-
 #endif /* HAVE_SYSTEMD */
 
 /* Returns non-zero if socket address SA matches hostname, port and
@@ -761,6 +736,9 @@ AP_DECLARE(int) ap_setup_listeners(server_rec *s)
     int num_listeners = 0;
     const char* proto;
     int found;
+#ifdef HAVE_SYSTEMD
+    APR_OPTIONAL_FN_TYPE(ap_systemd_listen_fds) *systemd_listen_fds;
+#endif
 
     for (ls = s; ls; ls = ls->next) {
         proto = ap_get_server_protocol(ls);
@@ -800,7 +778,10 @@ AP_DECLARE(int) ap_setup_listeners(server_rec *s)
                                 apr_pool_cleanup_null, s->process->pool);
         }
         else {
-            sd_listen_fds(1);
+            systemd_listen_fds = APR_RETRIEVE_OPTIONAL_FN(ap_systemd_listen_fds);
+            if (systemd_listen_fds != NULL) {
+                systemd_listen_fds(1);
+            }
         }        
     }
     else
@@ -1070,6 +1051,9 @@ AP_DECLARE_NONSTD(const char *) ap_set_listener(cmd_parms *cmd, void *dummy,
     apr_status_t rv;
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
     apr_uint32_t flags = 0;
+#ifdef HAVE_SYSTEMD
+    APR_OPTIONAL_FN_TYPE(ap_systemd_listen_fds) *systemd_listen_fds;
+#endif
 
     if (err != NULL) {
         return err;
@@ -1080,7 +1064,12 @@ AP_DECLARE_NONSTD(const char *) ap_set_listener(cmd_parms *cmd, void *dummy,
     }
 #ifdef HAVE_SYSTEMD
     if (use_systemd == -1) {
-        use_systemd = sd_listen_fds(0) > 0;
+        systemd_listen_fds = APR_RETRIEVE_OPTIONAL_FN(ap_systemd_listen_fds);
+        if (systemd_listen_fds != NULL) {
+            use_systemd = systemd_listen_fds(0) > 0;
+        } else {
+            use_systemd = 0;
+        }
     }
 #endif
 
@@ -1166,6 +1155,9 @@ AP_DECLARE_NONSTD(const char *) ap_set_listenbacklog(cmd_parms *cmd,
 {
     int b;
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
+#ifdef HAVE_SYSTEMD
+    APR_OPTIONAL_FN_TYPE(ap_systemd_listen_fds) *systemd_listen_fds;
+#endif
 
     if (err != NULL) {
         return err;
