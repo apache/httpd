@@ -364,6 +364,7 @@ static const char *set_systemd_listener(process_rec *process, apr_port_t port,
     ap_listen_rec *last, *new;
     apr_status_t rv;
     APR_OPTIONAL_FN_TYPE(ap_find_systemd_socket) *find_systemd_socket;
+    int fd;
 
     find_systemd_socket = APR_RETRIEVE_OPTIONAL_FN(ap_find_systemd_socket);
 
@@ -371,7 +372,7 @@ static const char *set_systemd_listener(process_rec *process, apr_port_t port,
        return "Systemd socket activation is used, but mod_systemd is probably "
                "not loaded";
 
-    int fd = find_systemd_socket(process, port);
+    fd = find_systemd_socket(process, port);
     if (fd < 0) {
         return "Systemd socket activation is used, but this port is not "
                 "configured in systemd";
@@ -1155,9 +1156,6 @@ AP_DECLARE_NONSTD(const char *) ap_set_listenbacklog(cmd_parms *cmd,
 {
     int b;
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
-#ifdef HAVE_SYSTEMD
-    APR_OPTIONAL_FN_TYPE(ap_systemd_listen_fds) *systemd_listen_fds;
-#endif
 
     if (err != NULL) {
         return err;
