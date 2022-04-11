@@ -1650,36 +1650,46 @@ static int log_name_len(const char *name)
     return (len > LOG_NAME_MAX_LEN)? LOG_NAME_MAX_LEN : (int)len;
 }
 
-static void rrl_log_error(request_rec *r, rrl_error error, char *etoken)
+static void rrl_log_error(request_rec *r, rrl_error error, const char *etoken)
 {
-    if (error == rrl_badprotocol)
+    switch (error) {
+    case rrl_none:
+        break;
+    case rrl_badprotocol:
         ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02418)
                       "HTTP Request Line; Unrecognized protocol '%.*s' "
                       "(perhaps whitespace was injected?)",
                       log_name_len(etoken), etoken);
-    else if (error == rrl_badmethod)
+        break;
+    case rrl_badmethod:
         ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(03445)
                       "HTTP Request Line; Invalid method token: '%.*s'",
                       log_name_len(etoken), etoken);
-    else if (error == rrl_missinguri)
-        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(03446)
-                      "HTTP Request Line; Missing URI");
-    else if (error == rrl_baduri)
-        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(03454)
-                      "HTTP Request Line; URI incorrectly encoded: '%.*s'",
-                      log_name_len(etoken), etoken);
-    else if (error == rrl_badwhitespace)
+        break;
+    case rrl_badwhitespace:
         ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(03447)
                       "HTTP Request Line; Invalid whitespace");
-    else if (error == rrl_excesswhitespace)
+        break;
+    case rrl_excesswhitespace:
         ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(03448)
                       "HTTP Request Line; Excess whitespace "
                       "(disallowed by HttpProtocolOptions Strict)");
-    else if (error == rrl_trailingtext)
+        break;
+    case rrl_missinguri:
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(03446)
+                      "HTTP Request Line; Missing URI");
+    case rrl_baduri:
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(03454)
+                      "HTTP Request Line; URI incorrectly encoded: '%.*s'",
+                      log_name_len(etoken), etoken);
+        break;
+    case rrl_trailingtext:
         ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(03449)
                       "HTTP Request Line; Extraneous text found '%.*s' "
                       "(perhaps whitespace was injected?)",
                       log_name_len(etoken), etoken);
+        break;
+    }
 }
 
 /* remember the first error we encountered during tokenization */
@@ -1692,8 +1702,8 @@ static void rrl_log_error(request_rec *r, rrl_error error, char *etoken)
 
 static rrl_error tokenize_request_line(
         char *line, int strict,
-        char **pmethod, char **puri, char **pprotocol,
-        char **perror_token)
+        const char **pmethod, const char **puri, const char **pprotocol,
+        const char **perror_token)
 {
     char *method, *protocol, *uri, *ll;
     rrl_error e = rrl_none;
@@ -1808,12 +1818,12 @@ done:
 
 AP_DECLARE(int) ap_h1_tokenize_request_line(
         request_rec *r, const char *line,
-        char **pmethod, char **puri, char **pprotocol)
+        const char **pmethod, const char **puri, const char **pprotocol)
 {
     core_server_config *conf = ap_get_core_module_config(r->server->module_config);
     int strict = (conf->http_conformance != AP_HTTP_CONFORMANCE_UNSAFE);
     rrl_error error;
-    char *error_token;
+    const char *error_token;
 
     ap_log_rerror(APLOG_MARK, APLOG_TRACE4, 0, r,
                   "ap_tokenize_request_line: '%s'", line);

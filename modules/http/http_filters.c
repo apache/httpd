@@ -2092,9 +2092,9 @@ typedef struct h1_request_ctx {
 
     request_rec *r;
     char *request_line;
-    char *method;
-    char *uri;
-    char *protocol;
+    const char *method;
+    const char *uri;
+    const char *protocol;
 } h1_request_ctx;
 
 static apr_status_t read_request_line(h1_request_ctx *ctx, apr_bucket_brigade *bb)
@@ -2221,7 +2221,9 @@ apr_status_t ap_h1_request_in_filter(ap_filter_t *f,
                 http_status = r->status;
                 goto cleanup;
             }
-            /* append REQUEST bucket and return */
+            /* clear the brigade, as ap_get_mime_headers_core() leaves the last
+             * empty line in there, insert the REQUEST bucket and return */
+            apr_brigade_cleanup(bb);
             e = ap_bucket_request_createn(ctx->method, ctx->uri,
                                           ctx->protocol, r->headers_in,
                                           r->pool, r->connection->bucket_alloc);

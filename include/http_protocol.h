@@ -68,16 +68,17 @@ AP_DECLARE(request_rec *) ap_create_request(conn_rec *c);
 AP_DECLARE(request_rec *) ap_read_request(conn_rec *c);
 
 /**
- * Assign the method, uri and protocol to the request.
+ * Assign the method, uri and protocol (in HTTP/1.x the
+ * items from the first line) to the request.
  * @param r The current request
  * @param method the HTTP method
  * @param uri the request uri
  * @param protocol the request protocol
  * @return 1 on success, 0 on failure
  */
-AP_DECLARE(int) ap_assign_request(request_rec *r,
-                                  const char *method, const char *uri,
-                                  const char *protocol);
+AP_DECLARE(int) ap_assign_request_line(request_rec *r,
+                                       const char *method, const char *uri,
+                                       const char *protocol);
 
 /**
  * Parse a HTTP/1.x request line, validate and return the components
@@ -90,7 +91,7 @@ AP_DECLARE(int) ap_assign_request(request_rec *r,
  */
 AP_DECLARE(int) ap_h1_tokenize_request_line(
         request_rec *r, const char *line,
-        char **pmethod, char **puri, char **pprotocol);
+        const char **pmethod, const char **puri, const char **pprotocol);
 
 /**
  * Parse and validate the request line.

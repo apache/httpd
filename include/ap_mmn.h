@@ -708,7 +708,7 @@
  * 20211221.6 (2.5.1-dev)  Add new meta buckets request/response/headers
  *                         Add field `body_indeterminate` in request_rec
  *                         Add new http/1.x formatting helpers
- *                         Add ap_assign_request()
+ *                         Add ap_assign_request_line()
  * 20211221.7 (2.5.1-dev)  Add ap_h1_append_header()
  */
 

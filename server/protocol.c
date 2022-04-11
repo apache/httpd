@@ -684,11 +684,11 @@ static int field_name_len(const char *field)
 
 AP_DECLARE(int) ap_parse_request_line(request_rec *r)
 {
-    char *method, *uri, *protocol;
+    const char *method, *uri, *protocol;
 
     return ap_h1_tokenize_request_line(r, r->the_request,
                                        &method, &uri, &protocol)
-        && ap_assign_request(r, method, uri, protocol);
+        && ap_assign_request_line(r, method, uri, protocol);
 }
 
 AP_DECLARE(int) ap_check_request_header(request_rec *r)
@@ -1172,9 +1172,9 @@ static http_error r_assign_protocol(request_rec *r,
     return error;
 }
 
-AP_DECLARE(int) ap_assign_request(request_rec *r,
-                                  const char *method, const char *uri,
-                                  const char *protocol)
+AP_DECLARE(int) ap_assign_request_line(request_rec *r,
+                                       const char *method, const char *uri,
+                                       const char *protocol)
 {
     core_server_config *conf = ap_get_core_module_config(r->server->module_config);
     int strict = (conf->http_conformance != AP_HTTP_CONFORMANCE_UNSAFE);
@@ -1305,7 +1305,7 @@ AP_DECLARE(request_rec *) ap_read_request(conn_rec *conn)
 {
     int access_status;
     apr_bucket_brigade *tmp_bb;
-    apr_bucket *e;
+    apr_bucket *e, *bdata = NULL;
     ap_bucket_request *breq = NULL;
     const char *method, *uri, *protocol;
     apr_table_t *headers;
@@ -1339,11 +1339,24 @@ AP_DECLARE(request_rec *) ap_read_request(conn_rec *conn)
             goto die_unusable_input;
         }
         else if (!APR_BUCKET_IS_METADATA(e) && e->length != 0) {
+            if (!bdata) bdata = e;;
             break;
         }
     }
 
-    if (!breq) {
+    if (bdata) {
+        /* Since processing of a request body depends on knowing the request, we
+         * cannot handle any data here. For example, chunked-encoding filters are
+         * added after the request is read, so any data buckets here will not
+         * have been de-chunked.
+         */
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(10391)
+                      "request failed: seeing DATA bucket(len=%d) of request "
+                      "body, too early to process", (int)bdata->length);
+        access_status = HTTP_INTERNAL_SERVER_ERROR;
+        goto die_unusable_input;
+    }
+    else if (!breq) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(10389)
                       "request failed: neither request bucket nor error at start of input");
         access_status = HTTP_INTERNAL_SERVER_ERROR;
@@ -1370,7 +1383,7 @@ AP_DECLARE(request_rec *) ap_read_request(conn_rec *conn)
                   "checking request: %s %s %s",
                   method, uri, protocol);
 
-    if (!ap_assign_request(r, method, uri, protocol)) {
+    if (!ap_assign_request_line(r, method, uri, protocol)) {
         apr_brigade_cleanup(tmp_bb);
         switch (r->status) {
         case HTTP_REQUEST_URI_TOO_LARGE:
