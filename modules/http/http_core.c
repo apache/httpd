@@ -284,17 +284,6 @@ static void h1_pre_read_request(request_rec *r, conn_rec *c)
     }
 }
 
-static int h1_post_read_request_early(request_rec *r)
-{
-    if (!r->main && !r->prev && r->proto_num <= HTTP_VERSION(1,1)) {
-        /* HTTP1_BODY_IN takes care of chunked encoding and content-length.
-         */
-        ap_add_input_filter_handle(ap_h1_body_in_filter_handle,
-                                   NULL, r, r->connection);
-    }
-    return OK;
-}
-
 static int h1_post_read_request(request_rec *r)
 {
     const char *tenc;
@@ -334,6 +323,10 @@ static int h1_post_read_request(request_rec *r)
                 }
             }
         }
+        /* HTTP1_BODY_IN takes care of chunked encoding and content-length.
+         */
+        ap_add_input_filter_handle(ap_h1_body_in_filter_handle,
+                                   NULL, r, r->connection);
     }
     return OK;
 }
@@ -371,8 +364,7 @@ static void register_hooks(apr_pool_t *p)
 
     ap_hook_create_request(http_create_request, NULL, NULL, APR_HOOK_REALLY_LAST);
     ap_hook_pre_read_request(h1_pre_read_request, NULL, NULL, APR_HOOK_REALLY_LAST);
-    ap_hook_post_read_request(h1_post_read_request_early, NULL, NULL, APR_HOOK_REALLY_FIRST);
-    ap_hook_post_read_request(h1_post_read_request, NULL, NULL, APR_HOOK_REALLY_LAST);
+    ap_hook_post_read_request(h1_post_read_request, NULL, NULL, APR_HOOK_REALLY_FIRST);
 
     ap_http_input_filter_handle =
         ap_register_input_filter("HTTP_IN", ap_http_filter,
