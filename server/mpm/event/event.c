@@ -379,7 +379,7 @@ typedef struct event_retained_data {
      * We use this value to optimize routines that have to scan the entire
      * scoreboard.
      */
-    int max_daemons_limit;
+    int max_daemon_used;
 
     /*
      * All running workers, active and shutting down, including those that
@@ -645,7 +645,7 @@ static int event_query(int query_code, int *result, apr_status_t *rv)
     *rv = APR_SUCCESS;
     switch (query_code) {
     case AP_MPMQ_MAX_DAEMON_USED:
-        *result = retained->max_daemons_limit;
+        *result = retained->max_daemon_used;
         break;
     case AP_MPMQ_IS_THREADED:
         *result = AP_MPMQ_STATIC;
@@ -696,14 +696,32 @@ static int event_query(int query_code, int *result, apr_status_t *rv)
     return OK;
 }
 
-static void event_note_child_killed(int childnum, pid_t pid, ap_generation_t gen)
+static void event_note_child_stopped(int slot, pid_t pid, ap_generation_t gen)
 {
-    if (childnum != -1) { /* child had a scoreboard slot? */
-        ap_run_child_status(ap_server_conf,
-                            ap_scoreboard_image->parent[childnum].pid,
-                            ap_scoreboard_image->parent[childnum].generation,
-                            childnum, MPM_CHILD_EXITED);
-        ap_scoreboard_image->parent[childnum].pid = 0;
+    if (slot != -1) { /* child had a scoreboard slot? */
+        process_score *ps = &ap_scoreboard_image->parent[slot];
+        int i;
+
+        pid = ps->pid;
+        gen = ps->generation;
+        for (i = 0; i < threads_per_child; i++) {
+            ap_update_child_status_from_indexes(slot, i, SERVER_DEAD, NULL);
+        }
+        ap_run_child_status(ap_server_conf, pid, gen, slot, MPM_CHILD_EXITED);
+        if (ps->quiescing != 2) { /* vs perform_idle_server_maintenance() */
+            retained->active_daemons--;
+        }
+        retained->total_daemons--;
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf,
+                     "Child %d stopped: pid %d, gen %d, "
+                     "active %d/%d, total %d/%d/%d, quiescing %d",
+                     slot, (int)pid, (int)gen,
+                     retained->active_daemons, active_daemons_limit,
+                     retained->total_daemons, retained->max_daemon_used,
+                     server_limit, ps->quiescing);
+        ps->not_accepting = 0;
+        ps->quiescing = 0;
+        ps->pid = 0;
     }
     else {
         ap_run_child_status(ap_server_conf, pid, gen, -1, MPM_CHILD_EXITED);
@@ -713,9 +731,19 @@ static void event_note_child_killed(int childnum, pid_t pid, ap_generation_t gen
 static void event_note_child_started(int slot, pid_t pid)
 {
     ap_generation_t gen = retained->mpm->my_generation;
+
+    retained->total_daemons++;
+    retained->active_daemons++;
     ap_scoreboard_image->parent[slot].pid = pid;
     ap_scoreboard_image->parent[slot].generation = gen;
     ap_run_child_status(ap_server_conf, pid, gen, slot, MPM_CHILD_STARTED);
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf,
+                 "Child %d started: pid %d, gen %d, "
+                 "active %d/%d, total %d/%d/%d",
+                 slot, (int)pid, (int)gen,
+                 retained->active_daemons, active_daemons_limit,
+                 retained->total_daemons, retained->max_daemon_used,
+                 server_limit);
 }
 
 static const char *event_get_name(void)
@@ -737,7 +765,7 @@ static void clean_child_exit(int code)
     }
 
     if (one_process) {
-        event_note_child_killed(/* slot */ 0, 0, 0);
+        event_note_child_stopped(/* slot */ 0, 0, 0);
     }
 
     exit(code);
@@ -2712,8 +2740,8 @@ static int make_child(server_rec * s, int slot, int bucket)
 {
     int pid;
 
-    if (slot + 1 > retained->max_daemons_limit) {
-        retained->max_daemons_limit = slot + 1;
+    if (slot + 1 > retained->max_daemon_used) {
+        retained->max_daemon_used = slot + 1;
     }
 
     if (ap_scoreboard_image->parent[slot].pid != 0) {
@@ -2781,11 +2809,7 @@ static int make_child(server_rec * s, int slot, int bucket)
         return -1;
     }
 
-    ap_scoreboard_image->parent[slot].quiescing = 0;
-    ap_scoreboard_image->parent[slot].not_accepting = 0;
     event_note_child_started(slot, pid);
-    retained->active_daemons++;
-    retained->total_daemons++;
     return 0;
 }
 
@@ -2805,7 +2829,8 @@ static void startup_children(int number_to_start)
     }
 }
 
-static void perform_idle_server_maintenance(int child_bucket)
+static void perform_idle_server_maintenance(int child_bucket,
+                                            int *max_daemon_used)
 {
     int num_buckets = retained->mpm->num_buckets;
     int idle_thread_count = 0;
@@ -2821,7 +2846,7 @@ static void perform_idle_server_maintenance(int child_bucket)
             /* We only care about child_bucket in this call */
             continue;
         }
-        if (i >= retained->max_daemons_limit &&
+        if (i >= retained->max_daemon_used &&
             free_length == retained->idle_spawn_rate[child_bucket]) {
             /* short cut if all active processes have been examined and
              * enough empty scoreboard slots have been found
@@ -2835,6 +2860,13 @@ static void perform_idle_server_maintenance(int child_bucket)
             if (ps->quiescing == 1) {
                 ps->quiescing = 2;
                 retained->active_daemons--;
+                ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf,
+                             "Child %d quiescing: pid %d, gen %d, "
+                             "active %d/%d, total %d/%d/%d",
+                             i, (int)ps->pid, (int)ps->generation,
+                             retained->active_daemons, active_daemons_limit,
+                             retained->total_daemons, retained->max_daemon_used,
+                             server_limit);
             }
             for (j = 0; j < threads_per_child; j++) {
                 int status = ap_scoreboard_image->servers[i][j].status;
@@ -2864,7 +2896,16 @@ static void perform_idle_server_maintenance(int child_bucket)
         }
     }
 
-    retained->max_daemons_limit = last_non_dead + 1;
+    if (*max_daemon_used < last_non_dead + 1) {
+        *max_daemon_used = last_non_dead + 1;
+
+        /* Below make_child() can grow retained->max_daemon_used, so
+         * be accurate if the one being computed is higher already.
+         */
+        if (retained->max_daemon_used < *max_daemon_used) {
+            retained->max_daemon_used = *max_daemon_used;
+        }
+    }
 
     if (retained->sick_child_detected) {
         if (had_healthy_child) {
@@ -2893,6 +2934,10 @@ static void perform_idle_server_maintenance(int child_bucket)
         }
     }
 
+    AP_DEBUG_ASSERT(retained->active_daemons <= retained->total_daemons
+                    && retained->total_daemons <= retained->max_daemon_used
+                    && retained->max_daemon_used <= server_limit);
+
     if (idle_thread_count > max_spare_threads / num_buckets) {
         /*
          * Child processes that we ask to shut down won't die immediately
@@ -2915,13 +2960,12 @@ static void perform_idle_server_maintenance(int child_bucket)
                            active_daemons_limit));
         ap_log_error(APLOG_MARK, APLOG_TRACE5, 0, ap_server_conf,
                      "%shutting down one child: "
-                     "active daemons %d / active limit %d / "
-                     "total daemons %d / ServerLimit %d / "
-                     "idle threads %d / max workers %d",
+                     "active %d/%d, total %d/%d/%d, "
+                     "idle threads %d, max workers %d",
                      (do_kill) ? "S" : "Not s",
                      retained->active_daemons, active_daemons_limit,
-                     retained->total_daemons, server_limit,
-                     idle_thread_count, max_workers);
+                     retained->total_daemons, retained->max_daemon_used,
+                     server_limit, idle_thread_count, max_workers);
         if (do_kill) {
             ap_mpm_podx_signal(all_buckets[child_bucket].pod,
                                AP_MPM_PODX_GRACEFUL);
@@ -2970,10 +3014,14 @@ static void perform_idle_server_maintenance(int child_bucket)
                 else {
                     ap_log_error(APLOG_MARK, APLOG_TRACE1, 0, ap_server_conf,
                                  "server is at active daemons limit, spawning "
-                                 "of %d children cancelled: %d/%d active, "
-                                 "rate %d", free_length,
+                                 "of %d children cancelled: active %d/%d, "
+                                 "total %d/%d/%d, rate %d", free_length,
                                  retained->active_daemons, active_daemons_limit,
-                                 retained->idle_spawn_rate[child_bucket]);
+                                 retained->total_daemons, retained->max_daemon_used,
+                                 server_limit, retained->idle_spawn_rate[child_bucket]);
+                    /* reset the spawning rate and prevent its growth below */
+                    retained->idle_spawn_rate[child_bucket] = 1;
+                    ++retained->hold_off_on_exponential_spawning;
                     free_length = 0;
                 }
             }
@@ -2989,11 +3037,6 @@ static void perform_idle_server_maintenance(int child_bucket)
                              retained->total_daemons);
             }
             for (i = 0; i < free_length; ++i) {
-                ap_log_error(APLOG_MARK, APLOG_TRACE5, 0, ap_server_conf,
-                             "Spawning new child: slot %d active / "
-                             "total daemons: %d/%d",
-                             free_slots[i], retained->active_daemons,
-                             retained->total_daemons);
                 make_child(ap_server_conf, free_slots[i], child_bucket);
             }
             /* the next time around we want to spawn twice as many if this
@@ -3016,6 +3059,7 @@ static void perform_idle_server_maintenance(int child_bucket)
 static void server_main_loop(int remaining_children_to_start)
 {
     int num_buckets = retained->mpm->num_buckets;
+    int max_daemon_used = 0;
     int child_slot;
     apr_exit_why_e exitwhy;
     int status, processed_status;
@@ -3061,19 +3105,8 @@ static void server_main_loop(int remaining_children_to_start)
             }
             /* non-fatal death... note that it's gone in the scoreboard. */
             if (child_slot >= 0) {
-                process_score *ps;
+                event_note_child_stopped(child_slot, 0, 0);
 
-                for (i = 0; i < threads_per_child; i++)
-                    ap_update_child_status_from_indexes(child_slot, i,
-                                                        SERVER_DEAD, NULL);
-
-                event_note_child_killed(child_slot, 0, 0);
-                ps = &ap_scoreboard_image->parent[child_slot];
-                if (ps->quiescing != 2)
-                    retained->active_daemons--;
-                ps->quiescing = 0;
-                /* NOTE: We don't dec in the (child_slot < 0) case! */
-                retained->total_daemons--;
                 if (processed_status == APEXIT_CHILDSICK) {
                     /* resource shortage, minimize the fork rate */
                     retained->idle_spawn_rate[child_slot % num_buckets] = 1;
@@ -3123,9 +3156,11 @@ static void server_main_loop(int remaining_children_to_start)
             continue;
         }
 
+        max_daemon_used = 0;
         for (i = 0; i < num_buckets; i++) {
-            perform_idle_server_maintenance(i);
+            perform_idle_server_maintenance(i, &max_daemon_used);
         }
+        retained->max_daemon_used = max_daemon_used;
     }
 }
 
@@ -3213,7 +3248,7 @@ static int event_run(apr_pool_t * _pconf, apr_pool_t * plog, server_rec * s)
                                AP_MPM_PODX_RESTART);
         }
         ap_reclaim_child_processes(1, /* Start with SIGTERM */
-                                   event_note_child_killed);
+                                   event_note_child_stopped);
 
         if (!child_fatal) {
             /* cleanup pid file on normal shutdown */
@@ -3239,7 +3274,7 @@ static int event_run(apr_pool_t * _pconf, apr_pool_t * plog, server_rec * s)
             ap_mpm_podx_killpg(all_buckets[i].pod, active_daemons_limit,
                                AP_MPM_PODX_GRACEFUL);
         }
-        ap_relieve_child_processes(event_note_child_killed);
+        ap_relieve_child_processes(event_note_child_stopped);
 
         if (!child_fatal) {
             /* cleanup pid file on normal shutdown */
@@ -3261,10 +3296,10 @@ static int event_run(apr_pool_t * _pconf, apr_pool_t * plog, server_rec * s)
             apr_sleep(apr_time_from_sec(1));
 
             /* Relieve any children which have now exited */
-            ap_relieve_child_processes(event_note_child_killed);
+            ap_relieve_child_processes(event_note_child_stopped);
 
             active_children = 0;
-            for (index = 0; index < retained->max_daemons_limit; ++index) {
+            for (index = 0; index < retained->max_daemon_used; ++index) {
                 if (ap_mpm_safe_kill(MPM_CHILD_PID(index), 0) == APR_SUCCESS) {
                     active_children = 1;
                     /* Having just one child is enough to stay around */
@@ -3282,7 +3317,7 @@ static int event_run(apr_pool_t * _pconf, apr_pool_t * plog, server_rec * s)
             ap_mpm_podx_killpg(all_buckets[i].pod, active_daemons_limit,
                                AP_MPM_PODX_RESTART);
         }
-        ap_reclaim_child_processes(1, event_note_child_killed);
+        ap_reclaim_child_processes(1, event_note_child_stopped);
 
         return DONE;
     }
@@ -3302,8 +3337,7 @@ static int event_run(apr_pool_t * _pconf, apr_pool_t * plog, server_rec * s)
 
     if (!retained->mpm->is_ungraceful) {
         ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, ap_server_conf, APLOGNO(00493)
-                     AP_SIG_GRACEFUL_STRING
-                     " received.  Doing graceful restart");
+                     AP_SIG_GRACEFUL_STRING " received.  Doing graceful restart");
         /* wake up the children...time to die.  But we'll have more soon */
         for (i = 0; i < num_buckets; i++) {
             ap_mpm_podx_killpg(all_buckets[i].pod, active_daemons_limit,
@@ -3316,6 +3350,8 @@ static int event_run(apr_pool_t * _pconf, apr_pool_t * plog, server_rec * s)
 
     }
     else {
+        ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, ap_server_conf, APLOGNO(00494)
+                     "SIGHUP received.  Attempting to restart");
         /* Kill 'em all.  Since the child acts the same on the parents SIGTERM
          * and a SIGHUP, we may as well use the same signal, because some user
          * pthreads are stealing signals from us left and right.
@@ -3326,9 +3362,7 @@ static int event_run(apr_pool_t * _pconf, apr_pool_t * plog, server_rec * s)
         }
 
         ap_reclaim_child_processes(1,  /* Start with SIGTERM */
-                                   event_note_child_killed);
-        ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, ap_server_conf, APLOGNO(00494)
-                     "SIGHUP received.  Attempting to restart");
+                                   event_note_child_stopped);
     }
 
     return OK;
