@@ -831,7 +831,6 @@ case $host in
       if test "${ac_cv_header_systemd_sd_daemon_h}" = "no"; then
         AC_MSG_WARN([Your system does not support systemd.])
       else
-        APR_ADDTO(HTTPD_LIBS, [$SYSTEMD_LIBS])
         AC_DEFINE(HAVE_SYSTEMD, 1, [Define if systemd is supported])
       fi
    fi
