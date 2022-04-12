@@ -1,0 +1,3 @@
+  *) mod_systemd: Systemd socket activation can now be enabled at
+     build time but disabled at run time, if mod_systemd is not
+     loaded.  [Lubos Uhliarik <luhliari redhat.com>]

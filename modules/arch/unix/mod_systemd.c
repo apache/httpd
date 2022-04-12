@@ -34,6 +34,12 @@
 #include <unistd.h>
 #endif
 
+APR_DECLARE_OPTIONAL_FN(int,
+                        ap_find_systemd_socket, (process_rec *, apr_port_t));
+
+APR_DECLARE_OPTIONAL_FN(int,
+                        ap_systemd_listen_fds, (int));
+
 static int systemd_pre_config(apr_pool_t *pconf, apr_pool_t *plog,
                               apr_pool_t *ptemp)
 {
@@ -96,8 +102,42 @@ static int systemd_monitor(apr_pool_t *p, server_rec *s)
     return DECLINED;
 }
 
+static int ap_find_systemd_socket(process_rec * process, apr_port_t port) {
+    int fdcount, fd;
+    int sdc = sd_listen_fds(0);
+
+    if (sdc < 0) {
+        ap_log_perror(APLOG_MARK, APLOG_CRIT, sdc, process->pool, APLOGNO(02486)
+                      "find_systemd_socket: Error parsing enviroment, sd_listen_fds returned %d",
+                      sdc);
+        return -1;
+    }
+
+    if (sdc == 0) {
+        ap_log_perror(APLOG_MARK, APLOG_CRIT, sdc, process->pool, APLOGNO(02487)
+                      "find_systemd_socket: At least one socket must be set.");
+        return -1;
+    }
+
+    fdcount = atoi(getenv("LISTEN_FDS"));
+    for (fd = SD_LISTEN_FDS_START; fd < SD_LISTEN_FDS_START + fdcount; fd++) {
+        if (sd_is_socket_inet(fd, 0, 0, -1, port) > 0) {
+            return fd;
+        }
+    }
+
+    return -1;
+}
+
+static int ap_systemd_listen_fds(int unset_environment){
+    return sd_listen_fds(unset_environment);
+}
+
 static void systemd_register_hooks(apr_pool_t *p)
 {
+    APR_REGISTER_OPTIONAL_FN(ap_systemd_listen_fds);
+    APR_REGISTER_OPTIONAL_FN(ap_find_systemd_socket);
+
     /* Enable ap_extended_status. */
     ap_hook_pre_config(systemd_pre_config, NULL, NULL, APR_HOOK_LAST);
     /* Signal service is ready. */

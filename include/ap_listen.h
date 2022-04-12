@@ -29,6 +29,7 @@
 #include "apr_network_io.h"
 #include "httpd.h"
 #include "http_config.h"
+#include "apr_optional.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -142,6 +143,15 @@ AP_DECLARE_NONSTD(const char *) ap_set_send_buffer_size(cmd_parms *cmd, void *du
 AP_DECLARE_NONSTD(const char *) ap_set_receive_buffer_size(cmd_parms *cmd,
                                                            void *dummy,
                                                            const char *arg);
+
+#ifdef HAVE_SYSTEMD
+APR_DECLARE_OPTIONAL_FN(int,
+                        ap_find_systemd_socket, (process_rec *, apr_port_t));
+
+APR_DECLARE_OPTIONAL_FN(int,
+                        ap_systemd_listen_fds, (int));
+#endif
+
 
 #define LISTEN_COMMANDS \
 AP_INIT_TAKE1("ListenBacklog", ap_set_listenbacklog, NULL, RSRC_CONF, \
