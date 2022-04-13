@@ -184,6 +184,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c 1899609 ^/httpd/httpd/trunk .
      +1: icing
 
+  *) mod_heartmonitor: Set the documented default value
+     "10" for HeartbeatMaxServers instead of "0". With "0"
+     no shared memory slotmem was initialized.
+     trunk patch: https://svn.apache.org/r1899809
+     2.4.x patch: svn merge -c 1899809 ^/httpd/httpd/trunk .
+     +1: rjung
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
