@@ -1,0 +1,10 @@
+  *) core/mod_http: use REQUEST meta buckets and a new HTTP/1.x specific
+     input filter to separate the handling for HTTP requests from the
+     handling of HTTP/1.x request parsing and checks.
+     A new HTTP1_REQUEST_IN filter installs itself on http/1.1 connections
+     before a request is being read. It generates either a REQUEST meta
+     bucket on success or an ERROR bucket with the proposed response status.
+     The core connection processing, relying on ap_read_request(), now expects
+     a REQUEST or ERROR bucket from the input filters and is agnostic to
+     specific HTTP versions and how they bring requests into the server.
+     [Stefan Eissing]

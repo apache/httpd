@@ -1636,3 +1636,205 @@ AP_DECLARE(void) ap_h1_add_end_chunk(apr_bucket_brigade *b,
         if (tmp) APR_BRIGADE_CONCAT(b, tmp);
     }
 }
+
+typedef enum {
+    rrl_none, rrl_badprotocol, rrl_badmethod, rrl_badwhitespace, rrl_excesswhitespace,
+    rrl_missinguri, rrl_baduri, rrl_trailingtext,
+} rrl_error;
+
+/* get the length of a name for logging, but no more than 80 bytes */
+#define LOG_NAME_MAX_LEN 80
+static int log_name_len(const char *name)
+{
+    apr_size_t len = strlen(name);
+    return (len > LOG_NAME_MAX_LEN)? LOG_NAME_MAX_LEN : (int)len;
+}
+
+static void rrl_log_error(request_rec *r, rrl_error error, const char *etoken)
+{
+    switch (error) {
+    case rrl_none:
+        break;
+    case rrl_badprotocol:
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02418)
+                      "HTTP Request Line; Unrecognized protocol '%.*s' "
+                      "(perhaps whitespace was injected?)",
+                      log_name_len(etoken), etoken);
+        break;
+    case rrl_badmethod:
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(03445)
+                      "HTTP Request Line; Invalid method token: '%.*s'",
+                      log_name_len(etoken), etoken);
+        break;
+    case rrl_badwhitespace:
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(03447)
+                      "HTTP Request Line; Invalid whitespace");
+        break;
+    case rrl_excesswhitespace:
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(03448)
+                      "HTTP Request Line; Excess whitespace "
+                      "(disallowed by HttpProtocolOptions Strict)");
+        break;
+    case rrl_missinguri:
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(03446)
+                      "HTTP Request Line; Missing URI");
+    case rrl_baduri:
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(03454)
+                      "HTTP Request Line; URI incorrectly encoded: '%.*s'",
+                      log_name_len(etoken), etoken);
+        break;
+    case rrl_trailingtext:
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(03449)
+                      "HTTP Request Line; Extraneous text found '%.*s' "
+                      "(perhaps whitespace was injected?)",
+                      log_name_len(etoken), etoken);
+        break;
+    }
+}
+
+/* remember the first error we encountered during tokenization */
+#define RRL_ERROR(e, et, y, yt)     \
+    do { \
+        if (e == rrl_none) {\
+            e = y; et = yt;\
+        }\
+    } while (0)
+
+static rrl_error tokenize_request_line(
+        char *line, int strict,
+        const char **pmethod, const char **puri, const char **pprotocol,
+        const char **perror_token)
+{
+    char *method, *protocol, *uri, *ll;
+    rrl_error e = rrl_none;
+    char *etoken = NULL;
+    apr_size_t len = 0;
+
+    method = line;
+    /* If there is whitespace before a method, skip it and mark in error */
+    if (apr_isspace(*method)) {
+        RRL_ERROR(e, etoken, rrl_badwhitespace, method);
+        for ( ; apr_isspace(*method); ++method)
+            ;
+    }
+
+    /* Scan the method up to the next whitespace, ensure it contains only
+     * valid http-token characters, otherwise mark in error
+     */
+    if (strict) {
+        ll = (char*) ap_scan_http_token(method);
+    }
+    else {
+        ll = (char*) ap_scan_vchar_obstext(method);
+    }
+
+    if ((ll == method) || (*ll && !apr_isspace(*ll))) {
+        RRL_ERROR(e, etoken, rrl_badmethod, ll);
+        ll = strpbrk(ll, "\t\n\v\f\r ");
+    }
+
+    /* Verify method terminated with a single SP, or mark as specific error */
+    if (!ll) {
+        RRL_ERROR(e, etoken, rrl_missinguri, NULL);
+        protocol = uri = "";
+        goto done;
+    }
+    else if (strict && ll[0] && apr_isspace(ll[1])) {
+        RRL_ERROR(e, etoken, rrl_excesswhitespace, ll);
+    }
+
+    /* Advance uri pointer over leading whitespace, NUL terminate the method
+     * If non-SP whitespace is encountered, mark as specific error
+     */
+    for (uri = ll; apr_isspace(*uri); ++uri)
+        if (*uri != ' ')
+            RRL_ERROR(e, etoken, rrl_badwhitespace, uri);
+    *ll = '\0';
+
+    if (!*uri)
+        RRL_ERROR(e, etoken, rrl_missinguri, NULL);
+
+    /* Scan the URI up to the next whitespace, ensure it contains no raw
+     * control characters, otherwise mark in error
+     */
+    ll = (char*) ap_scan_vchar_obstext(uri);
+    if (ll == uri || (*ll && !apr_isspace(*ll))) {
+        RRL_ERROR(e, etoken, rrl_baduri, ll);
+        ll = strpbrk(ll, "\t\n\v\f\r ");
+    }
+
+    /* Verify URI terminated with a single SP, or mark as specific error */
+    if (!ll) {
+        protocol = "";
+        goto done;
+    }
+    else if (strict && ll[0] && apr_isspace(ll[1])) {
+        RRL_ERROR(e, etoken, rrl_excesswhitespace, ll);
+    }
+
+    /* Advance protocol pointer over leading whitespace, NUL terminate the uri
+     * If non-SP whitespace is encountered, mark as specific error
+     */
+    for (protocol = ll; apr_isspace(*protocol); ++protocol)
+        if (*protocol != ' ')
+            RRL_ERROR(e, etoken, rrl_badwhitespace, protocol);
+    *ll = '\0';
+
+    /* Scan the protocol up to the next whitespace, validation comes later */
+    if (!(ll = (char*) ap_scan_vchar_obstext(protocol))) {
+        len = strlen(protocol);
+        goto done;
+    }
+    len = ll - protocol;
+
+    /* Advance over trailing whitespace, if found mark in error,
+     * determine if trailing text is found, unconditionally mark in error,
+     * finally NUL terminate the protocol string
+     */
+    if (*ll && !apr_isspace(*ll)) {
+        RRL_ERROR(e, etoken, rrl_badprotocol, ll);
+    }
+    else if (strict && *ll) {
+        RRL_ERROR(e, etoken, rrl_excesswhitespace, ll);
+    }
+    else {
+        for ( ; apr_isspace(*ll); ++ll)
+            if (*ll != ' ') {
+                RRL_ERROR(e, etoken, rrl_badwhitespace, ll);
+                break;
+            }
+        if (*ll)
+            RRL_ERROR(e, etoken, rrl_trailingtext, ll);
+    }
+    *((char *)protocol + len) = '\0';
+
+done:
+    *pmethod = method;
+    *puri = uri;
+    *pprotocol = protocol;
+    *perror_token = etoken;
+    return e;
+}
+
+AP_DECLARE(int) ap_h1_tokenize_request_line(
+        request_rec *r, const char *line,
+        const char **pmethod, const char **puri, const char **pprotocol)
+{
+    core_server_config *conf = ap_get_core_module_config(r->server->module_config);
+    int strict = (conf->http_conformance != AP_HTTP_CONFORMANCE_UNSAFE);
+    rrl_error error;
+    const char *error_token;
+
+    ap_log_rerror(APLOG_MARK, APLOG_TRACE4, 0, r,
+                  "ap_tokenize_request_line: '%s'", line);
+    error = tokenize_request_line(apr_pstrdup(r->pool, line), strict, pmethod,
+                                  puri, pprotocol, &error_token);
+    ap_log_rerror(APLOG_MARK, APLOG_TRACE4, 0, r,
+                  "ap_tokenize_request: error=%d, method=%s, uri=%s, protocol=%s",
+                  error, *pmethod, *puri, *pprotocol);
+    if (error != rrl_none) {
+        rrl_log_error(r, error, error_token);
+        return 0;
+    }
+    return 1;
+}
