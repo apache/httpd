@@ -2895,16 +2895,8 @@ static void perform_idle_server_maintenance(int child_bucket,
             free_slots[free_length++] = i;
         }
     }
-
     if (*max_daemon_used < last_non_dead + 1) {
         *max_daemon_used = last_non_dead + 1;
-
-        /* Below make_child() can grow retained->max_daemon_used, so
-         * be accurate if the one being computed is higher already.
-         */
-        if (retained->max_daemon_used < *max_daemon_used) {
-            retained->max_daemon_used = *max_daemon_used;
-        }
     }
 
     if (retained->sick_child_detected) {
@@ -3037,7 +3029,13 @@ static void perform_idle_server_maintenance(int child_bucket,
                              retained->total_daemons);
             }
             for (i = 0; i < free_length; ++i) {
-                make_child(ap_server_conf, free_slots[i], child_bucket);
+                int slot = free_slots[i];
+                if (make_child(ap_server_conf, slot, child_bucket) < 0) {
+                    continue;
+                }
+                if (*max_daemon_used < slot + 1) {
+                    *max_daemon_used = slot + 1;
+                }
             }
             /* the next time around we want to spawn twice as many if this
              * wasn't good enough, but not if we've just done a graceful
