@@ -715,27 +715,6 @@ void h2_mplx_c1_process(h2_mplx *m,
     H2_MPLX_LEAVE(m);
 }
 
-apr_status_t h2_mplx_c1_fwd_input(h2_mplx *m, struct h2_iqueue *input_pending,
-                                  h2_stream_get_fn *get_stream,
-                                  struct h2_session *session)
-{
-    int sid;
-
-    H2_MPLX_ENTER(m);
-
-    while ((sid = h2_iq_shift(input_pending)) > 0) {
-        h2_stream *stream = get_stream(session, sid);
-        if (stream) {
-            H2_MPLX_LEAVE(m);
-            h2_stream_flush_input(stream);
-            H2_MPLX_ENTER(m);
-        }
-    }
-
-    H2_MPLX_LEAVE(m);
-    return APR_SUCCESS;
-}
-
 static void c2_beam_input_write_notify(void *ctx, h2_bucket_beam *beam)
 {
     conn_rec *c = ctx;
@@ -1078,6 +1057,31 @@ apr_status_t h2_mplx_c1_client_rst(h2_mplx *m, int stream_id)
     stream = h2_ihash_get(m->streams, stream_id);
     if (stream && !reset_is_acceptable(stream)) {
         m_be_annoyed(m);
+    }
+    H2_MPLX_LEAVE(m);
+    return status;
+}
+
+apr_status_t h2_mplx_c1_input_closed(h2_mplx *m, int stream_id)
+{
+    h2_stream *stream;
+    h2_conn_ctx_t *c2_ctx;
+    apr_status_t status = APR_EAGAIN;
+
+    H2_MPLX_ENTER_ALWAYS(m);
+    stream = h2_ihash_get(m->streams, stream_id);
+    if (stream && (c2_ctx = h2_conn_ctx_get(stream->c2))) {
+        if (c2_ctx->beam_in) {
+            apr_bucket_brigade *tmp =apr_brigade_create(
+                stream->pool, m->c1->bucket_alloc);
+            apr_bucket *eos = apr_bucket_eos_create(m->c1->bucket_alloc);
+            apr_off_t written;
+
+            APR_BRIGADE_INSERT_TAIL(tmp, eos);
+            status = h2_beam_send(c2_ctx->beam_in, m->c1,
+                      tmp, APR_BLOCK_READ, &written);
+            apr_brigade_destroy(tmp);
+        }
     }
     H2_MPLX_LEAVE(m);
     return status;

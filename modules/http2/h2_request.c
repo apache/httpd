@@ -205,13 +205,9 @@ apr_status_t h2_request_end_headers(h2_request *req, apr_pool_t *pool, int eos, 
         apr_table_setn(req->headers, "Host", req->authority);
     }
 
-    s = apr_table_get(req->headers, "Content-Length");
-    if (!s) {
-        /* HTTP/2 does not need a Content-Length for framing, but our
-         * internal request processing is used to HTTP/1.1, so we
-         * need to either add a Content-Length or a Transfer-Encoding
-         * if any content can be expected. */
-        if (eos && apr_table_get(req->headers, "Content-Type")) {
+    if (eos) {
+        s = apr_table_get(req->headers, "Content-Length");
+        if (!s && apr_table_get(req->headers, "Content-Type")) {
             /* If we have a content-type, but already seen eos, no more
              * data will come. Signal a zero content length explicitly.
              */
@@ -290,6 +286,27 @@ static request_rec *my_ap_create_request(conn_rec *c)
     return r;
 }
 #endif
+
+apr_bucket *h2_request_create_bucket(const h2_request *req, request_rec *r)
+{
+    conn_rec *c = r->connection;
+    apr_table_t *headers = apr_table_copy(r->pool, req->headers);
+    const char *uri = req->path;
+
+    AP_DEBUG_ASSERT(req->authority);
+    if (req->scheme && (ap_cstr_casecmp(req->scheme,
+                        ap_ssl_conn_is_ssl(c->master? c->master : c)? "https" : "http")
+                        || !ap_cstr_casecmp("CONNECT", req->method))) {
+        /* Client sent a non-matching ':scheme' pseudo header or CONNECT.
+         * In this case, we use an absolute URI.
+         */
+        uri = apr_psprintf(r->pool, "%s://%s%s",
+                           req->scheme, req->authority, req->path ? req->path : "");
+    }
+
+    return ap_bucket_request_create(req->method, uri, "HTTP/2.0", headers,
+                                    r->pool, c->bucket_alloc);
+}
 
 request_rec *h2_create_request_rec(const h2_request *req, conn_rec *c)
 {

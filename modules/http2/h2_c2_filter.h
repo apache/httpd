@@ -18,21 +18,20 @@
 #define __mod_h2__h2_c2_filter__
 
 /**
- * h2_from_h1 parses a HTTP/1.1 response into
- * - response status
- * - a list of header values
- * - a series of bytes that represent the response body alone, without
- *   any meta data, such as inserted by chunked transfer encoding.
- *
- * All data is allocated from the stream memory pool. 
- *
- * Again, see comments in h2_request: ideally we would take the headers
- * and status from the httpd structures instead of parsing them here, but
- * we need to have all handlers and filters involved in request/response
- * processing, so this seems to be the way for now.
+ * Output filter that inspects the request_rec->notes of the request
+ * itself and possible internal redirects to detect conditions that
+ * merit specific HTTP/2 response codes, such as 421.
  */
-struct h2_response_parser;
-
 apr_status_t h2_c2_filter_notes_out(ap_filter_t *f, apr_bucket_brigade *bb);
+
+/**
+ * Input filter on secondary connections that insert the REQUEST bucket
+ * with the request to perform and then removes itself.
+ */
+apr_status_t h2_c2_filter_request_in(ap_filter_t *f,
+                                     apr_bucket_brigade *bb,
+                                     ap_input_mode_t mode,
+                                     apr_read_type_e block,
+                                     apr_off_t readbytes);
 
 #endif /* defined(__mod_h2__h2_c2_filter__) */

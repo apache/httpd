@@ -17,6 +17,8 @@
 #ifndef __mod_h2__h2_stream__
 #define __mod_h2__h2_stream__
 
+#include <http_protocol.h>
+
 #include "h2.h"
 
 /**
@@ -26,7 +28,7 @@
  * connection to the client. The h2_session writes to the h2_stream,
  * adding HEADERS and DATA and finally an EOS. When headers are done,
  * h2_stream is scheduled for handling, which is expected to produce
- * RESPONSE buclets.
+ * RESPONSE buckets.
  */
 
 struct h2_mplx;
@@ -206,8 +208,6 @@ apr_status_t h2_stream_recv_frame(h2_stream *stream, int frame_type, int flags, 
  */
 apr_status_t h2_stream_recv_DATA(h2_stream *stream, uint8_t flags,
                                  const uint8_t *data, size_t len);
-
-apr_status_t h2_stream_flush_input(h2_stream *stream);
 
 /**
  * Reset the stream. Stream write/reads will return errors afterwards.

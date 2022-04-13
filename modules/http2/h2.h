@@ -188,7 +188,6 @@ struct h2_request {
     apr_table_t *headers;
 
     apr_time_t request_time;
-    unsigned int chunked : 1;   /* iff request body needs to be forwarded as chunked */
     apr_off_t raw_bytes;        /* RAW network bytes that generated this request - if known. */
     int http_status;            /* Store a possible HTTP status code that gets
                                  * defined before creating the dummy HTTP/1.1

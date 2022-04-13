@@ -112,8 +112,8 @@ typedef struct h2_session {
     char status[64];                /* status message for scoreboard */
     int last_status_code;           /* the one already reported */
     const char *last_status_msg;    /* the one already reported */
-    
-    struct h2_iqueue *in_pending;   /* all streams with input pending */
+
+    int input_flushed;              /* stream input was flushed */
     struct h2_iqueue *out_c1_blocked;  /* all streams with output blocked on c1 buffer full */
     struct h2_iqueue *ready_to_process;  /* all streams ready for processing */
 

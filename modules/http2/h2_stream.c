@@ -211,6 +211,30 @@ cleanup:
     return APR_SUCCESS;
 }
 
+static apr_status_t input_flush(h2_stream *stream)
+{
+    apr_status_t status = APR_SUCCESS;
+    apr_off_t written;
+
+    if (!stream->in_buffer) goto cleanup;
+
+    ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, stream->session->c1,
+                  H2_STRM_MSG(stream, "flush input"));
+    if (!stream->input) {
+        h2_stream_setup_input(stream);
+    }
+    status = h2_beam_send(stream->input, stream->session->c1,
+                          stream->in_buffer, APR_BLOCK_READ, &written);
+    stream->in_last_write = apr_time_now();
+    if (APR_SUCCESS != status && stream->state == H2_SS_CLOSED_L) {
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE2, status, stream->session->c1,
+                      H2_STRM_MSG(stream, "send input error"));
+        h2_stream_dispatch(stream, H2_SEV_IN_ERROR);
+    }
+cleanup:
+    return status;
+}
+
 static void input_append_bucket(h2_stream *stream, apr_bucket *b)
 {
     if (!stream->in_buffer) {
@@ -252,10 +276,17 @@ static apr_status_t close_input(h2_stream *stream)
     }
 
     stream->input_closed = 1;
-    if (stream->in_buffer || stream->input) {
+    if (stream->in_buffer) {
         b = apr_bucket_eos_create(c->bucket_alloc);
         input_append_bucket(stream, b);
+        input_flush(stream);
         h2_stream_dispatch(stream, H2_SEV_IN_DATA_PENDING);
+    }
+    else {
+        rv = h2_mplx_c1_input_closed(stream->session->mplx, stream->id);
+        if (APR_SUCCESS == rv) {
+            h2_stream_dispatch(stream, H2_SEV_IN_DATA_PENDING);
+        }
     }
 cleanup:
     return rv;
@@ -472,29 +503,6 @@ leave:
     return status;
 }
 
-apr_status_t h2_stream_flush_input(h2_stream *stream)
-{
-    apr_status_t status = APR_SUCCESS;
-    apr_off_t written;
-
-    ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, stream->session->c1,
-                  H2_STRM_MSG(stream, "flush input"));
-    if (stream->in_buffer && !APR_BRIGADE_EMPTY(stream->in_buffer)) {
-        if (!stream->input) {
-            h2_stream_setup_input(stream);
-        }
-        status = h2_beam_send(stream->input, stream->session->c1,
-                              stream->in_buffer, APR_BLOCK_READ, &written);
-        stream->in_last_write = apr_time_now();
-        if (APR_SUCCESS != status && stream->state == H2_SS_CLOSED_L) {
-            ap_log_cerror(APLOG_MARK, APLOG_TRACE2, status, stream->session->c1,
-                          H2_STRM_MSG(stream, "send input error"));
-            h2_stream_dispatch(stream, H2_SEV_IN_ERROR);
-        }
-    }
-    return status;
-}
-
 apr_status_t h2_stream_recv_DATA(h2_stream *stream, uint8_t flags,
                                     const uint8_t *data, size_t len)
 {
@@ -515,6 +523,7 @@ apr_status_t h2_stream_recv_DATA(h2_stream *stream, uint8_t flags,
         }
         stream->in_data_octets += len;
         input_append_data(stream, (const char*)data, len);
+        input_flush(stream);
         h2_stream_dispatch(stream, H2_SEV_IN_DATA_PENDING);
     }
     return status;
@@ -858,6 +867,20 @@ cleanup:
     if (APR_SUCCESS == status) {
         stream->request = req;
         stream->rtmp = NULL;
+
+        if (APLOGctrace4(stream->session->c1)) {
+            int i;
+            const apr_array_header_t *t_h = apr_table_elts(req->headers);
+            const apr_table_entry_t *t_elt = (apr_table_entry_t *)t_h->elts;
+            ap_log_cerror(APLOG_MARK, APLOG_TRACE4, 0, stream->session->c1,
+                          H2_STRM_MSG(stream,"headers received from client:"));
+            for (i = 0; i < t_h->nelts; i++, t_elt++) {
+                ap_log_cerror(APLOG_MARK, APLOG_TRACE4, 0, stream->session->c1,
+                              H2_STRM_MSG(stream, "  %s: %s"),
+                              ap_escape_logitem(stream->pool, t_elt->key),
+                              ap_escape_logitem(stream->pool, t_elt->val));
+            }
+        }
     }
     return status;
 }
@@ -911,13 +934,18 @@ static apr_status_t buffer_output_receive(h2_stream *stream)
         goto cleanup;
     }
 
-    H2_STREAM_OUT_LOG(APLOG_TRACE2, stream, "pre");
-    rv = h2_beam_receive(stream->output, stream->session->c1, stream->out_buffer,
-                         APR_NONBLOCK_READ, stream->session->max_stream_mem - buf_len);
-    if (APR_SUCCESS != rv) {
-        ap_log_cerror(APLOG_MARK, APLOG_TRACE1, rv, c1,
-                      H2_STRM_MSG(stream, "out_buffer, receive unsuccessful"));
-        goto cleanup;
+    if (stream->output_eos) {
+        rv = APR_BRIGADE_EMPTY(stream->out_buffer)? APR_EOF : APR_SUCCESS;
+    }
+    else {
+        H2_STREAM_OUT_LOG(APLOG_TRACE2, stream, "pre");
+        rv = h2_beam_receive(stream->output, stream->session->c1, stream->out_buffer,
+                             APR_NONBLOCK_READ, stream->session->max_stream_mem - buf_len);
+        if (APR_SUCCESS != rv) {
+            ap_log_cerror(APLOG_MARK, APLOG_TRACE1, rv, c1,
+                          H2_STRM_MSG(stream, "out_buffer, receive unsuccessful"));
+            goto cleanup;
+        }
     }
 
     /* get rid of buckets we have no need for */
@@ -929,6 +957,9 @@ static apr_status_t buffer_output_receive(h2_stream *stream)
                 if (APR_BUCKET_IS_FLUSH(b)) {  /* we flush any c1 data already */
                     APR_BUCKET_REMOVE(b);
                     apr_bucket_destroy(b);
+                }
+                else if (APR_BUCKET_IS_EOS(b)) {
+                    stream->output_eos = 1;
                 }
             }
             else if (b->length == 0) {  /* zero length data */
@@ -1281,7 +1312,7 @@ apr_status_t h2_stream_in_consumed(h2_stream *stream, apr_off_t amount)
     return APR_SUCCESS;   
 }
 
-static apr_off_t buffer_output_data_to_send(h2_stream *stream, int *peos)
+static apr_off_t output_data_buffered(h2_stream *stream, int *peos)
 {
     /* How much data do we have in our buffers that we can write? */
     apr_off_t buf_len = 0;
@@ -1380,7 +1411,7 @@ static ssize_t stream_data_cb(nghttp2_session *ng2s,
     }
 
     /* How much data do we have in our buffers that we can write? */
-    buf_len = buffer_output_data_to_send(stream, &eos);
+    buf_len = output_data_buffered(stream, &eos);
     if (buf_len < length && !eos) {
         /* read more? */
         ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, c1,
@@ -1388,7 +1419,7 @@ static ssize_t stream_data_cb(nghttp2_session *ng2s,
                       session->id, (int)stream_id, (long)length, (long)buf_len);
         rv = buffer_output_receive(stream);
         /* process all headers sitting at the buffer head. */
-        while (APR_SUCCESS == rv) {
+        while (APR_SUCCESS == rv && !eos && !stream->sent_trailers) {
             rv = buffer_output_process_headers(stream);
             if (APR_SUCCESS != rv && APR_EAGAIN != rv) {
                 ap_log_cerror(APLOG_MARK, APLOG_ERR, rv, c1,
@@ -1396,16 +1427,19 @@ static ssize_t stream_data_cb(nghttp2_session *ng2s,
                               "data_cb, error processing headers"));
                 return NGHTTP2_ERR_CALLBACK_FAILURE;
             }
-            buf_len = buffer_output_data_to_send(stream, &eos);
+            buf_len = output_data_buffered(stream, &eos);
         }
 
-        if (APR_EOF == rv) {
-            eos = 1;
-        }
-        else if (APR_SUCCESS != rv && !APR_STATUS_IS_EAGAIN(rv)) {
+        if (APR_SUCCESS != rv && !APR_STATUS_IS_EAGAIN(rv)) {
             ap_log_cerror(APLOG_MARK, APLOG_ERR, rv, c1,
                           H2_STRM_LOG(APLOGNO(02938), stream, "data_cb, reading data"));
             return NGHTTP2_ERR_CALLBACK_FAILURE;
+        }
+
+        if (stream->sent_trailers) {
+            AP_DEBUG_ASSERT(eos);
+            AP_DEBUG_ASSERT(buf_len == 0);
+            return NGHTTP2_ERR_DEFERRED;
         }
     }
 

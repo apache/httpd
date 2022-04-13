@@ -38,11 +38,6 @@ void h2_c2_destroy(conn_rec *c2);
  */
 void h2_c2_abort(conn_rec *c2, conn_rec *from);
 
-/**
- * Process a secondary connection for a HTTP/2 stream request.
- */
-apr_status_t h2_c2_process(conn_rec *c, apr_thread_t *thread, int worker_id);
-
 void h2_c2_register_hooks(void);
 
 #endif /* defined(__mod_h2__h2_c2__) */

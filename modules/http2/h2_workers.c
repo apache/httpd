@@ -21,6 +21,7 @@
 
 #include <mpm_common.h>
 #include <httpd.h>
+#include <http_connection.h>
 #include <http_core.h>
 #include <http_log.h>
 #include <http_protocol.h>
@@ -256,8 +257,41 @@ static void* APR_THREAD_FUNC slot_run(apr_thread_t *thread, void *wctx)
     
     /* Get the next c2 from mplx to process. */
     while (get_next(slot)) {
-        ap_assert(slot->connection != NULL);
-        h2_c2_process(slot->connection, thread, slot->id);
+        /* See the discussion at <https://github.com/icing/mod_h2/issues/195>
+         *
+         * Each conn_rec->id is supposed to be unique at a point in time. Since
+         * some modules (and maybe external code) uses this id as an identifier
+         * for the request_rec they handle, it needs to be unique for secondary
+         * connections also.
+         *
+         * The MPM module assigns the connection ids and mod_unique_id is using
+         * that one to generate identifier for requests. While the implementation
+         * works for HTTP/1.x, the parallel execution of several requests per
+         * connection will generate duplicate identifiers on load.
+         *
+         * The original implementation for secondary connection identifiers used
+         * to shift the master connection id up and assign the stream id to the
+         * lower bits. This was cramped on 32 bit systems, but on 64bit there was
+         * enough space.
+         *
+         * As issue 195 showed, mod_unique_id only uses the lower 32 bit of the
+         * connection id, even on 64bit systems. Therefore collisions in request ids.
+         *
+         * The way master connection ids are generated, there is some space "at the
+         * top" of the lower 32 bits on allmost all systems. If you have a setup
+         * with 64k threads per child and 255 child processes, you live on the edge.
+         *
+         * The new implementation shifts 8 bits and XORs in the worker
+         * id. This will experience collisions with > 256 h2 workers and heavy
+         * load still. There seems to be no way to solve this in all possible
+         * configurations by mod_h2 alone.
+         */
+        AP_DEBUG_ASSERT(slot->connection != NULL);
+        slot->connection->id = (slot->connection->master->id << 8)^slot->id;
+        slot->connection->current_thread = thread;
+
+        ap_process_connection(slot->connection, ap_get_conn_socket(slot->connection));
+
         h2_mplx_worker_c2_done(slot->connection);
         slot->connection = NULL;
     }

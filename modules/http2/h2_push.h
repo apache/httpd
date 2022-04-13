@@ -17,6 +17,8 @@
 #ifndef __mod_h2__h2_push__
 #define __mod_h2__h2_push__
 
+#include <http_protocol.h>
+
 #include "h2.h"
 
 struct h2_request;

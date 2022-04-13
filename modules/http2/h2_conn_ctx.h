@@ -43,7 +43,6 @@ struct h2_conn_ctx_t {
     struct h2_mplx *mplx;           /* c2: the multiplexer */
     struct h2_c2_transit *transit;  /* c2: transit pool and bucket_alloc */
 
-    int pre_conn_done;               /* has pre_connection setup run? */
     int stream_id;                  /* c1: 0, c2: stream id processed */
     apr_pool_t *req_pool;            /* c2: a c2 child pool for a request */
     const struct h2_request *request; /* c2: the request to process */

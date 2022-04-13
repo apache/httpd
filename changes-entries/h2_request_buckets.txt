@@ -1,0 +1,4 @@
+  *) mod_http2: use the new REQUEST buckets to forward request
+     on secondary connections. Use the now generic
+     ap_process_connection() in h2 workers to process those.
+     [Stefan Eissing]
