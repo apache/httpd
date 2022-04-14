@@ -1219,7 +1219,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f,
 
         if (respb) {
             ap_bucket_response *resp = respb->data;
-            if (resp->status >= 200 || resp->status == 101) {
+            if (resp->status >= 200 || resp->status == HTTP_SWITCHING_PROTOCOLS) {
                 /* Someone is passing the final response, remember it
                  * so we no longer generate one. */
                 ctx->final_status = resp->status;
@@ -1312,7 +1312,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f,
         }
         ap_remove_output_filter(f);
     }
-    else if (ctx->final_status == 101) {
+    else if (ctx->final_status == HTTP_SWITCHING_PROTOCOLS) {
         /* switching protocol, whatever comes next is not HTTP/1.x */
         ap_remove_output_filter(f);
     }
@@ -1937,7 +1937,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_h1_response_out_filter(ap_filter_t *f,
 
                     APR_BRIGADE_CONCAT(b, ctx->tmpbb);
 
-                    if (resp->status == 101) {
+                    if (resp->status == HTTP_SWITCHING_PROTOCOLS) {
                         /* switched to another protocol, get out of the way */
                         AP_DEBUG_ASSERT(!r->chunked);
                         ap_remove_output_filter(f);
