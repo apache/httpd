@@ -16,14 +16,16 @@ class TestRestarts:
     def _class_scope(self, env):
         conf = HttpdConf(env, extras={
             'base': f"""
-StartServers 1
-ServerLimit 4
-ThreadLimit 2
-ThreadsPerChild 2
-MinSpareThreads 2
-MaxSpareThreads 4
-MaxRequestWorkers 8
-MaxConnectionsPerChild 0
+StartServers            1
+ServerLimit             3
+ThreadLimit             4
+ThreadsPerChild         4
+MinSpareThreads         4
+MaxSpareThreads         6
+MaxRequestWorkers       12
+MaxConnectionsPerChild  0
+
+LogLevel mpm_event:trace6
         """,
         })
         conf.add_vhost_cgi()
