@@ -3382,7 +3382,7 @@ static void server_main_loop(int remaining_children_to_start)
 {
     int num_buckets = retained->mpm->num_buckets;
     int max_daemon_used = 0;
-    int successive_signals = 0;
+    int successive_kills = 0;
     int child_slot;
     apr_exit_why_e exitwhy;
     int status, processed_status;
@@ -3461,28 +3461,27 @@ static void server_main_loop(int remaining_children_to_start)
             /* Don't perform idle maintenance when a child dies,
              * only do it when there's a timeout.  Remember only a
              * finite number of children can die, and it's pretty
-             * pathological for a lot to die suddenly.  If that happens
-             * anyway, protect against fork()+kill() flood by not restarting
-             * more than 3 children if no timeout happened in between,
-             * otherwise we keep going with idle maintenance.
+             * pathological for a lot to die suddenly.  If a child is
+             * killed by a signal (faulting) we want to restart it ASAP
+             * though, up to 3 successive faults or we stop this until
+             * a timeout happens again (to avoid the flood of fork()ed
+             * processes that keep being killed early).
              */
             if (child_slot < 0 || !APR_PROC_CHECK_SIGNALED(exitwhy)) {
                 continue;
             }
-            if (++successive_signals >= 3) {
-                if (successive_signals % 10 == 3) {
+            if (++successive_kills >= 3) {
+                if (successive_kills % 10 == 3) {
                     ap_log_error(APLOG_MARK, APLOG_WARNING, 0,
                                  ap_server_conf, APLOGNO(10392)
                                  "children are killed successively!");
                 }
-                apr_sleep(apr_time_from_sec(1));
+                continue;
             }
-            else {
-                ++remaining_children_to_start;
-            }
+            ++remaining_children_to_start;
         }
         else {
-            successive_signals = 0;
+            successive_kills = 0;
         }
 
         if (remaining_children_to_start) {
