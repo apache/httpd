@@ -31,21 +31,23 @@ MaxConnectionsPerChild 0
         assert env.apache_restart() == 0
 
     def test_core_002_01(self, env):
-        connections = 8
-        n = connections * 10
+        clients = 6
+        total_requests = clients * 10
+        conn_per_client = 5
         url = env.mkurl("https", "cgi", "/delay.py")
-        args = [env.h2load, f"--connect-to=localhost:{env.https_port}", "--h1",
-                "-n", str(n), "-c", str(connections),
+        args = [env.h2load, f"--connect-to=localhost:{env.https_port}",
+                "--h1",                                 # use only http/1.1
+                "-n", str(total_requests),              # total # of requests to make
+                "-c", str(conn_per_client * clients),   # total # of connections to make
+                "-r", str(clients),                     # connections at a time
+                "--rate-period", "2",                   # create conns every 2 sec
                 url,
                 ]
         r = env.run(args)
         assert 0 == r.exit_code
         r = env.h2load_status(r)
         assert r.results["h2load"]["requests"] == {
-            "total": n, "started": n, "done": n, "succeeded": n
+            "total": total_requests, "started": total_requests,
+            "done": total_requests, "succeeded": total_requests
         }, f"{r.stdout}"
-        assert n == r.results["h2load"]["status"]["2xx"]
-        assert 0 == r.results["h2load"]["status"]["3xx"]
-        assert 0 == r.results["h2load"]["status"]["4xx"]
-        assert 0 == r.results["h2load"]["status"]["5xx"]
 
