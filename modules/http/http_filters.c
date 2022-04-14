@@ -1148,7 +1148,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f,
 {
     request_rec *r = f->r;
     conn_rec *c = r->connection;
-    apr_bucket *e, *respb = NULL, *trigger = NULL, *eos = NULL;
+    apr_bucket *e, *next, *eos = NULL, *bcontent = NULL;
     header_filter_ctx *ctx = f->ctx;
     ap_bucket_error *eb = NULL;
     apr_status_t rv = APR_SUCCESS;
@@ -1160,25 +1160,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f,
         ctx = f->ctx = apr_pcalloc(r->pool, sizeof(header_filter_ctx));
     }
 
-    if (ctx->final_status) {
-        /* Sent the final status, eat body if response must not have one. */
-        if (ctx->final_header_only) {
-            /* Still next filters may be waiting for EOS, so pass it (alone)
-             * when encountered and be done with this filter.
-             */
-            e = APR_BRIGADE_LAST(b);
-            if (e != APR_BRIGADE_SENTINEL(b) && APR_BUCKET_IS_EOS(e)) {
-                APR_BUCKET_REMOVE(e);
-                apr_brigade_cleanup(b);
-                APR_BRIGADE_INSERT_HEAD(b, e);
-                ap_remove_output_filter(f);
-                rv = ap_pass_brigade(f->next, b);
-            }
-            apr_brigade_cleanup(b);
-            return rv;
-        }
-    }
-    else {
+    if (!ctx->final_status) {
         /* Determine if it is time to insert the response bucket for
          * the request. Request handlers just write content or an EOS
          * and that needs to take the current state of request_rec to
@@ -1192,42 +1174,56 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f,
          * unfortunately, as some handlers trigger response generation
          * by just writing a FLUSH (see mod_lua's websocket for example).
          */
+        apr_bucket *respb = NULL;
+        ap_bucket_response *resp;
+
         for (e = APR_BRIGADE_FIRST(b);
-             e != APR_BRIGADE_SENTINEL(b) && !trigger;
+             e != APR_BRIGADE_SENTINEL(b) && !bcontent;
              e = APR_BUCKET_NEXT(e))
         {
-            if (AP_BUCKET_IS_RESPONSE(e)) {
-                /* remember the last one if there are many. */
-                respb = e;
-            }
-            else if (APR_BUCKET_IS_FLUSH(e)) {
-                /* flush without response bucket triggers */
-                if (!respb) trigger = e;
-            }
-            else if (APR_BUCKET_IS_EOS(e)) {
-                trigger = e;
-            }
-            else if (AP_BUCKET_IS_ERROR(e)) {
-                /* Need to handle this below via ap_die() */
-                break;
+            if (APR_BUCKET_IS_METADATA(e)) {
+                if (AP_BUCKET_IS_RESPONSE(e)) {
+                    /* RESPONSE buckets may get passed by others, for
+                     * example ap_send_interim_response() or ap_die().
+                     * We examine the status code of such a RESPONSE below
+                     * to determine if the response answers the request
+                     * or is just interim.
+                     */
+                    respb = e;
+                    resp = respb->data;
+                    if (!ctx->final_status
+                        && (resp->status >= 200 || resp->status == HTTP_SWITCHING_PROTOCOLS)) {
+                        ctx->final_status = resp->status;
+                        ctx->final_header_only = AP_STATUS_IS_HEADER_ONLY(resp->status);
+                        bcontent = APR_BUCKET_NEXT(e);
+                        break;
+                    }
+                }
+                else if (APR_BUCKET_IS_FLUSH(e)) {
+                    /* flush without response bucket triggers */
+                    if (!respb) bcontent = e;
+                }
+                else if (APR_BUCKET_IS_EOS(e)) {
+                    bcontent = e;
+                }
+                else if (AP_BUCKET_IS_ERROR(e)) {
+                    /* Need to handle this below via ap_die() */
+                    break;
+                }
+                else if (AP_BUCKET_IS_EOC(e)) {
+                    /* Need to handle this below. EOC prevents generating
+                     * a RESPONSE if not already triggered by buckets preceding
+                     * it. */
+                    break;
+                }
             }
             else {
                 /* First content bucket, always triggering the response.*/
-                trigger = e;
+                bcontent = e;
             }
         }
 
-        if (respb) {
-            ap_bucket_response *resp = respb->data;
-            if (resp->status >= 200 || resp->status == HTTP_SWITCHING_PROTOCOLS) {
-                /* Someone is passing the final response, remember it
-                 * so we no longer generate one. */
-                ctx->final_status = resp->status;
-                ctx->final_header_only = AP_STATUS_IS_HEADER_ONLY(resp->status);
-            }
-        }
-
-        if (trigger && !ctx->final_status) {
+        if (!ctx->final_status && bcontent) {
             ap_log_rerror(APLOG_MARK, APLOG_TRACE3, 0, r,
                           "ap_http_header_filter prep response status %d",
                           r->status);
@@ -1258,12 +1254,40 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f,
                 ap_set_content_length(r, 0);
                 recursive_error = 1;
             }
+            /* insert the RESPONSE before the first content bucket */
             respb = create_response_bucket(r, b->bucket_alloc);
-            APR_BUCKET_INSERT_BEFORE(trigger, respb);
+            APR_BUCKET_INSERT_BEFORE(bcontent, respb);
             ctx->final_status = r->status;
             ctx->final_header_only = (r->header_only || AP_STATUS_IS_HEADER_ONLY(r->status));
             r->sent_bodyct = 1;         /* Whatever follows is real body stuff... */
         }
+    }
+
+    if (ctx->final_status && ctx->final_header_only) {
+        /* The final RESPONSE has already been sent or is in front of `bcontent`
+         * in the brigade. For a header_only respsone, remove all content buckets
+         * up to the first EOS. On seeing EOS, we remove ourself and are done.
+         * NOTE that `header_only` responses never generate trailes.
+         */
+        for (e = bcontent? bcontent : APR_BRIGADE_FIRST(b);
+             e != APR_BRIGADE_SENTINEL(b);
+             e = next)
+        {
+            next = APR_BUCKET_NEXT(e);
+            if (APR_BUCKET_IS_EOS(e)) {
+                eos = e;
+                break;
+            }
+            apr_bucket_delete(e);
+        }
+
+        if (eos) {
+            ap_remove_output_filter(f);
+        }
+        if (!APR_BRIGADE_EMPTY(b)) {
+            rv = ap_pass_brigade(f->next, b);
+        }
+        return rv;
     }
 
     /* Look for ERROR/EOC/EOS that require special handling. */
