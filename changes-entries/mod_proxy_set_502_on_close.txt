@@ -1,0 +1,2 @@
+  *) mod_proxy: Set a status code of 502 in case the backend just closed the
+     connection in reply to our forwarded request.  [Ruediger Pluem]
