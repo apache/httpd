@@ -177,12 +177,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   *) mod_lua: Don't skip apr_global_mutex_child_init() if !APR_HAS_THREADS
      trunk patch: https://svn.apache.org/r1898453
      2.4.x patch: svn merge -c 1898453 ^/httpd/httpd/trunk .
-     +1: jaillect36
+     +1: jaillect36, ylavic,
 
   *) core: make ap_escape_quotes() work correctly on strings
      with more than MAX_INT/2 characters, counting quotes double.
+     trunk patch: https://svn.apache.org/r1899609
      2.4.x patch: svn merge -c 1899609 ^/httpd/httpd/trunk .
      +1: icing
+     ylavic: I think "extra" should be an apr_size_t.
 
   *) mod_heartmonitor: Set the documented default value
      "10" for HeartbeatMaxServers instead of "0". With "0"
@@ -192,6 +194,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      +1: rjung, rpluem
      rpluem says: Has a conflict in CHANGES. Please put each change entry
      in a separate file below changes-entries. See README.CHANGES.
+     ylavic: this needs r1899841, per travis:
+             https://app.travis-ci.com/github/apache/httpd/jobs/566966513#L4124
 
   *) mod_proxy: Set a status code of 502 in case the backend just closed the
      connection in reply to our forwarded request.
@@ -205,7 +209,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      Backport version for 2.4.x of patch:
        https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/314.diff
      Can be applied via apply_backport_pr.sh 314
-     +1: rpluem
+     +1: rpluem, ylavic,
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
