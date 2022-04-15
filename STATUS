@@ -148,6 +148,10 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) mod_lua: Don't skip apr_global_mutex_child_init() if !APR_HAS_THREADS
+     trunk patch: https://svn.apache.org/r1898453
+     2.4.x patch: svn merge -c 1898453 ^/httpd/httpd/trunk .
+     +1: jaillect36, ylavic, rpluem
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
@@ -173,11 +177,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      Backport version for 2.4.x of patch:
         https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/httpd-2.4-authn-expr.patch
      +1: minfrin, jim,
-
-  *) mod_lua: Don't skip apr_global_mutex_child_init() if !APR_HAS_THREADS
-     trunk patch: https://svn.apache.org/r1898453
-     2.4.x patch: svn merge -c 1898453 ^/httpd/httpd/trunk .
-     +1: jaillect36, ylavic,
 
   *) core: make ap_escape_quotes() work correctly on strings
      with more than MAX_INT/2 characters, counting quotes double.
