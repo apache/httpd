@@ -191,6 +191,20 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c 1899809 ^/httpd/httpd/trunk .
      +1: rjung
 
+  *) mod_proxy: Set a status code of 502 in case the backend just closed the
+     connection in reply to our forwarded request.
+     Trunk version of patch:
+        https://svn.apache.org/r1899451
+        https://svn.apache.org/r1899454
+        https://svn.apache.org/r1899562
+        https://svn.apache.org/r1899564
+        https://svn.apache.org/r1899584
+        https://svn.apache.org/r1899886
+     Backport version for 2.4.x of patch:
+       https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/314.diff
+     Can be applied via apply_backport_pr.sh 314
+     +1: rpluem
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
