@@ -189,7 +189,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      no shared memory slotmem was initialized.
      trunk patch: https://svn.apache.org/r1899809
      2.4.x patch: svn merge -c 1899809 ^/httpd/httpd/trunk .
-     +1: rjung
+     +1: rjung, rpluem
+     rpluem says: Has a conflict in CHANGES. Please put each change entry
+     in a separate file below changes-entries. See README.CHANGES.
 
   *) mod_proxy: Set a status code of 502 in case the backend just closed the
      connection in reply to our forwarded request.
