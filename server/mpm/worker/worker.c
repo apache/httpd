@@ -1603,6 +1603,7 @@ static void perform_idle_server_maintenance(int child_bucket)
 static void server_main_loop(int remaining_children_to_start)
 {
     int num_buckets = retained->mpm->num_buckets;
+    int successive_kills = 0;
     ap_generation_t old_gen;
     int child_slot;
     apr_exit_why_e exitwhy;
@@ -1697,11 +1698,30 @@ static void server_main_loop(int remaining_children_to_start)
             /* Don't perform idle maintenance when a child dies,
              * only do it when there's a timeout.  Remember only a
              * finite number of children can die, and it's pretty
-             * pathological for a lot to die suddenly.
+             * pathological for a lot to die suddenly.  If a child is
+             * killed by a signal (faulting) we want to restart it ASAP
+             * though, up to 3 successive faults or we stop this until
+             * a timeout happens again (to avoid the flood of fork()ed
+             * processes that keep being killed early).
              */
-            continue;
+            if (child_slot < 0 || !APR_PROC_CHECK_SIGNALED(exitwhy)) {
+                continue;
+            }
+            if (++successive_kills >= 3) {
+                if (successive_kills % 10 == 3) {
+                    ap_log_error(APLOG_MARK, APLOG_WARNING, 0,
+                                 ap_server_conf, APLOGNO(10392)
+                                 "children are killed successively!");
+                }
+                continue;
+            }
+            ++remaining_children_to_start;
         }
-        else if (remaining_children_to_start) {
+        else {
+            successive_kills = 0;
+        }
+
+        if (remaining_children_to_start) {
             /* we hit a 1 second timeout in which none of the previous
              * generation of children needed to be reaped... so assume
              * they're all done, and pick up the slack if any is left.
