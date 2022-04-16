@@ -181,9 +181,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   *) core: make ap_escape_quotes() work correctly on strings
      with more than MAX_INT/2 characters, counting quotes double.
      trunk patch: https://svn.apache.org/r1899609
-     2.4.x patch: svn merge -c 1899609 ^/httpd/httpd/trunk .
+     2.4.x patch: svn merge -c 1899609,1899905 ^/httpd/httpd/trunk .
      +1: icing
      ylavic: I think "extra" should be an apr_size_t.
+     icing: added r1899905 with the proposed changes and assertions.
 
   *) mod_heartmonitor: Set the documented default value
      "10" for HeartbeatMaxServers instead of "0". With "0"
