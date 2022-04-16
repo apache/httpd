@@ -2615,7 +2615,7 @@ AP_DECLARE(void) ap_content_type_tolower(char *str)
  */
 AP_DECLARE(char *) ap_escape_quotes(apr_pool_t *p, const char *instring)
 {
-    apr_ssize_t extra = 0;
+    apr_size_t size, extra = 0;
     const char *inchr = instring;
     char *outchr, *outstring;
 
@@ -2641,7 +2641,24 @@ AP_DECLARE(char *) ap_escape_quotes(apr_pool_t *p, const char *instring)
         return apr_pstrdup(p, instring);
     }
 
-    outstring = apr_palloc(p, (inchr - instring) + extra + 1);
+    /* How large will the string become, once we escaped all the quotes?
+     * The tricky cases are
+     * - an `instring` that is already longer than `ptrdiff_t`
+     *   can hold (which is an undefined case in C, as C defines ptrdiff_t as
+     *   a signed difference between pointers into the same array and one index
+     *   beyond).
+     * - an `instring` that, including the `extra` chars we want to add, becomes
+     *   even larger than apr_size_t can handle.
+     * Since this function was not designed to ever return NULL for failure, we
+     * can only trigger a hard assertion failure. It seems more a programming
+     * mistake (or failure to verify the input causing this) that leads to this
+     * situation.
+     */
+    ap_assert(inchr - instring > 0);
+    size = ((apr_size_t)(inchr - instring)) + 1;
+    ap_assert(size + extra > size);
+
+    outstring = apr_palloc(p, size + extra);
     inchr = instring;
     outchr = outstring;
     /*
