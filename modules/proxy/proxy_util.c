@@ -2200,9 +2200,9 @@ PROXY_DECLARE(apr_status_t) ap_proxy_initialize_worker(proxy_worker *worker, ser
                                         worker, worker->cp->pool);
 
                 ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(00930)
-                    "initialized pool in child %" APR_PID_T_FMT " for (%s) min=%d max=%d smax=%d",
-                     getpid(), worker->s->hostname_ex, worker->s->min,
-                     worker->s->hmax, worker->s->smax);
+                    "initialized pool in child %" APR_PID_T_FMT " for (%s:%d) min=%d max=%d smax=%d",
+                     getpid(), worker->s->hostname_ex, (int)worker->s->port,
+                     worker->s->min, worker->s->hmax, worker->s->smax);
 
                 /* Set the acquire timeout */
                 if (rv == APR_SUCCESS && worker->s->acquire_set) {
@@ -2217,8 +2217,9 @@ PROXY_DECLARE(apr_status_t) ap_proxy_initialize_worker(proxy_worker *worker, ser
                 worker->cp->conn = conn;
 
                 ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, s, APLOGNO(00931)
-                     "initialized single connection worker in child %" APR_PID_T_FMT " for (%s)",
-                     getpid(), worker->s->hostname_ex);
+                     "initialized single connection worker in child %" APR_PID_T_FMT " for (%s:%d)",
+                     getpid(), worker->s->hostname_ex,
+                     (int)worker->s->port);
             }
             if (rv == APR_SUCCESS) {
                 worker->local_status |= (PROXY_WORKER_INITIALIZED);
@@ -2239,8 +2240,9 @@ static int ap_proxy_retry_worker(const char *proxy_function, proxy_worker *worke
     if (worker->s->status & PROXY_WORKER_IN_ERROR) {
         if (PROXY_WORKER_IS(worker, PROXY_WORKER_STOPPED)) {
             ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(3305)
-                         "%s: Won't retry worker (%s): stopped",
-                         proxy_function, worker->s->hostname_ex);
+                         "%s: Won't retry worker (%s:%d): stopped",
+                         proxy_function, worker->s->hostname_ex,
+                         (int)worker->s->port);
             return DECLINED;
         }
         if ((worker->s->status & PROXY_WORKER_IGNORE_ERRORS)
@@ -2248,14 +2250,16 @@ static int ap_proxy_retry_worker(const char *proxy_function, proxy_worker *worke
             ++worker->s->retries;
             worker->s->status &= ~PROXY_WORKER_IN_ERROR;
             ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(00932)
-                         "%s: worker for (%s) has been marked for retry",
-                         proxy_function, worker->s->hostname_ex);
+                         "%s: worker for (%s:%d) has been marked for retry",
+                         proxy_function, worker->s->hostname_ex,
+                         (int)worker->s->port);
             return OK;
         }
         else {
             ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(00933)
-                         "%s: too soon to retry worker for (%s)",
-                         proxy_function, worker->s->hostname_ex);
+                         "%s: too soon to retry worker for (%s:%d)",
+                         proxy_function, worker->s->hostname_ex,
+                         (int)worker->s->port);
             return DECLINED;
         }
     }
@@ -2490,8 +2494,9 @@ PROXY_DECLARE(int) ap_proxy_acquire_connection(const char *proxy_function,
 
         if (!PROXY_WORKER_IS_USABLE(worker)) {
             ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO(00940)
-                         "%s: disabled connection for (%s)",
-                         proxy_function, worker->s->hostname_ex);
+                         "%s: disabled connection for (%s:%d)",
+                         proxy_function, worker->s->hostname_ex,
+                         (int)worker->s->port);
             return HTTP_SERVICE_UNAVAILABLE;
         }
     }
@@ -2513,13 +2518,15 @@ PROXY_DECLARE(int) ap_proxy_acquire_connection(const char *proxy_function,
 
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO(00941)
-                     "%s: failed to acquire connection for (%s)",
-                     proxy_function, worker->s->hostname_ex);
+                     "%s: failed to acquire connection for (%s:%d)",
+                     proxy_function, worker->s->hostname_ex,
+                     (int)worker->s->port);
         return HTTP_SERVICE_UNAVAILABLE;
     }
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(00942)
-                 "%s: has acquired connection for (%s)",
-                 proxy_function, worker->s->hostname_ex);
+                 "%s: has acquired connection for (%s:%d)",
+                 proxy_function, worker->s->hostname_ex,
+                 (int)worker->s->port);
 
     (*conn)->worker = worker;
     (*conn)->close  = 0;
@@ -2533,8 +2540,9 @@ PROXY_DECLARE(int) ap_proxy_release_connection(const char *proxy_function,
                                                server_rec *s)
 {
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(00943)
-                "%s: has released connection for (%s)",
-                proxy_function, conn->worker->s->hostname_ex);
+                "%s: has released connection for (%s:%d)",
+                proxy_function, conn->worker->s->hostname_ex,
+                (int)conn->worker->s->port);
     connection_cleanup(conn);
 
     return OK;
@@ -3145,9 +3153,10 @@ PROXY_DECLARE(int) ap_proxy_connect_backend(const char *proxy_function,
                 loglevel = APLOG_ERR;
                 ap_log_error(APLOG_MARK, loglevel, rv, s, APLOGNO(02453)
                              "%s: error creating Unix domain socket for "
-                             "target %s",
+                             "target %s:%d",
                              proxy_function,
-                             worker->s->hostname_ex);
+                             worker->s->hostname_ex,
+                             (int)worker->s->port);
                 break;
             }
             conn->connection = NULL;
@@ -3157,19 +3166,21 @@ PROXY_DECLARE(int) ap_proxy_connect_backend(const char *proxy_function,
                 apr_socket_close(newsock);
                 ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO(02454)
                              "%s: attempt to connect to Unix domain socket "
-                             "%s (%s) failed",
+                             "%s (%s:%d) failed",
                              proxy_function,
                              conn->uds_path,
-                             worker->s->hostname_ex);
+                             worker->s->hostname_ex,
+                             (int)worker->s->port);
                 break;
             }
 
             ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(02823)
                          "%s: connection established with Unix domain socket "
-                         "%s (%s)",
+                         "%s (%s:%d)",
                          proxy_function,
                          conn->uds_path,
-                         worker->s->hostname_ex);
+                         worker->s->hostname_ex,
+                         (int)worker->s->port);
         }
         else
 #endif
@@ -3180,10 +3191,11 @@ PROXY_DECLARE(int) ap_proxy_connect_backend(const char *proxy_function,
                 loglevel = backend_addr->next ? APLOG_DEBUG : APLOG_ERR;
                 ap_log_error(APLOG_MARK, loglevel, rv, s, APLOGNO(00952)
                              "%s: error creating fam %d socket for "
-                             "target %s",
+                             "target %s:%d",
                              proxy_function,
                              backend_addr->family,
-                             worker->s->hostname_ex);
+                             worker->s->hostname_ex,
+                             (int)worker->s->port);
                 /*
                  * this could be an IPv6 address from the DNS but the
                  * local machine won't give us an IPv6 socket; hopefully the
@@ -3232,8 +3244,9 @@ PROXY_DECLARE(int) ap_proxy_connect_backend(const char *proxy_function,
                 }
             }
             ap_log_error(APLOG_MARK, APLOG_TRACE2, 0, s,
-                         "%s: fam %d socket created to connect to %s",
-                         proxy_function, backend_addr->family, worker->s->hostname_ex);
+                         "%s: fam %d socket created to connect to %s:%d",
+                         proxy_function, backend_addr->family,
+                         worker->s->hostname_ex, (int)worker->s->port);
 
             if (conf->source_address_set) {
                 local_addr = apr_pmemdup(conn->scpool, conf->source_address,
@@ -3255,19 +3268,21 @@ PROXY_DECLARE(int) ap_proxy_connect_backend(const char *proxy_function,
                 apr_socket_close(newsock);
                 loglevel = backend_addr->next ? APLOG_DEBUG : APLOG_ERR;
                 ap_log_error(APLOG_MARK, loglevel, rv, s, APLOGNO(00957)
-                             "%s: attempt to connect to %pI (%s) failed",
+                             "%s: attempt to connect to %pI (%s:%d) failed",
                              proxy_function,
                              backend_addr,
-                             worker->s->hostname_ex);
+                             worker->s->hostname_ex,
+                             (int)worker->s->port);
                 backend_addr = backend_addr->next;
                 continue;
             }
 
             ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(02824)
-                         "%s: connection established with %pI (%s)",
+                         "%s: connection established with %pI (%s:%d)",
                          proxy_function,
                          backend_addr,
-                         worker->s->hostname_ex);
+                         worker->s->hostname_ex,
+                         (int)worker->s->port);
         }
 
         /* Set a timeout on the socket */
@@ -3298,10 +3313,11 @@ PROXY_DECLARE(int) ap_proxy_connect_backend(const char *proxy_function,
                     loglevel = backend_addr->next ? APLOG_DEBUG : APLOG_ERR;
                     ap_log_error(APLOG_MARK, loglevel, rv, s, APLOGNO(00958)
                                  "%s: attempt to connect to %s:%d "
-                                 "via http CONNECT through %pI (%s) failed",
+                                 "via http CONNECT through %pI (%s:%d) failed",
                                  proxy_function,
                                  forward->target_host, forward->target_port,
-                                 backend_addr, worker->s->hostname_ex);
+                                 backend_addr, worker->s->hostname_ex,
+                                 (int)worker->s->port);
                     backend_addr = backend_addr->next;
                     continue;
                 }
@@ -3321,9 +3337,10 @@ PROXY_DECLARE(int) ap_proxy_connect_backend(const char *proxy_function,
                 worker->s->error_time = apr_time_now();
                 worker->s->status |= PROXY_WORKER_IN_ERROR;
                 ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO(00959)
-                    "ap_proxy_connect_backend disabling worker for (%s) for %"
+                    "ap_proxy_connect_backend disabling worker for (%s:%d) for %"
                     APR_TIME_T_FMT "s",
-                    worker->s->hostname_ex, apr_time_sec(worker->s->retry));
+                    worker->s->hostname_ex, (int)worker->s->port,
+                    apr_time_sec(worker->s->retry));
             }
         }
         else {

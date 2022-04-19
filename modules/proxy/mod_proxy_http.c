@@ -2127,8 +2127,9 @@ static int proxy_http_handler(request_rec *r, proxy_worker *worker,
             proxy_run_detach_backend(r, backend);
             if (req->do_100_continue && status == HTTP_SERVICE_UNAVAILABLE) {
                 ap_log_rerror(APLOG_MARK, APLOG_INFO, status, r, APLOGNO(01115)
-                              "HTTP: 100-Continue failed to %pI (%s)",
-                              worker->cp->addr, worker->s->hostname_ex);
+                              "HTTP: 100-Continue failed to %pI (%s:%d)",
+                              worker->cp->addr, worker->s->hostname_ex,
+                              (int)worker->s->port);
                 backend->close = 1;
                 retry++;
                 continue;

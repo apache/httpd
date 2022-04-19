@@ -455,8 +455,9 @@ static void force_recovery(proxy_balancer *balancer, server_rec *s)
             ++(*worker)->s->retries;
             (*worker)->s->status &= ~PROXY_WORKER_IN_ERROR;
             ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(01165)
-                         "%s: Forcing recovery for worker (%s)",
-                         balancer->s->name, (*worker)->s->hostname_ex);
+                         "%s: Forcing recovery for worker (%s:%d)",
+                         balancer->s->name, (*worker)->s->hostname_ex,
+                         (int)(*worker)->s->port);
         }
     }
 }
