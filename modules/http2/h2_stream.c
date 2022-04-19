@@ -1303,9 +1303,8 @@ apr_status_t h2_stream_in_consumed(h2_stream *stream, apr_off_t amount)
                         NGHTTP2_FLAG_NONE, stream->id, win);
             } 
             ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, session->c1,
-                          "h2_stream(%ld-%d): consumed %ld bytes, window now %d/%d",
-                          session->id, stream->id, (long)amount, 
-                          cur_size, stream->in_window_size);
+                          H2_STRM_MSG(stream, "consumed %ld bytes, window now %d/%d"),
+                          (long)amount, cur_size, stream->in_window_size);
         }
 #endif /* #ifdef H2_NG2_LOCAL_WIN_SIZE */
     }
@@ -1372,15 +1371,13 @@ static ssize_t stream_data_cb(nghttp2_session *ng2s,
     if (!stream || !stream->output) {
         ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, c1,
                       APLOGNO(02937)
-                      "h2_stream(%ld-%d): data_cb, stream not found",
-                      session->id, (int)stream_id);
+                      H2_SSSN_STRM_MSG(session, stream_id, "data_cb, stream not found"));
         return NGHTTP2_ERR_CALLBACK_FAILURE;
     }
     if (!stream->response) {
         ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, c1,
                       APLOGNO(10299)
-                      "h2_stream(%ld-%d): data_cb, no response seen yet",
-                      session->id, (int)stream_id);
+                      H2_SSSN_STRM_MSG(session, stream_id, "data_cb, no response seen yet"));
         return NGHTTP2_ERR_DEFERRED;
     }
     if (stream->rst_error) {
@@ -1388,14 +1385,12 @@ static ssize_t stream_data_cb(nghttp2_session *ng2s,
     }
     if (!stream->out_buffer) {
         ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, c1,
-                      "h2_stream(%ld-%d): suspending",
-                      session->id, (int)stream_id);
+                      H2_SSSN_STRM_MSG(session, stream_id, "suspending"));
         return NGHTTP2_ERR_DEFERRED;
     }
     if (h2_c1_io_needs_flush(&session->io)) {
         ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, c1,
-                      "h2_stream(%ld-%d): suspending on c1 out needs flush",
-                      session->id, (int)stream_id);
+                      H2_SSSN_STRM_MSG(session, stream_id, "suspending on c1 out needs flush"));
         h2_stream_dispatch(stream, H2_SEV_OUT_C1_BLOCK);
         return NGHTTP2_ERR_DEFERRED;
     }
@@ -1415,8 +1410,9 @@ static ssize_t stream_data_cb(nghttp2_session *ng2s,
     if (buf_len < length && !eos) {
         /* read more? */
         ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, c1,
-                      "h2_stream(%ld-%d): need more (read len=%ld, %ld in buffer)",
-                      session->id, (int)stream_id, (long)length, (long)buf_len);
+                      H2_SSSN_STRM_MSG(session, stream_id,
+                      "need more (read len=%ld, %ld in buffer)"),
+                      (long)length, (long)buf_len);
         rv = buffer_output_receive(stream);
         /* process all headers sitting at the buffer head. */
         while (APR_SUCCESS == rv && !eos && !stream->sent_trailers) {
@@ -1460,8 +1456,7 @@ static ssize_t stream_data_cb(nghttp2_session *ng2s,
         ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c1,
                       H2_STRM_LOG(APLOGNO(03071), stream, "data_cb, suspending"));
         ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, c1,
-                      "h2_stream(%ld-%d): suspending",
-                      session->id, (int)stream_id);
+                      H2_SSSN_STRM_MSG(session, stream_id, "suspending"));
         return NGHTTP2_ERR_DEFERRED;
     }
 
@@ -1521,8 +1516,7 @@ apr_status_t h2_stream_read_output(h2_stream *stream)
 
     nghttp2_session_resume_data(stream->session->ngh2, stream->id);
     ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, c1,
-                  "h2_stream(%ld-%d): resumed",
-                  stream->session->id, (int)stream->id);
+                  H2_STRM_MSG(stream, "resumed"));
 
 cleanup:
     return rv;

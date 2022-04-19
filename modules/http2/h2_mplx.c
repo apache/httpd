@@ -249,8 +249,9 @@ static void c2_transit_recycle(h2_mplx *m, h2_c2_transit *transit)
  *   their HTTP/1 cousins, the separate allocator seems to work better
  *   than protecting a shared h2_session one with an own lock.
  */
-h2_mplx *h2_mplx_c1_create(h2_stream *stream0, server_rec *s, apr_pool_t *parent,
-                          h2_workers *workers)
+h2_mplx *h2_mplx_c1_create(int child_num, apr_uint32_t id, h2_stream *stream0,
+                           server_rec *s, apr_pool_t *parent,
+                           h2_workers *workers)
 {
     h2_conn_ctx_t *conn_ctx;
     apr_status_t status = APR_SUCCESS;
@@ -262,7 +263,8 @@ h2_mplx *h2_mplx_c1_create(h2_stream *stream0, server_rec *s, apr_pool_t *parent
     m->stream0 = stream0;
     m->c1 = stream0->c2;
     m->s = s;
-    m->id = m->c1->id;
+    m->child_num = child_num;
+    m->id = id;
 
     /* We create a pool with its own allocator to be used for
      * processing secondary connections. This is the only way to have the
@@ -434,7 +436,7 @@ void h2_mplx_c1_destroy(h2_mplx *m)
     int i, wait_secs = 60, old_aborted;
 
     ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, m->c1,
-                  "h2_mplx(%ld): start release", m->id);
+                  H2_MPLX_MSG(m, "start release"));
     /* How to shut down a h2 connection:
      * 0. abort and tell the workers that no more work will come from us */
     m->aborted = 1;
@@ -451,8 +453,8 @@ void h2_mplx_c1_destroy(h2_mplx *m)
     /* How to shut down a h2 connection:
      * 1. cancel all streams still active */
     ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, m->c1,
-                  "h2_mplx(%ld): release, %d/%d/%d streams (total/hold/purge), %d streams",
-                  m->id, (int)h2_ihash_count(m->streams),
+                  H2_MPLX_MSG(m, "release, %d/%d/%d streams (total/hold/purge), %d streams"),
+                  (int)h2_ihash_count(m->streams),
                   (int)h2_ihash_count(m->shold), m->spurge->nelts, m->processing_count);
     while (!h2_ihash_iter(m->streams, m_stream_cancel_iter, m)) {
         /* until empty */
@@ -477,8 +479,8 @@ void h2_mplx_c1_destroy(h2_mplx *m)
             /* This can happen if we have very long running requests
              * that do not time out on IO. */
             ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, m->c1, APLOGNO(03198)
-                          "h2_mplx(%ld): waited %d sec for %d streams",
-                          m->id, i*wait_secs, (int)h2_ihash_count(m->shold));
+                          H2_MPLX_MSG(m, "waited %d sec for %d streams"),
+                          i*wait_secs, (int)h2_ihash_count(m->shold));
             h2_ihash_iter(m->shold, m_report_stream_iter, m);
         }
     }
@@ -487,15 +489,16 @@ void h2_mplx_c1_destroy(h2_mplx *m)
     ap_assert(m->processing_count == 0);
     if (!h2_ihash_empty(m->shold)) {
         ap_log_cerror(APLOG_MARK, APLOG_WARNING, 0, m->c1, APLOGNO(03516)
-                      "h2_mplx(%ld): unexpected %d streams in hold", 
-                      m->id, (int)h2_ihash_count(m->shold));
+                      H2_MPLX_MSG(m, "unexpected %d streams in hold"),
+                      (int)h2_ihash_count(m->shold));
         h2_ihash_iter(m->shold, m_unexpected_stream_iter, m);
     }
     
     m->c1->aborted = old_aborted;
     H2_MPLX_LEAVE(m);
 
-    ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, m->c1, "h2_mplx(%ld): released", m->id);
+    ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, m->c1,
+                  H2_MPLX_MSG(m, "released"));
 }
 
 apr_status_t h2_mplx_c1_stream_cleanup(h2_mplx *m, h2_stream *stream,
@@ -607,7 +610,7 @@ apr_status_t h2_mplx_c1_reprioritize(h2_mplx *m, h2_stream_pri_cmp_fn *cmp,
     else {
         h2_iq_sort(m->q, cmp, session);
         ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, m->c1,
-                      "h2_mplx(%ld): reprioritize streams", m->id);
+                      H2_MPLX_MSG(m, "reprioritize streams"));
         status = APR_SUCCESS;
     }
 
@@ -680,7 +683,7 @@ void h2_mplx_c1_process(h2_mplx *m,
         }
         else {
             ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, m->c1,
-                          "h2_stream(%ld-%d): not found to process", m->id, sid);
+                          H2_MPLX_MSG(m, "stream %d not found to process"), sid);
         }
     }
     if (!m->is_registered && !h2_iq_empty(m->q)) {
@@ -691,7 +694,7 @@ void h2_mplx_c1_process(h2_mplx *m,
         if (rv != APR_SUCCESS) {
             m->is_registered = 0;
             ap_log_cerror(APLOG_MARK, APLOG_ERR, rv, m->c1, APLOGNO(10021)
-                          "h2_mplx(%ld): register at workers", m->id);
+                          H2_MPLX_MSG(m, "register at workers"));
         }
     }
     *pstream_count = (int)h2_ihash_count(m->streams);
@@ -706,8 +709,8 @@ void h2_mplx_c1_process(h2_mplx *m,
         mem_w = apr_pool_num_bytes(m->workers->pool, 1);
         mem_c1 = apr_pool_num_bytes(m->c1->pool, 1);
         ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, m->c1,
-                      "h2_mplx(%ld): child mem=%ld, mplx mem=%ld, session mem=%ld, workers=%ld, c1=%ld",
-                      m->id, (long)mem_g, (long)mem_m, (long)mem_s, (long)mem_w, (long)mem_c1);
+                      H2_MPLX_MSG(m, "child mem=%ld, mplx mem=%ld, session mem=%ld, workers=%ld, c1=%ld"),
+                      (long)mem_g, (long)mem_m, (long)mem_s, (long)mem_w, (long)mem_c1);
 
     } while (0);
 #endif
@@ -819,9 +822,9 @@ static conn_rec *s_next_c2(h2_mplx *m)
     if (!stream) {
         if (m->processing_count >= m->processing_limit && !h2_iq_empty(m->q)) {
             ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, m->c1,
-                          "h2_session(%ld): delaying request processing. "
-                          "Current limit is %d and %d workers are in use.",
-                          m->id, m->processing_limit, m->processing_count);
+                          H2_MPLX_MSG(m, "delaying request processing. "
+                          "Current limit is %d and %d workers are in use."),
+                          m->processing_limit, m->processing_count);
         }
         goto cleanup;
     }
@@ -986,8 +989,8 @@ static void s_mplx_be_happy(h2_mplx *m, conn_rec *c, h2_conn_ctx_t *conn_ctx)
             m->last_mood_change = now;
             m->irritations_since = 0;
             ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, c,
-                          "h2_mplx(%ld): mood update, increasing worker limit to %d",
-                          m->id, m->processing_limit);
+                          H2_MPLX_MSG(m, "mood update, increasing worker limit to %d"),
+                          m->processing_limit);
         }
     }
 }
@@ -1016,8 +1019,8 @@ static void m_be_annoyed(h2_mplx *m)
             m->last_mood_change = now;
             m->irritations_since = 0;
             ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, m->c1,
-                          "h2_mplx(%ld): mood update, decreasing worker limit to %d",
-                          m->id, m->processing_limit);
+                          H2_MPLX_MSG(m, "mood update, decreasing worker limit to %d"),
+                          m->processing_limit);
         }
     }
 }
@@ -1110,8 +1113,8 @@ static apr_status_t mplx_pollset_poll(h2_mplx *m, apr_interval_time_t timeout,
     m->polling = 1;
     do {
         ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, m->c1,
-                      "h2_mplx(%ld): enter polling timeout=%d",
-                      m->id, (int)apr_time_sec(timeout));
+                      H2_MPLX_MSG(m, "enter polling timeout=%d"),
+                      (int)apr_time_sec(timeout));
 
         apr_array_clear(m->streams_ev_in);
         apr_array_clear(m->streams_ev_out);
@@ -1149,12 +1152,11 @@ static apr_status_t mplx_pollset_poll(h2_mplx *m, apr_interval_time_t timeout,
         if (APR_SUCCESS != rv) {
             if (APR_STATUS_IS_TIMEUP(rv)) {
                 ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, m->c1,
-                              "h2_mplx(%ld): polling timed out ",
-                              m->id);
+                              H2_MPLX_MSG(m, "polling timed out "));
             }
             else {
                 ap_log_cerror(APLOG_MARK, APLOG_ERR, rv, m->c1, APLOGNO(10310)
-                              "h2_mplx(%ld): polling failed", m->id);
+                              H2_MPLX_MSG(m, "polling failed"));
             }
             goto cleanup;
         }

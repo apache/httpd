@@ -54,7 +54,8 @@ struct h2_c2_transit {
 typedef struct h2_mplx h2_mplx;
 
 struct h2_mplx {
-    long id;
+    int child_num;                  /* child this runs in */
+    apr_uint32_t id;                /* id unique per child */
     conn_rec *c1;                   /* the main connection */
     apr_pool_t *pool;
     struct h2_stream *stream0;      /* HTTP/2's stream 0 */
@@ -107,7 +108,9 @@ apr_status_t h2_mplx_c1_child_init(apr_pool_t *pool, server_rec *s);
  * Create the multiplexer for the given HTTP2 session. 
  * Implicitly has reference count 1.
  */
-h2_mplx *h2_mplx_c1_create(struct h2_stream *stream0, server_rec *s, apr_pool_t *master,
+h2_mplx *h2_mplx_c1_create(int child_id, apr_uint32_t id,
+                           struct h2_stream *stream0,
+                           server_rec *s, apr_pool_t *master,
                            struct h2_workers *workers);
 
 /**
@@ -220,5 +223,8 @@ apr_status_t h2_mplx_worker_pop_c2(h2_mplx *m, conn_rec **out_c2);
  * @param c2 the secondary connection finished processing
  */
 void h2_mplx_worker_c2_done(conn_rec *c2);
+
+#define H2_MPLX_MSG(m, msg)     \
+    "h2_mplx(%d-%lu): "msg, m->child_num, (unsigned long)m->id
 
 #endif /* defined(__mod_h2__h2_mplx__) */
