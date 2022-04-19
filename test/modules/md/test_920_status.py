@@ -148,13 +148,17 @@ Protocols h2 http/1.1 acme-tls/1
         assert re.search(r'<h3>Managed Certificates</h3>', status, re.MULTILINE)
         # get the ascii summary
         status = env.get_server_status(query="?auto", via_domain=env.http_addr, use_https=False)
-        m = re.search(r'Managed Certificates: total=(\d+), ok=(\d+) renew=(\d+) errored=(\d+) ready=(\d+)',
-                      status, re.MULTILINE)
+        m = re.search(r'ManagedCertificatesTotal: (\d+)', status, re.MULTILINE)
+        assert m, status
         assert int(m.group(1)) == 1
-        assert int(m.group(2)) == 0
-        assert int(m.group(3)) == 1
-        assert int(m.group(4)) == 0
-        assert int(m.group(5)) == 1
+        m = re.search(r'ManagedCertificatesOK: (\d+)', status, re.MULTILINE)
+        assert int(m.group(1)) == 0
+        m = re.search(r'ManagedCertificatesRenew: (\d+)', status, re.MULTILINE)
+        assert int(m.group(1)) == 1
+        m = re.search(r'ManagedCertificatesErrored: (\d+)', status, re.MULTILINE)
+        assert int(m.group(1)) == 0
+        m = re.search(r'ManagedCertificatesReady: (\d+)', status, re.MULTILINE)
+        assert int(m.group(1)) == 1
 
     def test_md_920_011(self, env):
         # MD with static cert files in base server, see issue #161
