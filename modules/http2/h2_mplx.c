@@ -1155,7 +1155,7 @@ static apr_status_t mplx_pollset_poll(h2_mplx *m, apr_interval_time_t timeout,
                               H2_MPLX_MSG(m, "polling timed out "));
             }
             else {
-                ap_log_cerror(APLOG_MARK, APLOG_ERR, rv, m->c1, APLOGNO(10310)
+                ap_log_cerror(APLOG_MARK, APLOG_ERR, rv, m->c1, APLOGNO(10310) \
                               H2_MPLX_MSG(m, "polling failed"));
             }
             goto cleanup;
