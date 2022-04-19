@@ -69,7 +69,7 @@ class TestPost:
         ("H2_PUSHED", ""),
         ("H2_PUSHED_ON", ""),
         ("H2_STREAM_ID", "1"),
-        ("H2_STREAM_TAG", r'\d+-1'),
+        ("H2_STREAM_TAG", r'\d+-\d+-1'),
     ])
     def test_h2_004_07(self, env, name, value):
         url = env.mkurl("https", "cgi", "/env.py")

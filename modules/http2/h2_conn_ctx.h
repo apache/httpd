@@ -79,6 +79,8 @@ typedef struct h2_conn_ctx_t h2_conn_ctx_t;
  */
 h2_conn_ctx_t *h2_conn_ctx_create_for_c1(conn_rec *c, server_rec *s, const char *protocol);
 
+void h2_conn_ctx_assign_session(h2_conn_ctx_t *ctx, struct h2_session *session);
+
 apr_status_t h2_conn_ctx_init_for_c2(h2_conn_ctx_t **pctx, conn_rec *c,
                                      struct h2_mplx *mplx, struct h2_stream *stream,
                                      struct h2_c2_transit *transit);

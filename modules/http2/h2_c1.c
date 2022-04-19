@@ -109,7 +109,7 @@ apr_status_t h2_c1_setup(conn_rec *c, request_rec *r, server_rec *s)
 
     ctx = h2_conn_ctx_get(c);
     ap_assert(ctx);
-    ctx->session = session;
+    h2_conn_ctx_assign_session(ctx, session);
     /* remove the input filter of mod_reqtimeout, now that the connection
      * is established and we have switched to h2. reqtimeout has supervised
      * possibly configured handshake timeouts and needs to get out of the way

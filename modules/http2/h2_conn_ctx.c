@@ -68,6 +68,12 @@ h2_conn_ctx_t *h2_conn_ctx_create_for_c1(conn_rec *c1, server_rec *s, const char
     return ctx;
 }
 
+void h2_conn_ctx_assign_session(h2_conn_ctx_t *ctx, struct h2_session *session)
+{
+    ctx->session = session;
+    ctx->id = apr_psprintf(session->pool, "%d-%lu", session->child_num, (unsigned long)session->id);
+}
+
 apr_status_t h2_conn_ctx_init_for_c2(h2_conn_ctx_t **pctx, conn_rec *c2,
                                      struct h2_mplx *mplx, struct h2_stream *stream,
                                      struct h2_c2_transit *transit)
