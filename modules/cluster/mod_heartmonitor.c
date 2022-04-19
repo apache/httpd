@@ -39,7 +39,7 @@
 
 static const ap_slotmem_provider_t *storage = NULL;
 static ap_slotmem_instance_t *slotmem = NULL;
-static int maxworkers = 0;
+static int maxworkers = 10;
 
 module AP_MODULE_DECLARE_DATA heartmonitor_module;
 
