@@ -254,6 +254,7 @@ static void slot_done(h2_slot *slot)
 static void* APR_THREAD_FUNC slot_run(apr_thread_t *thread, void *wctx)
 {
     h2_slot *slot = wctx;
+    conn_rec *c;
     
     /* Get the next c2 from mplx to process. */
     while (get_next(slot)) {
@@ -287,13 +288,14 @@ static void* APR_THREAD_FUNC slot_run(apr_thread_t *thread, void *wctx)
          * configurations by mod_h2 alone.
          */
         AP_DEBUG_ASSERT(slot->connection != NULL);
-        slot->connection->id = (slot->connection->master->id << 8)^slot->id;
-        slot->connection->current_thread = thread;
-
-        ap_process_connection(slot->connection, ap_get_conn_socket(slot->connection));
-
-        h2_mplx_worker_c2_done(slot->connection);
+        c = slot->connection;
         slot->connection = NULL;
+        c->id = (c->master->id << 8)^slot->id;
+        c->current_thread = thread;
+
+        ap_process_connection(c, ap_get_conn_socket(c));
+
+        h2_mplx_worker_c2_done(c);
     }
 
     if (apr_atomic_read32(&slot->timed_out) == 0) {
