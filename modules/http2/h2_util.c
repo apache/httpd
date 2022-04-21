@@ -817,7 +817,7 @@ apr_status_t h2_fifo_remove(h2_fifo *fifo, void *elem)
                         fifo->out -= fifo->capacity;
                     }
                 }
-                else if (i + 1 == fifo->in) {
+                else if (((i + 1) % fifo->capacity) == fifo->in) {
                     /* last element */
                     --fifo->in;
                     if (fifo->in < 0) {
@@ -835,6 +835,8 @@ apr_status_t h2_fifo_remove(h2_fifo *fifo, void *elem)
                 }
                 else {
                     /* we wrapped around, move elements above down */
+                    AP_DEBUG_ASSERT((fifo->in - i - 1) > 0);
+                    AP_DEBUG_ASSERT((fifo->in - i - 1) < fifo->capacity);
                     memmove(&fifo->elems[i], &fifo->elems[i + 1],
                             (fifo->in - i - 1) * sizeof(void*));
                     --fifo->in;
