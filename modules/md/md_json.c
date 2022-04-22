@@ -1264,7 +1264,7 @@ apr_status_t md_json_set_timeperiod(const md_timeperiod_t *tp, md_json_t *json, 
     const char *key;
     apr_status_t rv;
     
-    if (!tp || tp->start || tp->end) {
+    if (tp && tp->start && tp->end) {
         jn = json_object();
         apr_rfc822_date(ts, tp->start);
         json_object_set_new(jn, "from", json_string(ts));

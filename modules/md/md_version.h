@@ -27,7 +27,7 @@
  * @macro
  * Version number of the md module as c string
  */
-#define MOD_MD_VERSION "2.4.12"
+#define MOD_MD_VERSION "2.4.13"
 
 /**
  * @macro
@@ -35,7 +35,7 @@
  * release. This is a 24 bit number with 8 bits for major number, 8 bits
  * for minor and 8 bits for patch. Version 1.2.3 becomes 0x010203.
  */
-#define MOD_MD_VERSION_NUM 0x02040c
+#define MOD_MD_VERSION_NUM 0x02040d
 
 #define MD_ACME_DEF_URL    "https://acme-v02.api.letsencrypt.org/directory"
 
