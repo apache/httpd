@@ -398,6 +398,16 @@ apr_status_t md_util_is_file(const char *path, apr_pool_t *pool)
     return rv;
 }
 
+apr_status_t md_util_is_unix_socket(const char *path, apr_pool_t *pool)
+{
+    apr_finfo_t info;
+    apr_status_t rv = apr_stat(&info, path, APR_FINFO_TYPE, pool);
+    if (rv == APR_SUCCESS) {
+        rv = (info.filetype == APR_SOCK)? APR_SUCCESS : APR_EINVAL;
+    }
+    return rv;
+}
+
 int md_file_exists(const char *fname, apr_pool_t *p)
 {
     return (fname && *fname && APR_SUCCESS == md_util_is_file(fname, p));

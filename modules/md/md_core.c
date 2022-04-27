@@ -427,7 +427,7 @@ apr_status_t md_get_ca_url_from_name(const char **purl, apr_pool_t *p, const cha
         }
     }
     *purl = name;
-    rv = md_util_abs_http_uri_check(p, name, &err);
+    rv = md_util_abs_uri_check(p, name, &err);
     if (APR_SUCCESS != rv) {
         apr_array_header_t *names;
 

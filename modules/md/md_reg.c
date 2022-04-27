@@ -33,6 +33,7 @@
 #include "md_reg.h"
 #include "md_store.h"
 #include "md_status.h"
+#include "md_tailscale.h"
 #include "md_util.h"
 
 #include "md_acme.h"
@@ -98,7 +99,8 @@ apr_status_t md_reg_create(md_reg_t **preg, apr_pool_t *p, struct md_store_t *st
     md_timeslice_create(&reg->renew_window, p, MD_TIME_LIFE_NORM, MD_TIME_RENEW_WINDOW_DEF); 
     md_timeslice_create(&reg->warn_window, p, MD_TIME_LIFE_NORM, MD_TIME_WARN_WINDOW_DEF); 
     
-    if (APR_SUCCESS == (rv = md_acme_protos_add(reg->protos, p))) {
+    if (APR_SUCCESS == (rv = md_acme_protos_add(reg->protos, p))
+        && APR_SUCCESS == (rv = md_tailscale_protos_add(reg->protos, p))) {
         rv = load_props(reg, p);
     }
     
@@ -901,12 +903,22 @@ apr_status_t md_reg_sync_finish(md_reg_t *reg, md_t *md, apr_pool_t *p, apr_pool
     md_t *old;
     apr_status_t rv;
     int changed = 1;
+    md_proto_t *proto;
     
-    if (!md->ca_url) {
-        md->ca_url = MD_ACME_DEF_URL;
-        md->ca_proto = MD_PROTO_ACME; 
+    if (!md->ca_proto) {
+        md->ca_proto = MD_PROTO_ACME;
     }
-    
+    proto = apr_hash_get(reg->protos, md->ca_proto, (apr_ssize_t)strlen(md->ca_proto));
+    if (!proto) {
+        rv = APR_ENOTIMPL;
+        md_log_perror(MD_LOG_MARK, MD_LOG_ERR, rv, ptemp,
+                      "[%s] uses unknown CA protocol '%s'",
+                      md->name, md->ca_proto);
+        goto leave;
+    }
+    rv = proto->complete_md(md, p);
+    if (APR_SUCCESS != rv) goto leave;
+
     rv = state_init(reg, p, md);
     if (APR_SUCCESS != rv) goto leave;
     

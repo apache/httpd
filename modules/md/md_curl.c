@@ -301,6 +301,9 @@ static apr_status_t internals_setup(md_http_request_t *req)
     if (req->ca_file) {
         curl_easy_setopt(curl, CURLOPT_CAINFO, req->ca_file);
     }
+    if (req->unix_socket_path) {
+        curl_easy_setopt(curl, CURLOPT_UNIX_SOCKET_PATH, req->unix_socket_path);
+    }
 
     if (req->body_len >= 0) {
         /* set the Content-Length */

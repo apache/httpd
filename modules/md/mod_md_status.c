@@ -352,11 +352,31 @@ static void si_val_cert_valid_time(status_ctx *ctx, md_json_t *mdj, const status
 static void si_val_ca_url(status_ctx *ctx, md_json_t *mdj, const status_info *info)
 {
     md_json_t *jcert;
-    status_info sub = *info;
 
-    sub.key = MD_KEY_URL;
     jcert = md_json_getj(mdj, info->key, NULL);
-    if (jcert) si_val_url(ctx, jcert, &sub);
+    if (jcert) {
+        const char *proto, *s, *url;
+
+        proto = md_json_gets(jcert, MD_KEY_PROTO, NULL);
+        s = url = md_json_gets(jcert, MD_KEY_URL, NULL);
+        if (proto && !strcmp(proto, "tailscale")) {
+            s = "tailscale";
+        }
+        else if (url) {
+            s = md_get_ca_name_from_url(ctx->p, url);
+        }
+        if (HTML_STATUS(ctx)) {
+            apr_brigade_printf(ctx->bb, NULL, NULL, "<a href='%s'>%s</a>",
+                               ap_escape_html2(ctx->p, url, 1),
+                               ap_escape_html2(ctx->p, s, 1));
+        }
+        else {
+            apr_brigade_printf(ctx->bb, NULL, NULL, "%s%sName: %s\n",
+                               ctx->prefix, info->label, s);
+            apr_brigade_printf(ctx->bb, NULL, NULL, "%s%sURL: %s\n",
+                               ctx->prefix, info->label, url);
+        }
+    }
 }
 
 static int count_certs(void *baton, const char *key, md_json_t *json)

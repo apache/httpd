@@ -1036,9 +1036,19 @@ static apr_status_t acme_driver_preload(md_proto_driver_t *d,
     return rv;
 }
 
+static apr_status_t acme_complete_md(md_t *md, apr_pool_t *p)
+{
+    (void)p;
+    if (!md->ca_url) {
+        md->ca_url = MD_ACME_DEF_URL;
+    }
+    return APR_SUCCESS;
+}
+
 static md_proto_t ACME_PROTO = {
     MD_PROTO_ACME, acme_driver_init, acme_driver_renew, 
-    acme_driver_preload_init, acme_driver_preload
+    acme_driver_preload_init, acme_driver_preload,
+    acme_complete_md,
 };
  
 apr_status_t md_acme_protos_add(apr_hash_t *protos, apr_pool_t *p)
