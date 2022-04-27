@@ -529,7 +529,7 @@ static hm_server_t *hm_get_server(hm_ctx_t *ctx, const char *ip, const int port)
 
 /* Process a message received from a backend node */
 static void hm_processmsg(hm_ctx_t *ctx, apr_pool_t *p,
-                                  apr_sockaddr_t *from, char *buf, int len)
+                          apr_sockaddr_t *from, char *buf, apr_size_t len)
 {
     apr_table_t *tbl;
 
