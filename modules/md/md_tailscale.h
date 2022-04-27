@@ -14,30 +14,12 @@
  * limitations under the License.
  */
 
-#ifndef mod_md_md_version_h
-#define mod_md_md_version_h
+#ifndef mod_md_md_tailscale_h
+#define mod_md_md_tailscale_h
 
-#undef PACKAGE_VERSION
-#undef PACKAGE_TARNAME
-#undef PACKAGE_STRING
-#undef PACKAGE_NAME
-#undef PACKAGE_BUGREPORT
+#define MD_PROTO_TAILSCALE      "tailscale"
 
-/**
- * @macro
- * Version number of the md module as c string
- */
-#define MOD_MD_VERSION "2.4.14"
+apr_status_t md_tailscale_protos_add(struct apr_hash_t *protos, apr_pool_t *p);
 
-/**
- * @macro
- * Numerical representation of the version number of the md module
- * release. This is a 24 bit number with 8 bits for major number, 8 bits
- * for minor and 8 bits for patch. Version 1.2.3 becomes 0x010203.
- */
-#define MOD_MD_VERSION_NUM 0x02040e
+#endif /* mod_md_md_tailscale_h */
 
-#define MD_ACME_DEF_URL         "https://acme-v02.api.letsencrypt.org/directory"
-#define MD_TAILSCALE_DEF_URL    "file://localhost/var/run/tailscale/tailscaled.sock"
-
-#endif /* mod_md_md_version_h */

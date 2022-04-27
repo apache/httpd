@@ -503,6 +503,7 @@ static apr_status_t mk_group_dir(const char **pdir, md_store_fs_t *s_fs,
     
     perms = gperms(s_fs, group);
 
+    *pdir = NULL;
     rv = fs_get_dname(pdir, &s_fs->s, group, name, p);
     if ((APR_SUCCESS != rv) || (MD_SG_NONE == group)) goto cleanup;
 
@@ -521,7 +522,8 @@ static apr_status_t mk_group_dir(const char **pdir, md_store_fs_t *s_fs,
     }
 cleanup:
     if (APR_SUCCESS != rv) {
-        md_log_perror(MD_LOG_MARK, MD_LOG_ERR, rv, p, "mk_group_dir %d %s", group, name);
+        md_log_perror(MD_LOG_MARK, MD_LOG_ERR, rv, p, "mk_group_dir %d %s",
+            group, (*pdir? *pdir : (name? name : "(null)")));
     }
     return rv;
 }

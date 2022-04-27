@@ -176,7 +176,7 @@ static apr_status_t jselect_add(json_t *val, md_json_t *json, va_list ap)
     aj = json_object_get(j, key);
     if (!aj) {
         aj = json_array();
-        json_object_set(j, key, aj);
+        json_object_set_new(j, key, aj);
     }
     
     if (!json_is_array(aj)) {
@@ -202,7 +202,7 @@ static apr_status_t jselect_insert(json_t *val, size_t index, md_json_t *json, v
     aj = json_object_get(j, key);
     if (!aj) {
         aj = json_array();
-        json_object_set(j, key, aj);
+        json_object_set_new(j, key, aj);
     }
     
     if (!json_is_array(aj)) {
@@ -1264,7 +1264,7 @@ apr_status_t md_json_set_timeperiod(const md_timeperiod_t *tp, md_json_t *json, 
     const char *key;
     apr_status_t rv;
     
-    if (!tp || tp->start || tp->end) {
+    if (tp && tp->start && tp->end) {
         jn = json_object();
         apr_rfc822_date(ts, tp->start);
         json_object_set_new(jn, "from", json_string(ts));

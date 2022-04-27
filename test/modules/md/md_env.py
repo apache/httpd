@@ -111,6 +111,7 @@ class MDTestEnv(HttpdTestEnv):
 
         self._a2md_bin = os.path.join(self.bin_dir, 'a2md')
         self._default_domain = f"test1.{self.http_tld}"
+        self._tailscale_domain = "test.headless-chicken.ts.net"
         self._store_dir = "./md"
         self.set_store_dir_default()
 
@@ -119,6 +120,7 @@ class MDTestEnv(HttpdTestEnv):
                             valid_from=timedelta(days=-100),
                             valid_to=timedelta(days=-10)),
             CertificateSpec(domains=["localhost"], key_type='rsa2048'),
+            CertificateSpec(domains=[self._tailscale_domain]),
         ])
 
     def setup_httpd(self, setup: HttpdTestSetup = None):
@@ -167,6 +169,10 @@ class MDTestEnv(HttpdTestEnv):
     @property
     def store_dir(self):
         return self._store_dir
+
+    @property
+    def tailscale_domain(self):
+        return self._tailscale_domain
 
     def get_request_domain(self, request):
         name = request.node.originalname if request.node.originalname else request.node.name

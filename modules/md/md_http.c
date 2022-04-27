@@ -33,6 +33,7 @@ struct md_http_t {
     void *impl_data;         /* to be used by the implementation */
     const char *user_agent;
     const char *proxy_url;
+    const char *unix_socket_path;
     md_http_timeouts_t timeout;
     const char *ca_file;
 };
@@ -143,6 +144,11 @@ void md_http_set_ca_file(md_http_t *http, const char *ca_file)
     http->ca_file = ca_file;
 }
 
+void md_http_set_unix_socket_path(md_http_t *http, const char *path)
+{
+    http->unix_socket_path = path;
+}
+
 static apr_status_t req_set_body(md_http_request_t *req, const char *content_type,
                                  apr_bucket_brigade *body, apr_off_t body_len,
                                  int detect_len)
@@ -211,6 +217,7 @@ static apr_status_t req_create(md_http_request_t **preq, md_http_t *http,
     req->proxy_url = http->proxy_url;
     req->timeout = http->timeout;
     req->ca_file = http->ca_file;
+    req->unix_socket_path = http->unix_socket_path;
     *preq = req;
     return rv;
 }

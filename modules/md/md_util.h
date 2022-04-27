@@ -189,6 +189,7 @@ apr_status_t md_util_path_merge(const char **ppath, apr_pool_t *p, ...);
 
 apr_status_t md_util_is_dir(const char *path, apr_pool_t *pool);
 apr_status_t md_util_is_file(const char *path, apr_pool_t *pool);
+apr_status_t md_util_is_unix_socket(const char *path, apr_pool_t *pool);
 int md_file_exists(const char *fname, apr_pool_t *p);
 
 typedef apr_status_t md_util_file_cb(void *baton, struct apr_file_t *f, apr_pool_t *p);

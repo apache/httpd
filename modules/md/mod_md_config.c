@@ -26,6 +26,7 @@
 #include <http_vhost.h>
 
 #include "md.h"
+#include "md_acme.h"
 #include "md_crypt.h"
 #include "md_log.h"
 #include "md_json.h"
@@ -108,7 +109,7 @@ static md_srv_conf_t defconf = {
     &def_warn_window,          /* warn window */
     NULL,                      /* ca url */
     NULL,                      /* ca contact (email) */
-    "ACME",                    /* ca protocol */
+    MD_PROTO_ACME,             /* ca protocol */
     NULL,                      /* ca agreemnent */
     NULL,                      /* ca challenges array */
     NULL,                      /* ca eab kid */
