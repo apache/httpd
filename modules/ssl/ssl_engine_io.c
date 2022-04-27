@@ -192,16 +192,6 @@ static int bio_filter_destroy(BIO *bio)
     return 1;
 }
 
-static int bio_filter_out_read(BIO *bio, char *out, int outl)
-{
-    /* this is never called */
-    bio_filter_out_ctx_t *outctx = (bio_filter_out_ctx_t *)BIO_get_data(bio);
-    ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, outctx->c,
-                  "BUG: %s() should not be called", "bio_filter_out_read");
-    AP_DEBUG_ASSERT(0);
-    return -1;
-}
-
 static int bio_filter_out_write(BIO *bio, const char *in, int inl)
 {
     bio_filter_out_ctx_t *outctx = (bio_filter_out_ctx_t *)BIO_get_data(bio);
@@ -295,26 +285,6 @@ static long bio_filter_out_ctrl(BIO *bio, int cmd, long num, void *ptr)
     }
 
     return ret;
-}
-
-static int bio_filter_out_gets(BIO *bio, char *buf, int size)
-{
-    /* this is never called */
-    bio_filter_out_ctx_t *outctx = (bio_filter_out_ctx_t *)BIO_get_data(bio);
-    ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, outctx->c,
-                  "BUG: %s() should not be called", "bio_filter_out_gets");
-    AP_DEBUG_ASSERT(0);
-    return -1;
-}
-
-static int bio_filter_out_puts(BIO *bio, const char *str)
-{
-    /* this is never called */
-    bio_filter_out_ctx_t *outctx = (bio_filter_out_ctx_t *)BIO_get_data(bio);
-    ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, outctx->c,
-                  "BUG: %s() should not be called", "bio_filter_out_puts");
-    AP_DEBUG_ASSERT(0);
-    return -1;
 }
 
 typedef struct {
@@ -586,33 +556,6 @@ static int bio_filter_in_read(BIO *bio, char *in, int inlen)
     return -1;
 }
 
-static int bio_filter_in_write(BIO *bio, const char *in, int inl)
-{
-    bio_filter_in_ctx_t *inctx = (bio_filter_in_ctx_t *)BIO_get_data(bio);
-    ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, inctx->f->c,
-                  "BUG: %s() should not be called", "bio_filter_in_write");
-    AP_DEBUG_ASSERT(0);
-    return -1;
-}
-
-static int bio_filter_in_puts(BIO *bio, const char *str)
-{
-    bio_filter_in_ctx_t *inctx = (bio_filter_in_ctx_t *)BIO_get_data(bio);
-    ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, inctx->f->c,
-                  "BUG: %s() should not be called", "bio_filter_in_puts");
-    AP_DEBUG_ASSERT(0);
-    return -1;
-}
-
-static int bio_filter_in_gets(BIO *bio, char *buf, int size)
-{
-    bio_filter_in_ctx_t *inctx = (bio_filter_in_ctx_t *)BIO_get_data(bio);
-    ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, inctx->f->c,
-                  "BUG: %s() should not be called", "bio_filter_in_gets");
-    AP_DEBUG_ASSERT(0);
-    return -1;
-}
-
 static long bio_filter_in_ctrl(BIO *bio, int cmd, long num, void *ptr)
 {
     bio_filter_in_ctx_t *inctx = (bio_filter_in_ctx_t *)BIO_get_data(bio);
@@ -624,9 +567,8 @@ static long bio_filter_in_ctrl(BIO *bio, int cmd, long num, void *ptr)
     default:
         break;
     }
-    ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, inctx->f->c,
-                  "BUG: bio_filter_in_ctrl() should not be called with cmd=%i",
-                  cmd);
+    ap_log_cerror(APLOG_MARK, APLOG_TRACE4, 0, inctx->f->c,
+                  "input bio: unhandled control %d", cmd);
     return 0;
 }
 
@@ -636,9 +578,9 @@ static BIO_METHOD bio_filter_out_method = {
     BIO_TYPE_MEM,
     "APR output filter",
     bio_filter_out_write,
-    bio_filter_out_read,     /* read is never called */
-    bio_filter_out_puts,     /* puts is never called */
-    bio_filter_out_gets,     /* gets is never called */
+    NULL,                    /* read is never called */
+    NULL,                    /* puts is never called */
+    NULL,                    /* gets is never called */
     bio_filter_out_ctrl,
     bio_filter_create,
     bio_filter_destroy,
@@ -648,10 +590,10 @@ static BIO_METHOD bio_filter_out_method = {
 static BIO_METHOD bio_filter_in_method = {
     BIO_TYPE_MEM,
     "APR input filter",
-    bio_filter_in_write,        /* write is never called */
+    NULL,                       /* write is never called */
     bio_filter_in_read,
-    bio_filter_in_puts,         /* puts is never called */
-    bio_filter_in_gets,         /* gets is never called */
+    NULL,                       /* puts is never called */
+    NULL,                       /* gets is never called */
     bio_filter_in_ctrl,         /* ctrl is called for EOF check */
     bio_filter_create,
     bio_filter_destroy,
@@ -667,18 +609,12 @@ void init_bio_methods(void)
 {
     bio_filter_out_method = BIO_meth_new(BIO_TYPE_MEM, "APR output filter");
     BIO_meth_set_write(bio_filter_out_method, &bio_filter_out_write);
-    BIO_meth_set_read(bio_filter_out_method, &bio_filter_out_read); /* read is never called */
-    BIO_meth_set_puts(bio_filter_out_method, &bio_filter_out_puts); /* puts is never called */
-    BIO_meth_set_gets(bio_filter_out_method, &bio_filter_out_gets); /* gets is never called */
     BIO_meth_set_ctrl(bio_filter_out_method, &bio_filter_out_ctrl);
     BIO_meth_set_create(bio_filter_out_method, &bio_filter_create);
     BIO_meth_set_destroy(bio_filter_out_method, &bio_filter_destroy);
 
     bio_filter_in_method = BIO_meth_new(BIO_TYPE_MEM, "APR input filter");
-    BIO_meth_set_write(bio_filter_in_method, &bio_filter_in_write); /* write is never called */
     BIO_meth_set_read(bio_filter_in_method, &bio_filter_in_read);
-    BIO_meth_set_puts(bio_filter_in_method, &bio_filter_in_puts);   /* puts is never called */
-    BIO_meth_set_gets(bio_filter_in_method, &bio_filter_in_gets);   /* gets is never called */
     BIO_meth_set_ctrl(bio_filter_in_method, &bio_filter_in_ctrl);   /* ctrl is never called */
     BIO_meth_set_create(bio_filter_in_method, &bio_filter_create);
     BIO_meth_set_destroy(bio_filter_in_method, &bio_filter_destroy);
