@@ -1,0 +1,3 @@
+  *) mod_http2: remove unused and insecure code. Fixes PR66037.
+     Thanks to Ronald Crane (Zippenhop LLC) for reporting this.
+     [Stefan Eissing]
