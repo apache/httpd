@@ -220,6 +220,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patches: svn merge -c 1900039,1900145 ^/httpd/httpd/trunk .
      +1: icing, rjung
 
+  *) mod_http2: remove obsolete, insecure code. Fixes PR66037.
+     2.4.x patches: svn merge -c 1900356 ^/httpd/httpd/trunk .
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
