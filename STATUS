@@ -220,6 +220,18 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patches: svn merge -c 1900356 ^/httpd/httpd/trunk .
      +1: jailletc36,
 
+  *) mod_session: Harden mod_session and avoid overflow in case of indecently large
+     session
+     trunk patches: https://svn.apache.org/r1900335
+     2.4.x patches: svn merge -c 1900335 ^/httpd/httpd/trunk .
+     +1: jailletc36,
+
+  *) mod_heartmonitor: Be consistent with the type of the last argument passed to
+     hm_processmsg()
+     trunk patches: https://svn.apache.org/r1900340
+     2.4.x patches: svn merge -c 1900340 ^/httpd/httpd/trunk .
+     +1: jailletc36,
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
