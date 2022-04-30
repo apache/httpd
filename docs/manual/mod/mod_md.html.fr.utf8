@@ -327,7 +327,50 @@
 		existantes qui ne chargent pas ce module.
             </p>
         </div>
-	
+
+        <div class="note"><h3>tailscale</h3>
+            <p>
+                Depuis la version 2.4.14 du module, vous pouvez l'utiliser pour
+		obtenir des certificats pour vos domaines <a href="https://tailscale.com">tailscale</a>.
+            </p>
+            <pre class="prettyprint lang-config">&lt;MDomain mydomain.some-thing.ts.net&gt;
+  MDCertificateProtocol tailscale
+  MDCertificateAuthority file://localhost/var/run/tailscale/tailscaled.sock",
+&lt;/MDomain&gt;</pre>
+
+            <p>
+                Tailscale permet des communications sécurisées entre vos
+		machines, où qu'elles se trouvent, et peut leur fournir des noms de
+		domaine dans l'espace *.ts.net. Pour ceux-ci, il fournira
+		aussi ensuite des certificats Let's Encrypt de façon à ce que
+		vous puissiez ouvrir ces domaines dans votre navigateur en toute
+		sécurité.
+            </p>
+            <p>
+                Apache va contacter le démon tailscale local à l'aide des
+		directives listées ci-dessous pour obtenir et renouveler les
+		certificats. Ceci ne fonctionnera cependant que pour les noms de
+		domaine que tailscale aura assigné à votre machine.
+            </p>
+            <p>
+                Dans le cas contraire, ces certificats fonctionneront exactement
+		de la même façon que ceux qui auront été obtenus à l'aide du
+		protocole ACME de Lets Encrypt. Vous les verrez dans le rapport
+		d'état et les directives MDMessageCmd seront aussi exécutées
+		pour eux.
+            </p>
+            <p>
+		Vous trouverez plus de détails dans la <a href="https://github.com/icing/mod_md#tailscale">documentation
+		github de mod_md</a>.
+            </p>
+            <p>
+                Notez que cette fonctionnalité n'est disponible que sur les
+		machines où le démon tailscale fournit un socket de domaine unix.
+		Jusqu'à présent, ceci ne semble être le cas que sur les systèmes
+		de style Unix.
+            </p>
+        </div>
+
     </div>
 <div id="quickview"><h3 class="directives">Directives</h3>
 <ul id="toc">
