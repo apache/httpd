@@ -218,7 +218,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   *) mod_http2: remove obsolete, insecure code. Fixes PR66037.
      trunk patches: https://svn.apache.org/r1900356
      2.4.x patches: svn merge -c 1900356 ^/httpd/httpd/trunk .
-     +1: jailletc36,
+     +1: jailletc36, icing
+     icing: I just waited to see what you think!
 
   *) mod_session: Harden mod_session and avoid overflow in case of indecently large
      session
