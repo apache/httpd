@@ -1926,7 +1926,7 @@ static dav_prop_insert dav_fs_insert_prop(const dav_resource *resource,
     const char *s;
     apr_pool_t *p = resource->info->pool;
     const dav_liveprop_spec *info;
-    int global_ns;
+    long global_ns;
 
     /* an HTTP-date can be 29 chars plus a null term */
     /* a 64-bit size can be 20 chars plus a null term */
@@ -2007,11 +2007,11 @@ static dav_prop_insert dav_fs_insert_prop(const dav_resource *resource,
     /* DBG3("FS: inserting lp%d:%s  (local %d)", ns, scan->name, scan->ns); */
 
     if (what == DAV_PROP_INSERT_VALUE) {
-        s = apr_psprintf(p, "<lp%d:%s>%s</lp%d:%s>" DEBUG_CR,
+        s = apr_psprintf(p, "<lp%ld:%s>%s</lp%ld:%s>" DEBUG_CR,
                          global_ns, info->name, value, global_ns, info->name);
     }
     else if (what == DAV_PROP_INSERT_NAME) {
-        s = apr_psprintf(p, "<lp%d:%s/>" DEBUG_CR, global_ns, info->name);
+        s = apr_psprintf(p, "<lp%ld:%s/>" DEBUG_CR, global_ns, info->name);
     }
     else {
         /* assert: what == DAV_PROP_INSERT_SUPPORTED */
