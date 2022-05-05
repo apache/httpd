@@ -2028,9 +2028,12 @@ static void join_worker(struct worker *worker);
 static void workers_may_exit(int sig);
 #endif /* SIGINT */
 
-#define USE_SIGMASK (APR_HAS_THREADS \
-                     && (APR_HAVE_PTHREAD_H \
-                         || defined(SIGPROCMASK_SETS_THREAD_MASK)))
+#if (APR_HAS_THREADS \
+     && (APR_HAVE_PTHREAD_H || defined(SIGPROCMASK_SETS_THREAD_MASK)))
+#define USE_SIGMASK 1
+#else
+#define USE_SIGMASK 0
+#endif
 
 static void init_signals(void)
 {
