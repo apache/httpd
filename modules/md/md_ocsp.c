@@ -837,8 +837,8 @@ static apr_status_t next_todo(md_http_request_t **preq, void *baton,
             md_http_set_on_response_cb(req, ostat_on_resp, update);
             rv = APR_SUCCESS;
             md_log_perror(MD_LOG_MARK, MD_LOG_TRACE2, 0, req->pool,
-                          "scheduling OCSP request for %s, %d request in flight",
-                          ostat->md_name, in_flight);
+                          "scheduling OCSP request[%d] for %s, %d request in flight",
+                          req->id, ostat->md_name, in_flight);
         }
     }
 cleanup:

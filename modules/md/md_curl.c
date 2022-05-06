@@ -251,16 +251,17 @@ static apr_status_t internals_setup(md_http_request_t *req)
             rv = APR_EGENERAL;
             goto leave;
         }
-        curl_easy_setopt(curl, CURLOPT_HEADERFUNCTION, header_cb);
-        curl_easy_setopt(curl, CURLOPT_HEADERDATA, NULL);
-        curl_easy_setopt(curl, CURLOPT_READFUNCTION, req_data_cb);
-        curl_easy_setopt(curl, CURLOPT_READDATA, NULL);
-        curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, resp_data_cb);
-        curl_easy_setopt(curl, CURLOPT_WRITEDATA, NULL);
     }
     else {
         md_log_perror(MD_LOG_MARK, MD_LOG_TRACE3, 0, req->pool, "reusing curl instance from http");
     }
+
+    curl_easy_setopt(curl, CURLOPT_HEADERFUNCTION, header_cb);
+    curl_easy_setopt(curl, CURLOPT_HEADERDATA, NULL);
+    curl_easy_setopt(curl, CURLOPT_READFUNCTION, req_data_cb);
+    curl_easy_setopt(curl, CURLOPT_READDATA, NULL);
+    curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, resp_data_cb);
+    curl_easy_setopt(curl, CURLOPT_WRITEDATA, NULL);
 
     internals = apr_pcalloc(req->pool, sizeof(*internals));
     internals->curl = curl;
@@ -354,6 +355,9 @@ static apr_status_t update_status(md_http_request_t *req)
         rv = curl_status(curl_easy_getinfo(internals->curl, CURLINFO_RESPONSE_CODE, &l));
         if (APR_SUCCESS == rv) {
             internals->response->status = (int)l;
+            md_log_perror(MD_LOG_MARK, MD_LOG_TRACE3, rv, req->pool,
+                          "req[%d]: http status is %d",
+                          req->id, internals->response->status);
         }
     }
     return rv;
@@ -579,19 +583,7 @@ static void md_curl_req_cleanup(md_http_request_t *req)
     md_curl_internals_t *internals = req->internals;
     if (internals) {
         if (internals->curl) {
-            CURL *curl = md_http_get_impl_data(req->http);
-            if (curl == internals->curl) {
-                /* NOP: we have this curl at the md_http_t already */
-            }
-            else if (!curl) {
-                /* no curl at the md_http_t yet, install this one */
-                md_log_perror(MD_LOG_MARK, MD_LOG_TRACE3, 0, req->pool, "register curl instance at http");
-                md_http_set_impl_data(req->http, internals->curl);
-            }
-            else {
-                /* There already is a curl at the md_http_t and it's not this one. */
-                curl_easy_cleanup(internals->curl);
-            }
+            curl_easy_cleanup(internals->curl);
         }
         if (internals->req_hdrs) curl_slist_free_all(internals->req_hdrs);
         req->internals = NULL;
