@@ -1,0 +1,3 @@
+  *) mod_md:  fixed a bug leading to failed transfers for OCSP
+     stapling information when more than 6 certificates needed
+     updates in the same run. [Stefan Eissing]
