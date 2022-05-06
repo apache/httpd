@@ -239,6 +239,17 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: https://github.com/apache/httpd/pull/317.diff
      +1: icing
 
+  *) mpm_event, mpm_worker: Handle children killed pathologically.
+     Trunk version of patch:
+        https://svn.apache.org/r1899858
+        https://svn.apache.org/r1899865
+        https://svn.apache.org/r1899884
+     Backport version for 2.4.x of patch:
+      Trunk version of patch works
+      svn merge -c 1899858,1899865,1899884 ^/httpd/httpd/trunk .
+     +1: rpluem,
+     rpluem says: Should we add a CHANGES entry as it seems to fix PR65769?
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
