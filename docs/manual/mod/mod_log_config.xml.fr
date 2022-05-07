@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1855818 -->
+<!-- English Revision: 1900558 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -196,7 +196,6 @@ d'Apache</a></seealso>
         <td>Le numéro de processus ou le numéro de thread du processus
 	enfant qui a servi la requête. Les formats valides sont
 	<code>pid</code>, <code>tid</code>, et <code>hextid</code>.
-	<code>hextid</code> nécessite APR version 1.2.0 ou supérieure.
         </td></tr>
 
     <tr><td><code>%q</code></td>
