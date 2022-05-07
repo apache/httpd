@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1874148 -->
+<!-- English Revision: 1900525 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -25,7 +25,7 @@
 <modulesynopsis metafile="mod_authn_dbd.xml.meta">
 
 <name>mod_authn_dbd</name>
-<description>Authentification utilisateur &agrave; l'aide d'une base de donn&eacute;es
+<description>Authentification utilisateur à l'aide d'une base de données
 SQL</description>
 <status>Extension</status>
 <sourcefile>mod_authn_dbd.c</sourcefile>
@@ -35,16 +35,16 @@ SQL</description>
     <p>Ce module permet aux frontaux d'authentification comme
     <module>mod_auth_digest</module> et <module>mod_auth_basic</module>
     d'authentifier les utilisateurs en les recherchant dans une base de
-    donn&eacute;es SQL. <module>mod_authn_file</module>, par exemple, fournit
-    une fonctionnalit&eacute; similaire.</p>
-    <p>Ce module s'appuie sur <module>mod_dbd</module> pour sp&eacute;cifier le
-    pilote de la base de donn&eacute;es sous-jacente et les param&egrave;tres de
-    connexion, mais aussi  pour g&eacute;rer les connexions &agrave; la base de
-    donn&eacute;es.</p>
+    données SQL. <module>mod_authn_file</module>, par exemple, fournit
+    une fonctionnalité similaire.</p>
+    <p>Ce module s'appuie sur <module>mod_dbd</module> pour spécifier le
+    pilote de la base de données sous-jacente et les paramètres de
+    connexion, mais aussi  pour gérer les connexions à la base de
+    données.</p>
 
     <p>Si l'on utilise <module>mod_auth_basic</module> ou
     <module>mod_auth_digest</module>, on peut invoquer ce module en
-    affectant la valeur <code>dbd</code> &agrave; la directive <directive
+    affectant la valeur <code>dbd</code> à la directive <directive
     module="mod_auth_basic">AuthBasicProvider</directive> ou <directive
     module="mod_auth_digest">AuthDigestProvider</directive>.</p>
 </summary>
@@ -65,21 +65,21 @@ passe</a></seealso>
 <section id="socache">
 <title>Performances et mise en cache</title>
 <p>Certains utilisateurs de l'authentification DBD sous HTTPD 2.2/2.4 ont
-signal&eacute; une charge probl&eacute;matique au niveau de la base de donn&eacute;es. Cela
-se produit en g&eacute;n&eacute;ral lorsqu'une page HTML contient des centaines d'objets
-(comme des images, des scripts, etc...), chacun d'entre eux n&eacute;cessitant
+signalé une charge problématique au niveau de la base de données. Cela
+se produit en général lorsqu'une page HTML contient des centaines d'objets
+(comme des images, des scripts, etc...), chacun d'entre eux nécessitant
 une authentification. Les utilisateurs qui rencontrent ce genre de
-probl&egrave;me peuvent utiliser le module <module>mod_authn_socache</module>
-qui permet de mettre les donn&eacute;es d'authentification en cache, et
-soulager ainsi la base de donn&eacute;es de la plus grande partie de la charge.</p>
+problème peuvent utiliser le module <module>mod_authn_socache</module>
+qui permet de mettre les données d'authentification en cache, et
+soulager ainsi la base de données de la plus grande partie de la charge.</p>
 </section>
 
 <section id="example">
 <title>Exemple de configuration</title>
 <p>Voici un exemple simple d'utilisation de ce module dans un contexte
-d'authentification et de bases de donn&eacute;es.</p>
+d'authentification et de bases de données.</p>
 <highlight language="config">
-# configuration de mod_dbd modifi&eacute;e pour inclure la mise en cache de
+# configuration de mod_dbd modifiée pour inclure la mise en cache de
 # l'authentification
 DBDriver pgsql
 DBDParams "dbname=apacheauth user=apache password=xxxxxx"
@@ -95,11 +95,11 @@ DBDExptime 300
   AuthType Basic
   AuthName "Mon serveur"
 
-  # Pour mettre en cache les donn&eacute;es d'authentification, placez socache
+  # Pour mettre en cache les données d'authentification, placez socache
   # avant dbd
   AuthBasicProvider socache dbd
 
-  # Aussi n&eacute;cessaire &agrave; la mise en cache : dire au cache de mettre en
+  # Aussi nécessaire à la mise en cache : dire au cache de mettre en
   # cache les recherches dbd !
   AuthnCacheProvideFor dbd
   AuthnCacheContext mon-serveur
@@ -107,121 +107,118 @@ DBDExptime 300
   # configuration de mod_authz_core
   Require valid-user
 
-  # la requ&ecirc;te SQL de mod_authn_dbd pour authentifier un utilisateur
+  # la requête SQL de mod_authn_dbd pour authentifier un utilisateur
   AuthDBDUserPWQuery "SELECT password FROM authn WHERE user = %s"
 &lt;/Directory&gt;
 </highlight>
 </section>
 
 <section id="exposed">
-<title>Mise &agrave; disposition des informations de connexion</title>
+<title>Mise à disposition des informations de connexion</title>
 <p>
-Si httpd a &eacute;t&eacute; compil&eacute; avec la version 1.3.0 ou sup&eacute;rieure de
-l'<glossary>APR</glossary>, pour chaque requ&ecirc;te envoy&eacute;e au serveur de
-base de donn&eacute;es, toutes les valeurs de colonnes du premier
-enregistrement renvoy&eacute; par la requ&ecirc;te sont affect&eacute;es &agrave; des variables
-d'environnement avec le pr&eacute;fixe "AUTHENTICATE_".
+Pour chaque requête envoyée au serveur de
+base de données, toutes les valeurs de colonnes du premier
+enregistrement renvoyé par la requête sont affectées à des variables
+d'environnement avec le préfixe "AUTHENTICATE_".
 </p>
-<p>Par exemple, si une requ&ecirc;te renvoie un nom d'utilisateur, un nom
-complet et un num&eacute;ro de t&eacute;l&eacute;phone, un programme CGI pourra acc&eacute;der &agrave; ces
-informations sans avoir besoin d'effectuer une deuxi&egrave;me requ&ecirc;te vers la
-base de donn&eacute;es.</p>
-<p>Ceci va entra&icirc;ner une simplification consid&eacute;rable du code et de la
-configuration n&eacute;cessaire de certaines applications web.
+<p>Par exemple, si une requête renvoie un nom d'utilisateur, un nom
+complet et un numéro de téléphone, un programme CGI pourra accéder à ces
+informations sans avoir besoin d'effectuer une deuxième requête vers la
+base de données.</p>
+<p>Ceci va entraîner une simplification considérable du code et de la
+configuration nécessaire de certaines applications web.
 </p>
 </section>
 
 <section id="security">
-<title>Pr&eacute;vention contre les injections SQL</title>
-  <p>Selon le driver DBD et le serveur d'arri&egrave;re-plan que vous utilisez,
-  vous devrez prendre garde &agrave; la s&eacute;curit&eacute; dans le domaine SQL.
-  Avec la plupart des drivers, vous n'avez rien &agrave; faire : la
-  requ&ecirc;te est pr&eacute;par&eacute;e par la base de donn&eacute;es au d&eacute;marrage, et l'entr&eacute;e
-  utilisateur n'est utilis&eacute;e qu'en tant que donn&eacute;e. Mais vous aurez
-  peut-&ecirc;tre &agrave; nettoyer cette entr&eacute;e. Au moment o&ugrave; ces lignes sont
-  &eacute;crites, le seul driver qui peut n&eacute;cessiter le nettoyage de l'entr&eacute;e
+<title>Prévention contre les injections SQL</title>
+  <p>Selon le driver DBD et le serveur d'arrière-plan que vous utilisez,
+  vous devrez prendre garde à la sécurité dans le domaine SQL.
+  Avec la plupart des drivers, vous n'avez rien à faire : la
+  requête est préparée par la base de données au démarrage, et l'entrée
+  utilisateur n'est utilisée qu'en tant que donnée. Mais vous aurez
+  peut-être à nettoyer cette entrée. Au moment où ces lignes sont
+  écrites, le seul driver qui peut nécessiter le nettoyage de l'entrée
   est FreeTDS.</p>
-  <p>Veuillez vous r&eacute;f&eacute;rez &agrave; la documentation de
-  <module>mod_dbd</module> pour plus d'informations &agrave; propos de la
-  s&eacute;curit&eacute; dans ce domaine.</p>
+  <p>Veuillez vous référez à la documentation de
+  <module>mod_dbd</module> pour plus d'informations à propos de la
+  sécurité dans ce domaine.</p>
 </section>
 
 <directivesynopsis>
 <name>AuthDBDUserPWQuery</name>
-<description>Requ&ecirc;te SQL servant &agrave; v&eacute;rifier le mot de passe d'un
+<description>Requête SQL servant à vérifier le mot de passe d'un
 utilisateur</description>
-<syntax>AuthDBDUserPWQuery <var>requ&ecirc;te</var></syntax>
+<syntax>AuthDBDUserPWQuery <var>requête</var></syntax>
 <contextlist><context>directory</context>
 </contextlist>
 
 <usage>
     <p>La directive <directive>AuthDBDUserPWQuery</directive> permet de
-    sp&eacute;cifier une requ&ecirc;te servant &agrave; v&eacute;rifier le mot de passe d'un
-    utilisateur donn&eacute;. L'identifiant utilisateur sera transmis comme
-    param&egrave;tre sous forme d'une seule cha&icirc;ne de caract&egrave;res lorsque la
-    requ&ecirc;te sera ex&eacute;cut&eacute;e. Cet identifiant est r&eacute;f&eacute;renc&eacute; dans la requ&ecirc;te
-    en utilisant le sp&eacute;cificateur de format <code>%s</code>.</p>
+    spécifier une requête servant à vérifier le mot de passe d'un
+    utilisateur donné. L'identifiant utilisateur sera transmis comme
+    paramètre sous forme d'une seule chaîne de caractères lorsque la
+    requête sera exécutée. Cet identifiant est référencé dans la requête
+    en utilisant le spécificateur de format <code>%s</code>.</p>
     <highlight language="config">
 AuthDBDUserPWQuery "SELECT password FROM authn WHERE user = %s"
 </highlight>
-    <p>La premi&egrave;re colonne du premier enregistrement renvoy&eacute; par la
-    requ&ecirc;te se pr&eacute;sentera sous la forme d'une cha&icirc;ne de caract&egrave;res
-    contenant le mot de passe chiffr&eacute;. Les enregistrements suivants sont
-    ignor&eacute;s. Si aucun enregistrement n'est renvoy&eacute;, l'utilisateur ne
-    sera pas authentifi&eacute; par <module>mod_authn_dbd</module>.</p>
-    <p>Si httpd a &eacute;t&eacute; compil&eacute; avec la version 1.3.0 ou sup&eacute;rieure de
-    l'<glossary>APR</glossary>, toute valeur de colonne suppl&eacute;mentaire
-    du premier enregistrement renvoy&eacute; par la requ&ecirc;te sera stock&eacute;e dans
+    <p>La première colonne du premier enregistrement renvoyé par la
+    requête se présentera sous la forme d'une chaîne de caractères
+    contenant le mot de passe chiffré. Les enregistrements suivants sont
+    ignorés. Si aucun enregistrement n'est renvoyé, l'utilisateur ne
+    sera pas authentifié par <module>mod_authn_dbd</module>.</p>
+    <p>Toute valeur de colonne supplémentaire
+    du premier enregistrement renvoyé par la requête sera stockée dans
     une variable d'environnement dont le nom aura la forme
     <code>AUTHENTICATE_<var>valeur-colonne</var></code>.
     </p>
-    <p>Le format du mot de passe chiffr&eacute; d&eacute;pend du frontal
-    d'authentification utilis&eacute; (par exemple
+    <p>Le format du mot de passe chiffré dépend du frontal
+    d'authentification utilisé (par exemple
     <module>mod_auth_basic</module> ou
     <module>mod_auth_digest</module>). Voir la documentation sur les <a
     href="../misc/password_encryptions.html">Formats de mots de passe</a> pour
-    plus de d&eacute;tails.</p>
+    plus de détails.</p>
 </usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>AuthDBDUserRealmQuery</name>
-<description>Requ&ecirc;te SQL servant &agrave; v&eacute;rifier une empreinte de mot de
+<description>Requête SQL servant à vérifier une empreinte de mot de
 passe pour un utilisateur et un identifiant d'authentification.
 </description>
-<syntax>AuthDBDUserRealmQuery <var>requ&ecirc;te</var></syntax>
+<syntax>AuthDBDUserRealmQuery <var>requête</var></syntax>
 <contextlist><context>directory</context>
 </contextlist>
 
 <usage>
-    <p>La directive <directive>AuthDBDUserRealmQuery</directive> sp&eacute;cifie
-    une requ&ecirc;te SQL servant &agrave; v&eacute;rifier une empreinte de mot
+    <p>La directive <directive>AuthDBDUserRealmQuery</directive> spécifie
+    une requête SQL servant à vérifier une empreinte de mot
     de passe pour un utilisateur et un identifiant d'authentification
-    donn&eacute;s au cours d'un processus d'authentification digest. Les
+    donnés au cours d'un processus d'authentification digest. Les
     identifiants de l'utilisateur et de l'authentification
-    sont pass&eacute;s dans cet ordre comme param&egrave;tres &agrave; l'ex&eacute;cution de la
-    requ&ecirc;te. Ils sont r&eacute;f&eacute;renc&eacute;s dans la cha&icirc;ne de la requ&ecirc;te en
-    utilisant des sp&eacute;cificateurs de format <code>%s</code>.</p>
+    sont passés dans cet ordre comme paramètres à l'exécution de la
+    requête. Ils sont référencés dans la chaîne de la requête en
+    utilisant des spécificateurs de format <code>%s</code>.</p>
     <highlight language="config">
 AuthDBDUserRealmQuery "SELECT password FROM authn WHERE user = %s AND realm = %s"
 </highlight>
-    <p>La premi&egrave;re colonne du premier enregistrement renvoy&eacute; par la
-    requ&ecirc;te se pr&eacute;sentera sous la forme d'une cha&icirc;ne de caract&egrave;res
-    contenant le mot de passe chiffr&eacute;. Les enregistrements suivants
-    seront ignor&eacute;s. Si aucun enregistrement n'est renvoy&eacute;, l'utilisateur
-    ne sera pas authentifi&eacute; par <module>mod_authn_dbd</module>.</p>
-    <p>Si httpd a &eacute;t&eacute; compil&eacute; avec une version 1.3.0 ou sup&eacute;rieure de
-    l'<glossary>APR</glossary>, toute valeur de colonne suppl&eacute;mentaire
-    du premier enregistrement renvoy&eacute; par la requ&ecirc;te sera stock&eacute;e dans
+    <p>La première colonne du premier enregistrement renvoyé par la
+    requête se présentera sous la forme d'une chaîne de caractères
+    contenant le mot de passe chiffré. Les enregistrements suivants
+    seront ignorés. Si aucun enregistrement n'est renvoyé, l'utilisateur
+    ne sera pas authentifié par <module>mod_authn_dbd</module>.</p>
+    <p>Toute valeur de colonne supplémentaire
+    du premier enregistrement renvoyé par la requête sera stockée dans
     une variable d'environnement avec un nom de la forme
     <code>AUTHENTICATE_<var>COLONNE</var></code>.
     </p>
-    <p>Le format du mot de passe chiffr&eacute; d&eacute;pend du frontal
-    d'authentification utilis&eacute; (par exemple
+    <p>Le format du mot de passe chiffré dépend du frontal
+    d'authentification utilisé (par exemple
     <module>mod_auth_basic</module> ou
     <module>mod_auth_digest</module>). Voir la documentation sur les <a
     href="../misc/password_encryptions.html">Formats de mots de passe</a> pour
-    plus de d&eacute;tails.</p>
+    plus de détails.</p>
 </usage>
 </directivesynopsis>
 
