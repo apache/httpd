@@ -489,7 +489,7 @@ apr_status_t ssl_init_Module(apr_pool_t *p, apr_pool_t *plog,
 
 /*
  * Support for external a Crypto Device ("engine"), usually
- * a hardware accellerator card for crypto operations.
+ * a hardware accelerator card for crypto operations.
  */
 #if defined(HAVE_OPENSSL_ENGINE_H) && defined(HAVE_ENGINE_INIT)
 apr_status_t ssl_init_Engine(server_rec *s, apr_pool_t *p)
