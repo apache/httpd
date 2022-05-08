@@ -74,7 +74,7 @@ typedef struct h2_conn_ctx_t h2_conn_ctx_t;
  * Create the h2 connection context.
  * @param c the connection to create it at
  * @param s the server in use
- * @param protocol the procotol selected
+ * @param protocol the protocol selected
  * @return created h2 context of this connection
  */
 h2_conn_ctx_t *h2_conn_ctx_create_for_c1(conn_rec *c, server_rec *s, const char *protocol);
