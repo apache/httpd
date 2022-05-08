@@ -1172,7 +1172,7 @@ int ssl_is_challenge(conn_rec *c, const char *servername,
                      X509 **pcert, EVP_PKEY **pkey,
                     const char **pcert_file, const char **pkey_file);
 
-/* Set the renegotation state for connection. */
+/* Set the renegotiation state for connection. */
 void modssl_set_reneg_state(SSLConnRec *sslconn, modssl_reneg_state state);
 
 #endif /* SSL_PRIVATE_H */
