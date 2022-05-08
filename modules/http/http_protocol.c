@@ -1678,6 +1678,7 @@ static void rrl_log_error(request_rec *r, rrl_error error, const char *etoken)
     case rrl_missinguri:
         ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(03446)
                       "HTTP Request Line; Missing URI");
+        break;
     case rrl_baduri:
         ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(03454)
                       "HTTP Request Line; URI incorrectly encoded: '%.*s'",
