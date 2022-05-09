@@ -153,6 +153,19 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c 1898453 ^/httpd/httpd/trunk .
      +1: jaillect36, ylavic, rpluem
 
+  *) mod_proxy: Set a status code of 502 in case the backend just closed the
+     connection in reply to our forwarded request.
+     Trunk version of patch:
+        https://svn.apache.org/r1899451
+        https://svn.apache.org/r1899454
+        https://svn.apache.org/r1899562
+        https://svn.apache.org/r1899564
+        https://svn.apache.org/r1899584
+        https://svn.apache.org/r1899886
+     Backport version for 2.4.x of patch:
+       https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/314.diff
+     Can be applied via apply_backport_pr.sh 314
+     +1: rpluem, ylavic, jim
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -185,20 +198,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      +1: icing, rpluem
      ylavic: I think "extra" should be an apr_size_t.
      icing: added r1899905 with the proposed changes and assertions.
-
-  *) mod_proxy: Set a status code of 502 in case the backend just closed the
-     connection in reply to our forwarded request.
-     Trunk version of patch:
-        https://svn.apache.org/r1899451
-        https://svn.apache.org/r1899454
-        https://svn.apache.org/r1899562
-        https://svn.apache.org/r1899564
-        https://svn.apache.org/r1899584
-        https://svn.apache.org/r1899886
-     Backport version for 2.4.x of patch:
-       https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/314.diff
-     Can be applied via apply_backport_pr.sh 314
-     +1: rpluem, ylavic, jim
 
   *) mod_proxy: Add backend port to log messages to
      ease identification of involved service.
