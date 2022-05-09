@@ -193,7 +193,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                     https://svn.apache.org/r1900026
      2.4.x patches: svn merge -c 1899841 ^/httpd/httpd/trunk .
                     svn merge -c 1900026 ^/httpd/httpd/trunk .
-     +1: rjung, rpluem
+     +1: rjung, rpluem, jim
 
   *) mod_proxy: Set a status code of 502 in case the backend just closed the
      connection in reply to our forwarded request.
@@ -207,13 +207,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      Backport version for 2.4.x of patch:
        https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/314.diff
      Can be applied via apply_backport_pr.sh 314
-     +1: rpluem, ylavic,
+     +1: rpluem, ylavic, jim
 
   *) mod_proxy: Add backend port to log messages to
      ease identification of involved service.
      trunk patches: https://svn.apache.org/r1900028
      2.4.x patches: svn merge -c 1900028 ^/httpd/httpd/trunk .
-     +1: rjung, 
+     +1: rjung, jim
 
   *) mod_http2: remove obsolete, insecure code. Fixes PR66037.
      trunk patches: https://svn.apache.org/r1900356
