@@ -1,4 +1,0 @@
-  *) mod_md: a possible NULL pointer deref was fixed in
-     the JSON code for persisting time periods (start+end).
-     Fixes #282 on mod_md's github.
-     Thanks to @marcstern for finding this.
