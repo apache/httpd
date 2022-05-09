@@ -154,6 +154,16 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      +1: jaillect36, ylavic, rpluem
 
 
+  *) mod_heartmonitor: Set the documented default value
+     "10" for HeartbeatMaxServers instead of "0". With "0"
+     no shared memory slotmem was initialized.
+     trunk patches: https://svn.apache.org/r1899841
+                    https://svn.apache.org/r1900026
+     2.4.x patches: svn merge -c 1899841 ^/httpd/httpd/trunk .
+                    svn merge -c 1900026 ^/httpd/httpd/trunk .
+     +1: rjung, rpluem, jim
+
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -185,15 +195,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      +1: icing, rpluem
      ylavic: I think "extra" should be an apr_size_t.
      icing: added r1899905 with the proposed changes and assertions.
-
-  *) mod_heartmonitor: Set the documented default value
-     "10" for HeartbeatMaxServers instead of "0". With "0"
-     no shared memory slotmem was initialized.
-     trunk patches: https://svn.apache.org/r1899841
-                    https://svn.apache.org/r1900026
-     2.4.x patches: svn merge -c 1899841 ^/httpd/httpd/trunk .
-                    svn merge -c 1900026 ^/httpd/httpd/trunk .
-     +1: rjung, rpluem, jim
 
   *) mod_proxy: Set a status code of 502 in case the backend just closed the
      connection in reply to our forwarded request.
