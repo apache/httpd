@@ -283,6 +283,43 @@
             </p>
         </div>
 
+        <div class="note"><h3>tailscale</h3>
+            <p>
+                Since version 2.4.14 of the module, you can use it to get certificates
+                for your <a href="https://tailscale.com">tailscale</a> domains.
+            </p>
+            <pre class="prettyprint lang-config">&lt;MDomain mydomain.some-thing.ts.net&gt;
+  MDCertificateProtocol tailscale
+  MDCertificateAuthority file://localhost/var/run/tailscale/tailscaled.sock",
+&lt;/MDomain&gt;</pre>
+
+            <p>
+                Tailscale provides secure networking between your machines, where ever
+                they are, and can provide domain names in the *.ts.net space for them.
+                For those, it will then provide Let's Encrypt certificates as well, so
+                you can open these domains in your browser securely.
+            </p>
+            <p>
+                The directives listed above tell Apache to contact the local tailscale
+                demon for obtaining and renewing certificates. This will only work for
+                the domain name that tailscale assigns to your machine.
+            </p>
+            <p>
+                Otherwise, these certificates work exactly like the ones retrieved
+                via the ACME protocol from Lets Encrypt. You see them in status reporting
+                and MDMessageCmd directives are executed for them as well.
+            </p>
+            <p>
+                More details are <a href="https://github.com/icing/mod_md#tailscale">
+                available at the mod_md github documentation</a>.
+            </p>
+            <p>
+                Note that this feature only works on machines where the tailscale
+                demon provides a unix domain socket. This, so far, seems only the
+                case on *nix systems.
+            </p>
+        </div>
+
     </div>
 <div id="quickview"><a href="https://www.apache.org/foundation/contributing.html" class="badge"><img src="https://www.apache.org/images/SupportApache-small.png" alt="Support Apache!" /></a><h3 class="directives">Directives</h3>
 <ul id="toc">

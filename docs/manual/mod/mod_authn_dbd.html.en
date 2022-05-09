@@ -126,8 +126,7 @@ DBDExptime 300
 <h2><a name="exposed" id="exposed">Exposing Login Information</a></h2>
 
 <p>
-If httpd was built against <a class="glossarylink" href="../glossary.html#apr" title="see glossary">APR</a> version 1.3.0
-or higher, then whenever a query is made to the database server, all
+Whenever a query is made to the database server, all
 column values in the first row returned by the query are placed in the
 environment, using environment variables with the prefix "AUTHENTICATE_".
 </p>
@@ -159,8 +158,7 @@ configuration required in some web applications.
     statement should be a string containing the encrypted password.
     Subsequent rows will be ignored.  If no rows are returned, the user
     will not be authenticated through <code class="module"><a href="../mod/mod_authn_dbd.html">mod_authn_dbd</a></code>.</p>
-    <p>If httpd was built against <a class="glossarylink" href="../glossary.html#apr" title="see glossary">APR</a> version 1.3.0
-    or higher, any additional column values in the first row returned by
+    <p>Any additional column values in the first row returned by
     the query statement will be stored as environment variables with
     names of the form <code>AUTHENTICATE_<var>COLUMN</var></code>.
     </p>
@@ -192,8 +190,7 @@ configuration required in some web applications.
     statement should be a string containing the encrypted password.
     Subsequent rows will be ignored.  If no rows are returned, the user
     will not be authenticated through <code class="module"><a href="../mod/mod_authn_dbd.html">mod_authn_dbd</a></code>.</p>
-    <p>If httpd was built against <a class="glossarylink" href="../glossary.html#apr" title="see glossary">APR</a> version 1.3.0
-    or higher, any additional column values in the first row returned by
+    <p>Any additional column values in the first row returned by
     the query statement will be stored as environment variables with
     names of the form <code>AUTHENTICATE_<var>COLUMN</var></code>.
     </p>

@@ -690,8 +690,8 @@ tlshonorclientorder	mod/mod_tls.html#tlshonorclientorder
 tlsoptions	mod/mod_tls.html#tlsoptions
 tlsprotocol	mod/mod_tls.html#tlsprotocol
 tlsproxyca	mod/mod_tls.html#tlsproxyca
-tlsproxycipherprefer	mod/mod_tls.html#tlsproxycipherprefer
-tlsproxyciphersuppress	mod/mod_tls.html#tlsproxyciphersuppress
+tlsproxyciphersprefer	mod/mod_tls.html#tlsproxyciphersprefer
+tlsproxycipherssuppress	mod/mod_tls.html#tlsproxycipherssuppress
 tlsproxyengine	mod/mod_tls.html#tlsproxyengine
 tlsproxymachinecertificate	mod/mod_tls.html#tlsproxymachinecertificate
 tlsproxyprotocol	mod/mod_tls.html#tlsproxyprotocol
