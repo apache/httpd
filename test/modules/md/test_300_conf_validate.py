@@ -340,7 +340,7 @@ class TestConf:
         conf.install()
         assert env.apache_restart() == 0, "Server did not accepted CA '{}'".format(ca)
         md = env.get_md_status(domain)
-        assert md['ca']['url'] == url
+        assert md['ca']['urls'][0] == url, f"CA url '{url}' not set in {md}"
 
     # vhost on another address, see #278
     def test_md_300_026(self, env):
@@ -364,4 +364,28 @@ class TestConf:
             """)
         conf.install()
         assert env.apache_restart() == 0
+
+    # test case: configure more than 1 CA
+    @pytest.mark.parametrize("cas, should_work", [
+        (["https://acme-v02.api.letsencrypt.org/directory"], True),
+        (["https://acme-v02.api.letsencrypt.org/directory", "buypass"], True),
+        (["x", "buypass"], False),
+        (["letsencrypt", "abc"], False),
+        (["letsencrypt", "buypass"], True),
+    ])
+    def test_md_300_027(self, env, cas, should_work):
+        domain = f"test1.{env.http_tld}"
+        conf = MDConf(env, text=f"""
+            MDCertificateAuthority {' '.join(cas)}
+            MDRenewMode manual
+        """)
+        conf.add_md([domain])
+        conf.install()
+        rv = env.apache_restart()
+        if should_work:
+            assert rv == 0, "Server did not accepted CAs '{}'".format(cas)
+            md = env.get_md_status(domain)
+            assert len(md['ca']['urls']) == len(cas)
+        else:
+            assert rv != 0, "Server should not have accepted CAs '{}'".format(cas)
 

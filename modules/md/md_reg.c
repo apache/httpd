@@ -53,6 +53,8 @@ struct md_reg_t {
     md_timeslice_t *warn_window;
     md_job_notify_cb *notify;
     void *notify_ctx;
+    apr_time_t min_delay;
+    int retry_failover;
 };
 
 /**************************************************************************************************/
@@ -80,7 +82,8 @@ static apr_status_t load_props(md_reg_t *reg, apr_pool_t *p)
 }
 
 apr_status_t md_reg_create(md_reg_t **preg, apr_pool_t *p, struct md_store_t *store,
-                           const char *proxy_url, const char *ca_file)
+                           const char *proxy_url, const char *ca_file,
+                           apr_time_t min_delay, int retry_failover)
 {
     md_reg_t *reg;
     apr_status_t rv;
@@ -95,6 +98,8 @@ apr_status_t md_reg_create(md_reg_t **preg, apr_pool_t *p, struct md_store_t *st
     reg->proxy_url = proxy_url? apr_pstrdup(p, proxy_url) : NULL;
     reg->ca_file = (ca_file && apr_strnatcasecmp("none", ca_file))?
                     apr_pstrdup(p, ca_file) : NULL;
+    reg->min_delay = min_delay;
+    reg->retry_failover = retry_failover;
 
     md_timeslice_create(&reg->renew_window, p, MD_TIME_LIFE_NORM, MD_TIME_RENEW_WINDOW_DEF); 
     md_timeslice_create(&reg->warn_window, p, MD_TIME_LIFE_NORM, MD_TIME_WARN_WINDOW_DEF); 
@@ -165,12 +170,17 @@ static apr_status_t check_values(md_reg_t *reg, apr_pool_t *p, const md_t *md, i
         }
     }
     
-    if ((MD_UPD_CA_URL & fields) && md->ca_url) { /* setting to empty is ok */
-        rv = md_util_abs_uri_check(p, md->ca_url, &err);
-        if (err) {
-            md_log_perror(MD_LOG_MARK, MD_LOG_ERR, APR_EINVAL, p, 
-                          "CA url for %s invalid (%s): %s", md->name, err, md->ca_url);
-            return APR_EINVAL;
+    if ((MD_UPD_CA_URL & fields) && md->ca_urls) { /* setting to empty is ok */
+        int i;
+        const char *url;
+        for (i = 0; i < md->ca_urls->nelts; ++i) {
+            url = APR_ARRAY_IDX(md->ca_urls, i, const char*);
+            rv = md_util_abs_uri_check(p, url, &err);
+            if (err) {
+                md_log_perror(MD_LOG_MARK, MD_LOG_ERR, APR_EINVAL, p,
+                              "CA url for %s invalid (%s): %s", md->name, err, url);
+                return APR_EINVAL;
+            }
         }
     }
     
@@ -451,7 +461,8 @@ static apr_status_t p_md_update(void *baton, apr_pool_t *p, apr_pool_t *ptemp, v
         md_log_perror(MD_LOG_MARK, MD_LOG_TRACE1, 0, ptemp, "update domains: %s", name);
     }
     if (MD_UPD_CA_URL & fields) {
-        nmd->ca_url = updates->ca_url;
+        nmd->ca_urls = (updates->ca_urls?
+                        apr_array_copy(p, updates->ca_urls) : NULL);
         md_log_perror(MD_LOG_MARK, MD_LOG_TRACE1, 0, ptemp, "update ca url: %s", name);
     }
     if (MD_UPD_CA_PROTO & fields) {
@@ -934,13 +945,16 @@ apr_status_t md_reg_sync_finish(md_reg_t *reg, md_t *md, apr_pool_t *p, apr_pool
                 md->ca_challenges = md_array_str_compact(p, md->ca_challenges, 0);
             }
         }
+        if (!md->ca_effective && old->ca_effective) {
+            md->ca_effective = apr_pstrdup(p, old->ca_effective);
+        }
         if (!md->ca_account && old->ca_account) {
             md->ca_account = apr_pstrdup(p, old->ca_account);
         }
         
         /* if everything remains the same, spare the write back */
         if (!MD_VAL_UPDATE(md, old, state)
-            && !MD_SVAL_UPDATE(md, old, ca_url)
+            && md_array_str_eq(md->ca_urls, old->ca_urls, 0)
             && !MD_SVAL_UPDATE(md, old, ca_proto)
             && !MD_SVAL_UPDATE(md, old, ca_agreement)
             && !MD_VAL_UPDATE(md, old, transitive)
@@ -1118,8 +1132,9 @@ apr_status_t md_reg_test_init(md_reg_t *reg, const md_t *md, struct apr_table_t 
 
 static apr_status_t run_renew(void *baton, apr_pool_t *p, apr_pool_t *ptemp, va_list ap)
 {
+    md_reg_t *reg = baton;
     const md_t *md;
-    int reset;
+    int reset, attempt;
     md_proto_driver_t *driver;
     apr_table_t *env;
     apr_status_t rv;
@@ -1129,12 +1144,15 @@ static apr_status_t run_renew(void *baton, apr_pool_t *p, apr_pool_t *ptemp, va_
     md = va_arg(ap, const md_t *);
     env = va_arg(ap, apr_table_t *);
     reset = va_arg(ap, int); 
-    result = va_arg(ap, md_result_t *); 
+    attempt = va_arg(ap, int);
+    result = va_arg(ap, md_result_t *);
 
-    rv = run_init(baton, ptemp, &driver, md, 0, env, result, NULL);
+    rv = run_init(reg, ptemp, &driver, md, 0, env, result, NULL);
     if (APR_SUCCESS == rv) { 
         md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, 0, ptemp, "%s: run staging", md->name);
         driver->reset = reset;
+        driver->attempt = attempt;
+        driver->retry_failover = reg->retry_failover;
         rv = driver->proto->renew(driver, result);
     }
     md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, rv, ptemp, "%s: staging done", md->name);
@@ -1142,9 +1160,10 @@ static apr_status_t run_renew(void *baton, apr_pool_t *p, apr_pool_t *ptemp, va_
 }
 
 apr_status_t md_reg_renew(md_reg_t *reg, const md_t *md, apr_table_t *env, 
-                          int reset, md_result_t *result, apr_pool_t *p)
+                          int reset, int attempt,
+                          md_result_t *result, apr_pool_t *p)
 {
-    return md_util_pool_vdo(run_renew, reg, p, md, env, reset, result, NULL);
+    return md_util_pool_vdo(run_renew, reg, p, md, env, reset, attempt, result, NULL);
 }
 
 static apr_status_t run_load_staging(void *baton, apr_pool_t *p, apr_pool_t *ptemp, va_list ap)
@@ -1249,5 +1268,5 @@ void md_reg_set_warn_window_default(md_reg_t *reg, md_timeslice_t *warn_window)
 
 md_job_t *md_reg_job_make(md_reg_t *reg, const char *mdomain, apr_pool_t *p)
 {
-    return md_job_make(p, reg->store, MD_SG_STAGING, mdomain);
+    return md_job_make(p, reg->store, MD_SG_STAGING, mdomain, reg->min_delay);
 }

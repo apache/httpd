@@ -38,7 +38,8 @@ typedef struct md_ocsp_reg_t md_ocsp_reg_t;
 apr_status_t md_ocsp_reg_make(md_ocsp_reg_t **preg, apr_pool_t *p,
                               struct md_store_t *store, 
                               const md_timeslice_t *renew_window,
-                              const char *user_agent, const char *proxy_url);
+                              const char *user_agent, const char *proxy_url,
+                              apr_time_t min_delay);
 
 apr_status_t md_ocsp_init_id(struct md_data_t *id, apr_pool_t *p, const md_cert_t *cert);
 

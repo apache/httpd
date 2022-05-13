@@ -313,7 +313,8 @@ class MDTestEnv(HttpdTestEnv):
         if state >= 0:
             assert md['state'] == state
         if ca:
-            assert md['ca']['url'] == ca
+            assert len(md['ca']['urls']) == 1
+            assert md['ca']['urls'][0] == ca
         if protocol:
             assert md['ca']['proto'] == protocol
         if agreement:
@@ -343,6 +344,7 @@ class MDTestEnv(HttpdTestEnv):
             assert False, f"pkey missing: {pkey_file}: {r.stdout}"
         if not os.path.isfile(cert_file):
             assert False, f"cert missing: {cert_file}: {r.stdout}"
+        return md
 
     def check_md_credentials(self, domain):
         if isinstance(domain, list):

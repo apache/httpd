@@ -87,8 +87,9 @@ struct md_t {
     md_timeslice_t *renew_window;   /* time before expiration that starts renewal */
     md_timeslice_t *warn_window;    /* time before expiration that warnings are sent out */
     
-    const char *ca_url;             /* url of CA certificate service */
     const char *ca_proto;           /* protocol used vs CA (e.g. ACME) */
+    struct apr_array_header_t *ca_urls; /* urls of CAs */
+    const char *ca_effective;       /* url of CA used */
     const char *ca_account;         /* account used at CA */
     const char *ca_agreement;       /* accepted agreement uri between CA and user */
     struct apr_array_header_t *ca_challenges; /* challenge types configured for this MD */
@@ -203,6 +204,7 @@ struct md_t {
 #define MD_KEY_UNKNOWN          "unknown"
 #define MD_KEY_UNTIL            "until"
 #define MD_KEY_URL              "url"
+#define MD_KEY_URLS             "urls"
 #define MD_KEY_URI              "uri"
 #define MD_KEY_VALID            "valid"
 #define MD_KEY_VALID_FROM       "valid-from"

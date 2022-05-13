@@ -349,32 +349,62 @@ static void si_val_cert_valid_time(status_ctx *ctx, md_json_t *mdj, const status
     if (jcert) si_val_valid_time(ctx, jcert, &sub);
 }
 
-static void si_val_ca_url(status_ctx *ctx, md_json_t *mdj, const status_info *info)
+static void val_url_print(status_ctx *ctx, const status_info *info,
+                          const char*url, const char *proto, int i)
+{
+    const char *s;
+
+    if (proto && !strcmp(proto, "tailscale")) {
+        s = "tailscale";
+    }
+    else if (url) {
+        s = md_get_ca_name_from_url(ctx->p, url);
+    }
+    if (HTML_STATUS(ctx)) {
+        apr_brigade_printf(ctx->bb, NULL, NULL, "%s<a href='%s'>%s</a>",
+                           i? " " : "",
+                           ap_escape_html2(ctx->p, url, 1),
+                           ap_escape_html2(ctx->p, s, 1));
+    }
+    else if (i == 0) {
+        apr_brigade_printf(ctx->bb, NULL, NULL, "%s%sName: %s\n",
+                           ctx->prefix, info->label, s);
+        apr_brigade_printf(ctx->bb, NULL, NULL, "%s%sURL: %s\n",
+                           ctx->prefix, info->label, url);
+    }
+    else {
+        apr_brigade_printf(ctx->bb, NULL, NULL, "%s%sName%d: %s\n",
+                           ctx->prefix, info->label, i, s);
+        apr_brigade_printf(ctx->bb, NULL, NULL, "%s%sURL%d: %s\n",
+                           ctx->prefix, info->label, i, url);
+    }
+}
+
+static void si_val_ca_urls(status_ctx *ctx, md_json_t *mdj, const status_info *info)
 {
     md_json_t *jcert;
+    const char *proto, *url;
+    apr_array_header_t *urls;
+    int i;
 
     jcert = md_json_getj(mdj, info->key, NULL);
-    if (jcert) {
-        const char *proto, *s, *url;
+    if (!jcert) {
+        return;
+    }
 
-        proto = md_json_gets(jcert, MD_KEY_PROTO, NULL);
-        s = url = md_json_gets(jcert, MD_KEY_URL, NULL);
-        if (proto && !strcmp(proto, "tailscale")) {
-            s = "tailscale";
-        }
-        else if (url) {
-            s = md_get_ca_name_from_url(ctx->p, url);
-        }
-        if (HTML_STATUS(ctx)) {
-            apr_brigade_printf(ctx->bb, NULL, NULL, "<a href='%s'>%s</a>",
-                               ap_escape_html2(ctx->p, url, 1),
-                               ap_escape_html2(ctx->p, s, 1));
-        }
-        else {
-            apr_brigade_printf(ctx->bb, NULL, NULL, "%s%sName: %s\n",
-                               ctx->prefix, info->label, s);
-            apr_brigade_printf(ctx->bb, NULL, NULL, "%s%sURL: %s\n",
-                               ctx->prefix, info->label, url);
+    proto = md_json_gets(jcert, MD_KEY_PROTO, NULL);
+    url = md_json_gets(jcert, MD_KEY_URL, NULL);
+    if (url) {
+        /* print the effective CA url used, if set */
+        val_url_print(ctx, info, url, proto, 0);
+    }
+    else {
+        /* print the available CA urls configured */
+        urls = apr_array_make(ctx->p, 3, sizeof(const char*));
+        md_json_getsa(urls, jcert, MD_KEY_URLS, NULL);
+        for (i = 0; i < urls->nelts; ++i) {
+            url = APR_ARRAY_IDX(urls, i, const char*);
+            val_url_print(ctx, info, url, proto, i);
         }
     }
 }
@@ -673,7 +703,7 @@ static const status_info status_infos[] = {
     { "Names", MD_KEY_DOMAINS, si_val_names },
     { "Status", MD_KEY_STATE, si_val_status },
     { "Valid", MD_KEY_CERT, si_val_cert_valid_time },
-    { "CA", MD_KEY_CA, si_val_ca_url },
+    { "CA", MD_KEY_CA, si_val_ca_urls },
     { "Stapling", MD_KEY_STAPLING, si_val_stapling },
     { "CheckAt", MD_KEY_SHA256_FINGERPRINT, si_val_remote_check },
     { "Activity", MD_KEY_NOTIFIED, si_val_activity },

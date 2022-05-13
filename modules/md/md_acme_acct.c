@@ -243,7 +243,7 @@ int md_acme_acct_matches_url(md_acme_acct_t *acct, const char *url)
 
 int md_acme_acct_matches_md(md_acme_acct_t *acct, const md_t *md)
 {
-    if (!md_acme_acct_matches_url(acct, md->ca_url)) return 0;
+    if (!md_acme_acct_matches_url(acct, md->ca_effective)) return 0;
     /* if eab values are not mentioned, we match an account regardless
      * if it was registered with eab or not */
     if (!md->ca_eab_kid || !md->ca_eab_hmac) {
@@ -285,7 +285,7 @@ static int find_acct(void *baton, const char *name, const char *aspect,
             && (!ctx->md || md_acme_acct_matches_md(acct, ctx->md))) {
             md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, 0, ctx->p, 
                           "found account %s for %s: %s, status=%d",
-                          acct->id, ctx->md->ca_url, aspect, acct->status);
+                          acct->id, ctx->md->ca_effective, aspect, acct->status);
             ctx->id = apr_pstrdup(ctx->p, name);
             return 0;
         }

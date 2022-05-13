@@ -241,8 +241,11 @@ md_t *md_clone(apr_pool_t *p, const md_t *src)
         md->renew_window = src->renew_window;
         md->warn_window = src->warn_window;
         md->contacts = md_array_str_clone(p, src->contacts);
-        if (src->ca_url) md->ca_url = apr_pstrdup(p, src->ca_url);
         if (src->ca_proto) md->ca_proto = apr_pstrdup(p, src->ca_proto);
+        if (src->ca_urls) {
+            md->ca_urls = md_array_str_clone(p, src->ca_urls);
+        }
+        if (src->ca_effective) md->ca_effective = apr_pstrdup(p, src->ca_effective);
         if (src->ca_account) md->ca_account = apr_pstrdup(p, src->ca_account);
         if (src->ca_agreement) md->ca_agreement = apr_pstrdup(p, src->ca_agreement);
         if (src->defn_name) md->defn_name = apr_pstrdup(p, src->defn_name);
@@ -272,7 +275,10 @@ md_json_t *md_to_json(const md_t *md, apr_pool_t *p)
         md_json_setl(md->transitive, json, MD_KEY_TRANSITIVE, NULL);
         md_json_sets(md->ca_account, json, MD_KEY_CA, MD_KEY_ACCOUNT, NULL);
         md_json_sets(md->ca_proto, json, MD_KEY_CA, MD_KEY_PROTO, NULL);
-        md_json_sets(md->ca_url, json, MD_KEY_CA, MD_KEY_URL, NULL);
+        md_json_sets(md->ca_effective, json, MD_KEY_CA, MD_KEY_URL, NULL);
+        if (md->ca_urls && !apr_is_empty_array(md->ca_urls)) {
+            md_json_setsa(md->ca_urls, json, MD_KEY_CA, MD_KEY_URLS, NULL);
+        }
         md_json_sets(md->ca_agreement, json, MD_KEY_CA, MD_KEY_AGREEMENT, NULL);
         if (!md_pkeys_spec_is_empty(md->pks)) {
             md_json_setj(md_pkeys_spec_to_json(md->pks, p), json, MD_KEY_PKEY, NULL);
@@ -324,7 +330,16 @@ md_t *md_from_json(md_json_t *json, apr_pool_t *p)
         md_json_dupsa(md->contacts, p, json, MD_KEY_CONTACTS, NULL);
         md->ca_account = md_json_dups(p, json, MD_KEY_CA, MD_KEY_ACCOUNT, NULL);
         md->ca_proto = md_json_dups(p, json, MD_KEY_CA, MD_KEY_PROTO, NULL);
-        md->ca_url = md_json_dups(p, json, MD_KEY_CA, MD_KEY_URL, NULL);
+        md->ca_effective = md_json_dups(p, json, MD_KEY_CA, MD_KEY_URL, NULL);
+        if (md_json_has_key(json, MD_KEY_CA, MD_KEY_URLS, NULL)) {
+            md->ca_urls = apr_array_make(p, 5, sizeof(const char*));
+            md_json_dupsa(md->ca_urls, p, json, MD_KEY_CA, MD_KEY_URLS, NULL);
+        }
+        else if (md->ca_effective) {
+            /* compat for old format where we had only a single url */
+            md->ca_urls = apr_array_make(p, 5, sizeof(const char*));
+            APR_ARRAY_PUSH(md->ca_urls, const char*) = md->ca_effective;
+        }
         md->ca_agreement = md_json_dups(p, json, MD_KEY_CA, MD_KEY_AGREEMENT, NULL);
         if (md_json_has_key(json, MD_KEY_PKEY, NULL)) {
             md->pks = md_pkeys_spec_from_json(md_json_getj(json, MD_KEY_PKEY, NULL), p);

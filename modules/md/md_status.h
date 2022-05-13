@@ -68,6 +68,7 @@ struct md_job_t {
     apr_size_t max_log;    /* max number of log entries, new ones replace oldest */
     int dirty;
     struct md_result_t *observing;
+    apr_time_t min_delay;  /* smallest delay a repeated attempt should have */
 };
 
 /**
@@ -75,7 +76,8 @@ struct md_job_t {
  * Job load/save will work using the name.
  */
 md_job_t *md_job_make(apr_pool_t *p, md_store_t *store, 
-                      md_store_group_t group, const char *name);
+                      md_store_group_t group, const char *name,
+                      apr_time_t min_delay);
 
 void md_job_set_group(md_job_t *job, md_store_group_t group);
 
