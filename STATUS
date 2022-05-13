@@ -148,10 +148,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_lua: Don't skip apr_global_mutex_child_init() if !APR_HAS_THREADS
-     trunk patch: https://svn.apache.org/r1898453
-     2.4.x patch: svn merge -c 1898453 ^/httpd/httpd/trunk .
-     +1: jaillect36, ylavic, rpluem
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
