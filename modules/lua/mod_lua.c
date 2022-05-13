@@ -2176,9 +2176,8 @@ static void lua_register_hooks(apr_pool_t *p)
     
     /* Hook this right before FallbackResource kicks in */
     ap_hook_fixups(lua_map_handler_fixups, NULL, NULL, AP_LUA_HOOK_LAST-2);
-#if APR_HAS_THREADS
     ap_hook_child_init(ap_lua_init_mutex, NULL, NULL, APR_HOOK_MIDDLE);
-#endif
+
     /* providers */
     lua_authz_providers = apr_hash_make(p);
     
