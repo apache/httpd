@@ -360,6 +360,9 @@ static void val_url_print(status_ctx *ctx, const status_info *info,
     else if (url) {
         s = md_get_ca_name_from_url(ctx->p, url);
     }
+    else {
+        return;
+    }
     if (HTML_STATUS(ctx)) {
         apr_brigade_printf(ctx->bb, NULL, NULL, "%s<a href='%s'>%s</a>",
                            i? " " : "",
