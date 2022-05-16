@@ -185,7 +185,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      ease identification of involved service.
      trunk patches: https://svn.apache.org/r1900028
      2.4.x patches: svn merge -c 1900028 ^/httpd/httpd/trunk .
-     +1: rjung, jim
+     +1: rjung, jim, rpluem
 
   *) mod_http2: remove obsolete, insecure code. Fixes PR66037.
      trunk patches: https://svn.apache.org/r1900356
@@ -197,13 +197,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      session
      trunk patches: https://svn.apache.org/r1900335
      2.4.x patches: svn merge -c 1900335 ^/httpd/httpd/trunk .
-     +1: jailletc36,
+     +1: jailletc36, rpluem
 
   *) mod_heartmonitor: Be consistent with the type of the last argument passed to
      hm_processmsg()
      trunk patches: https://svn.apache.org/r1900340
      2.4.x patches: svn merge -c 1900340 ^/httpd/httpd/trunk .
-     +1: jailletc36,
+     +1: jailletc36, rpluem
 
   *) mod_http2: remove unscheduling of ongoing tasks when client
      behaviour triggers mood change. Fixes https://github.com/icing/mod_h2/issues/231
