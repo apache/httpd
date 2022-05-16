@@ -313,8 +313,8 @@ static void merge_srv_config(md_t *md, md_srv_conf_t *base_sc, apr_pool_t *p)
         md->sc = base_sc;
     }
 
-    if (!md->ca_url) {
-        md->ca_url = md_config_gets(md->sc, MD_CONFIG_CA_URL);
+    if (!md->ca_urls && md->sc->ca_urls) {
+        md->ca_urls = apr_array_copy(p, md->sc->ca_urls);
     }
     if (!md->ca_proto) {
         md->ca_proto = md_config_gets(md->sc, MD_CONFIG_CA_PROTO);
@@ -705,7 +705,7 @@ static apr_status_t merge_mds_with_conf(md_mod_conf_t *mc, apr_pool_t *p,
             ap_log_error(APLOG_MARK, log_level, 0, base_server, APLOGNO(10039)
                          "Completed MD[%s, CA=%s, Proto=%s, Agreement=%s, renew-mode=%d "
                          "renew_window=%s, warn_window=%s",
-                         md->name, md->ca_url, md->ca_proto, md->ca_agreement, md->renew_mode,
+                         md->name, md->ca_effective, md->ca_proto, md->ca_agreement, md->renew_mode,
                          md->renew_window? md_timeslice_format(md->renew_window, p) : "unset",
                          md->warn_window? md_timeslice_format(md->warn_window, p) : "unset");
         }
@@ -886,16 +886,21 @@ static apr_status_t md_post_config_before_ssl(apr_pool_t *p, apr_pool_t *plog,
 
     md_event_init(p);
     md_event_subscribe(on_event, mc);
-    
-    if (APR_SUCCESS != (rv = setup_store(&store, mc, p, s))
-        || APR_SUCCESS != (rv = md_reg_create(&mc->reg, p, store, mc->proxy_url, mc->ca_certs))) {
+
+    rv = setup_store(&store, mc, p, s);
+    if (APR_SUCCESS != rv) goto leave;
+
+    rv = md_reg_create(&mc->reg, p, store, mc->proxy_url, mc->ca_certs,
+                       mc->min_delay, mc->retry_failover);
+    if (APR_SUCCESS != rv) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO(10072) "setup md registry");
         goto leave;
     }
 
     /* renew on 30% remaining /*/
     rv = md_ocsp_reg_make(&mc->ocsp, p, store, mc->ocsp_renew_window,
-                          AP_SERVER_BASEVERSION, mc->proxy_url);
+                          AP_SERVER_BASEVERSION, mc->proxy_url,
+                          mc->min_delay);
     if (APR_SUCCESS != rv) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO(10196) "setup ocsp registry");
         goto leave;

@@ -13,7 +13,9 @@ class MDConf(HttpdConf):
             admin = f"admin@{env.http_tld}"
         if len(admin.strip()):
             self.add_admin(admin)
-
+        self.add([
+            "MDRetryDelay 1s",  # speed up testing a little
+        ])
         if local_ca:
             self.add([
                 f"MDCertificateAuthority {env.acme_url}",
@@ -23,7 +25,7 @@ class MDConf(HttpdConf):
                 ])
         if std_ports:
             self.add(f"MDPortMap 80:{env.http_port} 443:{env.https_port}")
-            if env.ssl_module == "tls":
+            if env.ssl_module == "mod_tls":
                 self.add(f"TLSListen {env.https_port}")
         self.add([
             "<Location /server-status>",

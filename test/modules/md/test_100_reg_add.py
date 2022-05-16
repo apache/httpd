@@ -23,7 +23,7 @@ class TestRegAdd:
             "domains": [dns],
             "contacts": [],
             "ca": {
-                "url": env.acme_url,
+                "urls": [env.acme_url],
                 "proto": "ACME"
             },
             "state": env.MD_S_INCOMPLETE
@@ -39,7 +39,7 @@ class TestRegAdd:
             "domains": dns,
             "contacts": [],
             "ca": {
-                "url": env.acme_url,
+                "urls": [env.acme_url],
                 "proto": "ACME"
             },
             "state": env.MD_S_INCOMPLETE
@@ -60,7 +60,7 @@ class TestRegAdd:
             "domains": dns2,
             "contacts": [],
             "ca": {
-                "url": env.acme_url,
+                "urls": [env.acme_url],
                 "proto": "ACME"
             },
             "state": env.MD_S_INCOMPLETE

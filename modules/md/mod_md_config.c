@@ -84,6 +84,8 @@ static md_mod_conf_t defmc = {
     "crt.sh",                  /* default cert checker site name */
     "https://crt.sh?q=",       /* default cert checker site url */
     NULL,                      /* CA cert file to use */
+    apr_time_from_sec(5),      /* minimum delay for retries */
+    13,                        /* retry_failover after 14 errors, with 5s delay ~ half a day */
 };
 
 static md_timeslice_t def_renew_window = {
@@ -107,7 +109,7 @@ static md_srv_conf_t defconf = {
     NULL,                      /* pkey spec */
     &def_renew_window,         /* renew window */
     &def_warn_window,          /* warn window */
-    NULL,                      /* ca url */
+    NULL,                      /* ca urls */
     NULL,                      /* ca contact (email) */
     MD_PROTO_ACME,             /* ca protocol */
     NULL,                      /* ca agreemnent */
@@ -161,7 +163,7 @@ static void srv_conf_props_clear(md_srv_conf_t *sc)
     sc->pks = NULL;
     sc->renew_window = NULL;
     sc->warn_window = NULL;
-    sc->ca_url = NULL;
+    sc->ca_urls = NULL;
     sc->ca_contact = NULL;
     sc->ca_proto = NULL;
     sc->ca_agreement = NULL;
@@ -181,7 +183,7 @@ static void srv_conf_props_copy(md_srv_conf_t *to, const md_srv_conf_t *from)
     to->pks = from->pks;
     to->warn_window = from->warn_window;
     to->renew_window = from->renew_window;
-    to->ca_url = from->ca_url;
+    to->ca_urls = from->ca_urls;
     to->ca_contact = from->ca_contact;
     to->ca_proto = from->ca_proto;
     to->ca_agreement = from->ca_agreement;
@@ -201,7 +203,7 @@ static void srv_conf_props_apply(md_t *md, const md_srv_conf_t *from, apr_pool_t
     if (from->pks) md->pks = md_pkeys_spec_clone(p, from->pks);
     if (from->renew_window) md->renew_window = from->renew_window;
     if (from->warn_window) md->warn_window = from->warn_window;
-    if (from->ca_url) md->ca_url = from->ca_url;
+    if (from->ca_urls) md->ca_urls = apr_array_copy(p, from->ca_urls);
     if (from->ca_proto) md->ca_proto = from->ca_proto;
     if (from->ca_agreement) md->ca_agreement = from->ca_agreement;
     if (from->ca_contact) {
@@ -247,7 +249,8 @@ static void *md_config_merge(apr_pool_t *pool, void *basev, void *addv)
     nsc->renew_window = add->renew_window? add->renew_window : base->renew_window;
     nsc->warn_window = add->warn_window? add->warn_window : base->warn_window;
 
-    nsc->ca_url = add->ca_url? add->ca_url : base->ca_url;
+    nsc->ca_urls = add->ca_urls? apr_array_copy(pool, add->ca_urls)
+                    : (base->ca_urls? apr_array_copy(pool, base->ca_urls) : NULL);
     nsc->ca_contact = add->ca_contact? add->ca_contact : base->ca_contact;
     nsc->ca_proto = add->ca_proto? add->ca_proto : base->ca_proto;
     nsc->ca_agreement = add->ca_agreement? add->ca_agreement : base->ca_agreement;
@@ -475,19 +478,29 @@ static const char *md_config_set_names(cmd_parms *cmd, void *dc,
     return NULL;
 }
 
-static const char *md_config_set_ca(cmd_parms *cmd, void *dc, const char *value)
+static const char *md_config_set_ca(cmd_parms *cmd, void *dc,
+                                    int argc, char *const argv[])
 {
     md_srv_conf_t *sc = md_config_get(cmd->server);
     const char *err, *url;
+    int i;
 
     (void)dc;
     if ((err = md_conf_check_location(cmd, MD_LOC_ALL))) {
         return err;
     }
-    if (APR_SUCCESS != md_get_ca_url_from_name(&url, cmd->pool, value)) {
-        return url;
+    if (!sc->ca_urls) {
+        sc->ca_urls = apr_array_make(cmd->pool, 3, sizeof(const char *));
     }
-    sc->ca_url = url;
+    else {
+        apr_array_clear(sc->ca_urls);
+    }
+    for (i = 0; i < argc; ++i) {
+        if (APR_SUCCESS != md_get_ca_url_from_name(&url, cmd->pool, argv[i])) {
+            return url;
+        }
+        APR_ARRAY_PUSH(sc->ca_urls, const char *) = url;
+    }
     return NULL;
 }
 
@@ -601,6 +614,37 @@ static const char *md_config_set_base_server(cmd_parms *cmd, void *dc, const cha
     (void)dc;
     if (err) return err;
     return set_on_off(&config->mc->manage_base_server, value, cmd->pool);
+}
+
+static const char *md_config_set_min_delay(cmd_parms *cmd, void *dc, const char *value)
+{
+    md_srv_conf_t *config = md_config_get(cmd->server);
+    const char *err = md_conf_check_location(cmd, MD_LOC_NOT_MD);
+    apr_time_t delay;
+
+    (void)dc;
+    if (err) return err;
+    if (md_duration_parse(&delay, value, "s") != APR_SUCCESS) {
+        return "unrecognized duration format";
+    }
+    config->mc->min_delay = delay;
+    return NULL;
+}
+
+static const char *md_config_set_retry_failover(cmd_parms *cmd, void *dc, const char *value)
+{
+    md_srv_conf_t *config = md_config_get(cmd->server);
+    const char *err = md_conf_check_location(cmd, MD_LOC_NOT_MD);
+    int retry_failover;
+
+    (void)dc;
+    if (err) return err;
+    retry_failover = atoi(value);
+    if (retry_failover <= 0) {
+        return "invalid argument, must be a number > 0";
+    }
+    config->mc->retry_failover = retry_failover;
+    return NULL;
 }
 
 static const char *md_config_set_require_https(cmd_parms *cmd, void *dc, const char *value)
@@ -1090,8 +1134,8 @@ leave:
 }
 
 const command_rec md_cmds[] = {
-    AP_INIT_TAKE1("MDCertificateAuthority", md_config_set_ca, NULL, RSRC_CONF, 
-                  "URL or known name of CA issuing the certificates"),
+    AP_INIT_TAKE_ARGV("MDCertificateAuthority", md_config_set_ca, NULL, RSRC_CONF,
+                      "URL(s) or known name(s) of CA issuing the certificates"),
     AP_INIT_TAKE1("MDCertificateAgreement", md_config_set_agreement, NULL, RSRC_CONF, 
                   "either 'accepted' or the URL of CA Terms-of-Service agreement you accept"),
     AP_INIT_TAKE_ARGV("MDCAChallenges", md_config_set_cha_tyes, NULL, RSRC_CONF, 
@@ -1167,6 +1211,10 @@ const command_rec md_cmds[] = {
                   "Set the CA file to use for connections"),
     AP_INIT_TAKE12("MDExternalAccountBinding", md_config_set_eab, NULL, RSRC_CONF,
                   "Set the external account binding keyid and hmac values to use at CA"),
+    AP_INIT_TAKE1("MDRetryDelay", md_config_set_min_delay, NULL, RSRC_CONF,
+                  "Time length for first retry, doubled on every consecutive error."),
+    AP_INIT_TAKE1("MDRetryFailover", md_config_set_retry_failover, NULL, RSRC_CONF,
+                  "The number of errors before a failover to another CA is triggered."),
 
     AP_INIT_TAKE1(NULL, NULL, NULL, RSRC_CONF, NULL)
 };
@@ -1226,8 +1274,6 @@ md_srv_conf_t *md_config_cget(conn_rec *c)
 const char *md_config_gets(const md_srv_conf_t *sc, md_config_var_t var)
 {
     switch (var) {
-        case MD_CONFIG_CA_URL:
-            return sc->ca_url? sc->ca_url : defconf.ca_url;
         case MD_CONFIG_CA_CONTACT:
             return sc->ca_contact? sc->ca_contact : defconf.ca_contact;
         case MD_CONFIG_CA_PROTO:

@@ -56,7 +56,8 @@ static apr_status_t ts_init(md_proto_driver_t *d, md_result_t *result)
     ts_ctx->driver = d;
     ts_ctx->chain = apr_array_make(d->p, 5, sizeof(md_cert_t *));
 
-    ca_url = d->md->ca_url;
+    ca_url = (d->md->ca_urls && !apr_is_empty_array(d->md->ca_urls))?
+                APR_ARRAY_IDX(d->md->ca_urls, 0, const char*) : NULL;
     if (!ca_url) {
         ca_url = MD_TAILSCALE_DEF_URL;
     }
@@ -254,7 +255,7 @@ static apr_status_t ts_renew(md_proto_driver_t *d, md_result_t *result)
         ts_ctx->md = NULL;
     }
 
-    if (!ts_ctx->md || strcmp(ts_ctx->md->ca_url, d->md->ca_url)) {
+    if (!ts_ctx->md || !md_array_str_eq(ts_ctx->md->ca_urls, d->md->ca_urls, 1)) {
         md_result_activity_printf(result, "Resetting staging for %s", d->md->name);
         /* re-initialize staging */
         md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, 0, d->p, "%s: setup staging", d->md->name);
@@ -361,8 +362,9 @@ leave:
 static apr_status_t ts_complete_md(md_t *md, apr_pool_t *p)
 {
     (void)p;
-    if (!md->ca_url) {
-        md->ca_url = MD_TAILSCALE_DEF_URL;
+    if (!md->ca_urls) {
+        md->ca_urls = apr_array_make(p, 3, sizeof(const char *));
+        APR_ARRAY_PUSH(md->ca_urls, const char*) = MD_TAILSCALE_DEF_URL;
     }
     return APR_SUCCESS;
 }

@@ -286,7 +286,8 @@ apr_status_t md_status_get_json(md_json_t **pjson, apr_array_header_t *mds,
 /* drive job persistence */
 
 md_job_t *md_job_make(apr_pool_t *p, md_store_t *store,
-                      md_store_group_t group, const char *name)
+                      md_store_group_t group, const char *name,
+                      apr_time_t min_delay)
 {
     md_job_t *job = apr_pcalloc(p, sizeof(*job));
     job->group = group;
@@ -294,6 +295,7 @@ md_job_t *md_job_make(apr_pool_t *p, md_store_t *store,
     job->store = store;
     job->p = p;
     job->max_log = 128;
+    job->min_delay = min_delay;
     return job;
 }
 
@@ -588,7 +590,7 @@ apr_time_t md_job_delay_on_errors(md_job_t *job, int err_count, const char *last
     }
     else if (err_count > 0) {
         /* back off duration, depending on the errors we encounter in a row */
-        delay = apr_time_from_sec(5 << (err_count - 1));
+        delay = job->min_delay << (err_count - 1);
         if (delay > max_delay) {
             delay = max_delay;
         }

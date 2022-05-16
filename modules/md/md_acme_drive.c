@@ -45,7 +45,7 @@
 /**************************************************************************************************/
 /* account setup */
 
-static apr_status_t use_staged_acct(md_acme_t *acme, struct md_store_t *store, 
+static apr_status_t use_staged_acct(md_acme_t *acme, struct md_store_t *store,
                                     const md_t *md, apr_pool_t *p)
 {
     md_acme_acct_t *acct;
@@ -654,13 +654,15 @@ static apr_status_t acme_renew(md_proto_driver_t *d, md_result_t *result)
     apr_status_t rv = APR_SUCCESS;
     apr_time_t now, t, t2;
     md_credentials_t *cred;
+    const char *ca_effective = NULL;
     char ts[APR_RFC822_DATE_LEN];
     int i, first = 0;
-    
-    if (md_log_is_level(d->p, MD_LOG_DEBUG)) {
-        md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, 0, d->p, "%s: staging started, "
-                      "state=%d, challenges='%s'", d->md->name, d->md->state, 
-                      apr_array_pstrcat(d->p, ad->ca_challenges, ' '));
+
+    if (!d->md->ca_urls || d->md->ca_urls->nelts <= 0) {
+        /* No CA defined? This is checked in several other places, but lets be sure */
+        md_result_printf(result, APR_INCOMPLETE,
+            "The managed domain %s is missing MDCertificateAuthority", d->md->name);
+        goto out;
     }
 
     /* When not explicitly told to reset, we check the existing data. If
@@ -679,13 +681,46 @@ static apr_status_t acme_renew(md_proto_driver_t *d, md_result_t *result)
             rv = APR_SUCCESS;
         }
     }
-    
+
+    /* What CA are we using this time? */
+    if (ad->md && ad->md->ca_effective) {
+        /* There was one chosen on the previous run. Do we stick to it? */
+        ca_effective = ad->md->ca_effective;
+        if (d->md->ca_urls->nelts > 1 && d->attempt >= d->retry_failover) {
+            /* We have more than one CA to choose from and this is the (at least)
+             * third attempt with the same CA. Let's switch to the next one. */
+            int last_idx = md_array_str_index(d->md->ca_urls, ca_effective, 0, 1);
+            if (last_idx >= 0) {
+                int next_idx = (last_idx+1) % d->md->ca_urls->nelts;
+                ca_effective = APR_ARRAY_IDX(d->md->ca_urls, next_idx, const char*);
+            }
+            else {
+                /* not part of current configuration? */
+                ca_effective = NULL;
+            }
+            /* switching CA means we need to wipe the staging area */
+            reset_staging = 1;
+        }
+    }
+
+    if (!ca_effective) {
+        /* None chosen yet, pick the first one configured */
+        ca_effective = APR_ARRAY_IDX(d->md->ca_urls, 0, const char*);
+    }
+
+    if (md_log_is_level(d->p, MD_LOG_DEBUG)) {
+        md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, 0, d->p, "%s: staging started, "
+                      "state=%d, attempt=%d, acme=%s, challenges='%s'",
+                      d->md->name, d->md->state, d->attempt, ca_effective,
+                      apr_array_pstrcat(d->p, ad->ca_challenges, ' '));
+    }
+
     if (reset_staging) {
         md_result_activity_setn(result, "Resetting staging area");
         /* reset the staging area for this domain */
         rv = md_store_purge(d->store, d->p, MD_SG_STAGING, d->md->name);
         md_log_perror(MD_LOG_MARK, MD_LOG_TRACE1, rv, d->p, 
-                      "%s: reset staging area, will", d->md->name);
+                      "%s: reset staging area", d->md->name);
         if (APR_SUCCESS != rv && !APR_STATUS_IS_ENOENT(rv)) {
             md_result_printf(result, rv, "resetting staging area");
             goto out;
@@ -709,24 +744,14 @@ static apr_status_t acme_renew(md_proto_driver_t *d, md_result_t *result)
     }
     
     /* Need to renew */
-    md_result_activity_printf(result, "Contacting ACME server for %s at %s", 
-                              d->md->name, d->md->ca_url);
-    if (APR_SUCCESS != (rv = md_acme_create(&ad->acme, d->p, d->md->ca_url, d->proxy_url, d->ca_file))) {
-        md_result_printf(result, rv, "setup ACME communications");
-        md_result_log(result, MD_LOG_ERR);
-        goto out;
-    } 
-    if (APR_SUCCESS != (rv = md_acme_setup(ad->acme, result))) {
-        md_result_log(result, MD_LOG_ERR);
-        goto out;
-    }
-    
-    if (!ad->md || strcmp(ad->md->ca_url, d->md->ca_url)) {
+    if (!ad->md || !md_array_str_eq(ad->md->ca_urls, d->md->ca_urls, 1)) {
         md_result_activity_printf(result, "Resetting staging for %s", d->md->name);
         /* re-initialize staging */
         md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, 0, d->p, "%s: setup staging", d->md->name);
         md_store_purge(d->store, d->p, MD_SG_STAGING, d->md->name);
         ad->md = md_copy(d->p, d->md);
+        ad->md->ca_effective = ca_effective;
+        ad->md->ca_account = NULL;
         ad->order = NULL;
         rv = md_save(d->store, d->p, MD_SG_STAGING, ad->md, 0);
         if (APR_SUCCESS != rv) {
@@ -739,6 +764,19 @@ static apr_status_t acme_renew(md_proto_driver_t *d, md_result_t *result)
         ad->domains = md_dns_make_minimal(d->p, ad->md->domains);
     }
     
+    md_result_activity_printf(result, "Contacting ACME server for %s at %s",
+                              d->md->name, ca_effective);
+    if (APR_SUCCESS != (rv = md_acme_create(&ad->acme, d->p, ca_effective,
+                                            d->proxy_url, d->ca_file))) {
+        md_result_printf(result, rv, "setup ACME communications");
+        md_result_log(result, MD_LOG_ERR);
+        goto out;
+    }
+    if (APR_SUCCESS != (rv = md_acme_setup(ad->acme, result))) {
+        md_result_log(result, MD_LOG_ERR);
+        goto out;
+    }
+
     if (APR_SUCCESS != load_missing_creds(d)) {
         for (i = 0; i < ad->creds->nelts; ++i) {
             ad->cred = APR_ARRAY_IDX(ad->creds, i, md_credentials_t*);
@@ -922,7 +960,12 @@ static apr_status_t acme_preload(md_proto_driver_t *d, md_store_group_t load_gro
         md_result_set(result, rv, "loading staged md.json");
         goto leave;
     }
-    
+    if (!md->ca_effective) {
+        rv = APR_ENOENT;
+        md_result_set(result, rv, "effective CA url not set");
+        goto leave;
+    }
+
     all_creds = apr_array_make(d->p, 5, sizeof(md_credentials_t*));
     for (i = 0; i < md_pkeys_spec_count(md->pks); ++i) {
         pkspec = md_pkeys_spec_get(md->pks, i);
@@ -985,7 +1028,8 @@ static apr_status_t acme_preload(md_proto_driver_t *d, md_store_group_t load_gro
             }
         }
         
-        if (APR_SUCCESS != (rv = md_acme_create(&acme, d->p, md->ca_url, d->proxy_url, d->ca_file))) {
+        if (APR_SUCCESS != (rv = md_acme_create(&acme, d->p, md->ca_effective,
+                                                d->proxy_url, d->ca_file))) {
             md_result_set(result, rv, "error setting up acme");
             goto leave;
         }
@@ -1039,8 +1083,9 @@ static apr_status_t acme_driver_preload(md_proto_driver_t *d,
 static apr_status_t acme_complete_md(md_t *md, apr_pool_t *p)
 {
     (void)p;
-    if (!md->ca_url) {
-        md->ca_url = MD_ACME_DEF_URL;
+    if (!md->ca_urls || apr_is_empty_array(md->ca_urls)) {
+        md->ca_urls = apr_array_make(p, 3, sizeof(const char *));
+        APR_ARRAY_PUSH(md->ca_urls, const char*) = MD_ACME_DEF_URL;
     }
     return APR_SUCCESS;
 }

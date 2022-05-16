@@ -37,7 +37,7 @@ class TestRegUpdate:
             "domains": dns,
             "contacts": [],
             "ca": {
-                "url": env.acme_url,
+                "urls": [env.acme_url],
                 "proto": "ACME"
             },
             "state": env.MD_S_INCOMPLETE
@@ -104,7 +104,7 @@ class TestRegUpdate:
             "domains": [self.NAME1, "www.greenbytes2.de", "mail.greenbytes2.de"],
             "contacts": [],
             "ca": {
-                "url": url,
+                "urls": [url],
                 "proto": "ACME"
             },
             "state": env.MD_S_INCOMPLETE
@@ -121,7 +121,7 @@ class TestRegUpdate:
     def test_md_110_102(self, env):
         md = env.a2md(["update", self.NAME1, "ca", env.acme_url, "FOO"]).json['output'][0]
         env.check_json_contains(md['ca'], {
-            "url": env.acme_url,
+            "urls": [env.acme_url],
             "proto": "FOO"
         })
         assert md['state'] == 1
@@ -137,7 +137,7 @@ class TestRegUpdate:
             "contacts": [],
             "ca": {
                 "account": acc_id,
-                "url": env.acme_url,
+                "urls": [env.acme_url],
                 "proto": "ACME"
             },
             "state": env.MD_S_INCOMPLETE
@@ -148,7 +148,7 @@ class TestRegUpdate:
         assert env.a2md(["update", self.NAME1, "account", "test.account.id"]).exit_code == 0
         md = env.a2md(["update", self.NAME1, "account"]).json['output'][0]
         env.check_json_contains(md['ca'], {
-            "url": env.acme_url,
+            "urls": [env.acme_url],
             "proto": "ACME"
         })
         assert md['state'] == 1
@@ -159,7 +159,7 @@ class TestRegUpdate:
         md = env.a2md(["update", self.NAME1, "account", "foo.test.com"]).json['output'][0]
         env.check_json_contains(md['ca'], {
             "account": "foo.test.com",
-            "url": env.acme_url,
+            "urls": [env.acme_url],
             "proto": "ACME"
         })
         assert md['state'] == 1
@@ -170,7 +170,7 @@ class TestRegUpdate:
                        "test2.account.id"]).json['output'][0]
         env.check_json_contains(md['ca'], {
             "account": "test.account.id",
-            "url": env.acme_url,
+            "urls": [env.acme_url],
             "proto": "ACME"
         })
         assert md['state'] == 1
@@ -185,7 +185,7 @@ class TestRegUpdate:
             "domains": [self.NAME1, "www.greenbytes2.de", "mail.greenbytes2.de"],
             "contacts": ["mailto:" + mail],
             "ca": {
-                "url": env.acme_url,
+                "urls": [env.acme_url],
                 "proto": "ACME"
             },
             "state": env.MD_S_INCOMPLETE
@@ -237,7 +237,7 @@ class TestRegUpdate:
             "domains": [self.NAME1, "www.greenbytes2.de", "mail.greenbytes2.de"],
             "contacts": [],
             "ca": {
-                "url": env.acme_url,
+                "urls": [env.acme_url],
                 "proto": "ACME",
                 "agreement": env.acme_tos
             },
@@ -249,7 +249,7 @@ class TestRegUpdate:
         assert env.a2md(["update", self.NAME1, "agreement", env.acme_tos]).exit_code == 0
         md = env.a2md(["update", self.NAME1, "agreement"]).json['output'][0]
         env.check_json_contains(md['ca'], {
-            "url": env.acme_url,
+            "urls": [env.acme_url],
             "proto": "ACME"
         })
         assert md['state'] == 1
@@ -259,7 +259,7 @@ class TestRegUpdate:
         md = env.a2md(["update", self.NAME1, "agreement",
                        env.acme_tos, "http://invalid.tos/"]).json['output'][0]
         env.check_json_contains(md['ca'], {
-            "url": env.acme_url,
+            "urls": [env.acme_url],
             "proto": "ACME",
             "agreement": env.acme_tos
         })
