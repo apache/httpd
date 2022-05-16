@@ -148,6 +148,17 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) mod_proxy: Add backend port to log messages to
+     ease identification of involved service.
+     trunk patches: https://svn.apache.org/r1900028
+     2.4.x patches: svn merge -c 1900028 ^/httpd/httpd/trunk .
+     +1: rjung, jim, rpluem
+
+  *) mod_http2: remove obsolete, insecure code. Fixes PR66037.
+     trunk patches: https://svn.apache.org/r1900356
+     2.4.x patches: svn merge -c 1900356 ^/httpd/httpd/trunk .
+     +1: jailletc36, icing, rpluem
+     icing: I just waited to see what you think!
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -181,18 +192,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      +1: icing, rpluem
      ylavic: I think "extra" should be an apr_size_t.
      icing: added r1899905 with the proposed changes and assertions.
-
-  *) mod_proxy: Add backend port to log messages to
-     ease identification of involved service.
-     trunk patches: https://svn.apache.org/r1900028
-     2.4.x patches: svn merge -c 1900028 ^/httpd/httpd/trunk .
-     +1: rjung, jim, rpluem
-
-  *) mod_http2: remove obsolete, insecure code. Fixes PR66037.
-     trunk patches: https://svn.apache.org/r1900356
-     2.4.x patches: svn merge -c 1900356 ^/httpd/httpd/trunk .
-     +1: jailletc36, icing, rpluem
-     icing: I just waited to see what you think!
 
   *) mod_session: Harden mod_session and avoid overflow in case of indecently large
      session
