@@ -55,21 +55,13 @@ fi
 # build the version we want from source
 if test -v TEST_MOD_TLS; then
   RUSTLS_HOME="$HOME/build/rustls-ffi"
-  RUSTLS_VERSION="v0.8.2"
+  RUSTLS_VERSION="v0.9.0"
   git clone https://github.com/rustls/rustls-ffi.git "$RUSTLS_HOME"
   pushd "$RUSTLS_HOME"
+    # since v0.9.0, there is no longer a dependency on cbindgen
     git fetch origin
     git checkout tags/$RUSTLS_VERSION
-    # force an update to cbindgen as focal seems to deliver v0.12.1
-    # always something changes with rust/cargo every few weeks, sigh.
-    RUSTC_VERSION=`rustc --version`
-    CBINDGEN_INSTALLED_VERSION=`cbindgen --version`
-    cargo install --force cbindgen
-    CBINDGEN_LOCAL_VERSION=`"${HOME}"/.cargo/bin/cbindgen --version`
-    echo "building rustls-ffi: RUSTC='${RUSTC_VERSION}', "\
-        "SYSTEM CBINDGEN='${CBINDGEN_INSTALLED_VERSION}'"\
-        "LOCAL CBINDGEN='${CBINDGEN_LOCAL_VERSION}'"
-    PATH="${HOME}/.cargo/bin:${PATH}" make install DESTDIR="$PREFIX"
+    make install DESTDIR="$PREFIX"
   popd
   CONFIG="$CONFIG --with-tls --with-rustls=$PREFIX"
 fi
