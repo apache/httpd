@@ -172,6 +172,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      Backport version for 2.4.x of patch:
         https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/httpd-2.4-authn-expr.patch
      +1: minfrin, jim,
+     rpluem says: The version in the compatibility notes is wrong.
 
   *) core: make ap_escape_quotes() work correctly on strings
      with more than MAX_INT/2 characters, counting quotes double.
@@ -190,7 +191,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   *) mod_http2: remove obsolete, insecure code. Fixes PR66037.
      trunk patches: https://svn.apache.org/r1900356
      2.4.x patches: svn merge -c 1900356 ^/httpd/httpd/trunk .
-     +1: jailletc36, icing
+     +1: jailletc36, icing, rpluem
      icing: I just waited to see what you think!
 
   *) mod_session: Harden mod_session and avoid overflow in case of indecently large
@@ -209,7 +210,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      behaviour triggers mood change. Fixes https://github.com/icing/mod_h2/issues/231
      Trunk version of patch: n.a.
      2.4.x patch: https://github.com/apache/httpd/pull/317.diff
-     +1: icing
+     +1: icing, rpluem
 
   *) mpm_event, mpm_worker: Handle children killed pathologically.
      Trunk version of patch:
