@@ -157,6 +157,7 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   *) core: make ap_escape_quotes() work correctly on strings
      with more than MAX_INT/2 characters, counting quotes double.
      trunk patch: https://svn.apache.org/r1899609
+                  https://svn.apache.org/r1899905
      2.4.x patch: svn merge -c 1899609,1899905 ^/httpd/httpd/trunk .
      +1: icing, rpluem, ylavic
      ylavic: I think "extra" should be an apr_size_t.
