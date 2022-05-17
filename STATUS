@@ -218,7 +218,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      rpluem says: Should we add a CHANGES entry as it seems to fix PR65769?
      ylavic: CHANGES entry added in r1900991
 
-  *) mpm_event: Fix accounting of active/total processes on ungraceful restart.
+  *) mpm_event: Fix accounting of active/total processes on ungraceful restart. PR 66004
      trunk patches: https://svn.apache.org/r1899777
                     https://svn.apache.org/r1899786
                     https://svn.apache.org/r1899812
