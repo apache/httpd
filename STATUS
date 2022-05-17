@@ -226,6 +226,16 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                     (from https://github.com/apache/httpd/pull/313)
      +1: ylavic,
 
+  *) core: Disable TCP_NOPUSH optimization on OSX. BZ 66019.
+     trunk patches: https://svn.apache.org/r1900100
+     2.4.x patches: svn merge -c 1900100 ^/httpd/httpd/trunk .
+     +1: ylavic,
+
+  *) ab: Allow for TLSv1.3 when the SSL library supports it. BZ 63594 64699 
+     trunk patches: https://svn.apache.org/r1900157
+     2.4.x patches: svn merge -c 1900157 ^/httpd/httpd/trunk .
+     +1: ylavic,
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
