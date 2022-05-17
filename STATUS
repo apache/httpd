@@ -154,6 +154,32 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      +1: jailletc36, icing, rpluem
      icing: I just waited to see what you think!
 
+  *) core: make ap_escape_quotes() work correctly on strings
+     with more than MAX_INT/2 characters, counting quotes double.
+     trunk patch: https://svn.apache.org/r1899609
+     2.4.x patch: svn merge -c 1899609,1899905 ^/httpd/httpd/trunk .
+     +1: icing, rpluem, ylavic
+     ylavic: I think "extra" should be an apr_size_t.
+     icing: added r1899905 with the proposed changes and assertions.
+
+  *) mod_session: Harden mod_session and avoid overflow in case of indecently large
+     session
+     trunk patches: https://svn.apache.org/r1900335
+     2.4.x patches: svn merge -c 1900335 ^/httpd/httpd/trunk .
+     +1: jailletc36, rpluem, ylavic
+
+  *) mod_heartmonitor: Be consistent with the type of the last argument passed to
+     hm_processmsg()
+     trunk patches: https://svn.apache.org/r1900340
+     2.4.x patches: svn merge -c 1900340 ^/httpd/httpd/trunk .
+     +1: jailletc36, rpluem, ylavic
+
+  *) mod_http2: remove unscheduling of ongoing tasks when client
+     behaviour triggers mood change. Fixes https://github.com/icing/mod_h2/issues/231
+     Trunk version of patch: n.a.
+     2.4.x patch: https://github.com/apache/httpd/pull/317.diff
+     +1: icing, rpluem, ylavic
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -179,42 +205,18 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      +1: minfrin, jim,
      rpluem says: The version in the compatibility notes is wrong.
 
-  *) core: make ap_escape_quotes() work correctly on strings
-     with more than MAX_INT/2 characters, counting quotes double.
-     trunk patch: https://svn.apache.org/r1899609
-     2.4.x patch: svn merge -c 1899609,1899905 ^/httpd/httpd/trunk .
-     +1: icing, rpluem
-     ylavic: I think "extra" should be an apr_size_t.
-     icing: added r1899905 with the proposed changes and assertions.
-
-  *) mod_session: Harden mod_session and avoid overflow in case of indecently large
-     session
-     trunk patches: https://svn.apache.org/r1900335
-     2.4.x patches: svn merge -c 1900335 ^/httpd/httpd/trunk .
-     +1: jailletc36, rpluem
-
-  *) mod_heartmonitor: Be consistent with the type of the last argument passed to
-     hm_processmsg()
-     trunk patches: https://svn.apache.org/r1900340
-     2.4.x patches: svn merge -c 1900340 ^/httpd/httpd/trunk .
-     +1: jailletc36, rpluem
-
-  *) mod_http2: remove unscheduling of ongoing tasks when client
-     behaviour triggers mood change. Fixes https://github.com/icing/mod_h2/issues/231
-     Trunk version of patch: n.a.
-     2.4.x patch: https://github.com/apache/httpd/pull/317.diff
-     +1: icing, rpluem
-
   *) mpm_event, mpm_worker: Handle children killed pathologically.
      Trunk version of patch:
         https://svn.apache.org/r1899858
         https://svn.apache.org/r1899865
         https://svn.apache.org/r1899884
+        https://svn.apache.org/r1900991
      Backport version for 2.4.x of patch:
       Trunk version of patch works
       svn merge -c 1899858,1899865,1899884 ^/httpd/httpd/trunk .
-     +1: rpluem,
+     +1: rpluem, ylavic,
      rpluem says: Should we add a CHANGES entry as it seems to fix PR65769?
+     ylavic: CHANGES entry added in r1900991
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
