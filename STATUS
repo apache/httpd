@@ -163,11 +163,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      ylavic: I think "extra" should be an apr_size_t.
      icing: added r1899905 with the proposed changes and assertions.
 
-  *) mod_http2: remove unscheduling of ongoing tasks when client
-     behaviour triggers mood change. Fixes https://github.com/icing/mod_h2/issues/231
-     Trunk version of patch: n.a.
-     2.4.x patch: https://github.com/apache/httpd/pull/317.diff
-     +1: icing, rpluem, ylavic
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]

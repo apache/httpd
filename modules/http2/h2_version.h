@@ -27,7 +27,7 @@
  * @macro
  * Version number of the http2 module as c string
  */
-#define MOD_HTTP2_VERSION "1.15.26"
+#define MOD_HTTP2_VERSION "1.15.28"
 
 /**
  * @macro
