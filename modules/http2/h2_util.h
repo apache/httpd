@@ -28,10 +28,6 @@ struct nghttp2_frame;
 size_t h2_util_hex_dump(char *buffer, size_t maxlen,
                         const char *data, size_t datalen);
 
-size_t h2_util_header_print(char *buffer, size_t maxlen,
-                            const char *name, size_t namelen,
-                            const char *value, size_t valuelen);
-
 void h2_util_camel_case_header(char *s, size_t len);
 
 int h2_util_frame_print(const nghttp2_frame *frame, char *buffer, size_t maxlen);

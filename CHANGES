@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.54
 
+  *) mod_http2: remove unused and insecure code. Fixes PR66037.
+     Thanks to Ronald Crane (Zippenhop LLC) for reporting this.
+
   *) mod_http2: removing unscheduling of ongonig tasks when
      connection shows potential abuse by a client. This proved
      counter-productive and the abuse detection can false flag

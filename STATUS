@@ -148,12 +148,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_http2: remove obsolete, insecure code. Fixes PR66037.
-     trunk patches: https://svn.apache.org/r1900356
-     2.4.x patches: svn merge -c 1900356 ^/httpd/httpd/trunk .
-     +1: jailletc36, icing, rpluem
-     icing: I just waited to see what you think!
-
   *) core: make ap_escape_quotes() work correctly on strings
      with more than MAX_INT/2 characters, counting quotes double.
      trunk patch: https://svn.apache.org/r1899609
