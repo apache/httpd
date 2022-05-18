@@ -105,7 +105,7 @@ Changes with Apache 2.5.1
      PR 66004 (follow up to PR 65626 from 2.4.52).  [Yann Ylavic]
 
   *) mod_proxy: Add backend port to log messages to
-     ease identification of involved service.
+     ease identification of involved service.  [Rainer Jung]
 
   *) mod_systemd: Systemd socket activation can now be enabled at
      build time but disabled at run time, if mod_systemd is not
