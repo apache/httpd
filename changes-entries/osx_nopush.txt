@@ -1,2 +1,0 @@
-  *) core: Disable TCP_NOPUSH optimization on OSX since it might introduce
-     transmission delays.  PR 66019.  [Yann Ylavic]

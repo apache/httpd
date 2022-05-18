@@ -1,2 +1,0 @@
-  *) mod_substitute: Fix an integer overflow that can happen in very special
-     setups.  PR 66034 [Ruediger Pluem]

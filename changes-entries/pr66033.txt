@@ -1,2 +1,0 @@
-  *) core: Avoid an overflow on large inputs in ap_is_matchexp.  PR 66033
-     [Ruediger Pluem]

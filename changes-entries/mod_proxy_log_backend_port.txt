@@ -1,2 +1,0 @@
-  *) mod_proxy: Add backend port to log messages to
-     ease identification of involved service.

@@ -1,5 +1,0 @@
- * Implement full auto status ("key: value" type status output).
-   Especially not only status summary counts for certificates and
-   OCSP stapling but also lists. Auto status format is similar to
-   what was used for mod_proxy_balancer.
-   [Rainer Jung]

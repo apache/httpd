@@ -1,7 +1,0 @@
-  *) mod_md: the `MDCertificateAuthority` directive can take more than one URL/name of
-     an ACME CA. This gives a failover for renewals when several consecutive attempts
-     to get a certificate failed.
-     A new directive was added: `MDRetryDelay` sets the delay of retries.
-     A new directive was added: `MDRetryFailover` sets the number of errored
-     attempts before an alternate CA is selected for certificate renewals.
-     [Stefan Eissing]

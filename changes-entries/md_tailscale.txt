@@ -1,5 +1,0 @@
-  *) mod_md: added support for managing certificates via a
-     local tailscale demon for users of that secure networking.
-     This gives trusted certificates for tailscale  assigned
-     domain names in the *.ts.net space.
-     [Stefan Eissing]

@@ -1,9 +1,0 @@
-  *) core/mod_http: use RESPONSE meta buckets and a new HTTP/1.x specific
-     filter to send responses through the output filter chain.
-     Specifically: the HTTP_HEADER output filter and ap_send_interim_response()
-     create a RESPONSE bucket and no longer are concerned with HTTP/1.x
-     serialization.
-     A new HTTP1_RESPONSE_OUT transcode filter writes the proper HTTP/1.x
-     bytes when dealing with a RESPONSE bucket. That filter installs itself
-     on the pre_read_request hook when the connection has protocol 'http/1.1'.
-     [Stefan Eissing]

@@ -1,4 +1,0 @@
-  *) core: make ap_escape_quotes() work correctly on strings
-     with more than MAX_INT/2 characters, counting quotes double.
-     Credit to <generalbugs@zippenhop.com> for finding this.
-     [Stefan Eissing]

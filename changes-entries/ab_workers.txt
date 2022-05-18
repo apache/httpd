@@ -1,2 +1,0 @@
-  *) ab: Add the -W option to use worker threads, allowing for multiple CPUs
-     to handle the load.  [Yann Ylavic]
