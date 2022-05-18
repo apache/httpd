@@ -1,6 +1,21 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.54
 
+  *) mod_md: the `MDCertificateAuthority` directive can take more than one URL/name of
+     an ACME CA. This gives a failover for renewals when several consecutive attempts
+     to get a certificate failed.
+     A new directive was added: `MDRetryDelay` sets the delay of retries.
+     A new directive was added: `MDRetryFailover` sets the number of errored
+     attempts before an alternate CA is selected for certificate renewals.
+     [Stefan Eissing]
+
+  *) mod_http2: remove unused and insecure code. Fixes PR66037.
+     Thanks to Ronald Crane (Zippenhop LLC) for reporting this.
+     [Stefan Eissing]
+
+  *) mod_proxy: Add backend port to log messages to
+     ease identification of involved service.  [Rainer Jung]
+
   *) mod_http2: remove unused and insecure code. Fixes PR66037.
      Thanks to Ronald Crane (Zippenhop LLC) for reporting this.
 
