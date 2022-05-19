@@ -476,7 +476,8 @@ RewriteRule "(.*\.(jpg|gif|png))$" "http://images.example.com$1" [P,NC]
 <section id="flag_ne"><title>NE|noescape</title>
 <p>By default, special characters, such as <code>&amp;</code> and
 <code>?</code>, for example, will be converted to their hexcode
-equivalent. Using the [NE] flag prevents that from happening.
+equivalent for rules that result in external redirects. 
+Using the [NE] flag prevents that from happening.
 </p>
 
 <highlight language="config">
