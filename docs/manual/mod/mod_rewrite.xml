@@ -1404,8 +1404,9 @@ cannot use <code>$N</code> in the substitution string!
     <tr>
         <td>noescape|NE</td>
         <td>Prevent mod_rewrite from applying hexcode escaping of
-        special characters in the result of the rewrite. <em><a
-        href="../rewrite/flags.html#flag_ne">details ...</a></em></td>
+            special characters in the result of rewrites that result in 
+            redirection. <em>
+            <a href="../rewrite/flags.html#flag_ne">details ...</a></em></td>
     </tr>
     <tr>
         <td>nosubreq|NS</td>
