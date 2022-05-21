@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1873762 -->
+<!-- English Revision: 1901071 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -1547,7 +1547,8 @@ substitution !
     <tr>
         <td>noescape|NE</td>
         <td>Empêche mod_rewrite d'effectuer un échappement hexadécimal
-	des caractères spéciaux dans le résultat de la réécriture. <em><a
+	des caractères spéciaux dans le résultat des réécritures qui aboutissent
+	à une redirection. <em><a
         href="../rewrite/flags.html#flag_ne">détails ...</a></em></td>
     </tr>
     <tr>
