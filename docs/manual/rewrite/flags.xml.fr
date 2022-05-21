@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1898648 -->
+<!-- English Revision: 1901072 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -505,9 +505,9 @@ bien que <code>.JPG</code> seront acceptés.</p>
 
 <section id="flag_ne"><title>NE|noescape</title>
 <p>Par défaut, les caractères spéciaux, comme <code>&amp;</code> et
-<code>?</code>, sont convertis en leur équivalent
-hexadécimal. Le drapeau [NE] permet d'éviter cette conversion.
-</p>
+<code>?</code>, sont convertis en leur équivalent hexadécimal pour les règles
+qui génèrent des redirections externes. Le drapeau [NE] permet d'éviter cette
+conversion.</p>
 
 <highlight language="config">RewriteRule "^/anchor/(.+)" "/bigpage.html#$1" [NE,R]</highlight>
 

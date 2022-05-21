@@ -2,7 +2,7 @@
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
-<!-- English Revision: 1900316 -->
+<!-- English Revision: 1900950 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -556,29 +556,35 @@ MDomain example2.org auto
 
     <directivesynopsis>
         <name>MDCertificateAuthority</name>
-        <description>L'URL du service ACME de l'autorité de certification.</description>
+        <description>Les URLs du service ACME de l'autorité de certification.</description>
         <syntax>MDCertificateAuthority <var>url</var></syntax>
-        <default>MDCertificateAuthority https://acme-v02.api.letsencrypt.org/directory</default>
+        <default>MDCertificateAuthority letsencrypt</default>
         <contextlist>
             <context>server config</context>
         </contextlist>
         <usage>
             <p>
-                L'URL à laquelle l'autorité de certication offre son service
-		ACME.
+                Les URLs auxquelles l'autorité de certication offre son service.
+		Plutôt que l'URL proprement dite, vous pouvez spécifier
+		'letsencrypt' ou 'buypass'.
             </p><p>
-                Let's Encrypt propose actuellement quatre URLs pour accéder à ce
-		service. Deux pour la version précédente du protocole ACME,
-		communément appelé ACMEv1, et deux pour la version de la RFC
-		8555 nommée ACMEv2.
+                Si vous spécifiez plusieurs URLs, chacune d'entre elles est
+		testée en mode tourniquet ("round-robin") après un certain
+		nombre d'échecs. Vous pouvez définir la rapidité de ce processus
+		à l'aide des directives <directive>MDRetryDelay</directive> et
+		<directive>MDRetryFailover</directive>. Par défaut, une demie
+		journée d'essais infructueux est considérée comme un échec.
             </p><p>
-                Chaque version possède deux modes de fonctionnement : un mode
-		production et un mode test. Le mode test est identique au mode
-		production, à la différence près que le certificat ne sera pas
-		reconnu par les navigateurs. Il est aussi beaucoup plus souple
-		quant aux limitations en performances. Il permet de tester de
-		manière répétée le service sans pour autant bloquer votre
-		serveur.
+                Tous les autres réglages s'appliquent à chacune de ces URLs. Il
+		est ainsi par exemple impossible d'en avoir deux avec des
+		directives <directive>MDExternalAccountBinding</directive>
+		différentes.
+	    </p><p>
+                A des fins de test, les CAs fournissent en général une seconde
+		URL de service. Le service 'test' ne fournit pas de certificat
+		valable pour un navigateur, mais il est moins regardant vis à
+		vis des limites de vitesse. Il permet de tester votre
+		configuration avant de passer à l'URL de service de production.		
             </p>
             <example><title>Configuration pour le mode test de Let's Encrypt</title>
                 <highlight language="config">
@@ -1635,6 +1641,51 @@ MDMessageCmd /etc/apache/md-message
 		qui seront utilisées lors du prochain renouvellement de
 		certificat.
              </p>
+        </usage>
+    </directivesynopsis>
+
+    <directivesynopsis>
+        <name>MDRetryDelay</name>
+        <description></description>
+        <syntax>MDRetryDelay <var>duration</var></syntax>
+        <default>MDRetryDelay 5s</default>
+        <contextlist>
+            <context>server config</context>
+        </contextlist>
+        <compatibility>Disponible à partir de la version 2.4.54 du serveur HTTP
+	Apache</compatibility>
+        <usage>
+            <p>
+                Le temps d'attente après une erreur avant de tenter à nouveau le
+		renouvellement d'un certificat. Ce temps est doublé après chaque
+		erreur consécutive avec un maximum de 24 heures.
+            </p>
+            <p>
+                Ce temps d'attente est spécifique à chaque renouvellement de
+		certificat. Autrement dit, une erreur sur un MDomain ne retarde
+		pas les renouvellements des autres domaines.
+            </p>
+        </usage>
+    </directivesynopsis>
+
+        <directivesynopsis>
+        <name>MDRetryFailover</name>
+        <description></description>
+        <syntax>MDRetryFailover <var>number</var></syntax>
+        <default>MDRetryFailover 13</default>
+        <contextlist>
+            <context>server config</context>
+        </contextlist>
+        <compatibility>Disponible à partir de la version 2.4.54 du serveur HTTP
+	Apache</compatibility>
+        <usage>
+            <p>
+                Le nombre d'erreurs consécutives lors du renouvellement d'un
+		certificat avant la sélection d'une autre CA. Ne s'applique
+		qu'aux configurations pour lesquelles plusieurs
+		<directive>MDCertificateAuthority</directive> ont été
+		spécifiées.
+            </p>
         </usage>
     </directivesynopsis>    
 
