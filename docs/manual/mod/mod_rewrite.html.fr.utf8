@@ -1481,7 +1481,8 @@ substitution !
 <tr class="odd">
         <td>noescape|NE</td>
         <td>Empêche mod_rewrite d'effectuer un échappement hexadécimal
-	des caractères spéciaux dans le résultat de la réécriture. <em><a href="../rewrite/flags.html#flag_ne">détails ...</a></em></td>
+	des caractères spéciaux dans le résultat des réécritures qui aboutissent
+	à une redirection. <em><a href="../rewrite/flags.html#flag_ne">détails ...</a></em></td>
     </tr>
 <tr>
         <td>nosubreq|NS</td>

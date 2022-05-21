@@ -29,8 +29,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_lua.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_lua.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Fournit des points d'entrée Lua dans différentes parties du
 traitement des requêtes httpd</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
@@ -1590,10 +1588,10 @@ traitement de la requête</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_lua</td></tr>
 </table>
     <p>Identique à la directive
-    <code class="directive">LuaHookTranslateName</code>, mais s'exécute à la
-    phase map-to-storage du traitement de la requête. Les modules comme
-    mod_cache agissent pendant cette phase, ce qui permet de présenter
-    un exemple intéressant de ce que l'on peut faire ici :</p>
+    <code class="directive">LuaHookTranslateName</code>, mais s'exécute à la phase
+    map-to-storage du traitement de la requête. Les modules comme
+    <code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code> agissent pendant cette phase, ce qui permet de
+    présenter un exemple intéressant de ce que l'on peut faire ici :</p>
     <pre class="prettyprint lang-config">LuaHookMapToStorage "/path/to/lua/script.lua" check_cache</pre>
 
     <pre class="prettyprint lang-lua">require"apache2"

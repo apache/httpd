@@ -880,7 +880,7 @@ inactifs</td></tr>
 	du domaine.</td></tr>
 <tr class="odd"><td><a href="mod_md.html#mdcertificateagreement">MDCertificateAgreement accepted</a></td><td></td><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Acceptation des conditions d'utilisation de l'autorité de
 	certification.</td></tr>
-<tr><td><a href="mod_md.html#mdcertificateauthority">MDCertificateAuthority <var>url</var></a></td><td> https://acme-v02.ap +</td><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">L'URL du service ACME de l'autorité de certification.</td></tr>
+<tr><td><a href="mod_md.html#mdcertificateauthority">MDCertificateAuthority <var>url</var></a></td><td> letsencrypt </td><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">Les URLs du service ACME de l'autorité de certification.</td></tr>
 <tr class="odd"><td><a href="mod_md.html#mdcertificatecheck">MDCertificateCheck <var>name</var> <var>url</var></a></td><td></td><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">-</td></tr>
 <tr><td><a href="mod_md.html#mdcertificatefile">MDCertificateFile <var>path-to-pem-file</var></a></td><td></td><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">Définit un fichier de certificat statique pour le domaine géré.</td></tr>
 <tr class="odd"><td><a href="mod_md.html#mdcertificatekeyfile">MDCertificateKeyFile <var>path-to-file</var></a></td><td></td><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Définit une clé privée statique pour le certificat
@@ -913,6 +913,8 @@ inactifs</td></tr>
 <tr><td><a href="mod_md.html#mdrenewwindow">MDRenewWindow <var>duration</var></a></td><td> 33% </td><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">Définit le moment auquel un certificat doit être renouvelé.</td></tr>
 <tr class="odd"><td><a href="mod_md.html#mdrequirehttps">MDRequireHttps off|temporary|permanent</a></td><td> off </td><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Redirige le trafic http: vers https: pour les domaines
 	gérés.</td></tr>
+<tr><td><a href="mod_md.html#mdretrydelay">MDRetryDelay <var>duration</var></a></td><td> 5s </td><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">-</td></tr>
+<tr class="odd"><td><a href="mod_md.html#mdretryfailover">MDRetryFailover <var>number</var></a></td><td> 13 </td><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">-</td></tr>
 <tr><td><a href="mod_md.html#mdserverstatus">MDServerStatus on|off</a></td><td> on </td><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">Définit si les informations à propos des domaines gérés
 	sont ajoutés ou non à server-status.</td></tr>
 <tr class="odd"><td><a href="mod_md.html#mdstapleothers">MDStapleOthers on|off</a></td><td> on </td><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Active l'agrafage pour les certificats non gérés par
