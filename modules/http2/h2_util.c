@@ -790,7 +790,10 @@ apr_status_t h2_fifo_remove(h2_fifo *fifo, void *elem)
         for (i = fifo->out; i != fifo->in; i = (i + 1) % fifo->capacity) {
             if (fifo->elems[i] == elem) {
                 --fifo->count;
-                if (i == fifo->out) {
+                if (fifo->count == 0) {
+                    fifo->out = fifo->in = 0;
+                }
+                else if (i == fifo->out) {
                     /* first element */
                     ++fifo->out;
                     if (fifo->out >= fifo->capacity) {

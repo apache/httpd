@@ -44,6 +44,8 @@ struct h2_iqueue;
 
 #include <apr_queue.h>
 
+#include "h2_workers.h"
+
 typedef struct h2_c2_transit h2_c2_transit;
 
 struct h2_c2_transit {
@@ -63,7 +65,7 @@ struct h2_mplx {
 
     int aborted;
     int polling;                    /* is waiting/processing pollset events */
-    int is_registered;              /* is registered at h2_workers */
+    ap_conn_producer_t *producer;   /* registered producer at h2_workers */
 
     struct h2_ihash_t *streams;     /* all streams active */
     struct h2_ihash_t *shold;       /* all streams done with c2 processing ongoing */
