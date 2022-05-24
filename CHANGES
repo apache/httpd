@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.54
 
+  *) core: Disable TCP_NOPUSH optimization on OSX since it might introduce
+     transmission delays.  PR 66019.  [Yann Ylavic]
+
   *) MPM event: Fix accounting of active/total processes on ungraceful restart,
      PR 66004 (follow up to PR 65626 from 2.4.52).  [Yann Ylavic]
 
