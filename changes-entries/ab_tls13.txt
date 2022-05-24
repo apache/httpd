@@ -1,2 +1,0 @@
-  *) ab: Allow for TLSv1.3 when the SSL library supports it.
-     [abhilash1232 gmail.com, xiaolongx.jiang intel.com, Yann Ylavic]

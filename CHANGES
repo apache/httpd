@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.54
 
+  *) ab: Allow for TLSv1.3 when the SSL library supports it.
+     [abhilash1232 gmail.com, xiaolongx.jiang intel.com, Yann Ylavic]
+
   *) core: Disable TCP_NOPUSH optimization on OSX since it might introduce
      transmission delays.  PR 66019.  [Yann Ylavic]
 
