@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.54
 
+  *) MPM event: Fix accounting of active/total processes on ungraceful restart,
+     PR 66004 (follow up to PR 65626 from 2.4.52).  [Yann Ylavic]
+
   *) core: make ap_escape_quotes() work correctly on strings
      with more than MAX_INT/2 characters, counting quotes double.
      Credit to <generalbugs@zippenhop.com> for finding this.
