@@ -156,6 +156,14 @@
 #include "ap_config_auto.h"
 #endif
 
+#include <math.h>
+#if APR_HAVE_CTYPE_H
+#include <ctype.h>
+#endif
+#if APR_HAVE_LIMITS_H
+#include <limits.h>
+#endif
+
 #if defined(HAVE_OPENSSL)
 
 #include <openssl/rsa.h>
@@ -166,6 +174,7 @@
 #include <openssl/ssl.h>
 #include <openssl/rand.h>
 #define USE_SSL
+
 #define SK_NUM(x) sk_X509_num(x)
 #define SK_VALUE(x,y) sk_X509_value(x,y)
 typedef STACK_OF(X509) X509_STACK_TYPE;
@@ -178,9 +187,6 @@ typedef STACK_OF(X509) X509_STACK_TYPE;
 #include <openssl/applink.c>
 #endif
 
-#endif
-
-#if defined(USE_SSL)
 #if (OPENSSL_VERSION_NUMBER >= 0x00909000)
 #define AB_SSL_METHOD_CONST const
 #else
@@ -197,6 +203,7 @@ typedef STACK_OF(X509) X509_STACK_TYPE;
 #if !defined(OPENSSL_NO_TLSEXT) && defined(SSL_set_tlsext_host_name)
 #define HAVE_TLSEXT
 #endif
+
 #if defined(LIBRESSL_VERSION_NUMBER) && LIBRESSL_VERSION_NUMBER < 0x2060000f
 #define SSL_CTRL_SET_MIN_PROTO_VERSION 123
 #define SSL_CTRL_SET_MAX_PROTO_VERSION 124
@@ -205,15 +212,21 @@ typedef STACK_OF(X509) X509_STACK_TYPE;
 #define SSL_CTX_set_max_proto_version(ctx, version) \
    SSL_CTX_ctrl(ctx, SSL_CTRL_SET_MAX_PROTO_VERSION, version, NULL)
 #endif
-#endif
 
-#include <math.h>
-#if APR_HAVE_CTYPE_H
-#include <ctype.h>
+#if OPENSSL_VERSION_NUMBER >= 0x10100000L
+#ifdef TLS1_3_VERSION
+#define MAX_SSL_PROTO TLS1_3_VERSION
+#else
+#define MAX_SSL_PROTO TLS1_2_VERSION
 #endif
-#if APR_HAVE_LIMITS_H
-#include <limits.h>
+#ifndef OPENSSL_NO_SSL3
+#define MIN_SSL_PROTO SSL3_VERSION
+#else
+#define MIN_SSL_PROTO TLS1_VERSION
 #endif
+#endif /* OPENSSL_VERSION_NUMBER >= 0x10100000L */
+
+#endif /* HAVE_OPENSSL */
 
 /* ------------------- DEFINITIONS -------------------------- */
 
@@ -2160,7 +2173,13 @@ static void usage(const char *progname)
 #endif
 
 #ifdef HAVE_TLSV1_X
+
+#ifdef TLS1_3_VERSION
+#define TLS1_X_HELP_MSG ", TLS1.1, TLS1.2, TLS1.3"
+#else
 #define TLS1_X_HELP_MSG ", TLS1.1, TLS1.2"
+#endif
+
 #else
 #define TLS1_X_HELP_MSG ""
 #endif
@@ -2293,17 +2312,13 @@ int main(int argc, const char * const argv[])
     apr_getopt_t *opt;
     const char *opt_arg;
     char c;
-#if OPENSSL_VERSION_NUMBER >= 0x10100000L
-    int max_prot = TLS1_2_VERSION;
-#ifndef OPENSSL_NO_SSL3
-    int min_prot = SSL3_VERSION;
-#else
-    int min_prot = TLS1_VERSION;
-#endif
-#endif /* #if OPENSSL_VERSION_NUMBER >= 0x10100000L */
 #ifdef USE_SSL
+#if OPENSSL_VERSION_NUMBER >= 0x10100000L
+    int max_prot = MAX_SSL_PROTO;
+    int min_prot = MIN_SSL_PROTO;
+#endif /* #if OPENSSL_VERSION_NUMBER >= 0x10100000L */
     AB_SSL_METHOD_CONST SSL_METHOD *meth = SSLv23_client_method();
-#endif
+#endif /* USE_SSL */
 
     /* table defaults  */
     tablestring = "";
@@ -2559,12 +2574,8 @@ int main(int argc, const char * const argv[])
 #else /* #if OPENSSL_VERSION_NUMBER < 0x10100000L */
                 meth = TLS_client_method();
                 if (strncasecmp(opt_arg, "ALL", 3) == 0) {
-                    max_prot = TLS1_2_VERSION;
-#ifndef OPENSSL_NO_SSL3
-                    min_prot = SSL3_VERSION;
-#else
-                    min_prot = TLS1_VERSION;
-#endif
+                    max_prot = MAX_SSL_PROTO;
+                    min_prot = MIN_SSL_PROTO;
 #ifndef OPENSSL_NO_SSL3
                 } else if (strncasecmp(opt_arg, "SSL3", 4) == 0) {
                     max_prot = SSL3_VERSION;
@@ -2576,6 +2587,11 @@ int main(int argc, const char * const argv[])
                 } else if (strncasecmp(opt_arg, "TLS1.2", 6) == 0) {
                     max_prot = TLS1_2_VERSION;
                     min_prot = TLS1_2_VERSION;
+#ifdef TLS1_3_VERSION
+                } else if (strncasecmp(opt_arg, "TLS1.3", 6) == 0) {
+                    max_prot = TLS1_3_VERSION;
+                    min_prot = TLS1_3_VERSION;
+#endif
                 } else if (strncasecmp(opt_arg, "TLS1", 4) == 0) {
                     max_prot = TLS1_VERSION;
                     min_prot = TLS1_VERSION;
@@ -2587,7 +2603,7 @@ int main(int argc, const char * const argv[])
                 tls_use_sni = 0;
                 break;
 #endif
-#endif
+#endif /* USE_SSL */
         }
     }
 
@@ -2653,13 +2669,23 @@ int main(int argc, const char * const argv[])
     /* Keep memory usage as low as possible */
     SSL_CTX_set_mode (ssl_ctx, SSL_MODE_RELEASE_BUFFERS);
 #endif
+
     if (ssl_cipher != NULL) {
-        if (!SSL_CTX_set_cipher_list(ssl_ctx, ssl_cipher)) {
-            fprintf(stderr, "error setting cipher list [%s]\n", ssl_cipher);
-        ERR_print_errors_fp(stderr);
-        exit(1);
+        int ok;
+#if OPENSSL_VERSION_NUMBER >= 0x10101000L && defined(TLS1_3_VERSION)
+        if (min_prot >= TLS1_3_VERSION)
+            ok = SSL_CTX_set_ciphersuites(ssl_ctx, ssl_cipher);
+        else
+#endif
+        ok = SSL_CTX_set_cipher_list(ssl_ctx, ssl_cipher);
+        if (!ok) {
+            BIO_printf(bio_err, "error setting ciphersuite list [%s]\n",
+                       ssl_cipher);
+            ERR_print_errors(bio_err);
+            exit(1);
+        }
     }
-    }
+
     if (verbosity >= 3) {
         SSL_CTX_set_info_callback(ssl_ctx, ssl_state_cb);
     }
