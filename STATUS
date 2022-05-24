@@ -148,14 +148,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mpm_event: Fix accounting of active/total processes on ungraceful restart. PR 66004
-     trunk patches: https://svn.apache.org/r1899777
-                    https://svn.apache.org/r1899786
-                    https://svn.apache.org/r1899812
-     2.4.x patches: https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/313.diff
-                    (from https://github.com/apache/httpd/pull/313)
-     +1: ylavic, rpluem, jorton
-
   *) core: Disable TCP_NOPUSH optimization on OSX. BZ 66019.
      trunk patches: https://svn.apache.org/r1900100
      2.4.x patches: svn merge -c 1900100 ^/httpd/httpd/trunk .
