@@ -148,11 +148,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) ab: Allow for TLSv1.3 when the SSL library supports it. BZ 63594 64699
-     trunk patches: https://svn.apache.org/r1900157
-     2.4.x patches: svn merge -c 1900157 ^/httpd/httpd/trunk .
-     +1: ylavic, rpluem, jorton
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
