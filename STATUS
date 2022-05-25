@@ -148,6 +148,19 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) mpm_event, mpm_worker: Handle children killed pathologically.
+     Trunk version of patch:
+        https://svn.apache.org/r1899858
+        https://svn.apache.org/r1899865
+        https://svn.apache.org/r1899884
+        https://svn.apache.org/r1900991
+     Backport version for 2.4.x of patch:
+      Trunk version of patch works
+      svn merge -c 1899858,1899865,1899884,1900991 ^/httpd/httpd/trunk .
+     +1: rpluem, ylavic, icing
+     rpluem says: Should we add a CHANGES entry as it seems to fix PR65769?
+     ylavic: CHANGES entry added in r1900991
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -173,19 +186,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/httpd-2.4-authn-expr.patch
      +1: minfrin, jim,
      rpluem says: The version in the compatibility notes is wrong.
-
-  *) mpm_event, mpm_worker: Handle children killed pathologically.
-     Trunk version of patch:
-        https://svn.apache.org/r1899858
-        https://svn.apache.org/r1899865
-        https://svn.apache.org/r1899884
-        https://svn.apache.org/r1900991
-     Backport version for 2.4.x of patch:
-      Trunk version of patch works
-      svn merge -c 1899858,1899865,1899884,1900991 ^/httpd/httpd/trunk .
-     +1: rpluem, ylavic,
-     rpluem says: Should we add a CHANGES entry as it seems to fix PR65769?
-     ylavic: CHANGES entry added in r1900991
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
