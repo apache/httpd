@@ -1,0 +1,4 @@
+  *) mod_md: a logic bug in sending long OCSP HTTP request bodies was fixed.
+     This did not happen in normal use as request sizes for OSCP queries
+     never exceed that length.
+     [Stefan Eissing, Ronald Crane (Zippenhop LLC)]
