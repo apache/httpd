@@ -187,7 +187,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         https://svn.apache.org/r1900064
         https://svn.apache.org/r1900077
      2.4.x patch: svn merge -c 1756843,1897890,1898731,1900064,1900077 ^/httpd/httpd/trunk .
-
+     +1: jailletc36
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
