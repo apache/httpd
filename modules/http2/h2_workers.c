@@ -61,8 +61,9 @@ struct h2_slot {
     APR_RING_ENTRY(h2_slot) link;
     int id;
     h2_slot_state_t state;
+    volatile int should_shutdown;
     volatile int is_idle;
-    volatile apr_time_t busy_start;
+    volatile apr_time_t processing_start;
     h2_workers *workers;
     ap_conn_producer_t *prod;
     apr_thread_t *thread;
@@ -77,29 +78,30 @@ struct perf_tuner_t {
     struct apr_thread_cond_t *wait;
     apr_time_t wait_time;
 
-    apr_time_t long_time;
-    volatile int long_runners;
+    apr_time_t long_duration;
 };
 
 struct h2_workers {
     server_rec *s;
     apr_pool_t *pool;
 
-    apr_uint32_t max_workers;
-    apr_uint32_t fast_workers;
-    apr_uint32_t min_workers;
+    apr_uint32_t max_slots;
+    apr_uint32_t min_active;
     volatile int max_idle_secs;
     volatile int aborted;
     volatile int shutdown;
     int dynamic;
 
+    apr_uint32_t fast_slots;
+    volatile apr_uint32_t max_active;
+    volatile apr_uint32_t active_slots;
+    volatile apr_uint32_t idle_slots;
+    volatile apr_uint32_t busy_slots;
+
     apr_threadattr_t *thread_attr;
     h2_slot *slots;
     perf_tuner_t tuner;
 
-    volatile int worker_count;
-    volatile int idle_count;
-    volatile int busy_count;
     APR_RING_HEAD(h2_slots_free, h2_slot) free;
     APR_RING_HEAD(h2_slots_idle, h2_slot) idle;
     APR_RING_HEAD(h2_slots_busy, h2_slot) busy;
@@ -131,9 +133,10 @@ static apr_status_t activate_slot(h2_workers *workers)
     ap_log_error(APLOG_MARK, APLOG_TRACE3, 0, workers->s,
                  "h2_workers: activate slot %d", slot->id);
 
-    /* thread will either immediately start work or add itself
-     * to the idle queue */
     slot->state = H2_SLOT_RUN;
+    slot->should_shutdown = 0;
+    slot->is_idle = 0;
+    ++workers->active_slots;
     rv = ap_thread_create(&slot->thread, workers->thread_attr,
                           slot_run, slot, workers->pool);
 
@@ -141,8 +144,30 @@ static apr_status_t activate_slot(h2_workers *workers)
         AP_DEBUG_ASSERT(0);
         slot->state = H2_SLOT_FREE;
         APR_RING_INSERT_TAIL(&workers->free, slot, h2_slot, link);
+        --workers->active_slots;
     }
     return rv;
+}
+
+static void join_zombies(h2_workers *workers)
+{
+    h2_slot *slot;
+    apr_status_t status;
+
+    while (!APR_RING_EMPTY(&workers->zombie, h2_slot, link)) {
+        slot = APR_RING_FIRST(&workers->zombie);
+        APR_RING_REMOVE(slot, link);
+        ap_assert(slot->state == H2_SLOT_ZOMBIE);
+        ap_assert(slot->thread != NULL);
+
+        apr_thread_mutex_unlock(workers->lock);
+        apr_thread_join(&status, slot->thread);
+        apr_thread_mutex_lock(workers->lock);
+
+        slot->thread = NULL;
+        slot->state = H2_SLOT_FREE;
+        APR_RING_INSERT_TAIL(&workers->free, slot, h2_slot, link);
+    }
 }
 
 static void* APR_THREAD_FUNC tuner_run(apr_thread_t *thread, void *wctx)
@@ -158,36 +183,82 @@ static void* APR_THREAD_FUNC tuner_run(apr_thread_t *thread, void *wctx)
         if (workers->aborted || workers->shutdown) {
             break;
         }
-        else if (APR_TIMEUP == rv) {
-            /* normal, regular update of stats */
-            if (!APR_RING_EMPTY(&workers->busy, h2_slot, link)) {
-                int long_runners = 0, i, desired, to_add;
-                h2_slot *slot;
-                apr_time_t now = apr_time_now();
 
-                for (slot = APR_RING_FIRST(&workers->idle);
-                     slot != APR_RING_SENTINEL(&workers->idle, h2_slot, link);
+        if (APR_TIMEUP == rv) {
+            int long_runners = 0, i, desired, delta;
+            apr_time_t now = apr_time_now();
+
+            if (APR_RING_EMPTY(&workers->prod_active, ap_conn_producer_t, link)) {
+                /* no pending work, no adjustments necessary */
+                continue;
+            }
+
+            /* Count the long running processing slots. */
+            if (!APR_RING_EMPTY(&workers->busy, h2_slot, link)) {
+                h2_slot *slot;
+
+                for (slot = APR_RING_FIRST(&workers->busy);
+                     slot != APR_RING_SENTINEL(&workers->busy, h2_slot, link);
                      slot = APR_RING_NEXT(slot, link)) {
-                    if (now - slot->busy_start >= tuner->long_time) {
+                    apr_time_t started = slot->processing_start;
+                    if (started && now - started >= tuner->long_duration) {
                         ++long_runners;
                     }
                 }
-                tuner->long_runners = long_runners;
-                desired = H2MIN(workers->max_workers,
-                                workers->fast_workers + tuner->long_runners);
-                if (desired > workers->worker_count) {
-                    to_add = desired - workers->worker_count;
-                    ap_log_error(APLOG_MARK, APLOG_INFO, 0, workers->s,
-                                 "h2_workers: activating %d more slots", to_add);
-                    for (i = 0; i < to_add; ++i) {
-                        activate_slot(workers);
+            }
+
+            /* what change in number of active slots would we like to see? */
+            desired = H2MIN(workers->max_slots,
+                            workers->fast_slots + long_runners);
+            if (desired == workers->max_active) {
+                continue;
+            }
+
+            workers->max_active = desired;
+            delta = workers->max_active - workers->active_slots;
+            ap_log_error(APLOG_MARK, APLOG_INFO, 0, workers->s,
+                         "h2_workers tune: slots[%d,%d], active=%d, max_active=%d, long_runners=%d",
+                         workers->min_active, workers->max_slots,
+                         workers->active_slots, workers->max_active,
+                         long_runners);
+
+            if (delta > 0) {
+                /* revert shutdown slots that have not already done so */
+                for (i = 0; i < workers->max_slots && delta > 0; ++i) {
+                    if (workers->slots[i].should_shutdown
+                        && workers->slots[i].state == H2_SLOT_RUN) {
+                        workers->slots[i].should_shutdown = 0;
+                        --delta;
+                        ap_log_error(APLOG_MARK, APLOG_INFO, 0, workers->s,
+                                     "h2_workers tune: un-shutdown slot[%d]", workers->slots[i].id);
                     }
                 }
-                else if (desired < workers->worker_count) {
-                    /* long runners disappeard, we'd like to go
-                     * down to workers->fast_workers again.
-                     */
-
+                if (delta > 0) {
+                    /* if still not enough, activate another slot */
+                    ap_log_error(APLOG_MARK, APLOG_INFO, 0, workers->s,
+                                 "h2_workers tune: activate slot");
+                    activate_slot(workers);
+                }
+            }
+            else if (delta < 0) {
+                /* discounts slots, we already told to shutdown. */
+                for (i = workers->min_active; i < workers->max_slots; ++i) {
+                    if (workers->slots[i].should_shutdown) {
+                        ++delta;
+                        ap_log_error(APLOG_MARK, APLOG_INFO, 0, workers->s,
+                                     "h2_workers tune: already shutdown slot[%d]", workers->slots[i].id);
+                    }
+                }
+                /* And tell more to shutdown if necessary */
+                for (i = workers->min_active; i < workers->max_slots && delta < 0; ++i) {
+                    if (!workers->slots[i].should_shutdown
+                        && workers->slots[i].state == H2_SLOT_RUN) {
+                        workers->slots[i].should_shutdown = 1;
+                        ++delta;
+                        apr_thread_cond_signal(workers->slots[i].more_work);
+                        ap_log_error(APLOG_MARK, APLOG_INFO, 0, workers->s,
+                                     "h2_workers tune: shutdown slot[%d]", workers->slots[i].id);
+                    }
                 }
             }
         }
@@ -208,8 +279,8 @@ static apr_status_t tuner_start(h2_workers *workers)
     ap_log_error(APLOG_MARK, APLOG_TRACE3, 0, workers->s,
                  "h2_workers: start tuner");
     workers->tuner.workers = workers;
-    workers->tuner.wait_time = apr_time_from_msec(500);
-    workers->tuner.long_time = apr_time_from_msec(50);
+    workers->tuner.wait_time = apr_time_from_msec(100);
+    workers->tuner.long_duration = apr_time_from_msec(50);
 
     rv = apr_thread_cond_create(&workers->tuner.wait, workers->pool);
     if (rv != APR_SUCCESS) goto cleanup;
@@ -227,7 +298,7 @@ static void wake_idle_worker(h2_workers *workers, ap_conn_producer_t *prod)
         for (slot = APR_RING_FIRST(&workers->idle);
              slot != APR_RING_SENTINEL(&workers->idle, h2_slot, link);
              slot = APR_RING_NEXT(slot, link)) {
-             if (slot->is_idle) {
+             if (slot->is_idle && !slot->should_shutdown) {
                 apr_thread_cond_signal(slot->more_work);
                 slot->is_idle = 0;
                 return;
@@ -235,29 +306,8 @@ static void wake_idle_worker(h2_workers *workers, ap_conn_producer_t *prod)
         }
     }
     if (workers->dynamic && !workers->shutdown
-        && (workers->worker_count < workers->fast_workers)) {
+        && (workers->active_slots < workers->max_active)) {
         activate_slot(workers);
-    }
-}
-
-static void join_zombies(h2_workers *workers)
-{
-    h2_slot *slot;
-    apr_status_t status;
-
-    while (!APR_RING_EMPTY(&workers->zombie, h2_slot, link)) {
-        slot = APR_RING_FIRST(&workers->zombie);
-        APR_RING_REMOVE(slot, link);
-        ap_assert(slot->state == H2_SLOT_ZOMBIE);
-        ap_assert(slot->thread != NULL);
-        apr_thread_mutex_unlock(workers->lock);
-
-        apr_thread_join(&status, slot->thread);
-
-        apr_thread_mutex_lock(workers->lock);
-        slot->thread = NULL;
-        slot->state = H2_SLOT_FREE;
-        APR_RING_INSERT_TAIL(&workers->free, slot, h2_slot, link);
     }
 }
 
@@ -304,26 +354,26 @@ static void* APR_THREAD_FUNC slot_run(apr_thread_t *thread, void *wctx)
 
     apr_thread_mutex_lock(workers->lock);
     slot->state = H2_SLOT_RUN;
-    ++workers->worker_count;
     ++slot->activations;
     APR_RING_ELEM_INIT(slot, link);
     for(;;) {
         if (APR_RING_NEXT(slot, link) != slot) {
             /* slot is part of the idle ring from the last loop */
             APR_RING_REMOVE(slot, link);
-            --workers->idle_count;
+            --workers->idle_slots;
         }
         slot->is_idle = 0;
+        slot->processing_start = 0;
 
-        if (slot->state == H2_SLOT_RUN && !workers->aborted) {
+        if (!workers->aborted && !slot->should_shutdown) {
             APR_RING_INSERT_TAIL(&workers->busy, slot, h2_slot, link);
-            ++workers->busy_count;
-            slot->busy_start = apr_time_now();
+            ++workers->busy_slots;
             do {
                 c = get_next(slot);
                 if (!c) {
                     break;
                 }
+                slot->processing_start = apr_time_now();
                 apr_thread_mutex_unlock(workers->lock);
                 /* See the discussion at <https://github.com/icing/mod_h2/issues/195>
                  *
@@ -368,12 +418,13 @@ static void* APR_THREAD_FUNC slot_run(apr_thread_t *thread, void *wctx)
                     apr_thread_cond_broadcast(workers->prod_done);
                 }
 
-            } while (slot->state == H2_SLOT_RUN && !workers->aborted);
+            } while (!workers->aborted && !slot->should_shutdown);
             APR_RING_REMOVE(slot, link); /* no longer busy */
-            --workers->busy_count;
+            --workers->busy_slots;
+            slot->processing_start = 0;
         }
 
-        if (slot->state != H2_SLOT_RUN || workers->aborted) {
+        if (workers->aborted || slot->should_shutdown) {
             break;
         }
 
@@ -381,15 +432,15 @@ static void* APR_THREAD_FUNC slot_run(apr_thread_t *thread, void *wctx)
 
         /* we are idle */
         APR_RING_INSERT_TAIL(&workers->idle, slot, h2_slot, link);
-        ++workers->idle_count;
+        ++workers->idle_slots;
         slot->is_idle = 1;
-        if (slot->id >= workers->min_workers
+        if (slot->id >= workers->min_active
             && (idle_secs = workers->max_idle_secs)) {
             rv = apr_thread_cond_timedwait(slot->more_work, workers->lock,
                                            apr_time_from_sec(idle_secs));
             if (APR_TIMEUP == rv) {
                 APR_RING_REMOVE(slot, link);
-                --workers->idle_count;
+                --workers->idle_slots;
                 ap_log_error(APLOG_MARK, APLOG_ERR, 0, workers->s,
                              "h2_workers: idle timeout slot %d in state %d (%d activations)",
                              slot->id, slot->state, slot->activations);
@@ -406,9 +457,10 @@ static void* APR_THREAD_FUNC slot_run(apr_thread_t *thread, void *wctx)
                  slot->id, slot->state, slot->activations);
     slot->is_idle = 0;
     slot->state = H2_SLOT_ZOMBIE;
+    slot->should_shutdown = 0;
     APR_RING_INSERT_TAIL(&workers->zombie, slot, h2_slot, link);
-    --workers->worker_count;
-    if (workers->worker_count <= 0) {
+    --workers->active_slots;
+    if (workers->active_slots <= 0) {
         apr_thread_cond_broadcast(workers->all_done);
     }
     apr_thread_mutex_unlock(workers->lock);
@@ -437,7 +489,7 @@ static apr_status_t workers_pool_cleanup(void *data)
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, workers->s,
                  "h2_workers: cleanup %d workers (%d busy, %d idle)",
-                 workers->worker_count, workers->busy_count, workers->idle_count);
+                 workers->active_slots, workers->busy_slots, workers->idle_slots);
     apr_thread_mutex_lock(workers->lock);
     workers->shutdown = 1;
     workers->aborted = 1;
@@ -452,7 +504,7 @@ static apr_status_t workers_pool_cleanup(void *data)
     end = apr_time_now() + apr_time_from_sec(wait_sec);
     while (apr_time_now() < end) {
         apr_thread_mutex_lock(workers->lock);
-        if (!(n = workers->worker_count)) {
+        if (!(n = workers->active_slots)) {
             apr_thread_mutex_unlock(workers->lock);
             break;
         }
@@ -465,14 +517,14 @@ static apr_status_t workers_pool_cleanup(void *data)
             ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, workers->s,
                          APLOGNO(10290) "h2_workers: waiting for workers to close, "
                          "still seeing %d workers (%d busy, %d idle) living",
-                         workers->worker_count, workers->busy_count, workers->idle_count);
+                         workers->active_slots, workers->busy_slots, workers->idle_slots);
         }
     }
     if (n) {
         ap_log_error(APLOG_MARK, APLOG_WARNING, 0, workers->s,
                      APLOGNO(10291) "h2_workers: cleanup, %d workers (%d busy, %d idle) "
                      "did not exit after %d seconds.",
-                     n, workers->busy_count, workers->idle_count, wait_sec);
+                     n, workers->busy_slots, workers->idle_slots, wait_sec);
     }
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, workers->s,
                  "h2_workers: cleanup all workers terminated");
@@ -489,7 +541,7 @@ static apr_status_t workers_pool_cleanup(void *data)
 }
 
 h2_workers *h2_workers_create(server_rec *s, apr_pool_t *pchild,
-                              int min_workers, int max_workers,
+                              int min_active, int max_slots,
                               int idle_secs)
 {
     apr_status_t rv;
@@ -514,14 +566,15 @@ h2_workers *h2_workers_create(server_rec *s, apr_pool_t *pchild,
     
     workers->s = s;
     workers->pool = pool;
-    workers->min_workers = min_workers;
-    workers->fast_workers = H2MIN(H2MAX(min_workers, 20), max_workers);
-    workers->max_workers = max_workers;
+    workers->min_active = min_active;
+    workers->max_slots = max_slots;
     workers->max_idle_secs = (idle_secs > 0)? idle_secs : 10;
+    workers->fast_slots = H2MIN(H2MAX(min_active, 20), max_slots);
+    workers->max_active = workers->fast_slots;
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, workers->s,
                  "h2_workers: created with min=%d max=%d idle_timeout=%d sec",
-                 workers->min_workers, workers->max_workers,
+                 workers->min_active, workers->max_slots,
                  (int)workers->max_idle_secs);
 
     APR_RING_INIT(&workers->idle, h2_slot, link);
@@ -556,10 +609,10 @@ h2_workers *h2_workers_create(server_rec *s, apr_pool_t *pchild,
     locked = 1;
 
     /* create the slots and put them on the free list */
-    workers->dynamic = (workers->min_workers < workers->max_workers);
-    workers->slots = apr_pcalloc(workers->pool, workers->max_workers * sizeof(h2_slot));
+    workers->dynamic = (workers->min_active < workers->max_slots);
+    workers->slots = apr_pcalloc(workers->pool, workers->max_slots * sizeof(h2_slot));
 
-    for (i = 0; i < workers->max_workers; ++i) {
+    for (i = 0; i < workers->max_slots; ++i) {
         workers->slots[i].id = i;
         workers->slots[i].state = H2_SLOT_FREE;
         workers->slots[i].workers = workers;
@@ -570,7 +623,7 @@ h2_workers *h2_workers_create(server_rec *s, apr_pool_t *pchild,
     }
 
     /* activate the min amount of workers */
-    for (i = 0; i < workers->min_workers; ++i) {
+    for (i = 0; i < workers->min_active; ++i) {
         rv = activate_slot(workers);
         if (rv != APR_SUCCESS) goto cleanup;
     }
@@ -597,7 +650,7 @@ cleanup:
 
 apr_size_t h2_workers_get_max_workers(h2_workers *workers)
 {
-    return workers->max_workers;
+    return workers->max_slots;
 }
 
 void h2_workers_graceful_shutdown(h2_workers *workers)
