@@ -242,7 +242,7 @@ static void* APR_THREAD_FUNC tuner_run(apr_thread_t *thread, void *wctx)
                 /* indications that we need more workers are acted on immediately */
                 workers->max_active = tuner->advised_average;
                 tuner->measures = 0;
-                ap_log_error(APLOG_MARK, APLOG_INFO, 0, workers->s,
+                ap_log_error(APLOG_MARK, APLOG_TRACE1, 0, workers->s,
                              "h2_workers tune, increase: slots[%d,%d], active=%d, "
                              "new max_active=%d, long_runners=%d",
                              workers->min_active, workers->max_slots,
@@ -269,7 +269,7 @@ static void* APR_THREAD_FUNC tuner_run(apr_thread_t *thread, void *wctx)
             else if (delta < 0 && (now - tuner->measure_start) >= tuner->measure_action_delay) {
                 /* reductions of workers we do only after a certain delay on more samples */
                 workers->max_active = tuner->advised_average;
-                ap_log_error(APLOG_MARK, APLOG_INFO, 0, workers->s,
+                ap_log_error(APLOG_MARK, APLOG_TRACE1, 0, workers->s,
                              "h2_workers tune, decrease: slots[%d,%d], active=%d, "
                              "adviced_active=%d (%d measures), long_runners=%d",
                              workers->min_active, workers->max_slots,
@@ -308,7 +308,9 @@ static void* APR_THREAD_FUNC tuner_run(apr_thread_t *thread, void *wctx)
     return NULL;
 }
 
-static apr_status_t tuner_start(h2_workers *workers)
+static apr_status_t tuner_start(h2_workers *workers,
+                                apr_time_t run_interval,
+                                apr_time_t action_delay)
 {
     perf_tuner_t *tuner = &workers->tuner;
     apr_status_t rv;
@@ -316,8 +318,8 @@ static apr_status_t tuner_start(h2_workers *workers)
     ap_log_error(APLOG_MARK, APLOG_TRACE3, 0, workers->s,
                  "h2_workers: start tuner");
     tuner->workers = workers;
-    tuner->wait_time = apr_time_from_msec(100);
-    tuner->measure_action_delay = apr_time_from_msec(1000);
+    tuner->wait_time = run_interval;
+    tuner->measure_action_delay = action_delay;
     tuner->measures = 0;
     tuner->measure_start = apr_time_now();
 
@@ -533,7 +535,9 @@ static apr_status_t workers_pool_cleanup(void *data)
     workers->shutdown = 1;
     workers->aborted = 1;
     wake_all_idles(workers);
-    apr_thread_cond_signal(workers->tuner.wait);
+    if (workers->tuner.wait) {
+        apr_thread_cond_signal(workers->tuner.wait);
+    }
     apr_thread_mutex_unlock(workers->lock);
 
     /* wait for all the workers to become zombies and join them.
@@ -548,7 +552,9 @@ static apr_status_t workers_pool_cleanup(void *data)
             break;
         }
         wake_all_idles(workers);
-        apr_thread_cond_signal(workers->tuner.wait);
+        if (workers->tuner.wait) {
+            apr_thread_cond_signal(workers->tuner.wait);
+        }
         rv = apr_thread_cond_timedwait(workers->all_done, workers->lock, timeout);
         apr_thread_mutex_unlock(workers->lock);
 
@@ -572,9 +578,11 @@ static apr_status_t workers_pool_cleanup(void *data)
     apr_thread_mutex_unlock(workers->lock);
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, workers->s,
                  "h2_workers: cleanup zombie workers joined");
-    apr_thread_join(&rv, workers->tuner.thread);
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, workers->s,
-                 "h2_workers: tuner thread joined");
+    if (workers->tuner.thread) {
+        apr_thread_join(&rv, workers->tuner.thread);
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, workers->s,
+                     "h2_workers: tuner thread joined");
+    }
 
     return APR_SUCCESS;
 }
@@ -586,7 +594,8 @@ h2_workers *h2_workers_create(server_rec *s, apr_pool_t *pchild,
     apr_status_t rv;
     h2_workers *workers;
     apr_pool_t *pool;
-    int i, locked = 0;
+    int i, locked = 0, fast_slots;
+    apr_time_t tuner_interval, tuner_action_delay;
 
     ap_assert(s);
     ap_assert(pchild);
@@ -608,8 +617,17 @@ h2_workers *h2_workers_create(server_rec *s, apr_pool_t *pchild,
     workers->min_active = min_active;
     workers->max_slots = max_slots;
     workers->max_idle_secs = (idle_secs > 0)? idle_secs : 10;
-    workers->fast_slots = H2MIN(H2MAX(min_active, 20), max_slots);
-    workers->long_duration = apr_time_from_msec(50);
+    workers->dynamic = (workers->min_active < workers->max_slots);
+
+    /* TODO: make these configurable */
+    tuner_interval = apr_time_from_msec(100);       /* interval tuner runs */
+    tuner_action_delay = apr_time_from_msec(1000);  /* delay on decrease of active slots, e.g.
+                                                     * the need for decrease must be sustained that
+                                                     * long to act on it. */
+    workers->long_duration = apr_time_from_msec(50);/* duration for regarding a slot a long runner */
+    fast_slots = 20;                                /* active slots when no long requests run */
+
+    workers->fast_slots = H2MIN(H2MAX(min_active, fast_slots), max_slots);
     workers->max_active = workers->fast_slots;
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, workers->s,
@@ -649,7 +667,6 @@ h2_workers *h2_workers_create(server_rec *s, apr_pool_t *pchild,
     locked = 1;
 
     /* create the slots and put them on the free list */
-    workers->dynamic = (workers->min_active < workers->max_slots);
     workers->slots = apr_pcalloc(workers->pool, workers->max_slots * sizeof(h2_slot));
 
     for (i = 0; i < workers->max_slots; ++i) {
@@ -668,9 +685,10 @@ h2_workers *h2_workers_create(server_rec *s, apr_pool_t *pchild,
         if (rv != APR_SUCCESS) goto cleanup;
     }
 
-    rv = tuner_start(workers);
-    if (rv != APR_SUCCESS) goto cleanup;
-
+    if (workers->dynamic && workers->fast_slots < workers->max_slots) {
+        rv = tuner_start(workers, tuner_interval, tuner_action_delay);
+        if (rv != APR_SUCCESS) goto cleanup;
+    }
 
 cleanup:
     if (locked) {
