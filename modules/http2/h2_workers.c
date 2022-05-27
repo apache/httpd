@@ -78,7 +78,10 @@ struct perf_tuner_t {
     struct apr_thread_cond_t *wait;
     apr_time_t wait_time;
 
-    apr_time_t long_duration;
+    apr_time_t measure_action_delay;
+    apr_time_t measure_start;
+    apr_uint32_t measures;
+    apr_uint32_t advised_average;
 };
 
 struct h2_workers {
@@ -93,6 +96,7 @@ struct h2_workers {
     int dynamic;
 
     apr_uint32_t fast_slots;
+    apr_time_t long_duration;
     volatile apr_uint32_t max_active;
     volatile apr_uint32_t active_slots;
     volatile apr_uint32_t idle_slots;
@@ -201,7 +205,7 @@ static void* APR_THREAD_FUNC tuner_run(apr_thread_t *thread, void *wctx)
                      slot != APR_RING_SENTINEL(&workers->busy, h2_slot, link);
                      slot = APR_RING_NEXT(slot, link)) {
                     apr_time_t started = slot->processing_start;
-                    if (started && now - started >= tuner->long_duration) {
+                    if (started && now - started >= workers->long_duration) {
                         ++long_runners;
                     }
                 }
@@ -211,41 +215,73 @@ static void* APR_THREAD_FUNC tuner_run(apr_thread_t *thread, void *wctx)
             desired = H2MIN(workers->max_slots,
                             workers->fast_slots + long_runners);
             if (desired == workers->max_active) {
+                /* number of active workers is as it should be */
+                tuner->measures = 0;
+                ap_log_error(APLOG_MARK, APLOG_TRACE4, 0, workers->s,
+                             "h2_workers tune, all fine: slots[%d,%d], active=%d",
+                             workers->min_active, workers->max_slots,
+                             workers->active_slots);
                 continue;
             }
 
-            workers->max_active = desired;
-            delta = workers->max_active - workers->active_slots;
-            ap_log_error(APLOG_MARK, APLOG_INFO, 0, workers->s,
-                         "h2_workers tune: slots[%d,%d], active=%d, max_active=%d, long_runners=%d",
-                         workers->min_active, workers->max_slots,
-                         workers->active_slots, workers->max_active,
-                         long_runners);
+            join_zombies(workers);
 
+            if (!tuner->measures) {
+                tuner->measure_start = now;
+                tuner->measures = 1;
+                tuner->advised_average = desired;
+            }
+            else {
+                desired = ((tuner->advised_average * tuner->measures) + desired);
+                ++tuner->measures;
+                tuner->advised_average = (desired / tuner->measures);
+            }
+
+            delta = tuner->advised_average - workers->active_slots;
             if (delta > 0) {
+                /* indications that we need more workers are acted on immediately */
+                workers->max_active = tuner->advised_average;
+                tuner->measures = 0;
+                ap_log_error(APLOG_MARK, APLOG_INFO, 0, workers->s,
+                             "h2_workers tune, increase: slots[%d,%d], active=%d, "
+                             "new max_active=%d, long_runners=%d",
+                             workers->min_active, workers->max_slots,
+                             workers->active_slots, workers->max_active,
+                             long_runners);
+
                 /* revert shutdown slots that have not already done so */
                 for (i = 0; i < workers->max_slots && delta > 0; ++i) {
                     if (workers->slots[i].should_shutdown
                         && workers->slots[i].state == H2_SLOT_RUN) {
                         workers->slots[i].should_shutdown = 0;
                         --delta;
-                        ap_log_error(APLOG_MARK, APLOG_INFO, 0, workers->s,
+                        ap_log_error(APLOG_MARK, APLOG_TRACE5, 0, workers->s,
                                      "h2_workers tune: un-shutdown slot[%d]", workers->slots[i].id);
                     }
                 }
                 if (delta > 0) {
                     /* if still not enough, activate another slot */
-                    ap_log_error(APLOG_MARK, APLOG_INFO, 0, workers->s,
+                    ap_log_error(APLOG_MARK, APLOG_TRACE5, 0, workers->s,
                                  "h2_workers tune: activate slot");
                     activate_slot(workers);
                 }
             }
-            else if (delta < 0) {
+            else if (delta < 0 && (now - tuner->measure_start) >= tuner->measure_action_delay) {
+                /* reductions of workers we do only after a certain delay on more samples */
+                workers->max_active = tuner->advised_average;
+                ap_log_error(APLOG_MARK, APLOG_INFO, 0, workers->s,
+                             "h2_workers tune, decrease: slots[%d,%d], active=%d, "
+                             "adviced_active=%d (%d measures), long_runners=%d",
+                             workers->min_active, workers->max_slots,
+                             workers->active_slots, workers->max_active,
+                             tuner->measures, long_runners);
+                tuner->measures = 0;
+
                 /* discounts slots, we already told to shutdown. */
                 for (i = workers->min_active; i < workers->max_slots; ++i) {
                     if (workers->slots[i].should_shutdown) {
                         ++delta;
-                        ap_log_error(APLOG_MARK, APLOG_INFO, 0, workers->s,
+                        ap_log_error(APLOG_MARK, APLOG_TRACE5, 0, workers->s,
                                      "h2_workers tune: already shutdown slot[%d]", workers->slots[i].id);
                     }
                 }
@@ -256,7 +292,7 @@ static void* APR_THREAD_FUNC tuner_run(apr_thread_t *thread, void *wctx)
                         workers->slots[i].should_shutdown = 1;
                         ++delta;
                         apr_thread_cond_signal(workers->slots[i].more_work);
-                        ap_log_error(APLOG_MARK, APLOG_INFO, 0, workers->s,
+                        ap_log_error(APLOG_MARK, APLOG_TRACE5, 0, workers->s,
                                      "h2_workers tune: shutdown slot[%d]", workers->slots[i].id);
                     }
                 }
@@ -274,19 +310,22 @@ static void* APR_THREAD_FUNC tuner_run(apr_thread_t *thread, void *wctx)
 
 static apr_status_t tuner_start(h2_workers *workers)
 {
+    perf_tuner_t *tuner = &workers->tuner;
     apr_status_t rv;
 
     ap_log_error(APLOG_MARK, APLOG_TRACE3, 0, workers->s,
                  "h2_workers: start tuner");
-    workers->tuner.workers = workers;
-    workers->tuner.wait_time = apr_time_from_msec(100);
-    workers->tuner.long_duration = apr_time_from_msec(50);
+    tuner->workers = workers;
+    tuner->wait_time = apr_time_from_msec(100);
+    tuner->measure_action_delay = apr_time_from_msec(1000);
+    tuner->measures = 0;
+    tuner->measure_start = apr_time_now();
 
-    rv = apr_thread_cond_create(&workers->tuner.wait, workers->pool);
+    rv = apr_thread_cond_create(&tuner->wait, workers->pool);
     if (rv != APR_SUCCESS) goto cleanup;
 
-    rv = ap_thread_create(&workers->tuner.thread, workers->thread_attr,
-                          tuner_run, &workers->tuner, workers->pool);
+    rv = ap_thread_create(&tuner->thread, workers->thread_attr,
+                          tuner_run, tuner, workers->pool);
 cleanup:
     return rv;
 }
@@ -570,6 +609,7 @@ h2_workers *h2_workers_create(server_rec *s, apr_pool_t *pchild,
     workers->max_slots = max_slots;
     workers->max_idle_secs = (idle_secs > 0)? idle_secs : 10;
     workers->fast_slots = H2MIN(H2MAX(min_active, 20), max_slots);
+    workers->long_duration = apr_time_from_msec(50);
     workers->max_active = workers->fast_slots;
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, workers->s,
