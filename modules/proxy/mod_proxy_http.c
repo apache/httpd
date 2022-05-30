@@ -547,10 +547,6 @@ static int ap_proxy_http_prefetch(proxy_http_req_t *req,
     apr_off_t bytes;
     int rv;
 
-    if (req->force10 && r->expecting_100) {
-        return HTTP_EXPECTATION_FAILED;
-    }
-
     rv = ap_proxy_create_hdrbrgd(p, header_brigade, r, p_conn,
                                  req->worker, req->sconf,
                                  uri, url, req->server_portstr,
@@ -2008,8 +2004,9 @@ static int proxy_http_handler(request_rec *r, proxy_worker *worker,
     apr_pool_userdata_get((void **)&input_brigade, "proxy-req-input", p);
 
     /* Should we handle end-to-end or ping 100-continue? */
-    if ((r->expecting_100 && (dconf->forward_100_continue || input_brigade))
-            || PROXY_DO_100_CONTINUE(worker, r)) {
+    if (!req->force10
+        && ((r->expecting_100 && (dconf->forward_100_continue || input_brigade))
+            || PROXY_SHOULD_PING_100_CONTINUE(worker, r))) {
         req->do_100_continue = 1;
     }
 
