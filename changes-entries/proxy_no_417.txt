@@ -1,0 +1,2 @@
+  *) mod_proxy_http: Avoid 417 responses for non forwardable 100-continue.
+     PR 65666.  [Yann Ylavic]

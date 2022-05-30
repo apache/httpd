@@ -3876,7 +3876,7 @@ PROXY_DECLARE(int) ap_proxy_create_hdrbrgd(apr_pool_t *p,
     const apr_array_header_t *headers_in_array;
     const apr_table_entry_t *headers_in;
     apr_bucket *e;
-    int do_100_continue;
+    int force10 = 0, ping100 = 0;
     conn_rec *origin = p_conn->connection;
     proxy_dir_conf *dconf = ap_get_module_config(r->per_dir_config, &proxy_module);
 
@@ -3885,27 +3885,24 @@ PROXY_DECLARE(int) ap_proxy_create_hdrbrgd(apr_pool_t *p,
      * To be compliant, we only use 100-Continue for requests with bodies.
      * We also make sure we won't be talking HTTP/1.0 as well.
      */
-    do_100_continue = PROXY_DO_100_CONTINUE(worker, r);
-
     if (apr_table_get(r->subprocess_env, "force-proxy-request-1.0")) {
-        /*
-         * According to RFC 2616 8.2.3 we are not allowed to forward an
-         * Expect: 100-continue to an HTTP/1.0 server. Instead we MUST return
-         * a HTTP_EXPECTATION_FAILED
-         */
-        if (r->expecting_100) {
-            return HTTP_EXPECTATION_FAILED;
-        }
-        buf = apr_pstrcat(p, r->method, " ", url, " HTTP/1.0" CRLF, NULL);
-        p_conn->close = 1;
-    } else {
-        buf = apr_pstrcat(p, r->method, " ", url, " HTTP/1.1" CRLF, NULL);
+        force10 = 1;
     }
-    if (apr_table_get(r->subprocess_env, "proxy-nokeepalive")) {
+    else if (PROXY_SHOULD_PING_100_CONTINUE(worker, r)) {
+        ping100 = 1;
+    }
+    if (force10 || apr_table_get(r->subprocess_env, "proxy-nokeepalive")) {
         if (origin) {
             origin->keepalive = AP_CONN_CLOSE;
         }
         p_conn->close = 1;
+    }
+
+    if (force10) {
+        buf = apr_pstrcat(p, r->method, " ", url, " HTTP/1.0" CRLF, NULL);
+    }
+    else {
+        buf = apr_pstrcat(p, r->method, " ", url, " HTTP/1.1" CRLF, NULL);
     }
     ap_xlate_proto_to_ascii(buf, strlen(buf));
     e = apr_bucket_pool_create(buf, strlen(buf), p, c->bucket_alloc);
@@ -4025,15 +4022,16 @@ PROXY_DECLARE(int) ap_proxy_create_hdrbrgd(apr_pool_t *p,
     /* Use HTTP/1.1 100-Continue as quick "HTTP ping" test
      * to backend
      */
-    if (do_100_continue) {
-        const char *val;
-
+    if (ping100) {
         /* Add the Expect header if not already there. */
-        if (((val = apr_table_get(r->headers_in, "Expect")) == NULL)
-                || (ap_cstr_casecmp(val, "100-Continue") != 0 /* fast path */
-                    && !ap_find_token(r->pool, val, "100-Continue"))) {
+        const char *val = apr_table_get(r->headers_in, "Expect");
+        if (!val || (ap_cstr_casecmp(val, "100-Continue") != 0 /* fast path */
+                     && !ap_find_token(r->pool, val, "100-Continue"))) {
             apr_table_mergen(r->headers_in, "Expect", "100-Continue");
         }
+    }
+    else if (force10 || !dconf->forward_100_continue || !r->expecting_100) {
+        apr_table_unset(r->headers_in, "Expect");
     }
 
     /* X-Forwarded-*: handling
