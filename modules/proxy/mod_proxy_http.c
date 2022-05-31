@@ -1929,6 +1929,8 @@ static int proxy_http_handler(request_rec *r, proxy_worker *worker,
     if (!req->force10
         && ((r->expecting_100 && (dconf->forward_100_continue || input_brigade))
             || PROXY_SHOULD_PING_100_CONTINUE(worker, r))) {
+        /* Tell ap_proxy_create_hdrbrgd() to preserve/add the Expect header */
+        apr_table_setn(r->notes, "proxy-100-continue", "1");
         req->do_100_continue = 1;
     }
 
