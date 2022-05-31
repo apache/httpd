@@ -3891,7 +3891,7 @@ PROXY_DECLARE(int) ap_proxy_create_hdrbrgd(apr_pool_t *p,
     char *buf;
     apr_table_t *saved_headers_in, *request_headers;
     apr_bucket *e;
-    int force10 = 0, ping100 = 0;
+    int force10 = 0, do_100_continue = 0;
     conn_rec *origin = p_conn->connection;
     const char *creds;
     proxy_dir_conf *dconf = ap_get_module_config(r->per_dir_config, &proxy_module);
@@ -3904,8 +3904,9 @@ PROXY_DECLARE(int) ap_proxy_create_hdrbrgd(apr_pool_t *p,
     if (apr_table_get(r->subprocess_env, "force-proxy-request-1.0")) {
         force10 = 1;
     }
-    else if (PROXY_SHOULD_PING_100_CONTINUE(worker, r)) {
-        ping100 = 1;
+    else if (apr_table_get(r->notes, "proxy-100-continue")
+             || PROXY_SHOULD_PING_100_CONTINUE(worker, r)) {
+        do_100_continue = 1;
     }
     if (force10 || apr_table_get(r->subprocess_env, "proxy-nokeepalive")) {
         if (origin) {
@@ -4012,7 +4013,7 @@ PROXY_DECLARE(int) ap_proxy_create_hdrbrgd(apr_pool_t *p,
     /* Use HTTP/1.1 100-Continue as quick "HTTP ping" test
      * to backend
      */
-    if (ping100) {
+    if (do_100_continue) {
         /* Add the Expect header if not already there. */
         const char *val = apr_table_get(request_headers, "Expect");
         if (!val || (ap_cstr_casecmp(val, "100-Continue") != 0 /* fast path */
@@ -4020,7 +4021,10 @@ PROXY_DECLARE(int) ap_proxy_create_hdrbrgd(apr_pool_t *p,
             apr_table_mergen(request_headers, "Expect", "100-Continue");
         }
     }
-    else if (force10 || !dconf->forward_100_continue || !r->expecting_100) {
+    else {
+        /* XXX: we should strip the 100-continue token only from the
+         * Expect header, but are there others actually used anywhere?
+         */
         apr_table_unset(request_headers, "Expect");
     }
 
