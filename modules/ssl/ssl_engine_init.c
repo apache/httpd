@@ -216,7 +216,7 @@ int ssl_is_challenge(conn_rec *c, const char *servername,
 #ifdef HAVE_FIPS
 static apr_status_t modssl_fips_cleanup(void *data)
 {
-    FIPS_mode_set(0);
+    modssl_fips_enable(0);
     return APR_SUCCESS;
 }
 #endif
@@ -348,8 +348,8 @@ apr_status_t ssl_init_Module(apr_pool_t *p, apr_pool_t *plog,
     }
 
 #ifdef HAVE_FIPS
-    if (!FIPS_mode() && mc->fips == TRUE) {
-        if (!FIPS_mode_set(1)) {
+    if (!modssl_fips_is_enabled() && mc->fips == TRUE) {
+        if (!modssl_fips_enable(1)) {
             ap_log_error(APLOG_MARK, APLOG_EMERG, 0, base_server, APLOGNO(01885)
                          "Could not enable FIPS mode");
             ssl_log_ssl_error(SSLLOG_MARK, APLOG_EMERG, base_server);
@@ -363,7 +363,7 @@ apr_status_t ssl_init_Module(apr_pool_t *p, apr_pool_t *plog,
     /* Log actual FIPS mode which the SSL library is operating under,
      * which may have been set outside of the mod_ssl
      * configuration. */
-    if (FIPS_mode()) {
+    if (modssl_fips_is_enabled()) {
         ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, base_server, APLOGNO(01884)
                      MODSSL_LIBRARY_NAME " has FIPS mode enabled");
     }
