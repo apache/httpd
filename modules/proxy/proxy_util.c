@@ -3887,13 +3887,15 @@ PROXY_DECLARE(int) ap_proxy_create_hdrbrgd(apr_pool_t *p,
                                             char **old_cl_val,
                                             char **old_te_val)
 {
+    int rc = OK;
     conn_rec *c = r->connection;
     char *buf;
-    apr_table_t *saved_headers_in, *request_headers;
+    apr_table_t *saved_headers_in = r->headers_in;
+    const char *saved_host = apr_table_get(saved_headers_in, "Host");
     apr_bucket *e;
     int force10 = 0, do_100_continue = 0;
     conn_rec *origin = p_conn->connection;
-    const char *creds;
+    const char *host, *creds;
     proxy_dir_conf *dconf = ap_get_module_config(r->per_dir_config, &proxy_module);
 
     /*
@@ -3926,9 +3928,10 @@ PROXY_DECLARE(int) ap_proxy_create_hdrbrgd(apr_pool_t *p,
     APR_BRIGADE_INSERT_TAIL(header_brigade, e);
 
     /*
-     * Make a copy on r->headers_in for the request we make to the backend.
-     * This we modify according to our configuration and connection handling.
-     * Leave the original headers we received from the client untouched.
+     * Make a copy on r->headers_in for the request we make to the backend,
+     * modify the copy in place according to our configuration and connection
+     * handling, use it to fill in the forwarded headers' brigade, and finally
+     * restore the saved/original ones in r->headers_in.
      *
      * Note: We need to take r->pool for apr_table_copy as the key / value
      * pairs in r->headers_in have been created out of r->pool and
@@ -3939,52 +3942,49 @@ PROXY_DECLARE(int) ap_proxy_create_hdrbrgd(apr_pool_t *p,
      * icing: if p indeed lives longer than r->pool, we should allocate
      * all new header values from r->pool as well and avoid leakage.
      */
-    request_headers = apr_table_copy(r->pool, r->headers_in);
+    r->headers_in = apr_table_copy(r->pool, saved_headers_in);
 
     /* We used to send `Host: ` always first, so let's keep it that
      * way. No telling which legacy backend is relying no this.
      */
     if (dconf->preserve_host == 0) {
-        const char *nhost;
         if (ap_strchr_c(uri->hostname, ':')) { /* if literal IPv6 address */
             if (uri->port_str && uri->port != DEFAULT_HTTP_PORT) {
-                nhost = apr_pstrcat(r->pool, "[", uri->hostname, "]:",
-                                    uri->port_str, NULL);
+                host = apr_pstrcat(r->pool, "[", uri->hostname, "]:",
+                                   uri->port_str, NULL);
             } else {
-                nhost = apr_pstrcat(r->pool, "[", uri->hostname, "]", NULL);
+                host = apr_pstrcat(r->pool, "[", uri->hostname, "]", NULL);
             }
         } else {
             if (uri->port_str && uri->port != DEFAULT_HTTP_PORT) {
-                nhost = apr_pstrcat(r->pool, uri->hostname, ":",
-                                    uri->port_str, NULL);
+                host = apr_pstrcat(r->pool, uri->hostname, ":",
+                                   uri->port_str, NULL);
             } else {
-                nhost = uri->hostname;
+                host = uri->hostname;
             }
         }
-        ap_h1_append_header(header_brigade, r->pool, "Host", nhost);
-        apr_table_unset(request_headers, "Host");
     }
     else {
         /* don't want to use r->hostname, as the incoming header might have a
          * port attached
          */
-        const char* hostname = apr_table_get(request_headers, "Host");
-        if (!hostname) {
-            hostname =  r->server->server_hostname;
+        host = saved_host;
+        if (!host) {
+            host =  r->server->server_hostname;
             ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(01092)
                           "no HTTP 0.9 request (with no host line) "
                           "on incoming request and preserve host set "
                           "forcing hostname to be %s for uri %s",
-                          hostname, r->uri);
+                          host, r->uri);
         }
-        ap_h1_append_header(header_brigade, r->pool, "Host", hostname);
-        apr_table_unset(request_headers, "Host");
     }
+    ap_h1_append_header(header_brigade, r->pool, "Host", host);
+    apr_table_unset(r->headers_in, "Host");
 
     /* handle Via */
     if (conf->viaopt == via_block) {
         /* Block all outgoing Via: headers */
-        apr_table_unset(request_headers, "Via");
+        apr_table_unset(r->headers_in, "Via");
     } else if (conf->viaopt != via_off) {
         const char *server_name = ap_get_server_name(r);
         /* If USE_CANONICAL_NAME_OFF was configured for the proxy virtual host,
@@ -3996,7 +3996,7 @@ PROXY_DECLARE(int) ap_proxy_create_hdrbrgd(apr_pool_t *p,
             server_name = r->server->server_hostname;
         /* Create a "Via:" request header entry and merge it */
         /* Generate outgoing Via: header with/without server comment: */
-        apr_table_mergen(request_headers, "Via",
+        apr_table_mergen(r->headers_in, "Via",
                          (conf->viaopt == via_full)
                          ? apr_psprintf(r->pool, "%d.%d %s%s (%s)",
                                         HTTP_VERSION_MAJOR(r->proto_num),
@@ -4015,17 +4015,17 @@ PROXY_DECLARE(int) ap_proxy_create_hdrbrgd(apr_pool_t *p,
      */
     if (do_100_continue) {
         /* Add the Expect header if not already there. */
-        const char *val = apr_table_get(request_headers, "Expect");
+        const char *val = apr_table_get(r->headers_in, "Expect");
         if (!val || (ap_cstr_casecmp(val, "100-Continue") != 0 /* fast path */
                      && !ap_find_token(r->pool, val, "100-Continue"))) {
-            apr_table_mergen(request_headers, "Expect", "100-Continue");
+            apr_table_mergen(r->headers_in, "Expect", "100-Continue");
         }
     }
     else {
         /* XXX: we should strip the 100-continue token only from the
          * Expect header, but are there others actually used anywhere?
          */
-        apr_table_unset(request_headers, "Expect");
+        apr_table_unset(r->headers_in, "Expect");
     }
 
     /* X-Forwarded-*: handling
@@ -4050,62 +4050,55 @@ PROXY_DECLARE(int) ap_proxy_create_hdrbrgd(apr_pool_t *p,
      */
     if (dconf->add_forwarded_headers) {
         if (PROXYREQ_REVERSE == r->proxyreq) {
-            const char *buf;
-
             /* Add X-Forwarded-For: so that the upstream has a chance to
              * determine, where the original request came from.
              */
-            apr_table_mergen(request_headers, "X-Forwarded-For",
+            apr_table_mergen(r->headers_in, "X-Forwarded-For",
                              r->useragent_ip);
 
             /* Add X-Forwarded-Host: so that upstream knows what the
              * original request hostname was.
              */
-            if ((buf = apr_table_get(r->headers_in, "Host"))) {
-                apr_table_mergen(request_headers, "X-Forwarded-Host", buf);
+            if (saved_host) {
+                apr_table_mergen(r->headers_in, "X-Forwarded-Host",
+                                 saved_host);
             }
 
             /* Add X-Forwarded-Server: so that upstream knows what the
              * name of this proxy server is (if there are more than one)
              * XXX: This duplicates Via: - do we strictly need it?
              */
-            apr_table_mergen(request_headers, "X-Forwarded-Server",
+            apr_table_mergen(r->headers_in, "X-Forwarded-Server",
                              r->server->server_hostname);
         }
     }
 
-    /* run hook to fixup the request we are about to send,
-     * this will modify r->headers_in, so give it our request_headers
-     * and restore afterwards.
-     */
-    saved_headers_in = r->headers_in;
-    r->headers_in = request_headers;
+    /* run hook to fixup the request we are about to send */
     proxy_run_fixups(r);
     if (ap_proxy_clear_connection(r, r->headers_in) < 0) {
-        r->headers_in = saved_headers_in;
-        return HTTP_BAD_REQUEST;
+        rc = HTTP_BAD_REQUEST;
+        goto cleanup;
     }
-    r->headers_in = saved_headers_in;
 
     creds = apr_table_get(r->notes, "proxy-basic-creds");
     if (creds) {
-        apr_table_mergen(request_headers, "Proxy-Authorization", creds);
+        apr_table_mergen(r->headers_in, "Proxy-Authorization", creds);
     }
 
     /* Clear out hop-by-hop request headers not to send
      * RFC2616 13.5.1 says we should strip these headers
      */
-    apr_table_unset(request_headers, "Keep-Alive");
-    apr_table_unset(request_headers, "TE");
+    apr_table_unset(r->headers_in, "Keep-Alive");
+    apr_table_unset(r->headers_in, "TE");
 
     /* FIXME: since we now handle r->trailers_in on forwarding
      * request bodies, it seems unwise to clear any Trailer
      * header present. Is this the correct thing now?
      */
     if (force10)
-        apr_table_unset(request_headers, "Trailer");
+        apr_table_unset(r->headers_in, "Trailer");
 
-    apr_table_unset(request_headers, "Upgrade");
+    apr_table_unset(r->headers_in, "Upgrade");
 
     /* Do we want to strip Proxy-Authorization ?
      * If we haven't used it, then NO
@@ -4114,30 +4107,37 @@ PROXY_DECLARE(int) ap_proxy_create_hdrbrgd(apr_pool_t *p,
      */
     if (r->user != NULL /* we've authenticated */
         && !apr_table_get(r->subprocess_env, "Proxy-Chain-Auth")) {
-        apr_table_unset(request_headers, "Proxy-Authorization");
+        apr_table_unset(r->headers_in, "Proxy-Authorization");
     }
 
-        /* Skip Transfer-Encoding and Content-Length for now.
-         */
-    if ((*old_te_val = (char *)apr_table_get(request_headers, "Transfer-Encoding"))) {
-        apr_table_unset(request_headers, "Transfer-Encoding");
+    /* Return the original Transfer-Encoding and/or Content-Length values
+     * and drop the headers, they must be set by the proxy handler based
+     * on the actual body being forwarded.
+     */
+    if ((*old_te_val = (char *)apr_table_get(saved_headers_in,
+                                             "Transfer-Encoding"))) {
+        apr_table_unset(r->headers_in, "Transfer-Encoding");
     }
-    if ((*old_cl_val = (char *)apr_table_get(request_headers, "Content-Length"))) {
-        apr_table_unset(request_headers, "Content-Length");
+    if ((*old_cl_val = (char *)apr_table_get(saved_headers_in,
+                                             "Content-Length"))) {
+        apr_table_unset(r->headers_in, "Content-Length");
     }
 
     /* for sub-requests, ignore freshness/expiry headers */
     if (r->main) {
-        apr_table_unset(request_headers, "If-Match");
-        apr_table_unset(request_headers, "If-Modified-Since");
-        apr_table_unset(request_headers, "If-Range");
-        apr_table_unset(request_headers, "If-Unmodified-Since");
-        apr_table_unset(request_headers, "If-None-Match");
+        apr_table_unset(r->headers_in, "If-Match");
+        apr_table_unset(r->headers_in, "If-Modified-Since");
+        apr_table_unset(r->headers_in, "If-Range");
+        apr_table_unset(r->headers_in, "If-Unmodified-Since");
+        apr_table_unset(r->headers_in, "If-None-Match");
     }
 
-    ap_h1_append_headers(header_brigade, r, request_headers);
+    /* Append the (remaining) headers to the brigade */
+    ap_h1_append_headers(header_brigade, r, r->headers_in);
 
-    return OK;
+cleanup:
+    r->headers_in = saved_headers_in;
+    return rc;
 }
 
 PROXY_DECLARE(int) ap_proxy_prefetch_input(request_rec *r,
