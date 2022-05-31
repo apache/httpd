@@ -3944,6 +3944,37 @@ PROXY_DECLARE(int) ap_proxy_create_hdrbrgd(apr_pool_t *p,
      */
     r->headers_in = apr_table_copy(r->pool, saved_headers_in);
 
+    /* Return the original Transfer-Encoding and/or Content-Length values
+     * then drop the headers, they must be set by the proxy handler based
+     * on the actual body being forwarded.
+     */
+    if ((*old_te_val = (char *)apr_table_get(r->headers_in,
+                                             "Transfer-Encoding"))) {
+        apr_table_unset(r->headers_in, "Transfer-Encoding");
+    }
+    if ((*old_cl_val = (char *)apr_table_get(r->headers_in,
+                                             "Content-Length"))) {
+        apr_table_unset(r->headers_in, "Content-Length");
+    }
+
+    /* Clear out hop-by-hop request headers not to forward */
+    if (ap_proxy_clear_connection(r, r->headers_in) < 0) {
+        rc = HTTP_BAD_REQUEST;
+        goto cleanup;
+    }
+
+    /* RFC2616 13.5.1 says we should strip these */
+    apr_table_unset(r->headers_in, "Keep-Alive");
+    apr_table_unset(r->headers_in, "Upgrade");
+    apr_table_unset(r->headers_in, "TE");
+
+    /* FIXME: since we now handle r->trailers_in on forwarding
+     * request bodies, it seems unwise to clear any Trailer
+     * header present. Is this the correct thing now?
+     */
+    if (force10)
+        apr_table_unset(r->headers_in, "Trailer");
+
     /* We used to send `Host: ` always first, so let's keep it that
      * way. No telling which legacy backend is relying no this.
      */
@@ -4073,33 +4104,6 @@ PROXY_DECLARE(int) ap_proxy_create_hdrbrgd(apr_pool_t *p,
         }
     }
 
-    /* run hook to fixup the request we are about to send */
-    proxy_run_fixups(r);
-    if (ap_proxy_clear_connection(r, r->headers_in) < 0) {
-        rc = HTTP_BAD_REQUEST;
-        goto cleanup;
-    }
-
-    creds = apr_table_get(r->notes, "proxy-basic-creds");
-    if (creds) {
-        apr_table_mergen(r->headers_in, "Proxy-Authorization", creds);
-    }
-
-    /* Clear out hop-by-hop request headers not to send
-     * RFC2616 13.5.1 says we should strip these headers
-     */
-    apr_table_unset(r->headers_in, "Keep-Alive");
-    apr_table_unset(r->headers_in, "TE");
-
-    /* FIXME: since we now handle r->trailers_in on forwarding
-     * request bodies, it seems unwise to clear any Trailer
-     * header present. Is this the correct thing now?
-     */
-    if (force10)
-        apr_table_unset(r->headers_in, "Trailer");
-
-    apr_table_unset(r->headers_in, "Upgrade");
-
     /* Do we want to strip Proxy-Authorization ?
      * If we haven't used it, then NO
      * If we have used it then MAYBE: RFC2616 says we MAY propagate it.
@@ -4110,19 +4114,6 @@ PROXY_DECLARE(int) ap_proxy_create_hdrbrgd(apr_pool_t *p,
         apr_table_unset(r->headers_in, "Proxy-Authorization");
     }
 
-    /* Return the original Transfer-Encoding and/or Content-Length values
-     * and drop the headers, they must be set by the proxy handler based
-     * on the actual body being forwarded.
-     */
-    if ((*old_te_val = (char *)apr_table_get(saved_headers_in,
-                                             "Transfer-Encoding"))) {
-        apr_table_unset(r->headers_in, "Transfer-Encoding");
-    }
-    if ((*old_cl_val = (char *)apr_table_get(saved_headers_in,
-                                             "Content-Length"))) {
-        apr_table_unset(r->headers_in, "Content-Length");
-    }
-
     /* for sub-requests, ignore freshness/expiry headers */
     if (r->main) {
         apr_table_unset(r->headers_in, "If-Match");
@@ -4131,6 +4122,15 @@ PROXY_DECLARE(int) ap_proxy_create_hdrbrgd(apr_pool_t *p,
         apr_table_unset(r->headers_in, "If-Unmodified-Since");
         apr_table_unset(r->headers_in, "If-None-Match");
     }
+
+    /* Add credentials (per worker) if any */
+    creds = apr_table_get(r->notes, "proxy-basic-creds");
+    if (creds) {
+        apr_table_mergen(r->headers_in, "Proxy-Authorization", creds);
+    }
+
+    /* run hook to fixup the request we are about to send */
+    proxy_run_fixups(r);
 
     /* Append the (remaining) headers to the brigade */
     ap_h1_append_headers(header_brigade, r, r->headers_in);
