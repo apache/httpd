@@ -3895,7 +3895,7 @@ PROXY_DECLARE(int) ap_proxy_create_hdrbrgd(apr_pool_t *p,
     apr_bucket *e;
     int force10 = 0, do_100_continue = 0;
     conn_rec *origin = p_conn->connection;
-    const char *host, *creds;
+    const char *host, *creds, *val;
     proxy_dir_conf *dconf = ap_get_module_config(r->per_dir_config, &proxy_module);
 
     /*
@@ -3975,9 +3975,7 @@ PROXY_DECLARE(int) ap_proxy_create_hdrbrgd(apr_pool_t *p,
     if (force10)
         apr_table_unset(r->headers_in, "Trailer");
 
-    /* We used to send `Host: ` always first, so let's keep it that
-     * way. No telling which legacy backend is relying no this.
-     */
+    /* Compute Host header */
     if (dconf->preserve_host == 0) {
         if (ap_strchr_c(uri->hostname, ':')) { /* if literal IPv6 address */
             if (uri->port_str && uri->port != DEFAULT_HTTP_PORT) {
@@ -3994,10 +3992,11 @@ PROXY_DECLARE(int) ap_proxy_create_hdrbrgd(apr_pool_t *p,
                 host = uri->hostname;
             }
         }
+        apr_table_setn(r->headers_in, "Host", host);
     }
     else {
-        /* don't want to use r->hostname, as the incoming header might have a
-         * port attached
+        /* don't want to use r->hostname as the incoming header might have a
+         * port attached, let's use the original header.
          */
         host = saved_host;
         if (!host) {
@@ -4007,10 +4006,9 @@ PROXY_DECLARE(int) ap_proxy_create_hdrbrgd(apr_pool_t *p,
                           "on incoming request and preserve host set "
                           "forcing hostname to be %s for uri %s",
                           host, r->uri);
+            apr_table_setn(r->headers_in, "Host", host);
         }
     }
-    ap_h1_append_header(header_brigade, r->pool, "Host", host);
-    apr_table_unset(r->headers_in, "Host");
 
     /* handle Via */
     if (conf->viaopt == via_block) {
@@ -4131,6 +4129,18 @@ PROXY_DECLARE(int) ap_proxy_create_hdrbrgd(apr_pool_t *p,
 
     /* run hook to fixup the request we are about to send */
     proxy_run_fixups(r);
+
+    /* We used to send `Host: ` always first, so let's keep it that
+     * way. No telling which legacy backend is relying on this.
+     * If proxy_run_fixups() changed the value, use it (though removal
+     * is ignored).
+     */
+    val = apr_table_get(r->headers_in, "Host");
+    if (val) {
+        apr_table_unset(r->headers_in, "Host");
+        host = val;
+    }
+    ap_h1_append_header(header_brigade, r->pool, "Host", host);
 
     /* Append the (remaining) headers to the brigade */
     ap_h1_append_headers(header_brigade, r, r->headers_in);
