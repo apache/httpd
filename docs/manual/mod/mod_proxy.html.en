@@ -463,9 +463,6 @@ ProxyPass "/examples" "http://backend.example.com/examples" timeout=10</pre>
     Content-Length header, but the server is configured to filter incoming
     request bodies.</p>
 
-    <p><code class="directive"><a href="../mod/core.html#limitrequestbody">LimitRequestBody</a></code> only applies to
-    request bodies that the server will spool to disk</p>
-
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="x-headers" id="x-headers">Reverse Proxy Request Headers</a></h2>

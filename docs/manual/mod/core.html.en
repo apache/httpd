@@ -2796,16 +2796,16 @@ subrequests</td></tr>
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Restricts the total size of the HTTP request body sent
 from the client</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>LimitRequestBody <var>bytes</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>LimitRequestBody 0</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>LimitRequestBody 1073741824</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>All</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>In Apache HTTP Server 2.4.53 and earlier, the default value
+was 0 (unlimited)</td></tr>
 </table>
-    <p>This directive specifies the number of <var>bytes</var> from 0
-    (meaning unlimited) to 2147483647 (2GB) that are allowed in a
-    request body. See the note below for the limited applicability
-    to proxy requests.</p>
+    <p>This directive specifies the number of <var>bytes</var>
+    that are allowed in a request body. A value of <var>0</var> means unlimited.</p>
 
     <p>The <code class="directive">LimitRequestBody</code> directive allows
     the user to set a limit on the allowed size of an HTTP request
@@ -2831,10 +2831,6 @@ from the client</td></tr>
 
     <pre class="prettyprint lang-config">LimitRequestBody 102400</pre>
 
-
-    <div class="note"><p>For a full description of how this directive is interpreted by
-    proxy requests, see the <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> documentation.</p>
-    </div>
 
 
 </div>
