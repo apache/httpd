@@ -3867,12 +3867,14 @@ PROXY_DECLARE(int) ap_proxy_create_hdrbrgd(apr_pool_t *p,
                                             char **old_cl_val,
                                             char **old_te_val)
 {
+    int rc = OK;
     conn_rec *c = r->connection;
     int counter;
     char *buf;
+    apr_table_t *saved_headers_in = r->headers_in;
+    const char *saved_host = apr_table_get(saved_headers_in, "Host");
     const apr_array_header_t *headers_in_array;
     const apr_table_entry_t *headers_in;
-    apr_table_t *saved_headers_in;
     apr_bucket *e;
     int do_100_continue;
     conn_rec *origin = p_conn->connection;
@@ -3908,6 +3910,52 @@ PROXY_DECLARE(int) ap_proxy_create_hdrbrgd(apr_pool_t *p,
     ap_xlate_proto_to_ascii(buf, strlen(buf));
     e = apr_bucket_pool_create(buf, strlen(buf), p, c->bucket_alloc);
     APR_BRIGADE_INSERT_TAIL(header_brigade, e);
+
+    /*
+     * Make a copy on r->headers_in for the request we make to the backend,
+     * modify the copy in place according to our configuration and connection
+     * handling, use it to fill in the forwarded headers' brigade, and finally
+     * restore the saved/original ones in r->headers_in.
+     *
+     * Note: We need to take r->pool for apr_table_copy as the key / value
+     * pairs in r->headers_in have been created out of r->pool and
+     * p might be (and actually is) a longer living pool.
+     * This would trigger the bad pool ancestry abort in apr_table_copy if
+     * apr is compiled with APR_POOL_DEBUG.
+     *
+     * icing: if p indeed lives longer than r->pool, we should allocate
+     * all new header values from r->pool as well and avoid leakage.
+     */
+    r->headers_in = apr_table_copy(r->pool, saved_headers_in);
+
+    /* Return the original Transfer-Encoding and/or Content-Length values
+     * then drop the headers, they must be set by the proxy handler based
+     * on the actual body being forwarded.
+     */
+    if ((*old_te_val = (char *)apr_table_get(r->headers_in,
+                                             "Transfer-Encoding"))) {
+        apr_table_unset(r->headers_in, "Transfer-Encoding");
+    }
+    if ((*old_cl_val = (char *)apr_table_get(r->headers_in,
+                                             "Content-Length"))) {
+        apr_table_unset(r->headers_in, "Content-Length");
+    }
+
+    /* Clear out hop-by-hop request headers not to forward */
+    if (ap_proxy_clear_connection(r, r->headers_in) < 0) {
+        rc = HTTP_BAD_REQUEST;
+        goto cleanup;
+    }
+
+    /* RFC2616 13.5.1 says we should strip these */
+    apr_table_unset(r->headers_in, "Keep-Alive");
+    apr_table_unset(r->headers_in, "Upgrade");
+    apr_table_unset(r->headers_in, "Trailer");
+    apr_table_unset(r->headers_in, "TE");
+
+    /* We used to send `Host: ` always first, so let's keep it that
+     * way. No telling which legacy backend is relying no this.
+     */
     if (dconf->preserve_host == 0) {
         if (ap_strchr_c(uri->hostname, ':')) { /* if literal IPv6 address */
             if (uri->port_str && uri->port != DEFAULT_HTTP_PORT) {
@@ -3929,7 +3977,7 @@ PROXY_DECLARE(int) ap_proxy_create_hdrbrgd(apr_pool_t *p,
         /* don't want to use r->hostname, as the incoming header might have a
          * port attached
          */
-        const char* hostname = apr_table_get(r->headers_in,"Host");
+        const char* hostname = saved_host;
         if (!hostname) {
             hostname =  r->server->server_hostname;
             ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(01092)
@@ -3943,21 +3991,7 @@ PROXY_DECLARE(int) ap_proxy_create_hdrbrgd(apr_pool_t *p,
     ap_xlate_proto_to_ascii(buf, strlen(buf));
     e = apr_bucket_pool_create(buf, strlen(buf), p, c->bucket_alloc);
     APR_BRIGADE_INSERT_TAIL(header_brigade, e);
-
-    /*
-     * Save the original headers in here and restore them when leaving, since
-     * we will apply proxy purpose only modifications (eg. clearing hop-by-hop
-     * headers, add Via or X-Forwarded-* or Expect...), whereas the originals
-     * will be needed later to prepare the correct response and logging.
-     *
-     * Note: We need to take r->pool for apr_table_copy as the key / value
-     * pairs in r->headers_in have been created out of r->pool and
-     * p might be (and actually is) a longer living pool.
-     * This would trigger the bad pool ancestry abort in apr_table_copy if
-     * apr is compiled with APR_POOL_DEBUG.
-     */
-    saved_headers_in = r->headers_in;
-    r->headers_in = apr_table_copy(r->pool, saved_headers_in);
+    apr_table_unset(r->headers_in, "Host");
 
     /* handle Via */
     if (conf->viaopt == via_block) {
@@ -4024,8 +4058,6 @@ PROXY_DECLARE(int) ap_proxy_create_hdrbrgd(apr_pool_t *p,
      */
     if (dconf->add_forwarded_headers) {
         if (PROXYREQ_REVERSE == r->proxyreq) {
-            const char *buf;
-
             /* Add X-Forwarded-For: so that the upstream has a chance to
              * determine, where the original request came from.
              */
@@ -4035,8 +4067,9 @@ PROXY_DECLARE(int) ap_proxy_create_hdrbrgd(apr_pool_t *p,
             /* Add X-Forwarded-Host: so that upstream knows what the
              * original request hostname was.
              */
-            if ((buf = apr_table_get(r->headers_in, "Host"))) {
-                apr_table_mergen(r->headers_in, "X-Forwarded-Host", buf);
+            if (saved_host) {
+                apr_table_mergen(r->headers_in, "X-Forwarded-Host",
+                                 saved_host);
             }
 
             /* Add X-Forwarded-Server: so that upstream knows what the
@@ -4048,65 +4081,35 @@ PROXY_DECLARE(int) ap_proxy_create_hdrbrgd(apr_pool_t *p,
         }
     }
 
-    proxy_run_fixups(r);
-    if (ap_proxy_clear_connection(r, r->headers_in) < 0) {
-        return HTTP_BAD_REQUEST;
+    /* Do we want to strip Proxy-Authorization ?
+     * If we haven't used it, then NO
+     * If we have used it then MAYBE: RFC2616 says we MAY propagate it.
+     * So let's make it configurable by env.
+     */
+    if (r->user != NULL /* we've authenticated */
+        && !apr_table_get(r->subprocess_env, "Proxy-Chain-Auth")) {
+        apr_table_unset(r->headers_in, "Proxy-Authorization");
     }
+
+    /* for sub-requests, ignore freshness/expiry headers */
+    if (r->main) {
+        apr_table_unset(r->headers_in, "If-Match");
+        apr_table_unset(r->headers_in, "If-Modified-Since");
+        apr_table_unset(r->headers_in, "If-Range");
+        apr_table_unset(r->headers_in, "If-Unmodified-Since");
+        apr_table_unset(r->headers_in, "If-None-Match");
+    }
+
+    /* run hook to fixup the request we are about to send */
+    proxy_run_fixups(r);
 
     /* send request headers */
     headers_in_array = apr_table_elts(r->headers_in);
     headers_in = (const apr_table_entry_t *) headers_in_array->elts;
     for (counter = 0; counter < headers_in_array->nelts; counter++) {
         if (headers_in[counter].key == NULL
-            || headers_in[counter].val == NULL
-
-            /* Already sent */
-            || !ap_cstr_casecmp(headers_in[counter].key, "Host")
-
-            /* Clear out hop-by-hop request headers not to send
-             * RFC2616 13.5.1 says we should strip these headers
-             */
-            || !ap_cstr_casecmp(headers_in[counter].key, "Keep-Alive")
-            || !ap_cstr_casecmp(headers_in[counter].key, "TE")
-            || !ap_cstr_casecmp(headers_in[counter].key, "Trailer")
-            || !ap_cstr_casecmp(headers_in[counter].key, "Upgrade")
-
-            ) {
+            || headers_in[counter].val == NULL) {
             continue;
-        }
-        /* Do we want to strip Proxy-Authorization ?
-         * If we haven't used it, then NO
-         * If we have used it then MAYBE: RFC2616 says we MAY propagate it.
-         * So let's make it configurable by env.
-         */
-        if (!ap_cstr_casecmp(headers_in[counter].key,"Proxy-Authorization")) {
-            if (r->user != NULL) { /* we've authenticated */
-                if (!apr_table_get(r->subprocess_env, "Proxy-Chain-Auth")) {
-                    continue;
-                }
-            }
-        }
-
-        /* Skip Transfer-Encoding and Content-Length for now.
-         */
-        if (!ap_cstr_casecmp(headers_in[counter].key, "Transfer-Encoding")) {
-            *old_te_val = headers_in[counter].val;
-            continue;
-        }
-        if (!ap_cstr_casecmp(headers_in[counter].key, "Content-Length")) {
-            *old_cl_val = headers_in[counter].val;
-            continue;
-        }
-
-        /* for sub-requests, ignore freshness/expiry headers */
-        if (r->main) {
-            if (   !ap_cstr_casecmp(headers_in[counter].key, "If-Match")
-                || !ap_cstr_casecmp(headers_in[counter].key, "If-Modified-Since")
-                || !ap_cstr_casecmp(headers_in[counter].key, "If-Range")
-                || !ap_cstr_casecmp(headers_in[counter].key, "If-Unmodified-Since")
-                || !ap_cstr_casecmp(headers_in[counter].key, "If-None-Match")) {
-                continue;
-            }
         }
 
         buf = apr_pstrcat(p, headers_in[counter].key, ": ",
@@ -4117,11 +4120,9 @@ PROXY_DECLARE(int) ap_proxy_create_hdrbrgd(apr_pool_t *p,
         APR_BRIGADE_INSERT_TAIL(header_brigade, e);
     }
 
-    /* Restore the original headers in (see comment above),
-     * we won't modify them anymore.
-     */
+cleanup:
     r->headers_in = saved_headers_in;
-    return OK;
+    return rc;
 }
 
 PROXY_DECLARE(int) ap_proxy_prefetch_input(request_rec *r,
