@@ -252,7 +252,7 @@ static int lua_read_body(request_rec *r, const char **rbuf, apr_off_t *size,
         if (maxsize != 0 && length > maxsize) {
             return APR_EINCOMPLETE; /* Only room for incomplete data chunk :( */
         }
-        *rbuf = (const char *) apr_pcalloc(r->pool, (apr_size_t) (length + 1));
+        *rbuf = (const char *) apr_pcalloc(r->pool, (apr_size_t) (length) + 1);
         while ((rpos < length)
                && (len_read = ap_get_client_block(r, (char *) *rbuf + rpos,
                                                length - rpos)) > 0) {
