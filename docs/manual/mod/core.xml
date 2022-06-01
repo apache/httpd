@@ -2855,17 +2855,17 @@ LimitInternalRecursion 5
 <description>Restricts the total size of the HTTP request body sent
 from the client</description>
 <syntax>LimitRequestBody <var>bytes</var></syntax>
-<default>LimitRequestBody 0</default>
+<default>LimitRequestBody 1073741824</default>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>All</override>
+<compatibility>In Apache HTTP Server 2.4.53 and earlier, the default value
+was 0 (unlimited)</compatibility>
 
 <usage>
-    <p>This directive specifies the number of <var>bytes</var> from 0
-    (meaning unlimited) to 2147483647 (2GB) that are allowed in a
-    request body. See the note below for the limited applicability
-    to proxy requests.</p>
+    <p>This directive specifies the number of <var>bytes</var>
+    that are allowed in a request body. A value of <var>0</var> means unlimited.</p>
 
     <p>The <directive>LimitRequestBody</directive> directive allows
     the user to set a limit on the allowed size of an HTTP request
@@ -2892,10 +2892,6 @@ from the client</description>
     <highlight language="config">
 LimitRequestBody 102400
     </highlight>
-
-    <note><p>For a full description of how this directive is interpreted by
-    proxy requests, see the <module>mod_proxy</module> documentation.</p>
-    </note>
 
 </usage>
 </directivesynopsis>
