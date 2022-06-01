@@ -1630,7 +1630,7 @@ ProxyPass "/"             "balancer://mycluster/" stickysession=JSESSIONID|jsess
     The optional <var>noquery</var> keyword (available in
     httpd 2.4.1 and later) prevents this.</p>
 
-    <p>The optional <var>interpolate</var> keyword, in combination with
+    <p>The optional <code>interpolate</code> keyword, in combination with
     <code class="directive"><a href="#proxypassinterpolateenv">ProxyPassInterpolateEnv</a></code>, causes the ProxyPass
     to interpolate environment variables, using the syntax
     <var>${VARNAME}</var>.  Note that many of the standard CGI-derived
@@ -1688,7 +1688,7 @@ ProxyPassReverse  "/mirror/foo/" "https://backend.example.com/"</pre>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy</td></tr>
 </table>
-    <p>This directive, together with the <var>interpolate</var> argument to
+    <p>This directive, together with the <code>interpolate</code> argument to
     <code class="directive">ProxyPass</code>, <code class="directive">ProxyPassReverse</code>,
     <code class="directive">ProxyPassReverseCookieDomain</code>, and
     <code class="directive">ProxyPassReverseCookiePath</code>,
@@ -1701,7 +1701,7 @@ ProxyPassReverse  "/mirror/foo/" "https://backend.example.com/"</pre>
     <code class="directive">ProxyPassReverseCookiePath</code> directives
     and causes them to substitute the value of an environment
     variable <code>varname</code> for the string <code>${varname}</code>
-    in configuration directives if the <var>interpolate</var> option is set.</p>
+    in configuration directives if the <code>interpolate</code> option is set.</p>
     <p>The scheme/hostname/port portion of <code class="directive">ProxyPass</code> may
     contain variables, but only the ones available when the directive is parsed
     (for example, using <code class="directive"><a href="../mod/core.html#define">Define</a></code>).
@@ -1788,7 +1788,7 @@ ProxyPassReverse  "/mirror/foo/" "https://backend.example.com/"</pre>
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Adjusts the URL in HTTP response headers sent from a reverse
 proxied server</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ProxyPassReverse [<var>path</var>] <var>url</var>
-[<var>interpolate</var>]</code></td></tr>
+[interpolate]</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy</td></tr>
@@ -1853,8 +1853,8 @@ ProxyPassReverseCookiePath  "/"  "/mirror/foo/"</pre>
     (<code>RewriteRule ...  [P]</code>) from <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>
     because it doesn't depend on a corresponding <code class="directive"><a href="#proxypass">ProxyPass</a></code> directive.</p>
 
-    <p>The optional <var>interpolate</var> keyword, used together with
-    <code class="directive">ProxyPassInterpolateEnv</code>, enables interpolation
+    <p>The optional <code>interpolate</code> keyword, used together with
+    <code class="directive"><a href="#proxypassinterpolateenv">ProxyPassInterpolateEnv</a></code>, enables interpolation
     of environment variables specified using the format <var>${VARNAME}</var>.
     Note that interpolation is not supported within the scheme portion of a
     URL.</p>
@@ -1874,7 +1874,7 @@ ProxyPassReverseCookiePath  "/"  "/mirror/foo/"</pre>
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Adjusts the Domain string in Set-Cookie headers from a reverse-
 proxied server</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ProxyPassReverseCookieDomain <var>internal-domain</var>
-<var>public-domain</var> [<var>interpolate</var>]</code></td></tr>
+<var>public-domain</var> [interpolate]</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy</td></tr>
@@ -1891,7 +1891,7 @@ string in <code>Set-Cookie</code> headers.</p>
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Adjusts the Path string in Set-Cookie headers from a reverse-
 proxied server</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ProxyPassReverseCookiePath <var>internal-path</var>
-<var>public-path</var> [<var>interpolate</var>]</code></td></tr>
+<var>public-path</var> [interpolate]</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy</td></tr>
@@ -1929,7 +1929,7 @@ request</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Usable in directory
 context in 2.3.3 and later.</td></tr>
 </table>
-    <p>When enabled, this option will pass the Host: line from the incoming
+    <p>When enabled, this option will pass the <code>Host:</code> line from the incoming
     request to the proxied host, instead of the hostname specified in the
     <code class="directive"><a href="#proxypass">ProxyPass</a></code> line.</p>
 

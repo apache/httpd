@@ -91,7 +91,7 @@
     user to gain access.</p>
 
     <pre class="prettyprint lang-config">Require dbd-group team
-AuthzDBDQuery "SELECT group FROM authz WHERE user = %s"</pre>
+AuthzDBDQuery "SELECT user_group FROM authz WHERE user = %s"</pre>
 
 
 
