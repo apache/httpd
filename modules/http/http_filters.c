@@ -1703,6 +1703,7 @@ AP_DECLARE(int) ap_setup_client_block(request_rec *r, int read_policy)
 {
     const char *tenc = apr_table_get(r->headers_in, "Transfer-Encoding");
     const char *lenp = apr_table_get(r->headers_in, "Content-Length");
+    apr_off_t limit_req_body = ap_get_limit_req_body(r);
 
     r->read_body = read_policy;
     r->read_chunked = 0;
@@ -1735,6 +1736,11 @@ AP_DECLARE(int) ap_setup_client_block(request_rec *r, int read_policy)
         && (r->read_chunked || (r->remaining > 0))) {
         ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(01595)
                       "%s with body is not allowed for %s", r->method, r->uri);
+        return HTTP_REQUEST_ENTITY_TOO_LARGE;
+    }
+
+    if (limit_req_body > 0 && (r->remaining > limit_req_body)) {
+        /* will be logged when the body is discarded */
         return HTTP_REQUEST_ENTITY_TOO_LARGE;
     }
 
