@@ -50,7 +50,7 @@ The <module>mod_sed</module> input filter reads the data from the next filter in
 </p>
 
 <p>
-Both the input and output filters only process the data if newline characters are seen in the content. At the end of the data, the rest of the data is treated as the last line.
+Both the input and output filters only process the data if newline characters are seen in the content. At the end of the data, the rest of the data is treated as the last line.  Lines greater than 8MB in length result in an error.
 </p>
 
 </summary>
