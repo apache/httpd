@@ -30,25 +30,22 @@ Changes with Apache 2.4.54
   *) mod_proxy: Add backend port to log messages to
      ease identification of involved service.  [Rainer Jung]
 
-  *) mod_http2: remove unused and insecure code. Fixes PR66037.
-     Thanks to Ronald Crane (Zippenhop LLC) for reporting this.
-
-  *) mod_http2: removing unscheduling of ongonig tasks when
+  *) mod_http2: removing unscheduling of ongoing tasks when
      connection shows potential abuse by a client. This proved
      counter-productive and the abuse detection can false flag
      requests using server-side-events.
      Fixes <https://github.com/icing/mod_h2/issues/231>.
      [Stefan Eissing]
 
-  *) Implement full auto status ("key: value" type status output).
+  *) mod_md: Implement full auto status ("key: value" type status output).
      Especially not only status summary counts for certificates and
      OCSP stapling but also lists. Auto status format is similar to
      what was used for mod_proxy_balancer.
      [Rainer Jung]
 
-  *) mod_md:  fixed a bug leading to failed transfers for OCSP
+  *) mod_md: fixed a bug leading to failed transfers for OCSP
      stapling information when more than 6 certificates needed
-     updates in the same run. [Stefan Eissing]
+     updates in the same run.  [Stefan Eissing]
 
   *) mod_proxy: Set a status code of 502 in case the backend just closed the
      connection in reply to our forwarded request.  [Ruediger Pluem]
@@ -56,15 +53,15 @@ Changes with Apache 2.4.54
   *) mod_md: a possible NULL pointer deref was fixed in
      the JSON code for persisting time periods (start+end).
      Fixes #282 on mod_md's github.
-     Thanks to @marcstern for finding this.
+     Thanks to @marcstern for finding this.  [Stefan Eissing]
 
   *) mod_heartmonitor: Set the documented default value
      "10" for HeartbeatMaxServers instead of "0". With "0"
-     no shared memory slotmem was initialized. [Rainer Jung]
+     no shared memory slotmem was initialized.  [Rainer Jung]
 
   *) mod_md: added support for managing certificates via a
-     local tailscale demon for users of that secure networking.
-     This gives trusted certificates for tailscale  assigned
+     local tailscale daemon for users of that secure networking.
+     This gives trusted certificates for tailscale assigned
      domain names in the *.ts.net space.
      [Stefan Eissing]
 
