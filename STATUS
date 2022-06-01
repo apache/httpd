@@ -148,12 +148,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_proxy: ap_proxy_create_hdrbrgd() to clear hop-by-hop first and fixup last.
-     trunk patch: http://svn.apache.org/r1901461
-     2.4.x patch: https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/320.diff
-                  (from https://github.com/apache/httpd/pull/320)
-     +1: ylavic, rpluem, icing
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
