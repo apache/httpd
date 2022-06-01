@@ -4021,9 +4021,9 @@ PROXY_DECLARE(int) ap_proxy_create_hdrbrgd(apr_pool_t *p,
      */
     if (do_100_continue) {
         /* Add the Expect header if not already there. */
-        const char *val = apr_table_get(r->headers_in, "Expect");
-        if (!val || (ap_cstr_casecmp(val, "100-Continue") != 0 /* fast path */
-                     && !ap_find_token(r->pool, val, "100-Continue"))) {
+        if (!(val = apr_table_get(r->headers_in, "Expect"))
+            || (ap_cstr_casecmp(val, "100-Continue") != 0 /* fast path */
+                && !ap_find_token(r->pool, val, "100-Continue"))) {
             apr_table_mergen(r->headers_in, "Expect", "100-Continue");
         }
     }
