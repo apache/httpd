@@ -185,7 +185,7 @@ AP_DECLARE(char *) ap_ht_time(apr_pool_t *p, apr_time_t t, const char *fmt,
  */
 AP_DECLARE(int) ap_strcmp_match(const char *str, const char *expected)
 {
-    int x, y;
+    apr_size_t x, y;
 
     for (x = 0, y = 0; expected[y]; ++y, ++x) {
         if (expected[y] == '*') {
@@ -209,7 +209,7 @@ AP_DECLARE(int) ap_strcmp_match(const char *str, const char *expected)
 
 AP_DECLARE(int) ap_strcasecmp_match(const char *str, const char *expected)
 {
-    int x, y;
+    apr_size_t x, y;
 
     for (x = 0, y = 0; expected[y]; ++y, ++x) {
         if (!str[x] && expected[y] != '*')
