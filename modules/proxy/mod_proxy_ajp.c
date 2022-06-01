@@ -247,9 +247,18 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
     /* read the first block of data */
     input_brigade = apr_brigade_create(p, r->connection->bucket_alloc);
     tenc = apr_table_get(r->headers_in, "Transfer-Encoding");
-    if (tenc && (ap_cstr_casecmp(tenc, "chunked") == 0)) {
-        /* The AJP protocol does not want body data yet */
-        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(00870) "request is chunked");
+    if (tenc) {
+        if (ap_cstr_casecmp(tenc, "chunked") == 0) {
+            /* The AJP protocol does not want body data yet */
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(00870)
+                          "request is chunked");
+        }
+        else {
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(10396)
+                          "%s Transfer-Encoding is not supported",
+                          tenc);
+            return HTTP_INTERNAL_SERVER_ERROR;
+        }
     } else {
         /* Get client provided Content-Length header */
         content_length = get_content_length(r);
