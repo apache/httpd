@@ -701,7 +701,7 @@ simultaneously</td></tr>
 <tr><td><a href="mod_md.html#mdcachallenges">MDCAChallenges <var>name</var> [ <var>name</var> ... ]</a></td><td> tls-alpn-01 http-01 +</td><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">Type of ACME challenge used to prove domain ownership.</td></tr>
 <tr class="odd"><td><a href="mod_md.html#mdcertificateagreement">MDCertificateAgreement accepted</a></td><td></td><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">You confirm that you accepted the Terms of Service of the Certificate
         Authority.</td></tr>
-<tr><td><a href="mod_md.html#mdcertificateauthority">MDCertificateAuthority <var>url</var></a></td><td> https://acme-v02.ap +</td><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">The URL of the ACME Certificate Authority service.</td></tr>
+<tr><td><a href="mod_md.html#mdcertificateauthority">MDCertificateAuthority <var>url</var></a></td><td> letsencrypt </td><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">The URL(s) of the ACME Certificate Authority to use.</td></tr>
 <tr class="odd"><td><a href="mod_md.html#mdcertificatecheck">MDCertificateCheck <var>name</var> <var>url</var></a></td><td></td><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">-</td></tr>
 <tr><td><a href="mod_md.html#mdcertificatefile">MDCertificateFile <var>path-to-pem-file</var></a></td><td></td><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">Specify a static certificate file for the MD.</td></tr>
 <tr class="odd"><td><a href="mod_md.html#mdcertificatekeyfile">MDCertificateKeyFile <var>path-to-file</var></a></td><td></td><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Specify a static private key for for the static cerrtificate.</td></tr>
@@ -725,6 +725,8 @@ simultaneously</td></tr>
 <tr class="odd"><td><a href="mod_md.html#mdrenewmode">MDRenewMode always|auto|manual</a></td><td> auto </td><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Controls if certificates shall be renewed.</td></tr>
 <tr><td><a href="mod_md.html#mdrenewwindow">MDRenewWindow <var>duration</var></a></td><td> 33% </td><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">Control when a certificate will be renewed.</td></tr>
 <tr class="odd"><td><a href="mod_md.html#mdrequirehttps">MDRequireHttps off|temporary|permanent</a></td><td> off </td><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Redirects http: traffic to https: for Managed Domains.</td></tr>
+<tr><td><a href="mod_md.html#mdretrydelay">MDRetryDelay <var>duration</var></a></td><td> 5s </td><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">-</td></tr>
+<tr class="odd"><td><a href="mod_md.html#mdretryfailover">MDRetryFailover <var>number</var></a></td><td> 13 </td><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">-</td></tr>
 <tr><td><a href="mod_md.html#mdserverstatus">MDServerStatus on|off</a></td><td> on </td><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">Control if Managed Domain information is added to server-status.</td></tr>
 <tr class="odd"><td><a href="mod_md.html#mdstapleothers">MDStapleOthers on|off</a></td><td> on </td><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Enable stapling for certificates not managed by mod_md.</td></tr>
 <tr><td><a href="mod_md.html#mdstapling">MDStapling on|off</a></td><td> off </td><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">Enable stapling for all or a particular MDomain.</td></tr>
