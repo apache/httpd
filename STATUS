@@ -21,7 +21,6 @@ Patches considered for backport are noted in their branches' STATUS:
   * http://svn.apache.org/repos/asf/httpd/httpd/branches/2.4.x/STATUS
 
 
-
 Release history:
     [NOTE that x.{odd}.z versions are strictly Alpha/Beta releases,
           while x.{even}.z versions are Stable/GA releases.]
