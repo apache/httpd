@@ -1,4 +1,0 @@
-  *) core: the conf/mime.types has been updated in conformance with RFC 9239:
-     - .js moved from 'application/javascript' to 'text/javascript'
-     - .mjs was added as 'text/javascript'
-     [Mathias Bynens <@mathiasbynens> via PR 318]
