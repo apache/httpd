@@ -1,2 +1,0 @@
-  *) MPM event: Restart chilren processes killed before idle maintenance.
-     PR 65769.  [Yann Ylavic, Ruediger Pluem]

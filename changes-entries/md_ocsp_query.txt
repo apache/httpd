@@ -1,6 +1,0 @@
-  *) mod_md:  a bug was fixed that caused very large MDomains
-     with the combined DNS names exceeding ~7k to fail, as
-     request bodies would contain partially wrong data from
-     uninitialized memory. This would have appeared as failure
-     in signing-up/renewing such configurations.
-     [Stefan Eissing, Ronald Crane (Zippenhop LLC)]
