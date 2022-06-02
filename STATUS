@@ -184,7 +184,7 @@ OLD ISSUES THAT WERE THOUGHT TO BE SHOWSTOPPERS FOR 2.4 BUT OBVIOUSLY WEREN'T:
     jerenkrantz asks: Why should this block a release?
     stas replies: because it requires a rewrite of the filters stack
           implementation (you have suggested that) and once 2.2 is
-          released you can't do that anymore. 
+          released you can't do that anymore.
     pgollucci: this affects mod_perl I'm pretty sure.
 
 
