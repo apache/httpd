@@ -148,6 +148,20 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) Easy backports to synch 2.4 and trunk:
+        - mod_auth_digest: Fix some missed "strcasecmp <--> ap_cstr_casecmp" conversions
+        - mod_dav: fix a typo
+        - mod_lua: Avoid "may be uninitialized" warning
+        - ab: Fix alignment in an 'if' block.
+        - mod_authz_dbd: fix select-groups example, bz 66010
+     trunk patch:
+        https://svn.apache.org/r1756843
+        https://svn.apache.org/r1897890
+        https://svn.apache.org/r1898731
+        https://svn.apache.org/r1900064
+        https://svn.apache.org/r1900077
+     2.4.x patch: svn merge -c 1756843,1897890,1898731,1900064,1900077 ^/httpd/httpd/trunk .
+     +1: jailletc36, ylavic, rpluem
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -174,21 +188,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      +1: minfrin, jim,
      rpluem says: The version in the compatibility notes is wrong.
 
-  *) Easy backports to synch 2.4 and trunk:
-        - mod_auth_digest: Fix some missed "strcasecmp <--> ap_cstr_casecmp" conversions
-        - mod_dav: fix a typo
-        - mod_lua: Avoid "may be uninitialized" warning
-        - ab: Fix alignment in an 'if' block.
-        - mod_authz_dbd: fix select-groups example, bz 66010
-     trunk patch:
-        https://svn.apache.org/r1756843
-        https://svn.apache.org/r1897890
-        https://svn.apache.org/r1898731
-        https://svn.apache.org/r1900064
-        https://svn.apache.org/r1900077
-     2.4.x patch: svn merge -c 1756843,1897890,1898731,1900064,1900077 ^/httpd/httpd/trunk .
-     +1: jailletc36, ylavic,
-
   *) mod_proxy_http: Avoid 417 responses for non forwardable 100-continue. PR 65666.
      trunk patch: http://svn.apache.org/r1901420
                   http://svn.apache.org/r1901446
@@ -196,7 +195,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1901486
      2.4.x patch: https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/319.diff
                   (https://github.com/apache/httpd/pull/319)
-     +1: ylavic,
+     +1: ylavic, rpluem
 
   *) mod_ssl: SSLFIPS compatible with OpenSSL 3.0. PR 66063.
      trunk patch: http://svn.apache.org/r1874005
@@ -204,7 +203,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1901470
      2.4.x patch: https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/321.diff
                   (https://github.com/apache/httpd/pull/321)
-     +1: ylavic,
+     +1: ylavic, rpluem
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
