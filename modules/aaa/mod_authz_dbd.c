@@ -212,7 +212,7 @@ static int authz_dbd_login(request_rec *r, authz_dbd_cfg *cfg,
 static int authz_dbd_group_query(request_rec *r, authz_dbd_cfg *cfg,
                                  apr_array_header_t *groups)
 {
-    /* SELECT group FROM authz WHERE user = %s */
+    /* SELECT user_group FROM authz WHERE user = %s */
     int rv;
     const char *message;
     ap_dbd_t *dbd;
@@ -254,7 +254,7 @@ static int authz_dbd_group_query(request_rec *r, authz_dbd_cfg *cfg,
             else {
                 message = apr_dbd_error(dbd->driver, dbd->handle, rv);
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01651)
-                        "authz_dbd in get_row; group query for user=%s [%s]",
+                        "authz_dbd in get_row; user_group query for user=%s [%s]",
                         r->user, message?message:noerror);
                 return HTTP_INTERNAL_SERVER_ERROR;
             }

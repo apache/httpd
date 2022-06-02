@@ -1825,11 +1825,11 @@ static void test(void)
 
     if (!use_html) {
         printf("Benchmarking %s ", hostname);
-    if (isproxy)
-        printf("[through %s:%d] ", proxyhost, proxyport);
-    printf("(be patient)%s",
-           (heartbeatres ? "\n" : "..."));
-    fflush(stdout);
+        if (isproxy)
+            printf("[through %s:%d] ", proxyhost, proxyport);
+        printf("(be patient)%s",
+               (heartbeatres ? "\n" : "..."));
+        fflush(stdout);
     }
 
     con = xcalloc(concurrency, sizeof(struct connection));

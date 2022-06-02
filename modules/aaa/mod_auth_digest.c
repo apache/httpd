@@ -557,13 +557,13 @@ static const char *set_qop(cmd_parms *cmd, void *config, const char *op)
 {
     digest_config_rec *conf = (digest_config_rec *) config;
 
-    if (!strcasecmp(op, "none")) {
+    if (!ap_cstr_casecmp(op, "none")) {
         apr_array_clear(conf->qop_list);
         *(const char **)apr_array_push(conf->qop_list) = "none";
         return NULL;
     }
 
-    if (!strcasecmp(op, "auth-int")) {
+    if (!ap_cstr_casecmp(op, "auth-int")) {
         return "AuthDigestQop auth-int is not implemented";
     }
     else if (ap_cstr_casecmp(op, "auth")) {
@@ -614,7 +614,7 @@ static const char *set_nc_check(cmd_parms *cmd, void *config, int flag)
 
 static const char *set_algorithm(cmd_parms *cmd, void *config, const char *alg)
 {
-    if (!strcasecmp(alg, "MD5-sess")) {
+    if (!ap_cstr_casecmp(alg, "MD5-sess")) {
         return "AuthDigestAlgorithm: ERROR: algorithm `MD5-sess' "
                 "is not implemented";
     }
