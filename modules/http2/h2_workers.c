@@ -90,13 +90,13 @@ struct h2_workers {
 
     apr_uint32_t max_slots;
     apr_uint32_t min_active;
-    volatile int max_idle_secs;
+    volatile int idle_limit;
     volatile int aborted;
     volatile int shutdown;
     int dynamic;
 
     apr_uint32_t fast_slots;
-    apr_time_t long_duration;
+    apr_time_t fast_limit;
     volatile apr_uint32_t max_active;
     volatile apr_uint32_t active_slots;
     volatile apr_uint32_t idle_slots;
@@ -205,7 +205,7 @@ static void* APR_THREAD_FUNC tuner_run(apr_thread_t *thread, void *wctx)
                      slot != APR_RING_SENTINEL(&workers->busy, h2_slot, link);
                      slot = APR_RING_NEXT(slot, link)) {
                     apr_time_t started = slot->processing_start;
-                    if (started && now - started >= workers->long_duration) {
+                    if (started && now - started >= workers->fast_limit) {
                         ++long_runners;
                     }
                 }
@@ -389,7 +389,6 @@ static void* APR_THREAD_FUNC slot_run(apr_thread_t *thread, void *wctx)
 {
     h2_slot *slot = wctx;
     h2_workers *workers = slot->workers;
-    apr_uint32_t idle_secs;
     conn_rec *c;
     apr_status_t rv;
 
@@ -475,10 +474,9 @@ static void* APR_THREAD_FUNC slot_run(apr_thread_t *thread, void *wctx)
         APR_RING_INSERT_TAIL(&workers->idle, slot, h2_slot, link);
         ++workers->idle_slots;
         slot->is_idle = 1;
-        if (slot->id >= workers->min_active
-            && (idle_secs = workers->max_idle_secs)) {
+        if (slot->id >= workers->min_active && workers->idle_limit) {
             rv = apr_thread_cond_timedwait(slot->more_work, workers->lock,
-                                           apr_time_from_sec(idle_secs));
+                                           workers->idle_limit);
             if (APR_TIMEUP == rv) {
                 APR_RING_REMOVE(slot, link);
                 --workers->idle_slots;
@@ -588,13 +586,13 @@ static apr_status_t workers_pool_cleanup(void *data)
 }
 
 h2_workers *h2_workers_create(server_rec *s, apr_pool_t *pchild,
-                              int min_active, int max_slots,
-                              int idle_secs)
+                              int max_slots, int min_active, apr_time_t idle_limit,
+                              int fast_slots, apr_time_t fast_limit)
 {
     apr_status_t rv;
     h2_workers *workers;
     apr_pool_t *pool;
-    int i, locked = 0, fast_slots;
+    int i, locked = 0;
     apr_time_t tuner_interval, tuner_action_delay;
 
     ap_assert(s);
@@ -616,24 +614,29 @@ h2_workers *h2_workers_create(server_rec *s, apr_pool_t *pchild,
     workers->pool = pool;
     workers->min_active = min_active;
     workers->max_slots = max_slots;
-    workers->max_idle_secs = (idle_secs > 0)? idle_secs : 10;
+    workers->idle_limit = (idle_limit > 0)? idle_limit : apr_time_from_sec(10);
     workers->dynamic = (workers->min_active < workers->max_slots);
+    workers->fast_limit = fast_limit? fast_limit : apr_time_from_msec(25);
+    if (fast_slots > workers->min_active && fast_slots < workers->max_slots) {
+        workers->fast_slots = fast_slots;
+        workers->max_active = workers->fast_slots;
+    }
+    else {
+        workers->fast_slots = 0;
+        workers->max_active = workers->max_slots;
+    }
 
     /* TODO: make these configurable */
     tuner_interval = apr_time_from_msec(100);       /* interval tuner runs */
     tuner_action_delay = apr_time_from_msec(1000);  /* delay on decrease of active slots, e.g.
                                                      * the need for decrease must be sustained that
                                                      * long to act on it. */
-    workers->long_duration = apr_time_from_msec(50);/* duration for regarding a slot a long runner */
-    fast_slots = 20;                                /* active slots when no long requests run */
 
-    workers->fast_slots = H2MIN(H2MAX(min_active, fast_slots), max_slots);
-    workers->max_active = workers->fast_slots;
-
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, workers->s,
-                 "h2_workers: created with min=%d max=%d idle_timeout=%d sec",
+    ap_log_error(APLOG_MARK, APLOG_INFO, 0, workers->s,
+                 "h2_workers: created with min=%d max=%d idle_ms=%d fast=%d fast_ms=%d",
                  workers->min_active, workers->max_slots,
-                 (int)workers->max_idle_secs);
+                 (int)apr_time_as_msec(idle_limit),
+                 fast_slots, (int)apr_time_as_msec(workers->fast_limit));
 
     APR_RING_INIT(&workers->idle, h2_slot, link);
     APR_RING_INIT(&workers->busy, h2_slot, link);
@@ -685,7 +688,7 @@ h2_workers *h2_workers_create(server_rec *s, apr_pool_t *pchild,
         if (rv != APR_SUCCESS) goto cleanup;
     }
 
-    if (workers->dynamic && workers->fast_slots < workers->max_slots) {
+    if (workers->dynamic && workers->fast_slots) {
         rv = tuner_start(workers, tuner_interval, tuner_action_delay);
         if (rv != APR_SUCCESS) goto cleanup;
     }
@@ -703,6 +706,8 @@ cleanup:
         apr_pool_pre_cleanup_register(pchild, workers, workers_pool_cleanup);    
         return workers;
     }
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, workers->s,
+                 "h2_workers: errors initializing");
     return NULL;
 }
 
@@ -715,7 +720,7 @@ void h2_workers_graceful_shutdown(h2_workers *workers)
 {
     apr_thread_mutex_lock(workers->lock);
     workers->shutdown = 1;
-    workers->max_idle_secs = 1;
+    workers->idle_limit = apr_time_from_sec(1);
     wake_all_idles(workers);
     apr_thread_mutex_unlock(workers->lock);
 }
