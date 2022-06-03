@@ -85,7 +85,7 @@ Changes with Apache 2.5.1
      on the pre_read_request hook when the connection has protocol 'http/1.1'.
      [Stefan Eissing]
 
-  *) MPM event: Restart chilren processes killed before idle maintenance.
+  *) MPM event: Restart children processes killed before idle maintenance.
      PR 65769.  [Yann Ylavic, Ruediger Pluem]
 
   *) core: Disable TCP_NOPUSH optimization on OSX since it might introduce
