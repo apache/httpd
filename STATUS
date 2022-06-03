@@ -174,15 +174,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      +1: minfrin, jim,
      rpluem says: The version in the compatibility notes is wrong.
 
-  *) mod_proxy_http: Avoid 417 responses for non forwardable 100-continue. PR 65666.
-     trunk patch: http://svn.apache.org/r1901420
-                  http://svn.apache.org/r1901446
-                  http://svn.apache.org/r1901485
-                  http://svn.apache.org/r1901486
-     2.4.x patch: https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/319.diff
-                  (https://github.com/apache/httpd/pull/319)
-     +1: ylavic, rpluem, gbechis
-
   *) mod_ssl: SSLFIPS compatible with OpenSSL 3.0. PR 66063.
      trunk patch: http://svn.apache.org/r1874005
                   http://svn.apache.org/r1877261
