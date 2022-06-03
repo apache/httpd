@@ -17,7 +17,7 @@ Changes with Apache 2.4.54
   *) mod_proxy_http: Avoid 417 responses for non forwardable 100-continue.
      PR 65666.  [Yann Ylavic]
 
-  *) MPM event: Restart chilren processes killed before idle maintenance.
+  *) MPM event: Restart children processes killed before idle maintenance.
      PR 65769.  [Yann Ylavic, Ruediger Pluem]
 
   *) ab: Allow for TLSv1.3 when the SSL library supports it.
