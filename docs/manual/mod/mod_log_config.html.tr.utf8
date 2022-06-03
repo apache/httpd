@@ -32,7 +32,6 @@
 <a href="../ko/mod/mod_log_config.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/mod/mod_log_config.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Açıklama:</a></th><td>Sunucuya yapılan isteklerin günlük kayıtlarının tutulması
 </td></tr>
 <tr><th><a href="module-dict.html#Status">Durum:</a></th><td>Temel</td></tr>
@@ -118,8 +117,8 @@
           kaç konak için konak ismi de günlüğe kaydoluyorsa muhtemelen onların
           isimlerini içeren erişim denetim yönergelerine sahipsinizdir. Bak: <a href="mod_authz_host.html#reqhost">Require host</a>.</td></tr>
 <tr class="odd"><td><code>%{c}h</code></td>
-        <td><code>%h</code> gibi, ancak her zaman, temel TCP bağlantısının 
-        konak adı kaydedilir, ancak <code class="module"><a href="../mod/mod_remoteip.html">mod_remoteip</a></code> gibi modüller 
+        <td><code>%h</code> gibi, ancak her zaman, temel TCP bağlantısının
+        konak adı kaydedilir, ancak <code class="module"><a href="../mod/mod_remoteip.html">mod_remoteip</a></code> gibi modüller
         tarafından uzak konak adında yapılan değişiklikler kaydedilmez.</td></tr>
 <tr><td><code>%H</code></td>
         <td>İstek Protokolü.</td></tr>
@@ -167,8 +166,7 @@
 <tr class="odd"><td><code>%{<var>biçem</var>}P</code></td>
         <td>İsteği sunan çocuk sürecin süreç kimliği (<code>pid</code>) veya
           evre kimliği (<code>tid</code>). Geçerli biçemler: <code>pid</code>,
-          <code>tid</code>, <code>hextid</code>. <code>hextid</code> için APR
-          1.2.0 veya üstü gerekir.</td></tr>
+          <code>tid</code>, <code>hextid</code>.</td></tr>
 <tr><td><code>%q</code></td>
         <td>Sorgu dizgesi (bir sorgu dizgesi mevcutsa önüne bir <code>?</code>
           eklenir yoksa hiçbir şey eklenmez).</td></tr>

@@ -610,7 +610,7 @@ sarmalar.</td></tr>
 kullanılacak erişim sınırlayıcıları sarmalar.</td></tr>
 <tr class="odd"><td><a href="core.html#limitinternalrecursion">LimitInternalRecursion <code>sayı</code> [<code>sayı</code>]</a></td><td> 10 </td><td>sk</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Dahili yönlendirmelerin ve istek içi isteklerin azami sayısını
 belirler.</td></tr>
-<tr><td><a href="core.html#limitrequestbody">LimitRequestBody <code>bayt-sayısı</code></a></td><td> 0 </td><td>skdh</td><td>Ç</td></tr><tr><td class="descr" colspan="4">İstemci tarafından gönderilen HTTP istek gövdesinin toplam
+<tr><td><a href="core.html#limitrequestbody">LimitRequestBody <code>bayt-sayısı</code></a></td><td> 1073741824 </td><td>skdh</td><td>Ç</td></tr><tr><td class="descr" colspan="4">İstemci tarafından gönderilen HTTP istek gövdesinin toplam
 uzunluğunu sınırlar.</td></tr>
 <tr class="odd"><td><a href="core.html#limitrequestfields">LimitRequestFields <code>sayı</code></a></td><td> 100 </td><td>sk</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">İstemciden kabul edilecek HTTP isteği başlık alanlarının sayısını
 sınırlar.</td></tr>
