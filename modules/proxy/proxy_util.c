@@ -3876,8 +3876,9 @@ PROXY_DECLARE(int) ap_proxy_create_hdrbrgd(apr_pool_t *p,
     const apr_array_header_t *headers_in_array;
     const apr_table_entry_t *headers_in;
     apr_bucket *e;
-    int do_100_continue;
+    int force10 = 0, do_100_continue = 0;
     conn_rec *origin = p_conn->connection;
+    const char *host, *val;
     proxy_dir_conf *dconf = ap_get_module_config(r->per_dir_config, &proxy_module);
 
     /*
@@ -3885,27 +3886,25 @@ PROXY_DECLARE(int) ap_proxy_create_hdrbrgd(apr_pool_t *p,
      * To be compliant, we only use 100-Continue for requests with bodies.
      * We also make sure we won't be talking HTTP/1.0 as well.
      */
-    do_100_continue = PROXY_DO_100_CONTINUE(worker, r);
-
     if (apr_table_get(r->subprocess_env, "force-proxy-request-1.0")) {
-        /*
-         * According to RFC 2616 8.2.3 we are not allowed to forward an
-         * Expect: 100-continue to an HTTP/1.0 server. Instead we MUST return
-         * a HTTP_EXPECTATION_FAILED
-         */
-        if (r->expecting_100) {
-            return HTTP_EXPECTATION_FAILED;
-        }
-        buf = apr_pstrcat(p, r->method, " ", url, " HTTP/1.0" CRLF, NULL);
-        p_conn->close = 1;
-    } else {
-        buf = apr_pstrcat(p, r->method, " ", url, " HTTP/1.1" CRLF, NULL);
+        force10 = 1;
     }
-    if (apr_table_get(r->subprocess_env, "proxy-nokeepalive")) {
+    else if (apr_table_get(r->notes, "proxy-100-continue")
+             || PROXY_SHOULD_PING_100_CONTINUE(worker, r)) {
+        do_100_continue = 1;
+    }
+    if (force10 || apr_table_get(r->subprocess_env, "proxy-nokeepalive")) {
         if (origin) {
             origin->keepalive = AP_CONN_CLOSE;
         }
         p_conn->close = 1;
+    }
+
+    if (force10) {
+        buf = apr_pstrcat(p, r->method, " ", url, " HTTP/1.0" CRLF, NULL);
+    }
+    else {
+        buf = apr_pstrcat(p, r->method, " ", url, " HTTP/1.1" CRLF, NULL);
     }
     ap_xlate_proto_to_ascii(buf, strlen(buf));
     e = apr_bucket_pool_create(buf, strlen(buf), p, c->bucket_alloc);
@@ -3953,45 +3952,40 @@ PROXY_DECLARE(int) ap_proxy_create_hdrbrgd(apr_pool_t *p,
     apr_table_unset(r->headers_in, "Trailer");
     apr_table_unset(r->headers_in, "TE");
 
-    /* We used to send `Host: ` always first, so let's keep it that
-     * way. No telling which legacy backend is relying no this.
-     */
+    /* Compute Host header */
     if (dconf->preserve_host == 0) {
         if (ap_strchr_c(uri->hostname, ':')) { /* if literal IPv6 address */
             if (uri->port_str && uri->port != DEFAULT_HTTP_PORT) {
-                buf = apr_pstrcat(p, "Host: [", uri->hostname, "]:",
-                                  uri->port_str, CRLF, NULL);
+                host = apr_pstrcat(r->pool, "[", uri->hostname, "]:",
+                                   uri->port_str, NULL);
             } else {
-                buf = apr_pstrcat(p, "Host: [", uri->hostname, "]", CRLF, NULL);
+                host = apr_pstrcat(r->pool, "[", uri->hostname, "]", NULL);
             }
         } else {
             if (uri->port_str && uri->port != DEFAULT_HTTP_PORT) {
-                buf = apr_pstrcat(p, "Host: ", uri->hostname, ":",
-                                  uri->port_str, CRLF, NULL);
+                host = apr_pstrcat(r->pool, uri->hostname, ":",
+                                   uri->port_str, NULL);
             } else {
-                buf = apr_pstrcat(p, "Host: ", uri->hostname, CRLF, NULL);
+                host = uri->hostname;
             }
         }
+        apr_table_setn(r->headers_in, "Host", host);
     }
     else {
-        /* don't want to use r->hostname, as the incoming header might have a
-         * port attached
+        /* don't want to use r->hostname as the incoming header might have a
+         * port attached, let's use the original header.
          */
-        const char* hostname = saved_host;
-        if (!hostname) {
-            hostname =  r->server->server_hostname;
+        host = saved_host;
+        if (!host) {
+            host =  r->server->server_hostname;
             ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(01092)
                           "no HTTP 0.9 request (with no host line) "
                           "on incoming request and preserve host set "
                           "forcing hostname to be %s for uri %s",
-                          hostname, r->uri);
+                          host, r->uri);
+            apr_table_setn(r->headers_in, "Host", host);
         }
-        buf = apr_pstrcat(p, "Host: ", hostname, CRLF, NULL);
     }
-    ap_xlate_proto_to_ascii(buf, strlen(buf));
-    e = apr_bucket_pool_create(buf, strlen(buf), p, c->bucket_alloc);
-    APR_BRIGADE_INSERT_TAIL(header_brigade, e);
-    apr_table_unset(r->headers_in, "Host");
 
     /* handle Via */
     if (conf->viaopt == via_block) {
@@ -4026,14 +4020,18 @@ PROXY_DECLARE(int) ap_proxy_create_hdrbrgd(apr_pool_t *p,
      * to backend
      */
     if (do_100_continue) {
-        const char *val;
-
         /* Add the Expect header if not already there. */
-        if (((val = apr_table_get(r->headers_in, "Expect")) == NULL)
-                || (ap_cstr_casecmp(val, "100-Continue") != 0 /* fast path */
-                    && !ap_find_token(r->pool, val, "100-Continue"))) {
+        if (!(val = apr_table_get(r->headers_in, "Expect"))
+            || (ap_cstr_casecmp(val, "100-Continue") != 0 /* fast path */
+                && !ap_find_token(r->pool, val, "100-Continue"))) {
             apr_table_mergen(r->headers_in, "Expect", "100-Continue");
         }
+    }
+    else {
+        /* XXX: we should strip the 100-continue token only from the
+         * Expect header, but are there others actually used anywhere?
+         */
+        apr_table_unset(r->headers_in, "Expect");
     }
 
     /* X-Forwarded-*: handling
@@ -4103,7 +4101,22 @@ PROXY_DECLARE(int) ap_proxy_create_hdrbrgd(apr_pool_t *p,
     /* run hook to fixup the request we are about to send */
     proxy_run_fixups(r);
 
-    /* send request headers */
+    /* We used to send `Host: ` always first, so let's keep it that
+     * way. No telling which legacy backend is relying on this.
+     * If proxy_run_fixups() changed the value, use it (though removal
+     * is ignored).
+     */
+    val = apr_table_get(r->headers_in, "Host");
+    if (val) {
+        apr_table_unset(r->headers_in, "Host");
+        host = val;
+    }
+    buf = apr_pstrcat(p, "Host: ", host, CRLF, NULL);
+    ap_xlate_proto_to_ascii(buf, strlen(buf));
+    e = apr_bucket_pool_create(buf, strlen(buf), p, c->bucket_alloc);
+    APR_BRIGADE_INSERT_TAIL(header_brigade, e);
+
+    /* Append the (remaining) headers to the brigade */
     headers_in_array = apr_table_elts(r->headers_in);
     headers_in = (const apr_table_entry_t *) headers_in_array->elts;
     for (counter = 0; counter < headers_in_array->nelts; counter++) {
