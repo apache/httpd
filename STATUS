@@ -174,14 +174,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      +1: minfrin, jim,
      rpluem says: The version in the compatibility notes is wrong.
 
-  *) mod_ssl: SSLFIPS compatible with OpenSSL 3.0. PR 66063.
-     trunk patch: http://svn.apache.org/r1874005
-                  http://svn.apache.org/r1877261
-                  http://svn.apache.org/r1901470
-     2.4.x patch: https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/321.diff
-                  (https://github.com/apache/httpd/pull/321)
-     +1: ylavic, rpluem, gbechis
-
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
