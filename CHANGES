@@ -1,6 +1,12 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.54
 
+  *) mod_ssl: SSLFIPS compatible with OpenSSL 3.0.  PR 66063.
+     [Petr Sumbera <petr.sumbera oracle.com>, Yann Ylavic]
+
+  *) mod_proxy_http: Avoid 417 responses for non forwardable 100-continue.
+     PR 65666.  [Yann Ylavic]
+
   *) mod_md:  a bug was fixed that caused very large MDomains
      with the combined DNS names exceeding ~7k to fail, as
      request bodies would contain partially wrong data from
