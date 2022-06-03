@@ -80,6 +80,7 @@ CLEAN :
 	-@erase "$(INTDIR)\md_status.obj"
 	-@erase "$(INTDIR)\md_store.obj"
 	-@erase "$(INTDIR)\md_store_fs.obj"
+	-@erase "$(INTDIR)\md_tailscale.obj"
 	-@erase "$(INTDIR)\md_time.obj"
 	-@erase "$(INTDIR)\md_util.obj"
 	-@erase "$(INTDIR)\mod_md.obj"
@@ -163,6 +164,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\md_status.obj" \
 	"$(INTDIR)\md_store.obj" \
 	"$(INTDIR)\md_store_fs.obj" \
+	"$(INTDIR)\md_tailscale.obj" \
 	"$(INTDIR)\md_time.obj" \
 	"$(INTDIR)\md_util.obj" \
 	"$(INTDIR)\md_acme.obj" \
@@ -239,6 +241,7 @@ CLEAN :
 	-@erase "$(INTDIR)\md_status.obj"
 	-@erase "$(INTDIR)\md_store.obj"
 	-@erase "$(INTDIR)\md_store_fs.obj"
+	-@erase "$(INTDIR)\md_tailscale.obj"
 	-@erase "$(INTDIR)\md_time.obj"
 	-@erase "$(INTDIR)\md_util.obj"
 	-@erase "$(INTDIR)\mod_md.obj"
@@ -322,6 +325,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\md_status.obj" \
 	"$(INTDIR)\md_store.obj" \
 	"$(INTDIR)\md_store_fs.obj" \
+	"$(INTDIR)\md_tailscale.obj" \
 	"$(INTDIR)\md_time.obj" \
 	"$(INTDIR)\md_util.obj" \
 	"$(INTDIR)\md_acme.obj" \
@@ -563,6 +567,11 @@ SOURCE=./md_store.c
 SOURCE=./md_store_fs.c
 
 "$(INTDIR)\md_store_fs.obj" : $(SOURCE) "$(INTDIR)"
+
+
+SOURCE=./md_tailscale.c
+
+"$(INTDIR)\md_tailscale.obj" : $(SOURCE) "$(INTDIR)"
 
 
 SOURCE=./md_time.c
