@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 1855818:1900558 (outdated) -->
+<!-- English Revision: 1900558 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
    Reviewed by: Orhan Berent <berent belgeler.gen.tr>
@@ -115,8 +115,8 @@
           href="mod_authz_host.html#reqhost">Require host</a>.</td></tr>
 
     <tr><td><code>%{c}h</code></td>
-        <td><code>%h</code> gibi, ancak her zaman, temel TCP bağlantısının 
-        konak adı kaydedilir, ancak <module>mod_remoteip</module> gibi modüller 
+        <td><code>%h</code> gibi, ancak her zaman, temel TCP bağlantısının
+        konak adı kaydedilir, ancak <module>mod_remoteip</module> gibi modüller
         tarafından uzak konak adında yapılan değişiklikler kaydedilmez.</td></tr>
 
     <tr><td><code>%H</code></td>
@@ -177,8 +177,7 @@
     <tr><td><code>%{<var>biçem</var>}P</code></td>
         <td>İsteği sunan çocuk sürecin süreç kimliği (<code>pid</code>) veya
           evre kimliği (<code>tid</code>). Geçerli biçemler: <code>pid</code>,
-          <code>tid</code>, <code>hextid</code>. <code>hextid</code> için APR
-          1.2.0 veya üstü gerekir.</td></tr>
+          <code>tid</code>, <code>hextid</code>.</td></tr>
 
     <tr><td><code>%q</code></td>
         <td>Sorgu dizgesi (bir sorgu dizgesi mevcutsa önüne bir <code>?</code>

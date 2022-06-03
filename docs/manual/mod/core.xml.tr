@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 1898704:1901499 (outdated) -->
+<!-- English Revision: 1901499 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
    Reviewed by: Orhan Berent <berent belgeler.gen.tr>
@@ -2825,17 +2825,16 @@ LimitInternalRecursion 5
 <description>İstemci tarafından gönderilen HTTP istek gövdesinin toplam
 uzunluğunu sınırlar.</description>
 <syntax>LimitRequestBody <code>bayt-sayısı</code></syntax>
-<default>LimitRequestBody 0</default>
+<default>LimitRequestBody 1073741824</default>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>All</override>
+<compatibility>Apache HTTP Sunucusu 2.4.53 ve öncesinde, öntanımlı değer 0 idi (sınırsız)</compatibility>
 
 <usage>
-    <p>Bu yönerge, bir istek gövdesinde izin verilen bayt sayısını 0 (sınırsız
-      anlamında) ile 2147483647 (2GB) arasında sınırlamak için kullanılır.
-      Vekil isteklerinin snırlı uygulanabilirliği için aşağıdaki nota
-      bakınız.</p>
+    <p>Bu yönerge, bir istek gövdesinde izin verilen bayt sayısını sınırlamak
+      için kullanılır. <var>0</var> sınırsız anlamına gelir.</p>
 
     <p><directive>LimitRequestBody</directive> yönergesi kullanıcıya yönergenin
       kullanıldığı bağlam (sunucu, belli bir dizin, belli bir dosya, belli bir
@@ -2861,10 +2860,6 @@ uzunluğunu sınırlar.</description>
 LimitRequestBody 102400
     </highlight>
 
-    <note><p>Bu yönergenin vekil istekleri tarafından nasıl yorumlandığı
-      <module>mod_proxy</module> belgesinde ayrıntılı olarak
-      açıklanmıştır.</p>
-    </note>
 </usage>
 </directivesynopsis>
 

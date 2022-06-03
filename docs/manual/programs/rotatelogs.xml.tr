@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 1877709:1899270 (outdated) -->
+<!-- English Revision: 1899270 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
    Reviewed by: Orhan Berent <berent belgeler.gen.tr>
@@ -65,8 +65,8 @@
     <dd><p>Belirtilen bağ dosyası ismine geçerli günlük dosyasından kalıcı bir bağ
     oluşturulur. <code>tail -F bagismi</code> gibi bir komut kullanılarak
     günlüğün sürekli izlenmesi için kullanılabilir.</p>
-    <p>Bağ ismi mutlak bir yol içermiyorsa, <code>rotatelogs</code>'un çalışma 
-    dizinine, <code>rotatelogs</code> sunucu tarafından çalıştırılıyorsa 
+    <p>Bağ ismi mutlak bir yol içermiyorsa, <code>rotatelogs</code>'un çalışma
+    dizinine, <code>rotatelogs</code> sunucu tarafından çalıştırılıyorsa
     <directive module="core">ServerRoot</directive> dizinine görelidir.</p>
     </dd>
 
@@ -91,8 +91,8 @@
     açabilir. Bu seçenek bu gibi durumlarda yararlıdır.</dd>
 
     <dt><code><strong>-D</strong></code></dt>
-    <dd>Günlük dosyasının yerleştirileceği dizini (eğer yoksa) üst dizinleri ile 
-    birlikte yapılandırır. Bu, <code>strftime(3)</code> işlevinin sırf dosya için 
+    <dd>Günlük dosyasının yerleştirileceği dizini (eğer yoksa) üst dizinleri ile
+    birlikte yapılandırır. Bu, <code>strftime(3)</code> işlevinin sırf dosya için
     değil yol için de kullanılmasını sağlar.</dd>
 
     <dt><code><strong>-t</strong></code></dt>
@@ -112,12 +112,22 @@
     tarafından gerçek zamanda işlenmesi gerektiğinde kullanışlıdır.</dd>
 
     <dt><code><strong>-c</strong></code></dt>
-    <dd>Create log file for each interval, even if empty.</dd>
+    <dd>Boş olsa bile her döngüde günlük dosyası oluşturur.</dd>
 
     <dt><code><strong>-n</strong> <var>dosya_sayısı</var></code></dt>
-    <dd>Zaman damgalarına bakılmaksızın bir dosya serisi açılır. Örneğin -n3
-      belirtilirse "logfile", "logfile.1", "logfile.2" serisi açılır ve
-      "logfile" üzerine yazılır.
+    <dd>Zaman damgalarına bakılmaksızın bir dosya serisi açılır. Bu seçenek
+      döndürme ve başlatma sırasında günlük dosyalarının üzerine yazar.
+      Örneğin -n3 belirtilirse <var>dosyaismi</var>, <var>dosyaismi.1</var>,
+      <var>dosyaismi.2</var> serisi açılır ve <var>dosyaismi</var>'nin üzerine
+      yazılır.<br/>
+      Bu uygulama <var>dosyaismi</var> dosyasını ilk açtığında, dosya yalnızca
+      <code>-t</code> seçeneği de belirtilmişse kırpılır. Sonraki her döngü,
+      daima hedef dosya kırpılarak başlar. <code>-t</code> ve mevcut günlük
+      dosyaları olmadan boyuta dayalı döndürme için bu seçenek, ilk günlük
+      girişlerinin <var>dosyaismi.1</var>'e gönderilmesine ve
+      <var>dosyaismi.n</var> henüz kullanılmamış olsa bile
+      <var>dosyaismi.1</var>'deki girdilerin korunmaması gibi sezgisel
+      olmayan davranışlara neden olabilir.<br/>
       2.4.5 ve sonraki sürümler içindir.</dd>
 
     <dt><code><var>dosyaismi</var></code></dt>
@@ -141,9 +151,9 @@
       yeni bir günlük dosyasına başlanacaktır. Fakat 5 megabayta gün içinde iki
       kez ulaşılırsa aynı günlük dosyası üretilir ve günlük hep aynı dosyanın
       üzerine yazılır.</p>
-      <p>Günlük dosyası mutlak bir yol içermiyorsa, <code>rotatelogs</code>'un 
-      çalışma dizinine, <code>rotatelogs</code> sunucu tarafından 
-      çalıştırılıyorsa <directive module="core">ServerRoot</directive> 
+      <p>Günlük dosyası mutlak bir yol içermiyorsa, <code>rotatelogs</code>'un
+      çalışma dizinine, <code>rotatelogs</code> sunucu tarafından
+      çalıştırılıyorsa <directive module="core">ServerRoot</directive>
       dizinine görelidir.</p>
     </dd>
 
