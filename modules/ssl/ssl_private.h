@@ -258,6 +258,16 @@ void free_bio_methods(void);
 #define HAVE_OPENSSL_KEYLOG
 #endif
 
+#ifdef HAVE_FIPS
+#if OPENSSL_VERSION_NUMBER >= 0x30000000L
+#define modssl_fips_is_enabled() EVP_default_properties_is_fips_enabled(NULL)
+#define modssl_fips_enable(to)   EVP_default_properties_enable_fips(NULL, (to))
+#else
+#define modssl_fips_is_enabled() FIPS_mode()
+#define modssl_fips_enable(to)   FIPS_mode_set((to))
+#endif
+#endif /* HAVE_FIPS */
+
 /* mod_ssl headers */
 #include "ssl_util_ssl.h"
 
@@ -629,6 +639,10 @@ typedef struct {
     /* Used for logging if SSLKEYLOGFILE is set at startup. */
     apr_file_t      *keylog_file;
 #endif
+
+#ifdef HAVE_FIPS
+    BOOL             fips;
+#endif
 } SSLModConfigRec;
 
 /** Structure representing configured filenames for certs and keys for
@@ -783,9 +797,6 @@ struct SSLSrvConfigRec {
     modssl_ctx_t    *server;
 #ifdef HAVE_TLSEXT
     ssl_enabled_t    strict_sni_vhost_check;
-#endif
-#ifdef HAVE_FIPS
-    BOOL             fips;
 #endif
 #ifndef OPENSSL_NO_COMP
     BOOL             compression;
