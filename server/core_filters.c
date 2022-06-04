@@ -629,7 +629,7 @@ static APR_INLINE int can_sendfile_bucket(apr_bucket *b)
 }
 #endif
 
-#if defined(WIN32) && (APR_MAJOR_VERSION == 1 && APR_MINOR_VERSION <= 6)
+#if defined(WIN32) && (APR_MAJOR_VERSION == 1 && APR_MINOR_VERSION <= 7)
 #undef APR_TCP_NOPUSH_FLAG
 #define APR_TCP_NOPUSH_FLAG 0
 #endif
