@@ -25,6 +25,7 @@
 #include "apr_fnmatch.h"
 #include "apr_hash.h"
 #include "apr_thread_proc.h"    /* for RLIMIT stuff */
+#include "apr_version.h"
 
 #define APR_WANT_IOVEC
 #define APR_WANT_STRFUNC
@@ -626,6 +627,11 @@ static APR_INLINE int can_sendfile_bucket(apr_bucket *b)
         return 0;
     }
 }
+#endif
+
+#if defined(WIN32) && (APR_MAJOR_VERSION == 1 && APR_MINOR_VERSION <= 6)
+#undef APR_TCP_NOPUSH_FLAG
+#define APR_TCP_NOPUSH_FLAG 0
 #endif
 
 static APR_INLINE void sock_nopush(apr_socket_t *s, int to)
