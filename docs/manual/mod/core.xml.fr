@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1898702:1901497 (outdated) -->
+<!-- English Revision: 1901497 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -3090,18 +3090,19 @@ host</context>
 <description>limite la taille maximale du corps de la requête HTTP
 envoyée par le client</description>
 <syntax>LimitRequestBody <var>octets</var></syntax>
-<default>LimitRequestBody 0</default>
+<default>LimitRequestBody 1073741824</default>
 <contextlist><context>server config</context><context>virtual
 host</context>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>All</override>
+<compatibility>Dans les versions 2.4.53 et antérieures du serveur HTTP Apache,
+la valeur par défaut était 0 (aucune limite)</compatibility>
 
 <usage>
-    <p>Cette directive spécifie la taille maximale autorisée pour le
-    corps d'une requête ; la valeur de l'argument <var>octets</var> va
-    de 0 (pour une taille illimitée), à 2147483647 (2Go). Voir la note
-    ci-dessous pour la limite d'applicabilité aux requêtes mandatées.</p>
+    <p>Cette directive permet de spécifier la taille maximale d'un corps de
+    requête, en <var>octets</var>. Une valeur de <var>0</var> signifie « sans
+    limites ».</p>
 
     <p>La directive <directive>LimitRequestBody</directive> permet de
     définir une limite pour la taille maximale autorisée du corps d'une
@@ -3129,11 +3130,6 @@ host</context>
     :</p>
 
     <highlight language="config">LimitRequestBody 102400</highlight>
-
-    <note><p>Pour une description détaillée de la manière dont cette
-    directive est interprétée par les requêtes mandatées, voir la
-    documentation du module <module>mod_proxy</module>.</p>
-    </note>
 
 </usage>
 </directivesynopsis>
