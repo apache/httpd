@@ -29,8 +29,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_rewrite.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_rewrite.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Ce module fournit un moteur de réécriture à base de
 règles permettant de réécrire les URLs des requêtes
 à la volée</td></tr>
@@ -1322,14 +1320,17 @@ substitution !
 
         <dt>URL absolue</dt>
 
-        <dd>Si une URL absolue est spécifiée,
+        <dd><p>Si une URL absolue est spécifiée,
 	<code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> vérifie si le nom d'hôte
 	correspond à celui de l'hôte local. Si c'est le cas, le
 	protocole et le nom d'hôte sont supprimés, et ce qui reste est
 	traité comme un chemin d'URL. Dans le cas contraire, une
 	redirection externe vers l'URL indiquée est effectuée. Pour
 	forcer une redirection externe vers l'hôte local, voir le
-	drapeau <code>[R]</code> ci-dessous.</dd>
+	drapeau <code>[R]</code> ci-dessous.</p>
+	<p>Notez qu'une redirection (implicite ou non) qui utilise une URI
+	absolue inclura la chaîne de paramètres de la requête ; pour éviter
+	ceci, voir le drapeau <code>[QSD]</code> ci-dessous.</p></dd>
 
         <dt><code>-</code> (tiret)</dt>
 
