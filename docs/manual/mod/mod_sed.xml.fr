@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1817952:1901511 (outdated) -->
+<!-- English Revision: 1901511 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -60,9 +60,11 @@ dans la chaîne de filtrage.
 </p>
 
 <p>
-Les filtres en entrée ou en sortie ne traitent les données que si des
-caractères newline sont détectés dans le contenu à filtrer. A la fin des
-données, ce qui reste est traité comme la dernière ligne.
+Les filtres en entrée ou en sortie ne traitent les données que si des caractères
+newline sont détectés dans le contenu à filtrer. A la fin des données, ce qui
+reste est traité comme la dernière ligne. A partir de la version 2.4.54 du
+serveur HTTP Apache, les lignes d'une taille supérieure à 8 Mo provoquent une
+erreur.
 </p>
 
 </summary>
