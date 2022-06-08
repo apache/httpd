@@ -1,5 +1,79 @@
                                                          -*- coding: utf-8 -*-
+Changes with Apache 2.4.55
+
 Changes with Apache 2.4.54
+
+  *) SECURITY: CVE-2022-31813: mod_proxy X-Forwarded-For dropped by
+     hop-by-hop mechanism (cve.mitre.org)
+     Apache HTTP Server 2.4.53 and earlier may not send the
+     X-Forwarded-* headers to the origin server based on client side
+     Connection header hop-by-hop mechanism.
+     This may be used to bypass IP based authentication on the origin
+     server/application.
+     Credits: The Apache HTTP Server project would like to thank
+     Gaetan Ferry (Synacktiv) for reporting this issue
+
+  *) SECURITY: CVE-2022-30556: Information Disclosure in mod_lua with
+     websockets (cve.mitre.org)
+     Apache HTTP Server 2.4.53 and earlier may return lengths to
+     applications calling r:wsread() that point past the end of the
+     storage allocated for the buffer.
+     Credits: The Apache HTTP Server project would like to thank
+     Ronald Crane (Zippenhop LLC) for reporting this issue
+
+  *) SECURITY: CVE-2022-30522: mod_sed denial of service
+     (cve.mitre.org)
+     If Apache HTTP Server 2.4.53 is configured to do transformations
+     with mod_sed in contexts where the input to mod_sed may be very
+     large, mod_sed may make excessively large memory allocations and
+     trigger an abort.
+     Credits: This issue was found by Brian Moussalli from the JFrog
+     Security Research team
+
+  *) SECURITY: CVE-2022-29404: Denial of service in mod_lua
+     r:parsebody (cve.mitre.org)
+     In Apache HTTP Server 2.4.53 and earlier, a malicious request to
+     a lua script that calls r:parsebody(0) may cause a denial of
+     service due to no default limit on possible input size.
+     Credits: The Apache HTTP Server project would like to thank
+     Ronald Crane (Zippenhop LLC) for reporting this issue
+
+  *) SECURITY: CVE-2022-28615: Read beyond bounds in
+     ap_strcmp_match() (cve.mitre.org)
+     Apache HTTP Server 2.4.53 and earlier may crash or disclose
+     information due to a read beyond bounds in ap_strcmp_match()
+     when provided with an extremely large input buffer.  While no
+     code distributed with the server can be coerced into such a
+     call, third-party modules or lua scripts that use
+     ap_strcmp_match() may hypothetically be affected.
+     Credits: The Apache HTTP Server project would like to thank
+     Ronald Crane (Zippenhop LLC) for reporting this issue
+
+  *) SECURITY: CVE-2022-28614: read beyond bounds via ap_rwrite()
+     (cve.mitre.org)
+     The ap_rwrite() function in Apache HTTP Server 2.4.53 and
+     earlier may read unintended memory if an attacker can cause the
+     server to reflect very large input using ap_rwrite() or
+     ap_rputs(), such as with mod_luas r:puts() function.
+     Credits: The Apache HTTP Server project would like to thank
+     Ronald Crane (Zippenhop LLC) for reporting this issue
+
+  *) SECURITY: CVE-2022-28330: read beyond bounds in mod_isapi
+     (cve.mitre.org)
+     Apache HTTP Server 2.4.53 and earlier on Windows may read beyond
+     bounds when configured to process requests with the mod_isapi
+     module.
+     Credits: The Apache HTTP Server project would like to thank
+     Ronald Crane (Zippenhop LLC) for reporting this issue
+
+  *) SECURITY: CVE-2022-26377: mod_proxy_ajp: Possible request
+     smuggling (cve.mitre.org)
+     Inconsistent Interpretation of HTTP Requests ('HTTP Request
+     Smuggling') vulnerability in mod_proxy_ajp of Apache HTTP Server
+     allows an attacker to smuggle requests to the AJP server it
+     forwards requests to.  This issue affects Apache HTTP Server
+     Apache HTTP Server 2.4 version 2.4.53 and prior versions.
+     Credits: Ricter Z @ 360 Noah Lab
 
   *) mod_ssl: SSLFIPS compatible with OpenSSL 3.0.  PR 66063.
      [Petr Sumbera <petr.sumbera oracle.com>, Yann Ylavic]
