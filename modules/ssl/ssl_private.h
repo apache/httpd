@@ -151,7 +151,7 @@
 #define MODSSL_USE_SSLRAND
 #endif
 
-#if defined(OPENSSL_FIPS)
+#if defined(OPENSSL_FIPS) || OPENSSL_VERSION_NUMBER >= 0x30000000L
 #define HAVE_FIPS
 #endif
 
