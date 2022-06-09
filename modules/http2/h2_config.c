@@ -90,7 +90,7 @@ typedef struct h2_dir_config {
 static h2_config defconf = {
     "default",
     100,                    /* max_streams */
-    H2_INITIAL_WINDOW_SIZE, /* window_size */
+    64 * 1024,              /* window_size */
     -1,                     /* min workers */
     -1,                     /* max workers */
     10 * 60,                /* max workers idle secs */
