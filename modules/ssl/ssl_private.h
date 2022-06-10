@@ -151,7 +151,7 @@
 #define MODSSL_USE_SSLRAND
 #endif
 
-#if defined(OPENSSL_FIPS)
+#if defined(OPENSSL_FIPS) || OPENSSL_VERSION_NUMBER >= 0x30000000L
 #define HAVE_FIPS
 #endif
 
@@ -265,6 +265,16 @@ void free_bio_methods(void);
 #if OPENSSL_VERSION_NUMBER >= 0x10101000L && !defined(LIBRESSL_VERSION_NUMBER)
 #define HAVE_OPENSSL_KEYLOG
 #endif
+
+#ifdef HAVE_FIPS
+#if OPENSSL_VERSION_NUMBER >= 0x30000000L
+#define modssl_fips_is_enabled() EVP_default_properties_is_fips_enabled(NULL)
+#define modssl_fips_enable(to)   EVP_default_properties_enable_fips(NULL, (to))
+#else
+#define modssl_fips_is_enabled() FIPS_mode()
+#define modssl_fips_enable(to)   FIPS_mode_set((to))
+#endif
+#endif /* HAVE_FIPS */
 
 /* mod_ssl headers */
 #include "ssl_util_ssl.h"

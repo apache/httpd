@@ -27,7 +27,7 @@
  * @macro
  * Version number of the md module as c string
  */
-#define MOD_MD_VERSION "2.4.16"
+#define MOD_MD_VERSION "2.4.17"
 
 /**
  * @macro

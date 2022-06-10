@@ -483,6 +483,8 @@
 <li><a href="mod_md.html#mdrenewmode">MDRenewMode</a></li>
 <li><a href="mod_md.html#mdrenewwindow">MDRenewWindow</a></li>
 <li><a href="mod_md.html#mdrequirehttps">MDRequireHttps</a></li>
+<li><a href="mod_md.html#mdretrydelay">MDRetryDelay</a></li>
+<li><a href="mod_md.html#mdretryfailover">MDRetryFailover</a></li>
 <li><a href="mod_md.html#mdserverstatus">MDServerStatus</a></li>
 <li><a href="mod_md.html#mdstapleothers">MDStapleOthers</a></li>
 <li><a href="mod_md.html#mdstapling">MDStapling</a></li>

@@ -1,6 +1,24 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) mod_md:  a bug was fixed that caused very large MDomains
+     with the combined DNS names exceeding ~7k to fail, as
+     request bodies would contain partially wrong data from
+     uninitialized memory. This would have appeared as failure
+     in signing-up/renewing such configurations.
+     [Stefan Eissing, Ronald Crane (Zippenhop LLC)]
+
+  *) mod_proxy_http: Avoid 417 responses for non forwardable 100-continue.
+     PR 65666.  [Yann Ylavic]
+
+  *) mod_ssl: SSLFIPS compatible with OpenSSL 3.0.  PR 66063.
+     [Petr Sumbera <petr.sumbera oracle.com>, Yann Ylavic]
+
+  *) core: the conf/mime.types has been updated in conformance with RFC 9239:
+     - .js moved from 'application/javascript' to 'text/javascript'
+     - .mjs was added as 'text/javascript'
+     [Mathias Bynens <@mathiasbynens> via PR 318]
+
   *) mod_md: the `MDCertificateAuthority` directive can take more than one URL/name of
      an ACME CA. This gives a failover for renewals when several consecutive attempts
      to get a certificate failed.
@@ -67,7 +85,7 @@ Changes with Apache 2.5.1
      on the pre_read_request hook when the connection has protocol 'http/1.1'.
      [Stefan Eissing]
 
-  *) MPM event: Restart chilren processes killed before idle maintenance.
+  *) MPM event: Restart children processes killed before idle maintenance.
      PR 65769.  [Yann Ylavic, Ruediger Pluem]
 
   *) core: Disable TCP_NOPUSH optimization on OSX since it might introduce

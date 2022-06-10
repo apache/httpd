@@ -64,6 +64,7 @@ static size_t req_data_cb(void *data, size_t len, size_t nmemb, void *baton)
     apr_bucket_brigade *body = baton;
     size_t blen, read_len = 0, max_len = len * nmemb;
     const char *bdata;
+    char *rdata = data;
     apr_bucket *b;
     apr_status_t rv;
     
@@ -81,9 +82,10 @@ static size_t req_data_cb(void *data, size_t len, size_t nmemb, void *baton)
                     apr_bucket_split(b, max_len);
                     blen = max_len;
                 }
-                memcpy(data, bdata, blen);
+                memcpy(rdata, bdata, blen);
                 read_len += blen;
                 max_len -= blen;
+                rdata += blen;
             }
             else {
                 body = NULL;

@@ -283,6 +283,43 @@
             </p>
         </div>
 
+        <div class="note"><h3>tailscale</h3>
+            <p>
+                Since version 2.4.14 of the module, you can use it to get certificates
+                for your <a href="https://tailscale.com">tailscale</a> domains.
+            </p>
+            <pre class="prettyprint lang-config">&lt;MDomain mydomain.some-thing.ts.net&gt;
+  MDCertificateProtocol tailscale
+  MDCertificateAuthority file://localhost/var/run/tailscale/tailscaled.sock",
+&lt;/MDomain&gt;</pre>
+
+            <p>
+                Tailscale provides secure networking between your machines, where ever
+                they are, and can provide domain names in the *.ts.net space for them.
+                For those, it will then provide Let's Encrypt certificates as well, so
+                you can open these domains in your browser securely.
+            </p>
+            <p>
+                The directives listed above tell Apache to contact the local tailscale
+                demon for obtaining and renewing certificates. This will only work for
+                the domain name that tailscale assigns to your machine.
+            </p>
+            <p>
+                Otherwise, these certificates work exactly like the ones retrieved
+                via the ACME protocol from Lets Encrypt. You see them in status reporting
+                and MDMessageCmd directives are executed for them as well.
+            </p>
+            <p>
+                More details are <a href="https://github.com/icing/mod_md#tailscale">
+                available at the mod_md github documentation</a>.
+            </p>
+            <p>
+                Note that this feature only works on machines where the tailscale
+                demon provides a unix domain socket. This, so far, seems only the
+                case on *nix systems.
+            </p>
+        </div>
+
     </div>
 <div id="quickview"><h3 class="directives">Directives</h3>
 <ul id="toc">
@@ -314,6 +351,8 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#mdrenewmode">MDRenewMode</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mdrenewwindow">MDRenewWindow</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mdrequirehttps">MDRequireHttps</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#mdretrydelay">MDRetryDelay</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#mdretryfailover">MDRetryFailover</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mdserverstatus">MDServerStatus</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mdstapleothers">MDStapleOthers</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mdstapling">MDStapling</a></li>
@@ -409,27 +448,34 @@
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="MDCertificateAuthority" id="MDCertificateAuthority">MDCertificateAuthority</a> <a name="mdcertificateauthority" id="mdcertificateauthority">Directive</a> <a title="Permanent link" href="#mdcertificateauthority" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>The URL of the ACME Certificate Authority service.</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>The URL(s) of the ACME Certificate Authority to use.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>MDCertificateAuthority <var>url</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>MDCertificateAuthority https://acme-v02.api.letsencrypt.org/directory</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>MDCertificateAuthority letsencrypt</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_md</td></tr>
 </table>
             <p>
-                The URL where the CA offers its service.
+                The URL(s) where the CA offers its service.
+                Instead of the actual URL, you may use 'letsencrypt' or 'buypass'.
             </p><p>
-                Let's Encrypt offers, right now, four such URLs. Two for
-                the own legacy version of the ACME protocol, commonly named ACMEv1.
-                And two for the RFC 8555 version, named ACMEv2.
+                If you configure more than one URL, each one is tried in a round-robin
+                fashion after a number of failures. You can configure how quickly or
+                delayed that happens via the <code class="directive">MDRetryDelay</code> and
+                <code class="directive">MDRetryFailover</code> directives. The default setting
+                makes a failover after about half a day of trying.
             </p><p>
-                Each version has 2 endpoints, as their is a production endpoint and a
-                "staging" endpoint for testing. The testing endpoint works the same, but will
-                not give you certificates recognized by browsers. However, it also has
-                very relaxed rate limits. This allows testing of the service repeatedly
-                without you blocking yourself.
+                All other settings apply to each of these URLs. It is therefore
+                not possible to have two with different
+                <code class="directive">MDExternalAccountBinding</code>s, for example.
+            </p><p>
+                For testing, CAs commonly offer a second service URL.
+                The 'test' service does not give certificates valid in a browser,
+                but are more relaxed in regard to rate limits.
+                This allows for verfication of your own setup before switching
+                to the production service URL.
             </p>
-            <div class="example"><h3>LE Staging Setup</h3><pre class="prettyprint lang-config">MDCertificateAuthority https://acme-staging-v02.api.letsencrypt.org/directory</pre>
+            <div class="example"><h3>LE Test Setup</h3><pre class="prettyprint lang-config">MDCertificateAuthority https://acme-staging-v02.api.letsencrypt.org/directory</pre>
 </div>
         
 </div>
@@ -1152,6 +1198,47 @@ MDRenewWindow 10%</pre>
   MDRequireHttps temporary
 &lt;/MDomain&gt;</pre>
 </div>
+        
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="MDRetryDelay" id="MDRetryDelay">MDRetryDelay</a> <a name="mdretrydelay" id="mdretrydelay">Directive</a> <a title="Permanent link" href="#mdretrydelay" class="permalink">&para;</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td /></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>MDRetryDelay <var>duration</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>MDRetryDelay 5s</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_md</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in version 2.4.54 and later</td></tr>
+</table>
+            <p>
+                The amount of time to wait after an error before trying
+                to renew a certificate again. This duration is doubled after
+                each consecutive error with a maximum of 24 hours.
+            </p>
+            <p>
+                It is kept separate for each certificate renewal. Meaning an error
+                on one MDomain does not delay the renewals of other domains.
+            </p>
+        
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="MDRetryFailover" id="MDRetryFailover">MDRetryFailover</a> <a name="mdretryfailover" id="mdretryfailover">Directive</a> <a title="Permanent link" href="#mdretryfailover" class="permalink">&para;</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td /></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>MDRetryFailover <var>number</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>MDRetryFailover 13</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_md</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in version 2.4.54 and later</td></tr>
+</table>
+            <p>
+                The number of consecutive errors on renewing a certificate before
+                another CA is selected. This only applies to configurations that
+                have more than one <code class="directive">MDCertificateAuthority</code>
+                specified.
+            </p>
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>

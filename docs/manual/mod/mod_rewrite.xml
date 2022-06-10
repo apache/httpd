@@ -1239,13 +1239,16 @@ cannot use <code>$N</code> in the substitution string!
 
         <dt>Absolute URL</dt>
 
-        <dd>If an absolute URL is specified,
+        <dd><p>If an absolute URL is specified,
         <module>mod_rewrite</module> checks to see whether the
         hostname matches the current host. If it does, the scheme and
         hostname are stripped out and the resulting path is treated as
         a URL-path. Otherwise, an external redirect is performed for
         the given URL. To force an external redirect back to the
-        current host, see the <code>[R]</code> flag below.</dd>
+        current host, see the <code>[R]</code> flag below.</p>
+        <p>Note that a redirect (implicit or not) using an absolute URI
+        will include the requested query-string, to prevent this see the
+        <code>[QSD]</code> flag below.</p></dd>
 
         <dt><code>-</code> (dash)</dt>
 

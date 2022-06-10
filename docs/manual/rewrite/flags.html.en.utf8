@@ -468,7 +468,8 @@ example.</p>
 <h2><a name="flag_ne" id="flag_ne">NE|noescape</a> <a title="Permanent link" href="#flag_ne" class="permalink">&para;</a></h2>
 <p>By default, special characters, such as <code>&amp;</code> and
 <code>?</code>, for example, will be converted to their hexcode
-equivalent. Using the [NE] flag prevents that from happening.
+equivalent for rules that result in external redirects. 
+Using the [NE] flag prevents that from happening.
 </p>
 
 <pre class="prettyprint lang-config">RewriteRule "^/anchor/(.+)" "/bigpage.html#$1" [NE,R]</pre>
