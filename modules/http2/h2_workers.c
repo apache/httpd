@@ -60,6 +60,7 @@ typedef struct h2_slot h2_slot;
 struct h2_slot {
     APR_RING_ENTRY(h2_slot) link;
     int id;
+    apr_pool_t *pool;
     h2_slot_state_t state;
     volatile int should_shutdown;
     volatile int is_idle;
@@ -125,6 +126,7 @@ static void* APR_THREAD_FUNC slot_run(apr_thread_t *thread, void *wctx);
 static apr_status_t activate_slot(h2_workers *workers)
 {
     h2_slot *slot;
+    apr_pool_t *pool;
     apr_status_t rv;
 
     if (APR_RING_EMPTY(&workers->free, h2_slot, link)) {
@@ -140,13 +142,24 @@ static apr_status_t activate_slot(h2_workers *workers)
     slot->state = H2_SLOT_RUN;
     slot->should_shutdown = 0;
     slot->is_idle = 0;
+    slot->pool = NULL;
     ++workers->active_slots;
-    rv = ap_thread_create(&slot->thread, workers->thread_attr,
-                          slot_run, slot, workers->pool);
+    rv = apr_pool_create(&pool, workers->pool);
+    if (APR_SUCCESS != rv) goto cleanup;
+    apr_pool_tag(pool, "h2_worker_slot");
+    slot->pool = pool;
 
+    rv = ap_thread_create(&slot->thread, workers->thread_attr,
+                          slot_run, slot, slot->pool);
+
+cleanup:
     if (rv != APR_SUCCESS) {
         AP_DEBUG_ASSERT(0);
         slot->state = H2_SLOT_FREE;
+        if (slot->pool) {
+            apr_pool_destroy(slot->pool);
+            slot->pool = NULL;
+        }
         APR_RING_INSERT_TAIL(&workers->free, slot, h2_slot, link);
         --workers->active_slots;
     }
@@ -170,6 +183,10 @@ static void join_zombies(h2_workers *workers)
 
         slot->thread = NULL;
         slot->state = H2_SLOT_FREE;
+        if (slot->pool) {
+            apr_pool_destroy(slot->pool);
+            slot->pool = NULL;
+        }
         APR_RING_INSERT_TAIL(&workers->free, slot, h2_slot, link);
     }
 }
@@ -211,9 +228,9 @@ static void* APR_THREAD_FUNC tuner_run(apr_thread_t *thread, void *wctx)
                 }
             }
 
-            /* what change in number of active slots would we like to see? */
-            desired = H2MIN(workers->max_slots,
-                            workers->fast_slots + long_runners);
+            /* what change in number of active slots would we like to see?
+             * assuming we only detect half of the long runners... */
+            desired = workers->fast_slots + (2 * long_runners);
             if (desired == workers->max_active) {
                 /* number of active workers is as it should be */
                 tuner->measures = 0;
@@ -229,12 +246,14 @@ static void* APR_THREAD_FUNC tuner_run(apr_thread_t *thread, void *wctx)
             if (!tuner->measures) {
                 tuner->measure_start = now;
                 tuner->measures = 1;
-                tuner->advised_average = desired;
+                tuner->advised_average = H2MIN(workers->max_slots,
+                                               H2MAX(workers->min_active, desired));
             }
             else {
-                desired = ((tuner->advised_average * tuner->measures) + desired);
+                int n = ((tuner->advised_average * tuner->measures) + desired);
                 ++tuner->measures;
-                tuner->advised_average = (desired / tuner->measures);
+                tuner->advised_average = H2MIN(workers->max_slots,
+                                               H2MAX(workers->min_active, n / tuner->measures));
             }
 
             delta = tuner->advised_average - workers->active_slots;
@@ -267,8 +286,9 @@ static void* APR_THREAD_FUNC tuner_run(apr_thread_t *thread, void *wctx)
                 }
             }
             else if (delta < 0 && (now - tuner->measure_start) >= tuner->measure_action_delay) {
-                /* reductions of workers we do only after a certain delay on more samples */
-                workers->max_active = tuner->advised_average;
+                /* reductions of workers we do only after a certain delay on more samples.
+                 * Take it down carefully. */
+                workers->max_active = H2MAX(workers->max_active - 5, tuner->advised_average);
                 ap_log_error(APLOG_MARK, APLOG_TRACE1, 0, workers->s,
                              "h2_workers tune, decrease: slots[%d,%d], active=%d, "
                              "adviced_active=%d (%d measures), long_runners=%d",
@@ -592,6 +612,7 @@ h2_workers *h2_workers_create(server_rec *s, apr_pool_t *pchild,
     apr_status_t rv;
     h2_workers *workers;
     apr_pool_t *pool;
+    apr_allocator_t *allocator;
     int i, locked = 0;
     apr_time_t tuner_interval, tuner_action_delay;
 
@@ -603,7 +624,16 @@ h2_workers *h2_workers_create(server_rec *s, apr_pool_t *pchild,
      * guarded by our lock. Without this pool, all subpool creations would
      * happen on the pool handed to us, which we do not guard.
      */
-    apr_pool_create(&pool, pchild);
+    rv = apr_allocator_create(&allocator);
+    if (rv != APR_SUCCESS) {
+        goto cleanup;
+    }
+    rv = apr_pool_create_ex(&pool, pchild, NULL, allocator);
+    if (rv != APR_SUCCESS) {
+        apr_allocator_destroy(allocator);
+        goto cleanup;
+    }
+    apr_allocator_owner_set(allocator, pool);
     apr_pool_tag(pool, "h2_workers");
     workers = apr_pcalloc(pool, sizeof(h2_workers));
     if (!workers) {
@@ -628,7 +658,7 @@ h2_workers *h2_workers_create(server_rec *s, apr_pool_t *pchild,
 
     /* TODO: make these configurable */
     tuner_interval = apr_time_from_msec(100);       /* interval tuner runs */
-    tuner_action_delay = apr_time_from_msec(1000);  /* delay on decrease of active slots, e.g.
+    tuner_action_delay = apr_time_from_msec(5000);  /* delay on decrease of active slots, e.g.
                                                      * the need for decrease must be sustained that
                                                      * long to act on it. */
 
