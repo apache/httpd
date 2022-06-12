@@ -175,6 +175,31 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      +1: minfrin, jim,
      rpluem says: The version in the compatibility notes is wrong.
 
+  *) Easy patches: synch 2.4.x and trunk
+         - Makefile.in (build/config_vars.out): Rebuild if build/config_vars.sh has changed 
+         - suexec: sort the 'safe_env_lst' array
+         - mod_optional_hook_import: debug message at APLOG_DEBUG level
+         - worker: de-duplicate ALOGNO from code copy
+         - ab: tweak usage of apr_base64_encode()
+         - core: Avoid an overflow on large inputs in ap_is_matchexp()
+         - mod_dav: be more consistent with datatypes
+         - mod_log_forensic: be more consistent with datatypes
+         - mod_ssl: fix some typo
+         - mod_ssl: fix some typo
+     trunk patch:
+          https://svn.apache.org/r1822857
+          https://svn.apache.org/r1876815
+          https://svn.apache.org/r1893499
+          https://svn.apache.org/r1900024
+          https://svn.apache.org/r1900152
+          https://svn.apache.org/r1900306
+          https://svn.apache.org/r1900559
+          https://svn.apache.org/r1900564
+          https://svn.apache.org/r1900691
+          https://svn.apache.org/r1900694
+     2.4.x patch: svn merge -c 1822857,1876815,1893499,1900024,1900152,1900306,1900559,1900564,1900691,1900694 ^/httpd/httpd/trunk .
+     +1: jailletc36, 
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
