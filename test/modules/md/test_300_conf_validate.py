@@ -388,4 +388,3 @@ class TestConf:
             assert len(md['ca']['urls']) == len(cas)
         else:
             assert rv != 0, "Server should not have accepted CAs '{}'".format(cas)
-
