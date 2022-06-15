@@ -306,7 +306,7 @@ h2_mplx *h2_mplx_c1_create(int child_num, apr_uint32_t id, h2_stream *stream0,
     m->q = h2_iq_create(m->pool, m->max_streams);
 
     m->workers = workers;
-    m->processing_max = h2_workers_get_max_workers(workers);
+    m->processing_max = H2MIN(h2_workers_get_max_workers(workers), m->max_streams);
     m->processing_limit = 6; /* the original h1 max parallel connections */
     m->last_mood_change = apr_time_now();
     m->mood_update_interval = apr_time_from_msec(100);
@@ -695,13 +695,13 @@ void h2_mplx_c1_process(h2_mplx *m,
                           H2_MPLX_MSG(m, "stream %d not found to process"), sid);
         }
     }
-    if (!h2_iq_empty(m->q)) {
+    if ((m->processing_count < m->processing_limit) && !h2_iq_empty(m->q)) {
         H2_MPLX_LEAVE(m);
         rv = h2_workers_activate(m->workers, m->producer);
         H2_MPLX_ENTER_ALWAYS(m);
         if (rv != APR_SUCCESS) {
             ap_log_cerror(APLOG_MARK, APLOG_ERR, rv, m->c1, APLOGNO(10021)
-                          H2_MPLX_MSG(m, "register at workers"));
+                          H2_MPLX_MSG(m, "activate at workers"));
         }
     }
     *pstream_count = (int)h2_ihash_count(m->streams);
@@ -952,49 +952,6 @@ static void c2_prod_done(void *baton, conn_rec *c2)
     --m->processing_count;
     s_c2_done(m, c2, conn_ctx);
     if (m->join_wait) apr_thread_cond_signal(m->join_wait);
-
-    if (!m->aborted
-        && (m->processing_count < m->processing_limit)
-        && !h2_iq_empty(m->q)) {
-        /* We have a limit on the amount of c2s we process at a time. When
-         * this is reached, we do no longer have things to do for h2 workers
-         * and they remove such an mplx from its queue.
-         * When a c2 is done, there might then be room for more processing
-         * and we need then to register this mplx at h2 workers again.
-         */
-        H2_MPLX_LEAVE(m);
-        h2_workers_activate(m->workers, m->producer);
-        return;
-    }
-    H2_MPLX_LEAVE(m);
-}
-
-void h2_mplx_worker_c2_done(conn_rec *c2)
-{
-    h2_conn_ctx_t *conn_ctx = h2_conn_ctx_get(c2);
-    h2_mplx *m;
-
-    AP_DEBUG_ASSERT(conn_ctx);
-    m = conn_ctx->mplx;
-    H2_MPLX_ENTER_ALWAYS(m);
-
-    --m->processing_count;
-    s_c2_done(m, c2, conn_ctx);
-    if (m->join_wait) apr_thread_cond_signal(m->join_wait);
-
-    if (!m->aborted
-        && (m->processing_count < m->processing_limit)
-        && !h2_iq_empty(m->q)) {
-        /* We have a limit on the amount of c2s we process at a time. When
-         * this is reached, we do no longer have things to do for h2 workers
-         * and they remove such an mplx from its queue.
-         * When a c2 is done, there might then be room for more processing
-         * and we need then to register this mplx at h2 workers again.
-         */
-        H2_MPLX_LEAVE(m);
-        h2_workers_activate(m->workers, m->producer);
-        return;
-    }
 
     H2_MPLX_LEAVE(m);
 }

@@ -220,12 +220,6 @@ const struct h2_stream *h2_mplx_c2_stream_get(h2_mplx *m, int stream_id);
  */
 apr_status_t h2_mplx_worker_pop_c2(h2_mplx *m, conn_rec **out_c2);
 
-/**
- * A h2 worker reports a secondary connection processing done.
- * @param c2 the secondary connection finished processing
- */
-void h2_mplx_worker_c2_done(conn_rec *c2);
-
 #define H2_MPLX_MSG(m, msg)     \
     "h2_mplx(%d-%lu): "msg, m->child_num, (unsigned long)m->id
 

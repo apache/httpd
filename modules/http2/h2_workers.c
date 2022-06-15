@@ -64,7 +64,6 @@ struct h2_slot {
     h2_slot_state_t state;
     volatile int should_shutdown;
     volatile int is_idle;
-    volatile apr_time_t processing_start;
     h2_workers *workers;
     ap_conn_producer_t *prod;
     apr_thread_t *thread;
@@ -244,7 +243,6 @@ static void* APR_THREAD_FUNC slot_run(apr_thread_t *thread, void *wctx)
             --workers->idle_slots;
         }
         slot->is_idle = 0;
-        slot->processing_start = 0;
 
         if (!workers->aborted && !slot->should_shutdown) {
             APR_RING_INSERT_TAIL(&workers->busy, slot, h2_slot, link);
@@ -253,7 +251,6 @@ static void* APR_THREAD_FUNC slot_run(apr_thread_t *thread, void *wctx)
                 if (!c) {
                     break;
                 }
-                slot->processing_start = apr_time_now();
                 apr_thread_mutex_unlock(workers->lock);
                 /* See the discussion at <https://github.com/icing/mod_h2/issues/195>
                  *
@@ -297,10 +294,14 @@ static void* APR_THREAD_FUNC slot_run(apr_thread_t *thread, void *wctx)
                 if (--slot->prod->conns_active <= 0) {
                     apr_thread_cond_broadcast(workers->prod_done);
                 }
+                if (slot->prod->state == PROD_IDLE) {
+                    APR_RING_REMOVE(slot->prod, link);
+                    slot->prod->state = PROD_ACTIVE;
+                    APR_RING_INSERT_TAIL(&workers->prod_active, slot->prod, ap_conn_producer_t, link);
+                }
 
             } while (!workers->aborted && !slot->should_shutdown);
             APR_RING_REMOVE(slot, link); /* no longer busy */
-            slot->processing_start = 0;
         }
 
         if (workers->aborted || slot->should_shutdown) {
