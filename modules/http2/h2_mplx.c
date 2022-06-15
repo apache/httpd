@@ -563,13 +563,14 @@ static void c1_purge_streams(h2_mplx *m)
         if (stream->c2) {
             conn_rec *c2 = stream->c2;
             h2_conn_ctx_t *c2_ctx = h2_conn_ctx_get(c2);
+            h2_c2_transit *transit;
 
             stream->c2 = NULL;
             ap_assert(c2_ctx);
-            h2_c2_destroy(c2);
-            if (c2_ctx->transit) {
-                c2_transit_recycle(m, c2_ctx->transit);
-                c2_ctx->transit = NULL;
+            transit = c2_ctx->transit;
+            h2_c2_destroy(c2);  /* c2_ctx is gone as well */
+            if (transit) {
+                c2_transit_recycle(m, transit);
             }
         }
         h2_stream_destroy(stream);
