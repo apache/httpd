@@ -75,8 +75,6 @@ typedef struct h2_config {
     int padding_always;
     int output_buffered;
     apr_interval_time_t stream_timeout;/* beam timeout */
-    int fast_workers;                /* # of fast worker threads/child */
-    apr_interval_time_t fast_limit;  /* max duration to be 'fast' */
 } h2_config;
 
 typedef struct h2_dir_config {
@@ -112,8 +110,6 @@ static h2_config defconf = {
     1,                      /* padding always */
     1,                      /* stream output buffered */
     -1,                     /* beam timeout */
-    0,                      /* fast workers */
-    0,                      /* fast limit */
 };
 
 static h2_dir_config defdconf = {
@@ -157,8 +153,6 @@ void *h2_config_create_svr(apr_pool_t *pool, server_rec *s)
     conf->padding_always       = DEF_VAL;
     conf->output_buffered      = DEF_VAL;
     conf->stream_timeout       = DEF_VAL;
-    conf->fast_workers         = DEF_VAL;
-    conf->fast_limit           = DEF_VAL;
     return conf;
 }
 
@@ -201,8 +195,6 @@ static void *h2_config_merge(apr_pool_t *pool, void *basev, void *addv)
     n->padding_bits         = H2_CONFIG_GET(add, base, padding_bits);
     n->padding_always       = H2_CONFIG_GET(add, base, padding_always);
     n->stream_timeout       = H2_CONFIG_GET(add, base, stream_timeout);
-    n->fast_workers         = H2_CONFIG_GET(add, base, fast_workers);
-    n->fast_limit           = add->fast_limit > 0? add->fast_limit : base->fast_limit;
     return n;
 }
 
@@ -286,10 +278,6 @@ static apr_int64_t h2_srv_config_geti64(const h2_config *conf, h2_config_var_t v
             return H2_CONFIG_GET(conf, &defconf, output_buffered);
         case H2_CONF_STREAM_TIMEOUT:
             return H2_CONFIG_GET(conf, &defconf, stream_timeout);
-        case H2_CONF_FAST_WORKERS:
-            return H2_CONFIG_GET(conf, &defconf, fast_workers);
-        case H2_CONF_FAST_LIMIT:
-            return H2_CONFIG_GET(conf, &defconf, fast_limit);
         default:
             return DEF_VAL;
     }
@@ -309,9 +297,6 @@ static void h2_srv_config_seti(h2_config *conf, h2_config_var_t var, int val)
             break;
         case H2_CONF_MAX_WORKERS:
             H2_CONFIG_SET(conf, max_workers, val);
-            break;
-        case H2_CONF_FAST_WORKERS:
-            H2_CONFIG_SET(conf, fast_workers, val);
             break;
         case H2_CONF_STREAM_MAX_MEM:
             H2_CONFIG_SET(conf, stream_max_mem_size, val);
@@ -368,9 +353,6 @@ static void h2_srv_config_seti64(h2_config *conf, h2_config_var_t var, apr_int64
             break;
         case H2_CONF_MAX_WORKER_IDLE_LIMIT:
             H2_CONFIG_SET(conf, idle_limit, val);
-            break;
-        case H2_CONF_FAST_LIMIT:
-            H2_CONFIG_SET(conf, fast_limit, val);
             break;
         default:
             h2_srv_config_seti(conf, var, (int)val);
@@ -584,25 +566,6 @@ static const char *h2_conf_set_max_worker_idle_limit(cmd_parms *cmd,
         return "Invalid idle limit value";
     }
     CONFIG_CMD_SET64(cmd, dirconf, H2_CONF_MAX_WORKER_IDLE_LIMIT, timeout);
-    return NULL;
-}
-
-static const char *h2_conf_set_fast_workers(cmd_parms *cmd, void *dirconf,
-                                            const char *val1, const char *val2)
-{
-    int val = (int)apr_atoi64(val1);
-    if (val < 1) {
-        return "value must be > 0";
-    }
-    CONFIG_CMD_SET(cmd, dirconf, H2_CONF_FAST_WORKERS, val);
-    if (val2) {
-        apr_interval_time_t timeout;
-        apr_status_t rv = ap_timeout_parameter_parse(val2, &timeout, "s");
-        if (rv != APR_SUCCESS) {
-            return "Invalid fast limit value";
-        }
-        CONFIG_CMD_SET64(cmd, dirconf, H2_CONF_FAST_LIMIT, timeout);
-    }
     return NULL;
 }
 
@@ -907,8 +870,7 @@ static const char *h2_conf_set_stream_timeout(cmd_parms *cmd,
 }
 
 void h2_get_workers_config(server_rec *s, int *pminw, int *pmaxw,
-                           apr_time_t *pidle_limit,
-                           int *pfastw, apr_time_t *pfast_limit)
+                           apr_time_t *pidle_limit)
 {
     int threads_per_child = 0;
 
@@ -923,8 +885,6 @@ void h2_get_workers_config(server_rec *s, int *pminw, int *pmaxw,
         *pmaxw = H2MAX(4, 3 * (*pminw) / 2);
     }
     *pidle_limit = h2_config_sgeti64(s, H2_CONF_MAX_WORKER_IDLE_LIMIT);
-    *pfastw = h2_config_sgeti(s, H2_CONF_FAST_WORKERS);
-    *pfast_limit = h2_config_sgeti64(s, H2_CONF_FAST_LIMIT);
 }
 
 #define AP_END_CMD     AP_INIT_TAKE1(NULL, NULL, NULL, RSRC_CONF, NULL)
@@ -974,8 +934,6 @@ const command_rec h2_cmds[] = {
                   RSRC_CONF, "set stream output buffer on/off"),
     AP_INIT_TAKE1("H2StreamTimeout", h2_conf_set_stream_timeout, NULL,
                   RSRC_CONF, "set stream timeout"),
-    AP_INIT_TAKE12("H2FastWorkers", h2_conf_set_fast_workers, NULL,
-                  RSRC_CONF, "number of fast worker threads per child"),
     AP_END_CMD
 };
 

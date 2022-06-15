@@ -55,8 +55,8 @@ APR_OPTIONAL_FN_TYPE(ap_logio_add_bytes_out) *h2_c_logio_add_bytes_out;
 apr_status_t h2_c1_child_init(apr_pool_t *pool, server_rec *s)
 {
     apr_status_t status = APR_SUCCESS;
-    int minw, maxw, fastw;
-    apr_time_t fast_limit, idle_limit;
+    int minw, maxw;
+    apr_time_t idle_limit;
 
     status = ap_mpm_query(AP_MPMQ_IS_ASYNC, &async_mpm);
     if (status != APR_SUCCESS) {
@@ -67,9 +67,8 @@ apr_status_t h2_c1_child_init(apr_pool_t *pool, server_rec *s)
 
     h2_config_init(pool);
 
-    h2_get_workers_config(s, &minw, &maxw, &idle_limit,
-                          &fastw, &fast_limit);
-    workers = h2_workers_create(s, pool, maxw, minw, idle_limit, fastw, fast_limit);
+    h2_get_workers_config(s, &minw, &maxw, &idle_limit);
+    workers = h2_workers_create(s, pool, maxw, minw, idle_limit);
  
     h2_c_logio_add_bytes_in = APR_RETRIEVE_OPTIONAL_FN(ap_logio_add_bytes_in);
     h2_c_logio_add_bytes_out = APR_RETRIEVE_OPTIONAL_FN(ap_logio_add_bytes_out);

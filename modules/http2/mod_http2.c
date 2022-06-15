@@ -150,10 +150,9 @@ static int http2_is_h2(conn_rec *);
 
 static void http2_get_num_workers(server_rec *s, int *minw, int *maxw)
 {
-    int dummy;
     apr_time_t tdummy;
 
-    h2_get_workers_config(s, minw, maxw, &tdummy, &dummy, &tdummy);
+    h2_get_workers_config(s, minw, maxw, &tdummy);
 }
 
 /* Runs once per created child process. Perform any process 

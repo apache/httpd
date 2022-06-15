@@ -36,36 +36,14 @@ typedef struct h2_workers h2_workers;
  * threads to run. Always keep `min_active` workers running. Shutdown
  * any additional workers after `idle_secs` seconds of doing nothing.
  *
- * If `fast_slots` is > 0, it is the number of slots the set strives
- * to provide for `fast` requests. A request is considered 'long', e.g.
- * not 'fast', when it takes longer than `fast_limit` elapsed time.
- *
- * The worker set scans ongoing work periodically to detect 'long'
- * requests and dynamically adjust the number of active slots. As long
- * as no 'long' requests are seen, it will keept the active worker
- * count limited by 'fast_slots'.
- *
- * There is an uppper limit on the optimal number of threads to
- * use for 'fast' requests. Starting more threads will thereafter
- * degrade overall performance.
- * 'Long' running work will in many setups not consume much CPU itself
- * as it involves proxied backend systems or application servers.
- * It is beneficial to allow extra threads for such 'long' work.
- *
- * With `fast_slots`== 0, the set will do no monitoring and start
- * up to `max_slots` threads when enough work is available.
- *
  * @oaram s the base server
  * @param pool for allocations
  * @param min_active minimum number of workers to run
  * @param max_slots maximum number of worker slots
  * @param idle_limit upper duration of idle after a non-minimal slots shuts down
- * @param fast_slots number of slots to provide for 'fast' requests
- * @param fast_limit upper limit of duration for a 'fast' request
  */
 h2_workers *h2_workers_create(server_rec *s, apr_pool_t *pool,
-                              int max_slots, int min_active, apr_time_t idle_limit,
-                              int fast_slots, apr_time_t fast_limit);
+                              int max_slots, int min_active, apr_time_t idle_limit);
 
 /**
  *  Shut down processing gracefully by terminating all idle workers.
