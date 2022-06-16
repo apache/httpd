@@ -1242,14 +1242,14 @@ static int h2_session_want_send(h2_session *session)
 
 static apr_status_t h2_session_send(h2_session *session)
 {
-    int ngrv, sent = 0;
+    int ngrv, pending = 0;
     apr_status_t rv = APR_SUCCESS;
 
     while (nghttp2_session_want_write(session->ngh2)) {
         ngrv = nghttp2_session_send(session->ngh2);
         ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, session->c1,
                       "nghttp2_session_send: %d", (int)ngrv);
-
+        pending = 1;
         if (ngrv != 0 && ngrv != NGHTTP2_ERR_WOULDBLOCK) {
             if (nghttp2_is_fatal(ngrv)) {
                 h2_session_dispatch_event(session, H2_SESSION_EV_PROTO_ERROR,
@@ -1258,9 +1258,12 @@ static apr_status_t h2_session_send(h2_session *session)
                 goto cleanup;
             }
         }
-        sent = 1;
+        if (h2_c1_io_needs_flush(&session->io)) {
+            rv = h2_c1_io_assure_flushed(&session->io);
+            pending = 0;
+        }
     }
-    if (sent) {
+    if (pending) {
         rv = h2_c1_io_pass(&session->io);
     }
 cleanup:
