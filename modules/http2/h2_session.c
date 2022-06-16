@@ -1242,7 +1242,7 @@ static int h2_session_want_send(h2_session *session)
 
 static apr_status_t h2_session_send(h2_session *session)
 {
-    int ngrv;
+    int ngrv, sent = 0;
     apr_status_t rv = APR_SUCCESS;
 
     while (nghttp2_session_want_write(session->ngh2)) {
@@ -1258,6 +1258,9 @@ static apr_status_t h2_session_send(h2_session *session)
                 goto cleanup;
             }
         }
+        sent = 1;
+    }
+    if (sent) {
         rv = h2_c1_io_pass(&session->io);
     }
 cleanup:
@@ -1527,7 +1530,7 @@ static void h2_session_ev_no_more_streams(h2_session *session)
             if (!h2_session_want_send(session)) {
                 if (session->local.accepting) {
                     /* We wait for new frames on c1 only. */
-                    transit(session, "c1 keepalive", H2_SESSION_ST_IDLE);
+                    transit(session, "all streams done", H2_SESSION_ST_IDLE);
                 }
                 else {
                     /* We are no longer accepting new streams.
@@ -1835,8 +1838,7 @@ apr_status_t h2_session_process(h2_session *session, int async)
                 /* Give any new incoming request a short grace period to
                  * arrive while we are still hot and return to the mpm
                  * connection handling when nothing really happened. */
-                h2_mplx_c1_poll(session->mplx, apr_time_from_msec(100),
-                                on_stream_input, on_stream_output, session);
+                h2_c1_read(session);
                 if (H2_SESSION_ST_IDLE == session->state) {
                     ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, c,
                                   H2_SSSN_LOG(APLOGNO(10306), session,
