@@ -737,16 +737,24 @@ static void c2_beam_input_write_notify(void *ctx, h2_bucket_beam *beam)
     }
 }
 
+static void add_stream_poll_event(h2_mplx *m, int stream_id, h2_iqueue *q)
+{
+    apr_thread_mutex_lock(m->poll_lock);
+    if (h2_iq_append(q, stream_id) && h2_iq_count(q) == 1) {
+        /* newly added first */
+        apr_pollset_wakeup(m->pollset);
+    }
+    apr_thread_mutex_unlock(m->poll_lock);
+}
+
 static void c2_beam_input_read_notify(void *ctx, h2_bucket_beam *beam)
 {
     conn_rec *c = ctx;
     h2_conn_ctx_t *conn_ctx = h2_conn_ctx_get(c);
 
     if (conn_ctx && conn_ctx->stream_id) {
-        apr_thread_mutex_lock(conn_ctx->mplx->poll_lock);
-        h2_iq_append(conn_ctx->mplx->streams_input_read, conn_ctx->stream_id);
-        apr_pollset_wakeup(conn_ctx->mplx->pollset);
-        apr_thread_mutex_unlock(conn_ctx->mplx->poll_lock);
+        add_stream_poll_event(conn_ctx->mplx, conn_ctx->stream_id,
+                              conn_ctx->mplx->streams_input_read);
     }
 }
 
@@ -756,10 +764,8 @@ static void c2_beam_output_write_notify(void *ctx, h2_bucket_beam *beam)
     h2_conn_ctx_t *conn_ctx = h2_conn_ctx_get(c);
 
     if (conn_ctx && conn_ctx->stream_id) {
-        apr_thread_mutex_lock(conn_ctx->mplx->poll_lock);
-        h2_iq_append(conn_ctx->mplx->streams_output_written, conn_ctx->stream_id);
-        apr_pollset_wakeup(conn_ctx->mplx->pollset);
-        apr_thread_mutex_unlock(conn_ctx->mplx->poll_lock);
+        add_stream_poll_event(conn_ctx->mplx, conn_ctx->stream_id,
+                              conn_ctx->mplx->streams_output_written);
     }
 }
 
