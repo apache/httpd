@@ -474,6 +474,7 @@ unistd.h \
 sys/socket.h \
 pwd.h \
 grp.h \
+pthread_np.h \
 strings.h \
 sys/prctl.h \
 sys/procctl.h \
@@ -535,6 +536,7 @@ initgroups \
 bindprocessor \
 prctl \
 procctl \
+pthread_getthreadid_np \
 timegm \
 getpgid \
 fopen64 \
