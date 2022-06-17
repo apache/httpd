@@ -56,11 +56,8 @@ apr_status_t h2_c1_child_init(apr_pool_t *pool, server_rec *s)
 {
     apr_status_t status = APR_SUCCESS;
     int minw, maxw;
-    int max_threads_per_child = 0;
-    int idle_secs = 0;
+    apr_time_t idle_limit;
 
-    ap_mpm_query(AP_MPMQ_MAX_THREADS, &max_threads_per_child);
-    
     status = ap_mpm_query(AP_MPMQ_IS_ASYNC, &async_mpm);
     if (status != APR_SUCCESS) {
         /* some MPMs do not implemnent this */
@@ -70,12 +67,8 @@ apr_status_t h2_c1_child_init(apr_pool_t *pool, server_rec *s)
 
     h2_config_init(pool);
 
-    h2_get_num_workers(s, &minw, &maxw);
-    idle_secs = h2_config_sgeti(s, H2_CONF_MAX_WORKER_IDLE_SECS);
-    ap_log_error(APLOG_MARK, APLOG_TRACE3, 0, s,
-                 "h2_workers: min=%d max=%d, mthrpchild=%d, idle_secs=%d", 
-                 minw, maxw, max_threads_per_child, idle_secs);
-    workers = h2_workers_create(s, pool, minw, maxw, idle_secs);
+    h2_get_workers_config(s, &minw, &maxw, &idle_limit);
+    workers = h2_workers_create(s, pool, maxw, minw, idle_limit);
  
     h2_c_logio_add_bytes_in = APR_RETRIEVE_OPTIONAL_FN(ap_logio_add_bytes_in);
     h2_c_logio_add_bytes_out = APR_RETRIEVE_OPTIONAL_FN(ap_logio_add_bytes_out);

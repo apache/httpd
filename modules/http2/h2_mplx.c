@@ -58,6 +58,9 @@ typedef struct {
     apr_size_t count;
 } stream_iter_ctx;
 
+static conn_rec *c2_prod_next(void *baton, int *phas_more);
+static void c2_prod_done(void *baton, conn_rec *c2);
+
 static void s_mplx_be_happy(h2_mplx *m, conn_rec *c, h2_conn_ctx_t *conn_ctx);
 static void m_be_annoyed(h2_mplx *m);
 
@@ -303,7 +306,7 @@ h2_mplx *h2_mplx_c1_create(int child_num, apr_uint32_t id, h2_stream *stream0,
     m->q = h2_iq_create(m->pool, m->max_streams);
 
     m->workers = workers;
-    m->processing_max = m->max_streams;
+    m->processing_max = H2MIN(h2_workers_get_max_workers(workers), m->max_streams);
     m->processing_limit = 6; /* the original h1 max parallel connections */
     m->last_mood_change = apr_time_now();
     m->mood_update_interval = apr_time_from_msec(100);
@@ -332,6 +335,9 @@ h2_mplx *h2_mplx_c1_create(int child_num, apr_uint32_t id, h2_stream *stream0,
     m->max_spare_transits = 3;
     m->c2_transits = apr_array_make(m->pool, m->max_spare_transits, sizeof(h2_c2_transit*));
 
+    m->producer = h2_workers_register(workers, m->pool,
+                                      apr_psprintf(m->pool, "h2-%d", (int)m->id),
+                                      c2_prod_next, c2_prod_done, m);
     return m;
 
 failure:
@@ -440,8 +446,7 @@ void h2_mplx_c1_destroy(h2_mplx *m)
     /* How to shut down a h2 connection:
      * 0. abort and tell the workers that no more work will come from us */
     m->aborted = 1;
-    h2_workers_unregister(m->workers, m);
-    
+
     H2_MPLX_ENTER_ALWAYS(m);
 
     /* While really terminating any c2 connections, treat the master
@@ -484,6 +489,10 @@ void h2_mplx_c1_destroy(h2_mplx *m)
             h2_ihash_iter(m->shold, m_report_stream_iter, m);
         }
     }
+
+    H2_MPLX_LEAVE(m);
+    h2_workers_join(m->workers, m->producer);
+    H2_MPLX_ENTER_ALWAYS(m);
 
     /* 4. With all workers done, all streams should be in spurge */
     ap_assert(m->processing_count == 0);
@@ -687,15 +696,13 @@ void h2_mplx_c1_process(h2_mplx *m,
                           H2_MPLX_MSG(m, "stream %d not found to process"), sid);
         }
     }
-    if (!m->is_registered && !h2_iq_empty(m->q)) {
-        m->is_registered = 1;
+    if ((m->processing_count < m->processing_limit) && !h2_iq_empty(m->q)) {
         H2_MPLX_LEAVE(m);
-        rv = h2_workers_register(m->workers, m);
+        rv = h2_workers_activate(m->workers, m->producer);
         H2_MPLX_ENTER_ALWAYS(m);
         if (rv != APR_SUCCESS) {
-            m->is_registered = 0;
             ap_log_cerror(APLOG_MARK, APLOG_ERR, rv, m->c1, APLOGNO(10021)
-                          H2_MPLX_MSG(m, "register at workers"));
+                          H2_MPLX_MSG(m, "activate at workers"));
         }
     }
     *pstream_count = (int)h2_ihash_count(m->streams);
@@ -863,24 +870,18 @@ cleanup:
     return c2;
 }
 
-apr_status_t h2_mplx_worker_pop_c2(h2_mplx *m, conn_rec **out_c)
+static conn_rec *c2_prod_next(void *baton, int *phas_more)
 {
-    apr_status_t rv;
+    h2_mplx *m = baton;
+    conn_rec *c = NULL;
 
     H2_MPLX_ENTER_ALWAYS(m);
-    if (m->aborted) {
-        *out_c = NULL;
-        rv = APR_EOF;
-    }
-    else {
-        *out_c = s_next_c2(m);
-        rv = (*out_c != NULL && !h2_iq_empty(m->q))? APR_EAGAIN : APR_SUCCESS;
-    }
-    if (APR_EAGAIN != rv) {
-        m->is_registered = 0; /* h2_workers will discard this mplx */
+    if (!m->aborted) {
+        c = s_next_c2(m);
+        *phas_more = (c != NULL && !h2_iq_empty(m->q));
     }
     H2_MPLX_LEAVE(m);
-    return rv;
+    return c;
 }
 
 static void s_c2_done(h2_mplx *m, conn_rec *c2, h2_conn_ctx_t *conn_ctx)
@@ -947,33 +948,17 @@ static void s_c2_done(h2_mplx *m, conn_rec *c2, h2_conn_ctx_t *conn_ctx)
     }
 }
 
-void h2_mplx_worker_c2_done(conn_rec *c2)
+static void c2_prod_done(void *baton, conn_rec *c2)
 {
+    h2_mplx *m = baton;
     h2_conn_ctx_t *conn_ctx = h2_conn_ctx_get(c2);
-    h2_mplx *m;
 
     AP_DEBUG_ASSERT(conn_ctx);
-    m = conn_ctx->mplx;
     H2_MPLX_ENTER_ALWAYS(m);
 
     --m->processing_count;
     s_c2_done(m, c2, conn_ctx);
     if (m->join_wait) apr_thread_cond_signal(m->join_wait);
-
-    if (!m->aborted && !m->is_registered
-        && (m->processing_count < m->processing_limit)
-        && !h2_iq_empty(m->q)) {
-        /* We have a limit on the amount of c2s we process at a time. When
-         * this is reached, we do no longer have things to do for h2 workers
-         * and they remove such an mplx from its queue.
-         * When a c2 is done, there might then be room for more processing
-         * and we need then to register this mplx at h2 workers again.
-         */
-        m->is_registered = 1;
-        H2_MPLX_LEAVE(m);
-        h2_workers_register(m->workers, m);
-        return;
-    }
 
     H2_MPLX_LEAVE(m);
 }

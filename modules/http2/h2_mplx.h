@@ -44,6 +44,8 @@ struct h2_iqueue;
 
 #include <apr_queue.h>
 
+#include "h2_workers.h"
+
 typedef struct h2_c2_transit h2_c2_transit;
 
 struct h2_c2_transit {
@@ -63,7 +65,7 @@ struct h2_mplx {
 
     int aborted;
     int polling;                    /* is waiting/processing pollset events */
-    int is_registered;              /* is registered at h2_workers */
+    ap_conn_producer_t *producer;   /* registered producer at h2_workers */
 
     struct h2_ihash_t *streams;     /* all streams active */
     struct h2_ihash_t *shold;       /* all streams done with c2 processing ongoing */
@@ -217,12 +219,6 @@ const struct h2_stream *h2_mplx_c2_stream_get(h2_mplx *m, int stream_id);
  *               secondary connection to process.
  */
 apr_status_t h2_mplx_worker_pop_c2(h2_mplx *m, conn_rec **out_c2);
-
-/**
- * A h2 worker reports a secondary connection processing done.
- * @param c2 the secondary connection finished processing
- */
-void h2_mplx_worker_c2_done(conn_rec *c2);
 
 #define H2_MPLX_MSG(m, msg)     \
     "h2_mplx(%d-%lu): "msg, m->child_num, (unsigned long)m->id
