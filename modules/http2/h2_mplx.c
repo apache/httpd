@@ -709,16 +709,15 @@ void h2_mplx_c1_process(h2_mplx *m,
 
 #if APR_POOL_DEBUG
     do {
-        apr_size_t mem_g, mem_m, mem_s, mem_w, mem_c1;
+        apr_size_t mem_g, mem_m, mem_s, mem_c1;
 
         mem_g = pchild? apr_pool_num_bytes(pchild, 1) : 0;
         mem_m = apr_pool_num_bytes(m->pool, 1);
         mem_s = apr_pool_num_bytes(session->pool, 1);
-        mem_w = apr_pool_num_bytes(m->workers->pool, 1);
         mem_c1 = apr_pool_num_bytes(m->c1->pool, 1);
         ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, m->c1,
-                      H2_MPLX_MSG(m, "child mem=%ld, mplx mem=%ld, session mem=%ld, workers=%ld, c1=%ld"),
-                      (long)mem_g, (long)mem_m, (long)mem_s, (long)mem_w, (long)mem_c1);
+                      H2_MPLX_MSG(m, "child mem=%ld, mplx mem=%ld, session mem=%ld, c1=%ld"),
+                      (long)mem_g, (long)mem_m, (long)mem_s, (long)mem_c1);
 
     } while (0);
 #endif
