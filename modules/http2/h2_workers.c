@@ -454,7 +454,7 @@ h2_workers *h2_workers_create(server_rec *s, apr_pool_t *pchild,
     workers->idle_limit = (idle_limit > 0)? idle_limit : apr_time_from_sec(10);
     workers->dynamic = (workers->min_active < workers->max_slots);
 
-    ap_log_error(APLOG_MARK, APLOG_INFO, 0, workers->s,
+    ap_log_error(APLOG_MARK, APLOG_INFO, 0, s,
                  "h2_workers: created with min=%d max=%d idle_ms=%d",
                  workers->min_active, workers->max_slots,
                  (int)apr_time_as_msec(idle_limit));
