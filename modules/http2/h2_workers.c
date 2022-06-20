@@ -364,7 +364,7 @@ static apr_status_t workers_pool_cleanup(void *data)
     h2_workers *workers = data;
     apr_time_t end, timeout = apr_time_from_sec(1);
     apr_status_t rv;
-    int n, wait_sec = 5;
+    int n = 0, wait_sec = 5;
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, workers->s,
                  "h2_workers: cleanup %d workers (%d idle)",
