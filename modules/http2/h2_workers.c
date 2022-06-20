@@ -522,7 +522,7 @@ cleanup:
         apr_pool_pre_cleanup_register(pchild, workers, workers_pool_cleanup);    
         return workers;
     }
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, workers->s,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, s,
                  "h2_workers: errors initializing");
     return NULL;
 }
