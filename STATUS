@@ -200,6 +200,16 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c 1822857,1876815,1893499,1900024,1900152,1900306,1900559,1900564,1900691,1900694 ^/httpd/httpd/trunk .
      +1: jailletc36, 
 
+  *) mod_heartmonitor: Allow "HeartbeatMaxServers 0"
+     to use file based storage instead of slotmem.
+     Needed after setting HeartbeatMaxServers default
+     to the documented value 10 in 2.4.54.
+     PR 66131.  [Jérôme Billiras]
+     Trunk version of patch:
+        https://svn.apache.org/r1902117
+     2.4.x patch: svn merge -c 1902117 ^/httpd/httpd/trunk .
+     +1: rjung,
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
