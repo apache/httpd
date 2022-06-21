@@ -207,7 +207,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      PR 66131.  [Jérôme Billiras]
      Trunk version of patch:
         https://svn.apache.org/r1902117
-     2.4.x patch: svn merge -c 1902117 ^/httpd/httpd/trunk .
+        https://svn.apache.org/r1902130
+        https://svn.apache.org/r1902132
+        https://svn.apache.org/r1902133
+     2.4.x patch: svn merge -c 1902117,1902130,1902132,1902133 ^/httpd/httpd/trunk .
      +1: rjung,
 
 PATCHES/ISSUES THAT ARE BEING WORKED
