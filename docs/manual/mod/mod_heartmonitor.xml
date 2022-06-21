@@ -76,7 +76,7 @@ use <module>mod_slotmem_shm</module>.</p>
 
 <directivesynopsis>
 <name>HeartbeatStorage</name>
-<description>Path to store heartbeat data</description>
+<description>Path to store heartbeat data when using flat-file storage</description>
 <syntax>HeartbeatStorage <var>file-path</var></syntax>
 <default>HeartbeatStorage logs/hb.dat</default>
 <contextlist><context>server config</context></contextlist>
@@ -84,7 +84,8 @@ use <module>mod_slotmem_shm</module>.</p>
 <usage>
     <p>The <directive>HeartbeatStorage</directive> directive specifies the
     path to store heartbeat data.  This flat-file is used only when
-    <module>mod_slotmem_shm</module> is not loaded.</p>
+    <module>mod_slotmem_shm</module> is not loaded and
+    <directive>HeartbeatMaxServers</directive> is set to 0.</p>
 </usage>
 </directivesynopsis>
 
@@ -101,6 +102,8 @@ heartbeat requests to this server</description>
     maximum number of servers that will be sending requests to this monitor
     server.  It is used to control the size of the shared memory allocated
     to store the heartbeat info when <module>mod_slotmem_shm</module> is in use.</p>
+    <p>For using flat-file storage (without loading <module>mod_slotmem_shm</module>),
+    this mus be set to 0. The value must be either 0, or bigger or equals 10.</p>
 </usage>
 </directivesynopsis>
 </modulesynopsis>
