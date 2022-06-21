@@ -892,7 +892,7 @@ static const char *cmd_hm_maxworkers(cmd_parms *cmd,
     }
 
     maxworkers = atoi(data);
-    if (maxworkers != 0 && maxworkers <= 10)
+    if (maxworkers != 0 && maxworkers < 10)
         return "HeartbeatMaxServers: Should be 0 for file storage, "
                "or greater or equal than 10 for slotmem";
 
