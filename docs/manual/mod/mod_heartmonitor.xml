@@ -103,7 +103,7 @@ heartbeat requests to this server</description>
     server.  It is used to control the size of the shared memory allocated
     to store the heartbeat info when <module>mod_slotmem_shm</module> is in use.</p>
     <p>For using flat-file storage (without loading <module>mod_slotmem_shm</module>),
-    this mus be set to 0. The value must be either 0, or bigger or equals 10.</p>
+    this must be set to 0. The value must be either 0, or bigger or equals 10.</p>
 </usage>
 </directivesynopsis>
 </modulesynopsis>
