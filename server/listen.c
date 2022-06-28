@@ -884,7 +884,8 @@ AP_DECLARE(apr_status_t) ap_duplicate_listeners(apr_pool_t *p, server_rec *s,
                 stat = apr_sockaddr_info_get(&sa, hostname, APR_UNSPEC, port, 0, p);
                 if (stat != APR_SUCCESS) {
                     ap_log_perror(APLOG_MARK, APLOG_CRIT, stat, p, APLOGNO(10397)
-                              "unable to control socket status");
+                                  "failure looking up %s to duplicate "
+                                  "listening socket", hostname);
                     return stat;
                 }
                 duplr->bind_addr = sa;
