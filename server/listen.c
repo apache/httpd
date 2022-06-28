@@ -881,7 +881,12 @@ AP_DECLARE(apr_status_t) ap_duplicate_listeners(apr_pool_t *p, server_rec *s,
                 duplr->protocol = apr_pstrdup(p, lr->protocol);
                 hostname = apr_pstrdup(p, lr->bind_addr->hostname);
                 port = lr->bind_addr->port;
-                apr_sockaddr_info_get(&sa, hostname, APR_UNSPEC, port, 0, p);
+                stat = apr_sockaddr_info_get(&sa, hostname, APR_UNSPEC, port, 0, p);
+                if (stat != APR_SUCCESS) {
+                    ap_log_perror(APLOG_MARK, APLOG_CRIT, stat, p, APLOGNO(10397)
+                              "unable to control socket status");
+                    return stat;
+                }
                 duplr->bind_addr = sa;
                 duplr->next = NULL;
                 duplr->flags = lr->flags;
