@@ -249,7 +249,7 @@ Changes with Apache 2.5.1
   * mod_http2: the new pollset implementation is disabled when
     compiling with an APR version less than 1.6.
 
-  *) mod_autoindex: Add "IndexForbiddenReturn404" to return 404 instead of a 
+  *) mod_autoindex: Add "IndexForbiddenReturn404" to return 404 instead of a
      403 when Options does not included "indexes". [Eric Covener]
 
   *) mod_dir: Add "NotFound" option to "DirectorySlash" directive to return 
