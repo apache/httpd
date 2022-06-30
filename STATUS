@@ -176,7 +176,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      rpluem says: The version in the compatibility notes is wrong.
 
   *) Easy patches: synch 2.4.x and trunk
-         - Makefile.in (build/config_vars.out): Rebuild if build/config_vars.sh has changed 
+         - Makefile.in (build/config_vars.out): Rebuild if build/config_vars.sh has changed
          - suexec: sort the 'safe_env_lst' array
          - mod_optional_hook_import: debug message at APLOG_DEBUG level
          - worker: de-duplicate ALOGNO from code copy
