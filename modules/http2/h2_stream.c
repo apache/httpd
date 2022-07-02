@@ -942,8 +942,10 @@ static apr_status_t buffer_output_receive(h2_stream *stream)
         rv = h2_beam_receive(stream->output, stream->session->c1, stream->out_buffer,
                              APR_NONBLOCK_READ, stream->session->max_stream_mem - buf_len);
         if (APR_SUCCESS != rv) {
-            ap_log_cerror(APLOG_MARK, APLOG_TRACE1, rv, c1,
-                          H2_STRM_MSG(stream, "out_buffer, receive unsuccessful"));
+            if (APR_EAGAIN != rv) {
+                ap_log_cerror(APLOG_MARK, APLOG_TRACE1, rv, c1,
+                              H2_STRM_MSG(stream, "out_buffer, receive unsuccessful"));
+            }
             goto cleanup;
         }
     }
@@ -1121,7 +1123,10 @@ static apr_status_t buffer_output_process_headers(h2_stream *stream)
         is_empty = 0;
         while (b != APR_BRIGADE_SENTINEL(stream->out_buffer)) {
             if (APR_BUCKET_IS_METADATA(b)) {
-                if (APR_BUCKET_IS_EOS(b)) {
+                if (AP_BUCKET_IS_HEADERS(b)) {
+                    break;
+                }
+                else if (APR_BUCKET_IS_EOS(b)) {
                     is_empty = 1;
                     break;
                 }
@@ -1311,13 +1316,13 @@ apr_status_t h2_stream_in_consumed(h2_stream *stream, apr_off_t amount)
     return APR_SUCCESS;   
 }
 
-static apr_off_t output_data_buffered(h2_stream *stream, int *peos)
+static apr_off_t output_data_buffered(h2_stream *stream, int *peos, int *pheader_blocked)
 {
     /* How much data do we have in our buffers that we can write? */
     apr_off_t buf_len = 0;
     apr_bucket *b;
 
-    *peos = 0;
+    *peos = *pheader_blocked = 0;
     if (stream->out_buffer) {
         b = APR_BRIGADE_FIRST(stream->out_buffer);
         while (b != APR_BRIGADE_SENTINEL(stream->out_buffer)) {
@@ -1330,6 +1335,7 @@ static apr_off_t output_data_buffered(h2_stream *stream, int *peos)
                     break;
                 }
                 else if (AP_BUCKET_IS_HEADERS(b)) {
+                    *pheader_blocked = 1;
                     break;
                 }
             }
@@ -1353,7 +1359,7 @@ static ssize_t stream_data_cb(nghttp2_session *ng2s,
     h2_session *session = (h2_session *)puser;
     conn_rec *c1 = session->c1;
     apr_off_t buf_len;
-    int eos;
+    int eos, header_blocked;
     apr_status_t rv;
     h2_stream *stream;
 
@@ -1406,60 +1412,81 @@ static ssize_t stream_data_cb(nghttp2_session *ng2s,
     }
 
     /* How much data do we have in our buffers that we can write? */
-    buf_len = output_data_buffered(stream, &eos);
-    if (buf_len < length && !eos) {
+check_and_receive:
+    buf_len = output_data_buffered(stream, &eos, &header_blocked);
+    while (buf_len < length && !eos && !header_blocked) {
         /* read more? */
         ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, c1,
                       H2_SSSN_STRM_MSG(session, stream_id,
                       "need more (read len=%ld, %ld in buffer)"),
                       (long)length, (long)buf_len);
         rv = buffer_output_receive(stream);
-        /* process all headers sitting at the buffer head. */
-        while (APR_SUCCESS == rv && !eos && !stream->sent_trailers) {
-            rv = buffer_output_process_headers(stream);
-            if (APR_SUCCESS != rv && APR_EAGAIN != rv) {
-                ap_log_cerror(APLOG_MARK, APLOG_ERR, rv, c1,
-                              H2_STRM_LOG(APLOGNO(10300), stream,
-                              "data_cb, error processing headers"));
-                return NGHTTP2_ERR_CALLBACK_FAILURE;
-            }
-            buf_len = output_data_buffered(stream, &eos);
+        if (APR_EOF == rv) {
+            eos = 1;
+            rv = APR_SUCCESS;
         }
 
-        if (APR_SUCCESS != rv && !APR_STATUS_IS_EAGAIN(rv)) {
+        if (APR_SUCCESS == rv) {
+            /* re-assess */
+            buf_len = output_data_buffered(stream, &eos, &header_blocked);
+        }
+        else if (APR_STATUS_IS_EAGAIN(rv)) {
+            /* currently, no more is available */
+            break;
+        }
+        else if (APR_SUCCESS != rv) {
             ap_log_cerror(APLOG_MARK, APLOG_ERR, rv, c1,
                           H2_STRM_LOG(APLOGNO(02938), stream, "data_cb, reading data"));
             return NGHTTP2_ERR_CALLBACK_FAILURE;
         }
+    }
 
-        if (stream->sent_trailers) {
-            AP_DEBUG_ASSERT(eos);
-            AP_DEBUG_ASSERT(buf_len == 0);
-            return NGHTTP2_ERR_DEFERRED;
+    if (buf_len == 0 && header_blocked) {
+        /* we are blocked from having data to send by a HEADER bucket sitting
+         * at buffer start. Send it and check again what DATA we can send. */
+        rv = buffer_output_process_headers(stream);
+        if (APR_SUCCESS == rv) {
+            goto check_and_receive;
+        }
+        else if (APR_STATUS_IS_EAGAIN(rv)) {
+            /* unable to send the HEADER at this time. */
+            eos = 0;
+            goto cleanup;
+        }
+        else {
+            ap_log_cerror(APLOG_MARK, APLOG_ERR, rv, c1,
+                          H2_STRM_LOG(APLOGNO(10300), stream,
+                          "data_cb, error processing headers"));
+            return NGHTTP2_ERR_CALLBACK_FAILURE;
         }
     }
 
     if (buf_len > (apr_off_t)length) {
-        eos = 0;
+        eos = 0;  /* Any EOS we have in the buffer does not apply yet */
     }
     else {
         length = (size_t)buf_len;
     }
+
+    if (stream->sent_trailers) {
+        /* We already sent trailers and will/can not send more DATA. */
+        eos = 0;
+    }
+
     if (length) {
         ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, c1,
                       H2_STRM_MSG(stream, "data_cb, sending len=%ld, eos=%d"),
                       (long)length, eos);
         *data_flags |=  NGHTTP2_DATA_FLAG_NO_COPY;
     }
-    else if (!eos) {
-        /* no data available and output is not closed, need to suspend */
+    else if (!eos && !stream->sent_trailers) {
+        /* We have not reached the end of DATA yet, DEFER sending */
         ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c1,
                       H2_STRM_LOG(APLOGNO(03071), stream, "data_cb, suspending"));
-        ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, c1,
-                      H2_SSSN_STRM_MSG(session, stream_id, "suspending"));
         return NGHTTP2_ERR_DEFERRED;
     }
 
+cleanup:
     if (eos) {
         *data_flags |= NGHTTP2_DATA_FLAG_EOF;
     }
@@ -1502,7 +1529,7 @@ apr_status_t h2_stream_read_output(h2_stream *stream)
     }
 
     rv = buffer_output_receive(stream);
-    if (APR_SUCCESS != rv) goto cleanup;
+    if (APR_SUCCESS != rv && APR_EAGAIN != rv) goto cleanup;
 
     /* process all headers sitting at the buffer head. */
     while (1) {
