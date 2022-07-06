@@ -115,6 +115,9 @@ if test -v TEST_OPENSSL3; then
     # Build the requested version of OpenSSL if it's not already
     # installed in the cached ~/root
     if ! test -f $HOME/root/openssl-is-${TEST_OPENSSL3}; then
+        # Remove any previous install.
+        rm -rf $HOME/root/openssl3
+
         mkdir -p build/openssl
         pushd build/openssl
            curl "https://www.openssl.org/source/openssl-${TEST_OPENSSL3}.tar.gz" |
