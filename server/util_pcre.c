@@ -74,8 +74,8 @@ POSSIBILITY OF SUCH DAMAGE.
 #define APR_WANT_STRFUNC
 #include "apr_want.h"
 
-#ifndef POSIX_MALLOC_THRESHOLD
-#define POSIX_MALLOC_THRESHOLD (10)
+#ifndef AP_PCRE_STACKBUF_SIZE
+#define AP_PCRE_STACKBUF_SIZE (256)
 #endif
 
 /* Table of error strings corresponding to POSIX error codes; must be
@@ -281,116 +281,84 @@ typedef int*              match_data_pt;
 typedef int*              match_vector_pt;
 #endif
 
-static APR_INLINE
-match_data_pt alloc_match_data(apr_size_t size,
-                               match_vector_pt small_vector)
+struct match_data_state
 {
     match_data_pt data;
-
+    char *buf;
+    apr_size_t buf_len;
+    apr_size_t buf_used;
 #ifdef HAVE_PCRE2
-    data = pcre2_match_data_create(size, NULL);
-#else
-    if (size > POSIX_MALLOC_THRESHOLD) {
-        data = malloc(size * sizeof(int) * 3);
-    }
-    else {
-        data = small_vector;
-    }
+    pcre2_general_context *pcre2_ctx;
 #endif
-
-    return data;
-}
-
-static APR_INLINE
-void free_match_data(match_data_pt data, apr_size_t size)
-{
-#ifdef HAVE_PCRE2
-    pcre2_match_data_free(data);
-#else
-    if (size > POSIX_MALLOC_THRESHOLD) {
-        free(data);
-    }
-#endif
-}
-
-#if AP_HAS_THREAD_LOCAL && !defined(APREG_NO_THREAD_LOCAL)
-
-struct apreg_tls {
-    match_data_pt data;
-    apr_size_t size;
 };
 
-#ifdef HAVE_PCRE2
-static apr_status_t apreg_tls_cleanup(void *arg)
+static void * private_malloc(size_t size, void *ctx)
 {
-    struct apreg_tls *tls = arg;
-    pcre2_match_data_free(tls->data); /* NULL safe */
-    return APR_SUCCESS;
-}
-#endif
+    struct match_data_state *state = ctx;
 
-static match_data_pt get_match_data(apr_size_t size,
-                                    match_vector_pt small_vector,
-                                    int *to_free)
-{
-    apr_thread_t *current;
-    struct apreg_tls *tls = NULL;
+    if(size <= (state->buf_len - state->buf_used)) {
+        void *p = state->buf + state->buf_used;
 
-    /* Even though AP_HAS_THREAD_LOCAL, we may still be called by a
-     * native/non-apr thread, let's fall back to alloc/free in this case.
-     */
-    current = ap_thread_current();
-    if (!current) {
-        *to_free = 1;
-        return alloc_match_data(size, small_vector);
+        state->buf_used += APR_ALIGN_DEFAULT(size);
+
+        return p;
     }
-
-    apr_thread_data_get((void **)&tls, "apreg", current);
-    if (!tls || tls->size < size) {
-        apr_pool_t *tp = apr_thread_pool_get(current);
-        if (!tls) {
-            tls = apr_pcalloc(tp, sizeof(*tls));
-#ifdef HAVE_PCRE2
-            apr_thread_data_set(tls, "apreg", apreg_tls_cleanup, current);
-#else
-            apr_thread_data_set(tls, "apreg", NULL, current);
-#endif
-        }
-
-        tls->size *= 2;
-        if (tls->size < size) {
-            tls->size = size;
-            if (tls->size < POSIX_MALLOC_THRESHOLD) {
-                tls->size = POSIX_MALLOC_THRESHOLD;
-            }
-        }
-
-#ifdef HAVE_PCRE2
-        pcre2_match_data_free(tls->data); /* NULL safe */
-        tls->data = pcre2_match_data_create(tls->size, NULL);
-        if (!tls->data) {
-            tls->size = 0;
-            return NULL;
-        }
-#else
-        tls->data = apr_palloc(tp, tls->size * sizeof(int) * 3);
-#endif
+    else {
+        return malloc(size);
     }
-
-    return tls->data;
 }
 
-#else /* AP_HAS_THREAD_LOCAL && !defined(APREG_NO_THREAD_LOCAL) */
-
-static APR_INLINE match_data_pt get_match_data(apr_size_t size,
-                                               match_vector_pt small_vector,
-                                               int *to_free)
+static void private_free(void *block, void *ctx)
 {
-    *to_free = 1;
-    return alloc_match_data(size, small_vector);
+    struct match_data_state *state = ctx;
+    void *buf_start = state->buf;
+    void *buf_end = state->buf + state->buf_len;
+
+    if (block >= buf_start && block <= buf_end) {
+        /* This block allocated from stack buffer. Do nothing. */
+    }
+    else {
+        free(block);
+    }
+} 
+
+static APR_INLINE
+match_data_pt alloc_match_data(apr_size_t size,
+                               struct match_data_state *state,
+                               void *stack_buf,
+                               apr_size_t stack_buf_len)
+{
+    state->buf = stack_buf;
+    state->buf_len = stack_buf_len;
+    state->buf_used = 0;
+
+#ifdef HAVE_PCRE2
+    state->pcre2_ctx = pcre2_general_context_create(private_malloc, private_free, state);
+    if (!state->pcre2_ctx) { 
+        return NULL;
+    }
+    state->data = pcre2_match_data_create((int)size, state->pcre2_ctx);
+    if (!state->data) {
+        pcre2_general_context_free(state->pcre2_ctx);
+        return NULL;
+    }
+#else
+    state->data = private_malloc(size * sizeof(int) * 3, state);
+#endif
+
+    return state->data;
 }
 
-#endif /* AP_HAS_THREAD_LOCAL && !defined(APREG_NO_THREAD_LOCAL) */
+static APR_INLINE
+void free_match_data(struct match_data_state *state)
+{
+#ifdef HAVE_PCRE2
+    pcre2_match_data_free(state->data);
+    pcre2_general_context_free(state->pcre2_ctx);
+#else
+    private_free(state->data, state);
+#endif
+}
 
 AP_DECLARE(int) ap_regexec(const ap_regex_t *preg, const char *string,
                            apr_size_t nmatch, ap_regmatch_t *pmatch,
@@ -408,13 +376,12 @@ AP_DECLARE(int) ap_regexec_len(const ap_regex_t *preg, const char *buff,
     int options = 0, to_free = 0;
     match_vector_pt ovector = NULL;
     apr_size_t ncaps = (apr_size_t)preg->re_nsub + 1;
-#ifdef HAVE_PCRE2
-    match_data_pt data = get_match_data(ncaps, NULL, &to_free);
-#else
-    int small_vector[POSIX_MALLOC_THRESHOLD * 3];
-    match_data_pt data = get_match_data(ncaps, small_vector, &to_free);
-#endif
+    struct match_data_state state;
+    match_data_pt data;
+    /* Use apr_uint64_t to get proper alignment. */
+    apr_uint64_t stack_buf[(AP_PCRE_STACKBUF_SIZE + sizeof(apr_uint64_t) - 1) / sizeof(apr_uint64_t)];
 
+    data = alloc_match_data(ncaps, &state, stack_buf, sizeof(stack_buf));
     if (!data) {
         return AP_REG_ESPACE;
     }
@@ -449,15 +416,11 @@ AP_DECLARE(int) ap_regexec_len(const ap_regex_t *preg, const char *buff,
         }
         for (; i < nmatch; i++)
             pmatch[i].rm_so = pmatch[i].rm_eo = -1;
-        if (to_free) {
-            free_match_data(data, ncaps);
-        }
+        free_match_data(&state);
         return 0;
     }
     else {
-        if (to_free) {
-            free_match_data(data, ncaps);
-        }
+        free_match_data(&state);
 #ifdef HAVE_PCRE2
         if (rc <= PCRE2_ERROR_UTF8_ERR1 && rc >= PCRE2_ERROR_UTF8_ERR21)
             return AP_REG_INVARG;
