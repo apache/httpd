@@ -55,7 +55,6 @@ POSSIBILITY OF SUCH DAMAGE.
 #include "httpd.h"
 #include "apr_strings.h"
 #include "apr_tables.h"
-#include "apr_thread_proc.h"
 
 #ifdef HAVE_PCRE2
 #define PCRE2_CODE_UNIT_WIDTH 8
