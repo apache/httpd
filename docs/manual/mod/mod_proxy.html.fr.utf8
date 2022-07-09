@@ -524,9 +524,6 @@ ProxyPass "/examples" "http://backend.example.com/examples" timeout=10</pre>
     de la requête contient déjà un en-tête Content-Length, alors que le
     serveur est configuré pour filtrer les corps des requêtes entrantes.</p>
 
-    <p>La directive <code class="directive"><a href="../mod/core.html#limitrequestbody">LimitRequestBody</a></code> ne s'applique qu'aux
-    corps de requêtes que le serveur met en file d'attente sur disque.</p>
-
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="x-headers" id="x-headers">En-têtes de requête du mandataire

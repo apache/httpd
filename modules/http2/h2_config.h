@@ -28,7 +28,7 @@ typedef enum {
     H2_CONF_WIN_SIZE,
     H2_CONF_MIN_WORKERS,
     H2_CONF_MAX_WORKERS,
-    H2_CONF_MAX_WORKER_IDLE_SECS,
+    H2_CONF_MAX_WORKER_IDLE_LIMIT,
     H2_CONF_STREAM_MAX_MEM,
     H2_CONF_DIRECT,
     H2_CONF_MODERN_TLS_ONLY,
@@ -88,7 +88,8 @@ apr_int64_t h2_config_rgeti64(request_rec *r, h2_config_var_t var);
 apr_array_header_t *h2_config_push_list(request_rec *r);
 
 
-void h2_get_num_workers(server_rec *s, int *minw, int *maxw);
+void h2_get_workers_config(server_rec *s, int *pminw, int *pmaxw,
+                           apr_time_t *pidle_limit);
 void h2_config_init(apr_pool_t *pool);
 
 const struct h2_priority *h2_cconfig_get_priority(conn_rec *c, const char *content_type);

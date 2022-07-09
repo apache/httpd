@@ -28,6 +28,7 @@
 #include <http_core.h>
 #include <http_connection.h>
 #include <http_log.h>
+#include <http_protocol.h>
 
 #include <mpm_common.h>
 
@@ -57,8 +58,11 @@ typedef struct {
     apr_size_t count;
 } stream_iter_ctx;
 
-static apr_status_t s_mplx_be_happy(h2_mplx *m, conn_rec *c, h2_conn_ctx_t *conn_ctx);
-static apr_status_t m_be_annoyed(h2_mplx *m);
+static conn_rec *c2_prod_next(void *baton, int *phas_more);
+static void c2_prod_done(void *baton, conn_rec *c2);
+
+static void s_mplx_be_happy(h2_mplx *m, conn_rec *c, h2_conn_ctx_t *conn_ctx);
+static void m_be_annoyed(h2_mplx *m);
 
 static apr_status_t mplx_pollset_create(h2_mplx *m);
 static apr_status_t mplx_pollset_poll(h2_mplx *m, apr_interval_time_t timeout,
@@ -248,8 +252,9 @@ static void c2_transit_recycle(h2_mplx *m, h2_c2_transit *transit)
  *   their HTTP/1 cousins, the separate allocator seems to work better
  *   than protecting a shared h2_session one with an own lock.
  */
-h2_mplx *h2_mplx_c1_create(h2_stream *stream0, server_rec *s, apr_pool_t *parent,
-                          h2_workers *workers)
+h2_mplx *h2_mplx_c1_create(int child_num, apr_uint32_t id, h2_stream *stream0,
+                           server_rec *s, apr_pool_t *parent,
+                           h2_workers *workers)
 {
     h2_conn_ctx_t *conn_ctx;
     apr_status_t status = APR_SUCCESS;
@@ -261,7 +266,8 @@ h2_mplx *h2_mplx_c1_create(h2_stream *stream0, server_rec *s, apr_pool_t *parent
     m->stream0 = stream0;
     m->c1 = stream0->c2;
     m->s = s;
-    m->id = m->c1->id;
+    m->child_num = child_num;
+    m->id = id;
 
     /* We create a pool with its own allocator to be used for
      * processing secondary connections. This is the only way to have the
@@ -300,7 +306,7 @@ h2_mplx *h2_mplx_c1_create(h2_stream *stream0, server_rec *s, apr_pool_t *parent
     m->q = h2_iq_create(m->pool, m->max_streams);
 
     m->workers = workers;
-    m->processing_max = workers->max_workers;
+    m->processing_max = H2MIN(h2_workers_get_max_workers(workers), m->max_streams);
     m->processing_limit = 6; /* the original h1 max parallel connections */
     m->last_mood_change = apr_time_now();
     m->mood_update_interval = apr_time_from_msec(100);
@@ -329,6 +335,9 @@ h2_mplx *h2_mplx_c1_create(h2_stream *stream0, server_rec *s, apr_pool_t *parent
     m->max_spare_transits = 3;
     m->c2_transits = apr_array_make(m->pool, m->max_spare_transits, sizeof(h2_c2_transit*));
 
+    m->producer = h2_workers_register(workers, m->pool,
+                                      apr_psprintf(m->pool, "h2-%d", (int)m->id),
+                                      c2_prod_next, c2_prod_done, m);
     return m;
 
 failure:
@@ -433,12 +442,11 @@ void h2_mplx_c1_destroy(h2_mplx *m)
     int i, wait_secs = 60, old_aborted;
 
     ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, m->c1,
-                  "h2_mplx(%ld): start release", m->id);
+                  H2_MPLX_MSG(m, "start release"));
     /* How to shut down a h2 connection:
      * 0. abort and tell the workers that no more work will come from us */
     m->aborted = 1;
-    h2_workers_unregister(m->workers, m);
-    
+
     H2_MPLX_ENTER_ALWAYS(m);
 
     /* While really terminating any c2 connections, treat the master
@@ -450,8 +458,8 @@ void h2_mplx_c1_destroy(h2_mplx *m)
     /* How to shut down a h2 connection:
      * 1. cancel all streams still active */
     ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, m->c1,
-                  "h2_mplx(%ld): release, %d/%d/%d streams (total/hold/purge), %d streams",
-                  m->id, (int)h2_ihash_count(m->streams),
+                  H2_MPLX_MSG(m, "release, %d/%d/%d streams (total/hold/purge), %d streams"),
+                  (int)h2_ihash_count(m->streams),
                   (int)h2_ihash_count(m->shold), m->spurge->nelts, m->processing_count);
     while (!h2_ihash_iter(m->streams, m_stream_cancel_iter, m)) {
         /* until empty */
@@ -476,25 +484,30 @@ void h2_mplx_c1_destroy(h2_mplx *m)
             /* This can happen if we have very long running requests
              * that do not time out on IO. */
             ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, m->c1, APLOGNO(03198)
-                          "h2_mplx(%ld): waited %d sec for %d streams",
-                          m->id, i*wait_secs, (int)h2_ihash_count(m->shold));
+                          H2_MPLX_MSG(m, "waited %d sec for %d streams"),
+                          i*wait_secs, (int)h2_ihash_count(m->shold));
             h2_ihash_iter(m->shold, m_report_stream_iter, m);
         }
     }
+
+    H2_MPLX_LEAVE(m);
+    h2_workers_join(m->workers, m->producer);
+    H2_MPLX_ENTER_ALWAYS(m);
 
     /* 4. With all workers done, all streams should be in spurge */
     ap_assert(m->processing_count == 0);
     if (!h2_ihash_empty(m->shold)) {
         ap_log_cerror(APLOG_MARK, APLOG_WARNING, 0, m->c1, APLOGNO(03516)
-                      "h2_mplx(%ld): unexpected %d streams in hold", 
-                      m->id, (int)h2_ihash_count(m->shold));
+                      H2_MPLX_MSG(m, "unexpected %d streams in hold"),
+                      (int)h2_ihash_count(m->shold));
         h2_ihash_iter(m->shold, m_unexpected_stream_iter, m);
     }
     
     m->c1->aborted = old_aborted;
     H2_MPLX_LEAVE(m);
 
-    ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, m->c1, "h2_mplx(%ld): released", m->id);
+    ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, m->c1,
+                  H2_MPLX_MSG(m, "released"));
 }
 
 apr_status_t h2_mplx_c1_stream_cleanup(h2_mplx *m, h2_stream *stream,
@@ -550,13 +563,14 @@ static void c1_purge_streams(h2_mplx *m)
         if (stream->c2) {
             conn_rec *c2 = stream->c2;
             h2_conn_ctx_t *c2_ctx = h2_conn_ctx_get(c2);
+            h2_c2_transit *transit;
 
             stream->c2 = NULL;
             ap_assert(c2_ctx);
-            h2_c2_destroy(c2);
-            if (c2_ctx->transit) {
-                c2_transit_recycle(m, c2_ctx->transit);
-                c2_ctx->transit = NULL;
+            transit = c2_ctx->transit;
+            h2_c2_destroy(c2);  /* c2_ctx is gone as well */
+            if (transit) {
+                c2_transit_recycle(m, transit);
             }
         }
         h2_stream_destroy(stream);
@@ -606,7 +620,7 @@ apr_status_t h2_mplx_c1_reprioritize(h2_mplx *m, h2_stream_pri_cmp_fn *cmp,
     else {
         h2_iq_sort(m->q, cmp, session);
         ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, m->c1,
-                      "h2_mplx(%ld): reprioritize streams", m->id);
+                      H2_MPLX_MSG(m, "reprioritize streams"));
         status = APR_SUCCESS;
     }
 
@@ -679,60 +693,36 @@ void h2_mplx_c1_process(h2_mplx *m,
         }
         else {
             ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, m->c1,
-                          "h2_stream(%ld-%d): not found to process", m->id, sid);
+                          H2_MPLX_MSG(m, "stream %d not found to process"), sid);
         }
     }
-    if (!m->is_registered && !h2_iq_empty(m->q)) {
-        m->is_registered = 1;
+    if ((m->processing_count < m->processing_limit) && !h2_iq_empty(m->q)) {
         H2_MPLX_LEAVE(m);
-        rv = h2_workers_register(m->workers, m);
+        rv = h2_workers_activate(m->workers, m->producer);
         H2_MPLX_ENTER_ALWAYS(m);
         if (rv != APR_SUCCESS) {
-            m->is_registered = 0;
             ap_log_cerror(APLOG_MARK, APLOG_ERR, rv, m->c1, APLOGNO(10021)
-                          "h2_mplx(%ld): register at workers", m->id);
+                          H2_MPLX_MSG(m, "activate at workers"));
         }
     }
     *pstream_count = (int)h2_ihash_count(m->streams);
 
 #if APR_POOL_DEBUG
     do {
-        apr_size_t mem_g, mem_m, mem_s, mem_w, mem_c1;
+        apr_size_t mem_g, mem_m, mem_s, mem_c1;
 
         mem_g = pchild? apr_pool_num_bytes(pchild, 1) : 0;
         mem_m = apr_pool_num_bytes(m->pool, 1);
         mem_s = apr_pool_num_bytes(session->pool, 1);
-        mem_w = apr_pool_num_bytes(m->workers->pool, 1);
         mem_c1 = apr_pool_num_bytes(m->c1->pool, 1);
         ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, m->c1,
-                      "h2_mplx(%ld): child mem=%ld, mplx mem=%ld, session mem=%ld, workers=%ld, c1=%ld",
-                      m->id, (long)mem_g, (long)mem_m, (long)mem_s, (long)mem_w, (long)mem_c1);
+                      H2_MPLX_MSG(m, "child mem=%ld, mplx mem=%ld, session mem=%ld, c1=%ld"),
+                      (long)mem_g, (long)mem_m, (long)mem_s, (long)mem_c1);
 
     } while (0);
 #endif
 
     H2_MPLX_LEAVE(m);
-}
-
-apr_status_t h2_mplx_c1_fwd_input(h2_mplx *m, struct h2_iqueue *input_pending,
-                                  h2_stream_get_fn *get_stream,
-                                  struct h2_session *session)
-{
-    int sid;
-
-    H2_MPLX_ENTER(m);
-
-    while ((sid = h2_iq_shift(input_pending)) > 0) {
-        h2_stream *stream = get_stream(session, sid);
-        if (stream) {
-            H2_MPLX_LEAVE(m);
-            h2_stream_flush_input(stream);
-            H2_MPLX_ENTER(m);
-        }
-    }
-
-    H2_MPLX_LEAVE(m);
-    return APR_SUCCESS;
 }
 
 static void c2_beam_input_write_notify(void *ctx, h2_bucket_beam *beam)
@@ -746,16 +736,24 @@ static void c2_beam_input_write_notify(void *ctx, h2_bucket_beam *beam)
     }
 }
 
+static void add_stream_poll_event(h2_mplx *m, int stream_id, h2_iqueue *q)
+{
+    apr_thread_mutex_lock(m->poll_lock);
+    if (h2_iq_append(q, stream_id) && h2_iq_count(q) == 1) {
+        /* newly added first */
+        apr_pollset_wakeup(m->pollset);
+    }
+    apr_thread_mutex_unlock(m->poll_lock);
+}
+
 static void c2_beam_input_read_notify(void *ctx, h2_bucket_beam *beam)
 {
     conn_rec *c = ctx;
     h2_conn_ctx_t *conn_ctx = h2_conn_ctx_get(c);
 
     if (conn_ctx && conn_ctx->stream_id) {
-        apr_thread_mutex_lock(conn_ctx->mplx->poll_lock);
-        h2_iq_append(conn_ctx->mplx->streams_input_read, conn_ctx->stream_id);
-        apr_pollset_wakeup(conn_ctx->mplx->pollset);
-        apr_thread_mutex_unlock(conn_ctx->mplx->poll_lock);
+        add_stream_poll_event(conn_ctx->mplx, conn_ctx->stream_id,
+                              conn_ctx->mplx->streams_input_read);
     }
 }
 
@@ -765,10 +763,8 @@ static void c2_beam_output_write_notify(void *ctx, h2_bucket_beam *beam)
     h2_conn_ctx_t *conn_ctx = h2_conn_ctx_get(c);
 
     if (conn_ctx && conn_ctx->stream_id) {
-        apr_thread_mutex_lock(conn_ctx->mplx->poll_lock);
-        h2_iq_append(conn_ctx->mplx->streams_output_written, conn_ctx->stream_id);
-        apr_pollset_wakeup(conn_ctx->mplx->pollset);
-        apr_thread_mutex_unlock(conn_ctx->mplx->poll_lock);
+        add_stream_poll_event(conn_ctx->mplx, conn_ctx->stream_id,
+                              conn_ctx->mplx->streams_output_written);
     }
 }
 
@@ -839,9 +835,9 @@ static conn_rec *s_next_c2(h2_mplx *m)
     if (!stream) {
         if (m->processing_count >= m->processing_limit && !h2_iq_empty(m->q)) {
             ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, m->c1,
-                          "h2_session(%ld): delaying request processing. "
-                          "Current limit is %d and %d workers are in use.",
-                          m->id, m->processing_limit, m->processing_count);
+                          H2_MPLX_MSG(m, "delaying request processing. "
+                          "Current limit is %d and %d workers are in use."),
+                          m->processing_limit, m->processing_count);
         }
         goto cleanup;
     }
@@ -873,24 +869,18 @@ cleanup:
     return c2;
 }
 
-apr_status_t h2_mplx_worker_pop_c2(h2_mplx *m, conn_rec **out_c)
+static conn_rec *c2_prod_next(void *baton, int *phas_more)
 {
-    apr_status_t rv;
+    h2_mplx *m = baton;
+    conn_rec *c = NULL;
 
     H2_MPLX_ENTER_ALWAYS(m);
-    if (m->aborted) {
-        *out_c = NULL;
-        rv = APR_EOF;
-    }
-    else {
-        *out_c = s_next_c2(m);
-        rv = (*out_c != NULL && !h2_iq_empty(m->q))? APR_EAGAIN : APR_SUCCESS;
-    }
-    if (APR_EAGAIN != rv) {
-        m->is_registered = 0; /* h2_workers will discard this mplx */
+    if (!m->aborted) {
+        c = s_next_c2(m);
+        *phas_more = (c != NULL && !h2_iq_empty(m->q));
     }
     H2_MPLX_LEAVE(m);
-    return rv;
+    return c;
 }
 
 static void s_c2_done(h2_mplx *m, conn_rec *c2, h2_conn_ctx_t *conn_ctx)
@@ -920,7 +910,7 @@ static void s_c2_done(h2_mplx *m, conn_rec *c2, h2_conn_ctx_t *conn_ctx)
                       conn_ctx->id, conn_ctx->stream_id);
         c2->aborted = 1;
     }
-    else if (!c2->aborted && conn_ctx->started_at > m->last_mood_change) {
+    else if (!c2->aborted) {
         s_mplx_be_happy(m, c2, conn_ctx);
     }
     
@@ -957,33 +947,17 @@ static void s_c2_done(h2_mplx *m, conn_rec *c2, h2_conn_ctx_t *conn_ctx)
     }
 }
 
-void h2_mplx_worker_c2_done(conn_rec *c2)
+static void c2_prod_done(void *baton, conn_rec *c2)
 {
+    h2_mplx *m = baton;
     h2_conn_ctx_t *conn_ctx = h2_conn_ctx_get(c2);
-    h2_mplx *m;
 
     AP_DEBUG_ASSERT(conn_ctx);
-    m = conn_ctx->mplx;
     H2_MPLX_ENTER_ALWAYS(m);
 
     --m->processing_count;
     s_c2_done(m, c2, conn_ctx);
     if (m->join_wait) apr_thread_cond_signal(m->join_wait);
-
-    if (!m->aborted && !m->is_registered
-        && (m->processing_count < m->processing_limit)
-        && !h2_iq_empty(m->q)) {
-        /* We have a limit on the amount of c2s we process at a time. When
-         * this is reached, we do no longer have things to do for h2 workers
-         * and they remove such an mplx from its queue.
-         * When a c2 is done, there might then be room for more processing
-         * and we need then to register this mplx at h2 workers again.
-         */
-        m->is_registered = 1;
-        H2_MPLX_LEAVE(m);
-        h2_workers_register(m->workers, m);
-        return;
-    }
 
     H2_MPLX_LEAVE(m);
 }
@@ -992,55 +966,54 @@ void h2_mplx_worker_c2_done(conn_rec *c2)
  * h2_mplx DoS protection
  ******************************************************************************/
 
-static apr_status_t s_mplx_be_happy(h2_mplx *m, conn_rec *c, h2_conn_ctx_t *conn_ctx)
+static void s_mplx_be_happy(h2_mplx *m, conn_rec *c, h2_conn_ctx_t *conn_ctx)
 {
     apr_time_t now;            
 
-    --m->irritations_since;
-    now = apr_time_now();
     if (m->processing_limit < m->processing_max
-        && (now - m->last_mood_change >= m->mood_update_interval
-            || m->irritations_since < -m->processing_limit)) {
-        m->processing_limit = H2MIN(m->processing_limit * 2, m->processing_max);
-        m->last_mood_change = now;
-        m->irritations_since = 0;
-        ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, c,
-                      "h2_mplx(%ld): mood update, increasing worker limit to %d",
-                      m->id, m->processing_limit);
+        && conn_ctx->started_at > m->last_mood_change) {
+        --m->irritations_since;
+        if (m->processing_limit < m->processing_max
+            && ((now = apr_time_now()) - m->last_mood_change >= m->mood_update_interval
+                || m->irritations_since < -m->processing_limit)) {
+            m->processing_limit = H2MIN(m->processing_limit * 2, m->processing_max);
+            m->last_mood_change = now;
+            m->irritations_since = 0;
+            ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, c,
+                          H2_MPLX_MSG(m, "mood update, increasing worker limit to %d"),
+                          m->processing_limit);
+        }
     }
-    return APR_SUCCESS;
 }
 
-static apr_status_t m_be_annoyed(h2_mplx *m)
+static void m_be_annoyed(h2_mplx *m)
 {
-    apr_status_t status = APR_SUCCESS;
-    apr_time_t now;            
+    apr_time_t now;
 
-    ++m->irritations_since;
-    now = apr_time_now();
-    if (m->processing_limit > 2 &&
-        ((now - m->last_mood_change >= m->mood_update_interval)
-         || (m->irritations_since >= m->processing_limit))) {
-            
-        if (m->processing_limit > 16) {
-            m->processing_limit = 16;
+    if (m->processing_limit > 2) {
+        ++m->irritations_since;
+        if (((now = apr_time_now()) - m->last_mood_change >= m->mood_update_interval)
+            || (m->irritations_since >= m->processing_limit)) {
+
+            if (m->processing_limit > 16) {
+                m->processing_limit = 16;
+            }
+            else if (m->processing_limit > 8) {
+                m->processing_limit = 8;
+            }
+            else if (m->processing_limit > 4) {
+                m->processing_limit = 4;
+            }
+            else if (m->processing_limit > 2) {
+                m->processing_limit = 2;
+            }
+            m->last_mood_change = now;
+            m->irritations_since = 0;
+            ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, m->c1,
+                          H2_MPLX_MSG(m, "mood update, decreasing worker limit to %d"),
+                          m->processing_limit);
         }
-        else if (m->processing_limit > 8) {
-            m->processing_limit = 8;
-        }
-        else if (m->processing_limit > 4) {
-            m->processing_limit = 4;
-        }
-        else if (m->processing_limit > 2) {
-            m->processing_limit = 2;
-        }
-        m->last_mood_change = now;
-        m->irritations_since = 0;
-        ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, m->c1,
-                      "h2_mplx(%ld): mood update, decreasing worker limit to %d",
-                      m->id, m->processing_limit);
     }
-    return status;
 }
 
 /*******************************************************************************
@@ -1077,7 +1050,32 @@ apr_status_t h2_mplx_c1_client_rst(h2_mplx *m, int stream_id)
     H2_MPLX_ENTER_ALWAYS(m);
     stream = h2_ihash_get(m->streams, stream_id);
     if (stream && !reset_is_acceptable(stream)) {
-        status = m_be_annoyed(m);
+        m_be_annoyed(m);
+    }
+    H2_MPLX_LEAVE(m);
+    return status;
+}
+
+apr_status_t h2_mplx_c1_input_closed(h2_mplx *m, int stream_id)
+{
+    h2_stream *stream;
+    h2_conn_ctx_t *c2_ctx;
+    apr_status_t status = APR_EAGAIN;
+
+    H2_MPLX_ENTER_ALWAYS(m);
+    stream = h2_ihash_get(m->streams, stream_id);
+    if (stream && (c2_ctx = h2_conn_ctx_get(stream->c2))) {
+        if (c2_ctx->beam_in) {
+            apr_bucket_brigade *tmp =apr_brigade_create(
+                stream->pool, m->c1->bucket_alloc);
+            apr_bucket *eos = apr_bucket_eos_create(m->c1->bucket_alloc);
+            apr_off_t written;
+
+            APR_BRIGADE_INSERT_TAIL(tmp, eos);
+            status = h2_beam_send(c2_ctx->beam_in, m->c1,
+                      tmp, APR_BLOCK_READ, &written);
+            apr_brigade_destroy(tmp);
+        }
     }
     H2_MPLX_LEAVE(m);
     return status;
@@ -1106,8 +1104,8 @@ static apr_status_t mplx_pollset_poll(h2_mplx *m, apr_interval_time_t timeout,
     m->polling = 1;
     do {
         ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, m->c1,
-                      "h2_mplx(%ld): enter polling timeout=%d",
-                      m->id, (int)apr_time_sec(timeout));
+                      H2_MPLX_MSG(m, "enter polling timeout=%d"),
+                      (int)apr_time_sec(timeout));
 
         apr_array_clear(m->streams_ev_in);
         apr_array_clear(m->streams_ev_out);
@@ -1145,12 +1143,11 @@ static apr_status_t mplx_pollset_poll(h2_mplx *m, apr_interval_time_t timeout,
         if (APR_SUCCESS != rv) {
             if (APR_STATUS_IS_TIMEUP(rv)) {
                 ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, m->c1,
-                              "h2_mplx(%ld): polling timed out ",
-                              m->id);
+                              H2_MPLX_MSG(m, "polling timed out "));
             }
             else {
-                ap_log_cerror(APLOG_MARK, APLOG_ERR, rv, m->c1, APLOGNO(10310)
-                              "h2_mplx(%ld): polling failed", m->id);
+                ap_log_cerror(APLOG_MARK, APLOG_ERR, rv, m->c1, APLOGNO(10310) \
+                              H2_MPLX_MSG(m, "polling failed"));
             }
             goto cleanup;
         }

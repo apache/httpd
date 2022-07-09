@@ -44,6 +44,8 @@ struct h2_iqueue;
 
 #include <apr_queue.h>
 
+#include "h2_workers.h"
+
 typedef struct h2_c2_transit h2_c2_transit;
 
 struct h2_c2_transit {
@@ -54,7 +56,8 @@ struct h2_c2_transit {
 typedef struct h2_mplx h2_mplx;
 
 struct h2_mplx {
-    long id;
+    int child_num;                  /* child this runs in */
+    apr_uint32_t id;                /* id unique per child */
     conn_rec *c1;                   /* the main connection */
     apr_pool_t *pool;
     struct h2_stream *stream0;      /* HTTP/2's stream 0 */
@@ -62,7 +65,7 @@ struct h2_mplx {
 
     int aborted;
     int polling;                    /* is waiting/processing pollset events */
-    int is_registered;              /* is registered at h2_workers */
+    ap_conn_producer_t *producer;   /* registered producer at h2_workers */
 
     struct h2_ihash_t *streams;     /* all streams active */
     struct h2_ihash_t *shold;       /* all streams done with c2 processing ongoing */
@@ -107,7 +110,9 @@ apr_status_t h2_mplx_c1_child_init(apr_pool_t *pool, server_rec *s);
  * Create the multiplexer for the given HTTP2 session. 
  * Implicitly has reference count 1.
  */
-h2_mplx *h2_mplx_c1_create(struct h2_stream *stream0, server_rec *s, apr_pool_t *master,
+h2_mplx *h2_mplx_c1_create(int child_id, apr_uint32_t id,
+                           struct h2_stream *stream0,
+                           server_rec *s, apr_pool_t *master,
                            struct h2_workers *workers);
 
 /**
@@ -153,11 +158,6 @@ void h2_mplx_c1_process(h2_mplx *m,
                         struct h2_session *session,
                         int *pstream_count);
 
-apr_status_t h2_mplx_c1_fwd_input(h2_mplx *m, struct h2_iqueue *input_pending,
-                                  h2_stream_get_fn *get_stream,
-                                  struct h2_session *session);
-
-
 /**
  * Stream priorities have changed, reschedule pending requests.
  * 
@@ -200,6 +200,15 @@ apr_status_t h2_mplx_c1_streams_do(h2_mplx *m, h2_mplx_stream_cb *cb, void *ctx)
 apr_status_t h2_mplx_c1_client_rst(h2_mplx *m, int stream_id);
 
 /**
+ * Input for stream has been closed. Notify a possibly started
+ * and waiting stream by sending an EOS.
+ * @param m the mplx
+ * @param stream_id the closed stream
+ * @return APR_SUCCESS iff EOS was sent, APR_EAGAIN if not necessary
+ */
+apr_status_t h2_mplx_c1_input_closed(h2_mplx *m, int stream_id);
+
+/**
  * Get readonly access to a stream for a secondary connection.
  */
 const struct h2_stream *h2_mplx_c2_stream_get(h2_mplx *m, int stream_id);
@@ -211,10 +220,7 @@ const struct h2_stream *h2_mplx_c2_stream_get(h2_mplx *m, int stream_id);
  */
 apr_status_t h2_mplx_worker_pop_c2(h2_mplx *m, conn_rec **out_c2);
 
-/**
- * A h2 worker reports a secondary connection processing done.
- * @param c2 the secondary connection finished processing
- */
-void h2_mplx_worker_c2_done(conn_rec *c2);
+#define H2_MPLX_MSG(m, msg)     \
+    "h2_mplx(%d-%lu): "msg, m->child_num, (unsigned long)m->id
 
 #endif /* defined(__mod_h2__h2_mplx__) */

@@ -22,6 +22,7 @@
 #include <http_core.h>
 #include <http_config.h>
 #include <http_log.h>
+#include <http_protocol.h>
 
 #include "h2_private.h"
 #include "h2_session.h"
@@ -65,6 +66,12 @@ h2_conn_ctx_t *h2_conn_ctx_create_for_c1(conn_rec *c1, server_rec *s, const char
     apr_socket_opt_set(ctx->pfd.desc.s, APR_SO_NONBLOCK, 1);
 
     return ctx;
+}
+
+void h2_conn_ctx_assign_session(h2_conn_ctx_t *ctx, struct h2_session *session)
+{
+    ctx->session = session;
+    ctx->id = apr_psprintf(session->pool, "%d-%lu", session->child_num, (unsigned long)session->id);
 }
 
 apr_status_t h2_conn_ctx_init_for_c2(h2_conn_ctx_t **pctx, conn_rec *c2,

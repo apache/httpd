@@ -150,7 +150,9 @@ static int http2_is_h2(conn_rec *);
 
 static void http2_get_num_workers(server_rec *s, int *minw, int *maxw)
 {
-    h2_get_num_workers(s, minw, maxw);
+    apr_time_t tdummy;
+
+    h2_get_workers_config(s, minw, maxw, &tdummy);
 }
 
 /* Runs once per created child process. Perform any process 
@@ -158,24 +160,7 @@ static void http2_get_num_workers(server_rec *s, int *minw, int *maxw)
  */
 static void h2_child_init(apr_pool_t *pchild, server_rec *s)
 {
-    apr_allocator_t *allocator;
-    apr_thread_mutex_t *mutex;
     apr_status_t rv;
-
-    /* The allocator of pchild has no mutex with MPM prefork, but we need one
-     * for h2 workers threads synchronization. Even though mod_http2 shouldn't
-     * be used with prefork, better be safe than sorry, so forcibly set the
-     * mutex here. For MPM event/worker, pchild has no allocator so pconf's
-     * is used, with its mutex.
-     */
-    allocator = apr_pool_allocator_get(pchild);
-    if (allocator) {
-        mutex = apr_allocator_mutex_get(allocator);
-        if (!mutex) {
-            apr_thread_mutex_create(&mutex, APR_THREAD_MUTEX_DEFAULT, pchild);
-            apr_allocator_mutex_set(allocator, mutex);
-        }
-    }
 
     /* Set up our connection processing */
     rv = h2_c1_child_init(pchild, s);
@@ -295,7 +280,7 @@ static const char *val_H2_STREAM_ID(apr_pool_t *p, server_rec *s,
                                     conn_rec *c, request_rec *r, h2_conn_ctx_t *ctx)
 {
     const char *cp = val_H2_STREAM_TAG(p, s, c, r, ctx);
-    if (cp && (cp = ap_strchr_c(cp, '-'))) {
+    if (cp && (cp = ap_strrchr_c(cp, '-'))) {
         return ++cp;
     }
     return NULL;

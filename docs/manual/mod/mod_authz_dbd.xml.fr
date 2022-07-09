@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1796296 -->
+<!-- English Revision : 1900077 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -75,7 +75,7 @@ d'Apache</compatibility>
 
     <highlight language="config">
 Require dbd-group team
-AuthzDBDQuery "SELECT group FROM authz WHERE user = %s"
+AuthzDBDQuery "SELECT user_group FROM authz WHERE user = %s"
     </highlight>
 
 </section>

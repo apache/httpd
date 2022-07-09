@@ -29,13 +29,13 @@
 #include <httpd.h>
 #include <http_core.h>
 #include <http_log.h>
+#include <http_protocol.h>
 
 #include "h2_private.h"
 #include "h2_protocol.h"
 #include "h2_util.h"
 #include "h2_push.h"
 #include "h2_request.h"
-#include "h2_headers.h"
 #include "h2_session.h"
 #include "h2_stream.h"
 
@@ -433,7 +433,7 @@ static int head_iter(void *ctx, const char *key, const char *value)
 }
 
 apr_array_header_t *h2_push_collect(apr_pool_t *p, const h2_request *req,
-                                    apr_uint32_t push_policy, const h2_headers *res)
+                                    apr_uint32_t push_policy, const ap_bucket_response *res)
 {
     if (req && push_policy != H2_PUSH_NONE) {
         /* Collect push candidates from the request/response pair.
@@ -675,9 +675,9 @@ apr_array_header_t *h2_push_diary_update(h2_session *session, apr_array_header_t
     return npushes;
 }
     
-apr_array_header_t *h2_push_collect_update(h2_stream *stream, 
-                                           const struct h2_request *req, 
-                                           const struct h2_headers *res)
+apr_array_header_t *h2_push_collect_update(struct h2_stream *stream,
+                                           const struct h2_request *req,
+                                           const ap_bucket_response *res)
 {
     apr_array_header_t *pushes;
     

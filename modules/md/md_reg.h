@@ -36,7 +36,8 @@ typedef struct md_reg_t md_reg_t;
  * Create the MD registry, using the pool and store.
  */
 apr_status_t md_reg_create(md_reg_t **preg, apr_pool_t *pm, md_store_t *store,
-                           const char *proxy_url, const char *ca_file);
+                           const char *proxy_url, const char *ca_file,
+                           apr_time_t min_delay, int retry_failover);
 
 md_store_t *md_reg_store_get(md_reg_t *reg);
 
@@ -212,6 +213,8 @@ struct md_proto_driver_t {
     int can_http;
     int can_https;
     int reset;
+    int attempt;
+    int retry_failover;
     apr_interval_time_t activation_delay;
 };
 
@@ -220,6 +223,7 @@ typedef apr_status_t md_proto_renew_cb(md_proto_driver_t *driver, struct md_resu
 typedef apr_status_t md_proto_init_preload_cb(md_proto_driver_t *driver, struct md_result_t *result);
 typedef apr_status_t md_proto_preload_cb(md_proto_driver_t *driver, 
                                          md_store_group_t group, struct md_result_t *result);
+typedef apr_status_t md_proto_complete_md_cb(md_t *md, apr_pool_t *p);
 
 struct md_proto_t {
     const char *protocol;
@@ -227,6 +231,7 @@ struct md_proto_t {
     md_proto_renew_cb *renew;
     md_proto_init_preload_cb *init_preload;
     md_proto_preload_cb *preload;
+    md_proto_complete_md_cb *complete_md;
 };
 
 /**
@@ -240,11 +245,17 @@ apr_status_t md_reg_test_init(md_reg_t *reg, const md_t *md, struct apr_table_t 
 
 /**
  * Obtain new credentials for the given managed domain in STAGING.
- *
+ * @param reg the registry instance
+ * @param md the mdomain to renew
+ * @param env global environment of settings
+ * @param reset != 0 if any previous, partial information should be wiped
+ * @param attempt the number of attempts made this far (for this md)
+ * @param result for reporting results of the renewal
+ * @param p the memory pool to use
  * @return APR_SUCCESS if new credentials have been staged successfully
  */
 apr_status_t md_reg_renew(md_reg_t *reg, const md_t *md, 
-                          struct apr_table_t *env, int reset, 
+                          struct apr_table_t *env, int reset, int attempt,
                           struct md_result_t *result, apr_pool_t *p);
 
 /**

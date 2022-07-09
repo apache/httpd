@@ -44,8 +44,8 @@ qui permet d'utiliser la <em>lbmethod</em> "heartbeat" au sein des
 directives <code class="directive"><a href="../mod/mod_proxy.html#proxypass">ProxyPass</a></code>.
 </p>
 
-<p>Ce module utilise les services de <code class="module"><a href="../mod/mod_slotmem_shm.html">mod_slotmem_shm</a></code>,
-lorsqu'il est disponible, au lieu d'un simple fichier texte. Aucune
+<p>Ce module utilise les services de <code class="module"><a href="../mod/mod_slotmem_shm.html">mod_slotmem_shm</a></code>, lorsqu'il
+est disponible, au lieu d'un fichier bidimensionnel (flat-file). Aucune
 configuration supplémentaire n'est requise pour utiliser
 <code class="module"><a href="../mod/mod_slotmem_shm.html">mod_slotmem_shm</a></code>.</p>
 
@@ -109,22 +109,27 @@ des requêtes heartbeat à ce serveur.</td></tr>
     contrôler la quantité de mémoire partagée allouée pour le stockage
     des données heartbeat lorsqu'on utilise
     <code class="module"><a href="../mod/mod_slotmem_shm.html">mod_slotmem_shm</a></code>.</p>
+    <p>Pour utiliser un stockage de type fichier bidimensionnel (flat-file)
+    lorque le module <code class="module"><a href="../mod/mod_slotmem_shm.html">mod_slotmem_shm</a></code>) n'est pas chargé, cette
+    directive doit être définie à 0. La valeur doit être soit égale à 0, soit
+    supérieure ou égale à 10.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="heartbeatstorage" id="heartbeatstorage">Directive</a> <a name="HeartbeatStorage" id="HeartbeatStorage">HeartbeatStorage</a> <a title="Lien permanent" href="#heartbeatstorage" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Chemin vers le stockage des données heartbeat</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Chemin vers le stockage des données heartbeat lorsqu'on utilise un
+fichier bidimensionnel (flat-file)</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>HeartbeatStorage <var>chemin fichier</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>HeartbeatStorage logs/hb.dat</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_heartmonitor</td></tr>
 </table>
-    <p>La directive <code class="directive">HeartbeatStorage</code> permet de
-    spécifier le chemin de stockage des données heartbeat. Ce fichier
-    texte n'est utilisé que si <code class="module"><a href="../mod/mod_slotmem_shm.html">mod_slotmem_shm</a></code> n'est
-    pas chargé.</p>
+    <p>La directive <code class="directive">HeartbeatStorage</code> permet de spécifier
+    le chemin de stockage des données heartbeat. Ce fichier bidimensionnel n'est
+    utilisé que si <code class="module"><a href="../mod/mod_slotmem_shm.html">mod_slotmem_shm</a></code> n'est pas chargé et si la
+    directive <code class="directive">HeartbeatMaxServers</code> est définie à 0.</p>
 
 </div>
 </div>

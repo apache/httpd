@@ -473,7 +473,7 @@ SET(mod_http2_extra_sources
   modules/http2/h2_c1.c              modules/http2/h2_c1_io.c
   modules/http2/h2_c2.c              modules/http2/h2_c2_filter.c
   modules/http2/h2_config.c          modules/http2/h2_conn_ctx.c
-  modules/http2/h2_headers.c         modules/http2/h2_mplx.c
+  modules/http2/h2_mplx.c
   modules/http2/h2_protocol.c        modules/http2/h2_push.c
   modules/http2/h2_request.c         modules/http2/h2_session.c
   modules/http2/h2_stream.c          modules/http2/h2_switch.c
@@ -512,7 +512,7 @@ SET(mod_md_extra_sources
   modules/md/md_ocsp.c               modules/md/md_util.c               
   modules/md/mod_md_config.c         modules/md/mod_md_drive.c
   modules/md/mod_md_os.c             modules/md/mod_md_status.c
-  modules/md/mod_md_ocsp.c           
+  modules/md/mod_md_ocsp.c           modules/md/md_tailscale.c
 )
 SET(mod_optional_hook_export_extra_defines AP_DECLARE_EXPORT) # bogus reuse of core API prefix
 SET(mod_proxy_extra_defines          PROXY_DECLARE_EXPORT)
@@ -651,11 +651,10 @@ ENDIF()
 CONFIGURE_FILE(os/win32/BaseAddr.ref ${PROJECT_BINARY_DIR}/ COPYONLY)
 
 ADD_EXECUTABLE(gen_test_char server/gen_test_char.c)
-GET_TARGET_PROPERTY(GEN_TEST_CHAR_EXE gen_test_char LOCATION)
 ADD_CUSTOM_COMMAND(
   COMMENT "Generating character tables, test_char.h, for current locale"
   DEPENDS gen_test_char
-  COMMAND ${GEN_TEST_CHAR_EXE} > ${PROJECT_BINARY_DIR}/test_char.h
+  COMMAND $<TARGET_FILE:gen_test_char> > ${PROJECT_BINARY_DIR}/test_char.h
   OUTPUT ${PROJECT_BINARY_DIR}/test_char.h
 )
 ADD_CUSTOM_TARGET(

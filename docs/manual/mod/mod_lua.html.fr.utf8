@@ -1601,10 +1601,10 @@ traitement de la requête</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_lua</td></tr>
 </table>
     <p>Identique à la directive
-    <code class="directive">LuaHookTranslateName</code>, mais s'exécute à la
-    phase map-to-storage du traitement de la requête. Les modules comme
-    mod_cache agissent pendant cette phase, ce qui permet de présenter
-    un exemple intéressant de ce que l'on peut faire ici :</p>
+    <code class="directive">LuaHookTranslateName</code>, mais s'exécute à la phase
+    map-to-storage du traitement de la requête. Les modules comme
+    <code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code> agissent pendant cette phase, ce qui permet de
+    présenter un exemple intéressant de ce que l'on peut faire ici :</p>
     <pre class="prettyprint lang-config">LuaHookMapToStorage /path/to/lua/script.lua check_cache</pre>
 
     <pre class="prettyprint lang-lua">require"apache2"

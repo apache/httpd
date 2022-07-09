@@ -76,9 +76,6 @@ class TestProxyTLS:
 
     @pytest.mark.parametrize("name, value", [
         ("SERVER_NAME", "b.mod-tls.test"),
-        ("SERVER_NAME", "b.mod-tls.test"),
-        ("SERVER_NAME", "b.mod-tls.test"),
-        ("SERVER_NAME", "b.mod-tls.test"),
         ("SSL_PROTOCOL", "TLSv1.3"),
         ("SSL_CIPHER", "TLS_CHACHA20_POLY1305_SHA256"),
         ("SSL_SESSION_RESUMED", "Initial"),

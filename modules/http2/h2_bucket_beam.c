@@ -28,7 +28,6 @@
 
 #include "h2_private.h"
 #include "h2_conn_ctx.h"
-#include "h2_headers.h"
 #include "h2_util.h"
 #include "h2_bucket_beam.h"
 
@@ -637,8 +636,14 @@ transfer:
             else if (APR_BUCKET_IS_FLUSH(bsender)) {
                 brecv = apr_bucket_flush_create(bb->bucket_alloc);
             }
-            else if (H2_BUCKET_IS_HEADERS(bsender)) {
-                brecv = h2_bucket_headers_clone(bsender, bb->p, bb->bucket_alloc);
+            else if (AP_BUCKET_IS_RESPONSE(bsender)) {
+                brecv = ap_bucket_response_clone(bsender, bb->p, bb->bucket_alloc);
+            }
+            else if (AP_BUCKET_IS_REQUEST(bsender)) {
+                brecv = ap_bucket_request_clone(bsender, bb->p, bb->bucket_alloc);
+            }
+            else if (AP_BUCKET_IS_HEADERS(bsender)) {
+                brecv = ap_bucket_headers_clone(bsender, bb->p, bb->bucket_alloc);
             }
             else if (AP_BUCKET_IS_ERROR(bsender)) {
                 ap_bucket_error *eb = bsender->data;

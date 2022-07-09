@@ -39,7 +39,7 @@ class TestStore:
                 "domains": [dns],
                 "contacts": [],
                 "ca": {
-                    "url": env.acme_url,
+                    "urls": [env.acme_url],
                     "proto": "ACME"
                 },
                 "state": 0
@@ -55,7 +55,7 @@ class TestStore:
                 "domains": dns,
                 "contacts": [],
                 "ca": {
-                    "url": env.acme_url,
+                    "urls": [env.acme_url],
                     "proto": "ACME"
                 },
                 "state": 0
@@ -76,7 +76,7 @@ class TestStore:
             "domains": dns2,
             "contacts": [],
             "ca": {
-                "url": env.acme_url,
+                "urls": [env.acme_url],
                 "proto": "ACME"
             },
             "state": 0
@@ -129,7 +129,7 @@ class TestStore:
                 "domains": domains[i],
                 "contacts": [],
                 "ca": {
-                    "url": env.acme_url,
+                    "urls": [env.acme_url],
                     "proto": "ACME"
                 },
                 "state": 0
@@ -186,10 +186,10 @@ class TestStore:
     def test_md_001_402(self, env: MDTestEnv):
         dns = "test000-402.com"
         args = ["store", "add", dns]
-        assert env.a2md(args).json['output'][0]['ca']['url'] == env.acme_url
+        assert env.a2md(args).json['output'][0]['ca']['urls'][0] == env.acme_url
         nurl = "https://foo.com/"
         args = [env.a2md_bin, "-a", nurl, "-d", env.store_dir, "-j", "store", "update", dns]
-        assert env.run(args).json['output'][0]['ca']['url'] == nurl
+        assert env.run(args).json['output'][0]['ca']['urls'][0] == nurl
 
     # test case: update nonexisting managed domain
     def test_md_001_403(self, env: MDTestEnv):

@@ -43,7 +43,6 @@ struct h2_conn_ctx_t {
     struct h2_mplx *mplx;           /* c2: the multiplexer */
     struct h2_c2_transit *transit;  /* c2: transit pool and bucket_alloc */
 
-    int pre_conn_done;               /* has pre_connection setup run? */
     int stream_id;                  /* c1: 0, c2: stream id processed */
     apr_pool_t *req_pool;            /* c2: a c2 child pool for a request */
     const struct h2_request *request; /* c2: the request to process */
@@ -75,10 +74,12 @@ typedef struct h2_conn_ctx_t h2_conn_ctx_t;
  * Create the h2 connection context.
  * @param c the connection to create it at
  * @param s the server in use
- * @param protocol the procotol selected
+ * @param protocol the protocol selected
  * @return created h2 context of this connection
  */
 h2_conn_ctx_t *h2_conn_ctx_create_for_c1(conn_rec *c, server_rec *s, const char *protocol);
+
+void h2_conn_ctx_assign_session(h2_conn_ctx_t *ctx, struct h2_session *session);
 
 apr_status_t h2_conn_ctx_init_for_c2(h2_conn_ctx_t **pctx, conn_rec *c,
                                      struct h2_mplx *mplx, struct h2_stream *stream,

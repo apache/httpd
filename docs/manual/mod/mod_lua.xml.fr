@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1879077 -->
+<!-- English Revision: 1900689 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -1740,10 +1740,10 @@ traitement de la requête</description>
 <override>All</override>
     <usage>
     <p>Identique à la directive
-    <directive>LuaHookTranslateName</directive>, mais s'exécute à la
-    phase map-to-storage du traitement de la requête. Les modules comme
-    mod_cache agissent pendant cette phase, ce qui permet de présenter
-    un exemple intéressant de ce que l'on peut faire ici :</p>
+    <directive>LuaHookTranslateName</directive>, mais s'exécute à la phase
+    map-to-storage du traitement de la requête. Les modules comme
+    <module>mod_cache</module> agissent pendant cette phase, ce qui permet de
+    présenter un exemple intéressant de ce que l'on peut faire ici :</p>
     <highlight language="config">
     LuaHookMapToStorage /path/to/lua/script.lua check_cache
     </highlight>

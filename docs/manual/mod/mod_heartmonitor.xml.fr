@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1839245 -->
+<!-- English Revision : 1902133 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -40,8 +40,8 @@ qui permet d'utiliser la <em>lbmethod</em> "heartbeat" au sein des
 directives <directive module="mod_proxy">ProxyPass</directive>.
 </p>
 
-<p>Ce module utilise les services de <module>mod_slotmem_shm</module>,
-lorsqu'il est disponible, au lieu d'un simple fichier texte. Aucune
+<p>Ce module utilise les services de <module>mod_slotmem_shm</module>, lorsqu'il
+est disponible, au lieu d'un fichier bidimensionnel (flat-file). Aucune
 configuration supplémentaire n'est requise pour utiliser
 <module>mod_slotmem_shm</module>.</p>
 
@@ -82,16 +82,17 @@ configuration supplémentaire n'est requise pour utiliser
 
 <directivesynopsis>
 <name>HeartbeatStorage</name>
-<description>Chemin vers le stockage des données heartbeat</description>
+<description>Chemin vers le stockage des données heartbeat lorsqu'on utilise un
+fichier bidimensionnel (flat-file)</description>
 <syntax>HeartbeatStorage <var>chemin fichier</var></syntax>
 <default>HeartbeatStorage logs/hb.dat</default>
 <contextlist><context>server config</context></contextlist>
 
 <usage>
-    <p>La directive <directive>HeartbeatStorage</directive> permet de
-    spécifier le chemin de stockage des données heartbeat. Ce fichier
-    texte n'est utilisé que si <module>mod_slotmem_shm</module> n'est
-    pas chargé.</p>
+    <p>La directive <directive>HeartbeatStorage</directive> permet de spécifier
+    le chemin de stockage des données heartbeat. Ce fichier bidimensionnel n'est
+    utilisé que si <module>mod_slotmem_shm</module> n'est pas chargé et si la
+    directive <directive>HeartbeatMaxServers</directive> est définie à 0.</p>
 </usage>
 </directivesynopsis>
 
@@ -110,6 +111,10 @@ des requêtes heartbeat à ce serveur.</description>
     contrôler la quantité de mémoire partagée allouée pour le stockage
     des données heartbeat lorsqu'on utilise
     <module>mod_slotmem_shm</module>.</p>
+    <p>Pour utiliser un stockage de type fichier bidimensionnel (flat-file)
+    lorque le module <module>mod_slotmem_shm</module>) n'est pas chargé, cette
+    directive doit être définie à 0. La valeur doit être soit égale à 0, soit
+    supérieure ou égale à 10.</p>
 </usage>
 </directivesynopsis>
 

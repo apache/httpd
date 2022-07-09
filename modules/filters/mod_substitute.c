@@ -309,7 +309,7 @@ static apr_status_t do_pattmatch(ap_filter_t *f, apr_bucket *inb,
                     }
                 }
                 else if (script->regexp) {
-                    int left = bytes;
+                    apr_size_t left = bytes;
                     const char *pos = buff;
                     char *repl;
                     apr_size_t space_left = cfg->max_line_length;

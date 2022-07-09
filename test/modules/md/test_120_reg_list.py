@@ -39,7 +39,7 @@ class TestRegAdd:
                 "domains": domains[i],
                 "contacts": [],
                 "ca": {
-                    "url": env.acme_url,
+                    "urls": [env.acme_url],
                     "proto": "ACME"
                 },
                 "state": env.MD_S_INCOMPLETE

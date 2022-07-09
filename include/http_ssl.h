@@ -104,7 +104,7 @@ AP_DECLARE_HOOK(const char *,ssl_var_lookup,
 /**
  * Lookup an SSL related variable for the server/connection/request or a global
  * value when all those parameters are set to NULL. Pool and name must always be
- * provided and the returned value (if not NULL) will be allocated fromt he pool.
+ * provided and the returned value (if not NULL) will be allocated from the pool.
  * @param p The pool to allocate a returned value in, MUST be provided
  * @param s The server to inquire a value for, maybe NULL
  * @param c The current connection, maybe NULL
@@ -118,7 +118,7 @@ AP_DECLARE(const char *) ap_ssl_var_lookup(apr_pool_t *p, server_rec *s,
 
 /**
  * Register to provide certificate/key files for servers. Certificate files are
- * exepcted to contain the certificate chain, beginning with the server's certificate,
+ * expected to contain the certificate chain, beginning with the server's certificate,
  * excluding the trust anchor, in PEM format.
  * They must be accompanied by a private key file, also in PEM format.
  *

@@ -28,10 +28,6 @@ struct nghttp2_frame;
 size_t h2_util_hex_dump(char *buffer, size_t maxlen,
                         const char *data, size_t datalen);
 
-size_t h2_util_header_print(char *buffer, size_t maxlen,
-                            const char *name, size_t namelen,
-                            const char *value, size_t valuelen);
-
 void h2_util_camel_case_header(char *s, size_t len);
 
 int h2_util_frame_print(const nghttp2_frame *frame, char *buffer, size_t maxlen);
@@ -395,17 +391,15 @@ const char *h2_util_base64url_encode(const char *data,
 
 int h2_util_ignore_header(const char *name);
 
-struct h2_headers;
-
 typedef struct h2_ngheader {
     nghttp2_nv *nv;
     apr_size_t nvlen;
 } h2_ngheader;
 
 apr_status_t h2_res_create_ngtrailer(h2_ngheader **ph, apr_pool_t *p, 
-                                     struct h2_headers *headers); 
-apr_status_t h2_res_create_ngheader(h2_ngheader **ph, apr_pool_t *p, 
-                                    struct h2_headers *headers); 
+                                     ap_bucket_headers *headers);
+apr_status_t h2_res_create_ngheader(h2_ngheader **ph, apr_pool_t *p,
+                                    ap_bucket_response *response);
 apr_status_t h2_req_create_ngheader(h2_ngheader **ph, apr_pool_t *p, 
                                     const struct h2_request *req);
 
@@ -529,5 +523,17 @@ void h2_util_drain_pipe(apr_file_t *pipe);
  * Wait on data arriving on a pipe.
  */
 apr_status_t h2_util_wait_on_pipe(apr_file_t *pipe);
+
+/**
+ * Give an estimate of the length of the header fields,
+ * without compression or other formatting decorations.
+ */
+apr_size_t headers_length_estimate(ap_bucket_headers *hdrs);
+
+/**
+ * Give an estimate of the length of the response meta data size,
+ * without compression or other formatting decorations.
+ */
+apr_size_t response_length_estimate(ap_bucket_response *resp);
 
 #endif /* defined(__mod_h2__h2_util__) */

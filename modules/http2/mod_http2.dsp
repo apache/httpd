@@ -133,10 +133,6 @@ SOURCE=./h2_conn_ctx.c
 # End Source File
 # Begin Source File
 
-SOURCE=./h2_headers.c
-# End Source File
-# Begin Source File
-
 SOURCE=./h2_mplx.c
 # End Source File
 # Begin Source File

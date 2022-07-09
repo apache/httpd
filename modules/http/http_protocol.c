@@ -213,15 +213,21 @@ static int is_mpm_running(void)
     return 1;
 }
 
-
-AP_DECLARE(int) ap_set_keepalive(request_rec *r)
+int ap_h1_set_keepalive(request_rec *r, ap_bucket_response *resp)
 {
-    int ka_sent = 0;
-    int left = r->server->keep_alive_max - r->connection->keepalives;
-    int wimpy = ap_find_token(r->pool,
-                              apr_table_get(r->headers_out, "Connection"),
-                              "close");
-    const char *conn = apr_table_get(r->headers_in, "Connection");
+    int ka_sent, left = 0, wimpy;
+    const char *conn;
+
+    if (r->proto_num >= HTTP_VERSION(2,0)) {
+        goto update_keepalives;
+    }
+
+    ka_sent = 0;
+    left = r->server->keep_alive_max - r->connection->keepalives;
+    wimpy = ap_find_token(r->pool,
+                          apr_table_get(resp->headers, "Connection"),
+                          "close");
+    conn = apr_table_get(r->headers_in, "Connection");
 
     /* The following convoluted conditional determines whether or not
      * the current connection should remain persistent after this response
@@ -255,18 +261,17 @@ AP_DECLARE(int) ap_set_keepalive(request_rec *r)
     if ((r->connection->keepalive != AP_CONN_CLOSE)
         && !r->expecting_100
         && (r->header_only
-            || AP_STATUS_IS_HEADER_ONLY(r->status)
-            || apr_table_get(r->headers_out, "Content-Length")
+            || AP_STATUS_IS_HEADER_ONLY(resp->status)
+            || apr_table_get(resp->headers, "Content-Length")
             || ap_is_chunked(r->pool,
-                                  apr_table_get(r->headers_out,
-                                                "Transfer-Encoding"))
+                             apr_table_get(resp->headers, "Transfer-Encoding"))
             || ((r->proto_num >= HTTP_VERSION(1,1))
                 && (r->chunked = 1))) /* THIS CODE IS CORRECT, see above. */
         && r->server->keep_alive
         && (r->server->keep_alive_timeout > 0)
         && ((r->server->keep_alive_max == 0)
             || (left > 0))
-        && !ap_status_drops_connection(r->status)
+        && !ap_status_drops_connection(resp->status)
         && !wimpy
         && !ap_find_token(r->pool, conn, "close")
         && (!apr_table_get(r->subprocess_env, "nokeepalive")
@@ -281,17 +286,17 @@ AP_DECLARE(int) ap_set_keepalive(request_rec *r)
         /* If they sent a Keep-Alive token, send one back */
         if (ka_sent) {
             if (r->server->keep_alive_max) {
-                apr_table_setn(r->headers_out, "Keep-Alive",
+                apr_table_setn(resp->headers, "Keep-Alive",
                        apr_psprintf(r->pool, "timeout=%d, max=%d",
                             (int)apr_time_sec(r->server->keep_alive_timeout),
                             left));
             }
             else {
-                apr_table_setn(r->headers_out, "Keep-Alive",
+                apr_table_setn(resp->headers, "Keep-Alive",
                       apr_psprintf(r->pool, "timeout=%d",
                             (int)apr_time_sec(r->server->keep_alive_timeout)));
             }
-            apr_table_mergen(r->headers_out, "Connection", "Keep-Alive");
+            apr_table_mergen(resp->headers, "Connection", "Keep-Alive");
         }
 
         return 1;
@@ -306,9 +311,10 @@ AP_DECLARE(int) ap_set_keepalive(request_rec *r)
      * to a HTTP/1.1 client. Better safe than sorry.
      */
     if (!wimpy) {
-        apr_table_mergen(r->headers_out, "Connection", "close");
+        apr_table_mergen(resp->headers, "Connection", "close");
     }
 
+update_keepalives:
     /*
      * If we had previously been a keepalive connection and this
      * is the last one, then bump up the number of keepalives
@@ -322,6 +328,17 @@ AP_DECLARE(int) ap_set_keepalive(request_rec *r)
     r->connection->keepalive = AP_CONN_CLOSE;
 
     return 0;
+}
+
+AP_DECLARE(int) ap_set_keepalive(request_rec *r)
+{
+    ap_bucket_response resp;
+
+    memset(&resp, 0, sizeof(resp));
+    resp.status = r->status;
+    resp.headers = r->headers_out;
+    resp.notes = r->notes;
+    return ap_h1_set_keepalive(r, &resp);
 }
 
 AP_DECLARE(ap_condition_e) ap_condition_if_match(request_rec *r,
@@ -1485,20 +1502,35 @@ AP_DECLARE(void) ap_clear_method_list(ap_method_list_t *l)
     l->method_list->nelts = 0;
 }
 
-AP_DECLARE(apr_status_t) ap_h1_append_header(apr_bucket_brigade *b,
-                                             apr_pool_t *p,
+AP_DECLARE(apr_status_t) ap_h1_append_header(apr_bucket_brigade *bb,
+                                             apr_pool_t *pool,
                                              const char *name, const char *value)
 {
-    char *buf;
+#if APR_CHARSET_EBCDIC
+    char *headfield;
     apr_size_t len;
 
-    if (!name || !*name || !value || !*value) {
-        return APR_SUCCESS;
-    }
-    buf = apr_pstrcat(p, name, ": ", value, CRLF, NULL);
-    len = strlen(buf);
-    ap_xlate_proto_to_ascii(buf, len);
-    return apr_brigade_write(b, NULL, NULL, buf, len);
+    headfield = apr_pstrcat(pool, name, ": ", value, CRLF, NULL);
+    len = strlen(headfield);
+
+    ap_xlate_proto_to_ascii(headfield, len);
+    return apr_brigade_write(bb, NULL, NULL, headfield, len);
+#else
+    struct iovec vec[4];
+    struct iovec *v = vec;
+    v->iov_base = (void *)name;
+    v->iov_len = strlen(name);
+    v++;
+    v->iov_base = ": ";
+    v->iov_len = sizeof(": ") - 1;
+    v++;
+    v->iov_base = (void *)value;
+    v->iov_len = strlen(value);
+    v++;
+    v->iov_base = CRLF;
+    v->iov_len = sizeof(CRLF) - 1;
+    return apr_brigade_writev(bb, NULL, NULL, vec, 4);
+#endif /* !APR_CHARSET_EBCDIC */
 }
 
 AP_DECLARE(apr_status_t) ap_h1_append_headers(apr_bucket_brigade *bb,
@@ -1603,4 +1635,207 @@ AP_DECLARE(void) ap_h1_add_end_chunk(apr_bucket_brigade *b,
         ap_h1_terminate_header(b);
         if (tmp) APR_BRIGADE_CONCAT(b, tmp);
     }
+}
+
+typedef enum {
+    rrl_none, rrl_badprotocol, rrl_badmethod, rrl_badwhitespace, rrl_excesswhitespace,
+    rrl_missinguri, rrl_baduri, rrl_trailingtext,
+} rrl_error;
+
+/* get the length of a name for logging, but no more than 80 bytes */
+#define LOG_NAME_MAX_LEN 80
+static int log_name_len(const char *name)
+{
+    apr_size_t len = strlen(name);
+    return (len > LOG_NAME_MAX_LEN)? LOG_NAME_MAX_LEN : (int)len;
+}
+
+static void rrl_log_error(request_rec *r, rrl_error error, const char *etoken)
+{
+    switch (error) {
+    case rrl_none:
+        break;
+    case rrl_badprotocol:
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02418)
+                      "HTTP Request Line; Unrecognized protocol '%.*s' "
+                      "(perhaps whitespace was injected?)",
+                      log_name_len(etoken), etoken);
+        break;
+    case rrl_badmethod:
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(03445)
+                      "HTTP Request Line; Invalid method token: '%.*s'",
+                      log_name_len(etoken), etoken);
+        break;
+    case rrl_badwhitespace:
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(03447)
+                      "HTTP Request Line; Invalid whitespace");
+        break;
+    case rrl_excesswhitespace:
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(03448)
+                      "HTTP Request Line; Excess whitespace "
+                      "(disallowed by HttpProtocolOptions Strict)");
+        break;
+    case rrl_missinguri:
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(03446)
+                      "HTTP Request Line; Missing URI");
+        break;
+    case rrl_baduri:
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(03454)
+                      "HTTP Request Line; URI incorrectly encoded: '%.*s'",
+                      log_name_len(etoken), etoken);
+        break;
+    case rrl_trailingtext:
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(03449)
+                      "HTTP Request Line; Extraneous text found '%.*s' "
+                      "(perhaps whitespace was injected?)",
+                      log_name_len(etoken), etoken);
+        break;
+    }
+}
+
+/* remember the first error we encountered during tokenization */
+#define RRL_ERROR(e, et, y, yt)     \
+    do { \
+        if (e == rrl_none) {\
+            e = y; et = yt;\
+        }\
+    } while (0)
+
+static rrl_error tokenize_request_line(
+        char *line, int strict,
+        const char **pmethod, const char **puri, const char **pprotocol,
+        const char **perror_token)
+{
+    char *method, *protocol, *uri, *ll;
+    rrl_error e = rrl_none;
+    char *etoken = NULL;
+    apr_size_t len = 0;
+
+    method = line;
+    /* If there is whitespace before a method, skip it and mark in error */
+    if (apr_isspace(*method)) {
+        RRL_ERROR(e, etoken, rrl_badwhitespace, method);
+        for ( ; apr_isspace(*method); ++method)
+            ;
+    }
+
+    /* Scan the method up to the next whitespace, ensure it contains only
+     * valid http-token characters, otherwise mark in error
+     */
+    if (strict) {
+        ll = (char*) ap_scan_http_token(method);
+    }
+    else {
+        ll = (char*) ap_scan_vchar_obstext(method);
+    }
+
+    if ((ll == method) || (*ll && !apr_isspace(*ll))) {
+        RRL_ERROR(e, etoken, rrl_badmethod, ll);
+        ll = strpbrk(ll, "\t\n\v\f\r ");
+    }
+
+    /* Verify method terminated with a single SP, or mark as specific error */
+    if (!ll) {
+        RRL_ERROR(e, etoken, rrl_missinguri, NULL);
+        protocol = uri = "";
+        goto done;
+    }
+    else if (strict && ll[0] && apr_isspace(ll[1])) {
+        RRL_ERROR(e, etoken, rrl_excesswhitespace, ll);
+    }
+
+    /* Advance uri pointer over leading whitespace, NUL terminate the method
+     * If non-SP whitespace is encountered, mark as specific error
+     */
+    for (uri = ll; apr_isspace(*uri); ++uri)
+        if (*uri != ' ')
+            RRL_ERROR(e, etoken, rrl_badwhitespace, uri);
+    *ll = '\0';
+
+    if (!*uri)
+        RRL_ERROR(e, etoken, rrl_missinguri, NULL);
+
+    /* Scan the URI up to the next whitespace, ensure it contains no raw
+     * control characters, otherwise mark in error
+     */
+    ll = (char*) ap_scan_vchar_obstext(uri);
+    if (ll == uri || (*ll && !apr_isspace(*ll))) {
+        RRL_ERROR(e, etoken, rrl_baduri, ll);
+        ll = strpbrk(ll, "\t\n\v\f\r ");
+    }
+
+    /* Verify URI terminated with a single SP, or mark as specific error */
+    if (!ll) {
+        protocol = "";
+        goto done;
+    }
+    else if (strict && ll[0] && apr_isspace(ll[1])) {
+        RRL_ERROR(e, etoken, rrl_excesswhitespace, ll);
+    }
+
+    /* Advance protocol pointer over leading whitespace, NUL terminate the uri
+     * If non-SP whitespace is encountered, mark as specific error
+     */
+    for (protocol = ll; apr_isspace(*protocol); ++protocol)
+        if (*protocol != ' ')
+            RRL_ERROR(e, etoken, rrl_badwhitespace, protocol);
+    *ll = '\0';
+
+    /* Scan the protocol up to the next whitespace, validation comes later */
+    if (!(ll = (char*) ap_scan_vchar_obstext(protocol))) {
+        len = strlen(protocol);
+        goto done;
+    }
+    len = ll - protocol;
+
+    /* Advance over trailing whitespace, if found mark in error,
+     * determine if trailing text is found, unconditionally mark in error,
+     * finally NUL terminate the protocol string
+     */
+    if (*ll && !apr_isspace(*ll)) {
+        RRL_ERROR(e, etoken, rrl_badprotocol, ll);
+    }
+    else if (strict && *ll) {
+        RRL_ERROR(e, etoken, rrl_excesswhitespace, ll);
+    }
+    else {
+        for ( ; apr_isspace(*ll); ++ll)
+            if (*ll != ' ') {
+                RRL_ERROR(e, etoken, rrl_badwhitespace, ll);
+                break;
+            }
+        if (*ll)
+            RRL_ERROR(e, etoken, rrl_trailingtext, ll);
+    }
+    *((char *)protocol + len) = '\0';
+
+done:
+    *pmethod = method;
+    *puri = uri;
+    *pprotocol = protocol;
+    *perror_token = etoken;
+    return e;
+}
+
+AP_DECLARE(int) ap_h1_tokenize_request_line(
+        request_rec *r, const char *line,
+        const char **pmethod, const char **puri, const char **pprotocol)
+{
+    core_server_config *conf = ap_get_core_module_config(r->server->module_config);
+    int strict = (conf->http_conformance != AP_HTTP_CONFORMANCE_UNSAFE);
+    rrl_error error;
+    const char *error_token;
+
+    ap_log_rerror(APLOG_MARK, APLOG_TRACE4, 0, r,
+                  "ap_tokenize_request_line: '%s'", line);
+    error = tokenize_request_line(apr_pstrdup(r->pool, line), strict, pmethod,
+                                  puri, pprotocol, &error_token);
+    ap_log_rerror(APLOG_MARK, APLOG_TRACE4, 0, r,
+                  "ap_tokenize_request: error=%d, method=%s, uri=%s, protocol=%s",
+                  error, *pmethod, *puri, *pprotocol);
+    if (error != rrl_none) {
+        rrl_log_error(r, error, error_token);
+        return 0;
+    }
+    return 1;
 }

@@ -1555,7 +1555,12 @@ static int proxy_ftp_handler(request_rec *r, proxy_worker *worker,
                 }
 
                 /* make the connection */
-                apr_sockaddr_info_get(&pasv_addr, apr_psprintf(p, "%d.%d.%d.%d", h3, h2, h1, h0), connect_addr->family, pasvport, 0, p);
+                err = apr_sockaddr_info_get(&pasv_addr, apr_psprintf(p, "%d.%d.%d.%d", h3, h2, h1, h0), connect_addr->family, pasvport, 0, p);
+                if (APR_SUCCESS != err) {
+                    return ap_proxyerror(r, HTTP_BAD_GATEWAY, apr_pstrcat(p,
+                                            "DNS lookup failure for: ",
+                                            connectname, NULL));
+                }
                 rv = apr_socket_connect(data_sock, pasv_addr);
                 if (rv != APR_SUCCESS) {
                     ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(01048)
@@ -1598,7 +1603,12 @@ static int proxy_ftp_handler(request_rec *r, proxy_worker *worker,
 #endif                          /* _OSD_POSIX */
         }
 
-        apr_sockaddr_info_get(&local_addr, local_ip, APR_UNSPEC, local_port, 0, r->pool);
+        err = apr_sockaddr_info_get(&local_addr, local_ip, APR_UNSPEC, local_port, 0, r->pool);
+        if (APR_SUCCESS != err) {
+            return ap_proxyerror(r, HTTP_BAD_GATEWAY, apr_pstrcat(p,
+                                    "DNS lookup failure for: ",
+                                    connectname, NULL));
+        }
 
         if ((rv = apr_socket_bind(local_sock, local_addr)) != APR_SUCCESS) {
             ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(01051)

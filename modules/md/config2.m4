@@ -156,6 +156,7 @@ md_reg.lo dnl
 md_status.lo dnl
 md_store.lo dnl
 md_store_fs.lo dnl
+md_tailscale.lo dnl
 md_time.lo dnl
 md_util.lo dnl
 mod_md.lo dnl

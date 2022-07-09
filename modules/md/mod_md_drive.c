@@ -125,7 +125,7 @@ static void process_drive_job(md_renew_ctx_t *dctx, md_job_t *job, apr_pool_t *p
         }
 
         md_job_start_run(job, result, md_reg_store_get(dctx->mc->reg));
-        md_reg_renew(dctx->mc->reg, md, dctx->mc->env, 0, result, ptemp);
+        md_reg_renew(dctx->mc->reg, md, dctx->mc->env, 0, job->error_runs, result, ptemp);
         md_job_end_run(job, result);
         
         if (APR_SUCCESS == result->status) {

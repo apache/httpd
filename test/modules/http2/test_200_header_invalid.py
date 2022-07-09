@@ -12,24 +12,22 @@ class TestInvalidHeaders:
         assert env.apache_restart() == 0
 
     # let the hecho.py CGI echo chars < 0x20 in field name
-    # for almost all such characters, the stream gets aborted with a h2 error and 
-    # there will be no http status, cr and lf are handled special
+    # for almost all such characters, the stream returns a 500
+    # cr is handled special
     def test_h2_200_01(self, env):
         url = env.mkurl("https", "cgi", "/hecho.py")
         for x in range(1, 32):
             r = env.curl_post_data(url, "name=x%%%02xx&value=yz" % x)
-            if x in [10]:
-                assert 0 == r.exit_code, "unexpected exit code for char 0x%02x" % x
-                assert 500 == r.response["status"], "unexpected status for char 0x%02x" % x
-            elif x in [13]:
+            if x in [13]:
                 assert 0 == r.exit_code, "unexpected exit code for char 0x%02x" % x
                 assert 200 == r.response["status"], "unexpected status for char 0x%02x" % x
             else:
-                assert 0 != r.exit_code, "unexpected exit code for char 0x%02x" % x
+                assert 0 == r.exit_code, "unexpected exit code for char 0x%02x" % x
+                assert 500 == r.response["status"], "unexpected status for char 0x%02x" % x
 
     # let the hecho.py CGI echo chars < 0x20 in field value
-    # for almost all such characters, the stream gets aborted with a h2 error and 
-    # there will be no http status, cr and lf are handled special
+    # for almost all such characters, the stream returns a 500
+    # cr and lf are handled special
     def test_h2_200_02(self, env):
         url = env.mkurl("https", "cgi", "/hecho.py")
         for x in range(1, 32):
@@ -39,17 +37,20 @@ class TestInvalidHeaders:
                     assert 0 == r.exit_code, "unexpected exit code for char 0x%02x" % x
                     assert 200 == r.response["status"], "unexpected status for char 0x%02x" % x
                 else:
-                    assert 0 != r.exit_code, "unexpected exit code for char 0x%02x" % x
+                    assert 0 == r.exit_code, "unexpected exit code for char 0x%02x" % x
+                    assert 500 == r.response["status"], "unexpected status for char 0x%02x" % x
 
     # let the hecho.py CGI echo 0x10 and 0x7f in field name and value
     def test_h2_200_03(self, env):
         url = env.mkurl("https", "cgi", "/hecho.py")
         for h in ["10", "7f"]:
             r = env.curl_post_data(url, "name=x%%%s&value=yz" % h)
-            assert 0 != r.exit_code
+            assert 0 == r.exit_code, "unexpected exit code for char 0x%02x" % h
+            assert 500 == r.response["status"], "unexpected status for char 0x%02x" % h
             r = env.curl_post_data(url, "name=x&value=y%%%sz" % h)
-            assert 0 != r.exit_code
-    
+            assert 0 == r.exit_code, "unexpected exit code for char 0x%02x" % h
+            assert 500 == r.response["status"], "unexpected status for char 0x%02x" % h
+
     # test header field lengths check, LimitRequestLine (default 8190)
     def test_h2_200_10(self, env):
         url = env.mkurl("https", "cgi", "/")

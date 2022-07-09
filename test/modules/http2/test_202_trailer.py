@@ -1,7 +1,7 @@
 import os
 import pytest
 
-from .env import H2Conf, H2TestEnv
+from .env import H2Conf
 
 
 def setup_data(env):
@@ -13,13 +13,20 @@ def setup_data(env):
 
 # The trailer tests depend on "nghttp" as no other client seems to be able to send those
 # rare things.
-@pytest.mark.skipif(condition=H2TestEnv.is_unsupported, reason="mod_http2 not supported here")
 class TestTrailers:
 
     @pytest.fixture(autouse=True, scope='class')
     def _class_scope(self, env):
         setup_data(env)
-        H2Conf(env).add_vhost_cgi(h2proxy_self=True).install()
+        conf = H2Conf(env, extras={
+            f"cgi.{env.http_tld}": [
+                "<Location \"/h2test/trailer\">",
+                "  SetHandler h2test-trailer",
+                "</Location>"
+            ],
+        })
+        conf.add_vhost_cgi(h2proxy_self=True)
+        conf.install()
         assert env.apache_restart() == 0
 
     # check if the server survives a trailer or two
@@ -64,3 +71,22 @@ class TestTrailers:
         assert r.response["status"] < 300
         assert r.response["body"] == b"X: 4a\n"
 
+    # check that our h2test-trailer handler works
+    def test_h2_202_10(self, env):
+        url = env.mkurl("https", "cgi", "/h2test/trailer?1024")
+        r = env.nghttp().get(url)
+        assert r.response["status"] == 200
+        assert len(r.response["body"]) == 1024
+        assert 'trailer' in r.response
+        assert 'trailer-content-length' in r.response['trailer']
+        assert r.response['trailer']['trailer-content-length'] == '1024'
+
+    # check that trailers also for with empty bodies
+    def test_h2_202_11(self, env):
+        url = env.mkurl("https", "cgi", "/h2test/trailer?0")
+        r = env.nghttp().get(url)
+        assert r.response["status"] == 200
+        assert len(r.response["body"]) == 0
+        assert 'trailer' in r.response
+        assert 'trailer-content-length' in r.response['trailer']
+        assert r.response['trailer']['trailer-content-length'] == '0'

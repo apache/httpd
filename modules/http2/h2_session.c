@@ -17,6 +17,7 @@
 #include <assert.h>
 #include <stddef.h>
 #include <apr_thread_cond.h>
+#include <apr_atomic.h>
 #include <apr_base64.h>
 #include <apr_strings.h>
 
@@ -26,6 +27,7 @@
 #include <http_core.h>
 #include <http_config.h>
 #include <http_log.h>
+#include <http_protocol.h>
 #include <scoreboard.h>
 
 #include <mpm_common.h>
@@ -40,7 +42,6 @@
 #include "h2_mplx.h"
 #include "h2_push.h"
 #include "h2_request.h"
-#include "h2_headers.h"
 #include "h2_stream.h"
 #include "h2_c2.h"
 #include "h2_session.h"
@@ -235,14 +236,14 @@ static int on_data_chunk_recv_cb(nghttp2_session *ngh2, uint8_t flags,
     stream = get_stream(session, stream_id);
     if (stream) {
         ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, session->c1,
-                      "h2_stream(%ld-%d): write %ld bytes of DATA",
-                      session->id, (int)stream_id, (long)len);
+                      H2_SSSN_STRM_MSG(session, stream_id, "write %ld bytes of DATA"),
+                      (long)len);
         status = h2_stream_recv_DATA(stream, flags, data, len);
     }
     else {
         ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c1, APLOGNO(03064)
-                      "h2_stream(%ld-%d): on_data_chunk for unknown stream",
-                      session->id, (int)stream_id);
+                      H2_SSSN_STRM_MSG(session, stream_id,
+                      "on_data_chunk for unknown stream"));
         rv = NGHTTP2_ERR_CALLBACK_FAILURE;
     }
     
@@ -306,8 +307,8 @@ static int on_header_cb(nghttp2_session *ngh2, const nghttp2_frame *frame,
     stream = get_stream(session, frame->hd.stream_id);
     if (!stream) {
         ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c1, APLOGNO(02920)
-                      "h2_stream(%ld-%d): on_header unknown stream",
-                      session->id, (int)frame->hd.stream_id);
+                      H2_SSSN_STRM_MSG(session, frame->hd.stream_id,
+                      "on_header unknown stream"));
         return NGHTTP2_ERR_TEMPORAL_CALLBACK_FAILURE;
     }
     
@@ -379,23 +380,22 @@ static int on_frame_recv_cb(nghttp2_session *ng2s,
         case NGHTTP2_PRIORITY:
             session->reprioritize = 1;
             ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, session->c1,
-                          "h2_stream(%ld-%d): PRIORITY frame "
-                          " weight=%d, dependsOn=%d, exclusive=%d", 
-                          session->id, (int)frame->hd.stream_id,
+                          H2_SSSN_STRM_MSG(session, frame->hd.stream_id, "PRIORITY frame "
+                          " weight=%d, dependsOn=%d, exclusive=%d"),
                           frame->priority.pri_spec.weight,
                           frame->priority.pri_spec.stream_id,
                           frame->priority.pri_spec.exclusive);
             break;
         case NGHTTP2_WINDOW_UPDATE:
             ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, session->c1,
-                          "h2_stream(%ld-%d): WINDOW_UPDATE incr=%d", 
-                          session->id, (int)frame->hd.stream_id,
+                          H2_SSSN_STRM_MSG(session, frame->hd.stream_id,
+                          "WINDOW_UPDATE incr=%d"),
                           frame->window_update.window_size_increment);
             break;
         case NGHTTP2_RST_STREAM:
             ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c1, APLOGNO(03067)
-                          "h2_stream(%ld-%d): RST_STREAM by client, error=%d",
-                          session->id, (int)frame->hd.stream_id,
+                          H2_SSSN_STRM_MSG(session, frame->hd.stream_id,
+                          "RST_STREAM by client, error=%d"),
                           (int)frame->rst_stream.error_code);
             if (stream && stream->initiated_on) {
                 /* A stream reset on a request we sent it. Normal, when the
@@ -499,8 +499,7 @@ static int on_send_data_cb(nghttp2_session *ngh2,
     if (!stream) {
         ap_log_cerror(APLOG_MARK, APLOG_ERR, APR_NOTFOUND, session->c1,
                       APLOGNO(02924) 
-                      "h2_stream(%ld-%d): send_data, stream not found",
-                      session->id, (int)stream_id);
+                      H2_SSSN_STRM_MSG(session, stream_id, "send_data, stream not found"));
         return NGHTTP2_ERR_CALLBACK_FAILURE;
     }
     
@@ -613,8 +612,8 @@ static int on_invalid_header_cb(nghttp2_session *ngh2,
     h2_stream *stream;
     
     ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c1, APLOGNO(03456)
-                  "h2_stream(%ld-%d): invalid header '%s: %s'",
-                  session->id, (int)frame->hd.stream_id,
+                  H2_SSSN_STRM_MSG(session, frame->hd.stream_id,
+                  "invalid header '%s: %s'"),
                   apr_pstrndup(session->pool, (const char *)name, namelen),
                   apr_pstrndup(session->pool, (const char *)value, valuelen));
     stream = get_stream(session, frame->hd.stream_id);
@@ -844,12 +843,15 @@ static apr_status_t session_pool_cleanup(void *data)
     return APR_SUCCESS;
 }
 
+static /* atomic */ apr_uint32_t next_id;
+
 apr_status_t h2_session_create(h2_session **psession, conn_rec *c, request_rec *r,
                                server_rec *s, h2_workers *workers)
 {
     nghttp2_session_callbacks *callbacks = NULL;
     nghttp2_option *options = NULL;
     uint32_t n;
+    int thread_num;
     apr_pool_t *pool = NULL;
     h2_session *session;
     h2_stream *stream0;
@@ -865,7 +867,16 @@ apr_status_t h2_session_create(h2_session **psession, conn_rec *c, request_rec *
     }
     
     *psession = session;
-    session->id = c->id;
+    /* c->id does not give a unique id for the lifetime of the session.
+     * mpms like event change c->id when re-activating a keepalive
+     * connection based on the child_num+thread_num of the worker
+     * processing it.
+     * We'd like to have an id that remains constant and unique bc
+     * h2 streams can live through keepalive periods. While double id
+     * will not lead to processing failures, it will confuse log analysis.
+     */
+    ap_sb_get_child_thread(c->sbh, &session->child_num, &thread_num);
+    session->id = apr_atomic_inc32(&next_id);
     session->c1 = c;
     session->r = r;
     session->s = s;
@@ -879,7 +890,6 @@ apr_status_t h2_session_create(h2_session **psession, conn_rec *c, request_rec *
     session->max_stream_count = h2_config_sgeti(s, H2_CONF_MAX_STREAMS);
     session->max_stream_mem = h2_config_sgeti(s, H2_CONF_STREAM_MAX_MEM);
     
-    session->in_pending = h2_iq_create(session->pool, (int)session->max_stream_count);
     session->out_c1_blocked = h2_iq_create(session->pool, (int)session->max_stream_count);
     session->ready_to_process = h2_iq_create(session->pool, (int)session->max_stream_count);
 
@@ -891,7 +901,8 @@ apr_status_t h2_session_create(h2_session **psession, conn_rec *c, request_rec *
 
     stream0 = h2_stream_create(0, session->pool, session, NULL, 0);
     stream0->c2 = session->c1;  /* stream0's connection is the main connection */
-    session->mplx = h2_mplx_c1_create(stream0, s, session->pool, workers);
+    session->mplx = h2_mplx_c1_create(session->child_num, session->id,
+                                      stream0, s, session->pool, workers);
     if (!session->mplx) {
         apr_pool_destroy(pool);
         return APR_ENOTIMPL;
@@ -1183,9 +1194,9 @@ apr_status_t h2_session_set_prio(h2_session *session, h2_stream *stream,
                 rv = nghttp2_session_change_stream_priority(session->ngh2, id_parent, &ps);
                 if (rv < 0) {
                     ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c1, APLOGNO(03202)
-                                  "h2_stream(%ld-%d): PUSH BEFORE, weight=%d, "
-                                  "depends=%d, returned=%d",
-                                  session->id, id_parent, ps.weight, ps.stream_id, rv);
+                                  H2_SSSN_STRM_MSG(session, id_parent,
+                                  "PUSH BEFORE, weight=%d, depends=%d, returned=%d"),
+                                  ps.weight, ps.stream_id, rv);
                     return APR_EGENERAL;
                 }
                 nghttp2_priority_spec_init(&ps, id_grandpa, w, 0);
@@ -1231,14 +1242,14 @@ static int h2_session_want_send(h2_session *session)
 
 static apr_status_t h2_session_send(h2_session *session)
 {
-    int ngrv;
+    int ngrv, pending = 0;
     apr_status_t rv = APR_SUCCESS;
 
     while (nghttp2_session_want_write(session->ngh2)) {
         ngrv = nghttp2_session_send(session->ngh2);
         ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, session->c1,
                       "nghttp2_session_send: %d", (int)ngrv);
-
+        pending = 1;
         if (ngrv != 0 && ngrv != NGHTTP2_ERR_WOULDBLOCK) {
             if (nghttp2_is_fatal(ngrv)) {
                 h2_session_dispatch_event(session, H2_SESSION_EV_PROTO_ERROR,
@@ -1247,6 +1258,12 @@ static apr_status_t h2_session_send(h2_session *session)
                 goto cleanup;
             }
         }
+        if (h2_c1_io_needs_flush(&session->io)) {
+            rv = h2_c1_io_assure_flushed(&session->io);
+            pending = 0;
+        }
+    }
+    if (pending) {
         rv = h2_c1_io_pass(&session->io);
     }
 cleanup:
@@ -1516,7 +1533,7 @@ static void h2_session_ev_no_more_streams(h2_session *session)
             if (!h2_session_want_send(session)) {
                 if (session->local.accepting) {
                     /* We wait for new frames on c1 only. */
-                    transit(session, "c1 keepalive", H2_SESSION_ST_IDLE);
+                    transit(session, "all streams done", H2_SESSION_ST_IDLE);
                 }
                 else {
                     /* We are no longer accepting new streams.
@@ -1635,7 +1652,7 @@ static void on_stream_event(void *ctx, h2_stream *stream, h2_stream_event_t ev)
     h2_session *session = ctx;
     switch (ev) {
         case H2_SEV_IN_DATA_PENDING:
-            h2_iq_append(session->in_pending, stream->id);
+            session->input_flushed = 1;
             break;
         case H2_SEV_OUT_C1_BLOCK:
             h2_iq_append(session->out_c1_blocked, stream->id);
@@ -1787,10 +1804,9 @@ apr_status_t h2_session_process(h2_session *session, int async)
             transit(session, "scheduled stream", H2_SESSION_ST_BUSY);
         }
 
-        if (!h2_iq_empty(session->in_pending)) {
-            h2_mplx_c1_fwd_input(session->mplx, session->in_pending,
-                                 get_stream, session);
+        if (session->input_flushed) {
             transit(session, "forwarded input", H2_SESSION_ST_BUSY);
+            session->input_flushed = 0;
         }
 
         if (!h2_iq_empty(session->out_c1_blocked)) {
@@ -1825,8 +1841,7 @@ apr_status_t h2_session_process(h2_session *session, int async)
                 /* Give any new incoming request a short grace period to
                  * arrive while we are still hot and return to the mpm
                  * connection handling when nothing really happened. */
-                h2_mplx_c1_poll(session->mplx, apr_time_from_msec(100),
-                                on_stream_input, on_stream_output, session);
+                h2_c1_read(session);
                 if (H2_SESSION_ST_IDLE == session->state) {
                     ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, c,
                                   H2_SSSN_LOG(APLOGNO(10306), session,

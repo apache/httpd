@@ -3016,16 +3016,17 @@ sous-requêtes imbriquées</td></tr>
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>limite la taille maximale du corps de la requête HTTP
 envoyée par le client</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LimitRequestBody <var>octets</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>LimitRequestBody 0</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>LimitRequestBody 1073741824</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>All</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Noyau httpd</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Dans les versions 2.4.53 et antérieures du serveur HTTP Apache,
+la valeur par défaut était 0 (aucune limite)</td></tr>
 </table>
-    <p>Cette directive spécifie la taille maximale autorisée pour le
-    corps d'une requête ; la valeur de l'argument <var>octets</var> va
-    de 0 (pour une taille illimitée), à 2147483647 (2Go). Voir la note
-    ci-dessous pour la limite d'applicabilité aux requêtes mandatées.</p>
+    <p>Cette directive permet de spécifier la taille maximale d'un corps de
+    requête, en <var>octets</var>. Une valeur de <var>0</var> signifie «&nbsp;sans
+    limites&nbsp;».</p>
 
     <p>La directive <code class="directive">LimitRequestBody</code> permet de
     définir une limite pour la taille maximale autorisée du corps d'une
@@ -3054,11 +3055,6 @@ envoyée par le client</td></tr>
 
     <pre class="prettyprint lang-config">LimitRequestBody 102400</pre>
 
-
-    <div class="note"><p>Pour une description détaillée de la manière dont cette
-    directive est interprétée par les requêtes mandatées, voir la
-    documentation du module <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code>.</p>
-    </div>
 
 
 </div>

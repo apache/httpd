@@ -61,6 +61,10 @@
 #include <sys/types.h>
 #endif
 
+#ifdef HAVE_PTHREAD_NP_H
+#include <pthread_np.h>
+#endif
+
 /* we know core's module_index is 0 */
 #undef APLOG_MODULE_INDEX
 #define APLOG_MODULE_INDEX AP_CORE_MODULE_INDEX
@@ -538,10 +542,12 @@ static int log_tid(const ap_errorlog_info *info, const char *arg,
 #if APR_HAS_THREADS
     int result;
 #endif
-#if defined(HAVE_GETTID) || defined(HAVE_SYS_GETTID)
+#if defined(HAVE_GETTID) || defined(HAVE_SYS_GETTID) || defined(HAVE_PTHREAD_GETTHREADID_NP)
     if (arg && *arg == 'g') {
-#ifdef HAVE_GETTID
+#if defined(HAVE_GETTID)
         pid_t tid = gettid();
+#elif defined(HAVE_PTHREAD_GETTHREADID_NP)
+        pid_t tid = pthread_getthreadid_np();
 #else
         pid_t tid = syscall(SYS_gettid);
 #endif

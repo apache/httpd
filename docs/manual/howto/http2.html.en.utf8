@@ -89,7 +89,7 @@
     <p><code class="module"><a href="../mod/mod_http2.html">mod_http2</a></code> uses the library of <a href="https://nghttp2.org">nghttp2</a>
     as its implementation base. In order to build <code class="module"><a href="../mod/mod_http2.html">mod_http2</a></code> you need at least version 1.2.1 of
     <code>libnghttp2</code> installed on your system.</p>
-    <p>When you <code>./configure</code> you Apache httpd source tree, you need to give it 
+    <p>When you <code>./configure</code> your Apache httpd source tree, you need to give it 
     '<code>--enable-http2</code>' as additional argument to trigger the build of the module.
     Should your <code>libnghttp2</code> reside in an unusual place (whatever that is on your
     operating system), you may announce its location with '<code>--with-nghttp2=&lt;path&gt;</code>'

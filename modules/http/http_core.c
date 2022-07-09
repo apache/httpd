@@ -24,6 +24,7 @@
 #include "http_config.h"
 #include "http_connection.h"
 #include "http_core.h"
+#include "http_log.h"
 #include "http_protocol.h"   /* For index_of_response().  Grump. */
 #include "http_request.h"
 
@@ -36,8 +37,10 @@
 
 /* Handles for core filters */
 AP_DECLARE_DATA ap_filter_rec_t *ap_http_input_filter_handle;
+AP_DECLARE_DATA ap_filter_rec_t *ap_h1_request_in_filter_handle;
 AP_DECLARE_DATA ap_filter_rec_t *ap_h1_body_in_filter_handle;
 AP_DECLARE_DATA ap_filter_rec_t *ap_http_header_filter_handle;
+AP_DECLARE_DATA ap_filter_rec_t *ap_h1_response_out_filter_handle;
 AP_DECLARE_DATA ap_filter_rec_t *ap_chunk_filter_handle;
 AP_DECLARE_DATA ap_filter_rec_t *ap_http_outerror_filter_handle;
 AP_DECLARE_DATA ap_filter_rec_t *ap_byterange_filter_handle;
@@ -268,6 +271,66 @@ static int http_create_request(request_rec *r)
     return OK;
 }
 
+static void h1_pre_read_request(request_rec *r, conn_rec *c)
+{
+    if (!r->main && !r->prev
+        && !strcmp(AP_PROTOCOL_HTTP1, ap_get_protocol(c))) {
+        if (r->proxyreq == PROXYREQ_NONE) {
+            ap_add_input_filter_handle(ap_h1_request_in_filter_handle,
+                                       NULL, r, r->connection);
+        }
+        ap_add_output_filter_handle(ap_h1_response_out_filter_handle,
+                                    NULL, r, r->connection);
+    }
+}
+
+static int h1_post_read_request(request_rec *r)
+{
+    const char *tenc;
+
+    if (!r->main && !r->prev && r->proto_num <= HTTP_VERSION(1,1)) {
+        if (r->proto_num >= HTTP_VERSION(1,0)) {
+            tenc = apr_table_get(r->headers_in, "Transfer-Encoding");
+            if (tenc) {
+                r->body_indeterminate = 1;
+
+                /* https://tools.ietf.org/html/rfc7230
+                 * Section 3.3.3.3: "If a Transfer-Encoding header field is
+                 * present in a request and the chunked transfer coding is not
+                 * the final encoding ...; the server MUST respond with the 400
+                 * (Bad Request) status code and then close the connection".
+                 */
+                if (!ap_is_chunked(r->pool, tenc)) {
+                    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02539)
+                                  "client sent unknown Transfer-Encoding "
+                                  "(%s): %s", tenc, r->uri);
+                    return HTTP_BAD_REQUEST;
+                }
+
+                /* https://tools.ietf.org/html/rfc7230
+                 * Section 3.3.3.3: "If a message is received with both a
+                 * Transfer-Encoding and a Content-Length header field, the
+                 * Transfer-Encoding overrides the Content-Length. ... A sender
+                 * MUST remove the received Content-Length field".
+                 */
+                if (apr_table_get(r->headers_in, "Content-Length")) {
+                    apr_table_unset(r->headers_in, "Content-Length");
+
+                    /* Don't reuse this connection anyway to avoid confusion with
+                     * intermediaries and request/reponse spltting.
+                     */
+                    r->connection->keepalive = AP_CONN_CLOSE;
+                }
+            }
+        }
+        /* HTTP1_BODY_IN takes care of chunked encoding and content-length.
+         */
+        ap_add_input_filter_handle(ap_h1_body_in_filter_handle,
+                                   NULL, r, r->connection);
+    }
+    return OK;
+}
+
 static int http_send_options(request_rec *r)
 {
     if ((r->method_number == M_OPTIONS) && r->uri && (r->uri[0] == '*') &&
@@ -298,9 +361,16 @@ static void register_hooks(apr_pool_t *p)
     ap_hook_map_to_storage(http_send_options,NULL,NULL,APR_HOOK_MIDDLE);
     ap_hook_http_scheme(http_scheme,NULL,NULL,APR_HOOK_REALLY_LAST);
     ap_hook_default_port(http_port,NULL,NULL,APR_HOOK_REALLY_LAST);
+
     ap_hook_create_request(http_create_request, NULL, NULL, APR_HOOK_REALLY_LAST);
+    ap_hook_pre_read_request(h1_pre_read_request, NULL, NULL, APR_HOOK_REALLY_LAST);
+    ap_hook_post_read_request(h1_post_read_request, NULL, NULL, APR_HOOK_REALLY_FIRST);
+
     ap_http_input_filter_handle =
         ap_register_input_filter("HTTP_IN", ap_http_filter,
+                                 NULL, AP_FTYPE_PROTOCOL);
+    ap_h1_request_in_filter_handle =
+        ap_register_input_filter("HTTP1_REQUEST_IN", ap_h1_request_in_filter,
                                  NULL, AP_FTYPE_PROTOCOL);
     ap_h1_body_in_filter_handle =
         ap_register_input_filter("HTTP1_BODY_IN", ap_h1_body_in_filter,
@@ -308,6 +378,9 @@ static void register_hooks(apr_pool_t *p)
     ap_http_header_filter_handle =
         ap_register_output_filter("HTTP_HEADER", ap_http_header_filter,
                                   NULL, AP_FTYPE_PROTOCOL);
+    ap_h1_response_out_filter_handle =
+        ap_register_output_filter("HTTP1_RESPONSE_OUT", ap_h1_response_out_filter,
+                                  NULL, AP_FTYPE_TRANSCODE);
     ap_chunk_filter_handle =
         ap_register_output_filter("CHUNK", ap_http_chunk_filter,
                                   NULL, AP_FTYPE_TRANSCODE);

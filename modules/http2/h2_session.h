@@ -62,8 +62,8 @@ typedef enum {
 } h2_session_event_t;
 
 typedef struct h2_session {
-    long id;                        /* identifier of this session, unique
-                                     * inside a httpd process */
+    int child_num;                  /* child number this session runs in */
+    apr_uint32_t id;                /* identifier of this session, unique per child */
     conn_rec *c1;                   /* the main connection this session serves */
     request_rec *r;                 /* the request that started this in case
                                      * of 'h2c', NULL otherwise */
@@ -112,8 +112,8 @@ typedef struct h2_session {
     char status[64];                /* status message for scoreboard */
     int last_status_code;           /* the one already reported */
     const char *last_status_msg;    /* the one already reported */
-    
-    struct h2_iqueue *in_pending;   /* all streams with input pending */
+
+    int input_flushed;              /* stream input was flushed */
     struct h2_iqueue *out_c1_blocked;  /* all streams with output blocked on c1 buffer full */
     struct h2_iqueue *ready_to_process;  /* all streams ready for processing */
 
@@ -193,9 +193,13 @@ void h2_session_dispatch_event(h2_session *session, h2_session_event_t ev,
 
 
 #define H2_SSSN_MSG(s, msg)     \
-    "h2_session(%ld,%s,%d): "msg, s->id, h2_session_state_str(s->state), \
+    "h2_session(%d-%lu,%s,%d): "msg, s->child_num, (unsigned long)s->id, \
+                            h2_session_state_str(s->state), \
                             s->open_streams
 
 #define H2_SSSN_LOG(aplogno, s, msg)    aplogno H2_SSSN_MSG(s, msg)
+
+#define H2_SSSN_STRM_MSG(s, stream_id, msg)     \
+    "h2_stream(%d-%lu-%d): "msg, s->child_num, (unsigned long)s->id, stream_id
 
 #endif /* defined(__mod_h2__h2_session__) */

@@ -1,6 +1,134 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) mod_md:  a bug was fixed that caused very large MDomains
+     with the combined DNS names exceeding ~7k to fail, as
+     request bodies would contain partially wrong data from
+     uninitialized memory. This would have appeared as failure
+     in signing-up/renewing such configurations.
+     [Stefan Eissing, Ronald Crane (Zippenhop LLC)]
+
+  *) mod_proxy_http: Avoid 417 responses for non forwardable 100-continue.
+     PR 65666.  [Yann Ylavic]
+
+  *) mod_ssl: SSLFIPS compatible with OpenSSL 3.0.  PR 66063.
+     [Petr Sumbera <petr.sumbera oracle.com>, Yann Ylavic]
+
+  *) core: the conf/mime.types has been updated in conformance with RFC 9239:
+     - .js moved from 'application/javascript' to 'text/javascript'
+     - .mjs was added as 'text/javascript'
+     [Mathias Bynens <@mathiasbynens> via PR 318]
+
+  *) mod_md: the `MDCertificateAuthority` directive can take more than one URL/name of
+     an ACME CA. This gives a failover for renewals when several consecutive attempts
+     to get a certificate failed.
+     A new directive was added: `MDRetryDelay` sets the delay of retries.
+     A new directive was added: `MDRetryFailover` sets the number of errored
+     attempts before an alternate CA is selected for certificate renewals.
+     [Stefan Eissing]
+
+  *) mod_heartmonitor: Set the documented default value
+     "10" for HeartbeatMaxServers instead of "0". With "0"
+     no shared memory slotmem was initialized. [Rainer Jung]
+
+  *) mod_md:  fixed a bug leading to failed transfers for OCSP
+     stapling information when more than 6 certificates needed
+     updates in the same run. [Stefan Eissing]
+
+  *) mod_http2: use the new REQUEST buckets to forward request
+     on secondary connections. Use the now generic
+     ap_process_connection() in h2 workers to process those.
+     [Stefan Eissing]
+
+  *) Implement full auto status ("key: value" type status output).
+     Especially not only status summary counts for certificates and
+     OCSP stapling but also lists. Auto status format is similar to
+     what was used for mod_proxy_balancer.
+     [Rainer Jung]
+
+  *) core/mod_http: use REQUEST meta buckets and a new HTTP/1.x specific
+     input filter to separate the handling for HTTP requests from the
+     handling of HTTP/1.x request parsing and checks.
+     A new HTTP1_REQUEST_IN filter installs itself on http/1.1 connections
+     before a request is being read. It generates either a REQUEST meta
+     bucket on success or an ERROR bucket with the proposed response status.
+     The core connection processing, relying on ap_read_request(), now expects
+     a REQUEST or ERROR bucket from the input filters and is agnostic to
+     specific HTTP versions and how they bring requests into the server.
+     [Stefan Eissing]
+
+  *) mod_http2: remove unused and insecure code. Fixes PR66037.
+     Thanks to Ronald Crane (Zippenhop LLC) for reporting this.
+     [Stefan Eissing]
+
+  *) mod_md: added support for managing certificates via a
+     local tailscale demon for users of that secure networking.
+     This gives trusted certificates for tailscale  assigned
+     domain names in the *.ts.net space.
+     [Stefan Eissing]
+
+  *) mod_md: a possible NULL pointer deref was fixed in
+     the JSON code for persisting time periods (start+end).
+     Fixes #282 on mod_md's github.
+     Thanks to @marcstern for finding this.
+
+  *) core: Avoid an overflow on large inputs in ap_is_matchexp.  PR 66033
+     [Ruediger Pluem]
+
+  *) core/mod_http: use RESPONSE meta buckets and a new HTTP/1.x specific
+     filter to send responses through the output filter chain.
+     Specifically: the HTTP_HEADER output filter and ap_send_interim_response()
+     create a RESPONSE bucket and no longer are concerned with HTTP/1.x
+     serialization.
+     A new HTTP1_RESPONSE_OUT transcode filter writes the proper HTTP/1.x
+     bytes when dealing with a RESPONSE bucket. That filter installs itself
+     on the pre_read_request hook when the connection has protocol 'http/1.1'.
+     [Stefan Eissing]
+
+  *) MPM event: Restart children processes killed before idle maintenance.
+     PR 65769.  [Yann Ylavic, Ruediger Pluem]
+
+  *) core: Disable TCP_NOPUSH optimization on OSX since it might introduce
+     transmission delays.  PR 66019.  [Yann Ylavic]
+
+  *) ab: Allow for TLSv1.3 when the SSL library supports it.
+     [abhilash1232 gmail.com, xiaolongx.jiang intel.com, Yann Ylavic]
+
+  *) ab: Add the -W option to use worker threads, allowing for multiple CPUs
+     to handle the load.  [Yann Ylavic]
+
+  *) mod_substitute: Fix an integer overflow that can happen in very special
+     setups.  PR 66034 [Ruediger Pluem]
+
+  *) core: make ap_escape_quotes() work correctly on strings
+     with more than MAX_INT/2 characters, counting quotes double.
+     Credit to <generalbugs@zippenhop.com> for finding this.
+     [Stefan Eissing]
+
+  *) core: adding a new hook and method to the API:
+     create_secondary_connection and ap_create_secondary_connection()
+     to setup connections related to a "master" one, as used in
+     the HTTP/2 protocol implementation.
+  *) mod_http2: using the new API calls to get rid of knowledge
+     about how the core handles conn_rec specifics.
+     Improvements in pollset stream handling to use less sets.
+     Using atomic read/writes instead of volatiles now.
+     Keeping a reserve of "transit" pools and bucket_allocs for
+     use on secondary connections to avoid repeated setup/teardowns.
+
+  *) mod_proxy: Set a status code of 502 in case the backend just closed the
+     connection in reply to our forwarded request.  [Ruediger Pluem]
+
+  *) MPM event: Fix accounting of active/total processes on ungraceful restart,
+     PR 66004 (follow up to PR 65626 from 2.4.52).  [Yann Ylavic]
+
+  *) mod_proxy: Add backend port to log messages to
+     ease identification of involved service.  [Rainer Jung]
+
+  *) mod_systemd: Systemd socket activation can now be enabled at
+     build time but disabled at run time, if mod_systemd is not
+     loaded.  [Lubos Uhliarik <luhliari redhat.com>]
+
   *) ab: Add an optional ramp delay when starting concurrent connections so
      as to not trigger denial of service protection in the network. Report
      levels of concurrency achieved in cases where the test completes before
@@ -121,7 +249,7 @@ Changes with Apache 2.5.1
   * mod_http2: the new pollset implementation is disabled when
     compiling with an APR version less than 1.6.
 
-  *) mod_autoindex: Add "IndexForbiddenReturn404" to return 404 instead of a 
+  *) mod_autoindex: Add "IndexForbiddenReturn404" to return 404 instead of a
      403 when Options does not included "indexes". [Eric Covener]
 
   *) mod_dir: Add "NotFound" option to "DirectorySlash" directive to return 

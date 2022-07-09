@@ -429,6 +429,14 @@ AP_DECLARE(void) ap_create_sb_handle(ap_sb_handle_t **new_sbh, apr_pool_t *p,
     ap_update_sb_handle(*new_sbh, child_num, thread_num);
 }
 
+AP_DECLARE(void) ap_sb_get_child_thread(ap_sb_handle_t *sbh,
+                                        int *pchild_num, int *pthread_num)
+{
+    AP_DEBUG_ASSERT(sbh);
+    *pchild_num = sbh->child_num;
+    *pthread_num = sbh->thread_num;
+}
+
 static void copy_request(char *rbuf, apr_size_t rbuflen, request_rec *r)
 {
     char *p;

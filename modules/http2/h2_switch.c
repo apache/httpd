@@ -125,6 +125,28 @@ static int h2_protocol_propose(conn_rec *c, request_rec *r,
     return proposed? DECLINED : OK;
 }
 
+static void remove_output_filters_below(ap_filter_t *f, ap_filter_type ftype)
+{
+    ap_filter_t *fnext;
+
+    while (f && f->frec->ftype < ftype) {
+        fnext = f->next;
+        ap_remove_output_filter(f);
+        f = fnext;
+    }
+}
+
+static void remove_input_filters_below(ap_filter_t *f, ap_filter_type ftype)
+{
+    ap_filter_t *fnext;
+
+    while (f && f->frec->ftype < ftype) {
+        fnext = f->next;
+        ap_remove_input_filter(f);
+        f = fnext;
+    }
+}
+
 static int h2_protocol_switch(conn_rec *c, request_rec *r, server_rec *s,
                               const char *protocol)
 {
@@ -155,11 +177,12 @@ static int h2_protocol_switch(conn_rec *c, request_rec *r, server_rec *s,
             /* Switching in the middle of a request means that
              * we have to send out the response to this one in h2
              * format. So we need to take over the connection
-             * right away.
+             * and remove all old filters with type up to the
+             * CONNEDCTION/NETWORK ones.
              */
-            ap_remove_input_filter_byhandle(r->input_filters, "http_in");
-            ap_remove_output_filter_byhandle(r->output_filters, "HTTP_HEADER");
-            
+            remove_input_filters_below(r->input_filters, AP_FTYPE_CONNECTION);
+            remove_output_filters_below(r->output_filters, AP_FTYPE_CONNECTION);
+
             /* Ok, start an h2_conn on this one. */
             status = h2_c1_setup(c, r, s);
             

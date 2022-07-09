@@ -117,6 +117,12 @@ void *md_pkey_get_EVP_PKEY(struct md_pkey_t *pkey);
 apr_status_t md_crypt_hmac64(const char **pmac64, const struct md_data_t *hmac_key,
                              apr_pool_t *p, const char *d, size_t dlen);
 
+/**
+ * Read a private key from a http response.
+ */
+apr_status_t md_pkey_read_http(md_pkey_t **ppkey, apr_pool_t *pool,
+                               const struct md_http_response_t *res);
+
 /**************************************************************************************************/
 /* X509 certificates */
 
@@ -178,6 +184,11 @@ int md_cert_must_staple(const md_cert_t *cert);
 apr_time_t md_cert_get_not_after(const md_cert_t *cert);
 apr_time_t md_cert_get_not_before(const md_cert_t *cert);
 struct md_timeperiod_t md_cert_get_valid(const md_cert_t *cert);
+
+/**
+ * Return != 0 iff the hash values of the certificates are equal.
+ */
+int md_certs_are_equal(const md_cert_t *a, const md_cert_t *b);
 
 apr_status_t md_cert_get_issuers_uri(const char **puri, const md_cert_t *cert, apr_pool_t *p);
 apr_status_t md_cert_get_alt_names(apr_array_header_t **pnames, const md_cert_t *cert, apr_pool_t *p);

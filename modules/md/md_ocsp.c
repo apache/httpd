@@ -65,6 +65,7 @@ struct md_ocsp_reg_t {
     md_timeslice_t renew_window;
     md_job_notify_cb *notify;
     void *notify_ctx;
+    apr_time_t min_delay;
 };
 
 typedef struct md_ocsp_status_t md_ocsp_status_t; 
@@ -279,7 +280,8 @@ static apr_status_t ocsp_reg_cleanup(void *data)
 
 apr_status_t md_ocsp_reg_make(md_ocsp_reg_t **preg, apr_pool_t *p, md_store_t *store, 
                               const md_timeslice_t *renew_window,
-                              const char *user_agent, const char *proxy_url)
+                              const char *user_agent, const char *proxy_url,
+                              apr_time_t min_delay)
 {
     md_ocsp_reg_t *reg;
     apr_status_t rv = APR_SUCCESS;
@@ -296,6 +298,7 @@ apr_status_t md_ocsp_reg_make(md_ocsp_reg_t **preg, apr_pool_t *p, md_store_t *s
     reg->id_by_external_id = apr_hash_make(p);
     reg->ostat_by_id = apr_hash_make(p);
     reg->renew_window = *renew_window;
+    reg->min_delay = min_delay;
     
     rv = apr_thread_mutex_create(&reg->mutex, APR_THREAD_MUTEX_NESTED, p);
     if (APR_SUCCESS != rv) goto cleanup;
@@ -837,8 +840,8 @@ static apr_status_t next_todo(md_http_request_t **preq, void *baton,
             md_http_set_on_response_cb(req, ostat_on_resp, update);
             rv = APR_SUCCESS;
             md_log_perror(MD_LOG_MARK, MD_LOG_TRACE2, 0, req->pool,
-                          "scheduling OCSP request for %s, %d request in flight",
-                          ostat->md_name, in_flight);
+                          "scheduling OCSP request[%d] for %s, %d request in flight",
+                          req->id, ostat->md_name, in_flight);
         }
     }
 cleanup:
@@ -1056,5 +1059,5 @@ void md_ocsp_get_status_all(md_json_t **pjson, md_ocsp_reg_t *reg, apr_pool_t *p
 
 md_job_t *md_ocsp_job_make(md_ocsp_reg_t *ocsp, const char *mdomain, apr_pool_t *p)
 {
-    return md_job_make(p, ocsp->store, MD_SG_OCSP, mdomain);
+    return md_job_make(p, ocsp->store, MD_SG_OCSP, mdomain, ocsp->min_delay);
 }

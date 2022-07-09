@@ -1615,7 +1615,7 @@ end
 <override>All</override>
     <usage>
     <p>Like <directive>LuaHookTranslateName</directive> but executed at the
-    map-to-storage phase of a request. Modules like mod_cache run at this phase,
+    map-to-storage phase of a request. Modules like <module>mod_cache</module> run at this phase,
     which makes for an interesting example on what to do here:</p>
     <highlight language="config">
     LuaHookMapToStorage /path/to/lua/script.lua check_cache
@@ -1811,7 +1811,7 @@ hook function usually returns OK, DECLINED, or HTTP_FORBIDDEN.</p>
 <override>All</override>
 <usage>
     <p>
-    This phase is run immediately after the request has been mapped to a virtal host,
+    This phase is run immediately after the request has been mapped to a virtual host,
     and can be used to either do some request processing before the other phases kick
     in, or to serve a request without the need to translate, map to storage et cetera.
     As this phase is run before anything else, directives such as <directive

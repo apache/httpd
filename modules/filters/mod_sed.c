@@ -358,6 +358,7 @@ static apr_status_t sed_response_filter(ap_filter_t *f,
                     status = sed_eval_buffer(&ctx->eval, buf, bytes, ctx);
                 }
                 if (status != APR_SUCCESS) {
+                    ap_log_rerror(APLOG_MARK, APLOG_ERR, status, f->r, APLOGNO(10394) "error evaluating sed on output");
                     break;
                 }
             }
@@ -463,8 +464,10 @@ static apr_status_t sed_request_filter(ap_filter_t *f,
             if (apr_bucket_read(b, &buf, &bytes, APR_BLOCK_READ)
                      == APR_SUCCESS) {
                 status = sed_eval_buffer(&ctx->eval, buf, bytes, ctx);
-                if (status != APR_SUCCESS)
+                if (status != APR_SUCCESS) { 
+                    ap_log_rerror(APLOG_MARK, APLOG_ERR, status, f->r, APLOGNO(10395) "error evaluating sed on input");
                     return status;
+                }
                 flush_output_buffer(ctx);
             }
         }

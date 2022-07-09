@@ -285,6 +285,44 @@ MDChallengeDns01 /usr/bin/acme-setup-dns
             </p>
         </note>
 
+        <note><title>tailscale</title>
+            <p>
+                Since version 2.4.14 of the module, you can use it to get certificates
+                for your <a href="https://tailscale.com">tailscale</a> domains.
+            </p>
+            <highlight language="config">
+&lt;MDomain mydomain.some-thing.ts.net>
+  MDCertificateProtocol tailscale
+  MDCertificateAuthority file://localhost/var/run/tailscale/tailscaled.sock",
+&lt;/MDomain>
+            </highlight>
+            <p>
+                Tailscale provides secure networking between your machines, where ever
+                they are, and can provide domain names in the *.ts.net space for them.
+                For those, it will then provide Let's Encrypt certificates as well, so
+                you can open these domains in your browser securely.
+            </p>
+            <p>
+                The directives listed above tell Apache to contact the local tailscale
+                demon for obtaining and renewing certificates. This will only work for
+                the domain name that tailscale assigns to your machine.
+            </p>
+            <p>
+                Otherwise, these certificates work exactly like the ones retrieved
+                via the ACME protocol from Lets Encrypt. You see them in status reporting
+                and MDMessageCmd directives are executed for them as well.
+            </p>
+            <p>
+                More details are <a href="https://github.com/icing/mod_md#tailscale">
+                available at the mod_md github documentation</a>.
+            </p>
+            <p>
+                Note that this feature only works on machines where the tailscale
+                demon provides a unix domain socket. This, so far, seems only the
+                case on *nix systems.
+            </p>
+        </note>
+
     </summary>
     
     <directivesynopsis>
@@ -433,27 +471,34 @@ MDomain example2.org auto
 
     <directivesynopsis>
         <name>MDCertificateAuthority</name>
-        <description>The URL of the ACME Certificate Authority service.</description>
+        <description>The URL(s) of the ACME Certificate Authority to use.</description>
         <syntax>MDCertificateAuthority <var>url</var></syntax>
-        <default>MDCertificateAuthority https://acme-v02.api.letsencrypt.org/directory</default>
+        <default>MDCertificateAuthority letsencrypt</default>
         <contextlist>
             <context>server config</context>
         </contextlist>
         <usage>
             <p>
-                The URL where the CA offers its service.
+                The URL(s) where the CA offers its service.
+                Instead of the actual URL, you may use 'letsencrypt' or 'buypass'.
             </p><p>
-                Let's Encrypt offers, right now, four such URLs. Two for
-                the own legacy version of the ACME protocol, commonly named ACMEv1.
-                And two for the RFC 8555 version, named ACMEv2.
+                If you configure more than one URL, each one is tried in a round-robin
+                fashion after a number of failures. You can configure how quickly or
+                delayed that happens via the <directive>MDRetryDelay</directive> and
+                <directive>MDRetryFailover</directive> directives. The default setting
+                makes a failover after about half a day of trying.
             </p><p>
-                Each version has 2 endpoints, as their is a production endpoint and a
-                "staging" endpoint for testing. The testing endpoint works the same, but will
-                not give you certificates recognized by browsers. However, it also has
-                very relaxed rate limits. This allows testing of the service repeatedly
-                without you blocking yourself.
+                All other settings apply to each of these URLs. It is therefore
+                not possible to have two with different
+                <directive>MDExternalAccountBinding</directive>s, for example.
+            </p><p>
+                For testing, CAs commonly offer a second service URL.
+                The 'test' service does not give certificates valid in a browser,
+                but are more relaxed in regard to rate limits.
+                This allows for verfication of your own setup before switching
+                to the production service URL.
             </p>
-            <example><title>LE Staging Setup</title>
+            <example><title>LE Test Setup</title>
                 <highlight language="config">
 MDCertificateAuthority https://acme-staging-v02.api.letsencrypt.org/directory
                 </highlight>
@@ -1334,6 +1379,47 @@ MDMessageCmd /etc/apache/md-message
             <p>
                 If you change EAB values, the new ones will be used when the next
                 certificate renewal is due.
+            </p>
+        </usage>
+    </directivesynopsis>
+
+    <directivesynopsis>
+        <name>MDRetryDelay</name>
+        <description></description>
+        <syntax>MDRetryDelay <var>duration</var></syntax>
+        <default>MDRetryDelay 5s</default>
+        <contextlist>
+            <context>server config</context>
+        </contextlist>
+        <compatibility>Available in version 2.4.54 and later</compatibility>
+        <usage>
+            <p>
+                The amount of time to wait after an error before trying
+                to renew a certificate again. This duration is doubled after
+                each consecutive error with a maximum of 24 hours.
+            </p>
+            <p>
+                It is kept separate for each certificate renewal. Meaning an error
+                on one MDomain does not delay the renewals of other domains.
+            </p>
+        </usage>
+    </directivesynopsis>
+
+        <directivesynopsis>
+        <name>MDRetryFailover</name>
+        <description></description>
+        <syntax>MDRetryFailover <var>number</var></syntax>
+        <default>MDRetryFailover 13</default>
+        <contextlist>
+            <context>server config</context>
+        </contextlist>
+        <compatibility>Available in version 2.4.54 and later</compatibility>
+        <usage>
+            <p>
+                The number of consecutive errors on renewing a certificate before
+                another CA is selected. This only applies to configurations that
+                have more than one <directive>MDCertificateAuthority</directive>
+                specified.
             </p>
         </usage>
     </directivesynopsis>

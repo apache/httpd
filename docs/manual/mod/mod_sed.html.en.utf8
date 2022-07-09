@@ -56,7 +56,7 @@ The <code class="module"><a href="../mod/mod_sed.html">mod_sed</a></code> input 
 </p>
 
 <p>
-Both the input and output filters only process the data if newline characters are seen in the content. At the end of the data, the rest of the data is treated as the last line.
+Both the input and output filters only process the data if newline characters are seen in the content. At the end of the data, the rest of the data is treated as the last line.  Lines greater than 8MB in length result in an error.
 </p>
 
 </div>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1899205 -->
+<!-- English Revision: 1901497 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -504,10 +504,6 @@ ProxyPass "/apps"     "http://127"
     HTTP/1.0. Cette mise en file d'attente se produira aussi si le corps
     de la requête contient déjà un en-tête Content-Length, alors que le
     serveur est configuré pour filtrer les corps des requêtes entrantes.</p>
-
-    <p>La directive <directive
-    module="core">LimitRequestBody</directive> ne s'applique qu'aux
-    corps de requêtes que le serveur met en file d'attente sur disque.</p>
 
     </section> <!-- /request-bodies -->
 
