@@ -1207,7 +1207,7 @@ void child_main(apr_pool_t *pconf, DWORD parent_pid)
 
     while (threads_created)
     {
-        struct worker_info *info = workers[threads_created - 1];
+        struct worker_info *info = &workers[threads_created - 1];
         DWORD dwRet;
 
         if (time_remains < 0)
