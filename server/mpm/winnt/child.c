@@ -1242,7 +1242,7 @@ void child_main(apr_pool_t *pconf, DWORD parent_pid)
                      "Child: Waiting for %d threads timed out, terminating process.",
                      threads_created);
         for (i = 0; i < threads_created; i++) {
-            struct worker_info *info = workers[i];
+            struct worker_info *info = &workers[i];
             ap_update_child_status_from_indexes(0, info->num, SERVER_DEAD, NULL);
         }
         /* We can't wait for any longer, but still have some threads remaining.
