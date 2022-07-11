@@ -91,7 +91,13 @@ class H2TestEnv(HttpdTestEnv):
         self.httpd_error_log.add_ignored_patterns([
             re.compile(r'.*malformed header from script \'hecho.py\': Bad header: x.*'),
             re.compile(r'.*:tls_post_process_client_hello:.*'),
+            # OSSL 3 dropped the function name from the error description. Use the code instead:
+            # 0A0000C1 = no shared cipher -- Too restrictive SSLCipherSuite or using DSA server certificate?
+            re.compile(r'.*SSL Library Error: error:0A0000C1:.*'),
             re.compile(r'.*:tls_process_client_certificate:.*'),
+            # OSSL 3 dropped the function name from the error description. Use the code instead:
+            # 0A0000C7 = peer did not return a certificate -- No CAs known to server for verification?
+            re.compile(r'.*SSL Library Error: error:0A0000C7:.*'),
             re.compile(r'.*have incompatible TLS configurations.'),
         ])
 
