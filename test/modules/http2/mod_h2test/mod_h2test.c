@@ -43,6 +43,65 @@ AP_DECLARE_MODULE(h2test) = {
 #endif
 };
 
+#define SECS_PER_HOUR      (60*60)
+#define SECS_PER_DAY       (24*SECS_PER_HOUR)
+
+static apr_status_t duration_parse(apr_interval_time_t *ptimeout, const char *value,
+                                   const char *def_unit)
+{
+    char *endp;
+    apr_int64_t n;
+
+    n = apr_strtoi64(value, &endp, 10);
+    if (errno) {
+        return errno;
+    }
+    if (!endp || !*endp) {
+        if (!def_unit) def_unit = "s";
+    }
+    else if (endp == value) {
+        return APR_EINVAL;
+    }
+    else {
+        def_unit = endp;
+    }
+
+    switch (*def_unit) {
+    case 'D':
+    case 'd':
+        *ptimeout = apr_time_from_sec(n * SECS_PER_DAY);
+        break;
+    case 's':
+    case 'S':
+        *ptimeout = (apr_interval_time_t) apr_time_from_sec(n);
+        break;
+    case 'h':
+    case 'H':
+        /* Time is in hours */
+        *ptimeout = (apr_interval_time_t) apr_time_from_sec(n * SECS_PER_HOUR);
+        break;
+    case 'm':
+    case 'M':
+        switch (*(++def_unit)) {
+        /* Time is in milliseconds */
+        case 's':
+        case 'S':
+            *ptimeout = (apr_interval_time_t) n * 1000;
+            break;
+        /* Time is in minutes */
+        case 'i':
+        case 'I':
+            *ptimeout = (apr_interval_time_t) apr_time_from_sec(n * 60);
+            break;
+        default:
+            return APR_EGENERAL;
+        }
+        break;
+    default:
+        return APR_EGENERAL;
+    }
+    return APR_SUCCESS;
+}
 
 static int h2test_post_config(apr_pool_t *p, apr_pool_t *plog,
                               apr_pool_t *ptemp, server_rec *s)
@@ -163,9 +222,10 @@ static int h2test_delay_handler(request_rec *r)
     }
 
     if (r->args) {
-        rv = apr_cstr_atoi(&i, r->args);
-        if (APR_SUCCESS == rv) {
-            delay = apr_time_from_sec(i);
+        rv = duration_parse(&delay, r->args, "s");
+        if (APR_SUCCESS != rv) {
+            ap_die(HTTP_BAD_REQUEST, r);
+            return OK;
         }
     }
 
@@ -230,6 +290,77 @@ cleanup:
     return AP_FILTER_ERROR;
 }
 
+static int h2test_trailer_handler(request_rec *r)
+{
+    conn_rec *c = r->connection;
+    apr_bucket_brigade *bb;
+    apr_bucket *b;
+    apr_status_t rv;
+    char buffer[8192];
+    int i, chunks = 3;
+    long l;
+    int body_len = 0, tclen;
+
+    if (strcmp(r->handler, "h2test-trailer")) {
+        return DECLINED;
+    }
+    if (r->method_number != M_GET && r->method_number != M_POST) {
+        return DECLINED;
+    }
+
+    if (r->args) {
+        tclen = body_len = (int)apr_atoi64(r->args);
+        if (body_len < 0) body_len = 0;
+    }
+
+    ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r, "trailer_handler: processing request, %d body length",
+                  body_len);
+    r->status = 200;
+    r->clength = body_len;
+    ap_set_content_length(r, body_len);
+
+    ap_set_content_type(r, "application/octet-stream");
+    bb = apr_brigade_create(r->pool, c->bucket_alloc);
+    memset(buffer, 0, sizeof(buffer));
+    while (body_len > 0) {
+        l = (sizeof(buffer) > body_len)? body_len : sizeof(buffer);
+        body_len -= l;
+        rv = apr_brigade_write(bb, NULL, NULL, buffer, l);
+        if (APR_SUCCESS != rv) goto cleanup;
+        rv = ap_pass_brigade(r->output_filters, bb);
+        if (APR_SUCCESS != rv) goto cleanup;
+        ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r,
+                      "trailer_handler: passed %ld bytes as response body", l);
+    }
+    /* flush it */
+    b = apr_bucket_flush_create(c->bucket_alloc);
+    APR_BRIGADE_INSERT_TAIL(bb, b);
+    rv = ap_pass_brigade(r->output_filters, bb);
+    apr_brigade_cleanup(bb);
+    apr_sleep(apr_time_from_msec(500));
+    /* set trailers */
+    apr_table_mergen(r->headers_out, "Trailer", "trailer-content-length");
+    apr_table_set(r->trailers_out, "trailer-content-length",
+                  apr_psprintf(r->pool, "%d", tclen));
+    /* we are done */
+    b = apr_bucket_eos_create(c->bucket_alloc);
+    APR_BRIGADE_INSERT_TAIL(bb, b);
+    rv = ap_pass_brigade(r->output_filters, bb);
+    apr_brigade_cleanup(bb);
+    ap_log_rerror(APLOG_MARK, APLOG_TRACE1, rv, r, "trailer_handler: response passed");
+
+cleanup:
+    ap_log_rerror(APLOG_MARK, APLOG_TRACE1, rv, r,
+                  "trailer_handler: request cleanup, r->status=%d, aborted=%d",
+                  r->status, c->aborted);
+    if (rv == APR_SUCCESS
+        || r->status != HTTP_OK
+        || c->aborted) {
+        return OK;
+    }
+    return AP_FILTER_ERROR;
+}
+
 /* Install this module into the apache2 infrastructure.
  */
 static void h2test_hooks(apr_pool_t *pool)
@@ -249,5 +380,6 @@ static void h2test_hooks(apr_pool_t *pool)
     /* test h2 handlers */
     ap_hook_handler(h2test_echo_handler, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_handler(h2test_delay_handler, NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_handler(h2test_trailer_handler, NULL, NULL, APR_HOOK_MIDDLE);
 }
 
