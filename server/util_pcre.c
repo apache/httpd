@@ -484,6 +484,32 @@ AP_DECLARE(int) ap_regexec_len(const ap_regex_t *preg, const char *buff,
     match_vector_pt ovector = NULL;
     apr_uint32_t ncaps = (apr_uint32_t)preg->re_nsub + 1;
 
+#ifndef HAVE_PCRE2
+    /* This is fine if pcre_exec() gets a vector size smaller than the
+     * number of capturing groups (it will treat the remaining ones as
+     * non-capturing), but if the vector is too small to keep track of
+     * the potential backrefs within the pattern, it will temporarily
+     * malloc()ate the necessary space anyway. So let's provide a vector
+     * of at least PCRE_INFO_BACKREFMAX entries (likely zero, otherwise
+     * the vector is most likely cached already anyway).
+     * Note that if no captures are to be used by the caller, passing an
+     * nmatch of zero (thus forcing all groups to be non-capturing) may
+     * allow for some optimizations and/or less recursion (stack usage)
+     * with PCRE1, unless backrefs..
+     */
+    if (ncaps > nmatch) {
+        int backrefmax = 0;
+        pcre_fullinfo((const pcre *)preg->re_pcre, NULL,
+                      PCRE_INFO_BACKREFMAX, &backrefmax);
+        if (backrefmax > 0 && (apr_uint32_t)backrefmax >= nmatch) {
+            ncaps = (apr_uint32_t)backrefmax + 1;
+        }
+        else {
+            ncaps = nmatch;
+        }
+    }
+#endif
+
     if (!setup_state(&state, ncaps)) {
         return AP_REG_ESPACE;
     }
