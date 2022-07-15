@@ -69,6 +69,7 @@
 #endif
 
 #include "ap_mpm.h"
+#include "mpm_common.h"         /* for ap_max_mem_free */
 
 /* A bunch of functions in util.c scan strings looking for certain characters.
  * To make that more efficient we encode a lookup table.  The test_char_table
@@ -3285,26 +3286,27 @@ AP_DECLARE(void *) ap_realloc(void *ptr, size_t size)
 
 #if APR_HAS_THREADS
 
-#if APR_VERSION_AT_LEAST(1,8,0) && !defined(AP_NO_THREAD_LOCAL)
-
-#define ap_thread_current_create apr_thread_current_create
-
-#else /* APR_VERSION_AT_LEAST(1,8,0) && !defined(AP_NO_THREAD_LOCAL) */
-
-#if AP_HAS_THREAD_LOCAL
+#if AP_HAS_THREAD_LOCAL && !APR_VERSION_AT_LEAST(1,8,0)
+AP_THREAD_LOCAL static apr_thread_t *current_thread = NULL;
+#endif
 
 struct thread_ctx {
     apr_thread_start_t func;
     void *data;
 };
 
-static AP_THREAD_LOCAL apr_thread_t *current_thread = NULL;
-
 static void *APR_THREAD_FUNC thread_start(apr_thread_t *thread, void *data)
 {
     struct thread_ctx *ctx = data;
+    apr_pool_t *tp = apr_thread_pool_get(thread);
 
+    /* Don't let the thread's pool allocator with no limits */
+    apr_allocator_max_free_set(apr_pool_allocator_get(tp),
+                               ap_max_mem_free);
+
+#if AP_HAS_THREAD_LOCAL && !APR_VERSION_AT_LEAST(1,8,0)
     current_thread = thread;
+#endif
     return ctx->func(thread, ctx->data);
 }
 
@@ -3319,67 +3321,6 @@ AP_DECLARE(apr_status_t) ap_thread_create(apr_thread_t **thread,
     ctx->data = data;
     return apr_thread_create(thread, attr, thread_start, ctx, pool);
 }
-
-#endif /* AP_HAS_THREAD_LOCAL */
-
-AP_DECLARE(apr_status_t) ap_thread_current_create(apr_thread_t **current,
-                                                  apr_threadattr_t *attr,
-                                                  apr_pool_t *pool)
-{
-    apr_status_t rv;
-    apr_abortfunc_t abort_fn = apr_pool_abort_get(pool);
-    apr_allocator_t *allocator;
-    apr_os_thread_t osthd;
-    apr_pool_t *p;
-
-    *current = ap_thread_current();
-    if (*current) {
-        return APR_EEXIST;
-    }
-
-    rv = apr_allocator_create(&allocator);
-    if (rv != APR_SUCCESS) {
-        if (abort_fn)
-            abort_fn(rv);
-        return rv;
-    }
-    rv = apr_pool_create_unmanaged_ex(&p, abort_fn, allocator);
-    if (rv != APR_SUCCESS) {
-        apr_allocator_destroy(allocator);
-        return rv;
-    }
-    apr_allocator_owner_set(allocator, p);
-
-    osthd = apr_os_thread_current();
-    rv = apr_os_thread_put(current, &osthd, p);
-    if (rv != APR_SUCCESS) {
-        apr_pool_destroy(p);
-        return rv;
-    }
-
-#if AP_HAS_THREAD_LOCAL
-    current_thread = *current;
-#endif
-    return APR_SUCCESS;
-}
-
-AP_DECLARE(void) ap_thread_current_after_fork(void)
-{
-#if AP_HAS_THREAD_LOCAL
-    current_thread = NULL;
-#endif
-}
-
-AP_DECLARE(apr_thread_t *) ap_thread_current(void)
-{
-#if AP_HAS_THREAD_LOCAL
-    return current_thread;
-#else
-    return NULL;
-#endif
-}
-
-#endif /* APR_VERSION_AT_LEAST(1,8,0) && !defined(AP_NO_THREAD_LOCAL) */
 
 static apr_status_t main_thread_cleanup(void *arg)
 {
@@ -3405,10 +3346,78 @@ AP_DECLARE(apr_status_t) ap_thread_main_create(apr_thread_t **thread,
         return rv;
     }
 
+#if APR_VERSION_AT_LEAST(1,8,0)
+    /* Don't let the thread's pool allocator with no limits */
+    {
+        apr_pool_t *tp = apr_thread_pool_get(*thread);
+        apr_allocator_max_free_set(apr_pool_allocator_get(tp),
+                                   ap_max_mem_free);
+    }
+#endif
+
     apr_pool_cleanup_register(pool, *thread, main_thread_cleanup,
                               apr_pool_cleanup_null);
     return APR_SUCCESS;
 }
+
+#if !APR_VERSION_AT_LEAST(1,8,0)
+
+AP_DECLARE(apr_status_t) ap_thread_current_create(apr_thread_t **current,
+                                                  apr_threadattr_t *attr,
+                                                  apr_pool_t *pool)
+{
+#if AP_HAS_THREAD_LOCAL
+    apr_status_t rv;
+    apr_abortfunc_t abort_fn;
+    apr_os_thread_t osthd;
+    apr_pool_t *p;
+
+    *current = ap_thread_current();
+    if (*current) {
+        return APR_EEXIST;
+    }
+
+    abort_fn = (pool) ? apr_pool_abort_get(pool) : NULL;
+    rv = apr_pool_create_unmanaged_ex(&p, abort_fn, NULL);
+    if (rv != APR_SUCCESS) {
+        return rv;
+    }
+
+    /* Don't let the thread's pool allocator with no limits */
+    apr_allocator_max_free_set(apr_pool_allocator_get(p),
+                               ap_max_mem_free);
+
+    osthd = apr_os_thread_current();
+    rv = apr_os_thread_put(current, &osthd, p);
+    if (rv != APR_SUCCESS) {
+        apr_pool_destroy(p);
+        return rv;
+    }
+
+    current_thread = *current;
+    return APR_SUCCESS;
+#else
+    return APR_ENOTIMPL;
+#endif
+}
+
+AP_DECLARE(void) ap_thread_current_after_fork(void)
+{
+#if AP_HAS_THREAD_LOCAL
+    current_thread = NULL;
+#endif
+}
+
+AP_DECLARE(apr_thread_t *) ap_thread_current(void)
+{
+#if AP_HAS_THREAD_LOCAL
+    return current_thread;
+#else
+    return NULL;
+#endif
+}
+
+#endif /* !APR_VERSION_AT_LEAST(1,8,0) */
 
 #endif /* APR_HAS_THREADS */
 
