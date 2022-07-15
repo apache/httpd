@@ -301,7 +301,7 @@ struct match_thread_state {
     apr_pool_t *pool;
 };
 
-AP_THREAD_LOCAL static struct match_thread_state *thread_state;
+static AP_THREAD_LOCAL struct match_thread_state *thread_state;
 #endif
 
 struct match_data_state {

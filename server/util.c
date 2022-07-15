@@ -3287,7 +3287,7 @@ AP_DECLARE(void *) ap_realloc(void *ptr, size_t size)
 #if APR_HAS_THREADS
 
 #if AP_HAS_THREAD_LOCAL && !APR_VERSION_AT_LEAST(1,8,0)
-AP_THREAD_LOCAL static apr_thread_t *current_thread = NULL;
+static AP_THREAD_LOCAL apr_thread_t *current_thread = NULL;
 #endif
 
 struct thread_ctx {
