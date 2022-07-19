@@ -82,10 +82,10 @@ POSSIBILITY OF SUCH DAMAGE.
  *   sizeof(pcre2_general_context) + offsetof(pcre2_match_data, ovector)
  */
 #define AP_PCRE_STACKBUF_SIZE \
-    (128 + POSIX_MALLOC_THRESHOLD * sizeof(PCRE2_SIZE) * 2)
+    APR_ALIGN_DEFAULT(128 + POSIX_MALLOC_THRESHOLD * sizeof(PCRE2_SIZE) * 2)
 #else
 #define AP_PCRE_STACKBUF_SIZE \
-    (POSIX_MALLOC_THRESHOLD * sizeof(int) * 3)
+    APR_ALIGN_DEFAULT(POSIX_MALLOC_THRESHOLD * sizeof(int) * 3)
 #endif
 
 /* Table of error strings corresponding to POSIX error codes; must be
@@ -276,9 +276,9 @@ AP_DECLARE(int) ap_regcomp(ap_regex_t * preg, const char *pattern, int cflags)
  * is in POSIX_MALLOC_THRESHOLD macro that can be changed at configure time.
  * PCRE2 takes an opaque match context and lets us provide the callbacks to
  * manage the memory needed during the match, so we can still use a small stack
- * space that'll suffice for regexes up to POSIX_MALLOC_THRESHOLD captures (and
- * not too complex), above that either use some thread local subpool cache (if
- * AP_HAS_THREAD_LOCAL) or fall back to malloc()/free().
+ * space that will suffice for the match context struct and a single frame of
+ * POSIX_MALLOC_THRESHOLD captures, above that either use a thread local
+ * subpool cache (#if AP_HAS_THREAD_LOCAL) or fall back to malloc()/free().
  */
 
 #if AP_HAS_THREAD_LOCAL && !defined(APREG_NO_THREAD_LOCAL)
@@ -294,14 +294,7 @@ typedef int*        match_vector_pt;
 #endif
 
 #if APREG_USE_THREAD_LOCAL
-struct match_thread_state {
-    char *heap;
-    apr_size_t heap_size;
-    apr_size_t heap_used;
-    apr_pool_t *pool;
-};
-
-static AP_THREAD_LOCAL struct match_thread_state *thread_state;
+static AP_THREAD_LOCAL apr_pool_t *thread_pool;
 #endif
 
 struct match_data_state {
@@ -311,7 +304,7 @@ struct match_data_state {
 
 #if APREG_USE_THREAD_LOCAL
     apr_thread_t *thd;
-    struct match_thread_state *ts;
+    apr_pool_t *pool;
 #endif
 
 #ifdef HAVE_PCRE2
@@ -325,59 +318,25 @@ struct match_data_state {
 static void * private_malloc(size_t size, void *ctx)
 {
     struct match_data_state *state = ctx;
-    apr_size_t avail;
 
-    avail = sizeof(state->buf) - state->buf_used;
-    if (avail >= size) {
+    if (size <= sizeof(state->buf) - state->buf_used) {
         void *p = state->buf + state->buf_used;
-        size = APR_ALIGN_DEFAULT(size);
-        if (size > avail) {
-            size = avail;
-        }
-        state->buf_used += size;
+        state->buf_used += APR_ALIGN_DEFAULT(size);
         return p;
     }
 
 #if APREG_USE_THREAD_LOCAL
     if (state->thd) {
-        struct match_thread_state *ts = thread_state;
-        void *p;
-
-        if (!ts) {
-            apr_pool_t *tp = apr_thread_pool_get(state->thd);
-            ts = apr_pcalloc(tp, sizeof(*ts));
-            apr_pool_create(&ts->pool, tp);
-            thread_state = state->ts = ts;
-        }
-        else if (!state->ts) {
-            ts->heap_used = 0;
-            state->ts = ts;
-        }
-
-        avail = ts->heap_size - ts->heap_used;
-        if (avail >= size) {
-            size = APR_ALIGN_DEFAULT(size);
-            if (size > avail) {
-                size = avail;
+        apr_pool_t *pool = state->pool;
+        if (pool == NULL) {
+            pool = thread_pool;
+            if (pool == NULL) {
+                apr_pool_create(&pool, apr_thread_pool_get(state->thd));
+                thread_pool = pool;
             }
-            p = ts->heap + ts->heap_used;
+            state->pool = pool;
         }
-        else {
-            ts->heap_size *= 2;
-            size = APR_ALIGN_DEFAULT(size);
-            if (ts->heap_size < size) {
-                ts->heap_size = size;
-            }
-            if (ts->heap_size < AP_PCRE_STACKBUF_SIZE * 2) {
-                ts->heap_size = AP_PCRE_STACKBUF_SIZE * 2;
-            }
-            ts->heap = apr_palloc(ts->pool, ts->heap_size);
-            ts->heap_used = 0;
-            p = ts->heap;
-        }
-
-        ts->heap_used += size;
-        return p;
+        return apr_palloc(pool, size);
     }
 #endif
 
@@ -408,9 +367,10 @@ static APR_INLINE
 int setup_state(struct match_data_state *state, apr_uint32_t ncaps)
 {
     state->buf_used = 0;
+
 #if APREG_USE_THREAD_LOCAL
     state->thd = ap_thread_current();
-    state->ts = NULL;
+    state->pool = NULL;
 #endif
 
 #ifdef HAVE_PCRE2
@@ -454,14 +414,11 @@ void cleanup_state(struct match_data_state *state)
 #endif
 
 #if APREG_USE_THREAD_LOCAL
-    if (state->ts) {
+    if (state->pool) {
         /* Let the thread's pool allocator recycle or free according
          * to its max_free setting.
          */
-        struct match_thread_state *ts = state->ts;
-        apr_pool_clear(ts->pool);
-        ts->heap_size = 0;
-        ts->heap = NULL;
+        apr_pool_clear(state->pool);
     }
 #endif
 }
