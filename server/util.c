@@ -3298,11 +3298,17 @@ struct thread_ctx {
 static void *APR_THREAD_FUNC thread_start(apr_thread_t *thread, void *data)
 {
     struct thread_ctx *ctx = data;
-    apr_pool_t *tp = apr_thread_pool_get(thread);
 
-    /* Don't let the thread's pool allocator with no limits */
-    apr_allocator_max_free_set(apr_pool_allocator_get(tp),
-                               ap_max_mem_free);
+    /* Don't let the thread's pool allocator with no limits, though there
+     * is possibly no allocator with APR <= 1.7 and APR_POOL_DEBUG.
+     */
+    {
+        apr_pool_t *tp = apr_thread_pool_get(thread);
+        apr_allocator_t *ta = apr_pool_allocator_get(tp);
+        if (ta) {
+            apr_allocator_max_free_set(ta, ap_max_mem_free);
+        }
+    }
 
 #if AP_HAS_THREAD_LOCAL && !APR_VERSION_AT_LEAST(1,8,0)
     current_thread = thread;
@@ -3341,17 +3347,24 @@ AP_DECLARE(apr_status_t) ap_thread_main_create(apr_thread_t **thread,
      */
     if ((rv = apr_threadattr_create(&attr, pool))
             || (rv = apr_threadattr_detach_set(attr, 1))
+#if APR_VERSION_AT_LEAST(2,0,0)
+            || (rv = apr_threadattr_max_free_set(attr, ap_max_mem_free))
+#endif
             || (rv = ap_thread_current_create(thread, attr, pool))) {
         *thread = NULL;
         return rv;
     }
 
-#if APR_VERSION_AT_LEAST(1,8,0)
-    /* Don't let the thread's pool allocator with no limits */
+#if APR_VERSION_AT_LEAST(1,8,0) && !APR_VERSION_AT_LEAST(2,0,0)
+    /* Don't let the thread's pool allocator with no limits, though there
+     * is possibly no allocator with APR <= 1.7 and APR_POOL_DEBUG.
+     */
     {
         apr_pool_t *tp = apr_thread_pool_get(*thread);
-        apr_allocator_max_free_set(apr_pool_allocator_get(tp),
-                                   ap_max_mem_free);
+        apr_allocator_t *ta = apr_pool_allocator_get(tp);
+        if (ta) {
+            apr_allocator_max_free_set(ta, ap_max_mem_free);
+        }
     }
 #endif
 
@@ -3368,6 +3381,7 @@ AP_DECLARE(apr_status_t) ap_thread_current_create(apr_thread_t **current,
 {
 #if AP_HAS_THREAD_LOCAL
     apr_status_t rv;
+    apr_allocator_t *ta;
     apr_abortfunc_t abort_fn;
     apr_os_thread_t osthd;
     apr_pool_t *p;
@@ -3378,14 +3392,19 @@ AP_DECLARE(apr_status_t) ap_thread_current_create(apr_thread_t **current,
     }
 
     abort_fn = (pool) ? apr_pool_abort_get(pool) : NULL;
-    rv = apr_pool_create_unmanaged_ex(&p, abort_fn, NULL);
+    rv = apr_allocator_create(&ta);
+    if (rv != APR_SUCCESS) {
+        if (abort_fn)
+            abort_fn(rv);
+        return rv;
+    }
+    rv = apr_pool_create_unmanaged_ex(&p, abort_fn, ta);
     if (rv != APR_SUCCESS) {
         return rv;
     }
-
     /* Don't let the thread's pool allocator with no limits */
-    apr_allocator_max_free_set(apr_pool_allocator_get(p),
-                               ap_max_mem_free);
+    apr_allocator_max_free_set(ta, ap_max_mem_free);
+    apr_allocator_owner_set(ta, p);
 
     osthd = apr_os_thread_current();
     rv = apr_os_thread_put(current, &osthd, p);
