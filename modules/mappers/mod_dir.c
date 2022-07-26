@@ -292,8 +292,8 @@ static int fixup_dir(request_rec *r)
                                 "/", NULL);
         }
 
-        apr_table_setn(r->headers_out, "Location",
-                       ap_construct_url(r->pool, ifile, r));
+        apr_table_setn(r->headers_out, "Location", ifile);
+
         return HTTP_MOVED_PERMANENTLY;
     }
 
