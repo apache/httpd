@@ -1,4 +1,6 @@
 import os
+import time
+
 import pytest
 
 from pyhttpd.conf import HttpdConf
@@ -69,3 +71,24 @@ class TestProxyHttp:
         assert r.response["status"] == 200
         assert r.json['host'] == seen
 
+    def test_proxy_01_003(self, env):
+        domain = f"test1.{env.http_tld}"
+        conf = HttpdConf(env)
+        conf.add([
+            "ProxyPreserveHost on",
+            "<Proxy balancer://backends>",
+            f"  BalancerMember https://localhost:{env.https_port}",
+            "  SSLProxyEngine on",
+            "</Proxy>",
+        ])
+        conf.start_vhost(domains=[domain], port=env.https_port, doc_root="htdocs/test1")
+        conf.add([
+            "ProxyPass /proxy balancer://backends",
+            "ProxyPassReverse /proxy balancer://backends",
+        ])
+        conf.end_vhost()
+        conf.install()
+        assert env.apache_restart() == 0
+        r = env.curl_get(f"https://{domain}:{env.https_port}/proxy/alive.json", 5)
+        assert r.response["status"] == 200
+        assert r.json['host'] == "test1"
