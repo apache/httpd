@@ -71,7 +71,6 @@ class TestProxyHttp:
         assert r.response["status"] == 200
         assert r.json['host'] == seen
 
-    @pytest.mark.skip(reason="needs backport of r1903167")
     def test_proxy_01_003(self, env):
         domain = f"test1.{env.http_tld}"
         conf = HttpdConf(env)
