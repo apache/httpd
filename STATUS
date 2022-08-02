@@ -213,6 +213,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c 1902117,1902130,1902132,1902133 ^/httpd/httpd/trunk .
      +1: rjung,
 
+  *) mod_ssl: fix for PR66190.
+     trunk revision:
+        https://svn.apache.org/r1903167
+     PR: https://github.com/apache/httpd/pull/326
+     +1: icing,
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
