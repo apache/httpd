@@ -198,7 +198,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
           https://svn.apache.org/r1900691
           https://svn.apache.org/r1900694
      2.4.x patch: svn merge -c 1822857,1876815,1893499,1900024,1900152,1900306,1900559,1900564,1900691,1900694 ^/httpd/httpd/trunk .
-     +1: jailletc36, 
+     +1: jailletc36, rpluem
 
   *) mod_heartmonitor: Allow "HeartbeatMaxServers 0"
      to use file based storage instead of slotmem.
@@ -211,13 +211,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         https://svn.apache.org/r1902132
         https://svn.apache.org/r1902133
      2.4.x patch: svn merge -c 1902117,1902130,1902132,1902133 ^/httpd/httpd/trunk .
-     +1: rjung,
+     +1: rjung, rpluem
 
   *) mod_ssl: fix for PR66190.
      trunk revision:
         https://svn.apache.org/r1903167
      PR: https://github.com/apache/httpd/pull/326
-     +1: icing,
+     +1: icing, rpluem
 
   *) mod_http2: Export mod_http2.h
      Trunk version of patch:
