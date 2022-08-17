@@ -28,6 +28,9 @@ APR_DECLARE_OPTIONAL_FN(char *,
 APR_DECLARE_OPTIONAL_FN(int, 
                         http2_is_h2, (conn_rec *));
 
+APR_DECLARE_OPTIONAL_FN(void,
+                        http2_get_num_workers, (server_rec *s,
+                                                int *minw, int *max));
 
 /*******************************************************************************
  * START HTTP/2 request engines (DEPRECATED)
@@ -68,9 +71,6 @@ APR_DECLARE_OPTIONAL_FN(void,
                                                 conn_rec *rconn,
                                                 apr_status_t status));
 
-APR_DECLARE_OPTIONAL_FN(void,
-                        http2_get_num_workers, (server_rec *s,
-                                                int *minw, int *max));
 
 /*******************************************************************************
  * END HTTP/2 request engines (DEPRECATED)
