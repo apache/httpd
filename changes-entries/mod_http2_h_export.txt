@@ -1,0 +1,1 @@
+  *) mod_http2: Export mod_http2.h as public header. [Stefan Eissing]
