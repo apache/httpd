@@ -180,10 +180,10 @@ AP_DECLARE_DATA int ap_max_requests_per_child;
 AP_DECLARE_DATA char ap_coredump_dir[MAX_STRING_LEN];
 AP_DECLARE_DATA int ap_coredumpdir_configured;
 AP_DECLARE_DATA int ap_graceful_shutdown_timeout;
-AP_DECLARE_DATA apr_uint32_t ap_max_mem_free;
 AP_DECLARE_DATA apr_size_t ap_thread_stacksize;
 
 #define ALLOCATOR_MAX_FREE_DEFAULT (2048*1024)
+AP_DECLARE_DATA apr_uint32_t ap_max_mem_free = ALLOCATOR_MAX_FREE_DEFAULT;
 
 /* Set defaults for config directives implemented here.  This is
  * called from core's pre-config hook, so MPMs which need to override
