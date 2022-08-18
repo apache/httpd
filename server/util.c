@@ -3385,12 +3385,12 @@ AP_DECLARE(apr_status_t) ap_thread_current_create(apr_thread_t **current,
             abort_fn(rv);
         return rv;
     }
+    /* Don't let the thread's pool allocator with no limits */
     apr_allocator_max_free_set(ta, ap_max_mem_free);
     rv = apr_pool_create_unmanaged_ex(&p, abort_fn, ta);
     if (rv != APR_SUCCESS) {
         return rv;
     }
-    /* Don't let the thread's pool allocator with no limits */
     apr_allocator_owner_set(ta, p);
 
     osthd = apr_os_thread_current();
