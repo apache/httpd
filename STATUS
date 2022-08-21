@@ -149,18 +149,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_heartmonitor: Allow "HeartbeatMaxServers 0"
-     to use file based storage instead of slotmem.
-     Needed after setting HeartbeatMaxServers default
-     to the documented value 10 in 2.4.54.
-     PR 66131.  [Jérôme Billiras]
-     Trunk version of patch:
-        https://svn.apache.org/r1902117
-        https://svn.apache.org/r1902130
-        https://svn.apache.org/r1902132
-        https://svn.apache.org/r1902133
-     2.4.x patch: svn merge -c 1902117,1902130,1902132,1902133 ^/httpd/httpd/trunk .
-     +1: rjung, rpluem, jim
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
