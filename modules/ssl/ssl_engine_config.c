@@ -798,7 +798,7 @@ const char *ssl_cmd_SSLCipherSuite(cmd_parms *cmd,
         return NULL;
     }
 #endif
-    return apr_pstrcat(cmd->pool, "procotol '", arg1, "' not supported", NULL);
+    return apr_pstrcat(cmd->pool, "protocol '", arg1, "' not supported", NULL);
 }
 
 #define SSL_FLAGS_CHECK_FILE \
@@ -1556,7 +1556,7 @@ const char *ssl_cmd_SSLProxyCipherSuite(cmd_parms *cmd,
         return NULL;
     }
 #endif
-    return apr_pstrcat(cmd->pool, "procotol '", arg1, "' not supported", NULL);
+    return apr_pstrcat(cmd->pool, "protocol '", arg1, "' not supported", NULL);
 }
 
 const char *ssl_cmd_SSLProxyVerify(cmd_parms *cmd,

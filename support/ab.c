@@ -2306,7 +2306,6 @@ static apr_status_t open_postfile(const char *pfile)
 /* sort out command-line args and call test */
 int main(int argc, const char * const argv[])
 {
-    int l;
     char tmp[1024];
     apr_status_t status;
     apr_getopt_t *opt;
@@ -2447,8 +2446,7 @@ int main(int argc, const char * const argv[])
                 if (apr_base64_encode_len(strlen(opt_arg)) > sizeof(tmp)) {
                     err("Authentication credentials too long\n");
                 }
-                l = apr_base64_encode(tmp, opt_arg, strlen(opt_arg));
-                tmp[l] = '\0';
+                apr_base64_encode(tmp, opt_arg, strlen(opt_arg));
 
                 auth = apr_pstrcat(cntxt, auth, "Authorization: Basic ", tmp,
                                        "\r\n", NULL);
@@ -2462,8 +2460,7 @@ int main(int argc, const char * const argv[])
                 if (apr_base64_encode_len(strlen(opt_arg)) > sizeof(tmp)) {
                     err("Proxy credentials too long\n");
                 }
-                l = apr_base64_encode(tmp, opt_arg, strlen(opt_arg));
-                tmp[l] = '\0';
+                apr_base64_encode(tmp, opt_arg, strlen(opt_arg));
 
                 auth = apr_pstrcat(cntxt, auth, "Proxy-Authorization: Basic ",
                                        tmp, "\r\n", NULL);

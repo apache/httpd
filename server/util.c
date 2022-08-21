@@ -250,10 +250,8 @@ AP_DECLARE(int) ap_os_is_path_absolute(apr_pool_t *p, const char *dir)
 
 AP_DECLARE(int) ap_is_matchexp(const char *str)
 {
-    int x;
-
-    for (x = 0; str[x]; x++)
-        if ((str[x] == '*') || (str[x] == '?'))
+    for (; *str; str++)
+        if ((*str == '*') || (*str == '?'))
             return 1;
     return 0;
 }

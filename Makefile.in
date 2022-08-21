@@ -128,7 +128,7 @@ install-conf:
 	fi
 
 # Create a sanitized config_vars.mk
-build/config_vars.out: build/config_vars.mk
+build/config_vars.out: build/config_vars.mk build/config_vars.sh
 	@$(SHELL) build/config_vars.sh < build/config_vars.mk > build/config_vars.out
 
 install-build: build/config_vars.out

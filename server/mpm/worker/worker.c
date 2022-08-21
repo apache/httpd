@@ -1697,7 +1697,7 @@ static void server_main_loop(int remaining_children_to_start)
             if (++successive_kills >= 3) {
                 if (successive_kills % 10 == 3) {
                     ap_log_error(APLOG_MARK, APLOG_WARNING, 0,
-                                 ap_server_conf, APLOGNO(10392)
+                                 ap_server_conf, APLOGNO(10393)
                                  "children are killed successively!");
                 }
                 continue;

@@ -146,9 +146,9 @@ typedef struct hlog {
     apr_size_t count;
 } hlog;
 
-static int count_string(const char *p)
+static apr_size_t count_string(const char *p)
 {
-    int n;
+    apr_size_t n;
 
     for (n = 0 ; *p ; ++p, ++n)
         if (TEST_CHAR(*p, T_ESCAPE_FORENSIC))
