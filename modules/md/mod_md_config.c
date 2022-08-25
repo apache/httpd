@@ -86,6 +86,8 @@ static md_mod_conf_t defmc = {
     NULL,                      /* CA cert file to use */
     apr_time_from_sec(5),      /* minimum delay for retries */
     13,                        /* retry_failover after 14 errors, with 5s delay ~ half a day */
+    0,                         /* store locks, disabled by default */
+    apr_time_from_sec(5),      /* max time to wait to obaint a store lock */
 };
 
 static md_timeslice_t def_renew_window = {
@@ -644,6 +646,36 @@ static const char *md_config_set_retry_failover(cmd_parms *cmd, void *dc, const 
         return "invalid argument, must be a number > 0";
     }
     config->mc->retry_failover = retry_failover;
+    return NULL;
+}
+
+static const char *md_config_set_store_locks(cmd_parms *cmd, void *dc, const char *s)
+{
+    md_srv_conf_t *config = md_config_get(cmd->server);
+    const char *err = md_conf_check_location(cmd, MD_LOC_NOT_MD);
+    int use_store_locks;
+    apr_time_t wait_time = 0;
+
+    (void)dc;
+    if (err) {
+        return err;
+    }
+    else if (!apr_strnatcasecmp("off", s)) {
+        use_store_locks = 0;
+    }
+    else if (!apr_strnatcasecmp("on", s)) {
+        use_store_locks = 1;
+    }
+    else {
+        if (md_duration_parse(&wait_time, s, "s") != APR_SUCCESS) {
+            return "neither 'on', 'off' or a duration specified";
+        }
+        use_store_locks = (wait_time != 0);
+    }
+    config->mc->use_store_locks = use_store_locks;
+    if (wait_time) {
+        config->mc->lock_wait_timeout = wait_time;
+    }
     return NULL;
 }
 
@@ -1215,6 +1247,8 @@ const command_rec md_cmds[] = {
                   "Time length for first retry, doubled on every consecutive error."),
     AP_INIT_TAKE1("MDRetryFailover", md_config_set_retry_failover, NULL, RSRC_CONF,
                   "The number of errors before a failover to another CA is triggered."),
+    AP_INIT_TAKE1("MDStoreLocks", md_config_set_store_locks, NULL, RSRC_CONF,
+                  "Configure locking of store for updates."),
 
     AP_INIT_TAKE1(NULL, NULL, NULL, RSRC_CONF, NULL)
 };

@@ -55,6 +55,8 @@ struct md_reg_t {
     void *notify_ctx;
     apr_time_t min_delay;
     int retry_failover;
+    int use_store_locks;
+    apr_time_t lock_wait_timeout;
 };
 
 /**************************************************************************************************/
@@ -83,7 +85,8 @@ static apr_status_t load_props(md_reg_t *reg, apr_pool_t *p)
 
 apr_status_t md_reg_create(md_reg_t **preg, apr_pool_t *p, struct md_store_t *store,
                            const char *proxy_url, const char *ca_file,
-                           apr_time_t min_delay, int retry_failover)
+                           apr_time_t min_delay, int retry_failover,
+                           int use_store_locks, apr_time_t lock_wait_timeout)
 {
     md_reg_t *reg;
     apr_status_t rv;
@@ -100,6 +103,8 @@ apr_status_t md_reg_create(md_reg_t **preg, apr_pool_t *p, struct md_store_t *st
                     apr_pstrdup(p, ca_file) : NULL;
     reg->min_delay = min_delay;
     reg->retry_failover = retry_failover;
+    reg->use_store_locks = use_store_locks;
+    reg->lock_wait_timeout = lock_wait_timeout;
 
     md_timeslice_create(&reg->renew_window, p, MD_TIME_LIFE_NORM, MD_TIME_RENEW_WINDOW_DEF); 
     md_timeslice_create(&reg->warn_window, p, MD_TIME_LIFE_NORM, MD_TIME_WARN_WINDOW_DEF); 
@@ -1233,6 +1238,52 @@ apr_status_t md_reg_load_staging(md_reg_t *reg, const md_t *md, apr_table_t *env
 {
     if (reg->domains_frozen) return APR_EACCES;
     return md_util_pool_vdo(run_load_staging, reg, p, md, env, result, NULL);
+}
+
+apr_status_t md_reg_load_stagings(md_reg_t *reg, apr_array_header_t *mds,
+                                  apr_table_t *env, apr_pool_t *p)
+{
+    apr_status_t rv = APR_SUCCESS;
+    md_t *md;
+    md_result_t *result;
+    int i;
+
+    for (i = 0; i < mds->nelts; ++i) {
+        md = APR_ARRAY_IDX(mds, i, md_t *);
+        result = md_result_md_make(p, md->name);
+        rv = md_reg_load_staging(reg, md, env, result, p);
+        if (APR_SUCCESS == rv) {
+            md_log_perror(MD_LOG_MARK, MD_LOG_INFO, rv, p, APLOGNO(10068)
+                          "%s: staged set activated", md->name);
+        }
+        else if (!APR_STATUS_IS_ENOENT(rv)) {
+            md_log_perror(MD_LOG_MARK, MD_LOG_ERR, rv, p, APLOGNO(10069)
+                          "%s: error loading staged set", md->name);
+        }
+    }
+
+    return rv;
+}
+
+apr_status_t md_reg_lock_global(md_reg_t *reg, apr_pool_t *p)
+{
+    apr_status_t rv = APR_SUCCESS;
+
+    if (reg->use_store_locks) {
+        rv = md_store_lock_global(reg->store, p, reg->lock_wait_timeout);
+        if (APR_SUCCESS != rv) {
+            md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, rv, p,
+                          "unable to acquire global store lock");
+        }
+    }
+    return rv;
+}
+
+void md_reg_unlock_global(md_reg_t *reg, apr_pool_t *p)
+{
+    if (reg->use_store_locks) {
+        md_store_unlock_global(reg->store, p);
+    }
 }
 
 apr_status_t md_reg_freeze_domains(md_reg_t *reg, apr_array_header_t *mds)

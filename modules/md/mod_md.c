@@ -713,27 +713,6 @@ static apr_status_t merge_mds_with_conf(md_mod_conf_t *mc, apr_pool_t *p,
     return rv;
 }
 
-static void load_staged_data(md_mod_conf_t *mc, server_rec *s, apr_pool_t *p)
-{
-    apr_status_t rv;
-    md_t *md;
-    md_result_t *result;
-    int i;
-
-    for (i = 0; i < mc->mds->nelts; ++i) {
-        md = APR_ARRAY_IDX(mc->mds, i, md_t *);
-        result = md_result_md_make(p, md->name);
-        if (APR_SUCCESS == (rv = md_reg_load_staging(mc->reg, md, mc->env, result, p))) {
-            ap_log_error( APLOG_MARK, APLOG_INFO, rv, s, APLOGNO(10068)
-                         "%s: staged set activated", md->name);
-        }
-        else if (!APR_STATUS_IS_ENOENT(rv)) {
-            ap_log_error( APLOG_MARK, APLOG_ERR, rv, s, APLOGNO(10069)
-                         "%s: error loading staged set", md->name);
-        }
-    }
-}
-
 static apr_status_t check_invalid_duplicates(server_rec *base_server)
 {
     server_rec *s;
@@ -891,7 +870,8 @@ static apr_status_t md_post_config_before_ssl(apr_pool_t *p, apr_pool_t *plog,
     if (APR_SUCCESS != rv) goto leave;
 
     rv = md_reg_create(&mc->reg, p, store, mc->proxy_url, mc->ca_certs,
-                       mc->min_delay, mc->retry_failover);
+                       mc->min_delay, mc->retry_failover,
+                       mc->use_store_locks, mc->lock_wait_timeout);
     if (APR_SUCCESS != rv) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO(10072) "setup md registry");
         goto leave;
@@ -934,14 +914,24 @@ static apr_status_t md_post_config_before_ssl(apr_pool_t *p, apr_pool_t *plog,
     /*3*/
     if (APR_SUCCESS != (rv = link_mds_to_servers(mc, s, p))) goto leave;
     /*4*/
+    if (APR_SUCCESS != (rv = md_reg_lock_global(mc->reg, ptemp))) {
+        ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO(10398)
+                     "unable to obtain global registry lock, "
+                     "renewed certificates may remain inactive on "
+                     "this httpd instance!");
+        /* FIXME: or should we fail the server start/reload here? */
+        rv = APR_SUCCESS;
+        goto leave;
+    }
     if (APR_SUCCESS != (rv = md_reg_sync_start(mc->reg, mc->mds, ptemp))) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO(10073)
                      "syncing %d mds to registry", mc->mds->nelts);
         goto leave;
     }
     /*5*/
-    load_staged_data(mc, s, p);
+    md_reg_load_stagings(mc->reg, mc->mds, mc->env, p);
 leave:
+    md_reg_unlock_global(mc->reg, ptemp);
     return rv;
 }
 

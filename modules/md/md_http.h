@@ -88,6 +88,13 @@ apr_status_t md_http_create(md_http_t **phttp, apr_pool_t *p, const char *user_a
 void md_http_set_response_limit(md_http_t *http, apr_off_t resp_limit);
 
 /**
+ * Clone a http instance, inheriting all settings from source_http.
+ * The cloned instance is not tied in any way to the source.
+ */
+apr_status_t md_http_clone(md_http_t **phttp,
+                           apr_pool_t *p, md_http_t *source_http);
+
+/**
  * Set the timeout for the complete request. This needs to take everything from
  * DNS looksups, to conntects, to transfer of all data into account and should
  * be sufficiently large.

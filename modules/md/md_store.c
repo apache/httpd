@@ -374,3 +374,12 @@ apr_status_t md_store_md_iter(md_store_md_inspect *inspect, void *baton, md_stor
     return md_store_iter(insp_md, &ctx, store, p, group, pattern, MD_FN_MD, MD_SV_JSON);
 }
 
+apr_status_t md_store_lock_global(md_store_t *store, apr_pool_t *p, apr_time_t max_wait)
+{
+    return store->lock_global(store, p, max_wait);
+}
+
+void md_store_unlock_global(md_store_t *store, apr_pool_t *p)
+{
+    store->unlock_global(store, p);
+}
