@@ -204,7 +204,23 @@ apr_status_t md_store_iter_names(md_store_inspect *inspect, void *baton, md_stor
 apr_time_t md_store_get_modified(md_store_t *store, md_store_group_t group,  
                                  const char *name, const char *aspect, apr_pool_t *p);
 
+/**
+ * Acquire a cooperative, global lock on store modifications.
 
+ * This will only prevent other children/processes/cluster nodes from
+ * doing the same and does not protect individual store functions from
+ * being called without it.
+ * @param store the store
+ * @param p memory pool to use
+ * @param max_wait maximum time to wait in order to acquire
+ * @return APR_SUCCESS when lock was obtained
+ */
+apr_status_t md_store_lock_global(md_store_t *store, apr_pool_t *p, apr_time_t max_wait);
+
+/**
+ * Realease the global store lock. Will do nothing if there is no lock.
+ */
+void md_store_unlock_global(md_store_t *store, apr_pool_t *p);
 
 /**************************************************************************************************/
 /* Storage handling utils */
@@ -303,6 +319,8 @@ typedef apr_time_t md_store_get_modified_cb(md_store_t *store, md_store_group_t 
 typedef apr_status_t md_store_remove_nms_cb(md_store_t *store, apr_pool_t *p, 
                                             apr_time_t modified, md_store_group_t group, 
                                             const char *name, const char *aspect);
+typedef apr_status_t md_store_lock_global_cb(md_store_t *store, apr_pool_t *p, apr_time_t max_wait);
+typedef void md_store_unlock_global_cb(md_store_t *store, apr_pool_t *p);
 
 struct md_store_t {
     md_store_save_cb *save;
@@ -317,6 +335,8 @@ struct md_store_t {
     md_store_is_newer_cb *is_newer;
     md_store_get_modified_cb *get_modified;
     md_store_remove_nms_cb *remove_nms;
+    md_store_lock_global_cb *lock_global;
+    md_store_unlock_global_cb *unlock_global;
 };
 
 

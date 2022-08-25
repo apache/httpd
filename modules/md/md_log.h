@@ -38,6 +38,10 @@ typedef enum {
 
 #define MD_LOG_MARK     __FILE__,__LINE__
 
+#ifndef APLOGNO
+#define APLOGNO(n)              "AH" #n ": "
+#endif
+
 const char *md_log_level_name(md_log_level_t level);
 
 int md_log_is_level(apr_pool_t *p, md_log_level_t level);

@@ -34,10 +34,18 @@ typedef struct md_reg_t md_reg_t;
 
 /**
  * Create the MD registry, using the pool and store.
+ * @param preg on APR_SUCCESS, the create md_reg_t
+ * @param pm memory pool to use for creation
+ * @param store the store to base on
+ * @param proxy_url optional URL of a proxy to use for requests
+ * @param ca_file  optioinal CA trust anchor file to use
+ * @param min_delay minimum delay between renewal attempts for a domain
+ * @param retry_failover numer of failed renewals attempt to fail over to alternate ACME ca
  */
 apr_status_t md_reg_create(md_reg_t **preg, apr_pool_t *pm, md_store_t *store,
                            const char *proxy_url, const char *ca_file,
-                           apr_time_t min_delay, int retry_failover);
+                           apr_time_t min_delay, int retry_failover,
+                           int use_store_locks, apr_time_t lock_wait_timeout);
 
 md_store_t *md_reg_store_get(md_reg_t *reg);
 
@@ -270,9 +278,36 @@ apr_status_t md_reg_renew(md_reg_t *reg, const md_t *md,
 apr_status_t md_reg_load_staging(md_reg_t *reg, const md_t *md, struct apr_table_t *env, 
                                  struct md_result_t *result, apr_pool_t *p);
 
+/**
+ * Check given MDomains for new data in staging areas and, if it exists, load
+ * the new credentials. On encountering errors, leave the credentails as
+ * they are.
+ */
+apr_status_t md_reg_load_stagings(md_reg_t *reg, apr_array_header_t *mds,
+                                  apr_table_t *env, apr_pool_t *p);
+
 void md_reg_set_renew_window_default(md_reg_t *reg, md_timeslice_t *renew_window);
 void md_reg_set_warn_window_default(md_reg_t *reg, md_timeslice_t *warn_window);
 
 struct md_job_t *md_reg_job_make(md_reg_t *reg, const char *mdomain, apr_pool_t *p);
+
+/**
+ * Acquire a cooperative, global lock on registry modifications. Will
+ * do nothing if locking is not configured.
+ *
+ * This will only prevent other children/processes/cluster nodes from
+ * doing the same and does not protect individual store functions from
+ * being called without it.
+ * @param reg the registy
+ * @param p memory pool to use
+ * @param max_wait maximum time to wait in order to acquire
+ * @return APR_SUCCESS when lock was obtained
+ */
+apr_status_t md_reg_lock_global(md_reg_t *reg, apr_pool_t *p);
+
+/**
+ * Realease the global registry lock. Will do nothing if there is no lock.
+ */
+void md_reg_unlock_global(md_reg_t *reg, apr_pool_t *p);
 
 #endif /* mod_md_md_reg_h */

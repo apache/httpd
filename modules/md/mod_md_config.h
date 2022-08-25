@@ -72,6 +72,8 @@ struct md_mod_conf_t {
     const char *ca_certs;              /* root certificates to use for connections */
     apr_time_t min_delay;              /* minimum delay for retries */
     int retry_failover;                /* number of errors to trigger CA failover */
+    int use_store_locks;               /* use locks when updating store */
+    apr_time_t lock_wait_timeout;      /* fail after this time when unable to obtain lock */
 };
 
 typedef struct md_srv_conf_t {

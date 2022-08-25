@@ -50,6 +50,7 @@ def _session_scope(env):
         'AH01909',  # mod_ssl, cert alt name complains
         'AH10170',  # mod_md, wrong config, tested
         'AH10171',  # mod_md, wrong config, tested
+        'AH10398',  # test on global store lock
     ])
 
     env.httpd_error_log.add_ignored_patterns([
@@ -60,6 +61,7 @@ def _session_scope(env):
         re.compile(r'.*problem\[urn:org:apache:httpd:log:AH\d+:].*'),
         re.compile(r'.*Unsuccessful in contacting ACME server at :*'),
         re.compile(r'.*test-md-720-002-\S+.org: dns-01 setup command failed .*'),
+        re.compile(r'.*AH\d*: unable to obtain global registry lock, .*'),
     ])
     if env.lacks_ocsp():
         env.httpd_error_log.add_ignored_patterns([
