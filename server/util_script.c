@@ -466,7 +466,7 @@ AP_DECLARE(int) ap_scan_script_header_err_core_ex(request_rec *r, char *buffer,
 {
     char x[MAX_STRING_LEN];
     char *w, *l;
-    int p;
+    apr_size_t p;
     int cgi_status = HTTP_UNSET;
     apr_table_t *merge;
     apr_table_t *cookie_table;
@@ -837,7 +837,7 @@ static int getsfunc_STRING(char *w, int len, void *pvastrs)
 {
     struct vastrs *strs = (struct vastrs*) pvastrs;
     const char *p;
-    int t;
+    apr_size_t t;
 
     if (!strs->curpos || !*strs->curpos) {
         w[0] = '\0';
