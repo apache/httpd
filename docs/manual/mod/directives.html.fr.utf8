@@ -461,6 +461,7 @@
 <li><a href="mod_md.html#mdstaplingkeepresponse">MDStaplingKeepResponse</a></li>
 <li><a href="mod_md.html#mdstaplingrenewwindow">MDStaplingRenewWindow</a></li>
 <li><a href="mod_md.html#mdstoredir">MDStoreDir</a></li>
+<li><a href="mod_md.html#mdstorelocks">MDStoreLocks</a></li>
 <li><a href="mod_md.html#mdwarnwindow">MDWarnWindow</a></li>
 <li><a href="mod_socache_memcache.html#memcacheconnttl">MemcacheConnTTL</a></li>
 <li><a href="core.html#mergeslashes">MergeSlashes</a></li>
