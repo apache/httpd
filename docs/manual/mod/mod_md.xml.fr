@@ -2,7 +2,7 @@
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
-<!-- English Revision: 1900950 -->
+<!-- English Revision: 1903678 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -1668,7 +1668,7 @@ MDMessageCmd /etc/apache/md-message
         </usage>
     </directivesynopsis>
 
-        <directivesynopsis>
+    <directivesynopsis>
         <name>MDRetryFailover</name>
         <description></description>
         <syntax>MDRetryFailover <var>number</var></syntax>
@@ -1687,6 +1687,47 @@ MDMessageCmd /etc/apache/md-message
 		spécifiées.
             </p>
         </usage>
-    </directivesynopsis>    
+    </directivesynopsis>
+
+    <directivesynopsis>
+        <name>MDStoreLocks</name>
+        <description></description>
+        <syntax>MDStoreLocks on|off|<var>duration</var></syntax>
+        <default>MDStoreLocks off</default>
+        <contextlist>
+            <context>server config</context>
+        </contextlist>
+        <compatibility>Disponible à partir de la version 2.4.55 du serveur HTTP
+	Apache</compatibility>
+        <usage>
+            <p>
+                Définissez cette directive pour utiliser un fichier verrou au
+		démarrage du serveur lorsque <directive>MDStoreDir</directive>
+		est synchronisé avec la configuration du serveur et si les
+		certificats renouvelés sont activés.
+            </p><p>
+                Le verrouillage a été implémenté pour les configurations de
+		cluster où MDStoreDir appartient à un système de fichiers
+		partagé. L'activation des certificats renouvelés sera alors
+		protégée lorsque plusieurs noeuds du cluster sont redémarrés ou
+		reconfigurés simultanément ; ceci à condition bien entendu que
+		le système de fichiers partagé prenne en charge le verrouillage
+		de fichier.
+            </p><p>
+                Le temps d'attente par défaut pour obtenir le verrou est de 5
+		secondes. Si le verrou ne peut pas être obtenu, une erreur est
+		enregistrée dans le journal et le démarrage du serveur se
+		poursuit ; de ce fait, un des noeuds du cluster pourra encore
+		utiliser les anciens certificats par la suite.
+            </p><p>
+                Un délai d'attente plus long réduira cette probabilité, mais
+		pourra aussi retarder les redémarrages et reconfigurations du
+		serveur dans le cas où les verrous ne sont pas correctement
+		gérés dans le système de fichiers sous-jacent. Un verrou ne doit
+		être maintenu par une instance de httpd que pendant une courte
+		durée.
+            </p>
+        </usage>
+    </directivesynopsis>
 
 </modulesynopsis>
