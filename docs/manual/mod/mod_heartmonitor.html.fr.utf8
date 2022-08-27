@@ -110,7 +110,7 @@ des requêtes heartbeat à ce serveur.</td></tr>
     des données heartbeat lorsqu'on utilise
     <code class="module"><a href="../mod/mod_slotmem_shm.html">mod_slotmem_shm</a></code>.</p>
     <p>Pour utiliser un stockage de type fichier bidimensionnel (flat-file)
-    lorque le module <code class="module"><a href="../mod/mod_slotmem_shm.html">mod_slotmem_shm</a></code>) n'est pas chargé, cette
+    lorque le module <code class="module"><a href="../mod/mod_slotmem_shm.html">mod_slotmem_shm</a></code> n'est pas chargé, cette
     directive doit être définie à 0. La valeur doit être soit égale à 0, soit
     supérieure ou égale à 10.</p>
 

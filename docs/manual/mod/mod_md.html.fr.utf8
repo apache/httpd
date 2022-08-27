@@ -410,6 +410,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#mdstaplingkeepresponse">MDStaplingKeepResponse</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mdstaplingrenewwindow">MDStaplingRenewWindow</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mdstoredir">MDStoreDir</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#mdstorelocks">MDStoreLocks</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mdwarnwindow">MDWarnWindow</a></li>
 </ul>
 <h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_md">Problèmes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_md">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
@@ -1609,6 +1610,47 @@ MDRenewWindow 10%</pre>
 		configuration et redémarrer le serveur sans copier les données,
 		ce dernier croira que les certificats sont absents et il tentera
 		d'en obtenir de nouveaux.
+            </p>
+        
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="mdstorelocks" id="mdstorelocks">Directive</a> <a name="MDStoreLocks" id="MDStoreLocks">MDStoreLocks</a> <a title="Lien permanent" href="#mdstorelocks" class="permalink">&para;</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td /></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MDStoreLocks on|off|<var>duration</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>MDStoreLocks off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_md</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.55 du serveur HTTP
+	Apache</td></tr>
+</table>
+            <p>
+                Définissez cette directive pour utiliser un fichier verrou au
+		démarrage du serveur lorsque <code class="directive">MDStoreDir</code>
+		est synchronisé avec la configuration du serveur et si les
+		certificats renouvelés sont activés.
+            </p><p>
+                Le verrouillage a été implémenté pour les configurations de
+		cluster où MDStoreDir appartient à un système de fichiers
+		partagé. L'activation des certificats renouvelés sera alors
+		protégée lorsque plusieurs noeuds du cluster sont redémarrés ou
+		reconfigurés simultanément ; ceci à condition bien entendu que
+		le système de fichiers partagé prenne en charge le verrouillage
+		de fichier.
+            </p><p>
+                Le temps d'attente par défaut pour obtenir le verrou est de 5
+		secondes. Si le verrou ne peut pas être obtenu, une erreur est
+		enregistrée dans le journal et le démarrage du serveur se
+		poursuit ; de ce fait, un des noeuds du cluster pourra encore
+		utiliser les anciens certificats par la suite.
+            </p><p>
+                Un délai d'attente plus long réduira cette probabilité, mais
+		pourra aussi retarder les redémarrages et reconfigurations du
+		serveur dans le cas où les verrous ne sont pas correctement
+		gérés dans le système de fichiers sous-jacent. Un verrou ne doit
+		être maintenu par une instance de httpd que pendant une courte
+		durée.
             </p>
         
 </div>
