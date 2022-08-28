@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) mod_proxy_hcheck: hcmethod now allows for HTTP/1.1 requests
+     using GET11, HEAD11 and/or OPTIONS11. [Jim Jagielski]
+
   *) mod_md:  a bug was fixed that caused very large MDomains
      with the combined DNS names exceeding ~7k to fail, as
      request bodies would contain partially wrong data from
