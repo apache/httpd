@@ -52,6 +52,9 @@ proxy_hcmethods_t PROXY_DECLARE_DATA proxy_hcmethods[] = {
     {GET, "GET", 1},
     {CPING, "CPING", 0},
     {PROVIDER, "PROVIDER", 0},
+    {OPTIONS11, "OPTIONS11", 1},
+    {HEAD11, "HEAD11", 1},
+    {GET11, "GET11", 1},
     {EOT, NULL, 1}
 };
 

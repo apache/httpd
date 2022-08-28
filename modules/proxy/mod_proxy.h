@@ -77,7 +77,7 @@ enum enctype {
 };
 
 typedef enum {
-    NONE, TCP, OPTIONS, HEAD, GET, CPING, PROVIDER, EOT
+    NONE, TCP, OPTIONS, HEAD, GET, CPING, PROVIDER, OPTIONS11, HEAD11, GET11, EOT
 } hcmethod_t;
 
 typedef struct {

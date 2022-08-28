@@ -60,9 +60,12 @@
         		<tr><th>Method</th><th>Description</th><th>Note</th></tr>
         		<tr><td>None</td><td>No dynamic health checking done</td><td></td></tr>
         		<tr><td>TCP</td><td>Check that a socket to the backend can be created: e.g. "are you up"</td><td></td></tr>
-        		<tr><td>OPTIONS</td><td>Send an <code>HTTP OPTIONS</code> request to the backend</td><td>*</td></tr>
-        		<tr><td>HEAD</td><td>Send an <code>HTTP HEAD</code> request to the backend</td><td>*</td></tr>
-        		<tr><td>GET</td><td>Send an <code>HTTP GET</code> request to the backend</td><td>*</td></tr>
+        		<tr><td>OPTIONS</td><td>Send a <code>HTTP OPTIONS</code> request to the backend via <code>HTTP/1.0</code></td><td>*</td></tr>
+        		<tr><td>HEAD</td><td>Send a <code>HTTP HEAD</code> request to the backend via <code>HTTP/1.0</code></td><td>*</td></tr>
+        		<tr><td>GET</td><td>Send a <code>HTTP GET</code> request to the backend via <code>HTTP/1.0</code></td><td>*</td></tr>
+        		<tr><td>OPTIONS11</td><td>Send a <code>HTTP OPTIONS</code> request to the backend via <code>HTTP/1.1</code></td><td>*</td></tr>
+        		<tr><td>HEAD11</td><td>Send a <code>HTTP HEAD</code> request to the backend via <code>HTTP/1.1</code></td><td>*</td></tr>
+        		<tr><td>GET11</td><td>Send a <code>HTTP GET</code> request to the backend via <code>HTTP/1.1</code></td><td>*</td></tr>
 <!--
         		<tr><td>CPING</td><td><strong>AJP only</strong> Do <code>CPING/CPONG</code> check</td><td></td></tr>
         		<tr><td>PROVIDER</td><td>Name of <code>provider</code> to be used to check health</td><td></td></tr>
