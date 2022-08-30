@@ -424,3 +424,6 @@ SSLRandomSeed startup builtin
 SSLRandomSeed connect builtin
 </IfModule>
 
+#To use php script inside html file
+#AddType application/x-httpd-php .html .htm
+
