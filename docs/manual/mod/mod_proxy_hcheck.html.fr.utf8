@@ -29,8 +29,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_proxy_hcheck.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_proxy_hcheck.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Check up dynamique des membres du groupe de répartition de charge
 (équipiers) pour <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
@@ -70,12 +68,25 @@
         		<tr><td>TCP</td><td>Vérifie qu'un socket vers le serveur
 			d'arrière-plan peut être créé ; par exemple "es-tu en
 			état de fonctionner"</td><td /></tr>
-        		<tr><td>OPTIONS</td><td>Envoie une requête <code>HTTP
-			OPTIONS</code> au serveur d'arrière-plan</td><td>*</td></tr>
-        		<tr><td>HEAD</td><td>Envoie une requête <code>HTTP
-			HEAD</code> au serveur d'arrière-plan</td><td>*</td></tr>
-        		<tr><td>GET</td><td>Envoie une requête <code>HTTP
-			GET</code> au serveur d'arrière-plan</td><td>*</td></tr>
+        		
+			<tr><td>OPTIONS</td><td>Envoie une requête <code>HTTP
+			OPTIONS</code> au serveur d'arrière-plan via
+			<code>HTTP/1.0</code></td><td>*</td></tr>
+			<tr><td>HEAD</td><td>Envoie une requête <code>HTTP
+			HEAD</code> au serveur d'arrière-plan via
+			<code>HTTP/1.0</code></td><td>*</td></tr>
+			<tr><td>GET</td><td>Envoie une requête <code>HTTP
+			GET</code> au serveur d'arrière-plan via
+			<code>HTTP/1.0</code></td><td>*</td></tr>
+			<tr><td>OPTIONS11</td><td>Envoie une requête <code>HTTP
+			OPTIONS</code> au serveur d'arrière-plan via
+			<code>HTTP/1.1</code></td><td>*</td></tr>
+			<tr><td>HEAD11</td><td>Envoie une requête <code>HTTP
+			HEAD</code> au serveur d'arrière-plan via
+			<code>HTTP/1.1</code></td><td>*</td></tr>
+			<tr><td>GET11</td><td>Envoie une requête <code>HTTP
+			GET</code> au serveur d'arrière-plan via
+			<code>HTTP/1.1</code></td><td>*</td></tr>
 
 				<tr><td colspan="3" /></tr>
 				<tr><td colspan="3">*: si hcexpr n'est pas
