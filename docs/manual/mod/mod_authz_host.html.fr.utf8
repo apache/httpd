@@ -179,10 +179,12 @@ Require host .net example.edu</pre>
     <p>A la différence du fournisseur <code>host</code>, ce fournisseur
     n'effectue pas de recherche DNS inverse : il effectue simplement une requête
     DNS directe pour le nom d'hôte spécifié et donne accès au client si son
-    adresse IP correspond. Il ne fonctionnera donc qu'avec des noms d'hôte, et
-    non avec des noms de domaine. Par contre, comme le DNS inverse n'est pas
-    sollicité, il fonctionnera avec des clients qui utilisent un service de DNS
-    dynamique.</p>
+    adresse IP correspond. Il ne fonctionnera donc qu'avec des noms d'hôte
+    complets qui peuvent être résolus par le DNS, et non avec des noms de
+    domaine partiels. Par contre, comme le DNS inverse n'est pas sollicité, et
+    comme les recherches DNS interviennent au moment du traitement de la requête
+    (et non au démarrage), il fonctionnera avec des clients qui utilisent un
+    service de DNS dynamique.</p>
 
     <pre class="prettyprint lang-config">Require forward-dns dynamic.example.org</pre>
 
