@@ -191,7 +191,9 @@ an offset.</dd>
 <section id="examples"><title>Examples</title>
 
 <example>
+<highlight language="config">
      CustomLog "|bin/rotatelogs /var/log/logfile 86400" common
+</highlight>
 </example>
 
      <p>This creates the files /var/log/logfile.nnnn where nnnn  is
@@ -201,7 +203,9 @@ an offset.</dd>
      time (here after 24 hours) a new log is started.</p>
 
 <example>
+<highlight language="config">
      CustomLog "|bin/rotatelogs -l /var/log/logfile.%Y.%m.%d 86400" common
+</highlight>
 </example>
 
      <p>This creates the files /var/log/logfile.yyyy.mm.dd where
@@ -209,14 +213,18 @@ an offset.</dd>
      Logging will switch to a new file every day at midnight, local time.</p>
 
 <example>
+<highlight language="config">
      CustomLog "|bin/rotatelogs /var/log/logfile 5M" common
+</highlight>
 </example>
 
      <p>This configuration will rotate the logfile whenever it reaches
      a size of 5 megabytes.</p>
 
 <example>
+<highlight language="config">
      ErrorLog "|bin/rotatelogs /var/log/errorlog.%Y-%m-%d-%H_%M_%S 5M"
+</highlight>
 </example>
      <p>This configuration will rotate the error logfile whenever it
      reaches a size of 5 megabytes, and the suffix to the logfile name
@@ -224,10 +232,12 @@ an offset.</dd>
      <code>errorlog.YYYY-mm-dd-HH_MM_SS</code>.</p>
 
 <example>
+<highlight language="config">
      CustomLog "|bin/rotatelogs -t /var/log/logfile 86400" common
+</highlight>
 </example>
 
-     <p>This creates the file /var/log/logfile, truncating the file at
+     <p>This creates the file <code>/var/log/logfile</code>, truncating the file at
      startup and then truncating the file once per day. It is expected
      in this scenario that a separate process (such as tail) would
      process the file in real time.</p>
