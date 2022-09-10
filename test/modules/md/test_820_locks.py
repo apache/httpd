@@ -41,6 +41,7 @@ class TestLocks:
         assert env.await_completion([domain])
 
     # renewal, with global lock held during restert
+    @pytest.mark.skip("does not work in our CI")
     def test_md_820_002(self, env):
         domain = self.test_domain
         self.configure_httpd(env, [domain], add_lines=[
