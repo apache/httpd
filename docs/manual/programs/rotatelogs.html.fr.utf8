@@ -78,7 +78,7 @@ nom-lien</code>.</p>
 <p>Si le nom du lien spécifié n'est pas un chemin absolu, il est relatif au
 répertoire de travail de <code>rotatelogs</code> qui correspond à la valeur de
 la directive <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code> lorsque la commande
-<code>rotatelogs</code> est exécutée par le serveur.
+<code>rotatelogs</code> est exécutée par le serveur.  
 </p>
 </dd>
 
@@ -105,10 +105,9 @@ journal associé n'"existe" pas, ce qui peut causer des problèmes à
 certains utilitaires de journalisation automatiques).</dd>
 
 <dt><code>-D</code></dt>
-<dd>Crée les répertoires parents du répertoire dans lequel le fichier journal
-sera placé s'ils n'existent pas déjà. Cela permet d'utiliser le formatage
-<code>strftime(3)</code> non seulement dans le nom de fichier mais aussi dans le
-chemin.</dd>
+<dd>Crée les répertoires parents du chemin du fichier journal s'ils
+n'existent pas déjà, ce qui permet d'utiliser le format
+<code>strftime(3)</code> dans les chemins au lieu du nom de fichier seul.</dd>
 
 <dt><code>-t</code></dt>
 <dd>Provoque une troncature du fichier journal au lieu d'une rotation.
@@ -132,10 +131,10 @@ opérations d'ouverture et de fermeture de fichiers.</dd>
 utile lorsque les journaux doivent être traités par un autre programme.</dd>
 
 <dt><code>-n <var>nombre-de-fichiers</var></code></dt>
-<dd>Utilise une liste circulaire de fichiers sans repères de temps. Cette option
-permet d'écraser des fichiers journaux au démarrage et au cours de la rotation.
-Avec -n 3, la série de fichiers conservés sera "logfile", "logfile.1",
-"logfile.2" avec écrasement de "logfile".
+<dd>Utilise une liste circulaire de noms de fichiers sans repères de temps.
+Cette option permet d'écraser des fichiers journaux au démarrage et au cours de
+la rotation. Avec -n 3, la série de fichiers conservés sera "logfile",
+"logfile.1", "logfile.2" avec écrasement de "logfile".
 <br />
 Lorsque ce programme ouvre «&nbsp;logfile&nbsp;», ce dernier sera seulement tronqué si
 l'option <code>-t</code> est aussi spécifiée. Toute rotation subséquente sera
@@ -213,9 +212,8 @@ spécifier un décalage.</dd>
 <div class="section">
 <h2><a name="examples" id="examples">Exemples</a></h2>
 
-<div class="example"><p><code>
-     CustomLog "|bin/rotatelogs /var/log/fichier-journal 86400" common
-</code></p></div>
+<div class="example"><pre class="prettyprint lang-config">CustomLog "|bin/rotatelogs /var/log/fichier-journal 86400" common</pre>
+</div>
 
      <p>Cette directive crée les fichiers /var/log/fichier-journal.nnnn
      où nnnn correspond au temps système auquel la journalisation
@@ -224,38 +222,33 @@ spécifier un décalage.</dd>
      avec lui). A la fin de chaque temps de rotation (ici après 24
      heures), une nouvelle journalisation démarre.</p>
 
-<div class="example"><p><code>
-     CustomLog "|bin/rotatelogs -l /var/log/fichier-journal.%Y.%m.%d 86400" common
-</code></p></div>
+<div class="example"><pre class="prettyprint lang-config">CustomLog "|bin/rotatelogs -l /var/log/fichier-journal.%Y.%m.%d 86400" common</pre>
+</div>
 
      <p>Cette directive crée les fichiers
      /var/log/fichier-journal.yyyy.mm.dd où yyyy correspond à l'année,
      mm au mois et dd au jour du mois. La journalisation basculera vers
      un nouveau fichier chaque jour à minuit, temps local.</p>
 
-<div class="example"><p><code>
-     CustomLog "|bin/rotatelogs /var/log/fichier-journal 5M" common
-</code></p></div>
+<div class="example"><pre class="prettyprint lang-config">CustomLog "|bin/rotatelogs /var/log/fichier-journal 5M" common</pre>
+</div>
 
      <p>Cette directive va effectuer une rotation du fichier journal
      chaque fois que la taille de ce dernier atteindra 5 MOctets.</p>
 
-<div class="example"><p><code>
-     ErrorLog "|bin/rotatelogs /var/log/journal-erreurs.%Y-%m-%d-%H_%M_%S 5M"
-</code></p></div>
+<div class="example"><pre class="prettyprint lang-config">ErrorLog "|bin/rotatelogs /var/log/journal-erreurs.%Y-%m-%d-%H_%M_%S 5M"</pre>
+</div>
      <p>Cette directive va effectuer une rotation du fichier journal des
      erreurs chaque fois que la taille de ce dernier atteindra 5
      MOctets, et le nom du fichier journal se présentera sous
      la forme <code>journal-erreurs.YYYY-mm-dd-HH_MM_SS</code>.</p>
 
-<div class="example"><p><code>
-     CustomLog "|bin/rotatelogs -t /var/log/journal 86400" common
-</code></p></div>
+<div class="example"><pre class="prettyprint lang-config">CustomLog "|bin/rotatelogs -t /var/log/journal 86400" common</pre>
+</div>
 
-     <p>Cet exemple crée le fichier /var/log/journal en le tronquant
-     au démarrage, puis une fois par jour. Ce scénario implique qu'un
-     processus séparé (tel que tail) traite le fichier en temps
-     réel.</p>
+     <p>Cet exemple crée le fichier <code>/var/log/journal</code> en le
+     tronquant au démarrage, puis une fois par jour. Ce scénario implique qu'un
+     processus séparé (tel que tail) traite le fichier en temps réel.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">

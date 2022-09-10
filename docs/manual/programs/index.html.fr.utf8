@@ -96,7 +96,7 @@
       <dd>Résolution des noms d'hôtes en adresses IP dans les fichiers
       de traces d'Apache</dd>
 
-      <dt><a href="other.html#log_server_status">log_server_status</a></dt>
+      <dt><code class="program"><a href="../programs/log_server_status.html">log_server_status</a></code></dt>
 
        <dd>Journalisation périodique du statut du serveur</dd>
 
