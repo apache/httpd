@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1899270 -->
+<!-- English Revision : 1903934 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -70,7 +70,7 @@ nom-lien</code>.</p>
 <p>Si le nom du lien spécifié n'est pas un chemin absolu, il est relatif au
 répertoire de travail de <code>rotatelogs</code> qui correspond à la valeur de
 la directive <directive module="core">ServerRoot</directive> lorsque la commande
-<code>rotatelogs</code> est exécutée par le serveur.
+<code>rotatelogs</code> est exécutée par le serveur.  
 </p>
 </dd>
 
@@ -97,10 +97,9 @@ journal associé n'"existe" pas, ce qui peut causer des problèmes à
 certains utilitaires de journalisation automatiques).</dd>
 
 <dt><code>-D</code></dt>
-<dd>Crée les répertoires parents du répertoire dans lequel le fichier journal
-sera placé s'ils n'existent pas déjà. Cela permet d'utiliser le formatage
-<code>strftime(3)</code> non seulement dans le nom de fichier mais aussi dans le
-chemin.</dd>
+<dd>Crée les répertoires parents du chemin du fichier journal s'ils
+n'existent pas déjà, ce qui permet d'utiliser le format
+<code>strftime(3)</code> dans les chemins au lieu du nom de fichier seul.</dd>
 
 <dt><code>-t</code></dt>
 <dd>Provoque une troncature du fichier journal au lieu d'une rotation.
@@ -124,10 +123,10 @@ opérations d'ouverture et de fermeture de fichiers.</dd>
 utile lorsque les journaux doivent être traités par un autre programme.</dd>
 
 <dt><code>-n <var>nombre-de-fichiers</var></code></dt>
-<dd>Utilise une liste circulaire de fichiers sans repères de temps. Cette option
-permet d'écraser des fichiers journaux au démarrage et au cours de la rotation.
-Avec -n 3, la série de fichiers conservés sera "logfile", "logfile.1",
-"logfile.2" avec écrasement de "logfile".
+<dd>Utilise une liste circulaire de noms de fichiers sans repères de temps.
+Cette option permet d'écraser des fichiers journaux au démarrage et au cours de
+la rotation. Avec -n 3, la série de fichiers conservés sera "logfile",
+"logfile.1", "logfile.2" avec écrasement de "logfile".
 <br />
 Lorsque ce programme ouvre « logfile », ce dernier sera seulement tronqué si
 l'option <code>-t</code> est aussi spécifiée. Toute rotation subséquente sera
@@ -206,7 +205,9 @@ spécifier un décalage.</dd>
 <section id="examples"><title>Exemples</title>
 
 <example>
+<highlight language="config">
      CustomLog "|bin/rotatelogs /var/log/fichier-journal 86400" common
+</highlight>
 </example>
 
      <p>Cette directive crée les fichiers /var/log/fichier-journal.nnnn
@@ -217,7 +218,9 @@ spécifier un décalage.</dd>
      heures), une nouvelle journalisation démarre.</p>
 
 <example>
+<highlight language="config">
      CustomLog "|bin/rotatelogs -l /var/log/fichier-journal.%Y.%m.%d 86400" common
+</highlight>
 </example>
 
      <p>Cette directive crée les fichiers
@@ -226,14 +229,18 @@ spécifier un décalage.</dd>
      un nouveau fichier chaque jour à minuit, temps local.</p>
 
 <example>
+<highlight language="config">
      CustomLog "|bin/rotatelogs /var/log/fichier-journal 5M" common
+</highlight>
 </example>
 
      <p>Cette directive va effectuer une rotation du fichier journal
      chaque fois que la taille de ce dernier atteindra 5 MOctets.</p>
 
 <example>
+<highlight language="config">
      ErrorLog "|bin/rotatelogs /var/log/journal-erreurs.%Y-%m-%d-%H_%M_%S 5M"
+</highlight>
 </example>
      <p>Cette directive va effectuer une rotation du fichier journal des
      erreurs chaque fois que la taille de ce dernier atteindra 5
@@ -241,13 +248,14 @@ spécifier un décalage.</dd>
      la forme <code>journal-erreurs.YYYY-mm-dd-HH_MM_SS</code>.</p>
 
 <example>
+<highlight language="config">
      CustomLog "|bin/rotatelogs -t /var/log/journal 86400" common
+</highlight>
 </example>
 
-     <p>Cet exemple crée le fichier /var/log/journal en le tronquant
-     au démarrage, puis une fois par jour. Ce scénario implique qu'un
-     processus séparé (tel que tail) traite le fichier en temps
-     réel.</p>
+     <p>Cet exemple crée le fichier <code>/var/log/journal</code> en le
+     tronquant au démarrage, puis une fois par jour. Ce scénario implique qu'un
+     processus séparé (tel que tail) traite le fichier en temps réel.</p>
 
 </section>
 
