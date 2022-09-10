@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1899269 -->
+<!-- English Revision : 1903933 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -205,7 +205,9 @@ spécifier un décalage.</dd>
 <section id="examples"><title>Exemples</title>
 
 <example>
+<highlight language="config">
      CustomLog "|bin/rotatelogs /var/log/fichier-journal 86400" common
+</highlight>
 </example>
 
      <p>Cette directive crée les fichiers /var/log/fichier-journal.nnnn
@@ -216,7 +218,9 @@ spécifier un décalage.</dd>
      heures), une nouvelle journalisation démarre.</p>
 
 <example>
+<highlight language="config">
      CustomLog "|bin/rotatelogs -l /var/log/fichier-journal.%Y.%m.%d 86400" common
+</highlight>
 </example>
 
      <p>Cette directive crée les fichiers
@@ -225,14 +229,18 @@ spécifier un décalage.</dd>
      un nouveau fichier chaque jour à minuit, temps local.</p>
 
 <example>
+<highlight language="config">
      CustomLog "|bin/rotatelogs /var/log/fichier-journal 5M" common
+</highlight>
 </example>
 
      <p>Cette directive va effectuer une rotation du fichier journal
      chaque fois que la taille de ce dernier atteindra 5 MOctets.</p>
 
 <example>
+<highlight language="config">
      ErrorLog "|bin/rotatelogs /var/log/journal-erreurs.%Y-%m-%d-%H_%M_%S 5M"
+</highlight>
 </example>
      <p>Cette directive va effectuer une rotation du fichier journal des
      erreurs chaque fois que la taille de ce dernier atteindra 5
@@ -240,13 +248,14 @@ spécifier un décalage.</dd>
      la forme <code>journal-erreurs.YYYY-mm-dd-HH_MM_SS</code>.</p>
 
 <example>
+<highlight language="config">
      CustomLog "|bin/rotatelogs -t /var/log/journal 86400" common
+</highlight>
 </example>
 
-     <p>Cet exemple crée le fichier /var/log/journal en le tronquant
-     au démarrage, puis une fois par jour. Ce scénario implique qu'un
-     processus séparé (tel que tail) traite le fichier en temps
-     réel.</p>
+     <p>Cet exemple crée le fichier <code>/var/log/journal</code> en le
+     tronquant au démarrage, puis une fois par jour. Ce scénario implique qu'un
+     processus séparé (tel que tail) traite le fichier en temps réel.</p>
 
 </section>
 
