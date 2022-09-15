@@ -30,9 +30,6 @@ typedef enum {
     H2_CONF_MAX_WORKERS,
     H2_CONF_MAX_WORKER_IDLE_SECS,
     H2_CONF_STREAM_MAX_MEM,
-    H2_CONF_ALT_SVCS,
-    H2_CONF_ALT_SVC_MAX_AGE,
-    H2_CONF_SER_HEADERS,
     H2_CONF_DIRECT,
     H2_CONF_MODERN_TLS_ONLY,
     H2_CONF_UPGRADE,
@@ -45,6 +42,8 @@ typedef enum {
     H2_CONF_PADDING_BITS,
     H2_CONF_PADDING_ALWAYS,
     H2_CONF_OUTPUT_BUFFER,
+    H2_CONF_STREAM_TIMEOUT,
+    H2_CONF_HEADER_STRICTNESS,
 } h2_config_var_t;
 
 struct apr_hash_t;
@@ -88,7 +87,6 @@ int h2_config_rgeti(request_rec *r, h2_config_var_t var);
 apr_int64_t h2_config_rgeti64(request_rec *r, h2_config_var_t var);
 
 apr_array_header_t *h2_config_push_list(request_rec *r);
-apr_array_header_t *h2_config_alt_svcs(request_rec *r);
 
 
 void h2_get_num_workers(server_rec *s, int *minw, int *maxw);

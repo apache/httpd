@@ -77,13 +77,19 @@ h2_headers *h2_headers_clone(apr_pool_t *pool, h2_headers *h);
  * @param pool the memory pool to use
  */
 h2_headers *h2_headers_die(apr_status_t type,
-                             const struct h2_request *req, apr_pool_t *pool);
+                           const struct h2_request *req, apr_pool_t *pool);
 
-int h2_headers_are_response(h2_headers *headers);
+int h2_headers_are_final_response(h2_headers *headers);
 
 /**
  * Give the number of bytes of all contained header strings.
  */
 apr_size_t h2_headers_length(h2_headers *headers);
+
+/**
+ * For H2HEADER buckets, return the length of all contained header strings.
+ * For all other buckets, return 0.
+ */
+apr_size_t h2_bucket_headers_headers_length(apr_bucket *b);
 
 #endif /* defined(__mod_h2__h2_headers__) */

@@ -693,7 +693,7 @@ static ssize_t stream_request_data(nghttp2_session *ngh2, int32_t stream_id,
 }
 
 #ifdef H2_NG2_INVALID_HEADER_CB
-static int on_invalid_header_cb(nghttp2_session *ngh2, 
+static int on_invalid_header_cb(nghttp2_session *ngh2,
                                 const nghttp2_frame *frame, 
                                 const uint8_t *name, size_t namelen, 
                                 const uint8_t *value, size_t valuelen, 
@@ -756,7 +756,6 @@ h2_proxy_session *h2_proxy_session_setup(const char *id, proxy_conn_rec *p_conn,
 #ifdef H2_NG2_INVALID_HEADER_CB
         nghttp2_session_callbacks_set_on_invalid_header_callback(cbs, on_invalid_header_cb);
 #endif
-        
         nghttp2_option_new(&option);
         nghttp2_option_set_peer_max_concurrent_streams(option, 100);
         nghttp2_option_set_no_auto_window_update(option, 0);
@@ -829,7 +828,7 @@ static apr_status_t open_stream(h2_proxy_session *session, const char *url,
     stream->input = apr_brigade_create(stream->pool, session->c->bucket_alloc);
     stream->output = apr_brigade_create(stream->pool, session->c->bucket_alloc);
     
-    stream->req = h2_proxy_req_create(1, stream->pool, 0);
+    stream->req = h2_proxy_req_create(1, stream->pool);
 
     status = apr_uri_parse(stream->pool, url, &puri);
     if (status != APR_SUCCESS)
@@ -1141,7 +1140,7 @@ static apr_status_t session_shutdown(h2_proxy_session *session, int reason,
     if (!err && reason) {
         err = nghttp2_strerror(reason);
     }
-    nghttp2_submit_goaway(session->ngh2, NGHTTP2_FLAG_NONE, 0, 
+    nghttp2_submit_goaway(session->ngh2, NGHTTP2_FLAG_NONE, 0,
                           reason, (uint8_t*)err, err? strlen(err):0);
     status = nghttp2_session_send(session->ngh2);
     dispatch_event(session, H2_PROXYS_EV_LOCAL_GOAWAY, reason, err);
@@ -1360,8 +1359,7 @@ static void ev_stream_done(h2_proxy_session *session, int stream_id,
         else if (!stream->data_received) {
             apr_bucket *b;
             /* if the response had no body, this is the time to flush
-             * an empty brigade which will also write the resonse
-             * headers */
+             * an empty brigade which will also write the response headers */
             h2_proxy_stream_end_headers_out(stream);
             stream->data_received = 1;
             b = apr_bucket_flush_create(stream->r->connection->bucket_alloc);

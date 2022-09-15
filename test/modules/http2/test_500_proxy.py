@@ -65,7 +65,7 @@ class TestProxy:
             src = file.read()
         if r.response["body"] != src:
             with open(os.path.join(env.gen_dir, "nghttp.out"), 'w') as fd:
-                fd.write(r.outraw)
+                fd.write(str(r.outraw))
                 fd.write("\nstderr:\n")
                 fd.write(r.stderr)
             assert r.response["body"] == src

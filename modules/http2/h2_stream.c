@@ -17,34 +17,38 @@
 #include <assert.h>
 #include <stddef.h>
 
-#include <apr_strings.h>
+#include "apr.h"
+#include "apr_strings.h"
+#include "apr_lib.h"
+#include "apr_strmatch.h"
 
 #include <httpd.h>
 #include <http_core.h>
 #include <http_connection.h>
 #include <http_log.h>
+#include <http_ssl.h>
 
 #include <nghttp2/nghttp2.h>
 
 #include "h2_private.h"
 #include "h2.h"
 #include "h2_bucket_beam.h"
-#include "h2_conn.h"
+#include "h2_c1.h"
 #include "h2_config.h"
-#include "h2_h2.h"
+#include "h2_protocol.h"
 #include "h2_mplx.h"
 #include "h2_push.h"
 #include "h2_request.h"
 #include "h2_headers.h"
 #include "h2_session.h"
 #include "h2_stream.h"
-#include "h2_task.h"
-#include "h2_ctx.h"
-#include "h2_task.h"
+#include "h2_c2.h"
+#include "h2_conn_ctx.h"
+#include "h2_c2.h"
 #include "h2_util.h"
 
 
-static const char *h2_ss_str(h2_stream_state_t state)
+static const char *h2_ss_str(const h2_stream_state_t state)
 {
     switch (state) {
         case H2_SS_IDLE:
@@ -68,7 +72,7 @@ static const char *h2_ss_str(h2_stream_state_t state)
     }
 }
 
-const char *h2_stream_state_str(h2_stream *stream) 
+const char *h2_stream_state_str(const h2_stream *stream)
 {
     return h2_ss_str(stream->state);
 }
@@ -121,6 +125,7 @@ static int trans_on_event[][H2_SS_MAX] = {
 { S_ERR, S_ERR,  S_ERR,  S_CL_R, S_ERR,  S_CLS,  S_NOP,  S_NOP, },/* EV_CLOSED_R*/
 { S_CLS, S_CLS,  S_CLS,  S_CLS,  S_CLS,  S_CLS,  S_NOP,  S_NOP, },/* EV_CANCELLED*/
 { S_NOP, S_XXX,  S_XXX,  S_XXX,  S_XXX,  S_CLS,  S_CLN,  S_XXX, },/* EV_EOS_SENT*/
+{ S_NOP, S_XXX,  S_CLS,  S_XXX,  S_XXX,  S_CLS,  S_XXX,  S_XXX, },/* EV_IN_ERROR*/
 };
 
 static int on_map(h2_stream_state_t state, int map[H2_SS_MAX])
@@ -169,10 +174,18 @@ static int on_event(h2_stream* stream, h2_stream_event_t ev)
     return stream->state;
 }
 
+static ssize_t stream_data_cb(nghttp2_session *ng2s,
+                              int32_t stream_id,
+                              uint8_t *buf,
+                              size_t length,
+                              uint32_t *data_flags,
+                              nghttp2_data_source *source,
+                              void *puser);
+
 static void H2_STREAM_OUT_LOG(int lvl, h2_stream *s, const char *tag)
 {
-    if (APLOG_C_IS_LEVEL(s->session->c, lvl)) {
-        conn_rec *c = s->session->c;
+    if (APLOG_C_IS_LEVEL(s->session->c1, lvl)) {
+        conn_rec *c = s->session->c1;
         char buffer[4 * 1024];
         apr_size_t len, bmax = sizeof(buffer)/sizeof(buffer[0]);
         
@@ -182,76 +195,77 @@ static void H2_STREAM_OUT_LOG(int lvl, h2_stream *s, const char *tag)
     }
 }
 
-static apr_status_t setup_input(h2_stream *stream) {
+apr_status_t h2_stream_setup_input(h2_stream *stream)
+{
     if (stream->input == NULL) {
-        int empty = (stream->input_eof 
+        int empty = (stream->input_closed
                      && (!stream->in_buffer 
                          || APR_BRIGADE_EMPTY(stream->in_buffer)));
         if (!empty) {
-            h2_beam_create(&stream->input, stream->pool, stream->id, 
-                           "input", H2_BEAM_OWNER_SEND, 0, 
-                           stream->session->s->timeout);
-            h2_beam_send_from(stream->input, stream->pool);
+            ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, stream->session->c1,
+                          H2_STRM_MSG(stream, "setup input beam"));
+            h2_beam_create(&stream->input, stream->session->c1,
+                           stream->pool, stream->id,
+                           "input", 0, stream->session->s->timeout);
         }
     }
     return APR_SUCCESS;
 }
 
+static void input_append_bucket(h2_stream *stream, apr_bucket *b)
+{
+    if (!stream->in_buffer) {
+        stream->in_buffer = apr_brigade_create(
+            stream->pool, stream->session->c1->bucket_alloc);
+    }
+    APR_BRIGADE_INSERT_TAIL(stream->in_buffer, b);
+}
+
+static void input_append_data(h2_stream *stream, const char *data, apr_size_t len)
+{
+    if (!stream->in_buffer) {
+        stream->in_buffer = apr_brigade_create(
+            stream->pool, stream->session->c1->bucket_alloc);
+    }
+    apr_brigade_write(stream->in_buffer, NULL, NULL, data, len);
+}
+
+
 static apr_status_t close_input(h2_stream *stream)
 {
-    conn_rec *c = stream->session->c;
-    apr_status_t status = APR_SUCCESS;
+    conn_rec *c = stream->session->c1;
+    apr_status_t rv = APR_SUCCESS;
+    apr_bucket *b;
 
-    stream->input_eof = 1;
-    if (stream->input && h2_beam_is_closed(stream->input)) {
-        return APR_SUCCESS;
-    }
-    
-    ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, stream->session->c,
+    if (stream->input_closed) goto cleanup;
+
+    ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, stream->session->c1,
                   H2_STRM_MSG(stream, "closing input"));
-    if (stream->rst_error) {
-        return APR_ECONNRESET;
-    }
-    
-    if (stream->trailers && !apr_is_empty_table(stream->trailers)) {
-        apr_bucket *b;
+    if (!stream->rst_error
+        && stream->trailers_in
+        && !apr_is_empty_table(stream->trailers_in)) {
         h2_headers *r;
         
-        if (!stream->in_buffer) {
-            stream->in_buffer = apr_brigade_create(stream->pool, c->bucket_alloc);
-        }
-        
-        r = h2_headers_create(HTTP_OK, stream->trailers, NULL, 
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, stream->session->c1,
+                      H2_STRM_MSG(stream, "adding trailers"));
+        r = h2_headers_create(HTTP_OK, stream->trailers_in, NULL,
             stream->in_trailer_octets, stream->pool);
-        stream->trailers = NULL;        
+        stream->trailers_in = NULL;
         b = h2_bucket_headers_create(c->bucket_alloc, r);
-        APR_BRIGADE_INSERT_TAIL(stream->in_buffer, b);
-        
+        input_append_bucket(stream, b);
+    }
+
+    stream->input_closed = 1;
+    if (stream->in_buffer || stream->input) {
         b = apr_bucket_eos_create(c->bucket_alloc);
-        APR_BRIGADE_INSERT_TAIL(stream->in_buffer, b);
-        
-        ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, stream->session->c,
-                      H2_STRM_MSG(stream, "added trailers"));
+        input_append_bucket(stream, b);
         h2_stream_dispatch(stream, H2_SEV_IN_DATA_PENDING);
     }
-    if (stream->input) {
-        h2_stream_flush_input(stream);
-        return h2_beam_close(stream->input);
-    }
-    return status;
+cleanup:
+    return rv;
 }
 
-static apr_status_t close_output(h2_stream *stream)
-{
-    if (!stream->output || h2_beam_is_closed(stream->output)) {
-        return APR_SUCCESS;
-    }
-    ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, stream->session->c,
-                  H2_STRM_MSG(stream, "closing output"));
-    return h2_beam_leave(stream->output);
-}
-
-static void on_state_enter(h2_stream *stream) 
+static void on_state_enter(h2_stream *stream)
 {
     if (stream->monitor && stream->monitor->on_state_enter) {
         stream->monitor->on_state_enter(stream->monitor->ctx, stream);
@@ -271,7 +285,7 @@ static void on_state_invalid(h2_stream *stream)
         stream->monitor->on_state_invalid(stream->monitor->ctx, stream);
     }
     /* stream got an event/frame invalid in its state */
-    ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, stream->session->c,
+    ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, stream->session->c1,
                   H2_STRM_MSG(stream, "invalid state event")); 
     switch (stream->state) {
         case H2_SS_OPEN:
@@ -292,13 +306,13 @@ static apr_status_t transit(h2_stream *stream, int new_state)
         return APR_SUCCESS;
     }
     else if (new_state < 0) {
-        ap_log_cerror(APLOG_MARK, APLOG_WARNING, 0, stream->session->c, 
+        ap_log_cerror(APLOG_MARK, APLOG_WARNING, 0, stream->session->c1,
                       H2_STRM_LOG(APLOGNO(03081), stream, "invalid transition"));
         on_state_invalid(stream);
         return APR_EINVAL;
     }
     
-    ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, stream->session->c, 
+    ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, stream->session->c1,
                   H2_STRM_MSG(stream, "transit to [%s]"), h2_ss_str(new_state));
     stream->state = new_state;
     switch (new_state) {
@@ -312,14 +326,12 @@ static apr_status_t transit(h2_stream *stream, int new_state)
         case H2_SS_OPEN:
             break;
         case H2_SS_CLOSED_L:
-            close_output(stream);
             break;
         case H2_SS_CLOSED_R:
             close_input(stream);
             break;
         case H2_SS_CLOSED:
             close_input(stream);
-            close_output(stream);
             if (stream->out_buffer) {
                 apr_brigade_cleanup(stream->out_buffer);
             }
@@ -340,11 +352,11 @@ void h2_stream_dispatch(h2_stream *stream, h2_stream_event_t ev)
 {
     int new_state;
     
-    ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, stream->session->c,
+    ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, stream->session->c1,
                   H2_STRM_MSG(stream, "dispatch event %d"), ev);
     new_state = on_event(stream, ev);
     if (new_state < 0) {
-        ap_log_cerror(APLOG_MARK, APLOG_WARNING, 0, stream->session->c, 
+        ap_log_cerror(APLOG_MARK, APLOG_WARNING, 0, stream->session->c1,
                       H2_STRM_LOG(APLOGNO(10002), stream, "invalid event %d"), ev);
         on_state_invalid(stream);
         AP_DEBUG_ASSERT(new_state > S_XXX);
@@ -352,7 +364,7 @@ void h2_stream_dispatch(h2_stream *stream, h2_stream_event_t ev)
     }
     else if (new_state == stream->state) {
         /* nop */
-        ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, stream->session->c,
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, stream->session->c1,
                       H2_STRM_MSG(stream, "non-state event %d"), ev);
         return;
     }
@@ -366,7 +378,6 @@ static void set_policy_for(h2_stream *stream, h2_request *r)
 {
     int enabled = h2_session_push_enabled(stream->session);
     stream->push_policy = h2_push_policy_determine(r->headers, stream->pool, enabled);
-    r->serialize = h2_config_sgeti(stream->session->s, H2_CONF_SER_HEADERS);
 }
 
 apr_status_t h2_stream_send_frame(h2_stream *stream, int ftype, int flags, size_t frame_len)
@@ -376,7 +387,7 @@ apr_status_t h2_stream_send_frame(h2_stream *stream, int ftype, int flags, size_
 
     new_state = on_frame_send(stream->state, ftype);
     if (new_state < 0) {
-        ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, stream->session->c, 
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, stream->session->c1,
                       H2_STRM_MSG(stream, "invalid frame %d send"), ftype);
         AP_DEBUG_ASSERT(new_state > S_XXX);
         return transit(stream, new_state);
@@ -404,8 +415,6 @@ apr_status_t h2_stream_send_frame(h2_stream *stream, int ftype, int flags, size_
         default:
             break;
     }
-    ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, stream->session->c, 
-                  H2_STRM_MSG(stream, "send frame %d, eos=%d"), ftype, eos);
     status = transit(stream, new_state);
     if (status == APR_SUCCESS && eos) {
         status = transit(stream, on_event(stream, H2_SEV_CLOSED_L));
@@ -421,7 +430,7 @@ apr_status_t h2_stream_recv_frame(h2_stream *stream, int ftype, int flags, size_
 
     new_state = on_frame_recv(stream->state, ftype);
     if (new_state < 0) {
-        ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, stream->session->c, 
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, stream->session->c1,
                       H2_STRM_MSG(stream, "invalid frame %d recv"), ftype);
         AP_DEBUG_ASSERT(new_state > S_XXX);
         return transit(stream, new_state);
@@ -470,15 +479,22 @@ leave:
 apr_status_t h2_stream_flush_input(h2_stream *stream)
 {
     apr_status_t status = APR_SUCCESS;
-    
+    apr_off_t written;
+
+    ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, stream->session->c1,
+                  H2_STRM_MSG(stream, "flush input"));
     if (stream->in_buffer && !APR_BRIGADE_EMPTY(stream->in_buffer)) {
-        setup_input(stream);
-        status = h2_beam_send(stream->input, stream->in_buffer, APR_BLOCK_READ);
+        if (!stream->input) {
+            h2_stream_setup_input(stream);
+        }
+        status = h2_beam_send(stream->input, stream->session->c1,
+                              stream->in_buffer, APR_BLOCK_READ, &written);
         stream->in_last_write = apr_time_now();
-    }
-    if (stream->input_eof 
-        && stream->input && !h2_beam_is_closed(stream->input)) {
-        status = h2_beam_close(stream->input);
+        if (APR_SUCCESS != status && stream->state == H2_SS_CLOSED_L) {
+            ap_log_cerror(APLOG_MARK, APLOG_TRACE2, status, stream->session->c1,
+                          H2_STRM_MSG(stream, "send input error"));
+            h2_stream_dispatch(stream, H2_SEV_IN_ERROR);
+        }
     }
     return status;
 }
@@ -491,32 +507,21 @@ apr_status_t h2_stream_recv_DATA(h2_stream *stream, uint8_t flags,
     
     stream->in_data_frames++;
     if (len > 0) {
-        if (APLOGctrace3(session->c)) {
+        if (APLOGctrace3(session->c1)) {
             const char *load = apr_pstrndup(stream->pool, (const char *)data, len);
-            ap_log_cerror(APLOG_MARK, APLOG_TRACE3, 0, session->c,
+            ap_log_cerror(APLOG_MARK, APLOG_TRACE3, 0, session->c1,
                           H2_STRM_MSG(stream, "recv DATA, len=%d: -->%s<--"), 
                           (int)len, load);
         }
         else {
-            ap_log_cerror(APLOG_MARK, APLOG_TRACE2, status, session->c,
+            ap_log_cerror(APLOG_MARK, APLOG_TRACE2, status, session->c1,
                           H2_STRM_MSG(stream, "recv DATA, len=%d"), (int)len);
         }
         stream->in_data_octets += len;
-        if (!stream->in_buffer) {
-            stream->in_buffer = apr_brigade_create(stream->pool, 
-                                                   session->c->bucket_alloc);
-        }
-        apr_brigade_write(stream->in_buffer, NULL, NULL, (const char *)data, len);
+        input_append_data(stream, (const char*)data, len);
         h2_stream_dispatch(stream, H2_SEV_IN_DATA_PENDING);
     }
     return status;
-}
-
-static void prep_output(h2_stream *stream) {
-    conn_rec *c = stream->session->c;
-    if (!stream->out_buffer) {
-        stream->out_buffer = apr_brigade_create(stream->pool, c->bucket_alloc);
-    }
 }
 
 h2_stream *h2_stream_create(int id, apr_pool_t *pool, h2_session *session,
@@ -531,15 +536,15 @@ h2_stream *h2_stream_create(int id, apr_pool_t *pool, h2_session *session,
     stream->pool         = pool;
     stream->session      = session;
     stream->monitor      = monitor;
-    stream->max_mem      = session->max_stream_mem;
-    
-#ifdef H2_NG2_LOCAL_WIN_SIZE
-    stream->in_window_size = 
-        nghttp2_session_get_stream_local_window_size(
-            stream->session->ngh2, stream->id);
-#endif
 
-    ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c, 
+#ifdef H2_NG2_LOCAL_WIN_SIZE
+    if (id) {
+        stream->in_window_size =
+            nghttp2_session_get_stream_local_window_size(
+                stream->session->ngh2, stream->id);
+    }
+#endif
+    ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c1,
                   H2_STRM_LOG(APLOGNO(03082), stream, "created"));
     on_state_enter(stream);
     return stream;
@@ -547,59 +552,34 @@ h2_stream *h2_stream_create(int id, apr_pool_t *pool, h2_session *session,
 
 void h2_stream_cleanup(h2_stream *stream)
 {
-    apr_status_t status;
-    
+    /* Stream is done on c1. There might still be processing on a c2
+     * going on. The input/output beams get aborted and the stream's
+     * end of the in/out notifications get closed.
+     */
     ap_assert(stream);
     if (stream->out_buffer) {
-        /* remove any left over output buckets that may still have
-         * references into request pools */
         apr_brigade_cleanup(stream->out_buffer);
-    }
-    if (stream->input) {
-        h2_beam_abort(stream->input);
-        status = h2_beam_wait_empty(stream->input, APR_NONBLOCK_READ);
-        if (status == APR_EAGAIN) {
-            ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, stream->session->c, 
-                          H2_STRM_MSG(stream, "wait on input drain"));
-            status = h2_beam_wait_empty(stream->input, APR_BLOCK_READ);
-            ap_log_cerror(APLOG_MARK, APLOG_TRACE2, status, stream->session->c, 
-                          H2_STRM_MSG(stream, "input drain returned"));
-        }
     }
 }
 
 void h2_stream_destroy(h2_stream *stream)
 {
     ap_assert(stream);
-    ap_log_cerror(APLOG_MARK, APLOG_TRACE3, 0, stream->session->c, 
+    ap_log_cerror(APLOG_MARK, APLOG_TRACE3, 0, stream->session->c1,
                   H2_STRM_MSG(stream, "destroy"));
     apr_pool_destroy(stream->pool);
-}
-
-apr_status_t h2_stream_prep_processing(h2_stream *stream)
-{
-    if (stream->request) {
-        const h2_request *r = stream->request;
-        ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, stream->session->c,
-                      H2_STRM_MSG(stream, "schedule %s %s://%s%s chunked=%d"),
-                      r->method, r->scheme, r->authority, r->path, r->chunked);
-        setup_input(stream);
-        stream->scheduled = 1;
-        return APR_SUCCESS;
-    }
-    return APR_EINVAL;
 }
 
 void h2_stream_rst(h2_stream *stream, int error_code)
 {
     stream->rst_error = error_code;
     if (stream->input) {
-        h2_beam_abort(stream->input);
+        h2_beam_abort(stream->input, stream->session->c1);
     }
     if (stream->output) {
-        h2_beam_leave(stream->output);
+        h2_beam_abort(stream->output, stream->session->c1);
     }
-    ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, stream->session->c,
+    ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, stream->session->c1,
                   H2_STRM_MSG(stream, "reset, error=%d"), error_code);
     h2_stream_dispatch(stream, H2_SEV_CANCELLED);
 }
@@ -648,7 +628,7 @@ static apr_status_t add_trailer(h2_stream *stream,
                                 const char *value, size_t vlen,
                                 size_t max_field_len, int *pwas_added)
 {
-    conn_rec *c = stream->session->c;
+    conn_rec *c = stream->session->c1;
     char *hname, *hvalue;
     const char *existing;
 
@@ -662,12 +642,12 @@ static apr_status_t add_trailer(h2_stream *stream,
     if (h2_req_ignore_trailer(name, nlen)) {
         return APR_SUCCESS;
     }
-    if (!stream->trailers) {
-        stream->trailers = apr_table_make(stream->pool, 5);
+    if (!stream->trailers_in) {
+        stream->trailers_in = apr_table_make(stream->pool, 5);
     }
     hname = apr_pstrndup(stream->pool, name, nlen);
     h2_util_camel_case_header(hname, nlen);
-    existing = apr_table_get(stream->trailers, hname);
+    existing = apr_table_get(stream->trailers_in, hname);
     if (max_field_len 
         && ((existing? strlen(existing)+2 : 0) + vlen + nlen + 2 > max_field_len)) {
         /* "key: (oldval, )?nval" is too long */
@@ -675,7 +655,7 @@ static apr_status_t add_trailer(h2_stream *stream,
     }
     if (!existing) *pwas_added = 1;
     hvalue = apr_pstrndup(stream->pool, value, vlen);
-    apr_table_mergen(stream->trailers, hname, hvalue);
+    apr_table_mergen(stream->trailers_in, hname, hvalue);
     ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, c, 
                   H2_STRM_MSG(stream, "added trailer '%s: %s'"), hname, hvalue);
     
@@ -690,7 +670,7 @@ apr_status_t h2_stream_add_header(h2_stream *stream,
     int error = 0, was_added = 0;
     apr_status_t status = APR_SUCCESS;
     
-    if (stream->has_response) {
+    if (stream->response) {
         return APR_EINVAL;    
     }
 
@@ -698,7 +678,7 @@ apr_status_t h2_stream_add_header(h2_stream *stream,
         if ((vlen) > session->s->limit_req_line) {
             /* pseudo header: approximation of request line size check */
             if (!h2_stream_is_ready(stream)) {
-                ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, session->c,
+                ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, session->c1,
                               H2_STRM_LOG(APLOGNO(10178), stream,
                                           "Request pseudo header exceeds "
                                           "LimitRequestFieldSize: %s"), name);
@@ -715,8 +695,8 @@ apr_status_t h2_stream_add_header(h2_stream *stream,
     }
     else if (H2_SS_IDLE == stream->state) {
         if (!stream->rtmp) {
-            stream->rtmp = h2_req_create(stream->id, stream->pool, 
-                                         NULL, NULL, NULL, NULL, NULL, 0);
+            stream->rtmp = h2_request_create(stream->id, stream->pool,
+                                             NULL, NULL, NULL, NULL, NULL);
         }
         status = h2_request_add_header(stream->rtmp, stream->pool,
                                        name, nlen, value, vlen,
@@ -736,7 +716,7 @@ apr_status_t h2_stream_add_header(h2_stream *stream,
     if (APR_EINVAL == status) {
         /* header too long */
         if (!h2_stream_is_ready(stream)) {
-            ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, session->c,
+            ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, session->c1,
                           H2_STRM_LOG(APLOGNO(10180), stream,"Request header exceeds "
                                       "LimitRequestFieldSize: %.*s"),
                           (int)H2MIN(nlen, 80), name);
@@ -754,7 +734,7 @@ apr_status_t h2_stream_add_header(h2_stream *stream,
             return APR_ECONNRESET;
         }
         if (!h2_stream_is_ready(stream)) {
-            ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, session->c,
+            ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, session->c1,
                           H2_STRM_LOG(APLOGNO(10181), stream, "Number of request headers "
                                       "exceeds LimitRequestFields"));
         }
@@ -768,7 +748,7 @@ cleanup:
         return APR_EINVAL; 
     }
     else if (status != APR_SUCCESS) {
-        ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, session->c,
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, session->c1,
                       H2_STRM_MSG(stream, "header %s not accepted"), name);
         h2_stream_dispatch(stream, H2_SEV_CANCELLED);
     }
@@ -793,27 +773,98 @@ apr_status_t h2_stream_end_headers(h2_stream *stream, int eos, size_t raw_bytes)
 {
     apr_status_t status;
     val_len_check_ctx ctx;
-    
-    status = h2_request_end_headers(stream->rtmp, stream->pool, eos, raw_bytes);
-    if (APR_SUCCESS == status) {
-        set_policy_for(stream, stream->rtmp);
-        stream->request = stream->rtmp;
-        stream->rtmp = NULL;
-        
-        ctx.maxlen = stream->session->s->limit_req_fieldsize;
-        ctx.failed_key = NULL;
-        apr_table_do(table_check_val_len, &ctx, stream->request->headers, NULL);
-        if (ctx.failed_key) {
-            if (!h2_stream_is_ready(stream)) {
-                ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, stream->session->c,
-                              H2_STRM_LOG(APLOGNO(10230), stream,"Request header exceeds "
-                                          "LimitRequestFieldSize: %.*s"),
-                              (int)H2MIN(strlen(ctx.failed_key), 80), ctx.failed_key);
-            }
-            set_error_response(stream, HTTP_REQUEST_HEADER_FIELDS_TOO_LARGE);
-            /* keep on returning APR_SUCCESS, so that we send a HTTP response and
-             * do not RST the stream. */
+    int is_http_or_https;
+    h2_request *req = stream->rtmp;
+
+    status = h2_request_end_headers(req, stream->pool, eos, raw_bytes);
+    if (APR_SUCCESS != status || req->http_status != H2_HTTP_STATUS_UNSET) goto cleanup;
+
+    /* keep on returning APR_SUCCESS for error responses, so that we
+     * send it and do not RST the stream.
+     */
+    set_policy_for(stream, req);
+
+    ctx.maxlen = stream->session->s->limit_req_fieldsize;
+    ctx.failed_key = NULL;
+    apr_table_do(table_check_val_len, &ctx, req->headers, NULL);
+    if (ctx.failed_key) {
+        if (!h2_stream_is_ready(stream)) {
+            ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, stream->session->c1,
+                          H2_STRM_LOG(APLOGNO(10230), stream,"Request header exceeds "
+                                      "LimitRequestFieldSize: %.*s"),
+                          (int)H2MIN(strlen(ctx.failed_key), 80), ctx.failed_key);
         }
+        set_error_response(stream, HTTP_REQUEST_HEADER_FIELDS_TOO_LARGE);
+        goto cleanup;
+    }
+
+    /* http(s) scheme. rfc7540, ch. 8.1.2.3:
+     * This [:path] pseudo-header field MUST NOT be empty for "http" or "https"
+     * URIs; "http" or "https" URIs that do not contain a path component
+     * MUST include a value of '/'.  The exception to this rule is an
+     * OPTIONS request for an "http" or "https" URI that does not include
+     * a path component; these MUST include a ":path" pseudo-header field
+     * with a value of '*'
+     *
+     * All HTTP/2 requests MUST include exactly one valid value for the
+     * ":method", ":scheme", and ":path" pseudo-header fields, unless it is
+     * a CONNECT request.
+     */
+    is_http_or_https = (!req->scheme
+            || !(ap_cstr_casecmpn(req->scheme, "http", 4) != 0
+                 || (req->scheme[4] != '\0'
+                     && (apr_tolower(req->scheme[4]) != 's'
+                         || req->scheme[5] != '\0'))));
+
+    /* CONNECT. rfc7540, ch. 8.3:
+     * In HTTP/2, the CONNECT method is used to establish a tunnel over a
+     * single HTTP/2 stream to a remote host for similar purposes.  The HTTP
+     * header field mapping works as defined in Section 8.1.2.3 ("Request
+     * Pseudo-Header Fields"), with a few differences.  Specifically:
+     *   o  The ":method" pseudo-header field is set to "CONNECT".
+     *   o  The ":scheme" and ":path" pseudo-header fields MUST be omitted.
+     *   o  The ":authority" pseudo-header field contains the host and port to
+     *      connect to (equivalent to the authority-form of the request-target
+     *      of CONNECT requests (see [RFC7230], Section 5.3)).
+     */
+    if (!ap_cstr_casecmp(req->method, "CONNECT")) {
+        if (req->scheme || req->path) {
+            ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, stream->session->c1,
+                          H2_STRM_LOG(APLOGNO(10384), stream, "Request to CONNECT "
+                          "with :scheme or :path specified, sending 400 answer"));
+            set_error_response(stream, HTTP_BAD_REQUEST);
+            goto cleanup;
+        }
+    }
+    else if (is_http_or_https) {
+        if (!req->path) {
+            ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, stream->session->c1,
+                          H2_STRM_LOG(APLOGNO(10385), stream, "Request for http(s) "
+                          "resource without :path, sending 400 answer"));
+            set_error_response(stream, HTTP_BAD_REQUEST);
+            goto cleanup;
+        }
+        if (!req->scheme) {
+            req->scheme = ap_ssl_conn_is_ssl(stream->session->c1)? "https" : "http";
+        }
+    }
+
+    if (req->scheme && (req->path && req->path[0] != '/')) {
+        /* We still have a scheme, which means we need to pass an absolute URI into
+         * our HTTP protocol handling and the missing '/' at the start will prevent
+         * us from doing so (as it then confuses path and authority). */
+        ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, stream->session->c1,
+                      H2_STRM_LOG(APLOGNO(10379), stream, "Request :scheme '%s' and "
+                      "path '%s' do not allow creating an absolute URL. Failing "
+                      "request with 400."), req->scheme, req->path);
+        set_error_response(stream, HTTP_BAD_REQUEST);
+        goto cleanup;
+    }
+
+cleanup:
+    if (APR_SUCCESS == status) {
+        stream->request = req;
+        stream->rtmp = NULL;
     }
     return status;
 }
@@ -832,190 +883,260 @@ static apr_bucket *get_first_headers_bucket(apr_bucket_brigade *bb)
     return NULL;
 }
 
-static apr_status_t add_buffered_data(h2_stream *stream, apr_off_t requested,
-                                      apr_off_t *plen, int *peos, int *is_all, 
-                                      h2_headers **pheaders)
+static apr_status_t buffer_output_receive(h2_stream *stream)
 {
+    apr_status_t rv = APR_EAGAIN;
+    apr_off_t buf_len;
+    conn_rec *c1 = stream->session->c1;
     apr_bucket *b, *e;
-    
-    *peos = 0;
-    *plen = 0;
-    *is_all = 0;
-    if (pheaders) {
-        *pheaders = NULL;
+
+    if (!stream->output) {
+        goto cleanup;
     }
 
-    H2_STREAM_OUT_LOG(APLOG_TRACE2, stream, "add_buffered_data");
-    b = APR_BRIGADE_FIRST(stream->out_buffer);
-    while (b != APR_BRIGADE_SENTINEL(stream->out_buffer)) {
-        e = APR_BUCKET_NEXT(b);
-        if (APR_BUCKET_IS_METADATA(b)) {
-            if (APR_BUCKET_IS_FLUSH(b)) {
+    if (!stream->out_buffer) {
+        stream->out_buffer = apr_brigade_create(stream->pool, c1->bucket_alloc);
+        buf_len = 0;
+    }
+    else {
+        /* if the brigade contains a file bucket, its normal report length
+         * might be megabytes, but the memory used is tiny. For buffering,
+         * we are only interested in the memory footprint. */
+        buf_len = h2_brigade_mem_size(stream->out_buffer);
+    }
+
+    if (buf_len >= stream->session->max_stream_mem) {
+        /* we have buffered enough. No need to read more.
+         * However, we have now output pending for which we may not
+         * receive another poll event. We need to make sure that this
+         * stream is not suspended so we keep on processing output.
+         */
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE1, rv, c1,
+                      H2_STRM_MSG(stream, "out_buffer, already has %ld length"),
+                      (long)buf_len);
+        rv = APR_SUCCESS;
+        goto cleanup;
+    }
+
+    H2_STREAM_OUT_LOG(APLOG_TRACE2, stream, "pre");
+    rv = h2_beam_receive(stream->output, stream->session->c1, stream->out_buffer,
+                         APR_NONBLOCK_READ, stream->session->max_stream_mem - buf_len);
+    if (APR_SUCCESS != rv) {
+        if (APR_EAGAIN != rv) {
+            ap_log_cerror(APLOG_MARK, APLOG_TRACE1, rv, c1,
+                          H2_STRM_MSG(stream, "out_buffer, receive unsuccessful"));
+        }
+        goto cleanup;
+    }
+
+    /* get rid of buckets we have no need for */
+    if (!APR_BRIGADE_EMPTY(stream->out_buffer)) {
+        b = APR_BRIGADE_FIRST(stream->out_buffer);
+        while (b != APR_BRIGADE_SENTINEL(stream->out_buffer)) {
+            e = APR_BUCKET_NEXT(b);
+            if (APR_BUCKET_IS_METADATA(b)) {
+                if (APR_BUCKET_IS_FLUSH(b)) {  /* we flush any c1 data already */
+                    APR_BUCKET_REMOVE(b);
+                    apr_bucket_destroy(b);
+                }
+            }
+            else if (b->length == 0) {  /* zero length data */
                 APR_BUCKET_REMOVE(b);
                 apr_bucket_destroy(b);
             }
-            else if (APR_BUCKET_IS_EOS(b)) {
-                *peos = 1;
-                return APR_SUCCESS;
-            }
-            else if (H2_BUCKET_IS_HEADERS(b)) {
-                if (*plen > 0) {
-                    /* data before the response, can only return up to here */
-                    return APR_SUCCESS;
-                }
-                else if (pheaders) {
-                    *pheaders = h2_bucket_headers_get(b);
-                    APR_BUCKET_REMOVE(b);
-                    apr_bucket_destroy(b);
-                    ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, stream->session->c,
-                                  H2_STRM_MSG(stream, "prep, -> response %d"), 
-                                  (*pheaders)->status);
-                    return APR_SUCCESS;
-                }
-                else {
-                    return APR_EAGAIN;
-                }
-            }
+            b = e;
         }
-        else if (b->length == 0) {
-            APR_BUCKET_REMOVE(b);
-            apr_bucket_destroy(b);
-        }
-        else {
-            ap_assert(b->length != (apr_size_t)-1);
-            *plen += b->length;
-            if (*plen >= requested) {
-                *plen = requested;
-                return APR_SUCCESS;
-            }
-        }
-        b = e;
     }
-    *is_all = 1;
-    return APR_SUCCESS;
+    H2_STREAM_OUT_LOG(APLOG_TRACE2, stream, "out_buffer, after receive");
+
+cleanup:
+    return rv;
 }
 
-apr_status_t h2_stream_out_prepare(h2_stream *stream, apr_off_t *plen, 
-                                   int *peos, h2_headers **pheaders)
+static int bucket_pass_to_c1(apr_bucket *b)
 {
-    apr_status_t status = APR_SUCCESS;
-    apr_off_t requested, missing, max_chunk = H2_DATA_CHUNK_SIZE;
-    conn_rec *c;
-    int complete, was_closed = 0;
-
-    ap_assert(stream);
-    
-    if (stream->rst_error) {
-        *plen = 0;
-        *peos = 1;
-        return APR_ECONNRESET;
-    }
-    
-    c = stream->session->c;
-    prep_output(stream);
-
-    /* determine how much we'd like to send. We cannot send more than
-     * is requested. But we can reduce the size in case the master
-     * connection operates in smaller chunks. (TSL warmup) */
-    if (stream->session->io.write_size > 0) {
-        max_chunk = stream->session->io.write_size - H2_FRAME_HDR_LEN; 
-    }
-    requested = (*plen > 0)? H2MIN(*plen, max_chunk) : max_chunk;
-    
-    /* count the buffered data until eos or a headers bucket */
-    status = add_buffered_data(stream, requested, plen, peos, &complete, pheaders);
-    
-    if (status == APR_EAGAIN) {
-        /* TODO: ugly, someone needs to retrieve the response first */
-        h2_mplx_m_keep_active(stream->session->mplx, stream);
-        ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, c,
-                      H2_STRM_MSG(stream, "prep, response eagain"));
-        return status;
-    }
-    else if (status != APR_SUCCESS) {
-        return status;
-    }
-    
-    if (pheaders && *pheaders) {
-        return APR_SUCCESS;
-    }
-    
-    /* If there we do not have enough buffered data to satisfy the requested
-     * length *and* we counted the _complete_ buffer (and did not stop in the middle
-     * because of meta data there), lets see if we can read more from the
-     * output beam */
-    missing = H2MIN(requested, stream->max_mem) - *plen;
-    if (complete && !*peos && missing > 0) {
-        apr_status_t rv = APR_EOF;
-        
-        if (stream->output) {
-            H2_STREAM_OUT_LOG(APLOG_TRACE2, stream, "pre");
-            h2_beam_log(stream->output, c, APLOG_TRACE2, "pre read output");
-            rv = h2_beam_receive(stream->output, stream->out_buffer,
-                                 APR_NONBLOCK_READ, stream->max_mem - *plen, &was_closed);
-            H2_STREAM_OUT_LOG(APLOG_TRACE2, stream, "post");
-            h2_beam_log(stream->output, c, APLOG_TRACE2, "post read output");
-        }
-        
-        if (rv == APR_SUCCESS) {
-            /* count the buffer again, now that we have read output */
-            status = add_buffered_data(stream, requested, plen, peos, &complete, pheaders);
-        }
-        else if (APR_STATUS_IS_EOF(rv)) {
-            apr_bucket *eos = apr_bucket_eos_create(c->bucket_alloc);
-            APR_BRIGADE_INSERT_TAIL(stream->out_buffer, eos);
-            *peos = 1;
-        }
-        else if (APR_STATUS_IS_EAGAIN(rv)) {
-            /* we set this is the status of this call only if there
-             * is no buffered data, see check below */
-        }
-        else {
-            /* real error reading. Give this back directly, even though
-             * we may have something buffered. */
-            status = rv;
-        }
-    }
-    
-    if (status == APR_SUCCESS) {
-        if (*peos || *plen) {
-            ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, c,
-                          H2_STRM_MSG(stream, "prepare, len=%ld eos=%d"),
-                          (long)*plen, *peos);
-        }
-        else {
-            status = was_closed? APR_EOF : APR_EAGAIN;
-            ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, c,
-                          H2_STRM_MSG(stream, "prepare, no data"));
-        }
-    }
-    return status;
-}
-
-static int is_not_headers(apr_bucket *b)
-{
-    return !H2_BUCKET_IS_HEADERS(b);
+    return !H2_BUCKET_IS_HEADERS(b) && !APR_BUCKET_IS_EOS(b);
 }
 
 apr_status_t h2_stream_read_to(h2_stream *stream, apr_bucket_brigade *bb, 
                                apr_off_t *plen, int *peos)
 {
-    conn_rec *c = stream->session->c;
-    apr_status_t status = APR_SUCCESS;
+    apr_status_t rv = APR_SUCCESS;
 
     if (stream->rst_error) {
         return APR_ECONNRESET;
     }
-    status = h2_append_brigade(bb, stream->out_buffer, plen, peos, is_not_headers);
-    if (status == APR_SUCCESS && !*peos && !*plen) {
-        status = APR_EAGAIN;
+    rv = h2_append_brigade(bb, stream->out_buffer, plen, peos, bucket_pass_to_c1);
+    if (APR_SUCCESS  == rv && !*peos && !*plen) {
+        rv = APR_EAGAIN;
     }
-    ap_log_cerror(APLOG_MARK, APLOG_TRACE2, status, c,
-                  H2_STRM_MSG(stream, "read_to, len=%ld eos=%d"),
-                  (long)*plen, *peos);
-    return status;
+    return rv;
 }
 
+static apr_status_t buffer_output_process_headers(h2_stream *stream)
+{
+    conn_rec *c1 = stream->session->c1;
+    h2_headers *headers = NULL;
+    apr_status_t rv = APR_EAGAIN;
+    int ngrv = 0, is_empty;
+    h2_ngheader *nh = NULL;
+    apr_bucket *b, *e;
+
+    if (!stream->out_buffer) goto cleanup;
+
+    b = APR_BRIGADE_FIRST(stream->out_buffer);
+    while (b != APR_BRIGADE_SENTINEL(stream->out_buffer)) {
+        e = APR_BUCKET_NEXT(b);
+        if (APR_BUCKET_IS_METADATA(b)) {
+            if (H2_BUCKET_IS_HEADERS(b)) {
+                headers = h2_bucket_headers_get(b);
+                APR_BUCKET_REMOVE(b);
+                apr_bucket_destroy(b);
+                ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, c1,
+                              H2_STRM_MSG(stream, "process headers, response %d"),
+                              headers->status);
+                b = e;
+                break;
+            }
+        }
+        else {
+            if (!stream->response) {
+                /* data buckets before response headers, an error */
+                rv = APR_EINVAL;
+            }
+            /* data bucket, need to send those before processing
+             * any subsequent headers (trailers) */
+            goto cleanup;
+        }
+        b = e;
+    }
+    if (!headers) goto cleanup;
+
+    if (stream->response) {
+        rv = h2_res_create_ngtrailer(&nh, stream->pool, headers);
+        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, rv, c1,
+                      H2_STRM_LOG(APLOGNO(03072), stream, "submit %d trailers"),
+                      (int)nh->nvlen);
+        if (APR_SUCCESS != rv) {
+            ap_log_cerror(APLOG_MARK, APLOG_DEBUG, rv, c1,
+                          H2_STRM_LOG(APLOGNO(10024), stream, "invalid trailers"));
+            h2_stream_rst(stream, NGHTTP2_PROTOCOL_ERROR);
+            goto cleanup;
+        }
+
+        ngrv = nghttp2_submit_trailer(stream->session->ngh2, stream->id, nh->nv, nh->nvlen);
+        stream->sent_trailers = 1;
+    }
+    else if (headers->status < 100) {
+        h2_stream_rst(stream, headers->status);
+        goto cleanup;
+    }
+    else {
+        nghttp2_data_provider provider, *pprovider = NULL;
+
+        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c1,
+                      H2_STRM_LOG(APLOGNO(03073), stream,
+                      "submit response %d"), headers->status);
+
+        /* If this stream is not a pushed one itself,
+         * and HTTP/2 server push is enabled here,
+         * and the response HTTP status is not sth >= 400,
+         * and the remote side has pushing enabled,
+         * -> find and perform any pushes on this stream
+         *    *before* we submit the stream response itself.
+         *    This helps clients avoid opening new streams on Link
+         *    headers that get pushed right afterwards.
+         *
+         * *) the response code is relevant, as we do not want to
+         *    make pushes on 401 or 403 codes and friends.
+         *    And if we see a 304, we do not push either
+         *    as the client, having this resource in its cache, might
+         *    also have the pushed ones as well.
+         */
+        if (!stream->initiated_on
+            && !stream->response
+            && stream->request && stream->request->method
+            && !strcmp("GET", stream->request->method)
+            && (headers->status < 400)
+            && (headers->status != 304)
+            && h2_session_push_enabled(stream->session)) {
+            /* PUSH is possible and enabled on server, unless the request
+             * denies it, submit resources to push */
+            const char *s = apr_table_get(headers->notes, H2_PUSH_MODE_NOTE);
+            if (!s || strcmp(s, "0")) {
+                h2_stream_submit_pushes(stream, headers);
+            }
+        }
+
+        if (!stream->pref_priority) {
+            stream->pref_priority = h2_stream_get_priority(stream, headers);
+        }
+        h2_session_set_prio(stream->session, stream, stream->pref_priority);
+
+        if (headers->status == 103
+            && !h2_config_sgeti(stream->session->s, H2_CONF_EARLY_HINTS)) {
+            /* suppress sending this to the client, it might have triggered
+             * pushes and served its purpose nevertheless */
+            rv = APR_SUCCESS;
+            goto cleanup;
+        }
+        if (h2_headers_are_final_response(headers)) {
+            stream->response = headers;
+        }
+
+        /* Do we know if this stream has no response body? */
+        is_empty = 0;
+        while (b != APR_BRIGADE_SENTINEL(stream->out_buffer)) {
+            if (APR_BUCKET_IS_METADATA(b)) {
+                if (H2_BUCKET_IS_HEADERS(b)) {
+                    break;
+                }
+                else if (APR_BUCKET_IS_EOS(b)) {
+                    is_empty = 1;
+                    break;
+                }
+            }
+            else {  /* data, not empty */
+                break;
+            }
+            b = APR_BUCKET_NEXT(b);
+        }
+
+        if (!is_empty) {
+            memset(&provider, 0, sizeof(provider));
+            provider.source.fd = stream->id;
+            provider.read_callback = stream_data_cb;
+            pprovider = &provider;
+        }
+
+        rv = h2_res_create_ngheader(&nh, stream->pool, headers);
+        if (APR_SUCCESS != rv) {
+            ap_log_cerror(APLOG_MARK, APLOG_DEBUG, rv, c1,
+                          H2_STRM_LOG(APLOGNO(10025), stream, "invalid response"));
+            h2_stream_rst(stream, NGHTTP2_PROTOCOL_ERROR);
+            goto cleanup;
+        }
+        ngrv = nghttp2_submit_response(stream->session->ngh2, stream->id,
+                                       nh->nv, nh->nvlen, pprovider);
+        if (stream->initiated_on) {
+            ++stream->session->pushes_submitted;
+        }
+        else {
+            ++stream->session->responses_submitted;
+        }
+    }
+
+cleanup:
+    if (nghttp2_is_fatal(ngrv)) {
+        rv = APR_EGENERAL;
+        h2_session_dispatch_event(stream->session,
+                                 H2_SESSION_EV_PROTO_ERROR, ngrv, nghttp2_strerror(rv));
+        ap_log_cerror(APLOG_MARK, APLOG_ERR, rv, c1,
+                      APLOGNO(02940) "submit_response: %s",
+                      nghttp2_strerror(rv));
+    }
+    return rv;
+}
 
 apr_status_t h2_stream_submit_pushes(h2_stream *stream, h2_headers *response)
 {
@@ -1025,7 +1146,7 @@ apr_status_t h2_stream_submit_pushes(h2_stream *stream, h2_headers *response)
     
     pushes = h2_push_collect_update(stream, stream->request, response);
     if (pushes && !apr_is_empty_array(pushes)) {
-        ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, stream->session->c,
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, stream->session->c1,
                       H2_STRM_MSG(stream, "found %d push candidates"),
                       pushes->nelts);
         for (i = 0; i < pushes->nelts; ++i) {
@@ -1052,7 +1173,7 @@ const h2_priority *h2_stream_get_priority(h2_stream *stream,
         const char *ctype = apr_table_get(response->headers, "content-type");
         if (ctype) {
             /* FIXME: Not good enough, config needs to come from request->server */
-            return h2_cconfig_get_priority(stream->session->c, ctype);
+            return h2_cconfig_get_priority(stream->session->c1, ctype);
         }
     }
     return NULL;
@@ -1060,7 +1181,8 @@ const h2_priority *h2_stream_get_priority(h2_stream *stream,
 
 int h2_stream_is_ready(h2_stream *stream)
 {
-    if (stream->has_response) {
+    /* Have we sent a response or do we have the response in our buffer? */
+    if (stream->response) {
         return 1;
     }
     else if (stream->out_buffer && get_first_headers_bucket(stream->out_buffer)) {
@@ -1131,13 +1253,249 @@ apr_status_t h2_stream_in_consumed(h2_stream *stream, apr_off_t amount)
                 nghttp2_session_set_local_window_size(session->ngh2, 
                         NGHTTP2_FLAG_NONE, stream->id, win);
             } 
-            ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, session->c,
+            ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, session->c1,
                           "h2_stream(%ld-%d): consumed %ld bytes, window now %d/%d",
                           session->id, stream->id, (long)amount, 
                           cur_size, stream->in_window_size);
         }
-#endif
+#endif /* #ifdef H2_NG2_LOCAL_WIN_SIZE */
     }
     return APR_SUCCESS;   
 }
 
+static apr_off_t buffer_output_data_to_send(h2_stream *stream, int *peos, int *pheader_blocked)
+{
+    /* How much data do we have in our buffers that we can write? */
+    apr_off_t buf_len = 0;
+    apr_bucket *b;
+
+    *peos = *pheader_blocked = 0;
+    if (stream->out_buffer) {
+        b = APR_BRIGADE_FIRST(stream->out_buffer);
+        while (b != APR_BRIGADE_SENTINEL(stream->out_buffer)) {
+            if (APR_BUCKET_IS_METADATA(b)) {
+                if (APR_BUCKET_IS_EOS(b)) {
+                    *peos = 1;
+                    break;
+                }
+                else if (H2_BUCKET_IS_HEADERS(b)) {
+                    *pheader_blocked = 1;
+                    break;
+                }
+            }
+            else {
+                buf_len += b->length;
+            }
+            b = APR_BUCKET_NEXT(b);
+        }
+    }
+    return buf_len;
+}
+
+static ssize_t stream_data_cb(nghttp2_session *ng2s,
+                              int32_t stream_id,
+                              uint8_t *buf,
+                              size_t length,
+                              uint32_t *data_flags,
+                              nghttp2_data_source *source,
+                              void *puser)
+{
+    h2_session *session = (h2_session *)puser;
+    conn_rec *c1 = session->c1;
+    apr_off_t buf_len;
+    int eos, header_blocked;
+    apr_status_t rv;
+    h2_stream *stream;
+
+    /* nghttp2 wants to send more DATA for the stream. We need
+     * to find out how much of the requested length we can send without
+     * blocking.
+     * Indicate EOS when we encounter it or DEFERRED if the stream
+     * should be suspended. Beware of trailers.
+     */
+    ap_assert(session);
+    (void)ng2s;
+    (void)buf;
+    (void)source;
+    stream = nghttp2_session_get_stream_user_data(session->ngh2, stream_id);
+    if (!stream || !stream->output) {
+        ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, c1,
+                      APLOGNO(02937)
+                      "h2_stream(%ld-%d): data_cb, stream not found",
+                      session->id, (int)stream_id);
+        return NGHTTP2_ERR_CALLBACK_FAILURE;
+    }
+    if (!stream->response) {
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, c1,
+                      APLOGNO(10299)
+                      "h2_stream(%ld-%d): data_cb, no response seen yet",
+                      session->id, (int)stream_id);
+        return NGHTTP2_ERR_DEFERRED;
+    }
+    if (stream->rst_error) {
+        return NGHTTP2_ERR_CALLBACK_FAILURE;
+    }
+    if (!stream->out_buffer) {
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, c1,
+                      "h2_stream(%ld-%d): suspending",
+                      session->id, (int)stream_id);
+        return NGHTTP2_ERR_DEFERRED;
+    }
+    if (h2_c1_io_needs_flush(&session->io)) {
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, c1,
+                      "h2_stream(%ld-%d): suspending on c1 out needs flush",
+                      session->id, (int)stream_id);
+        h2_stream_dispatch(stream, H2_SEV_OUT_C1_BLOCK);
+        return NGHTTP2_ERR_DEFERRED;
+    }
+
+    /* determine how much we'd like to send. We cannot send more than
+     * is requested. But we can reduce the size in case the master
+     * connection operates in smaller chunks. (TSL warmup) */
+    if (stream->session->io.write_size > 0) {
+        apr_off_t chunk_len = stream->session->io.write_size - H2_FRAME_HDR_LEN;
+        if (length > chunk_len) {
+            length = chunk_len;
+        }
+    }
+
+    /* How much data do we have in our buffers that we can write? */
+check_and_receive:
+    buf_len = buffer_output_data_to_send(stream, &eos, &header_blocked);
+    while (buf_len < length && !eos && !header_blocked) {
+        /* read more? */
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, c1,
+                      "h2_stream(%ld-%d): need more (read len=%ld, %ld in buffer)",
+                      session->id, (int)stream_id, (long)length, (long)buf_len);
+        rv = buffer_output_receive(stream);
+        if (APR_EOF == rv) {
+            eos = 1;
+            rv = APR_SUCCESS;
+        }
+
+        if (APR_SUCCESS == rv) {
+            /* re-assess */
+            buf_len = buffer_output_data_to_send(stream, &eos, &header_blocked);
+        }
+        else if (APR_STATUS_IS_EAGAIN(rv)) {
+            /* currenlty, no more is available */
+            break;
+        }
+        else if (APR_SUCCESS != rv) {
+            ap_log_cerror(APLOG_MARK, APLOG_ERR, rv, c1,
+                          H2_STRM_LOG(APLOGNO(02938), stream, "data_cb, reading data"));
+            return NGHTTP2_ERR_CALLBACK_FAILURE;
+        }
+    }
+
+    if (buf_len == 0 && header_blocked) {
+        /* we are blocked from having data to send by a HEADER bucket sitting
+         * at buffer start. Send it and check again what DATA we can send. */
+        rv = buffer_output_process_headers(stream);
+        if (APR_SUCCESS == rv) {
+            goto check_and_receive;
+        }
+        else if (APR_STATUS_IS_EAGAIN(rv)) {
+            /* unable to send the HEADER at this time. */
+            eos = 0;
+            goto cleanup;
+        }
+        else {
+            ap_log_cerror(APLOG_MARK, APLOG_ERR, rv, c1,
+                          H2_STRM_LOG(APLOGNO(10300), stream,
+                          "data_cb, error processing headers"));
+            return NGHTTP2_ERR_CALLBACK_FAILURE;
+        }
+    }
+
+
+    if (buf_len > (apr_off_t)length) {
+        eos = 0;  /* Any EOS we have in the buffer does not apply yet */
+    }
+    else {
+        length = (size_t)buf_len;  /* we can only sent what we have buffered */
+    }
+
+    if (stream->sent_trailers) {
+        /* We already sent trailers and will/can not send more DATA.
+         * We do not indicate EOF to nghttp2 as it will forget the trailers
+         * in transit and close the stream. */
+        eos = 0;
+    }
+
+    if (length) {
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, c1,
+                      H2_STRM_MSG(stream, "data_cb, sending len=%ld, eos=%d"),
+                      (long)length, eos);
+        *data_flags |=  NGHTTP2_DATA_FLAG_NO_COPY;
+    }
+    else if (!eos && !stream->sent_trailers) {
+        /* We have not reached the end of DATA yet, DEFER sending */
+        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c1,
+                      H2_STRM_LOG(APLOGNO(03071), stream, "data_cb, suspending"));
+        return NGHTTP2_ERR_DEFERRED;
+    }
+
+cleanup:
+    if (eos) {
+        *data_flags |= NGHTTP2_DATA_FLAG_EOF;
+    }
+    return length;
+}
+
+apr_status_t h2_stream_read_output(h2_stream *stream)
+{
+    conn_rec *c1 = stream->session->c1;
+    apr_status_t rv = APR_EAGAIN;
+
+    /* stream->pout_recv_write signalled a change. Check what has happend, read
+     * from it and act on seeing a response/data. */
+    if (!stream->output) {
+        /* c2 has not assigned the output beam to the stream (yet). */
+        ap_log_cerror(APLOG_MARK, APLOG_WARNING, 0, c1,
+                      H2_STRM_MSG(stream, "read_output, no output beam registered"));
+        rv = APR_EAGAIN;
+        goto cleanup;
+    }
+    ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, c1,
+                  H2_STRM_MSG(stream, "read_output"));
+
+    if (h2_stream_was_closed(stream)) {
+        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, rv, c1,
+                      H2_STRM_LOG(APLOGNO(10301), stream, "already closed"));
+        rv = APR_EOF;
+        goto cleanup;
+    }
+    else if (stream->state == H2_SS_CLOSED_L) {
+        /* We have delivered a response to a stream that was not closed
+         * by the client. This could be a POST with body that we negate
+         * and we need to RST_STREAM to end if. */
+        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c1,
+                      H2_STRM_LOG(APLOGNO(10313), stream, "remote close missing"));
+        nghttp2_submit_rst_stream(stream->session->ngh2, NGHTTP2_FLAG_NONE,
+                                  stream->id, NGHTTP2_NO_ERROR);
+        rv = APR_EOF;
+        goto cleanup;
+    }
+
+    rv = buffer_output_receive(stream);
+    if (APR_SUCCESS != rv && APR_EAGAIN != rv) goto cleanup;
+
+    /* process all headers sitting at the buffer head. */
+    while (1) {
+        rv = buffer_output_process_headers(stream);
+        if (APR_EAGAIN == rv) {
+            rv = APR_SUCCESS;
+            break;
+        }
+        if (APR_SUCCESS != rv) goto cleanup;
+    }
+
+    nghttp2_session_resume_data(stream->session->ngh2, stream->id);
+    ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, c1,
+                  "h2_stream(%ld-%d): resumed",
+                  stream->session->id, (int)stream->id);
+
+cleanup:
+    return rv;
+}

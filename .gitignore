@@ -359,7 +359,10 @@ Release
 /test/httpdunit.cases
 
 # /test/unit/
+/test/gen
 /test/unit/*.tests
+__pycache__
+/test/pyhttpd/config.ini
 
 # Intellij
 /.idea/

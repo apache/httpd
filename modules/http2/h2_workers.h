@@ -17,16 +17,15 @@
 #ifndef __mod_h2__h2_workers__
 #define __mod_h2__h2_workers__
 
-/* Thread pool specific to executing h2_tasks. Has a minimum and maximum 
- * number of workers it creates. Starts with minimum workers and adds
- * some on load, reduces the number again when idle.
- *
+/* Thread pool specific to executing secondary connections.
+ * Has a minimum and maximum number of workers it creates.
+ * Starts with minimum workers and adds some on load,
+ * reduces the number again when idle.
  */
 struct apr_thread_mutex_t;
 struct apr_thread_cond_t;
 struct h2_mplx;
 struct h2_request;
-struct h2_task;
 struct h2_fifo;
 
 struct h2_slot;
@@ -70,9 +69,9 @@ h2_workers *h2_workers_create(server_rec *s, apr_pool_t *pool,
                               int min_size, int max_size, int idle_secs);
 
 /**
- * Registers a h2_mplx for task scheduling. If this h2_mplx runs
- * out of tasks, it will be automatically be unregistered. Should
- * new tasks arrive, it needs to be registered again.
+ * Registers a h2_mplx for scheduling. If this h2_mplx runs
+ * out of work, it will be automatically be unregistered. Should
+ * new work arrive, it needs to be registered again.
  */
 apr_status_t h2_workers_register(h2_workers *workers, struct h2_mplx *m);
 

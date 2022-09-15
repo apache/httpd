@@ -27,7 +27,7 @@
 #include <nghttp2/nghttp2.h>
 
 #include "h2_private.h"
-#include "h2_h2.h"
+#include "h2_protocol.h"
 #include "h2_config.h"
 #include "h2_util.h"
 #include "h2_request.h"
@@ -64,7 +64,7 @@ apr_bucket * h2_bucket_headers_make(apr_bucket *b, h2_headers *r)
 
     b = apr_bucket_shared_make(b, br, 0, 0);
     b->type = &h2_bucket_type_headers;
-    b->length = h2_headers_length(r);
+    b->length = 0;
     
     return b;
 } 
@@ -140,6 +140,12 @@ apr_size_t h2_headers_length(h2_headers *headers)
     return len;
 }
 
+apr_size_t h2_bucket_headers_headers_length(apr_bucket *b)
+{
+    h2_headers *h = h2_bucket_headers_get(b);
+    return h? h2_headers_length(h) : 0;
+}
+
 h2_headers *h2_headers_rcreate(request_rec *r, int status,
                                const apr_table_t *header, apr_pool_t *pool)
 {
@@ -199,7 +205,7 @@ h2_headers *h2_headers_die(apr_status_t type,
     return headers;
 }
 
-int h2_headers_are_response(h2_headers *headers)
+int h2_headers_are_final_response(h2_headers *headers)
 {
     return headers->status >= 200;
 }

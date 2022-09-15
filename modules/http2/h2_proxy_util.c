@@ -583,8 +583,7 @@ static apr_status_t h2_headers_add_h1(apr_table_t *headers, apr_pool_t *pool,
 
 static h2_proxy_request *h2_proxy_req_createn(int id, apr_pool_t *pool, const char *method, 
                                   const char *scheme, const char *authority, 
-                                  const char *path, apr_table_t *header, 
-                                  int serialize)
+                                  const char *path, apr_table_t *header)
 {
     h2_proxy_request *req = apr_pcalloc(pool, sizeof(h2_proxy_request));
     
@@ -594,14 +593,13 @@ static h2_proxy_request *h2_proxy_req_createn(int id, apr_pool_t *pool, const ch
     req->path           = path;
     req->headers        = header? header : apr_table_make(pool, 10);
     req->request_time   = apr_time_now();
-    req->serialize      = serialize;
-    
+
     return req;
 }
 
-h2_proxy_request *h2_proxy_req_create(int id, apr_pool_t *pool, int serialize)
+h2_proxy_request *h2_proxy_req_create(int id, apr_pool_t *pool)
 {
-    return h2_proxy_req_createn(id, pool, NULL, NULL, NULL, NULL, NULL, serialize);
+    return h2_proxy_req_createn(id, pool, NULL, NULL, NULL, NULL, NULL);
 }
 
 typedef struct {

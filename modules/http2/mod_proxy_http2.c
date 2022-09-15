@@ -291,7 +291,7 @@ static int proxy_http2_handler(request_rec *r,
                                const char *proxyname,
                                apr_port_t proxyport)
 {
-    const char *proxy_func, *task_id;
+    const char *proxy_func;
     char *locurl = url, *u;
     apr_size_t slen;
     int is_ssl = 0;
@@ -324,11 +324,9 @@ static int proxy_http2_handler(request_rec *r,
             return DECLINED;
     }
 
-    task_id = apr_table_get(r->connection->notes, H2_TASK_ID_NOTE);
-    
     ctx = apr_pcalloc(r->pool, sizeof(*ctx));
     ctx->master = r->connection->master? r->connection->master : r->connection;
-    ctx->id = task_id? task_id : apr_psprintf(r->pool, "%ld", (long)ctx->master->id);
+    ctx->id = apr_psprintf(r->pool, "%ld", (long)ctx->master->id);
     ctx->owner = r->connection;
     ctx->pool = r->pool;
     ctx->server = r->server;
