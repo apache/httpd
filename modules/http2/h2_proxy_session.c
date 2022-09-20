@@ -838,7 +838,10 @@ static apr_status_t open_stream(h2_proxy_session *session, const char *url,
     
     dconf = ap_get_module_config(r->per_dir_config, &proxy_module);
     if (dconf->preserve_host) {
-        authority = r->hostname;
+        authority = apr_table_get(r->headers_in, "Host");
+        if (authority == NULL) {
+            authority = r->hostname;
+        }
     }
     else {
         authority = puri.hostname;
@@ -847,6 +850,9 @@ static apr_status_t open_stream(h2_proxy_session *session, const char *url,
             /* port info missing and port is not default for scheme: append */
             authority = apr_psprintf(stream->pool, "%s:%d", authority, puri.port);
         }
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, session->c,
+                      "authority=%s from uri.hostname=%s and uri.port=%d",
+                      authority, puri.hostname, puri.port);
     }
     
     /* we need this for mapping relative uris in headers ("Link") back
@@ -884,7 +890,8 @@ static apr_status_t open_stream(h2_proxy_session *session, const char *url,
                              r->server->server_hostname);
         }
     }
-    
+    apr_table_unset(r->headers_in, "Host");
+
     /* Tuck away all already existing cookies */
     stream->saves = apr_table_make(r->pool, 2);
     apr_table_do(add_header, stream->saves, r->headers_out, "Set-Cookie", NULL);
