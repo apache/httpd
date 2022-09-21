@@ -26,6 +26,7 @@ class TestLoadPostStatic:
     
     # test POST on static file, slurped in by server
     def test_h2_710_00(self, env, repeat):
+        assert env.is_live()
         url = env.mkurl("https", "test1", "/index.html")
         n = 10
         m = 1
@@ -38,6 +39,7 @@ class TestLoadPostStatic:
         self.check_h2load_ok(env, r, n)
 
     def test_h2_710_01(self, env, repeat):
+        assert env.is_live()
         url = env.mkurl("https", "test1", "/index.html")
         n = 1000
         m = 100
@@ -50,6 +52,7 @@ class TestLoadPostStatic:
         self.check_h2load_ok(env, r, n)
 
     def test_h2_710_02(self, env, repeat):
+        assert env.is_live()
         url = env.mkurl("https", "test1", "/index.html")
         n = 100
         m = 50

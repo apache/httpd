@@ -90,6 +90,7 @@ class HttpdTestSetup:
             self.add_modules([self.env.ssl_module])
         self._make_modules_conf()
         self._make_htdocs()
+        self._add_aptest()
         self.env.clear_curl_headerfiles()
 
     def _make_dirs(self):
@@ -179,6 +180,21 @@ class HttpdTestSetup:
                     st = os.stat(py_file)
                     os.chmod(py_file, st.st_mode | stat.S_IEXEC)
 
+    def _add_aptest(self):
+        local_dir = os.path.dirname(inspect.getfile(HttpdTestSetup))
+        p = subprocess.run([self.env.apxs, '-c', 'mod_aptest.c'],
+                           capture_output=True,
+                           cwd=os.path.join(local_dir, 'mod_aptest'))
+        rv = p.returncode
+        if rv != 0:
+            log.error(f"compiling mod_aptest failed: {p.stderr}")
+            raise Exception(f"compiling mod_aptest failed: {p.stderr}")
+
+        modules_conf = os.path.join(self.env.server_dir, 'conf/modules.conf')
+        with open(modules_conf, 'a') as fd:
+            # load our test module which is not installed
+            fd.write(f"LoadModule aptest_module   \"{local_dir}/mod_aptest/.libs/mod_aptest.so\"\n")
+
 
 class HttpdTestEnv:
 
@@ -255,7 +271,7 @@ class HttpdTestEnv:
         self._verbosity = pytestconfig.option.verbose if pytestconfig is not None else 0
         self._test_conf = os.path.join(self._server_conf_dir, "test.conf")
         self._httpd_base_conf = []
-        self._httpd_log_modules = []
+        self._httpd_log_modules = ['aptest']
         self._log_interesting = None
         self._setup = None
 
@@ -269,6 +285,8 @@ class HttpdTestEnv:
 
         self._verify_certs = False
         self._curl_headerfiles_n = 0
+        self._h2load_version = None
+        self._current_test = None
 
     def add_httpd_conf(self, lines: List[str]):
         self._httpd_base_conf.extend(lines)
@@ -403,6 +421,13 @@ class HttpdTestEnv:
         return self._ca
 
     @property
+    def current_test_name(self) -> str:
+        return self._current_test
+
+    def set_current_test_name(self, val) -> None:
+        self._current_test = val
+
+    @property
     def apachectl_stderr(self):
         return self._apachectl_stderr
 
@@ -416,6 +441,7 @@ class HttpdTestEnv:
         return []
 
     def _versiontuple(self, v):
+        v = re.sub(r'(\d+\.\d+(\.\d+)?)(-\S+)?', r'\1', v)
         return tuple(map(int, v.split('.')))
 
     def httpd_is_at_least(self, minv):
@@ -428,14 +454,16 @@ class HttpdTestEnv:
     def h2load_is_at_least(self, minv):
         if not self.has_h2load():
             return False
-        p = subprocess.run([self._h2load, '--version'], capture_output=True, text=True)
-        if p.returncode != 0:
-            return False
-        s = p.stdout.strip()
-        m = re.match(r'h2load nghttp2/(\S+)', s)
-        if m:
-            hv = self._versiontuple(m.group(1))
-            return hv >= self._versiontuple(minv)
+        if self._h2load_version is None:
+            p = subprocess.run([self._h2load, '--version'], capture_output=True, text=True)
+            if p.returncode != 0:
+                return False
+            s = p.stdout.strip()
+            m = re.match(r'h2load nghttp2/(\S+)', s)
+            if m:
+                self._h2load_version = self._versiontuple(m.group(1))
+        if self._h2load_version is not None:
+            return self._h2load_version >= self._versiontuple(minv)
         return False
 
     def has_nghttp(self):
@@ -627,6 +655,9 @@ class HttpdTestEnv:
             if ca_pem:
                 args.extend(["--cacert", ca_pem])
 
+        if self._current_test is not None:
+            args.extend(["-H", f'AP-Test-Name: {self._current_test}'])
+
         if force_resolve and u.hostname and u.hostname != 'localhost' \
                 and u.hostname != self._httpd_addr \
                 and not re.match(r'^(\d+|\[|:).*', u.hostname):
@@ -739,7 +770,8 @@ class HttpdTestEnv:
         return -1
         
     def nghttp(self):
-        return Nghttp(self._nghttp, connect_addr=self._httpd_addr, tmp_dir=self.gen_dir)
+        return Nghttp(self._nghttp, connect_addr=self._httpd_addr,
+                      tmp_dir=self.gen_dir, test_name=self._current_test)
 
     def h2load_status(self, run: ExecResult):
         stats = {}

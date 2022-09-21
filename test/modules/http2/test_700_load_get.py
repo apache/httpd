@@ -30,6 +30,7 @@ class TestLoadGet:
         1000, 80000
     ])
     def test_h2_700_10(self, env, start):
+        assert env.is_live()
         text = "X"
         chunk = 32
         for n in range(0, 5):
@@ -47,6 +48,7 @@ class TestLoadGet:
         1, 2, 16, 32
     ])
     def test_h2_700_11(self, env, conns):
+        assert env.is_live()
         text = "X"
         start = 1200
         chunk = 64

@@ -15,10 +15,12 @@ def _get_path(x):
 
 class Nghttp:
 
-    def __init__(self, path, connect_addr=None, tmp_dir="/tmp"):
+    def __init__(self, path, connect_addr=None, tmp_dir="/tmp",
+                 test_name: str = None):
         self.NGHTTP = path
         self.CONNECT_ADDR = connect_addr
         self.TMP_DIR = tmp_dir
+        self._test_name = test_name
 
     @staticmethod
     def get_stream(streams, sid):
@@ -104,7 +106,7 @@ class Nghttp:
                 body += m.group(1)
                 s = self.get_stream(streams, m.group(2))
                 if s:
-                    print("stream %d: recv %d header" % (s["id"], len(s["header"]))) 
+                    print("stream %d: recv %d header" % (s["id"], len(s["header"])))
                     response = s["response"]
                     hkey = "header"
                     if "header" in response:
@@ -194,9 +196,11 @@ class Nghttp:
             output["response"] = streams[main_stream]["response"]
             output["paddings"] = streams[main_stream]["paddings"]
         return output
-    
+
     def _raw(self, url, timeout, options):
         args = ["-v"]
+        if self._test_name is not None:
+            args.append(f'--header=AP-Test-Name: {self._test_name}')
         if options:
             args.extend(options)
         r = self._baserun(url, timeout, args)

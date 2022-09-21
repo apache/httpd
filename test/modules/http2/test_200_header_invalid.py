@@ -88,7 +88,8 @@ class TestInvalidHeaders:
     def test_h2_200_12(self, env):
         url = env.mkurl("https", "cgi", "/")
         opt = []
-        for i in range(98):  # curl sends 2 headers itself (user-agent and accept)
+        # curl sends 3 headers itself (user-agent, accept, and our AP-Test-Name)
+        for i in range(97):
             opt += ["-H", "x: 1"]
         r = env.curl_get(url, options=opt)
         assert r.response["status"] == 200
@@ -100,8 +101,9 @@ class TestInvalidHeaders:
     def test_h2_200_13(self, env):
         url = env.mkurl("https", "cgi", "/")
         opt = []
-        for i in range(98):  # curl sends 2 headers itself (user-agent and accept)
-            opt += ["-H", "x{0}: 1".format(i)]
+        # curl sends 3 headers itself (user-agent, accept, and our AP-Test-Name)
+        for i in range(97):
+            opt += ["-H", f"x{i}: 1"]
         r = env.curl_get(url, options=opt)
         assert r.response["status"] == 200
         r = env.curl_get(url, options=(opt + ["-H", "y: 2"]))
