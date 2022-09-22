@@ -190,10 +190,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      Can be applied via apply_backport_pr.sh 327
      +1: rpluem,
 
-  *) mod_http2: bring in mod_http2 v2.0.4 from github
-     Pull Request: https://github.com/apache/httpd/pull/329
-     +1: icing
-
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
