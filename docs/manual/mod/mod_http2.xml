@@ -1027,8 +1027,8 @@ H2TLSCoolDownSecs 0
     <directivesynopsis>
         <name>H2HeaderStrictness</name>
         <description>Strictness applied to head checks, via RFC number.</description>
-        <syntax>H2HeaderStrictness <var>rfc-number</var></syntax>
-        <default>7540</default>
+        <syntax>H2HeaderStrictness <var>rfc</var></syntax>
+        <default>rfc7540</default>
         <contextlist>
             <context>server config</context>
             <context>virtual host</context>
@@ -1039,9 +1039,11 @@ H2TLSCoolDownSecs 0
             <p>
                 <directive>H2HeaderStrictness</directive> specifies the compliance
                 checks for header values, as specified in the IETF RFC number.
-                '7540' is the original HTTP/2 RFC, 9113 is the updated version that
+                'rfc7540' is the original HTTP/2 RFC, 'rfc9113' is the updated version that
                 disallows leading and trialing spaces in fields.
-            </p>
+            </p><p>
+                Use 'highest' to use always the highest strictness checks available.
+        </p>
         </usage>
     </directivesynopsis>
 
