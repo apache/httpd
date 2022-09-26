@@ -53,7 +53,7 @@
     } while (0)
 
 
-static int is_empty(h2_bucket_beam *beam);
+static int buffer_is_empty(h2_bucket_beam *beam);
 static apr_off_t get_buffered_data_len(h2_bucket_beam *beam);
 
 static int h2_blist_count(h2_blist *blist)
@@ -78,7 +78,7 @@ static int h2_blist_count(h2_blist *blist)
                           "BEAM[%s,%s%sdata=%ld,buckets(send/consumed)=%d/%d]: %s %s", \
                           (beam)->name, \
                           (beam)->aborted? "aborted," : "", \
-                          is_empty(beam)? "empty," : "", \
+                          buffer_is_empty(beam)? "empty," : "", \
                           (long)get_buffered_data_len(beam), \
                           h2_blist_count(&(beam)->buckets_to_send), \
                           h2_blist_count(&(beam)->buckets_consumed), \
@@ -180,6 +180,9 @@ static apr_status_t wait_not_empty(h2_bucket_beam *beam, conn_rec *c, apr_read_t
     while (buffer_is_empty(beam) && APR_SUCCESS == rv) {
         if (beam->aborted) {
             rv = APR_ECONNABORTED;
+        }
+        else if (beam->closed) {
+            rv = APR_EOF;
         }
         else if (APR_BLOCK_READ != block) {
             rv = APR_EAGAIN;
@@ -371,6 +374,24 @@ void h2_beam_abort(h2_bucket_beam *beam, conn_rec *c)
         beam_shutdown(beam, APR_SHUTDOWN_READ);
     }
     apr_thread_cond_broadcast(beam->change);
+    apr_thread_mutex_unlock(beam->lock);
+}
+
+void h2_beam_close(h2_bucket_beam *beam, conn_rec *c)
+{
+    apr_thread_mutex_lock(beam->lock);
+    if (!beam->closed) {
+        /* should only be called from sender */
+        ap_assert(c == beam->from);
+        beam->closed = 1;
+        if (beam->send_cb) {
+            beam->send_cb(beam->send_ctx, beam);
+        }
+        if (beam->was_empty_cb && buffer_is_empty(beam)) {
+            beam->was_empty_cb(beam->was_empty_ctx, beam);
+        }
+        apr_thread_cond_broadcast(beam->change);
+    }
     apr_thread_mutex_unlock(beam->lock);
 }
 
@@ -584,6 +605,8 @@ transfer:
         if (APR_BUCKET_IS_METADATA(bsender)) {
             /* we need a real copy into the receivers bucket_alloc */
             if (APR_BUCKET_IS_EOS(bsender)) {
+                /* this closes the beam */
+                beam->closed = 1;
                 brecv = apr_bucket_eos_create(bb->bucket_alloc);
             }
             else if (APR_BUCKET_IS_FLUSH(bsender)) {
@@ -677,6 +700,9 @@ transfer:
     else if (beam->aborted) {
         rv = APR_ECONNABORTED;
     }
+    else if (beam->closed) {
+        rv = APR_EOF;
+    }
     else {
         rv = wait_not_empty(beam, to, block);
         if (rv != APR_SUCCESS) {
@@ -767,17 +793,12 @@ apr_off_t h2_beam_get_mem_used(h2_bucket_beam *beam)
     return l;
 }
 
-static int is_empty(h2_bucket_beam *beam)
-{
-    return H2_BLIST_EMPTY(&beam->buckets_to_send);
-}
-
 int h2_beam_empty(h2_bucket_beam *beam)
 {
     int empty = 1;
 
     apr_thread_mutex_lock(beam->lock);
-    empty = is_empty(beam);
+    empty = buffer_is_empty(beam);
     apr_thread_mutex_unlock(beam->lock);
     return empty;
 }

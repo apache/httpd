@@ -63,7 +63,8 @@ struct h2_mplx {
     struct h2_stream *stream0;      /* HTTP/2's stream 0 */
     server_rec *s;                  /* server for master conn */
 
-    int aborted;
+    int shutdown;                   /* we are shutting down */
+    int aborted;                    /* we need to get out of here asap */
     int polling;                    /* is waiting/processing pollset events */
     ap_conn_producer_t *producer;   /* registered producer at h2_workers */
 
@@ -198,15 +199,6 @@ apr_status_t h2_mplx_c1_streams_do(h2_mplx *m, h2_mplx_stream_cb *cb, void *ctx)
  * queue.
  */
 apr_status_t h2_mplx_c1_client_rst(h2_mplx *m, int stream_id);
-
-/**
- * Input for stream has been closed. Notify a possibly started
- * and waiting stream by sending an EOS.
- * @param m the mplx
- * @param stream_id the closed stream
- * @return APR_SUCCESS iff EOS was sent, APR_EAGAIN if not necessary
- */
-apr_status_t h2_mplx_c1_input_closed(h2_mplx *m, int stream_id);
 
 /**
  * Get readonly access to a stream for a secondary connection.

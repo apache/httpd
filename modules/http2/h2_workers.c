@@ -45,6 +45,7 @@ struct ap_conn_producer_t {
     void *baton;
     ap_conn_producer_next *fn_next;
     ap_conn_producer_done *fn_done;
+    ap_conn_producer_shutdown *fn_shutdown;
     volatile prod_state_t state;
     volatile int conns_active;
 };
@@ -320,7 +321,7 @@ static void* APR_THREAD_FUNC slot_run(apr_thread_t *thread, void *wctx)
             if (APR_TIMEUP == rv) {
                 APR_RING_REMOVE(slot, link);
                 --workers->idle_slots;
-                ap_log_error(APLOG_MARK, APLOG_ERR, 0, workers->s,
+                ap_log_error(APLOG_MARK, APLOG_TRACE1, 0, workers->s,
                              "h2_workers: idle timeout slot %d in state %d (%d activations)",
                              slot->id, slot->state, slot->activations);
                 break;
@@ -451,7 +452,7 @@ h2_workers *h2_workers_create(server_rec *s, apr_pool_t *pchild,
     workers->pool = pool;
     workers->min_active = min_active;
     workers->max_slots = max_slots;
-    workers->idle_limit = (idle_limit > 0)? idle_limit : apr_time_from_sec(10);
+    workers->idle_limit = (int)((idle_limit > 0)? idle_limit : apr_time_from_sec(10));
     workers->dynamic = (workers->min_active < workers->max_slots);
 
     ap_log_error(APLOG_MARK, APLOG_INFO, 0, s,
@@ -532,12 +533,23 @@ apr_size_t h2_workers_get_max_workers(h2_workers *workers)
     return workers->max_slots;
 }
 
-void h2_workers_graceful_shutdown(h2_workers *workers)
+void h2_workers_shutdown(h2_workers *workers, int graceful)
 {
+    ap_conn_producer_t *prod;
+
     apr_thread_mutex_lock(workers->lock);
+    ap_log_error(APLOG_MARK, APLOG_TRACE1, 0, workers->s,
+                 "h2_workers: shutdown graceful=%d", graceful);
     workers->shutdown = 1;
     workers->idle_limit = apr_time_from_sec(1);
     wake_all_idles(workers);
+    for (prod = APR_RING_FIRST(&workers->prod_idle);
+        prod != APR_RING_SENTINEL(&workers->prod_idle, ap_conn_producer_t, link);
+        prod = APR_RING_NEXT(prod, link)) {
+        if (prod->fn_shutdown) {
+            prod->fn_shutdown(prod->baton, graceful);
+        }
+    }
     apr_thread_mutex_unlock(workers->lock);
 }
 
@@ -546,6 +558,7 @@ ap_conn_producer_t *h2_workers_register(h2_workers *workers,
                                         const char *name,
                                         ap_conn_producer_next *fn_next,
                                         ap_conn_producer_done *fn_done,
+                                        ap_conn_producer_shutdown *fn_shutdown,
                                         void *baton)
 {
     ap_conn_producer_t *prod;
@@ -555,6 +568,7 @@ ap_conn_producer_t *h2_workers_register(h2_workers *workers,
     prod->name = name;
     prod->fn_next = fn_next;
     prod->fn_done = fn_done;
+    prod->fn_shutdown = fn_shutdown;
     prod->baton = baton;
 
     apr_thread_mutex_lock(workers->lock);

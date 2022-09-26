@@ -32,6 +32,10 @@
 
 #include <mpm_common.h>
 
+#if APR_HAVE_UNISTD_H
+#include <unistd.h>         /* for getpid() */
+#endif
+
 #include "h2_private.h"
 #include "h2.h"
 #include "h2_bucket_beam.h"
@@ -546,6 +550,9 @@ static int on_send_data_cb(nghttp2_session *ngh2,
     if (status == APR_SUCCESS) {
         stream->out_data_frames++;
         stream->out_data_octets += length;
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, session->c1,
+                      H2_STRM_MSG(stream, "sent data length=%ld, total=%ld"),
+                      (long)length, (long)stream->out_data_octets);
         return 0;
     }
     else {
@@ -875,7 +882,12 @@ apr_status_t h2_session_create(h2_session **psession, conn_rec *c, request_rec *
      * h2 streams can live through keepalive periods. While double id
      * will not lead to processing failures, it will confuse log analysis.
      */
+#if AP_MODULE_MAGIC_AT_LEAST(20211221, 8)
     ap_sb_get_child_thread(c->sbh, &session->child_num, &thread_num);
+#else
+    (void)thread_num;
+    session->child_num = (int)getpid();
+#endif
     session->id = apr_atomic_inc32(&next_id);
     session->c1 = c;
     session->r = r;
@@ -941,6 +953,15 @@ apr_status_t h2_session_create(h2_session **psession, conn_rec *c, request_rec *
      * that accumulates memory on long connections. This makes PRIORITY
      * setting in relation to older streams non-working. */
     nghttp2_option_set_no_closed_streams(options, 1);
+#endif
+#ifdef H2_NG2_RFC9113_STRICTNESS
+    /* nghttp2 v1.50.0 introduces the strictness checks on leading/trailing
+     * whitespace of RFC 9113. */
+    ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, c,
+                  "nghttp2_session_server_new: header strictness is %d",
+                  h2_config_sgeti(s, H2_CONF_HEADER_STRICTNESS));
+    nghttp2_option_set_no_rfc9113_leading_and_trailing_ws_validation(options,
+        h2_config_sgeti(s, H2_CONF_HEADER_STRICTNESS) < 9113);
 #endif
     rv = nghttp2_session_server_new2(&session->ngh2, callbacks,
                                      session, options);
@@ -1843,10 +1864,35 @@ apr_status_t h2_session_process(h2_session *session, int async)
                  * connection handling when nothing really happened. */
                 h2_c1_read(session);
                 if (H2_SESSION_ST_IDLE == session->state) {
-                    ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, c,
-                                  H2_SSSN_LOG(APLOGNO(10306), session,
-                                  "returning to mpm c1 monitoring"));
-                    goto leaving;
+                    if (async) {
+                        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, c,
+                                      H2_SSSN_LOG(APLOGNO(10306), session,
+                                      "returning to mpm c1 monitoring"));
+                        goto leaving;
+                    }
+                    else {
+                        /* Not an async mpm, we must continue waiting
+                         * for client data to arrive until the configured
+                         * server Timeout/KeepAliveTimeout happens */
+                        apr_time_t timeout = (session->open_streams == 0)?
+                            session->s->keep_alive_timeout :
+                            session->s->timeout;
+                        status = h2_mplx_c1_poll(session->mplx, timeout,
+                                                 on_stream_input,
+                                                 on_stream_output, session);
+                        if (APR_STATUS_IS_TIMEUP(status)) {
+                            if (session->open_streams == 0) {
+                                h2_session_dispatch_event(session,
+                                    H2_SESSION_EV_CONN_TIMEOUT, status, NULL);
+                                break;
+                            }
+                        }
+                        else if (APR_SUCCESS != status) {
+                            h2_session_dispatch_event(session,
+                                H2_SESSION_EV_CONN_ERROR, status, NULL);
+                            break;
+                        }
+                    }
                 }
             }
             else {
@@ -1872,14 +1918,20 @@ apr_status_t h2_session_process(h2_session *session, int async)
                 h2_session_dispatch_event(session, H2_SESSION_EV_CONN_ERROR, status, NULL);
                 break;
             }
+            if (session->open_streams == 0) {
+                h2_session_dispatch_event(session, H2_SESSION_EV_NO_MORE_STREAMS,
+                                          0, "streams really done");
+            }
             /* No IO happening and input is exhausted. Make sure we have
              * flushed any possibly pending output and then wait with
              * the c1 connection timeout for sth to happen in our c1/c2 sockets/pipes */
             status = h2_mplx_c1_poll(session->mplx, session->s->timeout,
                                      on_stream_input, on_stream_output, session);
             if (APR_STATUS_IS_TIMEUP(status)) {
-                h2_session_dispatch_event(session, H2_SESSION_EV_CONN_TIMEOUT, status, NULL);
-                break;
+                if (session->open_streams == 0) {
+                    h2_session_dispatch_event(session, H2_SESSION_EV_CONN_TIMEOUT, status, NULL);
+                    break;
+                }
             }
             else if (APR_SUCCESS != status) {
                 h2_session_dispatch_event(session, H2_SESSION_EV_CONN_ERROR, status, NULL);

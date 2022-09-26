@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #include <assert.h>
 #include <apr_strings.h>
 #include <apr_thread_mutex.h>
@@ -56,7 +56,7 @@ unsigned char h2_log2(int n)
     if (!(n & 0x80000000u)) {
         lz += 1;
     }
-    
+
     return 31 - lz;
 }
 
@@ -85,7 +85,7 @@ void h2_util_camel_case_header(char *s, size_t len)
             if (s[i] >= 'a' && s[i] <= 'z') {
                 s[i] -= 'a' - 'A';
             }
-            
+
             start = 0;
         }
         else if (s[i] == '-') {
@@ -101,9 +101,9 @@ void h2_util_camel_case_header(char *s, size_t len)
 static const unsigned int BASE64URL_UINT6[] = {
 /*   0   1   2   3   4   5   6   7   8   9   a   b   c   d   e   f        */
     N6, N6, N6, N6, N6, N6, N6, N6, N6, N6, N6, N6, N6, N6, N6, N6, /*  0 */
-    N6, N6, N6, N6, N6, N6, N6, N6, N6, N6, N6, N6, N6, N6, N6, N6, /*  1 */ 
+    N6, N6, N6, N6, N6, N6, N6, N6, N6, N6, N6, N6, N6, N6, N6, N6, /*  1 */
     N6, N6, N6, N6, N6, N6, N6, N6, N6, N6, N6, N6, N6, 62, N6, N6, /*  2 */
-    52, 53, 54, 55, 56, 57, 58, 59, 60, 61, N6, N6, N6, N6, N6, N6, /*  3 */ 
+    52, 53, 54, 55, 56, 57, 58, 59, 60, 61, N6, N6, N6, N6, N6, N6, /*  3 */
     N6, 0,  1,  2,  3,  4,  5,  6,   7,  8,  9, 10, 11, 12, 13, 14, /*  4 */
     15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, N6, N6, N6, N6, 63, /*  5 */
     N6, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, /*  6 */
@@ -129,7 +129,7 @@ static const unsigned char BASE64URL_CHARS[] = {
 
 #define BASE64URL_CHAR(x)    BASE64URL_CHARS[ (unsigned int)(x) & 0x3fu ]
 
-apr_size_t h2_util_base64url_decode(const char **decoded, const char *encoded, 
+apr_size_t h2_util_base64url_decode(const char **decoded, const char *encoded,
                                     apr_pool_t *pool)
 {
     const unsigned char *e = (const unsigned char *)encoded;
@@ -137,14 +137,14 @@ apr_size_t h2_util_base64url_decode(const char **decoded, const char *encoded,
     unsigned char *d;
     unsigned int n;
     long len, mlen, remain, i;
-    
+
     while (*p && BASE64URL_UINT6[ *p ] != N6) {
         ++p;
     }
     len = (int)(p - e);
     mlen = (len/4)*4;
     *decoded = apr_pcalloc(pool, (apr_size_t)len + 1);
-    
+
     i = 0;
     d = (unsigned char*)*decoded;
     for (; i < mlen; i += 4) {
@@ -178,14 +178,14 @@ apr_size_t h2_util_base64url_decode(const char **decoded, const char *encoded,
     return (apr_size_t)(mlen/4*3 + remain);
 }
 
-const char *h2_util_base64url_encode(const char *data, 
+const char *h2_util_base64url_encode(const char *data,
                                      apr_size_t dlen, apr_pool_t *pool)
 {
     int i, len = (int)dlen;
     apr_size_t slen = ((dlen+2)/3)*4 + 1; /* 0 terminated */
     const unsigned char *udata = (const unsigned char*)data;
     unsigned char *enc, *p = apr_pcalloc(pool, slen);
-    
+
     enc = p;
     for (i = 0; i < len-2; i+= 3) {
         *p++ = BASE64URL_CHAR( (udata[i]   >> 2) );
@@ -193,7 +193,7 @@ const char *h2_util_base64url_encode(const char *data,
         *p++ = BASE64URL_CHAR( (udata[i+1] << 2) + (udata[i+2] >> 6) );
         *p++ = BASE64URL_CHAR( (udata[i+2]) );
     }
-    
+
     if (i < len) {
         *p++ = BASE64URL_CHAR( (udata[i] >> 2) );
         if (i == (len - 1)) {
@@ -249,7 +249,7 @@ typedef struct {
     void *ctx;
 } iter_ctx;
 
-static int ihash_iter(void *ctx, const void *key, apr_ssize_t klen, 
+static int ihash_iter(void *ctx, const void *key, apr_ssize_t klen,
                      const void *val)
 {
     iter_ctx *ictx = ctx;
@@ -307,7 +307,7 @@ size_t h2_ihash_shift(h2_ihash_t *ih, void **buffer, size_t max)
 {
     collect_ctx ctx;
     size_t i;
-    
+
     ctx.ih = ih;
     ctx.buffer = buffer;
     ctx.max = max;
@@ -325,9 +325,9 @@ size_t h2_ihash_shift(h2_ihash_t *ih, void **buffer, size_t max)
 
 static void iq_grow(h2_iqueue *q, int nlen);
 static void iq_swap(h2_iqueue *q, int i, int j);
-static int iq_bubble_up(h2_iqueue *q, int i, int top, 
+static int iq_bubble_up(h2_iqueue *q, int i, int top,
                         h2_iq_cmp *cmp, void *ctx);
-static int iq_bubble_down(h2_iqueue *q, int i, int bottom, 
+static int iq_bubble_down(h2_iqueue *q, int i, int bottom,
                           h2_iq_cmp *cmp, void *ctx);
 
 h2_iqueue *h2_iq_create(apr_pool_t *pool, int capacity)
@@ -353,7 +353,7 @@ int h2_iq_count(h2_iqueue *q)
 int h2_iq_add(h2_iqueue *q, int sid, h2_iq_cmp *cmp, void *ctx)
 {
     int i;
-    
+
     if (h2_iq_contains(q, sid)) {
         return 0;
     }
@@ -363,7 +363,7 @@ int h2_iq_add(h2_iqueue *q, int sid, h2_iq_cmp *cmp, void *ctx)
     i = (q->head + q->nelts) % q->nalloc;
     q->elts[i] = sid;
     ++q->nelts;
-    
+
     if (cmp) {
         /* bubble it to the front of the queue */
         iq_bubble_up(q, i, q->head, cmp, ctx);
@@ -384,7 +384,7 @@ int h2_iq_remove(h2_iqueue *q, int sid)
             break;
         }
     }
-    
+
     if (i < q->nelts) {
         ++i;
         for (; i < q->nelts; ++i) {
@@ -409,14 +409,14 @@ void h2_iq_sort(h2_iqueue *q, h2_iq_cmp *cmp, void *ctx)
      */
     if (q->nelts > 0) {
         int i, ni, prev, last;
-        
+
         /* Start at the end of the queue and create a tail of sorted
          * entries. Make that tail one element longer in each iteration.
          */
         last = i = (q->head + q->nelts - 1) % q->nalloc;
         while (i != q->head) {
             prev = (q->nalloc + i - 1) % q->nalloc;
-            
+
             ni = iq_bubble_up(q, i, prev, cmp, ctx);
             if (ni == prev) {
                 /* i bubbled one up, bubble the new i down, which
@@ -432,15 +432,15 @@ void h2_iq_sort(h2_iqueue *q, h2_iq_cmp *cmp, void *ctx)
 int h2_iq_shift(h2_iqueue *q)
 {
     int sid;
-    
+
     if (q->nelts <= 0) {
         return 0;
     }
-    
+
     sid = q->elts[q->head];
     q->head = (q->head + 1) % q->nalloc;
     q->nelts--;
-    
+
     return sid;
 }
 
@@ -462,7 +462,7 @@ static void iq_grow(h2_iqueue *q, int nlen)
         int *nq = apr_pcalloc(q->pool, sizeof(int) * nlen);
         if (q->nelts > 0) {
             int l = ((q->head + q->nelts) % q->nalloc) - q->head;
-            
+
             memmove(nq, q->elts + q->head, sizeof(int) * l);
             if (l < q->nelts) {
                 /* elts wrapped, append elts in [0, remain] to nq */
@@ -483,11 +483,11 @@ static void iq_swap(h2_iqueue *q, int i, int j)
     q->elts[j] = x;
 }
 
-static int iq_bubble_up(h2_iqueue *q, int i, int top, 
-                        h2_iq_cmp *cmp, void *ctx) 
+static int iq_bubble_up(h2_iqueue *q, int i, int top,
+                        h2_iq_cmp *cmp, void *ctx)
 {
     int prev;
-    while (((prev = (q->nalloc + i - 1) % q->nalloc), i != top) 
+    while (((prev = (q->nalloc + i - 1) % q->nalloc), i != top)
            && (*cmp)(q->elts[i], q->elts[prev], ctx) < 0) {
         iq_swap(q, prev, i);
         i = prev;
@@ -495,11 +495,11 @@ static int iq_bubble_up(h2_iqueue *q, int i, int top,
     return i;
 }
 
-static int iq_bubble_down(h2_iqueue *q, int i, int bottom, 
+static int iq_bubble_down(h2_iqueue *q, int i, int bottom,
                           h2_iq_cmp *cmp, void *ctx)
 {
     int next;
-    while (((next = (q->nalloc + i + 1) % q->nalloc), i != bottom) 
+    while (((next = (q->nalloc + i + 1) % q->nalloc), i != bottom)
            && (*cmp)(q->elts[i], q->elts[next], ctx) > 0) {
         iq_swap(q, next, i);
         i = next;
@@ -549,7 +549,7 @@ static apr_status_t fifo_destroy(void *data)
 static int index_of(h2_fifo *fifo, void *elem)
 {
     int i;
-    
+
     for (i = fifo->out; i != fifo->in; i = (i + 1) % fifo->capacity) {
         if (elem == fifo->elems[i]) {
             return i;
@@ -558,12 +558,12 @@ static int index_of(h2_fifo *fifo, void *elem)
     return -1;
 }
 
-static apr_status_t create_int(h2_fifo **pfifo, apr_pool_t *pool, 
+static apr_status_t create_int(h2_fifo **pfifo, apr_pool_t *pool,
                                int capacity, int as_set)
 {
     apr_status_t rv;
     h2_fifo *fifo;
-    
+
     fifo = apr_pcalloc(pool, sizeof(*fifo));
     if (fifo == NULL) {
         return APR_ENOMEM;
@@ -591,7 +591,7 @@ static apr_status_t create_int(h2_fifo **pfifo, apr_pool_t *pool,
     }
     fifo->capacity = capacity;
     fifo->set = as_set;
-    
+
     *pfifo = fifo;
     apr_pool_cleanup_register(pool, fifo, fifo_destroy, apr_pool_cleanup_null);
 
@@ -667,7 +667,7 @@ static apr_status_t fifo_push_int(h2_fifo *fifo, void *elem, int block)
             return APR_EAGAIN;
         }
     }
-    
+
     fifo->elems[fifo->in++] = elem;
     if (fifo->in >= fifo->capacity) {
         fifo->in -= fifo->capacity;
@@ -682,7 +682,7 @@ static apr_status_t fifo_push_int(h2_fifo *fifo, void *elem, int block)
 static apr_status_t fifo_push(h2_fifo *fifo, void *elem, int block)
 {
     apr_status_t rv;
-    
+
     if ((rv = apr_thread_mutex_lock(fifo->lock)) == APR_SUCCESS) {
         rv = fifo_push_int(fifo, elem, block);
         apr_thread_mutex_unlock(fifo->lock);
@@ -704,7 +704,7 @@ static apr_status_t pull_head(h2_fifo *fifo, void **pelem, int block)
 {
     apr_status_t rv;
     int was_full;
-    
+
     if ((rv = check_not_empty(fifo, block)) != APR_SUCCESS) {
         *pelem = NULL;
         return rv;
@@ -724,7 +724,7 @@ static apr_status_t pull_head(h2_fifo *fifo, void **pelem, int block)
 static apr_status_t fifo_pull(h2_fifo *fifo, void **pelem, int block)
 {
     apr_status_t rv;
-    
+
     if ((rv = apr_thread_mutex_lock(fifo->lock)) == APR_SUCCESS) {
         rv = pull_head(fifo, pelem, block);
         apr_thread_mutex_unlock(fifo->lock);
@@ -746,11 +746,11 @@ static apr_status_t fifo_peek(h2_fifo *fifo, h2_fifo_peek_fn *fn, void *ctx, int
 {
     apr_status_t rv;
     void *elem;
-    
+
     if (fifo->aborted) {
         return APR_EOF;
     }
-    
+
     if (APR_SUCCESS == (rv = apr_thread_mutex_lock(fifo->lock))) {
         if (APR_SUCCESS == (rv = pull_head(fifo, &elem, block))) {
             switch (fn(elem, ctx)) {
@@ -779,7 +779,7 @@ apr_status_t h2_fifo_try_peek(h2_fifo *fifo, h2_fifo_peek_fn *fn, void *ctx)
 apr_status_t h2_fifo_remove(h2_fifo *fifo, void *elem)
 {
     apr_status_t rv;
-    
+
     if (fifo->aborted) {
         return APR_EOF;
     }
@@ -838,7 +838,7 @@ apr_status_t h2_fifo_remove(h2_fifo *fifo, void *elem)
         else {
             rv = APR_EAGAIN;
         }
-        
+
         apr_thread_mutex_unlock(fifo->lock);
     }
     return rv;
@@ -860,12 +860,12 @@ struct h2_ififo {
     apr_thread_cond_t  *not_full;
 };
 
-static int inth_index(h2_ififo *fifo, int n) 
+static int inth_index(h2_ififo *fifo, int n)
 {
     return (fifo->head + n) % fifo->capacity;
 }
 
-static apr_status_t ififo_destroy(void *data) 
+static apr_status_t ififo_destroy(void *data)
 {
     h2_ififo *fifo = data;
 
@@ -879,7 +879,7 @@ static apr_status_t ififo_destroy(void *data)
 static int iindex_of(h2_ififo *fifo, int id)
 {
     int i;
-    
+
     for (i = 0; i < fifo->count; ++i) {
         if (id == fifo->elems[inth_index(fifo, i)]) {
             return i;
@@ -888,12 +888,12 @@ static int iindex_of(h2_ififo *fifo, int id)
     return -1;
 }
 
-static apr_status_t icreate_int(h2_ififo **pfifo, apr_pool_t *pool, 
+static apr_status_t icreate_int(h2_ififo **pfifo, apr_pool_t *pool,
                                 int capacity, int as_set)
 {
     apr_status_t rv;
     h2_ififo *fifo;
-    
+
     fifo = apr_pcalloc(pool, sizeof(*fifo));
     if (fifo == NULL) {
         return APR_ENOMEM;
@@ -921,7 +921,7 @@ static apr_status_t icreate_int(h2_ififo **pfifo, apr_pool_t *pool,
     }
     fifo->capacity = capacity;
     fifo->set = as_set;
-    
+
     *pfifo = fifo;
     apr_pool_cleanup_register(pool, fifo, ififo_destroy, apr_pool_cleanup_null);
 
@@ -992,7 +992,7 @@ static apr_status_t ififo_push_int(h2_ififo *fifo, int id, int block)
             return APR_EAGAIN;
         }
     }
-    
+
     ap_assert(fifo->count < fifo->capacity);
     fifo->elems[inth_index(fifo, fifo->count)] = id;
     ++fifo->count;
@@ -1005,7 +1005,7 @@ static apr_status_t ififo_push_int(h2_ififo *fifo, int id, int block)
 static apr_status_t ififo_push(h2_ififo *fifo, int id, int block)
 {
     apr_status_t rv;
-    
+
     if ((rv = apr_thread_mutex_lock(fifo->lock)) == APR_SUCCESS) {
         rv = ififo_push_int(fifo, id, block);
         apr_thread_mutex_unlock(fifo->lock);
@@ -1026,7 +1026,7 @@ apr_status_t h2_ififo_try_push(h2_ififo *fifo, int id)
 static apr_status_t ipull_head(h2_ififo *fifo, int *pi, int block)
 {
     apr_status_t rv;
-    
+
     if ((rv = icheck_not_empty(fifo, block)) != APR_SUCCESS) {
         *pi = 0;
         return rv;
@@ -1045,7 +1045,7 @@ static apr_status_t ipull_head(h2_ififo *fifo, int *pi, int block)
 static apr_status_t ififo_pull(h2_ififo *fifo, int *pi, int block)
 {
     apr_status_t rv;
-    
+
     if ((rv = apr_thread_mutex_lock(fifo->lock)) == APR_SUCCESS) {
         rv = ipull_head(fifo, pi, block);
         apr_thread_mutex_unlock(fifo->lock);
@@ -1067,7 +1067,7 @@ static apr_status_t ififo_peek(h2_ififo *fifo, h2_ififo_peek_fn *fn, void *ctx, 
 {
     apr_status_t rv;
     int id;
-    
+
     if (APR_SUCCESS == (rv = apr_thread_mutex_lock(fifo->lock))) {
         if (APR_SUCCESS == (rv = ipull_head(fifo, &id, block))) {
             switch (fn(id, ctx)) {
@@ -1096,7 +1096,7 @@ apr_status_t h2_ififo_try_peek(h2_ififo *fifo, h2_ififo_peek_fn *fn, void *ctx)
 static apr_status_t ififo_remove(h2_ififo *fifo, int id)
 {
     int rc, i;
-    
+
     if (fifo->aborted) {
         return APR_EOF;
     }
@@ -1124,7 +1124,7 @@ static apr_status_t ififo_remove(h2_ififo *fifo, int id)
 apr_status_t h2_ififo_remove(h2_ififo *fifo, int id)
 {
     apr_status_t rv;
-    
+
     if ((rv = apr_thread_mutex_lock(fifo->lock)) == APR_SUCCESS) {
         rv = ififo_remove(fifo, id);
         apr_thread_mutex_unlock(fifo->lock);
@@ -1135,7 +1135,7 @@ apr_status_t h2_ififo_remove(h2_ififo *fifo, int id)
 /*******************************************************************************
  * h2_util for apt_table_t
  ******************************************************************************/
- 
+
 typedef struct {
     apr_size_t bytes;
     apr_size_t pair_extra;
@@ -1157,7 +1157,7 @@ static int count_bytes(void *x, const char *key, const char *value)
 apr_size_t h2_util_table_bytes(apr_table_t *t, apr_size_t pair_extra)
 {
     table_bytes_ctx ctx;
-    
+
     ctx.bytes = 0;
     ctx.pair_extra = pair_extra;
     apr_table_do(count_bytes, &ctx, t, NULL);
@@ -1169,8 +1169,8 @@ apr_size_t h2_util_table_bytes(apr_table_t *t, apr_size_t pair_extra)
  * h2_util for bucket brigades
  ******************************************************************************/
 
-static apr_status_t last_not_included(apr_bucket_brigade *bb, 
-                                      apr_off_t maxlen, 
+static apr_status_t last_not_included(apr_bucket_brigade *bb,
+                                      apr_off_t maxlen,
                                       apr_bucket **pend)
 {
     apr_bucket *b;
@@ -1178,10 +1178,10 @@ static apr_status_t last_not_included(apr_bucket_brigade *bb,
 
     if (maxlen >= 0) {
         /* Find the bucket, up to which we reach maxlen/mem bytes */
-        for (b = APR_BRIGADE_FIRST(bb); 
+        for (b = APR_BRIGADE_FIRST(bb);
              (b != APR_BRIGADE_SENTINEL(bb));
              b = APR_BUCKET_NEXT(b)) {
-            
+
             if (APR_BUCKET_IS_METADATA(b)) {
                 /* included */
             }
@@ -1194,12 +1194,12 @@ static apr_status_t last_not_included(apr_bucket_brigade *bb,
                         return status;
                     }
                 }
-                
+
                 if (maxlen == 0 && b->length > 0) {
                     *pend = b;
                     return status;
                 }
-                
+
                 if (APR_BUCKET_IS_FILE(b)
 #if APR_HAS_MMAP
                  || APR_BUCKET_IS_MMAP(b)
@@ -1221,17 +1221,17 @@ static apr_status_t last_not_included(apr_bucket_brigade *bb,
     return status;
 }
 
-apr_status_t h2_brigade_concat_length(apr_bucket_brigade *dest, 
+apr_status_t h2_brigade_concat_length(apr_bucket_brigade *dest,
                                       apr_bucket_brigade *src,
                                       apr_off_t length)
 {
     apr_bucket *b;
     apr_off_t remain = length;
     apr_status_t status = APR_SUCCESS;
-    
+
     while (!APR_BRIGADE_EMPTY(src)) {
-        b = APR_BRIGADE_FIRST(src); 
-        
+        b = APR_BRIGADE_FIRST(src);
+
         if (APR_BUCKET_IS_METADATA(b)) {
             APR_BUCKET_REMOVE(b);
             APR_BRIGADE_INSERT_TAIL(dest, b);
@@ -1252,7 +1252,7 @@ apr_status_t h2_brigade_concat_length(apr_bucket_brigade *dest,
                         return status;
                     }
                 }
-            
+
                 if (remain < b->length) {
                     apr_bucket_split(b, remain);
                 }
@@ -1265,19 +1265,19 @@ apr_status_t h2_brigade_concat_length(apr_bucket_brigade *dest,
     return status;
 }
 
-apr_status_t h2_brigade_copy_length(apr_bucket_brigade *dest, 
+apr_status_t h2_brigade_copy_length(apr_bucket_brigade *dest,
                                     apr_bucket_brigade *src,
                                     apr_off_t length)
 {
     apr_bucket *b, *next;
     apr_off_t remain = length;
     apr_status_t status = APR_SUCCESS;
-    
-    for (b = APR_BRIGADE_FIRST(src); 
+
+    for (b = APR_BRIGADE_FIRST(src);
          b != APR_BRIGADE_SENTINEL(src);
          b = next) {
         next = APR_BUCKET_NEXT(b);
-        
+
         if (APR_BUCKET_IS_METADATA(b)) {
             /* fall through */
         }
@@ -1297,7 +1297,7 @@ apr_status_t h2_brigade_copy_length(apr_bucket_brigade *dest,
                         return status;
                     }
                 }
-            
+
                 if (remain < b->length) {
                     apr_bucket_split(b, remain);
                 }
@@ -1316,12 +1316,12 @@ apr_status_t h2_brigade_copy_length(apr_bucket_brigade *dest,
 int h2_util_has_eos(apr_bucket_brigade *bb, apr_off_t len)
 {
     apr_bucket *b, *end;
-    
+
     apr_status_t status = last_not_included(bb, len, &end);
     if (status != APR_SUCCESS) {
         return status;
     }
-    
+
     for (b = APR_BRIGADE_FIRST(bb);
          b != APR_BRIGADE_SENTINEL(bb) && b != end;
          b = APR_BUCKET_NEXT(b))
@@ -1333,7 +1333,7 @@ int h2_util_has_eos(apr_bucket_brigade *bb, apr_off_t len)
     return 0;
 }
 
-apr_status_t h2_util_bb_avail(apr_bucket_brigade *bb, 
+apr_status_t h2_util_bb_avail(apr_bucket_brigade *bb,
                               apr_off_t *plen, int *peos)
 {
     apr_status_t status;
@@ -1369,7 +1369,7 @@ apr_size_t h2_util_bucket_print(char *buffer, apr_size_t bmax,
     if (sep && *sep) {
         off += apr_snprintf(buffer+off, bmax-off, "%s", sep);
     }
-    
+
     if (bmax <= off) {
         return off;
     }
@@ -1377,30 +1377,30 @@ apr_size_t h2_util_bucket_print(char *buffer, apr_size_t bmax,
         off += apr_snprintf(buffer+off, bmax-off, "%s", b->type->name);
     }
     else if (bmax > off) {
-        off += apr_snprintf(buffer+off, bmax-off, "%s[%ld]", 
-                            b->type->name, 
-                            (long)(b->length == ((apr_size_t)-1)? 
+        off += apr_snprintf(buffer+off, bmax-off, "%s[%ld]",
+                            b->type->name,
+                            (long)(b->length == ((apr_size_t)-1)?
                                    -1 : b->length));
     }
     return off;
 }
 
-apr_size_t h2_util_bb_print(char *buffer, apr_size_t bmax, 
-                            const char *tag, const char *sep, 
+apr_size_t h2_util_bb_print(char *buffer, apr_size_t bmax,
+                            const char *tag, const char *sep,
                             apr_bucket_brigade *bb)
 {
     apr_size_t off = 0;
     const char *sp = "";
     apr_bucket *b;
-    
+
     if (bmax > 1) {
         if (bb) {
             memset(buffer, 0, bmax--);
             off += apr_snprintf(buffer+off, bmax-off, "%s(", tag);
-            for (b = APR_BRIGADE_FIRST(bb); 
+            for (b = APR_BRIGADE_FIRST(bb);
                  (bmax > off) && (b != APR_BRIGADE_SENTINEL(bb));
                  b = APR_BUCKET_NEXT(b)) {
-                
+
                 off += h2_util_bucket_print(buffer+off, bmax-off, b, sp);
                 sp = " ";
             }
@@ -1416,7 +1416,7 @@ apr_size_t h2_util_bb_print(char *buffer, apr_size_t bmax,
 }
 
 apr_status_t h2_append_brigade(apr_bucket_brigade *to,
-                               apr_bucket_brigade *from, 
+                               apr_bucket_brigade *from,
                                apr_off_t *plen,
                                int *peos,
                                h2_bucket_gate *should_append)
@@ -1426,10 +1426,10 @@ apr_status_t h2_append_brigade(apr_bucket_brigade *to,
     apr_status_t rv;
 
     *peos = 0;
-    
+
     while (!APR_BRIGADE_EMPTY(from)) {
         e = APR_BRIGADE_FIRST(from);
-        
+
         if (!should_append(e)) {
             goto leave;
         }
@@ -1440,7 +1440,7 @@ apr_status_t h2_append_brigade(apr_bucket_brigade *to,
                 continue;
             }
         }
-        else {        
+        else {
             if (remain > 0 && e->length == ((apr_size_t)-1)) {
                 const char *ign;
                 apr_size_t ilen;
@@ -1449,7 +1449,7 @@ apr_status_t h2_append_brigade(apr_bucket_brigade *to,
                     return rv;
                 }
             }
-            
+
             if (remain < e->length) {
                 if (remain <= 0) {
                     goto leave;
@@ -1457,7 +1457,7 @@ apr_status_t h2_append_brigade(apr_bucket_brigade *to,
                 apr_bucket_split(e, (apr_size_t)remain);
             }
         }
-        
+
         APR_BUCKET_REMOVE(e);
         APR_BRIGADE_INSERT_TAIL(to, e);
         len += e->length;
@@ -1492,8 +1492,8 @@ apr_off_t h2_brigade_mem_size(apr_bucket_brigade *bb)
 /*******************************************************************************
  * h2_ngheader
  ******************************************************************************/
- 
-int h2_util_ignore_header(const char *name) 
+
+int h2_util_ignore_header(const char *name)
 {
     /* never forward, ch. 8.1.2.2 */
     return (H2_HD_MATCH_LIT_CS("connection", name)
@@ -1541,14 +1541,14 @@ static int add_header(ngh_ctx *ctx, const char *key, const char *value)
     if (!ctx->unsafe) {
         if ((p = inv_field_name_chr(key))) {
             ap_log_perror(APLOG_MARK, APLOG_TRACE1, APR_EINVAL, ctx->p,
-                          "h2_request: head field '%s: %s' has invalid char %s", 
+                          "h2_request: head field '%s: %s' has invalid char %s",
                           key, value, p);
             ctx->status = APR_EINVAL;
             return 0;
         }
         if ((p = inv_field_value_chr(value))) {
             ap_log_perror(APLOG_MARK, APLOG_TRACE1, APR_EINVAL, ctx->p,
-                          "h2_request: head field '%s: %s' has invalid char %s", 
+                          "h2_request: head field '%s: %s' has invalid char %s",
                           key, value, p);
             ctx->status = APR_EINVAL;
             return 0;
@@ -1558,7 +1558,7 @@ static int add_header(ngh_ctx *ctx, const char *key, const char *value)
     nv->namelen = strlen(key);
     nv->value = (uint8_t*)value;
     nv->valuelen = strlen(value);
-    
+
     return 1;
 }
 
@@ -1570,37 +1570,37 @@ static int add_table_header(void *ctx, const char *key, const char *value)
     return 1;
 }
 
-static apr_status_t ngheader_create(h2_ngheader **ph, apr_pool_t *p, 
-                                    int unsafe, size_t key_count, 
+static apr_status_t ngheader_create(h2_ngheader **ph, apr_pool_t *p,
+                                    int unsafe, size_t key_count,
                                     const char *keys[], const char *values[],
                                     apr_table_t *headers)
 {
     ngh_ctx ctx;
     size_t n, i;
-    
+
     ctx.p = p;
     ctx.unsafe = unsafe;
-    
+
     n = key_count;
     apr_table_do(count_header, &n, headers, NULL);
-    
+
     *ph = ctx.ngh = apr_pcalloc(p, sizeof(h2_ngheader));
     if (!ctx.ngh) {
         return APR_ENOMEM;
     }
-    
+
     ctx.ngh->nv = apr_pcalloc(p, n * sizeof(nghttp2_nv));
     if (!ctx.ngh->nv) {
         return APR_ENOMEM;
     }
-    
+
     ctx.status = APR_SUCCESS;
     for (i = 0; i < key_count; ++i) {
         if (!add_header(&ctx, keys[i], values[i])) {
             return ctx.status;
         }
     }
-    
+
     apr_table_do(add_table_header, &ctx, headers, NULL);
 
     return ctx.status;
@@ -1618,7 +1618,7 @@ apr_status_t h2_res_create_ngtrailer(h2_ngheader **ph, apr_pool_t *p,
     return ngheader_create(ph, p, 0,
                            0, NULL, NULL, headers->headers);
 }
-                                     
+
 apr_status_t h2_res_create_ngheader(h2_ngheader **ph, apr_pool_t *p,
                                     ap_bucket_response *response)
 {
@@ -1632,23 +1632,23 @@ apr_status_t h2_res_create_ngheader(h2_ngheader **ph, apr_pool_t *p,
                            H2_ALEN(keys), keys, values, response->headers);
 }
 
-apr_status_t h2_req_create_ngheader(h2_ngheader **ph, apr_pool_t *p, 
+apr_status_t h2_req_create_ngheader(h2_ngheader **ph, apr_pool_t *p,
                                     const struct h2_request *req)
 {
-    
+
     const char *keys[] = {
-        ":scheme", 
-        ":authority", 
-        ":path", 
-        ":method", 
+        ":scheme",
+        ":authority",
+        ":path",
+        ":method",
     };
     const char *values[] = {
         req->scheme,
-        req->authority, 
-        req->path, 
-        req->method, 
+        req->authority,
+        req->path,
+        req->method,
     };
-    
+
     ap_assert(req->scheme);
     ap_assert(req->authority);
     ap_assert(req->path);
@@ -1660,7 +1660,7 @@ apr_status_t h2_req_create_ngheader(h2_ngheader **ph, apr_pool_t *p,
 /*******************************************************************************
  * header HTTP/1 <-> HTTP/2 conversions
  ******************************************************************************/
- 
+
 
 typedef struct {
     const char *name;
@@ -1688,9 +1688,9 @@ static literal IgnoredRequestTrailers[] = { /* Ignore, see rfc7230, ch. 4.1.2 */
     H2_DEF_LITERAL("max-forwards"),
     H2_DEF_LITERAL("cache-control"),
     H2_DEF_LITERAL("authorization"),
-    H2_DEF_LITERAL("content-length"),       
+    H2_DEF_LITERAL("content-length"),
     H2_DEF_LITERAL("proxy-authorization"),
-};    
+};
 static literal IgnoredResponseTrailers[] = {
     H2_DEF_LITERAL("age"),
     H2_DEF_LITERAL("date"),
@@ -1710,7 +1710,7 @@ static int ignore_header(const literal *lits, size_t llen,
 {
     const literal *lit;
     size_t i;
-    
+
     for (i = 0; i < llen; ++i) {
         lit = &lits[i];
         if (lit->len == nlen && !apr_strnatcasecmp(lit->name, name)) {
@@ -1727,7 +1727,7 @@ int h2_req_ignore_header(const char *name, size_t len)
 
 int h2_req_ignore_trailer(const char *name, size_t len)
 {
-    return (h2_req_ignore_header(name, len) 
+    return (h2_req_ignore_header(name, len)
             || ignore_header(H2_LIT_ARGS(IgnoredRequestTrailers), name, len));
 }
 
@@ -1736,14 +1736,14 @@ int h2_res_ignore_trailer(const char *name, size_t len)
     return ignore_header(H2_LIT_ARGS(IgnoredResponseTrailers), name, len);
 }
 
-apr_status_t h2_req_add_header(apr_table_t *headers, apr_pool_t *pool, 
+apr_status_t h2_req_add_header(apr_table_t *headers, apr_pool_t *pool,
                               const char *name, size_t nlen,
                               const char *value, size_t vlen,
                               size_t max_field_len, int *pwas_added)
 {
     char *hname, *hvalue;
     const char *existing;
-    
+
     *pwas_added = 0;
     if (h2_req_ignore_header(name, nlen)) {
         return APR_SUCCESS;
@@ -1752,7 +1752,7 @@ apr_status_t h2_req_add_header(apr_table_t *headers, apr_pool_t *pool,
         existing = apr_table_get(headers, "cookie");
         if (existing) {
             char *nval;
-            
+
             /* Cookie header come separately in HTTP/2, but need
              * to be merged by "; " (instead of default ", ")
              */
@@ -1771,7 +1771,7 @@ apr_status_t h2_req_add_header(apr_table_t *headers, apr_pool_t *pool,
             return APR_SUCCESS; /* ignore duplicate */
         }
     }
-    
+
     hname = apr_pstrndup(pool, name, nlen);
     h2_util_camel_case_header(hname, nlen);
     existing = apr_table_get(headers, hname);
@@ -1784,7 +1784,7 @@ apr_status_t h2_req_add_header(apr_table_t *headers, apr_pool_t *pool,
     if (!existing) *pwas_added = 1;
     hvalue = apr_pstrndup(pool, value, vlen);
     apr_table_mergen(headers, hname, hvalue);
-    
+
     return APR_SUCCESS;
 }
 
@@ -1796,7 +1796,7 @@ int h2_util_frame_print(const nghttp2_frame *frame, char *buffer, size_t maxlen)
 {
     char scratch[128];
     size_t s_len = sizeof(scratch)/sizeof(scratch[0]);
-    
+
     switch (frame->hd.type) {
         case NGHTTP2_DATA: {
             return apr_snprintf(buffer, maxlen,
@@ -1855,13 +1855,13 @@ int h2_util_frame_print(const nghttp2_frame *frame, char *buffer, size_t maxlen)
                 memcpy(scratch, frame->goaway.opaque_data, len);
             scratch[len] = '\0';
             return apr_snprintf(buffer, maxlen, "GOAWAY[error=%d, reason='%s', "
-                                "last_stream=%d]", frame->goaway.error_code, 
+                                "last_stream=%d]", frame->goaway.error_code,
                                 scratch, frame->goaway.last_stream_id);
         }
         case NGHTTP2_WINDOW_UPDATE: {
             return apr_snprintf(buffer, maxlen,
                                 "WINDOW_UPDATE[stream=%d, incr=%d]",
-                                frame->hd.stream_id, 
+                                frame->hd.stream_id,
                                 frame->window_update.window_size_increment);
         }
         default:

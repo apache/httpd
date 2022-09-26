@@ -163,6 +163,9 @@ dnl # nghttp2 >= 1.15.0: get/set stream window sizes
 dnl # nghttp2 >= 1.15.0: don't keep info on closed streams
       AC_CHECK_FUNCS([nghttp2_option_set_no_closed_streams],
         [APR_ADDTO(MOD_CPPFLAGS, ["-DH2_NG2_NO_CLOSED_STREAMS"])], [])
+dnl # nghttp2 >= 1.50.0: rfc9113 leading/trailing whitespec strictness
+      AC_CHECK_FUNCS([nghttp2_option_set_no_rfc9113_leading_and_trailing_ws_validation],
+        [APR_ADDTO(MOD_CPPFLAGS, ["-DH2_NG2_RFC9113_STRICTNESS"])], [])
     else
       AC_MSG_WARN([nghttp2 version is too old])
     fi

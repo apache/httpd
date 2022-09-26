@@ -183,7 +183,8 @@ static apr_status_t h2_c2_filter_in(ap_filter_t* f,
     if (APLOGctrace3(f->c)) {
         ap_log_cerror(APLOG_MARK, APLOG_TRACE3, 0, f->c,
                       "h2_c2_in(%s-%d): read, mode=%d, block=%d, readbytes=%ld",
-                      conn_ctx->id, conn_ctx->stream_id, mode, block, (long)readbytes);
+                      conn_ctx->id, conn_ctx->stream_id, mode, block,
+                      (long)readbytes);
     }
 
     if (!fctx) {

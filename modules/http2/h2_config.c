@@ -75,6 +75,7 @@ typedef struct h2_config {
     int padding_always;
     int output_buffered;
     apr_interval_time_t stream_timeout;/* beam timeout */
+    int header_strictness;           /* which rfc to follow when verifying header */
 } h2_config;
 
 typedef struct h2_dir_config {
@@ -110,6 +111,7 @@ static h2_config defconf = {
     1,                      /* padding always */
     1,                      /* stream output buffered */
     -1,                     /* beam timeout */
+    7540,                   /* header strictness */
 };
 
 static h2_dir_config defdconf = {
@@ -153,6 +155,7 @@ void *h2_config_create_svr(apr_pool_t *pool, server_rec *s)
     conf->padding_always       = DEF_VAL;
     conf->output_buffered      = DEF_VAL;
     conf->stream_timeout       = DEF_VAL;
+    conf->header_strictness    = DEF_VAL;
     return conf;
 }
 
@@ -195,6 +198,7 @@ static void *h2_config_merge(apr_pool_t *pool, void *basev, void *addv)
     n->padding_bits         = H2_CONFIG_GET(add, base, padding_bits);
     n->padding_always       = H2_CONFIG_GET(add, base, padding_always);
     n->stream_timeout       = H2_CONFIG_GET(add, base, stream_timeout);
+    n->header_strictness    = H2_CONFIG_GET(add, base, header_strictness);
     return n;
 }
 
@@ -278,6 +282,8 @@ static apr_int64_t h2_srv_config_geti64(const h2_config *conf, h2_config_var_t v
             return H2_CONFIG_GET(conf, &defconf, output_buffered);
         case H2_CONF_STREAM_TIMEOUT:
             return H2_CONFIG_GET(conf, &defconf, stream_timeout);
+        case H2_CONF_HEADER_STRICTNESS:
+            return H2_CONFIG_GET(conf, &defconf, header_strictness);
         default:
             return DEF_VAL;
     }
@@ -336,6 +342,9 @@ static void h2_srv_config_seti(h2_config *conf, h2_config_var_t var, int val)
             break;
         case H2_CONF_OUTPUT_BUFFER:
             H2_CONFIG_SET(conf, output_buffered, val);
+            break;
+        case H2_CONF_HEADER_STRICTNESS:
+            H2_CONFIG_SET(conf, header_strictness, val);
             break;
         default:
             break;
@@ -700,6 +709,24 @@ static const char *h2_conf_set_modern_tls_only(cmd_parms *cmd,
     return "value must be On or Off";
 }
 
+static const char *h2_conf_set_header_strictness(
+    cmd_parms *cmd, void *dirconf, const char *value)
+{
+    if (!strcasecmp(value, "highest")) {
+        CONFIG_CMD_SET(cmd, dirconf, H2_CONF_HEADER_STRICTNESS, 1000000);
+        return NULL;
+    }
+    else if (!strcasecmp(value, "rfc7540")) {
+        CONFIG_CMD_SET(cmd, dirconf, H2_CONF_HEADER_STRICTNESS, 7540);
+        return NULL;
+    }
+    else if (!strcasecmp(value, "rfc9113")) {
+        CONFIG_CMD_SET(cmd, dirconf, H2_CONF_HEADER_STRICTNESS, 9113);
+        return NULL;
+    }
+    return "value must be one of highest|rfc7540|rfc9113";
+}
+
 static const char *h2_conf_set_upgrade(cmd_parms *cmd,
                                        void *dirconf, const char *value)
 {
@@ -934,6 +961,8 @@ const command_rec h2_cmds[] = {
                   RSRC_CONF, "set stream output buffer on/off"),
     AP_INIT_TAKE1("H2StreamTimeout", h2_conf_set_stream_timeout, NULL,
                   RSRC_CONF, "set stream timeout"),
+    AP_INIT_TAKE1("H2HeaderStrictness", h2_conf_set_header_strictness, NULL,
+                  RSRC_CONF, "set strictness of header value checks"),
     AP_END_CMD
 };
 

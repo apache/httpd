@@ -199,8 +199,6 @@ apr_status_t h2_stream_setup_input(h2_stream *stream)
 {
     /* already done? */
     if (stream->input != NULL) goto cleanup;
-    /* if already closed and nothing was every sent, leave it */
-    if (stream->input_closed && !stream->in_buffer) goto cleanup;
 
     ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, stream->session->c1,
                   H2_STRM_MSG(stream, "setup input beam"));
@@ -220,9 +218,6 @@ static apr_status_t input_flush(h2_stream *stream)
 
     ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, stream->session->c1,
                   H2_STRM_MSG(stream, "flush input"));
-    if (!stream->input) {
-        h2_stream_setup_input(stream);
-    }
     status = h2_beam_send(stream->input, stream->session->c1,
                           stream->in_buffer, APR_BLOCK_READ, &written);
     stream->in_last_write = apr_time_now();
@@ -276,18 +271,13 @@ static apr_status_t close_input(h2_stream *stream)
     }
 
     stream->input_closed = 1;
-    if (stream->in_buffer) {
-        b = apr_bucket_eos_create(c->bucket_alloc);
-        input_append_bucket(stream, b);
-        input_flush(stream);
-        h2_stream_dispatch(stream, H2_SEV_IN_DATA_PENDING);
-    }
-    else {
-        rv = h2_mplx_c1_input_closed(stream->session->mplx, stream->id);
-        if (APR_SUCCESS == rv) {
-            h2_stream_dispatch(stream, H2_SEV_IN_DATA_PENDING);
-        }
-    }
+    b = apr_bucket_eos_create(c->bucket_alloc);
+    input_append_bucket(stream, b);
+    input_flush(stream);
+    h2_stream_dispatch(stream, H2_SEV_IN_DATA_PENDING);
+    ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, stream->session->c1,
+                  H2_STRM_MSG(stream, "input flush + EOS"));
+
 cleanup:
     return rv;
 }
@@ -549,6 +539,7 @@ h2_stream *h2_stream_create(int id, apr_pool_t *pool, h2_session *session,
                 stream->session->ngh2, stream->id);
     }
 #endif
+    h2_stream_setup_input(stream);
     ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c1,
                   H2_STRM_LOG(APLOGNO(03082), stream, "created"));
     on_state_enter(stream);

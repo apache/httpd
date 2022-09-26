@@ -53,6 +53,7 @@ struct h2_bucket_beam {
     apr_interval_time_t timeout;
 
     int aborted;
+    int closed;
     int tx_mem_limits; /* only memory size counts on transfers */
     int copy_files;
 
@@ -155,6 +156,14 @@ int h2_beam_empty(h2_bucket_beam *beam);
  * @param c the connection the caller is working with
  */
 void h2_beam_abort(h2_bucket_beam *beam, conn_rec *c);
+
+/**
+ * Close the beam. Make certain an EOS is sent.
+ *
+ * @param beam the beam to abort
+ * @param c the connection the caller is working with
+ */
+void h2_beam_close(h2_bucket_beam *beam, conn_rec *c);
 
 /**
  * Set/get the timeout for blocking sebd/receive operations.

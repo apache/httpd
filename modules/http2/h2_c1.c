@@ -78,8 +78,8 @@ apr_status_t h2_c1_child_init(apr_pool_t *pool, server_rec *s)
 
 void h2_c1_child_stopping(apr_pool_t *pool, int graceful)
 {
-    if (workers && graceful) {
-        h2_workers_graceful_shutdown(workers);
+    if (workers) {
+        h2_workers_shutdown(workers, graceful);
     }
 }
 

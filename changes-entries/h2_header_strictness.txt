@@ -1,0 +1,4 @@
+  *) mod_http2: new directive "H2HeaderStrictness" to control the compliance
+     level of header checks as defined in the HTTP/2 RFCs. Default is 7540.
+     9113 activates the checks for forbidden leading/trailing whitespace in
+     field values (available from nghttp2 v1.50.0 on).

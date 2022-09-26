@@ -488,9 +488,15 @@ static apr_status_t read_and_feed(h2_session *session)
                         APR_NONBLOCK_READ, bytes_requested);
 
     if (APR_SUCCESS == rv) {
-        h2_util_bb_log(session->c1, session->id, APLOG_TRACE2, "c1 in", session->bbtmp);
-        rv = c1_in_feed_brigade(session, session->bbtmp, &bytes_fed);
-        session->io.bytes_read += bytes_fed;
+        if (!APR_BRIGADE_EMPTY(session->bbtmp)) {
+            h2_util_bb_log(session->c1, session->id, APLOG_TRACE2, "c1 in",
+                           session->bbtmp);
+            rv = c1_in_feed_brigade(session, session->bbtmp, &bytes_fed);
+            session->io.bytes_read += bytes_fed;
+        }
+        else {
+            rv = APR_EAGAIN;
+        }
     }
     return rv;
 }

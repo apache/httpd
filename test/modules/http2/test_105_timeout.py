@@ -113,17 +113,17 @@ class TestTimeout:
 
     def test_h2_105_11(self, env):
         # short connection timeout, longer stream delay
-        # receiving the first response chunk, then timeout
+        # connection timeout must not abort ongoing streams
         conf = H2Conf(env)
         conf.add_vhost_cgi()
         conf.add("Timeout 1")
         conf.install()
         assert env.apache_restart() == 0
-        url = env.mkurl("https", "cgi", "/h2test/delay?5")
+        url = env.mkurl("https", "cgi", "/h2test/delay?1200ms")
         piper = CurlPiper(env=env, url=url)
         piper.start()
         stdout, stderr = piper.close()
-        assert len("".join(stdout)) == 8192
+        assert len("".join(stdout)) == 3 * 8192
 
     def test_h2_105_12(self, env):
         # long connection timeout, short stream timeout

@@ -46,9 +46,9 @@ h2_workers *h2_workers_create(server_rec *s, apr_pool_t *pool,
                               int max_slots, int min_active, apr_time_t idle_limit);
 
 /**
- *  Shut down processing gracefully by terminating all idle workers.
+ *  Shut down processing.
  */
-void h2_workers_graceful_shutdown(h2_workers *workers);
+void h2_workers_shutdown(h2_workers *workers, int graceful);
 
 /**
  * Get the maximum number of workers.
@@ -87,6 +87,13 @@ typedef conn_rec *ap_conn_producer_next(void *baton, int *pmore);
 typedef void ap_conn_producer_done(void *baton, conn_rec *conn);
 
 /**
+ * Tell the producer that the workers are shutting down.
+ * @param baton value from producer registration
+ * @param graceful != 0 iff shutdown is graceful
+ */
+typedef void ap_conn_producer_shutdown(void *baton, int graceful);
+
+/**
  * Register a new producer with the given `baton` and callback functions.
  * Will allocate internal structures from the given pool (but make no use
  * of the pool after registration).
@@ -103,6 +110,7 @@ ap_conn_producer_t *h2_workers_register(h2_workers *workers,
                                         const char *name,
                                         ap_conn_producer_next *fn_next,
                                         ap_conn_producer_done *fn_done,
+                                        ap_conn_producer_shutdown *fn_shutdown,
                                         void *baton);
 
 /**
