@@ -1042,7 +1042,10 @@ H2TLSCoolDownSecs 0
                 'rfc7540' is the original HTTP/2 RFC, 'rfc9113' is the updated version that
                 disallows leading and trialing spaces in fields.
             </p><p>
-                Use 'highest' to use always the highest strictness checks available.
+                Use 'highest' to apply the highest strictness checks available. This
+                depends on the nghttp2 library version used. 'rfc9113' is available
+                from nghttp2 v1.50.0 and onward only. When building with previous
+                versions, this setting has no effect.
         </p>
         </usage>
     </directivesynopsis>
