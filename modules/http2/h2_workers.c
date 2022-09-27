@@ -78,7 +78,7 @@ struct h2_workers {
 
     apr_uint32_t max_slots;
     apr_uint32_t min_active;
-    volatile int idle_limit;
+    volatile apr_time_t idle_limit;
     volatile int aborted;
     volatile int shutdown;
     int dynamic;
@@ -315,7 +315,7 @@ static void* APR_THREAD_FUNC slot_run(apr_thread_t *thread, void *wctx)
         APR_RING_INSERT_TAIL(&workers->idle, slot, h2_slot, link);
         ++workers->idle_slots;
         slot->is_idle = 1;
-        if (slot->id >= workers->min_active && workers->idle_limit) {
+        if (slot->id >= workers->min_active && workers->idle_limit > 0) {
             rv = apr_thread_cond_timedwait(slot->more_work, workers->lock,
                                            workers->idle_limit);
             if (APR_TIMEUP == rv) {
@@ -416,7 +416,8 @@ static apr_status_t workers_pool_cleanup(void *data)
 }
 
 h2_workers *h2_workers_create(server_rec *s, apr_pool_t *pchild,
-                              int max_slots, int min_active, apr_time_t idle_limit)
+                              int max_slots, int min_active,
+                              apr_time_t idle_limit)
 {
     apr_status_t rv;
     h2_workers *workers;
@@ -453,7 +454,7 @@ h2_workers *h2_workers_create(server_rec *s, apr_pool_t *pchild,
     workers->pool = pool;
     workers->min_active = min_active;
     workers->max_slots = max_slots;
-    workers->idle_limit = (int)((idle_limit > 0)? idle_limit : apr_time_from_sec(10));
+    workers->idle_limit = (idle_limit > 0)? idle_limit : apr_time_from_sec(10);
     workers->dynamic = (workers->min_active < workers->max_slots);
 
     ap_log_error(APLOG_MARK, APLOG_INFO, 0, s,
