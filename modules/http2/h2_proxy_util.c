@@ -496,7 +496,7 @@ static int ignore_header(const literal *lits, size_t llen,
                          const char *name, size_t nlen)
 {
     const literal *lit;
-    int i;
+    size_t i;
     
     for (i = 0; i < llen; ++i) {
         lit = &lits[i];
@@ -951,7 +951,7 @@ static void map_link(link_ctx *ctx)
 {
     if (ctx->link_start < ctx->link_end) {
         char buffer[HUGE_STRING_LEN];
-        int need_len, link_len, buffer_len, prepend_p_server; 
+        size_t need_len, link_len, buffer_len, prepend_p_server;
         const char *mapped;
         
         buffer[0] = '\0';

@@ -234,7 +234,8 @@ static h2_c2_transit *c2_transit_get(h2_mplx *m)
 
 static void c2_transit_recycle(h2_mplx *m, h2_c2_transit *transit)
 {
-    if (m->c2_transits->nelts >= m->max_spare_transits) {
+    if (m->c2_transits->nelts >= APR_INT32_MAX ||
+        (apr_uint32_t)m->c2_transits->nelts >= m->max_spare_transits) {
         c2_transit_destroy(transit);
     }
     else {
@@ -307,7 +308,7 @@ h2_mplx *h2_mplx_c1_create(int child_num, apr_uint32_t id, h2_stream *stream0,
     m->q = h2_iq_create(m->pool, m->max_streams);
 
     m->workers = workers;
-    m->processing_max = H2MIN((int)h2_workers_get_max_workers(workers), m->max_streams);
+    m->processing_max = H2MIN(h2_workers_get_max_workers(workers), m->max_streams);
     m->processing_limit = 6; /* the original h1 max parallel connections */
     m->last_mood_change = apr_time_now();
     m->mood_update_interval = apr_time_from_msec(100);
@@ -338,7 +339,8 @@ h2_mplx *h2_mplx_c1_create(int child_num, apr_uint32_t id, h2_stream *stream0,
                                     sizeof(h2_c2_transit*));
 
     m->producer = h2_workers_register(workers, m->pool,
-                                      apr_psprintf(m->pool, "h2-%d", (int)m->id),
+                                      apr_psprintf(m->pool, "h2-%u",
+                                      (unsigned int)m->id),
                                       c2_prod_next, c2_prod_done,
                                       workers_shutdown, m);
     return m;
@@ -403,11 +405,11 @@ static int m_report_stream_iter(void *ctx, void *val) {
     if (conn_ctx) {
         ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, m->c1, /* NO APLOGNO */
                       H2_STRM_MSG(stream, "->03198: %s %s %s"
-                      "[started=%d/done=%d]"), 
+                      "[started=%u/done=%u]"),
                       conn_ctx->request->method, conn_ctx->request->authority,
                       conn_ctx->request->path,
-                      (int)apr_atomic_read32(&conn_ctx->started),
-                      (int)apr_atomic_read32(&conn_ctx->done));
+                      apr_atomic_read32(&conn_ctx->started),
+                      apr_atomic_read32(&conn_ctx->done));
     }
     else {
         ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, m->c1, /* NO APLOGNO */
@@ -442,7 +444,8 @@ static int m_stream_cancel_iter(void *ctx, void *val) {
 void h2_mplx_c1_destroy(h2_mplx *m)
 {
     apr_status_t status;
-    int i, wait_secs = 60, old_aborted;
+    unsigned int i, wait_secs = 60;
+    int old_aborted;
 
     ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, m->c1,
                   H2_MPLX_MSG(m, "start release"));
@@ -461,9 +464,10 @@ void h2_mplx_c1_destroy(h2_mplx *m)
     /* How to shut down a h2 connection:
      * 1. cancel all streams still active */
     ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, m->c1,
-                  H2_MPLX_MSG(m, "release, %d/%d/%d streams (total/hold/purge), %d streams"),
-                  (int)h2_ihash_count(m->streams),
-                  (int)h2_ihash_count(m->shold), m->spurge->nelts, m->processing_count);
+                  H2_MPLX_MSG(m, "release, %u/%u/%d streams (total/hold/purge), %d streams"),
+                  h2_ihash_count(m->streams),
+                  h2_ihash_count(m->shold),
+                  m->spurge->nelts, m->processing_count);
     while (!h2_ihash_iter(m->streams, m_stream_cancel_iter, m)) {
         /* until empty */
     }
@@ -487,8 +491,8 @@ void h2_mplx_c1_destroy(h2_mplx *m)
             /* This can happen if we have very long running requests
              * that do not time out on IO. */
             ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, m->c1, APLOGNO(03198)
-                          H2_MPLX_MSG(m, "waited %d sec for %d streams"),
-                          i*wait_secs, (int)h2_ihash_count(m->shold));
+                          H2_MPLX_MSG(m, "waited %u sec for %u streams"),
+                          i*wait_secs, h2_ihash_count(m->shold));
             h2_ihash_iter(m->shold, m_report_stream_iter, m);
         }
     }
@@ -501,8 +505,8 @@ void h2_mplx_c1_destroy(h2_mplx *m)
     ap_assert(m->processing_count == 0);
     if (!h2_ihash_empty(m->shold)) {
         ap_log_cerror(APLOG_MARK, APLOG_WARNING, 0, m->c1, APLOGNO(03516)
-                      H2_MPLX_MSG(m, "unexpected %d streams in hold"),
-                      (int)h2_ihash_count(m->shold));
+                      H2_MPLX_MSG(m, "unexpected %u streams in hold"),
+                      h2_ihash_count(m->shold));
         h2_ihash_iter(m->shold, m_unexpected_stream_iter, m);
     }
     
@@ -514,14 +518,14 @@ void h2_mplx_c1_destroy(h2_mplx *m)
 }
 
 apr_status_t h2_mplx_c1_stream_cleanup(h2_mplx *m, h2_stream *stream,
-                                       int *pstream_count)
+                                       unsigned int *pstream_count)
 {
     H2_MPLX_ENTER(m);
     
     ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, m->c1,
                   H2_STRM_MSG(stream, "cleanup"));
     m_stream_cleanup(m, stream);
-    *pstream_count = (int)h2_ihash_count(m->streams);
+    *pstream_count = h2_ihash_count(m->streams);
     H2_MPLX_LEAVE(m);
     return APR_SUCCESS;
 }
@@ -675,7 +679,7 @@ void h2_mplx_c1_process(h2_mplx *m,
                         h2_stream_get_fn *get_stream,
                         h2_stream_pri_cmp_fn *stream_pri_cmp,
                         h2_session *session,
-                        int *pstream_count)
+                        unsigned int *pstream_count)
 {
     apr_status_t rv;
     int sid;
@@ -705,7 +709,7 @@ void h2_mplx_c1_process(h2_mplx *m,
                           H2_MPLX_MSG(m, "activate at workers"));
         }
     }
-    *pstream_count = (int)h2_ihash_count(m->streams);
+    *pstream_count = h2_ihash_count(m->streams);
 
 #if APR_POOL_DEBUG
     do {
@@ -819,7 +823,7 @@ static conn_rec *s_next_c2(h2_mplx *m)
 {
     h2_stream *stream = NULL;
     apr_status_t rv = APR_SUCCESS;
-    int sid;
+    apr_uint32_t sid;
     conn_rec *c2 = NULL;
     h2_c2_transit *transit = NULL;
 

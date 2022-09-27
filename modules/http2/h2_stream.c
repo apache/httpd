@@ -147,7 +147,7 @@ static int on_frame(h2_stream_state_t state, int frame_type,
 {
     ap_assert(frame_type >= 0);
     ap_assert(state >= 0);
-    if (frame_type >= maxlen) {
+    if (frame_type < 0 || (apr_size_t)frame_type >= maxlen) {
         return state; /* NOP, ignore unknown frame types */
     }
     return on_map(state, frame_map[frame_type]);
@@ -319,7 +319,7 @@ static void on_state_invalid(h2_stream *stream)
 
 static apr_status_t transit(h2_stream *stream, int new_state)
 {
-    if (new_state == stream->state) {
+    if ((h2_stream_state_t)new_state == stream->state) {
         return APR_SUCCESS;
     }
     else if (new_state < 0) {
@@ -379,7 +379,7 @@ void h2_stream_dispatch(h2_stream *stream, h2_stream_event_t ev)
         AP_DEBUG_ASSERT(new_state > S_XXX);
         return;
     }
-    else if (new_state == stream->state) {
+    else if ((h2_stream_state_t)new_state == stream->state) {
         /* nop */
         ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, stream->session->c1,
                       H2_STRM_MSG(stream, "non-state event %d"), ev);
@@ -668,7 +668,7 @@ apr_status_t h2_stream_add_header(h2_stream *stream,
     }
 
     if (name[0] == ':') {
-        if ((vlen) > session->s->limit_req_line) {
+        if (vlen > APR_INT32_MAX || (int)vlen > session->s->limit_req_line) {
             /* pseudo header: approximation of request line size check */
             if (!h2_stream_is_ready(stream)) {
                 ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, session->c1,
@@ -912,7 +912,8 @@ static apr_status_t buffer_output_receive(h2_stream *stream)
         buf_len = h2_brigade_mem_size(stream->out_buffer);
     }
 
-    if (buf_len >= stream->session->max_stream_mem) {
+    if (buf_len > APR_INT32_MAX
+        || (apr_size_t)buf_len >= stream->session->max_stream_mem) {
         /* we have buffered enough. No need to read more.
          * However, we have now output pending for which we may not
          * receive another poll event. We need to make sure that this
@@ -1396,7 +1397,7 @@ static ssize_t stream_data_cb(nghttp2_session *ng2s,
      * is requested. But we can reduce the size in case the master
      * connection operates in smaller chunks. (TSL warmup) */
     if (stream->session->io.write_size > 0) {
-        apr_off_t chunk_len = stream->session->io.write_size - H2_FRAME_HDR_LEN;
+        apr_size_t chunk_len = stream->session->io.write_size - H2_FRAME_HDR_LEN;
         if (length > chunk_len) {
             length = chunk_len;
         }
@@ -1405,7 +1406,7 @@ static ssize_t stream_data_cb(nghttp2_session *ng2s,
     /* How much data do we have in our buffers that we can write? */
 check_and_receive:
     buf_len = output_data_buffered(stream, &eos, &header_blocked);
-    while (buf_len < length && !eos && !header_blocked) {
+    while (buf_len < (apr_off_t)length && !eos && !header_blocked) {
         /* read more? */
         ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, c1,
                       H2_SSSN_STRM_MSG(session, stream_id,

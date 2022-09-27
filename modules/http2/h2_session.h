@@ -73,7 +73,7 @@ typedef struct h2_session {
     struct h2_workers *workers;     /* for executing streams */
     struct h2_c1_io_in_ctx_t *cin;  /* connection input filter context */
     h2_c1_io io;                    /* io on httpd conn filters */
-    int padding_max;                /* max number of padding bytes */
+    unsigned int padding_max;       /* max number of padding bytes */
     int padding_always;             /* padding has precedence over I/O optimizations */
     struct nghttp2_session *ngh2;   /* the nghttp2 session (internal use) */
 
@@ -89,14 +89,14 @@ typedef struct h2_session {
     struct h2_push_diary *push_diary; /* remember pushes, avoid duplicates */
     
     struct h2_stream_monitor *monitor;/* monitor callbacks for streams */
-    int open_streams;               /* number of streams processing */
+    unsigned int open_streams;      /* number of streams processing */
 
-    int streams_done;               /* number of http/2 streams handled */
-    int responses_submitted;        /* number of http/2 responses submitted */
-    int streams_reset;              /* number of http/2 streams reset by client */
-    int pushes_promised;            /* number of http/2 push promises submitted */
-    int pushes_submitted;           /* number of http/2 pushed responses submitted */
-    int pushes_reset;               /* number of http/2 pushed reset by client */
+    unsigned int streams_done;      /* number of http/2 streams handled */
+    unsigned int responses_submitted; /* number of http/2 responses submitted */
+    unsigned int streams_reset;     /* number of http/2 streams reset by client */
+    unsigned int pushes_promised;   /* number of http/2 push promises submitted */
+    unsigned int pushes_submitted;  /* number of http/2 pushed responses submitted */
+    unsigned int pushes_reset;      /* number of http/2 pushed reset by client */
     
     apr_size_t frames_received;     /* number of http/2 frames received */
     apr_size_t frames_sent;         /* number of http/2 frames sent */

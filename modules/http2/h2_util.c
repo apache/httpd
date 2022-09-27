@@ -229,7 +229,7 @@ h2_ihash_t *h2_ihash_create(apr_pool_t *pool, size_t offset_of_int)
     return ih;
 }
 
-size_t h2_ihash_count(h2_ihash_t *ih)
+unsigned int h2_ihash_count(h2_ihash_t *ih)
 {
     return apr_hash_count(ih->hash);
 }
@@ -446,7 +446,7 @@ int h2_iq_shift(h2_iqueue *q)
 
 size_t h2_iq_mshift(h2_iqueue *q, int *pint, size_t max)
 {
-    int i;
+    size_t i;
     for (i = 0; i < max; ++i) {
         pint[i] = h2_iq_shift(q);
         if (pint[i] == 0) {
@@ -1169,56 +1169,24 @@ apr_size_t h2_util_table_bytes(apr_table_t *t, apr_size_t pair_extra)
  * h2_util for bucket brigades
  ******************************************************************************/
 
-static apr_status_t last_not_included(apr_bucket_brigade *bb,
-                                      apr_off_t maxlen,
-                                      apr_bucket **pend)
+static void fit_bucket_into(apr_bucket *b, apr_off_t *plen)
 {
-    apr_bucket *b;
-    apr_status_t status = APR_SUCCESS;
-
-    if (maxlen >= 0) {
-        /* Find the bucket, up to which we reach maxlen/mem bytes */
-        for (b = APR_BRIGADE_FIRST(bb);
-             (b != APR_BRIGADE_SENTINEL(bb));
-             b = APR_BUCKET_NEXT(b)) {
-
-            if (APR_BUCKET_IS_METADATA(b)) {
-                /* included */
-            }
-            else {
-                if (b->length == ((apr_size_t)-1)) {
-                    const char *ign;
-                    apr_size_t ilen;
-                    status = apr_bucket_read(b, &ign, &ilen, APR_BLOCK_READ);
-                    if (status != APR_SUCCESS) {
-                        return status;
-                    }
-                }
-
-                if (maxlen == 0 && b->length > 0) {
-                    *pend = b;
-                    return status;
-                }
-
-                if (APR_BUCKET_IS_FILE(b)
-#if APR_HAS_MMAP
-                 || APR_BUCKET_IS_MMAP(b)
-#endif
-                 ) {
-                    /* we like to move it, always */
-                }
-                else if (maxlen < (apr_off_t)b->length) {
-                    apr_bucket_split(b, (apr_size_t)maxlen);
-                    maxlen = 0;
-                }
-                else {
-                    maxlen -= b->length;
-                }
-            }
-        }
+    /* signed apr_off_t is at least as large as unsigned apr_size_t.
+     * Propblems may arise when they are both the same size. Then
+     * the bucket length *may* be larger than a value we can hold
+     * in apr_off_t. Before casting b->length to apr_off_t we must
+     * check the limitations.
+     * After we resized the bucket, it is safe to cast and substract.
+     */
+    if ((sizeof(apr_off_t) == sizeof(apr_int64_t)
+         && b->length > APR_INT64_MAX)
+       || (sizeof(apr_off_t) == sizeof(apr_int32_t)
+           && b->length > APR_INT32_MAX)
+       || *plen < (apr_off_t)b->length) {
+        /* bucket is longer the *plen */
+        apr_bucket_split(b, *plen);
     }
-    *pend = APR_BRIGADE_SENTINEL(bb);
-    return status;
+    *plen -= (apr_off_t)b->length;
 }
 
 apr_status_t h2_brigade_concat_length(apr_bucket_brigade *dest,
@@ -1237,29 +1205,20 @@ apr_status_t h2_brigade_concat_length(apr_bucket_brigade *dest,
             APR_BRIGADE_INSERT_TAIL(dest, b);
         }
         else {
-            if (remain == b->length) {
-                /* fall through */
-            }
-            else if (remain <= 0) {
+            if (remain <= 0) {
                 return status;
             }
-            else {
-                if (b->length == ((apr_size_t)-1)) {
-                    const char *ign;
-                    apr_size_t ilen;
-                    status = apr_bucket_read(b, &ign, &ilen, APR_BLOCK_READ);
-                    if (status != APR_SUCCESS) {
-                        return status;
-                    }
-                }
-
-                if (remain < b->length) {
-                    apr_bucket_split(b, remain);
+            if (b->length == ((apr_size_t)-1)) {
+                const char *ign;
+                apr_size_t ilen;
+                status = apr_bucket_read(b, &ign, &ilen, APR_BLOCK_READ);
+                if (status != APR_SUCCESS) {
+                    return status;
                 }
             }
+            fit_bucket_into(b, &remain);
             APR_BUCKET_REMOVE(b);
             APR_BRIGADE_INSERT_TAIL(dest, b);
-            remain -= b->length;
         }
     }
     return status;
@@ -1282,84 +1241,26 @@ apr_status_t h2_brigade_copy_length(apr_bucket_brigade *dest,
             /* fall through */
         }
         else {
-            if (remain == b->length) {
-                /* fall through */
-            }
-            else if (remain <= 0) {
+            if (remain <= 0) {
                 return status;
             }
-            else {
-                if (b->length == ((apr_size_t)-1)) {
-                    const char *ign;
-                    apr_size_t ilen;
-                    status = apr_bucket_read(b, &ign, &ilen, APR_BLOCK_READ);
-                    if (status != APR_SUCCESS) {
-                        return status;
-                    }
-                }
-
-                if (remain < b->length) {
-                    apr_bucket_split(b, remain);
+            if (b->length == ((apr_size_t)-1)) {
+                const char *ign;
+                apr_size_t ilen;
+                status = apr_bucket_read(b, &ign, &ilen, APR_BLOCK_READ);
+                if (status != APR_SUCCESS) {
+                    return status;
                 }
             }
+            fit_bucket_into(b, &remain);
         }
         status = apr_bucket_copy(b, &b);
         if (status != APR_SUCCESS) {
             return status;
         }
         APR_BRIGADE_INSERT_TAIL(dest, b);
-        remain -= b->length;
     }
     return status;
-}
-
-int h2_util_has_eos(apr_bucket_brigade *bb, apr_off_t len)
-{
-    apr_bucket *b, *end;
-
-    apr_status_t status = last_not_included(bb, len, &end);
-    if (status != APR_SUCCESS) {
-        return status;
-    }
-
-    for (b = APR_BRIGADE_FIRST(bb);
-         b != APR_BRIGADE_SENTINEL(bb) && b != end;
-         b = APR_BUCKET_NEXT(b))
-    {
-        if (APR_BUCKET_IS_EOS(b)) {
-            return 1;
-        }
-    }
-    return 0;
-}
-
-apr_status_t h2_util_bb_avail(apr_bucket_brigade *bb,
-                              apr_off_t *plen, int *peos)
-{
-    apr_status_t status;
-    apr_off_t blen = 0;
-
-    /* test read to determine available length */
-    status = apr_brigade_length(bb, 1, &blen);
-    if (status != APR_SUCCESS) {
-        return status;
-    }
-    else if (blen == 0) {
-        /* brigade without data, does it have an EOS bucket somewhere? */
-        *plen = 0;
-        *peos = h2_util_has_eos(bb, -1);
-    }
-    else {
-        /* data in the brigade, limit the length returned. Check for EOS
-         * bucket only if we indicate data. This is required since plen == 0
-         * means "the whole brigade" for h2_util_has_eos()
-         */
-        if (blen < *plen || *plen < 0) {
-            *plen = blen;
-        }
-        *peos = h2_util_has_eos(bb, *plen);
-    }
-    return APR_SUCCESS;
 }
 
 apr_size_t h2_util_bucket_print(char *buffer, apr_size_t bmax,
@@ -1422,10 +1323,11 @@ apr_status_t h2_append_brigade(apr_bucket_brigade *to,
                                h2_bucket_gate *should_append)
 {
     apr_bucket *e;
-    apr_off_t len = 0, remain = *plen;
+    apr_off_t start, remain;
     apr_status_t rv;
 
     *peos = 0;
+    start = remain = *plen;
 
     while (!APR_BRIGADE_EMPTY(from)) {
         e = APR_BRIGADE_FIRST(from);
@@ -1441,7 +1343,10 @@ apr_status_t h2_append_brigade(apr_bucket_brigade *to,
             }
         }
         else {
-            if (remain > 0 && e->length == ((apr_size_t)-1)) {
+            if (remain <= 0) {
+                goto leave;
+            }
+            if (e->length == ((apr_size_t)-1)) {
                 const char *ign;
                 apr_size_t ilen;
                 rv = apr_bucket_read(e, &ign, &ilen, APR_BLOCK_READ);
@@ -1449,22 +1354,13 @@ apr_status_t h2_append_brigade(apr_bucket_brigade *to,
                     return rv;
                 }
             }
-
-            if (remain < e->length) {
-                if (remain <= 0) {
-                    goto leave;
-                }
-                apr_bucket_split(e, (apr_size_t)remain);
-            }
+            fit_bucket_into(e, &remain);
         }
-
         APR_BUCKET_REMOVE(e);
         APR_BRIGADE_INSERT_TAIL(to, e);
-        len += e->length;
-        remain -= e->length;
     }
 leave:
-    *plen = len;
+    *plen = start - remain;
     return APR_SUCCESS;
 }
 

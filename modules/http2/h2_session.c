@@ -530,7 +530,7 @@ static int on_send_data_cb(nghttp2_session *ngh2,
         apr_brigade_cleanup(session->bbtmp);
         return NGHTTP2_ERR_CALLBACK_FAILURE;
     }
-    else if (len != length) {
+    else if (len != (apr_off_t)length) {
         ap_log_cerror(APLOG_MARK, APLOG_TRACE1, status, session->c1,
                       H2_STRM_MSG(stream, "send_data_cb, wanted %ld bytes, "
                       "got %ld from stream"), (long)length, (long)len);
@@ -636,8 +636,8 @@ static ssize_t select_padding_cb(nghttp2_session *ngh2,
                                  size_t max_payloadlen, void *user_data)
 {
     h2_session *session = user_data;
-    ssize_t frame_len = frame->hd.length + H2_FRAME_HDR_LEN; /* the total length without padding */
-    ssize_t padded_len = frame_len;
+    size_t frame_len = frame->hd.length + H2_FRAME_HDR_LEN; /* the total length without padding */
+    size_t padded_len = frame_len;
 
     /* Determine # of padding bytes to append to frame. Unless session->padding_always
      * the number my be capped by the ui.write_size that currently applies. 

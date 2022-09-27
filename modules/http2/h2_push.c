@@ -481,8 +481,7 @@ static void calc_sha256_hash(h2_push_diary *diary, apr_uint64_t *phash, h2_push 
     EVP_MD_CTX *md;
     apr_uint64_t val;
     unsigned char hash[EVP_MAX_MD_SIZE];
-    unsigned len;
-    int i;
+    unsigned len, i;
 
     md = EVP_MD_CTX_create();
     ap_assert(md != NULL);
@@ -599,7 +598,7 @@ static void move_to_last(h2_push_diary *diary, apr_size_t idx)
 {
     h2_push_diary_entry *entries = (h2_push_diary_entry*)diary->entries->elts;
     h2_push_diary_entry e;
-    int lastidx;
+    apr_size_t lastidx;
     
     /* Move an existing entry to the last place */
     if (diary->entries->nelts <= 0)
@@ -792,11 +791,11 @@ apr_status_t h2_push_diary_digest_get(h2_push_diary *diary, apr_pool_t *pool,
                                       int maxP, const char *authority, 
                                       const char **pdata, apr_size_t *plen)
 {
-    int nelts, N, i;
+    int nelts, N;
     unsigned char log2n, log2pmax;
     gset_encoder encoder;
     apr_uint64_t *hashes;
-    apr_size_t hash_count;
+    apr_size_t hash_count, i;
     
     nelts = diary->entries->nelts;
     N = ceil_power_of_2(nelts);

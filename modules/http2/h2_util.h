@@ -45,7 +45,7 @@ typedef int h2_ihash_iter_t(void *ctx, void *val);
  */
 h2_ihash_t *h2_ihash_create(apr_pool_t *pool, size_t offset_of_int);
 
-size_t h2_ihash_count(h2_ihash_t *ih);
+unsigned int h2_ihash_count(h2_ihash_t *ih);
 int h2_ihash_empty(h2_ihash_t *ih);
 void *h2_ihash_get(h2_ihash_t *ih, int id);
 
@@ -432,24 +432,7 @@ apr_status_t h2_brigade_copy_length(apr_bucket_brigade *dest,
                                     apr_bucket_brigade *src,
                                     apr_off_t length);
                                 
-/**
- * Return != 0 iff there is a FLUSH or EOS bucket in the brigade.
- * @param bb the brigade to check on
- * @return != 0 iff brigade holds FLUSH or EOS bucket (or both)
- */
-int h2_util_has_eos(apr_bucket_brigade *bb, apr_off_t len);
-
-/**
- * Check how many bytes of the desired amount are available and if the
- * end of stream is reached by that amount.
- * @param bb the brigade to check
- * @param plen the desired length and, on return, the available length
- * @param on return, if eos has been reached
- */
-apr_status_t h2_util_bb_avail(apr_bucket_brigade *bb, 
-                              apr_off_t *plen, int *peos);
-
-typedef apr_status_t h2_util_pass_cb(void *ctx, 
+typedef apr_status_t h2_util_pass_cb(void *ctx,
                                      const char *data, apr_off_t len);
 
 /**

@@ -166,8 +166,8 @@ static apr_status_t h2_c2_filter_in(ap_filter_t* f,
     apr_status_t status = APR_SUCCESS;
     apr_bucket *b;
     apr_off_t bblen;
-    apr_size_t rmax = ((readbytes <= APR_SIZE_MAX)?
-                       (apr_size_t)readbytes : APR_SIZE_MAX);
+    apr_size_t rmax = (readbytes < APR_INT32_MAX)?
+                       (apr_size_t)readbytes : APR_INT32_MAX;
     
     conn_ctx = h2_conn_ctx_get(f->c);
     AP_DEBUG_ASSERT(conn_ctx);

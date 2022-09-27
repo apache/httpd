@@ -53,7 +53,7 @@ void h2_workers_shutdown(h2_workers *workers, int graceful);
 /**
  * Get the maximum number of workers.
  */
-apr_size_t h2_workers_get_max_workers(h2_workers *workers);
+apr_uint32_t h2_workers_get_max_workers(h2_workers *workers);
 
 /**
  * ap_conn_producer_t is the source of connections (conn_rec*) to run.

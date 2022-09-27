@@ -60,7 +60,7 @@ typedef enum {
 typedef struct h2_slot h2_slot;
 struct h2_slot {
     APR_RING_ENTRY(h2_slot) link;
-    int id;
+    apr_uint32_t id;
     apr_pool_t *pool;
     h2_slot_state_t state;
     volatile int should_shutdown;
@@ -422,7 +422,8 @@ h2_workers *h2_workers_create(server_rec *s, apr_pool_t *pchild,
     h2_workers *workers;
     apr_pool_t *pool;
     apr_allocator_t *allocator;
-    int i, locked = 0;
+    int locked = 0;
+    apr_uint32_t i;
 
     ap_assert(s);
     ap_assert(pchild);
@@ -528,7 +529,7 @@ cleanup:
     return NULL;
 }
 
-apr_size_t h2_workers_get_max_workers(h2_workers *workers)
+apr_uint32_t h2_workers_get_max_workers(h2_workers *workers)
 {
     return workers->max_slots;
 }

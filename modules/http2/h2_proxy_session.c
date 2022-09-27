@@ -631,7 +631,7 @@ static ssize_t stream_request_data(nghttp2_session *ngh2, int32_t stream_id,
     }
 
     if (status == APR_SUCCESS) {
-        ssize_t readlen = 0;
+        size_t readlen = 0;
         while (status == APR_SUCCESS 
                && (readlen < length)
                && !APR_BRIGADE_EMPTY(stream->input)) {
@@ -650,7 +650,7 @@ static ssize_t stream_request_data(nghttp2_session *ngh2, int32_t stream_id,
                 status = apr_bucket_read(b, &bdata, &blen, APR_BLOCK_READ);
                 
                 if (status == APR_SUCCESS && blen > 0) {
-                    ssize_t copylen = H2MIN(length - readlen, blen);
+                    size_t copylen = H2MIN(length - readlen, blen);
                     memcpy(buf, bdata, copylen);
                     buf += copylen;
                     readlen += copylen;
@@ -964,7 +964,7 @@ static apr_status_t feed_brigade(h2_proxy_session *session, apr_bucket_brigade *
     apr_status_t status = APR_SUCCESS;
     apr_size_t readlen = 0;
     ssize_t n;
-    
+
     while (status == APR_SUCCESS && !APR_BRIGADE_EMPTY(bb)) {
         apr_bucket* b = APR_BRIGADE_FIRST(bb);
         
@@ -987,9 +987,10 @@ static apr_status_t feed_brigade(h2_proxy_session *session, apr_bucket_brigade *
                     }
                 }
                 else {
-                    readlen += n;
-                    if (n < blen) {
-                        apr_bucket_split(b, n);
+                    size_t rlen = (size_t)n;
+                    readlen += rlen;
+                    if (rlen < blen) {
+                        apr_bucket_split(b, rlen);
                     }
                 }
             }

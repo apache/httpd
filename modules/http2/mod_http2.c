@@ -317,7 +317,7 @@ static int http2_is_h2(conn_rec *c)
 static char *http2_var_lookup(apr_pool_t *p, server_rec *s,
                               conn_rec *c, request_rec *r, char *name)
 {
-    int i;
+    unsigned int i;
     /* If the # of vars grow, we need to put definitions in a hash */
     for (i = 0; i < H2_ALEN(H2_VARS); ++i) {
         h2_var_def *vdef = &H2_VARS[i];
@@ -334,7 +334,7 @@ static int h2_h2_fixups(request_rec *r)
 {
     if (r->connection->master) {
         h2_conn_ctx_t *ctx = h2_conn_ctx_get(r->connection);
-        int i;
+        unsigned int i;
         apr_interval_time_t stream_timeout;
         
         for (i = 0; ctx && i < H2_ALEN(H2_VARS); ++i) {

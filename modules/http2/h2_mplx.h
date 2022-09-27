@@ -75,16 +75,16 @@ struct h2_mplx {
     struct h2_iqueue *q;            /* all stream ids that need to be started */
 
     apr_size_t stream_max_mem;      /* max memory to buffer for a stream */
-    int max_streams;                /* max # of concurrent streams */
-    int max_stream_id_started;      /* highest stream id that started processing */
+    apr_uint32_t max_streams;       /* max # of concurrent streams */
+    apr_uint32_t max_stream_id_started; /* highest stream id that started processing */
 
-    int processing_count;           /* # of c2 working for this mplx */
-    int processing_limit;           /* current limit on processing c2s, dynamic */
-    int processing_max;             /* max, hard limit of processing c2s */
+    apr_uint32_t processing_count;  /* # of c2 working for this mplx */
+    apr_uint32_t processing_limit;  /* current limit on processing c2s, dynamic */
+    apr_uint32_t processing_max;    /* max, hard limit of processing c2s */
     
     apr_time_t last_mood_change;    /* last time, processing limit changed */
     apr_interval_time_t mood_update_interval; /* how frequent we update at most */
-    int irritations_since; /* irritations (>0) or happy events (<0) since last mood change */
+    apr_uint32_t irritations_since; /* irritations (>0) or happy events (<0) since last mood change */
 
     apr_thread_mutex_t *lock;
     struct apr_thread_cond_t *join_wait;
@@ -101,7 +101,7 @@ struct h2_mplx {
 
     request_rec *scratch_r;         /* pseudo request_rec for scoreboard reporting */
 
-    apr_size_t max_spare_transits;   /* max number of transit pools idling */
+    apr_uint32_t max_spare_transits; /* max number of transit pools idling */
     apr_array_header_t *c2_transits; /* base pools for running c2 connections */
 };
 
@@ -139,7 +139,7 @@ int h2_mplx_c1_shutdown(h2_mplx *m);
  * @param pstream_count return the number of streams active
  */
 apr_status_t h2_mplx_c1_stream_cleanup(h2_mplx *m, struct h2_stream *stream,
-                                       int *pstream_count);
+                                       unsigned int *pstream_count);
 
 int h2_mplx_c1_stream_is_running(h2_mplx *m, struct h2_stream *stream);
 
@@ -157,7 +157,7 @@ void h2_mplx_c1_process(h2_mplx *m,
                         h2_stream_get_fn *get_stream,
                         h2_stream_pri_cmp_fn *cmp,
                         struct h2_session *session,
-                        int *pstream_count);
+                        unsigned int *pstream_count);
 
 /**
  * Stream priorities have changed, reschedule pending requests.
