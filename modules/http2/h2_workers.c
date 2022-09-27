@@ -288,7 +288,11 @@ static void* APR_THREAD_FUNC slot_run(apr_thread_t *thread, void *wctx)
                 c->current_thread = thread;
                 AP_DEBUG_ASSERT(slot->prod);
 
+#if AP_HAS_RESPONSE_BUCKETS
                 ap_process_connection(c, ap_get_conn_socket(c));
+#else
+                h2_c2_process(c, thread, slot->id);
+#endif
                 slot->prod->fn_done(slot->prod->baton, c);
 
                 apr_thread_mutex_lock(workers->lock);

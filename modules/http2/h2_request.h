@@ -49,7 +49,8 @@ h2_request *h2_request_clone(apr_pool_t *p, const h2_request *src);
  */
 request_rec *h2_create_request_rec(const h2_request *req, conn_rec *conn);
 
+#if AP_HAS_RESPONSE_BUCKETS
 apr_bucket *h2_request_create_bucket(const h2_request *req, request_rec *r);
-
+#endif
 
 #endif /* defined(__mod_h2__h2_request__) */

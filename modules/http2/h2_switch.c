@@ -29,6 +29,7 @@
 #include <http_log.h>
 
 #include "h2_private.h"
+#include "h2.h"
 
 #include "h2_config.h"
 #include "h2_conn_ctx.h"
@@ -125,6 +126,7 @@ static int h2_protocol_propose(conn_rec *c, request_rec *r,
     return proposed? DECLINED : OK;
 }
 
+#if AP_HAS_RESPONSE_BUCKETS
 static void remove_output_filters_below(ap_filter_t *f, ap_filter_type ftype)
 {
     ap_filter_t *fnext;
@@ -146,6 +148,7 @@ static void remove_input_filters_below(ap_filter_t *f, ap_filter_type ftype)
         f = fnext;
     }
 }
+#endif
 
 static int h2_protocol_switch(conn_rec *c, request_rec *r, server_rec *s,
                               const char *protocol)
@@ -174,6 +177,7 @@ static int h2_protocol_switch(conn_rec *c, request_rec *r, server_rec *s,
 
         if (r != NULL) {
             apr_status_t status;
+#if AP_HAS_RESPONSE_BUCKETS
             /* Switching in the middle of a request means that
              * we have to send out the response to this one in h2
              * format. So we need to take over the connection
@@ -182,7 +186,15 @@ static int h2_protocol_switch(conn_rec *c, request_rec *r, server_rec *s,
              */
             remove_input_filters_below(r->input_filters, AP_FTYPE_CONNECTION);
             remove_output_filters_below(r->output_filters, AP_FTYPE_CONNECTION);
-
+#else
+            /* Switching in the middle of a request means that
+             * we have to send out the response to this one in h2
+             * format. So we need to take over the connection
+             * right away.
+             */
+            ap_remove_input_filter_byhandle(r->input_filters, "http_in");
+            ap_remove_output_filter_byhandle(r->output_filters, "HTTP_HEADER");
+#endif
             /* Ok, start an h2_conn on this one. */
             status = h2_c1_setup(c, r, s);
             

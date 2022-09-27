@@ -19,6 +19,8 @@
 
 #include <http_core.h>
 
+#include "h2.h"
+
 const char *h2_conn_mpm_name(void);
 int h2_mpm_supported(void);
 
@@ -27,6 +29,18 @@ int h2_mpm_supported(void);
  * starts.
  */
 apr_status_t h2_c2_child_init(apr_pool_t *pool, server_rec *s);
+
+#if !AP_HAS_RESPONSE_BUCKETS
+
+conn_rec *h2_c2_create(conn_rec *c1, apr_pool_t *parent,
+                       apr_bucket_alloc_t *buckt_alloc);
+
+/**
+ * Process a secondary connection for a HTTP/2 stream request.
+ */
+apr_status_t h2_c2_process(conn_rec *c, apr_thread_t *thread, int worker_id);
+
+#endif /* !AP_HAS_RESPONSE_BUCKETS */
 
 void h2_c2_destroy(conn_rec *c2);
 

@@ -18,6 +18,7 @@
 #define __mod_h2__h2__
 
 #include <apr_version.h>
+#include <ap_mmn.h>
 
 struct h2_session;
 struct h2_stream;
@@ -179,5 +180,14 @@ typedef struct h2_stream *h2_stream_get_fn(struct h2_session *session, int strea
 #define H2_HDR_CONFORMANCE      "http2-hdr-conformance"
 #define H2_HDR_CONFORMANCE_UNSAFE      "unsafe"
 #define H2_PUSH_MODE_NOTE       "http2-push-mode"
+
+
+#if AP_MODULE_MAGIC_AT_LEAST(20211221, 6)
+#define AP_HAS_RESPONSE_BUCKETS     1
+
+#else /* AP_MODULE_MAGIC_AT_LEAST(20211221, 6) */
+#define AP_HAS_RESPONSE_BUCKETS     0
+
+#endif /* else AP_MODULE_MAGIC_AT_LEAST(20211221, 6) */
 
 #endif /* defined(__mod_h2__h2__) */

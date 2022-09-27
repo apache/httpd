@@ -17,6 +17,8 @@
 #ifndef __mod_h2__h2_conn_ctx__
 #define __mod_h2__h2_conn_ctx__
 
+#include "h2.h"
+
 struct h2_session;
 struct h2_stream;
 struct h2_mplx;
@@ -28,7 +30,7 @@ struct h2_c2_transit;
 #define H2_PIPE_IN      1
 
 /**
- * The h2 module context associated with a connection. 
+ * The h2 module context associated with a connection.
  *
  * It keeps track of the different types of connections:
  * - those from clients that use HTTP/2 protocol
@@ -43,6 +45,9 @@ struct h2_conn_ctx_t {
     struct h2_mplx *mplx;           /* c2: the multiplexer */
     struct h2_c2_transit *transit;  /* c2: transit pool and bucket_alloc */
 
+#if !AP_HAS_RESPONSE_BUCKETS
+    int pre_conn_done;               /* has pre_connection setup run? */
+#endif
     int stream_id;                  /* c1: 0, c2: stream id processed */
     apr_pool_t *req_pool;            /* c2: a c2 child pool for a request */
     const struct h2_request *request; /* c2: the request to process */

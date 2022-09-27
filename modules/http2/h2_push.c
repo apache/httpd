@@ -432,8 +432,17 @@ static int head_iter(void *ctx, const char *key, const char *value)
     return 1;
 }
 
-apr_array_header_t *h2_push_collect(apr_pool_t *p, const h2_request *req,
-                                    apr_uint32_t push_policy, const ap_bucket_response *res)
+#if AP_HAS_RESPONSE_BUCKETS
+apr_array_header_t *h2_push_collect(apr_pool_t *p,
+                                    const struct h2_request *req,
+                                    apr_uint32_t push_policy,
+                                    const ap_bucket_response *res)
+#else
+apr_array_header_t *h2_push_collect(apr_pool_t *p,
+                                    const struct h2_request *req,
+                                    apr_uint32_t push_policy,
+                                    const struct h2_headers *res)
+#endif
 {
     if (req && push_policy != H2_PUSH_NONE) {
         /* Collect push candidates from the request/response pair.
@@ -674,9 +683,15 @@ apr_array_header_t *h2_push_diary_update(h2_session *session, apr_array_header_t
     return npushes;
 }
     
+#if AP_HAS_RESPONSE_BUCKETS
 apr_array_header_t *h2_push_collect_update(struct h2_stream *stream,
                                            const struct h2_request *req,
                                            const ap_bucket_response *res)
+#else
+apr_array_header_t *h2_push_collect_update(struct h2_stream *stream,
+                                           const struct h2_request *req,
+                                           const struct h2_headers *res)
+#endif
 {
     apr_array_header_t *pushes;
     

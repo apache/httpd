@@ -20,6 +20,7 @@
 #include <http_protocol.h>
 
 #include "h2.h"
+#include "h2_headers.h"
 
 /**
  * A HTTP/2 stream, e.g. a client request+response in HTTP/1.1 terms.
@@ -28,7 +29,12 @@
  * connection to the client. The h2_session writes to the h2_stream,
  * adding HEADERS and DATA and finally an EOS. When headers are done,
  * h2_stream is scheduled for handling, which is expected to produce
- * RESPONSE buckets.
+ * h2_headers/RESPONSE buckets.
+ *
+ * The h2_headers may be followed by more h2_headers (interim responses) and
+ * by DATA frames read from the h2_stream until EOS is reached. Trailers
+ * are send when a last h2_headers is received. This always closes the stream
+ * output.
  */
 
 struct h2_mplx;
@@ -71,13 +77,17 @@ struct h2_stream {
     apr_table_t *trailers_in;   /* optional, incoming trailers */
     int request_headers_added;  /* number of request headers added */
 
+#if AP_HAS_RESPONSE_BUCKETS
     ap_bucket_response *response; /* the final, non-interim response or NULL */
+#else
+    struct h2_headers *response; /* the final, non-interim response or NULL */
+#endif
 
     struct h2_bucket_beam *input;
     apr_bucket_brigade *in_buffer;
     int in_window_size;
     apr_time_t in_last_write;
-    
+
     struct h2_bucket_beam *output;
     apr_bucket_brigade *out_buffer;
 
@@ -90,7 +100,7 @@ struct h2_stream {
     unsigned int output_eos : 1; /* output EOS in buffer/sent */
 
     conn_rec *c2;               /* connection processing stream */
-    
+
     const h2_priority *pref_priority; /* preferred priority for this stream */
     apr_off_t out_frames;       /* # of frames sent out */
     apr_off_t out_frame_octets; /* # of RAW frame octets sent out */
@@ -99,7 +109,7 @@ struct h2_stream {
     apr_off_t in_data_frames;   /* # of DATA frames received */
     apr_off_t in_data_octets;   /* # of DATA octets (payload) received */
     apr_off_t in_trailer_octets; /* # of HEADER octets (payload) received in trailers */
-    
+
     h2_stream_monitor *monitor; /* optional monitor for stream states */
 };
 
@@ -111,13 +121,13 @@ struct h2_stream {
  * @param id      the stream identifier
  * @param pool    the memory pool to use for this stream
  * @param session the session this stream belongs to
- * @param monitor an optional monitor to be called for events and 
+ * @param monitor an optional monitor to be called for events and
  *                state transisitions
  * @param initiated_on the id of the stream this one was initiated on (PUSH)
  *
  * @return the newly opened stream
  */
-h2_stream *h2_stream_create(int id, apr_pool_t *pool, 
+h2_stream *h2_stream_create(int id, apr_pool_t *pool,
                             struct h2_session *session,
                             h2_stream_monitor *monitor,
                             int initiated_on);
@@ -160,7 +170,7 @@ apr_status_t h2_stream_in_consumed(h2_stream *stream, apr_off_t amount);
 
 /**
  * Set complete stream headers from given h2_request.
- * 
+ *
  * @param stream stream to write request to
  * @param r the request with all the meta data
  * @param eos != 0 iff stream input is closed
@@ -169,16 +179,16 @@ void h2_stream_set_request(h2_stream *stream, const h2_request *r);
 
 /**
  * Set complete stream header from given request_rec.
- * 
+ *
  * @param stream stream to write request to
  * @param r the request with all the meta data
  * @param eos != 0 iff stream input is closed
  */
-apr_status_t h2_stream_set_request_rec(h2_stream *stream, 
+apr_status_t h2_stream_set_request_rec(h2_stream *stream,
                                        request_rec *r, int eos);
 
 /*
- * Add a HTTP/2 header (including pseudo headers) or trailer 
+ * Add a HTTP/2 header (including pseudo headers) or trailer
  * to the given stream, depending on stream state.
  *
  * @param stream stream to write the header to
@@ -190,7 +200,7 @@ apr_status_t h2_stream_set_request_rec(h2_stream *stream,
 apr_status_t h2_stream_add_header(h2_stream *stream,
                                   const char *name, size_t nlen,
                                   const char *value, size_t vlen);
-                                  
+
 /* End the construction of request headers */
 apr_status_t h2_stream_end_headers(h2_stream *stream, int eos, size_t raw_bytes);
 
@@ -235,7 +245,7 @@ apr_status_t h2_stream_read_output(h2_stream *stream);
 
 /**
  * Read a maximum number of bytes into the bucket brigade.
- * 
+ *
  * @param stream the stream to read from
  * @param bb the brigade to append output to
  * @param plen (in-/out) max. number of bytes to append and on return actual
@@ -245,7 +255,7 @@ apr_status_t h2_stream_read_output(h2_stream *stream);
  *         APR_EAGAIN if not data is available and end of stream has not been
  *         reached yet.
  */
-apr_status_t h2_stream_read_to(h2_stream *stream, apr_bucket_brigade *bb, 
+apr_status_t h2_stream_read_to(h2_stream *stream, apr_bucket_brigade *bb,
                                apr_off_t *plen, int *peos);
 
 /**
@@ -264,13 +274,24 @@ apr_table_t *h2_stream_get_trailers(h2_stream *stream);
  *
  * @param stream the stream for which to submit
  */
-apr_status_t h2_stream_submit_pushes(h2_stream *stream, ap_bucket_response *response);
+#if AP_HAS_RESPONSE_BUCKETS
+apr_status_t h2_stream_submit_pushes(h2_stream *stream,
+                                     ap_bucket_response *response);
+#else
+apr_status_t h2_stream_submit_pushes(h2_stream *stream,
+                                     struct h2_headers *response);
+#endif
 
 /**
  * Get priority information set for this stream.
  */
-const struct h2_priority *h2_stream_get_priority(h2_stream *stream, 
+#if AP_HAS_RESPONSE_BUCKETS
+const struct h2_priority *h2_stream_get_priority(h2_stream *stream,
                                                  ap_bucket_response *response);
+#else
+const struct h2_priority *h2_stream_get_priority(h2_stream *stream,
+                                                 struct h2_headers *response);
+#endif
 
 /**
  * Return a textual representation of the stream state as in RFC 7540
