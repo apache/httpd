@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1897753 -->
+<!-- English Revision: 1904273 -->
 <!-- French translation : Lucien GENTIS -->
 
 <!--
@@ -1178,4 +1178,35 @@ H2PushPriority text/css   interleaved      # poids de 256 par défaut
         </usage>
     </directivesynopsis>
 
+    <directivesynopsis>
+        <name>H2HeaderStrictness</name>
+        <description>Définition, à l'aide d'un numéro de RFC, du niveau de
+	rigueur à appliquer lors de la vérification des en-têtes.</description>
+        <syntax>H2HeaderStrictness <var>rfc</var></syntax>
+        <default>rfc7540</default>
+        <contextlist>
+            <context>server config</context>
+            <context>virtual host</context>
+        </contextlist>
+        <compatibility>Disponible à partir de la version 2.5.1 du serveur HTTP
+	Apache.</compatibility>
+
+        <usage>
+            <p>
+                La directive <directive>H2HeaderStrictness</directive> permet de
+		définir les tests de conformité des valeurs d'en-têtes en se
+		référant au numéro de RFC IETF spécifié. 'rfc7540' est la RFC
+		HTTP/2 initiale et 'rfc9113' en est la version mise à jour qui
+		interdit les espaces en début et en fin de champ.
+            </p><p>
+                Spécifiez 'highest' pour appliquer la plus grande rigueur
+		disponible aux vérifications. Cette dernière dépend de la
+		version de la bibliothèque nghttp2 utilisée. La 'rfc9113' n'est
+		disponible qu'à partir de la version 1.50.0 de la bibliothèque
+		nghttp2. Lorsqu'on compile avec des versions antérieures, cette
+		valeur de paramètre n'a aucun effet.
+        </p>
+        </usage>
+    </directivesynopsis>
+    
 </modulesynopsis>
