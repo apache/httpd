@@ -153,7 +153,7 @@ h2_headers *h2_headers_rcreate(request_rec *r, int status,
                  * in HTTP/2. Tell the client that it should use HTTP/1.1 for this.
                  */
                 ap_log_rerror(APLOG_MARK, APLOG_DEBUG, headers->status, r,
-                              APLOGNO(03061)
+                              APLOGNO(10399)
                               "h2_headers(%ld): renegotiate forbidden, cause: %s",
                               (long)r->connection->id, cause);
                 headers->status = H2_ERR_HTTP_1_1_REQUIRED;
