@@ -658,8 +658,8 @@ CustomLog "|$/usr/local/apache/bin/rotatelogs   /var/log/access_log 86400" commo
     consider the following directives.</p>
 
     <highlight language="config">
-LogFormat "%v %l %u %t \"%r\" %&gt;s %b" comonvhost
-CustomLog "logs/access_log" comonvhost
+LogFormat "%v:%p %h %l %u %t \"%r\" %&gt;s %b" common_vhost
+CustomLog "logs/access_log" common_vhost
     </highlight>
 
     <p>The <code>%v</code> is used to log the name of the virtual
