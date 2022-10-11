@@ -188,7 +188,31 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      Backport version for 2.4.x of patch:
        https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/327.diff
      Can be applied via apply_backport_pr.sh 327
-     +1: rpluem, icing, 
+     +1: rpluem, icing,
+
+  *) mod_proxy_hcheck: hcmethod now allow for HTTP/1.1 requests
+     using GET11, HEAD11 and/or OPTIONS11.
+     trunk revision:
+        https://svn.apache.org/r1903744
+        https://svn.apache.org/r1903745
+     Backport version for 2.4.x of patch:
+        svn merge works
+     +1: jim,
+
+  *) mod_proxy_hcheck: Detect AJP/CPING support correctly. PR 66300.
+     trunk revision:
+        https://svn.apache.org/r1904516
+     Backport version for 2.4.x of patch:
+        svn merge works
+     +1: jim,
+
+  *) mod_proxy_hcheck: Re-enable workers in standard ERROR state. PR 66302.
+     trunk revision:
+        https://svn.apache.org/r1904518
+     Backport version for 2.4.x of patch:
+        svn merge works
+     +1: jim,
+
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
