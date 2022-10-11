@@ -258,7 +258,7 @@ Changes with Apache 2.5.1
   *) mod_autoindex: Add "IndexForbiddenReturn404" to return 404 instead of a
      403 when Options does not included "indexes". [Eric Covener]
 
-  *) mod_dir: Add "NotFound" option to "DirectorySlash" directive to return 
+  *) mod_dir: Add "NotFound" option to "DirectorySlash" directive to return
      404 instead of a DirectorySlash redirect. [Eric Covener]
 
   *) mod_md: adding v2.4.8 with the following changes
@@ -570,35 +570,35 @@ Changes with Apache 2.5.1
      restart/stop.  PR 59798.  [Yann Ylavic]
 
   *) mod_md: v2.4.0 with improvements and bugfixes
-     - MDPrivateKeys allows the specification of several types. Beside "RSA" plus 
-     optional key lengths elliptic curves can be configured. This means you can 
+     - MDPrivateKeys allows the specification of several types. Beside "RSA" plus
+     optional key lengths elliptic curves can be configured. This means you can
      have multiple certificates for a Managed Domain with different key types.
-     With ```MDPrivateKeys secp384r1 rsa2048``` you get one ECDSA  and one RSA 
-     certificate and all modern client will use the shorter ECDSA, while older 
+     With ```MDPrivateKeys secp384r1 rsa2048``` you get one ECDSA  and one RSA
+     certificate and all modern client will use the shorter ECDSA, while older
      client will get the RSA certificate.
      Many thanks to @tlhackque who pushed and helped on this.
-     - Support added for MDomains consisting of a wildcard. Configuring 
-     ```MDomain *.host.net``` will match all virtual hosts matching that pattern 
-     and obtain one certificate for it (assuming you have 'dns-01' challenge 
+     - Support added for MDomains consisting of a wildcard. Configuring
+     ```MDomain *.host.net``` will match all virtual hosts matching that pattern
+     and obtain one certificate for it (assuming you have 'dns-01' challenge
      support configured). Addresses #239.
-     - Removed support for ACMEv1 servers. The only known installation used to 
-     be Let's Encrypt which has disabled that version more than a year ago for 
+     - Removed support for ACMEv1 servers. The only known installation used to
+     be Let's Encrypt which has disabled that version more than a year ago for
      new accounts.
-     - Andreas Ulm (<https://github.com/root360-AndreasUlm>) implemented the 
-     ```renewing``` call to ```MDMessageCmd``` that can deny a certificate 
-     renewal attempt. This is useful in clustered installations, as 
+     - Andreas Ulm (<https://github.com/root360-AndreasUlm>) implemented the
+     ```renewing``` call to ```MDMessageCmd``` that can deny a certificate
+     renewal attempt. This is useful in clustered installations, as
      discussed in #233).
-     - New event ```challenge-setup:<type>:<domain>```, triggered when the 
-     challenge data for a domain has been created. This is invoked before the 
-     ACME server is told to check for it. The type is one of the ACME challenge 
+     - New event ```challenge-setup:<type>:<domain>```, triggered when the
+     challenge data for a domain has been created. This is invoked before the
+     ACME server is told to check for it. The type is one of the ACME challenge
      types. This is invoked for every DNS name in a MDomain.
-     - The max delay for retries has been raised to daily (this is like all 
+     - The max delay for retries has been raised to daily (this is like all
      retries jittered somewhat to avoid repeats at fixed time of day).
-     - Certain error codes reported by the ACME server that indicate a problem 
-     with the configured data now immediately switch to daily retries. For 
-     example: if the ACME server rejects a contact email or a domain name, 
-     frequent retries will most likely not solve the problem. But daily retries 
-     still make sense as there might be an error at the server and un-supervised 
+     - Certain error codes reported by the ACME server that indicate a problem
+     with the configured data now immediately switch to daily retries. For
+     example: if the ACME server rejects a contact email or a domain name,
+     frequent retries will most likely not solve the problem. But daily retries
+     still make sense as there might be an error at the server and un-supervised
      certificate renewal is the goal. Refs #222.
      - Test case and work around for domain names > 64 octets. Fixes #227.
      When the first DNS name of an MD is longer than 63 octets, the certificate
@@ -607,25 +607,25 @@ Changes with Apache 2.5.1
      fails the request if none is found. But it is really up to the CA (and what
      browsers/libs accept here) and may change over the years. That is why
      the decision is best made at the CA.
-     - Retry delays now have a random +/-[0-50]% modification applied to let 
-     retries from several servers spread out more, should they have been 
+     - Retry delays now have a random +/-[0-50]% modification applied to let
+     retries from several servers spread out more, should they have been
      restarted at the same time of day.
-     - Fixed several places where the 'badNonce' return code from an ACME server 
-     was not handled correctly. The test server 'pebble' simulates this behaviour 
+     - Fixed several places where the 'badNonce' return code from an ACME server
+     was not handled correctly. The test server 'pebble' simulates this behaviour
      by default and helps nicely in verifying this behaviour. Thanks, pebble!
      - Set the default `MDActivationDelay` to 0. This was confusing to users that
      new certificates were deemed not usably before a day of delay. When clocks are
      correct, using a new certificate right away should not pose a problem.
-     - When handling ACME authorization resources, the module no longer requires 
-     the server to return a "Location" header, as was necessary in ACMEv1. 
+     - When handling ACME authorization resources, the module no longer requires
+     the server to return a "Location" header, as was necessary in ACMEv1.
      Fixes #216.
-     - Fixed a theoretical uninitialized read when testing for JSON error responses 
+     - Fixed a theoretical uninitialized read when testing for JSON error responses
      from the ACME CA. Reported at <https://bz.apache.org/bugzilla/show_bug.cgi?id=64297>.
-     - ACME problem reports from CAs that include parameters in the Content-Type 
-     header are handled correctly. (Previously, the problem text would not be 
+     - ACME problem reports from CAs that include parameters in the Content-Type
+     header are handled correctly. (Previously, the problem text would not be
      reported and retries could exist CA limits.)
-     - Account Update transactions to V2 CAs now use the correct POST-AS-GET method.  
-     Previously, an empty JSON object was sent - which apparently LE accepted, 
+     - Account Update transactions to V2 CAs now use the correct POST-AS-GET method.
+     Previously, an empty JSON object was sent - which apparently LE accepted,
      but others reject.
      - MDCertificateFile and MDCertificateKeyFile can now be specified several
      times to add multiple, static certificates to a MDomain.
@@ -649,7 +649,7 @@ Changes with Apache 2.5.1
      as core supplies its own versions of those.
      The following has been added so far:
      - ap_ssl_conn_is_ssl() to query if a connection is using SSL.
-     - ap_ssl_var_lookup() to query SSL related variables for a 
+     - ap_ssl_var_lookup() to query SSL related variables for a
        server/connection/request.
      - Hooks for 'ssl_conn_is_ssl' and 'ssl_var_lookup' where modules
        providing SSL can install their own value supplying functions.
@@ -667,19 +667,19 @@ Changes with Apache 2.5.1
        to the above mentioned functions.
      [Stefan Eissing]
 
-  *) mod_http2: new option 'H2OutputBuffering on/off' which controls the 
-     buffering of stream output. The default is on, which is the behaviour of 
-     previous mod-h2 versions. When off, all bytes are made available immediately 
-     to the main connection for sending them out to the client. This fixes interop 
+  *) mod_http2: new option 'H2OutputBuffering on/off' which controls the
+     buffering of stream output. The default is on, which is the behaviour of
+     previous mod-h2 versions. When off, all bytes are made available immediately
+     to the main connection for sending them out to the client. This fixes interop
      issues with certain flavours of gRPC. [Stefan Eissing]
 
   *) mod_authnz_ldap: Prevent authentications with empty passwords for the
      initial bind to fail with status 500. [Ruediger Pluem]
 
-  *) mod_http2: Fixed reporting of transferred bytes for mod_logio for 
-     modifiers %O (and %S) to report the number of transferred header and 
-     body lengths. This is still only an approximation of the bytes on the 
-     connection. The data is subject to header compression and h2 framing 
+  *) mod_http2: Fixed reporting of transferred bytes for mod_logio for
+     modifiers %O (and %S) to report the number of transferred header and
+     body lengths. This is still only an approximation of the bytes on the
+     connection. The data is subject to header compression and h2 framing
      afterwards. [Stefan Eissing]
 
   *) mod_cgid: Intercept and log stderr output correctly on Unix systems
@@ -770,10 +770,10 @@ Changes with Apache 2.5.1
      dav_find_attr() so that other modules get to play too.
      [Graham Leggett]
 
-  *) mod_http2: 
-     Fixes <https://github.com/icing/mod_h2/issues/200>: 
+  *) mod_http2:
+     Fixes <https://github.com/icing/mod_h2/issues/200>:
      "LimitRequestFields 0" now disables the limit, as documented.
-     Fixes <https://github.com/icing/mod_h2/issues/201>: 
+     Fixes <https://github.com/icing/mod_h2/issues/201>:
      Do not count repeated headers with same name against the field
      count limit. The are merged internally, as if sent in a single HTTP/1 line.
      [Stefan Eissing]
@@ -859,7 +859,7 @@ Changes with Apache 2.5.1
      renegotiation in TLSv1.2 and earlier is blocked at SSL library
      level (with a TLS warning alert sent), rather than by aborting
      the connection inside mod_ssl.  [Joe Orton]
- 
+
   *) core: Add optional "options=" argument to Listen.  Supported
      keywords are "freebind", "reuseport" and "v6only".  PR 61865.
      [Jan Kaluza, Lubos Uhliarik <luhliari redhat.com>, Joe Orton]
@@ -875,7 +875,7 @@ Changes with Apache 2.5.1
   *) mod_reqtimeout: Cannot override default Virtualhost's mod_reqtimeout.
      PR64295 [Jean-Frederic Clere]
 
-  *) mod_proxy: Allow ProxyErrorOverride to be restricted to specific status 
+  *) mod_proxy: Allow ProxyErrorOverride to be restricted to specific status
      codes.  PR63628. [Martin Drößler <mail martindroessler.de>]
 
   *) configtest: Issue a warning for non-existent directories in <Directory> config
@@ -909,10 +909,10 @@ Changes with Apache 2.5.1
   *) mod_authz_groupfile: Drop AH01666 from loglevel "error" to "info".
      PR64172.
 
-  *) mod_usertrack: Add CookieSameSite, CookieHTTPOnly, and CookieSecure 
+  *) mod_usertrack: Add CookieSameSite, CookieHTTPOnly, and CookieSecure
      to allow customization of the usertrack cookie. PR64077.
      [Prashant Keshvani <prashant2400 gmail.com>, Eric Covener]
-    
+
   *) mpm_event: avoid possible KeepAlveTimeout off by -100 ms.
      [Eric Covener, Yann Ylavic]
 
@@ -927,7 +927,7 @@ Changes with Apache 2.5.1
        allow for use in <If> and <Macro> sections. If all possible variations lead to the configuration
        you wanted in the first place, is another matter.
      [Michael Kaufmann <mail michael-kaufmann.ch>, Timothe Litt (@tlhackque),
-      Michal Karm Babacek (@Karm), Stefan Eissing (@icing)] 
+      Michal Karm Babacek (@Karm), Stefan Eissing (@icing)]
 
   *) core: ap_method_mask_t type added for method bitmasks, changed
      from apr_int64_t and used for the method_mask field in
@@ -941,15 +941,15 @@ Changes with Apache 2.5.1
      issue mod_md#172 (https://github.com/icing/mod_md/issues/172).
      [Michael Kaufmann <mail michael-kaufmann.ch>, Stefan Eissing]
 
-  *) mod_rewrite: Extend the [CO] (cookie) flag of RewriteRule to accept a 
+  *) mod_rewrite: Extend the [CO] (cookie) flag of RewriteRule to accept a
      SameSite attribute. [Eric Covener]
 
   *) Update DOCTYPE tags in server-generated HTML. PR62989.
      [Andra Farkas <deepbluemistake gmail.com>, Giovanni Bechis <giovanni paclan.it>]
 
   *) mod_setenvif: Passing an env-variable parameter of "--early" in non-perdir
-     context runs directives from this module before `RequestHeader ... early` 
-     are evaluated. This allows results of SetEnvIf conditionals to be used 
+     context runs directives from this module before `RequestHeader ... early`
+     are evaluated. This allows results of SetEnvIf conditionals to be used
      to modify request headers in early mode. [Eric Covener]
 
   *) config: Speed up graceful restarts by using pre-hashed command table. PR 64066.
@@ -968,26 +968,26 @@ Changes with Apache 2.5.1
 
   *) Add a config layout for OpenWRT. [Graham Leggett]
 
-  *) mod_http2: Fixed rare cases where a h2 worker could deadlock the main connection. 
+  *) mod_http2: Fixed rare cases where a h2 worker could deadlock the main connection.
      [Yann Ylavic, Stefan Eissing]
 
-  *) mod_lua: Accept nil assignments to the exposed tables (r.subprocess_env, 
-     r.headers_out, etc) to remove the key from the table. PR63971. 
+  *) mod_lua: Accept nil assignments to the exposed tables (r.subprocess_env,
+     r.headers_out, etc) to remove the key from the table. PR63971.
      [Eric Covener]
 
   *) mod_http2: Fixed interaction with mod_reqtimeout. A loaded mod_http2 was disabling the
-     ssl handshake timeouts. Also, fixed a mistake of the last version that made `H2Direct` 
+     ssl handshake timeouts. Also, fixed a mistake of the last version that made `H2Direct`
      always `on`, regardless of configuration. Found and reported by
      <Armin.Abfalterer@united-security-providers.ch> and
-     <Marcial.Rion@united-security-providers.ch>. [Stefan Eissing] 
+     <Marcial.Rion@united-security-providers.ch>. [Stefan Eissing]
 
   *) mod_http2: Multiple field length violations in the same request no longer cause
      several log entries to be written. [@mkauf]
-  
-  *) mod_md: v2.2.4 from github, Fixes a compile time issue with OpenSSL 1.0.2 in 
-     the new OCSP code. Skips port checks for domain server_rec selection when "tls-alpn-01" 
+
+  *) mod_md: v2.2.4 from github, Fixes a compile time issue with OpenSSL 1.0.2 in
+     the new OCSP code. Skips port checks for domain server_rec selection when "tls-alpn-01"
      is configured explicitly (related to #133). [@mkauf, Stefan Eissing]
-  
+
   *) mod_ssl: Support logging private key material for use with
      wireshark via log file given by SSLKEYLOGFILE environment
      variable.  Requires OpenSSL 1.1.1.  PR 63391.  [Joe Orton]
@@ -1024,18 +1024,18 @@ Changes with Apache 2.5.1
      valid (For example, testing for a file on a flash drive that is not mounted)
      [Christophe Jaillet]
 
-  *) mod_proxy_balancer: Fix case-sensitive referer check related to CSRF/XSS 
+  *) mod_proxy_balancer: Fix case-sensitive referer check related to CSRF/XSS
      protection. PR63688. [Armin Abfalterer <a.abfalterer gmail.com>]
 
   *) mod_authn_socache: Increase the maximum length of strings that can be cached by
      the module from 100 to 256.  PR 62149 [<thorsten.meinl knime.com>]
 
   *) mod_ssl: reverting a 2.4.40 change where a superfluous SSLCertificateChainFile configuration
-     for a domain managed by mod_md caused a startup error. This happened when mod_md installed 
+     for a domain managed by mod_md caused a startup error. This happened when mod_md installed
      its fallback certificate, before it got the first real certificate from Lets Encrypt.
      [Stefan Eissing]
 
-  *) core, mod_rewrite: Set PCRE_DOTALL by default. Revert via 
+  *) core, mod_rewrite: Set PCRE_DOTALL by default. Revert via
      RegexDefaultOptions -DOTALL [Yann Ylavic]
 
   *) core: Remove request details from built-in error documents [Eric Covener]
@@ -1045,7 +1045,7 @@ Changes with Apache 2.5.1
 
   *) mod_http2: fixed a bug that prevented proper stream cleanup when connection
      throttling was in place. Stream resets by clients on streams initiated by them
-     are counted as possible trigger for throttling. [Stefan Eissing] 
+     are counted as possible trigger for throttling. [Stefan Eissing]
 
   *) mod_http2/mpm_event: Fixes the behaviour when a HTTP/2 connection has nothing
      more to write with streams ongoing (flow control block). The timeout waiting
@@ -1059,7 +1059,7 @@ Changes with Apache 2.5.1
      other modules want to provide those. Falls back to own implementation with
      same behaviour as before.
      [Stefan Eissing]
-  
+
   *) mod_ssl: use OPENSSL_init_ssl() to initialise OpenSSL on versions 1.1+.
      [Graham Leggett]
 
@@ -1078,11 +1078,11 @@ Changes with Apache 2.5.1
 
   *) mod_md: Store permissions are enforced on file creation, enforcing restrictions in
      spite of umask. Fixes <https://github.com/icing/mod_md/issues/117>. [Stefan Eissing]
-     
+
   *) mod_ssl: Correctly restore SSL verify state after TLSv1.3 PHA failure.
      [Michael Kaufmann <mail michael-kaufmann.ch>]
 
-  *) Merge consecutive slashes in URL's. Opt-out with `MergeSlashes OFF`. 
+  *) Merge consecutive slashes in URL's. Opt-out with `MergeSlashes OFF`.
      [Eric Covener]
 
   *) mod_proxy/ssl: Cleanup per-request SSL configuration anytime a backend
@@ -1118,10 +1118,10 @@ Changes with Apache 2.5.1
 
   *) mod_proxy_wstunnel: Fix websocket proxy over UDS.
      PR 62932 <pavel dcmsys.com>
-  
+
   *) mod_negociation: LanguagePriority should be case-insensitive in order to
      match AddLanguage behavior. PR 39730 [Christophe Jaillet]
-  
+
   *) mod_session: Always decode session attributes early. [Hank Ibell]
 
   *) core: Incorrect values for environment variables are substituted when
@@ -1204,7 +1204,7 @@ Changes with Apache 2.5.1
 
   *) ru, zh-cn and zh-tw translations of errordocs have been added.
      Contributed by Alexander Gaganashvili and CodeingBoy
-  
+
   *) mod_userdir: If several directories are given in a UserDir directive, only files
      in the first existing one are checked. If the file is not found there, the
      other possible directories are not checked. The doc clearly states that they
@@ -1213,7 +1213,7 @@ Changes with Apache 2.5.1
      [Christophe Jaillet]
 
   *) mod_rewrite: Only create the global mutex used by "RewriteMap prg:" when
-     this type of map is present in the configuration.  PR62311.  
+     this type of map is present in the configuration.  PR62311.
      [Hank Ibell <hwibell gmail.com>]
 
   *) mod_ldap: Abort on LDAP locking errors. [Eric Covener]
@@ -1245,9 +1245,9 @@ Changes with Apache 2.5.1
 
   *) mod_ssl: proper checks for libressl 2.07/8 and its TLSv1_3 support, see PR 62236.
      [Bernard Spil <brnrd@freebsd.org>]
-  
+
   *) mod_cgi: Add CGIScriptTimeout to make mod_cgi's timeout per-directory and
-     independent of the core Timeout directive.  PR 62229.  
+     independent of the core Timeout directive.  PR 62229.
      [Hank Ibell <hwibell gmail.com>]
 
   *) mod_ssl: heavily simplified SSLPolicy. No more user defines, no propxy policies,
@@ -1271,7 +1271,7 @@ Changes with Apache 2.5.1
   *) core: adding defines to allow interworking with honggfuzz without
      further patches. [Stefan Eissing, Robert Swiecki]
 
-  *) mod_headers: 'RequestHeader set|edit|edit_r Content-Type X' could 
+  *) mod_headers: 'RequestHeader set|edit|edit_r Content-Type X' could
      inadvertently modify the Content-Type _response_ header. Applies to
      Content-Type only and likely to only affect static file responses.
      [Eric Covener]
@@ -1282,17 +1282,17 @@ Changes with Apache 2.5.1
   *) mod_headers: Allow 'Header unset Content-Type' to remove the Content-Type
      header. PR 61983. [Hank Ibell <hwibell gmail.com>]
 
-  *) mod_md v1.1.8: new configuration directive "MDBaseServer on|off" to allow/inhibit 
-     management of the base server domains outside VirtualHosts. By default, this is "off", 
-     e.g. mod_md will not manage certificates or perform https: redirections on the 
+  *) mod_md v1.1.8: new configuration directive "MDBaseServer on|off" to allow/inhibit
+     management of the base server domains outside VirtualHosts. By default, this is "off",
+     e.g. mod_md will not manage certificates or perform https: redirections on the
      base server. [Stefan Eissing]
-              
+
   *) core: Add "AcceptErrorsNonFatal" to allow ECONNREFUSED, ECONNABORTED, and
      ECONNRESET during the client accept() to not trigger graceful shutdown of
      the child process.  [Eric Covener]
 
   *) mod_md v1.1.7:
-     - MDMustStaple was unable to create the necessary OpenSSL OBJ identifier on some platforms, 
+     - MDMustStaple was unable to create the necessary OpenSSL OBJ identifier on some platforms,
        possibly because this fails if the OID is already configured in ```openssl.cnf```, see
        [here](https://github.com/openssl/openssl/issues/2795).
      - Two memory leaks in cert issuer and alt-names lookup eliminated by Yann Ylavic.
@@ -1321,8 +1321,8 @@ Changes with Apache 2.5.1
 
   *) mod_md: fixed backward compatibility to old <ManagedDomain configuration.
      Add higher level WARNING log when initial request to ACME server fails, mentioning
-     some advice. [Stefan Eissing] 
-     
+     some advice. [Stefan Eissing]
+
   *) mod_md: name change in configuration directives. The old names are still working
      in this version, so you can safely upgrade. They will give warnings in the log and
      will disappear in the immediate future. ManagedDomain is now MDomain,
@@ -1335,25 +1335,25 @@ Changes with Apache 2.5.1
   *) mod_auth_basic: Be less tolerant when parsing the credencial. Only spaces
      should be accepted after the authorization scheme. \t are also tolerated.
      [Christophe Jaillet]
-  
+
   *) core: Support zone/scope in IPv6 link-local addresses in Listen and
      VirtualHost directives (requires APR 1.7.x or later).  PR 59396.  [Joe Orton]
 
   *) mod_md: v1.0.5, restricting post_config dry run to be more silent and performing
      only necessary work for mod_ssl to be also happy with the configuration.
-     [Stefan Eissing] 
+     [Stefan Eissing]
 
   *) mod_md: v1.0.4, removed the 'a2md' utility command from build. Only used in github
      testing. Avoid problems with our build system that had problems after the latest
      changes to make a clean initial build. Remove the windows a2md.dsp therefore also.
-     [Stefan Eissing] 
+     [Stefan Eissing]
 
   *) mod_ssl: Fail with 403 if the username for FakeBasicAuth mode
      includes a colon character.  PR 52644.  [Joe Orton]
 
-  *) mod_md: v1.0.3, fixed various bugs in persisting job properties, so that status is 
-     persisted across child process changes and staging is reset on reloads. Changed 
-     MDCertificateAgreement url checks. As long as the CA reports that the account has 
+  *) mod_md: v1.0.3, fixed various bugs in persisting job properties, so that status is
+     persisted across child process changes and staging is reset on reloads. Changed
+     MDCertificateAgreement url checks. As long as the CA reports that the account has
      an agreement, no further checking is done. Existing accounts need no changes when
      a new agreement comes out. [Stefan Eissing]
 
@@ -1383,7 +1383,7 @@ Changes with Apache 2.5.0-alpha
 
   *) mod_md: v0.9.7
      - Use of the new module flag
-     - Removed obsolete function from interface to mod_ssl. 
+     - Removed obsolete function from interface to mod_ssl.
      - Fallback certificates has version set and no longer claims to be a CA. (re issue #32)
      - MDRequireHttps now happens before any Redirect.
      [Stefan Eissing]
@@ -1395,20 +1395,20 @@ Changes with Apache 2.5.0-alpha
   *) mod_md: v0.9.6: a "MDRequireHttps permanent" configured domain automatically sends out
      HSTS (rfc 6797) headers in https: responses. [Stefan Eissing]
 
-  *) mod_ssl: adding ssl_policies.h[.in] for policy cipher/protocol definitions. Use 
+  *) mod_ssl: adding ssl_policies.h[.in] for policy cipher/protocol definitions. Use
      update_policies.py to update manually from Mozilla JSON definitions at
      https://statics.tls.security.mozilla.org/server-side-tls-conf.json
      [Stefan Eissing]
-     
+
   *) mod_md: v0.9.5:
      - New directive (srly: what do you expect at this point?) "MDMustStaple on|off" to control if
        new certificates are requested with the OCSP Must Staple extension.
      - Known limitation: when the server is configured to ditch and restart child processes, for example
-       after a certain number of connections/requests, the mod_md watchdog instance might migrate 
+       after a certain number of connections/requests, the mod_md watchdog instance might migrate
        to a new child process. Since not all its state is persisted, some messages might appear a
        second time in the logs.
      - Adding checks when 'MDRequireHttps' is used. It is considered an error when 'MDPortMap 443:-'
-       is used - which negates that a https: port exists. Also, a warning is logged if no 
+       is used - which negates that a https: port exists. Also, a warning is logged if no
        VirtualHost can be found for a Managed Domain that has port 443 (or the mapped one) in
        its address list.
      - New directive 'MDRequireHttps' for redirecting http: traffic to a Managed Domain, permanently
@@ -1421,9 +1421,9 @@ Changes with Apache 2.5.0-alpha
   *) mod_md: v0.9.2: new directive 'MDHttpProxy' to define a proxy for outgoing connection,
      some minor bugfixes, twiddle the build system to avoid non-pic code generation.
      [Stefan Eissing]
-  
+
   *) mod_md: v0.9.1:
-     - various fixes in MDRenewWindow handling when specifying percent. Serialization changed. If 
+     - various fixes in MDRenewWindow handling when specifying percent. Serialization changed. If
        someone already used percent configurations, it is advised to change these to a new value,
        reload and change back to the wanted ones.
      - various fixes in handling of MDPrivateKeys when specifying 2048 bits (the default) explicitly.
@@ -1439,18 +1439,18 @@ Changes with Apache 2.5.0-alpha
      core definitions for policies 'modern', 'intermediate' and 'old', as defined by Mozilla
      in <https://wiki.mozilla.org/Security/Server_Side_TLS>. [Stefan Eissing]
 
-  *) mod_md: new module for managing domains across VirtualHosts with ACME protocol 
+  *) mod_md: new module for managing domains across VirtualHosts with ACME protocol
      implementation for automated certificate signup and renewal. Default CA is
      the test area of Let's Encrypt right now, so certificates root will not be valid.
      Will be switched to the real service endpoint rather soon. If you need it now,
      configure 'MDCertificateAuthority https://acme-v01.api.letsencrypt.org/directory'.
-     [Stefan Eissing] 
+     [Stefan Eissing]
 
   *) mod_rewrite: Add 'RewriteOptions LongURLOptimization' to free memory
      from each set of unmatched rewrite conditions.
      [Eric Covener]
 
-  *) Allow the argument to <IfFile>, <IfDefine>, <IfSection>, <IfDirective>, 
+  *) Allow the argument to <IfFile>, <IfDefine>, <IfSection>, <IfDirective>,
      and <IfModule> to be quoted.  This is primarily for the benefit of
      <IfFile>. [Eric Covener]
 
@@ -1490,7 +1490,7 @@ Changes with Apache 2.5.0-alpha
      dav_failed_proppatch, dav_success_proppatch to mod_dav.h.
      [Jari Urpalainen <jari.urpalainen nokia.com>, Graham Leggett]
 
-  *) core: explicitly exclude 'h2' from protocols announced via an Upgrade: 
+  *) core: explicitly exclude 'h2' from protocols announced via an Upgrade:
      header as commanded by http-wg. [Stefan Eissing]
 
   *) mod_proxy_ajp: Add "secret" parameter to proxy workers to implement legacy
@@ -1555,7 +1555,7 @@ Changes with Apache 2.5.0-alpha
      context. [Eric Covener]
 
   *) config: For directives that do not expect any arguments, enforce
-     that none are specified in the configuration file. 
+     that none are specified in the configuration file.
      [Joachim Zobel <jzobel heute-morgen.de>, Eric Covener]
 
   *) mod_rewrite: Improve 'bad flag delimeters' startup error by showing
@@ -1568,7 +1568,7 @@ Changes with Apache 2.5.0-alpha
   *) ap_expr: Add filemod function for checking file modification dates
      [Daniel Gruno]
 
-  *) mod_authnz_ldap: Resolve crashes with LDAP authz and non-LDAP authn since 
+  *) mod_authnz_ldap: Resolve crashes with LDAP authz and non-LDAP authn since
      r1608202. [Eric Covener]
 
   *) apreq: Content-Length header should be always interpreted as a decimal.
@@ -1581,8 +1581,8 @@ Changes with Apache 2.5.0-alpha
   *) mod_ssl: Add optional function "ssl_get_tls_cb" to allow support
      for channel bindings.  [Simo Sorce <simo redhat.com>]
 
-  *) mod_proxy_wstunnel: Concurrent websockets messages could be 
-     lost or delayed with ProxyWebsocketAsync enabled.  
+  *) mod_proxy_wstunnel: Concurrent websockets messages could be
+     lost or delayed with ProxyWebsocketAsync enabled.
      [Edward Lu <Chaosed0 gmail.com>]
 
   *) core, mod_info: Add compiled and loaded PCRE versions to version
@@ -1595,7 +1595,7 @@ Changes with Apache 2.5.0-alpha
      of FPIs.  PR56285 [Micha Lenk <micha lenk info>, Nick Kew]
 
   *) core: Add ap_mpm_resume_suspended() API to allow a suspended connection
-     to resume. PR56333 
+     to resume. PR56333
      [Artem <artemciy gmail.com>, Edward Lu <Chaosed0 gmail.com>]
 
   *) core: Add ap_mpm_register_socket_callback_timeout() API. [Eric Covener]
@@ -1621,11 +1621,11 @@ Changes with Apache 2.5.0-alpha
      websockets connection as it is being close down. [Eric Covener]
 
   *) mod_proxy_wstunnel: Allow the administrator to cap the amount
-     of time a synchronous websockets connection stays idle with 
+     of time a synchronous websockets connection stays idle with
      ProxyWebsocketIdleTimeout. [Eric Covener]
 
-  *) mod_proxy_wstunnel: Change to opt-in for asynchronous support, adding 
-     directives ProxyWebsocketAsync and ProxyWebsocketAsyncDelay. 
+  *) mod_proxy_wstunnel: Change to opt-in for asynchronous support, adding
+     directives ProxyWebsocketAsync and ProxyWebsocketAsyncDelay.
      [Eric Covener]
 
   *) mod_proxy_wstunnel: Stop leaking websockets backend connections under
@@ -1641,11 +1641,11 @@ Changes with Apache 2.5.0-alpha
   *) mod_dir: Default to 2.2-like behavior and skip execution when method is
      neither GET nor POST, such as for DAV requests. PR 54914. [Chris Darroch]
 
-  *) mod_rewrite: Rename the handler that does per-directory internal 
+  *) mod_rewrite: Rename the handler that does per-directory internal
      redirects to "rewrite-redirect-handler" from "redirect-handler" so
      it is less ambiguous and less likely to be reused. [Eric Covener]
 
-  *) mod_rewrite: Protect against looping with the [N] flag by enforcing a 
+  *) mod_rewrite: Protect against looping with the [N] flag by enforcing a
      default limit of 10000 iterations, and allowing each rule to change its
      limit. [Eric Covener]
 
@@ -1672,7 +1672,7 @@ Changes with Apache 2.5.0-alpha
   *) core: ensure any abnormal exit is reported to stderr if it's a tty.
      PR 55670 [Nick Kew]
 
-  *) mod_lua: Let the Inter-VM get/set functions work with a global 
+  *) mod_lua: Let the Inter-VM get/set functions work with a global
      shared memory pool instead of a per-process pool. [Daniel Gruno]
 
   *) ldap: Support ldaps when using the Microsoft LDAP SDK.
@@ -1747,7 +1747,7 @@ Changes with Apache 2.5.0-alpha
 
   *) core: Add new directive Warning to issue warnings from a configuration
      file. Both Warning and Error now generate a timestamped log message.
-     [Fabien Coelho] 
+     [Fabien Coelho]
 
   *) ap_expr: Add SERVER_PROTOCOL_VERSION, ..._MAJOR, and ..._MINOR
      variables. [Stefan Fritsch]
