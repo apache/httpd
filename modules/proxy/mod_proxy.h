@@ -360,6 +360,8 @@ PROXY_WORKER_HC_FAIL )
 
 #define PROXY_WORKER_IS_HCFAILED(f)   ( (f)->s->status &  PROXY_WORKER_HC_FAIL )
 
+#define PROXY_WORKER_IS_ERROR(f)   ( (f)->s->status &  PROXY_WORKER_IN_ERROR )
+
 #define PROXY_WORKER_IS(f, b)   ( (f)->s->status & (b) )
 
 /* default worker retry timeout in seconds */

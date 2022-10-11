@@ -927,7 +927,7 @@ static void * APR_THREAD_FUNC hc_check(apr_thread_t *thread, void *b)
                          (int)hc->s->method);
     }
     /* what state are we in ? */
-    else if (PROXY_WORKER_IS_HCFAILED(worker)) {
+    else if (PROXY_WORKER_IS_HCFAILED(worker) || PROXY_WORKER_IS_ERROR(worker)) {
         if (rv == APR_SUCCESS) {
             worker->s->pcount += 1;
             if (worker->s->pcount >= worker->s->passes) {

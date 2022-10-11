@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) mod_proxy_hcheck: Re-enable workers in standard ERROR state. PR 66302.
+     [Alessandro Cavaliere <alessandro.cavalier7 unibo.it>]
+
   *) mod_proxy_hcheck: Detect AJP/CPING support correctly. PR 66300.
      [Alessandro Cavaliere <alessandro.cavalier7 unibo.it>]
 
