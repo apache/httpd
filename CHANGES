@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) mod_proxy_hcheck: Detect AJP/CPING support correctly. PR 66300.
+     [Alessandro Cavaliere <alessandro.cavalier7 unibo.it>]
+
   *) mod_proxy_hcheck: hcmethod now allows for HTTP/1.1 requests
      using GET11, HEAD11 and/or OPTIONS11. [Jim Jagielski]
 
