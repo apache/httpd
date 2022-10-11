@@ -121,7 +121,8 @@ class Nghttp:
                                 prev["previous"] = response["previous"]
                             response["previous"] = prev
                     response[hkey] = s["header"]
-                    s["header"] = {} 
+                    s["header"] = {}
+                    body = ''
                 continue
             
             m = re.match(r'(.*)\[.*] recv DATA frame <length=(\d+), .*stream_id=(\d+)>', l)

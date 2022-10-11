@@ -408,11 +408,11 @@ apr_status_t h2_res_create_ngheader(h2_ngheader **ph, apr_pool_t *p,
 apr_status_t h2_req_create_ngheader(h2_ngheader **ph, apr_pool_t *p,
                                     const struct h2_request *req);
 #else
-apr_status_t h2_res_create_ngtrailer(h2_ngheader **ph, apr_pool_t *p,
-                                     struct h2_headers *headers);
-apr_status_t h2_res_create_ngheader(h2_ngheader **ph, apr_pool_t *p,
-                                    struct h2_headers *headers);
-apr_status_t h2_req_create_ngheader(h2_ngheader **ph, apr_pool_t *p,
+apr_status_t h2_res_create_ngtrailer(h2_ngheader **ph, apr_pool_t *p, 
+                                     struct h2_headers *headers); 
+apr_status_t h2_res_create_ngheader(h2_ngheader **ph, apr_pool_t *p, 
+                                    struct h2_headers *headers); 
+apr_status_t h2_req_create_ngheader(h2_ngheader **ph, apr_pool_t *p, 
                                     const struct h2_request *req);
 #endif
 

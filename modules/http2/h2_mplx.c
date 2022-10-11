@@ -665,6 +665,10 @@ static apr_status_t c1_process_stream(h2_mplx *m,
                       H2_STRM_MSG(stream, "process, ready already"));
     }
     else {
+        /* last chance to set anything up before stream is processed
+         * by worker threads. */
+        rv = h2_stream_prepare_processing(stream);
+        if (APR_SUCCESS != rv) goto cleanup;
         h2_iq_add(m->q, stream->id, cmp, session);
         ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, m->c1,
                       H2_STRM_MSG(stream, "process, added to q"));
@@ -791,23 +795,21 @@ static apr_status_t c2_setup_io(h2_mplx *m, conn_rec *c2, h2_stream *stream, h2_
         h2_beam_on_was_empty(conn_ctx->beam_out, c2_beam_output_write_notify, c2);
     }
 
-    conn_ctx->beam_in = stream->input;
-    h2_beam_on_send(stream->input, c2_beam_input_write_notify, c2);
-    h2_beam_on_received(stream->input, c2_beam_input_read_notify, c2);
-    h2_beam_on_consumed(stream->input, c1_input_consumed, stream);
-
+    memset(&conn_ctx->pipe_in, 0, sizeof(conn_ctx->pipe_in));
+    if (stream->input) {
+        conn_ctx->beam_in = stream->input;
+        h2_beam_on_send(stream->input, c2_beam_input_write_notify, c2);
+        h2_beam_on_received(stream->input, c2_beam_input_read_notify, c2);
+        h2_beam_on_consumed(stream->input, c1_input_consumed, stream);
 #if H2_USE_PIPES
-    if (!conn_ctx->pipe_in[H2_PIPE_OUT]) {
         action = "create input write pipe";
         rv = apr_file_pipe_create_pools(&conn_ctx->pipe_in[H2_PIPE_OUT],
                                         &conn_ctx->pipe_in[H2_PIPE_IN],
                                         APR_READ_BLOCK,
                                         c2->pool, c2->pool);
         if (APR_SUCCESS != rv) goto cleanup;
-    }
-#else
-    memset(&conn_ctx->pipe_in, 0, sizeof(conn_ctx->pipe_in));
 #endif
+    }
 
 cleanup:
     stream->output = (APR_SUCCESS == rv)? conn_ctx->beam_out : NULL;

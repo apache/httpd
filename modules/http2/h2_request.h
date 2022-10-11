@@ -35,7 +35,8 @@ apr_status_t h2_request_add_trailer(h2_request *req, apr_pool_t *pool,
                                     const char *name, size_t nlen,
                                     const char *value, size_t vlen);
 
-apr_status_t h2_request_end_headers(h2_request *req, apr_pool_t *pool, int eos, size_t raw_bytes);
+apr_status_t h2_request_end_headers(h2_request *req, apr_pool_t *pool,
+                                     size_t raw_bytes);
 
 h2_request *h2_request_clone(apr_pool_t *p, const h2_request *src);
 
@@ -45,9 +46,11 @@ h2_request *h2_request_clone(apr_pool_t *p, const h2_request *src);
  *
  * @param req the h2 request to process
  * @param conn the connection to process the request on
+ * @param no_body != 0 iff the request is known to have no body
  * @return the request_rec representing the request
  */
-request_rec *h2_create_request_rec(const h2_request *req, conn_rec *conn);
+request_rec *h2_create_request_rec(const h2_request *req, conn_rec *conn,
+                                   int no_body);
 
 #if AP_HAS_RESPONSE_BUCKETS
 apr_bucket *h2_request_create_bucket(const h2_request *req, request_rec *r);

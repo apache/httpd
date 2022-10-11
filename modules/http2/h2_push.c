@@ -351,7 +351,7 @@ static int add_push(link_ctx *ctx)
                 req = h2_request_create(0, ctx->pool, method, ctx->req->scheme,
                                         ctx->req->authority, path, headers);
                 /* atm, we do not push on pushes */
-                h2_request_end_headers(req, ctx->pool, 1, 0);
+                h2_request_end_headers(req, ctx->pool, 0);
                 push->req = req;
                 if (has_param(ctx, "critical")) {
                     h2_priority *prio = apr_pcalloc(ctx->pool, sizeof(*prio));

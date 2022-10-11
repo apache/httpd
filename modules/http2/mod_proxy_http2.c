@@ -249,7 +249,7 @@ static apr_status_t ctx_run(h2_proxy_ctx *ctx) {
     ctx->r_done = 0;
     add_request(ctx->session, ctx->r);
     
-    while (!ctx->master->aborted && !ctx->r_done) {
+    while (!ctx->owner->aborted && !ctx->r_done) {
     
         status = h2_proxy_session_process(ctx->session);
         if (status != APR_SUCCESS) {
@@ -267,16 +267,13 @@ static apr_status_t ctx_run(h2_proxy_ctx *ctx) {
     }
     
 out:
-    if (ctx->master->aborted) {
+    if (ctx->owner->aborted) {
         /* master connection gone */
         ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, ctx->owner, 
                       APLOGNO(03374) "eng(%s): master connection gone", ctx->id);
         /* cancel all ongoing requests */
         h2_proxy_session_cancel_all(ctx->session);
         h2_proxy_session_process(ctx->session);
-        if (!ctx->master->aborted) {
-            status = ctx->r_status = APR_SUCCESS;
-        }
     }
     
     ctx->session->user_data = NULL;
@@ -348,7 +345,7 @@ static int proxy_http2_handler(request_rec *r,
                   "H2: serving URL %s", url);
     
 run_connect:    
-    if (ctx->master->aborted) goto cleanup;
+    if (ctx->owner->aborted) goto cleanup;
 
     /* Get a proxy_conn_rec from the worker, might be a new one, might
      * be one still open from another request, or it might fail if the
@@ -400,10 +397,10 @@ run_connect:
                        "proxy-request-alpn-protos", "h2");
     }
 
-    if (ctx->master->aborted) goto cleanup;
+    if (ctx->owner->aborted) goto cleanup;
     status = ctx_run(ctx);
 
-    if (ctx->r_status != APR_SUCCESS && ctx->r_may_retry && !ctx->master->aborted) {
+    if (ctx->r_status != APR_SUCCESS && ctx->r_may_retry && !ctx->owner->aborted) {
         /* Not successfully processed, but may retry, tear down old conn and start over */
         if (ctx->p_conn) {
             ctx->p_conn->close = 1;

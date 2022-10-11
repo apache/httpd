@@ -86,7 +86,7 @@ class TestTrailers:
         url = env.mkurl("https", "cgi", "/h2test/trailer?0")
         r = env.nghttp().get(url)
         assert r.response["status"] == 200
-        assert len(r.response["body"]) == 0
+        assert len(r.response["body"]) == 0, f'{r.response["body"]}'
         assert 'trailer' in r.response
         assert 'trailer-content-length' in r.response['trailer']
         assert r.response['trailer']['trailer-content-length'] == '0'

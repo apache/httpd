@@ -26,7 +26,7 @@ class TestEarlyHints:
         assert env.apache_restart() == 0
 
     # H2EarlyHints enabled in general, check that it works for H2PushResource
-    def test_h2_401_31(self, env):
+    def test_h2_401_31(self, env, repeat):
         url = env.mkurl("https", "hints", "/006-hints.html")
         r = env.nghttp().get(url)
         assert r.response["status"] == 200
@@ -38,7 +38,7 @@ class TestEarlyHints:
         assert early["header"]["link"]
 
     # H2EarlyHints enabled in general, but does not trigger on added response headers
-    def test_h2_401_32(self, env):
+    def test_h2_401_32(self, env, repeat):
         url = env.mkurl("https", "hints", "/006-nohints.html")
         r = env.nghttp().get(url)
         assert r.response["status"] == 200

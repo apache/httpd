@@ -432,6 +432,7 @@ h2_workers *h2_workers_create(server_rec *s, apr_pool_t *pchild,
 
     ap_assert(s);
     ap_assert(pchild);
+    ap_assert(idle_limit > 0);
 
     /* let's have our own pool that will be parent to all h2_worker
      * instances we create. This happens in various threads, but always
@@ -458,7 +459,7 @@ h2_workers *h2_workers_create(server_rec *s, apr_pool_t *pchild,
     workers->pool = pool;
     workers->min_active = min_active;
     workers->max_slots = max_slots;
-    workers->idle_limit = (idle_limit > 0)? idle_limit : apr_time_from_sec(10);
+    workers->idle_limit = idle_limit;
     workers->dynamic = (workers->min_active < workers->max_slots);
 
     ap_log_error(APLOG_MARK, APLOG_INFO, 0, s,

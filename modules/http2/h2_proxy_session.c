@@ -20,6 +20,7 @@
 
 #include <mpm_common.h>
 #include <httpd.h>
+#include <http_protocol.h>
 #include <mod_proxy.h>
 
 #include "mod_http2.h"
@@ -854,13 +855,17 @@ static apr_status_t open_stream(h2_proxy_session *session, const char *url,
                       "authority=%s from uri.hostname=%s and uri.port=%d",
                       authority, puri.hostname, puri.port);
     }
-    
+    /* See #235, we use only :authority when available and remove Host:
+     * since differing values are not acceptable, see RFC 9113 ch. 8.3.1 */
+    if (authority && strlen(authority)) {
+        apr_table_unset(r->headers_in, "Host");
+    }
+
     /* we need this for mapping relative uris in headers ("Link") back
      * to local uris */
     stream->real_server_uri = apr_psprintf(stream->pool, "%s://%s", scheme, authority); 
     stream->p_server_uri = apr_psprintf(stream->pool, "%s://%s", puri.scheme, authority); 
     path = apr_uri_unparse(stream->pool, &puri, APR_URI_UNP_OMITSITEPART);
-
 
     h2_proxy_req_make(stream->req, stream->pool, r->method, scheme,
                 authority, path, r->headers_in);
@@ -890,7 +895,6 @@ static apr_status_t open_stream(h2_proxy_session *session, const char *url,
                              r->server->server_hostname);
         }
     }
-    apr_table_unset(r->headers_in, "Host");
 
     /* Tuck away all already existing cookies */
     stream->saves = apr_table_make(r->pool, 2);
@@ -1350,33 +1354,42 @@ static void ev_stream_done(h2_proxy_session *session, int stream_id,
                            const char *msg)
 {
     h2_proxy_stream *stream;
-    
+    apr_bucket *b;
+
     stream = nghttp2_session_get_stream_user_data(session->ngh2, stream_id);
     if (stream) {
-        int touched = (stream->data_sent || 
-                       stream_id <= session->last_stream_id);
+        /* if the stream's connection is aborted, do not send anything
+         * more on it. */
         apr_status_t status = (stream->error_code == 0)? APR_SUCCESS : APR_EINVAL;
-        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c, APLOGNO(03364)
-                      "h2_proxy_sesssion(%s): stream(%d) closed "
-                      "(touched=%d, error=%d)", 
-                      session->id, stream_id, touched, stream->error_code);
-        
-        if (status != APR_SUCCESS) {
-            stream->r->status = 500;
+        int touched = (stream->data_sent ||
+                       stream_id <= session->last_stream_id);
+        if (!session->c->aborted) {
+            ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c, APLOGNO(03364)
+                          "h2_proxy_sesssion(%s): stream(%d) closed "
+                          "(touched=%d, error=%d)",
+                          session->id, stream_id, touched, stream->error_code);
+
+            if (status != APR_SUCCESS) {
+                b = ap_bucket_error_create(HTTP_SERVICE_UNAVAILABLE, NULL, stream->r->pool,
+                                           stream->r->connection->bucket_alloc);
+                APR_BRIGADE_INSERT_TAIL(stream->output, b);
+                b = apr_bucket_eos_create(stream->r->connection->bucket_alloc);
+                APR_BRIGADE_INSERT_TAIL(stream->output, b);
+                ap_pass_brigade(stream->r->output_filters, stream->output);
+            }
+            else if (!stream->data_received) {
+                /* if the response had no body, this is the time to flush
+                 * an empty brigade which will also write the response headers */
+                h2_proxy_stream_end_headers_out(stream);
+                stream->data_received = 1;
+                b = apr_bucket_flush_create(stream->r->connection->bucket_alloc);
+                APR_BRIGADE_INSERT_TAIL(stream->output, b);
+                b = apr_bucket_eos_create(stream->r->connection->bucket_alloc);
+                APR_BRIGADE_INSERT_TAIL(stream->output, b);
+                ap_pass_brigade(stream->r->output_filters, stream->output);
+            }
         }
-        else if (!stream->data_received) {
-            apr_bucket *b;
-            /* if the response had no body, this is the time to flush
-             * an empty brigade which will also write the response headers */
-            h2_proxy_stream_end_headers_out(stream);
-            stream->data_received = 1;
-            b = apr_bucket_flush_create(stream->r->connection->bucket_alloc);
-            APR_BRIGADE_INSERT_TAIL(stream->output, b);
-            b = apr_bucket_eos_create(stream->r->connection->bucket_alloc);
-            APR_BRIGADE_INSERT_TAIL(stream->output, b);
-            ap_pass_brigade(stream->r->output_filters, stream->output);
-        }
-        
+
         stream->state = H2_STREAM_ST_CLOSED;
         h2_proxy_ihash_remove(session->streams, stream_id);
         h2_proxy_iq_remove(session->suspended, stream_id);

@@ -185,14 +185,13 @@ apr_status_t h2_request_add_header(h2_request *req, apr_pool_t *pool,
     return status;
 }
 
-apr_status_t h2_request_end_headers(h2_request *req, apr_pool_t *pool, int eos, size_t raw_bytes)
+apr_status_t h2_request_end_headers(h2_request *req, apr_pool_t *pool,
+                                    size_t raw_bytes)
 {
-    const char *s;
-
-    /* rfc7540, ch. 8.1.2.3:
-     * - if we have :authority, it overrides any Host header
-     * - :authority MUST be omitted when converting h1->h2, so we
-     *   might get a stream without, but then Host needs to be there */
+    /* rfc7540, ch. 8.1.2.3: without :authority, Host: must be there */
+    if (req->authority && !strlen(req->authority)) {
+        req->authority = NULL;
+    }
     if (!req->authority) {
         const char *host = apr_table_get(req->headers, "Host");
         if (!host) {
@@ -203,40 +202,6 @@ apr_status_t h2_request_end_headers(h2_request *req, apr_pool_t *pool, int eos, 
     else {
         apr_table_setn(req->headers, "Host", req->authority);
     }
-
-#if AP_HAS_RESPONSE_BUCKETS
-    if (eos) {
-        s = apr_table_get(req->headers, "Content-Length");
-        if (!s && apr_table_get(req->headers, "Content-Type")) {
-            /* If we have a content-type, but already seen eos, no more
-             * data will come. Signal a zero content length explicitly.
-             */
-            apr_table_setn(req->headers, "Content-Length", "0");
-        }
-    }
-#else /* AP_HAS_RESPONSE_BUCKETS */
-    s = apr_table_get(req->headers, "Content-Length");
-    if (!s) {
-        /* HTTP/2 does not need a Content-Length for framing, but our
-         * internal request processing is used to HTTP/1.1, so we
-         * need to either add a Content-Length or a Transfer-Encoding
-         * if any content can be expected. */
-        if (!eos) {
-            /* We have not seen a content-length and have no eos,
-             * simulate a chunked encoding for our HTTP/1.1 infrastructure,
-             * in case we have "H2SerializeHeaders on" here
-             */
-            req->chunked = 1;
-            apr_table_mergen(req->headers, "Transfer-Encoding", "chunked");
-        }
-        else if (apr_table_get(req->headers, "Content-Type")) {
-            /* If we have a content-type, but already seen eos, no more
-             * data will come. Signal a zero content length explicitly.
-             */
-            apr_table_setn(req->headers, "Content-Length", "0");
-        }
-    }
-#endif /* else AP_HAS_RESPONSE_BUCKETS */
     req->raw_bytes += raw_bytes;
 
     return APR_SUCCESS;
@@ -333,7 +298,59 @@ apr_bucket *h2_request_create_bucket(const h2_request *req, request_rec *r)
 }
 #endif
 
-request_rec *h2_create_request_rec(const h2_request *req, conn_rec *c)
+static void assign_headers(request_rec *r, const h2_request *req,
+                           int no_body)
+{
+    const char *cl;
+
+    r->headers_in = apr_table_copy(r->pool, req->headers);
+    if (req->authority) {
+        /* for internal handling, we have to simulate that :authority
+         * came in as Host:, RFC 9113 ch. says that mismatches between
+         * :authority and Host: SHOULD be rejected as malformed. However,
+         * we are more lenient and just replace any Host: if we have
+         * an :authority.
+         */
+        const char *orig_host = apr_table_get(req->headers, "Host");
+        if (orig_host && strcmp(req->authority, orig_host)) {
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO()
+                          "overwriting 'Host: %s' with :authority: %s'",
+                          orig_host, req->authority);
+            apr_table_setn(r->subprocess_env, "H2_ORIGINAL_HOST", orig_host);
+        }
+        apr_table_setn(r->headers_in, "Host", req->authority);
+        ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r,
+                      "set 'Host: %s' from :authority", req->authority);
+    }
+
+    cl = apr_table_get(req->headers, "Content-Length");
+    if (no_body) {
+        if (!cl && apr_table_get(req->headers, "Content-Type")) {
+            /* If we have a content-type, but already seen eos, no more
+             * data will come. Signal a zero content length explicitly.
+             */
+            apr_table_setn(req->headers, "Content-Length", "0");
+        }
+    }
+#if !AP_HAS_RESPONSE_BUCKETS
+    else if (!cl) {
+        /* there may be a body and we have internal HTTP/1.1 processing.
+         * If the Content-Length is unspecified, we MUST simulate
+         * chunked Transfer-Encoding.
+         *
+         * HTTP/2 does not need a Content-Length for framing. Ideally
+         * all clients set the EOS flag on the header frame if they
+         * do not intent to send a body. However, forwarding proxies
+         * might just no know at the time and send an empty DATA
+         * frame with EOS much later.
+         */
+        apr_table_mergen(r->headers_in, "Transfer-Encoding", "chunked");
+    }
+#endif /* else AP_HAS_RESPONSE_BUCKETS */
+}
+
+request_rec *h2_create_request_rec(const h2_request *req, conn_rec *c,
+                                   int no_body)
 {
     int access_status = HTTP_OK;
 
@@ -344,6 +361,7 @@ request_rec *h2_create_request_rec(const h2_request *req, conn_rec *c)
 #endif
 
 #if AP_MODULE_MAGIC_AT_LEAST(20120211, 107)
+    assign_headers(r, req, no_body);
     ap_run_pre_read_request(r, c);
 
     /* Time to populate r with the data we have. */
@@ -371,8 +389,6 @@ request_rec *h2_create_request_rec(const h2_request *req, conn_rec *c)
         r->the_request = apr_psprintf(r->pool, "%s / HTTP/2.0", req->method);
     }
 
-    r->headers_in = apr_table_copy(r->pool, req->headers);
-
     /* Start with r->hostname = NULL, ap_check_request_header() will get it
      * form Host: header, otherwise we get complains about port numbers.
      */
@@ -397,7 +413,7 @@ request_rec *h2_create_request_rec(const h2_request *req, conn_rec *c)
     {
         const char *s;
 
-        r->headers_in = apr_table_clone(r->pool, req->headers);
+        assign_headers(r, req, no_body);
         ap_run_pre_read_request(r, c);
 
         /* Time to populate r with the data we have. */

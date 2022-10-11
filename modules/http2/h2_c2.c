@@ -464,13 +464,18 @@ static int c2_post_read_request(request_rec *r)
 {
     h2_conn_ctx_t *conn_ctx;
     conn_rec *c2 = r->connection;
+    apr_time_t timeout;
 
     if (!c2->master || !(conn_ctx = h2_conn_ctx_get(c2)) || !conn_ctx->stream_id) {
         return DECLINED;
     }
     /* Now that the request_rec is fully initialized, set relevant params */
     conn_ctx->server = r->server;
-    h2_conn_ctx_set_timeout(conn_ctx, r->server->timeout);
+    timeout = h2_config_geti64(r, r->server, H2_CONF_STREAM_TIMEOUT);
+    if (timeout <= 0) {
+        timeout = r->server->timeout;
+    }
+    h2_conn_ctx_set_timeout(conn_ctx, timeout);
     /* We only handle this one request on the connection and tell everyone
      * that there is no need to keep it "clean" if something fails. Also,
      * this prevents mod_reqtimeout from doing funny business with monitoring
@@ -651,8 +656,10 @@ static apr_status_t c2_process(h2_conn_ctx_t *conn_ctx, conn_rec *c)
     const h2_request *req = conn_ctx->request;
     conn_state_t *cs = c->cs;
     request_rec *r;
+    const char *tenc;
+    apr_time_t timeout;
 
-    r = h2_create_request_rec(conn_ctx->request, c);
+    r = h2_create_request_rec(conn_ctx->request, c, conn_ctx->beam_in == NULL);
     if (!r) {
         ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, c,
                       "h2_c2(%s-%d): create request_rec failed, r=NULL",
@@ -666,13 +673,18 @@ static apr_status_t c2_process(h2_conn_ctx_t *conn_ctx, conn_rec *c)
         goto cleanup;
     }
 
+    tenc = apr_table_get(r->headers_in, "Transfer-Encoding");
+    conn_ctx->input_chunked = tenc && ap_is_chunked(r->pool, tenc);
+
     ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, c,
                   "h2_c2(%s-%d): created request_rec for %s",
                   conn_ctx->id, conn_ctx->stream_id, r->the_request);
     conn_ctx->server = r->server;
-
-    /* the request_rec->server carries the timeout value that applies */
-    h2_conn_ctx_set_timeout(conn_ctx, r->server->timeout);
+    timeout = h2_config_geti64(r, r->server, H2_CONF_STREAM_TIMEOUT);
+    if (timeout <= 0) {
+        timeout = r->server->timeout;
+    }
+    h2_conn_ctx_set_timeout(conn_ctx, timeout);
 
     if (h2_config_sgeti(conn_ctx->server, H2_CONF_COPY_FILES)) {
         ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, c,

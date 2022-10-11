@@ -89,7 +89,7 @@ void h2_session_event(h2_session *session, h2_session_event_t ev,
 
 static int rst_unprocessed_stream(h2_stream *stream, void *ctx)
 {
-    int unprocessed = (!h2_stream_was_closed(stream)
+    int unprocessed = (!h2_stream_is_at_or_past(stream, H2_SS_CLOSED)
                        && (H2_STREAM_CLIENT_INITIATED(stream->id)? 
                            (!stream->session->local.accepting
                             && stream->id > stream->session->local.accepted_max)
@@ -1298,58 +1298,37 @@ cleanup:
 /**
  * A streams input state has changed.
  */
-static apr_status_t on_stream_input(void *ctx, h2_stream *stream)
+static void on_stream_input(void *ctx, h2_stream *stream)
 {
     h2_session *session = ctx;
-    apr_status_t rv = APR_EAGAIN;
 
     ap_assert(stream);
     ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, session->c1,
                   H2_STRM_MSG(stream, "on_input change"));
-
+    update_child_status(session, SERVER_BUSY_READ, "read", stream);
     if (stream->id == 0) {
         /* input on primary connection available? read */
-        rv = h2_c1_read(session);
+        h2_c1_read(session);
     }
     else {
-        ap_assert(stream->input);
-        if (stream->state == H2_SS_CLOSED_L
-            && !h2_mplx_c1_stream_is_running(session->mplx, stream)) {
-            ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c1,
-                          H2_STRM_LOG(APLOGNO(10026), stream, "remote close missing"));
-            nghttp2_submit_rst_stream(stream->session->ngh2, NGHTTP2_FLAG_NONE,
-                                      stream->id, NGHTTP2_NO_ERROR);
-            update_child_status(session, SERVER_BUSY_WRITE, "reset", stream);
-            goto cleanup;
-        }
-        update_child_status(session, SERVER_BUSY_READ, "read", stream);
-        h2_beam_report_consumption(stream->input);
-        if (stream->state == H2_SS_CLOSED_R) {
-            /* TODO: remove this stream from input polling */
-            ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, session->c1,
-                          H2_STRM_MSG(stream, "should not longer be input polled"));
-        }
+        h2_stream_on_input_change(stream);
     }
-cleanup:
-    return rv;
 }
 
 /**
  * A streams output state has changed.
  */
-static apr_status_t on_stream_output(void *ctx, h2_stream *stream)
+static void on_stream_output(void *ctx, h2_stream *stream)
 {
     h2_session *session = ctx;
 
     ap_assert(stream);
     ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, session->c1,
                   H2_STRM_MSG(stream, "on_output change"));
-    if (stream->id == 0) {
-        /* we dont poll output of stream 0, this should not be called */
-        return APR_SUCCESS;
+    if (stream->id != 0) {
+        update_child_status(session, SERVER_BUSY_WRITE, "write", stream);
+        h2_stream_on_output_change(stream);
     }
-    update_child_status(session, SERVER_BUSY_WRITE, "write", stream);
-    return h2_stream_read_output(stream);
 }
 
 
@@ -1878,6 +1857,9 @@ apr_status_t h2_session_process(h2_session *session, int async)
                         apr_time_t timeout = (session->open_streams == 0)?
                             session->s->keep_alive_timeout :
                             session->s->timeout;
+                        ap_log_cerror(APLOG_MARK, APLOG_TRACE2, status, c,
+                                      H2_SSSN_MSG(session, "polling timeout=%d"),
+                                      (int)apr_time_sec(timeout));
                         status = h2_mplx_c1_poll(session->mplx, timeout,
                                                  on_stream_input,
                                                  on_stream_output, session);
@@ -1922,10 +1904,16 @@ apr_status_t h2_session_process(h2_session *session, int async)
             if (session->open_streams == 0) {
                 h2_session_dispatch_event(session, H2_SESSION_EV_NO_MORE_STREAMS,
                                           0, "streams really done");
+                if (session->state != H2_SESSION_ST_WAIT) {
+                    break;
+                }
             }
             /* No IO happening and input is exhausted. Make sure we have
              * flushed any possibly pending output and then wait with
              * the c1 connection timeout for sth to happen in our c1/c2 sockets/pipes */
+            ap_log_cerror(APLOG_MARK, APLOG_TRACE2, status, c,
+                          H2_SSSN_MSG(session, "polling timeout=%d, open_streams=%d"),
+                          (int)apr_time_sec(session->s->timeout), session->open_streams);
             status = h2_mplx_c1_poll(session->mplx, session->s->timeout,
                                      on_stream_input, on_stream_output, session);
             if (APR_STATUS_IS_TIMEUP(status)) {

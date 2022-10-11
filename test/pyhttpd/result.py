@@ -9,21 +9,21 @@ class ExecResult:
                  stdout: bytes, stderr: bytes = None, duration: timedelta = None):
         self._args = args
         self._exit_code = exit_code
-        self._raw = stdout if stdout else b''
-        self._stdout = stdout.decode() if stdout is not None else ""
-        self._stderr = stderr.decode() if stderr is not None else ""
+        self._stdout = stdout if stdout is not None else b''
+        self._stderr = stderr if stderr is not None else b''
         self._duration = duration if duration is not None else timedelta()
         self._response = None
         self._results = {}
         self._assets = []
         # noinspection PyBroadException
         try:
-            self._json_out = json.loads(self._stdout)
+            out = self._stdout.decode()
+            self._json_out = json.loads(out)
         except:
             self._json_out = None
 
     def __repr__(self):
-        return f"ExecResult[code={self.exit_code}, args={self._args}, stdout={self.stdout}, stderr={self.stderr}]"
+        return f"ExecResult[code={self.exit_code}, args={self._args}, stdout={self._stdout}, stderr={self._stderr}]"
 
     @property
     def exit_code(self) -> int:
@@ -35,11 +35,11 @@ class ExecResult:
 
     @property
     def outraw(self) -> bytes:
-        return self._raw
+        return self._stdout
 
     @property
     def stdout(self) -> str:
-        return self._stdout
+        return self._stdout.decode()
 
     @property
     def json(self) -> Optional[Dict]:
@@ -48,7 +48,7 @@ class ExecResult:
 
     @property
     def stderr(self) -> str:
-        return self._stderr
+        return self._stderr.decode()
 
     @property
     def duration(self) -> timedelta:

@@ -53,6 +53,7 @@ struct h2_conn_ctx_t {
     const struct h2_request *request; /* c2: the request to process */
     struct h2_bucket_beam *beam_out; /* c2: data out, created from req_pool */
     struct h2_bucket_beam *beam_in;  /* c2: data in or NULL, borrowed from request stream */
+    unsigned int input_chunked;      /* c2: if input needs HTTP/1.1 chunking applied */
 
     apr_file_t *pipe_in[2];          /* c2: input produced notification pipe */
     apr_pollfd_t pfd;                /* c1: poll socket input, c2: NUL */

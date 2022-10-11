@@ -574,6 +574,9 @@ static const char *h2_conf_set_max_worker_idle_limit(cmd_parms *cmd,
     if (rv != APR_SUCCESS) {
         return "Invalid idle limit value";
     }
+    if (timeout <= 0) {
+        timeout = DEF_VAL;
+    }
     CONFIG_CMD_SET64(cmd, dirconf, H2_CONF_MAX_WORKER_IDLE_LIMIT, timeout);
     return NULL;
 }

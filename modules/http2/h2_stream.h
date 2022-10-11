@@ -87,7 +87,7 @@ struct h2_stream {
     apr_bucket_brigade *in_buffer;
     int in_window_size;
     apr_time_t in_last_write;
-
+    
     struct h2_bucket_beam *output;
     apr_bucket_brigade *out_buffer;
 
@@ -100,7 +100,7 @@ struct h2_stream {
     unsigned int output_eos : 1; /* output EOS in buffer/sent */
 
     conn_rec *c2;               /* connection processing stream */
-
+    
     const h2_priority *pref_priority; /* preferred priority for this stream */
     apr_off_t out_frames;       /* # of frames sent out */
     apr_off_t out_frame_octets; /* # of RAW frame octets sent out */
@@ -109,7 +109,7 @@ struct h2_stream {
     apr_off_t in_data_frames;   /* # of DATA frames received */
     apr_off_t in_data_octets;   /* # of DATA octets (payload) received */
     apr_off_t in_trailer_octets; /* # of HEADER octets (payload) received in trailers */
-
+    
     h2_stream_monitor *monitor; /* optional monitor for stream states */
 };
 
@@ -121,13 +121,13 @@ struct h2_stream {
  * @param id      the stream identifier
  * @param pool    the memory pool to use for this stream
  * @param session the session this stream belongs to
- * @param monitor an optional monitor to be called for events and
+ * @param monitor an optional monitor to be called for events and 
  *                state transisitions
  * @param initiated_on the id of the stream this one was initiated on (PUSH)
  *
  * @return the newly opened stream
  */
-h2_stream *h2_stream_create(int id, apr_pool_t *pool,
+h2_stream *h2_stream_create(int id, apr_pool_t *pool, 
                             struct h2_session *session,
                             h2_stream_monitor *monitor,
                             int initiated_on);
@@ -138,9 +138,9 @@ h2_stream *h2_stream_create(int id, apr_pool_t *pool,
 void h2_stream_destroy(h2_stream *stream);
 
 /**
- * Setup the input for the stream.
+ * Perform any late initialization before stream starts processing.
  */
-apr_status_t h2_stream_setup_input(h2_stream *stream);
+apr_status_t h2_stream_prepare_processing(h2_stream *stream);
 
 /*
  * Set a new monitor for this stream, replacing any existing one. Can
@@ -154,6 +154,22 @@ void h2_stream_set_monitor(h2_stream *stream, h2_stream_monitor *monitor);
  * @param ev      the type of event
  */
 void h2_stream_dispatch(h2_stream *stream, h2_stream_event_t ev);
+
+/**
+ * Determine if stream is at given state.
+ * @param stream the stream to check
+ * @param state the state to look for
+ * @return != 0 iff stream is at given state.
+ */
+int h2_stream_is_at(const h2_stream *stream, h2_stream_state_t state);
+
+/**
+ * Determine if stream is reached given state or is past this state.
+ * @param stream the stream to check
+ * @param state the state to look for
+ * @return != 0 iff stream is at or past given state.
+ */
+int h2_stream_is_at_or_past(const h2_stream *stream, h2_stream_state_t state);
 
 /**
  * Cleanup references into requst processing.
@@ -170,7 +186,7 @@ apr_status_t h2_stream_in_consumed(h2_stream *stream, apr_off_t amount);
 
 /**
  * Set complete stream headers from given h2_request.
- *
+ * 
  * @param stream stream to write request to
  * @param r the request with all the meta data
  * @param eos != 0 iff stream input is closed
@@ -179,16 +195,16 @@ void h2_stream_set_request(h2_stream *stream, const h2_request *r);
 
 /**
  * Set complete stream header from given request_rec.
- *
+ * 
  * @param stream stream to write request to
  * @param r the request with all the meta data
  * @param eos != 0 iff stream input is closed
  */
-apr_status_t h2_stream_set_request_rec(h2_stream *stream,
+apr_status_t h2_stream_set_request_rec(h2_stream *stream, 
                                        request_rec *r, int eos);
 
 /*
- * Add a HTTP/2 header (including pseudo headers) or trailer
+ * Add a HTTP/2 header (including pseudo headers) or trailer 
  * to the given stream, depending on stream state.
  *
  * @param stream stream to write the header to
@@ -200,7 +216,7 @@ apr_status_t h2_stream_set_request_rec(h2_stream *stream,
 apr_status_t h2_stream_add_header(h2_stream *stream,
                                   const char *name, size_t nlen,
                                   const char *value, size_t vlen);
-
+                                  
 /* End the construction of request headers */
 apr_status_t h2_stream_end_headers(h2_stream *stream, int eos, size_t raw_bytes);
 
@@ -228,24 +244,20 @@ apr_status_t h2_stream_recv_DATA(h2_stream *stream, uint8_t flags,
 void h2_stream_rst(h2_stream *stream, int error_code);
 
 /**
- * Determine if stream was closed already. This is true for
- * states H2_SS_CLOSED, H2_SS_CLEANUP. But not true
- * for H2_SS_CLOSED_L and H2_SS_CLOSED_R.
- *
- * @param stream the stream to check on
- * @return != 0 iff stream has been closed
- */
-int h2_stream_was_closed(const h2_stream *stream);
-
-/**
- * Inspect the c2 output for response(s) and data.
+ * Stream input signals change. Take necessary actions.
  * @param stream the stream to read output for
  */
-apr_status_t h2_stream_read_output(h2_stream *stream);
+void h2_stream_on_input_change(h2_stream *stream);
+
+/**
+ * Stream output signals change. Take necessary actions.
+ * @param stream the stream to read output for
+ */
+void h2_stream_on_output_change(h2_stream *stream);
 
 /**
  * Read a maximum number of bytes into the bucket brigade.
- *
+ * 
  * @param stream the stream to read from
  * @param bb the brigade to append output to
  * @param plen (in-/out) max. number of bytes to append and on return actual
@@ -255,7 +267,7 @@ apr_status_t h2_stream_read_output(h2_stream *stream);
  *         APR_EAGAIN if not data is available and end of stream has not been
  *         reached yet.
  */
-apr_status_t h2_stream_read_to(h2_stream *stream, apr_bucket_brigade *bb,
+apr_status_t h2_stream_read_to(h2_stream *stream, apr_bucket_brigade *bb, 
                                apr_off_t *plen, int *peos);
 
 /**

@@ -529,7 +529,10 @@ apr_status_t h2_beam_send(h2_bucket_beam *beam, conn_rec *from,
     space_left = calc_space_left(beam);
     while (!APR_BRIGADE_EMPTY(sender_bb) && APR_SUCCESS == rv) {
         rv = append_bucket(beam, sender_bb, block, &space_left, pwritten);
-        if (!beam->aborted && APR_EAGAIN == rv) {
+        if (beam->aborted) {
+            goto cleanup;
+        }
+        else if (APR_EAGAIN == rv) {
             /* bucket was not added, as beam buffer has no space left.
              * Trigger event callbacks, so receiver can know there is something
              * to receive before we do a conditional wait. */
@@ -548,6 +551,7 @@ apr_status_t h2_beam_send(h2_bucket_beam *beam, conn_rec *from,
         }
     }
 
+cleanup:
     if (beam->send_cb && !buffer_is_empty(beam)) {
         beam->send_cb(beam->send_ctx, beam);
     }

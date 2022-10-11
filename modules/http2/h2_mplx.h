@@ -169,7 +169,7 @@ void h2_mplx_c1_process(h2_mplx *m,
 apr_status_t h2_mplx_c1_reprioritize(h2_mplx *m, h2_stream_pri_cmp_fn *cmp,
                                     struct h2_session *session);
 
-typedef apr_status_t stream_ev_callback(void *ctx, struct h2_stream *stream);
+typedef void stream_ev_callback(void *ctx, struct h2_stream *stream);
 
 /**
  * Poll the primary connection for input and the active streams for output.

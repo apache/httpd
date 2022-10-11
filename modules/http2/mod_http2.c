@@ -335,8 +335,7 @@ static int h2_h2_fixups(request_rec *r)
     if (r->connection->master) {
         h2_conn_ctx_t *ctx = h2_conn_ctx_get(r->connection);
         unsigned int i;
-        apr_interval_time_t stream_timeout;
-        
+
         for (i = 0; ctx && i < H2_ALEN(H2_VARS); ++i) {
             h2_var_def *vdef = &H2_VARS[i];
             if (vdef->subprocess) {
@@ -344,10 +343,6 @@ static int h2_h2_fixups(request_rec *r)
                                vdef->lookup(r->pool, r->server, r->connection, 
                                             r, ctx));
             }
-        }
-        stream_timeout = h2_config_geti64(r, r->server, H2_CONF_STREAM_TIMEOUT);
-        if (stream_timeout > 0) {
-            h2_conn_ctx_set_timeout(ctx, stream_timeout);
         }
     }
     return DECLINED;

@@ -126,3 +126,28 @@ class TestProxy:
     def test_h2_500_24(self, env):
         for i in range(100):
             self.nghttp_upload_stat(env, "data-1k", ["--no-content-length"])
+
+    # lets do some error tests
+    def test_h2_500_30(self, env):
+        url = env.mkurl("https", "cgi", "/proxy/h2test/error?status=500")
+        r = env.curl_get(url)
+        assert r.exit_code == 0, r
+        assert r.response['status'] == 500
+        url = env.mkurl("https", "cgi", "/proxy/h2test/error?error=timeout")
+        r = env.curl_get(url)
+        assert r.exit_code == 0, r
+        assert r.response['status'] == 408
+
+    # produce an error during response body
+    def test_h2_500_31(self, env, repeat):
+        pytest.skip("needs fix in core protocol handling")
+        url = env.mkurl("https", "cgi", "/proxy/h2test/error?body_error=timeout")
+        r = env.curl_get(url)
+        assert r.exit_code != 0, r
+
+    # produce an error, fail to generate an error bucket
+    def test_h2_500_32(self, env, repeat):
+        pytest.skip("needs fix in core protocol handling")
+        url = env.mkurl("https", "cgi", "/proxy/h2test/error?body_error=timeout&error_bucket=0")
+        r = env.curl_get(url)
+        assert r.exit_code != 0, r

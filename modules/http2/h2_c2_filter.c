@@ -635,7 +635,7 @@ apr_status_t h2_c2_filter_catch_h1_out(ap_filter_t* f, apr_bucket_brigade* bb)
                  */
                 int result = ap_map_http_request_error(conn_ctx->last_err,
                                                        HTTP_INTERNAL_SERVER_ERROR);
-                request_rec *r = h2_create_request_rec(conn_ctx->request, f->c);
+                request_rec *r = h2_create_request_rec(conn_ctx->request, f->c, 1);
                 ap_die((result >= 400)? result : HTTP_INTERNAL_SERVER_ERROR, r);
                 b = ap_bucket_eor_create(f->c->bucket_alloc, r);
                 APR_BRIGADE_INSERT_TAIL(bb, b);
@@ -918,7 +918,7 @@ apr_status_t h2_c2_filter_request_in(ap_filter_t* f,
                   "readbytes=%ld, exp=%d",
                   conn_ctx->id, conn_ctx->stream_id, mode, block,
                   (long)readbytes, r->expecting_100);
-    if (!conn_ctx->request->chunked) {
+    if (!conn_ctx->input_chunked) {
         status = ap_get_brigade(f->next, bb, mode, block, readbytes);
         /* pipe data through, just take care of trailers */
         for (b = APR_BRIGADE_FIRST(bb);

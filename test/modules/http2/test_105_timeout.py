@@ -146,4 +146,4 @@ class TestTimeout:
                     break
             piper.close()
             assert piper.response
-            assert piper.response['status'] == 408
+            assert piper.response['status'] == 408, f"{piper.response}"

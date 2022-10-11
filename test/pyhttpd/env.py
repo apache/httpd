@@ -244,6 +244,7 @@ class HttpdTestEnv:
             self._h2load = 'h2load'
 
         self._http_port = int(self.config.get('test', 'http_port'))
+        self._http_port2 = int(self.config.get('test', 'http_port2'))
         self._https_port = int(self.config.get('test', 'https_port'))
         self._proxy_port = int(self.config.get('test', 'proxy_port'))
         self._http_tld = self.config.get('test', 'http_tld')
@@ -344,6 +345,10 @@ class HttpdTestEnv:
     @property
     def http_port(self) -> int:
         return self._http_port
+
+    @property
+    def http_port2(self) -> int:
+        return self._http_port2
 
     @property
     def https_port(self) -> int:
