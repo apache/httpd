@@ -1882,6 +1882,7 @@ PROXY_DECLARE(char *) ap_proxy_define_worker_ex(apr_pool_t *p,
     proxy_worker_shared *wshared;
     const char *ptr = NULL, *sockpath = NULL, *pdollars = NULL;
     apr_port_t port_of_scheme;
+    int disable_reuse = 0;
     apr_uri_t uri;
 
     /*
@@ -1910,12 +1911,21 @@ PROXY_DECLARE(char *) ap_proxy_define_worker_ex(apr_pool_t *p,
          * to fail (e.g. "ProxyPassMatch ^/(a|b)(/.*)? http://host:port$2").
          * So we trim all the $n from the :port and prepend them in uri.path
          * afterward for apr_uri_unparse() to restore the original URL below.
+         * If a dollar substitution is found in the hostname[:port] part of
+         * the URL, reusing address and connections in the same worker is not
+         * possible (the current implementation of active connections cache
+         * handles/assumes a single origin server:port per worker only), so
+         * we set disable_reuse here during parsing to take that into account
+         * in the worker settings below.
          */
 #define IS_REF(x) (x[0] == '$' && apr_isdigit(x[1]))
         const char *pos = ap_strstr_c(ptr, "://");
         if (pos) {
             pos += 3;
             while (*pos && *pos != ':' && *pos != '/') {
+                if (*pos == '$') {
+                    disable_reuse = 1;
+                }
                 pos++;
             }
             if (*pos == ':') {
@@ -1935,6 +1945,7 @@ PROXY_DECLARE(char *) ap_proxy_define_worker_ex(apr_pool_t *p,
                     vec[1].iov_base = (void *)path;
                     vec[1].iov_len = strlen(path);
                     ptr = apr_pstrcatv(p, vec, 2, NULL);
+                    disable_reuse = 1;
                 }
             }
         }
@@ -2030,7 +2041,7 @@ PROXY_DECLARE(char *) ap_proxy_define_worker_ex(apr_pool_t *p,
     wshared->port = (uri.port) ? uri.port : port_of_scheme;
     wshared->flush_packets = flush_off;
     wshared->flush_wait = PROXY_FLUSH_WAIT;
-    wshared->is_address_reusable = 1;
+    wshared->is_address_reusable = !disable_reuse;
     wshared->lbfactor = 100;
     wshared->passes = 1;
     wshared->fails = 1;
@@ -2039,7 +2050,31 @@ PROXY_DECLARE(char *) ap_proxy_define_worker_ex(apr_pool_t *p,
     wshared->hash.def = ap_proxy_hashfunc(wshared->name_ex, PROXY_HASHFUNC_DEFAULT);
     wshared->hash.fnv = ap_proxy_hashfunc(wshared->name_ex, PROXY_HASHFUNC_FNV);
     wshared->was_malloced = (mask & AP_PROXY_WORKER_IS_MALLOCED) != 0;
-    wshared->is_name_matchable = 0;
+    if (mask & AP_PROXY_WORKER_IS_MATCH) {
+        wshared->is_name_matchable = 1;
+
+        /* Before AP_PROXY_WORKER_IS_MATCH (< 2.4.47), a regex worker with
+         * dollar substitution was never matched against any actual URL, thus
+         * the requests fell through the generic worker. Now if a ProyPassMatch
+         * matches, a worker (and its parameters) is always used to determine
+         * the properties of the connection with the origin server. So for
+         * instance the same "timeout=" will be enforced for all the requests
+         * matched by the same ProyPassMatch worker, which is an improvement
+         * compared to the global/vhost [Proxy]Timeout applied by the generic
+         * worker. Likewise, address and connection reuse is the default for
+         * a ProyPassMatch worker with no dollar substitution, just like a
+         * "normal" worker. However to avoid DNS and connection reuse compat
+         * issues, connection reuse is disabled by default if there is any
+         * substitution in the uri-path (an explicit enablereuse=on can still
+         * opt-in), and reuse is even disabled definitively for substitutions
+         * happening in the hostname[:port] (disable_reuse was set above so
+         * address reuse is also disabled which will prevent enablereuse=on
+         * to apply anyway).
+         */
+        if (disable_reuse || ap_strchr_c(wshared->name, '$')) {
+            wshared->disablereuse = 1;
+        }
+    }
     if (sockpath) {
         if (PROXY_STRNCPY(wshared->uds_path, sockpath) != APR_SUCCESS) {
             return apr_psprintf(p, "worker uds path (%s) too long", sockpath);
@@ -2058,20 +2093,6 @@ PROXY_DECLARE(char *) ap_proxy_define_worker_ex(apr_pool_t *p,
     (*worker)->cp = NULL;
     (*worker)->balancer = balancer;
     (*worker)->s = wshared;
-
-    if (mask & AP_PROXY_WORKER_IS_MATCH) {
-        (*worker)->s->is_name_matchable = 1;
-        if (ap_strchr_c((*worker)->s->name_ex, '$')) {
-            /* Before AP_PROXY_WORKER_IS_MATCH (< 2.4.47), a regex worker
-             * with dollar substitution was never matched against the actual
-             * URL thus the request fell through the generic worker. To avoid
-             * dns and connection reuse compat issues, let's disable connection
-             * reuse by default, it can still be overwritten by an explicit
-             * enablereuse=on.
-             */
-            (*worker)->s->disablereuse = 1;
-        }
-    }
 
     return NULL;
 }
@@ -2158,12 +2179,22 @@ PROXY_DECLARE(apr_status_t) ap_proxy_initialize_worker(proxy_worker *worker, ser
         if (!worker->s->retry_set) {
             worker->s->retry = apr_time_from_sec(PROXY_WORKER_DEFAULT_RETRY);
         }
-        /* By default address is reusable unless DisableReuse is set */
+        /* Consistently set address and connection reusabilty: when reuse
+         * is disabled by configuration, or when the address is known already
+         * to not be reusable for this worker (in any case, thus ignore/force
+         * DisableReuse).
+         */
         if (worker->s->disablereuse) {
             worker->s->is_address_reusable = 0;
         }
-        else {
-            worker->s->is_address_reusable = 1;
+        else if (!worker->s->is_address_reusable) {
+            /* Explicit enablereuse=on can't work in this case, warn user. */
+            if (worker->s->disablereuse_set && !worker->s->disablereuse) {
+                ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s, APLOGNO(10400)
+                             "enablereuse/disablereuse ignored for worker %s",
+                             ap_proxy_worker_name(p, worker));
+            }
+            worker->s->disablereuse = 1;
         }
 
         /*
