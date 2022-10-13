@@ -313,7 +313,7 @@ static void assign_headers(request_rec *r, const h2_request *req,
          */
         const char *orig_host = apr_table_get(req->headers, "Host");
         if (orig_host && strcmp(req->authority, orig_host)) {
-            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO()
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(10401)
                           "overwriting 'Host: %s' with :authority: %s'",
                           orig_host, req->authority);
             apr_table_setn(r->subprocess_env, "H2_ORIGINAL_HOST", orig_host);
