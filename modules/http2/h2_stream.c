@@ -1604,7 +1604,7 @@ static apr_status_t stream_do_response(h2_stream *stream)
         h2_session_dispatch_event(stream->session,
                                  H2_SESSION_EV_PROTO_ERROR, ngrv, nghttp2_strerror(rv));
         ap_log_cerror(APLOG_MARK, APLOG_ERR, rv, c1,
-                      APLOGNO(02940) "submit_response: %s",
+                      APLOGNO(10402) "submit_response: %s",
                       nghttp2_strerror(rv));
         goto cleanup;
     }
