@@ -198,6 +198,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      Backport version for 2.4.x of patch:
         svn merge works
      +1: jim,
+     -1: jailletc36: the place of the 'protocol' seems wrong in the GET11 case
+         (see @dev)
 
   *) mod_proxy_hcheck: Detect AJP/CPING support correctly. PR 66300.
      trunk revision:
