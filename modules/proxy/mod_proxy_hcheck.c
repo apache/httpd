@@ -463,10 +463,11 @@ static void create_hcheck_req(wctx_t *wctx, proxy_worker *hc,
                                "%s %s%s%s %s\r\n"
                                "Host: %s:%d\r\n"
                                "\r\n",
-                               method, protocol,
+                               method,
                                (wctx->path ? wctx->path : ""),
                                (wctx->path && *hc->s->hcuri ? "/" : "" ),
                                (*hc->s->hcuri ? hc->s->hcuri : ""),
+                               protocol,
                                hc->s->hostname_ex, (int)hc->s->port);
             break;
 
