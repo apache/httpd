@@ -1,3 +1,4 @@
+import importlib
 import inspect
 import logging
 import re
@@ -35,6 +36,7 @@ class HttpdTestSetup:
         "logio",
         "unixd",
         "version",
+        "watchdog",
         "authn_core",
         "authz_host",
         "authz_groupfile",
@@ -67,6 +69,7 @@ class HttpdTestSetup:
         self.env = env
         self._source_dirs = [os.path.dirname(inspect.getfile(HttpdTestSetup))]
         self._modules = HttpdTestSetup.MODULES.copy()
+        self._optional_modules = []
 
     def add_source_dir(self, source_dir):
         self._source_dirs.append(source_dir)
@@ -74,15 +77,20 @@ class HttpdTestSetup:
     def add_modules(self, modules: List[str]):
         self._modules.extend(modules)
 
+    def add_optional_modules(self, modules: List[str]):
+        self._optional_modules.extend(modules)
+
     def make(self):
         self._make_dirs()
         self._make_conf()
-        if self.env.mpm_module is not None:
+        if self.env.mpm_module is not None \
+                and self.env.mpm_module in self.env.mpm_modules:
             self.add_modules([self.env.mpm_module])
         if self.env.ssl_module is not None:
             self.add_modules([self.env.ssl_module])
         self._make_modules_conf()
         self._make_htdocs()
+        self._add_aptest()
         self.env.clear_curl_headerfiles()
 
     def _make_dirs(self):
@@ -134,11 +142,21 @@ class HttpdTestSetup:
                 mod_path = os.path.join(self.env.libexec_dir, f"mod_{m}.so")
                 if os.path.isfile(mod_path):
                     fd.write(f"LoadModule {m}_module   \"{mod_path}\"\n")
-                elif m in self.env.static_modules:
-                    fd.write(f"#built static: LoadModule {m}_module   \"{mod_path}\"\n")
-                else:
+                elif m in self.env.dso_modules:
                     missing_mods.append(m)
+                else:
+                    fd.write(f"#built static: LoadModule {m}_module   \"{mod_path}\"\n")
                 loaded.add(m)
+            for m in self._optional_modules:
+                match = re.match(r'^mod_(.+)$', m)
+                if match:
+                    m = match.group(1)
+                if m in loaded:
+                    continue
+                mod_path = os.path.join(self.env.libexec_dir, f"mod_{m}.so")
+                if os.path.isfile(mod_path):
+                    fd.write(f"LoadModule {m}_module   \"{mod_path}\"\n")
+                    loaded.add(m)
         if len(missing_mods) > 0:
             raise Exception(f"Unable to find modules: {missing_mods} "
                             f"DSOs: {self.env.dso_modules}")
@@ -162,12 +180,49 @@ class HttpdTestSetup:
                     st = os.stat(py_file)
                     os.chmod(py_file, st.st_mode | stat.S_IEXEC)
 
+    def _add_aptest(self):
+        local_dir = os.path.dirname(inspect.getfile(HttpdTestSetup))
+        p = subprocess.run([self.env.apxs, '-c', 'mod_aptest.c'],
+                           capture_output=True,
+                           cwd=os.path.join(local_dir, 'mod_aptest'))
+        rv = p.returncode
+        if rv != 0:
+            log.error(f"compiling mod_aptest failed: {p.stderr}")
+            raise Exception(f"compiling mod_aptest failed: {p.stderr}")
+
+        modules_conf = os.path.join(self.env.server_dir, 'conf/modules.conf')
+        with open(modules_conf, 'a') as fd:
+            # load our test module which is not installed
+            fd.write(f"LoadModule aptest_module   \"{local_dir}/mod_aptest/.libs/mod_aptest.so\"\n")
+
 
 class HttpdTestEnv:
+
+    LIBEXEC_DIR = None
+
+    @classmethod
+    def has_python_package(cls, name: str) -> bool:
+        if name in sys.modules:
+            # already loaded
+            return True
+        elif (spec := importlib.util.find_spec(name)) is not None:
+            module = importlib.util.module_from_spec(spec)
+            sys.modules[name] = module
+            spec.loader.exec_module(module)
+            return True
+        else:
+            return False
 
     @classmethod
     def get_ssl_module(cls):
         return os.environ['SSL'] if 'SSL' in os.environ else 'mod_ssl'
+
+    @classmethod
+    def has_shared_module(cls, name):
+        if cls.LIBEXEC_DIR is None:
+            env = HttpdTestEnv()  # will initialized it
+        path = os.path.join(cls.LIBEXEC_DIR, f"mod_{name}.so")
+        return os.path.isfile(path)
 
     def __init__(self, pytestconfig=None):
         self._our_dir = os.path.dirname(inspect.getfile(Dummy))
@@ -178,8 +233,8 @@ class HttpdTestEnv:
         self._apxs = self.config.get('global', 'apxs')
         self._prefix = self.config.get('global', 'prefix')
         self._apachectl = self.config.get('global', 'apachectl')
-        self._libexec_dir = self.get_apxs_var('LIBEXECDIR')
-
+        if HttpdTestEnv.LIBEXEC_DIR is None:
+            HttpdTestEnv.LIBEXEC_DIR = self._libexec_dir = self.get_apxs_var('LIBEXECDIR')
         self._curl = self.config.get('global', 'curl_bin')
         self._nghttp = self.config.get('global', 'nghttp')
         if self._nghttp is None:
@@ -189,6 +244,7 @@ class HttpdTestEnv:
             self._h2load = 'h2load'
 
         self._http_port = int(self.config.get('test', 'http_port'))
+        self._http_port2 = int(self.config.get('test', 'http_port2'))
         self._https_port = int(self.config.get('test', 'https_port'))
         self._proxy_port = int(self.config.get('test', 'proxy_port'))
         self._http_tld = self.config.get('test', 'http_tld')
@@ -203,7 +259,7 @@ class HttpdTestEnv:
         self._apachectl_stderr = None
 
         self._dso_modules = self.config.get('httpd', 'dso_modules').split(' ')
-        self._static_modules = self.config.get('httpd', 'static_modules').split(' ')
+        self._mpm_modules = self.config.get('httpd', 'mpm_modules').split(' ')
         self._mpm_module = f"mpm_{os.environ['MPM']}" if 'MPM' in os.environ else 'mpm_event'
         self._ssl_module = self.get_ssl_module()
         if len(self._ssl_module.strip()) == 0:
@@ -216,7 +272,7 @@ class HttpdTestEnv:
         self._verbosity = pytestconfig.option.verbose if pytestconfig is not None else 0
         self._test_conf = os.path.join(self._server_conf_dir, "test.conf")
         self._httpd_base_conf = []
-        self._httpd_log_modules = []
+        self._httpd_log_modules = ['aptest']
         self._log_interesting = None
         self._setup = None
 
@@ -230,6 +286,8 @@ class HttpdTestEnv:
 
         self._verify_certs = False
         self._curl_headerfiles_n = 0
+        self._h2load_version = None
+        self._current_test = None
 
     def add_httpd_conf(self, lines: List[str]):
         self._httpd_base_conf.extend(lines)
@@ -289,6 +347,10 @@ class HttpdTestEnv:
         return self._http_port
 
     @property
+    def http_port2(self) -> int:
+        return self._http_port2
+
+    @property
     def https_port(self) -> int:
         return self._https_port
 
@@ -330,15 +392,15 @@ class HttpdTestEnv:
 
     @property
     def libexec_dir(self) -> str:
-        return self._libexec_dir
+        return HttpdTestEnv.LIBEXEC_DIR
 
     @property
     def dso_modules(self) -> List[str]:
         return self._dso_modules
 
     @property
-    def static_modules(self) -> List[str]:
-        return self._static_modules
+    def mpm_modules(self) -> List[str]:
+        return self._mpm_modules
 
     @property
     def server_conf_dir(self) -> str:
@@ -364,6 +426,13 @@ class HttpdTestEnv:
         return self._ca
 
     @property
+    def current_test_name(self) -> str:
+        return self._current_test
+
+    def set_current_test_name(self, val) -> None:
+        self._current_test = val
+
+    @property
     def apachectl_stderr(self):
         return self._apachectl_stderr
 
@@ -377,6 +446,7 @@ class HttpdTestEnv:
         return []
 
     def _versiontuple(self, v):
+        v = re.sub(r'(\d+\.\d+(\.\d+)?)(-\S+)?', r'\1', v)
         return tuple(map(int, v.split('.')))
 
     def httpd_is_at_least(self, minv):
@@ -389,14 +459,16 @@ class HttpdTestEnv:
     def h2load_is_at_least(self, minv):
         if not self.has_h2load():
             return False
-        p = subprocess.run([self._h2load, '--version'], capture_output=True, text=True)
-        if p.returncode != 0:
-            return False
-        s = p.stdout.strip()
-        m = re.match(r'h2load nghttp2/(\S+)', s)
-        if m:
-            hv = self._versiontuple(m.group(1))
-            return hv >= self._versiontuple(minv)
+        if self._h2load_version is None:
+            p = subprocess.run([self._h2load, '--version'], capture_output=True, text=True)
+            if p.returncode != 0:
+                return False
+            s = p.stdout.strip()
+            m = re.match(r'h2load nghttp2/(\S+)', s)
+            if m:
+                self._h2load_version = self._versiontuple(m.group(1))
+        if self._h2load_version is not None:
+            return self._h2load_version >= self._versiontuple(minv)
         return False
 
     def has_nghttp(self):
@@ -570,7 +642,7 @@ class HttpdTestEnv:
         if not isinstance(urls, list):
             urls = [urls]
         u = urlparse(urls[0])
-        assert u.hostname, f"hostname not in url: {urls[0]}"
+        #assert u.hostname, f"hostname not in url: {urls[0]}"
         headerfile = f"{self.gen_dir}/curl.headers.{self._curl_headerfiles_n}"
         self._curl_headerfiles_n += 1
 
@@ -583,12 +655,15 @@ class HttpdTestEnv:
             args.append('--insecure')
         elif options and "--cacert" in options:
             pass
-        else:
+        elif u.hostname:
             ca_pem = self.get_ca_pem_file(u.hostname)
             if ca_pem:
                 args.extend(["--cacert", ca_pem])
 
-        if force_resolve and u.hostname != 'localhost' \
+        if self._current_test is not None:
+            args.extend(["-H", f'AP-Test-Name: {self._current_test}'])
+
+        if force_resolve and u.hostname and u.hostname != 'localhost' \
                 and u.hostname != self._httpd_addr \
                 and not re.match(r'^(\d+|\[|:).*', u.hostname):
             assert u.port, f"port not in url: {urls[0]}"
@@ -602,39 +677,60 @@ class HttpdTestEnv:
 
     def curl_parse_headerfile(self, headerfile: str, r: ExecResult = None) -> ExecResult:
         lines = open(headerfile).readlines()
-        exp_stat = True
         if r is None:
             r = ExecResult(args=[], exit_code=0, stdout=b'', stderr=b'')
-        header = {}
+
+        response = None
+        def fin_response(response):
+            if response:
+                r.add_response(response)
+
+        expected = ['status']
         for line in lines:
-            if exp_stat:
+            if re.match(r'^$', line):
+                if 'trailer' in expected:
+                    # end of trailers
+                    fin_response(response)
+                    response = None
+                    expected = ['status']
+                elif 'header' in expected:
+                    # end of header, another status or trailers might follow
+                    expected = ['status', 'trailer']
+                else:
+                    assert False, f"unexpected line: {line}"
+                continue
+            if 'status' in expected:
                 log.debug("reading 1st response line: %s", line)
                 m = re.match(r'^(\S+) (\d+) (.*)$', line)
-                assert m
-                r.add_response({
-                    "protocol": m.group(1),
-                    "status": int(m.group(2)),
-                    "description": m.group(3),
-                    "body": r.outraw
-                })
-                exp_stat = False
-                header = {}
-            elif re.match(r'^$', line):
-                exp_stat = True
-            else:
-                log.debug("reading header line: %s", line)
+                if m:
+                    fin_response(response)
+                    response = {
+                        "protocol": m.group(1),
+                        "status": int(m.group(2)),
+                        "description": m.group(3),
+                        "header": {},
+                        "trailer": {},
+                        "body": r.outraw
+                    }
+                    expected = ['header']
+                    continue
+            if 'trailer' in expected:
                 m = re.match(r'^([^:]+):\s*(.*)$', line)
-                assert m
-                header[m.group(1).lower()] = m.group(2)
-        if r.response:
-            r.response["header"] = header
+                if m:
+                    response['trailer'][m.group(1).lower()] = m.group(2)
+                    continue
+            if 'header' in expected:
+                m = re.match(r'^([^:]+):\s*(.*)$', line)
+                if m:
+                    response['header'][m.group(1).lower()] = m.group(2)
+                    continue
+            assert False, f"unexpected line: {line}"
+
+        fin_response(response)
         return r
 
     def curl_raw(self, urls, timeout=10, options=None, insecure=False,
                  force_resolve=True):
-        xopt = ['-vvvv']
-        if options:
-            xopt.extend(options)
         args, headerfile = self.curl_complete_args(
             urls=urls, timeout=timeout, options=options, insecure=insecure,
             force_resolve=force_resolve)
@@ -679,7 +775,8 @@ class HttpdTestEnv:
         return -1
         
     def nghttp(self):
-        return Nghttp(self._nghttp, connect_addr=self._httpd_addr, tmp_dir=self.gen_dir)
+        return Nghttp(self._nghttp, connect_addr=self._httpd_addr,
+                      tmp_dir=self.gen_dir, test_name=self._current_test)
 
     def h2load_status(self, run: ExecResult):
         stats = {}

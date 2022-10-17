@@ -2,10 +2,11 @@ from datetime import timedelta
 
 import pytest
 
-from .env import H2Conf
+from .env import H2Conf, H2TestEnv
 from pyhttpd.curl import CurlPiper
 
 
+@pytest.mark.skipif(condition=H2TestEnv.is_unsupported, reason="mod_http2 not supported here")
 class TestBuffering:
 
     @pytest.fixture(autouse=True, scope='class')
@@ -36,7 +37,6 @@ class TestBuffering:
         piper = CurlPiper(env=env, url=url)
         piper.stutter_check(chunks, stutter)
 
-    @pytest.mark.skip(reason="only in 2.5.x")
     def test_h2_712_02(self, env):
         # same as 712_01 but via mod_proxy_http2
         #
@@ -47,7 +47,6 @@ class TestBuffering:
         piper = CurlPiper(env=env, url=url)
         piper.stutter_check(chunks, stutter)
 
-    @pytest.mark.skip(reason="only in 2.5.x")
     def test_h2_712_03(self, env):
         # same as 712_02 but with smaller chunks
         #

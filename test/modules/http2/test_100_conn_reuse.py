@@ -1,8 +1,9 @@
 import pytest
 
-from .env import H2Conf
+from .env import H2Conf, H2TestEnv
 
 
+@pytest.mark.skipif(condition=H2TestEnv.is_unsupported, reason="mod_http2 not supported here")
 class TestConnReuse:
 
     @pytest.fixture(autouse=True, scope='class')
@@ -26,7 +27,7 @@ class TestConnReuse:
     def test_h2_100_02(self, env):
         url = env.mkurl("https", "cgi", "/hello.py")
         hostname = ("cgi-alias.%s" % env.http_tld)
-        r = env.curl_get(url, 5, options=[ "-H", "Host:%s" % hostname ])
+        r = env.curl_get(url, 5, options=["-H", f"Host: {hostname}"])
         assert r.response["status"] == 200
         assert "HTTP/2" == r.response["protocol"]
         assert hostname == r.response["json"]["host"]

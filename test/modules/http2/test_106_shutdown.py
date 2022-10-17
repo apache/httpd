@@ -7,10 +7,11 @@ from threading import Thread
 
 import pytest
 
-from .env import H2Conf
+from .env import H2Conf, H2TestEnv
 from pyhttpd.result import ExecResult
 
 
+@pytest.mark.skipif(condition=H2TestEnv.is_unsupported, reason="mod_http2 not supported here")
 class TestShutdown:
 
     @pytest.fixture(autouse=True, scope='class')

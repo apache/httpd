@@ -29,13 +29,13 @@
 #include <httpd.h>
 #include <http_core.h>
 #include <http_log.h>
+#include <http_protocol.h>
 
 #include "h2_private.h"
-#include "h2_h2.h"
+#include "h2_protocol.h"
 #include "h2_util.h"
 #include "h2_push.h"
 #include "h2_request.h"
-#include "h2_headers.h"
 #include "h2_session.h"
 #include "h2_stream.h"
 
@@ -348,11 +348,10 @@ static int add_push(link_ctx *ctx)
                 }
                 headers = apr_table_make(ctx->pool, 5);
                 apr_table_do(set_push_header, headers, ctx->req->headers, NULL);
-                req = h2_req_create(0, ctx->pool, method, ctx->req->scheme,
-                                    ctx->req->authority, path, headers,
-                                    ctx->req->serialize);
+                req = h2_request_create(0, ctx->pool, method, ctx->req->scheme,
+                                        ctx->req->authority, path, headers);
                 /* atm, we do not push on pushes */
-                h2_request_end_headers(req, ctx->pool, 1, 0);
+                h2_request_end_headers(req, ctx->pool, 0);
                 push->req = req;
                 if (has_param(ctx, "critical")) {
                     h2_priority *prio = apr_pcalloc(ctx->pool, sizeof(*prio));
@@ -433,8 +432,17 @@ static int head_iter(void *ctx, const char *key, const char *value)
     return 1;
 }
 
-apr_array_header_t *h2_push_collect(apr_pool_t *p, const h2_request *req,
-                                    apr_uint32_t push_policy, const h2_headers *res)
+#if AP_HAS_RESPONSE_BUCKETS
+apr_array_header_t *h2_push_collect(apr_pool_t *p,
+                                    const struct h2_request *req,
+                                    apr_uint32_t push_policy,
+                                    const ap_bucket_response *res)
+#else
+apr_array_header_t *h2_push_collect(apr_pool_t *p,
+                                    const struct h2_request *req,
+                                    apr_uint32_t push_policy,
+                                    const struct h2_headers *res)
+#endif
 {
     if (req && push_policy != H2_PUSH_NONE) {
         /* Collect push candidates from the request/response pair.
@@ -482,8 +490,7 @@ static void calc_sha256_hash(h2_push_diary *diary, apr_uint64_t *phash, h2_push 
     EVP_MD_CTX *md;
     apr_uint64_t val;
     unsigned char hash[EVP_MAX_MD_SIZE];
-    unsigned len;
-    int i;
+    unsigned len, i;
 
     md = EVP_MD_CTX_create();
     ap_assert(md != NULL);
@@ -600,7 +607,7 @@ static void move_to_last(h2_push_diary *diary, apr_size_t idx)
 {
     h2_push_diary_entry *entries = (h2_push_diary_entry*)diary->entries->elts;
     h2_push_diary_entry e;
-    int lastidx;
+    apr_size_t lastidx;
     
     /* Move an existing entry to the last place */
     if (diary->entries->nelts <= 0)
@@ -657,13 +664,13 @@ apr_array_header_t *h2_push_diary_update(h2_session *session, apr_array_header_t
             idx = h2_push_diary_find(session->push_diary, e.hash);
             if (idx >= 0) {
                 /* Intentional no APLOGNO */
-                ap_log_cerror(APLOG_MARK, GCSLOG_LEVEL, 0, session->c,
+                ap_log_cerror(APLOG_MARK, GCSLOG_LEVEL, 0, session->c1,
                               "push_diary_update: already there PUSH %s", push->req->path);
                 move_to_last(session->push_diary, (apr_size_t)idx);
             }
             else {
                 /* Intentional no APLOGNO */
-                ap_log_cerror(APLOG_MARK, GCSLOG_LEVEL, 0, session->c,
+                ap_log_cerror(APLOG_MARK, GCSLOG_LEVEL, 0, session->c1,
                               "push_diary_update: adding PUSH %s", push->req->path);
                 if (!npushes) {
                     npushes = apr_array_make(pushes->pool, 5, sizeof(h2_push_diary_entry*));
@@ -676,9 +683,15 @@ apr_array_header_t *h2_push_diary_update(h2_session *session, apr_array_header_t
     return npushes;
 }
     
-apr_array_header_t *h2_push_collect_update(h2_stream *stream, 
-                                           const struct h2_request *req, 
+#if AP_HAS_RESPONSE_BUCKETS
+apr_array_header_t *h2_push_collect_update(struct h2_stream *stream,
+                                           const struct h2_request *req,
+                                           const ap_bucket_response *res)
+#else
+apr_array_header_t *h2_push_collect_update(struct h2_stream *stream,
+                                           const struct h2_request *req,
                                            const struct h2_headers *res)
+#endif
 {
     apr_array_header_t *pushes;
     
@@ -793,11 +806,11 @@ apr_status_t h2_push_diary_digest_get(h2_push_diary *diary, apr_pool_t *pool,
                                       int maxP, const char *authority, 
                                       const char **pdata, apr_size_t *plen)
 {
-    int nelts, N, i;
+    int nelts, N;
     unsigned char log2n, log2pmax;
     gset_encoder encoder;
     apr_uint64_t *hashes;
-    apr_size_t hash_count;
+    apr_size_t hash_count, i;
     
     nelts = diary->entries->nelts;
     N = ceil_power_of_2(nelts);

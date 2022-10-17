@@ -17,10 +17,12 @@
 #ifndef __mod_h2__h2_push__
 #define __mod_h2__h2_push__
 
+#include <http_protocol.h>
+
 #include "h2.h"
+#include "h2_headers.h"
 
 struct h2_request;
-struct h2_headers;
 struct h2_ngheader;
 struct h2_session;
 struct h2_stream;
@@ -97,14 +99,21 @@ struct h2_push_diary {
  * @param res the response from the server
  * @return array of h2_push addresses or NULL
  */
-apr_array_header_t *h2_push_collect(apr_pool_t *p, 
-                                    const struct h2_request *req, 
-                                    apr_uint32_t push_policy, 
+#if AP_HAS_RESPONSE_BUCKETS
+apr_array_header_t *h2_push_collect(apr_pool_t *p,
+                                    const struct h2_request *req,
+                                    apr_uint32_t push_policy,
+                                    const ap_bucket_response *res);
+#else
+apr_array_header_t *h2_push_collect(apr_pool_t *p,
+                                    const struct h2_request *req,
+                                    apr_uint32_t push_policy,
                                     const struct h2_headers *res);
+#endif
 
 /**
  * Create a new push diary for the given maximum number of entries.
- * 
+ *
  * @param p the pool to use
  * @param N the max number of entries, rounded up to 2^x
  * @return the created diary, might be NULL of max_entries is 0
@@ -121,14 +130,21 @@ apr_array_header_t *h2_push_diary_update(struct h2_session *session, apr_array_h
  * Collect pushes for the given request/response pair, enter them into the
  * diary and return those pushes newly entered.
  */
-apr_array_header_t *h2_push_collect_update(struct h2_stream *stream, 
-                                           const struct h2_request *req, 
+#if AP_HAS_RESPONSE_BUCKETS
+apr_array_header_t *h2_push_collect_update(struct h2_stream *stream,
+                                           const struct h2_request *req,
+                                           const ap_bucket_response *res);
+#else
+apr_array_header_t *h2_push_collect_update(struct h2_stream *stream,
+                                           const struct h2_request *req,
                                            const struct h2_headers *res);
+#endif
+
 /**
  * Get a cache digest as described in 
  * https://datatracker.ietf.org/doc/draft-kazuho-h2-cache-digest/
  * from the contents of the push diary.
- * 
+ *
  * @param diary the diary to calculdate the digest from
  * @param p the pool to use
  * @param authority the authority to get the data for, use NULL/"*" for all

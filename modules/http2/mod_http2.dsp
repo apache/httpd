@@ -101,10 +101,6 @@ PostBuild_Cmds=if exist $(TargetPath).manifest mt.exe -manifest $(TargetPath).ma
 # Name "mod_http2 - Win32 Debug"
 # Begin Source File
 
-SOURCE=./h2_alt_svc.c
-# End Source File
-# Begin Source File
-
 SOURCE=./h2_bucket_beam.c
 # End Source File
 # Begin Source File
@@ -113,35 +109,39 @@ SOURCE=./h2_bucket_eos.c
 # End Source File
 # Begin Source File
 
+SOURCE=./h2_c1.c
+# End Source File
+# Begin Source File
+
+SOURCE=./h2_c1_io.c
+# End Source File
+# Begin Source File
+
+SOURCE=./h2_c2.c
+# End Source File
+# Begin Source File
+
+SOURCE=./h2_c2_filter.c
+# End Source File
+# Begin Source File
+
 SOURCE=./h2_config.c
 # End Source File
 # Begin Source File
 
-SOURCE=./h2_conn.c
+SOURCE=./h2_conn_ctx.c
 # End Source File
 # Begin Source File
 
-SOURCE=./h2_conn_io.c
-# End Source File
-# Begin Source File
-
-SOURCE=./h2_ctx.c
-# End Source File
-# Begin Source File
-
-SOURCE=./h2_filter.c
-# End Source File
-# Begin Source File
-
-SOURCE=./h2_from_h1.c
-# End Source File
-# Begin Source File
-
-SOURCE=./h2_h2.c
+SOURCE=./h2_headers.c
 # End Source File
 # Begin Source File
 
 SOURCE=./h2_mplx.c
+# End Source File
+# Begin Source File
+
+SOURCE=./h2_protocol.c
 # End Source File
 # Begin Source File
 
@@ -150,10 +150,6 @@ SOURCE=./h2_push.c
 # Begin Source File
 
 SOURCE=./h2_request.c
-# End Source File
-# Begin Source File
-
-SOURCE=./h2_headers.c
 # End Source File
 # Begin Source File
 
@@ -169,15 +165,15 @@ SOURCE=./h2_switch.c
 # End Source File
 # Begin Source File
 
-SOURCE=./h2_task.c
-# End Source File
-# Begin Source File
-
 SOURCE=./h2_util.c
 # End Source File
 # Begin Source File
 
 SOURCE=./h2_workers.c
+# End Source File
+# Begin Source File
+
+SOURCE=./mod_http2.c
 # End Source File
 # Begin Source File
 

@@ -111,40 +111,39 @@ class TestTimeout:
         assert piper.exitcode == 0
         assert len("".join(stdout)) == 3 * 8192
 
-    @pytest.mark.skip(reason="only in 2.5.x")
     def test_h2_105_11(self, env):
         # short connection timeout, longer stream delay
-        # receiving the first response chunk, then timeout
+        # connection timeout must not abort ongoing streams
         conf = H2Conf(env)
         conf.add_vhost_cgi()
         conf.add("Timeout 1")
         conf.install()
         assert env.apache_restart() == 0
-        url = env.mkurl("https", "cgi", "/h2test/delay?5")
+        url = env.mkurl("https", "cgi", "/h2test/delay?1200ms")
         piper = CurlPiper(env=env, url=url)
         piper.start()
         stdout, stderr = piper.close()
-        assert len("".join(stdout)) == 8192
+        assert len("".join(stdout)) == 3 * 8192
 
-    @pytest.mark.skip(reason="only in 2.5.x")
     def test_h2_105_12(self, env):
         # long connection timeout, short stream timeout
         # sending a slow POST
-        conf = H2Conf(env)
-        conf.add_vhost_cgi()
-        conf.add("Timeout 10")
-        conf.add("H2StreamTimeout 1")
-        conf.install()
-        assert env.apache_restart() == 0
-        url = env.mkurl("https", "cgi", "/h2test/delay?5")
-        piper = CurlPiper(env=env, url=url)
-        piper.start()
-        for _ in range(3):
-            time.sleep(2)
-            try:
-                piper.send("0123456789\n")
-            except BrokenPipeError:
-                break
-        piper.close()
-        assert piper.response
-        assert piper.response['status'] == 408
+        if env.httpd_is_at_least("2.5.0"):
+            conf = H2Conf(env)
+            conf.add_vhost_cgi()
+            conf.add("Timeout 10")
+            conf.add("H2StreamTimeout 1")
+            conf.install()
+            assert env.apache_restart() == 0
+            url = env.mkurl("https", "cgi", "/h2test/delay?5")
+            piper = CurlPiper(env=env, url=url)
+            piper.start()
+            for _ in range(3):
+                time.sleep(2)
+                try:
+                    piper.send("0123456789\n")
+                except BrokenPipeError:
+                    break
+            piper.close()
+            assert piper.response
+            assert piper.response['status'] == 408, f"{piper.response}"
