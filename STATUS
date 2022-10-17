@@ -161,7 +161,7 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      trunk revision:
         https://svn.apache.org/r1903167
      PR: https://github.com/apache/httpd/pull/326
-     +1: icing, rpluem, ylavic
+     +1: icing, rpluem, ylavic 
 
   *) mod_proxy_hcheck: Detect AJP/CPING support correctly. PR 66300.
      trunk revision:
