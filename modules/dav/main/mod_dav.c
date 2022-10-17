@@ -2102,7 +2102,7 @@ static dav_error * dav_propfind_walker(dav_walk_resource *wres, int calltype)
             const char *errstr = NULL;
             int eval = ap_expr_exec(ctx->r, conf->allow_lockdiscovery, &errstr);
             if (errstr) {
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, ctx->r, APLOGNO(00623)
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, ctx->r, APLOGNO(10403)
                               "Failed to evaluate expression (%s) - ignoring",
                               errstr);
             } else {
