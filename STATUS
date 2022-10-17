@@ -149,6 +149,19 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) mod_http2: Export mod_http2.h
+     Trunk version of patch:
+        https://svn.apache.org/r1727934
+     Backport version for 2.4.x of patch:
+       https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/327.diff
+     Can be applied via apply_backport_pr.sh 327
+     +1: rpluem, icing, ylavic
+
+  *) mod_ssl: fix for PR66190.
+     trunk revision:
+        https://svn.apache.org/r1903167
+     PR: https://github.com/apache/httpd/pull/326
+     +1: icing, rpluem, ylavic
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
@@ -176,20 +189,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      +1: minfrin, jim,
      rpluem says: The version in the compatibility notes is wrong.
 
-  *) mod_ssl: fix for PR66190.
-     trunk revision:
-        https://svn.apache.org/r1903167
-     PR: https://github.com/apache/httpd/pull/326
-     +1: icing, rpluem
-
-  *) mod_http2: Export mod_http2.h
-     Trunk version of patch:
-        https://svn.apache.org/r1727934
-     Backport version for 2.4.x of patch:
-       https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/327.diff
-     Can be applied via apply_backport_pr.sh 327
-     +1: rpluem, icing,
-
   *) mod_proxy_hcheck: hcmethod now allow for HTTP/1.1 requests
      using GET11, HEAD11 and/or OPTIONS11.
      trunk revision:
@@ -206,21 +205,21 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         https://svn.apache.org/r1904516
      Backport version for 2.4.x of patch:
         svn merge works
-     +1: jim,
+     +1: jim, ylavic,
 
   *) mod_proxy_hcheck: Re-enable workers in standard ERROR state. PR 66302.
      trunk revision:
         https://svn.apache.org/r1904518
      Backport version for 2.4.x of patch:
         svn merge works
-     +1: jim,
+     +1: jim, ylavic,
 
   *) mod_ssl: fix for PR66063 (follow-up)
      trunk revision:
         https://svn.apache.org/r1901772
      2.4.x patch:
         svn merge -c 1901772 ^/httpd/httpd/trunk . 
-     +1: rpluem,
+     +1: rpluem, ylavic,
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
