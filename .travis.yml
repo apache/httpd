@@ -439,14 +439,19 @@ jobs:
            TEST_ASAN=1
            CLEAR_CACHE=1
     # -------------------------------------------------------------------------
-    - name: Linux Ubuntu Focal, ASan, pool-debug
-      dist: focal
-      env: NOTEST_CFLAGS="-ggdb -fsanitize=address -fno-sanitize-recover=address -fno-omit-frame-pointer"
-           APR_VERSION=1.7.x APR_CONFIG="--enable-pool-debug"
-           APU_VERSION=1.7.x APU_CONFIG="--with-crypto --with-ldap"
-           CONFIG="--enable-mods-shared=reallyall"
-           TEST_ASAN=1
-           CLEAR_CACHE=1
+    ## icing: disabled due to persistent errors, reported as
+    ## Tracer caught signal 11: addr=0x0 pc=0x7fbae3b894f0 sp=0x7fbade4c3ce0
+    ## 4526==66806==LeakSanitizer has encountered a fatal error.
+    ## 4527==66806==HINT: For debugging, try setting environment variable LSAN_OPTIONS=verbosity=1:log_threads=1
+    ## 4528==66806==HINT: LeakSanitizer does not work under ptrace (strace, gdb, etc)
+    #- name: Linux Ubuntu Focal, ASan, pool-debug
+    #  dist: focal
+    #  env: NOTEST_CFLAGS="-ggdb -fsanitize=address -fno-sanitize-recover=address -fno-omit-frame-pointer"
+    #       APR_VERSION=1.7.x APR_CONFIG="--enable-pool-debug"
+    #       APU_VERSION=1.7.x APU_CONFIG="--with-crypto --with-ldap"
+    #       CONFIG="--enable-mods-shared=reallyall"
+    #       TEST_ASAN=1
+    #       CLEAR_CACHE=1
   allow_failures:
     # Intermittent failures:
     - env: CONFIG="--enable-mods-shared=reallyall --with-mpm=worker"
