@@ -163,6 +163,27 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      PR: https://github.com/apache/httpd/pull/326
      +1: icing, rpluem, ylavic
 
+  *) mod_proxy_hcheck: Detect AJP/CPING support correctly. PR 66300.
+     trunk revision:
+        https://svn.apache.org/r1904516
+     Backport version for 2.4.x of patch:
+        svn merge works
+     +1: jim, ylavic, icing
+
+  *) mod_proxy_hcheck: Re-enable workers in standard ERROR state. PR 66302.
+     trunk revision:
+        https://svn.apache.org/r1904518
+     Backport version for 2.4.x of patch:
+        svn merge works
+     +1: jim, ylavic, icing
+
+  *) mod_ssl: fix for PR66063 (follow-up)
+     trunk revision:
+        https://svn.apache.org/r1901772
+     2.4.x patch:
+        svn merge -c 1901772 ^/httpd/httpd/trunk .
+     +1: rpluem, ylavic, icing
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -198,27 +219,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      Backport version for 2.4.x of patch:
         svn merge works
      +1: jim,
-
-  *) mod_proxy_hcheck: Detect AJP/CPING support correctly. PR 66300.
-     trunk revision:
-        https://svn.apache.org/r1904516
-     Backport version for 2.4.x of patch:
-        svn merge works
-     +1: jim, ylavic,
-
-  *) mod_proxy_hcheck: Re-enable workers in standard ERROR state. PR 66302.
-     trunk revision:
-        https://svn.apache.org/r1904518
-     Backport version for 2.4.x of patch:
-        svn merge works
-     +1: jim, ylavic,
-
-  *) mod_ssl: fix for PR66063 (follow-up)
-     trunk revision:
-        https://svn.apache.org/r1901772
-     2.4.x patch:
-        svn merge -c 1901772 ^/httpd/httpd/trunk .
-     +1: rpluem, ylavic,
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
