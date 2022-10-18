@@ -220,6 +220,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         svn merge works
      +1: jim,
 
+  *) mod_http2: backport of v2.0.10 to synch sources with trunk/github
+     See: change-entries/http2_v2.txt for details.
+     The PR contains the unchanged sources from trunk, plus the test
+     additions made.
+     PR: https://github.com/apache/httpd/pull/331
+     +1: icing,
+
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
