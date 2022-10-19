@@ -67,3 +67,31 @@ class TestRequestStrict:
                     assert int(m.group(1)) == status, f"{rlines}"
                 else:
                     assert int(m.group(1)) >= 400, f"{rlines}"
+
+    @pytest.mark.parametrize(["hvalue", "expvalue"], [
+        ['123', '123'],
+        ['123 ', '123 '],    # trailing space stays
+        ['123\t', '123\t'],    # trailing tab stays
+        [' 123', '123'],    # leading space is stripped
+        ['          123', '123'],  # leading spaces are stripped
+        ['\t123', '123'],  # leading tab is stripped
+    ])
+    def test_h1_007_02(self, env, hvalue, expvalue):
+        hname = 'ap-test-007'
+        conf = H1Conf(env, extras={
+            f'test1.{env.http_tld}': [
+                '<Location />',
+                f'Header add {hname} "{hvalue}"',
+                '</Location>',
+            ]
+        })
+        conf.add_vhost_test1(
+            proxy_self=True
+        )
+        conf.install()
+        assert env.apache_restart() == 0
+        url = env.mkurl("https", "test1", "/")
+        r = env.curl_get(url, options=['--http1.1'])
+        assert r.response["status"] == 200
+        assert r.response["header"][hname] == expvalue
+

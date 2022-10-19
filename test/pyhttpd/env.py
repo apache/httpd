@@ -739,7 +739,8 @@ class HttpdTestEnv:
             self.curl_parse_headerfile(headerfile, r=r)
             if r.json:
                 r.response["json"] = r.json
-        os.remove(headerfile)
+        if os.path.isfile(headerfile):
+            os.remove(headerfile)
         return r
 
     def curl_get(self, url, insecure=False, options=None):
