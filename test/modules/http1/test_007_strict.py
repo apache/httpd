@@ -68,30 +68,55 @@ class TestRequestStrict:
                 else:
                     assert int(m.group(1)) >= 400, f"{rlines}"
 
+    @pytest.mark.parametrize(["hvalue", "expvalue", "status"], [
+        ['"123"', '123', 200],
+        ['"123 "', '123 ', 200],       # trailing space stays
+        ['"123\t"', '123\t', 200],     # trailing tab stays
+        ['" 123"', '123', 200],        # leading space is stripped
+        ['"          123"', '123', 200],  # leading spaces are stripped
+        ['"\t123"', '123', 200],       # leading tab is stripped
+        ['"expr=%{unescape:123%0A 123}"', '', 500],  # illegal char
+    ])
+    def test_h1_007_02(self, env, hvalue, expvalue, status):
+        hname = 'ap-test-007'
+        conf = H1Conf(env, extras={
+            f'test1.{env.http_tld}': [
+                '<Location /index.html>',
+                f'Header add {hname} {hvalue}',
+                '</Location>',
+            ]
+        })
+        conf.add_vhost_test1(proxy_self=True)
+        conf.install()
+        assert env.apache_restart() == 0
+        url = env.mkurl("https", "test1", "/index.html")
+        r = env.curl_get(url, options=['--http1.1'])
+        assert r.response["status"] == status
+        if int(status) < 400:
+            assert r.response["header"][hname] == expvalue
+
     @pytest.mark.parametrize(["hvalue", "expvalue"], [
         ['123', '123'],
-        ['123 ', '123 '],    # trailing space stays
-        ['123\t', '123\t'],    # trailing tab stays
+        ['123 ', '123'],    # trailing space is stripped
+        ['123\t', '123'],    # trailing tab is stripped
         [' 123', '123'],    # leading space is stripped
         ['          123', '123'],  # leading spaces are stripped
         ['\t123', '123'],  # leading tab is stripped
     ])
-    def test_h1_007_02(self, env, hvalue, expvalue):
+    def test_h1_007_03(self, env, hvalue, expvalue):
+        # same as 007_02, but http1 proxied
         hname = 'ap-test-007'
         conf = H1Conf(env, extras={
             f'test1.{env.http_tld}': [
-                '<Location />',
+                '<Location /index.html>',
                 f'Header add {hname} "{hvalue}"',
                 '</Location>',
             ]
         })
-        conf.add_vhost_test1(
-            proxy_self=True
-        )
+        conf.add_vhost_test1(proxy_self=True)
         conf.install()
         assert env.apache_restart() == 0
-        url = env.mkurl("https", "test1", "/")
+        url = env.mkurl("https", "test1", "/proxy/index.html")
         r = env.curl_get(url, options=['--http1.1'])
         assert r.response["status"] == 200
         assert r.response["header"][hname] == expvalue
-

@@ -63,6 +63,7 @@ class H1TestEnv(HttpdTestEnv):
 
         self.httpd_error_log.set_ignored_lognos([
             'AH00135', # unsafe/strict tests send invalid methods
+            'AH02430', # test of invalid chars in response headers
         ])
         self.httpd_error_log.add_ignored_patterns([
         ])
