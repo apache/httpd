@@ -177,13 +177,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
         svn merge works
      +1: jim, ylavic, icing
 
-  *) mod_ssl: fix for PR66063 (follow-up)
-     trunk revision:
-        https://svn.apache.org/r1901772
-     2.4.x patch:
-        svn merge -c 1901772 ^/httpd/httpd/trunk .
-     +1: rpluem, ylavic, icing
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
