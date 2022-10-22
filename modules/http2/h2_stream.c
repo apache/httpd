@@ -654,7 +654,7 @@ static apr_status_t add_trailer(h2_stream *stream,
                       "pseudo header in trailer"));
         return APR_EINVAL;
     }
-    if (h2_req_ignore_trailer(name, nlen)) {
+    if (h2_ignore_req_trailer(name, nlen)) {
         return APR_SUCCESS;
     }
     if (!stream->trailers_in) {

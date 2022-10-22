@@ -31,11 +31,10 @@
      - A bug that prevented trailers (e.g. HEADER frame at the end) to be
        generated in certain cases was fixed. See #233 where it prevented
        gRPC responses to be properly generated.
-     - new directive `H2HeaderStrictness (highest|rfc7540|rfc9113)` to configure
-       the strictness of HTTP header checks. rfc9113 forbids leading and trailing
-       whitespace in headers and is supported when building against
-       nghttp2 v1.50.0 or newer. The default is the backward compatible
-       behavior, e.g. rfc7540.
+     - Request and response header values are automatically stripped of leading
+       and trialing space/tab characters. This is equivalent behaviour to what
+       Apache httpd's http/1.1 parser does.
+       The checks for this in nghttp2 v1.50.0+ are disabled.
      - Extensive testing in production done by Alessandro Bianchi (@alexskynet)
        on the v2.0.x versions for stability. Many thanks!
 
