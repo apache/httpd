@@ -76,6 +76,7 @@ class TestRequestStrict:
         ['"          123"', '123', 200],  # leading spaces are stripped
         ['"\t123"', '123', 200],       # leading tab is stripped
         ['"expr=%{unescape:123%0A 123}"', '', 500],  # illegal char
+        ['" \t "', '', 200],           # just ws
     ])
     def test_h1_007_02(self, env, hvalue, expvalue, status):
         hname = 'ap-test-007'
