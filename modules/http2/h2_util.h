@@ -342,9 +342,8 @@ apr_size_t h2_util_table_bytes(apr_table_t *t, apr_size_t pair_extra);
 /*******************************************************************************
  * HTTP/2 header helpers
  ******************************************************************************/
-int h2_req_ignore_header(const char *name, size_t len);
-int h2_req_ignore_trailer(const char *name, size_t len);
-int h2_res_ignore_trailer(const char *name, size_t len);
+int h2_ignore_req_trailer(const char *name, size_t len);
+int h2_ignore_resp_trailer(const char *name, size_t len);
 
 /**
  * Set the push policy for the given request. Takes request headers into 
@@ -375,25 +374,7 @@ const char *h2_util_base64url_encode(const char *data,
  * nghttp2 helpers
  ******************************************************************************/
 
-#define H2_HD_MATCH_LIT_CS(l, name)  \
-    ((strlen(name) == sizeof(l) - 1) && !apr_strnatcasecmp(l, name))
-
-#define H2_CREATE_NV_LIT_CS(nv, NAME, VALUE) nv->name = (uint8_t *)NAME;      \
-                                             nv->namelen = sizeof(NAME) - 1;  \
-                                             nv->value = (uint8_t *)VALUE;    \
-                                             nv->valuelen = strlen(VALUE)
-
-#define H2_CREATE_NV_CS_LIT(nv, NAME, VALUE) nv->name = (uint8_t *)NAME;      \
-                                             nv->namelen = strlen(NAME);      \
-                                             nv->value = (uint8_t *)VALUE;    \
-                                             nv->valuelen = sizeof(VALUE) - 1
-
-#define H2_CREATE_NV_CS_CS(nv, NAME, VALUE) nv->name = (uint8_t *)NAME;       \
-                                            nv->namelen = strlen(NAME);       \
-                                            nv->value = (uint8_t *)VALUE;     \
-                                            nv->valuelen = strlen(VALUE)
-
-int h2_util_ignore_header(const char *name);
+int h2_util_ignore_resp_header(const char *name);
 
 typedef struct h2_ngheader {
     nghttp2_nv *nv;

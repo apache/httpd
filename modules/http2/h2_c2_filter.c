@@ -495,7 +495,7 @@ static apr_table_t *make_table(h2_response_parser *parser)
                 ++sep;
             }
 
-            if (!h2_util_ignore_header(hline)) {
+            if (!h2_util_ignore_resp_header(hline)) {
                 apr_table_merge(headers, hline, sep);
             }
         }

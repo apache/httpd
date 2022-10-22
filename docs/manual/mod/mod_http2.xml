@@ -1024,30 +1024,4 @@ H2TLSCoolDownSecs 0
         </usage>
     </directivesynopsis>
 
-    <directivesynopsis>
-        <name>H2HeaderStrictness</name>
-        <description>Strictness applied to head checks, via RFC number.</description>
-        <syntax>H2HeaderStrictness <var>rfc</var></syntax>
-        <default>rfc7540</default>
-        <contextlist>
-            <context>server config</context>
-            <context>virtual host</context>
-        </contextlist>
-        <compatibility>Available in version 2.5.1 and later.</compatibility>
-
-        <usage>
-            <p>
-                <directive>H2HeaderStrictness</directive> specifies the compliance
-                checks for header values, as specified in the IETF RFC number.
-                'rfc7540' is the original HTTP/2 RFC, 'rfc9113' is the updated version that
-                disallows leading and trialing spaces in fields.
-            </p><p>
-                Use 'highest' to apply the highest strictness checks available. This
-                depends on the nghttp2 library version used. 'rfc9113' is available
-                from nghttp2 v1.50.0 and onward only. When building with previous
-                versions, this setting has no effect.
-        </p>
-        </usage>
-    </directivesynopsis>
-
 </modulesynopsis>

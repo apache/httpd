@@ -11,8 +11,7 @@ class TestRfc9113:
         H2Conf(env).add_vhost_test1().install()
         assert env.apache_restart() == 0
 
-    # by default, we ignore leading/trailing ws
-    # tests with leading ws are not present as curl seems to silently eat those
+    # by default, we accept leading/trailing ws in request fields
     def test_h2_203_01_ws_ignore(self, env):
         url = env.mkurl("https", "test1", "/")
         r = env.curl_get(url, options=['-H', 'trailing-space: must not  '])
@@ -22,21 +21,32 @@ class TestRfc9113:
         assert r.exit_code == 0, f'curl output: {r.stderr}'
         assert r.response["status"] == 200, f'curl output: {r.stdout}'
 
-    # When enabled, leading/trailing make the stream RST
-    # tests with leading ws are not present as curl seems to silently eat those
-    def test_h2_203_02_ws_reject(self, env):
-        if not env.h2load_is_at_least('1.50.0'):
-            pytest.skip(f'need nghttp2 >= 1.50.0')
-        conf = H2Conf(env)
-        conf.add([
-            "H2HeaderStrictness rfc9113"
-        ])
-        conf.add_vhost_test1()
+    # response header are also handled, but we strip ws before sending
+    @pytest.mark.parametrize(["hvalue", "expvalue", "status"], [
+        ['"123"', '123', 200],
+        ['"123 "', '123', 200],       # trailing space stripped
+        ['"123\t"', '123', 200],     # trailing tab stripped
+        ['" 123"', '123', 200],        # leading space is stripped
+        ['"          123"', '123', 200],  # leading spaces are stripped
+        ['"\t123"', '123', 200],       # leading tab is stripped
+        ['"expr=%{unescape:123%0A 123}"', '', 500],  # illegal char
+        ['" \t "', '', 200],          # just ws
+    ])
+    def test_h2_203_02(self, env, hvalue, expvalue, status):
+        hname = 'ap-test-007'
+        conf = H2Conf(env, extras={
+            f'test1.{env.http_tld}': [
+                '<Location /index.html>',
+                f'Header add {hname} {hvalue}',
+                '</Location>',
+            ]
+        })
+        conf.add_vhost_test1(proxy_self=True)
         conf.install()
         assert env.apache_restart() == 0
-        url = env.mkurl("https", "test1", "/")
-        r = env.curl_get(url, options=['-H', 'trailing-space: must not  '])
-        assert r.exit_code != 0, f'curl output: {r.stderr}'
-        r = env.curl_get(url, options=['-H', 'trailing-space: must not\t'])
-        assert r.exit_code != 0, f'curl output: {r.stderr}'
+        url = env.mkurl("https", "test1", "/index.html")
+        r = env.curl_get(url, options=['--http2'])
+        assert r.response["status"] == status
+        if int(status) < 400:
+            assert r.response["header"][hname] == expvalue
 

@@ -1390,19 +1390,9 @@ apr_off_t h2_brigade_mem_size(apr_bucket_brigade *bb)
  * h2_ngheader
  ******************************************************************************/
 
-int h2_util_ignore_header(const char *name)
-{
-    /* never forward, ch. 8.1.2.2 */
-    return (H2_HD_MATCH_LIT_CS("connection", name)
-            || H2_HD_MATCH_LIT_CS("proxy-connection", name)
-            || H2_HD_MATCH_LIT_CS("upgrade", name)
-            || H2_HD_MATCH_LIT_CS("keep-alive", name)
-            || H2_HD_MATCH_LIT_CS("transfer-encoding", name));
-}
-
 static int count_header(void *ctx, const char *key, const char *value)
 {
-    if (!h2_util_ignore_header(key)) {
+    if (!h2_util_ignore_resp_header(key)) {
         (*((size_t*)ctx))++;
     }
     return 1;
@@ -1421,6 +1411,17 @@ static const char *inv_field_value_chr(const char *token)
 {
     const char *p = ap_scan_http_field_content(token);
     return (p && *p)? p : NULL;
+}
+
+static void strip_field_value_ws(nghttp2_nv *nv)
+{
+    while(nv->valuelen && (nv->value[0] == ' ' || nv->value[0] == '\t')) {
+        nv->value++; nv->valuelen--;
+    }
+    while(nv->valuelen && (nv->value[nv->valuelen-1] == ' '
+                           || nv->value[nv->valuelen-1] == '\t')) {
+        nv->valuelen--;
+    }
 }
 
 typedef struct ngh_ctx {
@@ -1455,13 +1456,14 @@ static int add_header(ngh_ctx *ctx, const char *key, const char *value)
     nv->namelen = strlen(key);
     nv->value = (uint8_t*)value;
     nv->valuelen = strlen(value);
+    strip_field_value_ws(nv);
 
     return 1;
 }
 
 static int add_table_header(void *ctx, const char *key, const char *value)
 {
-    if (!h2_util_ignore_header(key)) {
+    if (!h2_util_ignore_resp_header(key)) {
         add_header(ctx, key, value);
     }
     return 1;
@@ -1620,6 +1622,12 @@ static literal IgnoredRequestTrailers[] = { /* Ignore, see rfc7230, ch. 4.1.2 */
     H2_DEF_LITERAL("content-length"),
     H2_DEF_LITERAL("proxy-authorization"),
 };
+static literal IgnoredResponseHeaders[] = {
+    H2_DEF_LITERAL("upgrade"),
+    H2_DEF_LITERAL("connection"),
+    H2_DEF_LITERAL("keep-alive"),
+    H2_DEF_LITERAL("transfer-encoding"),
+};
 static literal IgnoredResponseTrailers[] = {
     H2_DEF_LITERAL("age"),
     H2_DEF_LITERAL("date"),
@@ -1634,35 +1642,110 @@ static literal IgnoredResponseTrailers[] = {
     H2_DEF_LITERAL("proxy-authenticate"),
 };
 
-static int ignore_header(const literal *lits, size_t llen,
-                         const char *name, size_t nlen)
+static int contains_name(const literal *lits, size_t llen, nghttp2_nv *nv)
 {
     const literal *lit;
     size_t i;
 
     for (i = 0; i < llen; ++i) {
         lit = &lits[i];
-        if (lit->len == nlen && !apr_strnatcasecmp(lit->name, name)) {
+        if (lit->len == nv->namelen
+            && !apr_strnatcasecmp(lit->name, (const char *)nv->name)) {
             return 1;
         }
     }
     return 0;
 }
 
-int h2_req_ignore_header(const char *name, size_t len)
+int h2_util_ignore_resp_header(const char *name)
 {
-    return ignore_header(H2_LIT_ARGS(IgnoredRequestHeaders), name, len);
+    nghttp2_nv nv;
+
+    nv.name = (uint8_t*)name;
+    nv.namelen = strlen(name);
+    return contains_name(H2_LIT_ARGS(IgnoredResponseHeaders), &nv);
 }
 
-int h2_req_ignore_trailer(const char *name, size_t len)
+
+static int h2_req_ignore_header(nghttp2_nv *nv)
 {
-    return (h2_req_ignore_header(name, len)
-            || ignore_header(H2_LIT_ARGS(IgnoredRequestTrailers), name, len));
+    return contains_name(H2_LIT_ARGS(IgnoredRequestHeaders), nv);
 }
 
-int h2_res_ignore_trailer(const char *name, size_t len)
+int h2_ignore_req_trailer(const char *name, size_t len)
 {
-    return ignore_header(H2_LIT_ARGS(IgnoredResponseTrailers), name, len);
+    nghttp2_nv nv;
+
+    nv.name = (uint8_t*)name;
+    nv.namelen = strlen(name);
+    return (h2_req_ignore_header(&nv)
+            || contains_name(H2_LIT_ARGS(IgnoredRequestTrailers), &nv));
+}
+
+int h2_ignore_resp_trailer(const char *name, size_t len)
+{
+    nghttp2_nv nv;
+
+    nv.name = (uint8_t*)name;
+    nv.namelen = strlen(name);
+    return (contains_name(H2_LIT_ARGS(IgnoredResponseHeaders), &nv)
+            || contains_name(H2_LIT_ARGS(IgnoredResponseTrailers), &nv));
+}
+
+static apr_status_t req_add_header(apr_table_t *headers, apr_pool_t *pool,
+                                   nghttp2_nv *nv, size_t max_field_len,
+                                   int *pwas_added)
+{
+    char *hname, *hvalue;
+    const char *existing;
+
+    *pwas_added = 0;
+    strip_field_value_ws(nv);
+
+    if (h2_req_ignore_header(nv)) {
+        return APR_SUCCESS;
+    }
+    else if (nv->namelen == sizeof("cookie")-1
+             && !apr_strnatcasecmp("cookie", (const char *)nv->name)) {
+        existing = apr_table_get(headers, "cookie");
+        if (existing) {
+            /* Cookie header come separately in HTTP/2, but need
+             * to be merged by "; " (instead of default ", ")
+             */
+            if (max_field_len
+                && strlen(existing) + nv->valuelen + nv->namelen + 4
+                   > max_field_len) {
+                /* "key: oldval, nval" is too long */
+                return APR_EINVAL;
+            }
+            hvalue = apr_pstrndup(pool, (const char*)nv->value, nv->valuelen);
+            apr_table_setn(headers, "Cookie",
+                           apr_psprintf(pool, "%s; %s", existing, hvalue));
+            return APR_SUCCESS;
+        }
+    }
+    else if (nv->namelen == sizeof("host")-1
+             && !apr_strnatcasecmp("host", (const char *)nv->name)) {
+        if (apr_table_get(headers, "Host")) {
+            return APR_SUCCESS; /* ignore duplicate */
+        }
+    }
+
+    hname = apr_pstrndup(pool, (const char*)nv->name, nv->namelen);
+    h2_util_camel_case_header(hname, nv->namelen);
+    existing = apr_table_get(headers, hname);
+    if (max_field_len) {
+        if ((existing? strlen(existing)+2 : 0) + nv->valuelen + nv->namelen + 2
+            > max_field_len) {
+            /* "key: (oldval, )?nval" is too long */
+            return APR_EINVAL;
+        }
+    }
+    if (!existing) *pwas_added = 1;
+    hvalue = apr_pstrndup(pool, (const char*)nv->value, nv->valuelen);
+    apr_table_mergen(headers, hname, hvalue);
+
+    return APR_SUCCESS;
 }
 
 apr_status_t h2_req_add_header(apr_table_t *headers, apr_pool_t *pool,
@@ -1670,51 +1753,13 @@ apr_status_t h2_req_add_header(apr_table_t *headers, apr_pool_t *pool,
                               const char *value, size_t vlen,
                               size_t max_field_len, int *pwas_added)
 {
-    char *hname, *hvalue;
-    const char *existing;
+    nghttp2_nv nv;
 
-    *pwas_added = 0;
-    if (h2_req_ignore_header(name, nlen)) {
-        return APR_SUCCESS;
-    }
-    else if (H2_HD_MATCH_LIT("cookie", name, nlen)) {
-        existing = apr_table_get(headers, "cookie");
-        if (existing) {
-            char *nval;
-
-            /* Cookie header come separately in HTTP/2, but need
-             * to be merged by "; " (instead of default ", ")
-             */
-            if (max_field_len && strlen(existing) + vlen + nlen + 4 > max_field_len) {
-                /* "key: oldval, nval" is too long */
-                return APR_EINVAL;
-            }
-            hvalue = apr_pstrndup(pool, value, vlen);
-            nval = apr_psprintf(pool, "%s; %s", existing, hvalue);
-            apr_table_setn(headers, "Cookie", nval);
-            return APR_SUCCESS;
-        }
-    }
-    else if (H2_HD_MATCH_LIT("host", name, nlen)) {
-        if (apr_table_get(headers, "Host")) {
-            return APR_SUCCESS; /* ignore duplicate */
-        }
-    }
-
-    hname = apr_pstrndup(pool, name, nlen);
-    h2_util_camel_case_header(hname, nlen);
-    existing = apr_table_get(headers, hname);
-    if (max_field_len) {
-        if ((existing? strlen(existing)+2 : 0) + vlen + nlen + 2 > max_field_len) {
-            /* "key: (oldval, )?nval" is too long */
-            return APR_EINVAL;
-        }
-    }
-    if (!existing) *pwas_added = 1;
-    hvalue = apr_pstrndup(pool, value, vlen);
-    apr_table_mergen(headers, hname, hvalue);
-
-    return APR_SUCCESS;
+    nv.name = (uint8_t*)name;
+    nv.namelen = nlen;
+    nv.value = (uint8_t*)value;
+    nv.valuelen = vlen;
+    return req_add_header(headers, pool, &nv, max_field_len, pwas_added);
 }
 
 /*******************************************************************************
