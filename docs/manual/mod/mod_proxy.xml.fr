@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1901497 -->
+<!-- English Revision: 1904804 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -1731,12 +1731,15 @@ ProxyPassReverse  "/mirror/foo/" "https://backend.example.com/"
 <description>Fait correspondre des serveurs distants dans l'espace d'URL
 du serveur local en utilisant des expressions rationnelles</description>
 <syntax>ProxyPassMatch [<var>regex</var>] !|<var>url</var>
-[<var>clé=valeur</var>
-	<var>[clé=valeur</var> ...]]</syntax>
+[<var>key=value</var>
+	<var>[key=value</var> ...]]</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context>
 </contextlist>
-
+<compatibility>Depuis la version 2.4.47, les paramètres <var>key=value</var>
+sont pris en compte lorsque le paramètre <var>url</var> contient des références
+arrières (voir note ci-dessous).
+</compatibility>
 <usage>
     <p>Cette directive est identique à la directive <directive
     module="mod_proxy">ProxyPass</directive>, mais fait usage des
@@ -1760,24 +1763,6 @@ du serveur local en utilisant des expressions rationnelles</description>
     <code>http://example.com/foo/bar.gif</code> en une requête mandatée
     pour <code>http://backend.example.com/foo/bar.gif</code>.</p>
 
-    <note><title>Note</title>
-      <p>L'argument URL doit pouvoir être interprété en tant qu'URL
-      <em>avant</em> les substitutions d'expressions rationnelles (et
-      doit aussi l'être après). Ceci limite les correspondances que vous
-      pouvez utiliser. Par exemple, si l'on avait utilisé</p>
-      <highlight language="config">
-        ProxyPassMatch "^(/.*\.gif)$"
-	"http://backend.example.com:8000$1"
-      </highlight>
-      <p>dans l'exemple précédent, nous aurions provoqué une erreur de
-      syntaxe au démarrage du serveur. C'est une bogue (PR 46665 dans
-      ASF bugzilla), et il est possible de la contourner en reformulant
-      la correspondance :</p>
-      <highlight language="config">
-        ProxyPassMatch "^/(.*\.gif)$" "http://backend.example.com:8000/$1"
-      </highlight>
-    </note>
-
     <p>Le drapeau <code>!</code> vous permet de ne pas mandater un
     sous-répertoire donné.</p>
 
@@ -1798,6 +1783,25 @@ du serveur local en utilisant des expressions rationnelles</description>
 	paramètre URL.
  	</p>
  	</note>
+
+    <note>
+        <title>Paramètres <code>key=value</code> et <var>url</var> avec
+	références arrières</title>
+      <p>Depuis la version 2.4.47, les paramètres <code>key=value</code> ne sont
+      plus ignorés dans une directive <directive>ProxyPassMatch</directive>
+      lorsqu'on utilise une <var>url</var> contenant des références arrières.
+      Cependant, pour conserver le comportement précédent relatif à la
+      réutilisation/conservation des connexions d'arrière-plan (qui n'avaient
+      jamais été réutilisées auparavant pour ces URLs), les paramètres
+      <var>enablereuse</var> et <var>disablereuse</var> prendront dans ce cas
+      respectivement comme valeurs par défaut <code>off</code> et
+      <code>on</code>. Définir explicitement <code>enablereuse=on</code> permet
+      de réutiliser les connexions, <strong>sauf si</strong> des références
+      arrières se trouvent dans la partie <code>authority</code> (nom d'hôte
+      et/ou port) de l'<var>url</var> (cette condition est imposée depuis la
+      version 2.4.55 du serveur HTTP Apache et provoque un avertissement au
+      démarrage car ces URLs ne sont pas réutilisables sous cette forme).</p>
+    </note>
 
     <note type="warning">
       <title>Avertissement à propos de la sécurité</title>
