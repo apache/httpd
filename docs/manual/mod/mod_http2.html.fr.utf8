@@ -85,7 +85,6 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#h2copyfiles">H2CopyFiles</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#h2direct">H2Direct</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#h2earlyhints">H2EarlyHints</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#h2headerstrictness">H2HeaderStrictness</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#h2maxsessionstreams">H2MaxSessionStreams</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#h2maxworkeridleseconds">H2MaxWorkerIdleSeconds</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#h2maxworkers">H2MaxWorkers</a></li>
@@ -360,35 +359,6 @@
 		103 comporte des en-têtes <code>Link</code> qui provoquent le
 		<code>préchargement</code> des ressources considérées.
             </p>
-        
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="h2headerstrictness" id="h2headerstrictness">Directive</a> <a name="H2HeaderStrictness" id="H2HeaderStrictness">H2HeaderStrictness</a> <a title="Lien permanent" href="#h2headerstrictness" class="permalink">&para;</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définition, à l'aide d'un numéro de RFC, du niveau de
-	rigueur à appliquer lors de la vérification des en-têtes.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>H2HeaderStrictness <var>rfc</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>rfc7540</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
-<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_http2</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.5.1 du serveur HTTP
-	Apache.</td></tr>
-</table>
-            <p>
-                La directive <code class="directive">H2HeaderStrictness</code> permet de
-		définir les tests de conformité des valeurs d'en-têtes en se
-		référant au numéro de RFC IETF spécifié. 'rfc7540' est la RFC
-		HTTP/2 initiale et 'rfc9113' en est la version mise à jour qui
-		interdit les espaces en début et en fin de champ.
-            </p><p>
-                Spécifiez 'highest' pour appliquer la plus grande rigueur
-		disponible aux vérifications. Cette dernière dépend de la
-		version de la bibliothèque nghttp2 utilisée. La 'rfc9113' n'est
-		disponible qu'à partir de la version 1.50.0 de la bibliothèque
-		nghttp2. Lorsqu'on compile avec des versions antérieures, cette
-		valeur de paramètre n'a aucun effet.
-        </p>
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
