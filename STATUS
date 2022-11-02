@@ -168,7 +168,7 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
         https://svn.apache.org/r1904516
      Backport version for 2.4.x of patch:
         svn merge works
-     +1: jim, ylavic, icing
+     +1: jim, ylavic, icing, jfclere
 
   *) mod_proxy_hcheck: Re-enable workers in standard ERROR state. PR 66302.
      trunk revision:
