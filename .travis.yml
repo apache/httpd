@@ -436,7 +436,8 @@ jobs:
            APR_VERSION=1.7.x
            APU_VERSION=1.7.x APU_CONFIG="--with-crypto --with-ldap"
            CONFIG="--enable-mods-shared=reallyall"
-           TEST_ASAN=1 ASAN_OPTIONS="detect_leaks=0" # LeakSanitizer segfaults some{how,times}..
+           # LeakSanitizer segfaults some{how,times}..
+           TEST_ASAN=1 ASAN_OPTIONS="detect_leaks=0"
            CLEAR_CACHE=1
     # -------------------------------------------------------------------------
     - name: Linux Ubuntu Focal, ASan, pool-debug
@@ -445,7 +446,8 @@ jobs:
            APR_VERSION=1.7.x APR_CONFIG="--enable-pool-debug"
            APU_VERSION=1.7.x APU_CONFIG="--with-crypto --with-ldap"
            CONFIG="--enable-mods-shared=reallyall"
-           TEST_ASAN=1 ASAN_OPTIONS="detect_leaks=0" # LeakSanitizer segfaults some{how,times}..
+           TEST_ASAN=1 ASAN_OPTIONS="detect_leaks=0"
+           # LeakSanitizer segfaults some{how,times}..
            CLEAR_CACHE=1
   allow_failures:
     # Intermittent failures:
