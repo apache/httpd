@@ -430,16 +430,17 @@ jobs:
            CONFIG="--enable-mods-shared=reallyall --disable-http2"
            TEST_UBSAN=1
     # -------------------------------------------------------------------------
+    # LeakSanitizer segfaults some{how,times}..
     - name: Linux Ubuntu Focal, ASan
       dist: focal
       env: NOTEST_CFLAGS="-ggdb -fsanitize=address -fno-sanitize-recover=address -fno-omit-frame-pointer"
            APR_VERSION=1.7.x
            APU_VERSION=1.7.x APU_CONFIG="--with-crypto --with-ldap"
            CONFIG="--enable-mods-shared=reallyall"
-           # LeakSanitizer segfaults some{how,times}..
            TEST_ASAN=1 ASAN_OPTIONS="detect_leaks=0"
            CLEAR_CACHE=1
     # -------------------------------------------------------------------------
+    # LeakSanitizer segfaults some{how,times}..
     - name: Linux Ubuntu Focal, ASan, pool-debug
       dist: focal
       env: NOTEST_CFLAGS="-ggdb -fsanitize=address -fno-sanitize-recover=address -fno-omit-frame-pointer"
@@ -447,7 +448,6 @@ jobs:
            APU_VERSION=1.7.x APU_CONFIG="--with-crypto --with-ldap"
            CONFIG="--enable-mods-shared=reallyall"
            TEST_ASAN=1 ASAN_OPTIONS="detect_leaks=0"
-           # LeakSanitizer segfaults some{how,times}..
            CLEAR_CACHE=1
   allow_failures:
     # Intermittent failures:
