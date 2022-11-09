@@ -72,15 +72,22 @@ which is the <directive module="core">ServerRoot</directive> when
 
 <dt><code>-p</code> <var>program</var></dt>
 
-<dd>If given, <code>rotatelogs</code> will execute the specified
+<dd><p>If given, <code>rotatelogs</code> will execute the specified
 program every time a new log file is opened.  The filename of the
 newly opened file is passed as the first argument to the program.  If
 executing after a rotation, the old log file is passed as the second
-argument.  <code>rotatelogs</code> does not wait for the specified
+argument.</p> 
+<p> <code>rotatelogs</code> does not wait for the specified
 program to terminate before continuing to operate, and will not log
-any error code returned on termination.  The spawned program uses the
+any error code returned on termination.</p>
+<p>The spawned program uses the
 same stdin, stdout, and stderr as rotatelogs itself, and also inherits
-the environment.</dd>
+the environment.</p>
+<p>When two parameters are provided, under some conditions the parameters 
+will have the same value.  For example, if rotation is triggerd but the 
+portions of the time and date incorporated into the log filename do not change
+across the rotation.</p>
+</dd>
 
 <dt><code>-f</code></dt>
 <dd>Causes the logfile to be opened immediately, as soon as
@@ -211,6 +218,20 @@ an offset.</dd>
      <p>This creates the files /var/log/logfile.yyyy.mm.dd where
      yyyy is the year, mm is the month, and dd is the day of the month.
      Logging will switch to a new file every day at midnight, local time.</p>
+ 
+ <example>
+<highlight language="config">
+     CustomLog "|bin/rotatelogs -l /var/log/logfile.%Y.%m 86400" common
+</highlight>
+</example>
+
+     <p>This creates the files /var/log/logfile.yyyy.mm where
+     yyyy is the year and mm is the month.   Every day at midnight, rotation
+     will occur, including running programs specified with <code>-p</code>. 
+     Despite rotation ocurring, the filename will only change on the first 
+     rotation of the month. Rotation on other days will continue to output file
+     and append to it.
+     </p>
 
 <example>
 <highlight language="config">
