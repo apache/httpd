@@ -83,7 +83,7 @@ typedef struct {
     const char *dir;
     int locktimeout;
     int allow_depthinfinity;
-    ap_expr_info_t *allow_lockdiscovery;
+    int allow_lockdiscovery;
 
 } dav_dir_conf;
 
@@ -159,6 +159,8 @@ static void *dav_create_dir_config(apr_pool_t *p, char *dir)
     dav_dir_conf *conf;
 
     conf = (dav_dir_conf *)apr_pcalloc(p, sizeof(*conf));
+
+    conf->allow_lockdiscovery = DAV_ENABLED_ON;
 
     /* clean up the directory to remove any trailing slash */
     if (dir != NULL) {
@@ -304,26 +306,17 @@ static const char *dav_cmd_davdepthinfinity(cmd_parms *cmd, void *config,
 }
 
 /*
- * Command handler for the DAVLockDiscovery directive, which is TAKE1.
+ * Command handler for the DAVLockDiscovery directive, which is FLAG.
  */
 static const char *dav_cmd_davlockdiscovery(cmd_parms *cmd, void *config,
-                                            const char *arg)
+                                            int arg)
 {
     dav_dir_conf *conf = (dav_dir_conf *)config;
 
-    if (strncasecmp(arg, "expr=", 5) == 0) {
-        const char *err;
-        if ((arg[5] == '\0'))
-            return "missing condition";
-        conf->allow_lockdiscovery = ap_expr_parse_cmd(cmd, &arg[5],
-                                                      AP_EXPR_FLAG_DONT_VARY,
-                                                      &err, NULL);
-        if (err)
-            return err;
-    } else {
-        return "error in condition clause";
-    }
-
+    if (arg)
+        conf->allow_lockdiscovery = DAV_ENABLED_ON;
+    else
+        conf->allow_lockdiscovery = DAV_ENABLED_OFF;
     return NULL;
 }
 
@@ -2098,18 +2091,8 @@ static dav_error * dav_propfind_walker(dav_walk_resource *wres, int calltype)
     }
 
     conf = ap_get_module_config(ctx->r->per_dir_config, &dav_module);
-    if (conf && conf->allow_lockdiscovery) {
-            const char *errstr = NULL;
-            int eval = ap_expr_exec(ctx->r, conf->allow_lockdiscovery, &errstr);
-            if (errstr) {
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, ctx->r, APLOGNO(10403)
-                              "Failed to evaluate expression (%s) - ignoring",
-                              errstr);
-            } else {
-                if (!eval) 
-                    flags |= DAV_PROPDB_DISABLE_LOCKDISCOVERY;
-            }
-    }
+    if (conf && conf->allow_lockdiscovery == DAV_ENABLED_OFF)
+        flags |= DAV_PROPDB_DISABLE_LOCKDISCOVERY;
 
     /*
     ** Note: ctx->doc can only be NULL for DAV_PROPFIND_IS_ALLPROP. Since
@@ -5265,9 +5248,9 @@ static const command_rec dav_cmds[] =
                  "allow Depth infinity PROPFIND requests"),
 
     /* per directory/location, or per server */
-    AP_INIT_TAKE1("DAVLockDiscovery", dav_cmd_davlockdiscovery, NULL,
-                  ACCESS_CONF|RSRC_CONF,
-                  "allow lock discovery by PROPFIND requests"),
+    AP_INIT_FLAG("DAVLockDiscovery", dav_cmd_davlockdiscovery, NULL,
+                 ACCESS_CONF|RSRC_CONF,
+                 "allow lock discovery by PROPFIND requests"),
 
     { NULL }
 };
