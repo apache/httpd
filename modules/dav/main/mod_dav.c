@@ -160,8 +160,6 @@ static void *dav_create_dir_config(apr_pool_t *p, char *dir)
 
     conf = (dav_dir_conf *)apr_pcalloc(p, sizeof(*conf));
 
-    conf->allow_lockdiscovery = DAV_ENABLED_ON;
-
     /* clean up the directory to remove any trailing slash */
     if (dir != NULL) {
         char *d;
