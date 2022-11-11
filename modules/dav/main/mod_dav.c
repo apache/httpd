@@ -1458,8 +1458,7 @@ static dav_error *dav_gen_supported_live_props(request_rec *r,
     dav_error *err;
 
     /* open lock database, to report on supported lock properties */
-    /* ### should open read-only */
-    if ((err = dav_open_lockdb(r, 0, &lockdb)) != NULL) {
+    if ((err = dav_open_lockdb(r, 1, &lockdb)) != NULL) {
         return dav_push_error(r->pool, err->status, 0,
                               "The lock database could not be opened, "
                               "preventing the reporting of supported lock "
@@ -2242,8 +2241,7 @@ static int dav_method_propfind(request_rec *r)
     apr_pool_create(&ctx.scratchpool, r->pool);
     apr_pool_tag(ctx.scratchpool, "mod_dav-scratch");
 
-    /* ### should open read-only */
-    if ((err = dav_open_lockdb(r, 0, &ctx.w.lockdb)) != NULL) {
+    if ((err = dav_open_lockdb(r, 1, &ctx.w.lockdb)) != NULL) {
         err = dav_push_error(r->pool, err->status, 0,
                              "The lock database could not be opened, "
                              "preventing access to the various lock "
