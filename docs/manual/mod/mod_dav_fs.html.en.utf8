@@ -53,6 +53,7 @@
 <div id="quickview"><h3 class="directives">Directives</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#davlockdb">DavLockDB</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#davlockdiscovery">DavLockDiscovery</a></li>
 </ul>
 <h3>Bugfix checklist</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd changelog</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_dav_fs">Known issues</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_dav_fs">Report a bug</a></li></ul><h3>See also</h3>
 <ul class="seealso">
@@ -95,6 +96,26 @@
     relative to the state directory (configurable via <code class="directive"><a href="../mod/core.html#defaultstatedir">DefaultStateDir</a></code>) is used.</p>
     </div>
 
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="DavLockDiscovery" id="DavLockDiscovery">DavLockDiscovery</a> <a name="davlockdiscovery" id="davlockdiscovery">Directive</a> <a title="Permanent link" href="#davlockdiscovery" class="permalink">&para;</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enable lock discovery</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>DavLockDiscovery on|off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>DavLockDiscovery on</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_dav_fs</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available from Apache 2.5.0 and later.</td></tr>
+</table>
+    <p><code class="directive">DavLockDiscovery</code> controls if the lock
+    discovery feature is enabled for <code>PROPFIND</code> method.
+    When disabled, <code>PROPFIND</code> always returns an empty
+    <code>lockdiscovery</code> section. This improves performance
+    if clients use <code>PROPFIND</code> a lot.</p>
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">DavLockDiscovery off</pre>
+</div>
 
 </div>
 </div>
