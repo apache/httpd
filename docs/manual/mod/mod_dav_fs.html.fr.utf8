@@ -109,21 +109,21 @@ du serveur HTTP Apache.</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="davlockdiscovery" id="davlockdiscovery">Directive</a> <a name="DavLockDiscovery" id="DavLockDiscovery">DavLockDiscovery</a> <a title="Lien permanent" href="#davlockdiscovery" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Active la découverte des verrous</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Active la découverte de verrou</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>DavLockDiscovery on|off</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>DavLockDiscovery on</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_dav_fs</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de Apache 2.5.0.</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.5.0 du serveur HTTP Apache.</td></tr>
 </table>
-    <p><code class="directive">DavLockDiscovery</code> contrôle la 
-    découverte des verrous par la méthode <code>PROPFIND</code>.
-    Lorsqu'elle est désactivée, <code>PROPFIND</code> renvoie
-    toujours une section <code>lockdiscovery</code> vide. Ce
-    réglage améliore les performances dans le cas où des
-    clients utilisent beaucoup <code>PROPFIND</code>.</p>
-    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">DavLockDiscovery off</pre>
+    <p>La directive <code class="directive">DavLockDiscovery</code> permet de contrôler
+    l'activation de la fonctionnalité de découverte de verrou pour la méthode
+    <code>PROPFIND</code>. Lorsque cette fonctionnalité est désactivée,
+    <code>PROPFIND</code> renvoie toujours une section
+    <code>lockdiscovery</code> vide. Les performances seront alors améliorées si
+    les clients utilisent intensément <code>PROPFIND</code>.</p>
+    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">DavLockDiscovery off</pre>
 </div>
 
 </div>

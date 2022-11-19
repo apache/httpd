@@ -83,17 +83,24 @@ la directive <code class="directive"><a href="../mod/core.html#serverroot">Serve
 </dd>
 
 <dt><code>-p</code> <var>programme</var></dt>
-<dd>Avec cette option, <code>rotatelogs</code> exécutera le programme
+<dd><p>Avec cette option, <code>rotatelogs</code> exécutera le programme
 <var>programme</var> chaque fois qu'un nouveau fichier journal sera
 ouvert. Le nom du fichier nouvellement ouvert est passé comme premier
 argument au programme. Si l'exécution se produit après une rotation,
 l'ancien nom du fichier journal est passé au programme comme second
-argument. <code>rotatelogs</code>
+argument.</p>
+<p> <code>rotatelogs</code>
 n'attend pas la fin du <var>programme</var> pour continuer son
 exécution, et cessera tout enregistrement de codes d'erreur lorsqu'il
-aura terminé son processus. Le <var>programme</var> utilise les mêmes
+aura terminé son processus.</p>
+<p>Le <var>programme</var> utilise les mêmes
 canaux stdin, stdout, et stderr que rotatelogs, et hérite de son
-environnement.</dd>
+environnement.</p>
+<p>Lorsque deux paramètres sont fournis, les paramètres auront sous certaines
+conditions la même valeur, comme par exemple, dans le cas où la rotation est
+déclenchée alors que les portions du temps et de la date faisant partie du nom
+du fichier journal ne sont pas modifiées par cette rotation.</p>
+</dd>
 
 <dt><code>-f</code></dt>
 <dd>Ouvre le fichier journal immédiatement, dès que
@@ -229,6 +236,18 @@ spécifier un décalage.</dd>
      /var/log/fichier-journal.yyyy.mm.dd où yyyy correspond à l'année,
      mm au mois et dd au jour du mois. La journalisation basculera vers
      un nouveau fichier chaque jour à minuit, temps local.</p>
+ 
+ <div class="example"><pre class="prettyprint lang-config">CustomLog "|bin/rotatelogs -l /var/log/logfile.%Y.%m 86400" common</pre>
+</div>
+
+     <p>Cette directive crée les fichiers /var/log/logfile.yyyy.mm où yyyy
+     correspond à l'année et mm au mois. La rotation sera déclenchée chaque jour
+     à minuit, ainsi que l'exécution des programmes spécifiés à l'aide de
+     l'option <code>-p</code>. Bien que la rotation soit effectuée, le nom de
+     fichier ne sera modifié qu'au cours de la première rotation du mois. Les
+     rotations des autres jours du mois continueront sur le fichier de sortie et
+     y ajouteront leurs entrées.
+     </p>
 
 <div class="example"><pre class="prettyprint lang-config">CustomLog "|bin/rotatelogs /var/log/fichier-journal 5M" common</pre>
 </div>
