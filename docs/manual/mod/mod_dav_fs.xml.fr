@@ -109,33 +109,6 @@ du serveur HTTP Apache.</compatibility>
 
 <directivesynopsis>
 <name>DavLockDiscovery</name>
-<description>Active la découverte des verrous</description>
-<syntax>DavLockDiscovery on|off</syntax>
-<default>DavLockDiscovery on</default>
-<contextlist><context>server config</context>
-<context>virtual host</context>
-<context>directory</context>
-<context>.htaccess</context>
-</contextlist>
-<compatibility>Disponible à partir de Apache 2.5.0.</compatibility>
-
-<usage>
-    <p><directive>DavLockDiscovery</directive> contrôle la 
-    découverte des verrous par la méthode <code>PROPFIND</code>.
-    Lorsqu'elle est désactivée, <code>PROPFIND</code> renvoie
-    toujours une section <code>lockdiscovery</code> vide. Ce
-    réglage améliore les performances dans le cas où des
-    clients utilisent beaucoup <code>PROPFIND</code>.</p>
-    <example><title>Example</title>
-     <highlight language="config">
-      DavLockDiscovery off
-     </highlight>
-    </example>
-</usage>
-</directivesynopsis>
-
-<directivesynopsis>
-<name>DavLockDiscovery</name>
 <description>Active la découverte de verrou</description>
 <syntax>DavLockDiscovery on|off</syntax>
 <default>DavLockDiscovery on</default>
