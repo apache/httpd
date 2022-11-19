@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1843164 -->
+<!-- English Revision: 1905230 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -127,6 +127,33 @@ du serveur HTTP Apache.</compatibility>
     réglage améliore les performances dans le cas où des
     clients utilisent beaucoup <code>PROPFIND</code>.</p>
     <example><title>Example</title>
+     <highlight language="config">
+      DavLockDiscovery off
+     </highlight>
+    </example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>DavLockDiscovery</name>
+<description>Active la découverte de verrou</description>
+<syntax>DavLockDiscovery on|off</syntax>
+<default>DavLockDiscovery on</default>
+<contextlist><context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+<context>.htaccess</context>
+</contextlist>
+<compatibility>Disponible à partir de la version 2.5.0 du serveur HTTP Apache.</compatibility>
+
+<usage>
+    <p>La directive <directive>DavLockDiscovery</directive> permet de contrôler
+    l'activation de la fonctionnalité de découverte de verrou pour la méthode
+    <code>PROPFIND</code>. Lorsque cette fonctionnalité est désactivée,
+    <code>PROPFIND</code> renvoie toujours une section
+    <code>lockdiscovery</code> vide. Les performances seront alors améliorées si
+    les clients utilisent intensément <code>PROPFIND</code>.</p>
+    <example><title>Exemple</title>
      <highlight language="config">
       DavLockDiscovery off
      </highlight>
