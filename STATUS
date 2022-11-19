@@ -220,6 +220,21 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      PR: https://github.com/apache/httpd/pull/331
      +1: icing,
 
+  *) mod_dav: Open the lock database read-only when possible
+     trunk patch: http://svn.apache.org/r1905229
+     2.4.x patch: trunk works
+     +1: manu
+
+  *) mod_dav: DAVlockDiscovery option to disable WebDAV lock discovery
+     This is a game changer for performances if client use PROPFIND a lot,
+     trunk patch: http://svn.apache.org/r1904638
+                  http://svn.apache.org/r1904662 
+                  http://svn.apache.org/r1905170
+                  http://svn.apache.org/r1905206
+                  http://svn.apache.org/r1905230
+     2.4.x patch: trunk works
+     +1: manu
+
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
@@ -281,21 +296,6 @@ PATCHES/ISSUES THAT ARE BEING WORKED
              Do you think we'd better remove the prefetch, or maybe just
              make it nonblocking (by default)?
         jim: Non-blocking seems the best way to handle...
-
-  *) mod_dav: Open the lock database read-only when possible
-     trunk patch: http://svn.apache.org/r1905229
-     2.4.x patch: trunk works
-     +1: manu
-
-  *) mod_dav: DAVlockDiscovery option to disable WebDAV lock discovery
-     This is a game changer for performances if client use PROPFIND a lot,
-     trunk patch: http://svn.apache.org/r1904638
-                  http://svn.apache.org/r1904662 
-                  http://svn.apache.org/r1905170
-                  http://svn.apache.org/r1905206
-                  http://svn.apache.org/r1905230
-     2.4.x patch: trunk works
-     +1: manu
 
 PATCHES/ISSUES THAT ARE STALLED
 
