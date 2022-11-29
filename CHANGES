@@ -1,6 +1,12 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.55
 
+  *) mod_ssl: when a proxy connection had handled a request using SSL, an
+     error was logged when "SSLProxyEngine" was only configured in the
+     location/proxy section and not the overall server. The connection
+     continued to work, the error log was in error. Fixed PR66190.
+     [Stefan Eissing]
+
   *) mod_http2: Export mod_http2.h as public header. [Stefan Eissing]
 
   *) mod_md: a new directive `MDStoreLocks` can be used on cluster
