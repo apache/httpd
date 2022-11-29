@@ -157,6 +157,15 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      +1: jim, ylavic, icing
      covener: minor MMN needed for mod_proxy.h?
 
+  *) mod_authn_core: Add expression support to AuthName and AuthType.
+     Trunk version of patch:
+        https://svn.apache.org/r1663123
+        https://svn.apache.org/r1670431
+     Backport version for 2.4.x of patch:
+        https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/httpd-2.4-authn-expr.patch
+     +1: minfrin, jim, covener
+     rpluem says: The version in the compatibility notes is wrong.
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -173,15 +182,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      +1: minfrin, jim,
      jailletc36: r1745033 seems related and should in included
 
-  *) mod_authn_core: Add expression support to AuthName and AuthType.
-     Trunk version of patch:
-        https://svn.apache.org/r1663123
-        https://svn.apache.org/r1670431
-     Backport version for 2.4.x of patch:
-        https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/httpd-2.4-authn-expr.patch
-     +1: minfrin, jim,
-     rpluem says: The version in the compatibility notes is wrong.
-
   *) mod_proxy_hcheck: hcmethod now allow for HTTP/1.1 requests
      using GET11, HEAD11 and/or OPTIONS11.
      trunk revision:
@@ -190,14 +190,15 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         https://svn.apache.org/r1904642
      Backport version for 2.4.x of patch:
         svn merge works
-     +1: jim,
+     +1: jim, covener
+     covener: needs MMN bump
 
   *) mod_http2: backport of v2.0.10 to synch sources with trunk/github
      See: change-entries/http2_v2.txt for details.
      The PR contains the unchanged sources from trunk, plus the test
      additions made.
      PR: https://github.com/apache/httpd/pull/331
-     +1: icing,
+     +1: icing, covener (minimal review)
 
   *) mod_dav: DAVlockDiscovery option to disable WebDAV lock discovery
      This is a game changer for performances if client use PROPFIND a lot,
@@ -207,7 +208,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1905206
                   http://svn.apache.org/r1905230
      2.4.x patch: svn merge -c 1904638,1904662,1905170,1905206,1905230 ^/httpd/httpd/trunk . 
-     +1: manu
+     +1: manu, covener
+     covener: xml needs doc tweak after backport
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
