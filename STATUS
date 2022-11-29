@@ -157,14 +157,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      +1: jim, ylavic, icing
      covener: minor MMN needed for mod_proxy.h?
 
-  *) mod_dav: Open the lock database read-only when possible
-     trunk patch: http://svn.apache.org/r1905229
-                  http://svn.apache.org/r1905404
-     2.4.x patch: trunk works
-     +1: manu, jailletc36 (by inspection), covener
-
-
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
