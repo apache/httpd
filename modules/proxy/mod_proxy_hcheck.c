@@ -1073,6 +1073,18 @@ static int hc_pre_config(apr_pool_t *pconf, apr_pool_t *plog,
     hctp = NULL;
     tpsize = HC_THREADPOOL_SIZE;
 #endif
+
+    ajp_handle_cping_cpong = APR_RETRIEVE_OPTIONAL_FN(ajp_handle_cping_cpong);
+    if (ajp_handle_cping_cpong) {
+       proxy_hcmethods_t *method = proxy_hcmethods;
+       for (; method->name; method++) {
+           if (method->method == CPING) {
+               method->implemented = 1;
+               break;
+           }
+       }
+    }
+
     return OK;
 }
 static int hc_post_config(apr_pool_t *p, apr_pool_t *plog,
@@ -1127,17 +1139,6 @@ static int hc_post_config(apr_pool_t *p, apr_pool_t *plog,
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(03265)
                      "watchdog callback registered (%s for %s)", HCHECK_WATHCHDOG_NAME, s->server_hostname);
         s = s->next;
-    }
-
-    ajp_handle_cping_cpong = APR_RETRIEVE_OPTIONAL_FN(ajp_handle_cping_cpong);
-    if (ajp_handle_cping_cpong) {
-       proxy_hcmethods_t *method = proxy_hcmethods;
-       for (; method->name; method++) {
-           if (method->method == CPING) {
-               method->implemented = 1;
-               break;
-           }
-       }
     }
 
     return OK;

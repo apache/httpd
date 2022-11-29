@@ -7,6 +7,9 @@ Changes with Apache 2.4.55
      continued to work, the error log was in error. Fixed PR66190.
      [Stefan Eissing]
 
+  *) mod_proxy_hcheck: Detect AJP/CPING support correctly. PR 66300.
+     [Alessandro Cavaliere <alessandro.cavalier7 unibo.it>]
+
   *) mod_http2: Export mod_http2.h as public header. [Stefan Eissing]
 
   *) mod_md: a new directive `MDStoreLocks` can be used on cluster
