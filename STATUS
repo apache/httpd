@@ -149,33 +149,13 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_http2: Export mod_http2.h
-     Trunk version of patch:
-        https://svn.apache.org/r1727934
-     Backport version for 2.4.x of patch:
-       https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/327.diff
-     Can be applied via apply_backport_pr.sh 327
-     +1: rpluem, icing, ylavic
-
-  *) mod_ssl: fix for PR66190.
-     trunk revision:
-        https://svn.apache.org/r1903167
-     PR: https://github.com/apache/httpd/pull/326
-     +1: icing, rpluem, ylavic 
-
-  *) mod_proxy_hcheck: Detect AJP/CPING support correctly. PR 66300.
-     trunk revision:
-        https://svn.apache.org/r1904516
-     Backport version for 2.4.x of patch:
-        svn merge works
-     +1: jim, ylavic, icing, jfclere
-
   *) mod_proxy_hcheck: Re-enable workers in standard ERROR state. PR 66302.
      trunk revision:
         https://svn.apache.org/r1904518
      Backport version for 2.4.x of patch:
         svn merge works
      +1: jim, ylavic, icing
+     covener: minor MMN needed for mod_proxy.h?
 
   *) mod_dav: Open the lock database read-only when possible
      trunk patch: http://svn.apache.org/r1905229
