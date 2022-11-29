@@ -177,6 +177,13 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
         svn merge works
      +1: jim, ylavic, icing
 
+  *) mod_dav: Open the lock database read-only when possible
+     trunk patch: http://svn.apache.org/r1905229
+                  http://svn.apache.org/r1905404
+     2.4.x patch: trunk works
+     +1: manu, jailletc36 (by inspection), covener
+
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -219,13 +226,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      additions made.
      PR: https://github.com/apache/httpd/pull/331
      +1: icing,
-
-  *) mod_dav: Open the lock database read-only when possible
-     trunk patch: http://svn.apache.org/r1905229
-     2.4.x patch: trunk works
-     +1: manu, jailletc36 (by inspection)
-    jailletc36: I've prepared a changelog in r1905404. It could eb included in the
-                backport proposal
 
   *) mod_dav: DAVlockDiscovery option to disable WebDAV lock discovery
      This is a game changer for performances if client use PROPFIND a lot,
