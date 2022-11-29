@@ -1,6 +1,8 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.55
 
+  *) mod_http2: Export mod_http2.h as public header. [Stefan Eissing]
+
   *) mod_md: a new directive `MDStoreLocks` can be used on cluster
      setups with a shared file system for `MDStoreDir` to order
      activation of renewed certificates when several cluster nodes are
