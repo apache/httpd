@@ -188,10 +188,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         https://svn.apache.org/r1903744
         https://svn.apache.org/r1903745
         https://svn.apache.org/r1904642
+        https://svn.apache.org/r1905646 (*)
      Backport version for 2.4.x of patch:
-        svn merge works
+        svn merge works  (* requires hand fixing)
      +1: jim, covener
-     covener: needs MMN bump
 
   *) mod_http2: backport of v2.0.10 to synch sources with trunk/github
      See: change-entries/http2_v2.txt for details.
@@ -203,11 +203,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   *) mod_dav: DAVlockDiscovery option to disable WebDAV lock discovery
      This is a game changer for performances if client use PROPFIND a lot,
      trunk patch: http://svn.apache.org/r1904638
-                  http://svn.apache.org/r1904662 
+                  http://svn.apache.org/r1904662
                   http://svn.apache.org/r1905170
                   http://svn.apache.org/r1905206
                   http://svn.apache.org/r1905230
-     2.4.x patch: svn merge -c 1904638,1904662,1905170,1905206,1905230 ^/httpd/httpd/trunk . 
+     2.4.x patch: svn merge -c 1904638,1904662,1905170,1905206,1905230 ^/httpd/httpd/trunk .
      +1: manu, covener
      covener: xml needs doc tweak after backport
 
