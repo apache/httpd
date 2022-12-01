@@ -244,7 +244,7 @@ l'alias sp&eacute;cifi&eacute;</description>
     module="mod_auth_basic">AuthBasicProvider</directive> ou <directive
     module="mod_auth_digest">AuthDigestProvider</directive>.</p>
 
-    <note>Cette directive n'a aucun influence sur le processus
+    <note>Cette directive n'a aucune influence sur le processus
     d'autorisation, m&ecirc;me pour les modules qui fournissent &agrave; la fois
     l'authentification et l'autorisation.</note>
 
