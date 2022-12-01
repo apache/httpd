@@ -188,7 +188,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         https://svn.apache.org/r1903744
         https://svn.apache.org/r1903745
         https://svn.apache.org/r1904642
-        https://svn.apache.org/r1905646 (*)
+        https://svn.apache.org/r1905646/1905669. (*)
      Backport version for 2.4.x of patch:
         svn merge works  (* requires hand fixing)
      +1: jim, covener
