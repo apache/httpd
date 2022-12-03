@@ -481,7 +481,8 @@ are interpreted, it is important to understand how this works.</p>
       and <directive type="section"
       module="core">LocationMatch</directive> done simultaneously</li>
 
-      <li><directive type="section" module="core">If</directive>
+      <li><directive type="section" module="core">If</directive> sections, even when
+      they are enclosed in any of the preceding contexts.
       </li>
 
     </ol>
@@ -519,6 +520,15 @@ are interpreted, it is important to understand how this works.</p>
         container takes the place of the <directive module="core"
         type="section">Directory</directive> container in the processing
         order.</li>
+        <li> Caution should be exercised when mixing related configuration
+        directives inside and outside of <directive type="section" module="core"
+        >If</directive> because of the effect on merging order.  Explicit use
+        of <directive type="section" module="core" >Else</directive> can help.
+        </li>
+        <li> When <directive type="section" module="core" >If</directive> is 
+        used in <code>.htaccess</code>, the enclosed directives in a parent 
+        directory will be merged <em>after</em> non-enclosed directives in a 
+        subdirectory.</li>
     </ul>
 
     <note><title>Technical Note</title>
