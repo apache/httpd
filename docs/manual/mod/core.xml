@@ -1424,7 +1424,7 @@ EnableSendfile On
     </highlight>
 
     <note type="warning"><title>Note</title>
-        <p> This directive is evaluated and configuration processing time, 
+        <p> This directive is evaluated at configuration processing time, 
         not at runtime. As a result, this directive cannot be conditonally
         evaluated by enclosing it in an <directive type="section" module="core"
         >If</directive> section.</p>
@@ -5310,7 +5310,7 @@ recognized methods to modules.</p>
     </highlight>
 
     <note type="warning"><title>Note</title>
-        <p> This directive is evaluated and configuration processing time,
+        <p> This directive is evaluated at configuration processing time,
         not at runtime. As a result, this directive cannot be conditonally
         evaluated by enclosing it in an <directive type="section" module="core"
         >If</directive> section.</p>
