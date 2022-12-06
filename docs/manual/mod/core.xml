@@ -1404,6 +1404,12 @@ EnableSendfile On
 &lt;/IfDefine&gt;
     </highlight>
 
+    <note type="warning"><title>Note</title>
+        <p> This directive is evaluated and configuration processing time, 
+        not at runtime. As a result, this directive cannot be conditonally
+        evaluated by enclosing it in an <directive type="section" module="core"
+        >If</directive> section.</p>
+    </note>
 </usage>
 </directivesynopsis>
 
@@ -2230,6 +2236,16 @@ satisfied by a request at runtime</description>
     been evaluated, and so will not be available to use in this
     directive.
     </note>
+    
+    <note type="warning">
+    Directives that take affect during configuration parsing, such as 
+    <directive>Define</directive>, <directive>Include</directive>, and
+    <directive>Error</directive> cannot be made conditional by enclosing
+    them in an if <directive type="section">If</directive> configuration
+    section.  These sections are always part of the configuration, 
+    regardless of how they evaluate at runtime.
+    </note>
+
 
 </usage>
 
