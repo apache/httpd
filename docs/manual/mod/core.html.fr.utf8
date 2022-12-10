@@ -1408,6 +1408,12 @@ d'erreur personnalisé</td></tr>
 &lt;/IfDefine&gt;</pre>
 
 
+    <div class="warning"><h3>Note</h3>
+        <p>Cette directive est évaluée lors du traitement de la configuration,
+	et non à l'exécution. Par conséquent, elle ne peut pas être évaluée de
+	manière conditionnelle en l'incluant dans une section <code class="directive"><a href="#if">&lt;If&gt;</a></code>.</p>
+    </div>
+
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -2382,6 +2388,15 @@ requête</td></tr>
     response headers, are set after &lt;If&gt; conditions have already
     been evaluated, and so will not be available to use in this
     directive.
+    </div>
+
+    <div class="warning">
+    Les directives qui sont évaluées lors du traitement de la configuration
+    comme <code class="directive">Define</code>, <code class="directive">Include</code> et
+    <code class="directive">Error</code> ne peuvent pas être traitées de manière
+    conditionnelle en les incluant dans une section de configuration <code class="directive">&lt;If&gt;</code>. Ces sections font en effet toujours partie de
+    la configuration, quelle soit la manière dont elles sont évaluées à
+    l'exécution.
     </div>
 
 
