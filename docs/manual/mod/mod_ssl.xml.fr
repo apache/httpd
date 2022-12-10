@@ -1212,11 +1212,11 @@ module="mod_ssl">SSLCertificateKeyFile</directive> doit être associée
 une directive <directive>SSLCertificateFile</directive> correspondante.</p>
 
 <p>
-La clé privé peut aussi être ajoutée au fichier défini par la directive
+La clé privée peut aussi être ajoutée au fichier défini par la directive
 <directive module="mod_ssl">SSLCertificateFile</directive>, mais cette
-pratique est fortement déconseillée. En effet, les fichiers de
+pratique est fortement déconseillée. Dans ce cas, les fichiers de
 certificats qui comportent une telle clé doivent être définis après les
-certificats en utilisant un fichier de clé séparé.</p>
+certificats qui utilisent un fichier de clé séparé.</p>
 
 <p>Plutôt que de stocker des clés privées dans des fichiers, il est possible
 d'identifier une clé privée via un identifiant stocké dans un jeton.
