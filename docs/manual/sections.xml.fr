@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 1869920 -->
+<!-- English Revision: 1905717 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -528,7 +528,8 @@ sont interprétées.</p>
       module="core">LocationMatch</directive> sont appliquées
       simultanément</li>
 
-      <li>Les directives <directive type="section" module="core">If</directive>
+      <li>Les sections <directive type="section" module="core">If</directive>,
+      même si elles sont incluses dans un des contextes précédents.
       </li>
     </ol>
 
@@ -567,6 +568,18 @@ sont interprétées.</p>
     le conteneur <directive module="mod_proxy" type="section">Proxy</directive>
     prend la place du conteneur <directive module="core"
     type="section">Directory</directive> dans l'ordre de traitement.</li>
+    <li>Il faut être très prudent lorsqu'on mélange des directives de
+    configuration similaires à l'intérieur et à l'extérieur d'une section
+    <directive type="section" module="core">If</directive> car leur ordre
+    d'apparition a de l'importance. A cet effet, l'utilisation explicite de la
+    directive <directive type="section" module="core" >Else</directive>
+    peut vous y aider.
+        </li>
+        <li>Lorsqu'une section <directive type="section" module="core"
+	>If</directive> est utilisée dans un fichier <code>.htaccess</code>, les
+	directives incluses dans un répertoire parent seront fusionnées
+	<em>après</em> les directives non-incluses dans un sous-répertoire.
+	</li>
     </ul>
 
 	<note><title>Note technique</title>

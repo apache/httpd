@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1901499 -->
+<!-- English Revision: 1905795 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -1521,6 +1521,13 @@ d'erreur personnalisé</description>
 &lt;/IfDefine&gt;
     </highlight>
 
+    <note type="warning"><title>Note</title>
+        <p>Cette directive est évaluée lors du traitement de la configuration,
+	et non à l'exécution. Par conséquent, elle ne peut pas être évaluée de
+	manière conditionnelle en l'incluant dans une section <directive
+	type="section" module="core">If</directive>.</p>
+    </note>
+
 </usage>
 </directivesynopsis>
 
@@ -2431,6 +2438,16 @@ host</context>
     response headers, are set after &lt;If&gt; conditions have already
     been evaluated, and so will not be available to use in this
     directive.
+    </note>
+
+    <note type="warning">
+    Les directives qui sont évaluées lors du traitement de la configuration
+    comme <directive>Define</directive>, <directive>Include</directive> et
+    <directive>Error</directive> ne peuvent pas être traitées de manière
+    conditionnelle en les incluant dans une section de configuration <directive
+    type="section">If</directive>. Ces sections font en effet toujours partie de
+    la configuration, quelle soit la manière dont elles sont évaluées à
+    l'exécution.
     </note>
 
 </usage>
