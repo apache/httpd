@@ -1111,8 +1111,8 @@ l'entité finale au fichier de certificat, ce qui permet de se passer
 d'une directive <directive
 module="mod_ssl">SSLCertificateKeyFile</directive> séparée. Cette
 pratique est cependant fortement déconseillée. En effet, les fichiers de
-certificats qui contiennent de tels clés embarquées doivent être définis
-avant les certificats en utilisant un fichier de clé séparé. En outre,
+certificat qui contiennent de telles clés embarquées doivent être définis
+après les certificats qui utilisent un fichier de clé séparé. En outre,
 si la clé est chiffrée, une boîte de dialogue pour entrer le mot de
 passe de la clé s'ouvre au démarrage du serveur.
 </p>
