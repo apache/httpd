@@ -66,6 +66,18 @@ if test -v TEST_MOD_TLS; then
   CONFIG="$CONFIG --with-tls --with-rustls=$PREFIX"
 fi
 
+# Since libwasm_runtime is not a package (yet) on any platform, we
+# build the version we want from source
+if test -v TEST_MOD_WASM; then
+  MOD_WASM_HOME="$HOME/build/mod_wasm"
+  WASM_RUNTIME_HOME="$MOD_WASM_HOME/wasm_runtime"
+  git clone https://github.com/vmware-labs/mod_wasm.git "$MOD_WASM_HOME"
+  pushd "$WASM_RUNTIME_HOME"
+    make all
+  popd
+  CONFIG="$CONFIG --enable-wasm --with-wasmruntime=$WASM_RUNTIME_HOME"
+fi
+
 if test -v TEST_OPENSSL3; then
     CONFIG="$CONFIG --with-ssl=$HOME/root/openssl3"
     export LD_LIBRARY_PATH=$HOME/root/openssl3/lib:$HOME/root/openssl3/lib64
