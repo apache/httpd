@@ -73,6 +73,7 @@ if test -v TEST_MOD_WASM; then
   WASM_RUNTIME_HOME="$MOD_WASM_HOME/wasm_runtime"
   git clone https://github.com/vmware-labs/mod_wasm.git "$MOD_WASM_HOME"
   pushd "$WASM_RUNTIME_HOME"
+    rustc --version
     make all
   popd
   CONFIG="$CONFIG --enable-wasm --with-wasmruntime=$WASM_RUNTIME_HOME"

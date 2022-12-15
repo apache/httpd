@@ -387,8 +387,8 @@ jobs:
             - cargo
             - cbindgen
     # -------------------------------------------------------------------------
-    - name: Linux Ubuntu, event MPM, MOD_WASM test suite
-      dist: focal
+    - name: Linux Ubuntu Jammy, event MPM, MOD_WASM test suite
+      dist: jammy
       env: CONFIG="--enable-mods-shared=reallyall --with-mpm=event --enable-mpms-shared=event"
            NO_TEST_FRAMEWORK=1 TEST_INSTALL=1 TEST_MOD_WASM=1
       addons:
