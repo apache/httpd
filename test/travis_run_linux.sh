@@ -71,6 +71,7 @@ fi
 if test -v TEST_MOD_WASM; then
   # Install Rust
   curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | bash -s -- -y
+  source "$HOME/.cargo/env"
   rustc --version
   cargo install cbindgen
   # Download and build libwasm_runtime
