@@ -211,6 +211,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      +1: manu, covener
      covener: xml needs doc tweak after backport
 
+  *) mod_proxy_http2: apply the standard httpd content type handling
+     to responses from the backend, as other proxy modules do. Fixes PR 66391.
+     trunk patch: http://svn.apache.org/r1906051
+     2.4.x patch: svn merge -c 1906051 ^/httpd/httpd/trunk .
+      +1: icing, 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
