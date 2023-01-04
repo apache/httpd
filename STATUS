@@ -225,6 +225,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       svn merge -c 1477687 ^/httpd/httpd/trunk .
      +1: rpluem, covener
 
+  *) mod_proxy_hcheck: Honor worker timeout settings
+     Trunk version of patch:
+        https://svn.apache.org/r1889936
+     Backport version for 2.4.x of patch:
+      Trunk version of patch works
+      svn merge -c 1889936 ^/httpd/httpd/trunk .
+     +1: rpluem,
+
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
