@@ -223,7 +223,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      Backport version for 2.4.x of patch:
       Trunk version of patch works (only CHANGES conflicts)
       svn merge -c 1477687 ^/httpd/httpd/trunk .
-     +1: rpluem, covener
+     +1: rpluem, covener, jorton
 
   *) mod_proxy_hcheck: Honor worker timeout settings
      Trunk version of patch:
@@ -231,8 +231,23 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      Backport version for 2.4.x of patch:
       Trunk version of patch works
       svn merge -c 1889936 ^/httpd/httpd/trunk .
-     +1: rpluem,
+     +1: rpluem, jorton, 
 
+  *) mod_ssl: don't verify cert files are present when dumping config
+     Trunk version of patch:
+        https://svn.apache.org/r1861269
+     Backport version for 2.4.x of patch:
+        Trunk version of patch works
+        svn merge -c 1861269 ^/httpd/httpd/trunk .
+     +1: jorton, 
+
+  *) mod_proxy: downgrade AH03408 log level to INFO from WARN
+     Trunk version of patch:
+        https://svn.apache.org/r1756531
+     Backport version for 2.4.x of patch:
+        Trunk version of patch works
+        svn merge -c 1756531 ^/httpd/httpd/trunk .
+     +1: jorton, 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
