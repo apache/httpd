@@ -1,0 +1,2 @@
+  *) core: Improve the AH00124 error message about too many redirects by logging
+     the URI of the request. PR 66403 [Ruediger Pluem]
