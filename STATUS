@@ -198,7 +198,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      The PR contains the unchanged sources from trunk, plus the test
      additions made.
      PR: https://github.com/apache/httpd/pull/331
-     +1: icing, covener (minimal review)
+     +1: icing, covener (minimal review), gbechis
 
   *) mod_dav: DAVlockDiscovery option to disable WebDAV lock discovery
      This is a game changer for performances if client use PROPFIND a lot,
@@ -208,14 +208,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1905206
                   http://svn.apache.org/r1905230
      2.4.x patch: svn merge -c 1904638,1904662,1905170,1905206,1905230 ^/httpd/httpd/trunk .
-     +1: manu, covener
+     +1: manu, covener, gbechis
      covener: xml needs doc tweak after backport
 
   *) mod_proxy_http2: apply the standard httpd content type handling
      to responses from the backend, as other proxy modules do. Fixes PR 66391.
      trunk patch: http://svn.apache.org/r1906051
      2.4.x patch: svn merge -c 1906051 ^/httpd/httpd/trunk .
-      +1: icing, covener
+      +1: icing, covener, gbechis
 
   *) mod_dav: mod_dav overrides dav_fs response on PUT failure. PR 35981
      Trunk version of patch:
@@ -223,7 +223,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      Backport version for 2.4.x of patch:
       Trunk version of patch works (only CHANGES conflicts)
       svn merge -c 1477687 ^/httpd/httpd/trunk .
-     +1: rpluem, covener, jorton
+     +1: rpluem, covener, jorton, gbechis
 
   *) mod_proxy_hcheck: Honor worker timeout settings
      Trunk version of patch:
