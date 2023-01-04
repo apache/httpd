@@ -215,7 +215,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      to responses from the backend, as other proxy modules do. Fixes PR 66391.
      trunk patch: http://svn.apache.org/r1906051
      2.4.x patch: svn merge -c 1906051 ^/httpd/httpd/trunk .
-      +1: icing, 
+      +1: icing, covener
 
   *) mod_dav: mod_dav overrides dav_fs response on PUT failure. PR 35981
      Trunk version of patch:
@@ -223,7 +223,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      Backport version for 2.4.x of patch:
       Trunk version of patch works (only CHANGES conflicts)
       svn merge -c 1477687 ^/httpd/httpd/trunk .
-     +1: rpluem,
+     +1: rpluem, covener
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
