@@ -217,6 +217,15 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c 1906051 ^/httpd/httpd/trunk .
       +1: icing, 
 
+  *) mod_dav: mod_dav overrides dav_fs response on PUT failure. PR 35981
+     Trunk version of patch:
+        https://svn.apache.org/r1477687
+     Backport version for 2.4.x of patch:
+      Trunk version of patch works (only CHANGES conflicts)
+      svn merge -c 1477687 ^/httpd/httpd/trunk .
+     +1: rpluem,
+
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
