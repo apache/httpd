@@ -166,22 +166,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      +1: minfrin, jim, covener
      rpluem says: The version in the compatibility notes is wrong.
 
-PATCHES PROPOSED TO BACKPORT FROM TRUNK:
-  [ New proposals should be added at the end of the list ]
-
-  *) Add the ldap-search option to mod_authnz_ldap, allowing authorization
-     to be based on arbitrary expressions that do not include the username.
-     Make sure that when ldap searches are too long, we explicitly log the
-     error.
-     Trunk version of patch:
-        https://svn.apache.org/r1589993
-        https://svn.apache.org/r1591012
-        https://svn.apache.org/r1596108
-     Backport version for 2.4.x of patch:
-        https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/httpd-2.4-ldap-search.patch
-     +1: minfrin, jim,
-     jailletc36: r1745033 seems related and should in included
-
   *) mod_proxy_hcheck: hcmethod now allow for HTTP/1.1 requests
      using GET11, HEAD11 and/or OPTIONS11.
      trunk revision:
@@ -224,6 +208,22 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       Trunk version of patch works (only CHANGES conflicts)
       svn merge -c 1477687 ^/httpd/httpd/trunk .
      +1: rpluem, covener, jorton, gbechis
+
+PATCHES PROPOSED TO BACKPORT FROM TRUNK:
+  [ New proposals should be added at the end of the list ]
+
+  *) Add the ldap-search option to mod_authnz_ldap, allowing authorization
+     to be based on arbitrary expressions that do not include the username.
+     Make sure that when ldap searches are too long, we explicitly log the
+     error.
+     Trunk version of patch:
+        https://svn.apache.org/r1589993
+        https://svn.apache.org/r1591012
+        https://svn.apache.org/r1596108
+     Backport version for 2.4.x of patch:
+        https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/httpd-2.4-ldap-search.patch
+     +1: minfrin, jim,
+     jailletc36: r1745033 seems related and should in included
 
   *) mod_proxy_hcheck: Honor worker timeout settings
      Trunk version of patch:
