@@ -4125,12 +4125,15 @@ AP_DECLARE(int) ap_is_recursion_limit_exceeded(const request_rec *r)
         if (top->prev) {
             if (++redirects >= rlimit) {
                 /* uuh, too much. */
+                /* As we check before a new internal redirect, top->prev->uri
+                 * should be the original request causing this.
+                 */
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(00124)
-                              "Request exceeded the limit of %d internal "
+                              "Request (%s) exceeded the limit of %d internal "
                               "redirects due to probable configuration error. "
                               "Use 'LimitInternalRecursion' to increase the "
                               "limit if necessary. Use 'LogLevel debug' to get "
-                              "a backtrace.", rlimit);
+                              "a backtrace.", top->prev->uri, rlimit);
 
                 /* post backtrace */
                 log_backtrace(r);
@@ -4145,12 +4148,15 @@ AP_DECLARE(int) ap_is_recursion_limit_exceeded(const request_rec *r)
         if (!top->prev && top->main) {
             if (++subreqs >= slimit) {
                 /* uuh, too much. */
+                /* As we check before a new subrequest, top->main->uri should
+                 * be the original request causing this.
+                 */
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(00125)
-                              "Request exceeded the limit of %d subrequest "
+                              "Request (%s) exceeded the limit of %d subrequest "
                               "nesting levels due to probable configuration "
                               "error. Use 'LimitInternalRecursion' to increase "
                               "the limit if necessary. Use 'LogLevel debug' to "
-                              "get a backtrace.", slimit);
+                              "get a backtrace.", top->main->uri, slimit);
 
                 /* post backtrace */
                 log_backtrace(r);
