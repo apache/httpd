@@ -191,7 +191,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         https://svn.apache.org/r1905646/1905669. (*)
      Backport version for 2.4.x of patch:
         svn merge works  (* requires hand fixing)
-     +1: jim, covener
+     +1: jim, covener, rpluem
 
   *) mod_http2: backport of v2.0.10 to synch sources with trunk/github
      See: change-entries/http2_v2.txt for details.
@@ -239,7 +239,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      Backport version for 2.4.x of patch:
         Trunk version of patch works
         svn merge -c 1861269 ^/httpd/httpd/trunk .
-     +1: jorton, 
+     +1: jorton, rpluem
 
   *) mod_proxy: downgrade AH03408 log level to INFO from WARN
      Trunk version of patch:
@@ -247,7 +247,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      Backport version for 2.4.x of patch:
         Trunk version of patch works
         svn merge -c 1756531 ^/httpd/httpd/trunk .
-     +1: jorton, 
+     +1: jorton, rpluem
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
