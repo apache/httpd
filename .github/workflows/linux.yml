@@ -1,0 +1,38 @@
+name: Linux
+
+on:
+  push:
+    branches: [ "*" ]
+  pull_request:
+    branches: [ "trunk" ]
+
+env:
+  MARGS: "-j2"
+  CFLAGS: "-g"
+
+jobs:
+
+  build:
+    strategy:
+      matrix:
+        include: 
+          - name: Default
+      fail-fast: false
+
+    runs-on: ubuntu-latest
+    env:
+      NOTEST_CFLAGS: ${{ matrix.notest-cflags }}
+    name: ${{ matrix.name }}
+    steps:
+    - name: apt refresh
+      run: sudo apt-get -o Acquire::Retries=5 update
+    - name: Install prerequisites
+      run: sudo apt-get install -o Acquire::Retries=5
+                    cpanminus libtool-bin libapr1-dev libaprutil1-dev
+                    liblua5.3-dev libbrotli-dev libcurl4-openssl-dev     
+                    libnghttp2-dev libjansson-dev libpcre2-dev gdb
+    - uses: actions/checkout@v3
+    - name: Configure environment
+      run: ./test/travis_before_linux.sh
+    - name: Build and test
+      run: ./test/travis_run_linux.sh

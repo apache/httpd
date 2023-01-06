@@ -25,6 +25,8 @@ if test -v TEST_LOGNO; then
     fi
 fi
 
+eval $(perl -I ~/perl5/lib/perl5/ -Mlocal::lib)
+
 ### Installed apr/apr-util don't include the *.m4 files but the
 ### Debian packages helpfully install them, so use the system APR to buildconf
 ./buildconf --with-apr=/usr/bin/apr-1-config ${BUILDCONFIG}
