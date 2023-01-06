@@ -111,6 +111,13 @@ the filename, however format strings containing '%' characters
 will be respected.
 </dd>
 
+<dt><code>-T</code></dt>
+<dd>Causes all but the initial logfile to be truncated when opened.
+This is useful when the format string contains something that will
+loop around, such as the day of the month.
+</dd>
+
+
 <dt><code>-v</code></dt>
 <dd>Produce verbose output on STDERR. The output contains
 the result of the configuration parsing, and all file open and
@@ -262,6 +269,18 @@ an offset.</dd>
      startup and then truncating the file once per day. It is expected
      in this scenario that a separate process (such as tail) would
      process the file in real time.</p>
+
+<example>
+<highlight language="config">
+     CustomLog "|bin/rotatelogs -T /var/log/logfile.%d 86400" common
+</highlight>
+</example>
+
+<p>If the server is started (or restarted) on the first of the month, this 
+appends to <code>/var/log/logfile.01</code>.  When a log entry is written on the
+second of the month, <code>/var/log/logfile.02</code> is truncated and new entries
+will be added to the top. This example keeps approximately 1 months worth of 
+logs without external maintenance.</p>
 
 </section>
 

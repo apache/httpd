@@ -1,0 +1,2 @@
+  *) rotatelogs: Add -T flag to allow subsequent rotated logfiles to be
+     truncated without the initial logfile being truncated.  [Eric Covener]
