@@ -378,6 +378,7 @@ static void doRotate(rotate_config_t *config, rotate_status_t *status)
     apr_status_t rv;
     struct logfile newlog;
     int thisLogNum = -1;
+    int oldreason = status->rotateReason;
 
     /* Retrieve local-time-adjusted-Unix-time. */
     now = get_now(config, &offset);
@@ -472,6 +473,19 @@ static void doRotate(rotate_config_t *config, rotate_status_t *status)
 
         /* New log file is now 'current'. */
         status->current = newlog;
+
+        /* The first write to to the initial file hasn't checked for size
+         * In the normalized timestamp case and the custom strftime case with
+         * any reasonable accuracy, it's futile as the rotation will pick the
+         * same filename again. 
+         * For -n, when not truncating, check and rotate.
+         */
+        if (config->num_files > 0 && oldreason == ROTATE_NEW && !config->truncate) {
+            checkRotate(config, status);
+            if (status->rotateReason != ROTATE_NONE) {
+                doRotate(config, status);
+            }
+        }
     }
     else {
         char *error = apr_psprintf(newlog.pool, "%pm", &rv);
