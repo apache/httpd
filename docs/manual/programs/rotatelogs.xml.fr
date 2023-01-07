@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1905209 -->
+<!-- English Revision : 1906433 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -116,6 +116,13 @@ nécessaire. Si aucun suffixe n'est ajouté au nom de fichier, les
 chaînes de format contenant des caractères '%' sont cependant
 respectées.
 </dd>
+
+<dt><code>-T</code></dt>
+<dd>Provoque la troncature de tous les fichiers journaux à leur ouverture, à
+l'exception du fichier journal initial. Cette option s'avère utile lorsque la
+chaîne de format contient quelque chose qui se répète comme le jour du mois.
+</dd>
+
 
 <dt><code>-v</code></dt>
 <dd>Affiche une sortie verbeuse sur STDERR. La sortie contient le
@@ -278,6 +285,19 @@ spécifier un décalage.</dd>
      <p>Cet exemple crée le fichier <code>/var/log/journal</code> en le
      tronquant au démarrage, puis une fois par jour. Ce scénario implique qu'un
      processus séparé (tel que tail) traite le fichier en temps réel.</p>
+     
+<example>
+<highlight language="config">
+     CustomLog "|bin/rotatelogs -T /var/log/logfile.%d 86400" common
+</highlight>
+</example>
+
+<p>Si le serveur est démarré (ou redémarré) le premier de chaque mois, cela
+s'ajoute au fichier <code>/var/log/logfile.01</code>. Lorsqu'une entrée de
+journal est écrite le deux du mois, le fichier <code>/var/log/logfile.02</code>
+est tronqué et les entrées suivantes seront écrites au début du fichier. Cet
+exemple permet de conserver environ un mois de journalisation sans maintenance
+externe.</p>
 
 </section>
 
