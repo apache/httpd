@@ -160,14 +160,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      +1: manu, covener, gbechis
      covener: xml needs doc tweak after backport
 
-  *) mod_proxy_hcheck: Honor worker timeout settings
-     Trunk version of patch:
-        https://svn.apache.org/r1889936
-     Backport version for 2.4.x of patch:
-      Trunk version of patch works
-      svn merge -c 1889936 ^/httpd/httpd/trunk .
-     +1: rpluem, jorton, jim
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
