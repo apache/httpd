@@ -157,15 +157,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      +1: jim, ylavic, icing
      covener: minor MMN needed for mod_proxy.h?
 
-  *) mod_authn_core: Add expression support to AuthName and AuthType.
-     Trunk version of patch:
-        https://svn.apache.org/r1663123
-        https://svn.apache.org/r1670431
-     Backport version for 2.4.x of patch:
-        https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/httpd-2.4-authn-expr.patch
-     +1: minfrin, jim, covener
-     rpluem says: The version in the compatibility notes is wrong.
-
   *) mod_proxy_hcheck: hcmethod now allow for HTTP/1.1 requests
      using GET11, HEAD11 and/or OPTIONS11.
      trunk revision:

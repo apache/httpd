@@ -34,6 +34,7 @@
 #include "http_log.h"
 #include "http_request.h"
 #include "http_protocol.h"
+#include "ap_expr.h"
 #include "ap_provider.h"
 
 #include "mod_auth.h"
@@ -52,9 +53,9 @@
 */
 
 typedef struct {
-    const char *ap_auth_type;
+    ap_expr_info_t *ap_auth_type;
     int auth_type_set;
-    const char *ap_auth_name;
+    ap_expr_info_t *ap_auth_name;
 } authn_core_dir_conf;
 
 typedef struct provider_alias_rec {
@@ -298,8 +299,16 @@ static const char *set_authname(cmd_parms *cmd, void *mconfig,
                                 const char *word1)
 {
     authn_core_dir_conf *aconfig = (authn_core_dir_conf *)mconfig;
+    const char *expr_err = NULL;
 
-    aconfig->ap_auth_name = ap_escape_quotes(cmd->pool, word1);
+    aconfig->ap_auth_name = ap_expr_parse_cmd(cmd, word1, AP_EXPR_FLAG_STRING_RESULT,
+            &expr_err, NULL);
+    if (expr_err) {
+        return apr_pstrcat(cmd->temp_pool,
+                "Cannot parse expression '", word1, "' in AuthName: ",
+                      expr_err, NULL);
+    }
+
     return NULL;
 }
 
@@ -307,9 +316,17 @@ static const char *set_authtype(cmd_parms *cmd, void *mconfig,
                                 const char *word1)
 {
     authn_core_dir_conf *aconfig = (authn_core_dir_conf *)mconfig;
+    const char *expr_err = NULL;
+
+    aconfig->ap_auth_type = ap_expr_parse_cmd(cmd, word1, AP_EXPR_FLAG_STRING_RESULT,
+            &expr_err, NULL);
+    if (expr_err) {
+        return apr_pstrcat(cmd->temp_pool,
+                "Cannot parse expression '", word1, "' in AuthType: ",
+                      expr_err, NULL);
+    }
 
     aconfig->auth_type_set = 1;
-    aconfig->ap_auth_type = strcasecmp(word1, "None") ? word1 : NULL;
 
     return NULL;
 }
@@ -318,20 +335,44 @@ static const char *authn_ap_auth_type(request_rec *r)
 {
     authn_core_dir_conf *conf;
 
-    conf = (authn_core_dir_conf *)ap_get_module_config(r->per_dir_config,
-        &authn_core_module);
+    conf = (authn_core_dir_conf *) ap_get_module_config(r->per_dir_config,
+            &authn_core_module);
 
-    return conf->ap_auth_type;
+    if (conf->ap_auth_type) {
+        const char *err = NULL, *type;
+        type = ap_expr_str_exec(r, conf->ap_auth_type, &err);
+        if (err) {
+            ap_log_rerror(
+                    APLOG_MARK, APLOG_ERR, APR_SUCCESS, r, APLOGNO(02834) "AuthType expression could not be evaluated: %s", err);
+            return NULL;
+        }
+
+        return strcasecmp(type, "None") ? type : NULL;
+    }
+
+    return NULL;
 }
 
 static const char *authn_ap_auth_name(request_rec *r)
 {
     authn_core_dir_conf *conf;
+    const char *err = NULL, *name;
 
-    conf = (authn_core_dir_conf *)ap_get_module_config(r->per_dir_config,
-        &authn_core_module);
+    conf = (authn_core_dir_conf *) ap_get_module_config(r->per_dir_config,
+            &authn_core_module);
 
-    return apr_pstrdup(r->pool, conf->ap_auth_name);
+    if (conf->ap_auth_name) {
+        name = ap_expr_str_exec(r, conf->ap_auth_name, &err);
+        if (err) {
+            ap_log_rerror(
+                    APLOG_MARK, APLOG_ERR, APR_SUCCESS, r, APLOGNO(02835) "AuthName expression could not be evaluated: %s", err);
+            return NULL;
+        }
+
+        return ap_escape_quotes(r->pool, name);
+    }
+
+    return NULL;
 }
 
 static const command_rec authn_cmds[] =

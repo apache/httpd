@@ -48,6 +48,8 @@
 <seealso><directive module="mod_auth_form">AuthFormLoginRequiredLocation</directive></seealso>
 <seealso><directive module="mod_auth_form">AuthFormLoginSuccessLocation</directive></seealso>
 <seealso><directive module="mod_auth_form">AuthFormLogoutLocation</directive></seealso>
+<seealso><directive module="mod_authn_core">AuthName</directive></seealso>
+<seealso><directive module="mod_authn_core">AuthType</directive></seealso>
 <seealso><directive module="mod_rewrite">RewriteCond</directive></seealso>
 <seealso><directive module="mod_setenvif">SetEnvIfExpr</directive></seealso>
 <seealso><directive module="mod_headers">Header</directive></seealso>
