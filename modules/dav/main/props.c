@@ -185,6 +185,8 @@ struct dav_propdb {
 
     dav_buffer wb_lock;           /* work buffer for lockdiscovery property */
 
+    int flags;                    /* ro, disable lock discovery */
+
     /* if we ever run a GET subreq, it will be stored here */
     request_rec *subreq;
 
@@ -351,6 +353,11 @@ static dav_error * dav_insert_coreprop(dav_propdb *propdb,
     switch (propid) {
 
     case DAV_PROPID_CORE_lockdiscovery:
+        if (propdb->flags & DAV_PROPDB_DISABLE_LOCKDISCOVERY) {
+            value = "";
+            break;
+        }
+
         if (propdb->lockdb != NULL) {
             dav_lock *locks;
 
@@ -522,17 +529,18 @@ static dav_error *dav_really_open_db(dav_propdb *propdb, int ro)
 
 DAV_DECLARE(dav_error *)dav_open_propdb(request_rec *r, dav_lockdb *lockdb,
                                         const dav_resource *resource,
-                                        int ro,
+                                        int flags,
                                         apr_array_header_t * ns_xlate,
                                         dav_propdb **p_propdb)
 {
-    return dav_popen_propdb(r->pool, r, lockdb, resource, ro, ns_xlate, p_propdb);
+    return dav_popen_propdb(r->pool, r, lockdb, resource,
+                            flags, ns_xlate, p_propdb);
 }
 
 DAV_DECLARE(dav_error *)dav_popen_propdb(apr_pool_t *p,
                                          request_rec *r, dav_lockdb *lockdb,
                                          const dav_resource *resource,
-                                         int ro,
+                                         int flags,
                                          apr_array_header_t * ns_xlate,
                                          dav_propdb **p_propdb)
 {
@@ -558,6 +566,8 @@ DAV_DECLARE(dav_error *)dav_popen_propdb(apr_pool_t *p,
     propdb->db_hooks = DAV_GET_HOOKS_PROPDB(r);
 
     propdb->lockdb = lockdb;
+
+    propdb->flags = flags;
 
     /* always defer actual open, to avoid expense of accessing db
      * when only live properties are involved

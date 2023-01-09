@@ -43,6 +43,10 @@ Changes with Apache 2.4.55
      HeartbeatMaxServers default to the documented value 10 in 2.4.54.
      PR 66131.  [Jérôme Billiras]
 
+  *) mod_dav: DAVlockDiscovery option to disable WebDAV lock discovery
+     This is a game changer for performances if client use PROPFIND a lot,
+     PR 66313. [Emmanuel Dreyfus]
+
 Changes with Apache 2.4.54
 
   *) SECURITY: CVE-2022-31813: mod_proxy X-Forwarded-For dropped by

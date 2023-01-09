@@ -87,5 +87,31 @@
 </usage>
 </directivesynopsis>
 
+<directivesynopsis>
+<name>DavLockDiscovery</name>
+<description>Enable lock discovery</description>
+<syntax>DavLockDiscovery on|off</syntax>
+<default>DavLockDiscovery on</default>
+<contextlist><context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+<context>.htaccess</context>
+</contextlist>
+<compatibility>Available from Apache 2.5.0 and later.</compatibility>
+
+<usage>
+    <p><directive>DavLockDiscovery</directive> controls if the lock
+    discovery feature is enabled for <code>PROPFIND</code> method.
+    When disabled, <code>PROPFIND</code> always returns an empty
+    <code>lockdiscovery</code> section. This improves performance
+    if clients use <code>PROPFIND</code> a lot.</p>
+    <example><title>Example</title>
+     <highlight language="config">
+      DavLockDiscovery off
+     </highlight>
+    </example>
+</usage>
+</directivesynopsis>
+
 </modulesynopsis>
 

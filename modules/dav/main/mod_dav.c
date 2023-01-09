@@ -83,6 +83,7 @@ typedef struct {
     const char *dir;
     int locktimeout;
     int allow_depthinfinity;
+    int allow_lockdiscovery;
 
 } dav_dir_conf;
 
@@ -197,6 +198,8 @@ static void *dav_merge_dir_config(apr_pool_t *p, void *base, void *overrides)
     newconf->dir = DAV_INHERIT_VALUE(parent, child, dir);
     newconf->allow_depthinfinity = DAV_INHERIT_VALUE(parent, child,
                                                      allow_depthinfinity);
+    newconf->allow_lockdiscovery = DAV_INHERIT_VALUE(parent, child,
+                                                     allow_lockdiscovery);
 
     return newconf;
 }
@@ -291,6 +294,21 @@ static const char *dav_cmd_davdepthinfinity(cmd_parms *cmd, void *config,
         conf->allow_depthinfinity = DAV_ENABLED_ON;
     else
         conf->allow_depthinfinity = DAV_ENABLED_OFF;
+    return NULL;
+}
+
+/*
+ * Command handler for the DAVLockDiscovery directive, which is FLAG.
+ */
+static const char *dav_cmd_davlockdiscovery(cmd_parms *cmd, void *config,
+                                            int arg)
+{
+    dav_dir_conf *conf = (dav_dir_conf *)config;
+
+    if (arg)
+        conf->allow_lockdiscovery = DAV_ENABLED_ON;
+    else
+        conf->allow_lockdiscovery = DAV_ENABLED_OFF;
     return NULL;
 }
 
@@ -1419,7 +1437,7 @@ static dav_error *dav_gen_supported_live_props(request_rec *r,
     }
 
     /* open the property database (readonly) for the resource */
-    if ((err = dav_open_propdb(r, lockdb, resource, 1, NULL,
+    if ((err = dav_open_propdb(r, lockdb, resource, DAV_PROPDB_RO, NULL,
                                &propdb)) != NULL) {
         if (lockdb != NULL)
             (*lockdb->hooks->close_lockdb)(lockdb);
@@ -2014,6 +2032,8 @@ static void dav_cache_badprops(dav_walker_ctx *ctx)
 static dav_error * dav_propfind_walker(dav_walk_resource *wres, int calltype)
 {
     dav_walker_ctx *ctx = wres->walk_ctx;
+    dav_dir_conf *conf;
+    int flags = DAV_PROPDB_RO;
     dav_error *err;
     dav_propdb *propdb;
     dav_get_props_result propstats = { 0 };
@@ -2025,6 +2045,10 @@ static dav_error * dav_propfind_walker(dav_walk_resource *wres, int calltype)
         return NULL;
     }
 
+    conf = ap_get_module_config(ctx->r->per_dir_config, &dav_module);
+    if (conf && conf->allow_lockdiscovery == DAV_ENABLED_OFF)
+        flags |= DAV_PROPDB_DISABLE_LOCKDISCOVERY;
+
     /*
     ** Note: ctx->doc can only be NULL for DAV_PROPFIND_IS_ALLPROP. Since
     ** dav_get_allprops() does not need to do namespace translation,
@@ -2034,7 +2058,7 @@ static dav_error * dav_propfind_walker(dav_walk_resource *wres, int calltype)
     ** the resource, however, since we are opening readonly.
     */
     err = dav_popen_propdb(ctx->scratchpool,
-                           ctx->r, ctx->w.lockdb, wres->resource, 1,
+                           ctx->r, ctx->w.lockdb, wres->resource, flags,
                            ctx->doc ? ctx->doc->namespaces : NULL, &propdb);
     if (err != NULL) {
         /* ### do something with err! */
@@ -2419,7 +2443,8 @@ static int dav_method_proppatch(request_rec *r)
         return dav_handle_err(r, err, NULL);
     }
 
-    if ((err = dav_open_propdb(r, NULL, resource, 0, doc->namespaces,
+    if ((err = dav_open_propdb(r, NULL, resource,
+                               DAV_PROPDB_NONE, doc->namespaces,
                                &propdb)) != NULL) {
         /* undo any auto-checkout */
         dav_auto_checkin(r, resource, 1 /*undo*/, 0 /*unlock*/, &av_info);
@@ -5148,6 +5173,11 @@ static const command_rec dav_cmds[] =
     AP_INIT_FLAG("DAVDepthInfinity", dav_cmd_davdepthinfinity, NULL,
                  ACCESS_CONF|RSRC_CONF,
                  "allow Depth infinity PROPFIND requests"),
+
+    /* per directory/location, or per server */
+    AP_INIT_FLAG("DAVLockDiscovery", dav_cmd_davlockdiscovery, NULL,
+                 ACCESS_CONF|RSRC_CONF,
+                 "allow lock discovery by PROPFIND requests"),
 
     { NULL }
 };

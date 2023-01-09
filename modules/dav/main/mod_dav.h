@@ -1685,12 +1685,15 @@ struct dav_hooks_locks
 
 typedef struct dav_propdb dav_propdb;
 
+#define DAV_PROPDB_NONE                  0 
+#define DAV_PROPDB_RO                    1
+#define DAV_PROPDB_DISABLE_LOCKDISCOVERY 2 
 
 DAV_DECLARE(dav_error *) dav_open_propdb(
     request_rec *r,
     dav_lockdb *lockdb,
     const dav_resource *resource,
-    int ro,
+    int flags,
     apr_array_header_t *ns_xlate,
     dav_propdb **propdb);
 
@@ -1699,7 +1702,7 @@ DAV_DECLARE(dav_error *) dav_popen_propdb(
     request_rec *r,
     dav_lockdb *lockdb,
     const dav_resource *resource,
-    int ro,
+    int flags,
     apr_array_header_t *ns_xlate,
     dav_propdb **propdb);
 
