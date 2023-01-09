@@ -211,7 +211,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      Backport version for 2.4.x of patch:
       Trunk version of patch works
       svn merge -c 1889936 ^/httpd/httpd/trunk .
-     +1: rpluem, jorton, 
+     +1: rpluem, jorton, jim
 
   *) mod_ssl: don't verify cert files are present when dumping config
      Trunk version of patch:
@@ -219,7 +219,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      Backport version for 2.4.x of patch:
         Trunk version of patch works
         svn merge -c 1861269 ^/httpd/httpd/trunk .
-     +1: jorton, rpluem
+     +1: jorton, rpluem, jim
 
   *) mod_proxy: downgrade AH03408 log level to INFO from WARN
      Trunk version of patch:
@@ -227,7 +227,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      Backport version for 2.4.x of patch:
         Trunk version of patch works
         svn merge -c 1756531 ^/httpd/httpd/trunk .
-     +1: jorton, rpluem
+     +1: jorton, rpluem, jim
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
