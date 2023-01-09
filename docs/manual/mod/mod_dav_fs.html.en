@@ -92,7 +92,7 @@
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="DavLockDiscovery" id="DavLockDiscovery">DavLockDiscovery</a> <a name="davlockdiscovery" id="davlockdiscovery">Directive</a> <a title="Permanent link" href="#davlockdiscovery" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="DavLockDiscovery" id="DavLockDiscovery">DavLockDiscovery</a> <a name="davlockdiscovery" id="davlockdiscovery">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enable lock discovery</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>DavLockDiscovery on|off</code></td></tr>

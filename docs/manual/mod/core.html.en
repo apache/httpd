@@ -1337,6 +1337,11 @@ version 2.3.9.</td></tr>
 &lt;/IfDefine&gt;</pre>
 
 
+    <div class="warning"><h3>Note</h3>
+        <p> This directive is evaluated and configuration processing time, 
+        not at runtime. As a result, this directive cannot be conditonally
+        evaluated by enclosing it in an <code class="directive"><a href="#if">&lt;If&gt;</a></code> section.</p>
+    </div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -2224,6 +2229,16 @@ satisfied by a request at runtime</td></tr>
     been evaluated, and so will not be available to use in this
     directive.
     </div>
+    
+    <div class="warning">
+    Directives that take affect during configuration parsing, such as 
+    <code class="directive">Define</code>, <code class="directive">Include</code>, and
+    <code class="directive">Error</code> cannot be made conditional by enclosing
+    them in an if <code class="directive">&lt;If&gt;</code> configuration
+    section.  These sections are always part of the configuration, 
+    regardless of how they evaluate at runtime.
+    </div>
+
 
 
 <h3>See also</h3>

@@ -66,9 +66,12 @@
         		<tr><th>Method</th><th>Description</th><th>Note</th></tr>
         		<tr><td>None</td><td>No dynamic health checking done</td><td /></tr>
         		<tr><td>TCP</td><td>Check that a socket to the backend can be created: e.g. "are you up"</td><td /></tr>
-        		<tr><td>OPTIONS</td><td>Send an <code>HTTP OPTIONS</code> request to the backend</td><td>*</td></tr>
-        		<tr><td>HEAD</td><td>Send an <code>HTTP HEAD</code> request to the backend</td><td>*</td></tr>
-        		<tr><td>GET</td><td>Send an <code>HTTP GET</code> request to the backend</td><td>*</td></tr>
+        		<tr><td>OPTIONS</td><td>Send a <code>HTTP OPTIONS</code> request to the backend via <code>HTTP/1.0</code></td><td>*</td></tr>
+        		<tr><td>HEAD</td><td>Send a <code>HTTP HEAD</code> request to the backend via <code>HTTP/1.0</code></td><td>*</td></tr>
+        		<tr><td>GET</td><td>Send a <code>HTTP GET</code> request to the backend via <code>HTTP/1.0</code></td><td>*</td></tr>
+        		<tr><td>OPTIONS11</td><td>Send a <code>HTTP OPTIONS</code> request to the backend via <code>HTTP/1.1</code></td><td>*</td></tr>
+        		<tr><td>HEAD11</td><td>Send a <code>HTTP HEAD</code> request to the backend via <code>HTTP/1.1</code></td><td>*</td></tr>
+        		<tr><td>GET11</td><td>Send a <code>HTTP GET</code> request to the backend via <code>HTTP/1.1</code></td><td>*</td></tr>
 
 				<tr><td colspan="3" /></tr>
 				<tr><td colspan="3">*: Unless <code>hcexpr</code> is used, a 2xx or 3xx HTTP status will be interpreted as <em>passing</em> the health check</td></tr>

@@ -199,9 +199,8 @@ an offset.</dd>
 <div class="section">
 <h2><a name="examples" id="examples">Examples</a></h2>
 
-<div class="example"><p><code>
-     CustomLog "|bin/rotatelogs /var/log/logfile 86400" common
-</code></p></div>
+<div class="example"><pre class="prettyprint lang-config">CustomLog "|bin/rotatelogs /var/log/logfile 86400" common</pre>
+</div>
 
      <p>This creates the files /var/log/logfile.nnnn where nnnn  is
      the system time at which the log nominally starts (this time
@@ -209,34 +208,30 @@ an offset.</dd>
      synchronize cron scripts with it).  At the end of each rotation
      time (here after 24 hours) a new log is started.</p>
 
-<div class="example"><p><code>
-     CustomLog "|bin/rotatelogs -l /var/log/logfile.%Y.%m.%d 86400" common
-</code></p></div>
+<div class="example"><pre class="prettyprint lang-config">CustomLog "|bin/rotatelogs -l /var/log/logfile.%Y.%m.%d 86400" common</pre>
+</div>
 
      <p>This creates the files /var/log/logfile.yyyy.mm.dd where
      yyyy is the year, mm is the month, and dd is the day of the month.
      Logging will switch to a new file every day at midnight, local time.</p>
 
-<div class="example"><p><code>
-     CustomLog "|bin/rotatelogs /var/log/logfile 5M" common
-</code></p></div>
+<div class="example"><pre class="prettyprint lang-config">CustomLog "|bin/rotatelogs /var/log/logfile 5M" common</pre>
+</div>
 
      <p>This configuration will rotate the logfile whenever it reaches
      a size of 5 megabytes.</p>
 
-<div class="example"><p><code>
-     ErrorLog "|bin/rotatelogs /var/log/errorlog.%Y-%m-%d-%H_%M_%S 5M"
-</code></p></div>
+<div class="example"><pre class="prettyprint lang-config">ErrorLog "|bin/rotatelogs /var/log/errorlog.%Y-%m-%d-%H_%M_%S 5M"</pre>
+</div>
      <p>This configuration will rotate the error logfile whenever it
      reaches a size of 5 megabytes, and the suffix to the logfile name
      will be created of the form
      <code>errorlog.YYYY-mm-dd-HH_MM_SS</code>.</p>
 
-<div class="example"><p><code>
-     CustomLog "|bin/rotatelogs -t /var/log/logfile 86400" common
-</code></p></div>
+<div class="example"><pre class="prettyprint lang-config">CustomLog "|bin/rotatelogs -t /var/log/logfile 86400" common</pre>
+</div>
 
-     <p>This creates the file /var/log/logfile, truncating the file at
+     <p>This creates the file <code>/var/log/logfile</code>, truncating the file at
      startup and then truncating the file once per day. It is expected
      in this scenario that a separate process (such as tail) would
      process the file in real time.</p>
