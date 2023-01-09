@@ -33,6 +33,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       NOTEST_CFLAGS: ${{ matrix.notest-cflags }}
+      CONFIG: ${{ matrix.config }}
     name: ${{ matrix.name }}
     steps:
     - name: apt refresh
