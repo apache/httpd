@@ -711,7 +711,7 @@
  *                         Add ap_assign_request_line()
  * 20211221.7 (2.5.1-dev)  Add ap_h1_append_header()
  * 20211221.8 (2.5.1-dev)  Add ap_sb_get_child_thread()
- * 20211221.9 (2.5.1-dev)  Add additional hcmethod_t enums
+ * 20211221.9 (2.5.1-dev)  Add additional hcmethod_t enums and PROXY_WORKER_IS_ERROR
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503235UL /* "AP25" */
