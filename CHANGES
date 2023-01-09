@@ -2,7 +2,7 @@
 Changes with Apache 2.4.55
 
   *) mod_proxy: The AH03408 warning for a forcibly closed backend
-     connect is now logged at INFO level.  [Yann Ylavic]
+     connection is now logged at INFO level.  [Yann Ylavic]
 
   *) mod_ssl: When dumping the configuration, the existence of
      certificate/key files is no longer tested.  [Joe Orton]
