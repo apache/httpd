@@ -447,6 +447,7 @@ static void h2_proxy_stream_end_headers_out(h2_proxy_stream *stream)
     h2_proxy_session *session = stream->session;
     request_rec *r = stream->r;
     apr_pool_t *p = r->pool;
+    const char *buf;
     
     /* Now, add in the cookies from the response to the ones already saved */
     apr_table_do(add_header, stream->saves, r->headers_out, "Set-Cookie", NULL);
@@ -455,6 +456,10 @@ static void h2_proxy_stream_end_headers_out(h2_proxy_stream *stream)
     if (!apr_is_empty_table(stream->saves)) {
         apr_table_unset(r->headers_out, "Set-Cookie");
         r->headers_out = apr_table_overlay(p, r->headers_out, stream->saves);
+    }
+
+    if ((buf = apr_table_get(r->headers_out, "Content-Type"))) {
+        ap_set_content_type(r, apr_pstrdup(p, buf));
     }
     
     /* handle Via header in response */
