@@ -17,8 +17,19 @@ jobs:
       matrix:
         include: 
           - name: Default
+          # -------------------------------------------------------------------------
+          - name: All-static modules
+            config: --enable-mods-static=reallyall
+          # -------------------------------------------------------------------------
+          - name: Prefork MPM, all-modules (except cgid)
+            config: --enable-mods-shared=reallyall --with-mpm=prefork --disable-cgid"
+          # -------------------------------------------------------------------------
+          - name: Worker MPM, all-modules
+            config: --enable-mods-shared=reallyall --with-mpm=worker"
+          # -------------------------------------------------------------------------
+          - name: Shared MPMs, all-modules
+            config: --enable-mods-shared=reallyall --enable-mpms-shared=all"
       fail-fast: false
-
     runs-on: ubuntu-latest
     env:
       NOTEST_CFLAGS: ${{ matrix.notest-cflags }}
