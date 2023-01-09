@@ -142,7 +142,7 @@ authentication</description>
     <p>The string provided for the <code>AuthName</code> is what will
     appear in the password dialog provided by most browsers.</p>
 
-    <p>From 2.4.13, <a href="../expr.html">expression syntax</a> can be
+    <p>From 2.4.55, <a href="../expr.html">expression syntax</a> can be
     used inside the directive to produce the name dynamically.</p>
 
    <p>For example:</p>
@@ -205,7 +205,7 @@ authentication</description>
 &lt;/Directory&gt;
     </highlight>
 
-    <p>From 2.4.13, <a href="../expr.html">expression syntax</a> can be
+    <p>From 2.4.55, <a href="../expr.html">expression syntax</a> can be
     used inside the directive to specify the type dynamically.</p>
 
     <note>When disabling authentication, note that clients which have
