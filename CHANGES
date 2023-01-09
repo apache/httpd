@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.55
 
+  *) mod_proxy_hcheck: hcmethod now allows for HTTP/1.1 requests
+     using GET11, HEAD11 and/or OPTIONS11. [Jim Jagielski]
+
   *) mod_proxy: The AH03408 warning for a forcibly closed backend
      connection is now logged at INFO level.  [Yann Ylavic]
 

@@ -149,17 +149,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_proxy_hcheck: hcmethod now allow for HTTP/1.1 requests
-     using GET11, HEAD11 and/or OPTIONS11.
-     trunk revision:
-        https://svn.apache.org/r1903744
-        https://svn.apache.org/r1903745
-        https://svn.apache.org/r1904642
-        https://svn.apache.org/r1905646/1905669. (*)
-     Backport version for 2.4.x of patch:
-        svn merge works  (* requires hand fixing)
-     +1: jim, covener, rpluem
-
   *) mod_dav: DAVlockDiscovery option to disable WebDAV lock discovery
      This is a game changer for performances if client use PROPFIND a lot,
      trunk patch: http://svn.apache.org/r1904638
