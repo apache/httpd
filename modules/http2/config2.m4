@@ -19,24 +19,22 @@ APACHE_MODPATH_INIT(http2)
 dnl #  list of module object files
 http2_objs="dnl
 mod_http2.lo dnl
-h2_alt_svc.lo dnl
 h2_bucket_beam.lo dnl
 h2_bucket_eos.lo dnl
+h2_c1.lo dnl
+h2_c1_io.lo dnl
+h2_c2.lo dnl
+h2_c2_filter.lo dnl
 h2_config.lo dnl
-h2_conn.lo dnl
-h2_conn_io.lo dnl
-h2_ctx.lo dnl
-h2_filter.lo dnl
-h2_from_h1.lo dnl
-h2_h2.lo dnl
+h2_conn_ctx.lo dnl
 h2_headers.lo dnl
 h2_mplx.lo dnl
+h2_protocol.lo dnl
 h2_push.lo dnl
 h2_request.lo dnl
 h2_session.lo dnl
 h2_stream.lo dnl
 h2_switch.lo dnl
-h2_task.lo dnl
 h2_util.lo dnl
 h2_workers.lo dnl
 "
@@ -163,6 +161,12 @@ dnl # nghttp2 >= 1.14.0: invalid header callback
 dnl # nghttp2 >= 1.15.0: get/set stream window sizes
       AC_CHECK_FUNCS([nghttp2_session_get_stream_local_window_size], 
         [APR_ADDTO(MOD_CPPFLAGS, ["-DH2_NG2_LOCAL_WIN_SIZE"])], [])
+dnl # nghttp2 >= 1.15.0: don't keep info on closed streams
+      AC_CHECK_FUNCS([nghttp2_option_set_no_closed_streams],
+        [APR_ADDTO(MOD_CPPFLAGS, ["-DH2_NG2_NO_CLOSED_STREAMS"])], [])
+dnl # nghttp2 >= 1.50.0: rfc9113 leading/trailing whitespec strictness
+      AC_CHECK_FUNCS([nghttp2_option_set_no_rfc9113_leading_and_trailing_ws_validation],
+        [APR_ADDTO(MOD_CPPFLAGS, ["-DH2_NG2_RFC9113_STRICTNESS"])], [])
     else
       AC_MSG_WARN([nghttp2 version is too old])
     fi

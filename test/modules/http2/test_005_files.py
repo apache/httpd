@@ -1,7 +1,7 @@
 import os
 import pytest
 
-from .env import H2Conf
+from .env import H2Conf, H2TestEnv
 
 
 def mk_text_file(fpath: str, lines: int):
@@ -15,6 +15,7 @@ def mk_text_file(fpath: str, lines: int):
             fd.write("\n")
 
 
+@pytest.mark.skipif(condition=H2TestEnv.is_unsupported, reason="mod_http2 not supported here")
 class TestFiles:
 
     URI_PATHS = []

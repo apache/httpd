@@ -1,9 +1,10 @@
 import pytest
 import os
 
-from .env import H2Conf
+from .env import H2Conf, H2TestEnv
 
 
+@pytest.mark.skipif(condition=H2TestEnv.is_unsupported, reason="mod_http2 not supported here")
 class TestLoadPostStatic:
 
     @pytest.fixture(autouse=True, scope='class')
@@ -24,7 +25,8 @@ class TestLoadPostStatic:
         assert 0 == r.results["h2load"]["status"]["5xx"]
     
     # test POST on static file, slurped in by server
-    def test_h2_710_00(self, env):
+    def test_h2_710_00(self, env, repeat):
+        assert env.is_live()
         url = env.mkurl("https", "test1", "/index.html")
         n = 10
         m = 1
@@ -36,7 +38,8 @@ class TestLoadPostStatic:
         r = env.run(args)
         self.check_h2load_ok(env, r, n)
 
-    def test_h2_710_01(self, env):
+    def test_h2_710_01(self, env, repeat):
+        assert env.is_live()
         url = env.mkurl("https", "test1", "/index.html")
         n = 1000
         m = 100
@@ -48,7 +51,8 @@ class TestLoadPostStatic:
         r = env.run(args)
         self.check_h2load_ok(env, r, n)
 
-    def test_h2_710_02(self, env):
+    def test_h2_710_02(self, env, repeat):
+        assert env.is_live()
         url = env.mkurl("https", "test1", "/index.html")
         n = 100
         m = 50

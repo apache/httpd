@@ -185,11 +185,10 @@ struct h2_proxy_request {
     
     apr_time_t request_time;
     
-    unsigned int chunked : 1;   /* iff request body needs to be forwarded as chunked */
-    unsigned int serialize : 1; /* iff this request is written in HTTP/1.1 serialization */
+    int chunked;   /* iff request body needs to be forwarded as chunked */
 };
 
-h2_proxy_request *h2_proxy_req_create(int id, apr_pool_t *pool, int serialize);
+h2_proxy_request *h2_proxy_req_create(int id, apr_pool_t *pool);
 apr_status_t h2_proxy_req_make(h2_proxy_request *req, apr_pool_t *pool,
                                const char *method, const char *scheme, 
                                const char *authority, const char *path, 

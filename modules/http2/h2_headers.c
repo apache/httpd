@@ -27,12 +27,13 @@
 #include <nghttp2/nghttp2.h>
 
 #include "h2_private.h"
-#include "h2_h2.h"
+#include "h2_protocol.h"
 #include "h2_config.h"
 #include "h2_util.h"
 #include "h2_request.h"
 #include "h2_headers.h"
 
+#if !AP_HAS_RESPONSE_BUCKETS
 
 static int is_unsafe(server_rec *s) 
 {
@@ -64,7 +65,7 @@ apr_bucket * h2_bucket_headers_make(apr_bucket *b, h2_headers *r)
 
     b = apr_bucket_shared_make(b, br, 0, 0);
     b->type = &h2_bucket_type_headers;
-    b->length = h2_headers_length(r);
+    b->length = 0;
     
     return b;
 } 
@@ -98,18 +99,11 @@ const apr_bucket_type_t h2_bucket_type_headers = {
     apr_bucket_shared_copy
 };
 
-apr_bucket *h2_bucket_headers_beam(struct h2_bucket_beam *beam,
-                                    apr_bucket_brigade *dest,
-                                    const apr_bucket *src)
+apr_bucket *h2_bucket_headers_clone(apr_bucket *b, apr_pool_t *pool,
+                                    apr_bucket_alloc_t *list)
 {
-    if (H2_BUCKET_IS_HEADERS(src)) {
-        h2_headers *src_headers = ((h2_bucket_headers *)src->data)->headers;
-        apr_bucket *b = h2_bucket_headers_create(dest->bucket_alloc, 
-                                                 h2_headers_clone(dest->p, src_headers));
-        APR_BRIGADE_INSERT_TAIL(dest, b);
-        return b;
-    }
-    return NULL;
+    h2_headers *hdrs = ((h2_bucket_headers *)b->data)->headers;
+    return h2_bucket_headers_create(list, h2_headers_clone(pool, hdrs));
 }
 
 
@@ -140,6 +134,12 @@ apr_size_t h2_headers_length(h2_headers *headers)
     return len;
 }
 
+apr_size_t h2_bucket_headers_headers_length(apr_bucket *b)
+{
+    h2_headers *h = h2_bucket_headers_get(b);
+    return h? h2_headers_length(h) : 0;
+}
+
 h2_headers *h2_headers_rcreate(request_rec *r, int status,
                                const apr_table_t *header, apr_pool_t *pool)
 {
@@ -153,7 +153,7 @@ h2_headers *h2_headers_rcreate(request_rec *r, int status,
                  * in HTTP/2. Tell the client that it should use HTTP/1.1 for this.
                  */
                 ap_log_rerror(APLOG_MARK, APLOG_DEBUG, headers->status, r,
-                              APLOGNO(03061)
+                              APLOGNO(10399)
                               "h2_headers(%ld): renegotiate forbidden, cause: %s",
                               (long)r->connection->id, cause);
                 headers->status = H2_ERR_HTTP_1_1_REQUIRED;
@@ -199,8 +199,9 @@ h2_headers *h2_headers_die(apr_status_t type,
     return headers;
 }
 
-int h2_headers_are_response(h2_headers *headers)
+int h2_headers_are_final_response(h2_headers *headers)
 {
     return headers->status >= 200;
 }
 
+#endif /* !AP_HAS_RESPONSE_BUCKETS */

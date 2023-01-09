@@ -34,23 +34,22 @@
 
 #include "h2_bucket_beam.h"
 #include "h2_stream.h"
-#include "h2_task.h"
+#include "h2_c2.h"
 #include "h2_config.h"
-#include "h2_ctx.h"
-#include "h2_conn.h"
-#include "h2_filter.h"
+#include "h2_conn_ctx.h"
+#include "h2_c1.h"
 #include "h2_request.h"
 #include "h2_headers.h"
 #include "h2_session.h"
 #include "h2_util.h"
-#include "h2_h2.h"
+#include "h2_protocol.h"
 #include "mod_http2.h"
 
-const char *h2_tls_protos[] = {
+const char *h2_protocol_ids_tls[] = {
     "h2", NULL
 };
 
-const char *h2_clear_protos[] = {
+const char *h2_protocol_ids_clear[] = {
     "h2c", NULL
 };
 
@@ -76,7 +75,7 @@ static const char *h2_err_descr[] = {
     "http/1.1 required",
 };
 
-const char *h2_h2_err_description(unsigned int h2_error)
+const char *h2_protocol_err_description(unsigned int h2_error)
 {
     if (h2_error < (sizeof(h2_err_descr)/sizeof(h2_err_descr[0]))) {
         return h2_err_descr[h2_error];
@@ -421,19 +420,7 @@ static int cipher_is_blacklisted(const char *cipher, const char **psource)
     return !!*psource;
 }
 
-/*******************************************************************************
- * Hooks for processing incoming connections:
- * - process_conn take over connection in case of h2
- */
-static int h2_h2_process_conn(conn_rec* c);
-static int h2_h2_pre_close_conn(conn_rec* c);
-static int h2_h2_post_read_req(request_rec *r);
-static int h2_h2_late_fixups(request_rec *r);
-
-/*******************************************************************************
- * Once per lifetime init, retrieve optional functions
- */
-apr_status_t h2_h2_init(apr_pool_t *pool, server_rec *s)
+apr_status_t h2_protocol_init(apr_pool_t *pool, server_rec *s)
 {
     (void)pool;
     ap_log_error(APLOG_MARK, APLOG_TRACE1, 0, s, "h2_h2, child_init");
@@ -442,7 +429,7 @@ apr_status_t h2_h2_init(apr_pool_t *pool, server_rec *s)
     return APR_SUCCESS;
 }
 
-int h2_is_acceptable_connection(conn_rec *c, request_rec *r, int require_all) 
+int h2_protocol_is_acceptable_c1(conn_rec *c, request_rec *r, int require_all)
 {
     int is_tls = ap_ssl_conn_is_ssl(c);
 
@@ -473,265 +460,26 @@ int h2_is_acceptable_connection(conn_rec *c, request_rec *r, int require_all)
             return 0;
         }
 
-        /* Check TLS cipher blacklist
-         */
-        val = ap_ssl_var_lookup(pool, s, c, NULL, "SSL_CIPHER");
-        if (val && *val) {
-            const char *source;
-            if (cipher_is_blacklisted(val, &source)) {
-                ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, APLOGNO(03052)
-                              "h2_h2(%ld): tls cipher %s blacklisted by %s", 
-                              (long)c->id, val, source);
+        if (val && !strcmp("TLSv1.2", val)) {
+            /* Check TLS cipher blacklist, defined pre-TLSv1.3, so only
+             * checking for 1.2 */
+            val = ap_ssl_var_lookup(pool, s, c, NULL, "SSL_CIPHER");
+            if (val && *val) {
+                const char *source;
+                if (cipher_is_blacklisted(val, &source)) {
+                    ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, APLOGNO(03052)
+                                  "h2_h2(%ld): tls cipher %s blacklisted by %s",
+                                  (long)c->id, val, source);
+                    return 0;
+                }
+            }
+            else if (require_all) {
+                ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, APLOGNO(03053)
+                              "h2_h2(%ld): tls cipher is indetermined", (long)c->id);
                 return 0;
             }
         }
-        else if (require_all) {
-            ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, APLOGNO(03053)
-                          "h2_h2(%ld): tls cipher is indetermined", (long)c->id);
-            return 0;
-        }
     }
     return 1;
-}
-
-static int h2_allows_h2_direct(conn_rec *c)
-{
-    int is_tls = ap_ssl_conn_is_ssl(c);
-    const char *needed_protocol = is_tls? "h2" : "h2c";
-    int h2_direct = h2_config_cgeti(c, H2_CONF_DIRECT);
-    
-    if (h2_direct < 0) {
-        h2_direct = is_tls? 0 : 1;
-    }
-    return (h2_direct && ap_is_allowed_protocol(c, NULL, NULL, needed_protocol));
-}
-
-int h2_allows_h2_upgrade(request_rec *r)
-{
-    int h2_upgrade = h2_config_rgeti(r, H2_CONF_UPGRADE);
-    return h2_upgrade > 0 || (h2_upgrade < 0 && !ap_ssl_conn_is_ssl(r->connection));
-}
-
-/*******************************************************************************
- * Register various hooks
- */
-static const char* const mod_ssl[]        = { "mod_ssl.c", NULL};
-static const char* const mod_reqtimeout[] = { "mod_ssl.c", "mod_reqtimeout.c", NULL};
-
-void h2_h2_register_hooks(void)
-{
-    /* Our main processing needs to run quite late. Definitely after mod_ssl,
-     * as we need its connection filters, but also before reqtimeout as its
-     * method of timeouts is specific to HTTP/1.1 (as of now).
-     * The core HTTP/1 processing run as REALLY_LAST, so we will have
-     * a chance to take over before it.
-     */
-    ap_hook_process_connection(h2_h2_process_conn, 
-                               mod_reqtimeout, NULL, APR_HOOK_LAST);
-    
-    /* One last chance to properly say goodbye if we have not done so
-     * already. */
-    ap_hook_pre_close_connection(h2_h2_pre_close_conn, NULL, mod_ssl, APR_HOOK_LAST);
-
-    /* With "H2SerializeHeaders On", we install the filter in this hook
-     * that parses the response. This needs to happen before any other post
-     * read function terminates the request with an error. Otherwise we will
-     * never see the response.
-     */
-    ap_hook_post_read_request(h2_h2_post_read_req, NULL, NULL, APR_HOOK_REALLY_FIRST);
-    ap_hook_fixups(h2_h2_late_fixups, NULL, NULL, APR_HOOK_LAST);
-
-    /* special bucket type transfer through a h2_bucket_beam */
-    h2_register_bucket_beamer(h2_bucket_headers_beam);
-    h2_register_bucket_beamer(h2_bucket_observer_beam);
-}
-
-int h2_h2_process_conn(conn_rec* c)
-{
-    apr_status_t status;
-    h2_ctx *ctx;
-    server_rec *s;
-    
-    if (c->master) {
-        return DECLINED;
-    }
-    
-    ctx = h2_ctx_get(c, 0);
-    s = ctx? ctx->server : c->base_server;
-    
-    ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, c, "h2_h2, process_conn");
-    if (ctx && ctx->task) {
-        /* our stream pseudo connection */
-        ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, c, "h2_h2, task, declined");
-        return DECLINED;
-    }
-    
-    if (!ctx && c->keepalives == 0) {
-        const char *proto = ap_get_protocol(c);
-        
-        if (APLOGctrace1(c)) {
-            ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, c, "h2_h2, process_conn, "
-                          "new connection using protocol '%s', direct=%d, "
-                          "tls acceptable=%d", proto, h2_allows_h2_direct(c), 
-                          h2_is_acceptable_connection(c, NULL, 1));
-        }
-        
-        if (!strcmp(AP_PROTOCOL_HTTP1, proto)
-            && h2_allows_h2_direct(c) 
-            && h2_is_acceptable_connection(c, NULL, 1)) {
-            /* Fresh connection still is on http/1.1 and H2Direct is enabled. 
-             * Otherwise connection is in a fully acceptable state.
-             * -> peek at the first 24 incoming bytes
-             */
-            apr_bucket_brigade *temp;
-            char *peek = NULL;
-            apr_size_t peeklen;
-            
-            temp = apr_brigade_create(c->pool, c->bucket_alloc);
-            status = ap_get_brigade(c->input_filters, temp,
-                                    AP_MODE_SPECULATIVE, APR_BLOCK_READ, 24);
-            
-            if (status != APR_SUCCESS) {
-                ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, c, APLOGNO(03054)
-                              "h2_h2, error reading 24 bytes speculative");
-                apr_brigade_destroy(temp);
-                return DECLINED;
-            }
-            
-            apr_brigade_pflatten(temp, &peek, &peeklen, c->pool);
-            if ((peeklen >= 24) && !memcmp(H2_MAGIC_TOKEN, peek, 24)) {
-                ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, c,
-                              "h2_h2, direct mode detected");
-                if (!ctx) {
-                    ctx = h2_ctx_get(c, 1);
-                }
-                h2_ctx_protocol_set(ctx, ap_ssl_conn_is_ssl(c)? "h2" : "h2c");
-            }
-            else if (APLOGctrace2(c)) {
-                ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, c,
-                              "h2_h2, not detected in %d bytes(base64): %s", 
-                              (int)peeklen, h2_util_base64url_encode(peek, peeklen, c->pool));
-            }
-            
-            apr_brigade_destroy(temp);
-        }
-    }
-
-    if (ctx) {
-        ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, c, "process_conn");
-        
-        if (!h2_ctx_get_session(c)) {
-            status = h2_conn_setup(c, NULL, s);
-            ap_log_cerror(APLOG_MARK, APLOG_TRACE1, status, c, "conn_setup");
-            if (status != APR_SUCCESS) {
-                h2_ctx_clear(c);
-                return !OK;
-            }
-        }
-        h2_conn_run(c);
-        return OK;
-    }
-    
-    ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, c, "h2_h2, declined");
-    return DECLINED;
-}
-
-static int h2_h2_pre_close_conn(conn_rec *c)
-{
-    h2_ctx *ctx;
-
-    /* secondary connection? */
-    if (c->master) {
-        return DECLINED;
-    }
-
-    ctx = h2_ctx_get(c, 0);
-    if (ctx) {
-        /* If the session has been closed correctly already, we will not
-         * find a h2_ctx here. The presence indicates that the session
-         * is still ongoing. */
-        return h2_conn_pre_close(ctx, c);
-    }
-    return DECLINED;
-}
-
-static void check_push(request_rec *r, const char *tag)
-{
-    apr_array_header_t *push_list = h2_config_push_list(r);
-
-    if (!r->expecting_100 && push_list && push_list->nelts > 0) {
-        int i, old_status;
-        const char *old_line;
-        
-        ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r, 
-                      "%s, early announcing %d resources for push",
-                      tag, push_list->nelts);
-        for (i = 0; i < push_list->nelts; ++i) {
-            h2_push_res *push = &APR_ARRAY_IDX(push_list, i, h2_push_res);
-            apr_table_add(r->headers_out, "Link", 
-                           apr_psprintf(r->pool, "<%s>; rel=preload%s", 
-                                        push->uri_ref, push->critical? "; critical" : ""));
-        }
-        old_status = r->status;
-        old_line = r->status_line;
-        r->status = 103;
-        r->status_line = "103 Early Hints";
-        ap_send_interim_response(r, 1);
-        r->status = old_status;
-        r->status_line = old_line;
-    }
-}
-
-static int h2_h2_post_read_req(request_rec *r)
-{
-    /* secondary connection? */
-    if (r->connection->master) {
-        struct h2_task *task = h2_ctx_get_task(r->connection);
-        /* This hook will get called twice on internal redirects. Take care
-         * that we manipulate filters only once. */
-        if (task && !task->filters_set) {
-            ap_filter_t *f;
-            ap_log_rerror(APLOG_MARK, APLOG_TRACE3, 0, r, 
-                          "h2_task(%s): adding request filters", task->id);
-
-            /* setup the correct filters to process the request for h2 */
-            ap_add_input_filter("H2_REQUEST", task, r, r->connection);
-            
-            /* replace the core http filter that formats response headers
-             * in HTTP/1 with our own that collects status and headers */
-            ap_remove_output_filter_byhandle(r->output_filters, "HTTP_HEADER");
-            ap_add_output_filter("H2_RESPONSE", task, r, r->connection);
-            
-            for (f = r->input_filters; f; f = f->next) {
-                if (!strcmp("H2_SECONDARY_IN", f->frec->name)) {
-                    f->r = r;
-                    break;
-                }
-            }
-            ap_add_output_filter("H2_TRAILERS_OUT", task, r, r->connection);
-            task->filters_set = 1;
-        }
-    }
-    return DECLINED;
-}
-
-static int h2_h2_late_fixups(request_rec *r)
-{
-    /* secondary connection? */
-    if (r->connection->master) {
-        struct h2_task *task = h2_ctx_get_task(r->connection);
-        if (task) {
-            /* check if we copy vs. setaside files in this location */
-            task->output.copy_files = h2_config_rgeti(r, H2_CONF_COPY_FILES);
-            task->output.buffered = h2_config_rgeti(r, H2_CONF_OUTPUT_BUFFER);
-            if (task->output.copy_files) {
-                ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, task->c,
-                              "h2_secondary_out(%s): copy_files on", task->id);
-                h2_beam_on_file_beam(task->output.beam, h2_beam_no_files, NULL);
-            }
-            check_push(r, "late_fixup");
-        }
-    }
-    return DECLINED;
 }
 

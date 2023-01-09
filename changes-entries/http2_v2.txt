@@ -1,0 +1,43 @@
+  *) mod_http2: version 2.0.10 of the module, synchronizing changes
+     with the gitgub version. This is a partial rewrite of how connections
+     and streams are handled.
+     - an APR pollset and pipes (where supported) are used to monitor
+       the main connection and react to IO for request/response handling.
+       This replaces the stuttered timed waits of earlier versions.
+     - H2SerializeHeaders directive still exists, but has no longer an effect.
+     - Clients that seemingly misbehave still get less resources allocated,
+       but ongoing requests are no longer disrupted.
+     - Fixed an issue since 1.15.24 that "Server" headers in proxied requests
+       were overwritten instead of preserved. [PR by @daum3ns]
+     - A regression in v1.15.24 was fixed that could lead to httpd child
+       processes not being terminated on a graceful reload or when reaching
+       MaxConnectionsPerChild. When unprocessed h2 requests were queued at
+       the time, these could stall. See #212.
+     - Improved information displayed in 'server-status' for H2 connections when
+       Extended Status is enabled. Now one can see the last request that IO
+       operations happened on and transferred IO stats are updated as well.
+     - When reaching server limits, such as MaxRequestsPerChild, the HTTP/2 connection
+       send a GOAWAY frame much too early on new connections, leading to invalid
+       protocol state and a client failing the request. See PR65731 at
+       <https://bz.apache.org/bugzilla/show_bug.cgi?id=65731>.
+       The module now initializes the HTTP/2 protocol correctly and allows the
+       client to submit one request before the shutdown via a GOAWAY frame
+       is being announced.
+     - :scheme pseudo-header values, not matching the
+       connection scheme, are forwarded via absolute uris to the
+       http protocol processing to preserve semantics of the request.
+       Checks on combinations of pseudo-headers values/absence
+       have been added as described in RFC 7540. Fixes #230.
+     - A bug that prevented trailers (e.g. HEADER frame at the end) to be
+       generated in certain cases was fixed. See #233 where it prevented
+       gRPC responses to be properly generated.
+     - Request and response header values are automatically stripped of leading
+       and trialing space/tab characters. This is equivalent behaviour to what
+       Apache httpd's http/1.1 parser does.
+       The checks for this in nghttp2 v1.50.0+ are disabled.
+     - Extensive testing in production done by Alessandro Bianchi (@alexskynet)
+       on the v2.0.x versions for stability. Many thanks!
+
+  *) mod_proxy_http2: fixed #235 by no longer forwarding 'Host:' header when
+     request ':authority' is known. Improved test case that did not catch that
+     the previous 'fix' was incorrect.

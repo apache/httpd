@@ -12,10 +12,13 @@ try:
 except KeyError:
     text="a"
     count=77784
-    
-    
+
+count = int(count)
+
 print("Status: 200 OK")
 print("Content-Type: text/html")
 print()
-sys.stdout.write(text*int(count))
+sys.stdout.flush()
+for _ in range(count):
+    sys.stdout.write(text)
 
