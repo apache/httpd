@@ -801,8 +801,14 @@ static dav_error * dav_process_if_header(request_rec *r, dav_if_header **p_ih)
                                                  "for the same state.");
                         }
                         condition = DAV_IF_COND_NOT;
+                        list += 2;
                     }
-                    list += 2;
+                    else {
+                        return dav_new_error(r->pool, HTTP_BAD_REQUEST,
+                                             DAV_ERR_IF_UNK_CHAR, 0,
+                                             "Invalid \"If:\" header: "
+                                             "Unexpected character in List");
+                    }
                     break;
 
                 case ' ':
