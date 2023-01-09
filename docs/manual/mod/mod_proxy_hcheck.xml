@@ -98,6 +98,11 @@
     </table>
 </note>
 
+<note><title>Compatibility:</title>
+    <p><code>OPTIONS11</code>, <code>HEAD11</code> and <code>GET11</code> are
+       available in 2.4.55 and above.</p>
+</note>
+
 </summary>
 <seealso><module>mod_proxy</module></seealso>
 
