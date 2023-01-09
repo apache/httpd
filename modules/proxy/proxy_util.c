@@ -3121,7 +3121,7 @@ PROXY_DECLARE(apr_status_t) ap_proxy_check_connection(const char *scheme,
                          "%s: backend socket is disconnected.", scheme);
         }
         else {
-            ap_log_error(APLOG_MARK, APLOG_WARNING, 0, server, APLOGNO(03408)
+            ap_log_error(APLOG_MARK, APLOG_INFO, 0, server, APLOGNO(03408)
                          "%s: reusable backend connection is not empty: "
                          "forcibly closed", scheme);
         }
