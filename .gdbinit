@@ -142,7 +142,7 @@ define dump_bucket_ex
         print_bkt_datacol "rc" "n/%c" 'a' $sh
 
     else
-    if ($bucket->type == &ap_bucket_type_error)
+    if ($_streq($bucket->type->name, "ERROR"))
 
         # metadata bucket, no content but it does have an error code in it
         print_bkt_datacol "contents" "%c" ' ' $sh
