@@ -16,6 +16,9 @@ Changes with Apache 2.4.55
      continued to work, the error log was in error. Fixed PR66190.
      [Stefan Eissing]
 
+  *) mod_proxy_hcheck: Re-enable workers in standard ERROR state. PR 66302.
+     [Alessandro Cavaliere <alessandro.cavalier7 unibo.it>]
+
   *) mod_proxy_hcheck: Detect AJP/CPING support correctly. PR 66300.
      [Alessandro Cavaliere <alessandro.cavalier7 unibo.it>]
 
