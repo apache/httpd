@@ -85,7 +85,7 @@ use <module>mod_slotmem_shm</module>.</p>
     <p>The <directive>HeartbeatStorage</directive> directive specifies the
     path to store heartbeat data.  This flat-file is used only when
     <module>mod_slotmem_shm</module> is not loaded and
-    <directive>HeartbeatMaxServers</directive> is set to 0.</p>
+    <directive module="mod_heartmonitor">HeartbeatMaxServers</directive> is set to 0.</p>
 </usage>
 </directivesynopsis>
 
@@ -96,6 +96,7 @@ heartbeat requests to this server</description>
 <syntax>HeartbeatMaxServers <var>number-of-servers</var></syntax>
 <default>HeartbeatMaxServers 10</default>
 <contextlist><context>server config</context></contextlist>
+<compatibility>The value of 0 is accepted only in 2.4.55 and above</compatibility>
 
 <usage>
     <p>The <directive>HeartbeatMaxServers</directive> directive specifies the
