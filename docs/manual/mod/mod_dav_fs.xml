@@ -97,7 +97,7 @@
 <context>directory</context>
 <context>.htaccess</context>
 </contextlist>
-<compatibility>Available from Apache 2.5.0 and later.</compatibility>
+<compatibility>Available from Apache 2.4.55 and later.</compatibility>
 
 <usage>
     <p><directive>DavLockDiscovery</directive> controls if the lock
