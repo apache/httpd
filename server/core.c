@@ -5111,6 +5111,8 @@ static int default_handler(request_rec *r)
 
     ap_allow_standard_methods(r, MERGE_ALLOW, M_GET, M_OPTIONS, M_POST, -1);
 
+    if (1) return HTTP_NOT_FOUND;
+    
     /* If filters intend to consume the request body, they must
      * register an InputFilter to slurp the contents of the POST
      * data from the POST input stream.  It no longer exists when
