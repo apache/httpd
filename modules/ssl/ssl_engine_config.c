@@ -810,8 +810,14 @@ const char *ssl_cmd_SSLCipherSuite(cmd_parms *cmd,
 static const char *ssl_cmd_check_file(cmd_parms *parms,
                                       const char **file)
 {
-    const char *filepath = ap_server_root_relative(parms->pool, *file);
+    const char *filepath;
 
+    /* If only dumping the config, don't verify the paths */
+    if (ap_state_query(AP_SQ_RUN_MODE) == AP_SQ_RM_CONFIG_DUMP) {
+        return NULL;
+    }
+
+    filepath = ap_server_root_relative(parms->pool, *file);
     if (!filepath) {
         return apr_pstrcat(parms->pool, parms->cmd->name,
                            ": Invalid file path ", *file, NULL);

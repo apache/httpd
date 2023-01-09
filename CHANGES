@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.55
 
+  *) mod_ssl: When dumping the configuration, the existence of
+     certificate/key files is no longer tested.  [Joe Orton]
+
   *) mod_ssl: when a proxy connection had handled a request using SSL, an
      error was logged when "SSLProxyEngine" was only configured in the
      location/proxy section and not the overall server. The connection
