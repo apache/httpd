@@ -3,8 +3,18 @@ name: Linux
 on:
   push:
     branches: [ "*" ]
+    paths-ignore:
+      - 'docs/**'
+      - STATUS
+      - CHANGES
+      - changes-entries/*
   pull_request:
     branches: [ "trunk" ]
+    paths-ignore:
+      - 'docs/**'
+      - STATUS
+      - CHANGES
+      - changes-entries/*
 
 env:
   MARGS: "-j2"
@@ -54,3 +64,9 @@ jobs:
       run: ./test/travis_before_linux.sh
     - name: Build and test
       run: ./test/travis_run_linux.sh
+    - uses: actions/upload-artifact@v3
+      if: failure()
+      with:
+        name: error_log
+        path: test/perl-framework/t/logs/error_log
+
