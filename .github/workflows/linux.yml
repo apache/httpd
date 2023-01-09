@@ -43,6 +43,7 @@ jobs:
                     cpanminus libtool-bin libapr1-dev libaprutil1-dev
                     liblua5.3-dev libbrotli-dev libcurl4-openssl-dev     
                     libnghttp2-dev libjansson-dev libpcre2-dev gdb
+                    perl-doc
     - uses: actions/checkout@v3
     - name: Configure environment
       run: ./test/travis_before_linux.sh
