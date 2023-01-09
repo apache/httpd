@@ -87,12 +87,27 @@ function install_apx() {
     touch ${prefix}/.revision-is-${revision}
 }
 
-# Allow to load /home/travis/build/apache/httpd/.gdbinit
-echo "add-auto-load-safe-path /home/travis/build/apache/httpd/.gdbinit" >> /home/travis/.gdbinit
+# Allow to load $HOME/build/apache/httpd/.gdbinit
+echo "add-auto-load-safe-path $HOME/build/apache/httpd/.gdbinit" >> $HOME/.gdbinit
 
+# Prepare perl-framework test environment
 if ! test -v SKIP_TESTING; then
+    # Clear CPAN cache if necessary
+    if [ -v CLEAR_CACHE ]; then rm -rf ~/perl5; fi
+    
+    cpanm --local-lib=~/perl5 local::lib && eval $(perl -I ~/perl5/lib/perl5/ -Mlocal::lib)
+
+    # CPAN modules are to be used with the system Perl and always with
+    # CC=gcc, e.g. for the CC="gcc -m32" case the builds are not correct
+    # otherwise.
+    CC=gcc cpanm --notest Net::SSL LWP::Protocol::https                 \
+           LWP::Protocol::AnyEvent::http                                \
+           ExtUtils::Embed Test::More AnyEvent DateTime HTTP::DAV FCGI  \
+           AnyEvent::WebSocket::Client Apache::Test
+
     ### Temporary: purge old svn checkout from the cache
     rm -rf $HOME/root/framework
+
     # Make a shallow clone of httpd-tests git repo.
     git clone --depth=1 https://github.com/apache/httpd-tests.git test/perl-framework
 fi
