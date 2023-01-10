@@ -508,6 +508,8 @@ cleanup:
         /* PR#43039: We shouldn't accept NULL bytes within the line */
         bytes_handled = strlen(*s);
         if (bytes_handled < *read) {
+            ap_log_data(APLOG_MARK, APLOG_DEBUG, ap_server_conf,
+                        "NULL bytes in header", *s, *read, 0);
             *read = bytes_handled;
             if (rv == APR_SUCCESS) {
                 rv = APR_EINVAL;
