@@ -836,7 +836,7 @@ static void process_proxy_header(request_rec *r, proxy_dir_conf *c,
  * any sense at all, since we depend on buffer still containing
  * what was read by ap_getline() upon return.
  */
-static void ap_proxy_read_headers(request_rec *r, request_rec *rr,
+static apr_status_t ap_proxy_read_headers(request_rec *r, request_rec *rr,
                                   char *buffer, int size,
                                   conn_rec *c, int *pread_len)
 {
@@ -868,19 +868,26 @@ static void ap_proxy_read_headers(request_rec *r, request_rec *rr,
         rc = ap_proxygetline(tmp_bb, buffer, size, rr,
                              AP_GETLINE_FOLD | AP_GETLINE_NOSPC_EOL, &len);
 
-        if (len <= 0)
-            break;
 
-        if (APR_STATUS_IS_ENOSPC(rc)) {
-            /* The header could not fit in the provided buffer, warn.
-             * XXX: falls through with the truncated header, 5xx instead?
-             */
-            int trunc = (len > 128 ? 128 : len) / 2;
-            ap_log_rerror(APLOG_MARK, APLOG_WARNING, rc, r, APLOGNO(10124)
-                    "header size is over the limit allowed by "
-                    "ResponseFieldSize (%d bytes). "
-                    "Bad response header: '%.*s[...]%s'",
-                    size, trunc, buffer, buffer + len - trunc);
+        if (rc != APR_SUCCESS) {
+            if (APR_STATUS_IS_ENOSPC(rc)) {
+                int trunc = (len > 128 ? 128 : len) / 2;
+                ap_log_rerror(APLOG_MARK, APLOG_WARNING, rc, r, APLOGNO(10124)
+                        "header size is over the limit allowed by "
+                        "ResponseFieldSize (%d bytes). "
+                        "Bad response header: '%.*s[...]%s'",
+                        size, trunc, buffer, buffer + len - trunc);
+            }
+            else {
+                ap_log_rerror(APLOG_MARK, APLOG_WARNING, rc, r, APLOGNO(10404) 
+                              "Error reading headers from backend");
+            }
+            r->headers_out = NULL;
+            return rc;
+        }
+
+        if (len <= 0) {
+            break;
         }
         else {
             ap_log_rerror(APLOG_MARK, APLOG_TRACE4, 0, r, "%s", buffer);
@@ -903,7 +910,7 @@ static void ap_proxy_read_headers(request_rec *r, request_rec *rr,
                 if (psc->badopt == bad_error) {
                     /* Nope, it wasn't even an extra HTTP header. Give up. */
                     r->headers_out = NULL;
-                    return;
+                    return APR_EINVAL;
                 }
                 else if (psc->badopt == bad_body) {
                     /* if we've already started loading headers_out, then
@@ -917,13 +924,13 @@ static void ap_proxy_read_headers(request_rec *r, request_rec *rr,
                                       "in headers returned by %s (%s)",
                                       r->uri, r->method);
                         *pread_len = len;
-                        return;
+                        return APR_SUCCESS;
                     }
                     else {
                         ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(01099)
                                       "No HTTP headers returned by %s (%s)",
                                       r->uri, r->method);
-                        return;
+                        return APR_SUCCESS;
                     }
                 }
             }
@@ -953,6 +960,7 @@ static void ap_proxy_read_headers(request_rec *r, request_rec *rr,
         process_proxy_header(r, dconf, buffer, value);
         saw_headers = 1;
     }
+    return APR_SUCCESS;
 }
 
 
@@ -1242,10 +1250,10 @@ int ap_proxy_http_process_response(proxy_http_req_t *req)
                          "Set-Cookie", NULL);
 
             /* shove the headers direct into r->headers_out */
-            ap_proxy_read_headers(r, backend->r, buffer, response_field_size,
-                                  origin, &pread_len);
+            rc = ap_proxy_read_headers(r, backend->r, buffer, response_field_size,
+                                       origin, &pread_len);
 
-            if (r->headers_out == NULL) {
+            if (rc != APR_SUCCESS || r->headers_out == NULL) {
                 ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(01106)
                               "bad HTTP/%d.%d header returned by %s (%s)",
                               major, minor, r->uri, r->method);
