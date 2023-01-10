@@ -257,6 +257,8 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
             ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(10396)
                           "%s Transfer-Encoding is not supported",
                           tenc);
+            /* We had a failure: Close connection to backend */
+            conn->close = 1;
             return HTTP_INTERNAL_SERVER_ERROR;
         }
     } else {
