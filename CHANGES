@@ -15,7 +15,7 @@ Changes with Apache 2.4.55
 
   *) mod_proxy_hcheck: Honor worker timeout settings.  [Yann Ylavic]
 
-  *) mod_http2: version 2.0.10 of the module, synchronizing changes
+  *) mod_http2: version 2.0.11 of the module, synchronizing changes
      with the gitgub version. This is a partial rewrite of how connections
      and streams are handled.
      - an APR pollset and pipes (where supported) are used to monitor
