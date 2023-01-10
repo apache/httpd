@@ -149,6 +149,14 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) mod_dav: fix error path for "Not" parsing in If header. 
+     Trunk version of patch:
+        https://svn.apache.org/r1906487
+     Backport version for 2.4.x of patch:
+        Trunk version of patch works
+        svn merge -c 1906487 ^/httpd/httpd/trunk .
+     +1: jorton, covener, rpluem
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -165,13 +173,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      +1: minfrin, jim,
      jailletc36: r1745033 seems related and should in included
 
-  *) mod_dav: fix error path for "Not" parsing in If header. 
-     Trunk version of patch:
-        https://svn.apache.org/r1906487
-     Backport version for 2.4.x of patch:
-        Trunk version of patch works
-        svn merge -c 1906487 ^/httpd/httpd/trunk .
-     +1: jorton, covener
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
