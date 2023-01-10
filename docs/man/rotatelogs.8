@@ -19,7 +19,7 @@
 .el .ne 3
 .IP "\\$1" \\$2
 ..
-.TH "ROTATELOGS" 8 "2022-03-28" "Apache HTTP Server" "rotatelogs"
+.TH "ROTATELOGS" 8 "2023-01-10" "Apache HTTP Server" "rotatelogs"
 
 .SH NAME
 rotatelogs \- Piped logging program to rotate Apache logs
@@ -85,49 +85,49 @@ The number of minutes offset from UTC\&. If omitted, zero is assumed and UTC is 
 .SH "EXAMPLES"
  
 .nf
-
+ 
      CustomLog "|bin/rotatelogs /var/log/logfile 86400" common
-
+ 
 .fi
  
 .PP
 This creates the files /var/log/logfile\&.nnnn where nnnn is the system time at which the log nominally starts (this time will always be a multiple of the rotation time, so you can synchronize cron scripts with it)\&. At the end of each rotation time (here after 24 hours) a new log is started\&.
  
 .nf
-
+ 
      CustomLog "|bin/rotatelogs -l /var/log/logfile\&.%Y\&.%m\&.%d 86400" common
-
+ 
 .fi
  
 .PP
 This creates the files /var/log/logfile\&.yyyy\&.mm\&.dd where yyyy is the year, mm is the month, and dd is the day of the month\&. Logging will switch to a new file every day at midnight, local time\&.
  
 .nf
-
+ 
      CustomLog "|bin/rotatelogs /var/log/logfile 5M" common
-
+ 
 .fi
  
 .PP
 This configuration will rotate the logfile whenever it reaches a size of 5 megabytes\&.
  
 .nf
-
+ 
      ErrorLog "|bin/rotatelogs /var/log/errorlog\&.%Y-%m-%d-%H_%M_%S 5M"
-
+ 
 .fi
  
 .PP
 This configuration will rotate the error logfile whenever it reaches a size of 5 megabytes, and the suffix to the logfile name will be created of the form \fBerrorlog\&.YYYY-mm-dd-HH_MM_SS\fR\&.
  
 .nf
-
+ 
      CustomLog "|bin/rotatelogs -t /var/log/logfile 86400" common
-
+ 
 .fi
  
 .PP
-This creates the file /var/log/logfile, truncating the file at startup and then truncating the file once per day\&. It is expected in this scenario that a separate process (such as tail) would process the file in real time\&.
+This creates the file \fB/var/log/logfile\fR, truncating the file at startup and then truncating the file once per day\&. It is expected in this scenario that a separate process (such as tail) would process the file in real time\&.
  
 .SH "PORTABILITY"
  
