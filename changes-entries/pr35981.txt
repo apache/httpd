@@ -1,3 +1,0 @@
-  *) mod_dav: mod_dav overrides dav_fs response on PUT failure. PR 35981
-     [Basant Kumar Kukreja <basant.kukreja sun.com>, Alejandro Alvarez
-     <alejandro.alvarez.ayllon cern.ch>]

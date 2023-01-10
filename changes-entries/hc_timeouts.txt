@@ -1,1 +1,0 @@
-  *) mod_proxy_hcheck: Honor worker timeout settings.  [Yann Ylavic]
