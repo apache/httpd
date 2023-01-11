@@ -203,7 +203,7 @@ like the <code class="directive"><a href="../mod/mod_alias.html#alias">Alias</a>
 <dt>2. A web-path to a resource</dt>
 <dd>
 <div class="example"><p><code>
-RewriteRule ^/foo$ /bar
+RewriteRule ^/foo/?$ /bar
 </code></p></div>
 <p>If <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code> is set
 to <code>/usr/local/apache2/htdocs</code>, then this directive would
