@@ -205,7 +205,7 @@ like the <directive module="mod_alias">Alias</directive> directive.</p>
 <dt>2. A web-path to a resource</dt>
 <dd>
 <example>
-RewriteRule ^/foo$ /bar
+RewriteRule ^/foo/?$ /bar
 </example>
 <p>If <directive module="core">DocumentRoot</directive> is set
 to <code>/usr/local/apache2/htdocs</code>, then this directive would
