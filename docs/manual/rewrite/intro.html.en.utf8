@@ -231,7 +231,7 @@ value.
 <p>The <var>Substitution</var> can itself be one of three things:</p>
 
 <dl>
-<dt>A full filesystem path to a resource</dt>
+<dt>1. A full filesystem path to a resource</dt>
 <dd>
 <pre class="prettyprint lang-config">RewriteRule "^/games" "/usr/local/games/web"</pre>
 
@@ -239,23 +239,26 @@ value.
 like the <code class="directive"><a href="../mod/mod_alias.html#alias">Alias</a></code> directive.</p>
 </dd>
 
-<dt>A web-path to a resource</dt>
+<dt>2. A web-path to a resource</dt>
 <dd>
-<pre class="prettyprint lang-config">RewriteRule "^/foo$" "/bar"</pre>
+<pre class="prettyprint lang-config">RewriteRule "^/foo/?$" "/bar"</pre>
 
 <p>If <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code> is set
 to <code>/usr/local/apache2/htdocs</code>, then this directive would
 map requests for <code>http://example.com/foo</code> to the
 path <code>/usr/local/apache2/htdocs/bar</code>.</p>
+
 </dd>
 
-<dt>An absolute URL</dt>
+<dt>3. An absolute URL</dt>
 <dd>
 <pre class="prettyprint lang-config">RewriteRule "^/product/view$" "http://site2.example.com/seeproduct.html" [R]</pre>
 
 <p>This tells the client to make a new request for the specified URL.</p>
 </dd>
 </dl>
+
+<div class="warning">Note that <strong>1</strong> and <strong>2</strong> have exactly the same syntax. The difference between them is that in the case of <strong>1</strong>, the top level of the target path (i.e., <code>/usr/</code>) exists on the filesystem, where as in the case of <strong>2</strong>, it does not. (i.e., there's no <code>/bar/</code> as a root-level directory in the filesystem.)</div>
 
 <p>The <var>Substitution</var> can also
 contain <em>back-references</em> to parts of the incoming URL-path
