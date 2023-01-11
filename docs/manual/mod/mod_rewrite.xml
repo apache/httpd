@@ -1059,6 +1059,13 @@ RewriteRule  "^/$"                 "/homepage.std.html"     [L]
         the homepage is served. Otherwise, the standard page is served.
         </p>
 
+        <p>By default, multiple <directive>RewriteCond</directive>s
+        are evaluated in sequence with an implied logical <strong>AND</strong>.
+        If a condition fails, in the absence of an
+        <strong><code>OR</code></strong> flag, the entire ruleset is abandoned,
+        and further conditions are not evaluated.
+        </p>
+
 </usage>
 
 </directivesynopsis>
