@@ -239,7 +239,7 @@ value.
 <dt>1. A full filesystem path to a resource</dt>
 <dd>
 <highlight language="config">
-RewriteRule "^/games" "/usr/local/games/web"
+RewriteRule "^/games" "/usr/local/games/web/puzzles.html"
 </highlight>
 <p>This maps a request to an arbitrary location on your filesystem, much
 like the <directive module="mod_alias">Alias</directive> directive.</p>
@@ -248,12 +248,12 @@ like the <directive module="mod_alias">Alias</directive> directive.</p>
 <dt>2. A web-path to a resource</dt>
 <dd>
 <highlight language="config">
-RewriteRule "^/foo/?$" "/bar"
+RewriteRule "^/games$" "/puzzles.html"
 </highlight>
 <p>If <directive module="core">DocumentRoot</directive> is set
 to <code>/usr/local/apache2/htdocs</code>, then this directive would
-map requests for <code>http://example.com/foo</code> to the
-path <code>/usr/local/apache2/htdocs/bar</code>.</p>
+map requests for <code>http://example.com/games</code> to the
+path <code>/usr/local/apache2/htdocs/puzzles.html</code>.</p>
 
 </dd>
 
