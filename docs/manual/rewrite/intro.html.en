@@ -233,7 +233,7 @@ value.
 <dl>
 <dt>1. A full filesystem path to a resource</dt>
 <dd>
-<pre class="prettyprint lang-config">RewriteRule "^/games" "/usr/local/games/web"</pre>
+<pre class="prettyprint lang-config">RewriteRule "^/games" "/usr/local/games/web/puzzles.html"</pre>
 
 <p>This maps a request to an arbitrary location on your filesystem, much
 like the <code class="directive"><a href="../mod/mod_alias.html#alias">Alias</a></code> directive.</p>
@@ -241,12 +241,12 @@ like the <code class="directive"><a href="../mod/mod_alias.html#alias">Alias</a>
 
 <dt>2. A web-path to a resource</dt>
 <dd>
-<pre class="prettyprint lang-config">RewriteRule "^/foo/?$" "/bar"</pre>
+<pre class="prettyprint lang-config">RewriteRule "^/games$" "/puzzles.html"</pre>
 
 <p>If <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code> is set
 to <code>/usr/local/apache2/htdocs</code>, then this directive would
-map requests for <code>http://example.com/foo</code> to the
-path <code>/usr/local/apache2/htdocs/bar</code>.</p>
+map requests for <code>http://example.com/games</code> to the
+path <code>/usr/local/apache2/htdocs/puzzles.html</code>.</p>
 
 </dd>
 
