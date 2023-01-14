@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1838953:1906498 (outdated) -->
+<!-- English Revision: 1906521 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -67,11 +67,23 @@
 			d'arrière-plan peut être créé ; par exemple "es-tu en
 			état de fonctionner"</td><td></td></tr>
         		<tr><td>OPTIONS</td><td>Envoie une requête <code>HTTP
-			OPTIONS</code> au serveur d'arrière-plan</td><td>*</td></tr>
-        		<tr><td>HEAD</td><td>Envoie une requête <code>HTTP
-			HEAD</code> au serveur d'arrière-plan</td><td>*</td></tr>
-        		<tr><td>GET</td><td>Envoie une requête <code>HTTP
-			GET</code> au serveur d'arrière-plan</td><td>*</td></tr>
+			OPTIONS</code> au serveur d'arrière-plan via
+			<code>HTTP/1.0</code></td><td>*</td></tr>
+			<tr><td>HEAD</td><td>Envoie une requête <code>HTTP
+			HEAD</code> au serveur d'arrière-plan via
+			<code>HTTP/1.0</code></td><td>*</td></tr>
+			<tr><td>GET</td><td>Envoie une requête <code>HTTP
+			GET</code> au serveur d'arrière-plan via
+			<code>HTTP/1.0</code></td><td>*</td></tr>
+			<tr><td>OPTIONS11</td><td>Envoie une requête <code>HTTP
+			OPTIONS</code> au serveur d'arrière-plan via
+			<code>HTTP/1.1</code></td><td>*</td></tr>
+			<tr><td>HEAD11</td><td>Envoie une requête <code>HTTP
+			HEAD</code> au serveur d'arrière-plan via
+			<code>HTTP/1.1</code></td><td>*</td></tr>
+			<tr><td>GET11</td><td>Envoie une requête <code>HTTP
+			GET</code> au serveur d'arrière-plan via
+			<code>HTTP/1.1</code></td><td>*</td></tr>
 <!--
         		<tr><td>CPING</td><td><strong>AJP only</strong> Do <code>CPING/CPONG</code> check</td><td></td></tr>
         		<tr><td>PROVIDER</td><td>Name of <code>provider</code> to be used to check health</td><td></td></tr>
@@ -108,6 +120,11 @@
             <em>Si ce paramètre est absent, un état HTTP de 2xx à 3xx est
 	    interprété comme un check up réussi.</em></td></tr>
     </table>
+</note>
+
+<note><title>Compatibilité :</title>
+    <p><code>OPTIONS11</code>, <code>HEAD11</code> et <code>GET11</code> sont
+    disponibles à partir de la version 2.4.55 du serveur HTTP Apache.</p>
 </note>
 
 </summary>

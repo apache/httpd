@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1673563:1906506 (outdated) -->
+<!-- English Revision: 1906516 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- $LastChangedRevision: 2015053001 $ -->
 
@@ -107,7 +107,7 @@ host</context>
 <context>directory</context>
 <context>.htaccess</context>
 </contextlist>
-<compatibility>Disponible à partir de Apache 2.5.0.</compatibility>
+<compatibility>Disponible à partir de la version 2.4.55 du serveur HTTP Apache.</compatibility>
 
 <usage>
     <p><directive>DavLockDiscovery</directive> contrôle la 
@@ -123,6 +123,8 @@ host</context>
     </example>
 </usage>
 </directivesynopsis>
+
+
 
 </modulesynopsis>
 

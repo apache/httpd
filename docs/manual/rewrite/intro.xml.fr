@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1866240:1906638 (outdated) -->
+<!-- English Revision: 1906638 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -269,28 +269,28 @@ substituée.</p>
 trois types :</p>
 
 <dl>
-<dt>Un chemin complet du système de fichiers vers une ressource</dt>
+<dt>1. Un chemin complet du système de fichiers vers une ressource</dt>
 <dd>
 <highlight language="config">
-RewriteRule "^/jeux" "/usr/local/jeux/web"
+RewriteRule "^/games" "/usr/local/games/web/puzzles.html"
 </highlight>
 <p>Ceci peut faire correspondre une requête à toute localisation voulue de
 votre système de fichiers, un peu comme la directive <directive
 module="mod_alias">Alias</directive>.</p>
 </dd>
 
-<dt>Un chemin web vers une ressource</dt>
+<dt>2. Un chemin web vers une ressource</dt>
 <dd>
 <highlight language="config">
-RewriteRule "^/foo$" "/bar"
+RewriteRule "^/games$" "/puzzles.html"
 </highlight>
 <p>Si la directive <directive module="core">DocumentRoot</directive> a
 pour valeur <code>/usr/local/apache2/htdocs</code>, cette règle va faire
-correspondre les requêtes pour <code>http://example.com/foo</code> au
-chemin <code>/usr/local/apache2/htdocs/bar</code>.</p>
+correspondre les requêtes pour <code>http://example.com/games</code> au
+chemin <code>/usr/local/apache2/htdocs/puzzles.html</code>.</p>
 </dd>
 
-<dt>Une URL absolue</dt>
+<dt>3. Une URL absolue</dt>
 <dd>
 <highlight language="config">
 RewriteRule "^/produits/vues$" "http://site2.example.com/voirproduits.html" [R]
@@ -299,6 +299,13 @@ RewriteRule "^/produits/vues$" "http://site2.example.com/voirproduits.html" [R]
 l'URL spécifiée.</p>
 </dd>
 </dl>
+
+<note type="warning">Notez que <strong>1</strong> et <strong>2</strong>
+possèdent exactement la même syntaxe. Par contre, dans le cas de
+<strong>1</strong>, le niveau racine du chemin cible (par exemple
+<code>/usr/</code>) existe dans le système de fichiers, alors que ce n'est pas
+le cas avec <strong>2</strong> (par exemple, il n'y a pas de répertoire
+<code>/bar/</code> au niveau de la racine du système de fichiers).</note>
 
 <p>La chaîne de <var>Substitution</var> peut aussi contenir des
 <em>références arrières</em> vers des parties du chemin d'URL entrant
@@ -360,7 +367,7 @@ certaine tranche d'adresses IP vers un autre serveur, vous pouvez
 utiliser :</p>
 <highlight language="config">
 RewriteCond "%{REMOTE_ADDR}" "^10\.2\."
-RewriteRule "(.*)" "http://intranet.example.com$1"
+RewriteRule "(.*)"           "http://intranet.example.com$1"
 </highlight>
 
 <p>Si vous spécifiez plus d'une directive <directive
@@ -372,8 +379,8 @@ de requête, sauf si elles contiennent aussi un cookie contenant le mot
 "go", vous pouvez utiliser :</p>
 <highlight language="config">
 RewriteCond "%{QUERY_STRING}" "hack"
-RewriteCond "%{HTTP_COOKIE}" "!go"
-RewriteRule "." "-" [F]
+RewriteCond "%{HTTP_COOKIE}"  !go
+RewriteRule "."               "-"   [F]
 </highlight>
 <p>Notez que le point d'exclamation indique une correspondance négative
 ; ainsi, la règle n'est appliquée que si le cookie ne contient pas "go"</p>
@@ -387,7 +394,7 @@ exemple, ce qui suit va diriger la requête vers un répertoire différent
 en fonction du nom d'hôte utilisé pour accéder au site :</p>
 <highlight language="config">
 RewriteCond "%{HTTP_HOST}" "(.*)"
-RewriteRule "^/(.*)" "/sites/%1/$1"
+RewriteRule "^/(.*)"       "/sites/%1/$1"
 </highlight>
 <p>Si la requête concernait <code>http://example.com/foo/bar</code>,
 alors <code>%1</code> contiendrait <code>example.com</code> et

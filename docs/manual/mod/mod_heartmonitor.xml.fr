@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1903619 -->
+<!-- English Revision : 1906518 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -92,7 +92,8 @@ fichier bidimensionnel (flat-file)</description>
     <p>La directive <directive>HeartbeatStorage</directive> permet de spécifier
     le chemin de stockage des données heartbeat. Ce fichier bidimensionnel n'est
     utilisé que si <module>mod_slotmem_shm</module> n'est pas chargé et si la
-    directive <directive>HeartbeatMaxServers</directive> est définie à 0.</p>
+    directive <directive module="mod_heartmonitor">HeartbeatMaxServers</directive>
+    est définie à 0.</p>
 </usage>
 </directivesynopsis>
 
@@ -103,6 +104,8 @@ des requêtes heartbeat à ce serveur.</description>
 <syntax>HeartbeatMaxServers <var>nombre-de-serveurs</var></syntax>
 <default>HeartbeatMaxServers 10</default>
 <contextlist><context>server config</context></contextlist>
+<compatibility>La valeur 0 est prise en charge à partir de la version 2.4.55 du
+serveur HTTP Apache</compatibility>
 
 <usage>
     <p>La directive <directive>HeartbeatMaxServers</directive>

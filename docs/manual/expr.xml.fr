@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
-<!-- English Revision: 1898351:1906494 (outdated) -->
+<!-- English Revision: 1906494 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -55,6 +55,8 @@
 <seealso><directive module="mod_auth_form">AuthFormLoginRequiredLocation</directive></seealso>
 <seealso><directive module="mod_auth_form">AuthFormLoginSuccessLocation</directive></seealso>
 <seealso><directive module="mod_auth_form">AuthFormLogoutLocation</directive></seealso>
+<seealso><directive module="mod_authn_core">AuthName</directive></seealso>
+<seealso><directive module="mod_authn_core">AuthType</directive></seealso>
 <seealso><directive module="mod_rewrite">RewriteCond</directive></seealso>
 <seealso><directive module="mod_setenvif">SetEnvIfExpr</directive></seealso>
 <seealso><directive module="mod_headers">Header</directive></seealso>
