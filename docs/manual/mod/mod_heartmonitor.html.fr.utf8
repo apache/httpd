@@ -102,6 +102,8 @@ des requêtes heartbeat à ce serveur.</td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_heartmonitor</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>La valeur 0 est prise en charge à partir de la version 2.4.55 du
+serveur HTTP Apache</td></tr>
 </table>
     <p>La directive <code class="directive">HeartbeatMaxServers</code>
     spécifie le nombre maximal de serveurs qui pourront envoyer des
@@ -129,7 +131,8 @@ fichier bidimensionnel (flat-file)</td></tr>
     <p>La directive <code class="directive">HeartbeatStorage</code> permet de spécifier
     le chemin de stockage des données heartbeat. Ce fichier bidimensionnel n'est
     utilisé que si <code class="module"><a href="../mod/mod_slotmem_shm.html">mod_slotmem_shm</a></code> n'est pas chargé et si la
-    directive <code class="directive">HeartbeatMaxServers</code> est définie à 0.</p>
+    directive <code class="directive"><a href="#heartbeatmaxservers">HeartbeatMaxServers</a></code> 
+    est définie à 0.</p>
 
 </div>
 </div>

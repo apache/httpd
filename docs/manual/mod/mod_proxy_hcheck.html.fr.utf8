@@ -122,6 +122,11 @@
     </table>
 </div>
 
+<div class="note"><h3>Compatibilité :</h3>
+    <p><code>OPTIONS11</code>, <code>HEAD11</code> et <code>GET11</code> sont
+    disponibles à partir de la version 2.4.55 du serveur HTTP Apache.</p>
+</div>
+
 </div>
 <div id="quickview"><h3>Sujets</h3>
 <ul id="topics">
