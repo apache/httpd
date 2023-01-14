@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1901487:1906605 (outdated) -->
+<!-- English Revision: 1906605 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -1153,6 +1153,14 @@ RewriteRule  "^/$"                 "/homepage.std.html"  [L]
 	mobiles), c'est la version pour mobile de la page d'accueil qui
 	sera renvoyée. Dans le cas contraire, ce sera la page d'accueil
 	standard.</p>
+
+	<p>Par défaut, plusieurs directives <directive>RewriteCond</directive>
+	sont évaluées de manière séquentielle et combinées à l'aide d'un
+	<strong>ET</strong> logique. Si une condition n'est pas vérifiée et en
+	l'absence d'un opérateur logique <strong><code>OU</code></strong>,
+	l'ensemble du jeu de règles est abandonné et les conditions restantes ne
+	sont pas évaluées.
+        </p> 
 
 </usage>
 

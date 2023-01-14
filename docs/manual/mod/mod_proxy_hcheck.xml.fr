@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1903744 -->
+<!-- English Revision: 1906520 -->
 <!-- French translation : Lucien GENTIS -->
 
 
@@ -122,6 +122,11 @@
             <em>Si ce paramètre est absent, un état HTTP de 2xx à 3xx est
 	    interprété comme un check up réussi.</em></td></tr>
     </table>
+</note>
+
+<note><title>Compatibilité :</title>
+    <p><code>OPTIONS11</code>, <code>HEAD11</code> et <code>GET11</code> sont
+    disponibles à partir de la version 2.4.55 du serveur HTTP Apache.</p>
 </note>
 
 </summary>
