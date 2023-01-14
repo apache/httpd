@@ -98,7 +98,7 @@
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="davlockdiscovery" id="davlockdiscovery">Directive</a> <a name="DavLockDiscovery" id="DavLockDiscovery">DavLockDiscovery</a> <a title="Lien permanent" href="#davlockdiscovery" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="davlockdiscovery" id="davlockdiscovery">Directive</a> <a name="DavLockDiscovery" id="DavLockDiscovery">DavLockDiscovery</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Active la découverte des verrous</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>DavLockDiscovery on|off</code></td></tr>
@@ -106,7 +106,7 @@
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_dav_fs</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de Apache 2.5.0.</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.55 du serveur HTTP Apache.</td></tr>
 </table>
     <p><code class="directive">DavLockDiscovery</code> contrôle la 
     découverte des verrous par la méthode <code>PROPFIND</code>.

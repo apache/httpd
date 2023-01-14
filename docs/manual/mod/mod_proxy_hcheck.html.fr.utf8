@@ -69,11 +69,23 @@
 			d'arrière-plan peut être créé ; par exemple "es-tu en
 			état de fonctionner"</td><td /></tr>
         		<tr><td>OPTIONS</td><td>Envoie une requête <code>HTTP
-			OPTIONS</code> au serveur d'arrière-plan</td><td>*</td></tr>
-        		<tr><td>HEAD</td><td>Envoie une requête <code>HTTP
-			HEAD</code> au serveur d'arrière-plan</td><td>*</td></tr>
-        		<tr><td>GET</td><td>Envoie une requête <code>HTTP
-			GET</code> au serveur d'arrière-plan</td><td>*</td></tr>
+			OPTIONS</code> au serveur d'arrière-plan via
+			<code>HTTP/1.0</code></td><td>*</td></tr>
+			<tr><td>HEAD</td><td>Envoie une requête <code>HTTP
+			HEAD</code> au serveur d'arrière-plan via
+			<code>HTTP/1.0</code></td><td>*</td></tr>
+			<tr><td>GET</td><td>Envoie une requête <code>HTTP
+			GET</code> au serveur d'arrière-plan via
+			<code>HTTP/1.0</code></td><td>*</td></tr>
+			<tr><td>OPTIONS11</td><td>Envoie une requête <code>HTTP
+			OPTIONS</code> au serveur d'arrière-plan via
+			<code>HTTP/1.1</code></td><td>*</td></tr>
+			<tr><td>HEAD11</td><td>Envoie une requête <code>HTTP
+			HEAD</code> au serveur d'arrière-plan via
+			<code>HTTP/1.1</code></td><td>*</td></tr>
+			<tr><td>GET11</td><td>Envoie une requête <code>HTTP
+			GET</code> au serveur d'arrière-plan via
+			<code>HTTP/1.1</code></td><td>*</td></tr>
 
 				<tr><td colspan="3" /></tr>
 				<tr><td colspan="3">*: si hcexpr n'est pas
@@ -107,6 +119,11 @@
             <em>Si ce paramètre est absent, un état HTTP de 2xx à 3xx est
 	    interprété comme un check up réussi.</em></td></tr>
     </table>
+</div>
+
+<div class="note"><h3>Compatibilité :</h3>
+    <p><code>OPTIONS11</code>, <code>HEAD11</code> et <code>GET11</code> sont
+    disponibles à partir de la version 2.4.55 du serveur HTTP Apache.</p>
 </div>
 
 </div>

@@ -160,6 +160,17 @@ l'authentification HTTP</td></tr>
     apparaîtra dans la boîte de dialogue d'authentification pour la
     plupart des navigateurs.</p>
 
+     <p>A partir de la version 2.4.55 du serveur HTTP Apache, il est possible de
+    définir cette directive en utilisant la <a href="../expr.html">syntaxe des
+    expressions</a> pour spécifier l'identifiant d'autorisation de manière
+    dynamique.</p>
+
+   <p>Exemple :</p>
+
+   <pre class="prettyprint lang-config">AuthName "%{HTTP_HOST}"</pre>
+
+
+
 <h3>Voir aussi</h3>
 <ul>
 <li><a href="../howto/auth.html">Authentification, autorisation et contrôle
@@ -237,6 +248,10 @@ l'alias spécifié</td></tr>
     Require all granted
 &lt;/Directory&gt;</pre>
 
+
+    <p>A partir de la version 2.4.55, il est possible de définir cette
+    directive en utilisant la <a href="../expr.html">syntaxe des expressions</a> pour
+    spécifier le type d'authentification de manière dynamique.</p>
 
     <div class="note">Veuillez noter que, lorsque l'authentification n'est pas
     activée, les clients qui se sont déjà authentifiés pour une autre

@@ -806,6 +806,14 @@ RewriteRule  "^/$"                 "/homepage.std.html"  [L]</pre>
 	sera renvoyée. Dans le cas contraire, ce sera la page d'accueil
 	standard.</p>
 
+	<p>Par défaut, plusieurs directives <code class="directive">RewriteCond</code>
+	sont évaluées de manière séquentielle et combinées à l'aide d'un
+	<strong>ET</strong> logique. Si une condition n'est pas vérifiée et en
+	l'absence d'un opérateur logique <strong><code>OU</code></strong>,
+	l'ensemble du jeu de règles est abandonné et les conditions restantes ne
+	sont pas évaluées.
+        </p>
+
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
