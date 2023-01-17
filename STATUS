@@ -228,6 +228,11 @@ PATCHES/ISSUES THAT ARE BEING WORKED
              make it nonblocking (by default)?
         jim: Non-blocking seems the best way to handle...
 
+  *) CMake: Use full path to gen_test_char.exe in CUSTOM_COMMAND.
+     trunk patch: http://svn.apache.org/r1902366
+     2.4.x patch: svn merge -c r1902366 ^/httpd/httpd/trunk .
+     +1: ivan    
+
 PATCHES/ISSUES THAT ARE STALLED
 
   *) core: avoid duplicate headers when using ap_send_error_response.
