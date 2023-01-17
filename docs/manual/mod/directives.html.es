@@ -230,6 +230,7 @@
 <li><a href="mod_dav.html#davdepthinfinity">DavDepthInfinity</a></li>
 <li><a href="mod_dav_lock.html#davgenericlockdb">DavGenericLockDB</a></li>
 <li><a href="mod_dav_fs.html#davlockdb">DavLockDB</a></li>
+<li><a href="mod_dav_fs.html#davlockdiscovery">DavLockDiscovery</a></li>
 <li><a href="mod_dav.html#davmintimeout">DavMinTimeout</a></li>
 <li><a href="mod_dbd.html#dbdexptime">DBDExptime</a></li>
 <li><a href="mod_dbd.html#dbdinitsql">DBDInitSQL</a></li>
@@ -463,6 +464,7 @@
 <li><a href="mod_md.html#mdstaplingkeepresponse">MDStaplingKeepResponse</a></li>
 <li><a href="mod_md.html#mdstaplingrenewwindow">MDStaplingRenewWindow</a></li>
 <li><a href="mod_md.html#mdstoredir">MDStoreDir</a></li>
+<li><a href="mod_md.html#mdstorelocks">MDStoreLocks</a></li>
 <li><a href="mod_md.html#mdwarnwindow">MDWarnWindow</a></li>
 <li><a href="mod_socache_memcache.html#memcacheconnttl">MemcacheConnTTL</a></li>
 <li><a href="core.html#mergeslashes">MergeSlashes</a></li>
@@ -799,7 +801,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/2.4/mod/directives.html'
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2022 The Apache Software Foundation.<br />Licencia bajo los t&#233;rminos de la <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2023 The Apache Software Foundation.<br />Licencia bajo los t&#233;rminos de la <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">M&#243;dulos</a> | <a href="../mod/directives.html">Directivas</a> | <a href="http://wiki.apache.org/httpd/FAQ">Preguntas Frecuentes</a> | <a href="../glossary.html">Glosario</a> | <a href="../sitemap.html">Mapa del sitio web</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
