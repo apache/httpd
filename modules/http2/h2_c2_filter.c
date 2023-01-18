@@ -615,7 +615,7 @@ apr_status_t h2_c2_filter_catch_h1_out(ap_filter_t* f, apr_bucket_brigade* bb)
     ap_assert(conn_ctx);
     H2_FILTER_LOG("c2_catch_h1_out", f->c, APLOG_TRACE2, 0, "check", bb);
 
-    if (!conn_ctx->has_final_response) {
+    if (!f->c->aborted && !conn_ctx->has_final_response) {
         if (!parser) {
             parser = apr_pcalloc(f->c->pool, sizeof(*parser));
             parser->id = apr_psprintf(f->c->pool, "%s-%d", conn_ctx->id, conn_ctx->stream_id);

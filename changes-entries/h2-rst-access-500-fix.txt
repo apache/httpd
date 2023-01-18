@@ -1,0 +1,4 @@
+  *) mod_http2: client resets of HTTP/2 streams led to unwanted 500 errors
+     reported in access logs and error documents. The processing of the
+     reset was correct, only unneccesary reporting was caused.
+     [Stefan Eissing]
