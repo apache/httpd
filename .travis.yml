@@ -43,7 +43,6 @@ _cond2: &condition_not_24x (branch is not present OR branch !~ /^2.4/) AND (tag 
 
 jobs:
   include:
-    - name: Linux Ubuntu, Default module set
     # -------------------------------------------------------------------------
     - name: Empty APLOGNO() test
       env: SKIP_TESTING=1 TEST_LOGNO=1
@@ -92,22 +91,9 @@ jobs:
            TEST_INSTALL=1
            APACHE_TEST_EXTRA_ARGS=-v
     # -------------------------------------------------------------------------
-    - name: Linux Ubuntu, Default, all-static modules
-      env: CONFIG="--enable-mods-static=reallyall"
-    # -------------------------------------------------------------------------
     - name: Linux Ubuntu, Default, all-modules, random test order
       env: CONFIG="--enable-mods-shared=reallyall"
            TEST_ARGS="-order=random"
-    # -------------------------------------------------------------------------
-    - name: Linux Ubuntu, Prefork MPM, all-modules (except cgid)
-      env: CONFIG="--enable-mods-shared=reallyall --with-mpm=prefork --disable-cgid"
-    # -------------------------------------------------------------------------
-    - name: Linux Ubuntu, Worker MPM, all-modules
-      env: CONFIG="--enable-mods-shared=reallyall --with-mpm=worker"
-           CLEAR_CACHE=1
-    # -------------------------------------------------------------------------
-    - name: Linux Ubuntu, Shared MPMs, all-modules
-      env: CONFIG="--enable-mods-shared=reallyall --enable-mpms-shared=all"
     # -------------------------------------------------------------------------
     - name: Linux Ubuntu, GCC 7 maintainer-mode w/-Werror, install + VPATH
       os: linux
@@ -115,11 +101,6 @@ jobs:
            NOTEST_CFLAGS='-Werror -O2' CC=gcc-7
            TEST_VPATH=1 TEST_INSTALL=1 SKIP_TESTING=1
     # -------------------------------------------------------------------------
-    - name: Linux Ubuntu, Event MPM, all-modules, mod_cgid only
-      env: CONFIG="--enable-mods-shared=reallyall --with-mpm=event --disable-cgi"
-    # -------------------------------------------------------------------------
-    - name: Linux Ubuntu, Event MPM, all-modules, no CMSG_DATA
-      env: CONFIG="--enable-mods-shared=reallyall --with-mpm=event ac_cv_have_decl_CMSG_DATA=no"
     # -------------------------------------------------------------------------
     - if: *condition_not_24x
       name: Linux Ubuntu, PCRE 1, GCC 7 maintainer-mode w/-Werror
