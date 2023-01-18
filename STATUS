@@ -166,6 +166,15 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      +1: minfrin, jim,
      jailletc36: r1745033 seems related and should in included
 
+  *) mod_http2: client resets of HTTP/2 streams led to unwanted 500 errors
+     reported in access logs and error documents. The processing of the
+     reset was correct, only unneccesary reporting was caused.
+     Trunk version of patch:
+        https://svn.apache.org/r1906775
+     Backport for 2.4.x
+        svn merge -c 1906775 ^/httpd/httpd/trunk
+     +1: icing
+
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
