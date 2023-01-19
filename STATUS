@@ -173,7 +173,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         https://svn.apache.org/r1906775
      Backport for 2.4.x
         svn merge -c 1906775 ^/httpd/httpd/trunk
-     +1: icing, steffenal,
+     +1: icing, steffenal, gbechis
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
