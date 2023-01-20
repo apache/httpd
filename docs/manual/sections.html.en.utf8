@@ -428,7 +428,8 @@ are interpreted, it is important to understand how this works.</p>
       <li><code class="directive"><a href="./mod/core.html#location">&lt;Location&gt;</a></code>
       and <code class="directive"><a href="./mod/core.html#locationmatch">&lt;LocationMatch&gt;</a></code> done simultaneously</li>
 
-      <li><code class="directive"><a href="./mod/core.html#if">&lt;If&gt;</a></code>
+      <li><code class="directive"><a href="./mod/core.html#if">&lt;If&gt;</a></code> sections, even when
+      they are enclosed in any of the preceding contexts.
       </li>
 
     </ol>
@@ -461,6 +462,14 @@ are interpreted, it is important to understand how this works.</p>
         <code class="directive"><a href="./mod/mod_proxy.html#proxy">&lt;Proxy&gt;</a></code>
         container takes the place of the <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code> container in the processing
         order.</li>
+        <li> Caution should be exercised when mixing related configuration
+        directives inside and outside of <code class="directive"><a href="./mod/core.html#if">&lt;If&gt;</a></code> because of the effect on merging order.  Explicit use
+        of <code class="directive"><a href="./mod/core.html#else">&lt;Else&gt;</a></code> can help.
+        </li>
+        <li> When <code class="directive"><a href="./mod/core.html#if">&lt;If&gt;</a></code> is 
+        used in <code>.htaccess</code>, the enclosed directives in a parent 
+        directory will be merged <em>after</em> non-enclosed directives in a 
+        subdirectory.</li>
     </ul>
 
     <div class="note"><h3>Technical Note</h3>

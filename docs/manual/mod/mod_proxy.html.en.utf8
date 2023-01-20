@@ -1721,6 +1721,9 @@ ProxyPassReverse  "/mirror/foo/" "https://backend.example.com/"</pre>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Since 2.4.47 the <var>key=value</var> Parameters are honored
+when the <var>url</var> parameter contains backreference(s) (see note below).
+</td></tr>
 </table>
     <p>This directive is equivalent to <code class="directive"><a href="#proxypass">ProxyPass</a></code>
        but makes use of regular expressions instead of simple prefix matching. The
@@ -1740,18 +1743,7 @@ ProxyPassReverse  "/mirror/foo/" "https://backend.example.com/"</pre>
     <p>will cause a local request for
     <code>http://example.com/foo/bar.gif</code> to be internally converted
     into a proxy request to <code>http://backend.example.com/foo/bar.gif</code>.</p>
-    <div class="note"><h3>Note</h3>
-      <p>The URL argument must be parsable as a URL <em>before</em> regexp
-      substitutions (as well as after).  This limits the matches you can use.
-      For instance, if we had used</p>
-      <pre class="prettyprint lang-config">ProxyPassMatch "^(/.*\.gif)$" "http://backend.example.com:8000$1"</pre>
 
-      <p>in our previous example, it would fail with a syntax error
-      at server startup.  This is a bug (PR 46665 in the ASF bugzilla),
-      and the workaround is to reformulate the match:</p>
-      <pre class="prettyprint lang-config">ProxyPassMatch "^/(.*\.gif)$" "http://backend.example.com:8000/$1"</pre>
-
-    </div>
     <p>The <code>!</code> directive is useful in situations where you don't want
     to reverse-proxy a subdirectory.</p>
 
@@ -1767,6 +1759,20 @@ ProxyPassReverse  "/mirror/foo/" "https://backend.example.com/"</pre>
       <p>When the URL parameter doesn't use any backreferences into the regular
       expression, the original URL will be appended to the URL parameter.
       </p>
+    </div>
+    <div class="note">
+        <h3><code>key=value</code> Parameters versus <var>url</var> with backreference(s)</h3>
+      <p>Since Apache HTTP Server 2.4.47, the <code>key=value</code> Parameters
+      are no longer ignored in a <code class="directive">ProxyPassMatch</code> using
+      an <var>url</var> with backreference(s). However to keep the existing
+      behavior regarding reuse/keepalive of backend connections (which were
+      never reused before for these URLs), the parameter <var>enablereuse</var>
+      (or <var>disablereuse</var>) default to <code>off</code> (resp. <code>on</code>)
+      in this case. Setting <code>enablereuse=on</code> explicitely allows to
+      reuse connections <strong>unless</strong> some backreference(s) belong in
+      the <code>authority</code> part (hostname and/or port) of the <var>url</var>
+      (this condition is enforced since Apache HTTP Server 2.4.55, and produces
+      a warning at startup because these URLs are not reusable per se).</p>
     </div>
 
     <div class="warning">

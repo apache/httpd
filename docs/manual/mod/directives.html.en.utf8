@@ -247,6 +247,7 @@
 <li><a href="mod_dav.html#davdepthinfinity">DavDepthInfinity</a></li>
 <li><a href="mod_dav_lock.html#davgenericlockdb">DavGenericLockDB</a></li>
 <li><a href="mod_dav_fs.html#davlockdb">DavLockDB</a></li>
+<li><a href="mod_dav_fs.html#davlockdiscovery">DavLockDiscovery</a></li>
 <li><a href="mod_dav.html#davmintimeout">DavMinTimeout</a></li>
 <li><a href="mod_dbd.html#dbdexptime">DBDExptime</a></li>
 <li><a href="mod_dbd.html#dbdinitsql">DBDInitSQL</a></li>

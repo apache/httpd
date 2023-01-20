@@ -102,6 +102,11 @@
     </table>
 </div>
 
+<div class="note"><h3>Compatibility:</h3>
+    <p><code>OPTIONS11</code>, <code>HEAD11</code> and <code>GET11</code> are
+       available in 2.4.55 and above.</p>
+</div>
+
 </div>
 <div id="quickview"><h3>Topics</h3>
 <ul id="topics">
