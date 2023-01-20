@@ -1156,15 +1156,15 @@ follow the rules of the <em>directory</em> context.</li>
 
 <li>By default, mod_rewrite overrides rules when <a href="../sections.html#merging">
 merging sections</a> belonging to the same context. The <directive
-module="rewrite">RewriteOptions</directive> directive can change this behavior,
+module="mod_rewrite">RewriteOptions</directive> directive can change this behavior,
 for example using the <em>Inherit</em> setting.</li>
 
-<li>The <directive module="rewrite">RewriteOptions</directive> also regulates the
+<li>The <directive module="mod_rewrite">RewriteOptions</directive> also regulates the
 behavior of sections that are stated at the same nesting level of the configuration. In the
 following example, by default only the RewriteRules stated in the second 
 <directive module="core">If</directive> block
 are considered, since the first ones are overridden. Using <directive
-module="rewrite">RewriteOptions</directive> Inherit forces mod_rewrite to merge the two
+module="mod_rewrite">RewriteOptions</directive> Inherit forces mod_rewrite to merge the two
 sections and consider both set of statements, rather than only the last one.</li>
 </ul>
 <example>
