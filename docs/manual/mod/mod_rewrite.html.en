@@ -1145,14 +1145,14 @@ to break in these contexts is relative substitutions.</li>
 follow the rules of the <em>directory</em> context.</li>
 
 <li>By default, mod_rewrite overrides rules when <a href="../sections.html#merging">
-merging sections</a> belonging to the same context. The <code class="directive"><a href="../mod/rewrite.html#rewriteoptions">RewriteOptions</a></code> directive can change this behavior,
+merging sections</a> belonging to the same context. The <code class="directive"><a href="#rewriteoptions">RewriteOptions</a></code> directive can change this behavior,
 for example using the <em>Inherit</em> setting.</li>
 
-<li>The <code class="directive"><a href="../mod/rewrite.html#rewriteoptions">RewriteOptions</a></code> also regulates the
+<li>The <code class="directive"><a href="#rewriteoptions">RewriteOptions</a></code> also regulates the
 behavior of sections that are stated at the same nesting level of the configuration. In the
 following example, by default only the RewriteRules stated in the second 
 <code class="directive"><a href="../mod/core.html#if">If</a></code> block
-are considered, since the first ones are overridden. Using <code class="directive"><a href="../mod/rewrite.html#rewriteoptions">RewriteOptions</a></code> Inherit forces mod_rewrite to merge the two
+are considered, since the first ones are overridden. Using <code class="directive"><a href="#rewriteoptions">RewriteOptions</a></code> Inherit forces mod_rewrite to merge the two
 sections and consider both set of statements, rather than only the last one.</li>
 </ul>
 <div class="example"><pre class="prettyprint lang-config">&lt;If "true"&gt;
