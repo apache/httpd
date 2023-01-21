@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1906607:1906840 (outdated) -->
+<!-- English Revision: 1906840 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -1267,18 +1267,18 @@ du contexte de <em>répertoire</em>.</li>
 <li>Par défaut, mod_rewrite écrase les règles précédentes au sein de <a
 href="../sections.html#merging">sections combinées</a> appartenant au même
 contexte. Pour modifier ce comportement, on peut utiliser la directive
-<directive module="rewrite">RewriteOptions</directive> pour définir par exemple
-l'option <em>Inherit</em>.</li>
+<directive module="mod_rewrite">RewriteOptions</directive> pour définir par
+exemple l'option <em>Inherit</em>.</li>
 
-<li>La directive <directive module="rewrite">RewriteOptions</directive> permet
-aussi de contrôler le comportement des sections définies au même niveau
+<li>La directive <directive module="mod_rewrite">RewriteOptions</directive>
+permet aussi de contrôler le comportement des sections définies au même niveau
 d'imbrication dans la configuration. Dans l'exemple suivant, par défaut seule la
 règle RewriteRules définie dans le second bloc <directive
 module="core">If</directive> est prise en compte car celle définie dans le
 premier bloc est écrasée. Définir <directive
-module="rewrite">RewriteOptions</directive> Inherit force mod_rewrite à combiner
-les deux sections en prenant en compte les deux règles et pas seulement la
-dernière.</li>
+module="mod_rewrite">RewriteOptions</directive> Inherit force mod_rewrite à
+combiner les deux sections en prenant en compte les deux règles et pas seulement
+la dernière.</li>
 </ul>
 <example>
 <highlight language="config">
