@@ -29,8 +29,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_rewrite.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_rewrite.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Ce module fournit un moteur de réécriture à base de
 règles permettant de réécrire les URLs des requêtes
 à la volée</td></tr>
@@ -1244,14 +1242,14 @@ du contexte de <em>répertoire</em>.</li>
 
 <li>Par défaut, mod_rewrite écrase les règles précédentes au sein de <a href="../sections.html#merging">sections combinées</a> appartenant au même
 contexte. Pour modifier ce comportement, on peut utiliser la directive
-<code class="directive"><a href="../mod/rewrite.html#rewriteoptions">RewriteOptions</a></code> pour définir par exemple
-l'option <em>Inherit</em>.</li>
+<code class="directive"><a href="#rewriteoptions">RewriteOptions</a></code> pour définir par
+exemple l'option <em>Inherit</em>.</li>
 
-<li>La directive <code class="directive"><a href="../mod/rewrite.html#rewriteoptions">RewriteOptions</a></code> permet
-aussi de contrôler le comportement des sections définies au même niveau
+<li>La directive <code class="directive"><a href="#rewriteoptions">RewriteOptions</a></code>
+permet aussi de contrôler le comportement des sections définies au même niveau
 d'imbrication dans la configuration. Dans l'exemple suivant, par défaut seule la
 règle RewriteRules définie dans le second bloc <code class="directive"><a href="../mod/core.html#if">If</a></code> est prise en compte car celle définie dans le
-premier bloc est écrasée. Définir <code class="directive"><a href="../mod/rewrite.html#rewriteoptions">RewriteOptions</a></code> Inherit force mod_rewrite à combiner
+premier bloc est écrasée. Définir <code class="directive"><a href="#rewriteoptions">RewriteOptions</a></code> Inherit force mod_rewrite à combiner
 les deux sections en prenant en compte les deux règles et pas seulement la
 dernière.</li>
 </ul>
