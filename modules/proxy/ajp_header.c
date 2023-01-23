@@ -584,8 +584,15 @@ static apr_status_t ajp_unmarshal_response(ajp_msg_t *msg,
         r->headers_out = save_table;
     }
     else {
-        r->headers_out = NULL;
+        /*
+         * Reset headers, but not to NULL because things below the chain expect
+         * this to be non NULL e.g. the ap_content_length_filter.
+         */
+        r->headers_out = apr_table_make(r->pool, 1);
         num_headers = 0;
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(10405)
+                "ajp_unmarshal_response: Bad number of headers");
+        return rc;
     }
 
     ap_log_rerror(APLOG_MARK, APLOG_TRACE4, 0, r,
