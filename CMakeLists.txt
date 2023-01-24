@@ -916,7 +916,10 @@ ADD_EXECUTABLE(httpd server/main.c build/win32/httpd.rc)
 SET(install_targets ${install_targets} httpd)
 SET(install_bin_pdb ${install_bin_pdb} $<TARGET_PDB_FILE:httpd>)
 DEFINE_WITH_BLANKS(define_long_name "LONG_NAME" "Apache HTTP Server")
-SET_TARGET_PROPERTIES(httpd PROPERTIES COMPILE_FLAGS "-DAPP_FILE ${define_long_name} -DBIN_NAME=httpd.exe -DICON_FILE=${CMAKE_SOURCE_DIR}/build/win32/apache.ico ${EXTRA_COMPILE_FLAGS}")
+SET_TARGET_PROPERTIES(httpd PROPERTIES
+  COMPILE_FLAGS "-DAPP_FILE ${define_long_name} -DBIN_NAME=httpd.exe -DICON_FILE=${CMAKE_SOURCE_DIR}/build/win32/apache.ico ${EXTRA_COMPILE_FLAGS}"
+  LINK_FLAGS "/stack:0x40000"
+)
 TARGET_LINK_LIBRARIES(httpd libhttpd ${EXTRA_LIBS})
 
 SET(standard_support
