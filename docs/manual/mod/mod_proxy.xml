@@ -1242,7 +1242,7 @@ ProxyPass "/example" "http://backend.example.com" max=20 ttl=120 retry=300
         Available in Apache HTTP Server 2.4.42 and later.
     </td></tr>
     <tr><td><a id="upgrade" name="upgrade">upgrade</a></td>
-        <td>WebSocket</td>
+        <td>-</td>
         <td><p>Protocol accepted by <module>mod_proxy_http</module> or
         <module>mod_proxy_wstunnel</module> for the HTTP Upgrade mechanism
         upon negotiation by the HTTP client/browser (per
