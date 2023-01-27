@@ -1275,10 +1275,13 @@ ProxyPass "/example" "http://backend.example.com" max=20 ttl=120 retry=300
         <td><p>Value of secret used by <module>mod_proxy_ajp</module>.
         See the documentation of this module for more details.</p>
     </td></tr>
-    <tr><td>upgrade</td>
+    <tr><td><a id="upgrade" name="upgrade">upgrade</a></td>
         <td>WebSocket</td>
-        <td><p>Protocol accepted in the Upgrade header by <module>mod_proxy_wstunnel</module>.
-        See the documentation of this module for more details.</p>
+        <td><p>Protocol accepted by <module>mod_proxy_http</module> or
+        <module>mod_proxy_wstunnel</module> for the HTTP Upgrade mechanism
+        upon negotiation by the HTTP client/browser (per
+        <a href="https://www.ietf.org/rfc/rfc9110.html#name-upgrade">RFC 9110 - Upgrade</a>).
+        See the <a href="#protoupgrade">Protocol Upgrade</a> note below</p>
     </td></tr>
     <tr><td>mapping</td>
         <td>-</td>
@@ -1500,6 +1503,29 @@ RewriteRule ^/mirror/foo/(.*) %{ENV:protocol}://backend.example.com/$1 [P]
 ProxyPassReverse  "/mirror/foo/" "http://backend.example.com/"
 ProxyPassReverse  "/mirror/foo/" "https://backend.example.com/"
     </highlight>
+
+    <note><title><a id="protoupgrade" name="protoupgrade">Protocol Upgrade</a></title>
+        <p>Since Apache HTTP Server 2.4.47, protocol Upgrade (tunneling) can be handled
+        end-to-end by <module>mod_proxy_http</module> using the <directive>ProxyPass</directive>
+        parameter <var><a href="#upgrade">upgrade</a></var>.</p>
+        <p>End-to-end means that the HTTP Upgrade request from the client/browser is first
+        forwarded by <module>mod_proxy_http</module> to the origin server and the connection
+        will be upgraded (and tunneled by <module>mod_proxy_http</module>) only if the origin
+        server accepts/initiates the upgrade (HTTP response <code>101 Switching Protocols</code>).
+        If the origin server responds with anything else <module>mod_proxy_http</module>
+        will continue forwarding (and enforcing) the HTTP protocol as usual for this
+        connection.</p>
+        <example><title>Example</title>
+        <highlight language="config">
+ProxyPass "/some/http/or/ws/path/" "http://example.com/some/http/or/ws/path/" upgrade=websocket
+        </highlight>
+        </example>
+        <p>For Apache HTTP Server 2.4.46 and earlier (or if
+        <directive module="mod_proxy_wstunnel">ProxyWebsocketFallbackToProxyHttp</directive>
+        from 2.4.48 and later disables <module>mod_proxy_http</module> handling), see the
+        documentation of <module>mod_proxy_wstunnel</module> for how to proxy the WebSocket
+        protocol.</p>
+    </note>
 </usage>
 </directivesynopsis>
 
