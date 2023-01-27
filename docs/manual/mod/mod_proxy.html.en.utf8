@@ -219,6 +219,8 @@ ProxyVia On
   Require host internal.example.com
 &lt;/Proxy&gt;</pre>
 </div>
+    <div class="example"><h3><a id="wsupgrade" name="wsupgrade">Websocket Upgrade (2.4.47 and later)</a></h3><pre class="prettyprint lang-config">ProxyPass "/some/ws/capable/path/" "http://example.com/some/ws/capable/path/" upgrade=websocket</pre>
+</div>
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="handler" id="handler">Access via Handler</a> <a title="Permanent link" href="#handler" class="permalink">&para;</a></h2>
@@ -1657,23 +1659,23 @@ ProxyPassReverse  "/mirror/foo/" "https://backend.example.com/"</pre>
 
 
     <div class="note"><h3><a id="protoupgrade" name="protoupgrade">Protocol Upgrade</a></h3>
-        <p>Since Apache HTTP Server 2.4.47, protocol Upgrade (tunneling) can be handled
-        end-to-end by <code class="module"><a href="../mod/mod_proxy_http.html">mod_proxy_http</a></code> using the <code class="directive">ProxyPass</code>
-        parameter <var><a href="#upgrade">upgrade</a></var>.</p>
-        <p>End-to-end means that the HTTP Upgrade request from the client/browser is first
-        forwarded by <code class="module"><a href="../mod/mod_proxy_http.html">mod_proxy_http</a></code> to the origin server and the connection
-        will be upgraded (and tunneled by <code class="module"><a href="../mod/mod_proxy_http.html">mod_proxy_http</a></code>) only if the origin
-        server accepts/initiates the upgrade (HTTP response <code>101 Switching Protocols</code>).
-        If the origin server responds with anything else <code class="module"><a href="../mod/mod_proxy_http.html">mod_proxy_http</a></code>
-        will continue forwarding (and enforcing) the HTTP protocol as usual for this
-        connection.</p>
-        <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">ProxyPass "/some/http/or/ws/path/" "http://example.com/some/http/or/ws/path/" upgrade=websocket</pre>
-</div>
-        <p>For Apache HTTP Server 2.4.46 and earlier (or if
-        <code class="directive"><a href="../mod/mod_proxy_wstunnel.html#proxywebsocketfallbacktoproxyhttp">ProxyWebsocketFallbackToProxyHttp</a></code>
-        from 2.4.48 and later disables <code class="module"><a href="../mod/mod_proxy_http.html">mod_proxy_http</a></code> handling), see the
-        documentation of <code class="module"><a href="../mod/mod_proxy_wstunnel.html">mod_proxy_wstunnel</a></code> for how to proxy the WebSocket
-        protocol.</p>
+      <p>Since Apache HTTP Server 2.4.47, protocol Upgrade (tunneling) can be handled
+      end-to-end by <code class="module"><a href="../mod/mod_proxy_http.html">mod_proxy_http</a></code> using the <code class="directive">ProxyPass</code>
+      parameter <var><a href="#upgrade">upgrade</a></var>.</p>
+      <p>End-to-end means that the HTTP Upgrade request from the client/browser is first
+      forwarded by <code class="module"><a href="../mod/mod_proxy_http.html">mod_proxy_http</a></code> to the origin server and the connection
+      will be upgraded (and tunneled by <code class="module"><a href="../mod/mod_proxy_http.html">mod_proxy_http</a></code>) only if the origin
+      server accepts/initiates the upgrade (HTTP response <code>101 Switching Protocols</code>).
+      If the origin server responds with anything else <code class="module"><a href="../mod/mod_proxy_http.html">mod_proxy_http</a></code>
+      will continue forwarding (and enforcing) the HTTP protocol as usual for this
+      connection.</p>
+      <p>See <a href="#wsupgrade">Websocket Upgrade (2.4.47 and later)</a> for an example of
+      configuration using <code class="module"><a href="../mod/mod_proxy_http.html">mod_proxy_http</a></code>.</p>
+      <p>For Apache HTTP Server 2.4.46 and earlier (or if
+      <code class="directive"><a href="../mod/mod_proxy_wstunnel.html#proxywebsocketfallbacktoproxyhttp">ProxyWebsocketFallbackToProxyHttp</a></code>
+      from 2.4.48 and later disables <code class="module"><a href="../mod/mod_proxy_http.html">mod_proxy_http</a></code> handling), see the
+      documentation of <code class="module"><a href="../mod/mod_proxy_wstunnel.html">mod_proxy_wstunnel</a></code> for how to proxy the WebSocket
+      protocol.</p>
     </div>
 
 </div>

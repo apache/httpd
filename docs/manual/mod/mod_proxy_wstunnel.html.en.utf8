@@ -37,7 +37,8 @@
 <tr><th><a href="module-dict.html#Compatibility">Compatibility:</a></th><td>Available in httpd 2.4.5 and later</td></tr></table>
 <h3>Summary</h3>
 
-    <p>This module <em>requires</em> the service of <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code>. It provides support for the tunnelling of web
+    <p>This module <em>requires</em> the service of <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code>.
+    It provides support for the tunnelling of web
     socket connections to a backend websockets server. The connection
     is automatically upgraded to a websocket connection:</p>
 
@@ -67,6 +68,12 @@ directive to allow the module to accept other protocol.
 NONE means you bypass the check for the header but still upgrade to WebSocket.
 ANY means that <code>Upgrade</code> will read in the request headers and use
 in the response <code>Upgrade</code></p>
+
+  <div class="warning"><h3><a id="deprecation" name="deprecation">Deprecation</a></h3>
+    <p>Since Apache HTTP Server 2.4.47, protocol Upgrade (tunneling) can be better handled by
+    <code class="module"><a href="../mod/mod_proxy_http.html">mod_proxy_http</a></code>.</p>
+    <p>See <a href="mod_proxy.html#protoupgrade">Protocol Upgrade</a>.</p>
+  </div>
 </div>
 <div id="quickview"><h3 class="directives">Directives</h3>
 <ul id="toc">
