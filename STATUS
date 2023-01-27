@@ -166,6 +166,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      +1: minfrin, jim,
      jailletc36: r1745033 seems related and should in included
 
+  *) mod_ldap: LDAPConnectionPoolTTL should accept negative values in order to
+     allow connections of any age to be reused. Up to now, a negative value
+     was handled as an error when parsing the configuration file.  PR 66421.
+     trunk patch: https://svn.apache.org/r1907024
+     2.4.x patch: svn merge -c 1907024 ^/httpd/httpd/trunk .
+     +1: jailletc36
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
