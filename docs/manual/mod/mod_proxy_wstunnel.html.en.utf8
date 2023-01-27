@@ -74,11 +74,11 @@ the <var><a href="mod_proxy.html#upgrade">upgrade</a></var> parameter in the
 <code class="directive"><a href="../mod/mod_proxy.html#proxypass">ProxyPass</a></code>
 directive to some custom protocol name.
 Special <code>upgrade=NONE</code> and <code>upgrade=ANY</code> values may be used for
-testing/forcing the upgrade but they are <strong>not recommended</strong> for production for
+testing/forcing the upgrade but they are <strong>not recommended</strong> in production for
 security reasons.
-<code>NONE</code> means that the check for the header is omitted but still the upgrade to
-WebSocket still happens.
-<code>ANY</code> means that the upgrade will happen with any protocol asked by the client.
+<code>NONE</code> means that the check for the header is omitted but still the upgrade/tunneling to
+WebSocket always happens.
+<code>ANY</code> means that the upgrade/tunneling will happen using any protocol asked by the client.
 </p>
 </div>
 <div id="quickview"><h3 class="directives">Directives</h3>
