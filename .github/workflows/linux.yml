@@ -23,8 +23,15 @@ env:
 jobs:
   build:
     strategy:
+      fail-fast: false
       matrix:
         include: 
+          # -------------------------------------------------------------------------
+          - name: Empty APLOGNO() test
+            env: |
+              SKIP_TESTING=1
+              TEST_LOGNO=1
+          # -------------------------------------------------------------------------
           - name: Default
           # -------------------------------------------------------------------------
           - name: All-static modules
@@ -44,13 +51,40 @@ jobs:
           # -------------------------------------------------------------------------
           - name: Event MPM, all-modules, no CMSG_DATA
             config: --enable-mods-shared=reallyall --with-mpm=event ac_cv_have_decl_CMSG_DATA=no
-      fail-fast: false
+          # -------------------------------------------------------------------------
+          - name: Linux Ubuntu, Default, all-modules + install
+            config: --enable-mods-shared=reallyall
+            env: |
+              TEST_INSTALL=1
+              APACHE_TEST_EXTRA_ARGS=-v
+          # -------------------------------------------------------------------------
+          - name: Linux Ubuntu, Default, all-modules, random test order
+            config: --enable-mods-shared=reallyall
+            env: |
+              TEST_ARGS=-order=random
+          # -------------------------------------------------------------------------
+          - name: Linux Ubuntu, GCC 10 maintainer-mode w/-Werror, install + VPATH
+            config: --enable-mods-shared=reallyall --enable-maintainer-mode
+            notest-cflags: -Werror -O2 -Wno-deprecated-declarations
+            env: |
+              CC=gcc-10
+              TEST_VPATH=1
+              TEST_INSTALL=1
+              SKIP_TESTING=1
+          # -------------------------------------------------------------------------
+          - name: All-modules, APR 1.7.0, APR-util 1.6.1
+            env: |
+              APR_VERSION=1.7.0 APU_VERSION=1.6.1
+              CONFIG="--enable-mods-shared=reallyall"
+              APU_CONFIG="--with-crypto --with-ldap"
     runs-on: ubuntu-latest
     env:
       NOTEST_CFLAGS: ${{ matrix.notest-cflags }}
       CONFIG: ${{ matrix.config }}
     name: ${{ matrix.name }}
     steps:
+    - name: Set environment variables
+      run: echo "${{ matrix.env }}" >> $GITHUB_ENV
     - name: apt refresh
       run: sudo apt-get -o Acquire::Retries=5 update
     - name: Install prerequisites

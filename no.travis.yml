@@ -44,9 +44,6 @@ _cond2: &condition_not_24x (branch is not present OR branch !~ /^2.4/) AND (tag 
 jobs:
   include:
     # -------------------------------------------------------------------------
-    - name: Empty APLOGNO() test
-      env: SKIP_TESTING=1 TEST_LOGNO=1
-    # -------------------------------------------------------------------------
     - name: Linux s390x Ubuntu, all-modules
       arch: s390x
       env: CONFIG="--enable-mods-shared=reallyall"
@@ -86,20 +83,6 @@ jobs:
             - libapr1-dev
             - libbrotli-dev:i386
     # -------------------------------------------------------------------------
-    - name: Linux Ubuntu, Default, all-modules + install
-      env: CONFIG="--enable-mods-shared=reallyall"
-           TEST_INSTALL=1
-           APACHE_TEST_EXTRA_ARGS=-v
-    # -------------------------------------------------------------------------
-    - name: Linux Ubuntu, Default, all-modules, random test order
-      env: CONFIG="--enable-mods-shared=reallyall"
-           TEST_ARGS="-order=random"
-    # -------------------------------------------------------------------------
-    - name: Linux Ubuntu, GCC 7 maintainer-mode w/-Werror, install + VPATH
-      os: linux
-      env: CONFIG="--enable-mods-shared=reallyall --enable-maintainer-mode"
-           NOTEST_CFLAGS='-Werror -O2' CC=gcc-7
-           TEST_VPATH=1 TEST_INSTALL=1 SKIP_TESTING=1
     # -------------------------------------------------------------------------
     # -------------------------------------------------------------------------
     - if: *condition_not_24x
@@ -192,17 +175,6 @@ jobs:
     # -------------------------------------------------------------------------
     - name: Linux Ubuntu Xenial, all-modules, APR 1.7.0, APR-util 1.6.1
       dist: xenial
-      env: APR_VERSION=1.7.0 APU_VERSION=1.6.1
-           CONFIG="--enable-mods-shared=reallyall"
-           APU_CONFIG="--with-crypto --with-ldap"
-    # -------------------------------------------------------------------------
-    - name: Linux Ubuntu Focal, all-modules, system APR/APR-util
-      os: linux
-      dist: focal
-      env: CONFIG="--enable-mods-shared=reallyall"
-    # -------------------------------------------------------------------------
-    - name: Linux Ubuntu Focal, all-modules, APR 1.7.0, APR-util 1.6.1
-      dist: focal
       env: APR_VERSION=1.7.0 APU_VERSION=1.6.1
            CONFIG="--enable-mods-shared=reallyall"
            APU_CONFIG="--with-crypto --with-ldap"
