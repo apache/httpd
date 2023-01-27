@@ -1430,7 +1430,7 @@ ProxyPass "/mirror/foo"   "http://backend.example.com"</pre>
         See the documentation of this module for more details.</p>
     </td></tr>
     <tr><td><a id="upgrade" name="upgrade">upgrade</a></td>
-        <td>WebSocket</td>
+        <td>-</td>
         <td><p>Protocol accepted by <code class="module"><a href="../mod/mod_proxy_http.html">mod_proxy_http</a></code> or
         <code class="module"><a href="../mod/mod_proxy_wstunnel.html">mod_proxy_wstunnel</a></code> for the HTTP Upgrade mechanism
         upon negotiation by the HTTP client/browser (per
