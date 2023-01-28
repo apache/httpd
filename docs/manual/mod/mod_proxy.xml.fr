@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1901499:1907047 (outdated) -->
+<!-- English Revision: 1907047 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -184,6 +184,12 @@ ProxyVia On
 &lt;Proxy "*"&gt;
   Require host internal.example.com
 &lt;/Proxy&gt;
+    </highlight>
+    </example>
+    <example><title><a id="wsupgrade" name="wsupgrade">Promotion de protocole
+    vers Websocket (versions 2.4.47 et ultérieures)</a></title>
+    <highlight language="config">
+ProxyPass "/some/ws/capable/path/" "http://example.com/some/ws/capable/path/" upgrade=websocket
     </highlight>
     </example>
     </section> <!-- /examples -->
@@ -1407,11 +1413,15 @@ ProxyPass "/mirror/foo/i" "!"
 	AJP.<br />
 	Disponible à partir de la version 2.4.42 du serveur HTTP Apache.
     </td></tr>
-    <tr><td>upgrade</td>
-        <td>WebSocket</td>
-        <td><p>Le protocol accepté par <module>mod_proxy_wstunnel</module> dans
-	l'en-tête Upgrade. Voir	la documentation de ce module pour plus de
-	détails.</p>
+    <tr><td><a id="upgrade" name="upgrade">upgrade</a></td>
+        <td>-</td>
+        <td><p>Protocole pris en charge par <module>mod_proxy_http</module> ou
+	<module>mod_proxy_wstunnel</module> pour le mécanisme de promotion de
+	protocole HTTP lors d'une négociation du client/navigateur HTTP (en
+	accord avec <a
+	href="https://www.ietf.org/rfc/rfc9110.html#name-upgrade">RFC 9110 -
+	Upgrade</a>). Voir la note <a href="#protoupgrade">Promotion de
+	protocole</a> ci-dessous</p>	
     </td></tr>
     <tr><td>mapping</td>
         <td>-</td>
@@ -1694,6 +1704,33 @@ RewriteRule "^/mirror/foo/(.*)" "%{ENV:protocol}://backend.example.com/$1" [P]
 ProxyPassReverse  "/mirror/foo/" "http://backend.example.com/"
 ProxyPassReverse  "/mirror/foo/" "https://backend.example.com/"
     </highlight>
+
+    <note><title><a id="protoupgrade" name="protoupgrade">Promotion de
+    protocole</a></title>
+      <p>Depuis la version 2.4.47 du serveur HTTP Apache, la promotion de
+      protocole (tunneling) peut être géré bout à bout par
+      <module>mod_proxy_http</module> en utilisant le paramètre <var><a
+      href="#upgrade">upgrade</a></var>.</p>
+      <p>Bout à bout signifie que la requête de promotion de protocole en
+      provenance du client/navigateur est tout d'abord transmise par
+      <module>mod_proxy_http</module> au serveur origine et que le protocole de
+      la connexion ne sera modifié (et « tunnelisé » par
+      <module>mod_proxy_http</module>) que si le serveur origine accepte/initie
+      la promotion (réponse HTTP <code>101 Switching Protocols</code>). Si le
+      serveur origine renvoie une réponse différente,
+      <module>mod_proxy_http</module> continuera la transmission en utilisant
+      (et en forçant) le protocole HTTP habituel pour cette connexion.</p>
+      <p>Voir <a href="#wsupgrade">Promotion de protocole vers Websocket
+    (versions 2.4.47 et ultérieures)</a> pour un exemple de configuration qui
+    utilise<module>mod_proxy_http</module>.</p>
+      <p>Avec les versions 2.4.46 et antérieures du serveur HTTP Apache (ou si
+      la directive <directive
+      module="mod_proxy_wstunnel">ProxyWebsocketFallbackToProxyHttp</directive>
+      des versions 2.4.48 et ultérieures désactive la prise en charge par
+      <module>mod_proxy_http</module>), voir la documentation de
+      <module>mod_proxy_wstunnel</module> pour la méthode permettant de mandater
+      le protocole WebSocket.</p>
+    </note>
 
 </usage>
 </directivesynopsis>
