@@ -29,8 +29,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_proxy_wstunnel.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_proxy_wstunnel.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Module pour <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> supportant les
 websockets</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
@@ -39,6 +37,13 @@ websockets</td></tr>
 <tr><th><a href="module-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.5 du serveur HTTP
 Apache</td></tr></table>
 <h3>Sommaire</h3>
+
+  <div class="warning"><h3><a id="deprecation" name="deprecation">Obsolescence</a></h3>
+    <p>Depuis la version 2.4.47 du serveur HTTP Apache, la promotion de
+    protocole (tunneling) peut être pris en charge de manière plus efficace par
+    <code class="module"><a href="../mod/mod_proxy_http.html">mod_proxy_http</a></code>.</p>
+    <p>Voir <a href="mod_proxy.html#protoupgrade">Promotion de protocole</a>.</p>
+  </div>
 
     <p>Pour utiliser ce module, <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> doit être
     chargé. Il fournit le support du tunnelling pour les connexions
@@ -76,12 +81,19 @@ RewriteRule ^/?(.*) "ws://example.com:9080/$1" [P,L]</pre>
 <p>La répartition de charge entre plusieurs serveurs d'arrière-plan peut être
 configurée via le module <code class="module"><a href="../mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code>.</p>
 
-<p>En fait, ce module permet d'accepter d'autres protocoles ; vous pouvez à cet
-effet utiliser le paramètre <code>upgrade</code> de la directive <code class="directive"><a href="../mod/mod_proxy.html#proxypass">ProxyPass</a></code>. La valeur NONE
-signifie que vous court-circuitez la consultation de l'en-tête, mais que vous
-autorisez quand-même WebSocket. La valeur ANY signifie que <code>Upgrade</code>
-va lire les en-têtes de la requête et les utilisera dans l'en-tête
-<code>Upgrade</code> de la réponse.</p>
+<p>
+Ce module peut aussi être utilisé pour la promotion vers des protocoles autres
+que WebSocket en définissant le paramètre <var><a href="mod_proxy.html#upgrade">upgrade</a></var> de la directive <code class="directive"><a href="../mod/mod_proxy.html#proxypass">ProxyPass</a></code> avec un nom de
+protocole particulier.
+Les valeurs spéciales <code>upgrade=NONE</code> et <code>upgrade=ANY</code>
+peuvent être utilisées pour tester ou forcer la promotion de protocole mais leur
+utilisation <strong>n'est pas recommandée</strong> en production pour des
+raisons de sécurité.
+<code>NONE</code> signifie que la vérification de l'en-tête est omise mais que
+la promotion (tunneling) vers WebSocket s'effectuera quand-même.
+<code>ANY</code> signifie que la promotion (tunneling) s'effectuera en utilisant
+tout protocole demandé par le client.
+</p>
 </div>
 <div id="quickview"><a href="https://www.apache.org/foundation/contributing.html" class="badge"><img src="https://www.apache.org/images/SupportApache-small.png" alt="Support Apache!" /></a><h3 class="directives">Directives</h3>
 <ul id="toc">

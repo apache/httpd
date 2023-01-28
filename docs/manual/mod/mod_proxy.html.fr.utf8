@@ -30,8 +30,6 @@
 <a href="../fr/mod/mod_proxy.html" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_proxy.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Serveur mandataire/passerelle multi-protocole</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>proxy_module</td></tr>
@@ -238,6 +236,9 @@ ProxyVia On
 &lt;Proxy "*"&gt;
   Require host internal.example.com
 &lt;/Proxy&gt;</pre>
+</div>
+    <div class="example"><h3><a id="wsupgrade" name="wsupgrade">Promotion de protocole
+    vers Websocket (versions 2.4.47 et ultérieures)</a></h3><pre class="prettyprint lang-config">ProxyPass "/some/ws/capable/path/" "http://example.com/some/ws/capable/path/" upgrade=websocket</pre>
 </div>
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -1551,11 +1552,14 @@ ProxyPass "/mirror/foo" "http://backend.example.com"</pre>
 	AJP.<br />
 	Disponible à partir de la version 2.4.42 du serveur HTTP Apache.
     </td></tr>
-    <tr><td>upgrade</td>
-        <td>WebSocket</td>
-        <td><p>Le protocol accepté par <code class="module"><a href="../mod/mod_proxy_wstunnel.html">mod_proxy_wstunnel</a></code> dans
-	l'en-tête Upgrade. Voir	la documentation de ce module pour plus de
-	détails.</p>
+    <tr><td><a id="upgrade" name="upgrade">upgrade</a></td>
+        <td>-</td>
+        <td><p>Protocole pris en charge par <code class="module"><a href="../mod/mod_proxy_http.html">mod_proxy_http</a></code> ou
+	<code class="module"><a href="../mod/mod_proxy_wstunnel.html">mod_proxy_wstunnel</a></code> pour le mécanisme de promotion de
+	protocole HTTP lors d'une négociation du client/navigateur HTTP (en
+	accord avec <a href="https://www.ietf.org/rfc/rfc9110.html#name-upgrade">RFC 9110 -
+	Upgrade</a>). Voir la note <a href="#protoupgrade">Promotion de
+	protocole</a> ci-dessous</p>	
     </td></tr>
     <tr><td>mapping</td>
         <td>-</td>
@@ -1834,6 +1838,31 @@ RewriteRule "^/mirror/foo/(.*)" "%{ENV:protocol}://backend.example.com/$1" [P]
 ProxyPassReverse  "/mirror/foo/" "http://backend.example.com/"
 ProxyPassReverse  "/mirror/foo/" "https://backend.example.com/"</pre>
 
+
+    <div class="note"><h3><a id="protoupgrade" name="protoupgrade">Promotion de
+    protocole</a></h3>
+      <p>Depuis la version 2.4.47 du serveur HTTP Apache, la promotion de
+      protocole (tunneling) peut être géré bout à bout par
+      <code class="module"><a href="../mod/mod_proxy_http.html">mod_proxy_http</a></code> en utilisant le paramètre <var><a href="#upgrade">upgrade</a></var>.</p>
+      <p>Bout à bout signifie que la requête de promotion de protocole en
+      provenance du client/navigateur est tout d'abord transmise par
+      <code class="module"><a href="../mod/mod_proxy_http.html">mod_proxy_http</a></code> au serveur origine et que le protocole de
+      la connexion ne sera modifié (et «&nbsp;tunnelisé&nbsp;» par
+      <code class="module"><a href="../mod/mod_proxy_http.html">mod_proxy_http</a></code>) que si le serveur origine accepte/initie
+      la promotion (réponse HTTP <code>101 Switching Protocols</code>). Si le
+      serveur origine renvoie une réponse différente,
+      <code class="module"><a href="../mod/mod_proxy_http.html">mod_proxy_http</a></code> continuera la transmission en utilisant
+      (et en forçant) le protocole HTTP habituel pour cette connexion.</p>
+      <p>Voir <a href="#wsupgrade">Promotion de protocole vers Websocket
+    (versions 2.4.47 et ultérieures)</a> pour un exemple de configuration qui
+    utilise<code class="module"><a href="../mod/mod_proxy_http.html">mod_proxy_http</a></code>.</p>
+      <p>Avec les versions 2.4.46 et antérieures du serveur HTTP Apache (ou si
+      la directive <code class="directive"><a href="../mod/mod_proxy_wstunnel.html#proxywebsocketfallbacktoproxyhttp">ProxyWebsocketFallbackToProxyHttp</a></code>
+      des versions 2.4.48 et ultérieures désactive la prise en charge par
+      <code class="module"><a href="../mod/mod_proxy_http.html">mod_proxy_http</a></code>), voir la documentation de
+      <code class="module"><a href="../mod/mod_proxy_wstunnel.html">mod_proxy_wstunnel</a></code> pour la méthode permettant de mandater
+      le protocole WebSocket.</p>
+    </div>
 
 
 </div>
