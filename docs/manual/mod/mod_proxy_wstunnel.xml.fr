@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1890110:1907040 (outdated) -->
+<!-- English Revision: 1907040 -->
 <!-- French translation : Lucien GENTIS -->
 
 <!--
@@ -33,6 +33,14 @@ websockets</description>
 Apache</compatibility>
 
 <summary>
+  <note type="warning"><title><a id="deprecation"
+  name="deprecation">Obsolescence</a></title>
+    <p>Depuis la version 2.4.47 du serveur HTTP Apache, la promotion de
+    protocole (tunneling) peut être pris en charge de manière plus efficace par
+    <module>mod_proxy_http</module>.</p>
+    <p>Voir <a href="mod_proxy.html#protoupgrade">Promotion de protocole</a>.</p>
+  </note>
+
     <p>Pour utiliser ce module, <module>mod_proxy</module> doit être
     chargé. Il fournit le support du tunnelling pour les connexions
     websocket vers un serveur websockets d'arrière-plan. La connexion
@@ -65,13 +73,21 @@ ProxyPass "/"  "http://backend.example.com:9080/"
 <p>La répartition de charge entre plusieurs serveurs d'arrière-plan peut être
 configurée via le module <module>mod_proxy_balancer</module>.</p>
 
-<p>En fait, ce module permet d'accepter d'autres protocoles ; vous pouvez à cet
-effet utiliser le paramètre <code>upgrade</code> de la directive <directive
-type="ProxyPass" module="mod_proxy">ProxyPass</directive>. La valeur NONE
-signifie que vous court-circuitez la consultation de l'en-tête, mais que vous
-autorisez quand-même WebSocket. La valeur ANY signifie que <code>Upgrade</code>
-va lire les en-têtes de la requête et les utilisera dans l'en-tête
-<code>Upgrade</code> de la réponse.</p>
+<p>
+Ce module peut aussi être utilisé pour la promotion vers des protocoles autres
+que WebSocket en définissant le paramètre <var><a
+href="mod_proxy.html#upgrade">upgrade</a></var> de la directive <directive
+type="ProxyPass" module="mod_proxy">ProxyPass</directive> avec un nom de
+protocole particulier.
+Les valeurs spéciales <code>upgrade=NONE</code> et <code>upgrade=ANY</code>
+peuvent être utilisées pour tester ou forcer la promotion de protocole mais leur
+utilisation <strong>n'est pas recommandée</strong> en production pour des
+raisons de sécurité.
+<code>NONE</code> signifie que la vérification de l'en-tête est omise mais que
+la promotion (tunneling) vers WebSocket s'effectuera quand-même.
+<code>ANY</code> signifie que la promotion (tunneling) s'effectuera en utilisant
+tout protocole demandé par le client.
+</p>
 </summary>
 
 <seealso><module>mod_proxy</module></seealso>
