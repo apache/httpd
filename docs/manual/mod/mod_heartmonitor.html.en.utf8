@@ -98,6 +98,7 @@ heartbeat requests to this server</td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_heartmonitor</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>The value of 0 is accepted only in 2.4.55 and above</td></tr>
 </table>
     <p>The <code class="directive">HeartbeatMaxServers</code> directive specifies the
     maximum number of servers that will be sending requests to this monitor
@@ -120,7 +121,7 @@ heartbeat requests to this server</td></tr>
     <p>The <code class="directive">HeartbeatStorage</code> directive specifies the
     path to store heartbeat data.  This flat-file is used only when
     <code class="module"><a href="../mod/mod_slotmem_shm.html">mod_slotmem_shm</a></code> is not loaded and
-    <code class="directive">HeartbeatMaxServers</code> is set to 0.</p>
+    <code class="directive"><a href="#heartbeatmaxservers">HeartbeatMaxServers</a></code> is set to 0.</p>
 
 </div>
 </div>
@@ -145,7 +146,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_heartmonit
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2021 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2023 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
