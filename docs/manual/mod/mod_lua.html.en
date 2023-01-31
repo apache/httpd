@@ -1092,7 +1092,14 @@ end</pre>
     <p>
     Mod_lua implements a simple database feature for querying and running commands
     on the most popular database engines (mySQL, PostgreSQL, FreeTDS, ODBC, SQLite, Oracle)
-    as well as mod_dbd.
+    as well as mod_dbd.</p>
+    <p>
+    The <code>dbType</code> to use as the first parameter of <code>dbacquire</code>
+    is case sensitive.</p>
+    <p>
+    It should be one of <code>mysql</code>, <code>pgsql</code>, <code>freetds</code>,
+    <code>odbc</code>, <code>sqlite2</code>, <code>sqlite3</code>, <code>oracle</code>
+    or <code>mod_dbd</code>.
     </p>
     <p>The example below shows how to acquire a database handle and return information from a table:</p>
     <pre class="prettyprint lang-lua">function handle(r)
