@@ -85,6 +85,7 @@ function install_apx() {
     popd
 
     touch ${prefix}/.revision-is-${revision}
+    echo ${version} ${revision} > ${HOME}/root/.key-${name}
 }
 
 # Allow to load $HOME/build/apache/httpd/.gdbinit
