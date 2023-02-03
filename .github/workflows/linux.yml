@@ -181,13 +181,13 @@ jobs:
                     libnghttp2-dev libjansson-dev libpcre2-dev gdb
                     perl-doc ${{ matrix.pkgs }}
     - uses: actions/checkout@v3
-    - name: Cache build environment
+    - name: Cache APR build
       uses: actions/cache@v3
       env:
-        cache-name: cache-apx
+        cache-name: cache-apr
       with:
         path: ~/root
-        key: ${{runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('/home/runner/root/.key-*') }}
+        key: ${{runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('/home/runner/root/.key-apr') }}
     - name: Configure environment
       run: ./test/travis_before_linux.sh
       timeout-minutes: 15
