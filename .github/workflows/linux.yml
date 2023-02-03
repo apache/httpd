@@ -52,18 +52,18 @@ jobs:
           - name: Event MPM, all-modules, no CMSG_DATA
             config: --enable-mods-shared=reallyall --with-mpm=event ac_cv_have_decl_CMSG_DATA=no
           # -------------------------------------------------------------------------
-          - name: Linux Ubuntu, Default, all-modules + install
+          - name: Default, all-modules + install
             config: --enable-mods-shared=reallyall
             env: |
               TEST_INSTALL=1
               APACHE_TEST_EXTRA_ARGS=-v
           # -------------------------------------------------------------------------
-          - name: Linux Ubuntu, Default, all-modules, random test order
+          - name: Default, all-modules, random test order
             config: --enable-mods-shared=reallyall
             env: |
               TEST_ARGS=-order=random
           # -------------------------------------------------------------------------
-          - name: Linux Ubuntu, GCC 10 maintainer-mode w/-Werror, install + VPATH
+          - name: GCC 10 maintainer-mode w/-Werror, install + VPATH
             config: --enable-mods-shared=reallyall --enable-maintainer-mode
             notest-cflags: -Werror -O2 -Wno-deprecated-declarations
             env: |
@@ -174,11 +174,11 @@ jobs:
           # -------------------------------------------------------------------------
           - name: ASan
             notest-cflags: -ggdb -fsanitize=address -fno-sanitize-recover=address -fno-omit-frame-pointer
+            config: --enable-mods-shared=reallyall
             env: |
               APR_VERSION=1.7.x
               APU_VERSION=1.7.x
               APU_CONFIG="--with-crypto --with-ldap"
-              CONFIG="--enable-mods-shared=reallyall"
               TEST_ASAN=1
               CLEAR_CACHE=1
           # -------------------------------------------------------------------------
