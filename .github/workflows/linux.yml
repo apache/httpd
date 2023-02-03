@@ -152,7 +152,9 @@ jobs:
       if: failure()
       with:
         name: config.log
-        path: build/**/config.log
+        path: |
+          config.log
+          build/**/config.log
     - name: Build and test
       run: ./test/travis_run_linux.sh
     - uses: actions/upload-artifact@v3
