@@ -129,6 +129,13 @@ jobs:
               TEST_MALLOC=1
               TEST_SSL=1
               CLEAR_CACHE=1
+          # -------------------------------------------------------------------------
+          - name: litmus WebDAV tests
+          config: --enable-dav --enable-dav-fs
+          env:
+            LITMUS=1
+            TESTS="t/modules/dav.t"
+          pkgs: litmus
     runs-on: ubuntu-latest
     env:
       NOTEST_CFLAGS: ${{ matrix.notest-cflags }}
@@ -144,7 +151,7 @@ jobs:
                     cpanminus libtool-bin libapr1-dev libaprutil1-dev
                     liblua5.3-dev libbrotli-dev libcurl4-openssl-dev     
                     libnghttp2-dev libjansson-dev libpcre2-dev gdb
-                    perl-doc
+                    perl-doc ${{ matrix.pkgs }}
     - uses: actions/checkout@v3
     - name: Configure environment
       run: ./test/travis_before_linux.sh
