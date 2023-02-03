@@ -154,14 +154,6 @@ jobs:
             - libpcre2-dev
             - libldap2-dev
     # -------------------------------------------------------------------------
-    # MFLAGS= works around https://bz.apache.org/bugzilla/show_bug.cgi?id=63942
-    - if: *condition_not_24x
-      name: Linux Ubuntu, Regenerate ap_expr
-      os: linux
-      env: CONFIG="--enable-mods-shared=reallyall --enable-maintainer-mode NOTEST_CFLAGS=-Werror"
-           BUILDCONFIG="--with-regen-expr"
-           MFLAGS=
-    # -------------------------------------------------------------------------
     - if: *condition_not_24x
       name: Linux Ubuntu, APR trunk
       env: APR_VERSION=trunk APR_CONFIG="--with-crypto"
@@ -300,18 +292,6 @@ jobs:
             - python3-requests
             - cargo
             - cbindgen
-    # -------------------------------------------------------------------------
-    - name: Linux Ubuntu, APR 1.7.0, APR-util 1.6.1, LDAP
-      env: APR_VERSION=1.7.0
-           APU_VERSION=1.6.1 APU_CONFIG="--with-crypto --with-ldap"
-           CONFIG="--enable-mods-shared=reallyall"
-           TEST_MALLOC=1 TEST_LDAP=1 TEST_ARGS="-defines LDAP"
-           TESTS="t/modules/"
-    # -------------------------------------------------------------------------
-    - if: *condition_not_24x
-      name: Linux Ubuntu, event, APR trunk thread debugging
-      env: APR_VERSION=trunk APR_CONFIG="--with-crypto --enable-thread-debug"
-           CONFIG="--enable-mods-shared=reallyall --with-mpm=event"
     # -------------------------------------------------------------------------
     - if: *condition_24x_only
       name: Linux Ubuntu, APR 1.5.1, APR-util 1.5.4

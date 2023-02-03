@@ -136,6 +136,33 @@ jobs:
               LITMUS=1
               TESTS="t/modules/dav.t"
             pkgs: litmus
+          # -------------------------------------------------------------------------
+          # MFLAGS= works around https://bz.apache.org/bugzilla/show_bug.cgi?id=63942
+          ## TODO if: *condition_not_24x
+          - name: Regenerate ap_expr
+            config: --enable-mods-shared=reallyall --enable-maintainer-mode
+            notest-cflags: -Werror
+            env: |
+              BUILDCONFIG="--with-regen-expr"
+              MFLAGS=
+          # -------------------------------------------------------------------------
+          - name: APR 1.7.0, APR-util 1.6.1, LDAP
+            config: --enable-mods-shared=reallyall
+            env: |
+              APR_VERSION=1.7.0
+              APU_VERSION=1.6.1
+              APU_CONFIG="--with-crypto --with-ldap"
+              TEST_MALLOC=1
+              TEST_LDAP=1
+              TEST_ARGS="-defines LDAP"
+              TESTS="t/modules/"
+          # -------------------------------------------------------------------------
+          ### TODO: if: *condition_not_24x
+          name: APR trunk thread debugging
+          config: --enable-mods-shared=reallyall --with-mpm=event
+          env: |
+            APR_VERSION=trunk
+            APR_CONFIG="--with-crypto --enable-thread-debug"
     runs-on: ubuntu-latest
     env:
       NOTEST_CFLAGS: ${{ matrix.notest-cflags }}
@@ -160,8 +187,7 @@ jobs:
       with:
         name: config.log
         path: |
-          config.log
-          build/**/config.log
+          /home/runner/build/**/config.log
     - name: Build and test
       run: ./test/travis_run_linux.sh
     - uses: actions/upload-artifact@v3
