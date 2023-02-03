@@ -190,7 +190,7 @@ jobs:
         key: ${{runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('/home/runner/root/.key-*') }}
     - name: Configure environment
       run: ./test/travis_before_linux.sh
-      timeout-minutes: 10
+      timeout-minutes: 15
     - uses: actions/upload-artifact@v3
       if: failure()
       with:
