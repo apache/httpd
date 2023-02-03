@@ -44,9 +44,6 @@ _cond2: &condition_not_24x (branch is not present OR branch !~ /^2.4/) AND (tag 
 jobs:
   include:
     # -------------------------------------------------------------------------
-    - name: Empty APLOGNO() test
-      env: SKIP_TESTING=1 TEST_LOGNO=1
-    # -------------------------------------------------------------------------
     - name: Linux s390x Ubuntu, all-modules
       arch: s390x
       env: CONFIG="--enable-mods-shared=reallyall"
@@ -86,20 +83,6 @@ jobs:
             - libapr1-dev
             - libbrotli-dev:i386
     # -------------------------------------------------------------------------
-    - name: Linux Ubuntu, Default, all-modules + install
-      env: CONFIG="--enable-mods-shared=reallyall"
-           TEST_INSTALL=1
-           APACHE_TEST_EXTRA_ARGS=-v
-    # -------------------------------------------------------------------------
-    - name: Linux Ubuntu, Default, all-modules, random test order
-      env: CONFIG="--enable-mods-shared=reallyall"
-           TEST_ARGS="-order=random"
-    # -------------------------------------------------------------------------
-    - name: Linux Ubuntu, GCC 7 maintainer-mode w/-Werror, install + VPATH
-      os: linux
-      env: CONFIG="--enable-mods-shared=reallyall --enable-maintainer-mode"
-           NOTEST_CFLAGS='-Werror -O2' CC=gcc-7
-           TEST_VPATH=1 TEST_INSTALL=1 SKIP_TESTING=1
     # -------------------------------------------------------------------------
     # -------------------------------------------------------------------------
     - if: *condition_not_24x
@@ -171,14 +154,6 @@ jobs:
             - libpcre2-dev
             - libldap2-dev
     # -------------------------------------------------------------------------
-    # MFLAGS= works around https://bz.apache.org/bugzilla/show_bug.cgi?id=63942
-    - if: *condition_not_24x
-      name: Linux Ubuntu, Regenerate ap_expr
-      os: linux
-      env: CONFIG="--enable-mods-shared=reallyall --enable-maintainer-mode NOTEST_CFLAGS=-Werror"
-           BUILDCONFIG="--with-regen-expr"
-           MFLAGS=
-    # -------------------------------------------------------------------------
     - if: *condition_not_24x
       name: Linux Ubuntu, APR trunk
       env: APR_VERSION=trunk APR_CONFIG="--with-crypto"
@@ -195,56 +170,6 @@ jobs:
       env: APR_VERSION=1.7.0 APU_VERSION=1.6.1
            CONFIG="--enable-mods-shared=reallyall"
            APU_CONFIG="--with-crypto --with-ldap"
-    # -------------------------------------------------------------------------
-    - name: Linux Ubuntu Focal, all-modules, system APR/APR-util
-      os: linux
-      dist: focal
-      env: CONFIG="--enable-mods-shared=reallyall"
-    # -------------------------------------------------------------------------
-    - name: Linux Ubuntu Focal, all-modules, APR 1.7.0, APR-util 1.6.1
-      dist: focal
-      env: APR_VERSION=1.7.0 APU_VERSION=1.6.1
-           CONFIG="--enable-mods-shared=reallyall"
-           APU_CONFIG="--with-crypto --with-ldap"
-    # -------------------------------------------------------------------------
-    - name: Linux Ubuntu, APR 1.7.0, APR-util 1.6.1
-      env: APR_VERSION=1.7.0 APU_VERSION=1.6.1
-           CONFIG="--enable-mods-shared=reallyall"
-           APU_CONFIG="--with-crypto --with-ldap"
-    # -------------------------------------------------------------------------
-    - name: Linux Ubuntu, APR 1.7.x, APR-util 1.7.x
-      env: APR_VERSION=1.7.x APU_VERSION=1.7.x
-           CONFIG="--enable-mods-shared=reallyall"
-           APU_CONFIG="--with-crypto --with-ldap"
-           CLEAR_CACHE=1
-    # -------------------------------------------------------------------------
-    - name: Linux Ubuntu, pool-debug
-      env: APR_VERSION=1.7.x APR_CONFIG="--enable-pool-debug"
-           APU_VERSION=1.7.x APU_CONFIG="--with-crypto --with-ldap"
-           CONFIG="--enable-mods-shared=reallyall"
-           TEST_MALLOC=1
-           CLEAR_CACHE=1
-    # -------------------------------------------------------------------------
-    - name: Linux Ubuntu, Shared MPMs (event), pool-debug, SSL/TLS variants
-      env: APR_VERSION=1.7.x APR_CONFIG="--enable-pool-debug"
-           APU_VERSION=1.7.x APU_CONFIG="--with-crypto --with-ldap"
-           CONFIG="--enable-mods-shared=reallyall --enable-mpms-shared=all --with-mpm=event"
-           TEST_MALLOC=1 TEST_SSL=1
-           CLEAR_CACHE=1
-    # -------------------------------------------------------------------------
-    - name: Linux Ubuntu, Shared MPMs (worker), pool-debug, SSL/TLS variants
-      env: APR_VERSION=1.7.x APR_CONFIG="--enable-pool-debug"
-           APU_VERSION=1.7.x APU_CONFIG="--with-crypto --with-ldap"
-           CONFIG="--enable-mods-shared=reallyall --enable-mpms-shared=all --with-mpm=worker"
-           TEST_MALLOC=1 TEST_SSL=1
-           CLEAR_CACHE=1
-    # -------------------------------------------------------------------------
-    - name: Linux Ubuntu, Shared MPMs (prefork), pool-debug, SSL/TLS variants
-      env: APR_VERSION=1.7.x APR_CONFIG="--enable-pool-debug"
-           APU_VERSION=1.7.x APU_CONFIG="--with-crypto --with-ldap"
-           CONFIG="--enable-mods-shared=reallyall --enable-mpms-shared=all --with-mpm=prefork"
-           TEST_MALLOC=1 TEST_SSL=1
-           CLEAR_CACHE=1
     # -------------------------------------------------------------------------
     - name: Linux Ubuntu, APR trunk, minimal module set, OpenSSL 3.x
       if: *condition_not_24x
@@ -368,41 +293,6 @@ jobs:
             - cargo
             - cbindgen
     # -------------------------------------------------------------------------
-    - name: Linux Ubuntu, APR 1.7.0, APR-util 1.6.1, LDAP
-      env: APR_VERSION=1.7.0
-           APU_VERSION=1.6.1 APU_CONFIG="--with-crypto --with-ldap"
-           CONFIG="--enable-mods-shared=reallyall"
-           TEST_MALLOC=1 TEST_LDAP=1 TEST_ARGS="-defines LDAP"
-           TESTS="t/modules/"
-    # -------------------------------------------------------------------------
-    - if: *condition_not_24x
-      name: Linux Ubuntu, event, APR trunk thread debugging
-      env: APR_VERSION=trunk APR_CONFIG="--with-crypto --enable-thread-debug"
-           CONFIG="--enable-mods-shared=reallyall --with-mpm=event"
-    # -------------------------------------------------------------------------
-    - name: Linux Ubuntu, litmus WebDAV tests
-      env: CONFIG="--enable-dav --enable-dav-fs"
-           LITMUS=1 TESTS="t/modules/dav.t"
-      addons:
-        apt:
-          update: false
-          sources:
-            - sourceline: 'deb http://archive.ubuntu.com/ubuntu $(lsb_release -sc) universe'
-          packages:
-            - cpanminus
-            - libtool-bin
-            - libapr1-dev
-            - libaprutil1-dev
-            - perl-doc
-            - liblua5.3-dev
-            - libbrotli-dev
-            - libcurl4-openssl-dev
-            - libsystemd-dev
-            - libnghttp2-dev
-            - libjansson-dev
-            - libpcre2-dev
-            - litmus
-    # -------------------------------------------------------------------------
     - if: *condition_24x_only
       name: Linux Ubuntu, APR 1.5.1, APR-util 1.5.4
       env: APR_VERSION=1.5.1 APU_VERSION=1.5.4
@@ -412,30 +302,6 @@ jobs:
       name: Linux Ubuntu, APR 1.4.8, APR-util 1.4.2
       env: APR_VERSION=1.4.8 APU_VERSION=1.4.2
            CONFIG="--enable-mods-shared=reallyall"
-    # -------------------------------------------------------------------------
-    - name: Linux Ubuntu Focal, UBSan
-      dist: focal
-      env: NOTEST_CFLAGS="-fsanitize=undefined -fno-sanitize-recover=undefined" NOTEST_LIBS=-lubsan
-           CONFIG="--enable-mods-shared=reallyall --disable-http2"
-           TEST_UBSAN=1
-    # -------------------------------------------------------------------------
-    - name: Linux Ubuntu Focal, ASan
-      dist: focal
-      env: NOTEST_CFLAGS="-ggdb -fsanitize=address -fno-sanitize-recover=address -fno-omit-frame-pointer"
-           APR_VERSION=1.7.x
-           APU_VERSION=1.7.x APU_CONFIG="--with-crypto --with-ldap"
-           CONFIG="--enable-mods-shared=reallyall"
-           TEST_ASAN=1
-           CLEAR_CACHE=1
-    # -------------------------------------------------------------------------
-    - name: Linux Ubuntu Focal, ASan, pool-debug
-      dist: focal
-      env: NOTEST_CFLAGS="-ggdb -fsanitize=address -fno-sanitize-recover=address -fno-omit-frame-pointer"
-           APR_VERSION=1.7.x APR_CONFIG="--enable-pool-debug"
-           APU_VERSION=1.7.x APU_CONFIG="--with-crypto --with-ldap"
-           CONFIG="--enable-mods-shared=reallyall"
-           TEST_ASAN=1
-           CLEAR_CACHE=1
   allow_failures:
     # Non-x86 are sometimes flaky:
     - arch: s390x

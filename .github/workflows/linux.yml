@@ -23,8 +23,15 @@ env:
 jobs:
   build:
     strategy:
+      fail-fast: false
       matrix:
         include: 
+          # -------------------------------------------------------------------------
+          - name: Empty APLOGNO() test
+            env: |
+              SKIP_TESTING=1
+              TEST_LOGNO=1
+          # -------------------------------------------------------------------------
           - name: Default
           # -------------------------------------------------------------------------
           - name: All-static modules
@@ -44,13 +51,155 @@ jobs:
           # -------------------------------------------------------------------------
           - name: Event MPM, all-modules, no CMSG_DATA
             config: --enable-mods-shared=reallyall --with-mpm=event ac_cv_have_decl_CMSG_DATA=no
-      fail-fast: false
+          # -------------------------------------------------------------------------
+          - name: Default, all-modules + install
+            config: --enable-mods-shared=reallyall
+            env: |
+              TEST_INSTALL=1
+              APACHE_TEST_EXTRA_ARGS=-v
+          # -------------------------------------------------------------------------
+          - name: Default, all-modules, random test order
+            config: --enable-mods-shared=reallyall
+            env: |
+              TEST_ARGS=-order=random
+          # -------------------------------------------------------------------------
+          - name: GCC 10 maintainer-mode w/-Werror, install + VPATH
+            config: --enable-mods-shared=reallyall --enable-maintainer-mode
+            notest-cflags: -Werror -O2 -Wno-deprecated-declarations
+            env: |
+              CC=gcc-10
+              TEST_VPATH=1
+              TEST_INSTALL=1
+              SKIP_TESTING=1
+          # -------------------------------------------------------------------------
+          - name: All-modules, APR 1.7.2, APR-util 1.6.3
+            config: --enable-mods-shared=reallyall
+            env: |
+              APR_VERSION=1.7.2
+              APU_VERSION=1.6.3
+              APU_CONFIG="--with-crypto --with-ldap"
+          # -------------------------------------------------------------------------
+          - name: APR 1.7.x, APR-util 1.7.x
+            config: --enable-mods-shared=reallyall
+            env: |
+              APR_VERSION=1.7.x
+              APU_VERSION=1.7.x
+              APU_CONFIG="--with-crypto --with-ldap"
+              CLEAR_CACHE=1
+          # -------------------------------------------------------------------------
+          - name: Pool-debug
+            config: --enable-mods-shared=reallyall
+            env: |
+              APR_VERSION=1.7.x
+              APR_CONFIG="--enable-pool-debug"
+              APU_VERSION=1.7.x
+              APU_CONFIG="--with-crypto --with-ldap"
+              TEST_MALLOC=1
+              CLEAR_CACHE=1
+          # -------------------------------------------------------------------------
+          - name: Shared MPMs (event), pool-debug, SSL/TLS variants
+            config: --enable-mods-shared=reallyall --enable-mpms-shared=all --with-mpm=event
+            env: |
+              APR_VERSION=1.7.x
+              APR_CONFIG="--enable-pool-debug"
+              APU_VERSION=1.7.x
+              APU_CONFIG="--with-crypto --with-ldap"
+              TEST_MALLOC=1
+              TEST_SSL=1
+              CLEAR_CACHE=1
+          # -------------------------------------------------------------------------
+          - name: Shared MPMs (worker), pool-debug, SSL/TLS variants
+            config: --enable-mods-shared=reallyall --enable-mpms-shared=all --with-mpm=worker
+            env: |
+              APR_VERSION=1.7.x
+              APR_CONFIG="--enable-pool-debug"
+              APU_VERSION=1.7.x
+              APU_CONFIG="--with-crypto --with-ldap"
+              TEST_MALLOC=1
+              TEST_SSL=1
+              CLEAR_CACHE=1
+          # -------------------------------------------------------------------------
+          - name: Shared MPMs (prefork), pool-debug, SSL/TLS variants
+            config: --enable-mods-shared=reallyall --enable-mpms-shared=all --with-mpm=prefork
+            env: |
+              APR_VERSION=1.7.x
+              APR_CONFIG="--enable-pool-debug"
+              APU_VERSION=1.7.x
+              APU_CONFIG="--with-crypto --with-ldap"
+              TEST_MALLOC=1
+              TEST_SSL=1
+              CLEAR_CACHE=1
+          # -------------------------------------------------------------------------
+          - name: litmus WebDAV tests
+            config: --enable-dav --enable-dav-fs
+            env: |
+              LITMUS=1
+              TESTS="t/modules/dav.t"
+            pkgs: litmus
+          # -------------------------------------------------------------------------
+          # MFLAGS= works around https://bz.apache.org/bugzilla/show_bug.cgi?id=63942
+          ## TODO if: *condition_not_24x
+          - name: Regenerate ap_expr
+            config: --enable-mods-shared=reallyall --enable-maintainer-mode
+            notest-cflags: -Werror -Wno-deprecated-declarations
+            env: |
+              BUILDCONFIG="--with-regen-expr"
+              MFLAGS=
+          # -------------------------------------------------------------------------
+          - name: APR 1.7.2, APR-util 1.6.3, LDAP
+            config: --enable-mods-shared=reallyall
+            pkgs: ldap-utils
+            env: |
+              APR_VERSION=1.7.2
+              APU_VERSION=1.6.3
+              APU_CONFIG="--with-crypto --with-ldap"
+              TEST_MALLOC=1
+              TEST_LDAP=1
+              TEST_ARGS="-defines LDAP"
+              TESTS="t/modules/"
+          # -------------------------------------------------------------------------
+          ### TODO: if: *condition_not_24x
+          - name: APR trunk thread debugging
+            config: --enable-mods-shared=reallyall --with-mpm=event
+            env: |
+              APR_VERSION=trunk
+              APR_CONFIG="--with-crypto --enable-thread-debug"
+          # -------------------------------------------------------------------------
+          - name: UBSan
+            notest-cflags: -fsanitize=undefined -fno-sanitize-recover=undefined
+            config: --enable-mods-shared=reallyall --disable-http2
+            env: |
+              NOTEST_LIBS=-lubsan
+              TEST_UBSAN=1
+          # -------------------------------------------------------------------------
+          - name: ASan
+            notest-cflags: -ggdb -fsanitize=address -fno-sanitize-recover=address -fno-omit-frame-pointer
+            config: --enable-mods-shared=reallyall
+            env: |
+              APR_VERSION=1.7.x
+              APU_VERSION=1.7.x
+              APU_CONFIG="--with-crypto --with-ldap"
+              TEST_ASAN=1
+              CLEAR_CACHE=1
+          # -------------------------------------------------------------------------
+          - name: ASan, pool-debug
+            notest-cflags: -ggdb -fsanitize=address -fno-sanitize-recover=address -fno-omit-frame-pointer
+            config: --enable-mods-shared=reallyall
+            env: |
+              APR_VERSION=1.7.x
+              APR_CONFIG="--enable-pool-debug"
+              APU_VERSION=1.7.x
+              APU_CONFIG="--with-crypto --with-ldap"
+              TEST_ASAN=1
+              CLEAR_CACHE=1
     runs-on: ubuntu-latest
     env:
       NOTEST_CFLAGS: ${{ matrix.notest-cflags }}
       CONFIG: ${{ matrix.config }}
     name: ${{ matrix.name }}
     steps:
+    - name: Set environment variables
+      run: echo "${{ matrix.env }}" >> $GITHUB_ENV
     - name: apt refresh
       run: sudo apt-get -o Acquire::Retries=5 update
     - name: Install prerequisites
@@ -58,15 +207,29 @@ jobs:
                     cpanminus libtool-bin libapr1-dev libaprutil1-dev
                     liblua5.3-dev libbrotli-dev libcurl4-openssl-dev     
                     libnghttp2-dev libjansson-dev libpcre2-dev gdb
-                    perl-doc
+                    perl-doc ${{ matrix.pkgs }}
     - uses: actions/checkout@v3
+    - name: Cache APR build
+      uses: actions/cache@v3
+      env:
+        cache-name: cache-apr
+      with:
+        path: ~/root
+        key: ${{runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('/home/runner/root/.key-apr') }}
     - name: Configure environment
       run: ./test/travis_before_linux.sh
+      timeout-minutes: 15
+    - uses: actions/upload-artifact@v3
+      if: failure()
+      with:
+        name: config.log ${{ matrix.node-version }}
+        path: |
+          /home/runner/build/**/config.log
     - name: Build and test
       run: ./test/travis_run_linux.sh
     - uses: actions/upload-artifact@v3
       if: failure()
       with:
-        name: error_log
+        name: error_log ${{ matrix.node-version }}
         path: test/perl-framework/t/logs/error_log
 
