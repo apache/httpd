@@ -72,11 +72,11 @@ jobs:
               TEST_INSTALL=1
               SKIP_TESTING=1
           # -------------------------------------------------------------------------
-          - name: All-modules, APR 1.7.0, APR-util 1.6.1
+          - name: All-modules, APR 1.7.2, APR-util 1.6.3
             config: --enable-mods-shared=reallyall
             env: |
-              APR_VERSION=1.7.0
-              APU_VERSION=1.6.1
+              APR_VERSION=1.7.2
+              APU_VERSION=1.6.3
               APU_CONFIG="--with-crypto --with-ldap"
           # -------------------------------------------------------------------------
           - name: APR 1.7.x, APR-util 1.7.x
@@ -146,12 +146,12 @@ jobs:
               BUILDCONFIG="--with-regen-expr"
               MFLAGS=
           # -------------------------------------------------------------------------
-          - name: APR 1.7.0, APR-util 1.6.1, LDAP
+          - name: APR 1.7.2, APR-util 1.6.3, LDAP
             config: --enable-mods-shared=reallyall
             pkgs: ldap-utils
             env: |
-              APR_VERSION=1.7.0
-              APU_VERSION=1.6.1
+              APR_VERSION=1.7.2
+              APU_VERSION=1.6.3
               APU_CONFIG="--with-crypto --with-ldap"
               TEST_MALLOC=1
               TEST_LDAP=1
