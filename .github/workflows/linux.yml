@@ -158,11 +158,11 @@ jobs:
               TESTS="t/modules/"
           # -------------------------------------------------------------------------
           ### TODO: if: *condition_not_24x
-          name: APR trunk thread debugging
-          config: --enable-mods-shared=reallyall --with-mpm=event
-          env: |
-            APR_VERSION=trunk
-            APR_CONFIG="--with-crypto --enable-thread-debug"
+          - name: APR trunk thread debugging
+            config: --enable-mods-shared=reallyall --with-mpm=event
+            env: |
+              APR_VERSION=trunk
+              APR_CONFIG="--with-crypto --enable-thread-debug"
     runs-on: ubuntu-latest
     env:
       NOTEST_CFLAGS: ${{ matrix.notest-cflags }}
