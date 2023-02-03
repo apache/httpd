@@ -131,11 +131,11 @@ jobs:
               CLEAR_CACHE=1
           # -------------------------------------------------------------------------
           - name: litmus WebDAV tests
-          config: --enable-dav --enable-dav-fs
-          env:
-            LITMUS=1
-            TESTS="t/modules/dav.t"
-          pkgs: litmus
+            config: --enable-dav --enable-dav-fs
+            env:
+              LITMUS=1
+              TESTS="t/modules/dav.t"
+            pkgs: litmus
     runs-on: ubuntu-latest
     env:
       NOTEST_CFLAGS: ${{ matrix.notest-cflags }}
