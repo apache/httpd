@@ -2,7 +2,7 @@
 Variables
 ---------
 
-The Travis scripts use the following environment variables:
+The CI scripts use the following environment variables:
 
 * APR_VERSION - if set, APR of this version is built and installed in
   $HOME/root/apr-$APR_VERSION - a value of "trunk" means trunk is
@@ -64,9 +64,22 @@ only be rebuilt if an APR checkout is present, so a APR-util cannot be
 built from source alone.  (i.e. the scripts do not handle the case of
 cached, fresh APR plus a cached but stale APR-util)
 
+Travis to Github Actions Migration TODO
+---------------------------------------
+
+* better path filtering so e.g. CHANGES changes don't trigger CI
+* support branch conditionals again (some tests are 2.4.x only, some trunk only)
+* make caching work properly for ~/root/apr*
+* cache ~/perl5 as well
+* turn on failure notifications?
+* test across different Ubuntu versions again
+ - and test against OpenSSL 1.x since we're now ONLY building against 3.x
+* update the docs below for testing from PRs/feature branches
+
 TODO list
 ---------
 
+* non-x86 builds
 * MacOS build
 * Windows build
 * clang-on-Linux build
@@ -76,9 +89,6 @@ Known Failures
 --------------
 
 Some known failures:
-
-* "apt-get install" timeout/fails - workaround by moving apt install
-  to before_script phase?
 
 * prefork, and more rarely non-prefork testing sometimes catches child
   segfaults under pool-debug from assert()s in (e.g.)
@@ -95,11 +105,11 @@ Some known failures:
   Not clear if there is a real bug here which can be reproduced
   outside of pool-debug.
 
-Testing from a Feature Branch
+Testing from a Feature Branch [*** N/A FOR GITHUB ACTIONS ***]
 -----------------------------
 
 An SVN branch off trunk should be mirrored to github, and will be
-tested in the same way that trunk is in Travis, so this workflow is
+tested in the same way that trunk is in CI, so this workflow is
 available for those familiar with using Subversion and the standard
 ASF/httpd repository layout.
 
