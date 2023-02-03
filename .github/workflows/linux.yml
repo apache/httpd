@@ -141,13 +141,14 @@ jobs:
           ## TODO if: *condition_not_24x
           - name: Regenerate ap_expr
             config: --enable-mods-shared=reallyall --enable-maintainer-mode
-            notest-cflags: -Werror
+            notest-cflags: -Werror -Wno-deprecated-declarations
             env: |
               BUILDCONFIG="--with-regen-expr"
               MFLAGS=
           # -------------------------------------------------------------------------
           - name: APR 1.7.0, APR-util 1.6.1, LDAP
             config: --enable-mods-shared=reallyall
+            pkgs: ldap-utils
             env: |
               APR_VERSION=1.7.0
               APU_VERSION=1.6.1
