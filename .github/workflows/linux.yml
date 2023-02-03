@@ -166,7 +166,7 @@ jobs:
               APR_CONFIG="--with-crypto --enable-thread-debug"
           # -------------------------------------------------------------------------
           - name: UBSan
-            notest-cflags: -fsanitize=undefined -fno-sanitize-recover=undefined"
+            notest-cflags: -fsanitize=undefined -fno-sanitize-recover=undefined
             config: --enable-mods-shared=reallyall --disable-http2
             env: |
               NOTEST_LIBS=-lubsan
