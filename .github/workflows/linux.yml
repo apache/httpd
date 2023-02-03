@@ -181,6 +181,17 @@ jobs:
                     libnghttp2-dev libjansson-dev libpcre2-dev gdb
                     perl-doc ${{ matrix.pkgs }}
     - uses: actions/checkout@v3
+    - name: Cache build environment
+      uses: actions/cache@v3
+      env:
+        cache-name: cache-apx
+      with:
+        path: ~/root
+        key: ${{runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('root/.key-*') }}
+        restore-keys: |
+          ${{ runner.os }}-build-${{ env.cache-name }}-
+          ${{ runner.os }}-build-
+          ${{ runner.os }}-
     - name: Configure environment
       run: ./test/travis_before_linux.sh
     - uses: actions/upload-artifact@v3
