@@ -73,9 +73,10 @@ jobs:
               SKIP_TESTING=1
           # -------------------------------------------------------------------------
           - name: All-modules, APR 1.7.0, APR-util 1.6.1
+            config: --enable-mods-shared=reallyall
             env: |
-              APR_VERSION=1.7.0 APU_VERSION=1.6.1
-              CONFIG="--enable-mods-shared=reallyall"
+              APR_VERSION=1.7.0
+              APU_VERSION=1.6.1
               APU_CONFIG="--with-crypto --with-ldap"
     runs-on: ubuntu-latest
     env:
