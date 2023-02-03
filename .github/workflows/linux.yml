@@ -132,7 +132,7 @@ jobs:
           # -------------------------------------------------------------------------
           - name: litmus WebDAV tests
             config: --enable-dav --enable-dav-fs
-            env:
+            env: |
               LITMUS=1
               TESTS="t/modules/dav.t"
             pkgs: litmus
