@@ -187,11 +187,7 @@ jobs:
         cache-name: cache-apx
       with:
         path: ~/root
-        key: ${{runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('root/.key-*') }}
-        restore-keys: |
-          ${{ runner.os }}-build-${{ env.cache-name }}-
-          ${{ runner.os }}-build-
-          ${{ runner.os }}-
+        key: ${{runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('/home/runner/root/.key-*') }}
     - name: Configure environment
       run: ./test/travis_before_linux.sh
     - uses: actions/upload-artifact@v3
