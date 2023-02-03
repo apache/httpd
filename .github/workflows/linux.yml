@@ -194,7 +194,7 @@ jobs:
     - uses: actions/upload-artifact@v3
       if: failure()
       with:
-        name: config.log
+        name: config.log ${{ matrix.node-version }}
         path: |
           /home/runner/build/**/config.log
     - name: Build and test
@@ -202,6 +202,6 @@ jobs:
     - uses: actions/upload-artifact@v3
       if: failure()
       with:
-        name: error_log
+        name: error_log ${{ matrix.node-version }}
         path: test/perl-framework/t/logs/error_log
 
