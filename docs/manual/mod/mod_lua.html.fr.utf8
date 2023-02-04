@@ -29,8 +29,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_lua.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_lua.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Fournit des points d'entrée Lua dans différentes parties du
 traitement des requêtes httpd</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
@@ -1194,7 +1192,14 @@ end</pre>
     <p>Mod_lua implémente une fonctionnalité basique de connexion aux
 bases de données permettant d'envoyer des requêtes ou d'exécuter des
 commandes auprès des moteurs de base de données les plus courants
-(mySQL, PostgreSQL, FreeTDS, ODBC, SQLite, Oracle), ainsi que mod_dbd.
+(mySQL, PostgreSQL, FreeTDS, ODBC, SQLite, Oracle), ainsi que mod_dbd.</p>
+    <p>
+    <code>dbType</code>, le premier paramètre de <code>dbacquire</code>, est
+    sensible à la casse.</p>
+    <p>
+    Ses valeurs possibles sont <code>mysql</code>, <code>pgsql</code>,
+    <code>freetds</code>, <code>odbc</code>, <code>sqlite2</code>,
+    <code>sqlite3</code>, <code>oracle</code> ou <code>mod_dbd</code>.
     </p>
     <p>L'exemple suivant montre comment se connecter à une base de
 données et extraire des informations d'une table :</p>
