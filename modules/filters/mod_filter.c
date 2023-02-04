@@ -144,6 +144,7 @@ static int filter_lookup(ap_filter_t *f, ap_filter_rec_t *filter)
     unsigned int proto_flags;
     mod_filter_ctx *rctx = ap_get_module_config(r->request_config,
                                                 &filter_module);
+    const char *wildcard = "/*";
 #endif
 
     /* Check registered providers in order */
@@ -177,13 +178,14 @@ static int filter_lookup(ap_filter_t *f, ap_filter_rec_t *filter)
                     match = 1;
                     break;
                 }
-                else if (strncmp(*type, r->content_type, sep) == 0
-                    && (*type)[sep + 1] == '*'
-                    && (*type)[sep + 2] == '\0') {
-                    ap_log_rerror(APLOG_MARK, APLOG_TRACE4, 0, r,
-                                  "... matched '%s'", *type);
-                    match = 1;
-                    break;
+                else if (sep                                     
+                    && strncmp(*type, r->content_type, sep) == 0     
+                    && strncmp(*type + sep, wildcard, strlen(wildcard)) == 0
+                    && (*type)[sep + strlen(wildcard)] == '\0') {                
+                    ap_log_rerror(APLOG_MARK, APLOG_TRACE4, 0, r,              
+                                  "... matched '%s'", *type);               
+                    match = 1;                                              
+                    break;                                                                 
                 } 
                 else {
                     ap_log_rerror(APLOG_MARK, APLOG_TRACE4, 0, r,
