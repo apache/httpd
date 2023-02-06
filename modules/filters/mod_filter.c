@@ -180,8 +180,7 @@ static int filter_lookup(ap_filter_t *f, ap_filter_rec_t *filter)
                 }
                 else if (sep                                     
                     && strncmp(*type, r->content_type, sep) == 0     
-                    && strncmp(*type + sep, wildcard, strlen(wildcard)) == 0
-                    && (*type)[sep + strlen(wildcard)] == '\0') {                
+                    && strcmp(*type + sep, wildcard) == 0) {                
                     ap_log_rerror(APLOG_MARK, APLOG_TRACE4, 0, r,              
                                   "... matched '%s'", *type);               
                     match = 1;                                              
