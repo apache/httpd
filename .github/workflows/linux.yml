@@ -210,7 +210,7 @@ jobs:
           ### TODO: if: *condition_not_24x
           - name: ACME test suite
             config: enable-mods-shared=reallyall --with-mpm=event --enable-mpms-shared=event
-            pkgs: curl python3-pytest nghttp2-client python3-cryptography python3-requests golang-1.14
+            pkgs: curl python3-pytest nghttp2-client python3-cryptography python3-requests golang-1.17
             env: |
               APR_VERSION=1.7.2
               APU_VERSION=1.6.1
