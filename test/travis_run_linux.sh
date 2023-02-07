@@ -216,7 +216,6 @@ if ! test -v SKIP_TESTING; then
         #         imports crypto/ed25519: unrecognized import path "crypto/ed25519" (import path does not begin with hostname)
         #
         # but works on a docker ubuntu-focal image. ???
-        export GOROOT=/usr/lib/go-1.14
         export GOPATH=${PREFIX}/gocode
         mkdir -p "${GOPATH}"
         export PATH="${GOROOT}/bin:${GOPATH}/bin:${PATH}"

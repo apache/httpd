@@ -46,7 +46,7 @@ The CI scripts use the following environment variables:
 
 * CLEAR_CACHE - if set, the cached $HOME/root is removed before each build
 
-Caching
+Caching -- NOTE, BROKEN IN GITHUB ACTIONS --
 -------
 
 Perl modules installed in $HOME/perl5 are cached.
@@ -69,12 +69,19 @@ Travis to Github Actions Migration TODO
 
 * better path filtering so e.g. CHANGES changes don't trigger CI
 * support branch conditionals again (some tests are 2.4.x only, some trunk only)
-* make caching work properly for ~/root/apr*
-* cache ~/perl5 as well
+* make caching work properly for APR + CPAN modules
+  - this is using the wrong model at the moment
+  - the cache key needs to be based off (source code, job configuration)
+  - rather than done on the fly in test/travis_before_linux.sh
+  - pebble + Rustls builds should also be cached
 * turn on failure notifications?
 * test across different Ubuntu versions again
  - and test against OpenSSL 1.x since we're now ONLY building against 3.x
 * update the docs below for testing from PRs/feature branches
+* introduce some job ordering rather than having a flat/concurrent
+  set, if the default "./configure && make && test" works *then* start
+  jobs doing 200 different variations on ./configure --enable-XXX 
+  i.e. stop burning CPU time for a typo which breaks every job
 
 TODO list
 ---------
