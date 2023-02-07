@@ -230,6 +230,21 @@ jobs:
               NO_TEST_FRAMEWORK=1
               TEST_INSTALL=1
               TEST_MOD_TLS=1
+          # -------------------------------------------------------------------------
+          ### TODO if: *condition_not_24x
+          - name: i386 Shared MPMs, most modules, maintainer-mode w/-Werror
+            config: --enable-mods-shared=reallyall --disable-xml2enc --disable-proxy-html --enable-mpms-shared=all --enable-maintainer-mode
+            pkgs: >-
+              cpanminus libc6-dev-i386 gcc-multilib libexpat1-dev:i386 libssl-dev:i386
+              lib32z1-dev libbrotli-dev:i386 libpcre2-dev:i386 libldap2-dev:i386 libtool-bin
+              perl-doc libapr1-dev libbrotli-dev:i386
+            env: |
+              PKG_CONFIG_PATH="/usr/lib/i386-linux-gnu/pkgconfig"
+              NOTEST_CFLAGS="-Werror"
+              CC="gcc -m32"
+              APR_VERSION=1.7.0
+              APU_VERSION=1.6.1
+              APU_CONFIG="--with-crypto --with-ldap"
     runs-on: ubuntu-latest
     env:
       NOTEST_CFLAGS: ${{ matrix.notest-cflags }}

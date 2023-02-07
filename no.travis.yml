@@ -56,33 +56,6 @@ jobs:
       arch: arm64
       env: CONFIG="--enable-mods-shared=reallyall"
     # -------------------------------------------------------------------------
-    - if: *condition_not_24x
-      name: Linux i386 Ubuntu, Shared MPMs, most modules, maintainer-mode w/-Werror
-      env: CONFIG="--enable-mods-shared=reallyall --disable-xml2enc --disable-proxy-html --enable-mpms-shared=all --enable-maintainer-mode"
-           PKG_CONFIG_PATH="/usr/lib/i386-linux-gnu/pkgconfig"
-           NOTEST_CFLAGS="-Werror"
-           CC="gcc -m32"
-           APR_VERSION=1.7.0
-           APU_VERSION=1.6.1 APU_CONFIG="--with-crypto --with-ldap"
-      addons:
-        apt:
-          sources:
-            - sourceline: 'deb http://archive.ubuntu.com/ubuntu $(lsb_release -sc) universe'
-          packages:
-            - cpanminus
-            - libc6-dev-i386
-            - gcc-multilib
-            - libexpat1-dev:i386
-            - libssl-dev:i386
-            - lib32z1-dev
-            - libbrotli-dev:i386
-            - libpcre2-dev:i386
-            - libldap2-dev:i386
-            - libtool-bin
-            - perl-doc
-            - libapr1-dev
-            - libbrotli-dev:i386
-    # -------------------------------------------------------------------------
     # -------------------------------------------------------------------------
     # -------------------------------------------------------------------------
     - if: *condition_not_24x
