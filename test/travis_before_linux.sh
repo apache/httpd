@@ -97,7 +97,7 @@ if ! test -v SKIP_TESTING; then
     
     cpanm --local-lib=~/perl5 local::lib && eval $(perl -I ~/perl5/lib/perl5/ -Mlocal::lib)
 
-    local pkgs="Net::SSL LWP::Protocol::https                           \
+    pkgs="Net::SSL LWP::Protocol::https                                 \
            LWP::Protocol::AnyEvent::http ExtUtils::Embed Test::More     \
            AnyEvent DateTime HTTP::DAV FCGI                             \
            AnyEvent::WebSocket::Client Apache::Test"
@@ -109,6 +109,7 @@ if ! test -v SKIP_TESTING; then
 
     # Set cache key.
     echo $pkgs > ~/perl5/.key
+    unset pkgs
 
     # Make a shallow clone of httpd-tests git repo.
     git clone --depth=1 https://github.com/apache/httpd-tests.git test/perl-framework
