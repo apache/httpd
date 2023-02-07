@@ -68,9 +68,9 @@ function install_apx() {
 
     local revision=`svn info --show-item last-changed-revision ${url}`
 
-    # Blow away the cached install root if the revision does not
-    # match.
-    test -f ${prefix}/.revision-is-${revision} || rm -rf ${prefix}
+    # Blow away the cached install root if the cached install is stale
+    # or doesn't match the expected configuration.
+    grep -q "${version} ${revision} ${config}" ${HOME}/root/.key-${name} || rm -rf ${prefix}
 
     if test -d ${prefix}; then
         return 0
@@ -84,7 +84,6 @@ function install_apx() {
          make install
     popd
 
-    touch ${prefix}/.revision-is-${revision}
     echo ${version} ${revision} ${config} > ${HOME}/root/.key-${name}
 }
 
