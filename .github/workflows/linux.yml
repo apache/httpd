@@ -192,6 +192,44 @@ jobs:
               APU_CONFIG="--with-crypto --with-ldap"
               TEST_ASAN=1
               CLEAR_CACHE=1
+          # -------------------------------------------------------------------------
+          ### TODO: if: *condition_not_24x
+          - name: HTTP/2 test suite
+            config: --enable-mods-shared=reallyall --with-mpm=event --enable-mpms-shared=all
+            pkgs: curl python3-pytest nghttp2-client python3-cryptography python3-requests
+            env: |
+              APR_VERSION=1.7.2
+              APU_VERSION=1.6.1
+              APU_CONFIG="--with-crypto"
+              NO_TEST_FRAMEWORK=1
+              TEST_INSTALL=1
+              TEST_H2=1
+              TEST_CORE=1
+              TEST_PROXY=1
+          # -------------------------------------------------------------------------
+          ### TODO: if: *condition_not_24x
+          - name: ACME test suite
+            config: enable-mods-shared=reallyall --with-mpm=event --enable-mpms-shared=event
+            pkgs: curl python3-pytest nghttp2-client python3-cryptography python3-requests golang-1.14
+            env: |
+              APR_VERSION=1.7.2
+              APU_VERSION=1.6.1
+              APU_CONFIG="--with-crypto"
+              NO_TEST_FRAMEWORK=1
+              TEST_INSTALL=1
+              TEST_MD=1
+          # -------------------------------------------------------------------------
+          ### TODO: if: *condition_not_24x
+          - name: MOD_TLS test suite
+            pkgs: curl python3-pytest nghttp2-client python3-cryptography python3-requests cargo cbindgen
+            config: --enable-mods-shared=reallyall --with-mpm=event --enable-mpms-shared=event
+            env: |
+              APR_VERSION=1.7.2
+              APU_VERSION=1.6.1
+              APU_CONFIG="--with-crypto"
+              NO_TEST_FRAMEWORK=1
+              TEST_INSTALL=1
+              TEST_MOD_TLS=1
     runs-on: ubuntu-latest
     env:
       NOTEST_CFLAGS: ${{ matrix.notest-cflags }}
