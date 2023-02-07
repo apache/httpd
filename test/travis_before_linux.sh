@@ -70,7 +70,7 @@ function install_apx() {
 
     # Blow away the cached install root if the cached install is stale
     # or doesn't match the expected configuration.
-    grep -q "${version} ${revision} ${config}" ${HOME}/root/.key-${name} || rm -rf ${prefix}
+    grep -q "${version} ${revision} ${config} CC=$CC" ${HOME}/root/.key-${name} || rm -rf ${prefix}
 
     if test -d ${prefix}; then
         return 0
@@ -84,7 +84,7 @@ function install_apx() {
          make install
     popd
 
-    echo ${version} ${revision} ${config} > ${HOME}/root/.key-${name}
+    echo ${version} ${revision} "${config}" "CC=${CC}" > ${HOME}/root/.key-${name}
 }
 
 # Allow to load $HOME/build/apache/httpd/.gdbinit
