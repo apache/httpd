@@ -268,7 +268,14 @@ jobs:
         cache-name: cache-apru
       with:
         path: ~/root
-        key: ${{runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('/home/runner/root/.key-*') }}
+        key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('/home/runner/root/.key-*') }}
+    - name: Cache CPAN modules
+      uses: actions/cache@v3
+      env:
+        cache-name: cache-cpan
+      with:
+        path: ~/perl5
+        key: ${{ runner.os }}-cpan-${{ env.cache-name }}-${{ hashFiles('/home/runner/perl5/.key') }}
     - name: Configure environment
       run: ./test/travis_before_linux.sh
       timeout-minutes: 15
