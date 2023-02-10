@@ -261,12 +261,13 @@ PROXY_DECLARE(char *)ap_proxy_canonenc(apr_pool_t *p, const char *x, int len,
                 return NULL;
             }
             ch = ap_proxy_hex2c(&x[i + 1]);
-            i += 2;
             if (ch != 0 && strchr(reserved, ch)) {  /* keep it encoded */
-                ap_proxy_c2hex(ch, &y[j]);
-                j += 2;
+                y[j++] = x[i++];
+                y[j++] = x[i++];
+                y[j] = x[i];
                 continue;
             }
+            i += 2;
         }
 /* recode it, if necessary */
         if (!apr_isalnum(ch) && !strchr(allowed, ch)) {
