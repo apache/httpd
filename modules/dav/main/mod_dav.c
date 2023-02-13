@@ -76,6 +76,12 @@ enum {
     DAV_ENABLED_ON
 };
 
+typedef enum {
+    DAV_MSEXT_NONE = 0,
+    DAV_MSEXT_WDV = 1,
+    DAV_MSEXT_ALL = 1,
+} dav_msext_opts;
+
 /* per-dir configuration */
 typedef struct {
     const char *provider_name;
@@ -84,7 +90,7 @@ typedef struct {
     int locktimeout;
     int allow_depthinfinity;
     int allow_lockdiscovery;
-
+    dav_msext_opts msext_opts;
 } dav_dir_conf;
 
 /* per-server configuration */
@@ -108,6 +114,7 @@ enum {
 };
 static int dav_methods[DAV_M_LAST];
 
+static const char *dav_cmd_davmsext(cmd_parms *, void *, const char *);
 
 static int dav_init_handler(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp,
                              server_rec *s)
@@ -206,6 +213,8 @@ static void *dav_merge_dir_config(apr_pool_t *p, void *base, void *overrides)
                                                      allow_depthinfinity);
     newconf->allow_lockdiscovery = DAV_INHERIT_VALUE(parent, child,
                                                      allow_lockdiscovery);
+    newconf->msext_opts = DAV_INHERIT_VALUE(parent, child,
+                                            msext_opts);
 
     return newconf;
 }
@@ -315,6 +324,33 @@ static const char *dav_cmd_davlockdiscovery(cmd_parms *cmd, void *config,
         conf->allow_lockdiscovery = DAV_ENABLED_ON;
     else
         conf->allow_lockdiscovery = DAV_ENABLED_OFF;
+    return NULL;
+}
+
+/*
+ * Command handler for the DAVmsExt directive, which is RAW
+ */
+static const char *dav_cmd_davmsext(cmd_parms *cmd, void *config, const char *w)
+{
+    dav_dir_conf *conf = (dav_dir_conf *)config;
+
+    if (!ap_cstr_casecmp(w, "None"))
+        conf->msext_opts = DAV_MSEXT_NONE;
+    else if (!ap_cstr_casecmp(w, "Off"))
+        conf->msext_opts = DAV_MSEXT_NONE;
+    else if (!ap_cstr_casecmp(w, "+WDV"))
+        conf->msext_opts |= DAV_MSEXT_WDV;
+    else if (!ap_cstr_casecmp(w, "WDV"))
+        conf->msext_opts |= DAV_MSEXT_WDV;
+    else if (!ap_cstr_casecmp(w, "-WDV"))
+        conf->msext_opts &= ~DAV_MSEXT_WDV;
+    else if (!ap_cstr_casecmp(w, "All"))
+        conf->msext_opts = DAV_MSEXT_ALL;
+    else if (!ap_cstr_casecmp(w, "On"))
+        conf->msext_opts = DAV_MSEXT_ALL;
+    else
+        return "DAVMSext values can be None | [+|-]WDV | All";
+
     return NULL;
 }
 
@@ -964,6 +1000,7 @@ static int dav_method_post(request_rec *r)
 /* handle the PUT method */
 static int dav_method_put(request_rec *r)
 {
+    dav_dir_conf *conf;   
     dav_resource *resource;
     int resource_state;
     dav_auto_version_info av_info;
@@ -1166,6 +1203,11 @@ static int dav_method_put(request_rec *r)
                               err2);
         dav_log_err(r, err2, APLOG_WARNING);
     }
+
+    /* This performs MS-WDV PROPPATCH combined with PUT */
+    conf = ap_get_module_config(r->per_dir_config, &dav_module);
+    if (conf->msext_opts & DAV_MSEXT_WDV)
+        (void)dav_mswdv_postprocessing(r);
 
     /* ### place the Content-Type and Content-Language into the propdb */
 
@@ -4971,6 +5013,15 @@ static int dav_method_bind(request_rec *r)
  */
 static int dav_handler(request_rec *r)
 {
+    dav_dir_conf *conf;   
+    int ret;
+
+    conf = ap_get_module_config(r->per_dir_config, &dav_module);
+    if (conf->msext_opts & DAV_MSEXT_WDV) {
+        if ((ret = dav_mswdv_preprocessing(r)) != OK)
+            return ret;
+    }
+
     if (strcmp(r->handler, DAV_HANDLER_NAME) != 0)
         return DECLINED;
 
@@ -4978,7 +5029,7 @@ static int dav_handler(request_rec *r)
      * be more destructive than the user intended. */
     if (r->parsed_uri.fragment != NULL) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(00622)
-                     "buggy client used un-escaped hash in Request-URI");
+                     "buggy client used un-escaped hash in Request-URI %s in method %d", r->unparsed_uri, r->method_number);
         return dav_error_response(r, HTTP_BAD_REQUEST,
                                   "The request was invalid: the URI included "
                                   "an un-escaped hash character");
@@ -5204,6 +5255,8 @@ static int dav_fixups(request_rec *r)
     return DECLINED;
 }
 
+
+
 static void register_hooks(apr_pool_t *p)
 {
     ap_hook_handler(dav_handler, NULL, NULL, APR_HOOK_MIDDLE);
@@ -5218,6 +5271,11 @@ static void register_hooks(apr_pool_t *p)
                             NULL, NULL, APR_HOOK_LAST);
     dav_hook_gather_reports(dav_core_gather_reports,
                             NULL, NULL, APR_HOOK_LAST);
+
+    ap_register_output_filter("DAV_MSWDV_OUT", dav_mswdv_output, NULL,
+                              AP_FTYPE_RESOURCE);
+    ap_register_input_filter("DAV_MSWDV_IN", dav_mswdv_input, NULL,
+                             AP_FTYPE_RESOURCE);
 
     dav_core_register_uris(p);
 }
@@ -5247,6 +5305,11 @@ static const command_rec dav_cmds[] =
     AP_INIT_FLAG("DAVLockDiscovery", dav_cmd_davlockdiscovery, NULL,
                  ACCESS_CONF|RSRC_CONF,
                  "allow lock discovery by PROPFIND requests"),
+
+    /* per directory/location, or per server */
+    AP_INIT_ITERATE("DAVMSext", dav_cmd_davmsext, NULL,
+                    ACCESS_CONF|RSRC_CONF,
+                    "Enable MS-WDV extensions"),
 
     { NULL }
 };

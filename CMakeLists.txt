@@ -450,6 +450,7 @@ SET(mod_dav_extra_sources
   modules/dav/main/liveprop.c        modules/dav/main/props.c
   modules/dav/main/std_liveprop.c    modules/dav/main/providers.c
   modules/dav/main/util.c            modules/dav/main/util_lock.c
+  modules/dav/mail/ms_wdv.c
 )
 SET(mod_dav_install_lib 1)
 SET(mod_dav_fs_extra_sources

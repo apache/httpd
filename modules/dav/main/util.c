@@ -541,9 +541,27 @@ DAV_DECLARE(void) dav_xmlns_generate(dav_xmlns_info *xi,
  */
 DAV_DECLARE(time_t) dav_get_timeout(request_rec *r)
 {
+    const char *timeout_const = apr_table_get(r->headers_in, "Timeout");
+
+    if (timeout_const == NULL)
+        return DAV_TIMEOUT_INFINITE;
+
+    return dav_get_timeout_string(r, timeout_const);
+}
+
+/* dav_get_timeout_string:  From a Timeout header value, return a time_t
+ *    when this lock is expected to expire.  Otherwise, return
+ *    a time_t of DAV_TIMEOUT_INFINITE.
+ *
+ *    It's unclear if DAV clients are required to understand
+ *    Seconds-xxx and Infinity time values.  We assume that they do.
+ *    In addition, for now, that's all we understand, too.
+ */
+DAV_DECLARE(time_t) dav_get_timeout_string(request_rec *r,
+                                           const char *timeout_const)
+{
     time_t now, expires = DAV_TIMEOUT_INFINITE;
 
-    const char *timeout_const = apr_table_get(r->headers_in, "Timeout");
     const char *timeout = apr_pstrdup(r->pool, timeout_const), *val;
 
     if (timeout == NULL)
