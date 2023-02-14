@@ -76,11 +76,9 @@ enum {
     DAV_ENABLED_ON
 };
 
-typedef enum {
-    DAV_MSEXT_NONE = 0,
-    DAV_MSEXT_WDV = 1,
-    DAV_MSEXT_ALL = 1,
-} dav_msext_opts;
+#define DAV_MSEXT_OPT_NONE	0
+#define DAV_MSEXT_OPT_WDV	(1u << 0)
+#define DAV_MSEXT_OPT_ALL	DAV_MSEXT_OPT_WDV
 
 /* per-dir configuration */
 typedef struct {
@@ -90,7 +88,7 @@ typedef struct {
     int locktimeout;
     int allow_depthinfinity;
     int allow_lockdiscovery;
-    dav_msext_opts msext_opts;
+    int msext_opts;
 } dav_dir_conf;
 
 /* per-server configuration */
@@ -334,20 +332,20 @@ static const char *dav_cmd_davmsext(cmd_parms *cmd, void *config, const char *w)
 {
     dav_dir_conf *conf = (dav_dir_conf *)config;
 
-    if (!ap_cstr_casecmp(w, "None"))
-        conf->msext_opts = DAV_MSEXT_NONE;
-    else if (!ap_cstr_casecmp(w, "Off"))
-        conf->msext_opts = DAV_MSEXT_NONE;
-    else if (!ap_cstr_casecmp(w, "+WDV"))
-        conf->msext_opts |= DAV_MSEXT_WDV;
-    else if (!ap_cstr_casecmp(w, "WDV"))
-        conf->msext_opts |= DAV_MSEXT_WDV;
+    if (!ap_cstr_casecmp(w, "None") ||
+        !ap_cstr_casecmp(w, "Off"))
+        conf->msext_opts = DAV_MSEXT_OPT_NONE;
+
+    else if (!ap_cstr_casecmp(w, "+WDV") ||
+             !ap_cstr_casecmp(w, "WDV"))
+        conf->msext_opts |= DAV_MSEXT_OPT_WDV;
+
     else if (!ap_cstr_casecmp(w, "-WDV"))
-        conf->msext_opts &= ~DAV_MSEXT_WDV;
-    else if (!ap_cstr_casecmp(w, "All"))
-        conf->msext_opts = DAV_MSEXT_ALL;
-    else if (!ap_cstr_casecmp(w, "On"))
-        conf->msext_opts = DAV_MSEXT_ALL;
+        conf->msext_opts &= ~DAV_MSEXT_OPT_WDV;
+
+    else if (!ap_cstr_casecmp(w, "All") ||
+             !ap_cstr_casecmp(w, "On"))
+        conf->msext_opts = DAV_MSEXT_OPT_ALL;
     else
         return "DAVMSext values can be None | [+|-]WDV | All";
 
@@ -1206,7 +1204,7 @@ static int dav_method_put(request_rec *r)
 
     /* This performs MS-WDV PROPPATCH combined with PUT */
     conf = ap_get_module_config(r->per_dir_config, &dav_module);
-    if (conf->msext_opts & DAV_MSEXT_WDV)
+    if (conf->msext_opts & DAV_MSEXT_OPT_WDV)
         (void)dav_mswdv_postprocessing(r);
 
     /* ### place the Content-Type and Content-Language into the propdb */
@@ -5017,7 +5015,7 @@ static int dav_handler(request_rec *r)
     int ret;
 
     conf = ap_get_module_config(r->per_dir_config, &dav_module);
-    if (conf->msext_opts & DAV_MSEXT_WDV) {
+    if (conf->msext_opts & DAV_MSEXT_OPT_WDV) {
         if ((ret = dav_mswdv_preprocessing(r)) != OK)
             return ret;
     }
