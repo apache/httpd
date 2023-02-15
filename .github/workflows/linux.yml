@@ -225,6 +225,7 @@ jobs:
           #     TEST_MD=1
           # -------------------------------------------------------------------------
           ### TODO: if: *condition_not_24x
+          ### TODO: fix caching here.
           - name: MOD_TLS test suite
             config: --enable-mods-shared=reallyall --with-mpm=event --enable-mpms-shared=event
             pkgs: curl python3-pytest nghttp2-client python3-cryptography python3-requests cargo cbindgen
@@ -235,6 +236,7 @@ jobs:
               NO_TEST_FRAMEWORK=1
               TEST_INSTALL=1
               TEST_MOD_TLS=1
+              CLEAR_CACHE=1
           # -------------------------------------------------------------------------
           ### TODO if: *condition_not_24x
           ### TODO: Fails because :i386 packages are not being found.
