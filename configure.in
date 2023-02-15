@@ -519,7 +519,7 @@ if test "$ac_cv_search_crypt" != "no"; then
 ]], [char *result = crypt(PASSWD_0, SALT_0);
      if (!result) return 1;
      if (strcmp(result, EXPECT_0)) return 2;
-])], [ap_cv_crypt_sha2=yes], [ap_cv_crypt_sha2=no])])
+])], [ap_cv_crypt_sha2=yes], [ap_cv_crypt_sha2=no], [ap_cv_crypt_sha2=no])])
    if test "$ap_cv_crypt_sha2" = yes; then
      AC_DEFINE([HAVE_CRYPT_SHA2], 1, [Define if crypt() supports SHA-2 hashes])
    fi
