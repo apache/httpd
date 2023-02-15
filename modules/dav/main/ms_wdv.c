@@ -409,7 +409,7 @@ static dav_error *mswdv_combined_lock(request_rec *r)
 done:
     ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
                   "%s failmsg = \"%s\", action = %s%s%s%s%s",
-                  __func__, failmsg,
+                  __func__, failmsg ? failmsg : "",
                   action == LOCK ? "LOCK" : "",
                   action == UNLOCK ? "UNLOCK" : "",
                   action == REFRESH ? "REFRESH" : "",
