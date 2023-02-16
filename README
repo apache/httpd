@@ -16,7 +16,7 @@
   ------------------
 
   Details of the latest version can be found on the Apache HTTP
-  server project page under http://httpd.apache.org/.
+  server project page under https://httpd.apache.org/.
 
   Documentation
   -------------
@@ -24,7 +24,7 @@
   The documentation available as of the date of this release is
   included in HTML format in the docs/manual/ directory.  The most
   up-to-date documentation can be found at
-  http://httpd.apache.org/docs/2.4/.
+  https://httpd.apache.org/docs/2.4/.
 
   Installation
   ------------
@@ -46,7 +46,7 @@
   to another country, of encryption software.  BEFORE using any encryption
   software, please check your country's laws, regulations and policies
   concerning the import, possession, or use, and re-export of encryption
-  software, to see if this is permitted.  See <http://www.wassenaar.org/>
+  software, to see if this is permitted.  See <https://www.wassenaar.org/>
   for more information.
 
   The U.S. Government Department of Commerce, Bureau of Industry and
@@ -82,7 +82,7 @@
     Some object code distributions of Apache httpd, indicated with the
     word "crypto" in the package name, may include object code for the
     OpenSSL encryption library as distributed in open source form from
-    <http://www.openssl.org/source/>.
+    <https://www.openssl.org/source/>.
 
   The above files are optional and may be removed if the cryptographic
   functionality is not desired or needs to be excluded from redistribution.
@@ -96,15 +96,15 @@
      o If you want to be informed about new code releases, bug fixes,
        security fixes, general news and information about the Apache server
        subscribe to the apache-announce mailing list as described under
-       <http://httpd.apache.org/lists.html#http-announce>
+       <https://httpd.apache.org/lists.html#http-announce>
 
      o If you want freely available support for running Apache please see the
-       resources at <http://httpd.apache.org/support.html>
+       resources at <https://httpd.apache.org/support.html>
 
      o If you have a concrete bug report for Apache please see the instructions
-       for bug reporting at <http://httpd.apache.org/bug_report.html>
+       for bug reporting at <https://httpd.apache.org/bug_report.html>
 
      o If you want to participate in actively developing Apache please
        subscribe to the `dev@httpd.apache.org' mailing list as described at
-       <http://httpd.apache.org/lists.html#http-dev>
+       <https://httpd.apache.org/lists.html#http-dev>
 
