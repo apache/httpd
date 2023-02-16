@@ -37,6 +37,7 @@ class Nghttp:
                         "id": sid,
                         "body": b''
                     },
+                    "data_lengths": [],
                     "paddings": [],
                     "promises": []
             }
@@ -131,12 +132,13 @@ class Nghttp:
                 s = self.get_stream(streams, m.group(3))
                 blen = int(m.group(2))
                 if s:
-                    print("stream %d: %d DATA bytes added" % (s["id"], blen))
+                    print(f'stream {s["id"]}: {blen} DATA bytes added via "{l}"')
                     padlen = 0
                     if len(lines) > lidx + 2:
                         mpad = re.match(r' +\(padlen=(\d+)\)', lines[lidx+2])
                         if mpad: 
                             padlen = int(mpad.group(1))
+                    s["data_lengths"].append(blen)
                     s["paddings"].append(padlen)
                     blen -= padlen
                     s["response"]["body"] += body[-blen:].encode()
@@ -196,6 +198,7 @@ class Nghttp:
         if main_stream in streams:
             output["response"] = streams[main_stream]["response"]
             output["paddings"] = streams[main_stream]["paddings"]
+            output["data_lengths"] = streams[main_stream]["data_lengths"]
         return output
 
     def _raw(self, url, timeout, options):

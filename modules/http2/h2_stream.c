@@ -1361,6 +1361,11 @@ static ssize_t stream_data_cb(nghttp2_session *ng2s,
             length = chunk_len;
         }
     }
+    /* We allow configurable max DATA frame length. */
+    if (stream->session->max_data_frame_len > 0
+        && length > stream->session->max_data_frame_len) {
+      length = stream->session->max_data_frame_len;
+    }
 
     /* How much data do we have in our buffers that we can write?
      * if not enough, receive more. */

@@ -1024,4 +1024,29 @@ H2TLSCoolDownSecs 0
         </usage>
     </directivesynopsis>
 
+    <directivesynopsis>
+        <name>H2MaxDataFrameLen</name>
+        <description>Maximum bytes inside a single HTTP/2 DATA frame</description>
+        <syntax>H2MaxDataFrameLen <em>n</em></syntax>
+        <default>H2MaxDataFrameLen 0</default>
+        <contextlist>
+            <context>server config</context>
+            <context>virtual host</context>
+        </contextlist>
+        <compatibility>Available in version 2.5.1 and later.</compatibility>
+
+        <usage>
+            <p>
+                <directive>H2MaxDataFrameLen</directive> limits the maximum
+                amount of response body bytes placed into a single HTTP/2 DATA
+                frame. Setting this to 0 places no limit (but the max size
+                allowed by the protocol is observed).
+            </p><p>
+                The module, by default, tries to use the maximum size possible,
+                which is somewhat around 16KB. This sets the maximum. When less
+                response data is availble, smaller frames will be sent.
+            </p>
+        </usage>
+    </directivesynopsis>
+
 </modulesynopsis>
