@@ -552,8 +552,8 @@ static dav_error *mswdv_combined_propfind(request_rec *r)
 
     bb = apr_brigade_create(r->pool,r->output_filters->c->bucket_alloc);
 
-    apr_brigade_printf(bb, NULL, NULL,
-                       "%016" APR_UINT64_T_HEX_FMT, length);
+    apr_brigade_printf(bb, NULL, NULL, "%016" APR_UINT64_T_HEX_FMT,
+                       (apr_uint64_t)length);
 
     APR_BRIGADE_CONCAT(bb, bbsub);
 
@@ -569,8 +569,8 @@ static dav_error *mswdv_combined_propfind(request_rec *r)
         return dav_new_error(r->pool, HTTP_BAD_REQUEST, 0, 0,
                              "Not a plain file");
 
-    apr_brigade_printf(bb, NULL, NULL,
-                       "%016" APR_UINT64_T_HEX_FMT, rr->finfo.size);
+    apr_brigade_printf(bb, NULL, NULL, "%016" APR_UINT64_T_HEX_FMT,
+                       (apr_uint64_t)rr->finfo.size);
 
     ap_set_content_type(r, "multipart/MSDAVEXTPrefixEncoded");
 
