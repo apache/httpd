@@ -104,9 +104,10 @@ static int h2_protocol_propose(conn_rec *c, request_rec *r,
         /* We also allow switching only for requests that have no body.
          */
         p = apr_table_get(r->headers_in, "Content-Length");
-        if (p && strcmp(p, "0")) {
+        if ((p && strcmp(p, "0"))
+            || (!p && apr_table_get(r->headers_in, "Transfer-Encoding"))) {
             ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(03087)
-                          "upgrade with content-length: %s, declined", p);
+                          "upgrade with body declined");
             return DECLINED;
         }
     }
