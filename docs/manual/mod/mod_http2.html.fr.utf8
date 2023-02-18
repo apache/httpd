@@ -85,6 +85,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#h2copyfiles">H2CopyFiles</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#h2direct">H2Direct</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#h2earlyhints">H2EarlyHints</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#h2maxdataframelen">H2MaxDataFrameLen</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#h2maxsessionstreams">H2MaxSessionStreams</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#h2maxworkeridleseconds">H2MaxWorkerIdleSeconds</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#h2maxworkers">H2MaxWorkers</a></li>
@@ -358,6 +359,32 @@
 		réponse intermédiaire 103 avant la réponse finale. Cette réponse
 		103 comporte des en-têtes <code>Link</code> qui provoquent le
 		<code>préchargement</code> des ressources considérées.
+            </p>
+        
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="h2maxdataframelen" id="h2maxdataframelen">Directive</a> <a name="H2MaxDataFrameLen" id="H2MaxDataFrameLen">H2MaxDataFrameLen</a> <a title="Lien permanent" href="#h2maxdataframelen" class="permalink">&para;</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Nombre maximal d'octets dans une trame HTTP/2 DATA</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>H2MaxDataFrameLen <em>n</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>H2MaxDataFrameLen 0</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_http2</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.5.1 du serveur HTTP
+	Apache.</td></tr>
+</table>
+            <p>
+		La directive <code class="directive">H2MaxDataFrameLen</code> permet de
+		définir le nombre maximal d'octets du corps de réponse que l'on
+		peut placer dans une seule trame HTTP/2 DATA. La valeur 0
+		signifie aucune limite (mais la taille maximale permise par le
+		protocole est respectée).
+            </p><p>
+                Par défaut, le module essaie d'utiliser la taille maximale
+		possible qui est d'environ 16 Ko. Il s'agit cependant de la
+		taille maximale, et lorsque la taille des données de la réponse
+		est inférieure, les trames envoyées sont plus courtes.
             </p>
         
 </div>
