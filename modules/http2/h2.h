@@ -114,10 +114,10 @@ typedef struct h2_session_props {
     int completed_max;     /* the highest remote stream completed */
     int emitted_count;     /* the number of local streams sent */
     int emitted_max;       /* the highest local stream id sent */
-    int error;             /* the last session error encountered */
-    const char *error_msg; /* the short message given on the error */
     unsigned int accepting : 1;     /* if the session is accepting new streams */
     unsigned int shutdown : 1;      /* if the final GOAWAY has been sent */
+    int error;             /* the last session error encountered */
+    const char *error_msg; /* the short message given on the error */
 } h2_session_props;
 
 typedef enum h2_stream_state_t {
