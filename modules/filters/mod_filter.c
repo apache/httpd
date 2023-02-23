@@ -178,6 +178,7 @@ static int filter_lookup(ap_filter_t *f, ap_filter_rec_t *filter)
                     match = 1;
                     break;
                 }
+                /* Handle wildcards */
                 else if (sep                                     
                     && strncmp(*type, r->content_type, sep) == 0     
                     && strcmp(*type + sep, wildcard) == 0) {                
