@@ -118,6 +118,12 @@ Apache</td></tr>
     "password" sera utilisée. Pour désactiver l'authentification de base
     simulée pour un espace d'URL, définissez AuthBasicFake à "off".</p>
 
+    <div class="note">
+    L'en-tête Authorization ajouté par cette directive <em>ne constitue pas</em>
+    une donnée d'authentification ou d'autorisation au sein du serveur local. Il
+    est destiné à être transmis aux serveurs en amont.
+    </div>
+
     <p>Dans l'exemple suivant, un nom d'utilisateur et un mot de passe
     prédéfinis sont transmis à un serveur d'arrière-plan :</p>
 
