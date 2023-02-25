@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1896664 -->
+<!-- English Revision: 1907762 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -1771,6 +1771,13 @@ Les <em>option</em>s disponibles sont :</p>
     <module>mod_auth_basic</module> permet de contrôler à la
     fois le nom d'utilisateur et le mot de passe ; elle fournit donc un
     mécanisme plus général de simulation d'authentification de base.</p>
+
+    <note>A la différence de l'option <code>FakeBasicAuth</code>, la directive
+    <directive module="mod_auth_basic">AuthBasicFake</directive> ne définit pas
+    l'en-tête Authorization suffisamment tôt pour qu'il soit traité par le
+    système d'authentification et d'autorisation du serveur local ; cet en-tête
+    est destiné à être transmis aux serveurs en amont.
+    </note>
 
     <note type="warning">
       <p>Les noms d'utilisateur pour <code>FakeBasicAuth</code> ne doivent pas
