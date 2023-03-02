@@ -1172,6 +1172,10 @@ enum {
     DAV_PROPID_workspace,
     DAV_PROPID_workspace_checkout_set,
 
+    /* RFC 4331 quotas */
+    DAV_PROPID_quota_available_bytes,
+    DAV_PROPID_quota_used_bytes,
+
     DAV_PROPID_END
 };
 

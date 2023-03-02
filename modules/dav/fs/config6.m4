@@ -2,7 +2,7 @@ dnl modules enabled in this directory by default
 
 APACHE_MODPATH_INIT(dav/fs)
 
-dav_fs_objects="mod_dav_fs.lo dbm.lo lock.lo repos.lo"
+dav_fs_objects="mod_dav_fs.lo dbm.lo lock.lo quota.lo repos.lo"
 
 if test "x$enable_dav" != "x"; then
   dav_fs_enable=$enable_dav

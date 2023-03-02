@@ -455,7 +455,7 @@ SET(mod_dav_extra_sources
 SET(mod_dav_install_lib 1)
 SET(mod_dav_fs_extra_sources
   modules/dav/fs/dbm.c               modules/dav/fs/lock.c
-  modules/dav/fs/repos.c
+  modules/dav/fs/quota.c             modules/dav/fs/repos.c
 )
 SET(mod_dav_fs_extra_libs            mod_dav)
 SET(mod_dav_lock_extra_sources       modules/dav/lock/locks.c)
