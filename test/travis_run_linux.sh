@@ -39,6 +39,9 @@ if test ! -v SKIP_TESTING; then
         CONFIG="--with-test-suite=test/perl-framework $CONFIG"
         WITH_TEST_SUITE=1
     fi
+
+    # Use the CPAN environment.
+    eval $(perl -I ~/perl5/lib/perl5/ -Mlocal::lib)
 fi
 if test -v APR_VERSION; then
     CONFIG="$CONFIG --with-apr=$HOME/root/apr-${APR_VERSION}"
@@ -191,7 +194,6 @@ if ! test -v SKIP_TESTING; then
         # Run ACME tests.
         # need the go based pebble as ACME test server
         # which is a package on debian sid, but not on focal
-        export GOROOT=/usr/lib/go-1.14
         export GOPATH=${PREFIX}/gocode
         mkdir -p "${GOPATH}"
         export PATH="${GOROOT}/bin:${GOPATH}/bin:${PATH}"
