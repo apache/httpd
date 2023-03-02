@@ -154,6 +154,10 @@ static int proxy_http2_canon(request_rec *r, char *url)
         if (apr_table_get(r->notes, "proxy-nocanon")) {
             path = url;   /* this is the raw path */
         }
+        else if (apr_table_get(r->notes, "proxy-noencode")) {
+            path = url;   /* this is the encoded path already */
+            search = r->args;
+        }
         else {
             path = ap_proxy_canonenc(r->pool, url, (int)strlen(url),
                                      enc_path, 0, r->proxyreq);
