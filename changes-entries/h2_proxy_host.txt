@@ -1,4 +1,0 @@
-  *) mod_proxy_http2: use only the ':authority' header to forward 'Host'
-     information to a backend. Deduce ':authority' from what the client
-     sent when 'ProxyPreserveHost' is on.
-     [Stefan Eissing]

@@ -1,2 +1,0 @@
-  *) mod_proxy_uwsgi: Stricter backend HTTP response parsing/validation.
-     [Yann Ylavic]

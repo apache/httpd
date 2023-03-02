@@ -1,5 +1,0 @@
-  *) mod_http2: fixed trailer handling. Empty response bodies
-     prevented trailers from being sent to a client. See
-     <https://github.com/icing/mod_h2/issues/233> for how
-     this affected gRPC use.
-     [Stefan Eissing]

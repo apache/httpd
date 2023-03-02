@@ -1,6 +1,88 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) mod_http2: field values (headers and trailers) are stripped of
+     leading/trailing whitespace (space +htab) before being processed
+     or send in a response. This is compatible behaviour to HTTP/1.1
+     parsers that strip incoming headers of such characters.
+     [Stefan Eissing]
+
+  *) build: Use 'command -v' instead of 'which' which is more portable.
+     PR 66130 [Sam James <sam@gentoo.org>]
+
+  *) mod_dav: Allow to disable lock discovery via an DAVLockDiscovery
+     expression (per-request). PR 66313. [Emmanuel Dreyfus <manu netbsd.org>]
+
+  *) mod_ssl: when a proxy connection had handled a request using SSL, an
+     error was logged when "SSLProxyEngine" was only configured in the
+     location/proxy section and not the overall server. The connection
+     continued to work, the error log was in error. Fixed PR66190.
+     [Stefan Eissing]
+
+  *) mod_proxy: Ignore (and warn about) enablereuse=on for ProxyPassMatch when
+     some dollar substitution (backreference) happens in the hostname or port
+     part of the URL.  [Yann Ylavic]
+
+  *) rotatelogs: Add -T flag to allow subsequent rotated logfiles to be
+     truncated without the initial logfile being truncated.  [Eric Covener]
+
+  *) mod_md: a new directive `MDStoreLocks` can be used on cluster
+     setups with a shared file system for `MDStoreDir` to order
+     activation of renewed certificates when several cluster nodes are
+     restarted at the same time. Store locks are not enabled by default.
+     Restored curl_easy cleanup behaviour from v2.4.14 and refactored
+     the use of curl_multi for OCSP requests to work with that.
+     Fixes <https://github.com/icing/mod_md/issues/293>.
+
+  *) mod_proxy_ajp: Report an error if the AJP backend sends an invalid number
+     of headers. [Ruediger Pluem]
+
+  *) mod_proxy_http2: apply the standard httpd content type handling
+     to responses from the backend, as other proxy modules do. Fixes PR 66391.
+     Thanks to Jérôme Billiras for providing the patch.
+     [Stefan Eissing]
+
+  *) mod_http2: fixed trailer handling. Empty response bodies
+     prevented trailers from being sent to a client. See
+     <https://github.com/icing/mod_h2/issues/233> for how
+     this affected gRPC use.
+     [Stefan Eissing]
+
+  *) mod_proxy_http2: use only the ':authority' header to forward 'Host'
+     information to a backend. Deduce ':authority' from what the client
+     sent when 'ProxyPreserveHost' is on.
+     [Stefan Eissing]
+
+  *) core: Improve the AH00124 error message about too many redirects by logging
+     the URI of the request. PR 66403 [Ruediger Pluem]
+
+  *) mod_proxy_uwsgi: Stricter backend HTTP response parsing/validation.
+     [Yann Ylavic]
+
+  *) mod_http2: new directive 'H2MaxDataFrameLen n' to limit the maximum
+     amount of response body bytes put into a single HTTP/2 DATA frame.
+     Setting this to 0 places no limit (but the max size allowed by the
+     protocol is observed).
+     The module, by default, tries to use the maximum size possible, which is
+     somewhat around 16KB. This sets the maximum. When less response data is
+     available, smaller frames will be sent.
+
+  *) mod_http2: client resets of HTTP/2 streams led to unwanted 500 errors
+     reported in access logs and error documents. The processing of the
+     reset was correct, only unneccesary reporting was caused.
+     [Stefan Eissing]
+
+  *) mod_proxy: Fix double encoding of the uri-path of the request forwarded
+     to the origin server, when using mapping=encoded|servlet.  [Yann Ylavic]
+
+  *) mod_dav: Open the lock database read-only when possible.
+     PR 36636 [Wilson Felipe <wfelipe gmail.com>, manu]
+
+  *) mod_ldap: LDAPConnectionPoolTTL should accept negative values in order to
+     allow connections of any age to be reused. Up to now, a negative value
+     was handled as an error when parsing the configuration file.  PR 66421.
+     [nailyk <bzapache nailyk.fr>, Christophe Jaillet]
+
   *) mod_proxy_hcheck: Re-enable workers in standard ERROR state. PR 66302.
      [Alessandro Cavaliere <alessandro.cavalier7 unibo.it>]
 

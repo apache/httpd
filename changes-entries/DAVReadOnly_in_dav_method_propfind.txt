@@ -1,2 +1,0 @@
-  *) mod_dav: Open the lock database read-only when possible.
-     PR 36636 [Wilson Felipe <wfelipe gmail.com>, manu]

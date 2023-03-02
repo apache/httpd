@@ -1,2 +1,0 @@
-  *) build: Use 'command -v' instead of 'which' which is more portable.
-     PR 66130 [Sam James <sam@gentoo.org>]

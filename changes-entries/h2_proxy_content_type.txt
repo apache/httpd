@@ -1,4 +1,0 @@
-  *) mod_proxy_http2: apply the standard httpd content type handling
-     to responses from the backend, as other proxy modules do. Fixes PR 66391.
-     Thanks to Jérôme Billiras for providing the patch.
-     [Stefan Eissing]

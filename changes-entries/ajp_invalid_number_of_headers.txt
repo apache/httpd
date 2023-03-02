@@ -1,2 +1,0 @@
-  *) mod_proxy_ajp: Report an error if the AJP backend sends an invalid number
-     of headers. [Ruediger Pluem]

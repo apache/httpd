@@ -1,2 +1,0 @@
-  *) mod_dav: Allow to disable lock discovery via an DAVLockDiscovery
-     expression (per-request). PR 66313. [Emmanuel Dreyfus <manu netbsd.org>]

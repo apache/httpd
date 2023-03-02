@@ -1,8 +1,0 @@
-  *) mod_md: a new directive `MDStoreLocks` can be used on cluster
-     setups with a shared file system for `MDStoreDir` to order
-     activation of renewed certificates when several cluster nodes are
-     restarted at the same time. Store locks are not enabled by default.
-
-     Restored curl_easy cleanup behaviour from v2.4.14 and refactored
-     the use of curl_multi for OCSP requests to work with that.
-     Fixes <https://github.com/icing/mod_md/issues/293>.
