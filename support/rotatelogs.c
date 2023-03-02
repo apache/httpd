@@ -486,7 +486,7 @@ static void doRotate(rotate_config_t *config, rotate_status_t *status)
         /* New log file is now 'current'. */
         status->current = newlog;
 
-        /* The first write to to the initial file hasn't checked for size
+        /* The first write to the initial file hasn't checked for size.
          * In the normalized timestamp case and the custom strftime case with
          * any reasonable accuracy, it's futile as the rotation will pick the
          * same filename again. 
