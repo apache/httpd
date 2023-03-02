@@ -171,7 +171,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      was handled as an error when parsing the configuration file.  PR 66421.
      trunk patch: https://svn.apache.org/r1907024
      2.4.x patch: svn merge -c 1907024 ^/httpd/httpd/trunk .
-     +1: jailletc36
+     +1: jailletc36, covener
 
   *) mod_proxy_ajp: Report an error if the AJP backend sends an invalid number of headers
      Trunk version of patch:
@@ -179,7 +179,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      Backport version for 2.4.x of patch:
       Trunk version of patch works
       svn merge -c 1906940 ^/httpd/httpd/trunk .
-     +1: rpluem,
+     +1: rpluem, covener
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
