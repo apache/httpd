@@ -157,6 +157,23 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c 1907024 ^/httpd/httpd/trunk .
      +1: jailletc36, covener, rpluem
 
+  *) mod_proxy_ajp: Report an error if the AJP backend sends an invalid number of headers
+     Trunk version of patch:
+        https://svn.apache.org/r1906940
+     Backport version for 2.4.x of patch:
+      Trunk version of patch works
+      svn merge -c 1906940 ^/httpd/httpd/trunk .
+     +1: rpluem, covener, ylavic
+
+  *) rotatelogs: backport recent trunk changes, a tweak for -n and
+                 a new option -T to truncate all rotations but the first.
+     Trunk version of patch:
+       https://svn.apache.org/r1906428
+       https://svn.apache.org/r1906433
+     Backport version for 2.4.x:
+       svn merge -c 1906428,1906433 ^/httpd/httpd/trunk .
+    +1: covener (needs doc tweak for 2.4.x release), rpluem, ylavic
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -172,24 +189,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/httpd-2.4-ldap-search.patch
      +1: minfrin, jim,
      jailletc36: r1745033 seems related and should in included
-
-  *) mod_proxy_ajp: Report an error if the AJP backend sends an invalid number of headers
-     Trunk version of patch:
-        https://svn.apache.org/r1906940
-     Backport version for 2.4.x of patch:
-      Trunk version of patch works
-      svn merge -c 1906940 ^/httpd/httpd/trunk .
-     +1: rpluem, covener
-
-  *) rotatelogs: backport recent trunk changes, a tweak for -n and
-                 a new option -T to truncate all rotations but the first.
-     Trunk version of patch:
-       https://svn.apache.org/r1906428
-       https://svn.apache.org/r1906433
-     Backport version for 2.4.x:
-       svn merge -c 1906428,1906433 ^/httpd/httpd/trunk .
-    +1: covener (needs doc tweak for 2.4.x release), rpluem
-
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
