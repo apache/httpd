@@ -69,7 +69,7 @@ static apr_status_t get_dir_used_bytes_walk(request_rec *r,
         if (rv != APR_SUCCESS && rv != APR_INCOMPLETE)
             break;
 
-        if (finfo.valid & APR_FINFO_NAME == 0) {
+        if ((finfo.valid & APR_FINFO_NAME) == 0) {
             ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                           "Cannot get entry name in \"%s\"", path);
             goto out;
@@ -81,7 +81,7 @@ static apr_status_t get_dir_used_bytes_walk(request_rec *r,
             !strncmp(finfo.name, DAV_FS_TMP_PREFIX, strlen(DAV_FS_TMP_PREFIX)))
             continue;
 
-        if (finfo.valid & APR_FINFO_TYPE == 0) {
+        if ((finfo.valid & APR_FINFO_TYPE) == 0) {
             ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                           "Cannot get entry type in \"%s\"", path);
             goto out;
@@ -89,7 +89,7 @@ static apr_status_t get_dir_used_bytes_walk(request_rec *r,
 
         switch (finfo.filetype) {
         case APR_REG:
-            if (finfo.valid & APR_FINFO_SIZE == 0) {
+            if ((finfo.valid & APR_FINFO_SIZE) == 0) {
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                               "Cannot get entry size in \"%s\"", path);
                 goto out;
@@ -98,7 +98,7 @@ static apr_status_t get_dir_used_bytes_walk(request_rec *r,
             break;
 
         case APR_DIR:
-            if (finfo.valid & APR_FINFO_NAME == 0) {
+            if ((finfo.valid & APR_FINFO_NAME) == 0) {
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                               "Cannot get entry name in \"%s\"", path);
                 goto out;
@@ -142,7 +142,6 @@ static apr_off_t get_dir_used_bytes(request_rec *r, const char *path)
 
     rv = get_dir_used_bytes_walk(r, path, &used_bytes);
 
-out:
     return (rv == APR_SUCCESS) ? used_bytes : DAV_FS_BYTES_ERROR;
 }
 
@@ -161,8 +160,8 @@ static apr_off_t get_fs_used_bytes(const char *path)
     used_bytes = (f.f_blocks - f.f_bfree) * f.f_bsize;
 #endif
 
-#endif
 out:
+#endif
     return used_bytes;
 }
 
@@ -180,8 +179,8 @@ static apr_off_t get_fs_available_bytes(const char *path)
 #else
     available_bytes = f.f_bavail * f.f_bsize;
 #endif
-#endif
 out:
+#endif
     return available_bytes;
 }
 
@@ -270,14 +269,12 @@ int dav_fs_quota_precondition(request_rec *r,
                               const apr_xml_doc *doc, dav_error **err)
 {
     apr_off_t quota;
-    apr_off_t used_bytes;
     apr_off_t available_bytes;
     apr_off_t size;
     const char *path;
     const char *lenhdr;
     const char *tag;
     const char *msg;
-    apr_status_t rv;
     int status = DECLINED;
     int fs_low;
 
