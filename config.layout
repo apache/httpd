@@ -385,6 +385,29 @@
     proxycachedir: ${localstatedir}/proxy
 </Layout>
 
+#   NetBSD (pkgsrc) layout
+<Layout NetBSD>
+    prefix:        /usr/pkg
+    exec_prefix:   ${prefix}
+    bindir:        ${exec_prefix}/bin
+    sbindir:       ${exec_prefix}/sbin
+    libexecdir:    ${exec_prefix}/lib/httpd
+    mandir:        ${prefix}/man
+    sysconfdir:    /usr/pkg/etc
+    datadir:       ${prefix}/share/httpd
+    installbuilddir: ${datadir}/build
+    errordir:      ${datadir}/error
+    iconsdir:      ${datadir}/icons
+    htdocsdir:     ${datadir}/htdocs
+    manualdir:     ${datadir}/manual
+    cgidir:        ${exec_prefix}/libexec/cgi-bin
+    includedir:    ${prefix}/include/httpd
+    localstatedir: /var
+    runtimedir:    ${localstatedir}/run
+    logfiledir:    ${localstatedir}/log/httpd
+    proxycachedir: ${localstatedir}/db/httpd/proxy
+</Layout>
+
 # FHS layout
 <Layout Slackware-FHS>
     prefix:          /usr
