@@ -39,6 +39,9 @@ if test ! -v SKIP_TESTING; then
         CONFIG="--with-test-suite=test/perl-framework $CONFIG"
         WITH_TEST_SUITE=1
     fi
+
+    # Use the CPAN environment.
+    eval $(perl -I ~/perl5/lib/perl5/ -Mlocal::lib)
 fi
 if test -v APR_VERSION; then
     CONFIG="$CONFIG --with-apr=$HOME/root/apr-${APR_VERSION}"
@@ -78,6 +81,8 @@ if test -v TEST_VPATH; then
     cd ../vpath
 fi
 
+builddir=$PWD
+
 $srcdir/configure --prefix=$PREFIX $CONFIG
 make $MFLAGS
 
@@ -112,22 +117,24 @@ if ! test -v SKIP_TESTING; then
     # Try to keep all potential coredumps from all processes
     sudo sysctl -w kernel.core_uses_pid=1 2>/dev/null || true
 
-    if test -v WITH_TEST_SUITE; then
-        make check TESTS="${TESTS}" TEST_CONFIG="${TEST_ARGS}"
-        RV=$?
-    else
-        test -v TEST_INSTALL || make install
-        pushd test/perl-framework
-            perl Makefile.PL -apxs $PREFIX/bin/apxs
-            make test APACHE_TEST_EXTRA_ARGS="${TEST_ARGS} ${TESTS}"
+    if ! test -v NO_TEST_FRAMEWORK; then
+        if test -v WITH_TEST_SUITE; then
+            make check TESTS="${TESTS}" TEST_CONFIG="${TEST_ARGS}"
             RV=$?
-        popd
-    fi
+        else
+            test -v TEST_INSTALL || make install
+            pushd test/perl-framework
+                perl Makefile.PL -apxs $PREFIX/bin/apxs
+                make test APACHE_TEST_EXTRA_ARGS="${TEST_ARGS} ${TESTS}"
+                RV=$?
+            popd
+        fi
 
-    # Skip further testing if a core dump was created during the test
-    # suite run above.
-    if test $RV -eq 0 && test -n "`ls test/perl-framework/t/core{,.*} 2>/dev/null`"; then
-        RV=4
+        # Skip further testing if a core dump was created during the test
+        # suite run above.
+        if test $RV -eq 0 && test -n "`ls test/perl-framework/t/core{,.*} 2>/dev/null`"; then
+            RV=4
+        fi
     fi
 
     if test -v TEST_SSL -a $RV -eq 0; then
@@ -146,6 +153,13 @@ if ! test -v SKIP_TESTING; then
                 SSL_SESSCACHE=$cache ./t/TEST -sslproto TLSv1.2 -defines TEST_SSL_SESSCACHE -start
                 ./t/TEST t/ssl
                 RV=$?
+                if test $RV -eq 0; then
+                    # TODO: only really useful in e.g. triggering
+                    # server segfaults which are caught later, doesn't
+                    # directly catch non-200 responses etc.
+                    $builddir/support/ab -qd -n 4000 -c 20 -f TLS1.2 https://localhost:8532/
+                    RV=$?
+                fi
                 ./t/TEST -stop
                 SRV=$?
                 if test $RV -eq 0 -a $SRV -ne 0; then
@@ -177,6 +191,12 @@ if ! test -v SKIP_TESTING; then
         RV=$?
     fi
 
+    if test -v TEST_PROXY -a $RV -eq 0; then
+        # Run proxy tests.
+        py.test-3 test/modules/proxy
+        RV=$?
+    fi
+
     if test -v TEST_H2 -a $RV -eq 0; then
         # Run HTTP/2 tests.
         MPM=event py.test-3 test/modules/http2
@@ -191,7 +211,11 @@ if ! test -v SKIP_TESTING; then
         # Run ACME tests.
         # need the go based pebble as ACME test server
         # which is a package on debian sid, but not on focal
-        export GOROOT=/usr/lib/go-1.14
+        # FAILS on TRAVIS with
+        # package github.com/letsencrypt/pebble/cmd/pebble
+        #         imports crypto/ed25519: unrecognized import path "crypto/ed25519" (import path does not begin with hostname)
+        #
+        # but works on a docker ubuntu-focal image. ???
         export GOPATH=${PREFIX}/gocode
         mkdir -p "${GOPATH}"
         export PATH="${GOROOT}/bin:${GOPATH}/bin:${PATH}"
