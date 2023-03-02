@@ -80,7 +80,7 @@ static const char *get_lock_owner(request_rec *r, dav_lock *lock)
         lock = lock->next;
     }
 
-    return lock->auth_user;
+    return lock ? lock->auth_user : NULL;
 }
 
 
