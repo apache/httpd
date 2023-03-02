@@ -137,15 +137,6 @@ jobs:
               TESTS="t/modules/dav.t"
             pkgs: litmus
           # -------------------------------------------------------------------------
-          # MFLAGS= works around https://bz.apache.org/bugzilla/show_bug.cgi?id=63942
-          ## TODO if: *condition_not_24x
-          - name: Regenerate ap_expr
-            config: --enable-mods-shared=reallyall --enable-maintainer-mode
-            notest-cflags: -Werror -Wno-deprecated-declarations
-            env: |
-              BUILDCONFIG="--with-regen-expr"
-              MFLAGS=
-          # -------------------------------------------------------------------------
           - name: APR 1.7.2, APR-util 1.6.3, LDAP
             config: --enable-mods-shared=reallyall
             pkgs: ldap-utils
@@ -158,19 +149,11 @@ jobs:
               TEST_ARGS="-defines LDAP"
               TESTS="t/modules/"
           # -------------------------------------------------------------------------
-          ### TODO: if: *condition_not_24x
           - name: APR trunk thread debugging
             config: --enable-mods-shared=reallyall --with-mpm=event
             env: |
               APR_VERSION=trunk
               APR_CONFIG="--with-crypto --enable-thread-debug"
-          # -------------------------------------------------------------------------
-          - name: UBSan
-            notest-cflags: -fsanitize=undefined -fno-sanitize-recover=undefined
-            config: --enable-mods-shared=reallyall --disable-http2
-            env: |
-              NOTEST_LIBS=-lubsan
-              TEST_UBSAN=1
           # -------------------------------------------------------------------------
           - name: ASan
             notest-cflags: -ggdb -fsanitize=address -fno-sanitize-recover=address -fno-omit-frame-pointer
