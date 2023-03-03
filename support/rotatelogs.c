@@ -65,6 +65,7 @@ struct rotate_config {
     int echo;
     char *szLogRoot;
     int truncate;
+    int truncate_rotated_only;
     const char *linkfile;
     const char *postrotate_prog;
 #if APR_FILES_AS_SOCKETS
@@ -109,9 +110,9 @@ static void usage(const char *argv0, const char *reason)
     }
     fprintf(stderr,
 #if APR_FILES_AS_SOCKETS
-            "Usage: %s [-v] [-l] [-L linkname] [-p prog] [-f] [-D] [-t] [-e] [-c] [-n number] <logfile> "
+            "Usage: %s [-vlfDtTec] [-L linkname] [-p prog] [-n number] <logfile> "
 #else
-            "Usage: %s [-v] [-l] [-L linkname] [-p prog] [-f] [-D] [-t] [-e] [-n number] <logfile> "
+            "Usage: %s [-vlfDtTe] [-L linkname] [-p prog] [-n number] <logfile> "
 #endif
             "{<rotation time in seconds>|<rotation size>(B|K|M|G)} "
             "[offset minutes from UTC]\n\n",
@@ -145,6 +146,7 @@ static void usage(const char *argv0, const char *reason)
             "  -f       Force opening of log on program start.\n"
             "  -D       Create parent directories of log file.\n" 
             "  -t       Truncate logfile instead of rotating, tail friendly.\n"
+            "  -T       Truncate logfiles opened for rotation, but not the initial logfile.\n"
             "  -e       Echo log to stdout for further processing.\n"
 #if APR_FILES_AS_SOCKETS
             "  -c       Create log even if it is empty.\n"
@@ -380,6 +382,8 @@ static void doRotate(rotate_config_t *config, rotate_status_t *status)
     apr_status_t rv;
     struct logfile newlog;
     int thisLogNum = -1;
+    int oldreason = status->rotateReason;
+    int truncate = config->truncate;
 
     /* Retrieve local-time-adjusted-Unix-time. */
     now = get_now(config, &offset);
@@ -459,8 +463,17 @@ static void doRotate(rotate_config_t *config, rotate_status_t *status)
     if (config->verbose) {
         fprintf(stderr, "Opening file %s\n", newlog.name);
     }
-    rv = apr_file_open(&newlog.fd, newlog.name, APR_WRITE | APR_CREATE | APR_APPEND
-                       | (config->truncate || (config->num_files > 0 && status->current.fd) ? APR_TRUNCATE : 0), 
+
+    if (!truncate) {
+        /* -n and -T truncate subsequent files only. */
+        if (status->current.fd &&
+               (config->num_files > 0 || config->truncate_rotated_only)) {
+            truncate = 1;
+        }
+    }
+    rv = apr_file_open(&newlog.fd, newlog.name,
+                       APR_WRITE | APR_CREATE | APR_APPEND
+                       | (truncate ? APR_TRUNCATE : 0),
                        APR_OS_DEFAULT, newlog.pool);
     if (rv == APR_SUCCESS) {
         /* Handle post-rotate processing. */
@@ -474,6 +487,19 @@ static void doRotate(rotate_config_t *config, rotate_status_t *status)
 
         /* New log file is now 'current'. */
         status->current = newlog;
+
+        /* The first write to the initial file hasn't checked for size.
+         * In the normalized timestamp case and the custom strftime case with
+         * any reasonable accuracy, it's futile as the rotation will pick the
+         * same filename again. 
+         * For -n, when not truncating, check and rotate.
+         */
+        if (config->num_files > 0 && oldreason == ROTATE_NEW && !config->truncate) {
+            checkRotate(config, status);
+            if (status->rotateReason != ROTATE_NONE) {
+                doRotate(config, status);
+            }
+        }
     }
     else {
         char *error = apr_psprintf(newlog.pool, "%pm", &rv);
@@ -585,9 +611,9 @@ int main (int argc, const char * const argv[])
     apr_pool_create(&status.pool, NULL);
     apr_getopt_init(&opt, status.pool, argc, argv);
 #if APR_FILES_AS_SOCKETS
-    while ((rv = apr_getopt(opt, "lL:p:fDtvecn:", &c, &opt_arg)) == APR_SUCCESS) {
+    while ((rv = apr_getopt(opt, "lL:p:fDtTvecn:", &c, &opt_arg)) == APR_SUCCESS) {
 #else
-    while ((rv = apr_getopt(opt, "lL:p:fDtven:", &c, &opt_arg)) == APR_SUCCESS) {
+    while ((rv = apr_getopt(opt, "lL:p:fDtTven:", &c, &opt_arg)) == APR_SUCCESS) {
 #endif
         switch (c) {
         case 'l':
@@ -611,6 +637,9 @@ int main (int argc, const char * const argv[])
             break;
         case 't':
             config.truncate = 1;
+            break;
+        case 'T':
+            config.truncate_rotated_only = 1;
             break;
         case 'v':
             config.verbose = 1;
