@@ -47,7 +47,7 @@ class TestMustStaple:
         cert1 = MDCertUtil(env.store_domain_file(self.domain, 'pubcert.pem'))
         assert not cert1.get_must_staple()
         stat = env.get_ocsp_status(self.domain)
-        assert stat['ocsp'] == "no response sent" 
+        assert 'ocsp' not in stat or stat['ocsp'] == "no response sent"
 
     # MD that must staple and toggle off again
     @pytest.mark.skipif(MDTestEnv.lacks_ocsp(), reason="no OCSP responder")

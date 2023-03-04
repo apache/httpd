@@ -20,7 +20,7 @@ class TestVars:
         conf.install()
         assert env.apache_restart() == 0
 
-    def test_08_vars_root(self, env):
+    def test_tls_08_vars_root(self, env):
         # in domain_b root, the StdEnvVars is switch on
         exp_proto = "TLSv1.2"
         exp_cipher = "TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384"
@@ -44,7 +44,7 @@ class TestVars:
         ("SSL_CIPHER_EXPORT", "false"),
         ("SSL_CLIENT_VERIFY", "NONE"),
     ])
-    def test_08_vars_const(self, env, name: str, value: str):
+    def test_tls_08_vars_const(self, env, name: str, value: str):
         r = env.tls_get(env.domain_b, f"/vars.py?name={name}")
         assert r.exit_code == 0, r.stderr
         assert r.json == {name: value}, r.stdout
@@ -53,7 +53,7 @@ class TestVars:
         ("SSL_VERSION_INTERFACE", r'mod_tls/\d+\.\d+\.\d+'),
         ("SSL_VERSION_LIBRARY", r'rustls-ffi/\d+\.\d+\.\d+/rustls/\d+\.\d+\.\d+'),
     ])
-    def test_08_vars_match(self, env, name: str, pattern: str):
+    def test_tls_08_vars_match(self, env, name: str, pattern: str):
         r = env.tls_get(env.domain_b, f"/vars.py?name={name}")
         assert r.exit_code == 0, r.stderr
         assert name in r.json

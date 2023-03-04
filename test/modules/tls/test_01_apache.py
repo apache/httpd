@@ -10,5 +10,5 @@ class TestApache:
         TlsTestConf(env=env).install()
         assert env.apache_restart() == 0
 
-    def test_01_apache_http(self, env):
+    def test_tls_01_apache_http(self, env):
         assert env.is_live(env.http_base_url)

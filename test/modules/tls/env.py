@@ -58,11 +58,14 @@ class TlsTestEnv(HttpdTestEnv):
     @classmethod
     def curl_supports_tls_1_3(cls) -> bool:
         if cls.CURL_SUPPORTS_TLS_1_3 is None:
-            p = subprocess.run(['curl', '--tlsv1.3', 'https://shouldneverexistreally'],
-                               stderr=subprocess.PIPE, stdout=subprocess.PIPE)
+            # Unfortunately, there is no reliable, platform-independant
+            # way to verify that TLSv1.3 is properly supported by curl.
+            #
+            # p = subprocess.run(['curl', '--tlsv1.3', 'https://shouldneverexistreally'],
+            #                    stderr=subprocess.PIPE, stdout=subprocess.PIPE)
             # return code 6 means the site could not be resolved, but the
             # tls parameter was recognized
-            cls.CURL_SUPPORTS_TLS_1_3 = p.returncode == 6
+            cls.CURL_SUPPORTS_TLS_1_3 = False
         return cls.CURL_SUPPORTS_TLS_1_3
 
 

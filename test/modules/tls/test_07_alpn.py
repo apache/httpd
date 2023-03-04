@@ -23,19 +23,19 @@ class TestAlpn:
 
     def _get_protocol(self, output: str):
         for line in output.splitlines():
-            m = re.match(r'^\*\s+ALPN, server accepted to use\s+(.*)$', line)
+            m = re.match(r'^\*\s+ALPN[:,] server accepted (to use\s+)?(.*)$', line)
             if m:
-                return m.group(1)
+                return m.group(2)
         return None
 
-    def test_07_alpn_get_a(self, env):
+    def test_tls_07_alpn_get_a(self, env):
         # do we see the correct json for the domain_a?
-        r = env.tls_get(env.domain_a, "/index.json", options=["-vvvvvv"])
+        r = env.tls_get(env.domain_a, "/index.json", options=["-vvvvvv", "--http1.1"])
         assert r.exit_code == 0, r.stderr
         protocol = self._get_protocol(r.stderr)
         assert protocol == "http/1.1", r.stderr
 
-    def test_07_alpn_get_b(self, env):
+    def test_tls_07_alpn_get_b(self, env):
         # do we see the correct json for the domain_a?
         r = env.tls_get(env.domain_b, "/index.json", options=["-vvvvvv"])
         assert r.exit_code == 0, r.stderr

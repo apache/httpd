@@ -1,19 +1,26 @@
 #!/usr/bin/env python3
+import os, sys
+import multipart
+from urllib import parse
 
-import cgi
-import cgitb; cgitb.enable()
-import os
-import sys
 
-try:
-    form = cgi.FieldStorage()
-    count = form['count'].value
-    text = form['text'].value
-except KeyError:
-    text="a"
-    count=77784
+def get_request_params():
+    oforms = {}
+    if "REQUEST_URI" in os.environ:
+        qforms = parse.parse_qs(parse.urlsplit(os.environ["REQUEST_URI"]).query)
+        for name, values in qforms.items():
+            oforms[name] = values[0]
+    myenv = os.environ.copy()
+    myenv['wsgi.input'] = sys.stdin.buffer
+    mforms, ofiles = multipart.parse_form_data(environ=myenv)
+    for name, item in mforms.items():
+        oforms[name] = item
+    return oforms, ofiles
 
-count = int(count)
+
+forms, files = get_request_params()
+text = forms['text'] if 'text' in forms else "a"
+count = int(forms['count']) if 'count' in forms else 77784
 
 print("Status: 200 OK")
 print("Content-Type: text/html")

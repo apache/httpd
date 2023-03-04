@@ -1,10 +1,9 @@
 #!/usr/bin/env python3
-import cgi, os
-import cgitb
+import os
+import sys
+import multipart
+from urllib import parse
 
-cgitb.enable()
-
-status = '200 Ok'
 
 try:  # Windows needs stdio set for binary mode.
     import msvcrt
@@ -14,31 +13,47 @@ try:  # Windows needs stdio set for binary mode.
 except ImportError:
     pass
 
-form = cgi.FieldStorage()
+
+def get_request_params():
+    oforms = {}
+    if "REQUEST_URI" in os.environ:
+        qforms = parse.parse_qs(parse.urlsplit(os.environ["REQUEST_URI"]).query)
+        for name, values in qforms.items():
+            oforms[name] = values[0]
+    myenv = os.environ.copy()
+    myenv['wsgi.input'] = sys.stdin.buffer
+    mforms, ofiles = multipart.parse_form_data(environ=myenv)
+    for name, item in mforms.items():
+        oforms[name] = item
+    return oforms, ofiles
+
+
+forms, files = get_request_params()
+
+status = '200 Ok'
 
 # Test if the file was uploaded
-if 'file' in form:
-    fileitem = form['file']
+if 'file' in files:
+    fitem = files['file']
     # strip leading path from file name to avoid directory traversal attacks
-    fn = os.path.basename(fileitem.filename)
-    f = open(('%s/files/%s' % (os.environ["DOCUMENT_ROOT"], fn)), 'wb');
-    f.write(fileitem.file.read())
-    f.close()
-    message = "The file %s was uploaded successfully" % (fn)
+    fname = fitem.filename
+    fpath = f'{os.environ["DOCUMENT_ROOT"]}/files/{fname}'
+    fitem.save_as(fpath)
+    message = "The file %s was uploaded successfully" % (fname)
     print("Status: 201 Created")
     print("Content-Type: text/html")
-    print("Location: %s://%s/files/%s" % (os.environ["REQUEST_SCHEME"], os.environ["HTTP_HOST"], fn))
+    print("Location: %s://%s/files/%s" % (os.environ["REQUEST_SCHEME"], os.environ["HTTP_HOST"], fname))
     print("")
     print("<html><body><p>%s</p></body></html>" % (message))
 
-elif 'remove' in form:
-    remove = form['remove'].value
+elif 'remove' in forms:
+    remove = forms['remove']
     try:
-        fn = os.path.basename(remove)
-        os.remove('./files/' + fn)
-        message = 'The file "' + fn + '" was removed successfully'
+        fname = os.path.basename(remove)
+        os.remove('./files/' + fname)
+        message = 'The file "' + fname + '" was removed successfully'
     except OSError as e:
-        message = 'Error removing ' + fn + ': ' + e.strerror
+        message = 'Error removing ' + fname + ': ' + e.strerror
         status = '404 File Not Found'
     print("Status: %s" % (status))
     print("""

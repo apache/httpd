@@ -22,7 +22,7 @@ class TestProxy:
         conf.install()
         assert env.apache_restart() == 0
 
-    def test_13_proxy_http_get(self, env):
+    def test_tls_13_proxy_http_get(self, env):
         data = env.tls_get_json(env.domain_b, "/proxy/index.json")
         assert data == {'domain': env.domain_b}
 
@@ -34,7 +34,7 @@ class TestProxy:
         ("SSL_CIPHER_EXPORT", ""),
         ("SSL_CLIENT_VERIFY", ""),
     ])
-    def test_13_proxy_http_vars(self, env, name: str, value: str):
+    def test_tls_13_proxy_http_vars(self, env, name: str, value: str):
         r = env.tls_get(env.domain_b, f"/proxy/vars.py?name={name}")
         assert r.exit_code == 0, r.stderr
         assert r.json == {name: value}, r.stdout

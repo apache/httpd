@@ -36,11 +36,11 @@ class TestProxyMixed:
         conf.install()
         assert env.apache_restart() == 0
 
-    def test_16_proxy_mixed_ssl_get(self, env, repeat):
+    def test_tls_16_proxy_mixed_ssl_get(self, env, repeat):
         data = env.tls_get_json(env.domain_b, "/proxy-ssl/index.json")
         assert data == {'domain': env.domain_b}
 
-    def test_16_proxy_mixed_tls_get(self, env, repeat):
+    def test_tls_16_proxy_mixed_tls_get(self, env, repeat):
         data = env.tls_get_json(env.domain_a, "/proxy-tls/index.json")
         if data is None:
             time.sleep(300)
