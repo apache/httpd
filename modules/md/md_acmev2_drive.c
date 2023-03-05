@@ -73,7 +73,7 @@ static apr_status_t ad_setup_order(md_proto_driver_t *d, md_result_t *result, in
     }
     else if (!APR_STATUS_IS_ENOENT(rv)) {
         md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, rv, d->p, "%s: loading order", md->name);
-        md_acme_order_purge(d->store, d->p, MD_SG_STAGING, md->name, d->env);
+        md_acme_order_purge(d->store, d->p, MD_SG_STAGING, md, d->env);
     }
     
     md_result_activity_setn(result, "Creating new order");
@@ -128,7 +128,7 @@ apr_status_t md_acmev2_drive_renew(md_acme_driver_t *ad, md_proto_driver_t *d, m
         || MD_ACME_ORDER_ST_INVALID == ad->order->status) {
         /* order is invalid or no longer known at the ACME server */
         ad->order = NULL;
-        md_acme_order_purge(d->store, d->p, MD_SG_STAGING, d->md->name, d->env);
+        md_acme_order_purge(d->store, d->p, MD_SG_STAGING, d->md, d->env);
     }
     else if (APR_SUCCESS != rv) {
         goto leave;
@@ -145,7 +145,7 @@ retry:
     if (!is_new_order && APR_STATUS_IS_EINVAL(rv)) {
         /* found 'invalid' domains in previous order, need to start over */
         ad->order = NULL;
-        md_acme_order_purge(d->store, d->p, MD_SG_STAGING, d->md->name, d->env);
+        md_acme_order_purge(d->store, d->p, MD_SG_STAGING, d->md, d->env);
         goto retry;
     }
     if (APR_SUCCESS != rv) goto leave;

@@ -103,7 +103,8 @@ struct md_t {
     
     struct apr_array_header_t *acme_tls_1_domains; /* domains supporting "acme-tls/1" protocol */
     int stapling;                   /* if OCSP stapling is enabled */
-    
+    const char *dns01_cmd;          /* DNS challenge command, override global command */
+
     int watched;               /* if certificate is supervised (renew or expiration warning) */
     const struct md_srv_conf_t *sc; /* server config where it was defined or NULL */
     const char *defn_name;          /* config file this MD was defined */

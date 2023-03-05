@@ -100,6 +100,8 @@ typedef struct md_srv_conf_t {
     int stapling;                      /* OCSP stapling enabled */
     int staple_others;                 /* Provide OCSP stapling for non-MD certificates */
 
+    const char *dns01_cmd;             /* DNS challenge command, override global command */
+
     md_t *current;                     /* md currently defined in <MDomainSet xxx> section */
     struct apr_array_header_t *assigned; /* post_config: MDs that apply to this server */
     int is_ssl;                        /* SSLEngine is enabled here */
