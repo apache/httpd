@@ -40,16 +40,16 @@ class TestProxySSL:
         conf.install()
         assert env.apache_restart() == 0
 
-    def test_14_proxy_ssl_get(self, env):
+    def test_tls_14_proxy_ssl_get(self, env):
         data = env.tls_get_json(env.domain_b, "/proxy-ssl/index.json")
         assert data == {'domain': env.domain_b}
 
-    def test_14_proxy_ssl_get_local(self, env):
+    def test_tls_14_proxy_ssl_get_local(self, env):
         # does not work, since SSLProxy* not configured
         data = env.tls_get_json(env.domain_b, "/proxy-local/index.json")
         assert data is None
 
-    def test_14_proxy_ssl_h2_get(self, env):
+    def test_tls_14_proxy_ssl_h2_get(self, env):
         r = env.tls_get(env.domain_b, "/proxy-h2-ssl/index.json")
         assert r.exit_code == 0
         assert r.json == {'domain': env.domain_b}
@@ -62,7 +62,7 @@ class TestProxySSL:
         ("SSL_CIPHER_EXPORT", "false"),
         ("SSL_CLIENT_VERIFY", "NONE"),
     ])
-    def test_14_proxy_ssl_vars_const(self, env, name: str, value: str):
+    def test_tls_14_proxy_ssl_vars_const(self, env, name: str, value: str):
         r = env.tls_get(env.domain_b, f"/proxy-ssl/vars.py?name={name}")
         assert r.exit_code == 0, r.stderr
         assert r.json == {name: value}, r.stdout
@@ -71,7 +71,7 @@ class TestProxySSL:
         ("SSL_VERSION_INTERFACE", r'mod_tls/\d+\.\d+\.\d+'),
         ("SSL_VERSION_LIBRARY", r'rustls-ffi/\d+\.\d+\.\d+/rustls/\d+\.\d+\.\d+'),
     ])
-    def test_14_proxy_ssl_vars_match(self, env, name: str, pattern: str):
+    def test_tls_14_proxy_ssl_vars_match(self, env, name: str, pattern: str):
         r = env.tls_get(env.domain_b, f"/proxy-ssl/vars.py?name={name}")
         assert r.exit_code == 0, r.stderr
         assert name in r.json

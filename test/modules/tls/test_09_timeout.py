@@ -21,7 +21,7 @@ class TestTimeout:
     def _function_scope(self, env):
         pass
 
-    def test_09_timeout_handshake(self, env):
+    def test_tls_09_timeout_handshake(self, env):
         # in domain_b root, the StdEnvVars is switch on
         s = socket.create_connection(('localhost', env.https_port))
         s.send(b'1234')

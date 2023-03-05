@@ -1,18 +1,35 @@
 #!/usr/bin/env python3
-import cgi, os
-import cgitb; cgitb.enable()
+import os, sys
+import multipart
+from urllib import parse
+
+
+def get_request_params():
+    oforms = {}
+    if "REQUEST_URI" in os.environ:
+        qforms = parse.parse_qs(parse.urlsplit(os.environ["REQUEST_URI"]).query)
+        for name, values in qforms.items():
+            oforms[name] = values[0]
+    myenv = os.environ.copy()
+    myenv['wsgi.input'] = sys.stdin.buffer
+    mforms, ofiles = multipart.parse_form_data(environ=myenv)
+    for name, item in mforms.items():
+        oforms[name] = item
+    return oforms, ofiles
+
+
+forms, files = get_request_params()
 
 status = '200 Ok'
 
 try:
-    form = cgi.FieldStorage()
-    
+
     # A nested FieldStorage instance holds the file
-    name = form['name'].value
+    name = forms['name']
     value = ''
     
     try:
-        value = form['value'].value
+        value = forms['value']
     except KeyError:
         value = os.environ.get("HTTP_"+name, "unset")
     

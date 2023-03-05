@@ -1,7 +1,25 @@
 #!/usr/bin/env python3
 import json
-import os, cgi
-import re
+import os, sys
+import multipart
+from urllib import parse
+
+
+def get_request_params():
+    oforms = {}
+    if "REQUEST_URI" in os.environ:
+        qforms = parse.parse_qs(parse.urlsplit(os.environ["REQUEST_URI"]).query)
+        for name, values in qforms.items():
+            oforms[name] = values[0]
+    myenv = os.environ.copy()
+    myenv['wsgi.input'] = sys.stdin.buffer
+    mforms, ofiles = multipart.parse_form_data(environ=myenv)
+    for name, item in mforms.items():
+        oforms[name] = item
+    return oforms, ofiles
+
+
+forms, files = get_request_params()
 
 jenc = json.JSONEncoder()
 
@@ -15,13 +33,7 @@ def get_json_var(name: str, def_val: str = ""):
     return jenc.encode(var)
 
 
-name = None
-try:
-    form = cgi.FieldStorage()
-    if 'name' in form:
-        name = str(form['name'].value)
-except Exception:
-    pass
+name = forms['name'] if 'name' in forms else None
 
 print("Content-Type: application/json\n")
 if name:

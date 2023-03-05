@@ -45,7 +45,7 @@ class TestTLS:
         assert r.json, r.stderr + r.stdout
         return r.json[name] if name in r.json else None
 
-    def test_12_set_ca_non_existing(self, env):
+    def test_tls_12_set_ca_non_existing(self, env):
         conf = TlsTestConf(env=env, extras={
             env.domain_a: "TLSClientCA xxx"
         })
@@ -53,7 +53,7 @@ class TestTLS:
         conf.install()
         assert env.apache_restart() == 1
 
-    def test_12_set_ca_existing(self, env, cax_file):
+    def test_tls_12_set_ca_existing(self, env, cax_file):
         conf = TlsTestConf(env=env, extras={
             env.domain_a: f"TLSClientCA {cax_file}"
         })
@@ -61,7 +61,7 @@ class TestTLS:
         conf.install()
         assert env.apache_restart() == 0
 
-    def test_12_set_auth_no_ca(self, env):
+    def test_tls_12_set_auth_no_ca(self, env):
         conf = TlsTestConf(env=env, extras={
             env.domain_a: "TLSClientCertificate required"
         })
@@ -70,7 +70,7 @@ class TestTLS:
         # will fail bc lacking clien CA
         assert env.apache_restart() == 1
 
-    def test_12_auth_option_std(self, env, cax_file, clients_x):
+    def test_tls_12_auth_option_std(self, env, cax_file, clients_x):
         conf = TlsTestConf(env=env, extras={
             env.domain_b: [
                 f"TLSClientCertificate required",
@@ -102,7 +102,7 @@ class TestTLS:
         val = self.get_ssl_var(env, env.domain_b, ccert, "SSL_CLIENT_CERT")
         assert val == ""
 
-    def test_12_auth_option_cert(self, env, test_ca, cax_file, clients_x):
+    def test_tls_12_auth_option_cert(self, env, test_ca, cax_file, clients_x):
         conf = TlsTestConf(env=env, extras={
             env.domain_b: [
                 "TLSClientCertificate required",
@@ -124,7 +124,7 @@ class TestTLS:
         server_certs = test_ca.get_credentials_for_name(env.domain_b)
         assert val in [c.cert_pem.decode() for c in server_certs]
 
-    def test_12_auth_ssl_optional(self, env, cax_file, clients_x):
+    def test_tls_12_auth_ssl_optional(self, env, cax_file, clients_x):
         domain = env.domain_b
         conf = TlsTestConf(env=env, extras={
             domain: [
@@ -164,7 +164,7 @@ class TestTLS:
         val = self.get_ssl_var(env, env.domain_b, ccert, "SSL_CLIENT_CERT")
         assert val == ccert.cert_pem.decode()
 
-    def test_12_auth_optional(self, env, cax_file, clients_x):
+    def test_tls_12_auth_optional(self, env, cax_file, clients_x):
         domain = env.domain_b
         conf = TlsTestConf(env=env, extras={
             domain: [
@@ -197,7 +197,7 @@ class TestTLS:
             'SSL_CLIENT_S_DN_CN': 'Not Implemented',
         }, r.stdout
 
-    def test_12_auth_expired(self, env, cax_file, clients_x):
+    def test_tls_12_auth_expired(self, env, cax_file, clients_x):
         conf = TlsTestConf(env=env, extras={
             env.domain_b: [
                 "TLSClientCertificate required",
@@ -213,7 +213,7 @@ class TestTLS:
         ])
         assert r.exit_code != 0
 
-    def test_12_auth_other_ca(self, env, cax_file, clients_y):
+    def test_tls_12_auth_other_ca(self, env, cax_file, clients_y):
         conf = TlsTestConf(env=env, extras={
             env.domain_b: [
                 "TLSClientCertificate required",

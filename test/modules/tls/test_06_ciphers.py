@@ -35,7 +35,7 @@ class TestCiphers:
                 cipher = m.group(1)
         return protocol, cipher
 
-    def test_06_ciphers_ecdsa(self, env):
+    def test_tls_06_ciphers_ecdsa(self, env):
         ecdsa_1_2 = [c for c in env.RUSTLS_CIPHERS
                      if c.max_version == 1.2 and c.flavour == 'ECDSA'][0]
         # client speaks only this cipher, see that it gets it
@@ -46,7 +46,7 @@ class TestCiphers:
         assert protocol == "TLSv1.2", r.stdout
         assert cipher == ecdsa_1_2.openssl_name, r.stdout
 
-    def test_06_ciphers_rsa(self, env):
+    def test_tls_06_ciphers_rsa(self, env):
         rsa_1_2 = [c for c in env.RUSTLS_CIPHERS
                    if c.max_version == 1.2 and c.flavour == 'RSA'][0]
         # client speaks only this cipher, see that it gets it
@@ -62,7 +62,7 @@ class TestCiphers:
     ], ids=[
         c.name for c in TlsTestEnv.RUSTLS_CIPHERS if c.max_version == 1.2 and c.flavour == 'ECDSA'
     ])
-    def test_06_ciphers_server_prefer_ecdsa(self, env, cipher):
+    def test_tls_06_ciphers_server_prefer_ecdsa(self, env, cipher):
         # Select a ECSDA ciphers as preference and suppress all RSA ciphers.
         # The last is not strictly necessary since rustls prefers ECSDA anyway
         suppress_names = [c.name for c in env.RUSTLS_CIPHERS
@@ -89,7 +89,7 @@ class TestCiphers:
     ], ids=[
         c.name for c in TlsTestEnv.RUSTLS_CIPHERS if c.max_version == 1.2 and c.flavour == 'RSA'
     ])
-    def test_06_ciphers_server_prefer_rsa(self, env, cipher):
+    def test_tls_06_ciphers_server_prefer_rsa(self, env, cipher):
         # Select a RSA ciphers as preference and suppress all ECDSA ciphers.
         # The last is necessary since rustls prefers ECSDA and openssl leaks that it can.
         suppress_names = [c.name for c in env.RUSTLS_CIPHERS
@@ -116,7 +116,7 @@ class TestCiphers:
     ], ids=[
         c.openssl_name for c in TlsTestEnv.RUSTLS_CIPHERS if c.max_version == 1.2 and c.flavour == 'RSA'
     ])
-    def test_06_ciphers_server_prefer_rsa_alias(self, env, cipher):
+    def test_tls_06_ciphers_server_prefer_rsa_alias(self, env, cipher):
         # same as above, but using openssl names for ciphers
         suppress_names = [c.openssl_name for c in env.RUSTLS_CIPHERS
                           if c.max_version == 1.2 and c.flavour == 'ECDSA']
@@ -142,7 +142,7 @@ class TestCiphers:
     ], ids=[
         c.id_name for c in TlsTestEnv.RUSTLS_CIPHERS if c.max_version == 1.2 and c.flavour == 'RSA'
     ])
-    def test_06_ciphers_server_prefer_rsa_id(self, env, cipher):
+    def test_tls_06_ciphers_server_prefer_rsa_id(self, env, cipher):
         # same as above, but using openssl names for ciphers
         suppress_names = [c.id_name for c in env.RUSTLS_CIPHERS
                           if c.max_version == 1.2 and c.flavour == 'ECDSA']
@@ -161,7 +161,7 @@ class TestCiphers:
         assert client_proto == "TLSv1.2", r.stdout
         assert client_cipher == cipher.openssl_name, r.stdout
 
-    def test_06_ciphers_pref_unknown(self, env):
+    def test_tls_06_ciphers_pref_unknown(self, env):
         conf = TlsTestConf(env=env, extras={
             env.domain_b: "TLSCiphersPrefer TLS_MY_SUPER_CIPHER:SSL_WHAT_NOT"
         })
@@ -174,7 +174,7 @@ class TestCiphers:
         conf.install()
         env.apache_restart()
 
-    def test_06_ciphers_pref_unsupported(self, env):
+    def test_tls_06_ciphers_pref_unsupported(self, env):
         # a warning on preferring a known, but not supported cipher
         env.httpd_error_log.ignore_recent()
         conf = TlsTestConf(env=env, extras={
@@ -187,7 +187,7 @@ class TestCiphers:
         assert errors == 0
         assert warnings == 2  # once on dry run, once on start
 
-    def test_06_ciphers_supp_unknown(self, env):
+    def test_tls_06_ciphers_supp_unknown(self, env):
         conf = TlsTestConf(env=env, extras={
             env.domain_b: "TLSCiphersSuppress TLS_MY_SUPER_CIPHER:SSL_WHAT_NOT"
         })
@@ -195,7 +195,7 @@ class TestCiphers:
         conf.install()
         assert env.apache_restart() != 0
 
-    def test_06_ciphers_supp_unsupported(self, env):
+    def test_tls_06_ciphers_supp_unsupported(self, env):
         # no warnings on suppressing known, but not supported ciphers
         env.httpd_error_log.ignore_recent()
         conf = TlsTestConf(env=env, extras={

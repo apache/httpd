@@ -50,6 +50,7 @@ def _session_scope(env):
         'AH01909',  # mod_ssl, cert alt name complains
         'AH10170',  # mod_md, wrong config, tested
         'AH10171',  # mod_md, wrong config, tested
+        'AH10373',  # SSL errors on uncompleted handshakes
         'AH10398',  # test on global store lock
     ])
 

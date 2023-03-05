@@ -39,7 +39,7 @@ class TestGet:
         ("1m.txt", 1000 * 1024),
         ("10m.txt", 10000 * 1024),
     ])
-    def test_04_get(self, env, fname, flen):
+    def test_tls_04_get(self, env, fname, flen):
         # do we see the correct json for the domain_a?
         docs_a = os.path.join(env.server_docs_dir, env.domain_a)
         r = env.tls_get(env.domain_a, "/{0}".format(fname))
@@ -55,7 +55,7 @@ class TestGet:
     @pytest.mark.parametrize("fname, flen", [
         ("1k.txt", 1024),
     ])
-    def test_04_double_get(self, env, fname, flen):
+    def test_tls_04_double_get(self, env, fname, flen):
         # we'd like to check that we can do >1 requests on the same connection
         # however curl hides that from us, unless we analyze its verbose output
         docs_a = os.path.join(env.server_docs_dir, env.domain_a)

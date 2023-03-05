@@ -3,13 +3,9 @@ import logging
 import os
 import re
 import subprocess
-import sys
-import time
 
 from datetime import timedelta, datetime
-from http.client import HTTPConnection
 from typing import List, Optional, Dict, Tuple, Union
-from urllib.parse import urlparse
 
 from pyhttpd.certs import CertificateSpec
 from pyhttpd.env import HttpdTestEnv, HttpdTestSetup
@@ -56,6 +52,22 @@ class TlsCipher:
 
 
 class TlsTestEnv(HttpdTestEnv):
+
+    CURL_SUPPORTS_TLS_1_3 = None
+
+    @classmethod
+    def curl_supports_tls_1_3(cls) -> bool:
+        if cls.CURL_SUPPORTS_TLS_1_3 is None:
+            # Unfortunately, there is no reliable, platform-independant
+            # way to verify that TLSv1.3 is properly supported by curl.
+            #
+            # p = subprocess.run(['curl', '--tlsv1.3', 'https://shouldneverexistreally'],
+            #                    stderr=subprocess.PIPE, stdout=subprocess.PIPE)
+            # return code 6 means the site could not be resolved, but the
+            # tls parameter was recognized
+            cls.CURL_SUPPORTS_TLS_1_3 = False
+        return cls.CURL_SUPPORTS_TLS_1_3
+
 
     # current rustls supported ciphers in their order of preference
     # used to test cipher selection, see test_06_ciphers.py
@@ -158,14 +170,6 @@ class TlsTestEnv(HttpdTestEnv):
             args.extend(extra_args)
         args.extend([])
         return self.openssl(args)
-
-    CURL_SUPPORTS_TLS_1_3 = None
-
-    def curl_supports_tls_1_3(self) -> bool:
-        if self.CURL_SUPPORTS_TLS_1_3 is None:
-            r = self.tls_get(self.domain_a, "/index.json", options=["--tlsv1.3"])
-            self.CURL_SUPPORTS_TLS_1_3 = r.exit_code == 0
-        return self.CURL_SUPPORTS_TLS_1_3
 
     OPENSSL_SUPPORTED_PROTOCOLS = None
 

@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-import sys, cgi, os
+import os, sys
+import multipart
 
 status = '200 Ok'
 
