@@ -587,7 +587,9 @@ static apr_status_t acme_driver_init(md_proto_driver_t *d, md_result_t *result)
             ad->ca_challenges = md_array_str_remove(d->p, ad->ca_challenges, MD_AUTHZ_TYPE_TLSALPN01, 0);
             dis_alpn_acme = 1;
         }
-        if (!apr_table_get(d->env, MD_KEY_CMD_DNS01) && md_array_str_index(ad->ca_challenges, MD_AUTHZ_TYPE_DNS01, 0, 1) >= 0) {
+        if (!apr_table_get(d->env, MD_KEY_CMD_DNS01)
+            && NULL == d->md->dns01_cmd
+            && md_array_str_index(ad->ca_challenges, MD_AUTHZ_TYPE_DNS01, 0, 1) >= 0) {
             ad->ca_challenges = md_array_str_remove(d->p, ad->ca_challenges, MD_AUTHZ_TYPE_DNS01, 0);
             dis_dns = 1;
         }
@@ -832,7 +834,7 @@ static apr_status_t acme_renew(md_proto_driver_t *d, md_result_t *result)
                                 md_result_printf(result, rv, "Certificate and private key do not match.");
 
                                 /* Delete the order */
-                                md_acme_order_purge(d->store, d->p, MD_SG_STAGING, d->md->name, d->env);
+                                md_acme_order_purge(d->store, d->p, MD_SG_STAGING, d->md, d->env);
 
                                 goto out;
                             }
@@ -849,7 +851,7 @@ static apr_status_t acme_renew(md_proto_driver_t *d, md_result_t *result)
                 }
                 
                 /* Clean up the order, so the next pkey spec sets up a new one */
-                md_acme_order_purge(d->store, d->p, MD_SG_STAGING, d->md->name, d->env);
+                md_acme_order_purge(d->store, d->p, MD_SG_STAGING, d->md, d->env);
             }
         }
     }
@@ -857,7 +859,7 @@ static apr_status_t acme_renew(md_proto_driver_t *d, md_result_t *result)
     
     /* As last step, cleanup any order we created so that challenge data
      * may be removed asap. */
-    md_acme_order_purge(d->store, d->p, MD_SG_STAGING, d->md->name, d->env);
+    md_acme_order_purge(d->store, d->p, MD_SG_STAGING, d->md, d->env);
     
     /* first time this job ran through */
     first = 1;    
@@ -998,7 +1000,7 @@ static apr_status_t acme_preload(md_proto_driver_t *d, md_store_group_t load_gro
     }
 
     md_result_activity_setn(result, "purging order information");
-    md_acme_order_purge(d->store, d->p, MD_SG_STAGING, name, d->env);
+    md_acme_order_purge(d->store, d->p, MD_SG_STAGING, md, d->env);
 
     md_result_activity_setn(result, "purging store tmp space");
     rv = md_store_purge(d->store, d->p, load_group, name);

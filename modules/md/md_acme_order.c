@@ -226,32 +226,33 @@ static apr_status_t p_purge(void *baton, apr_pool_t *p, apr_pool_t *ptemp, va_li
     md_store_t *store = baton;
     md_acme_order_t *order;
     md_store_group_t group;
-    const char *md_name, *setup_token;
+    const md_t *md;
+    const char *setup_token;
     apr_table_t *env;
     int i;
 
     group = (md_store_group_t)va_arg(ap, int);
-    md_name = va_arg(ap, const char *);
+    md = va_arg(ap, const md_t *);
     env = va_arg(ap, apr_table_t *);
 
-    if (APR_SUCCESS == md_acme_order_load(store, group, md_name, &order, p)) {
-        md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, 0, p, "order loaded for %s", md_name);
+    if (APR_SUCCESS == md_acme_order_load(store, group, md->name, &order, p)) {
+        md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, 0, p, "order loaded for %s", md->name);
         for (i = 0; i < order->challenge_setups->nelts; ++i) {
             setup_token = APR_ARRAY_IDX(order->challenge_setups, i, const char*);
             if (setup_token) {
                 md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, 0, p, 
                               "order teardown setup %s", setup_token);
-                md_acme_authz_teardown(store, setup_token, md_name, env, p);
+                md_acme_authz_teardown(store, setup_token, md, env, p);
             }
         }
     }
-    return md_store_remove(store, group, md_name, MD_FN_ORDER, ptemp, 1);
+    return md_store_remove(store, group, md->name, MD_FN_ORDER, ptemp, 1);
 }
 
 apr_status_t md_acme_order_purge(md_store_t *store, apr_pool_t *p, md_store_group_t group,
-                                 const char *md_name, apr_table_t *env)
+                                 const md_t *md, apr_table_t *env)
 {
-    return md_util_pool_vdo(p_purge, store, p, group, md_name, env, NULL);
+    return md_util_pool_vdo(p_purge, store, p, group, md, env, NULL);
 }
 
 /**************************************************************************************************/
@@ -465,7 +466,7 @@ apr_status_t md_acme_order_start_challenges(md_acme_order_t *order, md_acme_t *a
                               md->name, authz->domain);
                 rv = md_acme_authz_respond(authz, acme, store, challenge_types,
                                            md->pks,
-                                           md->acme_tls_1_domains, md->name,
+                                           md->acme_tls_1_domains, md,
                                            env, p, &setup_token, result);
                 if (APR_SUCCESS != rv) {
                     goto leave;

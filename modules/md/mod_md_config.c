@@ -120,6 +120,7 @@ static md_srv_conf_t defconf = {
     NULL,                      /* ca eab hmac */
     0,                         /* stapling */
     1,                         /* staple others */
+    NULL,                      /* dns01_cmd */
     NULL,                      /* currently defined md */
     NULL,                      /* assigned md, post config */
     0,                         /* is_ssl, set during mod_ssl post_config */
@@ -174,6 +175,7 @@ static void srv_conf_props_clear(md_srv_conf_t *sc)
     sc->ca_eab_hmac = NULL;
     sc->stapling = DEF_VAL;
     sc->staple_others = DEF_VAL;
+    sc->dns01_cmd = NULL;
 }
 
 static void srv_conf_props_copy(md_srv_conf_t *to, const md_srv_conf_t *from)
@@ -194,6 +196,7 @@ static void srv_conf_props_copy(md_srv_conf_t *to, const md_srv_conf_t *from)
     to->ca_eab_hmac = from->ca_eab_hmac;
     to->stapling = from->stapling;
     to->staple_others = from->staple_others;
+    to->dns01_cmd = from->dns01_cmd;
 }
 
 static void srv_conf_props_apply(md_t *md, const md_srv_conf_t *from, apr_pool_t *p)
@@ -217,6 +220,7 @@ static void srv_conf_props_apply(md_t *md, const md_srv_conf_t *from, apr_pool_t
     if (from->ca_eab_kid) md->ca_eab_kid = from->ca_eab_kid;
     if (from->ca_eab_hmac) md->ca_eab_hmac = from->ca_eab_hmac;
     if (from->stapling != DEF_VAL) md->stapling = from->stapling;
+    if (from->dns01_cmd) md->dns01_cmd = from->dns01_cmd;
 }
 
 void *md_config_create_svr(apr_pool_t *pool, server_rec *s)
@@ -262,6 +266,7 @@ static void *md_config_merge(apr_pool_t *pool, void *basev, void *addv)
     nsc->ca_eab_hmac = add->ca_eab_hmac? add->ca_eab_hmac : base->ca_eab_hmac;
     nsc->stapling = (add->stapling != DEF_VAL)? add->stapling : base->stapling;
     nsc->staple_others = (add->staple_others != DEF_VAL)? add->staple_others : base->staple_others;
+    nsc->dns01_cmd = (add->dns01_cmd)? add->dns01_cmd : base->dns01_cmd;
     nsc->current = NULL;
     
     return nsc;
@@ -966,10 +971,16 @@ static const char *md_config_set_dns01_cmd(cmd_parms *cmd, void *mconfig, const 
     md_srv_conf_t *sc = md_config_get(cmd->server);
     const char *err;
 
-    if ((err = md_conf_check_location(cmd, MD_LOC_NOT_MD))) {
+    if ((err = md_conf_check_location(cmd, MD_LOC_ALL))) {
         return err;
     }
-    apr_table_set(sc->mc->env, MD_KEY_CMD_DNS01, arg);
+
+    if (inside_md_section(cmd)) {
+        sc->dns01_cmd = arg;
+    } else {
+        apr_table_set(sc->mc->env, MD_KEY_CMD_DNS01, arg);
+    }
+
     (void)mconfig;
     return NULL;
 }

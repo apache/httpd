@@ -61,8 +61,8 @@
 #define MD_USE_OPENSSL_PRE_1_1_API (OPENSSL_VERSION_NUMBER < 0x10100000L)
 #endif
 
-#if defined(LIBRESSL_VERSION_NUMBER) || (OPENSSL_VERSION_NUMBER < 0x10100000L) 
-/* Missing from LibreSSL and only available since OpenSSL v1.1.x */
+#if (defined(LIBRESSL_VERSION_NUMBER) && (LIBRESSL_VERSION_NUMBER < 0x3050000fL)) || (OPENSSL_VERSION_NUMBER < 0x10100000L) 
+/* Missing from LibreSSL < 3.5.0 and only available since OpenSSL v1.1.x */
 #ifndef OPENSSL_NO_CT
 #define OPENSSL_NO_CT
 #endif
@@ -210,7 +210,8 @@ static int pem_passwd(char *buf, int size, int rwflag, void *baton)
  */
 static apr_time_t md_asn1_time_get(const ASN1_TIME* time)
 {
-#if OPENSSL_VERSION_NUMBER < 0x10002000L || defined(LIBRESSL_VERSION_NUMBER)
+#if OPENSSL_VERSION_NUMBER < 0x10002000L || (defined(LIBRESSL_VERSION_NUMBER) && \
+                                             LIBRESSL_VERSION_NUMBER < 0x3060000fL)
     /* courtesy: https://stackoverflow.com/questions/10975542/asn1-time-to-time-t-conversion#11263731
      * all bugs are mine */
     apr_time_exp_t t;
@@ -854,7 +855,8 @@ static apr_status_t gen_ec(md_pkey_t **ppkey, apr_pool_t *p, const char *curve)
         curve = EC_curve_nid2nist(curve_nid);
     }
 #endif
-#if defined(NID_X25519) && !defined(LIBRESSL_VERSION_NUMBER)
+#if defined(NID_X25519) && (!defined(LIBRESSL_VERSION_NUMBER) || \
+                            LIBRESSL_VERSION_NUMBER >= 0x3070000fL)
     if (NID_undef == curve_nid && !apr_strnatcasecmp("X25519", curve)) {
         curve_nid = NID_X25519;
         curve = EC_curve_nid2nist(curve_nid);
@@ -872,7 +874,8 @@ static apr_status_t gen_ec(md_pkey_t **ppkey, apr_pool_t *p, const char *curve)
     *ppkey = make_pkey(p);
     switch (curve_nid) {
 
-#if defined(NID_X25519) && !defined(LIBRESSL_VERSION_NUMBER)
+#if defined(NID_X25519) && (!defined(LIBRESSL_VERSION_NUMBER) || \
+                            LIBRESSL_VERSION_NUMBER >= 0x3070000fL)
     case NID_X25519:
         /* no parameters */
         if (NULL == (ctx = EVP_PKEY_CTX_new_id(EVP_PKEY_X25519, NULL))

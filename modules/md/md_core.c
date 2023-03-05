@@ -255,6 +255,7 @@ md_t *md_clone(apr_pool_t *p, const md_t *src)
         }
         md->acme_tls_1_domains = md_array_str_compact(p, src->acme_tls_1_domains, 0);
         md->stapling = src->stapling;
+        if (src->dns01_cmd) md->dns01_cmd = apr_pstrdup(p, src->dns01_cmd);
         if (src->cert_files) md->cert_files = md_array_str_clone(p, src->cert_files);
         if (src->pkey_files) md->pkey_files = md_array_str_clone(p, src->pkey_files);
     }    
@@ -311,6 +312,7 @@ md_json_t *md_to_json(const md_t *md, apr_pool_t *p)
         if (md->cert_files) md_json_setsa(md->cert_files, json, MD_KEY_CERT_FILES, NULL);
         if (md->pkey_files) md_json_setsa(md->pkey_files, json, MD_KEY_PKEY_FILES, NULL);
         md_json_setb(md->stapling > 0, json, MD_KEY_STAPLING, NULL);
+        if (md->dns01_cmd) md_json_sets(md->dns01_cmd, json, MD_KEY_CMD_DNS01, NULL);
         if (md->ca_eab_kid && strcmp("none", md->ca_eab_kid)) {
             md_json_sets(md->ca_eab_kid, json, MD_KEY_EAB, MD_KEY_KID, NULL);
             if (md->ca_eab_hmac) md_json_sets(md->ca_eab_hmac, json, MD_KEY_EAB, MD_KEY_HMAC, NULL);
@@ -376,7 +378,7 @@ md_t *md_from_json(md_json_t *json, apr_pool_t *p)
             md_json_dupsa(md->pkey_files, p, json, MD_KEY_PKEY_FILES, NULL);
         }
         md->stapling = (int)md_json_getb(json, MD_KEY_STAPLING, NULL);
-        
+        md->dns01_cmd = md_json_dups(p, json, MD_KEY_CMD_DNS01, NULL);
         if (md_json_has_key(json, MD_KEY_EAB, NULL)) {
             md->ca_eab_kid = md_json_dups(p, json, MD_KEY_EAB, MD_KEY_KID, NULL);
             md->ca_eab_hmac = md_json_dups(p, json, MD_KEY_EAB, MD_KEY_HMAC, NULL);

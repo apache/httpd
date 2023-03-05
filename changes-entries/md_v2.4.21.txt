@@ -1,0 +1,8 @@
+  *) mod_md:
+     - Enabling ED25519 support and certificate transparency information when
+       building with libressl v3.5.0 and newer. Thanks to Giovanni Bechis.
+     - MDChallengeDns01 can now be configured for individual domains.
+       Thanks to Jérôme Billiras (@bilhackmac) for the initial PR.
+     - Fixed a bug found by Jérôme Billiras (@bilhackmac) that caused the challenge
+       teardown not being invoked as it should.
+     [Stefan Eissing]
