@@ -19,7 +19,7 @@
 .el .ne 3
 .IP "\\$1" \\$2
 ..
-.TH "ROTATELOGS" 8 "2023-01-17" "Apache HTTP Server" "rotatelogs"
+.TH "ROTATELOGS" 8 "2023-03-05" "Apache HTTP Server" "rotatelogs"
 
 .SH NAME
 rotatelogs \- Piped logging program to rotate Apache logs
@@ -57,6 +57,9 @@ Creates the parent directories of the path that the log file will be placed in i
 .TP
 \fB-t\fR
 Causes the logfile to be truncated instead of rotated\&. This is useful when a log is processed in real time by a command like tail, and there is no need for archived data\&. No suffix will be added to the filename, however format strings containing '%' characters will be respected\&.  
+.TP
+\fB-T\fR
+Causes all but the initial logfile to be truncated when opened\&. This is useful when the format string contains something that will loop around, such as the day of the month\&. Available in 2\&.4\&.56 and later\&.  
 .TP
 \fB-v\fR
 Produce verbose output on STDERR\&. The output contains the result of the configuration parsing, and all file open and close actions\&.  
@@ -128,6 +131,15 @@ This configuration will rotate the error logfile whenever it reaches a size of 5
  
 .PP
 This creates the file \fB/var/log/logfile\fR, truncating the file at startup and then truncating the file once per day\&. It is expected in this scenario that a separate process (such as tail) would process the file in real time\&.
+ 
+.nf
+ 
+     CustomLog "|bin/rotatelogs -T /var/log/logfile\&.%d 86400" common
+ 
+.fi
+ 
+.PP
+If the server is started (or restarted) on the first of the month, this appends to \fB/var/log/logfile\&.01\fR\&. When a log entry is written on the second of the month, \fB/var/log/logfile\&.02\fR is truncated and new entries will be added to the top\&. This example keeps approximately 1 months worth of logs without external maintenance\&.
  
 .SH "PORTABILITY"
  

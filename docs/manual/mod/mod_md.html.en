@@ -644,6 +644,10 @@
                 challenge available for wildcard certificates. If you require
                 one of those, you need to configure this.
             </p><p>
+                It is now possible to use this directive inside a <code class="directive"><a href="#mdomain">MDomain</a></code>
+                section to specify a specific command for that domain. This allows to configure
+                a script specific for the particular DNS provider involved.
+            </p><p>
                 See the section about wildcard certificates above for more details.
             </p>
         
