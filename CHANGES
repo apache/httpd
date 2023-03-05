@@ -1,6 +1,34 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.56
 
+  *) rotatelogs: Add -T flag to allow subsequent rotated logfiles to be
+     truncated without the initial logfile being truncated.  [Eric Covener]
+
+  *) mod_ldap: LDAPConnectionPoolTTL should accept negative values in order to
+     allow connections of any age to be reused. Up to now, a negative value
+     was handled as an error when parsing the configuration file.  PR 66421.
+     [nailyk <bzapache nailyk.fr>, Christophe Jaillet]
+
+  *) mod_proxy_ajp: Report an error if the AJP backend sends an invalid number
+     of headers. [Ruediger Pluem]
+
+  *) mod_md:
+     - Enabling ED25519 support and certificate transparency information when
+       building with libressl v3.5.0 and newer. Thanks to Giovanni Bechis.
+     - MDChallengeDns01 can now be configured for individual domains.
+       Thanks to Jérôme Billiras (@bilhackmac) for the initial PR.
+     - Fixed a bug found by Jérôme Billiras (@bilhackmac) that caused the challenge
+       teardown not being invoked as it should.
+     [Stefan Eissing]
+
+  *) mod_http2: client resets of HTTP/2 streams led to unwanted 500 errors
+     reported in access logs and error documents. The processing of the
+     reset was correct, only unneccesary reporting was caused.
+     [Stefan Eissing]
+
+  *) mod_proxy_uwsgi: Stricter backend HTTP response parsing/validation.
+     [Yann Ylavic]
+
 Changes with Apache 2.4.55
 
   *) SECURITY: CVE-2022-37436: Apache HTTP Server: mod_proxy prior to
