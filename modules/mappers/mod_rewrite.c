@@ -4794,6 +4794,17 @@ static int hook_uri2file(request_rec *r)
         apr_size_t flen;
         int to_proxyreq;
 
+        if (r->args && *(ap_scan_vchar_obstext(r->args))) {
+            /*
+             * We have a raw control character or a ' ' in r->args.
+             * Correct encoding was missed.
+             */
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(10410)
+                          "Rewritten query string contains control "
+                          "characters or spaces");
+            return HTTP_FORBIDDEN;
+        }
+
         if (ACTION_STATUS == rulestatus) {
             int n = r->status;
 
@@ -5091,6 +5102,17 @@ static int hook_fixup(request_rec *r)
     rulestatus = apply_rewrite_list(r, dconf->rewriterules, dconf->directory);
     if (rulestatus) {
         unsigned skip;
+
+        if (r->args && *(ap_scan_vchar_obstext(r->args))) {
+            /*
+             * We have a raw control character or a ' ' in r->args.
+             * Correct encoding was missed.
+             */
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(10411)
+                          "Rewritten query string contains control "
+                          "characters or spaces");
+            return HTTP_FORBIDDEN;
+        }
 
         if (ACTION_STATUS == rulestatus) {
             int n = r->status;
