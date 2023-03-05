@@ -173,6 +173,7 @@ static const char* really_last_key = "rewrite_really_last";
 #define RULEFLAG_END                (1<<17)
 #define RULEFLAG_ESCAPENOPLUS       (1<<18)
 #define RULEFLAG_QSLAST             (1<<19)
+#define RULEFLAG_QSNONE             (1<<20) /* programattic only */
 
 /* return code of the rewrite rule
  * the result may be escaped - or not
@@ -769,11 +770,19 @@ static char *escape_absolute_uri(apr_pool_t *p, char *uri, unsigned scheme)
  * split out a QUERY_STRING part from
  * the current URI string
  */
-static void splitout_queryargs(request_rec *r, int qsappend, int qsdiscard, 
-                               int qslast)
+static void splitout_queryargs(request_rec *r, int flags)
 {
     char *q;
     int split, skip;
+    int qsappend = flags & RULEFLAG_QSAPPEND;
+    int qsdiscard = flags & RULEFLAG_QSDISCARD;
+    int qslast = flags & RULEFLAG_QSLAST;
+
+    if (flags & RULEFLAG_QSNONE) {
+        rewritelog(r, 2, NULL, "discarding query string, no parse from substitution");
+        r->args = NULL;
+        return;
+    }
 
     /* don't touch, unless it's a scheme for which a query string makes sense.
      * See RFC 1738 and RFC 2368.
@@ -798,7 +807,7 @@ static void splitout_queryargs(request_rec *r, int qsappend, int qsdiscard,
         olduri = apr_pstrdup(r->pool, r->filename);
         *q++ = '\0';
         if (qsappend) {
-            if (*q) { 
+            if (*q) {
                 r->args = apr_pstrcat(r->pool, q, "&" , r->args, NULL);
             }
         }
@@ -806,9 +815,9 @@ static void splitout_queryargs(request_rec *r, int qsappend, int qsdiscard,
             r->args = apr_pstrdup(r->pool, q);
         }
 
-        if (r->args) { 
+        if (r->args) {
            len = strlen(r->args);
-      
+
            if (!len) {
                r->args = NULL;
            }
@@ -2761,7 +2770,7 @@ static apr_status_t rewritelock_remove(void *data)
  * XXX: what an inclined parser. Seems we have to leave it so
  *      for backwards compat. *sigh*
  */
-static int parseargline(char *str, char **a1, char **a2, char **a3)
+static int parseargline(char *str, char **a1, char **a2, char **a2_end, char **a3)
 {
     char quote;
 
@@ -2812,8 +2821,10 @@ static int parseargline(char *str, char **a1, char **a2, char **a3)
 
     if (!*str) {
         *a3 = NULL; /* 3rd argument is optional */
+        *a2_end = str;
         return 0;
     }
+    *a2_end = str;
     *str++ = '\0';
 
     while (apr_isspace(*str)) {
@@ -3353,7 +3364,7 @@ static const char *cmd_rewritecond(cmd_parms *cmd, void *in_dconf,
     rewrite_server_conf *sconf;
     rewritecond_entry *newcond;
     ap_regex_t *regexp;
-    char *a1 = NULL, *a2 = NULL, *a3 = NULL;
+    char *a1 = NULL, *a2 = NULL, *a2_end, *a3 = NULL;
     const char *err;
 
     sconf = ap_get_module_config(cmd->server->module_config, &rewrite_module);
@@ -3371,7 +3382,7 @@ static const char *cmd_rewritecond(cmd_parms *cmd, void *in_dconf,
      * of the argument line. So we can use a1 .. a3 without
      * copying them again.
      */
-    if (parseargline(str, &a1, &a2, &a3)) {
+    if (parseargline(str, &a1, &a2, &a2_end, &a3)) {
         return apr_pstrcat(cmd->pool, "RewriteCond: bad argument line '", str,
                            "'", NULL);
     }
@@ -3779,7 +3790,7 @@ static const char *cmd_rewriterule(cmd_parms *cmd, void *in_dconf,
     rewrite_server_conf *sconf;
     rewriterule_entry *newrule;
     ap_regex_t *regexp;
-    char *a1 = NULL, *a2 = NULL, *a3 = NULL;
+    char *a1 = NULL, *a2 = NULL, *a2_end, *a3 = NULL;
     const char *err;
 
     sconf = ap_get_module_config(cmd->server->module_config, &rewrite_module);
@@ -3793,7 +3804,7 @@ static const char *cmd_rewriterule(cmd_parms *cmd, void *in_dconf,
     }
 
     /*  parse the argument line ourself */
-    if (parseargline(str, &a1, &a2, &a3)) {
+    if (parseargline(str, &a1, &a2, &a2_end, &a3)) {
         return apr_pstrcat(cmd->pool, "RewriteRule: bad argument line '", str,
                            "'", NULL);
     }
@@ -3838,6 +3849,16 @@ static const char *cmd_rewriterule(cmd_parms *cmd, void *in_dconf,
     newrule->output = a2;
     if (*a2 == '-' && !a2[1]) {
         newrule->flags |= RULEFLAG_NOSUB;
+    }
+
+    if (*(a2_end-1) == '?') {
+        /* a literal ? at the end of the unsubstituted rewrite rule */
+        newrule->flags |= RULEFLAG_QSNONE;
+    }
+    else if (newrule->flags & RULEFLAG_QSDISCARD) {
+        if (NULL == ap_strchr(newrule->output, '?')) {
+            newrule->flags |= RULEFLAG_QSNONE;
+        }
     }
 
     /* now, if the server or per-dir config holds an
@@ -4245,9 +4266,7 @@ static int apply_rewrite_rule(rewriterule_entry *p, rewrite_ctx *ctx)
         r->path_info = NULL;
     }
 
-    splitout_queryargs(r, p->flags & RULEFLAG_QSAPPEND, 
-                          p->flags & RULEFLAG_QSDISCARD, 
-                          p->flags & RULEFLAG_QSLAST);
+    splitout_queryargs(r, p->flags);
 
     /* Add the previously stripped per-directory location prefix, unless
      * (1) it's an absolute URL path and
