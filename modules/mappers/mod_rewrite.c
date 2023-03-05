@@ -779,7 +779,7 @@ static void splitout_queryargs(request_rec *r, int flags)
     int qslast = flags & RULEFLAG_QSLAST;
 
     if (flags & RULEFLAG_QSNONE) {
-        rewritelog(r, 2, NULL, "discarding query string, no parse from substitution");
+        rewritelog((r, 2, NULL, "discarding query string, no parse from substitution"));
         r->args = NULL;
         return;
     }
