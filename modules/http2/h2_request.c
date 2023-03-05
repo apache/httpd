@@ -381,6 +381,11 @@ request_rec *h2_create_request_rec(const h2_request *req, conn_rec *c,
         r->the_request = apr_psprintf(r->pool, "%s %s HTTP/2.0",
                                       req->method, req->path);
     }
+    else if (!apr_strnatcasecmp("CONNECT", req->method)) {
+      /* CONNECT MUST NOT have scheme or path */
+      r->the_request = apr_psprintf(r->pool, "%s %s HTTP/2.0",
+                                    req->method, req->authority);
+    }
     else {
         /* We should only come here on a request that is errored already.
          * create a request line that passes parsing, we'll die anyway.

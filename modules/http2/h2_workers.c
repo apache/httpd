@@ -131,8 +131,13 @@ static apr_status_t activate_slot(h2_workers *workers)
     apr_pool_tag(pool, "h2_worker_slot");
     slot->pool = pool;
 
+#if defined(AP_HAS_THREAD_LOCAL)
     rv = ap_thread_create(&slot->thread, workers->thread_attr,
                           slot_run, slot, slot->pool);
+#else
+    rv = apr_thread_create(&slot->thread, workers->thread_attr,
+                           slot_run, slot, slot->pool);
+#endif
 
 cleanup:
     if (rv != APR_SUCCESS) {
