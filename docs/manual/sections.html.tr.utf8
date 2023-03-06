@@ -29,7 +29,6 @@
 <a href="./ko/sections.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./tr/sections.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 
     <p><a href="configuring.html">Yapılandırma dosyaları</a>ndaki
        yönergeler sunucunun tamamına uygulanacağı gibi sadece belli dizinler,
@@ -349,9 +348,9 @@ ProxyPass "/" "balancer://mycluster/" stickysession=JSESSIONID|jsessionid nofail
     <p>Bazı bölüm türleri başka bölüm türlerinin içinde olabilir. Bir yandan,
       <code class="directive"><a href="./mod/core.html#files">&lt;Files&gt;</a></code> bölümü
       <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code> bölümünün
-      içinde bulunabilirken diğer yandan bir <code class="directive"><a href="./mod/core.html#if">&lt;If&gt;</a></code> bölümü <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code>, <code class="directive"><a href="./mod/core.html#location">&lt;Location&gt;</a></code> ve <code class="directive"><a href="./mod/core.html#files">&lt;Files&gt;</a></code> bölümlerinde bulunabilir fakat 
-      başka bir <code class="directive"><a href="./mod/core.html#if">&lt;If&gt;</a></code> bölümünün 
-      içinde bulunamaz. Bu bölümlerin düzenli ifadeli türevleri de benzer tarzda 
+      içinde bulunabilirken diğer yandan bir <code class="directive"><a href="./mod/core.html#if">&lt;If&gt;</a></code> bölümü <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code>, <code class="directive"><a href="./mod/core.html#location">&lt;Location&gt;</a></code> ve <code class="directive"><a href="./mod/core.html#files">&lt;Files&gt;</a></code> bölümlerinde bulunabilir fakat
+      başka bir <code class="directive"><a href="./mod/core.html#if">&lt;If&gt;</a></code> bölümünün
+      içinde bulunamaz. Bu bölümlerin düzenli ifadeli türevleri de benzer tarzda
       davranır.</p>
 
     <p>İç içe bölümler, aynı türdeki iç içe olmayan bölümlerin sonrasına
@@ -440,7 +439,9 @@ ProxyPass "/" "balancer://mycluster/" stickysession=JSESSIONID|jsessionid nofail
       ve <code class="directive"><a href="./mod/core.html#locationmatch">&lt;LocationMatch&gt;</a></code>
       aynı anda işleme sokulur.</li>
 
-      <li><code class="directive"><a href="./mod/core.html#if">&lt;If&gt;</a></code>
+      <li><code class="directive"><a href="./mod/core.html#if">&lt;If&gt;</a></code> bölümleri,
+      önceki bağlamlardan herhangi birinin içine alınmış olsalar bile.
+
       </li>
     </ol>
 
@@ -448,31 +449,41 @@ ProxyPass "/" "balancer://mycluster/" stickysession=JSESSIONID|jsessionid nofail
     <ul>
         <li><code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code>
         bölümündekiler hariç, her grup, yapılandırma dosyasında bulundukları
-        sıraya göre işleme sokulurlar. Örneğin, 4. grupta <em>/foo/bar</em> için yapılan 
-        bir istek <code>&lt;Location "/foo/bar"&gt;</code> ve <code>&lt;Location 
-        "/foo"&gt;</code> bölümleriyle de eşleşir ve bunlar yapılandırma 
+        sıraya göre işleme sokulurlar. Örneğin, 4. grupta <em>/foo/bar</em> için yapılan
+        bir istek <code>&lt;Location "/foo/bar"&gt;</code> ve <code>&lt;Location
+        "/foo"&gt;</code> bölümleriyle de eşleşir ve bunlar yapılandırma
         dosyalarında bulundukları sıraya göre değerlendirilir.</li>
-      
-        <li>Yukarıda 1. grup olan <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code> bölümü en kısa dizin elemanından en uzun 
-        dizin elemanına doğru işleme sokulur. Yani, örneğin, <code>&lt;Directory 
-        "/var/web/dir"&gt;</code> bölümü <code>&lt;Directory    
+
+        <li>Yukarıda 1. grup olan <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code> bölümü en kısa dizin elemanından en uzun
+        dizin elemanına doğru işleme sokulur. Yani, örneğin, <code>&lt;Directory
+        "/var/web/dir"&gt;</code> bölümü <code>&lt;Directory
         "/var/web/dir/subdir"&gt;</code> bölümünden önce işleme sokulacaktır.</li>
-    
-        <li>Eğer aynı dizin için birden fazla <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code> bölümü varsa bunlar yapılandırma 
+
+        <li>Eğer aynı dizin için birden fazla <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code> bölümü varsa bunlar yapılandırma
         dosyasında bulundukları sıraya göre işleme sokulurlar.</li>
-      
-        <li><code class="directive"><a href="./mod/core.html#include">Include</a></code> yönergeleri ile 
-        yapılandırmaya dahil edilen dosyaların içerikleri <code class="directive"><a href="./mod/core.html#include">Include</a></code> yönergesinin bulunduğu yere konulduktan 
+
+        <li><code class="directive"><a href="./mod/core.html#include">Include</a></code> yönergeleri ile
+        yapılandırmaya dahil edilen dosyaların içerikleri <code class="directive"><a href="./mod/core.html#include">Include</a></code> yönergesinin bulunduğu yere konulduktan
         sonra işleme sokulurlar.</li>
 
        <li><code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>
        bölümlerinin içindeki bölümler, sanal konak tanımı dışındaki
-       karşılıklarından <em>sonra</em> uygulanırlar. Bu yöntemle ana sunucu 
+       karşılıklarından <em>sonra</em> uygulanırlar. Bu yöntemle ana sunucu
        yapılandırmasındaki tanımlar geçersiz kılınabilir</li>
 
        <li>İstek <code class="module"><a href="./mod/mod_proxy.html">mod_proxy</a></code> tarafından sunulduğu takdirde,
        <code class="directive"><a href="./mod/mod_proxy.html#proxy">&lt;Proxy&gt;</a></code> taşıyıcısı
        işlem sırasında <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code> taşıyıcısının yerini alır.</li>
+
+       <li>katıştırma düzeni üzerindeki etkisi nedeniyle, ilgili yapılandırma
+       yönergelerini <code class="directive"><a href="./mod/core.html#if">&lt;If&gt;</a></code>'in
+       içinde ve dışında karıştırırken dikkatli olunmalıdır.  Doğrudan
+       <code class="directive"><a href="./mod/core.html#else">&lt;Else&gt;</a></code> kullanımının
+       yardımı olabilir.</li>
+
+       <li><code>.htaccess</code> içinde <code class="directive"><a href="./mod/core.html#if">&lt;If&gt;</a></code> kullanıldığında, üst dizindeki sarmalanmış
+       yönergeler, alt dizinde sarmalanmamış yönergelerden <em>sonra</em>
+       birleştirilir.</li>
     </ul>
 
     <div class="note"><h3>Bazı Teknik Bilgiler</h3>
@@ -484,35 +495,35 @@ ProxyPass "/" "balancer://mycluster/" stickysession=JSESSIONID|jsessionid nofail
       tamamen elden çıkarılır.
     </div>
 
-  <h3><a name="relationship-module-configuration" id="relationship-module-configuration">Modüllerle 
+  <h3><a name="relationship-module-configuration" id="relationship-module-configuration">Modüllerle
     yapılandırma bölümleri arasındaki ilişki</a></h3>
-  
-    <p>Yapılandırma bölümlerini okurken örneğin <code class="module"><a href="./mod/mod_rewrite.html">mod_rewrite</a></code>  
-      gibi belli modüllerin yönergelerinin bu bölümlere nasıl katılacağı ve  
-      ne zaman nasıl işleneceği gibi sorular sıkça aklımızdan geçer. Bunun 
-      belli bir yanıtı yoktur ve biraz temel bilgi gerektirir. Her httpd 
-      modülü yapılandırmasını kendi yönetir ve httpd.conf içindeki 
-      yönergelerinin her biri belli bir bağlamdaki bir yapılandırmayı 
+
+    <p>Yapılandırma bölümlerini okurken örneğin <code class="module"><a href="./mod/mod_rewrite.html">mod_rewrite</a></code>
+      gibi belli modüllerin yönergelerinin bu bölümlere nasıl katılacağı ve
+      ne zaman nasıl işleneceği gibi sorular sıkça aklımızdan geçer. Bunun
+      belli bir yanıtı yoktur ve biraz temel bilgi gerektirir. Her httpd
+      modülü yapılandırmasını kendi yönetir ve httpd.conf içindeki
+      yönergelerinin her biri belli bir bağlamdaki bir yapılandırmayı
       belirtir. httpd bir komutu okunduğu sırada çalıştırmaz.</p>
-    
-    <p>Çalışma anında, httpd çekirdeği geçerli isteğe hangilerinin 
-      uygulanacağını belirlemek için yukarıda açıklanan sırada tanımlı 
-      yapılandırma bölümlerini tekrar tekrar okur. Eşleşen ilk bölümün bu 
-      istek için geçerli yapılandırmayı içerdiği varsayılır. Eğer alt 
-      bölümlerden biri de eşleşmişse bu bölümlerde yönergeleri bulunan her 
-      modüle yapılandırmasını iki bölüm arasında katıştırma şansı verilir. 
-      Sonuç üçüncü bir yapılandırma olup işlem bütün yapılandırma bölümleri 
+
+    <p>Çalışma anında, httpd çekirdeği geçerli isteğe hangilerinin
+      uygulanacağını belirlemek için yukarıda açıklanan sırada tanımlı
+      yapılandırma bölümlerini tekrar tekrar okur. Eşleşen ilk bölümün bu
+      istek için geçerli yapılandırmayı içerdiği varsayılır. Eğer alt
+      bölümlerden biri de eşleşmişse bu bölümlerde yönergeleri bulunan her
+      modüle yapılandırmasını iki bölüm arasında katıştırma şansı verilir.
+      Sonuç üçüncü bir yapılandırma olup işlem bütün yapılandırma bölümleri
       değerlendirilene kadar sürer.</p>
-    
-    <p>Yukarıdaki adımların ardından HTTP isteğiyle ilgili "asıl" işlem 
-      başlar: her modül ondan istenen görevleri gerçekleştirme şansına sahip 
-      olur. Nasıl davranacaklarını belirlemek için kendilerinin katıştırılmış 
+
+    <p>Yukarıdaki adımların ardından HTTP isteğiyle ilgili "asıl" işlem
+      başlar: her modül ondan istenen görevleri gerçekleştirme şansına sahip
+      olur. Nasıl davranacaklarını belirlemek için kendilerinin katıştırılmış
       son yapılandırmalarını http çekirdeğinden alabilirler.</p>
-    
-    <p>Sürecin tamamı bir örnekle görselleştirilebilir. Aşağıdaki örnekte 
-      belli bir HTTP başlığını ayarlamak için <code class="module"><a href="./mod/mod_headers.html">mod_headers</a></code> 
-      modülünün <code class="directive"><a href="./mod/mod_headers.html#header">Header</a></code> yönergesi 
-      kullanılmıştır. <code>/example/index.html</code> isteği için httpd 
+
+    <p>Sürecin tamamı bir örnekle görselleştirilebilir. Aşağıdaki örnekte
+      belli bir HTTP başlığını ayarlamak için <code class="module"><a href="./mod/mod_headers.html">mod_headers</a></code>
+      modülünün <code class="directive"><a href="./mod/mod_headers.html#header">Header</a></code> yönergesi
+      kullanılmıştır. <code>/example/index.html</code> isteği için httpd
       <code>CustomHeaderName</code> başlığına hangi değeri atayacaktır?
     </p>
     <pre class="prettyprint lang-config">&lt;Directory "/"&gt;
@@ -525,37 +536,37 @@ ProxyPass "/" "balancer://mycluster/" stickysession=JSESSIONID|jsessionid nofail
 &lt;Directory "/example"&gt;
     Header set CustomHeaderName iki
 &lt;/Directory&gt;</pre>
-    
+
     <ul>
-        <li><code class="directive">Directory</code> "/" eşleşir ve ilk yapılandırma 
-          olarak <code>CustomHeaderName</code> başlığı <code>bir</code> 
+        <li><code class="directive">Directory</code> "/" eşleşir ve ilk yapılandırma
+          olarak <code>CustomHeaderName</code> başlığı <code>bir</code>
           değeriyle oluşturulur.</li>
-        
-        <li><code class="directive">Directory</code> "/example" eşleşir ve 
-          <code class="module"><a href="./mod/mod_headers.html">mod_headers</a></code> modülünün koduna göre bir katıştırma 
-          durumundan yeni değer eskiyi geçersiz kılacağından yeni bir 
-          yapılandırma ile <code>CustomHeaderName</code> başlığının değeri 
+
+        <li><code class="directive">Directory</code> "/example" eşleşir ve
+          <code class="module"><a href="./mod/mod_headers.html">mod_headers</a></code> modülünün koduna göre bir katıştırma
+          durumundan yeni değer eskiyi geçersiz kılacağından yeni bir
+          yapılandırma ile <code>CustomHeaderName</code> başlığının değeri
           <code>iki</code> yapılır.</li>
-        
-        <li><code class="directive">FilesMatch</code> ".*" eşleşir ve başka bir 
-          katıştırma fırsatı doğar: <code>CustomHeaderName</code> başlığının 
+
+        <li><code class="directive">FilesMatch</code> ".*" eşleşir ve başka bir
+          katıştırma fırsatı doğar: <code>CustomHeaderName</code> başlığının
           değeri <code>yedi</code> yapılır.</li>
-        
-        <li>Neticede HHP isteğinin sonraki adımlarında 
-          <code class="module"><a href="./mod/mod_headers.html">mod_headers</a></code> çağrılıp <code>yedi</code> değeri 
-          atanmış <code>CustomHeaderName</code> başlığını işleme sokması 
-          istenecektir. <code class="module"><a href="./mod/mod_headers.html">mod_headers</a></code> normalde işini yapmak 
-          için bu yapılandırmayı kullanacaktır. Fakat bundan, bir yönergenin  
-          gerekli olmaması veya kullanımdan kaldırılması ve benzeri nedenlerle 
-          yapılandırmada iptal edilmesi gibi daha karmaşık bir eylemi bir 
+
+        <li>Neticede HHP isteğinin sonraki adımlarında
+          <code class="module"><a href="./mod/mod_headers.html">mod_headers</a></code> çağrılıp <code>yedi</code> değeri
+          atanmış <code>CustomHeaderName</code> başlığını işleme sokması
+          istenecektir. <code class="module"><a href="./mod/mod_headers.html">mod_headers</a></code> normalde işini yapmak
+          için bu yapılandırmayı kullanacaktır. Fakat bundan, bir yönergenin
+          gerekli olmaması veya kullanımdan kaldırılması ve benzeri nedenlerle
+          yapılandırmada iptal edilmesi gibi daha karmaşık bir eylemi bir
           modülün gerçekleştiremeyeceği anlamı çıkarılmamalıdır.</li>
     </ul>
 
-    <p><code class="directive">Directory</code> ile aynı katıştırma sırasından dolayı 
-      bu durum .htaccess için de geçerlidir. Burada anlaşılması gereken husus, 
-      <code class="directive">Directory</code> ve <code class="directive">FilesMatch</code> 
-      gibi yapılandırma bölümlerinin <code class="directive"><a href="./mod/mod_headers.html#header">Header</a></code> veya <code class="directive"><a href="./mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> gibi modüle özgü 
-      yönergelerle karşılaştırılmamasıdır, çünkü bunlar farklı seviyelerde 
+    <p><code class="directive">Directory</code> ile aynı katıştırma sırasından dolayı
+      bu durum .htaccess için de geçerlidir. Burada anlaşılması gereken husus,
+      <code class="directive">Directory</code> ve <code class="directive">FilesMatch</code>
+      gibi yapılandırma bölümlerinin <code class="directive"><a href="./mod/mod_headers.html#header">Header</a></code> veya <code class="directive"><a href="./mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> gibi modüle özgü
+      yönergelerle karşılaştırılmamasıdır, çünkü bunlar farklı seviyelerde
       işlem görür.
     </p>
   

@@ -30,7 +30,6 @@
 <a href="../ko/programs/rotatelogs.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/programs/rotatelogs.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 
      <p><code><strong>rotatelogs</strong></code>, Apache'nin borulu günlük
      dosyaları özelliği ile birlikte kullanmak için tasarlanmış basit bir
@@ -108,6 +107,13 @@
     zamanda işlendiği ve veriyi saklamanın gerekmediği durumda kullanışlıdır.
     Dosya ismine bir sonek eklenmez, ancak biçem dizgesi '%' karakteri
     içeriyorsa buna uyulur.</dd>
+
+    <dt><code>-T</code></dt>
+    <dd>Açıldığında ilk günlük dosyası dışındaki tüm dosyaların kırpılmasına
+    neden olur. Bu, biçem dizgesi ayın günü gibi döngüsel bir şey içerdiğinde
+    kullanışlıdır. 2.4.56 ve sonrasında mevcuttur.
+    </dd>
+
 
     <dt><code><strong>-v</strong></code></dt>
     <dd>Standart hataya verilen çıktı daha ayrıntılı olur. Çıktı,
@@ -191,9 +197,8 @@
 <div class="section">
 <h2><a name="examples" id="examples">Örnekler</a></h2>
 
-<div class="example"><p><code>
-     CustomLog "|bin/rotatelogs /var/log/logfile 86400" common
-</code></p></div>
+<div class="example"><pre class="prettyprint lang-config">CustomLog "|bin/rotatelogs /var/log/logfile 86400" common</pre>
+</div>
 
      <p>nnnn, günlük kaydının başladığı sistem zamanı olmak üzere
      /var/log/logfile.nnnn dosyası oluşturulur. Bu zaman, daima döngü
@@ -201,35 +206,40 @@
      kullanabilirsiniz. Her döngü süresinin sonunda (burada 24 saat sonra)
      yeni bir günlük dosyası açılır.</p>
 
-<div class="example"><p><code>
-     CustomLog "|bin/rotatelogs -l /var/log/logfile.%Y.%m.%d 86400" common
-</code></p></div>
+<div class="example"><pre class="prettyprint lang-config">CustomLog "|bin/rotatelogs -l /var/log/logfile.%Y.%m.%d 86400" common</pre>
+</div>
 
      <p>yyyy, yıl; mm, ay; dd, ayın gününü belirtmek üzere
      /var/log/logfile.yyyy.mm.dd dosyası oluşturulur. Her gün yerel zamanla
      geceyarısı yeni bir günlük dosyasına geçilecektir.</p>
 
-<div class="example"><p><code>
-     CustomLog "|bin/rotatelogs /var/log/logfile 5M" common
-</code></p></div>
+<div class="example"><pre class="prettyprint lang-config">CustomLog "|bin/rotatelogs /var/log/logfile 5M" common</pre>
+</div>
 
      <p>Günlük dosyası 5 megabaytlık olunca yenisinin oluşturulmasını sağlar.
      </p>
 
-<div class="example"><p><code>
-     ErrorLog "|bin/rotatelogs /var/log/errorlog.%Y-%m-%d-%H_%M_%S 5M"
-</code></p></div>
+<div class="example"><pre class="prettyprint lang-config">ErrorLog "|bin/rotatelogs /var/log/errorlog.%Y-%m-%d-%H_%M_%S 5M"</pre>
+</div>
      <p>Hata günlüğünün 5 megabaytta bir
      <code>errorlog.YYYY-mm-dd-HH_MM_SS</code> biçemli bir isimle
      oluşturulmasını sağlar.</p>
 
-<div class="example"><p><code>
-     CustomLog "|bin/rotatelogs -t /var/log/logfile 86400" common
-</code></p></div>
+<div class="example"><pre class="prettyprint lang-config">CustomLog "|bin/rotatelogs -t /var/log/logfile 86400" common</pre>
+</div>
 
-     <p>/var/log/logfile dosyasını oluşturur, sunucu başlatılırken ve günde
+     <p><code>/var/log/logfile</code> dosyasını oluşturur, sunucu başlatılırken ve günde
        bir kere dosyanın tepesi kırpılır. Bu senaryoda ayrı bir sürecin (tail
        gibi) dosyayı gerçek zamanlı işleyeceği umulur.</p>
+
+<div class="example"><pre class="prettyprint lang-config">CustomLog "|bin/rotatelogs -T /var/log/logfile.%d 86400" common</pre>
+</div>
+
+     <p>Sunucu ayın birinde başlatılırsa (veya yeniden başlatılırsa), bu,
+     <code>/var/log/logfile.01</code> dosyasının sonuna eklenir. Ayın ikinci
+     günü bir günlük girişi yazıldığında, <code>/var/log/logfile.02</code>
+     kırpılır ve en üste yeni girdiler eklenir. Bu örnek, özel bir bakım
+     gerektirmeden yaklaşık 1 aylık günlük tutar.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">

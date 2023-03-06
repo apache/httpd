@@ -33,7 +33,6 @@
 <a href="../ja/mod/core.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../tr/mod/core.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Açıklama:</a></th><td>Apache HTTP Sunucusunda daima mevcut olan çekirdek
  özellikler</td></tr>
 <tr><th><a href="module-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr></table>
@@ -1359,6 +1358,11 @@ DocumentRoot "/var/www/${servername}/htdocs"</pre>
 &lt;/IfDefine&gt;</pre>
 
 
+    <div class="warning"><h3>Ek Bilgi</h3>
+      <p>Bu yönerge, çalışma zamanında değil, yapılandırma işlemi sırasında
+      değerlendirilir. Sonuç olarak, bu yönerge bir <code class="directive"><a href="#if">&lt;If&gt;</a></code> bölümü içine alınarak koşullu olarak
+      değerlendirilemez.</p>
+    </div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -1696,7 +1700,7 @@ ErrorLogFormat "[%{uc}t] [%-m:%-l] [R:%L] [C:%{C}L] %7F: %E: %M"
 ErrorLogFormat request "[%{uc}t] [R:%L] Request %k on C:%{c}L pid:%P tid:%T"
 ErrorLogFormat request "[%{uc}t] [R:%L] UA:'%+{User-Agent}i'"
 ErrorLogFormat request "[%{uc}t] [R:%L] Referer:'%+{Referer}i'"
-ErrorLogFormat connection "[%{uc}t] [C:%{c}L] local\ %a remote\ %A"</pre>
+ErrorLogFormat connection "[%{uc}t] [C:%{c}L] remote\ %a local\ %A"</pre>
 
 
 
@@ -2250,6 +2254,13 @@ takdirde uygulanacak yönergeleri barındırır.</td></tr>
     &lt;If&gt; sonrasında atanan <code>CONTENT_TYPE</code> gibi belli
     değişkenler ve diğer yanıt başlıkları zaten yorumlanmış olacaklarından bu
     yönerge için kullanılabilir olmayacaktır.
+    </div>
+
+    <div class="warning"><code class="directive">Define</code>,
+    <code class="directive">Include</code> ve <code class="directive">Error</code> gibi
+    yapılandırma ayrıştırılırken etkili olan yönergeler, bir <code class="directive">&lt;If&gt;</code> yapılandırma bölümü içine alınarak koşullu
+    hale getirilemez. Bu bölümler, çalışma anında nasıl değerlendirildiklerine
+    bakılmaksızın, her zaman yapılandırmanın bir parçasıdır.
     </div>
 
 
