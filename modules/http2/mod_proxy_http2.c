@@ -167,7 +167,7 @@ static int proxy_http2_canon(request_rec *r, char *url)
                  * We have a raw control character or a ' ' in r->args.
                  * Correct encoding was missed.
                  */
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO()
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(10412)
                               "To be forwarded query string contains control "
                               "characters or spaces");
                 return HTTP_FORBIDDEN;
