@@ -1532,6 +1532,7 @@ static const char *const ssl_hook_Fixup_vars[] = {
     "SSL_SERVER_A_SIG",
     "SSL_SESSION_ID",
     "SSL_SESSION_RESUMED",
+    "SSL_SHARED_CIPHERS",
 #ifdef HAVE_SRP
     "SSL_SRP_USER",
     "SSL_SRP_USERINFO",

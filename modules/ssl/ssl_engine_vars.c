@@ -506,6 +506,11 @@ static const char *ssl_var_lookup_ssl(apr_pool_t *p, const SSLConnRec *sslconn,
     else if (ssl != NULL && strcEQ(var, "COMPRESS_METHOD")) {
         result = ssl_var_lookup_ssl_compress_meth(ssl);
     }
+    else if (ssl != NULL && strcEQ(var, "SHARED_CIPHERS")) {
+        char buf[ 1024 * 16 ];
+        if (SSL_get_shared_ciphers(ssl,buf,sizeof(buf)))
+               result = apr_pstrdup(p,buf);
+    }
 #ifdef HAVE_TLSEXT
     else if (ssl != NULL && strcEQ(var, "TLS_SNI")) {
         result = apr_pstrdup(p, SSL_get_servername(ssl,

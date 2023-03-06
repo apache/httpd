@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) Add a SSL_SHARED_CIPHER environment variable with the list of
+     client/server permitted ciphers. [Dirk-Willem van Gulik]
+
   *) mod_http2: field values (headers and trailers) are stripped of
      leading/trailing whitespace (space +htab) before being processed
      or send in a response. This is compatible behaviour to HTTP/1.1
