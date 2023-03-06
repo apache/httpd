@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.tr.xsl"?>
-<!-- English Revision: 1869920:1905717 (outdated) -->
+<!-- English Revision: 1905717 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
    Reviewed by: Orhan Berent <berent belgeler.gen.tr>
@@ -395,9 +395,9 @@ ProxyPass "/" "balancer://mycluster/" stickysession=JSESSIONID|jsessionid nofail
       module="core">If</directive> bölümü <directive type="section"
       module="core">Directory</directive>, <directive type="section"
       module="core">Location</directive> ve <directive
-      type="section" module="core">Files</directive> bölümlerinde bulunabilir fakat 
-      başka bir <directive type="section" module="core">If</directive> bölümünün 
-      içinde bulunamaz. Bu bölümlerin düzenli ifadeli türevleri de benzer tarzda 
+      type="section" module="core">Files</directive> bölümlerinde bulunabilir fakat
+      başka bir <directive type="section" module="core">If</directive> bölümünün
+      içinde bulunamaz. Bu bölümlerin düzenli ifadeli türevleri de benzer tarzda
       davranır.</p>
 
     <p>İç içe bölümler, aynı türdeki iç içe olmayan bölümlerin sonrasına
@@ -492,7 +492,9 @@ ProxyPass "/" "balancer://mycluster/" stickysession=JSESSIONID|jsessionid nofail
       ve <directive type="section" module="core">LocationMatch</directive>
       aynı anda işleme sokulur.</li>
 
-      <li><directive type="section" module="core">If</directive>
+      <li><directive type="section" module="core">If</directive> bölümleri,
+      önceki bağlamlardan herhangi birinin içine alınmış olsalar bile.
+
       </li>
     </ol>
 
@@ -500,35 +502,46 @@ ProxyPass "/" "balancer://mycluster/" stickysession=JSESSIONID|jsessionid nofail
     <ul>
         <li><directive type="section" module="core">Directory</directive>
         bölümündekiler hariç, her grup, yapılandırma dosyasında bulundukları
-        sıraya göre işleme sokulurlar. Örneğin, 4. grupta <em>/foo/bar</em> için yapılan 
-        bir istek <code>&lt;Location "/foo/bar"&gt;</code> ve <code>&lt;Location 
-        "/foo"&gt;</code> bölümleriyle de eşleşir ve bunlar yapılandırma 
+        sıraya göre işleme sokulurlar. Örneğin, 4. grupta <em>/foo/bar</em> için yapılan
+        bir istek <code>&lt;Location "/foo/bar"&gt;</code> ve <code>&lt;Location
+        "/foo"&gt;</code> bölümleriyle de eşleşir ve bunlar yapılandırma
         dosyalarında bulundukları sıraya göre değerlendirilir.</li>
-      
-        <li>Yukarıda 1. grup olan <directive type="section" 
-        module="core">Directory</directive> bölümü en kısa dizin elemanından en uzun 
-        dizin elemanına doğru işleme sokulur. Yani, örneğin, <code>&lt;Directory 
-        "/var/web/dir"&gt;</code> bölümü <code>&lt;Directory    
+
+        <li>Yukarıda 1. grup olan <directive type="section"
+        module="core">Directory</directive> bölümü en kısa dizin elemanından en uzun
+        dizin elemanına doğru işleme sokulur. Yani, örneğin, <code>&lt;Directory
+        "/var/web/dir"&gt;</code> bölümü <code>&lt;Directory
         "/var/web/dir/subdir"&gt;</code> bölümünden önce işleme sokulacaktır.</li>
-    
-        <li>Eğer aynı dizin için birden fazla <directive type="section"      
-        module="core">Directory</directive> bölümü varsa bunlar yapılandırma 
+
+        <li>Eğer aynı dizin için birden fazla <directive type="section"
+        module="core">Directory</directive> bölümü varsa bunlar yapılandırma
         dosyasında bulundukları sıraya göre işleme sokulurlar.</li>
-      
-        <li><directive module="core">Include</directive> yönergeleri ile 
-        yapılandırmaya dahil edilen dosyaların içerikleri <directive 
-        module="core">Include</directive> yönergesinin bulunduğu yere konulduktan 
+
+        <li><directive module="core">Include</directive> yönergeleri ile
+        yapılandırmaya dahil edilen dosyaların içerikleri <directive
+        module="core">Include</directive> yönergesinin bulunduğu yere konulduktan
         sonra işleme sokulurlar.</li>
 
        <li><directive type="section" module="core">VirtualHost</directive>
        bölümlerinin içindeki bölümler, sanal konak tanımı dışındaki
-       karşılıklarından <em>sonra</em> uygulanırlar. Bu yöntemle ana sunucu 
+       karşılıklarından <em>sonra</em> uygulanırlar. Bu yöntemle ana sunucu
        yapılandırmasındaki tanımlar geçersiz kılınabilir</li>
 
        <li>İstek <module>mod_proxy</module> tarafından sunulduğu takdirde,
        <directive module="mod_proxy" type="section">Proxy</directive> taşıyıcısı
        işlem sırasında <directive module="core" type="section"
        >Directory</directive> taşıyıcısının yerini alır.</li>
+
+       <li>katıştırma düzeni üzerindeki etkisi nedeniyle, ilgili yapılandırma
+       yönergelerini <directive type="section" module="core">If</directive>'in
+       içinde ve dışında karıştırırken dikkatli olunmalıdır.  Doğrudan
+       <directive type="section" module="core" >Else</directive> kullanımının
+       yardımı olabilir.</li>
+
+       <li><code>.htaccess</code> içinde <directive type="section"
+       module="core">If</directive> kullanıldığında, üst dizindeki sarmalanmış
+       yönergeler, alt dizinde sarmalanmamış yönergelerden <em>sonra</em>
+       birleştirilir.</li>
     </ul>
 
     <note><title>Bazı Teknik Bilgiler</title>
@@ -540,35 +553,35 @@ ProxyPass "/" "balancer://mycluster/" stickysession=JSESSIONID|jsessionid nofail
       tamamen elden çıkarılır.
     </note>
 
-  <section id="relationship-module-configuration"><title>Modüllerle 
+  <section id="relationship-module-configuration"><title>Modüllerle
     yapılandırma bölümleri arasındaki ilişki</title>
-  
-    <p>Yapılandırma bölümlerini okurken örneğin <module>mod_rewrite</module>  
-      gibi belli modüllerin yönergelerinin bu bölümlere nasıl katılacağı ve  
-      ne zaman nasıl işleneceği gibi sorular sıkça aklımızdan geçer. Bunun 
-      belli bir yanıtı yoktur ve biraz temel bilgi gerektirir. Her httpd 
-      modülü yapılandırmasını kendi yönetir ve httpd.conf içindeki 
-      yönergelerinin her biri belli bir bağlamdaki bir yapılandırmayı 
+
+    <p>Yapılandırma bölümlerini okurken örneğin <module>mod_rewrite</module>
+      gibi belli modüllerin yönergelerinin bu bölümlere nasıl katılacağı ve
+      ne zaman nasıl işleneceği gibi sorular sıkça aklımızdan geçer. Bunun
+      belli bir yanıtı yoktur ve biraz temel bilgi gerektirir. Her httpd
+      modülü yapılandırmasını kendi yönetir ve httpd.conf içindeki
+      yönergelerinin her biri belli bir bağlamdaki bir yapılandırmayı
       belirtir. httpd bir komutu okunduğu sırada çalıştırmaz.</p>
-    
-    <p>Çalışma anında, httpd çekirdeği geçerli isteğe hangilerinin 
-      uygulanacağını belirlemek için yukarıda açıklanan sırada tanımlı 
-      yapılandırma bölümlerini tekrar tekrar okur. Eşleşen ilk bölümün bu 
-      istek için geçerli yapılandırmayı içerdiği varsayılır. Eğer alt 
-      bölümlerden biri de eşleşmişse bu bölümlerde yönergeleri bulunan her 
-      modüle yapılandırmasını iki bölüm arasında katıştırma şansı verilir. 
-      Sonuç üçüncü bir yapılandırma olup işlem bütün yapılandırma bölümleri 
+
+    <p>Çalışma anında, httpd çekirdeği geçerli isteğe hangilerinin
+      uygulanacağını belirlemek için yukarıda açıklanan sırada tanımlı
+      yapılandırma bölümlerini tekrar tekrar okur. Eşleşen ilk bölümün bu
+      istek için geçerli yapılandırmayı içerdiği varsayılır. Eğer alt
+      bölümlerden biri de eşleşmişse bu bölümlerde yönergeleri bulunan her
+      modüle yapılandırmasını iki bölüm arasında katıştırma şansı verilir.
+      Sonuç üçüncü bir yapılandırma olup işlem bütün yapılandırma bölümleri
       değerlendirilene kadar sürer.</p>
-    
-    <p>Yukarıdaki adımların ardından HTTP isteğiyle ilgili "asıl" işlem 
-      başlar: her modül ondan istenen görevleri gerçekleştirme şansına sahip 
-      olur. Nasıl davranacaklarını belirlemek için kendilerinin katıştırılmış 
+
+    <p>Yukarıdaki adımların ardından HTTP isteğiyle ilgili "asıl" işlem
+      başlar: her modül ondan istenen görevleri gerçekleştirme şansına sahip
+      olur. Nasıl davranacaklarını belirlemek için kendilerinin katıştırılmış
       son yapılandırmalarını http çekirdeğinden alabilirler.</p>
-    
-    <p>Sürecin tamamı bir örnekle görselleştirilebilir. Aşağıdaki örnekte 
-      belli bir HTTP başlığını ayarlamak için <module>mod_headers</module> 
-      modülünün <directive module="mod_headers">Header</directive> yönergesi 
-      kullanılmıştır. <code>/example/index.html</code> isteği için httpd 
+
+    <p>Sürecin tamamı bir örnekle görselleştirilebilir. Aşağıdaki örnekte
+      belli bir HTTP başlığını ayarlamak için <module>mod_headers</module>
+      modülünün <directive module="mod_headers">Header</directive> yönergesi
+      kullanılmıştır. <code>/example/index.html</code> isteği için httpd
       <code>CustomHeaderName</code> başlığına hangi değeri atayacaktır?
     </p>
     <highlight language="config">
@@ -583,40 +596,40 @@ ProxyPass "/" "balancer://mycluster/" stickysession=JSESSIONID|jsessionid nofail
 &lt;Directory "/example"&gt;
     Header set CustomHeaderName iki
 &lt;/Directory&gt;
-     
-    </highlight>    
+
+    </highlight>
     <ul>
-        <li><directive>Directory</directive> "/" eşleşir ve ilk yapılandırma 
-          olarak <code>CustomHeaderName</code> başlığı <code>bir</code> 
+        <li><directive>Directory</directive> "/" eşleşir ve ilk yapılandırma
+          olarak <code>CustomHeaderName</code> başlığı <code>bir</code>
           değeriyle oluşturulur.</li>
-        
-        <li><directive>Directory</directive> "/example" eşleşir ve 
-          <module>mod_headers</module> modülünün koduna göre bir katıştırma 
-          durumundan yeni değer eskiyi geçersiz kılacağından yeni bir 
-          yapılandırma ile <code>CustomHeaderName</code> başlığının değeri 
+
+        <li><directive>Directory</directive> "/example" eşleşir ve
+          <module>mod_headers</module> modülünün koduna göre bir katıştırma
+          durumundan yeni değer eskiyi geçersiz kılacağından yeni bir
+          yapılandırma ile <code>CustomHeaderName</code> başlığının değeri
           <code>iki</code> yapılır.</li>
-        
-        <li><directive>FilesMatch</directive> ".*" eşleşir ve başka bir 
-          katıştırma fırsatı doğar: <code>CustomHeaderName</code> başlığının 
+
+        <li><directive>FilesMatch</directive> ".*" eşleşir ve başka bir
+          katıştırma fırsatı doğar: <code>CustomHeaderName</code> başlığının
           değeri <code>yedi</code> yapılır.</li>
-        
-        <li>Neticede HHP isteğinin sonraki adımlarında 
-          <module>mod_headers</module> çağrılıp <code>yedi</code> değeri 
-          atanmış <code>CustomHeaderName</code> başlığını işleme sokması 
-          istenecektir. <module>mod_headers</module> normalde işini yapmak 
-          için bu yapılandırmayı kullanacaktır. Fakat bundan, bir yönergenin  
-          gerekli olmaması veya kullanımdan kaldırılması ve benzeri nedenlerle 
-          yapılandırmada iptal edilmesi gibi daha karmaşık bir eylemi bir 
+
+        <li>Neticede HHP isteğinin sonraki adımlarında
+          <module>mod_headers</module> çağrılıp <code>yedi</code> değeri
+          atanmış <code>CustomHeaderName</code> başlığını işleme sokması
+          istenecektir. <module>mod_headers</module> normalde işini yapmak
+          için bu yapılandırmayı kullanacaktır. Fakat bundan, bir yönergenin
+          gerekli olmaması veya kullanımdan kaldırılması ve benzeri nedenlerle
+          yapılandırmada iptal edilmesi gibi daha karmaşık bir eylemi bir
           modülün gerçekleştiremeyeceği anlamı çıkarılmamalıdır.</li>
     </ul>
 
-    <p><directive>Directory</directive> ile aynı katıştırma sırasından dolayı 
-      bu durum .htaccess için de geçerlidir. Burada anlaşılması gereken husus, 
-      <directive>Directory</directive> ve <directive>FilesMatch</directive> 
-      gibi yapılandırma bölümlerinin <directive 
-      module="mod_headers">Header</directive> veya <directive 
-      module="mod_rewrite">RewriteRule</directive> gibi modüle özgü 
-      yönergelerle karşılaştırılmamasıdır, çünkü bunlar farklı seviyelerde 
+    <p><directive>Directory</directive> ile aynı katıştırma sırasından dolayı
+      bu durum .htaccess için de geçerlidir. Burada anlaşılması gereken husus,
+      <directive>Directory</directive> ve <directive>FilesMatch</directive>
+      gibi yapılandırma bölümlerinin <directive
+      module="mod_headers">Header</directive> veya <directive
+      module="mod_rewrite">RewriteRule</directive> gibi modüle özgü
+      yönergelerle karşılaştırılmamasıdır, çünkü bunlar farklı seviyelerde
       işlem görür.
     </p>
   </section>

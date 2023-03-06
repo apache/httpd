@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 1901499:1907151 (outdated) -->
+<!-- English Revision: 1907151 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
    Reviewed by: Orhan Berent <berent belgeler.gen.tr>
@@ -1412,6 +1412,12 @@ EnableSendfile On
 &lt;/IfDefine&gt;
     </highlight>
 
+    <note type="warning"><title>Ek Bilgi</title>
+      <p>Bu yönerge, çalışma zamanında değil, yapılandırma işlemi sırasında
+      değerlendirilir. Sonuç olarak, bu yönerge bir <directive type="section"
+      module="core">If</directive> bölümü içine alınarak koşullu olarak
+      değerlendirilemez.</p>
+    </note>
 </usage>
 </directivesynopsis>
 
@@ -1795,7 +1801,7 @@ ErrorLogFormat "[%{uc}t] [%-m:%-l] [R:%L] [C:%{C}L] %7F: %E: %M"
 ErrorLogFormat request "[%{uc}t] [R:%L] Request %k on C:%{c}L pid:%P tid:%T"
 ErrorLogFormat request "[%{uc}t] [R:%L] UA:'%+{User-Agent}i'"
 ErrorLogFormat request "[%{uc}t] [R:%L] Referer:'%+{Referer}i'"
-ErrorLogFormat connection "[%{uc}t] [C:%{c}L] local\ %a remote\ %A"
+ErrorLogFormat connection "[%{uc}t] [C:%{c}L] remote\ %a local\ %A"
     </highlight>
 
 </usage>
@@ -2241,6 +2247,14 @@ takdirde uygulanacak yönergeleri barındırır.</description>
     &lt;If&gt; sonrasında atanan <code>CONTENT_TYPE</code> gibi belli
     değişkenler ve diğer yanıt başlıkları zaten yorumlanmış olacaklarından bu
     yönerge için kullanılabilir olmayacaktır.
+    </note>
+
+    <note type="warning"><directive>Define</directive>,
+    <directive>Include</directive> ve <directive>Error</directive> gibi
+    yapılandırma ayrıştırılırken etkili olan yönergeler, bir <directive
+    type="section">If</directive> yapılandırma bölümü içine alınarak koşullu
+    hale getirilemez. Bu bölümler, çalışma anında nasıl değerlendirildiklerine
+    bakılmaksızın, her zaman yapılandırmanın bir parçasıdır.
     </note>
 
 </usage>

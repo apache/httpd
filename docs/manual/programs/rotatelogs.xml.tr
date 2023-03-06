@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 1899270:1908025 (outdated) -->
+<!-- English Revision: 1908025 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
    Reviewed by: Orhan Berent <berent belgeler.gen.tr>
@@ -102,6 +102,13 @@
     Dosya ismine bir sonek eklenmez, ancak biçem dizgesi '%' karakteri
     içeriyorsa buna uyulur.</dd>
 
+    <dt><code>-T</code></dt>
+    <dd>Açıldığında ilk günlük dosyası dışındaki tüm dosyaların kırpılmasına
+    neden olur. Bu, biçem dizgesi ayın günü gibi döngüsel bir şey içerdiğinde
+    kullanışlıdır. 2.4.56 ve sonrasında mevcuttur.
+    </dd>
+
+
     <dt><code><strong>-v</strong></code></dt>
     <dd>Standart hataya verilen çıktı daha ayrıntılı olur. Çıktı,
     yapılandırma çözümlemesinin sonuçlarını ve tüm dosya açma/kapama
@@ -185,7 +192,9 @@
 <section id="examples"><title>Örnekler</title>
 
 <example>
+<highlight language="config">
      CustomLog "|bin/rotatelogs /var/log/logfile 86400" common
+</highlight>
 </example>
 
      <p>nnnn, günlük kaydının başladığı sistem zamanı olmak üzere
@@ -195,7 +204,9 @@
      yeni bir günlük dosyası açılır.</p>
 
 <example>
+<highlight language="config">
      CustomLog "|bin/rotatelogs -l /var/log/logfile.%Y.%m.%d 86400" common
+</highlight>
 </example>
 
      <p>yyyy, yıl; mm, ay; dd, ayın gününü belirtmek üzere
@@ -203,26 +214,44 @@
      geceyarısı yeni bir günlük dosyasına geçilecektir.</p>
 
 <example>
+<highlight language="config">
      CustomLog "|bin/rotatelogs /var/log/logfile 5M" common
+</highlight>
 </example>
 
      <p>Günlük dosyası 5 megabaytlık olunca yenisinin oluşturulmasını sağlar.
      </p>
 
 <example>
+<highlight language="config">
      ErrorLog "|bin/rotatelogs /var/log/errorlog.%Y-%m-%d-%H_%M_%S 5M"
+</highlight>
 </example>
      <p>Hata günlüğünün 5 megabaytta bir
      <code>errorlog.YYYY-mm-dd-HH_MM_SS</code> biçemli bir isimle
      oluşturulmasını sağlar.</p>
 
 <example>
+<highlight language="config">
      CustomLog "|bin/rotatelogs -t /var/log/logfile 86400" common
+</highlight>
 </example>
 
-     <p>/var/log/logfile dosyasını oluşturur, sunucu başlatılırken ve günde
+     <p><code>/var/log/logfile</code> dosyasını oluşturur, sunucu başlatılırken ve günde
        bir kere dosyanın tepesi kırpılır. Bu senaryoda ayrı bir sürecin (tail
        gibi) dosyayı gerçek zamanlı işleyeceği umulur.</p>
+
+<example>
+<highlight language="config">
+     CustomLog "|bin/rotatelogs -T /var/log/logfile.%d 86400" common
+</highlight>
+</example>
+
+     <p>Sunucu ayın birinde başlatılırsa (veya yeniden başlatılırsa), bu,
+     <code>/var/log/logfile.01</code> dosyasının sonuna eklenir. Ayın ikinci
+     günü bir günlük girişi yazıldığında, <code>/var/log/logfile.02</code>
+     kırpılır ve en üste yeni girdiler eklenir. Bu örnek, özel bir bakım
+     gerektirmeden yaklaşık 1 aylık günlük tutar.</p>
 
 </section>
 
