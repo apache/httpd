@@ -1,5 +1,38 @@
                                                          -*- coding: utf-8 -*-
+Changes with Apache 2.4.57
+
 Changes with Apache 2.4.56
+
+  *) SECURITY: CVE-2023-27522: Apache HTTP Server: mod_proxy_uwsgi
+     HTTP response splitting (cve.mitre.org)
+     HTTP Response Smuggling vulnerability in Apache HTTP Server via
+     mod_proxy_uwsgi. This issue affects Apache HTTP Server: from
+     2.4.30 through 2.4.55.
+     Special characters in the origin response header can
+     truncate/split the response forwarded to the client.
+     Credits: Dimas Fariski Setyawan Putra (nyxsorcerer)
+
+  *) SECURITY: CVE-2023-25690: HTTP request splitting with
+     mod_rewrite and mod_proxy (cve.mitre.org)
+     Some mod_proxy configurations on Apache HTTP Server versions
+     2.4.0 through 2.4.55 allow a HTTP Request Smuggling attack.
+     Configurations are affected when mod_proxy is enabled along with
+     some form of RewriteRule
+     or ProxyPassMatch in which a non-specific pattern matches
+     some portion of the user-supplied request-target (URL) data and
+     is then
+     re-inserted into the proxied request-target using variable
+     substitution. For example, something like:
+     RewriteEngine on
+     RewriteRule "^/here/(.*)" "
+     http://example.com:8080/elsewhere?$1"
+     http://example.com:8080/elsewhere ; [P]
+     ProxyPassReverse /here/  http://example.com:8080/
+     http://example.com:8080/
+     Request splitting/smuggling could result in bypass of access
+     controls in the proxy server, proxying unintended URLs to
+     existing origin servers, and cache poisoning.
+     Credits: Lars Krapf of Adobe
 
   *) rotatelogs: Add -T flag to allow subsequent rotated logfiles to be
      truncated without the initial logfile being truncated.  [Eric Covener]
