@@ -228,7 +228,9 @@ jobs:
           ### TODO: fix caching here.
           - name: MOD_TLS test suite
             config: --enable-mods-shared=reallyall --with-mpm=event --enable-mpms-shared=event
-            pkgs: curl python3-pytest nghttp2-client python3-cryptography python3-requests cargo cbindgen
+            pkgs: >-
+              curl python3-pytest nghttp2-client python3-cryptography python3-requests
+              cargo cbindgen python3-multipart
             env: |
               APR_VERSION=1.7.2
               APU_VERSION=1.6.1
@@ -299,5 +301,6 @@ jobs:
       if: failure()
       with:
         name: error_log ${{ matrix.node-version }}
-        path: test/perl-framework/t/logs/error_log
-
+        path: |
+          test/perl-framework/t/logs/error_log
+          test/gen/apache/logs/error_log
