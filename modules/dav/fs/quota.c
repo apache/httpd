@@ -320,7 +320,7 @@ int dav_fs_quota_precondition(request_rec *r,
         /*
          * If PUT has Content-Length, we can forecast overquota
          */
-        if (lenhdr = apr_table_get(r->headers_in, "Content-Length")) {
+        if ((lenhdr = apr_table_get(r->headers_in, "Content-Length"))) {
             if (!ap_parse_strict_length(&size, lenhdr)) {
                 status = HTTP_BAD_REQUEST;
                 *err = dav_new_error(r->pool, status, 0, 0,
