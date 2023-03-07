@@ -98,12 +98,6 @@ static apr_status_t get_dir_used_bytes_walk(request_rec *r,
             break;
 
         case APR_DIR:
-            if ((finfo.valid & APR_FINFO_NAME) == 0) {
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-                              "Cannot get entry name in \"%s\"", path);
-                goto out;
-            }
-
             rv = apr_filepath_merge(&newpath, path, finfo.name, 0, r->pool);
             if (rv != APR_SUCCESS) {
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
