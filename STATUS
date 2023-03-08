@@ -185,6 +185,16 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       svn merge -c 1907505,1908186 ^/httpd/httpd/trunk .
      +1: rpluem,
 
+  *) mod_proxy: Optimize code: We know that we already have a valid
+     encoding string, because we just decoded it. Hence just copy
+     what we have instead of redoing it.
+     Trunk version of patch:
+        https://svn.apache.org/r1907565
+     Backport version for 2.4.x of patch:
+      Trunk version of patch works
+      svn merge -c 1907565 ^/httpd/httpd/trunk .
+     +1: rpluem,
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
