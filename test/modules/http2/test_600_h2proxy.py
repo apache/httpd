@@ -78,25 +78,31 @@ class TestH2Proxy:
         conf.install()
         assert env.apache_restart() == 0
         url = env.mkurl("https", "cgi", f"/h2proxy/{env.http_port}/hello.py")
-        r = env.curl_get(url, 5)
-        assert r.response["status"] == 200
-        assert r.json["h2_stream_id"] == "1"
         # httpd 2.5.0 disables reuse, not matter the config
         if enable_reuse == "on" and not env.httpd_is_at_least("2.5.0"):
-            # reuse is not guarantueed for each request, but we expect some
+            # reuse is not guaranteed for each request, but we expect some
             # to do it and run on a h2 stream id > 1
             reused = False
-            for _ in range(10):
-                r = env.curl_get(url, 5)
-                assert r.response["status"] == 200
-                if int(r.json["h2_stream_id"]) > 1:
+            count = 10
+            r = env.curl_raw([url] * count, 5)
+            response = r.response
+            for n in range(count):
+                assert response["status"] == 200
+                if n == (count - 1):
+                    break
+                response = response["previous"]
+            assert r.json[0]["h2_stream_id"] == "1"
+            for n in range(1, count):
+                if int(r.json[n]["h2_stream_id"]) > 1:
                     reused = True
                     break
             assert reused
         else:
-            r = env.curl_get(url, 5)
+            r = env.curl_raw([url, url], 5)
+            assert r.response["previous"]["status"] == 200
             assert r.response["status"] == 200
-            assert r.json["h2_stream_id"] == "1"
+            assert r.json[0]["h2_stream_id"] == "1"
+            assert r.json[1]["h2_stream_id"] == "1"
 
     # do some flexible setup from #235 to proper connection selection
     @pytest.mark.parametrize("enable_reuse", [ "on", "off" ])
@@ -120,18 +126,15 @@ class TestH2Proxy:
         conf.install()
         assert env.apache_restart() == 0
         url = env.mkurl("https", "cgi", f"/h2proxy/{env.http_port}/hello.py")
-        r = env.curl_get(url, 5)
-        assert r.response["status"] == 200
-        assert int(r.json["port"]) == env.http_port
-        # going to another backend port must create a new connection and
-        # we should see stream id one again
-        url = env.mkurl("https", "cgi", f"/h2proxy/{env.http_port2}/hello.py")
-        r = env.curl_get(url, 5)
+        url2 = env.mkurl("https", "cgi", f"/h2proxy/{env.http_port2}/hello.py")
+        r = env.curl_raw([url, url2], 5)
+        assert r.response["previous"]["status"] == 200
+        assert int(r.json[0]["port"]) == env.http_port
         assert r.response["status"] == 200
         exp_port = env.http_port if enable_reuse == "on" \
                                     and not env.httpd_is_at_least("2.5.0")\
             else env.http_port2
-        assert int(r.json["port"]) == exp_port
+        assert int(r.json[1]["port"]) == exp_port
 
     # lets do some error tests
     def test_h2_600_30(self, env):
