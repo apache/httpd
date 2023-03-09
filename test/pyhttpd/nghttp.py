@@ -254,7 +254,9 @@ class Nghttp:
             f.write("--DSAJKcd9876\n")
         if not options:
             options = []
-        options.extend(["--data=%s" % reqbody])
+        options.extend([ 
+            "--data=%s" % reqbody, 
+            "-HContent-Type: multipart/form-data; boundary=DSAJKcd9876"])
         return self._raw(url, timeout, options)
 
     def upload(self, url, fpath, timeout=5, options=None):
