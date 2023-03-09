@@ -32,7 +32,7 @@ class CurlPiper:
         return self._r.response if self._r else None
 
     def start(self):
-        self.args, self.headerfile = self.env.curl_complete_args(self.url, timeout=5, options=[
+        self.args, self.headerfile = self.env.curl_complete_args([self.url], timeout=5, options=[
             "-T", "-", "-X", "POST", "--trace-ascii", "%", "--trace-time"])
         sys.stderr.write("starting: {0}\n".format(self.args))
         self.proc = subprocess.Popen(self.args, stdin=subprocess.PIPE,

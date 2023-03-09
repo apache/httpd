@@ -65,6 +65,8 @@ class HttpdTestSetup:
         "proxy_http",
     ]
 
+    CURL_STDOUT_SEPARATOR = "===CURL_STDOUT_SEPARATOR==="
+
     def __init__(self, env: 'HttpdTestEnv'):
         self.env = env
         self._source_dirs = [os.path.dirname(inspect.getfile(HttpdTestSetup))]
@@ -497,14 +499,26 @@ class HttpdTestEnv:
         if not os.path.exists(path):
             return os.makedirs(path)
 
-    def run(self, args, intext=None, debug_log=True):
+    def run(self, args, stdout_list=False, intext=None, debug_log=True):
         if debug_log:
             log.debug(f"run: {args}")
         start = datetime.now()
         p = subprocess.run(args, stderr=subprocess.PIPE, stdout=subprocess.PIPE,
                            input=intext.encode() if intext else None)
+        stdout_as_list = None
+        if stdout_list:
+            try:
+                out = p.stdout.decode()
+                if HttpdTestSetup.CURL_STDOUT_SEPARATOR in out:
+                    stdout_as_list = out.split(HttpdTestSetup.CURL_STDOUT_SEPARATOR)
+                    if not stdout_as_list[len(stdout_as_list) - 1]:
+                        stdout_as_list.pop()
+                p.stdout.replace(HttpdTestSetup.CURL_STDOUT_SEPARATOR.encode(), b'')
+            except:
+                pass
         return ExecResult(args=args, exit_code=p.returncode,
                           stdout=p.stdout, stderr=p.stderr,
+                          stdout_as_list=stdout_as_list,
                           duration=datetime.now() - start)
 
     def mkurl(self, scheme, hostname, path='/'):
@@ -637,10 +651,9 @@ class HttpdTestEnv:
                 os.remove(os.path.join(self.gen_dir, fname))
         self._curl_headerfiles_n = 0
 
-    def curl_complete_args(self, urls, timeout=None, options=None,
+    def curl_complete_args(self, urls, stdout_list=False,
+                           timeout=None, options=None,
                            insecure=False, force_resolve=True):
-        if not isinstance(urls, list):
-            urls = [urls]
         u = urlparse(urls[0])
         #assert u.hostname, f"hostname not in url: {urls[0]}"
         headerfile = f"{self.gen_dir}/curl.headers.{self._curl_headerfiles_n}"
@@ -649,6 +662,8 @@ class HttpdTestEnv:
         args = [
             self._curl, "-s", "--path-as-is", "-D", headerfile,
         ]
+        if stdout_list:
+            args.extend(['-w', '%{stdout}' + HttpdTestSetup.CURL_STDOUT_SEPARATOR])
         if u.scheme == 'http':
             pass
         elif insecure:
@@ -731,10 +746,16 @@ class HttpdTestEnv:
 
     def curl_raw(self, urls, timeout=10, options=None, insecure=False,
                  force_resolve=True):
+        if not isinstance(urls, list):
+            urls = [urls]
+        stdout_list = False
+        if len(urls) > 1:
+            stdout_list = True
         args, headerfile = self.curl_complete_args(
-            urls=urls, timeout=timeout, options=options, insecure=insecure,
+            urls=urls, stdout_list=stdout_list,
+            timeout=timeout, options=options, insecure=insecure,
             force_resolve=force_resolve)
-        r = self.run(args)
+        r = self.run(args, stdout_list=stdout_list)
         if r.exit_code == 0:
             self.curl_parse_headerfile(headerfile, r=r)
             if r.json:
