@@ -5,6 +5,7 @@ import json
 import os
 import re
 import sys
+import time
 
 import pytest
 
@@ -173,6 +174,8 @@ CustomLog logs/test_004_30 issue_203
         r = env.curl_get(url, 5, options=["--http2", "-H", "Range: bytes=0-{0}".format(chunk-1)])
         assert 206 == r.response["status"]
         assert chunk == len(r.response["body"].decode('utf-8'))
+        # Wait for log completeness
+        time.sleep(1)
         # now check what response lengths have actually been reported
         lines = open(logfile).readlines()
         log_h2_full = json.loads(lines[-3])
