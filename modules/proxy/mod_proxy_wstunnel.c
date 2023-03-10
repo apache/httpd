@@ -203,16 +203,16 @@ static int proxy_wstunnel_canon(request_rec *r, char *url)
         path = ap_proxy_canonenc(r->pool, url, strlen(url), enc_path, 0,
                                  r->proxyreq);
         search = r->args;
-        if (search && *(ap_scan_vchar_obstext(search))) {
-            /*
-             * We have a raw control character or a ' ' in r->args.
-             * Correct encoding was missed.
-             */
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(10409)
-                          "To be forwarded query string contains control "
-                          "characters or spaces");
-            return HTTP_FORBIDDEN;
-        }
+    }
+    if (search && *ap_scan_vchar_obstext(search)) {
+        /*
+         * We have a raw control character or a ' ' in r->args.
+         * Correct encoding was missed.
+         */
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(10409)
+                      "To be forwarded query string contains control "
+                      "characters or spaces");
+        return HTTP_FORBIDDEN;
     }
     if (path == NULL)
         return HTTP_BAD_REQUEST;
