@@ -4813,8 +4813,7 @@ static int hook_uri2file(request_rec *r)
         unsigned skip_absolute = is_absolute_uri(r->filename, NULL);
         apr_size_t flen =  r->filename ? strlen(r->filename) : 0;
         int to_proxyreq = (flen > 6 && strncmp(r->filename, "proxy:", 6) == 0);
-        int will_escape = (to_proxyreq || skip_absolute)
-            && (rulestatus != ACTION_NOESCAPE);
+        int will_escape = skip_absolute && (rulestatus != ACTION_NOESCAPE);
 
         if (r->args
                 && !will_escape
