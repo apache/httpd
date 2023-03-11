@@ -70,10 +70,6 @@ of how you might use them.</p>
 <p>The [B] flag instructs <directive
 module="mod_rewrite">RewriteRule</directive> to escape non-alphanumeric
 characters before applying the transformation.</p>
-<p>In 2.4.26 and later, you can limit the escaping to specific characters
-in backreferences by listing them: <code>[B=#?;]</code>. Note: The space
-character can be used in the list of characters to escape, but it cannot be
-the last character in the list.</p>
 
 <p><code>mod_rewrite</code> has to unescape URLs before mapping them,
 so backreferences are unescaped at the time they are applied.
@@ -109,6 +105,19 @@ when the backend may break if presented with an unescaped URL.</p>
 <p>An alternative to this flag is using a <directive module="mod_rewrite"
 >RewriteCond</directive> to capture against %{THE_REQUEST} which will capture
 strings in the encoded form.</p>
+
+<p>In 2.4.26 and later, you can limit the escaping to specific characters
+in backreferences by listing them: <code>[B=#?;]</code>. Note: The space
+character can be used in the list of characters to escape, but you must quote
+the entire third argument of <directive module="mod_rewrite">RewriteRule</directive>
+and the space must not be the last character in the list.</p>
+
+<highlight language="config">
+# Escape spaces and question marks. 
+RewriteRule "^search/(.*)$" "/search.php?term=$1" "[B= ?]"
+</highlight>
+
+
 </section>
 
 <section id="flag_bnp"><title>BNP|backrefnoplus (don't escape space to +)</title>
