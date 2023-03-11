@@ -174,6 +174,7 @@ static const char* really_last_key = "rewrite_really_last";
 #define RULEFLAG_ESCAPENOPLUS       (1<<18)
 #define RULEFLAG_QSLAST             (1<<19)
 #define RULEFLAG_QSNONE             (1<<20) /* programattic only */
+#define RULEFLAG_ESCAPECTLS         (1<<21)
 
 /* return code of the rewrite rule
  * the result may be escaped - or not
@@ -425,7 +426,7 @@ static apr_global_mutex_t *rewrite_mapr_lock_acquire = NULL;
 static const char *rewritemap_mutex_type = "rewrite-map";
 
 /* Optional functions imported from mod_ssl when loaded: */
-static char *escape_backref(apr_pool_t *p, const char *path, const char *escapeme, int noplus);
+static char *escape_backref(apr_pool_t *p, const char *path, const char *escapeme, int flags);
 
 /*
  * +-------------------------------------------------------+
@@ -684,14 +685,27 @@ static APR_INLINE unsigned char *c2x(unsigned what, unsigned char prefix,
  * Escapes a backreference in a similar way as php's urlencode does.
  * Based on ap_os_escape_path in server/util.c
  */
-static char *escape_backref(apr_pool_t *p, const char *path, const char *escapeme, int noplus) {
+static char *escape_backref(apr_pool_t *p, const char *path, const char *escapeme, int flags) {
     char *copy = apr_palloc(p, 3 * strlen(path) + 3);
     const unsigned char *s = (const unsigned char *)path;
     unsigned char *d = (unsigned char *)copy;
     unsigned c;
+    int noplus = flags & RULEFLAG_ESCAPENOPLUS;
+    int ctls = flags & RULEFLAG_ESCAPECTLS;
 
     while ((c = *s)) {
-        if (!escapeme) { 
+        if (ctls) {
+            if (c == ' ' && !noplus) {
+                *d++ = '+';
+            }
+            else if (apr_iscntrl(c)) {
+                d = c2x(c, '%', d);
+            }
+            else {
+                *d++ = c;
+            }
+        }
+        else if (!escapeme) {
             if (apr_isalnum(c) || c == '_') {
                 *d++ = c;
             }
@@ -702,9 +716,9 @@ static char *escape_backref(apr_pool_t *p, const char *path, const char *escapem
                 d = c2x(c, '%', d);
             }
         }
-        else { 
+        else {
             const char *esc = escapeme;
-            while (*esc) { 
+            while (*esc) {
                 if (c == *esc) { 
                     if (c == ' ' && !noplus) { 
                         *d++ = '+';
@@ -2497,7 +2511,7 @@ static char *do_expand(char *input, rewrite_ctx *ctx, rewriterule_entry *entry, 
                     /* escape the backreference */
                     char *tmp2, *tmp;
                     tmp = apr_pstrmemdup(pool, bri->source + bri->regmatch[n].rm_so, span);
-                    tmp2 = escape_backref(pool, tmp, entry->escapes, entry->flags & RULEFLAG_ESCAPENOPLUS);
+                    tmp2 = escape_backref(pool, tmp, entry->escapes, entry->flags);
                     rewritelog(ctx->r, 5, ctx->perdir, "escaping backreference '%s' to '%s'",
                             tmp, tmp2);
 
@@ -3585,12 +3599,15 @@ static const char *cmd_rewriterule_setflag(apr_pool_t *p, void *_cfg,
     case 'B':
         if (!*key || !strcasecmp(key, "ackrefescaping")) {
             cfg->flags |= RULEFLAG_ESCAPEBACKREF;
-            if (val && *val) { 
+            if (val && *val) {
                 cfg->escapes = val;
             }
         }
         else if (!strcasecmp(key, "NP") || !strcasecmp(key, "ackrefernoplus")) { 
             cfg->flags |= RULEFLAG_ESCAPENOPLUS;
+        }
+        else if (!strcasecmp(key, "CTLS")) {
+            cfg->flags |= RULEFLAG_ESCAPECTLS|RULEFLAG_ESCAPEBACKREF;
         }
         else {
             ++error;
