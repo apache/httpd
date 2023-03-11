@@ -735,6 +735,12 @@
 		avez besoin d'un tel certificat, vous devez alors définir cette
 		directive.
             </p><p>
+                Il est maintenant possible d'utiliser cette directive dans une
+		section <code class="directive"><a href="#mdomain">MDomain</a></code> pour
+		spécifier une commande spécifique au domaine considéré. Cela
+		permet de configurer un script spécifique au fournisseur de DNS
+		concerné.
+            </p><p>    
                 Reportez vous à la section sur les certificats génériques pour
 		plus de détails.
             </p>
