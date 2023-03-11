@@ -1,0 +1,3 @@
+  *) mod_rewrite: Re-allow some proxy and redirect substitutions flagged as
+     403 errors in 2.4.56. [Eric Covener]
+
