@@ -2,7 +2,7 @@
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
-<!-- English Revision: 1903677 -->
+<!-- English Revision: 1908080 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -1227,6 +1227,12 @@ MDRequireHttps permanent
 		avez besoin d'un tel certificat, vous devez alors définir cette
 		directive.
             </p><p>
+                Il est maintenant possible d'utiliser cette directive dans une
+		section <directive module="mod_md">MDomain</directive> pour
+		spécifier une commande spécifique au domaine considéré. Cela
+		permet de configurer un script spécifique au fournisseur de DNS
+		concerné.
+            </p><p>    
                 Reportez vous à la section sur les certificats génériques pour
 		plus de détails.
             </p>

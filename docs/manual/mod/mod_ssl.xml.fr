@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1907762 -->
+<!-- English Revision: 1908132 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -78,8 +78,12 @@ si les connexions persistantes (HTTP KeepAlive) sont utilisées</td></tr>
 <tr><td><code>SSL_SECURE_RENEG</code></td>              <td>chaîne</td>
 <td><code>true</code> si la renégociation sécurisée est supportée,
 <code>false</code> dans le cas contraire</td></tr>
+<tr><td><code>SSL_SHARED_CIPHERS</code></td>            <td>chaîne</td>    <td>La
+liste des algorithmes de chiffrement partagés séparés par des ":" (autrement dit
+le sous-ensemble d'algorithmes de chiffrement pris en charge à la fois par le
+serveur et par le client)</td></tr>
 <tr><td><code>SSL_CIPHER</code></td>                    <td>chaîne</td>
-<td>Le nom de l'algorithme de chiffrement</td></tr>
+<td>Le nom de l'algorithme de chiffrement adopté par le client et le serveur</td></tr>
 <tr><td><code>SSL_CIPHER_EXPORT</code></td>             <td>chaîne</td>
 <td><code>true</code> si l'algorithme de chiffrement est un algorithme
 exporté</td></tr>
