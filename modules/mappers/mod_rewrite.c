@@ -177,7 +177,6 @@ static const char* really_last_key = "rewrite_really_last";
 #define RULEFLAG_QSLAST             (1<<19)
 #define RULEFLAG_QSNONE             (1<<20) /* programattic only */
 #define RULEFLAG_ESCAPECTLS         (1<<21)
-#define RULEFLAG_ESCAPENEG          (1<<22)
 
 /* return code of the rewrite rule
  * the result may be escaped - or not
@@ -328,7 +327,8 @@ typedef struct {
     data_item *cookie;               /* added cookies                         */
     int        skip;                 /* number of next rules to skip          */
     int        maxrounds;            /* limit on number of loops with N flag  */
-    char       *escapes;             /* specific backref escapes              */
+    const char *escapes;             /* specific backref escapes              */
+    const char *noescapes;           /* specific backref chars not to escape  */
 } rewriterule_entry;
 
 typedef struct {
@@ -429,7 +429,9 @@ static apr_global_mutex_t *rewrite_mapr_lock_acquire = NULL;
 static const char *rewritemap_mutex_type = "rewrite-map";
 
 /* Optional functions imported from mod_ssl when loaded: */
-static char *escape_backref(apr_pool_t *p, const char *path, const char *escapeme, int flags);
+static char *escape_backref(apr_pool_t *p, const char *path,
+                            const char *escapeme, const char *noescapeme,
+                            int flags);
 
 /*
  * +-------------------------------------------------------+
@@ -688,19 +690,21 @@ static APR_INLINE unsigned char *c2x(unsigned what, unsigned char prefix,
  * Escapes a backreference in a similar way as php's urlencode does.
  * Based on ap_os_escape_path in server/util.c
  */
-static char *escape_backref(apr_pool_t *p, const char *path, const char *escapeme, int flags)
+static char *escape_backref(apr_pool_t *p, const char *path,
+                            const char *escapeme, const char *noescapeme,
+                            int flags)
 {
     char *copy = apr_palloc(p, 3 * strlen(path) + 1);
     const unsigned char *s = (const unsigned char *)path;
     unsigned char *d = (unsigned char *)copy;
     int noplus = (flags & RULEFLAG_ESCAPENOPLUS) != 0;
     int ctls = (flags & RULEFLAG_ESCAPECTLS) != 0;
-    int neg = (flags & RULEFLAG_ESCAPENEG) != 0;
     unsigned char c;
 
     while ((c = *s)) {
-        if ((ctls ? !TEST_CHAR(c, T_VCHAR_OBSTEXT) : !escapeme)
-            || (escapeme && ((ap_strchr_c(escapeme, c) != NULL) ^ neg))) {
+        if (((ctls ? !TEST_CHAR(c, T_VCHAR_OBSTEXT) : !escapeme)
+             || (escapeme && ap_strchr_c(escapeme, c)))
+            && (!noescapeme || !ap_strchr_c(noescapeme, c))) {
             if (apr_isalnum(c) || c == '_') {
                 *d++ = c;
             }
@@ -2491,7 +2495,8 @@ static char *do_expand(char *input, rewrite_ctx *ctx, rewriterule_entry *entry, 
                     /* escape the backreference */
                     char *tmp2, *tmp;
                     tmp = apr_pstrmemdup(pool, bri->source + bri->regmatch[n].rm_so, span);
-                    tmp2 = escape_backref(pool, tmp, entry->escapes, entry->flags);
+                    tmp2 = escape_backref(pool, tmp, entry->escapes, entry->noescapes,
+                                          entry->flags);
                     rewritelog(ctx->r, 5, ctx->perdir, "escaping backreference '%s' to '%s'",
                             tmp, tmp2);
 
@@ -3583,8 +3588,13 @@ static const char *cmd_rewriterule_setflag(apr_pool_t *p, void *_cfg,
                 cfg->escapes = val;
             }
         }
-        else if (!strcasecmp(key, "NEG")) { 
-            cfg->flags |= RULEFLAG_ESCAPENEG;
+        else if (!strcasecmp(key, "NE")) {
+            if (val && *val) {
+                cfg->noescapes = val;
+            }
+            else {
+                return "flag 'BNE' wants a list of characters (i.e. [BNE=...])";
+            }
         }
         else if (!strcasecmp(key, "NP") || !strcasecmp(key, "ackrefernoplus")) { 
             cfg->flags |= RULEFLAG_ESCAPENOPLUS;
@@ -3854,7 +3864,6 @@ static const char *cmd_rewriterule(cmd_parms *cmd, void *in_dconf,
                 err, a1, a2, a3);
     }
 
-    /* arg3: optional flags field */
     newrule->forced_mimetype     = NULL;
     newrule->forced_handler      = NULL;
     newrule->forced_responsecode = HTTP_MOVED_TEMPORARILY;
@@ -3863,6 +3872,9 @@ static const char *cmd_rewriterule(cmd_parms *cmd, void *in_dconf,
     newrule->cookie = NULL;
     newrule->skip   = 0;
     newrule->maxrounds = REWRITE_MAX_ROUNDS;
+    newrule->escapes = newrule->noescapes = NULL;
+
+    /* arg3: optional flags field */
     if (a3 != NULL) {
         if ((err = cmd_parseflagfield(cmd->pool, newrule, a3,
                                       cmd_rewriterule_setflag)) != NULL) {
