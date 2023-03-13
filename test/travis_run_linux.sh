@@ -181,10 +181,6 @@ if ! test -v SKIP_TESTING; then
         popd
     fi
 
-    if test $RV -ne 0 && test -f test/perl-framework/t/logs/error_log; then
-        grep -v ':\(debug\|trace[12345678]\)\]' test/perl-framework/t/logs/error_log
-    fi
-
     if test -v TEST_CORE -a $RV -eq 0; then
         # Run HTTP/2 tests.
         MPM=event py.test-3 test/modules/core
