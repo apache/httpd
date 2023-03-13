@@ -99,6 +99,8 @@
 #include "util_charset.h"
 #endif
 
+#include "test_char.h"
+
 static ap_dbd_t *(*dbd_acquire)(request_rec*) = NULL;
 static void (*dbd_prepare)(server_rec*, const char*, const char*) = NULL;
 static const char* really_last_key = "rewrite_really_last";
@@ -175,6 +177,7 @@ static const char* really_last_key = "rewrite_really_last";
 #define RULEFLAG_QSLAST             (1<<19)
 #define RULEFLAG_QSNONE             (1<<20) /* programattic only */
 #define RULEFLAG_ESCAPECTLS         (1<<21)
+#define RULEFLAG_ESCAPENEG          (1<<22)
 
 /* return code of the rewrite rule
  * the result may be escaped - or not
@@ -685,27 +688,19 @@ static APR_INLINE unsigned char *c2x(unsigned what, unsigned char prefix,
  * Escapes a backreference in a similar way as php's urlencode does.
  * Based on ap_os_escape_path in server/util.c
  */
-static char *escape_backref(apr_pool_t *p, const char *path, const char *escapeme, int flags) {
-    char *copy = apr_palloc(p, 3 * strlen(path) + 3);
+static char *escape_backref(apr_pool_t *p, const char *path, const char *escapeme, int flags)
+{
+    char *copy = apr_palloc(p, 3 * strlen(path) + 1);
     const unsigned char *s = (const unsigned char *)path;
     unsigned char *d = (unsigned char *)copy;
-    unsigned c;
-    int noplus = flags & RULEFLAG_ESCAPENOPLUS;
-    int ctls = flags & RULEFLAG_ESCAPECTLS;
+    int noplus = (flags & RULEFLAG_ESCAPENOPLUS) != 0;
+    int ctls = (flags & RULEFLAG_ESCAPECTLS) != 0;
+    int neg = (flags & RULEFLAG_ESCAPENEG) != 0;
+    unsigned char c;
 
     while ((c = *s)) {
-        if (ctls) {
-            if (c == ' ' && !noplus) {
-                *d++ = '+';
-            }
-            else if (apr_iscntrl(c)) {
-                d = c2x(c, '%', d);
-            }
-            else {
-                *d++ = c;
-            }
-        }
-        else if (!escapeme) {
+        if ((ctls ? !TEST_CHAR(c, T_VCHAR_OBSTEXT) : !escapeme)
+            || (escapeme && ((ap_strchr_c(escapeme, c) != NULL) ^ neg))) {
             if (apr_isalnum(c) || c == '_') {
                 *d++ = c;
             }
@@ -717,22 +712,7 @@ static char *escape_backref(apr_pool_t *p, const char *path, const char *escapem
             }
         }
         else {
-            const char *esc = escapeme;
-            while (*esc) {
-                if (c == *esc) { 
-                    if (c == ' ' && !noplus) { 
-                        *d++ = '+';
-                    }
-                    else { 
-                        d = c2x(c, '%', d);
-                    }
-                    break;
-                }
-                ++esc;
-            }
-            if (!*esc) { 
-                *d++ = c;
-            }
+            *d++ = c;
         }
         ++s;
     }
@@ -3602,6 +3582,9 @@ static const char *cmd_rewriterule_setflag(apr_pool_t *p, void *_cfg,
             if (val && *val) {
                 cfg->escapes = val;
             }
+        }
+        else if (!strcasecmp(key, "NEG")) { 
+            cfg->flags |= RULEFLAG_ESCAPENEG;
         }
         else if (!strcasecmp(key, "NP") || !strcasecmp(key, "ackrefernoplus")) { 
             cfg->flags |= RULEFLAG_ESCAPENOPLUS;
