@@ -289,6 +289,8 @@ static int proxy_ftp_canon(request_rec *r, char *url)
     apr_pool_t *p = r->pool;
     const char *err;
     apr_port_t port, def_port;
+    core_dir_config *d = ap_get_core_module_config(r->per_dir_config);
+    int flags = d->allow_encoded_slashes  && !d->decode_encoded_slashes ? PROXY_CANONENC_NOENCODEDSLASHENCODING : 0;
 
     /* */
     if (ap_cstr_casecmpn(url, "ftp:", 4) == 0) {
@@ -327,7 +329,8 @@ static int proxy_ftp_canon(request_rec *r, char *url)
     else
         parms = "";
 
-    path = ap_proxy_canonenc(p, url, strlen(url), enc_path, 0, r->proxyreq);
+    path = ap_proxy_canonenc_ex(p, url, strlen(url), enc_path, flags,
+                                r->proxyreq);
     if (path == NULL)
         return HTTP_BAD_REQUEST;
     if (!ftp_check_string(path))
