@@ -1337,6 +1337,11 @@ cannot use <code>$N</code> in the substitution string!
         href="../rewrite/flags.html#flag_b">details ...</a></em></td>
     </tr>
     <tr>
+        <td>BCTLS</td>
+        <td>Like [B], but only escape control characters and spaces.
+        <em><a href="../rewrite/flags.html#flag_bctls">details ...</a></em></td>
+    </tr>
+    <tr>
         <td>backrefnoplus|BNP</td>
         <td>If backreferences are being escaped, spaces should be escaped to
         %20 instead of +. Useful when the backreference will be used in the
