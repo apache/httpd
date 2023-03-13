@@ -157,16 +157,15 @@ RewriteRule "^search/(.*)$" "/search.php/$1" "[BCTLS]"
 
 </section>
 
-<section id="flag_bneg"><title>BNEG</title>
-<p>The [BNEG] flag modifies the behavior of escaping when the
-the [B] flag is used with a list of specific characters to escape.
-When [BNEG] is specified, the list of characters passed with [B=...]
-are treated as exclusions to the list of characters to be escaped.
+<section id="flag_bne"><title>BNE</title>
+<p>The list of characters in [BNE=...] are treated as exclusions to the
+characters of the [B] or [BCTLS] flags. The listed characters will not be
+escaped.
 </p>
 
 <highlight language="config">
 # Escape the default characters, but leave /
-RewriteRule "^search/(.*)$" "/search.php?term=$1" "[B=/,BNEG]"
+RewriteRule "^search/(.*)$" "/search.php?term=$1" "[B,BNE=/]"
 </highlight>
 
 <p>This flag is available in version 2.5.1 and later.</p>
