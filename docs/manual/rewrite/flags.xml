@@ -117,7 +117,6 @@ and the space must not be the last character in the list.</p>
 RewriteRule "^search/(.*)$" "/search.php?term=$1" "[B= ?]"
 </highlight>
 
-
 </section>
 
 <section id="flag_bnp"><title>BNP|backrefnoplus (don't escape space to +)</title>
@@ -127,6 +126,7 @@ in a backreference to %20 rather than '+'. Useful when the backreference
 will be used in the path component rather than the query string.</p>
 
 <p>This flag is available in version 2.4.26 and later.</p>
+</section>
 
 <section id="flag_bctls"><title>BCTLS</title>
     <p>The [BCTLS] flag is simular to the [B] flag, but only escapes
