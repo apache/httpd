@@ -76,6 +76,10 @@ enum enctype {
     enc_path, enc_search, enc_user, enc_fpath, enc_parm
 };
 
+/* Flags for ap_proxy_canonenc_ex */
+#define PROXY_CANONENC_FORCEDEC 0x01
+#define PROXY_CANONENC_NOENCODEDSLASHENCODING 0x02
+
 typedef enum {
     NONE, TCP, OPTIONS, HEAD, GET, CPING, PROVIDER, OPTIONS11, HEAD11, GET11, EOT
 } hcmethod_t;
@@ -676,6 +680,8 @@ PROXY_DECLARE(apr_status_t) ap_proxy_strncpy(char *dst, const char *src,
                                              apr_size_t dlen);
 PROXY_DECLARE(int) ap_proxy_hex2c(const char *x);
 PROXY_DECLARE(void) ap_proxy_c2hex(int ch, char *x);
+PROXY_DECLARE(char *)ap_proxy_canonenc_ex(apr_pool_t *p, const char *x, int len, enum enctype t,
+                                          int flags, int proxyreq);
 PROXY_DECLARE(char *)ap_proxy_canonenc(apr_pool_t *p, const char *x, int len, enum enctype t,
                                        int forcedec, int proxyreq);
 PROXY_DECLARE(char *)ap_proxy_canon_netloc(apr_pool_t *p, char **const urlp, char **userp,
