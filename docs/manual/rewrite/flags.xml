@@ -139,26 +139,30 @@ RewriteRule "^search/(.*)$" "/search.php/$1" "[B,BNP]"
 </section>
 
 <section id="flag_bctls"><title>BCTLS</title>
-    <p>The [BCTLS] flag is simular to the [B] flag, but only escapes
-    control characters and the space character. This is the same set of
-    characters rejected when they are copied into the query string unencoded.
-    </p>
+<p>The [BCTLS] flag is similar to the [B] flag, but only escapes
+control characters and the space character. This is the same set of
+characters rejected when they are copied into the query string unencoded.
+</p>
+
+<p>[B], [B=...] and [BNEG] have no affect when [BCTLS] is used..</p>
 
 <highlight language="config">
 # Escape control characters and spaces
 RewriteRule "^search/(.*)$" "/search.php/$1" "[BCTLS]"
 </highlight>
 
-
 <p>This flag is available in version 2.5.1 and later.</p>
+
+</note>
+
 </section>
 
 <section id="flag_bneg"><title>BNEG</title>
-    <p>The [BNEG] flag modifies the behavior of escaping when the
-    the [B] flag is used with a list of specific characters to escape.
-    When [BNEG] is specified, the list of characters passed with [B=...]
-    are treated as exclusions to the list of characters to be escaped.
-    </p>
+<p>The [BNEG] flag modifies the behavior of escaping when the
+the [B] flag is used with a list of specific characters to escape.
+When [BNEG] is specified, the list of characters passed with [B=...]
+are treated as exclusions to the list of characters to be escaped.
+</p>
 
 <highlight language="config">
 # Escape the default characters, but leave /
