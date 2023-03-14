@@ -2308,6 +2308,9 @@ AP_DECLARE(server_rec*) ap_read_config(process_rec *process, apr_pool_t *ptemp,
     if (s == NULL) {
         return s;
     }
+    if (ap_server_conf == NULL) {
+        ap_server_conf = s;
+    }
 
     init_config_globals(p);
 

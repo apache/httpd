@@ -717,8 +717,7 @@ static void usage(process_rec *process)
     if (temp_error_log) {
         ap_replace_stderr_log(process->pool, temp_error_log);
     }
-    ap_server_conf = ap_read_config(process, ptemp, confname, &ap_conftree);
-    if (!ap_server_conf) {
+    if (!ap_read_config(process, ptemp, confname, &ap_conftree)) {
         if (showcompile) {
             /* Well, we tried. Show as much as we can, but exit nonzero to
              * indicate that something's not right. The cause should have
@@ -727,6 +726,7 @@ static void usage(process_rec *process)
         }
         destroy_and_exit_process(process, 1);
     }
+    ap_assert(ap_server_conf != NULL);
     apr_pool_cleanup_register(pconf, &ap_server_conf, ap_pool_cleanup_set_null,
                               apr_pool_cleanup_null);
 
@@ -824,10 +824,10 @@ static void usage(process_rec *process)
         apr_pool_create(&ptemp, pconf);
         apr_pool_tag(ptemp, "ptemp");
         ap_server_root = def_server_root;
-        ap_server_conf = ap_read_config(process, ptemp, confname, &ap_conftree);
-        if (!ap_server_conf) {
+        if (!ap_read_config(process, ptemp, confname, &ap_conftree)) {
             destroy_and_exit_process(process, 1);
         }
+        ap_assert(ap_server_conf != NULL);
         apr_pool_cleanup_register(pconf, &ap_server_conf,
                                   ap_pool_cleanup_set_null, apr_pool_cleanup_null);
         /* sort hooks here to make sure pre_config hooks are sorted properly */
