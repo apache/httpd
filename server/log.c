@@ -573,14 +573,32 @@ static int log_ctime(const ap_errorlog_info *info, const char *arg,
     int time_len = buflen;
     int option = AP_CTIME_OPTION_NONE;
 
-    while (arg && *arg) {
-        switch (*arg) {
-            case 'u':   option |= AP_CTIME_OPTION_USEC;
-                        break;
-            case 'c':   option |= AP_CTIME_OPTION_COMPACT;
-                        break;
+    if (arg) {
+        if (arg[0] == 'u' && !arg[1]) { /* no ErrorLogFormat (fast path) */
+            option |= AP_CTIME_OPTION_USEC;
         }
-        arg++;
+        else if (!ap_strchr_c(arg, '%')) { /* special "%{cuz}t" formats */
+            while (*arg) {
+                switch (*arg++) {
+                case 'u':
+                    option |= AP_CTIME_OPTION_USEC;
+                    break;
+                case 'c':
+                    option |= AP_CTIME_OPTION_COMPACT;
+                    break;
+                case 'z':
+                    option |= AP_CTIME_OPTION_GMTOFF;
+                    break;
+                }
+            }
+        }
+        else { /* "%{strftime %-format}t" */
+            apr_size_t len = 0;
+            apr_time_exp_t expt;
+            ap_explode_recent_localtime(&expt, apr_time_now());
+            apr_strftime(buf, &len, buflen, arg, &expt);
+            return (int)len;
+        }
     }
 
     ap_recent_ctime_ex(buf, apr_time_now(), option, &time_len);

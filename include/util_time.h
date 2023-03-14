@@ -47,6 +47,8 @@ extern "C" {
 #define AP_CTIME_OPTION_USEC    0x1
 /* Use more compact ISO 8601 format */
 #define AP_CTIME_OPTION_COMPACT 0x2
+/* Add timezone offset from GMT ([+-]hhmm) */
+#define AP_CTIME_OPTION_GMTOFF  0x4
 
 
 /**

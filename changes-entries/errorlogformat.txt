@@ -1,0 +1,3 @@
+  *) core: Add formats %{z} and %{strftime-format} to ErrorLogFormat.
+     PR 62161.  [Yann Ylavic]
+

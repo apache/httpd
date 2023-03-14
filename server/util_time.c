@@ -16,6 +16,7 @@
 
 #include "util_time.h"
 #include "apr_env.h"
+#include "apr_strings.h"
 
 
 
@@ -27,6 +28,8 @@
 /* Length of ISO 8601 date/time */
 #define AP_CTIME_COMPACT_LEN      20
 
+/* Length of timezone offset from GMT ([+-]hhmm) plus leading space */
+#define AP_CTIME_GMTOFF_LEN       6
 
 /* Cache for exploded values of recent timestamps
  */
@@ -183,6 +186,10 @@ AP_DECLARE(apr_status_t) ap_recent_ctime_ex(char *date_str, apr_time_t t,
         needed += AP_CTIME_USEC_LENGTH;
     }
 
+    if (option & AP_CTIME_OPTION_GMTOFF) {
+        needed += AP_CTIME_GMTOFF_LEN;
+    }
+
     /* Check the provided buffer length */
     if (len && *len >= needed) {
         *len = needed;
@@ -195,9 +202,10 @@ AP_DECLARE(apr_status_t) ap_recent_ctime_ex(char *date_str, apr_time_t t,
     }
 
     /* example without options: "Wed Jun 30 21:49:08 1993" */
-    /*                           123456789012345678901234  */
     /* example for compact format: "1993-06-30 21:49:08" */
-    /*                              1234567890123456789  */
+    /* example for compact+usec+gmtoff format:
+     *     "1993-06-30 22:49:08.123456 +0100"
+     */
 
     ap_explode_recent_localtime(&xt, t);
     real_year = 1900 + xt.tm_year;
@@ -251,7 +259,19 @@ AP_DECLARE(apr_status_t) ap_recent_ctime_ex(char *date_str, apr_time_t t,
         *date_str++ = real_year % 100 / 10 + '0';
         *date_str++ = real_year % 10 + '0';
     }
-    *date_str++ = 0;
+    if (option & AP_CTIME_OPTION_GMTOFF) {
+        int off = xt.tm_gmtoff;
+        char sign = '+';
+        if (off < 0) {
+            off = -off;
+            sign = '-';
+        }
+        apr_snprintf(date_str, AP_CTIME_GMTOFF_LEN + 1, " %c%.2d%.2d",
+                     sign, off / 3600, (off % 3600) / 60);
+    }
+    else {
+        *date_str = 0;
+    }
 
     return APR_SUCCESS;
 }
