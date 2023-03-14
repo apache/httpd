@@ -1100,7 +1100,9 @@ static void log_error_core(const char *file, int line, int module_index,
         }
 
         /* Use the main ErrorLogFormat if any */
-        sconf = ap_get_core_module_config(ap_server_conf->module_config);
+        if (ap_server_conf) {
+            sconf = ap_get_core_module_config(ap_server_conf->module_config);
+        }
     }
     else {
         int configured_level = r ? ap_get_request_module_loglevel(r, module_index)        :
@@ -1148,7 +1150,7 @@ static void log_error_core(const char *file, int line, int module_index,
                 }
             }
         }
-        else {
+        else if (ap_server_conf) {
             /* Use the main ErrorLogFormat if any */
             sconf = ap_get_core_module_config(ap_server_conf->module_config);
         }
@@ -1222,7 +1224,7 @@ static void log_error_core(const char *file, int line, int module_index,
             info.file         = file;
             info.line         = line;
             info.status       = status;
-            log_format = sconf->error_log_format;
+            log_format = sconf ? sconf->error_log_format : NULL;
             done = 1;
         }
 
