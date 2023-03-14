@@ -97,7 +97,7 @@ AP_DECLARE(apr_status_t) ap_recent_ctime(char *date_str, apr_time_t t);
  * @param option Additional formatting options (AP_CTIME_OPTION_*).
  * @param len Pointer to an int containing the length of the provided buffer.
  *        On successful return it contains the number of bytes written to the
- *        buffer.
+ *        buffer (including trailing NUL byte).
  * @return APR_SUCCESS iff successful, APR_ENOMEM if buffer was to short.
  */
 AP_DECLARE(apr_status_t) ap_recent_ctime_ex(char *date_str, apr_time_t t,
