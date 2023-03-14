@@ -493,6 +493,11 @@ static void *create_core_server_config(apr_pool_t *a, server_rec *s)
         conf->flush_max_pipelined = AP_FLUSH_MAX_PIPELINED;
     }
     else {
+        /* Use main ErrorLogFormat while the vhost is loading */
+        core_server_config *main_conf =
+            ap_get_core_module_config(ap_server_conf->module_config);
+        conf->error_log_format = main_conf->error_log_format;
+
         conf->flush_max_pipelined = -1;
     }
 
