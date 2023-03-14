@@ -717,6 +717,7 @@ static void usage(process_rec *process)
     if (temp_error_log) {
         ap_replace_stderr_log(process->pool, temp_error_log);
     }
+    ap_server_conf = NULL;
     if (!ap_read_config(process, ptemp, confname, &ap_conftree)) {
         if (showcompile) {
             /* Well, we tried. Show as much as we can, but exit nonzero to
@@ -824,6 +825,7 @@ static void usage(process_rec *process)
         apr_pool_create(&ptemp, pconf);
         apr_pool_tag(ptemp, "ptemp");
         ap_server_root = def_server_root;
+        ap_server_conf = NULL;
         if (!ap_read_config(process, ptemp, confname, &ap_conftree)) {
             destroy_and_exit_process(process, 1);
         }
