@@ -25,7 +25,7 @@
  *   */
 #define AP_CTIME_USEC_LENGTH      7
 
-/* Length of ISO 8601 date/time */
+/* Length of ISO 8601 date/time (including trailing '\0') */
 #define AP_CTIME_COMPACT_LEN      20
 
 /* Length of timezone offset from GMT ([+-]hhmm) plus leading space */
@@ -190,7 +190,9 @@ AP_DECLARE(apr_status_t) ap_recent_ctime_ex(char *date_str, apr_time_t t,
         needed += AP_CTIME_GMTOFF_LEN;
     }
 
-    /* Check the provided buffer length */
+    /* Check the provided buffer length (note: above AP_CTIME_COMPACT_LEN
+     * and APR_CTIME_LEN include the trailing '\0'; so does 'needed' then).
+     */
     if (len && *len >= needed) {
         *len = needed;
     }
