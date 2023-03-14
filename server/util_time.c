@@ -262,18 +262,22 @@ AP_DECLARE(apr_status_t) ap_recent_ctime_ex(char *date_str, apr_time_t t,
         *date_str++ = real_year % 10 + '0';
     }
     if (option & AP_CTIME_OPTION_GMTOFF) {
-        int off = xt.tm_gmtoff;
+        int off = xt.tm_gmtoff, off_hh, off_mm;
         char sign = '+';
         if (off < 0) {
             off = -off;
             sign = '-';
         }
-        apr_snprintf(date_str, AP_CTIME_GMTOFF_LEN + 1, " %c%.2d%.2d",
-                     sign, off / 3600, (off % 3600) / 60);
+        off_hh = off / 3600;
+        off_mm = off % 3600 / 60;
+        *date_str++ = ' ';
+        *date_str++ = sign;
+        *date_str++ = off_hh / 10 + '0';
+        *date_str++ = off_hh % 10 + '0';
+        *date_str++ = off_mm / 10 + '0';
+        *date_str++ = off_mm % 10 + '0';
     }
-    else {
-        *date_str = 0;
-    }
+    *date_str = 0;
 
     return APR_SUCCESS;
 }
