@@ -196,6 +196,22 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       svn merge -c 1907565 ^/httpd/httpd/trunk .
      +1: rpluem,
 
+  *) core: Add formats %{z} and %{strftime-format} to ErrorLogFormat, and make
+     sure that if the format is configured early enough it applies to every log
+     line.  PR 62161.
+     trunk patch: https://svn.apache.org/r1908380
+                  https://svn.apache.org/r1908383
+                  https://svn.apache.org/r1908384
+                  https://svn.apache.org/r1908388
+                  https://svn.apache.org/r1908389
+                  https://svn.apache.org/r1908390
+                  https://svn.apache.org/r1908393
+                  https://svn.apache.org/r1908394
+                  https://svn.apache.org/r1908406
+                  https://svn.apache.org/r1908407
+     2.4.x patch: svn merge -c 1908380,1908383-1908384,1908388-1908390,1908393-1908394,1908406-1908407 ^/httpd/httpd/trunk .
+     +1: ylavic
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
