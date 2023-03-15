@@ -79,10 +79,10 @@ jobs:
               APU_VERSION=1.6.3
               APU_CONFIG="--with-crypto --with-ldap"
           # -------------------------------------------------------------------------
-          - name: APR 1.7.x, APR-util 1.7.x
+          - name: APR 1.8.x, APR-util 1.7.x
             config: --enable-mods-shared=reallyall
             env: |
-              APR_VERSION=1.7.x
+              APR_VERSION=1.8.x
               APU_VERSION=1.7.x
               APU_CONFIG="--with-crypto --with-ldap"
               CLEAR_CACHE=1
