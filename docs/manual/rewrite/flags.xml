@@ -144,8 +144,6 @@ control characters and the space character. This is the same set of
 characters rejected when they are copied into the query string unencoded.
 </p>
 
-<p>[B], [B=...] and [BNEG] have no affect when [BCTLS] is used..</p>
-
 <highlight language="config">
 # Escape control characters and spaces
 RewriteRule "^search/(.*)$" "/search.php/$1" "[BCTLS]"
