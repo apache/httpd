@@ -184,7 +184,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      Backport version for 2.4.x of patch:
       Trunk version of patch works
       svn merge -c 1907505,1908186 ^/httpd/httpd/trunk .
-     +1: rpluem,
+     +1: rpluem, ylavic,
 
   *) mod_proxy: Optimize code: We know that we already have a valid
      encoding string, because we just decoded it. Hence just copy
@@ -194,7 +194,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      Backport version for 2.4.x of patch:
       Trunk version of patch works
       svn merge -c 1907565 ^/httpd/httpd/trunk .
-     +1: rpluem,
+     +1: rpluem, ylavic,
 
   *) core: Add formats %{z} and %{strftime-format} to ErrorLogFormat, and make
      sure that if the format is configured early enough it applies to every log
@@ -210,7 +210,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   https://svn.apache.org/r1908406
                   https://svn.apache.org/r1908407
      2.4.x patch: svn merge -c 1908380,1908383-1908384,1908388-1908390,1908393-1908394,1908406-1908407 ^/httpd/httpd/trunk .
-     +1: ylavic
+     +1: ylavic,
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
