@@ -179,13 +179,18 @@
 
 #if defined(HAVE_OPENSSL)
 
-#include <openssl/rsa.h>
+#include <openssl/evp.h>
 #include <openssl/crypto.h>
 #include <openssl/x509.h>
 #include <openssl/pem.h>
 #include <openssl/err.h>
 #include <openssl/ssl.h>
 #include <openssl/rand.h>
+#include <openssl/opensslv.h>
+#if OPENSSL_VERSION_NUMBER >= 0x30000000L
+#include <openssl/core_names.h>
+#endif
+
 #define USE_SSL
 
 #define SK_NUM(x) sk_X509_num(x)
@@ -621,22 +626,33 @@ static void set_conn_state(struct connection *c, connect_state_e new_state,
  *
  */
 #ifdef USE_SSL
-static long ssl_print_cb(BIO *bio,int cmd,const char *argp,int argi,long argl,long ret)
+#if OPENSSL_VERSION_NUMBER >= 0x30000000L
+static long ssl_print_cb(BIO *bio, int cmd, const char *argp,
+                         size_t len, int argi, long argl, int ret,
+                         size_t *processed)
+#else
+static long ssl_print_cb(BIO *bio, int cmd, const char *argp,
+                         int argi, long argl, long ret)
+#endif
 {
     BIO *out;
+#if OPENSSL_VERSION_NUMBER >= 0x30000000L
+    (void)len;
+    (void)processed;
+#endif
 
     out=(BIO *)BIO_get_callback_arg(bio);
     if (out == NULL) return(ret);
 
     if (cmd == (BIO_CB_READ|BIO_CB_RETURN)) {
         BIO_printf(out,"read from %p [%p] (%d bytes => %ld (0x%lX))\n",
-                   bio, argp, argi, ret, ret);
+                   bio, argp, argi, (long)ret, (long)ret);
         BIO_dump(out,(char *)argp,(int)ret);
         return(ret);
     }
     else if (cmd == (BIO_CB_WRITE|BIO_CB_RETURN)) {
         BIO_printf(out,"write to %p [%p] (%d bytes => %ld (0x%lX))\n",
-                   bio, argp, argi, ret, ret);
+                   bio, argp, argi, (long)ret, (long)ret);
         BIO_dump(out,(char *)argp,(int)ret);
     }
     return ret;
@@ -838,14 +854,27 @@ static void ssl_proceed_handshake(struct connection *c)
                         break;
 #ifndef OPENSSL_NO_EC
                     case EVP_PKEY_EC: {
+#if OPENSSL_VERSION_NUMBER >= 0x30000000L
+                        size_t len;
+                        char cname[80];
+                        if (!EVP_PKEY_get_utf8_string_param(key, OSSL_PKEY_PARAM_GROUP_NAME,
+                                                            cname, sizeof(cname), &len)) {
+                            cname[0] = '?';
+                            len = 1;
+                        }
+                        cname[len] = '\0';
+#else
                         const char *cname = NULL;
                         EC_KEY *ec = EVP_PKEY_get1_EC_KEY(key);
                         int nid = EC_GROUP_get_curve_name(EC_KEY_get0_group(ec));
                         EC_KEY_free(ec);
                         cname = EC_curve_nid2nist(nid);
-                        if (!cname)
+                        if (!cname) {
                             cname = OBJ_nid2sn(nid);
-
+                            if (!cname)
+                                cname = "?";
+                        }
+#endif
                         apr_snprintf(worker->metrics.ssl_tmp_key, 128, "ECDH %s %d bits",
                                      cname, EVP_PKEY_bits(key));
                         break;
@@ -1567,7 +1596,11 @@ static void start_connection(struct connection * c)
         SSL_set_bio(c->ssl, bio, bio);
         SSL_set_connect_state(c->ssl);
         if (verbosity >= 4) {
+#if OPENSSL_VERSION_NUMBER >= 0x30000000L
+            BIO_set_callback_ex(bio, ssl_print_cb);
+#else
             BIO_set_callback(bio, ssl_print_cb);
+#endif
             BIO_set_callback_arg(bio, (void *)bio_err);
         }
 #ifdef HAVE_TLSEXT
