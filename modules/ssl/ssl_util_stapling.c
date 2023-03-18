@@ -29,9 +29,9 @@
                                             -- Alexei Sayle          */
 
 #include "ssl_private.h"
+
 #include "ap_mpm.h"
 #include "apr_thread_mutex.h"
-#include "mod_ssl_openssl.h"
 
 APR_IMPLEMENT_OPTIONAL_HOOK_RUN_ALL(ssl, SSL, int, init_stapling_status,
                                     (server_rec *s, apr_pool_t *p, 

@@ -25,8 +25,7 @@
  */
 
 #include "ssl_private.h"
-#include "mod_ssl.h"
-#include "mod_ssl_openssl.h"
+
 #include "util_md5.h"
 #include "util_mutex.h"
 #include "ap_provider.h"

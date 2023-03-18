@@ -30,6 +30,8 @@
                                            -- Clifford Stoll     */
 #include "ssl_private.h"
 
+#include <openssl/ui.h>
+
 typedef struct {
     server_rec         *s;
     apr_pool_t         *p;
@@ -574,7 +576,7 @@ int ssl_pphrase_Handle_CB(char *buf, int bufsize, int verify, void *srv)
     return (len);
 }
 
-#if defined(HAVE_OPENSSL_ENGINE_H) && defined(HAVE_ENGINE_INIT)
+#if MODSSL_HAVE_ENGINE_API
 
 /* OpenSSL UI implementation for passphrase entry; largely duplicated
  * from ssl_pphrase_Handle_CB but adjusted for UI API. TODO: Might be
@@ -797,7 +799,7 @@ apr_status_t modssl_load_engine_keypair(server_rec *s, apr_pool_t *p,
                                         const char *certid, const char *keyid,
                                         X509 **pubkey, EVP_PKEY **privkey)
 {
-#if defined(HAVE_OPENSSL_ENGINE_H) && defined(HAVE_ENGINE_INIT)
+#if MODSSL_HAVE_ENGINE_API
     const char *c, *scheme;
     ENGINE *e;
     UI_METHOD *ui_method = get_passphrase_ui(p);

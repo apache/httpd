@@ -115,14 +115,30 @@ static void digest_public_key(EVP_PKEY *pubkey, unsigned char digest[LOG_ID_SIZE
     int len = i2d_PUBKEY(pubkey, NULL);
     unsigned char *val = ap_malloc(len);
     unsigned char *tmp = val;
-    SHA256_CTX sha256ctx;
 
     ap_assert(LOG_ID_SIZE == SHA256_DIGEST_LENGTH);
 
     i2d_PUBKEY(pubkey, &tmp);
-    SHA256_Init(&sha256ctx);
-    SHA256_Update(&sha256ctx, (unsigned char *)val, len);
-    SHA256_Final(digest, &sha256ctx);
+#if OPENSSL_VERSION_NUMBER < 0x30000000
+    {
+        SHA256_CTX sha256ctx;
+        SHA256_Init(&sha256ctx);
+        SHA256_Update(&sha256ctx, (unsigned char *)val, len);
+        SHA256_Final(digest, &sha256ctx);
+    }
+#else
+    {
+        EVP_MD_CTX *md_ctx;
+        unsigned int dlen = 0;
+        md_ctx = EVP_MD_CTX_create();
+        ap_assert(md_ctx != NULL);
+        ap_assert(EVP_DigestInit_ex(md_ctx, EVP_sha256(), NULL));
+        ap_assert(EVP_DigestUpdate(md_ctx, val, len));
+        ap_assert(EVP_DigestFinal_ex(md_ctx, digest, &dlen));
+        ap_assert(dlen == SHA256_DIGEST_LENGTH);
+        EVP_MD_CTX_destroy(md_ctx);
+    }
+#endif
     free(val);
 }
 
