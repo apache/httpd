@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1906839 -->
+<!-- English Revision: 1908360 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -1470,6 +1470,17 @@ substitution !
 	dans les références arrières <em>avant</em>
 	d'appliquer la transformation. <em><a
         href="../rewrite/flags.html#flag_b">détails ...</a></em></td>
+    </tr>
+    <tr>
+        <td>BCTLS</td>
+        <td>Identique à [B], mais n'échappe que les espaces et les caractères de
+	contrôle. <em><a href="../rewrite/flags.html#flag_bctls">détails ...</a></em></td>
+    </tr>
+    <tr>
+        <td>BNE</td>
+	<td>Les caractères de [B] ou [BCTLS] qui <strong>ne doivent pas</strong>
+	être échappés.  <em><a href="../rewrite/flags.html#flag_bne">détails
+	...</a></em></td>
     </tr>
     <tr>
         <td>backrefnoplus|BNP</td>

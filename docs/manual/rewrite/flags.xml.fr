@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1901071 -->
+<!-- English Revision: 1908495 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -73,13 +73,7 @@ d'utilisation.</p>
 <section id="flag_b"><title>B (échappement dans les références arrières)</title>
 <p>Avec le drapeau [B], la directive <directive
 module="mod_rewrite">RewriteRule</directive> échappe les caractères
-non-alphanumériques avant d'appliquer la transformation. A partir
-de la version 2.4.26, vous pouvez limiter l'échappement dans les
-références arrières à une liste de caractères que vous pouvez spécifiez comme
-dans cet exemple : <code>[B=#?;]</code>. Notez que l'espace peut faire
-partie de la liste des caractères à échapper, mais qu'il ne doit pas
-être le dernier caractère de cette liste.
-</p>
+non-alphanumériques avant d'appliquer la transformation.</p>
 
 <p><code>mod_rewrite</code> doit supprimer les séquences d'échappement
 des URLs avant leur
@@ -123,6 +117,25 @@ si on présente à ce dernier une URL non échappée.</p>
 %{THE_REQUEST}, les chaînes capturées se présentant
 alors sous la forme codée.</p>
 
+<p>A partir
+de la version 2.4.26, vous pouvez limiter l'échappement dans les
+références arrières à une liste de caractères que vous pouvez spécifiez comme
+dans cet exemple : <code>[B=#?;]</code>. Notez que l'espace peut faire
+partie de la liste des caractères à échapper, mais que vous devez mettre entre
+guillemets le troisième argument de la directive <directive
+module="mod_rewrite">RewriteRule</directive> et que l'espace ne doit pas
+être le dernier caractère de cette liste.
+</p>
+
+<highlight language="config">
+# Échappement des espaces et des points d'interrogation. Les guillemets autour
+# du dernier argument sont obligatoires lorsque l'espace est inclus.
+RewriteRule "^search/(.*)$" "/search.php?term=$1" "[B= ?]"
+</highlight>
+
+<p>Pour définir la liste des caractères à échapper de cette manière, voir <a
+href="flag_bneg">flag_bneg</a> et <a href="flag_bctls">flag_bctls</a></p>
+
 </section>
 
 <section id="flag_bnp"><title>BNP|backrefnoplus (ne pas échapper
@@ -133,7 +146,44 @@ espace en %20 au lieu de '+' dans les références arrières. Ceci s'avère
 utile lorsque la référence arrière est utilisée dans la partie chemin,
 et non dans les paramètres de la requête.</p>
 
+<highlight language="config">
+# Échappe le caractère espace en %20 dans le chemin au lieu de + comme dans la
+# soumission de formulaire à l'aide de la chaîne de paramètres
+RewriteRule "^search/(.*)$" "/search.php/$1" "[B,BNP]"
+</highlight>
+
 <p>Ce drapeau est disponible à partir de la version 2.4.26 du serveur HTTP
+Apache.</p>
+
+</section>
+
+<section id="flag_bctls"><title>BCTLS</title>
+<p>Le drapeau [BCTLS] est similaire à [B], à la différence que seuls les espaces
+et les caractères de contrôle sont échappés. Il s'agit du même jeu de caractères
+rejetés lorsqu'ils sont copiés dans la chaîne de paramètres non codée.
+</p>
+
+<highlight language="config">
+# Échappe les espaces et les caractères de contrôle
+RewriteRule "^search/(.*)$" "/search.php/$1" "[BCTLS]"
+</highlight>
+
+<p>Ce drapeau est disponible à partir de la version 2.5.1 du serveur HTTP
+Apache.</p>
+
+</section>
+
+<section id="flag_bne"><title>BNE</title>
+<p>Les caractères listés dans [BNE=...] sont exclus des listes de caractères
+correspondant aux drapeaux [B] ou [BCTLS]. Ils ne seront donc pas échappés.
+</p>
+
+<highlight language="config">
+# Échappe les caractères par défaut, sauf /
+RewriteRule "^search/(.*)$" "/search.php?term=$1" "[B,BNE=/]"
+</highlight>
+ 
+<p>Ce drapeau est disponible à partir de la version 2.5.1 du serveur HTTP
 Apache.</p>
 
 </section>
