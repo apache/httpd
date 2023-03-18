@@ -151,8 +151,6 @@ RewriteRule "^search/(.*)$" "/search.php/$1" "[BCTLS]"
 
 <p>This flag is available in version 2.5.1 and later.</p>
 
-</note>
-
 </section>
 
 <section id="flag_bne"><title>BNE</title>
