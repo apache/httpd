@@ -88,13 +88,7 @@ d'utilisation.</p>
 <div class="section">
 <h2><a name="flag_b" id="flag_b">B (échappement dans les références arrières)</a></h2>
 <p>Avec le drapeau [B], la directive <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> échappe les caractères
-non-alphanumériques avant d'appliquer la transformation. A partir
-de la version 2.4.26, vous pouvez limiter l'échappement dans les
-références arrières à une liste de caractères que vous pouvez spécifiez comme
-dans cet exemple : <code>[B=#?;]</code>. Notez que l'espace peut faire
-partie de la liste des caractères à échapper, mais qu'il ne doit pas
-être le dernier caractère de cette liste.
-</p>
+non-alphanumériques avant d'appliquer la transformation.</p>
 
 <p><code>mod_rewrite</code> doit supprimer les séquences d'échappement
 des URLs avant leur
@@ -137,6 +131,20 @@ si on présente à ce dernier une URL non échappée.</p>
 <code class="directive"><a href="../mod/mod_rewrite.html#rewritecond">RewriteCond</a></code> pour capturer
 %{THE_REQUEST}, les chaînes capturées se présentant
 alors sous la forme codée.</p>
+
+<p>A partir
+de la version 2.4.26, vous pouvez limiter l'échappement dans les
+références arrières à une liste de caractères que vous pouvez spécifiez comme
+dans cet exemple : <code>[B=#?;]</code>. Notez que l'espace peut faire
+partie de la liste des caractères à échapper, mais que vous devez mettre entre
+guillemets le troisième argument de la directive <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> et que l'espace ne doit pas
+être le dernier caractère de cette liste.
+</p>
+
+<pre class="prettyprint lang-config"># Échappement des espaces et des points d'interrogation. Les guillemets autour
+# du dernier argument sont obligatoires lorsque l'espace est inclus.
+RewriteRule "^search/(.*)$" "/search.php?term=$1" "[B= ?]"</pre>
+
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
