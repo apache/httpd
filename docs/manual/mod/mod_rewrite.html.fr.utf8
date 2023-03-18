@@ -1424,6 +1424,17 @@ substitution !
 	d'appliquer la transformation. <em><a href="../rewrite/flags.html#flag_b">détails ...</a></em></td>
     </tr>
 <tr class="odd">
+        <td>BCTLS</td>
+        <td>Identique à [B], mais n'échappe que les espaces et les caractères de
+	contrôle. <em><a href="../rewrite/flags.html#flag_bctls">détails ...</a></em></td>
+    </tr>
+<tr>
+        <td>BNE</td>
+	<td>Les caractères de [B] ou [BCTLS] qui <strong>ne doivent pas</strong>
+	être échappés.  <em><a href="../rewrite/flags.html#flag_bne">détails
+	...</a></em></td>
+    </tr>
+<tr class="odd">
         <td>backrefnoplus|BNP</td>
         <td>Avec ce drapeau, si les références arrières sont échappées,
 	les espaces seront échappés en %20 au lieu de +. Ceci s'avère
