@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1901072 -->
+<!-- English Revision: 1908303 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -73,13 +73,7 @@ d'utilisation.</p>
 <section id="flag_b"><title>B (échappement dans les références arrières)</title>
 <p>Avec le drapeau [B], la directive <directive
 module="mod_rewrite">RewriteRule</directive> échappe les caractères
-non-alphanumériques avant d'appliquer la transformation. A partir
-de la version 2.4.26, vous pouvez limiter l'échappement dans les
-références arrières à une liste de caractères que vous pouvez spécifiez comme
-dans cet exemple : <code>[B=#?;]</code>. Notez que l'espace peut faire
-partie de la liste des caractères à échapper, mais qu'il ne doit pas
-être le dernier caractère de cette liste.
-</p>
+non-alphanumériques avant d'appliquer la transformation.</p>
 
 <p><code>mod_rewrite</code> doit supprimer les séquences d'échappement
 des URLs avant leur
@@ -122,6 +116,22 @@ si on présente à ce dernier une URL non échappée.</p>
 <directive module="mod_rewrite">RewriteCond</directive> pour capturer
 %{THE_REQUEST}, les chaînes capturées se présentant
 alors sous la forme codée.</p>
+
+<p>A partir
+de la version 2.4.26, vous pouvez limiter l'échappement dans les
+références arrières à une liste de caractères que vous pouvez spécifiez comme
+dans cet exemple : <code>[B=#?;]</code>. Notez que l'espace peut faire
+partie de la liste des caractères à échapper, mais que vous devez mettre entre
+guillemets le troisième argument de la directive <directive
+module="mod_rewrite">RewriteRule</directive> et que l'espace ne doit pas
+être le dernier caractère de cette liste.
+</p>
+
+<highlight language="config">
+# Échappement des espaces et des points d'interrogation. Les guillemets autour
+# du dernier argument sont obligatoires lorsque l'espace est inclus.
+RewriteRule "^search/(.*)$" "/search.php?term=$1" "[B= ?]"
+</highlight>
 
 </section>
 
