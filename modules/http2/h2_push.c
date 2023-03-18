@@ -502,6 +502,7 @@ static void calc_sha256_hash(h2_push_diary *diary, apr_uint64_t *phash, h2_push 
     sha256_update(md, push->req->authority);
     sha256_update(md, push->req->path);
     EVP_DigestFinal(md, hash, &len);
+    EVP_MD_CTX_destroy(md);
 
     val = 0;
     for (i = 0; i != len; ++i)
