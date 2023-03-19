@@ -1,0 +1,3 @@
+  *) mod_rewrite: Add "BCTLS" and "BNEG" RewriteRule flags. Re-allow encoded
+     characters on redirections without the "NE" flag. 
+     [Yann Ylavic, Eric Covener]
