@@ -2581,6 +2581,7 @@ static int ssl_find_vhost(void *servername, conn_rec *c, server_rec *s)
             sc->server->pks->service_unavailable : 0; 
         
         ap_update_child_status_from_server(c->sbh, SERVER_BUSY_READ, c, s);
+
         /*
          * There is one special filter callback, which is set
          * very early depending on the base_server's log level.
@@ -2589,14 +2590,7 @@ static int ssl_find_vhost(void *servername, conn_rec *c, server_rec *s)
          * we need to set that callback here.
          */
         if (APLOGtrace4(s)) {
-            BIO *rbio = SSL_get_rbio(ssl),
-                *wbio = SSL_get_wbio(ssl);
-            BIO_set_callback(rbio, ssl_io_data_cb);
-            BIO_set_callback_arg(rbio, (void *)ssl);
-            if (wbio && wbio != rbio) {
-                BIO_set_callback(wbio, ssl_io_data_cb);
-                BIO_set_callback_arg(wbio, (void *)ssl);
-            }
+            modssl_set_io_callbacks(ssl);
         }
 
         return 1;
