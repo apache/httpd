@@ -154,20 +154,24 @@ static int proxy_http2_canon(request_rec *r, char *url)
         if (apr_table_get(r->notes, "proxy-nocanon")) {
             path = url;   /* this is the raw path */
         }
+        else if (apr_table_get(r->notes, "proxy-noencode")) {
+            path = url;   /* this is the encoded path already */
+            search = r->args;
+        }
         else {
             path = ap_proxy_canonenc(r->pool, url, (int)strlen(url),
                                      enc_path, 0, r->proxyreq);
             search = r->args;
-            if (search && *(ap_scan_vchar_obstext(search))) {
-                /*
-                 * We have a raw control character or a ' ' in r->args.
-                 * Correct encoding was missed.
-                 */
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(10412)
-                              "To be forwarded query string contains control "
-                              "characters or spaces");
-                return HTTP_FORBIDDEN;
-            }
+        }
+        if (search && *ap_scan_vchar_obstext(search)) {
+            /*
+             * We have a raw control character or a ' ' in r->args.
+             * Correct encoding was missed.
+             */
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(10412)
+                          "To be forwarded query string contains control "
+                          "characters or spaces");
+            return HTTP_FORBIDDEN;
         }
         break;
     case PROXYREQ_PROXY:

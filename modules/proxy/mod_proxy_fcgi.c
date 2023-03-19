@@ -92,8 +92,9 @@ static int proxy_fcgi_canon(request_rec *r, char *url)
         host = apr_pstrcat(r->pool, "[", host, "]", NULL);
     }
 
-    if (apr_table_get(r->notes, "proxy-nocanon")) {
-        path = url;   /* this is the raw path */
+    if (apr_table_get(r->notes, "proxy-nocanon")
+        || apr_table_get(r->notes, "proxy-noencode")) {
+        path = url;   /* this is the raw/encoded path */
     }
     else {
         path = ap_proxy_canonenc(r->pool, url, strlen(url), enc_path, 0,

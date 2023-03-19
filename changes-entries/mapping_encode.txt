@@ -1,0 +1,2 @@
+  *) mod_proxy: Fix double encoding of the uri-path of the request forwarded
+     to the origin server, when using mapping=encoded|servlet.  [Yann Ylavic]
