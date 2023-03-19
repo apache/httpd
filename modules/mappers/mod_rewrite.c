@@ -106,6 +106,8 @@
 #include "mod_rewrite.h"
 #include "ap_expr.h"
 
+#include "test_char.h"
+
 static ap_dbd_t *(*dbd_acquire)(request_rec*) = NULL;
 static void (*dbd_prepare)(server_rec*, const char*, const char*) = NULL;
 static const char* really_last_key = "rewrite_really_last";
@@ -174,6 +176,7 @@ static const char* really_last_key = "rewrite_really_last";
 #define RULEFLAG_ESCAPENOPLUS       (1<<18)
 #define RULEFLAG_QSLAST             (1<<19)
 #define RULEFLAG_QSNONE             (1<<20) /* programattic only */
+#define RULEFLAG_ESCAPECTLS         (1<<21)
 
 /* return code of the rewrite rule
  * the result may be escaped - or not
@@ -327,7 +330,8 @@ typedef struct {
     data_item *cookie;               /* added cookies                         */
     int        skip;                 /* number of next rules to skip          */
     int        maxrounds;            /* limit on number of loops with N flag  */
-    char       *escapes;             /* specific backref escapes              */
+    const char *escapes;             /* specific backref escapes              */
+    const char *noescapes;           /* specific backref chars not to escape  */
 } rewriterule_entry;
 
 typedef struct {
@@ -427,7 +431,9 @@ static apr_global_mutex_t *rewrite_mapr_lock_acquire = NULL;
 static const char *rewritemap_mutex_type = "rewrite-map";
 
 /* Optional functions imported from mod_ssl when loaded: */
-static char *escape_backref(apr_pool_t *p, const char *path, const char *escapeme, int noplus);
+static char *escape_backref(apr_pool_t *p, const char *path,
+                            const char *escapeme, const char *noescapeme,
+                            int flags);
 
 /*
  * +-------------------------------------------------------+
@@ -654,14 +660,21 @@ static APR_INLINE unsigned char *c2x(unsigned what, unsigned char prefix,
  * Escapes a backreference in a similar way as php's urlencode does.
  * Based on ap_os_escape_path in server/util.c
  */
-static char *escape_backref(apr_pool_t *p, const char *path, const char *escapeme, int noplus) {
-    char *copy = apr_palloc(p, 3 * strlen(path) + 3);
+static char *escape_backref(apr_pool_t *p, const char *path,
+                            const char *escapeme, const char *noescapeme,
+                            int flags)
+{
+    char *copy = apr_palloc(p, 3 * strlen(path) + 1);
     const unsigned char *s = (const unsigned char *)path;
     unsigned char *d = (unsigned char *)copy;
-    unsigned c;
+    int noplus = (flags & RULEFLAG_ESCAPENOPLUS) != 0;
+    int ctls = (flags & RULEFLAG_ESCAPECTLS) != 0;
+    unsigned char c;
 
     while ((c = *s)) {
-        if (!escapeme) { 
+        if (((ctls ? !TEST_CHAR(c, T_VCHAR_OBSTEXT) : !escapeme)
+             || (escapeme && ap_strchr_c(escapeme, c)))
+            && (!noescapeme || !ap_strchr_c(noescapeme, c))) {
             if (apr_isalnum(c) || c == '_') {
                 *d++ = c;
             }
@@ -672,23 +685,8 @@ static char *escape_backref(apr_pool_t *p, const char *path, const char *escapem
                 d = c2x(c, '%', d);
             }
         }
-        else { 
-            const char *esc = escapeme;
-            while (*esc) { 
-                if (c == *esc) { 
-                    if (c == ' ' && !noplus) { 
-                        *d++ = '+';
-                    }
-                    else { 
-                        d = c2x(c, '%', d);
-                    }
-                    break;
-                }
-                ++esc;
-            }
-            if (!*esc) { 
-                *d++ = c;
-            }
+        else {
+            *d++ = c;
         }
         ++s;
     }
@@ -2469,7 +2467,8 @@ static char *do_expand(char *input, rewrite_ctx *ctx, rewriterule_entry *entry)
                     /* escape the backreference */
                     char *tmp2, *tmp;
                     tmp = apr_pstrmemdup(pool, bri->source + bri->regmatch[n].rm_so, span);
-                    tmp2 = escape_backref(pool, tmp, entry->escapes, entry->flags & RULEFLAG_ESCAPENOPLUS);
+                    tmp2 = escape_backref(pool, tmp, entry->escapes, entry->noescapes,
+                                          entry->flags);
                     rewritelog((ctx->r, 5, ctx->perdir, "escaping backreference '%s' to '%s'",
                             tmp, tmp2));
 
@@ -3541,12 +3540,23 @@ static const char *cmd_rewriterule_setflag(apr_pool_t *p, void *_cfg,
     case 'B':
         if (!*key || !strcasecmp(key, "ackrefescaping")) {
             cfg->flags |= RULEFLAG_ESCAPEBACKREF;
-            if (val && *val) { 
+            if (val && *val) {
                 cfg->escapes = val;
+            }
+        }
+        else if (!strcasecmp(key, "NE")) {
+            if (val && *val) {
+                cfg->noescapes = val;
+            }
+            else {
+                return "flag 'BNE' wants a list of characters (i.e. [BNE=...])";
             }
         }
         else if (!strcasecmp(key, "NP") || !strcasecmp(key, "ackrefernoplus")) { 
             cfg->flags |= RULEFLAG_ESCAPENOPLUS;
+        }
+        else if (!strcasecmp(key, "CTLS")) {
+            cfg->flags |= RULEFLAG_ESCAPECTLS|RULEFLAG_ESCAPEBACKREF;
         }
         else {
             ++error;
@@ -3809,7 +3819,6 @@ static const char *cmd_rewriterule(cmd_parms *cmd, void *in_dconf,
                            "'", NULL);
     }
 
-    /* arg3: optional flags field */
     newrule->forced_mimetype     = NULL;
     newrule->forced_handler      = NULL;
     newrule->forced_responsecode = HTTP_MOVED_TEMPORARILY;
@@ -3818,6 +3827,9 @@ static const char *cmd_rewriterule(cmd_parms *cmd, void *in_dconf,
     newrule->cookie = NULL;
     newrule->skip   = 0;
     newrule->maxrounds = REWRITE_MAX_ROUNDS;
+    newrule->escapes = newrule->noescapes = NULL;
+
+    /* arg3: optional flags field */
     if (a3 != NULL) {
         if ((err = cmd_parseflagfield(cmd->pool, newrule, a3,
                                       cmd_rewriterule_setflag)) != NULL) {
@@ -4745,13 +4757,19 @@ static int hook_uri2file(request_rec *r)
     }
 
     if (rulestatus) {
-        unsigned skip;
-        apr_size_t flen;
+        unsigned skip_absolute = is_absolute_uri(r->filename, NULL);
+        apr_size_t flen =  r->filename ? strlen(r->filename) : 0;
+        int to_proxyreq = (flen > 6 && strncmp(r->filename, "proxy:", 6) == 0);
+        int will_escape = skip_absolute && (rulestatus != ACTION_NOESCAPE);
 
-        if (r->args && *(ap_scan_vchar_obstext(r->args))) {
+        if (r->args
+                && !will_escape
+                && *(ap_scan_vchar_obstext(r->args))) {
             /*
              * We have a raw control character or a ' ' in r->args.
              * Correct encoding was missed.
+             * Correct encoding was missed and we're not going to escape
+             * it before returning.
              */
             ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(10410)
                           "Rewritten query string contains control "
@@ -4766,8 +4784,7 @@ static int hook_uri2file(request_rec *r)
             return n;
         }
 
-        flen = r->filename ? strlen(r->filename) : 0;
-        if (flen > 6 && strncmp(r->filename, "proxy:", 6) == 0) {
+        if (to_proxyreq) {
             /* it should be go on as an internal proxy request */
 
             /* check if the proxy module is enabled, so
@@ -4809,7 +4826,7 @@ static int hook_uri2file(request_rec *r)
                         r->filename));
             return OK;
         }
-        else if ((skip = is_absolute_uri(r->filename, NULL)) > 0) {
+        else if (skip_absolute > 0) {
             int n;
 
             /* it was finally rewritten to a remote URL */
@@ -4817,7 +4834,7 @@ static int hook_uri2file(request_rec *r)
             if (rulestatus != ACTION_NOESCAPE) {
                 rewritelog((r, 1, NULL, "escaping %s for redirect",
                             r->filename));
-                r->filename = escape_absolute_uri(r->pool, r->filename, skip);
+                r->filename = escape_absolute_uri(r->pool, r->filename, skip_absolute);
             }
 
             /* append the QUERY_STRING part */
@@ -5041,9 +5058,17 @@ static int hook_fixup(request_rec *r)
      */
     rulestatus = apply_rewrite_list(r, dconf->rewriterules, dconf->directory);
     if (rulestatus) {
-        unsigned skip;
+        unsigned skip_absolute = is_absolute_uri(r->filename, NULL);
+        int to_proxyreq = 0;
+        int will_escape = 0;
 
-        if (r->args && *(ap_scan_vchar_obstext(r->args))) {
+        l = strlen(r->filename);
+        to_proxyreq = l > 6 && strncmp(r->filename, "proxy:", 6) == 0;
+        will_escape = skip_absolute && (rulestatus != ACTION_NOESCAPE);
+
+        if (r->args
+               && !will_escape
+               &&  *(ap_scan_vchar_obstext(r->args))) {
             /*
              * We have a raw control character or a ' ' in r->args.
              * Correct encoding was missed.
@@ -5061,8 +5086,7 @@ static int hook_fixup(request_rec *r)
             return n;
         }
 
-        l = strlen(r->filename);
-        if (l > 6 && strncmp(r->filename, "proxy:", 6) == 0) {
+        if (to_proxyreq) {
             /* it should go on as an internal proxy request */
 
             /* make sure the QUERY_STRING and
@@ -5086,7 +5110,7 @@ static int hook_fixup(request_rec *r)
                         "%s [OK]", r->filename));
             return OK;
         }
-        else if ((skip = is_absolute_uri(r->filename, NULL)) > 0) {
+        else if (skip_absolute > 0) {
             /* it was finally rewritten to a remote URL */
 
             /* because we are in a per-dir context
@@ -5095,7 +5119,7 @@ static int hook_fixup(request_rec *r)
              */
             if (dconf->baseurl != NULL) {
                 /* skip 'scheme://' */
-                cp = r->filename + skip;
+                cp = r->filename + skip_absolute;
 
                 if ((cp = ap_strchr(cp, '/')) != NULL && *(++cp)) {
                     rewritelog((r, 2, dconf->directory,
@@ -5140,7 +5164,7 @@ static int hook_fixup(request_rec *r)
             if (rulestatus != ACTION_NOESCAPE) {
                 rewritelog((r, 1, dconf->directory, "escaping %s for redirect",
                             r->filename));
-                r->filename = escape_absolute_uri(r->pool, r->filename, skip);
+                r->filename = escape_absolute_uri(r->pool, r->filename, skip_absolute);
             }
 
             /* append the QUERY_STRING part */
