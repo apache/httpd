@@ -151,6 +151,26 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) mod_mime: Do not match the extention against possible query string
+     parameters in case ProxyPass was used with the nocanon option.
+     Trunk version of patch:
+        https://svn.apache.org/r1907505
+        https://svn.apache.org/r1908186
+     Backport version for 2.4.x of patch:
+      Trunk version of patch works
+      svn merge -c 1907505,1908186 ^/httpd/httpd/trunk .
+     +1: rpluem, ylavic, covener
+
+  *) mod_proxy: Optimize code: We know that we already have a valid
+     encoding string, because we just decoded it. Hence just copy
+     what we have instead of redoing it.
+     Trunk version of patch:
+        https://svn.apache.org/r1907565
+     Backport version for 2.4.x of patch:
+      Trunk version of patch works
+      svn merge -c 1907565 ^/httpd/httpd/trunk .
+     +1: rpluem, ylavic, covener
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -175,26 +195,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1908257
      2.4.x patch: svn merge -c 1907972,1907976,1907977,1908257 ^/httpd/httpd/trunk .
      +1: ylavic, rpluem
-
-  *) mod_mime: Do not match the extention against possible query string
-     parameters in case ProxyPass was used with the nocanon option.
-     Trunk version of patch:
-        https://svn.apache.org/r1907505
-        https://svn.apache.org/r1908186
-     Backport version for 2.4.x of patch:
-      Trunk version of patch works
-      svn merge -c 1907505,1908186 ^/httpd/httpd/trunk .
-     +1: rpluem, ylavic,
-
-  *) mod_proxy: Optimize code: We know that we already have a valid
-     encoding string, because we just decoded it. Hence just copy
-     what we have instead of redoing it.
-     Trunk version of patch:
-        https://svn.apache.org/r1907565
-     Backport version for 2.4.x of patch:
-      Trunk version of patch works
-      svn merge -c 1907565 ^/httpd/httpd/trunk .
-     +1: rpluem, ylavic,
 
   *) core: Add formats %{z} and %{strftime-format} to ErrorLogFormat, and make
      sure that if the format is configured early enough it applies to every log
