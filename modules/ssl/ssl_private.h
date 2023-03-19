@@ -83,16 +83,13 @@
 
 #include "ap_expr.h"
 
+/* keep first for compat API */
+#ifndef OPENSSL_API_COMPAT
+#define OPENSSL_API_COMPAT 0x10101000 /* for ENGINE_ API */
+#endif
+#include "mod_ssl_openssl.h"
+
 /* OpenSSL headers */
-#include <openssl/opensslv.h>
-#if (OPENSSL_VERSION_NUMBER >= 0x10001000)
-/* must be defined before including ssl.h */
-#define OPENSSL_NO_SSL_INTERN
-#endif
-#if OPENSSL_VERSION_NUMBER >= 0x30000000
-#include <openssl/core_names.h>
-#endif
-#include <openssl/ssl.h>
 #include <openssl/err.h>
 #include <openssl/x509.h>
 #include <openssl/pem.h>
@@ -102,12 +99,24 @@
 #include <openssl/x509v3.h>
 #include <openssl/x509_vfy.h>
 #include <openssl/ocsp.h>
+#include <openssl/dh.h>
+#if OPENSSL_VERSION_NUMBER >= 0x30000000
+#include <openssl/core_names.h>
+#endif
 
 /* Avoid tripping over an engine build installed globally and detected
  * when the user points at an explicit non-engine flavor of OpenSSL
  */
 #if defined(HAVE_OPENSSL_ENGINE_H) && defined(HAVE_ENGINE_INIT)
+#if OPENSSL_VERSION_NUMBER < 0x30000000 \
+    || (defined(OPENSSL_API_LEVEL) && OPENSSL_API_LEVEL < 30000)
 #include <openssl/engine.h>
+#define MODSSL_HAVE_ENGINE_API 1
+#endif
+#ifndef MODSSL_HAVE_ENGINE_API
+#define MODSSL_HAVE_ENGINE_API 0
+#endif
+
 #endif
 
 #if (OPENSSL_VERSION_NUMBER < 0x0090801f)
@@ -142,10 +151,18 @@
  * include most changes from OpenSSL >= 1.1 (new functions, macros, 
  * deprecations, ...), so we have to work around this...
  */
-#define MODSSL_USE_OPENSSL_PRE_1_1_API (LIBRESSL_VERSION_NUMBER < 0x2070000f)
-#else /* defined(LIBRESSL_VERSION_NUMBER) */
-#define MODSSL_USE_OPENSSL_PRE_1_1_API (OPENSSL_VERSION_NUMBER < 0x10100000L)
+#if LIBRESSL_VERSION_NUMBER < 0x2070000f
+#define MODSSL_USE_OPENSSL_PRE_1_1_API 1
+#else
+#define MODSSL_USE_OPENSSL_PRE_1_1_API 0
 #endif
+#else /* defined(LIBRESSL_VERSION_NUMBER) */
+#if OPENSSL_VERSION_NUMBER < 0x10100000L
+#define MODSSL_USE_OPENSSL_PRE_1_1_API 1
+#else
+#define MODSSL_USE_OPENSSL_PRE_1_1_API 0
+#endif
+#endif /* defined(LIBRESSL_VERSION_NUMBER) */
 
 #if OPENSSL_VERSION_NUMBER < 0x10101000
 #define MODSSL_USE_SSLRAND
@@ -215,7 +232,10 @@
 #endif
 
 /* Secure Remote Password */
-#if !defined(OPENSSL_NO_SRP) && defined(SSL_CTRL_SET_TLS_EXT_SRP_USERNAME_CB)
+#if !defined(OPENSSL_NO_SRP) \
+    && (OPENSSL_VERSION_NUMBER < 0x30000000L \
+        || (defined(OPENSSL_API_LEVEL) && OPENSSL_API_LEVEL < 30000)) \
+    && defined(SSL_CTRL_SET_TLS_EXT_SRP_USERNAME_CB)
 #define HAVE_SRP
 #include <openssl/srp.h>
 #endif
@@ -260,6 +280,14 @@ void free_bio_methods(void);
 #ifndef X509_STORE_CTX_get0_current_issuer
 #define X509_STORE_CTX_get0_current_issuer(x) (x->current_issuer)
 #endif
+#endif
+
+/* those may be deprecated */
+#ifndef X509_get_notBefore
+#define X509_get_notBefore  X509_getm_notBefore
+#endif
+#ifndef X509_get_notAfter
+#define X509_get_notAfter   X509_getm_notAfter
 #endif
 
 #if OPENSSL_VERSION_NUMBER >= 0x10101000L && !defined(LIBRESSL_VERSION_NUMBER)
@@ -1022,7 +1050,7 @@ void         modssl_callback_keylog(const SSL *ssl, const char *line);
 /**  I/O  */
 apr_status_t ssl_io_filter_init(conn_rec *, request_rec *r, SSL *);
 void         ssl_io_filter_register(apr_pool_t *);
-long         ssl_io_data_cb(BIO *, int, const char *, int, long, long);
+void         modssl_set_io_callbacks(SSL *ssl);
 
 /* ssl_io_buffer_fill fills the setaside buffering of the HTTP request
  * to allow an SSL renegotiation to take place. */
@@ -1064,9 +1092,13 @@ apr_status_t modssl_load_engine_keypair(server_rec *s, apr_pool_t *p,
                                         X509 **pubkey, EVP_PKEY **privkey);
 
 /**  Diffie-Hellman Parameter Support  */
-DH           *ssl_dh_GetParamFromFile(const char *);
+#if OPENSSL_VERSION_NUMBER < 0x30000000L
+DH           *modssl_dh_from_file(const char *);
+#else
+EVP_PKEY     *modssl_dh_pkey_from_file(const char *);
+#endif
 #ifdef HAVE_ECC
-EC_GROUP     *ssl_ec_GetParamFromFile(const char *);
+EC_GROUP     *modssl_ec_group_from_file(const char *);
 #endif
 
 /* Store the EVP_PKEY key (serialized into DER) in the hash table with

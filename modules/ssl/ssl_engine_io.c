@@ -28,8 +28,7 @@
                                   core keeps dumping.''
                                             -- Unknown    */
 #include "ssl_private.h"
-#include "mod_ssl.h"
-#include "mod_ssl_openssl.h"
+
 #include "apr_date.h"
 
 APR_IMPLEMENT_OPTIONAL_HOOK_RUN_ALL(ssl, SSL, int, proxy_post_handshake,
@@ -2283,14 +2282,7 @@ apr_status_t ssl_io_filter_init(conn_rec *c, request_rec *r, SSL *ssl)
                               ssl_io_filter_cleanup, apr_pool_cleanup_null);
 
     if (APLOG_CS_IS_LEVEL(c, mySrvFromConn(c), APLOG_TRACE4)) {
-        BIO *rbio = SSL_get_rbio(ssl),
-            *wbio = SSL_get_wbio(ssl);
-        BIO_set_callback(rbio, ssl_io_data_cb);
-        BIO_set_callback_arg(rbio, (void *)ssl);
-        if (wbio && wbio != rbio) {
-            BIO_set_callback(wbio, ssl_io_data_cb);
-            BIO_set_callback_arg(wbio, (void *)ssl);
-        }
+        modssl_set_io_callbacks(ssl);
     }
 
     return APR_SUCCESS;
@@ -2374,13 +2366,22 @@ static void ssl_io_data_dump(conn_rec *c, server_rec *s,
             "+-------------------------------------------------------------------------+");
 }
 
-long ssl_io_data_cb(BIO *bio, int cmd,
-                    const char *argp,
-                    int argi, long argl, long rc)
+#if OPENSSL_VERSION_NUMBER >= 0x30000000L
+static long modssl_io_cb(BIO *bio, int cmd, const char *argp,
+                         size_t len, int argi, long argl, int rc,
+                         size_t *processed)
+#else
+static long modssl_io_cb(BIO *bio, int cmd, const char *argp,
+                         int argi, long argl, long rc)
+#endif
 {
     SSL *ssl;
     conn_rec *c;
     server_rec *s;
+#if OPENSSL_VERSION_NUMBER >= 0x30000000L
+    (void)len;
+    (void)processed;
+#endif
 
     if ((ssl = (SSL *)BIO_get_callback_arg(bio)) == NULL)
         return rc;
@@ -2402,7 +2403,7 @@ long ssl_io_data_cb(BIO *bio, int cmd,
                     "%s: %s %ld/%d bytes %s BIO#%pp [mem: %pp] %s",
                     MODSSL_LIBRARY_NAME,
                     (cmd == (BIO_CB_WRITE|BIO_CB_RETURN) ? "write" : "read"),
-                    rc, argi, (cmd == (BIO_CB_WRITE|BIO_CB_RETURN) ? "to" : "from"),
+                    (long)rc, argi, (cmd == (BIO_CB_WRITE|BIO_CB_RETURN) ? "to" : "from"),
                     bio, argp, dump);
             if (*dump != '\0' && argp != NULL)
                 ssl_io_data_dump(c, s, argp, rc);
@@ -2416,4 +2417,26 @@ long ssl_io_data_cb(BIO *bio, int cmd,
         }
     }
     return rc;
+}
+
+static APR_INLINE void set_bio_callback(BIO *bio, void *arg)
+{
+#if OPENSSL_VERSION_NUMBER >= 0x30000000L
+    BIO_set_callback_ex(bio, modssl_io_cb);
+#else
+    BIO_set_callback(bio, modssl_io_cb);
+#endif
+    BIO_set_callback_arg(bio, arg);
+}
+
+void modssl_set_io_callbacks(SSL *ssl)
+{
+    BIO *rbio = SSL_get_rbio(ssl),
+        *wbio = SSL_get_wbio(ssl);
+    if (rbio) {
+        set_bio_callback(rbio, ssl);
+    }
+    if (wbio && wbio != rbio) {
+        set_bio_callback(wbio, ssl);
+    }
 }
