@@ -1,6 +1,13 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.57
 
+  *) mod_proxy: Fix double encoding of the uri-path of the request forwarded
+     to the origin server, when using mapping=encoded|servlet.  [Yann Ylavic]
+
+  *) mod_mime: Do not match the extention against possible query string
+     parameters in case ProxyPass was used with the nocanon option.
+     [Ruediger Pluem]
+
 Changes with Apache 2.4.56
 
   *) SECURITY: CVE-2023-27522: Apache HTTP Server: mod_proxy_uwsgi
