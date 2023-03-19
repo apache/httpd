@@ -755,7 +755,7 @@ static int find_ct(request_rec *r)
     mime_dir_config *conf;
     apr_array_header_t *exception_list;
     char *ext;
-    const char *fn, *fntmp, *type, *charset = NULL, *resource_name;
+    const char *fn, *fntmp, *type, *charset = NULL, *resource_name, *qm;
     int found_metadata = 0;
 
     if (r->finfo.filetype == APR_DIR) {
@@ -774,6 +774,19 @@ static int find_ct(request_rec *r)
     /* If use_path_info is explicitly set to on (value & 1 == 1), append. */
     if (conf->use_path_info & 1) {
         resource_name = apr_pstrcat(r->pool, r->filename, r->path_info, NULL);
+    }
+    /*
+     * In the reverse proxy case r->filename might contain a query string if
+     * the nocanon option was used with ProxyPass.
+     * If this is the case cut off the query string as the last parameter in
+     * this query string might end up on an extension we take care about, but
+     * we only want to match against path components not against query
+     * parameters.
+     */
+    else if ((r->proxyreq == PROXYREQ_REVERSE)
+             && (apr_table_get(r->notes, "proxy-nocanon"))
+             && ((qm = ap_strchr_c(r->filename, '?')) != NULL)) {
+        resource_name = apr_pstrmemdup(r->pool, r->filename, qm - r->filename);
     }
     else {
         resource_name = r->filename;
