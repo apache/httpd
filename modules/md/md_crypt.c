@@ -32,6 +32,9 @@
 #include <openssl/rand.h>
 #include <openssl/rsa.h>
 #include <openssl/x509v3.h>
+#if OPENSSL_VERSION_NUMBER >= 0x30000000L
+#include <openssl/core_names.h>
+#endif
 
 #include "md.h"
 #include "md_crypt.h"
@@ -988,26 +991,42 @@ static const char *bn64(const BIGNUM *b, apr_pool_t *p)
 
 const char *md_pkey_get_rsa_e64(md_pkey_t *pkey, apr_pool_t *p)
 {
-    const BIGNUM *e;
+#if OPENSSL_VERSION_NUMBER < 0x30000000L
     RSA *rsa = EVP_PKEY_get1_RSA(pkey->pkey);
-    
-    if (!rsa) {
-        return NULL;
+    if (rsa) {
+        const BIGNUM *e;
+        RSA_get0_key(rsa, NULL, &e, NULL);
+        return bn64(e, p);
     }
-    RSA_get0_key(rsa, NULL, &e, NULL);
-    return bn64(e, p);
+#else
+    BIGNUM *e = NULL;
+    if (EVP_PKEY_get_bn_param(pkey->pkey, OSSL_PKEY_PARAM_RSA_E, &e)) {
+        const char *e64 = bn64(e, p);
+        BN_free(e);
+        return e64;
+    }
+#endif
+    return NULL;
 }
 
 const char *md_pkey_get_rsa_n64(md_pkey_t *pkey, apr_pool_t *p)
 {
-    const BIGNUM *n;
+#if OPENSSL_VERSION_NUMBER < 0x30000000L
     RSA *rsa = EVP_PKEY_get1_RSA(pkey->pkey);
-    
-    if (!rsa) {
-        return NULL;
+    if (rsa) {
+        const BIGNUM *n;
+        RSA_get0_key(rsa, &n, NULL, NULL);
+        return bn64(n, p);
     }
-    RSA_get0_key(rsa, &n, NULL, NULL);
-    return bn64(n, p);
+#else
+    BIGNUM *n = NULL;
+    if (EVP_PKEY_get_bn_param(pkey->pkey, OSSL_PKEY_PARAM_RSA_N, &n)) {
+        const char *n64 = bn64(n, p);
+        BN_free(n);
+        return n64;
+    }
+#endif
+    return NULL;
 }
 
 apr_status_t md_crypt_sign64(const char **psign64, md_pkey_t *pkey, apr_pool_t *p, 
