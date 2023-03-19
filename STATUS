@@ -171,6 +171,16 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
       svn merge -c 1907565 ^/httpd/httpd/trunk .
      +1: rpluem, ylavic, covener
 
+  *) mod_proxy: Fix double encoding of the uri-path of the request forwarded
+     to the origin server, when using mapping=encoded|servlet.
+     trunk patch: http://svn.apache.org/r1907972
+                  http://svn.apache.org/r1907976
+                  http://svn.apache.org/r1907977
+                  http://svn.apache.org/r1908257
+     2.4.x patch: svn merge -c 1907972,1907976,1907977,1908257 ^/httpd/httpd/trunk .
+     +1: ylavic, rpluem, covener
+
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -186,15 +196,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/httpd-2.4-ldap-search.patch
      +1: minfrin, jim,
      jailletc36: r1745033 seems related and should in included
-
-  *) mod_proxy: Fix double encoding of the uri-path of the request forwarded
-     to the origin server, when using mapping=encoded|servlet.
-     trunk patch: http://svn.apache.org/r1907972
-                  http://svn.apache.org/r1907976
-                  http://svn.apache.org/r1907977
-                  http://svn.apache.org/r1908257
-     2.4.x patch: svn merge -c 1907972,1907976,1907977,1908257 ^/httpd/httpd/trunk .
-     +1: ylavic, rpluem
 
   *) core: Add formats %{z} and %{strftime-format} to ErrorLogFormat, and make
      sure that if the format is configured early enough it applies to every log
