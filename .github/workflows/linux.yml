@@ -67,7 +67,7 @@ jobs:
           # -------------------------------------------------------------------------
           - name: GCC 10 maintainer-mode w/-Werror, install + VPATH
             config: --enable-mods-shared=reallyall --enable-maintainer-mode
-            notest-cflags: -Werror -O2 -Wno-deprecated-declarations
+            notest-cflags: -Werror -O2
             env: |
               CC=gcc-10
               TEST_VPATH=1
