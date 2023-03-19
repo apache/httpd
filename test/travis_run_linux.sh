@@ -119,14 +119,44 @@ if ! test -v SKIP_TESTING; then
 
     if ! test -v NO_TEST_FRAMEWORK; then
         if test -v WITH_TEST_SUITE; then
-            make check TESTS="${TESTS}" TEST_CONFIG="${TEST_ARGS}"
-            RV=$?
+            make check TESTS="${TESTS}" TEST_CONFIG="${TEST_ARGS}" | tee test.log
+            RV=${PIPESTATUS[0]}
+            # re-run failing tests with -v, avoiding set -e
+            if [ $RV -ne 0 ]; then
+                # mv test/perl-framework/t/logs/error_log test/perl-framework/t/logs/error_log_save
+                FAILERS=""
+                while read FAILER; do
+                    FAILERS="$FAILERS $FAILER"
+                done < <(awk '/Failed:/{print $1}' test.log)
+                if [ -n "$FAILERS" ]; then
+                    t/TEST -v $FAILERS || true
+                fi
+                # set -e would have killed us after the original t/TEST
+                rm -f test.log
+                # mv test/perl-framework/t/logs/error_log_save test/perl-framework/t/logs/error_log
+                false
+            fi
         else
             test -v TEST_INSTALL || make install
             pushd test/perl-framework
                 perl Makefile.PL -apxs $PREFIX/bin/apxs
-                make test APACHE_TEST_EXTRA_ARGS="${TEST_ARGS} ${TESTS}"
-                RV=$?
+                make test APACHE_TEST_EXTRA_ARGS="${TEST_ARGS} ${TESTS}" | tee test.log
+                RV=${PIPESTATUS[0]}
+                # re-run failing tests with -v, avoiding set -e
+                if [ $RV -ne 0 ]; then
+                    # mv t/logs/error_log t/logs/error_log_save
+                    FAILERS=""
+                    while read FAILER; do
+                        FAILERS="$FAILERS $FAILER"
+                    done < <(awk '/Failed:/{print $1}' test.log)
+                    if [ -n "$FAILERS" ]; then
+                        t/TEST -v $FAILERS || true
+                    fi
+                    # set -e would have killed us after the original t/TEST
+                    rm -f test.log
+                    # mv t/logs/error_log_save t/logs/error_log
+                    false
+                fi
             popd
         fi
 
