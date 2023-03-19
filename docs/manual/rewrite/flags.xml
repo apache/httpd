@@ -113,18 +113,57 @@ the entire third argument of <directive module="mod_rewrite">RewriteRule</direct
 and the space must not be the last character in the list.</p>
 
 <highlight language="config">
-# Escape spaces and question marks. 
+# Escape spaces and question marks.  The quotes around the final argument
+# are required when a space is included.
 RewriteRule "^search/(.*)$" "/search.php?term=$1" "[B= ?]"
 </highlight>
 
+<p>To limit the characters escaped this way, see <a href="flag_bneg">flag_bneg</a>
+and <a href="flag_bctls">flag_bctls</a></p>
 
 </section>
+
+<section id="flag_bctls"><title>BCTLS</title>
+    <p>The [BCTLS] flag is simular to the [B] flag, but only escapes
+    control characters and the space character. This is the same set of
+    characters rejected when they are copied into the query string unencoded.
+   </p>
+<p>This flag is available in version 2.4.57 and later.</p>
+
+<highlight language="config">
+# Escape control characters and spaces
+RewriteRule "^search/(.*)$" "/search.php/$1" "[BCTLS]"
+</highlight>
+</section>
+
+<section id="flag_bneg"><title>BNEG</title>
+    <p>The [BNEG] flag modifies the behavior of escaping when the
+    the [B] flag is used with a list of specific characters to escape.
+    When [BNEG] is specified, the list of characters passed with [B=...]
+    are treated as exclusions to the list of characters to be escaped.
+    </p>
+
+<highlight language="config">
+# Escape the default characters, but leave /
+RewriteRule "^search/(.*)$" "/search.php?term=$1" "[B=/,BNEG]"
+</highlight>
+
+<p>This flag is available in version 2.4.57 and later.</p>
+</section>
+
 
 <section id="flag_bnp"><title>BNP|backrefnoplus (don't escape space to +)</title>
 <p>The [BNP] flag instructs <directive
 module="mod_rewrite">RewriteRule</directive> to escape the space character
 in a backreference to %20 rather than '+'. Useful when the backreference
 will be used in the path component rather than the query string.</p>
+
+<highlight language="config">
+# Escape spaces to %20 in the path instead of + as used in form submission via
+# the query string
+RewriteRule "^search/(.*)$" "/search.php/$1" "[B,BNP]"
+</highlight>
+
 
 <p>This flag is available in version 2.4.26 and later.</p>
 
