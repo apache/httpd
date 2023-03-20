@@ -145,11 +145,11 @@ class TlsTestEnv(HttpdTestEnv):
     def domain_b(self) -> str:
         return self._domain_b
 
-    def tls_get(self, domain, paths: Union[str, List[str]], options: List[str] = None) -> ExecResult:
+    def tls_get(self, domain, paths: Union[str, List[str]], options: List[str] = None, no_stdout_list = False) -> ExecResult:
         if isinstance(paths, str):
             paths = [paths]
         urls = [f"https://{domain}:{self.https_port}{path}" for path in paths]
-        return self.curl_raw(urls=urls, options=options)
+        return self.curl_raw(urls=urls, options=options, no_stdout_list=no_stdout_list)
 
     def tls_get_json(self, domain: str, path: str, options=None):
         r = self.tls_get(domain=domain, paths=path, options=options)

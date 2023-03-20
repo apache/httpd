@@ -530,7 +530,7 @@ class HttpdTestEnv:
             fd.write('\n'.join(self._httpd_base_conf))
             fd.write('\n')
             if self._verbosity >= 2:
-                fd.write(f"LogLevel core:trace5 {self.mpm_module}:trace5\n")
+                fd.write(f"LogLevel core:trace5 {self.mpm_module}:trace5 http:trace5\n")
             if self._log_interesting:
                 fd.write(self._log_interesting)
             fd.write('\n\n')
@@ -745,11 +745,11 @@ class HttpdTestEnv:
         return r
 
     def curl_raw(self, urls, timeout=10, options=None, insecure=False,
-                 force_resolve=True):
+                 force_resolve=True, no_stdout_list=False):
         if not isinstance(urls, list):
             urls = [urls]
         stdout_list = False
-        if len(urls) > 1:
+        if len(urls) > 1 and not no_stdout_list:
             stdout_list = True
         args, headerfile = self.curl_complete_args(
             urls=urls, stdout_list=stdout_list,
