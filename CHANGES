@@ -354,6 +354,9 @@ Changes with Apache 2.4.54
      domain names in the *.ts.net space.
      [Stefan Eissing]
 
+  *) core: Change default value of LimitRequestBody from 0 (unlimited)
+     to 1GB. [Eric Covener]
+
 Changes with Apache 2.4.53
 
   *) SECURITY: CVE-2022-23943: mod_sed: Read/write beyond bounds
