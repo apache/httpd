@@ -181,7 +181,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   https://svn.apache.org/r1908394
                   https://svn.apache.org/r1908406
                   https://svn.apache.org/r1908407
-     2.4.x patch: svn merge -c 1908380,1908383-1908384,1908388-1908390,1908393-1908394,1908406-1908407 ^/httpd/httpd/trunk .
+                  https://svn.apache.org/r1908556
+                  https://svn.apache.org/r1908557
+     2.4.x patch: svn merge -c 1908380,1908383-1908384,1908388-1908390,1908393-1908394,1908406-1908407,1908556-1908557 ^/httpd/httpd/trunk .
+                  (merge works modulo MMN, or patch/PR below)
+                  https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/350.diff
+                  https://github.com/apache/httpd/pull/350
      +1: ylavic,
 
   *) rewrite: backport BCTLS, BNE and allowing non-vchar prior to redirect escaping.
