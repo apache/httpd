@@ -285,6 +285,7 @@ typedef struct {
  */
 
 typedef struct {
+    char *tag; /* tag that did create this lfi */
     ap_log_handler_fn_t *func;
     char *arg;
     int condition_sense;
@@ -884,6 +885,7 @@ static char *parse_log_misc_string(apr_pool_t *p, log_format_item *it,
     const char *s;
     char *d;
 
+    it->tag = NULL;
     it->func = constant_item;
     it->conditions = NULL;
 
@@ -963,6 +965,7 @@ static char *parse_log_item(apr_pool_t *p, log_format_item *it, const char **sa)
 
     it->want_orig = -1;
     it->arg = "";               /* For safety's sake... */
+    it->tag = NULL;
 
     while (*s) {
         int i;
@@ -1014,22 +1017,24 @@ static char *parse_log_item(apr_pool_t *p, log_format_item *it, const char **sa)
 
         default:
             /* check for '^' + two character format first */
-            if (*s == '^' && *(s+1) && *(s+2)) { 
+            if (*s == '^' && *(s+1) && *(s+2)) {
                 handler = (ap_log_handler *)apr_hash_get(log_hash, s, 3); 
-                if (handler) { 
+                if (handler) {
+                   it->tag=apr_pstrmemdup(p, s, 3);
                    s += 3;
                 }
             }
             if (!handler) {  
-                handler = (ap_log_handler *)apr_hash_get(log_hash, s++, 1);  
-            }
-            if (!handler) {
-                char dummy[2];
+                handler = (ap_log_handler *)apr_hash_get(log_hash, s, 1);
+                if (!handler) {
+                    char dummy[2];
 
-                dummy[0] = s[-1];
-                dummy[1] = '\0';
-                return apr_pstrcat(p, "Unrecognized LogFormat directive %",
-                               dummy, NULL);
+                    dummy[0] = s[0];
+                    dummy[1] = '\0';
+                    return apr_pstrcat(p, "Unrecognized LogFormat directive %",
+                                   dummy, NULL);
+                }
+                it->tag=apr_pstrmemdup(p, s++, 1);
             }
             it->func = handler->func;
             if (it->want_orig == -1) {
