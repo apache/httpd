@@ -185,12 +185,14 @@ static apr_status_t ap_default_log_writer(request_rec *r,
                            const char **strs,
                            int *strl,
                            int nelts,
+                           void *items,
                            apr_size_t len);
 static apr_status_t ap_buffered_log_writer(request_rec *r,
                            void *handle,
                            const char **strs,
                            int *strl,
                            int nelts,
+                           void *items,
                            apr_size_t len);
 static void *ap_default_log_writer_init(apr_pool_t *p, server_rec *s,
                                         const char* name);
@@ -1179,7 +1181,7 @@ static int config_log_transaction(request_rec *r, config_log_state *cls,
                 "log writer isn't correctly setup");
         return HTTP_INTERNAL_SERVER_ERROR;
     }
-    rv = log_writer(r, cls->log_writer, strs, strl, format->nelts, len);
+    rv = log_writer(r, cls->log_writer, strs, strl, format->nelts, items, len);
     if (rv != APR_SUCCESS) {
         ap_log_rerror(APLOG_MARK, APLOG_WARNING, rv, r, APLOGNO(00646)
                       "Error writing to %s", cls->fname);
@@ -1612,6 +1614,7 @@ static apr_status_t ap_default_log_writer( request_rec *r,
                            const char **strs,
                            int *strl,
                            int nelts,
+                           void *items,
                            apr_size_t len)
 
 {
@@ -1685,6 +1688,7 @@ static apr_status_t ap_buffered_log_writer(request_rec *r,
                                            const char **strs,
                                            int *strl,
                                            int nelts,
+                                           void *items,
                                            apr_size_t len)
 
 {
