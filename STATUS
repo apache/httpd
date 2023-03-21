@@ -191,14 +191,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
   *) rewrite: backport BCTLS, BNE and allowing non-vchar prior to redirect escaping.
               (does not merge well due to rewritelog(()) changes.
-     trunk patch: r1908296 r1908299 r1908301 r1908347 r1908359
+     trunk patch: r1908296 r1908299 r1908301 r1908347 r1908359 (and more docs)
      2.4.x patch: https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/348.diff
      +1 covener, ylavic,
-     ylavic: r1908360 seems to be missing for the docs (and the changes to
-             travis_run_linux.sh are in already).
-     rjung: the mod_rewrite.xml hunk of r1908352 seems to be missing for the docs
-     rjung: typo "simular" => "similar" was fixed in r1908353
-     rjung: flag rename in docs should be added (r1908610)
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
