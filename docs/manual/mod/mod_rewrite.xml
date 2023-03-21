@@ -1329,6 +1329,16 @@ cannot use <code>$N</code> in the substitution string!
         applying the transformation. <em><a
         href="../rewrite/flags.html#flag_b">details ...</a></em></td>
     </tr>
+     <tr>
+        <td>BCTLS</td>
+        <td>Like [B], but only escape control characters and spaces.
+        <em><a href="../rewrite/flags.html#flag_bctls">details ...</a></em></td>
+    </tr>
+    <tr>
+        <td>BNE</td>
+        <td>Characters of [B] or [BCTLS] which should <strong>not</strong> be escaped.
+        <em><a href="../rewrite/flags.html#flag_bne">details ...</a></em></td>
+     </tr>
     <tr>
         <td>backrefnoplus|BNP</td>
         <td>If backreferences are being escaped, spaces should be escaped to
@@ -1336,7 +1346,6 @@ cannot use <code>$N</code> in the substitution string!
         path component rather than the query string.<em><a
         href="../rewrite/flags.html#flag_bnp">details ...</a></em></td>
     </tr>
-
     <tr>
         <td>chain|C</td>
         <td>Rule is chained to the following rule. If the rule fails,
