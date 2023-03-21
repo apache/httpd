@@ -118,7 +118,7 @@ and the space must not be the last character in the list.</p>
 RewriteRule "^search/(.*)$" "/search.php?term=$1" "[B= ?]"
 </highlight>
 
-<p>To limit the characters escaped this way, see <a href="flag_bneg">flag_bneg</a>
+<p>To limit the characters escaped this way, see <a href="flag_bne">flag_bne</a>
 and <a href="flag_bctls">flag_bctls</a></p>
 </section>
 
