@@ -43,7 +43,7 @@ Install libapreq2
     
     
 Install mod_lua from subversion
-    http://svn.apache.org/repos/asf/httpd/mod_lua/trunk
+    http://svn.apache.org/repos/asf/httpd/httpd/trunk/modules/lua
     
     The first step, when building from subversion, is to bootstrap autoconf. 
     To do this run the bootstrap script:
