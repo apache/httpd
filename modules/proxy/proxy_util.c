@@ -259,7 +259,7 @@ PROXY_DECLARE(char *)ap_proxy_canonenc_ex(apr_pool_t *p, const char *x, int len,
  * unless specifically forced
  */
         if ((forcedec || noencslashesenc
-            ||(proxyreq && proxyreq != PROXYREQ_REVERSE)) && ch == '%') {
+            || (proxyreq && proxyreq != PROXYREQ_REVERSE)) && ch == '%') {
             if (!apr_isxdigit(x[i + 1]) || !apr_isxdigit(x[i + 2])) {
                 return NULL;
             }
