@@ -147,6 +147,7 @@ Changes with Apache 2.4.55
        The checks for this in nghttp2 v1.50.0+ are disabled.
      - Extensive testing in production done by Alessandro Bianchi (@alexskynet)
        on the v2.0.x versions for stability. Many thanks!
+
   *) mod_proxy_http2: fixed #235 by no longer forwarding 'Host:' header when
      request ':authority' is known. Improved test case that did not catch that
      the previous 'fix' was incorrect.
