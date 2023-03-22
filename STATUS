@@ -151,6 +151,11 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) rewrite: backport BCTLS, BNE and allowing non-vchar prior to redirect escaping.
+              (does not merge well due to rewritelog(()) changes.
+     trunk patch: r1908296 r1908299 r1908301 r1908347 r1908359 (and more docs)
+     2.4.x patch: https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/348.diff
+     +1 covener, ylavic, rpluem
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -187,13 +192,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   (merge works modulo MMN, or patch/PR below)
                   https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/350.diff
                   https://github.com/apache/httpd/pull/350
-     +1: ylavic,
-
-  *) rewrite: backport BCTLS, BNE and allowing non-vchar prior to redirect escaping.
-              (does not merge well due to rewritelog(()) changes.
-     trunk patch: r1908296 r1908299 r1908301 r1908347 r1908359 (and more docs)
-     2.4.x patch: https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/348.diff
-     +1 covener, ylavic,
+     +1: ylavic, rpluem,
 
   *) mod_proxy: In case that AllowEncodedSlashes is set to NoDecode do not
      double encode encoded slashes in the URL sent by the reverse proxy to the
