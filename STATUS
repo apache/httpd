@@ -195,6 +195,18 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/348.diff
      +1 covener, ylavic,
 
+  *) mod_proxy: In case that AllowEncodedSlashes is set to NoDecode do not
+     double encode encoded slashes in the URL sent by the reverse proxy to the
+     backend.
+     Trunk version of patch:
+        https://svn.apache.org/r1908341
+        https://svn.apache.org/r1908628
+        https://svn.apache.org/r1908629
+     Backport version for 2.4.x of patch:
+       https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/351.diff
+     Can be applied via apply_backport_pr.sh 351
+     +1: rpluem,
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
