@@ -290,7 +290,7 @@ static int proxy_ftp_canon(request_rec *r, char *url)
     const char *err;
     apr_port_t port, def_port;
     core_dir_config *d = ap_get_core_module_config(r->per_dir_config);
-    int flags = d->allow_encoded_slashes  && !d->decode_encoded_slashes ? PROXY_CANONENC_NOENCODEDSLASHENCODING : 0;
+    int flags = d->allow_encoded_slashes && !d->decode_encoded_slashes ? PROXY_CANONENC_NOENCODEDSLASHENCODING : 0;
 
     /* */
     if (ap_cstr_casecmpn(url, "ftp:", 4) == 0) {
