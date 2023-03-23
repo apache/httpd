@@ -66,7 +66,8 @@ compatibility variables.</p>
 <tr><td><code>SSL_SESSION_ID</code></td>                <td>string</td>    <td>The hex-encoded SSL session id</td></tr>
 <tr><td><code>SSL_SESSION_RESUMED</code></td>           <td>string</td>    <td>Initial or Resumed SSL Session.  Note: multiple requests may be served over the same (Initial or Resumed) SSL session if HTTP KeepAlive is in use</td></tr>
 <tr><td><code>SSL_SECURE_RENEG</code></td>              <td>string</td>    <td><code>true</code> if secure renegotiation is supported, else <code>false</code></td></tr>
-<tr><td><code>SSL_CIPHER</code></td>                    <td>string</td>    <td>The cipher specification name</td></tr>
+<tr><td><code>SSL_SHARED_CIPHERS</code></td>            <td>string</td>    <td>Colon separated list of shared ciphers (i.e. the subset of ciphers that are configured on both server and on the client)</td></tr>
+<tr><td><code>SSL_CIPHER</code></td>                    <td>string</td>    <td>The name of the cipher agreed between client and server</td></tr>
 <tr><td><code>SSL_CIPHER_EXPORT</code></td>             <td>string</td>    <td><code>true</code> if cipher is an export cipher</td></tr>
 <tr><td><code>SSL_CIPHER_USEKEYSIZE</code></td>         <td>number</td>    <td>Number of cipher bits (actually used)</td></tr>
 <tr><td><code>SSL_CIPHER_ALGKEYSIZE</code></td>         <td>number</td>    <td>Number of cipher bits (possible)</td></tr>
@@ -1538,7 +1539,13 @@ The available <em>option</em>s are:</p>
     <p>Note that the <directive module="mod_auth_basic">AuthBasicFake</directive>
     directive within <module>mod_auth_basic</module> can be used as a more
     general mechanism for faking basic authentication, giving control over the
-    structure of both the username and password.</p>
+    structure of both the username and password. </p>
+
+    <note>Unlike the <code>FakeBasicAuth</code>
+    option, the <directive module="mod_auth_basic">AuthBasicFake</directive> directive
+    does not set an Authorization header early enough to be processed by authentication
+    and authorization in the local server, it is only intended for upstream servers.
+    </note>
 
     <note type="warning">
       <p>The usernames used for <code>FakeBasicAuth</code> must not
@@ -2946,13 +2953,6 @@ depends on the OpenSSL version being used for <module>mod_ssl</module>
 names, see the section <em>Supported configuration file commands</em> in the
 <a href="http://www.openssl.org/docs/man1.0.2/ssl/SSL_CONF_cmd.html#SUPPORTED-CONFIGURATION-FILE-COMMANDS">SSL_CONF_cmd(3)</a> manual page for OpenSSL.</p>
 
-<p>Some of the <directive>SSLOpenSSLConfCmd</directive> commands can be used
-as an alternative to existing directives (such as
-<directive module="mod_ssl">SSLCipherSuite</directive> or
-<directive module="mod_ssl">SSLProtocol</directive>),
-though it should be noted that the syntax / allowable values for the parameters
-may sometimes differ.</p>
-
 <example><title>Examples</title>
 <highlight language="config">
 SSLOpenSSLConfCmd Options -SessionTicket,ServerPreference
@@ -2962,6 +2962,23 @@ SSLOpenSSLConfCmd Protocol "-ALL, TLSv1.2"
 SSLOpenSSLConfCmd SignatureAlgorithms RSA+SHA384:ECDSA+SHA256
 </highlight>
 </example>
+
+<note type="warning"><title>Compatibility and Stability
+warning</title>
+
+<p>Some of the <directive>SSLOpenSSLConfCmd</directive> commands can be used
+as an alternative to existing directives (such as
+<directive module="mod_ssl">SSLCipherSuite</directive> or
+<directive module="mod_ssl">SSLProtocol</directive>),
+though the syntax / allowable values for the parameters may sometimes differ.</p>
+
+<p>It is recommended that directives provided by mod_ssl are used
+where available to configure OpenSSL, and
+<directive>SSLOpenSSLConfCmd</directive> is only used for features of
+OpenSSL which are not configurable by mod_ssl.  It is possible that
+mod_ssl behaviour will change across versions of httpd where
+<directive>SSLOpenSSLConfCmd</directive> is used.</p>
+</note>
 </usage>
 </directivesynopsis>
 

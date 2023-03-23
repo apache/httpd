@@ -21,6 +21,7 @@
 #include "apr_lib.h"
 #include "apr_md5.h"
 #include "apr_time.h"
+#include "apr_thread_proc.h"
 #include "apr_version.h"
 #include "apu_version.h"
 
@@ -388,6 +389,23 @@ static process_rec *init_process(int *argc, const char * const * *argv)
     process->argc = *argc;
     process->argv = *argv;
     process->short_name = apr_filepath_name_get((*argv)[0]);
+
+#if AP_HAS_THREAD_LOCAL
+    {
+        apr_status_t rv;
+        apr_thread_t *thd = NULL;
+        if ((rv = ap_thread_main_create(&thd, process->pool))) {
+            char ctimebuff[APR_CTIME_LEN];
+            apr_ctime(ctimebuff, apr_time_now());
+            fprintf(stderr, "[%s] [crit] (%d) %s: failed "
+                            "to initialize thread context, exiting\n",
+                            ctimebuff, rv, (*argv)[0]);
+            apr_terminate();
+            exit(1);
+        }
+    }
+#endif
+
     return process;
 }
 
@@ -699,8 +717,8 @@ static void usage(process_rec *process)
     if (temp_error_log) {
         ap_replace_stderr_log(process->pool, temp_error_log);
     }
-    ap_server_conf = ap_read_config(process, ptemp, confname, &ap_conftree);
-    if (!ap_server_conf) {
+    ap_server_conf = NULL; /* set early by ap_read_config() for logging */
+    if (!ap_read_config(process, ptemp, confname, &ap_conftree)) {
         if (showcompile) {
             /* Well, we tried. Show as much as we can, but exit nonzero to
              * indicate that something's not right. The cause should have
@@ -709,6 +727,7 @@ static void usage(process_rec *process)
         }
         destroy_and_exit_process(process, 1);
     }
+    ap_assert(ap_server_conf != NULL);
     apr_pool_cleanup_register(pconf, &ap_server_conf, ap_pool_cleanup_set_null,
                               apr_pool_cleanup_null);
 
@@ -806,10 +825,11 @@ static void usage(process_rec *process)
         apr_pool_create(&ptemp, pconf);
         apr_pool_tag(ptemp, "ptemp");
         ap_server_root = def_server_root;
-        ap_server_conf = ap_read_config(process, ptemp, confname, &ap_conftree);
-        if (!ap_server_conf) {
+        ap_server_conf = NULL; /* set early by ap_read_config() for logging */
+        if (!ap_read_config(process, ptemp, confname, &ap_conftree)) {
             destroy_and_exit_process(process, 1);
         }
+        ap_assert(ap_server_conf != NULL);
         apr_pool_cleanup_register(pconf, &ap_server_conf,
                                   ap_pool_cleanup_set_null, apr_pool_cleanup_null);
         /* sort hooks here to make sure pre_config hooks are sorted properly */

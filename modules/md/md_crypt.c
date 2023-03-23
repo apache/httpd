@@ -27,10 +27,14 @@
 
 #include <openssl/err.h>
 #include <openssl/evp.h>
+#include <openssl/hmac.h>
 #include <openssl/pem.h>
 #include <openssl/rand.h>
 #include <openssl/rsa.h>
 #include <openssl/x509v3.h>
+#if OPENSSL_VERSION_NUMBER >= 0x30000000L
+#include <openssl/core_names.h>
+#endif
 
 #include "md.h"
 #include "md_crypt.h"
@@ -60,8 +64,8 @@
 #define MD_USE_OPENSSL_PRE_1_1_API (OPENSSL_VERSION_NUMBER < 0x10100000L)
 #endif
 
-#if defined(LIBRESSL_VERSION_NUMBER) || (OPENSSL_VERSION_NUMBER < 0x10100000L) 
-/* Missing from LibreSSL and only available since OpenSSL v1.1.x */
+#if (defined(LIBRESSL_VERSION_NUMBER) && (LIBRESSL_VERSION_NUMBER < 0x3050000fL)) || (OPENSSL_VERSION_NUMBER < 0x10100000L) 
+/* Missing from LibreSSL < 3.5.0 and only available since OpenSSL v1.1.x */
 #ifndef OPENSSL_NO_CT
 #define OPENSSL_NO_CT
 #endif
@@ -209,7 +213,8 @@ static int pem_passwd(char *buf, int size, int rwflag, void *baton)
  */
 static apr_time_t md_asn1_time_get(const ASN1_TIME* time)
 {
-#if OPENSSL_VERSION_NUMBER < 0x10002000L || defined(LIBRESSL_VERSION_NUMBER)
+#if OPENSSL_VERSION_NUMBER < 0x10002000L || (defined(LIBRESSL_VERSION_NUMBER) && \
+                                             LIBRESSL_VERSION_NUMBER < 0x3060000fL)
     /* courtesy: https://stackoverflow.com/questions/10975542/asn1-time-to-time-t-conversion#11263731
      * all bugs are mine */
     apr_time_exp_t t;
@@ -643,6 +648,7 @@ static apr_status_t pkey_to_buffer(md_data_t *buf, md_pkey_t *pkey, apr_pool_t *
     const EVP_CIPHER *cipher = NULL;
     pem_password_cb *cb = NULL;
     void *cb_baton = NULL;
+    apr_status_t rv = APR_SUCCESS;
     passwd_ctx ctx;
     unsigned long err;
     int i;
@@ -651,7 +657,8 @@ static apr_status_t pkey_to_buffer(md_data_t *buf, md_pkey_t *pkey, apr_pool_t *
         return APR_ENOMEM;
     }
     if (pass_len > INT_MAX) {
-        return APR_EINVAL;
+        rv = APR_EINVAL;
+        goto cleanup;
     }
     if (pass && pass_len > 0) {
         ctx.pass_phrase = pass;
@@ -660,7 +667,8 @@ static apr_status_t pkey_to_buffer(md_data_t *buf, md_pkey_t *pkey, apr_pool_t *
         cb_baton = &ctx;
         cipher = EVP_aes_256_cbc();
         if (!cipher) {
-            return APR_ENOTIMPL;
+            rv = APR_ENOTIMPL;
+            goto cleanup;
         }
     }
     
@@ -670,11 +678,11 @@ static apr_status_t pkey_to_buffer(md_data_t *buf, md_pkey_t *pkey, apr_pool_t *
 #else 
     if (!PEM_write_bio_PrivateKey(bio, pkey->pkey, cipher, NULL, 0, cb, cb_baton)) {
 #endif
-        BIO_free(bio);
         err = ERR_get_error();
         md_log_perror(MD_LOG_MARK, MD_LOG_ERR, 0, p, "PEM_write key: %ld %s", 
                       err, ERR_error_string(err, NULL)); 
-        return APR_EINVAL;
+        rv = APR_EINVAL;
+        goto cleanup;
     }
 
     md_data_null(buf);
@@ -684,8 +692,10 @@ static apr_status_t pkey_to_buffer(md_data_t *buf, md_pkey_t *pkey, apr_pool_t *
         i = BIO_read(bio, (char*)buf->data, i);
         buf->len = (apr_size_t)i;
     }
+
+cleanup:
     BIO_free(bio);
-    return APR_SUCCESS;
+    return rv;
 }
 
 apr_status_t md_pkey_fsave(md_pkey_t *pkey, apr_pool_t *p, 
@@ -700,6 +710,53 @@ apr_status_t md_pkey_fsave(md_pkey_t *pkey, apr_pool_t *p,
     }
     md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, rv, p, "save pkey %s (%s pass phrase, len=%d)",
                   fname, pass_len > 0? "with" : "without", (int)pass_len); 
+    return rv;
+}
+
+apr_status_t md_pkey_read_http(md_pkey_t **ppkey, apr_pool_t *pool,
+                               const struct md_http_response_t *res)
+{
+    apr_status_t rv;
+    apr_off_t data_len;
+    char *pem_data;
+    apr_size_t pem_len;
+    md_pkey_t *pkey;
+    BIO *bf;
+    passwd_ctx ctx;
+
+    rv = apr_brigade_length(res->body, 1, &data_len);
+    if (APR_SUCCESS != rv) goto leave;
+    if (data_len > 1024*1024) { /* certs usually are <2k each */
+        rv = APR_EINVAL;
+        goto leave;
+    }
+    rv = apr_brigade_pflatten(res->body, &pem_data, &pem_len, res->req->pool);
+    if (APR_SUCCESS != rv) goto leave;
+
+    if (NULL == (bf = BIO_new_mem_buf(pem_data, (int)pem_len))) {
+        rv = APR_ENOMEM;
+        goto leave;
+    }
+    pkey = make_pkey(pool);
+    ctx.pass_phrase = NULL;
+    ctx.pass_len = 0;
+    ERR_clear_error();
+    pkey->pkey = PEM_read_bio_PrivateKey(bf, NULL, NULL, &ctx);
+    BIO_free(bf);
+
+    if (pkey->pkey == NULL) {
+        unsigned long err = ERR_get_error();
+        rv = APR_EINVAL;
+        md_log_perror(MD_LOG_MARK, MD_LOG_WARNING, rv, pool,
+                      "error loading pkey from http response: %s",
+                      ERR_error_string(err, NULL));
+        goto leave;
+    }
+    rv = APR_SUCCESS;
+    apr_pool_cleanup_register(pool, pkey, pkey_cleanup, apr_pool_cleanup_null);
+
+leave:
+    *ppkey = (APR_SUCCESS == rv)? pkey : NULL;
     return rv;
 }
 
@@ -786,21 +843,26 @@ static apr_status_t gen_ec(md_pkey_t **ppkey, apr_pool_t *p, const char *curve)
 #ifdef NID_secp384r1
     if (NID_undef == curve_nid && !apr_strnatcasecmp("secp384r1", curve)) {
         curve_nid = NID_secp384r1;
+        curve = EC_curve_nid2nist(curve_nid);
     }
 #endif
 #ifdef NID_X9_62_prime256v1
     if (NID_undef == curve_nid && !apr_strnatcasecmp("secp256r1", curve)) {
         curve_nid = NID_X9_62_prime256v1;
+        curve = EC_curve_nid2nist(curve_nid);
     }
 #endif
 #ifdef NID_X9_62_prime192v1
     if (NID_undef == curve_nid && !apr_strnatcasecmp("secp192r1", curve)) {
         curve_nid = NID_X9_62_prime192v1;
+        curve = EC_curve_nid2nist(curve_nid);
     }
 #endif
-#if defined(NID_X25519) && !defined(LIBRESSL_VERSION_NUMBER)
+#if defined(NID_X25519) && (!defined(LIBRESSL_VERSION_NUMBER) || \
+                            LIBRESSL_VERSION_NUMBER >= 0x3070000fL)
     if (NID_undef == curve_nid && !apr_strnatcasecmp("X25519", curve)) {
         curve_nid = NID_X25519;
+        curve = EC_curve_nid2nist(curve_nid);
     }
 #endif
     if (NID_undef == curve_nid) {
@@ -815,7 +877,8 @@ static apr_status_t gen_ec(md_pkey_t **ppkey, apr_pool_t *p, const char *curve)
     *ppkey = make_pkey(p);
     switch (curve_nid) {
 
-#if defined(NID_X25519) && !defined(LIBRESSL_VERSION_NUMBER)
+#if defined(NID_X25519) && (!defined(LIBRESSL_VERSION_NUMBER) || \
+                            LIBRESSL_VERSION_NUMBER >= 0x3070000fL)
     case NID_X25519:
         /* no parameters */
         if (NULL == (ctx = EVP_PKEY_CTX_new_id(EVP_PKEY_X25519, NULL))
@@ -844,6 +907,7 @@ static apr_status_t gen_ec(md_pkey_t **ppkey, apr_pool_t *p, const char *curve)
 #endif
 
     default:
+#if OPENSSL_VERSION_NUMBER < 0x30000000L
         if (APR_SUCCESS != (rv = check_EC_curve(curve_nid, p))) goto leave;
         if (NULL == (ctx = EVP_PKEY_CTX_new_id(EVP_PKEY_EC, NULL))
             || EVP_PKEY_paramgen_init(ctx) <= 0 
@@ -855,6 +919,17 @@ static apr_status_t gen_ec(md_pkey_t **ppkey, apr_pool_t *p, const char *curve)
                           "error generate EC key for group: %s", curve); 
             rv = APR_EGENERAL; goto leave;
         }
+#else
+        if (APR_SUCCESS != (rv = check_EC_curve(curve_nid, p))) goto leave;
+        if (NULL == (ctx = EVP_PKEY_CTX_new_id(EVP_PKEY_EC, NULL))
+            || EVP_PKEY_keygen_init(ctx) <= 0
+            || EVP_PKEY_CTX_ctrl_str(ctx, "ec_paramgen_curve", curve) <= 0
+            || EVP_PKEY_keygen(ctx, &(*ppkey)->pkey) <= 0) {
+            md_log_perror(MD_LOG_MARK, MD_LOG_WARNING, 0, p,
+                          "error generate EC key for group: %s", curve);
+            rv = APR_EGENERAL; goto leave;
+        }
+#endif
         rv = APR_SUCCESS;
         break;
     }
@@ -916,26 +991,42 @@ static const char *bn64(const BIGNUM *b, apr_pool_t *p)
 
 const char *md_pkey_get_rsa_e64(md_pkey_t *pkey, apr_pool_t *p)
 {
-    const BIGNUM *e;
+#if OPENSSL_VERSION_NUMBER < 0x30000000L
     RSA *rsa = EVP_PKEY_get1_RSA(pkey->pkey);
-    
-    if (!rsa) {
-        return NULL;
+    if (rsa) {
+        const BIGNUM *e;
+        RSA_get0_key(rsa, NULL, &e, NULL);
+        return bn64(e, p);
     }
-    RSA_get0_key(rsa, NULL, &e, NULL);
-    return bn64(e, p);
+#else
+    BIGNUM *e = NULL;
+    if (EVP_PKEY_get_bn_param(pkey->pkey, OSSL_PKEY_PARAM_RSA_E, &e)) {
+        const char *e64 = bn64(e, p);
+        BN_free(e);
+        return e64;
+    }
+#endif
+    return NULL;
 }
 
 const char *md_pkey_get_rsa_n64(md_pkey_t *pkey, apr_pool_t *p)
 {
-    const BIGNUM *n;
+#if OPENSSL_VERSION_NUMBER < 0x30000000L
     RSA *rsa = EVP_PKEY_get1_RSA(pkey->pkey);
-    
-    if (!rsa) {
-        return NULL;
+    if (rsa) {
+        const BIGNUM *n;
+        RSA_get0_key(rsa, &n, NULL, NULL);
+        return bn64(n, p);
     }
-    RSA_get0_key(rsa, &n, NULL, NULL);
-    return bn64(n, p);
+#else
+    BIGNUM *n = NULL;
+    if (EVP_PKEY_get_bn_param(pkey->pkey, OSSL_PKEY_PARAM_RSA_N, &n)) {
+        const char *n64 = bn64(n, p);
+        BN_free(n);
+        return n64;
+    }
+#endif
+    return NULL;
 }
 
 apr_status_t md_crypt_sign64(const char **psign64, md_pkey_t *pkey, apr_pool_t *p, 
@@ -987,8 +1078,6 @@ static apr_status_t sha256_digest(md_data_t **pdigest, apr_pool_t *p, const md_d
     unsigned int dlen;
 
     digest = md_data_pmake(EVP_MAX_MD_SIZE, p);
-    if (!digest) goto leave;
-
     ctx = EVP_MD_CTX_create();
     if (ctx) {
         rv = APR_ENOTIMPL;
@@ -1002,7 +1091,6 @@ static apr_status_t sha256_digest(md_data_t **pdigest, apr_pool_t *p, const md_d
             }
         }
     }
-leave:
     if (ctx) {
         EVP_MD_CTX_destroy(ctx);
     }
@@ -1035,6 +1123,31 @@ apr_status_t md_crypt_sha256_digest_hex(const char **pdigesthex, apr_pool_t *p,
         return md_data_to_hex(pdigesthex, 0, p, digest);
     }
     *pdigesthex = NULL;
+    return rv;
+}
+
+apr_status_t md_crypt_hmac64(const char **pmac64, const md_data_t *hmac_key,
+                             apr_pool_t *p, const char *d, size_t dlen)
+{
+    const char *mac64 = NULL;
+    unsigned char *s;
+    unsigned int digest_len = 0;
+    md_data_t *digest;
+    apr_status_t rv = APR_SUCCESS;
+
+    digest = md_data_pmake(EVP_MAX_MD_SIZE, p);
+    s = HMAC(EVP_sha256(), (const unsigned char*)hmac_key->data, (int)hmac_key->len,
+             (const unsigned char*)d, (size_t)dlen,
+             (unsigned char*)digest->data, &digest_len);
+    if (!s) {
+        rv = APR_EINVAL;
+        goto cleanup;
+    }
+    digest->len = digest_len;
+    mac64 = md_util_base64url_encode(digest, p);
+
+cleanup:
+    *pmac64 = (APR_SUCCESS == rv)? mac64 : NULL;
     return rv;
 }
 
@@ -1091,6 +1204,11 @@ const char *md_cert_get_serial_number(const md_cert_t *cert, apr_pool_t *p)
         OPENSSL_free((void*)bn);
     }
     return s;
+}
+
+int md_certs_are_equal(const md_cert_t *a, const md_cert_t *b)
+{
+    return X509_cmp(a->x509, b->x509) == 0;
 }
 
 int md_cert_is_valid_now(const md_cert_t *cert)
@@ -1326,17 +1444,13 @@ apr_status_t md_cert_to_sha256_digest(md_data_t **pdigest, const md_cert_t *cert
 {
     md_data_t *digest;
     unsigned int dlen;
-    apr_status_t rv = APR_ENOMEM;
 
     digest = md_data_pmake(EVP_MAX_MD_SIZE, p);
-    if (!digest) goto leave;
-
     X509_digest(cert->x509, EVP_sha256(), (unsigned char*)digest->data, &dlen);
     digest->len = dlen;
-    rv = APR_SUCCESS;
-leave:
-    *pdigest = (APR_SUCCESS == rv)? digest : NULL;
-    return rv;
+
+    *pdigest = digest;
+    return APR_SUCCESS;
 }
 
 apr_status_t md_cert_to_sha256_fingerprint(const char **pfinger, const md_cert_t *cert, apr_pool_t *p)
@@ -1458,17 +1572,30 @@ apr_status_t md_cert_chain_read_http(struct apr_array_header_t *chain,
     ct = apr_table_get(res->headers, "Content-Type");
     if (!res->body || !ct) goto cleanup;
     ct = md_util_parse_ct(res->req->pool, ct);
-    if (!strcmp("application/pem-certificate-chain", ct)
+    if (!strcmp("application/pkix-cert", ct)) {
+        rv = md_cert_read_http(&cert, p, res);
+        if (APR_SUCCESS != rv) goto cleanup;
+        APR_ARRAY_PUSH(chain, md_cert_t *) = cert;
+    }
+    else if (!strcmp("application/pem-certificate-chain", ct)
         || !strncmp("text/plain", ct, sizeof("text/plain")-1)) {
         /* Some servers seem to think 'text/plain' is sufficient, see #232 */
         rv = apr_brigade_pflatten(res->body, &data, &data_len, res->req->pool);
         if (APR_SUCCESS != rv) goto cleanup;
         rv = md_cert_read_chain(chain, res->req->pool, data, data_len);
     }
-    else if (!strcmp("application/pkix-cert", ct)) {
-        rv = md_cert_read_http(&cert, p, res);
+    else {
+        md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, 0, p,
+            "attempting to parse certificates from unrecognized content-type: %s", ct);
+        rv = apr_brigade_pflatten(res->body, &data, &data_len, res->req->pool);
         if (APR_SUCCESS != rv) goto cleanup;
-        APR_ARRAY_PUSH(chain, md_cert_t *) = cert;
+        rv = md_cert_read_chain(chain, res->req->pool, data, data_len);
+        if (APR_SUCCESS == rv && chain->nelts == 0) {
+            md_log_perror(MD_LOG_MARK, MD_LOG_ERR, 0, p,
+                "certificate chain response did not contain any certificates "
+                "(suspicious content-type: %s)", ct);
+            rv = APR_ENOENT;
+        }
     }
 cleanup:
     md_log_perror(MD_LOG_MARK, MD_LOG_TRACE2, rv, p,
@@ -2014,3 +2141,19 @@ cleanup:
     return rv;
 }
 
+apr_status_t md_check_cert_and_pkey(struct apr_array_header_t *certs, md_pkey_t *pkey)
+{
+    const md_cert_t *cert;
+
+    if (certs->nelts == 0) {
+        return APR_ENOENT;
+    }
+
+    cert = APR_ARRAY_IDX(certs, 0, const md_cert_t*);
+
+    if (1 != X509_check_private_key(cert->x509, pkey->pkey)) {
+        return APR_EGENERAL;
+    }
+
+    return APR_SUCCESS;
+}

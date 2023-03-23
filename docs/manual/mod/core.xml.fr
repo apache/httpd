@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1890424 -->
+<!-- English Revision: 1907144 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -837,8 +837,6 @@ DESACTIVÉS à partir de la version 2.3.0.</compatibility>
     Content-Type, et le destinataire devra déterminer lui-même le type
     de médium.</p>
 </usage>
-<seealso><directive module="core">UnDefine</directive></seealso>
-<seealso><directive module="core">IfDefine</directive></seealso>
 </directivesynopsis>
 
 <directivesynopsis>
@@ -884,6 +882,8 @@ DESACTIVÉS à partir de la version 2.3.0.</compatibility>
     ultérieure, au delà de tout bloc VirtualHost.</p>
     </note>
 </usage>
+<seealso><directive module="core">UnDefine</directive></seealso>
+<seealso><directive module="core">IfDefine</directive></seealso>
 </directivesynopsis>
 
 <directivesynopsis type="section">
@@ -1543,6 +1543,13 @@ d'erreur personnalisé</description>
 &lt;/IfDefine&gt;
     </highlight>
 
+    <note type="warning"><title>Note</title>
+        <p>Cette directive est évaluée lors du traitement de la configuration,
+	et non à l'exécution. Par conséquent, elle ne peut pas être évaluée de
+	manière conditionnelle en l'incluant dans une section <directive
+	type="section" module="core">If</directive>.</p>
+    </note>
+
 </usage>
 </directivesynopsis>
 
@@ -1963,7 +1970,7 @@ ErrorLogFormat "[%{uc}t] [%-m:%-l] [R:%L] [C:%{C}L] %7F: %E: %M"
 ErrorLogFormat request "[%{uc}t] [R:%L] Request %k on C:%{c}L pid:%P tid:%T"
 ErrorLogFormat request "[%{uc}t] [R:%L] UA:'%+{User-Agent}i'"
 ErrorLogFormat request "[%{uc}t] [R:%L] Referer:'%+{Referer}i'"
-ErrorLogFormat connection "[%{uc}t] [C:%{c}L] local\ %a remote\ %A"
+ErrorLogFormat connection "[%{uc}t] [C:%{c}L] remote\ %a local\ %A"
     </highlight>
 
 </usage>
@@ -2231,9 +2238,9 @@ elles sont envoyées sur le réseau</description>
     dessous de la limite.</p>
 
     <p>La directive <directive>FlushMaxPipelined</directive> permet de limiter
-    la consommation de mémoire. Lorsqu'elle est définie à <var>0</var>, le
-    pipelining est désactivé, et lorsqu'elle est définie à <var>-1</var>, il n'y
-    a plus de limite (mais la directive <directive>FlushMaxThreshold</directive>
+    la consommation de mémoire. Lorsqu'elle est définie à <code>0</code>, le
+    pipelining est désactivé, et lorsqu'elle est définie à <code>-1</code>, il n'y
+    a plus de limite (mais la directive <directive module="core">FlushMaxThreshold</directive>
     s'applique quand-même).</p>
 </usage>
 </directivesynopsis>
@@ -2242,7 +2249,7 @@ elles sont envoyées sur le réseau</description>
 <name>FlushMaxThreshold</name>
 <description>Seuil au-delà duquel les données en attente sont envoyées sur le
 réseau</description>
-<syntax>FlushMaxThreshold<var>number-of-bytes</var></syntax>
+<syntax>FlushMaxThreshold <var>number-of-bytes</var></syntax>
 <default>FlushMaxThreshold 65536</default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
@@ -2255,7 +2262,7 @@ réseau</description>
     dessous du seuil spécifié.</p>
 
     <p>La directive <directive>FlushMaxThreshold</directive> permet de limiter
-    la consommation de mémoire. Lorsqu'elle est définie à <var>0</var> ou à une
+    la consommation de mémoire. Lorsqu'elle est définie à <code>0</code> ou à une
     valeur trop petite, aucune donnée n'est mise en attente, mais dans le cas
     des MPMs threadés, il peut alors y avoir plus de threads occupés en attente du
     réseau, ce qui diminue d'autant le nombre de threads disponibles pour
@@ -2464,6 +2471,16 @@ host</context>
     Certaines variables comme <code>CONTENT_TYPE</code> ainsi que
     d'autres en-têtes de réponse ne seront pas disponibles dans ce bloc,
     car elle sont définies après l'évaluation des conditions &lt;If&gt;.
+    </note>
+
+    <note type="warning">
+    Les directives qui sont évaluées lors du traitement de la configuration
+    comme <directive>Define</directive>, <directive>Include</directive> et
+    <directive>Error</directive> ne peuvent pas être traitées de manière
+    conditionnelle en les incluant dans une section de configuration <directive
+    type="section">If</directive>. Ces sections font en effet toujours partie de
+    la configuration, quelle soit la manière dont elles sont évaluées à
+    l'exécution.
     </note>
 
 </usage>
@@ -3090,18 +3107,19 @@ host</context>
 <description>limite la taille maximale du corps de la requête HTTP
 envoyée par le client</description>
 <syntax>LimitRequestBody <var>octets</var></syntax>
-<default>LimitRequestBody 0</default>
+<default>LimitRequestBody 1073741824</default>
 <contextlist><context>server config</context><context>virtual
 host</context>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>All</override>
+<compatibility>Dans les versions 2.4.53 et antérieures du serveur HTTP Apache,
+la valeur par défaut était 0 (aucune limite)</compatibility>
 
 <usage>
-    <p>Cette directive spécifie la taille maximale autorisée pour le
-    corps d'une requête ; la valeur de l'argument <var>octets</var> va
-    de 0 (pour une taille illimitée), à 2147483647 (2Go). Voir la note
-    ci-dessous pour la limite d'applicabilité aux requêtes mandatées.</p>
+    <p>Cette directive permet de spécifier la taille maximale d'un corps de
+    requête, en <var>octets</var>. Une valeur de <var>0</var> signifie « sans
+    limites ».</p>
 
     <p>La directive <directive>LimitRequestBody</directive> permet de
     définir une limite pour la taille maximale autorisée du corps d'une
@@ -3129,11 +3147,6 @@ host</context>
     :</p>
 
     <highlight language="config">LimitRequestBody 102400</highlight>
-
-    <note><p>Pour une description détaillée de la manière dont cette
-    directive est interprétée par les requêtes mandatées, voir la
-    documentation du module <module>mod_proxy</module>.</p>
-    </note>
 
 </usage>
 </directivesynopsis>
@@ -3286,13 +3299,21 @@ host</context>
 <override>All</override>
 
 <usage>
-    <p>Taille maximale (en octets) du corps d'une requête au format XML.
-    Une valeur de <code>0</code> signifie qu'aucune limite n'est
-    imposée.</p>
+    <p>Taille maximale (en octets) du corps d'une requête au format XML.  Une
+    valeur de <code>0</code> appliquera une limite physique (différente selon
+    que le système est sur 32 ou 64 bits) permettant à XML de s'étaler jusqu'aux
+    limites de la mémoire adressable du système, mais elle n'existe qu'à des
+    fins de compatibilité et il est déconseillé de l'utiliser car elle ne tient
+    pas compte de la mémoire consommée ailleurs et des requêtes simultanées, ce
+    qui pourrait provoquer un dépassement de mémoire global du système.
+    </p>
 
     <p>Exemple :</p>
 
-    <highlight language="config">LimitXMLRequestBody 0</highlight>
+    <highlight language="config">
+# Limitation à 1 Mo
+LimitXMLRequestBody 1073741824
+    </highlight>
 
 </usage>
 </directivesynopsis>
@@ -5721,6 +5742,13 @@ Apache.</compatibility>
   # définition de la configuration personnalisée du mandataire
 &lt;/IfDefine&gt;
     </highlight>
+
+    <note type="warning"><title>Note</title>
+        <p>Cette directive est évaluée lors du traitement de la configuration,
+	et non à l'exécution. Par conséquent, elle ne peut pas être évaluée de
+	manière conditionnelle en l'incluant dans une section <directive
+	type="section" module="core">If</directive>.</p>
+    </note>
 
 </usage>
 </directivesynopsis>

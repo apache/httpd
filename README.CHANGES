@@ -15,5 +15,5 @@ afterwards.
 This make target can be seen in a similar way as the scripts to update the
 documentation files from its xml sources. It can be executed immediately
 after the new file in the changes-entries directory has been created / merged
-and committed or it can executed later. It should be executed at least before
+and committed or it can be executed later. It should be executed at least before
 a release gets tagged.

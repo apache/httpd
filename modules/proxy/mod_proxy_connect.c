@@ -170,6 +170,8 @@ static int proxy_connect_handler(request_rec *r, proxy_worker *worker,
     apr_port_t connectport = 0;
     apr_sockaddr_t *nexthop;
 
+    apr_interval_time_t current_timeout;
+
     /* is this for us? */
     if (r->method_number != M_CONNECT) {
         ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r, "declining URL %s", url);
@@ -261,8 +263,8 @@ static int proxy_connect_handler(request_rec *r, proxy_worker *worker,
      * Send the HTTP/1.1 CONNECT request to the remote server
      */
 
-    backconn = ap_run_create_connection(c->pool, r->server, sock,
-                                        c->id, c->sbh, c->bucket_alloc);
+    backconn = ap_create_connection(c->pool, r->server, sock, 0, NULL,
+                                    c->bucket_alloc, 1);
     if (!backconn) {
         /* peer reset */
         ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(01021)
@@ -272,6 +274,13 @@ static int proxy_connect_handler(request_rec *r, proxy_worker *worker,
         return HTTP_INTERNAL_SERVER_ERROR;
     }
     ap_proxy_ssl_engine(backconn, r->per_dir_config, 0);
+
+    /*
+     * save the timeout of the socket because core_pre_connection
+     * will set it to base_server->timeout
+     * (core TimeOut directive).
+     */
+    apr_socket_timeout_get(sock, &current_timeout);
     rc = ap_run_pre_connection(backconn, sock);
     if (rc != OK && rc != DONE) {
         backconn->aborted = 1;
@@ -280,6 +289,7 @@ static int proxy_connect_handler(request_rec *r, proxy_worker *worker,
         apr_socket_close(sock);
         return HTTP_INTERNAL_SERVER_ERROR;
     }
+    apr_socket_timeout_set(sock, current_timeout);
 
     ap_log_rerror(APLOG_MARK, APLOG_TRACE3, 0, r,
                   "connection complete to %pI (%s)",
@@ -354,8 +364,6 @@ static int proxy_connect_handler(request_rec *r, proxy_worker *worker,
         if (proxyport && !tunnel->replied) {
             return rc;
         }
-        /* Custom log may need this, still */
-        r->status = rc;
     }
 
     /*

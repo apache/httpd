@@ -220,32 +220,39 @@ substituée.</p>
 trois types :</p>
 
 <dl>
-<dt>Un chemin complet du système de fichiers vers une ressource</dt>
+<dt>1. Un chemin complet du système de fichiers vers une ressource</dt>
 <dd>
-<pre class="prettyprint lang-config">RewriteRule "^/jeux" "/usr/local/jeux/web"</pre>
+<pre class="prettyprint lang-config">RewriteRule "^/games" "/usr/local/games/web/puzzles.html"</pre>
 
 <p>Ceci peut faire correspondre une requête à toute localisation voulue de
 votre système de fichiers, un peu comme la directive <code class="directive"><a href="../mod/mod_alias.html#alias">Alias</a></code>.</p>
 </dd>
 
-<dt>Un chemin web vers une ressource</dt>
+<dt>2. Un chemin web vers une ressource</dt>
 <dd>
-<pre class="prettyprint lang-config">RewriteRule "^/foo$" "/bar"</pre>
+<pre class="prettyprint lang-config">RewriteRule "^/games$" "/puzzles.html"</pre>
 
 <p>Si la directive <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code> a
 pour valeur <code>/usr/local/apache2/htdocs</code>, cette règle va faire
-correspondre les requêtes pour <code>http://example.com/foo</code> au
-chemin <code>/usr/local/apache2/htdocs/bar</code>.</p>
+correspondre les requêtes pour <code>http://example.com/games</code> au
+chemin <code>/usr/local/apache2/htdocs/puzzles.html</code>.</p>
 </dd>
 
-<dt>Une URL absolue</dt>
+<dt>3. Une URL absolue</dt>
 <dd>
-<pre class="prettyprint lang-config">RewriteRule "^/produits/vues$" "http://site2.example.com/voirproduits.html" [R]</pre>
+<pre class="prettyprint lang-config">RewriteRule "^/product/view$" "http://site2.example.com/seeproduct.html" [R]</pre>
 
 <p>Ceci informe le client qu'il doit effectuer une nouvelle requête vers
 l'URL spécifiée.</p>
 </dd>
 </dl>
+
+<div class="warning">Notez que <strong>1</strong> et <strong>2</strong>
+possèdent exactement la même syntaxe. Par contre, dans le cas de
+<strong>1</strong>, le niveau racine du chemin cible (par exemple
+<code>/usr/</code>) existe dans le système de fichiers, alors que ce n'est pas
+le cas avec <strong>2</strong> (par exemple, il n'y a pas de répertoire
+<code>/bar/</code> au niveau de la racine du système de fichiers).</div>
 
 <p>La chaîne de <var>Substitution</var> peut aussi contenir des
 <em>références arrières</em> vers des parties du chemin d'URL entrant
@@ -380,7 +387,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/rewrite/intro.html
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2021 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2023 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

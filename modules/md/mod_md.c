@@ -54,7 +54,6 @@
 #include "mod_md_ocsp.h"
 #include "mod_md_os.h"
 #include "mod_md_status.h"
-#include "mod_ssl_openssl.h"
 
 static void md_hooks(apr_pool_t *pool);
 
@@ -99,7 +98,7 @@ static void log_print(const char *file, int line, md_log_level_t level,
         buffer[LOG_BUF_LEN-1] = '\0';
 
         if (log_server) {
-            ap_log_error(file, line, APLOG_MODULE_INDEX, (int)level, rv, log_server, "%s",buffer);
+            ap_log_error(file, line, APLOG_MODULE_INDEX, (int)level, rv, log_server, "%s", buffer);
         }
         else {
             ap_log_perror(file, line, APLOG_MODULE_INDEX, (int)level, rv, p, "%s", buffer);
@@ -314,8 +313,8 @@ static void merge_srv_config(md_t *md, md_srv_conf_t *base_sc, apr_pool_t *p)
         md->sc = base_sc;
     }
 
-    if (!md->ca_url) {
-        md->ca_url = md_config_gets(md->sc, MD_CONFIG_CA_URL);
+    if (!md->ca_urls && md->sc->ca_urls) {
+        md->ca_urls = apr_array_copy(p, md->sc->ca_urls);
     }
     if (!md->ca_proto) {
         md->ca_proto = md_config_gets(md->sc, MD_CONFIG_CA_PROTO);
@@ -324,11 +323,15 @@ static void merge_srv_config(md_t *md, md_srv_conf_t *base_sc, apr_pool_t *p)
         md->ca_agreement = md_config_gets(md->sc, MD_CONFIG_CA_AGREEMENT);
     }
     contact = md_config_gets(md->sc, MD_CONFIG_CA_CONTACT);
-    if (contact && contact[0]) {
+    if (md->contacts && md->contacts->nelts > 0) {
+        /* set explicitly */
+    }
+    else if (contact && contact[0]) {
         apr_array_clear(md->contacts);
         APR_ARRAY_PUSH(md->contacts, const char *) =
         md_util_schemify(p, contact, "mailto");
-    } else if( md->sc->s->server_admin && strcmp(DEFAULT_ADMIN, md->sc->s->server_admin)) {
+    }
+    else if( md->sc->s->server_admin && strcmp(DEFAULT_ADMIN, md->sc->s->server_admin)) {
         apr_array_clear(md->contacts);
         APR_ARRAY_PUSH(md->contacts, const char *) =
         md_util_schemify(p, md->sc->s->server_admin, "mailto");
@@ -349,6 +352,10 @@ static void merge_srv_config(md_t *md, md_srv_conf_t *base_sc, apr_pool_t *p)
     }
     if (md->require_https < 0) {
         md->require_https = md_config_geti(md->sc, MD_CONFIG_REQUIRE_HTTPS);
+    }
+    if (!md->ca_eab_kid) {
+        md->ca_eab_kid = md->sc->ca_eab_kid;
+        md->ca_eab_hmac = md->sc->ca_eab_hmac;
     }
     if (md->must_staple < 0) {
         md->must_staple = md_config_geti(md->sc, MD_CONFIG_MUST_STAPLE);
@@ -592,14 +599,18 @@ static apr_status_t link_md_to_servers(md_mod_conf_t *mc, md_t *md, server_rec *
                              s->server_hostname, s->port, md->name, sc->name,
                              domain, (int)sc->assigned->nelts);
 
-                if (sc->ca_contact && sc->ca_contact[0]) {
+                if (md->contacts && md->contacts->nelts > 0) {
+                    /* set explicitly */
+                }
+                else if (sc->ca_contact && sc->ca_contact[0]) {
                     uri = md_util_schemify(p, sc->ca_contact, "mailto");
                     if (md_array_str_index(md->contacts, uri, 0, 0) < 0) {
                         APR_ARRAY_PUSH(md->contacts, const char *) = uri;
                         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, base_server, APLOGNO(10044)
                                      "%s: added contact %s", md->name, uri);
                     }
-                } else if (s->server_admin && strcmp(DEFAULT_ADMIN, s->server_admin)) {
+                }
+                else if (s->server_admin && strcmp(DEFAULT_ADMIN, s->server_admin)) {
                     uri = md_util_schemify(p, s->server_admin, "mailto");
                     if (md_array_str_index(md->contacts, uri, 0, 0) < 0) {
                         APR_ARRAY_PUSH(md->contacts, const char *) = uri;
@@ -675,18 +686,18 @@ static apr_status_t merge_mds_with_conf(md_mod_conf_t *mc, apr_pool_t *p,
         if (md->cert_files && md->cert_files->nelts) {
             if (!md->pkey_files || (md->cert_files->nelts != md->pkey_files->nelts)) {
                 ap_log_error(APLOG_MARK, APLOG_ERR, 0, base_server, APLOGNO(10170)
-                             "The Managed Domain '%s', defined in %s(line %d), "
+                             "The Managed Domain '%s' "
                              "needs one MDCertificateKeyFile for each MDCertificateFile.",
-                             md->name, md->defn_name, md->defn_line_number);
+                             md->name);
                 return APR_EINVAL;
             }
         }
         else if (md->pkey_files && md->pkey_files->nelts 
             && (!md->cert_files || !md->cert_files->nelts)) {
             ap_log_error(APLOG_MARK, APLOG_ERR, 0, base_server, APLOGNO(10171)
-                         "The Managed Domain '%s', defined in %s(line %d), "
+                         "The Managed Domain '%s' "
                          "has MDCertificateKeyFile(s) but no MDCertificateFile.",
-                         md->name, md->defn_name, md->defn_line_number);
+                         md->name);
             return APR_EINVAL;
         }
 
@@ -694,33 +705,12 @@ static apr_status_t merge_mds_with_conf(md_mod_conf_t *mc, apr_pool_t *p,
             ap_log_error(APLOG_MARK, log_level, 0, base_server, APLOGNO(10039)
                          "Completed MD[%s, CA=%s, Proto=%s, Agreement=%s, renew-mode=%d "
                          "renew_window=%s, warn_window=%s",
-                         md->name, md->ca_url, md->ca_proto, md->ca_agreement, md->renew_mode,
+                         md->name, md->ca_effective, md->ca_proto, md->ca_agreement, md->renew_mode,
                          md->renew_window? md_timeslice_format(md->renew_window, p) : "unset",
                          md->warn_window? md_timeslice_format(md->warn_window, p) : "unset");
         }
     }
     return rv;
-}
-
-static void load_staged_data(md_mod_conf_t *mc, server_rec *s, apr_pool_t *p)
-{
-    apr_status_t rv;
-    md_t *md;
-    md_result_t *result;
-    int i;
-
-    for (i = 0; i < mc->mds->nelts; ++i) {
-        md = APR_ARRAY_IDX(mc->mds, i, md_t *);
-        result = md_result_md_make(p, md->name);
-        if (APR_SUCCESS == (rv = md_reg_load_staging(mc->reg, md, mc->env, result, p))) {
-            ap_log_error( APLOG_MARK, APLOG_INFO, rv, s, APLOGNO(10068)
-                         "%s: staged set activated", md->name);
-        }
-        else if (!APR_STATUS_IS_ENOENT(rv)) {
-            ap_log_error( APLOG_MARK, APLOG_ERR, rv, s, APLOGNO(10069)
-                         "%s: error loading staged set", md->name);
-        }
-    }
 }
 
 static apr_status_t check_invalid_duplicates(server_rec *base_server)
@@ -875,16 +865,22 @@ static apr_status_t md_post_config_before_ssl(apr_pool_t *p, apr_pool_t *plog,
 
     md_event_init(p);
     md_event_subscribe(on_event, mc);
-    
-    if (APR_SUCCESS != (rv = setup_store(&store, mc, p, s))
-        || APR_SUCCESS != (rv = md_reg_create(&mc->reg, p, store, mc->proxy_url, mc->ca_certs))) {
+
+    rv = setup_store(&store, mc, p, s);
+    if (APR_SUCCESS != rv) goto leave;
+
+    rv = md_reg_create(&mc->reg, p, store, mc->proxy_url, mc->ca_certs,
+                       mc->min_delay, mc->retry_failover,
+                       mc->use_store_locks, mc->lock_wait_timeout);
+    if (APR_SUCCESS != rv) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO(10072) "setup md registry");
         goto leave;
     }
 
     /* renew on 30% remaining /*/
     rv = md_ocsp_reg_make(&mc->ocsp, p, store, mc->ocsp_renew_window,
-                          AP_SERVER_BASEVERSION, mc->proxy_url);
+                          AP_SERVER_BASEVERSION, mc->proxy_url,
+                          mc->min_delay);
     if (APR_SUCCESS != rv) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO(10196) "setup ocsp registry");
         goto leave;
@@ -918,14 +914,24 @@ static apr_status_t md_post_config_before_ssl(apr_pool_t *p, apr_pool_t *plog,
     /*3*/
     if (APR_SUCCESS != (rv = link_mds_to_servers(mc, s, p))) goto leave;
     /*4*/
+    if (APR_SUCCESS != (rv = md_reg_lock_global(mc->reg, ptemp))) {
+        ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO(10398)
+                     "unable to obtain global registry lock, "
+                     "renewed certificates may remain inactive on "
+                     "this httpd instance!");
+        /* FIXME: or should we fail the server start/reload here? */
+        rv = APR_SUCCESS;
+        goto leave;
+    }
     if (APR_SUCCESS != (rv = md_reg_sync_start(mc->reg, mc->mds, ptemp))) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO(10073)
                      "syncing %d mds to registry", mc->mds->nelts);
         goto leave;
     }
     /*5*/
-    load_staged_data(mc, s, p);
+    md_reg_load_stagings(mc->reg, mc->mds, mc->env, p);
 leave:
+    md_reg_unlock_global(mc->reg, ptemp);
     return rv;
 }
 
@@ -1154,6 +1160,12 @@ static apr_status_t get_certificates(server_rec *s, apr_pool_t *p, int fallback,
                 APR_ARRAY_PUSH(key_files, const char*) = keyfile;
                 APR_ARRAY_PUSH(chain_files, const char*) = chainfile;
             }
+            else if (APR_STATUS_IS_ENOENT(rv)) {
+                /* certificate for this pkey is not available, others might
+                 * if pkeys have been added for a running mdomain.
+                 * see issue #260 */
+                rv = APR_SUCCESS;
+            }
             else if (!APR_STATUS_IS_ENOENT(rv)) {
                 ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO(10110)
                              "retrieving credentials for MD %s (%s)",
@@ -1201,6 +1213,9 @@ leave:
     if (!md_array_is_empty(key_files) && !md_array_is_empty(chain_files)) {
         *pkey_files = key_files;
         *pcert_files = chain_files;
+    }
+    else if (APR_SUCCESS == rv) {
+        rv = APR_ENOENT;
     }
     return rv;
 }
@@ -1339,6 +1354,15 @@ static int md_http_challenge_pr(request_rec *r)
             name = r->parsed_uri.path + sizeof(ACME_CHALLENGE_PREFIX)-1;
             reg = sc && sc->mc? sc->mc->reg : NULL;
 
+            if (md && md->ca_challenges
+                && md_array_str_index(md->ca_challenges, MD_AUTHZ_CHA_HTTP_01, 0, 1) < 0) {
+                /* The MD this challenge is for does not allow http-01 challanges,
+                 * we have to decline. See #279 for a setup example where this
+                 * is necessary.
+                 */
+                return DECLINED;
+            }
+
             if (strlen(name) && !ap_strchr_c(name, '/') && reg) {
                 md_store_t *store = md_reg_store_get(reg);
 
@@ -1476,7 +1500,7 @@ static void md_hooks(apr_pool_t *pool)
     /* Run once after configuration is set, before mod_ssl.
      * Run again after mod_ssl is done.
      */
-    ap_hook_post_config(md_post_config_before_ssl, NULL, mod_ssl, APR_HOOK_MIDDLE);
+    ap_hook_post_config(md_post_config_before_ssl, NULL, mod_ssl, APR_HOOK_FIRST);
     ap_hook_post_config(md_post_config_after_ssl, mod_ssl, mod_wd, APR_HOOK_LAST);
 
     /* Run once after a child process has been created.

@@ -57,6 +57,7 @@
     [ -<strong>P</strong> <var>proxy-auth-username</var>:<var>password</var> ]
     [ -<strong>q</strong> ]
     [ -<strong>r</strong> ]
+    [ -<strong>R</strong> <var>rampdelay</var> ]
     [ -<strong>s</strong> <var>timeout</var> ]
     [ -<strong>S</strong> ]
     [ -<strong>t</strong> <var>timelimit</var> ]
@@ -169,6 +170,17 @@
 
     <dt><code>-r</code></dt>
     <dd>Don't exit on socket receive errors.</dd>
+
+    <dt><code>-R <var>rampdelay</var></code></dt>
+    <dd>Milliseconds in between each new connection when starting up.
+    Default is no delay. Starting too many concurrent connections at once can
+    trigger denial of service protection on the network, which limits the
+    effectiveness of the test. Introducing a delay between starting each
+    concurrent connection can work around this problem. The test may complete
+    before full ramp up of concurrent connections is achieved. If this happens,
+    the total number of concurrent connections achieved is noted in the results.
+    <br />
+    Available in 2.5.1 and later.</dd>
 
     <dt><code>-s <var>timeout</var></code></dt>
     <dd>Maximum number of seconds to wait before the socket times out.

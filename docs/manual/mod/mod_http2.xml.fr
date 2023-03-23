@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1886792 -->
+<!-- English Revision: 1907697 -->
 <!-- French translation : Lucien GENTIS -->
 
 <!--
@@ -325,9 +325,9 @@ Protocols h2 h2c http/1.1
 		considéré comme devant faire l'objet d'un push.
             </p>
             <p>
-                Les en-têtes link des réponses sont soit définis par
-		l'application, soit configurés via la directive
-		<directive>H2PushResource</directive> ou en utilisant
+		Les en-têtes link des réponses sont soit définis par
+		l'application, soit configurés via la directive <directive
+		module="mod_http2">H2PushResource</directive> ou en utilisant
 		<module>mod_headers</module> comme suit :
             </p>
             <example><title>Exemple de configuration d'en-tête link via mod_headers</title>
@@ -391,15 +391,11 @@ Protocols h2 h2c http/1.1
 		de pushes pour le serveur virtuel considéré.
             </p>
             <p>
-                Le journal des pushes enregistre un condensé (sous la forme d'un
-		nombre de 64 bits) des ressources préchargées (leurs URLs) afin
-		d'éviter les duplications de pushes pour une même connexion.
-		Cependant, ces données ne sont pas conservées, et les clients
-		qui ouvrent une nouvelle connexion se verront à nouveau affecter les
-		mêmes pushes. A ce titre, une étude est en cours pour permettre
-		au client de supprimer le condensé des ressources qu'il possède
-		déjà, et par là-même de réinitialiser le journal des pushes à
-		chaque nouvelle connexion.
+		Le journal des pushes enregistre un condensé des ressources
+		préchargées (leurs URLs) afin d'éviter les duplications de
+		pushes pour une même connexion.  Cependant, ces données ne sont
+		pas conservées, et les clients qui ouvrent une nouvelle
+		connexion se verront à nouveau affecter les mêmes pushes. 
             </p>
             <p>
                 Si la taille maximale est atteinte, les nouvelles entrées
@@ -416,7 +412,7 @@ Protocols h2 h2c http/1.1
     <directivesynopsis>
         <name>H2PushPriority</name>
         <description>Priorité des pushes H2</description>
-        <syntax>H2PushPriority mime-type [after|before|interleaved] [weight]</syntax>
+        <syntax>H2PushPriority <em>mime-type</em> [after|before|interleaved] [<em>weight</em>]</syntax>
         <default>H2PushPriority * After 16</default>
         <contextlist>
             <context>server config</context>
@@ -975,116 +971,6 @@ H2PushPriority text/css   interleaved      # poids de 256 par défaut
     </directivesynopsis>
 
     <directivesynopsis>
-        <name>H2Timeout</name>
-        <description>Délai (en secondes) pour les connexions HTTP/2</description>
-        <syntax>H2Timeout secondes</syntax>
-        <default>H2Timeout 5</default>
-        <contextlist>
-            <context>server config</context>
-            <context>virtual host</context>
-        </contextlist>
-        <compatibility>Disponible à partir de la version 2.4.19 du serveur HTTP
-	Apache.</compatibility>
-
-        <usage>
-            <p>
-                Cette directive permet de définir un délai pour les opérations
-		de lecture/écriture lorsqu'une connexion HTTP/2 a été
-		négociée. Elle peut être définie pour l'ensemble du serveur ou
-		pour un <directive module="core" type="section">serveur
-		virtuel</directive> spécifique.
-            </p>
-            <p>
-                Elle est similaire à la directive <directive module="core"
-		type="section">Timeout</directive>, mais elle ne s'applique
-		qu'aux connexions HTTP/2.
-            </p>
-            <p>
-                Une valeur de 0 signifie qu'aucun délai n'est imposé.
-            </p>
-        </usage>
-    </directivesynopsis>
-
-    <directivesynopsis>
-        <name>H2KeepAliveTimeout</name>
-        <description>Durée de vie en secondes des connexions HTTP/2 inactives</description>
-        <syntax>H2KeepAliveTimeout secondes</syntax>
-        <contextlist>
-            <context>server config</context>
-            <context>virtual host</context>
-        </contextlist>
-        <compatibility>Disponible à partir de la version 2.4.19 du serveur HTTP
-	Apache.</compatibility>
-
-        <usage>
-            <p>
-                Cette directive permet de définir la durée de vie des connexions
-		HTTP/2 inactives. Sa portée peut s'étendre à l'ensemble du
-		serveur, ou seulement à un <directive module="core"
-		type="section">VirtualHost</directive> spécifique.
-            </p>
-            <p>
-                Cette directive est équivalente à la directive <directive
-		module="core" type="section">KeepAliveTimeout</directive>, mais
-		elle ne s'applique qu'aux connexions HTTP/2. Une connexion
-		HTTP/2 est considérée comme inactive lorsqu'aucun flux n'est
-		ouvert, autrement dit lorsqu'aucune requête n'est sur le point
-		d'être traitée.
-            </p>
-            <p>
-                Pour les MPMs non-asynch (prefork, worker), la durée de vie
-		sera par défaut égale à H2Timeout. Pour les MPMs async, il
-		semble qu'aucune action ne soit à entreprendre pour la durée de
-		vie des connexions HTTP/1.
-            </p>
-        </usage>
-    </directivesynopsis>
-
-    <directivesynopsis>
-        <name>H2StreamTimeout</name>
-        <description>Durée de vie en secondes des connexions HTTP/2 inactives</description>
-        <syntax>H2StreamTimeout secondes</syntax>
-        <default>H2StreamTimeout 0</default>
-        <contextlist>
-            <context>server config</context>
-            <context>virtual host</context>
-        </contextlist>
-        <compatibility>Disponible à partir de la version 2.4.19 du serveur HTTP
-	Apache.</compatibility>
-
-        <usage>
-            <p>
-		Cette directive permet de définir la durée de vie des flux
-		HTTP/2 pour les requêtes individuelles. Sa portée peut s'étendre
-		à l'ensemble du serveur, ou seulement à un <directive
-		module="core" type="section">VirtualHost</directive> spécifique
-            </p>
-            <p>
-                De par la nature de HTTP/2 qui transmet plusieurs requêtes sur
-		une seule connexion et gère une planification des priorités, les
-		flux individuels ne sont pas susceptibles de recevoir des
-		données en entrée beaucoup plus longtemps qu'une connexion
-		HTTP/1.1.
-            </p>
-            <p>
-                Si cette directive est définie à 0, la durée de vie des flux
-		HTTP/2 n'a aucune limite, et il peuvent attendre indéfiniment
-		l'arrivée de données à lire ou écrire. Cela expose cependant le
-		serveur à atteindre sa limite en nombre de threads.
-            </p>
-            <p>
-                Un site peut nécessiter une augmentation de cette valeur en
-		fonction de votre gestion des flux PUSHés, des priorités et de
-		la réactivité générale. Par exemple, si vous PUSHez une
-		ressource de taille importante <em>avant</em> celle qui a fait
-		l'objet d'une requête, le flux initiale n'effectuera aucune
-		écriture jusqu'à ce que la ressource PUSHée ne soit envoyée dans
-		son intégralité.
-            </p>
-        </usage>
-    </directivesynopsis>
-
-    <directivesynopsis>
         <name>H2CopyFiles</name>
         <description>Contrôle la gestion des fichiers dans les réponses</description>
         <syntax>H2CopyFiles on|off</syntax>
@@ -1128,7 +1014,7 @@ H2PushPriority text/css   interleaved      # poids de 256 par défaut
     <directivesynopsis>
         <name>H2PushResource</name>
         <description>Déclare des ressources à proposer ("pusher") au client</description>
-        <syntax>H2PushResource [add] path [critical]</syntax>
+        <syntax>H2PushResource [add] <em>path</em> [critical]</syntax>
         <contextlist>
             <context>server config</context>
             <context>virtual host</context>
@@ -1189,11 +1075,11 @@ H2PushPriority text/css   interleaved      # poids de 256 par défaut
 		intermédiaires inattendues.
             </p>
             <p>
-                Lorsque cette directive est définie à <code>on</code>, les
-		ressources PUSHées définie par la directive
-		<code>H2PushResource</code> déclenchent une réponse
-		intermédiaire 103 avant la réponse finale. Cette réponse 103
-		comporte des en-têtes <code>Link</code> qui provoquent le
+		Lorsque cette directive est définie à <code>on</code>, les
+		ressources PUSHées définie par la directive <directive
+		module="mod_http2">H2PushResource</directive> déclenchent une
+		réponse intermédiaire 103 avant la réponse finale. Cette réponse
+		103 comporte des en-têtes <code>Link</code> qui provoquent le
 		<code>préchargement</code> des ressources considérées.
             </p>
         </usage>
@@ -1203,7 +1089,7 @@ H2PushPriority text/css   interleaved      # poids de 256 par défaut
         <name>H2Padding</name>
         <description>Spécifie un intervalle de nombres d'octets de bourrage à
 	ajouter aux trames utiles</description>
-        <syntax>H2Padding numbits</syntax>
+        <syntax>H2Padding <em>numbits</em></syntax>
         <default>H2Padding 0</default>
         <contextlist>
             <context>server config</context>
@@ -1247,7 +1133,7 @@ H2PushPriority text/css   interleaved      # poids de 256 par défaut
     <directivesynopsis>
         <name>H2OutputBuffering</name>
         <description>Contrôle la mise en tampon du flux de sortie</description>
-        <syntax>H2OutputBuffering on/off</syntax>
+        <syntax>H2OutputBuffering on|off</syntax>
         <default>H2OutputBuffering on</default>
         <contextlist>
             <context>server config</context>
@@ -1258,13 +1144,64 @@ H2PushPriority text/css   interleaved      # poids de 256 par défaut
         
         <usage>
             <p>
-                L'option 'H2OutputBuffering on/off' permet de contrôler la mise
-		en tampon du flux de sortie. La valeur par défaut est on, ce qui
-		correspond au comportement des versions précédentes. Lorsqu'elle
-		est à off, chaque octet est immédiatement disponible pour envoi
-		au client via la connexion principale. Ceci permet de résoudre
-		les problèmes d'inter-opérations avec certaines versions de
-		gRPC.
+		La directive <directive>H2OutputBuffering</directive> permet de
+		contrôler la mise en tampon du flux de sortie. La valeur par
+		défaut est on, ce qui correspond au comportement des versions
+		précédentes. Lorsqu'elle est à off, chaque octet est
+		immédiatement disponible pour envoi au client via la connexion
+		principale. Ceci permet de résoudre les problèmes
+		d'inter-opérations avec certaines versions de gRPC.
+            </p>
+        </usage>
+    </directivesynopsis>
+
+    <directivesynopsis>
+        <name>H2StreamTimeout</name>
+        <description>Temps d'attente maximum lors de l'envoi/réception de
+	données pour le traitement d'un flux</description>
+        <syntax>H2StreamTimeout <var>time-interval</var>[s]</syntax>
+        <default>La valeur de la directive <directive module="core">Timeout</directive></default>
+        <contextlist>
+            <context>server config</context>
+            <context>virtual host</context>
+            <context>directory</context>
+        </contextlist>
+        <compatibility>Disponible à partir de la version 2.5.1 du serveur HTTP
+	Apache.</compatibility>
+
+        <usage>
+            <p>
+		<directive>H2StreamTimeout</directive> permet de spécifier le
+		temps maximum pendant lequel un flux en cours de traitement
+		attendra pour l'envoi/réception de ses données.
+            </p>
+        </usage>
+    </directivesynopsis>
+
+    <directivesynopsis>
+        <name>H2MaxDataFrameLen</name>
+        <description>Nombre maximal d'octets dans une trame HTTP/2 DATA</description>
+        <syntax>H2MaxDataFrameLen <em>n</em></syntax>
+        <default>H2MaxDataFrameLen 0</default>
+        <contextlist>
+            <context>server config</context>
+            <context>virtual host</context>
+        </contextlist>
+        <compatibility>Disponible à partir de la version 2.5.1 du serveur HTTP
+	Apache.</compatibility>
+
+        <usage>
+            <p>
+		La directive <directive>H2MaxDataFrameLen</directive> permet de
+		définir le nombre maximal d'octets du corps de réponse que l'on
+		peut placer dans une seule trame HTTP/2 DATA. La valeur 0
+		signifie aucune limite (mais la taille maximale permise par le
+		protocole est respectée).
+            </p><p>
+                Par défaut, le module essaie d'utiliser la taille maximale
+		possible qui est d'environ 16 Ko. Il s'agit cependant de la
+		taille maximale, et lorsque la taille des données de la réponse
+		est inférieure, les trames envoyées sont plus courtes.
             </p>
         </usage>
     </directivesynopsis>

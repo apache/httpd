@@ -1,0 +1,18 @@
+{
+  "name": "7007-1502285564.org",
+  "domains": [
+    "7007-1502285564.org"
+  ],
+  "contacts": [
+    "mailto:admin@7007-1502285564.org"
+  ],
+  "transitive": 0,
+  "ca": {
+    "proto": "ACME",
+    "url": "http://localhost:4000/directory",
+    "agreement": "http://boulder:4000/terms/v1"
+  },
+  "state": 1,
+  "renew-mode": 2,
+  "renew-window": 1209600
+}

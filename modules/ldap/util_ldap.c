@@ -2817,12 +2817,14 @@ static const char *util_ldap_set_conn_ttl(cmd_parms *cmd,
                                           void *dummy,
                                           const char *val)
 {
-    apr_interval_time_t timeout;
+    apr_interval_time_t timeout = -1;
     util_ldap_state_t *st =
         (util_ldap_state_t *)ap_get_module_config(cmd->server->module_config,
                                                   &ldap_module);
 
-    if (ap_timeout_parameter_parse(val, &timeout, "s") != APR_SUCCESS) {
+    /* Negative values mean AP_LDAP_CONNPOOL_INFINITE */
+    if (val[0] != '-' &&
+        ap_timeout_parameter_parse(val, &timeout, "s") != APR_SUCCESS) {
         return "LDAPConnectionPoolTTL has wrong format";
     }
 

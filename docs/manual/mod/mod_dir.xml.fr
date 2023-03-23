@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1872257 -->
+<!-- English Revision: 1894515 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -191,16 +191,18 @@ répertoires.
 <name>DirectorySlash</name>
 <description>Activation/Désactivation de la redirection "slash de
 fin"</description>
-<syntax>DirectorySlash On|Off</syntax>
+<syntax>DirectorySlash On|Off|NotFound</syntax>
 <default>DirectorySlash On</default>
 <contextlist><context>server config</context><context>virtual
 host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
 <override>Indexes</override>
+<compatibility>L'argument NotFound est disponible à partir de la version 2.5.1
+du serveur HTTP Apache</compatibility>
 
 <usage>
-    <p>La directive <directive>DirectorySlash</directive> permet de
-    déterminer si <module>mod_dir</module> doit corriger ou non les URLs
+    <p>La directive <directive>DirectorySlash</directive> permet de déterminer
+    comment <module>mod_dir</module> doit éventuellement corriger les URLs
     pointant vers un répertoire.</p>
 
     <p>En général, si un utilisateur envoie une requête pour une
@@ -252,6 +254,12 @@ host</context>
     <p>Notez aussi que certains navigateurs peuvent modifier par erreur
     des requêtes POST en requêtes GET lors d'une redirection, les
     données POST étant alors perdues.</p>
+
+    <p>Pour éviter les risques inhérents à l'option "off" ci-dessus ou pour
+    éviter de divulguer la présence d'un répertoire via l'option "on", on peut
+    utiliser l'argument "NotFound" pour que <module>mod_dir</module> renvoie un
+    code d'état 404 au lieu de rediriger la requête pour inclure un slash de
+    fin.</p>
 </usage>
 </directivesynopsis>
 <directivesynopsis>

@@ -171,8 +171,7 @@
 <tr><td><code>%{<var>format</var>}P</code></td>
         <td>The process ID or thread ID of the child that serviced the
         request.  Valid formats are <code>pid</code>, <code>tid</code>,
-        and <code>hextid</code>.  <code>hextid</code> requires APR 1.2.0 or
-        higher.
+        and <code>hextid</code>.
         </td></tr>
 <tr class="odd"><td><code>%q</code></td>
         <td>The query string (prepended with a <code>?</code> if a query
@@ -639,7 +638,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_log_config
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2021 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2023 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

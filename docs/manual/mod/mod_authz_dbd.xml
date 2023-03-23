@@ -70,7 +70,7 @@
 
     <highlight language="config">
 Require dbd-group team
-AuthzDBDQuery "SELECT group FROM authz WHERE user = %s"
+AuthzDBDQuery "SELECT user_group FROM authz WHERE user = %s"
     </highlight>
 
 </section>

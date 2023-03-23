@@ -61,6 +61,10 @@
 #include <sys/types.h>
 #endif
 
+#ifdef HAVE_PTHREAD_NP_H
+#include <pthread_np.h>
+#endif
+
 /* we know core's module_index is 0 */
 #undef APLOG_MODULE_INDEX
 #define APLOG_MODULE_INDEX AP_CORE_MODULE_INDEX
@@ -538,10 +542,12 @@ static int log_tid(const ap_errorlog_info *info, const char *arg,
 #if APR_HAS_THREADS
     int result;
 #endif
-#if defined(HAVE_GETTID) || defined(HAVE_SYS_GETTID)
+#if defined(HAVE_GETTID) || defined(HAVE_SYS_GETTID) || defined(HAVE_PTHREAD_GETTHREADID_NP)
     if (arg && *arg == 'g') {
-#ifdef HAVE_GETTID
+#if defined(HAVE_GETTID)
         pid_t tid = gettid();
+#elif defined(HAVE_PTHREAD_GETTHREADID_NP)
+        pid_t tid = pthread_getthreadid_np();
 #else
         pid_t tid = syscall(SYS_gettid);
 #endif
@@ -567,14 +573,32 @@ static int log_ctime(const ap_errorlog_info *info, const char *arg,
     int time_len = buflen;
     int option = AP_CTIME_OPTION_NONE;
 
-    while (arg && *arg) {
-        switch (*arg) {
-            case 'u':   option |= AP_CTIME_OPTION_USEC;
-                        break;
-            case 'c':   option |= AP_CTIME_OPTION_COMPACT;
-                        break;
+    if (arg) {
+        if (arg[0] == 'u' && !arg[1]) { /* no ErrorLogFormat (fast path) */
+            option |= AP_CTIME_OPTION_USEC;
         }
-        arg++;
+        else if (!ap_strchr_c(arg, '%')) { /* special "%{cuz}t" formats */
+            while (*arg) {
+                switch (*arg++) {
+                case 'u':
+                    option |= AP_CTIME_OPTION_USEC;
+                    break;
+                case 'c':
+                    option |= AP_CTIME_OPTION_COMPACT;
+                    break;
+                case 'z':
+                    option |= AP_CTIME_OPTION_GMTOFF;
+                    break;
+                }
+            }
+        }
+        else { /* "%{strftime %-format}t" */
+            apr_size_t len = 0;
+            apr_time_exp_t expt;
+            ap_explode_recent_localtime(&expt, apr_time_now());
+            apr_strftime(buf, &len, buflen, arg, &expt);
+            return (int)len;
+        }
     }
 
     ap_recent_ctime_ex(buf, apr_time_now(), option, &time_len);
@@ -914,14 +938,14 @@ static int do_errorlog_default(const ap_errorlog_info *info, char *buf,
      * a scoreboard handle, it is likely a client.
      */
     if (info->r) {
-        len += apr_snprintf(buf + len, buflen - len,
-                            info->r->connection->sbh ? "[client %s:%d] " : "[remote %s:%d] ",
+        len += apr_snprintf(buf + len, buflen - len, "[%s %s:%d] ",
+                            info->r->connection->outgoing ? "remote" : "client",
                             info->r->useragent_ip,
                             info->r->useragent_addr ? info->r->useragent_addr->port : 0);
     }
     else if (info->c) {
-        len += apr_snprintf(buf + len, buflen - len,
-                            info->c->sbh ? "[client %s:%d] " : "[remote %s:%d] ",
+        len += apr_snprintf(buf + len, buflen - len, "[%s %s:%d] ",
+                            info->c->outgoing ? "remote" : "client",
                             info->c->client_ip,
                             info->c->client_addr ? info->c->client_addr->port : 0);
     }
@@ -1074,6 +1098,11 @@ static void log_error_core(const char *file, int line, int module_index,
             errorlog_provider = ap_server_conf->errorlog_provider;
             errorlog_provider_handle = ap_server_conf->errorlog_provider_handle;
         }
+
+        /* Use the main ErrorLogFormat if any */
+        if (ap_server_conf) {
+            sconf = ap_get_core_module_config(ap_server_conf->module_config);
+        }
     }
     else {
         int configured_level = r ? ap_get_request_module_loglevel(r, module_index)        :
@@ -1120,6 +1149,10 @@ static void log_error_core(const char *file, int line, int module_index,
                     add_log_id(c, rmain);
                 }
             }
+        }
+        else if (ap_server_conf) {
+            /* Use the main ErrorLogFormat if any */
+            sconf = ap_get_core_module_config(ap_server_conf->module_config);
         }
     }
 

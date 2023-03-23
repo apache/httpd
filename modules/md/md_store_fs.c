@@ -39,6 +39,7 @@
 /* file system based implementation of md_store_t */
 
 #define MD_STORE_VERSION        3
+#define MD_FS_LOCK_NAME         "store.lock"
 
 typedef struct {
     apr_fileperms_t dir;
@@ -60,6 +61,8 @@ struct md_store_fs_t {
     
     int port_80;
     int port_443;
+
+    apr_file_t *global_lock;
 };
 
 #define FS_STORE(store)     (md_store_fs_t*)(((char*)store)-offsetof(md_store_fs_t, s))
@@ -100,6 +103,9 @@ static int fs_is_newer(md_store_t *store, md_store_group_t group1, md_store_grou
 
 static apr_time_t fs_get_modified(md_store_t *store, md_store_group_t group,  
                                   const char *name, const char *aspect, apr_pool_t *p);
+
+static apr_status_t fs_lock_global(md_store_t *store, apr_pool_t *p, apr_time_t max_wait);
+static void fs_unlock_global(md_store_t *store, apr_pool_t *p);
 
 static apr_status_t init_store_file(md_store_fs_t *s_fs, const char *fname, 
                                     apr_pool_t *p, apr_pool_t *ptemp)
@@ -240,8 +246,8 @@ static apr_status_t read_store_file(md_store_fs_t *s_fs, const char *fname,
             if (APR_SUCCESS == rv) {
                 md_json_setn(MD_STORE_VERSION, json, MD_KEY_STORE, MD_KEY_VERSION, NULL);
                 rv = md_json_freplace(json, ptemp, MD_JSON_FMT_INDENT, fname, MD_FPROT_F_UONLY);
-           }
-           md_log_perror(MD_LOG_MARK, MD_LOG_INFO, rv, p, "migrated store");
+            }
+            md_log_perror(MD_LOG_MARK, MD_LOG_INFO, rv, p, "migrated store");
         } 
     }
     return rv;
@@ -296,7 +302,9 @@ apr_status_t md_store_fs_init(md_store_t **pstore, apr_pool_t *p, const char *pa
     s_fs->s.is_newer = fs_is_newer;
     s_fs->s.get_modified = fs_get_modified;
     s_fs->s.remove_nms = fs_remove_nms;
-    
+    s_fs->s.lock_global = fs_lock_global;
+    s_fs->s.unlock_global = fs_unlock_global;
+
     /* by default, everything is only readable by the current user */ 
     s_fs->def_perms.dir = MD_FPROT_D_UONLY;
     s_fs->def_perms.file = MD_FPROT_F_UONLY;
@@ -508,19 +516,22 @@ static apr_status_t mk_group_dir(const char **pdir, md_store_fs_t *s_fs,
 
     rv = md_util_is_dir(*pdir, p);
     if (APR_STATUS_IS_ENOENT(rv)) {
-        md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, rv, p, "not a directory, creating %s", *pdir);
+        md_log_perror(MD_LOG_MARK, MD_LOG_TRACE3, rv, p, "not a directory, creating %s", *pdir);
         rv = apr_dir_make_recursive(*pdir, perms->dir, p);
         if (APR_SUCCESS != rv) goto cleanup;
         dispatch(s_fs, MD_S_FS_EV_CREATED, group, *pdir, APR_DIR, p);
     }
 
     rv = apr_file_perms_set(*pdir, perms->dir);
-    md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, rv, p, "mk_group_dir %s perm set", *pdir);
+    md_log_perror(MD_LOG_MARK, MD_LOG_TRACE3, rv, p, "mk_group_dir %s perm set", *pdir);
     if (APR_STATUS_IS_ENOTIMPL(rv)) {
         rv = APR_SUCCESS;
     }
 cleanup:
-    md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, rv, p, "mk_group_dir %d %s", group, name);
+    if (APR_SUCCESS != rv) {
+        md_log_perror(MD_LOG_MARK, MD_LOG_ERR, rv, p, "mk_group_dir %d %s",
+                      group, (*pdir? *pdir : (name? name : "(null)")));
+    }
     return rv;
 }
 
@@ -629,7 +640,7 @@ static apr_status_t pfs_save(void *baton, apr_pool_t *p, apr_pool_t *ptemp, va_l
         && MD_OK(mk_group_dir(&dir, s_fs, group, name, p))
         && MD_OK(md_util_path_merge(&fpath, ptemp, dir, aspect, NULL))) {
         
-        md_log_perror(MD_LOG_MARK, MD_LOG_TRACE3, 0, ptemp, "storing in %s", fpath);
+        md_log_perror(MD_LOG_MARK, MD_LOG_TRACE2, 0, ptemp, "storing in %s", fpath);
         switch (vtype) {
             case MD_SV_TEXT:
                 rv = (create? md_text_fcreatex(fpath, perms->file, p, value)
@@ -743,7 +754,9 @@ static apr_status_t pfs_purge(void *baton, apr_pool_t *p, apr_pool_t *ptemp, va_
         /* Remove all files in dir, there should be no sub-dirs */
         rv = md_util_rm_recursive(dir, ptemp, 1);
     }
-    md_log_perror(MD_LOG_MARK, MD_LOG_TRACE2, rv, ptemp, "purge %s/%s (%s)", groupname, name, dir);
+    if (!APR_STATUS_IS_ENOENT(rv)) {
+        md_log_perror(MD_LOG_MARK, MD_LOG_TRACE2, rv, ptemp, "purge %s/%s (%s)", groupname, name, dir);
+    }
     return APR_SUCCESS;
 }
 
@@ -1016,12 +1029,12 @@ static apr_status_t pfs_move(void *baton, apr_pool_t *p, apr_pool_t *ptemp, va_l
         }
         
         if (!MD_OK(apr_file_rename(to_dir, narch_dir, ptemp))) {
-                md_log_perror(MD_LOG_MARK, MD_LOG_ERR, rv, ptemp, "rename from %s to %s", 
+                md_log_perror(MD_LOG_MARK, MD_LOG_ERR, rv, ptemp, "rename from %s to %s",
                               to_dir, narch_dir);
                 goto out;
         }
         if (!MD_OK(apr_file_rename(from_dir, to_dir, ptemp))) {
-            md_log_perror(MD_LOG_MARK, MD_LOG_ERR, rv, ptemp, "rename from %s to %s", 
+            md_log_perror(MD_LOG_MARK, MD_LOG_ERR, rv, ptemp, "rename from %s to %s",
                           from_dir, to_dir);
             apr_file_rename(narch_dir, to_dir, ptemp);
             goto out;
@@ -1032,7 +1045,7 @@ static apr_status_t pfs_move(void *baton, apr_pool_t *p, apr_pool_t *ptemp, va_l
     }
     else if (APR_STATUS_IS_ENOENT(rv)) {
         if (APR_SUCCESS != (rv = apr_file_rename(from_dir, to_dir, ptemp))) {
-            md_log_perror(MD_LOG_MARK, MD_LOG_ERR, rv, ptemp, "rename from %s to %s", 
+            md_log_perror(MD_LOG_MARK, MD_LOG_ERR, rv, ptemp, "rename from %s to %s",
                           from_dir, to_dir);
             goto out;
         }
@@ -1073,8 +1086,9 @@ static apr_status_t pfs_rename(void *baton, apr_pool_t *p, apr_pool_t *ptemp, va
         goto out;
     }
     
-    if (APR_SUCCESS != (rv = apr_file_rename(from_dir, to_dir, ptemp))) {
-        md_log_perror(MD_LOG_MARK, MD_LOG_ERR, rv, ptemp, "rename from %s to %s", 
+    if (APR_SUCCESS != (rv = apr_file_rename(from_dir, to_dir, ptemp))
+        && !APR_STATUS_IS_ENOENT(rv)) {
+        md_log_perror(MD_LOG_MARK, MD_LOG_ERR, rv, ptemp, "rename from %s to %s",
                       from_dir, to_dir);
         goto out;
     }
@@ -1087,4 +1101,68 @@ static apr_status_t fs_rename(md_store_t *store, apr_pool_t *p,
 {
     md_store_fs_t *s_fs = FS_STORE(store);
     return md_util_pool_vdo(pfs_rename, s_fs, p, group, from, to, NULL);
+}
+
+static apr_status_t fs_lock_global(md_store_t *store, apr_pool_t *p, apr_time_t max_wait)
+{
+    md_store_fs_t *s_fs = FS_STORE(store);
+    apr_status_t rv;
+    const char *lpath;
+    apr_time_t end;
+
+    if (s_fs->global_lock) {
+        rv = APR_EEXIST;
+        md_log_perror(MD_LOG_MARK, MD_LOG_ERR, rv, p, "already locked globally");
+        goto cleanup;
+    }
+
+    rv = md_util_path_merge(&lpath, p, s_fs->base, MD_FS_LOCK_NAME, NULL);
+    if (APR_SUCCESS != rv) goto cleanup;
+    end = apr_time_now() + max_wait;
+
+    md_log_perror(MD_LOG_MARK, MD_LOG_TRACE1, 0, p,
+                  "acquire global lock: %s", lpath);
+    while (apr_time_now() < end) {
+        rv = apr_file_open(&s_fs->global_lock, lpath,
+                           (APR_FOPEN_WRITE|APR_FOPEN_CREATE),
+                           MD_FPROT_F_UALL_GREAD, p);
+        if (APR_SUCCESS != rv) {
+            md_log_perror(MD_LOG_MARK, MD_LOG_TRACE1, rv, p,
+                          "unable to create/open lock file: %s",
+                          lpath);
+            goto next_try;
+        }
+        rv = apr_file_lock(s_fs->global_lock,
+                           APR_FLOCK_EXCLUSIVE|APR_FLOCK_NONBLOCK);
+        if (APR_SUCCESS == rv) {
+            goto cleanup;
+        }
+        md_log_perror(MD_LOG_MARK, MD_LOG_TRACE1, rv, p,
+                      "unable to obtain lock on: %s",
+                      lpath);
+
+    next_try:
+        if (s_fs->global_lock) {
+            apr_file_close(s_fs->global_lock);
+            s_fs->global_lock = NULL;
+        }
+        apr_sleep(apr_time_from_msec(100));
+    }
+    rv = APR_EGENERAL;
+    md_log_perror(MD_LOG_MARK, MD_LOG_TRACE1, rv, p,
+                  "acquire global lock: %s", lpath);
+
+cleanup:
+    return rv;
+}
+
+static void fs_unlock_global(md_store_t *store, apr_pool_t *p)
+{
+    md_store_fs_t *s_fs = FS_STORE(store);
+
+    (void)p;
+    if (s_fs->global_lock) {
+        apr_file_close(s_fs->global_lock);
+        s_fs->global_lock = NULL;
+    }
 }

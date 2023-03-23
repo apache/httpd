@@ -70,10 +70,6 @@ of how you might use them.</p>
 <p>The [B] flag instructs <directive
 module="mod_rewrite">RewriteRule</directive> to escape non-alphanumeric
 characters before applying the transformation.</p>
-<p>In 2.4.26 and later, you can limit the escaping to specific characters
-in backreferences by listing them: <code>[B=#?;]</code>. Note: The space
-character can be used in the list of characters to escape, but it cannot be
-the last character in the list.</p>
 
 <p><code>mod_rewrite</code> has to unescape URLs before mapping them,
 so backreferences are unescaped at the time they are applied.
@@ -109,6 +105,21 @@ when the backend may break if presented with an unescaped URL.</p>
 <p>An alternative to this flag is using a <directive module="mod_rewrite"
 >RewriteCond</directive> to capture against %{THE_REQUEST} which will capture
 strings in the encoded form.</p>
+
+<p>In 2.4.26 and later, you can limit the escaping to specific characters
+in backreferences by listing them: <code>[B=#?;]</code>. Note: The space
+character can be used in the list of characters to escape, but you must quote
+the entire third argument of <directive module="mod_rewrite">RewriteRule</directive>
+and the space must not be the last character in the list.</p>
+
+<highlight language="config">
+# Escape spaces and question marks.  The quotes around the final argument 
+# are required when a space is included.
+RewriteRule "^search/(.*)$" "/search.php?term=$1" "[B= ?]"
+</highlight>
+
+<p>To limit the characters escaped this way, see <a href="flag_bne">flag_bne</a>
+and <a href="flag_bctls">flag_bctls</a></p>
 </section>
 
 <section id="flag_bnp"><title>BNP|backrefnoplus (don't escape space to +)</title>
@@ -117,8 +128,43 @@ module="mod_rewrite">RewriteRule</directive> to escape the space character
 in a backreference to %20 rather than '+'. Useful when the backreference
 will be used in the path component rather than the query string.</p>
 
-<p>This flag is available in version 2.4.26 and later.</p>
+<highlight language="config">
+# Escape spaces to %20 in the path instead of + as used in form submission via
+# the query string
+RewriteRule "^search/(.*)$" "/search.php/$1" "[B,BNP]"
+</highlight>
 
+
+<p>This flag is available in version 2.4.26 and later.</p>
+</section>
+
+<section id="flag_bctls"><title>BCTLS</title>
+<p>The [BCTLS] flag is similar to the [B] flag, but only escapes
+control characters and the space character. This is the same set of
+characters rejected when they are copied into the query string unencoded.
+</p>
+
+<highlight language="config">
+# Escape control characters and spaces
+RewriteRule "^search/(.*)$" "/search.php/$1" "[BCTLS]"
+</highlight>
+
+<p>This flag is available in version 2.5.1 and later.</p>
+
+</section>
+
+<section id="flag_bne"><title>BNE</title>
+<p>The list of characters in [BNE=...] are treated as exclusions to the
+characters of the [B] or [BCTLS] flags. The listed characters will not be
+escaped.
+</p>
+
+<highlight language="config">
+# Escape the default characters, but leave /
+RewriteRule "^search/(.*)$" "/search.php?term=$1" "[B,BNE=/]"
+</highlight>
+
+<p>This flag is available in version 2.5.1 and later.</p>
 </section>
 
 <section id="flag_c"><title>C|chain</title>
@@ -194,7 +240,7 @@ browsers that support this feature.</dd>
 <dt>samesite</dt>
 <dd>If set to anything other than <code>false</code> or <code>0</code>, the <code>SameSite</code>
 attribute is set to the specified value.  Typical values are <code>None</code>,
-<code>Lax</code>, and <code>Strict</code>.Available in 2.5.1 and later.</dd>
+<code>Lax</code>, and <code>Strict</code>. Available in 2.5.1 and later.</dd>
 </dl>
 
 
@@ -476,7 +522,8 @@ RewriteRule "(.*\.(jpg|gif|png))$" "http://images.example.com$1" [P,NC]
 <section id="flag_ne"><title>NE|noescape</title>
 <p>By default, special characters, such as <code>&amp;</code> and
 <code>?</code>, for example, will be converted to their hexcode
-equivalent. Using the [NE] flag prevents that from happening.
+equivalent for rules that result in external redirects. 
+Using the [NE] flag prevents that from happening.
 </p>
 
 <highlight language="config">

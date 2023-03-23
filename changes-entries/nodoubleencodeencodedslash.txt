@@ -1,0 +1,4 @@
+
+  *) mod_proxy: In case that AllowEncodedSlashes is set to NoDecode do not
+     double encode encoded slashes in the URL sent by the reverse proxy to the
+     backend. [Ruediger Pluem]

@@ -26,6 +26,11 @@
 #include "apr_general.h"    /* for APR_OFFSETOF                */
 #include "apr_network_io.h"
 
+#ifdef APR_HAS_THREADS
+#include "apr_atomic.h"     /* for apr_atomic_inc32 */
+#include "mpm_common.h"     /* for ap_mpm_query */
+#endif
+
 #include "httpd.h"
 #include "http_config.h"
 #include "http_log.h"
@@ -42,6 +47,12 @@ typedef struct {
 
 /* We are using thread_index (the index into the scoreboard), because we
  * cannot guarantee the thread_id will be an integer.
+ *
+ * This code looks like it won't give a unique ID with the new thread logic.
+ * It will.  The reason is, we don't increment the counter in a thread_safe
+ * manner.  Because the thread_index is also in the unique ID now, this does
+ * not matter.  In order for the id to not be unique, the same thread would
+ * have to get the same counter twice in the same second.
  */
 
 /* Comments:
@@ -63,7 +74,7 @@ typedef struct {
  * The stamp and counter are used to distinguish all hits for a
  * particular root.  The stamp is updated using r->request_time,
  * saving cpu cycles.  The counter is never reset, and is used to
- * permit up to 64k requests in a single second by a single thread.
+ * permit up to 64k requests in a single second by a single child.
  *
  * The 144-bits of unique_id_rec are encoded using the alphabet
  * [A-Za-z0-9@-], resulting in 24 bytes of printable characters.  That is then
@@ -110,7 +121,17 @@ typedef struct {
  * htonl/ntohl. Well, this shouldn't be a problem till year 2106.
  */
 
+/*
+ * XXX: We should have a per-thread counter and not use cur_unique_id.counter
+ * XXX: in all threads, because this is bad for performance on multi-processor
+ * XXX: systems: Writing to the same address from several CPUs causes cache
+ * XXX: thrashing.
+ */
 static unique_id_rec cur_unique_id;
+static apr_uint32_t cur_unique_counter;
+#ifdef APR_HAS_THREADS
+static int is_threaded_mpm;
+#endif
 
 /*
  * Number of elements in the structure unique_id_rec.
@@ -148,6 +169,11 @@ static int unique_id_global_init(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *pt
 
 static void unique_id_child_init(apr_pool_t *p, server_rec *s)
 {
+#ifdef APR_HAS_THREADS
+    is_threaded_mpm = 0;
+    ap_mpm_query(AP_MPMQ_IS_THREADED, &is_threaded_mpm);
+#endif
+
     ap_random_insecure_bytes(&cur_unique_id.root,
                              sizeof(cur_unique_id.root));
 
@@ -156,8 +182,8 @@ static void unique_id_child_init(apr_pool_t *p, server_rec *s)
      * against restart problems, and a little less protection against a clock
      * going backwards in time.
      */
-    ap_random_insecure_bytes(&cur_unique_id.counter,
-                             sizeof(cur_unique_id.counter));
+    ap_random_insecure_bytes(&cur_unique_counter,
+                             sizeof(cur_unique_counter));
 }
 
 /* Use the base64url encoding per RFC 4648, avoiding characters which
@@ -170,7 +196,9 @@ static const char uuencoder[64] = {
     '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '-', '_',
 };
 
-#define THREADED_COUNTER "unique_id_counter"
+#ifndef APR_UINT16_MAX
+#define APR_UINT16_MAX 0xffffu
+#endif
 
 static const char *gen_unique_id(const request_rec *r)
 {
@@ -184,41 +212,24 @@ static const char *gen_unique_id(const request_rec *r)
         unique_id_rec foo;
         unsigned char pad[2];
     } paddedbuf;
+    apr_uint32_t counter;
     unsigned char *x,*y;
-    unsigned short counter;
     int i,j,k;
 
-#if APR_HAS_THREADS
-    apr_status_t rv;
-    unsigned short *pcounter;
-    apr_thread_t *thread = r->connection->current_thread;
-    
-    rv = apr_thread_data_get((void **)&pcounter, THREADED_COUNTER, thread);
-    if (rv == APR_SUCCESS && pcounter) {
-        counter = *pcounter;
-    }
-    else
-#endif
-    {
-        counter = cur_unique_id.counter;
-    }
-
     memcpy(&new_unique_id.root, &cur_unique_id.root, ROOT_SIZE);
-    new_unique_id.counter = htons(counter++);
-#if APR_HAS_THREADS
-    if (!pcounter) {
-        pcounter = apr_palloc(apr_thread_pool_get(thread), sizeof(*pcounter));
-    }
-    
-    *pcounter = counter;
-    rv = apr_thread_data_set(pcounter, THREADED_COUNTER, NULL, thread);
-    if (rv != APR_SUCCESS)
-#endif
-    {
-        cur_unique_id.counter = counter;
-    }
     new_unique_id.stamp = htonl((unsigned int)apr_time_sec(r->request_time));
     new_unique_id.thread_index = htonl((unsigned int)r->connection->id);
+#ifdef APR_HAS_THREADS
+    if (is_threaded_mpm)
+        counter = apr_atomic_inc32(&cur_unique_counter);
+    else
+#endif
+        counter = cur_unique_counter++;
+
+    /* The counter is two bytes for the uuencoded unique id, in network
+     * byte order.
+     */
+    new_unique_id.counter = htons(counter % APR_UINT16_MAX);
 
     /* we'll use a temporal buffer to avoid uuencoding the possible internal
      * paddings of the original structure */

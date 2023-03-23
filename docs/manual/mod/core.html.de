@@ -1453,7 +1453,7 @@ to the network</td></tr>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Beschreibung:</a></th><td>Threshold above which pending data are flushed to the
 network</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>FlushMaxThreshold<var>number-of-bytes</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>FlushMaxThreshold <var>number-of-bytes</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Voreinstellung:</a></th><td><code>FlushMaxThreshold 65536</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Kontext:</a></th><td>Serverkonfiguration, Virtual Host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
@@ -3924,7 +3924,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/core.html';
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2021 The Apache Software Foundation.<br />Lizenziert unter der <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2023 The Apache Software Foundation.<br />Lizenziert unter der <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Module</a> | <a href="../mod/quickreference.html">Direktiven</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossar</a> | <a href="../sitemap.html">Seitenindex</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

@@ -573,7 +573,9 @@ DIGIT       ::= &lt;any US-ASCII digit "0".."9"&gt;</pre>
 <tr><td><code>ldap</code></td>
         <td>Echappe les caractères selon la RFC4514 (Echappement des
 	noms distinctifs LDAP - DN) et la RFC4515 (Echappement des
-	filtres LDAP).</td><td /></tr>
+	filtres LDAP).<br />
+	Disponible à partir de la version 2.4.53 du serveur HTTP
+	Apache.</td><td /></tr>
 <tr class="odd"><td><code>replace</code></td>
         <td>replace(chaîne, "from", "to") remplace dans la chaîne
 	spécifiée toutes les occurrences de "from" par "to". Le premier
@@ -778,7 +780,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/expr.html';
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2021 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2023 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossaire</a> | <a href="./sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

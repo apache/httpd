@@ -219,6 +219,8 @@ ProxyVia On
   Require host internal.example.com
 &lt;/Proxy&gt;</pre>
 </div>
+    <div class="example"><h3><a id="wsupgrade" name="wsupgrade">Websocket Upgrade (2.4.47 and later)</a></h3><pre class="prettyprint lang-config">ProxyPass "/some/ws/capable/path/" "http://example.com/some/ws/capable/path/" upgrade=websocket</pre>
+</div>
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="handler" id="handler">Access via Handler</a> <a title="Permanent link" href="#handler" class="permalink">&para;</a></h2>
@@ -470,9 +472,6 @@ ProxyPass "/examples" "http://backend.example.com/examples" timeout=10</pre>
     This spooling can also occur if the request body already has a
     Content-Length header, but the server is configured to filter incoming
     request bodies.</p>
-
-    <p><code class="directive"><a href="../mod/core.html#limitrequestbody">LimitRequestBody</a></code> only applies to
-    request bodies that the server will spool to disk</p>
 
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -1430,16 +1429,49 @@ ProxyPass "/mirror/foo"   "http://backend.example.com"</pre>
         <td><p>Value of secret used by <code class="module"><a href="../mod/mod_proxy_ajp.html">mod_proxy_ajp</a></code>.
         See the documentation of this module for more details.</p>
     </td></tr>
-    <tr><td>upgrade</td>
-        <td>WebSocket</td>
-        <td><p>Protocol accepted in the Upgrade header by <code class="module"><a href="../mod/mod_proxy_wstunnel.html">mod_proxy_wstunnel</a></code>.
-        See the documentation of this module for more details.</p>
+    <tr><td><a id="upgrade" name="upgrade">upgrade</a></td>
+        <td>-</td>
+        <td><p>Protocol accepted by <code class="module"><a href="../mod/mod_proxy_http.html">mod_proxy_http</a></code> or
+        <code class="module"><a href="../mod/mod_proxy_wstunnel.html">mod_proxy_wstunnel</a></code> for the HTTP Upgrade mechanism
+        upon negotiation by the HTTP client/browser (per
+        <a href="https://www.ietf.org/rfc/rfc9110.html#name-upgrade">RFC 9110 - Upgrade</a>).
+        See the <a href="#protoupgrade">Protocol Upgrade</a> note below</p>
     </td></tr>
     <tr><td>mapping</td>
         <td>-</td>
-        <td><p>Mapping to process the <var>url</var> before choosing a Worker/Balancer.
-        'servlet' maps like a servlet container (like jk_servlet_normalize), use with Apache Tomcat for example.
-        'encoded' maps it encoded.</p>
+        <td><p>Type of mapping between the <var>path</var> and the <var>url</var>.
+        This determines the normalization and/or (non-)decoding that <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code>
+        will apply to the requested <var>uri-path</var> before matching the <var>path</var>. If
+        a mapping matches, it's committed to the <var>uri-path</var> such that all the directory
+        contexts that use a path (like <code>&lt;Location&gt;</code>) will be matched using the
+        same mapping.</p>
+        <p><code>mapping=encoded</code> prevents the %-decoding of the <var>uri-path</var> so
+        that one can use for instance configurations like:</p>
+        <pre class="prettyprint lang-config">ProxyPass "/special%3Fsegment" "https://example.com/special%3Fsegment" mapping=encoded</pre>
+
+        <pre class="prettyprint lang-config">&lt;Location "/special%3Fsegment"&gt;
+  Require ip 172.17.2.0/24
+&lt;/Location&gt;</pre>
+
+        <p><code>mapping=servlet</code> refers to the normalization defined by the Servlet
+        specification, which is for instance applied by Apache Tomcat for servlet containers
+        (notably the path parameters are ignored for the mapping). An <var>uri-path</var> like
+        <code>/some;foo/path</code> is then mapped as <code>/some/path</code> hence matches any
+        of the below regardless of the requested path parameters:</p>
+        <pre class="prettyprint lang-config">ProxyPass "/some/path" "https://servlet.example.com/some/path" mapping=servlet</pre>
+
+        <pre class="prettyprint lang-config">&lt;Location "/some/path"&gt;
+  Require valid-user
+&lt;/Location&gt;</pre>
+
+        <div class="note"><h3>Note</h3>
+            <p>It is recommended to use the same mapping on the Apache httpd side than the one
+            used on the backend side. For instance when configuring authorizations in
+            <code>&lt;Location&gt;</code> blocks for paths that are mapped by <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code>
+            to some servlet containers (like applications running on Apache Tomcat), one should
+            use the <code>mapping=servlet</code> setting to prevent path parameters and alike from
+            interfering with the authorizations that are to be enforced in by the Apache httpd.</p>
+        </div>
     </td></tr>
 
     </table>
@@ -1600,7 +1632,7 @@ ProxyPass "/"             "balancer://mycluster/" stickysession=JSESSIONID|jsess
     The optional <var>noquery</var> keyword (available in
     httpd 2.4.1 and later) prevents this.</p>
 
-    <p>The optional <var>interpolate</var> keyword, in combination with
+    <p>The optional <code>interpolate</code> keyword, in combination with
     <code class="directive"><a href="#proxypassinterpolateenv">ProxyPassInterpolateEnv</a></code>, causes the ProxyPass
     to interpolate environment variables, using the syntax
     <var>${VARNAME}</var>.  Note that many of the standard CGI-derived
@@ -1625,6 +1657,26 @@ RewriteRule ^/mirror/foo/(.*) %{ENV:protocol}://backend.example.com/$1 [P]
 ProxyPassReverse  "/mirror/foo/" "http://backend.example.com/"
 ProxyPassReverse  "/mirror/foo/" "https://backend.example.com/"</pre>
 
+
+    <div class="note"><h3><a id="protoupgrade" name="protoupgrade">Protocol Upgrade</a></h3>
+      <p>Since Apache HTTP Server 2.4.47, protocol Upgrade (tunneling) can be handled
+      end-to-end by <code class="module"><a href="../mod/mod_proxy_http.html">mod_proxy_http</a></code> using the <code class="directive">ProxyPass</code>
+      parameter <var><a href="#upgrade">upgrade</a></var>.</p>
+      <p>End-to-end means that the HTTP Upgrade request from the client/browser is first
+      forwarded by <code class="module"><a href="../mod/mod_proxy_http.html">mod_proxy_http</a></code> to the origin server and the connection
+      will be upgraded (and tunneled by <code class="module"><a href="../mod/mod_proxy_http.html">mod_proxy_http</a></code>) only if the origin
+      server accepts/initiates the upgrade (HTTP response <code>101 Switching Protocols</code>).
+      If the origin server responds with anything else <code class="module"><a href="../mod/mod_proxy_http.html">mod_proxy_http</a></code>
+      will continue forwarding (and enforcing) the HTTP protocol as usual for this
+      connection.</p>
+      <p>See <a href="#wsupgrade">Websocket Upgrade (2.4.47 and later)</a> for an example of
+      configuration using <code class="module"><a href="../mod/mod_proxy_http.html">mod_proxy_http</a></code>.</p>
+      <p>For Apache HTTP Server 2.4.46 and earlier (or if
+      <code class="directive"><a href="../mod/mod_proxy_wstunnel.html#proxywebsocketfallbacktoproxyhttp">ProxyWebsocketFallbackToProxyHttp</a></code>
+      from 2.4.48 and later disables <code class="module"><a href="../mod/mod_proxy_http.html">mod_proxy_http</a></code> handling), see the
+      documentation of <code class="module"><a href="../mod/mod_proxy_wstunnel.html">mod_proxy_wstunnel</a></code> for how to proxy the WebSocket
+      protocol.</p>
+    </div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -1658,7 +1710,7 @@ ProxyPassReverse  "/mirror/foo/" "https://backend.example.com/"</pre>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy</td></tr>
 </table>
-    <p>This directive, together with the <var>interpolate</var> argument to
+    <p>This directive, together with the <code>interpolate</code> argument to
     <code class="directive">ProxyPass</code>, <code class="directive">ProxyPassReverse</code>,
     <code class="directive">ProxyPassReverseCookieDomain</code>, and
     <code class="directive">ProxyPassReverseCookiePath</code>,
@@ -1671,7 +1723,7 @@ ProxyPassReverse  "/mirror/foo/" "https://backend.example.com/"</pre>
     <code class="directive">ProxyPassReverseCookiePath</code> directives
     and causes them to substitute the value of an environment
     variable <code>varname</code> for the string <code>${varname}</code>
-    in configuration directives if the <var>interpolate</var> option is set.</p>
+    in configuration directives if the <code>interpolate</code> option is set.</p>
     <p>The scheme/hostname/port portion of <code class="directive">ProxyPass</code> may
     contain variables, but only the ones available when the directive is parsed
     (for example, using <code class="directive"><a href="../mod/core.html#define">Define</a></code>).
@@ -1694,6 +1746,9 @@ ProxyPassReverse  "/mirror/foo/" "https://backend.example.com/"</pre>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Since 2.4.47 the <var>key=value</var> Parameters are honored
+when the <var>url</var> parameter contains backreference(s) (see note below).
+</td></tr>
 </table>
     <p>This directive is equivalent to <code class="directive"><a href="#proxypass">ProxyPass</a></code>
        but makes use of regular expressions instead of simple prefix matching. The
@@ -1713,18 +1768,7 @@ ProxyPassReverse  "/mirror/foo/" "https://backend.example.com/"</pre>
     <p>will cause a local request for
     <code>http://example.com/foo/bar.gif</code> to be internally converted
     into a proxy request to <code>http://backend.example.com/foo/bar.gif</code>.</p>
-    <div class="note"><h3>Note</h3>
-      <p>The URL argument must be parsable as a URL <em>before</em> regexp
-      substitutions (as well as after).  This limits the matches you can use.
-      For instance, if we had used</p>
-      <pre class="prettyprint lang-config">ProxyPassMatch "^(/.*\.gif)$" "http://backend.example.com:8000$1"</pre>
 
-      <p>in our previous example, it would fail with a syntax error
-      at server startup.  This is a bug (PR 46665 in the ASF bugzilla),
-      and the workaround is to reformulate the match:</p>
-      <pre class="prettyprint lang-config">ProxyPassMatch "^/(.*\.gif)$" "http://backend.example.com:8000/$1"</pre>
-
-    </div>
     <p>The <code>!</code> directive is useful in situations where you don't want
     to reverse-proxy a subdirectory.</p>
 
@@ -1740,6 +1784,20 @@ ProxyPassReverse  "/mirror/foo/" "https://backend.example.com/"</pre>
       <p>When the URL parameter doesn't use any backreferences into the regular
       expression, the original URL will be appended to the URL parameter.
       </p>
+    </div>
+    <div class="note">
+        <h3><code>key=value</code> Parameters versus <var>url</var> with backreference(s)</h3>
+      <p>Since Apache HTTP Server 2.4.47, the <code>key=value</code> Parameters
+      are no longer ignored in a <code class="directive">ProxyPassMatch</code> using
+      an <var>url</var> with backreference(s). However to keep the existing
+      behavior regarding reuse/keepalive of backend connections (which were
+      never reused before for these URLs), the parameter <var>enablereuse</var>
+      (or <var>disablereuse</var>) default to <code>off</code> (resp. <code>on</code>)
+      in this case. Setting <code>enablereuse=on</code> explicitely allows to
+      reuse connections <strong>unless</strong> some backreference(s) belong in
+      the <code>authority</code> part (hostname and/or port) of the <var>url</var>
+      (this condition is enforced since Apache HTTP Server 2.4.55, and produces
+      a warning at startup because these URLs are not reusable per se).</p>
     </div>
 
     <div class="warning">
@@ -1758,7 +1816,7 @@ ProxyPassReverse  "/mirror/foo/" "https://backend.example.com/"</pre>
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Adjusts the URL in HTTP response headers sent from a reverse
 proxied server</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ProxyPassReverse [<var>path</var>] <var>url</var>
-[<var>interpolate</var>]</code></td></tr>
+[interpolate]</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy</td></tr>
@@ -1823,8 +1881,8 @@ ProxyPassReverseCookiePath  "/"  "/mirror/foo/"</pre>
     (<code>RewriteRule ...  [P]</code>) from <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>
     because it doesn't depend on a corresponding <code class="directive"><a href="#proxypass">ProxyPass</a></code> directive.</p>
 
-    <p>The optional <var>interpolate</var> keyword, used together with
-    <code class="directive">ProxyPassInterpolateEnv</code>, enables interpolation
+    <p>The optional <code>interpolate</code> keyword, used together with
+    <code class="directive"><a href="#proxypassinterpolateenv">ProxyPassInterpolateEnv</a></code>, enables interpolation
     of environment variables specified using the format <var>${VARNAME}</var>.
     Note that interpolation is not supported within the scheme portion of a
     URL.</p>
@@ -1844,7 +1902,7 @@ ProxyPassReverseCookiePath  "/"  "/mirror/foo/"</pre>
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Adjusts the Domain string in Set-Cookie headers from a reverse-
 proxied server</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ProxyPassReverseCookieDomain <var>internal-domain</var>
-<var>public-domain</var> [<var>interpolate</var>]</code></td></tr>
+<var>public-domain</var> [interpolate]</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy</td></tr>
@@ -1861,7 +1919,7 @@ string in <code>Set-Cookie</code> headers.</p>
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Adjusts the Path string in Set-Cookie headers from a reverse-
 proxied server</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ProxyPassReverseCookiePath <var>internal-path</var>
-<var>public-path</var> [<var>interpolate</var>]</code></td></tr>
+<var>public-path</var> [interpolate]</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy</td></tr>
@@ -1899,7 +1957,7 @@ request</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Usable in directory
 context in 2.3.3 and later.</td></tr>
 </table>
-    <p>When enabled, this option will pass the Host: line from the incoming
+    <p>When enabled, this option will pass the <code>Host:</code> line from the incoming
     request to the proxied host, instead of the hostname specified in the
     <code class="directive"><a href="#proxypass">ProxyPass</a></code> line.</p>
 
@@ -2180,7 +2238,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_proxy.html
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2021 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2023 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

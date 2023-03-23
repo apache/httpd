@@ -436,7 +436,7 @@
  * 20130702.1 (2.5.0-dev)  Restore AUTH_HANDLED to mod_auth.h
  * 20130702.2 (2.5.0-dev)  Add ap_log_data(), ap_log_rdata(), etc.
  * 20130702.3 (2.5.0-dev)  Add util_fcgi.h, FastCGI protocol support
- * 20130903.0 (2.5.0-dev)  Changes sizeof(worker_score) in scoreboard 
+ * 20130903.0 (2.5.0-dev)  Changes sizeof(worker_score) in scoreboard
  * 20130924.0 (2.5.0-dev)  Add ap_errorlog_provider
  * 20130924.1 (2.5.0-dev)  Add ap_proxy_connection_reusable()
  * 20131112.0 (2.5.0-dev)  Add parse_errorlog_arg to ap_errorlog_provider
@@ -457,7 +457,7 @@
  * 20140207.8 (2.5.0-dev)  Added ap_shutdown_conn().
  * 20140611.0 (2.5.0-dev)  Add ap_mpm_socket_callback_fn_t.
                            Changes 3rd argument's type of
-                           ap_mpm_register_socket_callback and 
+                           ap_mpm_register_socket_callback and
                            ap_mpm_register_socket_callback_timeout.
  * 20140611.1 (2.5.0-dev)  Add ap_proxy_connect_uds().
  * 20140627.0 (2.5.0-dev)  Revert 20140611.0 change.
@@ -473,7 +473,7 @@
  * 20140627.8 (2.5.0-dev)  Add ap_set_listencbratio(), ap_close_listeners_ex(),
  *                         ap_duplicate_listeners(), ap_num_listen_buckets and
  *                         ap_have_so_reuseport to ap_listen.h.
- * 20140627.9 (2.5.0-dev)  Add cgi_pass_auth and AP_CGI_PASS_AUTH_* to 
+ * 20140627.9 (2.5.0-dev)  Add cgi_pass_auth and AP_CGI_PASS_AUTH_* to
  *                         core_dir_config
  * 20140627.10 (2.5.0-dev) Add ap_proxy_de_socketfy to mod_proxy.h
  * 20150121.0 (2.5.0-dev)  Revert field addition from core_dir_config; r1653666
@@ -500,7 +500,7 @@
  * 20150222.9 (2.5.0-dev)  Add expr_handler to core_dir_config.
  * 20150222.10 (2.5.0-dev) Add new ap_update_child_status...() methods,
  *                         add protocol to worker_score in scoreboard.h,
- *                         Add pre_close connection hook and 
+ *                         Add pre_close connection hook and
  *                         ap_prep_lingering_close().
  * 20150222.11 (2.5.0-dev) Split useragent_host from the conn_rec into
  *                         the request_rec, with ap_get_useragent_host()
@@ -539,7 +539,7 @@
  * 20160608.7 (2.5.0-dev)  Add ap_check_pipeline().
  * 20160608.8 (2.5.0-dev)  Rename ap_proxy_check_backend() to
  *                         ap_proxy_check_connection().
- * 20160608.9 (2.5.0-dev)  Renamed AP_HTTP_CONFORMANCE_LIBERAL to 
+ * 20160608.9 (2.5.0-dev)  Renamed AP_HTTP_CONFORMANCE_LIBERAL to
  *                         AP_HTTP_CONFORMANCE_UNSAFE, and
  *                         eliminated AP_HTTP_CONFORMANCE_LOGONLY
  * 20160617.1 (2.5.0-dev)  Added http_whitespace and http_methods to
@@ -559,9 +559,9 @@
  *                         ap_get_module_flags()
  * 20171014.1 (2.5.0-dev)  Add NOT_IN_DIR_CONTEXT replacing NOT_IN_DIR_LOC_FILE
  *                         semantics
- * 20171014.2 (2.5.1-dev)  Add "use_specific_errors" to listen_rec and 
+ * 20171014.2 (2.5.1-dev)  Add "use_specific_errors" to listen_rec and
  *                         ap_accept_error_is_nonfatal()
- * 20171014.3 (2.5.1-dev)  AP_DECLARE ap_parse_vhost_addrs() as public 
+ * 20171014.3 (2.5.1-dev)  AP_DECLARE ap_parse_vhost_addrs() as public
  * 20171014.4 (2.5.1-dev)  Add failontimeout_set, growth_set and lbmethod_set
  *                         to proxy_balancer struct
  * 20171014.5 (2.5.1-dev)  Add hostname_ex to proxy_worker_shared
@@ -570,7 +570,7 @@
  *                         ap_regcomp_default_cflag_by_name
  * 20171014.7 (2.5.1-dev)  Add AP_CORE_DEFAULT macro
  * 20171014.8 (2.5.1-dev)  Add CONN_STATE_NUM to enum conn_state_e
- * 20171014.9 (2.5.1-dev)  Add response_field_size to proxy_worker_shared 
+ * 20171014.9 (2.5.1-dev)  Add response_field_size to proxy_worker_shared
  * 20180417.1 (2.5.1-dev)  Toggle ap_filter_input|output_pending API to _NONSTD
  * 20180417.2 (2.5.1-dev)  Add AP_GETLINE_NOSPC_EOL flag to http_protocol.h
  * 20180417.3 (2.5.1-dev)  Add ap_fgetline() and AP_GETLINE_NONBLOCK flag
@@ -610,7 +610,7 @@
  * 20180906.2 (2.5.1-dev)  Add ap_state_dir_relative()
  * 20180906.3 (2.5.1-dev)  Add ap_dir_nofnmatch() and ap_dir_fnmatch().
  * 20190312.1 (2.5.1-dev)  Axe bucket number from struct process_score
- * 20190312.2 (2.5.1-dev)  Add ap_no2slash_ex() and merge_slashes to 
+ * 20190312.2 (2.5.1-dev)  Add ap_no2slash_ex() and merge_slashes to
  *                         core_server_conf.
  * 20190312.3 (2.5.1-dev)  Add forward_100_continue{,_set} to proxy_dir_conf
  * 20190312.4 (2.5.1-dev)  Add add dns_pool to proxy_conn_pool and define
@@ -679,14 +679,49 @@
  *                         ap_proxy_define_worker_ex() to mod_proxy.h
  * 20210531.3 (2.5.1-dev)  Add hook child_stopping to get informed that a child
  *                         is being shut down.
+ * 20210531.4 (2.5.1-dev)  Add ap_create_connection
+ * 20210531.5 (2.5.1-dev)  Add ap_pre_connection
+ * 20210531.6 (2.5.1-dev)  Add proxy_tunnel_conn_t
+ * 20210924.0 (2.5.1-dev)  Restore ap_proxy_transfer_between_connections()
+ *                         interface back to before 20210506.0 (that MAJOR bump
+ *                         cancelled), axe ap_proxy_tunnel_conn_get_read()
+ *                         and ap_proxy_tunnel_conn_get_transferred() and add
+ *                         ap_proxy_tunnel_conn_bytes_in() and
+ *                         ap_proxy_tunnel_conn_bytes_out() as replacement
+ *                         (this MAJOR bump). Overall there is no MAJOR bumb
+ *                         for 20210506.0 + 20210924.0, MINOR bump only for
+ *                         adding ap_proxy_tunnel_conn_bytes_{in,out}().
+ * 20210924.1 (2.5.1-dev)  Add ap_proxy_fill_error_brigade()
+ * 20210926.0 (2.5.1-dev)  Add dav_get_liveprop_element(), remove DAV_PROP_ELEMENT.
+ * 20210926.1 (2.5.1-dev)  Add ap_unescape_url_ex() and deprecate
+ *                         AP_NORMALIZE_DROP_PARAMETERS
+ * 20210926.2 (2.5.1-dev)  Add ap_post_read_request()
+ * 20211221.0 (2.5.1-dev)  Bump PROXY_WORKER_MAX_NAME_SIZE from 256 to 384,
+ *                         add PROXY_WORKER_UDS_PATH_SIZE.
+ * 20211221.3 (2.5.1-dev)  Add ap_thread_create(), ap_thread_main_create()
+ *                         and ap_thread_current()
+ * 20211221.4 (2.5.1-dev)  Add hook child_stopped to get informed that a child
+ *                         has stopped processing any requests.
+ * 20211221.5 (2.5.1-dev)  Add hook create_secondary_connection and method
+ *                         ap_create_secondary_connection() to have connection
+ *                         setup of http2-like connections in core.
+ * 20211221.6 (2.5.1-dev)  Add new meta buckets request/response/headers
+ *                         Add field `body_indeterminate` in request_rec
+ *                         Add new http/1.x formatting helpers
+ *                         Add ap_assign_request_line()
+ * 20211221.7 (2.5.1-dev)  Add ap_h1_append_header()
+ * 20211221.8 (2.5.1-dev)  Add ap_sb_get_child_thread()
+ * 20211221.9 (2.5.1-dev)  Add additional hcmethod_t enums and PROXY_WORKER_IS_ERROR
+ * 20211221.10 (2.5.1-dev) Add ap_proxy_canonenc_ex
+ * 20211221.11 (2.5.1-dev) Add AP_CTIME_OPTION_GMTOFF to util_time.h
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503235UL /* "AP25" */
 
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
-#define MODULE_MAGIC_NUMBER_MAJOR 20210531
+#define MODULE_MAGIC_NUMBER_MAJOR 20211221
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 3             /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 11             /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a

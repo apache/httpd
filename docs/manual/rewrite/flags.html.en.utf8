@@ -203,7 +203,7 @@ browsers that support this feature.</dd>
 <dt>samesite</dt>
 <dd>If set to anything other than <code>false</code> or <code>0</code>, the <code>SameSite</code>
 attribute is set to the specified value.  Typical values are <code>None</code>,
-<code>Lax</code>, and <code>Strict</code>.Available in 2.5.1 and later.</dd>
+<code>Lax</code>, and <code>Strict</code>. Available in 2.5.1 and later.</dd>
 </dl>
 
 
@@ -468,7 +468,8 @@ example.</p>
 <h2><a name="flag_ne" id="flag_ne">NE|noescape</a> <a title="Permanent link" href="#flag_ne" class="permalink">&para;</a></h2>
 <p>By default, special characters, such as <code>&amp;</code> and
 <code>?</code>, for example, will be converted to their hexcode
-equivalent. Using the [NE] flag prevents that from happening.
+equivalent for rules that result in external redirects. 
+Using the [NE] flag prevents that from happening.
 </p>
 
 <pre class="prettyprint lang-config">RewriteRule "^/anchor/(.+)" "/bigpage.html#$1" [NE,R]</pre>
@@ -788,7 +789,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/rewrite/flags.html
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2021 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2023 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

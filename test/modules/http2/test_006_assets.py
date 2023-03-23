@@ -1,17 +1,18 @@
 import pytest
 
-from h2_conf import HttpdConf
+from .env import H2Conf, H2TestEnv
 
 
-class TestStore:
+@pytest.mark.skipif(condition=H2TestEnv.is_unsupported, reason="mod_http2 not supported here")
+class TestAssets:
 
     @pytest.fixture(autouse=True, scope='class')
     def _class_scope(self, env):
-        HttpdConf(env).add_vhost_test1().install()
+        H2Conf(env).add_vhost_test1().install()
         assert env.apache_restart() == 0
 
     # single page without any assets
-    def test_006_01(self, env):
+    def test_h2_006_01(self, env):
         url = env.mkurl("https", "test1", "/001.html")
         r = env.nghttp().assets(url,  options=["-Haccept-encoding: none"])
         assert 0 == r.exit_code
@@ -21,7 +22,7 @@ class TestStore:
         ]
 
     # single image without any assets
-    def test_006_02(self, env):
+    def test_h2_006_02(self, env):
         url = env.mkurl("https", "test1", "/002.jpg")
         r = env.nghttp().assets(url,  options=["-Haccept-encoding: none"])
         assert 0 == r.exit_code
@@ -31,7 +32,7 @@ class TestStore:
         ]
         
     # gophertiles, yea!
-    def test_006_03(self, env):
+    def test_h2_006_03(self, env):
         # create the tiles files we originally had checked in
         exp_assets = [
             {"status": 200, "size": "10K", "path": "/004.html"},
@@ -51,7 +52,7 @@ class TestStore:
         assert r.assets == exp_assets
             
     # page with js and css
-    def test_006_04(self, env):
+    def test_h2_006_04(self, env):
         url = env.mkurl("https", "test1", "/006.html")
         r = env.nghttp().assets(url, options=["-Haccept-encoding: none"])
         assert 0 == r.exit_code
@@ -63,7 +64,7 @@ class TestStore:
         ]
 
     # page with image, try different window size
-    def test_006_05(self, env):
+    def test_h2_006_05(self, env):
         url = env.mkurl("https", "test1", "/003.html")
         r = env.nghttp().assets(url, options=["--window-bits=24", "-Haccept-encoding: none"])
         assert 0 == r.exit_code

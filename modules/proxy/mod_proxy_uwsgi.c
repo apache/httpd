@@ -84,8 +84,17 @@ static int uwsgi_canon(request_rec *r, char *url)
         host = apr_pstrcat(r->pool, "[", host, "]", NULL);
     }
 
-    path = ap_proxy_canonenc(r->pool, url, strlen(url), enc_path, 0,
-                             r->proxyreq);
+    if (apr_table_get(r->notes, "proxy-nocanon")
+        || apr_table_get(r->notes, "proxy-noencode")) {
+        path = url;   /* this is the raw/encoded path */
+    }
+    else {
+        core_dir_config *d = ap_get_core_module_config(r->per_dir_config);
+        int flags = d->allow_encoded_slashes && !d->decode_encoded_slashes ? PROXY_CANONENC_NOENCODEDSLASHENCODING : 0;
+
+        path = ap_proxy_canonenc_ex(r->pool, url, strlen(url), enc_path, flags,
+                                    r->proxyreq);
+    }
     if (!path) {
         return HTTP_BAD_REQUEST;
     }
@@ -307,18 +316,16 @@ static int uwsgi_response(request_rec *r, proxy_conn_rec * backend,
     pass_bb = apr_brigade_create(r->pool, c->bucket_alloc);
 
     len = ap_getline(buffer, sizeof(buffer), rp, 1);
-
     if (len <= 0) {
-        /* oops */
+        /* invalid or empty */
         return HTTP_INTERNAL_SERVER_ERROR;
     }
-
     backend->worker->s->read += len;
-
-    if (len >= sizeof(buffer) - 1) {
-        /* oops */
+    if ((apr_size_t)len >= sizeof(buffer)) {
+        /* too long */
         return HTTP_INTERNAL_SERVER_ERROR;
     }
+
     /* Position of http status code */
     if (apr_date_checkmask(buffer, "HTTP/#.# ###*")) {
         status_start = 9;
@@ -327,8 +334,8 @@ static int uwsgi_response(request_rec *r, proxy_conn_rec * backend,
         status_start = 7;
     }
     else {
-        /* oops */
-        return HTTP_INTERNAL_SERVER_ERROR;
+        /* not HTTP */
+        return HTTP_BAD_GATEWAY;
     }
     status_end = status_start + 3;
 
@@ -348,20 +355,43 @@ static int uwsgi_response(request_rec *r, proxy_conn_rec * backend,
     }
     r->status_line = apr_pstrdup(r->pool, &buffer[status_start]);
 
-    /* start parsing headers */
+    /* parse headers */
     while ((len = ap_getline(buffer, sizeof(buffer), rp, 1)) > 0) {
+        if ((apr_size_t)len >= sizeof(buffer)) {
+            /* too long */
+            len = -1;
+            break;
+        }
         value = strchr(buffer, ':');
-        /* invalid header skip */
-        if (!value)
-            continue;
-        *value = '\0';
-        ++value;
+        if (!value) {
+            /* invalid header */
+            len = -1;
+            break;
+        }
+        *value++ = '\0';
+        if (*ap_scan_http_token(buffer)) {
+            /* invalid name */
+            len = -1;
+            break;
+        }
         while (apr_isspace(*value))
             ++value;
         for (end = &value[strlen(value) - 1];
              end > value && apr_isspace(*end); --end)
             *end = '\0';
+        if (*ap_scan_http_field_content(value)) {
+            /* invalid value */
+            len = -1;
+            break;
+        }
         apr_table_add(r->headers_out, buffer, value);
+    }
+    if (len < 0) {
+        /* Reset headers, but not to NULL because things below the chain expect
+         * this to be non NULL e.g. the ap_content_length_filter.
+         */
+        r->headers_out = apr_table_make(r->pool, 1);
+        return HTTP_BAD_GATEWAY;
     }
 
     if ((buf = apr_table_get(r->headers_out, "Content-Type"))) {
@@ -379,14 +409,11 @@ static int uwsgi_response(request_rec *r, proxy_conn_rec * backend,
         int status = r->status;
         r->status = HTTP_OK;
         r->status_line = NULL;
-
-        apr_brigade_cleanup(bb);
-        apr_brigade_cleanup(pass_bb);
-
         return status;
     }
 
     while (!finish) {
+        apr_brigade_cleanup(bb);
         rv = ap_get_brigade(rp->input_filters, bb,
                             AP_MODE_READBYTES, mode, conf->io_buffer_size);
         if (APR_STATUS_IS_EAGAIN(rv)
@@ -396,51 +423,59 @@ static int uwsgi_response(request_rec *r, proxy_conn_rec * backend,
             if (ap_pass_brigade(r->output_filters, bb) || c->aborted) {
                 break;
             }
-            apr_brigade_cleanup(bb);
             mode = APR_BLOCK_READ;
             continue;
         }
-        else if (rv == APR_EOF) {
+        if (rv == APR_EOF) {
             break;
         }
-        else if (rv != APR_SUCCESS) {
-            ap_proxy_backend_broke(r, bb);
+        if (rv != APR_SUCCESS || APR_BRIGADE_EMPTY(bb)) {
+            int status = HTTP_BAD_GATEWAY;
+            if (rv == APR_SUCCESS) {
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(10294)
+                              "Unexpected empty data reading uwscgi response");
+                status = HTTP_INTERNAL_SERVER_ERROR;
+            }
+            apr_brigade_cleanup(bb);
+            ap_proxy_fill_error_brigade(r, status, bb, -1);
             ap_pass_brigade(r->output_filters, bb);
             backend_broke = 1;
             break;
         }
 
-        mode = APR_NONBLOCK_READ;
-        apr_brigade_length(bb, 0, &readbytes);
-        backend->worker->s->read += readbytes;
-
-        if (APR_BRIGADE_EMPTY(bb)) {
-            apr_brigade_cleanup(bb);
-            break;
-        }
-
-        ap_proxy_buckets_lifetime_transform(r, bb, pass_bb);
-
         /* found the last brigade? */
         if (APR_BUCKET_IS_EOS(APR_BRIGADE_LAST(bb)))
             finish = 1;
 
-        /* do not pass chunk if it is zero_sized */
-        apr_brigade_length(pass_bb, 0, &readbytes);
+        mode = APR_NONBLOCK_READ;
+        apr_brigade_length(bb, 0, &readbytes);
+        backend->worker->s->read += readbytes;
 
-        if ((readbytes > 0
-             && ap_pass_brigade(r->output_filters, pass_bb) != APR_SUCCESS)
+        rv = ap_proxy_buckets_lifetime_transform(r, bb, pass_bb);
+        if (rv != APR_SUCCESS) {
+            /* Half way through a response, our only option is
+             * to notice the output filters and then disconnect the
+             * client and backend.
+             */
+            if (!APR_BRIGADE_EMPTY(pass_bb)) {
+                /* Pass what we have still */
+                ap_pass_brigade(r->output_filters, pass_bb);
+                apr_brigade_cleanup(pass_bb);
+            }
+            ap_proxy_fill_error_brigade(r, HTTP_INTERNAL_SERVER_ERROR,
+                                        pass_bb, -1);
+            ap_pass_brigade(r->output_filters, pass_bb);
+            apr_brigade_cleanup(pass_bb);
+
+            backend_broke = 1;
+            break;
+        }
+        if (ap_pass_brigade(r->output_filters, pass_bb) != APR_SUCCESS
             || c->aborted) {
             finish = 1;
         }
-
-        apr_brigade_cleanup(bb);
         apr_brigade_cleanup(pass_bb);
     }
-
-    e = apr_bucket_eos_create(c->bucket_alloc);
-    APR_BRIGADE_INSERT_TAIL(bb, e);
-    ap_pass_brigade(r->output_filters, bb);
 
     apr_brigade_cleanup(bb);
 
@@ -456,11 +491,8 @@ static int uwsgi_handler(request_rec *r, proxy_worker * worker,
                          const char *proxyname, apr_port_t proxyport)
 {
     int status;
-    int delta = 0;
-    int decode_status;
     proxy_conn_rec *backend = NULL;
     apr_pool_t *p = r->pool;
-    size_t w_len;
     char server_portstr[32];
     char *u_path_info;
     apr_uri_t *uri;
@@ -472,24 +504,23 @@ static int uwsgi_handler(request_rec *r, proxy_worker * worker,
 
     uri = apr_palloc(r->pool, sizeof(*uri));
 
-    /* ADD PATH_INFO */
-#if AP_MODULE_MAGIC_AT_LEAST(20111130,0)
-    w_len = strlen(worker->s->name);
-#else
-    w_len = strlen(worker->name);
-#endif
-    u_path_info = r->filename + 6 + w_len;
-    if (u_path_info[0] != '/') {
-        delta = 1;
+    /* ADD PATH_INFO (unescaped) */
+    u_path_info = ap_strchr(url + sizeof(UWSGI_SCHEME) + 2, '/');
+    if (!u_path_info) {
+        u_path_info = apr_pstrdup(r->pool, "/");
     }
-    decode_status = ap_unescape_url(url + w_len - delta);
-    if (decode_status) {
+    else if (ap_unescape_url(u_path_info) != OK) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(10100)
-                      "unable to decode uri: %s", url + w_len - delta);
+                      "unable to decode uwsgi uri: %s", url);
         return HTTP_INTERNAL_SERVER_ERROR;
     }
-    apr_table_add(r->subprocess_env, "PATH_INFO", url + w_len - delta);
-
+    else {
+        /* Remove duplicate slashes at the beginning of PATH_INFO */
+        while (u_path_info[1] == '/') {
+            u_path_info++;
+        }
+    }
+    apr_table_add(r->subprocess_env, "PATH_INFO", u_path_info);
 
     /* Create space for state information */
     status = ap_proxy_acquire_connection(UWSGI_SCHEME, &backend, worker,

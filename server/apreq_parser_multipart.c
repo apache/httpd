@@ -220,19 +220,26 @@ struct mfd_ctx * create_multipart_context(const char *content_type,
 {
     apr_status_t s;
     apr_size_t blen;
-    struct mfd_ctx *ctx = apr_palloc(pool, sizeof *ctx);
-    char *ct = apr_pstrdup(pool, content_type);
+    struct mfd_ctx *ctx;
+    const char *attr;
+    char *buf;
 
-    ct = strchr(ct, ';');
-    if (ct == NULL)
+    attr = (content_type) ? strchr(content_type, ';') : NULL;
+    if (!attr)
         return NULL; /* missing semicolon */
 
-    *ct++ = 0;
-    s = apreq_header_attribute(ct, "boundary", 8,
-                               (const char **)&ctx->bdry, &blen);
+    ctx = apr_palloc(pool, sizeof *ctx);
 
-    if (s != APR_SUCCESS)
-        return NULL; /* missing boundary */
+    attr++;
+    blen = strlen(attr) + 1;
+    buf = apr_palloc(pool, 4 + blen);
+    buf += 4;
+    memcpy(buf, attr, blen);
+
+    s = apreq_header_attribute(buf, "boundary", 8,
+                               (const char **)&ctx->bdry, &blen);
+    if (s != APR_SUCCESS || !blen)
+        return NULL; /* missing or empty boundary */
 
     ctx->bdry[blen] = 0;
 
@@ -415,22 +422,27 @@ APREQ_DECLARE_PARSER(apreq_parse_multipart)
                     goto mfd_parse_brigade;
                 }
 
-                next_ctx->param_name = "";
-
                 if (cd != NULL) {
                     s = apreq_header_attribute(cd, "name", 4,
                                                &name, &nlen);
-                    if (s == APR_SUCCESS) {
-                        next_ctx->param_name
-                            = apr_pstrmemdup(pool, name, nlen);
+                    if (s == APR_SUCCESS && nlen) {
+                        next_ctx->param_name = apr_pstrmemdup(pool, name,
+                                                              nlen);
+                    }
+                    else if (s != APREQ_ERROR_NOATTR) {
+                        ctx->status = MFD_ERROR;
+                        goto mfd_parse_brigade;
+                    }
+                }
+                if (!next_ctx->param_name) {
+                    const char *cid = apr_table_get(ctx->info,
+                                                    "Content-ID");
+                    if (cid) {
+                        next_ctx->param_name = apr_pstrdup(pool, cid);
                     }
                     else {
-                        const char *cid = apr_table_get(ctx->info,
-                                                        "Content-ID");
-                        if (cid != NULL)
-                            next_ctx->param_name = apr_pstrdup(pool, cid);
+                        next_ctx->param_name = "";
                     }
-
                 }
 
                 ctx->next_parser = apreq_parser_make(pool, ba, ct,
@@ -448,14 +460,14 @@ APREQ_DECLARE_PARSER(apreq_parse_multipart)
 
             if (cd != NULL && strncmp(cd, "form-data", 9) == 0) {
                 s = apreq_header_attribute(cd, "name", 4, &name, &nlen);
-                if (s != APR_SUCCESS) {
+                if (s != APR_SUCCESS || !nlen) {
                     ctx->status = MFD_ERROR;
                     goto mfd_parse_brigade;
                 }
 
                 s = apreq_header_attribute(cd, "filename",
                                            8, &filename, &flen);
-                if (s == APR_SUCCESS) {
+                if (s == APR_SUCCESS && flen) {
                     apreq_param_t *param;
 
                     param = apreq_param_make(pool, name, nlen,
@@ -466,6 +478,10 @@ APREQ_DECLARE_PARSER(apreq_parse_multipart)
                         = apr_brigade_create(pool, ctx->bb->bucket_alloc);
                     ctx->upload = param;
                     ctx->status = MFD_UPLOAD;
+                    goto mfd_parse_brigade;
+                }
+                else if (s != APREQ_ERROR_NOATTR) {
+                    ctx->status = MFD_ERROR;
                     goto mfd_parse_brigade;
                 }
                 else {
@@ -481,7 +497,7 @@ APREQ_DECLARE_PARSER(apreq_parse_multipart)
 
                 s = apreq_header_attribute(cd, "filename",
                                            8, &filename, &flen);
-                if (s != APR_SUCCESS || ctx->param_name == NULL) {
+                if (s != APR_SUCCESS || !flen || !ctx->param_name) {
                     ctx->status = MFD_ERROR;
                     goto mfd_parse_brigade;
                 }

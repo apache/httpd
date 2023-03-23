@@ -51,7 +51,7 @@ typedef struct sed_filter_ctxt
     apr_bucket_brigade *bbinp;
     char *outbuf;
     char *curoutbuf;
-    int bufsize;
+    apr_size_t bufsize;
     apr_pool_t *tpool;
     int numbuckets;
 } sed_filter_ctxt;
@@ -100,7 +100,7 @@ static void alloc_outbuf(sed_filter_ctxt* ctx)
 /* append_bucket
  * Allocate a new bucket from buf and sz and append to ctx->bb
  */
-static apr_status_t append_bucket(sed_filter_ctxt* ctx, char* buf, int sz)
+static apr_status_t append_bucket(sed_filter_ctxt* ctx, char* buf, apr_size_t sz)
 {
     apr_status_t status = APR_SUCCESS;
     apr_bucket *b;
@@ -133,7 +133,7 @@ static apr_status_t append_bucket(sed_filter_ctxt* ctx, char* buf, int sz)
  */
 static apr_status_t flush_output_buffer(sed_filter_ctxt *ctx)
 {
-    int size = ctx->curoutbuf - ctx->outbuf;
+    apr_size_t size = ctx->curoutbuf - ctx->outbuf;
     char *out;
     apr_status_t status = APR_SUCCESS;
     if ((ctx->outbuf == NULL) || (size <=0))
@@ -147,12 +147,12 @@ static apr_status_t flush_output_buffer(sed_filter_ctxt *ctx)
 /* This is a call back function. When libsed wants to generate the output,
  * this function will be invoked.
  */
-static apr_status_t sed_write_output(void *dummy, char *buf, int sz)
+static apr_status_t sed_write_output(void *dummy, char *buf, apr_size_t sz)
 {
     /* dummy is basically filter context. Context is passed during invocation
      * of sed_eval_buffer
      */
-    int remainbytes = 0;
+    apr_size_t remainbytes = 0;
     apr_status_t status = APR_SUCCESS;
     sed_filter_ctxt *ctx = (sed_filter_ctxt *) dummy;
     if (ctx->outbuf == NULL) {
@@ -168,21 +168,29 @@ static apr_status_t sed_write_output(void *dummy, char *buf, int sz)
         }
         /* buffer is now full */
         status = append_bucket(ctx, ctx->outbuf, ctx->bufsize);
-        /* old buffer is now used so allocate new buffer */
-        alloc_outbuf(ctx);
-        /* if size is bigger than the allocated buffer directly add to output
-         * brigade */
-        if ((status == APR_SUCCESS) && (sz >= ctx->bufsize)) {
-            char* newbuf = apr_pmemdup(ctx->tpool, buf, sz);
-            status = append_bucket(ctx, newbuf, sz);
-            /* pool might get clear after append_bucket */
-            if (ctx->outbuf == NULL) {
+        if (status == APR_SUCCESS) {
+            /* if size is bigger than the allocated buffer directly add to output
+             * brigade */
+            if (sz >= ctx->bufsize) {
+                char* newbuf = apr_pmemdup(ctx->tpool, buf, sz);
+                status = append_bucket(ctx, newbuf, sz);
+                if (status == APR_SUCCESS) {
+                    /* old buffer is now used so allocate new buffer */
+                    alloc_outbuf(ctx);
+                }
+                else {
+                    clear_ctxpool(ctx);
+                }
+            }
+            else {
+                /* old buffer is now used so allocate new buffer */
                 alloc_outbuf(ctx);
+                memcpy(ctx->curoutbuf, buf, sz);
+                ctx->curoutbuf += sz;
             }
         }
         else {
-            memcpy(ctx->curoutbuf, buf, sz);
-            ctx->curoutbuf += sz;
+            clear_ctxpool(ctx);
         }
     }
     else {
@@ -350,6 +358,7 @@ static apr_status_t sed_response_filter(ap_filter_t *f,
                     status = sed_eval_buffer(&ctx->eval, buf, bytes, ctx);
                 }
                 if (status != APR_SUCCESS) {
+                    ap_log_rerror(APLOG_MARK, APLOG_ERR, status, f->r, APLOGNO(10394) "error evaluating sed on output");
                     break;
                 }
             }
@@ -455,8 +464,10 @@ static apr_status_t sed_request_filter(ap_filter_t *f,
             if (apr_bucket_read(b, &buf, &bytes, APR_BLOCK_READ)
                      == APR_SUCCESS) {
                 status = sed_eval_buffer(&ctx->eval, buf, bytes, ctx);
-                if (status != APR_SUCCESS)
+                if (status != APR_SUCCESS) { 
+                    ap_log_rerror(APLOG_MARK, APLOG_ERR, status, f->r, APLOGNO(10395) "error evaluating sed on input");
                     return status;
+                }
                 flush_output_buffer(ctx);
             }
         }

@@ -195,7 +195,6 @@ d'Apache</a></li>
         <td>Le numéro de processus ou le numéro de thread du processus
 	enfant qui a servi la requête. Les formats valides sont
 	<code>pid</code>, <code>tid</code>, et <code>hextid</code>.
-	<code>hextid</code> nécessite APR version 1.2.0 ou supérieure.
         </td></tr>
 <tr class="odd"><td><code>%q</code></td>
         <td>La chaîne d'arguments (préfixée par un <code>?</code> si une
@@ -681,7 +680,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_log_config
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2021 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2023 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

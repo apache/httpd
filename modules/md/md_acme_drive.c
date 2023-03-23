@@ -45,15 +45,15 @@
 /**************************************************************************************************/
 /* account setup */
 
-static apr_status_t use_staged_acct(md_acme_t *acme, struct md_store_t *store, 
-                                    const char *md_name, apr_pool_t *p)
+static apr_status_t use_staged_acct(md_acme_t *acme, struct md_store_t *store,
+                                    const md_t *md, apr_pool_t *p)
 {
     md_acme_acct_t *acct;
     md_pkey_t *pkey;
     apr_status_t rv;
     
     if (APR_SUCCESS == (rv = md_acme_acct_load(&acct, &pkey, store, 
-                                               MD_SG_STAGING, md_name, acme->p))) {
+                                               MD_SG_STAGING, md->name, acme->p))) {
         acme->acct_id = NULL;
         acme->acct = acct;
         acme->acct_key = pkey;
@@ -89,7 +89,7 @@ apr_status_t md_acme_drive_set_acct(md_proto_driver_t *d, md_result_t *result)
     md_acme_clear_acct(ad->acme);
     
     /* Do we have a staged (modified) account? */
-    if (APR_SUCCESS == (rv = use_staged_acct(ad->acme, d->store, md->name, d->p))) {
+    if (APR_SUCCESS == (rv = use_staged_acct(ad->acme, d->store, md, d->p))) {
         md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, rv, d->p, "re-using staged account");
     }
     else if (!APR_STATUS_IS_ENOENT(rv)) {
@@ -99,7 +99,7 @@ apr_status_t md_acme_drive_set_acct(md_proto_driver_t *d, md_result_t *result)
     /* Get an account for the ACME server for this MD */
     if (!ad->acme->acct && md->ca_account) {
         md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, rv, d->p, "re-use account '%s'", md->ca_account);
-        rv = md_acme_use_acct(ad->acme, d->store, d->p, md->ca_account);
+        rv = md_acme_use_acct_for_md(ad->acme, d->store, d->p, md->ca_account, md);
         if (APR_STATUS_IS_ENOENT(rv) || APR_STATUS_IS_EINVAL(rv)) {
             md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, rv, d->p, "rejected %s", md->ca_account);
             md->ca_account = NULL;
@@ -114,7 +114,7 @@ apr_status_t md_acme_drive_set_acct(md_proto_driver_t *d, md_result_t *result)
         /* Find a local account for server, store at MD */ 
         md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, rv, d->p, "%s: looking at existing accounts",
                       d->proto->protocol);
-        if (APR_SUCCESS == (rv = md_acme_find_acct(ad->acme, d->store))) {
+        if (APR_SUCCESS == (rv = md_acme_find_acct_for_md(ad->acme, d->store, md))) {
             md->ca_account = md_acme_acct_id_get(ad->acme);
             update_md = 1;
             md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, rv, d->p, "%s: using account %s (id=%s)",
@@ -153,7 +153,19 @@ apr_status_t md_acme_drive_set_acct(md_proto_driver_t *d, md_result_t *result)
             goto leave;
         }
     
-        rv = md_acme_acct_register(ad->acme, d->store, d->p, md->contacts, md->ca_agreement);
+        if (ad->acme->eab_required && (!md->ca_eab_kid || !strcmp("none", md->ca_eab_kid))) {
+            md_result_printf(result, APR_EINVAL,
+                  "the CA requires 'External Account Binding' which is not "
+                  "configured. This means you need to obtain a 'Key ID' and a "
+                  "'HMAC' from the CA and configure that using the "
+                  "MDExternalAccountBinding directive in your config. "
+                  "The creation of a new ACME account will most likely fail, "
+                  "but an attempt is made anyway.",
+                  ad->acme->ca_agreement);
+            md_result_log(result, MD_LOG_INFO);
+        }
+
+        rv = md_acme_acct_register(ad->acme, d->store, md, d->p);
         if (APR_SUCCESS != rv) {
             if (APR_SUCCESS != ad->acme->last->status) {
                 md_result_dup(result, ad->acme->last);
@@ -169,11 +181,11 @@ apr_status_t md_acme_drive_set_acct(md_proto_driver_t *d, md_result_t *result)
     
 leave:
     /* Persist MD changes in STAGING, so we pick them up on next run */
-    if (APR_SUCCESS == rv&& update_md) {
+    if (APR_SUCCESS == rv && update_md) {
         rv = md_save(d->store, d->p, MD_SG_STAGING, ad->md, 0);
     }
     /* Persist account changes in STAGING, so we pick them up on next run */
-    if (APR_SUCCESS == rv&& update_acct) {
+    if (APR_SUCCESS == rv && update_acct) {
         rv = save_acct_staged(ad->acme, d->store, md->name, d->p);
     }
     return rv;
@@ -575,7 +587,9 @@ static apr_status_t acme_driver_init(md_proto_driver_t *d, md_result_t *result)
             ad->ca_challenges = md_array_str_remove(d->p, ad->ca_challenges, MD_AUTHZ_TYPE_TLSALPN01, 0);
             dis_alpn_acme = 1;
         }
-        if (!apr_table_get(d->env, MD_KEY_CMD_DNS01) && md_array_str_index(ad->ca_challenges, MD_AUTHZ_TYPE_DNS01, 0, 1) >= 0) {
+        if (!apr_table_get(d->env, MD_KEY_CMD_DNS01)
+            && NULL == d->md->dns01_cmd
+            && md_array_str_index(ad->ca_challenges, MD_AUTHZ_TYPE_DNS01, 0, 1) >= 0) {
             ad->ca_challenges = md_array_str_remove(d->p, ad->ca_challenges, MD_AUTHZ_TYPE_DNS01, 0);
             dis_dns = 1;
         }
@@ -642,13 +656,15 @@ static apr_status_t acme_renew(md_proto_driver_t *d, md_result_t *result)
     apr_status_t rv = APR_SUCCESS;
     apr_time_t now, t, t2;
     md_credentials_t *cred;
+    const char *ca_effective = NULL;
     char ts[APR_RFC822_DATE_LEN];
     int i, first = 0;
-    
-    if (md_log_is_level(d->p, MD_LOG_DEBUG)) {
-        md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, 0, d->p, "%s: staging started, "
-                      "state=%d, challenges='%s'", d->md->name, d->md->state, 
-                      apr_array_pstrcat(d->p, ad->ca_challenges, ' '));
+
+    if (!d->md->ca_urls || d->md->ca_urls->nelts <= 0) {
+        /* No CA defined? This is checked in several other places, but lets be sure */
+        md_result_printf(result, APR_INCOMPLETE,
+            "The managed domain %s is missing MDCertificateAuthority", d->md->name);
+        goto out;
     }
 
     /* When not explicitly told to reset, we check the existing data. If
@@ -667,13 +683,46 @@ static apr_status_t acme_renew(md_proto_driver_t *d, md_result_t *result)
             rv = APR_SUCCESS;
         }
     }
-    
+
+    /* What CA are we using this time? */
+    if (ad->md && ad->md->ca_effective) {
+        /* There was one chosen on the previous run. Do we stick to it? */
+        ca_effective = ad->md->ca_effective;
+        if (d->md->ca_urls->nelts > 1 && d->attempt >= d->retry_failover) {
+            /* We have more than one CA to choose from and this is the (at least)
+             * third attempt with the same CA. Let's switch to the next one. */
+            int last_idx = md_array_str_index(d->md->ca_urls, ca_effective, 0, 1);
+            if (last_idx >= 0) {
+                int next_idx = (last_idx+1) % d->md->ca_urls->nelts;
+                ca_effective = APR_ARRAY_IDX(d->md->ca_urls, next_idx, const char*);
+            }
+            else {
+                /* not part of current configuration? */
+                ca_effective = NULL;
+            }
+            /* switching CA means we need to wipe the staging area */
+            reset_staging = 1;
+        }
+    }
+
+    if (!ca_effective) {
+        /* None chosen yet, pick the first one configured */
+        ca_effective = APR_ARRAY_IDX(d->md->ca_urls, 0, const char*);
+    }
+
+    if (md_log_is_level(d->p, MD_LOG_DEBUG)) {
+        md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, 0, d->p, "%s: staging started, "
+                      "state=%d, attempt=%d, acme=%s, challenges='%s'",
+                      d->md->name, d->md->state, d->attempt, ca_effective,
+                      apr_array_pstrcat(d->p, ad->ca_challenges, ' '));
+    }
+
     if (reset_staging) {
         md_result_activity_setn(result, "Resetting staging area");
         /* reset the staging area for this domain */
         rv = md_store_purge(d->store, d->p, MD_SG_STAGING, d->md->name);
         md_log_perror(MD_LOG_MARK, MD_LOG_TRACE1, rv, d->p, 
-                      "%s: reset staging area, will", d->md->name);
+                      "%s: reset staging area", d->md->name);
         if (APR_SUCCESS != rv && !APR_STATUS_IS_ENOENT(rv)) {
             md_result_printf(result, rv, "resetting staging area");
             goto out;
@@ -697,24 +746,14 @@ static apr_status_t acme_renew(md_proto_driver_t *d, md_result_t *result)
     }
     
     /* Need to renew */
-    md_result_activity_printf(result, "Contacting ACME server for %s at %s", 
-                              d->md->name, d->md->ca_url);
-    if (APR_SUCCESS != (rv = md_acme_create(&ad->acme, d->p, d->md->ca_url, d->proxy_url, d->ca_file))) {
-        md_result_printf(result, rv, "setup ACME communications");
-        md_result_log(result, MD_LOG_ERR);
-        goto out;
-    } 
-    if (APR_SUCCESS != (rv = md_acme_setup(ad->acme, result))) {
-        md_result_log(result, MD_LOG_ERR);
-        goto out;
-    }
-    
-    if (!ad->md || strcmp(ad->md->ca_url, d->md->ca_url)) {
+    if (!ad->md || !md_array_str_eq(ad->md->ca_urls, d->md->ca_urls, 1)) {
         md_result_activity_printf(result, "Resetting staging for %s", d->md->name);
         /* re-initialize staging */
         md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, 0, d->p, "%s: setup staging", d->md->name);
         md_store_purge(d->store, d->p, MD_SG_STAGING, d->md->name);
         ad->md = md_copy(d->p, d->md);
+        ad->md->ca_effective = ca_effective;
+        ad->md->ca_account = NULL;
         ad->order = NULL;
         rv = md_save(d->store, d->p, MD_SG_STAGING, ad->md, 0);
         if (APR_SUCCESS != rv) {
@@ -727,6 +766,19 @@ static apr_status_t acme_renew(md_proto_driver_t *d, md_result_t *result)
         ad->domains = md_dns_make_minimal(d->p, ad->md->domains);
     }
     
+    md_result_activity_printf(result, "Contacting ACME server for %s at %s",
+                              d->md->name, ca_effective);
+    if (APR_SUCCESS != (rv = md_acme_create(&ad->acme, d->p, ca_effective,
+                                            d->proxy_url, d->ca_file))) {
+        md_result_printf(result, rv, "setup ACME communications");
+        md_result_log(result, MD_LOG_ERR);
+        goto out;
+    }
+    if (APR_SUCCESS != (rv = md_acme_setup(ad->acme, result))) {
+        md_result_log(result, MD_LOG_ERR);
+        goto out;
+    }
+
     if (APR_SUCCESS != load_missing_creds(d)) {
         for (i = 0; i < ad->creds->nelts; ++i) {
             ad->cred = APR_ARRAY_IDX(ad->creds, i, md_credentials_t*);
@@ -767,6 +819,27 @@ static apr_status_t acme_renew(md_proto_driver_t *d, md_result_t *result)
                     }
                     
                     if (!md_array_is_empty(ad->cred->chain)) {
+
+                        if (!ad->cred->pkey) {
+                            rv = md_pkey_load(d->store, MD_SG_STAGING, d->md->name, ad->cred->spec, &ad->cred->pkey, d->p);
+                            if (APR_SUCCESS != rv) {
+                                md_result_printf(result, rv, "Loading the private key.");
+                                goto out;
+                            }
+                        }
+
+                        if (ad->cred->pkey) {
+                            rv = md_check_cert_and_pkey(ad->cred->chain, ad->cred->pkey);
+                            if (APR_SUCCESS != rv) {
+                                md_result_printf(result, rv, "Certificate and private key do not match.");
+
+                                /* Delete the order */
+                                md_acme_order_purge(d->store, d->p, MD_SG_STAGING, d->md, d->env);
+
+                                goto out;
+                            }
+                        }
+
                         rv = md_pubcert_save(d->store, d->p, MD_SG_STAGING, d->md->name, 
                                              ad->cred->spec, ad->cred->chain, 0);
                         if (APR_SUCCESS != rv) {
@@ -778,7 +851,7 @@ static apr_status_t acme_renew(md_proto_driver_t *d, md_result_t *result)
                 }
                 
                 /* Clean up the order, so the next pkey spec sets up a new one */
-                md_acme_order_purge(d->store, d->p, MD_SG_STAGING, d->md->name, d->env);
+                md_acme_order_purge(d->store, d->p, MD_SG_STAGING, d->md, d->env);
             }
         }
     }
@@ -786,7 +859,7 @@ static apr_status_t acme_renew(md_proto_driver_t *d, md_result_t *result)
     
     /* As last step, cleanup any order we created so that challenge data
      * may be removed asap. */
-    md_acme_order_purge(d->store, d->p, MD_SG_STAGING, d->md->name, d->env);
+    md_acme_order_purge(d->store, d->p, MD_SG_STAGING, d->md, d->env);
     
     /* first time this job ran through */
     first = 1;    
@@ -873,6 +946,7 @@ static apr_status_t acme_preload(md_proto_driver_t *d, md_store_group_t load_gro
     md_credentials_t *creds;
     apr_array_header_t *all_creds;
     struct md_acme_acct_t *acct;
+    const char *id;
     int i;
 
     md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, 0, d->p, "%s: preload start", name);
@@ -888,7 +962,12 @@ static apr_status_t acme_preload(md_proto_driver_t *d, md_store_group_t load_gro
         md_result_set(result, rv, "loading staged md.json");
         goto leave;
     }
-    
+    if (!md->ca_effective) {
+        rv = APR_ENOENT;
+        md_result_set(result, rv, "effective CA url not set");
+        goto leave;
+    }
+
     all_creds = apr_array_make(d->p, 5, sizeof(md_credentials_t*));
     for (i = 0; i < md_pkeys_spec_count(md->pks); ++i) {
         pkspec = md_pkeys_spec_get(md->pks, i);
@@ -899,6 +978,10 @@ static apr_status_t acme_preload(md_proto_driver_t *d, md_store_group_t load_gro
         if (!creds->chain) {
             rv = APR_ENOENT;
             md_result_printf(result, rv, "no certificate in staged credentials #%d", i);
+            goto leave;
+        }
+        if (APR_SUCCESS != (rv = md_check_cert_and_pkey(creds->chain, creds->pkey))) {
+            md_result_printf(result, rv, "certificate and private key do not match in staged credentials #%d", i);
             goto leave;
         }
         APR_ARRAY_PUSH(all_creds, md_credentials_t*) = creds;
@@ -917,7 +1000,7 @@ static apr_status_t acme_preload(md_proto_driver_t *d, md_store_group_t load_gro
     }
 
     md_result_activity_setn(result, "purging order information");
-    md_acme_order_purge(d->store, d->p, MD_SG_STAGING, name, d->env);
+    md_acme_order_purge(d->store, d->p, MD_SG_STAGING, md, d->env);
 
     md_result_activity_setn(result, "purging store tmp space");
     rv = md_store_purge(d->store, d->p, load_group, name);
@@ -928,7 +1011,6 @@ static apr_status_t acme_preload(md_proto_driver_t *d, md_store_group_t load_gro
     
     if (acct) {
         md_acme_t *acme;
-        const char *id = md->ca_account;
 
         /* We may have STAGED the same account several times. This happens when
          * several MDs are renewed at once and need a new account. They will all store
@@ -936,8 +1018,9 @@ static apr_status_t acme_preload(md_proto_driver_t *d, md_store_group_t load_gro
          * the same url, we save them all into a single one.
          */
         md_result_activity_setn(result, "saving staged account");
-        if (!id && acct->url) {
-            rv = md_acme_acct_id_for_url(&id, d->store, MD_SG_ACCOUNTS, acct->url, d->p);
+        id = md->ca_account;
+        if (!id) {
+            rv = md_acme_acct_id_for_md(&id, d->store, MD_SG_ACCOUNTS, md, d->p);
             if (APR_STATUS_IS_ENOENT(rv)) {
                 id = NULL;
             }
@@ -947,7 +1030,8 @@ static apr_status_t acme_preload(md_proto_driver_t *d, md_store_group_t load_gro
             }
         }
         
-        if (APR_SUCCESS != (rv = md_acme_create(&acme, d->p, md->ca_url, d->proxy_url, d->ca_file))) {
+        if (APR_SUCCESS != (rv = md_acme_create(&acme, d->p, md->ca_effective,
+                                                d->proxy_url, d->ca_file))) {
             md_result_set(result, rv, "error setting up acme");
             goto leave;
         }
@@ -957,6 +1041,14 @@ static apr_status_t acme_preload(md_proto_driver_t *d, md_store_group_t load_gro
             goto leave;
         }
         md->ca_account = id;
+    }
+    else if (!md->ca_account) {
+        /* staging reused another account and did not create a new one. find
+         * the account, if it is already there */
+        rv = md_acme_acct_id_for_md(&id, d->store, MD_SG_ACCOUNTS, md, d->p);
+        if (APR_SUCCESS == rv) {
+            md->ca_account = id;
+        }
     }
     
     md_result_activity_setn(result, "saving staged md/privkey/pubcert");
@@ -990,9 +1082,20 @@ static apr_status_t acme_driver_preload(md_proto_driver_t *d,
     return rv;
 }
 
+static apr_status_t acme_complete_md(md_t *md, apr_pool_t *p)
+{
+    (void)p;
+    if (!md->ca_urls || apr_is_empty_array(md->ca_urls)) {
+        md->ca_urls = apr_array_make(p, 3, sizeof(const char *));
+        APR_ARRAY_PUSH(md->ca_urls, const char*) = MD_ACME_DEF_URL;
+    }
+    return APR_SUCCESS;
+}
+
 static md_proto_t ACME_PROTO = {
     MD_PROTO_ACME, acme_driver_init, acme_driver_renew, 
-    acme_driver_preload_init, acme_driver_preload
+    acme_driver_preload_init, acme_driver_preload,
+    acme_complete_md,
 };
  
 apr_status_t md_acme_protos_add(apr_hash_t *protos, apr_pool_t *p)

@@ -897,11 +897,6 @@ DESACTIVÉS à partir de la version 2.3.0.</td></tr>
     Content-Type, et le destinataire devra déterminer lui-même le type
     de médium.</p>
 
-<h3>Voir aussi</h3>
-<ul>
-<li><code class="directive"><a href="#undefine">UnDefine</a></code></li>
-<li><code class="directive"><a href="#ifdefine">IfDefine</a></code></li>
-</ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="define" id="define">Directive</a> <a name="Define" id="Define">Define</a> <a title="Lien permanent" href="#define" class="permalink">&para;</a></h2>
@@ -944,6 +939,11 @@ DESACTIVÉS à partir de la version 2.3.0.</td></tr>
     ultérieure, au delà de tout bloc VirtualHost.</p>
     </div>
 
+<h3>Voir aussi</h3>
+<ul>
+<li><code class="directive"><a href="#undefine">UnDefine</a></code></li>
+<li><code class="directive"><a href="#ifdefine">IfDefine</a></code></li>
+</ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="directory" id="directory">Directive</a> <a name="Directory" id="Directory">&lt;Directory&gt;</a> <a title="Lien permanent" href="#directory" class="permalink">&para;</a></h2>
@@ -1438,6 +1438,12 @@ d'erreur personnalisé</td></tr>
 &lt;/IfDefine&gt;</pre>
 
 
+    <div class="warning"><h3>Note</h3>
+        <p>Cette directive est évaluée lors du traitement de la configuration,
+	et non à l'exécution. Par conséquent, elle ne peut pas être évaluée de
+	manière conditionnelle en l'incluant dans une section <code class="directive"><a href="#if">&lt;If&gt;</a></code>.</p>
+    </div>
+
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -1812,7 +1818,7 @@ ErrorLogFormat "[%{uc}t] [%-m:%-l] [R:%L] [C:%{C}L] %7F: %E: %M"
 ErrorLogFormat request "[%{uc}t] [R:%L] Request %k on C:%{c}L pid:%P tid:%T"
 ErrorLogFormat request "[%{uc}t] [R:%L] UA:'%+{User-Agent}i'"
 ErrorLogFormat request "[%{uc}t] [R:%L] Referer:'%+{Referer}i'"
-ErrorLogFormat connection "[%{uc}t] [C:%{c}L] local\ %a remote\ %A"</pre>
+ErrorLogFormat connection "[%{uc}t] [C:%{c}L] remote\ %a local\ %A"</pre>
 
 
 
@@ -2068,9 +2074,9 @@ elles sont envoyées sur le réseau</td></tr>
     dessous de la limite.</p>
 
     <p>La directive <code class="directive">FlushMaxPipelined</code> permet de limiter
-    la consommation de mémoire. Lorsqu'elle est définie à <var>0</var>, le
-    pipelining est désactivé, et lorsqu'elle est définie à <var>-1</var>, il n'y
-    a plus de limite (mais la directive <code class="directive">FlushMaxThreshold</code>
+    la consommation de mémoire. Lorsqu'elle est définie à <code>0</code>, le
+    pipelining est désactivé, et lorsqu'elle est définie à <code>-1</code>, il n'y
+    a plus de limite (mais la directive <code class="directive"><a href="#flushmaxthreshold">FlushMaxThreshold</a></code>
     s'applique quand-même).</p>
 
 </div>
@@ -2079,7 +2085,7 @@ elles sont envoyées sur le réseau</td></tr>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Seuil au-delà duquel les données en attente sont envoyées sur le
 réseau</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>FlushMaxThreshold<var>number-of-bytes</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>FlushMaxThreshold <var>number-of-bytes</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>FlushMaxThreshold 65536</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Noyau httpd</td></tr>
@@ -2092,7 +2098,7 @@ réseau</td></tr>
     dessous du seuil spécifié.</p>
 
     <p>La directive <code class="directive">FlushMaxThreshold</code> permet de limiter
-    la consommation de mémoire. Lorsqu'elle est définie à <var>0</var> ou à une
+    la consommation de mémoire. Lorsqu'elle est définie à <code>0</code> ou à une
     valeur trop petite, aucune donnée n'est mise en attente, mais dans le cas
     des MPMs threadés, il peut alors y avoir plus de threads occupés en attente du
     réseau, ce qui diminue d'autant le nombre de threads disponibles pour
@@ -2422,6 +2428,15 @@ requête</td></tr>
     Certaines variables comme <code>CONTENT_TYPE</code> ainsi que
     d'autres en-têtes de réponse ne seront pas disponibles dans ce bloc,
     car elle sont définies après l'évaluation des conditions &lt;If&gt;.
+    </div>
+
+    <div class="warning">
+    Les directives qui sont évaluées lors du traitement de la configuration
+    comme <code class="directive">Define</code>, <code class="directive">Include</code> et
+    <code class="directive">Error</code> ne peuvent pas être traitées de manière
+    conditionnelle en les incluant dans une section de configuration <code class="directive">&lt;If&gt;</code>. Ces sections font en effet toujours partie de
+    la configuration, quelle soit la manière dont elles sont évaluées à
+    l'exécution.
     </div>
 
 
@@ -3016,16 +3031,17 @@ sous-requêtes imbriquées</td></tr>
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>limite la taille maximale du corps de la requête HTTP
 envoyée par le client</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LimitRequestBody <var>octets</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>LimitRequestBody 0</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>LimitRequestBody 1073741824</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>All</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Noyau httpd</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Dans les versions 2.4.53 et antérieures du serveur HTTP Apache,
+la valeur par défaut était 0 (aucune limite)</td></tr>
 </table>
-    <p>Cette directive spécifie la taille maximale autorisée pour le
-    corps d'une requête ; la valeur de l'argument <var>octets</var> va
-    de 0 (pour une taille illimitée), à 2147483647 (2Go). Voir la note
-    ci-dessous pour la limite d'applicabilité aux requêtes mandatées.</p>
+    <p>Cette directive permet de spécifier la taille maximale d'un corps de
+    requête, en <var>octets</var>. Une valeur de <var>0</var> signifie «&nbsp;sans
+    limites&nbsp;».</p>
 
     <p>La directive <code class="directive">LimitRequestBody</code> permet de
     définir une limite pour la taille maximale autorisée du corps d'une
@@ -3054,11 +3070,6 @@ envoyée par le client</td></tr>
 
     <pre class="prettyprint lang-config">LimitRequestBody 102400</pre>
 
-
-    <div class="note"><p>Pour une description détaillée de la manière dont cette
-    directive est interprétée par les requêtes mandatées, voir la
-    documentation du module <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code>.</p>
-    </div>
 
 
 </div>
@@ -3216,13 +3227,19 @@ XML</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Noyau httpd</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
 </table>
-    <p>Taille maximale (en octets) du corps d'une requête au format XML.
-    Une valeur de <code>0</code> signifie qu'aucune limite n'est
-    imposée.</p>
+    <p>Taille maximale (en octets) du corps d'une requête au format XML.  Une
+    valeur de <code>0</code> appliquera une limite physique (différente selon
+    que le système est sur 32 ou 64 bits) permettant à XML de s'étaler jusqu'aux
+    limites de la mémoire adressable du système, mais elle n'existe qu'à des
+    fins de compatibilité et il est déconseillé de l'utiliser car elle ne tient
+    pas compte de la mémoire consommée ailleurs et des requêtes simultanées, ce
+    qui pourrait provoquer un dépassement de mémoire global du système.
+    </p>
 
     <p>Exemple :</p>
 
-    <pre class="prettyprint lang-config">LimitXMLRequestBody 0</pre>
+    <pre class="prettyprint lang-config"># Limitation à 1 Mo
+LimitXMLRequestBody 1073741824</pre>
 
 
 
@@ -5756,6 +5773,12 @@ Apache.</td></tr>
 &lt;/IfDefine&gt;</pre>
 
 
+    <div class="warning"><h3>Note</h3>
+        <p>Cette directive est évaluée lors du traitement de la configuration,
+	et non à l'exécution. Par conséquent, elle ne peut pas être évaluée de
+	manière conditionnelle en l'incluant dans une section <code class="directive"><a href="#if">&lt;If&gt;</a></code>.</p>
+    </div>
+
 
 </div>
 </div>
@@ -5784,7 +5807,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/core.html';
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2021 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2023 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

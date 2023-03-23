@@ -757,6 +757,13 @@ RewriteRule  "^/$"                 "/homepage.std.html"     [L]</pre>
         the homepage is served. Otherwise, the standard page is served.
         </p>
 
+        <p>By default, multiple <code class="directive">RewriteCond</code>s
+        are evaluated in sequence with an implied logical <strong>AND</strong>.
+        If a condition fails, in the absence of an
+        <strong><code>OR</code></strong> flag, the entire ruleset is abandoned,
+        and further conditions are not evaluated.
+        </p>
+
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -1145,14 +1152,14 @@ to break in these contexts is relative substitutions.</li>
 follow the rules of the <em>directory</em> context.</li>
 
 <li>By default, mod_rewrite overrides rules when <a href="../sections.html#merging">
-merging sections</a> belonging to the same context. The <code class="directive"><a href="../mod/rewrite.html#rewriteoptions">RewriteOptions</a></code> directive can change this behavior,
+merging sections</a> belonging to the same context. The <code class="directive"><a href="#rewriteoptions">RewriteOptions</a></code> directive can change this behavior,
 for example using the <em>Inherit</em> setting.</li>
 
-<li>The <code class="directive"><a href="../mod/rewrite.html#rewriteoptions">RewriteOptions</a></code> also regulates the
+<li>The <code class="directive"><a href="#rewriteoptions">RewriteOptions</a></code> also regulates the
 behavior of sections that are stated at the same nesting level of the configuration. In the
 following example, by default only the RewriteRules stated in the second 
 <code class="directive"><a href="../mod/core.html#if">If</a></code> block
-are considered, since the first ones are overridden. Using <code class="directive"><a href="../mod/rewrite.html#rewriteoptions">RewriteOptions</a></code> Inherit forces mod_rewrite to merge the two
+are considered, since the first ones are overridden. Using <code class="directive"><a href="#rewriteoptions">RewriteOptions</a></code> Inherit forces mod_rewrite to merge the two
 sections and consider both set of statements, rather than only the last one.</li>
 </ul>
 <div class="example"><pre class="prettyprint lang-config">&lt;If "true"&gt;
@@ -1222,13 +1229,16 @@ cannot use <code>$N</code> in the substitution string!
 
         <dt>Absolute URL</dt>
 
-        <dd>If an absolute URL is specified,
+        <dd><p>If an absolute URL is specified,
         <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> checks to see whether the
         hostname matches the current host. If it does, the scheme and
         hostname are stripped out and the resulting path is treated as
         a URL-path. Otherwise, an external redirect is performed for
         the given URL. To force an external redirect back to the
-        current host, see the <code>[R]</code> flag below.</dd>
+        current host, see the <code>[R]</code> flag below.</p>
+        <p>Note that a redirect (implicit or not) using an absolute URI
+        will include the requested query-string, to prevent this see the
+        <code>[QSD]</code> flag below.</p></dd>
 
         <dt><code>-</code> (dash)</dt>
 
@@ -1376,7 +1386,9 @@ cannot use <code>$N</code> in the substitution string!
 <tr class="odd">
         <td>noescape|NE</td>
         <td>Prevent mod_rewrite from applying hexcode escaping of
-        special characters in the result of the rewrite. <em><a href="../rewrite/flags.html#flag_ne">details ...</a></em></td>
+            special characters in the result of rewrites that result in 
+            redirection. <em>
+            <a href="../rewrite/flags.html#flag_ne">details ...</a></em></td>
     </tr>
 <tr>
         <td>nosubreq|NS</td>
@@ -1595,7 +1607,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_rewrite.ht
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2021 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2023 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

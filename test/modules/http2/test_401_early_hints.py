@@ -1,16 +1,17 @@
 import pytest
 
-from h2_conf import HttpdConf
+from .env import H2Conf, H2TestEnv
 
 
 # The push tests depend on "nghttp"
-class TestStore:
+@pytest.mark.skipif(condition=H2TestEnv.is_unsupported, reason="mod_http2 not supported here")
+class TestEarlyHints:
 
     @pytest.fixture(autouse=True, scope='class')
     def _class_scope(self, env):
-        HttpdConf(env).start_vhost(
-            env.https_port, "hints", doc_root="htdocs/test1", with_ssl=True
-        ).add("""    Protocols h2 http/1.1"
+        H2Conf(env).start_vhost(domains=[f"hints.{env.http_tld}"],
+                                port=env.https_port, doc_root="htdocs/test1"
+        ).add("""
         H2EarlyHints on
         RewriteEngine on
         RewriteRule ^/006-(.*)?\\.html$ /006.html
@@ -25,10 +26,10 @@ class TestStore:
         assert env.apache_restart() == 0
 
     # H2EarlyHints enabled in general, check that it works for H2PushResource
-    def test_401_31(self, env):
+    def test_h2_401_31(self, env, repeat):
         url = env.mkurl("https", "hints", "/006-hints.html")
         r = env.nghttp().get(url)
-        assert 200 == r.response["status"]
+        assert r.response["status"] == 200
         promises = r.results["streams"][r.response["id"]]["promises"]
         assert 1 == len(promises)
         early = r.response["previous"]
@@ -37,10 +38,10 @@ class TestStore:
         assert early["header"]["link"]
 
     # H2EarlyHints enabled in general, but does not trigger on added response headers
-    def test_401_32(self, env):
+    def test_h2_401_32(self, env, repeat):
         url = env.mkurl("https", "hints", "/006-nohints.html")
         r = env.nghttp().get(url)
-        assert 200 == r.response["status"]
+        assert r.response["status"] == 200
         promises = r.results["streams"][r.response["id"]]["promises"]
         assert 1 == len(promises)
         assert "previous" not in r.response

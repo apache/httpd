@@ -271,7 +271,7 @@ H2Direct on
             </p>
             <p> 
                 Link headers in responses are either set by the application or
-                can be configured via <directive>H2PushResource</directive> or
+                can be configured via <directive module="mod_http2">H2PushResource</directive> or
                 using <module>mod_headers</module> as:
             </p>
             <example><title>mod_headers example</title>
@@ -327,12 +327,10 @@ H2Push off
                 section to influence the number for all connections to that virtual host. 
             </p>
             <p>
-                The push diary records a digest (currently using a 64 bit number) of pushed
+                The push diary records a digest of pushed
                 resources (their URL) to avoid duplicate pushes on the same connection.
                 These value are not persisted, so clients opening a new connection
-                will experience known pushes again. There is ongoing work to enable
-                a client to disclose a digest of the resources it already has, so
-                the diary maybe initialized by the client on each connection setup.
+                will experience known pushes again.
             </p>
             <p>
                 If the maximum size is reached, newer entries replace the oldest
@@ -348,7 +346,7 @@ H2Push off
     <directivesynopsis>
         <name>H2PushPriority</name>
         <description>H2 Server Push Priority</description>
-        <syntax>H2PushPriority <em>mime-type</em> [after|before|interleaved] [weight]</syntax>
+        <syntax>H2PushPriority <em>mime-type</em> [after|before|interleaved] [<em>weight</em>]</syntax>
         <default>H2PushPriority * After 16</default>
         <contextlist>
             <context>server config</context>
@@ -882,7 +880,7 @@ H2TLSCoolDownSecs 0
     <directivesynopsis>
         <name>H2PushResource</name>
         <description>Declares resources for early pushing to the client</description>
-        <syntax>H2PushResource [add] path [critical]</syntax>
+        <syntax>H2PushResource [add] <em>path</em> [critical]</syntax>
         <contextlist>
             <context>server config</context>
             <context>virtual host</context>
@@ -939,7 +937,8 @@ H2TLSCoolDownSecs 0
             </p>
             <p>
                 When set to <code>on</code>, PUSH resources announced with
-                <code>H2PushResource</code> will trigger an interim 103 response
+                <directive module="mod_http2">H2PushResource</directive> will
+                trigger an interim 103 response
                 before the final response. The 103 response will carry <code>Link</code>
                 headers that advise the <code>preload</code> of such resources. 
             </p>
@@ -949,7 +948,7 @@ H2TLSCoolDownSecs 0
     <directivesynopsis>
         <name>H2Padding</name>
         <description>Determine the range of padding bytes added to payload frames</description>
-        <syntax>H2Padding numbits</syntax>
+        <syntax>H2Padding <em>numbits</em></syntax>
         <default>H2Padding 0</default>
         <contextlist>
             <context>server config</context>
@@ -987,7 +986,7 @@ H2TLSCoolDownSecs 0
     <directivesynopsis>
         <name>H2OutputBuffering</name>
         <description>Determine buffering behaviour of output</description>
-        <syntax>H2OutputBuffering on/off</syntax>
+        <syntax>H2OutputBuffering on|off</syntax>
         <default>H2OutputBuffering on</default>
         <contextlist>
             <context>server config</context>
@@ -997,7 +996,7 @@ H2TLSCoolDownSecs 0
         
         <usage>
             <p>
-                The option 'H2OutputBuffering on/off' controls the buffering of stream output.
+                The directive <directive>H2OutputBuffering</directive> controls the buffering of stream output.
                 The default is on, which is the behaviour of previous versions. When off, all
                 bytes are made available immediately to the main connection for sending them
                 out to the client. This fixes interop issues with certain flavours of gRPC.
@@ -1005,4 +1004,49 @@ H2TLSCoolDownSecs 0
         </usage>
     </directivesynopsis>
     
+    <directivesynopsis>
+        <name>H2StreamTimeout</name>
+        <description>Maximum time waiting when sending/receiving data to stream processing</description>
+        <syntax>H2StreamTimeout <var>time-interval</var>[s]</syntax>
+        <default>Value of <directive module="core">Timeout</directive></default>
+        <contextlist>
+            <context>server config</context>
+            <context>virtual host</context>
+            <context>directory</context>
+        </contextlist>
+        <compatibility>Available in version 2.5.1 and later.</compatibility>
+
+        <usage>
+            <p>
+                <directive>H2StreamTimeout</directive> specifies the maximum time that
+                a stream being processed will wait for its data to be sent/received.
+            </p>
+        </usage>
+    </directivesynopsis>
+
+    <directivesynopsis>
+        <name>H2MaxDataFrameLen</name>
+        <description>Maximum bytes inside a single HTTP/2 DATA frame</description>
+        <syntax>H2MaxDataFrameLen <em>n</em></syntax>
+        <default>H2MaxDataFrameLen 0</default>
+        <contextlist>
+            <context>server config</context>
+            <context>virtual host</context>
+        </contextlist>
+        <compatibility>Available in version 2.5.1 and later.</compatibility>
+
+        <usage>
+            <p>
+                <directive>H2MaxDataFrameLen</directive> limits the maximum
+                amount of response body bytes placed into a single HTTP/2 DATA
+                frame. Setting this to 0 places no limit (but the max size
+                allowed by the protocol is observed).
+            </p><p>
+                The module, by default, tries to use the maximum size possible,
+                which is somewhat around 16KB. This sets the maximum. When less
+                response data is availble, smaller frames will be sent.
+            </p>
+        </usage>
+    </directivesynopsis>
+
 </modulesynopsis>

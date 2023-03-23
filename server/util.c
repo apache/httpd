@@ -69,6 +69,7 @@
 #endif
 
 #include "ap_mpm.h"
+#include "mpm_common.h"         /* for ap_max_mem_free */
 
 /* A bunch of functions in util.c scan strings looking for certain characters.
  * To make that more efficient we encode a lookup table.  The test_char_table
@@ -186,7 +187,7 @@ AP_DECLARE(char *) ap_ht_time(apr_pool_t *p, apr_time_t t, const char *fmt,
  */
 AP_DECLARE(int) ap_strcmp_match(const char *str, const char *expected)
 {
-    int x, y;
+    apr_size_t x, y;
 
     for (x = 0, y = 0; expected[y]; ++y, ++x) {
         if (expected[y] == '*') {
@@ -210,7 +211,7 @@ AP_DECLARE(int) ap_strcmp_match(const char *str, const char *expected)
 
 AP_DECLARE(int) ap_strcasecmp_match(const char *str, const char *expected)
 {
-    int x, y;
+    apr_size_t x, y;
 
     for (x = 0, y = 0; expected[y]; ++y, ++x) {
         if (!str[x] && expected[y] != '*')
@@ -251,10 +252,8 @@ AP_DECLARE(int) ap_os_is_path_absolute(apr_pool_t *p, const char *dir)
 
 AP_DECLARE(int) ap_is_matchexp(const char *str)
 {
-    int x;
-
-    for (x = 0; str[x]; x++)
-        if ((str[x] == '*') || (str[x] == '?'))
+    for (; *str; str++)
+        if ((*str == '*') || (*str == '?'))
             return 1;
     return 0;
 }
@@ -503,7 +502,9 @@ static char x2c(const char *what);
 AP_DECLARE(int) ap_normalize_path(char *path, unsigned int flags)
 {
     int ret = 1;
-    apr_size_t l = 1, w = 1;
+    apr_size_t l = 1, w = 1, n;
+    int decode_unreserved = (flags & AP_NORMALIZE_DECODE_UNRESERVED) != 0;
+    int merge_slashes = (flags & AP_NORMALIZE_MERGE_SLASHES) != 0;
 
     if (!IS_SLASH(path[0])) {
         /* Besides "OPTIONS *", a request-target should start with '/'
@@ -530,28 +531,25 @@ AP_DECLARE(int) ap_normalize_path(char *path, unsigned int flags)
          *  be decoded to their corresponding unreserved characters by
          *  URI normalizers.
          */
-        if ((flags & AP_NORMALIZE_DECODE_UNRESERVED)
-                && path[l] == '%' && apr_isxdigit(path[l + 1])
-                                  && apr_isxdigit(path[l + 2])) {
-            const char c = x2c(&path[l + 1]);
-            if (apr_isalnum(c) || (c && strchr("-._~", c))) {
-                /* Replace last char and fall through as the current
-                 * read position */
-                l += 2;
-                path[l] = c;
+        if (decode_unreserved && path[l] == '%') {
+            if (apr_isxdigit(path[l + 1]) && apr_isxdigit(path[l + 2])) {
+                const char c = x2c(&path[l + 1]);
+                if (TEST_CHAR(c, T_URI_UNRESERVED)) {
+                    /* Replace last char and fall through as the current
+                     * read position */
+                    l += 2;
+                    path[l] = c;
+                }
             }
-        }
-
-        if ((flags & AP_NORMALIZE_DROP_PARAMETERS) && path[l] == ';') {
-            do {
-                l++;
-            } while (!IS_SLASH_OR_NUL(path[l]));
-            continue;
+            else {
+                /* Invalid encoding */
+                ret = 0;
+            }
         }
 
         if (w == 0 || IS_SLASH(path[w - 1])) {
             /* Collapse ///// sequences to / */
-            if ((flags & AP_NORMALIZE_MERGE_SLASHES) && IS_SLASH(path[l])) {
+            if (merge_slashes && IS_SLASH(path[l])) {
                 do {
                     l++;
                 } while (IS_SLASH(path[l]));
@@ -568,8 +566,17 @@ AP_DECLARE(int) ap_normalize_path(char *path, unsigned int flags)
                     continue;
                 }
 
-                /* Remove /xx/../ segments */
-                if (path[l + 1] == '.' && IS_SLASH_OR_NUL(path[l + 2])) {
+                /* Remove /xx/../ segments (or /xx/.%2e/ when
+                 * AP_NORMALIZE_DECODE_UNRESERVED is set since we
+                 * decoded only the first dot above).
+                 */
+                n = l + 1;
+                if ((path[n] == '.' || (decode_unreserved
+                                        && path[n] == '%'
+                                        && path[++n] == '2'
+                                        && (path[++n] == 'e'
+                                            || path[n] == 'E')))
+                        && IS_SLASH_OR_NUL(path[n + 1])) {
                     /* Wind w back to remove the previous segment */
                     if (w > 1) {
                         do {
@@ -586,7 +593,7 @@ AP_DECLARE(int) ap_normalize_path(char *path, unsigned int flags)
                     }
 
                     /* Move l forward to the next segment */
-                    l += 2;
+                    l = n + 1;
                     if (path[l]) {
                         l++;
                     }
@@ -1880,8 +1887,12 @@ static char x2c(const char *what)
  *   decoding %00 or a forbidden character returns HTTP_NOT_FOUND
  */
 
-static int unescape_url(char *url, const char *forbid, const char *reserved)
+static int unescape_url(char *url, const char *forbid, const char *reserved,
+                        unsigned int flags)
 {
+    const int keep_slashes = (flags & AP_UNESCAPE_URL_KEEP_SLASHES) != 0,
+              forbid_slashes = (flags & AP_UNESCAPE_URL_FORBID_SLASHES) != 0,
+              keep_unreserved = (flags & AP_UNESCAPE_URL_KEEP_UNRESERVED) != 0;
     int badesc, badpath;
     char *x, *y;
 
@@ -1910,12 +1921,16 @@ static int unescape_url(char *url, const char *forbid, const char *reserved)
                 char decoded;
                 decoded = x2c(y + 1);
                 if ((decoded == '\0')
+                    || (forbid_slashes && IS_SLASH(decoded))
                     || (forbid && ap_strchr_c(forbid, decoded))) {
                     badpath = 1;
                     *x = decoded;
                     y += 2;
                 }
-                else if (reserved && ap_strchr_c(reserved, decoded)) {
+                else if ((keep_unreserved && TEST_CHAR(decoded,
+                                                       T_URI_UNRESERVED))
+                         || (keep_slashes && IS_SLASH(decoded))
+                         || (reserved && ap_strchr_c(reserved, decoded))) {
                     *x++ = *y++;
                     *x++ = *y++;
                     *x = *y;
@@ -1941,19 +1956,24 @@ static int unescape_url(char *url, const char *forbid, const char *reserved)
 AP_DECLARE(int) ap_unescape_url(char *url)
 {
     /* Traditional */
-    return unescape_url(url, SLASHES, NULL);
+    return unescape_url(url, SLASHES, NULL, 0);
 }
 AP_DECLARE(int) ap_unescape_url_keep2f(char *url, int decode_slashes)
 {
     /* AllowEncodedSlashes (corrected) */
     if (decode_slashes) {
         /* no chars reserved */
-        return unescape_url(url, NULL, NULL);
+        return unescape_url(url, NULL, NULL, 0);
     } else {
         /* reserve (do not decode) encoded slashes */
-        return unescape_url(url, NULL, SLASHES);
+        return unescape_url(url, NULL, SLASHES, 0);
     }
 }
+AP_DECLARE(int) ap_unescape_url_ex(char *url, unsigned int flags)
+{
+    return unescape_url(url, NULL, NULL, flags);
+}
+
 #ifdef NEW_APIS
 /* IFDEF these out until they've been thought through.
  * Just a germ of an API extension for now
@@ -1963,7 +1983,7 @@ AP_DECLARE(int) ap_unescape_url_proxy(char *url)
     /* leave RFC1738 reserved characters intact, * so proxied URLs
      * don't get mangled.  Where does that leave encoded '&' ?
      */
-    return unescape_url(url, NULL, "/;?");
+    return unescape_url(url, NULL, "/;?", 0);
 }
 AP_DECLARE(int) ap_unescape_url_reserved(char *url, const char *reserved)
 {
@@ -1985,7 +2005,7 @@ AP_DECLARE(int) ap_unescape_urlencoded(char *query)
     }
 
     /* unescape everything else */
-    return unescape_url(query, NULL, NULL);
+    return unescape_url(query, NULL, NULL, 0);
 }
 
 AP_DECLARE(char *) ap_construct_server(apr_pool_t *p, const char *hostname,
@@ -2001,7 +2021,7 @@ AP_DECLARE(char *) ap_construct_server(apr_pool_t *p, const char *hostname,
 
 AP_DECLARE(int) ap_unescape_all(char *url)
 {
-    return unescape_url(url, NULL, NULL);
+    return unescape_url(url, NULL, NULL, 0);
 }
 
 /* c2x takes an unsigned, and expects the caller has guaranteed that
@@ -2131,11 +2151,14 @@ AP_DECLARE(char *) ap_escape_urlencoded(apr_pool_t *p, const char *buffer)
 
 AP_DECLARE(char *) ap_escape_html2(apr_pool_t *p, const char *s, int toasc)
 {
-    int i, j;
+    apr_size_t i, j;
     char *x;
 
     /* first, count the number of extra characters */
-    for (i = 0, j = 0; s[i] != '\0'; i++)
+    for (i = 0, j = 0; s[i] != '\0'; i++) {
+        if (i + j > APR_SIZE_MAX - 6) {
+            abort();
+        }
         if (s[i] == '<' || s[i] == '>')
             j += 3;
         else if (s[i] == '&')
@@ -2144,6 +2167,7 @@ AP_DECLARE(char *) ap_escape_html2(apr_pool_t *p, const char *s, int toasc)
             j += 5;
         else if (toasc && !apr_isascii(s[i]))
             j += 5;
+    }
 
     if (j == 0)
         return apr_pstrmemdup(p, s, i);
@@ -2590,7 +2614,7 @@ AP_DECLARE(void) ap_content_type_tolower(char *str)
  */
 AP_DECLARE(char *) ap_escape_quotes(apr_pool_t *p, const char *instring)
 {
-    int newlen = 0;
+    apr_size_t size, extra = 0;
     const char *inchr = instring;
     char *outchr, *outstring;
 
@@ -2599,9 +2623,8 @@ AP_DECLARE(char *) ap_escape_quotes(apr_pool_t *p, const char *instring)
      * string up by an extra byte each time we find an unescaped ".
      */
     while (*inchr != '\0') {
-        newlen++;
         if (*inchr == '"') {
-            newlen++;
+            extra++;
         }
         /*
          * If we find a slosh, and it's not the last byte in the string,
@@ -2609,11 +2632,32 @@ AP_DECLARE(char *) ap_escape_quotes(apr_pool_t *p, const char *instring)
          */
         else if ((*inchr == '\\') && (inchr[1] != '\0')) {
             inchr++;
-            newlen++;
         }
         inchr++;
     }
-    outstring = apr_palloc(p, newlen + 1);
+
+    if (!extra) {
+        return apr_pstrdup(p, instring);
+    }
+
+    /* How large will the string become, once we escaped all the quotes?
+     * The tricky cases are
+     * - an `instring` that is already longer than `ptrdiff_t`
+     *   can hold (which is an undefined case in C, as C defines ptrdiff_t as
+     *   a signed difference between pointers into the same array and one index
+     *   beyond).
+     * - an `instring` that, including the `extra` chars we want to add, becomes
+     *   even larger than apr_size_t can handle.
+     * Since this function was not designed to ever return NULL for failure, we
+     * can only trigger a hard assertion failure. It seems more a programming
+     * mistake (or failure to verify the input causing this) that leads to this
+     * situation.
+     */
+    ap_assert(inchr - instring > 0);
+    size = ((apr_size_t)(inchr - instring)) + 1;
+    ap_assert(size + extra > size);
+
+    outstring = apr_palloc(p, size + extra);
     inchr = instring;
     outchr = outstring;
     /*
@@ -3240,6 +3284,149 @@ AP_DECLARE(void *) ap_realloc(void *ptr, size_t size)
     return p;
 }
 
+#if APR_HAS_THREADS
+
+#if AP_HAS_THREAD_LOCAL && !APR_VERSION_AT_LEAST(1,8,0)
+static AP_THREAD_LOCAL apr_thread_t *current_thread = NULL;
+#endif
+
+struct thread_ctx {
+    apr_thread_start_t func;
+    void *data;
+};
+
+static void *APR_THREAD_FUNC thread_start(apr_thread_t *thread, void *data)
+{
+    struct thread_ctx *ctx = data;
+
+    /* Don't let the thread's pool allocator with no limits, though there
+     * is possibly no allocator with APR <= 1.7 and APR_POOL_DEBUG.
+     */
+    {
+        apr_pool_t *tp = apr_thread_pool_get(thread);
+        apr_allocator_t *ta = apr_pool_allocator_get(tp);
+        if (ta) {
+            apr_allocator_max_free_set(ta, ap_max_mem_free);
+        }
+    }
+
+#if AP_HAS_THREAD_LOCAL && !APR_VERSION_AT_LEAST(1,8,0)
+    current_thread = thread;
+#endif
+    return ctx->func(thread, ctx->data);
+}
+
+AP_DECLARE(apr_status_t) ap_thread_create(apr_thread_t **thread, 
+                                          apr_threadattr_t *attr, 
+                                          apr_thread_start_t func, 
+                                          void *data, apr_pool_t *pool)
+{
+    struct thread_ctx *ctx = apr_palloc(pool, sizeof(*ctx));
+
+    ctx->func = func;
+    ctx->data = data;
+    return apr_thread_create(thread, attr, thread_start, ctx, pool);
+}
+
+static apr_status_t main_thread_cleanup(void *arg)
+{
+    apr_thread_t *thd = arg;
+    apr_pool_destroy(apr_thread_pool_get(thd));
+    return APR_SUCCESS;
+}
+
+AP_DECLARE(apr_status_t) ap_thread_main_create(apr_thread_t **thread,
+                                               apr_pool_t *pool)
+{
+    apr_status_t rv;
+    apr_threadattr_t *attr = NULL;
+
+    /* Create an apr_thread_t for the main child thread to set up its Thread
+     * Local Storage. Since it's detached and won't apr_thread_exit(), destroy
+     * its pool before exiting via a cleanup of the given pool.
+     */
+    if ((rv = apr_threadattr_create(&attr, pool))
+            || (rv = apr_threadattr_detach_set(attr, 1))
+#if APR_VERSION_AT_LEAST(1,8,0)
+            || (rv = apr_threadattr_max_free_set(attr, ap_max_mem_free))
+#endif
+            || (rv = ap_thread_current_create(thread, attr, pool))) {
+        *thread = NULL;
+        return rv;
+    }
+
+    apr_pool_cleanup_register(pool, *thread, main_thread_cleanup,
+                              apr_pool_cleanup_null);
+    return APR_SUCCESS;
+}
+
+#if !APR_VERSION_AT_LEAST(1,8,0)
+
+AP_DECLARE(apr_status_t) ap_thread_current_create(apr_thread_t **current,
+                                                  apr_threadattr_t *attr,
+                                                  apr_pool_t *pool)
+{
+#if AP_HAS_THREAD_LOCAL
+    apr_status_t rv;
+    apr_allocator_t *ta;
+    apr_abortfunc_t abort_fn;
+    apr_os_thread_t osthd;
+    apr_pool_t *p;
+
+    *current = ap_thread_current();
+    if (*current) {
+        return APR_EEXIST;
+    }
+
+    abort_fn = (pool) ? apr_pool_abort_get(pool) : NULL;
+    rv = apr_allocator_create(&ta);
+    if (rv != APR_SUCCESS) {
+        if (abort_fn)
+            abort_fn(rv);
+        return rv;
+    }
+    /* Don't let the thread's pool allocator with no limits */
+    apr_allocator_max_free_set(ta, ap_max_mem_free);
+    rv = apr_pool_create_unmanaged_ex(&p, abort_fn, ta);
+    if (rv != APR_SUCCESS) {
+        return rv;
+    }
+    apr_allocator_owner_set(ta, p);
+
+    osthd = apr_os_thread_current();
+    rv = apr_os_thread_put(current, &osthd, p);
+    if (rv != APR_SUCCESS) {
+        apr_pool_destroy(p);
+        return rv;
+    }
+
+    current_thread = *current;
+    return APR_SUCCESS;
+#else
+    return APR_ENOTIMPL;
+#endif
+}
+
+AP_DECLARE(void) ap_thread_current_after_fork(void)
+{
+#if AP_HAS_THREAD_LOCAL
+    current_thread = NULL;
+#endif
+}
+
+AP_DECLARE(apr_thread_t *) ap_thread_current(void)
+{
+#if AP_HAS_THREAD_LOCAL
+    return current_thread;
+#else
+    return NULL;
+#endif
+}
+
+#endif /* !APR_VERSION_AT_LEAST(1,8,0) */
+
+#endif /* APR_HAS_THREADS */
+
 AP_DECLARE(void) ap_get_sload(ap_sload_t *ld)
 {
     int i, j, server_limit, thread_limit;
@@ -3433,7 +3620,7 @@ AP_DECLARE(int) ap_array_str_contains(const apr_array_header_t *array,
  * octets (such as extended latin alphabetics) are never case-folded.
  * NOTE: Other than Alpha A-Z/a-z, each code point is unique!
  */
-static const short ucharmap[] = {
+static const unsigned char ucharmap[256] = {
     0x0,  0x1,  0x2,  0x3,  0x4,  0x5,  0x6,  0x7,
     0x8,  0x9,  0xa,  0xb,  0xc,  0xd,  0xe,  0xf,
     0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17,
@@ -3480,7 +3667,7 @@ static const short ucharmap[] = {
  *
  * NOTE: Other than Alpha A-Z/a-z, each code point is unique!
  */
-static const short ucharmap[] = {
+static const unsigned char ucharmap[256] = {
     0x00, 0x01, 0x02, 0x03, 0x9C, 0x09, 0x86, 0x7F,
     0x97, 0x8D, 0x8E, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F,
     0x10, 0x11, 0x12, 0x13, 0x9D, 0x85, 0x08, 0x87,
@@ -3518,35 +3705,27 @@ static const short ucharmap[] = {
 
 AP_DECLARE(int) ap_cstr_casecmp(const char *s1, const char *s2)
 {
-    const unsigned char *str1 = (const unsigned char *)s1;
-    const unsigned char *str2 = (const unsigned char *)s2;
-    for (;;)
-    {
-        const int c1 = (int)(*str1);
-        const int c2 = (int)(*str2);
-        const int cmp = ucharmap[c1] - ucharmap[c2];
-        /* Not necessary to test for !c2, this is caught by cmp */
-        if (cmp || !c1)
+    const unsigned char *u1 = (const unsigned char *)s1;
+    const unsigned char *u2 = (const unsigned char *)s2;
+    for (;;) {
+        const int c2 = ucharmap[*u2++];
+        const int cmp = (int)ucharmap[*u1++] - c2;
+        /* Not necessary to test for !c1, this is caught by cmp */
+        if (cmp || !c2)
             return cmp;
-        str1++;
-        str2++;
     }
 }
 
 AP_DECLARE(int) ap_cstr_casecmpn(const char *s1, const char *s2, apr_size_t n)
 {
-    const unsigned char *str1 = (const unsigned char *)s1;
-    const unsigned char *str2 = (const unsigned char *)s2;
-    while (n--)
-    {
-        const int c1 = (int)(*str1);
-        const int c2 = (int)(*str2);
-        const int cmp = ucharmap[c1] - ucharmap[c2];
-        /* Not necessary to test for !c2, this is caught by cmp */
-        if (cmp || !c1)
+    const unsigned char *u1 = (const unsigned char *)s1;
+    const unsigned char *u2 = (const unsigned char *)s2;
+    while (n--) {
+        const int c2 = ucharmap[*u2++];
+        const int cmp = (int)ucharmap[*u1++] - c2;
+        /* Not necessary to test for !c1, this is caught by cmp */
+        if (cmp || !c2)
             return cmp;
-        str1++;
-        str2++;
     }
     return 0;
 }

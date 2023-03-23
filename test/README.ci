@@ -1,0 +1,163 @@
+
+Variables
+---------
+
+The CI scripts use the following environment variables:
+
+* APR_VERSION - if set, APR of this version is built and installed in
+  $HOME/root/apr-$APR_VERSION - a value of "trunk" means trunk is
+  used, "*.x" means a branch, otherwise a tagged version is implied.
+
+* APR_CONFIG - arguments to pass when running APR's configure script
+  if APR_VERSION is set
+
+* APU_VERSION - if set, APR-util of this version is built and
+  installed in $HOME/root/apr-util-$APU_VERSION - a value of "*.x"
+  means a branch, otherwise a tagged version is implied.  (Since there
+  is no "trunk" for apr-util, that value cannot be used here.)
+
+* APU_CONFIG - arguments to pass when running APR-util's configure
+  script if APU_VERSION is set
+
+* CONFIG - arguments to pass to httpd's configure script.
+
+* BUILDCONFIG - arguments to pass when running httpd's ./buildconf script
+
+* MFLAGS - arguments to pass when running "make" for httpd.
+
+* SKIP_TESTING - if set, the Perl test framework is not run for the
+  build.
+
+* TEST_UBSAN - set for job using UBSan ("Undefined Behaviour Sanitizer")
+
+* TEST_MALLOC - set for job using enhanced malloc debugging.
+
+* TEST_INSTALL - set for job testing "make install"
+
+* TEST_VPATH - set for job testing srcdir!=builddir 
+
+* TEST_LDAP - set for job with slapd, running LDAP tests
+
+* TEST_SSL - set for job with SSL/TLS testing variants
+
+* TESTS - a list of Perl framework tests to run
+
+* TEST_ARGS - arguments to pass to ./t/TEST in the Perl test framework
+
+* CLEAR_CACHE - if set, the cached $HOME/root is removed before each build
+
+Caching -- NOTE, BROKEN IN GITHUB ACTIONS --
+-------
+
+Perl modules installed in $HOME/perl5 are cached.
+
+Anything installed into the $HOME/root directory is cached - notably,
+versions of APR/APR-util are installed here and cached across httpd
+build jobs without needing to be rebuilt every time.
+
+The cached installs of APR/APR-util are refreshed if the
+last-changed-revision of the build is stale.
+
+If APR_VERSION and APU_VERSION are both set to 1.x versions, then
+CLEAR_CACHE should also be set to disable APR* caching.  APR-util can
+only be rebuilt if an APR checkout is present, so a APR-util cannot be
+built from source alone.  (i.e. the scripts do not handle the case of
+cached, fresh APR plus a cached but stale APR-util)
+
+Travis to Github Actions Migration TODO
+---------------------------------------
+
+* better path filtering so e.g. CHANGES changes don't trigger CI
+* support branch conditionals again (some tests are 2.4.x only, some trunk only)
+* make caching work properly for APR + CPAN modules
+  - this is using the wrong model at the moment
+  - the cache key needs to be based off (source code, job configuration)
+  - rather than done on the fly in test/travis_before_linux.sh
+  - pebble + Rustls builds should also be cached
+* turn on failure notifications?
+* test across different Ubuntu versions again
+ - and test against OpenSSL 1.x since we're now ONLY building against 3.x
+* update the docs below for testing from PRs/feature branches
+* introduce some job ordering rather than having a flat/concurrent
+  set, if the default "./configure && make && test" works *then* start
+  jobs doing 200 different variations on ./configure --enable-XXX 
+  i.e. stop burning CPU time for a typo which breaks every job
+
+TODO list
+---------
+
+* non-x86 builds
+* MacOS build
+* Windows build
+* clang-on-Linux build
+* Use containers for non-Ubuntu-based Linux testing
+
+Known Failures
+--------------
+
+Some known failures:
+
+* prefork, and more rarely non-prefork testing sometimes catches child
+  segfaults under pool-debug from assert()s in (e.g.)
+  __pthread_tpp_change_priority where one child is destroying threads
+  which another is waiting for, or iterating through via
+  apr_pool_walk_tree().
+
+  See dev@httpd threads:
+  msg <5f4abde1b5789_13fde2ecacb40795a1@travis-tasks-5b566d48fc-drkb9.mail>
+  msg <73060f7b-df7f-ad3c-a9fa-dd666a59b31e@kippdata.de> and
+  https://bz.apache.org/bugzilla/show_bug.cgi?id=63098
+  https://bz.apache.org/bugzilla/show_bug.cgi?id=46185
+
+  Not clear if there is a real bug here which can be reproduced
+  outside of pool-debug.
+
+Testing from a Feature Branch [*** N/A FOR GITHUB ACTIONS ***]
+-----------------------------
+
+An SVN branch off trunk should be mirrored to github, and will be
+tested in the same way that trunk is in CI, so this workflow is
+available for those familiar with using Subversion and the standard
+ASF/httpd repository layout.
+
+Tested branches are listed at: https://travis-ci.com/github/apache/httpd/branches
+
+Travis will also run the tests for a PR filed against the httpd Github
+repository at https://github.com/apache/httpd or from a fork of this
+repository if enabled for the Travis user.
+
+A workflow to enable testing would be as follows, substituting
+$USERNAME for your github username:
+
+  $ git clone https://github.com/apache/httpd
+  $ cd httpd
+  $ git remote add $USERNAME git@github.com:$USERNAME/httpd.git
+  $ git checkout -b my-feature origin/trunk
+  ... do some work ...
+  $ git commit ...
+  $ git push -u $USERNAME my-feature:my-feature
+
+To enable testing for a fork, visit the settings page at
+https://travis-ci.com/$USERNAME/httpd/settings - you may need to sync
+your account via https://travis-ci.com/account/repositories for a
+freshly created fork.
+
+To create a Pull Request, go to the URL produced in the "git push"
+command output when pushing to your fork, which is something like:
+https://github.com/apache/httpd/compare/trunk...$USERNAME:trunk
+
+Once a PR has been created, travis will run the tests and link the
+results from a PR comment. All tested PRs are listed here:
+https://travis-ci.com/github/apache/httpd/pull_requests
+
+To merge from github back to SVN trunk, create a patch from e.g.:
+
+  $ git diff origin/trunk..my-feature
+
+and then apply it in SVN.  To rebase a feature once trunk has
+diverged, from a feature branch run:
+
+  $ git pull
+  $ git rebase -i origin/trunk
+
+and follow the standard rebase steps.

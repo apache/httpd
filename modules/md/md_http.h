@@ -65,6 +65,7 @@ struct md_http_request_t {
     const char *user_agent;
     const char *proxy_url;
     const char *ca_file;
+    const char *unix_socket_path;
     apr_table_t *headers;
     struct apr_bucket_brigade *body;
     apr_off_t body_len;
@@ -85,6 +86,13 @@ apr_status_t md_http_create(md_http_t **phttp, apr_pool_t *p, const char *user_a
                             const char *proxy_url);
 
 void md_http_set_response_limit(md_http_t *http, apr_off_t resp_limit);
+
+/**
+ * Clone a http instance, inheriting all settings from source_http.
+ * The cloned instance is not tied in any way to the source.
+ */
+apr_status_t md_http_clone(md_http_t **phttp,
+                           apr_pool_t *p, md_http_t *source_http);
 
 /**
  * Set the timeout for the complete request. This needs to take everything from
@@ -116,6 +124,12 @@ void md_http_set_stalling(md_http_request_t *req, long bytes_per_sec, apr_time_t
  * certificate store will be used.
  */
 void md_http_set_ca_file(md_http_t *http, const char *ca_file);
+
+/**
+ * Set the path of a unix domain socket for use instead of TCP
+ * in a connection. Disable by providing NULL as path.
+ */
+void md_http_set_unix_socket_path(md_http_t *http, const char *path);
 
 /**
  * Perform the request. Then this function returns, the request and

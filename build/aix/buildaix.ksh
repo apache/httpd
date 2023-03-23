@@ -26,14 +26,14 @@ export CFLAGS='-O2 -qlanglvl=extc99'
 lslpp -L bos.adt.insttools >/dev/null
  [[ $? -ne 0 ]] && echo "must have bos.adt.insttools installed" && exit -1
 
-apr_config=`which apr-1-config`
-apu_config=`which apu-1-config`
+apr_config=`command -v apr-1-config`
+apu_config=`command -v apu-1-config`
 
 if [[ -z ${apr_config} && -z ${apu_config} ]]
 then
 	export PATH=/opt/bin:${PATH}
-	apr_config=`which apr-1-config`
-	apu_config=`which apu-1-config`
+	apr_config=`command -v apr-1-config`
+	apu_config=`command -v apu-1-config`
 fi
 
 while test $# -gt 0

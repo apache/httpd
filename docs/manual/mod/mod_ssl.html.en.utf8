@@ -1287,18 +1287,28 @@ depends on the OpenSSL version being used for <code class="module"><a href="../m
 names, see the section <em>Supported configuration file commands</em> in the
 <a href="http://www.openssl.org/docs/man1.0.2/ssl/SSL_CONF_cmd.html#SUPPORTED-CONFIGURATION-FILE-COMMANDS">SSL_CONF_cmd(3)</a> manual page for OpenSSL.</p>
 
-<p>Some of the <code class="directive">SSLOpenSSLConfCmd</code> commands can be used
-as an alternative to existing directives (such as
-<code class="directive"><a href="#sslciphersuite">SSLCipherSuite</a></code> or
-<code class="directive"><a href="#sslprotocol">SSLProtocol</a></code>),
-though it should be noted that the syntax / allowable values for the parameters
-may sometimes differ.</p>
-
 <div class="example"><h3>Examples</h3><pre class="prettyprint lang-config">SSLOpenSSLConfCmd Options -SessionTicket,ServerPreference
 SSLOpenSSLConfCmd ECDHParameters brainpoolP256r1
 SSLOpenSSLConfCmd ServerInfoFile "/usr/local/apache2/conf/server-info.pem"
 SSLOpenSSLConfCmd Protocol "-ALL, TLSv1.2"
 SSLOpenSSLConfCmd SignatureAlgorithms RSA+SHA384:ECDSA+SHA256</pre>
+</div>
+
+<div class="warning"><h3>Compatibility and Stability
+warning</h3>
+
+<p>Some of the <code class="directive">SSLOpenSSLConfCmd</code> commands can be used
+as an alternative to existing directives (such as
+<code class="directive"><a href="#sslciphersuite">SSLCipherSuite</a></code> or
+<code class="directive"><a href="#sslprotocol">SSLProtocol</a></code>),
+though the syntax / allowable values for the parameters may sometimes differ.</p>
+
+<p>It is recommended that directives provided by mod_ssl are used
+where available to configure OpenSSL, and
+<code class="directive">SSLOpenSSLConfCmd</code> is only used for features of
+OpenSSL which are not configurable by mod_ssl.  It is possible that
+mod_ssl behaviour will change across versions of httpd where
+<code class="directive">SSLOpenSSLConfCmd</code> is used.</p>
 </div>
 
 </div>
@@ -2924,7 +2934,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_ssl.html';
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2021 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2023 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

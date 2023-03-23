@@ -76,6 +76,10 @@ enum {
     DAV_ENABLED_ON
 };
 
+#define DAV_MSEXT_OPT_NONE	0
+#define DAV_MSEXT_OPT_WDV	(1u << 0)
+#define DAV_MSEXT_OPT_ALL	DAV_MSEXT_OPT_WDV
+
 /* per-dir configuration */
 typedef struct {
     const char *provider_name;
@@ -83,7 +87,8 @@ typedef struct {
     const char *dir;
     int locktimeout;
     int allow_depthinfinity;
-
+    int allow_lockdiscovery;
+    int msext_opts;
 } dav_dir_conf;
 
 /* per-server configuration */
@@ -107,6 +112,7 @@ enum {
 };
 static int dav_methods[DAV_M_LAST];
 
+static const char *dav_cmd_davmsext(cmd_parms *, void *, const char *);
 
 static int dav_init_handler(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp,
                              server_rec *s)
@@ -203,6 +209,10 @@ static void *dav_merge_dir_config(apr_pool_t *p, void *base, void *overrides)
     newconf->dir = DAV_INHERIT_VALUE(parent, child, dir);
     newconf->allow_depthinfinity = DAV_INHERIT_VALUE(parent, child,
                                                      allow_depthinfinity);
+    newconf->allow_lockdiscovery = DAV_INHERIT_VALUE(parent, child,
+                                                     allow_lockdiscovery);
+    newconf->msext_opts = DAV_INHERIT_VALUE(parent, child,
+                                            msext_opts);
 
     return newconf;
 }
@@ -297,6 +307,48 @@ static const char *dav_cmd_davdepthinfinity(cmd_parms *cmd, void *config,
         conf->allow_depthinfinity = DAV_ENABLED_ON;
     else
         conf->allow_depthinfinity = DAV_ENABLED_OFF;
+    return NULL;
+}
+
+/*
+ * Command handler for the DAVLockDiscovery directive, which is FLAG.
+ */
+static const char *dav_cmd_davlockdiscovery(cmd_parms *cmd, void *config,
+                                            int arg)
+{
+    dav_dir_conf *conf = (dav_dir_conf *)config;
+
+    if (arg)
+        conf->allow_lockdiscovery = DAV_ENABLED_ON;
+    else
+        conf->allow_lockdiscovery = DAV_ENABLED_OFF;
+    return NULL;
+}
+
+/*
+ * Command handler for the DAVmsExt directive, which is RAW
+ */
+static const char *dav_cmd_davmsext(cmd_parms *cmd, void *config, const char *w)
+{
+    dav_dir_conf *conf = (dav_dir_conf *)config;
+
+    if (!ap_cstr_casecmp(w, "None") ||
+        !ap_cstr_casecmp(w, "Off"))
+        conf->msext_opts = DAV_MSEXT_OPT_NONE;
+
+    else if (!ap_cstr_casecmp(w, "+WDV") ||
+             !ap_cstr_casecmp(w, "WDV"))
+        conf->msext_opts |= DAV_MSEXT_OPT_WDV;
+
+    else if (!ap_cstr_casecmp(w, "-WDV"))
+        conf->msext_opts &= ~DAV_MSEXT_OPT_WDV;
+
+    else if (!ap_cstr_casecmp(w, "All") ||
+             !ap_cstr_casecmp(w, "On"))
+        conf->msext_opts = DAV_MSEXT_OPT_ALL;
+    else
+        return "DAVMSext values can be None | [+|-]WDV | All";
+
     return NULL;
 }
 
@@ -946,6 +998,7 @@ static int dav_method_post(request_rec *r)
 /* handle the PUT method */
 static int dav_method_put(request_rec *r)
 {
+    dav_dir_conf *conf;   
     dav_resource *resource;
     int resource_state;
     dav_auto_version_info av_info;
@@ -1148,6 +1201,11 @@ static int dav_method_put(request_rec *r)
                               err2);
         dav_log_err(r, err2, APLOG_WARNING);
     }
+
+    /* This performs MS-WDV PROPPATCH combined with PUT */
+    conf = ap_get_module_config(r->per_dir_config, &dav_module);
+    if (conf->msext_opts & DAV_MSEXT_OPT_WDV)
+        (void)dav_mswdv_postprocessing(r);
 
     /* ### place the Content-Type and Content-Language into the propdb */
 
@@ -1440,8 +1498,7 @@ static dav_error *dav_gen_supported_live_props(request_rec *r,
     dav_error *err;
 
     /* open lock database, to report on supported lock properties */
-    /* ### should open read-only */
-    if ((err = dav_open_lockdb(r, 0, &lockdb)) != NULL) {
+    if ((err = dav_open_lockdb(r, 1, &lockdb)) != NULL) {
         return dav_push_error(r->pool, err->status, 0,
                               "The lock database could not be opened, "
                               "preventing the reporting of supported lock "
@@ -1450,7 +1507,7 @@ static dav_error *dav_gen_supported_live_props(request_rec *r,
     }
 
     /* open the property database (readonly) for the resource */
-    if ((err = dav_open_propdb(r, lockdb, resource, 1, NULL,
+    if ((err = dav_open_propdb(r, lockdb, resource, DAV_PROPDB_RO, NULL,
                                &propdb)) != NULL) {
         if (lockdb != NULL)
             (*lockdb->hooks->close_lockdb)(lockdb);
@@ -2045,6 +2102,8 @@ static void dav_cache_badprops(dav_walker_ctx *ctx)
 static dav_error * dav_propfind_walker(dav_walk_resource *wres, int calltype)
 {
     dav_walker_ctx *ctx = wres->walk_ctx;
+    dav_dir_conf *conf;
+    int flags = DAV_PROPDB_RO;
     dav_error *err;
     dav_propdb *propdb;
     dav_get_props_result propstats = { 0 };
@@ -2068,6 +2127,10 @@ static dav_error * dav_propfind_walker(dav_walk_resource *wres, int calltype)
         return NULL;
     }
 
+    conf = ap_get_module_config(ctx->r->per_dir_config, &dav_module);
+    if (conf && conf->allow_lockdiscovery == DAV_ENABLED_OFF)
+        flags |= DAV_PROPDB_DISABLE_LOCKDISCOVERY;
+
     /*
     ** Note: ctx->doc can only be NULL for DAV_PROPFIND_IS_ALLPROP. Since
     ** dav_get_allprops() does not need to do namespace translation,
@@ -2077,7 +2140,7 @@ static dav_error * dav_propfind_walker(dav_walk_resource *wres, int calltype)
     ** the resource, however, since we are opening readonly.
     */
     err = dav_popen_propdb(ctx->scratchpool,
-                           ctx->r, ctx->w.lockdb, wres->resource, 1,
+                           ctx->r, ctx->w.lockdb, wres->resource, flags,
                            ctx->doc ? ctx->doc->namespaces : NULL, &propdb);
     if (err != NULL) {
         /* ### do something with err! */
@@ -2218,8 +2281,7 @@ static int dav_method_propfind(request_rec *r)
     apr_pool_create(&ctx.scratchpool, r->pool);
     apr_pool_tag(ctx.scratchpool, "mod_dav-scratch");
 
-    /* ### should open read-only */
-    if ((err = dav_open_lockdb(r, 0, &ctx.w.lockdb)) != NULL) {
+    if ((err = dav_open_lockdb(r, 1, &ctx.w.lockdb)) != NULL) {
         err = dav_push_error(r->pool, err->status, 0,
                              "The lock database could not be opened, "
                              "preventing access to the various lock "
@@ -2463,7 +2525,8 @@ static int dav_method_proppatch(request_rec *r)
         return dav_handle_err(r, err, NULL);
     }
 
-    if ((err = dav_open_propdb(r, NULL, resource, 0, doc->namespaces,
+    if ((err = dav_open_propdb(r, NULL, resource,
+                               DAV_PROPDB_NONE, doc->namespaces,
                                &propdb)) != NULL) {
         /* undo any auto-checkout */
         dav_auto_checkin(r, resource, 1 /*undo*/, 0 /*unlock*/, &av_info);
@@ -4403,10 +4466,32 @@ static int dav_method_report(request_rec *r)
     /* set up defaults for the report response */
     r->status = HTTP_OK;
     ap_set_content_type(r, DAV_XML_CONTENT_TYPE);
+    err = NULL;
 
     /* run report hook */
     result = dav_run_deliver_report(r, resource, doc,
             r->output_filters, &err);
+    if (err != NULL) {
+
+        if (! r->sent_bodyct) {
+          /* No data has been sent to client yet;  throw normal error. */
+          return dav_handle_err(r, err, NULL);
+        }
+
+        /* If an error occurred during the report delivery, there's
+           basically nothing we can do but abort the connection and
+           log an error.  This is one of the limitations of HTTP; it
+           needs to "know" the entire status of the response before
+           generating it, which is just impossible in these streamy
+           response situations. */
+        err = dav_push_error(r->pool, err->status, 0,
+                             "Provider encountered an error while streaming"
+                             " a REPORT response.", err);
+        dav_log_err(r, err, APLOG_ERR);
+        r->connection->aborted = 1;
+
+        return DONE;
+    }
     switch (result) {
     case OK:
         return DONE;
@@ -4414,27 +4499,7 @@ static int dav_method_report(request_rec *r)
         /* No one handled the report */
         return HTTP_NOT_IMPLEMENTED;
     default:
-        if ((err) != NULL) {
-
-            if (! r->sent_bodyct) {
-              /* No data has been sent to client yet;  throw normal error. */
-              return dav_handle_err(r, err, NULL);
-            }
-
-            /* If an error occurred during the report delivery, there's
-               basically nothing we can do but abort the connection and
-               log an error.  This is one of the limitations of HTTP; it
-               needs to "know" the entire status of the response before
-               generating it, which is just impossible in these streamy
-               response situations. */
-            err = dav_push_error(r->pool, err->status, 0,
-                                 "Provider encountered an error while streaming"
-                                 " a REPORT response.", err);
-            dav_log_err(r, err, APLOG_ERR);
-            r->connection->aborted = 1;
-
-            return DONE;
-        }
+        return DONE;
     }
 
     return DONE;
@@ -4946,6 +5011,15 @@ static int dav_method_bind(request_rec *r)
  */
 static int dav_handler(request_rec *r)
 {
+    dav_dir_conf *conf;   
+    int ret;
+
+    conf = ap_get_module_config(r->per_dir_config, &dav_module);
+    if (conf->msext_opts & DAV_MSEXT_OPT_WDV) {
+        if ((ret = dav_mswdv_preprocessing(r)) != OK)
+            return ret;
+    }
+
     if (strcmp(r->handler, DAV_HANDLER_NAME) != 0)
         return DECLINED;
 
@@ -4953,7 +5027,7 @@ static int dav_handler(request_rec *r)
      * be more destructive than the user intended. */
     if (r->parsed_uri.fragment != NULL) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(00622)
-                     "buggy client used un-escaped hash in Request-URI");
+                     "buggy client used un-escaped hash in Request-URI %s in method %d", r->unparsed_uri, r->method_number);
         return dav_error_response(r, HTTP_BAD_REQUEST,
                                   "The request was invalid: the URI included "
                                   "an un-escaped hash character");
@@ -5179,6 +5253,8 @@ static int dav_fixups(request_rec *r)
     return DECLINED;
 }
 
+
+
 static void register_hooks(apr_pool_t *p)
 {
     ap_hook_handler(dav_handler, NULL, NULL, APR_HOOK_MIDDLE);
@@ -5193,6 +5269,11 @@ static void register_hooks(apr_pool_t *p)
                             NULL, NULL, APR_HOOK_LAST);
     dav_hook_gather_reports(dav_core_gather_reports,
                             NULL, NULL, APR_HOOK_LAST);
+
+    ap_register_output_filter("DAV_MSWDV_OUT", dav_mswdv_output, NULL,
+                              AP_FTYPE_RESOURCE);
+    ap_register_input_filter("DAV_MSWDV_IN", dav_mswdv_input, NULL,
+                             AP_FTYPE_RESOURCE);
 
     dav_core_register_uris(p);
 }
@@ -5217,6 +5298,16 @@ static const command_rec dav_cmds[] =
     AP_INIT_FLAG("DAVDepthInfinity", dav_cmd_davdepthinfinity, NULL,
                  ACCESS_CONF|RSRC_CONF,
                  "allow Depth infinity PROPFIND requests"),
+
+    /* per directory/location, or per server */
+    AP_INIT_FLAG("DAVLockDiscovery", dav_cmd_davlockdiscovery, NULL,
+                 ACCESS_CONF|RSRC_CONF,
+                 "allow lock discovery by PROPFIND requests"),
+
+    /* per directory/location, or per server */
+    AP_INIT_ITERATE("DAVMSext", dav_cmd_davmsext, NULL,
+                    ACCESS_CONF|RSRC_CONF,
+                    "Enable MS-WDV extensions"),
 
     { NULL }
 };

@@ -47,6 +47,7 @@
 #include "ap_release.h"
 
 #include "apr.h"
+#include "apr_version.h"
 #include "apr_general.h"
 #include "apr_tables.h"
 #include "apr_pools.h"
@@ -1143,6 +1144,14 @@ struct request_rec {
      * the elements of this field.
      */
     ap_request_bnotes_t bnotes;
+    /** Indicates that the request has a body of unknown length and
+     * protocol handlers need to read it, even if only to discard the
+     * data. In HTTP/1.1 this is set on chunked transfer encodings, but
+     * newer HTTP versions can transfer such bodies by other means. The
+     * absence of a "Transfer-Encoding" header is no longer sufficient
+     * to conclude that no body is there.
+     */
+    int body_indeterminate;
 };
 
 /**
@@ -1802,6 +1811,18 @@ AP_DECLARE(int) ap_unescape_url(char *url);
  */
 AP_DECLARE(int) ap_unescape_url_keep2f(char *url, int decode_slashes);
 
+#define AP_UNESCAPE_URL_KEEP_UNRESERVED (1u << 0)
+#define AP_UNESCAPE_URL_FORBID_SLASHES  (1u << 1)
+#define AP_UNESCAPE_URL_KEEP_SLASHES    (1u << 2)
+
+/**
+ * Unescape a URL, with options
+ * @param url The url to unescape
+ * @param flags Bitmask of AP_UNESCAPE_URL_* flags
+ * @return 0 on success, non-zero otherwise
+ */
+AP_DECLARE(int) ap_unescape_url_ex(char *url, unsigned int flags);
+
 /**
  * Unescape an application/x-www-form-urlencoded string
  * @param query The query to unescape
@@ -1831,7 +1852,7 @@ AP_DECLARE(void) ap_no2slash_ex(char *name, int is_fs_path)
 #define AP_NORMALIZE_NOT_ABOVE_ROOT     (1u <<  1)
 #define AP_NORMALIZE_DECODE_UNRESERVED  (1u <<  2)
 #define AP_NORMALIZE_MERGE_SLASHES      (1u <<  3)
-#define AP_NORMALIZE_DROP_PARAMETERS    (1u <<  4)
+#define AP_NORMALIZE_DROP_PARAMETERS    (0) /* deprecated */
 
 /**
  * Remove all ////, /./ and /xx/../ substrings from a path, and more
@@ -2547,6 +2568,67 @@ AP_DECLARE(void *) ap_calloc(size_t nelem, size_t size)
 AP_DECLARE(void *) ap_realloc(void *ptr, size_t size)
                    AP_FN_ATTR_WARN_UNUSED_RESULT
                    AP_FN_ATTR_ALLOC_SIZE(2);
+
+#if APR_HAS_THREADS
+
+/* apr_thread_create() wrapper that handles thread pool limits and
+ * ap_thread_current() eventually (if not handle by APR already).
+ */
+AP_DECLARE(apr_status_t) ap_thread_create(apr_thread_t **thread, 
+                                          apr_threadattr_t *attr, 
+                                          apr_thread_start_t func, 
+                                          void *data, apr_pool_t *pool);
+
+/* Make the main() thread ap_thread_current()-able. */
+AP_DECLARE(apr_status_t) ap_thread_main_create(apr_thread_t **thread,
+                                               apr_pool_t *pool);
+
+#if APR_VERSION_AT_LEAST(1,8,0)
+
+/**
+ * Use APR 1.8+ implementation.
+ */
+#if APR_HAS_THREAD_LOCAL && !defined(AP_NO_THREAD_LOCAL)
+#define AP_THREAD_LOCAL                 APR_THREAD_LOCAL
+#endif
+#define ap_thread_current               apr_thread_current
+#define ap_thread_current_create        apr_thread_current_create
+#define ap_thread_current_after_fork    apr_thread_current_after_fork
+
+#else /* APR_VERSION_AT_LEAST(1,8,0) */
+
+#if !defined(AP_NO_THREAD_LOCAL)
+/**
+ * AP_THREAD_LOCAL keyword aliases the compiler's.
+ */
+#if defined(__cplusplus) && __cplusplus >= 201103L
+#define AP_THREAD_LOCAL thread_local
+#elif defined(__STDC_VERSION__) && __STDC_VERSION__ >= 201112 && \
+      (!defined(__GNUC__) || \
+      __GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 9))
+#define AP_THREAD_LOCAL _Thread_local
+#elif defined(__GNUC__) /* works for clang too */
+#define AP_THREAD_LOCAL __thread
+#elif defined(WIN32) && defined(_MSC_VER)
+#define AP_THREAD_LOCAL __declspec(thread)
+#endif
+#endif /* !defined(AP_NO_THREAD_LOCAL) */
+
+AP_DECLARE(apr_status_t) ap_thread_current_create(apr_thread_t **current,
+                                                  apr_threadattr_t *attr,
+                                                  apr_pool_t *pool);
+AP_DECLARE(void) ap_thread_current_after_fork(void);
+AP_DECLARE(apr_thread_t *) ap_thread_current(void);
+
+#endif /* APR_VERSION_AT_LEAST(1,8,0) */
+
+#endif /* APR_HAS_THREADS */
+
+#ifdef AP_THREAD_LOCAL
+#define AP_HAS_THREAD_LOCAL 1
+#else
+#define AP_HAS_THREAD_LOCAL 0
+#endif
 
 /**
  * Get server load params

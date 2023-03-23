@@ -17,6 +17,22 @@
 #ifndef __mod_h2__h2__
 #define __mod_h2__h2__
 
+#include <apr_version.h>
+#include <ap_mmn.h>
+
+struct h2_session;
+struct h2_stream;
+
+/*
+ * When apr pollsets can poll file descriptors (e.g. pipes),
+ * we use it for polling stream input/output.
+ */
+#ifdef H2_NO_PIPES
+#define H2_USE_PIPES            0
+#else
+#define H2_USE_PIPES            (APR_FILES_AS_SOCKETS && APR_VERSION_AT_LEAST(1,6,0))
+#endif
+
 /**
  * The magic PRIamble of RFC 7540 that is always sent when starting
  * a h2 communication.
@@ -89,7 +105,7 @@ typedef enum {
     H2_SESSION_ST_DONE,             /* finished, connection close */
     H2_SESSION_ST_IDLE,             /* nothing to write, expecting data inc */
     H2_SESSION_ST_BUSY,             /* read/write without stop */
-    H2_SESSION_ST_WAIT,             /* waiting for tasks reporting back */
+    H2_SESSION_ST_WAIT,             /* waiting for c1 incoming + c2s output */
     H2_SESSION_ST_CLEANUP,          /* pool is being cleaned up */
 } h2_session_state;
 
@@ -98,9 +114,10 @@ typedef struct h2_session_props {
     int completed_max;     /* the highest remote stream completed */
     int emitted_count;     /* the number of local streams sent */
     int emitted_max;       /* the highest local stream id sent */
-    int error;             /* the last session error encountered */
     unsigned int accepting : 1;     /* if the session is accepting new streams */
     unsigned int shutdown : 1;      /* if the final GOAWAY has been sent */
+    int error;             /* the last session error encountered */
+    const char *error_msg; /* the short message given on the error */
 } h2_session_props;
 
 typedef enum h2_stream_state_t {
@@ -120,7 +137,9 @@ typedef enum {
     H2_SEV_CLOSED_R,
     H2_SEV_CANCELLED,
     H2_SEV_EOS_SENT,
+    H2_SEV_IN_ERROR,
     H2_SEV_IN_DATA_PENDING,
+    H2_SEV_OUT_C1_BLOCK,
 } h2_stream_event_t;
 
 
@@ -129,7 +148,6 @@ typedef enum {
  * become a request_rec to be handled by soemone.
  */
 typedef struct h2_request h2_request;
-
 struct h2_request {
     const char *method; /* pseudo header values, see ch. 8.1.2.3 */
     const char *scheme;
@@ -138,8 +156,6 @@ struct h2_request {
     apr_table_t *headers;
 
     apr_time_t request_time;
-    unsigned int chunked : 1;   /* iff request body needs to be forwarded as chunked */
-    unsigned int serialize : 1; /* iff this request is written in HTTP/1.1 serialization */
     apr_off_t raw_bytes;        /* RAW network bytes that generated this request - if known. */
     int http_status;            /* Store a possible HTTP status code that gets
                                  * defined before creating the dummy HTTP/1.1
@@ -154,25 +170,23 @@ struct h2_request {
  */
 #define H2_HTTP_STATUS_UNSET (0)
 
-typedef struct h2_headers h2_headers;
-
-struct h2_headers {
-    int         status;
-    apr_table_t *headers;
-    apr_table_t *notes;
-    apr_off_t   raw_bytes;      /* RAW network bytes that generated this request - if known. */
-};
-
 typedef apr_status_t h2_io_data_cb(void *ctx, const char *data, apr_off_t len);
 
-typedef int h2_stream_pri_cmp(int stream_id1, int stream_id2, void *ctx);
+typedef int h2_stream_pri_cmp_fn(int stream_id1, int stream_id2, void *session);
+typedef struct h2_stream *h2_stream_get_fn(struct h2_session *session, int stream_id);
 
-/* Note key to attach connection task id to conn_rec/request_rec instances */
-
-#define H2_TASK_ID_NOTE         "http2-task-id"
-#define H2_FILTER_DEBUG_NOTE    "http2-debug"
+/* Note key to attach stream id to conn_rec/request_rec instances */
 #define H2_HDR_CONFORMANCE      "http2-hdr-conformance"
 #define H2_HDR_CONFORMANCE_UNSAFE      "unsafe"
 #define H2_PUSH_MODE_NOTE       "http2-push-mode"
+
+
+#if AP_MODULE_MAGIC_AT_LEAST(20211221, 6)
+#define AP_HAS_RESPONSE_BUCKETS     1
+
+#else /* AP_MODULE_MAGIC_AT_LEAST(20211221, 6) */
+#define AP_HAS_RESPONSE_BUCKETS     0
+
+#endif /* else AP_MODULE_MAGIC_AT_LEAST(20211221, 6) */
 
 #endif /* defined(__mod_h2__h2__) */

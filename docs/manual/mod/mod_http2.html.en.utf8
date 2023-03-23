@@ -92,6 +92,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#h2pushresource">H2PushResource</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#h2serializeheaders">H2SerializeHeaders</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#h2streammaxmemsize">H2StreamMaxMemSize</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#h2streamtimeout">H2StreamTimeout</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#h2tlscooldownsecs">H2TLSCoolDownSecs</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#h2tlswarmupsize">H2TLSWarmUpSize</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#h2upgrade">H2Upgrade</a></li>
@@ -312,7 +313,8 @@
             </p>
             <p>
                 When set to <code>on</code>, PUSH resources announced with
-                <code>H2PushResource</code> will trigger an interim 103 response
+                <code class="directive"><a href="#h2pushresource">H2PushResource</a></code> will
+                trigger an interim 103 response
                 before the final response. The 103 response will carry <code>Link</code>
                 headers that advise the <code>preload</code> of such resources. 
             </p>
@@ -441,7 +443,7 @@
 <div class="directive-section"><h2><a name="H2OutputBuffering" id="H2OutputBuffering">H2OutputBuffering</a> <a name="h2outputbuffering" id="h2outputbuffering">Directive</a> <a title="Permanent link" href="#h2outputbuffering" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Determine buffering behaviour of output</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>H2OutputBuffering on/off</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>H2OutputBuffering on|off</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>H2OutputBuffering on</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
@@ -449,7 +451,7 @@
 <tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in version 2.4.48 and later.</td></tr>
 </table>
             <p>
-                The option 'H2OutputBuffering on/off' controls the buffering of stream output.
+                The directive <code class="directive">H2OutputBuffering</code> controls the buffering of stream output.
                 The default is on, which is the behaviour of previous versions. When off, all
                 bytes are made available immediately to the main connection for sending them
                 out to the client. This fixes interop issues with certain flavours of gRPC.
@@ -460,7 +462,7 @@
 <div class="directive-section"><h2><a name="H2Padding" id="H2Padding">H2Padding</a> <a name="h2padding" id="h2padding">Directive</a> <a title="Permanent link" href="#h2padding" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Determine the range of padding bytes added to payload frames</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>H2Padding numbits</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>H2Padding <em>numbits</em></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>H2Padding 0</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
@@ -524,7 +526,7 @@
             </p>
             <p> 
                 Link headers in responses are either set by the application or
-                can be configured via <code class="directive">H2PushResource</code> or
+                can be configured via <code class="directive"><a href="#h2pushresource">H2PushResource</a></code> or
                 using <code class="module"><a href="../mod/mod_headers.html">mod_headers</a></code> as:
             </p>
             <div class="example"><h3>mod_headers example</h3><pre class="prettyprint lang-config">&lt;Location /index.html&gt;
@@ -572,12 +574,10 @@
                 section to influence the number for all connections to that virtual host. 
             </p>
             <p>
-                The push diary records a digest (currently using a 64 bit number) of pushed
+                The push diary records a digest of pushed
                 resources (their URL) to avoid duplicate pushes on the same connection.
                 These value are not persisted, so clients opening a new connection
-                will experience known pushes again. There is ongoing work to enable
-                a client to disclose a digest of the resources it already has, so
-                the diary maybe initialized by the client on each connection setup.
+                will experience known pushes again.
             </p>
             <p>
                 If the maximum size is reached, newer entries replace the oldest
@@ -593,7 +593,7 @@
 <div class="directive-section"><h2><a name="H2PushPriority" id="H2PushPriority">H2PushPriority</a> <a name="h2pushpriority" id="h2pushpriority">Directive</a> <a title="Permanent link" href="#h2pushpriority" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>H2 Server Push Priority</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>H2PushPriority <em>mime-type</em> [after|before|interleaved] [weight]</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>H2PushPriority <em>mime-type</em> [after|before|interleaved] [<em>weight</em>]</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>H2PushPriority * After 16</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
@@ -710,7 +710,7 @@ H2PushPriority text/css   interleaved      # weight 256 default</pre>
 <div class="directive-section"><h2><a name="H2PushResource" id="H2PushResource">H2PushResource</a> <a name="h2pushresource" id="h2pushresource">Directive</a> <a title="Permanent link" href="#h2pushresource" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Declares resources for early pushing to the client</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>H2PushResource [add] path [critical]</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>H2PushResource [add] <em>path</em> [critical]</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
@@ -785,6 +785,23 @@ H2PushPriority text/css   interleaved      # weight 256 default</pre>
             </p>
             <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">H2StreamMaxMemSize 128000</pre>
 </div>
+        
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="H2StreamTimeout" id="H2StreamTimeout">H2StreamTimeout</a> <a name="h2streamtimeout" id="h2streamtimeout">Directive</a> <a title="Permanent link" href="#h2streamtimeout" class="permalink">&para;</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Maximum time waiting when sending/receiving data to stream processing</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>H2StreamTimeout <var>time-interval</var>[s]</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>Value of <code class="directive"><a href="../mod/core.html#timeout">Timeout</a></code></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_http2</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in version 2.5.1 and later.</td></tr>
+</table>
+            <p>
+                <code class="directive">H2StreamTimeout</code> specifies the maximum time that
+                a stream being processed will wait for its data to be sent/received.
+            </p>
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -964,7 +981,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_http2.html
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2021 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2023 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

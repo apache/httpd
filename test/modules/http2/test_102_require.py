@@ -1,13 +1,16 @@
 import pytest
 
-from h2_conf import HttpdConf
+from .env import H2Conf, H2TestEnv
 
 
-class TestStore:
+@pytest.mark.skipif(condition=H2TestEnv.is_unsupported, reason="mod_http2 not supported here")
+class TestRequire:
 
     @pytest.fixture(autouse=True, scope='class')
     def _class_scope(self, env):
-        conf = HttpdConf(env).start_vhost(env.https_port, "ssl", with_ssl=True)
+        domain = f"ssl.{env.http_tld}"
+        conf = H2Conf(env)
+        conf.start_vhost(domains=[domain], port=env.https_port)
         conf.add("""
               Protocols h2 http/1.1
               SSLOptions +StdEnvVars
@@ -20,17 +23,17 @@ class TestStore:
         conf.end_vhost()
         conf.install()
         # the dir needs to exists for the configuration to have effect
-        env.mkpath("%s/htdocs/ssl-client-verify" % env.server_dir)
+        env.mkpath(f"{env.server_dir}/htdocs/ssl-client-verify")
         assert env.apache_restart() == 0
 
-    def test_102_01(self, env):
+    def test_h2_102_01(self, env):
         url = env.mkurl("https", "ssl", "/h2only.html")
         r = env.curl_get(url)
         assert 0 == r.exit_code
         assert r.response
         assert 404 == r.response["status"]
         
-    def test_102_02(self, env):
+    def test_h2_102_02(self, env):
         url = env.mkurl("https", "ssl", "/noh2.html")
         r = env.curl_get(url)
         assert 0 == r.exit_code

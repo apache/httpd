@@ -85,6 +85,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#h2copyfiles">H2CopyFiles</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#h2direct">H2Direct</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#h2earlyhints">H2EarlyHints</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#h2maxdataframelen">H2MaxDataFrameLen</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#h2maxsessionstreams">H2MaxSessionStreams</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#h2maxworkeridleseconds">H2MaxWorkerIdleSeconds</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#h2maxworkers">H2MaxWorkers</a></li>
@@ -98,6 +99,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#h2pushresource">H2PushResource</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#h2serializeheaders">H2SerializeHeaders</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#h2streammaxmemsize">H2StreamMaxMemSize</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#h2streamtimeout">H2StreamTimeout</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#h2tlscooldownsecs">H2TLSCoolDownSecs</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#h2tlswarmupsize">H2TLSWarmUpSize</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#h2upgrade">H2Upgrade</a></li>
@@ -352,12 +354,37 @@
 		intermédiaires inattendues.
             </p>
             <p>
-                Lorsque cette directive est définie à <code>on</code>, les
-		ressources PUSHées définie par la directive
-		<code>H2PushResource</code> déclenchent une réponse
-		intermédiaire 103 avant la réponse finale. Cette réponse 103
-		comporte des en-têtes <code>Link</code> qui provoquent le
+		Lorsque cette directive est définie à <code>on</code>, les
+		ressources PUSHées définie par la directive <code class="directive"><a href="#h2pushresource">H2PushResource</a></code> déclenchent une
+		réponse intermédiaire 103 avant la réponse finale. Cette réponse
+		103 comporte des en-têtes <code>Link</code> qui provoquent le
 		<code>préchargement</code> des ressources considérées.
+            </p>
+        
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="h2maxdataframelen" id="h2maxdataframelen">Directive</a> <a name="H2MaxDataFrameLen" id="H2MaxDataFrameLen">H2MaxDataFrameLen</a> <a title="Lien permanent" href="#h2maxdataframelen" class="permalink">&para;</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Nombre maximal d'octets dans une trame HTTP/2 DATA</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>H2MaxDataFrameLen <em>n</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>H2MaxDataFrameLen 0</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_http2</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.5.1 du serveur HTTP
+	Apache.</td></tr>
+</table>
+            <p>
+		La directive <code class="directive">H2MaxDataFrameLen</code> permet de
+		définir le nombre maximal d'octets du corps de réponse que l'on
+		peut placer dans une seule trame HTTP/2 DATA. La valeur 0
+		signifie aucune limite (mais la taille maximale permise par le
+		protocole est respectée).
+            </p><p>
+                Par défaut, le module essaie d'utiliser la taille maximale
+		possible qui est d'environ 16 Ko. Il s'agit cependant de la
+		taille maximale, et lorsque la taille des données de la réponse
+		est inférieure, les trames envoyées sont plus courtes.
             </p>
         
 </div>
@@ -502,7 +529,7 @@
 <div class="directive-section"><h2><a name="h2outputbuffering" id="h2outputbuffering">Directive</a> <a name="H2OutputBuffering" id="H2OutputBuffering">H2OutputBuffering</a> <a title="Lien permanent" href="#h2outputbuffering" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Contrôle la mise en tampon du flux de sortie</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>H2OutputBuffering on/off</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>H2OutputBuffering on|off</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>H2OutputBuffering on</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
@@ -511,13 +538,13 @@
 	Apache.</td></tr>
 </table>
             <p>
-                L'option 'H2OutputBuffering on/off' permet de contrôler la mise
-		en tampon du flux de sortie. La valeur par défaut est on, ce qui
-		correspond au comportement des versions précédentes. Lorsqu'elle
-		est à off, chaque octet est immédiatement disponible pour envoi
-		au client via la connexion principale. Ceci permet de résoudre
-		les problèmes d'inter-opérations avec certaines versions de
-		gRPC.
+		La directive <code class="directive">H2OutputBuffering</code> permet de
+		contrôler la mise en tampon du flux de sortie. La valeur par
+		défaut est on, ce qui correspond au comportement des versions
+		précédentes. Lorsqu'elle est à off, chaque octet est
+		immédiatement disponible pour envoi au client via la connexion
+		principale. Ceci permet de résoudre les problèmes
+		d'inter-opérations avec certaines versions de gRPC.
             </p>
         
 </div>
@@ -526,7 +553,7 @@
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Spécifie un intervalle de nombres d'octets de bourrage à
 	ajouter aux trames utiles</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>H2Padding numbits</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>H2Padding <em>numbits</em></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>H2Padding 0</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
@@ -603,9 +630,8 @@
 		considéré comme devant faire l'objet d'un push.
             </p>
             <p>
-                Les en-têtes link des réponses sont soit définis par
-		l'application, soit configurés via la directive
-		<code class="directive">H2PushResource</code> ou en utilisant
+		Les en-têtes link des réponses sont soit définis par
+		l'application, soit configurés via la directive <code class="directive"><a href="#h2pushresource">H2PushResource</a></code> ou en utilisant
 		<code class="module"><a href="../mod/mod_headers.html">mod_headers</a></code> comme suit :
             </p>
             <div class="example"><h3>Exemple de configuration d'en-tête link via mod_headers</h3><pre class="prettyprint lang-config">&lt;Location /index.html&gt;
@@ -660,15 +686,11 @@
 		de pushes pour le serveur virtuel considéré.
             </p>
             <p>
-                Le journal des pushes enregistre un condensé (sous la forme d'un
-		nombre de 64 bits) des ressources préchargées (leurs URLs) afin
-		d'éviter les duplications de pushes pour une même connexion.
-		Cependant, ces données ne sont pas conservées, et les clients
-		qui ouvrent une nouvelle connexion se verront à nouveau affecter les
-		mêmes pushes. A ce titre, une étude est en cours pour permettre
-		au client de supprimer le condensé des ressources qu'il possède
-		déjà, et par là-même de réinitialiser le journal des pushes à
-		chaque nouvelle connexion.
+		Le journal des pushes enregistre un condensé des ressources
+		préchargées (leurs URLs) afin d'éviter les duplications de
+		pushes pour une même connexion.  Cependant, ces données ne sont
+		pas conservées, et les clients qui ouvrent une nouvelle
+		connexion se verront à nouveau affecter les mêmes pushes. 
             </p>
             <p>
                 Si la taille maximale est atteinte, les nouvelles entrées
@@ -685,7 +707,7 @@
 <div class="directive-section"><h2><a name="h2pushpriority" id="h2pushpriority">Directive</a> <a name="H2PushPriority" id="H2PushPriority">H2PushPriority</a> <a title="Lien permanent" href="#h2pushpriority" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Priorité des pushes H2</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>H2PushPriority mime-type [after|before|interleaved] [weight]</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>H2PushPriority <em>mime-type</em> [after|before|interleaved] [<em>weight</em>]</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>H2PushPriority * After 16</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
@@ -817,7 +839,7 @@ H2PushPriority text/css   interleaved      # poids de 256 par défaut</pre>
 <div class="directive-section"><h2><a name="h2pushresource" id="h2pushresource">Directive</a> <a name="H2PushResource" id="H2PushResource">H2PushResource</a> <a title="Lien permanent" href="#h2pushresource" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Déclare des ressources à proposer ("pusher") au client</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>H2PushResource [add] path [critical]</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>H2PushResource [add] <em>path</em> [critical]</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
@@ -901,6 +923,26 @@ H2PushPriority text/css   interleaved      # poids de 256 par défaut</pre>
             </p>
             <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">H2StreamMaxMemSize 128000</pre>
 </div>
+        
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="h2streamtimeout" id="h2streamtimeout">Directive</a> <a name="H2StreamTimeout" id="H2StreamTimeout">H2StreamTimeout</a> <a title="Lien permanent" href="#h2streamtimeout" class="permalink">&para;</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Temps d'attente maximum lors de l'envoi/réception de
+	données pour le traitement d'un flux</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>H2StreamTimeout <var>time-interval</var>[s]</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>La valeur de la directive <code class="directive"><a href="../mod/core.html#timeout">Timeout</a></code></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_http2</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.5.1 du serveur HTTP
+	Apache.</td></tr>
+</table>
+            <p>
+		<code class="directive">H2StreamTimeout</code> permet de spécifier le
+		temps maximum pendant lequel un flux en cours de traitement
+		attendra pour l'envoi/réception de ses données.
+            </p>
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -1100,7 +1142,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_http2.html
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2021 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2023 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

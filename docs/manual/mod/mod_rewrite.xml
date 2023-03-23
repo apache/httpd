@@ -1059,6 +1059,13 @@ RewriteRule  "^/$"                 "/homepage.std.html"     [L]
         the homepage is served. Otherwise, the standard page is served.
         </p>
 
+        <p>By default, multiple <directive>RewriteCond</directive>s
+        are evaluated in sequence with an implied logical <strong>AND</strong>.
+        If a condition fails, in the absence of an
+        <strong><code>OR</code></strong> flag, the entire ruleset is abandoned,
+        and further conditions are not evaluated.
+        </p>
+
 </usage>
 
 </directivesynopsis>
@@ -1156,15 +1163,15 @@ follow the rules of the <em>directory</em> context.</li>
 
 <li>By default, mod_rewrite overrides rules when <a href="../sections.html#merging">
 merging sections</a> belonging to the same context. The <directive
-module="rewrite">RewriteOptions</directive> directive can change this behavior,
+module="mod_rewrite">RewriteOptions</directive> directive can change this behavior,
 for example using the <em>Inherit</em> setting.</li>
 
-<li>The <directive module="rewrite">RewriteOptions</directive> also regulates the
+<li>The <directive module="mod_rewrite">RewriteOptions</directive> also regulates the
 behavior of sections that are stated at the same nesting level of the configuration. In the
 following example, by default only the RewriteRules stated in the second 
 <directive module="core">If</directive> block
 are considered, since the first ones are overridden. Using <directive
-module="rewrite">RewriteOptions</directive> Inherit forces mod_rewrite to merge the two
+module="mod_rewrite">RewriteOptions</directive> Inherit forces mod_rewrite to merge the two
 sections and consider both set of statements, rather than only the last one.</li>
 </ul>
 <example>
@@ -1239,13 +1246,16 @@ cannot use <code>$N</code> in the substitution string!
 
         <dt>Absolute URL</dt>
 
-        <dd>If an absolute URL is specified,
+        <dd><p>If an absolute URL is specified,
         <module>mod_rewrite</module> checks to see whether the
         hostname matches the current host. If it does, the scheme and
         hostname are stripped out and the resulting path is treated as
         a URL-path. Otherwise, an external redirect is performed for
         the given URL. To force an external redirect back to the
-        current host, see the <code>[R]</code> flag below.</dd>
+        current host, see the <code>[R]</code> flag below.</p>
+        <p>Note that a redirect (implicit or not) using an absolute URI
+        will include the requested query-string, to prevent this see the
+        <code>[QSD]</code> flag below.</p></dd>
 
         <dt><code>-</code> (dash)</dt>
 
@@ -1327,6 +1337,16 @@ cannot use <code>$N</code> in the substitution string!
         href="../rewrite/flags.html#flag_b">details ...</a></em></td>
     </tr>
     <tr>
+        <td>BCTLS</td>
+        <td>Like [B], but only escape control characters and spaces.
+        <em><a href="../rewrite/flags.html#flag_bctls">details ...</a></em></td>
+    </tr>
+    <tr>
+        <td>BNE</td>
+        <td>Characters of [B] or [BCTLS] which should <strong>not</strong> be escaped.
+        <em><a href="../rewrite/flags.html#flag_bne">details ...</a></em></td>
+    </tr>
+    <tr>
         <td>backrefnoplus|BNP</td>
         <td>If backreferences are being escaped, spaces should be escaped to
         %20 instead of +. Useful when the backreference will be used in the
@@ -1404,8 +1424,9 @@ cannot use <code>$N</code> in the substitution string!
     <tr>
         <td>noescape|NE</td>
         <td>Prevent mod_rewrite from applying hexcode escaping of
-        special characters in the result of the rewrite. <em><a
-        href="../rewrite/flags.html#flag_ne">details ...</a></em></td>
+            special characters in the result of rewrites that result in 
+            redirection. <em>
+            <a href="../rewrite/flags.html#flag_ne">details ...</a></em></td>
     </tr>
     <tr>
         <td>nosubreq|NS</td>

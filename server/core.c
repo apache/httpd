@@ -68,11 +68,13 @@
 
 /* LimitRequestBody handling */
 #define AP_LIMIT_REQ_BODY_UNSET         ((apr_off_t) -1)
-#define AP_DEFAULT_LIMIT_REQ_BODY       ((apr_off_t) 0)
+#define AP_DEFAULT_LIMIT_REQ_BODY       ((apr_off_t) 1<<30) /* 1GB */
 
 /* LimitXMLRequestBody handling */
 #define AP_LIMIT_UNSET                  ((long) -1)
 #define AP_DEFAULT_LIMIT_XML_BODY       ((apr_size_t)1000000)
+/* Hard limit for ap_escape_html2() */
+#define AP_MAX_LIMIT_XML_BODY           ((apr_size_t)(APR_SIZE_MAX / 6 - 1))
 
 #define AP_MIN_SENDFILE_BYTES           (256)
 
@@ -144,6 +146,8 @@ typedef struct {
     apr_ipsubnet_t *subnet;
     struct ap_logconf log;
 } conn_log_config;
+
+static apr_socket_t *dummy_socket;
 
 static void *create_core_dir_config(apr_pool_t *a, char *dir)
 {
@@ -489,6 +493,11 @@ static void *create_core_server_config(apr_pool_t *a, server_rec *s)
         conf->flush_max_pipelined = AP_FLUSH_MAX_PIPELINED;
     }
     else {
+        /* Use main ErrorLogFormat while the vhost is loading */
+        core_server_config *main_conf =
+            ap_get_core_module_config(ap_server_conf->module_config);
+        conf->error_log_format = main_conf->error_log_format;
+
         conf->flush_max_pipelined = -1;
     }
 
@@ -3888,6 +3897,11 @@ static const char *set_limit_xml_req_body(cmd_parms *cmd, void *conf_,
     if (conf->limit_xml_body < 0)
         return "LimitXMLRequestBody requires a non-negative integer.";
 
+    /* zero is AP_MAX_LIMIT_XML_BODY (implicitly) */
+    if ((apr_size_t)conf->limit_xml_body > AP_MAX_LIMIT_XML_BODY)
+        return apr_psprintf(cmd->pool, "LimitXMLRequestBody must not exceed "
+                            "%" APR_SIZE_T_FMT, AP_MAX_LIMIT_XML_BODY);
+
     return NULL;
 }
 
@@ -3976,6 +3990,8 @@ AP_DECLARE(apr_size_t) ap_get_limit_xml_body(const request_rec *r)
     conf = ap_get_core_module_config(r->per_dir_config);
     if (conf->limit_xml_body == AP_LIMIT_UNSET)
         return AP_DEFAULT_LIMIT_XML_BODY;
+    if (conf->limit_xml_body == 0)
+        return AP_MAX_LIMIT_XML_BODY;
 
     return (apr_size_t)conf->limit_xml_body;
 }
@@ -4069,24 +4085,26 @@ static const char *set_recursion_limit(cmd_parms *cmd, void *dummy,
 
 static void log_backtrace(const request_rec *r)
 {
-    const request_rec *top = r;
+    if (APLOGrdebug(r)) {
+        const request_rec *top = r;
 
-    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(00121)
-                  "r->uri = %s", r->uri ? r->uri : "(unexpectedly NULL)");
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(00121)
+                      "r->uri = %s", r->uri ? r->uri : "(unexpectedly NULL)");
 
-    while (top && (top->prev || top->main)) {
-        if (top->prev) {
-            top = top->prev;
-            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(00122)
-                          "redirected from r->uri = %s",
-                          top->uri ? top->uri : "(unexpectedly NULL)");
-        }
+        while (top && (top->prev || top->main)) {
+            if (top->prev) {
+                top = top->prev;
+                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(00122)
+                              "redirected from r->uri = %s",
+                              top->uri ? top->uri : "(unexpectedly NULL)");
+            }
 
-        if (!top->prev && top->main) {
-            top = top->main;
-            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(00123)
-                          "subrequested from r->uri = %s",
-                          top->uri ? top->uri : "(unexpectedly NULL)");
+            if (!top->prev && top->main) {
+                top = top->main;
+                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(00123)
+                              "subrequested from r->uri = %s",
+                              top->uri ? top->uri : "(unexpectedly NULL)");
+            }
         }
     }
 }
@@ -4112,12 +4130,15 @@ AP_DECLARE(int) ap_is_recursion_limit_exceeded(const request_rec *r)
         if (top->prev) {
             if (++redirects >= rlimit) {
                 /* uuh, too much. */
+                /* As we check before a new internal redirect, top->prev->uri
+                 * should be the original request causing this.
+                 */
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(00124)
-                              "Request exceeded the limit of %d internal "
+                              "Request (%s) exceeded the limit of %d internal "
                               "redirects due to probable configuration error. "
                               "Use 'LimitInternalRecursion' to increase the "
                               "limit if necessary. Use 'LogLevel debug' to get "
-                              "a backtrace.", rlimit);
+                              "a backtrace.", top->prev->uri, rlimit);
 
                 /* post backtrace */
                 log_backtrace(r);
@@ -4132,12 +4153,15 @@ AP_DECLARE(int) ap_is_recursion_limit_exceeded(const request_rec *r)
         if (!top->prev && top->main) {
             if (++subreqs >= slimit) {
                 /* uuh, too much. */
+                /* As we check before a new subrequest, top->main->uri should
+                 * be the original request causing this.
+                 */
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(00125)
-                              "Request exceeded the limit of %d subrequest "
+                              "Request (%s) exceeded the limit of %d subrequest "
                               "nesting levels due to probable configuration "
                               "error. Use 'LimitInternalRecursion' to increase "
                               "the limit if necessary. Use 'LogLevel debug' to "
-                              "get a backtrace.", slimit);
+                              "get a backtrace.", top->main->uri, slimit);
 
                 /* post backtrace */
                 log_backtrace(r);
@@ -5508,6 +5532,54 @@ static conn_rec *core_create_conn(apr_pool_t *ptrans, server_rec *s,
     return c;
 }
 
+static conn_rec *core_create_secondary_conn(apr_pool_t *ptrans,
+                                            conn_rec *master,
+                                            apr_bucket_alloc_t *alloc)
+{
+    apr_pool_t *pool;
+    conn_config_t *conn_config;
+    conn_rec *c = (conn_rec *) apr_pmemdup(ptrans, master, sizeof(*c));
+
+    /* Got a connection structure, so initialize what fields we can
+     * (the rest are zeroed out by pcalloc).
+     */
+    apr_pool_create(&pool, ptrans);
+    apr_pool_tag(pool, "secondary_conn");
+
+    /* we copied everything, now replace what is different */
+    c->master = master;
+    c->pool = pool;
+    c->bucket_alloc = alloc;
+    c->conn_config = ap_create_conn_config(pool);
+    c->notes = apr_table_make(pool, 5);
+    c->slaves = apr_array_make(pool, 20, sizeof(conn_slave_rec *));
+    c->requests = apr_array_make(pool, 20, sizeof(request_rec *));
+    c->input_filters = NULL;
+    c->output_filters = NULL;
+    c->filter_conn_ctx = NULL;
+
+    /* prevent mpm_event from making wrong assumptions about this connection,
+     * like e.g. using its socket for an async read check. */
+    c->clogging_input_filters = 1;
+
+    c->log = NULL;
+    c->aborted = 0;
+    c->keepalives = 0;
+
+    /* FIXME: mpms (and maybe other) parts think that there is always
+     * a socket for a connection. We cannot use the master socket for
+     * secondary connections, as this gets modified (closed?) when
+     * the secondary connection terminates.
+     * There seem to be some checks for c->master necessary in other
+     * places.
+     */
+    conn_config = apr_pcalloc(pool, sizeof(*conn_config));
+    conn_config->socket = dummy_socket;
+    ap_set_core_module_config(c->conn_config, conn_config);
+
+    return c;
+}
+
 static int core_pre_connection(conn_rec *c, void *csd)
 {
     conn_config_t *conn_config;
@@ -5555,6 +5627,31 @@ static int core_pre_connection(conn_rec *c, void *csd)
     ap_add_output_filter_handle(ap_core_output_filter_handle, NULL, NULL, c);
 
     return DONE;
+}
+
+AP_DECLARE(int) ap_pre_connection(conn_rec *c, void *csd)
+{
+    int rc = OK;
+
+    rc = ap_run_pre_connection(c, csd);
+    if (rc != OK && rc != DONE) {
+        c->aborted = 1;
+        /*
+         * In case we errored, the pre_connection hook of the core
+         * module maybe did not run (it is APR_HOOK_REALLY_LAST) and
+         * hence we missed to
+         *
+         * - Put the socket in c->conn_config
+         * - Setup core output and input filters
+         * - Set socket options and timeouts
+         *
+         * Hence call it in this case.
+         */
+        if (!ap_get_conn_socket(c)) {
+            core_pre_connection(c, csd);
+        }
+    }
+    return rc;
 }
 
 AP_CORE_DECLARE(conn_rec *) ap_create_slave_connection(conn_rec *c)
@@ -5636,6 +5733,11 @@ static void core_child_init(apr_pool_t *pchild, server_rec *s)
      */
     proc.pid = getpid();
     apr_random_after_fork(&proc);
+
+    /* needed for secondary connections so people do not change the master
+     * connection socket. */
+    apr_socket_create(&dummy_socket, APR_INET, SOCK_STREAM,
+                      APR_PROTO_TCP, pchild);
 }
 
 static void core_optional_fn_retrieve(void)
@@ -5871,6 +5973,8 @@ static void register_hooks(apr_pool_t *p)
      */
     ap_hook_create_connection(core_create_conn, NULL, NULL,
                               APR_HOOK_REALLY_LAST);
+    ap_hook_create_secondary_connection(core_create_secondary_conn, NULL, NULL,
+                                        APR_HOOK_REALLY_LAST);
     ap_hook_pre_connection(core_pre_connection, NULL, NULL,
                            APR_HOOK_REALLY_LAST);
 

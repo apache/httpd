@@ -839,100 +839,158 @@ APREQ_DECLARE(apr_status_t) apreq_file_mktemp(apr_file_t **fp,
 }
 
 
-/*
- * is_2616_token() is the verbatim definition from section 2.2
- * in the rfc itself.  We try to optimize it around the
- * expectation that the argument is not a token, which
- * should be the typical usage.
- */
-
-static APR_INLINE
-unsigned is_2616_token(const char c) {
-    switch (c) {
-    case ' ': case ';': case ',': case '"': case '\t':
-        /* The chars we are expecting are listed above;
-           the chars below are just for completeness. */
-    case '?': case '=': case '@': case ':': case '\\': case '/':
-    case '(': case ')':
-    case '<': case '>':
-    case '{': case '}':
-    case '[': case ']':
-        return 0;
-    default:
-        if (apr_iscntrl(c))
-            return 0;
-    }
-    return 1;
-}
+#define IS_SPACE_CHAR(c) ((c) == '\t' || (c) == ' ')
+#define IS_TOKEN_CHAR(c) (apr_isalnum(c) \
+                          || ((c) && strchr("!#$%&'*+-.^_`|~", (c))))
 
 APREQ_DECLARE(apr_status_t)
     apreq_header_attribute(const char *hdr,
                            const char *name, const apr_size_t nlen,
                            const char **val, apr_size_t *vlen)
 {
-    const char *key, *v;
+    int done = 0;
 
-    /* Must ensure first char isn't '=', so we can safely backstep. */
-    while (*hdr == '=')
-        ++hdr;
+    if (!nlen)
+        return APREQ_ERROR_NOATTR;
 
-    while ((key = strchr(hdr, '=')) != NULL) {
+    do {
+        const char *hde, *v;
+        apr_size_t tail = 0;
 
-        v = key + 1;
-        --key;
+        /* Parse the name => [hdr:hde[ */
+        hde = hdr;
+    look_for_end_name:
+        switch (*hde) {
+        case 0:
+        case '\r':
+        case '\n':
+            done = 1;
+        case '=':
+        case ';':
+        case ',':
+            v = hde;
+            hde -= tail;
+            break;
+        case ' ':
+        case '\t':
+            if (hde == hdr)
+                ++hdr;
+            else
+                ++tail;
+            ++hde;
+            goto look_for_end_name;
+        default:
+            /* The name is a token */
+            if (!IS_TOKEN_CHAR(*hde))
+                return APREQ_ERROR_BADCHAR;
+            /* Nothing after the tail */
+            if (tail)
+                return APREQ_ERROR_BADATTR;
+            ++hde;
+            goto look_for_end_name;
+        }
 
-        while (apr_isspace(*key) && key > hdr + nlen)
-            --key;
+        /* Parse the value => (*val, *vlen) */
+        if (*v == '=') {
+            if (hde == hdr) {
+                /* The name can't be empty */
+                return APREQ_ERROR_BADATTR;
+            }
 
-        key -= nlen - 1;
-
-        while (apr_isspace(*v))
             ++v;
-
-        if (*v == '"') {
-            ++v;
-            *val = v;
-
-        look_for_end_quote:
-            switch (*v) {
-            case '"':
-                break;
-            case 0:
-                return APREQ_ERROR_BADSEQ;
-            case '\\':
-                if (v[1] != 0)
-                    ++v;
-            default:
+            while (IS_SPACE_CHAR(*v))
                 ++v;
-                goto look_for_end_quote;
+
+            /* Quoted string ? */
+            if (*v == '"') {
+                *val = ++v;
+
+                /* XXX: the interface does not permit unescaping,
+                 *      it should have pool to allocate from.
+                 * The caller can't know whether a returned '\\' is
+                 * a quoted-char or not..
+                 */
+            look_for_end_quote:
+                switch (*v) {
+                case 0:
+                case '\r':
+                case '\n':
+                    return APREQ_ERROR_BADSEQ;
+                case '"':
+                    *vlen = v - *val;
+                    break;
+                case '\\':
+                    if (v[1] != 0)
+                        ++v;
+                    ++v;
+                    goto look_for_end_quote;
+                default:
+                    if (apr_iscntrl(*v))
+                        return APREQ_ERROR_BADCHAR;
+                    ++v;
+                    goto look_for_end_quote;
+                }
+
+            look_for_after_quote:
+                switch (*v) {
+                case 0:
+                case '\r':
+                case '\n':
+                    done = 1;
+                case ';':
+                case ',':
+                    break;
+                case ' ':
+                case '\t':
+                    goto look_for_after_quote;
+                default:
+                    if (apr_iscntrl(*v))
+                        return APREQ_ERROR_BADCHAR;
+                    return APREQ_ERROR_BADSEQ;
+                }
+            }
+            else {
+                *val = v;
+                tail = 0;
+
+            look_for_end_value:
+                switch (*v) {
+                case 0:
+                case '\r':
+                case '\n':
+                    done = 1;
+                case ';':
+                case ',':
+                    *vlen = v - *val - tail;
+                    break;
+                case ' ':
+                case '\t':
+                    if (*val == v)
+                        ++*val;
+                    else
+                        ++tail;
+                    ++v;
+                    goto look_for_end_value;
+                default:
+                    if (apr_iscntrl(*v))
+                        return APREQ_ERROR_BADCHAR;
+                    ++v;
+                    tail = 0;
+                    goto look_for_end_value;
+                }
             }
         }
         else {
-            *val = v;
-
-        look_for_terminator:
-            switch (*v) {
-            case 0:
-            case ' ':
-            case ';':
-            case ',':
-            case '\t':
-            case '\r':
-            case '\n':
-                break;
-            default:
-                ++v;
-                goto look_for_terminator;
-            }
+            *val = NULL;
+            *vlen = 0;
         }
 
-        if (key >= hdr && strncasecmp(key, name, nlen) == 0) {
-            *vlen = v - *val;
-            if (key == hdr || ! is_2616_token(key[-1]))
-                return APR_SUCCESS;
+        if (hdr + nlen == hde && strncasecmp(hdr, name, nlen) == 0) {
+            return APR_SUCCESS;
         }
-        hdr = v;
-    }
+
+        hdr = v + 1;
+    } while (!done);
 
     return APREQ_ERROR_NOATTR;
 }
@@ -1044,7 +1102,8 @@ APREQ_DECLARE(apr_status_t) apreq_brigade_concat(apr_pool_t *pool,
         if (s != APR_SUCCESS)
             return s;
 
-        last_out = apr_bucket_file_create(file, wlen, 0,
+        apr_brigade_cleanup(out);
+        last_out = apr_bucket_file_create(file, 0, wlen,
                                           out->p, out->bucket_alloc);
         last_out->type = &spool_bucket_type;
         APR_BRIGADE_INSERT_TAIL(out, last_out);

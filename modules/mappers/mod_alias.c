@@ -67,8 +67,10 @@ typedef struct {
 
 module AP_MODULE_DECLARE_DATA alias_module;
 
-static char magic_error_value;
-#define PREGSUB_ERROR      (&magic_error_value)
+static char magic_pregsub_error_value;
+#define PREGSUB_ERROR (&magic_pregsub_error_value)
+static char magic_merge_error_value;
+#define MERGE_ERROR   (&magic_merge_error_value)
 
 static void *create_alias_config(apr_pool_t *p, server_rec *s)
 {
@@ -500,6 +502,7 @@ static char *try_alias_list(request_rec *r, apr_array_header_t *aliases,
     alias_entry *entries = (alias_entry *) aliases->elts;
     ap_regmatch_t regm[AP_MAX_REG_MATCH];
     char *found = NULL;
+    int canon = 1;
     int i;
 
     for (i = 0; i < aliases->nelts; ++i) {
@@ -553,8 +556,38 @@ static char *try_alias_list(request_rec *r, apr_array_header_t *aliases,
 
                     found = apr_pstrcat(r->pool, alias->real, escurl, NULL);
                 }
-                else
-                    found = apr_pstrcat(r->pool, alias->real, r->uri + l, NULL);
+                else {
+                    apr_status_t rv;
+                    char *fake = r->uri + l;
+
+                    /*
+                     * For the apr_filepath_merge below we need a relative path
+                     * Hence skip all leading '/'
+                     */
+                    while (*fake == '/') {
+                        fake++;
+                    }
+
+                    /* Merge if there is something left to merge */
+                    if (*fake) {
+                        if ((rv = apr_filepath_merge(&found, alias->real, fake,
+                                                     APR_FILEPATH_TRUENAME
+                                                   | APR_FILEPATH_SECUREROOT, r->pool))
+                                    != APR_SUCCESS) {
+                            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(10297)
+                                          "Cannot map %s to file", r->the_request);
+                            return MERGE_ERROR;
+                        }
+                        canon = 0;
+                    }
+                    else {
+                        /*
+                         * r->uri + l might be either pointing to \0 or to a
+                         * string full of '/'s. Hence we need to cat.
+                         */
+                        found = apr_pstrcat(r->pool, alias->real, r->uri + l, NULL);
+                    }
+                }
             }
         }
 
@@ -568,7 +601,7 @@ static char *try_alias_list(request_rec *r, apr_array_header_t *aliases,
              * canonicalized.  After I finish eliminating os canonical.
              * Better fail test for ap_server_root_relative needed here.
              */
-            if (!is_redir) {
+            if (!is_redir && canon) {
                 found = ap_server_root_relative(r->pool, found);
             }
             if (found) {
@@ -596,7 +629,7 @@ static int translate_alias_redir(request_rec *r)
     if ((ret = try_redirect(r, &status)) != NULL
             || (ret = try_alias_list(r, serverconf->redirects, 1, &status))
                     != NULL) {
-        if (ret == PREGSUB_ERROR)
+        if ((ret == PREGSUB_ERROR) || (ret == MERGE_ERROR))
             return HTTP_INTERNAL_SERVER_ERROR;
         if (ap_is_HTTP_REDIRECT(status)) {
             alias_dir_conf *dirconf = (alias_dir_conf *) 
@@ -653,7 +686,7 @@ static int fixup_redir(request_rec *r)
     if ((ret = try_redirect(r, &status)) != NULL
             || (ret = try_alias_list(r, dirconf->redirects, 1, &status))
                     != NULL) {
-        if (ret == PREGSUB_ERROR)
+        if ((ret == PREGSUB_ERROR) || (ret == MERGE_ERROR))
             return HTTP_INTERNAL_SERVER_ERROR;
         if (ap_is_HTTP_REDIRECT(status)) {
             if (dirconf->allow_relative != ALIAS_FLAG_ON || ret[0] != '/') {

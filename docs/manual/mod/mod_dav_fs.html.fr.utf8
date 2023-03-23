@@ -55,6 +55,7 @@
 <div id="quickview"><h3 class="directives">Directives</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#davlockdb">DavLockDB</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#davlockdiscovery">DavLockDiscovery</a></li>
 </ul>
 <h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_dav_fs">Problèmes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_dav_fs">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
 <ul class="seealso">
@@ -105,6 +106,27 @@ du serveur HTTP Apache.</td></tr>
 
 
 </div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="davlockdiscovery" id="davlockdiscovery">Directive</a> <a name="DavLockDiscovery" id="DavLockDiscovery">DavLockDiscovery</a> <a title="Lien permanent" href="#davlockdiscovery" class="permalink">&para;</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Active la découverte de verrou</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>DavLockDiscovery on|off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>DavLockDiscovery on</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_dav_fs</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.5.0 du serveur HTTP Apache.</td></tr>
+</table>
+    <p>La directive <code class="directive">DavLockDiscovery</code> permet de contrôler
+    l'activation de la fonctionnalité de découverte de verrou pour la méthode
+    <code>PROPFIND</code>. Lorsque cette fonctionnalité est désactivée,
+    <code>PROPFIND</code> renvoie toujours une section
+    <code>lockdiscovery</code> vide. Les performances seront alors améliorées si
+    les clients utilisent intensément <code>PROPFIND</code>.</p>
+    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">DavLockDiscovery off</pre>
+</div>
+
+</div>
 </div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_dav_fs.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
@@ -129,7 +151,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_dav_fs.htm
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2021 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2023 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

@@ -70,14 +70,13 @@
 #endif
 
 #include "mod_proxy.h"
-#include "mod_ssl.h"
-#include "mod_ssl_openssl.h"
 
+#include "mod_ssl_openssl.h"
 #include "ssl_ct_util.h"
 #include "ssl_ct_sct.h"
 
-#include "openssl/x509v3.h"
-#include "openssl/ocsp.h"
+#include <openssl/x509v3.h>
+#include <openssl/ocsp.h>
 
 #if OPENSSL_VERSION_NUMBER < 0x10002003L
 #error "mod_ssl_ct requires OpenSSL 1.0.2-beta3 or later"
@@ -1123,8 +1122,8 @@ static int daemon_thread_start(apr_pool_t *pconf, server_rec *s_main)
 
     apr_pool_create(&pdaemon, pconf);
     apr_pool_tag(pdaemon, "sct_daemon");
-    rv = apr_thread_create(&daemon_thread, NULL, sct_daemon_thread, s_main,
-                           pconf);
+    rv = ap_thread_create(&daemon_thread, NULL, sct_daemon_thread, s_main,
+                          pconf);
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s_main,
                      APLOGNO(02709) "could not create " DAEMON_THREAD_NAME 
@@ -1592,26 +1591,55 @@ static const char *gen_key(conn_rec *c, cert_chain *cc,
                            ct_conn_config *conncfg)
 {
     const char *fp;
-    SHA256_CTX sha256ctx;
     unsigned char digest[SHA256_DIGEST_LENGTH];
 
     fp = get_cert_fingerprint(c->pool, cc->leaf);
 
-    SHA256_Init(&sha256ctx); /* UNDOC */
-    SHA256_Update(&sha256ctx, (unsigned char *)fp, strlen(fp)); /* UNDOC */
-    if (conncfg->cert_sct_list) {
-        SHA256_Update(&sha256ctx, conncfg->cert_sct_list, 
-                      conncfg->cert_sct_list_size);
+#if OPENSSL_VERSION_NUMBER < 0x30000000L
+    {
+        SHA256_CTX sha256ctx;
+        SHA256_Init(&sha256ctx); /* UNDOC */
+        SHA256_Update(&sha256ctx, (unsigned char *)fp, strlen(fp)); /* UNDOC */
+        if (conncfg->cert_sct_list) {
+            SHA256_Update(&sha256ctx, conncfg->cert_sct_list, 
+                          conncfg->cert_sct_list_size);
+        }
+        if (conncfg->serverhello_sct_list) {
+            SHA256_Update(&sha256ctx, conncfg->serverhello_sct_list,
+                          conncfg->serverhello_sct_list_size);
+        }
+        if (conncfg->ocsp_sct_list) {
+            SHA256_Update(&sha256ctx, conncfg->ocsp_sct_list,
+                          conncfg->ocsp_sct_list_size);
+        }
+        SHA256_Final(digest, &sha256ctx); /* UNDOC */
     }
-    if (conncfg->serverhello_sct_list) {
-        SHA256_Update(&sha256ctx, conncfg->serverhello_sct_list,
-                      conncfg->serverhello_sct_list_size);
+#else
+    {
+        EVP_MD_CTX *md_ctx;
+        unsigned int dlen = 0;
+        md_ctx = EVP_MD_CTX_create();
+        ap_assert(md_ctx != NULL);
+        ap_assert(EVP_DigestInit_ex(md_ctx, EVP_sha256(), NULL));
+        ap_assert(EVP_DigestUpdate(md_ctx, (unsigned char *)fp, strlen(fp)));
+        if (conncfg->cert_sct_list) {
+            ap_assert(EVP_DigestUpdate(md_ctx, conncfg->cert_sct_list, 
+                                       conncfg->cert_sct_list_size));
+        }
+        if (conncfg->serverhello_sct_list) {
+            ap_assert(EVP_DigestUpdate(md_ctx, conncfg->serverhello_sct_list,
+                                       conncfg->serverhello_sct_list_size));
+        }
+        if (conncfg->ocsp_sct_list) {
+            ap_assert(EVP_DigestUpdate(md_ctx, conncfg->ocsp_sct_list,
+                                       conncfg->ocsp_sct_list_size));
+        }
+        ap_assert(EVP_DigestFinal_ex(md_ctx, digest, &dlen));
+        ap_assert(dlen == SHA256_DIGEST_LENGTH);
+        EVP_MD_CTX_destroy(md_ctx);
     }
-    if (conncfg->ocsp_sct_list) {
-        SHA256_Update(&sha256ctx, conncfg->ocsp_sct_list,
-                      conncfg->ocsp_sct_list_size);
-    }
-    SHA256_Final(digest, &sha256ctx); /* UNDOC */
+#endif
+
     return apr_pescape_hex(c->pool, digest, sizeof digest, 0);
 }
 
@@ -2522,7 +2550,7 @@ static void ssl_ct_child_init(apr_pool_t *p, server_rec *s)
         exit(APEXIT_CHILDSICK);
     }
 
-    rv = apr_thread_create(&service_thread, NULL, run_service_thread, s, p);
+    rv = ap_thread_create(&service_thread, NULL, run_service_thread, s, p);
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s,
                      APLOGNO(02745) "could not create " SERVICE_THREAD_NAME
@@ -2966,12 +2994,12 @@ static const char *ct_static_scts(cmd_parms *cmd, void *x, const char *cert_fn,
     }
     
     cert = PEM_read_X509(pemfile, NULL, NULL, NULL);
+    fclose(pemfile);
+
     if (!cert) {
         return apr_psprintf(p, "could not read certificate from file %s",
                             cert_fn);
     }
-
-    fclose(pemfile);
 
     fingerprint = get_cert_fingerprint(p, cert);
     X509_free(cert);

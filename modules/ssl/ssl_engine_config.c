@@ -31,6 +31,7 @@
 
 #include "ssl_private.h"
 #include "ssl_policies.h"
+
 #include "util_mutex.h"
 #include "ap_provider.h"
 
@@ -675,7 +676,9 @@ const char *ssl_cmd_SSLCryptoDevice(cmd_parms *cmd,
 {
     SSLModConfigRec *mc = myModConfig(cmd->server);
     const char *err;
+#if MODSSL_HAVE_ENGINE_API
     ENGINE *e;
+#endif
 
     if ((err = ap_check_cmd_context(cmd, GLOBAL_ONLY))) {
         return err;
@@ -687,13 +690,16 @@ const char *ssl_cmd_SSLCryptoDevice(cmd_parms *cmd,
     if (strcEQ(arg, "builtin")) {
         mc->szCryptoDevice = NULL;
     }
+#if MODSSL_HAVE_ENGINE_API
     else if ((e = ENGINE_by_id(arg))) {
         mc->szCryptoDevice = arg;
         ENGINE_free(e);
     }
+#endif
     else {
         err = "SSLCryptoDevice: Invalid argument; must be one of: "
               "'builtin' (none)";
+#if MODSSL_HAVE_ENGINE_API
         e = ENGINE_get_first();
         while (e) {
             err = apr_pstrcat(cmd->pool, err, ", '", ENGINE_get_id(e),
@@ -702,6 +708,7 @@ const char *ssl_cmd_SSLCryptoDevice(cmd_parms *cmd,
              * on the 'old' e, per the docs in engine.h. */
             e = ENGINE_get_next(e);
         }
+#endif
         return err;
     }
 
@@ -888,7 +895,7 @@ const char *ssl_cmd_SSLCipherSuite(cmd_parms *cmd,
         return NULL;
     }
 #endif
-    return apr_pstrcat(cmd->pool, "procotol '", arg1, "' not supported", NULL);
+    return apr_pstrcat(cmd->pool, "protocol '", arg1, "' not supported", NULL);
 }
 
 #define SSL_FLAGS_CHECK_FILE \
@@ -1658,7 +1665,7 @@ const char *ssl_cmd_SSLProxyCipherSuite(cmd_parms *cmd,
         return NULL;
     }
 #endif
-    return apr_pstrcat(cmd->pool, "procotol '", arg1, "' not supported", NULL);
+    return apr_pstrcat(cmd->pool, "protocol '", arg1, "' not supported", NULL);
 }
 
 const char *ssl_cmd_SSLProxyVerify(cmd_parms *cmd,

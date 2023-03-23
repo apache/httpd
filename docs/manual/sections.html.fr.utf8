@@ -473,7 +473,8 @@ sont interprétées.</p>
       et <code class="directive"><a href="./mod/core.html#locationmatch">&lt;LocationMatch&gt;</a></code> sont appliquées
       simultanément</li>
 
-      <li>Les directives <code class="directive"><a href="./mod/core.html#if">&lt;If&gt;</a></code>
+      <li>Les sections <code class="directive"><a href="./mod/core.html#if">&lt;If&gt;</a></code>,
+      même si elles sont incluses dans un des contextes précédents.
       </li>
     </ol>
 
@@ -506,6 +507,17 @@ sont interprétées.</p>
     <li>Quand la requête est servie par le module <code class="module"><a href="./mod/mod_proxy.html">mod_proxy</a></code>,
     le conteneur <code class="directive"><a href="./mod/mod_proxy.html#proxy">&lt;Proxy&gt;</a></code>
     prend la place du conteneur <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code> dans l'ordre de traitement.</li>
+    <li>Il faut être très prudent lorsqu'on mélange des directives de
+    configuration similaires à l'intérieur et à l'extérieur d'une section
+    <code class="directive"><a href="./mod/core.html#if">&lt;If&gt;</a></code> car leur ordre
+    d'apparition a de l'importance. A cet effet, l'utilisation explicite de la
+    directive <code class="directive"><a href="./mod/core.html#else">&lt;Else&gt;</a></code>
+    peut vous y aider.
+        </li>
+        <li>Lorsqu'une section <code class="directive"><a href="./mod/core.html#if">&lt;If&gt;</a></code> est utilisée dans un fichier <code>.htaccess</code>, les
+	directives incluses dans un répertoire parent seront fusionnées
+	<em>après</em> les directives non-incluses dans un sous-répertoire.
+	</li>
     </ul>
 
 	<div class="note"><h3>Note technique</h3>
@@ -666,7 +678,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/sections.html';
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2021 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2023 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossaire</a> | <a href="./sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

@@ -806,6 +806,14 @@ RewriteRule  "^/$"                 "/homepage.std.html"  [L]</pre>
 	sera renvoyée. Dans le cas contraire, ce sera la page d'accueil
 	standard.</p>
 
+	<p>Par défaut, plusieurs directives <code class="directive">RewriteCond</code>
+	sont évaluées de manière séquentielle et combinées à l'aide d'un
+	<strong>ET</strong> logique. Si une condition n'est pas vérifiée et en
+	l'absence d'un opérateur logique <strong><code>OU</code></strong>,
+	l'ensemble du jeu de règles est abandonné et les conditions restantes ne
+	sont pas évaluées.
+        </p> 
+
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -1234,14 +1242,14 @@ du contexte de <em>répertoire</em>.</li>
 
 <li>Par défaut, mod_rewrite écrase les règles précédentes au sein de <a href="../sections.html#merging">sections combinées</a> appartenant au même
 contexte. Pour modifier ce comportement, on peut utiliser la directive
-<code class="directive"><a href="../mod/rewrite.html#rewriteoptions">RewriteOptions</a></code> pour définir par exemple
-l'option <em>Inherit</em>.</li>
+<code class="directive"><a href="#rewriteoptions">RewriteOptions</a></code> pour définir par
+exemple l'option <em>Inherit</em>.</li>
 
-<li>La directive <code class="directive"><a href="../mod/rewrite.html#rewriteoptions">RewriteOptions</a></code> permet
-aussi de contrôler le comportement des sections définies au même niveau
+<li>La directive <code class="directive"><a href="#rewriteoptions">RewriteOptions</a></code>
+permet aussi de contrôler le comportement des sections définies au même niveau
 d'imbrication dans la configuration. Dans l'exemple suivant, par défaut seule la
 règle RewriteRules définie dans le second bloc <code class="directive"><a href="../mod/core.html#if">If</a></code> est prise en compte car celle définie dans le
-premier bloc est écrasée. Définir <code class="directive"><a href="../mod/rewrite.html#rewriteoptions">RewriteOptions</a></code> Inherit force mod_rewrite à combiner
+premier bloc est écrasée. Définir <code class="directive"><a href="#rewriteoptions">RewriteOptions</a></code> Inherit force mod_rewrite à combiner
 les deux sections en prenant en compte les deux règles et pas seulement la
 dernière.</li>
 </ul>
@@ -1320,14 +1328,17 @@ substitution !
 
         <dt>URL absolue</dt>
 
-        <dd>Si une URL absolue est spécifiée,
+        <dd><p>Si une URL absolue est spécifiée,
 	<code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> vérifie si le nom d'hôte
 	correspond à celui de l'hôte local. Si c'est le cas, le
 	protocole et le nom d'hôte sont supprimés, et ce qui reste est
 	traité comme un chemin d'URL. Dans le cas contraire, une
 	redirection externe vers l'URL indiquée est effectuée. Pour
 	forcer une redirection externe vers l'hôte local, voir le
-	drapeau <code>[R]</code> ci-dessous.</dd>
+	drapeau <code>[R]</code> ci-dessous.</p>
+	<p>Notez qu'une redirection (implicite ou non) qui utilise une URI
+	absolue inclura la chaîne de paramètres de la requête ; pour éviter
+	ceci, voir le drapeau <code>[QSD]</code> ci-dessous.</p></dd>
 
         <dt><code>-</code> (tiret)</dt>
 
@@ -1413,6 +1424,17 @@ substitution !
 	d'appliquer la transformation. <em><a href="../rewrite/flags.html#flag_b">détails ...</a></em></td>
     </tr>
 <tr class="odd">
+        <td>BCTLS</td>
+        <td>Identique à [B], mais n'échappe que les espaces et les caractères de
+	contrôle. <em><a href="../rewrite/flags.html#flag_bctls">détails ...</a></em></td>
+    </tr>
+<tr>
+        <td>BNE</td>
+	<td>Les caractères de [B] ou [BCTLS] qui <strong>ne doivent pas</strong>
+	être échappés.  <em><a href="../rewrite/flags.html#flag_bne">détails
+	...</a></em></td>
+    </tr>
+<tr class="odd">
         <td>backrefnoplus|BNP</td>
         <td>Avec ce drapeau, si les références arrières sont échappées,
 	les espaces seront échappés en %20 au lieu de +. Ceci s'avère
@@ -1489,7 +1511,8 @@ substitution !
 <tr class="odd">
         <td>noescape|NE</td>
         <td>Empêche mod_rewrite d'effectuer un échappement hexadécimal
-	des caractères spéciaux dans le résultat de la réécriture. <em><a href="../rewrite/flags.html#flag_ne">détails ...</a></em></td>
+	des caractères spéciaux dans le résultat des réécritures qui aboutissent
+	à une redirection. <em><a href="../rewrite/flags.html#flag_ne">détails ...</a></em></td>
     </tr>
 <tr>
         <td>nosubreq|NS</td>
@@ -1707,7 +1730,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_rewrite.ht
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2021 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2023 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

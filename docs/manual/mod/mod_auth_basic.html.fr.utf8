@@ -118,6 +118,12 @@ Apache</td></tr>
     "password" sera utilisée. Pour désactiver l'authentification de base
     simulée pour un espace d'URL, définissez AuthBasicFake à "off".</p>
 
+    <div class="note">
+    L'en-tête Authorization ajouté par cette directive <em>ne constitue pas</em>
+    une donnée d'authentification ou d'autorisation au sein du serveur local. Il
+    est destiné à être transmis aux serveurs en amont.
+    </div>
+
     <p>Dans l'exemple suivant, un nom d'utilisateur et un mot de passe
     prédéfinis sont transmis à un serveur d'arrière-plan :</p>
 
@@ -307,7 +313,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_auth_basic
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2021 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2023 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

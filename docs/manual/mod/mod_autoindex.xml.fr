@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1878825 -->
+<!-- English Revision: 1894455 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -1209,6 +1209,25 @@ ReadmeName /include/FOOTER.html
     <p>Voir aussi la directive <directive module="mod_autoindex"
     >HeaderName</directive>, où cette fonctionnalité est décrite plus en
     détails.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>IndexForbiddenReturn404</name>
+<description>Renvoie une erreur HTTP 404 au lieu de Forbidden lorsque les
+options n'autorisent pas le listing de répertoire</description>
+<syntax>IndexForbiddenReturn404 On|Off</syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>Indexes</override>
+<compatibility>Disponible à partir de la version 2.5.1 du serveur HTTP Apache</compatibility>
+
+<usage>
+    <p>La directive <directive>IndexForbiddenReturn404</directive> permet de
+    définir si ce module renvoie un code d'état HTTP 404 au lieu d'un code
+    d'état 403 lorsque la directive <directive>Options</directive> n'autorise
+    pas le listing de répertoire.</p>
 </usage>
 </directivesynopsis>
 

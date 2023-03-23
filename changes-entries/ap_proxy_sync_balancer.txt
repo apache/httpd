@@ -1,2 +1,0 @@
-  *) mod_proxy: Fix icomplete initialization of BalancerMember(s) from the
-     balancer-manager, which can lead to a crash.  [Yann Ylavic]

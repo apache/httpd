@@ -1,0 +1,31 @@
+[global]
+curl_bin = curl
+nghttp = nghttp
+h2load = h2load
+
+prefix = @prefix@
+exec_prefix = @exec_prefix@
+bindir = @bindir@
+sbindir = @sbindir@
+libdir = @libdir@
+libexecdir = @libexecdir@
+
+apr_bindir = @APR_BINDIR@
+apxs = @bindir@/apxs
+apachectl = @sbindir@/apachectl
+
+[httpd]
+version = @HTTPD_VERSION@
+name = @progname@
+dso_modules = @DSO_MODULES@
+mpm_modules = @MPM_MODULES@
+
+[test]
+gen_dir = @abs_srcdir@/../gen
+http_port = 5002
+https_port = 5001
+proxy_port = 5003
+http_port2 = 5004
+http_tld = tests.httpd.apache.org
+test_dir = @abs_srcdir@
+test_src_dir = @abs_srcdir@

@@ -1,8 +1,0 @@
-  *) mod_md:
-     - Domain names in `<MDomain ...>` can now appear in quoted form.
-     - Fixed a failure in ACME challenge selection that aborted further searches
-       when the tls-alpn-01 method did not seem to be suitable.
-     - Changed the tls-alpn-01 setup to only become unsuitable when none of the
-       dns names showed support for a configured 'Protocols ... acme-tls/1'. This
-       allows use of tls-alpn-01 for dns names that are not mapped to a VirtualHost.
-     [Stefan Eissing]

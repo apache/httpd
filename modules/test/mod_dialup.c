@@ -157,17 +157,17 @@ dialup_handler(request_rec *r)
         return DECLINED;
     }
 
-    rv = ap_mpm_query(AP_MPMQ_CAN_SUSPEND, &mpm_can_suspend);
-    if (!mpm_can_suspend) {
-        ap_log_rerror (APLOG_MARK, APLOG_NOTICE, rv, r, APLOGNO(02637)
-                "dialup: MPM doesn't support suspending");
-        return DECLINED;
-    }
-
     dcfg = ap_get_module_config(r->per_dir_config,
                                 &dialup_module);
 
     if (dcfg->bytes_per_second == 0) {
+        return DECLINED;
+    }
+
+    rv = ap_mpm_query(AP_MPMQ_CAN_SUSPEND, &mpm_can_suspend);
+    if (!mpm_can_suspend) {
+        ap_log_rerror (APLOG_MARK, APLOG_NOTICE, rv, r, APLOGNO(02637)
+                "dialup: MPM doesn't support suspending");
         return DECLINED;
     }
 

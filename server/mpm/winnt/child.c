@@ -778,23 +778,26 @@ static winnt_conn_ctx_t *winnt_get_connection(winnt_conn_ctx_t *context)
     return context;
 }
 
+struct worker_info {
+    apr_thread_t *thd;
+    HANDLE handle;
+    int num;
+};
+
 /*
- * worker_main()
+ * worker_thread()
  * Main entry point for the worker threads. Worker threads block in
  * win*_get_connection() awaiting a connection to service.
  */
-static DWORD __stdcall worker_main(void *thread_num_val)
+static void *APR_THREAD_FUNC worker_thread(apr_thread_t *thd, void *ctx)
 {
-    apr_thread_t *thd;
-    apr_os_thread_t osthd;
+    struct worker_info *info = ctx;
     static int requests_this_child = 0;
     winnt_conn_ctx_t *context = NULL;
-    int thread_num = (int)thread_num_val;
+    int thread_num = info->num;
     ap_sb_handle_t *sbh;
     conn_rec *c;
     apr_int32_t disconnected;
-
-    osthd = apr_os_thread_current();
 
     while (1) {
 
@@ -827,8 +830,6 @@ static DWORD __stdcall worker_main(void *thread_num_val)
             continue;
         }
 
-        thd = NULL;
-        apr_os_thread_put(&thd, &osthd, context->ptrans);
         c->current_thread = thd;
 
         ap_process_connection(c, context->sock);
@@ -843,6 +844,7 @@ static DWORD __stdcall worker_main(void *thread_num_val)
 
     ap_update_child_status_from_indexes(0, thread_num, SERVER_DEAD, NULL);
 
+    SetEvent(info->handle);
     return 0;
 }
 
@@ -892,10 +894,9 @@ static void create_listener_thread(void)
 void child_main(apr_pool_t *pconf, DWORD parent_pid)
 {
     apr_status_t status;
-    apr_hash_t *ht;
     ap_listen_rec *lr;
     HANDLE child_events[3];
-    HANDLE *child_handles;
+    struct worker_info *workers;
     int listener_started = 0;
     int threads_created = 0;
     int time_remains;
@@ -904,6 +905,7 @@ void child_main(apr_pool_t *pconf, DWORD parent_pid)
     int rv;
     int i;
     int num_events;
+    int graceful_shutdown = 0;
 
     /* Get a sub context for global allocations in this child, so that
      * we can have cleanups occur when the child exits.
@@ -912,7 +914,6 @@ void child_main(apr_pool_t *pconf, DWORD parent_pid)
     apr_pool_tag(pchild, "pchild");
 
     ap_run_child_init(pchild, ap_server_conf);
-    ht = apr_hash_make(pchild);
 
     listener_shutdown_event = CreateEvent(NULL, TRUE, FALSE, NULL);
     if (!listener_shutdown_event) {
@@ -983,15 +984,13 @@ void child_main(apr_pool_t *pconf, DWORD parent_pid)
      */
     ap_log_error(APLOG_MARK, APLOG_NOTICE, APR_SUCCESS, ap_server_conf, APLOGNO(00354)
                  "Child: Starting %d worker threads.", ap_threads_per_child);
-    child_handles = (HANDLE) apr_pcalloc(pchild, ap_threads_per_child
-                                                  * sizeof(HANDLE));
+    workers = apr_pcalloc(pchild, ap_threads_per_child * sizeof(*workers));
     apr_thread_mutex_create(&child_lock, APR_THREAD_MUTEX_DEFAULT, pchild);
 
     while (1) {
         int from_previous_generation = 0, starting_up = 0;
 
         for (i = 0; i < ap_threads_per_child; i++) {
-            int *score_idx;
             int status = ap_scoreboard_image->servers[0][i].status;
             if (status != SERVER_GRACEFUL && status != SERVER_DEAD) {
                 if (ap_scoreboard_image->servers[0][i].generation != my_generation) {
@@ -1004,13 +1003,24 @@ void child_main(apr_pool_t *pconf, DWORD parent_pid)
             }
             ap_update_child_status_from_indexes(0, i, SERVER_STARTING, NULL);
 
-            child_handles[i] = CreateThread(NULL, ap_thread_stacksize,
-                                            worker_main, (void *) i,
-                                            stack_res_flag, &tid);
-            if (child_handles[i] == 0) {
-                ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_os_error(),
-                             ap_server_conf, APLOGNO(00355)
-                             "Child: CreateThread failed. Unable to "
+            workers[i].num = i;
+            workers[i].handle = CreateEvent(NULL, TRUE, FALSE, NULL);
+            if (!workers[i].handle) {
+                rv = apr_get_os_error();
+            }
+            else {
+                apr_threadattr_t *thread_attr = NULL;
+                apr_threadattr_create(&thread_attr, pchild);
+                if (ap_thread_stacksize != 0) {
+                    apr_threadattr_stacksize_set(thread_attr,
+                                                 ap_thread_stacksize);
+                }
+                rv = ap_thread_create(&workers[i].thd, thread_attr,
+                                      worker_thread, &workers[i], pchild);
+            }
+            if (rv != APR_SUCCESS) {
+                ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ap_server_conf, APLOGNO(00355)
+                             "Child: thread creation failed. Unable to "
                              "create all worker threads. Created %d of the %d "
                              "threads requested with the ThreadsPerChild "
                              "configuration directive.",
@@ -1021,14 +1031,6 @@ void child_main(apr_pool_t *pconf, DWORD parent_pid)
             ap_scoreboard_image->servers[0][i].pid = my_pid;
             ap_scoreboard_image->servers[0][i].generation = my_generation;
             threads_created++;
-            /* Save the score board index in ht keyed to the thread handle.
-             * We need this when cleaning up threads down below...
-             */
-            apr_thread_mutex_lock(child_lock);
-            score_idx = apr_pcalloc(pchild, sizeof(int));
-            *score_idx = i;
-            apr_hash_set(ht, &child_handles[i], sizeof(HANDLE), score_idx);
-            apr_thread_mutex_unlock(child_lock);
         }
         /* Start the listener only when workers are available */
         if (!listener_started && threads_created) {
@@ -1113,6 +1115,7 @@ void child_main(apr_pool_t *pconf, DWORD parent_pid)
             ap_log_error(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS, ap_server_conf, APLOGNO(00357)
                          "Child: Exit event signaled. Child process is "
                          "ending.");
+            graceful_shutdown = 1;
             break;
         }
         else if (cld == 2) {
@@ -1131,6 +1134,7 @@ void child_main(apr_pool_t *pconf, DWORD parent_pid)
                          "MaxConnectionsPerChild. Signaling the parent to "
                          "restart a new child process.");
             ap_signal_parent(SIGNAL_PARENT_RESTART);
+            graceful_shutdown = 1;
             break;
         }
     }
@@ -1156,6 +1160,10 @@ void child_main(apr_pool_t *pconf, DWORD parent_pid)
      * already accepted connections.
      */
     SetEvent(listener_shutdown_event);
+
+    /* Notify anyone interested that this child is stopping.
+     */
+    ap_run_child_stopping(pchild, graceful_shutdown);
 
     Sleep(1000);
 
@@ -1199,7 +1207,7 @@ void child_main(apr_pool_t *pconf, DWORD parent_pid)
 
     while (threads_created)
     {
-        HANDLE handle = child_handles[threads_created - 1];
+        struct worker_info *info = &workers[threads_created - 1];
         DWORD dwRet;
 
         if (time_remains < 0)
@@ -1213,13 +1221,15 @@ void child_main(apr_pool_t *pconf, DWORD parent_pid)
                          time_remains / 1000, threads_created);
         }
 
-        dwRet = WaitForSingleObject(handle, 100);
+        dwRet = WaitForSingleObject(info->handle, 100);
         time_remains -= 100;
         if (dwRet == WAIT_TIMEOUT) {
             /* Keep waiting */
         }
         else if (dwRet == WAIT_OBJECT_0) {
-            CloseHandle(handle);
+            apr_status_t thread_rv;
+            apr_thread_join(&thread_rv, info->thd);
+            CloseHandle(info->handle);
             threads_created--;
         }
         else {
@@ -1232,11 +1242,8 @@ void child_main(apr_pool_t *pconf, DWORD parent_pid)
                      "Child: Waiting for %d threads timed out, terminating process.",
                      threads_created);
         for (i = 0; i < threads_created; i++) {
-            /* Reset the scoreboard entries for the threads. */
-            int *idx = apr_hash_get(ht, &child_handles[i], sizeof(HANDLE));
-            if (idx) {
-                ap_update_child_status_from_indexes(0, *idx, SERVER_DEAD, NULL);
-            }
+            struct worker_info *info = &workers[i];
+            ap_update_child_status_from_indexes(0, info->num, SERVER_DEAD, NULL);
         }
         /* We can't wait for any longer, but still have some threads remaining.
          *
@@ -1254,6 +1261,8 @@ void child_main(apr_pool_t *pconf, DWORD parent_pid)
     }
     ap_log_error(APLOG_MARK, APLOG_NOTICE, APR_SUCCESS, ap_server_conf, APLOGNO(00364)
                  "Child: All worker threads have exited.");
+
+    ap_run_child_stopped(pchild, graceful_shutdown);
 
     apr_thread_mutex_destroy(child_lock);
     apr_thread_mutex_destroy(ctxpool_lock);

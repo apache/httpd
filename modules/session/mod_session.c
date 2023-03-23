@@ -325,7 +325,8 @@ static apr_status_t ap_session_set(request_rec * r, session_rec * z,
 
 static int identity_count(void *v, const char *key, const char *val)
 {
-    int *count = v;
+    apr_size_t *count = v;
+
     *count += strlen(key) * 3 + strlen(val) * 3 + 2;
     return 1;
 }
@@ -333,7 +334,8 @@ static int identity_count(void *v, const char *key, const char *val)
 static int identity_concat(void *v, const char *key, const char *val)
 {
     char *slider = v;
-    int length = strlen(slider);
+    apr_size_t length = strlen(slider);
+
     slider += length;
     if (length) {
         *slider = '&';
@@ -363,7 +365,8 @@ static int identity_concat(void *v, const char *key, const char *val)
 static apr_status_t session_identity_encode(request_rec * r, session_rec * z)
 {
     char *buffer = NULL;
-    int length = 0;
+    apr_size_t length = 0;
+
     if (z->expiry) {
         char *expiry = apr_psprintf(z->pool, "%" APR_INT64_T_FMT, z->expiry);
         apr_table_setn(z->entries, SESSION_EXPIRY, expiry);
@@ -413,7 +416,7 @@ static apr_status_t session_identity_decode(request_rec * r, session_rec * z)
         const char *psep = "=";
         char *key = apr_strtok(pair, psep, &plast);
         if (key && *key) {
-            char *val = apr_strtok(NULL, sep, &plast);
+            char *val = apr_strtok(NULL, psep, &plast);
             if (!val || !*val) {
                 apr_table_unset(z->entries, key);
             }

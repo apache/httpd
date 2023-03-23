@@ -771,8 +771,6 @@ DefaultType None
     send the response without a Content-Type header field and the
     recipient may attempt to guess the media type.</p>
 </usage>
-<seealso><directive module="core">UnDefine</directive></seealso>
-<seealso><directive module="core">IfDefine</directive></seealso>
 </directivesynopsis>
 
 <directivesynopsis>
@@ -816,6 +814,8 @@ DocumentRoot "/var/www/${servername}/htdocs"
          directives, beyond any enclosing virtual host.</p>
     </note>
 </usage>
+<seealso><directive module="core">UnDefine</directive></seealso>
+<seealso><directive module="core">IfDefine</directive></seealso>
 </directivesynopsis>
 
 <directivesynopsis type="section">
@@ -1423,6 +1423,12 @@ EnableSendfile On
 &lt;/IfDefine&gt;
     </highlight>
 
+    <note type="warning"><title>Note</title>
+        <p> This directive is evaluated at configuration processing time, 
+        not at runtime. As a result, this directive cannot be conditonally
+        evaluated by enclosing it in an <directive type="section" module="core"
+        >If</directive> section.</p>
+    </note>
 </usage>
 </directivesynopsis>
 
@@ -1805,7 +1811,7 @@ ErrorLogFormat "[%{uc}t] [%-m:%-l] [R:%L] [C:%{C}L] %7F: %E: %M"
 ErrorLogFormat request "[%{uc}t] [R:%L] Request %k on C:%{c}L pid:%P tid:%T"
 ErrorLogFormat request "[%{uc}t] [R:%L] UA:'%+{User-Agent}i'"
 ErrorLogFormat request "[%{uc}t] [R:%L] Referer:'%+{Referer}i'"
-ErrorLogFormat connection "[%{uc}t] [C:%{c}L] local\ %a remote\ %A"
+ErrorLogFormat connection "[%{uc}t] [C:%{c}L] remote\ %a local\ %A"
     </highlight>
 
 </usage>
@@ -2042,12 +2048,12 @@ to the network</description>
 <usage>
     <p>This directive allows to configure the maximum number of pipelined
     responses, which remain pending so long as pipelined request are received.
-    When the limit is reached, reponses are forcibly flushed to the network in
+    When the limit is reached, responses are forcibly flushed to the network in
     blocking mode, until passing under the limit again.</p>
 
     <p><directive>FlushMaxPipelined</directive> helps constraining memory
-    usage. When set to <var>0</var> pipelining is disabled, when set to
-    <var>-1</var> there is no limit (<directive>FlushMaxThreshold</directive>
+    usage. When set to <code>0</code> pipelining is disabled, when set to
+    <code>-1</code> there is no limit (<directive module="core">FlushMaxThreshold</directive>
     still applies).</p>
 </usage>
 </directivesynopsis>
@@ -2056,7 +2062,7 @@ to the network</description>
 <name>FlushMaxThreshold</name>
 <description>Threshold above which pending data are flushed to the
 network</description>
-<syntax>FlushMaxThreshold<var>number-of-bytes</var></syntax>
+<syntax>FlushMaxThreshold <var>number-of-bytes</var></syntax>
 <default>FlushMaxThreshold 65536</default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
@@ -2068,7 +2074,7 @@ network</description>
     the network in blocking mode, until passing under the limit again.</p>
 
     <p><directive>FlushMaxThreshold</directive> helps constraining memory
-    usage. When set to <var>0</var> or a too small value there are actually
+    usage. When set to <code>0</code> or a too small value there are actually
     no pending data, but for threaded MPMs there can be more threads busy
     waiting for the network thus less ones available to handle the other
     simultaneous connections.</p>
@@ -2262,6 +2268,16 @@ satisfied by a request at runtime</description>
     been evaluated, and so will not be available to use in this
     directive.
     </note>
+    
+    <note type="warning">
+    Directives that take affect during configuration parsing, such as 
+    <directive>Define</directive>, <directive>Include</directive>, and
+    <directive>Error</directive> cannot be made conditional by enclosing
+    them in an if <directive type="section">If</directive> configuration
+    section.  These sections are always part of the configuration, 
+    regardless of how they evaluate at runtime.
+    </note>
+
 
 </usage>
 
@@ -2855,17 +2871,17 @@ LimitInternalRecursion 5
 <description>Restricts the total size of the HTTP request body sent
 from the client</description>
 <syntax>LimitRequestBody <var>bytes</var></syntax>
-<default>LimitRequestBody 0</default>
+<default>LimitRequestBody 1073741824</default>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>All</override>
+<compatibility>In Apache HTTP Server 2.4.53 and earlier, the default value
+was 0 (unlimited)</compatibility>
 
 <usage>
-    <p>This directive specifies the number of <var>bytes</var> from 0
-    (meaning unlimited) to 2147483647 (2GB) that are allowed in a
-    request body. See the note below for the limited applicability
-    to proxy requests.</p>
+    <p>This directive specifies the number of <var>bytes</var>
+    that are allowed in a request body. A value of <var>0</var> means unlimited.</p>
 
     <p>The <directive>LimitRequestBody</directive> directive allows
     the user to set a limit on the allowed size of an HTTP request
@@ -2892,10 +2908,6 @@ from the client</description>
     <highlight language="config">
 LimitRequestBody 102400
     </highlight>
-
-    <note><p>For a full description of how this directive is interpreted by
-    proxy requests, see the <module>mod_proxy</module> documentation.</p>
-    </note>
 
 </usage>
 </directivesynopsis>
@@ -3044,13 +3056,19 @@ LimitRequestLine 4094
 <override>All</override>
 
 <usage>
-    <p>Limit (in bytes) on maximum size of an XML-based request
-    body. A value of <code>0</code> will disable any checking.</p>
-
+    <p>Limit (in bytes) on the maximum size of an XML-based request
+    body. A value of <code>0</code> will apply a hard limit (depending on
+    32bit vs 64bit system) allowing for XML escaping within the bounds of
+    the system addressable memory, but it exists for compatibility only
+    and is not recommended since it does not account for memory consumed
+    elsewhere or concurrent requests, which might result in an overall
+    system out-of-memory.
+    </p>
     <p>Example:</p>
 
     <highlight language="config">
-LimitXMLRequestBody 0
+# Limit of 1 MiB
+LimitXMLRequestBody 1073741824
     </highlight>
 
 </usage>
@@ -5291,6 +5309,12 @@ recognized methods to modules.</p>
 &lt;/IfDefine&gt;
     </highlight>
 
+    <note type="warning"><title>Note</title>
+        <p> This directive is evaluated at configuration processing time,
+        not at runtime. As a result, this directive cannot be conditonally
+        evaluated by enclosing it in an <directive type="section" module="core"
+        >If</directive> section.</p>
+    </note>
 </usage>
 </directivesynopsis>
 

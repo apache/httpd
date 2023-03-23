@@ -167,6 +167,8 @@
 
 #define DAV_EMPTY_VALUE                "\0"    /* TWO null terms */
 
+#define DAV_PROP_ELEMENT "mod_dav-element"
+
 struct dav_propdb {
     apr_pool_t *p;                /* the pool we should use */
     request_rec *r;               /* the request record */
@@ -182,6 +184,8 @@ struct dav_propdb {
     dav_lockdb *lockdb;           /* the lock database */
 
     dav_buffer wb_lock;           /* work buffer for lockdiscovery property */
+
+    int flags;                    /* ro, disable lock discovery */
 
     /* if we ever run a GET subreq, it will be stored here */
     request_rec *subreq;
@@ -349,6 +353,11 @@ static dav_error * dav_insert_coreprop(dav_propdb *propdb,
     switch (propid) {
 
     case DAV_PROPID_CORE_lockdiscovery:
+        if (propdb->flags & DAV_PROPDB_DISABLE_LOCKDISCOVERY) {
+            value = "";
+            break;
+        }
+
         if (propdb->lockdb != NULL) {
             dav_lock *locks;
 
@@ -520,17 +529,18 @@ static dav_error *dav_really_open_db(dav_propdb *propdb, int ro)
 
 DAV_DECLARE(dav_error *)dav_open_propdb(request_rec *r, dav_lockdb *lockdb,
                                         const dav_resource *resource,
-                                        int ro,
+                                        int flags,
                                         apr_array_header_t * ns_xlate,
                                         dav_propdb **p_propdb)
 {
-    return dav_popen_propdb(r->pool, r, lockdb, resource, ro, ns_xlate, p_propdb);
+    return dav_popen_propdb(r->pool, r, lockdb, resource,
+                            flags, ns_xlate, p_propdb);
 }
 
 DAV_DECLARE(dav_error *)dav_popen_propdb(apr_pool_t *p,
                                          request_rec *r, dav_lockdb *lockdb,
                                          const dav_resource *resource,
-                                         int ro,
+                                         int flags,
                                          apr_array_header_t * ns_xlate,
                                          dav_propdb **p_propdb)
 {
@@ -556,6 +566,8 @@ DAV_DECLARE(dav_error *)dav_popen_propdb(apr_pool_t *p,
     propdb->db_hooks = DAV_GET_HOOKS_PROPDB(r);
 
     propdb->lockdb = lockdb;
+
+    propdb->flags = flags;
 
     /* always defer actual open, to avoid expense of accessing db
      * when only live properties are involved
@@ -803,9 +815,15 @@ DAV_DECLARE(dav_get_props_result) dav_get_props(dav_propdb *propdb,
     /* we lose both the document and the element when calling (insert_prop),
      * make these available in the pool.
      */
-    element = apr_pcalloc(propdb->resource->pool, sizeof(dav_liveprop_elem));
+    element = dav_get_liveprop_element(propdb->resource);
+    if (!element) {
+        element = apr_pcalloc(propdb->resource->pool, sizeof(dav_liveprop_elem));
+        apr_pool_userdata_setn(element, DAV_PROP_ELEMENT, NULL, propdb->resource->pool);
+    }
+    else {
+        memset(element, 0, sizeof(dav_liveprop_elem));
+    }
     element->doc = doc;
-    apr_pool_userdata_setn(element, DAV_PROP_ELEMENT, NULL, propdb->resource->pool);
 
     /* ### NOTE: we should pass in TWO buffers -- one for keys, one for
        the marks */
@@ -1055,6 +1073,15 @@ DAV_DECLARE(void) dav_get_liveprop_supported(dav_propdb *propdb,
                                   DAV_PROP_INSERT_SUPPORTED, body);
         }
     }
+}
+
+DAV_DECLARE(dav_liveprop_elem *) dav_get_liveprop_element(const dav_resource *resource)
+{
+    dav_liveprop_elem *element;
+
+    apr_pool_userdata_get((void **)&element, DAV_PROP_ELEMENT, resource->pool);
+
+    return element;
 }
 
 DAV_DECLARE_NONSTD(void) dav_prop_validate(dav_prop_ctx *ctx)

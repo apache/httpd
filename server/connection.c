@@ -35,6 +35,7 @@ APR_HOOK_STRUCT(
             APR_HOOK_LINK(process_connection)
             APR_HOOK_LINK(pre_connection)
             APR_HOOK_LINK(pre_close_connection)
+            APR_HOOK_LINK(create_secondary_connection)
 )
 AP_IMPLEMENT_HOOK_RUN_FIRST(conn_rec *,create_connection,
                             (apr_pool_t *p, server_rec *server, apr_socket_t *csd, long conn_id, void *sbh, apr_bucket_alloc_t *alloc),
@@ -42,6 +43,39 @@ AP_IMPLEMENT_HOOK_RUN_FIRST(conn_rec *,create_connection,
 AP_IMPLEMENT_HOOK_RUN_FIRST(int,process_connection,(conn_rec *c),(c),DECLINED)
 AP_IMPLEMENT_HOOK_RUN_ALL(int,pre_connection,(conn_rec *c, void *csd),(c, csd),OK,DECLINED)
 AP_IMPLEMENT_HOOK_RUN_ALL(int,pre_close_connection,(conn_rec *c),(c),OK,DECLINED)
+AP_IMPLEMENT_HOOK_RUN_FIRST(conn_rec *,create_secondary_connection,
+                            (apr_pool_t *p, conn_rec *master, apr_bucket_alloc_t *alloc),
+                            (p, master, alloc), NULL)
+
+AP_DECLARE(conn_rec *) ap_create_connection(apr_pool_t *p,
+                                            server_rec *server,
+                                            apr_socket_t *csd,
+                                            long conn_id, void *sbh,
+                                            apr_bucket_alloc_t *alloc,
+                                            unsigned int outgoing)
+{
+    conn_rec *c;
+
+    /* Some day it may be flags, so deny anything but 0 or 1 for now */
+    if (outgoing > 1) {
+        return NULL;
+    }
+
+    c = ap_run_create_connection(p, server, csd, conn_id, sbh, alloc);
+
+    if (c && outgoing) {
+        c->outgoing = 1;
+    }
+
+    return c;
+}
+
+AP_DECLARE(conn_rec *) ap_create_secondary_connection(apr_pool_t *p,
+                                                      conn_rec *master,
+                                                      apr_bucket_alloc_t *alloc)
+{
+    return ap_run_create_secondary_connection(p, master, alloc);
+}
 
 /*
  * More machine-dependent networking gooo... on some systems,
@@ -122,9 +156,7 @@ AP_DECLARE(int) ap_start_lingering_close(conn_rec *c)
 {
     apr_socket_t *csd = ap_get_conn_socket(c);
 
-    if (!csd) {
-        return 1;
-    }
+    ap_assert(csd != NULL);
 
     if (ap_prep_lingering_close(c)) {
         return 1;
@@ -154,6 +186,15 @@ AP_DECLARE(void) ap_lingering_close(conn_rec *c)
     apr_size_t nbytes;
     apr_time_t now, timeup = 0;
     apr_socket_t *csd = ap_get_conn_socket(c);
+
+    if (!csd) {
+        /* Be safe with third-party modules that:
+         *   ap_set_core_module_config(c->conn_config, NULL)
+         * to no-op ap_lingering_close().
+         */
+        c->aborted = 1;
+        return;
+    }
 
     if (ap_start_lingering_close(c)) {
         apr_socket_close(csd);
@@ -202,13 +243,9 @@ AP_DECLARE(void) ap_lingering_close(conn_rec *c)
 
 AP_CORE_DECLARE(void) ap_process_connection(conn_rec *c, void *csd)
 {
-    int rc;
     ap_update_vhost_given_ip(c);
 
-    rc = ap_run_pre_connection(c, csd);
-    if (rc != OK && rc != DONE) {
-        c->aborted = 1;
-    }
+    ap_pre_connection(c, csd);
 
     if (!c->aborted) {
         ap_run_process_connection(c);

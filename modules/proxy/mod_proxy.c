@@ -52,6 +52,9 @@ proxy_hcmethods_t PROXY_DECLARE_DATA proxy_hcmethods[] = {
     {GET, "GET", 1},
     {CPING, "CPING", 0},
     {PROVIDER, "PROVIDER", 0},
+    {OPTIONS11, "OPTIONS11", 1},
+    {HEAD11, "HEAD11", 1},
+    {GET11, "GET11", 1},
     {EOT, NULL, 1}
 };
 
@@ -783,11 +786,12 @@ static int proxy_detect(request_rec *r)
 
     if (conf->req && r->parsed_uri.scheme) {
         /* but it might be something vhosted */
-        if (!(r->parsed_uri.hostname
-              && !ap_cstr_casecmp(r->parsed_uri.scheme, ap_http_scheme(r))
-              && ap_matches_request_vhost(r, r->parsed_uri.hostname,
-                                          (apr_port_t)(r->parsed_uri.port_str ? r->parsed_uri.port
-                                                       : ap_default_port(r))))) {
+        if (!r->parsed_uri.hostname
+            || ap_cstr_casecmp(r->parsed_uri.scheme, ap_http_scheme(r)) != 0
+            || !ap_matches_request_vhost(r, r->parsed_uri.hostname,
+                                         (apr_port_t)(r->parsed_uri.port_str
+                                                      ? r->parsed_uri.port
+                                                      : ap_default_port(r)))) {
             r->proxyreq = PROXYREQ_PROXY;
             r->uri = r->unparsed_uri;
             r->filename = apr_pstrcat(r->pool, "proxy:", r->uri, NULL);
@@ -949,7 +953,7 @@ PROXY_DECLARE(int) ap_proxy_trans_match(request_rec *r, struct proxy_alias *ent,
                               "'%s'; declining", r->uri);
                 return DECLINED;
             }
-            if (nocanon && len != alias_match(r->unparsed_uri, ent->fake)) {
+            if (nocanon && len != alias_match(r->unparsed_uri, fake)) {
                 mismatch = 1;
                 use_uri = r->uri;
             }
@@ -965,6 +969,8 @@ PROXY_DECLARE(int) ap_proxy_trans_match(request_rec *r, struct proxy_alias *ent,
     }
 
     if (found) {
+        unsigned int encoded = ent->flags & PROXYPASS_MAP_ENCODED;
+
         /* A proxy module is assigned this URL, check whether it's interested
          * in the request itself (e.g. proxy_wstunnel cares about Upgrade
          * requests only, and could hand over to proxy_http otherwise).
@@ -984,6 +990,9 @@ PROXY_DECLARE(int) ap_proxy_trans_match(request_rec *r, struct proxy_alias *ent,
         if (ent->flags & PROXYPASS_NOQUERY) {
             apr_table_setn(r->notes, "proxy-noquery", "1");
         }
+        if (encoded) {
+            apr_table_setn(r->notes, "proxy-noencode", "1");
+        }
 
         if (servlet_uri) {
             ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r, APLOGNO(10248)
@@ -997,13 +1006,13 @@ PROXY_DECLARE(int) ap_proxy_trans_match(request_rec *r, struct proxy_alias *ent,
              */
             AP_DEBUG_ASSERT(strlen(r->uri) >= strlen(servlet_uri));
             strcpy(r->uri, servlet_uri);
-            return DONE;
         }
-
-        ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r, APLOGNO(03464)
-                      "URI path '%s' matches proxy handler '%s'", r->uri,
-                      found);
-        return OK;
+        else {
+            ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r, APLOGNO(03464)
+                          "URI path '%s' matches proxy handler '%s'", r->uri,
+                          found);
+        }
+        return (encoded) ? DONE : OK;
     }
 
     return HTTP_CONTINUE;
@@ -2009,7 +2018,7 @@ PROXY_DECLARE(const char *) ap_proxy_de_socketfy(apr_pool_t *p, const char *url)
      * the UDS path... ignore it
      */
     if (!ap_cstr_casecmpn(url, "unix:", 5) &&
-        ((ptr = ap_strchr_c(url, '|')) != NULL)) {
+        ((ptr = ap_strchr_c(url + 5, '|')) != NULL)) {
         /* move past the 'unix:...|' UDS path info */
         const char *ret, *c;
 
@@ -2041,6 +2050,7 @@ static const char *
     struct proxy_alias *new;
     char *f = cmd->path;
     char *r = NULL;
+    const char *real;
     char *word;
     apr_table_t *params = apr_table_make(cmd->pool, 5);
     const apr_array_header_t *arr;
@@ -2127,6 +2137,10 @@ static const char *
     if (r == NULL) {
         return "ProxyPass|ProxyPassMatch needs a path when not defined in a location";
     }
+    if (!(real = ap_proxy_de_socketfy(cmd->temp_pool, r))) {
+        return "ProxyPass|ProxyPassMatch uses an invalid \"unix:\" URL";
+    }
+
 
     /* if per directory, save away the single alias */
     if (cmd->path) {
@@ -2143,7 +2157,7 @@ static const char *
     }
 
     new->fake = apr_pstrdup(cmd->pool, f);
-    new->real = apr_pstrdup(cmd->pool, ap_proxy_de_socketfy(cmd->pool, r));
+    new->real = apr_pstrdup(cmd->pool, real);
     new->flags = flags;
     if (worker_type & AP_PROXY_WORKER_IS_MATCH) {
         new->regex = ap_pregcomp(cmd->pool, f, AP_REG_EXTENDED);
@@ -2696,6 +2710,7 @@ static const char *add_member(cmd_parms *cmd, void *dummy, const char *arg)
     proxy_worker *worker;
     char *path = cmd->path;
     char *name = NULL;
+    const char *real;
     char *word;
     apr_table_t *params = apr_table_make(cmd->pool, 5);
     const apr_array_header_t *arr;
@@ -2736,6 +2751,9 @@ static const char *add_member(cmd_parms *cmd, void *dummy, const char *arg)
         return "BalancerMember must define balancer name when outside <Proxy > section";
     if (!name)
         return "BalancerMember must define remote proxy server";
+    if (!(real = ap_proxy_de_socketfy(cmd->temp_pool, name))) {
+        return "BalancerMember uses an invalid \"unix:\" URL";
+    }
 
     ap_str_tolower(path);   /* lowercase scheme://hostname */
 
@@ -2748,8 +2766,7 @@ static const char *add_member(cmd_parms *cmd, void *dummy, const char *arg)
     }
 
     /* Try to find existing worker */
-    worker = ap_proxy_get_worker(cmd->temp_pool, balancer, conf,
-                                 ap_proxy_de_socketfy(cmd->temp_pool, name));
+    worker = ap_proxy_get_worker(cmd->temp_pool, balancer, conf, real);
     if (!worker) {
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, cmd->server, APLOGNO(01147)
                      "Defining worker '%s' for balancer '%s'",
@@ -2846,9 +2863,14 @@ static const char *
         }
     }
     else {
+        const char *real;
+
+        if (!(real = ap_proxy_de_socketfy(cmd->temp_pool, name))) {
+            return "ProxySet uses an invalid \"unix:\" URL";
+        }
+
         worker = ap_proxy_get_worker_ex(cmd->temp_pool, NULL, conf,
-                                        ap_proxy_de_socketfy(cmd->temp_pool, name),
-                                        worker_type);
+                                        real, worker_type);
         if (!worker) {
             if (in_proxy_section) {
                 err = ap_proxy_define_worker_ex(cmd->pool, &worker, NULL,
@@ -2991,9 +3013,14 @@ static const char *proxysection(cmd_parms *cmd, void *mconfig, const char *arg)
             }
         }
         else {
+            const char *real;
+
+            if (!(real = ap_proxy_de_socketfy(cmd->temp_pool, conf->p))) {
+                return "<Proxy/ProxyMatch > uses an invalid \"unix:\" URL";
+            }
+
             worker = ap_proxy_get_worker_ex(cmd->temp_pool, NULL, sconf,
-                                            ap_proxy_de_socketfy(cmd->temp_pool, conf->p),
-                                            worker_type);
+                                            real, worker_type);
             if (!worker) {
                 err = ap_proxy_define_worker_ex(cmd->pool, &worker, NULL, sconf,
                                                 conf->p, worker_type);
@@ -3474,6 +3501,7 @@ APR_HOOK_STRUCT(
     APR_HOOK_LINK(post_request)
     APR_HOOK_LINK(request_status)
     APR_HOOK_LINK(check_trans)
+    APR_HOOK_LINK(tunnel_forward)
 )
 
 APR_IMPLEMENT_EXTERNAL_HOOK_RUN_FIRST(proxy, PROXY, int, scheme_handler,
@@ -3517,3 +3545,9 @@ APR_IMPLEMENT_OPTIONAL_HOOK_RUN_ALL(proxy, PROXY, int, request_status,
 APR_IMPLEMENT_OPTIONAL_HOOK_RUN_ALL(proxy, PROXY, int, detach_backend,
                                     (request_rec *r, proxy_conn_rec *backend),
                                     (r, backend), OK, DECLINED)
+APR_IMPLEMENT_EXTERNAL_HOOK_RUN_ALL(proxy, PROXY, int, tunnel_forward,
+                                    (proxy_tunnel_rec *tunnel,
+                                     conn_rec *c_i, conn_rec *c_o,
+                                     apr_bucket_brigade *bb),
+                                    (tunnel, c_i, c_o, bb),
+                                    OK, DECLINED)

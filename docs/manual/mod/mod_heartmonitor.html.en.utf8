@@ -98,17 +98,20 @@ heartbeat requests to this server</td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_heartmonitor</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>The value of 0 is accepted only in 2.4.55 and above</td></tr>
 </table>
     <p>The <code class="directive">HeartbeatMaxServers</code> directive specifies the
     maximum number of servers that will be sending requests to this monitor
     server.  It is used to control the size of the shared memory allocated
     to store the heartbeat info when <code class="module"><a href="../mod/mod_slotmem_shm.html">mod_slotmem_shm</a></code> is in use.</p>
+    <p>For using flat-file storage (without loading <code class="module"><a href="../mod/mod_slotmem_shm.html">mod_slotmem_shm</a></code>),
+    this must be set to 0. The value must be either 0, or bigger or equals 10.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="HeartbeatStorage" id="HeartbeatStorage">HeartbeatStorage</a> <a name="heartbeatstorage" id="heartbeatstorage">Directive</a> <a title="Permanent link" href="#heartbeatstorage" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Path to store heartbeat data</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Path to store heartbeat data when using flat-file storage</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>HeartbeatStorage <var>file-path</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>HeartbeatStorage logs/hb.dat</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
@@ -117,7 +120,8 @@ heartbeat requests to this server</td></tr>
 </table>
     <p>The <code class="directive">HeartbeatStorage</code> directive specifies the
     path to store heartbeat data.  This flat-file is used only when
-    <code class="module"><a href="../mod/mod_slotmem_shm.html">mod_slotmem_shm</a></code> is not loaded.</p>
+    <code class="module"><a href="../mod/mod_slotmem_shm.html">mod_slotmem_shm</a></code> is not loaded and
+    <code class="directive"><a href="#heartbeatmaxservers">HeartbeatMaxServers</a></code> is set to 0.</p>
 
 </div>
 </div>
@@ -142,7 +146,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_heartmonit
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2021 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2023 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

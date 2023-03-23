@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1874148 -->
+<!-- English Revision: 1907762 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -146,6 +146,12 @@ Apache</compatibility>
     <p>Si aucun mot de passe n'est spécifié, la valeur par défaut
     "password" sera utilisée. Pour désactiver l'authentification de base
     simulée pour un espace d'URL, définissez AuthBasicFake à "off".</p>
+
+    <note>
+    L'en-tête Authorization ajouté par cette directive <em>ne constitue pas</em>
+    une donnée d'authentification ou d'autorisation au sein du serveur local. Il
+    est destiné à être transmis aux serveurs en amont.
+    </note>
 
     <p>Dans l'exemple suivant, un nom d'utilisateur et un mot de passe
     prédéfinis sont transmis à un serveur d'arrière-plan :</p>

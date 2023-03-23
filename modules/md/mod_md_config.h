@@ -24,7 +24,6 @@ struct md_ocsp_reg_t;
 struct md_pkeys_spec_t;
 
 typedef enum {
-    MD_CONFIG_CA_URL,
     MD_CONFIG_CA_CONTACT,
     MD_CONFIG_CA_PROTO,
     MD_CONFIG_BASE_DIR,
@@ -71,6 +70,10 @@ struct md_mod_conf_t {
     const char *cert_check_name;       /* name of the linked certificate check site */
     const char *cert_check_url;        /* url "template for" checking a certificate */
     const char *ca_certs;              /* root certificates to use for connections */
+    apr_time_t min_delay;              /* minimum delay for retries */
+    int retry_failover;                /* number of errors to trigger CA failover */
+    int use_store_locks;               /* use locks when updating store */
+    apr_time_t lock_wait_timeout;      /* fail after this time when unable to obtain lock */
 };
 
 typedef struct md_srv_conf_t {
@@ -86,14 +89,18 @@ typedef struct md_srv_conf_t {
     md_timeslice_t *renew_window;      /* time before expiration that starts renewal */
     md_timeslice_t *warn_window;       /* time before expiration that warning are sent out */
     
-    const char *ca_url;                /* url of CA certificate service */
+    struct apr_array_header_t *ca_urls; /* urls of CAs */
     const char *ca_contact;            /* contact email registered to account */
     const char *ca_proto;              /* protocol used vs CA (e.g. ACME) */
     const char *ca_agreement;          /* accepted agreement uri between CA and user */ 
     struct apr_array_header_t *ca_challenges; /* challenge types configured */
-    
+    const char *ca_eab_kid;            /* != NULL, external account binding keyid */
+    const char *ca_eab_hmac;           /* != NULL, external account binding hmac */
+
     int stapling;                      /* OCSP stapling enabled */
     int staple_others;                 /* Provide OCSP stapling for non-MD certificates */
+
+    const char *dns01_cmd;             /* DNS challenge command, override global command */
 
     md_t *current;                     /* md currently defined in <MDomainSet xxx> section */
     struct apr_array_header_t *assigned; /* post_config: MDs that apply to this server */

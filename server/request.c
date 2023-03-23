@@ -243,14 +243,15 @@ AP_DECLARE(int) ap_process_request_internal(request_rec *r)
     /* Ignore URL unescaping for translated URIs already */
     if (access_status != DONE && r->parsed_uri.path) {
         core_dir_config *d = ap_get_core_module_config(r->per_dir_config);
-
-        if (d->allow_encoded_slashes) {
-            access_status = ap_unescape_url_keep2f(r->parsed_uri.path,
-                                                   d->decode_encoded_slashes);
+        /* Unreserved chars were already decoded by ap_normalize_path() */
+        unsigned int unescape_flags = AP_UNESCAPE_URL_KEEP_UNRESERVED;
+        if (!d->allow_encoded_slashes) {
+            unescape_flags |= AP_UNESCAPE_URL_FORBID_SLASHES;
         }
-        else {
-            access_status = ap_unescape_url(r->parsed_uri.path);
+        else if (!d->decode_encoded_slashes) {
+            unescape_flags |= AP_UNESCAPE_URL_KEEP_SLASHES;
         }
+        access_status = ap_unescape_url_ex(r->parsed_uri.path, unescape_flags);
         if (access_status) {
             if (access_status == HTTP_NOT_FOUND) {
                 if (! d->allow_encoded_slashes) {

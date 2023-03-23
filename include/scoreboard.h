@@ -183,6 +183,8 @@ AP_DECLARE(void) ap_create_sb_handle(ap_sb_handle_t **new_sbh, apr_pool_t *p,
                                      int child_num, int thread_num);
 AP_DECLARE(void) ap_update_sb_handle(ap_sb_handle_t *sbh,
                                      int child_num, int thread_num);
+AP_DECLARE(void) ap_sb_get_child_thread(ap_sb_handle_t *sbh,
+                                        int *pchild_num, int *pthread_num);
 
 AP_DECLARE(int) ap_find_child_by_pid(apr_proc_t *pid);
 AP_DECLARE(int) ap_update_child_status(ap_sb_handle_t *sbh, int status, request_rec *r);

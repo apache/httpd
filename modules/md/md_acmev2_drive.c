@@ -51,7 +51,7 @@
  * Either we have an order stored in the STAGING area, or we need to create a 
  * new one at the ACME server.
  */
-static apr_status_t ad_setup_order(md_proto_driver_t *d, md_result_t *result)
+static apr_status_t ad_setup_order(md_proto_driver_t *d, md_result_t *result, int *pis_new)
 {
     md_acme_driver_t *ad = d->baton;
     apr_status_t rv;
@@ -65,6 +65,7 @@ static apr_status_t ad_setup_order(md_proto_driver_t *d, md_result_t *result)
      * if known AUTHZ resource is not valid, remove, goto 4.1.1
      * if no AUTHZ available, create a new one for the domain, store it
      */
+    if (pis_new) *pis_new = 0;
     rv = md_acme_order_load(d->store, MD_SG_STAGING, md->name, &ad->order, d->p);
     if (APR_SUCCESS == rv) {
         md_result_activity_setn(result, "Loaded order from staging");
@@ -72,7 +73,7 @@ static apr_status_t ad_setup_order(md_proto_driver_t *d, md_result_t *result)
     }
     else if (!APR_STATUS_IS_ENOENT(rv)) {
         md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, rv, d->p, "%s: loading order", md->name);
-        md_acme_order_purge(d->store, d->p, MD_SG_STAGING, md->name, d->env);
+        md_acme_order_purge(d->store, d->p, MD_SG_STAGING, md, d->env);
     }
     
     md_result_activity_setn(result, "Creating new order");
@@ -82,7 +83,8 @@ static apr_status_t ad_setup_order(md_proto_driver_t *d, md_result_t *result)
     if (APR_SUCCESS != rv) {
         md_result_set(result, rv, "saving order in staging");
     }
-    
+    if (pis_new) *pis_new = 1;
+
 leave:
     md_acme_report_result(ad->acme, rv, result);
     return rv;
@@ -94,7 +96,8 @@ leave:
 apr_status_t md_acmev2_drive_renew(md_acme_driver_t *ad, md_proto_driver_t *d, md_result_t *result)
 {
     apr_status_t rv = APR_SUCCESS;
-    
+    int is_new_order = 0;
+
     md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, 0, d->p, "%s: (ACMEv2) need certificate", d->md->name);
     
     /* Chose (or create) and ACME account to use */
@@ -115,27 +118,36 @@ apr_status_t md_acmev2_drive_renew(md_acme_driver_t *ad, md_proto_driver_t *d, m
      *   * COMPLETE: all done, return success
      *   * INVALID and otherwise: fail renewal, delete local order
      */
-    if (APR_SUCCESS != (rv = ad_setup_order(d, result))) {
+    if (APR_SUCCESS != (rv = ad_setup_order(d, result, &is_new_order))) {
         goto leave;
     }
     
     rv = md_acme_order_update(ad->order, ad->acme, result, d->p);
-    if (APR_STATUS_IS_ENOENT(rv)) {
-        /* order is no longer known at the ACME server */
+    if (APR_STATUS_IS_ENOENT(rv)
+        || APR_STATUS_IS_EACCES(rv)
+        || MD_ACME_ORDER_ST_INVALID == ad->order->status) {
+        /* order is invalid or no longer known at the ACME server */
         ad->order = NULL;
-        md_acme_order_purge(d->store, d->p, MD_SG_STAGING, d->md->name, d->env);
+        md_acme_order_purge(d->store, d->p, MD_SG_STAGING, d->md, d->env);
     }
     else if (APR_SUCCESS != rv) {
         goto leave;
     }
-    
+
+retry:
     if (!ad->order) {
-        rv = ad_setup_order(d, result);
+        rv = ad_setup_order(d, result, &is_new_order);
         if (APR_SUCCESS != rv) goto leave;
     }
     
     rv = md_acme_order_start_challenges(ad->order, ad->acme, ad->ca_challenges,
                                         d->store, d->md, d->env, result, d->p);
+    if (!is_new_order && APR_STATUS_IS_EINVAL(rv)) {
+        /* found 'invalid' domains in previous order, need to start over */
+        ad->order = NULL;
+        md_acme_order_purge(d->store, d->p, MD_SG_STAGING, d->md, d->env);
+        goto retry;
+    }
     if (APR_SUCCESS != rv) goto leave;
     
     rv = md_acme_order_monitor_authzs(ad->order, ad->acme, d->md,
@@ -157,7 +169,7 @@ apr_status_t md_acmev2_drive_renew(md_acme_driver_t *ad, md_proto_driver_t *d, m
     if (APR_SUCCESS != rv) goto leave;
     
     if (!ad->order->certificate) {
-        md_result_set(result, APR_EINVAL, "Order valid, but certifiate url is missing.");
+        md_result_set(result, APR_EINVAL, "Order valid, but certificate url is missing.");
         goto leave;
     }
     md_result_set(result, APR_SUCCESS, NULL);

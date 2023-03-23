@@ -1,14 +1,17 @@
 import socket
+import time
+
 import pytest
 
-from h2_conf import HttpdConf
+from .env import H2Conf
+from pyhttpd.curl import CurlPiper
 
 
-class TestStore:
+class TestTimeout:
 
     # Check that base servers 'Timeout' setting is observed on SSL handshake
-    def test_105_01(self, env):
-        conf = HttpdConf(env)
+    def test_h2_105_01(self, env):
+        conf = H2Conf(env)
         conf.add("""
             AcceptFilter http none
             Timeout 1.5
@@ -41,8 +44,8 @@ class TestStore:
         sock.close()
 
     # Check that mod_reqtimeout handshake setting takes effect
-    def test_105_02(self, env):
-        conf = HttpdConf(env)
+    def test_h2_105_02(self, env):
+        conf = H2Conf(env)
         conf.add("""
             AcceptFilter http none
             Timeout 10
@@ -77,8 +80,8 @@ class TestStore:
 
     # Check that mod_reqtimeout handshake setting do no longer apply to handshaked 
     # connections. See <https://github.com/icing/mod_h2/issues/196>.
-    def test_105_03(self, env):
-        conf = HttpdConf(env)
+    def test_h2_105_03(self, env):
+        conf = H2Conf(env)
         conf.add("""
             Timeout 10
             RequestReadTimeout handshake=1 header=5 body=10
@@ -87,10 +90,60 @@ class TestStore:
         conf.install()
         assert env.apache_restart() == 0
         url = env.mkurl("https", "cgi", "/necho.py")
-        r = env.curl_get(url, 5, [
+        r = env.curl_get(url, 5, options=[
             "-vvv",
             "-F", ("count=%d" % 100),
             "-F", ("text=%s" % "abcdefghijklmnopqrstuvwxyz"),
             "-F", ("wait1=%f" % 1.5),
         ])
-        assert 200 == r.response["status"]
+        assert r.response["status"] == 200
+
+    def test_h2_105_10(self, env):
+        # just a check without delays if all is fine
+        conf = H2Conf(env)
+        conf.add_vhost_cgi()
+        conf.install()
+        assert env.apache_restart() == 0
+        url = env.mkurl("https", "cgi", "/h2test/delay")
+        piper = CurlPiper(env=env, url=url)
+        piper.start()
+        stdout, stderr = piper.close()
+        assert piper.exitcode == 0
+        assert len("".join(stdout)) == 3 * 8192
+
+    def test_h2_105_11(self, env):
+        # short connection timeout, longer stream delay
+        # connection timeout must not abort ongoing streams
+        conf = H2Conf(env)
+        conf.add_vhost_cgi()
+        conf.add("Timeout 1")
+        conf.install()
+        assert env.apache_restart() == 0
+        url = env.mkurl("https", "cgi", "/h2test/delay?1200ms")
+        piper = CurlPiper(env=env, url=url)
+        piper.start()
+        stdout, stderr = piper.close()
+        assert len("".join(stdout)) == 3 * 8192
+
+    def test_h2_105_12(self, env):
+        # long connection timeout, short stream timeout
+        # sending a slow POST
+        if env.httpd_is_at_least("2.5.0"):
+            conf = H2Conf(env)
+            conf.add_vhost_cgi()
+            conf.add("Timeout 10")
+            conf.add("H2StreamTimeout 1")
+            conf.install()
+            assert env.apache_restart() == 0
+            url = env.mkurl("https", "cgi", "/h2test/delay?5")
+            piper = CurlPiper(env=env, url=url)
+            piper.start()
+            for _ in range(3):
+                time.sleep(2)
+                try:
+                    piper.send("0123456789\n")
+                except BrokenPipeError:
+                    break
+            piper.close()
+            assert piper.response
+            assert piper.response['status'] == 408, f"{piper.response}"

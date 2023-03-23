@@ -25,67 +25,67 @@
 #include "md_log.h"
 #include "md_util.h"
 
-static int header_set(void *data, const char *key, const char *val)
+apr_status_t md_jws_get_jwk(md_json_t **pjwk, apr_pool_t *p, struct md_pkey_t *pkey)
 {
-    md_json_sets(val, (md_json_t *)data, key, NULL);
-    return 1;
+    md_json_t *jwk;
+
+    if (!pkey) return APR_EINVAL;
+
+    jwk = md_json_create(p);
+    md_json_sets(md_pkey_get_rsa_e64(pkey, p), jwk, "e", NULL);
+    md_json_sets("RSA", jwk, "kty", NULL);
+    md_json_sets(md_pkey_get_rsa_n64(pkey, p), jwk, "n", NULL);
+    *pjwk = jwk;
+    return APR_SUCCESS;
 }
 
 apr_status_t md_jws_sign(md_json_t **pmsg, apr_pool_t *p,
-                         md_data_t *payload, struct apr_table_t *protected, 
+                         md_data_t *payload, md_json_t *prot_fields,
                          struct md_pkey_t *pkey, const char *key_id)
 {
-    md_json_t *msg, *jprotected;
+    md_json_t *msg, *jprotected, *jwk;
     const char *prot64, *pay64, *sign64, *sign, *prot;
-    apr_status_t rv = APR_SUCCESS;
+    md_data_t data;
+    apr_status_t rv;
 
-    *pmsg = NULL;
-    
     msg = md_json_create(p);
-
-    jprotected = md_json_create(p);
+    jprotected = md_json_clone(p, prot_fields);
     md_json_sets("RS256", jprotected, "alg", NULL);
     if (key_id) {
         md_json_sets(key_id, jprotected, "kid", NULL);
     }
     else {
-        md_json_sets(md_pkey_get_rsa_e64(pkey, p), jprotected, "jwk", "e", NULL);
-        md_json_sets("RSA", jprotected, "jwk", "kty", NULL);
-        md_json_sets(md_pkey_get_rsa_n64(pkey, p), jprotected, "jwk", "n", NULL);
+        rv = md_jws_get_jwk(&jwk, p, pkey);
+        if (APR_SUCCESS != rv) {
+            md_log_perror(MD_LOG_MARK, MD_LOG_WARNING, rv, p, "get jwk");
+            goto cleanup;
+        }
+        md_json_setj(jwk, jprotected, "jwk", NULL);
     }
-    apr_table_do(header_set, jprotected, protected, NULL);
-    prot = md_json_writep(jprotected, p, MD_JSON_FMT_COMPACT);
-    md_log_perror(MD_LOG_MARK, MD_LOG_TRACE4, 0, p, "protected: %s",
-                  prot ? prot : "<failed to serialize!>");
 
+    prot = md_json_writep(jprotected, p, MD_JSON_FMT_COMPACT);
     if (!prot) {
         rv = APR_EINVAL;
-    }
-    
-    if (rv == APR_SUCCESS) {
-        md_data_t data;
-
-        md_data_init(&data, prot, strlen(prot));
-        prot64 = md_util_base64url_encode(&data, p);
-        md_json_sets(prot64, msg, "protected", NULL);
-        pay64 = md_util_base64url_encode(payload, p);
-
-        md_json_sets(pay64, msg, "payload", NULL);
-        sign = apr_psprintf(p, "%s.%s", prot64, pay64);
-
-        rv = md_crypt_sign64(&sign64, pkey, p, sign, strlen(sign));
+        md_log_perror(MD_LOG_MARK, MD_LOG_WARNING, rv, p, "serialize protected");
+        goto cleanup;
     }
 
-    if (rv == APR_SUCCESS) {
-        md_log_perror(MD_LOG_MARK, MD_LOG_TRACE3, 0, p, 
-                      "jws pay64=%s\nprot64=%s\nsign64=%s", pay64, prot64, sign64);
-        
-        md_json_sets(sign64, msg, "signature", NULL);
-    }
-    else {
+    md_data_init(&data, prot, strlen(prot));
+    prot64 = md_util_base64url_encode(&data, p);
+    md_json_sets(prot64, msg, "protected", NULL);
+
+    pay64 = md_util_base64url_encode(payload, p);
+    md_json_sets(pay64, msg, "payload", NULL);
+    sign = apr_psprintf(p, "%s.%s", prot64, pay64);
+
+    rv = md_crypt_sign64(&sign64, pkey, p, sign, strlen(sign));
+    if (APR_SUCCESS != rv) {
         md_log_perror(MD_LOG_MARK, MD_LOG_WARNING, rv, p, "jwk signed message");
-    } 
-    
+        goto cleanup;
+    }
+    md_json_sets(sign64, msg, "signature", NULL);
+
+cleanup:
     *pmsg = (APR_SUCCESS == rv)? msg : NULL;
     return rv;
 }
@@ -106,5 +106,43 @@ apr_status_t md_jws_pkey_thumb(const char **pthumb, apr_pool_t *p, struct md_pke
     s = apr_psprintf(p, "{\"e\":\"%s\",\"kty\":\"RSA\",\"n\":\"%s\"}", e64, n64);
     md_data_init_str(&data, s);
     rv = md_crypt_sha256_digest64(pthumb, p, &data);
+    return rv;
+}
+
+apr_status_t md_jws_hmac(md_json_t **pmsg, apr_pool_t *p,
+                         md_data_t *payload, md_json_t *prot_fields,
+                         const md_data_t *hmac_key)
+{
+    md_json_t *msg, *jprotected;
+    const char *prot64, *pay64, *mac64, *sign, *prot;
+    md_data_t data;
+    apr_status_t rv;
+
+    msg = md_json_create(p);
+    jprotected = md_json_clone(p, prot_fields);
+    md_json_sets("HS256", jprotected, "alg", NULL);
+    prot = md_json_writep(jprotected, p, MD_JSON_FMT_COMPACT);
+    if (!prot) {
+        rv = APR_EINVAL;
+        md_log_perror(MD_LOG_MARK, MD_LOG_WARNING, rv, p, "serialize protected");
+        goto cleanup;
+    }
+
+    md_data_init(&data, prot, strlen(prot));
+    prot64 = md_util_base64url_encode(&data, p);
+    md_json_sets(prot64, msg, "protected", NULL);
+
+    pay64 = md_util_base64url_encode(payload, p);
+    md_json_sets(pay64, msg, "payload", NULL);
+    sign = apr_psprintf(p, "%s.%s", prot64, pay64);
+
+    rv = md_crypt_hmac64(&mac64, hmac_key, p, sign, strlen(sign));
+    if (APR_SUCCESS != rv) {
+        goto cleanup;
+    }
+    md_json_sets(mac64, msg, "signature", NULL);
+
+cleanup:
+    *pmsg = (APR_SUCCESS == rv)? msg : NULL;
     return rv;
 }

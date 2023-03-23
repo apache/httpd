@@ -33,6 +33,7 @@ struct md_http_t {
     void *impl_data;         /* to be used by the implementation */
     const char *user_agent;
     const char *proxy_url;
+    const char *unix_socket_path;
     md_http_timeouts_t timeout;
     const char *ca_file;
 };
@@ -91,6 +92,25 @@ apr_status_t md_http_create(md_http_t **phttp, apr_pool_t *p, const char *user_a
     return APR_SUCCESS;
 }
 
+apr_status_t md_http_clone(md_http_t **phttp,
+                           apr_pool_t *p, md_http_t *source_http)
+{
+    apr_status_t rv;
+
+    rv = md_http_create(phttp, p, source_http->user_agent, source_http->proxy_url);
+    if (APR_SUCCESS == rv) {
+        (*phttp)->resp_limit = source_http->resp_limit;
+        (*phttp)->timeout = source_http->timeout;
+        if (source_http->unix_socket_path) {
+            (*phttp)->unix_socket_path = apr_pstrdup(p, source_http->unix_socket_path);
+        }
+        if (source_http->ca_file) {
+            (*phttp)->ca_file = apr_pstrdup(p, source_http->ca_file);
+        }
+    }
+    return rv;
+}
+
 void md_http_set_impl_data(md_http_t *http, void *data)
 {
     http->impl_data = data;
@@ -143,6 +163,11 @@ void md_http_set_ca_file(md_http_t *http, const char *ca_file)
     http->ca_file = ca_file;
 }
 
+void md_http_set_unix_socket_path(md_http_t *http, const char *path)
+{
+    http->unix_socket_path = path;
+}
+
 static apr_status_t req_set_body(md_http_request_t *req, const char *content_type,
                                  apr_bucket_brigade *body, apr_off_t body_len,
                                  int detect_len)
@@ -177,7 +202,6 @@ static apr_status_t req_set_body_data(md_http_request_t *req, const char *conten
         bbody = apr_brigade_create(req->pool, req->http->bucket_alloc);
         rv = apr_brigade_write(bbody, NULL, NULL, body->data, body->len);
         if (rv != APR_SUCCESS) {
-            md_http_req_destroy(req);
             return rv;
         }
     }
@@ -211,6 +235,7 @@ static apr_status_t req_create(md_http_request_t **preq, md_http_t *http,
     req->proxy_url = http->proxy_url;
     req->timeout = http->timeout;
     req->ca_file = http->ca_file;
+    req->unix_socket_path = http->unix_socket_path;
     *preq = req;
     return rv;
 }
@@ -308,10 +333,16 @@ apr_status_t md_http_POSTd_create(md_http_request_t **preq, md_http_t *http, con
     apr_status_t rv;
     
     rv = req_create(&req, http, "POST", url, headers);
+    if (APR_SUCCESS != rv) goto cleanup;
+    rv = req_set_body_data(req, content_type, body);
+cleanup:
     if (APR_SUCCESS == rv) {
-        rv = req_set_body_data(req, content_type, body);
+        *preq = req;
     }
-    *preq = (APR_SUCCESS == rv)? req : NULL;
+    else {
+        *preq = NULL;
+        if (req) md_http_req_destroy(req);
+    }
     return rv;
 }
 

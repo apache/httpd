@@ -72,15 +72,22 @@ which is the <directive module="core">ServerRoot</directive> when
 
 <dt><code>-p</code> <var>program</var></dt>
 
-<dd>If given, <code>rotatelogs</code> will execute the specified
+<dd><p>If given, <code>rotatelogs</code> will execute the specified
 program every time a new log file is opened.  The filename of the
 newly opened file is passed as the first argument to the program.  If
 executing after a rotation, the old log file is passed as the second
-argument.  <code>rotatelogs</code> does not wait for the specified
+argument.</p> 
+<p> <code>rotatelogs</code> does not wait for the specified
 program to terminate before continuing to operate, and will not log
-any error code returned on termination.  The spawned program uses the
+any error code returned on termination.</p>
+<p>The spawned program uses the
 same stdin, stdout, and stderr as rotatelogs itself, and also inherits
-the environment.</dd>
+the environment.</p>
+<p>When two parameters are provided, under some conditions the parameters 
+will have the same value.  For example, if rotation is triggerd but the 
+portions of the time and date incorporated into the log filename do not change
+across the rotation.</p>
+</dd>
 
 <dt><code>-f</code></dt>
 <dd>Causes the logfile to be opened immediately, as soon as
@@ -104,6 +111,13 @@ the filename, however format strings containing '%' characters
 will be respected.
 </dd>
 
+<dt><code>-T</code></dt>
+<dd>Causes all but the initial logfile to be truncated when opened.
+This is useful when the format string contains something that will
+loop around, such as the day of the month.
+</dd>
+
+
 <dt><code>-v</code></dt>
 <dd>Produce verbose output on STDERR. The output contains
 the result of the configuration parsing, and all file open and
@@ -117,9 +131,16 @@ processed in real time by a further tool in the chain.</dd>
 <dd>Create log file for each interval, even if empty.</dd>
 
 <dt><code>-n <var>number-of-files</var></code></dt>
-<dd>Use a circular list of filenames without timestamps.
-With -n 3, the series of log files opened would be
-"logfile", "logfile.1", "logfile.2", then overwriting "logfile".<br />
+<dd>Use a circular list of filenames without timestamps. This option overwrites 
+log files at startup and during rotation.  With -n 3, the series of log 
+files opened would be "logfile", "logfile.1", "logfile.2", then overwriting 
+"logfile". 
+<br/>
+When this program first opens "logfile", the file will only be truncated if <code>-t</code> is also provided. Every subsequent rotation will
+always begin with truncation of the target file.  For size based rotation without <code>-t</code> and existing log files in place,
+this option may result in unintuitive behavior such as initial log entries being sent to "logfile.1", and entries in "logfile.1" not being preserved
+even if later "logfile.n" have not yet been used.
+<br/>
 Available in 2.4.5 and later.</dd>
 
 <dt><code><var>logfile</var></code></dt>
@@ -184,7 +205,9 @@ an offset.</dd>
 <section id="examples"><title>Examples</title>
 
 <example>
+<highlight language="config">
      CustomLog "|bin/rotatelogs /var/log/logfile 86400" common
+</highlight>
 </example>
 
      <p>This creates the files /var/log/logfile.nnnn where nnnn  is
@@ -194,22 +217,42 @@ an offset.</dd>
      time (here after 24 hours) a new log is started.</p>
 
 <example>
+<highlight language="config">
      CustomLog "|bin/rotatelogs -l /var/log/logfile.%Y.%m.%d 86400" common
+</highlight>
 </example>
 
      <p>This creates the files /var/log/logfile.yyyy.mm.dd where
      yyyy is the year, mm is the month, and dd is the day of the month.
      Logging will switch to a new file every day at midnight, local time.</p>
+ 
+ <example>
+<highlight language="config">
+     CustomLog "|bin/rotatelogs -l /var/log/logfile.%Y.%m 86400" common
+</highlight>
+</example>
+
+     <p>This creates the files /var/log/logfile.yyyy.mm where
+     yyyy is the year and mm is the month.   Every day at midnight, rotation
+     will occur, including running programs specified with <code>-p</code>. 
+     Despite rotation ocurring, the filename will only change on the first 
+     rotation of the month. Rotation on other days will continue to output file
+     and append to it.
+     </p>
 
 <example>
+<highlight language="config">
      CustomLog "|bin/rotatelogs /var/log/logfile 5M" common
+</highlight>
 </example>
 
      <p>This configuration will rotate the logfile whenever it reaches
      a size of 5 megabytes.</p>
 
 <example>
+<highlight language="config">
      ErrorLog "|bin/rotatelogs /var/log/errorlog.%Y-%m-%d-%H_%M_%S 5M"
+</highlight>
 </example>
      <p>This configuration will rotate the error logfile whenever it
      reaches a size of 5 megabytes, and the suffix to the logfile name
@@ -217,13 +260,27 @@ an offset.</dd>
      <code>errorlog.YYYY-mm-dd-HH_MM_SS</code>.</p>
 
 <example>
+<highlight language="config">
      CustomLog "|bin/rotatelogs -t /var/log/logfile 86400" common
+</highlight>
 </example>
 
-     <p>This creates the file /var/log/logfile, truncating the file at
+     <p>This creates the file <code>/var/log/logfile</code>, truncating the file at
      startup and then truncating the file once per day. It is expected
      in this scenario that a separate process (such as tail) would
      process the file in real time.</p>
+
+<example>
+<highlight language="config">
+     CustomLog "|bin/rotatelogs -T /var/log/logfile.%d 86400" common
+</highlight>
+</example>
+
+<p>If the server is started (or restarted) on the first of the month, this 
+appends to <code>/var/log/logfile.01</code>.  When a log entry is written on the
+second of the month, <code>/var/log/logfile.02</code> is truncated and new entries
+will be added to the top. This example keeps approximately 1 months worth of 
+logs without external maintenance.</p>
 
 </section>
 

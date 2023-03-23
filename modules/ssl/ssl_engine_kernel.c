@@ -926,7 +926,10 @@ static int ssl_hook_Access_classic(request_rec *r, SSLSrvConfigRec *sc, SSLDirCo
             }
 
             cert_store_ctx = X509_STORE_CTX_new();
-            X509_STORE_CTX_init(cert_store_ctx, cert_store, cert, cert_stack);
+            if (!X509_STORE_CTX_init(cert_store_ctx, cert_store, cert, cert_stack)) {
+                X509_STORE_CTX_free(cert_store_ctx);
+                return HTTP_FORBIDDEN;
+            }
             depth = SSL_get_verify_depth(ssl);
 
             if (depth >= 0) {
@@ -1529,6 +1532,7 @@ static const char *const ssl_hook_Fixup_vars[] = {
     "SSL_SERVER_A_SIG",
     "SSL_SESSION_ID",
     "SSL_SESSION_RESUMED",
+    "SSL_SHARED_CIPHERS",
 #ifdef HAVE_SRP
     "SSL_SRP_USER",
     "SSL_SRP_USERINFO",
@@ -2584,6 +2588,7 @@ static int ssl_find_vhost(void *servername, conn_rec *c, server_rec *s)
             sc->server->pks->service_unavailable : 0; 
         
         ap_update_child_status_from_server(c->sbh, SERVER_BUSY_READ, c, s);
+
         /*
          * There is one special filter callback, which is set
          * very early depending on the base_server's log level.
@@ -2592,14 +2597,7 @@ static int ssl_find_vhost(void *servername, conn_rec *c, server_rec *s)
          * we need to set that callback here.
          */
         if (APLOGtrace4(s)) {
-            BIO *rbio = SSL_get_rbio(ssl),
-                *wbio = SSL_get_wbio(ssl);
-            BIO_set_callback(rbio, ssl_io_data_cb);
-            BIO_set_callback_arg(rbio, (void *)ssl);
-            if (wbio && wbio != rbio) {
-                BIO_set_callback(wbio, ssl_io_data_cb);
-                BIO_set_callback_arg(wbio, (void *)ssl);
-            }
+            modssl_set_io_callbacks(ssl);
         }
 
         return 1;

@@ -152,13 +152,12 @@ static void *motorz_io_setup_conn(apr_thread_t *thread, void *baton)
 
     ap_update_vhost_given_ip(scon->c);
 
-    status = ap_run_pre_connection(scon->c, scon->sock);
+    status = ap_pre_connection(scon->c, scon->sock);
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO(03317)
                          "motorz_io_setup_conn(): did pre-conn");
     if (status != OK && status != DONE) {
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO(02843)
                      "motorz_io_setup_conn: connection aborted");
-        scon->c->aborted = 1;
     }
 
     scon->cs.state = CONN_STATE_READ_REQUEST_LINE;

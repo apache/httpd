@@ -14,7 +14,7 @@ LTLIBRARY_SOURCES = \
 	util_charset.c util_cookies.c util_debug.c util_xml.c \
 	util_filter.c util_pcre.c util_regex.c $(EXPORTS_DOT_C) \
 	scoreboard.c error_bucket.c protocol.c core.c request.c ssl.c provider.c \
-	eoc_bucket.c eor_bucket.c core_filters.c \
+	eoc_bucket.c eor_bucket.c headers_bucket.c core_filters.c \
 	util_expr_parse.c util_expr_scan.c util_expr_eval.c \
 	apreq_cookie.c apreq_error.c apreq_module.c \
 	apreq_module_cgi.c apreq_module_custom.c apreq_param.c \

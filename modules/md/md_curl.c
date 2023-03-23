@@ -64,6 +64,7 @@ static size_t req_data_cb(void *data, size_t len, size_t nmemb, void *baton)
     apr_bucket_brigade *body = baton;
     size_t blen, read_len = 0, max_len = len * nmemb;
     const char *bdata;
+    char *rdata = data;
     apr_bucket *b;
     apr_status_t rv;
     
@@ -81,9 +82,10 @@ static size_t req_data_cb(void *data, size_t len, size_t nmemb, void *baton)
                     apr_bucket_split(b, max_len);
                     blen = max_len;
                 }
-                memcpy(data, bdata, blen);
+                memcpy(rdata, bdata, blen);
                 read_len += blen;
                 max_len -= blen;
+                rdata += blen;
             }
             else {
                 body = NULL;
@@ -301,6 +303,9 @@ static apr_status_t internals_setup(md_http_request_t *req)
     if (req->ca_file) {
         curl_easy_setopt(curl, CURLOPT_CAINFO, req->ca_file);
     }
+    if (req->unix_socket_path) {
+        curl_easy_setopt(curl, CURLOPT_UNIX_SOCKET_PATH, req->unix_socket_path);
+    }
 
     if (req->body_len >= 0) {
         /* set the Content-Length */
@@ -351,6 +356,9 @@ static apr_status_t update_status(md_http_request_t *req)
         rv = curl_status(curl_easy_getinfo(internals->curl, CURLINFO_RESPONSE_CODE, &l));
         if (APR_SUCCESS == rv) {
             internals->response->status = (int)l;
+            md_log_perror(MD_LOG_MARK, MD_LOG_TRACE3, rv, req->pool,
+                          "req[%d]: http status is %d",
+                          req->id, internals->response->status);
         }
     }
     return rv;
@@ -433,33 +441,41 @@ static void add_to_curlm(md_http_request_t *req, CURLM *curlm)
 {
     md_curl_internals_t *internals = req->internals;
     
-    if (curlm && internals && internals->curlm == NULL) {
-        curl_multi_add_handle(curlm, internals->curl);
+    assert(curlm);
+    assert(internals);
+    if (internals->curlm == NULL) {
         internals->curlm = curlm;
     }
+    assert(internals->curlm == curlm);
+    curl_multi_add_handle(curlm, internals->curl);
 }
 
-static void remove_from_curlm(md_http_request_t *req, CURLM *curlm)
+static void remove_from_curlm_and_destroy(md_http_request_t *req, CURLM *curlm)
 {
     md_curl_internals_t *internals = req->internals;
 
-    if (curlm && internals && internals->curlm == curlm) {
-        curl_multi_remove_handle(curlm, internals->curl);
-        internals->curlm = NULL;
-    }
+    assert(curlm);
+    assert(internals);
+    assert(internals->curlm == curlm);
+    curl_multi_remove_handle(curlm, internals->curl);
+    internals->curlm = NULL;
+    md_http_req_destroy(req);
 }
     
 static apr_status_t md_curl_multi_perform(md_http_t *http, apr_pool_t *p,
                                           md_http_next_req *nextreq, void *baton)
 {
+    md_http_t *sub_http;
     md_http_request_t *req;
     CURLM *curlm = NULL;
     CURLMcode mc;
     struct CURLMsg *curlmsg;
+    apr_array_header_t *http_spares;
     apr_array_header_t *requests;
     int i, running, numfds, slowdown, msgcount;
     apr_status_t rv;
     
+    http_spares = apr_array_make(p, 10, sizeof(md_http_t*));
     requests = apr_array_make(p, 10, sizeof(md_http_request_t*));
     curlm = curl_multi_init();
     if (!curlm) {
@@ -472,35 +488,46 @@ static apr_status_t md_curl_multi_perform(md_http_t *http, apr_pool_t *p,
     while(1) {
         while (1) {
             /* fetch as many requests as nextreq gives us */
-            rv = nextreq(&req, baton, http, requests->nelts);
-            
-            if (APR_SUCCESS == rv) {
-                if (APR_SUCCESS != (rv = internals_setup(req))) {
-                    if (req->cb.on_status) req->cb.on_status(req, rv, req->cb.on_status_data);
-                    md_log_perror(MD_LOG_MARK, MD_LOG_TRACE3, rv, p, 
-                                  "multi_perform[%d reqs]: setup failed", requests->nelts);
-                }
-                else {
-                    APR_ARRAY_PUSH(requests, md_http_request_t*) = req;
-                    add_to_curlm(req, curlm);
-                    md_log_perror(MD_LOG_MARK, MD_LOG_TRACE3, rv, p, 
-                                  "multi_perform[%d reqs]: added request", requests->nelts);
-                }
-                continue;
+            if (http_spares->nelts > 0) {
+                sub_http = *(md_http_t **)(apr_array_pop(http_spares));
             }
-            else if (APR_STATUS_IS_ENOENT(rv)) {
-                md_log_perror(MD_LOG_MARK, MD_LOG_TRACE3, 0, p, 
+            else {
+                rv = md_http_clone(&sub_http, p, http);
+                if (APR_SUCCESS != rv) {
+                    md_log_perror(MD_LOG_MARK, MD_LOG_ERR, rv, p,
+                                  "multi_perform[%d reqs]: setup failed", requests->nelts);
+                    goto leave;
+                }
+            }
+
+            rv = nextreq(&req, baton, sub_http, requests->nelts);
+            if (APR_STATUS_IS_ENOENT(rv)) {
+                md_log_perror(MD_LOG_MARK, MD_LOG_TRACE3, 0, p,
                               "multi_perform[%d reqs]: no more requests", requests->nelts);
-                if (!running) {
+                if (!requests->nelts) {
                     goto leave;
                 }
                 break;
             }
-            else {
-                md_log_perror(MD_LOG_MARK, MD_LOG_TRACE3, rv, p, 
+            else if (APR_SUCCESS != rv) {
+                md_log_perror(MD_LOG_MARK, MD_LOG_TRACE3, rv, p,
                               "multi_perform[%d reqs]: nextreq() failed", requests->nelts);
+                APR_ARRAY_PUSH(http_spares, md_http_t*) = sub_http;
                 goto leave;
             }
+
+            if (APR_SUCCESS != (rv = internals_setup(req))) {
+                if (req->cb.on_status) req->cb.on_status(req, rv, req->cb.on_status_data);
+                md_log_perror(MD_LOG_MARK, MD_LOG_TRACE3, rv, p,
+                              "multi_perform[%d reqs]: setup failed", requests->nelts);
+                APR_ARRAY_PUSH(http_spares, md_http_t*) = sub_http;
+                goto leave;
+            }
+
+            APR_ARRAY_PUSH(requests, md_http_request_t*) = req;
+            add_to_curlm(req, curlm);
+            md_log_perror(MD_LOG_MARK, MD_LOG_TRACE3, rv, p,
+                          "multi_perform[%d reqs]: added request", requests->nelts);
         }
     
         mc = curl_multi_perform(curlm, &running);
@@ -524,20 +551,21 @@ static apr_status_t md_curl_multi_perform(md_http_t *http, apr_pool_t *p,
         }
 
         /* process status messages, e.g. that a request is done */
-        while (1) {
+        while (running < requests->nelts) {
             curlmsg = curl_multi_info_read(curlm, &msgcount);
             if (!curlmsg) break;
             if (curlmsg->msg == CURLMSG_DONE) {
                 req = find_curl_request(requests, curlmsg->easy_handle);
                 if (req) {
-                    md_log_perror(MD_LOG_MARK, MD_LOG_TRACE3, 0, p, 
+                    md_log_perror(MD_LOG_MARK, MD_LOG_TRACE2, 0, p,
                                   "multi_perform[%d reqs]: req[%d] done", 
                                   requests->nelts, req->id);
                     update_status(req);
                     fire_status(req, curl_status(curlmsg->data.result));
-                    remove_from_curlm(req, curlm);
                     md_array_remove(requests, req);
-                    md_http_req_destroy(req);
+                    sub_http = req->http;
+                    APR_ARRAY_PUSH(http_spares, md_http_t*) = sub_http;
+                    remove_from_curlm_and_destroy(req, curlm);
                 }
                 else {
                     md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, 0, p, 
@@ -546,7 +574,6 @@ static apr_status_t md_curl_multi_perform(md_http_t *http, apr_pool_t *p,
                 }
             }
         }
-        assert(running == requests->nelts);
     };
 
 leave:
@@ -555,8 +582,9 @@ leave:
     for (i = 0; i < requests->nelts; ++i) {
         req = APR_ARRAY_IDX(requests, i, md_http_request_t*);
         fire_status(req, APR_SUCCESS);
-        remove_from_curlm(req, curlm);
-        md_http_req_destroy(req);
+        sub_http = req->http;
+        APR_ARRAY_PUSH(http_spares, md_http_t*) = sub_http;
+        remove_from_curlm_and_destroy(req, curlm);
     }
     if (curlm) curl_multi_cleanup(curlm);
     return rv;

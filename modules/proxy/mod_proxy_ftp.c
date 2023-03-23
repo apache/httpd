@@ -23,11 +23,6 @@
 #endif
 #include "apr_version.h"
 
-#if (APR_MAJOR_VERSION < 1)
-#undef apr_socket_create
-#define apr_socket_create apr_socket_create_ex
-#endif
-
 #define AUTODETECT_PWD
 /* Automatic timestamping (Last-Modified header) based on MDTM is used if:
  * 1) the FTP server supports the MDTM command and
@@ -294,6 +289,8 @@ static int proxy_ftp_canon(request_rec *r, char *url)
     apr_pool_t *p = r->pool;
     const char *err;
     apr_port_t port, def_port;
+    core_dir_config *d = ap_get_core_module_config(r->per_dir_config);
+    int flags = d->allow_encoded_slashes && !d->decode_encoded_slashes ? PROXY_CANONENC_NOENCODEDSLASHENCODING : 0;
 
     /* */
     if (ap_cstr_casecmpn(url, "ftp:", 4) == 0) {
@@ -332,7 +329,8 @@ static int proxy_ftp_canon(request_rec *r, char *url)
     else
         parms = "";
 
-    path = ap_proxy_canonenc(p, url, strlen(url), enc_path, 0, r->proxyreq);
+    path = ap_proxy_canonenc_ex(p, url, strlen(url), enc_path, flags,
+                                r->proxyreq);
     if (path == NULL)
         return HTTP_BAD_REQUEST;
     if (!ftp_check_string(path))
@@ -1560,7 +1558,12 @@ static int proxy_ftp_handler(request_rec *r, proxy_worker *worker,
                 }
 
                 /* make the connection */
-                apr_sockaddr_info_get(&pasv_addr, apr_psprintf(p, "%d.%d.%d.%d", h3, h2, h1, h0), connect_addr->family, pasvport, 0, p);
+                err = apr_sockaddr_info_get(&pasv_addr, apr_psprintf(p, "%d.%d.%d.%d", h3, h2, h1, h0), connect_addr->family, pasvport, 0, p);
+                if (APR_SUCCESS != err) {
+                    return ap_proxyerror(r, HTTP_BAD_GATEWAY, apr_pstrcat(p,
+                                            "DNS lookup failure for: ",
+                                            connectname, NULL));
+                }
                 rv = apr_socket_connect(data_sock, pasv_addr);
                 if (rv != APR_SUCCESS) {
                     ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(01048)
@@ -1603,7 +1606,12 @@ static int proxy_ftp_handler(request_rec *r, proxy_worker *worker,
 #endif                          /* _OSD_POSIX */
         }
 
-        apr_sockaddr_info_get(&local_addr, local_ip, APR_UNSPEC, local_port, 0, r->pool);
+        err = apr_sockaddr_info_get(&local_addr, local_ip, APR_UNSPEC, local_port, 0, r->pool);
+        if (APR_SUCCESS != err) {
+            return ap_proxyerror(r, HTTP_BAD_GATEWAY, apr_pstrcat(p,
+                                    "DNS lookup failure for: ",
+                                    connectname, NULL));
+        }
 
         if ((rv = apr_socket_bind(local_sock, local_addr)) != APR_SUCCESS) {
             ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(01051)
@@ -1968,11 +1976,11 @@ static int proxy_ftp_handler(request_rec *r, proxy_worker *worker,
     }
 
     /* the transfer socket is now open, create a new connection */
-    data = ap_run_create_connection(p, r->server, data_sock, r->connection->id,
-                                    r->connection->sbh, c->bucket_alloc);
+    data = ap_create_connection(p, r->server, data_sock, 0, NULL,
+                                c->bucket_alloc, 1);
     if (!data) {
         /*
-         * the peer reset the connection already; ap_run_create_connection() closed
+         * the peer reset the connection already; ap_create_connection() closed
          * the socket
          */
         ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01054)

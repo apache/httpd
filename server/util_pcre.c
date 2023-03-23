@@ -77,6 +77,17 @@ POSSIBILITY OF SUCH DAMAGE.
 #define POSIX_MALLOC_THRESHOLD (10)
 #endif
 
+#ifdef HAVE_PCRE2
+/* Reserve 128 bytes for the PCRE2 structs, that is (a bit above):
+ *   sizeof(pcre2_general_context) + offsetof(pcre2_match_data, ovector)
+ */
+#define AP_PCRE_STACKBUF_SIZE \
+    APR_ALIGN_DEFAULT(128 + POSIX_MALLOC_THRESHOLD * sizeof(PCRE2_SIZE) * 2)
+#else
+#define AP_PCRE_STACKBUF_SIZE \
+    APR_ALIGN_DEFAULT(POSIX_MALLOC_THRESHOLD * sizeof(int) * 3)
+#endif
+
 /* Table of error strings corresponding to POSIX error codes; must be
  * kept in synch with include/ap_regex.h's AP_REG_E* definitions.
  */
@@ -202,7 +213,7 @@ AP_DECLARE(int) ap_regcomp(ap_regex_t * preg, const char *pattern, int cflags)
 {
 #ifdef HAVE_PCRE2
     uint32_t capcount;
-    size_t erroffset;
+    PCRE2_SIZE erroffset;
 #else
     const char *errorptr;
     int erroffset;
@@ -257,13 +268,161 @@ AP_DECLARE(int) ap_regcomp(ap_regex_t * preg, const char *pattern, int cflags)
  *              Match a regular expression       *
  *************************************************/
 
-/* Unfortunately, PCRE requires 3 ints of working space for each captured
+/* Unfortunately, PCRE1 requires 3 ints of working space for each captured
  * substring, so we have to get and release working store instead of just using
  * the POSIX structures as was done in earlier releases when PCRE needed only 2
  * ints. However, if the number of possible capturing brackets is small, use a
  * block of store on the stack, to reduce the use of malloc/free. The threshold
- * is in a macro that can be changed at configure time.
+ * is in POSIX_MALLOC_THRESHOLD macro that can be changed at configure time.
+ * PCRE2 takes an opaque match context and lets us provide the callbacks to
+ * manage the memory needed during the match, so we can still use a small stack
+ * space that will suffice for the match context struct and a single frame of
+ * POSIX_MALLOC_THRESHOLD captures, above that either use a thread local
+ * subpool cache (#if AP_HAS_THREAD_LOCAL) or fall back to malloc()/free().
  */
+
+#if AP_HAS_THREAD_LOCAL && !defined(APREG_NO_THREAD_LOCAL)
+#define APREG_USE_THREAD_LOCAL 1
+#else
+#define APREG_USE_THREAD_LOCAL 0
+#endif
+
+#ifdef HAVE_PCRE2
+typedef PCRE2_SIZE* match_vector_pt;
+#else
+typedef int*        match_vector_pt;
+#endif
+
+#if APREG_USE_THREAD_LOCAL
+static AP_THREAD_LOCAL apr_pool_t *thread_pool;
+#endif
+
+struct match_data_state {
+    /* keep first, struct aligned */
+    char buf[AP_PCRE_STACKBUF_SIZE];
+    apr_size_t buf_used;
+
+#if APREG_USE_THREAD_LOCAL
+    apr_thread_t *thd;
+    apr_pool_t *pool;
+#endif
+
+#ifdef HAVE_PCRE2
+    pcre2_general_context *pcre2_ctx;
+    pcre2_match_data* match_data;
+#else
+    int *match_data;
+#endif
+};
+
+static void * private_malloc(size_t size, void *ctx)
+{
+    struct match_data_state *state = ctx;
+
+    if (size <= sizeof(state->buf) - state->buf_used) {
+        void *p = state->buf + state->buf_used;
+        state->buf_used += APR_ALIGN_DEFAULT(size);
+        return p;
+    }
+
+#if APREG_USE_THREAD_LOCAL
+    if (state->thd) {
+        apr_pool_t *pool = state->pool;
+        if (pool == NULL) {
+            pool = thread_pool;
+            if (pool == NULL) {
+                apr_pool_create(&pool, apr_thread_pool_get(state->thd));
+                thread_pool = pool;
+            }
+            state->pool = pool;
+        }
+        return apr_palloc(pool, size);
+    }
+#endif
+
+    return malloc(size);
+}
+
+static void private_free(void *block, void *ctx)
+{
+    struct match_data_state *state = ctx;
+    char *p = block;
+
+    if (p >= state->buf && p < state->buf + sizeof(state->buf)) {
+        /* This block allocated from stack buffer. Do nothing. */
+        return;
+    }
+
+#if APREG_USE_THREAD_LOCAL
+    if (state->thd) {
+        /* Freed in cleanup_state() eventually. */
+        return;
+    }
+#endif
+
+    free(block);
+} 
+
+static APR_INLINE
+int setup_state(struct match_data_state *state, apr_uint32_t ncaps)
+{
+    state->buf_used = 0;
+
+#if APREG_USE_THREAD_LOCAL
+    state->thd = ap_thread_current();
+    state->pool = NULL;
+#endif
+
+#ifdef HAVE_PCRE2
+    state->pcre2_ctx = pcre2_general_context_create(private_malloc,
+                                                    private_free, state);
+    if (!state->pcre2_ctx) { 
+        return 0;
+    }
+
+    state->match_data = pcre2_match_data_create(ncaps, state->pcre2_ctx);
+    if (!state->match_data) {
+        pcre2_general_context_free(state->pcre2_ctx);
+        return 0;
+    }
+#else
+    if (ncaps) {
+        state->match_data = private_malloc(ncaps * sizeof(int) * 3, state);
+        if (!state->match_data) {
+            return 0;
+        }
+    }
+    else {
+        /* Fine with PCRE1 */
+        state->match_data = NULL;
+    }
+#endif
+
+    return 1;
+}
+
+static APR_INLINE
+void cleanup_state(struct match_data_state *state)
+{
+#ifdef HAVE_PCRE2
+    pcre2_match_data_free(state->match_data);
+    pcre2_general_context_free(state->pcre2_ctx);
+#else
+    if (state->match_data) {
+        private_free(state->match_data, state);
+    }
+#endif
+
+#if APREG_USE_THREAD_LOCAL
+    if (state->pool) {
+        /* Let the thread's pool allocator recycle or free according
+         * to its max_free setting.
+         */
+        apr_pool_clear(state->pool);
+    }
+#endif
+}
+
 AP_DECLARE(int) ap_regexec(const ap_regex_t *preg, const char *string,
                            apr_size_t nmatch, ap_regmatch_t *pmatch,
                            int eflags)
@@ -278,15 +437,39 @@ AP_DECLARE(int) ap_regexec_len(const ap_regex_t *preg, const char *buff,
 {
     int rc;
     int options = 0;
-    apr_size_t nlim;
-#ifdef HAVE_PCRE2
-    pcre2_match_data *matchdata;
-    size_t *ovector;
-#else
-    int small_ovector[POSIX_MALLOC_THRESHOLD * 3];
-    int allocated_ovector = 0;
-    int *ovector = NULL;
+    struct match_data_state state;
+    match_vector_pt ovector = NULL;
+    apr_uint32_t ncaps = (apr_uint32_t)preg->re_nsub + 1;
+
+#ifndef HAVE_PCRE2
+    /* This is fine if pcre_exec() gets a vector size smaller than the
+     * number of capturing groups (it will treat the remaining ones as
+     * non-capturing), but if the vector is too small to keep track of
+     * the potential backrefs within the pattern, it will temporarily
+     * malloc()ate the necessary space anyway. So let's provide a vector
+     * of at least PCRE_INFO_BACKREFMAX entries (likely zero, otherwise
+     * the vector is most likely cached already anyway).
+     * Note that if no captures are to be used by the caller, passing an
+     * nmatch of zero (thus forcing all groups to be non-capturing) may
+     * allow for some optimizations and/or less recursion (stack usage)
+     * with PCRE1, unless backrefs..
+     */
+    if (ncaps > nmatch) {
+        int backrefmax = 0;
+        pcre_fullinfo((const pcre *)preg->re_pcre, NULL,
+                      PCRE_INFO_BACKREFMAX, &backrefmax);
+        if (backrefmax > 0 && (apr_uint32_t)backrefmax >= nmatch) {
+            ncaps = (apr_uint32_t)backrefmax + 1;
+        }
+        else {
+            ncaps = nmatch;
+        }
+    }
 #endif
+
+    if (!setup_state(&state, ncaps)) {
+        return AP_REG_ESPACE;
+    }
 
     if ((eflags & AP_REG_NOTBOL) != 0)
         options |= PCREn(NOTBOL);
@@ -298,61 +481,31 @@ AP_DECLARE(int) ap_regexec_len(const ap_regex_t *preg, const char *buff,
         options |= PCREn(ANCHORED);
 
 #ifdef HAVE_PCRE2
-    /* TODO: create a generic TLS matchdata buffer of some nmatch limit,
-     * e.g. 10 matches, to avoid a malloc-per-call. If it must be allocated,
-     * implement a general context using palloc and no free implementation.
-     */
-    nlim = ((apr_size_t)preg->re_nsub + 1) > nmatch
-         ? ((apr_size_t)preg->re_nsub + 1) : nmatch;
-    matchdata = pcre2_match_data_create(nlim, NULL);
-    if (matchdata == NULL)
-        return AP_REG_ESPACE;
-    ovector = pcre2_get_ovector_pointer(matchdata);
     rc = pcre2_match((const pcre2_code *)preg->re_pcre,
-                     (const unsigned char *)buff, len,
-                     0, options, matchdata, NULL);
-    if (rc == 0)
-        rc = nlim;            /* All captured slots were filled in */
+                     (const unsigned char *)buff, len, 0, options,
+                     state.match_data, NULL);
+    ovector = pcre2_get_ovector_pointer(state.match_data);
 #else
-    if (nmatch > 0) {
-        if (nmatch <= POSIX_MALLOC_THRESHOLD) {
-            ovector = &(small_ovector[0]);
-        }
-        else {
-            ovector = (int *)malloc(sizeof(int) * nmatch * 3);
-            if (ovector == NULL)
-                return AP_REG_ESPACE;
-            allocated_ovector = 1;
-        }
-    }
+    ovector = state.match_data;
     rc = pcre_exec((const pcre *)preg->re_pcre, NULL, buff, (int)len,
-                   0, options, ovector, nmatch * 3);
-    if (rc == 0)
-        rc = nmatch;            /* All captured slots were filled in */
+                   0, options, ovector, ncaps * 3);
 #endif
 
     if (rc >= 0) {
-        apr_size_t i;
-        nlim = (apr_size_t)rc < nmatch ? (apr_size_t)rc : nmatch;
-        for (i = 0; i < nlim; i++) {
+        apr_size_t n = rc, i;
+        if (n == 0 || n > nmatch)
+            rc = n = nmatch; /* All capture slots were filled in */
+        for (i = 0; i < n; i++) {
             pmatch[i].rm_so = ovector[i * 2];
             pmatch[i].rm_eo = ovector[i * 2 + 1];
         }
         for (; i < nmatch; i++)
             pmatch[i].rm_so = pmatch[i].rm_eo = -1;
-    }
-
-#ifdef HAVE_PCRE2
-    pcre2_match_data_free(matchdata);
-#else
-    if (allocated_ovector)
-        free(ovector);
-#endif
-
-    if (rc >= 0) {
+        cleanup_state(&state);
         return 0;
     }
     else {
+        cleanup_state(&state);
 #ifdef HAVE_PCRE2
         if (rc <= PCRE2_ERROR_UTF8_ERR1 && rc >= PCRE2_ERROR_UTF8_ERR21)
             return AP_REG_INVARG;

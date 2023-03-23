@@ -1,28 +1,22 @@
 import pytest
 
-from h2_conf import HttpdConf
+from .env import H2Conf, H2TestEnv
 
 
-class TestStore:
+@pytest.mark.skipif(condition=H2TestEnv.is_unsupported, reason="mod_http2 not supported here")
+class TestBasicAlive:
 
     @pytest.fixture(autouse=True, scope='class')
     def _class_scope(self, env):
-        HttpdConf(env).add_vhost_test1().install()
+        H2Conf(env).add_vhost_test1().install()
         assert env.apache_restart() == 0
 
     # we expect to see the document from the generic server
-    def test_001_01(self, env):
-        r = env.curl_get(f"https://{env.domain_test1}:{env.https_port}/alive.json", 5)
+    def test_h2_001_01(self, env):
+        url = env.mkurl("https", "test1", "/alive.json")
+        r = env.curl_get(url, 5)
         assert r.exit_code == 0, r.stderr + r.stdout
         assert r.response["json"]
-        assert True == r.response["json"]["alive"]
-        assert "test1" == r.response["json"]["host"]
-
-    # we expect to see the document from the generic server
-    def test_001_02(self, env):
-        r = env.curl_get(f"https://{env.domain_test1}:{env.https_port}/alive.json", 5)
-        assert r.exit_code == 0, r.stderr
-        assert r.response["json"]
-        assert True == r.response["json"]["alive"]
-        assert "test1" == r.response["json"]["host"]
+        assert r.response["json"]["alive"] is True
+        assert r.response["json"]["host"] == "test1"
 

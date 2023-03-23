@@ -31,8 +31,14 @@
 <compatibility>Available in httpd 2.4.5 and later</compatibility>
 
 <summary>
-    <p>This module <em>requires</em> the service of <module
-    >mod_proxy</module>. It provides support for the tunnelling of web
+  <note type="warning"><title><a id="deprecation" name="deprecation">Deprecation</a></title>
+    <p>Since Apache HTTP Server 2.4.47, protocol Upgrade (tunneling) can be better handled by
+    <module>mod_proxy_http</module>.</p>
+    <p>See <a href="mod_proxy.html#protoupgrade">Protocol Upgrade</a>.</p>
+  </note>
+
+    <p>This module <em>requires</em> the service of <module >mod_proxy</module>.
+    It provides support for the tunnelling of web
     socket connections to a backend websockets server. The connection
     is automatically upgraded to a websocket connection:</p>
 
@@ -61,12 +67,18 @@ ProxyPass "/"  "http://backend.example.com:9080/"
 
 <p>Load balancing for multiple backends can be achieved using <module>mod_proxy_balancer</module>.</p>
 
-<p>In fact the module can be used to upgrade to other protocols, you can set the <code>upgrade</code>
-parameter in the <directive type="ProxyPass" module="mod_proxy">ProxyPass</directive>
-directive to allow the module to accept other protocol.
-NONE means you bypass the check for the header but still upgrade to WebSocket.
-ANY means that <code>Upgrade</code> will read in the request headers and use
-in the response <code>Upgrade</code></p>
+<p>
+The module can also be used to upgrade to other protocols than WebSocket, by setting
+the <var><a href="mod_proxy.html#upgrade">upgrade</a></var> parameter in the
+<directive type="ProxyPass" module="mod_proxy">ProxyPass</directive>
+directive to some custom protocol name.
+Special <code>upgrade=NONE</code> and <code>upgrade=ANY</code> values may be used for
+testing/forcing the upgrade but they are <strong>not recommended</strong> in production for
+security reasons.
+<code>NONE</code> means that the check for the header is omitted but still the upgrade/tunneling to
+WebSocket always happens.
+<code>ANY</code> means that the upgrade/tunneling will happen using any protocol asked by the client.
+</p>
 </summary>
 
 <seealso><module>mod_proxy</module></seealso>

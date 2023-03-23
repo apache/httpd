@@ -92,7 +92,7 @@ static const char *ssl_var_lookup_ssl_cert_data(apr_pool_t *p, X509 *xs,
         BIO_set_flags(b64, BIO_FLAGS_BASE64_NO_NL);
         b64 = BIO_push(b64, bio);
         i2d_X509_bio(b64, xs);
-        BIO_flush(b64); /* ensures trailing bytes are padded */
+        (void)BIO_flush(b64); /* ensures trailing bytes are padded */
         BIO_pop(b64);
         BIO_free(b64);
     }
@@ -506,6 +506,11 @@ static const char *ssl_var_lookup_ssl(apr_pool_t *p, const SSLConnRec *sslconn,
     else if (ssl != NULL && strcEQ(var, "COMPRESS_METHOD")) {
         result = ssl_var_lookup_ssl_compress_meth(ssl);
     }
+    else if (ssl != NULL && strcEQ(var, "SHARED_CIPHERS")) {
+        char buf[HUGE_STRING_LEN * 2];
+        if (SSL_get_shared_ciphers(ssl, buf, sizeof(buf)))
+               result = apr_pstrdup(p, buf);
+    }
 #ifdef HAVE_TLSEXT
     else if (ssl != NULL && strcEQ(var, "TLS_SNI")) {
         result = apr_pstrdup(p, SSL_get_servername(ssl,
@@ -843,6 +848,7 @@ static const char *ssl_var_lookup_ssl_cert_chain(apr_pool_t *p, STACK_OF(X509) *
 static const char *ssl_var_lookup_ssl_cert_rfc4523_cea(apr_pool_t *p, SSL *ssl)
 {
     char *result;
+    char *decimal;
     X509 *xs;
 
     ASN1_INTEGER *serialNumber;
@@ -858,7 +864,11 @@ static const char *ssl_var_lookup_ssl_cert_rfc4523_cea(apr_pool_t *p, SSL *ssl)
         X509_NAME *issuer = X509_get_issuer_name(xs);
         if (issuer) {
             BIGNUM *bn = ASN1_INTEGER_to_BN(serialNumber, NULL);
-            char *decimal = BN_bn2dec(bn);
+            if((decimal = BN_bn2dec(bn)) == NULL) {
+              BN_free(bn);
+              X509_free(xs);
+              return NULL;
+            }
             result = apr_pstrcat(p, "{ serialNumber ", decimal,
                     ", issuer rdnSequence:\"",
                     modssl_X509_NAME_to_string(p, issuer, 0), "\" }", NULL);
@@ -1104,6 +1114,10 @@ static int dump_extn_value(BIO *bio, ASN1_OCTET_STRING *str)
     ASN1_STRING *ret = ASN1_STRING_new();
     int rv = 0;
 
+    if(!ret) {
+      return rv;
+    }
+
     /* This allows UTF8String, IA5String, VisibleString, or BMPString;
      * conversion to UTF-8 is forced. */
     if (d2i_DISPLAYTEXT(&ret, &pp, str->length)) {
@@ -1157,6 +1171,11 @@ apr_array_header_t *ssl_ext_list(apr_pool_t *p, conn_rec *c, int peer,
 
         if (OBJ_cmp(X509_EXTENSION_get_object(ext), oid) == 0) {
             BIO *bio = BIO_new(BIO_s_mem());
+            if(bio == NULL) {
+              X509_free(xs);
+              ASN1_OBJECT_free(oid);
+              return NULL;
+            }
 
             /* We want to obtain a string representation of the extensions
              * value and add it to the array we're building.

@@ -20,6 +20,7 @@
 
 #include <mpm_common.h>
 #include <httpd.h>
+#include <http_protocol.h>
 #include <mod_proxy.h>
 
 #include "mod_http2.h"
@@ -446,6 +447,7 @@ static void h2_proxy_stream_end_headers_out(h2_proxy_stream *stream)
     h2_proxy_session *session = stream->session;
     request_rec *r = stream->r;
     apr_pool_t *p = r->pool;
+    const char *buf;
     
     /* Now, add in the cookies from the response to the ones already saved */
     apr_table_do(add_header, stream->saves, r->headers_out, "Set-Cookie", NULL);
@@ -454,6 +456,10 @@ static void h2_proxy_stream_end_headers_out(h2_proxy_stream *stream)
     if (!apr_is_empty_table(stream->saves)) {
         apr_table_unset(r->headers_out, "Set-Cookie");
         r->headers_out = apr_table_overlay(p, r->headers_out, stream->saves);
+    }
+
+    if ((buf = apr_table_get(r->headers_out, "Content-Type"))) {
+        ap_set_content_type(r, apr_pstrdup(p, buf));
     }
     
     /* handle Via header in response */
@@ -631,7 +637,7 @@ static ssize_t stream_request_data(nghttp2_session *ngh2, int32_t stream_id,
     }
 
     if (status == APR_SUCCESS) {
-        ssize_t readlen = 0;
+        size_t readlen = 0;
         while (status == APR_SUCCESS 
                && (readlen < length)
                && !APR_BRIGADE_EMPTY(stream->input)) {
@@ -650,7 +656,7 @@ static ssize_t stream_request_data(nghttp2_session *ngh2, int32_t stream_id,
                 status = apr_bucket_read(b, &bdata, &blen, APR_BLOCK_READ);
                 
                 if (status == APR_SUCCESS && blen > 0) {
-                    ssize_t copylen = H2MIN(length - readlen, blen);
+                    size_t copylen = H2MIN(length - readlen, blen);
                     memcpy(buf, bdata, copylen);
                     buf += copylen;
                     readlen += copylen;
@@ -693,7 +699,7 @@ static ssize_t stream_request_data(nghttp2_session *ngh2, int32_t stream_id,
 }
 
 #ifdef H2_NG2_INVALID_HEADER_CB
-static int on_invalid_header_cb(nghttp2_session *ngh2, 
+static int on_invalid_header_cb(nghttp2_session *ngh2,
                                 const nghttp2_frame *frame, 
                                 const uint8_t *name, size_t namelen, 
                                 const uint8_t *value, size_t valuelen, 
@@ -756,7 +762,6 @@ h2_proxy_session *h2_proxy_session_setup(const char *id, proxy_conn_rec *p_conn,
 #ifdef H2_NG2_INVALID_HEADER_CB
         nghttp2_session_callbacks_set_on_invalid_header_callback(cbs, on_invalid_header_cb);
 #endif
-        
         nghttp2_option_new(&option);
         nghttp2_option_set_peer_max_concurrent_streams(option, 100);
         nghttp2_option_set_no_auto_window_update(option, 0);
@@ -829,7 +834,7 @@ static apr_status_t open_stream(h2_proxy_session *session, const char *url,
     stream->input = apr_brigade_create(stream->pool, session->c->bucket_alloc);
     stream->output = apr_brigade_create(stream->pool, session->c->bucket_alloc);
     
-    stream->req = h2_proxy_req_create(1, stream->pool, 0);
+    stream->req = h2_proxy_req_create(1, stream->pool);
 
     status = apr_uri_parse(stream->pool, url, &puri);
     if (status != APR_SUCCESS)
@@ -839,7 +844,10 @@ static apr_status_t open_stream(h2_proxy_session *session, const char *url,
     
     dconf = ap_get_module_config(r->per_dir_config, &proxy_module);
     if (dconf->preserve_host) {
-        authority = r->hostname;
+        authority = apr_table_get(r->headers_in, "Host");
+        if (authority == NULL) {
+            authority = r->hostname;
+        }
     }
     else {
         authority = puri.hostname;
@@ -848,14 +856,21 @@ static apr_status_t open_stream(h2_proxy_session *session, const char *url,
             /* port info missing and port is not default for scheme: append */
             authority = apr_psprintf(stream->pool, "%s:%d", authority, puri.port);
         }
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, session->c,
+                      "authority=%s from uri.hostname=%s and uri.port=%d",
+                      authority, puri.hostname, puri.port);
     }
-    
+    /* See #235, we use only :authority when available and remove Host:
+     * since differing values are not acceptable, see RFC 9113 ch. 8.3.1 */
+    if (authority && strlen(authority)) {
+        apr_table_unset(r->headers_in, "Host");
+    }
+
     /* we need this for mapping relative uris in headers ("Link") back
      * to local uris */
     stream->real_server_uri = apr_psprintf(stream->pool, "%s://%s", scheme, authority); 
     stream->p_server_uri = apr_psprintf(stream->pool, "%s://%s", puri.scheme, authority); 
     path = apr_uri_unparse(stream->pool, &puri, APR_URI_UNP_OMITSITEPART);
-
 
     h2_proxy_req_make(stream->req, stream->pool, r->method, scheme,
                 authority, path, r->headers_in);
@@ -885,7 +900,7 @@ static apr_status_t open_stream(h2_proxy_session *session, const char *url,
                              r->server->server_hostname);
         }
     }
-    
+
     /* Tuck away all already existing cookies */
     stream->saves = apr_table_make(r->pool, 2);
     apr_table_do(add_header, stream->saves, r->headers_out, "Set-Cookie", NULL);
@@ -958,7 +973,7 @@ static apr_status_t feed_brigade(h2_proxy_session *session, apr_bucket_brigade *
     apr_status_t status = APR_SUCCESS;
     apr_size_t readlen = 0;
     ssize_t n;
-    
+
     while (status == APR_SUCCESS && !APR_BRIGADE_EMPTY(bb)) {
         apr_bucket* b = APR_BRIGADE_FIRST(bb);
         
@@ -981,9 +996,10 @@ static apr_status_t feed_brigade(h2_proxy_session *session, apr_bucket_brigade *
                     }
                 }
                 else {
-                    readlen += n;
-                    if (n < blen) {
-                        apr_bucket_split(b, n);
+                    size_t rlen = (size_t)n;
+                    readlen += rlen;
+                    if (rlen < blen) {
+                        apr_bucket_split(b, rlen);
                     }
                 }
             }
@@ -1141,7 +1157,7 @@ static apr_status_t session_shutdown(h2_proxy_session *session, int reason,
     if (!err && reason) {
         err = nghttp2_strerror(reason);
     }
-    nghttp2_submit_goaway(session->ngh2, NGHTTP2_FLAG_NONE, 0, 
+    nghttp2_submit_goaway(session->ngh2, NGHTTP2_FLAG_NONE, 0,
                           reason, (uint8_t*)err, err? strlen(err):0);
     status = nghttp2_session_send(session->ngh2);
     dispatch_event(session, H2_PROXYS_EV_LOCAL_GOAWAY, reason, err);
@@ -1343,34 +1359,42 @@ static void ev_stream_done(h2_proxy_session *session, int stream_id,
                            const char *msg)
 {
     h2_proxy_stream *stream;
-    
+    apr_bucket *b;
+
     stream = nghttp2_session_get_stream_user_data(session->ngh2, stream_id);
     if (stream) {
-        int touched = (stream->data_sent || 
-                       stream_id <= session->last_stream_id);
+        /* if the stream's connection is aborted, do not send anything
+         * more on it. */
         apr_status_t status = (stream->error_code == 0)? APR_SUCCESS : APR_EINVAL;
-        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c, APLOGNO(03364)
-                      "h2_proxy_sesssion(%s): stream(%d) closed "
-                      "(touched=%d, error=%d)", 
-                      session->id, stream_id, touched, stream->error_code);
-        
-        if (status != APR_SUCCESS) {
-            stream->r->status = 500;
+        int touched = (stream->data_sent ||
+                       stream_id <= session->last_stream_id);
+        if (!session->c->aborted) {
+            ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c, APLOGNO(03364)
+                          "h2_proxy_sesssion(%s): stream(%d) closed "
+                          "(touched=%d, error=%d)",
+                          session->id, stream_id, touched, stream->error_code);
+
+            if (status != APR_SUCCESS) {
+                b = ap_bucket_error_create(HTTP_SERVICE_UNAVAILABLE, NULL, stream->r->pool,
+                                           stream->r->connection->bucket_alloc);
+                APR_BRIGADE_INSERT_TAIL(stream->output, b);
+                b = apr_bucket_eos_create(stream->r->connection->bucket_alloc);
+                APR_BRIGADE_INSERT_TAIL(stream->output, b);
+                ap_pass_brigade(stream->r->output_filters, stream->output);
+            }
+            else if (!stream->data_received) {
+                /* if the response had no body, this is the time to flush
+                 * an empty brigade which will also write the response headers */
+                h2_proxy_stream_end_headers_out(stream);
+                stream->data_received = 1;
+                b = apr_bucket_flush_create(stream->r->connection->bucket_alloc);
+                APR_BRIGADE_INSERT_TAIL(stream->output, b);
+                b = apr_bucket_eos_create(stream->r->connection->bucket_alloc);
+                APR_BRIGADE_INSERT_TAIL(stream->output, b);
+                ap_pass_brigade(stream->r->output_filters, stream->output);
+            }
         }
-        else if (!stream->data_received) {
-            apr_bucket *b;
-            /* if the response had no body, this is the time to flush
-             * an empty brigade which will also write the resonse
-             * headers */
-            h2_proxy_stream_end_headers_out(stream);
-            stream->data_received = 1;
-            b = apr_bucket_flush_create(stream->r->connection->bucket_alloc);
-            APR_BRIGADE_INSERT_TAIL(stream->output, b);
-            b = apr_bucket_eos_create(stream->r->connection->bucket_alloc);
-            APR_BRIGADE_INSERT_TAIL(stream->output, b);
-            ap_pass_brigade(stream->r->output_filters, stream->output);
-        }
-        
+
         stream->state = H2_STREAM_ST_CLOSED;
         h2_proxy_ihash_remove(session->streams, stream_id);
         h2_proxy_iq_remove(session->suspended, stream_id);

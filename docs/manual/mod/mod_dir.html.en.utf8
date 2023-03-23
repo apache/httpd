@@ -215,19 +215,20 @@ a directory</td></tr>
 <div class="directive-section"><h2><a name="DirectorySlash" id="DirectorySlash">DirectorySlash</a> <a name="directoryslash" id="directoryslash">Directive</a> <a title="Permanent link" href="#directoryslash" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Toggle trailing slash redirects on or off</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>DirectorySlash On|Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>DirectorySlash On|Off|NotFound</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>DirectorySlash On</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>Indexes</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_dir</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Argument NotFound added in 2.5.1</td></tr>
 </table>
-    <p>The <code class="directive">DirectorySlash</code> directive determines whether
+    <p>The <code class="directive">DirectorySlash</code> directive determines how 
     <code class="module"><a href="../mod/mod_dir.html">mod_dir</a></code> should fixup URLs pointing to a directory or
     not.</p>
 
     <p>Typically if a user requests a resource without a trailing slash, which
-    points to a directory, <code class="module"><a href="../mod/mod_dir.html">mod_dir</a></code> redirects him to the same
+    points to a directory, <code class="module"><a href="../mod/mod_dir.html">mod_dir</a></code> redirects them to the same
     resource, but <em>with</em> trailing slash for some good reasons:</p>
 
     <ul>
@@ -262,6 +263,12 @@ a directory</td></tr>
     </div>
 	<p>Also note that some browsers may erroneously change POST requests into GET
 	(thus discarding POST data) when a redirect is issued.</p>
+
+    <p>To avoid the risks of the "off" behavior above, or to avoid disclosing 
+    that a directory is present via the behavior of "on", an argument of 
+    "NotFound" can be used to tell <code class="module"><a href="../mod/mod_dir.html">mod_dir</a></code> to return an HTTP 
+    404 status code instead of redirecting the request to include a trailing slash.</p>
+
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -339,7 +346,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_dir.html';
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2021 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2023 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

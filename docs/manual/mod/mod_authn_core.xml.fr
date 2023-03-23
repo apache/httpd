@@ -261,7 +261,7 @@ l'alias spécifié</description>
     module="mod_auth_basic">AuthBasicProvider</directive> ou <directive
     module="mod_auth_digest">AuthDigestProvider</directive>.</p>
 
-    <note>Cette directive n'a aucun influence sur le processus
+    <note>Cette directive n'a aucune influence sur le processus
     d'autorisation, même pour les modules qui fournissent à la fois
     l'authentification et l'autorisation.</note>
 

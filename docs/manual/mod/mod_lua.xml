@@ -1139,7 +1139,14 @@ end
     <p>
     Mod_lua implements a simple database feature for querying and running commands
     on the most popular database engines (mySQL, PostgreSQL, FreeTDS, ODBC, SQLite, Oracle)
-    as well as mod_dbd.
+    as well as mod_dbd.</p>
+    <p>
+    The <code>dbType</code> to use as the first parameter of <code>dbacquire</code>
+    is case sensitive.</p>
+    <p>
+    It should be one of <code>mysql</code>, <code>pgsql</code>, <code>freetds</code>,
+    <code>odbc</code>, <code>sqlite2</code>, <code>sqlite3</code>, <code>oracle</code>
+    or <code>mod_dbd</code>.
     </p>
     <p>The example below shows how to acquire a database handle and return information from a table:</p>
     <highlight language="lua">
@@ -1615,7 +1622,7 @@ end
 <override>All</override>
     <usage>
     <p>Like <directive>LuaHookTranslateName</directive> but executed at the
-    map-to-storage phase of a request. Modules like mod_cache run at this phase,
+    map-to-storage phase of a request. Modules like <module>mod_cache</module> run at this phase,
     which makes for an interesting example on what to do here:</p>
     <highlight language="config">
     LuaHookMapToStorage /path/to/lua/script.lua check_cache
@@ -1811,7 +1818,7 @@ hook function usually returns OK, DECLINED, or HTTP_FORBIDDEN.</p>
 <override>All</override>
 <usage>
     <p>
-    This phase is run immediately after the request has been mapped to a virtal host,
+    This phase is run immediately after the request has been mapped to a virtual host,
     and can be used to either do some request processing before the other phases kick
     in, or to serve a request without the need to translate, map to storage et cetera.
     As this phase is run before anything else, directives such as <directive

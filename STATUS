@@ -21,7 +21,6 @@ Patches considered for backport are noted in their branches' STATUS:
   * http://svn.apache.org/repos/asf/httpd/httpd/branches/2.4.x/STATUS
 
 
-
 Release history:
     [NOTE that x.{odd}.z versions are strictly Alpha/Beta releases,
           while x.{even}.z versions are Stable/GA releases.]
@@ -166,7 +165,7 @@ THINGS THAT SHOULD BE CONSIDERED EARLY IN THE 2.6/3.0 DEVELOPMENT CYCLE:
 
   * Add a "normalized" list of headers for a HTTP response, rather then relying
     on r->headers_out and r->err_headers_out, since mod_headers' behavior is
-    not really user friendly in some scenarios (example in PR 62380). 
+    not really user friendly in some scenarios (example in PR 62380).
 
 
 OLD ISSUES THAT WERE THOUGHT TO BE SHOWSTOPPERS FOR 2.4 BUT OBVIOUSLY WEREN'T:
@@ -178,13 +177,13 @@ OLD ISSUES THAT WERE THOUGHT TO BE SHOWSTOPPERS FOR 2.4 BUT OBVIOUSLY WEREN'T:
       clearly wrong, and even if so, it doesn't seem like a
       showstopper.
 
-  * the edge connection filter cannot be removed 
+  * the edge connection filter cannot be removed
     http://marc.theaimsgroup.com/?l=apache-httpd-dev&m=105366252619530&w=2
     http://mail-archives.apache.org/mod_mbox/httpd-dev/200501.mbox/%3C41E30B42.4060202@stason.org%3E
     jerenkrantz asks: Why should this block a release?
     stas replies: because it requires a rewrite of the filters stack
           implementation (you have suggested that) and once 2.2 is
-          released you can't do that anymore. 
+          released you can't do that anymore.
     pgollucci: this affects mod_perl I'm pretty sure.
 
 

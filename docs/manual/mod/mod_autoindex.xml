@@ -1124,4 +1124,22 @@ ReadmeName /include/FOOTER.html
 </usage>
 </directivesynopsis>
 
+<directivesynopsis>
+<name>IndexForbiddenReturn404</name>
+<description>Return an HTTP 404 error instead of Forbidden when options 
+don't permit directory listing</description>
+<syntax>IndexForbiddenReturn404 On|Off</syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>Indexes</override>
+<compatibility>Added in 2.5.1</compatibility>
+
+<usage>
+    <p>The <directive>IndexForbiddenReturn404</directive> directive controls whether 
+    this module returns an HTTP 404 status code instead of an HTTP 403 status code when the
+    <directive>Options</directive> does not allow indexes to be returned.  </p>
+</usage>
+</directivesynopsis>
+
 </modulesynopsis>

@@ -364,4 +364,11 @@ Release
 # Intellij
 /.idea/
 
+# pytest
+test/__pycache__
+test/*/__pycache__
+test/*/*/__pycache__
 
+# make check
+check
+build/config_vars.out

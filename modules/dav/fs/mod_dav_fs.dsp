@@ -116,6 +116,10 @@ SOURCE=.\mod_dav_fs.c
 # End Source File
 # Begin Source File
 
+SOURCE=.\quota.c
+# End Source File
+# Begin Source File
+
 SOURCE=.\repos.c
 # End Source File
 # End Group

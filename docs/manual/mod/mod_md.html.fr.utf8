@@ -327,7 +327,50 @@
 		existantes qui ne chargent pas ce module.
             </p>
         </div>
-	
+
+        <div class="note"><h3>tailscale</h3>
+            <p>
+                Depuis la version 2.4.14 du module, vous pouvez l'utiliser pour
+		obtenir des certificats pour vos domaines <a href="https://tailscale.com">tailscale</a>.
+            </p>
+            <pre class="prettyprint lang-config">&lt;MDomain mydomain.some-thing.ts.net&gt;
+  MDCertificateProtocol tailscale
+  MDCertificateAuthority file://localhost/var/run/tailscale/tailscaled.sock",
+&lt;/MDomain&gt;</pre>
+
+            <p>
+                Tailscale permet des communications sécurisées entre vos
+		machines, où qu'elles se trouvent, et peut leur fournir des noms de
+		domaine dans l'espace *.ts.net. Pour ceux-ci, il fournira
+		aussi ensuite des certificats Let's Encrypt de façon à ce que
+		vous puissiez ouvrir ces domaines dans votre navigateur en toute
+		sécurité.
+            </p>
+            <p>
+                Apache va contacter le démon tailscale local à l'aide des
+		directives listées ci-dessous pour obtenir et renouveler les
+		certificats. Ceci ne fonctionnera cependant que pour les noms de
+		domaine que tailscale aura assigné à votre machine.
+            </p>
+            <p>
+                Dans le cas contraire, ces certificats fonctionneront exactement
+		de la même façon que ceux qui auront été obtenus à l'aide du
+		protocole ACME de Lets Encrypt. Vous les verrez dans le rapport
+		d'état et les directives MDMessageCmd seront aussi exécutées
+		pour eux.
+            </p>
+            <p>
+		Vous trouverez plus de détails dans la <a href="https://github.com/icing/mod_md#tailscale">documentation
+		github de mod_md</a>.
+            </p>
+            <p>
+                Notez que cette fonctionnalité n'est disponible que sur les
+		machines où le démon tailscale fournit un socket de domaine unix.
+		Jusqu'à présent, ceci ne semble être le cas que sur les systèmes
+		de style Unix.
+            </p>
+        </div>
+
     </div>
 <div id="quickview"><h3 class="directives">Directives</h3>
 <ul id="toc">
@@ -345,6 +388,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#mdchallengedns01">MDChallengeDns01</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mdcontactemail">MDContactEmail</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mddrivemode">MDDriveMode</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#mdexternalaccountbinding">MDExternalAccountBinding</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mdhttpproxy">MDHttpProxy</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mdmember">MDMember</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mdmembers">MDMembers</a></li>
@@ -358,12 +402,15 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#mdrenewmode">MDRenewMode</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mdrenewwindow">MDRenewWindow</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mdrequirehttps">MDRequireHttps</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#mdretrydelay">MDRetryDelay</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#mdretryfailover">MDRetryFailover</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mdserverstatus">MDServerStatus</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mdstapleothers">MDStapleOthers</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mdstapling">MDStapling</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mdstaplingkeepresponse">MDStaplingKeepResponse</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mdstaplingrenewwindow">MDStaplingRenewWindow</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mdstoredir">MDStoreDir</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#mdstorelocks">MDStoreLocks</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mdwarnwindow">MDWarnWindow</a></li>
 </ul>
 <h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_md">Problèmes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_md">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
@@ -472,29 +519,35 @@
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="mdcertificateauthority" id="mdcertificateauthority">Directive</a> <a name="MDCertificateAuthority" id="MDCertificateAuthority">MDCertificateAuthority</a> <a title="Lien permanent" href="#mdcertificateauthority" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>L'URL du service ACME de l'autorité de certification.</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Les URLs du service ACME de l'autorité de certification.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MDCertificateAuthority <var>url</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>MDCertificateAuthority https://acme-v02.api.letsencrypt.org/directory</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>MDCertificateAuthority letsencrypt</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_md</td></tr>
 </table>
             <p>
-                L'URL à laquelle l'autorité de certication offre son service
-		ACME.
+                Les URLs auxquelles l'autorité de certication offre son service.
+		Plutôt que l'URL proprement dite, vous pouvez spécifier
+		'letsencrypt' ou 'buypass'.
             </p><p>
-                Let's Encrypt propose actuellement quatre URLs pour accéder à ce
-		service. Deux pour la version précédente du protocole ACME,
-		communément appelé ACMEv1, et deux pour la version de la RFC
-		8555 nommée ACMEv2.
+                Si vous spécifiez plusieurs URLs, chacune d'entre elles est
+		testée en mode tourniquet ("round-robin") après un certain
+		nombre d'échecs. Vous pouvez définir la rapidité de ce processus
+		à l'aide des directives <code class="directive">MDRetryDelay</code> et
+		<code class="directive">MDRetryFailover</code>. Par défaut, une demie
+		journée d'essais infructueux est considérée comme un échec.
             </p><p>
-                Chaque version possède deux modes de fonctionnement : un mode
-		production et un mode test. Le mode test est identique au mode
-		production, à la différence près que le certificat ne sera pas
-		reconnu par les navigateurs. Il est aussi beaucoup plus souple
-		quant aux limitations en performances. Il permet de tester de
-		manière répétée le service sans pour autant bloquer votre
-		serveur.
+                Tous les autres réglages s'appliquent à chacune de ces URLs. Il
+		est ainsi par exemple impossible d'en avoir deux avec des
+		directives <code class="directive">MDExternalAccountBinding</code>
+		différentes.
+	    </p><p>
+                A des fins de test, les CAs fournissent en général une seconde
+		URL de service. Le service 'test' ne fournit pas de certificat
+		valable pour un navigateur, mais il est moins regardant vis à
+		vis des limites de vitesse. Il permet de tester votre
+		configuration avant de passer à l'URL de service de production.
             </p>
             <div class="example"><h3>Configuration pour le mode test de Let's Encrypt</h3><pre class="prettyprint lang-config">MDCertificateAuthority https://acme-staging-v02.api.letsencrypt.org/directory</pre>
 </div>
@@ -682,6 +735,12 @@
 		avez besoin d'un tel certificat, vous devez alors définir cette
 		directive.
             </p><p>
+                Il est maintenant possible d'utiliser cette directive dans une
+		section <code class="directive"><a href="#mdomain">MDomain</a></code> pour
+		spécifier une commande spécifique au domaine considéré. Cela
+		permet de configurer un script spécifique au fournisseur de DNS
+		concerné.
+            </p><p>    
                 Reportez vous à la section sur les certificats génériques pour
 		plus de détails.
             </p>
@@ -695,6 +754,8 @@
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_md</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.42 du serveur HTTP
+	Apache</td></tr>
 </table>
             <p>
                 Lors de votre inscription, vous devez fournir une url de contact
@@ -723,6 +784,54 @@
              <p>Cette directive est l'ancien nom de la directive <code class="directive"><a href="#mdrenewmode">MDRenewMode</a></code>, et n'est encore supportée
 	     qu'à titre de compatibilité ascendante.
             </p>
+        
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="mdexternalaccountbinding" id="mdexternalaccountbinding">Directive</a> <a name="MDExternalAccountBinding" id="MDExternalAccountBinding">MDExternalAccountBinding</a> <a title="Lien permanent" href="#mdexternalaccountbinding" class="permalink">&para;</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td /></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MDExternalAccountBinding <var>key-id</var> <var>hmac-64</var> | none | <var>file</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>MDExternalAccountBinding none</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_md</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.52 du serveur HTTP
+	Apache</td></tr>
+</table>
+            <p>
+                Cette directive permet de définir des valeurs pour associer des
+		comptes externes avec ACME ("External Account Binding") ; c'est
+		une fonctionnalité de la norme ACME qui permet à des clients
+		d'associer des inscriptions à un compte client existant sur les
+		serveurs ACME.
+            </p>
+            <p>
+		Certains CAs ACME ont besoin de ces valeurs, mais ce n'est pas
+		le cas pour Let's Encrypt. Vérifiez avec votre CA ACME si vous
+		avez besoin de ces valeurs et la manière de les obtenir. Ces
+		dernières se composent de deux chaînes&nbsp;: un identifiant de clé
+		et une valeur 'hmac' codée en base64.
+            </p>
+            <p>
+		Vous pouvez définir ces valeurs de manière globale ou pour un
+		MDomain spécifique. Comme ces valeurs permettent à n'importe qui
+		de s'inscrire sous le même compte, il est conseillé de
+		restreindre les permissions d'accès au fichier de configuration
+		(à root seulement, par exemple).
+            </p>
+            <p>
+                Les valeurs peuvent aussi être extraites d'un fichier JSON pour
+		conserver l'ouverture des permissions au niveau de la
+		configuration du serveur et restreindre celles de ce fichier. Le
+		fichier JSON sera du style&nbsp;:
+            </p>
+            <div class="example"><h3>Exemple de fichier EAB JSON</h3><pre class="prettyprint lang-config">{"kid": "kid-1", "hmac": "zWND..."}</pre>
+</div>
+            <p>
+                Si vous modifiez les valeurs EAB, ce sont les nouvelles valeurs
+		qui seront utilisées lors du prochain renouvellement de
+		certificat.
+             </p>
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -860,11 +969,12 @@
 		configurations de clusters peuvent utiliser cet évènement pour
 		distribuer les fichiers de vérification à tous les noeuds.
             </p><p>
-                Un évènement de type ocsp-errored est déclenché lorsque le
-		MDStapling est activé pour un domaine, et indique qu'une erreur
-		s'est produite en essayant d'obtenir la réponse OCSP  de
-		l'autorité de certification. mod_md essaiera à nouveau d'obtenir
-		cette réponse.		
+		Un évènement de type ocsp-errored est déclenché lorsque le
+		<code class="directive"><a href="#mdstapling">MDStapling</a></code> est activé
+		pour un domaine, et indique qu'une erreur s'est produite en
+		essayant d'obtenir la réponse OCSP  de l'autorité de
+		certification. mod_md essaiera à nouveau d'obtenir cette
+		réponse.		
             </p>
         
 </div>
@@ -1280,6 +1390,51 @@ MDRenewWindow 10%</pre>
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="mdretrydelay" id="mdretrydelay">Directive</a> <a name="MDRetryDelay" id="MDRetryDelay">MDRetryDelay</a> <a title="Lien permanent" href="#mdretrydelay" class="permalink">&para;</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td /></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MDRetryDelay <var>duration</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>MDRetryDelay 5s</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_md</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.54 du serveur HTTP
+	Apache</td></tr>
+</table>
+            <p>
+                Le temps d'attente après une erreur avant de tenter à nouveau le
+		renouvellement d'un certificat. Ce temps est doublé après chaque
+		erreur consécutive avec un maximum de 24 heures.
+            </p>
+            <p>
+                Ce temps d'attente est spécifique à chaque renouvellement de
+		certificat. Autrement dit, une erreur sur un MDomain ne retarde
+		pas les renouvellements des autres domaines.
+            </p>
+        
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="mdretryfailover" id="mdretryfailover">Directive</a> <a name="MDRetryFailover" id="MDRetryFailover">MDRetryFailover</a> <a title="Lien permanent" href="#mdretryfailover" class="permalink">&para;</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td /></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MDRetryFailover <var>number</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>MDRetryFailover 13</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_md</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.54 du serveur HTTP
+	Apache</td></tr>
+</table>
+            <p>
+                Le nombre d'erreurs consécutives lors du renouvellement d'un
+		certificat avant la sélection d'une autre CA. Ne s'applique
+		qu'aux configurations pour lesquelles plusieurs
+		<code class="directive">MDCertificateAuthority</code> ont été
+		spécifiées.
+            </p>
+        
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="mdserverstatus" id="mdserverstatus">Directive</a> <a name="MDServerStatus" id="MDServerStatus">MDServerStatus</a> <a title="Lien permanent" href="#mdserverstatus" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit si les informations à propos des domaines gérés
@@ -1465,6 +1620,47 @@ MDRenewWindow 10%</pre>
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="mdstorelocks" id="mdstorelocks">Directive</a> <a name="MDStoreLocks" id="MDStoreLocks">MDStoreLocks</a> <a title="Lien permanent" href="#mdstorelocks" class="permalink">&para;</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td /></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MDStoreLocks on|off|<var>duration</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>MDStoreLocks off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_md</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.55 du serveur HTTP
+	Apache</td></tr>
+</table>
+            <p>
+                Définissez cette directive pour utiliser un fichier verrou au
+		démarrage du serveur lorsque <code class="directive">MDStoreDir</code>
+		est synchronisé avec la configuration du serveur et si les
+		certificats renouvelés sont activés.
+            </p><p>
+                Le verrouillage a été implémenté pour les configurations de
+		cluster où MDStoreDir appartient à un système de fichiers
+		partagé. L'activation des certificats renouvelés sera alors
+		protégée lorsque plusieurs noeuds du cluster sont redémarrés ou
+		reconfigurés simultanément ; ceci à condition bien entendu que
+		le système de fichiers partagé prenne en charge le verrouillage
+		de fichier.
+            </p><p>
+                Le temps d'attente par défaut pour obtenir le verrou est de 5
+		secondes. Si le verrou ne peut pas être obtenu, une erreur est
+		enregistrée dans le journal et le démarrage du serveur se
+		poursuit ; de ce fait, un des noeuds du cluster pourra encore
+		utiliser les anciens certificats par la suite.
+            </p><p>
+                Un délai d'attente plus long réduira cette probabilité, mais
+		pourra aussi retarder les redémarrages et reconfigurations du
+		serveur dans le cas où les verrous ne sont pas correctement
+		gérés dans le système de fichiers sous-jacent. Un verrou ne doit
+		être maintenu par une instance de httpd que pendant une courte
+		durée.
+            </p>
+        
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="mdwarnwindow" id="mdwarnwindow">Directive</a> <a name="MDWarnWindow" id="MDWarnWindow">MDWarnWindow</a> <a title="Lien permanent" href="#mdwarnwindow" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit la fenêtre de temps pendant laquelle vous serez
@@ -1513,7 +1709,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_md.html';
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2021 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2023 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

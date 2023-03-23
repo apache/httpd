@@ -76,8 +76,12 @@ enum enctype {
     enc_path, enc_search, enc_user, enc_fpath, enc_parm
 };
 
+/* Flags for ap_proxy_canonenc_ex */
+#define PROXY_CANONENC_FORCEDEC 0x01
+#define PROXY_CANONENC_NOENCODEDSLASHENCODING 0x02
+
 typedef enum {
-    NONE, TCP, OPTIONS, HEAD, GET, CPING, PROVIDER, EOT
+    NONE, TCP, OPTIONS, HEAD, GET, CPING, PROVIDER, OPTIONS11, HEAD11, GET11, EOT
 } hcmethod_t;
 
 typedef struct {
@@ -360,6 +364,8 @@ PROXY_WORKER_HC_FAIL )
 
 #define PROXY_WORKER_IS_HCFAILED(f)   ( (f)->s->status &  PROXY_WORKER_HC_FAIL )
 
+#define PROXY_WORKER_IS_ERROR(f)   ( (f)->s->status &  PROXY_WORKER_IN_ERROR )
+
 #define PROXY_WORKER_IS(f, b)   ( (f)->s->status & (b) )
 
 /* default worker retry timeout in seconds */
@@ -369,12 +375,13 @@ PROXY_WORKER_HC_FAIL )
 #define PROXY_WORKER_MAX_SCHEME_SIZE     16
 #define PROXY_WORKER_MAX_ROUTE_SIZE      96
 #define PROXY_BALANCER_MAX_ROUTE_SIZE    64
-#define PROXY_WORKER_MAX_NAME_SIZE      256
+#define PROXY_WORKER_MAX_NAME_SIZE      384
 #define PROXY_BALANCER_MAX_NAME_SIZE     64
 #define PROXY_WORKER_MAX_HOSTNAME_SIZE   96
 #define PROXY_BALANCER_MAX_HOSTNAME_SIZE 64
 #define PROXY_BALANCER_MAX_STICKY_SIZE   64
 #define PROXY_WORKER_MAX_SECRET_SIZE     64
+#define PROXY_WORKER_UDS_PATH_SIZE      256
 
 #define PROXY_RFC1035_HOSTNAME_SIZE	256
 
@@ -397,11 +404,14 @@ do {                             \
 (w)->s->io_buffer_size_set   = (c)->io_buffer_size_set;    \
 } while (0)
 
+#define PROXY_SHOULD_PING_100_CONTINUE(w, r) \
+    ((w)->s->ping_timeout_set \
+     && (PROXYREQ_REVERSE == (r)->proxyreq) \
+     && ap_request_has_body((r)))
+
 #define PROXY_DO_100_CONTINUE(w, r) \
-((w)->s->ping_timeout_set \
- && (PROXYREQ_REVERSE == (r)->proxyreq) \
- && !(apr_table_get((r)->subprocess_env, "force-proxy-request-1.0")) \
- && ap_request_has_body((r)))
+    (PROXY_SHOULD_PING_100_CONTINUE(w, r) \
+     && !apr_table_get((r)->subprocess_env, "force-proxy-request-1.0"))
 
 /* use 2 hashes */
 typedef struct {
@@ -417,7 +427,7 @@ typedef struct {
     char      route[PROXY_WORKER_MAX_ROUTE_SIZE];     /* balancing route */
     char      redirect[PROXY_WORKER_MAX_ROUTE_SIZE];  /* temporary balancing redirection route */
     char      flusher[PROXY_WORKER_MAX_SCHEME_SIZE];  /* flush provider used by mod_proxy_fdpass */
-    char      uds_path[PROXY_WORKER_MAX_NAME_SIZE];   /* path to worker's unix domain socket if applicable */
+    char      uds_path[PROXY_WORKER_UDS_PATH_SIZE];   /* path to worker's unix domain socket if applicable */
     char      hcuri[PROXY_WORKER_MAX_ROUTE_SIZE];     /* health check uri */
     char      hcexpr[PROXY_WORKER_MAX_SCHEME_SIZE];   /* name of condition expr for health check */
     char      secret[PROXY_WORKER_MAX_SECRET_SIZE]; /* authentication secret (e.g. AJP13) */
@@ -687,6 +697,8 @@ PROXY_DECLARE(apr_status_t) ap_proxy_strncpy(char *dst, const char *src,
                                              apr_size_t dlen);
 PROXY_DECLARE(int) ap_proxy_hex2c(const char *x);
 PROXY_DECLARE(void) ap_proxy_c2hex(int ch, char *x);
+PROXY_DECLARE(char *)ap_proxy_canonenc_ex(apr_pool_t *p, const char *x, int len, enum enctype t,
+                                          int flags, int proxyreq);
 PROXY_DECLARE(char *)ap_proxy_canonenc(apr_pool_t *p, const char *x, int len, enum enctype t,
                                        int forcedec, int proxyreq);
 PROXY_DECLARE(char *)ap_proxy_canon_netloc(apr_pool_t *p, char **const urlp, char **userp,
@@ -768,6 +780,7 @@ PROXY_DECLARE(int) ap_proxy_worker_can_upgrade(apr_pool_t *p,
 #define AP_PROXY_WORKER_IS_PREFIX   (1u << 0)
 #define AP_PROXY_WORKER_IS_MATCH    (1u << 1)
 #define AP_PROXY_WORKER_IS_MALLOCED (1u << 2)
+#define AP_PROXY_WORKER_NO_UDS      (1u << 3)
 
 /**
  * Get the worker from proxy configuration, looking for either PREFIXED or
@@ -1177,12 +1190,27 @@ PROXY_DECLARE(int) ap_proxy_connection_create_ex(const char *proxy_function,
 PROXY_DECLARE(int) ap_proxy_connection_reusable(proxy_conn_rec *conn);
 
 /**
- * Signal the upstream chain that the connection to the backend broke in the
- * middle of the response. This is done by sending an error bucket with
- * status HTTP_BAD_GATEWAY and an EOS bucket up the filter chain.
+ * Fill a brigade that can be sent downstream to signal that the connection to
+ * the backend broke in the middle of the response. The brigade will contain
+ * an error bucket with the given status and eventually an EOC bucket if asked
+ * to or heuristically if the response header was sent already.
  * @param r       current request record of client request
- * @param brigade The brigade that is sent through the output filter chain
- * @deprecated To be removed in v2.6.
+ * @param status  the error status
+ * @param bb      the brigade to fill
+ * @param eoc     0 do not add an EOC bucket, > 0 always add one, < 0 add one
+ *                only if the response header was sent already
+ */
+PROXY_DECLARE(void) ap_proxy_fill_error_brigade(request_rec *r, int status,
+                                                apr_bucket_brigade *bb,
+                                                int eoc);
+
+/**
+ * Fill a brigade that can be sent downstream to signal that the connection to
+ * the backend broke in the middle of the response. The brigade will contain
+ * an error bucket with status HTTP_BAD_GATEWAY and an EOS bucket.
+ * @param r       current request record of client request
+ * @param brigade the brigade to fill
+ * @deprecated To be removed in v2.6 (see ap_proxy_fill_error_brigade).
  */
 PROXY_DECLARE(void) ap_proxy_backend_broke(request_rec *r,
                                            apr_bucket_brigade *brigade);
@@ -1335,16 +1363,18 @@ PROXY_DECLARE(int) ap_proxy_pass_brigade(apr_bucket_alloc_t *bucket_alloc,
                                          int flush);
 
 struct proxy_tunnel_conn; /* opaque */
+typedef struct proxy_tunnel_conn proxy_tunnel_conn_t;
 typedef struct {
     request_rec *r;
     const char *scheme;
     apr_pollset_t *pollset;
     apr_array_header_t *pfds;
     apr_interval_time_t timeout;
-    struct proxy_tunnel_conn *client,
-                             *origin;
+    proxy_tunnel_conn_t *client,
+                        *origin;
     apr_size_t read_buf_size;
-    int replied;
+    int replied; /* TODO 2.5+: one bit to merge in below bitmask */
+    unsigned int nohalfclose :1;
 } proxy_tunnel_rec;
 
 /**
@@ -1367,6 +1397,39 @@ PROXY_DECLARE(apr_status_t) ap_proxy_tunnel_create(proxy_tunnel_rec **tunnel,
  *                or another HTTP_ error otherwise.
  */
 PROXY_DECLARE(int) ap_proxy_tunnel_run(proxy_tunnel_rec *tunnel);
+
+/*
+ * Number of incoming bytes on the tunnel connection.
+ * @param tc tunnel connection
+ * @return   number of bytes.
+ */
+PROXY_DECLARE(apr_off_t) ap_proxy_tunnel_conn_bytes_in(
+                                const proxy_tunnel_conn_t *tc);
+/*
+ * Number of outgoing bytes on the tunnel connection.
+ * @param tc tunnel connection
+ * @return   number of bytes.
+ */
+PROXY_DECLARE(apr_off_t) ap_proxy_tunnel_conn_bytes_out(
+                                const proxy_tunnel_conn_t *tc);
+
+/**
+ * Tunnel forwarding hook
+ * Called for every brigade forwarded by a tunnel from/to the client to/from
+ * the origin. Each hook receives incoming buckets in bb and produces outgoing
+ * buckets in the same bb, much like an output filter.
+ * @param tunnel   the tunnel
+ * @param c        the connection the data are going to
+ * @param bb       the incoming data
+ * @return         OK/DECLINED to pass to the next hooks, DONE to not pass to
+ *                 the next hooks, an HTTP_ error on failure.
+ * @note A hook must not return DONE unless it consumes/sets-aside *all* the
+ *       incoming buckets, and it must produce (non-meta-)data buckets only.
+ */
+PROXY_DECLARE_OPTIONAL_HOOK(proxy, PROXY, int, tunnel_forward,
+                            (proxy_tunnel_rec *tunnel,
+                             conn_rec *c_i, conn_rec *c_o,
+                             apr_bucket_brigade *bb))
 
 /**
  * Clear the headers referenced by the Connection header from the given
@@ -1511,24 +1574,9 @@ PROXY_DECLARE(apr_status_t) ap_proxy_transfer_between_connections(
                                                        apr_bucket_brigade *bb_i,
                                                        apr_bucket_brigade *bb_o,
                                                        const char *name,
-                                                       apr_off_t *sent,
+                                                       int *sent,
                                                        apr_off_t bsize,
                                                        int flags);
-
-/* 
- * returns number of bytes read from the back end tunnel
- * @param ptunnel     proxy_tunnel_rec use during the tunnelling.
- * @return      apr_off_t number of bytes read.
- */
-PROXY_DECLARE (apr_off_t) ap_proxy_tunnel_conn_get_read(
-                                                       proxy_tunnel_rec *ptunnel);
-/*
- * returns number of bytes sent to the back end tunnel
- * @param ptunnel     proxy_tunnel_rec use during the tunnelling.
- * @return      apr_off_t number of bytes sent.
- */
-PROXY_DECLARE (apr_off_t) ap_proxy_tunnel_conn_get_transferred(
-                                                       proxy_tunnel_rec *ptunnel);
 
 extern module PROXY_DECLARE_DATA proxy_module;
 

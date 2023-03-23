@@ -65,6 +65,7 @@ typedef struct {
     const char *method; /* Method string for the HTTP/AJP request */
     const char *req;    /* pre-formatted HTTP/AJP request */
     proxy_worker *w;    /* Pointer to the actual worker */
+    const char *protocol; /* HTTP 1.0 or 1.1? */
 } wctx_t;
 
 typedef struct {
@@ -342,7 +343,8 @@ static const char *set_hc_tpsize (cmd_parms *cmd, void *dummy, const char *arg)
  */
 static request_rec *create_request_rec(apr_pool_t *p, server_rec *s,
                                        proxy_balancer *balancer,
-                                       const char *method)
+                                       const char *method,
+                                       const char *protocol)
 {
     request_rec *r;
 
@@ -400,10 +402,12 @@ static request_rec *create_request_rec(apr_pool_t *p, server_rec *s,
     else {
         r->header_only = 0;
     }
-
     r->protocol = "HTTP/1.0";
     r->proto_num = HTTP_VERSION(1, 0);
-
+    if ( protocol && (protocol[7] == '1') ) {
+        r->protocol = "HTTP/1.1";
+        r->proto_num = HTTP_VERSION(1, 1);
+    }
     r->hostname = NULL;
 
     return r;
@@ -427,31 +431,43 @@ static void create_hcheck_req(wctx_t *wctx, proxy_worker *hc,
 {
     char *req = NULL;
     const char *method = NULL;
+    const char *protocol = NULL;
+
+    /* TODO: Fold into switch/case below? This seems more obvious */
+    if ( (hc->s->method == OPTIONS11) || (hc->s->method == HEAD11) || (hc->s->method == GET11) ) {
+        protocol = "HTTP/1.1";
+    } else {
+        protocol = "HTTP/1.0";
+    }
     switch (hc->s->method) {
         case OPTIONS:
+        case OPTIONS11:
             method = "OPTIONS";
             req = apr_psprintf(p,
-                               "OPTIONS * HTTP/1.0\r\n"
+                               "OPTIONS * %s\r\n"
                                "Host: %s:%d\r\n"
-                               "\r\n",
+                               "\r\n", protocol,
                                hc->s->hostname_ex, (int)hc->s->port);
             break;
 
         case HEAD:
+        case HEAD11:
             method = "HEAD";
             /* fallthru */
         case GET:
+        case GET11:
             if (!method) { /* did we fall thru? If not, we are GET */
                 method = "GET";
             }
             req = apr_psprintf(p,
-                               "%s %s%s%s HTTP/1.0\r\n"
+                               "%s %s%s%s %s\r\n"
                                "Host: %s:%d\r\n"
                                "\r\n",
                                method,
                                (wctx->path ? wctx->path : ""),
                                (wctx->path && *hc->s->hcuri ? "/" : "" ),
                                (*hc->s->hcuri ? hc->s->hcuri : ""),
+                               protocol,
                                hc->s->hostname_ex, (int)hc->s->port);
             break;
 
@@ -460,6 +476,7 @@ static void create_hcheck_req(wctx_t *wctx, proxy_worker *hc,
     }
     wctx->req = req;
     wctx->method = method;
+    wctx->protocol = protocol;
 }
 
 static proxy_worker *hc_get_hcworker(sctx_t *ctx, proxy_worker *worker,
@@ -639,7 +656,7 @@ static apr_status_t hc_check_cping(baton_t *baton, apr_thread_t *thread)
     if ((status = ap_proxy_connect_backend("HCCPING", backend, hc, ctx->s)) != OK) {
         return backend_cleanup("HCCPING", backend, ctx->s, status);
     }
-    r = create_request_rec(ptemp, ctx->s, baton->balancer, "CPING");
+    r = create_request_rec(ptemp, ctx->s, baton->balancer, "CPING", NULL);
     if ((status = ap_proxy_connection_create_ex("HCCPING", backend, r)) != OK) {
         return backend_cleanup("HCCPING", backend, ctx->s, status);
     }
@@ -826,7 +843,7 @@ static apr_status_t hc_check_http(baton_t *baton, apr_thread_t *thread)
         return backend_cleanup("HCOH", backend, ctx->s, status);
     }
 
-    r = create_request_rec(ptemp, ctx->s, baton->balancer, wctx->method);
+    r = create_request_rec(ptemp, ctx->s, baton->balancer, wctx->method, wctx->protocol);
     if ((status = ap_proxy_connection_create_ex("HCOH", backend, r)) != OK) {
         return backend_cleanup("HCOH", backend, ctx->s, status);
     }
@@ -911,7 +928,7 @@ static void * APR_THREAD_FUNC hc_check(apr_thread_t *thread, void *b)
                          (int)hc->s->method);
     }
     /* what state are we in ? */
-    else if (PROXY_WORKER_IS_HCFAILED(worker)) {
+    else if (PROXY_WORKER_IS_HCFAILED(worker) || PROXY_WORKER_IS_ERROR(worker)) {
         if (rv == APR_SUCCESS) {
             worker->s->pcount += 1;
             if (worker->s->pcount >= worker->s->passes) {
@@ -1072,6 +1089,18 @@ static int hc_pre_config(apr_pool_t *pconf, apr_pool_t *plog,
     hctp = NULL;
     tpsize = HC_THREADPOOL_SIZE;
 #endif
+
+    ajp_handle_cping_cpong = APR_RETRIEVE_OPTIONAL_FN(ajp_handle_cping_cpong);
+    if (ajp_handle_cping_cpong) {
+       proxy_hcmethods_t *method = proxy_hcmethods;
+       for (; method->name; method++) {
+           if (method->method == CPING) {
+               method->implemented = 1;
+               break;
+           }
+       }
+    }
+
     return OK;
 }
 static int hc_post_config(apr_pool_t *p, apr_pool_t *plog,
@@ -1126,17 +1155,6 @@ static int hc_post_config(apr_pool_t *p, apr_pool_t *plog,
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(03265)
                      "watchdog callback registered (%s for %s)", HCHECK_WATHCHDOG_NAME, s->server_hostname);
         s = s->next;
-    }
-
-    ajp_handle_cping_cpong = APR_RETRIEVE_OPTIONAL_FN(ajp_handle_cping_cpong);
-    if (ajp_handle_cping_cpong) {
-       proxy_hcmethods_t *method = proxy_hcmethods;
-       for (; method->name; method++) {
-           if (method->method == CPING) {
-               method->implemented = 1;
-               break;
-           }
-       }
     }
 
     return OK;

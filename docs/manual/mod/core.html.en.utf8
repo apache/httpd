@@ -852,11 +852,6 @@ which no other media type configuration could be found.
     send the response without a Content-Type header field and the
     recipient may attempt to guess the media type.</p>
 
-<h3>See also</h3>
-<ul>
-<li><code class="directive"><a href="#undefine">UnDefine</a></code></li>
-<li><code class="directive"><a href="#ifdefine">IfDefine</a></code></li>
-</ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="Define" id="Define">Define</a> <a name="define" id="define">Directive</a> <a title="Permanent link" href="#define" class="permalink">&para;</a></h2>
@@ -899,6 +894,11 @@ DocumentRoot "/var/www/${servername}/htdocs"</pre>
          directives, beyond any enclosing virtual host.</p>
     </div>
 
+<h3>See also</h3>
+<ul>
+<li><code class="directive"><a href="#undefine">UnDefine</a></code></li>
+<li><code class="directive"><a href="#ifdefine">IfDefine</a></code></li>
+</ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="Directory" id="Directory">&lt;Directory&gt;</a> <a name="directory" id="directory">Directive</a> <a title="Permanent link" href="#directory" class="permalink">&para;</a></h2>
@@ -1364,6 +1364,11 @@ version 2.3.9.</td></tr>
 &lt;/IfDefine&gt;</pre>
 
 
+    <div class="warning"><h3>Note</h3>
+        <p> This directive is evaluated at configuration processing time, 
+        not at runtime. As a result, this directive cannot be conditonally
+        evaluated by enclosing it in an <code class="directive"><a href="#if">&lt;If&gt;</a></code> section.</p>
+    </div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -1702,7 +1707,7 @@ ErrorLogFormat "[%{uc}t] [%-m:%-l] [R:%L] [C:%{C}L] %7F: %E: %M"
 ErrorLogFormat request "[%{uc}t] [R:%L] Request %k on C:%{c}L pid:%P tid:%T"
 ErrorLogFormat request "[%{uc}t] [R:%L] UA:'%+{User-Agent}i'"
 ErrorLogFormat request "[%{uc}t] [R:%L] Referer:'%+{Referer}i'"
-ErrorLogFormat connection "[%{uc}t] [C:%{c}L] local\ %a remote\ %A"</pre>
+ErrorLogFormat connection "[%{uc}t] [C:%{c}L] remote\ %a local\ %A"</pre>
 
 
 
@@ -1932,12 +1937,12 @@ to the network</td></tr>
 </table>
     <p>This directive allows to configure the maximum number of pipelined
     responses, which remain pending so long as pipelined request are received.
-    When the limit is reached, reponses are forcibly flushed to the network in
+    When the limit is reached, responses are forcibly flushed to the network in
     blocking mode, until passing under the limit again.</p>
 
     <p><code class="directive">FlushMaxPipelined</code> helps constraining memory
-    usage. When set to <var>0</var> pipelining is disabled, when set to
-    <var>-1</var> there is no limit (<code class="directive">FlushMaxThreshold</code>
+    usage. When set to <code>0</code> pipelining is disabled, when set to
+    <code>-1</code> there is no limit (<code class="directive"><a href="#flushmaxthreshold">FlushMaxThreshold</a></code>
     still applies).</p>
 
 </div>
@@ -1946,7 +1951,7 @@ to the network</td></tr>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Threshold above which pending data are flushed to the
 network</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>FlushMaxThreshold<var>number-of-bytes</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>FlushMaxThreshold <var>number-of-bytes</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>FlushMaxThreshold 65536</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
@@ -1958,7 +1963,7 @@ network</td></tr>
     the network in blocking mode, until passing under the limit again.</p>
 
     <p><code class="directive">FlushMaxThreshold</code> helps constraining memory
-    usage. When set to <var>0</var> or a too small value there are actually
+    usage. When set to <code>0</code> or a too small value there are actually
     no pending data, but for threaded MPMs there can be more threads busy
     waiting for the network thus less ones available to handle the other
     simultaneous connections.</p>
@@ -2264,6 +2269,16 @@ satisfied by a request at runtime</td></tr>
     been evaluated, and so will not be available to use in this
     directive.
     </div>
+    
+    <div class="warning">
+    Directives that take affect during configuration parsing, such as 
+    <code class="directive">Define</code>, <code class="directive">Include</code>, and
+    <code class="directive">Error</code> cannot be made conditional by enclosing
+    them in an if <code class="directive">&lt;If&gt;</code> configuration
+    section.  These sections are always part of the configuration, 
+    regardless of how they evaluate at runtime.
+    </div>
+
 
 
 <h3>See also</h3>
@@ -2834,16 +2849,16 @@ subrequests</td></tr>
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Restricts the total size of the HTTP request body sent
 from the client</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>LimitRequestBody <var>bytes</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>LimitRequestBody 0</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>LimitRequestBody 1073741824</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>All</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>In Apache HTTP Server 2.4.53 and earlier, the default value
+was 0 (unlimited)</td></tr>
 </table>
-    <p>This directive specifies the number of <var>bytes</var> from 0
-    (meaning unlimited) to 2147483647 (2GB) that are allowed in a
-    request body. See the note below for the limited applicability
-    to proxy requests.</p>
+    <p>This directive specifies the number of <var>bytes</var>
+    that are allowed in a request body. A value of <var>0</var> means unlimited.</p>
 
     <p>The <code class="directive">LimitRequestBody</code> directive allows
     the user to set a limit on the allowed size of an HTTP request
@@ -2869,10 +2884,6 @@ from the client</td></tr>
 
     <pre class="prettyprint lang-config">LimitRequestBody 102400</pre>
 
-
-    <div class="note"><p>For a full description of how this directive is interpreted by
-    proxy requests, see the <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> documentation.</p>
-    </div>
 
 
 </div>
@@ -3021,12 +3032,18 @@ from the client</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
 </table>
-    <p>Limit (in bytes) on maximum size of an XML-based request
-    body. A value of <code>0</code> will disable any checking.</p>
-
+    <p>Limit (in bytes) on the maximum size of an XML-based request
+    body. A value of <code>0</code> will apply a hard limit (depending on
+    32bit vs 64bit system) allowing for XML escaping within the bounds of
+    the system addressable memory, but it exists for compatibility only
+    and is not recommended since it does not account for memory consumed
+    elsewhere or concurrent requests, which might result in an overall
+    system out-of-memory.
+    </p>
     <p>Example:</p>
 
-    <pre class="prettyprint lang-config">LimitXMLRequestBody 0</pre>
+    <pre class="prettyprint lang-config"># Limit of 1 MiB
+LimitXMLRequestBody 1073741824</pre>
 
 
 
@@ -5364,6 +5381,11 @@ hostname or IP address</td></tr>
 &lt;/IfDefine&gt;</pre>
 
 
+    <div class="warning"><h3>Note</h3>
+        <p> This directive is evaluated at configuration processing time,
+        not at runtime. As a result, this directive cannot be conditonally
+        evaluated by enclosing it in an <code class="directive"><a href="#if">&lt;If&gt;</a></code> section.</p>
+    </div>
 
 </div>
 </div>
@@ -5392,7 +5414,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/core.html';
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2021 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2023 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

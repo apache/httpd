@@ -22,10 +22,31 @@ struct md_json_t;
 struct md_pkey_t;
 struct md_data_t;
 
-apr_status_t md_jws_sign(md_json_t **pmsg, apr_pool_t *p,
-                         struct md_data_t *payload, struct apr_table_t *protected, 
-                         struct md_pkey_t *pkey, const char *key_id);
+/**
+ * Get the JSON value of the 'jwk' field for the given key.
+ */
+apr_status_t md_jws_get_jwk(md_json_t **pjwk, apr_pool_t *p, struct md_pkey_t *pkey);
 
-apr_status_t md_jws_pkey_thumb(const char **pthumb, apr_pool_t *p, struct md_pkey_t *pkey);
+/**
+ * Get the JWS key signed JSON message with given payload and protected fields, signed
+ * using the given key and optional key_id.
+ */
+apr_status_t md_jws_sign(md_json_t **pmsg, apr_pool_t *p,
+                         struct md_data_t *payload, md_json_t *prot_fields,
+                         struct md_pkey_t *pkey, const char *key_id);
+/**
+ * Get the 'Thumbprint' as defined in RFC8555 for the given key in
+ * base64 encoding.
+ */
+apr_status_t md_jws_pkey_thumb(const char **pthumb64, apr_pool_t *p, struct md_pkey_t *pkey);
+
+/**
+ * Get the JWS HS256 signed message for given payload and protected fields,
+ * using the base64 encoded MAC key.
+ */
+apr_status_t md_jws_hmac(md_json_t **pmsg, apr_pool_t *p,
+                         struct md_data_t *payload, md_json_t *prot_fields,
+                         const struct md_data_t *hmac_key);
+
 
 #endif /* md_jws_h */

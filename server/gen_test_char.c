@@ -54,6 +54,7 @@
 #define T_ESCAPE_URLENCODED   (0x40)
 #define T_HTTP_CTRLS          (0x80)
 #define T_VCHAR_OBSTEXT      (0x100)
+#define T_URI_UNRESERVED     (0x200)
 
 int main(int argc, char *argv[])
 {
@@ -71,6 +72,7 @@ int main(int argc, char *argv[])
            "#define T_ESCAPE_URLENCODED    (%u)\n"
            "#define T_HTTP_CTRLS           (%u)\n"
            "#define T_VCHAR_OBSTEXT        (%u)\n"
+           "#define T_URI_UNRESERVED       (%u)\n"
            "\n"
            "static const unsigned short test_char_table[256] = {",
            T_ESCAPE_SHELL_CMD,
@@ -81,7 +83,9 @@ int main(int argc, char *argv[])
            T_ESCAPE_FORENSIC,
            T_ESCAPE_URLENCODED,
            T_HTTP_CTRLS,
-           T_VCHAR_OBSTEXT);
+           T_VCHAR_OBSTEXT,
+           T_URI_UNRESERVED
+        );
 
     for (c = 0; c < 256; ++c) {
         flags = 0;
@@ -164,6 +168,12 @@ int main(int argc, char *argv[])
             flags |= T_ESCAPE_FORENSIC;
         }
 
+        /* Characters in the RFC 3986 "unreserved" set.
+         * https://datatracker.ietf.org/doc/html/rfc3986#section-2.3 */
+        if (c && (apr_isalnum(c) || strchr("-._~", c))) {
+            flags |= T_URI_UNRESERVED;
+        }
+        
         printf("0x%03x%c", flags, (c < 255) ? ',' : ' ');
     }
 

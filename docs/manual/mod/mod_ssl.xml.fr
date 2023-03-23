@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1884552 -->
+<!-- English Revision: 1908132 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -78,8 +78,12 @@ si les connexions persistantes (HTTP KeepAlive) sont utilisées</td></tr>
 <tr><td><code>SSL_SECURE_RENEG</code></td>              <td>chaîne</td>
 <td><code>true</code> si la renégociation sécurisée est supportée,
 <code>false</code> dans le cas contraire</td></tr>
+<tr><td><code>SSL_SHARED_CIPHERS</code></td>            <td>chaîne</td>    <td>La
+liste des algorithmes de chiffrement partagés séparés par des ":" (autrement dit
+le sous-ensemble d'algorithmes de chiffrement pris en charge à la fois par le
+serveur et par le client)</td></tr>
 <tr><td><code>SSL_CIPHER</code></td>                    <td>chaîne</td>
-<td>Le nom de l'algorithme de chiffrement</td></tr>
+<td>Le nom de l'algorithme de chiffrement adopté par le client et le serveur</td></tr>
 <tr><td><code>SSL_CIPHER_EXPORT</code></td>             <td>chaîne</td>
 <td><code>true</code> si l'algorithme de chiffrement est un algorithme
 exporté</td></tr>
@@ -1110,9 +1114,9 @@ indépendamment de l'algorithme d'authentification utilisé.
 l'entité finale au fichier de certificat, ce qui permet de se passer
 d'une directive <directive
 module="mod_ssl">SSLCertificateKeyFile</directive> séparée. Cette
-pratique est cependant fortement déconseillée. En effet, les fichiers de
-certificats qui contiennent de tels clés embarquées doivent être définis
-avant les certificats en utilisant un fichier de clé séparé. En outre,
+pratique est cependant fortement déconseillée. Dans ce cas, les fichiers de
+certificat qui contiennent de telles clés embarquées doivent être définis
+après les certificats qui utilisent un fichier de clé séparé. En outre,
 si la clé est chiffrée, une boîte de dialogue pour entrer le mot de
 passe de la clé s'ouvre au démarrage du serveur.
 </p>
@@ -1212,11 +1216,11 @@ module="mod_ssl">SSLCertificateKeyFile</directive> doit être associée
 une directive <directive>SSLCertificateFile</directive> correspondante.</p>
 
 <p>
-La clé privé peut aussi être ajoutée au fichier défini par la directive
+La clé privée peut aussi être ajoutée au fichier défini par la directive
 <directive module="mod_ssl">SSLCertificateFile</directive>, mais cette
-pratique est fortement déconseillée. En effet, les fichiers de
+pratique est fortement déconseillée. Dans ce cas, les fichiers de
 certificats qui comportent une telle clé doivent être définis après les
-certificats en utilisant un fichier de clé séparé.</p>
+certificats qui utilisent un fichier de clé séparé.</p>
 
 <p>Plutôt que de stocker des clés privées dans des fichiers, il est possible
 d'identifier une clé privée via un identifiant stocké dans un jeton.
@@ -1771,6 +1775,13 @@ Les <em>option</em>s disponibles sont :</p>
     <module>mod_auth_basic</module> permet de contrôler à la
     fois le nom d'utilisateur et le mot de passe ; elle fournit donc un
     mécanisme plus général de simulation d'authentification de base.</p>
+
+    <note>A la différence de l'option <code>FakeBasicAuth</code>, la directive
+    <directive module="mod_auth_basic">AuthBasicFake</directive> ne définit pas
+    l'en-tête Authorization suffisamment tôt pour qu'il soit traité par le
+    système d'authentification et d'autorisation du serveur local ; cet en-tête
+    est destiné à être transmis aux serveurs en amont.
+    </note>
 
     <note type="warning">
       <p>Les noms d'utilisateur pour <code>FakeBasicAuth</code> ne doivent pas
@@ -3333,12 +3344,7 @@ section <em>Supported configuration file commands</em> de la page de
 manuel d'OpenSSL <a
 href="http://www.openssl.org/docs/man1.0.2/ssl/SSL_CONF_cmd.html#SUPPORTED-CONFIGURATION-FILE-COMMANDS">SSL_CONF_cmd(3)</a>.</p>
 
-<p>Certaines commandes peuvent remplacer des directives existantes
-(comme <directive module="mod_ssl">SSLCipherSuite</directive> ou
-<directive module="mod_ssl">SSLProtocol</directive>) ; notez cependant
-que la syntaxe et/ou les valeurs possibles peuvent différer.</p>
-
-<example><title>Examples</title>
+<example><title>Exemples</title>
 <highlight language="config">
 SSLOpenSSLConfCmd Options -SessionTicket,ServerPreference
 SSLOpenSSLConfCmd ECDHParameters brainpoolP256r1
@@ -3347,6 +3353,23 @@ SSLOpenSSLConfCmd Protocol "-ALL, TLSv1.2"
 SSLOpenSSLConfCmd SignatureAlgorithms RSA+SHA384:ECDSA+SHA256
 </highlight>
 </example>
+
+<note type="warning"><title>Avertissement à propos de la compatibilité et de la
+stabilité</title>
+
+<p>Certaines commandes de la directive <directive>SSLOpenSSLConfCmd</directive>
+peuvent être utilisées comme alternatives à certaines directives existantes
+comme <directive module="mod_ssl">SSLCipherSuite</directive> ou <directive
+module="mod_ssl">SSLProtocol</directive>), bien que la syntaxe et les valeurs
+autorisées des paramètres puissent parfois être différentes.</p>
+
+<p>Pour configurer OpenSSL, il est recommandé d'utiliser les directives fournies
+par mod_ssl, losqu'elles sont disponibles, et de n'utiliser
+<directive>SSLOpenSSLConfCmd</directive> que pour les fonctionnalités d'OpenSSL
+non configurables par mod_ssl. Il est possible que le comportement de mod_ssl
+évolue avec les versions de httpd où <directive>SSLOpenSSLConfCmd</directive>
+sera utilisé.</p>
+</note>
 </usage>
 </directivesynopsis>
 

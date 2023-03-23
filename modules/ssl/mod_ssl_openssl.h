@@ -30,14 +30,17 @@
 
 /* OpenSSL headers */
 
-#ifndef SSL_PRIVATE_H
 #include <openssl/opensslv.h>
-#if (OPENSSL_VERSION_NUMBER >= 0x10001000)
+#if OPENSSL_VERSION_NUMBER >= 0x30000000
+#include <openssl/macros.h> /* for OPENSSL_API_LEVEL */
+#endif
+#if OPENSSL_VERSION_NUMBER >= 0x10001000
 /* must be defined before including ssl.h */
 #define OPENSSL_NO_SSL_INTERN
 #endif
 #include <openssl/ssl.h>
-#endif
+#include <openssl/evp.h>
+#include <openssl/x509.h>
 
 /**
  * init_server hook -- allow SSL_CTX-specific initialization to be performed by

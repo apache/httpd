@@ -882,14 +882,8 @@ static const char *log_pid_tid(request_rec *r, char *a)
         int tid = 0; /* APR will format "0" anyway but an arg is needed */
 #endif
         return apr_psprintf(r->pool,
-#if APR_MAJOR_VERSION > 1 || (APR_MAJOR_VERSION == 1 && APR_MINOR_VERSION >= 2)
                             /* APR can format a thread id in hex */
-                            *a == 'h' ? "%pt" : "%pT",
-#else
-                            /* APR is missing the feature, so always use decimal */
-                            "%pT",
-#endif
-                            &tid);
+                            *a == 'h' ? "%pt" : "%pT", &tid);
     }
     /* bogus format */
     return a;

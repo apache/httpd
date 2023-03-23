@@ -25,8 +25,7 @@
  */
 
 #include "ssl_private.h"
-#include "mod_ssl.h"
-#include "mod_ssl_openssl.h"
+
 #include "util_md5.h"
 #include "util_mutex.h"
 #include "ap_provider.h"
@@ -556,6 +555,13 @@ static int ssl_hook_ssl_bind_outgoing(conn_rec *c,
     int status;
 
     sslconn = ssl_init_connection_ctx(c, per_dir_config, 1);
+    if (sslconn->ssl) {
+        /* we are already bound to this connection. We have rebound
+         * or removed the reference to a previous per_dir_config,
+         * there is nothing more to do. */
+        return OK;
+    }
+
     status = ssl_engine_status(c, sslconn);
     if (enable_ssl) {
         if (status != OK) {
@@ -641,9 +647,7 @@ int ssl_init_ssl_connection(conn_rec *c, request_rec *r)
 
     SSL_set_verify_result(ssl, X509_V_OK);
 
-    ssl_io_filter_init(c, r, ssl);
-
-    return APR_SUCCESS;
+    return ssl_io_filter_init(c, r, ssl);
 }
 
 static const char *ssl_hook_http_scheme(const request_rec *r)
@@ -697,11 +701,22 @@ static int ssl_hook_process_connection(conn_rec* c)
          * all kinds of useful things such as SNI and ALPN.
          */
         apr_bucket_brigade* temp;
+        apr_status_t rv;
 
         temp = apr_brigade_create(c->pool, c->bucket_alloc);
-        ap_get_brigade(c->input_filters, temp,
-                       AP_MODE_INIT, APR_BLOCK_READ, 0);
+        rv = ap_get_brigade(c->input_filters, temp,
+                            AP_MODE_INIT, APR_BLOCK_READ, 0);
         apr_brigade_destroy(temp);
+
+        if (APR_SUCCESS != APR_SUCCESS) {
+            if (c->cs) {
+                c->cs->state = CONN_STATE_LINGER;
+            }
+            ap_log_cerror(APLOG_MARK, APLOG_ERR, rv, c, APLOGNO(10373)
+                          "SSL handshake was not completed, "
+                          "closing connection");
+            return OK;
+        }
     }
     
     return DECLINED;

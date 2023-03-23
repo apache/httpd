@@ -177,8 +177,9 @@ Require host .net example.edu</pre>
     <p>In contrast to the <code>host</code> provider, this provider does not
     rely on reverse DNS lookups: it simply queries the DNS for the host name
     and allows a client if its IP matches.  As a consequence, it will only
-    work with host names, not domain names.  However, as the reverse DNS is
-    not used, it will work with clients which use a dynamic DNS service.</p>
+    work with complete host names that can be resolved in DNS, not partial domain names.  
+    However, as the reverse DNS is not used, and DNS lookups occur at request processing
+    time (instead of startup), it will work with clients which use a dynamic DNS service.</p>
 
     <pre class="prettyprint lang-config">Require forward-dns dynamic.example.org</pre>
 
@@ -243,7 +244,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_authz_host
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2021 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2023 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

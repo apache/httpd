@@ -204,14 +204,12 @@
     décrit comment configurer le serveur pour l'enregistrement des informations
     dans le journal des accès.</p>
 
-    <p>Bien évidemment, le stockage d'informations dans le journal des accès
+    <p>Le stockage d'informations dans le journal des accès
     n'est que le point de départ de la gestion de la journalisation. L'étape
     suivante consiste à analyser ces informations de façon à pouvoir en
     extraire des statistiques utiles. L'analyse de journaux en général est en
     dehors du sujet de ce document et ne fait pas vraiment partie intégrante
-    du travail du serveur web lui-même. Pour plus d'informations à propos de ce
-    sujet et des applications dédiées à l'analyse de journaux, vous pouvez vous
-    référer à <a href="http://dmoz.org/Computers/Software/Internet/     Site_Management/Log_analysis/">Open Directory</a>.
+    du travail du serveur web lui-même.
     </p>
 
     <p>Différentes versions du démon Apache httpd utilisaient d'autres modules
@@ -509,7 +507,7 @@ LogFormat "%!200,304,302{Referer}i" refererlog</pre>
       enregistré si le code d'état HTTP est 400 ou 501. Dans le cas
       contraire, c'est un caractère "-" qui sera enregistré à la place.
       Dans le second exemple, le <code>Referer</code> sera enregistré si
-      le code d'état HTTP n'est <strong>pas</strong> 200, 204, ou 302
+      le code d'état HTTP n'est <strong>pas</strong> 200, 304, ou 302
       (remarquez le caractère "!" avant les codes d'état).</p>
 
       <p>Bien que nous venions de montrer que la journalisation conditionnelle
@@ -684,7 +682,7 @@ CustomLog "logs/access_log" comonvhost</pre>
 <h2><a name="other" id="other">Autres fichiers journaux</a> <a title="Lien permanent" href="#other" class="permalink">&para;</a></h2>
     
 
-    <table class="related"><tr><th>Modules Apparentés</th><th>Directives Apparentées</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_logio.html">mod_logio</a></code></li><li><code class="module"><a href="./mod/mod_log_config.html">mod_log_config</a></code></li><li><code class="module"><a href="./mod/mod_log_forensic.html">mod_log_forensic</a></code></li><li><code class="module"><a href="./mod/mod_cgi.html">mod_cgi</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_log_config.html#logformat">LogFormat</a></code></li><li><code class="directive"><a href="./mod/mod_log_config.html#bufferedlogs">BufferedLogs</a></code></li><li><code class="directive"><a href="./mod/mod_log_forensic.html#forensiclog">ForensicLog</a></code></li><li><code class="directive"><a href="./mod/mpm_common.html#pidfile">PidFile</a></code></li><li><code class="directive"><a href="./mod/mod_cgi.html#scriptlog">ScriptLog</a></code></li><li><code class="directive"><a href="./mod/mod_cgi.html#scriptlogbuffer">ScriptLogBuffer</a></code></li><li><code class="directive"><a href="./mod/mod_cgi.html#scriptloglength">ScriptLogLength</a></code></li></ul></td></tr></table>
+    <table class="related"><tr><th>Modules Apparentés</th><th>Directives Apparentées</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_logio.html">mod_logio</a></code></li><li><code class="module"><a href="./mod/mod_log_config.html">mod_log_config</a></code></li><li><code class="module"><a href="./mod/mod_log_debug.html">mod_log_debug</a></code></li><li><code class="module"><a href="./mod/mod_log_forensic.html">mod_log_forensic</a></code></li><li><code class="module"><a href="./mod/mod_cgi.html">mod_cgi</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_log_config.html#bufferedlogs">BufferedLogs</a></code></li><li><code class="directive"><a href="./mod/mod_log_forensic.html#forensiclog">ForensicLog</a></code></li><li><code class="directive"><a href="./mod/mod_log_config.html#logformat">LogFormat</a></code></li><li><code class="directive"><a href="./mod/mod_log_debug.html#logmessage">LogMessage</a></code></li><li><code class="directive"><a href="./mod/mpm_common.html#pidfile">PidFile</a></code></li><li><code class="directive"><a href="./mod/mod_cgi.html#scriptlog">ScriptLog</a></code></li><li><code class="directive"><a href="./mod/mod_cgi.html#scriptlogbuffer">ScriptLogBuffer</a></code></li><li><code class="directive"><a href="./mod/mod_cgi.html#scriptloglength">ScriptLogLength</a></code></li></ul></td></tr></table>
 
     <h3>Enregistrement du nombre réel d'octets envoyés et reçus</h3>
       
@@ -729,6 +727,15 @@ CustomLog "logs/access_log" comonvhost</pre>
       serveur en production. Vous trouverez plus d'informations dans la
       documentation du module <a href="mod/mod_cgi.html">mod_cgi</a>.</p>
     
+
+    <h3><a name="debug" id="debug">Journalisation de débogage configurable</a></h3>
+        
+
+        <p>La directive <code class="directive"><a href="./mod/mod_log_debug.html#logmessage">LogMessage</a></code>
+	vous permet de créer vos propres messages de journalisation
+	personnalisés pour faciliter vos opérations de débogage.
+        </p>
+    
     
   </div></div>
 <div class="bottomlang">
@@ -755,7 +762,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/logs.html';
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2021 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2023 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossaire</a> | <a href="./sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

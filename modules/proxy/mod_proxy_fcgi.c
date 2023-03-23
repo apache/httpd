@@ -92,12 +92,16 @@ static int proxy_fcgi_canon(request_rec *r, char *url)
         host = apr_pstrcat(r->pool, "[", host, "]", NULL);
     }
 
-    if (apr_table_get(r->notes, "proxy-nocanon")) {
-        path = url;   /* this is the raw path */
+    if (apr_table_get(r->notes, "proxy-nocanon")
+        || apr_table_get(r->notes, "proxy-noencode")) {
+        path = url;   /* this is the raw/encoded path */
     }
     else {
-        path = ap_proxy_canonenc(r->pool, url, strlen(url), enc_path, 0,
-                             r->proxyreq);
+        core_dir_config *d = ap_get_core_module_config(r->per_dir_config);
+        int flags = d->allow_encoded_slashes && !d->decode_encoded_slashes ? PROXY_CANONENC_NOENCODEDSLASHENCODING : 0;
+
+        path = ap_proxy_canonenc_ex(r->pool, url, strlen(url), enc_path, flags,
+                                    r->proxyreq);
     }
     if (path == NULL)
         return HTTP_BAD_REQUEST;

@@ -78,7 +78,8 @@
     APR_HOOK_LINK(input_pending) \
     APR_HOOK_LINK(suspend_connection) \
     APR_HOOK_LINK(resume_connection) \
-    APR_HOOK_LINK(child_stopping)
+    APR_HOOK_LINK(child_stopping) \
+    APR_HOOK_LINK(child_stopped)
 
 #if AP_ENABLE_EXCEPTION_HOOK
 APR_HOOK_STRUCT(
@@ -140,6 +141,9 @@ AP_IMPLEMENT_HOOK_VOID(resume_connection,
 AP_IMPLEMENT_HOOK_VOID(child_stopping,
                        (apr_pool_t *pchild, int graceful),
                        (pchild, graceful))
+AP_IMPLEMENT_HOOK_VOID(child_stopped,
+                       (apr_pool_t *pchild, int graceful),
+                       (pchild, graceful))
 
 /* hooks with no args are implemented last, after disabling APR hook probes */
 #if defined(APR_HOOK_PROBES_ENABLED)
@@ -176,10 +180,10 @@ AP_DECLARE_DATA int ap_max_requests_per_child;
 AP_DECLARE_DATA char ap_coredump_dir[MAX_STRING_LEN];
 AP_DECLARE_DATA int ap_coredumpdir_configured;
 AP_DECLARE_DATA int ap_graceful_shutdown_timeout;
-AP_DECLARE_DATA apr_uint32_t ap_max_mem_free;
 AP_DECLARE_DATA apr_size_t ap_thread_stacksize;
 
 #define ALLOCATOR_MAX_FREE_DEFAULT (2048*1024)
+AP_DECLARE_DATA apr_uint32_t ap_max_mem_free = ALLOCATOR_MAX_FREE_DEFAULT;
 
 /* Set defaults for config directives implemented here.  This is
  * called from core's pre-config hook, so MPMs which need to override

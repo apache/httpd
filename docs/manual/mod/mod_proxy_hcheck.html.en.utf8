@@ -66,9 +66,12 @@
         		<tr><th>Method</th><th>Description</th><th>Note</th></tr>
         		<tr><td>None</td><td>No dynamic health checking done</td><td /></tr>
         		<tr><td>TCP</td><td>Check that a socket to the backend can be created: e.g. "are you up"</td><td /></tr>
-        		<tr><td>OPTIONS</td><td>Send an <code>HTTP OPTIONS</code> request to the backend</td><td>*</td></tr>
-        		<tr><td>HEAD</td><td>Send an <code>HTTP HEAD</code> request to the backend</td><td>*</td></tr>
-        		<tr><td>GET</td><td>Send an <code>HTTP GET</code> request to the backend</td><td>*</td></tr>
+        		<tr><td>OPTIONS</td><td>Send a <code>HTTP OPTIONS</code> request to the backend via <code>HTTP/1.0</code></td><td>*</td></tr>
+        		<tr><td>HEAD</td><td>Send a <code>HTTP HEAD</code> request to the backend via <code>HTTP/1.0</code></td><td>*</td></tr>
+        		<tr><td>GET</td><td>Send a <code>HTTP GET</code> request to the backend via <code>HTTP/1.0</code></td><td>*</td></tr>
+        		<tr><td>OPTIONS11</td><td>Send a <code>HTTP OPTIONS</code> request to the backend via <code>HTTP/1.1</code></td><td>*</td></tr>
+        		<tr><td>HEAD11</td><td>Send a <code>HTTP HEAD</code> request to the backend via <code>HTTP/1.1</code></td><td>*</td></tr>
+        		<tr><td>GET11</td><td>Send a <code>HTTP GET</code> request to the backend via <code>HTTP/1.1</code></td><td>*</td></tr>
 
 				<tr><td colspan="3" /></tr>
 				<tr><td colspan="3">*: Unless <code>hcexpr</code> is used, a 2xx or 3xx HTTP status will be interpreted as <em>passing</em> the health check</td></tr>
@@ -97,6 +100,11 @@
             used to check response headers for health.<br />
             <em>If not used, 2xx thru 3xx status codes imply success</em></td></tr>
     </table>
+</div>
+
+<div class="note"><h3>Compatibility:</h3>
+    <p><code>OPTIONS11</code>, <code>HEAD11</code> and <code>GET11</code> are
+       available in 2.4.55 and above.</p>
 </div>
 
 </div>
@@ -268,7 +276,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_proxy_hche
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2021 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2023 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
