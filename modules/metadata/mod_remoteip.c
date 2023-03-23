@@ -664,8 +664,13 @@ static int remoteip_modify_request(request_rec *r)
                 if ( (proto = apr_table_get(r->headers_in, config->proto_header_name)) ) {
                     /* Exact HTTPS protocol ID option not set means just the header presence is enough, otherwise check for a match
                      */
-                    if (!config->proto_https_enable || !strcmp(proto, config->proto_https_enable))
+                    if (!config->proto_https_enable || !strcmp(proto, config->proto_https_enable)) {
                         apr_table_setn(r->connection->notes, "remoteip_https", "on");
+                    } else {
+                        /* Subsequent requests inside a single connection need to have the annotation reset if they do not have the content match
+                         */
+                        apr_table_unset(r->connection->notes, "remoteip_https");
+                    }
                 } else {
                     /* Subsequent requests inside a single connection need to have the annotation reset if they do not have the header set
                      */
