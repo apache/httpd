@@ -12,7 +12,7 @@ Install Lua 5.1
     
     
 Install Apache HTTPD 2.2
-    http://httpd.apache.org/download.cgi
+    https://httpd.apache.org/download.cgi
     
     You can build apache pretty much any way you like, as long as you enable
     dynamic module loading (--enable-so) so that mod_lua can be loaded.
@@ -28,7 +28,7 @@ Install Apache HTTPD 2.2
     
     
 Install libapreq2
-    http://httpd.apache.org/apreq/download.cgi
+    https://httpd.apache.org/apreq/download.cgi
         The download link is in the page body, NOT under the "Download!" link
         in the left hand column.
     
