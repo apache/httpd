@@ -206,6 +206,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      Can be applied via apply_backport_pr.sh 351
      +1: rpluem,
 
+  *) mod_http2: fixed a crash during connection termination. See PR 66539.
+     Trunk version of patch:
+        https://svn.apache.org/r1908691
+     Backport version for 2.4.x of patch:
+     2.4.x patch: svn merge -c 1908691 ^/httpd/httpd/trunk .
+     +1: icing
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
