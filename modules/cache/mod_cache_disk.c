@@ -1033,7 +1033,14 @@ static apr_status_t write_headers(cache_handle_t *h, request_rec *r)
             varray = apr_array_make(r->pool, 6, sizeof(char*));
             tokens_to_array(r->pool, tmp, varray);
 
-            store_array(dobj->vary.tempfd, varray);
+            rv = store_array(dobj->vary.tempfd, varray);
+            if (rv != APR_SUCCESS) {
+                ap_log_rerror(APLOG_MARK, APLOG_WARNING, rv, r, APLOGNO(10413)
+                        "could not write to vary file %s",
+                        dobj->vary.tempfile);
+                apr_pool_destroy(dobj->vary.pool);
+                return rv;
+            }
 
             rv = apr_file_close(dobj->vary.tempfd);
             if (rv != APR_SUCCESS) {
