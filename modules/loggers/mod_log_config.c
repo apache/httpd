@@ -179,7 +179,10 @@ module AP_MODULE_DECLARE_DATA log_config_module;
 
 static int xfer_flags = (APR_WRITE | APR_APPEND | APR_CREATE | APR_LARGEFILE);
 static apr_fileperms_t xfer_perms = APR_OS_DEFAULT;
-static apr_hash_t *log_hash;
+
+static apr_hash_t *log_hash; // tag to log_struct
+static apr_hash_t *json_hash; // tag to json attribute name
+
 static apr_status_t ap_default_log_writer(request_rec *r,
                            void *handle,
                            const char **strs,
@@ -194,6 +197,14 @@ static apr_status_t ap_buffered_log_writer(request_rec *r,
                            int nelts,
                            void *items,
                            apr_size_t len);
+static apr_status_t ap_json_log_writer(request_rec *r,
+                           void *handle,
+                           const char **strs,
+                           int *strl,
+                           int nelts,
+                           void *items,
+                           apr_size_t len);
+
 static void *ap_default_log_writer_init(apr_pool_t *p, server_rec *s,
                                         const char* name);
 static void *ap_buffered_log_writer_init(apr_pool_t *p, server_rec *s,
@@ -1379,6 +1390,17 @@ static const char *set_transfer_log(cmd_parms *cmd, void *dummy,
     return add_custom_log(cmd, dummy, fn, NULL, NULL);
 }
 
+static const char *set_json_logs_on(cmd_parms *parms, void *dummy, int flag)
+{
+    if (flag) {
+        ap_log_set_writer(ap_json_log_writer);
+    }
+    else {
+        ap_log_set_writer(ap_default_log_writer);
+    }
+    return NULL;
+}
+
 static const char *set_buffered_logs_on(cmd_parms *parms, void *dummy, int flag)
 {
     buffered_logs = flag;
@@ -1392,6 +1414,7 @@ static const char *set_buffered_logs_on(cmd_parms *parms, void *dummy, int flag)
     }
     return NULL;
 }
+
 static const command_rec config_log_cmds[] =
 {
 AP_INIT_TAKE23("CustomLog", add_custom_log, NULL, RSRC_CONF,
@@ -1405,6 +1428,8 @@ AP_INIT_TAKE12("LogFormat", log_format, NULL, RSRC_CONF,
      "a log format string (see docs) and an optional format name"),
 AP_INIT_FLAG("BufferedLogs", set_buffered_logs_on, NULL, RSRC_CONF,
                  "Enable Buffered Logging (experimental)"),
+AP_INIT_FLAG("JsonLogs", set_json_logs_on, NULL, RSRC_CONF,
+                 "Enable JSON Logging (experimental)"),
     {NULL}
 };
 
@@ -1609,6 +1634,197 @@ static ap_log_writer *ap_log_set_writer(ap_log_writer *handle)
     return old;
 }
 
+/**
+ * tries to convert the utf-8 encoded byte sequence pointed to by idx
+ * into a Unicode code point
+ *
+ * returns
+ *     number of bytes consumed, if valid utf-8 (1, 2, 3 or 4 bytes)
+ *     or  0 if idx is invalid
+ *     or -1 if byte sequence pointed to by idx is not valid utf-8
+ *
+ * the target code point cp is only updated in case of a valid utf-8 byte
+ * sequence
+ */
+static int utf8_next_code_point(const char* string, int idx, apr_uint32_t *cp)
+{
+    apr_uint32_t code_point = 0;
+    int len = 0;
+
+    int sl = strlen(string);
+    if(idx < 0 || idx >= sl)
+        return 0;
+
+    unsigned char c = string[idx];
+    int expect_more_bytes = 0;
+    if((c & 0b11110000) == 0b11110000) { // 4 byte utf-8
+        code_point = c & 0b00000111;
+        code_point <<= 3;
+        expect_more_bytes = 3;
+        len++;
+    } else if((c & 0b11100000) == 0b11100000) { // 3 byte utf-8
+        code_point = c & 0b00001111;
+        code_point <<= 4;
+        expect_more_bytes = 2;
+        len++;
+    } else if((c & 0b11000000) == 0b11000000) { // 2 byte utf-8
+        code_point = c & 0b00011111;
+        code_point <<= 5;
+        expect_more_bytes = 1;
+        len++;
+    } else if((c & 0b10000000) == 0b10000000) { // 1 byte utf-8 continuation
+        // this is an actual error, probably wrong idx
+        // idx did point to a byte which looks like an utf-8 1 byte continuation
+        return -1;
+    } else if(c < 0x80) { // 1 byte utf-8
+        code_point = c;
+        expect_more_bytes = 0;
+        len++;
+    }
+
+    while(expect_more_bytes > 0) {
+        if(++idx >= sl) break;
+        c = string[idx];
+        if((c & 0b10000000) == 0b10000000) { // 1 byte utf-8 continuation
+            c = c & 0b00111111;
+            code_point |= c;
+        } else {
+            // unexpected byte sequence, error
+            return -1;
+        }
+
+        expect_more_bytes--;
+        len++;
+
+        if(expect_more_bytes > 0) {
+            code_point <<= 6;
+        }
+    }
+
+    *cp = code_point;
+    return len;
+}
+
+/* see https://www.rfc-editor.org/rfc/rfc8259#section-7 */
+static int json_needs_encoding(const char* string)
+{
+    apr_uint32_t code_point;
+    int idx = 0;
+    int len = utf8_next_code_point(string, idx, &code_point);
+
+    while(len > 0) {
+        if(code_point  < 0x20 ||
+           code_point == 0x22 ||
+           code_point == 0x5c) {
+            return 1; // true, this json utf-8 string, needs encoding
+        }
+
+        idx += len;
+        len = utf8_next_code_point(string, idx, &code_point);
+    }
+
+    return 0;
+}
+
+static const char* json_encode(apr_pool_t *p, const char* utf8_string_to_encode)
+{
+    apr_uint32_t code_point;
+
+    struct iovec strcats[strlen(utf8_string_to_encode)];
+    apr_size_t isc = 0;
+
+    int idx = 0;
+    int len = utf8_next_code_point(utf8_string_to_encode, idx, &code_point);
+
+    while(len > 0) {
+        // unescaped = %x20-21 / %x23-5B / %x5D-10FFFF
+        if(code_point  < 0x20 ||
+           code_point == 0x22 ||
+           code_point == 0x5c) {
+            strcats[isc].iov_base = apr_psprintf(p, "\\u%04x", code_point);
+            strcats[isc].iov_len = strlen(strcats[isc].iov_base);
+        } else {
+            strcats[isc].iov_base = (void*) utf8_string_to_encode + idx;
+            strcats[isc].iov_len = len;
+        }
+
+        isc++;
+        idx += len;
+        len = utf8_next_code_point(utf8_string_to_encode, idx, &code_point);
+    }
+
+    return apr_pstrcatv(p, strcats, isc, NULL);
+}
+
+static void add_iovec_str(struct iovec *iv, const char *str)
+{
+    iv->iov_base = (void*) str;
+    iv->iov_len = strlen(str);
+}
+
+static apr_status_t ap_json_log_writer( request_rec *r,
+                           void *handle,
+                           const char **strs,
+                           int *strl,
+                           int nelts,
+                           void *itms,
+                           apr_size_t len)
+
+{
+    log_format_item *items = (log_format_item *) itms;
+    apr_size_t len_file_write;
+
+    const char* attribute_name;
+    const char* attribute_value;
+    const char* json_str;
+
+    struct iovec strcats[1 + (nelts * 7) ];
+    apr_size_t isc = 0;
+
+    // build json object
+    add_iovec_str(&strcats[isc++], "{");
+    for (int i = 0; i < nelts; ++i) {
+        if(items[i].tag == NULL) {
+                continue;
+        }
+
+        attribute_name = apr_hash_get(json_hash, items[i].tag, APR_HASH_KEY_STRING );
+        if(!attribute_name) {
+            attribute_name = items[i].tag; // use tag as attribute name as fallback
+
+            // TODO: do we really needs to check for json string encoding for tags?
+            if(json_needs_encoding(attribute_name)) {
+                attribute_name = json_encode(r->pool, attribute_name);
+            }
+        }
+
+        add_iovec_str(&strcats[isc++], "\"");
+        add_iovec_str(&strcats[isc++], attribute_name);
+
+        // process any arguemnts as attribute name extension
+        if(items[i].arg != NULL && strlen(items[i].arg) > 0) {
+            attribute_name = items[i].arg;
+            if(json_needs_encoding(attribute_name)) {
+                attribute_name = json_encode(r->pool, attribute_name);
+            }
+            add_iovec_str(&strcats[isc++], " ");
+            add_iovec_str(&strcats[isc++], attribute_name);
+        }
+        add_iovec_str(&strcats[isc++], "\":\"");
+
+        attribute_value = strs[i];
+        if(json_needs_encoding(attribute_value)) {
+            attribute_value = json_encode(r->pool, attribute_value);
+        }
+        add_iovec_str(&strcats[isc++], attribute_value);
+        add_iovec_str(&strcats[isc++], "\",");
+    }
+    // replace last '",' with '"}'
+    add_iovec_str(&strcats[isc - 1], "\"}" APR_EOL_STR);
+    json_str = apr_pstrcatv(r->pool, strcats, isc, &len_file_write);
+    return apr_file_write((apr_file_t*)handle, json_str, &len_file_write);
+}
+
 static apr_status_t ap_default_log_writer( request_rec *r,
                            void *handle,
                            const char **strs,
@@ -1616,7 +1832,6 @@ static apr_status_t ap_default_log_writer( request_rec *r,
                            int nelts,
                            void *items,
                            apr_size_t len)
-
 {
     char *str;
     char *s;
@@ -1734,6 +1949,15 @@ static apr_status_t ap_buffered_log_writer(request_rec *r,
     return rv;
 }
 
+static void json_register_attribute(apr_pool_t *p, const char *tag, const char* attribute_name)
+{
+    if(json_needs_encoding(attribute_name)) {
+            attribute_name = json_encode(p, attribute_name);
+    }
+
+    apr_hash_set(json_hash, tag, strlen(tag), (const void *)attribute_name);
+}
+
 static int log_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp)
 {
     static APR_OPTIONAL_FN_TYPE(ap_register_log_handler) *log_pfn_register;
@@ -1774,6 +1998,40 @@ static int log_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp)
 
         log_pfn_register(p, "^ti", log_trailer_in, 0);
         log_pfn_register(p, "^to", log_trailer_out, 0);
+    }
+
+    // TODO: align attribute names with https://github.com/apache/tomcat/commit/00edb6d271f6ffbe65a01acc377b1930c7354ab0
+    if(1) {
+        json_register_attribute(p, "h", "host");
+        json_register_attribute(p, "a", "remoteAddr");
+        json_register_attribute(p, "A", "localAddr");
+        json_register_attribute(p, "l", "logicalUserName");
+        json_register_attribute(p, "u", "user");
+        json_register_attribute(p, "t", "time");
+        json_register_attribute(p, "f", "file");
+        json_register_attribute(p, "b", "size");
+        json_register_attribute(p, "B", "byteSentNC");
+        json_register_attribute(p, "i", "headerIn");
+        json_register_attribute(p, "o", "headerOut");
+        json_register_attribute(p, "n", "note");
+        json_register_attribute(p, "L", "logId");
+        json_register_attribute(p, "e", "env");
+        json_register_attribute(p, "V", "serverName");
+        json_register_attribute(p, "v", "virtualHost");
+        json_register_attribute(p, "p", "port");
+        json_register_attribute(p, "P", "threadId");
+        json_register_attribute(p, "H", "protocol");
+        json_register_attribute(p, "m", "method");
+        json_register_attribute(p, "q", "query");
+        json_register_attribute(p, "X", "connectionStatus");
+        json_register_attribute(p, "C", "cookie");
+        json_register_attribute(p, "k", "requestsOnConnection");
+        json_register_attribute(p, "r", "request");
+        json_register_attribute(p, "D", "elapsedTime");
+        json_register_attribute(p, "T", "elapsedTimeS");
+        json_register_attribute(p, "U", "path");
+        json_register_attribute(p, "s", "statusCode");
+        json_register_attribute(p, "R", "handler");
     }
 
     /* reset to default conditions */
@@ -1848,6 +2106,7 @@ static void register_hooks(apr_pool_t *p)
      * before calling APR_REGISTER_OPTIONAL_FN.
      */
     log_hash = apr_hash_make(p);
+    json_hash = apr_hash_make(p);
     APR_REGISTER_OPTIONAL_FN(ap_register_log_handler);
     APR_REGISTER_OPTIONAL_FN(ap_log_set_writer_init);
     APR_REGISTER_OPTIONAL_FN(ap_log_set_writer);
