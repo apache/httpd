@@ -134,7 +134,7 @@ RewriteRule "^search/(.*)$" "/search.php?term=$1" "[B= ?]"
 </highlight>
 
 <p>Pour définir la liste des caractères à échapper de cette manière, voir <a
-href="flag_bneg">flag_bneg</a> et <a href="flag_bctls">flag_bctls</a></p>
+href="flag_bne">flag_bne</a> et <a href="flag_bctls">flag_bctls</a></p>
 
 </section>
 
