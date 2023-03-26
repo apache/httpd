@@ -665,7 +665,7 @@ static int remoteip_modify_request(request_rec *r)
                 const char *port;
 
                 if (!conn_config) {
-                    ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(10413)
+                    ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(10413) /* FIXME: how to properly set LOGNO in trunk patch? */
                                   "Remote IP per-connection data is missing, but required for RemotePortHeader! Aborting request.");
                     return HTTP_BAD_REQUEST;
                 }
@@ -686,7 +686,7 @@ static int remoteip_modify_request(request_rec *r)
                 const char *proto;
 
                 if (!conn_config) {
-                    ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(10414)
+                    ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(10414) /* FIXME: how to properly set LOGNO in trunk patch? */
                                   "Remote IP per-connection data is missing, but required for RemoteProtoHeader! Aborting request.");
                     return HTTP_BAD_REQUEST;
                 }
@@ -894,13 +894,13 @@ static int remoteip_modify_request(request_rec *r)
     return OK;
 }
 
-static int remoteip_hook_ssl_conn_is_ssl(conn_rec *c)
+static int remoteip_hook_remote_is_ssl(request_rec *r)
 {
     remoteip_conn_config_t *conn_config = (remoteip_conn_config_t *)
-        ap_get_module_config(c->conn_config, &remoteip_module);
+        ap_get_module_config(r->connection->conn_config, &remoteip_module);
 
-    if (conn_config && conn_config->has_remote_is_ssl && conn_config->remote_is_ssl) {
-        return OK;
+    if (conn_config && conn_config->has_remote_is_ssl) {
+        return conn_config->remote_is_ssl ? OK : DONE;
     }
 
     return DECLINED;
@@ -1551,7 +1551,7 @@ static void register_hooks(apr_pool_t *p)
     ap_hook_post_config(remoteip_hook_post_config, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_pre_connection(remoteip_hook_pre_connection, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_post_read_request(remoteip_modify_request, NULL, NULL, APR_HOOK_FIRST);
-    ap_hook_ssl_conn_is_ssl(remoteip_hook_ssl_conn_is_ssl, NULL, NULL, APR_HOOK_LAST);
+    ap_hook_remote_is_ssl(remoteip_hook_remote_is_ssl, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_http_scheme(remoteip_hook_http_scheme, NULL, NULL, APR_HOOK_FIRST);
     ap_hook_default_port(remoteip_hook_default_port, NULL, NULL, APR_HOOK_FIRST);
     ap_hook_fixups(remoteip_hook_fixups, NULL, NULL, APR_HOOK_LAST);

@@ -1655,7 +1655,7 @@ APR_DECLARE_OPTIONAL_FN(int, http2_is_h2, (conn_rec *));
 static APR_OPTIONAL_FN_TYPE(http2_is_h2) *is_http2 = NULL;
 
 static const char *const conn_var_names[] = {
-    "HTTPS",                    /*  0 */
+    "HTTPS_LOCAL",              /*  0 */
     "IPV6",                     /*  1 */
     "CONN_LOG_ID",              /*  2 */
     "CONN_REMOTE_ADDR",         /*  3 */
@@ -1738,6 +1738,8 @@ static const char *const request_var_names[] = {
     "SERVER_PROTOCOL_VERSION_MAJOR",  /* 30 */
     "SERVER_PROTOCOL_VERSION_MINOR",  /* 31 */
     "REMOTE_PORT",                    /* 32 */
+    "HTTPS",                          /* 33 */
+    "HTTPS_REMOTE",                   /* 34 */
     NULL
 };
 
@@ -1849,6 +1851,12 @@ static const char *request_var_fn(ap_expr_eval_ctx_t *ctx, const void *data)
         return apr_psprintf(ctx->p, "%d", HTTP_VERSION_MINOR(r->proto_num));
     case 32:
         return apr_psprintf(ctx->p, "%u", ctx->c->client_addr->port);
+    case 33:
+    case 34:
+        if (ap_remote_is_ssl(r))
+            return "on";
+        else
+            return "off";
     default:
         ap_assert(0);
         return NULL;

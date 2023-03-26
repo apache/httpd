@@ -41,6 +41,7 @@
 #include "http_protocol.h"
 #include "http_log.h"
 #include "http_main.h"
+#include "http_ssl.h"
 #include "util_filter.h"
 #include "util_charset.h"
 #include "util_script.h"
@@ -73,6 +74,7 @@ APR_HOOK_STRUCT(
     APR_HOOK_LINK(post_perdir_config)
     APR_HOOK_LINK(dirwalk_stat)
     APR_HOOK_LINK(force_authn)
+    APR_HOOK_LINK(remote_is_ssl)
 )
 
 AP_IMPLEMENT_HOOK_RUN_FIRST(int,pre_translate_name,
@@ -102,6 +104,8 @@ AP_IMPLEMENT_HOOK_RUN_FIRST(apr_status_t,dirwalk_stat,
                             (apr_finfo_t *finfo, request_rec *r, apr_int32_t wanted),
                             (finfo, r, wanted), AP_DECLINED)
 AP_IMPLEMENT_HOOK_RUN_FIRST(int,force_authn,
+                            (request_rec *r), (r), DECLINED)
+AP_IMPLEMENT_HOOK_RUN_FIRST(int, remote_is_ssl,
                             (request_rec *r), (r), DECLINED)
 
 static int auth_internal_per_conf = 0;
@@ -2574,3 +2578,12 @@ AP_DECLARE(int) ap_is_initial_req(request_rec *r)
            && (r->prev == NULL);   /* otherwise, this is an internal redirect */
 }
 
+/*
+ * Is remote frontend connection SSL? Hooks return OK if yes, DONE if no
+ * If hook sequence returns DECLINED, we fall back to ap_ssl_conn_is_ssl()
+*/
+AP_DECLARE(int) ap_remote_is_ssl(request_rec *r)
+{
+    int result = ap_run_remote_is_ssl(r);
+    return (result == DECLINED) ? ap_ssl_conn_is_ssl(r->connection) : (result == OK);
+}

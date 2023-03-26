@@ -591,6 +591,25 @@ AP_DECLARE_HOOK(int,force_authn,(request_rec *r))
  */
 AP_DECLARE_HOOK(apr_status_t,dirwalk_stat,(apr_finfo_t *finfo, request_rec *r, apr_int32_t wanted))
 
+/**
+ * This hook allows modules that virtualize SSL state (i.e. mod_remoteip)
+ * based on the data from remote frontend to register their inquiry function
+ * for checking if a remote frontend connection is using SSL for the request.
+ * @param r The current request
+ * @return OK iff the frontend connection is using SSL, DONE if not,
+ *         DECLINED iff the state is undefined (let later modules decide).
+ * @ingroup hooks
+ */
+AP_DECLARE_HOOK(int,remote_is_ssl,(request_rec *r))
+
+/**
+ * Return != 0 iff the frontend connection for the request is encrypted with SSL.
+ * If there is no data from the hook (DECLINED), falls back to ap_ssl_conn_is_ssl()
+ * and so corresponds to the local connection security state (we are the frontend).
+ * @param r The current request
+ */
+AP_DECLARE(int) ap_remote_is_ssl(request_rec *r);
+
 AP_DECLARE(int) ap_location_walk(request_rec *r);
 AP_DECLARE(int) ap_directory_walk(request_rec *r);
 AP_DECLARE(int) ap_file_walk(request_rec *r);
