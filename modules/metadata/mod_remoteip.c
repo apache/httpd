@@ -670,7 +670,7 @@ static int remoteip_modify_request(request_rec *r)
                 const char *port;
 
                 if (!conn_config) {
-                    ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(10413) /* FIXME: how to properly set LOGNO in trunk patch? */
+                    ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(10413)
                                   "Remote IP per-connection data is missing, but required for RemotePortHeader! Aborting request.");
                     return HTTP_BAD_REQUEST;
                 }
@@ -691,7 +691,7 @@ static int remoteip_modify_request(request_rec *r)
                 const char *proto;
 
                 if (!conn_config) {
-                    ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(10414) /* FIXME: how to properly set LOGNO in trunk patch? */
+                    ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(10414)
                                   "Remote IP per-connection data is missing, but required for RemoteProtoHeader! Aborting request.");
                     return HTTP_BAD_REQUEST;
                 }
