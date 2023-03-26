@@ -580,6 +580,11 @@ static int remoteip_modify_request(request_rec *r)
      */
     void *internal = NULL;
 
+    /* Avoid doing any work on internal subrequests or redirects */
+    if (r->main || r->prev) {
+        return DECLINED;
+    }
+
     /* No headers defined or results from our input filter */
     if (!conn_config && !config->header_name
         && !config->host_header_name && !config->port_header_name
