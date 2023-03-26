@@ -2190,6 +2190,129 @@ AP_DECLARE(char *) ap_escape_html2(apr_pool_t *p, const char *s, int toasc)
     x[j] = '\0';
     return x;
 }
+
+/**
+ * tries to convert the utf-8 encoded byte sequence pointed to by idx
+ * into a Unicode code point
+ *
+ * returns
+ *     number of bytes consumed, if valid utf-8 (1, 2, 3 or 4 bytes)
+ *     or  0 if idx is invalid
+ *     or -1 if byte sequence pointed to by idx is not valid utf-8
+ *
+ * the target code point cp is only updated in case of a valid utf-8 byte
+ * sequence
+ */
+static int utf8_next_code_point(const char* string, int idx, apr_uint32_t *cp)
+{
+    apr_uint32_t code_point = 0;
+    int len = 0;
+
+    int sl = strlen(string);
+    if(idx < 0 || idx >= sl)
+        return 0;
+
+    unsigned char c = string[idx];
+    int expect_more_bytes = 0;
+    if((c & 0b11110000) == 0b11110000) { // 4 byte utf-8
+        code_point = c & 0b00000111;
+        code_point <<= 3;
+        expect_more_bytes = 3;
+        len++;
+    } else if((c & 0b11100000) == 0b11100000) { // 3 byte utf-8
+        code_point = c & 0b00001111;
+        code_point <<= 4;
+        expect_more_bytes = 2;
+        len++;
+    } else if((c & 0b11000000) == 0b11000000) { // 2 byte utf-8
+        code_point = c & 0b00011111;
+        code_point <<= 5;
+        expect_more_bytes = 1;
+        len++;
+    } else if((c & 0b10000000) == 0b10000000) { // 1 byte utf-8 continuation
+        // this is an actual error, probably wrong idx
+        // idx did point to a byte which looks like an utf-8 1 byte continuation
+        return -1;
+    } else if(c < 0x80) { // 1 byte utf-8
+        code_point = c;
+        expect_more_bytes = 0;
+        len++;
+    }
+
+    while(expect_more_bytes > 0) {
+        if(++idx >= sl) break;
+        c = string[idx];
+        if((c & 0b10000000) == 0b10000000) { // 1 byte utf-8 continuation
+            c = c & 0b00111111;
+            code_point |= c;
+        } else {
+            // unexpected byte sequence, error
+            return -1;
+        }
+
+        expect_more_bytes--;
+        len++;
+
+        if(expect_more_bytes > 0) {
+            code_point <<= 6;
+        }
+    }
+
+    *cp = code_point;
+    return len;
+}
+
+AP_DECLARE(char *) ap_escape_json(apr_pool_t *p, const char *string)
+{
+    apr_uint32_t code_point;
+    int str_idx = 0;
+    int cp_len = utf8_next_code_point(string, str_idx, &code_point);
+    apr_size_t escapes = 0, str_len = strlen(string);
+
+    if (!string) {
+        return NULL;
+    }
+
+    while(cp_len > 0) {
+        if(code_point  < 0x20 || // iscntrl
+           code_point == 0x22 || // == '"'
+           code_point == 0x5c) { // == '\\'
+           escapes++;
+        }
+
+        str_idx += cp_len;
+        cp_len = utf8_next_code_point(string, str_idx, &code_point);
+    }
+
+    if(escapes == 0) {
+        return apr_pmemdup(p, string, str_len + 1);
+    }
+
+    struct iovec strcats[str_len];
+    apr_size_t isc = 0;
+
+    str_idx = 0;
+    cp_len = utf8_next_code_point(string, str_idx, &code_point);
+
+    while(cp_len > 0) {
+        // unescaped = %x20-21 / %x23-5B / %x5D-10FFFF
+        if(code_point  < 0x20 || // iscntrl
+           code_point == 0x22 || // == '"'
+           code_point == 0x5c) { // == '\\'
+            strcats[isc].iov_base = apr_psprintf(p, "\\u%04x", code_point);
+            strcats[isc].iov_len = strlen(strcats[isc].iov_base);
+        } else {
+            strcats[isc].iov_base = (void*) string + str_idx;
+            strcats[isc].iov_len = cp_len;
+        }
+
+        isc++;
+        str_idx += cp_len;
+        cp_len = utf8_next_code_point(string, str_idx, &code_point);
+    }
+
+    return apr_pstrcatv(p, strcats, isc, NULL);
+}
 AP_DECLARE(char *) ap_escape_logitem(apr_pool_t *p, const char *str)
 {
     char *ret;

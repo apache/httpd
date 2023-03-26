@@ -1634,128 +1634,6 @@ static ap_log_writer *ap_log_set_writer(ap_log_writer *handle)
     return old;
 }
 
-/**
- * tries to convert the utf-8 encoded byte sequence pointed to by idx
- * into a Unicode code point
- *
- * returns
- *     number of bytes consumed, if valid utf-8 (1, 2, 3 or 4 bytes)
- *     or  0 if idx is invalid
- *     or -1 if byte sequence pointed to by idx is not valid utf-8
- *
- * the target code point cp is only updated in case of a valid utf-8 byte
- * sequence
- */
-static int utf8_next_code_point(const char* string, int idx, apr_uint32_t *cp)
-{
-    apr_uint32_t code_point = 0;
-    int len = 0;
-
-    int sl = strlen(string);
-    if(idx < 0 || idx >= sl)
-        return 0;
-
-    unsigned char c = string[idx];
-    int expect_more_bytes = 0;
-    if((c & 0b11110000) == 0b11110000) { // 4 byte utf-8
-        code_point = c & 0b00000111;
-        code_point <<= 3;
-        expect_more_bytes = 3;
-        len++;
-    } else if((c & 0b11100000) == 0b11100000) { // 3 byte utf-8
-        code_point = c & 0b00001111;
-        code_point <<= 4;
-        expect_more_bytes = 2;
-        len++;
-    } else if((c & 0b11000000) == 0b11000000) { // 2 byte utf-8
-        code_point = c & 0b00011111;
-        code_point <<= 5;
-        expect_more_bytes = 1;
-        len++;
-    } else if((c & 0b10000000) == 0b10000000) { // 1 byte utf-8 continuation
-        // this is an actual error, probably wrong idx
-        // idx did point to a byte which looks like an utf-8 1 byte continuation
-        return -1;
-    } else if(c < 0x80) { // 1 byte utf-8
-        code_point = c;
-        expect_more_bytes = 0;
-        len++;
-    }
-
-    while(expect_more_bytes > 0) {
-        if(++idx >= sl) break;
-        c = string[idx];
-        if((c & 0b10000000) == 0b10000000) { // 1 byte utf-8 continuation
-            c = c & 0b00111111;
-            code_point |= c;
-        } else {
-            // unexpected byte sequence, error
-            return -1;
-        }
-
-        expect_more_bytes--;
-        len++;
-
-        if(expect_more_bytes > 0) {
-            code_point <<= 6;
-        }
-    }
-
-    *cp = code_point;
-    return len;
-}
-
-/* see https://www.rfc-editor.org/rfc/rfc8259#section-7 */
-static int json_needs_encoding(const char* string)
-{
-    apr_uint32_t code_point;
-    int idx = 0;
-    int len = utf8_next_code_point(string, idx, &code_point);
-
-    while(len > 0) {
-        if(code_point  < 0x20 ||
-           code_point == 0x22 ||
-           code_point == 0x5c) {
-            return 1; // true, this json utf-8 string, needs encoding
-        }
-
-        idx += len;
-        len = utf8_next_code_point(string, idx, &code_point);
-    }
-
-    return 0;
-}
-
-static const char* json_encode(apr_pool_t *p, const char* utf8_string_to_encode)
-{
-    apr_uint32_t code_point;
-
-    struct iovec strcats[strlen(utf8_string_to_encode)];
-    apr_size_t isc = 0;
-
-    int idx = 0;
-    int len = utf8_next_code_point(utf8_string_to_encode, idx, &code_point);
-
-    while(len > 0) {
-        // unescaped = %x20-21 / %x23-5B / %x5D-10FFFF
-        if(code_point  < 0x20 ||
-           code_point == 0x22 ||
-           code_point == 0x5c) {
-            strcats[isc].iov_base = apr_psprintf(p, "\\u%04x", code_point);
-            strcats[isc].iov_len = strlen(strcats[isc].iov_base);
-        } else {
-            strcats[isc].iov_base = (void*) utf8_string_to_encode + idx;
-            strcats[isc].iov_len = len;
-        }
-
-        isc++;
-        idx += len;
-        len = utf8_next_code_point(utf8_string_to_encode, idx, &code_point);
-    }
-
-    return apr_pstrcatv(p, strcats, isc, NULL);
-}
-
 static void add_iovec_str(struct iovec *iv, const char *str)
 {
     iv->iov_base = (void*) str;
@@ -1790,12 +1668,7 @@ static apr_status_t ap_json_log_writer( request_rec *r,
 
         attribute_name = apr_hash_get(json_hash, items[i].tag, APR_HASH_KEY_STRING );
         if(!attribute_name) {
-            attribute_name = items[i].tag; // use tag as attribute name as fallback
-
-            // TODO: do we really needs to check for json string encoding for tags?
-            if(json_needs_encoding(attribute_name)) {
-                attribute_name = json_encode(r->pool, attribute_name);
-            }
+            attribute_name = ap_escape_json(r->pool, items[i].tag); // use tag as attribute name as fallback
         }
 
         add_iovec_str(&strcats[isc++], "\"");
@@ -1803,19 +1676,13 @@ static apr_status_t ap_json_log_writer( request_rec *r,
 
         // process any arguemnts as attribute name extension
         if(items[i].arg != NULL && strlen(items[i].arg) > 0) {
-            attribute_name = items[i].arg;
-            if(json_needs_encoding(attribute_name)) {
-                attribute_name = json_encode(r->pool, attribute_name);
-            }
+            attribute_name = ap_escape_json(r->pool, items[i].arg);
             add_iovec_str(&strcats[isc++], " ");
             add_iovec_str(&strcats[isc++], attribute_name);
         }
         add_iovec_str(&strcats[isc++], "\":\"");
 
-        attribute_value = strs[i];
-        if(json_needs_encoding(attribute_value)) {
-            attribute_value = json_encode(r->pool, attribute_value);
-        }
+        attribute_value = ap_escape_json(r->pool, strs[i]);
         add_iovec_str(&strcats[isc++], attribute_value);
         add_iovec_str(&strcats[isc++], "\",");
     }
@@ -1951,11 +1818,7 @@ static apr_status_t ap_buffered_log_writer(request_rec *r,
 
 static void json_register_attribute(apr_pool_t *p, const char *tag, const char* attribute_name)
 {
-    if(json_needs_encoding(attribute_name)) {
-            attribute_name = json_encode(p, attribute_name);
-    }
-
-    apr_hash_set(json_hash, tag, strlen(tag), (const void *)attribute_name);
+    apr_hash_set(json_hash, tag, strlen(tag), (const void *)ap_escape_json(p, attribute_name));
 }
 
 static int log_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp)

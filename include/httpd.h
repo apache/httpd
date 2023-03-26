@@ -1869,6 +1869,14 @@ AP_DECLARE(char *) ap_escape_html2(apr_pool_t *p, const char *s, int toasc);
 AP_DECLARE(char *) ap_escape_logitem(apr_pool_t *p, const char *str);
 
 /**
+ * Escape a string for JSON (https://www.rfc-editor.org/rfc/rfc8259#section-7)
+ * @param p The pool to allocate from
+ * @param str The string to escape
+ * @return The escaped string
+ */
+AP_DECLARE(char *) ap_escape_json(apr_pool_t *p, const char *str);
+
+/**
  * Escape a string for logging into the error log (without a pool)
  * @param dest The buffer to write to
  * @param source The string to escape
