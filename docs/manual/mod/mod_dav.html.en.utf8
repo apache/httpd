@@ -54,6 +54,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#dav">Dav</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#davdepthinfinity">DavDepthInfinity</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#davmintimeout">DavMinTimeout</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#davmsext">DavMSext</a></li>
 </ul>
 <h3>Bugfix checklist</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd changelog</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_dav">Known issues</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_dav">Report a bug</a></li></ul><h3>See also</h3>
 <ul class="seealso">
@@ -246,6 +247,30 @@ a DAV resource</td></tr>
     DavMinTimeout 600
 &lt;/Location&gt;</pre>
 </div>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="DavMSext" id="DavMSext">DavMSext</a> <a name="davmsext" id="davmsext">Directive</a> <a title="Permanent link" href="#davmsext" class="permalink">&para;</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enable support for Microsoft extensions</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>DavMSext None | [+|-]WDV | All</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>DavMSext None</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_dav</td></tr>
+</table>
+    <p>The <code class="directive">DavMSext</code> directive enables support
+    for Microsoft extensions. Possible values are:
+        <ul>
+            <li><code>None</code> No Microsoft extension is enabled.</li>
+            <li><code>WDV</code> Enable support for
+            <a href="https://learn.microsoft.com/en-us/openspecs/windows_protocols/ms-wdv">MS-WDV</a>.
+            </li>
+            <li><code>All</code> All implemented Microsoft extension 
+            are enabled. Currently, this is means <code>WDV</code> as
+            it is the only Microsoft extension implemented.</li>
+        </ul>
+    </p>
 
 </div>
 </div>

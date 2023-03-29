@@ -55,6 +55,7 @@ documents via le web (<a href="http://www.webdav.org/">WebDAV</a>)</td></tr>
 <li><img alt="" src="../images/down.gif" /> <a href="#dav">Dav</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#davdepthinfinity">DavDepthInfinity</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#davmintimeout">DavMinTimeout</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#davmsext">DavMSext</a></li>
 </ul>
 <h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_dav">Problèmes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_dav">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
 <ul class="seealso">
@@ -267,6 +268,31 @@ verrou sur une ressource DAV</td></tr>
     DavMinTimeout 600
 &lt;/Location&gt;</pre>
 </div>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="davmsext" id="davmsext">Directive</a> <a name="DavMSext" id="DavMSext">DavMSext</a> <a title="Lien permanent" href="#davmsext" class="permalink">&para;</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Active les extensions Microsoft</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>DavMSext None | [+|-]WDV | All</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>DavMSext None</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_dav</td></tr>
+</table>
+    <p>La directive <code class="directive">DavMSext</code> active le support 
+    des extensions Microsoft. Les veleurs possibles sont:
+        <ul>
+            <li><code>None</code> Aucune extension Microsoft n'est active.</li>
+            <li><code>WDV</code> Active le support de
+            <a href="https://learn.microsoft.com/en-us/openspecs/windows_protocols/ms-wdv">MS-WDV</a>.
+            </li>
+            <li><code>All</code> Active toutes les extensions Microsoft 
+            implémentées. Actuellement, c'est un synonyme de
+            <code>WDV</code>, qui est la seule extension Microsoft
+            implémentéese.</li>
+        </ul>
+    </p>
 
 </div>
 </div>

@@ -244,6 +244,30 @@ a DAV resource</description>
 </usage>
 </directivesynopsis>
 
+<directivesynopsis>
+<name>DavMSext</name>
+<description>Enable support for Microsoft extensions</description>
+<syntax>DavMSext None | [+|-]WDV | All</syntax>
+<default>DavMSext None</default>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context></contextlist>
+
+<usage>
+    <p>The <directive>DavMSext</directive> directive enables support
+    for Microsoft extensions. Possible values are:
+        <ul>
+            <li><code>None</code> No Microsoft extension is enabled.</li>
+            <li><code>WDV</code> Enable support for
+            <a href="https://learn.microsoft.com/en-us/openspecs/windows_protocols/ms-wdv">MS-WDV</a>.
+            </li>
+            <li><code>All</code> All implemented Microsoft extension 
+            are enabled. Currently, this is means <code>WDV</code> as
+            it is the only Microsoft extension implemented.</li>
+        </ul>
+    </p>
+</usage>
+</directivesynopsis>
+
 </modulesynopsis>
 
 

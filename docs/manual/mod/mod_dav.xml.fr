@@ -263,6 +263,30 @@ Infinity</description>
 </usage>
 </directivesynopsis>
 
+<directivesynopsis>
+<name>DavMSext</name>
+<description>Active les extensions Microsoft</description>
+<syntax>DavMSext None | [+|-]WDV | All</syntax>
+<default>DavMSext None</default>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context></contextlist>
+
+<usage>
+    <p>La directive <directive>DavMSext</directive> active le support 
+    des extensions Microsoft. Les veleurs possibles sont:
+        <ul>
+            <li><code>None</code> Aucune extension Microsoft n'est active.</li>
+            <li><code>WDV</code> Active le support de
+            <a href="https://learn.microsoft.com/en-us/openspecs/windows_protocols/ms-wdv">MS-WDV</a>.
+            </li>
+            <li><code>All</code> Active toutes les extensions Microsoft 
+            impl&eacute;ment&eacute;es. Actuellement, c'est un synonyme de
+            <code>WDV</code>, qui est la seule extension Microsoft
+            impl&eacute;ment&eacute;e.</li>
+        </ul>
+    </p>
+</usage>
+</directivesynopsis>
 </modulesynopsis>
 
 
