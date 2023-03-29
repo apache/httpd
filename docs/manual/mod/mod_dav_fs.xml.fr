@@ -134,5 +134,31 @@ du serveur HTTP Apache.</compatibility>
 </usage>
 </directivesynopsis>
 
+<directivesynopsis>
+<name>DavQuota</name>
+<description>D&eacute;finit un quota</description>
+<syntax>DavQuota Off | None | #octets</syntax>
+<default>DavQuota Off</default>
+<contextlist><context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+<context>.htaccess</context>
+</contextlist>
+
+<usage>
+    <p><directive>DavQuota</directive> fixe un quota disque en
+    octets pour un r&eacute;pertoire, tel que sp&eacute;cifi&eacute;
+    par le RFC 4331. Deux valeurs sp&eacute;ciales sont d&eacute;finies:
+        <ul>
+            <li><code>Off</code> Les quotas sont d&eacute;sactiv&eacutes;s.</li>
+            <li><code>None</code> Aucun quota n'est d&eacute;fini, mais 
+            les espaces disque utilis&eacute;s et disponibles sont 
+            indiqu&eacute;s aux clients qui en font la demande.</li>
+        </ul>
+    </p>
+</usage>
+</directivesynopsis>
+
+
 </modulesynopsis>
 
