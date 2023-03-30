@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.57
 
+  *) mod_rewrite: Add "BCTLS" and "BNE" RewriteRule flags. Re-allow encoded
+     characters on redirections without the "NE" flag. 
+     [Yann Ylavic, Eric Covener]
+
   *) mod_proxy: Fix double encoding of the uri-path of the request forwarded
      to the origin server, when using mapping=encoded|servlet.  [Yann Ylavic]
 

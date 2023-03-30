@@ -113,11 +113,13 @@ the entire third argument of <directive module="mod_rewrite">RewriteRule</direct
 and the space must not be the last character in the list.</p>
 
 <highlight language="config">
-# Escape spaces and question marks. 
+# Escape spaces and question marks.  The quotes around the final argument 
+# are required when a space is included.
 RewriteRule "^search/(.*)$" "/search.php?term=$1" "[B= ?]"
 </highlight>
 
-
+<p>To limit the characters escaped this way, see <a href="flag_bne">flag_bne</a>
+and <a href="flag_bctls">flag_bctls</a></p>
 </section>
 
 <section id="flag_bnp"><title>BNP|backrefnoplus (don't escape space to +)</title>
@@ -126,8 +128,43 @@ module="mod_rewrite">RewriteRule</directive> to escape the space character
 in a backreference to %20 rather than '+'. Useful when the backreference
 will be used in the path component rather than the query string.</p>
 
-<p>This flag is available in version 2.4.26 and later.</p>
+<highlight language="config">
+# Escape spaces to %20 in the path instead of + as used in form submission via
+# the query string
+RewriteRule "^search/(.*)$" "/search.php/$1" "[B,BNP]"
+</highlight>
 
+
+<p>This flag is available in version 2.4.26 and later.</p>
+</section>
+
+<section id="flag_bctls"><title>BCTLS</title>
+<p>The [BCTLS] flag is similar to the [B] flag, but only escapes
+control characters and the space character. This is the same set of
+characters rejected when they are copied into the query string unencoded.
+</p>
+
+<highlight language="config">
+# Escape control characters and spaces
+RewriteRule "^search/(.*)$" "/search.php/$1" "[BCTLS]"
+</highlight>
+
+<p>This flag is available in version 2.4.57 and later.</p>
+
+</section>
+
+<section id="flag_bne"><title>BNE</title>
+<p>The list of characters in [BNE=...] are treated as exclusions to the
+characters of the [B] or [BCTLS] flags. The listed characters will not be
+escaped.
+</p>
+
+<highlight language="config">
+# Escape the default characters, but leave /
+RewriteRule "^search/(.*)$" "/search.php?term=$1" "[B,BNE=/]"
+</highlight>
+
+<p>This flag is available in version 2.4.57 and later.</p>
 </section>
 
 <section id="flag_c"><title>C|chain</title>
@@ -211,7 +248,7 @@ attribute is set to the specified value.  Typical values are <code>None</code>,
 
 <highlight language="config">
 RewriteEngine On
-RewriteRule "^/index\.html" "-" [CO=frontdoor:yes:.example.com:1440:/]
+RewriteRule   "^/index\.html"   "-" [CO=frontdoor:yes:.example.com:1440:/]
 </highlight>
 
 <p>In the example give, the rule doesn't rewrite the request.
@@ -298,8 +335,8 @@ environment variable is used to exclude those requests from the access
 log.</p>
 
 <highlight language="config">
-RewriteRule "\.(png|gif|jpg)$" "-" [E=image:1]
-CustomLog "logs/access_log" combined env=!image
+RewriteRule "\.(png|gif|jpg)$"   "-" [E=image:1]
+CustomLog   "logs/access_log"    combined env=!image
 </highlight>
 
 <p>Note that this same effect can be obtained using <directive
@@ -326,7 +363,7 @@ allows more flexibility in assigning a Forbidden status.</p>
 downloaded from your server.</p>
 
 <highlight language="config">
-RewriteRule "\.exe" "-" [F]
+RewriteRule "\.exe"   "-" [F]
 </highlight>
 
 <p>This example uses the "-" syntax for the rewrite target, which means
@@ -347,7 +384,7 @@ longer available.</p>
 rewrite target when using the [G] flag:</p>
 
 <highlight language="config">
-RewriteRule "oldproduct" "-" [G,NC]
+RewriteRule "oldproduct"   "-" [G,NC]
 </highlight>
 
 <p>When using [G], an [L] is implied - that is, the response is returned
@@ -361,7 +398,7 @@ handler. For example, one might use this to force all files without a
 file extension to be parsed by the php handler:</p>
 
 <highlight language="config">
-RewriteRule "!\." "-" [H=application/x-httpd-php]
+RewriteRule "!\."  "-" [H=application/x-httpd-php]
 </highlight>
 
 <p>
@@ -429,8 +466,8 @@ module="mod_rewrite">RewriteRule</directive> will be skipped.</p>
 
 <highlight language="config">
 RewriteBase "/"
-RewriteCond "%{REQUEST_URI}" "!=/index.php"
-RewriteRule "^(.*)" "/index.php?req=$1" [L,PT]
+RewriteCond "%{REQUEST_URI}" !=/index.php
+RewriteRule "^(.*)"          "/index.php?req=$1" [L,PT]
 </highlight>
 </section>
 
@@ -454,12 +491,12 @@ pattern still matches (i.e., while the URI still contains an
 <code>A</code>), perform this substitution (i.e., replace the
 <code>A</code> with a <code>B</code>).</p>
 
-<p>In 2.4.8 and later, this module returns an error after 32,000 iterations to
+<p>In 2.4.8 and later, this module returns an error after 10,000 iterations to
 protect against unintended looping.  An alternative maximum number of
 iterations can be specified by adding to the N flag.  </p>
 <highlight language="config">
 # Be willing to replace 1 character in each pass of the loop
-RewriteRule "(.+)[&gt;&lt;;]$" "$1" [N=64000]
+RewriteRule "(.+)[&gt;&lt;;]$" "$1" [N=32000]
 # ... or, give up if after 10 loops
 RewriteRule "(.+)[&gt;&lt;;]$" "$1" [N=10]
 </highlight>
@@ -717,20 +754,22 @@ URI in request' warnings.
 <p>The [S] flag is used to skip rules that you don't want to run. The
 syntax of the skip flag is [S=<em>N</em>], where <em>N</em> signifies
 the number of rules to skip (provided the <directive module="mod_rewrite">
-RewriteRule</directive> matches). This can be thought of as a <code>goto</code>
-statement in your rewrite ruleset. In the following example, we only want
-to run the <directive module="mod_rewrite">RewriteRule</directive> if the
-requested URI doesn't correspond with an actual file.</p>
+RewriteRule</directive> and any preceding <directive module="mod_rewrite">
+RewriteCond</directive> directives match). This can be thought of as a
+<code>goto</code> statement in your rewrite ruleset. In the following
+example, we only want to run the <directive module="mod_rewrite">
+RewriteRule</directive> if the requested URI doesn't correspond with an
+actual file.</p>
 
 <highlight language="config">
 # Is the request for a non-existent file?
-RewriteCond "%{REQUEST_FILENAME}" "!-f"
-RewriteCond "%{REQUEST_FILENAME}" "!-d"
+RewriteCond "%{REQUEST_FILENAME}" !-f
+RewriteCond "%{REQUEST_FILENAME}" !-d
 # If so, skip these two RewriteRules
-RewriteRule ".?" "-" [S=2]
+RewriteRule ".?"                  "-" [S=2]
 
-RewriteRule "(.*\.gif)" "images.php?$1"
-RewriteRule "(.*\.html)" "docs.php?$1"
+RewriteRule "(.*\.gif)"           "images.php?$1"
+RewriteRule "(.*\.html)"          "docs.php?$1"
 </highlight>
 
 <p>This technique is useful because a <directive
@@ -744,18 +783,18 @@ the then-clause becomes <code>skip=N</code>, where N is the
 number of rules in the else-clause:</p>
 <highlight language="config">
 # Does the file exist?
-RewriteCond "%{REQUEST_FILENAME}" "!-f"
-RewriteCond "%{REQUEST_FILENAME}" "!-d"
+RewriteCond "%{REQUEST_FILENAME}" !-f
+RewriteCond "%{REQUEST_FILENAME}" !-d
 # Create an if-then-else construct by skipping 3 lines if we meant to go to the &quot;else&quot; stanza.
-RewriteRule ".?" "-" [S=3]
+RewriteRule ".?"                  "-" [S=3]
 
 # IF the file exists, then:
-    RewriteRule "(.*\.gif)" "images.php?$1"
+    RewriteRule "(.*\.gif)"  "images.php?$1"
     RewriteRule "(.*\.html)" "docs.php?$1"
     # Skip past the &quot;else&quot; stanza.
-    RewriteRule ".?" "-" [S=1]
+    RewriteRule ".?"         "-" [S=1]
 # ELSE...
-    RewriteRule "(.*)" "404.php?file=$1"
+    RewriteRule "(.*)"       "404.php?file=$1"
 # END
 </highlight>
 
@@ -776,7 +815,7 @@ source code as plain text, if requested in a particular way:</p>
 
 <highlight language="config">
 # Serve .pl files as plain text
-RewriteRule "\.pl$" "-" [T=text/plain]
+RewriteRule "\.pl$"  "-" [T=text/plain]
 </highlight>
 
 <p>Or, perhaps, if you have a camera that produces jpeg images without
@@ -785,7 +824,7 @@ correct MIME type by virtue of their file names:</p>
 
 <highlight language="config">
 # Files with 'IMG' in the name are jpg images.
-RewriteRule "IMG" "-" [T=image/jpg]
+RewriteRule "IMG"  "-" [T=image/jpg]
 </highlight>
 
 <p>Please note that this is a trivial example, and could be better done
