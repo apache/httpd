@@ -91,9 +91,19 @@ static int uwsgi_canon(request_rec *r, char *url)
     else {
         path = ap_proxy_canonenc(r->pool, url, strlen(url), enc_path, 0,
                                  r->proxyreq);
+        if (!path) {
+            return HTTP_BAD_REQUEST;
+        }
     }
-    if (!path) {
-        return HTTP_BAD_REQUEST;
+    /*
+     * If we have a raw control character or a ' ' in nocanon path,
+     * correct encoding was missed.
+     */
+    if (path == url && *ap_scan_vchar_obstext(path)) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(10417)
+                      "To be forwarded path contains control "
+                      "characters or spaces");
+        return HTTP_FORBIDDEN;
     }
 
     r->filename =

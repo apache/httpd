@@ -109,20 +109,27 @@ static int proxy_balancer_canon(request_rec *r, char *url)
     else {
         path = ap_proxy_canonenc(r->pool, url, strlen(url), enc_path, 0,
                                  r->proxyreq);
+        if (!path) {
+            return HTTP_BAD_REQUEST;
+        }
         search = r->args;
     }
+    /*
+     * If we have a raw control character or a ' ' in nocanon path or
+     * r->args, correct encoding was missed.
+     */
+    if (path == url && *ap_scan_vchar_obstext(path)) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(10416)
+                      "To be forwarded path contains control "
+                      "characters or spaces");
+        return HTTP_FORBIDDEN;
+    }
     if (search && *ap_scan_vchar_obstext(search)) {
-        /*
-         * We have a raw control character or a ' ' in r->args.
-         * Correct encoding was missed.
-         */
          ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(10407)
                        "To be forwarded query string contains control "
                        "characters or spaces");
          return HTTP_FORBIDDEN;
     }
-    if (path == NULL)
-        return HTTP_BAD_REQUEST;
 
     r->filename = apr_pstrcat(r->pool, "proxy:" BALANCER_PREFIX, host,
             "/", path, (search) ? "?" : "", (search) ? search : "", NULL);
