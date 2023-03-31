@@ -279,7 +279,7 @@ static request_rec *my_ap_create_request(conn_rec *c)
 apr_bucket *h2_request_create_bucket(const h2_request *req, request_rec *r)
 {
     conn_rec *c = r->connection;
-    apr_table_t *headers = apr_table_copy(r->pool, req->headers);
+    apr_table_t *headers = apr_table_clone(r->pool, req->headers);
     const char *uri = req->path;
 
     AP_DEBUG_ASSERT(req->authority);
@@ -303,7 +303,7 @@ static void assign_headers(request_rec *r, const h2_request *req,
 {
     const char *cl;
 
-    r->headers_in = apr_table_copy(r->pool, req->headers);
+    r->headers_in = apr_table_clone(r->pool, req->headers);
     if (req->authority) {
         /* for internal handling, we have to simulate that :authority
          * came in as Host:, RFC 9113 ch. says that mismatches between

@@ -1,0 +1,2 @@
+  *) mod_http2: fixed a crash during connection termination. See PR 66539.
+     [Stefan Eissing]
