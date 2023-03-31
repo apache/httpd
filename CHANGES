@@ -1,6 +1,12 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.57
 
+  *) mod_http2: fixed a crash during connection termination. See PR 66539.
+     [Stefan Eissing]
+
+  *) mod_rewrite: Fix a 2.4.56 regression for substitutions ending
+     in a question mark. PR66547. [Eric Covener]
+
   *) mod_rewrite: Add "BCTLS" and "BNE" RewriteRule flags. Re-allow encoded
      characters on redirections without the "NE" flag. 
      [Yann Ylavic, Eric Covener]
