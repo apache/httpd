@@ -3866,6 +3866,7 @@ static const char *cmd_rewriterule(cmd_parms *cmd, void *in_dconf,
     if (*(a2_end-1) == '?') {
         /* a literal ? at the end of the unsubstituted rewrite rule */
         newrule->flags |= RULEFLAG_QSNONE;
+        *(a2_end-1) = '\0'; /* trailing ? has done its job */
     }
     else if (newrule->flags & RULEFLAG_QSDISCARD) {
         if (NULL == ap_strchr(newrule->output, '?')) {
