@@ -1,3 +1,0 @@
-  *) mod_proxy: Check before forwarding that a nocanon path has not been
-     rewritten with spaces during processing.  [Yann Ylavic]
-

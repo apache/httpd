@@ -1,6 +1,42 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) mod_http2: fixed a crash during connection termination. See PR 66539.
+     [Stefan Eissing]
+
+  *) mod_mime: Do not match the extention against possible query string
+     parameters in case ProxyPass was used with the nocanon option.
+     [Ruediger Pluem]
+
+  *) mod_proxy: In case that AllowEncodedSlashes is set to NoDecode do not
+     double encode encoded slashes in the URL sent by the reverse proxy to the
+     backend. [Ruediger Pluem]
+
+  *) mod_rewrite: Add BCTLS flag similar to B, but only escaping the characters
+     checked by 2.4.56 in the query string. [Eric Covener]
+
+  *) mod_md:
+     - Enabling ED25519 support and certificate transparency information when
+       building with libressl v3.5.0 and newer. Thanks to Giovanni Bechis.
+     - MDChallengeDns01 can now be configured for individual domains.
+       Thanks to Jérôme Billiras (@bilhackmac) for the initial PR.
+     - Fixed a bug found by Jérôme Billiras (@bilhackmac) that caused the challenge
+       teardown not being invoked as it should.
+     [Stefan Eissing]
+
+  *) core: Add formats %{z} and %{strftime-format} to ErrorLogFormat, and make
+     sure that if the format is configured early enough it applies to every log
+     line.  PR 62161.  [Yann Ylavic]
+
+  *) mod_proxy: Check before forwarding that a nocanon path has not been
+     rewritten with spaces during processing.  [Yann Ylavic]
+
+  *) mod_rewrite: Re-allow some proxy and redirect substitutions flagged as
+     403 errors in 2.4.56. [Eric Covener]
+
+  *) mod_rewrite: Fix a 2.4.56 regression for substitutions ending
+     in a question mark. [Eric Covener]
+
   *) Add a SSL_SHARED_CIPHER environment variable with the list of
      client/server permitted ciphers. [Dirk-Willem van Gulik]
 

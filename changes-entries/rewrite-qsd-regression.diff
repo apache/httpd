@@ -1,3 +1,0 @@
-  *) mod_rewrite: Fix a 2.4.56 regression for substitutions ending
-     in a question mark. [Eric Covener]
-

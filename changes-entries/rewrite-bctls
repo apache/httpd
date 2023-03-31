@@ -1,3 +1,0 @@
-  *) mod_rewrite: Add BCTLS flag similar to B, but only escaping the characters
-     checked by 2.4.56 in the query string. [Eric Covener]
-
