@@ -151,13 +151,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_http2: fixed a crash during connection termination. See PR 66539.
-     Trunk version of patch:
-        https://svn.apache.org/r1908691
-     Backport version for 2.4.x of patch:
-     2.4.x patch: svn merge -c 1908691 ^/httpd/httpd/trunk .
-     +1: icing, rpluem, covener
-
   *) mod_rewrite: fix a 2.4.56 regression for substitutions that end in '?'.
     Trunk version of patch:
       http://svn.apache.org/viewvc?view=revision&revision=1908813
