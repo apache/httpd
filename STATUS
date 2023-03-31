@@ -158,6 +158,15 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c 1908691 ^/httpd/httpd/trunk .
      +1: icing, rpluem, covener
 
+  *) mod_rewrite: fix a 2.4.56 regression for substitutions that end in '?'.
+    Trunk version of patch:
+      http://svn.apache.org/viewvc?view=revision&revision=1908813
+    Backport to 2.4.x:
+        svn merge -c 1908813 ^/httpd/httpd/trunk .
+    +1: covener, ylavic, rpluem
+    rpluem says: I guess when backporting you will add a changelog entry
+     pointing to PR 66547
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -206,13 +215,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/351.diff
      Can be applied via apply_backport_pr.sh 351
      +1: rpluem, ylavic,
-
-  *) mod_rewrite: fix a 2.4.56 regression for substitutions that end in '?'.
-    Trunk version of patch:
-      http://svn.apache.org/viewvc?view=revision&revision=1908813
-    Backport to 2.4.x:
-        svn merge -c 1908813 ^/httpd/httpd/trunk .
-    +1: covener, ylavic,
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
