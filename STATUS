@@ -151,14 +151,30 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_rewrite: fix a 2.4.56 regression for substitutions that end in '?'.
-    Trunk version of patch:
-      http://svn.apache.org/viewvc?view=revision&revision=1908813
-    Backport to 2.4.x:
-        svn merge -c 1908813 ^/httpd/httpd/trunk .
-    +1: covener, ylavic, rpluem
-    rpluem says: I guess when backporting you will add a changelog entry
-     pointing to PR 66547
+  *) mod_proxy: In case that AllowEncodedSlashes is set to NoDecode do not
+     double encode encoded slashes in the URL sent by the reverse proxy to the
+     backend.
+     Trunk version of patch:
+        https://svn.apache.org/r1908341
+        https://svn.apache.org/r1908628
+        https://svn.apache.org/r1908629
+     Backport version for 2.4.x of patch:
+       https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/351.diff
+     Can be applied via apply_backport_pr.sh 351
+     +1: rpluem, ylavic, covener
+
+  *) mod_proxy: Check before forwarding that a nocanon path has not been
+                rewritten with spaces during processing.
+     trunk patch: https://svn.apache.org/r1908827
+                  https://svn.apache.org/r1908838
+     2.4.x patch: svn merge -c 1908827,1908838 ^/httpd/httpd/trunk .
+                  (convenience gh diff/PR below, but missing CHANGES entry..)
+                  https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/354.diff
+                  https://github.com/apache/httpd/pull/354
+     +1: ylavic, rpluem, covener
+     rpluem says: svn merge should work fine once the backport above this one
+     is in.
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -196,30 +212,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/350.diff
                   https://github.com/apache/httpd/pull/350
      +1: ylavic, rpluem,
-
-  *) mod_proxy: In case that AllowEncodedSlashes is set to NoDecode do not
-     double encode encoded slashes in the URL sent by the reverse proxy to the
-     backend.
-     Trunk version of patch:
-        https://svn.apache.org/r1908341
-        https://svn.apache.org/r1908628
-        https://svn.apache.org/r1908629
-     Backport version for 2.4.x of patch:
-       https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/351.diff
-     Can be applied via apply_backport_pr.sh 351
-     +1: rpluem, ylavic,
-
-  *) mod_proxy: Check before forwarding that a nocanon path has not been
-                rewritten with spaces during processing.
-     trunk patch: https://svn.apache.org/r1908827
-                  https://svn.apache.org/r1908838
-     2.4.x patch: svn merge -c 1908827,1908838 ^/httpd/httpd/trunk .
-                  (convenience gh diff/PR below, but missing CHANGES entry..)
-                  https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/354.diff
-                  https://github.com/apache/httpd/pull/354
-     +1: ylavic, rpluem
-     rpluem says: svn merge should work fine once the backport above this one
-     is in.
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
