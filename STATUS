@@ -216,6 +216,16 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      Can be applied via apply_backport_pr.sh 351
      +1: rpluem, ylavic,
 
+  *) mod_proxy: Check before forwarding that a nocanon path has not been
+                rewritten with spaces during processing.
+     trunk patch: https://svn.apache.org/r1908827
+                  https://svn.apache.org/r1908838
+     2.4.x patch: svn merge -c 1908827,1908838 ^/httpd/httpd/trunk .
+                  (convenience gh diff/PR below, but missing CHANGES entry..)
+                  https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/354.diff
+                  https://github.com/apache/httpd/pull/354
+     +1: ylavic,
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
