@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.57
 
+  *) mod_proxy: Check before forwarding that a nocanon path has not been
+     rewritten with spaces during processing.  [Yann Ylavic]
+
   *) mod_proxy: In case that AllowEncodedSlashes is set to NoDecode do not
      double encode encoded slashes in the URL sent by the reverse proxy to the
      backend. [Ruediger Pluem]
