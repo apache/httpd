@@ -224,7 +224,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   (convenience gh diff/PR below, but missing CHANGES entry..)
                   https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/354.diff
                   https://github.com/apache/httpd/pull/354
-     +1: ylavic,
+     +1: ylavic, rpluem
+     rpluem says: svn merge should work fine once the backport above this one
+     is in.
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
