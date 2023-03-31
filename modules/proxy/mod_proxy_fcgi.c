@@ -102,9 +102,20 @@ static int proxy_fcgi_canon(request_rec *r, char *url)
 
         path = ap_proxy_canonenc_ex(r->pool, url, strlen(url), enc_path, flags,
                                     r->proxyreq);
+        if (!path) {
+            return HTTP_BAD_REQUEST;
+        }
     }
-    if (path == NULL)
-        return HTTP_BAD_REQUEST;
+    /*
+     * If we have a raw control character or a ' ' in nocanon path,
+     * correct encoding was missed.
+     */
+    if (path == url && *ap_scan_vchar_obstext(path)) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(10414)
+                      "To be forwarded path contains control "
+                      "characters or spaces");
+        return HTTP_FORBIDDEN;
+    }
 
     r->filename = apr_pstrcat(r->pool, "proxy:fcgi://", host, sport, "/",
                               path, NULL);
