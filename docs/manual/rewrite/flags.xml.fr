@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1908303 -->
+<!-- English Revision: 1908814 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -133,6 +133,9 @@ module="mod_rewrite">RewriteRule</directive> et que l'espace ne doit pas
 RewriteRule "^search/(.*)$" "/search.php?term=$1" "[B= ?]"
 </highlight>
 
+<p>Pour définir la liste des caractères à échapper de cette manière, voir <a
+href="flag_bne">flag_bne</a> et <a href="flag_bctls">flag_bctls</a></p>
+
 </section>
 
 <section id="flag_bnp"><title>BNP|backrefnoplus (ne pas échapper
@@ -143,8 +146,45 @@ espace en %20 au lieu de '+' dans les références arrières. Ceci s'avère
 utile lorsque la référence arrière est utilisée dans la partie chemin,
 et non dans les paramètres de la requête.</p>
 
+<highlight language="config">
+# Échappe le caractère espace en %20 dans le chemin au lieu de + comme dans la
+# soumission de formulaire à l'aide de la chaîne de paramètres
+RewriteRule "^search/(.*)$" "/search.php/$1" "[B,BNP]"
+</highlight>
+
 <p>Ce drapeau est disponible à partir de la version 2.4.26 du serveur HTTP
 Apache.</p>
+
+<section id="flag_bctls"><title>BCTLS</title>
+<p>Le drapeau [BCTLS] est similaire à [B], à la différence que seuls les espaces
+et les caractères de contrôle sont échappés. Il s'agit du même jeu de caractères
+rejetés lorsqu'ils sont copiés dans la chaîne de paramètres non codée.
+</p>
+
+<highlight language="config">
+# Échappe les espaces et les caractères de contrôle
+RewriteRule "^search/(.*)$" "/search.php/$1" "[BCTLS]"
+</highlight>
+
+<p>Ce drapeau est disponible à partir de la version 2.4.57 du serveur HTTP
+Apache.</p>
+
+</section>
+
+<section id="flag_bne"><title>BNE</title>
+<p>Les caractères listés dans [BNE=...] sont exclus des listes de caractères
+correspondant aux drapeaux [B] ou [BCTLS]. Ils ne seront donc pas échappés.
+</p>
+
+<highlight language="config">
+# Échappe les caractères par défaut, sauf /
+RewriteRule "^search/(.*)$" "/search.php?term=$1" "[B,BNE=/]"
+</highlight>
+ 
+<p>Ce drapeau est disponible à partir de la version 2.4.57 du serveur HTTP
+Apache.</p>
+
+</section>
 
 </section>
 
@@ -232,7 +272,7 @@ partir de la version 2.4.47 du serveur HTTP Apache.</dd>
 
 <highlight language="config">
 RewriteEngine On
-RewriteRule "^/index\.html" "-" [CO=frontdoor:yes:.example.org:1440:/]
+RewriteRule   "^/index\.html"   "-" [CO=frontdoor:yes:.example.com:1440:/]
 </highlight>
 
 <p>Dans l'exemple ci-dessus, la règle ne réécrit
@@ -320,10 +360,10 @@ avec une valeur de '1' si l'URI de la requête correspond à un fichier
 image. Cette variable d'environnement est ensuite utilisée pour exclure
 une telle requête du journal des accès.</p>
 
-<example>
-RewriteRule "\.(png|gif|jpg)" "-" [E=image:1]<br />
-CustomLog "logs/access_log" combined env=!image
-</example>
+<highlight language="config">
+RewriteRule "\.(png|gif|jpg)$"   "-" [E=image:1]
+CustomLog   "logs/access_log"    combined env=!image
+</highlight>
 
 <p>Notez que le même effet peut être obtenu à l'aide de la directive
 <directive module="mod_setenvif">SetEnvIf</directive>. Cette technique
@@ -350,7 +390,9 @@ Forbidden.</p>
 <p>La règle suivante va interdire la téléchargement de fichiers
 <code>.exe</code> depuis votre serveur.</p>
 
-<highlight language="config">RewriteRule "\.exe" "-" [F]</highlight>
+<highlight language="config">
+RewriteRule "\.exe"   "-" [F]
+</highlight>
 
 <p>Cet exemple utilise la syntaxe "-" pour la cible de réécriture, ce
 qui signifie que l'URI de la requête n'est pas modifié. Il n'y a aucune
@@ -370,7 +412,9 @@ disponible auparavant ne l'est plus actuellement.</p>
 <p>Comme dans le cas du drapeau [F], on utilise en général la syntaxe
 "-" pour la cible de réécriture lorsqu'on utilise le drapeau [G] :</p>
 
-<highlight language="config">RewriteRule "oldproduct" "-" [G,NC]</highlight>
+<highlight language="config">
+RewriteRule "oldproduct"   "-" [G,NC]
+</highlight>
 
 <p>Lorsqu'on utilise [G], [L] est implicite - c'est à dire que la
 réponse est renvoyée immédiatement, et aucune autre règle n'est évaluée.</p>
@@ -383,7 +427,9 @@ spécifié. Par exemple, on peut utiliser ce drapeau pour forcer
 l'interprétation de tous les fichiers sans extension par le gestionnaire
 php :</p>
 
-<highlight language="config">RewriteRule "!\." "-" [H=application/x-httpd-php]</highlight>
+<highlight language="config">
+RewriteRule "!\."  "-" [H=application/x-httpd-php]
+</highlight>
 
 <p>
 L'expression rationnelle ci-dessus - <code>!\.</code> - correspond à
@@ -459,8 +505,8 @@ module="mod_rewrite">RewriteRule</directive> sera sautée.</p>
 
 <highlight language="config">
 RewriteBase "/"
-RewriteCond "%{REQUEST_URI}" "!=/index.php"
-RewriteRule "^(.*)" "/index.php?req=$1" [L,PT]
+RewriteCond "%{REQUEST_URI}" !=/index.php
+RewriteRule "^(.*)"          "/index.php?req=$1" [L,PT]
 </highlight>
 </section>
 
@@ -487,11 +533,11 @@ effectuer la substitution (c'est à dire, remplacer le <code>A</code> par
 un <code>B</code>).</p>
 
 <p>A partir de la version 2.4.8, ce module renvoie une erreur après
-32000 itérations afin d'éviter les boucles infinies. Ce nombre maximum
+10000 itérations afin d'éviter les boucles infinies. Ce nombre maximum
 d'itération peut être modifié via le drapeau N.</p>
 <highlight language="config">
 # On veut remplacer 1 caractère à chaque itération de la boucle
-RewriteRule "(.+)[&gt;&lt;;]$" "$1" [N=64000]
+RewriteRule "(.+)[&gt;&lt;;]$" "$1" [N=32000]
 # ... ou s'arrêter après 10 itérations
 RewriteRule "(.+)[&gt;&lt;;]$" "$1" [N=10]
 </highlight>
@@ -757,7 +803,9 @@ avertissements 'Invalid URI in request'.
 exécuter. La syntaxe du drapeau [S] est [S=<em>N</em>], où
 <em>N</em> correspond au nombre de règles à sauter (sous
 réserve que la règle <directive
-module="mod_rewrite">RewriteRule</directive> corresponde).
+module="mod_rewrite">RewriteRule</directive> corresponde et qu'au moins
+une condition <directive module="mod_rewrite">RewriteCond</directive>
+préalable soit vérifiée). 
 Ceci peut s'interpréter comme une instruction
 <code>goto</code>  dans votre jeu de règles de réécriture. Dans
 l'exemple suivant, nous ne voulons exécuter la règle <directive
@@ -765,13 +813,13 @@ module="mod_rewrite">RewriteRule</directive> que si l'URI demandé ne
 correspond pas à un fichier existant.</p>
 <highlight language="config">
 # La requête concerne-t-elle un fichier qui n'existe pas ?
-RewriteCond "%{REQUEST_FILENAME}" "!-f"
-RewriteCond "%{REQUEST_FILENAME}" "!-d"
+RewriteCond "%{REQUEST_FILENAME}" !-f
+RewriteCond "%{REQUEST_FILENAME}" !-d
 # Si c'est la cas, on saute les deux règles de réécriture suivantes
-RewriteRule ".?" "-" [S=2]
+RewriteRule ".?"                  "-" [S=2]
 
-RewriteRule "(.*\.gif)" "images.php?$1"
-RewriteRule "(.*\.html)" "docs.php?$1"
+RewriteRule "(.*\.gif)"           "images.php?$1"
+RewriteRule "(.*\.html)"          "docs.php?$1"
 </highlight>
 
 
@@ -787,18 +835,19 @@ bloc then contiendra <code>skip=N</code>, où N est le nombre de règles
 contenues dans le bloc else :</p>
 <highlight language="config">
 # Est-ce que le fichier existe ?
-RewriteCond "%{REQUEST_FILENAME}" "!-f"
-RewriteCond "%{REQUEST_FILENAME}" "!-d"
-# Create an if-then-else construct by skipping 3 lines if we meant to go to the &quot;else&quot; stanza.
-RewriteRule ".?" "-" [S=3]
+RewriteCond "%{REQUEST_FILENAME}" !-f
+RewriteCond "%{REQUEST_FILENAME}" !-d
+# Créer une structure conditionnelle if-then-else en sautant 3 lignes si nous
+# avions l'intention d'aller au bloc &quot;else&quot;.
+RewriteRule ".?"                  "-" [S=3]
 
 # Si le fichier existe, alors :
-RewriteRule "(.*\.gif)" "images.php?$1"
+    RewriteRule "(.*\.gif)"  "images.php?$1"
     RewriteRule "(.*\.html)" "docs.php?$1"
-    # Skip past the &quot;else&quot; stanza.
-    RewriteRule ".?" "-" [S=1]
+    # Passer le bloc &quot;else&quot;.
+    RewriteRule ".?"         "-" [S=1]
 # ELSE...
-RewriteRule "(.*)" "404.php?file=$1
+    RewriteRule "(.*)"       "404.php?file=$1"
 # END
 </highlight>
 
@@ -820,7 +869,7 @@ certaine manière :</p>
 
 <highlight language="config">
 # Sert les fichier .pl en tant que plein texte
-RewriteRule "\.pl$" "-" [T=text/plain]
+RewriteRule "\.pl$"  "-" [T=text/plain]
 </highlight>
 
 <p>Ou encore, si vous possédez une caméra qui produit des fichiers
@@ -829,7 +878,7 @@ avec le type MIME correct en se basant sur le nom du fichier :</p>
 
 <highlight language="config">
 # Les fichiers dont le nom contient 'IMG' sont des images jpg.
-RewriteRule "IMG" "-" [T=image/jpg]
+RewriteRule "IMG"  "-" [T=image/jpg]
 </highlight>
 
 <p>Notez cependant qu'il s'agit d'un exemple trivial, et que le problème
