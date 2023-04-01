@@ -72,7 +72,7 @@ Development
 -----------
 
 Adding a test in an existing file is done by adding a method. Its name
-must start with 'test_' and the common practise is to have the name
+must start with 'test_' and the common practice is to have the name
 of the test suite there as well. All http2 tests start with 'test_h2_'.
 
 Following this can be any characters. If you make test cases of a
