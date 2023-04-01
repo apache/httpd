@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1905230 -->
+<!-- English Revision: 1908782 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -136,8 +136,8 @@ du serveur HTTP Apache.</compatibility>
 
 <directivesynopsis>
 <name>DavQuota</name>
-<description>D&eacute;finit un quota</description>
-<syntax>DavQuota Off | None | #octets</syntax>
+<description>Définir des quotas d'utilisation</description>
+<syntax>DavQuota Off | None | #bytes</syntax>
 <default>DavQuota Off</default>
 <contextlist><context>server config</context>
 <context>virtual host</context>
@@ -146,19 +146,18 @@ du serveur HTTP Apache.</compatibility>
 </contextlist>
 
 <usage>
-    <p><directive>DavQuota</directive> fixe un quota disque en
-    octets pour un r&eacute;pertoire, tel que sp&eacute;cifi&eacute;
-    par le RFC 4331. Deux valeurs sp&eacute;ciales sont d&eacute;finies:
+    <p>La directive <directive>DavQuota</directive> permet de définir un quota
+    en octets pour un répertoire donné selon les spécifications de la RFC 4331.
+    Elle possède deux valeurs particulières :</p>
         <ul>
-            <li><code>Off</code> Les quotas sont d&eacute;sactiv&eacutes;s.</li>
-            <li><code>None</code> Aucun quota n'est d&eacute;fini, mais 
-            les espaces disque utilis&eacute;s et disponibles sont 
-            indiqu&eacute;s aux clients qui en font la demande.</li>
+            <li><code>Off</code> Les quotas sont désactivés.</li>
+	    <li><code>None</code> Aucun quota n'est défini, mais les clients qui
+	    le demandent sont informés des espaces disque disponible et
+	    utilisé.</li>
         </ul>
-    </p>
+    
 </usage>
 </directivesynopsis>
-
 
 </modulesynopsis>
 
