@@ -254,7 +254,7 @@ a DAV resource</description>
 
 <usage>
     <p>The <directive>DavMSext</directive> directive enables support
-    for Microsoft extensions. Possible values are:
+    for Microsoft extensions. Possible values are:</p>
         <ul>
             <li><code>None</code> No Microsoft extension is enabled.</li>
             <li><code>WDV</code> Enable support for
@@ -264,7 +264,7 @@ a DAV resource</description>
             are enabled. Currently, this is means <code>WDV</code> as
             it is the only Microsoft extension implemented.</li>
         </ul>
-    </p>
+    
 </usage>
 </directivesynopsis>
 
