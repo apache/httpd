@@ -493,6 +493,8 @@ Infinity</td></tr>
 <tr><td><a href="mod_dav_fs.html#davlockdiscovery">DavLockDiscovery on|off</a></td><td> on </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Active la découverte de verrou</td></tr>
 <tr class="odd"><td><a href="mod_dav.html#davmintimeout">DavMinTimeout <var>secondes</var></a></td><td> 0 </td><td>svd</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Durée minimale pendant laquelle le serveur maintient un
 verrou sur une ressource DAV</td></tr>
+<tr><td><a href="mod_dav.html#davmsext">DavMSext None | [+|-]WDV | All</a></td><td> None </td><td>svd</td><td>E</td></tr><tr><td class="descr" colspan="4">Activer la prise en charge des extensions de Microsoft</td></tr>
+<tr class="odd"><td><a href="mod_dav_fs.html#davquota">DavQuota Off | None | #bytes</a></td><td> Off </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Définir des quotas d'utilisation</td></tr>
 <tr><td><a href="mod_dbd.html#dbdexptime">DBDExptime <var>durée en secondes</var></a></td><td> 300 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Durée de vie des connexions inactives</td></tr>
 <tr class="odd"><td><a href="mod_dbd.html#dbdinitsql">DBDInitSQL <var>"instruction SQL"</var></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Exécute une instruction SQL après connexion à une base de
 données</td></tr>

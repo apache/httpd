@@ -273,26 +273,26 @@ verrou sur une ressource DAV</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="davmsext" id="davmsext">Directive</a> <a name="DavMSext" id="DavMSext">DavMSext</a> <a title="Lien permanent" href="#davmsext" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Active les extensions Microsoft</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Activer la prise en charge des extensions de Microsoft</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>DavMSext None | [+|-]WDV | All</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>DavMSext None</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_dav</td></tr>
 </table>
-    <p>La directive <code class="directive">DavMSext</code> active le support 
-    des extensions Microsoft. Les veleurs possibles sont:
+    <p>La directive <code class="directive">DavMSext</code> permet d'activer la prise en
+    charge des extensions de Microsoft. Ses valeurs possibles sont&nbsp;:</p>
         <ul>
-            <li><code>None</code> Aucune extension Microsoft n'est active.</li>
-            <li><code>WDV</code> Active le support de
-            <a href="https://learn.microsoft.com/en-us/openspecs/windows_protocols/ms-wdv">MS-WDV</a>.
+            <li><code>None</code> Aucune extension de Microsoft n'est prise en
+	    charge.</li>
+            <li><code>WDV</code> Active la prise en charge de <a href="https://learn.microsoft.com/en-us/openspecs/windows_protocols/ms-wdv">MS-WDV</a>.
             </li>
-            <li><code>All</code> Active toutes les extensions Microsoft 
-            implémentées. Actuellement, c'est un synonyme de
-            <code>WDV</code>, qui est la seule extension Microsoft
-            implémentéese.</li>
+            <li><code>All</code> Toutes les extensions de Microsoft implémentées
+	    sont prises en charge. La liste se limite cependant à
+	    <code>WDV</code> car il s'agit de la seule extension de Microsoft
+	    actuellement implémentée.</li>
         </ul>
-    </p>
+    
 
 </div>
 </div>

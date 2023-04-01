@@ -821,13 +821,14 @@ contenues dans le bloc else :</p>
 <pre class="prettyprint lang-config"># Est-ce que le fichier existe ?
 RewriteCond "%{REQUEST_FILENAME}" !-f
 RewriteCond "%{REQUEST_FILENAME}" !-d
-# Create an if-then-else construct by skipping 3 lines if we meant to go to the "else" stanza.
+# Créer une structure conditionnelle if-then-else en sautant 3 lignes si nous
+# avions l'intention d'aller au bloc "else".
 RewriteRule ".?" "-" [S=3]
 
 # Si le fichier existe, alors :
 RewriteRule "(.*\.gif)" "images.php?$1"
     RewriteRule "(.*\.html)" "docs.php?$1"
-    # Skip past the "else" stanza.
+    # Passer le bloc "else".
     RewriteRule ".?" "-" [S=1]
 # ELSE...
 RewriteRule "(.*)" "404.php?file=$1"
