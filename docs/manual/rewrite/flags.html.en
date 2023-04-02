@@ -34,6 +34,8 @@ providing detailed explanations and examples.</p>
 <div id="quickview"><a href="https://www.apache.org/foundation/contributing.html" class="badge"><img src="https://www.apache.org/images/SupportApache-small.png" alt="Support Apache!" /></a><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#introduction">Introduction</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#flag_b">B (escape backreferences)</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#flag_bnp">BNP|backrefnoplus (don't escape space to +)</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#flag_bctls">BCTLS</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#flag_bne">BNE</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#flag_c">C|chain</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#flag_co">CO|cookie</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#flag_dpi">DPI|discardpath</a></li>
@@ -123,11 +125,13 @@ character can be used in the list of characters to escape, but you must quote
 the entire third argument of <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>
 and the space must not be the last character in the list.</p>
 
-<pre class="prettyprint lang-config"># Escape spaces and question marks. 
+<pre class="prettyprint lang-config"># Escape spaces and question marks.  The quotes around the final argument 
+# are required when a space is included.
 RewriteRule "^search/(.*)$" "/search.php?term=$1" "[B= ?]"</pre>
 
 
-
+<p>To limit the characters escaped this way, see <a href="flag_bne">flag_bne</a>
+and <a href="flag_bctls">flag_bctls</a></p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="flag_bnp" id="flag_bnp">BNP|backrefnoplus (don't escape space to +)</a></h2>
@@ -135,8 +139,40 @@ RewriteRule "^search/(.*)$" "/search.php?term=$1" "[B= ?]"</pre>
 in a backreference to %20 rather than '+'. Useful when the backreference
 will be used in the path component rather than the query string.</p>
 
-<p>This flag is available in version 2.4.26 and later.</p>
+<pre class="prettyprint lang-config"># Escape spaces to %20 in the path instead of + as used in form submission via
+# the query string
+RewriteRule "^search/(.*)$" "/search.php/$1" "[B,BNP]"</pre>
 
+
+
+<p>This flag is available in version 2.4.26 and later.</p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="flag_bctls" id="flag_bctls">BCTLS</a></h2>
+<p>The [BCTLS] flag is similar to the [B] flag, but only escapes
+control characters and the space character. This is the same set of
+characters rejected when they are copied into the query string unencoded.
+</p>
+
+<pre class="prettyprint lang-config"># Escape control characters and spaces
+RewriteRule "^search/(.*)$" "/search.php/$1" "[BCTLS]"</pre>
+
+
+<p>This flag is available in version 2.4.57 and later.</p>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="flag_bne" id="flag_bne">BNE</a></h2>
+<p>The list of characters in [BNE=...] are treated as exclusions to the
+characters of the [B] or [BCTLS] flags. The listed characters will not be
+escaped.
+</p>
+
+<pre class="prettyprint lang-config"># Escape the default characters, but leave /
+RewriteRule "^search/(.*)$" "/search.php?term=$1" "[B,BNE=/]"</pre>
+
+
+<p>This flag is available in version 2.4.57 and later.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="flag_c" id="flag_c">C|chain</a></h2>
@@ -218,7 +254,7 @@ attribute is set to the specified value.  Typical values are <code>None</code>,
 <p>Consider this example:</p>
 
 <pre class="prettyprint lang-config">RewriteEngine On
-RewriteRule "^/index\.html" "-" [CO=frontdoor:yes:.example.com:1440:/]</pre>
+RewriteRule   "^/index\.html"   "-" [CO=frontdoor:yes:.example.com:1440:/]</pre>
 
 
 <p>In the example give, the rule doesn't rewrite the request.
@@ -303,8 +339,8 @@ value of '1' if the requested URI is an image file. Then, that
 environment variable is used to exclude those requests from the access
 log.</p>
 
-<pre class="prettyprint lang-config">RewriteRule "\.(png|gif|jpg)$" "-" [E=image:1]
-CustomLog "logs/access_log" combined env=!image</pre>
+<pre class="prettyprint lang-config">RewriteRule "\.(png|gif|jpg)$"   "-" [E=image:1]
+CustomLog   "logs/access_log"    combined env=!image</pre>
 
 
 <p>Note that this same effect can be obtained using <code class="directive"><a href="../mod/mod_setenvif.html#setenvif">SetEnvIf</a></code>. This technique is offered as
@@ -329,7 +365,7 @@ allows more flexibility in assigning a Forbidden status.</p>
 <p>The following rule will forbid <code>.exe</code> files from being
 downloaded from your server.</p>
 
-<pre class="prettyprint lang-config">RewriteRule "\.exe" "-" [F]</pre>
+<pre class="prettyprint lang-config">RewriteRule "\.exe"   "-" [F]</pre>
 
 
 <p>This example uses the "-" syntax for the rewrite target, which means
@@ -349,7 +385,7 @@ longer available.</p>
 <p>As with the [F] flag, you will typically use the "-" syntax for the
 rewrite target when using the [G] flag:</p>
 
-<pre class="prettyprint lang-config">RewriteRule "oldproduct" "-" [G,NC]</pre>
+<pre class="prettyprint lang-config">RewriteRule "oldproduct"   "-" [G,NC]</pre>
 
 
 <p>When using [G], an [L] is implied - that is, the response is returned
@@ -362,7 +398,7 @@ immediately, and no further rules are evaluated.</p>
 handler. For example, one might use this to force all files without a
 file extension to be parsed by the php handler:</p>
 
-<pre class="prettyprint lang-config">RewriteRule "!\." "-" [H=application/x-httpd-php]</pre>
+<pre class="prettyprint lang-config">RewriteRule "!\."  "-" [H=application/x-httpd-php]</pre>
 
 
 <p>
@@ -424,8 +460,8 @@ argument to <code>index.php</code>, however, the <code class="directive"><a href
 is already for <code>index.php</code>, the <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> will be skipped.</p>
 
 <pre class="prettyprint lang-config">RewriteBase "/"
-RewriteCond "%{REQUEST_URI}" "!=/index.php"
-RewriteRule "^(.*)" "/index.php?req=$1" [L,PT]</pre>
+RewriteCond "%{REQUEST_URI}" !=/index.php
+RewriteRule "^(.*)"          "/index.php?req=$1" [L,PT]</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -448,11 +484,11 @@ pattern still matches (i.e., while the URI still contains an
 <code>A</code>), perform this substitution (i.e., replace the
 <code>A</code> with a <code>B</code>).</p>
 
-<p>In 2.4.8 and later, this module returns an error after 32,000 iterations to
+<p>In 2.4.8 and later, this module returns an error after 10,000 iterations to
 protect against unintended looping.  An alternative maximum number of
 iterations can be specified by adding to the N flag.  </p>
 <pre class="prettyprint lang-config"># Be willing to replace 1 character in each pass of the loop
-RewriteRule "(.+)[&gt;&lt;;]$" "$1" [N=64000]
+RewriteRule "(.+)[&gt;&lt;;]$" "$1" [N=32000]
 # ... or, give up if after 10 loops
 RewriteRule "(.+)[&gt;&lt;;]$" "$1" [N=10]</pre>
 
@@ -696,19 +732,21 @@ URI in request' warnings.
 <p>The [S] flag is used to skip rules that you don't want to run. The
 syntax of the skip flag is [S=<em>N</em>], where <em>N</em> signifies
 the number of rules to skip (provided the <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">
-RewriteRule</a></code> matches). This can be thought of as a <code>goto</code>
-statement in your rewrite ruleset. In the following example, we only want
-to run the <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> if the
-requested URI doesn't correspond with an actual file.</p>
+RewriteRule</a></code> and any preceding <code class="directive"><a href="../mod/mod_rewrite.html#rewritecond">
+RewriteCond</a></code> directives match). This can be thought of as a
+<code>goto</code> statement in your rewrite ruleset. In the following
+example, we only want to run the <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">
+RewriteRule</a></code> if the requested URI doesn't correspond with an
+actual file.</p>
 
 <pre class="prettyprint lang-config"># Is the request for a non-existent file?
-RewriteCond "%{REQUEST_FILENAME}" "!-f"
-RewriteCond "%{REQUEST_FILENAME}" "!-d"
+RewriteCond "%{REQUEST_FILENAME}" !-f
+RewriteCond "%{REQUEST_FILENAME}" !-d
 # If so, skip these two RewriteRules
-RewriteRule ".?" "-" [S=2]
+RewriteRule ".?"                  "-" [S=2]
 
-RewriteRule "(.*\.gif)" "images.php?$1"
-RewriteRule "(.*\.html)" "docs.php?$1"</pre>
+RewriteRule "(.*\.gif)"           "images.php?$1"
+RewriteRule "(.*\.html)"          "docs.php?$1"</pre>
 
 
 <p>This technique is useful because a <code class="directive"><a href="../mod/mod_rewrite.html#rewritecond">RewriteCond</a></code> only applies to the
@@ -720,18 +758,18 @@ use this to make pseudo if-then-else constructs: The last rule of
 the then-clause becomes <code>skip=N</code>, where N is the
 number of rules in the else-clause:</p>
 <pre class="prettyprint lang-config"># Does the file exist?
-RewriteCond "%{REQUEST_FILENAME}" "!-f"
-RewriteCond "%{REQUEST_FILENAME}" "!-d"
+RewriteCond "%{REQUEST_FILENAME}" !-f
+RewriteCond "%{REQUEST_FILENAME}" !-d
 # Create an if-then-else construct by skipping 3 lines if we meant to go to the "else" stanza.
-RewriteRule ".?" "-" [S=3]
+RewriteRule ".?"                  "-" [S=3]
 
 # IF the file exists, then:
-    RewriteRule "(.*\.gif)" "images.php?$1"
+    RewriteRule "(.*\.gif)"  "images.php?$1"
     RewriteRule "(.*\.html)" "docs.php?$1"
     # Skip past the "else" stanza.
-    RewriteRule ".?" "-" [S=1]
+    RewriteRule ".?"         "-" [S=1]
 # ELSE...
-    RewriteRule "(.*)" "404.php?file=$1"
+    RewriteRule "(.*)"       "404.php?file=$1"
 # END</pre>
 
 
@@ -748,7 +786,7 @@ sent. This has the same effect as the <code class="directive"><a href="../mod/mo
 source code as plain text, if requested in a particular way:</p>
 
 <pre class="prettyprint lang-config"># Serve .pl files as plain text
-RewriteRule "\.pl$" "-" [T=text/plain]</pre>
+RewriteRule "\.pl$"  "-" [T=text/plain]</pre>
 
 
 <p>Or, perhaps, if you have a camera that produces jpeg images without
@@ -756,7 +794,7 @@ file extensions, you could force those images to be served with the
 correct MIME type by virtue of their file names:</p>
 
 <pre class="prettyprint lang-config"># Files with 'IMG' in the name are jpg images.
-RewriteRule "IMG" "-" [T=image/jpg]</pre>
+RewriteRule "IMG"  "-" [T=image/jpg]</pre>
 
 
 <p>Please note that this is a trivial example, and could be better done
