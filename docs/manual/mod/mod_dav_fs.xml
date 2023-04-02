@@ -121,5 +121,30 @@
 </usage>
 </directivesynopsis>
 
+<directivesynopsis>
+<name>DavQuota</name>
+<description>Set usage quota</description>
+<syntax>DavQuota Off | None | #bytes</syntax>
+<default>DavQuota Off</default>
+<contextlist><context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+<context>.htaccess</context>
+</contextlist>
+
+<usage>
+    <p><directive>DavQuota</directive> sets a quota in bytes for
+    a given directory as specified by RFC 4331. There are two
+    special values:</p>
+        <ul>
+            <li><code>Off</code> Quotas are disabled.</li>
+            <li><code>None</code> No quota is enforced, but
+            used and available disk space is reported to 
+            clients that request it.</li>
+        </ul>
+    
+</usage>
+</directivesynopsis>
+
 </modulesynopsis>
 

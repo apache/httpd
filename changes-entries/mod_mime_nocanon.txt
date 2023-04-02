@@ -1,4 +1,0 @@
-
-  *) mod_mime: Do not match the extention against possible query string
-     parameters in case ProxyPass was used with the nocanon option.
-     [Ruediger Pluem]

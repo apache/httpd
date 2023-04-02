@@ -1,4 +1,0 @@
-  *) core: Add formats %{z} and %{strftime-format} to ErrorLogFormat, and make
-     sure that if the format is configured early enough it applies to every log
-     line.  PR 62161.  [Yann Ylavic]
-

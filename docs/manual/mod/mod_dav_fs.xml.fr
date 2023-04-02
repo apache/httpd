@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1905230 -->
+<!-- English Revision: 1908895 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -131,6 +131,31 @@ du serveur HTTP Apache.</compatibility>
       DavLockDiscovery off
      </highlight>
     </example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>DavQuota</name>
+<description>Définir des quotas d'utilisation</description>
+<syntax>DavQuota Off | None | #bytes</syntax>
+<default>DavQuota Off</default>
+<contextlist><context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+<context>.htaccess</context>
+</contextlist>
+
+<usage>
+    <p>La directive <directive>DavQuota</directive> permet de définir un quota
+    en octets pour un répertoire donné selon les spécifications de la RFC 4331.
+    Elle possède deux valeurs particulières :</p>
+        <ul>
+            <li><code>Off</code> Les quotas sont désactivés.</li>
+	    <li><code>None</code> Aucun quota n'est défini, mais les clients qui
+	    le demandent sont informés des espaces disque disponible et
+	    utilisé.</li>
+        </ul>
+    
 </usage>
 </directivesynopsis>
 

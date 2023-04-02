@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1673582 -->
+<!-- English Revision: 1908894 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -260,6 +260,32 @@ Infinity</description>
     contenant l'en-t&ecirc;te Depth: Infinity. Par d&eacute;faut, ce type de requ&ecirc;te
     n'est pas autoris&eacute;, car il peut favoriser les attaques de type D&eacute;ni
     de service.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>DavMSext</name>
+<description>Activer la prise en charge des extensions de Microsoft</description>
+<syntax>DavMSext None | [+|-]WDV | All</syntax>
+<default>DavMSext None</default>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context></contextlist>
+
+<usage>
+    <p>La directive <directive>DavMSext</directive> permet d'activer la prise en
+    charge des extensions de Microsoft. Ses valeurs possibles sont :</p>
+        <ul>
+            <li><code>None</code> Aucune extension de Microsoft n'est prise en
+	    charge.</li>
+            <li><code>WDV</code> Active la prise en charge de <a
+	    href="https://learn.microsoft.com/en-us/openspecs/windows_protocols/ms-wdv">MS-WDV</a>.
+            </li>
+            <li><code>All</code> Toutes les extensions de Microsoft implémentées
+	    sont prises en charge. La liste se limite cependant à
+	    <code>WDV</code> car il s'agit de la seule extension de Microsoft
+	    actuellement implémentée.</li>
+        </ul>
+    
 </usage>
 </directivesynopsis>
 

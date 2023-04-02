@@ -1341,14 +1341,13 @@ static void check_infinite_requests(void)
 
 static int close_listeners(int *closed)
 {
-    ap_log_error(APLOG_MARK, APLOG_TRACE6, 0, ap_server_conf,
-                 "clos%s listeners (connection_count=%u)",
-                 *closed ? "ed" : "ing", apr_atomic_read32(&connection_count));
     if (!*closed) {
         int i;
 
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf,
+                     "closing listeners (connection_count=%u)",
+                     apr_atomic_read32(&connection_count));
         ap_close_listeners_ex(my_bucket->listeners);
-        *closed = 1; /* once */
 
         dying = 1;
         ap_scoreboard_image->parent[ap_child_slot].quiescing = 1;
@@ -1362,8 +1361,13 @@ static int close_listeners(int *closed)
         ap_queue_info_free_idle_pools(worker_queue_info);
         ap_queue_interrupt_all(worker_queue);
 
+        *closed = 1; /* once */
         return 1;
     }
+
+    ap_log_error(APLOG_MARK, APLOG_TRACE6, 0, ap_server_conf,
+                 "closed listeners (connection_count=%u)",
+                 apr_atomic_read32(&connection_count));
     return 0;
 }
 
@@ -2151,11 +2155,9 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
                     disable_listensocks();
                     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf,
                                  APLOGNO(03269)
-                                 "Too many open connections (%u), "
+                                 "Too many open connections (%u, idlers %u), "
                                  "not accepting new conns in this process",
-                                 apr_atomic_read32(&connection_count));
-                    ap_log_error(APLOG_MARK, APLOG_TRACE1, 0, ap_server_conf,
-                                 "Idle workers: %u",
+                                 apr_atomic_read32(&connection_count),
                                  ap_queue_info_num_idlers(worker_queue_info));
                 }
                 else if (!listener_may_exit) {
