@@ -997,7 +997,7 @@ static int ssl_hook_Access_classic(request_rec *r, SSLSrvConfigRec *sc, SSLDirCo
              * handshake to proceed. */
             modssl_set_reneg_state(sslconn, RENEG_ALLOW);
 
-            if(!SSL_renegotiate(ssl) || !SSL_do_handshake(ssl) || !SSL_is_init_finished(ssl)) {
+            if(!SSL_renegotiate(ssl) || (SSL_do_handshake(ssl) != 1) || !SSL_is_init_finished(ssl)) {
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(02225)
                               "Re-negotiation request failed");
                 ssl_log_ssl_error(SSLLOG_MARK, APLOG_ERR, r->server);
