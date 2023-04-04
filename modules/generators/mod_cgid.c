@@ -1059,6 +1059,8 @@ static int cgid_init(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp,
 
         parent_pid = getpid();
         tmp_sockname = ap_runtime_dir_relative(p, sockname);
+        if (!tmp_sockname)
+            return DECLINED;
         if (strlen(tmp_sockname) > sizeof(server_addr->sun_path) - 1) {
             tmp_sockname[sizeof(server_addr->sun_path)] = '\0';
             ap_log_error(APLOG_MARK, APLOG_ERR, 0, main_server, APLOGNO(01254)
