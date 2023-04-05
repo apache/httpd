@@ -228,6 +228,8 @@ APREQ_DECLARE_PARSER(apreq_parse_generic)
         ctx->status = GEN_INCOMPLETE;
         ctx->param = apreq_param_make(pool,
                                       "_dummy_", strlen("_dummy_"), "", 0);
+        if (ctx->param == NULL)
+            return APR_ENOMEM;
         ctx->param->upload = apr_brigade_create(pool, parser->bucket_alloc);
         ctx->param->info = apr_table_make(pool, APREQ_DEFAULT_NELTS);
     }
