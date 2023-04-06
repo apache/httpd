@@ -49,7 +49,7 @@ typedef apr_status_t ap_log_writer(
                             const char **portions,
                             int *lengths,
                             int nelts,
-                            void *items,
+                            const void *items,
                             apr_size_t len);
 
 typedef struct ap_log_handler {

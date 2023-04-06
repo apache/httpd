@@ -188,21 +188,21 @@ static apr_status_t ap_default_log_writer(request_rec *r,
                            const char **strs,
                            int *strl,
                            int nelts,
-                           void *items,
+                           const void *items,
                            apr_size_t len);
 static apr_status_t ap_buffered_log_writer(request_rec *r,
                            void *handle,
                            const char **strs,
                            int *strl,
                            int nelts,
-                           void *items,
+                           const void *items,
                            apr_size_t len);
 static apr_status_t ap_json_log_writer(request_rec *r,
                            void *handle,
                            const char **strs,
                            int *strl,
                            int nelts,
-                           void *items,
+                           const void *items,
                            apr_size_t len);
 
 static void *ap_default_log_writer_init(apr_pool_t *p, server_rec *s,
@@ -298,9 +298,9 @@ typedef struct {
  */
 
 typedef struct {
-    char *tag; /* tag that did create this lfi */
+    const char *tag; /* tag that did create this lfi */
     ap_log_handler_fn_t *func;
-    char *arg;
+    const char *arg;
     int condition_sense;
     int want_orig;
     apr_array_header_t *conditions;
@@ -912,7 +912,7 @@ static char *parse_log_misc_string(apr_pool_t *p, log_format_item *it,
      */
     it->arg = apr_palloc(p, s - *sa + 1);
 
-    d = it->arg;
+    d = (char *)it->arg;
     s = *sa;
     while (*s && *s != '%') {
         if (*s != '\\') {
@@ -1110,7 +1110,7 @@ static const char *process_item(request_rec *r, request_rec *orig,
 
     /* We do.  Do it... */
 
-    cp = (*item->func) (item->want_orig ? orig : r, item->arg);
+    cp = (*item->func) (item->want_orig ? orig : r, (char *)item->arg);
     return cp ? cp : "-";
 }
 
@@ -1634,8 +1634,9 @@ static ap_log_writer *ap_log_set_writer(ap_log_writer *handle)
     return old;
 }
 
-static void add_iovec_str(struct iovec *iv, const char *str)
+static void add_iovec_str(apr_array_header_t * ah, const char *str)
 {
+    struct iovec * iv = apr_array_push(ah);
     iv->iov_base = (void*) str;
     iv->iov_len = strlen(str);
 }
@@ -1645,22 +1646,19 @@ static apr_status_t ap_json_log_writer( request_rec *r,
                            const char **strs,
                            int *strl,
                            int nelts,
-                           void *itms,
+                           const void *itms,
                            apr_size_t len)
 
 {
     log_format_item *items = (log_format_item *) itms;
-    apr_size_t len_file_write;
 
     const char* attribute_name;
     const char* attribute_value;
-    const char* json_str;
 
-    struct iovec strcats[1 + (nelts * 7) ];
-    apr_size_t isc = 0;
+    apr_array_header_t *strcats = apr_array_make(r->pool, nelts * 3, sizeof(struct iovec)); 
 
     // build json object
-    add_iovec_str(&strcats[isc++], "{");
+    add_iovec_str(strcats, "{");
     for (int i = 0; i < nelts; ++i) {
         if(items[i].tag == NULL) {
                 continue;
@@ -1671,25 +1669,26 @@ static apr_status_t ap_json_log_writer( request_rec *r,
             attribute_name = ap_escape_json(r->pool, items[i].tag); // use tag as attribute name as fallback
         }
 
-        add_iovec_str(&strcats[isc++], "\"");
-        add_iovec_str(&strcats[isc++], attribute_name);
+        add_iovec_str(strcats, "\"");
+        add_iovec_str(strcats, attribute_name);
 
         // process any arguemnts as attribute name extension
         if(items[i].arg != NULL && strlen(items[i].arg) > 0) {
             attribute_name = ap_escape_json(r->pool, items[i].arg);
-            add_iovec_str(&strcats[isc++], " ");
-            add_iovec_str(&strcats[isc++], attribute_name);
+            add_iovec_str(strcats, " ");
+            add_iovec_str(strcats, attribute_name);
         }
-        add_iovec_str(&strcats[isc++], "\":\"");
+        add_iovec_str(strcats, "\":\"");
 
         attribute_value = ap_escape_json(r->pool, strs[i]);
-        add_iovec_str(&strcats[isc++], attribute_value);
-        add_iovec_str(&strcats[isc++], "\",");
+        add_iovec_str(strcats, attribute_value);
+        add_iovec_str(strcats, "\",");
     }
     // replace last '",' with '"}'
-    add_iovec_str(&strcats[isc - 1], "\"}" APR_EOL_STR);
-    json_str = apr_pstrcatv(r->pool, strcats, isc, &len_file_write);
-    return apr_file_write((apr_file_t*)handle, json_str, &len_file_write);
+    apr_array_pop(strcats);
+    add_iovec_str(strcats, "\"}" APR_EOL_STR);
+
+    return apr_file_writev_full((apr_file_t*)handle, (const struct iovec *)strcats->elts, strcats->nelts, NULL);
 }
 
 static apr_status_t ap_default_log_writer( request_rec *r,
@@ -1697,7 +1696,7 @@ static apr_status_t ap_default_log_writer( request_rec *r,
                            const char **strs,
                            int *strl,
                            int nelts,
-                           void *items,
+                           const void *items,
                            apr_size_t len)
 {
     char *str;
@@ -1770,7 +1769,7 @@ static apr_status_t ap_buffered_log_writer(request_rec *r,
                                            const char **strs,
                                            int *strl,
                                            int nelts,
-                                           void *items,
+                                           const void *items,
                                            apr_size_t len)
 
 {
