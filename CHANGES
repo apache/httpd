@@ -1,4 +1,6 @@
                                                          -*- coding: utf-8 -*-
+Changes with Apache 2.4.58
+
 Changes with Apache 2.4.57
 
   *) mod_proxy: Check before forwarding that a nocanon path has not been
