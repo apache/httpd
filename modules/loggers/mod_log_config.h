@@ -40,6 +40,14 @@ typedef const char *ap_log_handler_fn_t(request_rec *r, char *a);
  */
 typedef void *ap_log_writer_init(apr_pool_t *p, server_rec *s,
                                  const char *name);
+
+typedef struct ap_log_formatted_data {
+    const char **portions; /* all formatted strings */
+    int *lengths;          /* strlen for above strings */
+    int nelts;             /* total number of strings */
+    apr_size_t total_len;  /* total strlen of all strings */
+} ap_log_formatted_data;
+
 /**
  * callback which gets called where there is a log line to write.
  */
@@ -49,8 +57,16 @@ typedef apr_status_t ap_log_writer(
                             const char **portions,
                             int *lengths,
                             int nelts,
-                            const void *items,
                             apr_size_t len);
+
+/**
+ * callback which gets called before a log line gets written
+ */
+typedef ap_log_formatted_data * ap_log_formatter(
+                            request_rec *r,
+                            void *formatter_data,
+                            ap_log_formatted_data *lfd,
+                            const void *items);
 
 typedef struct ap_log_handler {
     ap_log_handler_fn_t *func;
