@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1908610 -->
+<!-- English Revision: 1909013 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -134,7 +134,7 @@ RewriteRule "^search/(.*)$" "/search.php?term=$1" "[B= ?]"
 </highlight>
 
 <p>Pour définir la liste des caractères à échapper de cette manière, voir <a
-href="flag_bne">flag_bne</a> et <a href="flag_bctls">flag_bctls</a></p>
+href="#flag_bne">#flag_bne</a> et <a href="#flag_bctls">#flag_bctls</a></p>
 
 </section>
 
