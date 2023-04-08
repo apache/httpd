@@ -146,7 +146,7 @@ guillemets le troisième argument de la directive <code class="directive"><a hre
 RewriteRule "^search/(.*)$" "/search.php?term=$1" "[B= ?]"</pre>
 
 
-<p>Pour définir la liste des caractères à échapper de cette manière, voir <a href="flag_bne">flag_bne</a> et <a href="flag_bctls">flag_bctls</a></p>
+<p>Pour définir la liste des caractères à échapper de cette manière, voir <a href="#flag_bne">#flag_bne</a> et <a href="#flag_bctls">#flag_bctls</a></p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
