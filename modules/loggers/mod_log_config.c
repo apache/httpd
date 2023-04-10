@@ -180,8 +180,8 @@ module AP_MODULE_DECLARE_DATA log_config_module;
 static int xfer_flags = (APR_WRITE | APR_APPEND | APR_CREATE | APR_LARGEFILE);
 static apr_fileperms_t xfer_perms = APR_OS_DEFAULT;
 
-static apr_hash_t *log_hash; // tag to log_struct
-static apr_hash_t *json_hash; // tag to json attribute name
+static apr_hash_t *log_hash; /* tag to log_struct */
+static apr_hash_t *json_hash; /* tag to json attribute name */
 
 static apr_status_t ap_default_log_writer(request_rec *r,
                            void *handle,
@@ -334,7 +334,7 @@ static const char *log_remote_host(request_rec *r, char *a)
     else {
         remote_host = ap_get_useragent_host(r, REMOTE_NAME, NULL);
     }
-    return ap_escape_logitem(r->pool, remote_host);
+    return remote_host;
 }
 
 static const char *log_remote_address(request_rec *r, char *a)
@@ -354,7 +354,7 @@ static const char *log_local_address(request_rec *r, char *a)
 
 static const char *log_remote_logname(request_rec *r, char *a)
 {
-    return ap_escape_logitem(r->pool, ap_get_remote_logname(r));
+    return ap_get_remote_logname(r);
 }
 
 static const char *log_remote_user(request_rec *r, char *a)
@@ -367,9 +367,6 @@ static const char *log_remote_user(request_rec *r, char *a)
     else if (strlen(rvalue) == 0) {
         rvalue = "\"\"";
     }
-    else {
-        rvalue = ap_escape_logitem(r->pool, rvalue);
-    }
 
     return rvalue;
 }
@@ -381,27 +378,24 @@ static const char *log_request_line(request_rec *r, char *a)
      * (note the truncation before the protocol string for HTTP/0.9 requests)
      * (note also that r->the_request contains the unmodified request)
      */
-    return ap_escape_logitem(r->pool,
-                             (r->parsed_uri.password)
-                               ? apr_pstrcat(r->pool, r->method, " ",
-                                             apr_uri_unparse(r->pool,
-                                                             &r->parsed_uri, 0),
-                                             r->assbackwards ? NULL : " ",
-                                             r->protocol, NULL)
-                               : r->the_request);
+    return (r->parsed_uri.password) ? apr_pstrcat(r->pool, r->method, " ",
+                                                  apr_uri_unparse(r->pool, &r->parsed_uri, 0),
+                                                  r->assbackwards ? NULL : " ",
+                                                  r->protocol, NULL)
+                                    : r->the_request;
 }
 
 static const char *log_request_file(request_rec *r, char *a)
 {
-    return ap_escape_logitem(r->pool, r->filename);
+    return r->filename;
 }
 static const char *log_request_uri(request_rec *r, char *a)
 {
-    return ap_escape_logitem(r->pool, r->uri);
+    return r->uri;
 }
 static const char *log_request_method(request_rec *r, char *a)
 {
-    return ap_escape_logitem(r->pool, r->method);
+    return r->method;
 }
 static const char *log_log_id(request_rec *r, char *a)
 {
@@ -414,12 +408,11 @@ static const char *log_log_id(request_rec *r, char *a)
 }
 static const char *log_request_protocol(request_rec *r, char *a)
 {
-    return ap_escape_logitem(r->pool, r->protocol);
+    return r->protocol;
 }
 static const char *log_request_query(request_rec *r, char *a)
 {
-    return (r->args) ? apr_pstrcat(r->pool, "?",
-                                   ap_escape_logitem(r->pool, r->args), NULL)
+    return (r->args) ? apr_pstrcat(r->pool, "?", r->args, NULL)
                      : "";
 }
 static const char *log_status(request_rec *r, char *a)
@@ -429,7 +422,7 @@ static const char *log_status(request_rec *r, char *a)
 
 static const char *log_handler(request_rec *r, char *a)
 {
-    return ap_escape_logitem(r->pool, r->handler);
+    return r->handler;
 }
 
 static const char *clf_log_bytes_sent(request_rec *r, char *a)
@@ -455,12 +448,12 @@ static const char *log_bytes_sent(request_rec *r, char *a)
 
 static const char *log_header_in(request_rec *r, char *a)
 {
-    return ap_escape_logitem(r->pool, apr_table_get(r->headers_in, a));
+    return apr_table_get(r->headers_in, a);
 }
 
 static const char *log_trailer_in(request_rec *r, char *a)
 {
-    return ap_escape_logitem(r->pool, apr_table_get(r->trailers_in, a));
+    return apr_table_get(r->trailers_in, a);
 }
 
 
@@ -544,21 +537,21 @@ static const char *log_header_out(request_rec *r, char *a)
         cp = apr_table_get(r->headers_out, a);
     }
 
-    return ap_escape_logitem(r->pool, cp);
+    return cp;
 }
 
 static const char *log_trailer_out(request_rec *r, char *a)
 {
-    return ap_escape_logitem(r->pool, apr_table_get(r->trailers_out, a));
+    return apr_table_get(r->trailers_out, a);
 }
 
 static const char *log_note(request_rec *r, char *a)
 {
-    return ap_escape_logitem(r->pool, apr_table_get(r->notes, a));
+    return apr_table_get(r->notes, a);
 }
 static const char *log_env_var(request_rec *r, char *a)
 {
-    return ap_escape_logitem(r->pool, apr_table_get(r->subprocess_env, a));
+    return apr_table_get(r->subprocess_env, a);
 }
 
 static const char *log_cookie(request_rec *r, char *a)
@@ -604,7 +597,7 @@ static const char *log_cookie(request_rec *r, char *a)
                        --last;
                     }
 
-                    return ap_escape_logitem(r->pool, value);
+                    return value;
                 }
             }
             /* Iterate the remaining tokens using apr_strtok(NULL, ...) */
@@ -821,7 +814,7 @@ static const char *log_request_duration_scaled(request_rec *r, char *a)
  */
 static const char *log_virtual_host(request_rec *r, char *a)
 {
-    return ap_escape_logitem(r->pool, r->server->server_hostname);
+    return r->pool, r->server->server_hostname;
 }
 
 static const char *log_server_port(request_rec *r, char *a)
@@ -849,7 +842,7 @@ static const char *log_server_port(request_rec *r, char *a)
  */
 static const char *log_server_name(request_rec *r, char *a)
 {
-    return ap_escape_logitem(r->pool, ap_get_server_name(r));
+    return ap_get_server_name(r);
 }
 
 static const char *log_pid_tid(request_rec *r, char *a)
@@ -1114,7 +1107,6 @@ static const char *process_item(request_rec *r, request_rec *orig,
     /* We do.  Do it... */
 
     cp = (*item->func) (item->want_orig ? orig : r, (char *)item->arg);
-    // TODO: why not sanitize here? e.g. return cp ? ap_escape_logitem(cp) : "-";
     return cp ? cp : "-";
 }
 
@@ -1188,9 +1180,14 @@ static int config_log_transaction(request_rec *r, config_log_state *cls,
     }
 
     for (i = 0; i < format->nelts; ++i) {
-            // TODO: why not sanitize here, or in process_items() itself? e.g.
-            // lfd->portions[i] = ap_escape_logitem(process_item(r, orig, &items[i]));
         lfd->portions[i] = process_item(r, orig, &items[i]);
+
+        /* if we don't have a custom log formatter escape all values unconditionally,
+         * else let the custom log formatter handle the escaping
+         */
+        if (!cls->log_formatter) {
+                lfd->portions[i] = ap_escape_logitem(r->pool, lfd->portions[i]);
+        }
         lfd->total_len += lfd->lengths[i] = strlen(lfd->portions[i]);
     }
 
@@ -1372,7 +1369,7 @@ static const char *add_custom_log(cmd_parms *cmd, void *dummy,
                 cls->log_formatter_data = apr_pcalloc(cmd->pool, sizeof(json_log_formatter_options));
                 char* token = strtok(argv[i], ",");
                 while (token != NULL) {
-                    if(strcasecmp(token, "short")) {
+                    if(strcasecmp(token, "short") == 0) {
                         ((json_log_formatter_options *)cls->log_formatter_data)->use_short_attribute_names = 1;
                     }
                     token = strtok(NULL, ",");
@@ -1692,7 +1689,7 @@ static ap_log_formatted_data * ap_json_log_formatter( request_rec *r,
     apr_array_header_t *strs = apr_array_make(r->pool, lfd->nelts * 3, sizeof(char *)); /* array of pointers to char */
     apr_array_header_t *strl = apr_array_make(r->pool, lfd->nelts * 3, sizeof(int));    /* array of int (strlen) */
 
-    // build json object
+    /* build json object */
     lfdj->total_len += add_str(strs, strl, "{");
     for (int i = 0; i < lfd->nelts; ++i) {
         if(items[i].tag == NULL) {
@@ -1700,34 +1697,34 @@ static ap_log_formatted_data * ap_json_log_formatter( request_rec *r,
         }
 
         if (formatter_options->use_short_attribute_names) {
-                attribute_name = items[i].tag;
+                attribute_name = NULL;
         }
         else {
-            attribute_name = apr_hash_get(json_hash, items[i].tag, APR_HASH_KEY_STRING );
+            attribute_name = apr_hash_get(json_hash, items[i].tag, APR_HASH_KEY_STRING);
         }
 
         if (!attribute_name) {
-            attribute_name = ap_escape_json(r->pool, items[i].tag); // use tag as attribute name as fallback
+            attribute_name = ap_escape_logjson(r->pool, items[i].tag, NULL, 0); /* use tag as attribute name as fallback */
         }
 
         lfdj->total_len += add_str(strs, strl, "\"");
         lfdj->total_len += add_str(strs, strl, attribute_name);
 
-        // process any arguemnts as attribute name extension
+        /* process any arguments as attribute name extension */
         if(items[i].arg != NULL && strlen(items[i].arg) > 0) {
-            attribute_name = ap_escape_json(r->pool, items[i].arg);
+            attribute_name = ap_escape_logjson(r->pool, items[i].arg, NULL, 0);
             lfdj->total_len += add_str(strs, strl, " ");
             lfdj->total_len += add_str(strs, strl, attribute_name);
         }
         lfdj->total_len += add_str(strs, strl, "\":\"");
 
-        attribute_value = ap_escape_json(r->pool, lfd->portions[i]);
+        attribute_value = ap_escape_logjson(r->pool, lfd->portions[i], NULL, 0);
         lfdj->total_len += add_str(strs, strl, attribute_value);
         lfdj->total_len += add_str(strs, strl, "\",");
     }
-    // replace last '",' with '"}'
+    /* replace last '",' with '"}' */
     apr_array_pop(strs);
-    apr_array_pop(strl);
+    lfdj->total_len -= *(int *)apr_array_pop(strl);
     lfdj->total_len += add_str(strs, strl, "\"}" APR_EOL_STR);
 
     lfdj->portions = (const char **)strs->elts;
@@ -1860,7 +1857,7 @@ static apr_status_t ap_buffered_log_writer(request_rec *r,
 
 static void json_register_attribute(apr_pool_t *p, const char *tag, const char* attribute_name)
 {
-    apr_hash_set(json_hash, tag, strlen(tag), (const void *)ap_escape_json(p, attribute_name));
+    apr_hash_set(json_hash, tag, strlen(tag), (const void *)ap_escape_logjson(p, attribute_name, NULL, 0));
 }
 
 static int log_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp)

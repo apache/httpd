@@ -1869,12 +1869,16 @@ AP_DECLARE(char *) ap_escape_html2(apr_pool_t *p, const char *s, int toasc);
 AP_DECLARE(char *) ap_escape_logitem(apr_pool_t *p, const char *str);
 
 /**
- * Escape a string for JSON (https://www.rfc-editor.org/rfc/rfc8259#section-7)
+ * Escape a string for JSON UTF-8 string (https://www.rfc-editor.org/rfc/rfc8259#section-7)
+ * Assumes ISO_8859-1 encoding when encountering bytes > 0x7f
+ * Will try to parse input string as UTF-8
  * @param p The pool to allocate from
- * @param str The string to escape
+ * @param str The string to escape. Can be NULL, which will then return escaped string 'null'
+ * @param len The length of the input string. The length of the output string. Can be NULL
+ * @param quoted boolean if the output string should get quoted with \"
  * @return The escaped string
  */
-AP_DECLARE(char *) ap_escape_json(apr_pool_t *p, const char *str);
+AP_DECLARE(const char *) ap_escape_logjson(apr_pool_t *p, const char *str, apr_size_t *len, int quoted);
 
 /**
  * Escape a string for logging into the error log (without a pool)
