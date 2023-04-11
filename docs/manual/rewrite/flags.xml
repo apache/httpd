@@ -597,11 +597,17 @@ client undue influence.</p>
 
 <note type="warning">
 <title>Performance warning</title>
-<p>Using this flag triggers the use of <module>mod_proxy</module>, without handling of persistent connections. This
-means the performance of your proxy will be better if you set it up with <directive module="mod_proxy">ProxyPass</directive> or
-<directive module="mod_proxy">ProxyPassMatch</directive></p>
-<p>This is because this flag triggers the use of the default worker, which does not handle connection pooling/reuse.</p>
-<p>Avoid using this flag and prefer those directives, whenever you can.</p>
+<p>Using this flag triggers the use of <module>mod_proxy</module>, without
+handling of persistent connections as the default worker is used in this case,
+which does not handle connection pooling/reuse.</p>
+<p>In order to use persistent connections you need to setup a
+<directive module="mod_proxy">Proxy</directive> block at least for the scheme
+and host part of the target URL containing a
+<directive module="mod_proxy">ProxySet</directive> directive where you e.g. set
+a timeout.</p>
+<p>If you set it up with <directive module="mod_proxy">ProxyPass</directive> or
+<directive module="mod_proxy">ProxyPassMatch</directive> persistent connections
+will be used automatically.</p>
 </note>
 
 <p>Note: <module>mod_proxy</module> must be enabled in order
