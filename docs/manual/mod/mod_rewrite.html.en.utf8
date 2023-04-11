@@ -1315,6 +1315,16 @@ cannot use <code>$N</code> in the substitution string!
         applying the transformation. <em><a href="../rewrite/flags.html#flag_b">details ...</a></em></td>
     </tr>
 <tr class="odd">
+        <td>BCTLS</td>
+        <td>Like [B], but only escape control characters and spaces.
+        <em><a href="../rewrite/flags.html#flag_bctls">details ...</a></em></td>
+    </tr>
+<tr>
+        <td>BNE</td>
+        <td>Characters of [B] or [BCTLS] which should <strong>not</strong> be escaped.
+        <em><a href="../rewrite/flags.html#flag_bne">details ...</a></em></td>
+    </tr>
+<tr class="odd">
         <td>backrefnoplus|BNP</td>
         <td>If backreferences are being escaped, spaces should be escaped to
         %20 instead of +. Useful when the backreference will be used in the

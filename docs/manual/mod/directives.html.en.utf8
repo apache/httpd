@@ -249,6 +249,8 @@
 <li><a href="mod_dav_fs.html#davlockdb">DavLockDB</a></li>
 <li><a href="mod_dav_fs.html#davlockdiscovery">DavLockDiscovery</a></li>
 <li><a href="mod_dav.html#davmintimeout">DavMinTimeout</a></li>
+<li><a href="mod_dav.html#davmsext">DavMSext</a></li>
+<li><a href="mod_dav_fs.html#davquota">DavQuota</a></li>
 <li><a href="mod_dbd.html#dbdexptime">DBDExptime</a></li>
 <li><a href="mod_dbd.html#dbdinitsql">DBDInitSQL</a></li>
 <li><a href="mod_dbd.html#dbdkeep">DBDKeep</a></li>
@@ -327,6 +329,7 @@
 <li><a href="mod_http2.html#h2copyfiles" id="H" name="H">H2CopyFiles</a></li>
 <li><a href="mod_http2.html#h2direct">H2Direct</a></li>
 <li><a href="mod_http2.html#h2earlyhints">H2EarlyHints</a></li>
+<li><a href="mod_http2.html#h2maxdataframelen">H2MaxDataFrameLen</a></li>
 <li><a href="mod_http2.html#h2maxsessionstreams">H2MaxSessionStreams</a></li>
 <li><a href="mod_http2.html#h2maxworkeridleseconds">H2MaxWorkerIdleSeconds</a></li>
 <li><a href="mod_http2.html#h2maxworkers">H2MaxWorkers</a></li>
