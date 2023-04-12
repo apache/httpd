@@ -93,6 +93,10 @@ so backreferences are unescaped at the time they are applied.
 Using the B flag, non-alphanumeric characters in backreferences
 will be escaped. For example, consider the rule:</p>
 
+<p>For similar escaping of server-variables, see
+    the "escape" <a href="#mapfunc">mapping-function</a></p>
+
+
 <pre class="prettyprint lang-config">RewriteRule "^search/(.*)$" "/search.php?term=$1"</pre>
 
 

@@ -364,7 +364,11 @@ AliasMatch "^/myapp" "/opt/myapp-1.2.3"
                   <dd>The path component of the requested URI,
                   such as "/index.html".  This notably excludes the
                   query string which is available as its own variable
-                  named <code>QUERY_STRING</code>.</dd>
+                  named <code>QUERY_STRING</code>. The value returned for
+                  both <code>REQUEST_URI</code> 
+                  has already been %-decoded, to re-encode it pass it through
+                  the "escape" <a href="#mapfunc">mapping-function</a>.
+                  </dd>
 
                   <dt><code>THE_REQUEST</code></dt>
 
@@ -1305,7 +1309,8 @@ cannot use <code>$N</code> in the substitution string!
 <tr>
         <td>B</td>
         <td>Escape non-alphanumeric characters in backreferences <em>before</em>
-        applying the transformation. <em><a href="../rewrite/flags.html#flag_b">details ...</a></em></td>
+        applying the transformation. For similar escaping of server-variables, see
+        the "escape" <a href="#mapfunc">mapping-function</a>.<em><a href="../rewrite/flags.html#flag_b">details ...</a></em></td>
     </tr>
 <tr class="odd">
         <td>BCTLS</td>
