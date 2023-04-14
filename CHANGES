@@ -1,6 +1,11 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) mod_alias: When an alias is declared inside a Location, make sure
+     the balance of the URL is preserved to match the alias declared
+     outside a location. Fixes an error where all requests are mapped
+     to the root of the location. [Graham Leggett]
+
   *) core: Be explicit if an enclosing directive contains a path or a
      regex. [Graham Leggett]
 
