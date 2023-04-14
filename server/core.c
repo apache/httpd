@@ -2515,7 +2515,6 @@ static const char *dirsection(cmd_parms *cmd, void *mconfig, const char *arg)
     char *old_path = cmd->path;
     core_dir_config *conf;
     ap_conf_vector_t *new_dir_conf = ap_create_per_dir_config(cmd->pool);
-    ap_regex_t *r = NULL;
     const command_rec *thiscmd = cmd->cmd;
 
     const char *err = ap_check_cmd_context(cmd, NOT_IN_DIR_CONTEXT);
@@ -2538,16 +2537,17 @@ static const char *dirsection(cmd_parms *cmd, void *mconfig, const char *arg)
 
     if (!strcmp(cmd->path, "~")) {
         cmd->path = ap_getword_conf(cmd->pool, &arg);
-        if (!cmd->path)
+        if (!cmd->path) {
             return "<Directory ~ > block must specify a path";
-        r = ap_pregcomp(cmd->pool, cmd->path, AP_REG_EXTENDED|USE_ICASE);
-        if (!r) {
+        }
+        cmd->regex = ap_pregcomp(cmd->pool, cmd->path, AP_REG_EXTENDED|USE_ICASE);
+        if (!cmd->regex) {
             return "Regex could not be compiled";
         }
     }
     else if (thiscmd->cmd_data) { /* <DirectoryMatch> */
-        r = ap_pregcomp(cmd->pool, cmd->path, AP_REG_EXTENDED|USE_ICASE);
-        if (!r) {
+        cmd->regex = ap_pregcomp(cmd->pool, cmd->path, AP_REG_EXTENDED|USE_ICASE);
+        if (!cmd->regex) {
             return "Regex could not be compiled";
         }
     }
@@ -2587,13 +2587,13 @@ static const char *dirsection(cmd_parms *cmd, void *mconfig, const char *arg)
     if (errmsg != NULL)
         return errmsg;
 
-    conf->r = r;
+    conf->r = cmd->regex;
     conf->d = cmd->path;
     conf->d_is_fnmatch = (apr_fnmatch_test(conf->d) != 0);
 
-    if (r) {
+    if (cmd->regex) {
         conf->refs = apr_array_make(cmd->pool, 8, sizeof(char *));
-        ap_regname(r, conf->refs, AP_REG_MATCH, 1);
+        ap_regname(cmd->regex, conf->refs, AP_REG_MATCH, 1);
     }
 
     /* Make this explicit - the "/" root has 0 elements, that is, we
@@ -2625,7 +2625,6 @@ static const char *urlsection(cmd_parms *cmd, void *mconfig, const char *arg)
     int old_overrides = cmd->override;
     char *old_path = cmd->path;
     core_dir_config *conf;
-    ap_regex_t *r = NULL;
     const command_rec *thiscmd = cmd->cmd;
     ap_conf_vector_t *new_url_conf = ap_create_per_dir_config(cmd->pool);
     const char *err = ap_check_cmd_context(cmd, NOT_IN_DIR_CONTEXT);
@@ -2647,15 +2646,15 @@ static const char *urlsection(cmd_parms *cmd, void *mconfig, const char *arg)
     cmd->override = OR_ALL|ACCESS_CONF;
 
     if (thiscmd->cmd_data) { /* <LocationMatch> */
-        r = ap_pregcomp(cmd->pool, cmd->path, AP_REG_EXTENDED);
-        if (!r) {
+        cmd->regex = ap_pregcomp(cmd->pool, cmd->path, AP_REG_EXTENDED);
+        if (!cmd->regex) {
             return "Regex could not be compiled";
         }
     }
     else if (!strcmp(cmd->path, "~")) {
         cmd->path = ap_getword_conf(cmd->pool, &arg);
-        r = ap_pregcomp(cmd->pool, cmd->path, AP_REG_EXTENDED);
-        if (!r) {
+        cmd->regex = ap_pregcomp(cmd->pool, cmd->path, AP_REG_EXTENDED);
+        if (!cmd->regex) {
             return "Regex could not be compiled";
         }
     }
@@ -2670,11 +2669,11 @@ static const char *urlsection(cmd_parms *cmd, void *mconfig, const char *arg)
 
     conf->d = apr_pstrdup(cmd->pool, cmd->path);     /* No mangling, please */
     conf->d_is_fnmatch = apr_fnmatch_test(conf->d) != 0;
-    conf->r = r;
+    conf->r = cmd->regex;
 
-    if (r) {
+    if (cmd->regex) {
         conf->refs = apr_array_make(cmd->pool, 8, sizeof(char *));
-        ap_regname(r, conf->refs, AP_REG_MATCH, 1);
+        ap_regname(cmd->regex, conf->refs, AP_REG_MATCH, 1);
     }
 
     ap_add_per_url_conf(cmd->server, new_url_conf);
@@ -2697,7 +2696,6 @@ static const char *filesection(cmd_parms *cmd, void *mconfig, const char *arg)
     int old_overrides = cmd->override;
     char *old_path = cmd->path;
     core_dir_config *conf;
-    ap_regex_t *r = NULL;
     const command_rec *thiscmd = cmd->cmd;
     ap_conf_vector_t *new_file_conf = ap_create_per_dir_config(cmd->pool);
     const char *err = ap_check_cmd_context(cmd,
@@ -2724,15 +2722,15 @@ static const char *filesection(cmd_parms *cmd, void *mconfig, const char *arg)
     }
 
     if (thiscmd->cmd_data) { /* <FilesMatch> */
-        r = ap_pregcomp(cmd->pool, cmd->path, AP_REG_EXTENDED|USE_ICASE);
-        if (!r) {
+        cmd->regex = ap_pregcomp(cmd->pool, cmd->path, AP_REG_EXTENDED|USE_ICASE);
+        if (!cmd->regex) {
             return "Regex could not be compiled";
         }
     }
     else if (!strcmp(cmd->path, "~")) {
         cmd->path = ap_getword_conf(cmd->pool, &arg);
-        r = ap_pregcomp(cmd->pool, cmd->path, AP_REG_EXTENDED|USE_ICASE);
-        if (!r) {
+        cmd->regex = ap_pregcomp(cmd->pool, cmd->path, AP_REG_EXTENDED|USE_ICASE);
+        if (!cmd->regex) {
             return "Regex could not be compiled";
         }
     }
@@ -2757,11 +2755,11 @@ static const char *filesection(cmd_parms *cmd, void *mconfig, const char *arg)
 
     conf->d = cmd->path;
     conf->d_is_fnmatch = apr_fnmatch_test(conf->d) != 0;
-    conf->r = r;
+    conf->r = cmd->regex;
 
-    if (r) {
+    if (cmd->regex) {
         conf->refs = apr_array_make(cmd->pool, 8, sizeof(char *));
-        ap_regname(r, conf->refs, AP_REG_MATCH, 1);
+        ap_regname(cmd->regex, conf->refs, AP_REG_MATCH, 1);
     }
 
     ap_add_file_conf(cmd->pool, (core_dir_config *)mconfig, new_file_conf);

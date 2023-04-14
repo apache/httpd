@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) core: Be explicit if an enclosing directive contains a path or a
+     regex. [Graham Leggett]
+
   *) mod_http2: fixed a crash during connection termination. See PR 66539.
      [Stefan Eissing]
 
