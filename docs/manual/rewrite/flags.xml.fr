@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1909014:1909075 (outdated) -->
+<!-- English Revision: 1909087 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -83,7 +83,13 @@ ces dernières sont appliquées. Avec le drapeau B, les caractères
 non-alphanumériques des références arrières seront échappés. Considérons
 par exemple cette règle :</p>
 
-<highlight language="config">RewriteRule "^search/(.*)$" "/search.php?term=$1"</highlight>
+<p>Pour un échappement similaire des variables du serveur, voir la <a
+href="#mapfunc">fonction de mappage</a> "escape".
+</p>
+
+<highlight language="config">
+RewriteRule "^search/(.*)$" "/search.php?term=$1"
+</highlight>
 
 <p>Soit le terme de recherche 'x &amp; y/z' ; un navigateur va le coder
 en 'x%20%26%20y%2Fz', transformant la requête en
@@ -637,13 +643,20 @@ local.</p>
 </note>
 
 <note type="warning">
-      <title>Avertissement au sujet des performances</title>
-      <p>Utiliser ce drapeau fait intervenir <module>mod_proxy</module> sans la gestion des connexions
-      persistantes, ce qui signifie que vous obtiendrez des performances meilleurs si vous utilisez
-      <directive module="mod_proxy">ProxyPass</directive> ou <directive module="mod_proxy">ProxyPassMatch</directive>.</p>
-      <p>Ceci est du au fait que ce drapeau induit l'utilisation du worker par défaut, qui
-      ne gère pas la mise en commun et la réutilisation des connexions.</p>
-      <p>Partout où cela est possible, préférez l'utilisation de ces directives.</p>
+      <title>Avertissement au sujet des performances</title> 
+      <p>Utiliser ce drapeau fait intervenir <module>mod_proxy</module> sans la
+      gestion des connexions persistantes car dans ce cas, c'est le worker par
+      défaut qui est utilisé, et ce dernier ne gère pas la mise en commun et la
+      réutilisation des connexions.</p> 
+      <p>Pour utiliser les connexions persistantes, vous devez définir un bloc
+      <directive module="mod_proxy">Proxy</directive>, au moins pour les parties
+      protocole et hôte de l'URL cible, et contenant une directive <directive
+      module="mod_proxy">ProxySet</directive> où vous définissez par exemple un
+      délai.</p> 
+      <p>Si vous le définissez avec une directive <directive
+      module="mod_proxy">ProxyPass</directive> ou <directive
+      module="mod_proxy">ProxyPassMatch</directive>, les connexions persistantes
+      seront automatiquement utilisées.</p>
 </note>
 
 <p>Note: <module>mod_proxy</module> doit être activé pour pouvoir

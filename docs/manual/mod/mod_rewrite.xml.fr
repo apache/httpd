@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1908814:1909085 (outdated) -->
+<!-- English Revision: 1909085 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -718,7 +718,11 @@ la réécriture soit effectuée
 		  <dd>La partie chemin de l'URI de la requête, comme
 		  "/index.html". Ceci exclut en particulier la chaîne de
 		  paramètres de la requête qui est contenue dans la
-		  variable <code>QUERY_STRING</code>.</dd>
+		  variable <code>QUERY_STRING</code>. La valeur renvoyée pour
+		  <code>REQUEST_URI</code> a déjà été %-décodée ; pour la
+		  recoder, passez-la à la <a href="#mapfunc">fonction de
+		  mappage</a> "escape".
+		  </dd>
 
                   <dt><code>THE_REQUEST</code></dt>
 
@@ -1458,10 +1462,11 @@ substitution !
     </tr>
     <tr>
         <td>B</td>
-        <td>Echappe les caractères non-alphanumériques
-	dans les références arrières <em>avant</em>
-	d'appliquer la transformation. <em><a
-        href="../rewrite/flags.html#flag_b">détails ...</a></em></td>
+        <td>Echappe les caractères non-alphanumériques dans les références
+	arrières <em>avant</em> d'appliquer la transformation. Pour un
+	échappement similaire des variables du serveur, voir la <a
+	href="#mapfunc">fonction de mappage</a> "escape".<em><a
+	href="../rewrite/flags.html#flag_b">détails ...</a></em></td>
     </tr>
     <tr>
         <td>BCTLS</td>
