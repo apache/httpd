@@ -98,6 +98,9 @@ ces dernières sont appliquées. Avec le drapeau B, les caractères
 non-alphanumériques des références arrières seront échappés. Considérons
 par exemple cette règle :</p>
 
+<p>Pour un échappement similaire des variables du serveur, voir la <a href="#mapfunc">fonction de mappage</a> "escape".
+</p>
+
 <pre class="prettyprint lang-config">RewriteRule "^search/(.*)$" "/search.php?term=$1"</pre>
 
 
@@ -632,13 +635,17 @@ local.</p>
 </div>
 
 <div class="warning">
-      <h3>Avertissement au sujet des performances</h3>
-      <p>Utiliser ce drapeau fait intervenir <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> sans la gestion des connexions
-      persistantes, ce qui signifie que vous obtiendrez des performances meilleurs si vous utilisez
-      <code class="directive"><a href="../mod/mod_proxy.html#proxypass">ProxyPass</a></code> ou <code class="directive"><a href="../mod/mod_proxy.html#proxypassmatch">ProxyPassMatch</a></code>.</p>
-      <p>Ceci est du au fait que ce drapeau induit l'utilisation du worker par défaut, qui
-      ne gère pas la mise en commun et la réutilisation des connexions.</p>
-      <p>Partout où cela est possible, préférez l'utilisation de ces directives.</p>
+      <h3>Avertissement au sujet des performances</h3> 
+      <p>Utiliser ce drapeau fait intervenir <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> sans la
+      gestion des connexions persistantes car dans ce cas, c'est le worker par
+      défaut qui est utilisé, et ce dernier ne gère pas la mise en commun et la
+      réutilisation des connexions.</p> 
+      <p>Pour utiliser les connexions persistantes, vous devez définir un bloc
+      <code class="directive"><a href="../mod/mod_proxy.html#proxy">Proxy</a></code>, au moins pour les parties
+      protocole et hôte de l'URL cible, et contenant une directive <code class="directive"><a href="../mod/mod_proxy.html#proxyset">ProxySet</a></code> où vous définissez par exemple un
+      délai.</p> 
+      <p>Si vous le définissez avec une directive <code class="directive"><a href="../mod/mod_proxy.html#proxypass">ProxyPass</a></code> ou <code class="directive"><a href="../mod/mod_proxy.html#proxypassmatch">ProxyPassMatch</a></code>, les connexions persistantes
+      seront automatiquement utilisées.</p>
 </div>
 
 <p>Note: <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> doit être activé pour pouvoir
