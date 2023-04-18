@@ -3312,8 +3312,8 @@ spécifiées</td></tr>
     qu'il est difficile de distinguer <code>~</code> de <code>-</code>
     dans la plupart des fontes.</p>
 
-    <p>La directive <code class="directive">&lt;Location&gt;</code>
-    s'utilise principalement avec la directive <code class="directive"><a href="#sethandler">SetHandler</a></code>. Par exemple, pour activer les
+    <p>La fonctionnalité <code class="directive">&lt;Location&gt;</code>
+    est particulièrement utile avec la directive <code class="directive"><a href="#sethandler">SetHandler</a></code>. Par exemple, pour activer les
     requêtes d'état, mais ne les autoriser que depuis des navigateurs
     appartenant au domaine <code>example.com</code>, vous pouvez
     utiliser :</p>
