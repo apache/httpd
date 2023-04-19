@@ -14,6 +14,11 @@ APACHE_MODULE(userdir, mapping of requests to user-specific directories, , , mos
 APACHE_MODULE(alias, mapping of requests to different filesystem parts, , , yes)
 APACHE_MODULE(rewrite, rule based URL manipulation, , , most)
 
+if test "x$enable_rewrite" != "xno"; then
+    # mod_rewrite needs test_char.h
+    APR_ADDTO(INCLUDES, [-I\$(top_builddir)/server])
+fi
+
 APR_ADDTO(INCLUDES, [-I\$(top_srcdir)/$modpath_current])
 
 APACHE_MODPATH_FINISH

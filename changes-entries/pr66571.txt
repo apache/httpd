@@ -1,0 +1,2 @@
+  *) mod_rewrite: Add server directory to include path as mod_rewrite requires
+     test_char.h. PR 66571 [Valeria Petrov <valeria.petrov@spinetix.com>]
