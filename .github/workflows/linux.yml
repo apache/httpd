@@ -256,6 +256,7 @@ jobs:
           #     APU_VERSION=1.6.3
           # APU_CONFIG="--with-crypto --with-ldap"
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     env:
       NOTEST_CFLAGS: ${{ matrix.notest-cflags }}
       CONFIG: ${{ matrix.config }}
