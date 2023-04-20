@@ -196,6 +196,15 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c 1909215 ^/httpd/httpd/trunk .
      +1: icing,
 
+  *) mod_rewrite: Add server directory to include path as mod_rewrite requires
+     test_char.h. PR 66571
+     Trunk version of patch:
+        https://svn.apache.org/r1909241
+     Backport version for 2.4.x of patch:
+      Trunk version of patch works
+      svn merge -c 1909241 ^/httpd/httpd/trunk .
+     +1: rpluem,
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
