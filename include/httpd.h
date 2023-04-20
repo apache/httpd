@@ -1385,12 +1385,16 @@ struct server_rec {
 
     /** The name of the error log */
     char *error_fname;
+    /** true if error log file was set */
+    char errorlog_altered;
     /** A file descriptor that references the error log */
     apr_file_t *error_log;
     /** The log level configuration */
     struct ap_logconf log;
     /** External error log writer provider */
     struct ap_errorlog_provider *errorlog_provider;
+    /** argument supplied to the errorlog provider */
+    const char *errorlog_provider_argument;
     /** Handle to be passed to external log provider's logging method */
     void *errorlog_provider_handle;
 

@@ -335,16 +335,7 @@ static int open_error_log(server_rec *s, int is_main, apr_pool_t *p)
         }
 
         s->error_log = dummy;
-    }
-    else if (s->errorlog_provider) {
-        s->errorlog_provider_handle = s->errorlog_provider->init(p, s);
-        s->error_log = NULL;
-        if (!s->errorlog_provider_handle) {
-            /* provider must log something to the console */
-            return DONE;
-        }
-    }
-    else {
+    } else if (!s->errorlog_provider || s->errorlog_altered){
         fname = ap_server_root_relative(p, s->error_fname);
         if (!fname) {
             ap_log_error(APLOG_MARK, APLOG_STARTUP, APR_EBADPATH, ap_server_conf, APLOGNO(00090)
@@ -358,6 +349,22 @@ static int open_error_log(server_rec *s, int is_main, apr_pool_t *p)
             ap_log_error(APLOG_MARK, APLOG_STARTUP, rc, ap_server_conf, APLOGNO(00091)
                          "%s: could not open error log file %s.",
                          ap_server_argv0, fname);
+            return DONE;
+        }
+    } else {
+        /* When provider is actived and there is no directive specifying logfile then do
+         * not log into file */
+        s->error_log = NULL;
+    }
+
+    /* we have to check whether this is the main server, because if it is not
+     * and errorlog_provider is set, then we have to initialize handle only if it has not
+     * been inherited from the main server
+     */
+    if (s->errorlog_provider && (is_main || !s->errorlog_provider_handle)) {
+        s->errorlog_provider_handle = s->errorlog_provider->init(p, s);
+        if (!s->errorlog_provider_handle) {
+            /* provider must log something to the console */
             return DONE;
         }
     }
@@ -450,8 +457,11 @@ int ap_open_logs(apr_pool_t *pconf, apr_pool_t *p /* plog */,
         stderr_log = NULL;
     }
 
+    char perform_opening;
     for (virt = s_main->next; virt; virt = virt->next) {
+        perform_opening = 0;
         if (virt->error_fname) {
+            virt->errorlog_altered = 1;
             for (q=s_main; q != virt; q = q->next) {
                 if (q->error_fname != NULL
                     && strcmp(q->error_fname, virt->error_fname) == 0) {
@@ -460,28 +470,26 @@ int ap_open_logs(apr_pool_t *pconf, apr_pool_t *p /* plog */,
             }
 
             if (q == virt) {
-                if (open_error_log(virt, 0, p) != OK) {
-                    return DONE;
-                }
+                perform_opening = 1;
             }
             else {
                 virt->error_log = q->error_log;
             }
+        } else {
+            virt->error_log = s_main->error_log;
         }
-        else if (virt->errorlog_provider) {
+
+        if (virt->errorlog_provider) {
             /* separately-configured vhost-specific provider */
-            if (open_error_log(virt, 0, p) != OK) {
-                return DONE;
-            }
-        }
-        else if (s_main->errorlog_provider) {
+            perform_opening = 1;
+            virt->errorlog_provider_handle = NULL;
+        } else if (s_main->errorlog_provider) {
             /* inherit provider from s_main */
             virt->errorlog_provider = s_main->errorlog_provider;
             virt->errorlog_provider_handle = s_main->errorlog_provider_handle;
-            virt->error_log = NULL;
         }
-        else {
-            virt->error_log = s_main->error_log;
+        if (perform_opening && open_error_log(virt, 0, p) != OK) {
+            return DONE;
         }
     }
     return OK;
@@ -889,13 +897,6 @@ static int do_errorlog_default(const ap_errorlog_info *info, char *buf,
     char scratch[MAX_STRING_LEN];
 #endif
 
-    if (!info->using_provider && !info->startup) {
-        buf[len++] = '[';
-        len += log_ctime(info, "u", buf + len, buflen - len);
-        buf[len++] = ']';
-        buf[len++] = ' ';
-    }
-
     if (!info->startup) {
         buf[len++] = '[';
         len += log_module_name(info, NULL, buf + len, buflen - len);
@@ -1094,7 +1095,7 @@ static void log_error_core(const char *file, int line, int module_index,
 #endif
 
         logf = stderr_log;
-        if (!logf && ap_server_conf && ap_server_conf->errorlog_provider) {
+        if (ap_server_conf && ap_server_conf->errorlog_provider) {
             errorlog_provider = ap_server_conf->errorlog_provider;
             errorlog_provider_handle = ap_server_conf->errorlog_provider_handle;
         }
@@ -1171,7 +1172,7 @@ static void log_error_core(const char *file, int line, int module_index,
     info.file          = NULL;
     info.line          = 0;
     info.status        = 0;
-    info.using_provider= (logf == NULL);
+    info.using_provider= errorlog_provider && errorlog_provider_handle;
     info.startup       = ((level & APLOG_STARTUP) == APLOG_STARTUP);
     info.format        = fmt;
 
@@ -1232,15 +1233,26 @@ static void log_error_core(const char *file, int line, int module_index,
          * prepare and log one line
          */
 
+        int provider_len = 0;
+        size_t after_timestamp = 0;
+
         if (log_format && !info.startup) {
             len += do_errorlog_format(log_format, &info, errstr + len,
                                       MAX_STRING_LEN - len,
                                       &errstr_start, &errstr_end, fmt, args);
-        }
-        else {
+        } else {
+            if (!info.startup) {
+                errstr[len++] = '[';
+                len += log_ctime(&info, "u", errstr + len, MAX_STRING_LEN - len);
+                errstr[len++] = ']';
+                errstr[len++] = ' ';
+            }
+            after_timestamp = len;
             len += do_errorlog_default(&info, errstr + len, MAX_STRING_LEN - len,
                                        &errstr_start, &errstr_end, fmt, args);
         }
+
+        provider_len = len - after_timestamp;
 
         if (!*errstr) {
             /*
@@ -1250,8 +1262,7 @@ static void log_error_core(const char *file, int line, int module_index,
             continue;
         }
 
-        if (logf || (errorlog_provider->flags &
-            AP_ERRORLOG_PROVIDER_ADD_EOL_STR)) {
+        if (logf || (errorlog_provider->flags & AP_ERRORLOG_PROVIDER_ADD_EOL_STR)) {
             /* Truncate for the terminator (as apr_snprintf does) */
             if (len > MAX_STRING_LEN - sizeof(APR_EOL_STR)) {
                 len = MAX_STRING_LEN - sizeof(APR_EOL_STR);
@@ -1263,9 +1274,11 @@ static void log_error_core(const char *file, int line, int module_index,
         if (logf) {
             write_logline(errstr, len, logf, level_and_mask);
         }
-        else {
+        if (errorlog_provider_handle) {
+            if (errorlog_provider->flags & AP_ERRORLOG_PROVIDER_ADD_EOL_STR)
+                provider_len += sizeof(APR_EOL_STR);
             errorlog_provider->writer(&info, errorlog_provider_handle,
-                                      errstr, len);
+                                      errstr + after_timestamp, provider_len);
         }
 
         if (done) {

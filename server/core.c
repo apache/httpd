@@ -4550,7 +4550,6 @@ static const char *set_errorlog(cmd_parms *cmd, void *dummy, const char *arg1,
 {
     ap_errorlog_provider *provider;
     const char *err;
-    cmd->server->errorlog_provider = NULL;
 
     if (!arg2) {
         /* Stay backward compatible and check for "syslog" */
@@ -4568,12 +4567,14 @@ static const char *set_errorlog(cmd_parms *cmd, void *dummy, const char *arg1,
                 arg2 = "";
             }
             else {
+                cmd->server->errorlog_altered = 1;
                 return set_server_string_slot(cmd, dummy, arg1);
             }
         }
     }
 
     if (strcmp("file", arg1) == 0) {
+        cmd->server->errorlog_altered = 1;
         return set_server_string_slot(cmd, dummy, arg2);
     }
 
@@ -4591,7 +4592,12 @@ static const char *set_errorlog(cmd_parms *cmd, void *dummy, const char *arg1,
     }
 
     cmd->server->errorlog_provider = provider;
-    return set_server_string_slot(cmd, dummy, arg2);
+    err = ap_check_cmd_context(cmd, NOT_IN_DIR_CONTEXT);
+    if (err != NULL) {
+        return err;
+    }
+    cmd->server->errorlog_provider_argument = arg2;
+    return NULL;
 }
 
 static const char *set_errorlog_format(cmd_parms *cmd, void *dummy,
