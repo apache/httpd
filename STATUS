@@ -194,7 +194,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   *) cmake build, improve libcurl detection (github PR 356)
      trunk patch: https://svn.apache.org/r1909215
      2.4.x patch: svn merge -c 1909215 ^/httpd/httpd/trunk .
-     +1: icing,
+     +1: icing, rpluem,
 
   *) mod_rewrite: Add server directory to include path as mod_rewrite requires
      test_char.h. PR 66571
