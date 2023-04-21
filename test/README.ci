@@ -112,7 +112,7 @@ Some known failures:
   Not clear if there is a real bug here which can be reproduced
   outside of pool-debug.
 
-Testing from a Feature Branch [*** N/A FOR GITHUB ACTIONS ***]
+Testing from a Feature Branch
 -----------------------------
 
 An SVN branch off trunk should be mirrored to github, and will be
@@ -120,11 +120,7 @@ tested in the same way that trunk is in CI, so this workflow is
 available for those familiar with using Subversion and the standard
 ASF/httpd repository layout.
 
-Tested branches are listed at: https://travis-ci.com/github/apache/httpd/branches
-
-Travis will also run the tests for a PR filed against the httpd Github
-repository at https://github.com/apache/httpd or from a fork of this
-repository if enabled for the Travis user.
+Test runs are listed at: https://github.com/apache/httpd/actions
 
 A workflow to enable testing would be as follows, substituting
 $USERNAME for your github username:
@@ -137,18 +133,12 @@ $USERNAME for your github username:
   $ git commit ...
   $ git push -u $USERNAME my-feature:my-feature
 
-To enable testing for a fork, visit the settings page at
-https://travis-ci.com/$USERNAME/httpd/settings - you may need to sync
-your account via https://travis-ci.com/account/repositories for a
-freshly created fork.
-
 To create a Pull Request, go to the URL produced in the "git push"
 command output when pushing to your fork, which is something like:
 https://github.com/apache/httpd/compare/trunk...$USERNAME:trunk
 
-Once a PR has been created, travis will run the tests and link the
-results from a PR comment. All tested PRs are listed here:
-https://travis-ci.com/github/apache/httpd/pull_requests
+Once a PR has been created, the tests will run and test results
+displayed directly in the PR.
 
 To merge from github back to SVN trunk, create a patch from e.g.:
 
@@ -161,3 +151,18 @@ diverged, from a feature branch run:
   $ git rebase -i origin/trunk
 
 and follow the standard rebase steps.
+
+An alternative way to apply a PR into an SVN checkout is to use the
+apply_trunk_pr.sh script:
+https://svn.apache.org/repos/asf/httpd/dev-tools/github/apply_trunk_pr.sh
+
+If you use keywords in the SVN commit message, the PR will be closed
+when the commit is mirrored to Github, e.g. a commit message like:
+
+   mod_foo: Fix the baz feature.
+
+   PR: 12345
+   Submitted by: Jane Doe <jane example.com>
+   Github: closes #1
+
+will close PR #1 when it's merged.
