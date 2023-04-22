@@ -2513,6 +2513,7 @@ static const char *dirsection(cmd_parms *cmd, void *mconfig, const char *arg)
     const char *endp = ap_strrchr_c(arg, '>');
     int old_overrides = cmd->override;
     char *old_path = cmd->path;
+    ap_regex_t *old_regex = cmd->regex;
     core_dir_config *conf;
     ap_conf_vector_t *new_dir_conf = ap_create_per_dir_config(cmd->pool);
     const command_rec *thiscmd = cmd->cmd;
@@ -2555,6 +2556,8 @@ static const char *dirsection(cmd_parms *cmd, void *mconfig, const char *arg)
     {
         int run_mode = ap_state_query(AP_SQ_RUN_MODE);
         char *newpath;
+
+        cmd->regex = NULL;
 
         /*
          * Ensure that the pathname is canonical, and append the trailing /
@@ -2614,6 +2617,7 @@ static const char *dirsection(cmd_parms *cmd, void *mconfig, const char *arg)
 
     cmd->path = old_path;
     cmd->override = old_overrides;
+    cmd->regex = old_regex;
 
     return NULL;
 }
@@ -2624,6 +2628,7 @@ static const char *urlsection(cmd_parms *cmd, void *mconfig, const char *arg)
     const char *endp = ap_strrchr_c(arg, '>');
     int old_overrides = cmd->override;
     char *old_path = cmd->path;
+    ap_regex_t *old_regex = cmd->regex;
     core_dir_config *conf;
     const command_rec *thiscmd = cmd->cmd;
     ap_conf_vector_t *new_url_conf = ap_create_per_dir_config(cmd->pool);
@@ -2658,6 +2663,9 @@ static const char *urlsection(cmd_parms *cmd, void *mconfig, const char *arg)
             return "Regex could not be compiled";
         }
     }
+    else {
+        cmd->regex = NULL;
+    }
 
     /* initialize our config and fetch it */
     conf = ap_set_config_vectors(cmd->server, new_url_conf, cmd->path,
@@ -2685,6 +2693,7 @@ static const char *urlsection(cmd_parms *cmd, void *mconfig, const char *arg)
 
     cmd->path = old_path;
     cmd->override = old_overrides;
+    cmd->regex = old_regex;
 
     return NULL;
 }
@@ -2695,6 +2704,7 @@ static const char *filesection(cmd_parms *cmd, void *mconfig, const char *arg)
     const char *endp = ap_strrchr_c(arg, '>');
     int old_overrides = cmd->override;
     char *old_path = cmd->path;
+    ap_regex_t *old_regex = cmd->regex;
     core_dir_config *conf;
     const command_rec *thiscmd = cmd->cmd;
     ap_conf_vector_t *new_file_conf = ap_create_per_dir_config(cmd->pool);
@@ -2736,6 +2746,9 @@ static const char *filesection(cmd_parms *cmd, void *mconfig, const char *arg)
     }
     else {
         char *newpath;
+
+        cmd->regex = NULL;
+
         /* Ensure that the pathname is canonical, but we
          * can't test the case/aliases without a fixed path */
         if (apr_filepath_merge(&newpath, "", cmd->path,
@@ -2771,6 +2784,7 @@ static const char *filesection(cmd_parms *cmd, void *mconfig, const char *arg)
 
     cmd->path = old_path;
     cmd->override = old_overrides;
+    cmd->regex = old_regex;
 
     return NULL;
 }
