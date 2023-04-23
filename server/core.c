@@ -2552,9 +2552,9 @@ static const char *dirsection(cmd_parms *cmd, void *mconfig, const char *arg)
             return "Regex could not be compiled";
         }
     }
-    else if (strcmp(cmd->path, "/") != 0)
-    {
+    else if (strcmp(cmd->path, "/") != 0) {
         int run_mode = ap_state_query(AP_SQ_RUN_MODE);
+        apr_status_t rv;
         char *newpath;
 
         cmd->regex = NULL;
@@ -2562,8 +2562,8 @@ static const char *dirsection(cmd_parms *cmd, void *mconfig, const char *arg)
         /*
          * Ensure that the pathname is canonical, and append the trailing /
          */
-        apr_status_t rv = apr_filepath_merge(&newpath, NULL, cmd->path,
-                                             APR_FILEPATH_TRUENAME, cmd->pool);
+        rv = apr_filepath_merge(&newpath, NULL, cmd->path,
+                                APR_FILEPATH_TRUENAME, cmd->pool);
         if (rv != APR_SUCCESS && rv != APR_EPATHWILD) {
             return apr_pstrcat(cmd->pool, "<Directory \"", cmd->path,
                                "\"> path is invalid.", NULL);
