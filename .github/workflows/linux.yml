@@ -74,17 +74,17 @@ jobs:
               TEST_INSTALL=1
               SKIP_TESTING=1
           # -------------------------------------------------------------------------
-          - name: All-modules, APR 1.7.3, APR-util 1.6.3
+          - name: All-modules, APR 1.7.4, APR-util 1.6.3
             config: --enable-mods-shared=reallyall
             env: |
-              APR_VERSION=1.7.3
+              APR_VERSION=1.7.4
               APU_VERSION=1.6.3
               APU_CONFIG="--with-crypto --with-ldap"
           # -------------------------------------------------------------------------
-          - name: APR 1.7.x, APR-util 1.7.x
+          - name: APR 1.8.x, APR-util 1.7.x
             config: --enable-mods-shared=reallyall
             env: |
-              APR_VERSION=1.7.x
+              APR_VERSION=1.8.x
               APU_VERSION=1.7.x
               APU_CONFIG="--with-crypto --with-ldap"
               CLEAR_CACHE=1
@@ -139,11 +139,11 @@ jobs:
               TESTS="t/modules/dav.t"
             pkgs: litmus
           # -------------------------------------------------------------------------
-          - name: APR 1.7.3, APR-util 1.6.3, LDAP
+          - name: APR 1.7.4, APR-util 1.6.3, LDAP
             config: --enable-mods-shared=reallyall
             pkgs: ldap-utils
             env: |
-              APR_VERSION=1.7.3
+              APR_VERSION=1.7.4
               APU_VERSION=1.6.3
               APU_CONFIG="--with-crypto --with-ldap"
               TEST_MALLOC=1
@@ -184,7 +184,7 @@ jobs:
           #   config: --enable-mods-shared=reallyall --with-mpm=event --enable-mpms-shared=all
           #   pkgs: curl python3-pytest nghttp2-client python3-cryptography python3-requests
           #   env: |
-          #     APR_VERSION=1.7.3
+          #     APR_VERSION=1.7.4
           #     APU_VERSION=1.6.3
           #     APU_CONFIG="--with-crypto"
           #     NO_TEST_FRAMEWORK=1
@@ -201,7 +201,7 @@ jobs:
           #     python3-pytest nghttp2-client python3-cryptography python3-requests python3-filelock
           #     golang-1.17 curl
           #   env: |
-          #     APR_VERSION=1.7.3
+          #     APR_VERSION=1.7.4
           #     APU_VERSION=1.6.3
           #     APU_CONFIG="--with-crypto"
           #     GOROOT=/usr/lib/go-1.17
@@ -216,7 +216,7 @@ jobs:
           #  config: --enable-mods-shared=reallyall --with-mpm=event --enable-mpms-shared=event
           #  pkgs: curl python3-pytest nghttp2-client python3-cryptography python3-requests cargo cbindgen
           #  env: |
-          #    APR_VERSION=1.7.3
+          #    APR_VERSION=1.7.4
           #    APU_VERSION=1.6.3
           #    APU_CONFIG="--with-crypto"
           #    NO_TEST_FRAMEWORK=1
