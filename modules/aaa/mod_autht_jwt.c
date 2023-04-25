@@ -20,6 +20,17 @@
  * of JWT bearer tokens, and as an acceptor of JWT Bearer tokens for authentication.
  */
 
+/* apr_jose support requires >= 1.7 */
+#if APU_MAJOR_VERSION > 1 || \
+    (APU_MAJOR_VERSION == 1 && APU_MINOR_VERSION > 6)
+#define HAVE_APU_JOSE 1
+#endif
+
+#include "httpd.h"
+#include "http_config.h"
+
+#ifdef HAVE_APU_JOSE
+
 #include "apr_strings.h"
 #include "apr_hash.h"
 #include "apr_crypto.h"
@@ -30,8 +41,6 @@
 #include "apr_want.h"
 
 #include "ap_config.h"
-#include "httpd.h"
-#include "http_config.h"
 #include "http_core.h"
 #include "http_log.h"
 #include "http_protocol.h"
@@ -1087,3 +1096,28 @@ AP_DECLARE_MODULE(autht_jwt) =
     auth_bearer_cmds,               /* command apr_table_t */
     register_hooks                  /* register hooks */
 };
+
+#else
+
+static const command_rec auth_bearer_cmds[] =
+{
+    {NULL}
+};
+
+static void register_hooks(apr_pool_t *p)
+{
+}
+
+AP_DECLARE_MODULE(autht_jwt) =
+{
+    STANDARD20_MODULE_STUFF,
+    NULL,                           /* dir config creater */
+    NULL,                           /* dir merger --- default is to override */
+    NULL,                           /* server config */
+    NULL,                           /* merge server config */
+    auth_bearer_cmds,               /* command apr_table_t */
+    register_hooks                  /* register hooks */
+};
+
+#endif /* HAVE_APU_JOSE */
+
