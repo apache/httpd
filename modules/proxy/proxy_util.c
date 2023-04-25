@@ -2774,8 +2774,16 @@ ap_proxy_determine_connection(apr_pool_t *p, request_rec *r,
             /*
              * Looking up the backend address for the worker only makes sense if
              * we can reuse the address.
+             *
+             * As we indicate in the comment below that for retriggering a DNS
+             * lookup worker->cp->addr should be set to NULL we need to avoid
+             * a race that worker->cp->addr switches to NULL after we checked
+             * it to be non NULL but before we assign it to conn->addr in an
+             * else tree which would leave it to NULL and likely cause a
+             * segfault later.
              */
-            if (!worker->cp->addr) {
+            conn->addr = worker->cp->addr;
+            if (!conn->addr) {
 #if APR_HAS_THREADS
                 if ((err = PROXY_THREAD_LOCK(worker)) != APR_SUCCESS) {
                     ap_log_rerror(APLOG_MARK, APLOG_ERR, err, r, APLOGNO(00945) "lock");
@@ -2787,7 +2795,8 @@ ap_proxy_determine_connection(apr_pool_t *p, request_rec *r,
                  * Recheck addr after we got the lock. This may have changed
                  * while waiting for the lock.
                  */
-                if (!AP_VOLATILIZE_T(apr_sockaddr_t *, worker->cp->addr)) {
+                conn->addr = AP_VOLATILIZE_T(apr_sockaddr_t *, worker->cp->addr);
+                if (!conn->addr) {
 
                     apr_sockaddr_t *addr;
 
@@ -2801,17 +2810,14 @@ ap_proxy_determine_connection(apr_pool_t *p, request_rec *r,
                                                 conn->hostname, APR_UNSPEC,
                                                 conn->port, 0,
                                                 worker->cp->dns_pool);
+                    conn->addr = addr;
                     worker->cp->addr = addr;
                 }
-                conn->addr = worker->cp->addr;
 #if APR_HAS_THREADS
                 if ((uerr = PROXY_THREAD_UNLOCK(worker)) != APR_SUCCESS) {
                     ap_log_rerror(APLOG_MARK, APLOG_ERR, uerr, r, APLOGNO(00946) "unlock");
                 }
 #endif
-            }
-            else {
-                conn->addr = worker->cp->addr;
             }
         }
     }
