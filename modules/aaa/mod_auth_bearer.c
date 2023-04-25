@@ -278,7 +278,7 @@ static int authenticate_bearer_token(request_rec *r)
                                           AUTHT_PROVIDER_VERSION);
 
             if (!provider || !provider->check_token) {
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01616)
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(10424)
                               "No Autht provider configured");
                 auth_result = AUTHT_GENERAL_ERROR;
                 break;
@@ -317,28 +317,28 @@ static int authenticate_bearer_token(request_rec *r)
 
         switch (auth_result) {
         case AUTHT_DENIED:
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO()
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(10425)
                       "bearer token %s: authentication failure for \"%s\": "
                       "Token Rejected",
                       sent_token, r->uri);
             return_code = HTTP_UNAUTHORIZED;
             break;
         case AUTHT_EXPIRED:
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO()
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(10426)
                       "bearer token %s: authentication failure for \"%s\": "
                       "Token has expired",
                       sent_token, r->uri);
             return_code = HTTP_UNAUTHORIZED;
             break;
         case AUTHT_INVALID:
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO()
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(10427)
                       "bearer token %s: authentication failure for \"%s\": "
                       "Token is not yet valid",
                       sent_token, r->uri);
             return_code = HTTP_UNAUTHORIZED;
             break;
         case AUTHT_MISMATCH:
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO()
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(10428)
                       "bearer token %s: did not match '%s': %s", sent_token,
 					  ap_auth_name(r), r->uri);
             return_code = HTTP_UNAUTHORIZED;
@@ -377,12 +377,12 @@ static int authenticate_bearer_fixup(request_rec *r)
 
     token = ap_expr_str_exec(r, conf->proxy, &err);
     if (err) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(02455)
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(10429)
                       "AuthBearerProxy: could not evaluate token expression for URI '%s': %s", r->uri, err);
         return HTTP_INTERNAL_SERVER_ERROR;
     }
     if (!token || !*token) {
-        ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(02458)
+        ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(10430)
                       "AuthBearerProxy: empty token expression for URI '%s', ignoring", r->uri);
 
         apr_table_unset(r->headers_in, "Authorization");
@@ -394,7 +394,7 @@ static int authenticate_bearer_fixup(request_rec *r)
                             NULL);
     apr_table_setn(r->headers_in, "Authorization", auth_line);
 
-    ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(02457)
+    ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(10431)
                   "AuthBearerProxy: \"Authorization: %s\"",
                   auth_line);
 

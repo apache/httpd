@@ -108,7 +108,7 @@ static int auth_bearer_init(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp,
             rv = apr_crypto_init(p);
             if (APR_SUCCESS != rv) {
                 ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
-                        APLOGNO() "APR crypto could not be initialised");
+                        APLOGNO(10432) "APR crypto could not be initialised");
                 return rv;
             }
 
@@ -116,25 +116,25 @@ static int auth_bearer_init(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp,
                     &err, p);
             if (APR_EREINIT == rv) {
                 ap_log_error(APLOG_MARK, APLOG_WARNING, rv, s,
-                        APLOGNO() "warning: crypto for '%s' was already initialised, " "using existing configuration",
+                        APLOGNO(10433) "warning: crypto for '%s' was already initialised, " "using existing configuration",
                         conf->library);
                 rv = APR_SUCCESS;
             }
             if (APR_SUCCESS != rv && err) {
                 ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
-                        APLOGNO() "The crypto library '%s' could not be loaded: %s (%s: %d)",
+                        APLOGNO(10434) "The crypto library '%s' could not be loaded: %s (%s: %d)",
                         conf->library, err->msg, err->reason, err->rc);
                 return rv;
             }
             if (APR_ENOTIMPL == rv) {
                 ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
-                        APLOGNO() "The crypto library '%s' could not be found",
+                        APLOGNO(10435) "The crypto library '%s' could not be found",
                         conf->library);
                 return rv;
             }
             if (APR_SUCCESS != rv || !driver) {
                 ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
-                        APLOGNO() "The crypto library '%s' could not be loaded",
+                        APLOGNO(10436) "The crypto library '%s' could not be loaded",
                         conf->library);
                 return rv;
             }
@@ -142,13 +142,13 @@ static int auth_bearer_init(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp,
             rv = apr_crypto_make(conf->crypto, driver, conf->params, p);
             if (APR_SUCCESS != rv) {
                 ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
-                        APLOGNO() "The crypto library '%s' could not be initialised",
+                        APLOGNO(10437) "The crypto library '%s' could not be initialised",
                         conf->library);
                 return rv;
             }
 
             ap_log_error(APLOG_MARK, APLOG_INFO, rv, s,
-                    APLOGNO() "The crypto library '%s' was loaded successfully",
+                    APLOGNO(10438) "The crypto library '%s' was loaded successfully",
                     conf->library);
 
         }
@@ -459,7 +459,7 @@ static int claim_iter(void *ctx, const void *key, apr_ssize_t klen,
 
     value = ap_expr_str_exec(r, val, &err);
     if (err) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO()
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(10439)
                 "AuthtJwtClaim: could not evaluate '%s' expression "
                 "'%s' for URI '%s': %s",
                 (char * )key, (char * )val, r->uri, err);
@@ -611,7 +611,7 @@ static const char *jwt_get_token(request_rec *r)
 
     if (!conf->claims || !apr_hash_count(conf->claims)) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, APR_SUCCESS, r,
-                APLOGNO() "AuthtJwtClaim: could not encode a JWT token for URI '%s': no claims",
+                APLOGNO(10440) "AuthtJwtClaim: could not encode a JWT token for URI '%s': no claims",
                 r->uri);
         return "error:no-claims";
     }
@@ -677,7 +677,7 @@ static const char *jwt_get_token(request_rec *r)
     if (APR_SUCCESS != status) {
         const apu_err_t *err = apr_jose_error(&jws);
         ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r,
-                APLOGNO() "AuthtJwtClaim: could not encode a JWT token for URI '%s': %s: %s",
+                APLOGNO(10441) "AuthtJwtClaim: could not encode a JWT token for URI '%s': %s: %s",
                 r->uri, err->msg, err->reason);
         return "error:could-not-encode";
     }
@@ -945,14 +945,14 @@ static autht_status check_token(request_rec *r, const char *type,
     if (APR_SUCCESS != status) {
         const apu_err_t *err = apr_jose_error(jose);
         ap_log_rerror(APLOG_MARK, APLOG_DEBUG, status, r,
-                APLOGNO() "AuthtJwt: could not decode a JWT token for URI '%s': %s: %s",
+                APLOGNO(10442) "AuthtJwt: could not decode a JWT token for URI '%s': %s: %s",
                 r->uri, err->msg, err->reason);
         return AUTHT_DENIED;
     }
 
     if (jose->type != APR_JOSE_TYPE_JWT) {
         ap_log_rerror(APLOG_MARK, APLOG_DEBUG, status, r,
-                APLOGNO() "AuthtJwt: JOSE token was not a JWT token for URI '%s'",
+                APLOGNO(10443) "AuthtJwt: JOSE token was not a JWT token for URI '%s'",
                 r->uri);
         return AUTHT_DENIED;
     }
@@ -999,14 +999,14 @@ static autht_status check_token(request_rec *r, const char *type,
 
     if (!aud) {
         ap_log_rerror(APLOG_MARK, APLOG_DEBUG, status, r,
-                APLOGNO() "AuthtJwt: JWT token 'aud' value was missing and did not match AuthName '%s' for URI '%s'",
+                APLOGNO(10444) "AuthtJwt: JWT token 'aud' value was missing and did not match AuthName '%s' for URI '%s'",
                 ap_auth_name(r), r->uri);
         return AUTHT_MISMATCH;
     }
 
     if (strcmp(aud, ap_auth_name(r))) {
         ap_log_rerror(APLOG_MARK, APLOG_DEBUG, status, r,
-                APLOGNO() "AuthtJwt: JWT token 'aud' value '%s' did not match AuthName '%s' for URI '%s'",
+                APLOGNO(10445) "AuthtJwt: JWT token 'aud' value '%s' did not match AuthName '%s' for URI '%s'",
                 aud, ap_auth_name(r), r->uri);
         return AUTHT_MISMATCH;
     }
@@ -1017,7 +1017,7 @@ static autht_status check_token(request_rec *r, const char *type,
         if (exp_set &&
                 exp < apr_time_sec(now)) {
             ap_log_rerror(APLOG_MARK, APLOG_DEBUG, status, r,
-                    APLOGNO() "AuthtJwt: JWT token is expired (%"
+                    APLOGNO(10446) "AuthtJwt: JWT token is expired (%"
                     APR_INT64_T_FMT " < %" APR_TIME_T_FMT ") for URI '%s'",
                     exp, apr_time_sec(now), r->uri);
             return AUTHT_EXPIRED;
@@ -1026,7 +1026,7 @@ static autht_status check_token(request_rec *r, const char *type,
         if (nbf_set &&
                 nbf > apr_time_sec(now)) {
             ap_log_rerror(APLOG_MARK, APLOG_DEBUG, status, r,
-                    APLOGNO() "AuthtJwt: JWT token is not yet valid (%"
+                    APLOGNO(10447) "AuthtJwt: JWT token is not yet valid (%"
                     APR_INT64_T_FMT " > %" APR_TIME_T_FMT ") for URI '%s'",
                     nbf, apr_time_sec(now), r->uri);
             return AUTHT_INVALID;
