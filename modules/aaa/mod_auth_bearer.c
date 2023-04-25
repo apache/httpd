@@ -217,7 +217,7 @@ static int get_bearer_auth(request_rec *r, const char **token)
 
     if (strcasecmp(ap_getword(r->pool, &auth_line, ' '), "Bearer")) {
         /* Client tried to authenticate using wrong auth scheme */
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01614)
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(10448)
                       "client used wrong authentication scheme: %s", r->uri);
         note_bearer_auth_failure(r);
         return HTTP_UNAUTHORIZED;
@@ -253,7 +253,7 @@ static int authenticate_bearer_token(request_rec *r)
 
     /* We need an authentication realm. */
     if (!ap_auth_name(r)) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01615)
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(10449)
                       "need AuthName: %s", r->uri);
         return HTTP_INTERNAL_SERVER_ERROR;
     }
