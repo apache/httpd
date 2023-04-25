@@ -2792,7 +2792,7 @@ ap_proxy_determine_connection(apr_pool_t *p, request_rec *r,
                      * inside dynamic config to force the lookup.
                      *
                      * Clear the dns_pool before to avoid a memory leak in case
-                     * we did the lookup again.
+                     * we did the lookup already in the past.
                      */
                     apr_pool_clear(worker->cp->dns_pool);
                     err = apr_sockaddr_info_get(&addr,
