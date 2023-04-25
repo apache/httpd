@@ -2805,7 +2805,11 @@ ap_proxy_determine_connection(apr_pool_t *p, request_rec *r,
                      * The single DNS lookup is used once per worker.
                      * If dynamic change is needed then set the addr to NULL
                      * inside dynamic config to force the lookup.
+                     *
+                     * Clear the dns_pool before to avoid a memory leak in case
+                     * we did the lookup again.
                      */
+                    apr_pool_clear(worker->cp->dns_pool);
                     err = apr_sockaddr_info_get(&addr,
                                                 conn->hostname, APR_UNSPEC,
                                                 conn->port, 0,
