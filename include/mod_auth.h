@@ -36,15 +36,20 @@
 extern "C" {
 #endif
 
+#define AUTHT_PROVIDER_GROUP "autht"
 #define AUTHN_PROVIDER_GROUP "authn"
 #define AUTHZ_PROVIDER_GROUP "authz"
+#define AUTHT_PROVIDER_VERSION "0"
 #define AUTHN_PROVIDER_VERSION "0"
 #define AUTHZ_PROVIDER_VERSION "0"
+#define AUTHT_DEFAULT_PROVIDER "jwt"
 #define AUTHN_DEFAULT_PROVIDER "file"
 
+#define AUTHT_PROVIDER_NAME_NOTE "autht_provider_name"
 #define AUTHN_PROVIDER_NAME_NOTE "authn_provider_name"
 #define AUTHZ_PROVIDER_NAME_NOTE "authz_provider_name"
 
+#define AUTHT_PREFIX "TOKEN_"
 #define AUTHN_PREFIX "AUTHENTICATE_"
 #define AUTHZ_PREFIX "AUTHORIZE_"
 
@@ -71,6 +76,15 @@ typedef enum {
 } authn_status;
 
 typedef enum {
+    AUTHT_DENIED = AUTH_DENIED,
+    AUTHT_GRANTED = AUTH_GRANTED,
+    AUTHT_GENERAL_ERROR = AUTH_GENERAL_ERROR,
+    AUTHT_MISMATCH,
+    AUTHT_EXPIRED,
+    AUTHT_INVALID
+} autht_status;
+
+typedef enum {
     AUTHZ_DENIED,
     AUTHZ_GRANTED,
     AUTHZ_NEUTRAL,
@@ -81,15 +95,20 @@ typedef enum {
 typedef struct {
     /* Given a username and password, expected to return AUTH_GRANTED
      * if we can validate this user/password combination.
+     *
+     * Use with AUTHN_PROVIDER_VERSION / AUTHN_PROVIDER_VERSION1 providers.
      */
     authn_status (*check_password)(request_rec *r, const char *user,
                                    const char *password);
 
     /* Given a user and realm, expected to return AUTH_USER_FOUND if we
      * can find a md5 hash of 'user:realm:password'
+     *
+     * Use with AUTHN_PROVIDER_VERSION / AUTHN_PROVIDER_VERSION1 providers.
      */
     authn_status (*get_realm_hash)(request_rec *r, const char *user,
                                    const char *realm, char **rethash);
+
 } authn_provider;
 
 /* A linked-list of authn providers. */
@@ -99,6 +118,24 @@ struct authn_provider_list {
     const char *provider_name;
     const authn_provider *provider;
     authn_provider_list *next;
+};
+
+typedef struct {
+    /* Given a token of a given type, expected to return AUTH_GRANTED
+     * if the token could be successfully authenticated.
+     */
+    autht_status (*check_token)(request_rec *r, const char *type,
+                                const char *token);
+
+} autht_provider;
+
+/* A linked-list of authn providers. */
+typedef struct autht_provider_list autht_provider_list;
+
+struct autht_provider_list {
+    const char *provider_name;
+    const autht_provider *provider;
+    autht_provider_list *next;
 };
 
 typedef struct {

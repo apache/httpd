@@ -481,6 +481,19 @@ AP_DECLARE_HOOK(int,access_checker_ex,(request_rec *r))
 AP_DECLARE_HOOK(int,auth_checker,(request_rec *r))
 
 /**
+ * This hook is used to parse any tokens in the request that might key
+ * or contain metadata such as users or IP addresses that may be
+ * relevant to the request. It runs before the access checker. This
+ * hook should be registered with ap_hook_check_autht().
+ *
+ * @param r the current request
+ * @return OK, DECLINED, or HTTP_...
+ * @ingroup hooks
+ * @see ap_hook_check_authz
+ */
+AP_DECLARE_HOOK(int,token_checker,(request_rec *r))
+
+/**
  * Register a hook function that will apply additional access control to
  * the current request.
  * @param pf An access_checker hook function
@@ -516,6 +529,24 @@ AP_DECLARE(void) ap_hook_check_access_ex(ap_HOOK_access_checker_ex_t *pf,
                                          const char * const *aszSucc,
                                          int nOrder, int type);
 
+/**
+ * Register a hook function that will analyze the request headers, extract
+ * any tokens, and apply and metadata contained in the tokens or keyed against
+ * the tokens to the request record.
+ * @param pf A token_checker hook function
+ * @param aszPre A NULL-terminated array of strings that name modules whose
+ *               hooks should precede this one
+ * @param aszSucc A NULL-terminated array of strings that name modules whose
+ *                hooks should succeed this one
+ * @param nOrder An integer determining order before honouring aszPre and
+ *               aszSucc (for example, HOOK_MIDDLE)
+ * @param type Internal request processing mode, either
+ *             AP_AUTH_INTERNAL_PER_URI or AP_AUTH_INTERNAL_PER_CONF
+ */
+AP_DECLARE(void) ap_hook_check_autht(ap_HOOK_check_user_id_t *pf,
+                                     const char * const *aszPre,
+                                     const char * const *aszSucc,
+                                     int nOrder, int type);
 
 /**
  * Register a hook function that will analyze the request headers,

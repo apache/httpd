@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) core: Add the token_checker hook, that allows authentication to take
+     place using mechanisms other than username/password, such as bearer
+     tokens. [Graham Leggett]
+
   *) mod_alias: When an alias is declared inside a Location, make sure
      the balance of the URL is preserved to match the alias declared
      outside a location. Fixes an error where all requests are mapped
