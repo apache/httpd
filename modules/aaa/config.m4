@@ -6,6 +6,16 @@ dnl APACHE_MODULE(name, helptext[, objects[, structname[, default[, config]]]])
 
 APACHE_MODPATH_INIT(aaa)
 
+dnl Token modules: modules that parse or reference a token, that may
+dnl contain or reference further data like usernames, or IP addresses.
+dnl
+APACHE_MODULE(autht_jwt, RFC7519 JSON Web Token based authentication control, , , most)
+
+dnl General Authentication modules; module which implements the 
+dnl non-autht module specific directives.
+dnl
+APACHE_MODULE(autht_core, core token authentication module, , , yes)
+
 dnl Authentication modules; modules checking a username and password against a
 dnl file, database, or other similar magic.
 dnl
@@ -67,6 +77,7 @@ APACHE_MODULE(access_compat, mod_access compatibility, , , yes)
 dnl these are the front-end authentication modules
 
 APACHE_MODULE(auth_basic, basic authentication, , , yes)
+APACHE_MODULE(auth_bearer, bearer authentication, , , yes)
 APACHE_MODULE(auth_form, form authentication, , , most)
 APACHE_MODULE(auth_digest, RFC2617 Digest authentication, , , most, [
   APR_CHECK_APR_DEFINE(APR_HAS_RANDOM)

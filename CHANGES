@@ -1,6 +1,17 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) mod_autht_jwt: New module to handle RFC 7519 JWT tokens within
+     bearer tokens, both as part of the aaa framework, and as a way to
+     generate tokens and pass them to backend servers and services.
+     [Graham Leggett]
+
+  *) mod_auth_bearer: New module to handle RFC 6750 Bearer tokens, using
+     the token_checker hook. [Graham Leggett]
+
+  *) mod_autht_core: New module to handle provider aliases for token
+     authentication. [Graham Leggett]
+
   *) core: Add the token_checker hook, that allows authentication to take
      place using mechanisms other than username/password, such as bearer
      tokens. [Graham Leggett]
