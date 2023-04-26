@@ -186,7 +186,8 @@ static int status_handler(request_rec *r)
     apr_uint32_t up_time;
     ap_loadavg_t t;
     int j, i, res, written;
-    int ready;
+    int idle;
+    int graceful;
     int busy;
     unsigned long count;
     unsigned long lres, my_lres, conn_lres;
@@ -203,6 +204,7 @@ static int status_handler(request_rec *r)
     char *stat_buffer;
     pid_t *pid_buffer, worker_pid;
     int *thread_idle_buffer = NULL;
+    int *thread_graceful_buffer = NULL;
     int *thread_busy_buffer = NULL;
     clock_t tu, ts, tcu, tcs;
     clock_t gu, gs, gcu, gcs;
@@ -231,7 +233,8 @@ static int status_handler(request_rec *r)
 #endif
 #endif
 
-    ready = 0;
+    idle = 0;
+    graceful = 0;
     busy = 0;
     count = 0;
     bcount = 0;
@@ -250,6 +253,7 @@ static int status_handler(request_rec *r)
     stat_buffer = apr_palloc(r->pool, server_limit * thread_limit * sizeof(char));
     if (is_async) {
         thread_idle_buffer = apr_palloc(r->pool, server_limit * sizeof(int));
+        thread_graceful_buffer = apr_palloc(r->pool, server_limit * sizeof(int));
         thread_busy_buffer = apr_palloc(r->pool, server_limit * sizeof(int));
     }
 
@@ -318,6 +322,7 @@ static int status_handler(request_rec *r)
         ps_record = ap_get_scoreboard_process(i);
         if (is_async) {
             thread_idle_buffer[i] = 0;
+            thread_graceful_buffer[i] = 0;
             thread_busy_buffer[i] = 0;
         }
         for (j = 0; j < thread_limit; ++j) {
@@ -336,18 +341,20 @@ static int status_handler(request_rec *r)
                 && ps_record->pid) {
                 if (res == SERVER_READY) {
                     if (ps_record->generation == mpm_generation)
-                        ready++;
+                        idle++;
                     if (is_async)
                         thread_idle_buffer[i]++;
                 }
                 else if (res != SERVER_DEAD &&
                          res != SERVER_STARTING &&
                          res != SERVER_IDLE_KILL) {
-                    busy++;
-                    if (is_async) {
-                        if (res == SERVER_GRACEFUL)
-                            thread_idle_buffer[i]++;
-                        else
+                    if (res == SERVER_GRACEFUL)
+                        graceful++;
+                        if (is_async) {
+                            thread_graceful_buffer[i]++;
+                    } else {
+                        busy++;
+                        if (is_async)
                             thread_busy_buffer[i]++;
                     }
                 }
@@ -548,10 +555,10 @@ static int status_handler(request_rec *r)
     } /* ap_extended_status */
 
     if (!short_report)
-        ap_rprintf(r, "<dt>%d requests currently being processed, "
-                      "%d idle workers</dt>\n", busy, ready);
+        ap_rprintf(r, "<dt>%d requests currently being processed, %d workers gracefully restarting, "
+                      "%d idle workers</dt>\n", busy, graceful, idle);
     else
-        ap_rprintf(r, "BusyWorkers: %d\nIdleWorkers: %d\n", busy, ready);
+        ap_rprintf(r, "BusyWorkers: %d\nGracefulWorkers: %d\nIdleWorkers: %d\n", busy, graceful, idle);
 
     if (!short_report)
         ap_rputs("</dl>", r);
@@ -559,11 +566,6 @@ static int status_handler(request_rec *r)
     if (is_async) {
         int write_completion = 0, lingering_close = 0, keep_alive = 0,
             connections = 0, stopping = 0, procs = 0;
-        /*
-         * These differ from 'busy' and 'ready' in how gracefully finishing
-         * threads are counted. XXX: How to make this clear in the html?
-         */
-        int busy_workers = 0, idle_workers = 0;
         if (!short_report)
             ap_rputs("\n\n<table rules=\"all\" cellpadding=\"1%\">\n"
                      "<tr><th rowspan=\"2\">Slot</th>"
@@ -573,7 +575,7 @@ static int status_handler(request_rec *r)
                          "<th colspan=\"2\">Threads</th>"
                          "<th colspan=\"3\">Async connections</th></tr>\n"
                      "<tr><th>total</th><th>accepting</th>"
-                         "<th>busy</th><th>idle</th>"
+                         "<th>busy</th><th>graceful</th><th>idle</th>"
                          "<th>writing</th><th>keep-alive</th><th>closing</th></tr>\n", r);
         for (i = 0; i < server_limit; ++i) {
             ps_record = ap_get_scoreboard_process(i);
@@ -582,8 +584,6 @@ static int status_handler(request_rec *r)
                 write_completion += ps_record->write_completion;
                 keep_alive       += ps_record->keep_alive;
                 lingering_close  += ps_record->lingering_close;
-                busy_workers     += thread_busy_buffer[i];
-                idle_workers     += thread_idle_buffer[i];
                 procs++;
                 if (ps_record->quiescing) {
                     stopping++;
@@ -599,7 +599,7 @@ static int status_handler(request_rec *r)
                     ap_rprintf(r, "<tr><td>%u</td><td>%" APR_PID_T_FMT "</td>"
                                       "<td>%s%s</td>"
                                       "<td>%u</td><td>%s</td>"
-                                      "<td>%u</td><td>%u</td>"
+                                      "<td>%u</td><td>%u</td><td>%u</td>"
                                       "<td>%u</td><td>%u</td><td>%u</td>"
                                       "</tr>\n",
                                i, ps_record->pid,
@@ -607,6 +607,7 @@ static int status_handler(request_rec *r)
                                ps_record->connections,
                                ps_record->not_accepting ? "no" : "yes",
                                thread_busy_buffer[i],
+                               thread_graceful_buffer[i],
                                thread_idle_buffer[i],
                                ps_record->write_completion,
                                ps_record->keep_alive,
@@ -618,25 +619,22 @@ static int status_handler(request_rec *r)
             ap_rprintf(r, "<tr><td>Sum</td>"
                           "<td>%d</td><td>%d</td>"
                           "<td>%d</td><td>&nbsp;</td>"
-                          "<td>%d</td><td>%d</td>"
+                          "<td>%d</td><td>%d</td><td>%d</td>"
                           "<td>%d</td><td>%d</td><td>%d</td>"
                           "</tr>\n</table>\n",
                           procs, stopping,
                           connections,
-                          busy_workers, idle_workers,
+                          busy, graceful, idle,
                           write_completion, keep_alive, lingering_close);
         }
         else {
             ap_rprintf(r, "Processes: %d\n"
                           "Stopping: %d\n"
-                          "BusyWorkers: %d\n"
-                          "IdleWorkers: %d\n"
                           "ConnsTotal: %d\n"
                           "ConnsAsyncWriting: %d\n"
                           "ConnsAsyncKeepAlive: %d\n"
                           "ConnsAsyncClosing: %d\n",
                           procs, stopping,
-                          busy_workers, idle_workers,
                           connections,
                           write_completion, keep_alive, lingering_close);
         }
