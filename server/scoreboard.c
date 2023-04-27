@@ -654,7 +654,7 @@ AP_DECLARE(void) ap_time_process_request(ap_sb_handle_t *sbh, int status)
     }
 }
 
-AP_DECLARE(int) ap_update_global_status()
+AP_DECLARE(int) ap_update_global_status(void)
 {
 #ifdef HAVE_TIMES
     if (ap_scoreboard_image == NULL) {
@@ -708,7 +708,7 @@ AP_DECLARE(process_score *) ap_get_scoreboard_process(int x)
     return &ap_scoreboard_image->parent[x];
 }
 
-AP_DECLARE(global_score *) ap_get_scoreboard_global()
+AP_DECLARE(global_score *) ap_get_scoreboard_global(void)
 {
     return ap_scoreboard_image->global;
 }
