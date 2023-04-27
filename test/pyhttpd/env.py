@@ -96,9 +96,8 @@ class HttpdTestSetup:
         self.env.clear_curl_headerfiles()
 
     def _make_dirs(self):
-        if os.path.exists(self.env.gen_dir):
-            shutil.rmtree(self.env.gen_dir)
-        os.makedirs(self.env.gen_dir)
+        if not os.path.exists(self.env.gen_dir):
+            os.makedirs(self.env.gen_dir)
         if not os.path.exists(self.env.server_logs_dir):
             os.makedirs(self.env.server_logs_dir)
 
