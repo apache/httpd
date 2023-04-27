@@ -29,9 +29,9 @@ def get_request_params():
                 oforms[name] = values[0]
         elif ctype.startswith("multipart/"):
             def on_field(field):
-                oforms[field.field_name] = field.value
+                oforms[field.field_name.decode()] = field.value.decode()
             def on_file(file):
-                ofiles[field.field_name] = field.value
+                ofiles[file.field_name.decode()] = file.value
             multipart.parse_form(headers={"Content-Type": ctype}, input_stream=sys.stdin.buffer, on_field=on_field, on_file=on_file)
     return oforms, ofiles
 

@@ -17,13 +17,14 @@ class TestInvalidHeaders:
     def test_h2_200_01(self, env):
         url = env.mkurl("https", "cgi", "/hecho.py")
         for x in range(1, 32):
-            r = env.curl_post_data(url, "name=x%%%02xx&value=yz" % x)
+            data = f'name=x%{x:02x}x&value=yz'
+            r = env.curl_post_data(url, data)
             if x in [13]:
-                assert 0 == r.exit_code, "unexpected exit code for char 0x%02x" % x
-                assert 200 == r.response["status"], "unexpected status for char 0x%02x" % x
+                assert 0 == r.exit_code, f'unexpected exit code for char 0x{x:02}'
+                assert 200 == r.response["status"], f'unexpected status for char 0x{x:02}'
             else:
-                assert 0 == r.exit_code, "unexpected exit code for char 0x%02x" % x
-                assert 500 == r.response["status"], "unexpected status for char 0x%02x" % x
+                assert 0 == r.exit_code, f'"unexpected exit code for char 0x{x:02}'
+                assert 500 == r.response["status"], f'posting "{data}" unexpected status, {r}'
 
     # let the hecho.py CGI echo chars < 0x20 in field value
     # for almost all such characters, the stream returns a 500

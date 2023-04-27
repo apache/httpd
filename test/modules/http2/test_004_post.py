@@ -124,6 +124,7 @@ class TestPost:
         r = env.nghttp().upload_file(url, fpath, options=options)
         assert r.exit_code == 0
         assert r.response["status"] >= 200 and r.response["status"] < 300
+        assert 'location' in r.response["header"], f'{r}'
         assert r.response["header"]["location"]
 
         r2 = env.nghttp().get(r.response["header"]["location"])

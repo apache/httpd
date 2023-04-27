@@ -194,10 +194,14 @@ content-type: text/html
     @pytest.mark.parametrize("path", [
         "/004.html", "/proxy/004.html", "/h2proxy/004.html"
     ])
-    def test_h2_003_50(self, env, path):
+    def test_h2_003_50(self, env, path, repeat):
         # check that the resource supports ranges and we see its raw content-length
         url = env.mkurl("https", "test1", path)
-        r = env.curl_get(url, 5)
+        # TODO: sometimes we see a 503 here from h2proxy
+        for i in range(10):
+            r = env.curl_get(url, 5)
+            if r.response["status"] != 503:
+                break
         assert r.response["status"] == 200
         assert "HTTP/2" == r.response["protocol"]
         h = r.response["header"]

@@ -1,38 +1,7 @@
 #!/usr/bin/env python3
 import os
 import sys
-from urllib import parse
-import multipart # https://github.com/andrew-d/python-multipart (`apt install python3-multipart`)
-
-
-try:  # Windows needs stdio set for binary mode.
-    import msvcrt
-
-    msvcrt.setmode(0, os.O_BINARY)  # stdin  = 0
-    msvcrt.setmode(1, os.O_BINARY)  # stdout = 1
-except ImportError:
-    pass
-
-def get_request_params():
-    oforms = {}
-    ofiles = {}
-    if "REQUEST_URI" in os.environ:
-        qforms = parse.parse_qs(parse.urlsplit(os.environ["REQUEST_URI"]).query)
-        for name, values in qforms.items():
-            oforms[name] = values[0]
-    if "HTTP_CONTENT_TYPE" in os.environ:
-        ctype = os.environ["HTTP_CONTENT_TYPE"]
-        if ctype == "application/x-www-form-urlencoded":
-            qforms = parse.parse_qs(parse.urlsplit(sys.stdin.read()).query)
-            for name, values in qforms.items():
-                oforms[name] = values[0]
-        elif ctype.startswith("multipart/"):
-            def on_field(field):
-                oforms[field.field_name] = field.value
-            def on_file(file):
-                ofiles[field.field_name] = field.value
-            multipart.parse_form(headers={"Content-Type": ctype}, input_stream=sys.stdin.buffer, on_field=on_field, on_file=on_file)
-    return oforms, ofiles
+from requestparser import get_request_params
 
 
 forms, files = get_request_params()
@@ -43,9 +12,9 @@ status = '200 Ok'
 if 'file' in files:
     fitem = files['file']
     # strip leading path from file name to avoid directory traversal attacks
-    fname = fitem.filename
+    fname = os.path.basename(fitem.file_name)
     fpath = f'{os.environ["DOCUMENT_ROOT"]}/files/{fname}'
-    fitem.save_as(fpath)
+    fitem.save_to(fpath)
     message = "The file %s was uploaded successfully" % (fname)
     print("Status: 201 Created")
     print("Content-Type: text/html")
