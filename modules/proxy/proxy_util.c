@@ -3206,6 +3206,7 @@ PROXY_DECLARE(int) ap_proxy_connect_backend(const char *proxy_function,
     apr_sockaddr_t *local_addr;
     apr_socket_t *newsock;
     void *sconf = s->module_config;
+    int did_dns_lookup = 0;
     proxy_server_conf *conf =
         (proxy_server_conf *) ap_get_module_config(sconf, &proxy_module);
 
@@ -3345,6 +3346,23 @@ PROXY_DECLARE(int) ap_proxy_connect_backend(const char *proxy_function,
                              worker->s->hostname_ex,
                              (int)worker->s->port);
                 backend_addr = backend_addr->next;
+                /*
+                 * If we run out of resolved IP's when connecting and if
+                 * we cache the resolution in the worker the resolution
+                 * might have changed. Hence try a DNS lookup to see if this
+                 * helps.
+                 */
+                if (!backend_addr && !did_dns_lookup && worker->cp->addr) {
+                    /*
+                     * In case of an error backend_addr will be NULL which
+                     * is enough to leave the loop.
+                     */
+                    apr_sockaddr_info_get(&backend_addr,
+                                          conn->hostname, APR_UNSPEC,
+                                          conn->port, 0,
+                                          conn->pool);
+                    did_dns_lookup = 1;
+                }
                 continue;
             }
 
@@ -3436,6 +3454,19 @@ PROXY_DECLARE(int) ap_proxy_connect_backend(const char *proxy_function,
             socket_cleanup(conn);
         }
         rv = APR_EINVAL;
+    }
+
+    if ((rv == APR_SUCCESS) && did_dns_lookup) {
+        /*
+         * A local DNS lookup caused a successful connect. Trigger to update
+         * the worker cache next time.
+         * We don't care handling any locking errors. If something fails we
+         * just continue with the existing cache value.
+         */
+        if (PROXY_THREAD_LOCK(worker) == APR_SUCCESS) {
+            worker->cp->addr = NULL;
+            PROXY_THREAD_UNLOCK(worker);
+        }
     }
 
     return rv == APR_SUCCESS ? OK : DECLINED;
