@@ -260,26 +260,36 @@ PROXY_DECLARE(char *)ap_proxy_canonenc_ex(apr_pool_t *p, const char *x, int len,
  */
         if ((forcedec || noencslashesenc
             || (proxyreq && proxyreq != PROXYREQ_REVERSE)) && ch == '%') {
-            if (!apr_isxdigit(x[i + 1]) || !apr_isxdigit(x[i + 2])) {
+            if (apr_isxdigit(x[i + 1]) && apr_isxdigit(x[i + 2])) {
+                ch = ap_proxy_hex2c(&x[i + 1]);
+                if (ch != 0 && strchr(reserved, ch)) {  /* keep it encoded */
+                    y[j++] = x[i++];
+                    y[j++] = x[i++];
+                    y[j] = x[i];
+                    continue;
+                }
+                if (noencslashesenc && !forcedec && (proxyreq == PROXYREQ_REVERSE)) {
+                    /*
+                     * In the reverse proxy case when we only want to keep encoded
+                     * slashes untouched revert back to '%' which will cause
+                     * '%' to be encoded in the following.
+                     */
+                    ch = '%';
+                }
+                else {
+                    i += 2;
+                }
+            }
+            /*
+             * In the reverse proxy case when we only want to keep encoded
+             * slashes untouched we can have decoded '%''s in the URI that got
+             * sent to us in the original URL as %25.
+             * Don't error out in this case but just fall through and have them
+             * encoded to %25 when forwarding to the backend.
+             */
+            else if (!noencslashesenc || forcedec
+                     || (proxyreq && proxyreq != PROXYREQ_REVERSE)) {
                 return NULL;
-            }
-            ch = ap_proxy_hex2c(&x[i + 1]);
-            if (ch != 0 && strchr(reserved, ch)) {  /* keep it encoded */
-                y[j++] = x[i++];
-                y[j++] = x[i++];
-                y[j] = x[i];
-                continue;
-            }
-            if (noencslashesenc && !forcedec && (proxyreq == PROXYREQ_REVERSE)) {
-                /*
-                 * In the reverse proxy case when we only want to keep encoded
-                 * slashes untouched revert back to '%' which will cause
-                 * '%' to be encoded in the following.
-                 */
-                ch = '%';
-            }
-            else {
-                i += 2;
             }
         }
 /* recode it, if necessary */

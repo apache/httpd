@@ -1,0 +1,3 @@
+  *) mod_proxy: In case that AllowEncodedSlashes is set to NoDecode do not
+     fail on literal '%' when doing the encoding of the backend URL.
+     PR 66580 [Ruediger Pluem]
