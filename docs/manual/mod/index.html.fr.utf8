@@ -84,6 +84,7 @@ qui peuvent être utilisés pour le serveur</dd>
 <dt><a href="mod_asis.html">mod_asis</a></dt><dd>Envoie des fichiers contenant leurs propres en-têtes
 HTTP</dd>
 <dt><a href="mod_auth_basic.html">mod_auth_basic</a></dt><dd>Authentification HTTP de base</dd>
+<dt><a href="mod_auth_bearer.html">mod_auth_bearer</a></dt><dd>Authentification HTTP du titulaire d'un jeton</dd>
 <dt><a href="mod_auth_digest.html">mod_auth_digest</a></dt><dd>Authentification utilisateur utilisant les condensés
 MD5</dd>
 <dt><a href="mod_auth_form.html">mod_auth_form</a></dt><dd>Authentification à l'aide d'un formulaire</dd>
@@ -102,6 +103,8 @@ la charge des serveurs d'arrière-plan</dd>
 l'authentification et l'autorisation httpd.</dd>
 <dt><a href="mod_authnz_ldap.html">mod_authnz_ldap</a></dt><dd>Permet d'utiliser un annuaire LDAP pour l'authentification
 HTTP de base.</dd>
+<dt><a href="mod_autht_core.html">mod_autht_core</a></dt><dd>Gestion des jetons de base</dd>
+<dt><a href="mod_autht_jwt.html">mod_autht_jwt</a></dt><dd>Authentification à base de jetons utilisant les jetons JWT</dd>
 <dt><a href="mod_authz_core.html">mod_authz_core</a></dt><dd>Socle d'autorisation</dd>
 <dt><a href="mod_authz_dbd.html">mod_authz_dbd</a></dt><dd>Autorisation par groupe ou par identifiant via SQL</dd>
 <dt><a href="mod_authz_dbm.html">mod_authz_dbm</a></dt><dd>Autorisation par groupes sur base de fichiers DBM</dd>

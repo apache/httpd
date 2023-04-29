@@ -283,156 +283,174 @@ cette zone du site web</td></tr>
 <tr><td colspan="2" class="descr">Vérifie les mots de passe auprès des fournisseurs
 d'authentification à la manière de l'authentification de type Digest.
 </td></tr>
-<tr class="odd"><td><a href="mod_authz_dbm.html#authdbmgroupfile">AuthDBMGroupFile</a></td><td class="module"><a href="mod_authz_dbm.html">mod_authz_dbm</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Définit le nom du fichier de base de données qui liste
+<tr class="odd"><td><a href="mod_auth_bearer.html#authbearerauthoritative">AuthBearerAuthoritative</a></td><td class="module"><a href="mod_auth_bearer.html">mod_auth_bearer</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Définit si la vérification des jetons est déléguée à des modules
+de plus bas niveau</td></tr>
+<tr><td><a href="mod_auth_bearer.html#authbearerprovider">AuthBearerProvider</a></td><td class="module"><a href="mod_auth_bearer.html">mod_auth_bearer</a></td></tr>
+<tr><td colspan="2" class="descr">Définit le/les fournisseur(s) d'authentification pour cette section
+de localisation</td></tr>
+<tr class="odd"><td><a href="mod_auth_bearer.html#authbearerproxy">AuthBearerProxy</a></td><td class="module"><a href="mod_auth_bearer.html">mod_auth_bearer</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Transmet un jeton d'authentification du titulaire à l'aide d'une
+connexion mandatée générée en utilisant l'expression donnée</td></tr>
+<tr><td><a href="mod_authz_dbm.html#authdbmgroupfile">AuthDBMGroupFile</a></td><td class="module"><a href="mod_authz_dbm.html">mod_authz_dbm</a></td></tr>
+<tr><td colspan="2" class="descr">Définit le nom du fichier de base de données qui liste
 les groupes d'utilisateurs.</td></tr>
-<tr><td><a href="mod_authn_dbm.html#authdbmtype">AuthDBMType</a></td><td class="module"><a href="mod_authn_dbm.html">mod_authn_dbm</a></td></tr>
-<tr><td colspan="2" class="descr">Définit le type de fichier de base de données utilisé pour
+<tr class="odd"><td><a href="mod_authn_dbm.html#authdbmtype">AuthDBMType</a></td><td class="module"><a href="mod_authn_dbm.html">mod_authn_dbm</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Définit le type de fichier de base de données utilisé pour
 stocker les mots de passe</td></tr>
-<tr class="odd"><td><a href="mod_authn_dbm.html#authdbmuserfile">AuthDBMUserFile</a></td><td class="module"><a href="mod_authn_dbm.html">mod_authn_dbm</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Définit le nom d'un fichier de base de données pour
+<tr><td><a href="mod_authn_dbm.html#authdbmuserfile">AuthDBMUserFile</a></td><td class="module"><a href="mod_authn_dbm.html">mod_authn_dbm</a></td></tr>
+<tr><td colspan="2" class="descr">Définit le nom d'un fichier de base de données pour
 l'authentification contenant la liste
 des utilisateurs et de leurs mots de passe</td></tr>
-<tr><td><a href="mod_auth_digest.html#authdigestalgorithm">AuthDigestAlgorithm</a></td><td class="module"><a href="mod_auth_digest.html">mod_auth_digest</a></td></tr>
-<tr><td colspan="2" class="descr">Sélectionne l'algorithme utilisé pour calculer les
+<tr class="odd"><td><a href="mod_auth_digest.html#authdigestalgorithm">AuthDigestAlgorithm</a></td><td class="module"><a href="mod_auth_digest.html">mod_auth_digest</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Sélectionne l'algorithme utilisé pour calculer les
 condensés du défit et de sa réponse</td></tr>
-<tr class="odd"><td><a href="mod_auth_digest.html#authdigestdomain">AuthDigestDomain</a></td><td class="module"><a href="mod_auth_digest.html">mod_auth_digest</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Les URIs qui se trouvent dans le même espace de protection
+<tr><td><a href="mod_auth_digest.html#authdigestdomain">AuthDigestDomain</a></td><td class="module"><a href="mod_auth_digest.html">mod_auth_digest</a></td></tr>
+<tr><td colspan="2" class="descr">Les URIs qui se trouvent dans le même espace de protection
 concernant l'authentification à base de condensés</td></tr>
-<tr><td><a href="mod_auth_digest.html#authdigestnonceformat">AuthDigestNonceFormat</a></td><td class="module"><a href="mod_auth_digest.html">mod_auth_digest</a></td></tr>
-<tr><td colspan="2" class="descr">Détermine la manière dont le nombre à valeur unique du
+<tr class="odd"><td><a href="mod_auth_digest.html#authdigestnonceformat">AuthDigestNonceFormat</a></td><td class="module"><a href="mod_auth_digest.html">mod_auth_digest</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Détermine la manière dont le nombre à valeur unique du
 serveur (nonce) est généré</td></tr>
-<tr class="odd"><td><a href="mod_auth_digest.html#authdigestnoncelifetime">AuthDigestNonceLifetime</a></td><td class="module"><a href="mod_auth_digest.html">mod_auth_digest</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Durée de validité du nombre à valeur unique du
+<tr><td><a href="mod_auth_digest.html#authdigestnoncelifetime">AuthDigestNonceLifetime</a></td><td class="module"><a href="mod_auth_digest.html">mod_auth_digest</a></td></tr>
+<tr><td colspan="2" class="descr">Durée de validité du nombre à valeur unique du
 serveur (nonce)</td></tr>
-<tr><td><a href="mod_auth_digest.html#authdigestprovider">AuthDigestProvider</a></td><td class="module"><a href="mod_auth_digest.html">mod_auth_digest</a></td></tr>
-<tr><td colspan="2" class="descr">Définit le(s) fournisseurs(s) d'authentification pour la
+<tr class="odd"><td><a href="mod_auth_digest.html#authdigestprovider">AuthDigestProvider</a></td><td class="module"><a href="mod_auth_digest.html">mod_auth_digest</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Définit le(s) fournisseurs(s) d'authentification pour la
 zone du site web concernée</td></tr>
-<tr class="odd"><td><a href="mod_auth_digest.html#authdigestqop">AuthDigestQop</a></td><td class="module"><a href="mod_auth_digest.html">mod_auth_digest</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Détermine le niveau de protection fourni par
+<tr><td><a href="mod_auth_digest.html#authdigestqop">AuthDigestQop</a></td><td class="module"><a href="mod_auth_digest.html">mod_auth_digest</a></td></tr>
+<tr><td colspan="2" class="descr">Détermine le niveau de protection fourni par
 l'authentification à base de condensé</td></tr>
-<tr><td><a href="mod_auth_form.html#authformauthoritative">AuthFormAuthoritative</a></td><td class="module"><a href="mod_auth_form.html">mod_auth_form</a></td></tr>
-<tr><td colspan="2" class="descr">Détermine si l'autorisation et l'authentification sont confiés à
+<tr class="odd"><td><a href="mod_auth_form.html#authformauthoritative">AuthFormAuthoritative</a></td><td class="module"><a href="mod_auth_form.html">mod_auth_form</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Détermine si l'autorisation et l'authentification sont confiés à
 des modules de plus bas niveau</td></tr>
-<tr class="odd"><td><a href="mod_auth_form.html#authformbody">AuthFormBody</a></td><td class="module"><a href="mod_auth_form.html">mod_auth_form</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Le nom du champ de formulaire contenant le corps de la
+<tr><td><a href="mod_auth_form.html#authformbody">AuthFormBody</a></td><td class="module"><a href="mod_auth_form.html">mod_auth_form</a></td></tr>
+<tr><td colspan="2" class="descr">Le nom du champ de formulaire contenant le corps de la
 requête à effectuer en cas de connexion réussie</td></tr>
-<tr><td><a href="mod_auth_form.html#authformdisablenostore">AuthFormDisableNoStore</a></td><td class="module"><a href="mod_auth_form.html">mod_auth_form</a></td></tr>
-<tr><td colspan="2" class="descr">Désactive l'en-tête CacheControl no-store sur la page de
+<tr class="odd"><td><a href="mod_auth_form.html#authformdisablenostore">AuthFormDisableNoStore</a></td><td class="module"><a href="mod_auth_form.html">mod_auth_form</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Désactive l'en-tête CacheControl no-store sur la page de
 connexion</td></tr>
-<tr class="odd"><td><a href="mod_auth_form.html#authformfakebasicauth">AuthFormFakeBasicAuth</a></td><td class="module"><a href="mod_auth_form.html">mod_auth_form</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Simule une en-tête d'authentification de base</td></tr>
-<tr><td><a href="mod_auth_form.html#authformlocation">AuthFormLocation</a></td><td class="module"><a href="mod_auth_form.html">mod_auth_form</a></td></tr>
-<tr><td colspan="2" class="descr">Le nom du champ de formulaire qui contiendra l'URL vers
+<tr><td><a href="mod_auth_form.html#authformfakebasicauth">AuthFormFakeBasicAuth</a></td><td class="module"><a href="mod_auth_form.html">mod_auth_form</a></td></tr>
+<tr><td colspan="2" class="descr">Simule une en-tête d'authentification de base</td></tr>
+<tr class="odd"><td><a href="mod_auth_form.html#authformlocation">AuthFormLocation</a></td><td class="module"><a href="mod_auth_form.html">mod_auth_form</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Le nom du champ de formulaire qui contiendra l'URL vers
 laquelle l'utilisateur sera redirigé en cas de connexion
 réussie</td></tr>
-<tr class="odd"><td><a href="mod_auth_form.html#authformloginrequiredlocation">AuthFormLoginRequiredLocation</a></td><td class="module"><a href="mod_auth_form.html">mod_auth_form</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">L'URL de la page vers laquelle on doit être redirigé si une
+<tr><td><a href="mod_auth_form.html#authformloginrequiredlocation">AuthFormLoginRequiredLocation</a></td><td class="module"><a href="mod_auth_form.html">mod_auth_form</a></td></tr>
+<tr><td colspan="2" class="descr">L'URL de la page vers laquelle on doit être redirigé si une
 authentification est requise</td></tr>
-<tr><td><a href="mod_auth_form.html#authformloginsuccesslocation">AuthFormLoginSuccessLocation</a></td><td class="module"><a href="mod_auth_form.html">mod_auth_form</a></td></tr>
-<tr><td colspan="2" class="descr">L'URL de la page vers laquelle on doit être redirigé en cas
+<tr class="odd"><td><a href="mod_auth_form.html#authformloginsuccesslocation">AuthFormLoginSuccessLocation</a></td><td class="module"><a href="mod_auth_form.html">mod_auth_form</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">L'URL de la page vers laquelle on doit être redirigé en cas
 de connexion réussie</td></tr>
-<tr class="odd"><td><a href="mod_auth_form.html#authformlogoutlocation">AuthFormLogoutLocation</a></td><td class="module"><a href="mod_auth_form.html">mod_auth_form</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">L'URL vers laquelle un utilisateur devra être redirigé
+<tr><td><a href="mod_auth_form.html#authformlogoutlocation">AuthFormLogoutLocation</a></td><td class="module"><a href="mod_auth_form.html">mod_auth_form</a></td></tr>
+<tr><td colspan="2" class="descr">L'URL vers laquelle un utilisateur devra être redirigé
 après s'être déconnecté</td></tr>
-<tr><td><a href="mod_auth_form.html#authformmethod">AuthFormMethod</a></td><td class="module"><a href="mod_auth_form.html">mod_auth_form</a></td></tr>
-<tr><td colspan="2" class="descr">Le nom du champ de formulaire contenant la méthode de la
+<tr class="odd"><td><a href="mod_auth_form.html#authformmethod">AuthFormMethod</a></td><td class="module"><a href="mod_auth_form.html">mod_auth_form</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Le nom du champ de formulaire contenant la méthode de la
 requête à effectuer en cas de connexion réussie</td></tr>
-<tr class="odd"><td><a href="mod_auth_form.html#authformmimetype">AuthFormMimetype</a></td><td class="module"><a href="mod_auth_form.html">mod_auth_form</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Le nom du champ de formulaire contenant le type MIME du
+<tr><td><a href="mod_auth_form.html#authformmimetype">AuthFormMimetype</a></td><td class="module"><a href="mod_auth_form.html">mod_auth_form</a></td></tr>
+<tr><td colspan="2" class="descr">Le nom du champ de formulaire contenant le type MIME du
 corps de la requête à effectuer en cas de connexion
 réussie</td></tr>
-<tr><td><a href="mod_auth_form.html#authformpassword">AuthFormPassword</a></td><td class="module"><a href="mod_auth_form.html">mod_auth_form</a></td></tr>
-<tr><td colspan="2" class="descr">Le nom du champ de formulaire qui contient le mot de passe
+<tr class="odd"><td><a href="mod_auth_form.html#authformpassword">AuthFormPassword</a></td><td class="module"><a href="mod_auth_form.html">mod_auth_form</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Le nom du champ de formulaire qui contient le mot de passe
 de connexion</td></tr>
-<tr class="odd"><td><a href="mod_auth_form.html#authformprovider">AuthFormProvider</a></td><td class="module"><a href="mod_auth_form.html">mod_auth_form</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Définit le(s) fournisseur(s) d'authentification pour la
+<tr><td><a href="mod_auth_form.html#authformprovider">AuthFormProvider</a></td><td class="module"><a href="mod_auth_form.html">mod_auth_form</a></td></tr>
+<tr><td colspan="2" class="descr">Définit le(s) fournisseur(s) d'authentification pour la
 zone concernée</td></tr>
-<tr><td><a href="mod_auth_form.html#authformsitepassphrase">AuthFormSitePassphrase</a></td><td class="module"><a href="mod_auth_form.html">mod_auth_form</a></td></tr>
-<tr><td colspan="2" class="descr">Court-circuite l'authentification pour les sites à fort
+<tr class="odd"><td><a href="mod_auth_form.html#authformsitepassphrase">AuthFormSitePassphrase</a></td><td class="module"><a href="mod_auth_form.html">mod_auth_form</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Court-circuite l'authentification pour les sites à fort
 trafic</td></tr>
-<tr class="odd"><td><a href="mod_auth_form.html#authformusername">AuthFormUsername</a></td><td class="module"><a href="mod_auth_form.html">mod_auth_form</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Le nom du champ de formulaire qui contient le nom de
+<tr><td><a href="mod_auth_form.html#authformusername">AuthFormUsername</a></td><td class="module"><a href="mod_auth_form.html">mod_auth_form</a></td></tr>
+<tr><td colspan="2" class="descr">Le nom du champ de formulaire qui contient le nom de
 connexion</td></tr>
-<tr><td><a href="mod_authz_groupfile.html#authgroupfile">AuthGroupFile</a></td><td class="module"><a href="mod_authz_groupfile.html">mod_authz_groupfile</a></td></tr>
-<tr><td colspan="2" class="descr">Définit le nom d'un fichier texte contenant la liste des
+<tr class="odd"><td><a href="mod_authz_groupfile.html#authgroupfile">AuthGroupFile</a></td><td class="module"><a href="mod_authz_groupfile.html">mod_authz_groupfile</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Définit le nom d'un fichier texte contenant la liste des
 groupes d'utilisateurs permettant de définir les autorisations des
 utilisateurs</td></tr>
-<tr class="odd"><td><a href="mod_authnz_ldap.html#authldapauthorizeprefix">AuthLDAPAuthorizePrefix</a></td><td class="module"><a href="mod_authnz_ldap.html">mod_authnz_ldap</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Spécifie le préfixe ajouté aux variables d'environnement
+<tr><td><a href="mod_authnz_ldap.html#authldapauthorizeprefix">AuthLDAPAuthorizePrefix</a></td><td class="module"><a href="mod_authnz_ldap.html">mod_authnz_ldap</a></td></tr>
+<tr><td colspan="2" class="descr">Spécifie le préfixe ajouté aux variables d'environnement
 durant la phase d'autorisation</td></tr>
-<tr><td><a href="mod_authnz_ldap.html#authldapbindauthoritative">AuthLDAPBindAuthoritative</a></td><td class="module"><a href="mod_authnz_ldap.html">mod_authnz_ldap</a></td></tr>
-<tr><td colspan="2" class="descr">Détermine si l'on doit utiliser d'autres fournisseurs
+<tr class="odd"><td><a href="mod_authnz_ldap.html#authldapbindauthoritative">AuthLDAPBindAuthoritative</a></td><td class="module"><a href="mod_authnz_ldap.html">mod_authnz_ldap</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Détermine si l'on doit utiliser d'autres fournisseurs
 d'authentification lorsque le serveur ne peut pas valider les données
 d'authentification de l'utilisateur, alors que ce dernier possède un
 DN.</td></tr>
-<tr class="odd"><td><a href="mod_authnz_ldap.html#authldapbinddn">AuthLDAPBindDN</a></td><td class="module"><a href="mod_authnz_ldap.html">mod_authnz_ldap</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Un DN optionnel pour se connecter au serveur
+<tr><td><a href="mod_authnz_ldap.html#authldapbinddn">AuthLDAPBindDN</a></td><td class="module"><a href="mod_authnz_ldap.html">mod_authnz_ldap</a></td></tr>
+<tr><td colspan="2" class="descr">Un DN optionnel pour se connecter au serveur
 LDAP</td></tr>
-<tr><td><a href="mod_authnz_ldap.html#authldapbindpassword">AuthLDAPBindPassword</a></td><td class="module"><a href="mod_authnz_ldap.html">mod_authnz_ldap</a></td></tr>
-<tr><td colspan="2" class="descr">Mot de passe à utiliser en conjonction avec le DN de
+<tr class="odd"><td><a href="mod_authnz_ldap.html#authldapbindpassword">AuthLDAPBindPassword</a></td><td class="module"><a href="mod_authnz_ldap.html">mod_authnz_ldap</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Mot de passe à utiliser en conjonction avec le DN de
 connexion</td></tr>
-<tr class="odd"><td><a href="mod_authnz_ldap.html#authldapcompareasuser">AuthLDAPCompareAsUser</a></td><td class="module"><a href="mod_authnz_ldap.html">mod_authnz_ldap</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Utilisation des données d'authentification de l'utilisateur
+<tr><td><a href="mod_authnz_ldap.html#authldapcompareasuser">AuthLDAPCompareAsUser</a></td><td class="module"><a href="mod_authnz_ldap.html">mod_authnz_ldap</a></td></tr>
+<tr><td colspan="2" class="descr">Utilisation des données d'authentification de l'utilisateur
 pour effectuer les comparaisons pour l'attribution des autorisations</td></tr>
-<tr><td><a href="mod_authnz_ldap.html#authldapcomparednonserver">AuthLDAPCompareDNOnServer</a></td><td class="module"><a href="mod_authnz_ldap.html">mod_authnz_ldap</a></td></tr>
-<tr><td colspan="2" class="descr">Utilise le serveur LDAP pour comparer les DNs</td></tr>
-<tr class="odd"><td><a href="mod_authnz_ldap.html#authldapdereferencealiases">AuthLDAPDereferenceAliases</a></td><td class="module"><a href="mod_authnz_ldap.html">mod_authnz_ldap</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">À quel moment le module va déréférencer les
+<tr class="odd"><td><a href="mod_authnz_ldap.html#authldapcomparednonserver">AuthLDAPCompareDNOnServer</a></td><td class="module"><a href="mod_authnz_ldap.html">mod_authnz_ldap</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Utilise le serveur LDAP pour comparer les DNs</td></tr>
+<tr><td><a href="mod_authnz_ldap.html#authldapdereferencealiases">AuthLDAPDereferenceAliases</a></td><td class="module"><a href="mod_authnz_ldap.html">mod_authnz_ldap</a></td></tr>
+<tr><td colspan="2" class="descr">À quel moment le module va déréférencer les
 alias</td></tr>
-<tr><td><a href="mod_authnz_ldap.html#authldapgroupattribute">AuthLDAPGroupAttribute</a></td><td class="module"><a href="mod_authnz_ldap.html">mod_authnz_ldap</a></td></tr>
-<tr><td colspan="2" class="descr">L'attribut LDAP utilisé pour vérifier l'appartenance d'un
+<tr class="odd"><td><a href="mod_authnz_ldap.html#authldapgroupattribute">AuthLDAPGroupAttribute</a></td><td class="module"><a href="mod_authnz_ldap.html">mod_authnz_ldap</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">L'attribut LDAP utilisé pour vérifier l'appartenance d'un
 utilisateur à un groupe.</td></tr>
-<tr class="odd"><td><a href="mod_authnz_ldap.html#authldapgroupattributeisdn">AuthLDAPGroupAttributeIsDN</a></td><td class="module"><a href="mod_authnz_ldap.html">mod_authnz_ldap</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Utilise le DN de l'utilisateur pour vérifier son
+<tr><td><a href="mod_authnz_ldap.html#authldapgroupattributeisdn">AuthLDAPGroupAttributeIsDN</a></td><td class="module"><a href="mod_authnz_ldap.html">mod_authnz_ldap</a></td></tr>
+<tr><td colspan="2" class="descr">Utilise le DN de l'utilisateur pour vérifier son
 appartenance à un groupe</td></tr>
-<tr><td><a href="mod_authnz_ldap.html#authldapinitialbindasuser">AuthLDAPInitialBindAsUser</a></td><td class="module"><a href="mod_authnz_ldap.html">mod_authnz_ldap</a></td></tr>
-<tr><td colspan="2" class="descr">Détermine si le serveur effectue la recherche initiale du
+<tr class="odd"><td><a href="mod_authnz_ldap.html#authldapinitialbindasuser">AuthLDAPInitialBindAsUser</a></td><td class="module"><a href="mod_authnz_ldap.html">mod_authnz_ldap</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Détermine si le serveur effectue la recherche initiale du
 DN en utilisant le nom propre de l'utilisateur pour l'authentification
 de base
 et non de manière anonyme, ou en utilisant des données d'authentification
 codées en dur pour le serveur</td></tr>
-<tr class="odd"><td><a href="mod_authnz_ldap.html#authldapinitialbindpattern">AuthLDAPInitialBindPattern</a></td><td class="module"><a href="mod_authnz_ldap.html">mod_authnz_ldap</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Spécifie la modification a apporter au nom d'utilisateur
+<tr><td><a href="mod_authnz_ldap.html#authldapinitialbindpattern">AuthLDAPInitialBindPattern</a></td><td class="module"><a href="mod_authnz_ldap.html">mod_authnz_ldap</a></td></tr>
+<tr><td colspan="2" class="descr">Spécifie la modification a apporter au nom d'utilisateur
 pour l'authentification de base lors de l'authentification auprès du
 serveur LDAP pour effectuer une recherche de DN</td></tr>
-<tr><td><a href="mod_authnz_ldap.html#authldapmaxsubgroupdepth">AuthLDAPMaxSubGroupDepth</a></td><td class="module"><a href="mod_authnz_ldap.html">mod_authnz_ldap</a></td></tr>
-<tr><td colspan="2" class="descr">Spécifie la profondeur d'imbrication des sous-groupes
+<tr class="odd"><td><a href="mod_authnz_ldap.html#authldapmaxsubgroupdepth">AuthLDAPMaxSubGroupDepth</a></td><td class="module"><a href="mod_authnz_ldap.html">mod_authnz_ldap</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Spécifie la profondeur d'imbrication des sous-groupes
 maximale prise en compte avant l'abandon de la recherche de
 l'utilisateur.</td></tr>
-<tr class="odd"><td><a href="mod_authnz_ldap.html#authldapremoteuserattribute">AuthLDAPRemoteUserAttribute</a></td><td class="module"><a href="mod_authnz_ldap.html">mod_authnz_ldap</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Spécifie l'attribut dont la valeur renvoyée au cours de la
+<tr><td><a href="mod_authnz_ldap.html#authldapremoteuserattribute">AuthLDAPRemoteUserAttribute</a></td><td class="module"><a href="mod_authnz_ldap.html">mod_authnz_ldap</a></td></tr>
+<tr><td colspan="2" class="descr">Spécifie l'attribut dont la valeur renvoyée au cours de la
 requête de l'utilisateur sera utilisée pour définir la variable
 d'environnement REMOTE_USER</td></tr>
-<tr><td><a href="mod_authnz_ldap.html#authldapremoteuserisdn">AuthLDAPRemoteUserIsDN</a></td><td class="module"><a href="mod_authnz_ldap.html">mod_authnz_ldap</a></td></tr>
-<tr><td colspan="2" class="descr">Utilise le DN de l'utilisateur pour définir la variable
+<tr class="odd"><td><a href="mod_authnz_ldap.html#authldapremoteuserisdn">AuthLDAPRemoteUserIsDN</a></td><td class="module"><a href="mod_authnz_ldap.html">mod_authnz_ldap</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Utilise le DN de l'utilisateur pour définir la variable
 d'environnement REMOTE_USER</td></tr>
-<tr class="odd"><td><a href="mod_authnz_ldap.html#authldapsearchasuser">AuthLDAPSearchAsUser</a></td><td class="module"><a href="mod_authnz_ldap.html">mod_authnz_ldap</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Utilise les données d'authentification de l'utilisateur
+<tr><td><a href="mod_authnz_ldap.html#authldapsearchasuser">AuthLDAPSearchAsUser</a></td><td class="module"><a href="mod_authnz_ldap.html">mod_authnz_ldap</a></td></tr>
+<tr><td colspan="2" class="descr">Utilise les données d'authentification de l'utilisateur
 pour la recherche des autorisations</td></tr>
-<tr><td><a href="mod_authnz_ldap.html#authldapsubgroupattribute">AuthLDAPSubGroupAttribute</a></td><td class="module"><a href="mod_authnz_ldap.html">mod_authnz_ldap</a></td></tr>
-<tr><td colspan="2" class="descr">Spécifie les noms d'attribut, un par directive, utilisés
+<tr class="odd"><td><a href="mod_authnz_ldap.html#authldapsubgroupattribute">AuthLDAPSubGroupAttribute</a></td><td class="module"><a href="mod_authnz_ldap.html">mod_authnz_ldap</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Spécifie les noms d'attribut, un par directive, utilisés
 pour différencier les membres du groupe courant qui sont eux-mêmes des
 groupes.</td></tr>
-<tr class="odd"><td><a href="mod_authnz_ldap.html#authldapsubgroupclass">AuthLDAPSubGroupClass</a></td><td class="module"><a href="mod_authnz_ldap.html">mod_authnz_ldap</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Spécifie quelles valeurs d'objectClass LDAP identifient les
+<tr><td><a href="mod_authnz_ldap.html#authldapsubgroupclass">AuthLDAPSubGroupClass</a></td><td class="module"><a href="mod_authnz_ldap.html">mod_authnz_ldap</a></td></tr>
+<tr><td colspan="2" class="descr">Spécifie quelles valeurs d'objectClass LDAP identifient les
 objets de l'annuaire qui sont des groupes au cours du traitement des
 sous-groupes.</td></tr>
-<tr><td><a href="mod_authnz_ldap.html#authldapurl">AuthLDAPURl</a></td><td class="module"><a href="mod_authnz_ldap.html">mod_authnz_ldap</a></td></tr>
-<tr><td colspan="2" class="descr">L'URL permettant de spécifier les paramètres de la
+<tr class="odd"><td><a href="mod_authnz_ldap.html#authldapurl">AuthLDAPURl</a></td><td class="module"><a href="mod_authnz_ldap.html">mod_authnz_ldap</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">L'URL permettant de spécifier les paramètres de la
 recherche LDAP</td></tr>
-<tr class="odd"><td><a href="mod_authz_core.html#authmerging">AuthMerging</a></td><td class="module"><a href="mod_authz_core.html">mod_authz_core</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Définit la manière dont chaque logique d'autorisation des
+<tr><td><a href="mod_authz_core.html#authmerging">AuthMerging</a></td><td class="module"><a href="mod_authz_core.html">mod_authz_core</a></td></tr>
+<tr><td colspan="2" class="descr">Définit la manière dont chaque logique d'autorisation des
 sections de configuration se combine avec celles des sections de
 configuration précédentes.</td></tr>
-<tr><td><a href="mod_authn_core.html#authname">AuthName</a></td><td class="module"><a href="mod_authn_core.html">mod_authn_core</a></td></tr>
-<tr><td colspan="2" class="descr">L'identifiant de l'autorisation à utiliser avec
+<tr class="odd"><td><a href="mod_authn_core.html#authname">AuthName</a></td><td class="module"><a href="mod_authn_core.html">mod_authn_core</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">L'identifiant de l'autorisation à utiliser avec
 l'authentification HTTP</td></tr>
-<tr class="odd"><td><a href="mod_authn_socache.html#authncacheprovidefor">AuthnCacheProvideFor</a></td><td class="module"><a href="mod_authn_socache.html">mod_authn_socache</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Spécifie le fournisseur pour lequel on veut effectuer une
+<tr><td><a href="mod_authn_socache.html#authncacheprovidefor">AuthnCacheProvideFor</a></td><td class="module"><a href="mod_authn_socache.html">mod_authn_socache</a></td></tr>
+<tr><td colspan="2" class="descr">Spécifie le fournisseur pour lequel on veut effectuer une
 mise en cache</td></tr>
-<tr><td><a href="mod_authn_socache.html#authncachetimeout">AuthnCacheTimeout</a></td><td class="module"><a href="mod_authn_socache.html">mod_authn_socache</a></td></tr>
-<tr><td colspan="2" class="descr">Définit une durée de vie pour les entrées du cache</td></tr>
+<tr class="odd"><td><a href="mod_authn_socache.html#authncachetimeout">AuthnCacheTimeout</a></td><td class="module"><a href="mod_authn_socache.html">mod_authn_socache</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Définit une durée de vie pour les entrées du cache</td></tr>
+<tr><td><a href="mod_autht_jwt.html#authtjwtclaim">AuthtJwtClaim</a></td><td class="module"><a href="mod_autht_jwt.html">mod_autht_jwt</a></td></tr>
+<tr><td colspan="2" class="descr">Définit une demande avec le nom et l'expression donnés ou annule la
+définition d'une demande avec le nom donné</td></tr>
+<tr class="odd"><td><a href="mod_autht_jwt.html#authtjwtsign">AuthtJwtSign</a></td><td class="module"><a href="mod_autht_jwt.html">mod_autht_jwt</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">L'algorithme de signature JWS et les mot de passe/clé pour signer
+un jeton JWT sortant</td></tr>
+<tr><td><a href="mod_autht_jwt.html#authtjwtverify">AuthtJwtVerify</a></td><td class="module"><a href="mod_autht_jwt.html">mod_autht_jwt</a></td></tr>
+<tr><td colspan="2" class="descr">L'algorithme de signature JWS et les mot de passe/clé pour vérifier
+un jeton JWT entrant</td></tr>
 <tr class="odd"><td><a href="mod_authn_core.html#authtype">AuthType</a></td><td class="module"><a href="mod_authn_core.html">mod_authn_core</a></td></tr>
 <tr class="odd"><td colspan="2" class="descr">Type d'authentification utilisateur</td></tr>
 <tr><td><a href="mod_authn_file.html#authuserfile">AuthUserFile</a></td><td class="module"><a href="mod_authn_file.html">mod_authn_file</a></td></tr>

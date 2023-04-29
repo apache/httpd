@@ -10,7 +10,7 @@
   <modulefile>mod_allowmethods.xml.fr</modulefile>
   <modulefile>mod_asis.xml.fr</modulefile>
   <modulefile>mod_auth_basic.xml.fr</modulefile>
-  <modulefile>mod_auth_bearer.xml</modulefile>
+  <modulefile>mod_auth_bearer.xml.fr</modulefile>
   <modulefile>mod_auth_digest.xml.fr</modulefile>
   <modulefile>mod_auth_form.xml.fr</modulefile>
   <modulefile>mod_authn_anon.xml.fr</modulefile>
@@ -21,8 +21,8 @@
   <modulefile>mod_authn_socache.xml.fr</modulefile>
   <modulefile>mod_authnz_fcgi.xml.fr</modulefile>
   <modulefile>mod_authnz_ldap.xml.fr</modulefile>
-  <modulefile>mod_autht_core.xml</modulefile>
-  <modulefile>mod_autht_jwt.xml</modulefile>
+  <modulefile>mod_autht_core.xml.fr</modulefile>
+  <modulefile>mod_autht_jwt.xml.fr</modulefile>
   <modulefile>mod_authz_core.xml.fr</modulefile>
   <modulefile>mod_authz_dbd.xml.fr</modulefile>
   <modulefile>mod_authz_dbm.xml.fr</modulefile>
