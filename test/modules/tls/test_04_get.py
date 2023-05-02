@@ -59,7 +59,7 @@ class TestGet:
         # we'd like to check that we can do >1 requests on the same connection
         # however curl hides that from us, unless we analyze its verbose output
         docs_a = os.path.join(env.server_docs_dir, env.domain_a)
-        r = env.tls_get(env.domain_a, paths=[
+        r = env.tls_get(env.domain_a, no_stdout_list=True, paths=[
             "/{0}".format(fname),
             "/{0}".format(fname)
         ])

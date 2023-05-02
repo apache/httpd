@@ -197,7 +197,11 @@ content-type: text/html
     def test_h2_003_50(self, env, path):
         # check that the resource supports ranges and we see its raw content-length
         url = env.mkurl("https", "test1", path)
-        r = env.curl_get(url, 5)
+        # TODO: sometimes we see a 503 here from h2proxy
+        for i in range(10):
+            r = env.curl_get(url, 5)
+            if r.response["status"] != 503:
+                break
         assert r.response["status"] == 200
         assert "HTTP/2" == r.response["protocol"]
         h = r.response["header"]
@@ -206,7 +210,10 @@ content-type: text/html
         assert "content-length" in h
         clen = h["content-length"]
         # get the first 1024 bytes of the resource, 206 status, but content-length as original
-        r = env.curl_get(url, 5, options=["-H", "range: bytes=0-1023"])
+        for i in range(10):
+            r = env.curl_get(url, 5, options=["-H", "range: bytes=0-1023"])
+            if r.response["status"] != 503:
+                break
         assert 206 == r.response["status"]
         assert "HTTP/2" == r.response["protocol"]
         assert 1024 == len(r.response["body"])

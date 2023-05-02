@@ -1,30 +1,7 @@
 #!/usr/bin/env python3
 import os
 import sys
-import multipart
-from urllib import parse
-
-
-try:  # Windows needs stdio set for binary mode.
-    import msvcrt
-
-    msvcrt.setmode(0, os.O_BINARY)  # stdin  = 0
-    msvcrt.setmode(1, os.O_BINARY)  # stdout = 1
-except ImportError:
-    pass
-
-def get_request_params():
-    oforms = {}
-    if "REQUEST_URI" in os.environ:
-        qforms = parse.parse_qs(parse.urlsplit(os.environ["REQUEST_URI"]).query)
-        for name, values in qforms.items():
-            oforms[name] = values[0]
-    myenv = os.environ.copy()
-    myenv['wsgi.input'] = sys.stdin.buffer
-    mforms, ofiles = multipart.parse_form_data(environ=myenv)
-    for name, item in mforms.items():
-        oforms[name] = item
-    return oforms, ofiles
+from requestparser import get_request_params
 
 
 forms, files = get_request_params()
@@ -35,9 +12,9 @@ status = '200 Ok'
 if 'file' in files:
     fitem = files['file']
     # strip leading path from file name to avoid directory traversal attacks
-    fname = fitem.filename
+    fname = os.path.basename(fitem.file_name)
     fpath = f'{os.environ["DOCUMENT_ROOT"]}/files/{fname}'
-    fitem.save_as(fpath)
+    fitem.save_to(fpath)
     message = "The file %s was uploaded successfully" % (fname)
     print("Status: 201 Created")
     print("Content-Type: text/html")

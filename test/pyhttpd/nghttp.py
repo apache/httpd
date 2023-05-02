@@ -37,6 +37,7 @@ class Nghttp:
                         "id": sid,
                         "body": b''
                     },
+                    "data_lengths": [],
                     "paddings": [],
                     "promises": []
             }
@@ -131,12 +132,13 @@ class Nghttp:
                 s = self.get_stream(streams, m.group(3))
                 blen = int(m.group(2))
                 if s:
-                    print("stream %d: %d DATA bytes added" % (s["id"], blen))
+                    print(f'stream {s["id"]}: {blen} DATA bytes added via "{l}"')
                     padlen = 0
                     if len(lines) > lidx + 2:
                         mpad = re.match(r' +\(padlen=(\d+)\)', lines[lidx+2])
                         if mpad: 
                             padlen = int(mpad.group(1))
+                    s["data_lengths"].append(blen)
                     s["paddings"].append(padlen)
                     blen -= padlen
                     s["response"]["body"] += body[-blen:].encode()
@@ -196,6 +198,7 @@ class Nghttp:
         if main_stream in streams:
             output["response"] = streams[main_stream]["response"]
             output["paddings"] = streams[main_stream]["paddings"]
+            output["data_lengths"] = streams[main_stream]["data_lengths"]
         return output
 
     def _raw(self, url, timeout, options):
@@ -244,11 +247,11 @@ class Nghttp:
     def post_name(self, url, name, timeout=5, options=None):
         reqbody = ("%s/nghttp.req.body" % self.TMP_DIR)
         with open(reqbody, 'w') as f:
-            f.write("--DSAJKcd9876\n")
-            f.write("Content-Disposition: form-data; name=\"value\"; filename=\"xxxxx\"\n")
-            f.write("Content-Type: text/plain\n")
-            f.write("\n%s\n" % name)
-            f.write("--DSAJKcd9876\n")
+            f.write("--DSAJKcd9876\r\n")
+            f.write("Content-Disposition: form-data; name=\"value\"; filename=\"xxxxx\"\r\n")
+            f.write("Content-Type: text/plain\r\n")
+            f.write(f"\r\n{name}")
+            f.write("\r\n--DSAJKcd9876\r\n")
         if not options:
             options = []
         options.extend([ 
@@ -267,20 +270,23 @@ class Nghttp:
         reqbody = ("%s/nghttp.req.body" % self.TMP_DIR)
         with open(fpath, 'rb') as fin:
             with open(reqbody, 'wb') as f:
-                f.write(("""--DSAJKcd9876
-Content-Disposition: form-data; name="xxx"; filename="xxxxx"
-Content-Type: text/plain
-
-testing mod_h2
---DSAJKcd9876
-Content-Disposition: form-data; name="file"; filename="%s"
-Content-Type: application/octet-stream
-Content-Transfer-Encoding: binary
-
-""" % fname).encode('utf-8'))
+                preamble = [
+                    '--DSAJKcd9876',
+                    'Content-Disposition: form-data; name="xxx"; filename="xxxxx"',
+                    'Content-Type: text/plain',
+                    '',
+                    'testing mod_h2',
+                    '\r\n--DSAJKcd9876',
+                    f'Content-Disposition: form-data; name="file"; filename="{fname}"',
+                    'Content-Type: application/octet-stream',
+                    'Content-Transfer-Encoding: binary',
+                    '', ''
+                ]
+                f.write('\r\n'.join(preamble).encode('utf-8'))
                 f.write(fin.read())
-                f.write("""
---DSAJKcd9876""".encode('utf-8'))
+                f.write('\r\n'.join([
+                    '\r\n--DSAJKcd9876', ''
+                ]).encode('utf-8'))
         if not options:
             options = []
         options.extend([ 
