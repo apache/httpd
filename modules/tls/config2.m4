@@ -109,9 +109,10 @@ AC_DEFUN([APACHE_CHECK_RUSTLS],[
       fi
     fi
 
-    AC_MSG_CHECKING([for rustls version >= 0.8.2])
+    AC_MSG_CHECKING([for rustls version >= 0.9.2])
     AC_TRY_COMPILE([#include <rustls.h>],[
 rustls_version();
+rustls_acceptor_new();
 ],
       [AC_MSG_RESULT(OK)
        ac_cv_rustls=yes],

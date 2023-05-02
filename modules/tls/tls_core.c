@@ -507,8 +507,8 @@ static const rustls_certified_key *extract_client_hello_values(
     ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, c, "extract client hello values");
     if (!cc) goto cleanup;
     cc->client_hello_seen = 1;
-    if (hello->sni_name.len > 0) {
-        cc->sni_hostname = apr_pstrndup(c->pool, hello->sni_name.data, hello->sni_name.len);
+    if (hello->server_name.len > 0) {
+        cc->sni_hostname = apr_pstrndup(c->pool, hello->server_name.data, hello->server_name.len);
         ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, c, "sni detected: %s", cc->sni_hostname);
     }
     else {
