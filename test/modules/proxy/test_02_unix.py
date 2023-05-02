@@ -110,6 +110,8 @@ class TestProxyUds:
         # check that we see the document we expect there (host matching worked)
         # we need to explicitly provide a Host: header since mod_proxy cannot
         # resolve the name via DNS.
+        if not env.curl_is_at_least('8.0.0'):
+            pytest.skip(f'need at least curl v8.0.0 for this')
         domain = f"{via}.{env.http_tld}"
         r = env.curl_get(f"http://127.0.0.1:{env.http_port}/alive.json", 5, options=[
             '-H', f"Host: {domain}",
