@@ -210,7 +210,10 @@ content-type: text/html
         assert "content-length" in h
         clen = h["content-length"]
         # get the first 1024 bytes of the resource, 206 status, but content-length as original
-        r = env.curl_get(url, 5, options=["-H", "range: bytes=0-1023"])
+        for i in range(10):
+            r = env.curl_get(url, 5, options=["-H", "range: bytes=0-1023"])
+            if r.response["status"] != 503:
+                break
         assert 206 == r.response["status"]
         assert "HTTP/2" == r.response["protocol"]
         assert 1024 == len(r.response["body"])
