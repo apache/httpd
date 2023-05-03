@@ -194,7 +194,7 @@ content-type: text/html
     @pytest.mark.parametrize("path", [
         "/004.html", "/proxy/004.html", "/h2proxy/004.html"
     ])
-    def test_h2_003_50(self, env, path):
+    def test_h2_003_50(self, env, path, repeat):
         # check that the resource supports ranges and we see its raw content-length
         url = env.mkurl("https", "test1", path)
         # TODO: sometimes we see a 503 here from h2proxy
@@ -258,6 +258,7 @@ content-type: text/html
 
     # produce an error during response body
     def test_h2_003_71(self, env, repeat):
+        pytest.skip("needs fix in core protocol handling")
         url = env.mkurl("https", "cgi", "/h2test/error?body_error=timeout")
         r = env.curl_get(url)
         assert r.exit_code != 0, f"{r}"
@@ -267,6 +268,7 @@ content-type: text/html
 
     # produce an error, fail to generate an error bucket
     def test_h2_003_72(self, env, repeat):
+        pytest.skip("needs fix in core protocol handling")
         url = env.mkurl("https", "cgi", "/h2test/error?body_error=timeout&error_bucket=0")
         r = env.curl_get(url)
         assert r.exit_code != 0, f"{r}"

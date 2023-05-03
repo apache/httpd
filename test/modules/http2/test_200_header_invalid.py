@@ -163,6 +163,8 @@ class TestInvalidHeaders:
 
     # invalid chars in method
     def test_h2_200_16(self, env):
+        if not env.h2load_is_at_least('1.45.0'):
+            pytest.skip(f'nhttp2 version too old')
         conf = H2Conf(env)
         conf.add_vhost_cgi()
         conf.install()
@@ -171,12 +173,8 @@ class TestInvalidHeaders:
         opt = ["-H:method: GET /hello.py"]
         r = env.nghttp().get(url, options=opt)
         assert r.exit_code == 0, r
-        # nghttp version >= 1.45.0 check pseudo headers and RST streams,
-        # which means we see no response.
-        if r.response is not None:
-            assert r.response["status"] == 400
+        assert r.response is None
         url = env.mkurl("https", "cgi", "/proxy/hello.py")
         r = env.nghttp().get(url, options=opt)
         assert r.exit_code == 0, r
-        if r.response is not None:
-            assert r.response["status"] == 400
+        assert r.response is None

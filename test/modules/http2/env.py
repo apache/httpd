@@ -98,6 +98,7 @@ class H2TestEnv(HttpdTestEnv):
             'AH01247',  # mod_cgid sometimes freaks out on load tests
             'AH01110',  # error by proxy reading response
             'AH10400',  # warning that 'enablereuse' has not effect in certain configs test_h2_600
+            'AH00045',  # child did not exit in time, SIGTERM was sent
         ])
         self.httpd_error_log.add_ignored_patterns([
             re.compile(r'.*malformed header from script \'hecho.py\': Bad header: x.*'),

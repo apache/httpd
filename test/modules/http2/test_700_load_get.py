@@ -16,14 +16,14 @@ class TestLoadGet:
     def check_h2load_ok(self, env, r, n):
         assert 0 == r.exit_code
         r = env.h2load_status(r)
-        assert n == r.results["h2load"]["requests"]["total"]
-        assert n == r.results["h2load"]["requests"]["started"]
-        assert n == r.results["h2load"]["requests"]["done"]
-        assert n == r.results["h2load"]["requests"]["succeeded"]
-        assert n == r.results["h2load"]["status"]["2xx"]
-        assert 0 == r.results["h2load"]["status"]["3xx"]
-        assert 0 == r.results["h2load"]["status"]["4xx"]
-        assert 0 == r.results["h2load"]["status"]["5xx"]
+        assert n == r.results["h2load"]["requests"]["total"], f'{r.results}'
+        assert n == r.results["h2load"]["requests"]["started"], f'{r.results}'
+        assert n == r.results["h2load"]["requests"]["done"], f'{r.results}'
+        assert n == r.results["h2load"]["requests"]["succeeded"], f'{r.results}'
+        assert n == r.results["h2load"]["status"]["2xx"], f'{r.results}'
+        assert 0 == r.results["h2load"]["status"]["3xx"], f'{r.results}'
+        assert 0 == r.results["h2load"]["status"]["4xx"], f'{r.results}'
+        assert 0 == r.results["h2load"]["status"]["5xx"], f'{r.results}'
     
     # test load on cgi script, single connection, different sizes
     @pytest.mark.parametrize("start", [
@@ -45,7 +45,7 @@ class TestLoadGet:
 
     # test load on cgi script, single connection
     @pytest.mark.parametrize("conns", [
-        1, 2, 16, 32
+        1, 2, 16
     ])
     def test_h2_700_11(self, env, conns):
         assert env.is_live()

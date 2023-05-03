@@ -124,6 +124,7 @@ class TestPost:
         r = env.nghttp().upload_file(url, fpath, options=options)
         assert r.exit_code == 0
         assert r.response["status"] >= 200 and r.response["status"] < 300
+        assert 'location' in r.response["header"], f'{r}'
         assert r.response["header"]["location"]
 
         r2 = env.nghttp().get(r.response["header"]["location"])
@@ -131,7 +132,7 @@ class TestPost:
         assert r2.response["status"] == 200
         with open(self.local_src(fpath), mode='rb') as file:
             src = file.read()
-        assert src == r2.response["body"]
+        assert src == r2.response["body"], f'GET {r.response["header"]["location"]}'
 
     @pytest.mark.parametrize("name", [
         "data-1k", "data-10k", "data-100k", "data-1m"
