@@ -75,7 +75,7 @@ need rewriting, and to rewrite links in embedded non-HTML contents
 stylesheets or scripts: for those you should use another parser such as
 <module>mod_substitute</module> or <module>mod_sed</module>.
 The main customisation directives are <directive>ProxyHTMLLinks</directive>
-and <directive>ProxyHTMLEvents</directive>.  By default these are set in 
+and <directive>ProxyHTMLEvents</directive>.  By default these are set in
 configuration file <var>proxy-html.conf</var>, which also contains
 comments to help you customise your parser if required.</p>
 <note>For historical reasons, configuring mod_proxy_html to rewrite
@@ -137,7 +137,7 @@ module for earlier 2.x versions.</compatibility>
 
     <p>This turns on or off pre-parsing of metadata in HTML
     <code>&lt;head&gt;</code> sections.</p>
-      
+
     <p>Enabling <directive>ProxyHTMLMeta</directive> will parse all
     <code>&lt;meta http-equiv=...&gt;</code> declarations and convert
     them to real HTTP headers, in keeping with the original purpose
@@ -190,7 +190,7 @@ module for earlier 2.x versions.</compatibility>
 <p>This is the key directive for rewriting HTML links. When parsing a document,
 whenever a link target matches <var>from-pattern</var>, the matching
 portion will be rewritten to <var>to-pattern</var>, as modified by any
-flags supplied and by the 
+flags supplied and by the
 <directive module="mod_proxy_html">ProxyHTMLExtended</directive> directive.
 Only the elements specified using
 the <directive module="mod_proxy_html">ProxyHTMLLinks</directive> directive
@@ -241,7 +241,7 @@ The logic is <em>starts-with</em> in HTML links, but
 (not regexps) and is irrelevant to HTML links.</p></dd>
 <dt>V</dt>
 <dd><p>Interpolate environment variables in <code>to-pattern</code>.
-A string of the form <code>${varname|default}</code> will be replaced by the
+A string of the form <code>%{ENV:varname|default}</code> will be replaced by the
 value of environment variable <code>varname</code>.  If that is unset, it
 is replaced by <code>default</code>.  The <code>|default</code> is optional.</p>
 <p>NOTE: interpolation will only be enabled if
