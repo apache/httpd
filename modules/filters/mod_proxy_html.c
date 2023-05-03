@@ -802,7 +802,7 @@ static const char *interpolate_vars(request_rec *r, const char *str)
 
         delim = ap_strchr_c(start+skip, '|');
 
-        /* Restrict delim to %{ENV:...} or ${...}*/
+        /* Restrict delim to %{ENV:...} or ${...} */
         if (delim && delim >= end) {
             delim = NULL;
         }
