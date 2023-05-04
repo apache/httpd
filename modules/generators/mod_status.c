@@ -348,9 +348,9 @@ static int status_handler(request_rec *r)
                 else if (res != SERVER_DEAD &&
                          res != SERVER_STARTING &&
                          res != SERVER_IDLE_KILL) {
-                    if (res == SERVER_GRACEFUL)
+                    if (res == SERVER_GRACEFUL) {
                         graceful++;
-                        if (is_async) {
+                        if (is_async)
                             thread_graceful_buffer[i]++;
                     } else {
                         busy++;
