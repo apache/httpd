@@ -51,8 +51,6 @@ const char *dav_get_lockdb_path(const request_rec *r)
     return conf->lockdb_path;
 }
 
-static const command_rec dav_fs_cmds[];
-
 dav_error *dav_fs_get_quota(const request_rec *r, const char *path,
                             apr_off_t *quota_bytes)
 {
