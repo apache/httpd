@@ -214,6 +214,16 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       https://raw.githubusercontent.com/jfclere/patch/main/mod_deflate.patch
      +1: jfclere,
 
+  *) mod_http2:
+     - new directive 'H2MaxDataFrameLen n'
+     - deny protocol upgrade on request with chunked encoding
+     Trunk version of patch:
+        https://svn.apache.org/r1907696
+        https://svn.apache.org/r1907697
+     Backport version for 2.4.x of patch:
+        svn merge -c 1907696,1907697 ^/httpd/httpd/trunk .
+     +1: icing,
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
