@@ -224,6 +224,17 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         svn merge -c 1907696,1907697 ^/httpd/httpd/trunk .
      +1: icing,
 
+  *) mod_http2:
+     - New directive 'H2EarlyHint name value'
+     - Fixed PR 66537 where requests were logged late and with wrong duration
+     - Fixed reporting of bytes actually sent (%O)
+     Trunk version of patch:
+        https://svn.apache.org/r1909769
+     Backport version for 2.4.x of patch:
+        svn merge -c 1909769 ^/httpd/httpd/trunk .  # minor conflicts
+     +1: icing,
+
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
