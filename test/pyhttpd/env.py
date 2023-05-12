@@ -237,6 +237,8 @@ class HttpdTestEnv:
         if HttpdTestEnv.LIBEXEC_DIR is None:
             HttpdTestEnv.LIBEXEC_DIR = self._libexec_dir = self.get_apxs_var('LIBEXECDIR')
         self._curl = self.config.get('global', 'curl_bin')
+        if 'CURL' in os.environ:
+            self._curl = os.environ['CURL']
         self._nghttp = self.config.get('global', 'nghttp')
         if self._nghttp is None:
             self._nghttp = 'nghttp'
@@ -837,3 +839,18 @@ class HttpdTestEnv:
                 }
             run.add_results({"h2load": stats})
         return run
+
+    def make_data_file(self, indir: str, fname: str, fsize: int) -> str:
+        fpath = os.path.join(indir, fname)
+        s10 = "0123456789"
+        s = (101 * s10) + s10[0:3]
+        with open(fpath, 'w') as fd:
+            for i in range(int(fsize / 1024)):
+                fd.write(f"{i:09d}-{s}\n")
+            remain = int(fsize % 1024)
+            if remain != 0:
+                i = int(fsize / 1024) + 1
+                s = f"{i:09d}-{s}\n"
+                fd.write(s[0:remain])
+        return fpath
+

@@ -435,6 +435,12 @@ apr_status_t h2_stream_send_frame(h2_stream *stream, int ftype, int flags, size_
 
     ++stream->out_frames;
     stream->out_frame_octets += frame_len;
+    if(stream->c2) {
+      h2_conn_ctx_t *conn_ctx = h2_conn_ctx_get(stream->c2);
+      if(conn_ctx)
+        conn_ctx->bytes_sent = stream->out_frame_octets;
+    }
+
     switch (ftype) {
         case NGHTTP2_DATA:
             eos = (flags & NGHTTP2_FLAG_END_STREAM);

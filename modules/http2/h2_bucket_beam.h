@@ -48,6 +48,7 @@ struct h2_bucket_beam {
     apr_pool_t *pool;
     h2_blist buckets_to_send;
     h2_blist buckets_consumed;
+    h2_blist buckets_eor;
 
     apr_size_t max_buf_size;
     apr_interval_time_t timeout;

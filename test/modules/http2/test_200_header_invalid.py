@@ -176,8 +176,6 @@ class TestInvalidHeaders:
         r = env.nghttp().get(url, options=opt)
         assert r.exit_code == 0, r
         assert r.response is None
-        if r.response is not None:
-            assert r.response["status"] == 400
         url = env.mkurl("https", "cgi", "/proxy/hello.py")
         r = env.nghttp().get(url, options=opt)
         assert r.exit_code == 0, r

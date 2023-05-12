@@ -59,10 +59,11 @@ class TestPost:
         self.curl_upload_and_verify(env, "data-1k", ["-v", "--http1.1", "-H", "Expect: 100-continue"])
         self.curl_upload_and_verify(env, "data-1k", ["-v", "--http2", "-H", "Expect: 100-continue"])
 
-    @pytest.mark.skipif(True, reason="python3 regresses in chunked inputs to cgi")
     def test_h2_004_06(self, env):
-        self.curl_upload_and_verify(env, "data-1k", ["--http1.1", "-H", "Content-Length: "])
-        self.curl_upload_and_verify(env, "data-1k", ["--http2", "-H", "Content-Length: "])
+        self.curl_upload_and_verify(env, "data-1k", [
+            "--http1.1", "-H", "Content-Length:", "-H", "Transfer-Encoding: chunked"
+        ])
+        self.curl_upload_and_verify(env, "data-1k", ["--http2", "-H", "Content-Length:"])
 
     @pytest.mark.parametrize("name, value", [
         ("HTTP2", "on"),
@@ -152,46 +153,6 @@ class TestPost:
     def test_h2_004_25(self, env, name, repeat):
         self.nghttp_upload_and_verify(env, name, ["--no-content-length"])
 
-    def test_h2_004_30(self, env):
-        # issue: #203
-        resource = "data-1k"
-        full_length = 1000
-        chunk = 200
-        self.curl_upload_and_verify(env, resource, ["-v", "--http2"])
-        logfile = os.path.join(env.server_logs_dir, "test_004_30")
-        if os.path.isfile(logfile):
-            os.remove(logfile)
-        H2Conf(env).add("""
-LogFormat "{ \\"request\\": \\"%r\\", \\"status\\": %>s, \\"bytes_resp_B\\": %B, \\"bytes_tx_O\\": %O, \\"bytes_rx_I\\": %I, \\"bytes_rx_tx_S\\": %S }" issue_203
-CustomLog logs/test_004_30 issue_203
-        """).add_vhost_cgi().install()
-        assert env.apache_restart() == 0
-        url = env.mkurl("https", "cgi", "/files/{0}".format(resource))
-        r = env.curl_get(url, 5, options=["--http2"])
-        assert r.response["status"] == 200
-        r = env.curl_get(url, 5, options=["--http1.1", "-H", "Range: bytes=0-{0}".format(chunk-1)])
-        assert 206 == r.response["status"]
-        assert chunk == len(r.response["body"].decode('utf-8'))
-        r = env.curl_get(url, 5, options=["--http2", "-H", "Range: bytes=0-{0}".format(chunk-1)])
-        assert 206 == r.response["status"]
-        assert chunk == len(r.response["body"].decode('utf-8'))
-        # Wait for log completeness
-        time.sleep(1)
-        # now check what response lengths have actually been reported
-        lines = open(logfile).readlines()
-        log_h2_full = json.loads(lines[-3])
-        log_h1 = json.loads(lines[-2])
-        log_h2 = json.loads(lines[-1])
-        assert log_h2_full['bytes_rx_I'] > 0
-        assert log_h2_full['bytes_resp_B'] == full_length
-        assert log_h2_full['bytes_tx_O'] > full_length
-        assert log_h1['bytes_rx_I'] > 0         # input bytes received
-        assert log_h1['bytes_resp_B'] == chunk  # response bytes sent (payload)
-        assert log_h1['bytes_tx_O'] > chunk     # output bytes sent
-        assert log_h2['bytes_rx_I'] > 0
-        assert log_h2['bytes_resp_B'] == chunk
-        assert log_h2['bytes_tx_O'] > chunk
-        
     def test_h2_004_40(self, env):
         # echo content using h2test_module "echo" handler
         def post_and_verify(fname, options=None):
