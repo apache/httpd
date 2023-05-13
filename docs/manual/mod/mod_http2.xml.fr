@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1907697 -->
+<!-- English Revision: 1909769 -->
 <!-- French translation : Lucien GENTIS -->
 
 <!--
@@ -1203,6 +1203,44 @@ H2PushPriority text/css   interleaved      # poids de 256 par défaut
 		taille maximale, et lorsque la taille des données de la réponse
 		est inférieure, les trames envoyées sont plus courtes.
             </p>
+        </usage>
+    </directivesynopsis>
+
+    <directivesynopsis>
+        <name>H2EarlyHint</name>
+        <description>Ajoute un en-tête de réponse à consulter dans le code de
+	retour 103 Early Hints</description>
+        <syntax>H2EarlyHint <em>name</em> <em>value</em></syntax>
+        <contextlist>
+            <context>server config</context>
+            <context>virtual host</context>
+            <context>directory</context>
+            <context>.htaccess</context>
+        </contextlist>
+        <compatibility>Disponible à partir de la version 2.5.1 du serveur HTTP
+	Apache.</compatibility>
+
+        <usage>
+            <p>
+                La directive <directive>H2EarlyHint</directive> permet d'ajouter
+		un en-tête de réponse avant le démarrage du traitement
+		proprement dit de la requête. Les en-têtes de ce style sont
+		consultables dans les réponses intermédiaires "103 Early Hints"
+		et ils ont pour but principal d'envoyer des informations de
+		"préchargement" aux navigateurs clients.
+            </p><p>
+                <em>name</em> et <em>value</em> doivent être des champs
+		d'en-tête HTTP valables sous peine de provoquer des échecs de
+		réponse. La directive <directive>H2EarlyHints</directive> doit
+		encore être activée pour permettre l'envoi de réponses
+		intermédiaires de code 103. Elle peut être répétée plusieurs
+		fois et les champs d'en-tête de même nom s'ajoutent.
+            </p>
+            <example><title>Exemple</title>
+                <highlight language="config">
+H2EarlyHint Link "&lt;/my.css&gt;;rel=preload;as=style"
+                </highlight>
+            </example>
         </usage>
     </directivesynopsis>
 
