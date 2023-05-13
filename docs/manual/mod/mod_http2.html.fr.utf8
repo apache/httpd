@@ -84,6 +84,7 @@
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#h2copyfiles">H2CopyFiles</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#h2direct">H2Direct</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#h2earlyhint">H2EarlyHint</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#h2earlyhints">H2EarlyHints</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#h2maxdataframelen">H2MaxDataFrameLen</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#h2maxsessionstreams">H2MaxSessionStreams</a></li>
@@ -331,6 +332,37 @@
 		autre.
             </p>
             <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">H2Direct on</pre>
+</div>
+        
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="h2earlyhint" id="h2earlyhint">Directive</a> <a name="H2EarlyHint" id="H2EarlyHint">H2EarlyHint</a> <a title="Lien permanent" href="#h2earlyhint" class="permalink">&para;</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Ajoute un en-tête de réponse à consulter dans le code de
+	retour 103 Early Hints</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>H2EarlyHint <em>name</em> <em>value</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_http2</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.5.1 du serveur HTTP
+	Apache.</td></tr>
+</table>
+            <p>
+                La directive <code class="directive">H2EarlyHint</code> permet d'ajouter
+		un en-tête de réponse avant le démarrage du traitement
+		proprement dit de la requête. Les en-têtes de ce style sont
+		consultables dans les réponses intermédiaires "103 Early Hints"
+		et ils ont pour but principal d'envoyer des informations de
+		"préchargement" aux navigateurs clients.
+            </p><p>
+                <em>name</em> et <em>value</em> doivent être des champs
+		d'en-tête HTTP valables sous peine de provoquer des échecs de
+		réponse. La directive <code class="directive">H2EarlyHints</code> doit
+		encore être activée pour permettre l'envoi de réponses
+		intermédiaires de code 103. Elle peut être répétée plusieurs
+		fois et les champs d'en-tête de même nom s'ajoutent.
+            </p>
+            <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">H2EarlyHint Link "&lt;/my.css&gt;;rel=preload;as=style"</pre>
 </div>
         
 </div>
