@@ -616,8 +616,9 @@ static const char *jwt_get_token(request_rec *r)
         return "error:no-claims";
     }
 
-    if (conf->verifies_set) {
-        srec = (auth_bearer_signature_rec *)conf->verifies->elts;
+    /* sign with the first key, if present */
+    if (conf->signs_set) {
+        srec = (auth_bearer_signature_rec *)conf->signs->elts;
     }
 
     /* create a JWT containing the claims */
