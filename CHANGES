@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) mod_authnz_ldap.c: Make sure the authentication variables are set in
+     all cases where another module is the source of the authentication,
+     and that authenticated user is looked up in LDAP. [Graham Leggett]
+
   *) mod_autht_jwt: New module to handle RFC 7519 JWT tokens within
      bearer tokens, both as part of the aaa framework, and as a way to
      generate tokens and pass them to backend servers and services.
