@@ -18,7 +18,15 @@ class TestPost:
     @pytest.fixture(autouse=True, scope='class')
     def _class_scope(self, env):
         TestPost._local_dir = os.path.dirname(inspect.getfile(TestPost))
-        H2Conf(env).add_vhost_cgi().install()
+        conf = H2Conf(env, extras={
+            f'cgi.{env.http_tld}': [
+                f'<Directory {env.server_docs_dir}/cgi/xxx>',
+                '  RewriteEngine On',
+                '  RewriteRule .* /proxy/echo.py [QSA]',
+                '</Directory>',
+            ]
+        })
+        conf.add_vhost_cgi(proxy_self=True).install()
         assert env.apache_restart() == 0
 
     def local_src(self, fname):
@@ -179,3 +187,15 @@ class TestPost:
             assert src == filepart.get_payload(decode=True)
         
         post_and_verify("data-1k", [])
+
+    def test_h2_004_41(self, env):
+        # reproduce PR66597, double chunked encoding on redirects
+        url = env.mkurl("https", "cgi", "/xxx/test.json")
+        r = env.curl_post_data(url, data="0123456789", options=[])
+        assert r.exit_code == 0
+        assert 200 <= r.response["status"] < 300
+        assert r.response['body'] == b'0123456789'
+        r = env.curl_post_data(url, data="0123456789", options=["-H", "Content-Length:"])
+        assert r.exit_code == 0
+        assert 200 <= r.response["status"] < 300
+        assert r.response['body'] == b'0123456789'

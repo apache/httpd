@@ -806,7 +806,7 @@ static int h2_c2_hook_post_read_request(request_rec *r)
 {
     h2_conn_ctx_t *conn_ctx = h2_conn_ctx_get(r->connection);
 
-    if (conn_ctx && conn_ctx->stream_id) {
+    if (conn_ctx && conn_ctx->stream_id && ap_is_initial_req(r)) {
 
         ap_log_rerror(APLOG_MARK, APLOG_TRACE3, 0, r,
                       "h2_c2(%s-%d): adding request filters",
