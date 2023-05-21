@@ -2041,7 +2041,7 @@ to the network</description>
 <description>Threshold above which pending data are flushed to the
 network</description>
 <syntax>FlushMaxThreshold <var>number-of-bytes</var></syntax>
-<default>FlushMaxThreshold 65536</default>
+<default>FlushMaxThreshold 65535</default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 <compatibility>2.4.47 and later</compatibility>
