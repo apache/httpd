@@ -1375,12 +1375,9 @@ static void ev_stream_done(h2_proxy_session *session, int stream_id,
                           session->id, stream_id, touched, stream->error_code);
 
             if (status != APR_SUCCESS) {
-                b = ap_bucket_error_create(HTTP_SERVICE_UNAVAILABLE, NULL, stream->r->pool,
-                                           stream->r->connection->bucket_alloc);
-                APR_BRIGADE_INSERT_TAIL(stream->output, b);
-                b = apr_bucket_eos_create(stream->r->connection->bucket_alloc);
-                APR_BRIGADE_INSERT_TAIL(stream->output, b);
-                ap_pass_brigade(stream->r->output_filters, stream->output);
+              /* stream failed, error reporting is done by caller
+               * of proxy_session, e.g. mod_proxy_http2 which also
+               * decides about retries. */
             }
             else if (!stream->data_received) {
                 /* if the response had no body, this is the time to flush
