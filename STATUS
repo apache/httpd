@@ -241,7 +241,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         https://svn.apache.org/r1909982
      Backport version for 2.4.x of patch:
         svn merge -c 1909932,1909982 ^/httpd/httpd/trunk .
-     +1: icing,
+     +1: icing, rpluem
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
