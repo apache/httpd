@@ -234,6 +234,15 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         svn merge -c 1909769 ^/httpd/httpd/trunk .  # minor conflicts
      +1: icing,
 
+  *) mod_http2: avoid double chunked-encoding on internal redirects.
+     Fixes PR 66597.
+     Trunk version of patch:
+        https://svn.apache.org/r1909932
+        https://svn.apache.org/r1909982
+     Backport version for 2.4.x of patch:
+        svn merge -c 1909932,1909982 ^/httpd/httpd/trunk .
+     +1: icing,
+
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
