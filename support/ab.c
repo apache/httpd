@@ -268,7 +268,6 @@ typedef enum {
     STATE_CONNECTING,           /* TCP connect initiated, but we don't
                                  * know if it worked yet
                                  */
-    STATE_CONNECTED,            /* we know TCP connect completed */
 #ifdef USE_SSL
     STATE_HANDSHAKE,            /* in the handshake phase */
 #endif
@@ -2404,13 +2403,6 @@ static void worker_test(struct worker *worker)
                 continue;
 
             rtnev = pollfd->rtnevents;
-
-#ifdef USE_SSL
-            if (c->state == STATE_CONNECTED && c->ssl && SSL_in_init(c->ssl)) {
-                ssl_proceed_handshake(c);
-                continue;
-            }
-#endif
 
             /*
              * Notes: APR_POLLHUP is set after FIN is received on some
