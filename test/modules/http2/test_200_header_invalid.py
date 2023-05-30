@@ -17,13 +17,14 @@ class TestInvalidHeaders:
     def test_h2_200_01(self, env):
         url = env.mkurl("https", "cgi", "/hecho.py")
         for x in range(1, 32):
-            r = env.curl_post_data(url, "name=x%%%02xx&value=yz" % x)
+            data = f'name=x%{x:02x}x&value=yz'
+            r = env.curl_post_data(url, data)
             if x in [13]:
-                assert 0 == r.exit_code, "unexpected exit code for char 0x%02x" % x
-                assert 200 == r.response["status"], "unexpected status for char 0x%02x" % x
+                assert 0 == r.exit_code, f'unexpected exit code for char 0x{x:02}'
+                assert 200 == r.response["status"], f'unexpected status for char 0x{x:02}'
             else:
-                assert 0 == r.exit_code, "unexpected exit code for char 0x%02x" % x
-                assert 500 == r.response["status"], "unexpected status for char 0x%02x" % x
+                assert 0 == r.exit_code, f'"unexpected exit code for char 0x{x:02}'
+                assert 500 == r.response["status"], f'posting "{data}" unexpected status, {r}'
 
     # let the hecho.py CGI echo chars < 0x20 in field value
     # for almost all such characters, the stream returns a 500
@@ -164,6 +165,8 @@ class TestInvalidHeaders:
 
     # invalid chars in method
     def test_h2_200_16(self, env):
+        if not env.h2load_is_at_least('1.45.0'):
+            pytest.skip(f'nhttp2 version too old')
         conf = H2Conf(env)
         conf.add_vhost_cgi()
         conf.install()
@@ -172,12 +175,8 @@ class TestInvalidHeaders:
         opt = ["-H:method: GET /hello.py"]
         r = env.nghttp().get(url, options=opt)
         assert r.exit_code == 0, r
-        # nghttp version >= 1.45.0 check pseudo headers and RST streams,
-        # which means we see no response.
-        if r.response is not None:
-            assert r.response["status"] == 400
+        assert r.response is None
         url = env.mkurl("https", "cgi", "/proxy/hello.py")
         r = env.nghttp().get(url, options=opt)
         assert r.exit_code == 0, r
-        if r.response is not None:
-            assert r.response["status"] == 400
+        assert r.response is None

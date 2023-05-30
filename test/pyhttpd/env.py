@@ -96,9 +96,8 @@ class HttpdTestSetup:
         self.env.clear_curl_headerfiles()
 
     def _make_dirs(self):
-        if os.path.exists(self.env.gen_dir):
-            shutil.rmtree(self.env.gen_dir)
-        os.makedirs(self.env.gen_dir)
+        if not os.path.exists(self.env.gen_dir):
+            os.makedirs(self.env.gen_dir)
         if not os.path.exists(self.env.server_logs_dir):
             os.makedirs(self.env.server_logs_dir)
 
@@ -238,6 +237,8 @@ class HttpdTestEnv:
         if HttpdTestEnv.LIBEXEC_DIR is None:
             HttpdTestEnv.LIBEXEC_DIR = self._libexec_dir = self.get_apxs_var('LIBEXECDIR')
         self._curl = self.config.get('global', 'curl_bin')
+        if 'CURL' in os.environ:
+            self._curl = os.environ['CURL']
         self._nghttp = self.config.get('global', 'nghttp')
         if self._nghttp is None:
             self._nghttp = 'nghttp'
@@ -288,6 +289,7 @@ class HttpdTestEnv:
 
         self._verify_certs = False
         self._curl_headerfiles_n = 0
+        self._curl_version = None
         self._h2load_version = None
         self._current_test = None
 
@@ -471,6 +473,20 @@ class HttpdTestEnv:
                 self._h2load_version = self._versiontuple(m.group(1))
         if self._h2load_version is not None:
             return self._h2load_version >= self._versiontuple(minv)
+        return False
+
+    def curl_is_at_least(self, minv):
+        if self._curl_version is None:
+            p = subprocess.run([self._curl, '-V'], capture_output=True, text=True)
+            if p.returncode != 0:
+                return False
+            for l in p.stdout.splitlines():
+                m = re.match(r'curl ([0-9.]+)[- ].*', l)
+                if m:
+                    self._curl_version = self._versiontuple(m.group(1))
+                    break
+        if self._curl_version is not None:
+            return self._curl_version >= self._versiontuple(minv)
         return False
 
     def has_nghttp(self):
@@ -823,3 +839,18 @@ class HttpdTestEnv:
                 }
             run.add_results({"h2load": stats})
         return run
+
+    def make_data_file(self, indir: str, fname: str, fsize: int) -> str:
+        fpath = os.path.join(indir, fname)
+        s10 = "0123456789"
+        s = (101 * s10) + s10[0:3]
+        with open(fpath, 'w') as fd:
+            for i in range(int(fsize / 1024)):
+                fd.write(f"{i:09d}-{s}\n")
+            remain = int(fsize % 1024)
+            if remain != 0:
+                i = int(fsize / 1024) + 1
+                s = f"{i:09d}-{s}\n"
+                fd.write(s[0:remain])
+        return fpath
+

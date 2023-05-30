@@ -385,7 +385,11 @@ la réécriture soit effectuée
 		  <dd>La partie chemin de l'URI de la requête, comme
 		  "/index.html". Ceci exclut en particulier la chaîne de
 		  paramètres de la requête qui est contenue dans la
-		  variable <code>QUERY_STRING</code>.</dd>
+		  variable <code>QUERY_STRING</code>. La valeur renvoyée pour
+		  <code>REQUEST_URI</code> a déjà été %-décodée ; pour la
+		  recoder, passez-la à la <a href="#mapfunc">fonction de
+		  mappage</a> "escape".
+		  </dd>
 
                   <dt><code>THE_REQUEST</code></dt>
 
@@ -1419,9 +1423,9 @@ substitution !
     </tr>
 <tr>
         <td>B</td>
-        <td>Echappe les caractères non-alphanumériques
-	dans les références arrières <em>avant</em>
-	d'appliquer la transformation. <em><a href="../rewrite/flags.html#flag_b">détails ...</a></em></td>
+	<td>Echappe les caractères non-alphanumériques dans les références
+	arrières <em>avant</em> d'appliquer la transformation. Pour un
+	échappement similaire des variables du serveur, voir la <a href="#mapfunc">fonction de mappage</a> "escape".<em><a href="../rewrite/flags.html#flag_b">détails ...</a></em></td>
     </tr>
 <tr class="odd">
         <td>BCTLS</td>

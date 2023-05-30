@@ -452,7 +452,7 @@ static apr_status_t retained_data_cleanup(void *unused)
     return APR_SUCCESS;
 }
 
-AP_DECLARE(ap_unixd_mpm_retained_data *) ap_unixd_mpm_get_retained_data()
+AP_DECLARE(ap_unixd_mpm_retained_data *) ap_unixd_mpm_get_retained_data(void)
 {
     if (!retained_data) {
         retained_data = ap_retained_data_create("ap_unixd_mpm_retained_data",

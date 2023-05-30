@@ -3244,7 +3244,7 @@ AP_DECLARE(apr_status_t) ap_varbuf_regsub(struct ap_varbuf *vb,
 static const char * const oom_message = "[crit] Memory allocation failed, "
                                         "aborting process." APR_EOL_STR;
 
-AP_DECLARE(void) ap_abort_on_oom()
+AP_DECLARE(void) ap_abort_on_oom(void)
 {
     int written, count = strlen(oom_message);
     const char *buf = oom_message;

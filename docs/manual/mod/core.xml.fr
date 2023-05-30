@@ -3436,8 +3436,8 @@ host</context>
     qu'il est difficile de distinguer <code>~</code> de <code>-</code>
     dans la plupart des fontes.</p>
 
-    <p>La directive <directive type="section">Location</directive>
-    s'utilise principalement avec la directive <directive
+    <p>La fonctionnalité <directive type="section">Location</directive>
+    est particulièrement utile avec la directive <directive
     module="core">SetHandler</directive>. Par exemple, pour activer les
     requêtes d'état, mais ne les autoriser que depuis des navigateurs
     appartenant au domaine <code>example.com</code>, vous pouvez

@@ -276,13 +276,14 @@ for additional examples.
 
 <usage>
     <p>The <directive>SetEnvIfExpr</directive> directive defines
-    environment variables based on an <directive module="core" type="section">If</directive>
-    <code>ap_expr</code>. These expressions will be evaluated at runtime,
+    environment variables based on an <a href="../expr.html">expression</a>.
+    These expressions will be evaluated at runtime,
     and applied <em>env-variable</em> in the same fashion as <directive
-    >SetEnvIf</directive>.</p>
+    >SetEnvIf</directive>, including backreferences.</p>
 
 <highlight language="config">
     SetEnvIfExpr "tolower(req('X-Sendfile')) == 'd:\images\very_big.iso')" iso_delivered
+    SetEnvIfExpr "tolower(req('X-Sendfile')) =~ /(.*\.iso$)/" iso-path=$1
 </highlight>
 
     <p>This would set the environment variable <code>iso_delivered</code>

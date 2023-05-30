@@ -1,0 +1,18 @@
+  *) mod_http2: v2.0.15 with the following fixes and improvements
+     - New directive 'H2EarlyHint name value' to add headers to a response,
+       picked up already when a "103 Early Hints" response is sent. 'name' and
+       'value' must comply to the HTTP field restrictions.
+       This directive can be repeated several times and header fields of the
+       same names add. Sending a 'Link' header with 'preload' relation will
+       also cause a HTTP/2 PUSH if enabled and supported by the client.
+     - Fixed an issue where requests were not logged and accounted in a timely
+       fashion when the connection returns to "keepalive" handling, e.g. when
+       the request served was the last outstanding one.
+       This led to late appearance in access logs with wrong duration times
+       reported.
+     - Accurately report the bytes sent for a request in the '%O' Log format.
+       This addresses #203, a long outstanding issue where mod_h2 has reported
+       numbers over-eagerly from internal buffering and not what has actually
+       been placed on the connection.
+       The numbers are now the same with and without H2CopyFiles enabled.
+     [Stefan Eissing]

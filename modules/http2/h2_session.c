@@ -1947,7 +1947,8 @@ leaving:
         ap_log_cerror( APLOG_MARK, APLOG_TRACE3, status, c,
                       H2_SSSN_MSG(session, "process returns")); 
     }
-    
+    h2_mplx_c1_going_keepalive(session->mplx);
+
     if (session->state == H2_SESSION_ST_DONE) {
         if (session->local.error) {
             char buffer[128];

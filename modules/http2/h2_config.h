@@ -87,6 +87,7 @@ int h2_config_rgeti(request_rec *r, h2_config_var_t var);
 apr_int64_t h2_config_rgeti64(request_rec *r, h2_config_var_t var);
 
 apr_array_header_t *h2_config_push_list(request_rec *r);
+apr_table_t *h2_config_early_headers(request_rec *r);
 
 
 void h2_get_workers_config(server_rec *s, int *pminw, int *pmaxw,

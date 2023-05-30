@@ -62,6 +62,22 @@
     <p>Introduces a new API to fill me in.</p>
   
 
+  <h3><a name="http_request" id="http_request">http_request (changed)</a></h3>
+    
+    <ul>
+      <li>New autht_provider API</li>
+      <li>New <code>token_checker</code> hook to handle authentication based on
+          mechanisms other than username and password.</li>
+      <li>New function <code>ap_hook_check_autht</code>, as an addition to
+          <code>ap_hook_check_authn</code> and <code>ap_hook_check_authz</code>.</li>
+    </ul>
+  
+
+  <h3><a name="mod_auth" id="mod_auth">mod_auth (changed)</a></h3>
+    
+    <p>Adds an additional provider framework for autht - token authentication.</p>
+  
+
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="upgrading" id="upgrading">Specific information on upgrading modules from 2.4</a> <a title="Permanent link" href="#upgrading" class="permalink">&para;</a></h2>

@@ -34,6 +34,8 @@ providing detailed explanations and examples.</p>
 <div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#introduction">Introduction</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#flag_b">B (escape backreferences)</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#flag_bnp">BNP|backrefnoplus (don't escape space to +)</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#flag_bctls">BCTLS</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#flag_bne">BNE</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#flag_c">C|chain</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#flag_co">CO|cookie</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#flag_dpi">DPI|discardpath</a></li>
@@ -85,15 +87,15 @@ of how you might use them.</p>
 <h2><a name="flag_b" id="flag_b">B (escape backreferences)</a> <a title="Permanent link" href="#flag_b" class="permalink">&para;</a></h2>
 <p>The [B] flag instructs <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> to escape non-alphanumeric
 characters before applying the transformation.</p>
-<p>In 2.4.26 and later, you can limit the escaping to specific characters
-in backreferences by listing them: <code>[B=#?;]</code>. Note: The space
-character can be used in the list of characters to escape, but it cannot be
-the last character in the list.</p>
 
 <p><code>mod_rewrite</code> has to unescape URLs before mapping them,
 so backreferences are unescaped at the time they are applied.
 Using the B flag, non-alphanumeric characters in backreferences
 will be escaped. For example, consider the rule:</p>
+
+<p>For similar escaping of server-variables, see
+    the "escape" <a href="#mapfunc">mapping-function</a></p>
+
 
 <pre class="prettyprint lang-config">RewriteRule "^search/(.*)$" "/search.php?term=$1"</pre>
 
@@ -120,6 +122,20 @@ when the backend may break if presented with an unescaped URL.</p>
 
 <p>An alternative to this flag is using a <code class="directive"><a href="../mod/mod_rewrite.html#rewritecond">RewriteCond</a></code> to capture against %{THE_REQUEST} which will capture
 strings in the encoded form.</p>
+
+<p>In 2.4.26 and later, you can limit the escaping to specific characters
+in backreferences by listing them: <code>[B=#?;]</code>. Note: The space
+character can be used in the list of characters to escape, but you must quote
+the entire third argument of <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>
+and the space must not be the last character in the list.</p>
+
+<pre class="prettyprint lang-config"># Escape spaces and question marks.  The quotes around the final argument 
+# are required when a space is included.
+RewriteRule "^search/(.*)$" "/search.php?term=$1" "[B= ?]"</pre>
+
+
+<p>To limit the characters escaped this way, see <a href="#flag_bne">#flag_bne</a>
+        and <a href="#flag_bctls">#flag_bctls</a></p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="flag_bnp" id="flag_bnp">BNP|backrefnoplus (don't escape space to +)</a> <a title="Permanent link" href="#flag_bnp" class="permalink">&para;</a></h2>
@@ -127,8 +143,40 @@ strings in the encoded form.</p>
 in a backreference to %20 rather than '+'. Useful when the backreference
 will be used in the path component rather than the query string.</p>
 
-<p>This flag is available in version 2.4.26 and later.</p>
+<pre class="prettyprint lang-config"># Escape spaces to %20 in the path instead of + as used in form submission via
+# the query string
+RewriteRule "^search/(.*)$" "/search.php/$1" "[B,BNP]"</pre>
 
+
+
+<p>This flag is available in version 2.4.26 and later.</p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="flag_bctls" id="flag_bctls">BCTLS</a> <a title="Permanent link" href="#flag_bctls" class="permalink">&para;</a></h2>
+<p>The [BCTLS] flag is similar to the [B] flag, but only escapes
+control characters and the space character. This is the same set of
+characters rejected when they are copied into the query string unencoded.
+</p>
+
+<pre class="prettyprint lang-config"># Escape control characters and spaces
+RewriteRule "^search/(.*)$" "/search.php/$1" "[BCTLS]"</pre>
+
+
+<p>This flag is available in version 2.5.1 and later.</p>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="flag_bne" id="flag_bne">BNE</a> <a title="Permanent link" href="#flag_bne" class="permalink">&para;</a></h2>
+<p>The list of characters in [BNE=...] are treated as exclusions to the
+characters of the [B] or [BCTLS] flags. The listed characters will not be
+escaped.
+</p>
+
+<pre class="prettyprint lang-config"># Escape the default characters, but leave /
+RewriteRule "^search/(.*)$" "/search.php?term=$1" "[B,BNE=/]"</pre>
+
+
+<p>This flag is available in version 2.5.1 and later.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="flag_c" id="flag_c">C|chain</a> <a title="Permanent link" href="#flag_c" class="permalink">&para;</a></h2>
@@ -540,11 +588,17 @@ client undue influence.</p>
 
 <div class="warning">
 <h3>Performance warning</h3>
-<p>Using this flag triggers the use of <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code>, without handling of persistent connections. This
-means the performance of your proxy will be better if you set it up with <code class="directive"><a href="../mod/mod_proxy.html#proxypass">ProxyPass</a></code> or
-<code class="directive"><a href="../mod/mod_proxy.html#proxypassmatch">ProxyPassMatch</a></code></p>
-<p>This is because this flag triggers the use of the default worker, which does not handle connection pooling/reuse.</p>
-<p>Avoid using this flag and prefer those directives, whenever you can.</p>
+<p>Using this flag triggers the use of <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code>, without
+handling of persistent connections as the default worker is used in this case,
+which does not handle connection pooling/reuse.</p>
+<p>In order to use persistent connections you need to setup a
+<code class="directive"><a href="../mod/mod_proxy.html#proxy">Proxy</a></code> block at least for the scheme
+and host part of the target URL containing a
+<code class="directive"><a href="../mod/mod_proxy.html#proxyset">ProxySet</a></code> directive where you e.g. set
+a timeout.</p>
+<p>If you set it up with <code class="directive"><a href="../mod/mod_proxy.html#proxypass">ProxyPass</a></code> or
+<code class="directive"><a href="../mod/mod_proxy.html#proxypassmatch">ProxyPassMatch</a></code> persistent connections
+will be used automatically.</p>
 </div>
 
 <p>Note: <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> must be enabled in order

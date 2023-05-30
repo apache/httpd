@@ -111,6 +111,12 @@ username and password</td></tr>
     will be used. To disable fake basic authentication for an URL
     space, specify "AuthBasicFake off".</p>
 
+    <div class="note">
+    The Authorization header added by this directive is <em>not</em>
+    input into any authentication or authorization within the local 
+    server.  It is designed to be passed along to upstream servers.
+    </div>
+
     <p>In this example, we pass a fixed username and password to a
     backend server.</p>
 

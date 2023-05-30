@@ -1,6 +1,33 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) mod_authnz_ldap.c: Make sure the authentication variables are set in
+     all cases where another module is the source of the authentication,
+     and that authenticated user is looked up in LDAP. [Graham Leggett]
+
+  *) mod_autht_jwt: New module to handle RFC 7519 JWT tokens within
+     bearer tokens, both as part of the aaa framework, and as a way to
+     generate tokens and pass them to backend servers and services.
+     [Graham Leggett]
+
+  *) mod_auth_bearer: New module to handle RFC 6750 Bearer tokens, using
+     the token_checker hook. [Graham Leggett]
+
+  *) mod_autht_core: New module to handle provider aliases for token
+     authentication. [Graham Leggett]
+
+  *) core: Add the token_checker hook, that allows authentication to take
+     place using mechanisms other than username/password, such as bearer
+     tokens. [Graham Leggett]
+
+  *) mod_alias: When an alias is declared inside a Location, make sure
+     the balance of the URL is preserved to match the alias declared
+     outside a location. Fixes an error where all requests are mapped
+     to the root of the location. [Graham Leggett]
+
+  *) core: Be explicit if an enclosing directive contains a path or a
+     regex. [Graham Leggett]
+
   *) mod_http2: fixed a crash during connection termination. See PR 66539.
      [Stefan Eissing]
 

@@ -144,6 +144,9 @@ h2_headers *h2_headers_rcreate(request_rec *r, int status,
                                const apr_table_t *header, apr_pool_t *pool)
 {
     h2_headers *headers = h2_headers_create(status, header, r->notes, 0, pool);
+    ap_log_rerror(APLOG_MARK, APLOG_TRACE1, headers->status, r,
+                  "h2_headers_rcreate(%ld): status=%d",
+                  (long)r->connection->id, status);
     if (headers->status == HTTP_FORBIDDEN) {
         request_rec *r_prev;
         for (r_prev = r; r_prev != NULL; r_prev = r_prev->prev) {

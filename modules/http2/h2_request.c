@@ -304,6 +304,7 @@ static void assign_headers(request_rec *r, const h2_request *req,
     const char *cl;
 
     r->headers_in = apr_table_clone(r->pool, req->headers);
+
     if (req->authority) {
         /* for internal handling, we have to simulate that :authority
          * came in as Host:, RFC 9113 ch. says that mismatches between
@@ -367,12 +368,15 @@ request_rec *h2_create_request_rec(const h2_request *req, conn_rec *c,
     /* Time to populate r with the data we have. */
     r->request_time = req->request_time;
     AP_DEBUG_ASSERT(req->authority);
-    if (req->scheme && (ap_cstr_casecmp(req->scheme,
-                        ap_ssl_conn_is_ssl(c->master? c->master : c)? "https" : "http")
-                        || !ap_cstr_casecmp("CONNECT", req->method))) {
-        /* Client sent a non-matching ':scheme' pseudo header. Forward this
-         * via an absolute URI in the request line.
-         */
+    if (!apr_strnatcasecmp("CONNECT", req->method)) {
+      /* CONNECT MUST NOT have scheme or path */
+      r->the_request = apr_psprintf(r->pool, "%s %s HTTP/2.0",
+                                    req->method, req->authority);
+    }
+    else if (req->scheme && ap_cstr_casecmp(req->scheme, "http")
+             && ap_cstr_casecmp(req->scheme, "https")) {
+        /* Client sent a ':scheme' pseudo header for something else
+         * than what we handle by default. Make an absolute URI. */
         r->the_request = apr_psprintf(r->pool, "%s %s://%s%s HTTP/2.0",
                                       req->method, req->scheme, req->authority,
                                       req->path ? req->path : "");
@@ -380,11 +384,6 @@ request_rec *h2_create_request_rec(const h2_request *req, conn_rec *c,
     else if (req->path) {
         r->the_request = apr_psprintf(r->pool, "%s %s HTTP/2.0",
                                       req->method, req->path);
-    }
-    else if (!apr_strnatcasecmp("CONNECT", req->method)) {
-      /* CONNECT MUST NOT have scheme or path */
-      r->the_request = apr_psprintf(r->pool, "%s %s HTTP/2.0",
-                                    req->method, req->authority);
     }
     else {
         /* We should only come here on a request that is errored already.

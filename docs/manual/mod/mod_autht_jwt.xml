@@ -1,0 +1,216 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
+<!-- $LastChangedRevision: 1421821 $ -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_autht_jwt.xml.meta">
+
+<name>mod_autht_jwt</name>
+<description>Token authentication using JWT tokens</description>
+<status>Base</status>
+<sourcefile>mod_autht_jwt.c</sourcefile>
+<identifier>autht_jwt_module</identifier>
+
+<summary>
+    <p>This module provides token parsing front-ends such as
+    <module>mod_auth_bearer</module> the ability to authenticate users
+    by verifying a JWT token as described in
+    <a href="http://www.ietf.org/rfc/rfc7519.txt">RFC 7519</a>.</p>
+
+    <p>A JWT token is read from the <var>Authorization</var> header
+    with an <var>auth-scheme</var> of <var>Bearer</var>.</p>
+
+    <p>When using <module>mod_auth_bearer</module> this module is invoked
+    via the
+    <directive module="mod_auth_bearer">AuthBearerProvider</directive>
+    with the <code>jwt</code> value.</p>
+
+    <p>This module can also be used standalone to generate JWT tokens
+    for passing to a backend server or service. Claims are embedded within
+    a token, which is then optionally signed, and passed using the
+    <var>Authorization</var> header as a <var>Bearer</var> token.</p>
+</summary>
+<seealso>
+  <directive module="mod_auth_bearer">AuthBearerProvider</directive>
+</seealso>
+
+<directivesynopsis>
+<name>AuthtJwtDriver</name>
+<description>Sets the name of the underlying crypto driver to
+use</description>
+<syntax>AuthtJwtDriver <var>name</var> <var>[param[=value]]</var></syntax>
+<contextlist><context>server config</context>
+<context>virtual host</context></contextlist>
+
+<usage>
+    <p>The <directive>AuthtJwtDriver</directive> directive specifies the name of
+    the crypto driver to be used for signing and verification. If not specified,
+    the driver defaults to the recommended driver compiled into APR-util.</p>
+
+    <p>Follow the instructions in the
+    <directive module="mod_session_crypto">SessionCryptoDriver</directive> to
+    set up the driver.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>AuthtJwtVerify</name>
+<description>The JWS signing algorithm and passphrase/key to verify an incoming
+JWT token</description>
+<syntax>AuthtJwtVerify <var>algorithm</var> [<var>type</var> <var>param</var>]</syntax>
+<contextlist><context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>AuthConfig</override>
+
+<usage>
+    <p>The <directive>AuthtJwtVerify</directive> directive specifies the algorithm
+    and secret used to verify incoming bearer tokens.</p>
+
+    <p>If the algorithm type <var>none</var> is selected, the token is not
+    protected, and will be accepted as is. Use only when the client is trusted, and the
+    channel is protected through other means, such as mutually authenticated TLS, or
+    unix domain sockets.</p>
+
+    <p>If present, the <var>sub</var> claim is assigned to REMOTE_USER.</p>
+
+    <example><title>No Verification Example</title>
+    <highlight language="config">
+&lt;Location "/mutual-tls-secured"&gt;
+  AuthType bearer
+  AuthName example-name
+  AuthBearerProvider jwt
+  AuthtJwtVerify none
+  Require valid-user
+&lt;/Location&gt;
+    </highlight>
+    </example>
+
+    <p>If the algorithm type <var>HS256</var> is used, the algorithm is set to
+    <var>HMAC-SHA256</var>, and the secret is set within the <var>file</var> specified
+    as the third parameter. The contents of the bearer token is still visible, and so
+    the channel must still be protected from evesdropping through TLS.</p>
+
+    <p>If the signature is verified, and if present, the <var>sub</var> claim is
+    assigned to REMOTE_USER.</p>
+
+    <example><title>Verification Example</title>
+    <highlight language="config">
+&lt;Location "/secure"&gt;
+  AuthType bearer
+  AuthName example-name
+  AuthBearerProvider jwt
+  AuthtJwtVerify hs256 file "/www/conf/jwt.secret"
+  Require valid-user
+&lt;/Location&gt;
+    </highlight>
+    </example>
+
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>AuthtJwtSign</name>
+<description>The JWS signing algorithm and passphrase/key to sign an outgoing
+JWT token</description>
+<syntax>AuthtJwtSign <var>algorithm</var> [<var>type</var> <var>param</var>]</syntax>
+<contextlist><context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>AuthConfig</override>
+
+<usage>
+    <p>The <directive>AuthtJwtSign</directive> directive specifies the algorithm
+    and secret used to sign outgoing bearer tokens passed to a server or service.</p>
+
+    <p>If the algorithm type <var>none</var> is selected, the token is not
+    protected. Use only when the client is trusted, and the channel is protected
+    through other means, such as mutually authenticated TLS, or unix domain sockets.</p>
+
+    <p>Set the claims to be sent in the token using the
+    <directive module="mod_autht_jwt">AuthtJwtClaim</directive> directive. The
+    <var>sub</var> claim is used to pass the remote user.</p>
+
+    <example><title>No Verification Example</title>
+    <highlight language="config">
+&lt;Location "/mutual-tls-secured"&gt;
+  AuthtJwtClaim set sub %{REMOTE_USER}
+  AuthtJwtSign none
+&lt;/Location&gt;
+    </highlight>
+    </example>
+
+    <p>If the algorithm type <var>HS256</var> is used, the algorithm is set to
+    <var>HMAC-SHA256</var>, and the secret is set within the <var>file</var> specified
+    as the third parameter. The contents of the bearer token is still visible, and so
+    the channel must still be protected from evesdropping through TLS.</p>
+
+    <example><title>Verification Example</title>
+    <highlight language="config">
+&lt;Location "/secure"&gt;
+  AuthtJwtClaim set sub %{REMOTE_USER}
+  AuthtJwtSign hs256 file "/www/conf/jwt.secret"
+&lt;/Location&gt;
+    </highlight>
+    </example>
+
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>AuthtJwtClaim</name>
+<description>Set a claim with the given name and expression, or unset the claim with the given name</description>
+<syntax>AuthtJwtVerify <var>[set|unset]</var> <var>name</var> [<var>value</var>]</syntax>
+<contextlist><context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>AuthConfig</override>
+
+<usage>
+    <p>The <directive>AuthtJwtClaim</directive> directive adds and/or removes
+    claims from token being passed to the backend server or service.</p>
+
+    <p>When a claim is set, the value of the claim is the result of an expression. The
+    expression may include parameters from a digital certificate, or the name of the
+    user that has been authenticated to Apache httpd.</p>
+
+    <example><title>Pass Remote User Example</title>
+    <highlight language="config">
+&lt;Location "/secure"&gt;
+  AuthtJwtClaim set sub %{REMOTE_USER}
+  AuthtJwtSign hs256 file "/www/conf/jwt.secret"
+&lt;/Location&gt;
+    </highlight>
+    </example>
+
+    <p>When a claim is unset, the claim previously set is removed from the token.</p>
+
+    <example><title>Unset Claim Example</title>
+    <highlight language="config">
+AuthtJwtClaim set my-claim present
+&lt;Location "/secure"&gt;
+  AuthtJwtClaim set sub %{REMOTE_USER}
+  AuthtJwtClaim unset my-claim
+  AuthtJwtSign hs256 file "/www/conf/jwt.secret"
+&lt;/Location&gt;
+    </highlight>
+    </example>
+
+</usage>
+</directivesynopsis>
+
+</modulesynopsis>

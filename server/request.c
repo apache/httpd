@@ -74,6 +74,7 @@ APR_HOOK_STRUCT(
     APR_HOOK_LINK(post_perdir_config)
     APR_HOOK_LINK(dirwalk_stat)
     APR_HOOK_LINK(force_authn)
+    APR_HOOK_LINK(token_checker)
     APR_HOOK_LINK(remote_is_ssl)
 )
 
@@ -104,6 +105,8 @@ AP_IMPLEMENT_HOOK_RUN_FIRST(apr_status_t,dirwalk_stat,
                             (apr_finfo_t *finfo, request_rec *r, apr_int32_t wanted),
                             (finfo, r, wanted), AP_DECLINED)
 AP_IMPLEMENT_HOOK_RUN_FIRST(int,force_authn,
+                            (request_rec *r), (r), DECLINED)
+AP_IMPLEMENT_HOOK_RUN_FIRST(int,token_checker,
                             (request_rec *r), (r), DECLINED)
 AP_IMPLEMENT_HOOK_RUN_FIRST(int, remote_is_ssl,
                             (request_rec *r), (r), DECLINED)
@@ -337,6 +340,12 @@ AP_DECLARE(int) ap_process_request_internal(request_rec *r)
         switch (ap_satisfies(r)) {
         case SATISFY_ALL:
         case SATISFY_NOSPEC:
+            if ((access_status = ap_run_token_checker(r)) != OK &&
+            		access_status != DECLINED) {
+                return decl_die(access_status,
+                                "check token (with Satisfy All)", r);
+            }
+
             if ((access_status = ap_run_access_checker(r)) != OK) {
                 return decl_die(access_status,
                                 "check access (with Satisfy All)", r);
@@ -372,6 +381,14 @@ AP_DECLARE(int) ap_process_request_internal(request_rec *r)
             }
             break;
         case SATISFY_ANY:
+            if ((access_status = ap_run_token_checker(r)) == OK) {
+                ap_log_rerror(APLOG_MARK, APLOG_TRACE3, 0, r,
+                              "request authorized bypassing access_checker by "
+                              "token_checker hook and 'Satisfy any': %s",
+                              r->uri);
+                break;
+            }
+
             if ((access_status = ap_run_access_checker(r)) == OK) {
                 ap_log_rerror(APLOG_MARK, APLOG_TRACE3, 0, r,
                               "request authorized without authentication by "
@@ -2219,6 +2236,18 @@ AP_DECLARE(void) ap_hook_check_access_ex(ap_HOOK_access_checker_ex_t *pf,
     }
 
     ap_hook_access_checker_ex(pf, aszPre, aszSucc, nOrder);
+}
+
+AP_DECLARE(void) ap_hook_check_autht(ap_HOOK_check_user_id_t *pf,
+                                     const char * const *aszPre,
+                                     const char * const *aszSucc,
+                                     int nOrder, int type)
+{
+    if ((type & AP_AUTH_INTERNAL_MASK) == AP_AUTH_INTERNAL_PER_CONF) {
+        ++auth_internal_per_conf_hooks;
+    }
+
+    ap_hook_token_checker(pf, aszPre, aszSucc, nOrder);
 }
 
 AP_DECLARE(void) ap_hook_check_authn(ap_HOOK_check_user_id_t *pf,

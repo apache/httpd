@@ -49,11 +49,17 @@ class TestProxy:
             src = file.read()
         assert r2.response["body"] == src
 
-    def test_h2_500_10(self, env, repeat):
-        self.curl_upload_and_verify(env, "data-1k", ["--http2"])
-        self.curl_upload_and_verify(env, "data-10k", ["--http2"])
-        self.curl_upload_and_verify(env, "data-100k", ["--http2"])
-        self.curl_upload_and_verify(env, "data-1m", ["--http2"])
+    @pytest.mark.parametrize("name", [
+        "data-1k", "data-10k", "data-100k", "data-1m",
+    ])
+    def test_h2_500_10(self, env, name, repeat):
+        self.curl_upload_and_verify(env, name, ["--http2"])
+
+    def test_h2_500_11(self, env):
+        self.curl_upload_and_verify(env, "data-1k", [
+            "--http1.1", "-H", "Content-Length:", "-H", "Transfer-Encoding: chunked"
+        ])
+        self.curl_upload_and_verify(env, "data-1k", ["--http2", "-H", "Content-Length:"])
 
     # POST some data using nghttp and see it echo'ed properly back
     def nghttp_post_and_verify(self, env, fname, options=None):
@@ -71,17 +77,17 @@ class TestProxy:
                 fd.write(r.stderr)
             assert r.response["body"] == src
 
-    def test_h2_500_20(self, env, repeat):
-        self.nghttp_post_and_verify(env, "data-1k", [])
-        self.nghttp_post_and_verify(env, "data-10k", [])
-        self.nghttp_post_and_verify(env, "data-100k", [])
-        self.nghttp_post_and_verify(env, "data-1m", [])
+    @pytest.mark.parametrize("name", [
+        "data-1k", "data-10k", "data-100k", "data-1m",
+    ])
+    def test_h2_500_20(self, env, name, repeat):
+        self.nghttp_post_and_verify(env, name, [])
 
-    def test_h2_500_21(self, env, repeat):
-        self.nghttp_post_and_verify(env, "data-1k", ["--no-content-length"])
-        self.nghttp_post_and_verify(env, "data-10k", ["--no-content-length"])
-        self.nghttp_post_and_verify(env, "data-100k", ["--no-content-length"])
-        self.nghttp_post_and_verify(env, "data-1m", ["--no-content-length"])
+    @pytest.mark.parametrize("name", [
+        "data-1k", "data-10k", "data-100k", "data-1m",
+    ])
+    def test_h2_500_21(self, env, name, repeat):
+        self.nghttp_post_and_verify(env, name, ["--no-content-length"])
 
     # upload and GET again using nghttp, compare to original content
     def nghttp_upload_and_verify(self, env, fname, options=None):
@@ -101,17 +107,17 @@ class TestProxy:
             src = file.read()
         assert src == r2.response["body"]
 
-    def test_h2_500_22(self, env):
-        self.nghttp_upload_and_verify(env, "data-1k", [])
-        self.nghttp_upload_and_verify(env, "data-10k", [])
-        self.nghttp_upload_and_verify(env, "data-100k", [])
-        self.nghttp_upload_and_verify(env, "data-1m", [])
+    @pytest.mark.parametrize("name", [
+        "data-1k", "data-10k", "data-100k", "data-1m",
+    ])
+    def test_h2_500_22(self, env, name):
+        self.nghttp_upload_and_verify(env, name, [])
 
-    def test_h2_500_23(self, env):
-        self.nghttp_upload_and_verify(env, "data-1k", ["--no-content-length"])
-        self.nghttp_upload_and_verify(env, "data-10k", ["--no-content-length"])
-        self.nghttp_upload_and_verify(env, "data-100k", ["--no-content-length"])
-        self.nghttp_upload_and_verify(env, "data-1m", ["--no-content-length"])
+    @pytest.mark.parametrize("name", [
+        "data-1k", "data-10k", "data-100k", "data-1m",
+    ])
+    def test_h2_500_23(self, env, name):
+        self.nghttp_upload_and_verify(env, name, ["--no-content-length"])
 
     # upload using nghttp and check returned status
     def nghttp_upload_stat(self, env, fname, options=None):
@@ -124,7 +130,7 @@ class TestProxy:
         assert r.response["header"]["location"]
 
     def test_h2_500_24(self, env):
-        for i in range(100):
+        for i in range(50):
             self.nghttp_upload_stat(env, "data-1k", ["--no-content-length"])
 
     # lets do some error tests

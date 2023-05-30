@@ -260,7 +260,7 @@ a DAV resource</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_dav</td></tr>
 </table>
     <p>The <code class="directive">DavMSext</code> directive enables support
-    for Microsoft extensions. Possible values are:
+    for Microsoft extensions. Possible values are:</p>
         <ul>
             <li><code>None</code> No Microsoft extension is enabled.</li>
             <li><code>WDV</code> Enable support for
@@ -270,7 +270,7 @@ a DAV resource</td></tr>
             are enabled. Currently, this is means <code>WDV</code> as
             it is the only Microsoft extension implemented.</li>
         </ul>
-    </p>
+    
 
 </div>
 </div>

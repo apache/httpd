@@ -78,9 +78,8 @@ static apr_status_t upgrade_connection(request_rec *r)
 
     /* Perform initial SSL handshake. */
     SSL_set_accept_state(ssl);
-    SSL_do_handshake(ssl);
 
-    if (!SSL_is_init_finished(ssl)) {
+    if ((SSL_do_handshake(ssl) != 1) || !SSL_is_init_finished(ssl)) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(02030)
                       "TLS upgrade handshake failed");
         ssl_log_ssl_error(SSLLOG_MARK, APLOG_ERR, r->server);
@@ -989,15 +988,23 @@ static int ssl_hook_Access_classic(request_rec *r, SSLSrvConfigRec *sc, SSLDirCo
                           "protocol (%s support secure renegotiation)",
                           reneg_support);
 
-            SSL_set_session_id_context(ssl,
+            if(!SSL_set_session_id_context(ssl,
                                        (unsigned char *)&id,
-                                       sizeof(id));
+                                       sizeof(id))) {
+
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(10422)
+                              "error setting SSL session context");
+                ssl_log_ssl_error(SSLLOG_MARK, APLOG_ERR, r->server);
+
+                r->connection->keepalive = AP_CONN_CLOSE;
+                return HTTP_FORBIDDEN;
+            }
 
             /* Toggle the renegotiation state to allow the new
              * handshake to proceed. */
             modssl_set_reneg_state(sslconn, RENEG_ALLOW);
 
-            if(!SSL_renegotiate(ssl) || !SSL_do_handshake(ssl) || !SSL_is_init_finished(ssl)) {
+            if(!SSL_renegotiate(ssl) || (SSL_do_handshake(ssl) != 1) || !SSL_is_init_finished(ssl)) {
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(02225)
                               "Re-negotiation request failed");
                 ssl_log_ssl_error(SSLLOG_MARK, APLOG_ERR, r->server);
@@ -1182,7 +1189,12 @@ static int ssl_hook_Access_modern(request_rec *r, SSLSrvConfigRec *sc, SSLDirCon
             
             modssl_set_app_data2(ssl, r);
 
-            SSL_do_handshake(ssl);
+            if(SSL_do_handshake(ssl) != 1) {
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(10421)
+                              "TLS handshake failure");
+                ssl_log_ssl_error(SSLLOG_MARK, APLOG_ERR, r->server);
+                return HTTP_FORBIDDEN;
+            }
             /* Need to trigger renegotiation handshake by reading.
              * Peeking 0 bytes actually works.
              * See: http://marc.info/?t=145493359200002&r=1&w=2
@@ -2572,7 +2584,9 @@ static int ssl_find_vhost(void *servername, conn_rec *c, server_rec *s)
          * a renegotiation.
          */
         if (SSL_num_renegotiations(ssl) == 0) {
-            SSL_set_session_id_context(ssl, sc->vhost_md5, APR_MD5_DIGESTSIZE*2);
+            if(!SSL_set_session_id_context(ssl, sc->vhost_md5, APR_MD5_DIGESTSIZE*2)) {
+              return 0;
+            }
         }
 
         /*

@@ -1,0 +1,228 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
+<!-- $LastChangedRevision: 1421821 $ -->
+<!-- French translation : Lucien GENTIS -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_autht_jwt.xml.meta">
+
+<name>mod_autht_jwt</name>
+<description>Authentification à base de jetons utilisant les jetons JWT</description>
+<status>Base</status>
+<sourcefile>mod_autht_jwt.c</sourcefile>
+<identifier>autht_jwt_module</identifier>
+
+<summary>
+    <p>Ce module permet à des frontaux d'interprétation de jetons comme
+    <module>mod_auth_bearer</module> d'authentifier les utilisateurs en
+    vérifiant un jeton JWT comme décrit dans la <a
+    href="http://www.ietf.org/rfc/rfc7519.txt">RFC 7519</a>.</p>
+
+    <p>Un jeton JWT est lu depuis l'en-tête <var>Authorization</var> avec un
+    <var>auth-scheme</var> de <var>Bearer</var>.</p>
+
+    <p>Lorsqu'on utilise <module>mod_auth_bearer</module>, ce module est invoqué
+    à l'aide de la directive <directive
+    module="mod_auth_bearer">AuthBearerProvider</directive> avec la valeur
+    <code>jwt</code>.</p>
+
+    <p>Ce module peut aussi être utilisé isolément pour générer des jetons JWT
+    destinés à être transmis vers un serveur ou service d'arrière-plan. Les
+    demandes sont incluses dans un jeton qui est ensuite éventuellement signé,
+    puis transmis à l'aide de l'en-tête <var>Authorization</var> en tant que
+    jeton <var>Bearer</var>.</p>
+</summary>
+<seealso>
+  <directive module="mod_auth_bearer">AuthBearerProvider</directive>
+</seealso>
+
+<directivesynopsis>
+<name>AuthtJwtDriver</name>
+<description>Définit le nom du pilote de chiffrement sous-jacent à utiliser</description>
+<syntax>AuthtJwtDriver <var>name</var> <var>[param[=value]]</var></syntax>
+<contextlist><context>server config</context>
+<context>virtual host</context></contextlist>
+
+<usage>
+    <p>La directive <directive>AuthtJwtDriver</directive> permet de spécifier le
+    nom du pilote de chiffrement à utiliser pour la signature et la
+    vérification. S'il n'est pas spécifier, sa valeur par défaut est celle du
+    pilote recommandé compilée dans APR-util.</p>
+
+    <p>Suivez les instructions de la directive <directive
+    module="mod_session_crypto">SessionCryptoDriver</directive> pour définir le
+    pilote.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>AuthtJwtVerify</name>
+<description>L'algorithme de signature JWS et les mot de passe/clé pour vérifier
+un jeton JWT entrant</description>
+<syntax>AuthtJwtVerify <var>algorithm</var> [<var>type</var> <var>param</var>]</syntax>
+<contextlist><context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>AuthConfig</override>
+
+<usage>
+    <p>La directive <directive>AuthtJwtVerify</directive> permet de spécifier
+    l'algorithme et le mot de passe utilisés pour vérifier les jetons de
+    titulaire entrants.</p>
+
+    <p>Si le type d'algorithme est <var>none</var>, le jeton ne sera pas protégé
+    et sera accepté tel quel. A n'utiliser qu'avec les clients de confiance et
+    lorsque le canal est protégé d'une autre manière comme l'authentification
+    mutuelle TLS ou les sockets de domaine unix.</p>
+
+    <p>Si elle est présente, la demande <var>sub</var> est assignée à
+    REMOTE_USER.</p>
+
+    <example><title>Exemple sans vérification</title>
+    <highlight language="config">
+&lt;Location "/mutual-tls-secured"&gt;
+  AuthType bearer
+  AuthName example-name
+  AuthBearerProvider jwt
+  AuthtJwtVerify none
+  Require valid-user
+&lt;/Location&gt;
+    </highlight>
+    </example>
+
+    <p>Si le type d'algorithme est <var>HS256</var>, l'algorithme est défini à
+    <var>HMAC-SHA256</var>, et le mot de passe est défini dans le fichier
+    <var>file</var> spécifié comme troisième paramètre. Le contenu du jeton de
+    titulaire est encore visible, et le canal doit donc encore être protégé
+    contre les écoutes clandestines à l'aide de TLS.</p>
+
+    <p>Si la signature est vérifiée, la demande the <var>sub</var>, si elle est
+    présente, est assignée à REMOTE_USER.</p>
+
+    <example><title>Exemple avec vérification</title>
+    <highlight language="config">
+&lt;Location "/secure"&gt;
+  AuthType bearer
+  AuthName example-name
+  AuthBearerProvider jwt
+  AuthtJwtVerify hs256 file "/www/conf/jwt.secret"
+  Require valid-user
+&lt;/Location&gt;
+    </highlight>
+    </example>
+
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>AuthtJwtSign</name>
+<description>L'algorithme de signature JWS et les mot de passe/clé pour signer
+un jeton JWT sortant</description>
+<syntax>AuthtJwtSign <var>algorithm</var> [<var>type</var> <var>param</var>]</syntax>
+<contextlist><context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>AuthConfig</override>
+
+<usage>
+    <p>La directive <directive>AuthtJwtSign</directive> permet de spécifier
+    l'algorithme et le mot de passe utilisés pour signer les jetons de titulaire
+    sortants transmis à un serveur ou service.</p>
+
+    <p>Si le type d'algorithme est <var>none</var>, le jeton ne sera pas
+    protégé. A n'utiliser qu'avec les clients de confiance et lorsque le canal
+    est protégé d'une autre manière comme l'authentification mutuelle TLS ou les
+    sockets de domaine unix.</p>
+
+    <p>Définissez les demandes à envoyer dans le jeton en utilisant la directive
+    <directive module="mod_autht_jwt">AuthtJwtClaim</directive>. La demande
+    <var>sub</var> est utilisée pour transmettre l'utilisateur distant.</p>
+
+    <example><title>Exemple sans vérification</title>
+    <highlight language="config">
+&lt;Location "/mutual-tls-secured"&gt;
+  AuthtJwtClaim set sub %{REMOTE_USER}
+  AuthtJwtSign none
+&lt;/Location&gt;
+    </highlight>
+    </example>
+
+    <p>Si le type d'algorithme est <var>HS256</var>, l'algorithme est défini à
+    <var>HMAC-SHA256</var>, et le mot de passe est défini dans le fichier
+    <var>file</var> spécifié comme troisième paramètre. Le contenu du jeton de
+    titulaire est encore visible, et le canal doit donc encore être protégé
+    contre les écoutes clandestines à l'aide de TLS.</p>
+
+    <example><title>Exemple avec vérification</title>
+    <highlight language="config">
+&lt;Location "/secure"&gt;
+  AuthtJwtClaim set sub %{REMOTE_USER}
+  AuthtJwtSign hs256 file "/www/conf/jwt.secret"
+&lt;/Location&gt;
+    </highlight>
+    </example>
+
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>AuthtJwtClaim</name>
+<description>Définit une demande avec le nom et l'expression donnés ou annule la
+définition d'une demande avec le nom donné</description>
+<syntax>AuthtJwtVerify <var>[set|unset]</var> <var>name</var> [<var>value</var>]</syntax>
+<contextlist><context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>AuthConfig</override>
+
+<usage>
+    <p>La directive <directive>AuthtJwtClaim</directive> permet d'ajouter et/ou
+    supprimer des demandes dans les jetons transmis au serveur ou service
+    d'arrière-plan.</p>
+
+    <p>Lorsqu'une demande est définie, sa valeur est le résultat d'une
+    expression. L'expression peut inclure des paramètres issus d'un certificat
+    digital ou le nom de l'utilisateur qui a été authentifié auprès d'Apache
+    httpd.</p>
+
+    <example><title>Exemple avec transmission de l'utilisateur distant</title>
+    <highlight language="config">
+&lt;Location "/secure"&gt;
+  AuthtJwtClaim set sub %{REMOTE_USER}
+  AuthtJwtSign hs256 file "/www/conf/jwt.secret"
+&lt;/Location&gt;
+    </highlight>
+    </example>
+
+    <p>Lorsque la définition d'une demande est annulée, la demande précédemment
+    définie est enlevée du jeton.</p>
+
+    <example><title>Exemple avec annulation de la définition d'une demande</title>
+    <highlight language="config">
+AuthtJwtClaim set my-claim present
+&lt;Location "/secure"&gt;
+  AuthtJwtClaim set sub %{REMOTE_USER}
+  AuthtJwtClaim unset my-claim
+  AuthtJwtSign hs256 file "/www/conf/jwt.secret"
+&lt;/Location&gt;
+    </highlight>
+    </example>
+
+</usage>
+</directivesynopsis>
+
+</modulesynopsis>

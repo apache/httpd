@@ -194,7 +194,7 @@ content-type: text/html
     @pytest.mark.parametrize("path", [
         "/004.html", "/proxy/004.html", "/h2proxy/004.html"
     ])
-    def test_h2_003_50(self, env, path):
+    def test_h2_003_50(self, env, path, repeat):
         # check that the resource supports ranges and we see its raw content-length
         url = env.mkurl("https", "test1", path)
         r = env.curl_get(url, 5)

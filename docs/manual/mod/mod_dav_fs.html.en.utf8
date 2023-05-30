@@ -131,14 +131,14 @@
 </table>
     <p><code class="directive">DavQuota</code> sets a quota in bytes for
     a given directory as specified by RFC 4331. There are two
-    special values:
+    special values:</p>
         <ul>
             <li><code>Off</code> Quotas are disabled.</li>
             <li><code>None</code> No quota is enforced, but
             used and available disk space is reported to 
             clients that request it.</li>
         </ul>
-    </p>
+    
 
 </div>
 </div>

@@ -1,0 +1,162 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
+<!-- $LastChangedRevision: 1907762 $ -->
+<!-- French translation : Lucien GENTIS -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_auth_bearer.xml.meta">
+
+<name>mod_auth_bearer</name>
+<description>Authentification HTTP du titulaire d'un jeton</description>
+<status>Base</status>
+<sourcefile>mod_auth_bearer.c</sourcefile>
+<identifier>auth_bearer_module</identifier>
+
+<summary>
+    <p>Ce module permet d'utiliser l'authentification HTTP du titulaire d'un
+    jeton pour restreindre l'accès en transmettant le jeton du titulaire aux
+    fournisseurs donnés. Ce module doit être combiné avec au moins un module de
+    gestion de jetons comme <module>mod_autht_jwt</module> et un module
+    d'autorisation comme <module>mod_authz_user</module>.</p>
+</summary>
+<seealso><directive module="mod_authn_core">AuthName</directive></seealso>
+<seealso><directive module="mod_authn_core">AuthType</directive></seealso>
+<seealso><directive module="mod_authz_core">Require</directive></seealso>
+<seealso><a href="../howto/auth.html">Authentication howto</a></seealso>
+
+<directivesynopsis>
+<name>AuthBearerProvider</name>
+<description>Définit le/les fournisseur(s) d'authentification pour cette section
+de localisation</description>
+<syntax>AuthBearerProvider <var>provider-name</var>
+[<var>provider-name</var>] ...</syntax>
+<default>AuthBearerProvider file</default>
+<contextlist><context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>AuthConfig</override>
+
+<usage>
+    <p>La directive <directive>AuthBearerProvider</directive> définit le
+    fournisseur à utiliser pour vérifier les jetons pour cette section de
+    localisation. Le fournisseur par défaut <code>jwt</code> est implémenté par
+    le module <module>mod_autht_jwt</module>. Assurez-vous que le module du
+    fournisseur choisi est présent dans le serveur.</p>
+    <example><title>Exemple</title>
+    <highlight language="config">
+&lt;Location "/secure"&gt;
+    AuthType bearer
+    AuthName "private area"
+    AuthBearerProvider jwt
+    AuthtJwtVerify hs256 file "/www/etc/jwt.secret"
+    Require            valid-user
+&lt;/Location&gt;
+    </highlight>
+    </example>
+    <p>Les fournisseurs sont interrogés dans l'ordre jusqu'à ce que l'un d'entre
+    eux trouve une correspondance pour le jeton demandé. Cela signifie en
+    général que le jeton a été correctement signé ou qu'il n'est pas périmé.</p>
+
+    <p>Le premier fournisseur implémenté est <module>mod_autht_jwt</module>.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>AuthBearerAuthoritative</name>
+<description>Définit si la vérification des jetons est déléguée à des modules
+de plus bas niveau</description>
+<syntax>AuthBearerAuthoritative On|Off</syntax>
+<default>AuthBearerAuthoritative On</default>
+<contextlist><context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>AuthConfig</override>
+
+<usage>
+    <p>Normalement, chaque module de vérification de jetons listé à l'aide de la
+    directive <directive module="mod_auth_bearer">AuthBearerProvider</directive>
+    va tenter de vérifier le jeton, et si ce dernier n'est pas jugé valable,
+    l'accès sera refusé. Définir explicitement la directive
+    <directive>AuthBearerAuthoritative</directive> à <code>Off</code> permet,
+    dans le cas où le jeton n'est pas reconnu, de déléguer la vérification des
+    jetons à d'autres modules non basés sur les fournisseurs. Cela ne devrait
+    être nécessaire que lorsqu'on combine <module>mod_auth_bearer</module> avec
+    des modules tiers qui ne sont pas configurés à l'aide de la directive
+    <directive module="mod_auth_bearer">AuthBearerProvider</directive>.
+    Lorsqu'on utilise de tels modules, l'ordre de traitement est déterminé dans
+    le code source des modules et n'est pas configurable.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>AuthBearerProxy</name>
+<description>Transmet un jeton d'authentification du titulaire à l'aide d'une
+connexion mandatée générée en utilisant l'expression donnée</description>
+<syntax>AuthBearerProxy off|<var>expression</var></syntax>
+<default>none</default>
+<contextlist><context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>AuthConfig</override>
+<compatibility>Disponible à partir de la version 2.5.1 du serveur HTTP Apache</compatibility>
+<usage>
+    <p>L'expression spécifiée est transmise en tant que jeton de titulaire dans
+    l'en-tête Authorization qui est lui-même transmis au serveur ou au service
+    en arrière-plan du serveur web. L'expression est interprétée en utilisant
+    l'<a href="../expr.html">interpréteur d'expression</a> qui permet de définir
+    le jeton en fonction des paramètres de la requête.</p>
+
+    <note>
+    L'en-tête Authorization ajouté par cette directive <em>n'est pas</em> une
+    entrée pour aucune authentification ou autorisation dans le serveur local.
+    Il est est conçu pour être transmis vers les serveurs en amont.
+    </note>
+
+    <p>Dans cet exemple, on transmet un jeton fixé à un serveur
+    d'arrière-plan.</p>
+
+    <example><title>Exemple avec jeton fixé</title>
+    <highlight language="config">
+&lt;Location "/demo"&gt;
+    AuthBearerProxy my-fixed-token
+&lt;/Location&gt;
+    </highlight>
+    </example>
+
+    <p>Dans cet exemple, on transmet la chaîne de paramètres de la requête en
+    tant que jeton au serveur d'arrière-plan.</p>
+
+    <example><title>Exemple avec la chaîne de paramètres de la requête</title>
+    <highlight language="config">
+&lt;Location "/secure"&gt;
+    AuthBearerProxy "%{QUERY_STRING}"
+&lt;/Location&gt;
+    </highlight>
+    </example>
+
+    <example><title>Exemple d'exclusion de transmission mandatée</title>
+    <highlight language="config">
+&lt;Location "/public"&gt;
+    AuthBearerProxy off
+&lt;/Location&gt;
+    </highlight>
+    </example>
+
+</usage>
+</directivesynopsis>
+
+</modulesynopsis>

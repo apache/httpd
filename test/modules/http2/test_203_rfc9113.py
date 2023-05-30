@@ -46,6 +46,10 @@ class TestRfc9113:
         assert env.apache_restart() == 0
         url = env.mkurl("https", "test1", "/index.html")
         r = env.curl_get(url, options=['--http2'])
+        if status == 500 and r.exit_code != 0:
+            # in 2.4.x we fail late on control chars in a response
+            # and RST_STREAM. That's also ok
+            return
         assert r.response["status"] == status
         if int(status) < 400:
             assert r.response["header"][hname] == expvalue

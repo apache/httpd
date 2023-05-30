@@ -441,6 +441,8 @@ static int m_stream_cancel_iter(void *ctx, void *val) {
     return 0;
 }
 
+static void c1_purge_streams(h2_mplx *m);
+
 void h2_mplx_c1_destroy(h2_mplx *m)
 {
     apr_status_t status;
@@ -509,7 +511,9 @@ void h2_mplx_c1_destroy(h2_mplx *m)
                       h2_ihash_count(m->shold));
         h2_ihash_iter(m->shold, m_unexpected_stream_iter, m);
     }
-    
+
+    c1_purge_streams(m);
+
     m->c1->aborted = old_aborted;
     H2_MPLX_LEAVE(m);
 
@@ -583,6 +587,15 @@ static void c1_purge_streams(h2_mplx *m)
         h2_stream_destroy(stream);
     }
     apr_array_clear(m->spurge);
+}
+
+void h2_mplx_c1_going_keepalive(h2_mplx *m)
+{
+    H2_MPLX_ENTER_ALWAYS(m);
+    if (m->spurge->nelts) {
+        c1_purge_streams(m);
+    }
+    H2_MPLX_LEAVE(m);
 }
 
 apr_status_t h2_mplx_c1_poll(h2_mplx *m, apr_interval_time_t timeout,

@@ -28,7 +28,14 @@ class ExecResult:
             self._json_out = None
 
     def __repr__(self):
-        return f"ExecResult[code={self.exit_code}, args={self._args}, stdout={self._stdout}, stderr={self._stderr}]"
+        out = [
+            f"ExecResult[code={self.exit_code}, args={self._args}\n",
+            "----stdout---------------------------------------\n",
+            self._stdout.decode(),
+            "----stderr---------------------------------------\n",
+            self._stderr.decode()
+        ]
+        return ''.join(out)
 
     @property
     def exit_code(self) -> int:

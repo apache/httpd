@@ -688,6 +688,7 @@ static authz_status get_dn_for_nonldap_authn(request_rec *r, util_ldap_connectio
     authn_ldap_config_t *sec =
         (authn_ldap_config_t *)ap_get_module_config(r->per_dir_config, &authnz_ldap_module);
     const char *dn = NULL;
+    int remote_user_attribute_set = 0;
 
     /* Build the username filter */
     if (APR_SUCCESS != authn_ldap_build_filter(filtbuf, r, r->user, NULL, sec)) {
@@ -710,6 +711,21 @@ static authz_status get_dn_for_nonldap_authn(request_rec *r, util_ldap_connectio
 
     req->dn = apr_pstrdup(r->pool, dn);
     req->user = r->user;
+
+    /* add environment variables */
+    remote_user_attribute_set = set_request_vars(r, LDAP_AUTHN, req->vals);
+
+    /* sanity check */
+    if (sec->remote_user_attribute && !remote_user_attribute_set) {
+        ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(10450)
+                  "auth_ldap non-ldap authenticate: "
+                  "REMOTE_USER was to be set with attribute '%s', "
+                  "but this attribute was not requested for in the "
+                  "LDAP query for the user. REMOTE_USER will fall "
+                  "back to username or DN as appropriate.",
+                  sec->remote_user_attribute);
+    }
+
     return AUTHZ_GRANTED;
 }
 

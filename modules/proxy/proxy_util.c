@@ -260,26 +260,36 @@ PROXY_DECLARE(char *)ap_proxy_canonenc_ex(apr_pool_t *p, const char *x, int len,
  */
         if ((forcedec || noencslashesenc
             || (proxyreq && proxyreq != PROXYREQ_REVERSE)) && ch == '%') {
-            if (!apr_isxdigit(x[i + 1]) || !apr_isxdigit(x[i + 2])) {
+            if (apr_isxdigit(x[i + 1]) && apr_isxdigit(x[i + 2])) {
+                ch = ap_proxy_hex2c(&x[i + 1]);
+                if (ch != 0 && strchr(reserved, ch)) {  /* keep it encoded */
+                    y[j++] = x[i++];
+                    y[j++] = x[i++];
+                    y[j] = x[i];
+                    continue;
+                }
+                if (noencslashesenc && !forcedec && (proxyreq == PROXYREQ_REVERSE)) {
+                    /*
+                     * In the reverse proxy case when we only want to keep encoded
+                     * slashes untouched revert back to '%' which will cause
+                     * '%' to be encoded in the following.
+                     */
+                    ch = '%';
+                }
+                else {
+                    i += 2;
+                }
+            }
+            /*
+             * In the reverse proxy case when we only want to keep encoded
+             * slashes untouched we can have decoded '%''s in the URI that got
+             * sent to us in the original URL as %25.
+             * Don't error out in this case but just fall through and have them
+             * encoded to %25 when forwarding to the backend.
+             */
+            else if (!noencslashesenc || forcedec
+                     || (proxyreq && proxyreq != PROXYREQ_REVERSE)) {
                 return NULL;
-            }
-            ch = ap_proxy_hex2c(&x[i + 1]);
-            if (ch != 0 && strchr(reserved, ch)) {  /* keep it encoded */
-                y[j++] = x[i++];
-                y[j++] = x[i++];
-                y[j] = x[i];
-                continue;
-            }
-            if (noencslashesenc && !forcedec && (proxyreq == PROXYREQ_REVERSE)) {
-                /*
-                 * In the reverse proxy case when we only want to keep encoded
-                 * slashes untouched revert back to '%' which will cause
-                 * '%' to be encoded in the following.
-                 */
-                ch = '%';
-            }
-            else {
-                i += 2;
             }
         }
 /* recode it, if necessary */
@@ -2761,8 +2771,16 @@ ap_proxy_determine_connection(apr_pool_t *p, request_rec *r,
             /*
              * Looking up the backend address for the worker only makes sense if
              * we can reuse the address.
+             *
+             * As we indicate in the comment below that for retriggering a DNS
+             * lookup worker->cp->addr should be set to NULL we need to avoid
+             * a race that worker->cp->addr switches to NULL after we checked
+             * it to be non NULL but before we assign it to conn->addr in an
+             * else tree which would leave it to NULL and likely cause a
+             * segfault later.
              */
-            if (!worker->cp->addr) {
+            conn->addr = worker->cp->addr;
+            if (!conn->addr) {
                 if ((err = PROXY_THREAD_LOCK(worker)) != APR_SUCCESS) {
                     ap_log_rerror(APLOG_MARK, APLOG_ERR, err, r, APLOGNO(00945) "lock");
                     return HTTP_INTERNAL_SERVER_ERROR;
@@ -2772,7 +2790,8 @@ ap_proxy_determine_connection(apr_pool_t *p, request_rec *r,
                  * Recheck addr after we got the lock. This may have changed
                  * while waiting for the lock.
                  */
-                if (!AP_VOLATILIZE_T(apr_sockaddr_t *, worker->cp->addr)) {
+                conn->addr = AP_VOLATILIZE_T(apr_sockaddr_t *, worker->cp->addr);
+                if (!conn->addr) {
 
                     apr_sockaddr_t *addr;
 
@@ -2781,20 +2800,21 @@ ap_proxy_determine_connection(apr_pool_t *p, request_rec *r,
                      * The single DNS lookup is used once per worker.
                      * If dynamic change is needed then set the addr to NULL
                      * inside dynamic config to force the lookup.
+                     *
+                     * Clear the dns_pool before to avoid a memory leak in case
+                     * we did the lookup already in the past.
                      */
+                    apr_pool_clear(worker->cp->dns_pool);
                     err = apr_sockaddr_info_get(&addr,
                                                 conn->hostname, APR_UNSPEC,
                                                 conn->port, 0,
                                                 worker->cp->dns_pool);
+                    conn->addr = addr;
                     worker->cp->addr = addr;
                 }
-                conn->addr = worker->cp->addr;
                 if ((uerr = PROXY_THREAD_UNLOCK(worker)) != APR_SUCCESS) {
                     ap_log_rerror(APLOG_MARK, APLOG_ERR, uerr, r, APLOGNO(00946) "unlock");
                 }
-            }
-            else {
-                conn->addr = worker->cp->addr;
             }
         }
     }
@@ -3196,6 +3216,7 @@ PROXY_DECLARE(int) ap_proxy_connect_backend(const char *proxy_function,
     apr_sockaddr_t *local_addr;
     apr_socket_t *newsock;
     void *sconf = s->module_config;
+    int did_dns_lookup = 0;
     proxy_server_conf *conf =
         (proxy_server_conf *) ap_get_module_config(sconf, &proxy_module);
 
@@ -3335,6 +3356,23 @@ PROXY_DECLARE(int) ap_proxy_connect_backend(const char *proxy_function,
                              worker->s->hostname_ex,
                              (int)worker->s->port);
                 backend_addr = backend_addr->next;
+                /*
+                 * If we run out of resolved IP's when connecting and if
+                 * we cache the resolution in the worker the resolution
+                 * might have changed. Hence try a DNS lookup to see if this
+                 * helps.
+                 */
+                if (!backend_addr && !did_dns_lookup && worker->cp->addr) {
+                    /*
+                     * In case of an error backend_addr will be NULL which
+                     * is enough to leave the loop.
+                     */
+                    apr_sockaddr_info_get(&backend_addr,
+                                          conn->hostname, APR_UNSPEC,
+                                          conn->port, 0,
+                                          conn->pool);
+                    did_dns_lookup = 1;
+                }
                 continue;
             }
 
@@ -3426,6 +3464,19 @@ PROXY_DECLARE(int) ap_proxy_connect_backend(const char *proxy_function,
             socket_cleanup(conn);
         }
         rv = APR_EINVAL;
+    }
+
+    if ((rv == APR_SUCCESS) && did_dns_lookup) {
+        /*
+         * A local DNS lookup caused a successful connect. Trigger to update
+         * the worker cache next time.
+         * We don't care handling any locking errors. If something fails we
+         * just continue with the existing cache value.
+         */
+        if (PROXY_THREAD_LOCK(worker) == APR_SUCCESS) {
+            worker->cp->addr = NULL;
+            PROXY_THREAD_UNLOCK(worker);
+        }
     }
 
     return rv == APR_SUCCESS ? OK : DECLINED;

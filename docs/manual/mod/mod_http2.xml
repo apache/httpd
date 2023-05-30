@@ -1049,4 +1049,37 @@ H2TLSCoolDownSecs 0
         </usage>
     </directivesynopsis>
 
+    <directivesynopsis>
+        <name>H2EarlyHint</name>
+        <description>Add a response header to be picked up in 103 Early Hints</description>
+        <syntax>H2EarlyHint <em>name</em> <em>value</em></syntax>
+        <contextlist>
+            <context>server config</context>
+            <context>virtual host</context>
+            <context>directory</context>
+            <context>.htaccess</context>
+        </contextlist>
+        <compatibility>Available in version 2.5.1 and later.</compatibility>
+
+        <usage>
+            <p>
+                <directive>H2EarlyHint</directive> allows adding a response
+                header before the real request processing is started. Such headers
+                are picked up for "103 Early Hints" intermediate responses. The main
+                purpose is to send "preload" information to client browsers.
+            </p><p>
+                <em>name</em> and <em>value</em> must be valid HTTP header fields
+                or will lead to failed responses. <directive>H2EarlyHints</directive>
+                must still be enabled to allow 103 intermediate responses to be sent.
+                This directive can be repeated several times and header fields of the
+                same names add.
+            </p>
+            <example><title>Example</title>
+                <highlight language="config">
+H2EarlyHint Link "&lt;/my.css&gt;;rel=preload;as=style"
+                </highlight>
+            </example>
+        </usage>
+    </directivesynopsis>
+
 </modulesynopsis>

@@ -59,6 +59,7 @@ typedef struct {
     unsigned int redirect_set:1;
     apr_array_header_t *redirects;
     const ap_expr_info_t *alias;
+    const char *alias_fake;
     char *handler;
     const ap_expr_info_t *redirect;
     int redirect_status;                /* 301, 302, 303, 410, etc */
@@ -113,6 +114,7 @@ static void *merge_alias_dir_config(apr_pool_t *p, void *basev, void *overridesv
     a->redirects = apr_array_append(p, overrides->redirects, base->redirects);
 
     a->alias = (overrides->alias_set == 0) ? base->alias : overrides->alias;
+    a->alias_fake = (overrides->alias_set == 0) ? base->alias_fake : overrides->alias_fake;
     a->handler = (overrides->alias_set == 0) ? base->handler : overrides->handler;
     a->alias_set = overrides->alias_set || base->alias_set;
 
@@ -220,6 +222,9 @@ static const char *add_alias(cmd_parms *cmd, void *dummy, const char *fake,
                     NULL);
         }
 
+        if (!cmd->regex) {
+            dirconf->alias_fake = cmd->path;
+        }
         dirconf->handler = cmd->info;
         dirconf->alias_set = 1;
 
@@ -436,6 +441,17 @@ static char *try_alias(request_rec *r)
             ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(02825)
                           "Can't evaluate alias expression: %s", err);
             return PREGSUB_ERROR;
+        }
+
+        if (dirconf->alias_fake) {
+            int l;
+
+            l = alias_matches(r->uri, dirconf->alias_fake);
+
+            if (l > 0) {
+                ap_set_context_info(r, dirconf->alias_fake, found);
+                found = apr_pstrcat(r->pool, found, r->uri + l, NULL);
+            }
         }
 
         if (dirconf->handler) { /* Set handler, and leave a note for mod_cgi */

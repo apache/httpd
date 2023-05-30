@@ -19,7 +19,7 @@
 .el .ne 3
 .IP "\\$1" \\$2
 ..
-.TH "ROTATELOGS" 8 "2022-06-01" "Apache HTTP Server" "rotatelogs"
+.TH "ROTATELOGS" 8 "2023-04-11" "Apache HTTP Server" "rotatelogs"
 
 .SH NAME
 rotatelogs \- Piped logging program to rotate Apache logs
@@ -47,7 +47,7 @@ Causes the use of local time rather than GMT as the base for the interval or for
 .PP Causes a hard link to be made from the current logfile to the specified link name\&. This can be used to watch the log continuously across rotations using a command like \fBtail -F linkname\fR\&. .PP If the linkname is not an absolute path, it is relative to \fBrotatelogs\fR' working directory, which is the ServerRoot when \fBrotatelogs\fR is run by the server\&.  
 .TP
 \fB-p\fR \fIprogram\fR
-If given, \fBrotatelogs\fR will execute the specified program every time a new log file is opened\&. The filename of the newly opened file is passed as the first argument to the program\&. If executing after a rotation, the old log file is passed as the second argument\&. \fBrotatelogs\fR does not wait for the specified program to terminate before continuing to operate, and will not log any error code returned on termination\&. The spawned program uses the same stdin, stdout, and stderr as rotatelogs itself, and also inherits the environment\&.  
+.PP If given, \fBrotatelogs\fR will execute the specified program every time a new log file is opened\&. The filename of the newly opened file is passed as the first argument to the program\&. If executing after a rotation, the old log file is passed as the second argument\&. .PP \fBrotatelogs\fR does not wait for the specified program to terminate before continuing to operate, and will not log any error code returned on termination\&. .PP The spawned program uses the same stdin, stdout, and stderr as rotatelogs itself, and also inherits the environment\&. .PP When two parameters are provided, under some conditions the parameters will have the same value\&. For example, if rotation is triggerd but the portions of the time and date incorporated into the log filename do not change across the rotation\&.  
 .TP
 \fB-f\fR
 Causes the logfile to be opened immediately, as soon as \fBrotatelogs\fR starts, instead of waiting for the first logfile entry to be read (for non-busy sites, there may be a substantial delay between when the server is started and when the first request is handled, meaning that the associated logfile does not "exist" until then, which causes problems from some automated logging tools)  
@@ -57,6 +57,9 @@ Creates the parent directories of the path that the log file will be placed in i
 .TP
 \fB-t\fR
 Causes the logfile to be truncated instead of rotated\&. This is useful when a log is processed in real time by a command like tail, and there is no need for archived data\&. No suffix will be added to the filename, however format strings containing '%' characters will be respected\&.  
+.TP
+\fB-T\fR
+Causes all but the initial logfile to be truncated when opened\&. This is useful when the format string contains something that will loop around, such as the day of the month\&.  
 .TP
 \fB-v\fR
 Produce verbose output on STDERR\&. The output contains the result of the configuration parsing, and all file open and close actions\&.  
@@ -85,49 +88,67 @@ The number of minutes offset from UTC\&. If omitted, zero is assumed and UTC is 
 .SH "EXAMPLES"
  
 .nf
-
+ 
      CustomLog "|bin/rotatelogs /var/log/logfile 86400" common
-
+ 
 .fi
  
 .PP
 This creates the files /var/log/logfile\&.nnnn where nnnn is the system time at which the log nominally starts (this time will always be a multiple of the rotation time, so you can synchronize cron scripts with it)\&. At the end of each rotation time (here after 24 hours) a new log is started\&.
  
 .nf
-
+ 
      CustomLog "|bin/rotatelogs -l /var/log/logfile\&.%Y\&.%m\&.%d 86400" common
-
+ 
 .fi
  
 .PP
 This creates the files /var/log/logfile\&.yyyy\&.mm\&.dd where yyyy is the year, mm is the month, and dd is the day of the month\&. Logging will switch to a new file every day at midnight, local time\&.
  
 .nf
-
+ 
+     CustomLog "|bin/rotatelogs -l /var/log/logfile\&.%Y\&.%m 86400" common
+ 
+.fi
+ 
+.PP
+This creates the files /var/log/logfile\&.yyyy\&.mm where yyyy is the year and mm is the month\&. Every day at midnight, rotation will occur, including running programs specified with \fB-p\fR\&. Despite rotation ocurring, the filename will only change on the first rotation of the month\&. Rotation on other days will continue to output file and append to it\&.
+ 
+.nf
+ 
      CustomLog "|bin/rotatelogs /var/log/logfile 5M" common
-
+ 
 .fi
  
 .PP
 This configuration will rotate the logfile whenever it reaches a size of 5 megabytes\&.
  
 .nf
-
+ 
      ErrorLog "|bin/rotatelogs /var/log/errorlog\&.%Y-%m-%d-%H_%M_%S 5M"
-
+ 
 .fi
  
 .PP
 This configuration will rotate the error logfile whenever it reaches a size of 5 megabytes, and the suffix to the logfile name will be created of the form \fBerrorlog\&.YYYY-mm-dd-HH_MM_SS\fR\&.
  
 .nf
-
+ 
      CustomLog "|bin/rotatelogs -t /var/log/logfile 86400" common
-
+ 
 .fi
  
 .PP
-This creates the file /var/log/logfile, truncating the file at startup and then truncating the file once per day\&. It is expected in this scenario that a separate process (such as tail) would process the file in real time\&.
+This creates the file \fB/var/log/logfile\fR, truncating the file at startup and then truncating the file once per day\&. It is expected in this scenario that a separate process (such as tail) would process the file in real time\&.
+ 
+.nf
+ 
+     CustomLog "|bin/rotatelogs -T /var/log/logfile\&.%d 86400" common
+ 
+.fi
+ 
+.PP
+If the server is started (or restarted) on the first of the month, this appends to \fB/var/log/logfile\&.01\fR\&. When a log entry is written on the second of the month, \fB/var/log/logfile\&.02\fR is truncated and new entries will be added to the top\&. This example keeps approximately 1 months worth of logs without external maintenance\&.
  
 .SH "PORTABILITY"
  

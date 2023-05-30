@@ -57,6 +57,22 @@
     <p>Introduces a new API to fill me in.</p>
   </section>
 
+  <section id="http_request">
+    <title>http_request (changed)</title>
+    <ul>
+      <li>New autht_provider API</li>
+      <li>New <code>token_checker</code> hook to handle authentication based on
+          mechanisms other than username and password.</li>
+      <li>New function <code>ap_hook_check_autht</code>, as an addition to
+          <code>ap_hook_check_authn</code> and <code>ap_hook_check_authz</code>.</li>
+    </ul>
+  </section>
+
+  <section id="mod_auth">
+    <title>mod_auth (changed)</title>
+    <p>Adds an additional provider framework for autht - token authentication.</p>
+  </section>
+
 </section>
 
 <section id="upgrading">

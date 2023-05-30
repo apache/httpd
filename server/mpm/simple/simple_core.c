@@ -28,7 +28,7 @@ static simple_core_t *g_simple_core;
 
 APLOG_USE_MODULE(mpm_simple);
 
-simple_core_t *simple_core_get()
+simple_core_t *simple_core_get(void)
 {
     return g_simple_core;
 }
