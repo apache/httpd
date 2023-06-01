@@ -717,6 +717,7 @@
  * 20211221.12 (2.5.1-dev) Add cmd_parms->regex
  * 20211221.13 (2.5.1-dev) Add hook token_checker to check for authorization other
  *                         than username / password. Add autht_provider structure.
+ * 20211221.14 (2.5.1-dev) Add request_rec->final_resp_passed bit
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503235UL /* "AP25" */
@@ -724,7 +725,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20211221
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 13             /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 14             /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a

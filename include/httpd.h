@@ -1152,6 +1152,11 @@ struct request_rec {
      * to conclude that no body is there.
      */
     int body_indeterminate;
+    /** Whether a final (status >= 200) RESPONSE BUCKET has been passed down
+     * the output filters already. Relevant for ap_die().
+     *  TODO: compact elsewhere
+     */
+    unsigned int final_resp_passed:1;
 };
 
 /**

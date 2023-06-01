@@ -84,38 +84,25 @@ static void ap_die_r(int type, request_rec *r, int recursive_error)
         return;
     }
 
+    /*
+     * if we have already passed the final response down the
+     * output filter chain, we cannot generate a second final
+     * response here.
+     */
+    if (r->final_resp_passed) {
+        return;
+    }
+
     if (!ap_is_HTTP_VALID_RESPONSE(type)) {
-        ap_filter_t *next;
-
-        /*
-         * Check if we still have the ap_http_header_filter in place. If
-         * this is the case we should not ignore the error here because
-         * it means that we have not sent any response at all and never
-         * will. This is bad. Sent an internal server error instead.
-         */
-        next = r->output_filters;
-        while (next && (next->frec != ap_http_header_filter_handle)) {
-               next = next->next;
-        }
-
-        /*
-         * If next != NULL then we left the while above because of
-         * next->frec == ap_http_header_filter
-         */
-        if (next) {
-            if (type != AP_FILTER_ERROR) {
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01579)
-                              "Invalid response status %i", type);
-            }
-            else {
-                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02831)
-                              "Response from AP_FILTER_ERROR");
-            }
-            type = HTTP_INTERNAL_SERVER_ERROR;
+        if (type != AP_FILTER_ERROR) {
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01579)
+                          "Invalid response status %i", type);
         }
         else {
-            return;
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02831)
+                          "Response from AP_FILTER_ERROR");
         }
+        type = HTTP_INTERNAL_SERVER_ERROR;
     }
 
     /*
