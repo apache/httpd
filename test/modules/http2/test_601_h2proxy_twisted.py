@@ -62,6 +62,8 @@ class TestH2ProxyTwisted:
         assert r.exit_code == 92 or r.response["status"] == 502
 
     def test_h2_601_05_echo_fail_many(self, env):
+        if not env.curl_is_at_least('8.0.0'):
+            pytest.skip(f'need at least curl v8.0.0 for this')
         count = 200
         fpath = os.path.join(env.gen_dir, "data-100k")
         args = [env.curl, '--parallel', '--parallel-max', '20']
