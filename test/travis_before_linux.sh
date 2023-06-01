@@ -71,6 +71,10 @@ function install_apx() {
     # Blow away the cached install root if the cached install is stale
     # or doesn't match the expected configuration.
     grep -q "${version} ${revision} ${config} CC=$CC" ${HOME}/root/.key-${name} || rm -rf ${prefix}
+    # TEST_H2 APR cache seems to be broken, reset
+    if test -v TEST_H2; then
+      rm -rf ${prefix}
+    fi
 
     if test -d ${prefix}; then
         return 0
