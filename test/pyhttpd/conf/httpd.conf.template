@@ -6,7 +6,7 @@ Include "conf/modules.conf"
 DocumentRoot "${server_dir}/htdocs"
 
 <IfModule log_config_module>
-    LogFormat "%h %l %u %t \"%r\" %>s %O \"%{Referer}i\" \"%{User-Agent}i\" %k" combined
+    LogFormat "{ \"request\": \"%r\", \"status\": %>s, \"bytes_resp_B\": %B, \"bytes_tx_O\": %O, \"bytes_rx_I\": %I, \"bytes_rx_tx_S\": %S, \"time_taken\": %D }" combined
     LogFormat "%h %l %u %t \"%r\" %>s %b" common
     CustomLog "logs/access_log" combined
 
