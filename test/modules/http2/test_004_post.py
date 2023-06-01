@@ -19,7 +19,7 @@ class TestPost:
     def _class_scope(self, env):
         TestPost._local_dir = os.path.dirname(inspect.getfile(TestPost))
         conf = H2Conf(env)
-        conf.add_vhost_cgi(proxy_self=True).install()
+        conf.add_vhost_cgi(proxy_self=True, h2proxy_self=True).install()
         assert env.apache_restart() == 0
 
     def local_src(self, fname):

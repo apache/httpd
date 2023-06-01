@@ -128,22 +128,25 @@ class TestTimeout:
     def test_h2_105_12(self, env):
         # long connection timeout, short stream timeout
         # sending a slow POST
-        if env.httpd_is_at_least("2.5.0"):
-            conf = H2Conf(env)
-            conf.add_vhost_cgi()
-            conf.add("Timeout 10")
-            conf.add("H2StreamTimeout 1")
-            conf.install()
-            assert env.apache_restart() == 0
-            url = env.mkurl("https", "cgi", "/h2test/delay?5")
-            piper = CurlPiper(env=env, url=url)
-            piper.start()
-            for _ in range(3):
-                time.sleep(2)
-                try:
-                    piper.send("0123456789\n")
-                except BrokenPipeError:
-                    break
-            piper.close()
-            assert piper.response
-            assert piper.response['status'] == 408, f"{piper.response}"
+        if not env.curl_is_at_least('8.0.0'):
+            pytest.skip(f'need at least curl v8.0.0 for this')
+        if not env.httpd_is_at_least("2.5.0"):
+            pytest.skip(f'need at least httpd 2.5.0 for this')
+        conf = H2Conf(env)
+        conf.add_vhost_cgi()
+        conf.add("Timeout 10")
+        conf.add("H2StreamTimeout 1")
+        conf.install()
+        assert env.apache_restart() == 0
+        url = env.mkurl("https", "cgi", "/h2test/delay?5")
+        piper = CurlPiper(env=env, url=url)
+        piper.start()
+        for _ in range(3):
+            time.sleep(2)
+            try:
+                piper.send("0123456789\n")
+            except BrokenPipeError:
+                break
+        piper.close()
+        assert piper.response, f'{piper}'
+        assert piper.response['status'] == 408, f"{piper.response}"
