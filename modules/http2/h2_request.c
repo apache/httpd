@@ -375,6 +375,9 @@ request_rec *h2_create_request_rec(const h2_request *req, conn_rec *c,
     }
     else if (req->scheme && ap_cstr_casecmp(req->scheme, "http")
              && ap_cstr_casecmp(req->scheme, "https")) {
+        /* FIXME: we also need to create absolute uris when we are
+         * in a forward proxy configuration! But there is currently
+         * no way to detect that. */
         /* Client sent a ':scheme' pseudo header for something else
          * than what we handle by default. Make an absolute URI. */
         r->the_request = apr_psprintf(r->pool, "%s %s://%s%s HTTP/2.0",
