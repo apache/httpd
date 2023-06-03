@@ -643,7 +643,7 @@ connexion.</td></tr>
 <tr class="odd"><td><a href="mod_firehose.html#firehoserequestoutput">FirehoseRequestOutput <var>[ block | nonblock ]</var> <var>filename</var></a></td><td></td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Capture le trafic sortant du serveur à chaque requête</td></tr>
 <tr><td><a href="core.html#flushmaxpipelined">FlushMaxPipelined <var>number</var></a></td><td> 5 </td><td>sv</td><td>C</td></tr><tr><td class="descr" colspan="4">Nombre maximal de réponses en attente (pipelined) au-delà duquel
 elles sont envoyées sur le réseau</td></tr>
-<tr class="odd"><td><a href="core.html#flushmaxthreshold">FlushMaxThreshold <var>number-of-bytes</var></a></td><td> 65536 </td><td>sv</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Seuil au-delà duquel les données en attente sont envoyées sur le
+<tr class="odd"><td><a href="core.html#flushmaxthreshold">FlushMaxThreshold <var>number-of-bytes</var></a></td><td> 65535 </td><td>sv</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Seuil au-delà duquel les données en attente sont envoyées sur le
 réseau</td></tr>
 <tr><td><a href="mod_negotiation.html#forcelanguagepriority">ForceLanguagePriority None|Prefer|Fallback [Prefer|Fallback]</a></td><td> Prefer </td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Action à entreprendre si un document acceptable unique
 n'est pas trouvé</td></tr>
