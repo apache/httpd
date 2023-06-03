@@ -2053,7 +2053,7 @@ elles sont envoyées sur le réseau</td></tr>
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Seuil au-delà duquel les données en attente sont envoyées sur le
 réseau</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>FlushMaxThreshold <var>number-of-bytes</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>FlushMaxThreshold 65536</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>FlushMaxThreshold 65535</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Noyau httpd</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
