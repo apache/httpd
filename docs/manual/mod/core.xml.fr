@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1907151 -->
+<!-- English Revision: 1909960 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -2226,7 +2226,7 @@ elles sont envoyées sur le réseau</description>
 <description>Seuil au-delà duquel les données en attente sont envoyées sur le
 réseau</description>
 <syntax>FlushMaxThreshold <var>number-of-bytes</var></syntax>
-<default>FlushMaxThreshold 65536</default>
+<default>FlushMaxThreshold 65535</default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 <compatibility>Disponible à partir de la version 2.4.47 du serveur HTTP Apache</compatibility>
