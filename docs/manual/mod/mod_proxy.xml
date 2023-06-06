@@ -1259,7 +1259,7 @@ ProxyPass "/example" "http://backend.example.com" max=20 ttl=120 retry=300
     </td></tr>
     <tr><td>timeout</td>
         <td><directive module="mod_proxy">ProxyTimeout</directive></td>
-        <td>Connection timeout in seconds.
+        <td>Socket timeout in seconds.
         The number of seconds Apache httpd waits for data sent by / to the backend.
         Uses the <a href="directive-dict.html#Syntax">time-interval</a> directive syntax.
     </td></tr>
