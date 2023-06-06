@@ -287,7 +287,10 @@ static OCSP_RESPONSE *read_response(apr_socket_t *sd, BIO *bio, conn_rec *c,
                       "OCSP response: got %" APR_SIZE_T_FMT
                       " bytes, %" APR_SIZE_T_FMT " total", len, count);
 
-        BIO_write(bio, data, (int)len);
+        if(BIO_write(bio, data, (int)len) < 0) {
+          ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, c, APLOGNO(10455)
+                      "failed to write OCSP response to BIO buffer");
+        }
         apr_bucket_delete(e);
     }
 
