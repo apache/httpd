@@ -747,13 +747,13 @@ static apr_status_t check_filter_process_on_eos(ef_ctx_t *ctx, request_rec *r)
             ap_log_rerror(APLOG_MARK, APLOG_ERR, APR_SUCCESS, r, APLOGNO(10452)
                           "child process %s killed by signal %d, uri=%s",
                           ctx->filter->command, exitcode, r->uri);
-            return HTTP_INTERNAL_SERVER_ERROR;
+            return APR_EGENERAL;
         }
         else if (exitcode != 0) {
             ap_log_rerror(APLOG_MARK, APLOG_ERR, APR_SUCCESS, r, APLOGNO(10453)
                           "child process %s exited with non-zero status %d, "
                           "uri=%s", ctx->filter->command, exitcode, r->uri);
-            return HTTP_INTERNAL_SERVER_ERROR;
+            return APR_EGENERAL;
         }
     }
 
@@ -766,7 +766,7 @@ static apr_status_t check_filter_process_on_eos(ef_ctx_t *ctx, request_rec *r)
  * bb, dropping the previous content of bb (the input)
  */
 
-static int ef_unified_filter(ap_filter_t *f, apr_bucket_brigade *bb)
+static apr_status_t ef_unified_filter(ap_filter_t *f, apr_bucket_brigade *bb)
 {
     request_rec *r = f->r;
     conn_rec *c = r->connection;
