@@ -1281,8 +1281,11 @@ static apr_status_t h2_session_send(h2_session *session)
                 goto cleanup;
             }
         }
-        if (h2_c1_io_needs_flush(&session->io)) {
+        if (h2_c1_io_needs_flush(&session->io) ||
+            ngrv == NGHTTP2_ERR_WOULDBLOCK) {
             rv = h2_c1_io_assure_flushed(&session->io);
+            if (rv != APR_SUCCESS)
+                goto cleanup;
             pending = 0;
         }
     }
