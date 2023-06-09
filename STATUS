@@ -194,7 +194,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   *) cmake build, improve libcurl detection (github PR 356)
      trunk patch: https://svn.apache.org/r1909215
      2.4.x patch: svn merge -c 1909215 ^/httpd/httpd/trunk .
-     +1: icing, rpluem,
+     +1: icing, rpluem, gbechis
 
   *) mod_rewrite: Add server directory to include path as mod_rewrite requires
      test_char.h. PR 66571
@@ -242,7 +242,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         https://svn.apache.org/r1909982
      Backport version for 2.4.x of patch:
         svn merge -c 1909932,1909982 ^/httpd/httpd/trunk .
-     +1: icing, rpluem
+     +1: icing, rpluem, gbechis
 
   *) mod_http2/mod_proxy_http2: upgrade to v2.0.18
      Fixes crash in mod_proxy_http2 caused by use for wrong bucket_alloc
@@ -293,7 +293,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         https://svn.apache.org/r1910331
      Backport version for 2.4.x of patch:
         svn merge -c 1910331 ^/httpd/httpd/trunk .
-     +1: icing
+     +1: icing, gbechis
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
