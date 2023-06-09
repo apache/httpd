@@ -288,6 +288,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       svn merge -c 1909400,1909401,1909402,1909451 ^/httpd/httpd/trunk .
      +1: rpluem,
 
+  *) mod_http2: Fix for PR 66624.
+     Trunk version of patch:
+        https://svn.apache.org/r1910331
+     Backport version for 2.4.x of patch:
+        svn merge -c 1910331 ^/httpd/httpd/trunk .
+     +1: icing
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
