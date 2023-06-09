@@ -273,6 +273,20 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c 1892450,1909966 ^/httpd/httpd/trunk .
      +1: jailletc36,
 
+  *) mod_proxy: If we fail to connect to all looked up IP's from the worker
+     lookup cache it might be caused by a change on DNS side. Try another
+     DNS lookup in this case and in case this causes a successful connection
+     trigger a refresh of the worker lookup cache.
+     Trunk version of patch:
+        https://svn.apache.org/r1909400
+        https://svn.apache.org/r1909401
+        https://svn.apache.org/r1909402
+        https://svn.apache.org/r1909451
+     Backport version for 2.4.x of patch:
+      Trunk version of patch works
+      svn merge -c 1909400,1909401,1909402,1909451 ^/httpd/httpd/trunk .
+     +1: rpluem,
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
