@@ -213,6 +213,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      Backport version for 2.4.x of patch:
       https://raw.githubusercontent.com/jfclere/patch/main/mod_deflate.patch
      +1: jfclere,
+     rpluem says: Does anyone know why we don't merge the server config?
 
   *) mod_http2:
      - new directive 'H2MaxDataFrameLen n'
@@ -264,14 +265,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
           https://svn.apache.org/r1908657
           https://svn.apache.org/r1908150
      2.4.x patch: svn merge -c 1877350,1894021,1906379,1908657,1908150 ^/httpd/httpd/trunk .
-     +1: jailletc36,
+     +1: jailletc36, rpluem
 
   *) core: Optimize send_brigade_nonblocking()
      trunk patch:
         https://svn.apache.org/r1892450
         https://svn.apache.org/r1909966
      2.4.x patch: svn merge -c 1892450,1909966 ^/httpd/httpd/trunk .
-     +1: jailletc36,
+     +1: jailletc36, rpluem
 
   *) mod_proxy: If we fail to connect to all looked up IP's from the worker
      lookup cache it might be caused by a change on DNS side. Try another
