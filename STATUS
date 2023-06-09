@@ -223,7 +223,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         https://svn.apache.org/r1907697
      Backport version for 2.4.x of patch:
         svn merge -c 1907696,1907697 ^/httpd/httpd/trunk .
-     +1: icing,
+     +1: icing, rpluem,
 
   *) mod_http2:
      - New directive 'H2EarlyHint name value'
