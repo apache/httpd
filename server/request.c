@@ -2234,7 +2234,7 @@ AP_DECLARE(void) ap_hook_check_access_ex(ap_HOOK_access_checker_ex_t *pf,
     ap_hook_access_checker_ex(pf, aszPre, aszSucc, nOrder);
 }
 
-AP_DECLARE(void) ap_hook_check_autht(ap_HOOK_check_user_id_t *pf,
+AP_DECLARE(void) ap_hook_check_autht(ap_HOOK_token_checker_t *pf,
                                      const char * const *aszPre,
                                      const char * const *aszSucc,
                                      int nOrder, int type)
