@@ -1579,7 +1579,7 @@ ProxyPass "/mirror/foo" "http://backend.example.com"</pre>
     </td></tr>
     <tr><td>timeout</td>
         <td><code class="directive"><a href="#proxytimeout">ProxyTimeout</a></code></td>
-        <td>Délai d'attente de la connexion en secondes. Le nombre de
+        <td>Délai d'attente du socket en secondes. Le nombre de
 	secondes pendant lesquelles Apache httpd attend l'envoi de
 	données vers le serveur d'arrière-plan. Utilise la syntaxe <a href="directive-dict.html#Syntax">time-interval</a>.
     </td></tr>
