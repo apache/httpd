@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1907047 -->
+<!-- English Revision: 1910254 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -1390,7 +1390,7 @@ ProxyPass "/mirror/foo/i" "!"
     </td></tr>
     <tr><td>timeout</td>
         <td><directive module="mod_proxy">ProxyTimeout</directive></td>
-        <td>Délai d'attente de la connexion en secondes. Le nombre de
+        <td>Délai d'attente du socket en secondes. Le nombre de
 	secondes pendant lesquelles Apache httpd attend l'envoi de
 	données vers le serveur d'arrière-plan.
     </td></tr>
