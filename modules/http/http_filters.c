@@ -1871,7 +1871,7 @@ typedef struct h1_response_ctx {
     apr_bucket_brigade *tmpbb;
 } h1_response_ctx;
 
-AP_CORE_DECLARE_NONSTD(apr_status_t) ap_h1_response_out_filter(ap_filter_t *f,
+apr_status_t ap_h1_response_out_filter(ap_filter_t *f,
                                                                apr_bucket_brigade *b)
 {
     request_rec *r = f->r;
