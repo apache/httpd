@@ -31,6 +31,9 @@
 #include "ssl_private.h"
 
 #include <openssl/ui.h>
+#if MODSSL_HAVE_OPENSSL_STORE
+#include <openssl/store.h>
+#endif
 
 typedef struct {
     server_rec         *s;
@@ -576,7 +579,7 @@ int ssl_pphrase_Handle_CB(char *buf, int bufsize, int verify, void *srv)
     return (len);
 }
 
-#if MODSSL_HAVE_ENGINE_API
+#if MODSSL_HAVE_ENGINE_API || MODSSL_HAVE_OPENSSL_STORE
 
 /* OpenSSL UI implementation for passphrase entry; largely duplicated
  * from ssl_pphrase_Handle_CB but adjusted for UI API. TODO: Might be
@@ -793,13 +796,14 @@ static UI_METHOD *get_passphrase_ui(apr_pool_t *p)
 }
 #endif
 
-
-apr_status_t modssl_load_engine_keypair(server_rec *s, apr_pool_t *p,
-                                        const char *vhostid,
-                                        const char *certid, const char *keyid,
-                                        X509 **pubkey, EVP_PKEY **privkey)
-{
 #if MODSSL_HAVE_ENGINE_API
+static apr_status_t modssl_load_keypair_engine(server_rec *s, apr_pool_t *p,
+                                               const char *vhostid,
+                                               const char *certid,
+                                               const char *keyid,
+                                               X509 **pubkey,
+                                               EVP_PKEY **privkey)
+{
     const char *c, *scheme;
     ENGINE *e;
     UI_METHOD *ui_method = get_passphrase_ui(p);
@@ -837,7 +841,7 @@ apr_status_t modssl_load_engine_keypair(server_rec *s, apr_pool_t *p,
         return ssl_die(s);
     }
 
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, 
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
                  "Init: Initialized engine %s for private key %s",
                  scheme, keyid);
 
@@ -873,6 +877,118 @@ apr_status_t modssl_load_engine_keypair(server_rec *s, apr_pool_t *p,
     ENGINE_free(e);
 
     return APR_SUCCESS;
+}
+#endif
+
+#if MODSSL_HAVE_OPENSSL_STORE
+static OSSL_STORE_INFO *modssl_load_store_uri(server_rec *s, apr_pool_t *p,
+                                              const char *vhostid,
+                                              const char *uri, int info_type)
+{
+    OSSL_STORE_CTX *sctx;
+    UI_METHOD *ui_method = get_passphrase_ui(p);
+    pphrase_cb_arg_t ppcb;
+    OSSL_STORE_INFO *info = NULL;
+
+    memset(&ppcb, 0, sizeof ppcb);
+    ppcb.s = s;
+    ppcb.p = p;
+    ppcb.bPassPhraseDialogOnce = TRUE;
+    ppcb.key_id = vhostid;
+    ppcb.pkey_file = uri;
+
+    sctx = OSSL_STORE_open(uri, ui_method, &ppcb, NULL, NULL);
+    if (!sctx) {
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO()
+                     "Init: OSSL_STORE_open failed for PKCS#11 URI `%s'",
+                     uri);
+        return NULL;
+    }
+
+    while (!OSSL_STORE_eof(sctx)) {
+        info = OSSL_STORE_load(sctx);
+        if (!info)
+            break;
+
+        if (OSSL_STORE_INFO_get_type(info) == info_type)
+            break;
+
+        OSSL_STORE_INFO_free(info);
+        info = NULL;
+    }
+
+    OSSL_STORE_close(sctx);
+
+    return info;
+}
+
+static apr_status_t modssl_load_keypair_store(server_rec *s, apr_pool_t *p,
+                                              const char *vhostid,
+                                              const char *certid,
+                                              const char *keyid,
+                                              X509 **pubkey,
+                                              EVP_PKEY **privkey)
+{
+    OSSL_STORE_INFO *info = NULL;
+
+    *privkey = NULL;
+    *pubkey = NULL;
+
+    info = modssl_load_store_uri(s, p, vhostid, keyid, OSSL_STORE_INFO_PKEY);
+    if (!info) {
+        ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO()
+                     "Init: OSSL_STORE_INFO_PKEY lookup failed for private key identifier `%s'",
+                     keyid);
+        return ssl_die(s);
+    }
+
+    *privkey = OSSL_STORE_INFO_get1_PKEY(info);
+    OSSL_STORE_INFO_free(info);
+    if (!*privkey) {
+        ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO()
+                     "Init: OSSL_STORE_INFO_PKEY lookup failed for private key identifier `%s'",
+                     keyid);
+        return ssl_die(s);
+    }
+
+    if (certid) {
+        info = modssl_load_store_uri(s, p, vhostid, certid, OSSL_STORE_INFO_CERT);
+        if (!info) {
+            ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO()
+                         "Init: OSSL_STORE_INFO_CERT lookup failed for certificate identifier `%s'",
+                         keyid);
+            return ssl_die(s);
+        }
+
+        *pubkey = OSSL_STORE_INFO_get1_CERT(info);
+        OSSL_STORE_INFO_free(info);
+        if (!*pubkey) {
+            ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO()
+                     "Init: OSSL_STORE_INFO_CERT lookup failed for certificate identifier `%s'",
+                     certid);
+            return ssl_die(s);
+        }
+    }
+
+    return APR_SUCCESS;
+}
+#endif
+
+apr_status_t modssl_load_engine_keypair(server_rec *s, apr_pool_t *p,
+                                        const char *vhostid,
+                                        const char *certid, const char *keyid,
+                                        X509 **pubkey, EVP_PKEY **privkey)
+{
+#if MODSSL_HAVE_OPENSSL_STORE
+    SSLModConfigRec *mc = myModConfig(s);
+
+    if (strcEQ(mc->szCryptoDevice, "provider"))
+        return modssl_load_keypair_store(s, p, vhostid, certid, keyid,
+                                         pubkey, privkey);
+#endif
+#if MODSSL_HAVE_ENGINE_API
+    return modssl_load_keypair_engine(s, p, vhostid, certid, keyid,
+                                      pubkey, privkey);
 #else
     return APR_ENOTIMPL;
 #endif

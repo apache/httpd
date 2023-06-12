@@ -689,6 +689,11 @@ const char *ssl_cmd_SSLCryptoDevice(cmd_parms *cmd,
     if (strcEQ(arg, "builtin")) {
         mc->szCryptoDevice = NULL;
     }
+#if MODSSL_HAVE_OPENSSL_STORE
+    else if (strcEQ(arg, "provider")) {
+        mc->szCryptoDevice = arg;
+    }
+#endif
 #if MODSSL_HAVE_ENGINE_API
     else if ((e = ENGINE_by_id(arg))) {
         mc->szCryptoDevice = arg;
@@ -697,7 +702,11 @@ const char *ssl_cmd_SSLCryptoDevice(cmd_parms *cmd,
 #endif
     else {
         err = "SSLCryptoDevice: Invalid argument; must be one of: "
-              "'builtin' (none)";
+              "'builtin' (none)"
+#if MODSSL_HAVE_OPENSSL_STORE
+              ", 'provider' (use OpenSSL >= 3.0 provider STORE)"
+#endif
+              ;
 #if MODSSL_HAVE_ENGINE_API
         e = ENGINE_get_first();
         while (e) {
