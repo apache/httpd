@@ -166,6 +166,7 @@ static int on_frame_recv(h2_stream_state_t state, int frame_type)
 
 static int on_event(h2_stream* stream, h2_stream_event_t ev)
 {
+    H2_STRM_ASSERT_MAGIC(stream, H2_STRM_MAGIC_OK);
     if (stream->monitor && stream->monitor->on_event) {
         stream->monitor->on_event(stream->monitor->ctx, stream, ev);
     }
@@ -392,6 +393,7 @@ void h2_stream_dispatch(h2_stream *stream, h2_stream_event_t ev)
 {
     int new_state;
     
+    H2_STRM_ASSERT_MAGIC(stream, H2_STRM_MAGIC_OK);
     ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, stream->session->c1,
                   H2_STRM_MSG(stream, "dispatch event %d"), ev);
     new_state = on_event(stream, ev);
@@ -425,6 +427,7 @@ apr_status_t h2_stream_send_frame(h2_stream *stream, int ftype, int flags, size_
     apr_status_t status = APR_SUCCESS;
     int new_state, eos = 0;
 
+    H2_STRM_ASSERT_MAGIC(stream, H2_STRM_MAGIC_OK);
     new_state = on_frame_send(stream->state, ftype);
     if (new_state < 0) {
         ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, stream->session->c1,
@@ -474,6 +477,7 @@ apr_status_t h2_stream_recv_frame(h2_stream *stream, int ftype, int flags, size_
     apr_status_t status = APR_SUCCESS;
     int new_state, eos = 0;
 
+    H2_STRM_ASSERT_MAGIC(stream, H2_STRM_MAGIC_OK);
     new_state = on_frame_recv(stream->state, ftype);
     if (new_state < 0) {
         ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, stream->session->c1,
@@ -528,6 +532,7 @@ apr_status_t h2_stream_recv_DATA(h2_stream *stream, uint8_t flags,
     h2_session *session = stream->session;
     apr_status_t status = APR_SUCCESS;
     
+    H2_STRM_ASSERT_MAGIC(stream, H2_STRM_MAGIC_OK);
     stream->in_data_frames++;
     if (len > 0) {
         if (APLOGctrace3(session->c1)) {
@@ -548,11 +553,38 @@ apr_status_t h2_stream_recv_DATA(h2_stream *stream, uint8_t flags,
     return status;
 }
 
+#ifdef AP_DEBUG
+static apr_status_t stream_pool_destroy(void *data)
+{
+    h2_stream *stream = data;
+    switch (stream->magic) {
+    case H2_STRM_MAGIC_OK:
+        ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, stream->session->c1,
+                      H2_STRM_MSG(stream, "was not destroyed explicitly"));
+        AP_DEBUG_ASSERT(0);
+        break;
+    case H2_STRM_MAGIC_SDEL:
+        /* stream has been explicitly destroyed, as it should */
+        H2_STRM_ASSIGN_MAGIC(stream, H2_STRM_MAGIC_PDEL);
+        break;
+    case H2_STRM_MAGIC_PDEL:
+        ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, stream->session->c1,
+                      H2_STRM_MSG(stream, "already pool destroyed"));
+        AP_DEBUG_ASSERT(0);
+        break;
+    default:
+        AP_DEBUG_ASSERT(0);
+    }
+    return APR_SUCCESS;
+}
+#endif
+
 h2_stream *h2_stream_create(int id, apr_pool_t *pool, h2_session *session,
                             h2_stream_monitor *monitor, int initiated_on)
 {
     h2_stream *stream = apr_pcalloc(pool, sizeof(h2_stream));
-    
+
+    H2_STRM_ASSIGN_MAGIC(stream, H2_STRM_MAGIC_OK);
     stream->id           = id;
     stream->initiated_on = initiated_on;
     stream->created      = apr_time_now();
@@ -560,6 +592,12 @@ h2_stream *h2_stream_create(int id, apr_pool_t *pool, h2_session *session,
     stream->pool         = pool;
     stream->session      = session;
     stream->monitor      = monitor;
+#ifdef AP_DEBUG
+    if (id) { /* stream 0 has special lifetime */
+        apr_pool_cleanup_register(pool, stream, stream_pool_destroy,
+                                  apr_pool_cleanup_null);
+    }
+#endif
 
 #ifdef H2_NG2_LOCAL_WIN_SIZE
     if (id) {
@@ -581,6 +619,7 @@ void h2_stream_cleanup(h2_stream *stream)
      * end of the in/out notifications get closed.
      */
     ap_assert(stream);
+    H2_STRM_ASSERT_MAGIC(stream, H2_STRM_MAGIC_OK);
     if (stream->out_buffer) {
         apr_brigade_cleanup(stream->out_buffer);
     }
@@ -589,13 +628,16 @@ void h2_stream_cleanup(h2_stream *stream)
 void h2_stream_destroy(h2_stream *stream)
 {
     ap_assert(stream);
+    H2_STRM_ASSERT_MAGIC(stream, H2_STRM_MAGIC_OK);
     ap_log_cerror(APLOG_MARK, APLOG_TRACE3, 0, stream->session->c1,
                   H2_STRM_MSG(stream, "destroy"));
+    H2_STRM_ASSIGN_MAGIC(stream, H2_STRM_MAGIC_SDEL);
     apr_pool_destroy(stream->pool);
 }
 
 void h2_stream_rst(h2_stream *stream, int error_code)
 {
+    H2_STRM_ASSERT_MAGIC(stream, H2_STRM_MAGIC_OK);
     stream->rst_error = error_code;
     if (stream->c2) {
         h2_c2_abort(stream->c2, stream->session->c1);
@@ -611,6 +653,7 @@ apr_status_t h2_stream_set_request_rec(h2_stream *stream,
     h2_request *req;
     apr_status_t status;
 
+    H2_STRM_ASSERT_MAGIC(stream, H2_STRM_MAGIC_OK);
     ap_assert(stream->request == NULL);
     ap_assert(stream->rtmp == NULL);
     if (stream->rst_error) {
@@ -632,6 +675,7 @@ apr_status_t h2_stream_set_request_rec(h2_stream *stream,
 
 void h2_stream_set_request(h2_stream *stream, const h2_request *r)
 {
+    H2_STRM_ASSERT_MAGIC(stream, H2_STRM_MAGIC_OK);
     ap_assert(stream->request == NULL);
     ap_assert(stream->rtmp == NULL);
     stream->rtmp = h2_request_clone(stream->pool, r);
@@ -691,6 +735,7 @@ apr_status_t h2_stream_add_header(h2_stream *stream,
     int error = 0, was_added = 0;
     apr_status_t status = APR_SUCCESS;
     
+    H2_STRM_ASSERT_MAGIC(stream, H2_STRM_MAGIC_OK);
     if (stream->response) {
         return APR_EINVAL;    
     }
@@ -797,6 +842,7 @@ apr_status_t h2_stream_end_headers(h2_stream *stream, int eos, size_t raw_bytes)
     int is_http_or_https;
     h2_request *req = stream->rtmp;
 
+    H2_STRM_ASSERT_MAGIC(stream, H2_STRM_MAGIC_OK);
     status = h2_request_end_headers(req, stream->pool, raw_bytes);
     if (APR_SUCCESS != status || req->http_status != H2_HTTP_STATUS_UNSET) {
         goto cleanup;
@@ -1045,6 +1091,7 @@ apr_status_t h2_stream_read_to(h2_stream *stream, apr_bucket_brigade *bb,
 {
     apr_status_t rv = APR_SUCCESS;
 
+    H2_STRM_ASSERT_MAGIC(stream, H2_STRM_MAGIC_OK);
     if (stream->rst_error) {
         return APR_ECONNRESET;
     }
@@ -1139,6 +1186,7 @@ apr_status_t h2_stream_submit_pushes(h2_stream *stream, h2_headers *response)
     apr_array_header_t *pushes;
     int i;
     
+    H2_STRM_ASSERT_MAGIC(stream, H2_STRM_MAGIC_OK);
     pushes = h2_push_collect_update(stream, stream->request, response);
     if (pushes && !apr_is_empty_array(pushes)) {
         ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, stream->session->c1,
@@ -1158,6 +1206,7 @@ apr_status_t h2_stream_submit_pushes(h2_stream *stream, h2_headers *response)
 
 apr_table_t *h2_stream_get_trailers(h2_stream *stream)
 {
+    H2_STRM_ASSERT_MAGIC(stream, H2_STRM_MAGIC_OK);
     return NULL;
 }
 
@@ -1169,6 +1218,7 @@ const h2_priority *h2_stream_get_priority(h2_stream *stream,
                                           h2_headers *response)
 #endif
 {
+    H2_STRM_ASSERT_MAGIC(stream, H2_STRM_MAGIC_OK);
     if (response && stream->initiated_on) {
         const char *ctype = apr_table_get(response->headers, "content-type");
         if (ctype) {
@@ -1182,6 +1232,7 @@ const h2_priority *h2_stream_get_priority(h2_stream *stream,
 int h2_stream_is_ready(h2_stream *stream)
 {
     /* Have we sent a response or do we have the response in our buffer? */
+    H2_STRM_ASSERT_MAGIC(stream, H2_STRM_MAGIC_OK);
     if (stream->response) {
         return 1;
     }
@@ -1193,11 +1244,13 @@ int h2_stream_is_ready(h2_stream *stream)
 
 int h2_stream_is_at(const h2_stream *stream, h2_stream_state_t state)
 {
+    H2_STRM_ASSERT_MAGIC(stream, H2_STRM_MAGIC_OK);
     return stream->state == state;
 }
 
 int h2_stream_is_at_or_past(const h2_stream *stream, h2_stream_state_t state)
 {
+    H2_STRM_ASSERT_MAGIC(stream, H2_STRM_MAGIC_OK);
     switch (state) {
         case H2_SS_IDLE:
             return 1; /* by definition */
@@ -1220,6 +1273,7 @@ apr_status_t h2_stream_in_consumed(h2_stream *stream, apr_off_t amount)
 {
     h2_session *session = stream->session;
     
+    H2_STRM_ASSERT_MAGIC(stream, H2_STRM_MAGIC_OK);
     if (amount > 0) {
         apr_off_t consumed = amount;
         
@@ -1345,6 +1399,7 @@ static ssize_t stream_data_cb(nghttp2_session *ng2s,
                       H2_SSSN_STRM_MSG(session, stream_id, "data_cb, stream not found"));
         return NGHTTP2_ERR_CALLBACK_FAILURE;
     }
+    H2_STRM_ASSERT_MAGIC(stream, H2_STRM_MAGIC_OK);
     if (!stream->output || !stream->response || !stream->out_buffer) {
         return NGHTTP2_ERR_DEFERRED;
     }
@@ -1476,6 +1531,7 @@ static apr_status_t stream_do_response(h2_stream *stream)
 #endif
     nghttp2_data_provider provider, *pprovider = NULL;
 
+    H2_STRM_ASSERT_MAGIC(stream, H2_STRM_MAGIC_OK);
     ap_assert(!stream->response);
     ap_assert(stream->out_buffer);
 
@@ -1666,6 +1722,7 @@ void h2_stream_on_output_change(h2_stream *stream)
 
     /* stream->pout_recv_write signalled a change. Check what has happend, read
      * from it and act on seeing a response/data. */
+    H2_STRM_ASSERT_MAGIC(stream, H2_STRM_MAGIC_OK);
     if (!stream->output) {
         /* c2 has not assigned the output beam to the stream (yet). */
         ap_log_cerror(APLOG_MARK, APLOG_WARNING, 0, c1,
@@ -1714,6 +1771,7 @@ void h2_stream_on_output_change(h2_stream *stream)
 
 void h2_stream_on_input_change(h2_stream *stream)
 {
+    H2_STRM_ASSERT_MAGIC(stream, H2_STRM_MAGIC_OK);
     ap_assert(stream->input);
     h2_beam_report_consumption(stream->input);
     if (h2_stream_is_at(stream, H2_SS_CLOSED_L)
