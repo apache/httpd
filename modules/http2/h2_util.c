@@ -1883,6 +1883,13 @@ void h2_util_drain_pipe(apr_file_t *pipe)
 {
     char rb[512];
     apr_size_t nr = sizeof(rb);
+    apr_interval_time_t timeout;
+    apr_status_t trv;
+
+    /* Make the pipe non-blocking if we can */
+    trv = apr_file_pipe_timeout_get(pipe, &timeout);
+    if (trv == APR_SUCCESS)
+      apr_file_pipe_timeout_set(pipe, 0);
 
     while (apr_file_read(pipe, rb, &nr) == APR_SUCCESS) {
         /* Although we write just one byte to the other end of the pipe
@@ -1893,6 +1900,8 @@ void h2_util_drain_pipe(apr_file_t *pipe)
         if (nr != sizeof(rb))
             break;
     }
+    if (trv == APR_SUCCESS)
+      apr_file_pipe_timeout_set(pipe, timeout);
 }
 
 apr_status_t h2_util_wait_on_pipe(apr_file_t *pipe)

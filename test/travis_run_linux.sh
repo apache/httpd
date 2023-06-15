@@ -221,6 +221,8 @@ if ! test -v SKIP_TESTING; then
     fi
 
     if test -v TEST_H2 -a $RV -eq 0; then
+        # Build the test clients
+        (cd test/clients && make)
         # Run HTTP/2 tests.
         MPM=event py.test-3 test/modules/http2
         RV=$?

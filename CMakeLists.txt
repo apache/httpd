@@ -497,6 +497,7 @@ SET(mod_http2_extra_sources
   modules/http2/h2_request.c         modules/http2/h2_session.c
   modules/http2/h2_stream.c          modules/http2/h2_switch.c
   modules/http2/h2_util.c            modules/http2/h2_workers.c
+  modules/http2/h2_ws.c
 )
 SET(mod_ldap_extra_defines           LDAP_DECLARE_EXPORT)
 SET(mod_ldap_extra_libs              wldap32)

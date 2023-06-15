@@ -21,6 +21,7 @@
 #include "apr_version.h"
 #include "apr_strings.h"
 #include "apr_hash.h"
+#include "http_core.h"
 #include "proxy_util.h"
 #include "ajp.h"
 #include "scgi.h"
@@ -4871,7 +4872,7 @@ PROXY_DECLARE(apr_status_t) ap_proxy_tunnel_create(proxy_tunnel_rec **ptunnel,
 {
     apr_status_t rv;
     conn_rec *c_i = r->connection;
-    apr_interval_time_t timeout = -1;
+    apr_interval_time_t client_timeout = -1, origin_timeout = -1;
     proxy_tunnel_rec *tunnel;
 
     *ptunnel = NULL;
@@ -4898,9 +4899,16 @@ PROXY_DECLARE(apr_status_t) ap_proxy_tunnel_create(proxy_tunnel_rec **ptunnel,
     tunnel->client->bb = apr_brigade_create(c_i->pool, c_i->bucket_alloc);
     tunnel->client->pfd = &APR_ARRAY_PUSH(tunnel->pfds, apr_pollfd_t);
     tunnel->client->pfd->p = r->pool;
-    tunnel->client->pfd->desc_type = APR_POLL_SOCKET;
-    tunnel->client->pfd->desc.s = ap_get_conn_socket(c_i);
+    tunnel->client->pfd->desc_type = APR_NO_DESC;
+    rv = ap_get_conn_in_pollfd(tunnel->client->c,
+                               tunnel->client->pfd, &client_timeout);
+    if (rv != APR_SUCCESS) {
+        return rv;
+    }
     tunnel->client->pfd->client_data = tunnel->client;
+    if (tunnel->client->pfd->desc_type == APR_POLL_SOCKET) {
+        apr_socket_opt_set(tunnel->client->pfd->desc.s, APR_SO_NONBLOCK, 1);
+    }
 
     tunnel->origin->c = c_o;
     tunnel->origin->name = "origin";
@@ -4910,17 +4918,12 @@ PROXY_DECLARE(apr_status_t) ap_proxy_tunnel_create(proxy_tunnel_rec **ptunnel,
     tunnel->origin->pfd->desc_type = APR_POLL_SOCKET;
     tunnel->origin->pfd->desc.s = ap_get_conn_socket(c_o);
     tunnel->origin->pfd->client_data = tunnel->origin;
+    apr_socket_timeout_get(tunnel->origin->pfd->desc.s, &origin_timeout);
+    apr_socket_opt_set(tunnel->origin->pfd->desc.s, APR_SO_NONBLOCK, 1);
 
     /* Defaults to the biggest timeout of both connections */
-    apr_socket_timeout_get(tunnel->client->pfd->desc.s, &timeout);
-    apr_socket_timeout_get(tunnel->origin->pfd->desc.s, &tunnel->timeout);
-    if (timeout >= 0 && (tunnel->timeout < 0 || tunnel->timeout < timeout)) {
-        tunnel->timeout = timeout;
-    }
-
-    /* We should be nonblocking from now on the sockets */
-    apr_socket_opt_set(tunnel->client->pfd->desc.s, APR_SO_NONBLOCK, 1);
-    apr_socket_opt_set(tunnel->origin->pfd->desc.s, APR_SO_NONBLOCK, 1);
+    tunnel->timeout = (origin_timeout >= 0 && origin_timeout > client_timeout)?
+                      origin_timeout : client_timeout;
 
     /* Bidirectional non-HTTP stream will confuse mod_reqtimeoout */
     ap_remove_input_filter_byhandle(c_i->input_filters, "reqtimeout");
@@ -4938,14 +4941,43 @@ PROXY_DECLARE(apr_status_t) ap_proxy_tunnel_create(proxy_tunnel_rec **ptunnel,
         tunnel->nohalfclose = 1;
     }
 
-    /* Start with POLLOUT and let ap_proxy_tunnel_run() schedule both
-     * directions when there are no output data pending (anymore).
-     */
-    tunnel->client->pfd->reqevents = APR_POLLOUT | APR_POLLERR;
-    tunnel->origin->pfd->reqevents = APR_POLLOUT | APR_POLLERR;
-    if ((rv = apr_pollset_add(tunnel->pollset, tunnel->client->pfd))
-            || (rv = apr_pollset_add(tunnel->pollset, tunnel->origin->pfd))) {
-        return rv;
+    if (tunnel->client->pfd->desc_type == APR_POLL_SOCKET) {
+        /* Both ends are sockets, the poll strategy is:
+         * - poll both sides POLLOUT
+         * - when one side is writable, remove the POLLOUT
+         *   and add POLLIN to the other side.
+         * - tunnel arriving data, remove POLLIN from the source
+         *   again and add POLLOUT to the receiving side
+         * - on EOF on read, remove the POLLIN from that side
+         * Repeat until both sides are down */
+        tunnel->client->pfd->reqevents = APR_POLLOUT | APR_POLLERR;
+        tunnel->origin->pfd->reqevents = APR_POLLOUT | APR_POLLERR;
+        if ((rv = apr_pollset_add(tunnel->pollset, tunnel->origin->pfd)) ||
+            (rv = apr_pollset_add(tunnel->pollset, tunnel->client->pfd))) {
+            return rv;
+        }
+    }
+    else if (tunnel->client->pfd->desc_type == APR_POLL_FILE) {
+        /* Input is a PIPE fd, the poll strategy is:
+         * - always POLLIN on origin
+         * - use socket strategy described above for client only
+         * otherwise the same
+         */
+        tunnel->client->pfd->reqevents = 0;
+        tunnel->origin->pfd->reqevents = APR_POLLIN | APR_POLLHUP |
+                                         APR_POLLOUT | APR_POLLERR;
+        if ((rv = apr_pollset_add(tunnel->pollset, tunnel->origin->pfd))) {
+            return rv;
+        }
+    }
+    else {
+        /* input is already closed, unsual, but we know nothing about
+         * the tunneled protocol. */
+        tunnel->client->down_in = 1;
+        tunnel->origin->pfd->reqevents = APR_POLLIN | APR_POLLHUP;
+        if ((rv = apr_pollset_add(tunnel->pollset, tunnel->origin->pfd))) {
+            return rv;
+        }
     }
 
     *ptunnel = tunnel;
@@ -5053,8 +5085,22 @@ static int proxy_tunnel_transfer(proxy_tunnel_rec *tunnel,
             return HTTP_INTERNAL_SERVER_ERROR;
         }
 
-        del_pollset(tunnel->pollset, in->pfd, APR_POLLIN);
-        add_pollset(tunnel->pollset, out->pfd, APR_POLLOUT);
+        if (out->pfd->desc_type == APR_POLL_SOCKET) {
+            /* if the output is a SOCKET, we can stop polling the input
+             * until the output signals POLLOUT again. */
+            del_pollset(tunnel->pollset, in->pfd, APR_POLLIN);
+            add_pollset(tunnel->pollset, out->pfd, APR_POLLOUT);
+        }
+        else {
+            /* Unable to use POLLOUT in this direction, out is not a socket */
+            if (in->down_in) {
+                del_pollset(tunnel->pollset, in->pfd, APR_POLLIN);
+                ap_log_rerror(APLOG_MARK, APLOG_TRACE3, 0, tunnel->r,
+                              "proxy: %s: %s write shutdown",
+                              tunnel->scheme, out->name);
+                out->down_out = 1;
+            }
+        }
     }
 
     return OK;

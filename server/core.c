@@ -92,6 +92,7 @@
 APR_HOOK_STRUCT(
     APR_HOOK_LINK(get_mgmt_items)
     APR_HOOK_LINK(insert_network_bucket)
+    APR_HOOK_LINK(get_conn_in_pollfd)
 )
 
 AP_IMPLEMENT_HOOK_RUN_ALL(int, get_mgmt_items,
@@ -102,6 +103,11 @@ AP_IMPLEMENT_HOOK_RUN_FIRST(apr_status_t, insert_network_bucket,
                             (conn_rec *c, apr_bucket_brigade *bb,
                              apr_socket_t *socket),
                             (c, bb, socket), AP_DECLINED)
+
+AP_IMPLEMENT_HOOK_RUN_FIRST(apr_status_t, get_conn_in_pollfd,
+                            (conn_rec *c, struct apr_pollfd_t *pfd,
+                             apr_interval_time_t *ptimeout),
+                              (c, pfd, ptimeout), AP_DECLINED)
 
 /* Server core module... This module provides support for really basic
  * server operations, including options and commands which control the
@@ -5971,6 +5977,30 @@ static int core_upgrade_storage(request_rec *r)
     return DECLINED;
 }
 
+static apr_status_t core_get_conn_in_pollfd(conn_rec *c,
+                                         struct apr_pollfd_t *pfd,
+                                         apr_interval_time_t *ptimeout)
+{
+    if (c && !c->master) {
+        pfd->desc_type = APR_POLL_SOCKET;
+        pfd->desc.s = ap_get_conn_socket(c);
+        if (ptimeout) {
+            apr_socket_timeout_get(pfd->desc.s, ptimeout);
+        }
+        return APR_SUCCESS;
+    }
+    return DECLINED;
+}
+
+AP_CORE_DECLARE(apr_status_t) ap_get_conn_in_pollfd(conn_rec *c,
+                                      struct apr_pollfd_t *pfd,
+                                      apr_interval_time_t *ptimeout)
+{
+    apr_status_t rv;
+    rv = ap_run_get_conn_in_pollfd(c, pfd, ptimeout);
+    return (rv == DECLINED)? APR_ENOTIMPL : rv;
+}
+
 static void register_hooks(apr_pool_t *p)
 {
     errorlog_hash = apr_hash_make(p);
@@ -6016,6 +6046,8 @@ static void register_hooks(apr_pool_t *p)
     ap_hook_open_htaccess(ap_open_htaccess, NULL, NULL, APR_HOOK_REALLY_LAST);
     ap_hook_optional_fn_retrieve(core_optional_fn_retrieve, NULL, NULL,
                                  APR_HOOK_MIDDLE);
+    ap_hook_get_conn_in_pollfd(core_get_conn_in_pollfd, NULL, NULL,
+                            APR_HOOK_REALLY_LAST);
 
     ap_hook_input_pending(ap_filter_input_pending, NULL, NULL,
                           APR_HOOK_MIDDLE);

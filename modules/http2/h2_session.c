@@ -621,9 +621,8 @@ static int on_invalid_header_cb(nghttp2_session *ngh2,
     
     ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c1, APLOGNO(03456)
                   H2_SSSN_STRM_MSG(session, frame->hd.stream_id,
-                  "invalid header '%s: %s'"),
-                  apr_pstrndup(session->pool, (const char *)name, namelen),
-                  apr_pstrndup(session->pool, (const char *)value, valuelen));
+                  "invalid header '%.*s: %.*s'"),
+                  (int)namelen, name, (int)valuelen, value);
     stream = get_stream(session, frame->hd.stream_id);
     if (stream) {
         h2_stream_rst(stream, NGHTTP2_PROTOCOL_ERROR);
@@ -1003,7 +1002,7 @@ apr_status_t h2_session_create(h2_session **psession, conn_rec *c, request_rec *
 static apr_status_t h2_session_start(h2_session *session, int *rv)
 {
     apr_status_t status = APR_SUCCESS;
-    nghttp2_settings_entry settings[3];
+    nghttp2_settings_entry settings[4];
     size_t slen;
     int win_size;
     
@@ -1070,7 +1069,12 @@ static apr_status_t h2_session_start(h2_session *session, int *rv)
         settings[slen].value = win_size;
         ++slen;
     }
-    
+    if (h2_config_sgeti(session->s, H2_CONF_WEBSOCKETS)) {
+      settings[slen].settings_id = NGHTTP2_SETTINGS_ENABLE_CONNECT_PROTOCOL;
+      settings[slen].value = 1;
+      ++slen;
+    }
+
     ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, session->c1,
                   H2_SSSN_LOG(APLOGNO(03201), session, 
                   "start, INITIAL_WINDOW_SIZE=%ld, MAX_CONCURRENT_STREAMS=%d"), 
