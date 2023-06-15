@@ -267,7 +267,7 @@ static apr_status_t pass_output(h2_c1_io *io, int flush)
         /* recursive call, may be triggered by an H2EOS bucket
          * being destroyed and triggering sending more data? */
         AP_DEBUG_ASSERT(0);
-        ap_log_cerror(APLOG_MARK, APLOG_ERR, rv, c, APLOGNO()
+        ap_log_cerror(APLOG_MARK, APLOG_ERR, rv, c, APLOGNO(10456)
                       "h2_c1_io(%ld): recursive call of h2_c1_io_pass. "
                       "Denied to prevent output corruption. This "
                       "points to a bug in the HTTP/2 implementation.",
