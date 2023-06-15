@@ -78,9 +78,8 @@ def run_server(port):
 
 
 def main():
-    parser = argparse.ArgumentParser(prog='scorecard', description="""
-        Run a websocket echo server.
-        """)
+    parser = argparse.ArgumentParser(prog='scorecard',
+                                     description="Run a websocket echo server.")
     parser.add_argument("--port", type=int,
                         default=0, help="port to listen on")
     args = parser.parse_args()
