@@ -6,8 +6,10 @@ import subprocess
 import time
 from datetime import timedelta, datetime
 from typing import Tuple, Union, List
+import packaging.version
 
 import pytest
+import websockets
 from pyhttpd.result import ExecResult
 from pyhttpd.ws_util import WsFrameReader, WsFrame
 
@@ -15,6 +17,9 @@ from .env import H2Conf, H2TestEnv
 
 
 log = logging.getLogger(__name__)
+
+ws_version = packaging.version.parse(websockets.version.version)
+ws_version_min = packaging.version.Version('10.4')
 
 
 def ws_run(env: H2TestEnv, path, do_input=None,
@@ -75,6 +80,8 @@ def ws_run(env: H2TestEnv, path, do_input=None,
 
 
 @pytest.mark.skipif(condition=H2TestEnv.is_unsupported, reason="mod_http2 not supported here")
+@pytest.mark.skipif(condition=ws_version < ws_version_min,
+                    reason=f'websockets is {ws_version}, need at least {ws_version_min}')
 class TestWebSockets:
 
     @pytest.fixture(autouse=True, scope='class')
