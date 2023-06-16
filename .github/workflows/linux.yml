@@ -197,7 +197,7 @@ jobs:
           # -------------------------------------------------------------------------
           - name: HTTP/2 test suite
             config: --enable-mods-shared=reallyall --with-mpm=event --enable-mpms-shared=all
-            pkgs: curl python3-pytest nghttp2-client python3-cryptography python3-requests python3-multipart python3-websockets
+            pkgs: curl python3-pytest nghttp2-client python3-cryptography python3-requests python3-multipart python3-filelock python3-websockets
             env: |
               APR_VERSION=1.7.4
               APU_VERSION=1.6.3
@@ -228,7 +228,7 @@ jobs:
           ### TODO: fix caching here.
           - name: MOD_TLS test suite
             config: --enable-mods-shared=reallyall --with-mpm=event --enable-mpms-shared=event
-            pkgs: curl python3-pytest nghttp2-client python3-cryptography python3-requests python3-multipart cargo cbindgen
+            pkgs: curl python3-pytest nghttp2-client python3-cryptography python3-requests python3-multipart python3-filelock python3-websockets cargo cbindgen
             env: |
               APR_VERSION=1.7.4
               APU_VERSION=1.6.3
