@@ -5,6 +5,7 @@ import shutil
 import subprocess
 import time
 from datetime import timedelta, datetime
+from typing import Tuple, Union, List
 
 import pytest
 from pyhttpd.result import ExecResult
@@ -16,8 +17,10 @@ from .env import H2Conf, H2TestEnv
 log = logging.getLogger(__name__)
 
 
-def ws_run(env: H2TestEnv, path, do_input=None, inbytes=None, send_close=True,
-           timeout=5, scenario='ws-stdin', wait_close: float = 0.0):
+def ws_run(env: H2TestEnv, path, do_input=None,
+           inbytes=None, send_close=True,
+           timeout=5, scenario='ws-stdin',
+           wait_close: float = 0.0) -> Tuple[ExecResult, List[str], Union[List[WsFrame], bytes]]:
     """ Run the h2ws test client in various scenarios with given input and
         timings.
     :param env: the test environment
@@ -91,7 +94,7 @@ class TestWebSockets:
         conf.add_vhost_cgi(proxy_self=True, h2proxy_self=True).install()
         assert env.apache_restart() == 0
 
-    def check_alive(self, env, timeout=5):
+    def ws_check_alive(self, env, timeout=5):
         url = f'http://localhost:{env.ws_port}/'
         end = datetime.now() + timedelta(seconds=timeout)
         while datetime.now() < end:
@@ -123,7 +126,10 @@ class TestWebSockets:
             args = ['python3', cmd, '--port', str(env.ws_port)]
             p = subprocess.Popen(args=args, cwd=run_dir, stderr=cerr,
                                  stdout=cerr)
-            assert self.check_alive(env)
+            if not self.ws_check_alive(env):
+                p.kill()
+                p.wait()
+                pytest.fail(f'ws_server did not start. stderr={open(err_file).readlines()}')
             yield
             p.terminate()
 
