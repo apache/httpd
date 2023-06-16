@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 import argparse
+import asyncio
 import logging
 import os
-import re
 import sys
 import time
 
-import websockets.sync.server as ws
+import websockets.server as ws_server
 from websockets.exceptions import ConnectionClosedError
 
 log = logging.getLogger(__name__)
@@ -29,18 +29,18 @@ async def echo(websocket):
         pass
 
 
-def on_conn(conn):
-    rpath = str(conn.request.path)
+async def on_async_conn(conn):
+    rpath = str(conn.path)
     pcomps = rpath[1:].split('/')
     if len(pcomps) == 0:
         pcomps = ['echo']  # default handler
     log.info(f'connection for {pcomps}')
     if pcomps[0] == 'echo':
         log.info(f'/echo endpoint')
-        for message in conn:
-            conn.send(message)
+        for message in await conn.recv():
+            await conn.send(message)
     elif pcomps[0] == 'text':
-        conn.send('hello!')
+        await conn.send('hello!')
     elif pcomps[0] == 'file':
         if len(pcomps) < 2:
             conn.close(code=4999, reason='unknown file')
@@ -62,22 +62,23 @@ def on_conn(conn):
                 buf = fd.read(bufsize)
                 if buf is None or len(buf) == 0:
                     break
-                conn.send(buf)
+                await conn.send(buf)
                 if delay_ms > 0:
                     time.sleep(delay_ms/1000)
     else:
         log.info(f'unknown endpoint: {rpath}')
-        conn.close(code=4999, reason='path unknown')
-    conn.close(code=1000, reason='')
+        await conn.close(code=4999, reason='path unknown')
+    await conn.close(code=1000, reason='')
 
 
-def run_server(port):
+async def run_server(port):
     log.info(f'starting server on port {port}')
-    server = ws.serve(handler=on_conn, host="localhost", port=port)
-    server.serve_forever()
+    async with ws_server.serve(ws_handler=on_async_conn,
+                               host="localhost", port=port):
+        await asyncio.Future()
 
 
-def main():
+async def main():
     parser = argparse.ArgumentParser(prog='scorecard',
                                      description="Run a websocket echo server.")
     parser.add_argument("--port", type=int,
@@ -92,8 +93,8 @@ def main():
         format="%(asctime)s %(message)s",
         level=logging.DEBUG,
     )
-    run_server(args.port)
+    await run_server(args.port)
 
 
 if __name__ == "__main__":
-    main()
+    asyncio.run(main())
