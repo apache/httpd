@@ -294,8 +294,6 @@ static apr_status_t pass_output(h2_c1_io *io, int flush)
 
     rv = ap_pass_brigade(c->output_filters, io->output);
     if (APR_SUCCESS != rv) goto cleanup;
-
-    io->buffered_len = 0;
     io->bytes_written += (apr_size_t)bblen;
 
     if (io->write_size < WRITE_SIZE_MAX
@@ -323,6 +321,7 @@ cleanup:
                       c->id, (long)bblen);
     }
     apr_brigade_cleanup(io->output);
+    io->buffered_len = 0;
     io->is_passing = 0;
     return rv;
 }
