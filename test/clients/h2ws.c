@@ -41,6 +41,7 @@
 #include <signal.h>
 #include <stdio.h>
 #include <string.h>
+#include <time.h>
 #include <errno.h>
 
 #include <nghttp2/nghttp2.h>
