@@ -249,6 +249,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      Backport version for 2.4.x of patch:
         svn merge -c 1910157 ^/httpd/httpd/trunk .
      +1: icing
+     rpluem says: This one has conflicts in modules/http2/h2_request.c and
+     modules/http2/h2_version.h.
 
   *) Easy patches: synch 2.4.x and trunk
          - core: constify pointers in ap_expr lookup tables.  ~1/2Kb moves to r/o text section
