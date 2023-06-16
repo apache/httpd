@@ -219,7 +219,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         https://svn.apache.org/r1586542
      Backport version for 2.4.x of patch:
       https://raw.githubusercontent.com/jfclere/patch/main/mod_deflate.patch
-     +1: jfclere,
+     +1: jfclere, rpluem,
      rpluem says: Does anyone know why we don't merge the server config?
 
   *) mod_http2:
