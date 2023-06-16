@@ -296,6 +296,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         svn merge -c 1910331,1910441 ^/httpd/httpd/trunk .
      +1: icing
      # reset vote due to addition of r1910441
+     rpluem says: r1910441 has a conflict in modules/http2/h2_version.h
+     and the patch for PR 66646 needs to go in before this one to avoid further
+     conflicts.
 
   *) mod_http2: Fix for PR 66646.
      Trunk version of patch:
