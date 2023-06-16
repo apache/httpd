@@ -1281,8 +1281,8 @@ apr_size_t h2_util_bucket_print(char *buffer, apr_size_t bmax,
     else if (bmax > off) {
         off += apr_snprintf(buffer+off, bmax-off, "%s[%ld]",
                             b->type->name,
-                            (long)(b->length == ((apr_size_t)-1)?
-                                   -1 : b->length));
+                            (b->length == ((apr_size_t)-1)?
+                                   -1 : (long)b->length));
     }
     return off;
 }

@@ -94,8 +94,6 @@ class TestWebSockets:
               f'  H2WebSockets on',
               f'  ProxyPass /ws/ http://127.0.0.1:{env.ws_port}/ \\',
               f'           upgrade=websocket timeout=10',
-              f'  ProxyPassReverse /ws/ \\'
-              '            http://cgi.tests.httpd.apache.org:{env.http_port}/',
             ]
         })
         conf.add_vhost_cgi(proxy_self=True, h2proxy_self=True).install()
