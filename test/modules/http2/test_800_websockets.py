@@ -120,7 +120,7 @@ class TestWebSockets:
         with open(err_file, 'w') as cerr:
             cmd = os.path.join(os.path.dirname(inspect.getfile(TestWebSockets)),
                                'ws_server.py')
-            args = [cmd, '--port', str(env.ws_port)]
+            args = ['python3', cmd, '--port', str(env.ws_port)]
             p = subprocess.Popen(args=args, cwd=run_dir, stderr=cerr,
                                  stdout=cerr)
             assert self.check_alive(env)
