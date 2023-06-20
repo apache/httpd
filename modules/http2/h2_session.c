@@ -1281,8 +1281,11 @@ static apr_status_t h2_session_send(h2_session *session)
                 goto cleanup;
             }
         }
-        if (h2_c1_io_needs_flush(&session->io)) {
+        if (h2_c1_io_needs_flush(&session->io) ||
+            ngrv == NGHTTP2_ERR_WOULDBLOCK) {
             rv = h2_c1_io_assure_flushed(&session->io);
+            if (rv != APR_SUCCESS)
+                goto cleanup;
             pending = 0;
         }
     }
@@ -1639,10 +1642,6 @@ static void on_stream_state_enter(void *ctx, h2_stream *stream)
             h2_mplx_c1_stream_cleanup(session->mplx, stream, &session->open_streams);
             ++session->streams_done;
             update_child_status(session, SERVER_BUSY_WRITE, "done", stream);
-            if (session->open_streams == 0) {
-                h2_session_dispatch_event(session, H2_SESSION_EV_NO_MORE_STREAMS,
-                                          0, "stream done");
-            }
             break;
         default:
             break;
