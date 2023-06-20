@@ -599,10 +599,20 @@ static int set_polled_events(struct connection *c, apr_int16_t new_reqevents)
 {
     apr_status_t rv;
 
+    /* Add POLLHUP and POLLERR to reqevents should some pollset
+     * implementations need/use them.
+     */
+    if (new_reqevents != 0) {
+        new_reqevents |= APR_POLLERR;
+        if (new_reqevents & APR_POLLIN) {
+            new_reqevents |= APR_POLLHUP;
+        }
+    }
+
     if (c->pollfd.reqevents != new_reqevents) {
         if (c->pollfd.reqevents != 0) {
             rv = apr_pollset_remove(c->worker->pollset, &c->pollfd);
-            if (rv != APR_SUCCESS) {
+            if (rv != APR_SUCCESS && !APR_STATUS_IS_NOTFOUND(rv)) {
                 graceful_strerror("apr_pollset_remove()", rv);
                 return 0;
             }
