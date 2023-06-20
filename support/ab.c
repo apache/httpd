@@ -377,7 +377,7 @@ static void consolidate_metrics(void);
 #define ap_max(a,b) (((a)>(b))?(a):(b))
 #define ap_round_ms(a) ((apr_time_t)((a) + 500)/1000)
 #define ap_double_ms(a) ((double)(a)/1000.0)
-#define MAX_CONCURRENCY 20000
+#define MAX_CONCURRENCY 200000
 
 /* --------------------- GLOBALS ---------------------------- */
 
