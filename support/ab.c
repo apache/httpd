@@ -259,6 +259,9 @@ typedef STACK_OF(X509) X509_STACK_TYPE;
 
 #define ROUND_UP(x, y) ((((x) + (y) - 1) / (y)) * (y))
 
+static int test_started = 0,
+           test_aborted = 0;
+
 /* connection state
  * don't add enums or rearrange or otherwise change values without
  * visiting set_conn_state()
@@ -471,33 +474,34 @@ static apr_thread_mutex_t *workers_mutex;
 static apr_thread_cond_t *workers_can_start;
 #endif
 
-static APR_INLINE int worker_should_exit(struct worker *worker)
+static APR_INLINE int worker_should_stop(struct worker *worker)
 {
     return (lasttime >= stoptime
             || (!tlimit && worker->metrics.done >= worker->requests));
 }
-static APR_INLINE int worker_should_stop(struct worker *worker)
+static APR_INLINE int worker_can_start_connection(struct worker *worker)
 {
-    return (worker_should_exit(worker)
-            || (!tlimit && worker->started >= worker->requests));
+    return !(worker_should_stop(worker)
+             || (!tlimit && worker->started >= worker->requests));
 }
 
-static void write_request(struct connection * c);
-static void retry_connection(struct connection *c, apr_status_t status);
-static void cleanup_connection(struct connection *c, int reuse);
+static void workers_may_exit(int);
 
-static APR_INLINE void reuse_connection(struct connection *c)
+static void start_connection(struct connection *c);
+static void try_reconnect(struct connection *c, apr_status_t status);
+static void write_request(struct connection *c);
+static void read_response(struct connection *c);
+static void finalize_connection(struct connection *c, int reuse);
+static void close_connection(struct connection *c);
+
+static APR_INLINE void shutdown_connection(struct connection *c)
 {
-    cleanup_connection(c, 1);
-}
-static APR_INLINE void close_connection(struct connection *c)
-{
-    cleanup_connection(c, 0);
+    finalize_connection(c, 0);
 }
 static APR_INLINE void abort_connection(struct connection *c)
 {
     c->gotheader = 0; /* invalidate */
-    close_connection(c);
+    shutdown_connection(c);
 }
 
 static void output_results(void);
@@ -505,43 +509,44 @@ static void output_html_results(void);
 
 /* --------------------------------------------------------- */
 
-/* simple little function to write an error string and exit */
-
-static void err(const char *s)
+/* simple little function to write an error string */
+static void print_error(const char *s)
 {
     fprintf(stderr, "%s\n", s);
     fflush(stderr);
-
-    consolidate_metrics();
-    if (metrics.done)
-        printf("Total of %" APR_INT64_T_FMT " requests completed\n" , metrics.done);
-    if (use_html)
-        output_html_results();
-    else
-        output_results();
-
+}
+static APR_INLINE void graceful_error(const char *s)
+{
+    print_error(s);
+    workers_may_exit(0);
+    test_aborted = 1;
+}
+static APR_INLINE void fatal_error(const char *s)
+{
+    print_error(s);
+    test_aborted = 1;
     exit(1);
 }
 
-/* simple little function to write an APR error string and exit */
-
-static void apr_err(const char *s, apr_status_t rv)
+/* simple little function to write an APR error string */
+static void print_strerror(const char *s, apr_status_t rv)
 {
     char buf[120];
-
     fprintf(stderr, "%s: %s (%d)\n",
             s, apr_strerror(rv, buf, sizeof buf), rv);
     fflush(stderr);
-
-    consolidate_metrics();
-    if (metrics.done)
-        printf("Total of %" APR_INT64_T_FMT " requests completed\n" , metrics.done);
-    if (use_html)
-        output_html_results();
-    else
-        output_results();
-
-    exit(rv);
+}
+static APR_INLINE void graceful_strerror(const char *s, apr_status_t rv)
+{
+    print_strerror(s, rv);
+    workers_may_exit(0);
+    test_aborted = 1;
+}
+static APR_INLINE void fatal_strerror(const char *s, apr_status_t rv)
+{
+    print_strerror(s, rv);
+    test_aborted = 1;
+    exit(1);
 }
 
 /*
@@ -583,12 +588,12 @@ static char *xstrcasestr(const char *s1, const char *s2)
 static int abort_on_oom(int retcode)
 {
     fprintf(stderr, "Could not allocate memory\n");
-    exit(1);
+    exit(APR_ENOMEM);
     /* not reached */
     return retcode;
 }
 
-static void set_polled_events(struct connection *c, apr_int16_t new_reqevents)
+static int set_polled_events(struct connection *c, apr_int16_t new_reqevents)
 {
     apr_status_t rv;
 
@@ -596,27 +601,31 @@ static void set_polled_events(struct connection *c, apr_int16_t new_reqevents)
         if (c->pollfd.reqevents != 0) {
             rv = apr_pollset_remove(c->worker->pollset, &c->pollfd);
             if (rv != APR_SUCCESS) {
-                apr_err("apr_pollset_remove()", rv);
+                graceful_strerror("apr_pollset_remove()", rv);
+                return 0;
             }
         }
 
+        c->pollfd.reqevents = new_reqevents;
         if (new_reqevents != 0) {
-            c->pollfd.reqevents = new_reqevents;
             rv = apr_pollset_add(c->worker->pollset, &c->pollfd);
             if (rv != APR_SUCCESS) {
-                apr_err("apr_pollset_add()", rv);
+                graceful_strerror("apr_pollset_add()", rv);
+                return 0;
             }
         }
     }
+    return 1;
 }
 
 static void set_conn_state(struct connection *c, connect_state_e new_state,
-        apr_int16_t events)
+                           apr_int16_t events)
 {
-
     c->state = new_state;
 
-    set_polled_events(c, events);
+    if (!set_polled_events(c, events) && new_state != STATE_UNCONNECTED) {
+        close_connection(c);
+    }
 }
 
 /* --------------------------------------------------------- */
@@ -814,7 +823,6 @@ static void ssl_proceed_handshake(struct connection *c)
 
         ret = SSL_do_handshake(c->ssl);
         ecode = SSL_get_error(c->ssl, ret);
-
         switch (ecode) {
         case SSL_ERROR_NONE:
             if (verbosity >= 2)
@@ -910,7 +918,7 @@ static void ssl_proceed_handshake(struct connection *c)
             /* Unexpected result */
             status = apr_get_netos_error();
             BIO_printf(bio_err, "SSL handshake failed (%d): %s\n", ecode,
-                    apr_psprintf(c->ctx, "%pm", &status));
+                       apr_psprintf(c->ctx, "%pm", &status));
             ERR_print_errors(bio_err);
             abort_connection(c);
             break;
@@ -959,15 +967,27 @@ static void write_request(struct connection * c)
         if (c->ssl) {
             e = SSL_write(c->ssl, request + c->rwrote, l);
             if (e <= 0) {
-                switch (SSL_get_error(c->ssl, e)) {
+                int scode = SSL_get_error(c->ssl, e);
+                switch (scode) {
                 case SSL_ERROR_WANT_READ:
                     set_conn_state(c, STATE_WRITE, APR_POLLIN);
                     break;
+
                 case SSL_ERROR_WANT_WRITE:
                     set_conn_state(c, STATE_WRITE, APR_POLLOUT);
                     break;
+
+                case SSL_ERROR_SYSCALL:
+                    if (c->keptalive) {
+                        /* connection aborted during keepalive:
+                         * let the length check determine whether it's an error
+                         */
+                        shutdown_connection(c);
+                        break;
+                    }
                 default:
-                    BIO_printf(bio_err, "SSL write failed - closing connection\n");
+                    /* some fatal error: */
+                    BIO_printf(bio_err, "SSL write failed (%d) - closing connection\n", scode);
                     ERR_print_errors(bio_err);
                     abort_connection(c);
                     break;
@@ -983,6 +1003,13 @@ static void write_request(struct connection * c)
             if (e != APR_SUCCESS && !l) {
                 if (APR_STATUS_IS_EAGAIN(e)) {
                     set_conn_state(c, STATE_WRITE, APR_POLLOUT);
+                    return;
+                }
+                if (c->keptalive) {
+                    /* connection aborted during keepalive:
+                     * let the length check determine whether it's an error
+                     */
+                    shutdown_connection(c);
                 }
                 else {
                     worker->metrics.epipe++;
@@ -1342,8 +1369,8 @@ static void output_results(void)
             fclose(out);
         }
         if (gnuplot) {
-            FILE *out = fopen(gnuplot, "w");
             char tmstring[APR_CTIME_LEN];
+            FILE *out = fopen(gnuplot, "w");
             if (!out) {
                 perror("Cannot open gnuplot output file");
                 exit(1);
@@ -1363,6 +1390,7 @@ static void output_results(void)
             fclose(out);
         }
     }
+    fflush(stdout);
 }
 
 /* --------------------------------------------------------- */
@@ -1506,6 +1534,7 @@ static void output_html_results(void)
         }
         printf("</table>\n");
     }
+    fflush(stdout);
 }
 
 /* --------------------------------------------------------- */
@@ -1517,17 +1546,58 @@ static void start_connection(struct connection * c)
     struct worker *worker = c->worker;
     apr_status_t rv;
 
-    if (worker_should_stop(worker)) {
+    if (!worker_can_start_connection(worker)) {
         return;
     }
 
-    if (c->ctx) {
-        apr_pool_clear(c->ctx);
-    }
-    else {
+    if (!c->ctx) {
         apr_pool_create(&c->ctx, worker->pool);
         APR_RING_ELEM_INIT(c, delay_list);
         worker->metrics.concurrent++;
+    }
+
+    if ((rv = apr_socket_create(&c->aprsock, worker->destsa->family,
+                                SOCK_STREAM, 0, c->ctx)) != APR_SUCCESS) {
+        graceful_strerror("socket", rv);
+        return;
+    }
+
+    c->state = STATE_UNCONNECTED;
+    c->pollfd.desc.s = c->aprsock;
+    c->pollfd.desc_type = APR_POLL_SOCKET;
+    c->pollfd.reqevents = c->pollfd.rtnevents = 0;
+    c->pollfd.client_data = c;
+
+    if (myhost) {
+        if ((rv = apr_socket_bind(c->aprsock, mysa)) != APR_SUCCESS) {
+            graceful_strerror("bind", rv);
+            close_connection(c);
+            return;
+        }
+    }
+
+    apr_socket_timeout_set(c->aprsock, 0);
+    if ((rv = apr_socket_opt_set(c->aprsock, APR_SO_NONBLOCK, 1))) {
+        graceful_strerror("socket nonblock", rv);
+        close_connection(c);
+        return;
+    }
+
+    if (windowsize != 0) {
+        rv = apr_socket_opt_set(c->aprsock, APR_SO_SNDBUF,
+                                windowsize);
+        if (rv != APR_SUCCESS && rv != APR_ENOTIMPL) {
+            graceful_strerror("socket send buffer", rv);
+            close_connection(c);
+            return;
+        }
+        rv = apr_socket_opt_set(c->aprsock, APR_SO_RCVBUF,
+                                windowsize);
+        if (rv != APR_SUCCESS && rv != APR_ENOTIMPL) {
+            graceful_strerror("socket receive buffer", rv);
+            close_connection(c);
+            return;
+        }
     }
 
     c->read = 0;
@@ -1538,58 +1608,27 @@ static void start_connection(struct connection * c)
     c->gotheader = 0;
     c->rwrite = 0;
     c->keptalive = 0;
-
-    if ((rv = apr_socket_create(&c->aprsock, worker->destsa->family,
-                                SOCK_STREAM, 0, c->ctx)) != APR_SUCCESS) {
-        apr_err("socket", rv);
-    }
-
-    if (myhost) {
-        if ((rv = apr_socket_bind(c->aprsock, mysa)) != APR_SUCCESS) {
-            apr_err("bind", rv);
-        }
-    }
-
-    c->pollfd.desc_type = APR_POLL_SOCKET;
-    c->pollfd.desc.s = c->aprsock;
-    c->pollfd.reqevents = 0;
-    c->pollfd.client_data = c;
-
-    if ((rv = apr_socket_opt_set(c->aprsock, APR_SO_NONBLOCK, 1))) {
-        apr_err("socket nonblock", rv);
-    }
-
-    if (windowsize != 0) {
-        rv = apr_socket_opt_set(c->aprsock, APR_SO_SNDBUF,
-                                windowsize);
-        if (rv != APR_SUCCESS && rv != APR_ENOTIMPL) {
-            apr_err("socket send buffer", rv);
-        }
-        rv = apr_socket_opt_set(c->aprsock, APR_SO_RCVBUF,
-                                windowsize);
-        if (rv != APR_SUCCESS && rv != APR_ENOTIMPL) {
-            apr_err("socket receive buffer", rv);
-        }
-    }
-
-    apr_socket_timeout_set(c->aprsock, 0);
     c->start = lasttime = apr_time_now();
+
 #ifdef USE_SSL
     if (is_ssl) {
         BIO *bio;
         apr_os_sock_t fd;
 
-        if ((c->ssl = SSL_new(ssl_ctx)) == NULL) {
-            BIO_printf(bio_err, "SSL_new failed.\n");
-            ERR_print_errors(bio_err);
-            exit(1);
-        }
         ssl_rand_seed();
         apr_os_sock_get(&fd, c->aprsock);
-        if((bio = BIO_new_socket(fd, BIO_NOCLOSE)) == NULL) {
-            BIO_printf(bio_err, "BIO_new_socket failed.\n");
+
+        if ((c->ssl = SSL_new(ssl_ctx)) == NULL) {
+            graceful_error("SSL_new failed");
             ERR_print_errors(bio_err);
-            exit(1);
+            close_connection(c);
+            return;
+        }
+        if((bio = BIO_new_socket(fd, BIO_NOCLOSE)) == NULL) {
+            graceful_error("BIO_new_socket failed");
+            ERR_print_errors(bio_err);
+            close_connection(c);
+            return;
         }
         BIO_set_nbio(bio, 1);
         SSL_set_bio(c->ssl, bio, bio);
@@ -1616,7 +1655,7 @@ static void start_connection(struct connection * c)
             set_conn_state(c, STATE_CONNECTING, APR_POLLOUT);
         }
         else {
-            retry_connection(c, rv);
+            try_reconnect(c, rv);
         }
         return;
     }
@@ -1633,9 +1672,9 @@ static void start_connection(struct connection * c)
 
 /* --------------------------------------------------------- */
 
-/* shutdown the transport layer */
+/* close the transport layer */
 
-static void shutdown_connection(struct connection *c)
+static void close_connection(struct connection *c)
 {
     set_conn_state(c, STATE_UNCONNECTED, 0);
 #ifdef USE_SSL
@@ -1646,19 +1685,20 @@ static void shutdown_connection(struct connection *c)
     }
 #endif
     apr_socket_close(c->aprsock);
+    apr_pool_clear(c->ctx);
 }
 
 /* --------------------------------------------------------- */
 
 /* retry a connect()ion failure on the next address (if any) */
 
-static void retry_connection(struct connection *c, apr_status_t status)
+static void try_reconnect(struct connection *c, apr_status_t status)
 {
     struct worker *worker = c->worker;
 
     if (worker->metrics.good == 0 && worker->destsa->next) {
         worker->destsa = worker->destsa->next;
-        shutdown_connection(c);
+        close_connection(c);
         start_connection(c);
     }
     else {
@@ -1667,7 +1707,7 @@ static void retry_connection(struct connection *c, apr_status_t status)
             if (worker->metrics.err_conn > 10) {
                 fprintf(stderr,
                         "\nTest aborted after 10 failures\n\n");
-                apr_err("apr_socket_connect()", status);
+                graceful_strerror("apr_socket_connect()", status);
             }
             worker->destsa = destsa;
         }
@@ -1677,16 +1717,16 @@ static void retry_connection(struct connection *c, apr_status_t status)
 
 /* --------------------------------------------------------- */
 
-/* reuse or renew the connection, saving stats */
+/* shutdown or reuse the connection, saving stats */
 
-static void cleanup_connection(struct connection *c, int reuse)
+static void finalize_connection(struct connection *c, int reuse)
 {
     struct worker *worker = c->worker;
     int good = (c->gotheader && c->bread >= c->length);
 
     /* close before measuring, to account for shutdown time */
     if (!reuse || !good) {
-        shutdown_connection(c);
+        close_connection(c);
         reuse = 0;
     }
 
@@ -1735,13 +1775,12 @@ static void cleanup_connection(struct connection *c, int reuse)
                 if (sync) {
 #if APR_HAS_THREADS
                     if (num_workers > 1) {
-                        apr_uint32_t m;
-                        do {
-                            m = apr_atomic_read32(&reqs_count32);
-                        } while (m && apr_atomic_cas32(&reqs_count32, 0, m) != m);
+                        apr_uint32_t m = apr_atomic_xchg32(&reqs_count32, 0);
                         if (m) {
-                            /* races should be quite rare here now */
+                            /* races should be rare here now */
+                            apr_thread_mutex_lock(workers_mutex);
                             reqs_count64 += m;
+                            apr_thread_mutex_unlock(workers_mutex);
                             flush = (m >= n);
                         }
                     }
@@ -1779,9 +1818,12 @@ static void cleanup_connection(struct connection *c, int reuse)
     }
 
     if (!reuse) {
-        start_connection(c); /* nop if worker_should_stop() */
+        start_connection(c); /* nop if !worker_can_start_connection() */
     }
-    else if (!worker_should_stop(worker)) {
+    else if (worker_can_start_connection(worker)) {
+        c->keptalive++;
+        worker->metrics.doneka++;
+
         c->read = 0;
         c->bread = 0;
         c->length = 0;
@@ -1790,12 +1832,10 @@ static void cleanup_connection(struct connection *c, int reuse)
         c->gotheader = 0;
         c->rwrite = 0;
 
-        c->keptalive++;
-        worker->metrics.doneka++;
         write_request(c);
     }
     else {
-        shutdown_connection(c);
+        close_connection(c);
     }
 }
 
@@ -1803,7 +1843,7 @@ static void cleanup_connection(struct connection *c, int reuse)
 
 /* read data from connection */
 
-static void read_connection(struct connection * c)
+static void read_response(struct connection * c)
 {
     struct worker *worker = c->worker;
     apr_size_t r;
@@ -1821,33 +1861,30 @@ read_more:
         status = SSL_read(c->ssl, worker->buffer, r);
         if (status <= 0) {
             int scode = SSL_get_error(c->ssl, status);
-
-            if (scode == SSL_ERROR_WANT_READ) {
+            switch (scode) {
+            case SSL_ERROR_WANT_READ:
                 set_conn_state(c, STATE_READ, APR_POLLIN);
-            }
-            else if (scode == SSL_ERROR_WANT_WRITE) {
+                break;
+
+            case SSL_ERROR_WANT_WRITE:
                 set_conn_state(c, STATE_READ, APR_POLLOUT);
-            }
-            else if (scode == SSL_ERROR_ZERO_RETURN) {
-                /* connection closed cleanly:
-                 * let the length check catch any response errors
-                 */
-                close_connection(c);
-            }
-            else if (scode == SSL_ERROR_SYSCALL
-                     && status == 0
-                     && c->read != 0) {
-                /* connection closed, but in violation of the protocol, after
-                 * some data has already been read; this commonly happens, so
-                 * let the length check catch any response errors
-                 */
-                close_connection(c);
-            }
-            else {
+                break;
+
+            case SSL_ERROR_SYSCALL:
+                if (status == 0 && c->keptalive) {
+            case SSL_ERROR_ZERO_RETURN:
+                    /* connection closed cleanly or aborted during keepalive:
+                     * let the length check determine whether it's an error
+                     */
+                    shutdown_connection(c);
+                    break;
+                }
+            default:
                 /* some fatal error: */
                 BIO_printf(bio_err, "SSL read failed (%d) - closing connection\n", scode);
                 ERR_print_errors(bio_err);
                 abort_connection(c);
+                break;
             }
             return;
         }
@@ -1857,26 +1894,31 @@ read_more:
 #endif
     {
         status = apr_socket_recv(c->aprsock, worker->buffer, &r);
-        if (APR_STATUS_IS_EAGAIN(status))
-            return;
-        else if (r == 0 && APR_STATUS_IS_EOF(status)) {
-            close_connection(c);
+        if (APR_STATUS_IS_EAGAIN(status)) {
+            set_conn_state(c, STATE_READ, APR_POLLIN);
             return;
         }
-        /* catch legitimate fatal apr_socket_recv errors */
-        else if (status != APR_SUCCESS) {
-            worker->metrics.err_recv++;
-            if (recverrok) {
-                if (verbosity >= 1) {
-                    char buf[120];
-                    fprintf(stderr,"%s: %s (%d)\n", "apr_socket_recv",
-                            apr_strerror(status, buf, sizeof buf), status);
-                }
+        if (status != APR_SUCCESS && !r) {
+            if (APR_STATUS_IS_EOF(status) || c->keptalive) {
+                /* connection closed cleanly or aborted during keepalive:
+                 * let the length check determine whether it's an error
+                 */
+                shutdown_connection(c);
             }
             else {
-                apr_err("apr_socket_recv", status);
+                worker->metrics.err_recv++;
+                if (recverrok) {
+                    if (verbosity >= 1) {
+                        char buf[120];
+                        fprintf(stderr,"%s: %s (%d)\n", "apr_socket_recv",
+                                apr_strerror(status, buf, sizeof buf), status);
+                    }
+                }
+                else {
+                    graceful_strerror("apr_socket_recv", status);
+                }
+                abort_connection(c);
             }
-            abort_connection(c);
             return;
         }
     }
@@ -1923,18 +1965,21 @@ read_more:
 
         if (!s) {
             /* read rest next time */
-            if (!space) {
+            if (space) {
+                set_conn_state(c, STATE_READ, APR_POLLIN);
+            }
+            else {
                 /* header is in invalid or too big - close connection */
-                if (worker->metrics.err_response++ > 10) {
+                if (++worker->metrics.err_response > 10) {
                     fprintf(stderr,
                             "\nTest aborted after 10 failures\n\n");
-                    err("Response header too long\n");
+                    graceful_error("Response header too long\n");
                 }
                 abort_connection(c);
             }
             return;
         }
-        else {
+        {
             /* have full header */
             s[l / 2] = '\0';     /* terminate at end of header */
             c->gotheader = 1;
@@ -2016,7 +2061,9 @@ read_more:
                     apr_thread_mutex_lock(workers_mutex);
                     rv = apr_thread_cond_signal(workers_can_start);
                     if (rv != APR_SUCCESS) {
-                        apr_err("apr_thread_cond_wait()", rv);
+                        graceful_strerror("apr_thread_cond_wait()", rv);
+                        close_connection(c);
+                        return;
                     }
                     workers_can_start = NULL; /* one shot */
                     apr_thread_mutex_unlock(workers_mutex);
@@ -2039,12 +2086,7 @@ read_more:
     }
 
     /* read complete, reuse/close depending on keepalive */
-    if (c->keepalive) {
-        reuse_connection(c);
-    }
-    else {
-        close_connection(c);
-    }
+    finalize_connection(c, c->keepalive != 0);
 }
 
 /* --------------------------------------------------------- */
@@ -2055,10 +2097,6 @@ static void start_worker(struct worker *worker);
 #if APR_HAS_THREADS
 static void join_worker(struct worker *worker);
 #endif /* APR_HAS_THREADS */
-
-#ifdef SIGINT
-static void workers_may_exit(int sig);
-#endif /* SIGINT */
 
 #if (APR_HAS_THREADS \
      && (APR_HAVE_PTHREAD_H || defined(SIGPROCMASK_SETS_THREAD_MASK)))
@@ -2075,7 +2113,7 @@ static void init_signals(void)
         apr_status_t rv;
         rv = apr_setup_signal_thread();
         if (rv != APR_SUCCESS) {
-            apr_err("apr_setup_signal_thread()", rv);
+            fatal_strerror("apr_setup_signal_thread()", rv);
         }
     }
 #endif
@@ -2089,22 +2127,20 @@ static void block_signals(int block)
 {
 #ifdef SIGINT
 #if USE_SIGMASK
-    if (num_workers > 1) {
-        sigset_t set;
-        sigemptyset(&set);
-        sigaddset(&set, SIGINT);
+    sigset_t set;
+    sigemptyset(&set);
+    sigaddset(&set, SIGINT);
 #if defined(SIGPROCMASK_SETS_THREAD_MASK)
-        sigprocmask(block ? SIG_BLOCK : SIG_UNBLOCK, &set, NULL);
+    sigprocmask(block ? SIG_BLOCK : SIG_UNBLOCK, &set, NULL);
 #else
-        pthread_sigmask(block ? SIG_BLOCK : SIG_UNBLOCK, &set, NULL);
+    pthread_sigmask(block ? SIG_BLOCK : SIG_UNBLOCK, &set, NULL);
 #endif
-    }
 #endif /* USE_SIGMASK */
 #endif /* SIGINT */
 }
 #endif /* APR_HAS_THREADS */
 
-static void test(void)
+static int test(void)
 {
     apr_status_t rv;
     int i, j;
@@ -2195,7 +2231,7 @@ static void test(void)
             (content_type != NULL) ? content_type : "text/plain", hdrs);
     }
     if (snprintf_res >= sizeof(_request)) {
-        err("Request too long\n");
+        fatal_error("Request too long\n");
     }
 
     if (verbosity >= 2)
@@ -2232,7 +2268,7 @@ static void test(void)
             char buf[120];
             apr_snprintf(buf, sizeof(buf),
                          "apr_sockaddr_info_get() for %s", myhost);
-            apr_err(buf, rv);
+            fatal_strerror(buf, rv);
         }
     }
 
@@ -2243,7 +2279,7 @@ static void test(void)
         char buf[120];
         apr_snprintf(buf, sizeof(buf),
                  "apr_sockaddr_info_get() for %s", connecthost);
-        apr_err(buf, rv);
+        fatal_strerror(buf, rv);
     }
 
     /*
@@ -2280,7 +2316,7 @@ static void test(void)
             rv = apr_pollset_create(&worker->pollset, worker->concurrency,
                                     cntxt, APR_POLLSET_NOCOPY);
         if (rv != APR_SUCCESS) {
-            apr_err("apr_pollset_create failed", rv);
+            fatal_strerror("apr_pollset_create failed", rv);
         }
     }
 
@@ -2289,65 +2325,59 @@ static void test(void)
         rv = apr_thread_mutex_create(&workers_mutex, APR_THREAD_MUTEX_DEFAULT,
                                      cntxt);
         if (rv != APR_SUCCESS) {
-            apr_err("apr_thread_mutex_create()", rv);
+            fatal_strerror("apr_thread_mutex_create()", rv);
         }
         rv = apr_thread_cond_create(&workers_can_start, cntxt);
         if (rv != APR_SUCCESS) {
-            apr_err("apr_thread_cond_create()", rv);
+            fatal_strerror("apr_thread_cond_create()", rv);
         }
     }
 #endif
 
     init_signals();
+    test_started = 1;
 
     /* ok - lets start */
     start = lasttime = apr_time_now();
     stoptime = tlimit ? (start + apr_time_from_sec(tlimit)) : AB_MAX;
 
-    /* let the first worker determine if the connectivity is ok before
-     * starting the others (if any).
-     */
-    start_worker(&workers[0]);
-
 #if APR_HAS_THREADS
     if (num_workers > 1) {
-        /* wait for the signal of the first worker to continue */
+        /* let the first worker determine if the connectivity is ok before
+         * starting the others (if any).
+         */
+        block_signals(1);
+        start_worker(&workers[0]);
+        block_signals(0);
+
+        /* wait for the first worker to tell us to continue */
         apr_thread_mutex_lock(workers_mutex);
         if (workers_can_start) { /* might have been signaled & NULL-ed already */
             rv = apr_thread_cond_wait(workers_can_start, workers_mutex);
             if (rv != APR_SUCCESS) {
-                apr_err("apr_thread_cond_wait()", rv);
+                fatal_strerror("apr_thread_cond_wait()", rv);
             }
         }
         apr_thread_mutex_unlock(workers_mutex);
 
         /* start the others? */
         if (workers[0].succeeded_once) {
+            block_signals(1);
             for (i = 1; i < num_workers; i++) {
                 start_worker(&workers[i]);
             }
+            block_signals(0);
         }
         /* wait what's started only, join_worker() knows */
         for (i = 0; i < num_workers; i++) {
             join_worker(&workers[i]);
         }
     }
+    else
 #endif
+    start_worker(&workers[0]);
 
-    consolidate_metrics();
-
-    if (heartbeatres)
-        fprintf(stderr, "Finished %" APR_INT64_T_FMT " requests%s\n",
-                metrics.done, stoptime ? "" : " (interrupted)");
-    else if (!stoptime)
-        printf("..interrupted\n");
-    else
-        printf("..done\n");
-
-    if (use_html)
-        output_html_results();
-    else
-        output_results();
+    return test_aborted != 0;
 }
 
 static void worker_test(struct worker *worker)
@@ -2390,7 +2420,8 @@ static void worker_test(struct worker *worker)
                                     delay_list))) {
                 continue;
             }
-            apr_err("apr_pollset_poll", rv);
+            graceful_strerror("apr_pollset_poll", rv);
+            return;
         }
 
         for (i = 0, pollfd = pollresults; i < n; i++, pollfd++) {
@@ -2402,6 +2433,14 @@ static void worker_test(struct worker *worker)
             if (c->state == STATE_UNCONNECTED)
                 continue;
 
+#if 0
+            /*
+             * Remove from the pollset while being handled.
+             */
+            if (!set_polled_events(c, 0))
+                continue;
+#endif
+
             rtnev = pollfd->rtnevents;
 
             /*
@@ -2410,7 +2449,7 @@ static void worker_test(struct worker *worker)
              * again.
              *
              * Some systems return APR_POLLERR with APR_POLLHUP.  We need to
-             * call read_connection() for APR_POLLHUP, so check for
+             * call read_response() for APR_POLLHUP, so check for
              * APR_POLLHUP first so that a closed connection isn't treated
              * like an I/O error.  If it is, we never figure out that the
              * connection is done and we loop here endlessly calling
@@ -2428,7 +2467,7 @@ static void worker_test(struct worker *worker)
                     write_request(c);
                     break;
                 case STATE_READ:
-                    read_connection(c);
+                    read_response(c);
                     break;
                 }
 
@@ -2440,7 +2479,7 @@ static void worker_test(struct worker *worker)
                     /* call connect() again to detect errors */
                     rv = apr_socket_connect(c->aprsock, worker->destsa);
                     if (rv != APR_SUCCESS) {
-                        retry_connection(c, rv);
+                        try_reconnect(c, rv);
                         continue;
                     }
 #ifdef USE_SSL
@@ -2462,7 +2501,7 @@ static void worker_test(struct worker *worker)
                         write_request(c);
                         break;
                     case STATE_READ:
-                        read_connection(c);
+                        read_response(c);
                         break;
                     }
 
@@ -2473,7 +2512,7 @@ static void worker_test(struct worker *worker)
 
             if (rtnev & (APR_POLLERR | APR_POLLNVAL)) {
                 if (c->state == STATE_CONNECTING) {
-                    retry_connection(c, APR_ENOPOLL);
+                    try_reconnect(c, APR_ENOPOLL);
                 }
                 else {
                     worker->metrics.err_except++;
@@ -2482,7 +2521,7 @@ static void worker_test(struct worker *worker)
                 continue;
             }
         }
-    } while (!worker_should_exit(worker));
+    } while (!worker_should_stop(worker));
 }
 
 #if APR_HAS_THREADS
@@ -2499,7 +2538,7 @@ static void *APR_THREAD_FUNC worker_thread(apr_thread_t *thd, void *arg)
         apr_thread_mutex_lock(workers_mutex);
         rv = apr_thread_cond_signal(workers_can_start);
         if (rv != APR_SUCCESS) {
-            apr_err("apr_thread_cond_wait()", rv);
+            fatal_strerror("apr_thread_cond_wait()", rv);
         }
         workers_can_start = NULL; /* one shot */
         apr_thread_mutex_unlock(workers_mutex);
@@ -2515,11 +2554,15 @@ static void start_worker(struct worker *worker)
 #if APR_HAS_THREADS
     if (num_workers > 1) {
         apr_status_t rv;
-        block_signals(1);
         rv = apr_thread_create(&worker->thd, NULL, worker_thread, worker, cntxt);
-        block_signals(0);
         if (rv != APR_SUCCESS) {
-            apr_err("apr_thread_create()", rv);
+            if (worker->slot == 0) {
+                fatal_strerror("apr_thread_create()", rv);
+            }
+            else {
+                graceful_strerror("apr_thread_create()", rv);
+            }
+            return;
         }
     }
     else
@@ -2535,36 +2578,33 @@ static void join_worker(struct worker *worker)
         apr_status_t rv, thread_rv;
         rv = apr_thread_join(&thread_rv, thd);
         if (rv != APR_SUCCESS) {
-            apr_err("apr_thread_join()", rv);
+            fatal_strerror("apr_thread_join()", rv);
         }
         worker->thd = NULL;
     }
 }
 #endif /* APR_HAS_THREADS */
 
-#ifdef SIGINT
-static void workers_may_exit(int sig)
+static void workers_may_exit(int unused)
 {
+    (void)unused;
+
+    test_aborted = -1;
     lasttime = apr_time_now();      /* record final time if interrupted */
-    if (num_workers > 1) {
-        stoptime = 0;               /* everyone stop now! */
+    stoptime = 0;                   /* everyone stop now! */
 
 #ifdef APR_POLLSET_WAKEABLE
-        if (pollset_wakeable) {     /* wake up poll()ing workers */
-            int i;
-            for (i = 0; i < num_workers; ++i) {
+    /* wake up poll()ing workers */
+    if (workers && pollset_wakeable) {
+        int i;
+        for (i = 0; i < num_workers; ++i) {
+            if (workers[i].pollset) {
                 apr_pollset_wakeup(workers[i].pollset);
             }
         }
+    }
 #endif
-    }
-    else {
-        consolidate_metrics();
-        output_results();
-        exit(1);
-    }
 }
-#endif /* SIGINT */
 
 /* ------------------------------------------------------- */
 
@@ -2781,6 +2821,35 @@ static apr_status_t open_postfile(const char *pfile)
     return APR_SUCCESS;
 }
 
+static void output_results_at_exit(void)
+{
+    if (test_started) {
+        consolidate_metrics();
+
+        if (test_aborted <= 0) {
+            if (heartbeatres)
+                fprintf(stderr, "Finished %" APR_INT64_T_FMT " requests%s\n",
+                        metrics.done, stoptime ? "" : " (interrupted)");
+            else if (!stoptime)
+                printf("..interrupted\n");
+            else
+                printf("..done\n");
+        }
+        else if (metrics.done) {
+            printf("Total of %" APR_INT64_T_FMT " requests completed\n" ,
+                   metrics.done);
+        }
+
+        if (use_html)
+            output_html_results();
+        else
+            output_results();
+    }
+
+    apr_pool_destroy(cntxt);
+    apr_terminate();
+}
+
 /* ------------------------------------------------------- */
 
 /* sort out command-line args and call test */
@@ -2811,9 +2880,11 @@ int main(int argc, const char * const argv[])
     hdrs = "";
 
     apr_app_initialize(&argc, &argv, NULL);
-    atexit(apr_terminate);
-    apr_pool_create(&cntxt, NULL);
+    if (apr_pool_create(&cntxt, NULL) != APR_SUCCESS) {
+        abort_on_oom(APR_ENOMEM);
+    }
     apr_pool_abort_set(abort_on_oom, cntxt);
+    atexit(output_results_at_exit);
 
 #ifdef NOT_ASCII
     status = apr_xlate_open(&to_ascii, "ISO-8859-1", APR_DEFAULT_CHARSET, cntxt);
@@ -2848,14 +2919,14 @@ int main(int argc, const char * const argv[])
             case 'n':
                 requests = atoi(opt_arg);
                 if (requests <= 0) {
-                    err("Invalid number of requests\n");
+                    fatal_error("Invalid number of requests\n");
                 }
                 break;
 #if APR_HAS_THREADS
             case 'W':
                 num_workers = atoi(opt_arg);
                 if (num_workers < 0) {
-                    err("Invalid number of workers\n");
+                    fatal_error("Invalid number of workers\n");
                 }
                 break;
 #endif
@@ -2868,7 +2939,7 @@ int main(int argc, const char * const argv[])
             case 'c':
                 concurrency = atoi(opt_arg);
                 if (concurrency < 0) {
-                    err("Invalid negative concurrency\n");
+                    fatal_error("Invalid negative concurrency\n");
                 }
                 break;
             case 'b':
@@ -2876,7 +2947,7 @@ int main(int argc, const char * const argv[])
                 break;
             case 'i':
                 if (method != NO_METH)
-                    err("Cannot mix HEAD with other methods\n");
+                    fatal_error("Cannot mix HEAD with other methods\n");
                 method = HEAD;
                 break;
             case 'g':
@@ -2899,7 +2970,7 @@ int main(int argc, const char * const argv[])
                 break;
             case 'p':
                 if (method != NO_METH)
-                    err("Cannot mix POST with other methods\n");
+                    fatal_error("Cannot mix POST with other methods\n");
                 if (open_postfile(opt_arg) != APR_SUCCESS) {
                     exit(1);
                 }
@@ -2908,7 +2979,7 @@ int main(int argc, const char * const argv[])
                 break;
             case 'u':
                 if (method != NO_METH)
-                    err("Cannot mix PUT with other methods\n");
+                    fatal_error("Cannot mix PUT with other methods\n");
                 if (open_postfile(opt_arg) != APR_SUCCESS) {
                     exit(1);
                 }
@@ -2927,7 +2998,7 @@ int main(int argc, const char * const argv[])
             case 't':
                 tlimit = atoi(opt_arg);
                 if (tlimit < 0)
-                    err("Invalid negative timelimit\n");
+                    fatal_error("Invalid negative timelimit\n");
                 requests = MAX_REQUESTS;    /* need to size data array on
                                              * something */
                 break;
@@ -2945,7 +3016,7 @@ int main(int argc, const char * const argv[])
                 while (apr_isspace(*opt_arg))
                     opt_arg++;
                 if (apr_base64_encode_len(strlen(opt_arg)) > sizeof(tmp)) {
-                    err("Authentication credentials too long\n");
+                    fatal_error("Authentication credentials too long\n");
                 }
                 apr_base64_encode(tmp, opt_arg, strlen(opt_arg));
 
@@ -2959,7 +3030,7 @@ int main(int argc, const char * const argv[])
                 while (apr_isspace(*opt_arg))
                 opt_arg++;
                 if (apr_base64_encode_len(strlen(opt_arg)) > sizeof(tmp)) {
-                    err("Proxy credentials too long\n");
+                    fatal_error("Proxy credentials too long\n");
                 }
                 apr_base64_encode(tmp, opt_arg, strlen(opt_arg));
 
@@ -3124,7 +3195,7 @@ int main(int argc, const char * const argv[])
 #ifdef _SC_NPROCESSORS_ONLN
         num_workers = sysconf(_SC_NPROCESSORS_ONLN);
 #else
-        err("-W0 not implemented on this platform\n");
+        fatal_error("-W0 not implemented on this platform\n");
 #endif
     }
     if (num_workers > 1) {
@@ -3198,7 +3269,7 @@ int main(int argc, const char * const argv[])
     if (!(ssl_ctx = SSL_CTX_new(meth))) {
         BIO_printf(bio_err, "Could not initialize SSL Context.\n");
         ERR_print_errors(bio_err);
-        exit(1);
+        fatal_error("SSL_CTX_new failed");
     }
     SSL_CTX_set_options(ssl_ctx, SSL_OP_ALL);
 #if OPENSSL_VERSION_NUMBER >= 0x10100000L
@@ -3222,7 +3293,7 @@ int main(int argc, const char * const argv[])
             BIO_printf(bio_err, "error setting ciphersuite list [%s]\n",
                        ssl_cipher);
             ERR_print_errors(bio_err);
-            exit(1);
+            fatal_error("SSL_CTX_set_cipher_list failed");
         }
     }
 
@@ -3234,18 +3305,19 @@ int main(int argc, const char * const argv[])
             BIO_printf(bio_err, "unable to get certificate from '%s'\n",
                     ssl_cert);
             ERR_print_errors(bio_err);
-            exit(1);
+            fatal_error("SSL_CTX_use_certificate_chain_file failed");
         }
         if (SSL_CTX_use_PrivateKey_file(ssl_ctx, ssl_cert, SSL_FILETYPE_PEM) <= 0) {
             BIO_printf(bio_err, "unable to get private key from '%s'\n",
                 ssl_cert);
             ERR_print_errors(bio_err);
-            exit(1);
+            fatal_error("SSL_CTX_use_PrivateKey_file failed");
         }
         if (!SSL_CTX_check_private_key(ssl_ctx)) {
             BIO_printf(bio_err,
                        "private key does not match the certificate public key in %s\n", ssl_cert);
-            exit(1);
+            ERR_print_errors(bio_err);
+            fatal_error("SSL_CTX_check_private_key failed");
         }
     }
 
@@ -3254,9 +3326,8 @@ int main(int argc, const char * const argv[])
     apr_signal(SIGPIPE, SIG_IGN);       /* Ignore writes to connections that
                                          * have been closed at the other end. */
 #endif
-    copyright();
-    test();
-    apr_pool_destroy(cntxt);
 
-    return 0;
+    copyright();
+
+    return test();
 }
