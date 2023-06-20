@@ -388,6 +388,7 @@ const char *method_str[] = {"bug", "GET", "HEAD", "PUT", "POST", ""};
 int send_body = 0;      /* non-zero if sending body with request */
 int requests = 0;       /* Number of requests to make */
 int num_workers = 1;    /* Number of worker threads to use */
+int no_banner = 0;      /* Do not show copyright banner */
 int heartbeatres = 100; /* How often do we say we're alive */
 int concurrency = 1;    /* Number of multiple requests to make */
 int percentile = 1;     /* Show percentile served */
@@ -2710,6 +2711,7 @@ static void usage(const char *progname)
     fprintf(stderr, "    -d              Do not show percentiles served table.\n");
     fprintf(stderr, "    -S              Do not show confidence estimators and warnings.\n");
     fprintf(stderr, "    -q              Do not show progress when doing more than 150 requests\n");
+    fprintf(stderr, "    -Q              Do not show copyright banner\n");
     fprintf(stderr, "    -l              Accept variable document length (use this for dynamic pages)\n");
     fprintf(stderr, "    -g filename     Output collected data to gnuplot format file.\n");
     fprintf(stderr, "    -e filename     Output CSV file with percentages served\n");
@@ -2945,7 +2947,7 @@ int main(int argc, const char * const argv[])
     myhost = NULL; /* 0.0.0.0 or :: */
 
     apr_getopt_init(&opt, cntxt, argc, argv);
-    while ((status = apr_getopt(opt, "n:c:t:s:b:T:p:u:v:lrkVhwiIx:y:z:C:H:P:A:g:X:de:SqB:m:R:"
+    while ((status = apr_getopt(opt, "n:c:t:s:b:T:p:u:v:lrkVhwiIx:y:z:C:H:P:A:g:X:de:SqQB:m:R:"
 #if APR_HAS_THREADS
             "W:"
 #endif
@@ -2973,6 +2975,9 @@ int main(int argc, const char * const argv[])
                 break;
             case 'q':
                 heartbeatres = 0;
+                break;
+            case 'Q':
+                no_banner = 1;
                 break;
             case 'c':
                 concurrency = atoi(opt_arg);
@@ -3368,7 +3373,9 @@ int main(int argc, const char * const argv[])
                                          * have been closed at the other end. */
 #endif
 
-    copyright();
+    if (!no_banner) {
+        copyright();
+    }
 
     return test();
 }
