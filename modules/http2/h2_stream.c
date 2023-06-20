@@ -1573,6 +1573,8 @@ static apr_status_t stream_do_response(h2_stream *stream)
          * denies it, submit resources to push */
         const char *s = apr_table_get(resp->notes, H2_PUSH_MODE_NOTE);
         if (!s || strcmp(s, "0")) {
+            ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, c1,
+                          H2_STRM_MSG(stream, "submit pushes, note=%s"), s);
             h2_stream_submit_pushes(stream, resp);
         }
     }

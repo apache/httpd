@@ -272,8 +272,8 @@ static void beam_shutdown(h2_bucket_beam *beam, apr_shutdown_how_e how)
 
     /* shutdown sender (or both)? */
     if (how != APR_SHUTDOWN_READ) {
-        h2_blist_cleanup(&beam->buckets_to_send);
         purge_consumed_buckets(beam);
+        h2_blist_cleanup(&beam->buckets_to_send);
     }
 }
 
@@ -585,6 +585,9 @@ cleanup:
         rv = APR_ECONNABORTED;
     }
     H2_BEAM_LOG(beam, from, APLOG_TRACE2, rv, "end send", sender_bb);
+    if(rv != APR_SUCCESS && !APR_STATUS_IS_EAGAIN(rv) && sender_bb != NULL) {
+        apr_brigade_cleanup(sender_bb);
+    }
     apr_thread_mutex_unlock(beam->lock);
     return rv;
 }

@@ -68,7 +68,8 @@ typedef enum {
 
 typedef struct h2_proxy_session h2_proxy_session;
 typedef void h2_proxy_request_done(h2_proxy_session *s, request_rec *r,
-                                   apr_status_t status, int touched);
+                                   apr_status_t status, int touched,
+                                   int error_code);
 
 struct h2_proxy_session {
     const char *id;
@@ -129,5 +130,7 @@ void h2_proxy_session_cancel_all(h2_proxy_session *s);
 void h2_proxy_session_cleanup(h2_proxy_session *s, h2_proxy_request_done *done);
 
 #define H2_PROXY_REQ_URL_NOTE   "h2-proxy-req-url"
+
+int h2_proxy_session_is_reusable(h2_proxy_session *s);
 
 #endif /* h2_proxy_session_h */
