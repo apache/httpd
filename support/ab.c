@@ -1810,7 +1810,8 @@ static void finalize_connection(struct connection *c, int reuse)
             worker->metrics.good++;
         }
         else {
-            if (!nolength && c->bread != worker->metrics.doclen) {
+            if (c->state >= STATE_READ
+                && !nolength && c->bread != worker->metrics.doclen) {
                 worker->metrics.err_length++;
             }
             worker->metrics.bad++;
