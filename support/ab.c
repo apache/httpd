@@ -1091,6 +1091,7 @@ static void consolidate_metrics(void)
         metrics.err_recv += worker->metrics.err_recv;
         metrics.err_except += worker->metrics.err_except;
         metrics.err_response += worker->metrics.err_response;
+        metrics.aborted_ka += worker->metrics.aborted_ka;
 
         metrics.concurrent += worker->metrics.concurrent;
         metrics.totalread += worker->metrics.totalread;
