@@ -902,7 +902,8 @@ apr_status_t h2_session_create(h2_session **psession, conn_rec *c, request_rec *
     
     session->max_stream_count = h2_config_sgeti(s, H2_CONF_MAX_STREAMS);
     session->max_stream_mem = h2_config_sgeti(s, H2_CONF_STREAM_MAX_MEM);
-    
+    session->max_data_frame_len = h2_config_sgeti(s, H2_CONF_MAX_DATA_FRAME_LEN);
+
     session->out_c1_blocked = h2_iq_create(session->pool, (int)session->max_stream_count);
     session->ready_to_process = h2_iq_create(session->pool, (int)session->max_stream_count);
 
@@ -983,13 +984,15 @@ apr_status_t h2_session_create(h2_session **psession, conn_rec *c, request_rec *
                       H2_SSSN_LOG(APLOGNO(03200), session, 
                                   "created, max_streams=%d, stream_mem=%d, "
                                   "workers_limit=%d, workers_max=%d, "
-                                  "push_diary(type=%d,N=%d)"),
+                                  "push_diary(type=%d,N=%d), "
+                                  "max_data_frame_len=%d"),
                       (int)session->max_stream_count, 
                       (int)session->max_stream_mem,
                       session->mplx->processing_limit,
                       session->mplx->processing_max,
                       session->push_diary->dtype, 
-                      (int)session->push_diary->N);
+                      (int)session->push_diary->N,
+                      (int)session->max_data_frame_len);
     }
     
     apr_pool_pre_cleanup_register(pool, c, session_pool_cleanup);

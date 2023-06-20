@@ -103,7 +103,8 @@ typedef struct h2_session {
     
     apr_size_t max_stream_count;    /* max number of open streams */
     apr_size_t max_stream_mem;      /* max buffer memory for a single stream */
-    
+    apr_size_t max_data_frame_len;  /* max amount of bytes for a single DATA frame */
+
     apr_size_t idle_frames;         /* number of rcvd frames that kept session in idle state */
     apr_interval_time_t idle_delay; /* Time we delay processing rcvd frames in idle state */
     

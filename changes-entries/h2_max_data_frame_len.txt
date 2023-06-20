@@ -1,0 +1,7 @@
+  *) mod_http2: new directive 'H2MaxDataFrameLen n' to limit the maximum
+     amount of response body bytes put into a single HTTP/2 DATA frame.
+     Setting this to 0 places no limit (but the max size allowed by the
+     protocol is observed).
+     The module, by default, tries to use the maximum size possible, which is
+     somewhat around 16KB. This sets the maximum. When less response data is
+     available, smaller frames will be sent.

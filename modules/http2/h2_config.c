@@ -75,6 +75,7 @@ typedef struct h2_config {
     int padding_always;
     int output_buffered;
     apr_interval_time_t stream_timeout;/* beam timeout */
+    int max_data_frame_len;          /* max # bytes in a single h2 DATA frame */
 } h2_config;
 
 typedef struct h2_dir_config {
@@ -110,6 +111,7 @@ static h2_config defconf = {
     1,                      /* padding always */
     1,                      /* stream output buffered */
     -1,                     /* beam timeout */
+    0,                      /* max DATA frame len, 0 == no extra limit */
 };
 
 static h2_dir_config defdconf = {
@@ -153,6 +155,7 @@ void *h2_config_create_svr(apr_pool_t *pool, server_rec *s)
     conf->padding_always       = DEF_VAL;
     conf->output_buffered      = DEF_VAL;
     conf->stream_timeout       = DEF_VAL;
+    conf->max_data_frame_len   = DEF_VAL;
     return conf;
 }
 
@@ -195,6 +198,7 @@ static void *h2_config_merge(apr_pool_t *pool, void *basev, void *addv)
     n->padding_bits         = H2_CONFIG_GET(add, base, padding_bits);
     n->padding_always       = H2_CONFIG_GET(add, base, padding_always);
     n->stream_timeout       = H2_CONFIG_GET(add, base, stream_timeout);
+    n->max_data_frame_len   = H2_CONFIG_GET(add, base, max_data_frame_len);
     return n;
 }
 
@@ -278,6 +282,8 @@ static apr_int64_t h2_srv_config_geti64(const h2_config *conf, h2_config_var_t v
             return H2_CONFIG_GET(conf, &defconf, output_buffered);
         case H2_CONF_STREAM_TIMEOUT:
             return H2_CONFIG_GET(conf, &defconf, stream_timeout);
+        case H2_CONF_MAX_DATA_FRAME_LEN:
+            return H2_CONFIG_GET(conf, &defconf, max_data_frame_len);
         default:
             return DEF_VAL;
     }
@@ -336,6 +342,9 @@ static void h2_srv_config_seti(h2_config *conf, h2_config_var_t var, int val)
             break;
         case H2_CONF_OUTPUT_BUFFER:
             H2_CONFIG_SET(conf, output_buffered, val);
+            break;
+        case H2_CONF_MAX_DATA_FRAME_LEN:
+            H2_CONFIG_SET(conf, max_data_frame_len, val);
             break;
         default:
             break;
@@ -580,6 +589,17 @@ static const char *h2_conf_set_stream_max_mem_size(cmd_parms *cmd,
         return "value must be >= 1024";
     }
     CONFIG_CMD_SET(cmd, dirconf, H2_CONF_STREAM_MAX_MEM, val);
+    return NULL;
+}
+
+static const char *h2_conf_set_max_data_frame_len(cmd_parms *cmd,
+                                                  void *dirconf, const char *value)
+{
+    int val = (int)apr_atoi64(value);
+    if (val < 0) {
+        return "value must be 0 or larger";
+    }
+    CONFIG_CMD_SET(cmd, dirconf, H2_CONF_MAX_DATA_FRAME_LEN, val);
     return NULL;
 }
 
@@ -937,6 +957,8 @@ const command_rec h2_cmds[] = {
                   RSRC_CONF, "set stream output buffer on/off"),
     AP_INIT_TAKE1("H2StreamTimeout", h2_conf_set_stream_timeout, NULL,
                   RSRC_CONF, "set stream timeout"),
+    AP_INIT_TAKE1("H2MaxDataFrameLen", h2_conf_set_max_data_frame_len, NULL,
+                  RSRC_CONF, "maximum number of bytes in a single HTTP/2 DATA frame"),
     AP_END_CMD
 };
 

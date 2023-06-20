@@ -32,8 +32,6 @@ class TestFrameLengths:
         99, 1024, 8192
     ])
     def test_h2_107_01(self, env, data_frame_len):
-        if not env.httpd_is_at_least('2.5.0'):
-            pytest.skip(f'needs r1907696+r1907697 from trunk')
         conf = H2Conf(env, extras={
             f'cgi.{env.http_tld}': [
                 f'H2MaxDataFrameLen {data_frame_len}',
