@@ -254,8 +254,8 @@ typedef STACK_OF(X509) X509_STACK_TYPE;
 #define AB_MAX LLONG_MAX
 #endif
 
-/* maximum number of requests on a time limited test */
-#define MAX_REQUESTS (INT_MAX > 50000 ? 50000 : INT_MAX)
+/* default number of requests on a time limited test */
+#define TIMED_REQUESTS (INT_MAX > 50000 ? 50000 : INT_MAX)
 
 #define ROUND_UP(x, y) ((((x) + (y) - 1) / (y)) * (y))
 
@@ -386,7 +386,7 @@ int recverrok = 0;      /* ok to proceed after socket receive errors */
 enum {NO_METH = 0, GET, HEAD, PUT, POST, CUSTOM_METHOD} method = NO_METH;
 const char *method_str[] = {"bug", "GET", "HEAD", "PUT", "POST", ""};
 int send_body = 0;      /* non-zero if sending body with request */
-int requests = 1;       /* Number of requests to make */
+int requests = 0;       /* Number of requests to make */
 int num_workers = 1;    /* Number of worker threads to use */
 int heartbeatres = 100; /* How often do we say we're alive */
 int concurrency = 1;    /* Number of multiple requests to make */
@@ -394,6 +394,7 @@ int percentile = 1;     /* Show percentile served */
 int nolength = 0;       /* Accept variable document length */
 int confidence = 1;     /* Show confidence estimator and warnings */
 int tlimit = 0;         /* time limit in secs */
+int rlimited = 0;       /* whether there is a requests limit */
 int keepalive = 0;      /* try and do keepalive connections */
 int windowsize = 0;     /* we use the OS default window size */
 char servername[1024];  /* name that server reports */
@@ -478,12 +479,12 @@ static apr_thread_cond_t *workers_can_start;
 static APR_INLINE int worker_should_stop(struct worker *worker)
 {
     return (lasttime >= stoptime
-            || (!tlimit && worker->metrics.done >= worker->requests));
+            || (rlimited && worker->metrics.done >= worker->requests));
 }
 static APR_INLINE int worker_can_start_connection(struct worker *worker)
 {
     return !(worker_should_stop(worker)
-             || (!tlimit && worker->started >= worker->requests));
+             || (rlimited && worker->started >= worker->requests));
 }
 
 static void workers_may_exit(int);
@@ -1075,7 +1076,7 @@ static int compwait(struct data * a, struct data * b)
 
 static void consolidate_metrics(void)
 {
-    int i;
+    int i, j;
 
     for (i = 0; i < num_workers; i++) {
         struct worker *worker = &workers[i];
@@ -1112,6 +1113,21 @@ static void consolidate_metrics(void)
                         sizeof(metrics.ssl_tmp_key));
         }
 #endif
+
+        if (worker->metrics.done > worker->requests) {
+            /* Mean of the cumulative stats accross the window */
+            int n = (worker->metrics.done + worker->requests - 1) / worker->requests;
+            int m = (worker->metrics.done % worker->requests);
+            for (j = 0; j < worker->requests; j++) {
+                struct data *s = &worker->stats[j];
+                if (j == m) {
+                    n--;
+                }
+                s->waittime /= n;
+                s->ctime /= n;
+                s->time /= n;
+            }
+        }
     }
 }
 
@@ -1152,6 +1168,7 @@ static void output_results(void)
     printf("Concurrency achieved:   %d\n", metrics.concurrent);
     printf("Rampup delay:           %" APR_TIME_T_FMT " [ms]\n", apr_time_as_msec(ramp));
     printf("Time taken for tests:   %.3f seconds\n", timetaken);
+    printf("Number of requests:     %d%s\n", requests, rlimited ? "" : " (window)");
     printf("Complete requests:      %" APR_INT64_T_FMT "\n", metrics.done);
     printf("Failed requests:        %" APR_INT64_T_FMT "\n", metrics.bad);
     if (metrics.bad)
@@ -1750,10 +1767,13 @@ static void finalize_connection(struct connection *c, int reuse)
             apr_time_t tnow = lasttime = c->end = apr_time_now();
             struct data *s = &worker->stats[worker->metrics.done++ % worker->requests];
 
-            s->starttime = c->start;
-            s->time      = ap_max(0, c->end - c->start);
-            s->ctime     = ap_max(0, c->connect - c->start);
-            s->waittime  = ap_max(0, c->beginread - c->endwrite);
+            /* Cumulative for when worker->metrics.done > worker->requests (tlimit),
+             * consolidate_metrics() will do the mean.
+             */
+            s->starttime = c->start; /* use last.. */
+            s->time     += ap_max(0, c->end - c->start);
+            s->ctime    += ap_max(0, c->connect - c->start);
+            s->waittime += ap_max(0, c->beginread - c->endwrite);
 
             if (heartbeatres) {
                 static apr_int64_t reqs_count64;
@@ -3007,8 +3027,6 @@ int main(int argc, const char * const argv[])
                 tlimit = atoi(opt_arg);
                 if (tlimit < 0)
                     fatal_error("Invalid negative timelimit\n");
-                requests = MAX_REQUESTS;    /* need to size data array on
-                                             * something */
                 break;
             case 'T':
                 content_type = apr_pstrdup(cntxt, opt_arg);
@@ -3196,6 +3214,11 @@ int main(int argc, const char * const argv[])
     if (parse_url(apr_pstrdup(cntxt, opt->argv[opt->ind++]))) {
         fprintf(stderr, "%s: invalid URL\n", argv[0]);
         usage(argv[0]);
+    }
+
+    rlimited = !tlimit || requests > 0;
+    if (requests == 0) {
+        requests = tlimit ? TIMED_REQUESTS : 1;
     }
 
 #if APR_HAS_THREADS
