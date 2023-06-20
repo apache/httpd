@@ -4900,8 +4900,8 @@ PROXY_DECLARE(apr_status_t) ap_proxy_tunnel_create(proxy_tunnel_rec **ptunnel,
     tunnel->client->pfd = &APR_ARRAY_PUSH(tunnel->pfds, apr_pollfd_t);
     tunnel->client->pfd->p = r->pool;
     tunnel->client->pfd->desc_type = APR_NO_DESC;
-    rv = ap_get_conn_in_pollfd(tunnel->client->c,
-                               tunnel->client->pfd, &client_timeout);
+    rv = ap_get_pollfd_from_conn(tunnel->client->c,
+                                 tunnel->client->pfd, &client_timeout);
     if (rv != APR_SUCCESS) {
         return rv;
     }
@@ -5085,21 +5085,23 @@ static int proxy_tunnel_transfer(proxy_tunnel_rec *tunnel,
             return HTTP_INTERNAL_SERVER_ERROR;
         }
 
+        del_pollset(tunnel->pollset, in->pfd, APR_POLLIN);
         if (out->pfd->desc_type == APR_POLL_SOCKET) {
             /* if the output is a SOCKET, we can stop polling the input
              * until the output signals POLLOUT again. */
-            del_pollset(tunnel->pollset, in->pfd, APR_POLLIN);
             add_pollset(tunnel->pollset, out->pfd, APR_POLLOUT);
         }
         else {
-            /* Unable to use POLLOUT in this direction, out is not a socket */
-            if (in->down_in) {
-                del_pollset(tunnel->pollset, in->pfd, APR_POLLIN);
-                ap_log_rerror(APLOG_MARK, APLOG_TRACE3, 0, tunnel->r,
-                              "proxy: %s: %s write shutdown",
-                              tunnel->scheme, out->name);
-                out->down_out = 1;
-            }
+            /* We can't use POLLOUT in this direction for the only
+             * APR_POLL_FILE case we have so far (mod_h2's "signal" pipe),
+             * we assume that the client's ouput filters chain will block/flush
+             * if necessary (i.e. no pending data), hence that the origin
+             * is EOF when reaching here. This direction is over. */
+            ap_assert(in->down_in && APR_STATUS_IS_EOF(rv));
+            ap_log_rerror(APLOG_MARK, APLOG_TRACE3, 0, tunnel->r,
+                          "proxy: %s: %s write shutdown",
+                          tunnel->scheme, out->name);
+            out->down_out = 1;
         }
     }
 

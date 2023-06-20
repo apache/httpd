@@ -116,6 +116,8 @@ apr_status_t h2_c2_filter_request_in(ap_filter_t *f,
         if (req->http_status == H2_HTTP_STATUS_UNSET &&
             req->protocol && !strcmp("websocket", req->protocol)) {
             req = h2_ws_rewrite_request(req, f->c, conn_ctx->beam_in == NULL);
+            if (!req)
+                return APR_EGENERAL;
         }
 
         if (req->http_status != H2_HTTP_STATUS_UNSET) {
@@ -194,7 +196,7 @@ static int uniq_field_values(void *d, const char *key, const char *val)
          */
         for (i = 0, strpp = (char **) values->elts; i < values->nelts;
              ++i, ++strpp) {
-            if (*strpp && apr_strnatcasecmp(*strpp, start) == 0) {
+            if (*strpp && ap_cstr_casecmp(*strpp, start) == 0) {
                 break;
             }
         }
@@ -302,7 +304,7 @@ static h2_headers *create_response(request_rec *r)
 
         while (field && (token = ap_get_list_item(r->pool, &field)) != NULL) {
             for (i = 0; i < r->content_languages->nelts; ++i) {
-                if (!apr_strnatcasecmp(token, languages[i]))
+                if (!ap_cstr_casecmp(token, languages[i]))
                     break;
             }
             if (i == r->content_languages->nelts) {

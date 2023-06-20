@@ -78,11 +78,12 @@ const h2_request *h2_ws_rewrite_request(const h2_request *req,
     unsigned char key_raw[16];
     const char *key_base64, *accept_base64;
     struct ws_filter_ctx *ws_ctx;
+    apr_status_t rv;
 
     if (!conn_ctx || !req->protocol || strcmp("websocket", req->protocol))
         return req;
 
-    if (apr_strnatcasecmp("CONNECT", req->method)) {
+    if (ap_cstr_casecmp("CONNECT", req->method)) {
         ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, c2,
                       "h2_c2(%s-%d): websocket request with method %s",
                       conn_ctx->id, conn_ctx->stream_id, req->method);
@@ -111,7 +112,12 @@ const h2_request *h2_ws_rewrite_request(const h2_request *req,
     wsreq->protocol = NULL;
     apr_table_set(wsreq->headers, "Upgrade", "websocket");
     /* add Sec-WebSocket-Key header */
-    ap_random_insecure_bytes(key_raw, sizeof(key_raw));
+    rv = apr_generate_random_bytes(key_raw, sizeof(key_raw));
+    if (rv != APR_SUCCESS) {
+        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, NULL, APLOGNO()
+                     "error generating secret");
+        return NULL;
+    }
     key_base64 = apr_pencode_base64_binary(c2->pool, key_raw, sizeof(key_raw),
                                            APR_ENCODE_NONE, NULL);
     apr_table_set(wsreq->headers, "Sec-WebSocket-Key", key_base64);
@@ -204,7 +210,7 @@ static void ws_handle_resp(conn_rec *c2, h2_conn_ctx_t *conn_ctx,
     ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, c2,
                   "h2_c2(%s-%d): H2_C2_WS_OUT inspecting response %d",
                   conn_ctx->id, conn_ctx->stream_id, resp->status);
-    if (resp->status == 101) {
+    if (resp->status == HTTP_SWITCHING_PROTOCOLS) {
         /* The resource agreed to switch protocol. But this is only valid
          * if it send back the correct Sec-WebSocket-Accept header value */
         const char *hd = apr_table_get(resp->headers, "Sec-WebSocket-Accept");

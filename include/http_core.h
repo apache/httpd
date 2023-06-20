@@ -31,6 +31,7 @@
 #include "apr_optional.h"
 #include "util_filter.h"
 #include "ap_expr.h"
+#include "apr_poll.h"
 #include "apr_tables.h"
 
 #include "http_config.h"
@@ -1109,9 +1110,11 @@ AP_DECLARE(int) ap_state_query(int query_code);
  */
 AP_CORE_DECLARE(conn_rec *) ap_create_slave_connection(conn_rec *c);
 
-struct apr_pollfd_t;
-
-AP_DECLARE_HOOK(apr_status_t, get_conn_in_pollfd,
+/** Get a apr_pollfd_t populated with descriptor and descriptor type
+ * and the timeout to use for it.
+ * @return APR_ENOTIMPL if not supported for a connection.
+ */
+AP_DECLARE_HOOK(apr_status_t, get_pollfd_from_conn,
                 (conn_rec *c, struct apr_pollfd_t *pfd,
                  apr_interval_time_t *ptimeout))
 
@@ -1128,7 +1131,7 @@ AP_DECLARE_HOOK(apr_status_t, get_conn_in_pollfd,
  * @param ptimeout  != NULL to retrieve the timeout in effect
  * @return ARP_SUCCESS when the information was assigned.
  */
-AP_CORE_DECLARE(apr_status_t) ap_get_conn_in_pollfd(conn_rec *c,
+AP_CORE_DECLARE(apr_status_t) ap_get_pollfd_from_conn(conn_rec *c,
                                       struct apr_pollfd_t *pfd,
                                       apr_interval_time_t *ptimeout);
 

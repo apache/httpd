@@ -718,7 +718,7 @@
  * 20211221.13 (2.5.1-dev) Add hook token_checker to check for authorization other
  *                         than username / password. Add autht_provider structure.
  * 20211221.14 (2.5.1-dev) Add request_rec->final_resp_passed bit
- * 20211221.15 (2.5.1-dev) Add ap_get_conn_in_pollfd()
+ * 20211221.15 (2.5.1-dev) Add ap_get_pollfd_from_conn()
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503235UL /* "AP25" */

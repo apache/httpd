@@ -362,7 +362,7 @@ request_rec *h2_create_request_rec(const h2_request *req, conn_rec *c,
                                    int no_body)
 {
     int access_status = HTTP_OK;
-    int is_connect = !apr_strnatcasecmp("CONNECT", req->method);
+    int is_connect = !ap_cstr_casecmp("CONNECT", req->method);
 
 #if AP_MODULE_MAGIC_AT_LEAST(20120211, 106)
     request_rec *r = ap_create_request(c);
