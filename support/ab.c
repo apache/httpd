@@ -334,6 +334,7 @@ struct metrics {
     int err_recv;               /* requests failed due to broken read */
     int err_except;             /* requests failed due to exception */
     int err_response;           /* requests with invalid or non-200 response */
+    int aborted_ka;             /* requests aborted during keepalive (no data) */
     int concurrent;             /* Number of multiple requests actually made */
 #ifdef USE_SSL
     char ssl_info[128];
@@ -1159,8 +1160,12 @@ static void output_results(void)
         printf("Write errors:           %d\n", metrics.epipe);
     if (metrics.err_response)
         printf("Non-2xx responses:      %d\n", metrics.err_response);
-    if (keepalive)
+    if (keepalive) {
         printf("Keep-Alive requests:    %" APR_INT64_T_FMT "\n", metrics.doneka);
+        if (metrics.aborted_ka) {
+            printf("Keep-Alive aborts:      %d\n", metrics.aborted_ka);
+        }
+    }
     printf("Total transferred:      %" APR_INT64_T_FMT " bytes\n", metrics.totalread);
     if (send_body)
         printf("Total body sent:        %" APR_INT64_T_FMT "\n", metrics.totalposted);
@@ -1736,6 +1741,7 @@ static void finalize_connection(struct connection *c, int reuse)
          * as per RFC7230 6.3.1, revert previous accounting (not an error).
          */
         worker->metrics.doneka--;
+        worker->metrics.aborted_ka++;
     }
     else {
         /* save out time */
