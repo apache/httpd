@@ -209,36 +209,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      +1: jfclere, rpluem,
      rpluem says: Does anyone know why we don't merge the server config?
 
-  *) mod_http2:
-     - new directive 'H2MaxDataFrameLen n'
-     - deny protocol upgrade on request with chunked encoding
-     Trunk version of patch:
-        https://svn.apache.org/r1907696
-        https://svn.apache.org/r1907697
-     Backport version for 2.4.x of patch:
-        svn merge -c 1907696,1907697 ^/httpd/httpd/trunk .
-     +1: icing, rpluem,
-
-  *) mod_http2:
-     - New directive 'H2EarlyHint name value'
-     - Fixed PR 66537 where requests were logged late and with wrong duration
-     - Fixed reporting of bytes actually sent (%O)
-     Trunk version of patch:
-        https://svn.apache.org/r1909769
-     Backport version for 2.4.x of patch:
-        svn merge -c 1909769 ^/httpd/httpd/trunk .  # minor conflicts
-     +1: icing,
-
-  *) mod_http2/mod_proxy_http2: upgrade to v2.0.18
-     Fixes crash in mod_proxy_http2 caused by use for wrong bucket_alloc
-     Trunk version of patch:
-        https://svn.apache.org/r1910157
-     Backport version for 2.4.x of patch:
-        svn merge -c 1910157 ^/httpd/httpd/trunk .
-     +1: icing
-     rpluem says: This one has conflicts in modules/http2/h2_request.c and
-     modules/http2/h2_version.h.
-
   *) Easy patches: synch 2.4.x and trunk
          - core: constify pointers in ap_expr lookup tables.  ~1/2Kb moves to r/o text section
          - core: Optimize performance in ap_normalize_path()
@@ -275,24 +245,23 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       svn merge -c 1909400,1909401,1909402,1909451 ^/httpd/httpd/trunk .
      +1: rpluem,
 
-  *) mod_http2: Fix for PR 66624.
-     Trunk version of patch:
-        https://svn.apache.org/r1910331
-        https://svn.apache.org/r1910441
-     Backport version for 2.4.x of patch:
-        svn merge -c 1910331,1910441 ^/httpd/httpd/trunk .
+  *) mod_http2:
+     Cumulative patch of fixes and new features in github PR #364:
+     - Merge 1907696,1907697 from trunk:
+       * new directive 'H2MaxDataFrameLen n'
+       * deny protocol upgrade on request with chunked encoding
+     - Merge 1909769 from trunk:
+       * New directive 'H2EarlyHint name value'
+       * Fixed PR 66537 where requests were logged late and with wrong duration
+       * Fixed reporting of bytes actually sent (%O)
+     - Merge r1910157 from trunk
+       * Fixed crash in mod_proxy_http2 caused by use for wrong bucket_alloc
+     - Merge of 1910331,1910386,1910441 from trunk
+       * Fix for PR 66624, busy loop on connection shutdown
+       * Fix for PR 66646, recursive call into output filters
+     Github PR at <https://github.com/apache/httpd/pull/364>,
+     all CI checks passed.
      +1: icing
-     # reset vote due to addition of r1910441
-     rpluem says: r1910441 has a conflict in modules/http2/h2_version.h
-     and the patch for PR 66646 needs to go in before this one to avoid further
-     conflicts.
-
-  *) mod_http2: Fix for PR 66646.
-     Trunk version of patch:
-        https://svn.apache.org/r1910386
-     Backport version for 2.4.x of patch:
-        svn merge -c 1910386 ^/httpd/httpd/trunk .
-     +1: icing,
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
