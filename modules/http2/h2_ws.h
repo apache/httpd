@@ -14,28 +14,22 @@
  * limitations under the License.
  */
 
-#ifndef mod_h2_h2_version_h
-#define mod_h2_h2_version_h
+#ifndef __mod_h2__h2_ws__
+#define __mod_h2__h2_ws__
 
-#undef PACKAGE_VERSION
-#undef PACKAGE_TARNAME
-#undef PACKAGE_STRING
-#undef PACKAGE_NAME
-#undef PACKAGE_BUGREPORT
+#include "h2.h"
 
 /**
- * @macro
- * Version number of the http2 module as c string
+ * Rewrite a websocket request.
+ *
+ * @param req the h2 request to rewrite
+ * @param conn the connection to process the request on
+ * @param no_body != 0 iff the request is known to have no body
+ * @return the websocket request for internal submit
  */
-#define MOD_HTTP2_VERSION "2.0.20-git"
+const h2_request *h2_ws_rewrite_request(const h2_request *req,
+                                        conn_rec *c2, int no_body);
 
-/**
- * @macro
- * Numerical representation of the version number of the http2 module
- * release. This is a 24 bit number with 8 bits for major number, 8 bits
- * for minor and 8 bits for patch. Version 1.2.3 becomes 0x010203.
- */
-#define MOD_HTTP2_VERSION_NUM 0x020014
+void h2_ws_register_hooks(void);
 
-
-#endif /* mod_h2_h2_version_h */
+#endif /* defined(__mod_h2__h2_ws__) */

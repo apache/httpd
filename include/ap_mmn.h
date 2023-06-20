@@ -412,6 +412,7 @@
  *                         ap_condition_if_none_match(),
  *                         ap_condition_if_modified_since(),
  *                         ap_condition_if_range()
+<<<<<<< HEAD
  * 20120211.19 (2.4.5-dev) Add post_perdir_config hook.
  * 20120211.20 (2.4.5-dev) Add dirwalk_stat hook.
  * 20120211.21 (2.4.5-dev) Add in ap_proxy_create_hdrbrgd() and
@@ -595,7 +596,7 @@
  * 20120211.125 (2.4.55-dev) Export mod_http2.h as public header
  * 20120211.126 (2.4.55-dev) Add additional hcmethod_t enums and PROXY_WORKER_IS_ERROR
  * 20120211.127 (2.4.56-dev) Add ap_proxy_canonenc_ex
- * 20120211.128 (2.4.55-dev) Add AP_CTIME_OPTION_GMTOFF to util_time.h
+ * 20120211.129 (2.4.58-dev) Add ap_get_pollfd_from_conn()
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */
@@ -603,7 +604,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20120211
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 128                 /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 129                 /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a

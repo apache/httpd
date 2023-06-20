@@ -146,6 +146,7 @@ static void m_stream_cleanup(h2_mplx *m, h2_stream *stream)
         if (c2_ctx->beam_in) {
             h2_beam_on_send(c2_ctx->beam_in, NULL, NULL);
             h2_beam_on_received(c2_ctx->beam_in, NULL, NULL);
+            h2_beam_on_eagain(c2_ctx->beam_in, NULL, NULL);
             h2_beam_on_consumed(c2_ctx->beam_in, NULL, NULL);
         }
     }
@@ -653,8 +654,12 @@ static apr_status_t c1_process_stream(h2_mplx *m,
     if (APLOGctrace1(m->c1)) {
         const h2_request *r = stream->request;
         ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, m->c1,
-                      H2_STRM_MSG(stream, "process %s %s://%s%s"),
-                      r->method, r->scheme, r->authority, r->path);
+                      H2_STRM_MSG(stream, "process %s%s%s %s%s%s%s"),
+                      r->protocol? r->protocol : "",
+                      r->protocol? " " : "",
+                      r->method, r->scheme? r->scheme : "",
+                      r->scheme? "://" : "",
+                      r->authority, r->path? r->path: "");
     }
 
     stream->scheduled = 1;
@@ -765,6 +770,19 @@ static void c2_beam_input_read_notify(void *ctx, h2_bucket_beam *beam)
     }
 }
 
+static void c2_beam_input_read_eagain(void *ctx, h2_bucket_beam *beam)
+{
+    conn_rec *c = ctx;
+    h2_conn_ctx_t *conn_ctx = h2_conn_ctx_get(c);
+    /* installed in the input bucket beams when we use pipes.
+     * Drain the pipe just before the beam returns APR_EAGAIN.
+     * A clean state for allowing polling on the pipe to rest
+     * when the beam is empty */
+    if (conn_ctx && conn_ctx->pipe_in[H2_PIPE_OUT]) {
+        h2_util_drain_pipe(conn_ctx->pipe_in[H2_PIPE_OUT]);
+    }
+}
+
 static void c2_beam_output_write_notify(void *ctx, h2_bucket_beam *beam)
 {
     conn_rec *c = ctx;
@@ -809,6 +827,7 @@ static apr_status_t c2_setup_io(h2_mplx *m, conn_rec *c2, h2_stream *stream, h2_
                                         c2->pool, c2->pool);
         if (APR_SUCCESS != rv) goto cleanup;
 #endif
+        h2_beam_on_eagain(stream->input, c2_beam_input_read_eagain, c2);
     }
 
 cleanup:
@@ -915,6 +934,15 @@ static void s_c2_done(h2_mplx *m, conn_rec *c2, h2_conn_ctx_t *conn_ctx)
                       "h2_c2(%s-%d): processing finished without final response",
                       conn_ctx->id, conn_ctx->stream_id);
         c2->aborted = 1;
+        if (conn_ctx->beam_out)
+          h2_beam_abort(conn_ctx->beam_out, c2);
+    }
+    else if (!conn_ctx->beam_out || !h2_beam_is_complete(conn_ctx->beam_out)) {
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE1, conn_ctx->last_err, c2,
+                      "h2_c2(%s-%d): processing finished with incomplete output",
+                      conn_ctx->id, conn_ctx->stream_id);
+        c2->aborted = 1;
+        h2_beam_abort(conn_ctx->beam_out, c2);
     }
     else if (!c2->aborted) {
         s_mplx_be_happy(m, c2, conn_ctx);
