@@ -1019,8 +1019,6 @@ const command_rec h2_cmds[] = {
                   RSRC_CONF, "set stream timeout"),
     AP_INIT_TAKE1("H2MaxDataFrameLen", h2_conf_set_max_data_frame_len, NULL,
                   RSRC_CONF, "maximum number of bytes in a single HTTP/2 DATA frame"),
-    AP_INIT_TAKE2("H2EarlyHint", h2_conf_add_early_hint, NULL,
-                   OR_FILEINFO|OR_AUTHCFG, "add a a 'Link:' header for a 103 Early Hints response."),
     AP_END_CMD
 };
 
