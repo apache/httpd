@@ -42,6 +42,7 @@
 #include "h2_switch.h"
 #include "h2_version.h"
 #include "h2_bucket_beam.h"
+#include "h2_ws.h"
 
 
 static void h2_hooks(apr_pool_t *pool);
@@ -199,6 +200,7 @@ static void h2_hooks(apr_pool_t *pool)
     h2_c1_register_hooks();
     h2_switch_register_hooks();
     h2_c2_register_hooks();
+    h2_ws_register_hooks();
 
     /* Setup subprocess env for certain variables
      */

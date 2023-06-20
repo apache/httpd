@@ -999,6 +999,7 @@ APACHE_FAST_OUTPUT(support/Makefile)
 if test -d ./test; then
     APACHE_FAST_OUTPUT(test/Makefile)
     AC_CONFIG_FILES([test/pyhttpd/config.ini])
+    APACHE_FAST_OUTPUT(test/clients/Makefile)
 fi
 
 dnl ## Finalize the variables

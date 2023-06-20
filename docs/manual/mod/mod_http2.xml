@@ -1082,4 +1082,42 @@ H2EarlyHint Link "&lt;/my.css&gt;;rel=preload;as=style"
         </usage>
     </directivesynopsis>
 
+    <directivesynopsis>
+        <name>H2WebSockets</name>
+        <description>En-/Disable WebSockets via HTTP/2</description>
+        <syntax>H2WebSockets  on|off</syntax>
+        <default>H2WebSockets off</default>
+        <contextlist>
+            <context>server config</context>
+            <context>virtual host</context>
+        </contextlist>
+        <compatibility>Available in version 2.5.1 and later.</compatibility>
+
+        <usage>
+            <p>
+                Use <directive>H2WebSockets</directive> to enable or disable
+                bootstrapping of WebSockets via the HTTP/2 protocol. This
+                protocol extension is defined in RFC 8441.
+            </p><p>
+                Such requests come as a CONNECT with an extra ':protocol'
+                header. Such requests are transformed inside the module to
+                their HTTP/1.1 equivalents before passing it to internal
+                processing.
+            </p><p>
+                This means that HTTP/2 WebSockets can be used for a
+                <directive module="mod_proxy">ProxyPass</directive> with
+                'upgrade=websocket' parameter without further changes.
+            </p><p>
+                For (3rd party) modules that handle WebSockets directly in the
+                server, the protocol bootstrapping itself will also work. However
+                the transfer of data does require extra support in case of HTTP/2.
+                The negotiated WebSocket will not be able to use the client connection
+                socket for polling IO related events.
+            </p><p>
+                Because enabling this feature might break backward compatibility
+                for such 3rd party modules, it is not enabled by default.
+            </p>
+        </usage>
+    </directivesynopsis>
+
 </modulesynopsis>

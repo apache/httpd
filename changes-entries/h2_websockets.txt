@@ -1,0 +1,10 @@
+  *) mod_http2: added support for bootstrapping WebSockets via HTTP/2, as
+     described in RFC 8441. A new directive 'H2WebSockets on|off' has been
+     added. The feature is by default not enabled.
+     As also discussed in the manual, this feature should work for setups
+     using "ProxyPass backend-url upgrade=websocket" without further changes.
+     Special server modules for WebSockets will have to be adapted,
+     most likely, as the handling if IO events is different with HTTP/2.
+     HTTP/2 WebSockets are supported on platforms with native pipes. This
+     excludes Windows.
+     [Stefan Eissing]
