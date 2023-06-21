@@ -287,13 +287,14 @@ apr_bucket *h2_request_create_bucket(const h2_request *req, request_rec *r)
     apr_table_t *headers = apr_table_clone(r->pool, req->headers);
     const char *uri = req->path;
 
+    AP_DEBUG_ASSERT(req->method);
     AP_DEBUG_ASSERT(req->authority);
-    if (req->scheme && (ap_cstr_casecmp(req->scheme,
-                        ap_ssl_conn_is_ssl(c->master? c->master : c)? "https" : "http")
-                        || !ap_cstr_casecmp("CONNECT", req->method))) {
-        /* Client sent a non-matching ':scheme' pseudo header or CONNECT.
-         * In this case, we use an absolute URI.
-         */
+    if (!ap_cstr_casecmp("CONNECT", req->method))  {
+        uri = req->authority;
+    }
+    else if (req->scheme && (ap_cstr_casecmp(req->scheme, "http") &&
+                             ap_cstr_casecmp(req->scheme, "https")))  {
+        /* Client sent a non-http ':scheme', use an absolute URI */
         uri = apr_psprintf(r->pool, "%s://%s%s",
                            req->scheme, req->authority, req->path ? req->path : "");
     }
@@ -379,33 +380,25 @@ request_rec *h2_create_request_rec(const h2_request *req, conn_rec *c,
     AP_DEBUG_ASSERT(req->authority);
     if (is_connect) {
       /* CONNECT MUST NOT have scheme or path */
-      if (req->scheme) {
-        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, APLOGNO(10458)
-                      "':scheme: %s' header present in CONNECT request",
-                      req->scheme);
-        access_status = HTTP_BAD_REQUEST;
-        goto die;
-      }
-      if (req->path) {
-        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, APLOGNO(10459)
-                      "':path: %s' header present in CONNECT request",
-                      req->path);
-        access_status = HTTP_BAD_REQUEST;
-        goto die;
-      }
-      r->the_request = apr_psprintf(r->pool, "%s %s HTTP/2.0",
-                                    req->method, req->authority);
+        r->the_request = apr_psprintf(r->pool, "%s %s HTTP/2.0",
+                                      req->method, req->authority);
+        if (req->scheme) {
+            ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, APLOGNO(10458)
+                          "':scheme: %s' header present in CONNECT request",
+                          req->scheme);
+            access_status = HTTP_BAD_REQUEST;
+            goto die;
+        }
+        else if (req->path) {
+            ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, APLOGNO(10459)
+                          "':path: %s' header present in CONNECT request",
+                          req->path);
+            access_status = HTTP_BAD_REQUEST;
+            goto die;
+        }
     }
-    else if (req->protocol) {
-      ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, APLOGNO(10460)
-                    "':protocol: %s' header present in %s request",
-                    req->protocol, req->method);
-      access_status = HTTP_BAD_REQUEST;
-      goto die;
-    }
-    else if (req->scheme &&
-             ap_cstr_casecmp(req->scheme, ap_ssl_conn_is_ssl(c->master? c->master : c)?
-                             "https" : "http")) {
+    else if (req->scheme && ap_cstr_casecmp(req->scheme, "http")
+             && ap_cstr_casecmp(req->scheme, "https")) {
         /* Client sent a ':scheme' pseudo header for something else
          * than what we have on this connection. Make an absolute URI. */
         r->the_request = apr_psprintf(r->pool, "%s %s://%s%s HTTP/2.0",
