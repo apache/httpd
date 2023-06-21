@@ -1368,9 +1368,16 @@ AP_DECLARE(request_rec *) ap_read_request(conn_rec *conn)
             headers = breq->headers? apr_table_clone(r->pool, breq->headers) : NULL;
         }
 
+        if (!method || !uri || !protocol) {
+            access_status = berr? ((ap_bucket_error *)(berr->data))->status :
+                                  HTTP_INTERNAL_SERVER_ERROR;
+            goto die_unusable_input;
+        }
+
         if (headers) {
             r->headers_in = headers;
         }
+
         ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r,
                       "checking request: %s %s %s",
                       method, uri, protocol);
