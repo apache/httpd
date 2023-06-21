@@ -5,11 +5,8 @@ import shutil
 import subprocess
 import time
 from datetime import timedelta, datetime
-from typing import Tuple, Union, List
-import packaging.version
 
 import pytest
-import websockets
 from pyhttpd.result import ExecResult
 from pyhttpd.ws_util import WsFrameReader, WsFrame
 
@@ -18,18 +15,15 @@ from .env import H2Conf, H2TestEnv
 
 log = logging.getLogger(__name__)
 
-ws_version = packaging.version.parse(websockets.version.version)
-ws_version_min = packaging.version.Version('10.4')
 
-
-def ws_run(env: H2TestEnv, path, do_input=None,
-           inbytes=None, send_close=True,
-           timeout=5, scenario='ws-stdin',
-           wait_close: float = 0.0) -> Tuple[ExecResult, List[str], Union[List[WsFrame], bytes]]:
+def ws_run(env: H2TestEnv, path, authority=None, do_input=None, inbytes=None,
+           send_close=True, timeout=5, scenario='ws-stdin',
+           wait_close: float = 0.0):
     """ Run the h2ws test client in various scenarios with given input and
         timings.
     :param env: the test environment
     :param path: the path on the Apache server to CONNECt to
+    :param authority: the host:port to use as
     :param do_input: a Callable for sending input to h2ws
     :param inbytes: fixed bytes to send to h2ws, unless do_input is given
     :param send_close: send a CLOSE WebSockets frame at the end
@@ -41,9 +35,11 @@ def ws_run(env: H2TestEnv, path, do_input=None,
     h2ws = os.path.join(env.clients_dir, 'h2ws')
     if not os.path.exists(h2ws):
         pytest.fail(f'test client not build: {h2ws}')
+    if authority is None:
+        authority = f'cgi.{env.http_tld}:{env.http_port}'
     args = [
         h2ws, '-vv', '-c', f'localhost:{env.http_port}',
-        f'ws://cgi.{env.http_tld}:{env.http_port}{path}',
+        f'ws://{authority}{path}',
         scenario
     ]
     # we write all output to files, because we manipulate input timings
@@ -80,8 +76,8 @@ def ws_run(env: H2TestEnv, path, do_input=None,
 
 
 @pytest.mark.skipif(condition=H2TestEnv.is_unsupported, reason="mod_http2 not supported here")
-@pytest.mark.skipif(condition=ws_version < ws_version_min,
-                    reason=f'websockets is {ws_version}, need at least {ws_version_min}')
+@pytest.mark.skipif(condition=not H2TestEnv().httpd_is_at_least("2.5.0"),
+                    reason=f'need at least httpd 2.5.0 for this')
 class TestWebSockets:
 
     @pytest.fixture(autouse=True, scope='class')
@@ -97,6 +93,7 @@ class TestWebSockets:
             ]
         })
         conf.add_vhost_cgi(proxy_self=True, h2proxy_self=True).install()
+        conf.add_vhost_test1(proxy_self=True, h2proxy_self=True).install()
         assert env.apache_restart() == 0
 
     def ws_check_alive(self, env, timeout=5):
@@ -150,7 +147,7 @@ class TestWebSockets:
     def test_h2_800_02_fail_proto(self, env: H2TestEnv, ws_server):
         r, infos, frames = ws_run(env, path='/ws/echo/', scenario='fail-proto')
         assert r.exit_code == 0, f'{r}'
-        assert infos == ['[1] :status: 400', '[1] EOF'], f'{r}'
+        assert infos == ['[1] :status: 501', '[1] EOF'], f'{r}'
 
     # CONNECT to a URL path that does not exist on the server
     def test_h2_800_03_not_found(self, env: H2TestEnv, ws_server):
@@ -193,10 +190,17 @@ class TestWebSockets:
         assert infos == ['[1] RST'], f'{r}'
 
     # CONNECT missing the :authority header
-    def test_h2_800_09_miss_authority(self, env: H2TestEnv, ws_server):
+    def test_h2_800_09a_miss_authority(self, env: H2TestEnv, ws_server):
         r, infos, frames = ws_run(env, path='/ws/echo/', scenario='miss-authority')
         assert r.exit_code == 0, f'{r}'
         assert infos == ['[1] RST'], f'{r}'
+
+    # CONNECT to authority with disabled websockets
+    def test_h2_800_09b_unsupported(self, env: H2TestEnv, ws_server):
+        r, infos, frames = ws_run(env, path='/ws/echo/',
+                                  authority=f'test1.{env.http_tld}:{env.http_port}')
+        assert r.exit_code == 0, f'{r}'
+        assert infos == ['[1] :status: 501', '[1] EOF'], f'{r}'
 
     # CONNECT and exchange a PING
     def test_h2_800_10_ws_ping(self, env: H2TestEnv, ws_server):

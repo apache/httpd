@@ -559,6 +559,7 @@ static int c2_hook_pre_connection(conn_rec *c2, void *csd)
     return OK;
 }
 
+#if H2_USE_POLLFD_FROM_CONN
 static apr_status_t c2_get_pollfd_from_conn(conn_rec *c,
                                             struct apr_pollfd_t *pfd,
                                             apr_interval_time_t *ptimeout)
@@ -583,6 +584,7 @@ static apr_status_t c2_get_pollfd_from_conn(conn_rec *c,
     }
     return APR_ENOTIMPL;
 }
+#endif
 
 void h2_c2_register_hooks(void)
 {
@@ -598,11 +600,10 @@ void h2_c2_register_hooks(void)
     ap_hook_post_read_request(c2_post_read_request, NULL, NULL,
                               APR_HOOK_REALLY_FIRST);
     ap_hook_fixups(c2_hook_fixups, NULL, NULL, APR_HOOK_LAST);
-#if AP_MODULE_MAGIC_AT_LEAST(20211221, 15)
+#if H2_USE_POLLFD_FROM_CONN
     ap_hook_get_pollfd_from_conn(c2_get_pollfd_from_conn, NULL, NULL,
                                  APR_HOOK_MIDDLE);
 #endif
-
 
     c2_net_in_filter_handle =
         ap_register_input_filter("H2_C2_NET_IN", h2_c2_filter_in,
@@ -788,7 +789,7 @@ static apr_status_t c2_process(h2_conn_ctx_t *conn_ctx, conn_rec *c)
         cs->state = CONN_STATE_WRITE_COMPLETION;
 
 cleanup:
-    return APR_SUCCESS;
+    return rv;
 }
 
 conn_rec *h2_c2_create(conn_rec *c1, apr_pool_t *parent,

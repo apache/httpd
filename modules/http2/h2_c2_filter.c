@@ -120,20 +120,28 @@ apr_status_t h2_c2_filter_request_in(ap_filter_t *f,
                 return APR_EGENERAL;
         }
 
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, f->c,
+                      "h2_c2_filter_request_in(%s): adding request bucket",
+                      conn_ctx->id);
+        b = h2_request_create_bucket(req, f->r);
+        APR_BRIGADE_INSERT_TAIL(bb, b);
+
         if (req->http_status != H2_HTTP_STATUS_UNSET) {
             /* error was encountered preparing this request */
+            ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, f->c,
+                          "h2_c2_filter_request_in(%s): adding error bucket %d",
+                          conn_ctx->id, req->http_status);
             b = ap_bucket_error_create(req->http_status, NULL, f->r->pool,
                                        f->c->bucket_alloc);
             APR_BRIGADE_INSERT_TAIL(bb, b);
             return APR_SUCCESS;
         }
 
-        b = h2_request_create_bucket(req, f->r);
-        APR_BRIGADE_INSERT_TAIL(bb, b);
         if (!conn_ctx->beam_in) {
             b = apr_bucket_eos_create(f->c->bucket_alloc);
             APR_BRIGADE_INSERT_TAIL(bb, b);
         }
+
         return APR_SUCCESS;
     }
 
