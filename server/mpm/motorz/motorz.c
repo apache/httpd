@@ -408,8 +408,8 @@ read_request:
 
             ap_update_child_status(scon->sbh, SERVER_BUSY_WRITE, NULL);
 
-            pending = ap_run_output_pending(c);
-            if (pending == OK) {
+            pending = ap_check_output_pending(c);
+            if (pending == AGAIN) {
                 /* Still in WRITE_COMPLETION_STATE:
                  * Set a write timeout for this connection, and let the
                  * event thread poll for writeability.
@@ -432,17 +432,21 @@ read_request:
                 }
                 return APR_SUCCESS;
             }
-            if (pending != DECLINED
-                    || c->keepalive != AP_CONN_KEEPALIVE
-                    || c->aborted) {
-                scon->cs.state = CONN_STATE_LINGER;
+            if (c->keepalive != AP_CONN_KEEPALIVE) {
+                pending = DONE;
             }
-            else if (ap_run_input_pending(c) == OK) {
-                scon->cs.state = CONN_STATE_PROCESSING;
-                goto read_request;
+            else if (pending == OK) {
+                pending = ap_check_input_pending(c);
+                if (pending == AGAIN) {
+                    scon->cs.state = CONN_STATE_PROCESSING;
+                    goto read_request;
+                }
+            }
+            if (pending == OK) {
+                scon->cs.state = CONN_STATE_KEEPALIVE;
             }
             else {
-                scon->cs.state = CONN_STATE_KEEPALIVE;
+                scon->cs.state = CONN_STATE_LINGER;
             }
         }
 

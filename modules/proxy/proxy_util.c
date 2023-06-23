@@ -5888,12 +5888,12 @@ PROXY_DECLARE(int) ap_proxy_tunnel_run(proxy_tunnel_rec *tunnel)
                               "proxy: %s: %s output ready",
                               scheme, out->name);
 
-                rc = ap_filter_output_pending(out->c);
-                if (rc == OK) {
-                    /* Keep polling out (only) */
+                rc = ap_check_output_pending(out->c);
+                if (rc == AGAIN) {
+                    /* Keep polling (OUT only) */
                     continue;
                 }
-                if (rc != DECLINED) {
+                if (rc != OK) {
                     /* Real failure, bail out */
                     ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(10221)
                                   "proxy: %s: %s flushing failed (%i)",
@@ -5923,7 +5923,7 @@ PROXY_DECLARE(int) ap_proxy_tunnel_run(proxy_tunnel_rec *tunnel)
                     /* Flush any pending input data now, we don't know when
                      * the next POLLIN will trigger and retaining data might
                      * deadlock the underlying protocol. We don't check for
-                     * pending data first with ap_filter_input_pending() since
+                     * pending data first with ap_check_input_pending() since
                      * the read from proxy_tunnel_transfer() is nonblocking
                      * anyway and returning OK if there's no data.
                      */

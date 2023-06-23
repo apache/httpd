@@ -1233,7 +1233,7 @@ static void process_socket(apr_thread_t *thd, apr_pool_t * p, apr_socket_t * soc
     }
 
     if (cs->pub.state == CONN_STATE_WRITE_COMPLETION) {
-        int pending = DECLINED;
+        int pending = OK;
 
         /* Flush all pending outputs before going to CONN_STATE_KEEPALIVE or
          * straight to CONN_STATE_PROCESSING if inputs are pending already.
@@ -1243,12 +1243,12 @@ static void process_socket(apr_thread_t *thd, apr_pool_t * p, apr_socket_t * soc
 
         if (from_wc_q) {
             from_wc_q = 0; /* one shot */
-            pending = ap_run_output_pending(c);
+            pending = ap_check_output_pending(c);
         }
         else if (ap_filter_should_yield(c->output_filters)) {
-            pending = OK;
+            pending = AGAIN;
         }
-        if (pending == OK) {
+        if (pending == AGAIN) {
             /* Let the event thread poll for write */
             cs->queue_timestamp = apr_time_now();
             notify_suspend(cs);
@@ -1274,11 +1274,11 @@ static void process_socket(apr_thread_t *thd, apr_pool_t * p, apr_socket_t * soc
             }
             return;
         }
-        if (pending != DECLINED || c->aborted || c->keepalive != AP_CONN_KEEPALIVE) {
+        if (pending != OK || c->aborted || c->keepalive != AP_CONN_KEEPALIVE) {
             cs->pub.state = CONN_STATE_LINGER;
             goto lingering_close;
         }
-        if (ap_run_input_pending(c) == OK) {
+        if (ap_check_input_pending(c) == AGAIN) {
             goto process_connection;
         }
         if (listener_may_exit) {

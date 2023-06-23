@@ -731,6 +731,8 @@
  *                         and AP_REQUEST_TRUSTED_CT BNOTE.
  * 20211221.24 (2.5.1-dev) Add ap_proxy_fixup_uds_filename()
  * 20211221.25 (2.5.1-dev) AP_SLASHES and AP_IS_SLASH
+ * 20211221.26 (2.5.1-dev) Add AGAIN, ap_check_input_pending() and
+ *                         ap_check_output_pending()
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503235UL /* "AP25" */
@@ -738,7 +740,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20211221
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 25             /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 26             /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a
