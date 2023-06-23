@@ -451,24 +451,6 @@ AP_DECLARE_HOOK(apr_status_t, mpm_resume_suspended, (conn_rec*))
 AP_DECLARE_HOOK(const char *,mpm_get_name,(void))
 
 /**
- * Hook called to determine whether we should stay within the write completion
- * phase.
- * @param c The current connection
- * @return OK if write completion should continue, DECLINED if write completion
- * should end gracefully, or a positive error if we should begin to linger.
- * @ingroup hooks
- */
-AP_DECLARE_HOOK(int, output_pending, (conn_rec *c))
-
-/**
- * Hook called to determine whether any data is pending in the input filters.
- * @param c The current connection
- * @return OK if we can read without blocking, DECLINED if a read would block.
- * @ingroup hooks
- */
-AP_DECLARE_HOOK(int, input_pending, (conn_rec *c))
-
-/**
  * Notification that connection handling is suspending (disassociating from the
  * current thread)
  * @param c The current connection

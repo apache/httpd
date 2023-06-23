@@ -1231,19 +1231,19 @@ read_request:
     }
 
     if (cs->pub.state == CONN_STATE_WRITE_COMPLETION) {
-        int pending = DECLINED;
+        int pending = OK;
 
         ap_update_child_status(cs->sbh, SERVER_BUSY_WRITE, NULL);
 
         if (from_wc_q) {
             from_wc_q = 0; /* one shot */
-            pending = ap_run_output_pending(c);
+            pending = ap_check_output_pending(c);
         }
         else if (ap_filter_should_yield(c->output_filters)) {
-            pending = OK;
+            pending = AGAIN;
         }
-        if (pending == OK || (pending == DECLINED &&
-                              cs->pub.sense == CONN_SENSE_WANT_READ)) {
+        if (pending == AGAIN || (pending == OK &&
+                                 cs->pub.sense == CONN_SENSE_WANT_READ)) {
             /* Still in WRITE_COMPLETION_STATE:
              * Set a read/write timeout for this connection, and let the
              * event thread poll for read/writeability.
@@ -1270,12 +1270,12 @@ read_request:
             }
             return;
         }
-        if (pending != DECLINED
+        if (pending != OK
                 || c->aborted
                 || c->keepalive != AP_CONN_KEEPALIVE) {
             cs->pub.state = CONN_STATE_LINGER;
         }
-        else if (ap_run_input_pending(c) == OK) {
+        else if (ap_check_input_pending(c) == AGAIN) {
             cs->pub.state = CONN_STATE_READ_REQUEST_LINE;
             goto read_request;
         }

@@ -484,7 +484,7 @@ AP_DECLARE(void) ap_process_request(request_rec *r)
 
     ap_process_async_request(r);
 
-    if (ap_run_input_pending(c) != OK) {
+    if (ap_check_input_pending(c) != AGAIN) {
         bb = ap_acquire_brigade(c);
         b = apr_bucket_flush_create(c->bucket_alloc);
         APR_BRIGADE_INSERT_HEAD(bb, b);
