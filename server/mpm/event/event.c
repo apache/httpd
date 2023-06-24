@@ -209,8 +209,8 @@ static apr_uint32_t threads_shutdown = 0;   /* Number of threads that have shutd
 static int had_healthy_child = 0;
 static int resource_shortage = 0;
 
-static fd_queue_t *worker_queue;
-static fd_queue_info_t *worker_queue_info;
+static ap_queue_t *worker_queue;
+static ap_queue_info_t *worker_queue_info;
 
 static int num_listensocks = 0;
 static int listener_is_wakeable = 0; /* Pollset supports APR_POLLSET_WAKEABLE */
