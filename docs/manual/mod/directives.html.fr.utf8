@@ -357,6 +357,7 @@
 <li><a href="mod_http2.html#h2tlscooldownsecs">H2TLSCoolDownSecs</a></li>
 <li><a href="mod_http2.html#h2tlswarmupsize">H2TLSWarmUpSize</a></li>
 <li><a href="mod_http2.html#h2upgrade">H2Upgrade</a></li>
+<li><a href="mod_http2.html#h2websockets">H2WebSockets</a></li>
 <li><a href="mod_http2.html#h2windowsize">H2WindowSize</a></li>
 <li><a href="mod_headers.html#header">Header</a></li>
 <li><a href="mod_autoindex.html#headername">HeaderName</a></li>
