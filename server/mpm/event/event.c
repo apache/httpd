@@ -197,15 +197,16 @@ static int server_limit = 0;                /* ServerLimit */
 static int thread_limit = 0;                /* ThreadLimit */
 static int conns_this_child = 0;            /* MaxConnectionsPerChild, only accessed
                                                in listener thread */
-static volatile int dying = 0;
-static volatile int workers_may_exit = 0;
-static volatile int start_thread_may_exit = 0;
-static volatile int listener_may_exit = 0;
-static apr_uint32_t connection_count = 0;   /* Number of open connections */
-static apr_uint32_t timers_count = 0;       /* Number of queued timers */
-static apr_uint32_t suspended_count = 0;    /* Number of suspended connections */
-static apr_uint32_t threads_shutdown = 0;   /* Number of threads that have shutdown
-                                               early during graceful termination */
+static /*atomic*/ apr_uint32_t dying = 0;
+static /*atomic*/ apr_uint32_t workers_may_exit = 0;
+static /*atomic*/ apr_uint32_t start_thread_may_exit = 0;
+static /*atomic*/ apr_uint32_t listener_may_exit = 0;
+static /*atomic*/ apr_uint32_t connection_count = 0; /* Number of open connections */
+static /*atomic*/ apr_uint32_t timers_count = 0;     /* Number of queued timers */
+static /*atomic*/ apr_uint32_t suspended_count = 0;  /* Number of suspended connections */
+static /*atomic*/ apr_uint32_t threads_shutdown = 0; /* Number of threads that have shutdown
+                                                        early during graceful termination */
+
 static int had_healthy_child = 0;
 static int resource_shortage = 0;
 
@@ -481,8 +482,13 @@ static void TO_QUEUE_APPEND(struct timeout_queue *q, event_conn_state_t *cs)
     cs->q = q;
     cs->queue_timestamp = event_time_now();
     APR_RING_INSERT_TAIL(&q->head, cs, event_conn_state_t, timeout_list);
-    ++*q->total;
     ++q->count;
+
+    /* Use atomic_set to be ordered/consistent with potential atomic reads
+     * outside the critical section, but writes are protected so a more
+     * expensive atomic_inc is not needed.
+     */
+    apr_atomic_set32(q->total, *q->total + 1);
 
     /* Cheaply update the global queues_next_expiry with the one of the
      * first entry of this queue (oldest) if it expires before.
@@ -506,8 +512,13 @@ static void TO_QUEUE_REMOVE(struct timeout_queue *q, event_conn_state_t *cs)
 
     APR_RING_REMOVE(cs, timeout_list);
     APR_RING_ELEM_INIT(cs, timeout_list);
-    --*q->total;
     --q->count;
+
+    /* Use atomic_set to be ordered/consistent with potential atomic reads
+     * outside the critical section, but writes are protected so a more
+     * expensive atomic_dec is not needed.
+     */
+    apr_atomic_set32(q->total, *q->total - 1);
 }
 
 static struct timeout_queue *TO_QUEUE_MAKE(apr_pool_t *p,
@@ -717,6 +728,7 @@ static /*atomic*/ apr_uint32_t listensocks_off = 0;
 
 static int disable_listensocks(void)
 {
+    volatile process_score *ps;
     int i;
 
     if (apr_atomic_cas32(&listensocks_off, 1, 0) != 0) {
@@ -738,7 +750,8 @@ static int disable_listensocks(void)
                  apr_atomic_read32(&timers_count),
                  apr_atomic_read32(&suspended_count));
 
-    ap_scoreboard_image->parent[ap_child_slot].not_accepting = 1;
+    ps = &ap_scoreboard_image->parent[ap_child_slot];
+    ps->not_accepting = 1;
 
     for (i = 0; i < num_listensocks; i++) {
         apr_pollset_remove(event_pollset, &listener_pollfd[i]);
@@ -748,9 +761,10 @@ static int disable_listensocks(void)
 
 static int enable_listensocks(void)
 {
+    volatile process_score *ps;
     int i;
 
-    if (listener_may_exit
+    if (apr_atomic_read32(&dying)
         || apr_atomic_cas32(&listensocks_off, 0, 1) != 1) {
         return 0;
     }
@@ -774,7 +788,8 @@ static int enable_listensocks(void)
      * XXX: This is not yet optimal. If many workers suddenly become available,
      * XXX: the parent may kill some processes off too soon.
      */
-    ap_scoreboard_image->parent[ap_child_slot].not_accepting = 0;
+    ps = &ap_scoreboard_image->parent[ap_child_slot];
+    ps->not_accepting = 0;
 
     for (i = 0; i < num_listensocks; i++) {
         apr_pollset_add(event_pollset, &listener_pollfd[i]);
@@ -809,7 +824,9 @@ static APR_INLINE int connections_above_limit(int *busy)
 
 static APR_INLINE int should_enable_listensocks(void)
 {
-    return !dying && listensocks_disabled() && !connections_above_limit(NULL);
+    return (listensocks_disabled()
+            && !apr_atomic_read32(&dying)
+            && !connections_above_limit(NULL));
 }
 
 static void close_socket_at(apr_socket_t *csd,
@@ -855,10 +872,9 @@ static void shutdown_listener(void)
 {
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf,
                  "shutting down listener%s",
-                 listener_may_exit ? " again" : "");
+                 apr_atomic_read32(&listener_may_exit) ? " again" : "");
 
-    listener_may_exit = 1;
-    disable_listensocks();
+    apr_atomic_set32(&listener_may_exit, 1);
 
     /* Unblock the listener if it's poll()ing */
     if (event_pollset && listener_is_wakeable) {
@@ -914,7 +930,7 @@ static void signal_threads(int mode)
      * workers to exit once it has stopped accepting new connections
      */
     if (mode == ST_UNGRACEFUL) {
-        workers_may_exit = 1;
+        apr_atomic_set32(&workers_may_exit, 1);
         ap_queue_interrupt_all(worker_queue);
         close_worker_sockets(); /* forcefully kill all current connections */
     }
@@ -993,7 +1009,7 @@ static int event_query(int query_code, int *result, apr_status_t *rv)
 static void event_note_child_stopped(int slot, pid_t pid, ap_generation_t gen)
 {
     if (slot != -1) { /* child had a scoreboard slot? */
-        process_score *ps = &ap_scoreboard_image->parent[slot];
+        volatile process_score *ps = &ap_scoreboard_image->parent[slot];
         int i;
 
         pid = ps->pid;
@@ -1079,8 +1095,9 @@ static int child_fatal;
 
 static apr_status_t decrement_connection_count(void *cs_)
 {
-    int is_last_connection;
     event_conn_state_t *cs = cs_;
+    int is_last_connection, is_dying;
+
     ap_log_error(APLOG_MARK, APLOG_TRACE6, 0, ap_server_conf,
                  "connection %" CS_FMT_TO " cleaned up",
                  CS_ARG_TO(cs));
@@ -1097,12 +1114,13 @@ static apr_status_t decrement_connection_count(void *cs_)
      * now accept new connections.
      */
     is_last_connection = !apr_atomic_dec32(&connection_count);
+    is_dying = apr_atomic_read32(&dying);
     if (listener_is_wakeable
-        && ((is_last_connection && listener_may_exit)
+        && ((is_last_connection && is_dying)
             || should_enable_listensocks())) {
         apr_pollset_wakeup(event_pollset);
     }
-    if (dying) {
+    if (is_dying) {
         /* Help worker_thread_should_exit_early() */
         ap_queue_interrupt_one(worker_queue);
     }
@@ -1325,7 +1343,7 @@ static int pollset_add_at(event_conn_state_t *cs, int sense,
         }
 
         /* close_worker_sockets() may have closed it already */
-        if (workers_may_exit) {
+        if (apr_atomic_read32(&workers_may_exit)) {
             AP_DEBUG_ASSERT(APR_STATUS_IS_EBADF(rv));
         }
         else {
@@ -1742,10 +1760,14 @@ static void check_infinite_requests(void)
 
 static void set_child_dying(void)
 {
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, "quiescing");
+    volatile process_score *ps;
 
-    dying = 1;
-    ap_scoreboard_image->parent[ap_child_slot].quiescing = 1;
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, "quiescing");
+    ps = &ap_scoreboard_image->parent[ap_child_slot];
+    ps->quiescing = 1;
+
+    apr_atomic_set32(&dying, 1);
+    disable_listensocks(); /* definitively with dying = 1 */
     ap_close_listeners_ex(my_bucket->listeners);
 
 #if 0
@@ -2340,7 +2362,7 @@ static APR_INLINE void shrink_timeout_queue(struct timeout_queue *queue,
     if (count) {
         ap_log_error(APLOG_MARK, APLOG_TRACE1, 0, ap_server_conf,
                      "All workers are %s, %s queue shrinked (%u done, %u left)",
-                     dying ? "dying" : "busy", queue->name,
+                     apr_atomic_read32(&dying) ? "dying" : "busy", queue->name,
                      count, apr_atomic_read32(queue->total));
     }
 }
@@ -2384,8 +2406,8 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
 
         now = poll_time = event_time_now();
 
-        if (listener_may_exit) {
-            int once = !dying;
+        if (apr_atomic_read32(&listener_may_exit)) {
+            int once = !apr_atomic_read32(&dying);
             if (once) {
                 set_child_dying();
             }
@@ -2519,7 +2541,8 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
                      timers_next_expiry ? timers_next_expiry - now : 0,
                      listensocks_disabled() ? "no" : "yes",
                      apr_atomic_read32(&connection_count),
-                     listener_may_exit, dying);
+                     apr_atomic_read32(&listener_may_exit),
+                     apr_atomic_read32(&dying));
 
         rc = apr_pollset_poll(event_pollset, timeout, &num, &out_pfd);
         if (rc != APR_SUCCESS) {
@@ -2554,7 +2577,8 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
                      timers_next_expiry ? timers_next_expiry - now : 0,
                      listensocks_disabled() ? "no" : "yes",
                      apr_atomic_read32(&connection_count),
-                     listener_may_exit, dying);
+                     apr_atomic_read32(&listener_may_exit),
+                     apr_atomic_read32(&dying));
 
         for (user_chain = NULL; num > 0; --num, ++out_pfd) {
             listener_poll_type *pt = out_pfd->client_data;
@@ -2601,7 +2625,7 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
                      */
                     continue;
                 }
-                if (!dying) {
+                if (!apr_atomic_read32(&dying)) {
                     void *csd = NULL;
                     ap_listen_rec *lr = (ap_listen_rec *) pt->baton;
                     apr_pool_t *ptrans;         /* Pool for per-transaction stuff */
@@ -2744,7 +2768,7 @@ do_maintenance:
             process_timeout_queue(keepalive_q, now);
 
             /* The linger queue can be shrinked any time under pressure */
-            if (workers_were_busy || dying) {
+            if (workers_were_busy || apr_atomic_read32(&dying)) {
                 shrink_timeout_queue(linger_q, now);
                 next_shrink_time = now + QUEUES_SHRINK_TIMEOUT;
             }
@@ -2778,7 +2802,7 @@ do_maintenance:
             ps->connections = apr_atomic_read32(&connection_count);
         }
         else if (next_shrink_time <= now
-                 && (workers_were_busy || dying)
+                 && (workers_were_busy || apr_atomic_read32(&dying))
                  && apr_atomic_read32(linger_q->total)) {
             apr_thread_mutex_lock(timeout_mutex);
             shrink_timeout_queue(linger_q, now);
@@ -2870,17 +2894,18 @@ static void *APR_THREAD_FUNC worker_thread(apr_thread_t * thd, void *dummy)
         }
 
         ap_update_child_status_from_indexes(process_slot, thread_slot,
-                                            dying ? SERVER_GRACEFUL
-                                                  : SERVER_READY,
+                                            (apr_atomic_read32(&dying)
+                                             ? SERVER_GRACEFUL : SERVER_READY),
                                             NULL);
 
-        if (workers_may_exit) {
+        if (apr_atomic_read32(&workers_may_exit)) {
             ap_log_error(APLOG_MARK, APLOG_TRACE5, 0, ap_server_conf,
                          "worker thread %i/%i may exit",
                          thread_slot, threads_per_child);
             break;
         }
-        if (dying && worker_thread_should_exit_early(thread_slot)) {
+        if (apr_atomic_read32(&dying)
+            && worker_thread_should_exit_early(thread_slot)) {
             break;
         }
 
@@ -2907,7 +2932,7 @@ static void *APR_THREAD_FUNC worker_thread(apr_thread_t * thd, void *dummy)
              * may have already been cleaned up.  Don't log the "error" if
              * workers_may_exit is set.
              */
-            if (!APR_STATUS_IS_EINTR(rv) && !workers_may_exit) {
+            if (!APR_STATUS_IS_EINTR(rv) && !apr_atomic_read32(&workers_may_exit)) {
                 ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ap_server_conf,
                              APLOGNO(03099) "ap_queue_pop_event failed");
                 AP_DEBUG_ASSERT(0);
@@ -2966,8 +2991,8 @@ static void *APR_THREAD_FUNC worker_thread(apr_thread_t * thd, void *dummy)
     }
 
     ap_update_child_status_from_indexes(process_slot, thread_slot,
-                                        dying ? SERVER_DEAD
-                                              : SERVER_GRACEFUL,
+                                        (apr_atomic_read32(&dying)
+                                         ? SERVER_DEAD : SERVER_GRACEFUL),
                                         NULL);
 
     apr_thread_exit(thd, APR_SUCCESS);
@@ -3240,7 +3265,8 @@ static void *APR_THREAD_FUNC start_threads(apr_thread_t * thd, void *dummy)
         }
 
 
-        if (start_thread_may_exit || threads_created == threads_per_child) {
+        if (apr_atomic_read32(&start_thread_may_exit)
+            || threads_created == threads_per_child) {
             break;
         }
         /* wait for previous generation to clean up an entry */
@@ -3290,9 +3316,9 @@ static void join_workers(apr_thread_t * listener, apr_thread_t ** threads)
          */
 
         iter = 0;
-        while (!dying) {
+        while (!apr_atomic_read32(&dying)) {
             apr_sleep(apr_time_from_msec(500));
-            if (dying || ++iter > 10) {
+            if (apr_atomic_read32(&dying) || ++iter > 10) {
                 break;
             }
             /* listener has not stopped accepting yet */
@@ -3332,10 +3358,11 @@ static void join_start_thread(apr_thread_t * start_thread_id)
 {
     apr_status_t rv, thread_rv;
 
-    start_thread_may_exit = 1;  /* tell it to give up in case it is still
-                                 * trying to take over slots from a
-                                 * previous generation
-                                 */
+    /* tell it to give up in case it is still trying to take over slots
+     * from a previous generation
+     */
+    apr_atomic_set32(&start_thread_may_exit, 1);
+
     rv = apr_thread_join(&thread_rv, start_thread_id);
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ap_server_conf, APLOGNO(00478)
