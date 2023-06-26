@@ -160,6 +160,9 @@
 /* Update scoreboard stats at this period */
 #define STATS_UPDATE_TIMEOUT    apr_time_from_msec(1000)
 
+/* Shrink linger_q at this period (min) when busy */
+#define QUEUES_SHRINK_TIMEOUT   apr_time_from_msec(500)
+
 /* Don't wait more time in poll() if APR_POLLSET_WAKEABLE is not implemented */
 #define NON_WAKEABLE_TIMEOUT    apr_time_from_msec(100)
 
@@ -2442,7 +2445,7 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
     proc_info *ti = dummy;
     int process_slot = ti->pslot;
     process_score *ps = ap_get_scoreboard_process(process_slot);
-    apr_time_t next_stats_time = 0;
+    apr_time_t next_stats_time = 0, next_shrink_time = 0;
     apr_interval_time_t min_poll_timeout = -1;
 
     free(ti);
@@ -2847,6 +2850,7 @@ do_maintenance:
             if (workers_were_busy || apr_atomic_read32(&dying)) {
                 shrink_timeout_queue(linger_q, now);
                 shrink_timeout_queue(keepalive_q, now);
+                next_shrink_time = now + QUEUES_SHRINK_TIMEOUT;
             }
             else {
                 process_timeout_queue(linger_q, now);
@@ -2869,13 +2873,15 @@ do_maintenance:
                          "queues maintained: next timeout=%" APR_TIME_T_FMT,
                          next_expiry ? next_expiry - now : -1);
         }
-        else if ((workers_were_busy || apr_atomic_read32(&dying))
+        else if (next_shrink_time <= now
+                 && (workers_were_busy || apr_atomic_read32(&dying))
                  && (apr_atomic_read32(linger_q->total)
                      || apr_atomic_read32(keepalive_q->total))) {
             apr_thread_mutex_lock(timeout_mutex);
             shrink_timeout_queue(linger_q, now);
             shrink_timeout_queue(keepalive_q, now);
             apr_thread_mutex_unlock(timeout_mutex);
+            next_shrink_time = now + QUEUES_SHRINK_TIMEOUT;
         }
     } /* listener main loop */
 
