@@ -158,6 +158,9 @@
 /* Lingering close (read) timeout */
 #define LINGER_READ_TIMEOUT     apr_time_from_sec(2)
 
+/* Shrink linger_q at this period (min) when busy */
+#define QUEUES_SHRINK_TIMEOUT   apr_time_from_msec(500)
+
 /* Don't wait more time in poll() if APR_POLLSET_WAKEABLE is not implemented */
 #define NON_WAKEABLE_TIMEOUT    apr_time_from_msec(100)
 
@@ -2348,7 +2351,7 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
     proc_info *ti = dummy;
     int process_slot = ti->pslot;
     process_score *ps = ap_get_scoreboard_process(process_slot);
-    apr_time_t last_log;
+    apr_time_t last_log, next_shrink_time = 0;
 
     last_log = event_time_now();
     free(ti);
@@ -2743,6 +2746,7 @@ do_maintenance:
             /* The linger queue can be shrinked any time under pressure */
             if (workers_were_busy || dying) {
                 shrink_timeout_queue(linger_q, now);
+                next_shrink_time = now + QUEUES_SHRINK_TIMEOUT;
             }
             else {
                 process_timeout_queue(linger_q, now);
@@ -2773,11 +2777,13 @@ do_maintenance:
             ps->suspended = apr_atomic_read32(&suspended_count);
             ps->connections = apr_atomic_read32(&connection_count);
         }
-        else if ((workers_were_busy || dying)
+        else if (next_shrink_time <= now
+                 && (workers_were_busy || dying)
                  && apr_atomic_read32(linger_q->total)) {
             apr_thread_mutex_lock(timeout_mutex);
             shrink_timeout_queue(linger_q, now);
             apr_thread_mutex_unlock(timeout_mutex);
+            next_shrink_time = now + QUEUES_SHRINK_TIMEOUT;
         }
     } /* listener main loop */
 
