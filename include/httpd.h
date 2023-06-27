@@ -1161,6 +1161,8 @@ struct request_rec {
      *  TODO: compact elsewhere
      */
     unsigned int final_resp_passed  :1;
+    /** Whether the header fetching is incomplete (non-blocking) */
+    unsigned int header_incomplete  :1;
 };
 
 /**
@@ -1309,6 +1311,9 @@ struct conn_rec {
     int async_filter;
 
     int outgoing;
+
+    /** Partial request being read (non-blocking) */
+    request_rec *partial_request;
 };
 
 struct conn_slave_rec {
@@ -1321,16 +1326,21 @@ struct conn_slave_rec {
  * only be set by the MPM. Use CONN_STATE_LINGER outside of the MPM.
  */
 typedef enum  {
-    CONN_STATE_CHECK_REQUEST_LINE_READABLE,
-    CONN_STATE_READ_REQUEST_LINE,
+    CONN_STATE_KEEPALIVE,
+    CONN_STATE_PROCESS,
     CONN_STATE_HANDLER,
-    CONN_STATE_WRITE_COMPLETION,
+    CONN_STATE_COMPLETION,
     CONN_STATE_SUSPENDED,
     CONN_STATE_LINGER,          /* connection may be closed with lingering */
     CONN_STATE_LINGER_NORMAL,   /* MPM has started lingering close with normal timeout */
     CONN_STATE_LINGER_SHORT,    /* MPM has started lingering close with short timeout */
 
-    CONN_STATE_NUM              /* Number of states (keep/kept last) */
+    CONN_STATE_NUM,             /* Number of states (keep/kept last) */
+
+    /* Legacy names */
+    CONN_STATE_READ_REQUEST_LINE            = CONN_STATE_PROCESS,
+    CONN_STATE_WRITE_COMPLETION             = CONN_STATE_COMPLETION,
+    CONN_STATE_CHECK_REQUEST_LINE_READABLE  = CONN_STATE_KEEPALIVE,
 } conn_state_e;
 
 typedef enum  {

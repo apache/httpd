@@ -564,7 +564,7 @@ static int status_handler(request_rec *r)
         ap_rputs("</dl>", r);
 
     if (is_async) {
-        int read_line = 0, write_completion = 0, lingering_close = 0, keep_alive = 0,
+        int reading = 0, writing = 0, lingering_close = 0, keep_alive = 0,
             connections = 0, stopping = 0, procs = 0;
         if (!short_report)
             ap_rputs("\n\n<table rules=\"all\" cellpadding=\"1%\">\n"
@@ -581,8 +581,8 @@ static int status_handler(request_rec *r)
             ps_record = ap_get_scoreboard_process(i);
             if (ps_record->pid) {
                 connections      += ps_record->connections;
-                read_line        += ps_record->read_line;
-                write_completion += ps_record->write_completion;
+                reading          += ps_record->reading;
+                writing          += ps_record->write_completion;
                 keep_alive       += ps_record->keep_alive;
                 lingering_close  += ps_record->lingering_close;
                 procs++;
@@ -610,7 +610,7 @@ static int status_handler(request_rec *r)
                                thread_busy_buffer[i],
                                thread_graceful_buffer[i],
                                thread_idle_buffer[i],
-                               ps_record->read_line,
+                               ps_record->reading,
                                ps_record->write_completion,
                                ps_record->keep_alive,
                                ps_record->lingering_close);
@@ -627,7 +627,7 @@ static int status_handler(request_rec *r)
                           procs, stopping,
                           connections,
                           busy, graceful, idle,
-                          read_line, write_completion, keep_alive, lingering_close);
+                          reading, writing, keep_alive, lingering_close);
         }
         else {
             ap_rprintf(r, "Processes: %d\n"
@@ -639,7 +639,7 @@ static int status_handler(request_rec *r)
                           "ConnsAsyncClosing: %d\n",
                           procs, stopping,
                           connections,
-                          read_line, write_completion, keep_alive, lingering_close);
+                          reading, writing, keep_alive, lingering_close);
         }
     }
 

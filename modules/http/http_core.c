@@ -37,7 +37,7 @@
 
 /* Handles for core filters */
 AP_DECLARE_DATA ap_filter_rec_t *ap_http_input_filter_handle;
-AP_DECLARE_DATA ap_filter_rec_t *ap_h1_request_in_filter_handle;
+AP_DECLARE_DATA ap_filter_rec_t *ap_h1_header_in_filter_handle;
 AP_DECLARE_DATA ap_filter_rec_t *ap_h1_body_in_filter_handle;
 AP_DECLARE_DATA ap_filter_rec_t *ap_http_header_filter_handle;
 AP_DECLARE_DATA ap_filter_rec_t *ap_h1_response_out_filter_handle;
@@ -142,14 +142,27 @@ static int ap_process_http_async_connection(conn_rec *c)
     conn_state_t *cs = c->cs;
 
     AP_DEBUG_ASSERT(cs != NULL);
-    AP_DEBUG_ASSERT(cs->state == CONN_STATE_READ_REQUEST_LINE);
+    AP_DEBUG_ASSERT(cs->state == CONN_STATE_PROCESS);
 
-    if (cs->state == CONN_STATE_READ_REQUEST_LINE) {
+    if (cs->state == CONN_STATE_PROCESS) {
+        apr_read_type_e block = APR_NONBLOCK_READ;
+        int again_mpm = 0;
+
+        if (c->master /* h2_c2 not ready for AGAIN yet */
+            || ap_mpm_query(AP_MPMQ_CAN_AGAIN, &again_mpm)
+            || !again_mpm) {
+            block = APR_BLOCK_READ;
+        }
+
         ap_update_child_status_from_conn(c->sbh, SERVER_BUSY_READ, c);
         if (ap_extended_status) {
             ap_set_conn_count(c->sbh, r, c->keepalives);
         }
-        if ((r = ap_read_request(c))) {
+
+        if ((r = ap_read_request_ex(c, block))) {
+            if (r->header_incomplete) {
+                return AGAIN;
+            }
             if (r->status == HTTP_OK) {
                 cs->state = CONN_STATE_HANDLER;
                 if (ap_extended_status) {
@@ -167,8 +180,9 @@ static int ap_process_http_async_connection(conn_rec *c)
                 r = NULL;
             }
 
-            if (cs->state != CONN_STATE_WRITE_COMPLETION &&
-                cs->state != CONN_STATE_SUSPENDED) {
+            if (cs->state != CONN_STATE_COMPLETION &&
+                cs->state != CONN_STATE_SUSPENDED &&
+                cs->state != CONN_STATE_LINGER) {
                 /* Something went wrong; close the connection */
                 cs->state = CONN_STATE_LINGER;
             }
@@ -276,7 +290,7 @@ static void h1_pre_read_request(request_rec *r, conn_rec *c)
     if (!r->main && !r->prev
         && !strcmp(AP_PROTOCOL_HTTP1, ap_get_protocol(c))) {
         if (r->proxyreq == PROXYREQ_NONE) {
-            ap_add_input_filter_handle(ap_h1_request_in_filter_handle,
+            ap_add_input_filter_handle(ap_h1_header_in_filter_handle,
                                        NULL, r, r->connection);
         }
         ap_add_output_filter_handle(ap_h1_response_out_filter_handle,
@@ -369,8 +383,8 @@ static void register_hooks(apr_pool_t *p)
     ap_http_input_filter_handle =
         ap_register_input_filter("HTTP_IN", ap_http_filter,
                                  NULL, AP_FTYPE_PROTOCOL);
-    ap_h1_request_in_filter_handle =
-        ap_register_input_filter("HTTP1_REQUEST_IN", ap_h1_request_in_filter,
+    ap_h1_header_in_filter_handle =
+        ap_register_input_filter("HTTP1_HEADER_IN", ap_h1_header_in_filter,
                                  NULL, AP_FTYPE_PROTOCOL);
     ap_h1_body_in_filter_handle =
         ap_register_input_filter("HTTP1_BODY_IN", ap_h1_body_in_filter,

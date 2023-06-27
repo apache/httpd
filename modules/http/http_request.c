@@ -393,7 +393,7 @@ AP_DECLARE(void) ap_process_request_after_handler(request_rec *r)
              * to not try another useless/stressful one but to go straight to
              * POLLOUT.
             */
-            c->cs->state = CONN_STATE_WRITE_COMPLETION;
+            c->cs->state = CONN_STATE_COMPLETION;
         }
     }
     AP_PROCESS_REQUEST_RETURN((uintptr_t)r, r->uri, r->status);
