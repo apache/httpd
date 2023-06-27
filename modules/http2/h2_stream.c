@@ -767,6 +767,9 @@ apr_status_t h2_stream_add_header(h2_stream *stream,
         status = h2_request_add_header(stream->rtmp, stream->pool,
                                        name, nlen, value, vlen,
                                        session->s->limit_req_fieldsize, &was_added);
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE2, status, session->c1,
+                      H2_STRM_MSG(stream, "add_header: '%.*s: %.*s"),
+                      (int)nlen, name, (int)vlen, value);
         if (was_added) ++stream->request_headers_added;
     }
     else if (H2_SS_OPEN == stream->state) {
@@ -897,7 +900,26 @@ apr_status_t h2_stream_end_headers(h2_stream *stream, int eos, size_t raw_bytes)
      *      of CONNECT requests (see [RFC7230], Section 5.3)).
      */
     if (!ap_cstr_casecmp(req->method, "CONNECT")) {
-        if (req->scheme || req->path) {
+        if (req->protocol) {
+            if (!strcmp("websocket", req->protocol)) {
+                if (!req->scheme || !req->path) {
+                    ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, stream->session->c1,
+                                  H2_STRM_LOG(APLOGNO(10457), stream, "Request to websocket CONNECT "
+                                  "without :scheme or :path, sending 400 answer"));
+                    set_error_response(stream, HTTP_BAD_REQUEST);
+                    goto cleanup;
+                }
+            }
+            else {
+                /* do not know that protocol */
+                ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, stream->session->c1, APLOGNO(10460)
+                              "':protocol: %s' header present in %s request",
+                              req->protocol, req->method);
+                set_error_response(stream, HTTP_NOT_IMPLEMENTED);
+                goto cleanup;
+            }
+        }
+        else if (req->scheme || req->path) {
             ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, stream->session->c1,
                           H2_STRM_LOG(APLOGNO(10384), stream, "Request to CONNECT "
                           "with :scheme or :path specified, sending 400 answer"));
@@ -1459,8 +1481,8 @@ static ssize_t stream_data_cb(nghttp2_session *ng2s,
                  * it is all fine. */
                  ap_log_cerror(APLOG_MARK, APLOG_TRACE1, rv, c1,
                                H2_SSSN_STRM_MSG(session, stream_id, "rst stream"));
-                 h2_stream_rst(stream, H2_ERR_INTERNAL_ERROR);
-                 return NGHTTP2_ERR_CALLBACK_FAILURE;
+                 h2_stream_rst(stream, H2_ERR_STREAM_CLOSED);
+                 return NGHTTP2_ERR_DEFERRED;
             }
             ap_log_cerror(APLOG_MARK, APLOG_TRACE1, rv, c1,
                           H2_SSSN_STRM_MSG(session, stream_id,
@@ -1469,10 +1491,17 @@ static ssize_t stream_data_cb(nghttp2_session *ng2s,
             eos = 1;
             rv = APR_SUCCESS;
         }
+        else if (APR_ECONNRESET == rv || APR_ECONNABORTED == rv) {
+            ap_log_cerror(APLOG_MARK, APLOG_DEBUG, rv, c1,
+                          H2_STRM_LOG(APLOGNO(), stream, "data_cb, reading data"));
+            h2_stream_rst(stream, H2_ERR_STREAM_CLOSED);
+            return NGHTTP2_ERR_DEFERRED;
+        }
         else {
             ap_log_cerror(APLOG_MARK, APLOG_ERR, rv, c1,
                           H2_STRM_LOG(APLOGNO(02938), stream, "data_cb, reading data"));
-            return NGHTTP2_ERR_CALLBACK_FAILURE;
+            h2_stream_rst(stream, H2_ERR_INTERNAL_ERROR);
+            return NGHTTP2_ERR_DEFERRED;
         }
     }
 

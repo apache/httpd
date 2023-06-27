@@ -33,6 +33,18 @@ struct h2_stream;
 #define H2_USE_PIPES            (APR_FILES_AS_SOCKETS && APR_VERSION_AT_LEAST(1,6,0))
 #endif
 
+#if AP_MODULE_MAGIC_AT_LEAST(20211221, 15)
+#define H2_USE_POLLFD_FROM_CONN 1
+#else
+#define H2_USE_POLLFD_FROM_CONN 0
+#endif
+
+#if H2_USE_POLLFD_FROM_CONN && H2_USE_PIPES
+#define H2_USE_WEBSOCKETS       1
+#else
+#define H2_USE_WEBSOCKETS       0
+#endif
+
 /**
  * The magic PRIamble of RFC 7540 that is always sent when starting
  * a h2 communication.
@@ -62,6 +74,8 @@ extern const char *H2_MAGIC_TOKEN;
 #define H2_HEADER_AUTH_LEN   10
 #define H2_HEADER_PATH       ":path"
 #define H2_HEADER_PATH_LEN   5
+#define H2_HEADER_PROTO      ":protocol"
+#define H2_HEADER_PROTO_LEN  9
 #define H2_CRLF             "\r\n"
 
 /* Size of the frame header itself in HTTP/2 */
@@ -153,6 +167,7 @@ struct h2_request {
     const char *scheme;
     const char *authority;
     const char *path;
+    const char *protocol;
     apr_table_t *headers;
 
     apr_time_t request_time;

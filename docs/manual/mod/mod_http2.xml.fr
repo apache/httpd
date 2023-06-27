@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1909769 -->
+<!-- English Revision: 1910507 -->
 <!-- French translation : Lucien GENTIS -->
 
 <!--
@@ -1243,5 +1243,48 @@ H2EarlyHint Link "&lt;/my.css&gt;;rel=preload;as=style"
             </example>
         </usage>
     </directivesynopsis>
+
+    <directivesynopsis>
+        <name>H2WebSockets</name>
+        <description>Active/désactive les WebSockets via HTTP/2</description>
+        <syntax>H2WebSockets  on|off</syntax>
+        <default>H2WebSockets off</default>
+        <contextlist>
+            <context>server config</context>
+            <context>virtual host</context>
+        </contextlist>
+        <compatibility>Disponible à partir de la version 2.5.1 du serveur HTTP
+	Apache</compatibility>
+
+        <usage>
+            <p>
+                La directive <directive>H2WebSockets</directive> permet
+		d'activer ou de désactiver l'amorçage des WebSockets via le
+		protocole HTTP/2. Cette extension du protocole est définie dans
+		la RFC 8441.
+            </p><p>
+                Ces requêtes sont similaires à CONNECT, mais elles possèdent
+		l'en-tête supplémentaire ':protocol'. Elles sont transformées au
+		sein du module en leurs équivalents HTTP/1.1 avant d'être
+		soumises au traitement interne.
+            </p><p>
+                Cela signifie que les WebSockets HTTP/2 peuvent être utilisés
+		dans le cadre d'une directive <directive
+		module="mod_proxy">ProxyPass</directive> avec le paramètre
+		'upgrade=websocket' sans autres modifications.
+            </p><p>
+                Pour les modules tiers qui gèrent les WebSockets directement
+		dans le serveur, l'amorçage du protocole lui-même fonctionnera
+		aussi. Dans le cas de HTTP/2 cependant, le transfert de données
+		nécessite une prise en charge supplémentaire. Le WebSocket
+		négocié sera incapable d'utiliser le socket de connexion du
+		client pour examiner les évènements d'entrée/sortie concernés.
+            </p><p>
+                Cette fonctionnalité étant susceptible de briser la
+		compatibilité ascendante pour de tels modules tiers, elle n'est
+		pas activée par défaut.
+            </p>
+        </usage>
+    </directivesynopsis>   
 
 </modulesynopsis>
