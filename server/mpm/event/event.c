@@ -1154,6 +1154,25 @@ static void close_connection_at(event_conn_state_t *cs,
 #define close_connection(cs) \
     close_connection_at((cs), __FUNCTION__, __LINE__)
 
+static void kill_connection_at(event_conn_state_t *cs, apr_status_t status,
+                               const char *at, int line)
+{
+    if (cs->c) {
+        ap_log_cerror(APLOG_MARK, APLOG_INFO, status, cs->c, APLOGNO(10382)
+                      "killing connection in %s at %s:%i",
+                      cs_state_str(cs), at, line);
+    }
+    else {
+        ap_log_error(APLOG_MARK, APLOG_INFO, status, ap_server_conf, APLOGNO(10383)
+                     "killing unprocessed connection from %pI in %s at %s:%i",
+                     cs_raddr(cs), cs_state_str(cs), at, line);
+    }
+
+    close_connection_at(cs, at, line);
+}
+#define kill_connection(cs, status) \
+    kill_connection_at((cs), (status), __FUNCTION__, __LINE__)
+
 /* forward declare */
 static void set_conn_state_sense(event_conn_state_t *cs, int sense);
 
@@ -1787,7 +1806,7 @@ static apr_status_t push2worker(event_conn_state_t *cs, apr_socket_t *csd,
          * socket to a worker
          */
         if (cs) {
-            shutdown_connection(cs);
+            kill_connection(cs, rc);
         }
         else {
             if (csd) {
@@ -2178,7 +2197,7 @@ static void process_timeout_queue(struct timeout_queue *q, apr_time_t expiry,
 
             TO_QUEUE_REMOVE(qp, cs);
             if (!pollset_del(cs, 1)) {
-                shutdown_connection(cs);
+                kill_connection(cs, APR_EGENERAL);
                 continue;
             }
 
@@ -2468,7 +2487,8 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
                 }
 
                 if (!pollset_del(cs, 0)) {
-                    shutdown_connection(cs);
+                    /* Can't go anywhere, kill (and log) and next. */
+                    kill_connection(cs, APR_EGENERAL);
                     continue;
                 }
 
