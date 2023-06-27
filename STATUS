@@ -263,6 +263,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      all CI checks passed.
      +1: icing, gbechis
 
+   *) mod_ssl: Fix for BZ 66626.
+      Trunk version of patch:
+         https://svn.apache.org/r1875355
+      Backport version for 2.4.x of patch:
+         svn merge -c 1875355 ^/httpd/httpd/trunk .
+      +1: gbechis
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
