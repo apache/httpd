@@ -222,7 +222,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
           https://svn.apache.org/r1908657
           https://svn.apache.org/r1908150
      2.4.x patch: svn merge -c 1877350,1894021,1906379,1908657,1908150 ^/httpd/httpd/trunk .
-     +1: jailletc36, rpluem
+     +1: jailletc36, rpluem, gbechis
 
   *) core: Optimize send_brigade_nonblocking()
      trunk patch:
@@ -261,7 +261,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        * Fix for PR 66646, recursive call into output filters
      Github PR at <https://github.com/apache/httpd/pull/364>,
      all CI checks passed.
-     +1: icing
+     +1: icing, gbechis
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
