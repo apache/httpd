@@ -157,6 +157,9 @@
 
 #define SECONDS_TO_LINGER  2
 
+/* Update scoreboard stats at this period */
+#define STATS_UPDATE_TIMEOUT    apr_time_from_msec(1000)
+
 /* Don't wait more time in poll() if APR_POLLSET_WAKEABLE is not implemented */
 #define NON_WAKEABLE_TIMEOUT    apr_time_from_msec(100)
 
@@ -2394,15 +2397,54 @@ static APR_INLINE void shrink_timeout_queue(struct timeout_queue *queue,
     }
 }
 
+static void update_stats(process_score *ps, apr_time_t now,
+                         apr_time_t *when, int force)
+{
+    int expired = (*when <= now);
+
+    if (expired || force) {
+        apr_atomic_set32(&ps->reading, apr_atomic_read32(process_q->total));
+        apr_atomic_set32(&ps->write_completion, apr_atomic_read32(completion_q->total));
+        apr_atomic_set32(&ps->keep_alive, apr_atomic_read32(keepalive_q->total));
+        apr_atomic_set32(&ps->flushing, apr_atomic_read32(flush_q->total));
+        apr_atomic_set32(&ps->lingering_close, apr_atomic_read32(linger_q->total));
+        apr_atomic_set32(&ps->suspended, apr_atomic_read32(&suspended_count));
+        apr_atomic_set32(&ps->backlog, apr_atomic_read32(backlog_q->total));
+        apr_atomic_set32(&ps->connections, apr_atomic_read32(&connection_count));
+    }
+
+    if (expired) {
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf,
+                     "child: idlers:%i conns:%u backlog:%u "
+                     "process:%u completion:%u keepalive:%u linger:%u "
+                     "timers:%u suspended:%u clogged:%u "
+                     "(%u/%u workers shutdown)",
+                     ap_queue_info_count(worker_queue_info),
+                     apr_atomic_read32(&connection_count),
+                     apr_atomic_read32(backlog_q->total),
+                     apr_atomic_read32(process_q->total),
+                     apr_atomic_read32(completion_q->total),
+                     apr_atomic_read32(keepalive_q->total),
+                     apr_atomic_read32(linger_q->total),
+                     apr_atomic_read32(&timers_count),
+                     apr_atomic_read32(&suspended_count),
+                     apr_atomic_read32(&clogged_count),
+                     apr_atomic_read32(&threads_shutdown),
+                     threads_per_child);
+
+        *when = now + STATS_UPDATE_TIMEOUT;
+    }
+}
+
 static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
 {
     apr_status_t rc;
     proc_info *ti = dummy;
     int process_slot = ti->pslot;
     process_score *ps = ap_get_scoreboard_process(process_slot);
-    apr_time_t last_log;
+    apr_time_t next_stats_time = 0;
+    apr_interval_time_t min_poll_timeout = -1;
 
-    last_log = event_time_now();
     free(ti);
 
 #if HAVE_SERF
@@ -2415,11 +2457,21 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
     apr_signal(LISTENER_SIGNAL, dummy_signal_handler);
     unblock_signal(LISTENER_SIGNAL);
 
+    /* Don't wait in poll() for more than NON_WAKEABLE_TIMEOUT if the pollset
+     * is not wakeable, and not more then the stats update period either.
+     */
+    if (!listener_is_wakeable) {
+        min_poll_timeout = NON_WAKEABLE_TIMEOUT;
+    }
+    if (min_poll_timeout < 0 || min_poll_timeout > STATS_UPDATE_TIMEOUT) {
+        min_poll_timeout = STATS_UPDATE_TIMEOUT;
+    }
+
     for (;;) {
         apr_int32_t num = 0;
         apr_time_t next_expiry = -1;
         apr_interval_time_t timeout = -1;
-        int workers_were_busy = 0;
+        int workers_were_busy = 0, force_stats = 0;
         socket_callback_baton_t *user_chain;
         const apr_pollfd_t *out_pfd;
         apr_time_t now, poll_time;
@@ -2451,31 +2503,6 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
                  * and exit the child faster.
                  */
                 goto do_maintenance; /* with next_expiry == -1 */
-            }
-        }
-
-        if (APLOGtrace6(ap_server_conf)) {
-            /* trace log status every second */
-            if (now - last_log > apr_time_from_sec(1)) {
-                last_log = now;
-                apr_thread_mutex_lock(timeout_mutex);
-                ap_log_error(APLOG_MARK, APLOG_TRACE6, 0, ap_server_conf,
-                             "connections: %u (clogged: %u process: %d completion: %d "
-                             "keep-alive: %d lingering: %d suspended: %u)",
-                             apr_atomic_read32(&connection_count),
-                             apr_atomic_read32(&clogged_count),
-                             apr_atomic_read32(process_q->total),
-                             apr_atomic_read32(completion_q->total),
-                             apr_atomic_read32(keepalive_q->total),
-                             apr_atomic_read32(linger_q->total),
-                             apr_atomic_read32(&suspended_count));
-                if (dying) {
-                    ap_log_error(APLOG_MARK, APLOG_TRACE6, 0, ap_server_conf,
-                                 "%u/%u workers shutdown",
-                                 apr_atomic_read32(&threads_shutdown),
-                                 threads_per_child);
-                }
-                apr_thread_mutex_unlock(timeout_mutex);
             }
         }
 
@@ -2549,15 +2576,32 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
             timeout = next_expiry > now ? next_expiry - now : 0;
         }
 
-        /* When non-wakeable, don't wait more than 100 ms, in any case. */
-        if (!listener_is_wakeable && (timeout < 0 || timeout > NON_WAKEABLE_TIMEOUT)) {
-            timeout = NON_WAKEABLE_TIMEOUT;
+        /* So long as there are connections, wake up at most every
+         * min_poll_timeout to refresh the scoreboard stats.
+         */
+        if (timeout < 0 || timeout > min_poll_timeout) {
+            if (timeout > 0
+                || !listener_is_wakeable
+                || apr_atomic_read32(&connection_count)) {
+                timeout = next_stats_time - now;
+                if (timeout <= 0 || timeout > min_poll_timeout) {
+                    timeout = min_poll_timeout;
+                }
+            }
+            else {
+                /* No connections and entering infinite poll(),
+                 * clear the stats first.
+                 */
+                force_stats = 1;
+            }
         }
-        else if (timeout > 0) {
-            /* apr_pollset_poll() might round down the timeout to
-             * milliseconds, let's forcibly round up here to never
-             * return before the timeout.
-             */
+        update_stats(ps, now, &next_stats_time, force_stats);
+
+        /* apr_pollset_poll() might round down the timeout to
+         * milliseconds, let's forcibly round up here to never
+         * return before the timeout.
+         */
+        if (timeout > 0) {
             timeout = apr_time_from_msec(
                 apr_time_as_msec(timeout + apr_time_from_msec(1) - 1)
             );
@@ -2824,15 +2868,6 @@ do_maintenance:
             ap_log_error(APLOG_MARK, APLOG_TRACE7, 0, ap_server_conf,
                          "queues maintained: next timeout=%" APR_TIME_T_FMT,
                          next_expiry ? next_expiry - now : -1);
-
-            ps->reading = apr_atomic_read32(process_q->total);
-            ps->write_completion = apr_atomic_read32(completion_q->total);
-            ps->keep_alive = apr_atomic_read32(keepalive_q->total);
-            ps->flushing = apr_atomic_read32(flush_q->total);
-            ps->lingering_close = apr_atomic_read32(linger_q->total);
-            ps->backlog = apr_atomic_read32(backlog_q->total);
-            ps->connections = apr_atomic_read32(&connection_count);
-            ps->suspended = apr_atomic_read32(&suspended_count);
         }
         else if ((workers_were_busy || apr_atomic_read32(&dying))
                  && (apr_atomic_read32(linger_q->total)
@@ -2841,7 +2876,6 @@ do_maintenance:
             shrink_timeout_queue(linger_q, now);
             shrink_timeout_queue(keepalive_q, now);
             apr_thread_mutex_unlock(timeout_mutex);
-            ps->keep_alive = 0;
         }
     } /* listener main loop */
 
