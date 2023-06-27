@@ -269,6 +269,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       Backport version for 2.4.x of patch:
          svn merge -c 1875355 ^/httpd/httpd/trunk .
       +1: gbechis
+   
+    *) mod_rewrite: PR66672 trailing ? and QSA together regression
+      Trunk version of patch:
+         https://svn.apache.org/r1910633
+      Backport version for 2.4.x of patch:
+         svn merge -c 1910633 ^/httpd/httpd/trunk .
+      +1: covener
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
