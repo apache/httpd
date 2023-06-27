@@ -149,6 +149,21 @@
 #define MAX_THREAD_LIMIT 100000
 #endif
 
+#ifndef DEFAULT_ASYNC_FACTOR
+#define DEFAULT_ASYNC_FACTOR 2.0
+#endif
+
+#ifndef MAX_SPARE_THREADS_RATIO
+#define MAX_SPARE_THREADS_RATIO 0.75 /* of MaxRequestWorkers */
+#endif
+#ifndef MAX_DAEMONS_THREADS_RATIO
+#define MAX_DAEMONS_THREADS_RATIO 32
+#endif
+
+#ifndef SCOREBOARD_DAEMONS_FACTOR
+#define SCOREBOARD_DAEMONS_FACTOR 4
+#endif
+
 #define MPM_CHILD_PID(i) (ap_scoreboard_image->parent[i].pid)
 
 #if !APR_VERSION_AT_LEAST(1,4,0)
@@ -183,13 +198,6 @@
  * Actual definitions of config globals
  */
 
-#ifndef DEFAULT_WORKER_FACTOR
-#define DEFAULT_WORKER_FACTOR 2
-#endif
-#define WORKER_FACTOR_SCALE   16  /* scale factor to allow fractional values */
-static unsigned int worker_factor = DEFAULT_WORKER_FACTOR * WORKER_FACTOR_SCALE;
-    /* AsyncRequestWorkerFactor * 16 */
-
 static int threads_per_child = 0;           /* ThreadsPerChild */
 static int ap_daemons_to_start = 0;         /* StartServers */
 static int min_spare_threads = 0;           /* MinSpareThreads */
@@ -200,6 +208,12 @@ static int server_limit = 0;                /* ServerLimit */
 static int thread_limit = 0;                /* ThreadLimit */
 static int conns_this_child = 0;            /* MaxConnectionsPerChild, only accessed
                                                in listener thread */
+static double async_factor = DEFAULT_ASYNC_FACTOR; /* AsyncRequestWorkerFactor */
+
+static int auto_settings = 0;               /* Auto settings based on max_workers
+                                               and num_online_cpus */
+static int num_online_cpus = 0;             /* Number of CPUs detected */
+
 static /*atomic*/ apr_uint32_t dying = 0;
 static /*atomic*/ apr_uint32_t workers_may_exit = 0;
 static /*atomic*/ apr_uint32_t start_thread_may_exit = 0;
@@ -627,11 +641,16 @@ typedef struct event_retained_data {
     apr_pool_t *gen_pool; /* generation pool (children start->stop lifetime) */
     event_child_bucket *buckets; /* children buckets (reset per generation) */
 
+    ap_listen_rec **listen_buckets;
+    int num_listen_buckets;
+
     int first_server_limit;
     int first_thread_limit;
+    int first_server_sb_limit;
     int sick_child_detected;
     int maxclients_reported;
     int near_maxclients_reported;
+
     /*
      * The max child slot ever assigned, preserved across restarts.  Necessary
      * to deal with MaxRequestWorkers changes across AP_SIG_GRACEFUL restarts.
@@ -815,7 +834,7 @@ static APR_INLINE int connections_above_limit(int *busy)
                 /* Off by 'listensocks_disabled()' to avoid flip flop */
                 || c_count - l_count < (apr_uint32_t)threads_per_child +
                                        (i_count - listensocks_disabled()) *
-                                       (worker_factor / WORKER_FACTOR_SCALE)) {
+                                       async_factor) {
             return 0;
         }
     }
@@ -3082,11 +3101,12 @@ static void setup_threads_runtime(void)
     const int good_methods[] = { APR_POLLSET_PORT,
                                  APR_POLLSET_KQUEUE,
                                  APR_POLLSET_EPOLL };
-    /* XXX: K-A or lingering close connection included in the async factor */
-    unsigned int async_factor = (worker_factor < WORKER_FACTOR_SCALE * 2
-                                 ? WORKER_FACTOR_SCALE * 2 : worker_factor);
-    unsigned int async_threads = (threads_per_child * async_factor / WORKER_FACTOR_SCALE);
-    const apr_size_t pollset_size = (num_listensocks + async_threads + POLLSET_RESERVE_SIZE);
+    const double threads_factor = (async_factor < DEFAULT_ASYNC_FACTOR
+                                   ? DEFAULT_ASYNC_FACTOR
+                                   : async_factor);
+    const apr_size_t pollset_size = ((unsigned int)(threads_per_child * threads_factor) +
+                                     (unsigned int)num_listensocks +
+                                     POLLSET_RESERVE_SIZE);
     int pollset_flags;
 
     /* Event's skiplist operations will happen concurrently with other modules'
@@ -4063,76 +4083,27 @@ static void server_main_loop(int remaining_children_to_start)
 
 static int event_run(apr_pool_t * _pconf, apr_pool_t * plog, server_rec * s)
 {
-    ap_listen_rec **listen_buckets = NULL;
-    int num_buckets = retained->mpm->num_buckets;
     int remaining_children_to_start;
+    int num_buckets, i;
     apr_status_t rv;
-    int i;
 
     ap_log_pid(pconf, ap_pid_fname);
 
-    /* On first startup create gen_pool to satisfy the lifetime of the
-     * parent's PODs and listeners; on restart stop the children from the
-     * previous generation and clear gen_pool for the next one.
-     */
-    if (!retained->gen_pool) {
-        apr_pool_create(&retained->gen_pool, ap_pglobal);
-    }
-    else {
-        if (retained->mpm->was_graceful) {
-            /* wake up the children...time to die.  But we'll have more soon */
-            for (i = 0; i < num_buckets; i++) {
-                ap_mpm_podx_killpg(retained->buckets[i].pod,
-                                   active_daemons_limit, AP_MPM_PODX_GRACEFUL);
-            }
-        }
-        else {
-            /* Kill 'em all.  Since the child acts the same on the parents SIGTERM
-             * and a SIGHUP, we may as well use the same signal, because some user
-             * pthreads are stealing signals from us left and right.
-             */
-            for (i = 0; i < num_buckets; i++) {
-                ap_mpm_podx_killpg(retained->buckets[i].pod,
-                                   active_daemons_limit, AP_MPM_PODX_RESTART);
-            }
-            ap_reclaim_child_processes(1,  /* Start with SIGTERM */
-                                       event_note_child_stopped);
-        }
-        apr_pool_clear(retained->gen_pool);
-        retained->buckets = NULL;
-
-        /* advance to the next generation */
-        /* XXX: we really need to make sure this new generation number isn't in
-         * use by any of the previous children.
-         */
-        ++retained->mpm->my_generation;
-    }
-
-    /* On graceful restart, preserve the scoreboard and the listeners buckets.
-     * When ungraceful, clear the scoreboard and set num_buckets to zero to let
-     * ap_duplicate_listeners() below determine how many are needed/configured.
-     */
-    if (!retained->mpm->was_graceful) {
-        if (ap_run_pre_mpm(s->process->pool, SB_SHARED) != OK) {
-            retained->mpm->mpm_state = AP_MPMQ_STOPPING;
-            return !OK;
-        }
-        num_buckets = (one_process) ? 1 : 0; /* one_process => one bucket */
-        retained->mpm->num_buckets = 0; /* reset idle_spawn_rate below */
+    /* Preserve the scoreboard on graceful restart, reset when ungraceful */
+    if (!retained->mpm->was_graceful
+        && ap_run_pre_mpm(s->process->pool, SB_SHARED)) {
+        retained->mpm->mpm_state = AP_MPMQ_STOPPING;
+        return !OK;
     }
 
     /* Now on for the new generation. */
     ap_scoreboard_image->global->running_generation = retained->mpm->my_generation;
     ap_unixd_mpm_set_signals(pconf, one_process);
 
-    if ((rv = ap_duplicate_listeners(retained->gen_pool, ap_server_conf,
-                                     &listen_buckets, &num_buckets))) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, rv,
-                     ap_server_conf, APLOGNO(03273)
-                     "could not duplicate listeners");
-        return !OK;
-    }
-
+    /* Set the buckets listeners from the listen_buckets initialized
+     * in event_open_logs().
+     */
+    num_buckets = retained->num_listen_buckets;
     retained->buckets = apr_pcalloc(retained->gen_pool,
                                     num_buckets * sizeof(event_child_bucket));
     for (i = 0; i < num_buckets; i++) {
@@ -4144,8 +4115,11 @@ static int event_run(apr_pool_t * _pconf, apr_pool_t * plog, server_rec * s)
                          "could not open pipe-of-death");
             return !OK;
         }
-        retained->buckets[i].listeners = listen_buckets[i];
+        retained->buckets[i].listeners = retained->listen_buckets[i];
     }
+    /* Reset for the next generation/restart */
+    retained->listen_buckets = NULL;
+    retained->num_listen_buckets = 0;
 
     /* If num_buckets changed, adjust max_spawn_rate and the free_slots buffer */
     if (retained->mpm->num_buckets != num_buckets) {
@@ -4178,23 +4152,14 @@ static int event_run(apr_pool_t * _pconf, apr_pool_t * plog, server_rec * s)
         retained->mpm->num_buckets = num_buckets;
     }
 
-    /* Don't thrash since num_buckets depends on the
-     * system and the number of online CPU cores...
-     */
-    if (active_daemons_limit < num_buckets)
-        active_daemons_limit = num_buckets;
-    if (ap_daemons_to_start < num_buckets)
-        ap_daemons_to_start = num_buckets;
-    /* We want to create as much children at a time as the number of buckets,
-     * so to optimally accept connections (evenly distributed across buckets).
-     * Thus min_spare_threads should at least maintain num_buckets children,
-     * and max_spare_threads allow num_buckets more children w/o triggering
-     * immediately (e.g. num_buckets idle threads margin, one per bucket).
-     */
-    if (min_spare_threads < threads_per_child * (num_buckets - 1) + num_buckets)
-        min_spare_threads = threads_per_child * (num_buckets - 1) + num_buckets;
-    if (max_spare_threads < min_spare_threads + (threads_per_child + 1) * num_buckets)
-        max_spare_threads = min_spare_threads + (threads_per_child + 1) * num_buckets;
+    ap_log_error(APLOG_MARK, APLOG_INFO, 0, ap_server_conf, APLOGNO(10464)
+                 "MPM event settings%s: MaxRequestWorkers=%d AsyncRequestWorkerFactor=%.1lf "
+                 "ThreadsPerChild=%d ThreadLimit=%d MinSpareThreads=%d MaxSpareThreads=%d "
+                 "ServerLimit=%d/%d StartServers=%d Buckets=%d CPUs=%d",
+                 auto_settings ? " (auto)" : "", max_workers, async_factor,
+                 threads_per_child, thread_limit, min_spare_threads, max_spare_threads,
+                 active_daemons_limit, server_limit, ap_daemons_to_start,
+                 num_buckets, num_online_cpus);
 
     /* If we're doing a graceful_restart then we're going to see a lot
      * of children exiting immediately when we get into the main loop
@@ -4382,12 +4347,18 @@ static int event_protocol_switch(conn_rec *c, request_rec *r, server_rec *s,
 
 /* This really should be a post_config hook, but the error log is already
  * redirected by that point, so we need to do this in the open_logs phase.
+ * We compute num_buckets here too, thus the definitive AP_MPMQ_* settings
+ * which need it and which may be needed by the post_config hooks of other
+ * modules.
  */
 static int event_open_logs(apr_pool_t * p, apr_pool_t * plog,
                            apr_pool_t * ptemp, server_rec * s)
 {
     int startup = 0;
     int level_flags = 0;
+    int num_buckets = 0, i;
+    int min_threads;
+    apr_status_t rv;
 
     pconf = p;
 
@@ -4406,6 +4377,152 @@ static int event_open_logs(apr_pool_t * p, apr_pool_t * plog,
                      (startup ? NULL : s), APLOGNO(03272)
                      "no listening sockets available, shutting down");
         return !OK;
+    }
+
+    /* On first startup create gen_pool to satisfy the lifetime of the
+     * parent's PODs and listeners; on restart stop the children from the
+     * previous generation and clear gen_pool for the next one.
+     */
+    if (!retained->gen_pool) {
+        apr_pool_create(&retained->gen_pool, ap_pglobal);
+    }
+    else {
+        num_buckets = retained->mpm->num_buckets;
+        if (retained->mpm->was_graceful) {
+            /* wake up the children...time to die.  But we'll have more soon */
+            for (i = 0; i < num_buckets; i++) {
+                ap_mpm_podx_killpg(retained->buckets[i].pod,
+                                   active_daemons_limit, AP_MPM_PODX_GRACEFUL);
+            }
+        }
+        else {
+            /* Kill 'em all.  Since the child acts the same on the parents SIGTERM
+             * and a SIGHUP, we may as well use the same signal, because some user
+             * pthreads are stealing signals from us left and right.
+             */
+            for (i = 0; i < num_buckets; i++) {
+                ap_mpm_podx_killpg(retained->buckets[i].pod,
+                                   active_daemons_limit, AP_MPM_PODX_RESTART);
+            }
+            ap_reclaim_child_processes(1,  /* Start with SIGTERM */
+                                       event_note_child_stopped);
+        }
+        apr_pool_clear(retained->gen_pool);
+        retained->buckets = NULL;
+
+        /* advance to the next generation */
+        /* XXX: we really need to make sure this new generation number isn't in
+         * use by any of the previous children.
+         */
+        ++retained->mpm->my_generation;
+    }
+
+    /* On graceful restart, preserve the listeners buckets. When ungraceful,
+     * set num_buckets to zero to let ap_duplicate_listeners() below determine
+     * how many are needed/configured.
+     */
+    if (!retained->mpm->was_graceful) {
+        num_buckets = (one_process) ? 1 : 0; /* one_process => one bucket */
+        retained->mpm->num_buckets = 0; /* old gen's until event_run() */
+    }
+    if ((rv = ap_duplicate_listeners(retained->gen_pool, ap_server_conf,
+                                     &retained->listen_buckets,
+                                     &num_buckets))) {
+        ap_log_error(APLOG_MARK, APLOG_ALERT | level_flags, rv,
+                     (startup ? NULL : s), APLOGNO(03273)
+                     "could not duplicate listeners, shutting down");
+        return !OK;
+    }
+    retained->num_listen_buckets = num_buckets;
+
+    /* Don't thrash since num_buckets depends on the system and the
+     * number of CPU cores, so make the settings consistent.
+     */
+    if (retained->first_thread_limit) {
+        if (threads_per_child > retained->first_thread_limit) {
+            ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s, APLOGNO(10465)
+                         "ThreadsPerChild (%d) exceeds initial ThreadLimit, "
+                         "forcing ThreadsPerChild to %d",
+                         threads_per_child, retained->first_thread_limit);
+            threads_per_child = retained->first_thread_limit;
+        }
+    }
+    else {
+        if (thread_limit < threads_per_child) {
+            thread_limit = threads_per_child;
+        }
+        retained->first_thread_limit = thread_limit;
+    }
+    min_threads = threads_per_child * num_buckets;
+    if (max_workers < min_threads) {
+        max_workers = min_threads;
+    }
+    else {
+        max_workers = (max_workers / min_threads) * min_threads;
+    }
+    active_daemons_limit = max_workers / threads_per_child;
+    if (retained->first_server_limit) {
+        if (active_daemons_limit > retained->first_server_sb_limit) {
+            int new_max_workers = retained->first_server_sb_limit * threads_per_child;
+            if (new_max_workers < min_threads) {
+                new_max_workers = min_threads;
+            }
+            else {
+                new_max_workers = (new_max_workers / min_threads) * min_threads;
+            }
+            ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s, APLOGNO(10466)
+                         "MaxRequestWorkers (%d) / ThreadsPerChild (%d) would "
+                         "exceed initial scoreboard limit (%d), forcing "
+                         "MaxRequestWorkers to %d",
+                         max_workers, threads_per_child,
+                         retained->first_server_sb_limit,
+                         new_max_workers);
+            max_workers = new_max_workers;
+            active_daemons_limit = retained->first_server_sb_limit;
+        }
+        server_limit = retained->first_server_sb_limit;
+    }
+    else {
+        /* Save the initial ServerLimit which cannot be changed on restart, but
+         * leave some spare room in the actual server_[sb_]limit (used to size
+         * the scoreboard) to allow for children restarting while the old gen
+         * is gracefully exiting.
+         */
+        retained->first_server_limit = server_limit;
+        if (server_limit < active_daemons_limit * SCOREBOARD_DAEMONS_FACTOR) {
+            server_limit = active_daemons_limit * SCOREBOARD_DAEMONS_FACTOR;
+        }
+        retained->first_server_sb_limit = server_limit;
+    }
+    if (ap_daemons_to_start < num_buckets) {
+        ap_daemons_to_start = num_buckets;
+    }
+    else if (ap_daemons_to_start < active_daemons_limit) {
+        ap_daemons_to_start = (ap_daemons_to_start / num_buckets) * num_buckets;
+    }
+    else {
+        ap_daemons_to_start = active_daemons_limit;
+    }
+    if (min_spare_threads < ap_daemons_to_start * threads_per_child) {
+        min_spare_threads = ap_daemons_to_start * threads_per_child;
+    }
+    else if (min_spare_threads < max_workers) {
+        min_spare_threads = (min_spare_threads / min_threads) * min_threads;
+    }
+    else {
+        min_spare_threads = max_workers;
+    }
+    if (max_spare_threads < 0) { /* auto settings */
+        max_spare_threads = max_workers * MAX_SPARE_THREADS_RATIO;
+    }
+    if (max_spare_threads < min_spare_threads + min_threads) {
+        max_spare_threads = min_spare_threads + min_threads;
+    }
+    else if (max_spare_threads < max_workers) {
+        max_spare_threads = (max_spare_threads / min_threads) * min_threads;
+    }
+    else {
+        max_spare_threads = max_workers;
     }
 
     return OK;
@@ -4465,7 +4582,8 @@ static int event_pre_config(apr_pool_t * pconf, apr_pool_t * plog,
 
     /* sigh, want this only the second time around */
     if (retained->mpm->module_loads == 2) {
-        rv = apr_pollset_create(&event_pollset, 1, plog,
+        apr_pollset_t *tmp = NULL;
+        rv = apr_pollset_create(&tmp, 1, plog,
                                 APR_POLLSET_THREADSAFE | APR_POLLSET_NOCOPY);
         if (rv != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_CRIT, rv, NULL, APLOGNO(00495)
@@ -4474,7 +4592,7 @@ static int event_pre_config(apr_pool_t * pconf, apr_pool_t * plog,
                          "Also check system or user limits!");
             return HTTP_INTERNAL_SERVER_ERROR;
         }
-        apr_pollset_destroy(event_pollset);
+        apr_pollset_destroy(tmp);
 
         if (!one_process && !foreground) {
             /* before we detach, setup crash handlers to log to errorlog */
@@ -4492,21 +4610,25 @@ static int event_pre_config(apr_pool_t * pconf, apr_pool_t * plog,
     parent_pid = ap_my_pid = getpid();
 
     ap_listen_pre_config();
-    ap_daemons_to_start = DEFAULT_START_DAEMON;
-    min_spare_threads = DEFAULT_MIN_FREE_DAEMON * DEFAULT_THREADS_PER_CHILD;
-    max_spare_threads = DEFAULT_MAX_FREE_DAEMON * DEFAULT_THREADS_PER_CHILD;
-    server_limit = DEFAULT_SERVER_LIMIT;
-    thread_limit = DEFAULT_THREAD_LIMIT;
-    active_daemons_limit = server_limit;
-    threads_per_child = DEFAULT_THREADS_PER_CHILD;
-    max_workers = active_daemons_limit * threads_per_child;
     had_healthy_child = 0;
     ap_extended_status = 0;
 
-    event_pollset = NULL;
-    worker_queue_info = NULL;
-    listener_os_thread = NULL;
-    listener_is_wakeable = 0;
+    max_workers = -1;
+    threads_per_child = -1;
+    min_spare_threads = max_spare_threads = -1;
+    server_limit = thread_limit = -1;
+    ap_daemons_to_start = -1;
+    auto_settings = 0;
+
+#ifndef _SC_NPROCESSORS_ONLN
+    num_online_cpus = 1;
+#else
+    num_online_cpus = sysconf(_SC_NPROCESSORS_ONLN);
+    if (num_online_cpus < 1) {
+        num_online_cpus = 1;
+    }
+#endif
+    async_factor = DEFAULT_ASYNC_FACTOR;
 
     return OK;
 }
@@ -4563,7 +4685,10 @@ static int event_check_config(apr_pool_t *p, apr_pool_t *plog,
         startup = 1;
     }
 
-    if (server_limit > MAX_SERVER_LIMIT) {
+    if (server_limit < 0) {
+        server_limit = DEFAULT_SERVER_LIMIT;
+    }
+    else if (server_limit > MAX_SERVER_LIMIT) {
         if (startup) {
             ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL, APLOGNO(00497)
                          "WARNING: ServerLimit of %d exceeds compile-time "
@@ -4577,7 +4702,7 @@ static int event_check_config(apr_pool_t *p, apr_pool_t *plog,
         }
         server_limit = MAX_SERVER_LIMIT;
     }
-    else if (server_limit < 1) {
+    else if (server_limit == 0) {
         if (startup) {
             ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL, APLOGNO(00499)
                          "WARNING: ServerLimit of %d not allowed, "
@@ -4589,14 +4714,10 @@ static int event_check_config(apr_pool_t *p, apr_pool_t *plog,
         }
         server_limit = 1;
     }
-
     /* you cannot change ServerLimit across a restart; ignore
      * any such attempts
      */
-    if (!retained->first_server_limit) {
-        retained->first_server_limit = server_limit;
-    }
-    else if (server_limit != retained->first_server_limit) {
+    if (retained->first_server_limit && server_limit != retained->first_server_limit) {
         /* don't need a startup console version here */
         ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s, APLOGNO(00501)
                      "changing ServerLimit to %d from original value of %d "
@@ -4605,7 +4726,10 @@ static int event_check_config(apr_pool_t *p, apr_pool_t *plog,
         server_limit = retained->first_server_limit;
     }
 
-    if (thread_limit > MAX_THREAD_LIMIT) {
+    if (thread_limit < 0) {
+        thread_limit = DEFAULT_THREAD_LIMIT;
+    }
+    else if (thread_limit > MAX_THREAD_LIMIT) {
         if (startup) {
             ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL, APLOGNO(00502)
                          "WARNING: ThreadLimit of %d exceeds compile-time "
@@ -4619,7 +4743,7 @@ static int event_check_config(apr_pool_t *p, apr_pool_t *plog,
         }
         thread_limit = MAX_THREAD_LIMIT;
     }
-    else if (thread_limit < 1) {
+    else if (thread_limit == 0) {
         if (startup) {
             ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL, APLOGNO(00504)
                          "WARNING: ThreadLimit of %d not allowed, "
@@ -4631,14 +4755,10 @@ static int event_check_config(apr_pool_t *p, apr_pool_t *plog,
         }
         thread_limit = 1;
     }
-
     /* you cannot change ThreadLimit across a restart; ignore
      * any such attempts
      */
-    if (!retained->first_thread_limit) {
-        retained->first_thread_limit = thread_limit;
-    }
-    else if (thread_limit != retained->first_thread_limit) {
+    if (retained->first_thread_limit && thread_limit != retained->first_thread_limit) {
         /* don't need a startup console version here */
         ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s, APLOGNO(00506)
                      "changing ThreadLimit to %d from original value of %d "
@@ -4647,7 +4767,41 @@ static int event_check_config(apr_pool_t *p, apr_pool_t *plog,
         thread_limit = retained->first_thread_limit;
     }
 
-    if (threads_per_child > thread_limit) {
+    /* Auto settings depend on max_workers and num_buckets, the latter being
+     * known in event_open_logs() only. So defer to there (with no warnings
+     * since it's somewhat auto..).
+     */
+    if (auto_settings) {
+        if (max_workers <= 0) {
+            /* This used to warn before auto settings, just take the
+             * default value still but silently.
+             */
+            max_workers = DEFAULT_SERVER_LIMIT * DEFAULT_THREADS_PER_CHILD;
+        }
+        if (threads_per_child <= 0) {
+            /* Default threads_per_child is the number of CPUs  */
+            threads_per_child = num_online_cpus;
+
+            /* With a lot of workers and not so much CPUs to handle them,
+             * spawn more threads to get a reasonable active_daemons_limit
+             * i.e. processes / threads ratio.
+             */
+            while (max_workers / threads_per_child >
+                   threads_per_child * MAX_DAEMONS_THREADS_RATIO) {
+                threads_per_child *= 2;
+            }
+        }
+        return OK; /* => event_open_logs() */
+    }
+
+    /* No auto settings; use the default for anything not set (or set to
+     * some negative value), warn about nonsense values and adjust otherwise.
+     */
+
+    if (threads_per_child < 0) {
+        threads_per_child = DEFAULT_THREADS_PER_CHILD;
+    }
+    else if (threads_per_child > thread_limit) {
         if (startup) {
             ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL, APLOGNO(00507)
                          "WARNING: ThreadsPerChild of %d exceeds ThreadLimit "
@@ -4662,7 +4816,7 @@ static int event_check_config(apr_pool_t *p, apr_pool_t *plog,
         }
         threads_per_child = thread_limit;
     }
-    else if (threads_per_child < 1) {
+    else if (threads_per_child == 0) {
         if (startup) {
             ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL, APLOGNO(00509)
                          "WARNING: ThreadsPerChild of %d not allowed, "
@@ -4675,7 +4829,10 @@ static int event_check_config(apr_pool_t *p, apr_pool_t *plog,
         threads_per_child = 1;
     }
 
-    if (max_workers < threads_per_child) {
+    if (max_workers < 0) {
+        max_workers = DEFAULT_SERVER_LIMIT * DEFAULT_THREADS_PER_CHILD;
+    }
+    else if (max_workers < threads_per_child) {
         if (startup) {
             ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL, APLOGNO(00511)
                          "WARNING: MaxRequestWorkers of %d is less than "
@@ -4693,27 +4850,6 @@ static int event_check_config(apr_pool_t *p, apr_pool_t *plog,
     }
 
     active_daemons_limit = max_workers / threads_per_child;
-
-    if (max_workers % threads_per_child) {
-        int tmp_max_workers = active_daemons_limit * threads_per_child;
-
-        if (startup) {
-            ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL, APLOGNO(00513)
-                         "WARNING: MaxRequestWorkers of %d is not an integer "
-                         "multiple of ThreadsPerChild of %d, decreasing to nearest "
-                         "multiple %d, for a maximum of %d servers.",
-                         max_workers, threads_per_child, tmp_max_workers,
-                         active_daemons_limit);
-        } else {
-            ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s, APLOGNO(00514)
-                         "MaxRequestWorkers of %d is not an integer multiple "
-                         "of ThreadsPerChild of %d, decreasing to nearest "
-                         "multiple %d", max_workers, threads_per_child,
-                         tmp_max_workers);
-        }
-        max_workers = tmp_max_workers;
-    }
-
     if (active_daemons_limit > server_limit) {
         if (startup) {
             ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL, APLOGNO(00515)
@@ -4730,10 +4866,34 @@ static int event_check_config(apr_pool_t *p, apr_pool_t *plog,
                          server_limit * threads_per_child);
         }
         active_daemons_limit = server_limit;
+        max_workers = active_daemons_limit * threads_per_child;
+    }
+    else if (max_workers % threads_per_child) {
+        int new_max_workers = active_daemons_limit * threads_per_child;
+        if (startup) {
+            ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL, APLOGNO(00513)
+                         "WARNING: MaxRequestWorkers of %d is not an integer "
+                         "multiple of ThreadsPerChild of %d, decreasing to nearest "
+                         "multiple %d, for a maximum of %d servers.",
+                         max_workers, threads_per_child, new_max_workers,
+                         active_daemons_limit);
+        } else {
+            ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s, APLOGNO(00514)
+                         "MaxRequestWorkers of %d is not an integer multiple "
+                         "of ThreadsPerChild of %d, decreasing to nearest "
+                         "multiple %d", max_workers, threads_per_child,
+                         new_max_workers);
+        }
+        max_workers = new_max_workers;
     }
 
-    /* ap_daemons_to_start > active_daemons_limit checked in ap_mpm_run() */
-    if (ap_daemons_to_start < 1) {
+    if (ap_daemons_to_start < 0) {
+        ap_daemons_to_start = DEFAULT_START_DAEMON;
+    }
+    else if (ap_daemons_to_start > active_daemons_limit) {
+        ap_daemons_to_start = active_daemons_limit;
+    }
+    else if (ap_daemons_to_start == 0) {
         if (startup) {
             ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL, APLOGNO(00517)
                          "WARNING: StartServers of %d not allowed, "
@@ -4746,7 +4906,10 @@ static int event_check_config(apr_pool_t *p, apr_pool_t *plog,
         ap_daemons_to_start = 1;
     }
 
-    if (min_spare_threads < 1) {
+    if (min_spare_threads < 0) {
+        min_spare_threads = DEFAULT_MIN_FREE_DAEMON * DEFAULT_THREADS_PER_CHILD;
+    }
+    else if (min_spare_threads == 0) {
         if (startup) {
             ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL, APLOGNO(00519)
                          "WARNING: MinSpareThreads of %d not allowed, "
@@ -4758,12 +4921,18 @@ static int event_check_config(apr_pool_t *p, apr_pool_t *plog,
                          "MinSpareThreads of %d not allowed, increasing to 1",
                          min_spare_threads);
         }
-        min_spare_threads = 1;
+        min_spare_threads = threads_per_child;
     }
 
-    /* max_spare_threads < min_spare_threads + threads_per_child
-     * checked in ap_mpm_run()
-     */
+    if (max_spare_threads < 0) {
+        max_spare_threads = DEFAULT_MAX_FREE_DAEMON * DEFAULT_THREADS_PER_CHILD;
+    }
+    else {
+        /* max_spare_threads value has never been checked, it's silently
+         * adjusted in event_open_logs() such that max_spare_threads >=
+         * min_spare_threads + threads_per_child.
+         */
+    }
 
     return OK;
 }
@@ -4839,7 +5008,7 @@ static const char *set_max_spare_threads(cmd_parms * cmd, void *dummy,
 }
 
 static const char *set_max_workers(cmd_parms * cmd, void *dummy,
-                                   const char *arg)
+                                   const char *arg, const char *arg2)
 {
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
     if (err != NULL) {
@@ -4850,7 +5019,10 @@ static const char *set_max_workers(cmd_parms * cmd, void *dummy,
                      "MaxClients is deprecated, use MaxRequestWorkers "
                      "instead.");
     }
+
     max_workers = atoi(arg);
+    auto_settings = (arg2 && !strcasecmp(arg2, "auto"));
+
     return NULL;
 }
 
@@ -4891,23 +5063,15 @@ static const char *set_thread_limit(cmd_parms * cmd, void *dummy,
 static const char *set_worker_factor(cmd_parms * cmd, void *dummy,
                                      const char *arg)
 {
-    double val;
     char *endptr;
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
     if (err != NULL) {
         return err;
     }
 
-    val = strtod(arg, &endptr);
-    if (*endptr)
-        return "error parsing value";
-
-    if (val <= 0)
-        return "AsyncRequestWorkerFactor argument must be a positive number";
-
-    worker_factor = val * WORKER_FACTOR_SCALE;
-    if (worker_factor < WORKER_FACTOR_SCALE) {
-        worker_factor = WORKER_FACTOR_SCALE;
+    async_factor = strtod(arg, &endptr);
+    if (*endptr || async_factor < 1.0) {
+        return "AsyncRequestWorkerFactor must be a rational number greater or equal to 1";
     }
     return NULL;
 }
@@ -4923,10 +5087,10 @@ static const command_rec event_cmds[] = {
                   "Minimum number of idle threads, to handle request spikes"),
     AP_INIT_TAKE1("MaxSpareThreads", set_max_spare_threads, NULL, RSRC_CONF,
                   "Maximum number of idle threads"),
-    AP_INIT_TAKE1("MaxClients", set_max_workers, NULL, RSRC_CONF,
-                  "Deprecated name of MaxRequestWorkers"),
-    AP_INIT_TAKE1("MaxRequestWorkers", set_max_workers, NULL, RSRC_CONF,
-                  "Maximum number of threads alive at the same time"),
+    AP_INIT_TAKE12("MaxClients", set_max_workers, NULL, RSRC_CONF,
+                   "Deprecated name of MaxRequestWorkers"),
+    AP_INIT_TAKE12("MaxRequestWorkers", set_max_workers, NULL, RSRC_CONF,
+                   "Maximum number of threads alive at the same time"),
     AP_INIT_TAKE1("ThreadsPerChild", set_threads_per_child, NULL, RSRC_CONF,
                   "Number of threads each child creates"),
     AP_INIT_TAKE1("ThreadLimit", set_thread_limit, NULL, RSRC_CONF,
