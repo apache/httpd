@@ -1120,4 +1120,28 @@ H2EarlyHint Link "&lt;/my.css&gt;;rel=preload;as=style"
         </usage>
     </directivesynopsis>
 
+    <directivesynopsis>
+        <name>H2ProxyRequests</name>
+        <description>En-/Disable forward proxy requests via HTTP/2</description>
+        <syntax>H2ProxyRequests  on|off</syntax>
+        <default>H2ProxyRequests off</default>
+        <contextlist>
+            <context>server config</context>
+            <context>virtual host</context>
+        </contextlist>
+        <compatibility>Available in version 2.5.1 and later.</compatibility>
+
+        <usage>
+            <p>
+                Use <directive>H2ProxyRequests</directive> to enable or disable
+                handling of HTTP/2 requests in a forward proxy configuration.
+            </p><p>
+                Similar to <directive module="proxy">ProxyRequests</directive>, this
+                triggers the needed treatment of requests when HTTP/2 is enabled
+                in a forward proxy configuration. Both directive should be enabled.
+            </p><p>
+            </p>
+        </usage>
+    </directivesynopsis>
+
 </modulesynopsis>
