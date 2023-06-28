@@ -605,6 +605,7 @@ static int h2_session_open(struct h2_session *session, const char *server_name,
                            const char *host, uint16_t port)
 {
     nghttp2_session_callbacks *cbs = NULL;
+    nghttp2_settings_entry settings[2];
     int rv = -1;
 
     memset(session, 0, sizeof(*session));
@@ -654,9 +655,22 @@ static int h2_session_open(struct h2_session *session, const char *server_name,
         goto leave;
     }
     /* submit initial settings */
-    rv = nghttp2_submit_settings(session->ngh2, NGHTTP2_FLAG_NONE, NULL, 0);
+    settings[0].settings_id = NGHTTP2_SETTINGS_MAX_CONCURRENT_STREAMS;
+    settings[0].value = 100;
+    settings[1].settings_id = NGHTTP2_SETTINGS_INITIAL_WINDOW_SIZE;
+    settings[1].value = 10 * 1024 * 1024;
+
+    rv = nghttp2_submit_settings(session->ngh2, NGHTTP2_FLAG_NONE, settings, 2);
     if (rv) {
         log_errf("submit settings", "error_code=%d, msg=%s\n", rv,
+                 nghttp2_strerror(rv));
+        rv = -1;
+        goto leave;
+    }
+    rv = nghttp2_session_set_local_window_size(session->ngh2, NGHTTP2_FLAG_NONE,
+                                               0, 10 * 1024 * 1024);
+    if (rv) {
+        log_errf("set connection window size", "error_code=%d, msg=%s\n", rv,
                  nghttp2_strerror(rv));
         rv = -1;
         goto leave;

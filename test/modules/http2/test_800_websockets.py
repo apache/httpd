@@ -45,6 +45,7 @@ def ws_run(env: H2TestEnv, path, authority=None, do_input=None, inbytes=None,
     # we write all output to files, because we manipulate input timings
     # and would run in deadlock situations with h2ws blocking operations
     # because its output is not consumed
+    start = datetime.now()
     with open(f'{env.gen_dir}/h2ws.stdout', 'w') as fdout:
         with open(f'{env.gen_dir}/h2ws.stderr', 'w') as fderr:
             proc = subprocess.Popen(args=args, stdin=subprocess.PIPE,
@@ -64,6 +65,7 @@ def ws_run(env: H2TestEnv, path, authority=None, do_input=None, inbytes=None,
                 log.error(f'ws_run: timeout expired')
                 proc.kill()
                 proc.communicate(timeout=timeout)
+    end = datetime.now()
     lines = open(f'{env.gen_dir}/h2ws.stdout').read().splitlines()
     infos = [line for line in lines if line.startswith('[1] ')]
     hex_content = ' '.join([line for line in lines if not line.startswith('[1] ')])
@@ -72,7 +74,7 @@ def ws_run(env: H2TestEnv, path, authority=None, do_input=None, inbytes=None,
     else:
         frames = bytearray.fromhex(hex_content)
     return ExecResult(args=args, exit_code=proc.returncode,
-                      stdout=b'', stderr=b''), infos, frames
+                      stdout=b'', stderr=b'', duration=end - start), infos, frames
 
 
 @pytest.mark.skipif(condition=H2TestEnv.is_unsupported, reason="mod_http2 not supported here")
@@ -90,6 +92,7 @@ class TestWebSockets:
               f'  H2WebSockets on',
               f'  ProxyPass /ws/ http://127.0.0.1:{env.ws_port}/ \\',
               f'           upgrade=websocket timeout=10',
+              f'  ReadBufferSize 65535'
             ]
         })
         conf.add_vhost_cgi(proxy_self=True, h2proxy_self=True).install()
@@ -308,3 +311,23 @@ class TestWebSockets:
         assert len(frames) > 0
         total_len = sum([f.data_len for f in frames if f.opcode == WsFrame.BINARY])
         assert total_len == flen, f'{frames}\n{r}'
+
+    # CONNECT to path with 1MB file and trigger delays between BINARY frame writes
+    @pytest.mark.parametrize("frame_len", [
+        64 * 1024,
+        16 * 1024,
+        1 * 1024,
+    ])
+    def test_h2_800_17_ws_throughput(self, env: H2TestEnv, ws_server, frame_len):
+        fname = "data-1m"
+        flen = 1000*1000
+        ncount = 5
+        r, infos, frames = ws_run(env, path=f'/ws/file/{fname}/{frame_len}/0/{ncount}',
+                                  wait_close=0.1, send_close=False, timeout=30)
+        assert r.exit_code == 0, f'{r}'
+        assert infos == ['[1] :status: 200', '[1] EOF'], f'{r}'
+        assert len(frames) > 0
+        total_len = sum([f.data_len for f in frames if f.opcode == WsFrame.BINARY])
+        assert total_len == ncount * flen, f'{frames}\n{r}'
+        # to see these logged, invoke: `pytest -o log_cli=true`
+        log.info(f'throughput (frame-len={frame_len}): {(total_len / (1024*1024)) / r.duration.total_seconds():0.2f} MB/s')

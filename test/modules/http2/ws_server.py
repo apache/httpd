@@ -57,14 +57,18 @@ async def on_async_conn(conn):
         delay_ms = 0
         if len(pcomps) > 3:
             delay_ms = int(pcomps[3])
-        with open(fpath, 'r+b') as fd:
-            while True:
-                buf = fd.read(bufsize)
-                if buf is None or len(buf) == 0:
-                    break
-                await conn.send(buf)
-                if delay_ms > 0:
-                    time.sleep(delay_ms/1000)
+        n = 1
+        if len(pcomps) > 4:
+            n = int(pcomps[4])
+        for _ in range(n):
+            with open(fpath, 'r+b') as fd:
+                while True:
+                    buf = fd.read(bufsize)
+                    if buf is None or len(buf) == 0:
+                        break
+                    await conn.send(buf)
+                    if delay_ms > 0:
+                        time.sleep(delay_ms/1000)
     else:
         log.info(f'unknown endpoint: {rpath}')
         await conn.close(code=4999, reason='path unknown')
