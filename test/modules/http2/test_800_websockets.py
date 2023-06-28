@@ -145,19 +145,20 @@ class TestWebSockets:
             yield
             p.terminate()
 
+    # CONNECT with invalid :protocol header, must fail
+    def test_h2_800_01_fail_proto(self, env: H2TestEnv, ws_server):
+        r, infos, frames = ws_run(env, path='/ws/echo/', scenario='fail-proto')
+        assert r.exit_code == 0, f'{r}'
+        assert infos == ['[1] :status: 501', '[1] EOF'], f'{r}'
+        env.httpd_error_log.ignore_recent()
+
     # a correct CONNECT, send CLOSE, expect CLOSE, basic success
-    def test_h2_800_01_ws_empty(self, env: H2TestEnv, ws_server):
+    def test_h2_800_02_ws_empty(self, env: H2TestEnv, ws_server):
         r, infos, frames = ws_run(env, path='/ws/echo/')
         assert r.exit_code == 0, f'{r}'
         assert infos == ['[1] :status: 200', '[1] EOF'], f'{r}'
         assert len(frames) == 1, f'{frames}'
         assert frames[0].opcode == WsFrame.CLOSE, f'{frames}'
-
-    # CONNECT with invalid :protocol header, must fail
-    def test_h2_800_02_fail_proto(self, env: H2TestEnv, ws_server):
-        r, infos, frames = ws_run(env, path='/ws/echo/', scenario='fail-proto')
-        assert r.exit_code == 0, f'{r}'
-        assert infos == ['[1] :status: 501', '[1] EOF'], f'{r}'
 
     # CONNECT to a URL path that does not exist on the server
     def test_h2_800_03_not_found(self, env: H2TestEnv, ws_server):
