@@ -413,13 +413,13 @@ request_rec *h2_create_request_rec(const h2_request *req, conn_rec *c,
     }
     else if (h2_config_cgeti(c, H2_CONF_PROXY_REQUESTS)) {
         if (!req->scheme) {
-            ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, APLOGNO()
+            ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, APLOGNO(10468)
                           "H2ProxyRequests on, but request misses :scheme");
             access_status = HTTP_BAD_REQUEST;
             goto die;
         }
         if (!req->authority) {
-            ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, APLOGNO()
+            ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, APLOGNO(10469)
                           "H2ProxyRequests on, but request misses :authority");
             access_status = HTTP_BAD_REQUEST;
             goto die;
