@@ -3909,10 +3909,12 @@ static const char *cmd_rewriterule(cmd_parms *cmd, void *in_dconf,
     }
 
     if (*(a2_end-1) == '?') {
-        *(a2_end-1) = '\0'; /* trailing ? has done its job */
         /* a literal ? at the end of the unsubstituted rewrite rule */
-        if (!(newrule->flags & RULEFLAG_QSAPPEND))
-        {
+        if (!(newrule->flags & RULEFLAG_QSAPPEND)) {
+            /* trailing ? has done its job.  with QSA, splitoutqueryargs 
+             * will handle it 
+             */ 
+            *(a2_end-1) = '\0'; 
             newrule->flags |= RULEFLAG_QSNONE;
         }
     }
