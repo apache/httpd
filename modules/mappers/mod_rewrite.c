@@ -3910,13 +3910,16 @@ static const char *cmd_rewriterule(cmd_parms *cmd, void *in_dconf,
 
     if (*(a2_end-1) == '?') {
         /* a literal ? at the end of the unsubstituted rewrite rule */
-        if (!(newrule->flags & RULEFLAG_QSAPPEND)) {
-            /* trailing ? has done its job.  with QSA, splitoutqueryargs 
-             * will handle it 
-             */ 
-            *(a2_end-1) = '\0'; 
-            newrule->flags |= RULEFLAG_QSNONE;
+        if (newrule->flags & RULEFLAG_QSAPPEND) {
+           /* with QSA, splitoutqueryargs will safely handle it if RULEFLAG_QSLAST is set */
+           newrule->flags |= RULEFLAG_QSLAST;
         }
+        else {
+            /* avoid getting a a query string via inadvertent capture */
+            newrule->flags |= RULEFLAG_QSNONE;
+            /* trailing ? has done its job, but splitoutqueryargs will not chop it off */ 
+            *(a2_end-1) = '\0'; 
+       }
     }
     else if (newrule->flags & RULEFLAG_QSDISCARD) {
         if (NULL == ap_strchr(newrule->output, '?')) {
