@@ -1429,10 +1429,17 @@ static ssize_t stream_data_cb(nghttp2_session *ng2s,
         return NGHTTP2_ERR_DEFERRED;
     }
     if (h2_c1_io_needs_flush(&session->io)) {
-        ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, c1,
-                      H2_SSSN_STRM_MSG(session, stream_id, "suspending on c1 out needs flush"));
-        h2_stream_dispatch(stream, H2_SEV_OUT_C1_BLOCK);
-        return NGHTTP2_ERR_DEFERRED;
+        rv = h2_c1_io_pass(&session->io);
+        if (APR_STATUS_IS_EAGAIN(rv)) {
+            ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, c1,
+                          H2_SSSN_STRM_MSG(session, stream_id, "suspending on c1 out needs flush"));
+            h2_stream_dispatch(stream, H2_SEV_OUT_C1_BLOCK);
+            return NGHTTP2_ERR_DEFERRED;
+        }
+        else if (rv) {
+            h2_session_dispatch_event(session, H2_SESSION_EV_CONN_ERROR, rv, NULL);
+            return NGHTTP2_ERR_CALLBACK_FAILURE;
+        }
     }
 
     /* determine how much we'd like to send. We cannot send more than
