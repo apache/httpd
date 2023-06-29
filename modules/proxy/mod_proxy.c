@@ -227,6 +227,18 @@ static const char *set_worker_param(apr_pool_t *p,
             return "EnableReuse must be On|Off";
         worker->s->disablereuse_set = 1;
     }
+    else if (!strcasecmp(key, "addressttl")) {
+        /* Address TTL in seconds
+         */
+        char *endptr;
+        long ttl = strtol(val, &endptr, 10);
+        if (endptr == val || *endptr || ttl < -1L || ttl > APR_INT32_MAX) {
+            return "AddressTTL must be a number between -1 and "
+                    APR_STRINGIFY(APR_INT32_MAX);
+        }
+        worker->s->address_ttl = apr_time_from_sec(ttl);
+        worker->s->address_ttl_set = 1;
+    }
     else if (!strcasecmp(key, "route")) {
         /* Worker route.
          */
