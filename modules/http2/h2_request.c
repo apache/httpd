@@ -385,7 +385,11 @@ request_rec *h2_create_request_rec(const h2_request *req, conn_rec *c,
     /* Time to populate r with the data we have. */
     r->request_time = req->request_time;
     AP_DEBUG_ASSERT(req->authority);
-    if (is_connect) {
+    if (req->http_status != H2_HTTP_STATUS_UNSET) {
+        access_status = req->http_status;
+        goto die;
+    }
+    else if (is_connect) {
       /* CONNECT MUST NOT have scheme or path */
         r->the_request = apr_psprintf(r->pool, "%s %s HTTP/2.0",
                                       req->method, req->authority);
@@ -548,6 +552,16 @@ request_rec *h2_create_request_rec(const h2_request *req, conn_rec *c,
     return r;
 
 die:
+    if (!r->method) {
+        /* if we fail early, `r` is not properly initialized for error
+         * processing which accesses fields in message generation.
+         * Make a best effort. */
+        if (!r->the_request) {
+                r->the_request = apr_psprintf(r->pool, "%s %s HTTP/2.0",
+                                      req->method, req->path);
+        }
+        ap_parse_request_line(r);
+    }
     ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, c,
                   "ap_die(%d) for %s", access_status, r->the_request);
     ap_die(access_status, r);
