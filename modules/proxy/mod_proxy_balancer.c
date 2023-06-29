@@ -1165,6 +1165,27 @@ static int balancer_process_balancer_worker(request_rec *r, proxy_server_conf *c
             else
                 *wsel->s->route = '\0';
         }
+        
+        if ((val = apr_table_get(params, "b_ewyes")) &&
+            (*val == '1' && *(val+1) == '\0') &&
+            (val = apr_table_get(params, "b_ewrkr"))) {
+            if (strlen(val)){
+                apr_status_t rc;
+                apr_uri_t wurl;
+                rc = apr_uri_parse(r->pool, val, &wurl);
+                
+                if(rc == APR_SUCCESS && wurl.scheme && wurl.hostname){
+                   wsel->s->port = wurl.port;
+                   ap_str_tolower(wurl.hostname);
+                   strcpy(wsel->s->hostname_ex, wurl.hostname);
+                   ap_str_tolower(val);
+                   strcpy(wsel->s->name_ex, val);
+                } else{
+                   ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01192) "Edit worker url failed");
+                }
+            }
+        }
+        
         if ((val = apr_table_get(params, "w_rr"))) {
             if (*val && strlen(val) < sizeof(wsel->s->redirect))
                 strcpy(wsel->s->redirect, val);
@@ -1789,7 +1810,12 @@ static void balancer_display_page(request_rec *r, proxy_server_conf *conf,
             ap_rvputs(r, "value=\"", ap_escape_html(r->pool, wsel->s->redirect),
                       NULL);
             ap_rputs("\"></td></tr>\n", r);
-            ap_rputs("<tr><td>Status:</td>", r);
+            ap_rputs("<tr><td>Worker URL:</td><td><input name='b_ewrkr' id='b_ewrkr' size=32 type=text ", r);
+            ap_rvputs(r, "value=\"", ap_escape_html(r->pool, wsel->s->name_ex),
+                                  NULL);
+            ap_rputs("\">&nbsp;&nbsp;&nbsp;&nbsp;Are you sure? <input name='b_ewyes' id='b_ewyes' type=checkbox value='1'>"
+                                                                                  "</td></tr>\n", r);  
+            ap_rputs("<tr><td>Status:</td>", r); 
             ap_rputs("<td><table><tr>"
                      "<th>Ignore Errors</th>"
                      "<th>Draining Mode</th>"

@@ -2768,7 +2768,16 @@ ap_proxy_determine_connection(apr_pool_t *p, request_rec *r,
             socket_cleanup(conn);
             conn->close = 0;
         }
-        if (will_reuse) {
+        if (will_reuse) {         
+            if(!strcmp(conn->hostname, worker->s->hostname_ex) || conn->port != worker->s->port) {
+                apr_sockaddr_t *addr;
+                err = apr_sockaddr_info_get(&addr,
+                                            worker->s->hostname_ex, APR_UNSPEC,
+                                            worker->s->port, 0,
+                                            worker->cp->dns_pool);
+                worker->cp->addr = addr;
+            }
+
             /*
              * Looking up the backend address for the worker only makes sense if
              * we can reuse the address.
