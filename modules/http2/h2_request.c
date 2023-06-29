@@ -409,7 +409,7 @@ request_rec *h2_create_request_rec(const h2_request *req, conn_rec *c,
         }
     }
     else if (req->protocol) {
-      ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, APLOGNO(10460)
+      ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, APLOGNO(10470)
                     "':protocol: %s' header present in %s request",
                     req->protocol, req->method);
       access_status = HTTP_BAD_REQUEST;
