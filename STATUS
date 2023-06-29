@@ -174,6 +174,50 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c 1892450,1909966 ^/httpd/httpd/trunk .
      +1: jailletc36, rpluem, icing
 
+  *) mod_rewrite: Add server directory to include path as mod_rewrite requires
+     test_char.h. PR 66571
+     Trunk version of patch:
+        https://svn.apache.org/r1909241
+     Backport version for 2.4.x of patch:
+      Trunk version of patch works
+      svn merge -c 1909241 ^/httpd/httpd/trunk .
+     +1: rpluem, icing, ylavic
+
+  *) mod_deflate: Add DeflateAlterETag to control how the ETag
+     is modified. The 'NoChange' parameter mimics 2.2.x behavior.
+     PR 45023, PR 39727.
+     Trunk version of patch:
+        https://svn.apache.org/r1586542
+     Backport version for 2.4.x of patch:
+      https://raw.githubusercontent.com/jfclere/patch/main/mod_deflate.patch
+     +1: jfclere, rpluem, ylavic
+     rpluem says: Does anyone know why we don't merge the server config?
+
+  *) mod_http2:
+     Cumulative patch of fixes and new features in github PR #364:
+     - Merge 1907696,1907697 from trunk:
+       * new directive 'H2MaxDataFrameLen n'
+       * deny protocol upgrade on request with chunked encoding
+     - Merge 1909769 from trunk:
+       * New directive 'H2EarlyHint name value'
+       * Fixed PR 66537 where requests were logged late and with wrong duration
+       * Fixed reporting of bytes actually sent (%O)
+     - Merge r1910157 from trunk
+       * Fixed crash in mod_proxy_http2 caused by use for wrong bucket_alloc
+     - Merge of 1910331,1910386,1910441 from trunk
+       * Fix for PR 66624, busy loop on connection shutdown
+       * Fix for PR 66646, recursive call into output filters
+     Github PR at <https://github.com/apache/httpd/pull/364>,
+     all CI checks passed.
+     +1: icing, gbechis, ylavic
+
+   *) mod_ssl: Fix for BZ 66626.
+      Trunk version of patch:
+         https://svn.apache.org/r1875355
+      Backport version for 2.4.x of patch:
+         svn merge -c 1875355 ^/httpd/httpd/trunk .
+      +1: gbechis, icing, ylavic
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -211,25 +255,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   https://github.com/apache/httpd/pull/350
      +1: ylavic, rpluem,
 
-  *) mod_rewrite: Add server directory to include path as mod_rewrite requires
-     test_char.h. PR 66571
-     Trunk version of patch:
-        https://svn.apache.org/r1909241
-     Backport version for 2.4.x of patch:
-      Trunk version of patch works
-      svn merge -c 1909241 ^/httpd/httpd/trunk .
-     +1: rpluem, icing
-
-  *) mod_deflate: Add DeflateAlterETag to control how the ETag
-     is modified. The 'NoChange' parameter mimics 2.2.x behavior.
-     PR 45023, PR 39727.
-     Trunk version of patch:
-        https://svn.apache.org/r1586542
-     Backport version for 2.4.x of patch:
-      https://raw.githubusercontent.com/jfclere/patch/main/mod_deflate.patch
-     +1: jfclere, rpluem,
-     rpluem says: Does anyone know why we don't merge the server config?
-
   *) mod_proxy: If we fail to connect to all looked up IP's from the worker
      lookup cache it might be caused by a change on DNS side. Try another
      DNS lookup in this case and in case this causes a successful connection
@@ -243,31 +268,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       Trunk version of patch works
       svn merge -c 1909400,1909401,1909402,1909451 ^/httpd/httpd/trunk .
      +1: rpluem,
-
-  *) mod_http2:
-     Cumulative patch of fixes and new features in github PR #364:
-     - Merge 1907696,1907697 from trunk:
-       * new directive 'H2MaxDataFrameLen n'
-       * deny protocol upgrade on request with chunked encoding
-     - Merge 1909769 from trunk:
-       * New directive 'H2EarlyHint name value'
-       * Fixed PR 66537 where requests were logged late and with wrong duration
-       * Fixed reporting of bytes actually sent (%O)
-     - Merge r1910157 from trunk
-       * Fixed crash in mod_proxy_http2 caused by use for wrong bucket_alloc
-     - Merge of 1910331,1910386,1910441 from trunk
-       * Fix for PR 66624, busy loop on connection shutdown
-       * Fix for PR 66646, recursive call into output filters
-     Github PR at <https://github.com/apache/httpd/pull/364>,
-     all CI checks passed.
-     +1: icing, gbechis
-
-   *) mod_ssl: Fix for BZ 66626.
-      Trunk version of patch:
-         https://svn.apache.org/r1875355
-      Backport version for 2.4.x of patch:
-         svn merge -c 1875355 ^/httpd/httpd/trunk .
-      +1: gbechis, icing
    
     *) mod_rewrite: PR66672 trailing ? and QSA together regression
       Trunk version of patch:
@@ -276,6 +276,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       Backport version for 2.4.x of patch:
          svn merge -c 1910633,1910650 ^/httpd/httpd/trunk .
       +1: covener
+      ylavic: wip still?
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
