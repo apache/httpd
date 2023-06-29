@@ -1500,7 +1500,7 @@ static ssize_t stream_data_cb(nghttp2_session *ng2s,
         }
         else if (APR_ECONNRESET == rv || APR_ECONNABORTED == rv) {
             ap_log_cerror(APLOG_MARK, APLOG_DEBUG, rv, c1,
-                          H2_STRM_LOG(APLOGNO(), stream, "data_cb, reading data"));
+                          H2_STRM_LOG(APLOGNO(10471), stream, "data_cb, reading data"));
             h2_stream_rst(stream, H2_ERR_STREAM_CLOSED);
             return NGHTTP2_ERR_DEFERRED;
         }
