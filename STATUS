@@ -266,7 +266,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       Backport version for 2.4.x of patch:
          (merge doesn't work well with rewritelog((..)) context)
          http://people.apache.org/~covener/patches/pr66672.diff
-      +1: covener
+      +1: covener, gbechis
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
