@@ -45,8 +45,8 @@ class TestH2ProxyTwisted:
         "data-1k", "data-10k", "data-100k", "data-1m",
     ])
     def test_h2_601_03_echo_fail_early(self, env, name):
-        if not env.httpd_is_at_least('2.5.0'):
-            pytest.skip(f'needs r1910157 from trunk')
+        if not env.httpd_is_at_least('2.4.58'):
+            pytest.skip(f'needs httpd 2.4.58')
         fpath = os.path.join(env.gen_dir, name)
         url = env.mkurl("https", "cgi", "/h2proxy/h2test/echo?fail_after=512")
         r = env.curl_upload(url, fpath, options=[])
@@ -57,8 +57,8 @@ class TestH2ProxyTwisted:
         "data-1k", "data-10k", "data-100k", "data-1m",
     ])
     def test_h2_601_04_echo_fail_late(self, env, name):
-        if not env.httpd_is_at_least('2.5.0'):
-            pytest.skip(f'needs r1910157 from trunk')
+        if not env.httpd_is_at_least('2.4.58'):
+            pytest.skip(f'needs httpd 2.4.58')
         fpath = os.path.join(env.gen_dir, name)
         url = env.mkurl("https", "cgi", f"/h2proxy/h2test/echo?fail_after={os.path.getsize(fpath)}")
         r = env.curl_upload(url, fpath, options=[])
@@ -70,8 +70,8 @@ class TestH2ProxyTwisted:
             assert r.response["status"] == 502, f'{r}'
 
     def test_h2_601_05_echo_fail_many(self, env):
-        if not env.httpd_is_at_least('2.5.0'):
-            pytest.skip(f'needs r1910157 from trunk')
+        if not env.httpd_is_at_least('2.4.58'):
+            pytest.skip(f'needs httpd 2.4.58')
         if not env.curl_is_at_least('8.0.0'):
             pytest.skip(f'need at least curl v8.0.0 for this')
         count = 200
