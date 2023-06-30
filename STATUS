@@ -260,6 +260,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       svn merge -c 1908502 ^/httpd/httpd/trunk .
      +1: icing,
 
+    *) mod_rewrite: PR66672 trailing ? and QSA together regression
+      Trunk version of patch:
+          svn diff -r  1910649:1910705 modules/mappers/mod_rewrite.c
+      Backport version for 2.4.x of patch:
+         (merge doesn't work well with rewritelog((..)) context)
+         http://people.apache.org/~covener/patches/pr66672.diff
+      +1: covener
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
