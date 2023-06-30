@@ -251,7 +251,15 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       svn merge -c 1909400,1909401,1909402,1909451 ^/httpd/httpd/trunk .
      +1: rpluem,
      ylavic: see https://lists.apache.org/thread/jftfd6mo6p3b0tw694rlh09gdl7189hq
-   
+
+  *) mod_http2: Fix memory leak in calc_sha256_hash().
+     Trunk version of patch:
+        https://svn.apache.org/r1908502
+     Backport version for 2.4.x of patch:
+      Trunk version of patch works
+      svn merge -c 1908502 ^/httpd/httpd/trunk .
+     +1: icing,
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
