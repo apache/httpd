@@ -4776,9 +4776,9 @@ PROXY_DECLARE(apr_status_t) ap_proxy_tunnel_create(proxy_tunnel_rec **ptunnel,
     apr_socket_timeout_get(tunnel->origin->pfd->desc.s, &origin_timeout);
     apr_socket_opt_set(tunnel->origin->pfd->desc.s, APR_SO_NONBLOCK, 1);
 
-    /* Defaults to the biggest timeout of both connections */
-    tunnel->timeout = (origin_timeout >= 0 && origin_timeout > client_timeout)?
-                      origin_timeout : client_timeout;
+    /* Defaults to the smallest timeout of both connections */
+    tunnel->timeout = (client_timeout >= 0 && client_timeout < origin_timeout ?
+                       client_timeout : origin_timeout);
 
     /* No coalescing filters */
     ap_remove_output_filter_byhandle(c_i->output_filters,
