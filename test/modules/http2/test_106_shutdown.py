@@ -66,7 +66,7 @@ class TestShutdown:
             r = env.curl_get(url, options=['-v'])
             # requests should succeed, but rarely connections get closed
             # before the response is received
-            if r.exit_code == 55:
+            if r.exit_code in [16, 55]:
                 # curl send error
                 assert r.response is None
             else:
