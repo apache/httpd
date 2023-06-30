@@ -534,7 +534,9 @@ static proxy_worker *hc_get_hcworker(sctx_t *ctx, proxy_worker *worker,
     }
     /* This *could* have changed via the Balancer Manager */
     /* TODO */
-    if (hc->s->method != worker->s->method || !strcmp(hc->s->hostname_ex, worker->s->hostname_ex) || hc->s->port != worker->s->port) {
+    if (hc->s->method != worker->s->method 
+        || strcmp(hc->s->hostname_ex, worker->s->hostname_ex) != 0
+        || hc->s->port != worker->s->port) {
         wctx_t *wctx = hc->context;
         port = (worker->s->port ? worker->s->port
                                 : ap_proxy_port_of_scheme(worker->s->scheme));

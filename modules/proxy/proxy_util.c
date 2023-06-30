@@ -2769,7 +2769,7 @@ ap_proxy_determine_connection(apr_pool_t *p, request_rec *r,
             conn->close = 0;
         }
         if (will_reuse) {         
-            if(!strcmp(conn->hostname, worker->s->hostname_ex) || conn->port != worker->s->port) {
+            if(strcmp(conn->hostname, worker->s->hostname_ex) != 0 || conn->port != worker->s->port) {
                 apr_sockaddr_t *addr;
                 err = apr_sockaddr_info_get(&addr,
                                             worker->s->hostname_ex, APR_UNSPEC,
