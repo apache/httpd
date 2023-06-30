@@ -511,10 +511,10 @@ static apr_status_t pass_response(h2_conn_ctx_t *conn_ctx, ap_filter_t *f,
 {
     apr_bucket *b;
     apr_status_t status;
-
     h2_headers *response = h2_headers_create(parser->http_status,
                                              make_table(parser),
-                                             NULL, 0, parser->pool);
+                                             parser->c->notes,
+                                             0, parser->pool);
     apr_brigade_cleanup(parser->tmp);
     b = h2_bucket_headers_create(parser->c->bucket_alloc, response);
     APR_BRIGADE_INSERT_TAIL(parser->tmp, b);

@@ -193,24 +193,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      +1: jfclere, rpluem, ylavic
      rpluem says: Does anyone know why we don't merge the server config?
 
-  *) mod_http2:
-     Cumulative patch of fixes and new features in github PR #364:
-     - Merge 1907696,1907697 from trunk:
-       * new directive 'H2MaxDataFrameLen n'
-       * deny protocol upgrade on request with chunked encoding
-     - Merge 1909769 from trunk:
-       * New directive 'H2EarlyHint name value'
-       * Fixed PR 66537 where requests were logged late and with wrong duration
-       * Fixed reporting of bytes actually sent (%O)
-     - Merge r1910157 from trunk
-       * Fixed crash in mod_proxy_http2 caused by use for wrong bucket_alloc
-     - Merge of 1910331,1910386,1910441 from trunk
-       * Fix for PR 66624, busy loop on connection shutdown
-       * Fix for PR 66646, recursive call into output filters
-     Github PR at <https://github.com/apache/httpd/pull/364>,
-     all CI checks passed.
-     +1: icing, gbechis, ylavic
-
    *) mod_ssl: Fix for BZ 66626.
       Trunk version of patch:
          https://svn.apache.org/r1875355
@@ -235,7 +217,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      jailletc36: r1745033 seems related and should in included
 
   *) core: Add formats %{z} and %{strftime-format} to ErrorLogFormat, and make
-     sure that if the format is configured early enough it applies to every log
+     sure that if the forat is configured early enough it applies to every log
      line.  PR 62161.
      trunk patch: https://svn.apache.org/r1908380
                   https://svn.apache.org/r1908383

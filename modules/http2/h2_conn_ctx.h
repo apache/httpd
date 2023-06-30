@@ -61,6 +61,7 @@ struct h2_conn_ctx_t {
     int has_final_response;          /* final HTTP response passed on out */
     apr_status_t last_err;           /* APR_SUCCES or last error encountered in filters */
 
+    apr_off_t bytes_sent;            /* c2: bytes acutaly sent via c1 */
     /* atomic */ apr_uint32_t started; /* c2: processing was started */
     apr_time_t started_at;           /* c2: when processing started */
     /* atomic */ apr_uint32_t done;  /* c2: processing has finished */

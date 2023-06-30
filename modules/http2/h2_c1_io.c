@@ -260,9 +260,22 @@ static apr_status_t read_to_scratch(h2_c1_io *io, apr_bucket *b)
 static apr_status_t pass_output(h2_c1_io *io, int flush)
 {
     conn_rec *c = io->session->c1;
-    apr_off_t bblen;
+    apr_off_t bblen = 0;
     apr_status_t rv;
-    
+
+    if (io->is_passing) {
+        /* recursive call, may be triggered by an H2EOS bucket
+         * being destroyed and triggering sending more data? */
+        AP_DEBUG_ASSERT(0);
+        ap_log_cerror(APLOG_MARK, APLOG_ERR, rv, c, APLOGNO(10456)
+                      "h2_c1_io(%ld): recursive call of h2_c1_io_pass. "
+                      "Denied to prevent output corruption. This "
+                      "points to a bug in the HTTP/2 implementation.",
+                      c->id);
+        return APR_EGENERAL;
+    }
+    io->is_passing = 1;
+
     append_scratch(io);
     if (flush) {
         if (!APR_BUCKET_IS_FLUSH(APR_BRIGADE_LAST(io->output))) {
@@ -271,17 +284,16 @@ static apr_status_t pass_output(h2_c1_io *io, int flush)
         }
     }
     if (APR_BRIGADE_EMPTY(io->output)) {
-        return APR_SUCCESS;
+        rv = APR_SUCCESS;
+        goto cleanup;
     }
-    
+
     io->unflushed = !APR_BUCKET_IS_FLUSH(APR_BRIGADE_LAST(io->output));
     apr_brigade_length(io->output, 0, &bblen);
     C1_IO_BB_LOG(c, 0, APLOG_TRACE2, "out", io->output);
-    
+
     rv = ap_pass_brigade(c->output_filters, io->output);
     if (APR_SUCCESS != rv) goto cleanup;
-
-    io->buffered_len = 0;
     io->bytes_written += (apr_size_t)bblen;
 
     if (io->write_size < WRITE_SIZE_MAX
@@ -309,6 +321,8 @@ cleanup:
                       c->id, (long)bblen);
     }
     apr_brigade_cleanup(io->output);
+    io->buffered_len = 0;
+    io->is_passing = 0;
     return rv;
 }
 

@@ -1002,4 +1002,82 @@ H2TLSCoolDownSecs 0
         </usage>
     </directivesynopsis>
     
+    <directivesynopsis>
+        <name>H2StreamTimeout</name>
+        <description>Maximum time waiting when sending/receiving data to stream processing</description>
+        <syntax>H2StreamTimeout <var>time-interval</var>[s]</syntax>
+        <default>Value of <directive module="core">Timeout</directive></default>
+        <contextlist>
+            <context>server config</context>
+            <context>virtual host</context>
+            <context>directory</context>
+        </contextlist>
+        <compatibility>Available in version 2.5.1 and later.</compatibility>
+
+        <usage>
+            <p>
+                <directive>H2StreamTimeout</directive> specifies the maximum time that
+                a stream being processed will wait for its data to be sent/received.
+            </p>
+        </usage>
+    </directivesynopsis>
+
+    <directivesynopsis>
+        <name>H2MaxDataFrameLen</name>
+        <description>Maximum bytes inside a single HTTP/2 DATA frame</description>
+        <syntax>H2MaxDataFrameLen <em>n</em></syntax>
+        <default>H2MaxDataFrameLen 0</default>
+        <contextlist>
+            <context>server config</context>
+            <context>virtual host</context>
+        </contextlist>
+        <compatibility>Available in version 2.5.1 and later.</compatibility>
+
+        <usage>
+            <p>
+                <directive>H2MaxDataFrameLen</directive> limits the maximum
+                amount of response body bytes placed into a single HTTP/2 DATA
+                frame. Setting this to 0 places no limit (but the max size
+                allowed by the protocol is observed).
+            </p><p>
+                The module, by default, tries to use the maximum size possible,
+                which is somewhat around 16KB. This sets the maximum. When less
+                response data is availble, smaller frames will be sent.
+            </p>
+        </usage>
+    </directivesynopsis>
+
+    <directivesynopsis>
+        <name>H2EarlyHint</name>
+        <description>Add a response header to be picked up in 103 Early Hints</description>
+        <syntax>H2EarlyHint <em>name</em> <em>value</em></syntax>
+        <contextlist>
+            <context>server config</context>
+            <context>virtual host</context>
+            <context>directory</context>
+            <context>.htaccess</context>
+        </contextlist>
+        <compatibility>Available in version 2.5.1 and later.</compatibility>
+
+        <usage>
+            <p>
+                <directive>H2EarlyHint</directive> allows adding a response
+                header before the real request processing is started. Such headers
+                are picked up for "103 Early Hints" intermediate responses. The main
+                purpose is to send "preload" information to client browsers.
+            </p><p>
+                <em>name</em> and <em>value</em> must be valid HTTP header fields
+                or will lead to failed responses. <directive>H2EarlyHints</directive>
+                must still be enabled to allow 103 intermediate responses to be sent.
+                This directive can be repeated several times and header fields of the
+                same names add.
+            </p>
+            <example><title>Example</title>
+                <highlight language="config">
+H2EarlyHint Link "&lt;/my.css&gt;;rel=preload;as=style"
+                </highlight>
+            </example>
+        </usage>
+    </directivesynopsis>
+
 </modulesynopsis>

@@ -70,11 +70,13 @@ typedef struct h2_config {
     int push_diary_size;             /* # of entries in push diary */
     int copy_files;                  /* if files shall be copied vs setaside on output */
     apr_array_header_t *push_list;   /* list of h2_push_res configurations */
+    apr_table_t *early_headers;      /* HTTP headers for a 103 response */
     int early_hints;                 /* support status code 103 */
     int padding_bits;
     int padding_always;
     int output_buffered;
     apr_interval_time_t stream_timeout;/* beam timeout */
+    int max_data_frame_len;          /* max # bytes in a single h2 DATA frame */
 } h2_config;
 
 typedef struct h2_dir_config {
@@ -82,6 +84,7 @@ typedef struct h2_dir_config {
     int h2_upgrade;                  /* Allow HTTP/1 upgrade to h2/h2c */
     int h2_push;                     /* if HTTP/2 server push is enabled */
     apr_array_header_t *push_list;   /* list of h2_push_res configurations */
+    apr_table_t *early_headers;      /* HTTP headers for a 103 response */
     int early_hints;                 /* support status code 103 */
     apr_interval_time_t stream_timeout;/* beam timeout */
 } h2_dir_config;
@@ -105,11 +108,13 @@ static h2_config defconf = {
     256,                    /* push diary size */
     0,                      /* copy files across threads */
     NULL,                   /* push list */
+    NULL,                   /* early headers */
     0,                      /* early hints, http status 103 */
     0,                      /* padding bits */
     1,                      /* padding always */
     1,                      /* stream output buffered */
     -1,                     /* beam timeout */
+    0,                      /* max DATA frame len, 0 == no extra limit */
 };
 
 static h2_dir_config defdconf = {
@@ -117,6 +122,7 @@ static h2_dir_config defdconf = {
     -1,                     /* HTTP/1 Upgrade support */
     -1,                     /* HTTP/2 server push enabled */
     NULL,                   /* push list */
+    NULL,                   /* early headers */
     -1,                     /* early hints, http status 103 */
     -1,                     /* beam timeout */
 };
@@ -148,11 +154,13 @@ void *h2_config_create_svr(apr_pool_t *pool, server_rec *s)
     conf->push_diary_size      = DEF_VAL;
     conf->copy_files           = DEF_VAL;
     conf->push_list            = NULL;
+    conf->early_headers        = NULL;
     conf->early_hints          = DEF_VAL;
     conf->padding_bits         = DEF_VAL;
     conf->padding_always       = DEF_VAL;
     conf->output_buffered      = DEF_VAL;
     conf->stream_timeout       = DEF_VAL;
+    conf->max_data_frame_len   = DEF_VAL;
     return conf;
 }
 
@@ -191,10 +199,17 @@ static void *h2_config_merge(apr_pool_t *pool, void *basev, void *addv)
     else {
         n->push_list        = add->push_list? add->push_list : base->push_list;
     }
+    if (add->early_headers && base->early_headers) {
+        n->early_headers    = apr_table_overlay(pool, add->early_headers, base->early_headers);
+    }
+    else {
+        n->early_headers    = add->early_headers? add->early_headers : base->early_headers;
+    }
     n->early_hints          = H2_CONFIG_GET(add, base, early_hints);
     n->padding_bits         = H2_CONFIG_GET(add, base, padding_bits);
     n->padding_always       = H2_CONFIG_GET(add, base, padding_always);
     n->stream_timeout       = H2_CONFIG_GET(add, base, stream_timeout);
+    n->max_data_frame_len   = H2_CONFIG_GET(add, base, max_data_frame_len);
     return n;
 }
 
@@ -231,6 +246,12 @@ void *h2_config_merge_dir(apr_pool_t *pool, void *basev, void *addv)
     }
     else {
         n->push_list        = add->push_list? add->push_list : base->push_list;
+    }
+    if (add->early_headers && base->early_headers) {
+        n->early_headers    = apr_table_overlay(pool, add->early_headers, base->early_headers);
+    }
+    else {
+        n->early_headers    = add->early_headers? add->early_headers : base->early_headers;
     }
     n->early_hints          = H2_CONFIG_GET(add, base, early_hints);
     n->stream_timeout         = H2_CONFIG_GET(add, base, stream_timeout);
@@ -278,6 +299,8 @@ static apr_int64_t h2_srv_config_geti64(const h2_config *conf, h2_config_var_t v
             return H2_CONFIG_GET(conf, &defconf, output_buffered);
         case H2_CONF_STREAM_TIMEOUT:
             return H2_CONFIG_GET(conf, &defconf, stream_timeout);
+        case H2_CONF_MAX_DATA_FRAME_LEN:
+            return H2_CONFIG_GET(conf, &defconf, max_data_frame_len);
         default:
             return DEF_VAL;
     }
@@ -336,6 +359,9 @@ static void h2_srv_config_seti(h2_config *conf, h2_config_var_t var, int val)
             break;
         case H2_CONF_OUTPUT_BUFFER:
             H2_CONFIG_SET(conf, output_buffered, val);
+            break;
+        case H2_CONF_MAX_DATA_FRAME_LEN:
+            H2_CONFIG_SET(conf, max_data_frame_len, val);
             break;
         default:
             break;
@@ -502,6 +528,18 @@ apr_array_header_t *h2_config_push_list(request_rec *r)
     return sconf? sconf->push_list : NULL;
 }
 
+apr_table_t *h2_config_early_headers(request_rec *r)
+{
+    const h2_config *sconf;
+    const h2_dir_config *conf = h2_config_rget(r);
+
+    if (conf && conf->early_headers) {
+        return conf->early_headers;
+    }
+    sconf = h2_config_sget(r->server);
+    return sconf? sconf->early_headers : NULL;
+}
+
 const struct h2_priority *h2_cconfig_get_priority(conn_rec *c, const char *content_type)
 {
     const h2_config *conf = h2_config_get(c);
@@ -580,6 +618,17 @@ static const char *h2_conf_set_stream_max_mem_size(cmd_parms *cmd,
         return "value must be >= 1024";
     }
     CONFIG_CMD_SET(cmd, dirconf, H2_CONF_STREAM_MAX_MEM, val);
+    return NULL;
+}
+
+static const char *h2_conf_set_max_data_frame_len(cmd_parms *cmd,
+                                                  void *dirconf, const char *value)
+{
+    int val = (int)apr_atoi64(value);
+    if (val < 0) {
+        return "value must be 0 or larger";
+    }
+    CONFIG_CMD_SET(cmd, dirconf, H2_CONF_MAX_DATA_FRAME_LEN, val);
     return NULL;
 }
 
@@ -812,6 +861,37 @@ static const char *h2_conf_add_push_res(cmd_parms *cmd, void *dirconf,
     return NULL;
 }
 
+static const char *h2_conf_add_early_hint(cmd_parms *cmd, void *dirconf,
+                                          const char *name, const char *value)
+{
+    apr_table_t *hds, **phds;
+
+    if(!name || !*name)
+      return "Early Hint header name must not be empty";
+    if(!value)
+      return "Early Hint header value must not be empty";
+    while (apr_isspace(*value))
+        ++value;
+    if(!*value)
+      return "Early Hint header value must not be empty/only space";
+    if (*ap_scan_http_field_content(value))
+      return "Early Hint header value contains invalid characters";
+
+    if (cmd->path) {
+        phds = &((h2_dir_config*)dirconf)->early_headers;
+    }
+    else {
+        phds = &(h2_config_sget(cmd->server))->early_headers;
+    }
+    hds = *phds;
+    if (!hds) {
+      *phds = hds = apr_table_make(cmd->pool, 10);
+    }
+    apr_table_add(hds, name, value);
+
+    return NULL;
+}
+
 static const char *h2_conf_set_early_hints(cmd_parms *cmd,
                                            void *dirconf, const char *value)
 {
@@ -937,6 +1017,10 @@ const command_rec h2_cmds[] = {
                   RSRC_CONF, "set stream output buffer on/off"),
     AP_INIT_TAKE1("H2StreamTimeout", h2_conf_set_stream_timeout, NULL,
                   RSRC_CONF, "set stream timeout"),
+    AP_INIT_TAKE1("H2MaxDataFrameLen", h2_conf_set_max_data_frame_len, NULL,
+                  RSRC_CONF, "maximum number of bytes in a single HTTP/2 DATA frame"),
+    AP_INIT_TAKE2("H2EarlyHint", h2_conf_add_early_hint, NULL,
+                   OR_FILEINFO|OR_AUTHCFG, "add a a 'Link:' header for a 103 Early Hints response."),
     AP_END_CMD
 };
 

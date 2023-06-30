@@ -24,6 +24,7 @@
 
 #include <httpd.h>
 #include <http_protocol.h>
+#include <http_request.h>
 #include <http_log.h>
 
 #include "h2_private.h"
@@ -156,6 +157,23 @@ static void purge_consumed_buckets(h2_bucket_beam *beam)
      * from sender thread only */
     while (!H2_BLIST_EMPTY(&beam->buckets_consumed)) {
         b = H2_BLIST_FIRST(&beam->buckets_consumed);
+        if(AP_BUCKET_IS_EOR(b)) {
+          APR_BUCKET_REMOVE(b);
+          H2_BLIST_INSERT_TAIL(&beam->buckets_eor, b);
+        }
+        else {
+          apr_bucket_delete(b);
+        }
+    }
+}
+
+static void purge_eor_buckets(h2_bucket_beam *beam)
+{
+    apr_bucket *b;
+    /* delete all sender buckets in purge brigade, needs to be called
+     * from sender thread only */
+    while (!H2_BLIST_EMPTY(&beam->buckets_eor)) {
+        b = H2_BLIST_FIRST(&beam->buckets_eor);
         apr_bucket_delete(b);
     }
 }
@@ -254,8 +272,8 @@ static void beam_shutdown(h2_bucket_beam *beam, apr_shutdown_how_e how)
 
     /* shutdown sender (or both)? */
     if (how != APR_SHUTDOWN_READ) {
-        h2_blist_cleanup(&beam->buckets_to_send);
         purge_consumed_buckets(beam);
+        h2_blist_cleanup(&beam->buckets_to_send);
     }
 }
 
@@ -263,6 +281,7 @@ static apr_status_t beam_cleanup(void *data)
 {
     h2_bucket_beam *beam = data;
     beam_shutdown(beam, APR_SHUTDOWN_READWRITE);
+    purge_eor_buckets(beam);
     beam->pool = NULL; /* the pool is clearing now */
     return APR_SUCCESS;
 }
@@ -295,6 +314,7 @@ apr_status_t h2_beam_create(h2_bucket_beam **pbeam, conn_rec *from,
 
     H2_BLIST_INIT(&beam->buckets_to_send);
     H2_BLIST_INIT(&beam->buckets_consumed);
+    H2_BLIST_INIT(&beam->buckets_eor);
     beam->tx_mem_limits = 1;
     beam->max_buf_size = max_buf_size;
     beam->timeout = timeout;
@@ -565,6 +585,9 @@ cleanup:
         rv = APR_ECONNABORTED;
     }
     H2_BEAM_LOG(beam, from, APLOG_TRACE2, rv, "end send", sender_bb);
+    if(rv != APR_SUCCESS && !APR_STATUS_IS_EAGAIN(rv) && sender_bb != NULL) {
+        apr_brigade_cleanup(sender_bb);
+    }
     apr_thread_mutex_unlock(beam->lock);
     return rv;
 }
