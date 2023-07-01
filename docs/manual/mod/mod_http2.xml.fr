@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1910507 -->
+<!-- English Revision: 1910656 -->
 <!-- French translation : Lucien GENTIS -->
 
 <!--
@@ -1286,5 +1286,31 @@ H2EarlyHint Link "&lt;/my.css&gt;;rel=preload;as=style"
             </p>
         </usage>
     </directivesynopsis>   
+
+    <directivesynopsis>
+        <name>H2ProxyRequests</name>
+        <description>Active/Désactive les requêtes sous mandat direct via HTTP/2</description>
+        <syntax>H2ProxyRequests  on|off</syntax>
+        <default>H2ProxyRequests off</default>
+        <contextlist>
+            <context>server config</context>
+            <context>virtual host</context>
+        </contextlist>
+        <compatibility>Disponible à partir de la version 2.5.1 du serveur HTTP
+	Apache</compatibility>
+
+        <usage>
+            <p>
+                La directive <directive>H2ProxyRequests</directive> permet
+		d'activer ou de désactiver la gestion des requêtes HTTP/2 dans
+		un contexte de mandat direct.
+            </p><p>
+                Similaire à <directive module="proxy">ProxyRequests</directive>,
+		cette directive déclenche le traitement nécessaire des requêtes
+		lorsque HTTP/2 est activé dans un contexte de mandat direct.
+            </p><p>
+            </p>
+        </usage>
+    </directivesynopsis>    
 
 </modulesynopsis>
