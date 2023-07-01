@@ -347,6 +347,7 @@
 <li><a href="mod_http2.html#h2moderntlsonly">H2ModernTLSOnly</a></li>
 <li><a href="mod_http2.html#h2outputbuffering">H2OutputBuffering</a></li>
 <li><a href="mod_http2.html#h2padding">H2Padding</a></li>
+<li><a href="mod_http2.html#h2proxyrequests">H2ProxyRequests</a></li>
 <li><a href="mod_http2.html#h2push">H2Push</a></li>
 <li><a href="mod_http2.html#h2pushdiarysize">H2PushDiarySize</a></li>
 <li><a href="mod_http2.html#h2pushpriority">H2PushPriority</a></li>
