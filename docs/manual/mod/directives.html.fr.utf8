@@ -299,7 +299,9 @@
 <li><a href="mod_unixd.html#group">Group</a></li>
 <li><a href="mod_http2.html#h2copyfiles" id="H" name="H">H2CopyFiles</a></li>
 <li><a href="mod_http2.html#h2direct">H2Direct</a></li>
+<li><a href="mod_http2.html#h2earlyhint">H2EarlyHint</a></li>
 <li><a href="mod_http2.html#h2earlyhints">H2EarlyHints</a></li>
+<li><a href="mod_http2.html#h2maxdataframelen">H2MaxDataFrameLen</a></li>
 <li><a href="mod_http2.html#h2maxsessionstreams">H2MaxSessionStreams</a></li>
 <li><a href="mod_http2.html#h2maxworkeridleseconds">H2MaxWorkerIdleSeconds</a></li>
 <li><a href="mod_http2.html#h2maxworkers">H2MaxWorkers</a></li>
@@ -313,6 +315,7 @@
 <li><a href="mod_http2.html#h2pushresource">H2PushResource</a></li>
 <li><a href="mod_http2.html#h2serializeheaders">H2SerializeHeaders</a></li>
 <li><a href="mod_http2.html#h2streammaxmemsize">H2StreamMaxMemSize</a></li>
+<li><a href="mod_http2.html#h2streamtimeout">H2StreamTimeout</a></li>
 <li><a href="mod_http2.html#h2tlscooldownsecs">H2TLSCoolDownSecs</a></li>
 <li><a href="mod_http2.html#h2tlswarmupsize">H2TLSWarmUpSize</a></li>
 <li><a href="mod_http2.html#h2upgrade">H2Upgrade</a></li>
