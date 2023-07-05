@@ -1530,6 +1530,7 @@ static void address_cleanup(proxy_conn_rec *conn)
 
 static apr_status_t conn_pool_cleanup(void *theworker)
 {
+    /* Signal that the child is exiting */
     ((proxy_worker *)theworker)->cp = NULL;
     return APR_SUCCESS;
 }
@@ -1672,9 +1673,10 @@ static void connection_cleanup(void *theconn)
         conn->close = 0;
     }
     else if (conn->is_ssl) {
-        /* Unbind/reset the SSL connection dir config (sslconn->dc) from
-         * r->per_dir_config, r will likely get destroyed before this proxy
-         * conn is reused.
+        /* The current ssl section/dir config of the conn is not necessarily
+         * the one it will be reused for, so while the conn is in the reslit
+         * reset its ssl config to the worker's, until a new user sets its own
+         * ssl config eventually in proxy_connection_create() and so on.
          */
         ap_proxy_ssl_engine(conn->connection, worker->section_config, 1);
     }
@@ -3825,8 +3827,6 @@ static int proxy_connection_create(const char *proxy_function,
                      s, APLOGNO(00960) "%s: an error occurred creating a "
                      "new connection to %pI (%s)", proxy_function,
                      backend_addr, conn->hostname);
-        /* XXX: Will be closed when proxy_conn is closed */
-        socket_cleanup(conn);
         return HTTP_INTERNAL_SERVER_ERROR;
     }
 
