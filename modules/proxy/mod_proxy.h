@@ -513,6 +513,7 @@ struct proxy_worker {
     void            *context;   /* general purpose storage */
     ap_conf_vector_t *section_config; /* <Proxy>-section wherein defined */
     struct proxy_address *address; /* current worker address (if reusable) */
+    const char      *uds_name;  /* "unix:/uds/path|worker-URL" */
 };
 
 /* default to health check every 30 seconds */
@@ -764,12 +765,13 @@ typedef __declspec(dllimport) const char *
 /* Connection pool API */
 /**
  * Return the user-land, UDS aware worker name
- * @param p        memory pool used for displaying worker name
+ * @param unused   memory pool unused
  * @param worker   the worker
  * @return         name
+ * @note Even though the returned name is non constant char*, the string
+ *       it points to is shared and should *not* be modified by the caller!
  */
-
-PROXY_DECLARE(char *) ap_proxy_worker_name(apr_pool_t *p,
+PROXY_DECLARE(char *) ap_proxy_worker_name(apr_pool_t *unused,
                                            proxy_worker *worker);
 
 /**
