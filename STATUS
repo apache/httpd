@@ -268,6 +268,16 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          http://people.apache.org/~covener/patches/pr66672.diff
       +1: covener, gbechis
 
+  *) mod_ldap: Avoid performance overhead of apr-util LDAP rebind cache
+     for modern versions of OpenLDAP.
+     Trunk version of patch:
+       https://svn.apache.org/r1878890
+     2.4.x version of patch:
+       trunk version of patch works w/o CHANGES
+       svn merge -c 1878890 ^/httpd/httpd/trunk .
+       or https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/370.patch
+     +1: jorton, 
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
