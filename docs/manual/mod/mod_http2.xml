@@ -1012,7 +1012,7 @@ H2TLSCoolDownSecs 0
             <context>virtual host</context>
             <context>directory</context>
         </contextlist>
-        <compatibility>Available in version 2.5.1 and later.</compatibility>
+        <compatibility>Available in version 2.4.55 and later.</compatibility>
 
         <usage>
             <p>
@@ -1031,7 +1031,7 @@ H2TLSCoolDownSecs 0
             <context>server config</context>
             <context>virtual host</context>
         </contextlist>
-        <compatibility>Available in version 2.5.1 and later.</compatibility>
+        <compatibility>Available in version 2.4.58 and later.</compatibility>
 
         <usage>
             <p>
@@ -1057,7 +1057,7 @@ H2TLSCoolDownSecs 0
             <context>directory</context>
             <context>.htaccess</context>
         </contextlist>
-        <compatibility>Available in version 2.5.1 and later.</compatibility>
+        <compatibility>Available in version 2.4.58 and later.</compatibility>
 
         <usage>
             <p>
