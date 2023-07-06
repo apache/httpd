@@ -445,7 +445,7 @@ static int stapling_check_response(server_rec *s, modssl_ctx_t *mctx,
             rv = SSL_TLSEXT_ERR_NOACK;
         }
 
-        if (status != V_OCSP_CERTSTATUS_GOOD) {
+        if (status != V_OCSP_CERTSTATUS_GOOD && pok) {
             char snum[MAX_STRING_LEN] = { '\0' };
             BIO *bio = BIO_new(BIO_s_mem());
 
@@ -466,12 +466,6 @@ static int stapling_check_response(server_rec *s, modssl_ctx_t *mctx,
                          (reason != OCSP_REVOKED_STATUS_NOSTATUS) ?
                          OCSP_crl_reason_str(reason) : "n/a",
                          snum[0] ? snum : "[n/a]");
-
-            if (mctx->stapling_return_errors == FALSE) {
-                if (pok)
-                    *pok = FALSE;
-                rv = SSL_TLSEXT_ERR_NOACK;
-            }
         }
     }
 
