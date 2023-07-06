@@ -5,6 +5,7 @@ import shutil
 import subprocess
 import time
 from datetime import timedelta, datetime
+from typing import Tuple, List
 import packaging.version
 
 import pytest
@@ -23,7 +24,7 @@ ws_version_min = packaging.version.Version('10.4')
 
 def ws_run(env: H2TestEnv, path, authority=None, do_input=None, inbytes=None,
            send_close=True, timeout=5, scenario='ws-stdin',
-           wait_close: float = 0.0):
+           wait_close: float = 0.0) -> Tuple[ExecResult, List[str], List[WsFrame]]:
     """ Run the h2ws test client in various scenarios with given input and
         timings.
     :param env: the test environment
@@ -95,6 +96,9 @@ class TestWebSockets:
         # with '/ws/'
         # The WebSocket server is started in pytest fixture 'ws_server' below.
         conf = H2Conf(env, extras={
+            'base': [
+                'Timeout 1',
+            ],
             f'cgi.{env.http_tld}': [
               f'  H2WebSockets on',
               f'  ProxyPass /ws/ http://127.0.0.1:{env.ws_port}/ \\',
@@ -338,4 +342,22 @@ class TestWebSockets:
         total_len = sum([f.data_len for f in frames if f.opcode == WsFrame.BINARY])
         assert total_len == ncount * flen, f'{frames}\n{r}'
         # to see these logged, invoke: `pytest -o log_cli=true`
-        log.info(f'throughput (frame-len={frame_len}): {(total_len / (1024*1024)) / r.duration.total_seconds():0.2f} MB/s')
+        log.info(f'throughput (frame-len={frame_len}): "'
+                 f'"{(total_len / (1024*1024)) / r.duration.total_seconds():0.2f} MB/s')
+
+    # Check that the tunnel timeout is observed, e.g. the longer holds and
+    # the 1sec cleint conn timeout does not trigger
+    def test_h2_800_18_timeout(self, env: H2TestEnv, ws_server):
+        fname = "data-10k"
+        frame_delay = 1500
+        flen = 10*1000
+        frame_len = 8192
+        # adjust frame_len to allow for 1 second overall duration
+        r, infos, frames = ws_run(env, path=f'/ws/file/{fname}/{frame_len}/{frame_delay}',
+                                  wait_close=2)
+        assert r.exit_code == 0, f'{r}'
+        assert infos == ['[1] :status: 200', '[1] EOF'], f'{r}'
+        assert len(frames) > 0
+        total_len = sum([f.data_len for f in frames if f.opcode == WsFrame.BINARY])
+        assert total_len == flen, f'{frames}\n{r}'
+
