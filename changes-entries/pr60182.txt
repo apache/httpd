@@ -1,2 +1,2 @@
-  *) mod_ssl: Fix handling of of Certificate Revoked messags
+  *) mod_ssl: Fix handling of Certificate Revoked messages
      in OCSP stapling. PR 60182 [<gmoniker gmail.com>]
