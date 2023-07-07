@@ -564,8 +564,8 @@ static int status_handler(request_rec *r)
         ap_rputs("</dl>", r);
 
     if (is_async) {
-        int wait_io = 0, write_completion = 0, lingering_close = 0, keep_alive = 0,
-            connections = 0, stopping = 0, procs = 0;
+        int wait_io = 0, write_completion = 0, shutdown = 0, lingering_close = 0,
+            keep_alive = 0, connections = 0, stopping = 0, procs = 0;
         if (!short_report)
             ap_rputs("\n\n<table rules=\"all\" cellpadding=\"1%\">\n"
                      "<tr><th rowspan=\"2\">Slot</th>"
@@ -577,7 +577,7 @@ static int status_handler(request_rec *r)
                      "<tr><th>total</th><th>accepting</th>"
                          "<th>busy</th><th>graceful</th><th>idle</th>"
                          "<th>wait-io</th><th>writing</th><th>keep-alive</th>"
-                         "<th>closing</th></tr>\n", r);
+                         "<th>shutdown</th><th>closing</th></tr>\n", r);
         for (i = 0; i < server_limit; ++i) {
             ps_record = ap_get_scoreboard_process(i);
             if (ps_record->pid) {
@@ -585,6 +585,7 @@ static int status_handler(request_rec *r)
                 wait_io          += ps_record->wait_io;
                 write_completion += ps_record->write_completion;
                 keep_alive       += ps_record->keep_alive;
+                shutdown         += ps_record->shutdown;
                 lingering_close  += ps_record->lingering_close;
                 procs++;
                 if (ps_record->quiescing) {
@@ -601,7 +602,7 @@ static int status_handler(request_rec *r)
                     ap_rprintf(r, "<tr><td>%u</td><td>%" APR_PID_T_FMT "</td>"
                                       "<td>%s%s</td>"
                                       "<td>%u</td><td>%s</td>"
-                                      "<td>%u</td><td>%u</td><td>%u</td>"
+                                      "<td>%u</td><td>%u</td><td>%u</td><td>%u</td>"
                                       "<td>%u</td><td>%u</td><td>%u</td><td>%u</td>"
                                       "</tr>\n",
                                i, ps_record->pid,
@@ -614,6 +615,7 @@ static int status_handler(request_rec *r)
                                ps_record->wait_io,
                                ps_record->write_completion,
                                ps_record->keep_alive,
+                               ps_record->shutdown,
                                ps_record->lingering_close);
                 }
             }
@@ -622,14 +624,14 @@ static int status_handler(request_rec *r)
             ap_rprintf(r, "<tr><td>Sum</td>"
                           "<td>%d</td><td>%d</td>"
                           "<td>%d</td><td>&nbsp;</td>"
-                          "<td>%d</td><td>%d</td><td>%d</td>"
+                          "<td>%d</td><td>%d</td><td>%d</td><td>%d</td>"
                           "<td>%d</td><td>%d</td><td>%d</td><td>%d</td>"
                           "</tr>\n</table>\n",
                           procs, stopping,
                           connections,
                           busy, graceful, idle,
                           wait_io, write_completion, keep_alive,
-                          lingering_close);
+                          shutdown, lingering_close);
         }
         else {
             ap_rprintf(r, "Processes: %d\n"
@@ -638,11 +640,12 @@ static int status_handler(request_rec *r)
                           "ConnsAsyncWaitIO: %d\n"
                           "ConnsAsyncWriting: %d\n"
                           "ConnsAsyncKeepAlive: %d\n"
+                          "ConnsAsyncShutdown: %d\n"
                           "ConnsAsyncClosing: %d\n",
                           procs, stopping,
                           connections,
                           wait_io, write_completion, keep_alive,
-                          lingering_close);
+                          shutdown, lingering_close);
         }
     }
 
