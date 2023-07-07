@@ -858,6 +858,7 @@ static void ssl_proceed_handshake(struct connection *c)
                              SSL_get_version(c->ssl),
                              SSL_CIPHER_get_name(ci),
                              pk_bits, sk_bits);
+                if (cert) X509_free(cert);
             }
 #if OPENSSL_VERSION_NUMBER >= 0x10002000L
             if (!worker->metrics.ssl_tmp_key[0] && !worker->metrics.ssl_tmp_key[1]) {
