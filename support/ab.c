@@ -176,6 +176,7 @@
 #if APR_HAVE_LIMITS_H
 #include <limits.h>
 #endif
+#include <assert.h>
 
 #if defined(HAVE_OPENSSL)
 
@@ -357,6 +358,7 @@ struct worker {
     int slot;
     int requests;
     int concurrency;
+    int polled;
     int succeeded_once;  /* response header received once */
     apr_int64_t started; /* number of requests started, so no excess */
 
@@ -477,14 +479,14 @@ static apr_thread_mutex_t *workers_mutex;
 static apr_thread_cond_t *workers_can_start;
 #endif
 
-static APR_INLINE int worker_should_stop(struct worker *worker)
+static APR_INLINE int worker_can_stop(struct worker *worker)
 {
     return (lasttime >= stoptime
             || (rlimited && worker->metrics.done >= worker->requests));
 }
-static APR_INLINE int worker_can_start_connection(struct worker *worker)
+static APR_INLINE int worker_can_connect(struct worker *worker)
 {
-    return !(worker_should_stop(worker)
+    return !(lasttime >= stoptime
              || (rlimited && worker->started >= worker->requests));
 }
 
@@ -617,7 +619,9 @@ static int set_polled_events(struct connection *c, apr_int16_t new_reqevents)
                 graceful_strerror("apr_pollset_remove()", rv);
                 return 0;
             }
-        }
+            assert(c->worker->polled > 0);
+            c->worker->polled--;
+         }
 
         c->pollfd.reqevents = new_reqevents;
         if (new_reqevents != 0) {
@@ -626,6 +630,7 @@ static int set_polled_events(struct connection *c, apr_int16_t new_reqevents)
                 graceful_strerror("apr_pollset_add()", rv);
                 return 0;
             }
+            c->worker->polled++;
         }
     }
     return 1;
@@ -809,7 +814,7 @@ static void ssl_print_info(struct connection *c)
         for (i=1; i<count; i++) {
             cert = (X509 *)SK_VALUE(sk, i);
             ssl_print_cert_info(bio_out, cert);
-    }
+        }
     }
     cert = SSL_get_peer_certificate(c->ssl);
     if (cert == NULL) {
@@ -1581,7 +1586,7 @@ static void start_connection(struct connection * c)
     struct worker *worker = c->worker;
     apr_status_t rv;
 
-    if (!worker_can_start_connection(worker)) {
+    if (!worker_can_connect(worker)) {
         return;
     }
 
@@ -1758,6 +1763,7 @@ static void finalize_connection(struct connection *c, int reuse)
 {
     struct worker *worker = c->worker;
     int good = (c->gotheader && c->bread >= c->length);
+    int final_state = c->state;
 
     /* close before measuring, to account for shutdown time */
     if (!reuse || !good) {
@@ -1772,12 +1778,15 @@ static void finalize_connection(struct connection *c, int reuse)
          */
         worker->metrics.doneka--;
         worker->metrics.aborted_ka++;
+        if (final_state > STATE_WRITE) {
+            worker->started--;
+        }
     }
     else {
         /* save out time */
         if (tlimit || worker->metrics.done < worker->requests) {
             apr_time_t tnow = lasttime = c->end = apr_time_now();
-            struct data *s = &worker->stats[worker->metrics.done++ % worker->requests];
+            struct data *s = &worker->stats[worker->metrics.done % worker->requests];
 
             /* Cumulative for when worker->metrics.done > worker->requests (tlimit),
              * consolidate_metrics() will do the mean.
@@ -1839,6 +1848,7 @@ static void finalize_connection(struct connection *c, int reuse)
                 }
             }
         }
+        worker->metrics.done++;
 
         /* update worker's metrics */
         if (good) {
@@ -1858,9 +1868,9 @@ static void finalize_connection(struct connection *c, int reuse)
     }
 
     if (!reuse) {
-        start_connection(c); /* nop if !worker_can_start_connection() */
+        start_connection(c); /* nop if !worker_can_connect() */
     }
-    else if (worker_can_start_connection(worker)) {
+    else if (worker_can_connect(worker)) {
         c->keptalive++;
         worker->metrics.doneka++;
 
@@ -2435,20 +2445,22 @@ static void worker_test(struct worker *worker)
         apr_int32_t n;
         const apr_pollfd_t *pollresults, *pollfd;
         apr_interval_time_t t = aprtimeout;
-        apr_time_t now = apr_time_now();
 
-        while (!APR_RING_EMPTY(&worker->delayed_ring, connection, delay_list)) {
-            c = APR_RING_FIRST(&worker->delayed_ring);
-            if (c->delay <= now) {
-                APR_RING_REMOVE(c, delay_list);
-                APR_RING_ELEM_INIT(c, delay_list);
-                c->delay = 0;
-                start_connection(c);
-            }
-            else {
-                t = c->delay - now;
-                break;
-            }
+        if (!APR_RING_EMPTY(&worker->delayed_ring, connection, delay_list)) {
+            apr_time_t now = apr_time_now();
+            do {
+                c = APR_RING_FIRST(&worker->delayed_ring);
+                if (c->delay <= now) {
+                    APR_RING_REMOVE(c, delay_list);
+                    APR_RING_ELEM_INIT(c, delay_list);
+                    c->delay = 0;
+                    start_connection(c);
+                }
+                else {
+                    t = c->delay - now;
+                    break;
+                }
+            } while (!APR_RING_EMPTY(&worker->delayed_ring, connection, delay_list));
         }
 
         n = worker->metrics.concurrent;
@@ -2561,7 +2573,9 @@ static void worker_test(struct worker *worker)
                 continue;
             }
         }
-    } while (!worker_should_stop(worker));
+    } while (worker->polled > 0 && stoptime);
+
+    assert(worker_can_stop(worker));
 }
 
 #if APR_HAS_THREADS
@@ -3312,7 +3326,7 @@ int main(int argc, const char * const argv[])
         exit(1);
     }
 #endif
-    
+
     if (!(ssl_ctx = SSL_CTX_new(meth))) {
         BIO_printf(bio_err, "Could not initialize SSL Context.\n");
         ERR_print_errors(bio_err);
