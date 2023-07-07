@@ -1,0 +1,2 @@
+  *) apxs: Fix -i in some cases where -n is not used.
+     [Jan Pazdziora <jpazdziora redhat.com>]
