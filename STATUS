@@ -201,6 +201,30 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
       svn merge -c 1908502 ^/httpd/httpd/trunk .
      +1: icing, jorton, covener
 
+  *) mod_rewrite: PR66672 trailing ? and QSA together regression
+      Trunk version of patch:
+          svn diff -r  1910649:1910705 modules/mappers/mod_rewrite.c
+      Backport version for 2.4.x of patch:
+         (merge doesn't work well with rewritelog((..)) context)
+         http://people.apache.org/~covener/patches/pr66672.diff
+      +1: covener, gbechis, ylavic
+
+  *) mod_ldap: Avoid performance overhead of apr-util LDAP rebind cache
+     for modern versions of OpenLDAP.
+     Trunk version of patch:
+       https://svn.apache.org/r1878890
+     2.4.x version of patch:
+       trunk version of patch works w/o CHANGES
+       svn merge -c 1878890 ^/httpd/httpd/trunk .
+       or https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/370.patch
+     +1: jorton, covener, ylavic (by inspection)
+
+  *) mod_rewrite: Fix possible NULL pointer dereference in hook_uri2file
+     Trunk version of patch:
+       https://svn.apache.org/r1910815 
+     2.4.x version of patch:
+       svn merge -c 1910815 ^/httpd/httpd/trunk .
+     +1: jorton, covener, ylavic
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -253,31 +277,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       svn merge -c 1909400,1909401,1909402,1909451 ^/httpd/httpd/trunk .
      +1: rpluem,
      ylavic: see https://lists.apache.org/thread/jftfd6mo6p3b0tw694rlh09gdl7189hq
-
-  *) mod_rewrite: PR66672 trailing ? and QSA together regression
-      Trunk version of patch:
-          svn diff -r  1910649:1910705 modules/mappers/mod_rewrite.c
-      Backport version for 2.4.x of patch:
-         (merge doesn't work well with rewritelog((..)) context)
-         http://people.apache.org/~covener/patches/pr66672.diff
-      +1: covener, gbechis
-
-  *) mod_ldap: Avoid performance overhead of apr-util LDAP rebind cache
-     for modern versions of OpenLDAP.
-     Trunk version of patch:
-       https://svn.apache.org/r1878890
-     2.4.x version of patch:
-       trunk version of patch works w/o CHANGES
-       svn merge -c 1878890 ^/httpd/httpd/trunk .
-       or https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/370.patch
-     +1: jorton, covener
-
-  *) mod_rewrite: Fix possible NULL pointer dereference in hook_uri2file
-     Trunk version of patch:
-       https://svn.apache.org/r1910815 
-     2.4.x version of patch:
-       svn merge -c 1910815 ^/httpd/httpd/trunk .
-     +1: jorton, covener
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
