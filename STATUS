@@ -174,15 +174,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c 1892450,1909966 ^/httpd/httpd/trunk .
      +1: jailletc36, rpluem, icing
 
-  *) mod_rewrite: Add server directory to include path as mod_rewrite requires
-     test_char.h. PR 66571
-     Trunk version of patch:
-        https://svn.apache.org/r1909241
-     Backport version for 2.4.x of patch:
-      Trunk version of patch works
-      svn merge -c 1909241 ^/httpd/httpd/trunk .
-     +1: rpluem, icing, ylavic
-
   *) mod_deflate: Add DeflateAlterETag to control how the ETag
      is modified. The 'NoChange' parameter mimics 2.2.x behavior.
      PR 45023, PR 39727.
@@ -193,14 +184,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      +1: jfclere, rpluem, ylavic
      rpluem says: Does anyone know why we don't merge the server config?
 
-  *) mod_http2: Fix memory leak in calc_sha256_hash().
-     Trunk version of patch:
-        https://svn.apache.org/r1908502
-     Backport version for 2.4.x of patch:
-      Trunk version of patch works
-      svn merge -c 1908502 ^/httpd/httpd/trunk .
-     +1: icing, jorton, covener
-
   *) mod_rewrite: PR66672 trailing ? and QSA together regression
       Trunk version of patch:
           svn diff -r  1910649:1910705 modules/mappers/mod_rewrite.c
@@ -208,23 +191,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
          (merge doesn't work well with rewritelog((..)) context)
          http://people.apache.org/~covener/patches/pr66672.diff
       +1: covener, gbechis, ylavic
-
-  *) mod_ldap: Avoid performance overhead of apr-util LDAP rebind cache
-     for modern versions of OpenLDAP.
-     Trunk version of patch:
-       https://svn.apache.org/r1878890
-     2.4.x version of patch:
-       trunk version of patch works w/o CHANGES
-       svn merge -c 1878890 ^/httpd/httpd/trunk .
-       or https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/370.patch
-     +1: jorton, covener, ylavic (by inspection)
-
-  *) mod_rewrite: Fix possible NULL pointer dereference in hook_uri2file
-     Trunk version of patch:
-       https://svn.apache.org/r1910815 
-     2.4.x version of patch:
-       svn merge -c 1910815 ^/httpd/httpd/trunk .
-     +1: jorton, covener, ylavic
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -277,6 +243,16 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       svn merge -c 1909400,1909401,1909402,1909451 ^/httpd/httpd/trunk .
      +1: rpluem,
      ylavic: see https://lists.apache.org/thread/jftfd6mo6p3b0tw694rlh09gdl7189hq
+
+  *) mime.types update to sync with trunk
+     Trunk version of patch:
+        https://svn.apache.org/r1884511
+        https://svn.apache.org/r1901273
+        https://svn.apache.org/r1910843
+        https://svn.apache.org/r1910849
+     2.4.x version of patch:
+        svn merge -c 1884511,1901273,1910843,1910849 ^/httpd/httpd/trunk .
+     +1: jorton, 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
