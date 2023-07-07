@@ -30,11 +30,8 @@ def env(pytestconfig) -> H2TestEnv:
 
 
 @pytest.fixture(autouse=True, scope="package")
-def _session_scope(env):
-    yield
-    assert env.apache_stop() == 0
-    errors, warnings = env.httpd_error_log.get_missed()
-    assert (len(errors), len(warnings)) == (0, 0),\
-            f"apache logged {len(errors)} errors and {len(warnings)} warnings: \n"\
-            "{0}\n{1}\n".format("\n".join(errors), "\n".join(warnings))
-
+def _h2_package_scope(env):
+    env.httpd_error_log.add_ignored_lognos([
+        'AH10400',  # warning that 'enablereuse' has not effect in certain configs
+        'AH00045',  # child did not exit in time, SIGTERM was sent
+    ])

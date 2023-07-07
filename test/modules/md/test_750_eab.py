@@ -37,6 +37,15 @@ class TestEab:
         md = env.await_error(domain)
         assert md['renewal']['errors'] > 0
         assert md['renewal']['last']['problem'] == 'urn:ietf:params:acme:error:externalAccountRequired'
+        #
+        env.httpd_error_log.ignore_recent(
+            lognos = [
+                "AH10056"   # ACME server policy requires newAccount requests must include a value for the 'externalAccountBinding' field
+            ],
+            matches = [
+                r'.*urn:ietf:params:acme:error:externalAccountRequired.*'
+            ]
+        )
 
     def test_md_750_002(self, env):
         # md with known EAB KID and non base64 hmac key configured
@@ -51,6 +60,15 @@ class TestEab:
         md = env.await_error(domain)
         assert md['renewal']['errors'] > 0
         assert md['renewal']['last']['problem'] == 'apache:eab-hmac-invalid'
+        #
+        env.httpd_error_log.ignore_recent(
+            lognos = [
+                "AH10056"   # external account binding HMAC value is not valid base64
+            ],
+            matches = [
+                r'.*problem\[apache:eab-hmac-invalid\].*'
+            ]
+        )
 
     def test_md_750_003(self, env):
         # md with empty EAB KID configured
@@ -65,6 +83,15 @@ class TestEab:
         md = env.await_error(domain)
         assert md['renewal']['errors'] > 0
         assert md['renewal']['last']['problem'] == 'urn:ietf:params:acme:error:unauthorized'
+        #
+        env.httpd_error_log.ignore_recent(
+            lognos = [
+                "AH10056"   # the field 'kid' references a key that is not known to the ACME server
+            ],
+            matches = [
+                r'.*urn:ietf:params:acme:error:unauthorized.*'
+            ]
+        )
 
     def test_md_750_004(self, env):
         # md with unknown EAB KID configured
@@ -79,6 +106,15 @@ class TestEab:
         md = env.await_error(domain)
         assert md['renewal']['errors'] > 0
         assert md['renewal']['last']['problem'] == 'urn:ietf:params:acme:error:unauthorized'
+        #
+        env.httpd_error_log.ignore_recent(
+            lognos = [
+                "AH10056"   # the field 'kid' references a key that is not known to the ACME server
+            ],
+            matches = [
+                r'.*urn:ietf:params:acme:error:unauthorized.*'
+            ]
+        )
 
     def test_md_750_005(self, env):
         # md with known EAB KID but wrong HMAC configured
@@ -93,6 +129,15 @@ class TestEab:
         md = env.await_error(domain)
         assert md['renewal']['errors'] > 0
         assert md['renewal']['last']['problem'] == 'urn:ietf:params:acme:error:unauthorized'
+        #
+        env.httpd_error_log.ignore_recent(
+            lognos = [
+                "AH10056"   # external account binding JWS verification error: square/go-jose: error in cryptographic primitive
+            ],
+            matches = [
+                r'.*urn:ietf:params:acme:error:unauthorized.*'
+            ]
+        )
 
     def test_md_750_010(self, env):
         # md with correct EAB configured
@@ -125,6 +170,15 @@ class TestEab:
         md = env.await_error(domain_b)
         assert md['renewal']['errors'] > 0
         assert md['renewal']['last']['problem'] == 'urn:ietf:params:acme:error:externalAccountRequired'
+        #
+        env.httpd_error_log.ignore_recent(
+            lognos = [
+                "AH10056"   # ACME server policy requires newAccount requests must include a value for the 'externalAccountBinding' field
+            ],
+            matches = [
+                r'.*urn:ietf:params:acme:error:externalAccountRequired.*'
+            ]
+        )
 
     def test_md_750_012(self, env):
         # first one md without EAB, then one with
@@ -144,6 +198,15 @@ class TestEab:
         md = env.await_error(domain_a)
         assert md['renewal']['errors'] > 0
         assert md['renewal']['last']['problem'] == 'urn:ietf:params:acme:error:externalAccountRequired'
+        #
+        env.httpd_error_log.ignore_recent(
+            lognos = [
+                "AH10056"   # ACME server policy requires newAccount requests must include a value for the 'externalAccountBinding' field
+            ],
+            matches = [
+                r'.*urn:ietf:params:acme:error:externalAccountRequired.*'
+            ]
+        )
 
     def test_md_750_013(self, env):
         # 2 mds with the same EAB, should one create a single account
@@ -215,6 +278,15 @@ class TestEab:
         md = env.await_error(domain)
         assert md['renewal']['errors'] > 0
         assert md['renewal']['last']['problem'] == 'urn:ietf:params:acme:error:externalAccountRequired'
+        #
+        env.httpd_error_log.ignore_recent(
+            lognos = [
+                "AH10056"   # ACME server policy requires newAccount requests must include a value for the 'externalAccountBinding' field
+            ],
+            matches = [
+                r'.*urn:ietf:params:acme:error:externalAccountRequired.*'
+            ]
+        )
 
     def test_md_750_016(self, env):
         # md with correct EAB, get cert, change to invalid EAB
@@ -241,6 +313,15 @@ class TestEab:
         md = env.await_error(domain)
         assert md['renewal']['errors'] > 0
         assert md['renewal']['last']['problem'] == 'urn:ietf:params:acme:error:unauthorized'
+        #
+        env.httpd_error_log.ignore_recent(
+            lognos = [
+                "AH10056"   # the field 'kid' references a key that is not known to the ACME server
+            ],
+            matches = [
+                r'.*urn:ietf:params:acme:error:unauthorized.*'
+            ]
+        )
 
     def test_md_750_017(self, env):
         # md without EAB explicitly set to none
@@ -257,6 +338,15 @@ class TestEab:
         md = env.await_error(domain)
         assert md['renewal']['errors'] > 0
         assert md['renewal']['last']['problem'] == 'urn:ietf:params:acme:error:externalAccountRequired'
+        #
+        env.httpd_error_log.ignore_recent(
+            lognos = [
+                "AH10056"   # ACME server policy requires newAccount requests must include a value for the 'externalAccountBinding' field
+            ],
+            matches = [
+                r'.*urn:ietf:params:acme:error:externalAccountRequired.*'
+            ]
+        )
 
     def test_md_750_018(self, env):
         # md with EAB file that does not exist

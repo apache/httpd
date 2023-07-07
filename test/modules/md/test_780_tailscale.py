@@ -140,6 +140,12 @@ class TestTailscale:
         assert md['renewal']['last']['status-description'] == 'No such file or directory'
         assert md['renewal']['last']['detail'] == \
                f"tailscale socket not available, may not be up: {socket_path}"
+        #
+        env.httpd_error_log.ignore_recent(
+            lognos = [
+                "AH10056"   # retrieving certificate from tailscale
+            ]
+        )
 
     # create a MD using `tailscale` as protocol, path to faker, should succeed
     def test_md_780_002(self, env):
@@ -184,3 +190,9 @@ class TestTailscale:
         assert md['renewal']['errors'] > 0
         assert md['renewal']['last']['status-description'] == 'No such file or directory'
         assert md['renewal']['last']['detail'] == "retrieving certificate from tailscale"
+        #
+        env.httpd_error_log.ignore_recent(
+            lognos = [
+                "AH10056"   # retrieving certificate from tailscale
+            ]
+        )

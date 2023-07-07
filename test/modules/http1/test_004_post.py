@@ -3,7 +3,6 @@ import email.parser
 import inspect
 import json
 import os
-import re
 import sys
 
 import pytest

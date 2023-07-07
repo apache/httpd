@@ -44,6 +44,15 @@ class TestWildcard:
         assert md
         assert md['renewal']['errors'] > 0
         assert md['renewal']['last']['problem'] == 'challenge-mismatch'
+        #
+        env.httpd_error_log.ignore_recent(
+            lognos = [
+                "AH10056"   # None of offered challenge types
+            ],
+            matches = [
+                r'.*problem\[challenge-mismatch\].*'
+            ]
+        )
 
     # test case: a wildcard certificate with ACMEv2, only dns-01 configured, invalid command path
     def test_md_720_002(self, env):
@@ -67,6 +76,16 @@ class TestWildcard:
         assert md
         assert md['renewal']['errors'] > 0
         assert md['renewal']['last']['problem'] == 'challenge-setup-failure'
+        #
+        env.httpd_error_log.ignore_recent(
+            lognos = [
+                "AH10056"   # None of offered challenge types
+            ],
+            matches = [
+                r'.*problem\[challenge-setup-failure\].*',
+                r'.*setup command failed to execute.*'
+            ]
+        )
 
     # variation, invalid cmd path, other challenges still get certificate for non-wildcard
     def test_md_720_002b(self, env):
@@ -113,6 +132,15 @@ class TestWildcard:
         assert md
         assert md['renewal']['errors'] > 0
         assert md['renewal']['last']['problem'] == 'challenge-setup-failure'
+        #
+        env.httpd_error_log.ignore_recent(
+            lognos = [
+                "AH10056"   # None of offered challenge types
+            ],
+            matches = [
+                r'.*problem\[challenge-setup-failure\].*'
+            ]
+        )
 
     # test case: a wildcard name certificate with ACMEv2, only dns-01 configured
     def test_md_720_004(self, env):
