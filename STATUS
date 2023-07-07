@@ -193,13 +193,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      +1: jfclere, rpluem, ylavic
      rpluem says: Does anyone know why we don't merge the server config?
 
-   *) mod_ssl: Fix for BZ 66626.
-      Trunk version of patch:
-         https://svn.apache.org/r1875355
-      Backport version for 2.4.x of patch:
-         svn merge -c 1875355 ^/httpd/httpd/trunk .
-      +1: gbechis, icing, ylavic
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -258,7 +251,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      Backport version for 2.4.x of patch:
       Trunk version of patch works
       svn merge -c 1908502 ^/httpd/httpd/trunk .
-     +1: icing,
+     +1: icing, jorton, 
 
     *) mod_rewrite: PR66672 trailing ? and QSA together regression
       Trunk version of patch:
@@ -276,6 +269,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        trunk version of patch works w/o CHANGES
        svn merge -c 1878890 ^/httpd/httpd/trunk .
        or https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/370.patch
+     +1: jorton,
+
+  *) mod_rewrite: Fix possible NULL pointer dereference in hook_uri2file
+     Trunk version of patch:
+       https://svn.apache.org/r1910815 
+     2.4.x version of patch:
+       svn merge -c 1910815 ^/httpd/httpd/trunk .
      +1: jorton, 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
