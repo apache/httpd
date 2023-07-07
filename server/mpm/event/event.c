@@ -296,6 +296,8 @@ struct event_conn_state_t {
      *  hooks)
      */
     unsigned int suspended          :1;
+    /** is lingering close started on the connection? */
+    unsigned int linger_started     :1;
     /** is lingering close flushed on the connection? */
     unsigned int linger_flushed     :1;
 };
@@ -449,6 +451,7 @@ struct timeout_queue {
  *   process_q          uses vhost's TimeOut FIXME - we can use a short timeout here
  *   completion_q       uses vhost's TimeOut
  *   keepalive_q        uses vhost's KeepAliveTimeOut
+ *   flush_q            uses vhost's TimeOut
  *   linger_q           uses MAX_SECS_TO_LINGER
  *   short_linger_q     uses SECONDS_TO_LINGER
  *   backlog_q          uses vhost's TimeOut
@@ -456,6 +459,7 @@ struct timeout_queue {
 static struct timeout_queue *process_q,     /* processing request still */
                             *completion_q,  /* completion or user async poll */
                             *keepalive_q,   /* in between requests */
+                            *flush_q,       /* flushing (write) before close */
                             *linger_q,      /* lingering (read) before close */
                             *short_linger_q,/* lingering (read) before close (short timeout) */
                             *backlog_q;     /* waiting for a worker */
@@ -652,6 +656,7 @@ struct event_srv_cfg_s {
     struct timeout_queue *process_q,
                          *completion_q,
                          *keepalive_q,
+                         *flush_q,
                          *backlog_q;
     server_rec *s; /* backref */
 };
@@ -2231,18 +2236,52 @@ static void process_lingering_close(event_conn_state_t *cs)
 
     /* Flush and shutdown first */
     if (!cs->linger_flushed) {
+        conn_rec *c = cs->c;
+        int rc = OK;
+
         cs->pub.state = CONN_STATE_LINGER;
         cs->pub.sense = CONN_SENSE_DEFAULT;
-        apr_atomic_inc32(&lingering_count);
 
-        apr_socket_timeout_set(csd, apr_time_from_sec(SECONDS_TO_LINGER));
-        if (ap_start_lingering_close(cs->c)) {
+        if (!cs->linger_started) {
+            apr_atomic_inc32(&lingering_count);
+            cs->linger_started = 1; /* once */
+
+            /* Shutdown the connection, i.e. pre_connection_close hooks,
+             * SSL/TLS close notify, WC bucket, etc..
+             */
+            rc = ap_prep_lingering_close(c);
+            if (rc == OK) {
+                rc = ap_shutdown_conn(c, AP_SHUTDOWN_CONN_WC);
+                if (rc == OK) {
+                    if (c->aborted) {
+                        rc = DONE;
+                    }
+                    else if (ap_filter_should_yield(c->output_filters)) {
+                        rc = AGAIN;
+                    }
+                    else if (apr_socket_shutdown(csd, APR_SHUTDOWN_WRITE)) {
+                        rc = DONE;
+                    }
+                }
+            }
             notify_suspend(cs);
+        }
+        else {
+            rc = ap_check_output_pending(c);
+        }
+        if (rc == AGAIN) {
+            ap_log_cerror(APLOG_MARK, APLOG_TRACE6, 0, cs->c,
+                          "queuing lingering close for connection %" CS_FMT,
+                          CS_ARG(cs));
+            if (pollset_add(cs, CONN_SENSE_WANT_WRITE,
+                            cs->sc->flush_q, NULL)) {
+                return;
+            }
+        }
+        if (rc != OK) {
             close_connection(cs);
             return;
         }
-
-        notify_suspend(cs);
 
         /* All nonblocking reads from now, we'll poll() in the listener
          * if needed so clear APR_INCOMPLETE_READ if it was ever set.
@@ -2771,25 +2810,24 @@ do_maintenance:
             /* Recompute this by walking the timeout queues (under the lock) */
             queues_next_expiry = 0;
 
-            /* Step 1: keepalive timeouts */
+            /* flush_q first, expired entries below go there */
+            process_timeout_queue(flush_q, now);
+            process_timeout_queue(process_q, now);
+            process_timeout_queue(completion_q, now);
+
+            /* The linger and keepalive queues can be shrinked any time
+             * under pressure.
+             */
             if (workers_were_busy || dying) {
+                shrink_timeout_queue(linger_q, now);
+                shrink_timeout_queue(short_linger_q, now);
                 shrink_timeout_queue(keepalive_q, now);
             }
             else {
+                process_timeout_queue(linger_q, now);
+                process_timeout_queue(short_linger_q, now);
                 process_timeout_queue(keepalive_q, now);
             }
-            /* Step 2: processing timeouts */
-            process_timeout_queue(process_q, now);
-            /* Step 3: write completion timeouts */
-            process_timeout_queue(completion_q, now);
-            /* Step 4: (normal) lingering close completion timeouts */
-            if (dying && linger_q->timeout > short_linger_q->timeout) {
-                /* Dying, force short timeout for normal lingering close */
-                linger_q->timeout = short_linger_q->timeout;
-            }
-            process_timeout_queue(linger_q, now);
-            /* Step 5: (short) lingering close completion timeouts */
-            process_timeout_queue(short_linger_q, now);
 
             /* Connections in backlog race with the workers (dequeuing) under
              * the worker_queue mutex.
@@ -2810,14 +2848,19 @@ do_maintenance:
             ps->reading = apr_atomic_read32(process_q->total);
             ps->write_completion = apr_atomic_read32(completion_q->total);
             ps->keep_alive = apr_atomic_read32(keepalive_q->total);
+            ps->flushing = apr_atomic_read32(flush_q->total);
             ps->lingering_close = apr_atomic_read32(&lingering_count);
             ps->backlog = apr_atomic_read32(backlog_q->total);
             ps->connections = apr_atomic_read32(&connection_count);
             ps->suspended = apr_atomic_read32(&suspended_count);
         }
         else if ((workers_were_busy || dying)
-                 && apr_atomic_read32(keepalive_q->total)) {
+                 && (apr_atomic_read32(linger_q->total)
+                     || apr_atomic_read32(short_linger_q->total)
+                     || apr_atomic_read32(keepalive_q->total))) {
             apr_thread_mutex_lock(timeout_mutex);
+            shrink_timeout_queue(linger_q, now);
+            shrink_timeout_queue(short_linger_q, now);
             shrink_timeout_queue(keepalive_q, now);
             apr_thread_mutex_unlock(timeout_mutex);
             ps->keep_alive = 0;
@@ -4464,6 +4507,7 @@ static int event_post_config(apr_pool_t *pconf, apr_pool_t *plog,
     apr_hash_t *process_h,
                *completion_h,
                *keepalive_h,
+               *flush_h,
                *backlog_h;
 
     /* Not needed in pre_config stage */
@@ -4474,6 +4518,7 @@ static int event_post_config(apr_pool_t *pconf, apr_pool_t *plog,
     process_h = apr_hash_make(ptemp);
     completion_h = apr_hash_make(ptemp);
     keepalive_h = apr_hash_make(ptemp);
+    flush_h = apr_hash_make(ptemp);
     backlog_h = apr_hash_make(ptemp);
 
     linger_q = TO_QUEUE_MAKE(pconf, "linger",
@@ -4494,6 +4539,9 @@ static int event_post_config(apr_pool_t *pconf, apr_pool_t *plog,
 
         sc->keepalive_q = TO_QUEUE_CHAIN(pconf, "keepalive", s->keep_alive_timeout,
                                          &keepalive_q, keepalive_h, ptemp);
+
+        sc->flush_q = TO_QUEUE_CHAIN(pconf, "flush", s->timeout,
+                                     &flush_q, flush_h, ptemp);
 
         sc->backlog_q = TO_QUEUE_CHAIN(pconf, "backlog", s->timeout,
                                        &backlog_q, backlog_h, ptemp);

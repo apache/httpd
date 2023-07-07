@@ -1276,6 +1276,10 @@ static int lua_ap_scoreboard_process(lua_State *L)
         lua_pushnumber(L, ps_record->write_completion);
         lua_settable(L, -3);
 
+        lua_pushstring(L, "flushing");
+        lua_pushnumber(L, ps_record->flushing);
+        lua_settable(L, -3);
+
         lua_pushstring(L, "not_accepting");
         lua_pushnumber(L, ps_record->not_accepting);
         lua_settable(L, -3);
