@@ -949,12 +949,14 @@ AP_DECLARE(apr_status_t) ap_filter_setaside_brigade(ap_filter_t *f,
     apr_status_t rv = APR_SUCCESS;
     struct ap_filter_private *fp = f->priv;
 
-    ap_log_cerror(APLOG_MARK, APLOG_TRACE6, 0, f->c,
-                  "setaside %s brigade to %s brigade in '%s' %sput filter",
-                  APR_BRIGADE_EMPTY(bb) ? "empty" : "full",
-                  (!fp->bb || APR_BRIGADE_EMPTY(fp->bb)) ? "empty" : "full",
-                  f->frec->name,
-                  f->frec->direction == AP_FILTER_INPUT ? "in" : "out");
+    if (!APR_BRIGADE_EMPTY(bb) || (fp->bb && !APR_BRIGADE_EMPTY(fp->bb))) {
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE6, 0, f->c,
+                      "setaside %s brigade to %s brigade in '%s' %sput filter",
+                      APR_BRIGADE_EMPTY(bb) ? "empty" : "full",
+                      (!fp->bb || APR_BRIGADE_EMPTY(fp->bb)) ? "empty" : "full",
+                      f->frec->name,
+                      f->frec->direction == AP_FILTER_INPUT ? "in" : "out");
+    }
 
     /* This API is not suitable for request filters */
     if (f->frec->ftype < AP_FTYPE_CONNECTION) {
@@ -1049,12 +1051,14 @@ AP_DECLARE(void) ap_filter_adopt_brigade(ap_filter_t *f,
 {
     struct ap_filter_private *fp = f->priv;
 
-    ap_log_cerror(APLOG_MARK, APLOG_TRACE6, 0, f->c,
-                  "adopt %s brigade to %s brigade in '%s' %sput filter",
-                  APR_BRIGADE_EMPTY(bb) ? "empty" : "full",
-                  (!fp->bb || APR_BRIGADE_EMPTY(fp->bb)) ? "empty" : "full",
-                  f->frec->name,
-                  f->frec->direction == AP_FILTER_INPUT ? "in" : "out");
+    if (!APR_BRIGADE_EMPTY(bb) || (fp->bb && !APR_BRIGADE_EMPTY(fp->bb))) {
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE6, 0, f->c,
+                      "adopt %s brigade to %s brigade in '%s' %sput filter",
+                      APR_BRIGADE_EMPTY(bb) ? "empty" : "full",
+                      (!fp->bb || APR_BRIGADE_EMPTY(fp->bb)) ? "empty" : "full",
+                      f->frec->name,
+                      f->frec->direction == AP_FILTER_INPUT ? "in" : "out");
+    }
 
     if (!APR_BRIGADE_EMPTY(bb)) {
         ap_filter_prepare_brigade(f);
@@ -1067,18 +1071,26 @@ AP_DECLARE(apr_status_t) ap_filter_reinstate_brigade(ap_filter_t *f,
                                                      apr_bucket **flush_upto)
 {
     apr_bucket *bucket, *next;
+    apr_size_t flush_max_threshold;
+    apr_int32_t flush_max_pipelined;
     apr_size_t bytes_in_brigade, memory_bytes_in_brigade;
     int eor_buckets_in_brigade, opaque_buckets_in_brigade;
     struct ap_filter_private *fp = f->priv;
     core_server_config *conf;
     int is_flush;
  
-    ap_log_cerror(APLOG_MARK, APLOG_TRACE6, 0, f->c,
-                  "reinstate %s brigade to %s brigade in '%s' %sput filter",
-                  (!fp->bb || APR_BRIGADE_EMPTY(fp->bb) ? "empty" : "full"),
-                  (APR_BRIGADE_EMPTY(bb) ? "empty" : "full"),
-                  f->frec->name,
-                  f->frec->direction == AP_FILTER_INPUT ? "in" : "out");
+    if (flush_upto) {
+        *flush_upto = NULL;
+    }
+
+    if (!APR_BRIGADE_EMPTY(bb) || (fp->bb && !APR_BRIGADE_EMPTY(fp->bb))) {
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE6, 0, f->c,
+                      "reinstate %s brigade to %s brigade in '%s' %sput filter",
+                      (!fp->bb || APR_BRIGADE_EMPTY(fp->bb) ? "empty" : "full"),
+                      (APR_BRIGADE_EMPTY(bb) ? "empty" : "full"),
+                      f->frec->name,
+                      f->frec->direction == AP_FILTER_INPUT ? "in" : "out");
+    }
 
     /* This API is not suitable for request filters */
     if (f->frec->ftype < AP_FTYPE_CONNECTION) {
@@ -1086,17 +1098,15 @@ AP_DECLARE(apr_status_t) ap_filter_reinstate_brigade(ap_filter_t *f,
     }
 
     /* Buckets in fp->bb are leftover from previous call to setaside, so
-     * they happen before anything added here in bb.
+     * they happen before anything in bb already.
      */
     if (fp->bb) {
         APR_BRIGADE_PREPEND(bb, fp->bb);
     }
-    if (!flush_upto) {
-        /* Just prepend all. */
+    if (!flush_upto || APR_BRIGADE_EMPTY(bb)) {
+        /* Just prepend all, or nothing to do. */
         return APR_SUCCESS;
     }
- 
-    *flush_upto = NULL;
 
     /*
      * Determine if and up to which bucket the caller needs to do a blocking
@@ -1124,12 +1134,14 @@ AP_DECLARE(apr_status_t) ap_filter_reinstate_brigade(ap_filter_t *f,
      * reinstated by moving them from/to fp->bb to/from user bb.
      */
 
+    conf = ap_get_core_module_config(f->c->base_server->module_config);
+    flush_max_threshold = conf->flush_max_threshold;
+    flush_max_pipelined = conf->flush_max_pipelined;
+
     bytes_in_brigade = 0;
     memory_bytes_in_brigade = 0;
     eor_buckets_in_brigade = 0;
     opaque_buckets_in_brigade = 0;
-
-    conf = ap_get_core_module_config(f->c->base_server->module_config);
 
     for (bucket = APR_BRIGADE_FIRST(bb); bucket != APR_BRIGADE_SENTINEL(bb);
          bucket = next) {
@@ -1157,9 +1169,9 @@ AP_DECLARE(apr_status_t) ap_filter_reinstate_brigade(ap_filter_t *f,
         }
 
         if (is_flush
-            || (memory_bytes_in_brigade > conf->flush_max_threshold)
-            || (conf->flush_max_pipelined >= 0
-                && eor_buckets_in_brigade > conf->flush_max_pipelined)) {
+            || (memory_bytes_in_brigade > flush_max_threshold)
+            || (flush_max_pipelined >= 0
+                && eor_buckets_in_brigade > flush_max_pipelined)) {
             /* this segment of the brigade MUST be sent before returning. */
 
             if (APLOGctrace6(f->c)) {
@@ -1170,11 +1182,9 @@ AP_DECLARE(apr_status_t) ap_filter_reinstate_brigade(ap_filter_t *f,
                 ap_log_cerror(APLOG_MARK, APLOG_TRACE6, 0, f->c,
                               "will flush because of %s", reason);
                 ap_log_cerror(APLOG_MARK, APLOG_TRACE8, 0, f->c,
-                              "seen in brigade%s: bytes: %" APR_SIZE_T_FMT
+                              "seen in brigade so far: bytes: %" APR_SIZE_T_FMT
                               ", memory bytes: %" APR_SIZE_T_FMT ", eor "
                               "buckets: %d, opaque buckets: %d",
-                              *flush_upto == NULL ? " so far"
-                                                  : " since last flush point",
                               bytes_in_brigade,
                               memory_bytes_in_brigade,
                               eor_buckets_in_brigade,
@@ -1183,16 +1193,18 @@ AP_DECLARE(apr_status_t) ap_filter_reinstate_brigade(ap_filter_t *f,
             /*
              * Defer the actual blocking write to avoid doing many writes.
              */
+            if (memory_bytes_in_brigade > flush_max_threshold) {
+                flush_max_threshold = APR_SIZE_MAX;
+            }
+            if (flush_max_pipelined >= 0
+                && eor_buckets_in_brigade > flush_max_pipelined) {
+                flush_max_pipelined = APR_INT32_MAX;
+            }
             *flush_upto = next;
-
-            bytes_in_brigade = 0;
-            memory_bytes_in_brigade = 0;
-            eor_buckets_in_brigade = 0;
-            opaque_buckets_in_brigade = 0;
         }
     }
 
-    ap_log_cerror(APLOG_MARK, APLOG_TRACE8, 0, f->c,
+    ap_log_cerror(APLOG_MARK, APLOG_TRACE6, 0, f->c,
                   "brigade contains%s: bytes: %" APR_SIZE_T_FMT
                   ", non-file bytes: %" APR_SIZE_T_FMT
                   ", eor buckets: %d, opaque buckets: %d",
