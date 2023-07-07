@@ -1,0 +1,2 @@
+  *) mod_ldap: Avoid performance overhead of APR-util rebind cache for
+     OpenLDAP 2.2+.  PR 64414.  [Joe Orton]
