@@ -1,4 +1,5 @@
 import pytest
+from typing import List, Optional
 
 from pyhttpd.env import HttpdTestEnv
 from .env import H2Conf
@@ -22,17 +23,17 @@ class TestRfc9113:
         assert r.response["status"] == 200, f'curl output: {r.stdout}'
 
     # response header are also handled, but we strip ws before sending
-    @pytest.mark.parametrize(["hvalue", "expvalue", "status"], [
-        ['"123"', '123', 200],
-        ['"123 "', '123', 200],       # trailing space stripped
-        ['"123\t"', '123', 200],     # trailing tab stripped
-        ['" 123"', '123', 200],        # leading space is stripped
-        ['"          123"', '123', 200],  # leading spaces are stripped
-        ['"\t123"', '123', 200],       # leading tab is stripped
-        ['"expr=%{unescape:123%0A 123}"', '', 500],  # illegal char
-        ['" \t "', '', 200],          # just ws
+    @pytest.mark.parametrize(["hvalue", "expvalue", "status", "lognos"], [
+        ['"123"', '123', 200, None],
+        ['"123 "', '123', 200, None],       # trailing space stripped
+        ['"123\t"', '123', 200, None],     # trailing tab stripped
+        ['" 123"', '123', 200, None],        # leading space is stripped
+        ['"          123"', '123', 200, None],  # leading spaces are stripped
+        ['"\t123"', '123', 200, None],       # leading tab is stripped
+        ['"expr=%{unescape:123%0A 123}"', '', 500, ["AH02430"]],  # illegal char
+        ['" \t "', '', 200, None],          # just ws
     ])
-    def test_h2_203_02(self, env, hvalue, expvalue, status):
+    def test_h2_203_02(self, env, hvalue, expvalue, status, lognos: Optional[List[str]]):
         hname = 'ap-test-007'
         conf = H2Conf(env, extras={
             f'test1.{env.http_tld}': [
@@ -53,4 +54,7 @@ class TestRfc9113:
         assert r.response["status"] == status
         if int(status) < 400:
             assert r.response["header"][hname] == expvalue
+        #
+        if lognos is not None:
+            env.httpd_error_log.ignore_recent(lognos = lognos)
 

@@ -154,7 +154,6 @@ class TestWebSockets:
         r, infos, frames = ws_run(env, path='/ws/echo/', scenario='fail-proto')
         assert r.exit_code == 0, f'{r}'
         assert infos == ['[1] :status: 501', '[1] EOF'], f'{r}'
-        env.httpd_error_log.ignore_recent()
 
     # a correct CONNECT, send CLOSE, expect CLOSE, basic success
     def test_h2_800_02_ws_empty(self, env: H2TestEnv, ws_server):

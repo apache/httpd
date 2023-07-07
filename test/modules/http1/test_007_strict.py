@@ -1,6 +1,6 @@
 import re
 import socket
-from typing import Optional
+from typing import List, Optional
 
 import pytest
 
@@ -68,17 +68,17 @@ class TestRequestStrict:
                 else:
                     assert int(m.group(1)) >= 400, f"{rlines}"
 
-    @pytest.mark.parametrize(["hvalue", "expvalue", "status"], [
-        ['"123"', '123', 200],
-        ['"123 "', '123 ', 200],       # trailing space stays
-        ['"123\t"', '123\t', 200],     # trailing tab stays
-        ['" 123"', '123', 200],        # leading space is stripped
-        ['"          123"', '123', 200],  # leading spaces are stripped
-        ['"\t123"', '123', 200],       # leading tab is stripped
-        ['"expr=%{unescape:123%0A 123}"', '', 500],  # illegal char
-        ['" \t "', '', 200],           # just ws
+    @pytest.mark.parametrize(["hvalue", "expvalue", "status", "lognos"], [
+        ['"123"', '123', 200, None],
+        ['"123 "', '123 ', 200, None],       # trailing space stays
+        ['"123\t"', '123\t', 200, None],     # trailing tab stays
+        ['" 123"', '123', 200, None],        # leading space is stripped
+        ['"          123"', '123', 200, None],  # leading spaces are stripped
+        ['"\t123"', '123', 200, None],       # leading tab is stripped
+        ['"expr=%{unescape:123%0A 123}"', '', 500, ["AH02430"]],  # illegal char
+        ['" \t "', '', 200, None],           # just ws
     ])
-    def test_h1_007_02(self, env, hvalue, expvalue, status):
+    def test_h1_007_02(self, env, hvalue, expvalue, status, lognos: Optional[List[str]]):
         hname = 'ap-test-007'
         conf = H1Conf(env, extras={
             f'test1.{env.http_tld}': [
@@ -95,6 +95,9 @@ class TestRequestStrict:
         assert r.response["status"] == status
         if int(status) < 400:
             assert r.response["header"][hname] == expvalue
+        #
+        if lognos is not None:
+            env.httpd_error_log.ignore_recent(lognos = lognos)
 
     @pytest.mark.parametrize(["hvalue", "expvalue"], [
         ['123', '123'],

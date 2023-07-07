@@ -28,6 +28,15 @@ class TestInvalidHeaders:
                 assert 500 == r.response["status"], f'unexpected status for char 0x{x:02}'
             else:
                 assert 0 != r.exit_code, f'unexpected exit code for char 0x{x:02}'
+        #
+        env.httpd_error_log.ignore_recent(
+            lognos = [
+                "AH02429"   # Response header name contains invalid characters
+            ],
+            matches = [
+                r'.*malformed header from script \'hecho.py\': Bad header: x.*'
+            ]
+        )
 
     # let the hecho.py CGI echo chars < 0x20 in field value
     # for almost all such characters, the stream returns a 500
@@ -46,6 +55,12 @@ class TestInvalidHeaders:
                     assert 500 == r.response["status"], f'unexpected status for char 0x{x:02}'
                 else:
                     assert 0 != r.exit_code, "unexpected exit code for char 0x%02x" % x
+        #
+        env.httpd_error_log.ignore_recent(
+            lognos = [
+                "AH02430"   # Response header value contains invalid characters
+            ]
+        )
 
     # let the hecho.py CGI echo 0x10 and 0x7f in field name and value
     def test_h2_200_03(self, env):
@@ -63,6 +78,13 @@ class TestInvalidHeaders:
                 assert 500 == r.response["status"], f"unexpected exit code for char 0x{h:02}"
             else:
                 assert 0 != r.exit_code
+        #
+        env.httpd_error_log.ignore_recent(
+            lognos = [
+                "AH02429",  # Response header name contains invalid characters
+                "AH02430"   # Response header value contains invalid characters
+            ]
+        )
 
     # test header field lengths check, LimitRequestLine (default 8190)
     def test_h2_200_10(self, env):
