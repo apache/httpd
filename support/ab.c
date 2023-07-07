@@ -2457,7 +2457,9 @@ static void worker_test(struct worker *worker)
                     start_connection(c);
                 }
                 else {
-                    t = c->delay - now;
+                    if (t > c->delay - now) {
+                        t = c->delay - now;
+                    }
                     break;
                 }
             } while (!APR_RING_EMPTY(&worker->delayed_ring, connection, delay_list));
