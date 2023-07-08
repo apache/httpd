@@ -361,6 +361,7 @@ struct worker {
     int requests;
     int concurrency;
     int polled;
+    int bind_num;
     int succeeded_once;  /* response header received once */
     apr_int64_t started; /* number of requests started, so no excess */
 
@@ -416,7 +417,9 @@ apr_port_t port;        /* port number */
 char *proxyhost = NULL; /* proxy host name */
 int proxyport = 0;      /* proxy port */
 const char *connecthost;
-const char *myhost;
+int bind_count = 0;
+const char **bind_hosts;
+apr_sockaddr_t **bind_addrs;
 apr_port_t connectport;
 const char *gnuplot;          /* GNUplot file */
 const char *csvperc;          /* CSV Percentile file */
@@ -469,7 +472,6 @@ struct connection *conns;   /* connection array */
 struct data *stats;         /* data for each request */
 apr_pool_t *cntxt;
 
-apr_sockaddr_t *mysa;
 apr_sockaddr_t *destsa;
 
 #ifdef NOT_ASCII
@@ -1610,8 +1612,11 @@ static void start_connection(struct connection * c)
     c->pollfd.reqevents = c->pollfd.rtnevents = 0;
     c->pollfd.client_data = c;
 
-    if (myhost) {
-        if ((rv = apr_socket_bind(c->aprsock, mysa)) != APR_SUCCESS) {
+    if (bind_count) {
+        if (worker->bind_num >= bind_count) {
+            worker->bind_num = 0;
+        }
+        if ((rv = apr_socket_bind(c->aprsock, bind_addrs[worker->bind_num++]))) {
             graceful_strerror("bind", rv);
             close_connection(c);
             return;
@@ -2314,19 +2319,23 @@ static int test(void)
     }
 #endif              /* NOT_ASCII */
 
-    if (myhost) {
+    if (bind_count) {
         /* This only needs to be done once */
-        if ((rv = apr_sockaddr_info_get(&mysa, myhost, APR_UNSPEC, 0, 0, cntxt))) {
-            char buf[120];
-            apr_snprintf(buf, sizeof(buf),
-                         "apr_sockaddr_info_get() for %s", myhost);
-            fatal_strerror(buf, rv);
+        bind_addrs = apr_pcalloc(cntxt, bind_count * sizeof(apr_sockaddr_t*));
+        for (i = 0; i < bind_count; ++i) {
+            if ((rv = apr_sockaddr_info_get(&bind_addrs[i], bind_hosts[i],
+                                            APR_UNSPEC, 0, 0, cntxt))) {
+                char buf[120];
+                apr_snprintf(buf, sizeof(buf),
+                             "apr_sockaddr_info_get() for %s", bind_hosts[i]);
+                fatal_strerror(buf, rv);
+            }
         }
     }
 
     /* This too */
     if ((rv = apr_sockaddr_info_get(&destsa, connecthost,
-                                    myhost ? mysa->family : APR_UNSPEC,
+                                    bind_count ? bind_addrs[0]->family : APR_UNSPEC,
                                     connectport, 0, cntxt))) {
         char buf[120];
         apr_snprintf(buf, sizeof(buf),
@@ -2705,7 +2714,7 @@ static void usage(const char *progname)
     fprintf(stderr, "    -R rampdelay    Milliseconds in between each new connection when starting up\n");
     fprintf(stderr, "                    Default is no delay\n");
     fprintf(stderr, "    -b windowsize   Size of TCP send/receive buffer, in bytes\n");
-    fprintf(stderr, "    -B address      Address to bind to when making outgoing connections\n");
+    fprintf(stderr, "    -B addr[,addr]* Address[es] to bind to when making outgoing connections\n");
     fprintf(stderr, "    -p postfile     File containing data to POST. Remember also to set -T\n");
     fprintf(stderr, "    -u putfile      File containing data to PUT. Remember also to set -T\n");
     fprintf(stderr, "    -T content-type Content-type header to use for POST/PUT data, eg.\n");
@@ -2963,8 +2972,6 @@ int main(int argc, const char * const argv[])
     }
 #endif
 
-    myhost = NULL; /* 0.0.0.0 or :: */
-
     apr_getopt_init(&opt, cntxt, argc, argv);
     while ((status = apr_getopt(opt, "n:c:t:s:b:T:p:u:v:lrkVhwiIx:y:z:C:H:P:A:g:X:de:SqQB:m:R:"
 #if APR_HAS_THREADS
@@ -3160,7 +3167,30 @@ int main(int argc, const char * const argv[])
                 copyright();
                 return 0;
             case 'B':
-                myhost = apr_pstrdup(cntxt, opt_arg);
+                {
+                    const char *ptr, *end;
+
+                    bind_count = 1;
+                    for (ptr = opt_arg; (end = strchr(ptr, ',')); ptr = end + 1) {
+                        bind_count++;
+                    }
+                    bind_hosts = apr_palloc(cntxt, bind_count * sizeof(char*));
+
+                    bind_count = 0;
+                    for (ptr = opt_arg; (end = strchr(ptr, ',')); ptr = end + 1) {
+                        if (end > ptr) {
+                            bind_hosts[bind_count++] = apr_pstrmemdup(cntxt, ptr, end - ptr);
+                        }
+                    }
+                    if (*ptr) {
+                        bind_hosts[bind_count++] = apr_pstrdup(cntxt, ptr);
+                    }
+
+                    if (!bind_count) {
+                        fprintf(stderr, "%s: Invalid bind address[es]\n", argv[0]);
+                        usage(argv[0]);
+                    }
+                }
                 break;
             case 'm':
                 method = CUSTOM_METHOD;
