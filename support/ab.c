@@ -249,10 +249,12 @@ typedef STACK_OF(X509) X509_STACK_TYPE;
 
 /* ------------------- DEFINITIONS -------------------------- */
 
-#ifndef LLONG_MAX
-#define AB_MAX APR_INT64_C(0x7fffffffffffffff)
+#if defined(APR_INT64_MAX)
+#define AB_TIME_MAX APR_INT64_MAX
+#elif defined(LLONG_MAX)
+#define AB_TIME_MAX LLONG_MAX
 #else
-#define AB_MAX LLONG_MAX
+#define AB_TIME_MAX APR_INT64_C(0x7fffffffffffffff)
 #endif
 
 /* default number of requests on a time limited test */
@@ -481,12 +483,12 @@ static apr_thread_cond_t *workers_can_start;
 
 static APR_INLINE int worker_can_stop(struct worker *worker)
 {
-    return (lasttime >= stoptime
+    return (stoptime <= lasttime
             || (rlimited && worker->metrics.done >= worker->requests));
 }
 static APR_INLINE int worker_can_connect(struct worker *worker)
 {
-    return !(lasttime >= stoptime
+    return !(stoptime <= lasttime
              || (rlimited && worker->started >= worker->requests));
 }
 
@@ -1229,8 +1231,8 @@ static void output_results(void)
         apr_int64_t i, count = ap_min(metrics.done, requests);
         apr_time_t totalcon = 0, total = 0, totald = 0, totalwait = 0;
         apr_time_t meancon, meantot, meand, meanwait;
-        apr_interval_time_t mincon = AB_MAX, mintot = AB_MAX, mind = AB_MAX,
-                            minwait = AB_MAX;
+        apr_interval_time_t mincon = AB_TIME_MAX, mintot = AB_TIME_MAX,
+                            mind = AB_TIME_MAX, minwait = AB_TIME_MAX;
         apr_interval_time_t maxcon = 0, maxtot = 0, maxd = 0, maxwait = 0;
         apr_interval_time_t mediancon = 0, mediantot = 0, mediand = 0, medianwait = 0;
         double sdtot = 0, sdcon = 0, sdd = 0, sdwait = 0;
@@ -1528,7 +1530,7 @@ static void output_html_results(void)
         /* work out connection times */
         apr_int64_t i, count = ap_min(metrics.done, requests);
         apr_interval_time_t totalcon = 0, total = 0;
-        apr_interval_time_t mincon = AB_MAX, mintot = AB_MAX;
+        apr_interval_time_t mincon = AB_TIME_MAX, mintot = AB_TIME_MAX;
         apr_interval_time_t maxcon = 0, maxtot = 0;
 
         for (i = 0; i < count; i++) {
@@ -2389,7 +2391,7 @@ static int test(void)
 
     /* ok - lets start */
     start = lasttime = apr_time_now();
-    stoptime = tlimit ? (start + apr_time_from_sec(tlimit)) : AB_MAX;
+    stoptime = tlimit ? start + apr_time_from_sec(tlimit) : AB_TIME_MAX;
 
 #if APR_HAS_THREADS
     if (num_workers > 1) {
@@ -2575,7 +2577,7 @@ static void worker_test(struct worker *worker)
                 continue;
             }
         }
-    } while (worker->polled > 0 && stoptime);
+    } while (worker->polled > 0 && stoptime > lasttime);
 
     assert(worker_can_stop(worker));
 }
@@ -2645,9 +2647,9 @@ static void workers_may_exit(int unused)
 {
     (void)unused;
 
-    test_aborted = -1;
-    lasttime = apr_time_now();      /* record final time if interrupted */
     stoptime = 0;                   /* everyone stop now! */
+    lasttime = apr_time_now();      /* record final time if interrupted */
+    test_aborted = -1;
 
 #ifdef APR_POLLSET_WAKEABLE
     /* wake up poll()ing workers */
