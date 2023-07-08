@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1910699 -->
+<!-- English Revision : 1910828 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -1164,7 +1164,7 @@ H2PushPriority text/css   interleaved      # poids de 256 par défaut
             <context>virtual host</context>
             <context>directory</context>
         </contextlist>
-        <compatibility>Disponible à partir de la version 2.5.1 du serveur HTTP
+        <compatibility>Disponible à partir de la version 2.4.55 du serveur HTTP
 	Apache.</compatibility>
 
         <usage>
@@ -1185,7 +1185,7 @@ H2PushPriority text/css   interleaved      # poids de 256 par défaut
             <context>server config</context>
             <context>virtual host</context>
         </contextlist>
-        <compatibility>Disponible à partir de la version 2.5.1 du serveur HTTP
+        <compatibility>Disponible à partir de la version 2.4.58 du serveur HTTP
 	Apache.</compatibility>
 
         <usage>
@@ -1215,7 +1215,7 @@ H2PushPriority text/css   interleaved      # poids de 256 par défaut
             <context>directory</context>
             <context>.htaccess</context>
         </contextlist>
-        <compatibility>Disponible à partir de la version 2.5.1 du serveur HTTP
+        <compatibility>Disponible à partir de la version 2.4.58 du serveur HTTP
 	Apache.</compatibility>
 
         <usage>
