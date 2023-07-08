@@ -361,7 +361,7 @@ struct worker {
     int requests;
     int concurrency;
     int polled;
-    int bind_num;
+    int bind_rr;         /* next address to bind (round robin) */
     int succeeded_once;  /* response header received once */
     apr_int64_t started; /* number of requests started, so no excess */
 
@@ -1613,10 +1613,10 @@ static void start_connection(struct connection * c)
     c->pollfd.client_data = c;
 
     if (bind_count) {
-        if (worker->bind_num >= bind_count) {
-            worker->bind_num = 0;
+        if (worker->bind_rr >= bind_count) {
+            worker->bind_rr = 0;
         }
-        if ((rv = apr_socket_bind(c->aprsock, bind_addrs[worker->bind_num++]))) {
+        if ((rv = apr_socket_bind(c->aprsock, bind_addrs[worker->bind_rr++]))) {
             graceful_strerror("bind", rv);
             close_connection(c);
             return;
