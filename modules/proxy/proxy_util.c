@@ -419,8 +419,8 @@ PROXY_DECLARE(char *)
     return NULL;
 }
 
-static int ap_proxyerror_ex(request_rec *r, int statuscode, const char *message,
-                            apr_status_t rv)
+static int proxyerror_core(request_rec *r, int statuscode, const char *message,
+                           apr_status_t rv)
 {
     ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(00898)
                   "%s returned by %s", message, r->uri);
@@ -441,7 +441,7 @@ static int ap_proxyerror_ex(request_rec *r, int statuscode, const char *message,
 
 PROXY_DECLARE(int) ap_proxyerror(request_rec *r, int statuscode, const char *message)
 {
-    return ap_proxyerror_ex(r, statuscode, message, 0);
+    return proxyerror_core(r, statuscode, message, 0);
 }
 
 static const char *
@@ -2761,9 +2761,9 @@ PROXY_DECLARE(apr_status_t) ap_proxy_determine_address(const char *proxy_functio
                                    hostport, 0, conn->pool);
         if (rv != APR_SUCCESS) {
             if (r && !s) {
-                ap_proxyerror_ex(r, HTTP_INTERNAL_SERVER_ERROR,
-                                 apr_pstrcat(r->pool, "DNS lookup failure for: ",
-                                             hostname, NULL), rv);
+                proxyerror_core(r, HTTP_INTERNAL_SERVER_ERROR,
+                                apr_pstrcat(r->pool, "DNS lookup failure for: ",
+                                            hostname, NULL), rv);
             }
             else if (r) {
                 ap_log_rerror(APLOG_MARK, APLOG_DEBUG, rv, r, APLOGNO()
@@ -2795,7 +2795,7 @@ PROXY_DECLARE(apr_status_t) ap_proxy_determine_address(const char *proxy_functio
             PROXY_THREAD_LOCK(worker);
 
             /* Re-check under the mutex, things may have changed. */
-            address = worker->address;
+            address = AP_VOLATILIZE_T(proxy_address *, worker->address);
             if (!address || apr_atomic_read32(&address->expiry) <= now) {
                 proxy_address *old_address = address;
                 apr_pool_t *pool = NULL;
@@ -2808,10 +2808,11 @@ PROXY_DECLARE(apr_status_t) ap_proxy_determine_address(const char *proxy_functio
                     PROXY_THREAD_UNLOCK(worker);
                     apr_pool_destroy(pool);
                     if (r && !s) {
-                        ap_proxyerror_ex(r, HTTP_INTERNAL_SERVER_ERROR,
-                                         apr_pstrcat(r->pool,
-                                                     "DNS lookup failure for: ",
-                                                     hostname, NULL), rv);
+                        proxyerror_core(r, HTTP_INTERNAL_SERVER_ERROR,
+                                        apr_pstrcat(r->pool,
+                                                    "DNS lookup failure for: ",
+                                                    hostname, NULL),
+                                        rv);
                     }
                     else if (r) {
                         ap_log_rerror(APLOG_MARK, APLOG_DEBUG, rv, r, APLOGNO()

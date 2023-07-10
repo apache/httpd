@@ -230,13 +230,19 @@ static const char *set_worker_param(apr_pool_t *p,
     else if (!strcasecmp(key, "addressttl")) {
         /* Address TTL in seconds
          */
-        char *endptr;
-        long ttl = strtol(val, &endptr, 10);
-        if (endptr == val || *endptr || ttl < -1L || ttl > APR_INT32_MAX) {
-            return "AddressTTL must be a number between -1 and "
-                    APR_STRINGIFY(APR_INT32_MAX);
+        apr_interval_time_t ttl;
+        if (strcmp(val, "-1") == 0) {
+            worker->s->address_ttl = -1;
         }
-        worker->s->address_ttl = apr_time_from_sec(ttl);
+        else if (ap_timeout_parameter_parse(val, &ttl, "s") == APR_SUCCESS
+                 && (ttl <= apr_time_from_sec(APR_INT32_MAX))
+                 && (ttl % apr_time_from_sec(1)) == 0) {
+            worker->s->address_ttl = ttl;
+        }
+        else {
+            return "AddressTTL must be -1 or a number of seconds not "
+                   "exceeding " APR_STRINGIFY(APR_INT32_MAX);
+        }
         worker->s->address_ttl_set = 1;
     }
     else if (!strcasecmp(key, "route")) {
