@@ -270,7 +270,7 @@ static int test_started = 0,
  * visiting set_conn_state()
  */
 typedef enum {
-    STATE_UNCONNECTED = 0,
+    STATE_DISCONNECTED = 0,
     STATE_CONNECTING,           /* TCP connect initiated, but we don't
                                  * know if it worked yet
                                  */
@@ -278,8 +278,20 @@ typedef enum {
     STATE_HANDSHAKE,            /* in the handshake phase */
 #endif
     STATE_WRITE,                /* in the write phase */
-    STATE_READ                  /* in the read phase */
+    STATE_READ,                 /* in the read phase */
+
+    STATE_COUNT
 } conn_state_e;
+
+const char *conn_state_str[STATE_COUNT] = {
+    "DISCONNECTED",
+    "CONNECTING",
+#ifdef USE_SSL
+    "HANDSHAKE",
+#endif
+    "WRITE",
+    "READ"
+};
 
 #define CBUFFSIZE (8192)
 
@@ -292,6 +304,7 @@ struct connection {
     apr_pool_t *ctx;
     apr_socket_t *aprsock;
     apr_pollfd_t pollfd;
+    apr_int16_t events;
     int state;
     apr_time_t delay;
     apr_size_t read;            /* amount of bytes read */
@@ -370,6 +383,8 @@ struct worker {
     struct delayed_ring_t delayed_ring;
 
     struct metrics metrics;
+    int counters[STATE_COUNT][2];
+    char tmp[1024];
 
     char buffer[CBUFFSIZE];  /* throw-away buffer to read stuff into */
 };
@@ -430,6 +445,9 @@ apr_interval_time_t hbperiod = 0; /* heartbeat period (when time limited) */
 apr_interval_time_t aprtimeout = apr_time_from_sec(30); /* timeout value */
 apr_interval_time_t ramp = apr_time_from_msec(0); /* ramp delay */
 int pollset_wakeable = 0;
+
+int watchdog = 0;
+#define WATCHDOG_TIMEOUT apr_time_from_sec(5)
 
 /* overrides for ab-generated common headers */
 const char *opt_host;   /* which optional "Host:" header specified, if any */
@@ -643,11 +661,19 @@ static int set_polled_events(struct connection *c, apr_int16_t new_reqevents)
 static void set_conn_state(struct connection *c, conn_state_e state,
                            apr_int16_t events)
 {
-    c->state = state;
+    struct worker *worker = c->worker;
 
-    if (!set_polled_events(c, events) && state != STATE_UNCONNECTED) {
+    assert(worker->counters[c->state][(c->events & APR_POLLOUT) != 0] > 0);
+    worker->counters[c->state][(c->events & APR_POLLOUT) != 0]--;
+
+    c->state = state;
+    c->events = events;
+    if (!set_polled_events(c, events) && state != STATE_DISCONNECTED) {
         close_connection(c);
+        c->events = 0;
     }
+
+    worker->counters[c->state][(c->events & APR_POLLOUT) != 0]++;
 }
 
 /* --------------------------------------------------------- */
@@ -1594,10 +1620,11 @@ static void start_connection(struct connection * c)
         return;
     }
 
-    assert(c->state == STATE_UNCONNECTED);
+    assert(c->state == STATE_DISCONNECTED);
     if (!c->ctx) {
         apr_pool_create(&c->ctx, worker->pool);
         APR_RING_ELEM_INIT(c, delay_list);
+        worker->counters[STATE_DISCONNECTED][0]++;
         worker->metrics.concurrent++;
     }
 
@@ -1710,11 +1737,15 @@ static void start_connection(struct connection * c)
     /* connected first time */
 #ifdef USE_SSL
     if (c->ssl) {
+        set_conn_state(c, STATE_HANDSHAKE, 0);
         ssl_proceed_handshake(c);
     }
     else
 #endif
-    write_request(c);
+    {
+        set_conn_state(c, STATE_WRITE, 0);
+        write_request(c);
+    }
 }
 
 /* --------------------------------------------------------- */
@@ -1723,7 +1754,7 @@ static void start_connection(struct connection * c)
 
 static void close_connection(struct connection *c)
 {
-    set_conn_state(c, STATE_UNCONNECTED, 0);
+    set_conn_state(c, STATE_DISCONNECTED, 0);
 #ifdef USE_SSL
     if (c->ssl) {
         SSL_shutdown(c->ssl);
@@ -2444,6 +2475,8 @@ static int test(void)
 static void worker_test(struct worker *worker)
 {
     apr_status_t rv;
+    apr_time_t poll_expiry = 0;
+    apr_time_t watchdog_expiry = 0;
     struct connection *c;
     apr_int16_t rtnev;
     int i;
@@ -2456,10 +2489,43 @@ static void worker_test(struct worker *worker)
         apr_int32_t n;
         const apr_pollfd_t *pollresults, *pollfd;
         apr_interval_time_t t = aprtimeout;
-
-        if (!APR_RING_EMPTY(&worker->delayed_ring, connection, delay_list)) {
-            apr_time_t now = apr_time_now();
-            do {
+        apr_time_t now = 0;
+ 
+        if (watchdog || !APR_RING_EMPTY(&worker->delayed_ring, connection, delay_list)) {
+            now = apr_time_now();
+            if (poll_expiry == 0) {
+                poll_expiry = now + aprtimeout;
+            }
+            else if (t > poll_expiry - now) {
+                t = poll_expiry > now ? poll_expiry - now : 0;
+            }
+            if (watchdog) {
+                if (watchdog_expiry && watchdog_expiry <= now) {
+                    int state;
+                    apr_size_t len = 0;
+                    len += apr_snprintf(worker->tmp + len, sizeof(worker->tmp) - len,
+                                   "Worker %d: requests %" APR_INT64_T_FMT "/%d, polls %d",
+                                   worker->slot,
+                                   worker->metrics.done, worker->requests,
+                                   worker->polls);
+                    for (state = 0; state < STATE_COUNT; ++state) {
+                        len += apr_snprintf(worker->tmp + len, sizeof(worker->tmp) - len,
+                                      ", %s %d/%d",
+                                      conn_state_str[state],
+                                      worker->counters[state][0],
+                                      worker->counters[state][1]);
+                    }
+                    fprintf(stderr, "%s\n", worker->tmp);
+                    fflush(stderr);
+                }
+                if (watchdog_expiry <= now) {
+                    watchdog_expiry = now + WATCHDOG_TIMEOUT;
+                }
+                if (t > WATCHDOG_TIMEOUT) {
+                    t = WATCHDOG_TIMEOUT;
+                }
+            }
+            while (!APR_RING_EMPTY(&worker->delayed_ring, connection, delay_list)) {
                 c = APR_RING_FIRST(&worker->delayed_ring);
                 if (c->delay <= now) {
                     APR_RING_REMOVE(c, delay_list);
@@ -2473,21 +2539,22 @@ static void worker_test(struct worker *worker)
                     }
                     break;
                 }
-            } while (!APR_RING_EMPTY(&worker->delayed_ring, connection, delay_list));
+            }
         }
 
+        assert(worker->polls > 0);
         n = worker->metrics.concurrent;
         rv = apr_pollset_poll(worker->pollset, t, &n, &pollresults);
         if (rv != APR_SUCCESS) {
             if (APR_STATUS_IS_EINTR(rv)
-                || (APR_STATUS_IS_TIMEUP(rv) &&
-                    !APR_RING_EMPTY(&worker->delayed_ring, connection,
-                                    delay_list))) {
+                || (APR_STATUS_IS_TIMEUP(rv)
+                    && poll_expiry && poll_expiry > apr_time_now())) {
                 continue;
             }
             graceful_strerror("apr_pollset_poll", rv);
             return;
         }
+        poll_expiry = 0;
 
         for (i = 0, pollfd = pollresults; i < n; i++, pollfd++) {
             c = pollfd->client_data;
@@ -2504,10 +2571,10 @@ static void worker_test(struct worker *worker)
                     }
 #ifdef USE_SSL
                     if (c->ssl)
-                        c->state = STATE_HANDSHAKE;
+                        set_conn_state(c, STATE_HANDSHAKE, 0);
                     else
 #endif
-                    c->state = STATE_WRITE;
+                    set_conn_state(c, STATE_WRITE, 0);
                 }
                 switch (c->state) {
 #ifdef USE_SSL
@@ -2730,6 +2797,7 @@ static void usage(const char *progname)
     fprintf(stderr, "    -e filename     Output CSV file with percentages served\n");
     fprintf(stderr, "    -r              Don't exit on socket receive errors.\n");
     fprintf(stderr, "    -m method       Method name\n");
+    fprintf(stderr, "    -D              Debug watchdog to show some counters during runtime\n");
     fprintf(stderr, "    -h              Display usage information (this message)\n");
 #ifdef USE_SSL
 
@@ -2958,7 +3026,7 @@ int main(int argc, const char * const argv[])
 #endif
 
     apr_getopt_init(&opt, cntxt, argc, argv);
-    while ((status = apr_getopt(opt, "n:c:t:s:b:T:p:u:v:lrkVhwiIx:y:z:C:H:P:A:g:X:de:SqQB:m:R:"
+    while ((status = apr_getopt(opt, "n:c:t:s:b:T:p:u:v:lrkVhwiIx:y:z:C:H:P:A:g:X:de:SqQDB:m:R:"
 #if APR_HAS_THREADS
             "W:"
 #endif
@@ -2989,6 +3057,9 @@ int main(int argc, const char * const argv[])
                 break;
             case 'Q':
                 no_banner = 1;
+                break;
+            case 'D':
+                watchdog = 1;
                 break;
             case 'c':
                 concurrency = atoi(opt_arg);
