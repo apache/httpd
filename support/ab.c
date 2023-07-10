@@ -279,7 +279,7 @@ typedef enum {
 #endif
     STATE_WRITE,                /* in the write phase */
     STATE_READ                  /* in the read phase */
-} connect_state_e;
+} conn_state_e;
 
 #define CBUFFSIZE (8192)
 
@@ -360,7 +360,7 @@ struct worker {
     int slot;
     int requests;
     int concurrency;
-    int polled;
+    int polls;           /* number of connections polled */
     int bind_rr;         /* next address to bind (round robin) */
     int succeeded_once;  /* response header received once */
     apr_int64_t started; /* number of requests started, so no excess */
@@ -483,7 +483,7 @@ static apr_thread_mutex_t *workers_mutex;
 static apr_thread_cond_t *workers_can_start;
 #endif
 
-static APR_INLINE int worker_can_stop(struct worker *worker)
+static APR_INLINE int worker_should_stop(struct worker *worker)
 {
     return (stoptime <= lasttime
             || (rlimited && worker->metrics.done >= worker->requests));
@@ -623,8 +623,8 @@ static int set_polled_events(struct connection *c, apr_int16_t new_reqevents)
                 graceful_strerror("apr_pollset_remove()", rv);
                 return 0;
             }
-            assert(c->worker->polled > 0);
-            c->worker->polled--;
+            assert(c->worker->polls > 0);
+            c->worker->polls--;
          }
 
         c->pollfd.reqevents = new_reqevents;
@@ -634,18 +634,18 @@ static int set_polled_events(struct connection *c, apr_int16_t new_reqevents)
                 graceful_strerror("apr_pollset_add()", rv);
                 return 0;
             }
-            c->worker->polled++;
+            c->worker->polls++;
         }
     }
     return 1;
 }
 
-static void set_conn_state(struct connection *c, connect_state_e new_state,
+static void set_conn_state(struct connection *c, conn_state_e state,
                            apr_int16_t events)
 {
-    c->state = new_state;
+    c->state = state;
 
-    if (!set_polled_events(c, events) && new_state != STATE_UNCONNECTED) {
+    if (!set_polled_events(c, events) && state != STATE_UNCONNECTED) {
         close_connection(c);
     }
 }
@@ -1594,6 +1594,7 @@ static void start_connection(struct connection * c)
         return;
     }
 
+    assert(c->state == STATE_UNCONNECTED);
     if (!c->ctx) {
         apr_pool_create(&c->ctx, worker->pool);
         APR_RING_ELEM_INIT(c, delay_list);
@@ -1606,7 +1607,6 @@ static void start_connection(struct connection * c)
         return;
     }
 
-    c->state = STATE_UNCONNECTED;
     c->pollfd.desc.s = c->aprsock;
     c->pollfd.desc_type = APR_POLL_SOCKET;
     c->pollfd.reqevents = c->pollfd.rtnevents = 0;
@@ -2492,21 +2492,42 @@ static void worker_test(struct worker *worker)
         for (i = 0, pollfd = pollresults; i < n; i++, pollfd++) {
             c = pollfd->client_data;
 
-            /*
-             * If the connection isn't connected how can we check it?
-             */
-            if (c->state == STATE_UNCONNECTED)
-                continue;
-
-#if 0
-            /*
-             * Remove from the pollset while being handled.
-             */
-            if (!set_polled_events(c, 0))
-                continue;
-#endif
-
             rtnev = pollfd->rtnevents;
+
+            if (rtnev & APR_POLLOUT) {
+                if (c->state == STATE_CONNECTING) {
+                    /* call connect() again to detect errors */
+                    rv = apr_socket_connect(c->aprsock, worker->destsa);
+                    if (rv != APR_SUCCESS) {
+                        try_reconnect(c, rv);
+                        continue;
+                    }
+#ifdef USE_SSL
+                    if (c->ssl)
+                        c->state = STATE_HANDSHAKE;
+                    else
+#endif
+                    c->state = STATE_WRITE;
+                }
+                switch (c->state) {
+#ifdef USE_SSL
+                case STATE_HANDSHAKE:
+                    ssl_proceed_handshake(c);
+                    break;
+#endif
+                case STATE_WRITE:
+                    write_request(c);
+                    break;
+                case STATE_READ:
+                    read_response(c);
+                    break;
+                default:
+                    assert(0);
+                    break;
+                }
+
+                continue;
+            }
 
             /*
              * Notes: APR_POLLHUP is set after FIN is received on some
@@ -2521,7 +2542,6 @@ static void worker_test(struct worker *worker)
              * apr_poll().
              */
             if (rtnev & (APR_POLLIN | APR_POLLHUP | APR_POLLPRI)) {
-
                 switch (c->state) {
 #ifdef USE_SSL
                 case STATE_HANDSHAKE:
@@ -2534,42 +2554,9 @@ static void worker_test(struct worker *worker)
                 case STATE_READ:
                     read_response(c);
                     break;
-                }
-
-                continue;
-            }
-
-            if (rtnev & APR_POLLOUT) {
-                if (c->state == STATE_CONNECTING) {
-                    /* call connect() again to detect errors */
-                    rv = apr_socket_connect(c->aprsock, worker->destsa);
-                    if (rv != APR_SUCCESS) {
-                        try_reconnect(c, rv);
-                        continue;
-                    }
-#ifdef USE_SSL
-                    if (c->ssl)
-                        ssl_proceed_handshake(c);
-                    else
-#endif
-                    write_request(c);
-                }
-                else {
-
-                    switch (c->state) {
-#ifdef USE_SSL
-                    case STATE_HANDSHAKE:
-                        ssl_proceed_handshake(c);
-                        break;
-#endif
-                    case STATE_WRITE:
-                        write_request(c);
-                        break;
-                    case STATE_READ:
-                        read_response(c);
-                        break;
-                    }
-
+                default:
+                    assert(0);
+                    break;
                 }
 
                 continue;
@@ -2586,9 +2573,7 @@ static void worker_test(struct worker *worker)
                 continue;
             }
         }
-    } while (worker->polled > 0 && stoptime > lasttime);
-
-    assert(worker_can_stop(worker));
+    } while (!worker_should_stop(worker));
 }
 
 #if APR_HAS_THREADS
