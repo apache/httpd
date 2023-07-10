@@ -1675,7 +1675,7 @@ static void connection_cleanup(void *theconn)
     }
     else if (conn->is_ssl) {
         /* The current ssl section/dir config of the conn is not necessarily
-         * the one it will be reused for, so while the conn is in the reslit
+         * the one it will be reused for, so while the conn is in the reslist
          * reset its ssl config to the worker's, until a new user sets its own
          * ssl config eventually in proxy_connection_create() and so on.
          */
