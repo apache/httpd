@@ -436,13 +436,15 @@ typedef struct event_retained_data {
      * Workers that still active, i.e. are not shutting down gracefully.
      */
     int active_daemons;
+
     /*
      * idle_spawn_rate is the number of children that will be spawned on the
      * next maintenance cycle if there aren't enough idle servers.  It is
-     * maintained per listeners bucket, doubled up to MAX_SPAWN_RATE, and
-     * reset only when a cycle goes by without the need to spawn.
+     * doubled up to MAX_SPAWN_RATE, and reset only when a cycle goes by
+     * without the need to spawn.
      */
-    int *idle_spawn_rate;
+    int idle_spawn_rate;
+    int max_spawn_rate, *free_slots;
     int hold_off_on_exponential_spawning;
 } event_retained_data;
 static event_retained_data *retained;
@@ -450,7 +452,6 @@ static event_retained_data *retained;
 #ifndef MAX_SPAWN_RATE
 #define MAX_SPAWN_RATE 32
 #endif
-static int max_spawn_rate_per_bucket = MAX_SPAWN_RATE / 1;
 
 struct event_srv_cfg_s {
     struct timeout_queue *io_q,
@@ -3144,9 +3145,9 @@ static void child_main(int child_num_arg, int child_bucket)
     clean_child_exit(resource_shortage ? APEXIT_CHILDSICK : 0);
 }
 
-static int make_child(server_rec * s, int slot, int bucket)
+static int make_child(server_rec *s, int slot)
 {
-    int pid;
+    int pid, bucket = slot % retained->mpm->num_buckets;
 
     if (slot + 1 > retained->max_daemon_used) {
         retained->max_daemon_used = slot + 1;
@@ -3230,32 +3231,27 @@ static void startup_children(int number_to_start)
         if (ap_scoreboard_image->parent[i].pid != 0) {
             continue;
         }
-        if (make_child(ap_server_conf, i, i % retained->mpm->num_buckets) < 0) {
+        if (make_child(ap_server_conf, i) < 0) {
             break;
         }
         --number_to_start;
     }
 }
 
-static void perform_idle_server_maintenance(int child_bucket,
-                                            int *max_daemon_used)
+static void perform_idle_server_maintenance(void)
 {
-    int num_buckets = retained->mpm->num_buckets;
-    int idle_thread_count = 0;
-    process_score *ps;
-    int free_length = 0;
-    int free_slots[MAX_SPAWN_RATE];
+    volatile process_score *ps;
+    const int num_buckets = retained->mpm->num_buckets;
     int last_non_dead = -1;
+    int free_length = 0, free_bucket = 0;
+    int max_daemon_used = 0;
+    int idle_thread_count = 0;
     int active_thread_count = 0;
     int i, j;
 
     for (i = 0; i < server_limit; ++i) {
-        if (num_buckets > 1 && (i % num_buckets) != child_bucket) {
-            /* We only care about child_bucket in this call */
-            continue;
-        }
         if (i >= retained->max_daemon_used &&
-            free_length == retained->idle_spawn_rate[child_bucket]) {
+            free_length == retained->idle_spawn_rate) {
             /* short cut if all active processes have been examined and
              * enough empty scoreboard slots have been found
              */
@@ -3299,12 +3295,16 @@ static void perform_idle_server_maintenance(int child_bucket,
             }
             last_non_dead = i;
         }
-        else if (free_length < retained->idle_spawn_rate[child_bucket]) {
-            free_slots[free_length++] = i;
+        else if (free_length < retained->idle_spawn_rate
+                 && (i % num_buckets) == free_bucket) {
+            retained->free_slots[free_length++] = i;
+            if (++free_bucket == num_buckets) {
+                free_bucket = 0;
+            }
         }
     }
-    if (*max_daemon_used < last_non_dead + 1) {
-        *max_daemon_used = last_non_dead + 1;
+    if (max_daemon_used < last_non_dead + 1) {
+        max_daemon_used = last_non_dead + 1;
     }
 
     if (retained->sick_child_detected) {
@@ -3314,10 +3314,6 @@ static void perform_idle_server_maintenance(int child_bucket,
              * problem will be resolved.
              */
             retained->sick_child_detected = 0;
-        }
-        else if (child_bucket < num_buckets - 1) {
-            /* check for had_healthy_child up to the last child bucket */
-            return;
         }
         else {
             /* looks like a basket case, as no child ever fully initialized; give up.
@@ -3338,7 +3334,7 @@ static void perform_idle_server_maintenance(int child_bucket,
                     && retained->total_daemons <= retained->max_daemon_used
                     && retained->max_daemon_used <= server_limit);
 
-    if (idle_thread_count > max_spare_threads / num_buckets) {
+    if (idle_thread_count > max_spare_threads) {
         /*
          * Child processes that we ask to shut down won't die immediately
          * but may stay around for a long time when they finish their
@@ -3367,17 +3363,19 @@ static void perform_idle_server_maintenance(int child_bucket,
                      retained->total_daemons, retained->max_daemon_used,
                      server_limit, idle_thread_count, max_workers);
         if (do_kill) {
-            ap_mpm_podx_signal(retained->buckets[child_bucket].pod,
-                               AP_MPM_PODX_GRACEFUL);
+            for (i = 0; i < num_buckets; ++i) {
+                ap_mpm_podx_signal(retained->buckets[i].pod,
+                                   AP_MPM_PODX_GRACEFUL);
+            }
         }
         else {
             /* Wait for dying daemon(s) to exit */
         }
-        retained->idle_spawn_rate[child_bucket] = 1;
+        retained->idle_spawn_rate = num_buckets;
     }
-    else if (idle_thread_count < min_spare_threads / num_buckets) {
-        if (active_thread_count >= max_workers / num_buckets) {
-            if (0 == idle_thread_count) { 
+    else if (idle_thread_count < min_spare_threads) {
+        if (active_thread_count >= max_workers) {
+            if (0 == idle_thread_count) {
                 if (!retained->maxclients_reported) {
                     ap_log_error(APLOG_MARK, APLOG_ERR, 0, ap_server_conf, APLOGNO(00484)
                                  "server reached MaxRequestWorkers setting, "
@@ -3395,18 +3393,15 @@ static void perform_idle_server_maintenance(int child_bucket,
                     retained->near_maxclients_reported = 1;
                 }
             }
-            retained->idle_spawn_rate[child_bucket] = 1;
+            retained->idle_spawn_rate = num_buckets;
         }
         else if (free_length == 0) { /* scoreboard is full, can't fork */
             ap_log_error(APLOG_MARK, APLOG_ERR, 0, ap_server_conf, APLOGNO(03490)
                          "scoreboard is full, not at MaxRequestWorkers."
                          "Increase ServerLimit.");
-            retained->idle_spawn_rate[child_bucket] = 1;
+            retained->idle_spawn_rate = num_buckets;
         }
         else {
-            if (free_length > retained->idle_spawn_rate[child_bucket]) {
-                free_length = retained->idle_spawn_rate[child_bucket];
-            }
             if (free_length + retained->active_daemons > active_daemons_limit) {
                 if (retained->active_daemons < active_daemons_limit) {
                     free_length = active_daemons_limit - retained->active_daemons;
@@ -3418,14 +3413,13 @@ static void perform_idle_server_maintenance(int child_bucket,
                                  "total %d/%d/%d, rate %d", free_length,
                                  retained->active_daemons, active_daemons_limit,
                                  retained->total_daemons, retained->max_daemon_used,
-                                 server_limit, retained->idle_spawn_rate[child_bucket]);
+                                 server_limit, retained->idle_spawn_rate);
                     /* reset the spawning rate and prevent its growth below */
-                    retained->idle_spawn_rate[child_bucket] = 1;
-                    ++retained->hold_off_on_exponential_spawning;
+                    retained->idle_spawn_rate = num_buckets;
                     free_length = 0;
                 }
             }
-            if (retained->idle_spawn_rate[child_bucket] >= 8) {
+            if (retained->idle_spawn_rate >= retained->max_spawn_rate / 4) {
                 ap_log_error(APLOG_MARK, APLOG_INFO, 0, ap_server_conf, APLOGNO(00486)
                              "server seems busy, (you may need "
                              "to increase StartServers, ThreadsPerChild "
@@ -3436,13 +3430,14 @@ static void perform_idle_server_maintenance(int child_bucket,
                              idle_thread_count, retained->active_daemons,
                              retained->total_daemons);
             }
+            free_length = (free_length / num_buckets) * num_buckets;
             for (i = 0; i < free_length; ++i) {
-                int slot = free_slots[i];
-                if (make_child(ap_server_conf, slot, child_bucket) < 0) {
+                int slot = retained->free_slots[i];
+                if (make_child(ap_server_conf, slot) < 0) {
                     continue;
                 }
-                if (*max_daemon_used < slot + 1) {
-                    *max_daemon_used = slot + 1;
+                if (max_daemon_used < slot + 1) {
+                    max_daemon_used = slot + 1;
                 }
             }
             /* the next time around we want to spawn twice as many if this
@@ -3451,31 +3446,41 @@ static void perform_idle_server_maintenance(int child_bucket,
             if (retained->hold_off_on_exponential_spawning) {
                 --retained->hold_off_on_exponential_spawning;
             }
-            else if (retained->idle_spawn_rate[child_bucket]
-                     < max_spawn_rate_per_bucket) {
-                int new_rate = retained->idle_spawn_rate[child_bucket] * 2;
-                if (new_rate > max_spawn_rate_per_bucket) {
-                    new_rate = max_spawn_rate_per_bucket;
+            else if (free_length && retained->idle_spawn_rate < retained->max_spawn_rate) {
+                int new_rate = retained->idle_spawn_rate * 2;
+                new_rate = ((new_rate + num_buckets - 1) / num_buckets) * num_buckets;
+                if (new_rate > retained->max_spawn_rate) {
+                    new_rate = retained->max_spawn_rate;
                 }
-                retained->idle_spawn_rate[child_bucket] = new_rate;
+                retained->idle_spawn_rate = new_rate;
             }
         }
     }
     else {
-        retained->idle_spawn_rate[child_bucket] = 1;
+        retained->idle_spawn_rate = num_buckets;
+    }
+
+    retained->max_daemon_used = max_daemon_used;
+    if (APLOGdebug(ap_server_conf)) {
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf,
+                     "score: idlers:%d, "
+                     "threads active:%d/%d max:%d, "
+                     "daemons active:%d/%d max:%d used:%d/%d/%d",
+                     idle_thread_count,
+                     active_thread_count, retained->active_daemons * threads_per_child,
+                     max_workers, retained->active_daemons, retained->total_daemons,
+                     active_daemons_limit, max_daemon_used, retained->max_daemon_used,
+                     server_limit);
     }
 }
 
 static void server_main_loop(int remaining_children_to_start)
 {
-    int num_buckets = retained->mpm->num_buckets;
-    int max_daemon_used = 0;
     int successive_kills = 0;
     int child_slot;
     apr_exit_why_e exitwhy;
     int status, processed_status;
     apr_proc_t pid;
-    int i;
 
     while (!retained->mpm->restart_pending && !retained->mpm->shutdown_pending) {
         ap_wait_or_timeout(&exitwhy, &status, &pid, pconf, ap_server_conf);
@@ -3520,14 +3525,13 @@ static void server_main_loop(int remaining_children_to_start)
 
                 if (processed_status == APEXIT_CHILDSICK) {
                     /* resource shortage, minimize the fork rate */
-                    retained->idle_spawn_rate[child_slot % num_buckets] = 1;
+                    retained->idle_spawn_rate = retained->mpm->num_buckets;
                 }
                 else if (remaining_children_to_start) {
                     /* we're still doing a 1-for-1 replacement of dead
                      * children with new children
                      */
-                    make_child(ap_server_conf, child_slot,
-                               child_slot % num_buckets);
+                    make_child(ap_server_conf, child_slot);
                     --remaining_children_to_start;
                 }
             }
@@ -3586,11 +3590,7 @@ static void server_main_loop(int remaining_children_to_start)
             continue;
         }
 
-        max_daemon_used = 0;
-        for (i = 0; i < num_buckets; i++) {
-            perform_idle_server_maintenance(i, &max_daemon_used);
-        }
-        retained->max_daemon_used = max_daemon_used;
+        perform_idle_server_maintenance();
     }
 }
 
@@ -3680,35 +3680,36 @@ static int event_run(apr_pool_t * _pconf, apr_pool_t * plog, server_rec * s)
         retained->buckets[i].listeners = listen_buckets[i];
     }
 
-    if (retained->mpm->max_buckets < num_buckets) {
-        int new_max, *new_ptr;
-        new_max = retained->mpm->max_buckets * 2;
-        if (new_max < num_buckets) {
-            new_max = num_buckets;
-        }
-        new_ptr = (int *)apr_palloc(ap_pglobal, new_max * sizeof(int));
-        if (retained->mpm->num_buckets) /* idle_spawn_rate NULL at startup */
-            memcpy(new_ptr, retained->idle_spawn_rate,
-                   retained->mpm->num_buckets * sizeof(int));
-        retained->idle_spawn_rate = new_ptr;
-        retained->mpm->max_buckets = new_max;
-    }
-    if (retained->mpm->num_buckets < num_buckets) {
-        int rate_max = 1;
-        /* If new buckets are added, set their idle spawn rate to
-         * the highest so far, so that they get filled as quickly
-         * as the existing ones.
-         */
-        for (i = 0; i < retained->mpm->num_buckets; i++) {
-            if (rate_max < retained->idle_spawn_rate[i]) {
-                rate_max = retained->idle_spawn_rate[i];
+    /* If num_buckets changed, adjust max_spawn_rate and the free_slots buffer */
+    if (retained->mpm->num_buckets != num_buckets) {
+        if (retained->mpm->max_buckets < num_buckets) {
+            int new_max, new_slots;
+            new_max = retained->mpm->max_buckets * 2;
+            if (new_max < num_buckets) {
+                new_max = num_buckets;
             }
+            else {
+                new_max = ((new_max + num_buckets - 1) / num_buckets) * num_buckets;
+            }
+            new_slots = ((MAX_SPAWN_RATE + new_max - 1) / new_max) * new_max;
+            retained->free_slots = apr_palloc(ap_pglobal, new_slots * sizeof(int));
+            retained->mpm->max_buckets = new_max;
         }
-        for (/* up to date i */; i < num_buckets; i++) {
-            retained->idle_spawn_rate[i] = rate_max;
+        /* We always spawn/kill children in a multiple of num_buckets (as needed),
+         * so align (round up) max_spawn_rate and idle_spawn_rate to num_buckets.
+         */
+        retained->max_spawn_rate = (((MAX_SPAWN_RATE + num_buckets - 1)
+                                     / num_buckets) * num_buckets);
+        retained->idle_spawn_rate = (((retained->idle_spawn_rate + num_buckets - 1)
+                                      / num_buckets) * num_buckets);
+        if (retained->idle_spawn_rate < num_buckets) {
+            retained->idle_spawn_rate = num_buckets;
         }
+        else if (retained->idle_spawn_rate > retained->max_spawn_rate) {
+            retained->idle_spawn_rate = retained->max_spawn_rate;
+        }
+        retained->mpm->num_buckets = num_buckets;
     }
-    retained->mpm->num_buckets = num_buckets;
 
     /* Don't thrash since num_buckets depends on the
      * system and the number of online CPU cores...
@@ -3727,11 +3728,6 @@ static int event_run(apr_pool_t * _pconf, apr_pool_t * plog, server_rec * s)
         min_spare_threads = threads_per_child * (num_buckets - 1) + num_buckets;
     if (max_spare_threads < min_spare_threads + (threads_per_child + 1) * num_buckets)
         max_spare_threads = min_spare_threads + (threads_per_child + 1) * num_buckets;
-
-    max_spawn_rate_per_bucket = (MAX_SPAWN_RATE + num_buckets - 1) / num_buckets;
-    if (max_spawn_rate_per_bucket < 1) {
-        max_spawn_rate_per_bucket = 1;
-    }
 
     /* If we're doing a graceful_restart then we're going to see a lot
      * of children exiting immediately when we get into the main loop
