@@ -210,6 +210,8 @@ static int auto_settings = 0;               /* Auto settings based on max_worker
                                                and num_online_cpus */
 static int num_online_cpus = 0;             /* Number of CPUs detected */
 
+static int threads_async_limit = 0;         /* ThreadsPerChild times the async_factor */
+
 static /*atomic*/ apr_uint32_t dying = 0;
 static /*atomic*/ apr_uint32_t workers_may_exit = 0;
 static /*atomic*/ apr_uint32_t start_thread_may_exit = 0;
@@ -816,23 +818,121 @@ static APR_INLINE int listensocks_disabled(void)
     return apr_atomic_read32(&listensocks_off) != 0;
 }
 
-static APR_INLINE int connections_above_limit(int *busy)
+/* Choose one of these */
+#define LIMIT_BY_CONNS_TOTAL_VS_IDLERS                           0
+#define LIMIT_BY_BACKLOG_MAYBLOCK_VS_IDLERS                      0
+#define LIMIT_BY_BACKLOG_TOTAL_AND_MAYBLOCK_VS_IDLERS            1 /* the winner? */
+#define LIMIT_BY_BACKLOG_TOTAL_AND_MAYBLOCK_AND_QUEUES_VS_IDLERS 0
+
+#if LIMIT_BY_BACKLOG_MAYBLOCK_VS_IDLERS \
+    || LIMIT_BY_BACKLOG_TOTAL_AND_MAYBLOCK_VS_IDLERS \
+    || LIMIT_BY_BACKLOG_TOTAL_AND_MAYBLOCK_AND_QUEUES_VS_IDLERS
+/* The rationale for the backlog_nonblock_count atomic counter is that the
+ * only connections in CONN_STATE_PROCESS (well, CONN_STATE_HANDLER actually
+ * but they leave the MPM in CONN_STATE_PROCESS) can make a worker thread block
+ * or take some non negligible time. They are the connections processed outside
+ * the MPM (the core will process the header itself without blocking, returning
+ * AGAIN if it'd have to, but once complete the header is passed to modules
+ * which then may block reading the body or whatever).
+ * All the other connections (state != CONN_STATE_PROCESS) are processed inside
+ * the MPM only, without blocking thus supposedly fast enough to ignore them
+ * for the limit on the number of connections handled by one child.
+ * So let's maintain backlog_nonblock_count in conn_state_backlog_cb() where
+ * connections are added/remove to/from the backlog and then (un)account for
+ * it in connections_above_limit().
+ */
+static /*atomic*/ apr_uint32_t backlog_nonblock_count;
+#endif
+
+static APR_INLINE int connections_above_limit(void)
 {
-    apr_uint32_t i_count = ap_queue_info_num_idlers(worker_queue_info);
-    if (i_count > 0) {
-        apr_uint32_t c_count = apr_atomic_read32(&connection_count);
-        apr_uint32_t l_count = apr_atomic_read32(linger_q->total);
-        if (c_count <= l_count
-                /* Off by 'listensocks_disabled()' to avoid flip flop */
-                || c_count - l_count < (apr_uint32_t)threads_per_child +
-                                       (i_count - listensocks_disabled()) *
-                                       async_factor) {
+    /* Note that idlers >= 0 gives the number of idle workers, idlers < 0 gives
+     * the number of connections in the backlog waiting for an idle worker.
+     */
+    int idlers = ap_queue_info_count(worker_queue_info);
+
+#if LIMIT_BY_CONNS_TOTAL_VS_IDLERS
+
+    /* Limit reached when the number of connections (excluding the ones in
+     * lingering close) is above the number of idle workers.
+     */
+    if (idlers >= 0) {
+        int conns = (apr_atomic_read32(&connection_count) -
+                     apr_atomic_read32(linger_q->total));
+        AP_DEBUG_ASSERT(conns >= 0);
+        if (idlers >= conns) {
             return 0;
         }
     }
-    else if (busy) {
-        *busy = 1;
+
+#elif LIMIT_BY_BACKLOG_MAYBLOCK_VS_IDLERS
+
+    /* Limit reached when the number of potentially blocking connections in
+     * the backlog is above the number of idle workers.
+     *
+     * Ignore connections in the backlog with "nonblocking" states by adding
+     * them back.
+     */
+    idlers += apr_atomic_read32(&backlog_nonblock_count);
+    if (idlers >= 0) {
+        return 0;
     }
+
+#elif LIMIT_BY_BACKLOG_TOTAL_AND_MAYBLOCK_VS_IDLERS
+
+    /* Limit reached when the number of potentially blocking connections in
+     * the backlog is above the number of idle workers, or the total number
+     * of connections waiting for a worker in the backlog is above some hard
+     * threads_async_limit.
+     */
+    if (idlers >= -threads_async_limit) {
+        /* Ignore connections in the backlog with "nonblocking" states by
+         * adding them back.
+         */
+        idlers += apr_atomic_read32(&backlog_nonblock_count);
+        if (idlers >= 0) {
+            return 0;
+        }
+    }
+
+#elif LIMIT_BY_BACKLOG_TOTAL_AND_MAYBLOCK_AND_QUEUES_VS_IDLERS
+
+    /* Limit reached when the number of potentially blocking connections in
+     * the backlog *and* the queues is above the number of idle workers, or
+     * the total number of connections waiting for a worker in the backlog
+     * is above some hard threads_async_limit.
+     */
+    if (idlers >= -threads_async_limit) {
+        /* Ignore connections in the backlog with "nonblocking" states by
+         * adding them back.
+         */
+        idlers += apr_atomic_read32(&backlog_nonblock_count);
+        if (idlers >= (apr_atomic_read32(keepalive_q->total) +
+                       apr_atomic_read32(process_q->total))) {
+            return 0;
+        }
+    }
+
+#else
+
+    /* Legacy but w/o ignoring the keepalive_q (not shrinked anymore).
+     * Limit reached when the number of conns (besides lingering close ones)
+     * is above some unclear limit (the total number of workers plus the
+     * number of idle workers times the async factor..).
+     */
+    int off = listensocks_disabled(); /* off by disabled() to limit flip flop */
+    if (idlers >= off) {
+        int avail = (threads_per_child + (int)((idlers - off) * async_factor));
+        int conns = (apr_atomic_read32(&connection_count) -
+                     apr_atomic_read32(linger_q->total));
+        AP_DEBUG_ASSERT(conns >= 0);
+        if (avail >= conns) {
+            return 0;
+        }
+    }
+
+#endif
+
     return 1;
 }
 
@@ -840,7 +940,7 @@ static APR_INLINE int should_enable_listensocks(void)
 {
     return (listensocks_disabled()
             && !apr_atomic_read32(&dying)
-            && !connections_above_limit(NULL));
+            && !connections_above_limit());
 }
 
 static void close_socket_at(apr_socket_t *csd,
@@ -1571,6 +1671,11 @@ static void process_socket(apr_thread_t *thd, apr_pool_t * p, apr_socket_t * soc
              || c->clogging_input_filters) {
 read_request:
             cs->pub.sense = CONN_SENSE_DEFAULT;
+            if (cs->pub.state == CONN_STATE_PROCESS
+                && apr_atomic_read32(&listener_may_exit)) {
+                /* Don't keep connections alive when exiting */
+                cs->c->keepalive = AP_CONN_CLOSE;
+            }
             clogging = c->clogging_input_filters;
             if (clogging) {
                 apr_atomic_inc32(&clogged_count);
@@ -1718,7 +1823,7 @@ read_request:
                 pending = DONE;
             }
         }
-        if (pending == OK && !apr_atomic_read32(&listener_may_exit)) {
+        if (pending == OK) {
             cs->pub.state = CONN_STATE_KEEPALIVE;
         }
         else {
@@ -1912,8 +2017,34 @@ static void conn_state_backlog_cb(void *baton, int pushed)
 
     if (pushed) {
         TO_QUEUE_APPEND(cs->sc->backlog_q, cs);
+#if LIMIT_BY_BACKLOG_MAYBLOCK_VS_IDLERS \
+    || LIMIT_BY_BACKLOG_TOTAL_AND_MAYBLOCK_VS_IDLERS \
+    || LIMIT_BY_BACKLOG_TOTAL_AND_MAYBLOCK_AND_QUEUES_VS_IDLERS
+        if (cs->pub.state != CONN_STATE_PROCESS) {
+            /* These connections won't block when processed.
+             *
+             * Increment *after* TO_QUEUE_APPEND() to make sure that:
+             *   cs->sc->backlog_q->total >= backlog_nonblock_count
+             * always holds.
+             */
+            apr_atomic_inc32(&backlog_nonblock_count);
+        }
+#endif
     }
     else { /* popped */
+#if LIMIT_BY_BACKLOG_MAYBLOCK_VS_IDLERS \
+    || LIMIT_BY_BACKLOG_TOTAL_AND_MAYBLOCK_VS_IDLERS \
+    || LIMIT_BY_BACKLOG_TOTAL_AND_MAYBLOCK_AND_QUEUES_VS_IDLERS
+        if (cs->pub.state != CONN_STATE_PROCESS) {
+            /* These connections won't block when processed.
+             *
+             * Decrement *before* TO_QUEUE_REMOVE() to make sure that:
+             *   cs->sc->backlog_q->total >= backlog_nonblock_count
+             * always holds.
+             */
+            apr_atomic_dec32(&backlog_nonblock_count);
+        }
+#endif
         TO_QUEUE_REMOVE(cs->sc->backlog_q, cs);
 
         /* not in backlog anymore */
@@ -1956,7 +2087,7 @@ static void push2worker(event_conn_state_t *cs, timer_event_t *te,
          * the situation settles down. The listener and new idling workers will
          * test for should_enable_listensocks() to recover (when suitable).
          */
-        if (connections_above_limit(NULL)) {
+        if (connections_above_limit()) {
             disable_listensocks();
             if (above_limit) {
                 *above_limit = 1;
@@ -2858,18 +2989,15 @@ do_maintenance:
             process_timeout_queue(flush_q, now);
             process_timeout_queue(process_q, now);
             process_timeout_queue(completion_q, now);
+            process_timeout_queue(keepalive_q, now);
 
-            /* The linger and keepalive queues can be shrinked any time
-             * under pressure.
-             */
+            /* The linger_q can be shrinked any time under pressure */
             if (workers_were_busy || apr_atomic_read32(&dying)) {
                 shrink_timeout_queue(linger_q, now);
-                shrink_timeout_queue(keepalive_q, now);
                 next_shrink_time = now + QUEUES_SHRINK_TIMEOUT;
             }
             else {
                 process_timeout_queue(linger_q, now);
-                process_timeout_queue(keepalive_q, now);
             }
 
             /* Connections in backlog race with the workers (dequeuing) under
@@ -2890,11 +3018,9 @@ do_maintenance:
         }
         else if (next_shrink_time <= now
                  && (workers_were_busy || apr_atomic_read32(&dying))
-                 && (apr_atomic_read32(linger_q->total)
-                     || apr_atomic_read32(keepalive_q->total))) {
+                 && apr_atomic_read32(linger_q->total)) {
             apr_thread_mutex_lock(timeout_mutex);
             shrink_timeout_queue(linger_q, now);
-            shrink_timeout_queue(keepalive_q, now);
             apr_thread_mutex_unlock(timeout_mutex);
             next_shrink_time = now + QUEUES_SHRINK_TIMEOUT;
         }
@@ -4531,6 +4657,8 @@ static int event_open_logs(apr_pool_t * p, apr_pool_t * plog,
     else {
         max_spare_threads = max_workers;
     }
+
+    threads_async_limit = threads_per_child * async_factor;
 
     return OK;
 }
