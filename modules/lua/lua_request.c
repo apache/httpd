@@ -1248,6 +1248,10 @@ static int lua_ap_scoreboard_process(lua_State *L)
         lua_pushnumber(L, ps_record->connections);
         lua_settable(L, -3);
 
+        lua_pushstring(L, "backlog");
+        lua_pushnumber(L, ps_record->backlog);
+        lua_settable(L, -3);
+
         lua_pushstring(L, "keepalive");
         lua_pushnumber(L, ps_record->keep_alive);
         lua_settable(L, -3);
