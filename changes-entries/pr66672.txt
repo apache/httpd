@@ -1,0 +1,2 @@
+  *) mod_rewrite: Fix a regression with both a trailing ? and [QSA].
+     in OCSP stapling. PR 66672. [Frank Meier <frank.meier ergon.ch>, covener]
