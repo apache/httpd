@@ -184,14 +184,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      +1: jfclere, rpluem, ylavic
      rpluem says: Does anyone know why we don't merge the server config?
 
-  *) mod_rewrite: PR66672 trailing ? and QSA together regression
-      Trunk version of patch:
-          svn diff -r  1910649:1910705 modules/mappers/mod_rewrite.c
-      Backport version for 2.4.x of patch:
-         (merge doesn't work well with rewritelog((..)) context)
-         http://people.apache.org/~covener/patches/pr66672.diff
-      +1: covener, gbechis, ylavic
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
