@@ -2201,6 +2201,219 @@ AP_DECLARE(char *) ap_escape_html2(apr_pool_t *p, const char *s, int toasc)
     x[j] = '\0';
     return x;
 }
+
+/* TODO: not sure about copyright&license of below code */
+
+/* See http://bjoern.hoehrmann.de/utf-8/decoder/dfa/ for details. */
+#define DECODE_UTF8_ACCEPT 0
+#define DECODE_UTF8_REJECT 1
+static const unsigned char decode_utf8d[] = {
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, /* 00..1f */
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, /* 20..3f */
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, /* 40..5f */
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, /* 60..7f */
+    1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9, /* 80..9f */
+    7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7, /* a0..bf */
+    8,8,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2, /* c0..df */
+    0xa,0x3,0x3,0x3,0x3,0x3,0x3,0x3,0x3,0x3,0x3,0x3,0x3,0x4,0x3,0x3, /* e0..ef */
+    0xb,0x6,0x6,0x6,0x5,0x8,0x8,0x8,0x8,0x8,0x8,0x8,0x8,0x8,0x8,0x8, /* f0..ff */
+    0x0,0x1,0x2,0x3,0x5,0x8,0x7,0x1,0x1,0x1,0x4,0x6,0x1,0x1,0x1,0x1, /* s0..s0 */
+    1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,0,1,0,1,1,1,1,1,1, /* s1..s2 */
+    1,2,1,1,1,1,1,2,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1, /* s3..s4 */
+    1,2,1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,3,1,3,1,1,1,1,1,1, /* s5..s6 */
+    1,3,1,1,1,1,1,3,1,3,1,1,1,1,1,1,1,3,1,1,1,1,1,1,1,1,1,1,1,1,1,1, /* s7..s8 */
+};
+static APR_INLINE apr_uint32_t decode_utf8_byte(apr_uint32_t state,
+                                                apr_uint32_t *codepoint,
+                                                unsigned char c)
+{
+    apr_uint32_t byte = c;
+    apr_uint32_t type = decode_utf8d[byte];
+
+    if (codepoint) {
+        *codepoint = (state != DECODE_UTF8_ACCEPT) ?
+            (byte & 0x3fu) | (*codepoint << 6) :
+            (0xff >> type) & (byte);
+    }
+
+    return decode_utf8d[256 + state * 16 + type];
+}
+
+static APR_INLINE unsigned char *escape_json_byte(unsigned char d[6],
+                                                  unsigned char c)
+{
+    apr_uint32_t byte = c;
+    d[0] = '\\';
+    d[1] = 'u';
+    d[2] = '0';
+    d[3] = '0';
+    d[4] = c2x_table[byte >> 4];
+    d[5] = c2x_table[byte & 15];
+    return d + 6;
+}
+
+AP_DECLARE(const char *) ap_escape_logjson(apr_pool_t *p, const char *str,
+                                           apr_size_t *len, int quoted)
+{
+    const unsigned char *s = (const unsigned char *)str;
+    apr_size_t seq, pos, length, escapes = 0;
+    apr_uint32_t state, prev;
+    unsigned char *d;
+    char *ret;
+
+    /* Compute how many characters need to be escaped */
+    state = prev = DECODE_UTF8_ACCEPT;
+    length = (len && *len != APR_SIZE_MAX) ? *len : (str) ? strlen(str) : 0;
+    for (seq = pos = 0; pos < length; ++pos, prev = state) {
+        unsigned char c = s[pos];
+        state = decode_utf8_byte(state, NULL, c);
+        switch (state) {
+        case DECODE_UTF8_ACCEPT:
+            switch (c) {
+            case '\b': case '\t': case '\n':
+            case '\f': case '\r': case '\\':
+            case '"':
+                /* \-escape these */
+                escapes++;
+                break;
+            default:
+                /* \u-escape controls (U+0000 through U+001F) */
+                if (c < 0x20) {
+                    escapes += 5;
+                }
+            }
+            seq = pos + 1;
+            break;
+
+        case DECODE_UTF8_REJECT:
+            if (prev == DECODE_UTF8_ACCEPT) {
+                /* \u-escape invalid [pos] (only) */
+                escapes += 5;
+                seq++;
+            }
+            else {
+                /* \u-escape each byte of invalid [seq,pos[ sequence and
+                 * let above decide for [pos]
+                 */
+                if (seq < pos) {
+                    escapes += (pos - seq) * 5;
+                    seq = pos;
+                }
+                pos--;
+            }
+            state = DECODE_UTF8_ACCEPT;
+            break;
+
+        default:
+            /* valid continuation byte */
+            break;
+        }
+    }
+    if (seq < length) {
+        /* \u-escape each byte of unterminated [seq,length[ sequence */
+        escapes += (length - seq) * 5;
+    }
+
+    /* Fast path: nothing to escape */
+    if (escapes == 0) {
+        if (quoted) {
+            if (str) {
+                str = apr_pstrcat(p, "\"", str, "\"", NULL);
+                length += 2;
+            }
+            else {
+                str = "null";
+                length = 4;
+            }
+        }
+        if (len) {
+            *len = length;
+        }
+        return str;
+    }
+
+    /* Do the actual escaping in a suitable buffer */
+    state = prev = DECODE_UTF8_ACCEPT;
+    ret = apr_palloc(p, length + escapes + (quoted ? 2 : 0) + 1);
+    d = (unsigned char *)ret;
+    if (quoted) {
+        *d++ = '"';
+    }
+    for (seq = pos = 0; pos < length; ++pos, prev = state) {
+        unsigned char c = s[pos];
+        state = decode_utf8_byte(state, NULL, c);
+        switch (state) {
+        case DECODE_UTF8_ACCEPT:
+            switch (c) {
+            case '\b':
+                *d++ = '\\';
+                *d++ = 'b';
+                break;
+            case '\t':
+                *d++ = '\\';
+                *d++ = 't';
+                break;
+            case '\n':
+                *d++ = '\\';
+                *d++ = 'n';
+                break;
+            case '\f':
+                *d++ = '\\';
+                *d++ = 'f';
+                break;
+            case '\r':
+                *d++ = '\\';
+                *d++ = 'r';
+                break;
+            case '\\':
+            case '"':
+                *d++ = '\\';
+                *d++ = c;
+                break;
+            default:
+                if (c < 0x20) {
+                    /* control to \u-escape */
+                    d = escape_json_byte(d, c);
+                }
+                else {
+                    /* valid (multi-)byte as is */
+                    while (seq < pos) {
+                        *d++ = s[seq++];
+                    }
+                    *d++ = c;
+                }
+            }
+            seq++;
+            break;
+
+        case DECODE_UTF8_REJECT:
+            if (prev == DECODE_UTF8_ACCEPT) {
+                d = escape_json_byte(d, c);
+                seq++;
+            }
+            else {
+                while (seq < pos) {
+                    d = escape_json_byte(d, s[seq++]);
+                }
+                pos--;
+            }
+            state = DECODE_UTF8_ACCEPT;
+            break;
+        }
+    }
+    while (seq < length) {
+        d = escape_json_byte(d, s[seq++]);
+    }
+    if (quoted) {
+        *d++ = '"';
+    }
+    if (len) {
+        *len = d - (const unsigned char *)ret;
+    }
+    *d = '\0';
+
+    return ret;
+}
 AP_DECLARE(char *) ap_escape_logitem(apr_pool_t *p, const char *str)
 {
     char *ret;
