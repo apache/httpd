@@ -174,6 +174,11 @@ struct apr_array_header_t *md_dns_make_minimal(apr_pool_t *p,
  */
 int md_dns_domains_match(const apr_array_header_t *domains, const char *name);
 
+/**
+ * @return != 0 iff `name` is matched by a wildcard pattern in `domains`
+ */
+int md_is_wild_match(const apr_array_header_t *domains, const char *name);
+
 /**************************************************************************************************/
 /* file system related */
 

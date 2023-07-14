@@ -48,6 +48,11 @@ class TestConf:
         assert env.apache_restart() == 0
         for i in range(0, len(dns_lists)):
             env.check_md(dns_lists[i], state=1)
+        env.httpd_error_log.ignore_recent(
+            lognos = [
+                "AH10045"   # No VirtualHost matches Managed Domain
+            ]
+        )
 
     # test case: add managed domains as separate steps
     def test_md_310_101(self, env):
@@ -63,6 +68,11 @@ class TestConf:
         assert env.apache_restart() == 0
         env.check_md(["testdomain.org", "www.testdomain.org", "mail.testdomain.org"], state=1)
         env.check_md(["testdomain2.org", "www.testdomain2.org", "mail.testdomain2.org"], state=1)
+        env.httpd_error_log.ignore_recent(
+            lognos = [
+                "AH10045"   # No VirtualHost matches Managed Domain
+            ]
+        )
 
     # test case: add dns to existing md
     def test_md_310_102(self, env):
@@ -72,6 +82,11 @@ class TestConf:
             """).install()
         assert env.apache_restart() == 0
         env.check_md(["testdomain.org", "www.testdomain.org", "mail.testdomain.org"], state=1)
+        env.httpd_error_log.ignore_recent(
+            lognos = [
+                "AH10045"   # No VirtualHost matches Managed Domain
+            ]
+        )
 
     # test case: add new md definition with acme url, acme protocol, acme agreement
     def test_md_310_103(self, env):
@@ -87,6 +102,11 @@ class TestConf:
         env.check_md([name, "www.testdomain.org", "mail.testdomain.org"], state=1,
                      ca="http://acme.test.org:4000/directory", protocol="ACME",
                      agreement="http://acme.test.org:4000/terms/v1")
+        env.httpd_error_log.ignore_recent(
+            lognos = [
+                "AH10045"   # No VirtualHost matches Managed Domain
+            ]
+        )
 
     # test case: add to existing md: acme url, acme protocol
     def test_md_310_104(self, env):
@@ -108,6 +128,11 @@ class TestConf:
         env.check_md([name, "www.testdomain.org", "mail.testdomain.org"], state=1,
                      ca="http://acme.test.org:4000/directory", protocol="ACME",
                      agreement="http://acme.test.org:4000/terms/v1")
+        env.httpd_error_log.ignore_recent(
+            lognos = [
+                "AH10045"   # No VirtualHost matches Managed Domain
+            ]
+        )
 
     # test case: add new md definition with server admin
     def test_md_310_105(self, env):
@@ -118,6 +143,11 @@ class TestConf:
         name = "testdomain.org"
         env.check_md([name, "www.testdomain.org", "mail.testdomain.org"], state=1,
                      contacts=["mailto:admin@testdomain.org"])
+        env.httpd_error_log.ignore_recent(
+            lognos = [
+                "AH10045"   # No VirtualHost matches Managed Domain
+            ]
+        )
 
     # test case: add to existing md: server admin
     def test_md_310_106(self, env):
@@ -129,6 +159,11 @@ class TestConf:
         assert env.apache_restart() == 0
         env.check_md([name, "www.testdomain.org", "mail.testdomain.org"], state=1,
                      contacts=["mailto:admin@testdomain.org"])
+        env.httpd_error_log.ignore_recent(
+            lognos = [
+                "AH10045"   # No VirtualHost matches Managed Domain
+            ]
+        )
 
     # test case: assign separate contact info based on VirtualHost
     def test_md_310_107(self, env):
@@ -161,6 +196,11 @@ class TestConf:
             """).install()
         assert env.apache_restart() == 0
         env.check_md(["testdomain.org", "www.testdomain.org", "mail.testdomain.org"], state=1)
+        env.httpd_error_log.ignore_recent(
+            lognos = [
+                "AH10045"   # No VirtualHost matches Managed Domain
+            ]
+        )
 
     # test case: default drive mode - auto
     def test_md_310_109(self, env):
@@ -169,6 +209,11 @@ class TestConf:
             """).install()
         assert env.apache_restart() == 0
         assert env.a2md(["list"]).json['output'][0]['renew-mode'] == 1
+        env.httpd_error_log.ignore_recent(
+            lognos = [
+                "AH10045"   # No VirtualHost matches Managed Domain
+            ]
+        )
 
     # test case: drive mode manual
     def test_md_310_110(self, env):
@@ -178,6 +223,11 @@ class TestConf:
             """).install()
         assert env.apache_restart() == 0
         assert env.a2md(["list"]).json['output'][0]['renew-mode'] == 0
+        env.httpd_error_log.ignore_recent(
+            lognos = [
+                "AH10045"   # No VirtualHost matches Managed Domain
+            ]
+        )
 
     # test case: drive mode auto
     def test_md_310_111(self, env):
@@ -187,6 +237,11 @@ class TestConf:
             """).install()
         assert env.apache_restart() == 0
         assert env.a2md(["list"]).json['output'][0]['renew-mode'] == 1
+        env.httpd_error_log.ignore_recent(
+            lognos = [
+                "AH10045"   # No VirtualHost matches Managed Domain
+            ]
+        )
 
     # test case: drive mode always
     def test_md_310_112(self, env):
@@ -205,6 +260,11 @@ class TestConf:
             """).install()
         assert env.apache_restart() == 0
         assert env.a2md(["list"]).json['output'][0]['renew-window'] == '14d'
+        env.httpd_error_log.ignore_recent(
+            lognos = [
+                "AH10045"   # No VirtualHost matches Managed Domain
+            ]
+        )
 
     # test case: renew window - 10 percent
     def test_md_310_113b(self, env):
@@ -214,7 +274,12 @@ class TestConf:
             """).install()
         assert env.apache_restart() == 0
         assert env.a2md(["list"]).json['output'][0]['renew-window'] == '10%'
-        
+        env.httpd_error_log.ignore_recent(
+            lognos = [
+                "AH10045"   # No VirtualHost matches Managed Domain
+            ]
+        )
+
     # test case: ca challenge type - http-01
     def test_md_310_114(self, env):
         MDConf(env, text="""
@@ -223,6 +288,11 @@ class TestConf:
             """).install()
         assert env.apache_restart() == 0
         assert env.a2md(["list"]).json['output'][0]['ca']['challenges'] == ['http-01']
+        env.httpd_error_log.ignore_recent(
+            lognos = [
+                "AH10045"   # No VirtualHost matches Managed Domain
+            ]
+        )
 
     # test case: ca challenge type - http-01
     def test_md_310_115(self, env):
@@ -232,6 +302,11 @@ class TestConf:
             """).install()
         assert env.apache_restart() == 0
         assert env.a2md(["list"]).json['output'][0]['ca']['challenges'] == ['tls-alpn-01']
+        env.httpd_error_log.ignore_recent(
+            lognos = [
+                "AH10045"   # No VirtualHost matches Managed Domain
+            ]
+        )
 
     # test case: ca challenge type - all
     def test_md_310_116(self, env):
@@ -241,6 +316,11 @@ class TestConf:
             """).install()
         assert env.apache_restart() == 0
         assert env.a2md(["list"]).json['output'][0]['ca']['challenges'] == ['http-01', 'tls-alpn-01']
+        env.httpd_error_log.ignore_recent(
+            lognos = [
+                "AH10045"   # No VirtualHost matches Managed Domain
+            ]
+        )
 
     # test case: automatically collect md names from vhost config
     def test_md_310_117(self, env):
@@ -269,6 +349,11 @@ class TestConf:
         assert env.apache_restart() == 0
         stat = env.get_md_status("testdomain.org")
         assert stat['renew-window'] == '14d'
+        env.httpd_error_log.ignore_recent(
+            lognos = [
+                "AH10045"   # No VirtualHost matches Managed Domain
+            ]
+        )
 
     # test case: set RSA key length 2048
     def test_md_310_119(self, env):
@@ -281,6 +366,11 @@ class TestConf:
             "type": "RSA",
             "bits": 2048
         }
+        env.httpd_error_log.ignore_recent(
+            lognos = [
+                "AH10045"   # No VirtualHost matches Managed Domain
+            ]
+        )
 
     # test case: set RSA key length 4096
     def test_md_310_120(self, env):
@@ -293,6 +383,11 @@ class TestConf:
             "type": "RSA",
             "bits": 4096
         }
+        env.httpd_error_log.ignore_recent(
+            lognos = [
+                "AH10045"   # No VirtualHost matches Managed Domain
+            ]
+        )
 
     # test case: require HTTPS
     def test_md_310_121(self, env):
@@ -302,6 +397,12 @@ class TestConf:
             """).install()
         assert env.apache_restart() == 0
         assert env.a2md(["list"]).json['output'][0]['require-https'] == "temporary"
+        env.httpd_error_log.ignore_recent(
+            lognos = [
+                "AH10045",  # No VirtualHost matches Managed Domain
+                "AH10105"   # no domain match
+            ]
+        )
 
     # test case: require OCSP stapling
     def test_md_310_122(self, env):
@@ -311,6 +412,11 @@ class TestConf:
             """).install()
         assert env.apache_restart() == 0
         assert env.a2md(["list"]).json['output'][0]['must-staple'] is True
+        env.httpd_error_log.ignore_recent(
+            lognos = [
+                "AH10045"   # No VirtualHost matches Managed Domain
+            ]
+        )
 
     # test case: remove managed domain from config
     def test_md_310_200(self, env):
@@ -334,6 +440,11 @@ class TestConf:
         assert env.apache_restart() == 0
         # check: DNS has been removed from md in store
         env.check_md(["testdomain.org", "www.testdomain.org", "mail.testdomain.org"], state=1)
+        env.httpd_error_log.ignore_recent(
+            lognos = [
+                "AH10045"   # No VirtualHost matches Managed Domain
+            ]
+        )
 
     # test case: remove primary name from managed domain
     def test_md_310_202(self, env):
@@ -347,6 +458,11 @@ class TestConf:
         # check: md overwrite previous name and changes name
         env.check_md(["testdomain.org", "www.testdomain.org", "mail.testdomain.org"],
                      md="testdomain.org", state=1)
+        env.httpd_error_log.ignore_recent(
+            lognos = [
+                "AH10045"   # No VirtualHost matches Managed Domain
+            ]
+        )
 
     # test case: remove one md, keep another
     def test_md_310_203(self, env):
@@ -363,6 +479,11 @@ class TestConf:
         # all mds stay in store
         env.check_md(dns_list1, state=1)
         env.check_md(dns_list2, state=1)
+        env.httpd_error_log.ignore_recent(
+            lognos = [
+                "AH10045"   # No VirtualHost matches Managed Domain
+            ]
+        )
 
     # test case: remove ca info from md, should switch over to new defaults
     def test_md_310_204(self, env):
@@ -382,6 +503,11 @@ class TestConf:
         assert env.apache_restart() == 0
         env.check_md([name, "www.testdomain.org", "mail.testdomain.org"], state=1,
                      ca="https://acme-v02.api.letsencrypt.org/directory", protocol="ACME")
+        env.httpd_error_log.ignore_recent(
+            lognos = [
+                "AH10045"   # No VirtualHost matches Managed Domain
+            ]
+        )
 
     # test case: remove server admin from md
     def test_md_310_205(self, env):
@@ -398,6 +524,11 @@ class TestConf:
         # check: md stays the same with previous admin info
         env.check_md([name, "www.testdomain.org", "mail.testdomain.org"], state=1,
                      contacts=["mailto:admin@testdomain.org"])
+        env.httpd_error_log.ignore_recent(
+            lognos = [
+                "AH10045"   # No VirtualHost matches Managed Domain
+            ]
+        )
 
     # test case: remove renew window from conf -> fallback to default
     def test_md_310_206(self, env):
@@ -413,6 +544,11 @@ class TestConf:
         assert env.apache_restart() == 0
         # check: renew window not set
         assert env.a2md(["list"]).json['output'][0]['renew-window'] == '33%'
+        env.httpd_error_log.ignore_recent(
+            lognos = [
+                "AH10045"   # No VirtualHost matches Managed Domain
+            ]
+        )
 
     # test case: remove drive mode from conf -> fallback to default (auto)
     @pytest.mark.parametrize("renew_mode,exp_code", [
@@ -433,6 +569,11 @@ class TestConf:
             """).install()
         assert env.apache_restart() == 0
         assert env.a2md(["list"]).json['output'][0]['renew-mode'] == 1
+        env.httpd_error_log.ignore_recent(
+            lognos = [
+                "AH10045"   # No VirtualHost matches Managed Domain
+            ]
+        )
 
     # test case: remove challenges from conf -> fallback to default (not set)
     def test_md_310_208(self, env):
@@ -448,6 +589,11 @@ class TestConf:
             """).install()
         assert env.apache_restart() == 0
         assert 'challenges' not in env.a2md(["list"]).json['output'][0]['ca']
+        env.httpd_error_log.ignore_recent(
+            lognos = [
+                "AH10045"   # No VirtualHost matches Managed Domain
+            ]
+        )
 
     # test case: specify RSA key
     @pytest.mark.parametrize("key_size", ["2048", "4096"])
@@ -464,6 +610,11 @@ class TestConf:
             """).install()
         assert env.apache_restart() == 0
         assert "privkey" not in env.a2md(["list"]).json['output'][0]
+        env.httpd_error_log.ignore_recent(
+            lognos = [
+                "AH10045"   # No VirtualHost matches Managed Domain
+            ]
+        )
 
     # test case: require HTTPS
     @pytest.mark.parametrize("mode", ["temporary", "permanent"])
@@ -484,6 +635,12 @@ class TestConf:
         assert env.apache_restart() == 0
         assert "require-https" not in env.a2md(["list"]).json['output'][0], \
             "HTTPS require still persisted in store. config: {}".format(mode)
+        env.httpd_error_log.ignore_recent(
+            lognos = [
+                "AH10045",  # No VirtualHost matches Managed Domain
+                "AH10105",  # MDomain does not match any vhost
+            ]
+        )
 
     # test case: require OCSP stapling
     def test_md_310_211(self, env):
@@ -499,6 +656,11 @@ class TestConf:
             """).install()
         assert env.apache_restart() == 0
         assert env.a2md(["list"]).json['output'][0]['must-staple'] is False
+        env.httpd_error_log.ignore_recent(
+            lognos = [
+                "AH10045"   # No VirtualHost matches Managed Domain
+            ]
+        )
 
     # test case: reorder DNS names in md definition
     def test_md_310_300(self, env):
@@ -511,6 +673,11 @@ class TestConf:
         assert env.apache_restart() == 0
         # check: dns list changes
         env.check_md(["testdomain.org", "www.testdomain.org", "mail.testdomain.org"], state=1)
+        env.httpd_error_log.ignore_recent(
+            lognos = [
+                "AH10045"   # No VirtualHost matches Managed Domain
+            ]
+        )
 
     # test case: move DNS from one md to another
     def test_md_310_301(self, env):
@@ -526,6 +693,11 @@ class TestConf:
         assert env.apache_restart() == 0
         env.check_md(["testdomain.org", "www.testdomain.org", "mail.testdomain.org"], state=1)
         env.check_md(["testdomain2.org", "www.testdomain2.org", "mail.testdomain2.org"], state=1)
+        env.httpd_error_log.ignore_recent(
+            lognos = [
+                "AH10045"   # No VirtualHost matches Managed Domain
+            ]
+        )
 
     # test case: change ca info
     def test_md_310_302(self, env):
@@ -552,6 +724,11 @@ class TestConf:
         env.check_md([name, "www.testdomain.org", "mail.testdomain.org"], state=1,
                      ca="http://somewhere.com:6666/directory", protocol="ACME",
                      agreement="http://somewhere.com:6666/terms/v1")
+        env.httpd_error_log.ignore_recent(
+            lognos = [
+                "AH10045"   # No VirtualHost matches Managed Domain
+            ]
+        )
 
     # test case: change server admin
     def test_md_310_303(self, env):
@@ -572,6 +749,11 @@ class TestConf:
         # check: md stays the same with previous admin info
         env.check_md([name, "www.testdomain.org", "mail.testdomain.org"], state=1,
                      contacts=["mailto:webmaster@testdomain.org"])
+        env.httpd_error_log.ignore_recent(
+            lognos = [
+                "AH10045"   # No VirtualHost matches Managed Domain
+            ]
+        )
 
     # test case: change drive mode - manual -> auto -> always
     def test_md_310_304(self, env):
@@ -595,6 +777,11 @@ class TestConf:
             """).install()
         assert env.apache_restart() == 0
         assert env.a2md(["list"]).json['output'][0]['renew-mode'] == 2
+        env.httpd_error_log.ignore_recent(
+            lognos = [
+                "AH10045"   # No VirtualHost matches Managed Domain
+            ]
+        )
 
     # test case: change config value for renew window, use various syntax alternatives
     def test_md_310_305(self, env):
@@ -619,6 +806,11 @@ class TestConf:
         assert env.apache_restart() == 0
         md = env.a2md(["list"]).json['output'][0]
         assert md['renew-window'] == '10%'
+        env.httpd_error_log.ignore_recent(
+            lognos = [
+                "AH10045"   # No VirtualHost matches Managed Domain
+            ]
+        )
 
     # test case: change challenge types - http -> tls-sni -> all
     def test_md_310_306(self, env):
@@ -642,6 +834,11 @@ class TestConf:
             """).install()
         assert env.apache_restart() == 0
         assert env.a2md(["list"]).json['output'][0]['ca']['challenges'] == ['http-01', 'tls-alpn-01']
+        env.httpd_error_log.ignore_recent(
+            lognos = [
+                "AH10045"   # No VirtualHost matches Managed Domain
+            ]
+        )
 
     # test case:  RSA key length: 4096 -> 2048 -> 4096
     def test_md_310_307(self, env):
@@ -672,6 +869,11 @@ class TestConf:
             "type": "RSA",
             "bits": 4096
         }
+        env.httpd_error_log.ignore_recent(
+            lognos = [
+                "AH10045"   # No VirtualHost matches Managed Domain
+            ]
+        )
 
     # test case: change HTTPS require settings on existing md
     def test_md_310_308(self, env):
@@ -697,6 +899,12 @@ class TestConf:
             """).install()
         assert env.apache_restart() == 0
         assert env.a2md(["list"]).json['output'][0]['require-https'] == "permanent"
+        env.httpd_error_log.ignore_recent(
+            lognos = [
+                "AH10045",  # No VirtualHost matches Managed Domain
+                "AH10105",  # MDomain matches no vhost
+            ]
+        )
 
     # test case: change OCSP stapling settings on existing md
     def test_md_310_309(self, env):
@@ -720,6 +928,11 @@ class TestConf:
             """).install()
         assert env.apache_restart() == 0
         assert env.a2md(["list"]).json['output'][0]['must-staple'] is False
+        env.httpd_error_log.ignore_recent(
+            lognos = [
+                "AH10045"   # No VirtualHost matches Managed Domain
+            ]
+        )
 
     # test case: change renew window parameter
     @pytest.mark.parametrize("window", [
@@ -792,6 +1005,11 @@ class TestConf:
         env.check_md(["testdomain.org", "www.testdomain.org", "mail.testdomain.org"], state=1)
         env.clear_store()
         env.set_store_dir_default()
+        env.httpd_error_log.ignore_recent(
+            lognos = [
+                "AH10045"   # No VirtualHost matches Managed Domain
+            ]
+        )
 
     # test case: place an unexpected file into the store, check startup survival, see #218
     def test_md_310_501(self, env):

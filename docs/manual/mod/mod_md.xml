@@ -1033,7 +1033,9 @@ MDRequireHttps permanent
             <p>
                 Define a program to be called when the `dns-01` challenge needs to be setup/torn down. 
                 The program is given the argument `setup` or `teardown` followed by the domain name. 
-                For `setup` the challenge content is additionally given.
+                For `setup` the challenge content is additionally given. When
+                <directive module="mod_md">MDChallengeDns01Version</directive> is set to 2,
+                the `teardown` also gets the challenge content as argument.
             </p><p>
                 You do not need to specify this, as long as a 'http:' or 'https:' challenge
                 method is possible. However, Let's Encrypt makes 'dns-01' the only
@@ -1458,6 +1460,54 @@ MDMessageCmd /etc/apache/md-message
                 startups/reloads in case the locks are not properly handled in
                 the underlying file system. A lock should only be held by a
                 httpd instance for a short duration.
+            </p>
+        </usage>
+    </directivesynopsis>
+
+    <directivesynopsis>
+        <name>MDChallengeDns01Version</name>
+        <description></description>
+        <syntax>MDChallengeDns01Version 1|2</syntax>
+        <default>MDChallengeDns01Version 1</default>
+        <contextlist>
+            <context>server config</context>
+        </contextlist>
+        <compatibility>Available in version 2.4.58 and later</compatibility>
+        <usage>
+            <p>
+                Set the way MDChallengeDns01 command is invoked, e.g the number and
+                types of arguments. See <directive module="mod_md">MDChallengeDns01</directive>
+                for the differences.
+                This setting is global and cannot be varied per domain.
+            </p>
+        </usage>
+    </directivesynopsis>
+
+    <directivesynopsis>
+        <name>MDMatchNames</name>
+        <description></description>
+        <syntax>MDMatchNames all|servernames</syntax>
+        <default>MDMatchNames all</default>
+        <contextlist>
+            <context>server config</context>
+        </contextlist>
+        <compatibility>Available in version 2.4.58 and later</compatibility>
+        <usage>
+            <p>
+                The mode `all` is the behaviour as in all previous versions. Both ServerName
+                and ServerAlias are inspected to find the MDomain matching a VirtualHost.
+                This automatically detects coverage, even when you only have added
+                one of the names to an MDomain.
+            </p><p>
+                However, this auto-magic has drawbacks in more complex setups. If you set
+                this directive to `servernames`, only the ServerName of a virtual host is
+                used for matching. ServerAliases are disregarded then, for matching.
+                Aliases will still be added to the certificate obtained, unless you also
+                run `MDMembers manual`.
+            </p><p>
+                Another advantage of `servernames` is that it gives you more flexibility
+                with sub-domains and wildcards. You can define one MDomain with a wildcard
+                and have other MDomains for specific sub-domain names.
             </p>
         </usage>
     </directivesynopsis>
