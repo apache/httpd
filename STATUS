@@ -152,15 +152,7 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mime.types update to sync with trunk
-     Trunk version of patch:
-        https://svn.apache.org/r1884511
-        https://svn.apache.org/r1901273
-        https://svn.apache.org/r1910843
-        https://svn.apache.org/r1910849
-     2.4.x version of patch:
-        svn merge -c 1884511,1901273,1910843,1910849 ^/httpd/httpd/trunk .
-     +1: jorton, icing, covener
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
