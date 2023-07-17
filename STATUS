@@ -152,16 +152,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_deflate: Add DeflateAlterETag to control how the ETag
-     is modified. The 'NoChange' parameter mimics 2.2.x behavior.
-     PR 45023, PR 39727.
-     Trunk version of patch:
-        https://svn.apache.org/r1586542
-     Backport version for 2.4.x of patch:
-      https://raw.githubusercontent.com/jfclere/patch/main/mod_deflate.patch
-     +1: jfclere, rpluem, ylavic
-     rpluem says: Does anyone know why we don't merge the server config?
-
   *) mime.types update to sync with trunk
      Trunk version of patch:
         https://svn.apache.org/r1884511

@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.58
 
+  *) mod_deflate: Add DeflateAlterETag to control how the ETag
+     is modified. The 'NoChange' parameter mimics 2.2.x behavior.
+     PR 45023, PR 39727. [Eric Covener]
+
   *) core: Optimize send_brigade_nonblocking(). [Christophe Jaillet]
 
   *) Easy patches: synch 2.4.x and trunk
