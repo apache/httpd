@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.58
 
+  *) core: Add formats %{z} and %{strftime-format} to ErrorLogFormat, and make
+     sure that if the format is configured early enough it applies to every log
+     line.  PR 62161.  [Yann Ylavic]
+
   *) mod_deflate: Add DeflateAlterETag to control how the ETag
      is modified. The 'NoChange' parameter mimics 2.2.x behavior.
      PR 45023, PR 39727. [Eric Covener]
