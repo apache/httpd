@@ -152,13 +152,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) core: Optimize send_brigade_nonblocking()
-     trunk patch:
-        https://svn.apache.org/r1892450
-        https://svn.apache.org/r1909966
-     2.4.x patch: svn merge -c 1892450,1909966 ^/httpd/httpd/trunk .
-     +1: jailletc36, rpluem, icing
-
   *) mod_deflate: Add DeflateAlterETag to control how the ETag
      is modified. The 'NoChange' parameter mimics 2.2.x behavior.
      PR 45023, PR 39727.

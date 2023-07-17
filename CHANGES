@@ -1,6 +1,8 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.58
 
+  *) core: Optimize send_brigade_nonblocking(). [Christophe Jaillet]
+
   *) Easy patches: synch 2.4.x and trunk
          - core: constify pointers in ap_expr lookup tables.
                  ~1/2Kb moves to r/o text section
