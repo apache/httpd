@@ -142,7 +142,7 @@ application/ipfix				ipfix
 application/java-archive			jar
 application/java-serialized-object		ser
 application/java-vm				class
-application/javascript				js
+# application/javascript
 # application/jose
 # application/jose+json
 # application/jrd+json
@@ -585,6 +585,7 @@ application/vnd.genomatix.tuxedo		txd
 # application/vnd.geo+json
 # application/vnd.geocube+xml
 application/vnd.geogebra.file			ggb
+application/vnd.geogebra.slides		ggs
 application/vnd.geogebra.tool			ggt
 application/vnd.geometry-explorer		gex gre
 application/vnd.geonext				gxt
@@ -1212,6 +1213,7 @@ application/vnd.zul				zir zirz
 application/vnd.zzazz.deck+xml			zaz
 application/voicexml+xml			vxml
 # application/vq-rtcpxr
+application/wasm				wasm
 # application/watcherinfo+xml
 # application/whoispp-query
 # application/whoispp-response
@@ -1439,7 +1441,7 @@ audio/mp4					m4a mp4a
 audio/mpeg					mpga mp2 mp2a mp3 m2a m3a
 # audio/mpeg4-generic
 # audio/musepack
-audio/ogg					oga ogg spx
+audio/ogg					oga ogg spx opus
 # audio/opus
 # audio/parityfec
 # audio/pcma
@@ -1686,7 +1688,7 @@ text/csv					csv
 # text/fwdred
 # text/grammar-ref-list
 text/html					html htm
-# text/javascript
+text/javascript					js mjs
 # text/jcr-cnd
 # text/markdown
 # text/mizar

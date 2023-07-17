@@ -1,0 +1,9 @@
+  *) core: Updated conf/mime.types:
+     - .js moved from 'application/javascript' to 'text/javascript'
+     - .mjs was added as 'text/javascript'
+     - add .opus ('audio/ogg')
+     - add 'application/vnd.geogebra.slides'
+     - add WebAssembly MIME types and extension
+     [Mathias Bynens <@mathiasbynens> via PR 318,
+      Richard de Boer <richard tubul.net>, Dave Hodder <dmh dmh.org.uk>,
+      Zbynek Konecny <zbynek1729 gmail.com>]
