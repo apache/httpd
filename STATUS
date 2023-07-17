@@ -152,6 +152,27 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) core: Add formats %{z} and %{strftime-format} to ErrorLogFormat, and make
+     sure that if the format is configured early enough it applies to every log
+     line.  PR 62161.
+     trunk patch: https://svn.apache.org/r1908380
+                  https://svn.apache.org/r1908383
+                  https://svn.apache.org/r1908384
+                  https://svn.apache.org/r1908388
+                  https://svn.apache.org/r1908389
+                  https://svn.apache.org/r1908390
+                  https://svn.apache.org/r1908393
+                  https://svn.apache.org/r1908394
+                  https://svn.apache.org/r1908406
+                  https://svn.apache.org/r1908407
+                  https://svn.apache.org/r1908556
+                  https://svn.apache.org/r1908557
+     2.4.x patch: svn merge -c 1908380,1908383-1908384,1908388-1908390,1908393-1908394,1908406-1908407,1908556-1908557 ^/httpd/httpd/trunk .
+                  (merge works modulo MMN, or patch/PR below)
+                  https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/350.diff
+                  https://github.com/apache/httpd/pull/350
+     +1: ylavic, rpluem, minfrin
+
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
@@ -172,27 +193,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      +1: minfrin, jim,
      jailletc36: r1745033 seems related and should in included
      minfrin: r1745033 is now included
-
-  *) core: Add formats %{z} and %{strftime-format} to ErrorLogFormat, and make
-     sure that if the forat is configured early enough it applies to every log
-     line.  PR 62161.
-     trunk patch: https://svn.apache.org/r1908380
-                  https://svn.apache.org/r1908383
-                  https://svn.apache.org/r1908384
-                  https://svn.apache.org/r1908388
-                  https://svn.apache.org/r1908389
-                  https://svn.apache.org/r1908390
-                  https://svn.apache.org/r1908393
-                  https://svn.apache.org/r1908394
-                  https://svn.apache.org/r1908406
-                  https://svn.apache.org/r1908407
-                  https://svn.apache.org/r1908556
-                  https://svn.apache.org/r1908557
-     2.4.x patch: svn merge -c 1908380,1908383-1908384,1908388-1908390,1908393-1908394,1908406-1908407,1908556-1908557 ^/httpd/httpd/trunk .
-                  (merge works modulo MMN, or patch/PR below)
-                  https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/350.diff
-                  https://github.com/apache/httpd/pull/350
-     +1: ylavic, rpluem,
 
   *) mod_proxy: If we fail to connect to all looked up IP's from the worker
      lookup cache it might be caused by a change on DNS side. Try another
