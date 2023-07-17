@@ -1,6 +1,15 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.58
 
+  *) Easy patches: synch 2.4.x and trunk
+         - core: constify pointers in ap_expr lookup tables.
+                 ~1/2Kb moves to r/o text section
+         - core: Optimize performance in ap_normalize_path()
+         - core: Optimize code flow in log_backtrace()
+         - Fix a typo in README.cmake
+         - Add a missing 'be' in README.CHANGES
+     [Christophe Jaillet]
+
 Changes with Apache 2.4.57
 
   *) mod_proxy: Check before forwarding that a nocanon path has not been

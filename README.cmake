@@ -148,7 +148,7 @@ How to build
        included if it is present.
 
      -DNGHTTP2_INCLUDE_DIR=d:/path/to/nghttp2inst/include  (which has nghttp2/*.h)
-     -DNGHTTP2_LIBRARIES=d:/path/to/nghttp2inst/lib/nghttp2.lib"
+     -DNGHTTP2_LIBRARIES="d:/path/to/nghttp2inst/lib/nghttp2.lib"
 
        These will have to be specified if nghttp2 was installed to a different
        directory than httpd.

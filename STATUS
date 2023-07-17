@@ -152,21 +152,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) Easy patches: synch 2.4.x and trunk
-         - core: constify pointers in ap_expr lookup tables.  ~1/2Kb moves to r/o text section
-         - core: Optimize performance in ap_normalize_path()
-         - core: Optimize code flow in log_backtrace()
-         - Fix a typo in README.cmake
-         - Add a missing 'be' in README.CHANGES
-     trunk patch:
-          https://svn.apache.org/r1877350
-          https://svn.apache.org/r1894021
-          https://svn.apache.org/r1906379
-          https://svn.apache.org/r1908657
-          https://svn.apache.org/r1908150
-     2.4.x patch: svn merge -c 1877350,1894021,1906379,1908657,1908150 ^/httpd/httpd/trunk .
-     +1: jailletc36, rpluem, gbechis
-
   *) core: Optimize send_brigade_nonblocking()
      trunk patch:
         https://svn.apache.org/r1892450
