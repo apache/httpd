@@ -194,6 +194,24 @@ Alias "/image" "/ftp/pub/image"
 &lt;/LocationMatch&gt;
     </highlight>
 
+    <p>Note that when the <directive>AliasPreservePath</directive>
+    directive is on, the full path is mapped to the destination. When
+    the directive is off, all URLs are mapped to the single target
+    URL.</p>
+
+    <highlight language="config">
+# /files/foo and /files/bar mapped to /ftp/pub/files/foo and /ftp/pub/files/bar
+&lt;Location "/files"&gt;
+    AliasPreservePath on
+    Alias "/ftp/pub/files"
+&lt;/Location&gt;
+# /errors/foo and /errors/bar mapped to /var/www/errors.html
+&lt;Location "/errors"&gt;
+    AliasPreservePath off
+    Alias "/var/www/errors.html"
+&lt;/Location&gt;
+    </highlight>
+
 </usage>
 </directivesynopsis>
 
@@ -641,5 +659,30 @@ ScriptAliasMatch "(?i)^/cgi-bin(.*)" "/usr/local/apache/cgi-bin$1"
 </usage>
 </directivesynopsis>
 
+<directivesynopsis>
+<name>AliasPreservePath</name>
+<description>Map the full path after the alias in a location.</description>
+<syntax>AliasPreservePath OFF|ON</syntax>
+<default>AliasPreservePath OFF</default>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context>
+</contextlist>
+<compatibility>2.5.1 and later</compatibility>
+
+<usage>
+    <p>When using the two parameter version of the
+    <directive>Alias</directive> directive, the full path after the alias
+    is preserved. When using the one parameter version of the
+    <directive>Alias</directive> directive inside a
+    <directive>Location</directive> directive, the full path is dropped,
+    and all URLs are mapped to the target expression.</p>
+
+    <p>To make the one parameter version of the
+    <directive>Alias</directive> directive preserve paths in the same way
+    that the two parameter version of the <directive>Alias</directive>
+    directive, enable this setting.</p>
+
+</usage>
+</directivesynopsis>
 
 </modulesynopsis>
