@@ -1766,8 +1766,8 @@ static void close_connection(struct connection *c)
         c->ssl = NULL;
     }
 #endif
-    apr_socket_close(c->aprsock);
     apr_pool_clear(c->ctx);
+    c->aprsock = NULL;
 }
 
 /* --------------------------------------------------------- */
