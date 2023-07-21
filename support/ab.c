@@ -304,7 +304,6 @@ struct connection {
     apr_pool_t *ctx;
     apr_socket_t *aprsock;
     apr_pollfd_t pollfd;
-    apr_int16_t events;
     int state;
     apr_time_t delay;
     apr_size_t read;            /* amount of bytes read */
@@ -650,6 +649,7 @@ static int set_polled_events(struct connection *c, apr_int16_t new_reqevents)
             rv = apr_pollset_add(c->worker->pollset, &c->pollfd);
             if (rv != APR_SUCCESS) {
                 graceful_strerror("apr_pollset_add()", rv);
+                c->pollfd.reqevents = 0;
                 return 0;
             }
             c->worker->polls++;
@@ -661,19 +661,17 @@ static int set_polled_events(struct connection *c, apr_int16_t new_reqevents)
 static void set_conn_state(struct connection *c, conn_state_e state,
                            apr_int16_t events)
 {
-    struct worker *worker = c->worker;
+    int (*const counters)[2] = c->worker->counters;
 
-    assert(worker->counters[c->state][(c->events & APR_POLLOUT) != 0] > 0);
-    worker->counters[c->state][(c->events & APR_POLLOUT) != 0]--;
+    assert(counters[c->state][(c->pollfd.reqevents & APR_POLLOUT) != 0] > 0);
+    counters[c->state][(c->pollfd.reqevents & APR_POLLOUT) != 0]--;
 
     c->state = state;
-    c->events = events;
     if (!set_polled_events(c, events) && state != STATE_DISCONNECTED) {
         close_connection(c);
-        c->events = 0;
     }
 
-    worker->counters[c->state][(c->events & APR_POLLOUT) != 0]++;
+    counters[c->state][(c->pollfd.reqevents & APR_POLLOUT) != 0]++;
 }
 
 /* --------------------------------------------------------- */
