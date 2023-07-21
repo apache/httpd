@@ -1655,6 +1655,12 @@ static void start_connection(struct connection * c)
         return;
     }
 
+    if ((rv = apr_socket_opt_set(c->aprsock, APR_TCP_NODELAY, 1))) {
+        graceful_strerror("socket nodelay", rv);
+        close_connection(c);
+        return;
+    }
+
     if (windowsize != 0) {
         rv = apr_socket_opt_set(c->aprsock, APR_SO_SNDBUF,
                                 windowsize);
