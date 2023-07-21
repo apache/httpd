@@ -1557,7 +1557,7 @@ static apr_pool_t *make_conn_subpool(apr_pool_t *p, const char *tag,
         }
     }
     if (rv != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s, APLOGNO()
+        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s, APLOGNO(10474)
                      "failed to create %s pool", tag);
         ap_abort_on_oom();
         return NULL; /* not reached */
@@ -2766,12 +2766,12 @@ PROXY_DECLARE(apr_status_t) ap_proxy_determine_address(const char *proxy_functio
                                             hostname, NULL), rv);
             }
             else if (r) {
-                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, rv, r, APLOGNO()
+                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, rv, r, APLOGNO(10475)
                               "%s: resolving backend %s address",
                               proxy_function, conn->hostname);
             }
             else {
-                ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, s, APLOGNO()
+                ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, s, APLOGNO(10476)
                               "%s: resolving backend %s address",
                               proxy_function, conn->hostname);
             }
@@ -2815,12 +2815,12 @@ PROXY_DECLARE(apr_status_t) ap_proxy_determine_address(const char *proxy_functio
                                         rv);
                     }
                     else if (r) {
-                        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, rv, r, APLOGNO()
+                        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, rv, r, APLOGNO(10477)
                                       "%s: resolving worker %s address",
                                       proxy_function, conn->hostname);
                     }
                     else {
-                        ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, s, APLOGNO()
+                        ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, s, APLOGNO(10478)
                                      "%s: resolving worker %s address",
                                      proxy_function, conn->hostname);
                     }
@@ -2912,12 +2912,12 @@ PROXY_DECLARE(apr_status_t) ap_proxy_determine_address(const char *proxy_functio
             apr_sockaddr_t *old_addr = NULL;
             apr_socket_addr_get(&old_addr, APR_REMOTE, conn->sock);
             if (r) {
-                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO()
+                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(10479)
                               "%s: %s will not reuse connection to %pI for %pI",
                               proxy_function, conn->hostname, old_addr, conn->addr);
             }
             else {
-                ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO()
+                ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(10480)
                              "%s: %s will not reuse connection to %pI for %pI",
                              proxy_function, conn->hostname, old_addr, conn->addr);
             }
@@ -2925,12 +2925,12 @@ PROXY_DECLARE(apr_status_t) ap_proxy_determine_address(const char *proxy_functio
         }
         else {
             if (r) {
-                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO()
+                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(10481)
                               "%s: %s address resolved to %pI",
                               proxy_function, conn->hostname, conn->addr);
             }
             else {
-                ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO()
+                ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(10482)
                              "%s: %s address resolved to %pI",
                               proxy_function, conn->hostname, conn->addr);
             }
