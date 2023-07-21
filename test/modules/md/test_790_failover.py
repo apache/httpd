@@ -63,6 +63,15 @@ class TestFailover:
         assert env.apache_restart() == 0
         assert env.await_completion([domain])
         env.check_md_complete(domain)
+        #
+        env.httpd_error_log.ignore_recent(
+            lognos = [
+                "AH10056"   # Unsuccessful in contacting ACME server
+            ],
+            matches = [
+                r'.*Unsuccessful in contacting ACME server at .*'
+            ]
+        )
 
     # set 3 ACME certificata authority, invalid + invalid + valid
     def test_md_790_003(self, env):
@@ -85,3 +94,12 @@ class TestFailover:
         assert env.apache_restart() == 0
         assert env.await_completion([domain])
         env.check_md_complete(domain)
+        #
+        env.httpd_error_log.ignore_recent(
+            lognos = [
+                "AH10056"   # Unsuccessful in contacting ACME server
+            ],
+            matches = [
+                r'.*Unsuccessful in contacting ACME server at .*'
+            ]
+        )

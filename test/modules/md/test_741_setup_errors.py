@@ -46,3 +46,13 @@ class TestSetupErrors:
         md = env.await_error(domain, errors=2, timeout=10)
         assert md
         assert md['renewal']['errors'] > 0
+        #
+        env.httpd_error_log.ignore_recent(
+            lognos = [
+                "AH10056"   # CA considers answer to challenge invalid
+            ],
+            matches = [
+                r'.*The key authorization file from the server did not match this challenge.*',
+                r'.*CA considers answer to challenge invalid.*'
+            ]
+        )

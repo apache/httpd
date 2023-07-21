@@ -324,6 +324,12 @@ class HttpdTestEnv:
             for name in self._httpd_log_modules:
                 self._log_interesting += f" {name}:{log_level}"
 
+    def check_error_log(self):
+        errors, warnings = self._error_log.get_missed()
+        assert (len(errors), len(warnings)) == (0, 0),\
+                f"apache logged {len(errors)} errors and {len(warnings)} warnings: \n"\
+                "{0}\n{1}\n".format("\n".join(errors), "\n".join(warnings))
+
     @property
     def curl(self) -> str:
         return self._curl
@@ -558,16 +564,22 @@ class HttpdTestEnv:
         return f"{scheme}://{hostname}.{self.http_tld}:{port}{path}"
 
     def install_test_conf(self, lines: List[str]):
+        self.apache_stop()
         with open(self._test_conf, 'w') as fd:
             fd.write('\n'.join(self._httpd_base_conf))
             fd.write('\n')
             fd.write(f"CoreDumpDirectory {self._server_dir}\n")
-            if self._verbosity >= 2:
-                fd.write(f"LogLevel core:trace5 {self.mpm_module}:trace5 http:trace5\n")
+            fd.write('\n')
             if self._verbosity >= 3:
-                fd.write(f"LogLevel dumpio:trace7\n")
+                fd.write(f"LogLevel trace7 ssl:trace6\n")
                 fd.write(f"DumpIoOutput on\n")
                 fd.write(f"DumpIoInput on\n")
+            elif self._verbosity >= 2:
+                fd.write(f"LogLevel debug core:trace5 {self.mpm_module}:trace5 ssl:trace5 http:trace5\n")
+            elif self._verbosity >= 1:
+                fd.write(f"LogLevel info\n")
+            else:
+                fd.write(f"LogLevel warn\n")
             if self._log_interesting:
                 fd.write(self._log_interesting)
             fd.write('\n\n')

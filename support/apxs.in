@@ -538,7 +538,7 @@ if ($opt_i or $opt_e) {
                 }
             }
             if ($name eq '') {
-                if ($base =~ m|.*mod_([a-zA-Z0-9_]+)\..+|) {
+                if ($base =~ m/.*mod_([a-zA-Z0-9_]+)(\..+|$)/) {
                     $name = "$1";
                     $filename = $base;
                     $filename =~ s|^[^/]+/||;

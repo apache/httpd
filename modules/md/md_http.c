@@ -212,7 +212,7 @@ static apr_status_t req_create(md_http_request_t **preq, md_http_t *http,
                                const char *method, const char *url, 
                                struct apr_table_t *headers)
 {
-    md_http_request_t *req = NULL;
+    md_http_request_t *req;
     apr_pool_t *pool;
     apr_status_t rv;
     

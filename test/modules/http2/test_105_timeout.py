@@ -42,6 +42,13 @@ class TestTimeout:
         except Exception as ex:
             print(f"as expected: {ex}")
         sock.close()
+        #
+        time.sleep(1) # let the log flush
+        env.httpd_error_log.ignore_recent(
+            lognos = [
+                "AH10373"   # SSL handshake was not completed
+            ]
+        )
 
     # Check that mod_reqtimeout handshake setting takes effect
     def test_h2_105_02(self, env):
@@ -77,6 +84,13 @@ class TestTimeout:
         except Exception as ex:
             print(f"as expected: {ex}")
         sock.close()
+        #
+        time.sleep(1) # let the log flush
+        env.httpd_error_log.ignore_recent(
+            lognos = [
+                "AH10373"   # SSL handshake was not completed
+            ]
+        )
 
     # Check that mod_reqtimeout handshake setting do no longer apply to handshaked 
     # connections. See <https://github.com/icing/mod_h2/issues/196>.

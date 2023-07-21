@@ -436,6 +436,11 @@ class TestDrivev2:
             md = env.a2md(["list", name]).json['output'][0]
             assert md["renew"] == tc["renew"], \
                 "Expected renew == {} indicator in {}, test case {}".format(tc["renew"], md, tc)
+        env.httpd_error_log.ignore_recent(
+            lognos = [
+                "AH10045"   # No VirtualHost matches Managed Domain
+            ]
+        )
 
     @pytest.mark.parametrize("key_type,key_params,exp_key_length", [
         ("RSA", [2048], 2048),
@@ -462,6 +467,11 @@ class TestDrivev2:
         # check cert key length
         cert = MDCertUtil(env.store_domain_file(name, 'pubcert.pem'))
         assert cert.get_key_length() == exp_key_length
+        env.httpd_error_log.ignore_recent(
+            lognos = [
+                "AH10045"   # No VirtualHost matches Managed Domain
+            ]
+        )
 
     # test_502_203 removed, as ToS agreement is not really checked in ACMEv2
 

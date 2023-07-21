@@ -78,12 +78,7 @@ struct md_t {
     struct apr_array_header_t *domains; /* all DNS names this MD includes */
     struct apr_array_header_t *contacts;   /* list of contact uris, e.g. mailto:xxx */
 
-    int transitive;                 /* != 0 iff VirtualHost names/aliases are auto-added */
-    md_require_t require_https;     /* Iff https: is required for this MD */
-    
-    int renew_mode;                 /* mode of obtaining credentials */
     struct md_pkeys_spec_t *pks;    /* specification for generating private keys */
-    int must_staple;                /* certificates should set the OCSP Must Staple extension */
     md_timeslice_t *renew_window;   /* time before expiration that starts renewal */
     md_timeslice_t *warn_window;    /* time before expiration that warnings are sent out */
     
@@ -98,19 +93,23 @@ struct md_t {
     const char *ca_eab_kid;         /* optional KEYID for external account binding */
     const char *ca_eab_hmac;        /* optional HMAC for external account binding */
 
-    md_state_t state;               /* state of this MD */
     const char *state_descr;        /* description of state of NULL */
     
     struct apr_array_header_t *acme_tls_1_domains; /* domains supporting "acme-tls/1" protocol */
-    int stapling;                   /* if OCSP stapling is enabled */
     const char *dns01_cmd;          /* DNS challenge command, override global command */
 
-    int watched;               /* if certificate is supervised (renew or expiration warning) */
     const struct md_srv_conf_t *sc; /* server config where it was defined or NULL */
     const char *defn_name;          /* config file this MD was defined */
     unsigned defn_line_number;      /* line number of definition */
-    
     const char *configured_name;    /* name this MD was configured with, if different */
+
+    int renew_mode;                 /* mode of obtaining credentials */
+    md_require_t require_https;     /* Iff https: is required for this MD */
+    md_state_t state;               /* state of this MD */
+    int transitive;                 /* != 0 iff VirtualHost names/aliases are auto-added */
+    int must_staple;                /* certificates should set the OCSP Must Staple extension */
+    int stapling;                   /* if OCSP stapling is enabled */
+    int watched;                    /* if certificate is supervised (renew or expiration warning) */
 };
 
 #define MD_KEY_ACCOUNT          "account"
@@ -128,6 +127,7 @@ struct md_t {
 #define MD_KEY_CHALLENGE        "challenge"
 #define MD_KEY_CHALLENGES       "challenges"
 #define MD_KEY_CMD_DNS01        "cmd-dns-01"
+#define MD_KEY_DNS01_VERSION    "cmd-dns-01-version"
 #define MD_KEY_COMPLETE         "complete"
 #define MD_KEY_CONTACT          "contact"
 #define MD_KEY_CONTACTS         "contacts"

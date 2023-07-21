@@ -1,7 +1,6 @@
 import inspect
 import logging
 import os
-import re
 import subprocess
 from typing import Dict, Any
 
@@ -83,34 +82,6 @@ class H2TestEnv(HttpdTestEnv):
                 f"pad8.{self._http_tld}",
             ]),
             CertificateSpec(domains=[f"noh2.{self.http_tld}"], key_type='rsa2048'),
-        ])
-
-        self.httpd_error_log.set_ignored_lognos([
-            'AH02032',
-            'AH01276',
-            'AH01630',
-            'AH00135',
-            'AH02261',  # Re-negotiation handshake failed (our test_101)
-            'AH03490',  # scoreboard full, happens on limit tests
-            'AH02429',  # invalid chars in response header names, see test_h2_200
-            'AH02430',  # invalid chars in response header values, see test_h2_200
-            'AH10373',  # SSL errors on uncompleted handshakes, see test_h2_105
-            'AH01247',  # mod_cgid sometimes freaks out on load tests
-            'AH01110',  # error by proxy reading response
-            'AH10400',  # warning that 'enablereuse' has not effect in certain configs test_h2_600
-            'AH00045',  # child did not exit in time, SIGTERM was sent
-        ])
-        self.httpd_error_log.add_ignored_patterns([
-            re.compile(r'.*malformed header from script \'hecho.py\': Bad header: x.*'),
-            re.compile(r'.*:tls_post_process_client_hello:.*'),
-            # OSSL 3 dropped the function name from the error description. Use the code instead:
-            # 0A0000C1 = no shared cipher -- Too restrictive SSLCipherSuite or using DSA server certificate?
-            re.compile(r'.*SSL Library Error: error:0A0000C1:.*'),
-            re.compile(r'.*:tls_process_client_certificate:.*'),
-            # OSSL 3 dropped the function name from the error description. Use the code instead:
-            # 0A0000C7 = peer did not return a certificate -- No CAs known to server for verification?
-            re.compile(r'.*SSL Library Error: error:0A0000C7:.*'),
-            re.compile(r'.*have incompatible TLS configurations.'),
         ])
 
     def setup_httpd(self, setup: HttpdTestSetup = None):

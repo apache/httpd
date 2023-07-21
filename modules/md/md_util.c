@@ -916,6 +916,19 @@ int md_dns_domains_match(const apr_array_header_t *domains, const char *name)
     return 0;
 }
 
+int md_is_wild_match(const apr_array_header_t *domains, const char *name)
+{
+    const char *domain;
+    int i;
+
+    for (i = 0; i < domains->nelts; ++i) {
+        domain = APR_ARRAY_IDX(domains, i, const char*);
+        if (md_dns_matches(domain, name))
+            return (domain[0] == '*' && domain[1] == '.');
+    }
+    return 0;
+}
+
 const char *md_util_schemify(apr_pool_t *p, const char *s, const char *def_scheme)
 {
     const char *cp = s;

@@ -24,6 +24,12 @@ class TestConf:
             MDomain not-forbidden.org www.not-forbidden.org mail.not-forbidden.org
             """).install()
         assert env.apache_restart() == 0
+        #
+        env.httpd_error_log.ignore_recent(
+            lognos = [
+                "AH10045"   # No VirtualHost matches Managed Domain
+            ]
+        )
 
     # test case: two MDomain definitions, non-overlapping
     def test_md_300_002(self, env):
@@ -32,6 +38,12 @@ class TestConf:
             MDomain example2.org www.example2.org mail.example2.org
             """).install()
         assert env.apache_restart() == 0
+        #
+        env.httpd_error_log.ignore_recent(
+            lognos = [
+                "AH10045"   # No VirtualHost matches Managed Domain
+            ]
+        )
 
     # test case: two MDomain definitions, exactly the same
     def test_md_300_003(self, env):
@@ -41,6 +53,12 @@ class TestConf:
             MDomain not-forbidden.org www.not-forbidden.org mail.not-forbidden.org test3.not-forbidden.org
             """).install()
         assert env.apache_fail() == 0
+        #
+        env.httpd_error_log.ignore_recent(
+            lognos = [
+                "AH10038"   # two Managed Domains have an overlap in domain
+            ]
+        )
 
     # test case: two MDomain definitions, overlapping
     def test_md_300_004(self, env):
@@ -50,6 +68,12 @@ class TestConf:
             MDomain example2.org test3.not-forbidden.org www.example2.org mail.example2.org
             """).install()
         assert env.apache_fail() == 0
+        #
+        env.httpd_error_log.ignore_recent(
+            lognos = [
+                "AH10038"   # two Managed Domains have an overlap in domain
+            ]
+        )
 
     # test case: two MDomains, one inside a virtual host
     def test_md_300_005(self, env):
@@ -60,6 +84,12 @@ class TestConf:
             </VirtualHost>
             """).install()
         assert env.apache_restart() == 0
+        #
+        env.httpd_error_log.ignore_recent(
+            lognos = [
+                "AH10045"   # No VirtualHost matches Managed Domain
+            ]
+        )
 
     # test case: two MDomains, one correct vhost name
     def test_md_300_006(self, env):
@@ -71,6 +101,12 @@ class TestConf:
             </VirtualHost>
             """).install()
         assert env.apache_restart() == 0
+        #
+        env.httpd_error_log.ignore_recent(
+            lognos = [
+                "AH10045"   # No VirtualHost matches Managed Domain
+            ]
+        )
 
     # test case: two MDomains, two correct vhost names
     def test_md_300_007(self, env):
@@ -85,6 +121,12 @@ class TestConf:
             </VirtualHost>
             """).install()
         assert env.apache_restart() == 0
+        #
+        env.httpd_error_log.ignore_recent(
+            lognos = [
+                "AH10045"   # No VirtualHost matches Managed Domain
+            ]
+        )
 
     # test case: two MDomains, overlapping vhosts
     def test_md_300_008(self, env):
@@ -102,6 +144,12 @@ class TestConf:
             </VirtualHost>
             """).install()
         assert env.apache_restart() == 0
+        #
+        env.httpd_error_log.ignore_recent(
+            lognos = [
+                "AH10045"   # No VirtualHost matches Managed Domain
+            ]
+        )
 
     # test case: vhosts with overlapping MDs
     def test_md_300_009(self, env):
@@ -118,7 +166,12 @@ class TestConf:
         conf.install()
         assert env.apache_fail() == 0
         env.apache_stop()
-        env.httpd_error_log.ignore_recent()
+        #
+        env.httpd_error_log.ignore_recent(
+            lognos = [
+                "AH10238"   # 2 MDs match Virtualhost
+            ]
+        )
 
     # test case: MDomain, vhost with matching ServerAlias
     def test_md_300_010(self, env):
@@ -146,6 +199,9 @@ class TestConf:
         conf.install()
         assert env.apache_fail() == 0
         env.apache_stop()
+        env.httpd_error_log.ignore_recent([
+            "AH10040"   # A requested MD certificate will not match ServerName
+        ])
 
     # test case: MDomain, misses one ServerAlias, but auto add enabled
     def test_md_300_011b(self, env):
@@ -171,6 +227,12 @@ class TestConf:
             </VirtualHost>
             """).install()
         assert env.apache_restart() == 0
+        #
+        env.httpd_error_log.ignore_recent(
+            lognos = [
+                "AH10045"   # No VirtualHost matches Managed Domain
+            ]
+        )
 
     # test case: one md covers two vhosts
     def test_md_300_013(self, env):
@@ -261,7 +323,6 @@ class TestConf:
         MDConf(env, text=line).install()
         assert env.apache_fail() == 0, "Server accepted test config {}".format(line)
         assert exp_err_msg in env.apachectl_stderr
-        env.httpd_error_log.ignore_recent()
 
     # test case: alt-names incomplete detection, github isse #68
     def test_md_300_021(self, env):
@@ -294,6 +355,12 @@ class TestConf:
             </VirtualHost>
             """).install()
         assert env.apache_restart() == 0
+        #
+        env.httpd_error_log.ignore_recent(
+            lognos = [
+                "AH10105"   # MD secret.com does not match any VirtualHost with 'SSLEngine on'
+            ]
+        )
 
     # test case: use MDRequireHttps not in <Directory
     def test_md_300_023(self, env):
@@ -388,3 +455,80 @@ class TestConf:
             assert len(md['ca']['urls']) == len(cas)
         else:
             assert rv != 0, "Server should not have accepted CAs '{}'".format(cas)
+
+    # messy ServerAliases, see #301
+    def test_md_300_028(self, env):
+        assert env.apache_stop() == 0
+        conf = MDConf(env)
+        domaina = f"t300_028a.{env.http_tld}"
+        domainb = f"t300_028b.{env.http_tld}"
+        dalias = f"t300_028alias.{env.http_tld}"
+        conf.add_vhost(port=env.http_port, domains=[domaina, domainb, dalias], with_ssl=False)
+        conf.add(f"""
+            MDomain {domaina} 
+            MDomain {domainb} {dalias}
+            """)
+        conf.add(f"""
+            <VirtualHost 10.0.0.1:{env.https_port}>
+              ServerName {domaina}
+              ServerAlias {dalias}
+              SSLEngine on
+            </VirtualHost>
+            <VirtualHost 10.0.0.1:{env.https_port}>
+              ServerName {domainb}
+              ServerAlias {dalias}
+              SSLEngine on
+            </VirtualHost>
+            """)
+        conf.install()
+        # This does not work as we have both MDs match domaina's vhost
+        assert env.apache_fail() == 0
+        env.httpd_error_log.ignore_recent(
+            lognos = [
+                "AH10238"   # 2 MDs match the same vhost
+            ]
+        )
+        # It works, if we only match on ServerNames
+        conf.add("MDMatchNames servernames")
+        conf.install()
+        assert env.apache_restart() == 0
+
+    # wildcard and specfic MD overlaps
+    def test_md_300_029(self, env):
+        assert env.apache_stop() == 0
+        conf = MDConf(env)
+        domain = f"t300_029.{env.http_tld}"
+        subdomain = f"sub.{domain}"
+        conf.add_vhost(port=env.http_port, domains=[domain, subdomain], with_ssl=False)
+        conf.add(f"""
+            MDMembers manual
+            MDomain {domain} *.{domain} 
+            MDomain {subdomain}
+            """)
+        conf.add(f"""
+            <VirtualHost 10.0.0.1:{env.https_port}>
+              ServerName {domain}
+              SSLEngine on
+            </VirtualHost>
+            <VirtualHost 10.0.0.1:{env.https_port}>
+              ServerName another.{domain}
+              SSLEngine on
+            </VirtualHost>
+            <VirtualHost 10.0.0.1:{env.https_port}>
+              ServerName {subdomain}
+              SSLEngine on
+            </VirtualHost>
+            """)
+        conf.install()
+        # This does not work as we have overlapping names in MDs
+        assert env.apache_fail() == 0
+        env.httpd_error_log.ignore_recent(
+            lognos = [
+                "AH10038"   # 2 MDs overlap
+            ]
+        )
+        # It works, if we only match on ServerNames
+        conf.add("MDMatchNames servernames")
+        conf.install()
+        assert env.apache_restart() == 0
+

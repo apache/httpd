@@ -585,6 +585,7 @@ application/vnd.genomatix.tuxedo		txd
 # application/vnd.geo+json
 # application/vnd.geocube+xml
 application/vnd.geogebra.file			ggb
+application/vnd.geogebra.slides		ggs
 application/vnd.geogebra.tool			ggt
 application/vnd.geometry-explorer		gex gre
 application/vnd.geonext				gxt
@@ -1212,6 +1213,7 @@ application/vnd.zul				zir zirz
 application/vnd.zzazz.deck+xml			zaz
 application/voicexml+xml			vxml
 # application/vq-rtcpxr
+application/wasm				wasm
 # application/watcherinfo+xml
 # application/whoispp-query
 # application/whoispp-response

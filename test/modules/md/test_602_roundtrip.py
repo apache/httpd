@@ -52,9 +52,13 @@ class TestRoundtripv2:
         # check: SSL is running OK
         cert = env.get_cert(domain)
         assert domain in cert.get_san_list()
-
         # check file system permissions:
         env.check_file_permissions(domain)
+        env.httpd_error_log.ignore_recent(
+            lognos = [
+                "AH10045"   # No VirtualHost matches Managed Domain
+            ]
+        )
 
     def test_md_602_001(self, env):
         # test case: same as test_600_000, but with two parallel managed domains
@@ -93,6 +97,11 @@ class TestRoundtripv2:
         assert domains_a == cert_a.get_san_list()
         cert_b = env.get_cert(domain_b)
         assert domains_b == cert_b.get_san_list()
+        env.httpd_error_log.ignore_recent(
+            lognos = [
+                "AH10045"   # No VirtualHost matches Managed Domain
+            ]
+        )
 
     def test_md_602_002(self, env):
         # test case: one md, that covers two vhosts
@@ -134,6 +143,11 @@ class TestRoundtripv2:
         assert cert_a.same_serial_as(cert_b)
         assert env.get_content(name_a, "/name.txt") == name_a
         assert env.get_content(name_b, "/name.txt") == name_b
+        env.httpd_error_log.ignore_recent(
+            lognos = [
+                "AH10045"   # No VirtualHost matches Managed Domain
+            ]
+        )
 
     # --------- _utils_ ---------
 
