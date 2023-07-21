@@ -1136,8 +1136,8 @@ static int proxy_ftp_handler(request_rec *r, proxy_worker *worker,
     err = ap_proxy_determine_address("FTP", backend, connectname, connectport,
                                      r, r->server);
     if (APR_SUCCESS != err) {
-        proxy_ftp_cleanup(r, backend);
-        return HTTP_BAD_GATEWAY;
+        return ftp_proxyerror(r, backend, HTTP_BAD_GATEWAY,
+                              "Error resolving backend address");
     }
 
     /* check if ProxyBlock directive on this host */
