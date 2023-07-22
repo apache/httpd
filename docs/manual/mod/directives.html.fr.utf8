@@ -74,6 +74,7 @@
 <li><a href="mod_mime.html#addtype">AddType</a></li>
 <li><a href="mod_alias.html#alias">Alias</a></li>
 <li><a href="mod_alias.html#aliasmatch">AliasMatch</a></li>
+<li><a href="mod_alias.html#aliaspreservepath">AliasPreservePath</a></li>
 <li><a href="mod_access_compat.html#allow">Allow</a></li>
 <li><a href="mod_proxy_connect.html#allowconnect">AllowCONNECT</a></li>
 <li><a href="core.html#allowencodedslashes">AllowEncodedSlashes</a></li>
@@ -486,10 +487,12 @@
 <li><a href="mod_md.html#mdcertificateprotocol">MDCertificateProtocol</a></li>
 <li><a href="mod_md.html#mdcertificatestatus">MDCertificateStatus</a></li>
 <li><a href="mod_md.html#mdchallengedns01">MDChallengeDns01</a></li>
+<li><a href="mod_md.html#mdchallengedns01version">MDChallengeDns01Version</a></li>
 <li><a href="mod_md.html#mdcontactemail">MDContactEmail</a></li>
 <li><a href="mod_md.html#mddrivemode">MDDriveMode</a></li>
 <li><a href="mod_md.html#mdexternalaccountbinding">MDExternalAccountBinding</a></li>
 <li><a href="mod_md.html#mdhttpproxy">MDHttpProxy</a></li>
+<li><a href="mod_md.html#mdmatchnames">MDMatchNames</a></li>
 <li><a href="mod_md.html#mdmember">MDMember</a></li>
 <li><a href="mod_md.html#mdmembers">MDMembers</a></li>
 <li><a href="mod_md.html#mdmessagecmd">MDMessageCmd</a></li>
