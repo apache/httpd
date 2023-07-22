@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1865364 -->
+<!-- English Revision: 1911075 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -435,6 +435,42 @@ Apache</compatibility>
     spécifier le nombre maximal de fois que la valeur de la directive <directive
     module="mod_deflate">DeflateInflateRatioLimit</directive> peut être dépassé
     avant l'arrêt du traitement de la requête.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>DeflateAlterETag</name>
+<description>Comment l'en-tête sortant ETag doit être modifié au cours
+de la compression</description>
+<syntax>DeflateAlterETag AddSuffix|NoChange|Remove</syntax>
+<default>DeflateAlterETag AddSuffix</default>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p>La directive <directive>DeflateAlterETag</directive> permet de
+    spécifier comment l'en-tête ETag doit être modifié lorsqu'une
+    réponse est compressée.</p>
+    <dl>
+    <dt>AddSuffix</dt>
+    <dd><p>Ajoute la méthode de compression à la fin de l'en-tête, ce
+    qui a pour effet d'attribuer un en-tête ETag unique aux
+    représentations compressées et non compressées. C'est l'option par
+    défaut depuis la version 2.4.0, mais empêche de servir des
+    codes d'état "HTTP Not Modified" (304) en réponse aux requêtes pour un
+    contenu compressé.</p></dd>
+    <dt>NoChange</dt>
+    <dd><p>Ne modifie pas l'en-tête ETag dans une réponse compressée.
+    C'était l'option par
+    défaut avant la version 2.4.0, mais cela ne respectait pas la
+    préconisation HTTP/1.1 selon laquelle chaque représentation de la
+    même ressource doit posséder un en-tête ETag unique.</p></dd>
+    <dt>Remove</dt>
+    <dd><p>Supprime l'en-tête ETag dans les réponses compressées, ce qui
+    a pour effet de rendre impossibles certaines requêtes
+    conditionnelles, mais permet d'éviter les inconvénients des options
+    précédentes.</p></dd>
+    </dl>
 </usage>
 </directivesynopsis>
 
