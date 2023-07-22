@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1861876 -->
+<!-- English Revision: 1911067 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -209,6 +209,24 @@ Alias "/image" "/ftp/pub/image"
     Alias "/usr/local/apache/errors/%{env:MATCH_NUMBER}.html"
 &lt;/LocationMatch&gt;
     </highlight>
+
+    <p>Notez que lorsque la directive <directive>AliasPreservePath</directive>
+    est à "on", la destination contient le chemin entier, alors que lorsque la
+    directive <directive>AliasPreservePath</directive> est à "off", tous les
+    URLs sont associés à l'URL cible unique.</p>
+
+    <highlight language="config">
+# /files/foo et /files/bar associés à /ftp/pub/files/foo et /ftp/pub/files/bar
+&lt;Location "/files"&gt;
+    AliasPreservePath on
+    Alias "/ftp/pub/files"
+&lt;/Location&gt;
+# /errors/foo et /errors/bar associés à /var/www/errors.html
+&lt;Location "/errors"&gt;
+    AliasPreservePath off
+    Alias "/var/www/errors.html"
+&lt;/Location&gt;
+    </highlight>    
 
 </usage>
 </directivesynopsis>
@@ -685,5 +703,29 @@ comme un script CGI</description>
 </usage>
 </directivesynopsis>
 
+<directivesynopsis>
+<name>AliasPreservePath</name>
+<description>Associer le chemin entier à l'alias dans une section location.</description>
+<syntax>AliasPreservePath OFF|ON</syntax>
+<default>AliasPreservePath OFF</default>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context>
+</contextlist>
+<compatibility>Disponible à partir de la version 2.5.1 du serveur HTTP Apache</compatibility>
+
+<usage>
+    <p>Lorsqu'on utilise la version à deux paramètres de la directive
+    <directive>Alias</directive>, le chemin complet après l'alias est préservé.
+    Lorsqu'on utilise la version à un paramètre de la directive
+    <directive>Alias</directive> dans une section
+    <directive>Location</directive>, le chemin entier est supprimé, et tous les
+    URLs sont associés à l'expression cible.</p>
+
+    <p>Pour que la version à un paramètre de la directive
+    <directive>Alias</directive> préserve les chemins de la même façon que la
+    version à deux paramètres, activez cette directive.</p>
+
+</usage>
+</directivesynopsis>
 
 </modulesynopsis>
