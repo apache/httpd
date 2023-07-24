@@ -1561,7 +1561,14 @@ AP_DECLARE(int) ap_setup_client_block(request_rec *r, int read_policy)
     }
 
     if (limit_req_body > 0 && (r->remaining > limit_req_body)) {
-        /* will be logged when the body is discarded */
+        /* 01588 msg in HTTP_IN filter will be skipped for a connection-dropping status,
+         * so log a similar message here.
+         */
+        ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(10483)
+                "Requested content-length of %" APR_OFF_T_FMT
+                " is larger than the configured limit"
+                " of %" APR_OFF_T_FMT, r->remaining, limit_req_body);
+
         return HTTP_REQUEST_ENTITY_TOO_LARGE;
     }
 
