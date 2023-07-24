@@ -1,4 +1,3 @@
-import re
 import pytest
 
 from .env import H2Conf, H2TestEnv

@@ -49,6 +49,12 @@ class TestNotify:
         assert env.await_error(self.domain)
         stat = env.get_md_status(self.domain)
         assert stat["renewal"]["last"]["problem"] == "urn:org:apache:httpd:log:AH10108:"
+        #
+        env.httpd_error_log.ignore_recent(
+            matches = [
+                r'.*urn:org:apache:httpd:log:AH10108:.*'
+            ]
+        )
 
     # test: valid notify cmd that fails, check error
     def test_md_900_002(self, env):
@@ -61,6 +67,14 @@ class TestNotify:
         assert env.await_error(self.domain)
         stat = env.get_md_status(self.domain)
         assert stat["renewal"]["last"]["problem"] == "urn:org:apache:httpd:log:AH10108:"
+        #
+        env.httpd_error_log.ignore_recent(
+            matches = [
+                r'.*urn:org:apache:httpd:log:AH10108:.*',
+                r'.*urn:org:apache:httpd:log:AH10109:.*'
+                r'.*problem\[challenge-setup-failure\].*',
+            ]
+        )
 
     # test: valid notify that logs to file
     def test_md_900_010(self, env):

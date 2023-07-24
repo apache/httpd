@@ -38,6 +38,7 @@
 
 #include "h2_private.h"
 #include "h2_config.h"
+#include "h2_conn_ctx.h"
 #include "h2_push.h"
 #include "h2_request.h"
 #include "h2_util.h"
@@ -166,6 +167,10 @@ apr_status_t h2_request_add_header(h2_request *req, apr_pool_t *pool,
                  && !strncmp(H2_HEADER_AUTH, name, nlen)) {
             req->authority = apr_pstrndup(pool, value, vlen);
         }
+        else if (H2_HEADER_PROTO_LEN == nlen
+                 && !strncmp(H2_HEADER_PROTO, name, nlen)) {
+            req->protocol = apr_pstrndup(pool, value, vlen);
+        }
         else {
             char buffer[32];
             memset(buffer, 0, 32);
@@ -214,6 +219,7 @@ h2_request *h2_request_clone(apr_pool_t *p, const h2_request *src)
     dst->scheme       = apr_pstrdup(p, src->scheme);
     dst->authority    = apr_pstrdup(p, src->authority);
     dst->path         = apr_pstrdup(p, src->path);
+    dst->protocol     = apr_pstrdup(p, src->protocol);
     dst->headers      = apr_table_clone(p, src->headers);
     return dst;
 }
@@ -282,13 +288,20 @@ apr_bucket *h2_request_create_bucket(const h2_request *req, request_rec *r)
     apr_table_t *headers = apr_table_clone(r->pool, req->headers);
     const char *uri = req->path;
 
+    AP_DEBUG_ASSERT(req->method);
     AP_DEBUG_ASSERT(req->authority);
-    if (req->scheme && (ap_cstr_casecmp(req->scheme,
-                        ap_ssl_conn_is_ssl(c->master? c->master : c)? "https" : "http")
-                        || !ap_cstr_casecmp("CONNECT", req->method))) {
-        /* Client sent a non-matching ':scheme' pseudo header or CONNECT.
-         * In this case, we use an absolute URI.
-         */
+    if (!ap_cstr_casecmp("CONNECT", req->method))  {
+        uri = req->authority;
+    }
+    else if (h2_config_cgeti(c, H2_CONF_PROXY_REQUESTS)) {
+        /* Forward proxying: always absolute uris */
+        uri = apr_psprintf(r->pool, "%s://%s%s",
+                           req->scheme, req->authority,
+                           req->path ? req->path : "");
+    }
+    else if (req->scheme && ap_cstr_casecmp(req->scheme, "http")
+             && ap_cstr_casecmp(req->scheme, "https")) {
+        /* Client sent a non-http ':scheme', use an absolute URI */
         uri = apr_psprintf(r->pool, "%s://%s%s",
                            req->scheme, req->authority, req->path ? req->path : "");
     }
@@ -299,13 +312,13 @@ apr_bucket *h2_request_create_bucket(const h2_request *req, request_rec *r)
 #endif
 
 static void assign_headers(request_rec *r, const h2_request *req,
-                           int no_body)
+                           int no_body, int is_connect)
 {
     const char *cl;
 
     r->headers_in = apr_table_clone(r->pool, req->headers);
 
-    if (req->authority) {
+    if (req->authority && !is_connect) {
         /* for internal handling, we have to simulate that :authority
          * came in as Host:, RFC 9113 ch. says that mismatches between
          * :authority and Host: SHOULD be rejected as malformed. However,
@@ -324,36 +337,40 @@ static void assign_headers(request_rec *r, const h2_request *req,
                       "set 'Host: %s' from :authority", req->authority);
     }
 
-    cl = apr_table_get(req->headers, "Content-Length");
-    if (no_body) {
-        if (!cl && apr_table_get(req->headers, "Content-Type")) {
-            /* If we have a content-type, but already seen eos, no more
-             * data will come. Signal a zero content length explicitly.
-             */
-            apr_table_setn(req->headers, "Content-Length", "0");
+    /* Unless we open a byte stream via CONNECT, apply content-length guards. */
+    if (!is_connect) {
+        cl = apr_table_get(req->headers, "Content-Length");
+        if (no_body) {
+            if (!cl && apr_table_get(req->headers, "Content-Type")) {
+                /* If we have a content-type, but already seen eos, no more
+                 * data will come. Signal a zero content length explicitly.
+                 */
+                apr_table_setn(req->headers, "Content-Length", "0");
+            }
         }
-    }
 #if !AP_HAS_RESPONSE_BUCKETS
-    else if (!cl) {
-        /* there may be a body and we have internal HTTP/1.1 processing.
-         * If the Content-Length is unspecified, we MUST simulate
-         * chunked Transfer-Encoding.
-         *
-         * HTTP/2 does not need a Content-Length for framing. Ideally
-         * all clients set the EOS flag on the header frame if they
-         * do not intent to send a body. However, forwarding proxies
-         * might just no know at the time and send an empty DATA
-         * frame with EOS much later.
-         */
-        apr_table_mergen(r->headers_in, "Transfer-Encoding", "chunked");
-    }
+        else if (!cl) {
+            /* there may be a body and we have internal HTTP/1.1 processing.
+             * If the Content-Length is unspecified, we MUST simulate
+             * chunked Transfer-Encoding.
+             *
+             * HTTP/2 does not need a Content-Length for framing. Ideally
+             * all clients set the EOS flag on the header frame if they
+             * do not intent to send a body. However, forwarding proxies
+             * might just no know at the time and send an empty DATA
+             * frame with EOS much later.
+             */
+            apr_table_mergen(r->headers_in, "Transfer-Encoding", "chunked");
+        }
 #endif /* else AP_HAS_RESPONSE_BUCKETS */
+  }
 }
 
 request_rec *h2_create_request_rec(const h2_request *req, conn_rec *c,
                                    int no_body)
 {
     int access_status = HTTP_OK;
+    int is_connect = !ap_cstr_casecmp("CONNECT", req->method);
 
 #if AP_MODULE_MAGIC_AT_LEAST(20120211, 106)
     request_rec *r = ap_create_request(c);
@@ -362,21 +379,63 @@ request_rec *h2_create_request_rec(const h2_request *req, conn_rec *c,
 #endif
 
 #if AP_MODULE_MAGIC_AT_LEAST(20120211, 107)
-    assign_headers(r, req, no_body);
+    assign_headers(r, req, no_body, is_connect);
     ap_run_pre_read_request(r, c);
 
     /* Time to populate r with the data we have. */
     r->request_time = req->request_time;
     AP_DEBUG_ASSERT(req->authority);
-    if (!apr_strnatcasecmp("CONNECT", req->method)) {
+    if (req->http_status != H2_HTTP_STATUS_UNSET) {
+        access_status = req->http_status;
+        goto die;
+    }
+    else if (is_connect) {
       /* CONNECT MUST NOT have scheme or path */
-      r->the_request = apr_psprintf(r->pool, "%s %s HTTP/2.0",
-                                    req->method, req->authority);
+        r->the_request = apr_psprintf(r->pool, "%s %s HTTP/2.0",
+                                      req->method, req->authority);
+        if (req->scheme) {
+            ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, APLOGNO(10458)
+                          "':scheme: %s' header present in CONNECT request",
+                          req->scheme);
+            access_status = HTTP_BAD_REQUEST;
+            goto die;
+        }
+        else if (req->path) {
+            ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, APLOGNO(10459)
+                          "':path: %s' header present in CONNECT request",
+                          req->path);
+            access_status = HTTP_BAD_REQUEST;
+            goto die;
+        }
+    }
+    else if (req->protocol) {
+      ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, APLOGNO(10470)
+                    "':protocol: %s' header present in %s request",
+                    req->protocol, req->method);
+      access_status = HTTP_BAD_REQUEST;
+      goto die;
+    }
+    else if (h2_config_cgeti(c, H2_CONF_PROXY_REQUESTS)) {
+        if (!req->scheme) {
+            ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, APLOGNO(10468)
+                          "H2ProxyRequests on, but request misses :scheme");
+            access_status = HTTP_BAD_REQUEST;
+            goto die;
+        }
+        if (!req->authority) {
+            ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, APLOGNO(10469)
+                          "H2ProxyRequests on, but request misses :authority");
+            access_status = HTTP_BAD_REQUEST;
+            goto die;
+        }
+        r->the_request = apr_psprintf(r->pool, "%s %s://%s%s HTTP/2.0",
+                                      req->method, req->scheme, req->authority,
+                                      req->path ? req->path : "");
     }
     else if (req->scheme && ap_cstr_casecmp(req->scheme, "http")
              && ap_cstr_casecmp(req->scheme, "https")) {
         /* Client sent a ':scheme' pseudo header for something else
-         * than what we handle by default. Make an absolute URI. */
+         * than what we have on this connection. Make an absolute URI. */
         r->the_request = apr_psprintf(r->pool, "%s %s://%s%s HTTP/2.0",
                                       req->method, req->scheme, req->authority,
                                       req->path ? req->path : "");
@@ -417,7 +476,7 @@ request_rec *h2_create_request_rec(const h2_request *req, conn_rec *c,
     {
         const char *s;
 
-        assign_headers(r, req, no_body);
+        assign_headers(r, req, no_body, is_connect);
         ap_run_pre_read_request(r, c);
 
         /* Time to populate r with the data we have. */
@@ -493,6 +552,16 @@ request_rec *h2_create_request_rec(const h2_request *req, conn_rec *c,
     return r;
 
 die:
+    if (!r->method) {
+        /* if we fail early, `r` is not properly initialized for error
+         * processing which accesses fields in message generation.
+         * Make a best effort. */
+        if (!r->the_request) {
+                r->the_request = apr_psprintf(r->pool, "%s %s HTTP/2.0",
+                                      req->method, req->path);
+        }
+        ap_parse_request_line(r);
+    }
     ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, c,
                   "ap_die(%d) for %s", access_status, r->the_request);
     ap_die(access_status, r);

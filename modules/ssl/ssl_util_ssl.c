@@ -187,12 +187,16 @@ BOOL modssl_X509_getBC(X509 *cert, int *ca, int *pathlen)
 
 char *modssl_bio_free_read(apr_pool_t *p, BIO *bio)
 {
-    int len = BIO_pending(bio);
+    int len = BIO_pending(bio), tmp;
     char *result = NULL;
 
     if (len > 0) {
         result = apr_palloc(p, len+1);
-        len = BIO_read(bio, result, len);
+        tmp = len;
+        if ((len = BIO_read(bio, result, len)) != tmp) {
+            BIO_free(bio);
+            return NULL;
+        }
         result[len] = NUL;
     }
     BIO_free(bio);
@@ -236,7 +240,7 @@ char *modssl_X509_NAME_to_string(apr_pool_t *p, X509_NAME *dn, int maxlen)
 {
     char *result = NULL;
     BIO *bio;
-    int len;
+    int len, tmp;
 
     if ((bio = BIO_new(BIO_s_mem())) == NULL)
         return NULL;
@@ -245,13 +249,20 @@ char *modssl_X509_NAME_to_string(apr_pool_t *p, X509_NAME *dn, int maxlen)
     if (len > 0) {
         result = apr_palloc(p, (maxlen > 0) ? maxlen+1 : len+1);
         if (maxlen > 0 && maxlen < len) {
-            len = BIO_read(bio, result, maxlen);
+            if ((len = BIO_read(bio, result, maxlen)) != maxlen) {
+                BIO_free(bio);
+                return NULL;
+            }
             if (maxlen > 2) {
                 /* insert trailing ellipsis if there's enough space */
                 apr_snprintf(result + maxlen - 3, 4, "...");
             }
         } else {
-            len = BIO_read(bio, result, len);
+            tmp = len;
+            if ((len = BIO_read(bio, result, len)) != tmp) {
+                BIO_free(bio);
+                return NULL;
+            }
         }
         result[len] = NUL;
     }

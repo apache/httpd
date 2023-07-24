@@ -1144,6 +1144,7 @@ struct request_rec {
      * the elements of this field.
      */
     ap_request_bnotes_t bnotes;
+
     /** Indicates that the request has a body of unknown length and
      * protocol handlers need to read it, even if only to discard the
      * data. In HTTP/1.1 this is set on chunked transfer encodings, but
@@ -1151,7 +1152,12 @@ struct request_rec {
      * absence of a "Transfer-Encoding" header is no longer sufficient
      * to conclude that no body is there.
      */
-    int body_indeterminate;
+    unsigned int body_indeterminate :1;
+    /** Whether a final (status >= 200) RESPONSE BUCKET has been passed down
+     * the output filters already. Relevant for ap_die().
+     *  TODO: compact elsewhere
+     */
+    unsigned int final_resp_passed  :1;
 };
 
 /**

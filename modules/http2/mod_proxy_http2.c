@@ -50,8 +50,7 @@ static int (*is_h2)(conn_rec *c);
 
 typedef struct h2_proxy_ctx {
     const char *id;
-    conn_rec *master;
-    conn_rec *owner;
+    conn_rec *cfront;
     apr_pool_t *pool;
     server_rec *server;
     const char *proxy_func;
@@ -69,7 +68,7 @@ typedef struct h2_proxy_ctx {
     apr_status_t r_status;     /* status of request work */
     int r_done;                /* request was processed, not necessarily successfully */
     int r_may_retry;           /* request may be retried */
-    h2_proxy_session *session; /* current http2 session against backend */
+    int has_reusable_session;  /* http2 session is live and clean */
 } h2_proxy_ctx;
 
 static int h2_proxy_post_config(apr_pool_t *p, apr_pool_t *plog,
@@ -160,10 +159,15 @@ static int proxy_http2_canon(request_rec *r, char *url)
         }
         else {
             core_dir_config *d = ap_get_core_module_config(r->per_dir_config);
+ #ifdef PROXY_CANONENC_NOENCODEDSLASHENCODING
             int flags = d->allow_encoded_slashes && !d->decode_encoded_slashes ? PROXY_CANONENC_NOENCODEDSLASHENCODING : 0;
 
             path = ap_proxy_canonenc_ex(r->pool, url, (int)strlen(url),
                                         enc_path, flags, r->proxyreq);
+#else
+            path = ap_proxy_canonenc(r->pool, url, (int)strlen(url),
+                                     enc_path, 0, r->proxyreq);
+#endif
             if (!path) {
                 return HTTP_BAD_REQUEST;
             }
@@ -227,79 +231,81 @@ static apr_status_t add_request(h2_proxy_session *session, request_rec *r)
 }
 
 static void request_done(h2_proxy_ctx *ctx, request_rec *r,
-                         apr_status_t status, int touched)
+                         apr_status_t status, int touched, int error_code)
 {   
     if (r == ctx->r) {
         ap_log_cerror(APLOG_MARK, APLOG_TRACE1, status, r->connection, 
-                      "h2_proxy_session(%s): request done, touched=%d",
-                      ctx->id, touched);
+                      "h2_proxy_session(%s): request done, touched=%d, error=%d",
+                      ctx->id, touched, error_code);
         ctx->r_done = 1;
         if (touched) ctx->r_may_retry = 0;
-        ctx->r_status = ((status == APR_SUCCESS)? APR_SUCCESS
-                         : HTTP_SERVICE_UNAVAILABLE);
+        ctx->r_status = error_code? HTTP_BAD_GATEWAY :
+            ((status == APR_SUCCESS)? OK :
+             ap_map_http_request_error(status, HTTP_SERVICE_UNAVAILABLE));
     }
 }    
 
 static void session_req_done(h2_proxy_session *session, request_rec *r,
-                             apr_status_t status, int touched)
+                             apr_status_t status, int touched, int error_code)
 {
-    request_done(session->user_data, r, status, touched);
+    request_done(session->user_data, r, status, touched, error_code);
 }
 
 static apr_status_t ctx_run(h2_proxy_ctx *ctx) {
     apr_status_t status = OK;
+    h2_proxy_session *session;
     int h2_front;
     
     /* Step Four: Send the Request in a new HTTP/2 stream and
      * loop until we got the response or encounter errors.
      */
-    h2_front = is_h2? is_h2(ctx->owner) : 0;
-    ctx->session = h2_proxy_session_setup(ctx->id, ctx->p_conn, ctx->conf,
-                                          h2_front, 30, 
-                                          h2_proxy_log2((int)ctx->req_buffer_size), 
-                                          session_req_done);
-    if (!ctx->session) {
-        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, ctx->owner, 
+    ctx->has_reusable_session = 0; /* don't know yet */
+    h2_front = is_h2? is_h2(ctx->cfront) : 0;
+    session = h2_proxy_session_setup(ctx->id, ctx->p_conn, ctx->conf,
+                                     h2_front, 30,
+                                     h2_proxy_log2((int)ctx->req_buffer_size),
+                                     session_req_done);
+    if (!session) {
+        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, ctx->cfront,
                       APLOGNO(03372) "session unavailable");
         return HTTP_SERVICE_UNAVAILABLE;
     }
     
-    ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, ctx->owner, APLOGNO(03373)
-                  "eng(%s): run session %s", ctx->id, ctx->session->id);
-    ctx->session->user_data = ctx;
+    ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, ctx->cfront, APLOGNO(03373)
+                  "eng(%s): run session %s", ctx->id, session->id);
+    session->user_data = ctx;
     
     ctx->r_done = 0;
-    add_request(ctx->session, ctx->r);
+    add_request(session, ctx->r);
     
-    while (!ctx->owner->aborted && !ctx->r_done) {
+    while (!ctx->cfront->aborted && !ctx->r_done) {
     
-        status = h2_proxy_session_process(ctx->session);
+        status = h2_proxy_session_process(session);
         if (status != APR_SUCCESS) {
             /* Encountered an error during session processing */
-            ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, ctx->owner, 
+            ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, ctx->cfront,
                           APLOGNO(03375) "eng(%s): end of session %s", 
-                          ctx->id, ctx->session->id);
+                          ctx->id, session->id);
             /* Any open stream of that session needs to
              * a) be reopened on the new session iff safe to do so
              * b) reported as done (failed) otherwise
              */
-            h2_proxy_session_cleanup(ctx->session, session_req_done);
+            h2_proxy_session_cleanup(session, session_req_done);
             goto out;
         }
     }
     
 out:
-    if (ctx->owner->aborted) {
+    if (ctx->cfront->aborted) {
         /* master connection gone */
-        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, ctx->owner, 
+        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, ctx->cfront,
                       APLOGNO(03374) "eng(%s): master connection gone", ctx->id);
         /* cancel all ongoing requests */
-        h2_proxy_session_cancel_all(ctx->session);
-        h2_proxy_session_process(ctx->session);
+        h2_proxy_session_cancel_all(session);
+        h2_proxy_session_process(session);
     }
-    
-    ctx->session->user_data = NULL;
-    ctx->session = NULL;
+    ctx->has_reusable_session = h2_proxy_session_is_reusable(session);
+    session->user_data = NULL;
     return status;
 }
 
@@ -344,9 +350,8 @@ static int proxy_http2_handler(request_rec *r,
     }
 
     ctx = apr_pcalloc(r->pool, sizeof(*ctx));
-    ctx->master = r->connection->master? r->connection->master : r->connection;
-    ctx->id = apr_psprintf(r->pool, "%ld", (long)ctx->master->id);
-    ctx->owner = r->connection;
+    ctx->id = apr_psprintf(r->pool, "%ld", (long)r->connection->id);
+    ctx->cfront = r->connection;
     ctx->pool = r->pool;
     ctx->server = r->server;
     ctx->proxy_func = proxy_func;
@@ -359,7 +364,7 @@ static int proxy_http2_handler(request_rec *r,
     ctx->r_done = 0;
     ctx->r_may_retry =  1;
     
-    ap_set_module_config(ctx->owner->conn_config, &proxy_http2_module, ctx);
+    ap_set_module_config(ctx->cfront->conn_config, &proxy_http2_module, ctx);
 
     /* scheme says, this is for us. */
     apr_table_setn(ctx->r->notes, H2_PROXY_REQ_URL_NOTE, url);
@@ -367,7 +372,7 @@ static int proxy_http2_handler(request_rec *r,
                   "H2: serving URL %s", url);
     
 run_connect:    
-    if (ctx->owner->aborted) goto cleanup;
+    if (ctx->cfront->aborted) goto cleanup;
 
     /* Get a proxy_conn_rec from the worker, might be a new one, might
      * be one still open from another request, or it might fail if the
@@ -395,7 +400,7 @@ run_connect:
      * backend->hostname. */
     if (ap_proxy_connect_backend(ctx->proxy_func, ctx->p_conn, ctx->worker, 
                                  ctx->server)) {
-        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, ctx->owner, APLOGNO(03352)
+        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, ctx->cfront, APLOGNO(03352)
                       "H2: failed to make connection to backend: %s",
                       ctx->p_conn->hostname);
         goto cleanup;
@@ -404,7 +409,7 @@ run_connect:
     /* Step Three: Create conn_rec for the socket we have open now. */
     status = ap_proxy_connection_create_ex(ctx->proxy_func, ctx->p_conn, ctx->r);
     if (status != OK) {
-        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, ctx->owner, APLOGNO(03353)
+        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, ctx->cfront, APLOGNO(03353)
                       "setup new connection: is_ssl=%d %s %s %s", 
                       ctx->p_conn->is_ssl, ctx->p_conn->ssl_hostname, 
                       locurl, ctx->p_conn->hostname);
@@ -419,10 +424,10 @@ run_connect:
                        "proxy-request-alpn-protos", "h2");
     }
 
-    if (ctx->owner->aborted) goto cleanup;
+    if (ctx->cfront->aborted) goto cleanup;
     status = ctx_run(ctx);
 
-    if (ctx->r_status != APR_SUCCESS && ctx->r_may_retry && !ctx->owner->aborted) {
+    if (ctx->r_status != APR_SUCCESS && ctx->r_may_retry && !ctx->cfront->aborted) {
         /* Not successfully processed, but may retry, tear down old conn and start over */
         if (ctx->p_conn) {
             ctx->p_conn->close = 1;
@@ -436,15 +441,16 @@ run_connect:
         if (reconnects < 2) {
             goto run_connect;
         } 
-        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, ctx->owner, APLOGNO(10023)
+        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, ctx->cfront, APLOGNO(10023)
                       "giving up after %d reconnects, request-done=%d",
                       reconnects, ctx->r_done);
     }
     
 cleanup:
     if (ctx->p_conn) {
-        if (status != APR_SUCCESS) {
-            /* close socket when errors happened or session shut down (EOF) */
+        if (status != APR_SUCCESS || !ctx->has_reusable_session) {
+            /* close socket when errors happened or session is not "clean",
+             * meaning in a working condition with no open streams */
             ctx->p_conn->close = 1;
         }
 #if AP_MODULE_MAGIC_AT_LEAST(20140207, 2)
@@ -454,8 +460,8 @@ cleanup:
         ctx->p_conn = NULL;
     }
 
-    ap_set_module_config(ctx->owner->conn_config, &proxy_http2_module, NULL);
-    ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, ctx->owner, 
+    ap_set_module_config(ctx->cfront->conn_config, &proxy_http2_module, NULL);
+    ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, ctx->cfront,
                   APLOGNO(03377) "leaving handler");
     return ctx->r_status;
 }

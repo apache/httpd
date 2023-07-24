@@ -176,16 +176,18 @@ class TestCiphers:
 
     def test_tls_06_ciphers_pref_unsupported(self, env):
         # a warning on preferring a known, but not supported cipher
-        env.httpd_error_log.ignore_recent()
         conf = TlsTestConf(env=env, extras={
             env.domain_b: "TLSCiphersPrefer TLS_NULL_WITH_NULL_NULL"
         })
         conf.add_tls_vhosts(domains=[env.domain_a, env.domain_b])
         conf.install()
         assert env.apache_restart() == 0
-        (errors, warnings) = env.httpd_error_log.get_recent_count()
-        assert errors == 0
-        assert warnings == 2  # once on dry run, once on start
+        #
+        env.httpd_error_log.ignore_recent(
+            lognos = [
+                "AH10319"   # Server has TLSCiphersPrefer configured that are not supported by rustls
+            ]
+        )
 
     def test_tls_06_ciphers_supp_unknown(self, env):
         conf = TlsTestConf(env=env, extras={
@@ -197,13 +199,9 @@ class TestCiphers:
 
     def test_tls_06_ciphers_supp_unsupported(self, env):
         # no warnings on suppressing known, but not supported ciphers
-        env.httpd_error_log.ignore_recent()
         conf = TlsTestConf(env=env, extras={
             env.domain_b: "TLSCiphersSuppress TLS_NULL_WITH_NULL_NULL"
         })
         conf.add_tls_vhosts(domains=[env.domain_a, env.domain_b])
         conf.install()
         assert env.apache_restart() == 0
-        (errors, warnings) = env.httpd_error_log.get_recent_count()
-        assert errors == 0
-        assert warnings == 0

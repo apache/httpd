@@ -48,6 +48,12 @@ class TestConnReuse:
         hostname = ("noh2.%s" % env.http_tld)
         r = env.curl_get(url, 5, options=[ "-H", "Host:%s" % hostname ])
         assert 421 == r.response["status"]
+        #
+        env.httpd_error_log.ignore_recent(
+            lognos = [
+                "AH02032"   # Hostname provided via SNI and hostname provided via HTTP have no compatible SSL setup
+            ]
+        )
 
     # access an unknown vhost, after using ServerName in SNI
     def test_h2_100_05(self, env):
@@ -55,3 +61,9 @@ class TestConnReuse:
         hostname = ("unknown.%s" % env.http_tld)
         r = env.curl_get(url, 5, options=[ "-H", "Host:%s" % hostname ])
         assert 421 == r.response["status"]
+        #
+        env.httpd_error_log.ignore_recent(
+            lognos = [
+                "AH02032"   # Hostname provided via SNI and hostname provided via HTTP have no compatible SSL setup
+            ]
+        )

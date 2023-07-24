@@ -31,9 +31,14 @@ class CurlPiper:
     def response(self):
         return self._r.response if self._r else None
 
+    def __repr__(self):
+        return f'CurlPiper[exitcode={self._exitcode}, stderr={self._stderr}, stdout={self._stdout}]'
+
     def start(self):
         self.args, self.headerfile = self.env.curl_complete_args([self.url], timeout=5, options=[
-            "-T", "-", "-X", "POST", "--trace-ascii", "%", "--trace-time"])
+            "-T", "-", "-X", "POST", "--trace-ascii", "%", "--trace-time"
+        ])
+        self.args.append(self.url)
         sys.stderr.write("starting: {0}\n".format(self.args))
         self.proc = subprocess.Popen(self.args, stdin=subprocess.PIPE,
                                      stdout=subprocess.PIPE,
@@ -125,9 +130,7 @@ class CurlPiper:
                 delta_mics += datetime.time(23, 59, 59, 999999)
             recv_deltas.append(datetime.timedelta(microseconds=delta_mics))
             last_mics = mics
-        stutter_td = datetime.timedelta(seconds=stutter.total_seconds() * 0.9)  # 10% leeway
-        # TODO: the first two chunks are often close together, it seems
-        # there still is a little buffering delay going on
+        stutter_td = datetime.timedelta(seconds=stutter.total_seconds() * 0.75)  # 25% leeway
         for idx, td in enumerate(recv_deltas[1:]):
             assert stutter_td < td, \
                 f"chunk {idx} arrived too early \n{recv_deltas}\nafter {td}\n{recv_err}"

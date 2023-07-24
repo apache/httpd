@@ -63,7 +63,22 @@ typedef struct h2_stream_monitor {
                                              trigger a state change */
 } h2_stream_monitor;
 
+#ifdef AP_DEBUG
+#define H2_STRM_MAGIC_OK     0x5354524d
+#define H2_STRM_MAGIC_SDEL   0x5344454c
+#define H2_STRM_MAGIC_PDEL   0x5044454c
+
+#define H2_STRM_ASSIGN_MAGIC(s,m)  ((s)->magic = m)
+#define H2_STRM_ASSERT_MAGIC(s,m)  ap_assert((s)->magic == m)
+#else
+#define H2_STRM_ASSIGN_MAGIC(s,m)  ((void)0)
+#define H2_STRM_ASSERT_MAGIC(s,m)  ((void)0)
+#endif
+
 struct h2_stream {
+#ifdef AP_DEBUG
+    uint32_t magic;
+#endif
     int id;                     /* http2 stream identifier */
     int initiated_on;           /* initiating stream id (PUSH) or 0 */
     apr_pool_t *pool;           /* the memory pool for this stream */

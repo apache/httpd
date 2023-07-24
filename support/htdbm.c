@@ -193,6 +193,10 @@ static apr_status_t htdbm_verify(htdbm_t *htdbm)
     char *pwd;
     char *rec, *cmnt;
 
+    if(htdbm->username == NULL) {
+      return APR_ENOENT;
+    }
+
     key.dptr = htdbm->username;
     key.dsize = strlen(htdbm->username);
     if (!apr_dbm_exists(htdbm->dbm, key))

@@ -268,12 +268,13 @@ static void beam_shutdown(h2_bucket_beam *beam, apr_shutdown_how_e how)
     if (how == APR_SHUTDOWN_READWRITE) {
         beam->cons_io_cb = NULL;
         beam->recv_cb = NULL;
+        beam->eagain_cb = NULL;
     }
 
     /* shutdown sender (or both)? */
     if (how != APR_SHUTDOWN_READ) {
-        h2_blist_cleanup(&beam->buckets_to_send);
         purge_consumed_buckets(beam);
+        h2_blist_cleanup(&beam->buckets_to_send);
     }
 }
 
@@ -585,6 +586,9 @@ cleanup:
         rv = APR_ECONNABORTED;
     }
     H2_BEAM_LOG(beam, from, APLOG_TRACE2, rv, "end send", sender_bb);
+    if(rv != APR_SUCCESS && !APR_STATUS_IS_EAGAIN(rv) && sender_bb != NULL) {
+        apr_brigade_cleanup(sender_bb);
+    }
     apr_thread_mutex_unlock(beam->lock);
     return rv;
 }
@@ -744,6 +748,9 @@ transfer:
 
 leave:
     H2_BEAM_LOG(beam, to, APLOG_TRACE2, rv, "end receive", bb);
+    if (rv == APR_EAGAIN && beam->eagain_cb) {
+        beam->eagain_cb(beam->eagain_ctx, beam);
+    }
     apr_thread_mutex_unlock(beam->lock);
     return rv;
 }
@@ -763,6 +770,15 @@ void h2_beam_on_received(h2_bucket_beam *beam,
     apr_thread_mutex_lock(beam->lock);
     beam->recv_cb = recv_cb;
     beam->recv_ctx = ctx;
+    apr_thread_mutex_unlock(beam->lock);
+}
+
+void h2_beam_on_eagain(h2_bucket_beam *beam,
+                       h2_beam_ev_callback *eagain_cb, void *ctx)
+{
+    apr_thread_mutex_lock(beam->lock);
+    beam->eagain_cb = eagain_cb;
+    beam->eagain_ctx = ctx;
     apr_thread_mutex_unlock(beam->lock);
 }
 
@@ -840,6 +856,28 @@ int h2_beam_report_consumption(h2_bucket_beam *beam)
 
     apr_thread_mutex_lock(beam->lock);
     rv = report_consumption(beam, 1);
+    apr_thread_mutex_unlock(beam->lock);
+    return rv;
+}
+
+int h2_beam_is_complete(h2_bucket_beam *beam)
+{
+    int rv = 0;
+
+    apr_thread_mutex_lock(beam->lock);
+    if (beam->closed)
+        rv = 1;
+    else {
+        apr_bucket *b;
+        for (b = H2_BLIST_FIRST(&beam->buckets_to_send);
+             b != H2_BLIST_SENTINEL(&beam->buckets_to_send);
+             b = APR_BUCKET_NEXT(b)) {
+            if (APR_BUCKET_IS_EOS(b)) {
+                rv = 1;
+                break;
+            }
+        }
+    }
     apr_thread_mutex_unlock(beam->lock);
     return rv;
 }

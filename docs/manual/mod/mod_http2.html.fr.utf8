@@ -94,6 +94,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#h2moderntlsonly">H2ModernTLSOnly</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#h2outputbuffering">H2OutputBuffering</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#h2padding">H2Padding</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#h2proxyrequests">H2ProxyRequests</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#h2push">H2Push</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#h2pushdiarysize">H2PushDiarySize</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#h2pushpriority">H2PushPriority</a></li>
@@ -104,6 +105,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#h2tlscooldownsecs">H2TLSCoolDownSecs</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#h2tlswarmupsize">H2TLSWarmUpSize</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#h2upgrade">H2Upgrade</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#h2websockets">H2WebSockets</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#h2windowsize">H2WindowSize</a></li>
 </ul>
 <h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_http2">Problèmes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_http2">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
@@ -624,6 +626,30 @@
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="h2proxyrequests" id="h2proxyrequests">Directive</a> <a name="H2ProxyRequests" id="H2ProxyRequests">H2ProxyRequests</a> <a title="Lien permanent" href="#h2proxyrequests" class="permalink">&para;</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Active/Désactive les requêtes sous mandat direct via HTTP/2</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>H2ProxyRequests  on|off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>H2ProxyRequests off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_http2</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.5.1 du serveur HTTP
+	Apache</td></tr>
+</table>
+            <p>
+                La directive <code class="directive">H2ProxyRequests</code> permet
+		d'activer ou de désactiver la gestion des requêtes HTTP/2 dans
+		un contexte de mandat direct.
+            </p><p>
+                Similaire à <code class="directive"><a href="../mod/proxy.html#proxyrequests">ProxyRequests</a></code>,
+		cette directive déclenche le traitement nécessaire des requêtes
+		lorsque HTTP/2 est activé dans un contexte de mandat direct.
+            </p><p>
+            </p>
+        
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="h2push" id="h2push">Directive</a> <a name="H2Push" id="H2Push">H2Push</a> <a title="Lien permanent" href="#h2push" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Activation/désactivation du server push H2</td></tr>
@@ -1121,6 +1147,46 @@ H2PushPriority text/css   interleaved      # poids de 256 par défaut</pre>
             </p>
             <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">H2Upgrade on</pre>
 </div>
+        
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="h2websockets" id="h2websockets">Directive</a> <a name="H2WebSockets" id="H2WebSockets">H2WebSockets</a> <a title="Lien permanent" href="#h2websockets" class="permalink">&para;</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Active/désactive les WebSockets via HTTP/2</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>H2WebSockets  on|off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>H2WebSockets off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_http2</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.5.1 du serveur HTTP
+	Apache</td></tr>
+</table>
+            <p>
+                La directive <code class="directive">H2WebSockets</code> permet
+		d'activer ou de désactiver l'amorçage des WebSockets via le
+		protocole HTTP/2. Cette extension du protocole est définie dans
+		la RFC 8441.
+            </p><p>
+                Ces requêtes sont similaires à CONNECT, mais elles possèdent
+		l'en-tête supplémentaire ':protocol'. Elles sont transformées au
+		sein du module en leurs équivalents HTTP/1.1 avant d'être
+		soumises au traitement interne.
+            </p><p>
+                Cela signifie que les WebSockets HTTP/2 peuvent être utilisés
+		dans le cadre d'une directive <code class="directive"><a href="../mod/mod_proxy.html#proxypass">ProxyPass</a></code> avec le paramètre
+		'upgrade=websocket' sans autres modifications.
+            </p><p>
+                Pour les modules tiers qui gèrent les WebSockets directement
+		dans le serveur, l'amorçage du protocole lui-même fonctionnera
+		aussi. Dans le cas de HTTP/2 cependant, le transfert de données
+		nécessite une prise en charge supplémentaire. Le WebSocket
+		négocié sera incapable d'utiliser le socket de connexion du
+		client pour examiner les évènements d'entrée/sortie concernés.
+            </p><p>
+                Cette fonctionnalité étant susceptible de briser la
+		compatibilité ascendante pour de tels modules tiers, elle n'est
+		pas activée par défaut.
+            </p>
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>

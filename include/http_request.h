@@ -543,7 +543,7 @@ AP_DECLARE(void) ap_hook_check_access_ex(ap_HOOK_access_checker_ex_t *pf,
  * @param type Internal request processing mode, either
  *             AP_AUTH_INTERNAL_PER_URI or AP_AUTH_INTERNAL_PER_CONF
  */
-AP_DECLARE(void) ap_hook_check_autht(ap_HOOK_check_user_id_t *pf,
+AP_DECLARE(void) ap_hook_check_autht(ap_HOOK_token_checker_t *pf,
                                      const char * const *aszPre,
                                      const char * const *aszSucc,
                                      int nOrder, int type);

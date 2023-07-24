@@ -18,7 +18,14 @@ class TestPost:
     @pytest.fixture(autouse=True, scope='class')
     def _class_scope(self, env):
         TestPost._local_dir = os.path.dirname(inspect.getfile(TestPost))
-        conf = H2Conf(env)
+        conf = H2Conf(env, extras={
+            f'cgi.{env.http_tld}': [
+                f'<Directory {env.server_docs_dir}/cgi/xxx>',
+                '  RewriteEngine On',
+                '  RewriteRule .* /proxy/echo.py [QSA]',
+                '</Directory>',
+            ]
+        })
         conf.add_vhost_cgi(proxy_self=True).install()
         assert env.apache_restart() == 0
 
@@ -183,16 +190,6 @@ class TestPost:
 
     def test_h2_004_41(self, env):
         # reproduce PR66597, double chunked encoding on redirects
-        conf = H2Conf(env, extras={
-            f'cgi.{env.http_tld}': [
-                f'<Directory {env.server_docs_dir}/cgi/xxx>',
-                '  RewriteEngine On',
-                '  RewriteRule .* /proxy/echo.py [QSA]',
-                '</Directory>',
-            ]
-        })
-        conf.add_vhost_cgi(proxy_self=True).install()
-        assert env.apache_restart() == 0
         url = env.mkurl("https", "cgi", "/xxx/test.json")
         r = env.curl_post_data(url, data="0123456789", options=[])
         assert r.exit_code == 0

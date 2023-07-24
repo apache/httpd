@@ -21,42 +21,13 @@ if grep ip6-localhost /etc/hosts; then
     cat /etc/hosts
 fi
 
-# Use a rudimental retry workflow as workaround to svn export hanging for minutes.
-# Travis automatically kills a build if one step takes more than 10 minutes without
-# reporting any progress. 
-function run_svn_export() {
-   local url=$1
-   local revision=$2
-   local dest_dir=$3
-   local max_tries=$4
-
-   # Disable -e to allow fail/retry
-   set +e
-
-   for i in $(seq 1 $max_tries)
-   do
-       timeout 60 svn export -r ${revision} --force -q $url $dest_dir
-       if [ $? -eq 0 ]; then
-           break
-       else
-           if [ $i -eq $max_tries ]; then
-               exit 1
-           else
-               sleep $((100 * i))
-           fi
-       fi
-   done
-
-   # Restore -e behavior after fail/retry
-   set -e
-}
-
 function install_apx() {
     local name=$1
     local version=$2
     local root=https://svn.apache.org/repos/asf/apr/${name}
     local prefix=${HOME}/root/${name}-${version}
     local build=${HOME}/build/${name}-${version}
+    local giturl=https://github.com/apache/${name}.git
     local config=$3
     local buildconf=$4
 
@@ -71,12 +42,17 @@ function install_apx() {
     # Blow away the cached install root if the cached install is stale
     # or doesn't match the expected configuration.
     grep -q "${version} ${revision} ${config} CC=$CC" ${HOME}/root/.key-${name} || rm -rf ${prefix}
+    # TEST_H2 APR cache seems to be broken, do not use.
+    # Unknown why this happens on this CI job only and how to fix it
+    if test -v TEST_H2; then
+      rm -rf ${prefix}
+    fi
 
     if test -d ${prefix}; then
         return 0
     fi
 
-    svn export -q -r ${revision} ${url} ${build}
+    git clone -q --depth=1 --branch=$version ${giturl} ${build}
     pushd $build
          ./buildconf ${buildconf}
          ./configure --prefix=${prefix} ${config}
@@ -112,7 +88,7 @@ if ! test -v SKIP_TESTING; then
     unset pkgs
 
     # Make a shallow clone of httpd-tests git repo.
-    git clone --depth=1 https://github.com/apache/httpd-tests.git test/perl-framework
+    git clone -q --depth=1 https://github.com/apache/httpd-tests.git test/perl-framework
 fi
 
 # For LDAP testing, run slapd listening on port 8389 and populate the
