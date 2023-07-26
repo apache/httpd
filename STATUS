@@ -223,6 +223,15 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      +1: minfrin
      covener: diff doesn't seem to apply clean to 2.4.x (with or without 1861542,r1861569 above)
 
+  *) mod_http2: fix access count reporting in server-status to not count
+     HTTP/2 requests twice. See PR 66801.
+     Trunk version of patch:
+        https://svn.apache.org/r1911291
+     Backport version for 2.4.x of patch:
+      Trunk version of patch works
+       svn merge -c 1911291 ^/httpd/httpd/trunk .
+     +1: icing,
+
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
