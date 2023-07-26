@@ -99,8 +99,6 @@ struct h2_mplx {
 
     struct h2_workers *workers;     /* h2 workers process wide instance */
 
-    request_rec *scratch_r;         /* pseudo request_rec for scoreboard reporting */
-
     apr_uint32_t max_spare_transits; /* max number of transit pools idling */
     apr_array_header_t *c2_transits; /* base pools for running c2 connections */
 };

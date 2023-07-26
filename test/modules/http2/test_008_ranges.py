@@ -2,6 +2,7 @@ import inspect
 import json
 import logging
 import os
+import re
 import pytest
 
 from .env import H2Conf, H2TestEnv
@@ -23,10 +24,16 @@ class TestRanges:
             os.remove(TestRanges.LOGFILE)
         destdir = os.path.join(env.gen_dir, 'apache/htdocs/test1')
         env.make_data_file(indir=destdir, fname="data-100m", fsize=100*1024*1024)
-        conf = H2Conf(env=env)
-        conf.add([
-            "CustomLog logs/test_008 combined"
-        ])
+        conf = H2Conf(env=env, extras={
+            'base': [
+                'CustomLog logs/test_008 combined'
+            ],
+            f'test1.{env.http_tld}': [
+                '<Location /status>',
+                '  SetHandler server-status',
+                '</Location>',
+            ]
+        })
         conf.add_vhost_cgi()
         conf.add_vhost_test1()
         conf.install()
@@ -133,6 +140,39 @@ class TestRanges:
                 found = True
                 break
         assert found, f'request not found in {self.LOGFILE}'
+
+    # test server-status reporting
+    # see <https://bz.apache.org/bugzilla/show_bug.cgi?id=66801>
+    def test_h2_008_04(self, env, repeat):
+        path = '/data-100m'
+        assert env.apache_restart() == 0
+        stats = self.get_server_status(env)
+        # we see the server uptime check request here
+        assert 1 == int(stats['Total Accesses'])
+        assert 1 == int(stats['Total kBytes'])
+        count = 10
+        url = env.mkurl("https", "test1", f'/data-100m?[0-{count-1}]')
+        r = env.curl_get(url, 5, options=['--http2', '-H', f'Range: bytes=0-{4096}'])
+        assert r.exit_code == 0, f'{r}'
+        stats = self.get_server_status(env)
+        # amount reported is larger than (count *4k), the net payload
+        # but does not exceed an additional 4k
+        assert (4*count)+1 <= int(stats['Total kBytes'])
+        assert (4*(count+1))+1 > int(stats['Total kBytes'])
+        # total requests is now at 1 from the start, plus the stat check,
+        # plus the count transfers we did.
+        assert (2+count) == int(stats['Total Accesses'])
+
+    def get_server_status(self, env):
+        status_url = env.mkurl("https", "test1", '/status?auto')
+        r = env.curl_get(status_url, 5)
+        assert r.exit_code == 0, f'{r}'
+        stats = {}
+        for line in r.stdout.splitlines():
+            m = re.match(r'([^:]+): (.*)', line)
+            if m:
+                stats[m.group(1)] = m.group(2)
+        return stats
 
     # upload and GET again using curl, compare to original content
     def curl_upload_and_verify(self, env, fname, options=None):

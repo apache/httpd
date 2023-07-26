@@ -1,0 +1,3 @@
+  *) mod_http2: Fix reporting of `Total Accesses` in server-status to not count
+     HTTP/2 requests twice. Fixes PR 66801.
+     [Stefan Eissing]

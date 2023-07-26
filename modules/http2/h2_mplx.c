@@ -334,7 +334,6 @@ h2_mplx *h2_mplx_c1_create(int child_num, apr_uint32_t id, h2_stream *stream0,
         apr_pollset_add(m->pollset, &conn_ctx->pfd);
     }
 
-    m->scratch_r = apr_pcalloc(m->pool, sizeof(*m->scratch_r));
     m->max_spare_transits = 3;
     m->c2_transits = apr_array_make(m->pool, (int)m->max_spare_transits,
                                     sizeof(h2_c2_transit*));
@@ -547,16 +546,6 @@ const h2_stream *h2_mplx_c2_stream_get(h2_mplx *m, int stream_id)
 }
 
 
-static void c1_update_scoreboard(h2_mplx *m, h2_stream *stream)
-{
-    if (stream->c2) {
-        m->scratch_r->connection = stream->c2;
-        m->scratch_r->bytes_sent = stream->out_frame_octets;
-        ap_increment_counts(m->c1->sbh, m->scratch_r);
-        m->scratch_r->connection = NULL;
-    }
-}
-
 static void c1_purge_streams(h2_mplx *m)
 {
     h2_stream *stream;
@@ -565,8 +554,6 @@ static void c1_purge_streams(h2_mplx *m)
     for (i = 0; i < m->spurge->nelts; ++i) {
         stream = APR_ARRAY_IDX(m->spurge, i, h2_stream*);
         ap_assert(stream->state == H2_SS_CLEANUP);
-
-        c1_update_scoreboard(m, stream);
 
         if (stream->input) {
             h2_beam_destroy(stream->input, m->c1);
