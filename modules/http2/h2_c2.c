@@ -51,6 +51,7 @@
 #include "h2_ws.h"
 #include "h2_c2.h"
 #include "h2_util.h"
+#include "mod_http2.h"
 
 
 static module *mpm_module;
@@ -469,10 +470,9 @@ static int c2_hook_fixups(request_rec *r)
     return DECLINED;
 }
 
-#if H2_USE_POLLFD_FROM_CONN
-static apr_status_t c2_get_pollfd_from_conn(conn_rec *c,
-                                            struct apr_pollfd_t *pfd,
-                                            apr_interval_time_t *ptimeout)
+static apr_status_t http2_get_pollfd_from_conn(conn_rec *c,
+                                               struct apr_pollfd_t *pfd,
+                                               apr_interval_time_t *ptimeout)
 {
     if (c->master) {
         h2_conn_ctx_t *ctx = h2_conn_ctx_get(c);
@@ -494,7 +494,6 @@ static apr_status_t c2_get_pollfd_from_conn(conn_rec *c,
     }
     return APR_ENOTIMPL;
 }
-#endif
 
 #if AP_HAS_RESPONSE_BUCKETS
 
@@ -601,9 +600,10 @@ void h2_c2_register_hooks(void)
                               APR_HOOK_REALLY_FIRST);
     ap_hook_fixups(c2_hook_fixups, NULL, NULL, APR_HOOK_LAST);
 #if H2_USE_POLLFD_FROM_CONN
-    ap_hook_get_pollfd_from_conn(c2_get_pollfd_from_conn, NULL, NULL,
+    ap_hook_get_pollfd_from_conn(http2_get_pollfd_from_conn, NULL, NULL,
                                  APR_HOOK_MIDDLE);
 #endif
+    APR_REGISTER_OPTIONAL_FN(http2_get_pollfd_from_conn);
 
     c2_net_in_filter_handle =
         ap_register_input_filter("H2_C2_NET_IN", h2_c2_filter_in,
@@ -913,9 +913,10 @@ void h2_c2_register_hooks(void)
     ap_hook_post_read_request(h2_c2_hook_post_read_request, NULL, NULL, APR_HOOK_REALLY_FIRST);
     ap_hook_fixups(c2_hook_fixups, NULL, NULL, APR_HOOK_LAST);
 #if H2_USE_POLLFD_FROM_CONN
-    ap_hook_get_pollfd_from_conn(c2_get_pollfd_from_conn, NULL, NULL,
+    ap_hook_get_pollfd_from_conn(http2_get_pollfd_from_conn, NULL, NULL,
                                  APR_HOOK_MIDDLE);
 #endif
+    APR_REGISTER_OPTIONAL_FN(http2_get_pollfd_from_conn);
 
     ap_register_input_filter("H2_C2_NET_IN", h2_c2_filter_in,
                              NULL, AP_FTYPE_NETWORK);

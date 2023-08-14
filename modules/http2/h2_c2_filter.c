@@ -914,10 +914,10 @@ static apr_status_t read_and_chunk(ap_filter_t *f, h2_conn_ctx_t *conn_ctx,
 }
 
 apr_status_t h2_c2_filter_request_in(ap_filter_t* f,
-                                  apr_bucket_brigade* bb,
-                                  ap_input_mode_t mode,
-                                  apr_read_type_e block,
-                                  apr_off_t readbytes)
+                                     apr_bucket_brigade* bb,
+                                     ap_input_mode_t mode,
+                                     apr_read_type_e block,
+                                     apr_off_t readbytes)
 {
     h2_conn_ctx_t *conn_ctx = h2_conn_ctx_get(f->c);
     h2_chunk_filter_t *fctx = f->ctx;
