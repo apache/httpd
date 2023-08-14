@@ -32,6 +32,15 @@ APR_DECLARE_OPTIONAL_FN(void,
                         http2_get_num_workers, (server_rec *s,
                                                 int *minw, int *max));
 
+#define AP_HTTP2_HAS_GET_POLLFD
+
+/* Get a apr_pollfd_t propulated for a h2 connection where
+ * (c->master != NULL) is true. */
+APR_DECLARE_OPTIONAL_FN(apr_status_t,
+                        http2_get_pollfd_from_conn,
+                        (conn_rec *c, struct apr_pollfd_t *pfd,
+                         apr_interval_time_t *ptimeout));
+
 /*******************************************************************************
  * START HTTP/2 request engines (DEPRECATED)
  ******************************************************************************/

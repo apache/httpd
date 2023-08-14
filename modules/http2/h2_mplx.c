@@ -828,6 +828,8 @@ static apr_status_t c2_setup_io(h2_mplx *m, conn_rec *c2, h2_stream *stream, h2_
         if (APR_SUCCESS != rv) goto cleanup;
 #endif
         h2_beam_on_eagain(stream->input, c2_beam_input_read_eagain, c2);
+        if (!h2_beam_empty(stream->input))
+            c2_beam_input_write_notify(c2, stream->input);
     }
 
 cleanup:
