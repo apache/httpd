@@ -152,6 +152,15 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) mod_alias: Add RedirectRelative to allow relative redirect targets to be
+     issued as-is.
+     Trunk version of patch:
+        https://svn.apache.org/r1861542
+        https://svn.apache.org/r1861569
+     Backport version for 2.4.x of patch:
+      Trunk version of patch works
+       svn merge -c 1861542,r1861569 ^/httpd/httpd/trunk .
+     +1: minfrin, covener, icing
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
@@ -202,16 +211,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x PR:
         https://github.com/apache/httpd/pull/366
      +1: icing,
-
-  *) mod_alias: Add RedirectRelative to allow relative redirect targets to be
-     issued as-is.
-     Trunk version of patch:
-        https://svn.apache.org/r1861542
-        https://svn.apache.org/r1861569
-     Backport version for 2.4.x of patch:
-      Trunk version of patch works
-       svn merge -c 1861542,r1861569 ^/httpd/httpd/trunk .
-     +1: minfrin, covener
 
   *) mod_alias: Add AliasPreservePath directive to map the full path after the
      alias in a location. Requires r1861542 / r1861569 above.
