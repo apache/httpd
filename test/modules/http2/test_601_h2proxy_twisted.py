@@ -63,7 +63,11 @@ class TestH2ProxyTwisted:
         url = env.mkurl("https", "cgi", f"/h2proxy/h2test/echo?fail_after={os.path.getsize(fpath)}")
         r = env.curl_upload(url, fpath, options=[])
         # 92 is curl's CURLE_HTTP2_STREAM
-        assert r.exit_code == 92 or r.response["status"] == 502
+        if r.exit_code != 0:
+            # H2 stream or partial file error
+            assert r.exit_code == 92 or r.exit_code == 18, f'{r}'
+        else:
+            assert r.response["status"] == 502, f'{r}'
 
     def test_h2_601_05_echo_fail_many(self, env):
         if not env.httpd_is_at_least('2.5.0'):
@@ -88,4 +92,8 @@ class TestH2ProxyTwisted:
             stats.append(json.loads(line))
         assert len(stats) == count
         for st in stats:
-            assert st['exitcode'] == 92 or st['http_code'] == 502, f'unexpected: {st}'
+            if st['exitcode'] != 0:
+                # H2 stream or partial file error
+                assert st['exitcode'] == 92 or st['exitcode'] == 18, f'{r}'
+            else:
+                assert st['http_code'] == 502, f'{r}'

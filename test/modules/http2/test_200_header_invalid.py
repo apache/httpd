@@ -64,36 +64,49 @@ class TestInvalidHeaders:
             else:
                 assert 0 != r.exit_code
 
-    # test header field lengths check, LimitRequestLine (default 8190)
+    # test header field lengths check, LimitRequestLine
     def test_h2_200_10(self, env):
-        url = env.mkurl("https", "cgi", "/")
-        val = "1234567890"  # 10 chars
-        for i in range(3):  # make a 10000 char string
-            val = "%s%s%s%s%s%s%s%s%s%s" % (val, val, val, val, val, val, val, val, val, val)
-        # LimitRequestLine 8190 ok, one more char -> 431
-        r = env.curl_get(url, options=["-H", "x: %s" % (val[:8187])])
+        conf = H2Conf(env)
+        conf.add("""
+            LimitRequestLine 1024
+            """)
+        conf.add_vhost_cgi()
+        conf.install()
+        assert env.apache_restart() == 0
+        val = 200*"1234567890"
+        url = env.mkurl("https", "cgi", f'/?{val[:1022]}')
+        r = env.curl_get(url)
         assert r.response["status"] == 200
-        r = env.curl_get(url, options=["-H", "x: %sx" % (val[:8188])])
-        assert 431 == r.response["status"]
-        # same with field name
-        r = env.curl_get(url, options=["-H", "y%s: 1" % (val[:8186])])
-        assert r.response["status"] == 200
-        r = env.curl_get(url, options=["-H", "y%s: 1" % (val[:8188])])
-        assert 431 == r.response["status"]
+        url = env.mkurl("https", "cgi", f'/?{val[:1023]}')
+        r = env.curl_get(url)
+        # URI too long
+        assert 414 == r.response["status"]
 
     # test header field lengths check, LimitRequestFieldSize (default 8190)
     def test_h2_200_11(self, env):
+        conf = H2Conf(env)
+        conf.add("""
+            LimitRequestFieldSize 1024
+            """)
+        conf.add_vhost_cgi()
+        conf.install()
+        assert env.apache_restart() == 0
         url = env.mkurl("https", "cgi", "/")
-        val = "1234567890"  # 10 chars
-        for i in range(3):  # make a 10000 char string
-            val = "%s%s%s%s%s%s%s%s%s%s" % (val, val, val, val, val, val, val, val, val, val)
-        # LimitRequestFieldSize 8190 ok, one more char -> 400 in HTTP/1.1
-        # (we send 4000+4185 since they are concatenated by ", " and start with "x: "
-        r = env.curl_get(url, options=["-H", "x: %s" % (val[:4000]),  "-H", "x: %s" % (val[:4185])])
-        assert r.response["status"] == 200
-        r = env.curl_get(url, options=["--http1.1", "-H", "x: %s" % (val[:4000]),  "-H", "x: %s" % (val[:4189])])
+        val = 200*"1234567890"
+        # two fields, concatenated with ', '
+        # LimitRequestFieldSize, one more char -> 400 in HTTP/1.1
+        r = env.curl_get(url, options=[
+            '-H', f'x: {val[:500]}', '-H', f'x: {val[:519]}'
+        ])
+        assert r.exit_code == 0, f'{r}'
+        assert r.response["status"] == 200, f'{r}'
+        r = env.curl_get(url, options=[
+            '--http1.1', '-H', f'x: {val[:500]}', '-H', f'x: {val[:523]}'
+        ])
         assert 400 == r.response["status"]
-        r = env.curl_get(url, options=["-H", "x: %s" % (val[:4000]),  "-H", "x: %s" % (val[:4191])])
+        r = env.curl_get(url, options=[
+            '-H', f'x: {val[:500]}', '-H', f'x: {val[:520]}'
+        ])
         assert 431 == r.response["status"]
 
     # test header field count, LimitRequestFields (default 100)
