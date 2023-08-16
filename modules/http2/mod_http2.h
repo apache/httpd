@@ -34,8 +34,22 @@ APR_DECLARE_OPTIONAL_FN(void,
 
 #define AP_HTTP2_HAS_GET_POLLFD
 
-/* Get a apr_pollfd_t propulated for a h2 connection where
- * (c->master != NULL) is true. */
+/**
+ * Get a apr_pollfd_t populated for a h2 connection where
+ * (c->master != NULL) is true and pipes are supported.
+ * To be used in Apache modules implementing WebSockets in Apache httpd
+ * versions that do not support the corresponding `ap_get_pollfd_from_conn()`
+ * function.
+ * When available, use `ap_get_pollfd_from_conn()` instead of this function.
+ *
+ * How it works: pass in a `apr_pollfd_t` which gets populated for
+ * monitoring the input of connection `c`. If `c` is not a HTTP/2
+ * stream connection, the function will return `APR_ENOTIMPL`.
+ * `ptimeout` is optional and, if passed, will get the timeout in effect
+ *
+ * On platforms without support for pipes (e.g. Windows), this function
+ * will return `APR_ENOTIMPL`.
+ */
 APR_DECLARE_OPTIONAL_FN(apr_status_t,
                         http2_get_pollfd_from_conn,
                         (conn_rec *c, struct apr_pollfd_t *pfd,
