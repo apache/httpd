@@ -1,0 +1,4 @@
+ * mod_md: fixed passing of the server environment variables to programs
+   started via MDMessageCmd and MDChallengeDns01 on *nix system.
+   See <https://github.com/icing/mod_md/issues/319>.
+   [Stefan Eissing]

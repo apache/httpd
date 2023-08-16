@@ -463,7 +463,7 @@ static apr_status_t cha_dns_01_setup(md_acme_authz_cha_t *cha, md_acme_authz_t *
                   "%s: dns-01 setup command: %s", authz->domain, cmdline);
 
     apr_tokenize_to_argv(cmdline, (char***)&argv, p);
-    if (APR_SUCCESS != (rv = md_util_exec(p, argv[0], argv, NULL, &exit_code))) {
+    if (APR_SUCCESS != (rv = md_util_exec(p, argv[0], argv, &exit_code))) {
         md_log_perror(MD_LOG_MARK, MD_LOG_WARNING, rv, p, 
                       "%s: dns-01 setup command failed to execute for %s", md->name, authz->domain);
         goto out;
@@ -531,7 +531,7 @@ static apr_status_t cha_dns_01_teardown(md_store_t *store, const char *domain, c
 
     cmdline = apr_psprintf(p, "%s teardown %s", dns01_cmd, domain); 
     apr_tokenize_to_argv(cmdline, (char***)&argv, p);
-    if (APR_SUCCESS != (rv = md_util_exec(p, argv[0], argv, NULL, &exit_code)) || exit_code) {
+    if (APR_SUCCESS != (rv = md_util_exec(p, argv[0], argv, &exit_code)) || exit_code) {
         md_log_perror(MD_LOG_MARK, MD_LOG_WARNING, rv, p, 
                       "%s: dns-01 teardown command failed (exit code=%d) for %s",
                       md->name, exit_code, domain);
