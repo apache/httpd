@@ -65,6 +65,8 @@ class TestSslRenegotiation:
         
     # try to renegotiate the cipher, should fail with correct code
     def test_h2_101_02(self, env):
+        if not (env.curl_is_at_least('8.2.0') or env.curl_is_less_than('8.1.0')):
+            pytest.skip("need curl != 8.1.x version")
         url = env.mkurl("https", "ssl", "/renegotiate/cipher/")
         r = env.curl_get(url, options=[
             "-vvv", "--tlsv1.2", "--tls-max", "1.2", "--ciphers", "ECDHE-RSA-AES256-GCM-SHA384"
@@ -86,6 +88,8 @@ class TestSslRenegotiation:
     # try to renegotiate a client certificate from Location 
     # needs to fail with correct code
     def test_h2_101_03(self, env):
+        if not (env.curl_is_at_least('8.2.0') or env.curl_is_less_than('8.1.0')):
+            pytest.skip("need curl != 8.1.x version")
         url = env.mkurl("https", "ssl", "/renegotiate/verify/")
         r = env.curl_get(url, options=["-vvv", "--tlsv1.2", "--tls-max", "1.2"])
         assert 0 != r.exit_code
@@ -105,6 +109,8 @@ class TestSslRenegotiation:
     # try to renegotiate a client certificate from Directory 
     # needs to fail with correct code
     def test_h2_101_04(self, env):
+        if not (env.curl_is_at_least('8.2.0') or env.curl_is_less_than('8.1.0')):
+            pytest.skip("need curl != 8.1.x version")
         url = env.mkurl("https", "ssl", "/ssl-client-verify/index.html")
         r = env.curl_get(url, options=["-vvv", "--tlsv1.2", "--tls-max", "1.2"])
         assert 0 != r.exit_code, f"{r}"
@@ -157,6 +163,8 @@ class TestSslRenegotiation:
         
     # Check that status works with ErrorDoc, see pull #174, fixes #172
     def test_h2_101_11(self, env):
+        if not (env.curl_is_at_least('8.2.0') or env.curl_is_less_than('8.1.0')):
+            pytest.skip("need curl != 8.1.x version")
         url = env.mkurl("https", "ssl", "/renegotiate/err-doc-cipher")
         r = env.curl_get(url, options=[
             "-vvv", "--tlsv1.2", "--tls-max", "1.2", "--ciphers", "ECDHE-RSA-AES256-GCM-SHA384"

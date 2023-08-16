@@ -509,6 +509,20 @@ class HttpdTestEnv:
             return self._curl_version >= self._versiontuple(minv)
         return False
 
+    def curl_is_less_than(self, version):
+        if self._curl_version is None:
+            p = subprocess.run([self._curl, '-V'], capture_output=True, text=True)
+            if p.returncode != 0:
+                return False
+            for l in p.stdout.splitlines():
+                m = re.match(r'curl ([0-9.]+)[- ].*', l)
+                if m:
+                    self._curl_version = self._versiontuple(m.group(1))
+                    break
+        if self._curl_version is not None:
+            return self._curl_version < self._versiontuple(version)
+        return False
+
     def has_nghttp(self):
         return self._nghttp != ""
 
