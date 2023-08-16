@@ -474,6 +474,7 @@ static apr_status_t http2_get_pollfd_from_conn(conn_rec *c,
                                                struct apr_pollfd_t *pfd,
                                                apr_interval_time_t *ptimeout)
 {
+#if H2_USE_PIPES
     if (c->master) {
         h2_conn_ctx_t *ctx = h2_conn_ctx_get(c);
         if (ctx) {
@@ -492,6 +493,11 @@ static apr_status_t http2_get_pollfd_from_conn(conn_rec *c,
             return APR_SUCCESS;
         }
     }
+#else
+    (void)c;
+    (void)pdf;
+    (void)ptimeout;
+#endif /* H2_USE_PIPES */
     return APR_ENOTIMPL;
 }
 
