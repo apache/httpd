@@ -2,7 +2,7 @@
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
-<!-- English Revision: 1908081 -->
+<!-- English Revision: 1911722 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -1218,7 +1218,10 @@ MDRequireHttps permanent
 		programme prend respectivement comme arguments "setup" ou
 		"teardown" suivi du nom de domaine. Pour "setup", le programme
 		prend comme argument supplémentaire les données de vérification
-		"dns-01".
+		"dns-01". Lorsque <directive
+		module="mod_md">MDChallengeDns01Version</directive> est définie
+		à 2, `teardown` prend aussi comme argument le contenu de la
+		vérification.
             </p><p>
                 Tant que la méthode de vérification "http:" ou "https:" est
 		valable, vous n'avez pas besoin de définir cette directive.
@@ -1735,5 +1738,62 @@ MDMessageCmd /etc/apache/md-message
             </p>
         </usage>
     </directivesynopsis>
+
+    <directivesynopsis>
+        <name>MDChallengeDns01Version</name>
+        <description></description>
+        <syntax>MDChallengeDns01Version 1|2</syntax>
+        <default>MDChallengeDns01Version 1</default>
+        <contextlist>
+            <context>server config</context>
+        </contextlist>
+        <compatibility>Disponible à partir de la version 2.4.58 du serveur HTTP
+	Apache</compatibility>
+        <usage>
+            <p>
+                Cette directive permet de définir de quelle manière est invoquée
+		la commande MDChallengeDns01, à savoir le nombre et le type de
+		ses arguments. Voir <directive
+		module="mod_md">MDChallengeDns01</directive> pour les
+		différences.
+		Cette définition est globale et ne peut pas s'appliquer
+		différemment pour chaque domaine.
+            </p>
+        </usage>
+    </directivesynopsis>
+
+    <directivesynopsis>
+        <name>MDMatchNames</name>
+        <description></description>
+        <syntax>MDMatchNames all|servernames</syntax>
+        <default>MDMatchNames all</default>
+        <contextlist>
+            <context>server config</context>
+        </contextlist>
+        <compatibility>Disponible à partir de la version 2.4.58 du serveur HTTP
+	Apache</compatibility>
+        <usage>
+            <p>
+                Le mode `all` correspond au comportement de toutes les versions
+		précédentes. ServerName et ServerAlias sont inspectés pour
+		trouver le MDomain qui correspond à un serveur virtuel. Les
+		recouvrements sont automatiquement détectés, même si vous n'avez
+		ajouté qu'un des noms à un MDomain.
+            </p><p>
+                Cet automatisme présente cependant des inconvénients avec les
+		configurations plus complexes. Si vous définissez cette
+		directive à `servernames`, seul le ServerName d'un serveur
+		virtuel est inspecté pour la correspondance et les ServerAliases
+		sont donc ignorés. Les Aliases seront tout de même ajoutés au
+		certificat obtenu, à moins que vous ne spécifiiez aussi `MDMembers manual`.
+            </p><p>
+                `servernames` possède un autre avantage : il vous confère plus
+		de souplesse avec les sous-domaines et les caractères
+		génériques. Vous pouvez ainsi définir un MDomain avec un
+		caractère générique et avoir d'autres MDomains pour des noms de
+		sous-domaines spécifiques.
+            </p>
+        </usage>
+    </directivesynopsis>    
 
 </modulesynopsis>
