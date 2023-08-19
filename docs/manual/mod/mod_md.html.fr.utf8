@@ -386,10 +386,12 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#mdcertificateprotocol">MDCertificateProtocol</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mdcertificatestatus">MDCertificateStatus</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mdchallengedns01">MDChallengeDns01</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#mdchallengedns01version">MDChallengeDns01Version</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mdcontactemail">MDContactEmail</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mddrivemode">MDDriveMode</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mdexternalaccountbinding">MDExternalAccountBinding</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mdhttpproxy">MDHttpProxy</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#mdmatchnames">MDMatchNames</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mdmember">MDMember</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mdmembers">MDMembers</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mdmessagecmd">MDMessageCmd</a></li>
@@ -726,7 +728,9 @@
 		programme prend respectivement comme arguments "setup" ou
 		"teardown" suivi du nom de domaine. Pour "setup", le programme
 		prend comme argument supplémentaire les données de vérification
-		"dns-01".
+		"dns-01". Lorsque <code class="directive"><a href="#mdchallengedns01version">MDChallengeDns01Version</a></code> est définie
+		à 2, `teardown` prend aussi comme argument le contenu de la
+		vérification.
             </p><p>
                 Tant que la méthode de vérification "http:" ou "https:" est
 		valable, vous n'avez pas besoin de définir cette directive.
@@ -743,6 +747,28 @@
             </p><p>
                 Reportez vous à la section sur les certificats génériques pour
 		plus de détails.
+            </p>
+        
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="mdchallengedns01version" id="mdchallengedns01version">Directive</a> <a name="MDChallengeDns01Version" id="MDChallengeDns01Version">MDChallengeDns01Version</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td /></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MDChallengeDns01Version 1|2</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>MDChallengeDns01Version 1</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_md</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.58 du serveur HTTP
+	Apache</td></tr>
+</table>
+            <p>
+                Cette directive permet de définir de quelle manière est invoquée
+		la commande MDChallengeDns01, à savoir le nombre et le type de
+		ses arguments. Voir <code class="directive"><a href="#mdchallengedns01">MDChallengeDns01</a></code> pour les
+		différences.
+		Cette définition est globale et ne peut pas s'appliquer
+		différemment pour chaque domaine.
             </p>
         
 </div>
@@ -849,6 +875,40 @@
 	    <code class="directive"><a href="#mdcertificateauthority">MDCertificateAuthority</a></code>. Vous
 	    devez la définir si votre serveur web ne peut atteindre internet que
 	    via un serveur mandataire.
+            </p>
+        
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="mdmatchnames" id="mdmatchnames">Directive</a> <a name="MDMatchNames" id="MDMatchNames">MDMatchNames</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td /></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MDMatchNames all|servernames</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>MDMatchNames all</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_md</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.58 du serveur HTTP
+	Apache</td></tr>
+</table>
+            <p>
+                Le mode `all` correspond au comportement de toutes les versions
+		précédentes. ServerName et ServerAlias sont inspectés pour
+		trouver le MDomain qui correspond à un serveur virtuel. Les
+		recouvrements sont automatiquement détectés, même si vous n'avez
+		ajouté qu'un des noms à un MDomain.
+            </p><p>
+                Cet automatisme présente cependant des inconvénients avec les
+		configurations plus complexes. Si vous définissez cette
+		directive à `servernames`, seul le ServerName d'un serveur
+		virtuel est inspecté pour la correspondance et les ServerAliases
+		sont donc ignorés. Les Aliases seront tout de même ajoutés au
+		certificat obtenu, à moins que vous ne spécifiiez aussi `MDMembers manual`.
+            </p><p>
+                `servernames` possède un autre avantage : il vous confère plus
+		de souplesse avec les sous-domaines et les caractères
+		génériques. Vous pouvez ainsi définir un MDomain avec un
+		caractère générique et avoir d'autres MDomains pour des noms de
+		sous-domaines spécifiques.
             </p>
         
 </div>
