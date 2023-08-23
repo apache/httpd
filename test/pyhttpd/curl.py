@@ -130,7 +130,7 @@ class CurlPiper:
                 delta_mics += datetime.time(23, 59, 59, 999999)
             recv_deltas.append(datetime.timedelta(microseconds=delta_mics))
             last_mics = mics
-        stutter_td = datetime.timedelta(seconds=stutter.total_seconds() * 0.9)  # 10% leeway
+        stutter_td = datetime.timedelta(seconds=stutter.total_seconds() * 0.75)  # 25% leeway
         # TODO: the first two chunks are often close together, it seems
         # there still is a little buffering delay going on
         for idx, td in enumerate(recv_deltas[1:]):
