@@ -23,7 +23,7 @@
  * Rewrite a websocket request.
  *
  * @param req the h2 request to rewrite
- * @param conn the connection to process the request on
+ * @param c2 the connection to process the request on
  * @param no_body != 0 iff the request is known to have no body
  * @return the websocket request for internal submit
  */

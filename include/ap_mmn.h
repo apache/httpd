@@ -596,6 +596,7 @@
  * 20120211.125 (2.4.55-dev) Export mod_http2.h as public header
  * 20120211.126 (2.4.55-dev) Add additional hcmethod_t enums and PROXY_WORKER_IS_ERROR
  * 20120211.127 (2.4.56-dev) Add ap_proxy_canonenc_ex
+ * 20120211.128 (2.4.55-dev) Add AP_CTIME_OPTION_GMTOFF to util_time.h
  * 20120211.129 (2.4.58-dev) Add ap_get_pollfd_from_conn()
  */
 

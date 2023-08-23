@@ -337,7 +337,7 @@ apr_size_t h2_util_table_bytes(apr_table_t *t, apr_size_t pair_extra);
 
 /** Match a header value against a string constance, case insensitive */
 #define H2_HD_MATCH_LIT(l, name, nlen)  \
-    ((nlen == sizeof(l) - 1) && !ap_cstr_casecmp(l, name))
+    ((nlen == sizeof(l) - 1) && !apr_strnatcasecmp(l, name))
 
 /*******************************************************************************
  * HTTP/2 header helpers
