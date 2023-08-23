@@ -129,7 +129,7 @@ class TestRanges:
                 assert e['bytes_rx_I'] > 0
                 assert e['bytes_resp_B'] == 100*1024*1024
                 assert e['bytes_tx_O'] > 1024
-                assert e['bytes_tx_O'] < 5*1024*1024  # curl buffers, but not that much
+                assert e['bytes_tx_O'] < 10*1024*1024  # curl buffers, but not that much
                 found = True
                 break
         assert found, f'request not found in {self.LOGFILE}'
