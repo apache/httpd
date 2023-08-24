@@ -11,6 +11,14 @@ Changes with Apache 2.4.58
 
   *) core: Optimize send_brigade_nonblocking(). [Yann Ylavic, Christophe Jaillet]
 
+  *) mod_status: Remove duplicate keys "BusyWorkers" and "IdleWorkers".
+     Resolve inconsistency between the previous two occurrences by
+     counting workers in state SERVER_GRACEFUL no longer as busy,
+     but instead in a new counter "GracefulWorkers" (or on HTML
+     view as "workers gracefully restarting"). Also add the graceful
+     counter as a new column to the existing HTML per process table
+     for async MPMs. PR 63300. [Rainer Jung]
+
 Changes with Apache 2.4.57
 
   *) mod_proxy: Check before forwarding that a nocanon path has not been
