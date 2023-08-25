@@ -429,8 +429,6 @@ AC_AIX
 AC_MINIX
 ])
 
-AC_ISC_POSIX
-
 # Ensure that satisfactory versions of apr and apr-util are 
 # found if external copies are configured.
 if test "${apr_found}" = "yes"; then
@@ -738,7 +736,7 @@ if test "$enable_pie" = "yes"; then
      PICFLAGS="-fPIE"
      PILDFLAGS="-pie"
    else
-     AC_ERROR([--enable-pie requested but $CC failed using PIE flags])
+     AC_MSG_ERROR([--enable-pie requested but $CC failed using PIE flags])
    fi
 fi
 APACHE_SUBST(PICFLAGS)
