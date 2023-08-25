@@ -225,11 +225,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   *) mod_dav: add DavBasePath (PR 35077)
      Trunk version of patch:
         https://svn.apache.org/r1911651
+        https://svn.apache.org/r1911906
      Backport version for 2.4.x of patch:
-        svn merge -c 1911651 ^/httpd/httpd/trunk .
+        svn merge -c 1911651,1911906 ^/httpd/httpd/trunk .
      2.4.x PR:
         https://github.com/apache/httpd/pull/377
-     +1: jorton, icing, 
+     +1: jorton,
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
