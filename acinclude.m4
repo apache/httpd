@@ -585,17 +585,17 @@ AC_DEFUN([APACHE_CHECK_OPENSSL],[
       fi
     fi
 
-    AC_MSG_CHECKING([for OpenSSL version >= 0.9.8a])
-    AC_TRY_COMPILE([#include <openssl/opensslv.h>],[
+    AC_CACHE_CHECK([for OpenSSL version >= 0.9.8a], [ap_cv_openssl098a], [
+    AC_COMPILE_IFELSE(AC_LANG_PROGRAM([#include <openssl/opensslv.h>],[
 #if !defined(OPENSSL_VERSION_NUMBER)
 #error "Missing OpenSSL version"
 #endif
 #if OPENSSL_VERSION_NUMBER < 0x0090801f
 #error "Unsupported OpenSSL version " OPENSSL_VERSION_TEXT
-#endif],
-      [AC_MSG_RESULT(yes)
-       ac_cv_openssl=yes],
-      [AC_MSG_RESULT(no)])
+#endif]), [ap_cv_openssl098a=yes], [ap_cv_openssl098a=no])])
+    if test "x$ap_cv_openssl098a" = xyes; then
+       ac_cv_openssl=yes
+    fi
 
     if test "x$ac_cv_openssl" = "xyes"; then
       ap_openssl_libs="${ap_openssl_libs:--lssl -lcrypto} `$apr_config --libs`"
