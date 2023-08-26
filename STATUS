@@ -209,9 +209,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         https://svn.apache.org/r1909137
         https://svn.apache.org/r1911067
      Backport version for 2.4.x of patch:
-        https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/alias-preserve-path.diff
+        https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/alias-preserve-path2.diff
      +1: minfrin
-     covener: diff doesn't seem to apply clean to 2.4.x (with or without 1861542,r1861569 above)
 
   *) mod_dav: add DavBasePath (PR 35077)
      Trunk version of patch:
