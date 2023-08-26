@@ -618,4 +618,25 @@ ScriptAliasMatch "(?i)^/cgi-bin(.*)" "/usr/local/apache/cgi-bin$1"
 </usage>
 </directivesynopsis>
 
+<directivesynopsis>
+<name>RedirectRelative</name>
+<description>Allows relative redirect targets.</description>
+<syntax>RedirectRelative OFF|ON</syntax>
+<default>RedirectRelative OFF</default>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context>
+<compatibility>2.5.1 and later</compatibility>
+</contextlist>
+
+<usage>
+    <p>By default, if the target URL of a <directive>Redirect</directive>
+    directive is a relative URL beginning with a '/' character, the server 
+    converts it to a an absolute URL before responding to the client. By
+    setting <directive>RedirectRelative</directive> to the value "ON",
+    the relative URL is presented to the client directly.</p>
+
+</usage>
+</directivesynopsis>
+
+
 </modulesynopsis>

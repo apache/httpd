@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.58
 
+  *) mod_alias: Add RedirectRelative to allow relative redirect targets to be
+     issued as-is. [Graham Leggett]
+
   *) core: Add formats %{z} and %{strftime-format} to ErrorLogFormat, and make
      sure that if the format is configured early enough it applies to every log
      line.  PR 62161.  [Yann Ylavic]
