@@ -209,7 +209,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         https://svn.apache.org/r1909137
         https://svn.apache.org/r1911067
      Backport version for 2.4.x of patch:
-        https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/alias-preserve-path2.diff
+        https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/alias-preserve-path3.diff
      +1: minfrin
 
   *) mod_dav: add DavBasePath (PR 35077)
