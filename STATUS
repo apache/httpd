@@ -220,7 +220,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         svn merge -c 1911651,1911906 ^/httpd/httpd/trunk .
      2.4.x PR:
         https://github.com/apache/httpd/pull/377
-     +1: jorton,
+     +1: jorton, minfrin
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
