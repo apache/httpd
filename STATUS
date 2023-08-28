@@ -220,6 +220,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/alias-preserve-path3.diff
      +1: minfrin, rpluem
 
+  *) mod_proxy_http2: improved error handling on connection errors while
+     response is already underway.
+     Trunk version of patch:
+        https://svn.apache.org/r1911964
+     Backport version for 2.4.x of patch:
+      svn merge -c 1911964 ^/httpd/httpd/trunk .
+     +1: icing,
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
