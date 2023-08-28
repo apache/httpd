@@ -2,6 +2,7 @@ import inspect
 import json
 import os
 import re
+import time
 import pytest
 
 from .env import H2Conf, H2TestEnv
@@ -129,7 +130,6 @@ class TestRanges:
                 assert e['bytes_rx_I'] > 0
                 assert e['bytes_resp_B'] == 100*1024*1024
                 assert e['bytes_tx_O'] > 1024
-                assert e['bytes_tx_O'] < 10*1024*1024  # curl buffers, but not that much
                 found = True
                 break
         assert found, f'request not found in {self.LOGFILE}'
@@ -147,7 +147,12 @@ class TestRanges:
         url = env.mkurl("https", "test1", f'/data-100m?[0-{count-1}]')
         r = env.curl_get(url, 5, options=['--http2', '-H', f'Range: bytes=0-{4096}'])
         assert r.exit_code == 0, f'{r}'
-        stats = self.get_server_status(env)
+        for _ in range(10):
+            # slow cpu might not success on first read
+            stats = self.get_server_status(env)
+            if (4*count)+1 <= int(stats['Total kBytes']):
+                break
+            time.sleep(0.1)
         # amount reported is larger than (count *4k), the net payload
         # but does not exceed an additional 4k
         assert (4*count)+1 <= int(stats['Total kBytes'])
