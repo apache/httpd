@@ -377,6 +377,7 @@ static void h2_srv_config_seti(h2_config *conf, h2_config_var_t var, int val)
             break;
         case H2_CONF_PROXY_REQUESTS:
             H2_CONFIG_SET(conf, proxy_requests, val);
+            break;
         case H2_CONF_WEBSOCKETS:
             H2_CONFIG_SET(conf, h2_websockets, val);
             break;

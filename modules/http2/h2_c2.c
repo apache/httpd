@@ -723,7 +723,7 @@ static apr_status_t c2_process(h2_conn_ctx_t *conn_ctx, conn_rec *c)
     apr_time_t timeout;
     apr_status_t rv = APR_SUCCESS;
 
-    if(req->protocol && !strcmp("websocket", req->protocol)) {
+    if (req->protocol && !strcmp("websocket", req->protocol)) {
         req = h2_ws_rewrite_request(req, c, conn_ctx->beam_in == NULL);
         if (!req) {
             rv = APR_EGENERAL;
