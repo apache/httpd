@@ -152,7 +152,15 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-
+  *) mod_dav: add DavBasePath (PR 35077)
+     Trunk version of patch:
+        https://svn.apache.org/r1911651
+        https://svn.apache.org/r1911906
+     Backport version for 2.4.x of patch:
+        svn merge -c 1911651,1911906 ^/httpd/httpd/trunk .
+     2.4.x PR:
+        https://github.com/apache/httpd/pull/377
+     +1: jorton, minfrin, rpluem
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -211,16 +219,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      Backport version for 2.4.x of patch:
         https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/alias-preserve-path3.diff
      +1: minfrin
-
-  *) mod_dav: add DavBasePath (PR 35077)
-     Trunk version of patch:
-        https://svn.apache.org/r1911651
-        https://svn.apache.org/r1911906
-     Backport version for 2.4.x of patch:
-        svn merge -c 1911651,1911906 ^/httpd/httpd/trunk .
-     2.4.x PR:
-        https://github.com/apache/httpd/pull/377
-     +1: jorton, minfrin
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
