@@ -209,7 +209,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         https://svn.apache.org/r1910809
      2.4.x PR:
         https://github.com/apache/httpd/pull/366
-     +1: icing, minfrin
+     +1: icing, minfrin, gbechis
 
   *) mod_alias: Add AliasPreservePath directive to map the full path after the
      alias in a location. Requires r1861542 / r1861569 above.
