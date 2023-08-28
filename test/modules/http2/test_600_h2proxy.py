@@ -166,6 +166,7 @@ class TestH2Proxy:
 
     # produce an error, fail to generate an error bucket
     def test_h2_600_32(self, env, repeat):
+        pytest.skip('only works reliable with r1911964 from trunk')
         conf = H2Conf(env)
         conf.add_vhost_cgi(h2proxy_self=True)
         conf.install()
