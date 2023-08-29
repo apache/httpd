@@ -196,21 +196,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      +1: rpluem,
      ylavic: see https://lists.apache.org/thread/jftfd6mo6p3b0tw694rlh09gdl7189hq
 
-  *) mod_http2: add HTTP/2 WebSockets (RFC8441) support.
-     Trunk version of patch:
-        https://svn.apache.org/r1910507
-        https://svn.apache.org/r1910535
-        https://svn.apache.org/r1910648
-        https://svn.apache.org/r1910654
-        https://svn.apache.org/r1910656
-        https://svn.apache.org/r1910685
-        https://svn.apache.org/r1910686
-        https://svn.apache.org/r1910704
-        https://svn.apache.org/r1910809
-     2.4.x PR:
-        https://github.com/apache/httpd/pull/366
-     +1: icing, minfrin, gbechis
-
   *) mod_alias: Add AliasPreservePath directive to map the full path after the
      alias in a location. Requires r1861542 / r1861569 above.
      Trunk version of patch:
