@@ -9,8 +9,8 @@ class TestEarlyHints:
 
     @pytest.fixture(autouse=True, scope='class')
     def _class_scope(self, env):
-        if not env.httpd_is_at_least('2.5.0'):
-            pytest.skip(f'needs r1909769 from trunk')
+        if not env.httpd_is_at_least('2.4.58'):
+            pytest.skip(f'needs httpd 2.4.58')
         H2Conf(env).start_vhost(domains=[f"hints.{env.http_tld}"],
                                 port=env.https_port, doc_root="htdocs/test1"
         ).add("""
@@ -69,8 +69,8 @@ class TestEarlyHints:
 
     # H2EarlyHints enabled, no PUSH, check that it works for H2EarlyHint
     def test_h2_401_34(self, env, repeat):
-        if not env.httpd_is_at_least('2.5.0'):
-            pytest.skip(f'needs r1909769 from trunk')
+        if not env.httpd_is_at_least('2.4.58'):
+            pytest.skip(f'needs httpd 2.4.58')
         url = env.mkurl("https", "hints", "/006-early-no-push.html")
         r = env.nghttp().get(url)
         assert r.response["status"] == 200

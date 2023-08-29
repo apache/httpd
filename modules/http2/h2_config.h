@@ -44,6 +44,8 @@ typedef enum {
     H2_CONF_OUTPUT_BUFFER,
     H2_CONF_STREAM_TIMEOUT,
     H2_CONF_MAX_DATA_FRAME_LEN,
+    H2_CONF_PROXY_REQUESTS,
+    H2_CONF_WEBSOCKETS,
 } h2_config_var_t;
 
 struct apr_hash_t;

@@ -250,8 +250,10 @@ class HttpdTestEnv:
         self._http_port2 = int(self.config.get('test', 'http_port2'))
         self._https_port = int(self.config.get('test', 'https_port'))
         self._proxy_port = int(self.config.get('test', 'proxy_port'))
+        self._ws_port = int(self.config.get('test', 'ws_port'))
         self._http_tld = self.config.get('test', 'http_tld')
         self._test_dir = self.config.get('test', 'test_dir')
+        self._clients_dir = os.path.join(os.path.dirname(self._test_dir), 'clients')
         self._gen_dir = self.config.get('test', 'gen_dir')
         self._server_dir = os.path.join(self._gen_dir, 'apache')
         self._server_conf_dir = os.path.join(self._server_dir, "conf")
@@ -367,6 +369,10 @@ class HttpdTestEnv:
         return self._proxy_port
 
     @property
+    def ws_port(self) -> int:
+        return self._ws_port
+
+    @property
     def http_tld(self) -> str:
         return self._http_tld
 
@@ -389,6 +395,10 @@ class HttpdTestEnv:
     @property
     def test_dir(self) -> str:
         return self._test_dir
+
+    @property
+    def clients_dir(self) -> str:
+        return self._clients_dir
 
     @property
     def server_dir(self) -> str:
@@ -533,12 +543,14 @@ class HttpdTestEnv:
         if not os.path.exists(path):
             return os.makedirs(path)
 
-    def run(self, args, stdout_list=False, intext=None, debug_log=True):
+    def run(self, args, stdout_list=False, intext=None, inbytes=None, debug_log=True):
         if debug_log:
             log.debug(f"run: {args}")
         start = datetime.now()
+        if intext is not None:
+            inbytes = intext.encode()
         p = subprocess.run(args, stderr=subprocess.PIPE, stdout=subprocess.PIPE,
-                           input=intext.encode() if intext else None)
+                           input=inbytes)
         stdout_as_list = None
         if stdout_list:
             try:

@@ -1281,8 +1281,8 @@ apr_size_t h2_util_bucket_print(char *buffer, apr_size_t bmax,
     else if (bmax > off) {
         off += apr_snprintf(buffer+off, bmax-off, "%s[%ld]",
                             b->type->name,
-                            (long)(b->length == ((apr_size_t)-1)?
-                                   -1 : b->length));
+                            (b->length == ((apr_size_t)-1)?
+                                   -1 : (long)b->length));
     }
     return off;
 }
@@ -1650,7 +1650,7 @@ static int contains_name(const literal *lits, size_t llen, nghttp2_nv *nv)
     for (i = 0; i < llen; ++i) {
         lit = &lits[i];
         if (lit->len == nv->namelen
-            && !apr_strnatcasecmp(lit->name, (const char *)nv->name)) {
+            && !ap_cstr_casecmp(lit->name, (const char *)nv->name)) {
             return 1;
         }
     }
@@ -1706,7 +1706,7 @@ static apr_status_t req_add_header(apr_table_t *headers, apr_pool_t *pool,
         return APR_SUCCESS;
     }
     else if (nv->namelen == sizeof("cookie")-1
-             && !apr_strnatcasecmp("cookie", (const char *)nv->name)) {
+             && !ap_cstr_casecmp("cookie", (const char *)nv->name)) {
         existing = apr_table_get(headers, "cookie");
         if (existing) {
             /* Cookie header come separately in HTTP/2, but need
@@ -1725,7 +1725,7 @@ static apr_status_t req_add_header(apr_table_t *headers, apr_pool_t *pool,
         }
     }
     else if (nv->namelen == sizeof("host")-1
-             && !apr_strnatcasecmp("host", (const char *)nv->name)) {
+             && !ap_cstr_casecmp("host", (const char *)nv->name)) {
         if (apr_table_get(headers, "Host")) {
             return APR_SUCCESS; /* ignore duplicate */
         }
@@ -1883,6 +1883,13 @@ void h2_util_drain_pipe(apr_file_t *pipe)
 {
     char rb[512];
     apr_size_t nr = sizeof(rb);
+    apr_interval_time_t timeout;
+    apr_status_t trv;
+
+    /* Make the pipe non-blocking if we can */
+    trv = apr_file_pipe_timeout_get(pipe, &timeout);
+    if (trv == APR_SUCCESS)
+      apr_file_pipe_timeout_set(pipe, 0);
 
     while (apr_file_read(pipe, rb, &nr) == APR_SUCCESS) {
         /* Although we write just one byte to the other end of the pipe
@@ -1893,6 +1900,8 @@ void h2_util_drain_pipe(apr_file_t *pipe)
         if (nr != sizeof(rb))
             break;
     }
+    if (trv == APR_SUCCESS)
+      apr_file_pipe_timeout_set(pipe, timeout);
 }
 
 apr_status_t h2_util_wait_on_pipe(apr_file_t *pipe)

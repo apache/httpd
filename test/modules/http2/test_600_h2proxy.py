@@ -153,7 +153,6 @@ class TestH2Proxy:
 
     # produce an error during response body
     def test_h2_600_31(self, env, repeat):
-        pytest.skip("needs fix in core protocol handling")
         conf = H2Conf(env)
         conf.add_vhost_cgi(h2proxy_self=True)
         conf.install()
@@ -163,11 +162,11 @@ class TestH2Proxy:
         # depending on when the error is detect in proxying, if may RST the
         # stream (exit_code != 0) or give a 503 response.
         if r.exit_code == 0:
-            assert r.response['status'] == 503
+            assert r.response['status'] == 502
 
     # produce an error, fail to generate an error bucket
     def test_h2_600_32(self, env, repeat):
-        pytest.skip("needs fix in core protocol handling")
+        pytest.skip('only works reliable with r1911964 from trunk')
         conf = H2Conf(env)
         conf.add_vhost_cgi(h2proxy_self=True)
         conf.install()
@@ -177,4 +176,4 @@ class TestH2Proxy:
         # depending on when the error is detect in proxying, if may RST the
         # stream (exit_code != 0) or give a 503 response.
         if r.exit_code == 0:
-            assert r.response['status'] == 503
+            assert r.response['status'] in [502, 503]

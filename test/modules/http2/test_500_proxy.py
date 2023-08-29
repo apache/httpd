@@ -61,12 +61,6 @@ class TestProxy:
         ])
         self.curl_upload_and_verify(env, "data-1k", ["--http2", "-H", "Content-Length:"])
 
-    def test_h2_500_11(self, env):
-        self.curl_upload_and_verify(env, "data-1k", [
-            "--http1.1", "-H", "Content-Length:", "-H", "Transfer-Encoding: chunked"
-        ])
-        self.curl_upload_and_verify(env, "data-1k", ["--http2", "-H", "Content-Length:"])
-
     # POST some data using nghttp and see it echo'ed properly back
     def nghttp_post_and_verify(self, env, fname, options=None):
         url = env.mkurl("https", "cgi", "/proxy/echo.py")

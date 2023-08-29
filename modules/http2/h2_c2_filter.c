@@ -39,6 +39,7 @@
 #include "h2_c2.h"
 #include "h2_mplx.h"
 #include "h2_request.h"
+#include "h2_ws.h"
 #include "h2_util.h"
 
 
@@ -108,20 +109,39 @@ apr_status_t h2_c2_filter_request_in(ap_filter_t *f,
     /* This filter is a one-time wonder */
     ap_remove_input_filter(f);
 
-    if (f->c->master && (conn_ctx = h2_conn_ctx_get(f->c)) && conn_ctx->stream_id) {
-        if (conn_ctx->request->http_status != H2_HTTP_STATUS_UNSET) {
+    if (f->c->master && (conn_ctx = h2_conn_ctx_get(f->c)) &&
+        conn_ctx->stream_id) {
+        const h2_request *req = conn_ctx->request;
+
+        if (req->http_status == H2_HTTP_STATUS_UNSET &&
+            req->protocol && !strcmp("websocket", req->protocol)) {
+            req = h2_ws_rewrite_request(req, f->c, conn_ctx->beam_in == NULL);
+            if (!req)
+                return APR_EGENERAL;
+        }
+
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, f->c,
+                      "h2_c2_filter_request_in(%s): adding request bucket",
+                      conn_ctx->id);
+        b = h2_request_create_bucket(req, f->r);
+        APR_BRIGADE_INSERT_TAIL(bb, b);
+
+        if (req->http_status != H2_HTTP_STATUS_UNSET) {
             /* error was encountered preparing this request */
-            b = ap_bucket_error_create(conn_ctx->request->http_status, NULL, f->r->pool,
+            ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, f->c,
+                          "h2_c2_filter_request_in(%s): adding error bucket %d",
+                          conn_ctx->id, req->http_status);
+            b = ap_bucket_error_create(req->http_status, NULL, f->r->pool,
                                        f->c->bucket_alloc);
             APR_BRIGADE_INSERT_TAIL(bb, b);
             return APR_SUCCESS;
         }
-        b = h2_request_create_bucket(conn_ctx->request, f->r);
-        APR_BRIGADE_INSERT_TAIL(bb, b);
+
         if (!conn_ctx->beam_in) {
             b = apr_bucket_eos_create(f->c->bucket_alloc);
             APR_BRIGADE_INSERT_TAIL(bb, b);
         }
+
         return APR_SUCCESS;
     }
 
@@ -636,9 +656,11 @@ apr_status_t h2_c2_filter_catch_h1_out(ap_filter_t* f, apr_bucket_brigade* bb)
                 int result = ap_map_http_request_error(conn_ctx->last_err,
                                                        HTTP_INTERNAL_SERVER_ERROR);
                 request_rec *r = h2_create_request_rec(conn_ctx->request, f->c, 1);
-                ap_die((result >= 400)? result : HTTP_INTERNAL_SERVER_ERROR, r);
-                b = ap_bucket_eor_create(f->c->bucket_alloc, r);
-                APR_BRIGADE_INSERT_TAIL(bb, b);
+                if (r) {
+                    ap_die((result >= 400)? result : HTTP_INTERNAL_SERVER_ERROR, r);
+                    b = ap_bucket_eor_create(f->c->bucket_alloc, r);
+                    APR_BRIGADE_INSERT_TAIL(bb, b);
+                }
             }
         }
         /* There are cases where we need to parse a serialized http/1.1 response.
@@ -892,10 +914,10 @@ static apr_status_t read_and_chunk(ap_filter_t *f, h2_conn_ctx_t *conn_ctx,
 }
 
 apr_status_t h2_c2_filter_request_in(ap_filter_t* f,
-                                  apr_bucket_brigade* bb,
-                                  ap_input_mode_t mode,
-                                  apr_read_type_e block,
-                                  apr_off_t readbytes)
+                                     apr_bucket_brigade* bb,
+                                     ap_input_mode_t mode,
+                                     apr_read_type_e block,
+                                     apr_off_t readbytes)
 {
     h2_conn_ctx_t *conn_ctx = h2_conn_ctx_get(f->c);
     h2_chunk_filter_t *fctx = f->ctx;
