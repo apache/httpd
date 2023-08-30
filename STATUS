@@ -162,6 +162,16 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
         https://github.com/apache/httpd/pull/377
      +1: jorton, minfrin, rpluem
 
+  *) mod_alias: Add AliasPreservePath directive to map the full path after the
+     alias in a location. Requires r1861542 / r1861569 above.
+     Trunk version of patch:
+        https://svn.apache.org/r1909137
+        https://svn.apache.org/r1911067
+     Backport version for 2.4.x of patch:
+        https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/alias-preserve-path3.diff
+     +1: minfrin, rpluem, covener
+
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -195,15 +205,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       svn merge -c 1909400,1909401,1909402,1909451 ^/httpd/httpd/trunk .
      +1: rpluem,
      ylavic: see https://lists.apache.org/thread/jftfd6mo6p3b0tw694rlh09gdl7189hq
-
-  *) mod_alias: Add AliasPreservePath directive to map the full path after the
-     alias in a location. Requires r1861542 / r1861569 above.
-     Trunk version of patch:
-        https://svn.apache.org/r1909137
-        https://svn.apache.org/r1911067
-     Backport version for 2.4.x of patch:
-        https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/alias-preserve-path3.diff
-     +1: minfrin, rpluem
 
   *) mod_proxy_http2: improved error handling on connection errors while
      response is already underway.
