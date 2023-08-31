@@ -25,18 +25,24 @@ module AP_MODULE_DECLARE_DATA lbmethod_bybusyness_module;
 static APR_OPTIONAL_FN_TYPE(proxy_balancer_get_best_worker)
                             *ap_proxy_balancer_get_best_worker_fn = NULL;
 
+
 static int is_best_bybusyness(proxy_worker *current, proxy_worker *prev_best, void *baton)
 {
     int *total_factor = (int *)baton;
 
     current->s->lbstatus += current->s->lbfactor;
     *total_factor += current->s->lbfactor;
+    apr_size_t current_busy = getbusy_count(current);
+    apr_size_t prev_best_busy = 0;
+    if (prev_best)
+        prev_best_busy = getbusy_count(prev_best);
+     
 
     return (
         !prev_best
-        || (current->s->busy < prev_best->s->busy)
+        || (current_busy < prev_best_busy)
         || (
-            (current->s->busy == prev_best->s->busy)
+            (current_busy == prev_best_busy)
             && (current->s->lbstatus > prev_best->s->lbstatus)
         )
     );
@@ -65,7 +71,7 @@ static apr_status_t reset(proxy_balancer *balancer, server_rec *s)
     worker = (proxy_worker **)balancer->workers->elts;
     for (i = 0; i < balancer->workers->nelts; i++, worker++) {
         (*worker)->s->lbstatus = 0;
-        (*worker)->s->busy = 0;
+        setbusy_count(*worker, 0); 
     }
     return APR_SUCCESS;
 }

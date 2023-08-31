@@ -486,17 +486,6 @@ static void force_recovery(proxy_balancer *balancer, server_rec *s)
     }
 }
 
-static apr_status_t decrement_busy_count(void *worker_)
-{
-    proxy_worker *worker = worker_;
-    
-    if (worker->s->busy) {
-        worker->s->busy--;
-    }
-
-    return APR_SUCCESS;
-}
-
 static int proxy_balancer_pre_request(proxy_worker **worker,
                                       proxy_balancer **balancer,
                                       request_rec *r,
@@ -635,7 +624,7 @@ static int proxy_balancer_pre_request(proxy_worker **worker,
         *worker = runtime;
     }
 
-    (*worker)->s->busy++;
+    increment_busy_count(*worker);
     apr_pool_cleanup_register(r->pool, *worker, decrement_busy_count,
                               apr_pool_cleanup_null);
 
@@ -1575,7 +1564,7 @@ static void balancer_display_page(request_rec *r, proxy_server_conf *conf,
                           "</httpd:redirect>\n", NULL);
                 ap_rprintf(r,
                            "          <httpd:busy>%" APR_SIZE_T_FMT "</httpd:busy>\n",
-                           worker->s->busy);
+                           getbusy_count(worker));
                 ap_rprintf(r, "          <httpd:lbset>%d</httpd:lbset>\n",
                            worker->s->lbset);
                 /* End proxy_worker_stat */
@@ -1748,7 +1737,7 @@ static void balancer_display_page(request_rec *r, proxy_server_conf *conf,
                 ap_rvputs(r, ap_proxy_parse_wstatus(r->pool, worker), NULL);
                 ap_rputs("</td>", r);
                 ap_rprintf(r, "<td>%" APR_SIZE_T_FMT "</td>", worker->s->elected);
-                ap_rprintf(r, "<td>%" APR_SIZE_T_FMT "</td>", worker->s->busy);
+                ap_rprintf(r, "<td>%" APR_SIZE_T_FMT "</td>", getbusy_count(worker));
                 ap_rprintf(r, "<td>%d</td><td>", worker->s->lbstatus);
                 ap_rputs(apr_strfsize(worker->s->transferred, fbuf), r);
                 ap_rputs("</td><td>", r);

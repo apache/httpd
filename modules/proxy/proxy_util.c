@@ -21,6 +21,7 @@
 #include "apr_version.h"
 #include "apr_strings.h"
 #include "apr_hash.h"
+#include "apr_atomic.h"
 #include "http_core.h"
 #include "proxy_util.h"
 #include "ajp.h"
@@ -4982,6 +4983,52 @@ PROXY_DECLARE(apr_status_t) ap_proxy_tunnel_create(proxy_tunnel_rec **ptunnel,
 
     *ptunnel = tunnel;
     return APR_SUCCESS;
+}
+
+PROXY_DECLARE(apr_status_t) decrement_busy_count(void *worker_)
+{
+    proxy_worker *worker = worker_;
+
+    if (sizeof(worker->s->busy) == 4) {
+        apr_uint32_t val = apr_atomic_add32((volatile apr_uint32_t *)&(worker->s->busy), -1);
+        if (val == 0 || val > INT_MAX)
+            apr_atomic_inc32((volatile apr_uint32_t *)&(worker->s->busy));
+    } else {
+        apr_uint64_t val = apr_atomic_add64((volatile apr_uint64_t *)&(worker->s->busy), -1);
+        if (val == 0 || val > INT_MAX)
+            apr_atomic_inc64((volatile apr_uint64_t *)&(worker->s->busy));
+    }
+    return APR_SUCCESS;
+}
+
+PROXY_DECLARE(void) increment_busy_count(void *worker_)
+{
+    proxy_worker *worker = worker_;
+    if (sizeof(worker->s->busy) == 4) {
+       apr_atomic_inc32((volatile apr_uint32_t *)&(worker->s->busy));
+    } else {
+        apr_atomic_inc64((volatile apr_uint64_t *)&(worker->s->busy));
+    }
+}
+
+PROXY_DECLARE(apr_size_t) getbusy_count(void *worker_)
+{
+    proxy_worker *worker = worker_;
+    if (sizeof(worker->s->busy) == 4) {
+       return(apr_atomic_read32((volatile apr_uint32_t *)&(worker->s->busy)));
+    } else {
+        return(apr_atomic_read64((volatile apr_uint64_t *)&(worker->s->busy)));
+    }
+}
+
+PROXY_DECLARE(void) setbusy_count(void *worker_, apr_size_t busy)
+{
+    proxy_worker *worker = worker_;
+    if (sizeof(worker->s->busy) == 4) {
+        apr_atomic_set32((volatile apr_uint32_t *)&worker->s->busy, (apr_uint32_t) busy); 
+    } else {
+        apr_atomic_set64((volatile apr_uint64_t *)&worker->s->busy, (apr_uint64_t) busy);
+    }
 }
 
 static void add_pollset(apr_pollset_t *pollset, apr_pollfd_t *pfd,
