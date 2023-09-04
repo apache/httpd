@@ -152,16 +152,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_dav: add DavBasePath (PR 35077)
-     Trunk version of patch:
-        https://svn.apache.org/r1911651
-        https://svn.apache.org/r1911906
-     Backport version for 2.4.x of patch:
-        svn merge -c 1911651,1911906 ^/httpd/httpd/trunk .
-     2.4.x PR:
-        https://github.com/apache/httpd/pull/377
-     +1: jorton, minfrin, rpluem
-
   *) mod_alias: Add AliasPreservePath directive to map the full path after the
      alias in a location. Requires r1861542 / r1861569 above.
      Trunk version of patch:
