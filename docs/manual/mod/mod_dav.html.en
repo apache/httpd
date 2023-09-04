@@ -213,7 +213,7 @@ Alias "/php-source" "/home/gstein/php_files"
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_dav</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in version 2.5.1 and later</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in version 2.4.58 and later</td></tr>
 </table>
   <p>If a DAV repository is configured using a regular expression
   match (such as <code class="directive"><a href="../mod/core.html#locationmatch">LocationMatch</a></code>)
