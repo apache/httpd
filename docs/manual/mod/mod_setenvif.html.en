@@ -274,11 +274,12 @@ for additional examples.
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_setenvif</td></tr>
 </table>
     <p>The <code class="directive">SetEnvIfExpr</code> directive defines
-    environment variables based on an <code class="directive"><a href="../mod/core.html#if">&lt;If&gt;</a></code>
-    <code>ap_expr</code>. These expressions will be evaluated at runtime,
-    and applied <em>env-variable</em> in the same fashion as <code class="directive">SetEnvIf</code>.</p>
+    environment variables based on an <a href="../expr.html">expression</a>.
+    These expressions will be evaluated at runtime,
+    and applied <em>env-variable</em> in the same fashion as <code class="directive">SetEnvIf</code>, including backreferences.</p>
 
-<pre class="prettyprint lang-config">SetEnvIfExpr "tolower(req('X-Sendfile')) == 'd:\images\very_big.iso')" iso_delivered</pre>
+<pre class="prettyprint lang-config">    SetEnvIfExpr "tolower(req('X-Sendfile')) == 'd:\images\very_big.iso')" iso_delivered
+    SetEnvIfExpr "tolower(req('X-Sendfile')) =~ /(.*\.iso$)/" iso-path=$1</pre>
 
 
     <p>This would set the environment variable <code>iso_delivered</code>

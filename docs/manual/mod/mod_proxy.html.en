@@ -1359,7 +1359,7 @@ ProxyPass "/mirror/foo" "http://backend.example.com"</pre>
     </td></tr>
     <tr><td>timeout</td>
         <td><code class="directive"><a href="#proxytimeout">ProxyTimeout</a></code></td>
-        <td>Connection timeout in seconds.
+        <td>Socket timeout in seconds.
         The number of seconds Apache httpd waits for data sent by / to the backend.
     </td></tr>
     <tr><td>ttl</td>

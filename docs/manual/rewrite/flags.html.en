@@ -588,11 +588,17 @@ client undue influence.</p>
 
 <div class="warning">
 <h3>Performance warning</h3>
-<p>Using this flag triggers the use of <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code>, without handling of persistent connections. This
-means the performance of your proxy will be better if you set it up with <code class="directive"><a href="../mod/mod_proxy.html#proxypass">ProxyPass</a></code> or
-<code class="directive"><a href="../mod/mod_proxy.html#proxypassmatch">ProxyPassMatch</a></code></p>
-<p>This is because this flag triggers the use of the default worker, which does not handle connection pooling/reuse.</p>
-<p>Avoid using this flag and prefer those directives, whenever you can.</p>
+<p>Using this flag triggers the use of <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code>, without
+handling of persistent connections as the default worker is used in this case,
+which does not handle connection pooling/reuse.</p>
+<p>In order to use persistent connections you need to setup a
+<code class="directive"><a href="../mod/mod_proxy.html#proxy">Proxy</a></code> block at least for the scheme
+and host part of the target URL containing a
+<code class="directive"><a href="../mod/mod_proxy.html#proxyset">ProxySet</a></code> directive where you e.g. set
+a timeout.</p>
+<p>If you set it up with <code class="directive"><a href="../mod/mod_proxy.html#proxypass">ProxyPass</a></code> or
+<code class="directive"><a href="../mod/mod_proxy.html#proxypassmatch">ProxyPassMatch</a></code> persistent connections
+will be used automatically.</p>
 </div>
 
 <p>Note: <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> must be enabled in order

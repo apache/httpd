@@ -53,6 +53,7 @@ client</td></tr>
 content</a></li>
 </ul><h3 class="directives">Directives</h3>
 <ul id="toc">
+<li><img alt="" src="../images/down.gif" /> <a href="#deflatealteretag">DeflateAlterETag</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#deflatebuffersize">DeflateBufferSize</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#deflatecompressionlevel">DeflateCompressionLevel</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#deflatefilternote">DeflateFilterNote</a></li>
@@ -231,6 +232,37 @@ content</a></h2>
     &lt;/FilesMatch&gt;
 &lt;/IfModule&gt;</pre>
 
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="DeflateAlterETag" id="DeflateAlterETag">DeflateAlterETag</a> <a name="deflatealteretag" id="deflatealteretag">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>How the outgoing ETag header should be modified during compression</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>DeflateAlterETag AddSuffix|NoChange|Remove</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>DeflateAlterETag AddSuffix</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_deflate</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache 2.4.58 and later</td></tr>
+</table>
+    <p>The <code class="directive">DeflateAlterETag</code> directive specifies
+    how the ETag header should be altered when a response is compressed.</p>
+    <dl>
+    <dt>AddSuffix</dt>
+    <dd><p>Append the compression method onto the end of the ETag, causing
+        compressed and uncompressed representations to have unique ETags.
+        This has been the default since 2.4.0, but prevents serving
+        "HTTP Not Modified" (304) responses to conditional requests for
+        compressed content.</p></dd>
+    <dt>NoChange</dt>
+    <dd><p>Don't change the ETag on a compressed response. This was the default
+        prior to 2.4.0, but does not satisfy the HTTP/1.1 property that all
+        representations of the same resource have unique ETags.</p></dd>
+    <dt>Remove</dt>
+    <dd><p>Remove the ETag header from compressed responses. This prevents
+        some conditional requests from being possible, but avoids the
+        shortcomings of the preceding options.</p></dd>
+    </dl>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
