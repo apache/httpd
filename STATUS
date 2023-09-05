@@ -202,7 +202,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         https://svn.apache.org/r1911964
      Backport version for 2.4.x of patch:
       svn merge -c 1911964 ^/httpd/httpd/trunk .
-     +1: icing,
+     +1: icing, gbechis
 
   *) mod_ssl: Silence info log message "SSL Library Error: error:0A000126:
      SSL routines::unexpected eof while reading" when using
@@ -212,7 +212,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         https://svn.apache.org/r1912015
      Backport version for 2.4.x of patch:
         svn merge -c 1912015 ^/httpd/httpd/trunk .
-     +1: rjung
+     +1: rjung, gbechis
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
