@@ -17,6 +17,7 @@
 /* Load balancer module for Apache proxy */
 
 #include "mod_proxy.h"
+#include "proxy_util.h"
 #include "scoreboard.h"
 #include "ap_mpm.h"
 #include "apr_version.h"

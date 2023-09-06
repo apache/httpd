@@ -467,7 +467,7 @@ typedef struct {
     apr_size_t      recv_buffer_size;
     apr_size_t      io_buffer_size;
     apr_size_t      elected;    /* Number of times the worker was elected */
-    volatile apr_size_t      busy;       /* busyness factor */
+    apr_size_t      busy;       /* busyness factor */
     apr_size_t      response_field_size; /* Size of proxy response buffer in bytes. */
     apr_port_t      port;
     apr_off_t       transferred;/* Number of bytes transferred to remote */
@@ -1577,38 +1577,6 @@ PROXY_DECLARE(apr_status_t) ap_proxy_transfer_between_connections(
                                                        int *sent,
                                                        apr_off_t bsize,
                                                        int flags);
-/*
- * Get the busy counter from the shared worker memory
- *
- * @param worker_ Pointer to the worker structure.
- * @return      apr_size_t value atomically read for the worker.
- */
-PROXY_DECLARE(apr_size_t) getbusy_count(void *worker_);
-
-/*
- * Set the busy counter from the shared worker memory
- *
- * @param worker_ Pointer to the worker structure.
- * @param busy value to set the busy counter.
- * @return      void
- */
-PROXY_DECLARE(void) setbusy_count(void *worker_, apr_size_t busy);
-
-/*
- * decrement the busy counter from the shared worker memory
- *
- * @param worker_ Pointer to the worker structure.
- * @return      apr_status_t returns APR_SUCCESS.
- */
-PROXY_DECLARE(apr_status_t) decrement_busy_count(void *worker_);
-
-/*
- * increment the busy counter from the shared worker memory
- *
- * @param worker_ Pointer to the worker structure.
- * @return      void
- */
-PROXY_DECLARE(void) increment_busy_count(void *worker_);
 
 extern module PROXY_DECLARE_DATA proxy_module;
 
