@@ -43,22 +43,24 @@ void proxy_util_register_hooks(apr_pool_t *p);
 /*
  * Get the busy counter from the shared worker memory
  *
- * @param worker_ Pointer to the worker structure.
+ * @param worker Pointer to the worker structure.
  * @return      apr_size_t value atomically read for the worker.
  */
-PROXY_DECLARE(apr_size_t) getbusy_count(void *worker_);
+PROXY_DECLARE(apr_size_t) getbusy_count(proxy_worker *worker);
 
 /*
  * Set the busy counter from the shared worker memory
  *
- * @param worker_ Pointer to the worker structure.
- * @param busy value to set the busy counter.
+ * @param worker Pointer to the worker structure.
+ * @param to value to set the busy counter.
  * @return      void
  */
-PROXY_DECLARE(void) setbusy_count(void *worker_, apr_size_t busy);
+PROXY_DECLARE(void) setbusy_count(proxy_worker *worker, apr_size_t to);
 
 /*
  * decrement the busy counter from the shared worker memory
+ * note it is called by apr_pool_cleanup_register()
+ * therfore the void * and apr_status_t.
  *
  * @param worker_ Pointer to the worker structure.
  * @return      apr_status_t returns APR_SUCCESS.
@@ -68,10 +70,10 @@ PROXY_DECLARE(apr_status_t) decrement_busy_count(void *worker_);
 /*
  * increment the busy counter from the shared worker memory
  *
- * @param worker_ Pointer to the worker structure.
+ * @param worker Pointer to the worker structure.
  * @return      void
  */
-PROXY_DECLARE(void) increment_busy_count(void *worker_);
+PROXY_DECLARE(void) increment_busy_count(proxy_worker *worker);
 
 /** @} */
 
