@@ -607,11 +607,23 @@ AC_DEFUN([APACHE_CHECK_OPENSSL],[
 
       dnl Run library and function checks
       liberrors=""
+      AC_TRY_COMPILE([#include <openssl/opensslconf.h>],[
+#if defined(OPENSSL_NO_ENGINE)
+#error "Engine support disabled in <openssl/opensslconf.h>"
+#endif],
+      [AC_MSG_RESULT(OK)
+       ac_cv_openssl_engine=yes],
+      [AC_MSG_RESULT(FAILED)])
       AC_CHECK_HEADERS([openssl/engine.h])
       AC_CHECK_FUNCS([SSL_CTX_new], [], [liberrors="yes"])
       AC_CHECK_FUNCS([OPENSSL_init_ssl])
-      AC_CHECK_FUNCS([ENGINE_init ENGINE_load_builtin_engines RAND_egd \
+      AC_CHECK_FUNCS([ENGINE_load_builtin_engines RAND_egd \
                       CRYPTO_set_id_callback])
+      if test "x$ac_cv_openssl_engine" = "xyes"; then
+        AC_CHECK_FUNCS([ENGINE_init])
+      else
+        AC_MSG_WARN([OpenSSL engine support disabled])
+      fi
       if test "x$liberrors" != "x"; then
         AC_MSG_WARN([OpenSSL libraries are unusable])
       fi
