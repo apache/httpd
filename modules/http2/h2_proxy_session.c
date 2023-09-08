@@ -1681,7 +1681,17 @@ static int done_iter(void *udata, void *val)
     h2_proxy_stream *stream = val;
     int touched = (stream->data_sent || stream->data_received ||
                    stream->id <= ctx->session->last_stream_id);
-    ctx->done(ctx->session, stream->r, APR_ECONNABORTED, touched, stream->error_code);
+    if (touched && stream->output) {
+      apr_bucket *b = ap_bucket_error_create(HTTP_BAD_GATEWAY, NULL,
+                                             stream->r->pool,
+                                             stream->cfront->bucket_alloc);
+      APR_BRIGADE_INSERT_TAIL(stream->output, b);
+      b = apr_bucket_eos_create(stream->cfront->bucket_alloc);
+      APR_BRIGADE_INSERT_TAIL(stream->output, b);
+      ap_pass_brigade(stream->r->output_filters, stream->output);
+    }
+    ctx->done(ctx->session, stream->r, APR_ECONNABORTED, touched,
+              stream->error_code);
     return 1;
 }
 
