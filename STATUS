@@ -214,6 +214,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         svn merge -c 1912015 ^/httpd/httpd/trunk .
      +1: rjung, gbechis
 
+  *) mod_proxy_http2: fix `X-Forward-Host` header to carry the correct value.
+     Fixes PR66752.
+     Trunk version of patch:
+        https://svn.apache.org/r1912180
+     Backport version for 2.4.x of patch:
+      svn merge -c 1912180 ^/httpd/httpd/trunk .
+     +1: icing,
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
