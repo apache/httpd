@@ -136,6 +136,28 @@ class TestH2Proxy:
             else env.http_port2
         assert int(r.json[1]["port"]) == exp_port
 
+    # test X-Forwarded-* headers
+    def test_h2_600_06(self, env):
+        conf = H2Conf(env, extras={
+            f'cgi.{env.http_tld}': [
+                "SetEnvIf Host (.+) X_HOST=$1",
+                f"ProxyPreserveHost on",
+                f"ProxyPass /h2c/ h2c://127.0.0.1:{env.http_port}/",
+                f"ProxyPass /h1c/ http://127.0.0.1:{env.http_port}/",
+            ]
+        })
+        conf.add_vhost_cgi(proxy_self=True)
+        conf.install()
+        assert env.apache_restart() == 0
+        url = env.mkurl("https", "cgi", "/h1c/hello.py")
+        r1 = env.curl_get(url, 5)
+        assert r1.response["status"] == 200
+        url = env.mkurl("https", "cgi", "/h2c/hello.py")
+        r2 = env.curl_get(url, 5)
+        assert r2.response["status"] == 200
+        for key in ['x-forwarded-for', 'x-forwarded-host','x-forwarded-server']:
+            assert r1.json[key] == r2.json[key], f'{key} differs proxy_http != proxy_http2'
+
     # lets do some error tests
     def test_h2_600_30(self, env):
         conf = H2Conf(env)

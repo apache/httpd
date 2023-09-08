@@ -1,0 +1,4 @@
+  *) mod_proxy_http2: fix `X-Forward-Host` header to carry the correct value.
+     Fixes PR66752.
+     [Stefan Eissing]
+
