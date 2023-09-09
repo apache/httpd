@@ -51,6 +51,7 @@ client</td></tr>
 <li><img alt="" src="../images/down.gif" /> <a href="#precompressed">Servir du contenu précompressé</a></li>
 </ul><h3 class="directives">Directives</h3>
 <ul id="toc">
+<li><img alt="" src="../images/down.gif" /> <a href="#deflatealteretag">DeflateAlterETag</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#deflatebuffersize">DeflateBufferSize</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#deflatecompressionlevel">DeflateCompressionLevel</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#deflatefilternote">DeflateFilterNote</a></li>
@@ -246,6 +247,43 @@ SetEnvIfNoCase Request_URI "\.(?:gif|jpe?g|png)$" no-gzip</pre>
     &lt;/FilesMatch&gt;
 &lt;/IfModule&gt;</pre>
 
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="deflatealteretag" id="deflatealteretag">Directive</a> <a name="DeflateAlterETag" id="DeflateAlterETag">DeflateAlterETag</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Comment l'en-tête sortant ETag doit être modifié au cours
+de la compression</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>DeflateAlterETag AddSuffix|NoChange|Remove</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>DeflateAlterETag AddSuffix</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_deflate</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.58 du serveur HTTP Apache</td></tr>
+</table>
+    <p>La directive <code class="directive">DeflateAlterETag</code> permet de
+    spécifier comment l'en-tête ETag doit être modifié lorsqu'une
+    réponse est compressée.</p>
+    <dl>
+    <dt>AddSuffix</dt>
+    <dd><p>Ajoute la méthode de compression à la fin de l'en-tête, ce
+    qui a pour effet d'attribuer un en-tête ETag unique aux
+    représentations compressées et non compressées. C'est l'option par
+    défaut depuis la version 2.4.0, mais empêche de servir des
+    codes d'état "HTTP Not Modified" (304) en réponse aux requêtes pour un
+    contenu compressé.</p></dd>
+    <dt>NoChange</dt>
+    <dd><p>Ne modifie pas l'en-tête ETag dans une réponse compressée.
+    C'était l'option par
+    défaut avant la version 2.4.0, mais cela ne respectait pas la
+    préconisation HTTP/1.1 selon laquelle chaque représentation de la
+    même ressource doit posséder un en-tête ETag unique.</p></dd>
+    <dt>Remove</dt>
+    <dd><p>Supprime l'en-tête ETag dans les réponses compressées, ce qui
+    a pour effet de rendre impossibles certaines requêtes
+    conditionnelles, mais permet d'éviter les inconvénients des options
+    précédentes.</p></dd>
+    </dl>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>

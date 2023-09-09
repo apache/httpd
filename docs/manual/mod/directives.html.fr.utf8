@@ -225,6 +225,7 @@
 <li><a href="mpm_common.html#coredumpdirectory">CoreDumpDirectory</a></li>
 <li><a href="mod_log_config.html#customlog">CustomLog</a></li>
 <li><a href="mod_dav.html#dav" id="D" name="D">Dav</a></li>
+<li><a href="mod_dav.html#davbasepath">DavBasePath</a></li>
 <li><a href="mod_dav.html#davdepthinfinity">DavDepthInfinity</a></li>
 <li><a href="mod_dav_lock.html#davgenericlockdb">DavGenericLockDB</a></li>
 <li><a href="mod_dav_fs.html#davlockdb">DavLockDB</a></li>
@@ -244,6 +245,7 @@
 <li><a href="core.html#defaultruntimedir">DefaultRuntimeDir</a></li>
 <li><a href="core.html#defaulttype">DefaultType</a></li>
 <li><a href="core.html#define">Define</a></li>
+<li><a href="mod_deflate.html#deflatealteretag">DeflateAlterETag</a></li>
 <li><a href="mod_deflate.html#deflatebuffersize">DeflateBufferSize</a></li>
 <li><a href="mod_deflate.html#deflatecompressionlevel">DeflateCompressionLevel</a></li>
 <li><a href="mod_deflate.html#deflatefilternote">DeflateFilterNote</a></li>
@@ -309,6 +311,7 @@
 <li><a href="mod_http2.html#h2moderntlsonly">H2ModernTLSOnly</a></li>
 <li><a href="mod_http2.html#h2outputbuffering">H2OutputBuffering</a></li>
 <li><a href="mod_http2.html#h2padding">H2Padding</a></li>
+<li><a href="mod_http2.html#h2proxyrequests">H2ProxyRequests</a></li>
 <li><a href="mod_http2.html#h2push">H2Push</a></li>
 <li><a href="mod_http2.html#h2pushdiarysize">H2PushDiarySize</a></li>
 <li><a href="mod_http2.html#h2pushpriority">H2PushPriority</a></li>
@@ -319,6 +322,7 @@
 <li><a href="mod_http2.html#h2tlscooldownsecs">H2TLSCoolDownSecs</a></li>
 <li><a href="mod_http2.html#h2tlswarmupsize">H2TLSWarmUpSize</a></li>
 <li><a href="mod_http2.html#h2upgrade">H2Upgrade</a></li>
+<li><a href="mod_http2.html#h2websockets">H2WebSockets</a></li>
 <li><a href="mod_http2.html#h2windowsize">H2WindowSize</a></li>
 <li><a href="mod_headers.html#header">Header</a></li>
 <li><a href="mod_autoindex.html#headername">HeaderName</a></li>
@@ -557,6 +561,7 @@
 <li><a href="mod_alias.html#redirect">Redirect</a></li>
 <li><a href="mod_alias.html#redirectmatch">RedirectMatch</a></li>
 <li><a href="mod_alias.html#redirectpermanent">RedirectPermanent</a></li>
+<li><a href="mod_alias.html#redirectrelative">RedirectRelative</a></li>
 <li><a href="mod_alias.html#redirecttemp">RedirectTemp</a></li>
 <li><a href="mod_socache_redis.html#redisconnpoolttl">RedisConnPoolTTL</a></li>
 <li><a href="mod_socache_redis.html#redistimeout">RedisTimeout</a></li>
