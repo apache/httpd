@@ -504,7 +504,7 @@ certificat de serveur
 expr=<var>expression</var>]</a></td><td></td><td>sv</td><td>B</td></tr><tr><td class="descr" colspan="4">Définit le nom et le format du fichier
 journal</td></tr>
 <tr class="odd"><td><a href="mod_dav.html#dav" id="D" name="D">Dav On|Off|<var>nom fournisseur</var></a></td><td> Off </td><td>d</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Active les méthodes HTTP WebDAV</td></tr>
-<tr><td><a href="mod_dav.html#davbasepath">DavBasePath <var>root-path</var></a></td><td> /repos/ </td><td>d</td><td>E</td></tr><tr><td class="descr" colspan="4">Définir le chemin de la racine du répertoire</td></tr>
+<tr><td><a href="mod_dav.html#davbasepath">DavBasePath <var>root-path</var></a></td><td></td><td>d</td><td>E</td></tr><tr><td class="descr" colspan="4">Définir le chemin de la racine du répertoire</td></tr>
 <tr class="odd"><td><a href="mod_dav.html#davdepthinfinity">DavDepthInfinity on|off</a></td><td> off </td><td>svd</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Autorise les requêtes PROPFIND avec en-tête Depth:
 Infinity</td></tr>
 <tr><td><a href="mod_dav_lock.html#davgenericlockdb">DavGenericLockDB <var>chemin fichier</var></a></td><td></td><td>svd</td><td>E</td></tr><tr><td class="descr" colspan="4">Chemin de la base de données des verrous DAV</td></tr>
@@ -1235,7 +1235,7 @@ courante</td></tr>
 <tr class="odd"><td><a href="mod_alias.html#redirectpermanent">RedirectPermanent <var>chemin URL</var> <var>URL</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Envoie une redirection externe permanente demandant au
 client d'effectuer une nouvelle requête avec une URL
 différente</td></tr>
-<tr><td><a href="mod_alias.html#redirectrelative">RedirectRelative OFF|ON</a></td><td> OFF </td><td>svd</td><td>B</td></tr><tr><td class="descr" colspan="4">Redirection relative de cibles.</td></tr>
+<tr><td><a href="mod_alias.html#redirectrelative">RedirectRelative On|Off</a></td><td> Off </td><td>svd</td><td>B</td></tr><tr><td class="descr" colspan="4">Redirection relative de cibles.</td></tr>
 <tr class="odd"><td><a href="mod_alias.html#redirecttemp">RedirectTemp <var>chemin URL</var> <var>URL</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Envoie une redirection externe temporaire demandant au
 client d'effectuer une nouvelle requête avec une URL
 différente</td></tr>
