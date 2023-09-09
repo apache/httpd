@@ -625,8 +625,8 @@ ScriptAliasMatch "(?i)^/cgi-bin(.*)" "/usr/local/apache/cgi-bin$1"
 <default>RedirectRelative Off</default>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context>
-<compatibility>2.4.58 and later</compatibility>
 </contextlist>
+<compatibility>2.4.58 and later</compatibility>
 
 <usage>
     <p>By default, if the target URL of a <directive module="mod_alias">Redirect</directive>
