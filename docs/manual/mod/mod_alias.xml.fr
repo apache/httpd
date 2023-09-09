@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1756708:1911949 (outdated) -->
+<!-- English Revision: 1912215 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -658,6 +658,27 @@ comme un script CGI</description>
     module="mod_alias">ScriptAliasMatch</directive>. Voir la directive
     <directive module="mod_alias">AliasMatch</directive> pour plus de
     détails.</p>
+
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>RedirectRelative</name>
+<description>Redirection relative de cibles.</description>
+<syntax>RedirectRelative On|Off</syntax>
+<default>RedirectRelative Off</default>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context>
+</contextlist>
+<compatibility>Disponible à partir de la version 2.4.58 du serveur HTTP Apache</compatibility>
+
+<usage>
+    <p>Par défaut, si l'URL cible d'une directive <directive
+    module="mod_alias">Redirect</directive> est une URL relative commençant par
+    un caractère '/', le serveur convertit cette dernière en URL absolue avant
+    de répondre au client. En définissant
+    <directive>RedirectRelative</directive> à "On", l'URL relative est présentée
+    au client sans modification.</p>
 
 </usage>
 </directivesynopsis>

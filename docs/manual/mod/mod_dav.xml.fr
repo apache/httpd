@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1673563:1912081 (outdated) -->
+<!-- English Revision: 1912086 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -207,6 +207,38 @@ ForceType text/plain
       vous passez outre cette recommandation, tout le monde pourra
       enregistrer des fichiers sur votre syst&egrave;me.
     </note>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>DavBasePath</name>
+<description>Définir le chemin de la racine du répertoire</description>
+<syntax>DavBasePath <var>root-path</var></syntax>
+<default>None</default>
+<contextlist><context>directory</context></contextlist>
+<compatibility>Disponible à partir de la version 2.4.58 du serveur HTTP Apache</compatibility>
+
+<usage>
+  <p>Si le répertoire DAV est défini en utilisant une correspondance
+  d'expression rationnelle (comme <directive
+  module="core">LocationMatch</directive>), <module>mod_dav</module> ne sera pas
+  en mesure de déterminer de lui-même la racine du répertoire à partir du chemin
+  seul. En conséquence, des fournisseurs tiers (par exemple le module <a
+  href="https://svnbook.red-bean.com/en/1.7/svn.ref.mod_dav_svn.conf.html">mod_dav_svn</a>
+  de Subversion) pourront échouer à traiter des requêtes sans disposer de la
+  valeur correcte de la racine du répertoire.</p>
+
+  <p>Pour permettre aux fournisseurs de travailler correctement en présence
+  d'une telle configuration, vous devez utiliser
+  <directive>DavBasePath</directive>.</p>
+
+    <highlight language="config">
+&lt;LocationMatch "^/repos/"&gt;
+    Dav svn
+    DavBasePath /repos
+    SVNParentPath /var/svn
+&lt;/LocationMatch&gt;
+    </highlight>
 </usage>
 </directivesynopsis>
 
