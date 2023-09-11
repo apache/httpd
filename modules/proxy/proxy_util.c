@@ -21,6 +21,7 @@
 #include "apr_version.h"
 #include "apr_strings.h"
 #include "apr_hash.h"
+#include "apr_atomic.h"
 #include "http_core.h"
 #include "proxy_util.h"
 #include "ajp.h"
@@ -4982,6 +4983,124 @@ PROXY_DECLARE(apr_status_t) ap_proxy_tunnel_create(proxy_tunnel_rec **ptunnel,
 
     *ptunnel = tunnel;
     return APR_SUCCESS;
+}
+
+PROXY_DECLARE(apr_status_t) decrement_busy_count(void *worker_)
+{
+    apr_size_t val;
+    proxy_worker *worker = worker_;
+
+#if APR_SIZEOF_VOIDP == 4
+    AP_DEBUG_ASSERT(sizeof(apr_size_t) == sizeof(apr_uint32_t));
+    val = apr_atomic_read32(&worker->s->busy);
+    while (val > 0) {
+        apr_size_t old = val;
+        val = apr_atomic_cas32(&worker->s->busy, val - 1, old);
+        if (val == old) {
+            break;
+        }
+    }
+#elif APR_VERSION_AT_LEAST(1,7,4) /* APR 64bit atomics not safe before 1.7.4 */
+    AP_DEBUG_ASSERT(sizeof(apr_size_t) == sizeof(apr_uint64_t));
+    val = apr_atomic_read64(&worker->s->busy);
+    while (val > 0) {
+        apr_size_t old = val;
+        val = apr_atomic_cas64(&worker->s->busy, val - 1, old);
+        if (val == old) {
+            break;
+        }
+    }
+#else /* Use atomics for (64bit) pointers */
+    void *volatile *busy_p = (void *)&worker->s->busy;
+    AP_DEBUG_ASSERT(sizeof(apr_size_t) == sizeof(void*));
+    AP_DEBUG_ASSERT((apr_uintptr_t)busy_p % sizeof(void*) == 0);
+    val = (apr_uintptr_t)apr_atomic_casptr((void *)busy_p, NULL, NULL);
+    while (val > 0) {
+        apr_size_t old = val;
+        val = (apr_uintptr_t)apr_atomic_casptr((void *)busy_p,
+                                               (void *)(apr_uintptr_t)(val - 1),
+                                               (void *)(apr_uintptr_t)old);
+        if (val == old) {
+            break;
+        }
+    }
+#endif
+    return APR_SUCCESS;
+}
+
+PROXY_DECLARE(void) increment_busy_count(proxy_worker *worker)
+{
+    apr_size_t val;
+#if APR_SIZEOF_VOIDP == 4
+    AP_DEBUG_ASSERT(sizeof(apr_size_t) == sizeof(apr_uint32_t));
+    val = apr_atomic_read32(&worker->s->busy);
+    while (val < APR_INT32_MAX) {
+        apr_size_t old = val;
+        val = apr_atomic_cas32(&worker->s->busy, val + 1, old);
+        if (val == old) {
+            break;
+        }
+    }
+#elif APR_VERSION_AT_LEAST(1,7,4) /* APR 64bit atomics not safe before 1.7.4 */
+    AP_DEBUG_ASSERT(sizeof(apr_size_t) == sizeof(apr_uint64_t));
+    val = apr_atomic_read64(&worker->s->busy);
+    while (val < APR_INT64_MAX) {
+        apr_size_t old = val;
+        val = apr_atomic_cas64(&worker->s->busy, val + 1, old);
+        if (val == old) {
+            break;
+        }
+    }
+#else /* Use atomics for (64bit) pointers */
+    void *volatile *busy_p = (void *)&worker->s->busy;
+    AP_DEBUG_ASSERT(sizeof(apr_size_t) == sizeof(void*));
+    AP_DEBUG_ASSERT((apr_uintptr_t)busy_p % sizeof(void*) == 0);
+    val = (apr_uintptr_t)apr_atomic_casptr((void *)busy_p, NULL, NULL);
+    while (val < APR_INT64_MAX) {
+        apr_size_t old = val;
+        val = (apr_uintptr_t)apr_atomic_casptr((void *)busy_p,
+                                               (void *)(apr_uintptr_t)(val + 1),
+                                               (void *)(apr_uintptr_t)old);
+        if (val == old) {
+            break;
+        }
+    }
+#endif
+}
+
+PROXY_DECLARE(apr_size_t) getbusy_count(proxy_worker *worker)
+{
+    apr_size_t val;
+#if APR_SIZEOF_VOIDP == 4
+    AP_DEBUG_ASSERT(sizeof(apr_size_t) == sizeof(apr_uint32_t));
+    val = apr_atomic_read32(&worker->s->busy);
+#elif APR_VERSION_AT_LEAST(1,7,4) /* APR 64bit atomics not safe before 1.7.4 */
+    AP_DEBUG_ASSERT(sizeof(apr_size_t) == sizeof(apr_uint64_t));
+    val = apr_atomic_read64(&worker->s->busy);
+#else /* Use atomics for (64bit) pointers */
+    void *volatile *busy_p = (void *)&worker->s->busy;
+    AP_DEBUG_ASSERT(sizeof(apr_size_t) == sizeof(void*));
+    AP_DEBUG_ASSERT((apr_uintptr_t)busy_p % sizeof(void*) == 0);
+    val = (apr_uintptr_t)apr_atomic_casptr((void *)busy_p, NULL, NULL);
+#endif
+
+    return val;
+}
+
+PROXY_DECLARE(void) setbusy_count(proxy_worker *worker, apr_size_t to)
+{
+#if APR_SIZEOF_VOIDP == 4
+    AP_DEBUG_ASSERT(sizeof(apr_size_t) == sizeof(apr_uint32_t));
+    apr_atomic_set32(&worker->s->busy, to);
+#elif APR_VERSION_AT_LEAST(1,7,4) /* APR 64bit atomics not safe before 1.7.4 */
+    AP_DEBUG_ASSERT(sizeof(apr_size_t) == sizeof(apr_uint64_t));
+    apr_atomic_set64(&worker->s->busy, to);
+#else /* Use atomics for (64bit) pointers */
+    void *volatile *busy_p = (void *)&worker->s->busy;
+    AP_DEBUG_ASSERT(sizeof(apr_size_t) == sizeof(void*));
+    AP_DEBUG_ASSERT((apr_uintptr_t)busy_p % sizeof(void*) == 0);
+    apr_atomic_xchgptr((void *)busy_p, (void *)(apr_uintptr_t)to);
+#endif
 }
 
 static void add_pollset(apr_pollset_t *pollset, apr_pollfd_t *pfd,
