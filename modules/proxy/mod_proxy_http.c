@@ -888,10 +888,8 @@ static apr_status_t ap_proxy_read_headers(request_rec *r, request_rec *rr,
 
     tmp_bb = apr_brigade_create(r->pool, c->bucket_alloc);
     while (1) {
-        rc = ap_proxygetline(tmp_bb, buffer, size, rr,
-                             AP_GETLINE_FOLD | AP_GETLINE_NOSPC_EOL, &len);
-
-
+        const int flags = AP_GETLINE_FOLD_COL;
+        rc = ap_proxygetline(tmp_bb, buffer, size, rr, flags, &len);
         if (rc != APR_SUCCESS) {
             if (APR_STATUS_IS_ENOSPC(rc)) {
                 int trunc = (len > 128 ? 128 : len) / 2;

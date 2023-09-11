@@ -36,6 +36,7 @@ APR_HOOK_STRUCT(
             APR_HOOK_LINK(pre_connection)
             APR_HOOK_LINK(pre_close_connection)
             APR_HOOK_LINK(create_secondary_connection)
+            APR_HOOK_LINK(min_connection_timeout)
 )
 AP_IMPLEMENT_HOOK_RUN_FIRST(conn_rec *,create_connection,
                             (apr_pool_t *p, server_rec *server, apr_socket_t *csd, long conn_id, void *sbh, apr_bucket_alloc_t *alloc),
@@ -46,6 +47,9 @@ AP_IMPLEMENT_HOOK_RUN_ALL(int,pre_close_connection,(conn_rec *c),(c),OK,DECLINED
 AP_IMPLEMENT_HOOK_RUN_FIRST(conn_rec *,create_secondary_connection,
                             (apr_pool_t *p, conn_rec *master, apr_bucket_alloc_t *alloc),
                             (p, master, alloc), NULL)
+AP_IMPLEMENT_HOOK_RUN_ALL(int,min_connection_timeout,
+                          (conn_rec *c, server_rec *s, apr_interval_time_t *min_timeout),
+                          (c, s, min_timeout),OK,DECLINED)
 
 AP_DECLARE(conn_rec *) ap_create_connection(apr_pool_t *p,
                                             server_rec *server,
@@ -107,37 +111,42 @@ AP_CORE_DECLARE(apr_status_t) ap_shutdown_conn(conn_rec *c, int flush)
     apr_bucket_brigade *bb;
     apr_bucket *b;
 
-    bb = apr_brigade_create(c->pool, c->bucket_alloc);
+    bb = ap_acquire_brigade(c);
 
-    if (flush) {
+    if (flush == AP_SHUTDOWN_CONN_WC) {
+        /* Write Completion bucket */
+        b = ap_bucket_wc_create(c->bucket_alloc);
+    }
+    else {
         /* FLUSH bucket */
         b = apr_bucket_flush_create(c->bucket_alloc);
-        APR_BRIGADE_INSERT_TAIL(bb, b);
     }
+    APR_BRIGADE_INSERT_TAIL(bb, b);
 
     /* End Of Connection bucket */
     b = ap_bucket_eoc_create(c->bucket_alloc);
     APR_BRIGADE_INSERT_TAIL(bb, b);
 
     rv = ap_pass_brigade(c->output_filters, bb);
-    apr_brigade_destroy(bb);
+    ap_release_brigade(c, bb);
     return rv;
 }
 
 AP_CORE_DECLARE(void) ap_flush_conn(conn_rec *c)
 {
-    (void)ap_shutdown_conn(c, 1);
+    (void)ap_shutdown_conn(c, AP_SHUTDOWN_CONN_FLUSH);
 }
 
 AP_DECLARE(int) ap_prep_lingering_close(conn_rec *c)
 {
     /* Give protocol handlers one last chance to raise their voice */
-    ap_run_pre_close_connection(c);
+    int rc = ap_run_pre_close_connection(c);
     
     if (c->sbh) {
         ap_update_child_status(c->sbh, SERVER_CLOSING, NULL);
     }
-    return 0;
+
+    return (rc == DECLINED) ? OK : rc;
 }
 
 /* we now proceed to read from the client until we get EOF, or until
@@ -168,7 +177,9 @@ AP_DECLARE(int) ap_start_lingering_close(conn_rec *c)
      */
 
     /* Send any leftover data to the client, but never try to again */
-    ap_flush_conn(c);
+    if (ap_shutdown_conn(c, AP_SHUTDOWN_CONN_FLUSH)) {
+        return 1;
+    }
 
 #ifdef NO_LINGCLOSE
     return 1;
@@ -250,4 +261,16 @@ AP_CORE_DECLARE(void) ap_process_connection(conn_rec *c, void *csd)
     if (!c->aborted) {
         ap_run_process_connection(c);
     }
+}
+
+AP_DECLARE(apr_interval_time_t) ap_get_connection_timeout(conn_rec *c,
+                                                          server_rec *s)
+{
+    apr_interval_time_t timeout = -1;
+
+    if (ap_run_min_connection_timeout(c, s, &timeout) != OK || timeout < 0) {
+        timeout = (s) ? s->timeout : c->base_server->timeout;
+    }
+
+    return timeout;
 }

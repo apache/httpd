@@ -719,6 +719,12 @@
  *                         than username / password. Add autht_provider structure.
  * 20211221.14 (2.5.1-dev) Add request_rec->final_resp_passed bit
  * 20211221.15 (2.5.1-dev) Add ap_get_pollfd_from_conn()
+ * 20211221.16 (2.5.1-dev) Add read_line to scoreboard.
+ * 20211221.17 (2.5.1-dev) Add AGAIN, AP_MPMQ_CAN_AGAIN.
+ * 20211221.18 (2.5.1-dev) Add ap_check_input_pending() and
+ *                         ap_check_output_pending()
+ * 20211221.19 (2.5.1-dev) Add min_connection_timeout hook and
+ *                         ap_get_connection_timeout()
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503235UL /* "AP25" */
@@ -726,7 +732,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20211221
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 15             /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 19             /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a

@@ -792,7 +792,7 @@ static apr_status_t c2_process(h2_conn_ctx_t *conn_ctx, conn_rec *c)
                   "h2_c2(%s-%d): process_request done",
                   conn_ctx->id, conn_ctx->stream_id);
     if (cs)
-        cs->state = CONN_STATE_WRITE_COMPLETION;
+        cs->state = CONN_STATE_COMPLETION;
 
 cleanup:
     return rv;

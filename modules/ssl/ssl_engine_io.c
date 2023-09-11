@@ -292,6 +292,7 @@ typedef struct {
 } char_buffer_t;
 
 typedef struct {
+    conn_rec *c;
     SSL *ssl;
     BIO *bio_out;
     ap_filter_t *f;
@@ -730,6 +731,32 @@ static apr_status_t ssl_io_input_read(bio_filter_in_ctx_t *inctx,
                  * (This is usually the case when the client forces an SSL
                  * renegotiation which is handled implicitly by OpenSSL.)
                  */
+                if (inctx->c->cs) {
+                    inctx->c->cs->sense = CONN_SENSE_WANT_READ;
+                }
+                inctx->rc = APR_EAGAIN;
+
+                if (*len > 0) {
+                    inctx->rc = APR_SUCCESS;
+                    break;
+                }
+                if (inctx->block == APR_NONBLOCK_READ) {
+                    break;
+                }
+                continue;  /* Blocking and nothing yet?  Try again. */
+            }
+            if (ssl_err == SSL_ERROR_WANT_WRITE) {
+                /*
+                 * If OpenSSL wants to write during read, and we were
+                 * nonblocking, report as an EAGAIN.  Otherwise loop,
+                 * pulling more data from network filter.
+                 *
+                 * (This is usually the case when the client forces an SSL
+                 * renegotiation which is handled implicitly by OpenSSL.)
+                 */
+                if (inctx->c->cs) {
+                    inctx->c->cs->sense = CONN_SENSE_WANT_WRITE;
+                }
                 inctx->rc = APR_EAGAIN;
 
                 if (*len > 0) {
@@ -895,7 +922,9 @@ static apr_status_t ssl_filter_write(ap_filter_t *f,
              * (This is usually the case when the client forces an SSL
              * renegotiation which is handled implicitly by OpenSSL.)
              */
-            outctx->c->cs->sense = CONN_SENSE_WANT_READ;
+            if (outctx->c->cs) {
+                outctx->c->cs->sense = CONN_SENSE_WANT_READ;
+            }
             outctx->rc = APR_EAGAIN;
             ap_log_cerror(APLOG_MARK, APLOG_TRACE6, 0, outctx->c,
                           "Want read during nonblocking write");
@@ -950,10 +979,6 @@ static apr_status_t ssl_filter_write(ap_filter_t *f,
                                sizeof(HTTP_ON_HTTPS_PORT) - 1, \
                                alloc)
 
-/* Custom apr_status_t error code, used when a plain HTTP request is
- * received on an SSL port. */
-#define MODSSL_ERROR_HTTP_ON_HTTPS (APR_OS_START_USERERR + 0)
-
 /* Custom apr_status_t error code, used when the proxy cannot
  * establish an outgoing SSL connection. */
 #define MODSSL_ERROR_BAD_GATEWAY (APR_OS_START_USERERR + 1)
@@ -989,7 +1014,7 @@ static apr_status_t ssl_io_filter_error(bio_filter_in_ctx_t *inctx,
             f->c->keepalive = AP_CONN_CLOSE;
             if (is_init) {
                 sslconn->non_ssl_request = NON_SSL_SEND_REQLINE;
-                return AP_FILTER_ERROR;
+                return MODSSL_ERROR_HTTP_ON_HTTPS;
             }
             sslconn->non_ssl_request = NON_SSL_SEND_HDR_SEP;
 
@@ -1424,10 +1449,25 @@ static apr_status_t ssl_io_filter_handshake(ssl_filter_ctx_t *filter_ctx)
         }
         else if (ssl_err == SSL_ERROR_WANT_READ) {
             /*
-             * This is in addition to what was present earlier. It is
-             * borrowed from openssl_state_machine.c [mod_tls].
-             * TBD.
+             * Call us back when ready to read *\/
              */
+            ap_log_cerror(APLOG_MARK, APLOG_TRACE6, 0, outctx->c,
+                          "Want read during nonblocking accept");
+            if (outctx->c->cs) {
+                outctx->c->cs->sense = CONN_SENSE_WANT_READ;
+            }
+            outctx->rc = APR_EAGAIN;
+            return APR_EAGAIN;
+        }
+        else if (ssl_err == SSL_ERROR_WANT_WRITE) {
+            /*
+             * Call us back when ready to write *\/
+             */
+            ap_log_cerror(APLOG_MARK, APLOG_TRACE6, 0, outctx->c,
+                          "Want write during nonblocking accept");
+            if (outctx->c->cs) {
+                outctx->c->cs->sense = CONN_SENSE_WANT_WRITE;
+            }
             outctx->rc = APR_EAGAIN;
             return APR_EAGAIN;
         }
@@ -2230,6 +2270,7 @@ static apr_status_t ssl_io_input_add_filter(ssl_filter_ctx_t *filter_ctx, conn_r
     }
     BIO_set_data(filter_ctx->pbioRead, (void *)inctx);
 
+    inctx->c = c;
     inctx->ssl = ssl;
     inctx->bio_out = filter_ctx->pbioWrite;
     inctx->f = filter_ctx->pInputFilter;
