@@ -206,6 +206,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         svn merge -c 1912015 ^/httpd/httpd/trunk .
      +1: rjung, gbechis
 
+  *) mod_http2: fixed a bug in handling of stream timeouts.
+     Trunk version of patch:
+        https://svn.apache.org/r1912385
+     Backport version for 2.4.x of patch:
+        svn merge -c 1912385 ^/httpd/httpd/trunk .
+     +1: icing, 
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
