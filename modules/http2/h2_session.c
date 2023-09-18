@@ -1921,7 +1921,15 @@ apr_status_t h2_session_process(h2_session *session, int async)
             status = h2_mplx_c1_poll(session->mplx, session->s->timeout,
                                      on_stream_input, on_stream_output, session);
             if (APR_STATUS_IS_TIMEUP(status)) {
-                if (session->open_streams == 0) {
+                /* If we timeout without streams open, no new request from client
+                 * arrived.
+                 * If we timeout without nghttp2 wanting to write something, but
+                 * all open streams have something to send, it means we are
+                 * blocked on HTTP/2 flow control and the client did not send
+                 * WINDOW_UPDATEs to us. */
+                if (session->open_streams == 0 ||
+                    (!h2_session_want_send(session) &&
+                     h2_mplx_c1_all_streams_want_send_data(session->mplx))) {
                     h2_session_dispatch_event(session, H2_SESSION_EV_CONN_TIMEOUT, status, NULL);
                     break;
                 }
