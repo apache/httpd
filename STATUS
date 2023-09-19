@@ -212,6 +212,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         svn merge -c 1912385 ^/httpd/httpd/trunk .
      +1: icing, rpluem
 
+  *) mod_http2: fixed a compile time issue on Windows builds.
+     Trunk version of patch:
+        https://svn.apache.org/r1912415
+     Backport version for 2.4.x of patch:
+        svn merge -c 1912415 ^/httpd/httpd/trunk .
+     +1: icing,
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
