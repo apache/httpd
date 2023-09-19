@@ -460,6 +460,7 @@ typedef struct {
                                  * may be available while exceeding the soft limit */
     apr_interval_time_t retry;   /* retry interval */
     apr_interval_time_t timeout; /* connection timeout */
+    apr_interval_time_t hc_timeout; /* health check timeout */
     apr_interval_time_t acquire; /* acquire timeout when the maximum number of connections is exceeded */
     apr_interval_time_t ping_timeout;
     apr_interval_time_t conn_timeout;
@@ -478,6 +479,7 @@ typedef struct {
     unsigned int     is_address_reusable:1;
     unsigned int     retry_set:1;
     unsigned int     timeout_set:1;
+    unsigned int     hc_timeout_set:1;
     unsigned int     acquire_set:1;
     unsigned int     ping_timeout_set:1;
     unsigned int     conn_timeout_set:1;
