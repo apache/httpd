@@ -512,7 +512,7 @@ struct proxy_worker {
 #endif
     void            *context;   /* general purpose storage */
     ap_conf_vector_t *section_config; /* <Proxy>-section wherein defined */
-    struct proxy_address *address; /* current worker address (if reusable) */
+    struct proxy_address *volatile address; /* current worker address (if reusable) */
     const char      *uds_name;  /* "unix:/uds/path|worker-URL" */
 };
 
