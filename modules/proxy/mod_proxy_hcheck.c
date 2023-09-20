@@ -562,7 +562,7 @@ static int hc_determine_connection(const char *proxy_function,
      */
     rv = ap_proxy_determine_address(proxy_function, backend,
                                     worker->s->hostname_ex, worker->s->port,
-                                    NULL, s);
+                                    0, NULL, s);
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, s, APLOGNO(03249)
                      "DNS lookup failure for: %s:%hu",

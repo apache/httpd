@@ -1134,7 +1134,7 @@ static int proxy_ftp_handler(request_rec *r, proxy_worker *worker,
      * them until we get a successful connection
      */
     err = ap_proxy_determine_address("FTP", backend, connectname, connectport,
-                                     r, r->server);
+                                     0, r, r->server);
     if (APR_SUCCESS != err) {
         return ftp_proxyerror(r, backend, HTTP_BAD_GATEWAY,
                               "Error resolving backend address");

@@ -1058,6 +1058,7 @@ PROXY_DECLARE(int) ap_proxy_post_request(proxy_worker *worker,
  * @param conn     proxy connection the address is used for
  * @param hostname host to resolve (should be the worker's if reusable)
  * @param hostport port to resolve (should be the worker's if reusable)
+ * @param flags    bitmask (unused for now, must be zero)
  * @param r        current request (if any)
  * @param s        current server (or NULL if r != NULL and ap_proxyerror()
  *                                 should be called on error)
@@ -1067,6 +1068,7 @@ PROXY_DECLARE(apr_status_t) ap_proxy_determine_address(const char *proxy_functio
                                                        proxy_conn_rec *conn,
                                                        const char *hostname,
                                                        apr_port_t hostport,
+                                                       unsigned int flags,
                                                        request_rec *r,
                                                        server_rec *s);
 

@@ -2751,11 +2751,16 @@ PROXY_DECLARE(apr_status_t) ap_proxy_determine_address(const char *proxy_functio
                                                        proxy_conn_rec *conn,
                                                        const char *hostname,
                                                        apr_port_t hostport,
+                                                       unsigned int flags,
                                                        request_rec *r,
                                                        server_rec *s)
 {
     proxy_worker *worker = conn->worker;
     apr_status_t rv;
+
+    if (flags) {
+        return APR_EINVAL;
+    }
 
     /*
      * Worker can have the single constant backend adress.
@@ -3157,7 +3162,7 @@ ap_proxy_determine_connection(apr_pool_t *p, request_rec *r,
 
         /* Resolve the connection address with the determined hostname/port */
         if (ap_proxy_determine_address(uri->scheme, conn, hostname, hostport,
-                                       r, NULL)) {
+                                       0, r, NULL)) {
             return HTTP_INTERNAL_SERVER_ERROR;
         }
     }
@@ -3710,7 +3715,7 @@ PROXY_DECLARE(int) ap_proxy_connect_backend(const char *proxy_function,
                     proxy_address_set_expired(worker, conn->address);
                     if (ap_proxy_determine_address(proxy_function, conn,
                                                    conn->hostname, conn->port,
-                                                   NULL, s) == APR_SUCCESS) {
+                                                   0, NULL, s) == APR_SUCCESS) {
                         backend_addr = conn->addr;
                     }
 
