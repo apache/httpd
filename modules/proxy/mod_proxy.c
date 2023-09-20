@@ -237,7 +237,7 @@ static const char *set_worker_param(apr_pool_t *p,
         else if (ap_timeout_parameter_parse(val, &ttl, "s") == APR_SUCCESS
                  && (ttl <= apr_time_from_sec(APR_INT32_MAX))
                  && (ttl % apr_time_from_sec(1)) == 0) {
-            worker->s->address_ttl = ttl;
+            worker->s->address_ttl = apr_time_sec(ttl);
         }
         else {
             return "AddressTTL must be -1 or a number of seconds not "

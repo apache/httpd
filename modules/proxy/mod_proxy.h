@@ -494,7 +494,7 @@ typedef struct {
     unsigned int     is_name_matchable:1;
     unsigned int     response_field_size_set:1;
     unsigned int     address_ttl_set:1;
-    apr_time_t       address_ttl;    /* backend address' TTL */
+    apr_int32_t      address_ttl;    /* backend address' TTL (seconds) */
     apr_uint32_t     address_expiry; /* backend address' next expiry time */
 } proxy_worker_shared;
 
