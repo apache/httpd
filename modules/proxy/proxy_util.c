@@ -1652,7 +1652,7 @@ static void connection_cleanup(void *theconn)
         ap_log_perror(APLOG_MARK, APLOG_ERR, 0, conn->pool, APLOGNO(00923)
                       "Pooled connection 0x%pp for worker %s has been"
                       " already returned to the connection pool.", conn,
-                      ap_proxy_worker_name(NULL, worker));
+                      ap_proxy_worker_get_name(worker));
         return;
     }
 
@@ -1765,11 +1765,17 @@ static apr_status_t connection_destructor(void *resource, void *params,
  * WORKER related...
  */
 
+PROXY_DECLARE(const char *) ap_proxy_worker_get_name(const proxy_worker *worker)
+{
+    return worker->uds_name ? worker->uds_name : worker->s->name;
+}
+
+/* Deprecated/legacy */
 PROXY_DECLARE(char *) ap_proxy_worker_name(apr_pool_t *unused,
                                            proxy_worker *worker)
 {
     (void)unused;
-    return worker->uds_name ? (char *)worker->uds_name : worker->s->name;
+    return (char *)ap_proxy_worker_get_name(worker);
 }
 
 PROXY_DECLARE(int) ap_proxy_worker_can_upgrade(apr_pool_t *p,
@@ -2225,7 +2231,7 @@ PROXY_DECLARE(apr_status_t) ap_proxy_share_worker(proxy_worker *worker, proxy_wo
         apr_pool_tag(pool, "proxy_worker_name");
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO(02338)
                      "%s shm[%d] (0x%pp) for worker: %s", action, i, (void *)shm,
-                     ap_proxy_worker_name(NULL, worker));
+                     ap_proxy_worker_get_name(worker));
         if (pool) {
             apr_pool_destroy(pool);
         }
@@ -2243,12 +2249,12 @@ PROXY_DECLARE(apr_status_t) ap_proxy_initialize_worker(proxy_worker *worker, ser
         /* The worker is already initialized */
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(00924)
                      "worker %s shared already initialized",
-                     ap_proxy_worker_name(NULL, worker));
+                     ap_proxy_worker_get_name(worker));
     }
     else {
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(00925)
                      "initializing worker %s shared",
-                     ap_proxy_worker_name(NULL, worker));
+                     ap_proxy_worker_get_name(worker));
         /* Set default parameters */
         if (!worker->s->retry_set) {
             worker->s->retry = apr_time_from_sec(PROXY_WORKER_DEFAULT_RETRY);
@@ -2267,7 +2273,7 @@ PROXY_DECLARE(apr_status_t) ap_proxy_initialize_worker(proxy_worker *worker, ser
             if (worker->s->disablereuse_set) {
                 ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s, APLOGNO(10400)
                              "enablereuse/disablereuse ignored for worker %s",
-                             ap_proxy_worker_name(NULL, worker));
+                             ap_proxy_worker_get_name(worker));
             }
             worker->s->disablereuse = 1;
         }
@@ -2311,7 +2317,7 @@ PROXY_DECLARE(apr_status_t) ap_proxy_initialize_worker(proxy_worker *worker, ser
     if (worker->local_status & PROXY_WORKER_INITIALIZED) {
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(00926)
                      "worker %s local already initialized",
-                     ap_proxy_worker_name(NULL, worker));
+                     ap_proxy_worker_get_name(worker));
     }
     else {
         apr_global_mutex_lock(proxy_mutex);
@@ -2319,7 +2325,7 @@ PROXY_DECLARE(apr_status_t) ap_proxy_initialize_worker(proxy_worker *worker, ser
         if (!(AP_VOLATILIZE_T(unsigned int, worker->local_status) & PROXY_WORKER_INITIALIZED)) {
             ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(00927)
                          "initializing worker %s local",
-                         ap_proxy_worker_name(NULL, worker));
+                         ap_proxy_worker_get_name(worker));
             /* Now init local worker data */
 #if APR_HAS_THREADS
             if (worker->tmutex == NULL) {
@@ -4200,7 +4206,7 @@ PROXY_DECLARE(apr_status_t) ap_proxy_sync_balancer(proxy_balancer *b, server_rec
                 found = 1;
                 ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(02402)
                              "re-grabbing shm[%d] (0x%pp) for worker: %s", i, (void *)shm,
-                             ap_proxy_worker_name(NULL, worker));
+                             ap_proxy_worker_get_name(worker));
                 break;
             }
         }
