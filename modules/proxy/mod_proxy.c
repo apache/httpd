@@ -2241,14 +2241,14 @@ static const char *
             reuse = 1;
             ap_log_error(APLOG_MARK, APLOG_INFO, 0, cmd->server, APLOGNO(01145)
                          "Sharing worker '%s' instead of creating new worker '%s'",
-                         ap_proxy_worker_name(cmd->pool, worker), new->real);
+                         ap_proxy_worker_get_name(worker), new->real);
         }
 
         for (i = 0; i < arr->nelts; i++) {
             if (reuse) {
                 ap_log_error(APLOG_MARK, APLOG_WARNING, 0, cmd->server, APLOGNO(01146)
                              "Ignoring parameter '%s=%s' for worker '%s' because of worker sharing",
-                             elts[i].key, elts[i].val, ap_proxy_worker_name(cmd->pool, worker));
+                             elts[i].key, elts[i].val, ap_proxy_worker_get_name(worker));
             } else {
                 const char *err = set_worker_param(cmd->pool, s, worker, elts[i].key,
                                                    elts[i].val);
@@ -2793,13 +2793,13 @@ static const char *add_member(cmd_parms *cmd, void *dummy, const char *arg)
             return apr_pstrcat(cmd->temp_pool, "BalancerMember ", err, NULL);
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, cmd->server, APLOGNO(01148)
                      "Defined worker '%s' for balancer '%s'",
-                     ap_proxy_worker_name(cmd->pool, worker), balancer->s->name);
+                     ap_proxy_worker_get_name(worker), balancer->s->name);
         PROXY_COPY_CONF_PARAMS(worker, conf);
     } else {
         reuse = 1;
         ap_log_error(APLOG_MARK, APLOG_INFO, 0, cmd->server, APLOGNO(01149)
                      "Sharing worker '%s' instead of creating new worker '%s'",
-                     ap_proxy_worker_name(cmd->pool, worker), name);
+                     ap_proxy_worker_get_name(worker), name);
     }
     if (!worker->section_config) {
         worker->section_config = balancer->section_config;
@@ -2811,7 +2811,7 @@ static const char *add_member(cmd_parms *cmd, void *dummy, const char *arg)
         if (reuse) {
             ap_log_error(APLOG_MARK, APLOG_WARNING, 0, cmd->server, APLOGNO(01150)
                          "Ignoring parameter '%s=%s' for worker '%s' because of worker sharing",
-                         elts[i].key, elts[i].val, ap_proxy_worker_name(cmd->pool, worker));
+                         elts[i].key, elts[i].val, ap_proxy_worker_get_name(worker));
         } else {
             err = set_worker_param(cmd->pool, cmd->server, worker, elts[i].key,
                                    elts[i].val);
