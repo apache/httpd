@@ -1513,6 +1513,7 @@ static void socket_cleanup(proxy_conn_rec *conn)
     conn->connection = NULL;
     conn->ssl_hostname = NULL;
     apr_pool_clear(conn->scpool);
+    conn->close = 0;
 }
 
 static void address_cleanup(proxy_conn_rec *conn)
@@ -1532,6 +1533,7 @@ static void address_cleanup(proxy_conn_rec *conn)
 
 static apr_status_t conn_pool_cleanup(void *theworker)
 {
+    /* Signal that the child is exiting */
     ((proxy_worker *)theworker)->cp = NULL;
     return APR_SUCCESS;
 }
@@ -1612,8 +1614,7 @@ PROXY_DECLARE(int) ap_proxy_connection_reusable(proxy_conn_rec *conn)
 
     return !(conn->close
              || conn->forward
-             || worker->s->disablereuse
-             || !worker->s->is_address_reusable);
+             || worker->s->disablereuse);
 }
 
 static proxy_conn_rec *connection_make(apr_pool_t *p, proxy_worker *worker)
@@ -1666,18 +1667,17 @@ static void connection_cleanup(void *theconn)
         apr_pool_clear(p);
         conn = connection_make(p, worker);
     }
-    else if (conn->close
-             || conn->forward
+    else if (!conn->sock
              || (conn->connection
                  && conn->connection->keepalive == AP_CONN_CLOSE)
-             || worker->s->disablereuse) {
+             || !ap_proxy_connection_reusable(conn)) {
         socket_cleanup(conn);
-        conn->close = 0;
     }
     else if (conn->is_ssl) {
-        /* Unbind/reset the SSL connection dir config (sslconn->dc) from
-         * r->per_dir_config, r will likely get destroyed before this proxy
-         * conn is reused.
+        /* The current ssl section/dir config of the conn is not necessarily
+         * the one it will be reused for, so while the conn is in the reslist
+         * reset its ssl config to the worker's, until a new user sets its own
+         * ssl config eventually in proxy_connection_create() and so on.
          */
         ap_proxy_ssl_engine(conn->connection, worker->section_config, 1);
     }
@@ -2685,7 +2685,6 @@ PROXY_DECLARE(int) ap_proxy_acquire_connection(const char *proxy_function,
                  (int)worker->s->port);
 
     (*conn)->worker = worker;
-    (*conn)->close  = 0;
     (*conn)->inreslist = 0;
 
     return OK;
@@ -3087,7 +3086,6 @@ ap_proxy_determine_connection(apr_pool_t *p, request_rec *r,
     /* Close a possible existing socket if we are told to do so */
     if (conn->close) {
         socket_cleanup(conn);
-        conn->close = 0;
     }
 
     /*
@@ -3871,13 +3869,13 @@ PROXY_DECLARE(int) ap_proxy_connect_backend(const char *proxy_function,
          * e.g. for a timeout or bad status. We should respect this and should
          * not continue with a connection via this worker even if we got one.
          */
-        if (rv == APR_SUCCESS) {
-            socket_cleanup(conn);
-        }
         rv = APR_EINVAL;
     }
-
-    return rv == APR_SUCCESS ? OK : DECLINED;
+    if (rv != APR_SUCCESS) {
+        socket_cleanup(conn);
+        return DECLINED;
+    }
+    return OK;
 }
 
 static apr_status_t connection_shutdown(void *theconn)
@@ -3914,9 +3912,9 @@ static int proxy_connection_create(const char *proxy_function,
     ap_conf_vector_t *per_dir_config = (r) ? r->per_dir_config
                                            : conn->worker->section_config;
     apr_sockaddr_t *backend_addr = conn->addr;
-    int rc;
     apr_interval_time_t current_timeout;
     apr_bucket_alloc_t *bucket_alloc;
+    int rc = OK;
 
     if (conn->connection) {
         if (conn->is_ssl) {
@@ -3928,14 +3926,15 @@ static int proxy_connection_create(const char *proxy_function,
         return OK;
     }
 
-    bucket_alloc = apr_bucket_alloc_create(conn->scpool);
-    conn->tmp_bb = apr_brigade_create(conn->scpool, bucket_alloc);
-    /*
-     * The socket is now open, create a new backend server connection
-     */
-    conn->connection = ap_create_connection(conn->scpool, s, conn->sock,
-                                            0, NULL, bucket_alloc, 1);
-
+    if (conn->sock) {
+        bucket_alloc = apr_bucket_alloc_create(conn->scpool);
+        conn->tmp_bb = apr_brigade_create(conn->scpool, bucket_alloc);
+        /*
+         * The socket is now open, create a new backend server connection
+         */
+        conn->connection = ap_create_connection(conn->scpool, s, conn->sock,
+                                                0, NULL, bucket_alloc, 1);
+    }
     if (!conn->connection) {
         /*
          * the peer reset the connection already; ap_create_connection()
@@ -3943,11 +3942,11 @@ static int proxy_connection_create(const char *proxy_function,
          */
         ap_log_error(APLOG_MARK, APLOG_ERR, 0,
                      s, APLOGNO(00960) "%s: an error occurred creating a "
-                     "new connection to %pI (%s)", proxy_function,
-                     backend_addr, conn->hostname);
-        /* XXX: Will be closed when proxy_conn is closed */
-        socket_cleanup(conn);
-        return HTTP_INTERNAL_SERVER_ERROR;
+                     "new connection to %pI (%s)%s",
+                     proxy_function, backend_addr, conn->hostname,
+                     conn->sock ? "" : " (not connected)");
+        rc = HTTP_INTERNAL_SERVER_ERROR;
+        goto cleanup;
     }
 
     /* For ssl connection to backend */
@@ -3957,7 +3956,8 @@ static int proxy_connection_create(const char *proxy_function,
                          s, APLOGNO(00961) "%s: failed to enable ssl support "
                          "for %pI (%s)", proxy_function,
                          backend_addr, conn->hostname);
-            return HTTP_INTERNAL_SERVER_ERROR;
+            rc = HTTP_INTERNAL_SERVER_ERROR;
+            goto cleanup;
         }
         if (conn->ssl_hostname) {
             /* Set a note on the connection about what CN is requested,
@@ -3992,7 +3992,7 @@ static int proxy_connection_create(const char *proxy_function,
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(00963)
                      "%s: pre_connection setup failed (%d)",
                      proxy_function, rc);
-        return rc;
+        goto cleanup;
     }
     apr_socket_timeout_set(conn->sock, current_timeout);
 
@@ -4002,6 +4002,10 @@ static int proxy_connection_create(const char *proxy_function,
     apr_pool_pre_cleanup_register(conn->scpool, conn, connection_shutdown);
 
     return OK;
+
+cleanup:
+    socket_cleanup(conn);
+    return rc;
 }
 
 PROXY_DECLARE(int) ap_proxy_connection_create_ex(const char *proxy_function,
