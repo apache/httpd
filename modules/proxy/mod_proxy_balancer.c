@@ -143,13 +143,11 @@ static int proxy_balancer_canon(request_rec *r, char *url)
     return OK;
 }
 
-static void init_balancer_members(apr_pool_t *p, server_rec *s,
-                                 proxy_balancer *balancer)
+static void init_balancer_members(proxy_balancer *balancer,
+                                  server_rec *s, apr_pool_t *p)
 {
     int i;
-    proxy_worker **workers;
-
-    workers = (proxy_worker **)balancer->workers->elts;
+    proxy_worker **workers = (proxy_worker **)balancer->workers->elts;
 
     for (i = 0; i < balancer->workers->nelts; i++) {
         int worker_is_initialized;
@@ -2024,7 +2022,7 @@ static int balancer_handler(request_rec *r)
 
 static void balancer_child_init(apr_pool_t *p, server_rec *s)
 {
-    while (s) {
+    for (; s; s = s->next) {
         proxy_balancer *balancer;
         int i;
         void *sconf = s->module_config;
@@ -2055,17 +2053,16 @@ static void balancer_child_init(apr_pool_t *p, server_rec *s)
 
         balancer = (proxy_balancer *)conf->balancers->elts;
         for (i = 0; i < conf->balancers->nelts; i++, balancer++) {
-            rv = ap_proxy_initialize_balancer(balancer, s, p);
-
+            rv = ap_proxy_initialize_balancer(balancer, s, conf->pool);
             if (rv != APR_SUCCESS) {
                 ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s, APLOGNO(01206)
                              "Failed to init balancer %s in child",
                              balancer->s->name);
                 exit(1); /* Ugly, but what else? */
             }
-            init_balancer_members(p, s, balancer);
+
+            init_balancer_members(balancer, s, conf->pool);
         }
-        s = s->next;
     }
 
 }
