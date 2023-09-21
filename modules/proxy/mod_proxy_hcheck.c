@@ -235,7 +235,7 @@ static const char *set_worker_hc_param(apr_pool_t *p,
         if (ap_timeout_parameter_parse(val, &timeout, "s") != APR_SUCCESS)
             return "Health check timeout value has wrong format";
         if (timeout < 1000)
-            return "Healt check timeout must be at least one millisecond";
+            return "Health check timeout must be at least one millisecond";
         if(worker) {
             worker->s->hc_timeout = timeout;
             worker->s->hc_timeout_set = 1;
