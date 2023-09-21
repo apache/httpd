@@ -1836,18 +1836,38 @@ static int ap_proxy_strcmp_ematch(const char *str, const char *expected)
     return 0;
 }
 
+static APR_INLINE
+int worker_matches(proxy_worker *worker,
+                   const char *url, apr_size_t url_len,
+                   apr_size_t min_match, apr_size_t *max_match,
+                   unsigned int mask)
+{
+    apr_size_t name_len = strlen(worker->s->name);
+    int name_match = worker->s->is_name_matchable;
+    if (name_len <= url_len
+        && name_len >= min_match
+        && name_len > *max_match
+        && ((name_match
+             && (mask & AP_PROXY_WORKER_IS_MATCH)
+             && !ap_proxy_strcmp_ematch(url, worker->s->name))
+            || (!name_match
+                && (mask & AP_PROXY_WORKER_IS_PREFIX)
+                && !strncmp(url, worker->s->name, name_len)))) {
+        *max_match = name_len;
+        return 1;
+    }
+    return 0;
+}
+
 PROXY_DECLARE(proxy_worker *) ap_proxy_get_worker_ex(apr_pool_t *p,
                                                      proxy_balancer *balancer,
                                                      proxy_server_conf *conf,
                                                      const char *url,
                                                      unsigned int mask)
 {
-    proxy_worker *worker;
     proxy_worker *max_worker = NULL;
-    int max_match = 0;
-    int url_length;
-    int min_match;
-    int worker_name_length;
+    apr_size_t min_match, max_match = 0;
+    apr_size_t url_len;
     const char *c;
     char *url_copy;
     int i;
@@ -1868,8 +1888,8 @@ PROXY_DECLARE(proxy_worker *) ap_proxy_get_worker_ex(apr_pool_t *p,
         return NULL;
     }
 
-    url_length = strlen(url);
-    url_copy = apr_pstrmemdup(p, url, url_length);
+    url_len = strlen(url);
+    url_copy = apr_pstrmemdup(p, url, url_len);
 
     /* Default to lookup for both _PREFIX and _MATCH workers */
     if (!(mask & (AP_PROXY_WORKER_IS_PREFIX | AP_PROXY_WORKER_IS_MATCH))) {
@@ -1895,48 +1915,28 @@ PROXY_DECLARE(proxy_worker *) ap_proxy_get_worker_ex(apr_pool_t *p,
         ap_str_tolower(url_copy);
         min_match = strlen(url_copy);
     }
+
     /*
      * Do a "longest match" on the worker name to find the worker that
      * fits best to the URL, but keep in mind that we must have at least
      * a minimum matching of length min_match such that
      * scheme://hostname[:port] matches between worker and url.
      */
-
     if (balancer) {
-        proxy_worker **workers = (proxy_worker **)balancer->workers->elts;
-        for (i = 0; i < balancer->workers->nelts; i++, workers++) {
-            worker = *workers;
-            if ( ((worker_name_length = strlen(worker->s->name)) <= url_length)
-                && (worker_name_length >= min_match)
-                && (worker_name_length > max_match)
-                && (worker->s->is_name_matchable
-                    || ((mask & AP_PROXY_WORKER_IS_PREFIX)
-                        && strncmp(url_copy, worker->s->name,
-                                   worker_name_length) == 0))
-                && (!worker->s->is_name_matchable
-                    || ((mask & AP_PROXY_WORKER_IS_MATCH)
-                        && ap_proxy_strcmp_ematch(url_copy,
-                                                  worker->s->name) == 0)) ) {
-                max_worker = worker;
-                max_match = worker_name_length;
+        proxy_worker **worker = (proxy_worker **)balancer->workers->elts;
+        for (i = 0; i < balancer->workers->nelts; i++, worker++) {
+            if (worker_matches(*worker, url_copy, url_len,
+                               min_match, &max_match, mask)) {
+                max_worker = *worker;
             }
         }
-    } else {
-        worker = (proxy_worker *)conf->workers->elts;
+    }
+    else {
+        proxy_worker *worker = (proxy_worker *)conf->workers->elts;
         for (i = 0; i < conf->workers->nelts; i++, worker++) {
-            if ( ((worker_name_length = strlen(worker->s->name)) <= url_length)
-                && (worker_name_length >= min_match)
-                && (worker_name_length > max_match)
-                && (worker->s->is_name_matchable
-                    || ((mask & AP_PROXY_WORKER_IS_PREFIX)
-                        && strncmp(url_copy, worker->s->name,
-                                   worker_name_length) == 0))
-                && (!worker->s->is_name_matchable
-                    || ((mask & AP_PROXY_WORKER_IS_MATCH)
-                        && ap_proxy_strcmp_ematch(url_copy,
-                                                  worker->s->name) == 0)) ) {
+            if (worker_matches(worker, url_copy, url_len,
+                               min_match, &max_match, mask)) {
                 max_worker = worker;
-                max_match = worker_name_length;
             }
         }
     }
