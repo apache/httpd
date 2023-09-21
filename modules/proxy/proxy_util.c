@@ -2802,18 +2802,23 @@ static apr_status_t worker_address_resolve(proxy_worker *worker,
 static int proxy_addrs_equal(const apr_sockaddr_t *addr1,
                              const apr_sockaddr_t *addr2)
 {
-    const apr_sockaddr_t *a2, *n2 = addr2;
-    for (; addr1; addr1 = addr1->next) {
-        if (!n2++) {
-            return 0;
-        }
-        for (a2 = addr2; a2; a2 = a2->next) {
-            if (!apr_sockaddr_equal(addr1, a2)) {
-                return 0;
+    const apr_sockaddr_t *base2 = addr2, *pos2;
+    while (addr1 && addr2) {
+        for (pos2 = base2; pos2; pos2 = pos2->next) {
+            if (apr_sockaddr_equal(pos2, addr1)) {
+                break;
             }
         }
+        if (!pos2) {
+            return 0;
+        }
+        addr1 = addr1->next;
+        addr2 = addr2->next;
     }
-    return !n2;
+    if (addr1 || addr2) {
+        return 0;
+    }
+    return 1;
 }
 
 PROXY_DECLARE(apr_status_t) ap_proxy_determine_address(const char *proxy_function,
