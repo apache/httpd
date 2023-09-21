@@ -597,6 +597,7 @@
  * 20120211.127 (2.4.56-dev) Add ap_proxy_canonenc_ex
  * 20120211.128 (2.4.55-dev) Add AP_CTIME_OPTION_GMTOFF to util_time.h
  * 20120211.129 (2.4.58-dev) Add ap_get_pollfd_from_conn()
+ * 20120211.130 (2.4.58-dev) Add ap_proxy_determine_address()
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */
@@ -604,7 +605,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20120211
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 129                 /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 130                 /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a
