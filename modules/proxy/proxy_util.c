@@ -2740,17 +2740,80 @@ static APR_INLINE void worker_address_set(proxy_worker *worker,
     }
 }
 
-/* Force an address to expire if it didn't already (i.e. still
- * the one of the worker).
- */
-static void proxy_address_set_expired(proxy_worker *worker,
-                                      proxy_address *address)
+static apr_status_t worker_address_resolve(proxy_worker *worker,
+                                           apr_sockaddr_t **paddr,
+                                           const char *hostname,
+                                           apr_port_t hostport,
+                                           const char *proxy_function,
+                                           request_rec *r, server_rec *s)
 {
-    PROXY_THREAD_LOCK(worker);
-    if (address == worker->address) {
-        apr_atomic_set32(&address->expiry, 0);
+    apr_status_t rv;
+    apr_pool_t *pool = NULL;
+
+    apr_pool_create(&pool, worker->cp->dns_pool);
+    rv = apr_sockaddr_info_get(paddr, hostname, APR_UNSPEC,
+                               hostport, 0, pool);
+    if (rv != APR_SUCCESS) {
+        if (r && !s) {
+            proxyerror_core(r, HTTP_INTERNAL_SERVER_ERROR,
+                            apr_pstrcat(pool,
+                                        "DNS lookup failure for: ",
+                                        hostname, NULL),
+                            rv);
+        }
+        else if (r) {
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, rv, r, APLOGNO(10477)
+                          "%s: resolving worker %s address",
+                          proxy_function, hostname);
+        }
+        else {
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, s, APLOGNO(10478)
+                         "%s: resolving worker %s address",
+                         proxy_function, hostname);
+        }
+        apr_pool_destroy(pool);
+        return rv;
     }
-    PROXY_THREAD_UNLOCK(worker);
+
+    if (r ? APLOGrdebug(r) : APLOGdebug(s)) {
+        char *addrs = NULL;
+        apr_sockaddr_t *addr = *paddr;
+        for (; addr; addr = addr->next) {
+            addrs = apr_psprintf(pool, "%s%s%pI",
+                                 addrs ? ", " : "",
+                                 addrs ? addrs : "",
+                                 addr);
+        }
+        if (r) {
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(10479)
+                          "%s: %s resolved to %s",
+                          proxy_function, hostname, addrs);
+        }
+        else {
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(10480)
+                         "%s: %s resolved to %s",
+                         proxy_function, hostname, addrs);
+        }
+    }
+
+    return APR_SUCCESS;
+}
+
+static int proxy_addrs_equal(const apr_sockaddr_t *addr1,
+                             const apr_sockaddr_t *addr2)
+{
+    const apr_sockaddr_t *a2, *n2 = addr2;
+    for (; addr1; addr1 = addr1->next) {
+        if (!n2++) {
+            return 0;
+        }
+        for (a2 = addr2; a2; a2 = a2->next) {
+            if (!apr_sockaddr_equal(addr1, a2)) {
+                return 0;
+            }
+        }
+    }
+    return !n2;
 }
 
 PROXY_DECLARE(apr_status_t) ap_proxy_determine_address(const char *proxy_function,
@@ -2763,10 +2826,6 @@ PROXY_DECLARE(apr_status_t) ap_proxy_determine_address(const char *proxy_functio
 {
     proxy_worker *worker = conn->worker;
     apr_status_t rv;
-
-    if (flags) {
-        return APR_EINVAL;
-    }
 
     /*
      * Worker can have the single constant backend adress.
@@ -2803,9 +2862,31 @@ PROXY_DECLARE(apr_status_t) ap_proxy_determine_address(const char *proxy_functio
         }
     }
     else {
-        proxy_address *address;
+        apr_sockaddr_t *addr = NULL;
+        proxy_address *address = NULL;
         apr_int32_t ttl = worker->s->address_ttl;
         apr_uint32_t now = 0;
+
+        if (flags & PROXY_DETERMINE_ADDRESS_CHECK) {
+            /* The caller wants to check if the address changed, return
+             * APR_EEXIST if not, otherwise fall through to update the
+             * worker's for everyone to switch.
+             */
+            if (!conn->addr) {
+                /* Need something to compare with */
+                return APR_EINVAL;
+            }
+            rv = worker_address_resolve(worker, &addr,
+                                        hostname, hostport,
+                                        proxy_function, r, s);
+            if (rv != APR_SUCCESS) {
+                return rv;
+            }
+            if (proxy_addrs_equal(conn->addr, addr)) {
+                apr_pool_destroy(addr->pool);
+                return APR_EEXIST;
+            }
+        }
 
         AP_DEBUG_ASSERT(ttl != 0);
         if (ttl > 0) {
@@ -2828,75 +2909,40 @@ PROXY_DECLARE(apr_status_t) ap_proxy_determine_address(const char *proxy_functio
          * time. So only conn->address is safe to dereference anywhere (unless
          * NULL..) since it has at least the lifetime of the connection.
          */
-        address = worker_address_get(worker);
+        if (!addr) {
+            address = worker_address_get(worker);
+        }
         if (!address
             || conn->address != address
             || apr_atomic_read32(&address->expiry) <= now) {
             PROXY_THREAD_LOCK(worker);
 
             /* Re-check while locked, might be a new address already */
-            address = worker_address_get(worker);
+            if (!addr) {
+                address = worker_address_get(worker);
+            }
             if (!address || apr_atomic_read32(&address->expiry) <= now) {
-                apr_pool_t *pool = NULL;
-                apr_sockaddr_t *addr;
+                if (!addr) {
+                    rv = worker_address_resolve(worker, &addr,
+                                                hostname, hostport,
+                                                proxy_function, r, s);
+                    if (rv != APR_SUCCESS) {
+                        PROXY_THREAD_UNLOCK(worker);
+                        return rv;
+                    }
 
-                apr_pool_create(&pool, worker->cp->dns_pool);
-                rv = apr_sockaddr_info_get(&addr, hostname, APR_UNSPEC,
-                                           hostport, 0, pool);
-                if (rv != APR_SUCCESS) {
-                    PROXY_THREAD_UNLOCK(worker);
-                    apr_pool_destroy(pool);
-                    if (r && !s) {
-                        proxyerror_core(r, HTTP_INTERNAL_SERVER_ERROR,
-                                        apr_pstrcat(r->pool,
-                                                    "DNS lookup failure for: ",
-                                                    hostname, NULL),
-                                        rv);
-                    }
-                    else if (r) {
-                        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, rv, r, APLOGNO(10477)
-                                      "%s: resolving worker %s address",
-                                      proxy_function, hostname);
-                    }
-                    else {
-                        ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, s, APLOGNO(10478)
-                                     "%s: resolving worker %s address",
-                                     proxy_function, hostname);
-                    }
-                    return rv;
-                }
-                if (r ? APLOGrdebug(r) : APLOGdebug(s)) {
-                    char *addrs = NULL;
-                    apr_sockaddr_t *a = addr;
-                    for (; a; a = a->next) {
-                        addrs = apr_psprintf(pool, "%s%s%pI",
-                                             addrs ? ", " : "",
-                                             addrs ? addrs : "",
-                                             a);
-                    }
-                    if (r) {
-                        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(10479)
-                                      "%s: %s resolved to %s",
-                                      proxy_function, hostname, addrs);
-                    }
-                    else {
-                        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(10480)
-                                     "%s: %s resolved to %s",
-                                     proxy_function, hostname, addrs);
-                    }
-                }
-
-                address = apr_pcalloc(pool, sizeof(*address));
-                address->hostname = apr_pstrdup(pool, hostname);
-                address->hostport = hostport;
-                address->addr = addr;
-
-                if (ttl > 0) {
                     /* Recompute "now" should the DNS be slow
                      * TODO: use a monotonic clock here
                      */
                     now = apr_time_sec(apr_time_now() - *proxy_start_time);
+                }
 
+                address = apr_pcalloc(addr->pool, sizeof(*address));
+                address->hostname = apr_pstrdup(addr->pool, hostname);
+                address->hostport = hostport;
+                address->addr = addr;
+
+                if (ttl > 0) {
                     /* We keep each worker's expiry date shared accross all the
                      * children so that they update their address at the same
                      * time, regardless of whether a specific child forced an
@@ -3713,15 +3759,14 @@ PROXY_DECLARE(int) ap_proxy_connect_backend(const char *proxy_function,
                  * helps.
                  */
                 if (!backend_addr && address_reusable && !did_dns_lookup) {
-                    /* Expire the current address first, this all might simply
-                     * reuse the last address if updated since conn->address
-                     * was set (in ap_proxy_determine_connection()), or do the
-                     * DNS lookup for this and all the following connections.
+                    /* Issue a new DNS lookup to check if the address changed,
+                     * in which case (SUCCESS) restart the loop with the new
+                     * one(s), otherwise leave (nothing we can do about it).
                      */
-                    proxy_address_set_expired(worker, conn->address);
                     if (ap_proxy_determine_address(proxy_function, conn,
                                                    conn->hostname, conn->port,
-                                                   0, NULL, s) == APR_SUCCESS) {
+                                                   PROXY_DETERMINE_ADDRESS_CHECK,
+                                                   NULL, s) == APR_SUCCESS) {
                         backend_addr = conn->addr;
                     }
 

@@ -1060,17 +1060,20 @@ PROXY_DECLARE(int) ap_proxy_post_request(proxy_worker *worker,
                                          request_rec *r,
                                          proxy_server_conf *conf);
 
+/* Bitmask for ap_proxy_determine_address() */
+#define PROXY_DETERMINE_ADDRESS_CHECK   (1u << 0)
 /**
  * Resolve an address, reusing the one of the worker if any.
  * @param proxy_function calling proxy scheme (http, ajp, ...)
  * @param conn     proxy connection the address is used for
  * @param hostname host to resolve (should be the worker's if reusable)
  * @param hostport port to resolve (should be the worker's if reusable)
- * @param flags    bitmask (unused for now, must be zero)
+ * @param flags    bitmask of PROXY_DETERMINE_ADDRESS_*
  * @param r        current request (if any)
  * @param s        current server (or NULL if r != NULL and ap_proxyerror()
  *                                 should be called on error)
- * @return         APR_SUCCESS or an error
+ * @return         APR_SUCCESS or an error, APR_EEXIST if the address is still
+ *                 the same and PROXY_DETERMINE_ADDRESS_CHECK is asked
  */
 PROXY_DECLARE(apr_status_t) ap_proxy_determine_address(const char *proxy_function,
                                                        proxy_conn_rec *conn,
