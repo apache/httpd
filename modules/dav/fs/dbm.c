@@ -100,7 +100,7 @@ static dav_error * dav_fs_dbm_error(dav_db *db, apr_pool_t *p,
     /* There might not be a <db> if we had problems creating it. */
     if (db == NULL) {
         errcode = 1;
-        errstr = "Could not open property database.";
+        errstr = "Could not open database.";
         if (APR_STATUS_IS_EDSOOPEN(status))
             ap_log_error(APLOG_MARK, APLOG_CRIT, status, ap_server_conf, APLOGNO(00576)
             "The DBM driver could not be loaded");
@@ -147,7 +147,7 @@ dav_error * dav_dbm_open_direct(apr_pool_t *p, const char *pathname, int ro,
                      "mod_dav_fs: The DBM library '%s' could not be loaded: %s",
                              err->reason, err->msg);
         return dav_new_error(p, HTTP_INTERNAL_SERVER_ERROR, 1, status,
-                "Could not load library for property database.");
+                "Could not load library for database.");
     }
     if ((status = apr_dbm_open2(&file, driver, pathname,
                                ro ? APR_DBM_READONLY : APR_DBM_RWCREATE,
