@@ -287,7 +287,7 @@ static apr_status_t pass_output(h2_c1_io *io, int flush)
         rv = APR_SUCCESS;
         goto cleanup;
     }
-    
+
     io->unflushed = !APR_BUCKET_IS_FLUSH(APR_BRIGADE_LAST(io->output));
     apr_brigade_length(io->output, 0, &bblen);
     C1_IO_BB_LOG(c, 0, APLOG_TRACE2, "out", io->output);

@@ -197,6 +197,36 @@ Alias "/php-source" "/home/gstein/php_files"
 </directivesynopsis>
 
 <directivesynopsis>
+<name>DavBasePath</name>
+<description>Configure repository root path</description>
+<syntax>DavBasePath <var>root-path</var></syntax>
+<default>None</default>
+<contextlist><context>directory</context></contextlist>
+<compatibility>Available in version 2.4.58 and later</compatibility>
+
+<usage>
+  <p>If a DAV repository is configured using a regular expression
+  match (such as <directive module="core">LocationMatch</directive>)
+  then <module>mod_dav</module> will not be able to find the root of
+  the repository from the pathname alone. Third-party providers (for
+  example, Subversion's <a
+  href="https://svnbook.red-bean.com/en/1.7/svn.ref.mod_dav_svn.conf.html">mod_dav_svn</a>)
+  may fail to handle requests without the correct repository root.</p>
+
+  <p>To allow providers to work correctly in such a configuration,
+  <directive>DavBasePath</directive> must be used.</p>
+
+    <highlight language="config">
+&lt;LocationMatch "^/repos/"&gt;
+    Dav svn
+    DavBasePath /repos
+    SVNParentPath /var/svn
+&lt;/LocationMatch&gt;
+    </highlight>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
 <name>DavMinTimeout</name>
 <description>Minimum amount of time the server holds a lock on
 a DAV resource</description>

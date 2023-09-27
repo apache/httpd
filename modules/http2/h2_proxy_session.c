@@ -818,7 +818,7 @@ static apr_status_t open_stream(h2_proxy_session *session, const char *url,
 {
     h2_proxy_stream *stream;
     apr_uri_t puri;
-    const char *authority, *scheme, *path;
+    const char *authority, *scheme, *path, *orig_host;
     apr_status_t status;
     proxy_dir_conf *dconf;
 
@@ -842,13 +842,14 @@ static apr_status_t open_stream(h2_proxy_session *session, const char *url,
         return status;
     
     scheme = (strcmp(puri.scheme, "h2")? "http" : "https");
-    
+    orig_host = apr_table_get(r->headers_in, "Host");
+    if (orig_host == NULL) {
+        orig_host = r->hostname;
+    }
+
     dconf = ap_get_module_config(r->per_dir_config, &proxy_module);
     if (dconf->preserve_host) {
-        authority = apr_table_get(r->headers_in, "Host");
-        if (authority == NULL) {
-            authority = r->hostname;
-        }
+        authority = orig_host;
     }
     else {
         authority = puri.hostname;
@@ -878,8 +879,6 @@ static apr_status_t open_stream(h2_proxy_session *session, const char *url,
 
     if (dconf->add_forwarded_headers) {
         if (PROXYREQ_REVERSE == r->proxyreq) {
-            const char *buf;
-
             /* Add X-Forwarded-For: so that the upstream has a chance to
              * determine, where the original request came from.
              */
@@ -889,8 +888,9 @@ static apr_status_t open_stream(h2_proxy_session *session, const char *url,
             /* Add X-Forwarded-Host: so that upstream knows what the
              * original request hostname was.
              */
-            if ((buf = apr_table_get(r->headers_in, "Host"))) {
-                apr_table_mergen(stream->req->headers, "X-Forwarded-Host", buf);
+            if (orig_host) {
+                apr_table_mergen(stream->req->headers, "X-Forwarded-Host",
+                                 orig_host);
             }
 
             /* Add X-Forwarded-Server: so that upstream knows what the
@@ -1681,7 +1681,17 @@ static int done_iter(void *udata, void *val)
     h2_proxy_stream *stream = val;
     int touched = (stream->data_sent || stream->data_received ||
                    stream->id <= ctx->session->last_stream_id);
-    ctx->done(ctx->session, stream->r, APR_ECONNABORTED, touched, stream->error_code);
+    if (touched && stream->output) {
+      apr_bucket *b = ap_bucket_error_create(HTTP_BAD_GATEWAY, NULL,
+                                             stream->r->pool,
+                                             stream->cfront->bucket_alloc);
+      APR_BRIGADE_INSERT_TAIL(stream->output, b);
+      b = apr_bucket_eos_create(stream->cfront->bucket_alloc);
+      APR_BRIGADE_INSERT_TAIL(stream->output, b);
+      ap_pass_brigade(stream->r->output_filters, stream->output);
+    }
+    ctx->done(ctx->session, stream->r, APR_ECONNABORTED, touched,
+              stream->error_code);
     return 1;
 }
 

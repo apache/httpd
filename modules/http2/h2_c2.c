@@ -51,6 +51,7 @@
 #include "h2_ws.h"
 #include "h2_c2.h"
 #include "h2_util.h"
+#include "mod_http2.h"
 
 
 static module *mpm_module;
@@ -469,11 +470,11 @@ static int c2_hook_fixups(request_rec *r)
     return DECLINED;
 }
 
-#if H2_USE_POLLFD_FROM_CONN
-static apr_status_t c2_get_pollfd_from_conn(conn_rec *c,
-                                            struct apr_pollfd_t *pfd,
-                                            apr_interval_time_t *ptimeout)
+static apr_status_t http2_get_pollfd_from_conn(conn_rec *c,
+                                               struct apr_pollfd_t *pfd,
+                                               apr_interval_time_t *ptimeout)
 {
+#if H2_USE_PIPES
     if (c->master) {
         h2_conn_ctx_t *ctx = h2_conn_ctx_get(c);
         if (ctx) {
@@ -492,9 +493,13 @@ static apr_status_t c2_get_pollfd_from_conn(conn_rec *c,
             return APR_SUCCESS;
         }
     }
+#else
+    (void)c;
+    (void)pfd;
+    (void)ptimeout;
+#endif /* H2_USE_PIPES */
     return APR_ENOTIMPL;
 }
-#endif
 
 #if AP_HAS_RESPONSE_BUCKETS
 
@@ -601,9 +606,10 @@ void h2_c2_register_hooks(void)
                               APR_HOOK_REALLY_FIRST);
     ap_hook_fixups(c2_hook_fixups, NULL, NULL, APR_HOOK_LAST);
 #if H2_USE_POLLFD_FROM_CONN
-    ap_hook_get_pollfd_from_conn(c2_get_pollfd_from_conn, NULL, NULL,
+    ap_hook_get_pollfd_from_conn(http2_get_pollfd_from_conn, NULL, NULL,
                                  APR_HOOK_MIDDLE);
 #endif
+    APR_REGISTER_OPTIONAL_FN(http2_get_pollfd_from_conn);
 
     c2_net_in_filter_handle =
         ap_register_input_filter("H2_C2_NET_IN", h2_c2_filter_in,
@@ -717,7 +723,7 @@ static apr_status_t c2_process(h2_conn_ctx_t *conn_ctx, conn_rec *c)
     apr_time_t timeout;
     apr_status_t rv = APR_SUCCESS;
 
-    if(req->protocol && !strcmp("websocket", req->protocol)) {
+    if (req->protocol && !strcmp("websocket", req->protocol)) {
         req = h2_ws_rewrite_request(req, c, conn_ctx->beam_in == NULL);
         if (!req) {
             rv = APR_EGENERAL;
@@ -913,9 +919,10 @@ void h2_c2_register_hooks(void)
     ap_hook_post_read_request(h2_c2_hook_post_read_request, NULL, NULL, APR_HOOK_REALLY_FIRST);
     ap_hook_fixups(c2_hook_fixups, NULL, NULL, APR_HOOK_LAST);
 #if H2_USE_POLLFD_FROM_CONN
-    ap_hook_get_pollfd_from_conn(c2_get_pollfd_from_conn, NULL, NULL,
+    ap_hook_get_pollfd_from_conn(http2_get_pollfd_from_conn, NULL, NULL,
                                  APR_HOOK_MIDDLE);
 #endif
+    APR_REGISTER_OPTIONAL_FN(http2_get_pollfd_from_conn);
 
     ap_register_input_filter("H2_C2_NET_IN", h2_c2_filter_in,
                              NULL, AP_FTYPE_NETWORK);

@@ -53,6 +53,7 @@ documents via le web (<a href="http://www.webdav.org/">WebDAV</a>)</td></tr>
 </ul><h3 class="directives">Directives</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#dav">Dav</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#davbasepath">DavBasePath</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#davdepthinfinity">DavDepthInfinity</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#davmintimeout">DavMinTimeout</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#davmsext">DavMSext</a></li>
@@ -218,6 +219,36 @@ ForceType text/plain
       vous passez outre cette recommandation, tout le monde pourra
       enregistrer des fichiers sur votre système.
     </div>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="davbasepath" id="davbasepath">Directive</a> <a name="DavBasePath" id="DavBasePath">DavBasePath</a> <a title="Lien permanent" href="#davbasepath" class="permalink">&para;</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définir le chemin de la racine du répertoire</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>DavBasePath <var>root-path</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>None</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_dav</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.58 du serveur HTTP Apache</td></tr>
+</table>
+  <p>Si le répertoire DAV est défini en utilisant une correspondance
+  d'expression rationnelle (comme <code class="directive"><a href="../mod/core.html#locationmatch">LocationMatch</a></code>), <code class="module"><a href="../mod/mod_dav.html">mod_dav</a></code> ne sera pas
+  en mesure de déterminer de lui-même la racine du répertoire à partir du chemin
+  seul. En conséquence, des fournisseurs tiers (par exemple le module <a href="https://svnbook.red-bean.com/en/1.7/svn.ref.mod_dav_svn.conf.html">mod_dav_svn</a>
+  de Subversion) pourront échouer à traiter des requêtes sans disposer de la
+  valeur correcte de la racine du répertoire.</p>
+
+  <p>Pour permettre aux fournisseurs de travailler correctement en présence
+  d'une telle configuration, vous devez utiliser
+  <code class="directive">DavBasePath</code>.</p>
+
+    <pre class="prettyprint lang-config">&lt;LocationMatch "^/repos/"&gt;
+    Dav svn
+    DavBasePath /repos
+    SVNParentPath /var/svn
+&lt;/LocationMatch&gt;</pre>
+
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>

@@ -99,8 +99,6 @@ struct h2_mplx {
 
     struct h2_workers *workers;     /* h2 workers process wide instance */
 
-    request_rec *scratch_r;         /* pseudo request_rec for scoreboard reporting */
-
     apr_uint32_t max_spare_transits; /* max number of transit pools idling */
     apr_array_header_t *c2_transits; /* base pools for running c2 connections */
 };
@@ -192,6 +190,11 @@ typedef int h2_mplx_stream_cb(struct h2_stream *s, void *userdata);
  * @param ctx userdata passed to the callback
  */
 apr_status_t h2_mplx_c1_streams_do(h2_mplx *m, h2_mplx_stream_cb *cb, void *ctx);
+
+/**
+ * Return != 0 iff all open streams want to send data
+ */
+int h2_mplx_c1_all_streams_want_send_data(h2_mplx *m);
 
 /**
  * A stream has been RST_STREAM by the client. Abort

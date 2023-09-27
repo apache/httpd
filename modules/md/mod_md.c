@@ -183,7 +183,7 @@ static apr_status_t notify(md_job_t *job, const char *reason,
         if (mc->notify_cmd) {
             cmdline = apr_psprintf(p, "%s %s", mc->notify_cmd, job->mdomain);
             apr_tokenize_to_argv(cmdline, (char***)&argv, p);
-            rv = md_util_exec(p, argv[0], argv, NULL, &exit_code);
+            rv = md_util_exec(p, argv[0], argv, &exit_code);
 
             if (APR_SUCCESS == rv && exit_code) rv = APR_EGENERAL;
             if (APR_SUCCESS != rv) {
@@ -202,7 +202,7 @@ static apr_status_t notify(md_job_t *job, const char *reason,
     if (mc->message_cmd) {
         cmdline = apr_psprintf(p, "%s %s %s", mc->message_cmd, reason, job->mdomain);
         apr_tokenize_to_argv(cmdline, (char***)&argv, p);
-        rv = md_util_exec(p, argv[0], argv, NULL, &exit_code);
+        rv = md_util_exec(p, argv[0], argv, &exit_code);
 
         if (APR_SUCCESS == rv && exit_code) rv = APR_EGENERAL;
         if (APR_SUCCESS != rv) {

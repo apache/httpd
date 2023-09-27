@@ -334,7 +334,6 @@ h2_mplx *h2_mplx_c1_create(int child_num, apr_uint32_t id, h2_stream *stream0,
         apr_pollset_add(m->pollset, &conn_ctx->pfd);
     }
 
-    m->scratch_r = apr_pcalloc(m->pool, sizeof(*m->scratch_r));
     m->max_spare_transits = 3;
     m->c2_transits = apr_array_make(m->pool, (int)m->max_spare_transits,
                                     sizeof(h2_c2_transit*));
@@ -393,6 +392,31 @@ apr_status_t h2_mplx_c1_streams_do(h2_mplx *m, h2_mplx_stream_cb *cb, void *ctx)
         
     H2_MPLX_LEAVE(m);
     return APR_SUCCESS;
+}
+
+typedef struct {
+    int stream_count;
+    int stream_want_send;
+} stream_iter_aws_t;
+
+static int m_stream_want_send_data(void *ctx, void *stream)
+{
+    stream_iter_aws_t *x = ctx;
+    ++x->stream_count;
+    if (h2_stream_wants_send_data(stream))
+      ++x->stream_want_send;
+    return 1;
+}
+
+int h2_mplx_c1_all_streams_want_send_data(h2_mplx *m)
+{
+    stream_iter_aws_t x;
+    x.stream_count = 0;
+    x.stream_want_send = 0;
+    H2_MPLX_ENTER(m);
+    h2_ihash_iter(m->streams, m_stream_want_send_data, &x);
+    H2_MPLX_LEAVE(m);
+    return x.stream_count && (x.stream_count == x.stream_want_send);
 }
 
 static int m_report_stream_iter(void *ctx, void *val) {
@@ -547,16 +571,6 @@ const h2_stream *h2_mplx_c2_stream_get(h2_mplx *m, int stream_id)
 }
 
 
-static void c1_update_scoreboard(h2_mplx *m, h2_stream *stream)
-{
-    if (stream->c2) {
-        m->scratch_r->connection = stream->c2;
-        m->scratch_r->bytes_sent = stream->out_frame_octets;
-        ap_increment_counts(m->c1->sbh, m->scratch_r);
-        m->scratch_r->connection = NULL;
-    }
-}
-
 static void c1_purge_streams(h2_mplx *m)
 {
     h2_stream *stream;
@@ -565,8 +579,6 @@ static void c1_purge_streams(h2_mplx *m)
     for (i = 0; i < m->spurge->nelts; ++i) {
         stream = APR_ARRAY_IDX(m->spurge, i, h2_stream*);
         ap_assert(stream->state == H2_SS_CLEANUP);
-
-        c1_update_scoreboard(m, stream);
 
         if (stream->input) {
             h2_beam_destroy(stream->input, m->c1);
@@ -841,6 +853,8 @@ static apr_status_t c2_setup_io(h2_mplx *m, conn_rec *c2, h2_stream *stream, h2_
         if (APR_SUCCESS != rv) goto cleanup;
 #endif
         h2_beam_on_eagain(stream->input, c2_beam_input_read_eagain, c2);
+        if (!h2_beam_empty(stream->input))
+            c2_beam_input_write_notify(c2, stream->input);
     }
 
 cleanup:

@@ -332,6 +332,8 @@ const char *h2_stream_state_str(const h2_stream *stream);
  */
 int h2_stream_is_ready(h2_stream *stream);
 
+int h2_stream_wants_send_data(h2_stream *stream);
+
 #define H2_STRM_MSG(s, msg)     \
     "h2_stream(%d-%lu-%d,%s): "msg, s->session->child_num, \
     (unsigned long)s->session->id, s->id, h2_stream_state_str(s)

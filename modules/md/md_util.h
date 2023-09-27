@@ -133,7 +133,7 @@ int md_array_str_add_missing(struct apr_array_header_t *dest,
 /* process execution */
 
 apr_status_t md_util_exec(apr_pool_t *p, const char *cmd, const char * const *argv,
-                          struct apr_array_header_t *env, int *exit_code);
+                          int *exit_code);
 
 /**************************************************************************************************/
 /* dns name check */

@@ -113,6 +113,7 @@ const h2_request *h2_ws_rewrite_request(const h2_request *req,
     wsreq->method = "GET";
     wsreq->protocol = NULL;
     apr_table_set(wsreq->headers, "Upgrade", "websocket");
+    apr_table_add(wsreq->headers, "Connection", "Upgrade");
     /* add Sec-WebSocket-Key header */
     rv = apr_generate_random_bytes(key_raw, sizeof(key_raw));
     if (rv != APR_SUCCESS) {
