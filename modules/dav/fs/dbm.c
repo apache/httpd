@@ -132,7 +132,7 @@ void dav_fs_ensure_state_dir(apr_pool_t * p, const char *dirname)
 dav_error * dav_dbm_open_direct(apr_pool_t *p, const char *pathname, int ro,
                                 dav_db **pdb)
 {
-#if APU_MAJOR_VERSION > 1 || (APU_MAJOR_VERSION == 1 && APU_MINOR_VERSION >= 7)
+#if APR_MAJOR_VERSION > 1 || (APU_MAJOR_VERSION == 1 && APU_MINOR_VERSION >= 7)
     const apr_dbm_driver_t *driver;
     const apu_err_t *err;
 #endif
@@ -141,7 +141,7 @@ dav_error * dav_dbm_open_direct(apr_pool_t *p, const char *pathname, int ro,
 
     *pdb = NULL;
 
-#if APU_MAJOR_VERSION > 1 || (APU_MAJOR_VERSION == 1 && APU_MINOR_VERSION >= 7)
+#if APR_MAJOR_VERSION > 1 || (APU_MAJOR_VERSION == 1 && APU_MINOR_VERSION >= 7)
     if ((status = apr_dbm_get_driver(&driver, NULL, &err, p)) != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, status, ap_server_conf, APLOGNO(10289)
                      "mod_dav_fs: The DBM library '%s' could not be loaded: %s",
