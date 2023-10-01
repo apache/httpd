@@ -384,10 +384,11 @@ apr_status_t h2_mplx_c1_streams_do(h2_mplx *m, h2_mplx_stream_cb *cb, void *ctx)
 {
     stream_iter_ctx_t x;
     
-    H2_MPLX_ENTER(m);
-
     x.cb = cb;
     x.ctx = ctx;
+
+    H2_MPLX_ENTER(m);
+
     h2_ihash_iter(m->streams, m_stream_iter_wrap, &x);
         
     H2_MPLX_LEAVE(m);
