@@ -24,16 +24,27 @@
 /* per-server configuration */
 typedef struct {
     const char *lockdb_path;
-
+    const char *lockdb_type;
 } dav_fs_server_conf;
 
 extern module AP_MODULE_DECLARE_DATA dav_fs_module;
 
-const char *dav_get_lockdb_path(const request_rec *r)
+#ifndef DEFAULT_DAV_LOCKDB
+#define DEFAULT_DAV_LOCKDB "davlockdb"
+#endif
+#ifndef DEFAULT_DAV_LOCKDB_TYPE
+#define DEFAULT_DAV_LOCKDB_TYPE "default"
+#endif
+
+
+const char *dav_get_lockdb_path(const request_rec *r, const char **dbmtype)
 {
     dav_fs_server_conf *conf;
 
     conf = ap_get_module_config(r->server->module_config, &dav_fs_module);
+
+    *dbmtype = conf->lockdb_type;
+
     return conf->lockdb_path;
 }
 
@@ -53,8 +64,32 @@ static void *dav_fs_merge_server_config(apr_pool_t *p,
 
     newconf->lockdb_path =
         child->lockdb_path ? child->lockdb_path : parent->lockdb_path;
+    newconf->lockdb_type =
+        child->lockdb_type ? child->lockdb_type : parent->lockdb_type;
 
     return newconf;
+}
+
+
+static apr_status_t dav_fs_post_config(apr_pool_t *p, apr_pool_t *plog,
+                                       apr_pool_t *ptemp, server_rec *base_server)
+{
+    server_rec *s;
+
+    for (s = base_server; s; s = s->next) {
+        dav_fs_server_conf *conf;
+
+        conf = ap_get_module_config(s->module_config, &dav_fs_module);
+
+        if (!conf->lockdb_path) {
+            conf->lockdb_path = ap_state_dir_relative(p, DEFAULT_DAV_LOCKDB);
+        }
+        if (!conf->lockdb_type) {
+            conf->lockdb_type = DEFAULT_DAV_LOCKDB_TYPE;
+        }
+    }
+
+    return OK;
 }
 
 /*
@@ -76,11 +111,26 @@ static const char *dav_fs_cmd_davlockdb(cmd_parms *cmd, void *config,
     return NULL;
 }
 
+/*
+ * Command handler for the DAVLockDBType directive, which is TAKE1
+ */
+static const char *dav_fs_cmd_davlockdbtype(cmd_parms *cmd, void *config,
+                                        const char *arg1)
+{
+    dav_fs_server_conf *conf = ap_get_module_config(cmd->server->module_config,
+                                                    &dav_fs_module);
+    conf->lockdb_type = arg1;
+
+    return NULL;
+}
+
 static const command_rec dav_fs_cmds[] =
 {
     /* per server */
     AP_INIT_TAKE1("DAVLockDB", dav_fs_cmd_davlockdb, NULL, RSRC_CONF,
                   "specify a lock database"),
+    AP_INIT_TAKE1("DAVLockDBType", dav_fs_cmd_davlockdbtype, NULL, RSRC_CONF,
+                  "specify a lock database DBM type"),
 
     { NULL }
 };

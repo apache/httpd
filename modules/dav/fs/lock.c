@@ -182,6 +182,7 @@ struct dav_lockdb_private
     request_rec *r;                  /* for accessing the uuid state */
     apr_pool_t *pool;                /* a pool to use */
     const char *lockdb_path;         /* where is the lock database? */
+    const char *lockdb_type;         /* where is the lock database? */
 
     int opened;                      /* we opened the database */
     dav_db *db;                      /* if non-NULL, the lock database */
@@ -306,6 +307,7 @@ static dav_error * dav_fs_really_open_lockdb(dav_lockdb *lockdb)
 
     err = dav_dbm_open_direct(lockdb->info->pool,
                               lockdb->info->lockdb_path,
+                              lockdb->info->lockdb_type,
                               lockdb->ro,
                               &lockdb->info->db);
     if (err != NULL) {
@@ -342,7 +344,7 @@ static dav_error * dav_fs_open_lockdb(request_rec *r, int ro, int force,
     comb->priv.r = r;
     comb->priv.pool = r->pool;
 
-    comb->priv.lockdb_path = dav_get_lockdb_path(r);
+    comb->priv.lockdb_path = dav_get_lockdb_path(r, &comb->priv.lockdb_type);
     if (comb->priv.lockdb_path == NULL) {
         return dav_new_error(r->pool, HTTP_INTERNAL_SERVER_ERROR,
                              DAV_ERR_LOCK_NO_DB, 0,
