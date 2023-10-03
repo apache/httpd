@@ -66,8 +66,8 @@ dav_error * dav_fs_get_locknull_members(const dav_resource *resource,
 /* DBM functions used by the repository and locking providers */
 extern const dav_hooks_db dav_hooks_db_dbm;
 
-dav_error * dav_dbm_open_direct(apr_pool_t *p, const char *pathname, int ro,
-                                dav_db **pdb);
+dav_error * dav_dbm_open_direct(apr_pool_t *p, const char *pathname,
+                                const char *dbmtype, int ro, dav_db **pdb);
 void dav_dbm_get_statefiles(apr_pool_t *p, const char *fname,
                             const char **state1, const char **state2);
 dav_error * dav_dbm_delete(dav_db *db, apr_datum_t key);
@@ -77,8 +77,9 @@ void dav_dbm_freedatum(dav_db *db, apr_datum_t data);
 int dav_dbm_exists(dav_db *db, apr_datum_t key);
 void dav_dbm_close(dav_db *db);
 
-/* where is the lock database located? */
-const char *dav_get_lockdb_path(const request_rec *r);
+/* Returns path to lock database and configured dbm type as
+ * *dbmtype. */
+const char *dav_get_lockdb_path(const request_rec *r, const char **dbmtype);
 
 dav_error *dav_fs_get_quota(const request_rec *r, const char *path,
                             apr_off_t *quota_bytes);
