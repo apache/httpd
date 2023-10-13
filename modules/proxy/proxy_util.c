@@ -3845,7 +3845,7 @@ PROXY_DECLARE(int) ap_proxy_connect_backend(const char *proxy_function,
                 worker->s->error_time = apr_time_now();
                 worker->s->status |= PROXY_WORKER_IN_ERROR;
                 ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO(00959)
-                    "ap_proxy_connect_backend disabling worker for (%s:%hu) "
+                    "ap_proxy_connect_backend disabling worker for (%s:%d) "
                     "for %" APR_TIME_T_FMT "s",
                     worker->s->hostname_ex, (int)worker->s->port,
                     apr_time_sec(worker->s->retry));
