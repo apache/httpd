@@ -100,9 +100,9 @@
 <name>DavLockDBType</name>
 <description>Database type of the DAV lock database</description>
 <syntax>DavLockDBType <var>dbm-type</var></syntax>
+<default>DavLockDBType default</default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
-<default>DavLockDBType default</default>
 <compatibility>Available in version 2.5.1 and later.</compatibility>
 <usage>
     <p>Use the <directive>DavLockDBType</directive> directive to
