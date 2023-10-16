@@ -1264,6 +1264,14 @@ int h2_stream_is_ready(h2_stream *stream)
     return 0;
 }
 
+int h2_stream_wants_send_data(h2_stream *stream)
+{
+    H2_STRM_ASSERT_MAGIC(stream, H2_STRM_MAGIC_OK);
+    return h2_stream_is_ready(stream) &&
+           ((stream->out_buffer && !APR_BRIGADE_EMPTY(stream->out_buffer)) ||
+            (stream->output && !h2_beam_empty(stream->output)));
+}
+
 int h2_stream_is_at(const h2_stream *stream, h2_stream_state_t state)
 {
     H2_STRM_ASSERT_MAGIC(stream, H2_STRM_MAGIC_OK);
