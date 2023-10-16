@@ -201,7 +201,8 @@ int h2_mplx_c1_all_streams_want_send_data(h2_mplx *m);
  * any processing going on and remove from processing
  * queue.
  */
-apr_status_t h2_mplx_c1_client_rst(h2_mplx *m, int stream_id);
+apr_status_t h2_mplx_c1_client_rst(h2_mplx *m, int stream_id,
+                                   struct h2_stream *stream);
 
 /**
  * Get readonly access to a stream for a secondary connection.
