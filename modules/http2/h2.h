@@ -41,7 +41,9 @@ struct h2_stream;
 #define H2_USE_POLLFD_FROM_CONN 0
 #endif
 
-#if H2_USE_PIPES && defined(NGHTTP2_VERSION_NUM) && NGHTTP2_VERSION_NUM >= 0x012200
+/* WebSockets support requires apr 1.7.0 for apr_encode.h, plus the
+ * WebSockets features of nghttp2 1.34.0 and later. */
+#if H2_USE_PIPES && defined(NGHTTP2_VERSION_NUM) && NGHTTP2_VERSION_NUM >= 0x012200 && APR_VERSION_AT_LEAST(1,7,0)
 #define H2_USE_WEBSOCKETS       1
 #else
 #define H2_USE_WEBSOCKETS       0

@@ -45,6 +45,8 @@
 
 #if H2_USE_WEBSOCKETS
 
+#include "apr_encode.h" /* H2_USE_WEBSOCKETS is conditional on APR 1.6+ */
+
 static ap_filter_rec_t *c2_ws_out_filter_handle;
 
 struct ws_filter_ctx {
