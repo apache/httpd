@@ -152,15 +152,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_ssl: Silence info log message "SSL Library Error: error:0A000126:
-     SSL routines::unexpected eof while reading" when using
-     OpenSSL 3 by setting SSL_OP_IGNORE_UNEXPECTED_EOF if
-     available. [Rainer Jung]
-     Trunk version of patch:
-        https://svn.apache.org/r1912015
-     Backport version for 2.4.x of patch:
-        svn merge -c 1912015 ^/httpd/httpd/trunk .
-     +1: rjung, gbechis, rpluem
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
