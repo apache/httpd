@@ -20,6 +20,8 @@
 #include <apr_version.h>
 #include <ap_mmn.h>
 
+#include <nghttp2/nghttp2ver.h>
+
 struct h2_session;
 struct h2_stream;
 
@@ -39,7 +41,7 @@ struct h2_stream;
 #define H2_USE_POLLFD_FROM_CONN 0
 #endif
 
-#if H2_USE_PIPES
+#if H2_USE_PIPES && defined(NGHTTP2_VERSION_NUM) && NGHTTP2_VERSION_NUM >= 0x012200
 #define H2_USE_WEBSOCKETS       1
 #else
 #define H2_USE_WEBSOCKETS       0
