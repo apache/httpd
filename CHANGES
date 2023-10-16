@@ -1,6 +1,151 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.58
 
+  *) mod_http2: improved early cleanup of streams.
+     [Stefan Eissing]
+
+  *) mod_proxy_http2: improved error handling on connection errors while
+     response is already underway.
+     [Stefan Eissing]
+
+  *) mod_http2: fixed a bug that could lead to a crash in main connection
+     output handling. This occured only when the last request on a HTTP/2
+     connection had been processed and the session decided to shut down.
+     This could lead to an attempt to send a final GOAWAY while the previous
+     write was still in progress. See PR 66646.
+     [Stefan Eissing]
+
+  *) mod_proxy_http2: fix `X-Forward-Host` header to carry the correct value.
+     Fixes PR66752.
+     [Stefan Eissing]
+
+  *) mod_http2: added support for bootstrapping WebSockets via HTTP/2, as
+     described in RFC 8441. A new directive 'H2WebSockets on|off' has been
+     added. The feature is by default not enabled.
+     As also discussed in the manual, this feature should work for setups
+     using "ProxyPass backend-url upgrade=websocket" without further changes.
+     Special server modules for WebSockets will have to be adapted,
+     most likely, as the handling if IO events is different with HTTP/2.
+     HTTP/2 WebSockets are supported on platforms with native pipes. This
+     excludes Windows.
+     [Stefan Eissing]
+
+  *) mod_rewrite: Fix a regression with both a trailing ? and [QSA].
+     in OCSP stapling. PR 66672. [Frank Meier <frank.meier ergon.ch>, covener]
+
+  *) mod_http2: fixed a bug in flushing pending data on an already closed
+     connection that could lead to a busy loop, preventing the HTTP/2 session
+     to close down successfully. Fixed PR 66624.
+     [Stefan Eissing]
+
+  *) mod_http2: v2.0.15 with the following fixes and improvements
+     - New directive 'H2EarlyHint name value' to add headers to a response,
+       picked up already when a "103 Early Hints" response is sent. 'name' and
+       'value' must comply to the HTTP field restrictions.
+       This directive can be repeated several times and header fields of the
+       same names add. Sending a 'Link' header with 'preload' relation will
+       also cause a HTTP/2 PUSH if enabled and supported by the client.
+     - Fixed an issue where requests were not logged and accounted in a timely
+       fashion when the connection returns to "keepalive" handling, e.g. when
+       the request served was the last outstanding one.
+       This led to late appearance in access logs with wrong duration times
+       reported.
+     - Accurately report the bytes sent for a request in the '%O' Log format.
+       This addresses #203, a long outstanding issue where mod_h2 has reported
+       numbers over-eagerly from internal buffering and not what has actually
+       been placed on the connection.
+       The numbers are now the same with and without H2CopyFiles enabled.
+     [Stefan Eissing]
+
+  *) mod_proxy_http2: fix retry handling to not leak temporary errors.
+     On detecting that that an existing connection was shutdown by the other
+     side, a 503 response leaked even though the request was retried on a
+     fresh connection.
+     [Stefan Eissing]
+
+  *) mod_rewrite: Add server directory to include path as mod_rewrite requires
+     test_char.h. PR 66571 [Valeria Petrov <valeria.petrov@spinetix.com>]
+
+  *) mod_http2: new directive `H2ProxyRequests on|off` to enable handling
+     of HTTP/2 requests in a forward proxy configuration.
+     General forward proxying is enabled via `ProxyRequests`. If the
+     HTTP/2 protocol is also enabled for such a server/host, this new
+     directive is needed in addition.
+     [Stefan Eissing]
+
+  *) core: Updated conf/mime.types:
+     - .js moved from 'application/javascript' to 'text/javascript'
+     - .mjs was added as 'text/javascript'
+     - add .opus ('audio/ogg')
+     - add 'application/vnd.geogebra.slides'
+     - add WebAssembly MIME types and extension
+     [Mathias Bynens <@mathiasbynens> via PR 318,
+      Richard de Boer <richard tubul.net>, Dave Hodder <dmh dmh.org.uk>,
+      Zbynek Konecny <zbynek1729 gmail.com>]
+
+  *) mod_proxy_http2: fixed using the wrong "bucket_alloc" from the backend
+     connection when sending data on the frontend one. This caused crashes
+     or infinite loops in rare situations.
+  *) mod_proxy_http2: fixed a bug in retry/response handling that could lead
+     to wrong status codes or HTTP messages send at the end of response bodies
+     exceeding the announced content-length.
+  *) mod_proxy_http2: fix retry handling to not leak temporary errors.
+     On detecting that that an existing connection was shutdown by the other
+     side, a 503 response leaked even though the request was retried on a
+     fresh connection.
+  *) mod_http2: fixed a bug that did cleanup of consumed and pending buckets in
+     the wrong order when a bucket_beam was destroyed.
+     [Stefan Eissing]
+
+  *) mod_http2: avoid double chunked-encoding on internal redirects.
+     PR 66597 [Yann Ylavic, Stefan Eissing]
+
+  *) mod_http2: Fix reporting of `Total Accesses` in server-status to not count
+     HTTP/2 requests twice. Fixes PR 66801.
+     [Stefan Eissing]
+
+  *) mod_ssl: Fix handling of Certificate Revoked messages
+     in OCSP stapling. PR 66626. [<gmoniker gmail.com>]
+
+  *) mod_http2: fixed a bug in handling of stream timeouts.
+     [Stefan Eissing]
+
+  *) mod_tls: updating to rustls-ffi version 0.9.2 or higher.
+     Checking in configure for proper version installed. Code
+     fixes for changed clienthello member name.
+     [Stefan Eissing]
+
+  *) mod_md:
+     - New directive `MDMatchNames all|servernames` to allow more control over how
+       MDomains are matched to VirtualHosts.
+     - New directive `MDChallengeDns01Version`. Setting this to `2` will provide
+       the command also with the challenge value on `teardown` invocation. In version
+       1, the default, only the `setup` invocation gets this parameter.
+       Refs #312. Thanks to @domrim for the idea.
+     - For Managed Domain in "manual" mode, the checks if all used ServerName and
+       ServerAlias are part of the MDomain now reports a warning instead of an error
+       (AH10040) when not all names are present.
+     - MDChallengeDns01 can now be configured for individual domains.
+       Using PR from Jérôme Billiras (@bilhackmac) and adding test case and fixing proper working
+     - Fixed a bug found by Jérôme Billiras (@bilhackmac) that caused the challenge
+       teardown not being invoked as it should.
+
+  *) mod_ldap: Avoid performance overhead of APR-util rebind cache for
+     OpenLDAP 2.2+.  PR 64414.  [Joe Orton]
+
+  *) mod_http2: new directive 'H2MaxDataFrameLen n' to limit the maximum
+     amount of response body bytes put into a single HTTP/2 DATA frame.
+     Setting this to 0 places no limit (but the max size allowed by the
+     protocol is observed).
+     The module, by default, tries to use the maximum size possible, which is
+     somewhat around 16KB. This sets the maximum. When less response data is
+     available, smaller frames will be sent.
+
+  *) mod_md: fixed passing of the server environment variables to programs
+     started via MDMessageCmd and MDChallengeDns01 on *nix system.
+     See <https://github.com/icing/mod_md/issues/319>.
+     [Stefan Eissing]
+
   *) mod_dav: Add DavBasePath directive to configure the repository root
      path.  PR 35077.  [Joe Orton]
 

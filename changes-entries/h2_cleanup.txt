@@ -1,2 +1,0 @@
- * mod_http2: improved early cleanup of streams.
-   [Stefan Eissing]

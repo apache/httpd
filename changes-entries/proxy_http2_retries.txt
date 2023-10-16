@@ -1,5 +1,0 @@
-  *) mod_proxy_http2: fix retry handling to not leak temporary errors.
-     On detecting that that an existing connection was shutdown by the other
-     side, a 503 response leaked even though the request was retried on a
-     fresh connection.
-     [Stefan Eissing]

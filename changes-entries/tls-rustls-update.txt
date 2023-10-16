@@ -1,4 +1,0 @@
-  *) mod_tls: updating to rustls-ffi version 0.9.2 or higher.
-     Checking in configure for proper version installed. Code
-     fixes for changed clienthello member name.
-     [Stefan Eissing]
