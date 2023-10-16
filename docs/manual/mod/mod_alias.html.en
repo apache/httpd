@@ -469,6 +469,7 @@ a different URL</td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_alias</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>2.4.58 and later</td></tr>
 </table>
     <p>By default, if the target URL of a <code class="directive"><a href="#redirect">Redirect</a></code>
     directive is a relative URL beginning with a '/' character, the server 

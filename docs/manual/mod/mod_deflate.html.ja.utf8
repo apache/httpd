@@ -52,6 +52,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#proxies">Proxy サーバでの扱い</a></li>
 </ul><h3 class="directives">ディレクティブ</h3>
 <ul id="toc">
+<li><img alt="" src="../images/down.gif" /> <a href="#deflatealteretag">DeflateAlterETag</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#deflatebuffersize">DeflateBufferSize</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#deflatecompressionlevel">DeflateCompressionLevel</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#deflatefilternote">DeflateFilterNote</a></li>
@@ -260,6 +261,19 @@
       Header set Vary *
     </code></p></div>
 </div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="DeflateAlterETag" id="DeflateAlterETag">DeflateAlterETag</a> <a name="deflatealteretag" id="deflatealteretag">ディレクティブ</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>How the outgoing ETag header should be modified during compression</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>DeflateAlterETag AddSuffix|NoChange|Remove</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>DeflateAlterETag AddSuffix</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_deflate</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">互換性:</a></th><td>Available in Apache 2.4.58 and later</td></tr>
+</table><p>このディレクティブの解説文書は
+            まだ翻訳されていません。英語版をご覧ください。
+            </p></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="DeflateBufferSize" id="DeflateBufferSize">DeflateBufferSize</a> <a name="deflatebuffersize" id="deflatebuffersize">ディレクティブ</a></h2>
 <table class="directive">

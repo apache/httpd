@@ -76,6 +76,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#redirect">Redirect</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#redirectmatch">RedirectMatch</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#redirectpermanent">RedirectPermanent</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#redirectrelative">RedirectRelative</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#redirecttemp">RedirectTemp</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#scriptalias">ScriptAlias</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#scriptaliasmatch">ScriptAliasMatch</a></li>
@@ -314,6 +315,19 @@ Redirect 系のディレクティブは Alias
     <code>Redirect permanent</code> とまったく同じです。</p>
 
 </div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="RedirectRelative" id="RedirectRelative">RedirectRelative</a> <a name="redirectrelative" id="redirectrelative">ディレクティブ</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>Allows relative redirect targets.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>RedirectRelative On|Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>RedirectRelative Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト, ディレクトリ</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_alias</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">互換性:</a></th><td>2.4.58 and later</td></tr>
+</table><p>このディレクティブの解説文書は
+            まだ翻訳されていません。英語版をご覧ください。
+            </p></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="RedirectTemp" id="RedirectTemp">RedirectTemp</a> <a name="redirecttemp" id="redirecttemp">ディレクティブ</a></h2>
 <table class="directive">
