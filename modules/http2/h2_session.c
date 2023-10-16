@@ -820,7 +820,7 @@ static apr_status_t session_cleanup(h2_session *session, const char *trigger)
     if (!h2_iq_empty(session->ready_to_process)) {
         int sid;
         ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c,
-                      H2_SSSN_LOG(APLOGNO(), session,
+                      H2_SSSN_LOG(APLOGNO(10485), session,
                       "cleanup, resetting %d streams in ready-to-process"),
                       h2_iq_count(session->ready_to_process));
         while ((sid = h2_iq_shift(session->ready_to_process)) > 0) {
