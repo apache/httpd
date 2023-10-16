@@ -72,6 +72,7 @@
 <li><a href="mod_mime.html#addtype">AddType</a></li>
 <li><a href="mod_alias.html#alias">Alias</a></li>
 <li><a href="mod_alias.html#aliasmatch">AliasMatch</a></li>
+<li><a href="mod_alias.html#aliaspreservepath">AliasPreservePath</a></li>
 <li><a href="mod_access_compat.html#allow">Allow</a></li>
 <li><a href="mod_proxy_connect.html#allowconnect">AllowCONNECT</a></li>
 <li><a href="core.html#allowencodedslashes">AllowEncodedSlashes</a></li>
