@@ -80,6 +80,7 @@ jobs:
               APR_VERSION=1.7.4
               APU_VERSION=1.6.3
               APU_CONFIG="--with-crypto --with-ldap"
+              CLEAR_CACHE=1
           # -------------------------------------------------------------------------
           - name: APR 1.8.x, APR-util 1.7.x
             config: --enable-mods-shared=reallyall
@@ -150,6 +151,7 @@ jobs:
               TEST_LDAP=1
               TEST_ARGS="-defines LDAP"
               TESTS="t/modules/"
+              CLEAR_CACHE=1
           # -------------------------------------------------------------------------
           - name: APR trunk thread debugging
             config: --enable-mods-shared=reallyall --with-mpm=event
