@@ -833,6 +833,14 @@ static apr_status_t ssl_init_ctx_protocol(server_rec *s,
         SSL_CTX_set_keylog_callback(ctx, modssl_callback_keylog);
     }
 #endif
+
+#ifdef SSL_OP_IGNORE_UNEXPECTED_EOF
+    /* For server-side SSL_CTX, enable ignoring unexpected EOF */
+    /* (OpenSSL 1.1.1 behavioural compatibility).. */
+    if (!mctx->pkp) {
+        SSL_CTX_set_options(ctx, SSL_OP_IGNORE_UNEXPECTED_EOF);
+    }
+#endif
     
     return APR_SUCCESS;
 }
