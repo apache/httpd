@@ -205,13 +205,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      +1: rpluem,
      ylavic: see https://lists.apache.org/thread/jftfd6mo6p3b0tw694rlh09gdl7189hq
 
-  *) mod_http2: fixed a bug in handling of stream timeouts.
-     Trunk version of patch:
-        https://svn.apache.org/r1912385
-     Backport version for 2.4.x of patch:
-        svn merge -c 1912385 ^/httpd/httpd/trunk .
-     +1: icing, rpluem
-
   *) mod_proxy: prevent bad busy values and problems with bybusyness
      Trunk version of patch:
        https://svn.apache.org/r1912245
