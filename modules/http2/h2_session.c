@@ -1085,11 +1085,13 @@ static apr_status_t h2_session_start(h2_session *session, int *rv)
         settings[slen].value = win_size;
         ++slen;
     }
+#if H2_USE_WEBSOCKETS
     if (h2_config_sgeti(session->s, H2_CONF_WEBSOCKETS)) {
       settings[slen].settings_id = NGHTTP2_SETTINGS_ENABLE_CONNECT_PROTOCOL;
       settings[slen].value = 1;
       ++slen;
     }
+#endif
 
     ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, session->c1,
                   H2_SSSN_LOG(APLOGNO(03201), session, 
