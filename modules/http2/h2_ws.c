@@ -19,7 +19,6 @@
 #include "apr.h"
 #include "apr_strings.h"
 #include "apr_lib.h"
-#include "apr_encode.h"
 #include "apr_sha1.h"
 #include "apr_strmatch.h"
 
