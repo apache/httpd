@@ -465,7 +465,7 @@ static const char *process_content(apr_pool_t * pool,
     for (i = 0; i < contents->nelts; i++) {
         const char *errmsg;
         /* copy the line and substitute macro parameters */
-        strncpy(line, ((char **) contents->elts)[i], MAX_STRING_LEN - 1);
+        apr_cpystrn(line, ((char **) contents->elts)[i], MAX_STRING_LEN);
         errmsg = substitute_macro_args(line, MAX_STRING_LEN,
                                        macro, replacements, used);
         if (errmsg) {
