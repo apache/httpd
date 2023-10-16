@@ -149,6 +149,9 @@ Changes with Apache 2.4.58
   *) mod_dav: Add DavBasePath directive to configure the repository root
      path.  PR 35077.  [Joe Orton]
 
+  *) mod_alias: Add AliasPreservePath directive to map the full
+     path after the alias in a location. [Graham Leggett]
+
   *) mod_alias: Add RedirectRelative to allow relative redirect targets to be
      issued as-is. [Eric Covener, Graham Leggett]
 

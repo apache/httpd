@@ -41,6 +41,8 @@
 #define ALIAS_FLAG_OFF 0
 #define ALIAS_FLAG_ON  1
 
+#define ALIAS_PRESERVE_PATH_DEFAULT 0
+
 typedef struct {
     const char *real;
     const char *fake;
@@ -59,10 +61,12 @@ typedef struct {
     unsigned int redirect_set:1;
     apr_array_header_t *redirects;
     const ap_expr_info_t *alias;
+    const char *alias_fake;
     char *handler;
     const ap_expr_info_t *redirect;
     int redirect_status;                /* 301, 302, 303, 410, etc */
     int allow_relative;                 /* skip ap_construct_url() */
+    int alias_preserve_path;            /* map full path */
 } alias_dir_conf;
 
 module AP_MODULE_DECLARE_DATA alias_module;
@@ -86,6 +90,7 @@ static void *create_alias_dir_config(apr_pool_t *p, char *d)
     (alias_dir_conf *) apr_pcalloc(p, sizeof(alias_dir_conf));
     a->redirects = apr_array_make(p, 2, sizeof(alias_entry));
     a->allow_relative = ALIAS_FLAG_DEFAULT;
+    a->alias_preserve_path = ALIAS_FLAG_DEFAULT;
     return a;
 }
 
@@ -111,6 +116,7 @@ static void *merge_alias_dir_config(apr_pool_t *p, void *basev, void *overridesv
     a->redirects = apr_array_append(p, overrides->redirects, base->redirects);
 
     a->alias = (overrides->alias_set == 0) ? base->alias : overrides->alias;
+    a->alias_fake = (overrides->alias_set == 0) ? base->alias_fake : overrides->alias_fake;
     a->handler = (overrides->alias_set == 0) ? base->handler : overrides->handler;
     a->alias_set = overrides->alias_set || base->alias_set;
 
@@ -120,6 +126,10 @@ static void *merge_alias_dir_config(apr_pool_t *p, void *basev, void *overridesv
     a->allow_relative = (overrides->allow_relative != ALIAS_FLAG_DEFAULT)
                                   ? overrides->allow_relative 
                                   : base->allow_relative;
+    a->alias_preserve_path = (overrides->alias_preserve_path != ALIAS_FLAG_DEFAULT)
+                                  ? overrides->alias_preserve_path
+                                  : base->alias_preserve_path;
+
     return a;
 }
 
@@ -218,6 +228,7 @@ static const char *add_alias(cmd_parms *cmd, void *dummy, const char *fake,
                     NULL);
         }
 
+        dirconf->alias_fake = cmd->path;
         dirconf->handler = cmd->info;
         dirconf->alias_set = 1;
 
@@ -434,6 +445,17 @@ static char *try_alias(request_rec *r)
             ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(02825)
                           "Can't evaluate alias expression: %s", err);
             return PREGSUB_ERROR;
+        }
+
+        if (dirconf->alias_fake && dirconf->alias_preserve_path == ALIAS_FLAG_ON) {
+            int l;
+
+            l = alias_matches(r->uri, dirconf->alias_fake);
+
+            if (l > 0) {
+                ap_set_context_info(r, dirconf->alias_fake, found);
+                found = apr_pstrcat(r->pool, found, r->uri + l, NULL);
+            }
         }
 
         if (dirconf->handler) { /* Set handler, and leave a note for mod_cgi */
@@ -715,6 +737,9 @@ static const command_rec alias_cmds[] =
     AP_INIT_FLAG("RedirectRelative", ap_set_flag_slot,
                   (void*)APR_OFFSETOF(alias_dir_conf, allow_relative), OR_FILEINFO,
                   "Set to ON to allow relative redirect targets to be issued as-is"),
+    AP_INIT_FLAG("AliasPreservePath", ap_set_flag_slot,
+                  (void*)APR_OFFSETOF(alias_dir_conf, alias_preserve_path), OR_FILEINFO,
+                  "Set to ON to map the full path after the fakename to the realname."),
 
     {NULL}
 };
