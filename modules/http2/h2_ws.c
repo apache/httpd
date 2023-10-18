@@ -44,7 +44,7 @@
 
 #if H2_USE_WEBSOCKETS
 
-#include "apr_encode.h" /* H2_USE_WEBSOCKETS is conditional on APR 1.6+ */
+#include "apr_encode.h" /* H2_USE_WEBSOCKETS is conditional on APR 1.7+ */
 
 static ap_filter_rec_t *c2_ws_out_filter_handle;
 
