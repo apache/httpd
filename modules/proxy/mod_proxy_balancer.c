@@ -143,20 +143,18 @@ static int proxy_balancer_canon(request_rec *r, char *url)
     return OK;
 }
 
-static void init_balancer_members(apr_pool_t *p, server_rec *s,
-                                 proxy_balancer *balancer)
+static void init_balancer_members(proxy_balancer *balancer,
+                                  server_rec *s, apr_pool_t *p)
 {
     int i;
-    proxy_worker **workers;
-
-    workers = (proxy_worker **)balancer->workers->elts;
+    proxy_worker **workers = (proxy_worker **)balancer->workers->elts;
 
     for (i = 0; i < balancer->workers->nelts; i++) {
         int worker_is_initialized;
         proxy_worker *worker = *workers;
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(01158)
                      "Looking at %s -> %s initialized?", balancer->s->name,
-                     ap_proxy_worker_name(p, worker));
+                     ap_proxy_worker_get_name(worker));
         worker_is_initialized = PROXY_WORKER_IS_INITIALIZED(worker);
         if (!worker_is_initialized) {
             ap_proxy_initialize_worker(worker, s, p);
@@ -688,7 +686,7 @@ static int proxy_balancer_post_request(proxy_worker *worker,
                               "%s: Forcing worker (%s) into error state "
                               "due to status code %d matching 'failonstatus' "
                               "balancer parameter",
-                              balancer->s->name, ap_proxy_worker_name(r->pool, worker),
+                              balancer->s->name, ap_proxy_worker_get_name(worker),
                               val);
                 worker->s->status |= PROXY_WORKER_IN_ERROR;
                 worker->s->error_time = apr_time_now();
@@ -703,7 +701,7 @@ static int proxy_balancer_post_request(proxy_worker *worker,
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(02460)
                       "%s: Forcing worker (%s) into error state "
                       "due to timeout and 'failontimeout' parameter being set",
-                       balancer->s->name, ap_proxy_worker_name(r->pool, worker));
+                       balancer->s->name, ap_proxy_worker_get_name(worker));
         worker->s->status |= PROXY_WORKER_IN_ERROR;
         worker->s->error_time = apr_time_now();
 
@@ -1486,7 +1484,7 @@ static void balancer_display_page(request_rec *r, proxy_server_conf *conf,
                 worker = *workers;
                 /* Start proxy_worker */
                 ap_rputs("        <httpd:worker>\n", r);
-                ap_rvputs(r, "          <httpd:name>", ap_proxy_worker_name(r->pool, worker),
+                ap_rvputs(r, "          <httpd:name>", ap_proxy_worker_get_name(worker),
                           "</httpd:name>\n", NULL);
                 ap_rvputs(r, "          <httpd:scheme>", worker->s->scheme,
                           "</httpd:scheme>\n", NULL);
@@ -1727,7 +1725,7 @@ static void balancer_display_page(request_rec *r, proxy_server_conf *conf,
                           ap_escape_uri(r->pool, worker->s->name),
                           "&amp;nonce=", balancer->s->nonce,
                           "\">", NULL);
-                ap_rvputs(r, (*worker->s->uds_path ? "<i>" : ""), ap_proxy_worker_name(r->pool, worker),
+                ap_rvputs(r, (*worker->s->uds_path ? "<i>" : ""), ap_proxy_worker_get_name(worker),
                           (*worker->s->uds_path ? "</i>" : ""), "</a></td>", NULL);
                 ap_rvputs(r, "<td>", ap_escape_html(r->pool, worker->s->route),
                           NULL);
@@ -1764,7 +1762,7 @@ static void balancer_display_page(request_rec *r, proxy_server_conf *conf,
         }
         if (wsel && bsel) {
             ap_rputs("<h3>Edit worker settings for ", r);
-            ap_rvputs(r, (*wsel->s->uds_path?"<i>":""), ap_proxy_worker_name(r->pool, wsel), (*wsel->s->uds_path?"</i>":""), "</h3>\n", NULL);
+            ap_rvputs(r, (*wsel->s->uds_path?"<i>":""), ap_proxy_worker_get_name(wsel), (*wsel->s->uds_path?"</i>":""), "</h3>\n", NULL);
             ap_rputs("<form method='POST' enctype='application/x-www-form-urlencoded' action=\"", r);
             ap_rvputs(r, ap_escape_uri(r->pool, action), "\">\n", NULL);
             ap_rputs("<table><tr><td>Load factor:</td><td><input name='w_lf' id='w_lf' type=text ", r);
@@ -2024,7 +2022,7 @@ static int balancer_handler(request_rec *r)
 
 static void balancer_child_init(apr_pool_t *p, server_rec *s)
 {
-    while (s) {
+    for (; s; s = s->next) {
         proxy_balancer *balancer;
         int i;
         void *sconf = s->module_config;
@@ -2055,17 +2053,16 @@ static void balancer_child_init(apr_pool_t *p, server_rec *s)
 
         balancer = (proxy_balancer *)conf->balancers->elts;
         for (i = 0; i < conf->balancers->nelts; i++, balancer++) {
-            rv = ap_proxy_initialize_balancer(balancer, s, p);
-
+            rv = ap_proxy_initialize_balancer(balancer, s, conf->pool);
             if (rv != APR_SUCCESS) {
                 ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s, APLOGNO(01206)
                              "Failed to init balancer %s in child",
                              balancer->s->name);
                 exit(1); /* Ugly, but what else? */
             }
-            init_balancer_members(p, s, balancer);
+
+            init_balancer_members(balancer, s, conf->pool);
         }
-        s = s->next;
     }
 
 }

@@ -269,6 +269,8 @@ typedef struct {
     apr_array_header_t* cookie_domains;
 } proxy_req_conf;
 
+struct proxy_address; /* opaque TTL'ed and refcount'ed address */
+
 typedef struct {
     conn_rec     *connection;
     request_rec  *r;           /* Request record of the backend request
@@ -294,6 +296,9 @@ typedef struct {
                                 * and its scpool/bucket_alloc (NULL before),
                                 * must be left cleaned when used (locally).
                                 */
+    apr_pool_t   *uds_pool;     /* Subpool for reusing UDS paths */
+    apr_pool_t   *fwd_pool;     /* Subpool for reusing ProxyRemote infos */
+    struct proxy_address *address; /* Current remote address */
 } proxy_conn_rec;
 
 typedef struct {
@@ -488,6 +493,9 @@ typedef struct {
     unsigned int     was_malloced:1;
     unsigned int     is_name_matchable:1;
     unsigned int     response_field_size_set:1;
+    unsigned int     address_ttl_set:1;
+    apr_int32_t      address_ttl;    /* backend address' TTL (seconds) */
+    apr_uint32_t     address_expiry; /* backend address' next expiry time */
     apr_interval_time_t hc_timeout; /* health check timeout */
     unsigned int     hc_timeout_set:1;
 } proxy_worker_shared;
@@ -506,6 +514,8 @@ struct proxy_worker {
 #endif
     void            *context;   /* general purpose storage */
     ap_conf_vector_t *section_config; /* <Proxy>-section wherein defined */
+    struct proxy_address *volatile address; /* current worker address (if reusable) */
+    const char      *uds_name;  /* "unix:/uds/path|worker-URL" */
 };
 
 /* default to health check every 30 seconds */
@@ -757,13 +767,22 @@ typedef __declspec(dllimport) const char *
 /* Connection pool API */
 /**
  * Return the user-land, UDS aware worker name
- * @param p        memory pool used for displaying worker name
+ * @param unused   memory pool unused
  * @param worker   the worker
- * @return         name
+ * @return         the name
+ * @note Even though the returned name is non constant char*, the string
+ *       it points to is shared and should *not* be modified by the caller!
+ * @deprecated Replaced by ap_proxy_worker_get_name()
  */
-
-PROXY_DECLARE(char *) ap_proxy_worker_name(apr_pool_t *p,
+PROXY_DECLARE(char *) ap_proxy_worker_name(apr_pool_t *unused,
                                            proxy_worker *worker);
+
+/**
+ * Return the user-land, UDS aware worker name
+ * @param worker   the worker
+ * @return         the name
+ */
+PROXY_DECLARE(const char *) ap_proxy_worker_get_name(const proxy_worker *worker);
 
 /**
  * Return whether a worker upgrade configuration matches Upgrade header
@@ -1042,6 +1061,29 @@ PROXY_DECLARE(int) ap_proxy_post_request(proxy_worker *worker,
                                          proxy_balancer *balancer,
                                          request_rec *r,
                                          proxy_server_conf *conf);
+
+/* Bitmask for ap_proxy_determine_address() */
+#define PROXY_DETERMINE_ADDRESS_CHECK   (1u << 0)
+/**
+ * Resolve an address, reusing the one of the worker if any.
+ * @param proxy_function calling proxy scheme (http, ajp, ...)
+ * @param conn     proxy connection the address is used for
+ * @param hostname host to resolve (should be the worker's if reusable)
+ * @param hostport port to resolve (should be the worker's if reusable)
+ * @param flags    bitmask of PROXY_DETERMINE_ADDRESS_*
+ * @param r        current request (if any)
+ * @param s        current server (or NULL if r != NULL and ap_proxyerror()
+ *                                 should be called on error)
+ * @return         APR_SUCCESS or an error, APR_EEXIST if the address is still
+ *                 the same and PROXY_DETERMINE_ADDRESS_CHECK is asked
+ */
+PROXY_DECLARE(apr_status_t) ap_proxy_determine_address(const char *proxy_function,
+                                                       proxy_conn_rec *conn,
+                                                       const char *hostname,
+                                                       apr_port_t hostport,
+                                                       unsigned int flags,
+                                                       request_rec *r,
+                                                       server_rec *s);
 
 /**
  * Determine backend hostname and port

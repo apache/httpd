@@ -402,6 +402,10 @@ static int on_frame_recv_cb(nghttp2_session *ng2s,
                           H2_SSSN_STRM_MSG(session, frame->hd.stream_id,
                           "RST_STREAM by client, error=%d"),
                           (int)frame->rst_stream.error_code);
+            if (stream) {
+                rv = h2_stream_recv_frame(stream, NGHTTP2_RST_STREAM, frame->hd.flags,
+                    frame->hd.length + H2_FRAME_HDR_LEN);
+            }
             if (stream && stream->initiated_on) {
                 /* A stream reset on a request we sent it. Normal, when the
                  * client does not want it. */
@@ -410,7 +414,8 @@ static int on_frame_recv_cb(nghttp2_session *ng2s,
             else {
                 /* A stream reset on a request it sent us. Could happen in a browser
                  * when the user navigates away or cancels loading - maybe. */
-                h2_mplx_c1_client_rst(session->mplx, frame->hd.stream_id);
+                h2_mplx_c1_client_rst(session->mplx, frame->hd.stream_id,
+                                      stream);
             }
             ++session->streams_reset;
             break;
@@ -812,6 +817,17 @@ static apr_status_t session_cleanup(h2_session *session, const char *trigger)
                       "goodbye, clients will be confused, should not happen"));
     }
 
+    if (!h2_iq_empty(session->ready_to_process)) {
+        int sid;
+        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c,
+                      H2_SSSN_LOG(APLOGNO(10485), session,
+                      "cleanup, resetting %d streams in ready-to-process"),
+                      h2_iq_count(session->ready_to_process));
+        while ((sid = h2_iq_shift(session->ready_to_process)) > 0) {
+          h2_mplx_c1_client_rst(session->mplx, sid, get_stream(session, sid));
+        }
+    }
+
     transit(session, trigger, H2_SESSION_ST_CLEANUP);
     h2_mplx_c1_destroy(session->mplx);
     session->mplx = NULL;
@@ -1069,11 +1085,13 @@ static apr_status_t h2_session_start(h2_session *session, int *rv)
         settings[slen].value = win_size;
         ++slen;
     }
+#if H2_USE_WEBSOCKETS
     if (h2_config_sgeti(session->s, H2_CONF_WEBSOCKETS)) {
       settings[slen].settings_id = NGHTTP2_SETTINGS_ENABLE_CONNECT_PROTOCOL;
       settings[slen].value = 1;
       ++slen;
     }
+#endif
 
     ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, session->c1,
                   H2_SSSN_LOG(APLOGNO(03201), session, 

@@ -789,7 +789,7 @@ static apr_status_t session_start(h2_proxy_session *session)
     apr_socket_t *s;
     
     s = ap_get_conn_socket(session->c);
-#if (!defined(WIN32) && !defined(NETWARE)) || defined(DOXYGEN)
+#if !defined(WIN32) && !defined(NETWARE)
     if (s) {
         ap_sock_disable_nagle(s);
     }

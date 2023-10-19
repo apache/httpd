@@ -495,7 +495,7 @@ static apr_status_t http2_get_pollfd_from_conn(conn_rec *c,
     }
 #else
     (void)c;
-    (void)pdf;
+    (void)pfd;
     (void)ptimeout;
 #endif /* H2_USE_PIPES */
     return APR_ENOTIMPL;

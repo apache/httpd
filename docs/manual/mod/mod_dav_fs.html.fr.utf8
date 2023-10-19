@@ -55,6 +55,7 @@
 <div id="quickview"><h3 class="directives">Directives</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#davlockdb">DavLockDB</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#davlockdbtype">DavLockDBType</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#davlockdiscovery">DavLockDiscovery</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#davquota">DavQuota</a></li>
 </ul>
@@ -79,8 +80,9 @@ du serveur HTTP Apache.</td></tr>
     le chemin complet de la base de données des verrous, sans extension.
     Si le chemin n'est pas absolu, il sera considéré comme relatif au
     répertoire défini par la directive <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code>. L'implémentation de
-    <code class="module"><a href="../mod/mod_dav_fs.html">mod_dav_fs</a></code> utilise une base de données SDBM pour
-    surveiller les verrous utilisateurs.</p>
+    <code class="module"><a href="../mod/mod_dav_fs.html">mod_dav_fs</a></code> utilise une base de données pour
+    surveiller les verrous utilisateurs. Le type de cette base de données peut
+    être modifié à l'aide de la directive <code class="directive"><a href="#davlockdbtype">DavLockDBType</a></code>.</p>
 
     
 
@@ -105,6 +107,25 @@ du serveur HTTP Apache.</td></tr>
     fichiers d'état (lui-même défini via la directive <code class="directive"><a href="../mod/core.html#defaultstatedir">DefaultStateDir</a></code>).</p>
     </div>
 
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="davlockdbtype" id="davlockdbtype">Directive</a> <a name="DavLockDBType" id="DavLockDBType">DavLockDBType</a> <a title="Lien permanent" href="#davlockdbtype" class="permalink">&para;</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Type de base de données pour le verrou DAV</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>DavLockDBType <var>dbm-type</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>DavLockDBType default</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_dav_fs</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.5.1 du serveur HTTP Apache.</td></tr>
+</table>
+    <p>La directive <code class="directive">DavLockDBType</code> permet de spécifier le
+    type du fichier de la base de données pour le verrou DAV. Si la directive
+    n'est pas définie, c'est le type de base de données par défaut codé en dur
+    <code>apr_dbm</code> qui sera utilisé, ce qui revient à spécifier
+    <code>DavLockDBType default</code>.</p>
+    
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>

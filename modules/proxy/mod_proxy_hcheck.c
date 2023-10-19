@@ -572,52 +572,29 @@ static proxy_worker *hc_get_hcworker(sctx_t *ctx, proxy_worker *worker,
     return hc;
 }
 
-static int hc_determine_connection(sctx_t *ctx, proxy_worker *worker,
-                                   apr_sockaddr_t **addr, apr_pool_t *p)
+static int hc_determine_connection(const char *proxy_function,
+                                   proxy_conn_rec *backend,
+                                   server_rec *s)
 {
-    apr_status_t rv = APR_SUCCESS;
+    proxy_worker *worker = backend->worker;
+    apr_status_t rv;
+
     /*
      * normally, this is done in ap_proxy_determine_connection().
      * TODO: Look at using ap_proxy_determine_connection() with a
      * fake request_rec
      */
-    if (worker->cp->addr) {
-        *addr = worker->cp->addr;
+    rv = ap_proxy_determine_address(proxy_function, backend,
+                                    worker->s->hostname_ex, worker->s->port,
+                                    0, NULL, s);
+    if (rv != APR_SUCCESS) {
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, s, APLOGNO(03249)
+                     "DNS lookup failure for: %s:%hu",
+                     worker->s->hostname_ex, worker->s->port);
+        return !OK;
     }
-    else {
-        rv = apr_sockaddr_info_get(addr, worker->s->hostname_ex,
-                                   APR_UNSPEC, worker->s->port, 0, p);
-        if (rv != APR_SUCCESS) {
-            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ctx->s, APLOGNO(03249)
-                         "DNS lookup failure for: %s:%d",
-                         worker->s->hostname_ex, (int)worker->s->port);
-        }
-    }
-    return (rv == APR_SUCCESS ? OK : !OK);
-}
 
-static apr_status_t hc_init_worker(sctx_t *ctx, proxy_worker *worker)
-{
-    apr_status_t rv = APR_SUCCESS;
-    /*
-     * Since this is the watchdog, workers never actually handle a
-     * request here, and so the local data isn't initialized (of
-     * course, the shared memory is). So we need to bootstrap
-     * worker->cp. Note, we only need do this once.
-     */
-    if (!worker->cp) {
-        rv = ap_proxy_initialize_worker(worker, ctx->s, ctx->p);
-        if (rv != APR_SUCCESS) {
-            ap_log_error(APLOG_MARK, APLOG_EMERG, rv, ctx->s, APLOGNO(03250) "Cannot init worker");
-            return rv;
-        }
-        if (worker->s->is_address_reusable && !worker->s->disablereuse &&
-                hc_determine_connection(ctx, worker, &worker->cp->addr,
-                                        worker->cp->pool) != OK) {
-            rv = APR_EGENERAL;
-        }
-    }
-    return rv;
+    return OK;
 }
 
 static apr_status_t backend_cleanup(const char *proxy_function, proxy_conn_rec *backend,
@@ -639,24 +616,64 @@ static apr_status_t backend_cleanup(const char *proxy_function, proxy_conn_rec *
 }
 
 static int hc_get_backend(const char *proxy_function, proxy_conn_rec **backend,
-                          proxy_worker *hc, sctx_t *ctx, apr_pool_t *ptemp)
+                          proxy_worker *hc, sctx_t *ctx)
 {
     int status;
-    status = ap_proxy_acquire_connection(proxy_function, backend, hc, ctx->s);
-    if (status == OK) {
-        (*backend)->addr = hc->cp->addr;
-        (*backend)->hostname = hc->s->hostname_ex;
-        if (strcmp(hc->s->scheme, "https") == 0 || strcmp(hc->s->scheme, "wss") == 0 ) {
-            if (!ap_ssl_has_outgoing_handlers()) {
-                ap_log_error(APLOG_MARK, APLOG_WARNING, 0, ctx->s, APLOGNO(03252)
-                              "mod_ssl not configured?");
-                return !OK;
-            }
-            (*backend)->is_ssl = 1;
-        }
 
+    status = ap_proxy_acquire_connection(proxy_function, backend, hc, ctx->s);
+    if (status != OK) {
+        return status;
     }
-    return hc_determine_connection(ctx, hc, &(*backend)->addr, ptemp);
+
+    if (strcmp(hc->s->scheme, "https") == 0 || strcmp(hc->s->scheme, "wss") == 0 ) {
+        if (!ap_ssl_has_outgoing_handlers()) {
+            ap_log_error(APLOG_MARK, APLOG_WARNING, 0, ctx->s, APLOGNO(03252)
+                          "mod_ssl not configured?");
+            return !OK;
+        }
+        (*backend)->is_ssl = 1;
+    }
+
+    return hc_determine_connection(proxy_function, *backend, ctx->s);
+}
+
+static apr_status_t hc_init_baton(baton_t *baton)
+{
+    sctx_t *ctx = baton->ctx;
+    proxy_worker *worker = baton->worker, *hc;
+    apr_status_t rv = APR_SUCCESS;
+    int once = 0;
+
+    /*
+     * Since this is the watchdog, workers never actually handle a
+     * request here, and so the local data isn't initialized (of
+     * course, the shared memory is). So we need to bootstrap
+     * worker->cp. Note, we only need do this once.
+     */
+    if (!worker->cp) {
+        rv = ap_proxy_initialize_worker(worker, ctx->s, ctx->p);
+        if (rv != APR_SUCCESS) {
+            ap_log_error(APLOG_MARK, APLOG_EMERG, rv, ctx->s, APLOGNO(03250) "Cannot init worker");
+            return rv;
+        }
+        once = 1;
+    }
+
+    baton->hc = hc = hc_get_hcworker(ctx, worker, baton->ptemp);
+
+    /* Try to resolve the worker address once if it's reusable */
+    if (once && worker->s->is_address_reusable) {
+        proxy_conn_rec *backend = NULL;
+        if (hc_get_backend("HCHECK", &backend, hc, ctx)) {
+            rv = APR_EGENERAL;
+        }
+        if (backend) {
+            backend->close = 1;
+            ap_proxy_release_connection("HCHECK", backend, ctx->s);
+        }
+    }
+
+    return rv;
 }
 
 static apr_status_t hc_check_cping(baton_t *baton, apr_thread_t *thread)
@@ -674,7 +691,7 @@ static apr_status_t hc_check_cping(baton_t *baton, apr_thread_t *thread)
     }
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, baton->ctx->s, "HCCPING starting");
-    if ((status = hc_get_backend("HCCPING", &backend, hc, ctx, baton->ptemp)) != OK) {
+    if ((status = hc_get_backend("HCCPING", &backend, hc, ctx)) != OK) {
         return backend_cleanup("HCCPING", backend, ctx->s, status);
     }
     if ((status = ap_proxy_connect_backend("HCCPING", backend, hc, ctx->s)) != OK) {
@@ -711,7 +728,7 @@ static apr_status_t hc_check_tcp(baton_t *baton)
     proxy_worker *hc = baton->hc;
     proxy_conn_rec *backend = NULL;
 
-    status = hc_get_backend("HCTCP", &backend, hc, ctx, baton->ptemp);
+    status = hc_get_backend("HCTCP", &backend, hc, ctx);
     if (status == OK) {
         status = ap_proxy_connect_backend("HCTCP", backend, hc, ctx->s);
         /* does an unconditional ap_proxy_is_socket_connected() */
@@ -862,7 +879,7 @@ static apr_status_t hc_check_http(baton_t *baton, apr_thread_t *thread)
         return APR_ENOTIMPL;
     }
 
-    if ((status = hc_get_backend("HCOH", &backend, hc, ctx, ptemp)) != OK) {
+    if ((status = hc_get_backend("HCOH", &backend, hc, ctx)) != OK) {
         return backend_cleanup("HCOH", backend, ctx->s, status);
     }
     if ((status = ap_proxy_connect_backend("HCOH", backend, hc, ctx->s)) != OK) {
@@ -1056,12 +1073,6 @@ static apr_status_t hc_watchdog_callback(int state, void *data,
                                          "Checking %s worker: %s  [%d] (%pp)", balancer->s->name,
                                          worker->s->name, worker->s->method, worker);
 
-                            if ((rv = hc_init_worker(ctx, worker)) != APR_SUCCESS) {
-                                worker->s->updated = now;
-                                return rv;
-                            }
-                            worker->s->updated = 0;
-
                             /* This pool has the lifetime of the check */
                             apr_pool_create(&ptemp, ctx->p);
                             apr_pool_tag(ptemp, "hc_request");
@@ -1070,7 +1081,12 @@ static apr_status_t hc_watchdog_callback(int state, void *data,
                             baton->balancer = balancer;
                             baton->worker = worker;
                             baton->ptemp = ptemp;
-                            baton->hc = hc_get_hcworker(ctx, worker, ptemp);
+                            if ((rv = hc_init_baton(baton))) {
+                                worker->s->updated = now;
+                                apr_pool_destroy(ptemp);
+                                return rv;
+                            }
+                            worker->s->updated = 0;
 #if HC_USE_THREADS
                             if (hctp) {
                                 apr_thread_pool_push(hctp, hc_check, (void *)baton,

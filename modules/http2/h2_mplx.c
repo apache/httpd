@@ -384,10 +384,11 @@ apr_status_t h2_mplx_c1_streams_do(h2_mplx *m, h2_mplx_stream_cb *cb, void *ctx)
 {
     stream_iter_ctx_t x;
     
-    H2_MPLX_ENTER(m);
-
     x.cb = cb;
     x.ctx = ctx;
+
+    H2_MPLX_ENTER(m);
+
     h2_ihash_iter(m->streams, m_stream_iter_wrap, &x);
         
     H2_MPLX_LEAVE(m);
@@ -1119,14 +1120,32 @@ static int reset_is_acceptable(h2_stream *stream)
     return 1; /* otherwise, be forgiving */
 }
 
-apr_status_t h2_mplx_c1_client_rst(h2_mplx *m, int stream_id)
+apr_status_t h2_mplx_c1_client_rst(h2_mplx *m, int stream_id, h2_stream *stream)
 {
-    h2_stream *stream;
     apr_status_t status = APR_SUCCESS;
+    int registered;
 
     H2_MPLX_ENTER_ALWAYS(m);
-    stream = h2_ihash_get(m->streams, stream_id);
-    if (stream && !reset_is_acceptable(stream)) {
+    registered = (h2_ihash_get(m->streams, stream_id) != NULL);
+    if (!stream) {
+      /* a RST might arrive so late, we have already forgotten
+       * about it. Seems ok. */
+      ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, m->c1,
+                    H2_MPLX_MSG(m, "RST on unknown stream %d"), stream_id);
+      AP_DEBUG_ASSERT(!registered);
+    }
+    else if (!registered) {
+      /* a RST on a stream that mplx has not been told about, but
+       * which the session knows. Very early and annoying. */
+      ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, m->c1,
+                    H2_STRM_MSG(stream, "very early RST, drop"));
+      h2_stream_set_monitor(stream, NULL);
+      h2_stream_rst(stream, H2_ERR_STREAM_CLOSED);
+      h2_stream_dispatch(stream, H2_SEV_EOS_SENT);
+      m_stream_cleanup(m, stream);
+      m_be_annoyed(m);
+    }
+    else if (!reset_is_acceptable(stream)) {
         m_be_annoyed(m);
     }
     H2_MPLX_LEAVE(m);
