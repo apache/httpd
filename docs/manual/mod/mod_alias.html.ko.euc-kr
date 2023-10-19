@@ -63,9 +63,11 @@
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#alias">Alias</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#aliasmatch">AliasMatch</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#aliaspreservepath">AliasPreservePath</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#redirect">Redirect</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#redirectmatch">RedirectMatch</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#redirectpermanent">RedirectPermanent</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#redirectrelative">RedirectRelative</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#redirecttemp">RedirectTemp</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#scriptalias">ScriptAlias</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#scriptaliasmatch">ScriptAliasMatch</a></li>
@@ -180,6 +182,19 @@ Alias /foo /gaq
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="AliasPreservePath" id="AliasPreservePath">AliasPreservePath</a> <a name="aliaspreservepath" id="aliaspreservepath">지시어</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">설명:</a></th><td>Map the full path after the alias in a location.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">문법:</a></th><td><code>AliasPreservePath OFF|ON</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">기본값:</a></th><td><code>AliasPreservePath OFF</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">사용장소:</a></th><td>주서버설정, 가상호스트, directory</td></tr>
+<tr><th><a href="directive-dict.html#Status">상태:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">모듈:</a></th><td>mod_alias</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">지원:</a></th><td>2.5.1 and later</td></tr>
+</table><p>The documentation for this directive has
+            not been translated yet. Please have a look at the English
+            version.</p></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="Redirect" id="Redirect">Redirect</a> <a name="redirect" id="redirect">지시어</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">설명:</a></th><td>클라이언트가 다른 URL에 접속하도록 요청하는 외부
@@ -290,6 +305,19 @@ Alias /foo /gaq
     301) 알린다. <code>Redirect permanent</code>와 정확히 같다.</p>
 
 </div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="RedirectRelative" id="RedirectRelative">RedirectRelative</a> <a name="redirectrelative" id="redirectrelative">지시어</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">설명:</a></th><td>Allows relative redirect targets.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">문법:</a></th><td><code>RedirectRelative On|Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">기본값:</a></th><td><code>RedirectRelative Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">사용장소:</a></th><td>주서버설정, 가상호스트, directory</td></tr>
+<tr><th><a href="directive-dict.html#Status">상태:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">모듈:</a></th><td>mod_alias</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">지원:</a></th><td>2.4.58 and later</td></tr>
+</table><p>The documentation for this directive has
+            not been translated yet. Please have a look at the English
+            version.</p></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="RedirectTemp" id="RedirectTemp">RedirectTemp</a> <a name="redirecttemp" id="redirecttemp">지시어</a></h2>
 <table class="directive">
