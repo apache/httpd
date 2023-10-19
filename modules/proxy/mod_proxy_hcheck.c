@@ -42,9 +42,9 @@ typedef struct {
     int passes;
     int fails;
     apr_interval_time_t interval;
-    apr_interval_time_t hc_timeout;
     char *hurl;
     char *hcexpr;
+    apr_interval_time_t hc_timeout;
     unsigned int     hc_timeout_set:1;
 } hc_template_t;
 
