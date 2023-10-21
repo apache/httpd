@@ -131,7 +131,7 @@ de fichiers</td></tr>
 <tr><td><a href="mod_alias.html#aliasmatch">AliasMatch <var>regex</var>
 <var>chemin fichier</var>|<var>chemin répertoire</var></a></td><td></td><td>sv</td><td>B</td></tr><tr><td class="descr" colspan="4">Met en correspondance des URLs avec le système de fichiers
 en faisant intervenir les expressions rationnelles</td></tr>
-<tr class="odd"><td><a href="mod_alias.html#aliaspreservepath">AliasPreservePath OFF|ON</a></td><td> OFF </td><td>svd</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Map the full path after the alias in a location.</td></tr>
+<tr class="odd"><td><a href="mod_alias.html#aliaspreservepath">AliasPreservePath OFF|ON</a></td><td> OFF </td><td>svd</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Associer le chemin entier à l'alias dans une section location.</td></tr>
 <tr><td><a href="mod_access_compat.html#allow"> Allow from all|<var>hôte</var>|env=[!]<var>variable
 d'environnement</var>
 [<var>hôte</var>|env=[!]<var>variable d'environnement</var>] ...</a></td><td></td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Spécifie quels hôtes peuvent accéder à une certaine zone du

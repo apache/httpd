@@ -32,8 +32,6 @@
 <a href="../ko/mod/mod_alias.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/mod/mod_alias.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Permet d'atteindre différentes parties du système de
 fichiers depuis l'arborescence des documents du site web, ainsi que la
 redirection d'URL</td></tr>
@@ -214,6 +212,23 @@ de fichiers</td></tr>
 &lt;/LocationMatch&gt;</pre>
 
 
+    <p>Notez que lorsque la directive <code class="directive">AliasPreservePath</code>
+    est à "on", la destination contient le chemin entier, alors que lorsque la
+    directive <code class="directive">AliasPreservePath</code> est à "off", tous les
+    URLs sont associés à l'URL cible unique.</p>
+
+    <pre class="prettyprint lang-config"># /files/foo et /files/bar associés à /ftp/pub/files/foo et /ftp/pub/files/bar
+&lt;Location "/files"&gt;
+    AliasPreservePath on
+    Alias "/ftp/pub/files"
+&lt;/Location&gt;
+# /errors/foo et /errors/bar associés à /var/www/errors.html
+&lt;Location "/errors"&gt;
+    AliasPreservePath off
+    Alias "/var/www/errors.html"
+&lt;/Location&gt;</pre>
+    
+
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -299,16 +314,27 @@ en faisant intervenir les expressions rationnelles</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="aliaspreservepath" id="aliaspreservepath">Directive</a> <a name="AliasPreservePath" id="AliasPreservePath">AliasPreservePath</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Map the full path after the alias in a location.</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Associer le chemin entier à l'alias dans une section location.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AliasPreservePath OFF|ON</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>AliasPreservePath OFF</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_alias</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>2.5.1 and later</td></tr>
-</table><p>La documentation de cette directive
-	n'a pas encore t traduite. Veuillez vous reporter  la version
-	en langue anglaise.</p></div>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.5.1 du serveur HTTP Apache</td></tr>
+</table>
+    <p>Lorsqu'on utilise la version à deux paramètres de la directive
+    <code class="directive">Alias</code>, le chemin complet après l'alias est préservé.
+    Lorsqu'on utilise la version à un paramètre de la directive
+    <code class="directive">Alias</code> dans une section
+    <code class="directive">Location</code>, le chemin entier est supprimé, et tous les
+    URLs sont associés à l'expression cible.</p>
+
+    <p>Pour que la version à un paramètre de la directive
+    <code class="directive">Alias</code> préserve les chemins de la même façon que la
+    version à deux paramètres, activez cette directive.</p>
+
+
+</div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="redirect" id="redirect">Directive</a> <a name="Redirect" id="Redirect">Redirect</a></h2>
 <table class="directive">
