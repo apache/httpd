@@ -61,23 +61,23 @@ effectue une <strong>requête</strong> pour une ressource en spécifiant
 son chemin.</p>
 
 <p>Un chemin peut représenter plusieurs types de ressources sur le
-serveur. Ce peut être un fichier (comme
-<code>getting-started.html</code>), un gestionnaire (comme <a href="mod/mod_status.html">server-status</a>), ou toute sorte de
-programme (comme <code>index.php</code>). Nous décrirons tout ceci plus
+serveur. Il peut s'agir d'un fichier (comme
+<code>getting-started.html</code>), d'un gestionnaire (comme <a href="mod/mod_status.html">server-status</a>) ou d'une sorte quelconque de
+programme (comme <code>index.php</code>). Nous décrirons tout cela plus
 en détails ci-dessous dans la section <a href="#content">Contenu d'un
 site web</a>.</p>
 
 <p>
 Le serveur envoie alors une <strong>réponse</strong> comportant un code
 d'état, et éventuellement un corps de réponse. Le code d'état indique si
-la requête a été traitée avec succès, ou dans la négative quel type
+la requête a été traitée avec succès, ou dans la négative, quel type
 d'erreur a été rencontré. Le client est alors censé savoir quoi faire de
 la réponse. Vous pouvez vous familiariser avec les différents codes
 d'état en consultant le <a href="http://wiki.apache.org/httpd/CommonHTTPStatusCodes">Wiki du
 serveur HTTP Apache</a>.</p>
 
 <p>Les détails de la transaction, ainsi que les erreurs rencontrées,
-sont enregistrés dans des fichiers journaux. Tout ceci est décrit en
+sont enregistrés dans des fichiers journaux. Tout cela est décrit en
 détails ci-dessous dans la section <a href="#logs">Débogage et fichiers
 journaux</a>.</p>
 
@@ -123,7 +123,7 @@ et à propos du DNS à <a href="http://en.wikipedia.org/wiki/Domain_Name_System"
 
 
 <p>La configuration du serveur HTTP Apache s'effectue via de simples
-fichiers textes. Ces fichiers peuvent se trouver dans de nombreux
+fichiers texte. Ces fichiers peuvent se trouver dans de nombreux
 endroits différents en fonction du mode d'installation du serveur. Vous
 trouverez les positions courantes de ces fichiers dans le <a href="http://wiki.apache.org/httpd/DistrosDefaultLayout">wiki httpd</a>.
 Si vous installez httpd depuis le code source, le répertoire par défaut
@@ -144,22 +144,20 @@ l'organisation par défaut.</p>
 insère dans les fichiers de configuration. Une directive se compose d'un
 mot-clé suivi d'un ou plusieurs arguments qui définissent sa valeur.</p>
 
-<p>La réponse à la question "<em>Où dois-je placer cette directive
-?</em>" dépend en général du niveau auquel cette directive doit être
-prise en compte. S'il s'agit du niveau global, elle doit être placée
-dans le fichier de configuration principal, et en dehors de toute
-section  <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code>, <code class="directive"><a href="./mod/core.html#location">&lt;Location&gt;</a></code>, <code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>, ou de toute autre section. Si
-par exemple elle ne doit s'appliquer qu'à un répertoire particulier,
-elle doit être placée dans la section <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code> qui fait référence à ce répertoire.
-Voir la documentation sur les <a href="sections.html">Sections de
-configuration</a> pour plus de détails.</p>
+<p>La réponse à la question "<em>Où dois-je placer cette directive ?</em>"
+dépend en général du niveau auquel cette directive doit être prise en compte.
+S'il s'agit du niveau global, elle doit être placée dans le fichier de
+configuration principal, et en dehors de toute section  <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code>, <code class="directive"><a href="./mod/core.html#location">&lt;Location&gt;</a></code>, <code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> ou de toute autre section.  Sinon, si par
+exemple elle ne doit s'appliquer qu'à un répertoire particulier, elle doit être
+placée dans la section <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code> qui fait référence à ce répertoire.  Voir la
+documentation sur les <a href="sections.html">Sections de configuration</a> pour
+plus de détails.</p>
 
-<p>En complément des fichiers de configuration principaux, certaines
-directives peuvent être insérées dans des fichiers
-<code>.htaccess</code> que l'on place directement dans le répertoire
-concerné. Les fichiers <code>.htaccess</code> sont essentiellement
-destinés aux personnes qui n'ont pas accès aux fichiers de configuration
-du serveur. Vous trouverez plus de détails à propos des fichiers
+<p>En complément des fichiers de configuration principaux, certaines directives
+peuvent être insérées dans des fichiers <code>.htaccess</code> que l'on place
+directement dans le répertoire concerné. Les fichiers <code>.htaccess</code>
+sont essentiellement destinés aux personnes qui n'ont pas accès aux fichiers de
+configuration du serveur. Vous trouverez plus de détails à propos des fichiers
 <code>.htaccess</code> dans ce <a href="howto/htaccess.html"><code>.htaccess</code>howto</a>.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
