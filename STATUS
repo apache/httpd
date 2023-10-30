@@ -173,20 +173,31 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      jailletc36: r1745033 seems related and should in included
      minfrin: r1745033 is now included
 
-  *) mod_proxy: If we fail to connect to all looked up IP's from the worker
-     lookup cache it might be caused by a change on DNS side. Try another
-     DNS lookup in this case and in case this causes a successful connection
-     trigger a refresh of the worker lookup cache.
+  *) mod_proxy: Allow to set a TTL for how long DNS resolutions to backend
+     systems are cached.
+     In order to solve merge conflicts this proposal also backports:
+
+     mod_proxy: Add optional third argument for ProxyRemote, which
+     configures Basic authentication credentials to pass to the remote
+     proxy.  PR 37355. (r1881790)
+
+     mod_proxy: Ignore (and warn about) enablereuse=on for ProxyPassMatch when
+     some dollar substitution (backreference) happens in the hostname or port
+     part of the URL. (r1904513)
+
      Trunk version of patch:
+        https://svn.apache.org/r1881790
+        https://svn.apache.org/r1904513
         https://svn.apache.org/r1909400
         https://svn.apache.org/r1909401
         https://svn.apache.org/r1909402
         https://svn.apache.org/r1909451
+        https://svn.apache.org/r1912459
+        https://svn.apache.org/r1913432
      Backport version for 2.4.x of patch:
-      Trunk version of patch works
-      svn merge -c 1909400,1909401,1909402,1909451 ^/httpd/httpd/trunk .
+       https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/390.diff
+     Can be applied via apply_backport_pr.sh 390
      +1: rpluem,
-     ylavic: see https://lists.apache.org/thread/jftfd6mo6p3b0tw694rlh09gdl7189hq
 
   *) mod_proxy: prevent bad busy values and problems with bybusyness
      Trunk version of patch:
