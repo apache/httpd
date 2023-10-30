@@ -93,7 +93,7 @@ function install_apx() {
 }
 
 # Allow to load $HOME/build/apache/httpd/.gdbinit
-echo "add-auto-load-safe-path $HOME/build/apache/httpd/httpd/.gdbinit" >> $HOME/.gdbinit
+echo "add-auto-load-safe-path $HOME/work/httpd/httpd/.gdbinit" >> $HOME/.gdbinit
 
 # Prepare perl-framework test environment
 if ! test -v SKIP_TESTING; then
