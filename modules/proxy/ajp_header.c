@@ -228,7 +228,7 @@ static apr_status_t ajp_marshal_into_msgb(ajp_msg_t *msg,
     ap_log_rerror(APLOG_MARK, APLOG_TRACE8, 0, r, "Into ajp_marshal_into_msgb");
 
     if ((method = sc_for_req_method_by_id(r)) == UNKNOWN_METHOD) {
-        ap_log_rerror(APLOG_MARK, APLOG_TRACE8, 0, r, APLOGNO(02437)
+        ap_log_rerror(APLOG_MARK, APLOG_TRACE8, 0, r,
                "ajp_marshal_into_msgb - Sending unknown method %s as request attribute",
                r->method);
         method = SC_M_JK_STORED;
