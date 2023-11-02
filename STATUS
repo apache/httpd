@@ -194,6 +194,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         https://svn.apache.org/r1909451
         https://svn.apache.org/r1912459
         https://svn.apache.org/r1913432
+        https://svn.apache.org/r1913534
      Backport version for 2.4.x of patch:
        https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/390.diff
      Can be applied via apply_backport_pr.sh 390
