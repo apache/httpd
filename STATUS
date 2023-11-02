@@ -198,6 +198,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/390.diff
      Can be applied via apply_backport_pr.sh 390
      +1: rpluem,
+     ylavic: +1 with r1913534
 
   *) mod_proxy: prevent bad busy values and problems with bybusyness
      Trunk version of patch:
