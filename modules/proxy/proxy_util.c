@@ -47,7 +47,7 @@ APLOG_USE_MODULE(proxy);
 /*
  * Opaque structure containing target server info when
  * using a forward proxy.
- * Up to now only used in combination with HTTP CONNECT.
+ * Up to now only used in combination with HTTP CONNECT to ProxyRemote
  */
 typedef struct {
     int          use_http_connect; /* Use SSL Tunneling via HTTP CONNECT */
@@ -3154,58 +3154,65 @@ ap_proxy_determine_connection(apr_pool_t *p, request_rec *r,
         const char *hostname = uri->hostname;
         apr_port_t hostport = uri->port;
 
-        if (proxyname) {
-            forward_info *forward;
+        /* Not a remote CONNECT until further notice */
+        conn->forward = NULL;
 
+        if (proxyname) {
             hostname = proxyname;
             hostport = proxyport;
 
-            /* Reset forward info if they changed */
-            if (conn->is_ssl
-                && (!(forward = conn->forward)
-                    || forward->target_port != uri->port
-                    || ap_cstr_casecmp(forward->target_host,
-                                       uri->hostname) != 0)) {
-                apr_pool_t *fwd_pool = conn->pool;
-                if (worker->s->is_address_reusable) {
-                    if (conn->fwd_pool) {
-                        apr_pool_clear(conn->fwd_pool);
-                    }
-                    else {
-                        apr_pool_create(&conn->fwd_pool, conn->pool);
-                    }
-                }
-                forward = apr_pcalloc(fwd_pool, sizeof(forward_info));
-                conn->forward = forward;
+            /*
+             * If we have a remote proxy and the protocol is HTTPS,
+             * then we need to prepend a HTTP CONNECT request before
+             * sending our actual HTTPS requests.
+             */
+            if (conn->is_ssl) {
+                forward_info *forward;
+                const char *proxy_auth;
 
-                /*
-                 * If we have a remote proxy and the protocol is HTTPS,
-                 * then we need to prepend a HTTP CONNECT request before
-                 * sending our actual HTTPS requests.
-                 * Save our real backend data for using it later during HTTP CONNECT.
+                /* Do we want to pass Proxy-Authorization along?
+                 * If we haven't used it, then YES
+                 * If we have used it then MAYBE: RFC2616 says we MAY propagate it.
+                 * So let's make it configurable by env.
+                 * The logic here is the same used in mod_proxy_http.
                  */
-                {
-                    const char *proxy_auth;
+                proxy_auth = apr_table_get(r->notes, "proxy-basic-creds");
+                if (proxy_auth == NULL
+                    && (r->user == NULL /* we haven't yet authenticated */
+                        || apr_table_get(r->subprocess_env, "Proxy-Chain-Auth"))) {
+                    proxy_auth = apr_table_get(r->headers_in, "Proxy-Authorization");
+                }
+                if (proxy_auth != NULL && proxy_auth[0] == '\0') {
+                    proxy_auth = NULL;
+                }
 
+                /* Reset forward info if they changed */
+                if (!(forward = conn->forward)
+                    || forward->target_port != uri->port
+                    || ap_cstr_casecmp(forward->target_host, uri->hostname) != 0
+                    || (forward->proxy_auth != NULL) != (proxy_auth != NULL)
+                    || (forward->proxy_auth != NULL && proxy_auth != NULL &&
+                        strcmp(forward->proxy_auth, proxy_auth) != 0)) {
+                    apr_pool_t *fwd_pool = conn->pool;
+                    if (worker->s->is_address_reusable) {
+                        if (conn->fwd_pool) {
+                            apr_pool_clear(conn->fwd_pool);
+                        }
+                        else {
+                            apr_pool_create(&conn->fwd_pool, conn->pool);
+                        }
+                        fwd_pool = conn->fwd_pool;
+                    }
+                    forward = apr_pcalloc(fwd_pool, sizeof(forward_info));
+                    conn->forward = forward;
+
+                    /*
+                     * Save our real backend data for using it later during HTTP CONNECT.
+                     */
                     forward->use_http_connect = 1;
                     forward->target_host = apr_pstrdup(fwd_pool, uri->hostname);
                     forward->target_port = uri->port;
-
-                    /* Do we want to pass Proxy-Authorization along?
-                     * If we haven't used it, then YES
-                     * If we have used it then MAYBE: RFC2616 says we MAY propagate it.
-                     * So let's make it configurable by env.
-                     * The logic here is the same used in mod_proxy_http.
-                     */
-                    proxy_auth = apr_table_get(r->notes, "proxy-basic-creds");
-                    if (proxy_auth == NULL)
-                        proxy_auth = apr_table_get(r->headers_in, "Proxy-Authorization");
-
-                    if (proxy_auth != NULL &&
-                        proxy_auth[0] != '\0' &&
-                        (r->user == NULL /* we haven't yet authenticated */
-                         || apr_table_get(r->subprocess_env, "Proxy-Chain-Auth")
-                         || apr_table_get(r->notes, "proxy-basic-creds"))) {
+                    if (proxy_auth) {
                         forward->proxy_auth = apr_pstrdup(fwd_pool, proxy_auth);
                     }
                 }
