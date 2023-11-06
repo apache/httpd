@@ -992,7 +992,7 @@ static const char *bn64(const BIGNUM *b, apr_pool_t *p)
 const char *md_pkey_get_rsa_e64(md_pkey_t *pkey, apr_pool_t *p)
 {
 #if OPENSSL_VERSION_NUMBER < 0x30000000L
-    RSA *rsa = EVP_PKEY_get1_RSA(pkey->pkey);
+    const RSA *rsa = EVP_PKEY_get0_RSA(pkey->pkey);
     if (rsa) {
         const BIGNUM *e;
         RSA_get0_key(rsa, NULL, &e, NULL);
@@ -1012,7 +1012,7 @@ const char *md_pkey_get_rsa_e64(md_pkey_t *pkey, apr_pool_t *p)
 const char *md_pkey_get_rsa_n64(md_pkey_t *pkey, apr_pool_t *p)
 {
 #if OPENSSL_VERSION_NUMBER < 0x30000000L
-    RSA *rsa = EVP_PKEY_get1_RSA(pkey->pkey);
+    const RSA *rsa = EVP_PKEY_get0_RSA(pkey->pkey);
     if (rsa) {
         const BIGNUM *n;
         RSA_get0_key(rsa, &n, NULL, NULL);
