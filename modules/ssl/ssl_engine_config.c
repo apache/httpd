@@ -593,7 +593,6 @@ const char *ssl_cmd_SSLPassPhraseDialog(cmd_parms *cmd,
     return NULL;
 }
 
-#if defined(HAVE_OPENSSL_ENGINE_H) && defined(HAVE_ENGINE_INIT)
 const char *ssl_cmd_SSLCryptoDevice(cmd_parms *cmd,
                                     void *dcfg,
                                     const char *arg)
@@ -635,7 +634,6 @@ const char *ssl_cmd_SSLCryptoDevice(cmd_parms *cmd,
 
     return NULL;
 }
-#endif
 
 const char *ssl_cmd_SSLRandomSeed(cmd_parms *cmd,
                                   void *dcfg,

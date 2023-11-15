@@ -107,16 +107,15 @@
 /* Avoid tripping over an engine build installed globally and detected
  * when the user points at an explicit non-engine flavor of OpenSSL
  */
-#if defined(HAVE_OPENSSL_ENGINE_H) && defined(HAVE_ENGINE_INIT)
-#if OPENSSL_VERSION_NUMBER < 0x30000000 \
-    || (defined(OPENSSL_API_LEVEL) && OPENSSL_API_LEVEL < 30000)
+#if defined(HAVE_OPENSSL_ENGINE_H) && defined(HAVE_ENGINE_INIT) \
+    && (OPENSSL_VERSION_NUMBER < 0x30000000 \
+        || (defined(OPENSSL_API_LEVEL) && OPENSSL_API_LEVEL < 30000)) \
+    && !defined(OPENSSL_NO_ENGINE)
 #include <openssl/engine.h>
 #define MODSSL_HAVE_ENGINE_API 1
 #endif
 #ifndef MODSSL_HAVE_ENGINE_API
 #define MODSSL_HAVE_ENGINE_API 0
-#endif
-
 #endif
 
 #if (OPENSSL_VERSION_NUMBER < 0x0090801f)
