@@ -1,3 +1,3 @@
   *) mod_ssl: Disable the OpenSSL ENGINE API when OPENSSL_NO_ENGINE is set.
      Allow for "SSLCryptoDevice builtin" if the ENGINE API is not available,
-     notably with OpenSSL >= 3.  PR 68080.  [ Yann Ylavic ]
+     notably with OpenSSL >= 3.  PR 68080.  [ Yann Ylavic, Joe Orton ]
