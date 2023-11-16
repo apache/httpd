@@ -238,6 +238,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1913815
                   http://svn.apache.org/r1913816
                   http://svn.apache.org/r1908542
+                  http://svn.apache.org/r1913832
      2.4.x patch: https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/381.diff
                   (https://github.com/apache/httpd/pull/381)
      +1: ylavic, jorton
