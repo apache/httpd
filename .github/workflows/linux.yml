@@ -102,7 +102,7 @@ jobs:
       run: echo "${{ matrix.env }}" >> $GITHUB_ENV
     - name: Install prerequisites
       run: dnf install libtool apr-devel apr-util-devel lua-devel openssl-devel
-                        libjansson-devel libbrotli-devel libcurl-devel liblua-devel
+                        jansson-devel brotli-devel libcurl-devel lua-devel
                         /usr/bin/cpanm libnghttp2-devel pcre2-devel gdb perl-doc
     - uses: actions/checkout@v3
     - name: Configure environment
