@@ -222,6 +222,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      ylavic: changes in ssl_private.h not needed if/after r1908537 is
              backported (below proposal), though they are harmless. See:
              https://lists.apache.org/thread/k924ql8c9ry1b9y94fpr2b0d5o6tmds6
+             I'd suggest adding r1913838 here if both proposals can be merged
+             at the same time..
 
   *) mod_ssl: Improve compatibility with OpenSSL 3, fix build warnings about
      deprecated ENGINE_ API, honor OPENSSL_API_COMPAT setting while defaulting
