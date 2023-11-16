@@ -1,5 +1,10 @@
 #!/bin/bash -xe
 
+if [ $EUID = 0 ]; then
+    useradd user
+    su - user -- $0 $*
+fi
+
 if test -v CLEAR_CACHE; then
     rm -rf $HOME/root
 fi

@@ -1,5 +1,9 @@
 #!/bin/bash -ex
 
+if [ $EUID = 0 ]; then
+    su - user -- $0 $*
+fi
+
 # Test for APLOGNO() macro errors (duplicates, empty args) etc.  For
 # trunk, run the updater script to see if it fails.  If it succeeds
 # and changes any files (because there was a missing argument), the
