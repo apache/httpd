@@ -101,11 +101,16 @@ jobs:
     - name: Set environment variables
       run: echo "${{ matrix.env }}" >> $GITHUB_ENV
     - name: Enable repositories
-      run: test -f /etc/fedora-release || (dnf install -y yum-utils && dnf config-manager --set-enabled crb)
+      run: |
+        if test -f /etc/centos-release; then
+          dnf install -y yum-utils
+          dnf config-manager --set-enabled crb || dnf config-manager --set-enabled powertools
+        fi
     - name: Install prerequisites
       run: dnf install -y libtool apr-devel apr-util-devel lua-devel openssl-devel
                           jansson-devel brotli-devel libcurl-devel lua-devel
                           /usr/bin/cpanm libnghttp2-devel pcre2-devel gdb perl-doc
+                          make autoconf glibc-devel gcc
     - uses: actions/checkout@v3
     - name: Configure environment
       run: ./test/travis_before_linux.sh
@@ -116,7 +121,7 @@ jobs:
         name: config.log ${{ matrix.node-version }}
         path: |
           build/**/config.log
-          .cpanm/work/*/build.log
+          .cpanm/**/build.log
     - name: Build and test
       run: ./test/travis_run_linux.sh
     - uses: actions/upload-artifact@v3
