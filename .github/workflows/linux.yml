@@ -110,7 +110,7 @@ jobs:
       run: dnf install -y libtool apr-devel apr-util-devel lua-devel openssl-devel
                           jansson-devel brotli-devel libcurl-devel lua-devel
                           /usr/bin/cpanm libnghttp2-devel pcre2-devel gdb perl-doc
-                          make autoconf glibc-devel gcc
+                          make autoconf glibc-devel gcc subversion git
     - uses: actions/checkout@v3
     - name: Configure environment
       run: ./test/travis_before_linux.sh
