@@ -91,7 +91,7 @@ jobs:
         container: ["quay.io/centos/centos:stream8", "quay.io/centos/centos:stream9",
                     "fedora:latest"]
     container:
-      image: ${{ matrix.image }}
+      image: ${{ matrix.container }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
     env:
