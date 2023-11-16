@@ -212,13 +212,16 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        https://svn.apache.org/r1898366
         svn merge -c 1898366 ^/httpd/httpd/trunk .
         svn merge -c 1898410 ^/httpd/httpd/trunk .
-     +1: gbechis
+     +1: gbechis, ylavic
 
   *) mod_ssl: fix LibreSSL build
      Trunk version of patch:
        https://svn.apache.org/r1874101
         svn merge -c 1874101 ^/httpd/httpd/trunk .
-     +1: gbechis
+     +1: gbechis, ylavic
+     ylavic: changes in ssl_private.h not needed if/after r1908537 is
+             backported (below proposal), though they are harmless. See:
+             https://lists.apache.org/thread/k924ql8c9ry1b9y94fpr2b0d5o6tmds6
 
   *) mod_ssl: Improve compatibility with OpenSSL 3, fix build warnings about
      deprecated ENGINE_ API, honor OPENSSL_API_COMPAT setting while defaulting
