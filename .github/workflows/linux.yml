@@ -100,10 +100,12 @@ jobs:
     steps:
     - name: Set environment variables
       run: echo "${{ matrix.env }}" >> $GITHUB_ENV
+    - name: Enable repositories
+      run: test -f /etc/fedora-release || dnf config-manager --set-enabled crb
     - name: Install prerequisites
-      run: dnf install libtool apr-devel apr-util-devel lua-devel openssl-devel
-                        jansson-devel brotli-devel libcurl-devel lua-devel
-                        /usr/bin/cpanm libnghttp2-devel pcre2-devel gdb perl-doc
+      run: dnf install -y libtool apr-devel apr-util-devel lua-devel openssl-devel
+                          jansson-devel brotli-devel libcurl-devel lua-devel
+                          /usr/bin/cpanm libnghttp2-devel pcre2-devel gdb perl-doc
     - uses: actions/checkout@v3
     - name: Configure environment
       run: ./test/travis_before_linux.sh
