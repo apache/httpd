@@ -115,7 +115,8 @@ jobs:
       with:
         name: config.log ${{ matrix.node-version }}
         path: |
-          /home/runner/build/**/config.log
+          build/**/config.log
+          .cpanm/work/*/build.log
     - name: Build and test
       run: ./test/travis_run_linux.sh
     - uses: actions/upload-artifact@v3
