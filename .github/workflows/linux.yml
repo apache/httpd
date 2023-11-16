@@ -86,12 +86,12 @@ jobs:
         path: test/perl-framework/t/logs/error_log
   containers:
     strategy:
+      fail-fast: false
       matrix:
         container: ["quay.io/centos/centos:stream8", "quay.io/centos/centos:stream9",
                     "fedora:latest"]
     container:
       image: ${{ matrix.image }}
-    fail-fast: false
     runs-on: ubuntu-latest
     timeout-minutes: 30
     env:
