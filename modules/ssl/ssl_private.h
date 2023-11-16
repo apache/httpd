@@ -255,11 +255,9 @@
 #define BN_get_rfc3526_prime_4096  get_rfc3526_prime_4096
 #define BN_get_rfc3526_prime_6144  get_rfc3526_prime_6144
 #define BN_get_rfc3526_prime_8192  get_rfc3526_prime_8192
-#if !defined(LIBRESSL_VERSION_NUMBER) || LIBRESSL_VERSION_NUMBER < 0x2070000fL
 #define BIO_set_init(x,v)          (x->init=v)
 #define BIO_get_data(x)            (x->ptr)
 #define BIO_set_data(x,v)          (x->ptr=v)
-#endif
 #define BIO_get_shutdown(x)        (x->shutdown)
 #define BIO_set_shutdown(x,v)      (x->shutdown=v)
 #define DH_bits(x)                 (BN_num_bits(x->p))
