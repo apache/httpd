@@ -212,7 +212,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        https://svn.apache.org/r1898366
         svn merge -c 1898366 ^/httpd/httpd/trunk .
         svn merge -c 1898410 ^/httpd/httpd/trunk .
-     +1: gbechis, ylavic
+     +1: gbechis, ylavic, jorton
 
   *) mod_ssl: fix LibreSSL build
      Trunk version of patch:
@@ -240,7 +240,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1908542
      2.4.x patch: https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/381.diff
                   (https://github.com/apache/httpd/pull/381)
-     +1: ylavic,
+     +1: ylavic, jorton
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
