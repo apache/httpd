@@ -101,7 +101,7 @@ jobs:
     - name: Set environment variables
       run: echo "${{ matrix.env }}" >> $GITHUB_ENV
     - name: Enable repositories
-      run: test -f /etc/fedora-release || dnf config-manager --set-enabled crb
+      run: test -f /etc/fedora-release || (dnf install yum-utils && dnf config-manager --set-enabled crb)
     - name: Install prerequisites
       run: dnf install -y libtool apr-devel apr-util-devel lua-devel openssl-devel
                           jansson-devel brotli-devel libcurl-devel lua-devel
