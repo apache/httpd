@@ -100,7 +100,8 @@ jobs:
     steps:
     - name: Set environment variables
       run: echo "${{ matrix.env }}" >> $GITHUB_ENV
-    - name: yum install libtool apr-devel apr-util-devel lua-devel openssl-devel
+    - name: Install prerequisites
+      run: yum install libtool apr-devel apr-util-devel lua-devel openssl-devel
                         libjansson-devel libbrotli-devel libcurl-devel liblua-devel
                         /usr/bin/cpanm libnghttp2-devel pcre2-devel gdb perl-doc
     - uses: actions/checkout@v3
