@@ -84,4 +84,40 @@ jobs:
       with:
         name: error_log ${{ matrix.node-version }}
         path: test/perl-framework/t/logs/error_log
+  containers:
+    strategy:
+      matrix:
+        container: ["quay.io/centos/centos:stream8", "quay.io/centos/centos:stream9",
+                    "fedora:latest"]
+    container:
+      image: ${{ matrix.image }}
+    fail-fast: false
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      NOTEST_CFLAGS: ${{ matrix.notest-cflags }}
+      CONFIG: ${{ matrix.config }}
+    steps:
+    - name: Set environment variables
+      run: echo "${{ matrix.env }}" >> $GITHUB_ENV
+    - name: yum install libtool apr-devel apr-util-devel lua-devel openssl-devel
+                        libjansson-devel libbrotli-devel libcurl-devel liblua-devel
+                        /usr/bin/cpanm libnghttp2-devel pcre2-devel gdb perl-doc
+    - uses: actions/checkout@v3
+    - name: Configure environment
+      run: ./test/travis_before_linux.sh
+      timeout-minutes: 15
+    - uses: actions/upload-artifact@v3
+      if: failure()
+      with:
+        name: config.log ${{ matrix.node-version }}
+        path: |
+          /home/runner/build/**/config.log
+    - name: Build and test
+      run: ./test/travis_run_linux.sh
+    - uses: actions/upload-artifact@v3
+      if: failure()
+      with:
+        name: error_log ${{ matrix.node-version }}
+        path: test/perl-framework/t/logs/error_log
 
