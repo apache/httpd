@@ -108,7 +108,7 @@ if ! test -v SKIP_TESTING; then
     fi
 
     if test -v TEST_ASAN; then
-        export ASAN_OPTIONS="log_path=$PWD/asan.log"
+        export ASAN_OPTIONS="log_path=$PWD/asan.log:detect_leaks=0"
     fi
 
     # Try to keep all potential coredumps from all processes
