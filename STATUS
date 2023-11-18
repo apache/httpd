@@ -187,6 +187,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
              https://lists.apache.org/thread/k924ql8c9ry1b9y94fpr2b0d5o6tmds6
              I'd suggest adding r1913838 here if both proposals can be merged
              at the same time..
+     minfrin: r1908537 is backported, can you update this proposal clean?
 
    *) mod_ldap: HTML-escape data in ldap-status handler
       trunk patch: http://svn.apache.org/r1913855
