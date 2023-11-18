@@ -186,6 +186,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
              ap_[proxy_] prefix.
      minfrin: r1913930 added, votes reset, mmn bump needed
      ylavic: not sure since it's not public (i.e. in mod_proxy.h)?
+     minfrin: true, mmn bump not needed
 
   *) mod_ssl: fix LibreSSL build
      Trunk version of patch:
