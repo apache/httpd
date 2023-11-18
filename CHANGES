@@ -1,6 +1,15 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.59
 
+  *) mod_ssl: Disable the OpenSSL ENGINE API when OPENSSL_NO_ENGINE is set.
+     Allow for "SSLCryptoDevice builtin" if the ENGINE API is not available,
+     notably with OpenSSL >= 3.  PR 68080.  [ Yann Ylavic, Joe Orton ]
+
+  *) mod_ssl: Improve compatibility with OpenSSL 3, fix build warnings about
+     deprecated ENGINE_ API, honor OPENSSL_API_COMPAT setting while defaulting
+     to compatibitily with version 1.1.1 (including ENGINEs / SSLCryptoDevice).
+     [ Yann Ylavic ]
+
   *) mod_ssl: release memory to the OS when needed. [Giovanni Bechis]
 
   *) mod_proxy: Ignore (and warn about) enablereuse=on for ProxyPassMatch when

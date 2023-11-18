@@ -464,29 +464,52 @@ BOOL modssl_X509_match_name(apr_pool_t *p, X509 *x509, const char *name,
 **  _________________________________________________________________
 */
 
-DH *ssl_dh_GetParamFromFile(const char *file)
+#if OPENSSL_VERSION_NUMBER < 0x30000000L
+DH *modssl_dh_from_file(const char *file)
 {
-    DH *dh = NULL;
+    DH *dh;
     BIO *bio;
 
     if ((bio = BIO_new_file(file, "r")) == NULL)
         return NULL;
     dh = PEM_read_bio_DHparams(bio, NULL, NULL, NULL);
     BIO_free(bio);
-    return (dh);
-}
 
-#ifdef HAVE_ECC
-EC_GROUP *ssl_ec_GetParamFromFile(const char *file)
+    return dh;
+}
+#else
+EVP_PKEY *modssl_dh_pkey_from_file(const char *file)
 {
-    EC_GROUP *group = NULL;
+    EVP_PKEY *pkey;
     BIO *bio;
 
     if ((bio = BIO_new_file(file, "r")) == NULL)
         return NULL;
-    group = PEM_read_bio_ECPKParameters(bio, NULL, NULL, NULL);
+    pkey = PEM_read_bio_Parameters(bio, NULL);
     BIO_free(bio);
-    return (group);
+
+    return pkey;
+}
+#endif
+
+#ifdef HAVE_ECC
+EC_GROUP *modssl_ec_group_from_file(const char *file)
+{
+    EC_GROUP *group;
+    BIO *bio;
+
+    if ((bio = BIO_new_file(file, "r")) == NULL)
+        return NULL;
+#if OPENSSL_VERSION_NUMBER < 0x30000000L
+    group = PEM_read_bio_ECPKParameters(bio, NULL, NULL, NULL);
+#else
+    group = PEM_ASN1_read_bio((void *)d2i_ECPKParameters,
+                              PEM_STRING_ECPARAMETERS, bio,
+                              NULL, NULL, NULL);
+#endif
+    BIO_free(bio);
+
+    return group;
 }
 #endif
 
