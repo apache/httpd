@@ -153,6 +153,10 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+   *) mod_ldap: HTML-escape data in ldap-status handler
+      trunk patch: http://svn.apache.org/r1913855
+      2.4.x patch  svn merge -c 1913855 ^/httpd/httpd/trunk .
+      +1: covener, minfrin, ylavic
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
@@ -181,6 +185,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      ylavic: +1 with r1913930, we can't provide exported functions w/o an
              ap_[proxy_] prefix.
      minfrin: r1913930 added, votes reset, mmn bump needed
+     ylavic: not sure since it's not public (i.e. in mod_proxy.h)?
 
   *) mod_ssl: fix LibreSSL build
      Trunk version of patch:
@@ -196,26 +201,21 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      minfrin: r1908537 is backported, can you update this proposal clean?
      ylavic: done, votes reset
 
-   *) mod_ldap: HTML-escape data in ldap-status handler
-      trunk patch: http://svn.apache.org/r1913855
-      2.4.x patch  svn merge -c 1913855 ^/httpd/httpd/trunk .
-      +1: covener, minfrin
-
    *) Fix compiler warnings triggered by clang.
       trunk patch: http://svn.apache.org/r1909450
       2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/httpd-2.4-warnings-be-gone.patch
-      +1: minfrin
+      +1: minfrin, ylavic
 
    *) Add support for SHA-2 crypt() algorithm in htpasswd.
       trunk patch: http://svn.apache.org/r1861793
                    http://svn.apache.org/r1862612
       2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/httpd-2.4-htpasswd-SHA-2-crypt.patch
-      +1: minfrin
+      +1: minfrin, ylavic
 
    *) Add CGIScriptTimeout to mod_cgi.
       trunk patch: http://svn.apache.org/r1828172
       2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/httpd-2.4-add-CGIScriptTimeout.patch
-      +1: minfrin
+      +1: minfrin, ylavic
 
    *) Allow mod_dav_fs to tolerate race conditions between PROPFIND and an
       operation which removes a directory/file between apr_dir_read() and
@@ -223,7 +223,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       inferior to tolerating (and logging) the error.
       trunk patch: http://svn.apache.org/r1910811
       2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/httpd-2.4-dav-tolerant.patch
-      +1: minfrin
+      +1: minfrin, ylavic
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
