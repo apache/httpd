@@ -5392,7 +5392,7 @@ PROXY_DECLARE(apr_status_t) ap_proxy_tunnel_create(proxy_tunnel_rec **ptunnel,
     return APR_SUCCESS;
 }
 
-PROXY_DECLARE(apr_status_t) decrement_busy_count(void *worker_)
+PROXY_DECLARE(apr_status_t) ap_proxy_decrement_busy_count(void *worker_)
 {
     apr_size_t val;
     proxy_worker *worker = worker_;
@@ -5435,7 +5435,7 @@ PROXY_DECLARE(apr_status_t) decrement_busy_count(void *worker_)
     return APR_SUCCESS;
 }
 
-PROXY_DECLARE(void) increment_busy_count(proxy_worker *worker)
+PROXY_DECLARE(void) ap_proxy_increment_busy_count(proxy_worker *worker)
 {
     apr_size_t val;
 #if APR_SIZEOF_VOIDP == 4
@@ -5475,7 +5475,7 @@ PROXY_DECLARE(void) increment_busy_count(proxy_worker *worker)
 #endif
 }
 
-PROXY_DECLARE(apr_size_t) getbusy_count(proxy_worker *worker)
+PROXY_DECLARE(apr_size_t) ap_proxy_get_busy_count(proxy_worker *worker)
 {
     apr_size_t val;
 #if APR_SIZEOF_VOIDP == 4
@@ -5494,7 +5494,7 @@ PROXY_DECLARE(apr_size_t) getbusy_count(proxy_worker *worker)
     return val;
 }
 
-PROXY_DECLARE(void) setbusy_count(proxy_worker *worker, apr_size_t to)
+PROXY_DECLARE(void) ap_proxy_set_busy_count(proxy_worker *worker, apr_size_t to)
 {
 #if APR_SIZEOF_VOIDP == 4
     AP_DEBUG_ASSERT(sizeof(apr_size_t) == sizeof(apr_uint32_t));
