@@ -225,6 +225,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/httpd-2.4-dav-tolerant.patch
       +1: minfrin, ylavic
 
+   *) core: Allow mod_env to override all system path environment variables,
+      not just PATH.
+      trunk patch: http://svn.apache.org/r1811831
+      2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/httpd-2.4-mod_env-override.patch
+      +1: minfrin
+
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
