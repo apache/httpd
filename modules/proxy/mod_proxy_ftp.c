@@ -975,13 +975,8 @@ static int proxy_ftp_handler(request_rec *r, proxy_worker *worker,
     conn_rec *c = r->connection;
     proxy_conn_rec *backend;
     apr_socket_t *sock, *local_sock, *data_sock = NULL;
-    apr_sockaddr_t *connect_addr = NULL;
-    apr_status_t rv;
     conn_rec *origin, *data = NULL;
     apr_status_t err = APR_SUCCESS;
-#if APR_HAS_THREADS
-    apr_status_t uerr = APR_SUCCESS;
-#endif
     apr_bucket_brigade *bb;
     char *buf, *connectname;
     apr_port_t connectport;
@@ -1005,8 +1000,8 @@ static int proxy_ftp_handler(request_rec *r, proxy_worker *worker,
     /* stuff for PASV mode */
     int connect = 0, use_port = 0;
     char dates[APR_RFC822_DATE_LEN];
+    apr_status_t rv;
     int status;
-    apr_pool_t *address_pool;
 
     /* is this for us? */
     if (proxyhost) {
@@ -1120,53 +1115,8 @@ static int proxy_ftp_handler(request_rec *r, proxy_worker *worker,
     ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01036)
                   "connecting %s to %s:%d", url, connectname, connectport);
 
-    if (worker->s->is_address_reusable) {
-        if (!worker->cp->addr) {
-#if APR_HAS_THREADS
-            if ((err = PROXY_THREAD_LOCK(worker->balancer)) != APR_SUCCESS) {
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, err, r, APLOGNO(01037) "lock");
-                return HTTP_INTERNAL_SERVER_ERROR;
-            }
-#endif
-        }
-        connect_addr = AP_VOLATILIZE_T(apr_sockaddr_t *, worker->cp->addr);
-        address_pool = worker->cp->dns_pool;
-    }
-    else
-        address_pool = r->pool;
-
-    /* do a DNS lookup for the destination host */
-    if (!connect_addr)
-        err = apr_sockaddr_info_get(&(connect_addr),
-                                    connectname, APR_UNSPEC,
-                                    connectport, 0,
-                                    address_pool);
-    if (worker->s->is_address_reusable && !worker->cp->addr) {
-        worker->cp->addr = connect_addr;
-#if APR_HAS_THREADS
-        if ((uerr = PROXY_THREAD_UNLOCK(worker->balancer)) != APR_SUCCESS) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, uerr, r, APLOGNO(01038) "unlock");
-        }
-#endif
-    }
-    /*
-     * get all the possible IP addresses for the destname and loop through
-     * them until we get a successful connection
-     */
-    if (APR_SUCCESS != err) {
-        return ap_proxyerror(r, HTTP_BAD_GATEWAY, apr_pstrcat(p,
-                                                 "DNS lookup failure for: ",
-                                                        connectname, NULL));
-    }
-
-    /* check if ProxyBlock directive on this host */
-    if (OK != ap_proxy_checkproxyblock2(r, conf, connectname, connect_addr)) {
-        return ap_proxyerror(r, HTTP_FORBIDDEN,
-                             "Connect to remote machine blocked");
-    }
-
     /* create space for state information */
-    backend = (proxy_conn_rec *) ap_get_module_config(c->conn_config, &proxy_ftp_module);
+    backend = ap_get_module_config(c->conn_config, &proxy_ftp_module);
     if (!backend) {
         status = ap_proxy_acquire_connection("FTP", &backend, worker, r->server);
         if (status != OK) {
@@ -1176,9 +1126,24 @@ static int proxy_ftp_handler(request_rec *r, proxy_worker *worker,
             }
             return status;
         }
-        /* TODO: see if ftp could use determine_connection */
-        backend->addr = connect_addr;
         ap_set_module_config(c->conn_config, &proxy_ftp_module, backend);
+    }
+
+    /*
+     * get all the possible IP addresses for the destname and loop through
+     * them until we get a successful connection
+     */
+    err = ap_proxy_determine_address("FTP", backend, connectname, connectport,
+                                     0, r, r->server);
+    if (APR_SUCCESS != err) {
+        return ftp_proxyerror(r, backend, HTTP_BAD_GATEWAY,
+                              "Error resolving backend address");
+    }
+
+    /* check if ProxyBlock directive on this host */
+    if (OK != ap_proxy_checkproxyblock2(r, conf, connectname, backend->addr)) {
+        return ftp_proxyerror(r, backend, HTTP_FORBIDDEN,
+                              "Connect to remote machine blocked");
     }
 
 
@@ -1188,11 +1153,7 @@ static int proxy_ftp_handler(request_rec *r, proxy_worker *worker,
      * We have determined who to connect to. Now make the connection.
      */
 
-
     if (ap_proxy_connect_backend("FTP", backend, worker, r->server)) {
-        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01039)
-                      "an error occurred creating a new connection to %pI (%s)",
-                      connect_addr, connectname);
         proxy_ftp_cleanup(r, backend);
         return HTTP_SERVICE_UNAVAILABLE;
     }
@@ -1536,7 +1497,8 @@ static int proxy_ftp_handler(request_rec *r, proxy_worker *worker,
                               "PASV contacting host %d.%d.%d.%d:%d",
                               h3, h2, h1, h0, pasvport);
 
-                if ((rv = apr_socket_create(&data_sock, connect_addr->family, SOCK_STREAM, 0, r->pool)) != APR_SUCCESS) {
+                if ((rv = apr_socket_create(&data_sock, backend->addr->family,
+                                            SOCK_STREAM, 0, r->pool)) != APR_SUCCESS) {
                     ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(01045)
                                   "error creating PASV socket");
                     proxy_ftp_cleanup(r, backend);
@@ -1558,7 +1520,14 @@ static int proxy_ftp_handler(request_rec *r, proxy_worker *worker,
                 }
 
                 /* make the connection */
-                apr_sockaddr_info_get(&pasv_addr, apr_psprintf(p, "%d.%d.%d.%d", h3, h2, h1, h0), connect_addr->family, pasvport, 0, p);
+                err = apr_sockaddr_info_get(&pasv_addr, apr_psprintf(p, "%d.%d.%d.%d",
+                                                                     h3, h2, h1, h0),
+                                            backend->addr->family, pasvport, 0, p);
+                if (APR_SUCCESS != err) {
+                    return ftp_proxyerror(r, backend, HTTP_BAD_GATEWAY,
+                                          apr_pstrcat(p, "DNS lookup failure for: ",
+                                                      connectname, NULL));
+                }
                 rv = apr_socket_connect(data_sock, pasv_addr);
                 if (rv != APR_SUCCESS) {
                     ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(01048)
@@ -1581,7 +1550,8 @@ static int proxy_ftp_handler(request_rec *r, proxy_worker *worker,
         apr_port_t local_port;
         unsigned int h0, h1, h2, h3, p0, p1;
 
-        if ((rv = apr_socket_create(&local_sock, connect_addr->family, SOCK_STREAM, 0, r->pool)) != APR_SUCCESS) {
+        if ((rv = apr_socket_create(&local_sock, backend->addr->family,
+                                    SOCK_STREAM, 0, r->pool)) != APR_SUCCESS) {
             ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(01049)
                           "error creating local socket");
             proxy_ftp_cleanup(r, backend);
@@ -1601,7 +1571,12 @@ static int proxy_ftp_handler(request_rec *r, proxy_worker *worker,
 #endif                          /* _OSD_POSIX */
         }
 
-        apr_sockaddr_info_get(&local_addr, local_ip, APR_UNSPEC, local_port, 0, r->pool);
+        err = apr_sockaddr_info_get(&local_addr, local_ip, APR_UNSPEC, local_port, 0, r->pool);
+        if (APR_SUCCESS != err) {
+            return ftp_proxyerror(r, backend, HTTP_BAD_GATEWAY,
+                                  apr_pstrcat(p, "DNS lookup failure for: ",
+                                              connectname, NULL));
+        }
 
         if ((rv = apr_socket_bind(local_sock, local_addr)) != APR_SUCCESS) {
             ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(01051)

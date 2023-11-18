@@ -78,8 +78,8 @@ class TestH2Proxy:
         conf.install()
         assert env.apache_restart() == 0
         url = env.mkurl("https", "cgi", f"/h2proxy/{env.http_port}/hello.py")
-        # httpd 2.5.0 disables reuse, not matter the config
-        if enable_reuse == "on" and not env.httpd_is_at_least("2.5.0"):
+        # httpd 2.4.59 disables reuse, not matter the config
+        if enable_reuse == "on" and not env.httpd_is_at_least("2.4.59"):
             # reuse is not guaranteed for each request, but we expect some
             # to do it and run on a h2 stream id > 1
             reused = False
@@ -132,7 +132,7 @@ class TestH2Proxy:
         assert int(r.json[0]["port"]) == env.http_port
         assert r.response["status"] == 200
         exp_port = env.http_port if enable_reuse == "on" \
-                                    and not env.httpd_is_at_least("2.5.0")\
+                                    and not env.httpd_is_at_least("2.4.59")\
             else env.http_port2
         assert int(r.json[1]["port"]) == exp_port
 
