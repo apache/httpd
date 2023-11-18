@@ -174,10 +174,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   *) mod_proxy: prevent bad busy values and problems with bybusyness
      Trunk version of patch:
        https://svn.apache.org/r1912245
+       https://svn.apache.org/r1913930
         svn merge -c 1912245 ^/httpd/httpd/trunk .
-     +1: jfclere, minfrin
+        svn merge -c 1913930 ^/httpd/httpd/trunk .
+     +1: minfrin, ylavic
      ylavic: +1 with r1913930, we can't provide exported functions w/o an
              ap_[proxy_] prefix.
+     minfrin: r1913930 added, votes reset, mmn bump needed
 
   *) mod_ssl: fix LibreSSL build
      Trunk version of patch:
