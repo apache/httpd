@@ -1605,6 +1605,12 @@ ProxyPass "/mirror/foo" "http://backend.example.com"</pre>
 	    autorisations qui doivent être définies par Apache httpd.</p>
         </div>
     </td></tr>
+    <tr><td><a id="addressttl" name="addressttl">addressttl</a></td>
+        <td>-1</td>
+        <td><p>Durée de vie (TTL) en secondes des résolutions DNS de l'adresse
+	du serveur d'arrière-plan dans le cache.
+        -1 signifie jusqu'au redémarrage de Apache httpd.</p>
+    </td></tr>
 
     </table>
 
@@ -1938,12 +1944,15 @@ les configurations de mandataires inverses</td></tr>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Fait correspondre des serveurs distants dans l'espace d'URL
 du serveur local en utilisant des expressions rationnelles</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ProxyPassMatch [<var>regex</var>] !|<var>url</var>
-[<var>clé=valeur</var>
-	<var>[clé=valeur</var> ...]]</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ProxyPassMatch [<var>regex</var>] !|<var>url</var> [<var>key=value</var>
+	<var>[key=value</var> ...]]</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Depuis la version 2.4.47, les paramètres <var>key=value</var>
+sont pris en compte lorsque le paramètre <var>url</var> contient des références
+arrières (voir note ci-dessous).
+</td></tr>
 </table>
     <p>Cette directive est identique à la directive <code class="directive"><a href="#proxypass">ProxyPass</a></code>, mais fait usage des
     expressions rationnelles, au lieu d'une simple comparaison de
@@ -1965,22 +1974,6 @@ du serveur local en utilisant des expressions rationnelles</td></tr>
     <code>http://example.com/foo/bar.gif</code> en une requête mandatée
     pour <code>http://backend.example.com/foo/bar.gif</code>.</p>
 
-    <div class="note"><h3>Note</h3>
-      <p>L'argument URL doit pouvoir être interprété en tant qu'URL
-      <em>avant</em> les substitutions d'expressions rationnelles (et
-      doit aussi l'être après). Ceci limite les correspondances que vous
-      pouvez utiliser. Par exemple, si l'on avait utilisé</p>
-      <pre class="prettyprint lang-config">        ProxyPassMatch "^(/.*\.gif)$"
-	"http://backend.example.com:8000$1"</pre>
-
-      <p>dans l'exemple précédent, nous aurions provoqué une erreur de
-      syntaxe au démarrage du serveur. C'est une bogue (PR 46665 dans
-      ASF bugzilla), et il est possible de la contourner en reformulant
-      la correspondance :</p>
-      <pre class="prettyprint lang-config">ProxyPassMatch "^/(.*\.gif)$" "http://backend.example.com:8000/$1"</pre>
-
-    </div>
-
     <p>Le drapeau <code>!</code> vous permet de ne pas mandater un
     sous-répertoire donné.</p>
 
@@ -1999,6 +1992,25 @@ du serveur local en utilisant des expressions rationnelles</td></tr>
 	paramètre URL.
  	</p>
  	</div>
+
+    <div class="note">
+        <h3>Paramètres <code>key=value</code> et <var>url</var> avec
+	références arrières</h3>
+      <p>Depuis la version 2.4.47, les paramètres <code>key=value</code> ne sont
+      plus ignorés dans une directive <code class="directive">ProxyPassMatch</code>
+      lorsqu'on utilise une <var>url</var> contenant des références arrières.
+      Cependant, pour conserver le comportement précédent relatif à la
+      réutilisation/conservation des connexions d'arrière-plan (qui n'avaient
+      jamais été réutilisées auparavant pour ces URLs), les paramètres
+      <var>enablereuse</var> et <var>disablereuse</var> prendront dans ce cas
+      respectivement comme valeurs par défaut <code>off</code> et
+      <code>on</code>. Définir explicitement <code>enablereuse=on</code> permet
+      de réutiliser les connexions, <strong>sauf si</strong> des références
+      arrières se trouvent dans la partie <code>authority</code> (nom d'hôte
+      et/ou port) de l'<var>url</var> (cette condition est imposée depuis la
+      version 2.4.55 du serveur HTTP Apache et provoque un avertissement au
+      démarrage car ces URLs ne sont pas réutilisables sous cette forme).</p>
+    </div>
 
     <div class="warning">
       <h3>Avertissement à propos de la sécurité</h3>
@@ -2197,25 +2209,27 @@ et FTP</td></tr>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Mandataire distant à utiliser pour traiter certaines
 requêtes</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ProxyRemote <var>comparaison</var> <var>serveur-distant</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ProxyRemote <var>match</var> <var>remote-server</var> [<var>username:password</var>]</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Le troisième argument facultatif est disponible depuis la version
+2.5.1 du serveur HTTP Apache.</td></tr>
 </table>
     <p>Cette directive permet de définir des mandataires distants pour
-    ce mandataire. <var>comparaison</var> est soit le nom d'un protocole
+    ce mandataire. <var>match</var> est soit le nom d'un protocole
     que supporte le serveur distant, soit une URL partielle pour
     laquelle le serveur distant devra être utilisé, soit <code>*</code>
     pour indiquer que le serveur distant doit être utilisé pour toutes
-    les requêtes. <var>serveur-distant</var> est une URL partielle
+    les requêtes. <var>remote-server</var> est une URL partielle
     correspondant au serveur distant. Syntaxe : </p>
 
     <div class="example"><p><code>
-      <dfn>serveur-distant</dfn> =
-          <var>protocole</var>://<var>nom-serveur</var>[:<var>port</var>]
+      <dfn>remote-server</dfn> =
+          <var>scheme</var>://<var>hostname</var>[:<var>port</var>]
     </code></p></div>
 
-    <p><var>protocole</var> est effectivement le protocole à utiliser
+    <p><var>scheme</var> est effectivement le protocole à utiliser
     pour communiquer avec le serveur distant ; ce module ne supporte que
     <code>http</code> et <code>https</code>. Lorsqu'on utilise
     <code>https</code>, les requêtes sont redirigées par le mandataire
@@ -2234,6 +2248,13 @@ ProxyRemote "ftp" "http://ftpproxy.mydomain:8080"</pre>
     inverse ; un serveur web d'arrière-plan peut être intégré dans
     l'espace d'URL d'un serveur virtuel, même si ce serveur est caché
     par un autre mandataire direct.</p>
+
+    <p>Le troisième argument optionnel <var>username:password</var> permet de
+    spécifier des données d'authentification basiques à transmettre au mandataire
+    distant défini. Ces données d'authentification seront toujoujours envoyées
+    sans attendre que le mandataire distant n'effectue une demande
+    d'authentification. La variable d'environnement <a href="mod_proxy_http.html#env">Proxy-Chain-Auth</a> n'est plus prise en
+    compte si cet argument est utilisé.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
