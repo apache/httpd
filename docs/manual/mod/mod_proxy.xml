@@ -1559,7 +1559,7 @@ ProxyPassMatch "^/(.*\.gif)$" "http://backend.example.com/$1"
       </p>
     </note>
     <note>
-        <title><var><code>key=value</code> Parameters versus <var>url</var> with backreference(s)</title>
+        <title><code>key=value</code> Parameters versus <var>url</var> with backreference(s)</title>
       <p>Since Apache HTTP Server 2.4.47, the <code>key=value</code> Parameters
       are no longer ignored in a <directive>ProxyPassMatch</directive> using
       an <var>url</var> with backreference(s). However to keep the existing
