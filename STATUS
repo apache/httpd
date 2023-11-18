@@ -167,11 +167,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         https://svn.apache.org/r1596108
         https://svn.apache.org/r1745033
      Backport version for 2.4.x of patch:
-        https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/httpd-2.4-ldap-search.patch
-        svn merge -c r1745033 ^/httpd/httpd/trunk .
-     +1: minfrin, jim,
-     jailletc36: r1745033 seems related and should in included
-     minfrin: r1745033 is now included
+        https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/httpd-2.4-ldap-search2.patch
+     +1: minfrin
 
   *) mod_proxy: Allow to set a TTL for how long DNS resolutions to backend
      systems are cached.
