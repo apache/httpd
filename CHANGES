@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.59
 
+  *) mod_ldap: HTML-escape data in the ldap-status handler.
+     [Eric Covener, Chamal De Silva]
+
   *) mod_ssl: Disable the OpenSSL ENGINE API when OPENSSL_NO_ENGINE is set.
      Allow for "SSLCryptoDevice builtin" if the ENGINE API is not available,
      notably with OpenSSL >= 3.  PR 68080.  [ Yann Ylavic, Joe Orton ]

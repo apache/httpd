@@ -153,10 +153,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   *) mod_ldap: HTML-escape data in ldap-status handler
-      trunk patch: http://svn.apache.org/r1913855
-      2.4.x patch  svn merge -c 1913855 ^/httpd/httpd/trunk .
-      +1: covener, minfrin, ylavic
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
