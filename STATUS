@@ -226,12 +226,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       not just PATH.
       trunk patch: http://svn.apache.org/r1811831
       2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/httpd-2.4-mod_env-override.patch
-      +1: minfrin
+      +1: minfrin, ylavic
 
    *) core: Fix use after free warning with gcc -fanalyzer.
       trunk patch: http://svn.apache.org/r1892413
       2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/httpd-2.4-use-after-free.patch
-      +1: minfrin
+      +1: minfrin, ylavic
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
