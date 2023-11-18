@@ -192,7 +192,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    *) mod_ldap: HTML-escape data in ldap-status handler
       trunk patch: http://svn.apache.org/r1913855
       2.4.x patch  svn merge -c 1913855 ^/httpd/httpd/trunk .
-      +1: covener
+      +1: covener, minfrin
+
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
