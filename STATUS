@@ -187,7 +187,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        https://svn.apache.org/r1874101
        https://svn.apache.org/r1913838
        svn merge -c 1874101,1913838 ^/httpd/httpd/trunk .
-     +1: ylavic
+     +1: ylavic, minfrin
      ylavic: changes in ssl_private.h not needed if/after r1908537 is
              backported (below proposal), though they are harmless. See:
              https://lists.apache.org/thread/k924ql8c9ry1b9y94fpr2b0d5o6tmds6
