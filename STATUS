@@ -153,13 +153,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_ssl: release memory to the OS when needed
-     Trunk version of patch:
-       https://svn.apache.org/r1898410
-       https://svn.apache.org/r1898366
-        svn merge -c 1898366 ^/httpd/httpd/trunk .
-        svn merge -c 1898410 ^/httpd/httpd/trunk .
-     +1: gbechis, ylavic, jorton
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:

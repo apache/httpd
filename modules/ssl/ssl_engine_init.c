@@ -1765,6 +1765,7 @@ static apr_status_t ssl_init_proxy_certs(server_rec *s,
         ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(02208)
                      "SSL proxy client cert initialization failed");
         ssl_log_ssl_error(SSLLOG_MARK, APLOG_EMERG, s);
+        sk_X509_INFO_free(sk);
         return ssl_die(s);
     }
 
@@ -1774,7 +1775,11 @@ static apr_status_t ssl_init_proxy_certs(server_rec *s,
         int i;
 
         X509_INFO *inf = sk_X509_INFO_value(pkp->certs, n);
-        X509_STORE_CTX_init(sctx, store, inf->x509, NULL);
+        if (!X509_STORE_CTX_init(sctx, store, inf->x509, NULL)) {
+            sk_X509_INFO_free(sk);
+            X509_STORE_CTX_free(sctx);
+            return ssl_die(s);
+        }
 
         /* Attempt to verify the client cert */
         if (X509_verify_cert(sctx) != 1) {

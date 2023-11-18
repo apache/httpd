@@ -1,6 +1,8 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.59
 
+  *) mod_ssl: release memory to the OS when needed. [Giovanni Bechis]
+
   *) mod_proxy: Ignore (and warn about) enablereuse=on for ProxyPassMatch when
      some dollar substitution (backreference) happens in the hostname or port
      part of the URL.  [Yann Ylavic]

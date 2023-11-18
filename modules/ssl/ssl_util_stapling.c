@@ -117,8 +117,10 @@ static X509 *stapling_get_issuer(modssl_ctx_t *mctx, X509 *x)
     }
 
     inctx = X509_STORE_CTX_new();
-    if (!X509_STORE_CTX_init(inctx, st, NULL, NULL))
+    if (!X509_STORE_CTX_init(inctx, st, NULL, NULL)) {
+        X509_STORE_CTX_free(inctx);
         return 0;
+    }
     if (X509_STORE_CTX_get1_issuer(&issuer, inctx, x) <= 0)
         issuer = NULL;
     X509_STORE_CTX_cleanup(inctx);
