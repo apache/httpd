@@ -199,6 +199,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/httpd-2.4-warnings-be-gone.patch
       +1: minfrin
 
+   *) Add support for SHA-2 crypt() algorithm in htpasswd.
+      trunk patch: http://svn.apache.org/r1861793
+                   http://svn.apache.org/r1862612
+      2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/httpd-2.4-htpasswd-SHA-2-crypt.patch
+      +1: minfrin
+
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
