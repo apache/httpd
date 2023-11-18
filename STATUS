@@ -176,18 +176,17 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        https://svn.apache.org/r1912245
         svn merge -c 1912245 ^/httpd/httpd/trunk .
      +1: jfclere, minfrin
+     ylavic: +1 with r1913930, we can't provide exported functions w/o an
+             ap_[proxy_] prefix.
 
   *) mod_ssl: fix LibreSSL build
      Trunk version of patch:
        https://svn.apache.org/r1874101
-        svn merge -c 1874101 ^/httpd/httpd/trunk .
-     +1: gbechis, ylavic
-     ylavic: changes in ssl_private.h not needed if/after r1908537 is
-             backported (below proposal), though they are harmless. See:
-             https://lists.apache.org/thread/k924ql8c9ry1b9y94fpr2b0d5o6tmds6
-             I'd suggest adding r1913838 here if both proposals can be merged
-             at the same time..
+       https://svn.apache.org/r1913838
+       svn merge -c 1874101,1913838 ^/httpd/httpd/trunk .
+     +1: ylavic
      minfrin: r1908537 is backported, can you update this proposal clean?
+     ylavic: done, votes reset
 
    *) mod_ldap: HTML-escape data in ldap-status handler
       trunk patch: http://svn.apache.org/r1913855
