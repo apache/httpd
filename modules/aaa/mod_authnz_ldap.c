@@ -1412,6 +1412,8 @@ static authz_status ldapsearch_check_authorization(request_rec *r,
                                                    const void *parsed_require_args)
 {
     int result = 0;
+    authn_ldap_request_t *req =
+        (authn_ldap_request_t *)ap_get_module_config(r->request_config, &authnz_ldap_module);
     authn_ldap_config_t *sec =
         (authn_ldap_config_t *)ap_get_module_config(r->per_dir_config, &authnz_ldap_module);
 
@@ -1461,6 +1463,7 @@ static authz_status ldapsearch_check_authorization(request_rec *r,
             ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02631)
                           "auth_ldap authorize: require ldap-search: "
                           "authorization successful");
+            set_request_vars(r, LDAP_AUTHZ, req->vals);
             return AUTHZ_GRANTED;
         }
         else {
