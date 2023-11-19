@@ -1429,12 +1429,40 @@ static authz_status ldapsearch_check_authorization(request_rec *r,
         return AUTHZ_DENIED;
     }
 
-    if (sec->host) {
+    if (!sec->host) {
+        ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(01738)
+                      "auth_ldap authorize: no sec->host - weird...?");
+        return AUTHZ_DENIED;
+    }
+
+    /*
+     * If we have been authenticated by some other module than mod_auth_ldap,
+     * the req structure needed for authorization needs to be created
+     * and populated with the userid and DN of the account in LDAP
+     */
+
+    if (!*r->user) {
+        ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(01739)
+            "ldap authorize: Userid is blank, AuthType=%s",
+            r->ap_auth_type);
+    }
+
+    if (!req) {
+        authz_status rv = AUTHZ_DENIED;
+        req = build_request_config(r);
         ldc = get_connection_for_authz(r, LDAP_SEARCH);
+        if (AUTHZ_GRANTED != (rv = get_dn_for_nonldap_authn(r, ldc))) {
+            return rv;
+        }
     }
     else {
-        ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(02636)
-                      "auth_ldap authorize: no sec->host - weird...?");
+        ldc = get_connection_for_authz(r, LDAP_SEARCH);
+    }
+
+    if (req->dn == NULL || !*req->dn) {
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01742)
+                      "auth_ldap authorize: require ldap-filter: user's DN "
+                      "has not been defined; failing authorization");
         return AUTHZ_DENIED;
     }
 
