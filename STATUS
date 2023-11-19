@@ -167,8 +167,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         https://svn.apache.org/r1591012
         https://svn.apache.org/r1596108
         https://svn.apache.org/r1745033
+        https://svn.apache.org/r1913958
+        https://svn.apache.org/r1913959
      Backport version for 2.4.x of patch:
-        https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/httpd-2.4-ldap-search2.patch
+        https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/httpd-2.4-ldap-search3.patch
      +1: minfrin
 
   *) mod_proxy: prevent bad busy values and problems with bybusyness
