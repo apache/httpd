@@ -206,7 +206,7 @@ static const char* authn_ldap_xlate_password(request_rec *r,
  * search filter will be (&(posixid=*)(uid=userj)).
  */
 #define FILTER_LENGTH MAX_STRING_LEN
-static apr_status_t authn_ldap_build_filter(char *filtbuf,
+static apr_status_t authn_ldap_build_filter(char filtbuf[FILTER_LENGTH],
                              request_rec *r,
                              const char *user,
                              const char *filter,
@@ -219,6 +219,7 @@ static apr_status_t authn_ldap_build_filter(char *filtbuf,
     apr_size_t outbytes;
     char *outbuf;
     int nofilter = 0, len;
+    apr_status_t rv = APR_SUCCESS;
 
     if (!filter) {
         filter = sec->filter;
@@ -244,7 +245,7 @@ static apr_status_t authn_ldap_build_filter(char *filtbuf,
      * config-supplied portions.
      */
 
-    if ((nofilter = (filter && !strcasecmp(filter, "none")))) { 
+    if ((nofilter = (!filter || !*filter || !strcasecmp(filter, "none")))) { 
         len = apr_snprintf(filtbuf, FILTER_LENGTH, "(%s=", sec->attribute);
     }
     else { 
@@ -256,12 +257,13 @@ static apr_status_t authn_ldap_build_filter(char *filtbuf,
      * LDAP filter metachars are escaped.
      */
     filtbuf_end = filtbuf + FILTER_LENGTH - 1;
-#if APR_HAS_MICROSOFT_LDAPSDK
-    for (p = user, q=filtbuf + len;
-         *p && q < filtbuf_end; ) {
+    for (p = user, q = filtbuf + len; *p; ) {
         if (strchr("*()\\", *p) != NULL) {
-            if ( q + 3 >= filtbuf_end)
-              break;  /* Don't write part of escape sequence if we can't write all of it */
+#if APR_HAS_MICROSOFT_LDAPSDK
+            if (q + 3 >= filtbuf_end) { /* accounts for final \0 */
+                rv = APR_EGENERAL;
+                goto out;
+            }
             *q++ = '\\';
             switch ( *p++ )
             {
@@ -281,23 +283,24 @@ static apr_status_t authn_ldap_build_filter(char *filtbuf,
                 *q++ = '5';
                 *q++ = 'c';
                 break;
-                        }
-        }
-        else
-            *q++ = *p++;
-    }
-#else
-    for (p = user, q=filtbuf + len;
-         *p && q < filtbuf_end; *q++ = *p++) {
-        if (strchr("*()\\", *p) != NULL) {
-            *q++ = '\\';
-            if (q >= filtbuf_end) {
-              break;
             }
+#else
+            if (q + 2 >= filtbuf_end) { /* accounts for final \0 */
+                rv = APR_EGENERAL;
+                goto out;
+            }
+            *q++ = '\\';
+            *q++ = *p++;
+#endif
+        }
+        else {
+            if (q + 1 >= filtbuf_end) { /* accounts for final \0 */
+                rv = APR_EGENERAL;
+                goto out;
+            }
+            *q++ = *p++;
         }
     }
-#endif
-    *q = '\0';
 
     /*
      * Append the closing parens of the filter, unless doing so would
@@ -305,23 +308,24 @@ static apr_status_t authn_ldap_build_filter(char *filtbuf,
      */
 
     if (nofilter) { 
-        if (q + 1 <= filtbuf_end) {
-            strcat(filtbuf, ")");
+        if (q + 1 >= filtbuf_end) { /* accounts for final \0 */
+            rv = APR_EGENERAL;
+            goto out;
         }
-        else {
-            return APR_EGENERAL;
-        }
+        *q++ = ')';
     } 
     else { 
-        if (q + 2 <= filtbuf_end) {
-            strcat(filtbuf, "))");
+        if (q + 2 >= filtbuf_end) { /* accounts for final \0 */
+            rv = APR_EGENERAL;
+            goto out;
         }
-        else {
-            return APR_EGENERAL;
-        }
+        *q++ = ')';
+        *q++ = ')';
     }
 
-    return APR_SUCCESS;
+out:
+    *q = '\0';
+    return rv;
 }
 
 static void *create_authnz_ldap_dir_config(apr_pool_t *p, char *d)
