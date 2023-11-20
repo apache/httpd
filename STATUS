@@ -212,9 +212,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                    http://svn.apache.org/r1862724
                    http://svn.apache.org/r1907672
       2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/httpd-2.4-htpasswd-SHA-2-crypt-2.patch
-      +1: minfrin
+      +1: minfrin, ylavic
       -1: jorton without r1877251, wants r1862724 and maybe r1907672 too?
-      ylavic: indeed, my +1 back when these 3 are in
+      ylavic: done
 
    *) Add CGIScriptTimeout to mod_cgi.
       trunk patch: http://svn.apache.org/r1828172
