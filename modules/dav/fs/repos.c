@@ -35,6 +35,7 @@
 #include "mod_dav.h"
 #include "repos.h"
 
+APLOG_USE_MODULE(dav_fs);
 
 /* to assist in debugging mod_dav's GET handling */
 #define DEBUG_GET_HANDLER       0
@@ -1586,6 +1587,19 @@ static dav_error * dav_fs_walker(dav_fs_walker_context *fsctx, int depth)
         status = apr_stat(&fsctx->info1.finfo, fsctx->path1.buf,
                           DAV_FINFO_MASK, pool);
         if (status != APR_SUCCESS && status != APR_INCOMPLETE) {
+            dav_resource_private *ctx = params->root->info;
+
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, status, ctx->r,
+                          APLOGNO(10472) "could not access file (%s) during directory walk",
+                          fsctx->path1.buf);
+
+            /* If being tolerant, ignore failure due to losing a race
+             * with some other process deleting files out from under
+             * the directory walk. */
+            if ((params->walk_type & DAV_WALKTYPE_TOLERANT)
+                && APR_STATUS_IS_ENOENT(status)) {
+                continue;
+            }
             /* woah! where'd it go? */
             /* ### should have a better error here */
             err = dav_new_error(pool, HTTP_NOT_FOUND, 0, status, NULL);

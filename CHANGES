@@ -1,6 +1,11 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.59
 
+  *) Allow mod_dav_fs to tolerate race conditions between PROPFIND and an
+     operation which removes a directory/file between apr_dir_read() and
+     apr_stat(). Current behaviour is to abort the connection which seems
+     inferior to tolerating (and logging) the error. [Joe Orton]
+
   *) mod_ldap: HTML-escape data in the ldap-status handler.
      [Eric Covener, Chamal De Silva]
 

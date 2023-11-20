@@ -1823,6 +1823,7 @@ typedef struct
 #define DAV_WALKTYPE_AUTH       0x0001  /* limit to authorized files */
 #define DAV_WALKTYPE_NORMAL     0x0002  /* walk normal files */
 #define DAV_WALKTYPE_LOCKNULL   0x0004  /* walk locknull resources */
+#define DAV_WALKTYPE_TOLERANT   0x0008  /* tolerate non-fatal errors */
 
     /* callback function and a client context for the walk */
     dav_error * (*func)(dav_walk_resource *wres, int calltype);

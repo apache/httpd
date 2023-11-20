@@ -2217,7 +2217,7 @@ static int dav_method_propfind(request_rec *r)
         return HTTP_BAD_REQUEST;
     }
 
-    ctx.w.walk_type = DAV_WALKTYPE_NORMAL | DAV_WALKTYPE_AUTH;
+    ctx.w.walk_type = DAV_WALKTYPE_NORMAL | DAV_WALKTYPE_AUTH | DAV_WALKTYPE_TOLERANT;
     ctx.w.func = dav_propfind_walker;
     ctx.w.walk_ctx = &ctx;
     ctx.w.pool = r->pool;
