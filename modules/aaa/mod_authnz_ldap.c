@@ -1430,7 +1430,7 @@ static authz_status ldapsearch_check_authorization(request_rec *r,
     }
 
     if (!sec->host) {
-        ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(01738)
+        ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(10486)
                       "auth_ldap authorize: no sec->host - weird...?");
         return AUTHZ_DENIED;
     }
@@ -1442,7 +1442,7 @@ static authz_status ldapsearch_check_authorization(request_rec *r,
      */
 
     if (!*r->user) {
-        ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(01739)
+        ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(10487)
             "ldap authorize: Userid is blank, AuthType=%s",
             r->ap_auth_type);
     }
@@ -1460,7 +1460,7 @@ static authz_status ldapsearch_check_authorization(request_rec *r,
     }
 
     if (req->dn == NULL || !*req->dn) {
-        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01742)
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02636)
                       "auth_ldap authorize: require ldap-filter: user's DN "
                       "has not been defined; failing authorization");
         return AUTHZ_DENIED;
