@@ -1,6 +1,8 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.59
 
+  *) core: Fix use after free warning with gcc -fanalyzer. [Joe Orton]
+
   *) Allow mod_dav_fs to tolerate race conditions between PROPFIND and an
      operation which removes a directory/file between apr_dir_read() and
      apr_stat(). Current behaviour is to abort the connection which seems

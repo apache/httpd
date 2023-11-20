@@ -153,10 +153,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   *) core: Fix use after free warning with gcc -fanalyzer.
-      trunk patch: http://svn.apache.org/r1892413
-      2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/httpd-2.4-use-after-free.patch
-      +1: minfrin, ylavic, jorton
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
