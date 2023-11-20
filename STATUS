@@ -153,6 +153,18 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+   *) Allow mod_dav_fs to tolerate race conditions between PROPFIND and an
+      operation which removes a directory/file between apr_dir_read() and
+      apr_stat(). Current behaviour is to abort the connection which seems
+      inferior to tolerating (and logging) the error.
+      trunk patch: http://svn.apache.org/r1910811
+      2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/httpd-2.4-dav-tolerant.patch
+      +1: minfrin, ylavic, jorton
+
+   *) core: Fix use after free warning with gcc -fanalyzer.
+      trunk patch: http://svn.apache.org/r1892413
+      2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/httpd-2.4-use-after-free.patch
+      +1: minfrin, ylavic, jorton
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
@@ -218,24 +230,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/httpd-2.4-add-CGIScriptTimeout.patch
       +1: minfrin, ylavic
 
-   *) Allow mod_dav_fs to tolerate race conditions between PROPFIND and an
-      operation which removes a directory/file between apr_dir_read() and
-      apr_stat(). Current behaviour is to abort the connection which seems
-      inferior to tolerating (and logging) the error.
-      trunk patch: http://svn.apache.org/r1910811
-      2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/httpd-2.4-dav-tolerant.patch
-      +1: minfrin, ylavic, jorton
-
    *) core: Allow mod_env to override all system path environment variables,
       not just PATH.
       trunk patch: http://svn.apache.org/r1811831
       2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/httpd-2.4-mod_env-override.patch
       +1: minfrin, ylavic
-
-   *) core: Fix use after free warning with gcc -fanalyzer.
-      trunk patch: http://svn.apache.org/r1892413
-      2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/httpd-2.4-use-after-free.patch
-      +1: minfrin, ylavic, jorton
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
