@@ -1441,12 +1441,6 @@ static authz_status ldapsearch_check_authorization(request_rec *r,
      * and populated with the userid and DN of the account in LDAP
      */
 
-    if (!*r->user) {
-        ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(10487)
-            "ldap authorize: Userid is blank, AuthType=%s",
-            r->ap_auth_type);
-    }
-
     if (!req) {
         authz_status rv = AUTHZ_DENIED;
         req = build_request_config(r);
