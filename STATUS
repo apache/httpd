@@ -210,6 +210,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                    http://svn.apache.org/r1862612
       2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/httpd-2.4-htpasswd-SHA-2-crypt.patch
       +1: minfrin, ylavic
+      -1: jorton without r1877251, wants r1862724 and maybe r1907672 too?
 
    *) Add CGIScriptTimeout to mod_cgi.
       trunk patch: http://svn.apache.org/r1828172
@@ -222,7 +223,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       inferior to tolerating (and logging) the error.
       trunk patch: http://svn.apache.org/r1910811
       2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/httpd-2.4-dav-tolerant.patch
-      +1: minfrin, ylavic
+      +1: minfrin, ylavic, jorton
 
    *) core: Allow mod_env to override all system path environment variables,
       not just PATH.
@@ -233,7 +234,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    *) core: Fix use after free warning with gcc -fanalyzer.
       trunk patch: http://svn.apache.org/r1892413
       2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/httpd-2.4-use-after-free.patch
-      +1: minfrin, ylavic
+      +1: minfrin, ylavic, jorton
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
