@@ -227,6 +227,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/httpd-2.4-mod_env-override.patch
       +1: minfrin, ylavic
 
+   *) mod_xml2enc: tolerate libxml2 2.12.0
+        https://github.com/apache/httpd/pull/393
+      trunk patch: http://svn.apache.org/viewvc?rev=1914013
+      2.4.x patch: svn merge -c 1914013 ^/httpd/httpd/trunk .
+      +1: covener
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
