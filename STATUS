@@ -233,6 +233,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       2.4.x patch: svn merge -c 1914013 ^/httpd/httpd/trunk .
       +1: covener, minfrin
 
+   *) mod_ldap: Add a hint to install the apr_ldap module on init failure.
+      trunk patch: http://svn.apache.org/r1914038
+      2.4.x patch: svn merge -c r1914038 ^/httpd/httpd/trunk .
+      +1: minfrin
+
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
