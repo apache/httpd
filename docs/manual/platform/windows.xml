@@ -64,7 +64,6 @@
     <p>Popular options for deploying Apache httpd, and, optionally, PHP
     and MySQL, on Microsoft Windows, include:</p>
     <ul>
-    <li><a href="http://www.apachehaus.com/cgi-bin/download.plx">ApacheHaus</a></li>
     <li><a href="http://www.apachelounge.com/download/">Apache Lounge</a></li>
     <li><a href="http://bitnami.com/stack/wamp">Bitnami WAMP Stack</a></li>
     <li><a href="http://www.wampserver.com/">WampServer</a></li>
