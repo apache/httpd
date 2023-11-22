@@ -76,7 +76,6 @@
     <p>Popular options for deploying Apache httpd, and, optionally, PHP
     and MySQL, on Microsoft Windows, include:</p>
     <ul>
-    <li><a href="http://www.apachehaus.com/cgi-bin/download.plx">ApacheHaus</a></li>
     <li><a href="http://www.apachelounge.com/download/">Apache Lounge</a></li>
     <li><a href="http://bitnami.com/stack/wamp">Bitnami WAMP Stack</a></li>
     <li><a href="http://www.wampserver.com/">WampServer</a></li>
@@ -92,6 +91,13 @@
     version, but there are a few different directives for Apache on
     Windows. See the <a href="../mod/directives.html">directive index</a>
     for all the available directives.</p>
+
+    <p>The default configuration of the source distribution expects the server
+    to be installed into \Apache24. This can be customized at compilation time,
+    but it's important that ultimately the <code class="directive">ServerRoot</code> in
+    httpd.conf match the actual installation root. Binary distributions may
+    customize either the default installation root or the overall layout of
+    the initial configuration.</p>
 
     <p>The main differences in Apache for Windows are:</p>
     <ul>

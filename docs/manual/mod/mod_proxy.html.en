@@ -1425,6 +1425,11 @@ ProxyPass "/mirror/foo" "http://backend.example.com"</pre>
             interfering with the authorizations that are to be enforced in by the Apache httpd.</p>
         </div>
     </td></tr>
+    <tr><td><a id="addressttl" name="addressttl">addressttl</a></td>
+        <td>-1</td>
+        <td><p>TTL in seconds for how long DNS resolutions of the backend address are cached.
+        -1 means until restart of Apache httpd.</p>
+    </td></tr>
 
     </table>
 
@@ -1699,6 +1704,9 @@ ProxyPassReverse  "/mirror/foo/" "https://backend.example.com/"</pre>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Since 2.4.47 the <var>key=value</var> Parameters are honored
+when the <var>url</var> parameter contains backreference(s) (see note below).
+</td></tr>
 </table>
     <p>This directive is equivalent to <code class="directive"><a href="#proxypass">ProxyPass</a></code>
        but makes use of regular expressions instead of simple prefix matching. The
@@ -1718,18 +1726,7 @@ ProxyPassReverse  "/mirror/foo/" "https://backend.example.com/"</pre>
     <p>will cause a local request for
     <code>http://example.com/foo/bar.gif</code> to be internally converted
     into a proxy request to <code>http://backend.example.com/foo/bar.gif</code>.</p>
-    <div class="note"><h3>Note</h3>
-      <p>The URL argument must be parsable as a URL <em>before</em> regexp
-      substitutions (as well as after).  This limits the matches you can use.
-      For instance, if we had used</p>
-      <pre class="prettyprint lang-config">ProxyPassMatch "^(/.*\.gif)$" "http://backend.example.com:8000$1"</pre>
 
-      <p>in our previous example, it would fail with a syntax error
-      at server startup.  This is a bug (PR 46665 in the ASF bugzilla),
-      and the workaround is to reformulate the match:</p>
-      <pre class="prettyprint lang-config">ProxyPassMatch "^/(.*\.gif)$" "http://backend.example.com:8000/$1"</pre>
-
-    </div>
     <p>The <code>!</code> directive is useful in situations where you don't want
     to reverse-proxy a subdirectory.</p>
 
@@ -1745,6 +1742,20 @@ ProxyPassReverse  "/mirror/foo/" "https://backend.example.com/"</pre>
       <p>When the URL parameter doesn't use any backreferences into the regular
       expression, the original URL will be appended to the URL parameter.
       </p>
+    </div>
+    <div class="note">
+        <h3><code>key=value</code> Parameters versus <var>url</var> with backreference(s)</h3>
+      <p>Since Apache HTTP Server 2.4.47, the <code>key=value</code> Parameters
+      are no longer ignored in a <code class="directive">ProxyPassMatch</code> using
+      an <var>url</var> with backreference(s). However to keep the existing
+      behavior regarding reuse/keepalive of backend connections (which were
+      never reused before for these URLs), the parameter <var>enablereuse</var>
+      (or <var>disablereuse</var>) default to <code>off</code> (resp. <code>on</code>)
+      in this case. Setting <code>enablereuse=on</code> explicitely allows to
+      reuse connections <strong>unless</strong> some backreference(s) belong in
+      the <code>authority</code> part (hostname and/or port) of the <var>url</var>
+      (this condition is enforced since Apache HTTP Server 2.4.55, and produces
+      a warning at startup because these URLs are not reusable per se).</p>
     </div>
 
     <div class="warning">
@@ -1924,10 +1935,11 @@ connections</td></tr>
 <div class="directive-section"><h2><a name="ProxyRemote" id="ProxyRemote">ProxyRemote</a> <a name="proxyremote" id="proxyremote">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Remote proxy used to handle certain requests</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ProxyRemote <var>match</var> <var>remote-server</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ProxyRemote <var>match</var> <var>remote-server</var> [<var>username:password</var>]</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>The optional third argument is usable only in httpd 2.5.1 and later.</td></tr>
 </table>
     <p>This defines remote proxies to this proxy. <var>match</var> is either the
     name of a URL-scheme that the remote server supports, or a partial URL
@@ -1957,6 +1969,14 @@ ProxyRemote "ftp" "http://ftpproxy.mydomain:8080"</pre>
     <p>This option also supports reverse proxy configuration; a backend
     webserver can be embedded within a virtualhost URL space even if that
     server is hidden by another forward proxy.</p>
+
+    <p>An optional third argument <var>username:password</var> may be
+    given, which defines the Basic authentication credentials to pass
+    to the configured remote proxy.  The credentials will always be
+    sent without first waiting for the remote proxy to send a Basic
+    authentication challenge.  The <a href="mod_proxy_http.html#env">Proxy-Chain-Auth</a> environment
+    variable has no effect if this argument is used.</p>
+
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
