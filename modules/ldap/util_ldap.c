@@ -379,7 +379,7 @@ static int uldap_connection_init(request_rec *r,
         /* something really bad happened */
         ldc->bound = 0;
         if (NULL == ldc->reason) {
-            ldc->reason = "LDAP: ldap initialization failed";
+            ldc->reason = "LDAP: ldap initialization failed. Make sure the apr_ldap module is installed.";
         }
         return(APR_EGENERAL);
     }
