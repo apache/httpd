@@ -767,32 +767,27 @@ static authz_status ldapuser_check_authorization(request_rec *r,
         return AUTHZ_DENIED;
     }
 
-    if (!req) {
-        authz_status rv = AUTHZ_DENIED;
-        req = build_request_config(r);
-        ldc = get_connection_for_authz(r, LDAP_COMPARE);
-        if (AUTHZ_GRANTED != (rv = get_dn_for_nonldap_authn(r, ldc))) { 
-            return rv;
-        }
-    }
-    else { 
-        ldc = get_connection_for_authz(r, LDAP_COMPARE);
-    }
-
-
     /*
      * If we have been authenticated by some other module than mod_authnz_ldap,
      * the req structure needed for authorization needs to be created
      * and populated with the userid and DN of the account in LDAP
      */
-
-
-    if (!*r->user) {
-        ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(01699)
-            "ldap authorize: Userid is blank, AuthType=%s",
-            r->ap_auth_type);
+    if (!req) {
+        req = build_request_config(r);
     }
-
+    ldc = get_connection_for_authz(r, LDAP_COMPARE);
+    if (!req->dn) {
+        authz_status rv;
+        if (!*r->user) {
+            ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(01699)
+                          "ldap authorize: Userid is blank, AuthType=%s",
+                          r->ap_auth_type);
+        }
+        rv = get_dn_for_nonldap_authn(r, ldc);
+        if (rv != AUTHZ_GRANTED) {
+            return rv;
+        }
+    }
     if (req->dn == NULL || !*req->dn) {
         ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01702)
                       "auth_ldap authorize: require user: user's DN has not "
@@ -895,16 +890,26 @@ static authz_status ldapgroup_check_authorization(request_rec *r,
         return AUTHZ_DENIED;
     }
 
+    /*
+     * If we have been authenticated by some other module than mod_authnz_ldap,
+     * the req structure needed for authorization needs to be created
+     * and populated with the userid and DN of the account in LDAP
+     */
     if (!req) {
-        authz_status rv = AUTHZ_DENIED;
         req = build_request_config(r);
-        ldc = get_connection_for_authz(r, LDAP_COMPARE);
-        if (AUTHZ_GRANTED != (rv = get_dn_for_nonldap_authn(r, ldc))) {
+    }
+    ldc = get_connection_for_authz(r, LDAP_COMPARE);
+    if (!req->dn) {
+        authz_status rv;
+        if (!*r->user) {
+            ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(01699)
+                          "ldap authorize: Userid is blank, AuthType=%s",
+                          r->ap_auth_type);
+        }
+        rv = get_dn_for_nonldap_authn(r, ldc);
+        if (rv != AUTHZ_GRANTED) {
             return rv;
         }
-    }
-    else { 
-        ldc = get_connection_for_authz(r, LDAP_COMPARE);
     }
 
     /*
@@ -1101,23 +1106,21 @@ static authz_status ldapdn_check_authorization(request_rec *r,
      * the req structure needed for authorization needs to be created
      * and populated with the userid and DN of the account in LDAP
      */
-
-    if (!*r->user) {
-        ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(01722)
-            "ldap authorize: Userid is blank, AuthType=%s",
-            r->ap_auth_type);
-    }
-
     if (!req) {
-        authz_status rv = AUTHZ_DENIED;
         req = build_request_config(r);
-        ldc = get_connection_for_authz(r, LDAP_SEARCH); /* comparedn is a search */
-        if (AUTHZ_GRANTED != (rv = get_dn_for_nonldap_authn(r, ldc))) {
+    }
+    ldc = get_connection_for_authz(r, LDAP_SEARCH); /* comparedn is a search */
+    if (!req->dn) {
+        authz_status rv;
+        if (!*r->user) {
+            ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(01722)
+                          "ldap authorize: Userid is blank, AuthType=%s",
+                          r->ap_auth_type);
+        }
+        rv = get_dn_for_nonldap_authn(r, ldc);
+        if (rv != AUTHZ_GRANTED) {
             return rv;
         }
-    }
-    else { 
-        ldc = get_connection_for_authz(r, LDAP_SEARCH); /* comparedn is a search */
     }
 
     require = ap_expr_str_exec(r, expr, &err);
@@ -1201,25 +1204,22 @@ static authz_status ldapattribute_check_authorization(request_rec *r,
      * the req structure needed for authorization needs to be created
      * and populated with the userid and DN of the account in LDAP
      */
-
-    if (!*r->user) {
-        ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(01730)
-            "ldap authorize: Userid is blank, AuthType=%s",
-            r->ap_auth_type);
-    }
-
     if (!req) {
-        authz_status rv = AUTHZ_DENIED;
         req = build_request_config(r);
-        ldc = get_connection_for_authz(r, LDAP_COMPARE);
-        if (AUTHZ_GRANTED != (rv = get_dn_for_nonldap_authn(r, ldc))) {
+    }
+    ldc = get_connection_for_authz(r, LDAP_COMPARE);
+    if (!req->dn) {
+        authz_status rv;
+        if (!*r->user) {
+            ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(01730)
+                          "ldap authorize: Userid is blank, AuthType=%s",
+                          r->ap_auth_type);
+        }
+        rv = get_dn_for_nonldap_authn(r, ldc);
+        if (rv != AUTHZ_GRANTED) {
             return rv;
         }
     }
-    else { 
-        ldc = get_connection_for_authz(r, LDAP_COMPARE);
-    }
-
     if (req->dn == NULL || !*req->dn) {
         ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01733)
                       "auth_ldap authorize: require ldap-attribute: user's DN "
@@ -1310,25 +1310,22 @@ static authz_status ldapfilter_check_authorization(request_rec *r,
      * the req structure needed for authorization needs to be created
      * and populated with the userid and DN of the account in LDAP
      */
-
-    if (!*r->user) {
-        ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(01739)
-            "ldap authorize: Userid is blank, AuthType=%s",
-            r->ap_auth_type);
-    }
-
     if (!req) {
-        authz_status rv = AUTHZ_DENIED;
         req = build_request_config(r);
-        ldc = get_connection_for_authz(r, LDAP_SEARCH);
-        if (AUTHZ_GRANTED != (rv = get_dn_for_nonldap_authn(r, ldc))) {
+    }
+    ldc = get_connection_for_authz(r, LDAP_SEARCH);
+    if (!req->dn) {
+        authz_status rv;
+        if (!*r->user) {
+            ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(01739)
+                          "ldap authorize: Userid is blank, AuthType=%s",
+                          r->ap_auth_type);
+        }
+        rv = get_dn_for_nonldap_authn(r, ldc);
+        if (rv != AUTHZ_GRANTED) {
             return rv;
         }
     }
-    else { 
-        ldc = get_connection_for_authz(r, LDAP_SEARCH);
-    }
-
     if (req->dn == NULL || !*req->dn) {
         ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01742)
                       "auth_ldap authorize: require ldap-filter: user's DN "
@@ -1440,24 +1437,27 @@ static authz_status ldapsearch_check_authorization(request_rec *r,
      * the req structure needed for authorization needs to be created
      * and populated with the userid and DN of the account in LDAP
      */
-
     if (!req) {
-        authz_status rv = AUTHZ_DENIED;
         req = build_request_config(r);
-        ldc = get_connection_for_authz(r, LDAP_SEARCH);
-        if (AUTHZ_GRANTED != (rv = get_dn_for_nonldap_authn(r, ldc))) {
+    }
+    ldc = get_connection_for_authz(r, LDAP_SEARCH);
+    if (!req->dn && r->user) {
+        authz_status rv;
+        if (!*r->user) {
+            ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(10487)
+                          "ldap authorize: Userid is blank, AuthType=%s",
+                          r->ap_auth_type);
+        }
+        rv = get_dn_for_nonldap_authn(r, ldc);
+        if (rv != AUTHZ_GRANTED) {
             return rv;
         }
-    }
-    else {
-        ldc = get_connection_for_authz(r, LDAP_SEARCH);
-    }
-
-    if (req->dn == NULL || !*req->dn) {
-        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02636)
-                      "auth_ldap authorize: require ldap-filter: user's DN "
-                      "has not been defined; failing authorization");
-        return AUTHZ_DENIED;
+        if (req->dn == NULL || !*req->dn) {
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02636)
+                          "auth_ldap authorize: require ldap-search: user's DN "
+                          "has not been defined; failing authorization");
+            return AUTHZ_DENIED;
+        }
     }
 
     require = ap_expr_str_exec(r, expr, &err);
