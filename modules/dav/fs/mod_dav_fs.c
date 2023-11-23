@@ -14,13 +14,16 @@
  * limitations under the License.
  */
 
-#include "httpd.h"
-#include "http_config.h"
-#include "http_request.h"
-#include "apr_strings.h"
 #if !defined(_MSC_VER) && !defined(NETWARE)
 #include "ap_config_auto.h"
 #endif
+
+#include "httpd.h"
+#include "http_config.h"
+#include "http_core.h"
+#include "http_log.h"
+#include "http_request.h"
+#include "apr_strings.h"
 
 #include "mod_dav.h"
 #include "repos.h"
@@ -31,12 +34,6 @@ typedef struct {
     apr_off_t quota;
 } dav_fs_dir_conf;
 
-/* per-server configuration */
-typedef struct {
-    const char *lockdb_path;
-    const char *lockdb_type;
-} dav_fs_server_conf;
-
 extern module AP_MODULE_DECLARE_DATA dav_fs_module;
 
 #ifndef DEFAULT_DAV_LOCKDB
@@ -46,16 +43,13 @@ extern module AP_MODULE_DECLARE_DATA dav_fs_module;
 #define DEFAULT_DAV_LOCKDB_TYPE "default"
 #endif
 
+static const char dav_fs_mutexid[] = "dav_fs-lockdb";
 
-const char *dav_get_lockdb_path(const request_rec *r, const char **dbmtype)
+static apr_global_mutex_t *dav_fs_lockdb_mutex;
+
+const dav_fs_server_conf *dav_fs_get_server_conf(const request_rec *r)
 {
-    dav_fs_server_conf *conf;
-
-    conf = ap_get_module_config(r->server->module_config, &dav_fs_module);
-
-    *dbmtype = conf->lockdb_type;
-
-    return conf->lockdb_path;
+    return ap_get_module_config(r->server->module_config, &dav_fs_module);
 }
 
 dav_error *dav_fs_get_quota(const request_rec *r, const char *path,
@@ -162,12 +156,44 @@ static void *dav_fs_merge_dir_config(apr_pool_t *p, void *base, void *overrides)
     return newconf;
 }
 
+static int dav_fs_pre_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *ptemp)
+{
+    if (ap_mutex_register(pconf, dav_fs_mutexid, NULL, APR_LOCK_DEFAULT, 0))
+        return !OK;
+    return OK;
+}
+
+static void dav_fs_child_init(apr_pool_t *p, server_rec *s)
+{
+    apr_status_t rv;
+    
+    rv = apr_global_mutex_child_init(&dav_fs_lockdb_mutex,
+                                     apr_global_mutex_lockfile(dav_fs_lockdb_mutex),
+                                     p);
+    if (rv) {
+        ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
+                     APLOGNO() "child init failed for mutex");
+    }                     
+}
 
 static apr_status_t dav_fs_post_config(apr_pool_t *p, apr_pool_t *plog,
                                        apr_pool_t *ptemp, server_rec *base_server)
 {
     server_rec *s;
+    apr_status_t rv;
 
+    /* Ignore first pass through the config. */
+    if (ap_state_query(AP_SQ_MAIN_STATE) == AP_SQ_MS_CREATE_PRE_CONFIG)
+        return OK;
+
+    rv = ap_global_mutex_create(&dav_fs_lockdb_mutex, NULL, dav_fs_mutexid, NULL,
+                                base_server, p, 0);
+    if (rv) {
+        ap_log_error(APLOG_MARK, APLOG_ERR, rv, base_server,
+                     APLOGNO() "could not create lock mutex");
+        return !OK;
+    }                     
+    
     for (s = base_server; s; s = s->next) {
         dav_fs_server_conf *conf;
 
@@ -179,6 +205,10 @@ static apr_status_t dav_fs_post_config(apr_pool_t *p, apr_pool_t *plog,
         if (!conf->lockdb_type) {
             conf->lockdb_type = DEFAULT_DAV_LOCKDB_TYPE;
         }
+
+        /* Mutex is common across all vhosts, but could have one per
+         * vhost if required. */
+        conf->lockdb_mutex = dav_fs_lockdb_mutex;
     }
 
     return OK;
@@ -252,8 +282,10 @@ static const command_rec dav_fs_cmds[] =
 
 static void register_hooks(apr_pool_t *p)
 {
+    ap_hook_pre_config(dav_fs_pre_config, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_post_config(dav_fs_post_config, NULL, NULL, APR_HOOK_MIDDLE);
-
+    ap_hook_child_init(dav_fs_child_init, NULL, NULL, APR_HOOK_MIDDLE);
+    
     dav_hook_gather_propsets(dav_fs_gather_propsets, NULL, NULL,
                              APR_HOOK_MIDDLE);
     dav_hook_find_liveprop(dav_fs_find_liveprop, NULL, NULL, APR_HOOK_MIDDLE);
