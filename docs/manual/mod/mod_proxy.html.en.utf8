@@ -232,7 +232,7 @@ ProxyVia On
       </p>
 
       <div class="example"><h3>Reverse Proxy PHP scripts</h3><pre class="prettyprint lang-config">&lt;FilesMatch "\.php$"&gt;
-    SetHandler  "proxy:unix:/path/to/app.sock|fcgi://localhost"
+    SetHandler  "proxy:unix:/path/to/app.sock|fcgi://localhost/"
 &lt;/FilesMatch&gt;</pre>
 </div>
 
@@ -2244,4 +2244,4 @@ if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }
 //--><!]]></script>
-</body></html>
+</body></html> 
