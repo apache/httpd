@@ -107,16 +107,15 @@
 /* Avoid tripping over an engine build installed globally and detected
  * when the user points at an explicit non-engine flavor of OpenSSL
  */
-#if defined(HAVE_OPENSSL_ENGINE_H) && defined(HAVE_ENGINE_INIT)
-#if OPENSSL_VERSION_NUMBER < 0x30000000 \
-    || (defined(OPENSSL_API_LEVEL) && OPENSSL_API_LEVEL < 30000)
+#if defined(HAVE_OPENSSL_ENGINE_H) && defined(HAVE_ENGINE_INIT) \
+    && (OPENSSL_VERSION_NUMBER < 0x30000000 \
+        || (defined(OPENSSL_API_LEVEL) && OPENSSL_API_LEVEL < 30000)) \
+    && !defined(OPENSSL_NO_ENGINE)
 #include <openssl/engine.h>
 #define MODSSL_HAVE_ENGINE_API 1
 #endif
 #ifndef MODSSL_HAVE_ENGINE_API
 #define MODSSL_HAVE_ENGINE_API 0
-#endif
-
 #endif
 
 #if (OPENSSL_VERSION_NUMBER < 0x0090801f)
@@ -256,11 +255,9 @@
 #define BN_get_rfc3526_prime_4096  get_rfc3526_prime_4096
 #define BN_get_rfc3526_prime_6144  get_rfc3526_prime_6144
 #define BN_get_rfc3526_prime_8192  get_rfc3526_prime_8192
-#if !defined(LIBRESSL_VERSION_NUMBER) || LIBRESSL_VERSION_NUMBER < 0x2070000fL
 #define BIO_set_init(x,v)          (x->init=v)
 #define BIO_get_data(x)            (x->ptr)
 #define BIO_set_data(x,v)          (x->ptr=v)
-#endif
 #define BIO_get_shutdown(x)        (x->shutdown)
 #define BIO_set_shutdown(x,v)      (x->shutdown=v)
 #define DH_bits(x)                 (BN_num_bits(x->p))

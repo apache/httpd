@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1911715 -->
+<!-- English Revision: 1912085 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -214,9 +214,9 @@ ForceType text/plain
 <name>DavBasePath</name>
 <description>Définir le chemin de la racine du répertoire</description>
 <syntax>DavBasePath <var>root-path</var></syntax>
-<default>DavBasePath /repos/</default>
+<default>None</default>
 <contextlist><context>directory</context></contextlist>
-<compatibility>Disponible à partir de la version 2.5.1 du serveur HTTP Apache</compatibility>
+<compatibility>Disponible à partir de la version 2.4.58 du serveur HTTP Apache</compatibility>
 
 <usage>
   <p>Si le répertoire DAV est défini en utilisant une correspondance

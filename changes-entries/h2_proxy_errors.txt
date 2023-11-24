@@ -1,0 +1,3 @@
+  *) mod_proxy_http2: improved error handling on connection errors while
+     response is already underway.
+     [Stefan Eissing]
