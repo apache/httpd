@@ -1453,18 +1453,17 @@ static authz_status ldapsearch_check_authorization(request_rec *r,
     t = require;
 
     if (t[0]) {
-        const char **vals;
 
         ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02630)
                       "auth_ldap authorize: checking filter %s", t);
 
         /* Search for the user DN */
         result = util_ldap_cache_getuserdn(r, ldc, sec->url, sec->basedn,
-             sec->scope, sec->attributes, t, &dn, &vals);
+             sec->scope, sec->attributes, t, &dn, &(req->vals));
 
         /* Make sure that the filtered search returned a single dn */
         if (result == LDAP_SUCCESS && dn) {
-            req->dn = dn;
+            req->dn = apr_pstrdup(r->pool, dn);
             ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02631)
                           "auth_ldap authorize: require ldap-search: "
                           "authorization successful");
