@@ -57,11 +57,11 @@ le Serveur HTTP Apache.</p>
     remplacement
     peuvent être utilisés pour inclure de nombreux fichiers de configuration.
     Des directives de tous types peuvent être placées dans chacun de ces fichiers
-    de configuration.  Les modifications dans les fichiers de configuration
+    de configuration. Les modifications dans les fichiers de configuration
     principaux ne sont prises en compte par httpd que lorsque le serveur
     est démarré ou redémarré.</p>
 
-    <p>Le serveur lit aussi un fichier contenant les types de document mime;
+    <p>Le serveur lit aussi un fichier contenant les types de document mime&nbsp;;
     ce fichier est défini par la directive <code class="directive"><a href="./mod/mod_mime.html#typesconfig">TypesConfig</a></code>,
     et se nomme <code>mime.types</code> par défaut.</p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
@@ -86,40 +86,37 @@ le Serveur HTTP Apache.</p>
     commentaires, et sont ignorées. Les commentaires ne doivent
     <strong>pas</strong> apparaître sur la même ligne qu'une directive
     de configuration. Les espaces précédant une directive
-    sont ignorés; vous pouvez par conséquent indenter les directives
+    sont ignorés&nbsp;; vous pouvez par conséquent indenter les directives
     afin d'améliorer la lisibilité. Les lignes vides sont
     aussi ignorées.</p>
 
-    <p>Les valeurs des variables d'environnement ou des variables
-    définies via la directive <code class="directive"><a href="./mod/core.html#define">Define</a></code> peuvent être utilisées dans le
-    fichier de configuration en utilisant la syntaxe
-    <code>${VAR}</code>.<br />
-    Si "VAR" est le nom d'une variable valide, la
-    valeur de la variable est alors substituée à la chaîne
-    <code>${VAR}</code>, et le processus de lecture du fichier de
-    configuration continue comme si la chaîne correspondant à la valeur
-    de la variable s'y était trouvée littéralement.<br />
-    Les variables définies
-    via la directive <code class="directive"><a href="./mod/core.html#define">Define</a></code>
-    l'emportent sur les autres variables d'environnement du shell.<br />
-    Si la variable "VAR" n'est pas trouvée, la chaîne <code>${VAR}</code> n'est
-    pas modifiée, et un avertissement est enregistré dans le journal. Si par
-    contre une valeur par défaut existe, on peut utiliser la forme
-    conditionnelle <code>${VAR?=une valeur par défaut}</code>. Notez qu'une
-    variable <strong>définie</strong> vide ne se verra pas attribuer la valeur
-    par défaut et qu'une valeur par défaut vide comme dans <code>${VAR?=}</code>
-    est une substitution valide (qui génère une valeur vide si "VAR" n'est pas
-    définie, mais aucun avertissement).<br />
+    <p>Les valeurs des variables d'environnement ou des variables définies via
+    la directive <code class="directive"><a href="./mod/core.html#define">Define</a></code> peuvent être
+    utilisées dans le fichier de configuration en utilisant la syntaxe
+    <code>${VAR}</code>.<br /> Si "VAR" est le nom d'une variable valable, la
+    valeur de la variable est alors substituée à la chaîne <code>${VAR}</code>,
+    et le processus de lecture du fichier de configuration continue comme si la
+    chaîne correspondant à la valeur de la variable s'y était trouvée
+    littéralement.<br /> Les variables définies via la directive <code class="directive"><a href="./mod/core.html#define">Define</a></code> l'emportent sur les autres variables
+    d'environnement de l'interpréteur de commande.<br /> Si la variable "VAR"
+    n'est pas trouvée, la chaîne <code>${VAR}</code> n'est pas modifiée, et un
+    avertissement est enregistré dans le journal. Si par contre une valeur par
+    défaut existe, on peut utiliser la forme conditionnelle <code>${VAR?=une
+    valeur par défaut}</code>. Notez qu'une variable <strong>définie</strong>
+    vide ne se verra pas attribuer la valeur par défaut et qu'une valeur par
+    défaut vide comme dans <code>${VAR?=}</code> est une substitution valable
+    (qui génère une valeur vide si "VAR" n'est pas définie, mais aucun
+    avertissement).<br />
     
     Le caractère ":" est interdit dans les noms de variables
     afin d'éviter tout conflit avec la syntaxe de la directive <code class="directive"><a href="./mod/mod_rewrite.html#rewritemap">RewriteMap</a></code>.</p>
 
-    <p>Seules les variables d'environnement du shell définies avant le démarrage
-    du serveur peuvent être utilisées en extension.
-    Les variables d'environnement
-    définies dans le fichier de configuration lui-même, par exemple avec <code class="directive"><a href="./mod/mod_env.html#setenv">SetEnv</a></code>, prennent effet trop tard pour
-    pouvoir être utilisées en extension au sein du fichier de
-    configuration.</p>
+    <p>Seules les variables d'environnement de l'interpréteur de commande
+    définies avant le démarrage du serveur peuvent être utilisées en extension.
+    Les variables d'environnement définies dans le fichier de configuration
+    lui-même, par exemple avec <code class="directive"><a href="./mod/mod_env.html#setenv">SetEnv</a></code>,
+    prennent effet trop tard pour pouvoir être utilisées en extension au sein du
+    fichier de configuration.</p>
 
     <p>La longueur maximale d'une ligne dans un fichier de configuration
     normal, après substitution des variables et fusion des lignes
@@ -173,24 +170,21 @@ le Serveur HTTP Apache.</p>
     s'appliquent au serveur dans son ensemble. Si vous souhaitez modifier la
     configuration d'une partie du serveur seulement, vous pouvez limiter la
     portée de vos directives en les plaçant dans une section
-    <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code>, <code class="directive"><a href="./mod/core.html#directorymatch">&lt;DirectoryMatch&gt;</a></code>, <code class="directive"><a href="./mod/core.html#files">&lt;Files&gt;</a></code>, <code class="directive"><a href="./mod/core.html#filesmatch">&lt;FilesMatch&gt;</a></code>, <code class="directive"><a href="./mod/core.html#location">&lt;Location&gt;</a></code>, ou <code class="directive"><a href="./mod/core.html#locationmatch">&lt;LocationMatch&gt;</a></code>.
+    <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code>, <code class="directive"><a href="./mod/core.html#directorymatch">&lt;DirectoryMatch&gt;</a></code>, <code class="directive"><a href="./mod/core.html#files">&lt;Files&gt;</a></code>, <code class="directive"><a href="./mod/core.html#filesmatch">&lt;FilesMatch&gt;</a></code>, <code class="directive"><a href="./mod/core.html#location">&lt;Location&gt;</a></code> ou <code class="directive"><a href="./mod/core.html#locationmatch">&lt;LocationMatch&gt;</a></code>.
     Ces sections limitent le champ d'application des directives qu'elles
     contiennent à des URls ou des portions du système de fichiers particulières.
     Elles peuvent aussi être imbriquées, ce qui permet
     une configuration très fine.</p>
 
-    <p>httpd peut servir simultanément de nombreux sites web au travers des
-    <a href="vhosts/">Hôtes Virtuels</a>. La portée des directives peut ainsi
-    être limitée en les plaçant dans des sections
-    <code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>,
-    afin qu'elles ne s'appliquent qu'aux requêtes
-    pour un site web particulier.</p>
+    <p>httpd peut servir simultanément de nombreux sites web au travers des <a href="vhosts/">Serveurs Virtuels</a>. La portée des directives peut ainsi
+    être limitée en les plaçant dans des sections <code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>, afin qu'elles ne s'appliquent qu'aux
+    requêtes pour un site web particulier.</p>
 
     <p>Bien que la plupart des directives puissent être placées dans
     chacune de ces sections, certaines d'entre elles n'ont aucun sens
     dans certains contextes.
     Par exemple, les directives qui contrôlent la création des processus
-    n'ont de sens que dans le contexte du serveur principal. Pour déterminer
+    n'ont de sens que dans le contexte du serveur global. Pour déterminer
     quelles directives peuvent être placées dans quelles sections, consultez
     le <a href="mod/directive-dict.html#Context">Contexte</a> de la
     directive. Pour plus d'informations, nous fournissons des détails dans
@@ -204,7 +198,7 @@ le Serveur HTTP Apache.</p>
     <table class="related"><tr><th>Modules Apparentés</th><th>Directives Apparentées</th></tr><tr><td /><td><ul><li><code class="directive"><a href="./mod/core.html#accessfilename">AccessFileName</a></code></li><li><code class="directive"><a href="./mod/core.html#allowoverride">AllowOverride</a></code></li></ul></td></tr></table>
 
     <p>httpd permet la gestion décentralisée de la configuration
-    via des fichiers spéciaux placés dans l'arborescence du site web.
+    à l'aide de fichiers spéciaux placés dans l'arborescence du site web.
     Ces fichiers spéciaux se nomment en général <code>.htaccess</code>,
     mais tout autre nom peut être spécifié à l'aide de la directive
     <code class="directive"><a href="./mod/core.html#accessfilename">AccessFileName</a></code>.
