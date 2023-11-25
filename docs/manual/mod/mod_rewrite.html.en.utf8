@@ -53,8 +53,6 @@ URLs on the fly</td></tr>
       sub-processing, external request redirection, or internal proxy
       throughput.</p>
 
-      <p>A regular expression only needs quoting if it contains unescaped space, in which case single and double quotes are equivalent.</p>
-
       <p>Further details, discussion, and examples, are provided in the
       <a href="../rewrite/">detailed mod_rewrite documentation</a>.</p>
 </div>
