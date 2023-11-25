@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1861449 -->
+<!-- English Revision: 1914040 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -77,7 +77,6 @@
     <p>Quelques solutions populaires pour déployer Apache httpd, et
     éventuellement PHP et MySQL sous Microsoft Windows :</p>
     <ul>
-    <li><a href="http://www.apachehaus.com/cgi-bin/download.plx">ApacheHaus</a></li>
     <li><a href="http://www.apachelounge.com/download/">Apache Lounge</a></li>
     <li><a href="http://bitnami.com/stack/wamp">Bitnami WAMP Stack</a></li>
     <li><a href="http://www.wampserver.com/">WampServer</a></li>
@@ -94,6 +93,14 @@
     directives spécifiques à Apache pour Windows. Voir l'<a
     href="../mod/directives.html">index des directives</a> pour la liste
     des directives disponibles.</p>
+
+    <p>La configuration par défaut de la distribution source installe
+    le serveur dans \Apache2x. Cet emplacement peut être modifié à
+    la compilation, mais il est important qu'en fin de compte, la directive
+    <directive>ServerRoot</directive> dans httpd.conf corresponde effectivement
+    à la racine de l'installation. Les distributions binaires peuvent parfois
+    modifier la racine de l'installation par défaut, ou même la structure
+    complète de la configuration initiale.</p>
 
     <p>Les principales spécificités d'Apache pour Windows sont :</p>
     <ul>
