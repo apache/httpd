@@ -226,11 +226,11 @@ ForceType text/plain
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définir le chemin de la racine du répertoire</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>DavBasePath <var>root-path</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>DavBasePath /repos/</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>None</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_dav</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.5.1 du serveur HTTP Apache</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.58 du serveur HTTP Apache</td></tr>
 </table>
   <p>Si le répertoire DAV est défini en utilisant une correspondance
   d'expression rationnelle (comme <code class="directive"><a href="../mod/core.html#locationmatch">LocationMatch</a></code>), <code class="module"><a href="../mod/mod_dav.html">mod_dav</a></code> ne sera pas

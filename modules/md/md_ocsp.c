@@ -32,13 +32,6 @@
 #include <openssl/pem.h>
 #include <openssl/x509v3.h>
 
-#if defined(LIBRESSL_VERSION_NUMBER)
-/* Missing from LibreSSL */
-#define MD_USE_OPENSSL_PRE_1_1_API (LIBRESSL_VERSION_NUMBER < 0x2070000f)
-#else /* defined(LIBRESSL_VERSION_NUMBER) */
-#define MD_USE_OPENSSL_PRE_1_1_API (OPENSSL_VERSION_NUMBER < 0x10100000L)
-#endif
-
 #include "md.h"
 #include "md_crypt.h"
 #include "md_event.h"
@@ -563,7 +556,9 @@ static const char *single_resp_summary(OCSP_SINGLERESP* resp, apr_pool_t *p)
     ASN1_GENERALIZEDTIME *bup = NULL, *bnextup = NULL;
     md_timeperiod_t valid;
     
-#if MD_USE_OPENSSL_PRE_1_1_API
+#if OPENSSL_VERSION_NUMBER < 0x10100000L \
+    || (defined(LIBRESSL_VERSION_NUMBER) \
+        && LIBRESSL_VERSION_NUMBER < 0x2070000f)
     certid = resp->certId;
 #else
     certid = OCSP_SINGLERESP_get0_id(resp);

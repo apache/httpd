@@ -831,9 +831,9 @@ DAV_DECLARE(dav_error *) dav_get_resource(request_rec *r, int label_allowed,
         /* In the error path, give a hint that DavBasePath needs to be
          * used if the location was configured via a regex match. */
         if (!conf->base) {
-            core_dir_config *conf = ap_get_core_module_config(r->per_dir_config);
+            core_dir_config *cdc = ap_get_core_module_config(r->per_dir_config);
 
-            if (conf->r) {
+            if (cdc->r) {
                 ap_log_error(APLOG_MARK, APLOG_ERR, 0, NULL, APLOGNO(10484)
                              "failed to find repository for location configured "
                              "via regex match - missing DAVBasePath?");

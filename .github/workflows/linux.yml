@@ -80,6 +80,7 @@ jobs:
               APR_VERSION=1.7.4
               APU_VERSION=1.6.3
               APU_CONFIG="--with-crypto --with-ldap"
+              CLEAR_CACHE=1
           # -------------------------------------------------------------------------
           - name: APR 1.8.x, APR-util 1.7.x
             config: --enable-mods-shared=reallyall
@@ -139,6 +140,15 @@ jobs:
               TESTS="t/modules/dav.t"
             pkgs: litmus
           # -------------------------------------------------------------------------
+          - name: litmus WebDAV tests, APR trunk, LMDB
+            config: --enable-dav --enable-dav-fs
+            pkgs: litmus liblmdb-dev
+            env: |
+              APR_VERSION=trunk
+              APR_CONFIG="--with-lmdb --with-dbm=lmdb"
+              LITMUS=1
+              TESTS="t/modules/dav.t"
+          # -------------------------------------------------------------------------
           # MFLAGS= works around https://bz.apache.org/bugzilla/show_bug.cgi?id=63942
           ## TODO if: *condition_not_24x
           - name: Regenerate ap_expr
@@ -159,6 +169,7 @@ jobs:
               TEST_LDAP=1
               TEST_ARGS="-defines LDAP"
               TESTS="t/modules/"
+              CLEAR_CACHE=1
           # -------------------------------------------------------------------------
           ### TODO: if: *condition_not_24x
           - name: APR trunk thread debugging

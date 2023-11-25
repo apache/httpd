@@ -537,8 +537,8 @@ static apr_status_t check_challenges(void *baton, int attempt)
             }
         }
         else {
-            md_result_printf(ctx->result, rv, "authorization retrieval failed for domain %s", 
-                             authz->domain);
+            md_result_printf(ctx->result, rv, "authorization retrieval failed for %s on <%s>",
+                             ctx->name, url);
         }
     }
 leave:
