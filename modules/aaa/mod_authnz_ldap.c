@@ -902,7 +902,7 @@ static authz_status ldapgroup_check_authorization(request_rec *r,
     if (!req->dn) {
         authz_status rv;
         if (!*r->user) {
-            ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(01699)
+            ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(10490)
                           "ldap authorize: Userid is blank, AuthType=%s",
                           r->ap_auth_type);
         }
