@@ -732,6 +732,7 @@ SET(LIBHTTPD_SOURCES
   server/ssl.c
   server/scoreboard.c
   server/util.c
+  server/util_atomics.c
   server/util_cfgtree.c
   server/util_cookies.c
   server/util_debug.c

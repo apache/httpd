@@ -34,6 +34,7 @@
 #include "httpd.h"
 
 /* Preprocess all of the standard HTTPD headers. */
+#include "ap_atomics.h"
 #include "ap_compat.h"
 #include "ap_listen.h"
 #include "ap_mmn.h"
