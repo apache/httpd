@@ -65,6 +65,9 @@
 #if APR_HAVE_STDLIB_H
 #include <stdlib.h>
 #endif
+#if defined(__STDC__) || defined(_MSC_VER)  /* C89 */
+#include <assert.h> /* for static_assert */
+#endif
 
 /* Note: apr_uri.h is also included, see below */
 
@@ -2422,6 +2425,58 @@ AP_DECLARE(void) ap_log_assert(const char *szExp, const char *szFile, int nLine)
 #else
 #define AP_DEBUG_ASSERT(exp) ((void)0)
 #endif
+
+/**
+ * Compile time assertion with custom error message.
+ * @param exp static expression/condition
+ * @param msg error message (string literal)
+ */
+#if (defined(static_assert) \
+     || (defined(__cplusplus) && __cplusplus >= 201103L) \
+     || (defined(__has_feature) && __has_feature(cxx_static_assert)) \
+     || (defined(_MSC_VER ) && _MSC_VER >= 1600))
+
+#define AP_STATIC_ASSERT(exp, msg) static_assert(exp, msg)
+
+#elif (defined(_Static_assert) \
+       || (defined(__STDC_VERSION__) && __STDC_VERSION__ >= 201112L) \
+       || (defined(__has_feature) && __has_feature(c_static_assert)) \
+       || (defined(__GNUC__) && __GNUC_PREREQ (4, 6)))
+
+#define AP_STATIC_ASSERT(exp, msg) _Static_assert(exp, msg)
+
+#else /* Fail compilation using bit-field with negative width */
+
+#ifdef __COUNTER__
+
+#define AP_STATIC_ASSERT(exp, msg) \
+    typedef __attribute__((unused)) struct { \
+        int static_assertion_failed: !!(exp) * 2 - 1; \
+    } AP_CONCATIFY(ap__static_assert_t_, __COUNTER__)
+
+#else  /* __COUNTER__ */
+
+#define AP_STATIC_ASSERT(exp, msg) \
+    typedef __attribute__((unused)) struct { \
+        int static_assertion_failed: !!(exp) * 2 - 1; \
+    } AP_CONCATIFY(ap__static_assert_t_, __LINE__)
+
+#endif /* __COUNTER__ */
+
+#endif /* AP_STATIC_ASSERT */
+
+/**
+ * Compile time assertion with the expression as error message.
+ * @param exp static expression/condition
+ */
+#define AP_BUILD_ASSERT(exp) \
+    AP_STATIC_ASSERT(exp, "static assertion failed at " \
+                     __FILE__ ":" APR_STRINGIFY(__LINE__) ": " \
+                     APR_STRINGIFY(exp))
+
+/** Properly concatenate two values in the C preprocessor */
+#define AP_CONCATIFY(x, y) AP__CONCATIFY(x, y)
+#define AP__CONCATIFY(x, y) x ## y
 
 /**
  * @defgroup stopsignal Flags which indicate places where the server should stop for debugging.
