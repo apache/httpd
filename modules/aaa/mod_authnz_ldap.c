@@ -84,10 +84,10 @@ typedef struct {
 } authn_ldap_config_t;
 
 typedef struct {
-    char *dn;                       /* The saved dn from a successful search */
-    char *user;                     /* The username provided by the client */
+    const char *dn;                 /* The saved dn from a successful search */
+    const char *user;               /* The username provided by the client */
     const char **vals;              /* The additional values pulled during the DN search*/
-    char *password;                 /* if this module successfully authenticates, the basic auth password, else null */
+    const char *password;           /* if this module successfully authenticates, the basic auth password, else null */
     apr_pool_t *ldc_pool;           /* a short-lived pool to trigger cleanups on any acquired LDCs */
 } authn_ldap_request_t;
 
@@ -447,8 +447,8 @@ static util_ldap_connection_t *get_connection_for_authz(request_rec *r, enum aut
         (authn_ldap_config_t *)ap_get_module_config(r->per_dir_config, &authnz_ldap_module);
     util_ldap_connection_t *ldc = NULL;
 
-    char *binddn = sec->binddn;
-    char *bindpw = sec->bindpw;
+    const char *binddn = sec->binddn;
+    const char *bindpw = sec->bindpw;
 
     if (!req) { 
         ap_log_rerror(APLOG_MARK, APLOG_CRIT, 0, r, APLOGNO(02659)
@@ -656,11 +656,11 @@ static authn_status authn_ldap_check_password(request_rec *r, const char *user,
     }
 
     /* mark the user and DN */
-    req->dn = apr_pstrdup(r->pool, dn);
-    req->user = apr_pstrdup(r->pool, user);
-    req->password = apr_pstrdup(r->pool, password);
+    req->dn = dn;
+    req->user = user;
+    req->password = password;
     if (sec->user_is_dn) {
-        r->user = req->dn;
+        r->user = (char *)req->dn;
     }
 
     /* add environment variables */
@@ -713,7 +713,7 @@ static authz_status get_dn_for_nonldap_authn(request_rec *r, util_ldap_connectio
         return AUTHZ_DENIED;
     }
 
-    req->dn = apr_pstrdup(r->pool, dn);
+    req->dn = dn;
     req->user = r->user;
 
     /* add environment variables */
@@ -1463,7 +1463,7 @@ static authz_status ldapsearch_check_authorization(request_rec *r,
 
         /* Make sure that the filtered search returned a single dn */
         if (result == LDAP_SUCCESS && dn) {
-            req->dn = apr_pstrdup(r->pool, dn);
+            req->dn = dn;
             ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02631)
                           "auth_ldap authorize: require ldap-search: "
                           "authorization successful");
