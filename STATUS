@@ -149,10 +149,13 @@ CURRENT RELEASE NOTES:
 
 RELEASE SHOWSTOPPERS:
 
+   *) mod_ssl: Fix typo in openssl-3 compat backported in r1913912 (impacting pkcs#11 engines)
+      trunk patch: http://svn.apache.org/r1914318
+      2.4.x patch: svn merge -c r1914318 ^/httpd/httpd/trunk .
+      +1: ylavic,
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
-
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
@@ -181,12 +184,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        https://svn.apache.org/r1913930
         svn merge -c 1912245 ^/httpd/httpd/trunk .
         svn merge -c 1913930 ^/httpd/httpd/trunk .
-     +1: minfrin, ylavic
-     ylavic: +1 with r1913930, we can't provide exported functions w/o an
-             ap_[proxy_] prefix.
+     +1: minfrin
      minfrin: r1913930 added, votes reset, mmn bump needed
      ylavic: not sure since it's not public (i.e. in mod_proxy.h)?
      minfrin: true, mmn bump not needed
+     ylavic: new proposal in https://github.com/apache/httpd/pull/396
 
   *) mod_ssl: fix LibreSSL build
      Trunk version of patch:
