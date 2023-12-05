@@ -118,6 +118,15 @@
 #define MODSSL_HAVE_ENGINE_API 0
 #endif
 
+/* Use OpenSSL 3.x STORE for loading URI keys and certificates starting with
+ * OpenSSL 3.0
+ */
+#if OPENSSL_VERSION_NUMBER >= 0x30000000
+#define MODSSL_HAVE_OPENSSL_STORE 1
+#else
+#define MODSSL_HAVE_OPENSSL_STORE 0
+#endif
+
 #if (OPENSSL_VERSION_NUMBER < 0x0090801f)
 #error mod_ssl requires OpenSSL 0.9.8a or later
 #endif
