@@ -500,7 +500,7 @@ void ssl_util_thread_setup(apr_pool_t *p)
 
 int modssl_is_engine_id(const char *name)
 {
-#if MODSSL_HAVE_ENGINE_API
+#if MODSSL_HAVE_ENGINE_API || MODSSL_HAVE_OPENSSL_STORE
     /* ### Can handle any other special ENGINE key names here? */
     return strncmp(name, "pkcs11:", 7) == 0;
 #else
