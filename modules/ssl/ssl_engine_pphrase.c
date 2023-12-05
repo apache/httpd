@@ -982,7 +982,7 @@ apr_status_t modssl_load_engine_keypair(server_rec *s, apr_pool_t *p,
 #if MODSSL_HAVE_OPENSSL_STORE
     SSLModConfigRec *mc = myModConfig(s);
 
-    if (strcEQ(mc->szCryptoDevice, "provider"))
+    if (!mc->szCryptoDevice)
         return modssl_load_keypair_store(s, p, vhostid, certid, keyid,
                                          pubkey, privkey);
 #endif

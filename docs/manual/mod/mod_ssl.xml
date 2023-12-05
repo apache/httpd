@@ -2444,9 +2444,10 @@ SSLCryptoDevice ubsec
 </example>
 
 <p>
-With OpenSSL 3.0 or later, specify <code>provider</code> to load keys and
-certificates from a provider using <a href="https://tools.ietf.org/html/rfc7512">PKCS#11 URIs</a>.
-The provider to use must be defined and configured in the OpenSSL config file,
+With OpenSSL 3.0 or later, if no engine is specified but the key or certificate
+is specified using a <a href="https://tools.ietf.org/html/rfc7512">PKCS#11 URIs</a>
+then it is tried to load the key and certificate from an OpenSSL provider.
+The OpenSSL provider to use must be defined and configured in the OpenSSL config file,
 and it must support the <a href="https://www.openssl.org/docs/man3.0/man7/provider-storemgmt.html">STORE method</a>
 for <a href="https://tools.ietf.org/html/rfc7512">PKCS#11 URIs</a>.
 </p>

@@ -506,11 +506,7 @@ apr_status_t ssl_init_Engine(server_rec *s, apr_pool_t *p)
     SSLModConfigRec *mc = myModConfig(s);
     ENGINE *e;
 
-#if MODSSL_HAVE_OPENSSL_STORE
-    if (mc->szCryptoDevice && !strcEQ(mc->szCryptoDevice, "provider")) {
-#else
     if (mc->szCryptoDevice) {
-#endif
         if (!(e = ENGINE_by_id(mc->szCryptoDevice))) {
             ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(01888)
                          "Init: Failed to load Crypto Device API `%s'",
@@ -1481,7 +1477,9 @@ static apr_status_t ssl_init_server_certs(server_rec *s,
                 if (SSL_CTX_use_certificate(mctx->ssl_ctx, cert) < 1) {
                     ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(10137)
                                  "Failed to configure certificate %s from %s, check %s",
-                                 key_id, mc->szCryptoDevice, certfile);
+                                 key_id, mc->szCryptoDevice ?
+                                             mc->szCryptoDevice : "provider",
+                                 certfile);
                     ssl_log_ssl_error(SSLLOG_MARK, APLOG_EMERG, s);
                     return APR_EGENERAL;
                 }
@@ -1493,7 +1491,8 @@ static apr_status_t ssl_init_server_certs(server_rec *s,
             if (SSL_CTX_use_PrivateKey(mctx->ssl_ctx, pkey) < 1) {
                 ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(10130)
                              "Failed to configure private key %s from %s",
-                             keyfile, mc->szCryptoDevice);
+                             keyfile, mc->szCryptoDevice ?
+                                          mc->szCryptoDevice : "provider");
                 ssl_log_ssl_error(SSLLOG_MARK, APLOG_EMERG, s);
                 return APR_EGENERAL;
             }
