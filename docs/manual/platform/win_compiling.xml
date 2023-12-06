@@ -128,9 +128,11 @@
         modified using the <code>awk.exe</code> utility. awk was chosen since
         it is a very small download (compared with Perl or WSH/VB) and
         accomplishes the task of modifying configuration files upon
-        installation.  The GNU <code>awk.exe</code> binary for Windows can be
-        downloaded and extracted from the zip archive available
-        <a href="https://gnuwin32.sourceforge.net/packages/gawk.htm">here</a>
+        installation.  The <code>awk.exe</code> binary for Windows can be
+        compiled from the original Brian Kernighan's sources available
+        <a href="https://svn.apache.org/repos/asf/httpd/httpd/win32-msi/trunk/awk/">here</a>,
+        or the GNU awk binary can be downloaded and extracted from the zip archive
+        <a href="https://gnuwin32.sourceforge.net/packages/gawk.htm">here</a>,
         and then placed in some %PATH% directory on the build system.
 
         <note>If awk.exe is not found, Makefile.win's install target
