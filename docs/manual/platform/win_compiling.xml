@@ -128,14 +128,10 @@
         modified using the <code>awk.exe</code> utility. awk was chosen since
         it is a very small download (compared with Perl or WSH/VB) and
         accomplishes the task of modifying configuration files upon
-        installation.  Brian Kernighan's
-        <a href="http://www.cs.princeton.edu/~bwk/btl.mirror/"
-        >http://www.cs.princeton.edu/~bwk/btl.mirror/</a>
-        site has a compiled native Win32 binary,
-        <a href="http://www.cs.princeton.edu/~bwk/btl.mirror/awk95.exe"
-        >http://www.cs.princeton.edu/~bwk/btl.mirror/awk95.exe</a> which
-        you must save with the name <code>awk.exe</code> (rather than
-        <code>awk95.exe</code>).</p>
+        installation.  The GNU <code>awk.exe</code> binary for Windows can be
+        downloaded and extracted from the zip archive available
+        <a href="https://gnuwin32.sourceforge.net/packages/gawk.htm">here</a>
+        and then placed in some %PATH% directory on the build system.
 
         <note>If awk.exe is not found, Makefile.win's install target
         will not perform substitutions in the installed .conf files.
