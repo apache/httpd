@@ -25,6 +25,8 @@
 #ifndef _DAV_FS_REPOS_H_
 #define _DAV_FS_REPOS_H_
 
+#include "util_mutex.h"
+
 /* the subdirectory to hold all DAV-related information for a directory */
 #define DAV_FS_STATE_DIR                ".DAV"
 #define DAV_FS_STATE_FILE_FOR_DIR       ".state_for_dir"
@@ -64,9 +66,15 @@ void dav_dbm_freedatum(dav_db *db, apr_datum_t data);
 int dav_dbm_exists(dav_db *db, apr_datum_t key);
 void dav_dbm_close(dav_db *db);
 
-/* Returns path to lock database and configured dbm type as
- * *dbmtype. */
-const char *dav_get_lockdb_path(const request_rec *r, const char **dbmtype);
+/* Per-server configuration. */
+typedef struct {
+    const char *lockdb_path;
+    const char *lockdb_type;
+    apr_global_mutex_t *lockdb_mutex;
+} dav_fs_server_conf;
+
+/* Returns server configuration for the request. */
+const dav_fs_server_conf *dav_fs_get_server_conf(const request_rec *r);
 
 const dav_hooks_locks *dav_fs_get_lock_hooks(request_rec *r);
 const dav_hooks_propdb *dav_fs_get_propdb_hooks(request_rec *r);

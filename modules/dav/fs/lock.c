@@ -181,9 +181,7 @@ struct dav_lockdb_private
 {
     request_rec *r;                  /* for accessing the uuid state */
     apr_pool_t *pool;                /* a pool to use */
-    const char *lockdb_path;         /* where is the lock database? */
-    const char *lockdb_type;         /* where is the lock database? */
-
+    const dav_fs_server_conf *conf;  /* lock database config & metadata */
     int opened;                      /* we opened the database */
     dav_db *db;                      /* if non-NULL, the lock database */
 };
@@ -293,6 +291,19 @@ static int dav_fs_compare_locktoken(
     return dav_compare_locktoken(lt1, lt2);
 }
 
+static apr_status_t dav_fs_lockdb_cleanup(void *data)
+{
+    dav_lockdb *lockdb = data;
+
+    apr_global_mutex_unlock(lockdb->info->conf->lockdb_mutex);
+
+    if (lockdb->info->db) {
+        dav_dbm_close(lockdb->info->db);
+    }
+    
+    return APR_SUCCESS;
+}
+
 /*
 ** dav_fs_really_open_lockdb:
 **
@@ -301,22 +312,37 @@ static int dav_fs_compare_locktoken(
 static dav_error * dav_fs_really_open_lockdb(dav_lockdb *lockdb)
 {
     dav_error *err;
+    apr_status_t rv;
 
     if (lockdb->info->opened)
         return NULL;
 
+    rv = apr_global_mutex_lock(lockdb->info->conf->lockdb_mutex);
+    if (rv) {
+        return dav_new_error(lockdb->info->pool,
+                             HTTP_INTERNAL_SERVER_ERROR,
+                             DAV_ERR_LOCK_OPENDB, rv,
+                             "Could not lock mutex for lock database.");
+    }
+    
     err = dav_dbm_open_direct(lockdb->info->pool,
-                              lockdb->info->lockdb_path,
-                              lockdb->info->lockdb_type,
+                              lockdb->info->conf->lockdb_path,
+                              lockdb->info->conf->lockdb_type,
                               lockdb->ro,
                               &lockdb->info->db);
     if (err != NULL) {
+        apr_global_mutex_unlock(lockdb->info->conf->lockdb_mutex);
+        
         return dav_push_error(lockdb->info->pool,
                               HTTP_INTERNAL_SERVER_ERROR,
                               DAV_ERR_LOCK_OPENDB,
                               "Could not open the lock database.",
                               err);
     }
+
+    apr_pool_cleanup_register(lockdb->info->pool, lockdb,
+                              dav_fs_lockdb_cleanup,
+                              dav_fs_lockdb_cleanup);
 
     /* all right. it is opened now. */
     lockdb->info->opened = 1;
@@ -343,9 +369,9 @@ static dav_error * dav_fs_open_lockdb(request_rec *r, int ro, int force,
     comb->pub.info = &comb->priv;
     comb->priv.r = r;
     comb->priv.pool = r->pool;
-
-    comb->priv.lockdb_path = dav_get_lockdb_path(r, &comb->priv.lockdb_type);
-    if (comb->priv.lockdb_path == NULL) {
+    comb->priv.conf = dav_fs_get_server_conf(r);
+    
+    if (comb->priv.conf == NULL || comb->priv.conf->lockdb_path == NULL) {
         return dav_new_error(r->pool, HTTP_INTERNAL_SERVER_ERROR,
                              DAV_ERR_LOCK_NO_DB, 0,
                              "A lock database was not specified with the "
@@ -371,8 +397,8 @@ static dav_error * dav_fs_open_lockdb(request_rec *r, int ro, int force,
 */
 static void dav_fs_close_lockdb(dav_lockdb *lockdb)
 {
-    if (lockdb->info->db != NULL)
-        dav_dbm_close(lockdb->info->db);
+    apr_pool_cleanup_run(lockdb->info->pool, lockdb,
+                         dav_fs_lockdb_cleanup);
 }
 
 /*
