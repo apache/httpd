@@ -112,7 +112,11 @@ static apr_status_t dav_fs_post_config(apr_pool_t *p, apr_pool_t *plog,
         conf = ap_get_module_config(s->module_config, &dav_fs_module);
 
         if (!conf->lockdb_path) {
+#if AP_MODULE_MAGIC_AT_LEAST(20180906, 2)
             conf->lockdb_path = ap_state_dir_relative(p, DEFAULT_DAV_LOCKDB);
+#else
+            conf->lockdb_path = ap_runtime_dir_relative(p, DEFAULT_DAV_LOCKDB);
+#endif
         }
         if (!conf->lockdb_type) {
             conf->lockdb_type = DEFAULT_DAV_LOCKDB_TYPE;
