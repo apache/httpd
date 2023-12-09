@@ -133,7 +133,7 @@
         <a href="https://svn.apache.org/repos/asf/httpd/httpd/win32-msi/trunk/awk/">here</a>,
         or the GNU awk binary can be downloaded and extracted from the zip archive
         <a href="https://gnuwin32.sourceforge.net/packages/gawk.htm">here</a>,
-        and then placed in some %PATH% directory on the build system.
+        and then placed in some %PATH% directory on the build system.</p>
 
         <note>If awk.exe is not found, Makefile.win's install target
         will not perform substitutions in the installed .conf files.
