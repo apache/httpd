@@ -167,6 +167,10 @@
 #include "ap_mpm.h"
 #include "ap_provider.h"
 
+#if APU_MAJOR_VERSION > 1 || (APU_MAJOR_VERSION == 1 && APU_MINOR_VERSION >= 7)
+#include "apr_json.h"
+#endif
+
 #if APR_HAVE_UNISTD_H
 #include <unistd.h>
 #endif
@@ -1761,15 +1765,152 @@ static ap_log_writer *ap_log_set_writer(ap_log_writer *handle)
     return old;
 }
 
+#if APU_MAJOR_VERSION > 1 || (APU_MAJOR_VERSION == 1 && APU_MINOR_VERSION >= 7)
+static ap_log_formatted_data * ap_json_log_formatter( request_rec *r,
+                           void *handle,
+                           ap_log_formatted_data *lfd,
+                           const void *itms)
+
+{
+    json_log_formatter_options * formatter_options = (json_log_formatter_options *) handle;
+    log_format_item *items = (log_format_item *) itms;
+
+    const char* attribute_name;
+    const char* attribute_value;
+
+    ap_log_formatted_data *lfdj = apr_palloc(r->pool, sizeof(ap_log_formatted_data));
+
+    /* TODO: how to determine max number of vectors? */
+    int nvec = lfd->nelts * 3;
+    struct iovec *vec = apr_palloc(r->pool, sizeof(struct iovec*) * nvec );
+
+    apr_bucket_alloc_t *ba;
+    apr_bucket_brigade *bb;
+
+    apr_json_value_t *sub_log_object;
+    apr_json_value_t *json_null = apr_json_null_create(r->pool);
+    apr_json_value_t *json_empty_string = apr_json_string_create(r->pool, "\"\"", APR_JSON_VALUE_STRING);
+
+    /* build log object */
+    apr_json_value_t *log_object = apr_json_object_create(r->pool);
+
+    for (int i = 0; i < lfd->nelts; ++i) {
+        if(!items[i].tag) {
+            continue;
+        }
+
+        if (formatter_options->use_short_attribute_names) {
+            attribute_name = NULL;
+        }
+        else {
+            attribute_name = apr_hash_get(json_hash, items[i].tag, APR_HASH_KEY_STRING);
+        }
+
+        if (!attribute_name) {
+            attribute_name = items[i].tag; /* fallback: use tag as attribute name */
+        }
+
+        /* if the current tag has arguments, i.e. "i" (requestHeaders)
+         * create a sub object with items[i].arg as key and lfd->portions[i] values.
+         *
+         * as multiple same tags with different arguments can exist,
+         * the log_format_item is sorted before, so we can easily check for
+         * gruppenwechsel
+         */
+        if(items[i].arg != NULL && strlen(items[i].arg) > 0) {
+            /* start sub object */
+            sub_log_object = apr_json_object_create(r->pool);
+
+            apr_json_object_set(log_object,
+                                attribute_name, APR_JSON_VALUE_STRING,
+                                sub_log_object,
+                                r->pool);
+
+            for (int j = i; j < lfd->nelts; ++j) {
+                if(!items[j].tag) {
+                    continue;
+                }
+                if(strcmp(items[j].tag, items[i].tag) != 0) {
+                    i = j - 1;
+                    break;
+                }
+
+                attribute_name = items[j].arg;
+                if (!lfd->portions[j]) {
+                    apr_json_object_set(sub_log_object,
+                                        attribute_name, APR_JSON_VALUE_STRING,
+                                        json_null, r->pool);
+                }
+                else if (!*lfd->portions[j]) {
+                    apr_json_object_set(sub_log_object,
+                                        attribute_name, APR_JSON_VALUE_STRING,
+                                        json_empty_string,
+                                        r->pool);
+                }
+                else {
+                    attribute_value = lfd->portions[j];
+                    apr_json_object_set(sub_log_object,
+                                        attribute_name, APR_JSON_VALUE_STRING,
+                                        apr_json_string_create(r->pool, attribute_value,
+                                                               APR_JSON_VALUE_STRING),
+                                        r->pool);
+                }
+            }
+
+            continue;
+        }
+
+        if (!lfd->portions[i]) {
+            apr_json_object_set(log_object,
+                                attribute_name, APR_JSON_VALUE_STRING,
+                                json_null, r->pool);
+
+        }
+        else if (!*lfd->portions[i]) {
+            apr_json_object_set(log_object,
+                                attribute_name, APR_JSON_VALUE_STRING,
+                                json_empty_string,
+                                r->pool);
+        }
+        else {
+            attribute_value = lfd->portions[i];
+            apr_json_object_set(log_object,
+                                attribute_name, APR_JSON_VALUE_STRING,
+                                apr_json_string_create(r->pool, attribute_value,
+                                                       APR_JSON_VALUE_STRING),
+                                r->pool);
+
+        }
+    }
+
+    ba = apr_bucket_alloc_create(r->pool);
+    bb = apr_brigade_create(r->pool, ba);
+
+    /* encode into bucket brigade */
+    apr_json_encode(bb, NULL, NULL, log_object, APR_JSON_FLAGS_WHITESPACE, r->pool);
+    apr_brigade_puts(bb, NULL, NULL, APR_EOL_STR);
+
+    // TODO: detect overflow nvec
+    apr_brigade_to_iovec(bb, vec, &nvec);
+
+    lfdj->portions = apr_palloc(r->pool, sizeof(char*) * nvec);
+    lfdj->lengths = apr_palloc(r->pool, sizeof(int) * nvec);
+    lfdj->total_len = 0;
+    for(int i = 0; i < nvec; i++) {
+        lfdj->portions[i] = vec[i].iov_base;
+        lfdj->lengths[i] = vec[i].iov_len;
+        lfdj->total_len += vec[i].iov_len;
+    }
+    lfdj->nelts = nvec;
+    return lfdj;
+}
+#else
 static apr_size_t add_str(apr_array_header_t * ah_strs, apr_array_header_t * ah_strl, const char *str)
 {
-	char** strs;
-	int* strl;
+    char** strs = apr_array_push(ah_strs);
+    int* strl = apr_array_push(ah_strl);
 
-    strs = apr_array_push(ah_strs);
     *strs = (char*) str;
-
-    strl = apr_array_push(ah_strl);
     *strl = strlen(str);
 
     return *strl;
@@ -1787,105 +1928,56 @@ static ap_log_formatted_data * ap_json_log_formatter( request_rec *r,
     const char* attribute_name;
     const char* attribute_value;
 
+    ap_log_formatted_data *lfdj = apr_palloc(r->pool, sizeof(ap_log_formatted_data));
     apr_array_header_t *strs = apr_array_make(r->pool, lfd->nelts * 3, sizeof(char *)); /* array of pointers to char */
     apr_array_header_t *strl = apr_array_make(r->pool, lfd->nelts * 3, sizeof(int));    /* array of int (strlen) */
 
-    ap_log_formatted_data *lfdj = apr_palloc(r->pool, sizeof(ap_log_formatted_data));
     lfdj->total_len = 0;
 
     /* build json object */
     lfdj->total_len += add_str(strs, strl, "{");
     for (int i = 0; i < lfd->nelts; ++i) {
-        if(!items[i].tag) {
-            continue;
+        if(items[i].tag == NULL) {
+                continue;
         }
 
         if (formatter_options->use_short_attribute_names) {
-            attribute_name = NULL;
+                attribute_name = NULL;
         }
         else {
             attribute_name = apr_hash_get(json_hash, items[i].tag, APR_HASH_KEY_STRING);
         }
 
         if (!attribute_name) {
-            attribute_name = ap_escape_logjson(r->pool, items[i].tag, NULL, 0); /* fallback: use tag as attribute name */
+            attribute_name = ap_escape_logjson(r->pool, items[i].tag, NULL, 0); /* use tag as attribute name as fallback */
         }
 
         lfdj->total_len += add_str(strs, strl, "\"");
         lfdj->total_len += add_str(strs, strl, attribute_name);
-        lfdj->total_len += add_str(strs, strl, "\":");
 
-        /* if the current tag has arguments, i.e. "i" (requestHeaders)
-         * create a sub object with items[i].arg as key and lfd->portions[i] values.
-         *
-         * as multiple same tags with different arguments can exist,
-         * the log_format_item is sorted before, so we can easily check for
-         * gruppenwechsel
-         */
+        /* process any arguments as attribute name extension */
         if(items[i].arg != NULL && strlen(items[i].arg) > 0) {
-            // start sub object
-            lfdj->total_len += add_str(strs, strl, "{");
-            for (int j = i; j < lfd->nelts; ++j) {
-                if(!items[j].tag) {
-                    continue;
-                }
-                if(strcmp(items[j].tag, items[i].tag) != 0) {
-                    i = j - 1;
-                    break;
-                }
-                attribute_name = ap_escape_logjson(r->pool, items[j].arg, NULL, 0);
-
-                lfdj->total_len += add_str(strs, strl, "\"");
-                lfdj->total_len += add_str(strs, strl, attribute_name);
-                lfdj->total_len += add_str(strs, strl, "\":");
-
-                if (!lfd->portions[j]) {
-                    lfdj->total_len += add_str(strs, strl, "null");
-                }
-                else if (!*lfd->portions[j]) {
-                    lfdj->total_len += add_str(strs, strl, "\"\"");
-                }
-                else {
-                    lfdj->total_len += add_str(strs, strl, "\"");
-                    attribute_value = ap_escape_logjson(r->pool, lfd->portions[j], NULL, 0);
-                    lfdj->total_len += add_str(strs, strl, attribute_value);
-                    lfdj->total_len += add_str(strs, strl, "\"");
-                }
-                lfdj->total_len += add_str(strs, strl, ",");
-            }
-            // remove last ","
-            apr_array_pop(strs);
-            lfdj->total_len -= *(int *)apr_array_pop(strl);
-
-            // end sub object
-            lfdj->total_len += add_str(strs, strl, "},");
-            continue;
+            attribute_name = ap_escape_logjson(r->pool, items[i].arg, NULL, 0);
+            lfdj->total_len += add_str(strs, strl, " ");
+            lfdj->total_len += add_str(strs, strl, attribute_name);
         }
+        lfdj->total_len += add_str(strs, strl, "\":\"");
 
-        if (!lfd->portions[i]) {
-            lfdj->total_len += add_str(strs, strl, "null");
-        }
-        else if (!*lfd->portions[i]) {
-            lfdj->total_len += add_str(strs, strl, "\"\"");
-        }
-        else {
-            lfdj->total_len += add_str(strs, strl, "\"");
-            attribute_value = ap_escape_logjson(r->pool, lfd->portions[i], NULL, 0);
-            lfdj->total_len += add_str(strs, strl, attribute_value);
-            lfdj->total_len += add_str(strs, strl, "\"");
-        }
-        lfdj->total_len += add_str(strs, strl, ",");
+        attribute_value = ap_escape_logjson(r->pool, lfd->portions[i], NULL, 0);
+        lfdj->total_len += add_str(strs, strl, attribute_value);
+        lfdj->total_len += add_str(strs, strl, "\",");
     }
-    /* replace last ',' with '}' */
+    /* replace last '",' with '"}' */
     apr_array_pop(strs);
     lfdj->total_len -= *(int *)apr_array_pop(strl);
-    lfdj->total_len += add_str(strs, strl, "}" APR_EOL_STR);
+    lfdj->total_len += add_str(strs, strl, "\"}" APR_EOL_STR);
 
     lfdj->portions = (const char **)strs->elts;
     lfdj->lengths = (int *)strl->elts;
     lfdj->nelts = strs->nelts;
     return lfdj;
 }
+#endif
 
 static apr_status_t ap_default_log_writer( request_rec *r,
                            void *handle,
@@ -2074,7 +2166,7 @@ static apr_status_t ap_buffered_log_writer(request_rec *r,
 
 static void json_register_attribute(apr_pool_t *p, const char *tag, const char* attribute_name)
 {
-    apr_hash_set(json_hash, tag, strlen(tag), (const void *)ap_escape_logjson(p, attribute_name, NULL, 0));
+    apr_hash_set(json_hash, tag, strlen(tag), attribute_name);
 }
 
 static int log_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp)
@@ -2084,37 +2176,37 @@ static int log_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp)
     log_pfn_register = APR_RETRIEVE_OPTIONAL_FN(ap_register_log_handler);
 
     if (log_pfn_register) {
-        log_pfn_register(p, "h", log_remote_host, 0);
         log_pfn_register(p, "a", log_remote_address, 0 );
         log_pfn_register(p, "A", log_local_address, 0 );
-        log_pfn_register(p, "l", log_remote_logname, 0);
-        log_pfn_register(p, "u", log_remote_user, 0);
-        log_pfn_register(p, "t", log_request_time, 0);
-        log_pfn_register(p, "f", log_request_file, 0);
         log_pfn_register(p, "b", clf_log_bytes_sent, 0);
         log_pfn_register(p, "B", log_bytes_sent, 0);
-        log_pfn_register(p, "i", log_header_in, 0);
-        log_pfn_register(p, "o", log_header_out, 0);
-        log_pfn_register(p, "n", log_note, 0);
-        log_pfn_register(p, "L", log_log_id, 1);
+        log_pfn_register(p, "C", log_cookie, 0);
+        log_pfn_register(p, "D", log_request_duration_microseconds, 1);
         log_pfn_register(p, "e", log_env_var, 0);
-        log_pfn_register(p, "V", log_server_name, 0);
-        log_pfn_register(p, "v", log_virtual_host, 0);
+        log_pfn_register(p, "f", log_request_file, 0);
+        log_pfn_register(p, "F", log_request_flushed, 1);
+        log_pfn_register(p, "h", log_remote_host, 0);
+        log_pfn_register(p, "H", log_request_protocol, 0);
+        log_pfn_register(p, "i", log_header_in, 0);
+        log_pfn_register(p, "k", log_requests_on_connection, 0);
+        log_pfn_register(p, "l", log_remote_logname, 0);
+        log_pfn_register(p, "L", log_log_id, 1);
+        log_pfn_register(p, "m", log_request_method, 0);
+        log_pfn_register(p, "n", log_note, 0);
+        log_pfn_register(p, "o", log_header_out, 0);
         log_pfn_register(p, "p", log_server_port, 0);
         log_pfn_register(p, "P", log_pid_tid, 0);
-        log_pfn_register(p, "H", log_request_protocol, 0);
-        log_pfn_register(p, "m", log_request_method, 0);
         log_pfn_register(p, "q", log_request_query, 0);
-        log_pfn_register(p, "F", log_request_flushed, 1);
-        log_pfn_register(p, "X", log_connection_status, 0);
-        log_pfn_register(p, "C", log_cookie, 0);
-        log_pfn_register(p, "k", log_requests_on_connection, 0);
         log_pfn_register(p, "r", log_request_line, 1);
-        log_pfn_register(p, "D", log_request_duration_microseconds, 1);
-        log_pfn_register(p, "T", log_request_duration_scaled, 1);
-        log_pfn_register(p, "U", log_request_uri, 1);
-        log_pfn_register(p, "s", log_status, 1);
         log_pfn_register(p, "R", log_handler, 1);
+        log_pfn_register(p, "s", log_status, 1);
+        log_pfn_register(p, "t", log_request_time, 0);
+        log_pfn_register(p, "T", log_request_duration_scaled, 1);
+        log_pfn_register(p, "u", log_remote_user, 0);
+        log_pfn_register(p, "U", log_request_uri, 1);
+        log_pfn_register(p, "v", log_virtual_host, 0);
+        log_pfn_register(p, "V", log_server_name, 0);
+        log_pfn_register(p, "X", log_connection_status, 0);
 
         log_pfn_register(p, "^ti", log_trailer_in, 0);
         log_pfn_register(p, "^to", log_trailer_out, 0);
