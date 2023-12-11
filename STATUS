@@ -189,6 +189,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      ylavic: not sure since it's not public (i.e. in mod_proxy.h)?
      minfrin: true, mmn bump not needed
      ylavic: new proposal in https://github.com/apache/httpd/pull/396
+     +1: jfclere
 
   *) mod_ssl: fix LibreSSL build
      Trunk version of patch:
