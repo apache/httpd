@@ -982,7 +982,12 @@ apr_status_t modssl_load_engine_keypair(server_rec *s, apr_pool_t *p,
 #if MODSSL_HAVE_OPENSSL_STORE
     SSLModConfigRec *mc = myModConfig(s);
 
-    if (!mc->szCryptoDevice)
+    /* For OpenSSL 3.x, use the STORE-based API if either ENGINE
+     * support was not present compile-time, or if it's built but
+     * SSLCryptoDevice is not configured. */
+#if MODSSL_HAVE_ENGINE_API 
+    if (!mc->szCryptoDevice) 
+#endif
         return modssl_load_keypair_store(s, p, vhostid, certid, keyid,
                                          pubkey, privkey);
 #endif
