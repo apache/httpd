@@ -1497,23 +1497,22 @@ static const char *add_custom_log(cmd_parms *cmd, void *dummy,
     return err_string;
 }
 
-static const char *add_global_log(cmd_parms *cmd, void *dummy, const char *fn,
-                                  const char *fmt, const char *envclause) {
+static const char *add_global_log(cmd_parms *cmd, void *dummy,
+                                  int argc,
+                                  char *const argv[]) {
     multi_log_state *mls = ap_get_module_config(cmd->server->module_config,
                                                 &log_config_module);
     config_log_state *clsarray;
     config_log_state *cls;
     const char *ret;
-    char *const argv[] = {(char *)fn, (char *)fmt, (char *)envclause};
 
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
-
     if (err) {
         return err;
     }
 
     /* Add a custom log through the normal channel */
-    ret = add_custom_log(cmd, dummy, sizeof(argv)/sizeof(argv[0]), argv);
+    ret = add_custom_log(cmd, dummy, argc, argv);
 
     /* Set the inherit flag unless there was some error */
     if (ret == NULL) {
@@ -1566,7 +1565,7 @@ static const command_rec config_log_cmds[] =
 AP_INIT_TAKE_ARGV("CustomLog", add_custom_log, NULL, RSRC_CONF,
      "a file name, a custom log format string or format name, "
      "and an optional \"env=\" or \"expr=\" clause (see docs)"),
-AP_INIT_TAKE23("GlobalLog", add_global_log, NULL, RSRC_CONF,
+AP_INIT_TAKE_ARGV("GlobalLog", add_global_log, NULL, RSRC_CONF,
      "Same as CustomLog, but forces virtualhosts to inherit the log"),
 AP_INIT_TAKE1("TransferLog", set_transfer_log, NULL, RSRC_CONF,
      "the filename of the access log"),
@@ -1958,11 +1957,11 @@ static ap_log_formatted_data * ap_json_log_formatter( request_rec *r,
     lfdj->total_len += add_str(strs, strl, "{");
     for (i = 0; i < lfd->nelts; ++i) {
         if(items[i].tag == NULL) {
-                continue;
+            continue;
         }
 
         if (formatter_options->use_short_attribute_names) {
-                attribute_name = NULL;
+            attribute_name = NULL;
         }
         else {
             attribute_name = apr_hash_get(json_hash, items[i].tag, APR_HASH_KEY_STRING);
@@ -1974,23 +1973,73 @@ static ap_log_formatted_data * ap_json_log_formatter( request_rec *r,
 
         lfdj->total_len += add_str(strs, strl, "\"");
         lfdj->total_len += add_str(strs, strl, attribute_name);
+        lfdj->total_len += add_str(strs, strl, "\":");
 
-        /* process any arguments as attribute name extension */
+        /* if the current tag has arguments, i.e. "i" (requestHeaders)
+         * create a sub object with items[i].arg as key and lfd->portions[i] values.
+         *
+         * as multiple same tags with different arguments can exist,
+         * the log_format_item is sorted before, so we can easily check for
+         * gruppenwechsel
+         */
         if(items[i].arg != NULL && strlen(items[i].arg) > 0) {
-            attribute_name = ap_escape_logjson(r->pool, items[i].arg, NULL, 0);
-            lfdj->total_len += add_str(strs, strl, " ");
-            lfdj->total_len += add_str(strs, strl, attribute_name);
-        }
-        lfdj->total_len += add_str(strs, strl, "\":\"");
+            // start sub object
+            lfdj->total_len += add_str(strs, strl, "{");
+            for (int j = i; j < lfd->nelts; ++j) {
+                if(items[j].tag == NULL) {
+                    continue;
+                }
+                if(strcmp(items[j].tag, items[i].tag) != 0) {
+                    i = j; /* -1 ?*/
+                    break;
+                }
+                attribute_name = ap_escape_logjson(r->pool, items[i].arg, NULL, 0);
 
-        attribute_value = ap_escape_logjson(r->pool, lfd->portions[i], NULL, 0);
-        lfdj->total_len += add_str(strs, strl, attribute_value);
-        lfdj->total_len += add_str(strs, strl, "\",");
+                lfdj->total_len += add_str(strs, strl, "\"");
+                lfdj->total_len += add_str(strs, strl, attribute_name);
+                lfdj->total_len += add_str(strs, strl, "\":");
+
+                if (!lfd->portions[i]) {
+                    lfdj->total_len += add_str(strs, strl, "null");
+                }
+                else if (!*lfd->portions[i]) {
+                    lfdj->total_len += add_str(strs, strl, "\"\"");
+                }
+                else {
+                    lfdj->total_len += add_str(strs, strl, "\"");
+                    attribute_value = ap_escape_logjson(r->pool, lfd->portions[i], NULL, 0);
+                    lfdj->total_len += add_str(strs, strl, attribute_value);
+                    lfdj->total_len += add_str(strs, strl, "\"");
+                }
+                lfdj->total_len += add_str(strs, strl, ",");
+            }
+            // remove last ","
+            apr_array_pop(strs);
+            lfdj->total_len -= *(int *)apr_array_pop(strl);
+
+            // end sub object
+            lfdj->total_len += add_str(strs, strl, "},");
+            continue;
+        }
+
+        if (!lfd->portions[i]) {
+            lfdj->total_len += add_str(strs, strl, "null");
+        }
+        else if (!*lfd->portions[i]) {
+            lfdj->total_len += add_str(strs, strl, "\"\"");
+        }
+        else {
+            lfdj->total_len += add_str(strs, strl, "\"");
+            attribute_value = ap_escape_logjson(r->pool, lfd->portions[i], NULL, 0);
+            lfdj->total_len += add_str(strs, strl, attribute_value);
+            lfdj->total_len += add_str(strs, strl, "\"");
+        }
+        lfdj->total_len += add_str(strs, strl, ",");
     }
-    /* replace last '",' with '"}' */
+    /* replace last ',' with '}' */
     apr_array_pop(strs);
     lfdj->total_len -= *(int *)apr_array_pop(strl);
-    lfdj->total_len += add_str(strs, strl, "\"}" APR_EOL_STR);
+    lfdj->total_len += add_str(strs, strl, "}" APR_EOL_STR);
 
     lfdj->portions = (const char **)strs->elts;
     lfdj->lengths = (int *)strl->elts;
