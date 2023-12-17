@@ -1945,7 +1945,7 @@ static ap_log_formatted_data * ap_json_log_formatter( request_rec *r,
     const char* attribute_name;
     const char* attribute_value;
 
-    int i;
+    int i,j;
 
     ap_log_formatted_data *lfdj = apr_palloc(r->pool, sizeof(ap_log_formatted_data));
     apr_array_header_t *strs = apr_array_make(r->pool, lfd->nelts * 3, sizeof(char *)); /* array of pointers to char */
@@ -1983,9 +1983,9 @@ static ap_log_formatted_data * ap_json_log_formatter( request_rec *r,
          * gruppenwechsel
          */
         if(items[i].arg != NULL && strlen(items[i].arg) > 0) {
-            // start sub object
+            /* start sub object */
             lfdj->total_len += add_str(strs, strl, "{");
-            for (int j = i; j < lfd->nelts; ++j) {
+            for (j = i; j < lfd->nelts; ++j) {
                 if(items[j].tag == NULL) {
                     continue;
                 }
@@ -2013,11 +2013,11 @@ static ap_log_formatted_data * ap_json_log_formatter( request_rec *r,
                 }
                 lfdj->total_len += add_str(strs, strl, ",");
             }
-            // remove last ","
+            /* remove last "," */
             apr_array_pop(strs);
             lfdj->total_len -= *(int *)apr_array_pop(strl);
 
-            // end sub object
+            /* end sub object */
             lfdj->total_len += add_str(strs, strl, "},");
             continue;
         }
