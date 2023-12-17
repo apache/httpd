@@ -1254,7 +1254,7 @@ static int config_log_transaction(request_rec *r, config_log_state *cls,
                 lfd->portions[i] = "\"\"";
             }
             else {
-                if(items[i].tag) { // or check for constant_item function, don't escape those
+                if(items[i].tag) { /* or check for constant_item function, don't escape those */
                     lfd->portions[i] = ap_escape_logitem(r->pool, lfd->portions[i]);
                 }
             }
@@ -1422,6 +1422,8 @@ static const char *add_custom_log(cmd_parms *cmd, void *dummy,
     const char* envclause = NULL;
     char* token;
 
+    int i;
+
     cls = (config_log_state *) apr_array_push(mls->config_logs);
     cls->condition_var = NULL;
     cls->condition_expr = NULL;
@@ -1436,7 +1438,7 @@ static const char *add_custom_log(cmd_parms *cmd, void *dummy,
     fn = argv[0];
     fmt = argv[1];
 
-    for(int i = 2; i < argc; i++) {
+    for (i = 2; i < argc; i++) {
         if (argv[i] == NULL)
             continue;
 
@@ -1511,7 +1513,7 @@ static const char *add_global_log(cmd_parms *cmd, void *dummy, const char *fn,
     }
 
     /* Add a custom log through the normal channel */
-    ret = add_custom_log(cmd, dummy, sizeof(argv), argv);
+    ret = add_custom_log(cmd, dummy, sizeof(argv)/sizeof(argv[0]), argv);
 
     /* Set the inherit flag unless there was some error */
     if (ret == NULL) {
@@ -1527,7 +1529,22 @@ static const char *set_transfer_log(cmd_parms *cmd, void *dummy,
                                     const char *fn)
 {
     char *const argv[] = {(char *)fn, NULL, NULL};
-    return add_custom_log(cmd, dummy, sizeof(argv), argv);
+    /*
+     * TODO: strangley there seems to be no common array length function available
+     * grepping the source reveals multiple definitions:
+
+#define H2_ALEN(a)          (sizeof(a)/sizeof((a)[0]))
+./modules/http2/h2.h
+
+#define H2_ALEN(a)          (sizeof(a)/sizeof((a)[0]))
+./modules/http2/h2_proxy_session.h
+
+#define TLS_DIM(a)      (sizeof(a)/sizeof(a[0]))
+    apr_size_t len, bmax = sizeof(buffer)/sizeof(buffer[0]); \
+./modules/tls/tls_util.h
+
+     */
+    return add_custom_log(cmd, dummy, sizeof(argv)/sizeof(argv[0]), argv);
 }
 
 static const char *set_buffered_logs_on(cmd_parms *parms, void *dummy, int flag)
@@ -1778,6 +1795,7 @@ static ap_log_formatted_data * ap_json_log_formatter( request_rec *r,
     const char* attribute_name;
     const char* attribute_value;
 
+    int i,j;
     ap_log_formatted_data *lfdj = apr_palloc(r->pool, sizeof(ap_log_formatted_data));
 
     /* TODO: how to determine max number of vectors? */
@@ -1794,7 +1812,7 @@ static ap_log_formatted_data * ap_json_log_formatter( request_rec *r,
     /* build log object */
     apr_json_value_t *log_object = apr_json_object_create(r->pool);
 
-    for (int i = 0; i < lfd->nelts; ++i) {
+    for (i = 0; i < lfd->nelts; ++i) {
         if(!items[i].tag) {
             continue;
         }
@@ -1826,7 +1844,7 @@ static ap_log_formatted_data * ap_json_log_formatter( request_rec *r,
                                 sub_log_object,
                                 r->pool);
 
-            for (int j = i; j < lfd->nelts; ++j) {
+            for (j = i; j < lfd->nelts; ++j) {
                 if(!items[j].tag) {
                     continue;
                 }
@@ -1890,13 +1908,13 @@ static ap_log_formatted_data * ap_json_log_formatter( request_rec *r,
     apr_json_encode(bb, NULL, NULL, log_object, APR_JSON_FLAGS_WHITESPACE, r->pool);
     apr_brigade_puts(bb, NULL, NULL, APR_EOL_STR);
 
-    // TODO: detect overflow nvec
+    /* TODO: detect overflow nvec */
     apr_brigade_to_iovec(bb, vec, &nvec);
 
     lfdj->portions = apr_palloc(r->pool, sizeof(char*) * nvec);
     lfdj->lengths = apr_palloc(r->pool, sizeof(int) * nvec);
     lfdj->total_len = 0;
-    for(int i = 0; i < nvec; i++) {
+    for (i = 0; i < nvec; i++) {
         lfdj->portions[i] = vec[i].iov_base;
         lfdj->lengths[i] = vec[i].iov_len;
         lfdj->total_len += vec[i].iov_len;
@@ -1928,6 +1946,8 @@ static ap_log_formatted_data * ap_json_log_formatter( request_rec *r,
     const char* attribute_name;
     const char* attribute_value;
 
+    int i;
+
     ap_log_formatted_data *lfdj = apr_palloc(r->pool, sizeof(ap_log_formatted_data));
     apr_array_header_t *strs = apr_array_make(r->pool, lfd->nelts * 3, sizeof(char *)); /* array of pointers to char */
     apr_array_header_t *strl = apr_array_make(r->pool, lfd->nelts * 3, sizeof(int));    /* array of int (strlen) */
@@ -1936,7 +1956,7 @@ static ap_log_formatted_data * ap_json_log_formatter( request_rec *r,
 
     /* build json object */
     lfdj->total_len += add_str(strs, strl, "{");
-    for (int i = 0; i < lfd->nelts; ++i) {
+    for (i = 0; i < lfd->nelts; ++i) {
         if(items[i].tag == NULL) {
                 continue;
         }
@@ -2230,7 +2250,7 @@ static int log_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp)
         json_register_attribute(p, "A", "localAddr");
         json_register_attribute(p, "b", "size");
         json_register_attribute(p, "B", "byteSentNC");
-        json_register_attribute(p, "C", "cookie"); // tomcat: "c"
+        json_register_attribute(p, "C", "cookie"); /* tomcat: "c" */
         json_register_attribute(p, "D", "elapsedTime");
         json_register_attribute(p, "e", "env");
         json_register_attribute(p, "f", "file");
@@ -2254,7 +2274,7 @@ static int log_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp)
         json_register_attribute(p, "T", "elapsedTimeS");
         json_register_attribute(p, "u", "user");
         json_register_attribute(p, "U", "path");
-        json_register_attribute(p, "v", "virtualHost"); // tomcat: localServerName
+        json_register_attribute(p, "v", "virtualHost"); /* tomcat: localServerName */
         json_register_attribute(p, "V", "serverName");
         json_register_attribute(p, "X", "connectionStatus");
 
