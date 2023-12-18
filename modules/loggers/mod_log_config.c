@@ -186,8 +186,8 @@ module AP_MODULE_DECLARE_DATA log_config_module;
 static int xfer_flags = (APR_WRITE | APR_APPEND | APR_CREATE | APR_LARGEFILE);
 static apr_fileperms_t xfer_perms = APR_OS_DEFAULT;
 
-static apr_hash_t *log_hash; /* tag to log_struct */
-static apr_hash_t *json_hash; /* tag to json attribute name */
+static apr_hash_t *log_hash;  /* tag to log_struct */
+static apr_hash_t *llog_hash; /* tag to long name */
 
 static apr_status_t ap_default_log_writer(request_rec *r,
                            void *handle,
@@ -1756,7 +1756,8 @@ static void init_child(apr_pool_t *p, server_rec *s)
     }
 }
 
-static void ap_register_log_handler(apr_pool_t *p, char *tag,
+static void ap_register_log_handler_ex(apr_pool_t *p, const char *tag,
+                                    const char *long_name,
                                     ap_log_handler_fn_t *handler, int def)
 {
     ap_log_handler *log_struct = apr_palloc(p, sizeof(*log_struct));
@@ -1764,15 +1765,25 @@ static void ap_register_log_handler(apr_pool_t *p, char *tag,
     log_struct->want_orig_default = def;
 
     apr_hash_set(log_hash, tag, strlen(tag), (const void *)log_struct);
+    if(long_name) {
+        apr_hash_set(llog_hash, tag, strlen(tag), long_name);
+    }
 }
+
+static void ap_register_log_handler(apr_pool_t *p, char *tag,
+                                    ap_log_handler_fn_t *handler, int def)
+{
+    ap_register_log_handler_ex(p, tag, NULL, handler, def);
+}
+
 static ap_log_writer_init *ap_log_set_writer_init(ap_log_writer_init *handle)
 {
     ap_log_writer_init *old = log_writer_init;
     log_writer_init = handle;
 
     return old;
-
 }
+
 static ap_log_writer *ap_log_set_writer(ap_log_writer *handle)
 {
     ap_log_writer *old = log_writer;
@@ -1820,7 +1831,7 @@ static ap_log_formatted_data * ap_json_log_formatter( request_rec *r,
             attribute_name = NULL;
         }
         else {
-            attribute_name = apr_hash_get(json_hash, items[i].tag, APR_HASH_KEY_STRING);
+            attribute_name = apr_hash_get(llog_hash, items[i].tag, APR_HASH_KEY_STRING);
         }
 
         if (!attribute_name) {
@@ -1964,7 +1975,7 @@ static ap_log_formatted_data * ap_json_log_formatter( request_rec *r,
             attribute_name = NULL;
         }
         else {
-            attribute_name = apr_hash_get(json_hash, items[i].tag, APR_HASH_KEY_STRING);
+            attribute_name = apr_hash_get(llog_hash, items[i].tag, APR_HASH_KEY_STRING);
         }
 
         if (!attribute_name) {
@@ -2233,104 +2244,65 @@ static apr_status_t ap_buffered_log_writer(request_rec *r,
     return rv;
 }
 
-static void json_register_attribute(apr_pool_t *p, const char *tag, const char* attribute_name)
-{
-    apr_hash_set(json_hash, tag, strlen(tag), attribute_name);
-}
-
 static int log_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp)
 {
-    static APR_OPTIONAL_FN_TYPE(ap_register_log_handler) *log_pfn_register;
+    static APR_OPTIONAL_FN_TYPE(ap_register_log_handler_ex) *log_pfn_register;
 
-    log_pfn_register = APR_RETRIEVE_OPTIONAL_FN(ap_register_log_handler);
-
-    if (log_pfn_register) {
-        log_pfn_register(p, "a", log_remote_address, 0 );
-        log_pfn_register(p, "A", log_local_address, 0 );
-        log_pfn_register(p, "b", clf_log_bytes_sent, 0);
-        log_pfn_register(p, "B", log_bytes_sent, 0);
-        log_pfn_register(p, "C", log_cookie, 0);
-        log_pfn_register(p, "D", log_request_duration_microseconds, 1);
-        log_pfn_register(p, "e", log_env_var, 0);
-        log_pfn_register(p, "f", log_request_file, 0);
-        log_pfn_register(p, "F", log_request_flushed, 1);
-        log_pfn_register(p, "h", log_remote_host, 0);
-        log_pfn_register(p, "H", log_request_protocol, 0);
-        log_pfn_register(p, "i", log_header_in, 0);
-        log_pfn_register(p, "k", log_requests_on_connection, 0);
-        log_pfn_register(p, "l", log_remote_logname, 0);
-        log_pfn_register(p, "L", log_log_id, 1);
-        log_pfn_register(p, "m", log_request_method, 0);
-        log_pfn_register(p, "n", log_note, 0);
-        log_pfn_register(p, "o", log_header_out, 0);
-        log_pfn_register(p, "p", log_server_port, 0);
-        log_pfn_register(p, "P", log_pid_tid, 0);
-        log_pfn_register(p, "q", log_request_query, 0);
-        log_pfn_register(p, "r", log_request_line, 1);
-        log_pfn_register(p, "R", log_handler, 1);
-        log_pfn_register(p, "s", log_status, 1);
-        log_pfn_register(p, "t", log_request_time, 0);
-        log_pfn_register(p, "T", log_request_duration_scaled, 1);
-        log_pfn_register(p, "u", log_remote_user, 0);
-        log_pfn_register(p, "U", log_request_uri, 1);
-        log_pfn_register(p, "v", log_virtual_host, 0);
-        log_pfn_register(p, "V", log_server_name, 0);
-        log_pfn_register(p, "X", log_connection_status, 0);
-
-        log_pfn_register(p, "^ti", log_trailer_in, 0);
-        log_pfn_register(p, "^to", log_trailer_out, 0);
-
-        /* these used to be part of mod_ssl, but with the introduction
-         * of ap_ssl_var_lookup() they are added here directly so lookups
-         * from all installed SSL modules work.
-         * We keep the old tag names to remain backward compatible. */
-        log_pfn_register(p, "c", log_ssl_var_short, 0);
-        log_pfn_register(p, "x", log_ssl_var, 0);
-    }
+    log_pfn_register = APR_RETRIEVE_OPTIONAL_FN(ap_register_log_handler_ex);
 
     /*
-     * should align with tomcat attribute names:
+     * long names should align with tomcat attribute names:
      * https://github.com/apache/tomcat/blob/9.0.x/java/org/apache/catalina/valves/JsonAccessLogValve.java#L78
      * also interessting is fluentd resp. fluent-bit:
      * - https://github.com/fluent/fluentd/blob/master/lib/fluent/plugin/parser_apache2.rb#L72
      */
     if (log_pfn_register) {
-        json_register_attribute(p, "a", "remoteAddr");
-        json_register_attribute(p, "A", "localAddr");
-        json_register_attribute(p, "b", "size");
-        json_register_attribute(p, "B", "byteSentNC");
-        json_register_attribute(p, "C", "cookie"); /* tomcat: "c" */
-        json_register_attribute(p, "D", "elapsedTime");
-        json_register_attribute(p, "e", "env");
-        json_register_attribute(p, "f", "file");
-        json_register_attribute(p, "F", "requestFlushed");
-        json_register_attribute(p, "h", "host");
-        json_register_attribute(p, "H", "protocol");
-        json_register_attribute(p, "i", "requestHeaders");
-        json_register_attribute(p, "k", "requestsOnConnection");
-        json_register_attribute(p, "l", "logicalUserName");
-        json_register_attribute(p, "L", "logId");
-        json_register_attribute(p, "m", "method");
-        json_register_attribute(p, "n", "note");
-        json_register_attribute(p, "o", "responseHeaders");
-        json_register_attribute(p, "p", "port");
-        json_register_attribute(p, "P", "threadId");
-        json_register_attribute(p, "q", "query");
-        json_register_attribute(p, "r", "request");
-        json_register_attribute(p, "R", "handler");
-        json_register_attribute(p, "s", "statusCode");
-        json_register_attribute(p, "t", "time");
-        json_register_attribute(p, "T", "elapsedTimeS");
-        json_register_attribute(p, "u", "user");
-        json_register_attribute(p, "U", "path");
-        json_register_attribute(p, "v", "virtualHost"); /* tomcat: localServerName */
-        json_register_attribute(p, "V", "serverName");
-        json_register_attribute(p, "X", "connectionStatus");
+        log_pfn_register(p, "a", "remoteAddr", log_remote_address, 0 );
+        log_pfn_register(p, "A", "localAddr", log_local_address, 0 );
+        log_pfn_register(p, "b", "size", clf_log_bytes_sent, 0);
+        log_pfn_register(p, "B", "byteSentNC", log_bytes_sent, 0);
+        log_pfn_register(p, "C", "cookie", log_cookie, 0); /* tomcat: "c" */
+        log_pfn_register(p, "D", "elapsedTime", log_request_duration_microseconds, 1);
+        log_pfn_register(p, "e", "env", log_env_var, 0);
+        log_pfn_register(p, "f", "file", log_request_file, 0);
+        log_pfn_register(p, "F", "requestFlushed", log_request_flushed, 1);
+        log_pfn_register(p, "h", "host", log_remote_host, 0);
+        log_pfn_register(p, "H", "protocol", log_request_protocol, 0);
+        log_pfn_register(p, "i", "requestHeaders", log_header_in, 0);
+        log_pfn_register(p, "k", "requestsOnConnection", log_requests_on_connection, 0);
+        log_pfn_register(p, "l", "logicalUserName", log_remote_logname, 0);
+        log_pfn_register(p, "L", "logId", log_log_id, 1);
+        log_pfn_register(p, "m", "method", log_request_method, 0);
+        log_pfn_register(p, "n", "note", log_note, 0);
+        log_pfn_register(p, "o", "responseHeaders", log_header_out, 0);
+        log_pfn_register(p, "p", "port", log_server_port, 0);
+        log_pfn_register(p, "P", "threadId", log_pid_tid, 0);
+        log_pfn_register(p, "q", "query", log_request_query, 0);
+        log_pfn_register(p, "r", "request", log_request_line, 1);
+        log_pfn_register(p, "R", "handler", log_handler, 1);
+        log_pfn_register(p, "s", "statusCode", log_status, 1);
+        log_pfn_register(p, "t", "time", log_request_time, 0);
+        log_pfn_register(p, "T", "elapsedTimeS", log_request_duration_scaled, 1);
+        log_pfn_register(p, "u", "user", log_remote_user, 0);
+        log_pfn_register(p, "U", "path", log_request_uri, 1);
+        log_pfn_register(p, "v", "virtualHost", log_virtual_host, 0); /* tomcat: localServerName */
+        log_pfn_register(p, "V", "serverName", log_server_name, 0);
+        log_pfn_register(p, "X", "connectionStatus", log_connection_status, 0);
 
-        /* TODO:
+        /* TODO: long names for
          * - "^ti", "^to", "c" and "x" -> new in trunk?
          * - mod_logio does register: "I", "O", "S", "^FU" and "^FB"
          */
+
+        log_pfn_register(p, "^ti", NULL, log_trailer_in, 0);
+        log_pfn_register(p, "^to", NULL, log_trailer_out, 0);
+
+        /* these used to be part of mod_ssl, but with the introduction
+         * of ap_ssl_var_lookup() they are added here directly so lookups
+         * from all installed SSL modules work.
+         * We keep the old tag names to remain backward compatible. */
+        log_pfn_register(p, "c", NULL, log_ssl_var_short, 0);
+        log_pfn_register(p, "x", NULL, log_ssl_var, 0);
     }
 
     /* reset to default conditions */
@@ -2405,8 +2377,9 @@ static void register_hooks(apr_pool_t *p)
      * before calling APR_REGISTER_OPTIONAL_FN.
      */
     log_hash = apr_hash_make(p);
-    json_hash = apr_hash_make(p);
+    llog_hash = apr_hash_make(p);
     APR_REGISTER_OPTIONAL_FN(ap_register_log_handler);
+    APR_REGISTER_OPTIONAL_FN(ap_register_log_handler_ex);
     APR_REGISTER_OPTIONAL_FN(ap_log_set_writer_init);
     APR_REGISTER_OPTIONAL_FN(ap_log_set_writer);
 }
