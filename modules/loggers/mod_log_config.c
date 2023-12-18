@@ -431,10 +431,10 @@ static const char *log_request_flushed(request_rec *r, char *a)
 static const char *log_log_id(request_rec *r, char *a)
 {
     if (a && !strcmp(a, "c")) {
-        return r->connection->log_id ? r->connection->log_id : NULL;
+        return r->connection->log_id;
     }
     else {
-        return r->log_id ? r->log_id : NULL;
+        return r->log_id;
     }
 }
 static const char *log_request_protocol(request_rec *r, char *a)
@@ -966,9 +966,8 @@ static char *parse_log_misc_string(apr_pool_t *p, log_format_item *it,
      * This might allocate a few chars extra if there's a backslash
      * escape in the format string.
      */
-    it->arg = apr_palloc(p, s - *sa + 1);
+    it->arg = d = apr_palloc(p, s - *sa + 1);
 
-    d = (char *)it->arg;
     s = *sa;
     while (*s && *s != '%') {
         if (*s != '\\') {
@@ -1799,8 +1798,8 @@ static ap_log_formatted_data * ap_json_log_formatter( request_rec *r,
                            const void *itms)
 
 {
-    json_log_formatter_options * formatter_options = (json_log_formatter_options *) handle;
-    log_format_item *items = (log_format_item *) itms;
+    const json_log_formatter_options * formatter_options = (json_log_formatter_options *) handle;
+    const log_format_item *items = (log_format_item *) itms;
 
     const char* attribute_name;
     const char* attribute_value;
@@ -1950,8 +1949,8 @@ static ap_log_formatted_data * ap_json_log_formatter( request_rec *r,
                            const void *itms)
 
 {
-    json_log_formatter_options * formatter_options = (json_log_formatter_options *) handle;
-    log_format_item *items = (log_format_item *) itms;
+    const json_log_formatter_options * formatter_options = (json_log_formatter_options *) handle;
+    const log_format_item *items = (log_format_item *) itms;
 
     const char* attribute_name;
     const char* attribute_value;
