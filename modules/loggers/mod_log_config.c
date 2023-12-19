@@ -1410,7 +1410,6 @@ static const char *add_custom_log(cmd_parms *cmd, void *dummy,
                                   char *const argv[])
 {
     const char *err_string = NULL;
-    int sort_log_format_items = 0;
     multi_log_state *mls = ap_get_module_config(cmd->server->module_config,
                                                 &log_config_module);
     config_log_state *cls;
@@ -1463,7 +1462,6 @@ static const char *add_custom_log(cmd_parms *cmd, void *dummy,
             if (strncasecmp(argv[i], "formatter=json", 14) == 0) {
                 cls->log_formatter = ap_json_log_formatter;
                 cls->log_formatter_data = apr_pcalloc(cmd->pool, sizeof(json_log_formatter_options));
-                sort_log_format_items = 1;
 
                 token = strtok(argv[i], ",");
                 while (token != NULL) {
@@ -1487,10 +1485,12 @@ static const char *add_custom_log(cmd_parms *cmd, void *dummy,
     }
     else {
         cls->format = parse_log_string(cmd->pool, fmt, &err_string);
-        if(cls->format && sort_log_format_items) {
-            /* sort log_format_items array, to help json formatter */
-            qsort(cls->format->elts, cls->format->nelts, cls->format->elt_size, compare_log_format_item_by_tag);
-        }
+        /* if fmt string was actually a nickname, cls->format will be NULL,
+         * but cls->format_string will have the nickname
+         * lookup will then happen in open_multi_logs()
+         * TODO: I assume the lookup cannot happen here for ordering reasons
+         *       of the config processing?!
+         */
     }
 
     return err_string;
@@ -1591,6 +1591,21 @@ static config_log_state *open_config_log(server_rec *s, apr_pool_t *p,
     if (cls->log_writer_data == NULL)
         return NULL;
 
+    /* TODO: not sure if this is a good place to do this,
+     * better than previously it is!
+     */
+
+    /* sort log_format_items array, to help json formatter in gruppenwechsel */
+    if (cls->log_formatter == ap_json_log_formatter /* sort_log_format_items */ ) {
+        /* no valid cls->format given in format string,
+           use default_format, if any valid */
+        if (!cls->format && default_format) {
+            /* copy here to not confuse non-json formatters */
+            cls->format = apr_array_copy(p, default_format);
+        }
+        qsort(cls->format->elts, cls->format->nelts, cls->format->elt_size, compare_log_format_item_by_tag);
+    }
+
     return cls;
 }
 
@@ -1611,6 +1626,9 @@ static int open_multi_logs(server_rec *s, apr_pool_t *p)
     }
 
     if (!mls->default_format) {
+        /* TODO: may use "CLF" instead from mls->formats here
+         *       which is added in make_config_log_state
+         */
         mls->default_format = parse_log_string(p, DEFAULT_LOG_FORMAT, &dummy);
     }
 
@@ -1623,10 +1641,6 @@ static int open_multi_logs(server_rec *s, apr_pool_t *p)
                 format = apr_table_get(mls->formats, cls->format_string);
                 if (format) {
                     cls->format = parse_log_string(p, format, &dummy);
-                    if(cls->format && cls->log_formatter == ap_json_log_formatter /* sort_log_format_items */ ) {
-                        /* sort log_format_items array, to help json formatter */
-                        qsort(cls->format->elts, cls->format->nelts, cls->format->elt_size, compare_log_format_item_by_tag);
-                    }
                 }
             }
 
