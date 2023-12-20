@@ -1,0 +1,2 @@
+  *) http/1.1: For a chunked response body, ensure the last-chunk
+     terminator is flushed if necessary. [Joe Orton]
