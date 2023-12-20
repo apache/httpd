@@ -1871,11 +1871,13 @@ static ap_log_formatted_data * ap_json_log_formatter( request_rec *r,
                                 r->pool);
 
             for (j = i; j < lfd->nelts; ++j) {
+                /* skip empty tags, if any */
                 if(!items[j].tag) {
                     continue;
                 }
-                if(strcmp(items[j].tag, items[i].tag) != 0) {
-                    i = j - 1;
+
+                /* is gruppenwechsel */
+                if(j > i && strcmp(items[j].tag, items[i].tag) != 0) {
                     break;
                 }
 
@@ -1901,6 +1903,8 @@ static ap_log_formatted_data * ap_json_log_formatter( request_rec *r,
                 }
             }
 
+            /* restart outer loop with current item */
+            i = j - 1;
             continue;
         }
 
@@ -2013,11 +2017,13 @@ static ap_log_formatted_data * ap_json_log_formatter( request_rec *r,
             /* start sub object */
             lfdj->total_len += add_str(strs, strl, "{");
             for (j = i; j < lfd->nelts; ++j) {
-                if(items[j].tag == NULL) {
+                /* skip empty tags, if any */
+                if(!items[j].tag) {
                     continue;
                 }
-                if(strcmp(items[j].tag, items[i].tag) != 0) {
-                    i = j - 1;
+
+                /* is gruppenwechsel */
+                if(j > i && strcmp(items[j].tag, items[i].tag) != 0) {
                     break;
                 }
                 attribute_name = ap_escape_logjson(r->pool, items[j].arg, NULL, 0);
@@ -2045,7 +2051,11 @@ static ap_log_formatted_data * ap_json_log_formatter( request_rec *r,
             lfdj->total_len -= *(int *)apr_array_pop(strl);
 
             /* end sub object */
-            lfdj->total_len += add_str(strs, strl, "},");
+            lfdj->total_len += add_str(strs, strl, "}");
+            lfdj->total_len += add_str(strs, strl, ",");
+
+            /* restart outer loop with current item */
+            i = j - 1;
             continue;
         }
 
