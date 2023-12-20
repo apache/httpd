@@ -1485,11 +1485,14 @@ static const char *add_custom_log(cmd_parms *cmd, void *dummy,
     }
     else {
         cls->format = parse_log_string(cmd->pool, fmt, &err_string);
-        /* if fmt string was actually a nickname, cls->format will be NULL,
+        /* if fmt string was actually a nickname,
+         * cls->format will not be NULL, but an array with one entry (APR_EOL_STR)
          * but cls->format_string will have the nickname
-         * lookup will then happen in open_multi_logs()
+         * lookup will then happen in open_multi_logs()!
          * TODO: I assume the lookup cannot happen here for ordering reasons
          *       of the config processing?!
+         * TODO: actually those kind of consistency checks should be done in
+         *       "ap_hook_check_config(log_check_config" IMHO and not in open_multi_logs!
          */
     }
 
@@ -2014,24 +2017,24 @@ static ap_log_formatted_data * ap_json_log_formatter( request_rec *r,
                     continue;
                 }
                 if(strcmp(items[j].tag, items[i].tag) != 0) {
-                    i = j; /* -1 ?*/
+                    i = j - 1;
                     break;
                 }
-                attribute_name = ap_escape_logjson(r->pool, items[i].arg, NULL, 0);
+                attribute_name = ap_escape_logjson(r->pool, items[j].arg, NULL, 0);
 
                 lfdj->total_len += add_str(strs, strl, "\"");
                 lfdj->total_len += add_str(strs, strl, attribute_name);
                 lfdj->total_len += add_str(strs, strl, "\":");
 
-                if (!lfd->portions[i]) {
+                if (!lfd->portions[j]) {
                     lfdj->total_len += add_str(strs, strl, "null");
                 }
-                else if (!*lfd->portions[i]) {
+                else if (!*lfd->portions[j]) {
                     lfdj->total_len += add_str(strs, strl, "\"\"");
                 }
                 else {
                     lfdj->total_len += add_str(strs, strl, "\"");
-                    attribute_value = ap_escape_logjson(r->pool, lfd->portions[i], NULL, 0);
+                    attribute_value = ap_escape_logjson(r->pool, lfd->portions[j], NULL, 0);
                     lfdj->total_len += add_str(strs, strl, attribute_value);
                     lfdj->total_len += add_str(strs, strl, "\"");
                 }
