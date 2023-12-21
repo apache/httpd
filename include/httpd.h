@@ -1964,6 +1964,38 @@ AP_DECLARE(char *) ap_escape_logitem(apr_pool_t *p, const char *str)
                    AP_FN_ATTR_NONNULL((1));
 
 /**
+ * Apply JSON escaping to a UTF string. Invalid UTF8 character sequences
+ * are replaced by the U+FFFD replacement character.
+ * @param dest The destination buffer, can be NULL
+ * @param src The original buffer
+ * @param srclen The length of the original buffer. Pass APR_ESCAPE_STRING
+ * for a NUL terminated string.
+ * @param quote If non zero, surround the string with quotes, and if the
+ * string is NULL, return the string "NULL".
+ * @param len If present, returns the length of the string
+ * @return APR_SUCCESS, or APR_NOTFOUND if the string resulted in no
+ * modification, APR_EINVAL if bad UTF8 is detected. In all cases valid
+ * UTF8 is returned.
+ */
+APR_DECLARE(apr_status_t) apr_escape_json(char *dest, const char *src,
+        apr_ssize_t srclen, int quote, apr_size_t *len);
+
+/**
+ * Apply JSON escaping to a UTF string. Invalid UTF8 character sequences
+ * are replaced by the U+FFFD replacement character.
+ * @param p Pool to allocate from
+ * @param src The original buffer
+ * @param srclen The length of the original buffer. Pass APR_ESCAPE_STRING
+ * for a NUL terminated string.
+ * @param quote If non zero, surround the string with quotes, and if the
+ * string is NULL, return the string "NULL".
+ * @return A zero padded buffer allocated from the pool on success, or
+ * NULL if src was NULL.
+ */
+APR_DECLARE(const char *) apr_pescape_json(apr_pool_t *p, const char *src,
+        apr_ssize_t srclen, int quote);
+
+/**
  * Escape a string for JSON UTF-8 string (https://www.rfc-editor.org/rfc/rfc8259#section-7)
  * Assumes ISO_8859-1 encoding when encountering bytes > 0x7f
  * Will try to parse input string as UTF-8

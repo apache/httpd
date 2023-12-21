@@ -146,6 +146,7 @@
  *
  * --- rst */
 
+#include "apr_escape.h"
 #include "apr_strings.h"
 #include "apr_lib.h"
 #include "apr_hash.h"
@@ -1974,7 +1975,6 @@ static ap_log_formatted_data * ap_json_log_formatter( request_rec *r,
     const log_format_item *items = (log_format_item *) itms;
 
     const char* attribute_name;
-    const char* attribute_value;
 
     int i,j;
 
@@ -1999,7 +1999,7 @@ static ap_log_formatted_data * ap_json_log_formatter( request_rec *r,
         }
 
         if (!attribute_name) {
-            attribute_name = ap_escape_logjson(r->pool, items[i].tag, NULL, 0); /* use tag as attribute name as fallback */
+            attribute_name = apr_pescape_json(r->pool, items[i].tag, APR_ESCAPE_STRING, 0); /* use tag as attribute name as fallback */
         }
 
         lfdj->total_len += add_str(strs, strl, "\"");
@@ -2026,24 +2026,10 @@ static ap_log_formatted_data * ap_json_log_formatter( request_rec *r,
                 if(j > i && strcmp(items[j].tag, items[i].tag) != 0) {
                     break;
                 }
-                attribute_name = ap_escape_logjson(r->pool, items[j].arg, NULL, 0);
 
-                lfdj->total_len += add_str(strs, strl, "\"");
-                lfdj->total_len += add_str(strs, strl, attribute_name);
-                lfdj->total_len += add_str(strs, strl, "\":");
-
-                if (!lfd->portions[j]) {
-                    lfdj->total_len += add_str(strs, strl, "null");
-                }
-                else if (!*lfd->portions[j]) {
-                    lfdj->total_len += add_str(strs, strl, "\"\"");
-                }
-                else {
-                    lfdj->total_len += add_str(strs, strl, "\"");
-                    attribute_value = ap_escape_logjson(r->pool, lfd->portions[j], NULL, 0);
-                    lfdj->total_len += add_str(strs, strl, attribute_value);
-                    lfdj->total_len += add_str(strs, strl, "\"");
-                }
+                lfdj->total_len += add_str(strs, strl, apr_pescape_json(r->pool, items[j].arg, APR_ESCAPE_STRING, 1));
+                lfdj->total_len += add_str(strs, strl, ":");
+                lfdj->total_len += add_str(strs, strl, apr_pescape_json(r->pool, lfd->portions[j], APR_ESCAPE_STRING, 1));
                 lfdj->total_len += add_str(strs, strl, ",");
             }
             /* remove last "," */
@@ -2059,18 +2045,7 @@ static ap_log_formatted_data * ap_json_log_formatter( request_rec *r,
             continue;
         }
 
-        if (!lfd->portions[i]) {
-            lfdj->total_len += add_str(strs, strl, "null");
-        }
-        else if (!*lfd->portions[i]) {
-            lfdj->total_len += add_str(strs, strl, "\"\"");
-        }
-        else {
-            lfdj->total_len += add_str(strs, strl, "\"");
-            attribute_value = ap_escape_logjson(r->pool, lfd->portions[i], NULL, 0);
-            lfdj->total_len += add_str(strs, strl, attribute_value);
-            lfdj->total_len += add_str(strs, strl, "\"");
-        }
+        lfdj->total_len += add_str(strs, strl, apr_pescape_json(r->pool, lfd->portions[i], APR_ESCAPE_STRING, 1));
         lfdj->total_len += add_str(strs, strl, ",");
     }
     /* replace last ',' with '}' */

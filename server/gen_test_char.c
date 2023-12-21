@@ -55,6 +55,7 @@
 #define T_HTTP_CTRLS          (0x80)
 #define T_VCHAR_OBSTEXT      (0x100)
 #define T_URI_UNRESERVED     (0x200)
+#define T_ESCAPE_JSON        (0x400)
 
 int main(int argc, char *argv[])
 {
@@ -73,6 +74,7 @@ int main(int argc, char *argv[])
            "#define T_HTTP_CTRLS           (%u)\n"
            "#define T_VCHAR_OBSTEXT        (%u)\n"
            "#define T_URI_UNRESERVED       (%u)\n"
+           "#define T_ESCAPE_JSON          (%u)\n"
            "\n"
            "static const unsigned short test_char_table[256] = {",
            T_ESCAPE_SHELL_CMD,
@@ -84,7 +86,8 @@ int main(int argc, char *argv[])
            T_ESCAPE_URLENCODED,
            T_HTTP_CTRLS,
            T_VCHAR_OBSTEXT,
-           T_URI_UNRESERVED
+           T_URI_UNRESERVED,
+           T_ESCAPE_JSON
         );
 
     for (c = 0; c < 256; ++c) {
@@ -173,7 +176,12 @@ int main(int argc, char *argv[])
         if (c && (apr_isalnum(c) || strchr("-._~", c))) {
             flags |= T_URI_UNRESERVED;
         }
-        
+
+        /* JSON escaping */
+        if (c < 0x20 || strchr("\"\\", c) || c > 0x7F) {
+            flags |= T_ESCAPE_JSON;
+        }
+
         printf("0x%03x%c", flags, (c < 255) ? ',' : ' ');
     }
 
