@@ -64,7 +64,7 @@ typedef apr_status_t ap_log_writer(
  */
 typedef ap_log_formatted_data * ap_log_formatter(
                             request_rec *r,
-                            void *formatter_data,
+                            const void *formatter_data,
                             ap_log_formatted_data *lfd,
                             const void *items);
 

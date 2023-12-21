@@ -204,7 +204,7 @@ static apr_status_t ap_buffered_log_writer(request_rec *r,
                            apr_size_t len);
 
 static ap_log_formatted_data * ap_json_log_formatter(request_rec *r,
-                           void *handle,
+                           const void *handle,
                            ap_log_formatted_data *lfd,
                            const void *items);
 typedef struct {
@@ -1088,13 +1088,13 @@ static char *parse_log_item(apr_pool_t *p, log_format_item *it, const char **sa)
         default:
             /* check for '^' + two character format first */
             if (*s == '^' && *(s+1) && *(s+2)) {
-                handler = (ap_log_handler *)apr_hash_get(log_hash, s, 3); 
+                handler = (ap_log_handler *)apr_hash_get(log_hash, s, 3);
                 if (handler) {
                    it->tag = apr_pstrmemdup(p, s, 3);
                    s += 3;
                 }
             }
-            if (!handler) {  
+            if (!handler) {
                 handler = (ap_log_handler *)apr_hash_get(log_hash, s, 1);
                 if (!handler) {
                     char dummy[2];
@@ -1813,7 +1813,7 @@ static ap_log_writer *ap_log_set_writer(ap_log_writer *handle)
 
 #if APU_MAJOR_VERSION > 1 || (APU_MAJOR_VERSION == 1 && APU_MINOR_VERSION >= 7)
 static ap_log_formatted_data * ap_json_log_formatter( request_rec *r,
-                           void *handle,
+                           const void *handle,
                            ap_log_formatted_data *lfd,
                            const void *itms)
 
@@ -1971,7 +1971,7 @@ static apr_size_t add_str(apr_array_header_t * ah_strs, apr_array_header_t * ah_
 }
 
 static ap_log_formatted_data * ap_json_log_formatter( request_rec *r,
-                           void *handle,
+                           const void *handle,
                            ap_log_formatted_data *lfd,
                            const void *itms)
 
@@ -2019,6 +2019,7 @@ static ap_log_formatted_data * ap_json_log_formatter( request_rec *r,
          * gruppenwechsel
          */
         if(items[i].arg != NULL && strlen(items[i].arg) > 0) {
+            //TODO: or allocate once at the begining and use apr_array_clear here?
             /* start sub object */
             strs_sub = apr_array_make(r->pool, 3, sizeof(char *)); /* array of pointers to char */
             strl_sub = apr_array_make(r->pool, 3, sizeof(int));    /* array of int (strlen) */
