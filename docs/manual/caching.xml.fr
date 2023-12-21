@@ -33,7 +33,7 @@
     href="programs/htcacheclean.html">htcacheclean</a>.
     Il décrit l'utilisation des fonctionnalités de mise en
     cache du serveur HTTP Apache
-    pour accélérer les services web et proxy, tout en évitant les problèmes
+    pour accélérer les services web et mandataire, tout en évitant les problèmes
     courants et les erreurs de configuration.</p>
   </summary>
 
@@ -122,7 +122,7 @@
     contenu est supprimé lorsqu'il est périmé, un cache HTTP comporte un
     mécanisme permettant de conserver temporairement un contenu périmé,
     de demander au serveur original si ce contenu périmé a été modifié,
-    et dans le cas contraire de le rendre à nouveau valide.</p>
+    et dans le cas contraire de le rendre à nouveau valable.</p>
 
     <p>Une entrée d'un cache HTTP peut se présenter sous un de ces trois
     états :</p>
@@ -251,7 +251,7 @@
       nombreux alias du serveur, la définition de la directive
       <directive module="core">UseCanonicalName</directive> à
       <code>On</code> peut augmenter de manière significative le nombre
-      de correspondances positives dans le cache. Ceci est du au fait
+      de correspondances positives dans le cache. Cela est dû au fait
       que la clé du cache contient le nom d'hôte du serveur virtuel.     
       Avec <directive module="core">UseCanonicalName</directive> positionnée
       à <code>On</code>,
@@ -265,13 +265,13 @@
       <title>Durée de fraîcheur</title>
 
        <p>Un contenu bien formé destiné à être mis en cache doit déclarer
-       explicitement une durée de fraîcheur via les champs
+       explicitement une durée de fraîcheur à l'aide des champs
        <code>max-age</code> ou <code>s-maxage</code> de l'en-tête
        <code>Cache-Control</code>, ou en incluant un en-tête
        <code>Expires</code>.</p>
       
       <p>De plus, un client peut passer outre la durée de fraîcheur
-      définie pour le serveur original en ajoutant son propre en-tête
+      définie pour le serveur d'origine en ajoutant son propre en-tête
       <code>Cache-Control</code> à la requête. Dans ce cas, c'est la
       durée de fraîcheur la plus basse entre la requête et la réponse
       qui l'emporte.</p>
@@ -286,13 +286,13 @@
       <p>Si une réponse ne contient pas d'en-tête <code>Expires</code> mais
       inclut un en-tête <code>Last-Modified</code>, <module>mod_cache</module>
       peut déduire une durée de fraîcheur en se basant sur une
-      heuristique, qui peut être contrôlée via la directive <directive
+      heuristique, qui peut être contrôlée à l'aide de la directive <directive
       module="mod_cache">CacheLastModifiedFactor</directive>.</p>
 
       <p>Pour les contenus locaux, ou les contenus distants qui ne
       spécifient pas leur propre en-tête <code>Expires</code>,
       <module>mod_expires</module> permet de régler finement la durée de
-      fraîcheur via les paramètres <code>max-age</code> et
+      fraîcheur à l'aide des paramètres <code>max-age</code> et
       <code>Expires</code>.</p>
 
       <p>On peut aussi contrôler la durée de fraîcheur maximale en utilisant
@@ -318,7 +318,7 @@
       <p>Lorsqu'un serveur d'origine reçoit une requête conditionnelle,
       il vérifie si le paramètre Etag ou Last-Modified a été modifié en
       fonction des paramètres de la requête. Si ce n'est pas le cas, il
-      répondra avec le message lapidaire "304 Not Modified". Ceci
+      répondra avec le message lapidaire "304 Not Modified". Cela
       informe le cache que le contenu est périmé mais encore à jour, et
       peut être utilisé tel quel pour les prochaines requêtes jusqu'à ce
       qu'il atteigne à nouveau sa date de péremption.</p>
@@ -358,7 +358,7 @@
       dans la <a
       href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec13.html#sec13.4">section
       13.4 Response Cacheability de la RFC2616</a>, et peut se résumer
-      ainsi :</p>
+      ainsi :</p>
 
       <ol>
         <li>La mise en cache doit être activée pour cette URL. Voir les
@@ -372,14 +372,14 @@
 
         <li>La requête doit être de type HTTP GET.</li>
 
-        <li>Si la réponse contient un en-tête "Authorization:", elle doit aussi
-	contenir une option "s-maxage", "must-revalidate" ou "public"
-	dans l'en-tête "Cache-Control:".</li>
+	<li>Si la réponse contient un en-tête "Authorization:", elle doit aussi
+	contenir une option "s-maxage", "must-revalidate" ou "public" dans l'en-tête
+	"Cache-Control:".</li>
 
         <li>Si l'URL contient une chaîne de requête
 	(provenant par exemple d'une méthode GET de formulaire HTML), elle ne
 	sera pas mise en cache, à moins que la réponse ne
-	spécifie explicitement un délai d'expiration via un
+	spécifie explicitement un délai d'expiration à l'aide d'un
 	en-tête "Expires:" ou une directive max-age ou s-maxage de
 	l'en-tête "Cache-Control:" comme indiqué dans les
 	sections 13.2.1. et 13.9 de la RFC2616.</li>
@@ -423,7 +423,7 @@
       <p>Les contenus qui varient au cours du temps, ou en fonction de
       particularités de la requête non prises en compte par la
       négociation HTTP ne doivent pas être mis en cache. Ce type de
-      contenu doit se déclarer lui-même "à ne pas mettre en cache" via
+      contenu doit se déclarer lui-même "à ne pas mettre en cache" à l'aide de
       l'en-tête <code>Cache-Control</code>.</p>
       
       <p>Si le contenu change souvent, suite par exemple à une durée de
@@ -498,8 +498,8 @@ Vary: negotiate,accept-language,accept-charset
 
       <p>Le module <module>mod_cache</module> s'appuie sur des
       implémentations de stockage sous-jacentes spécifiques pour gérer
-      le cache ; à ce titre, <module>mod_cache_disk</module> fournit le
-      support de la mise en cache sur disque.</p>
+      le cache ; à ce titre, <module>mod_cache_disk</module> fournit la
+      prise en charge de la mise en cache sur disque.</p>
 
       <p>En général, le module se configure comme suit :</p>
 
@@ -527,7 +527,7 @@ CacheDirLength 1
       caractères de l'URL qui a fait l'objet d'une requête. Cette empreinte
       comprend le nom d'hôte, le protocole, le port, le chemin et tout argument
       de type CGI associé à l'URL, ainsi que les éléments
-      spécifiés dans l'en-tête Vary afin d'être sur que plusieurs URLs
+      spécifiés dans l'en-tête Vary afin d'être sûr que plusieurs URLs
       n'interfèrent pas entre elles.</p>
 
       <p>Chaque position de l'empreinte peut contenir un caractère
@@ -535,7 +535,7 @@ CacheDirLength 1
       64^22 possibilités pour une empreinte. Par exemple, une URL peut posséder
       l'empreinte <code>xyTGxSMO2b68mBCykqkp1w</code>. Cette empreinte est
       utilisée pour préfixer les noms de fichiers spécifiques à cette URL à
-      l'intérieur du cache; cependant, elle est tout d'abord placée dans les
+      l'intérieur du cache ; cependant, elle est tout d'abord placée dans les
       répertoires du cache selon les directives
       <directive module="mod_cache_disk">CacheDirLevels</directive> et
       <directive module="mod_cache_disk">CacheDirLength</directive>.</p>
@@ -583,11 +583,11 @@ CacheDirLength 1
       <title>Maintenance du cache sur disque</title>
 
       <p>Le module <module>mod_cache_disk</module> n'effectue aucune
-      régulation de l'espace disque utilisé par le cache, mais s'il
+      régulation de l'espace disque utilisé par le cache, bien qu'il
       s'arrête en douceur en cas d'erreur disque et se comporte alors
       comme si le cache n'avait jamais existé.</p>
 
-      <p>Par contre l'utilitaire
+      <p>Par contre, l'utilitaire
       <a href="programs/htcacheclean.html">htcacheclean</a> fourni avec
       httpd
       vous permet de nettoyer le cache périodiquement.
@@ -617,7 +617,7 @@ CacheDirLength 1
       typique du cache / séquence de nettoyage.</p>
 
       <p>Comme <module>mod_cache_disk</module> ne tient pas compte de l'espace
-      utilisé dans le cache, vous devez vous assurer que
+      utilisé, vous devez vous assurer que
       <a href="programs/htcacheclean.html">htcacheclean</a> est configuré de
       façon à laisser suffisamment d'"espace de croissance"
       à la suite d'un nettoyage.</p>
@@ -642,7 +642,7 @@ CacheSocache memcache:memcd.example.com:11211
 
       <p>En outre, il est possible de spécifier plusieurs serveurs
       <code>memcached</code> en les ajoutant à la fin de la ligne
-      <code>CacheSocache memcache:</code> et en les séparant par des virgules :</p>
+      <code>CacheSocache memcache:</code> et en les séparant par des virgules :</p>
 
       <highlight language="config">
 CacheEnable socache /
@@ -650,7 +650,7 @@ CacheSocache memcache:mem1.example.com:11211,mem2.example.com:11212
       </highlight>
 
       <p>Divers autres fournisseurs <module>mod_cache_socache</module> utilisent
-      aussi ce format. Par exemple :</p>
+      aussi ce format. Par exemple :</p>
 
       <highlight language="config">
 CacheEnable socache /
@@ -692,8 +692,8 @@ CacheSocache dbm:/path/to/datafile
     ou les données d'authentification dans l'interface <a
     href="socache.html">socache</a>.</p>
 
-    <p>Pour chaque implémentation un module supplémentaire est fourni
-    qui offre les services d'arrière-plan suivants :</p>
+    <p>Pour chaque implémentation, un module supplémentaire est fourni
+    qui offre les services d'arrière-plan suivants :</p>
 
     <dl>
     <dt><module>mod_socache_dbm</module></dt>
@@ -837,7 +837,7 @@ CacheSocache dbm:/path/to/datafile
     bande passante dont vous disposez. Par contre, les temps d'accès à la
     mémoire sont de l'ordre de la nano-seconde.</p>
 
-    <p>Cependant la mémoire système n'est pas bon marché; à capacité égale,
+    <p>Cependant la mémoire système n'est pas bon marché ; à capacité égale,
     c'est de loin le type de stockage le plus coûteux et il est important de
     s'assurer qu'elle est utilisée efficacement. Le fait de mettre en cache
     des fichiers en mémoire diminue d'autant la quantité de mémoire système
@@ -871,22 +871,20 @@ sys     0m0.000s</pre>
         </example>
 
       <p>Même pour ce petit fichier, il y a une grande différence entre les
-      temps nécessaires pour lire le fichier. Ceci est du au fait que le
+      temps nécessaires pour lire le fichier. Cela est dû au fait que le
       noyau a mis en cache le contenu du fichier en mémoire.</p>
 
-      <p>Du fait de toujours pouvoir disposer de mémoire système, vous pouvez
-      être assuré qu'il y aura de plus en plus de contenus de fichiers stockés
-      dans ce cache. Ceci peut s'avérer une méthode de mise en cache en mémoire
-      très efficace, et ne nécessite aucune configuration supplémentaire
+      <p>En s'assurant de toujours pouvoir disposer de mémoire système, vous
+      pouvez être assuré qu'il y aura de plus en plus de contenus de fichiers
+      stockés dans ce cache. Cela peut s'avérer une méthode de mise en cache en
+      mémoire très efficace, et ne nécessite aucune configuration supplémentaire
       de httpd.</p>
 
-      <p>De plus, comme le système d'exploitation sait si des fichiers
-      ont été
+      <p>De plus, comme le système d'exploitation sait si des fichiers ont été
       supprimés ou modifiés, il peut effacer automatiquement des contenus de
-      fichiers du cache lorsque cela s'avère nécessaire. Ceci constitue un gros
-      avantage par rapport à la mise en cache en mémoire
-      de httpd qui n'a
-      aucune possibilité de savoir si un fichier a été modifié.</p>
+      fichiers du cache lorsque cela s'avère nécessaire. Cela constitue un gros
+      avantage par rapport à la mise en cache en mémoire de httpd qui n'a aucune
+      possibilité de savoir si un fichier a été modifié.</p>
       </section>
 
     <p>En dépit des performances et des avantages de la mise en cache
@@ -899,11 +897,10 @@ sys     0m0.000s</pre>
 
       <p>La directive <directive module="mod_file_cache">MMapFile</directive>
       fournie par le module <module>mod_file_cache</module> vous permet de
-      demander à httpd de charger un contenu de fichier statique en mémoire
-      lors de son démarrage (à l'aide de l'appel
-      système mmap). httpd
-      utilisera le contenu chargé en mémoire pour satisfaire ultérieurement
-      toutes les demandes d'accès à ce fichier.</p>
+      demander à httpd de charger un contenu de fichier statique en mémoire lors
+      de son démarrage (à l'aide de l'appel système mmap). httpd utilisera le
+      contenu chargé en mémoire pour satisfaire ultérieurement toutes les
+      demandes d'accès à ce fichier.</p>
 
         <highlight language="config">
         MMapFile /usr/local/apache2/htdocs/index.html
@@ -956,7 +953,7 @@ sys     0m0.000s</pre>
       <directive module="mod_cache">CacheDisable</directive>, ou le module
       <module>mod_expires</module>. Livré à lui-même,
       <module>mod_cache</module> - pratiquement comme un mandataire inverse -
-      mettrait en cache le contenu lors de son service, et le servirait ensuite
+      mettrait en cache le contenu lors de sa mise à dispisotion, et le servirait ensuite
       à tout client, vers n'importe quelle adresse IP.</p>
 
       <p>Lorsque la directive <directive
@@ -969,7 +966,7 @@ sys     0m0.000s</pre>
     <section>
       <title>Piratages locaux</title>
 
-      <p>Etant donné que les requêtes des utilisateurs finaux peuvent être
+      <p>Etant donné que les réponses vers les utilisateurs finaux peuvent être
       servies depuis le cache, ce dernier est une cible potentielle pour ceux
       qui veulent défigurer un contenu ou interférer avec lui. Il est important
       de garder à l'esprit que l'utilisateur sous lequel tourne
@@ -986,14 +983,13 @@ sys     0m0.000s</pre>
       modifier une entité dans le cache en utilisant le module
       <module>mod_cache_disk</module>.</p>
 
-      <p>Cela représente un risque relativement élévé par rapport aux autres
+      <p>Cela représente un risque relativement élevé par rapport aux autres
       types d'attaques qu'il est possible de mener sous l'utilisateur apache.
-      Si vous utilisez <module>mod_cache_disk</module>, vous devez garder ceci
-      à l'esprit : effectuez toujours les mises à jour de
-      httpdquand des
-      correctifs de sécurité sont annoncés et exécutez les processus CGI sous
-      un utilisateur autre qu'apache en utilisant
-      <a href="suexec.html">suEXEC</a> dans la mesure du possible.</p>
+      Si vous utilisez <module>mod_cache_disk</module>, vous devez garder ceci à
+      l'esprit : effectuez toujours les mises à jour de httpd quand des
+      correctifs de sécurité sont annoncés et exécutez les processus CGI sous un
+      utilisateur autre qu'apache en utilisant <a href="suexec.html">suEXEC</a>
+      dans la mesure du possible.</p>
 
     </section>
 
@@ -1005,7 +1001,7 @@ sys     0m0.000s</pre>
       cache" (Cache poisoning). L'empoisonnement du cache est un terme général
       pour désigner les attaques au cours desquelles l'attaquant fait en sorte
       que le serveur mandataire renvoie à un contenu incorrect (et souvent
-      indésirable) suite à en provenance du serveur d'arrière-plan.
+      indésirable) en provenance du serveur d'origine.
       </p>
 
       <p>Par exemple, si les serveur DNS qu'utilise votre système où tourne
@@ -1017,9 +1013,9 @@ sys     0m0.000s</pre>
 
       <p>Ce document n'est pas le bon endroit pour une discussion approfondie
       à propos de la Dissimulation de requêtes HTTP (utilisez plutôt votre
-      moteur de recherche favori); il est cependant important de savoir qu'il
+      moteur de recherche favori) ; il est cependant important de savoir qu'il
       est possible d'élaborer une série de requêtes, et d'exploiter une
-      vulnérabilité d'un serveur web d'origine de telle façon que l'attaquant
+      vulnérabilité d'un serveur web d'origine de façon que l'attaquant
       puisse contrôler entièrement le contenu renvoyé par le mandataire.</p>
     </section>
 
