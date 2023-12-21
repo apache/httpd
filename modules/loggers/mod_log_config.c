@@ -146,6 +146,7 @@
  *
  * --- rst */
 
+#include "apr_escape.h"
 #include "apr_strings.h"
 #include "apr_lib.h"
 #include "apr_hash.h"
