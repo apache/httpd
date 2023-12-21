@@ -209,6 +209,7 @@ static ap_log_formatted_data * ap_json_log_formatter(request_rec *r,
                            const void *items);
 typedef struct {
     int use_short_attribute_names;
+    int omit_null_values;
 } json_log_formatter_options;
 
 static void *ap_default_log_writer_init(apr_pool_t *p, server_rec *s,
@@ -818,7 +819,7 @@ static const char *log_request_time(request_rec *r, char *a)
 }
 
 static const char *log_request_duration_microseconds(request_rec *r, char *a)
-{    
+{
     return apr_psprintf(r->pool, "%" APR_TIME_T_FMT,
                         (get_request_end_time(r) - r->request_time));
 }
@@ -1463,6 +1464,7 @@ static const char *add_custom_log(cmd_parms *cmd, void *dummy,
             if (strncasecmp(argv[i], "formatter=json", 14) == 0) {
                 cls->log_formatter = ap_json_log_formatter;
                 cls->log_formatter_data = apr_pcalloc(cmd->pool, sizeof(json_log_formatter_options));
+                ((json_log_formatter_options *)cls->log_formatter_data)->omit_null_values = 1;
 
                 token = strtok(argv[i], ",");
                 while (token != NULL) {
@@ -1865,12 +1867,6 @@ static ap_log_formatted_data * ap_json_log_formatter( request_rec *r,
         if(items[i].arg != NULL && strlen(items[i].arg) > 0) {
             /* start sub object */
             sub_log_object = apr_json_object_create(r->pool);
-
-            apr_json_object_set(log_object,
-                                attribute_name, APR_JSON_VALUE_STRING,
-                                sub_log_object,
-                                r->pool);
-
             for (j = i; j < lfd->nelts; ++j) {
                 /* skip empty tags, if any */
                 if(!items[j].tag) {
@@ -1884,9 +1880,11 @@ static ap_log_formatted_data * ap_json_log_formatter( request_rec *r,
 
                 attribute_name = items[j].arg;
                 if (!lfd->portions[j]) {
-                    apr_json_object_set(sub_log_object,
-                                        attribute_name, APR_JSON_VALUE_STRING,
-                                        json_null, r->pool);
+                    if (formatter_options->omit_null_values) {
+                        apr_json_object_set(sub_log_object,
+                                            attribute_name, APR_JSON_VALUE_STRING,
+                                            json_null, r->pool);
+                    }
                 }
                 else if (!*lfd->portions[j]) {
                     apr_json_object_set(sub_log_object,
@@ -1904,16 +1902,24 @@ static ap_log_formatted_data * ap_json_log_formatter( request_rec *r,
                 }
             }
 
+            if (!apr_json_object_first(sub_log_object)) {
+                apr_json_object_set(log_object,
+                                    attribute_name, APR_JSON_VALUE_STRING,
+                                    sub_log_object,
+                                    r->pool);
+            }
+
             /* restart outer loop with current item */
             i = j - 1;
             continue;
         }
 
         if (!lfd->portions[i]) {
-            apr_json_object_set(log_object,
-                                attribute_name, APR_JSON_VALUE_STRING,
-                                json_null, r->pool);
-
+            if (formatter_options->omit_null_values) {
+                apr_json_object_set(log_object,
+                                    attribute_name, APR_JSON_VALUE_STRING,
+                                    json_null, r->pool);
+            }
         }
         else if (!*lfd->portions[i]) {
             apr_json_object_set(log_object,
@@ -1928,7 +1934,6 @@ static ap_log_formatted_data * ap_json_log_formatter( request_rec *r,
                                 apr_json_string_create(r->pool, attribute_value,
                                                        APR_JSON_VALUE_STRING),
                                 r->pool);
-
         }
     }
 
@@ -1978,6 +1983,10 @@ static ap_log_formatted_data * ap_json_log_formatter( request_rec *r,
 
     int i,j;
 
+    apr_size_t total_len_sub;
+    apr_array_header_t *strs_sub;
+    apr_array_header_t *strl_sub;
+
     ap_log_formatted_data *lfdj = apr_palloc(r->pool, sizeof(ap_log_formatted_data));
     apr_array_header_t *strs = apr_array_make(r->pool, lfd->nelts * 3, sizeof(char *)); /* array of pointers to char */
     apr_array_header_t *strl = apr_array_make(r->pool, lfd->nelts * 3, sizeof(int));    /* array of int (strlen) */
@@ -2002,10 +2011,6 @@ static ap_log_formatted_data * ap_json_log_formatter( request_rec *r,
             attribute_name = apr_pescape_json(r->pool, items[i].tag, APR_ESCAPE_STRING, 0); /* use tag as attribute name as fallback */
         }
 
-        lfdj->total_len += add_str(strs, strl, "\"");
-        lfdj->total_len += add_str(strs, strl, attribute_name);
-        lfdj->total_len += add_str(strs, strl, "\":");
-
         /* if the current tag has arguments, i.e. "i" (requestHeaders)
          * create a sub object with items[i].arg as key and lfd->portions[i] values.
          *
@@ -2015,7 +2020,11 @@ static ap_log_formatted_data * ap_json_log_formatter( request_rec *r,
          */
         if(items[i].arg != NULL && strlen(items[i].arg) > 0) {
             /* start sub object */
-            lfdj->total_len += add_str(strs, strl, "{");
+            strs_sub = apr_array_make(r->pool, 3, sizeof(char *)); /* array of pointers to char */
+            strl_sub = apr_array_make(r->pool, 3, sizeof(int));    /* array of int (strlen) */
+            total_len_sub = 0;
+
+            total_len_sub += add_str(strs_sub, strl_sub, "{");
             for (j = i; j < lfd->nelts; ++j) {
                 /* skip empty tags, if any */
                 if(!items[j].tag) {
@@ -2027,30 +2036,62 @@ static ap_log_formatted_data * ap_json_log_formatter( request_rec *r,
                     break;
                 }
 
-                lfdj->total_len += add_str(strs, strl, apr_pescape_json(r->pool, items[j].arg, APR_ESCAPE_STRING, 1));
-                lfdj->total_len += add_str(strs, strl, ":");
-                lfdj->total_len += add_str(strs, strl, apr_pescape_json(r->pool, lfd->portions[j], APR_ESCAPE_STRING, 1));
+                if(!lfd->portions[j]) {
+                    if (formatter_options->omit_null_values) {
+                        continue;
+                    }
+                }
+
+                total_len_sub += add_str(strs_sub, strl_sub, apr_pescape_json(r->pool, items[j].arg, APR_ESCAPE_STRING, 1));
+                total_len_sub += add_str(strs_sub, strl_sub, ":");
+                total_len_sub += add_str(strs_sub, strl_sub, apr_pescape_json(r->pool, lfd->portions[j], APR_ESCAPE_STRING, 1));
+                total_len_sub += add_str(strs_sub, strl_sub, ",");
+            }
+            if (total_len_sub > 1) {
+                /* remove last "," */
+                apr_array_pop(strs_sub);
+                total_len_sub -= *(int *)apr_array_pop(strl_sub);
+
+                /* end sub object */
+                total_len_sub += add_str(strs_sub, strl_sub, "}");
+
+                /* append to super object */
+                lfdj->total_len += add_str(strs, strl, "\"");
+                lfdj->total_len += add_str(strs, strl, attribute_name);
+                lfdj->total_len += add_str(strs, strl, "\":");
+
+                apr_array_cat(strs, strs_sub);
+                apr_array_cat(strl, strl_sub);
+                lfdj->total_len += total_len_sub;
+
                 lfdj->total_len += add_str(strs, strl, ",");
             }
-            /* remove last "," */
-            apr_array_pop(strs);
-            lfdj->total_len -= *(int *)apr_array_pop(strl);
-
-            /* end sub object */
-            lfdj->total_len += add_str(strs, strl, "}");
-            lfdj->total_len += add_str(strs, strl, ",");
 
             /* restart outer loop with current item */
             i = j - 1;
             continue;
         }
 
+        if(!lfd->portions[i]) {
+            if (formatter_options->omit_null_values) {
+                continue;
+            }
+        }
+
+        lfdj->total_len += add_str(strs, strl, "\"");
+        lfdj->total_len += add_str(strs, strl, attribute_name);
+        lfdj->total_len += add_str(strs, strl, "\":");
         lfdj->total_len += add_str(strs, strl, apr_pescape_json(r->pool, lfd->portions[i], APR_ESCAPE_STRING, 1));
         lfdj->total_len += add_str(strs, strl, ",");
     }
-    /* replace last ',' with '}' */
-    apr_array_pop(strs);
-    lfdj->total_len -= *(int *)apr_array_pop(strl);
+
+    if (lfdj->total_len > 1) {
+        /* replace last ',' with '}' */
+        apr_array_pop(strs);
+        lfdj->total_len -= *(int *)apr_array_pop(strl);
+    }
+
+    /* close object */
     lfdj->total_len += add_str(strs, strl, "}" APR_EOL_STR);
 
     lfdj->portions = (const char **)strs->elts;
@@ -2142,7 +2183,7 @@ static void *ap_default_log_writer_init(apr_pool_t *p, server_rec *s,
         provider_name, AP_ERRORLOG_PROVIDER_VERSION)) != NULL) {
         void *provider_handle;
         errorlog_provider_data *provider_data;
-    
+
         provider_handle = provider->init(p, s);
         if (!provider_handle) {
             /* provider must log something to the console */
