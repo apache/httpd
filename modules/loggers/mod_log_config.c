@@ -167,6 +167,7 @@
 #include "util_time.h"
 #include "ap_mpm.h"
 #include "ap_provider.h"
+#include "apu_version.h"
 
 #if APU_MAJOR_VERSION > 1 || (APU_MAJOR_VERSION == 1 && APU_MINOR_VERSION >= 7)
 #include "apr_json.h"
@@ -1812,6 +1813,46 @@ static ap_log_writer *ap_log_set_writer(ap_log_writer *handle)
 }
 
 #if APU_MAJOR_VERSION > 1 || (APU_MAJOR_VERSION == 1 && APU_MINOR_VERSION >= 7)
+static apr_status_t apr_brigade_to_log_formatted_data(apr_bucket_brigade *bb,
+                                     ap_log_formatted_data *lfd,
+                                     apr_pool_t *p)
+{
+    apr_status_t rv = APR_SUCCESS;
+    const char *str;
+    apr_size_t len;
+    apr_bucket *b;
+    int n = 0, i = 0;
+
+    /* first count elements */
+    for (b = APR_BRIGADE_FIRST(bb);
+         b != APR_BRIGADE_SENTINEL(bb);
+         b = APR_BUCKET_NEXT(b)) {
+         n++;
+    }
+
+    lfd->portions = apr_palloc(p, sizeof(char*) * n);
+    lfd->lengths = apr_palloc(p, sizeof(int) * n);
+    lfd->total_len = 0;
+    lfd->nelts = 0;
+
+    for (b = APR_BRIGADE_FIRST(bb);
+         b != APR_BRIGADE_SENTINEL(bb);
+         b = APR_BUCKET_NEXT(b), i++) {
+        rv = apr_bucket_read(b, &str, &len, APR_NONBLOCK_READ);
+        if (rv != APR_SUCCESS) {
+            break;
+        }
+        if (len) {
+            lfd->portions[i] = (void *)str;
+            lfd->lengths[i] = len;
+            lfd->total_len += len;
+            lfd->nelts++;
+        }
+    }
+
+    return rv;
+}
+
 static ap_log_formatted_data * ap_json_log_formatter( request_rec *r,
                            const void *handle,
                            ap_log_formatted_data *lfd,
@@ -1826,10 +1867,6 @@ static ap_log_formatted_data * ap_json_log_formatter( request_rec *r,
 
     int i,j;
     ap_log_formatted_data *lfdj = apr_palloc(r->pool, sizeof(ap_log_formatted_data));
-
-    /* TODO: how to determine max number of vectors? */
-    int nvec = lfd->nelts * 3;
-    struct iovec *vec = apr_palloc(r->pool, sizeof(struct iovec*) * nvec );
 
     apr_bucket_alloc_t *ba;
     apr_bucket_brigade *bb;
@@ -1880,7 +1917,7 @@ static ap_log_formatted_data * ap_json_log_formatter( request_rec *r,
 
                 attribute_name = items[j].arg;
                 if (!lfd->portions[j]) {
-                    if (formatter_options->omit_null_values) {
+                    if (!formatter_options->omit_null_values) {
                         apr_json_object_set(sub_log_object,
                                             attribute_name, APR_JSON_VALUE_STRING,
                                             json_null, r->pool);
@@ -1902,7 +1939,7 @@ static ap_log_formatted_data * ap_json_log_formatter( request_rec *r,
                 }
             }
 
-            if (!apr_json_object_first(sub_log_object)) {
+            if (apr_json_object_first(sub_log_object)) {
                 apr_json_object_set(log_object,
                                     attribute_name, APR_JSON_VALUE_STRING,
                                     sub_log_object,
@@ -1915,7 +1952,7 @@ static ap_log_formatted_data * ap_json_log_formatter( request_rec *r,
         }
 
         if (!lfd->portions[i]) {
-            if (formatter_options->omit_null_values) {
+            if (!formatter_options->omit_null_values) {
                 apr_json_object_set(log_object,
                                     attribute_name, APR_JSON_VALUE_STRING,
                                     json_null, r->pool);
@@ -1943,19 +1980,7 @@ static ap_log_formatted_data * ap_json_log_formatter( request_rec *r,
     /* encode into bucket brigade */
     apr_json_encode(bb, NULL, NULL, log_object, APR_JSON_FLAGS_WHITESPACE, r->pool);
     apr_brigade_puts(bb, NULL, NULL, APR_EOL_STR);
-
-    /* TODO: detect overflow nvec */
-    apr_brigade_to_iovec(bb, vec, &nvec);
-
-    lfdj->portions = apr_palloc(r->pool, sizeof(char*) * nvec);
-    lfdj->lengths = apr_palloc(r->pool, sizeof(int) * nvec);
-    lfdj->total_len = 0;
-    for (i = 0; i < nvec; i++) {
-        lfdj->portions[i] = vec[i].iov_base;
-        lfdj->lengths[i] = vec[i].iov_len;
-        lfdj->total_len += vec[i].iov_len;
-    }
-    lfdj->nelts = nvec;
+    apr_brigade_to_log_formatted_data(bb, lfdj, r->pool);
     return lfdj;
 }
 #else

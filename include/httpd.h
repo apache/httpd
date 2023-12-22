@@ -1977,7 +1977,7 @@ AP_DECLARE(char *) ap_escape_logitem(apr_pool_t *p, const char *str)
  * modification, APR_EINVAL if bad UTF8 is detected. In all cases valid
  * UTF8 is returned.
  */
-APR_DECLARE(apr_status_t) apr_escape_json(char *dest, const char *src,
+APR_DECLARE(apr_status_t) ap_escape_json(char *dest, const char *src,
         apr_ssize_t srclen, int quote, apr_size_t *len);
 
 /**
@@ -1992,7 +1992,7 @@ APR_DECLARE(apr_status_t) apr_escape_json(char *dest, const char *src,
  * @return A zero padded buffer allocated from the pool on success, or
  * NULL if src was NULL.
  */
-APR_DECLARE(const char *) apr_pescape_json(apr_pool_t *p, const char *src,
+APR_DECLARE(const char *) ap_pescape_json(apr_pool_t *p, const char *src,
         apr_ssize_t srclen, int quote);
 
 /**

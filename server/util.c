@@ -2206,7 +2206,7 @@ AP_DECLARE(char *) ap_escape_html2(apr_pool_t *p, const char *s, int toasc)
  * TODO: add #ifdef to only provide the apr_escape_json and
  *   apr_pescape_json if not available in apr/apr-util
  */
-APR_DECLARE(apr_status_t) apr_escape_json(char *escaped, const char *str,
+APR_DECLARE(apr_status_t) ap_escape_json(char *escaped, const char *str,
         apr_ssize_t slen, int quote, apr_size_t *len)
 {
     apr_size_t size = 1;
@@ -2452,7 +2452,7 @@ APR_DECLARE(apr_status_t) apr_escape_json(char *escaped, const char *str,
     return APR_SUCCESS;
 }
 
-APR_DECLARE(const char *) apr_pescape_json(apr_pool_t *p, const char *src,
+APR_DECLARE(const char *) ap_pescape_json(apr_pool_t *p, const char *src,
         apr_ssize_t srclen, int quote)
 {
     apr_size_t len;
