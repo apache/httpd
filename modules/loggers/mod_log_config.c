@@ -2033,7 +2033,7 @@ static ap_log_formatted_data * ap_json_log_formatter( request_rec *r,
         }
 
         if (!attribute_name) {
-            attribute_name = apr_pescape_json(r->pool, items[i].tag, APR_ESCAPE_STRING, 0); /* use tag as attribute name as fallback */
+            attribute_name = ap_pescape_json(r->pool, items[i].tag, APR_ESCAPE_STRING, 0); /* use tag as attribute name as fallback */
         }
 
         /* if the current tag has arguments, i.e. "i" (requestHeaders)
@@ -2068,9 +2068,9 @@ static ap_log_formatted_data * ap_json_log_formatter( request_rec *r,
                     }
                 }
 
-                total_len_sub += add_str(strs_sub, strl_sub, apr_pescape_json(r->pool, items[j].arg, APR_ESCAPE_STRING, 1));
+                total_len_sub += add_str(strs_sub, strl_sub, ap_pescape_json(r->pool, items[j].arg, APR_ESCAPE_STRING, 1));
                 total_len_sub += add_str(strs_sub, strl_sub, ":");
-                total_len_sub += add_str(strs_sub, strl_sub, apr_pescape_json(r->pool, lfd->portions[j], APR_ESCAPE_STRING, 1));
+                total_len_sub += add_str(strs_sub, strl_sub, ap_pescape_json(r->pool, lfd->portions[j], APR_ESCAPE_STRING, 1));
                 total_len_sub += add_str(strs_sub, strl_sub, ",");
             }
             if (total_len_sub > 1) {
@@ -2107,7 +2107,7 @@ static ap_log_formatted_data * ap_json_log_formatter( request_rec *r,
         lfdj->total_len += add_str(strs, strl, "\"");
         lfdj->total_len += add_str(strs, strl, attribute_name);
         lfdj->total_len += add_str(strs, strl, "\":");
-        lfdj->total_len += add_str(strs, strl, apr_pescape_json(r->pool, lfd->portions[i], APR_ESCAPE_STRING, 1));
+        lfdj->total_len += add_str(strs, strl, ap_pescape_json(r->pool, lfd->portions[i], APR_ESCAPE_STRING, 1));
         lfdj->total_len += add_str(strs, strl, ",");
     }
 
