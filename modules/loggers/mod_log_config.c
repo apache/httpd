@@ -2044,7 +2044,7 @@ static ap_log_formatted_data * ap_json_log_formatter( request_rec *r,
          * gruppenwechsel
          */
         if(items[i].arg != NULL && strlen(items[i].arg) > 0) {
-            //TODO: or allocate once at the begining and use apr_array_clear here?
+            /* TODO: or allocate once at the begining and use apr_array_clear here? */
             /* start sub object */
             strs_sub = apr_array_make(r->pool, 3, sizeof(char *)); /* array of pointers to char */
             strl_sub = apr_array_make(r->pool, 3, sizeof(int));    /* array of int (strlen) */
