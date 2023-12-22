@@ -2457,13 +2457,13 @@ APR_DECLARE(const char *) ap_pescape_json(apr_pool_t *p, const char *src,
 {
     apr_size_t len;
 
-    switch (apr_escape_json(NULL, src, srclen, quote, &len)) {
+    switch (ap_escape_json(NULL, src, srclen, quote, &len)) {
     case APR_NOTFOUND: {
         break;
     }
     default: {
         char *encoded = apr_palloc(p, len);
-        apr_escape_json(encoded, src, srclen, quote, NULL);
+        ap_escape_json(encoded, src, srclen, quote, NULL);
         return encoded;
     }
     }
