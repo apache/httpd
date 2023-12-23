@@ -721,6 +721,7 @@
  * 20211221.15 (2.5.1-dev) Add ap_get_pollfd_from_conn()
  * 20211221.16 (2.5.1-dev) Add ap_proxy_determine_address()
  * 20211221.17 (2.5.1-dev) Add ap_proxy_worker_get_name()
+ * 20211221.18 (2.5.1-dev) Add hc_timeout and hc_timeout_set to proxy_worker_shared and hc_template_t
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503235UL /* "AP25" */
@@ -728,7 +729,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20211221
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 17             /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 18             /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a

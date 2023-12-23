@@ -44,6 +44,8 @@ typedef struct {
     apr_interval_time_t interval;
     char *hurl;
     char *hcexpr;
+    apr_interval_time_t hc_timeout;
+    unsigned int     hc_timeout_set:1;
 } hc_template_t;
 
 typedef struct {
@@ -133,6 +135,8 @@ static const char *set_worker_hc_param(apr_pool_t *p,
                     worker->s->fails = template->fails;
                     PROXY_STRNCPY(worker->s->hcuri, template->hurl);
                     PROXY_STRNCPY(worker->s->hcexpr, template->hcexpr);
+                    worker->s->hc_timeout = template->hc_timeout;
+                    worker->s->hc_timeout_set = template->hc_timeout_set;
                 } else {
                     temp->method = template->method;
                     temp->interval = template->interval;
@@ -140,6 +144,8 @@ static const char *set_worker_hc_param(apr_pool_t *p,
                     temp->fails = template->fails;
                     temp->hurl = apr_pstrdup(p, template->hurl);
                     temp->hcexpr = apr_pstrdup(p, template->hcexpr);
+                    temp->hc_timeout = template->hc_timeout;
+                    temp->hc_timeout_set = template->hc_timeout_set;
                 }
                 return NULL;
             }
@@ -223,6 +229,19 @@ static const char *set_worker_hc_param(apr_pool_t *p,
             PROXY_STRNCPY(worker->s->hcexpr, val);
         } else {
             temp->hcexpr = apr_pstrdup(p, val);
+        } 
+    } else if(!strcasecmp(key, "hctimeout")) {
+        apr_interval_time_t timeout;
+        if (ap_timeout_parameter_parse(val, &timeout, "s") != APR_SUCCESS)
+            return "Health check timeout value has wrong format";
+        if (timeout < 1000)
+            return "Health check timeout must be at least one millisecond";
+        if(worker) {
+            worker->s->hc_timeout = timeout;
+            worker->s->hc_timeout_set = 1;
+        } else {
+            temp->hc_timeout = timeout;
+            temp->hc_timeout_set = 1;
         }
     }
   else {
@@ -509,12 +528,17 @@ static proxy_worker *hc_get_hcworker(sctx_t *ctx, proxy_worker *worker,
         hc->hash.def = hc->s->hash.def = ap_proxy_hashfunc(hc->s->name, PROXY_HASHFUNC_DEFAULT);
         hc->hash.fnv = hc->s->hash.fnv = ap_proxy_hashfunc(hc->s->name, PROXY_HASHFUNC_FNV);
         hc->s->port = port;
-        hc->s->conn_timeout_set = worker->s->conn_timeout_set;
-        hc->s->conn_timeout = worker->s->conn_timeout;
-        hc->s->ping_timeout_set = worker->s->ping_timeout_set;
-        hc->s->ping_timeout = worker->s->ping_timeout;
-        hc->s->timeout_set = worker->s->timeout_set;
-        hc->s->timeout = worker->s->timeout;
+        if(worker->s->hc_timeout_set) {
+            hc->s->timeout = worker->s->hc_timeout;
+            hc->s->timeout_set = 1;
+        } else {
+            hc->s->conn_timeout_set = worker->s->conn_timeout_set;
+            hc->s->conn_timeout = worker->s->conn_timeout;
+            hc->s->ping_timeout_set = worker->s->ping_timeout_set;
+            hc->s->ping_timeout = worker->s->ping_timeout;
+            hc->s->timeout_set = worker->s->timeout_set;
+            hc->s->timeout = worker->s->timeout;
+        }
         /* Do not disable worker in case of errors */
         hc->s->status |= PROXY_WORKER_IGNORE_ERRORS;
         /* Mark as the "generic" worker */
@@ -680,7 +704,9 @@ static apr_status_t hc_check_cping(baton_t *baton, apr_thread_t *thread)
     set_request_connection(r, backend->connection);
     backend->connection->current_thread = thread;
 
-    if (hc->s->ping_timeout_set) {
+    if (hc->s->hc_timeout_set) {
+        timeout = hc->s->hc_timeout;
+    } else if (hc->s->ping_timeout_set) {
         timeout = hc->s->ping_timeout;
     } else if ( hc->s->conn_timeout_set) {
         timeout = hc->s->conn_timeout;
