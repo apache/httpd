@@ -754,6 +754,11 @@ static int req_ssl_is_https_field(request_rec *r)
     return ap_lua_ssl_is_https(r->connection);
 }
 
+static int req_remote_is_https_field(request_rec *r)
+{
+    return ap_lua_remote_is_https(r);
+}
+
 static int req_ap_get_server_port(request_rec *r)
 {
     return (int) ap_get_server_port(r);
@@ -2772,7 +2777,11 @@ void ap_lua_load_request_lmodule(lua_State *L, apr_pool_t *p)
     apr_hash_set(dispatch, "ssl_var_lookup", APR_HASH_KEY_STRING,
                  makefun(&req_ssl_var_lookup, APL_REQ_FUNTYPE_LUACFUN, p));
     apr_hash_set(dispatch, "is_https", APR_HASH_KEY_STRING,
+                 makefun(&req_remote_is_https_field, APL_REQ_FUNTYPE_BOOLEAN, p));
+    apr_hash_set(dispatch, "local_is_https", APR_HASH_KEY_STRING,
                  makefun(&req_ssl_is_https_field, APL_REQ_FUNTYPE_BOOLEAN, p));
+    apr_hash_set(dispatch, "remote_is_https", APR_HASH_KEY_STRING,
+                 makefun(&req_remote_is_https_field, APL_REQ_FUNTYPE_BOOLEAN, p));
     apr_hash_set(dispatch, "assbackwards", APR_HASH_KEY_STRING,
                  makefun(&req_assbackwards_field, APL_REQ_FUNTYPE_BOOLEAN, p));
     apr_hash_set(dispatch, "status", APR_HASH_KEY_STRING,
