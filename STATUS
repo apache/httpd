@@ -152,7 +152,7 @@ RELEASE SHOWSTOPPERS:
    *) mod_ssl: Fix typo in openssl-3 compat backported in r1913912 (impacting pkcs#11 engines)
       trunk patch: http://svn.apache.org/r1914318
       2.4.x patch: svn merge -c r1914318 ^/httpd/httpd/trunk .
-      +1: ylavic, minfrin, 
+      +1: ylavic, minfrin, jorton
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
@@ -245,6 +245,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       trunk patch: http://svn.apache.org/r1914045
       2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/httpd-2.4-ab-source-address.patch
       +1: minfrin
+      -1: jorton, appears to be a duplicate of the existing -B option
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
