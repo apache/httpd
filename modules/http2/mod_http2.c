@@ -28,6 +28,8 @@
 
 #include "mod_http2.h"
 
+#include "util_misc.h"
+
 #include <nghttp2/nghttp2.h>
 #include "h2_stream.h"
 #include "h2_c1.h"
@@ -306,11 +308,6 @@ static h2_var_def H2_VARS[] = {
     { "H2_STREAM_TAG",       val_H2_STREAM_TAG, 1 },
 };
 
-#ifndef H2_ALEN
-#define H2_ALEN(a)          (sizeof(a)/sizeof((a)[0]))
-#endif
-
-
 static int http2_is_h2(conn_rec *c)
 {
     return h2_conn_ctx_get(c->master? c->master : c) != NULL;
@@ -321,7 +318,7 @@ static char *http2_var_lookup(apr_pool_t *p, server_rec *s,
 {
     unsigned int i;
     /* If the # of vars grow, we need to put definitions in a hash */
-    for (i = 0; i < H2_ALEN(H2_VARS); ++i) {
+    for (i = 0; i < ARRAY_LEN(H2_VARS); ++i) {
         h2_var_def *vdef = &H2_VARS[i];
         if (!strcmp(vdef->name, name)) {
             h2_conn_ctx_t *ctx = (r? h2_conn_ctx_get(c) :
@@ -338,7 +335,7 @@ static int h2_h2_fixups(request_rec *r)
         h2_conn_ctx_t *ctx = h2_conn_ctx_get(r->connection);
         unsigned int i;
 
-        for (i = 0; ctx && i < H2_ALEN(H2_VARS); ++i) {
+        for (i = 0; ctx && i < ARRAY_LEN(H2_VARS); ++i) {
             h2_var_def *vdef = &H2_VARS[i];
             if (vdef->subprocess) {
                 apr_table_setn(r->subprocess_env, vdef->name, 

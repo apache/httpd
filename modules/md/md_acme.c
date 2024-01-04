@@ -23,6 +23,8 @@
 #include <apr_hash.h>
 #include <apr_uri.h>
 
+#include "util_misc.h"
+
 #include "md.h"
 #include "md_crypt.h"
 #include "md_json.h"
@@ -80,7 +82,7 @@ static apr_status_t problem_status_get(const char *type) {
         type += strlen("urn:");
     }
      
-    for(i = 0; i < (sizeof(Problems)/sizeof(Problems[0])); ++i) {
+    for(i = 0; i < (ARRAY_LEN(Problems)); ++i) {
         if (!apr_strnatcasecmp(type, Problems[i].type)) {
             return Problems[i].rv;
         }
@@ -99,7 +101,7 @@ int md_acme_problem_is_input_related(const char *problem) {
         problem += strlen("urn:");
     }
 
-    for(i = 0; i < (sizeof(Problems)/sizeof(Problems[0])); ++i) {
+    for(i = 0; i < (ARRAY_LEN(Problems)); ++i) {
         if (!apr_strnatcasecmp(problem, Problems[i].type)) {
             return Problems[i].input_related;
         }

@@ -29,6 +29,8 @@
 #include <http_ssl.h>
 #include <http_log.h>
 
+#include "util_misc.h"
+
 #include "mod_http2.h"
 #include "h2_private.h"
 
@@ -43,7 +45,6 @@
 #include "h2_session.h"
 #include "h2_util.h"
 #include "h2_protocol.h"
-#include "mod_http2.h"
 
 const char *h2_protocol_ids_tls[] = {
     "h2", NULL
@@ -77,7 +78,7 @@ static const char *h2_err_descr[] = {
 
 const char *h2_protocol_err_description(unsigned int h2_error)
 {
-    if (h2_error < (sizeof(h2_err_descr)/sizeof(h2_err_descr[0]))) {
+    if (h2_error < (ARRAY_LEN(h2_err_descr))) {
         return h2_err_descr[h2_error];
     }
     return "unknown http/2 error code";
@@ -395,7 +396,7 @@ static const char *RFC7540_names[] = {
     "SSL3_CK_SCSV",                     /* TLS_EMPTY_RENEGOTIATION_INFO_SCSV */
     "SSL3_CK_FALLBACK_SCSV"
 };
-static size_t RFC7540_names_LEN = sizeof(RFC7540_names)/sizeof(RFC7540_names[0]);
+static size_t RFC7540_names_LEN = ARRAY_LEN(RFC7540_names);
 
 
 static apr_hash_t *BLCNames;

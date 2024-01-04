@@ -154,7 +154,7 @@ apr_status_t h2_c2_filter_request_in(ap_filter_t *f,
     do { \
         if (APLOG_C_IS_LEVEL((c),(level))) { \
             char buffer[4 * 1024]; \
-            apr_size_t len, bmax = sizeof(buffer)/sizeof(buffer[0]); \
+            apr_size_t len, bmax = ARRAY_LEN(buffer); \
             len = h2_util_bb_print(buffer, bmax, "", "", (bb)); \
             ap_log_cerror(APLOG_MARK, (level), rv, (c), \
                           "FILTER[%s]: %s %s", \
@@ -800,7 +800,7 @@ static void make_chunk(conn_rec *c, h2_chunk_filter_t *fctx, apr_bucket_brigade 
     apr_bucket *b;
     apr_size_t len;
 
-    len = (apr_size_t)apr_snprintf(buffer, H2_ALEN(buffer),
+    len = (apr_size_t)apr_snprintf(buffer, ARRAY_LEN(buffer),
                                    "%"APR_UINT64_T_HEX_FMT"\r\n", (apr_uint64_t)chunk_len);
     b = apr_bucket_heap_create(buffer, len, NULL, bb->bucket_alloc);
     APR_BUCKET_INSERT_BEFORE(first, b);

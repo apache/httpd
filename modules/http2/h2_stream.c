@@ -29,6 +29,8 @@
 #include <http_protocol.h>
 #include <http_ssl.h>
 
+#include "util_misc.h"
+
 #include <nghttp2/nghttp2.h>
 
 #include "h2_private.h"
@@ -156,12 +158,12 @@ static int on_frame(h2_stream_state_t state, int frame_type,
 
 static int on_frame_send(h2_stream_state_t state, int frame_type)
 {
-    return on_frame(state, frame_type, trans_on_send, H2_ALEN(trans_on_send));
+    return on_frame(state, frame_type, trans_on_send, ARRAY_LEN(trans_on_send));
 }
 
 static int on_frame_recv(h2_stream_state_t state, int frame_type)
 {
-    return on_frame(state, frame_type, trans_on_recv, H2_ALEN(trans_on_recv));
+    return on_frame(state, frame_type, trans_on_recv, ARRAY_LEN(trans_on_recv));
 }
 
 static int on_event(h2_stream* stream, h2_stream_event_t ev)
@@ -170,7 +172,7 @@ static int on_event(h2_stream* stream, h2_stream_event_t ev)
     if (stream->monitor && stream->monitor->on_event) {
         stream->monitor->on_event(stream->monitor->ctx, stream, ev);
     }
-    if (ev < H2_ALEN(trans_on_event)) {
+    if (ev < ARRAY_LEN(trans_on_event)) {
         return on_map(stream->state, trans_on_event[ev]);
     }
     return stream->state;
@@ -189,7 +191,7 @@ static void H2_STREAM_OUT_LOG(int lvl, h2_stream *s, const char *tag)
     if (APLOG_C_IS_LEVEL(s->session->c1, lvl)) {
         conn_rec *c = s->session->c1;
         char buffer[4 * 1024];
-        apr_size_t len, bmax = sizeof(buffer)/sizeof(buffer[0]);
+        apr_size_t len, bmax = ARRAY_LEN(buffer);
         
         len = h2_util_bb_print(buffer, bmax, tag, "", s->out_buffer);
         ap_log_cerror(APLOG_MARK, lvl, 0, c, 

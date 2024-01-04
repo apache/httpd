@@ -458,7 +458,7 @@ if (APLOG_C_IS_LEVEL(c, level)) { \
     do { \
         char buffer[4 * 1024]; \
         const char *line = "(null)"; \
-        apr_size_t len, bmax = sizeof(buffer)/sizeof(buffer[0]); \
+        apr_size_t len, bmax = ARRAY_LEN(buffer); \
         len = h2_util_bb_print(buffer, bmax, (tag), "", (bb)); \
         ap_log_cerror(APLOG_MARK, level, 0, (c), "bb_dump(%ld): %s", \
             ((c)->master? (c)->master->id : (c)->id), (len? buffer : line)); \

@@ -136,7 +136,7 @@ static void init_dh_params(void)
 {
     unsigned n;
 
-    for (n = 0; n < sizeof(dhparams)/sizeof(dhparams[0]); n++)
+    for (n = 0; n < ARRAY_LEN(dhparams); n++)
         dhparams[n].dh = make_dh_params(dhparams[n].prime);
 }
 
@@ -147,7 +147,7 @@ static void free_dh_params(void)
     /* DH_free() is a noop for a NULL parameter, so these are harmless
      * in the (unexpected) case where these variables are already
      * NULL. */
-    for (n = 0; n < sizeof(dhparams)/sizeof(dhparams[0]); n++) {
+    for (n = 0; n < ARRAY_LEN(dhparams); n++) {
         DH_free(dhparams[n].dh);
         dhparams[n].dh = NULL;
     }
@@ -164,7 +164,7 @@ DH *modssl_get_dh_params(unsigned keylen)
 {
     unsigned n;
 
-    for (n = 0; n < sizeof(dhparams)/sizeof(dhparams[0]); n++)
+    for (n = 0; n < ARRAY_LEN(dhparams); n++)
         if (keylen >= dhparams[n].min)
             return dhparams[n].dh;
         
