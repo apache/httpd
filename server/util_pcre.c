@@ -491,6 +491,8 @@ AP_DECLARE(int) ap_regexec_ex(const ap_regex_t *preg,
         options |= PCREn(NOTEOL);
     if ((eflags & AP_REG_NOTEMPTY) != 0)
         options |= PCREn(NOTEMPTY);
+    if ((eflags & AP_REG_NOTEMPTY_ATSTART) != 0)
+        options |= PCREn(NOTEMPTY_ATSTART);
     if ((eflags & AP_REG_ANCHORED) != 0)
         options |= PCREn(ANCHORED);
 

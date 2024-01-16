@@ -722,6 +722,7 @@
  * 20211221.16 (2.5.1-dev) Add ap_proxy_determine_address()
  * 20211221.17 (2.5.1-dev) Add ap_proxy_worker_get_name()
  * 20211221.18 (2.5.1-dev) Add ap_regexec_ex()
+ * 20211221.19 (2.5.1-dev) Add AP_REG_NOTEMPTY_ATSTART
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503235UL /* "AP25" */
@@ -729,7 +730,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20211221
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 18             /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 19             /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a
