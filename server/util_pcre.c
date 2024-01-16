@@ -427,13 +427,22 @@ AP_DECLARE(int) ap_regexec(const ap_regex_t *preg, const char *string,
                            apr_size_t nmatch, ap_regmatch_t *pmatch,
                            int eflags)
 {
-    return ap_regexec_len(preg, string, strlen(string), nmatch, pmatch,
-                          eflags);
+    return ap_regexec_ex(preg, string, strlen(string), 0,
+                         nmatch, pmatch, eflags);
 }
 
-AP_DECLARE(int) ap_regexec_len(const ap_regex_t *preg, const char *buff,
-                               apr_size_t len, apr_size_t nmatch,
-                               ap_regmatch_t *pmatch, int eflags)
+AP_DECLARE(int) ap_regexec_len(const ap_regex_t *preg,
+                               const char *buff, apr_size_t len,
+                               apr_size_t nmatch, ap_regmatch_t *pmatch,
+                               int eflags)
+{
+    return ap_regexec_ex(preg, buff, len, 0, nmatch, pmatch, eflags);
+}
+
+AP_DECLARE(int) ap_regexec_ex(const ap_regex_t *preg,
+                              const char *buff, apr_size_t len, apr_size_t pos,
+                              apr_size_t nmatch, ap_regmatch_t *pmatch,
+                              int eflags)
 {
     int rc;
     int options = 0;
@@ -442,6 +451,11 @@ AP_DECLARE(int) ap_regexec_len(const ap_regex_t *preg, const char *buff,
     apr_uint32_t ncaps = (apr_uint32_t)preg->re_nsub + 1;
 
 #ifndef HAVE_PCRE2
+    /* PCRE1 uses ints, reject overflowing values */
+    if (len > APR_INT32_MAX || pos > APR_INT32_MAX) {
+        return AP_REG_INVARG;
+    }
+
     /* This is fine if pcre_exec() gets a vector size smaller than the
      * number of capturing groups (it will treat the remaining ones as
      * non-capturing), but if the vector is too small to keep track of
@@ -482,13 +496,14 @@ AP_DECLARE(int) ap_regexec_len(const ap_regex_t *preg, const char *buff,
 
 #ifdef HAVE_PCRE2
     rc = pcre2_match((const pcre2_code *)preg->re_pcre,
-                     (const unsigned char *)buff, len, 0, options,
+                     (const unsigned char *)buff, len, pos, options,
                      state.match_data, NULL);
     ovector = pcre2_get_ovector_pointer(state.match_data);
 #else
     ovector = state.match_data;
-    rc = pcre_exec((const pcre *)preg->re_pcre, NULL, buff, (int)len,
-                   0, options, ovector, ncaps * 3);
+    rc = pcre_exec((const pcre *)preg->re_pcre, NULL,
+                   buff, (int)len, (int)pos, options,
+                   ovector, ncaps * 3);
 #endif
 
     if (rc >= 0) {
