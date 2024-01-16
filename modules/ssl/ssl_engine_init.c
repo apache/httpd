@@ -738,6 +738,10 @@ static apr_status_t ssl_init_ctx_protocol(server_rec *s,
         TLS_server_method();  /* server */
 #endif
     ctx = SSL_CTX_new(method);
+    if(ctx == NULL) {
+        ssl_log_ssl_error(SSLLOG_MARK, APLOG_EMERG, s);
+        return ssl_die(s);
+    }
 
     mctx->ssl_ctx = ctx;
 
