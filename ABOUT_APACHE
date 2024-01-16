@@ -128,7 +128,7 @@ group of volunteers who vote on changes to the distributed server), then
 you need to start by subscribing to the dev@httpd.apache.org mailing list.
 One warning though: traffic is high, 1000 to 1500 messages/month.
 To subscribe to the list, send an email to dev-subscribe@httpd.apache.org.
-We recommend reading the list for a while before trying to jump in to 
+We recommend reading the list for a while before trying to jump in to
 development.
 
    NOTE: The developer mailing list (dev@httpd.apache.org) is not
