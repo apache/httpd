@@ -237,6 +237,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       +1: minfrin
       -1: jorton, appears to be a duplicate of the existing -B option
 
+   *) mod_http2 v2.0.26. fixes `Data:` in upgrade responses and a small memory
+      leak in h2 header buckets.
+      trunk patch: http://svn.apache.org/r1915281
+      2.4.x patch: svn merge -c 1915281 ^/httpd/httpd/trunk .
+      +1: icing,
+
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
