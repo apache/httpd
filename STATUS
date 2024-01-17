@@ -242,6 +242,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       trunk patch: http://svn.apache.org/r1915281
       2.4.x patch: svn merge -c 1915281 ^/httpd/httpd/trunk .
       +1: icing,
+      rpluem says: This has conflict in modules/http2/h2_version.h. Otherwise
+      +1 from me on the backport.
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
