@@ -90,9 +90,18 @@ h2_headers *h2_bucket_headers_get(apr_bucket *b)
     return NULL;
 }
 
+static void bucket_destroy(void *data)
+{
+    h2_bucket_headers *h = data;
+
+    if (apr_bucket_shared_destroy(h)) {
+        apr_bucket_free(h);
+    }
+}
+
 const apr_bucket_type_t h2_bucket_type_headers = {
     "H2HEADERS", 5, APR_BUCKET_METADATA,
-    apr_bucket_destroy_noop,
+    bucket_destroy,
     bucket_read,
     apr_bucket_setaside_noop,
     apr_bucket_split_notimpl,

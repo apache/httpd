@@ -227,6 +227,24 @@ static const char *set_worker_param(apr_pool_t *p,
             return "EnableReuse must be On|Off";
         worker->s->disablereuse_set = 1;
     }
+    else if (!strcasecmp(key, "addressttl")) {
+        /* Address TTL in seconds
+         */
+        apr_interval_time_t ttl;
+        if (strcmp(val, "-1") == 0) {
+            worker->s->address_ttl = -1;
+        }
+        else if (ap_timeout_parameter_parse(val, &ttl, "s") == APR_SUCCESS
+                 && (ttl <= apr_time_from_sec(APR_INT32_MAX))
+                 && (ttl % apr_time_from_sec(1)) == 0) {
+            worker->s->address_ttl = apr_time_sec(ttl);
+        }
+        else {
+            return "AddressTTL must be -1 or a number of seconds not "
+                   "exceeding " APR_STRINGIFY(APR_INT32_MAX);
+        }
+        worker->s->address_ttl_set = 1;
+    }
     else if (!strcasecmp(key, "route")) {
         /* Worker route.
          */
@@ -2223,14 +2241,14 @@ static const char *
             reuse = 1;
             ap_log_error(APLOG_MARK, APLOG_INFO, 0, cmd->server, APLOGNO(01145)
                          "Sharing worker '%s' instead of creating new worker '%s'",
-                         ap_proxy_worker_name(cmd->pool, worker), new->real);
+                         ap_proxy_worker_get_name(worker), new->real);
         }
 
         for (i = 0; i < arr->nelts; i++) {
             if (reuse) {
                 ap_log_error(APLOG_MARK, APLOG_WARNING, 0, cmd->server, APLOGNO(01146)
                              "Ignoring parameter '%s=%s' for worker '%s' because of worker sharing",
-                             elts[i].key, elts[i].val, ap_proxy_worker_name(cmd->pool, worker));
+                             elts[i].key, elts[i].val, ap_proxy_worker_get_name(worker));
             } else {
                 const char *err = set_worker_param(cmd->pool, s, worker, elts[i].key,
                                                    elts[i].val);
@@ -2775,13 +2793,13 @@ static const char *add_member(cmd_parms *cmd, void *dummy, const char *arg)
             return apr_pstrcat(cmd->temp_pool, "BalancerMember ", err, NULL);
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, cmd->server, APLOGNO(01148)
                      "Defined worker '%s' for balancer '%s'",
-                     ap_proxy_worker_name(cmd->pool, worker), balancer->s->name);
+                     ap_proxy_worker_get_name(worker), balancer->s->name);
         PROXY_COPY_CONF_PARAMS(worker, conf);
     } else {
         reuse = 1;
         ap_log_error(APLOG_MARK, APLOG_INFO, 0, cmd->server, APLOGNO(01149)
                      "Sharing worker '%s' instead of creating new worker '%s'",
-                     ap_proxy_worker_name(cmd->pool, worker), name);
+                     ap_proxy_worker_get_name(worker), name);
     }
     if (!worker->section_config) {
         worker->section_config = balancer->section_config;
@@ -2793,7 +2811,7 @@ static const char *add_member(cmd_parms *cmd, void *dummy, const char *arg)
         if (reuse) {
             ap_log_error(APLOG_MARK, APLOG_WARNING, 0, cmd->server, APLOGNO(01150)
                          "Ignoring parameter '%s=%s' for worker '%s' because of worker sharing",
-                         elts[i].key, elts[i].val, ap_proxy_worker_name(cmd->pool, worker));
+                         elts[i].key, elts[i].val, ap_proxy_worker_get_name(worker));
         } else {
             err = set_worker_param(cmd->pool, cmd->server, worker, elts[i].key,
                                    elts[i].val);
@@ -3350,6 +3368,8 @@ static int proxy_status_hook(request_rec *r, int flags)
 
 static void child_init(apr_pool_t *p, server_rec *s)
 {
+    proxy_server_conf *main_conf;
+    proxy_worker *forward = NULL;
     proxy_worker *reverse = NULL;
 
     apr_status_t rv = apr_global_mutex_child_init(&proxy_mutex,
@@ -3361,8 +3381,8 @@ static void child_init(apr_pool_t *p, server_rec *s)
         exit(1); /* Ugly, but what else? */
     }
 
-    /* TODO */
-    while (s) {
+    main_conf = ap_get_module_config(s->module_config, &proxy_module);
+    for (; s; s = s->next) {
         void *sconf = s->module_config;
         proxy_server_conf *conf;
         proxy_worker *worker;
@@ -3375,32 +3395,36 @@ static void child_init(apr_pool_t *p, server_rec *s)
          */
         worker = (proxy_worker *)conf->workers->elts;
         for (i = 0; i < conf->workers->nelts; i++, worker++) {
-            ap_proxy_initialize_worker(worker, s, p);
+            ap_proxy_initialize_worker(worker, s, conf->pool);
         }
+
         /* Create and initialize forward worker if defined */
-        if (conf->req_set && conf->req) {
-            proxy_worker *forward;
-            ap_proxy_define_worker(conf->pool, &forward, NULL, NULL,
+        if (conf->req_set && conf->req && !forward) {
+            ap_proxy_define_worker(main_conf->pool, &forward, NULL, NULL,
                                    "http://www.apache.org", 0);
-            conf->forward = forward;
-            PROXY_STRNCPY(conf->forward->s->name,     "proxy:forward");
-            PROXY_STRNCPY(conf->forward->s->hostname, "*"); /* for compatibility */
-            PROXY_STRNCPY(conf->forward->s->hostname_ex, "*");
-            PROXY_STRNCPY(conf->forward->s->scheme,   "*");
-            conf->forward->hash.def = conf->forward->s->hash.def =
-                ap_proxy_hashfunc(conf->forward->s->name, PROXY_HASHFUNC_DEFAULT);
-             conf->forward->hash.fnv = conf->forward->s->hash.fnv =
-                ap_proxy_hashfunc(conf->forward->s->name, PROXY_HASHFUNC_FNV);
+            PROXY_STRNCPY(forward->s->name,     "proxy:forward");
+            PROXY_STRNCPY(forward->s->hostname, "*"); /* for compatibility */
+            PROXY_STRNCPY(forward->s->hostname_ex, "*");
+            PROXY_STRNCPY(forward->s->scheme,   "*");
+            forward->hash.def = forward->s->hash.def =
+                ap_proxy_hashfunc(forward->s->name, PROXY_HASHFUNC_DEFAULT);
+             forward->hash.fnv = forward->s->hash.fnv =
+                ap_proxy_hashfunc(forward->s->name, PROXY_HASHFUNC_FNV);
             /* Do not disable worker in case of errors */
-            conf->forward->s->status |= PROXY_WORKER_IGNORE_ERRORS;
+            forward->s->status |= PROXY_WORKER_IGNORE_ERRORS;
             /* Mark as the "generic" worker */
-            conf->forward->s->status |= PROXY_WORKER_GENERIC;
-            ap_proxy_initialize_worker(conf->forward, s, p);
-            /* Disable address cache for generic forward worker */
-            conf->forward->s->is_address_reusable = 0;
+            forward->s->status |= PROXY_WORKER_GENERIC;
+            /* Disable connection and address reuse for generic workers */
+            forward->s->is_address_reusable = 0;
+            ap_proxy_initialize_worker(forward, s, main_conf->pool);
         }
+        if (conf->req_set && conf->req) {
+            conf->forward = forward;
+        }
+
+        /* Create and initialize the generic reserse worker once only */
         if (!reverse) {
-            ap_proxy_define_worker(conf->pool, &reverse, NULL, NULL,
+            ap_proxy_define_worker(main_conf->pool, &reverse, NULL, NULL,
                                    "http://www.apache.org", 0);
             PROXY_STRNCPY(reverse->s->name,     "proxy:reverse");
             PROXY_STRNCPY(reverse->s->hostname, "*"); /* for compatibility */
@@ -3414,13 +3438,11 @@ static void child_init(apr_pool_t *p, server_rec *s)
             reverse->s->status |= PROXY_WORKER_IGNORE_ERRORS;
             /* Mark as the "generic" worker */
             reverse->s->status |= PROXY_WORKER_GENERIC;
-            conf->reverse = reverse;
-            ap_proxy_initialize_worker(conf->reverse, s, p);
-            /* Disable address cache for generic reverse worker */
+            /* Disable connection and address reuse for generic workers */
             reverse->s->is_address_reusable = 0;
+            ap_proxy_initialize_worker(reverse, s, main_conf->pool);
         }
         conf->reverse = reverse;
-        s = s->next;
     }
 }
 

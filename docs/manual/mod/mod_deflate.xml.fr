@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1873722 -->
+<!-- English Revision: 1911874 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -448,6 +448,7 @@ de la compression</description>
 <default>DeflateAlterETag AddSuffix</default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
+<compatibility>Disponible à partir de la version 2.4.58 du serveur HTTP Apache</compatibility>
 
 <usage>
     <p>La directive <directive>DeflateAlterETag</directive> permet de

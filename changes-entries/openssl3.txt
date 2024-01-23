@@ -1,0 +1,4 @@
+  *) mod_ssl: Improve compatibility with OpenSSL 3, fix build warnings about
+     deprecated ENGINE_ API, honor OPENSSL_API_COMPAT setting while defaulting
+     to compatibitily with version 1.1.1 (including ENGINEs / SSLCryptoDevice).
+     [ Yann Ylavic ]

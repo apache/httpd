@@ -108,11 +108,14 @@ if ! test -v SKIP_TESTING; then
     fi
 
     if test -v TEST_ASAN; then
-        export ASAN_OPTIONS="log_path=$PWD/asan.log"
+        export ASAN_OPTIONS="log_path=$PWD/asan.log:detect_leaks=0"
     fi
 
     # Try to keep all potential coredumps from all processes
     sudo sysctl -w kernel.core_uses_pid=1 2>/dev/null || true
+    # Systemd based systems might process core dumps via systemd-coredump.
+    # But we want to have local unprocessed files.
+    sudo sysctl -w kernel.core_pattern=core || true
     ulimit -c unlimited 2>/dev/null || true
 
     if ! test -v NO_TEST_FRAMEWORK; then

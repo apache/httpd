@@ -1,0 +1,2 @@
+  *) mod_ssl: Add support for loading certs/keys from pkcs11: URIs
+     via OpenSSL 3.x providers.  [Ingo Franzki <ifranzki linux.ibm.com>]

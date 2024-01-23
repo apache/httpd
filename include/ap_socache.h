@@ -94,9 +94,10 @@ typedef struct ap_socache_provider_t {
     unsigned int flags;
 
     /**
-     * Create a session cache based on the given configuration string.
-     * The instance pointer returned in the instance parameter will be
-     * passed as the first argument to subsequent invocations.
+     * Create a small object cache based on the given configuration
+     * string.  The instance pointer returned in the instance
+     * parameter will be passed as the first argument to subsequent
+     * invocations.
      *
      * @param instance Output parameter to which instance object is written.
      * @param arg User-specified configuration string.  May be NULL to

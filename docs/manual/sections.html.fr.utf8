@@ -41,7 +41,7 @@ configuration</a></li>
 arborescence du site web et expressions booléennes</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#virtualhost">Serveurs virtuels</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#proxy">Mandataire</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#whatwhere">Quelles sont les directives autorisées ?</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#whatwhere">Quelles sont les directives autorisées&nbsp;?</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#merging">Comment les sections sont combinées entre elles</a></li>
 </ul><h3>Voir aussi</h3><ul class="seealso"><li><a href="#comments_section">Commentaires</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
@@ -51,24 +51,24 @@ configuration</a> <a title="Lien permanent" href="#types" class="permalink">&par
 
 <table class="related"><tr><th>Modules Apparentés</th><th>Directives Apparentées</th></tr><tr><td><ul><li><code class="module"><a href="./mod/core.html">core</a></code></li><li><code class="module"><a href="./mod/mod_version.html">mod_version</a></code></li><li><code class="module"><a href="./mod/mod_proxy.html">mod_proxy</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#directorymatch">&lt;DirectoryMatch&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#files">&lt;Files&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#filesmatch">&lt;FilesMatch&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#if">&lt;If&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#ifdefine">&lt;IfDefine&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#ifmodule">&lt;IfModule&gt;</a></code></li><li><code class="directive"><a href="./mod/mod_version.html#ifversion">&lt;IfVersion&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#location">&lt;Location&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#locationmatch">&lt;LocationMatch&gt;</a></code></li><li><code class="directive"><a href="./mod/mod_md.html#mdomainsetsection">&lt;MDomainSet&gt;</a></code></li><li><code class="directive"><a href="./mod/mod_proxy.html#proxy">&lt;Proxy&gt;</a></code></li><li><code class="directive"><a href="./mod/mod_proxy.html#proxymatch">&lt;ProxyMatch&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code></li></ul></td></tr></table>
 
-<p>Il existe deux grands types de conteneurs.  La plupart des conteneurs sont
-évalués pour chaque requête.  Les directives qu'ils contiennent s'appliquent
-seulement aux requêtes qui sont concernées par le conteneur.  En revanche,
+<p>Il existe deux grands types de conteneurs. La plupart des conteneurs sont
+évalués pour chaque requête. Les directives qu'ils contiennent s'appliquent
+seulement aux requêtes qui sont concernées par le conteneur. En revanche,
 les conteneurs
-<code class="directive"><a href="./mod/core.html#ifdefine">&lt;IfDefine&gt;</a></code>, <code class="directive"><a href="./mod/core.html#ifmodule">&lt;IfModule&gt;</a></code>, et
+<code class="directive"><a href="./mod/core.html#ifdefine">&lt;IfDefine&gt;</a></code>, <code class="directive"><a href="./mod/core.html#ifmodule">&lt;IfModule&gt;</a></code> et
 <code class="directive"><a href="./mod/mod_version.html#ifversion">&lt;IfVersion&gt;</a></code> sont
 évalués seulement au démarrage et au redémarrage du serveur.
 Si leurs conditions sont vérifiées au démarrage, les directives qu'ils contiennent
-s'appliqueront à toutes les requêtes.  Si leurs conditions ne sont pas vérifiées, les
+s'appliqueront à toutes les requêtes. Si leurs conditions ne sont pas vérifiées, les
 directives qu'ils contiennent seront ignorées.</p>
 
 <p>Le conteneur <code class="directive"><a href="./mod/core.html#ifdefine">&lt;IfDefine&gt;</a></code>
 contient des directives qui ne seront appliquées que si un paramètre approprié a
-été défini dans la ligne de commande de <code class="program"><a href="./programs/httpd.html">httpd</a></code> ou via une
+été défini dans la ligne de commande de <code class="program"><a href="./programs/httpd.html">httpd</a></code> ou à l'aide d'une
 directive <code class="directive"><a href="./mod/core.html#define">Define</a></code>.  Par exemple, avec la
 configuration suivante, toutes les requêtes seront redirigées vers un autre site
-si le serveur est démarré en utilisant la ligne de commande : <code>httpd
--DClosedForNow</code>:</p>
+si le serveur est démarré en utilisant la ligne de commande&nbsp;: <code>httpd
+-DClosedForNow</code>&nbsp;:</p>
 
 <pre class="prettyprint lang-config">&lt;IfDefine ClosedForNow&gt;
     Redirect "/" "http://otherserver.example.com/"
@@ -76,12 +76,12 @@ si le serveur est démarré en utilisant la ligne de commande : <code>httpd
 
 
 <p>Le conteneur <code class="directive"><a href="./mod/core.html#ifmodule">&lt;IfModule&gt;</a></code>
-est similaire; les directives qu'il contient ne s'appliqueront que si
+est similaire&nbsp;; les directives qu'il contient ne s'appliqueront que si
 un module particulier est disponible au niveau du serveur.
 Le module doit être soit compilé statiquement dans le serveur, soit
 dynamiquement et dans ce cas, la ligne <code class="directive"><a href="./mod/mod_so.html#loadmodule">LoadModule</a></code> correspondante doit apparaître
-plus haut dans le fichier de configuration.  Ce conteneur ne doit être
-utilisé que dans le cas où votre fichier de configuration doit fonctionner
+plus haut dans le fichier de configuration. Ce conteneur ne doit être
+utilisé que dans le cas où votre fichier de configuration doit être valable
 indépendamment de la présence ou de l'absence de certains modules.
 Il ne doit pas contenir de directives que vous souhaitez voir s'appliquer
 systématiquement, car vous pouvez perdre ainsi de précieux messages d'erreur
@@ -97,8 +97,8 @@ module <code class="module"><a href="./mod/mod_mime_magic.html">mod_mime_magic</
 
 <p>Le conteneur
 <code class="directive"><a href="./mod/mod_version.html#ifversion">&lt;IfVersion&gt;</a></code>
-est similaire aux conteneurs <code class="directive"><a href="./mod/core.html#ifdefine">&lt;IfDefine&gt;</a></code> et <code class="directive"><a href="./mod/core.html#ifmodule">&lt;IfModule&gt;</a></code>; les directives qu'il contient ne
-s'appliqueront que si une version particulière du serveur s'exécute.  Ce
+est similaire aux conteneurs <code class="directive"><a href="./mod/core.html#ifdefine">&lt;IfDefine&gt;</a></code> et <code class="directive"><a href="./mod/core.html#ifmodule">&lt;IfModule&gt;</a></code>&nbsp;; les directives qu'il contient ne
+s'appliqueront que si une version particulière du serveur s'exécute. Ce
 conteneur a été conçu pour une utilisation dans les suites de tests
 et les grands réseaux qui doivent prendre en compte différentes versions
 et configurations de httpd.</p>
@@ -110,9 +110,9 @@ et configurations de httpd.</p>
 
 
 <p><code class="directive"><a href="./mod/core.html#ifdefine">&lt;IfDefine&gt;</a></code>,
-<code class="directive"><a href="./mod/core.html#ifmodule">&lt;IfModule&gt;</a></code>, et
+<code class="directive"><a href="./mod/core.html#ifmodule">&lt;IfModule&gt;</a></code> et
 <code class="directive"><a href="./mod/mod_version.html#ifversion">&lt;IfVersion&gt;</a></code>
-peuvent inverser leur test conditionnel en le faisant précéder d'un "!".
+peuvent inverser leur test conditionnel en le faisant précéder d'un «&nbsp;!&nbsp;».
 De plus, ces sections peuvent être imbriquées afin de définir des restrictions
 plus complexes.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
@@ -122,25 +122,22 @@ arborescence du site web et expressions booléennes</a> <a title="Lien permanent
 
 <p>Les conteneurs de sections de configuration les plus couramment utilisés
 sont ceux qui modifient la configuration de points particuliers du système de
-fichiers ou de l'arborescence du site web.  Tout d'abord, il est important de
-comprendre la différence entre les deux.  Le système de fichiers est une vue
-de vos disques tels qu'ils sont perçus par votre système d'exploitation.
-Par exemple, avec une installation par défaut,
-Apache httpd est situé dans <code>/usr/local/apache2</code> pour le système de
-fichiers UNIX, ou <code>"c:/Program Files/Apache Group/Apache2"</code> pour
-le système de fichiers Windows.  (Notez que des slashes directs doivent
-toujours être utilisés comme séparateur de chemin
-dans les fichiers de configuration d'Apache httpd, même sous
-Windows.)  Quant à
-l'arborescence du site web, il s'agit d'une vue de votre site
-tel que présenté par le
-serveur web et perçue par le client.  Ainsi le chemin <code>/dir/</code> dans
-l'arborescence du site web correspond au chemin
-<code>/usr/local/apache2/htdocs/dir/</code> dans le système de fichiers pour
-une installation d'Apache httpd par défaut sous UNIX.
-En outre, l'arborescence du site web n'a pas besoin de correspondre en permanence au
-système de fichiers, car les pages web peuvent être générées dynamiquement
-à partir de bases de données ou d'autres emplacements.</p>
+fichiers ou de l'arborescence du site web. Tout d'abord, il est important de
+comprendre la différence entre les deux. Le système de fichiers est une vue de
+vos disques tels qu'ils sont perçus par votre système d'exploitation.  Par
+exemple, avec une installation par défaut, Apache httpd est situé dans
+<code>/usr/local/apache2</code> pour le système de fichiers UNIX, ou
+<code>"c:/Program Files/Apache Group/Apache2"</code> pour le système de
+fichiers Windows (notez que des slashes directs doivent toujours être utilisés
+comme séparateur de chemin dans les fichiers de configuration d'Apache httpd,
+même sous Windows). Quant à l'arborescence du site web, il s'agit d'une vue de
+votre site telle que présentée par le serveur web et perçue par le client.
+Ainsi le chemin <code>/dir/</code> dans l'arborescence du site web correspond
+au chemin <code>/usr/local/apache2/htdocs/dir/</code> dans le système de
+fichiers pour une installation d'Apache httpd par défaut sous UNIX.  En outre,
+l'arborescence du site web n'a pas besoin de correspondre en permanence au
+système de fichiers, car les pages web peuvent être générées dynamiquement à
+partir de bases de données ou d'autres emplacements.</p>
 
 <h3><a name="filesystem" id="filesystem">Conteneurs de système de fichiers</a></h3>
 
@@ -152,7 +149,7 @@ appliquent des directives à certaines parties du système de fichiers.
 Les directives contenues dans une section <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code> s'appliquent au répertoire
 précisé, ainsi qu'à tous ses sous-répertoires et aux fichiers que ces
 derniers contiennent.
-Le même effet peut être obtenu en utilisant les <a href="howto/htaccess.html">fichiers .htaccess</a>.  Par exemple, avec la
+Le même effet peut être obtenu en utilisant les <a href="howto/htaccess.html">fichiers .htaccess</a>. Par exemple, avec la
 configuration suivante, l'indexation sera activée pour le répertoire
 <code>/var/web/dir1</code> et tous ses sous-répertoires.</p>
 
@@ -177,7 +174,7 @@ l'endroit où il se trouve.</p>
 particuliers du système de fichiers, les sections
 <code class="directive"><a href="./mod/core.html#files">&lt;Files&gt;</a></code> et
 <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code>
-peuvent être combinées.  Par exemple, la configuration suivante va interdire
+peuvent être combinées. Par exemple, la configuration suivante va interdire
 l'accès à <code>/var/web/dir1/private.html</code>,
 <code>/var/web/dir1/subdir2/private.html</code>,
 <code>/var/web/dir1/subdir3/private.html</code>, ainsi que toute instance de
@@ -196,8 +193,8 @@ l'accès à <code>/var/web/dir1/private.html</code>,
 
 <p>le conteneur <code class="directive"><a href="./mod/core.html#location">&lt;Location&gt;</a></code>
 et son équivalent acceptant les
-<a class="glossarylink" href="./glossary.html#regex" title="voir glossaire">expressions rationnelles</a>, modifient quant à eux la
-configuration de parties de l'arborescence du site web.  Par exemple, la
+<a class="glossarylink" href="./glossary.html#regex" title="voir glossaire">expressions rationnelles</a> modifient quant à eux la
+configuration de parties de l'arborescence du site web. Par exemple, la
 configuration suivante interdit l'accès à toute URL dont la partie chemin
 commence par /private.
 En particulier, l'interdiction s'appliquera aux requêtes pour :
@@ -213,8 +210,8 @@ toute requête commençant par la chaîne de caractères <code>/private</code>.<
 
 <p>Le conteneur <code class="directive"><a href="./mod/core.html#location">&lt;Location&gt;</a></code>
 n'a pas besoin de faire référence à un élément du système de fichiers.
-Par exemple, l'exemple suivant montre comment faire référence à une URL
-particulière vers un gestionnaire interne du serveur HTTP Apache fourni par le module
+À ce titre, l'exemple suivant montre comment faire correspondre une URL
+particulière à un gestionnaire interne du serveur HTTP Apache fourni par le module
 <code class="module"><a href="./mod/mod_status.html">mod_status</a></code>.
 Il n'est pas nécessaire de trouver un fichier nommé <code>server-status</code>
 dans le système de fichiers.</p>
@@ -229,17 +226,17 @@ dans le système de fichiers.</p>
 <p>Pour contrôler deux URLs imbriquées, on doit tenir compte de l'ordre
 dans lequel certaines sections ou directives sont évaluées. Pour
 <code class="directive"><a href="./mod/core.html#location">&lt;Location&gt;</a></code>, on doit
-avoir :</p>
+avoir&nbsp;:</p>
 <pre class="prettyprint lang-config">&lt;Location "/foo"&gt;
 &lt;/Location&gt;
 &lt;Location "/foo/bar"&gt;
 &lt;/Location&gt;</pre>
 
-<p>Les directives <code class="directive"><a href="./mod/mod_alias.html#alias">&lt;Alias&gt;</a></code>, quant à elles, sont évaluées vice-versa :</p>
+<p>Les directives <code class="directive"><a href="./mod/mod_alias.html#alias">&lt;Alias&gt;</a></code>, quant à elles, sont évaluées vice-versa&nbsp;:</p>
 <pre class="prettyprint lang-config">Alias "/foo/bar" "/srv/www/uncommon/bar"
 Alias "/foo" "/srv/www/common/foo"</pre>
 
-<p>Ceci est aussi vrai pour les directives <code class="directive"><a href="./mod/mod_proxy.html#proxypass">ProxyPass</a></code> :</p>
+<p>Ceci est aussi vrai pour les directives <code class="directive"><a href="./mod/mod_proxy.html#proxypass">ProxyPass</a></code>&nbsp;:</p>
 <pre class="prettyprint lang-config">ProxyPass "/special-area" "http://special.example.com" smax=5 max=10
 ProxyPass "/" "balancer://mycluster/" stickysession=JSESSIONID|jsessionid nofailover=On</pre>
 
@@ -249,33 +246,24 @@ ProxyPass "/" "balancer://mycluster/" stickysession=JSESSIONID|jsessionid nofail
 <h3><a name="wildcards" id="wildcards">Caractères de remplacement
 et expressions rationnelles</a></h3>
 
-<p>Les conteneurs
-<code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code>,
-<code class="directive"><a href="./mod/core.html#files">&lt;Files&gt;</a></code>, et
-<code class="directive"><a href="./mod/core.html#location">&lt;Location&gt;</a></code>
-peuvent utiliser des caractères de remplacement de style shell comme dans
-la fonction <code>fnmatch</code> de la bibliothèque C standard.
-Le caractère "*"
-correspond à toute séquence de caractères, "?" à un caractère seul,
-et "[<em>seq</em>]" à tout caractère contenu dans <em>seq</em>.
-Le caractère "/"
-ne peut pas faire l'objet d'un remplacement;
-il doit être spécifié explicitement.</p>
+<p>Les conteneurs <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code>, <code class="directive"><a href="./mod/core.html#files">&lt;Files&gt;</a></code> et <code class="directive"><a href="./mod/core.html#location">&lt;Location&gt;</a></code> peuvent utiliser des caractères de
+remplacement de style shell comme dans la fonction <code>fnmatch</code> de la
+bibliothèque C standard.  Le caractère «&nbsp;*&nbsp;» correspond à toute séquence de
+caractères, «&nbsp;?&nbsp;» à un caractère seul, et «&nbsp;[<em>seq</em>]&nbsp;» à tout caractère
+contenu dans <em>seq</em>.  Le caractère «&nbsp;/&nbsp;» ne peut pas faire l'objet d'un
+remplacement&nbsp;; il doit être spécifié explicitement.</p>
 
-<p>Si une définition des critères de correspondance
-encore plus souple est nécessaire, chaque conteneur
-possède son équivalent acceptant les expressions rationnelles : <code class="directive"><a href="./mod/core.html#directorymatch">&lt;DirectoryMatch&gt;</a></code>, <code class="directive"><a href="./mod/core.html#filesmatch">&lt;FilesMatch&gt;</a></code>, et <code class="directive"><a href="./mod/core.html#locationmatch">&lt;LocationMatch&gt;</a></code> acceptent les
-<a class="glossarylink" href="./glossary.html#regex" title="voir glossaire">expressions rationnelles</a> compatibles Perl
-pour définir les critères de correspondance.  Mais voyez plus loin la section
-à propos de la combinaison des sections de configuration
-pour comprendre comment l'utilisation de
-conteneurs avec des expressions rationnelles va modifier la manière
-dont les directives sont appliquées.</p>
+<p>Si une définition des critères de correspondance encore plus souple est
+nécessaire, chaque conteneur possède son équivalent acceptant les expressions
+rationnelles&nbsp;: <code class="directive"><a href="./mod/core.html#directorymatch">&lt;DirectoryMatch&gt;</a></code>, <code class="directive"><a href="./mod/core.html#filesmatch">&lt;FilesMatch&gt;</a></code> et <code class="directive"><a href="./mod/core.html#locationmatch">&lt;LocationMatch&gt;</a></code> acceptent les <a class="glossarylink" href="./glossary.html#regex" title="voir glossaire">expressions rationnelles</a> compatibles Perl pour définir
+les critères de correspondance. Mais voyez plus loin la section à propos de la
+combinaison des sections de configuration pour comprendre comment l'utilisation
+de conteneurs avec des expressions rationnelles va modifier la manière dont les
+directives sont appliquées.</p>
 
-<p>Un conteneur qui modifie la configuration de tous les
-répertoires utilisateurs à l'aide de caractères de remplacement
-mais sans utiliser
-les expressions rationnelles pourrait ressembler à ceci :</p>
+<p>Un conteneur qui modifie la configuration de tous les répertoires
+utilisateurs à l'aide de caractères de remplacement mais sans utiliser les
+expressions rationnelles pourrait ressembler à ceci&nbsp;:</p>
 
 <pre class="prettyprint lang-config">&lt;Directory "/home/*/public_html"&gt;
     Options Indexes
@@ -284,7 +272,7 @@ les expressions rationnelles pourrait ressembler à ceci :</p>
 
 <p>Avec les conteneurs utilisant les expressions rationnelles,
 on peut interdire l'accès à de nombreux types de fichiers d'images
-simultanément :</p>
+simultanément&nbsp;:</p>
 <pre class="prettyprint lang-config">+&lt;FilesMatch "\.(?i:gif|jpe?g|png)$"&gt;
     Require all denied
 &lt;/FilesMatch&gt;</pre>
@@ -292,7 +280,7 @@ simultanément :</p>
 
 <p>Les expressions rationnelles contenant des <strong>groupes nommés et
 des références arrières</strong> sont ajoutées à l'environnement avec
-leur nom en majuscules. Ceci permet de référencer des éléments de
+leur nom en majuscules. Cela permet de référencer des éléments de
 chemins de fichiers et d'URLs depuis une <a href="expr.html">expression</a> et au sein de modules comme
 <code class="module"><a href="./mod/mod_rewrite.html">mod_rewrite</a></code>.</p>
 
@@ -308,7 +296,7 @@ chemins de fichiers et d'URLs depuis une <a href="expr.html">expression</a> et a
 permet de modifier la configuration en fonction d'une condition qui peut
 être définie sous la forme d'une expression booléenne. Dans l'exemple
 suivant, l'accès est interdit si l'en-tête HTTP Referer ne commence pas
-par "http://www.example.com/".</p>
+par «&nbsp;http://www.example.com/&nbsp;».</p>
 <pre class="prettyprint lang-config">&lt;If "!(%{HTTP_REFERER} -strmatch 'http://www.example.com/*')"&gt;
     Require all denied
 &lt;/If&gt;</pre>
@@ -321,13 +309,13 @@ par "http://www.example.com/".</p>
 <p>Choisir entre des conteneurs de système de fichiers et des conteneurs
 d'arborescence du site web est vraiment très simple.
 Pour appliquer des directives à des objets qui résident dans le système de
-fichiers, utilisez toujours un conteneur <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code> ou <code class="directive"><a href="./mod/core.html#files">&lt;Files&gt;</a></code>.  Pour appliquer des directives à des objets
+fichiers, utilisez toujours un conteneur <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code> ou <code class="directive"><a href="./mod/core.html#files">&lt;Files&gt;</a></code>. Pour appliquer des directives à des objets
 qui ne résident pas dans le système de fichiers (comme une page web générée
 par une base de données), utilisez un conteneur <code class="directive"><a href="./mod/core.html#location">&lt;Location&gt;</a></code>.</p>
 
 <p>Il ne faut jamais utiliser un conteneur <code class="directive"><a href="./mod/core.html#location">&lt;Location&gt;</a></code> pour restreindre l'accès à des
-objets du système de fichiers, car plusieurs localisations de
-l'arborescence du site web (URLs) peuvent correspondre à la même localisation
+objets du système de fichiers, car plusieurs emplacements de
+l'arborescence du site web (URLs) peuvent correspondre au même emplacement
 du système de fichier, ce qui peut permettre de contourner vos restrictions.
 Par exemple, imaginez la configuration suivante :</p>
 
@@ -337,44 +325,39 @@ Par exemple, imaginez la configuration suivante :</p>
 
 
 <p>Elle fonctionne correctement si la requête appelle
-<code>http://yoursite.example.com/dir/</code>.  Mais que va-t-il se passer si
-votre système de fichiers est insensible à la casse ?
-Votre restriction va pouvoir être tout simplement contournée en envoyant une
-requête sur
-<code>http://yoursite.example.com/DIR/</code>.  Le conteneur <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code>, quant à lui, s'appliquera
-à tout contenu servi à partir de cette localisation,
-sans tenir compte de la manière dont il est appelé.
-(Les liens du système de fichiers constituent une exception.
-Le même répertoire peut être placé dans plusieurs parties du système de
-fichiers en utilisant des liens symboliques.  Le conteneur
-<code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code> va suivre le
-lien symbolique sans modifier le nom du chemin.  Par conséquent, pour plus de
-sécurité, les liens symboliques doivent être désactivés à l'aide de la
-directive
-<code class="directive"><a href="./mod/core.html#options">Options</a></code> appropriée.)</p>
+<code>http://yoursite.example.com/dir/</code>. Mais que va-t-il se passer si
+votre système de fichiers est insensible à la casse&nbsp;?  Votre restriction va
+pouvoir être tout simplement contournée en envoyant une requête sur
+<code>http://yoursite.example.com/DIR/</code>. Le conteneur <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code>, quant à lui, s'appliquera à
+tout contenu servi à partir de cet emplacement, sans tenir compte de la manière
+dont il est appelé.  Les liens du système de fichiers constituent une exception.
+Le même répertoire peut être placé dans plusieurs parties du système de fichiers
+en utilisant des liens symboliques. Le conteneur <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code> va suivre le lien symbolique sans modifier
+le nom du chemin. Par conséquent, pour plus de sécurité, les liens symboliques
+doivent être désactivés à l'aide de la directive <code class="directive"><a href="./mod/core.html#options">Options</a></code> appropriée.</p>
 
 <p>Si vous pensez que vous n'êtes pas concerné par ce problème
-parceque vous utilisez un système de fichiers sensible à la casse,
+parce que vous utilisez un système de fichiers sensible à la casse,
 gardez à l'esprit qu'il y a de nombreuses autres manières pour faire
-correspondre plusieurs localisations de l'arborescence du site web à la même
-localisation du système de fichiers.  C'est pourquoi vous devez autant que
+correspondre plusieurs emplacements de l'arborescence du site web au même
+emplacement du système de fichiers. C'est pourquoi vous devez autant que
 possible toujours utiliser les conteneurs de système de fichiers.
-Il y a cependant une exception à cette règle.  Placer des restrictions de
+Il y a cependant une exception à cette règle. Placer des restrictions de
 configuration dans un conteneur <code>&lt;Location
-"/"&gt;</code> est tout à fait sans rique car ce conteneur va s'appliquer à
+"/"&gt;</code> est absolument sans rique car ce conteneur va s'appliquer à
 toutes les requêtes sans tenir compte de l'URL spécifique.</p>
 
 
 <h3><a name="nesting" id="nesting">Imbrication des sections</a></h3>
 
-<p>Certains types de sections peuvent être imbriqués : d'une part, on peut
+<p>Certains types de sections peuvent être imbriqués&nbsp;: d'une part, on peut
 utiliser les sections <code class="directive"><a href="./mod/core.html#files">&lt;Files&gt;</a></code>
 à l'intérieur des sections <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code>, d'autre part, on peut utiliser les
 directives <code class="directive"><a href="./mod/core.html#if">&lt;If&gt;</a></code> à l'intérieur
 des sections <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code>,
 <code class="directive"><a href="./mod/core.html#location">&lt;Location&gt;</a></code> et <code class="directive"><a href="./mod/core.html#files">&lt;Files&gt;</a></code> (mais pas à l'intérieur d'une
 autre section <code class="directive"><a href="./mod/core.html#if">&lt;If&gt;</a></code>). Les
-valeurs des expressions rationnelles correspondant aux sections nommées se
+valeurs des expressions rationnelles correspondant aux sections citées se
 comportent de manière identique.</p>
 
 <p>Les sections imbriquées sont fusionnées après les sections
@@ -388,9 +371,9 @@ non-imbriquées de même type.</p>
 
 <p>Le conteneur <code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>
 contient des directives qui s'appliquent à des serveurs virtuels spécifiques.
-Ceci s'avère utile pour servir les contenus de plusieurs serveurs virtuels à
+Cela s'avère utile pour servir les contenus de plusieurs serveurs virtuels à
 partir de la même machine, chacun d'entre eux possédant une configuration
-différente.  Pour de plus amples informations, voir la <a href="vhosts/">Documentation sur les serveurs virtuels</a>.</p>
+différente. Pour de plus amples informations, voir la <a href="vhosts/">Documentation sur les serveurs virtuels</a>.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="proxy" id="proxy">Mandataire</a> <a title="Lien permanent" href="#proxy" class="permalink">&para;</a></h2>
@@ -400,10 +383,10 @@ différente.  Pour de plus amples informations, voir la <a href="vhosts/">Docume
 et <code class="directive"><a href="./mod/mod_proxy.html#proxymatch">&lt;ProxyMatch&gt;</a></code>
 appliquent les directives de configuration qu'ils contiennent uniquement aux
 sites qui correspondent à l'URL spécifiée et auxquels on a
-accédé via le serveur mandataire du module <code class="module"><a href="./mod/mod_proxy.html">mod_proxy</a></code>.
+accédé à l'aide du serveur mandataire du module <code class="module"><a href="./mod/mod_proxy.html">mod_proxy</a></code>.
 Par exemple, la configuration suivante n'autorisera qu'un sous-ensemble de
 clients à accéder au site <code>www.example.com</code> en passant par le serveur
-mandataire :.</p>
+mandataire&nbsp;:</p>
 
 <pre class="prettyprint lang-config">&lt;Proxy "http://www.example.com/*"&gt;
     Require host yournetwork.example.com
@@ -411,7 +394,7 @@ mandataire :.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="whatwhere" id="whatwhere">Quelles sont les directives autorisées ?</a> <a title="Lien permanent" href="#whatwhere" class="permalink">&para;</a></h2>
+<h2><a name="whatwhere" id="whatwhere">Quelles sont les directives autorisées&nbsp;?</a> <a title="Lien permanent" href="#whatwhere" class="permalink">&para;</a></h2>
 
 <p>Pour déterminer quelles sont les directives autorisées pour tel type de
 section de configuration, vérifiez le <a href="mod/directive-dict.html#Context">Contexte</a> de la directive.
@@ -423,9 +406,9 @@ l'est aussi d'un point de vue syntaxique dans les sections
 <code class="directive"><a href="./mod/core.html#filesmatch">&lt;FilesMatch&gt;</a></code>,
 <code class="directive"><a href="./mod/core.html#location">&lt;Location&gt;</a></code>,
 <code class="directive"><a href="./mod/core.html#locationmatch">&lt;LocationMatch&gt;</a></code>,
-<code class="directive"><a href="./mod/mod_proxy.html#proxy">&lt;Proxy&gt;</a></code>,
+<code class="directive"><a href="./mod/mod_proxy.html#proxy">&lt;Proxy&gt;</a></code>
 et <code class="directive"><a href="./mod/mod_proxy.html#proxymatch">&lt;ProxyMatch&gt;</a></code>.
-Il y a cependant quelques exceptions :</p>
+Il y a cependant quelques exceptions&nbsp;:</p>
 
 <ul>
 <li>La directive <code class="directive"><a href="./mod/core.html#allowoverride">AllowOverride</a></code>
@@ -433,7 +416,7 @@ ne fonctionne que dans les sections
 <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code>.</li>
 
 <li>Les <code class="directive"><a href="./mod/core.html#options">Options</a></code> <code>FollowSymLinks</code> et
-<code>SymLinksIfOwnerMatch</code>  ne fonctionnent que dans les sections
+<code>SymLinksIfOwnerMatch</code> ne fonctionnent que dans les sections
 <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code> ou les fichiers
 <code>.htaccess</code>.</li>
 
@@ -451,31 +434,25 @@ Il est important de savoir comment cet ordre est défini car il peut avoir
 des effets importants sur la manière dont les directives de configuration
 sont interprétées.</p>
 
-    <p>L'ordre dans lequel les sections sont appliquées est :</p>
+    <p>L'ordre dans lequel les sections sont appliquées est&nbsp;:</p>
 
     <ol>
-      <li> Les sections <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code> (à l'exception des
-      expressions rationnelles)
-      et les fichiers <code>.htaccess</code> sont appliquées simultanément (avec
-      la possibilité pour <code>.htaccess</code>, s'il y est autorisé, de
-      prévaloir sur
-      <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code>)</li>
+      <li> Les sections <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code> (à l'exception des expressions
+      rationnelles) et les fichiers <code>.htaccess</code> sont appliquées
+      simultanément (avec la possibilité pour <code>.htaccess</code>, s'il y est
+      autorisé, de prévaloir sur <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code>)</li>
 
-      <li>Les sections
-      <code class="directive"><a href="./mod/core.html#directorymatch">&lt;DirectoryMatch&gt;</a></code>
-      (et <code>&lt;Directory "~"&gt;</code>)</li>
+      <li>Les sections <code class="directive"><a href="./mod/core.html#directorymatch">&lt;DirectoryMatch&gt;</a></code> (et <code>&lt;Directory
+      "~"&gt;</code>)</li>
 
-      <li>Les sections <code class="directive"><a href="./mod/core.html#files">&lt;Files&gt;</a></code> et <code class="directive"><a href="./mod/core.html#filesmatch">&lt;FilesMatch&gt;</a></code> sont appliquées
-      simultanément</li>
+      <li>Les sections <code class="directive"><a href="./mod/core.html#files">&lt;Files&gt;</a></code>
+      et <code class="directive"><a href="./mod/core.html#filesmatch">&lt;FilesMatch&gt;</a></code> sont
+      appliquées simultanément</li>
 
-      <li>Les sections
-      <code class="directive"><a href="./mod/core.html#location">&lt;Location&gt;</a></code>
-      et <code class="directive"><a href="./mod/core.html#locationmatch">&lt;LocationMatch&gt;</a></code> sont appliquées
-      simultanément</li>
+      <li>Les sections <code class="directive"><a href="./mod/core.html#location">&lt;Location&gt;</a></code> et <code class="directive"><a href="./mod/core.html#locationmatch">&lt;LocationMatch&gt;</a></code> sont appliquées simultanément</li>
 
       <li>Les sections <code class="directive"><a href="./mod/core.html#if">&lt;If&gt;</a></code>,
-      même si elles sont incluses dans un des contextes précédents.
-      </li>
+      même si elles sont incluses dans un des contextes précédents.  </li>
     </ol>
 
     <p>Quelques remarques importantes :</p>
@@ -485,9 +462,9 @@ sont interprétées.</p>
     l'ordre dans lequel elles apparaissent dans les fichiers de configuration.
     Par exemple, une requête pour <em>/foo/bar</em> correspondra à
     <code>&lt;Location "/foo/bar"&gt;</code> et <code>&lt;Location
-    "/foo"&gt;</code> (dans ce cas le groupe 4) : les deux sections seront
+    "/foo"&gt;</code> (dans ce cas le groupe 4)&nbsp;: les deux sections seront
     évaluées mais selon l'ordre dans lequel elles apparaissent dans le fichier
-    de configuration..</li>
+    de configuration.</li>
     <li>Les sections <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code> (groupe 1 ci-dessus)
     sont traitées dans l'ordre du répertoire le plus court vers le plus long.
     Par exemple, <code>&lt;Directory "/var/web/dir"&gt;</code> sera
@@ -496,14 +473,14 @@ sont interprétées.</p>
     <li>Si plusieurs sections <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code> s'appliquent au même
     répertoire, elles sont traitées selon l'ordre dans lequel elles
     apparaissent dans le fichier de configuration.</li>
-    <li>Les sections de configuration incluses via la directive <code class="directive"><a href="./mod/core.html#include">Include</a></code> sont traitées comme si elles se
+    <li>Les sections de configuration incluses à laide de la directive <code class="directive"><a href="./mod/core.html#include">Include</a></code> sont traitées comme si elles se
     trouvaient réellement dans le fichier qui les inclut à la position de la
     directive
     <code class="directive"><a href="./mod/core.html#include">Include</a></code>.</li>
     <li>Les sections situées à l'intérieur de sections <code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>
     sont appliquées <em>après</em> les sections correspondantes situées en
-    dehors de la définition de l'hôte virtuel, ce qui permet à l'hôte virtuel
-    de prévaloir sur la configuration du serveur principal.</li>
+    dehors de la définition du serveur virtuel, ce qui permet au serveur virtuel
+    de prévaloir sur la configuration du serveur global.</li>
     <li>Quand la requête est servie par le module <code class="module"><a href="./mod/mod_proxy.html">mod_proxy</a></code>,
     le conteneur <code class="directive"><a href="./mod/mod_proxy.html#proxy">&lt;Proxy&gt;</a></code>
     prend la place du conteneur <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code> dans l'ordre de traitement.</li>
@@ -532,31 +509,31 @@ sont interprétées.</p>
 <h3><a name="relationship-module-configuration" id="relationship-module-configuration">Interactions entre
 modules et sections de configuration</a></h3>
     <p>Une question se pose souvent après avoir lu comment les sections de
-    configuration sont fusionnées : comment et quand les directives de modules
-    particuliers comme <code class="module"><a href="./mod/mod_rewrite.html">mod_rewrite</a></code> sont-elles interprétées ? La
+    configuration sont fusionnées&nbsp;: comment et quand les directives de modules
+    particuliers comme <code class="module"><a href="./mod/mod_rewrite.html">mod_rewrite</a></code> sont-elles interprétées&nbsp;? La
     réponse n'est pas triviale et nécessite un approfondissement. Chaque module
     httpd gère sa propre configuration, et chacune de ses directives dans
     httpd.conf définit un élément de configuration dans un contexte particulier.
     httpd n'exécute pas une commande au moment où elle est lue.</p>
     <p>A l'exécution, le noyau de httpd parcourt les sections de configuration
     dans l'ordre décrit ci-dessus afin de déterminer lesquelles s'appliquent à
-    la requête courante. Lorsqu'une première section s'applique, elle est
-    considérée comme la configuration courante pour cette requête. Si une
+    la requête actuelle. Lorsqu'une première section s'applique, elle est
+    considérée comme la configuration actuelle pour cette requête. Si une
     section suivante s'applique aussi, chaque module qui possède des directives
     dans chacune de ces sections a la possibilité de fusionner sa configuration
     entre ces deux sections. Il en résulte une troisième configuration et le
     processus de fusion se poursuit jusqu'à ce que toutes les sections de
     configuration aient été évaluées.</p>
     <p>Après l'étape précédente, le traitement proprement dit de la requête HTTP
-    peut commencer : chaque module peut effectuer toute tâche qui lui incombe,
-    et pour déterminer de quelle manière dont il doit agir, il peut s'appuyer
+    peut commencer&nbsp;: chaque module peut effectuer toute tâche qui lui incombe,
+    et pour déterminer de quelle manière il doit agir, il peut s'appuyer
     sur le noyau de httpd pour retrouver sa configuration globale issue de la
     fusion précédente.</p>
     <p>Un exemple permet de mieux visualiser l'ensemble du processus. La
     configuration suivante utilise la directive <code class="directive"><a href="./mod/mod_headers.html#header">Header</a></code> du module
     <code class="module"><a href="./mod/mod_headers.html">mod_headers</a></code> pour définir un en-tête HTTP spécifique. Quelle
     valeur httpd va-t-il affecter à l'en-tête <code>CustomHeaderName</code> pour
-    une requête vers <code>/example/index.html</code> ?
+    une requête vers <code>/example/index.html</code>&nbsp;?
     </p>
     <pre class="prettyprint lang-config">&lt;Directory "/"&gt;
     Header set CustomHeaderName one
@@ -579,7 +556,7 @@ modules et sections de configuration</a></h3>
 	nouveau, une nouvelle configuration est créée qui définit l'en-tête
 	<code>CustomHeaderName</code> avec la valeur <code>two</code>.</li>
         <li><code class="directive">FilesMatch</code> ".*" s'applique, une nouvelle
-	opportunité de fusion surgit, et l'en-tête <code>CustomHeaderName</code>
+	opportunité de fusion survient, et l'en-tête <code>CustomHeaderName</code>
 	est défini à la valeur <code>three</code>.</li>
         <li>Finalement, au cours des étapes suivantes du traitement de la
 	requête HTTP, <code class="module"><a href="./mod/mod_headers.html">mod_headers</a></code> sera sollicité, et il se
@@ -589,7 +566,7 @@ modules et sections de configuration</a></h3>
 	accomplir sa tâche, à savoir définir des en-têtes HTTP. Cela ne veut
 	cependant pas dire qu'un module ne peut pas effectuer des actions plus
 	complexes comme désactiver des directives car elle ne sont pas
-	nécessaires ou obsolètes, etc...</li>
+	nécessaires ou obsolètes, etc.</li>
     </ul>
 
     <p>Ceci est aussi vrai pour les fichiers .htaccess car ils possèdent la même
@@ -632,17 +609,17 @@ E.</p>
 &lt;/Directory&gt;</pre>
 
 
-<p>Pour un exemple plus concret, considérez ce qui suit.  Sans tenir compte
-de toute restriction d'accès placée dans les sections <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code>, la section <code class="directive"><a href="./mod/core.html#location">&lt;Location&gt;</a></code> sera
+<p>Pour un exemple plus concret, considérez ce qui suit. Sans tenir compte
+d'une quelconque restriction d'accès placée dans les sections <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code>, la section <code class="directive"><a href="./mod/core.html#location">&lt;Location&gt;</a></code> sera
 évaluée en dernier et permettra un accès au serveur sans aucune restriction.
-En d'autres termes, l'ordre de la combinaison des sections est important,
-soyez donc prudent !</p>
+En d'autres termes, l'ordre de la combinaison des sections est important&nbsp;;
+soyez donc prudent&nbsp;!</p>
 
 <pre class="prettyprint lang-config">&lt;Location "/"&gt;
     Require all granted
 &lt;/Location&gt;
 
-# Arrghs!  Cette section &lt;Directory&gt; n'aura aucun effet
+# Grrrr !  Cette section &lt;Directory&gt; n'aura aucun effet
 &lt;Directory "/"&gt;
     &lt;RequireAll&gt;
         Require all granted

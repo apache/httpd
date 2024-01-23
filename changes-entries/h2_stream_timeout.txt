@@ -1,0 +1,2 @@
+ * mod_http2: fixed a bug in handling of stream timeouts.
+   [Stefan Eissing]

@@ -156,10 +156,10 @@ l'arborescence de développement</a></li>
 	<code>awk.exe</code>. awk effectue la modification des fichiers
 	au moment de l'installation ; il a été choisi car il nécessite
 	un téléchargement de petite taille (par rapport à Perl ou
-	WSH/VB). Le site de Brian Kernighan <a href="http://www.cs.princeton.edu/~bwk/btl.mirror/">http://www.cs.princeton.edu/~bwk/btl.mirror/</a> propose un
-	binaire précompilé pour Win32, <a href="http://www.cs.princeton.edu/~bwk/btl.mirror/awk95.exe">http://www.cs.princeton.edu/~bwk/btl.mirror/awk95.exe</a>, que
-	vous devez enregistrer sous le nom <code>awk.exe</code> (plutôt
-	que <code>awk95.exe</code>).</p>
+	WSH/VB). Le binaire <code>awk.exe</code> pour Windows peut être compilé
+	à partir des sources originelles de Brian Kernighan disponibles <a href="https://svn.apache.org/repos/asf/httpd/httpd/win32-msi/trunk/awk/">ici</a>,
+	ou le binaire GNU awk peut être téléchargé et extrait de l'archive zip <a href="https://gnuwin32.sourceforge.net/packages/gawk.htm">ici</a> puis
+	placé dans un répertoire du %PATH% sur le système de construction.</p>
 
         <div class="note">Si awk.exe n'est pas trouvé, la cible install du fichier
 	Makefile.win n'effectuera aucune substitution dans les fichiers

@@ -1,0 +1,2 @@
+  *) mod_headers: Fix a possible infinite recursion with the edit* action and
+     empty matches.  [Yann Ylavic]

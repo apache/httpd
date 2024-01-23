@@ -775,7 +775,7 @@ passe de la clé s'ouvre au démarrage du serveur.
 on peut utiliser un identificateur de certificat pour identifier un certificat
 stocké dans un jeton. Actuellement, seuls les <a href="https://tools.ietf.org/html/rfc7512">URIs PKCS#11</a> sont reconnus comme
 identificateurs de certificats et peuvent être utilisés en conjonction avec le
-moteur OpenSSL <code>pkcs11</code>. Si la directive <code class="directive"><a href="#sslcertificatekeyfile">SSLCertificateKeyFile</a></code> est absente, le certificat et
+moteur ou le fournisseur OpenSSL <code>pkcs11</code>. Si la directive <code class="directive"><a href="#sslcertificatekeyfile">SSLCertificateKeyFile</a></code> est absente, le certificat et
 la clé privée peuvent être chargés avec l'identificateur spécifié via la
 directive <code class="directive">SSLCertificateFile</code>.</p>
 
@@ -869,7 +869,8 @@ certificats qui utilisent un fichier de clé séparé.</p>
 d'identifier une clé privée via un identifiant stocké dans un jeton.
 Actuellement, seuls les <a href="https://tools.ietf.org/html/rfc7512">PKCS#11
 URIs</a> sont reconnus comme identifiants de clés privées et peuvent être
-utilisés en conjonction avec le moteur OpenSSL <code>pkcs11</code>.</p>
+utilisés en conjonction avec le moteur ou le fournisseur OpenSSL
+<code>pkcs11</code>.</p>
 
 <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config"># Pour utiliser une clé privée stockée dans fichier encodé PEM :
 SSLCertificateKeyFile "/usr/local/apache2/conf/ssl.key/server.key"
@@ -1149,6 +1150,15 @@ qu'avec la version 0.9.6, il faut utiliser les distributions séparées
 <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config"># Pour un accélérateur Broadcom :
 SSLCryptoDevice ubsec</pre>
 </div>
+
+<p>
+À partir de la version 3.0 d'OpenSSL, si aucun moteur n'est spécifié alors
+que la clé ou le certificat sont spécifiés à l'aide d'<a href="https://tools.ietf.org/html/rfc7512">URIs PKCS#11</a>, le chargement de la
+clé et du certificat est tenté à partir d'un fournisseur OpenSSL. Le fournisseur
+OpenSSL à utiliser doit être défini et configuré dans le fichier de
+configuration d'OpenSSL et il doit prendre en charge la <a href="https://www.openssl.org/docs/man3.0/man7/provider-storemgmt.html">méthode
+STORE</a> pour les <a href="https://tools.ietf.org/html/rfc7512">URIs PKCS#11</a>.
+</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>

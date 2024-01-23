@@ -1,0 +1,2 @@
+  *) mod_ldap: HTML-escape data in the ldap-status handler.
+     [Eric Covener, Chamal De Silva]

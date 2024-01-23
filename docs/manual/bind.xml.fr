@@ -53,7 +53,7 @@
     l'hôte local et le serveur se met en attente de l'arrivée d'une requête.
     Par défaut, le serveur écoute toutes les adresses de l'hôte local.
     Cependant, on peut lui préciser des ports et des adresses spécifiques à
-    écouter, ou une combinaison des deux.  Tout ceci est souvent associé avec la
+    écouter, ou une combinaison des deux. Tout ceci est souvent associé avec la
     fonctionnalité des <a href="vhosts/">serveurs virtuels</a> qui détermine la
     manière dont <code>httpd</code> répond aux différents ports, noms d'hôtes et
     adresses IP.</p>
@@ -63,7 +63,7 @@
     port(s) spécifiés ou une combinaison adresse/port. Si seul un numéro de port
     est spécifié dans la directive <directive
     module="mpm_common">Listen</directive>, le serveur se met à l'écoute sur ce
-    port et sur toutes les interfaces réseau.  Si une adresse IP est spécifiée
+    port et sur toutes les interfaces réseau. Si une adresse IP est spécifiée
     en plus du port, le serveur va écouter sur ce port et uniquement sur
     l'interface réseau correspondante. On peut utiliser plusieurs directives
     <directive module="mpm_common">Listen</directive> pour spécifier plusieurs
@@ -181,7 +181,7 @@ Listen 192.0.2.5:8000
     configure</program>.</p>
 
     <p>L'option <code>--enable-v4-mapped</code> est utilisée par défaut sur
-    toutes les plateformes sauf FreeBSD, NetBSD, et OpenBSD;
+    toutes les plateformes sauf FreeBSD, NetBSD, et OpenBSD ;
     votre httpd a donc probablement été construit avec cette option.</p>
 
     <p>Si vous souhaitez que httpd ne gère que des connexions IPv4, sans se
@@ -202,7 +202,7 @@ Listen 192.0.2.1:80
     (c'est à dire désactiver la traduction des adresses IPv6 au format IPv4),
     utilisez l'option <code>--disable-v4-mapped</code> du script
     <program> configure</program>. <code>--disable-v4-mapped</code> est
-    utilisé par défaut sur FreeBSD, NetBSD, et OpenBSD.</p>
+    utilisée par défaut sur FreeBSD, NetBSD, et OpenBSD.</p>
   </section>
 
   <section id="protocol">
@@ -214,7 +214,7 @@ Listen 192.0.2.1:80
     sont <code>https</code> pour le port 443, et <code>http</code> pour
     tous les autres ports. Le protocole sert à déterminer quel module
     doit traiter une requête, et à appliquer les optimisations
-    spécifiques au protocole via la directive <directive
+    spécifiques au protocole à l'aide de la directive <directive
     module="core">AcceptFilter</directive>.</p>
 
     <p>Vous ne devez définir le protocole que si vous travaillez avec

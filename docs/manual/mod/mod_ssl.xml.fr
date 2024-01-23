@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1908132 -->
+<!-- English Revision: 1914365 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -1126,7 +1126,7 @@ on peut utiliser un identificateur de certificat pour identifier un certificat
 stocké dans un jeton. Actuellement, seuls les <a
 href="https://tools.ietf.org/html/rfc7512">URIs PKCS#11</a> sont reconnus comme
 identificateurs de certificats et peuvent être utilisés en conjonction avec le
-moteur OpenSSL <code>pkcs11</code>. Si la directive <directive
+moteur ou le fournisseur OpenSSL <code>pkcs11</code>. Si la directive <directive
 module="mod_ssl">SSLCertificateKeyFile</directive> est absente, le certificat et
 la clé privée peuvent être chargés avec l'identificateur spécifié via la
 directive <directive module="mod_ssl">SSLCertificateFile</directive>.</p>
@@ -1226,7 +1226,8 @@ certificats qui utilisent un fichier de clé séparé.</p>
 d'identifier une clé privée via un identifiant stocké dans un jeton.
 Actuellement, seuls les <a href="https://tools.ietf.org/html/rfc7512">PKCS#11
 URIs</a> sont reconnus comme identifiants de clés privées et peuvent être
-utilisés en conjonction avec le moteur OpenSSL <code>pkcs11</code>.</p>
+utilisés en conjonction avec le moteur ou le fournisseur OpenSSL
+<code>pkcs11</code>.</p>
 
 <example><title>Exemple</title>
 <highlight language="config">
@@ -2780,6 +2781,17 @@ qu'avec la version 0.9.6, il faut utiliser les distributions séparées
 SSLCryptoDevice ubsec
 </highlight>
 </example>
+
+<p>
+À partir de la version 3.0 d'OpenSSL, si aucun moteur n'est spécifié alors
+que la clé ou le certificat sont spécifiés à l'aide d'<a
+href="https://tools.ietf.org/html/rfc7512">URIs PKCS#11</a>, le chargement de la
+clé et du certificat est tenté à partir d'un fournisseur OpenSSL. Le fournisseur
+OpenSSL à utiliser doit être défini et configuré dans le fichier de
+configuration d'OpenSSL et il doit prendre en charge la <a
+href="https://www.openssl.org/docs/man3.0/man7/provider-storemgmt.html">méthode
+STORE</a> pour les <a href="https://tools.ietf.org/html/rfc7512">URIs PKCS#11</a>.
+</p>
 </usage>
 </directivesynopsis>
 

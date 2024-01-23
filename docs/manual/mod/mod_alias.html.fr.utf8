@@ -518,18 +518,18 @@ différente</td></tr>
 <div class="directive-section"><h2><a name="redirectrelative" id="redirectrelative">Directive</a> <a name="RedirectRelative" id="RedirectRelative">RedirectRelative</a> <a title="Lien permanent" href="#redirectrelative" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Redirection relative de cibles.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>RedirectRelative OFF|ON</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>RedirectRelative OFF</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>RedirectRelative On|Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>RedirectRelative Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_alias</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.5.1 du serveur HTTP Apache</td></tr>
 </table>
-    <p>Par défaut, si l'URL cible d'une directive
-    <code class="directive">Redirect</code> est une URL relative commençant par un
-    caractère '/', le serveur convertit cette dernière en URL absolue avant de
-    répondre au client. En définissant <code class="directive">RedirectRelative</code> à
-    "ON", l'URL relative est présentée au client sans modification.</p>
+    <p>Par défaut, si l'URL cible d'une directive <code class="directive"><a href="#redirect">Redirect</a></code> est une URL relative commençant par
+    un caractère '/', le serveur convertit cette dernière en URL absolue avant
+    de répondre au client. En définissant
+    <code class="directive">RedirectRelative</code> à "On", l'URL relative est présentée
+    au client sans modification.</p>
 
 
 </div>

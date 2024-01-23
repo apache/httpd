@@ -1,0 +1,2 @@
+ *) mod_xml2enc: Tolerate libxml2 2.12.0 and later.
+    [ttachi <tachihara AT hotmail.com>]

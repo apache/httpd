@@ -125,7 +125,7 @@ static int trans_on_event[][H2_SS_MAX] = {
 { S_XXX, S_ERR,  S_ERR,  S_CL_L, S_CLS,  S_XXX,  S_XXX,  S_XXX, },/* EV_CLOSED_L*/
 { S_ERR, S_ERR,  S_ERR,  S_CL_R, S_ERR,  S_CLS,  S_NOP,  S_NOP, },/* EV_CLOSED_R*/
 { S_CLS, S_CLS,  S_CLS,  S_CLS,  S_CLS,  S_CLS,  S_NOP,  S_NOP, },/* EV_CANCELLED*/
-{ S_NOP, S_XXX,  S_XXX,  S_XXX,  S_XXX,  S_CLS,  S_CLN,  S_XXX, },/* EV_EOS_SENT*/
+{ S_NOP, S_XXX,  S_XXX,  S_XXX,  S_XXX,  S_CLS,  S_CLN,  S_NOP, },/* EV_EOS_SENT*/
 { S_NOP, S_XXX,  S_CLS,  S_XXX,  S_XXX,  S_CLS,  S_XXX,  S_XXX, },/* EV_IN_ERROR*/
 };
 
@@ -1262,6 +1262,14 @@ int h2_stream_is_ready(h2_stream *stream)
         return 1;
     }
     return 0;
+}
+
+int h2_stream_wants_send_data(h2_stream *stream)
+{
+    H2_STRM_ASSERT_MAGIC(stream, H2_STRM_MAGIC_OK);
+    return h2_stream_is_ready(stream) &&
+           ((stream->out_buffer && !APR_BRIGADE_EMPTY(stream->out_buffer)) ||
+            (stream->output && !h2_beam_empty(stream->output)));
 }
 
 int h2_stream_is_at(const h2_stream *stream, h2_stream_state_t state)

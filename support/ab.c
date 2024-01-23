@@ -435,6 +435,7 @@ int bind_count = 0;
 const char **bind_hosts;
 apr_sockaddr_t **bind_addrs;
 apr_port_t connectport;
+char *src_address;
 const char *gnuplot;          /* GNUplot file */
 const char *csvperc;          /* CSV Percentile file */
 const char *fullurl;
@@ -1613,6 +1614,7 @@ static void start_connection(struct connection * c)
 {
     struct worker *worker = c->worker;
     apr_status_t rv;
+    apr_sockaddr_t *from;
 
     if (!worker_can_connect(worker)) {
         return;
@@ -1676,6 +1678,14 @@ static void start_connection(struct connection * c)
             close_connection(c);
             return;
         }
+    }
+
+    if (src_address) {
+        if ((rv = apr_sockaddr_info_get(&from, src_address, destsa->family,
+                0, 0, c->ctx)) != APR_SUCCESS)
+                graceful_strerror("src_address get", rv);
+        if ((rv = apr_socket_bind(c->aprsock, from)) != APR_SUCCESS)
+            graceful_strerror("src_address bind", rv);
     }
 
     c->read = 0;
@@ -2790,6 +2800,7 @@ static void usage(const char *progname)
     fprintf(stderr, "    -P attribute    Add Basic Proxy Authentication, the attributes\n");
     fprintf(stderr, "                    are a colon separated username and password.\n");
     fprintf(stderr, "    -X proxy:port   Proxyserver and port number to use\n");
+    fprintf(stderr, "    -o src_address  Set the local source address\n");
     fprintf(stderr, "    -V              Print version number and exit\n");
     fprintf(stderr, "    -k              Use HTTP KeepAlive feature\n");
     fprintf(stderr, "    -d              Do not show percentiles served table.\n");
@@ -3030,7 +3041,7 @@ int main(int argc, const char * const argv[])
 #endif
 
     apr_getopt_init(&opt, cntxt, argc, argv);
-    while ((status = apr_getopt(opt, "n:c:t:s:b:T:p:u:v:lrkVhwiIx:y:z:C:H:P:A:g:X:de:SqQDB:m:R:"
+    while ((status = apr_getopt(opt, "n:c:t:s:b:T:p:u:v:lrkVhwiIx:y:z:C:H:P:A:g:X:de:SqQDB:m:R:o:"
 #if APR_HAS_THREADS
             "W:"
 #endif
@@ -3055,6 +3066,9 @@ int main(int argc, const char * const argv[])
 #endif
             case 'k':
                 keepalive = 1;
+                break;
+            case 'o':
+                src_address = strdup(optarg);
                 break;
             case 'q':
                 heartbeatres = 0;

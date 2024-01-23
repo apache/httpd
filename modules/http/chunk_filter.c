@@ -64,7 +64,7 @@ apr_status_t ap_http_chunk_filter(ap_filter_t *f, apr_bucket_brigade *b)
 
     for (more = tmp = NULL; b; b = more, more = NULL) {
         apr_off_t bytes = 0;
-        apr_bucket *eos = NULL;
+        apr_bucket *eos = NULL; /* EOS bucket, or FLUSH preceding EOS */
         apr_bucket *flush = NULL;
         /* XXX: chunk_hdr must remain at this scope since it is used in a
          *      transient bucket.
@@ -99,8 +99,20 @@ apr_status_t ap_http_chunk_filter(ap_filter_t *f, apr_bucket_brigade *b)
                 }
                 if (APR_BUCKET_IS_FLUSH(e)) {
                     flush = e;
+
+                    /* Special case to catch common brigade ending of
+                     * [FLUSH] [EOS] - insert the last_chunk before
+                     * the FLUSH rather than between the FLUSH and the
+                     * EOS. */
                     if (e != APR_BRIGADE_LAST(b)) {
-                        more = apr_brigade_split_ex(b, APR_BUCKET_NEXT(e), tmp);
+                        if (APR_BUCKET_IS_EOS(APR_BUCKET_NEXT(e))) {
+                            eos = e;
+                            /* anything after EOS is dropped, no need
+                             * to split. */
+                        }
+                        else {
+                            more = apr_brigade_split_ex(b, APR_BUCKET_NEXT(e), tmp);
+                        }
                     }
                     break;
                 }
@@ -173,11 +185,11 @@ apr_status_t ap_http_chunk_filter(ap_filter_t *f, apr_bucket_brigade *b)
              * FLUSH bucket, or appended to the brigade
              */
             e = apr_bucket_immortal_create(CRLF_ASCII, 2, c->bucket_alloc);
-            if (eos != NULL) {
-                APR_BUCKET_INSERT_BEFORE(eos, e);
-            }
-            else if (flush != NULL) {
+            if (flush != NULL) {
                 APR_BUCKET_INSERT_BEFORE(flush, e);
+            }
+            else if (eos != NULL) {
+                APR_BUCKET_INSERT_BEFORE(eos, e);
             }
             else {
                 APR_BRIGADE_INSERT_TAIL(b, e);

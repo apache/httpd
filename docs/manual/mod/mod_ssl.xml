@@ -955,7 +955,7 @@ files, a certificate identifier can be used to identify a certificate
 stored in a token.  Currently, only <a
 href="https://tools.ietf.org/html/rfc7512">PKCS#11 URIs</a> are
 recognized as certificate identifiers, and can be used in conjunction
-with the OpenSSL <code>pkcs11</code> engine.  If <directive
+with the OpenSSL <code>pkcs11</code> engine or provider.  If <directive
 module="mod_ssl">SSLCertificateKeyFile</directive> is omitted, the
 certificate and private key can be loaded through the single
 identifier specified with <directive
@@ -1048,7 +1048,7 @@ key file.</p>
 identifier can be used to identify a private key stored in a
 token.  Currently, only <a href="https://tools.ietf.org/html/rfc7512">PKCS#11 URIs</a> are recognized as private key
 identifiers, and can be used in conjunction with the OpenSSL
-<code>pkcs11</code> engine.</p>
+<code>pkcs11</code> engine or provider.</p>
 
 <example><title>Example</title>
 <highlight language="config">
@@ -2442,6 +2442,15 @@ separate "-engine" releases of OpenSSL 0.9.6 must be used.</p>
 SSLCryptoDevice ubsec
 </highlight>
 </example>
+
+<p>
+With OpenSSL 3.0 or later, if no engine is specified but the key or certificate
+is specified using a <a href="https://tools.ietf.org/html/rfc7512">PKCS#11 URIs</a>
+then it is tried to load the key and certificate from an OpenSSL provider.
+The OpenSSL provider to use must be defined and configured in the OpenSSL config file,
+and it must support the <a href="https://www.openssl.org/docs/man3.0/man7/provider-storemgmt.html">STORE method</a>
+for <a href="https://tools.ietf.org/html/rfc7512">PKCS#11 URIs</a>.
+</p>
 </usage>
 </directivesynopsis>
 

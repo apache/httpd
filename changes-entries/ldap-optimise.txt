@@ -1,0 +1,4 @@
+
+  *) Optimise handling LDAP authorization where LDAP was not used
+     previously for LDAP authentication. [Yann Ylavic]
+

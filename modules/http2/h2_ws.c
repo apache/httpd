@@ -19,7 +19,6 @@
 #include "apr.h"
 #include "apr_strings.h"
 #include "apr_lib.h"
-#include "apr_encode.h"
 #include "apr_sha1.h"
 #include "apr_strmatch.h"
 
@@ -44,6 +43,8 @@
 #include "h2_ws.h"
 
 #if H2_USE_WEBSOCKETS
+
+#include "apr_encode.h" /* H2_USE_WEBSOCKETS is conditional on APR 1.7+ */
 
 static ap_filter_rec_t *c2_ws_out_filter_handle;
 

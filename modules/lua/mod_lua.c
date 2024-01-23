@@ -203,7 +203,7 @@ static ap_lua_vm_spec *create_vm_spec(apr_pool_t **lifecycle_pool,
     else {
         spec->file = r->filename;
     }
-    ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r, APLOGNO(02313)
+    ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r,
                   "%s details: scope: %s, file: %s, func: %s",
                   what, scope_to_string(spec->scope), spec->file,
                   function ? function : "-");
@@ -288,7 +288,7 @@ static int lua_handler(request_rec *r)
         ) {
         return DECLINED;
     }
-    ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r, APLOGNO(01472)
+    ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r,
                   "handling [%s] in mod_lua", r->filename);
 
     /* XXX: This seems wrong because it may generate wrong headers for HEAD requests */
@@ -308,7 +308,7 @@ static int lua_handler(request_rec *r)
             ap_lua_release_state(L, spec, r);
             return HTTP_INTERNAL_SERVER_ERROR;
         }
-        ap_log_rerror(APLOG_MARK, APLOG_TRACE3, 0, r, APLOGNO(01474) "got a vm!");
+        ap_log_rerror(APLOG_MARK, APLOG_TRACE3, 0, r, "got a vm!");
         lua_getglobal(L, "handle");
         if (!lua_isfunction(L, -1)) {
             ap_log_rerror(APLOG_MARK, APLOG_CRIT, 0, r, APLOGNO(01475)

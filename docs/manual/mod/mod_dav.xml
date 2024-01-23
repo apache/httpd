@@ -202,7 +202,7 @@ Alias "/php-source" "/home/gstein/php_files"
 <syntax>DavBasePath <var>root-path</var></syntax>
 <default>None</default>
 <contextlist><context>directory</context></contextlist>
-<compatibility>Available in version 2.5.1 and later</compatibility>
+<compatibility>Available in version 2.4.58 and later</compatibility>
 
 <usage>
   <p>If a DAV repository is configured using a regular expression

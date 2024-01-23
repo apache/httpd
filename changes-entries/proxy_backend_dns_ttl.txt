@@ -1,0 +1,3 @@
+
+  *) mod_proxy: Allow to set a TTL for how long DNS resolutions to backend
+     systems are cached. [Yann Ylavic]

@@ -941,6 +941,10 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
             }
 
             deflateEnd(&ctx->stream);
+
+            /* We've ended the libz stream, so remove ourselves. */
+            ap_remove_output_filter(f);
+
             /* No need for cleanup any longer */
             apr_pool_cleanup_kill(r->pool, ctx, deflate_ctx_cleanup);
 
