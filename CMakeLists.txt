@@ -414,6 +414,7 @@ SET(MODULE_LIST
   "modules/proxy/mod_proxy_express+I+mass reverse-proxy module. Requires --enable-proxy."
   "modules/proxy/mod_proxy_fcgi+I+Apache proxy FastCGI module.  Requires and is enabled by --enable-proxy."
   "modules/proxy/mod_proxy_ftp+I+Apache proxy FTP module.  Requires and is enabled by --enable-proxy."
+  "modules/proxy/mod_proxy_hcheck+I+Apache proxy Health check module.  Requires and is enabled by --enable-proxy."
   "modules/proxy/mod_proxy_http+I+Apache proxy HTTP module.  Requires and is enabled by --enable-proxy."
   "modules/proxy/mod_proxy_scgi+I+Apache proxy SCGI module.  Requires and is enabled by --enable-proxy."
   "modules/proxy/mod_proxy_wstunnel+I+Apache proxy Websocket Tunnel module.  Requires and is enabled by --enable-proxy."
@@ -548,6 +549,7 @@ SET(mod_proxy_connect_extra_libs     mod_proxy)
 SET(mod_proxy_express_extra_libs     mod_proxy)
 SET(mod_proxy_fcgi_extra_libs        mod_proxy)
 SET(mod_proxy_ftp_extra_libs         mod_proxy)
+SET(mod_proxy_hcheck_extra_libs      mod_proxy)
 SET(mod_proxy_http_extra_libs        mod_proxy)
 SET(mod_proxy_html_requires          LIBXML2_FOUND)
 IF(LIBXML2_FOUND)
