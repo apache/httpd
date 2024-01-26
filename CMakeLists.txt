@@ -415,6 +415,7 @@ SET(MODULE_LIST
   "modules/proxy/mod_proxy_fcgi+I+Apache proxy FastCGI module.  Requires and is enabled by --enable-proxy."
   "modules/proxy/mod_proxy_ftp+I+Apache proxy FTP module.  Requires and is enabled by --enable-proxy."
   "modules/proxy/mod_proxy_http+I+Apache proxy HTTP module.  Requires and is enabled by --enable-proxy."
+  "modules/proxy/mod_proxy_hcheck+I+Apache proxy Health check module.  Requires and is enabled by --enable-proxy."
   "modules/proxy/mod_proxy_scgi+I+Apache proxy SCGI module.  Requires and is enabled by --enable-proxy."
   "modules/proxy/mod_proxy_wstunnel+I+Apache proxy Websocket Tunnel module.  Requires and is enabled by --enable-proxy."
   "modules/http2/mod_proxy_http2+i+Apache proxy HTTP/2 module.  Requires --enable-proxy."
@@ -549,6 +550,7 @@ SET(mod_proxy_express_extra_libs     mod_proxy)
 SET(mod_proxy_fcgi_extra_libs        mod_proxy)
 SET(mod_proxy_ftp_extra_libs         mod_proxy)
 SET(mod_proxy_http_extra_libs        mod_proxy)
+SET(mod_proxy_hcheck_extra_libs      mod_proxy)
 SET(mod_proxy_html_requires          LIBXML2_FOUND)
 IF(LIBXML2_FOUND)
   SET(mod_proxy_html_extra_includes    "${LIBXML2_INCLUDE_DIR};${LIBXML2_ICONV_INCLUDE_DIR}")
@@ -935,7 +937,6 @@ SET_TARGET_PROPERTIES(httpd PROPERTIES
 TARGET_LINK_LIBRARIES(httpd libhttpd ${EXTRA_LIBS})
 
 SET(standard_support
-  ab
   htcacheclean
   htdbm
   htdigest
@@ -958,6 +959,15 @@ FOREACH(pgm ${standard_support})
   TARGET_LINK_LIBRARIES(${pgm} ${EXTRA_LIBS} ${APR_LIBRARIES})
 ENDFOREACH()
 
+ADD_EXECUTABLE(ab support/ab.c build/win32/httpd.rc)
+SET(install_targets ${install_targets} ab)
+SET(install_bin_pdb ${install_bin_pdb} $<TARGET_PDB_FILE:ab>)
+SET(tmp_includes ${HTTPD_INCLUDE_DIRECTORIES})
+SET_TARGET_PROPERTIES(ab PROPERTIES INCLUDE_DIRECTORIES "${tmp_includes}")
+DEFINE_WITH_BLANKS(define_long_name "LONG_NAME" "Apache HTTP Server ab program")
+SET_TARGET_PROPERTIES(ab PROPERTIES COMPILE_FLAGS "-DAPP_FILE ${define_long_name} -DBIN_NAME=ab.exe ${EXTRA_COMPILE_FLAGS}")
+TARGET_LINK_LIBRARIES(ab ${EXTRA_LIBS} ${APR_LIBRARIES} Ws2_32.lib)
+
 IF(OPENSSL_FOUND)
   ADD_EXECUTABLE(abs support/ab.c build/win32/httpd.rc)
   SET(install_targets ${install_targets} abs)
@@ -969,7 +979,6 @@ IF(OPENSSL_FOUND)
   SET_TARGET_PROPERTIES(abs PROPERTIES COMPILE_FLAGS "-DAPP_FILE ${define_long_name} -DBIN_NAME=abs.exe ${EXTRA_COMPILE_FLAGS}")
   TARGET_LINK_LIBRARIES(abs ${EXTRA_LIBS} ${APR_LIBRARIES} ${OPENSSL_LIBRARIES} Ws2_32.lib)
 ENDIF()
-GET_PROPERTY(tmp_includes TARGET ab PROPERTY INCLUDE_DIRECTORIES)
 
 # Unit Test Suite
 IF(CHECK_FOUND)
