@@ -61,10 +61,7 @@ BrowserMatch MSIE !netscape
 
    <p>A regular expression only needs quoting when it contains space, 
    in which case single and double quotes are equivalent. Unlike 
-   <code class="module"><a 
-   href="../mod/mod_rewrite.html">mod_rewrite</a></code>, 
-   <code class="module"><a 
-   href="../mod/mod_setenvif.html">mod_setenvif</a></code> strips every 
+   <module>mod_rewrite</module>, <module>mod_setenvif</module> strips every 
    other backslash when parsing the expression; thus <code>\\</code> 
    requires <code>\\\</code>, and <code>\\\</code> requires 
    <code>\\\\\</code>.</p>
