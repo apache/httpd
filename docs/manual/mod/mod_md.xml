@@ -1024,7 +1024,7 @@ MDRequireHttps permanent
 
     <directivesynopsis>
         <name>MDChallengeDns01</name>
-        <description></description>
+        <description>Set the command for setup/teardown of dns-01 challenges</description>
         <syntax>MDChallengeDns01 <var>path-to-command</var></syntax>
         <contextlist>
             <context>server config</context>
@@ -1299,7 +1299,7 @@ MDMessageCmd /etc/apache/md-message
 
     <directivesynopsis>
         <name>MDCertificateCheck</name>
-        <description></description>
+        <description>Set name and URL pattern for a certificate monitoring sitSet name and URL pattern for a certificate monitoring sitee</description>
         <syntax>MDCertificateCheck <var>name</var> <var>url</var></syntax>
         <contextlist>
             <context>server config</context>
@@ -1313,7 +1313,7 @@ MDMessageCmd /etc/apache/md-message
 
     <directivesynopsis>
         <name>MDActivationDelay</name>
-        <description></description>
+        <description>How long to delay activation of new certificates</description>
         <syntax>MDActivationDelay <var>duration</var></syntax>
         <contextlist>
             <context>server config</context>
@@ -1327,7 +1327,7 @@ MDMessageCmd /etc/apache/md-message
 
     <directivesynopsis>
         <name>MDContactEmail</name>
-        <description></description>
+        <description>Email address used for account registration</description>
         <syntax>MDContactEmail <var>address</var></syntax>
         <contextlist>
             <context>server config</context>
@@ -1347,7 +1347,7 @@ MDMessageCmd /etc/apache/md-message
     
     <directivesynopsis>
         <name>MDExternalAccountBinding</name>
-        <description></description>
+        <description>Set the external account binding keyid and hmac values to use at CA</description>
         <syntax>MDExternalAccountBinding <var>key-id</var> <var>hmac-64</var> | none | <var>file</var></syntax>
         <default>MDExternalAccountBinding none</default>
         <contextlist>
@@ -1391,7 +1391,7 @@ MDMessageCmd /etc/apache/md-message
 
     <directivesynopsis>
         <name>MDRetryDelay</name>
-        <description></description>
+        <description>Time length for first retry, doubled on every consecutive error.</description>
         <syntax>MDRetryDelay <var>duration</var></syntax>
         <default>MDRetryDelay 5s</default>
         <contextlist>
@@ -1413,7 +1413,7 @@ MDMessageCmd /etc/apache/md-message
 
     <directivesynopsis>
         <name>MDRetryFailover</name>
-        <description></description>
+        <description>The number of errors before a failover to another CA is triggered</description>
         <syntax>MDRetryFailover <var>number</var></syntax>
         <default>MDRetryFailover 13</default>
         <contextlist>
@@ -1432,7 +1432,7 @@ MDMessageCmd /etc/apache/md-message
 
     <directivesynopsis>
         <name>MDStoreLocks</name>
-        <description></description>
+        <description>Configure locking of store for updates</description>
         <syntax>MDStoreLocks on|off|<var>duration</var></syntax>
         <default>MDStoreLocks off</default>
         <contextlist>
@@ -1466,7 +1466,7 @@ MDMessageCmd /etc/apache/md-message
 
     <directivesynopsis>
         <name>MDChallengeDns01Version</name>
-        <description></description>
+        <description>Set the type of arguments to call MDChallengeDns01 with</description>
         <syntax>MDChallengeDns01Version 1|2</syntax>
         <default>MDChallengeDns01Version 1</default>
         <contextlist>
@@ -1485,7 +1485,7 @@ MDMessageCmd /etc/apache/md-message
 
     <directivesynopsis>
         <name>MDMatchNames</name>
-        <description></description>
+        <description>Determines how DNS names are matched to vhosts</description>
         <syntax>MDMatchNames all|servernames</syntax>
         <default>MDMatchNames all</default>
         <contextlist>
