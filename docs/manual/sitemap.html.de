@@ -201,6 +201,7 @@ HPUX betreiben</a></li>
 <li><a href="mod/mod_allowmethods.html">Apache-Modul mod_allowmethods</a></li>
 <li><a href="mod/mod_asis.html">Apache-Modul mod_asis</a></li>
 <li><a href="mod/mod_auth_basic.html">Apache-Modul mod_auth_basic</a></li>
+<li><a href="mod/mod_auth_bearer.html">Apache-Modul mod_auth_bearer</a></li>
 <li><a href="mod/mod_auth_digest.html">Apache-Modul mod_auth_digest</a></li>
 <li><a href="mod/mod_auth_form.html">Apache-Modul mod_auth_form</a></li>
 <li><a href="mod/mod_authn_anon.html">Apache-Modul mod_authn_anon</a></li>
@@ -211,6 +212,8 @@ HPUX betreiben</a></li>
 <li><a href="mod/mod_authn_socache.html">Apache-Modul mod_authn_socache</a></li>
 <li><a href="mod/mod_authnz_fcgi.html">Apache-Modul mod_authnz_fcgi</a></li>
 <li><a href="mod/mod_authnz_ldap.html">Apache-Modul mod_authnz_ldap</a></li>
+<li><a href="mod/mod_autht_core.html">Apache-Modul mod_autht_core</a></li>
+<li><a href="mod/mod_autht_jwt.html">Apache-Modul mod_autht_jwt</a></li>
 <li><a href="mod/mod_authz_core.html">Apache-Modul mod_authz_core</a></li>
 <li><a href="mod/mod_authz_dbd.html">Apache-Modul mod_authz_dbd</a></li>
 <li><a href="mod/mod_authz_dbm.html">Apache-Modul mod_authz_dbm</a></li>

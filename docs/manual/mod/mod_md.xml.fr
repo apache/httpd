@@ -2,7 +2,7 @@
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
-<!-- English Revision: 1910996 -->
+<!-- English Revision: 1910996:1915423 (outdated) -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more

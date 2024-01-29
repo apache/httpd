@@ -78,6 +78,7 @@
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#h2copyfiles">H2CopyFiles</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#h2direct">H2Direct</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#h2earlyhint">H2EarlyHint</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#h2earlyhints">H2EarlyHints</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#h2maxdataframelen">H2MaxDataFrameLen</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#h2maxsessionstreams">H2MaxSessionStreams</a></li>
@@ -87,6 +88,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#h2moderntlsonly">H2ModernTLSOnly</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#h2outputbuffering">H2OutputBuffering</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#h2padding">H2Padding</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#h2proxyrequests">H2ProxyRequests</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#h2push">H2Push</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#h2pushdiarysize">H2PushDiarySize</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#h2pushpriority">H2PushPriority</a></li>
@@ -97,6 +99,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#h2tlscooldownsecs">H2TLSCoolDownSecs</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#h2tlswarmupsize">H2TLSWarmUpSize</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#h2upgrade">H2Upgrade</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#h2websockets">H2WebSockets</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#h2windowsize">H2WindowSize</a></li>
 </ul>
 <h3>Bugfix checklist</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd changelog</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_http2">Known issues</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_http2">Report a bug</a></li></ul><h3>See also</h3>
@@ -292,6 +295,32 @@
                 as well, when the connection can be trusted or is secured by other means.
             </p>
             <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">H2Direct on</pre>
+</div>
+        
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="H2EarlyHint" id="H2EarlyHint">H2EarlyHint</a> <a name="h2earlyhint" id="h2earlyhint">Directive</a> <a title="Permanent link" href="#h2earlyhint" class="permalink">&para;</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Add a response header to be picked up in 103 Early Hints</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>H2EarlyHint <em>name</em> <em>value</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_http2</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in version 2.5.1 and later.</td></tr>
+</table>
+            <p>
+                <code class="directive">H2EarlyHint</code> allows adding a response
+                header before the real request processing is started. Such headers
+                are picked up for "103 Early Hints" intermediate responses. The main
+                purpose is to send "preload" information to client browsers.
+            </p><p>
+                <em>name</em> and <em>value</em> must be valid HTTP header fields
+                or will lead to failed responses. <code class="directive">H2EarlyHints</code>
+                must still be enabled to allow 103 intermediate responses to be sent.
+                This directive can be repeated several times and header fields of the
+                same names add.
+            </p>
+            <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">H2EarlyHint Link "&lt;/my.css&gt;;rel=preload;as=style"</pre>
 </div>
         
 </div>
@@ -515,6 +544,28 @@
                 compatibility. There might be deployments where padding bytes are
                 unwanted or do harm. The most likely cause would be a client that
                 has a faults implementation.
+            </p>
+        
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="H2ProxyRequests" id="H2ProxyRequests">H2ProxyRequests</a> <a name="h2proxyrequests" id="h2proxyrequests">Directive</a> <a title="Permanent link" href="#h2proxyrequests" class="permalink">&para;</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>En-/Disable forward proxy requests via HTTP/2</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>H2ProxyRequests  on|off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>H2ProxyRequests off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_http2</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in version 2.5.1 and later.</td></tr>
+</table>
+            <p>
+                Use <code class="directive">H2ProxyRequests</code> to enable or disable
+                handling of HTTP/2 requests in a forward proxy configuration.
+            </p><p>
+                Similar to <code class="directive"><a href="../mod/proxy.html#proxyrequests">ProxyRequests</a></code>, this
+                triggers the needed treatment of requests when HTTP/2 is enabled
+                in a forward proxy configuration. Both directive should be enabled.
+            </p><p>
             </p>
         
 </div>
@@ -957,6 +1008,42 @@ H2PushPriority text/css   interleaved      # weight 256 default</pre>
             </p>
             <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">H2Upgrade on</pre>
 </div>
+        
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="H2WebSockets" id="H2WebSockets">H2WebSockets</a> <a name="h2websockets" id="h2websockets">Directive</a> <a title="Permanent link" href="#h2websockets" class="permalink">&para;</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>En-/Disable WebSockets via HTTP/2</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>H2WebSockets  on|off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>H2WebSockets off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_http2</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in version 2.5.1 and later.</td></tr>
+</table>
+            <p>
+                Use <code class="directive">H2WebSockets</code> to enable or disable
+                bootstrapping of WebSockets via the HTTP/2 protocol. This
+                protocol extension is defined in RFC 8441.
+            </p><p>
+                Such requests come as a CONNECT with an extra ':protocol'
+                header. Such requests are transformed inside the module to
+                their HTTP/1.1 equivalents before passing it to internal
+                processing.
+            </p><p>
+                This means that HTTP/2 WebSockets can be used for a
+                <code class="directive"><a href="../mod/mod_proxy.html#proxypass">ProxyPass</a></code> with
+                'upgrade=websocket' parameter without further changes.
+            </p><p>
+                For (3rd party) modules that handle WebSockets directly in the
+                server, the protocol bootstrapping itself will also work. However
+                the transfer of data does require extra support in case of HTTP/2.
+                The negotiated WebSocket will not be able to use the client connection
+                socket for polling IO related events.
+            </p><p>
+                Because enabling this feature might break backward compatibility
+                for such 3rd party modules, it is not enabled by default.
+            </p>
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
