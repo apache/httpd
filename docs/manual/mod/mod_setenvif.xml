@@ -59,6 +59,13 @@ BrowserMatch MSIE !netscape
    are not separately evaluated in the subrequest due to the API phases
    <module>mod_setenvif</module> takes action in.</p>
 
+   <p>A regular expression only needs quoting when it contains space, 
+   in which case single and double quotes are equivalent. Unlike 
+   <module>mod_rewrite</module>, <module>mod_setenvif</module> strips every 
+   other backslash when parsing the expression; thus <code>\\</code> 
+   requires <code>\\\</code>, and <code>\\\</code> requires 
+   <code>\\\\\</code>.</p>
+
 </summary>
 
 <seealso><a href="../env.html">Environment Variables in Apache HTTP Server</a></seealso>
