@@ -369,7 +369,7 @@
             </p><p>
                 The module, by default, tries to use the maximum size possible,
                 which is somewhat around 16KB. This sets the maximum. When less
-                response data is availble, smaller frames will be sent.
+                response data is available, smaller frames will be sent.
             </p>
         
 </div>
