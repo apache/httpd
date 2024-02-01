@@ -248,6 +248,11 @@ jobs:
               TEST_INSTALL=1
               TEST_MOD_TLS=1
               CLEAR_CACHE=1
+          - name: Configured w/reduced exports
+            config: --enable-reduced-exports --enable-maintainer-mode
+            env: |
+              SKIP_TESTING=1
+              TEST_INSTALL=1
           # -------------------------------------------------------------------------
           ### TODO if: *condition_not_24x
           ### TODO: Fails because :i386 packages are not being found.
