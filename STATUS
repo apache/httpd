@@ -213,12 +213,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    *) Fix compiler warnings triggered by clang.
       trunk patch: http://svn.apache.org/r1909450
       2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/httpd-2.4-warnings-be-gone.patch
-      +1: minfrin, ylavic
+      +1: minfrin, ylavic, jfclere
 
    *) Add CGIScriptTimeout to mod_cgi.
       trunk patch: http://svn.apache.org/r1828172
       2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/httpd-2.4-add-CGIScriptTimeout.patch
-      +1: minfrin, ylavic
+      +1: minfrin, ylavic, jfclere
 
    *) mod_ldap: Add a hint to install the apr_ldap module on init failure.
       trunk patch: http://svn.apache.org/r1914038
@@ -249,7 +249,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       trunk patch: https://svn.apache.org/r1879591
       2.4.x patch: svn merge -c 1879591 ^/httpd/httpd/trunk .
       Github PR: https://github.com/apache/httpd/pull/404
-      +1: jorton, 
+      +1: jorton, jfclere,
 
    *) mod_slotmem_shm: Use ap_os_is_path_absolute() to make it portable.
       trunk patch: https://svn.apache.org/r1915400
