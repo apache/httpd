@@ -179,16 +179,21 @@ err_too_long:
 int mkhash(struct passwd_ctx *ctx)
 {
     char *pw;
-    char salt[16];
+    char salt[17];
     apr_status_t rv;
     int ret = 0;
 #if CRYPT_ALGO_SUPPORTED
     char *cbuf;
 #endif
+#ifdef HAVE_CRYPT_SHA2
+    const char *setting;
+    char method;
+#endif
 
-    if (ctx->cost != 0 && ctx->alg != ALG_BCRYPT) {
+    if (ctx->cost != 0 && ctx->alg != ALG_BCRYPT
+        && ctx->alg != ALG_CRYPT_SHA256 && ctx->alg != ALG_CRYPT_SHA512 ) {
         apr_file_printf(errfile,
-                        "Warning: Ignoring -C argument for this algorithm." NL);
+                        "Warning: Ignoring -C/-r argument for this algorithm." NL);
     }
 
     if (ctx->passwd == NULL) {
@@ -246,6 +251,34 @@ int mkhash(struct passwd_ctx *ctx)
         break;
 #endif /* CRYPT_ALGO_SUPPORTED */
 
+#ifdef HAVE_CRYPT_SHA2
+    case ALG_CRYPT_SHA256:
+    case ALG_CRYPT_SHA512:
+        ret = generate_salt(salt, 16, &ctx->errstr, ctx->pool);
+        if (ret != 0)
+            break;
+
+        method = ctx->alg == ALG_CRYPT_SHA256 ? '5': '6';
+
+        if (ctx->cost) 
+            setting = apr_psprintf(ctx->pool, "$%c$rounds=%d$%s",
+                                   method, ctx->cost, salt);
+        else
+            setting = apr_psprintf(ctx->pool, "$%c$%s",
+                                   method, salt);
+
+        cbuf = crypt(pw, setting);
+        if (cbuf == NULL) {
+            rv = APR_FROM_OS_ERROR(errno);
+            ctx->errstr = apr_psprintf(ctx->pool, "crypt() failed: %pm", &rv);
+            ret = ERR_PWMISMATCH;
+            break;
+        }
+
+        apr_cpystrn(ctx->out, cbuf, ctx->out_len - 1);
+        break;
+#endif /* HAVE_CRYPT_SHA2 */
+
 #if BCRYPT_ALGO_SUPPORTED
     case ALG_BCRYPT:
         rv = apr_generate_random_bytes((unsigned char*)salt, 16);
@@ -294,6 +327,19 @@ int parse_common_options(struct passwd_ctx *ctx, char opt,
     case 's':
         ctx->alg = ALG_APSHA;
         break;
+#ifdef HAVE_CRYPT_SHA2
+    case '2':
+        ctx->alg = ALG_CRYPT_SHA256;
+        break;
+    case '5':
+        ctx->alg = ALG_CRYPT_SHA512;
+        break;
+#else
+    case '2':
+    case '5':
+        ctx->errstr = "SHA-2 crypt() algorithms are not supported on this platform.";
+        return ERR_ALG_NOT_SUPP;
+#endif
     case 'p':
         ctx->alg = ALG_PLAIN;
 #if !PLAIN_ALGO_SUPPORTED
@@ -324,11 +370,12 @@ int parse_common_options(struct passwd_ctx *ctx, char opt,
         return ERR_ALG_NOT_SUPP;
 #endif
         break;
-    case 'C': {
+    case 'C':
+    case 'r': {
             char *endptr;
             long num = strtol(opt_arg, &endptr, 10);
             if (*endptr != '\0' || num <= 0) {
-                ctx->errstr = "argument to -C must be a positive integer";
+                ctx->errstr = "argument to -C/-r must be a positive integer";
                 return ERR_SYNTAX;
             }
             ctx->cost = num;

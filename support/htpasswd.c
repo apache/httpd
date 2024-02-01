@@ -98,18 +98,20 @@ static int mkrecord(struct passwd_ctx *ctx, char *user)
 static void usage(void)
 {
     apr_file_printf(errfile, "Usage:" NL
-        "\thtpasswd [-cimBdpsDv] [-C cost] passwordfile username" NL
-        "\thtpasswd -b[cmBdpsDv] [-C cost] passwordfile username password" NL
+        "\thtpasswd [-cimB25dpsDv] [-C cost] [-r rounds] passwordfile username" NL
+        "\thtpasswd -b[cmB25dpsDv] [-C cost] [-r rounds] passwordfile username password" NL
         NL
-        "\thtpasswd -n[imBdps] [-C cost] username" NL
-        "\thtpasswd -nb[mBdps] [-C cost] username password" NL
+        "\thtpasswd -n[imB25dps] [-C cost] [-r rounds] username" NL
+        "\thtpasswd -nb[mB25dps] [-C cost] [-r rounds] username password" NL
         " -c  Create a new file." NL
         " -n  Don't update file; display results on stdout." NL
         " -b  Use the password from the command line rather than prompting "
             "for it." NL
         " -i  Read password from stdin without verification (for script usage)." NL
         " -m  Force MD5 encryption of the password (default)." NL
-        " -B  Force bcrypt encryption of the password (very secure)." NL
+        " -2  Force SHA-256 crypt() hash of the password (secure)." NL
+        " -5  Force SHA-512 crypt() hash of the password (secure)." NL
+        " -B  Force bcrypt aencryption of the password (very secure)." NL
         " -C  Set the computing time used for the bcrypt algorithm" NL
         "     (higher is more secure but slower, default: %d, valid: 4 to 17)." NL
         " -d  Force CRYPT encryption of the password (8 chars max, insecure)." NL
@@ -178,7 +180,7 @@ static void check_args(int argc, const char *const argv[],
     if (rv != APR_SUCCESS)
         exit(ERR_SYNTAX);
 
-    while ((rv = apr_getopt(state, "cnmspdBbDiC:v", &opt, &opt_arg)) == APR_SUCCESS) {
+    while ((rv = apr_getopt(state, "cnmspdBbDi25C:r:v", &opt, &opt_arg)) == APR_SUCCESS) {
         switch (opt) {
         case 'c':
             *mask |= APHTP_NEWFILE;

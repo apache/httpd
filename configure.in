@@ -488,6 +488,28 @@ LIBS=""
 AC_SEARCH_LIBS(crypt, crypt)
 CRYPT_LIBS="$LIBS"
 APACHE_SUBST(CRYPT_LIBS)
+
+if test "$ac_cv_search_crypt" != "no"; then
+   # Test crypt() with the SHA-512 test vector from https://akkadia.org/drepper/SHA-crypt.txt
+   AC_CACHE_CHECK([whether crypt() supports SHA-2], [ap_cv_crypt_sha2], [
+    AC_RUN_IFELSE([AC_LANG_PROGRAM([[
+#include <crypt.h>
+#include <stdlib.h>
+#include <string.h>
+
+#define PASSWD_0 "Hello world!"
+#define SALT_0 "\$6\$saltstring"
+#define EXPECT_0 "\$6\$saltstring\$svn8UoSVapNtMuq1ukKS4tPQd8iKwSMHWjl/O817G3uBnIFNjnQJu" \
+               "esI68u4OTLiBFdcbYEdFCoEOfaS35inz1"
+]], [char *result = crypt(PASSWD_0, SALT_0);
+     if (!result) return 1;
+     if (strcmp(result, EXPECT_0)) return 2;
+])], [ap_cv_crypt_sha2=yes], [ap_cv_crypt_sha2=no], [ap_cv_crypt_sha2=no])])
+   if test "$ap_cv_crypt_sha2" = yes; then
+     AC_DEFINE([HAVE_CRYPT_SHA2], 1, [Define if crypt() supports SHA-2 hashes])
+   fi
+fi
+
 LIBS="$saved_LIBS"
 
 dnl See Comment #Spoon

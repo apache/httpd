@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.59
 
+  *) htpasswd: Add support for passwords using SHA-2.  [Joe Orton,
+     Yann Ylavic]
+
   *) core: Allow mod_env to override system environment vars. [Joe Orton]
 
   *) Allow mod_dav_fs to tolerate race conditions between PROPFIND and an
