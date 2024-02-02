@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.59
 
+  *) mod_ssl: Fix build with LibreSSL 2.0.7+. PR 64047.
+     [Giovanni Bechis, Yann Ylavic]
+
   *) htpasswd: Add support for passwords using SHA-2.  [Joe Orton,
      Yann Ylavic]
 
