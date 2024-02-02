@@ -207,7 +207,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       leak in h2 header buckets.
       trunk patch: http://svn.apache.org/r1915281
       2.4.x patch: svn merge -c 1915281 ^/httpd/httpd/trunk .
-      +1: icing,
+      +1: icing, gbechis
       rpluem says: This has conflict in modules/http2/h2_version.h. Otherwise
       +1 from me on the backport.
 
@@ -215,13 +215,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       trunk patch: https://svn.apache.org/r1884552
       2.4.x patch: https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/403.patch
       Github PR: https://github.com/apache/httpd/pull/403
-      +1: jorton,       
+      +1: jorton, gbechis
+      gbechis says: mod_ssl.xml should be updated to mention 2.4.x version
 
    *) Linux: use gettid() directly where available.
       trunk patch: https://svn.apache.org/r1879591
       2.4.x patch: svn merge -c 1879591 ^/httpd/httpd/trunk .
       Github PR: https://github.com/apache/httpd/pull/404
-      +1: jorton, jfclere,
+      +1: jorton, jfclere, gbechis
 
    *) mod_slotmem_shm: Use ap_os_is_path_absolute() to make it portable.
       trunk patch: https://svn.apache.org/r1915400
