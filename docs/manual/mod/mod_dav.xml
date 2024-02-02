@@ -216,7 +216,7 @@ Alias "/php-source" "/home/gstein/php_files"
   <p>To allow providers to work correctly in such a configuration,
   <directive>DavBasePath</directive> must be used.</p>
 
-    <highlight language="config">
+    <highlight language="config"><title>Example</title>
 &lt;LocationMatch "^/repos/"&gt;
     Dav svn
     DavBasePath /repos
