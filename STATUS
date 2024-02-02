@@ -218,12 +218,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       +1: jorton, gbechis
       gbechis says: mod_ssl.xml should be updated to mention 2.4.x version
 
-   *) Linux: use gettid() directly where available.
-      trunk patch: https://svn.apache.org/r1879591
-      2.4.x patch: svn merge -c 1879591 ^/httpd/httpd/trunk .
-      Github PR: https://github.com/apache/httpd/pull/404
-      +1: jorton, jfclere, gbechis
-
    *) mod_slotmem_shm: Use ap_os_is_path_absolute() to make it portable.
       trunk patch: https://svn.apache.org/r1915400
       2.4.x patch: svn merge -c 1915400 ^/httpd/httpd/trunk .
@@ -242,6 +236,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                    https://svn.apache.org/r1877693
       2.4.x patch: https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/408.patch
       Github PR: https://github.com/apache/httpd/pull/408
+      +1: jorton, 
+
+   *) htcacheclean: fix output for -A/-a mode
+      trunk patch: https://svn.apache.org/r1915508
+      2.4.x patch: svn merge -c 1915508 ^/httpd/httpd/trunk .
       +1: jorton, 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
