@@ -115,7 +115,6 @@ static apr_status_t readfile_heartbeats(const char *path, apr_hash_t *servers,
 
     {
         char *t;
-        int lineno = 0;
         apr_bucket_alloc_t *ba = apr_bucket_alloc_create(pool);
         apr_bucket_brigade *bb = apr_brigade_create(pool, ba);
         apr_bucket_brigade *tmpbb = apr_brigade_create(pool, ba);
@@ -137,7 +136,6 @@ static apr_status_t readfile_heartbeats(const char *path, apr_hash_t *servers,
 
             rv = apr_brigade_split_line(tmpbb, bb,
                                         APR_BLOCK_READ, sizeof(buf));
-            lineno++;
 
             if (rv) {
                 return rv;
