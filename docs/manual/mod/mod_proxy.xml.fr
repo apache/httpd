@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1913432:1915459 (outdated) -->
+<!-- English Revision: 1915459 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -206,7 +206,7 @@ ProxyPass "/some/ws/capable/path/" "http://example.com/some/ws/capable/path/" up
     <example><title>Scripts PHP et mandataire inverse</title>
     <highlight language="config">
 &lt;FilesMatch "\.php$"&gt;
-    SetHandler  "proxy:unix:/path/to/app.sock|fcgi://localhost/"
+    SetHandler  "proxy:unix:/path/to/app.sock|fcgi://localhost"
 &lt;/FilesMatch&gt;
     </highlight>
       </example>

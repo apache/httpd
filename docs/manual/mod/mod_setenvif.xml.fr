@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1909833:1915443 (outdated) -->
+<!-- English Revision: 1915443 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -62,6 +62,13 @@ BrowserMatch MSIE !netscape
    part, les directives <directive
    module="mod_setenvif">SetEnvIf</directive> ne sont pas évaluées
    séparément dans la sous-requête.</p>
+
+   <p>Une expression rationnelle ne nécessite des guillemets que si elle
+   contient des espaces non échappées et dans ce cas, les guillemets simples ou
+   doubles sont équivalents. À la différence de <module>mod_rewrite</module>,
+   <module>mod_setenvif</module> élimine tous les autres anti-slashes lorsqu'il
+   interprète l'expression ; ainsi, <code>\\</code> nécessite <code>\\\</code>
+   et <code>\\\</code> nécessite <code>\\\\\</code>.</p>
 
 </summary>
 

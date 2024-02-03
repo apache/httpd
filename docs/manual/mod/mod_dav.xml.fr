@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1912085 -->
+<!-- English Revision: 1915532 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -232,6 +232,7 @@ ForceType text/plain
   d'une telle configuration, vous devez utiliser
   <directive>DavBasePath</directive>.</p>
 
+    <example><title>Exemple</title>
     <highlight language="config">
 &lt;LocationMatch "^/repos/"&gt;
     Dav svn
@@ -239,6 +240,7 @@ ForceType text/plain
     SVNParentPath /var/svn
 &lt;/LocationMatch&gt;
     </highlight>
+    </example>
 </usage>
 </directivesynopsis>
 
