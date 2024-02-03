@@ -29,8 +29,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_md.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_md.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Gestion des domaines au sein des serveurs virtuels et obtention
     de certificats via le protocole ACME
     </td></tr>
@@ -424,7 +422,7 @@
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="mdactivationdelay" id="mdactivationdelay">Directive</a> <a name="MDActivationDelay" id="MDActivationDelay">MDActivationDelay</a> <a title="Lien permanent" href="#mdactivationdelay" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td /></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit le délai d'activation des nouveaux certificats</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MDActivationDelay <var>duration</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
@@ -560,7 +558,9 @@
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="mdcertificatecheck" id="mdcertificatecheck">Directive</a> <a name="MDCertificateCheck" id="MDCertificateCheck">MDCertificateCheck</a> <a title="Lien permanent" href="#mdcertificatecheck" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td /></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit le motif de nom pour un nom sitSet de
+	vérification de certificat et un motif d'URL pour un sitee de
+	vérification de certificat</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MDCertificateCheck <var>name</var> <var>url</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
@@ -718,7 +718,8 @@
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="mdchallengedns01" id="mdchallengedns01">Directive</a> <a name="MDChallengeDns01" id="MDChallengeDns01">MDChallengeDns01</a> <a title="Lien permanent" href="#mdchallengedns01" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td /></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit la commande d'activation/désactivation des
+	vérifications dns-01</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MDChallengeDns01 <var>path-to-command</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
@@ -726,7 +727,7 @@
 </table>
             <p>
 		Cette directive permet de définir le programme à appeler
-		lorsque la vérification "dns-01" doit être générée/détruite. Le
+		lorsque la vérification "dns-01" doit être activée/désactivée. Le
 		programme prend respectivement comme arguments "setup" ou
 		"teardown" suivi du nom de domaine. Pour "setup", le programme
 		prend comme argument supplémentaire les données de vérification
@@ -755,7 +756,8 @@
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="mdchallengedns01version" id="mdchallengedns01version">Directive</a> <a name="MDChallengeDns01Version" id="MDChallengeDns01Version">MDChallengeDns01Version</a> <a title="Lien permanent" href="#mdchallengedns01version" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td /></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit le type des arguments avec lesquels appeler
+	MDChallengeDns01</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MDChallengeDns01Version 1|2</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>MDChallengeDns01Version 1</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
@@ -777,7 +779,7 @@
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="mdcontactemail" id="mdcontactemail">Directive</a> <a name="MDContactEmail" id="MDContactEmail">MDContactEmail</a> <a title="Lien permanent" href="#mdcontactemail" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td /></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Adresse Email pour l'enregistrement du compte</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MDContactEmail <var>address</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
@@ -817,7 +819,8 @@
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="mdexternalaccountbinding" id="mdexternalaccountbinding">Directive</a> <a name="MDExternalAccountBinding" id="MDExternalAccountBinding">MDExternalAccountBinding</a> <a title="Lien permanent" href="#mdexternalaccountbinding" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td /></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit les valeurs keyid et hmac de liaison avec les
+	comptes externes à utiliser dans les CA</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MDExternalAccountBinding <var>key-id</var> <var>hmac-64</var> | none | <var>file</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>MDExternalAccountBinding none</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
@@ -883,7 +886,7 @@
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="mdmatchnames" id="mdmatchnames">Directive</a> <a name="MDMatchNames" id="MDMatchNames">MDMatchNames</a> <a title="Lien permanent" href="#mdmatchnames" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td /></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit comment les noms DNS sont comparés aux vhosts</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MDMatchNames all|servernames</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>MDMatchNames all</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
@@ -1454,7 +1457,8 @@ MDRenewWindow 10%</pre>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="mdretrydelay" id="mdretrydelay">Directive</a> <a name="MDRetryDelay" id="MDRetryDelay">MDRetryDelay</a> <a title="Lien permanent" href="#mdretrydelay" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td /></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Temps d'attente avant de réessayer, doublé à chaque erreur
+	consécutive</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MDRetryDelay <var>duration</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>MDRetryDelay 5s</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
@@ -1478,7 +1482,7 @@ MDRenewWindow 10%</pre>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="mdretryfailover" id="mdretryfailover">Directive</a> <a name="MDRetryFailover" id="MDRetryFailover">MDRetryFailover</a> <a title="Lien permanent" href="#mdretryfailover" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td /></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Le nombre d'erreurs avant de se tourner vers un autre CA</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MDRetryFailover <var>number</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>MDRetryFailover 13</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
@@ -1684,7 +1688,7 @@ MDRenewWindow 10%</pre>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="mdstorelocks" id="mdstorelocks">Directive</a> <a name="MDStoreLocks" id="MDStoreLocks">MDStoreLocks</a> <a title="Lien permanent" href="#mdstorelocks" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td /></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configure le verrouillage du magasin pour les mises à jour</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MDStoreLocks on|off|<var>duration</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>MDStoreLocks off</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>

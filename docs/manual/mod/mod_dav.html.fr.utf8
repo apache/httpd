@@ -243,12 +243,12 @@ ForceType text/plain
   d'une telle configuration, vous devez utiliser
   <code class="directive">DavBasePath</code>.</p>
 
-    <pre class="prettyprint lang-config">&lt;LocationMatch "^/repos/"&gt;
+    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">&lt;LocationMatch "^/repos/"&gt;
     Dav svn
     DavBasePath /repos
     SVNParentPath /var/svn
 &lt;/LocationMatch&gt;</pre>
-
+</div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
