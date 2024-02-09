@@ -1362,8 +1362,6 @@ PROXY_DECLARE(apr_status_t) ap_proxy_initialize_balancer(proxy_balancer *balance
         ap_log_error(APLOG_MARK, APLOG_CRIT, 0, s, APLOGNO(00921) "slotmem_attach failed");
         return APR_EGENERAL;
     }
-    if (balancer->lbmethod && balancer->lbmethod->reset)
-        balancer->lbmethod->reset(balancer, s);
 
 #if APR_HAS_THREADS
     if (balancer->tmutex == NULL) {
