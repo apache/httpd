@@ -1880,7 +1880,7 @@ SSLProxyMachineCertificatePath "/usr/local/apache2/conf/proxy.crt/"
 <contextlist><context>server config</context> <context>virtual host</context>
 <context>proxy section</context></contextlist>
 <compatibility>The proxy section context is allowed in httpd 2.4.30 and later<br/>
-Inclusion of non-leaf (CA) certificates is permitted only in httpd 2.5.1 and later.</compatibility>
+Inclusion of non-leaf (CA) certificates is permitted only in httpd 2.4.59 and later.</compatibility>
 
 <usage>
 <p>
