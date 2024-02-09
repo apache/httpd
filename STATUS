@@ -215,7 +215,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       trunk patch: https://svn.apache.org/r1884552
       2.4.x patch: https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/403.patch
       Github PR: https://github.com/apache/httpd/pull/403
-      +1: jorton, gbechis
+      +1: jorton, gbechis, jfclere
       gbechis says: mod_ssl.xml should be updated to mention 2.4.x version
 
    *) mod_slotmem_shm: Use ap_os_is_path_absolute() to make it portable.
