@@ -152,7 +152,18 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+   *) Add CGIScriptTimeout to mod_cgi.
+      trunk patch: http://svn.apache.org/r1828172
+      2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/httpd-2.4-add-CGIScriptTimeout.patch
+      +1: minfrin, ylavic, jfclere
 
+   *) mod_http2 v2.0.26. fixes `Data:` in upgrade responses and a small memory
+      leak in h2 header buckets.
+      trunk patch: http://svn.apache.org/r1915281
+      2.4.x patch: svn merge -c 1915281 ^/httpd/httpd/trunk .
+      +1: icing, gbechis, jorton
+      rpluem says: This has conflict in modules/http2/h2_version.h. Otherwise
+      +1 from me on the backport.
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -187,11 +198,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      ylavic: new proposal in https://github.com/apache/httpd/pull/396
      +1: jfclere
 
-   *) Add CGIScriptTimeout to mod_cgi.
-      trunk patch: http://svn.apache.org/r1828172
-      2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/httpd-2.4-add-CGIScriptTimeout.patch
-      +1: minfrin, ylavic, jfclere
-
    *) mod_ldap: Add a hint to install the apr_ldap module on init failure.
       trunk patch: http://svn.apache.org/r1914038
       2.4.x patch: svn merge -c r1914038 ^/httpd/httpd/trunk .
@@ -202,21 +208,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/httpd-2.4-ab-source-address.patch
       +1: minfrin
       -1: jorton, appears to be a duplicate of the existing -B option
-
-   *) mod_http2 v2.0.26. fixes `Data:` in upgrade responses and a small memory
-      leak in h2 header buckets.
-      trunk patch: http://svn.apache.org/r1915281
-      2.4.x patch: svn merge -c 1915281 ^/httpd/httpd/trunk .
-      +1: icing, gbechis, jorton
-      rpluem says: This has conflict in modules/http2/h2_version.h. Otherwise
-      +1 from me on the backport.
-
-   *) mod_ssl: handle CA certificates configured in SSLProxyMachineCertificateFile similarly to SSLCertificateFile
-      trunk patch: https://svn.apache.org/r1884552
-      2.4.x patch: https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/403.patch
-      Github PR: https://github.com/apache/httpd/pull/403
-      +1: jorton, gbechis, jfclere
-      gbechis says: mod_ssl.xml should be updated to mention 2.4.x version
 
    *) mod_slotmem_shm: Use ap_os_is_path_absolute() to make it portable.
       trunk patch: https://svn.apache.org/r1915400
@@ -241,6 +232,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    *) htcacheclean: fix output for -A/-a mode
       trunk patch: https://svn.apache.org/r1915508
       2.4.x patch: svn merge -c 1915508 ^/httpd/httpd/trunk .
+      +1: jorton,
+
+   *) mod_xml2enc: fix XML media type matching to avoid corruption of
+      non-XML documents.
+      trunk patch: https://svn.apache.org/r1884505
+                   https://svn.apache.org/r1915625
+      2.4.x patch: https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/410.patch
+      Github PR: https://github.com/apache/httpd/pull/410
       +1: jorton, 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
