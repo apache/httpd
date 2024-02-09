@@ -335,10 +335,12 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#mdcertificateprotocol">MDCertificateProtocol</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mdcertificatestatus">MDCertificateStatus</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mdchallengedns01">MDChallengeDns01</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#mdchallengedns01version">MDChallengeDns01Version</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mdcontactemail">MDContactEmail</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mddrivemode">MDDriveMode</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mdexternalaccountbinding">MDExternalAccountBinding</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mdhttpproxy">MDHttpProxy</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#mdmatchnames">MDMatchNames</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mdmember">MDMember</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mdmembers">MDMembers</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mdmessagecmd">MDMessageCmd</a></li>
@@ -369,7 +371,7 @@
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="MDActivationDelay" id="MDActivationDelay">MDActivationDelay</a> <a name="mdactivationdelay" id="mdactivationdelay">Directive</a> <a title="Permanent link" href="#mdactivationdelay" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td /></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>How long to delay activation of new certificates</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>MDActivationDelay <var>duration</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
@@ -483,7 +485,7 @@
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="MDCertificateCheck" id="MDCertificateCheck">MDCertificateCheck</a> <a name="mdcertificatecheck" id="mdcertificatecheck">Directive</a> <a title="Permanent link" href="#mdcertificatecheck" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td /></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Set name and URL pattern for a certificate monitoring sitSet name and URL pattern for a certificate monitoring sitee</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>MDCertificateCheck <var>name</var> <var>url</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
@@ -628,7 +630,7 @@
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="MDChallengeDns01" id="MDChallengeDns01">MDChallengeDns01</a> <a name="mdchallengedns01" id="mdchallengedns01">Directive</a> <a title="Permanent link" href="#mdchallengedns01" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td /></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Set the command for setup/teardown of dns-01 challenges</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>MDChallengeDns01 <var>path-to-command</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
@@ -637,7 +639,9 @@
             <p>
                 Define a program to be called when the `dns-01` challenge needs to be setup/torn down. 
                 The program is given the argument `setup` or `teardown` followed by the domain name. 
-                For `setup` the challenge content is additionally given.
+                For `setup` the challenge content is additionally given. When
+                <code class="directive"><a href="#mdchallengedns01version">MDChallengeDns01Version</a></code> is set to 2,
+                the `teardown` also gets the challenge content as argument.
             </p><p>
                 You do not need to specify this, as long as a 'http:' or 'https:' challenge
                 method is possible. However, Let's Encrypt makes 'dns-01' the only
@@ -653,9 +657,28 @@
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="MDChallengeDns01Version" id="MDChallengeDns01Version">MDChallengeDns01Version</a> <a name="mdchallengedns01version" id="mdchallengedns01version">Directive</a> <a title="Permanent link" href="#mdchallengedns01version" class="permalink">&para;</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Set the type of arguments to call MDChallengeDns01 with</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>MDChallengeDns01Version 1|2</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>MDChallengeDns01Version 1</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_md</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in version 2.4.58 and later</td></tr>
+</table>
+            <p>
+                Set the way MDChallengeDns01 command is invoked, e.g the number and
+                types of arguments. See <code class="directive"><a href="#mdchallengedns01">MDChallengeDns01</a></code>
+                for the differences.
+                This setting is global and cannot be varied per domain.
+            </p>
+        
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="MDContactEmail" id="MDContactEmail">MDContactEmail</a> <a name="mdcontactemail" id="mdcontactemail">Directive</a> <a title="Permanent link" href="#mdcontactemail" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td /></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Email address used for account registration</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>MDContactEmail <var>address</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
@@ -690,7 +713,7 @@
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="MDExternalAccountBinding" id="MDExternalAccountBinding">MDExternalAccountBinding</a> <a name="mdexternalaccountbinding" id="mdexternalaccountbinding">Directive</a> <a title="Permanent link" href="#mdexternalaccountbinding" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td /></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Set the external account binding keyid and hmac values to use at CA</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>MDExternalAccountBinding <var>key-id</var> <var>hmac-64</var> | none | <var>file</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>MDExternalAccountBinding none</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
@@ -739,6 +762,35 @@
 </table>
             <p>Use a http proxy to connect to the <code class="directive"><a href="#mdcertificateauthority">MDCertificateAuthority</a></code>. Define this
             if your webserver can only reach the internet with a forward proxy.
+            </p>
+        
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="MDMatchNames" id="MDMatchNames">MDMatchNames</a> <a name="mdmatchnames" id="mdmatchnames">Directive</a> <a title="Permanent link" href="#mdmatchnames" class="permalink">&para;</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Determines how DNS names are matched to vhosts</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>MDMatchNames all|servernames</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>MDMatchNames all</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_md</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in version 2.4.58 and later</td></tr>
+</table>
+            <p>
+                The mode `all` is the behaviour as in all previous versions. Both ServerName
+                and ServerAlias are inspected to find the MDomain matching a VirtualHost.
+                This automatically detects coverage, even when you only have added
+                one of the names to an MDomain.
+            </p><p>
+                However, this auto-magic has drawbacks in more complex setups. If you set
+                this directive to `servernames`, only the ServerName of a virtual host is
+                used for matching. ServerAliases are disregarded then, for matching.
+                Aliases will still be added to the certificate obtained, unless you also
+                run `MDMembers manual`.
+            </p><p>
+                Another advantage of `servernames` is that it gives you more flexibility
+                with sub-domains and wildcards. You can define one MDomain with a wildcard
+                and have other MDomains for specific sub-domain names.
             </p>
         
 </div>
@@ -1208,7 +1260,7 @@ MDRenewWindow 10%</pre>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="MDRetryDelay" id="MDRetryDelay">MDRetryDelay</a> <a name="mdretrydelay" id="mdretrydelay">Directive</a> <a title="Permanent link" href="#mdretrydelay" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td /></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Time length for first retry, doubled on every consecutive error.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>MDRetryDelay <var>duration</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>MDRetryDelay 5s</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
@@ -1230,7 +1282,7 @@ MDRenewWindow 10%</pre>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="MDRetryFailover" id="MDRetryFailover">MDRetryFailover</a> <a name="mdretryfailover" id="mdretryfailover">Directive</a> <a title="Permanent link" href="#mdretryfailover" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td /></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>The number of errors before a failover to another CA is triggered</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>MDRetryFailover <var>number</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>MDRetryFailover 13</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
@@ -1398,7 +1450,7 @@ MDRenewWindow 10%</pre>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="MDStoreLocks" id="MDStoreLocks">MDStoreLocks</a> <a name="mdstorelocks" id="mdstorelocks">Directive</a> <a title="Permanent link" href="#mdstorelocks" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td /></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configure locking of store for updates</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>MDStoreLocks on|off|<var>duration</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>MDStoreLocks off</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>

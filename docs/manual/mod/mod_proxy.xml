@@ -190,7 +190,7 @@ ProxyPass "/some/ws/capable/path/" "http://example.com/some/ws/capable/path/" up
       <example><title>Reverse Proxy PHP scripts</title>
       <highlight language="config">
 &lt;FilesMatch "\.php$"&gt;
-    SetHandler  "proxy:unix:/path/to/app.sock|fcgi://localhost/"
+    SetHandler  "proxy:unix:/path/to/app.sock|fcgi://localhost"
 &lt;/FilesMatch&gt;
       </highlight>
       </example>

@@ -53,6 +53,9 @@ URLs on the fly</td></tr>
       sub-processing, external request redirection, or internal proxy
       throughput.</p>
 
+      <p>A regular expression only needs quoting if it contains unescaped space, 
+      in which case single and double quotes are equivalent.</p>
+
       <p>Further details, discussion, and examples, are provided in the
       <a href="../rewrite/">detailed mod_rewrite documentation</a>.</p>
 </div>
@@ -365,7 +368,7 @@ AliasMatch "^/myapp" "/opt/myapp-1.2.3"
                   such as "/index.html".  This notably excludes the
                   query string which is available as its own variable
                   named <code>QUERY_STRING</code>. The value returned for
-                  both <code>REQUEST_URI</code> 
+                  <code>REQUEST_URI</code> 
                   has already been %-decoded, to re-encode it pass it through
                   the "escape" <a href="#mapfunc">mapping-function</a>.
                   </dd>

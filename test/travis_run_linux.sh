@@ -86,6 +86,8 @@ make $MFLAGS
 if test -v TEST_INSTALL; then
    make install
    pushd $PREFIX
+     # Basic sanity tests of the installed server.
+     ./bin/apachectl -V
      test `./bin/apxs -q PREFIX` = $PREFIX
      test `$PWD/bin/apxs -q PREFIX` = $PREFIX
      ./bin/apxs -g -n foobar
@@ -93,38 +95,70 @@ if test -v TEST_INSTALL; then
    popd
 fi
 
-if ! test -v SKIP_TESTING; then
-    set +e
-    RV=0
+if test -v SKIP_TESTING; then
+    # Check that httpd was built successfully, nothing more.
+    ./httpd -V
+    exit 0
+fi
 
-    if test -v TEST_MALLOC; then
-        # Enable enhanced glibc malloc debugging, see mallopt(3)
-        export MALLOC_PERTURB_=65 MALLOC_CHECK_=3
-        export LIBC_FATAL_STDERR_=1
-    fi
+###############################################################
+### Everything below is only run if SKIP_TESTING was not set ##
+###############################################################
 
-    if test -v TEST_UBSAN; then
-        export UBSAN_OPTIONS="log_path=$PWD/ubsan.log"
-    fi
+: Running tests...
 
-    if test -v TEST_ASAN; then
-        export ASAN_OPTIONS="log_path=$PWD/asan.log:detect_leaks=0"
-    fi
+set +e
+RV=0
 
-    # Try to keep all potential coredumps from all processes
-    sudo sysctl -w kernel.core_uses_pid=1 2>/dev/null || true
-    # Systemd based systems might process core dumps via systemd-coredump.
-    # But we want to have local unprocessed files.
-    sudo sysctl -w kernel.core_pattern=core || true
-    ulimit -c unlimited 2>/dev/null || true
+if test -v TEST_MALLOC; then
+    # Enable enhanced glibc malloc debugging, see mallopt(3)
+    export MALLOC_PERTURB_=65 MALLOC_CHECK_=3
+    export LIBC_FATAL_STDERR_=1
+fi
 
-    if ! test -v NO_TEST_FRAMEWORK; then
-        if test -v WITH_TEST_SUITE; then
-            make check TESTS="${TESTS}" TEST_CONFIG="${TEST_ARGS}" | tee test.log
+if test -v TEST_UBSAN; then
+    export UBSAN_OPTIONS="log_path=$PWD/ubsan.log"
+fi
+
+if test -v TEST_ASAN; then
+    export ASAN_OPTIONS="log_path=$PWD/asan.log:detect_leaks=0"
+fi
+
+# Try to keep all potential coredumps from all processes
+sudo sysctl -w kernel.core_uses_pid=1 2>/dev/null || true
+# Systemd based systems might process core dumps via systemd-coredump.
+# But we want to have local unprocessed files.
+sudo sysctl -w kernel.core_pattern=core || true
+ulimit -c unlimited 2>/dev/null || true
+
+if ! test -v NO_TEST_FRAMEWORK; then
+    if test -v WITH_TEST_SUITE; then
+        make check TESTS="${TESTS}" TEST_CONFIG="${TEST_ARGS}" | tee test.log
+        RV=${PIPESTATUS[0]}
+        # re-run failing tests with -v, avoiding set -e
+        if [ $RV -ne 0 ]; then
+            # mv test/perl-framework/t/logs/error_log test/perl-framework/t/logs/error_log_save
+            FAILERS=""
+            while read FAILER; do
+                FAILERS="$FAILERS $FAILER"
+            done < <(awk '/Failed:/{print $1}' test.log)
+            if [ -n "$FAILERS" ]; then
+                t/TEST -v $FAILERS || true
+            fi
+            # set -e would have killed us after the original t/TEST
+            rm -f test.log
+            # mv test/perl-framework/t/logs/error_log_save test/perl-framework/t/logs/error_log
+            false
+        fi
+    else
+        test -v TEST_INSTALL || make install
+        pushd test/perl-framework
+            perl Makefile.PL -apxs $PREFIX/bin/apxs
+            make test APACHE_TEST_EXTRA_ARGS="${TEST_ARGS} ${TESTS}" | tee test.log
             RV=${PIPESTATUS[0]}
             # re-run failing tests with -v, avoiding set -e
             if [ $RV -ne 0 ]; then
-                # mv test/perl-framework/t/logs/error_log test/perl-framework/t/logs/error_log_save
+                # mv t/logs/error_log t/logs/error_log_save
                 FAILERS=""
                 while read FAILER; do
                     FAILERS="$FAILERS $FAILER"
@@ -134,172 +168,150 @@ if ! test -v SKIP_TESTING; then
                 fi
                 # set -e would have killed us after the original t/TEST
                 rm -f test.log
-                # mv test/perl-framework/t/logs/error_log_save test/perl-framework/t/logs/error_log
+                # mv t/logs/error_log_save t/logs/error_log
                 false
             fi
-        else
-            test -v TEST_INSTALL || make install
-            pushd test/perl-framework
-                perl Makefile.PL -apxs $PREFIX/bin/apxs
-                make test APACHE_TEST_EXTRA_ARGS="${TEST_ARGS} ${TESTS}" | tee test.log
-                RV=${PIPESTATUS[0]}
-                # re-run failing tests with -v, avoiding set -e
-                if [ $RV -ne 0 ]; then
-                    # mv t/logs/error_log t/logs/error_log_save
-                    FAILERS=""
-                    while read FAILER; do
-                        FAILERS="$FAILERS $FAILER"
-                    done < <(awk '/Failed:/{print $1}' test.log)
-                    if [ -n "$FAILERS" ]; then
-                        t/TEST -v $FAILERS || true
-                    fi
-                    # set -e would have killed us after the original t/TEST
-                    rm -f test.log
-                    # mv t/logs/error_log_save t/logs/error_log
-                    false
-                fi
-            popd
-        fi
-
-        # Skip further testing if a core dump was created during the test
-        # suite run above.
-        if test $RV -eq 0 && test -n "`ls test/perl-framework/t/core{,.*} 2>/dev/null`"; then
-            RV=4
-        fi
-    fi
-
-    if test -v TEST_SSL -a $RV -eq 0; then
-        pushd test/perl-framework
-            # Test loading encrypted private keys
-            ./t/TEST -defines "TEST_SSL_DES3_KEY TEST_SSL_PASSPHRASE_EXEC" t/ssl
-            RV=$?
-
-            # Log the OpenSSL version.
-            grep 'mod_ssl.*compiled against' t/logs/error_log | tail -n 1
-            
-            # Test various session cache backends
-            for cache in shmcb redis:localhost:6379 memcache:localhost:11211; do
-                test $RV -eq 0 || break
-
-                SSL_SESSCACHE=$cache ./t/TEST -sslproto TLSv1.2 -defines TEST_SSL_SESSCACHE -start
-                ./t/TEST t/ssl
-                RV=$?
-                if test $RV -eq 0; then
-                    # TODO: only really useful in e.g. triggering
-                    # server segfaults which are caught later, doesn't
-                    # directly catch non-200 responses etc.
-                    $builddir/support/ab -qd -n 4000 -c 20 -f TLS1.2 https://localhost:8532/
-                    RV=$?
-                fi
-                ./t/TEST -stop
-                SRV=$?
-                if test $RV -eq 0 -a $SRV -ne 0; then
-                    RV=$SRV
-                fi
-            done
         popd
     fi
 
-    if test -v LITMUS -a $RV -eq 0; then
-        pushd test/perl-framework
-           mkdir -p t/htdocs/modules/dav
-           ./t/TEST -start
-           # litmus uses $TESTS, so unset it.
-           unset TESTS
-           litmus http://localhost:8529/modules/dav/
-           RV=$?
-           ./t/TEST -stop
-        popd
+    # Skip further testing if a core dump was created during the test
+    # suite run above.
+    if test $RV -eq 0 && test -n "`ls test/perl-framework/t/core{,.*} 2>/dev/null`"; then
+        RV=4
     fi
-
-    if test -v TEST_CORE -a $RV -eq 0; then
-        # Run HTTP/2 tests.
-        MPM=event py.test-3 test/modules/core
-        RV=$?
-    fi
-
-    if test -v TEST_PROXY -a $RV -eq 0; then
-        # Run proxy tests.
-        py.test-3 test/modules/proxy
-        RV=$?
-    fi
-
-    if test -v TEST_H2 -a $RV -eq 0; then
-        # Build the test clients
-        (cd test/clients && make)
-        # Run HTTP/2 tests.
-        MPM=event py.test-3 test/modules/http2
-        RV=$?
-        if test $RV -eq 0; then
-          MPM=worker py.test-3 test/modules/http2
-          RV=$?
-        fi
-    fi
-
-    if test -v TEST_MD -a $RV -eq 0; then
-        # Run ACME tests.
-        # need the go based pebble as ACME test server
-        # which is a package on debian sid, but not on focal
-        # FAILS on TRAVIS with
-        # package github.com/letsencrypt/pebble/cmd/pebble
-        #         imports crypto/ed25519: unrecognized import path "crypto/ed25519" (import path does not begin with hostname)
-        #
-        # but works on a docker ubuntu-focal image. ???
-        export GOPATH=${PREFIX}/gocode
-        mkdir -p "${GOPATH}"
-        export PATH="${GOROOT}/bin:${GOPATH}/bin:${PATH}"
-        go get -u github.com/letsencrypt/pebble/...
-        (cd $GOPATH/src/github.com/letsencrypt/pebble && go install ./...)
-
-        py.test-3 test/modules/md
-        RV=$?
-    fi
-
-    if test -v TEST_MOD_TLS -a $RV -eq 0; then
-        # Run mod_tls tests. The underlying librustls was build
-        # and installed before we configured the server (see top of file).
-        # This will be replaved once librustls is available as a package.
-        py.test-3 test/modules/tls
-        RV=$?
-    fi
-
-    # Catch cases where abort()s get logged to stderr by libraries but
-    # only cause child processes to terminate e.g. during shutdown,
-    # which may not otherwise trigger test failures.
-
-    # "glibc detected": printed with LIBC_FATAL_STDERR_/MALLOC_CHECK_
-    # glibc will abort when malloc errors are detected.  This will get
-    # caught by the segfault grep as well.
-
-    # "pool concurrency check": printed by APR built with
-    # --enable-thread-debug when an APR pool concurrency check aborts
-
-    for phrase in 'Segmentation fault' 'glibc detected' 'pool concurrency check:' 'Assertion.*failed'; do
-        # Ignore IO/debug logs
-        if grep -v ':\(debug\|trace[12345678]\)\]' test/perl-framework/t/logs/error_log | grep -q "$phrase"; then
-            grep --color=always -C5 "$phrase" test/perl-framework/t/logs/error_log
-            RV=2
-        fi
-    done
-
-    if test -v TEST_UBSAN && test -n "`ls ubsan.log.* 2>/dev/null`"; then
-        cat ubsan.log.*
-        RV=3
-    fi
-
-    if test -v TEST_ASAN && test -n "`ls asan.log.* 2>/dev/null`"; then
-        cat asan.log.*
-
-        # ASan can report memory leaks, fail on errors only
-        if grep -q "ERROR: AddressSanitizer:" `ls asan.log.*`; then
-            RV=4
-        fi
-    fi
-
-    for core in `ls test/perl-framework/t/core{,.*} test/gen/apache/core{,.*} 2>/dev/null`; do
-        gdb -ex 'thread apply all backtrace full' -batch ./httpd "$core"
-        RV=5
-    done
-
-    exit $RV
 fi
+
+if test -v TEST_SSL -a $RV -eq 0; then
+    pushd test/perl-framework
+        # Test loading encrypted private keys
+        ./t/TEST -defines "TEST_SSL_DES3_KEY TEST_SSL_PASSPHRASE_EXEC" t/ssl
+        RV=$?
+
+        # Log the OpenSSL version.
+        grep 'mod_ssl.*compiled against' t/logs/error_log | tail -n 1
+
+        # Test various session cache backends
+        for cache in shmcb redis:localhost:6379 memcache:localhost:11211; do
+            test $RV -eq 0 || break
+
+            SSL_SESSCACHE=$cache ./t/TEST -sslproto TLSv1.2 -defines TEST_SSL_SESSCACHE -start
+            ./t/TEST t/ssl
+            RV=$?
+            if test $RV -eq 0; then
+                # TODO: only really useful in e.g. triggering
+                # server segfaults which are caught later, doesn't
+                # directly catch non-200 responses etc.
+                $builddir/support/ab -qd -n 4000 -c 20 -f TLS1.2 https://localhost:8532/
+                RV=$?
+            fi
+            ./t/TEST -stop
+            SRV=$?
+            if test $RV -eq 0 -a $SRV -ne 0; then
+                RV=$SRV
+            fi
+        done
+    popd
+fi
+
+if test -v LITMUS -a $RV -eq 0; then
+    pushd test/perl-framework
+       mkdir -p t/htdocs/modules/dav
+       ./t/TEST -start
+       # litmus uses $TESTS, so unset it.
+       unset TESTS
+       litmus http://localhost:8529/modules/dav/
+       RV=$?
+       ./t/TEST -stop
+    popd
+fi
+
+if test -v TEST_CORE -a $RV -eq 0; then
+    # Run HTTP/2 tests.
+    MPM=event py.test-3 test/modules/core
+    RV=$?
+fi
+
+if test -v TEST_PROXY -a $RV -eq 0; then
+    # Run proxy tests.
+    py.test-3 test/modules/proxy
+    RV=$?
+fi
+
+if test -v TEST_H2 -a $RV -eq 0; then
+    # Build the test clients
+    (cd test/clients && make)
+    # Run HTTP/2 tests.
+    MPM=event py.test-3 test/modules/http2
+    RV=$?
+    if test $RV -eq 0; then
+      MPM=worker py.test-3 test/modules/http2
+      RV=$?
+    fi
+fi
+
+if test -v TEST_MD -a $RV -eq 0; then
+    # Run ACME tests.
+    # need the go based pebble as ACME test server
+    # which is a package on debian sid, but not on focal
+    # FAILS on TRAVIS with
+    # package github.com/letsencrypt/pebble/cmd/pebble
+    #         imports crypto/ed25519: unrecognized import path "crypto/ed25519" (import path does not begin with hostname)
+    #
+    # but works on a docker ubuntu-focal image. ???
+    export GOPATH=${PREFIX}/gocode
+    mkdir -p "${GOPATH}"
+    export PATH="${GOROOT}/bin:${GOPATH}/bin:${PATH}"
+    go get -u github.com/letsencrypt/pebble/...
+    (cd $GOPATH/src/github.com/letsencrypt/pebble && go install ./...)
+
+    py.test-3 test/modules/md
+    RV=$?
+fi
+
+if test -v TEST_MOD_TLS -a $RV -eq 0; then
+    # Run mod_tls tests. The underlying librustls was build
+    # and installed before we configured the server (see top of file).
+    # This will be replaved once librustls is available as a package.
+    py.test-3 test/modules/tls
+    RV=$?
+fi
+
+# Catch cases where abort()s get logged to stderr by libraries but
+# only cause child processes to terminate e.g. during shutdown,
+# which may not otherwise trigger test failures.
+
+# "glibc detected": printed with LIBC_FATAL_STDERR_/MALLOC_CHECK_
+# glibc will abort when malloc errors are detected.  This will get
+# caught by the segfault grep as well.
+
+# "pool concurrency check": printed by APR built with
+# --enable-thread-debug when an APR pool concurrency check aborts
+
+for phrase in 'Segmentation fault' 'glibc detected' 'pool concurrency check:' 'Assertion.*failed'; do
+    # Ignore IO/debug logs
+    if grep -v ':\(debug\|trace[12345678]\)\]' test/perl-framework/t/logs/error_log | grep -q "$phrase"; then
+        grep --color=always -C5 "$phrase" test/perl-framework/t/logs/error_log
+        RV=2
+    fi
+done
+
+if test -v TEST_UBSAN && test -n "`ls ubsan.log.* 2>/dev/null`"; then
+    cat ubsan.log.*
+    RV=3
+fi
+
+if test -v TEST_ASAN && test -n "`ls asan.log.* 2>/dev/null`"; then
+    cat asan.log.*
+
+    # ASan can report memory leaks, fail on errors only
+    if grep -q "ERROR: AddressSanitizer:" `ls asan.log.*`; then
+        RV=4
+    fi
+fi
+
+for core in `ls test/perl-framework/t/core{,.*} test/gen/apache/core{,.*} 2>/dev/null`; do
+    gdb -ex 'thread apply all backtrace full' -batch ./httpd "$core"
+    RV=5
+done
+
+exit $RV

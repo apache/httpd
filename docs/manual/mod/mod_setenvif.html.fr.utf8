@@ -66,6 +66,13 @@ BrowserMatch MSIE !netscape</pre>
    part, les directives <code class="directive"><a href="#setenvif">SetEnvIf</a></code> ne sont pas évaluées
    séparément dans la sous-requête.</p>
 
+   <p>Une expression rationnelle ne nécessite des guillemets que si elle
+   contient des espaces non échappées et dans ce cas, les guillemets simples ou
+   doubles sont équivalents. À la différence de <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>,
+   <code class="module"><a href="../mod/mod_setenvif.html">mod_setenvif</a></code> élimine tous les autres anti-slashes lorsqu'il
+   interprète l'expression&nbsp;; ainsi, <code>\\</code> nécessite <code>\\\</code>
+   et <code>\\\</code> nécessite <code>\\\\\</code>.</p>
+
 </div>
 <div id="quickview"><h3 class="directives">Directives</h3>
 <ul id="toc">

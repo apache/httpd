@@ -65,7 +65,7 @@
     les types d'autorisation <code>user</code> et <code>valid-user</code>.
     </p>
 
-    <p>A partir de la version 2.4.8, les directives require DBM
+    <p>A partir de la version 2.4.8, les directives require user
     supportent les <a href="../expr.html">expressions</a>.</p>
 
 <h3><a name="requser" id="requser">Require user</a></h3>
