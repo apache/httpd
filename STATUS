@@ -196,7 +196,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      ylavic: not sure since it's not public (i.e. in mod_proxy.h)?
      minfrin: true, mmn bump not needed
      ylavic: new proposal in https://github.com/apache/httpd/pull/396
-     +1: jfclere
+     -1: jfclere The new proposal is NOT in trunk
 
    *) mod_ldap: Add a hint to install the apr_ldap module on init failure.
       trunk patch: http://svn.apache.org/r1914038
