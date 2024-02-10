@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1915564 -->
+<!-- English Revision: 1915685 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -41,9 +41,8 @@ href="http://www.webdav.org/">WebDAV</a>)</description>
     supprimer des ressources ou collections de ressources sur un serveur
     web distant.</p>
 </summary>
-<seealso><directive module="mod_dav_fs">DavLockDB</directive></seealso>
+<seealso><module>mod_dav_fs</module></seealso>
 <seealso><directive module="core">LimitXMLRequestBody</directive></seealso>
-<seealso><a href="http://www.webdav.org">Ressources WebDAV</a></seealso>
 
 <section id="example"><title>Activation de WebDAV</title>
     <p>Pour activer le module <module>mod_dav</module>, ajoutez la ligne
@@ -57,21 +56,6 @@ href="http://www.webdav.org/">WebDAV</a>)</description>
     compilé dans le serveur ou chargé au démarrage à l'aide de la
     directive <directive module="mod_so">LoadModule</directive>.</p>
 
-    <p>En outre, vous devez indiquer où se trouve la base de données des
-    verrous DAV via une directive <directive
-    module="mod_dav_fs">DavLockDB</directive> dans la section globale de
-    votre fichier <code>httpd.conf</code> :</p>
-
-    <highlight language="config">
-      DavLockDB "/usr/local/apache2/var/DavLock"
-    </highlight>
-
-    <p>Le répertoire contenant le fichier de la base de données des
-    verrous doit avoir des droits en écriture pour l'utilisateur et le
-    groupe sous lesquels Apache s'exécute et définis respectivement par
-    les directives <directive module="mod_unixd">User</directive> et
-    <directive module="mod_unixd">Group</directive>.</p>
-
     <p>Si vous souhaitez limiter l'accès aux répertoires où DAV est
     activé, vous pouvez ajouter une clause <directive module="core"
     type="section">Limit</directive> dans la section <directive
@@ -84,8 +68,6 @@ href="http://www.webdav.org/">WebDAV</a>)</description>
 
     <example><title>Exemple complet</title>
       <highlight language="config">
-DavLockDB "/usr/local/apache2/var/DavLock"
-
 &lt;Directory "/usr/local/apache2/htdocs/foo"&gt;
     Require all granted
     Dav On

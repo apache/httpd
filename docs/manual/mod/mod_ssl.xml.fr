@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1914365 -->
+<!-- English Revision: 1915680 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -2138,10 +2138,10 @@ clients codés en PEM que le mandataire doit utiliser</description>
 <syntax>SSLProxyMachineCertificateFile <em>file-path</em></syntax>
 <contextlist><context>server config</context> <context>virtual host</context>
 <context>proxy section</context></contextlist>
-<compatibility>Le contexte d'une section proxy est supporté à partir de la
+<compatibility>Le contexte d'une section proxy est pris en charge à partir de la
 version 2.4.30 du serveur HTTP Apache<br/>
-L'inclusion de certificats non-feuilles (CA) est supportée à partir de la
-version 2.5.1.</compatibility>
+L'inclusion de certificats non-feuilles (CA) est prise en charge à partir de la
+version 2.4.59.</compatibility>
 
 <usage>
 <p>
