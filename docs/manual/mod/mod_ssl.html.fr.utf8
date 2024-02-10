@@ -2226,10 +2226,10 @@ clients codés en PEM que le mandataire doit utiliser</td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, </td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Le contexte d'une section proxy est supporté à partir de la
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Le contexte d'une section proxy est pris en charge à partir de la
 version 2.4.30 du serveur HTTP Apache<br />
-L'inclusion de certificats non-feuilles (CA) est supportée à partir de la
-version 2.5.1.</td></tr>
+L'inclusion de certificats non-feuilles (CA) est prise en charge à partir de la
+version 2.4.59.</td></tr>
 </table>
 <p>
 Cette directive permet de définir le fichier tout-en-un où sont stockés

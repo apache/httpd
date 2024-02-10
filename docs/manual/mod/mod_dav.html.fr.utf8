@@ -60,9 +60,8 @@ documents via le web (<a href="http://www.webdav.org/">WebDAV</a>)</td></tr>
 </ul>
 <h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_dav">Problèmes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_dav">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
 <ul class="seealso">
-<li><code class="directive"><a href="../mod/mod_dav_fs.html#davlockdb">DavLockDB</a></code></li>
+<li><code class="module"><a href="../mod/mod_dav_fs.html">mod_dav_fs</a></code></li>
 <li><code class="directive"><a href="../mod/core.html#limitxmlrequestbody">LimitXMLRequestBody</a></code></li>
-<li><a href="http://www.webdav.org">Ressources WebDAV</a></li>
 <li><a href="#comments_section">Commentaires</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -79,19 +78,6 @@ documents via le web (<a href="http://www.webdav.org/">WebDAV</a>)</td></tr>
     compilé dans le serveur ou chargé au démarrage à l'aide de la
     directive <code class="directive"><a href="../mod/mod_so.html#loadmodule">LoadModule</a></code>.</p>
 
-    <p>En outre, vous devez indiquer où se trouve la base de données des
-    verrous DAV via une directive <code class="directive"><a href="../mod/mod_dav_fs.html#davlockdb">DavLockDB</a></code> dans la section globale de
-    votre fichier <code>httpd.conf</code> :</p>
-
-    <pre class="prettyprint lang-config">DavLockDB "/usr/local/apache2/var/DavLock"</pre>
-
-
-    <p>Le répertoire contenant le fichier de la base de données des
-    verrous doit avoir des droits en écriture pour l'utilisateur et le
-    groupe sous lesquels Apache s'exécute et définis respectivement par
-    les directives <code class="directive"><a href="../mod/mod_unixd.html#user">User</a></code> et
-    <code class="directive"><a href="../mod/mod_unixd.html#group">Group</a></code>.</p>
-
     <p>Si vous souhaitez limiter l'accès aux répertoires où DAV est
     activé, vous pouvez ajouter une clause <code class="directive"><a href="../mod/core.html#limit">&lt;Limit&gt;</a></code> dans la section <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code> considérée. Pour
     définir la quantité maximale de données en octets qu'un client
@@ -100,9 +86,7 @@ documents via le web (<a href="http://www.webdav.org/">WebDAV</a>)</td></tr>
     directive <code class="directive"><a href="../mod/core.html#limitrequestbody">LimitRequestBody</a></code>
     "habituelle" n'a aucune incidence sur les requêtes DAV.</p>
 
-    <div class="example"><h3>Exemple complet</h3><pre class="prettyprint lang-config">DavLockDB "/usr/local/apache2/var/DavLock"
-
-&lt;Directory "/usr/local/apache2/htdocs/foo"&gt;
+    <div class="example"><h3>Exemple complet</h3><pre class="prettyprint lang-config">&lt;Directory "/usr/local/apache2/htdocs/foo"&gt;
     Require all granted
     Dav On
 
