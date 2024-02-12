@@ -1,2 +1,2 @@
- *) mod_xml2enc: Tolerate libxml2 2.12.0 and later.
+ *) mod_xml2enc: Tolerate libxml2 2.12.0 and later.  PR 68610
     [ttachi <tachihara AT hotmail.com>]
