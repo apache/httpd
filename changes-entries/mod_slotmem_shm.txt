@@ -1,0 +1,3 @@
+   *) mod_slotmem_shm: Use ap_os_is_path_absolute() to make it portable.
+      [Jean-Frederic Clere]
+
