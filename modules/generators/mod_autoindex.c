@@ -1665,11 +1665,11 @@ static void output_directories(struct ent **ar, int n,
                       colargs, static_columns);
         }
         if (!(autoindex_opts & SUPPRESS_RULES)) {
-            ap_rputs("<hr", r);
+            ap_rputs("</pre><hr", r);
             if (autoindex_opts & EMIT_XHTML) {
                 ap_rputs(" /", r);
             }
-            ap_rputs(">", r);
+            ap_rputs("><pre>", r);
         }
         else {
             ap_rputc('\n', r);
@@ -1895,11 +1895,11 @@ static void output_directories(struct ent **ar, int n,
     }
     else if (autoindex_opts & FANCY_INDEXING) {
         if (!(autoindex_opts & SUPPRESS_RULES)) {
-            ap_rputs("<hr", r);
+            ap_rputs("</pre><hr", r);
             if (autoindex_opts & EMIT_XHTML) {
                 ap_rputs(" /", r);
             }
-            ap_rputs("></pre>\n", r);
+            ap_rputs(">\n", r);
         }
         else {
             ap_rputs("</pre>\n", r);
