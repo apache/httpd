@@ -810,8 +810,7 @@ static const command_rec substitute_cmds[] = {
                   "Pattern to filter the response content (s/foo/bar/[inf])"),
     AP_INIT_TAKE1("SubstituteMaxLineLength", set_max_line_length, NULL, OR_FILEINFO,
                   "Maximum line length"),
-    AP_INIT_FLAG("SubstituteInheritBefore", ap_set_flag_slot,
-                 (void *)APR_OFFSETOF(subst_dir_conf, inherit_before), OR_FILEINFO,
+    AP_INIT_FLAG_SLOT("SubstituteInheritBefore", subst_dir_conf, inherit_before, OR_FILEINFO,
                  "Apply inherited patterns before those of the current context"),
     {NULL}
 };
