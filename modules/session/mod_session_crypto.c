@@ -333,6 +333,9 @@ static apr_status_t encrypt_string(request_rec * r, const apr_crypto_t *f,
     }
     encryptlen += tlen;
 
+    res = apr_crypto_block_cleanup(block);
+    if (res == APR_ENOTIMPL) res = APR_SUCCESS;
+
     /* prepend the salt and the iv to the result (keep room for the MAC) */
     combinedlen = AP_SIPHASH_DSIZE + sizeof(apr_uuid_t) + ivSize + encryptlen;
     combined = apr_palloc(r->pool, combinedlen);
@@ -373,6 +376,7 @@ static apr_status_t decrypt_string(request_rec * r, const apr_crypto_t *f,
     apr_crypto_block_key_type_e *cipher;
     unsigned char auth[AP_SIPHASH_DSIZE];
     int i = 0;
+    const apu_err_t *result = NULL;
 
     /* strip base64 from the string */
     decoded = apr_palloc(r->pool, apr_base64_decode_len(in));
@@ -472,12 +476,19 @@ static apr_status_t decrypt_string(request_rec * r, const apr_crypto_t *f,
 
         res = apr_crypto_block_decrypt_finish(decrypted + decryptedlen, &tlen, block);
         if (APR_SUCCESS != res) {
+	    apr_crypto_error(&result, f);
             ap_log_rerror(APLOG_MARK, APLOG_DEBUG, res, r, APLOGNO(01839)
-                    "apr_crypto_block_decrypt_finish failed");
+                    "apr_crypto_block_decrypt_finish failed: crypto driver error %d: %s (%s)",
+			  result->rc,
+			  result->reason ? result->reason : "", result->msg ? result->msg
+			  : "");
             continue;
         }
         decryptedlen += tlen;
         decrypted[decryptedlen] = 0;
+
+	res = apr_crypto_block_cleanup(block);
+	if (res == APR_ENOTIMPL) res = APR_SUCCESS;
 
         break;
     }
@@ -553,10 +564,23 @@ static apr_status_t session_crypto_decode(request_rec * r,
 
 }
 
+/*
+  Crypto cleanup function
+*/
+static apr_status_t session_crypto_cleanup(void *userdata)
+{
+    apr_crypto_t *f = (apr_crypto_t*) userdata;
+    apr_status_t res = apr_crypto_cleanup(f);
+
+    if (res == APR_ENOTIMPL) return APR_SUCCESS;
+
+    return res;
+}
+
 /**
  * Initialise the SSL in the post_config hook.
  */
-static int session_crypto_init(apr_pool_t *p, apr_pool_t *plog,
+static int session_crypto_init(apr_pool_t *_p, apr_pool_t *plog,
         apr_pool_t *ptemp, server_rec *s)
 {
     const apr_crypto_driver_t *driver = NULL;
@@ -565,10 +589,18 @@ static int session_crypto_init(apr_pool_t *p, apr_pool_t *plog,
     session_crypto_conf *conf = ap_get_module_config(s->module_config,
             &session_crypto_module);
 
+    /* session_crypto_init() will be called twice. Don't bother
+     * going through all of the initialization on the first call
+     * because it will just be thrown away.*/
+    if (ap_state_query(AP_SQ_MAIN_STATE) == AP_SQ_MS_CREATE_PRE_CONFIG) {
+        return OK;
+    }
+
     if (conf->library) {
 
         const apu_err_t *err = NULL;
         apr_status_t rv;
+	apr_pool_t *p = s->process->pconf;
 
         rv = apr_crypto_init(p);
         if (APR_SUCCESS != rv) {
@@ -615,7 +647,7 @@ static int session_crypto_init(apr_pool_t *p, apr_pool_t *plog,
                 conf->library);
 
         apr_pool_userdata_set((const void *)f, CRYPTO_KEY,
-                apr_pool_cleanup_null, s->process->pconf);
+                session_crypto_cleanup, p);
 
     }
 
