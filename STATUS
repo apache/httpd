@@ -165,17 +165,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
       rpluem says: This has conflict in modules/http2/h2_version.h. Otherwise
       +1 from me on the backport.
 
-   *) mod_slotmem_shm: Use ap_os_is_path_absolute() to make it portable.
-      trunk patch: https://svn.apache.org/r1915400
-      2.4.x patch: svn merge -c 1915400 ^/httpd/httpd/trunk .
-      +1: jfclere, jorton, covener
-
-   *) mod_ssl: use standard OpenSSL function for assembling CA name lists
-      trunk patch: https://svn.apache.org/r1825120
-      2.4.x patch: https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/406.patch
-      Github PR: https://github.com/apache/httpd/pull/406
-      +1: jorton, jfclere, covener
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
