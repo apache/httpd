@@ -62,10 +62,10 @@ typedef struct {
     scgi_request_type type;  /* type of request */
 } scgi_request_config;
 
-const char *scgi_sendfile_off = "off";
-const char *scgi_sendfile_on = "X-Sendfile";
-const char *scgi_internal_redirect_off = "off";
-const char *scgi_internal_redirect_on = "Location";
+static const char *const scgi_sendfile_off = "off";
+static const char *const scgi_sendfile_on = "X-Sendfile";
+static const char *const scgi_internal_redirect_off = "off";
+static const char *const scgi_internal_redirect_on = "Location";
 
 typedef struct {
     const char *sendfile;
