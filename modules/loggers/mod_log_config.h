@@ -40,6 +40,14 @@ typedef const char *ap_log_handler_fn_t(request_rec *r, char *a);
  */
 typedef void *ap_log_writer_init(apr_pool_t *p, server_rec *s,
                                  const char *name);
+
+typedef struct ap_log_formatted_data {
+    const char **portions; /* all formatted strings */
+    int *lengths;          /* strlen for above strings */
+    int nelts;             /* total number of strings */
+    apr_size_t total_len;  /* total strlen of all strings */
+} ap_log_formatted_data;
+
 /**
  * callback which gets called where there is a log line to write.
  */
@@ -51,6 +59,15 @@ typedef apr_status_t ap_log_writer(
                             int nelts,
                             apr_size_t len);
 
+/**
+ * callback which gets called before a log line gets written
+ */
+typedef ap_log_formatted_data * ap_log_formatter(
+                            request_rec *r,
+                            const void *formatter_data,
+                            ap_log_formatted_data *lfd,
+                            const void *items);
+
 typedef struct ap_log_handler {
     ap_log_handler_fn_t *func;
     int want_orig_default;
@@ -59,6 +76,11 @@ typedef struct ap_log_handler {
 APR_DECLARE_OPTIONAL_FN(void, ap_register_log_handler,
                         (apr_pool_t *p, char *tag, ap_log_handler_fn_t *func,
                          int def));
+
+APR_DECLARE_OPTIONAL_FN(void, ap_register_log_handler_ex,
+                        (apr_pool_t *p, const char *tag, const char *long_name, ap_log_handler_fn_t *func,
+                         int def));
+
 /**
  * you will need to set your init handler *BEFORE* the open_logs
  * in mod_log_config gets executed
