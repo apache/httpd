@@ -216,12 +216,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                    https://svn.apache.org/r1877693
       2.4.x patch: https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/408.patch
       Github PR: https://github.com/apache/httpd/pull/408
-      +1: jorton, 
+      +1: jorton, ylavic,
 
    *) htcacheclean: fix output for -A/-a mode
       trunk patch: https://svn.apache.org/r1915508
       2.4.x patch: svn merge -c 1915508 ^/httpd/httpd/trunk .
-      +1: jorton,
+      +1: jorton, ylavic,
 
    *) mod_xml2enc: fix XML media type matching to avoid corruption of
       non-XML documents.
@@ -229,13 +229,19 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                    https://svn.apache.org/r1915625
       2.4.x patch: https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/410.patch
       Github PR: https://github.com/apache/httpd/pull/410
-      +1: jorton, 
+      +1: jorton, ylavic,
 
    *) mod_ssl: follow-up to r1825120 to simplify code (no functional change)
       trunk patch: https://svn.apache.org/r1825124
       2.4.x patch: svn merge -c 1825124  ^/httpd/httpd/trunk .
       Github PR: https://github.com/apache/httpd/pull/412
-      +1: jorton, 
+      +1: jorton, ylavic
+
+   *) mod_ssl: fix build with !MODSSL_HAVE_ENGINE_API (follow up to r1913912 in 2.4.59)
+      trunk patch: https://svn.apache.org/r1915889
+      2.4.x patch: https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/413.patch
+      Github PR: https://github.com/apache/httpd/pull/413
+      +1: ylavic,
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
