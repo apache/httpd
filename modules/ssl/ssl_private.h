@@ -658,9 +658,7 @@ typedef struct {
     apr_array_header_t   *aRandSeed;
 #endif
 
-#if defined(HAVE_OPENSSL_ENGINE_H) && defined(HAVE_ENGINE_INIT)
-    const char     *szCryptoDevice;
-#endif
+    const char     *szCryptoDevice; /* ENGINE device (if available) */
 
 #ifdef HAVE_OCSP_STAPLING
     const ap_socache_provider_t *stapling_cache;
