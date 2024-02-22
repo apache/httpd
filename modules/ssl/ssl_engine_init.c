@@ -2242,12 +2242,6 @@ int ssl_proxy_section_post_config(apr_pool_t *p, apr_pool_t *plog,
     return OK;
 }
 
-static int ssl_init_FindCAList_X509NameCmp(const X509_NAME * const *a,
-                                           const X509_NAME * const *b)
-{
-    return(X509_NAME_cmp(*a, *b));
-}
-
 static apr_status_t ssl_init_ca_cert_path(server_rec *s,
                                           apr_pool_t *ptemp,
                                           const char *path,
@@ -2287,13 +2281,7 @@ STACK_OF(X509_NAME) *ssl_init_FindCAList(server_rec *s,
                                          const char *ca_file,
                                          const char *ca_path)
 {
-    STACK_OF(X509_NAME) *ca_list;
-
-    /*
-     * Start with a empty stack/list where new
-     * entries get added in sorted order.
-     */
-    ca_list = sk_X509_NAME_new(ssl_init_FindCAList_X509NameCmp);
+    STACK_OF(X509_NAME) *ca_list = sk_X509_NAME_new_null();;
 
     /*
      * Process CA certificate bundle file
@@ -2322,11 +2310,6 @@ STACK_OF(X509_NAME) *ssl_init_FindCAList(server_rec *s,
         sk_X509_NAME_pop_free(ca_list, X509_NAME_free);
         return NULL;
     }
-
-    /*
-     * Cleanup
-     */
-    (void) sk_X509_NAME_set_cmp_func(ca_list, NULL);
 
     return ca_list;
 }

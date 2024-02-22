@@ -160,12 +160,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
       rpluem says: This has conflict in modules/http2/h2_version.h. Otherwise
       +1 from me on the backport.
 
-   *) mod_ssl: follow-up to r1825120 to simplify code (no functional change)
-      trunk patch: https://svn.apache.org/r1825124
-      2.4.x patch: svn merge -c 1825124  ^/httpd/httpd/trunk .
-      Github PR: https://github.com/apache/httpd/pull/412
-      +1: jorton, ylavic, jfclere
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
