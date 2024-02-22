@@ -229,7 +229,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    *) htpasswd: Windows : do not include ap_config_auto.h 
       trunk patch: https://svn.apache.org/r1877693 
       2.4.x patch: svn merge -c 1877693 ^/httpd/httpd/trunk .
-      +1: jfclere,
+      +1: jfclere, ylavic,
       
 
 PATCHES/ISSUES THAT ARE BEING WORKED
