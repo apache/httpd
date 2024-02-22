@@ -171,12 +171,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
       Github PR: https://github.com/apache/httpd/pull/412
       +1: jorton, ylavic, jfclere
 
-   *) mod_ssl: fix build with !MODSSL_HAVE_ENGINE_API (follow up to r1913912 in 2.4.59)
-      trunk patch: https://svn.apache.org/r1915889
-      2.4.x patch: https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/413.patch
-      Github PR: https://github.com/apache/httpd/pull/413
-      +1: ylavic, jorton, jfclere
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
