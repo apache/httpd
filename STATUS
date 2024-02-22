@@ -152,11 +152,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   *) Add CGIScriptTimeout to mod_cgi.
-      trunk patch: http://svn.apache.org/r1828172
-      2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/httpd-2.4-add-CGIScriptTimeout.patch
-      +1: minfrin, ylavic, jfclere
-
    *) mod_http2 v2.0.26. fixes `Data:` in upgrade responses and a small memory
       leak in h2 header buckets.
       trunk patch: http://svn.apache.org/r1915281

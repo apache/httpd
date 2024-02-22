@@ -92,6 +92,10 @@ typedef struct {
     apr_size_t  bufbytes;
 } cgi_server_conf;
 
+typedef struct {
+    apr_interval_time_t timeout;
+} cgi_dirconf;
+
 static void *create_cgi_config(apr_pool_t *p, server_rec *s)
 {
     cgi_server_conf *c =
@@ -110,6 +114,12 @@ static void *merge_cgi_config(apr_pool_t *p, void *basev, void *overridesv)
                     *overrides = (cgi_server_conf *) overridesv;
 
     return overrides->logname ? overrides : base;
+}
+
+static void *create_cgi_dirconf(apr_pool_t *p, char *dummy)
+{
+    cgi_dirconf *c = (cgi_dirconf *) apr_pcalloc(p, sizeof(cgi_dirconf));
+    return c;
 }
 
 static const char *set_scriptlog(cmd_parms *cmd, void *dummy, const char *arg)
@@ -150,6 +160,17 @@ static const char *set_scriptlog_buffer(cmd_parms *cmd, void *dummy,
     return NULL;
 }
 
+static const char *set_script_timeout(cmd_parms *cmd, void *dummy, const char *arg)
+{
+    cgi_dirconf *dc = dummy;
+
+    if (ap_timeout_parameter_parse(arg, &dc->timeout, "s") != APR_SUCCESS) {
+        return "CGIScriptTimeout has wrong format";
+    }
+
+    return NULL;
+}
+
 static const command_rec cgi_cmds[] =
 {
 AP_INIT_TAKE1("ScriptLog", set_scriptlog, NULL, RSRC_CONF,
@@ -158,6 +179,9 @@ AP_INIT_TAKE1("ScriptLogLength", set_scriptlog_length, NULL, RSRC_CONF,
      "the maximum length (in bytes) of the script debug log"),
 AP_INIT_TAKE1("ScriptLogBuffer", set_scriptlog_buffer, NULL, RSRC_CONF,
      "the maximum size (in bytes) to record of a POST request"),
+AP_INIT_TAKE1("CGIScriptTimeout", set_script_timeout, NULL, RSRC_CONF | ACCESS_CONF,
+     "The amount of time to wait between successful reads from "
+     "the CGI script, in seconds."),
     {NULL}
 };
 
@@ -466,23 +490,26 @@ static apr_status_t run_cgi_child(apr_file_t **script_out,
                           apr_filepath_name_get(r->filename));
         }
         else {
+            cgi_dirconf *dc = ap_get_module_config(r->per_dir_config, &cgi_module);
+            apr_interval_time_t timeout = dc->timeout > 0 ? dc->timeout : r->server->timeout;
+
             apr_pool_note_subprocess(p, procnew, APR_KILL_AFTER_TIMEOUT);
 
             *script_in = procnew->out;
             if (!*script_in)
                 return APR_EBADF;
-            apr_file_pipe_timeout_set(*script_in, r->server->timeout);
+            apr_file_pipe_timeout_set(*script_in, timeout);
 
             if (e_info->prog_type == RUN_AS_CGI) {
                 *script_out = procnew->in;
                 if (!*script_out)
                     return APR_EBADF;
-                apr_file_pipe_timeout_set(*script_out, r->server->timeout);
+                apr_file_pipe_timeout_set(*script_out, timeout);
 
                 *script_err = procnew->err;
                 if (!*script_err)
                     return APR_EBADF;
-                apr_file_pipe_timeout_set(*script_err, r->server->timeout);
+                apr_file_pipe_timeout_set(*script_err, timeout);
             }
         }
     }
@@ -675,11 +702,14 @@ static apr_status_t cgi_bucket_read(apr_bucket *b, const char **str,
                                     apr_size_t *len, apr_read_type_e block)
 {
     struct cgi_bucket_data *data = b->data;
-    apr_interval_time_t timeout;
+    apr_interval_time_t timeout = 0;
     apr_status_t rv;
     int gotdata = 0;
+    cgi_dirconf *dc = ap_get_module_config(data->r->per_dir_config, &cgi_module);
 
-    timeout = block == APR_NONBLOCK_READ ? 0 : data->r->server->timeout;
+    if (block != APR_NONBLOCK_READ) {
+        timeout = dc->timeout > 0 ? dc->timeout : data->r->server->timeout;
+    }
 
     do {
         const apr_pollfd_t *results;
@@ -757,6 +787,8 @@ static int cgi_handler(request_rec *r)
     apr_status_t rv;
     cgi_exec_info_t e_info;
     conn_rec *c;
+    cgi_dirconf *dc = ap_get_module_config(r->per_dir_config, &cgi_module);
+    apr_interval_time_t timeout = dc->timeout > 0 ? dc->timeout : r->server->timeout;
 
     if (strcmp(r->handler, CGI_MAGIC_TYPE) && strcmp(r->handler, "cgi-script")) {
         return DECLINED;
@@ -976,7 +1008,7 @@ static int cgi_handler(request_rec *r)
              * stderr output, as normal. */
             discard_script_output(bb);
             apr_brigade_destroy(bb);
-            apr_file_pipe_timeout_set(script_err, r->server->timeout);
+            apr_file_pipe_timeout_set(script_err, timeout);
             log_script_err(r, script_err);
         }
 
@@ -1027,7 +1059,7 @@ static int cgi_handler(request_rec *r)
      * connection drops or we stopped sending output for some other
      * reason */
     if (rv == APR_SUCCESS && !r->connection->aborted) {
-        apr_file_pipe_timeout_set(script_err, r->server->timeout);
+        apr_file_pipe_timeout_set(script_err, timeout);
         log_script_err(r, script_err);
     }
 
@@ -1268,7 +1300,7 @@ static void register_hooks(apr_pool_t *p)
 AP_DECLARE_MODULE(cgi) =
 {
     STANDARD20_MODULE_STUFF,
-    NULL,                        /* dir config creater */
+    create_cgi_dirconf,          /* dir config creater */
     NULL,                        /* dir merger --- default is to override */
     create_cgi_config,           /* server config */
     merge_cgi_config,            /* merge server config */

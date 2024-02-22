@@ -176,6 +176,31 @@
 </section>
 
 <directivesynopsis>
+<name>CGIScriptTimeout</name>
+<description>The length of time to wait for more output from the
+CGI program</description>
+<syntax>CGIScriptTimeout <var>time</var>[s|ms]</syntax>
+<default>value of <directive module="core">Timeout</directive> directive when
+unset</default>
+<contextlist><context>server config</context>
+<context>virtual host</context><context>directory</context>
+<context>.htaccess</context></contextlist>
+
+<usage>
+    <p>This directive limits the length of time to wait for more output from
+    the CGI program.  If the time is exceeded, the request and CGI are
+    terminated.</p>
+
+    <example><title>Example</title>
+    <highlight language="config">
+      CGIScriptTimeout 20
+    </highlight>
+    </example>
+
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
 <name>ScriptLog</name>
 <description>Location of the CGI script error logfile</description>
 <syntax>ScriptLog <var>file-path</var></syntax>
