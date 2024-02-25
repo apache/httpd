@@ -7,7 +7,7 @@
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>Getting Started - Servidor HTTP Apache Versión 2.5</title>
+<title>Primeros Pasos - Servidor HTTP Apache Versión 2.5</title>
 <link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
 <link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
 <link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="./style/css/prettify.css" />
@@ -21,7 +21,7 @@
 <img alt="" src="./images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Servidor HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentación</a> &gt; <a href="./">Versión 2.5</a></div><div id="page-content"><div id="preamble"><h1>Getting Started</h1>
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Servidor HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentación</a> &gt; <a href="./">Versión 2.5</a></div><div id="page-content"><div id="preamble"><h1>Primeros Pasos</h1>
 <div class="toplang">
 <p><span>Idiomas disponibles: </span><a href="./en/getting-started.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="./es/getting-started.html" title="Español">&nbsp;es&nbsp;</a> |
@@ -192,9 +192,9 @@ son los ficheros de log, y en el particular, el log de errores. Intentar hacer
 Solución de Problemas sin el log de errores es como conducir con los ojos
 cerrados.</p>
 
-<p>La ubicación del log de errores se define con la directiva <code class="directive"><a href="./mod/core.html#errorlog">ErrorLog</a></code> directive, que puede configurarse 
+<p>La ubicación del log de errores se define con la directiva <code class="directive"><a href="./mod/core.html#errorlog">ErrorLog</a></code>, que puede configurarse 
 globalmnente o por host virtual. Entradas en el log de errores te indican
-qué fue mal, y cuando. A menudo también te indican cómo corregirlo. Cada 
+qué fue mal, y cuándo. A menudo también te indican cómo corregirlo. Cada 
 mensaje de error contiene un código de error, que puedes buscar en línea
 para obtener descripciones aún más detalladas sobre cómo resolver el 
 problema. También puedes configurar el log de errores para que incluya
@@ -211,8 +211,8 @@ documentación de logs</a>.</p>
 
 <p>Una vez que cumples los pre-requisitos es hora de avanzar.</p>
 
-<p>Esto documento sólo cubre cómo el mínimo básico. Esperamos que esto
-te ayude a comenzar, pero hay muchas otras cosas que podrías necesitar
+<p>Esto documento sólo cubre el mínimo básico. Esperamos que esto
+te ayude a comenzar, pero hay muchas otras cosas que puede que necesites
 aprender.</p>
 
 <ul>

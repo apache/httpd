@@ -23,7 +23,7 @@
 
 <manualpage metafile="getting-started.xml.meta">
 
-  <title>Getting Started</title>
+  <title>Primeros Pasos</title>
 
 <summary>
 <p>Si es tu primera vez con el servidor Apache HTTTP, o incluso para llevar 
@@ -195,9 +195,9 @@ Solución de Problemas sin el log de errores es como conducir con los ojos
 cerrados.</p>
 
 <p>La ubicación del log de errores se define con la directiva <directive
-module="core">ErrorLog</directive> directive, que puede configurarse 
+module="core">ErrorLog</directive>, que puede configurarse 
 globalmnente o por host virtual. Entradas en el log de errores te indican
-qué fue mal, y cuando. A menudo también te indican cómo corregirlo. Cada 
+qué fue mal, y cuándo. A menudo también te indican cómo corregirlo. Cada 
 mensaje de error contiene un código de error, que puedes buscar en línea
 para obtener descripciones aún más detalladas sobre cómo resolver el 
 problema. También puedes configurar el log de errores para que incluya
@@ -214,8 +214,8 @@ documentación de logs</a>.</p>
 
 <p>Una vez que cumples los pre-requisitos es hora de avanzar.</p>
 
-<p>Esto documento sólo cubre cómo el mínimo básico. Esperamos que esto
-te ayude a comenzar, pero hay muchas otras cosas que podrías necesitar
+<p>Esto documento sólo cubre el mínimo básico. Esperamos que esto
+te ayude a comenzar, pero hay muchas otras cosas que puede que necesites
 aprender.</p>
 
 <ul>
