@@ -59,9 +59,8 @@
 </ul>
 <h3>Bugfix checklist</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd changelog</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_dav">Known issues</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_dav">Report a bug</a></li></ul><h3>See also</h3>
 <ul class="seealso">
-<li><code class="directive"><a href="../mod/mod_dav_fs.html#davlockdb">DavLockDB</a></code></li>
+<li><code class="module"><a href="../mod/mod_dav_fs.html">mod_dav_fs</a></code></li>
 <li><code class="directive"><a href="../mod/core.html#limitxmlrequestbody">LimitXMLRequestBody</a></code></li>
-<li><a href="http://www.webdav.org">WebDAV Resources</a></li>
 <li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -77,19 +76,6 @@
     must be compiled into the server or loaded at runtime using the
     <code class="directive"><a href="../mod/mod_so.html#loadmodule">LoadModule</a></code> directive.</p>
 
-    <p>In addition, a location for the DAV lock database must be
-    specified in the global section of your <code>httpd.conf</code>
-    file using the <code class="directive"><a href="../mod/mod_dav_fs.html#davlockdb">DavLockDB</a></code>
-    directive:</p>
-
-    <pre class="prettyprint lang-config">DavLockDB "/usr/local/apache2/var/DavLock"</pre>
-
-
-    <p>The directory containing the lock database file must be
-    writable by the <code class="directive"><a href="../mod/mod_unixd.html#user">User</a></code>
-    and <code class="directive"><a href="../mod/mod_unixd.html#group">Group</a></code> under which
-    Apache is running.</p>
-
     <p>You may wish to add a <code class="directive"><a href="../mod/core.html#limit">&lt;Limit&gt;</a></code> clause inside the <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code> directive to limit access to
     DAV-enabled locations. If you want to set the maximum amount of
     bytes that a DAV client can send at one request, you have to use
@@ -97,9 +83,7 @@
     directive. The "normal" <code class="directive"><a href="../mod/core.html#limitrequestbody">LimitRequestBody</a></code> directive has no effect on DAV
     requests.</p>
 
-    <div class="example"><h3>Full Example</h3><pre class="prettyprint lang-config">DavLockDB "/usr/local/apache2/var/DavLock"
-
-&lt;Directory "/usr/local/apache2/htdocs/foo"&gt;
+    <div class="example"><h3>Full Example</h3><pre class="prettyprint lang-config">&lt;Directory "/usr/local/apache2/htdocs/foo"&gt;
     Require all granted
     Dav On
 
@@ -226,12 +210,12 @@ Alias "/php-source" "/home/gstein/php_files"
   <p>To allow providers to work correctly in such a configuration,
   <code class="directive">DavBasePath</code> must be used.</p>
 
-    <pre class="prettyprint lang-config">&lt;LocationMatch "^/repos/"&gt;
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">&lt;LocationMatch "^/repos/"&gt;
     Dav svn
     DavBasePath /repos
     SVNParentPath /var/svn
 &lt;/LocationMatch&gt;</pre>
-
+</div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>

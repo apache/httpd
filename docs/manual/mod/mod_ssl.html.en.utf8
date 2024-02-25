@@ -1962,7 +1962,7 @@ SSLProxyCACertificateFile</a></code>.</p>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>The proxy section context is allowed in httpd 2.4.30 and later<br />
-Inclusion of non-leaf (CA) certificates is permitted only in httpd 2.5.1 and later.</td></tr>
+Inclusion of non-leaf (CA) certificates is permitted only in httpd 2.4.59 and later.</td></tr>
 </table>
 <p>
 This directive sets the all-in-one file where you keep the certificates and
