@@ -18,6 +18,7 @@
 #include "scoreboard.h"
 #include "ap_mpm.h"
 #include "apr_version.h"
+#include "ap_atomics.h"
 #include "ap_hooks.h"
 
 module AP_MODULE_DECLARE_DATA lbmethod_byrequests_module;
@@ -28,11 +29,23 @@ static APR_OPTIONAL_FN_TYPE(proxy_balancer_get_best_worker)
 static int is_best_byrequests(proxy_worker *current, proxy_worker *prev_best, void *baton)
 {
     int *total_factor = (int *)baton;
+    int lbfactor = current->s->lbfactor, lbstatus;
 
-    current->s->lbstatus += current->s->lbfactor;
-    *total_factor += current->s->lbfactor;
-
-    return (!prev_best || (current->s->lbstatus > prev_best->s->lbstatus));
+    *total_factor += lbfactor;
+    lbstatus = ap_atomic_int_add_sat(&current->s->lbstatus, lbfactor);
+    if (prev_best) {
+        /* lbstatus is the value before atomic add */
+        if (lbstatus < APR_INT32_MAX - lbfactor) {
+            lbstatus += lbfactor;
+        }
+        else {
+            lbstatus = APR_INT32_MAX;
+        }
+        if (lbstatus <= ap_atomic_int_get(&prev_best->s->lbstatus)) {
+            return 0;
+        }
+    }
+    return 1;
 }
 
 /*
@@ -84,10 +97,12 @@ static proxy_worker *find_best_byrequests(proxy_balancer *balancer,
                                 request_rec *r)
 {
     int total_factor = 0;
-    proxy_worker *worker = ap_proxy_balancer_get_best_worker_fn(balancer, r, is_best_byrequests, &total_factor);
+    proxy_worker *worker = ap_proxy_balancer_get_best_worker_fn(balancer, r,
+                                                                is_best_byrequests,
+                                                                &total_factor);
 
     if (worker) {
-        worker->s->lbstatus -= total_factor;
+        ap_atomic_int_sub_sat(&worker->s->lbstatus, total_factor);
     }
 
     return worker;
@@ -100,7 +115,7 @@ static apr_status_t reset(proxy_balancer *balancer, server_rec *s)
     proxy_worker **worker;
     worker = (proxy_worker **)balancer->workers->elts;
     for (i = 0; i < balancer->workers->nelts; i++, worker++) {
-        (*worker)->s->lbstatus = 0;
+        ap_atomic_int_set(&(*worker)->s->lbstatus, 0);
     }
     return APR_SUCCESS;
 }

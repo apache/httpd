@@ -19,6 +19,7 @@
 #include "scoreboard.h"
 #include "ap_mpm.h"
 #include "apr_version.h"
+#include "ap_atomics.h"
 #include "ap_hooks.h"
 
 module AP_MODULE_DECLARE_DATA lbmethod_bybusyness_module;
@@ -30,23 +31,30 @@ static APR_OPTIONAL_FN_TYPE(proxy_balancer_get_best_worker)
 static int is_best_bybusyness(proxy_worker *current, proxy_worker *prev_best, void *baton)
 {
     int *total_factor = (int *)baton;
-    apr_size_t current_busy = ap_proxy_get_busy_count(current);
-    apr_size_t prev_best_busy = 0;
+    int lbfactor = current->s->lbfactor, lbstatus;
 
-    current->s->lbstatus += current->s->lbfactor;
-    *total_factor += current->s->lbfactor;
-    if (prev_best)
-        prev_best_busy = ap_proxy_get_busy_count(prev_best);
-     
-
-    return (
-        !prev_best
-        || (current_busy < prev_best_busy)
-        || (
-            (current_busy == prev_best_busy)
-            && (current->s->lbstatus > prev_best->s->lbstatus)
-        )
-    );
+    *total_factor += lbfactor;
+    lbstatus = ap_atomic_int_add_sat(&current->s->lbstatus, lbfactor);
+    if (prev_best) {
+        apr_size_t current_busy = ap_atomic_size_get(&current->s->busy);
+        apr_size_t prev_busy = ap_atomic_size_get(&prev_best->s->busy);
+        if (current_busy > prev_busy) {
+            return 0;
+        }
+        if (current_busy == prev_busy) {
+            /* lbstatus is the value before atomic add */
+            if (lbstatus < APR_INT32_MAX - lbfactor) {
+                lbstatus += lbfactor;
+            }
+            else {
+                lbstatus = APR_INT32_MAX;
+            }
+            if (lbstatus <= ap_atomic_int_get(&prev_best->s->lbstatus)) {
+                return 0;
+            }
+        }
+    }
+    return 1;
 }
 
 static proxy_worker *find_best_bybusyness(proxy_balancer *balancer,
@@ -58,7 +66,7 @@ static proxy_worker *find_best_bybusyness(proxy_balancer *balancer,
                                           &total_factor);
 
     if (worker) {
-        worker->s->lbstatus -= total_factor;
+        ap_atomic_int_sub_sat(&worker->s->lbstatus, total_factor);
     }
 
     return worker;
@@ -71,8 +79,8 @@ static apr_status_t reset(proxy_balancer *balancer, server_rec *s)
     proxy_worker **worker;
     worker = (proxy_worker **)balancer->workers->elts;
     for (i = 0; i < balancer->workers->nelts; i++, worker++) {
-        (*worker)->s->lbstatus = 0;
-        ap_proxy_set_busy_count(*worker, 0); 
+        ap_atomic_int_set(&(*worker)->s->lbstatus, 0); 
+        ap_atomic_size_set(&(*worker)->s->busy, 0); 
     }
     return APR_SUCCESS;
 }
