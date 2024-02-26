@@ -230,6 +230,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       trunk patch: https://svn.apache.org/r1877693 
       2.4.x patch: svn merge -c 1877693 ^/httpd/httpd/trunk .
       +1: jfclere, ylavic,
+
+   *) mod_proxy: Don't reset the balancer when we create a new child
+      and don't change shared memory mod_lbmethod_bytraffic is not using.
+      trunk patch: https://svn.apache.org/r1916004
+      2.4.x patch: svn merge -c 1916004  ^/httpd/httpd/trunk .
+      +1: jfclere,
       
 
 PATCHES/ISSUES THAT ARE BEING WORKED
