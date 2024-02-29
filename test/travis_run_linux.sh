@@ -31,9 +31,9 @@ fi
 
 PREFIX=${PREFIX:-$HOME/build/httpd-root}
 
-# For trunk, "make check" is sufficient to run the test suite.
-# For 2.4.x, the test suite must be run manually
-if test ! -v SKIP_TESTING; then
+# If perl-framework testing is required it is checked out here by
+# _before_linux.sh:
+if test -d test/perl-framework; then
     CONFIG="$CONFIG --enable-load-all-modules"
     if grep -q ^check: Makefile.in; then
         CONFIG="--with-test-suite=test/perl-framework $CONFIG"
