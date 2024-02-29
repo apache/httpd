@@ -29,7 +29,7 @@ jobs:
       matrix:
         include: 
           - name: OpenSSL 3.2 build
-            config: --enable-mods-shared=reallyall --enable-maintainer-mode
+            config: --enable-mods-shared=reallyall --enable-maintainer-mode --disable-md --disable-http2 --disable-ldap
             env: |
               TEST_OPENSSL3=3.2.1
               APR_VERSION=1.7.4
@@ -37,7 +37,7 @@ jobs:
               APU_CONFIG="--with-crypto"
               CLEAR_CACHE=1
           - name: OpenSSL 3.2 -Werror build
-            config: --enable-mods-shared=reallyall --enable-maintainer-mode
+            config: --enable-mods-shared=reallyall --enable-maintainer-mode --disable-md --disable-http2 --disable-ldap
             notest-cflags: -Werror -O2 -Wno-deprecated-declarations
             env: |
               TEST_OPENSSL3=3.2.1
@@ -46,7 +46,7 @@ jobs:
               APU_CONFIG="--with-crypto"
               CLEAR_CACHE=1
           - name: OpenSSL 3.2 no-engine build
-            config: --enable-mods-shared=reallyall --enable-maintainer-mode
+            config: --enable-mods-shared=reallyall --enable-maintainer-mode --disable-md --disable-http2 --disable-ldap
             env: |
               TEST_OPENSSL3=3.2.1
               OPENSSL_CONFIG=no-engine
