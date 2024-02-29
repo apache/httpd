@@ -115,7 +115,7 @@ if test -v TEST_OPENSSL3; then
            curl "https://www.openssl.org/source/openssl-${TEST_OPENSSL3}.tar.gz" |
               tar -xzf -
            cd openssl-${TEST_OPENSSL3}
-           ./Configure --prefix=$HOME/root/openssl3 shared no-tests
+           ./Configure --prefix=$HOME/root/openssl3 shared no-tests ${OPENSSL_CONFIG}
            make $MFLAGS
            make install_sw
            touch $HOME/root/openssl-is-${TEST_OPENSSL3}
