@@ -1012,22 +1012,23 @@ apr_status_t modssl_load_engine_keypair(server_rec *s, apr_pool_t *p,
                                         const char *certid, const char *keyid,
                                         X509 **pubkey, EVP_PKEY **privkey)
 {
-#if MODSSL_HAVE_OPENSSL_STORE
+#if MODSSL_HAVE_ENGINE_API 
     SSLModConfigRec *mc = myModConfig(s);
 
     /* For OpenSSL 3.x, use the STORE-based API if either ENGINE
      * support was not present compile-time, or if it's built but
      * SSLCryptoDevice is not configured. */
-#if MODSSL_HAVE_ENGINE_API 
-    if (!mc->szCryptoDevice) 
+    if (mc->szCryptoDevice)
+        return modssl_load_keypair_engine(s, p, vhostid, certid, keyid,
+                                          pubkey, privkey);
 #endif
-        return modssl_load_keypair_store(s, p, vhostid, certid, keyid,
-                                         pubkey, privkey);
-#endif
-#if MODSSL_HAVE_ENGINE_API
-    return modssl_load_keypair_engine(s, p, vhostid, certid, keyid,
-                                      pubkey, privkey);
+#if MODSSL_HAVE_OPENSSL_STORE
+    return modssl_load_keypair_store(s, p, vhostid, certid, keyid,
+                                     pubkey, privkey);
 #else
+    ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(10496)
+                 "Init: no method for loading keypair for %s (%s | %s)",
+                 vhostid, certid ? certid : "no cert", keyid);
     return APR_ENOTIMPL;
 #endif
 }
