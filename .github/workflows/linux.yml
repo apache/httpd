@@ -236,7 +236,6 @@ jobs:
           #     TEST_MD=1
           # -------------------------------------------------------------------------
           ### TODO: if: *condition_not_24x
-          ### TODO: fix caching here.
           - name: MOD_TLS test suite
             config: --enable-mods-shared=reallyall --with-mpm=event --enable-mpms-shared=event
             pkgs: curl python3-pytest nghttp2-client python3-cryptography python3-requests python3-multipart python3-filelock python3-websockets cargo cbindgen
@@ -244,10 +243,10 @@ jobs:
               APR_VERSION=1.7.4
               APU_VERSION=1.6.3
               APU_CONFIG="--with-crypto"
+              RUSTLS_VERSION="v0.10.0"
               NO_TEST_FRAMEWORK=1
               TEST_INSTALL=1
               TEST_MOD_TLS=1
-              CLEAR_CACHE=1
           - name: Configured w/reduced exports
             config: --enable-reduced-exports --enable-maintainer-mode
             env: |
