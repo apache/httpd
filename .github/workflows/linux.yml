@@ -277,7 +277,9 @@ jobs:
     name: ${{ matrix.name }}
     steps:
     - name: Set environment variables
-      run: echo "${{ matrix.env }}" >> $GITHUB_ENV
+      run: |
+        echo "${{ matrix.env }}" >> $GITHUB_ENV
+        echo JOBID=`echo "${{ matrix.notest-cflags }} ${{ matrix.env }} ${{ matrix.config }}'"| md5sum - | sed 's/ .*//'` >> $GITHUB_ENV
     - name: apt refresh
       run: sudo apt-get -o Acquire::Retries=5 update
     - name: Install prerequisites
@@ -287,27 +289,23 @@ jobs:
                     libnghttp2-dev libjansson-dev libpcre2-dev gdb
                     perl-doc ${{ matrix.pkgs }}
     - uses: actions/checkout@v3
-    - name: Cache APR build
+    - name: Cache installed libraries
       uses: actions/cache@v3
-      env:
-        cache-name: cache-apru
       with:
         path: ~/root
-        key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('/home/runner/root/.key-*') }}
+        key: cache-libs-${{ env.JOBID }}
     - name: Cache CPAN modules
       uses: actions/cache@v3
-      env:
-        cache-name: cache-cpan
       with:
         path: ~/perl5
-        key: ${{ runner.os }}-cpan-${{ env.cache-name }}-${{ hashFiles('/home/runner/perl5/.key') }}
+        key: cache-cpan-${{ env.JOBID }}
     - name: Configure environment
       run: ./test/travis_before_linux.sh
       timeout-minutes: 15
     - uses: actions/upload-artifact@v3
       if: failure()
       with:
-        name: config.log ${{ matrix.node-version }}
+        name: config.log-${{ env.JOBID }}
         path: |
           /home/runner/build/**/config.log
     - name: Build and test
@@ -315,6 +313,6 @@ jobs:
     - uses: actions/upload-artifact@v3
       if: failure()
       with:
-        name: error_log ${{ matrix.node-version }}
+        name: error_log-${{ env.JOBID }}
         path: test/perl-framework/t/logs/error_log
 
