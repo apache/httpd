@@ -147,3 +147,15 @@ if test -v APU_VERSION; then
     install_apx apr-util ${APU_VERSION} "${APU_CONFIG}" --with-apr=$HOME/build/apr-${APR_VERSION}
     ldd $HOME/root/apr-util-${APU_VERSION}/lib/libaprutil-?.so || true
 fi
+
+# Since librustls is not a package (yet) on any platform, we
+# build the version we want from source
+if test -v TEST_MOD_TLS -a -v RUSTLS_VERSION; then
+    if ! test -d $HOME/root/rustls; then
+        RUSTLS_HOME="$HOME/build/rustls-ffi"
+        git clone -b "$RUSTLS_VERSION" https://github.com/rustls/rustls-ffi.git "$RUSTLS_HOME"
+        pushd "$RUSTLS_HOME"
+            make install DESTDIR="$HOME/root/rustls"
+        popd
+    fi
+fi
