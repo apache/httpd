@@ -38,7 +38,7 @@ jobs:
               CLEAR_CACHE=1
           - name: OpenSSL 3.2 -Werror build
             config: --enable-mods-shared=reallyall --enable-maintainer-mode
-            notest-cflags: -Werror -O2
+            notest-cflags: -Werror -O2 -Wno-deprecated-declarations
             env: |
               TEST_OPENSSL3=3.2.1
               APR_VERSION=1.7.4
