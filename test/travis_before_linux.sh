@@ -71,11 +71,6 @@ function install_apx() {
     # Blow away the cached install root if the cached install is stale
     # or doesn't match the expected configuration.
     grep -q "${version} ${revision} ${config} CC=$CC" ${HOME}/root/.key-${name} || rm -rf ${prefix}
-    # TEST_H2 APR cache seems to be broken, do not use.
-    # Unknown why this happens on this CI job only and how to fix it
-    if test -v TEST_H2; then
-      rm -rf ${prefix}
-    fi
 
     if test -d ${prefix}; then
         return 0
@@ -95,8 +90,9 @@ function install_apx() {
 # Allow to load $HOME/build/apache/httpd/.gdbinit
 echo "add-auto-load-safe-path $HOME/work/httpd/httpd/.gdbinit" >> $HOME/.gdbinit
 
-# Prepare perl-framework test environment
-if ! test -v SKIP_TESTING; then
+# Unless either SKIP_TESTING or NO_TEST_FRAMEWORK are set, install
+# CPAN modules required to run the Perl test framework.
+if ! test -v SKIP_TESTING -o -v NO_TEST_FRAMEWORK; then
     # Clear CPAN cache if necessary
     if [ -v CLEAR_CACHE ]; then rm -rf ~/perl5; fi
     
