@@ -62,6 +62,8 @@ fi
 if test -v TEST_OPENSSL3; then
     CONFIG="$CONFIG --with-ssl=$HOME/root/openssl3"
     export LD_LIBRARY_PATH=$HOME/root/openssl3/lib:$HOME/root/openssl3/lib64
+    export PATH=$HOME/root/openssl3/bin:$PATH
+    openssl version
 fi
 
 srcdir=$PWD
