@@ -136,7 +136,7 @@ if ! test -v NO_TEST_FRAMEWORK; then
                 FAILERS="$FAILERS $FAILER"
             done < <(awk '/Failed:/{print $1}' test.log)
             if [ -n "$FAILERS" ]; then
-                t/TEST -v $FAILERS || true
+                make check TESTS="-v $FAILERS" || true
             fi
             # set -e would have killed us after the original t/TEST
             rm -f test.log
