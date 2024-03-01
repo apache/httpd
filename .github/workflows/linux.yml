@@ -267,7 +267,7 @@ jobs:
           #     APU_VERSION=1.6.3
           # APU_CONFIG="--with-crypto --with-ldap"
           # -------------------------------------------------------------------------
-          - name: OpenSSL 3.1 build
+          - name: OpenSSL 3.1
             config: --enable-mods-shared=most --enable-maintainer-mode --disable-md --disable-http2 --disable-ldap --disable-crypto
             env: |
               TEST_OPENSSL3=3.1.5
@@ -275,19 +275,19 @@ jobs:
               APU_VERSION=1.6.3
               APU_CONFIG="--without-crypto"
           # -------------------------------------------------------------------------
-          - name: OpenSSL 3.1 -Werror build
+          - name: OpenSSL 3.2 -Werror
             config: --enable-mods-shared=most --enable-maintainer-mode --disable-md --disable-http2 --disable-ldap --disable-crypto
             notest-cflags: -Werror -O2 -Wno-deprecated-declarations
             env: |
-              TEST_OPENSSL3=3.1.5
+              TEST_OPENSSL3=3.2.1
               APR_VERSION=1.7.4
               APU_VERSION=1.6.3
               APU_CONFIG="--without-crypto"
           # -------------------------------------------------------------------------
-          - name: OpenSSL 3.1 no-engine build
+          - name: OpenSSL 3.2 no-engine
             config: --enable-mods-shared=most --enable-maintainer-mode --disable-md --disable-http2 --disable-ldap --disable-crypto
             env: |
-              TEST_OPENSSL3=3.1.5
+              TEST_OPENSSL3=3.2.1
               OPENSSL_CONFIG=no-engine
               APR_VERSION=1.7.4
               APU_VERSION=1.6.3
