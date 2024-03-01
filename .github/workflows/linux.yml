@@ -80,7 +80,6 @@ jobs:
               APR_VERSION=1.7.4
               APU_VERSION=1.6.3
               APU_CONFIG="--with-crypto --with-ldap"
-              CLEAR_CACHE=1
           # -------------------------------------------------------------------------
           - name: APR 1.8.x, APR-util 1.7.x
             config: --enable-mods-shared=reallyall
@@ -151,7 +150,6 @@ jobs:
               TEST_LDAP=1
               TEST_ARGS="-defines LDAP"
               TESTS="t/modules/"
-              CLEAR_CACHE=1
           # -------------------------------------------------------------------------
           - name: APR trunk thread debugging
             config: --enable-mods-shared=reallyall --with-mpm=event
@@ -210,7 +208,6 @@ jobs:
           #     TEST_MD=1
           # -------------------------------------------------------------------------
           ### TODO: if: *condition_not_24x
-          ### TODO: fix caching here.
           - name: MOD_TLS test suite
             config: --enable-mods-shared=reallyall --with-mpm=event --enable-mpms-shared=event
             pkgs: curl python3-pytest nghttp2-client python3-cryptography python3-requests python3-multipart python3-filelock python3-websockets cargo cbindgen
@@ -218,10 +215,10 @@ jobs:
               APR_VERSION=1.7.4
               APU_VERSION=1.6.3
               APU_CONFIG="--with-crypto"
+              RUSTLS_VERSION="v0.10.0"
               NO_TEST_FRAMEWORK=1
               TEST_INSTALL=1
               TEST_MOD_TLS=1
-              CLEAR_CACHE=1
           # -------------------------------------------------------------------------
           ### TODO if: *condition_not_24x
           ### TODO: Fails because :i386 packages are not being found.
@@ -246,7 +243,9 @@ jobs:
     name: ${{ matrix.name }}
     steps:
     - name: Set environment variables
-      run: echo "${{ matrix.env }}" >> $GITHUB_ENV
+      run: |
+        echo "${{ matrix.env }}" >> $GITHUB_ENV
+        echo JOBID=`echo "${{ matrix.notest-cflags }} ${{ matrix.env }} ${{ matrix.config }}'"| md5sum - | sed 's/ .*//'` >> $GITHUB_ENV
     - name: apt refresh
       run: sudo apt-get -o Acquire::Retries=5 update
     - name: Install prerequisites
@@ -256,27 +255,23 @@ jobs:
                     libnghttp2-dev libjansson-dev libpcre2-dev gdb
                     perl-doc ${{ matrix.pkgs }}
     - uses: actions/checkout@v3
-    - name: Cache APR build
+    - name: Cache installed libraries
       uses: actions/cache@v3
-      env:
-        cache-name: cache-apru
       with:
         path: ~/root
-        key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('/home/runner/root/.key-*') }}
+        key: cache-libs-${{ env.JOBID }}
     - name: Cache CPAN modules
       uses: actions/cache@v3
-      env:
-        cache-name: cache-cpan
       with:
         path: ~/perl5
-        key: ${{ runner.os }}-cpan-${{ env.cache-name }}-${{ hashFiles('/home/runner/perl5/.key') }}
+        key: cache-cpan-${{ env.JOBID }}
     - name: Configure environment
       run: ./test/travis_before_linux.sh
       timeout-minutes: 15
     - uses: actions/upload-artifact@v3
       if: failure()
       with:
-        name: config.log ${{ matrix.node-version }}
+        name: config.log-${{ env.JOBID }}
         path: |
           /home/runner/build/**/config.log
     - name: Build and test
@@ -284,6 +279,6 @@ jobs:
     - uses: actions/upload-artifact@v3
       if: failure()
       with:
-        name: error_log ${{ matrix.node-version }}
+        name: error_log-${{ env.JOBID }}
         path: test/perl-framework/t/logs/error_log
 
