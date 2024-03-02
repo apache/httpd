@@ -64,6 +64,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#cgi-debug">Débogage des scripts CGI</a></li>
 </ul><h3 class="directives">Directives</h3>
 <ul id="toc">
+<li><img alt="" src="../images/down.gif" /> <a href="#cgiscripttimeout">CGIScriptTimeout</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#scriptlog">ScriptLog</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#scriptlogbuffer">ScriptLogBuffer</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#scriptloglength">ScriptLogLength</a></li>
@@ -197,6 +198,25 @@ CGI</a></li>
       n'a rien envoyé sur la sortie standard ou la sortie
       d'erreurs).</p>
     
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="cgiscripttimeout" id="cgiscripttimeout">Directive</a> <a name="CGIScriptTimeout" id="CGIScriptTimeout">CGIScriptTimeout</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Le temps d'attente maximum pour une sortie du programme CGI</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CGIScriptTimeout <var>time</var>[s|ms]</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>La valeur par défaut de la directive <code class="directive"><a href="../mod/core.html#timeout">Timeout</a></code> lorsqu'elle n'est pas définie</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_cgi</td></tr>
+</table>
+    <p>Cette directive permet de limiter le temps d'attente jusqu'à une
+    prochaine sortie du programme CGI. Si ce temps est dépassé, le traitement de
+    la requête et l'exécution du programme CGI sont terminés. </p>
+
+    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">CGIScriptTimeout 20</pre>
+</div>
+
+
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="scriptlog" id="scriptlog">Directive</a> <a name="ScriptLog" id="ScriptLog">ScriptLog</a></h2>

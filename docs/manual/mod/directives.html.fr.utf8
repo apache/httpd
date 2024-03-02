@@ -206,6 +206,7 @@
 <li><a href="mod_cgid.html#cgidscripttimeout">CGIDScriptTimeout</a></li>
 <li><a href="core.html#cgimapextension">CGIMapExtension</a></li>
 <li><a href="core.html#cgipassauth">CGIPassAuth</a></li>
+<li><a href="mod_cgi.html#cgiscripttimeout">CGIScriptTimeout</a></li>
 <li><a href="core.html#cgivar">CGIVar</a></li>
 <li><a href="mod_charset_lite.html#charsetdefault">CharsetDefault</a></li>
 <li><a href="mod_charset_lite.html#charsetoptions">CharsetOptions</a></li>
