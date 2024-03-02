@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1728020 -->
+<!-- English Revision: 1915950 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -188,6 +188,30 @@ CGI</a></seealso>
       d'erreurs).</p>
     </section>
 </section>
+
+<directivesynopsis>
+<name>CGIScriptTimeout</name>
+<description>Le temps d'attente maximum pour une sortie du programme CGI</description>
+<syntax>CGIScriptTimeout <var>time</var>[s|ms]</syntax>
+<default>La valeur par défaut de la directive <directive
+module="core">Timeout</directive> lorsqu'elle n'est pas définie</default>
+<contextlist><context>server config</context>
+<context>virtual host</context><context>directory</context>
+<context>.htaccess</context></contextlist>
+
+<usage>
+    <p>Cette directive permet de limiter le temps d'attente jusqu'à une
+    prochaine sortie du programme CGI. Si ce temps est dépassé, le traitement de
+    la requête et l'exécution du programme CGI sont terminés. </p>
+
+    <example><title>Exemple</title>
+    <highlight language="config">
+      CGIScriptTimeout 20
+    </highlight>
+    </example>
+
+</usage>
+</directivesynopsis>
 
 <directivesynopsis>
 <name>ScriptLog</name>
