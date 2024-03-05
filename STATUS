@@ -216,7 +216,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    *) htcacheclean: fix output for -A/-a mode
       trunk patch: https://svn.apache.org/r1915508
       2.4.x patch: svn merge -c 1915508 ^/httpd/httpd/trunk .
-      +1: jorton, ylavic,
+      +1: jorton, ylavic, jfclere
 
    *) mod_xml2enc: fix XML media type matching to avoid corruption of
       non-XML documents.
