@@ -127,6 +127,7 @@ static void ap_die_r(int type, request_rec *r, int recursive_error)
              */
             update_r_in_filters(r_1st_err->proto_output_filters, r, r_1st_err);
             update_r_in_filters(r_1st_err->input_filters, r, r_1st_err);
+            recursive_error = type;
         }
 
         custom_response = NULL; /* Do NOT retry the custom thing! */
