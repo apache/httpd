@@ -312,21 +312,21 @@ jobs:
                     liblua5.3-dev libbrotli-dev libcurl4-openssl-dev     
                     libnghttp2-dev libjansson-dev libpcre2-dev gdb
                     perl-doc ${{ matrix.pkgs }}
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Cache installed libraries
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       with:
         path: ~/root
         key: cache-libs-${{ env.JOBID }}
     - name: Cache CPAN modules
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       with:
         path: ~/perl5
         key: cache-cpan-${{ env.JOBID }}
     - name: Configure environment
       run: ./test/travis_before_linux.sh
       timeout-minutes: 15
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       if: failure()
       with:
         name: config.log-${{ env.JOBID }}
@@ -334,7 +334,7 @@ jobs:
           /home/runner/build/**/config.log
     - name: Build and test
       run: ./test/travis_run_linux.sh
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       if: failure()
       with:
         name: error_log-${{ env.JOBID }}
