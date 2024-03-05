@@ -59,7 +59,7 @@ The filename of the DBM format file\&. Usually without the extension \fB\&.db\fR
 The user for which the operations are performed\&. The \fIusername\fR may not contain a colon (\fB:\fR)\&.  
 .TP
 \fB\fIencpasswd\fR\fR
-This is the already encrypted password to use for the \fBupdate\fR and \fBadd\fR commands\&. You may use a hyphen (\fB-\fR) if you want to get prompted for the password, but fill in the fields afterwards\&. Additionally when using the \fBupdate\fR command, a period (\fB\&.\fR) keeps the original password untouched\&.  
+This is the already hashed password to use for the \fBupdate\fR and \fBadd\fR commands\&. You may use a hyphen (\fB-\fR) if you want to get prompted for the password, but fill in the fields afterwards\&. Additionally when using the \fBupdate\fR command, a period (\fB\&.\fR) keeps the original password untouched\&.  
 .TP
 \fB\fIgroup\fR\fR
 A group, which the user is member of\&. A groupname may not contain a colon (\fB:\fR)\&. You may use a hyphen (\fB-\fR) if you don't want to assign the user to a group, but fill in the comment field\&. Additionally when using the \fBupdate\fR command, a period (\fB\&.\fR) keeps the original groups untouched\&.  
@@ -72,13 +72,13 @@ This is the place for your opaque comments about the user, like realname, mailad
  
 .TP
 \fB-d\fR
-crypt encryption (default, except on Win32, Netware)  
+crypt hashing (default, except on Win32, Netware)  
 .TP
 \fB-m\fR
-MD5 encryption (default on Win32, Netware)  
+MD5 hashing (default on Win32, Netware)  
 .TP
 \fB-s\fR
-SHA1 encryption  
+SHA1 hashing  
 .TP
 \fB-p\fR
 plaintext (\fInot recommended\fR)  
@@ -88,7 +88,7 @@ plaintext (\fInot recommended\fR)
  
 .TP
 \fBadd\fR
-Adds an entry for \fIusername\fR to \fIfilename\fR using the encrypted password \fIencpasswd\fR\&. dbmmanage passwords\&.dat add rbowen foKntnEF3KSXA  
+Adds an entry for \fIusername\fR to \fIfilename\fR using the hashed password \fIencpasswd\fR\&. dbmmanage passwords\&.dat add rbowen foKntnEF3KSXA  
 .TP
 \fBadduser\fR
 Asks for a password and then adds an entry for \fIusername\fR to \fIfilename\fR\&. dbmmanage passwords\&.dat adduser krietz  

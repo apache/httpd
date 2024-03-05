@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.59
 
+  *) htpasswd, htdbm, dbmmanage: Update help&docs to refer to
+     "hashing", rather than "encrypting" passwords.
+     [Michele Preziuso <mpreziuso kaosdynamics.com>]
+
   *) mod_ssl: Fix build with LibreSSL 2.0.7+. PR 64047.
      [Giovanni Bechis, Yann Ylavic]
 
