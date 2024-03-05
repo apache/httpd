@@ -211,7 +211,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                    https://svn.apache.org/r1877693
       2.4.x patch: https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/408.patch
       Github PR: https://github.com/apache/httpd/pull/408
-      +1: jorton, ylavic,
+      +1: jorton, ylavic, jfclere
 
    *) htcacheclean: fix output for -A/-a mode
       trunk patch: https://svn.apache.org/r1915508
@@ -225,11 +225,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       2.4.x patch: https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/410.patch
       Github PR: https://github.com/apache/httpd/pull/410
       +1: jorton, ylavic,
-
-   *) htpasswd: Windows : do not include ap_config_auto.h 
-      trunk patch: https://svn.apache.org/r1877693 
-      2.4.x patch: svn merge -c 1877693 ^/httpd/httpd/trunk .
-      +1: jfclere, ylavic,
 
    *) mod_proxy: Don't reset the balancer when we create a new child
       and don't change shared memory mod_lbmethod_bytraffic is not using.
