@@ -204,20 +204,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       +1: minfrin
       -1: jorton, appears to be a duplicate of the existing -B option
 
-   *) htpasswd: further fixes for SHA-2 usage/docs
-      trunk patch: https://svn.apache.org/r1862611
-                   https://svn.apache.org/r1878703
-                   https://svn.apache.org/r1884207
-                   https://svn.apache.org/r1877693
-      2.4.x patch: https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/408.patch
-      Github PR: https://github.com/apache/httpd/pull/408
-      +1: jorton, ylavic, jfclere
-
-   *) htcacheclean: fix output for -A/-a mode
-      trunk patch: https://svn.apache.org/r1915508
-      2.4.x patch: svn merge -c 1915508 ^/httpd/httpd/trunk .
-      +1: jorton, ylavic, jfclere
-
    *) mod_xml2enc: fix XML media type matching to avoid corruption of
       non-XML documents.
       trunk patch: https://svn.apache.org/r1884505
