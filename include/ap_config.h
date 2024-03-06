@@ -222,9 +222,19 @@
 #define AP_HAVE_DESIGNATED_INITIALIZER
 #endif
 
+#ifndef __has_builtin           /* check for supported builtin on clang */
+#define __has_builtin(x) 0
+#endif
+#ifndef __has_feature           /* check for supported feature on clang */
+#define __has_feature(x) 0
+#endif
+#ifndef __has_extension         /* check for supported extension on clang */
+#define __has_extension __has_feature
+#endif
 #ifndef __has_attribute         /* check for supported attributes on clang */
 #define __has_attribute(x) 0
 #endif
+
 #if (defined(__GNUC__) && __GNUC__ >= 4) || __has_attribute(sentinel)
 #define AP_FN_ATTR_SENTINEL __attribute__((sentinel))
 #else
@@ -261,5 +271,13 @@
 #define AP_FN_ATTR_NONNULL(x)
 #endif
 
+/** Try harder to inline */
+#if __has_attribute(always_inline)
+#define AP_FORCE_INLINE APR_INLINE __attribute__((always_inline))
+#elif defined(_MSC_VER)
+#define AP_FORCE_INLINE APR_INLINE __forceinline
+#else
+#define AP_FORCE_INLINE APR_INLINE
+#endif
 
 #endif /* AP_CONFIG_H */

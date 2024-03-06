@@ -18,6 +18,7 @@
 #include "scoreboard.h"
 #include "ap_mpm.h"
 #include "apr_version.h"
+#include "ap_atomics.h"
 #include "ap_hooks.h"
 
 module AP_MODULE_DECLARE_DATA lbmethod_bytraffic_module;
@@ -28,16 +29,14 @@ static APR_OPTIONAL_FN_TYPE(proxy_balancer_get_best_worker)
 static int is_best_bytraffic(proxy_worker *current, proxy_worker *prev_best, void *baton)
 {
     apr_off_t *min_traffic = (apr_off_t *)baton;
-    apr_off_t traffic = (current->s->transferred / current->s->lbfactor)
-                        + (current->s->read / current->s->lbfactor);
+    apr_off_t traffic = (current->s->transferred / current->s->lbfactor +
+                         current->s->read / current->s->lbfactor);
 
-    if (!prev_best || (traffic < *min_traffic)) {
-        *min_traffic = traffic;
-
-        return TRUE;
+    if (prev_best && traffic >= *min_traffic) {
+        return 0;
     }
-
-    return FALSE;
+    *min_traffic = traffic;
+    return 1;
 }
 
 /*
