@@ -3068,7 +3068,7 @@ int main(int argc, const char * const argv[])
                 keepalive = 1;
                 break;
             case 'o':
-                src_address = strdup(optarg);
+                src_address = strdup(opt_arg);
                 break;
             case 'q':
                 heartbeatres = 0;
