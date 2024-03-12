@@ -2749,7 +2749,7 @@ static void *APR_THREAD_FUNC start_threads(apr_thread_t * thd, void *dummy)
                              APLOGNO(03104)
                              "ap_thread_create: unable to create worker thread");
                 /* let the parent decide how bad this really is */
-                signal_threads(ST_UNGRACEFUL);
+                signal_threads(listener_started ? ST_GRACEFUL : ST_UNGRACEFUL);
                 clean_child_exit(APEXIT_CHILDSICK);
             }
             threads_created++;
