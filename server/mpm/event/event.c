@@ -2745,11 +2745,28 @@ static void *APR_THREAD_FUNC start_threads(apr_thread_t * thd, void *dummy)
             rv = ap_thread_create(&threads[i], thread_attr,
                                   worker_thread, my_info, pruntime);
             if (rv != APR_SUCCESS) {
+                ap_update_child_status_from_indexes(my_child_num, i, SERVER_DEAD, NULL);
                 ap_log_error(APLOG_MARK, APLOG_ALERT, rv, ap_server_conf,
                              APLOGNO(03104)
                              "ap_thread_create: unable to create worker thread");
-                /* let the parent decide how bad this really is */
-                signal_threads(listener_started ? ST_GRACEFUL : ST_UNGRACEFUL);
+                /* Let the parent decide how bad this really is by returning
+                 * APEXIT_CHILDSICK. If threads were created already let them
+                 * stop cleanly first to avoid deadlocks in clean_child_exit(),
+                 * just stop creating new ones here (but set resource_shortage
+                 * to return APEXIT_CHILDSICK still when the child exists).
+                 */
+                if (threads_created) {
+                    resource_shortage = 1;
+                    signal_threads(ST_GRACEFUL);
+                    if (!listener_started) {
+                        workers_may_exit = 1;
+                        ap_queue_term(worker_queue);
+                        /* wake up main POD thread too */
+                        kill(ap_my_pid, SIGTERM);
+                    }
+                    apr_thread_exit(thd, APR_SUCCESS);
+                    return NULL;
+                }
                 clean_child_exit(APEXIT_CHILDSICK);
             }
             threads_created++;
