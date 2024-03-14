@@ -18,6 +18,7 @@
 #include <stdint.h>
 #include <ap_config.h>
 #include "ap_mpm.h"
+#include "ap_listen.h"
 #include <http_core.h>
 #include <httpd.h>
 #include <http_log.h>
@@ -33,12 +34,6 @@
 #if APR_HAVE_UNISTD_H
 #include <unistd.h>
 #endif
-
-APR_DECLARE_OPTIONAL_FN(int,
-                        ap_find_systemd_socket, (process_rec *, apr_port_t));
-
-APR_DECLARE_OPTIONAL_FN(int,
-                        ap_systemd_listen_fds, (int));
 
 static int systemd_pre_config(apr_pool_t *pconf, apr_pool_t *plog,
                               apr_pool_t *ptemp)
