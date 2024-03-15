@@ -246,7 +246,8 @@ jobs:
               TEST_INSTALL=1
               TEST_MOD_TLS=1
           - name: Configured w/reduced exports
-            config: --enable-reduced-exports --enable-maintainer-mode
+            config: --enable-reduced-exports --enable-maintainer-mode --enable-systemd
+            pkgs: libsystemd-dev
             env: |
               SKIP_TESTING=1
               TEST_INSTALL=1
