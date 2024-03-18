@@ -786,7 +786,7 @@ static apr_status_t strict_hostname_check(request_rec *r, char *host)
         /* The top-level domain must start with a letter (RFC 1123 2.1) */
         while (ch > host && *ch != '.')
             ch--;
-        if (ch[0] == '.' && ch[1] != '\0' && !apr_isalpha(ch[1]))
+        if (ch[0] == '.' && ch[1] != '\0' && !apr_isalnum(ch[1]))
             goto bad;
     }
     return APR_SUCCESS;
