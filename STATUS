@@ -210,7 +210,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                    https://svn.apache.org/r1915625
       2.4.x patch: https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/410.patch
       Github PR: https://github.com/apache/httpd/pull/410
-      +1: jorton, ylavic,
+      +1: jorton, ylavic, gbechis
 
    *) mod_proxy: Don't reset the balancer when we create a new child
       and don't change shared memory mod_lbmethod_bytraffic is not using.
@@ -226,7 +226,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                    https://svn.apache.org/r1914800
       2.4.x patch: https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/423.patch
       Github PR: https://github.com/apache/httpd/pull/423
-      +1: jorton, 
+      +1: jorton, gbechis
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
