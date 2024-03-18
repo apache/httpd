@@ -1,3 +1,4 @@
   *) mod_dav: Update redirect-carefully example BrowserMatch config
      to match more recent client versions.  PR 66148, 67039.
-     [Michal Maloszewski <michal.maloszewski canonical.com>]
+     [Michal Maloszewski <michal.maloszewski canonical.com>,
+      Romain Tartière <romain blogreen.org>]
