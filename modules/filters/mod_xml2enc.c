@@ -323,7 +323,7 @@ static apr_status_t xml2enc_ffunc(ap_filter_t* f, apr_bucket_brigade* bb)
     apr_bucket* bstart;
     apr_size_t insz = 0;
     int pending_meta = 0;
-    char *ctype;
+    char *mtype;
     char *p;
 
     if (!ctx || !f->r->content_type) {
@@ -332,13 +332,17 @@ static apr_status_t xml2enc_ffunc(ap_filter_t* f, apr_bucket_brigade* bb)
         return ap_pass_brigade(f->next, bb) ;
     }
 
-    ctype = apr_pstrdup(f->r->pool, f->r->content_type);
-    for (p = ctype; *p; ++p)
-        if (isupper(*p))
-            *p = tolower(*p);
+    /* Extract the media type, ignoring parameters in content-type. */
+    mtype = apr_pstrdup(f->r->pool, f->r->content_type);
+    if ((p = ap_strchr(mtype, ';')) != NULL) *p = '\0';
+    ap_str_tolower(mtype);
 
-    /* only act if starts-with "text/" or contains "xml" */
-    if (strncmp(ctype, "text/", 5) && !strstr(ctype, "xml"))  {
+    /* Accept text/ types, plus any XML media type per RFC 7303. */
+    if (!(strncmp(mtype, "text/", 5) == 0
+          || strcmp(mtype, "application/xml") == 0
+          || (strlen(mtype) > 7 /* minimum 'a/b+xml' length */
+              && (p = strstr(mtype, "+xml")) != NULL
+              && strlen(p) == 4 /* ensures +xml is a suffix */))) {
         ap_remove_output_filter(f);
         return ap_pass_brigade(f->next, bb) ;
     }
