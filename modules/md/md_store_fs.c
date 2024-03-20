@@ -26,6 +26,8 @@
 #include <apr_hash.h>
 #include <apr_strings.h>
 
+#include "util_misc.h"
+
 #include "md.h"
 #include "md_crypt.h"
 #include "md_json.h"
@@ -367,7 +369,7 @@ apr_status_t md_store_fs_group_perms_set(md_store_t *store, md_store_group_t gro
 {
     md_store_fs_t *s_fs = FS_STORE(store);
     
-    if (group >= (sizeof(s_fs->group_perms)/sizeof(s_fs->group_perms[0]))) {
+    if (group >= (ARRAY_LEN(s_fs->group_perms))) {
         return APR_ENOTIMPL;
     }
     s_fs->group_perms[group].file = file_perms;
@@ -386,7 +388,7 @@ apr_status_t md_store_fs_set_event_cb(struct md_store_t *store, md_store_fs_cb *
 
 static const perms_t *gperms(md_store_fs_t *s_fs, md_store_group_t group)
 {
-    if (group >= (sizeof(s_fs->group_perms)/sizeof(s_fs->group_perms[0]))
+    if (group >= (ARRAY_LEN(s_fs->group_perms))
         || !s_fs->group_perms[group].dir) {
         return &s_fs->def_perms;
     }

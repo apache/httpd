@@ -96,6 +96,7 @@
 #include "unixd.h"
 #include "apr_skiplist.h"
 #include "util_time.h"
+#include "util_misc.h"
 
 #include <signal.h>
 #include <limits.h>             /* for INT_MAX */
@@ -2631,7 +2632,7 @@ static void setup_threads_runtime(void)
     /* Create the main pollset */
     pollset_flags = APR_POLLSET_THREADSAFE | APR_POLLSET_NOCOPY |
                     APR_POLLSET_NODEFAULT | APR_POLLSET_WAKEABLE;
-    for (i = 0; i < sizeof(good_methods) / sizeof(good_methods[0]); i++) {
+    for (i = 0; i < ARRAY_LEN(good_methods); i++) {
         rv = apr_pollset_create_ex(&event_pollset, pollset_size, pruntime,
                                    pollset_flags, good_methods[i]);
         if (rv == APR_SUCCESS) {
@@ -2641,7 +2642,7 @@ static void setup_threads_runtime(void)
     }
     if (rv != APR_SUCCESS) {
         pollset_flags &= ~APR_POLLSET_WAKEABLE;
-        for (i = 0; i < sizeof(good_methods) / sizeof(good_methods[0]); i++) {
+        for (i = 0; i < ARRAY_LEN(good_methods); i++) {
             rv = apr_pollset_create_ex(&event_pollset, pollset_size, pruntime,
                                        pollset_flags, good_methods[i]);
             if (rv == APR_SUCCESS) {

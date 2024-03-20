@@ -27,6 +27,8 @@
 #include <http_request.h>
 #include <http_ssl.h>
 
+#include "util_misc.h"
+
 #include "h2_private.h"
 #include "h2_bucket_eos.h"
 #include "h2_config.h"
@@ -63,7 +65,7 @@ static void h2_c1_io_bb_log(conn_rec *c, int stream_id, int level,
 {
     char buffer[16 * 1024];
     const char *line = "(null)";
-    int bmax = sizeof(buffer)/sizeof(buffer[0]);
+    int bmax = ARRAY_LEN(buffer);
     int off = 0;
     apr_bucket *b;
     
