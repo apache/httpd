@@ -1,5 +1,5 @@
 # Licensed to the Apache Software Foundation (ASF) under one or more
-# contributor license agreements.  See the NOTICE file distributed with
+# contributor license agreements. See the NOTICE file distributed with
 # this work for additional information regarding copyright ownership.
 # The ASF licenses this file to You under the Apache License, Version 2.0
 # (the "License"); you may not use this file except in compliance with
@@ -152,10 +152,10 @@ GET_MOD_ENABLE_RANK("ENABLE_MODULES setting" ${ENABLE_MODULES} enable_modules_ra
 # Figure out what APR/APU features are available
 #
 # CHECK_APR_FEATURE checks for features defined to 1 or 0 in apr.h or apu.h
-# The symbol representing the feature will be set to TRUE or FALSE for 
+# The symbol representing the feature will be set to TRUE or FALSE for
 # compatibility with the feature tests set by FindFooPackage.
 #
-# (unclear why CHECK_SYMBOL_EXISTS is needed, but I was getting "found" for anything 
+# (unclear why CHECK_SYMBOL_EXISTS is needed, but I was getting "found" for anything
 # not defined to either 1 or 0)
 
 MACRO(CHECK_APR_FEATURE which_define)
@@ -268,10 +268,10 @@ MESSAGE(STATUS "")
 #   yet
 #
 #   Module is included by default in       -> a if it has prereqs, A otherwise
-#   autoconf-based build 
+#   autoconf-based build
 #
 #   Module is included in                  -> i if it has prereqs, I otherwise
-#   --enable-modules=most 
+#   --enable-modules=most
 #
 #   Otherwise                              -> O
 #
@@ -405,7 +405,7 @@ SET(MODULE_LIST
 SET(installed_mod_libs_exps)
 
 # Define extra definitions, sources, headers, etc. required by some modules.
-# This could be included in the master list of modules above, though it 
+# This could be included in the master list of modules above, though it
 # certainly would get a lot more unreadable.
 SET(mod_apreq_extra_defines          APREQ_DECLARE_EXPORT)
 SET(mod_apreq_extra_sources          modules/apreq/handle.c)
@@ -494,7 +494,7 @@ SET(mod_md_extra_sources
   modules/md/md_result.c             modules/md/md_reg.c
   modules/md/md_status.c             modules/md/md_store.c
   modules/md/md_store_fs.c           modules/md/md_time.c
-  modules/md/md_ocsp.c               modules/md/md_util.c               
+  modules/md/md_ocsp.c               modules/md/md_util.c
   modules/md/mod_md_config.c         modules/md/mod_md_drive.c
   modules/md/mod_md_os.c             modules/md/mod_md_status.c
   modules/md/mod_md_ocsp.c           modules/md/md_tailscale.c
@@ -610,7 +610,7 @@ IF(WITH_MODULES) # modules statically linked with the server
   STRING(REPLACE "," ";" WITH_MODULE_LIST ${WITH_MODULES})
   FOREACH(static_mod ${WITH_MODULE_LIST})
     STRING(REGEX MATCH   "[^/]+\\.c"           mod_basename    ${static_mod})
-    STRING(REGEX REPLACE "^mod_(.*)\\.c" "\\1" mod_module_name ${mod_basename})     
+    STRING(REGEX REPLACE "^mod_(.*)\\.c" "\\1" mod_module_name ${mod_basename})
     SET(builtin_module_shortnames "${builtin_module_shortnames} ${mod_module_name}")
     CONFIGURE_FILE(${static_mod} ${PROJECT_BINARY_DIR}/ COPYONLY)
     SET(extra_builtin_modules ${extra_builtin_modules} ${PROJECT_BINARY_DIR}/${mod_basename})
@@ -760,7 +760,7 @@ SET(mods_built_and_loaded)
 SET(mods_built_but_not_loaded)
 SET(mods_omitted)
 FOREACH (mod ${MODULE_PATHS})
-  # Build different forms of the module name; e.g., 
+  # Build different forms of the module name; e.g.,
   #   mod_name->mod_cgi, mod_module_name->cgi_module, mod_shortname->cgi
   STRING(REGEX REPLACE ".*/(mod_[^\\+]+)" "\\1"        mod_name        ${mod})
   STRING(REGEX REPLACE "mod_(.*)"         "\\1_module" mod_module_name ${mod_name})
@@ -795,7 +795,7 @@ FOREACH (mod ${MODULE_PATHS})
     # map a->A, i->I, O->O for remaining logic since prereq checking is over
     SET(enable_mod_val ${enable_mod_val_upper})
   ENDIF()
-  
+
   IF(${enable_mod_val} STREQUAL "O")
     # ignore
     SET(mods_omitted ${mods_omitted} ${mod_name})
