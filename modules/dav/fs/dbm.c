@@ -47,6 +47,10 @@
 #include "http_log.h"
 #include "http_main.h"      /* for ap_server_conf */
 
+#ifndef DEFAULT_PROPDB_DBM_TYPE
+#define DEFAULT_PROPDB_DBM_TYPE "default"
+#endif
+
 APLOG_USE_MODULE(dav_fs);
 
 struct dav_db {
@@ -100,7 +104,7 @@ static dav_error * dav_fs_dbm_error(dav_db *db, apr_pool_t *p,
     /* There might not be a <db> if we had problems creating it. */
     if (db == NULL) {
         errcode = 1;
-        errstr = "Could not open property database.";
+        errstr = "Could not open database.";
         if (APR_STATUS_IS_EDSOOPEN(status))
             ap_log_error(APLOG_MARK, APLOG_CRIT, status, ap_server_conf, APLOGNO(00576)
             "The DBM driver could not be loaded");
@@ -129,10 +133,10 @@ void dav_fs_ensure_state_dir(apr_pool_t * p, const char *dirname)
 /* dav_dbm_open_direct:  Opens a *dbm database specified by path.
  *    ro = boolean read-only flag.
  */
-dav_error * dav_dbm_open_direct(apr_pool_t *p, const char *pathname, int ro,
-                                dav_db **pdb)
+dav_error * dav_dbm_open_direct(apr_pool_t *p, const char *pathname,
+                                const char *dbmtype, int ro, dav_db **pdb)
 {
-#if APU_MAJOR_VERSION > 1 || (APU_MAJOR_VERSION == 1 && APU_MINOR_VERSION >= 7)
+#if APR_MAJOR_VERSION > 1 || (APU_MAJOR_VERSION == 1 && APU_MINOR_VERSION >= 7)
     const apr_dbm_driver_t *driver;
     const apu_err_t *err;
 #endif
@@ -141,13 +145,13 @@ dav_error * dav_dbm_open_direct(apr_pool_t *p, const char *pathname, int ro,
 
     *pdb = NULL;
 
-#if APU_MAJOR_VERSION > 1 || (APU_MAJOR_VERSION == 1 && APU_MINOR_VERSION >= 7)
-    if ((status = apr_dbm_get_driver(&driver, NULL, &err, p)) != APR_SUCCESS) {
+#if APR_MAJOR_VERSION > 1 || (APU_MAJOR_VERSION == 1 && APU_MINOR_VERSION >= 7)
+    if ((status = apr_dbm_get_driver(&driver, dbmtype, &err, p)) != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, status, ap_server_conf, APLOGNO(10289)
-                     "mod_dav_fs: The DBM library '%s' could not be loaded: %s",
-                             err->reason, err->msg);
+                     "mod_dav_fs: The DBM library '%s' for '%s' could not be loaded: %s",
+                     err->reason, dbmtype, err->msg);
         return dav_new_error(p, HTTP_INTERNAL_SERVER_ERROR, 1, status,
-                "Could not load library for property database.");
+                "Could not load library for database.");
     }
     if ((status = apr_dbm_open2(&file, driver, pathname,
                                ro ? APR_DBM_READONLY : APR_DBM_RWCREATE,
@@ -156,9 +160,9 @@ dav_error * dav_dbm_open_direct(apr_pool_t *p, const char *pathname, int ro,
         return dav_fs_dbm_error(NULL, p, status);
     }
 #else
-    if ((status = apr_dbm_open(&file, pathname,
-                               ro ? APR_DBM_READONLY : APR_DBM_RWCREATE,
-                               APR_OS_DEFAULT, p))
+    if ((status = apr_dbm_open_ex(&file, dbmtype, pathname,
+                                  ro ? APR_DBM_READONLY : APR_DBM_RWCREATE,
+                                  APR_OS_DEFAULT, p))
                 != APR_SUCCESS
         && !ro) {
         /* ### do something with 'status' */
@@ -206,7 +210,7 @@ static dav_error * dav_dbm_open(apr_pool_t * p, const dav_resource *resource,
 
     /* ### do we need to deal with the umask? */
 
-    return dav_dbm_open_direct(p, pathname, ro, pdb);
+    return dav_dbm_open_direct(p, pathname, DEFAULT_PROPDB_DBM_TYPE, ro, pdb);
 }
 
 void dav_dbm_close(dav_db *db)
