@@ -294,6 +294,15 @@ jobs:
               APU_VERSION=1.6.3
               APU_CONFIG="--without-crypto"
           # -------------------------------------------------------------------------
+          - name: OpenSSL 3.3 (alpha) no-engine
+            config: --enable-mods-shared=most --enable-maintainer-mode --disable-md --disable-http2 --disable-ldap --disable-crypto
+            env: |
+              TEST_OPENSSL3=3.3.0-alpha1
+              OPENSSL_CONFIG=no-engine
+              APR_VERSION=1.7.4
+              APU_VERSION=1.6.3
+              APU_CONFIG="--without-crypto"
+          # -------------------------------------------------------------------------
     runs-on: ubuntu-latest
     timeout-minutes: 30
     env:
