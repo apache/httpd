@@ -35,6 +35,12 @@
 #define APR_WANT_STRFUNC
 #include "apr_want.h"
 
+#if APR_HAVE_STRUCT_RLIMIT
+#if defined (RLIMIT_CPU) || defined (RLIMIT_NPROC) || defined (RLIMIT_DATA) || defined(RLIMIT_VMEM) || defined(RLIMIT_AS)
+#define AP_EXT_FILT_USE_RLIMIT
+#endif
+#endif
+
 typedef struct ef_server_t {
     apr_pool_t *p;
     apr_hash_t *h;
@@ -362,8 +368,7 @@ static void register_hooks(apr_pool_t *p)
 static apr_status_t set_resource_limits(request_rec *r,
                                         apr_procattr_t *procattr)
 {
-#if defined(RLIMIT_CPU)  || defined(RLIMIT_NPROC) || \
-    defined(RLIMIT_DATA) || defined(RLIMIT_VMEM) || defined (RLIMIT_AS)
+#ifdef AP_EXT_FILT_USE_RLIMIT
     core_dir_config *conf =
         (core_dir_config *)ap_get_core_module_config(r->per_dir_config);
     apr_status_t rv;
@@ -381,7 +386,7 @@ static apr_status_t set_resource_limits(request_rec *r,
     ap_assert(rv == APR_SUCCESS); /* otherwise, we're out of sync with APR */
 #endif
 
-#endif /* if at least one limit defined */
+#endif /* AP_EXT_FILT_USE_RLIMIT */
 
     return APR_SUCCESS;
 }
