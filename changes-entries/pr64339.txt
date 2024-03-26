@@ -1,4 +1,0 @@
-  *) mod_xml2enc: Update check to accept any text/ media type
-     or any XML media type per RFC 7303, avoiding
-     corruption of Microsoft OOXML formats.  PR 64339.
-     [Joseph Heenan <joseph.heenan fintechlabs.io>, Joe Orton]

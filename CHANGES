@@ -1,6 +1,38 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.59
 
+  *) Add CGIScriptTimeout to mod_cgi. [Eric Covener]
+
+  *) mod_xml2enc: Tolerate libxml2 2.12.0 and later.  PR 68610
+     [ttachi <tachihara AT hotmail.com>]
+
+  *) mod_slotmem_shm: Use ap_os_is_path_absolute() to make it portable.
+     [Jean-Frederic Clere]
+
+  *) mod_ssl: Use OpenSSL-standard functions to assemble CA
+     name lists for SSLCACertificatePath/SSLCADNRequestPath.
+     Names will now be consistently sorted. PR 61574.
+     [Joe Orton]
+
+  *) mod_xml2enc: Update check to accept any text/ media type
+     or any XML media type per RFC 7303, avoiding
+     corruption of Microsoft OOXML formats.  PR 64339.
+     [Joseph Heenan <joseph.heenan fintechlabs.io>, Joe Orton]
+
+  *) mod_http2: v2.0.26 with the following fixes:
+     - Fixed `Date` header on requests upgraded from HTTP/1.1 (h2c). Fixes
+       <https://github.com/icing/mod_h2/issues/272>.
+     - Fixed small memory leak in h2 header bucket free. Thanks to
+       Michael Kaufmann for finding this and providing the fix.
+
+  *) htcacheclean: In -a/-A mode, list all files per subdirectory
+     rather than only one. PR 65091.
+     [Artem Egorenkov <aegorenkov.91 gmail.com>]
+
+  *) mod_ssl: SSLProxyMachineCertificateFile/Path may reference files
+     which include CA certificates; those CA certs are treated as if
+     configured with SSLProxyMachineCertificateChainFile.  [Joe Orton]
+
   *) htpasswd, htdbm, dbmmanage: Update help&docs to refer to
      "hashing", rather than "encrypting" passwords.
      [Michele Preziuso <mpreziuso kaosdynamics.com>]

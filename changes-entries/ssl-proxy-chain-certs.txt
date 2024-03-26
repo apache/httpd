@@ -1,4 +1,0 @@
-  *) mod_ssl: SSLProxyMachineCertificateFile/Path may reference files
-     which include CA certificates; those CA certs are treated as if
-     configured with SSLProxyMachineCertificateChainFile.  [Joe Orton]
-

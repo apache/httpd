@@ -1,3 +1,0 @@
-
-  *) Add CGIScriptTimeout to mod_cgi. [Eric Covener]
-
