@@ -951,10 +951,12 @@ const char *ssl_cmd_SSLCompression(cmd_parms *cmd, void *dcfg, int flag)
         }
     }
     sc->compression = flag ? TRUE : FALSE;
-    return NULL;
 #else
-    return "Setting Compression mode unsupported; not implemented by the SSL library";
+    if (flag) {
+        return "Setting Compression mode unsupported; not implemented by the SSL library";
+    }
 #endif
+    return NULL;
 }
 
 const char *ssl_cmd_SSLHonorCipherOrder(cmd_parms *cmd, void *dcfg, int flag)
