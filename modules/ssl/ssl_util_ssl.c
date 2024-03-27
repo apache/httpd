@@ -612,3 +612,19 @@ cleanup:
     }
     return rv;
 }
+
+void modssl_set_reneg_state(SSLConnRec *sslconn, modssl_reneg_state state)
+{
+#ifdef SSL_OP_NO_RENEGOTATION
+    switch (state) {
+    case RENEG_ALLOW:
+        SSL_clear_options(sslconn->ssl, SSL_OP_NO_RENEGOTATION);
+        break;
+    default:
+        SSL_set_options(sslconn->ssl, SSL_OP_NO_RENEGOTATION);
+        break;
+    }
+#else
+    sslconn->reneg_state = state;
+#endif
+}
