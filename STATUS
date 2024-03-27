@@ -216,7 +216,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    *) mod_ssl: Keep "SSLCompression off" working with latest OpenSSL(s)/OPENSSL_NO_COMP.
       trunk patch: https://svn.apache.org/r1916561
       2.4.x patch: svn merge -c 1916561 ^/httpd/httpd/trunk .
-      +1: ylavic,
+      +1: ylavic, rpluem
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
