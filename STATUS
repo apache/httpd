@@ -152,15 +152,10 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   *) mod_deflate: Various cleanups & fixes for edge cases.
-      trunk patch: https://svn.apache.org/r1619448
-                   https://svn.apache.org/r1619486
-                   https://svn.apache.org/r1895552
-                   https://svn.apache.org/r1894152
-                   https://svn.apache.org/r1914800
-      2.4.x patch: https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/423.patch
-      Github PR: https://github.com/apache/httpd/pull/423
-      +1: jorton, gbechis, ylavic
+   *) mod_ssl: Keep "SSLCompression off" working with latest OpenSSL(s)/OPENSSL_NO_COMP.
+      trunk patch: https://svn.apache.org/r1916561
+      2.4.x patch: svn merge -c 1916561 ^/httpd/httpd/trunk .
+      +1: ylavic, rpluem, jorton
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
@@ -212,11 +207,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       trunk patch: https://svn.apache.org/r1916004
       2.4.x patch: svn merge -c 1916004  ^/httpd/httpd/trunk .
       +1: jfclere,
-
-   *) mod_ssl: Keep "SSLCompression off" working with latest OpenSSL(s)/OPENSSL_NO_COMP.
-      trunk patch: https://svn.apache.org/r1916561
-      2.4.x patch: svn merge -c 1916561 ^/httpd/httpd/trunk .
-      +1: ylavic, rpluem
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
