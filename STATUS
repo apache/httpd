@@ -152,12 +152,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   *) mod_auth_basic: Fix warnings wrt signed bit fields
-      trunk patch: https://svn.apache.org/r1603863
-      2.4.x patch: https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/425.diff
-      Github PR: https://github.com/apache/httpd/pull/425
-      +1: ylavic, jorton, rpluem
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
