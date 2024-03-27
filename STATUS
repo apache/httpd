@@ -207,7 +207,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       trunk patch: https://svn.apache.org/r1603863
       2.4.x patch: https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/425.diff
       Github PR: https://github.com/apache/httpd/pull/425
-      +1: ylavic,
+      +1: ylavic, jorton
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
