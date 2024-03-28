@@ -36,6 +36,7 @@
 
 /* libxml2 */
 #include <libxml/encoding.h>
+#include <libxml/xmlstring.h>
 
 #if defined(__clang__)
 #pragma clang diagnostic pop
