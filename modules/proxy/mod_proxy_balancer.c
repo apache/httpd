@@ -21,6 +21,7 @@
 #include "scoreboard.h"
 #include "ap_mpm.h"
 #include "apr_version.h"
+#include "ap_atomics.h"
 #include "ap_hooks.h"
 #include "apr_date.h"
 #include "apr_escape.h"
@@ -485,6 +486,13 @@ static void force_recovery(proxy_balancer *balancer, server_rec *s)
     }
 }
 
+static apr_status_t proxy_worker_decrement_busy(void *arg)
+{
+    proxy_worker *worker = arg;
+    ap_atomic_size_sub_sat(&worker->s->busy, 1);
+    return APR_SUCCESS;
+}
+
 static int proxy_balancer_pre_request(proxy_worker **worker,
                                       proxy_balancer **balancer,
                                       request_rec *r,
@@ -545,12 +553,12 @@ static int proxy_balancer_pre_request(proxy_worker **worker,
                  * not in error state or not disabled.
                  */
                 if (PROXY_WORKER_IS_USABLE(*workers)) {
-                    (*workers)->s->lbstatus += (*workers)->s->lbfactor;
+                    ap_atomic_int_add_sat(&(*workers)->s->lbstatus, (*workers)->s->lbfactor);
                     total_factor += (*workers)->s->lbfactor;
                 }
                 workers++;
             }
-            runtime->s->lbstatus -= total_factor;
+            ap_atomic_int_sub_sat(&runtime->s->lbstatus, total_factor);
         }
         runtime->s->elected++;
 
@@ -623,8 +631,8 @@ static int proxy_balancer_pre_request(proxy_worker **worker,
         *worker = runtime;
     }
 
-    ap_proxy_increment_busy_count(*worker);
-    apr_pool_cleanup_register(r->pool, *worker, ap_proxy_decrement_busy_count,
+    ap_atomic_size_add_sat(&(*worker)->s->busy, 1);
+    apr_pool_cleanup_register(r->pool, *worker, proxy_worker_decrement_busy,
                               apr_pool_cleanup_null);
 
     /* Add balancer/worker info to env. */
@@ -726,16 +734,15 @@ static void recalc_factors(proxy_balancer *balancer)
 
     /* Recalculate lbfactors */
     workers = (proxy_worker **)balancer->workers->elts;
-    /* Special case if there is only one worker its
-     * load factor will always be 100
-     */
     if (balancer->workers->nelts == 1) {
-        (*workers)->s->lbstatus = (*workers)->s->lbfactor = 100;
-        return;
+        /* Special case if there is only one worker its
+         * load factor will always be 100
+         */
+        workers[0]->s->lbfactor = 100;
     }
     for (i = 0; i < balancer->workers->nelts; i++) {
         /* Update the status entries */
-        workers[i]->s->lbstatus = workers[i]->s->lbfactor;
+        ap_atomic_int_set(&workers[i]->s->lbstatus, workers[i]->s->lbfactor);
     }
 }
 
@@ -1542,7 +1549,7 @@ static void balancer_display_page(request_rec *r, proxy_server_conf *conf,
                            worker->s->retries);
                 ap_rprintf(r,
                            "          <httpd:lbstatus>%d</httpd:lbstatus>\n",
-                           worker->s->lbstatus);
+                           ap_atomic_int_get(&worker->s->lbstatus));
                 ap_rprintf(r,
                            "          <httpd:loadfactor>%.2f</httpd:loadfactor>\n",
                            (float)(worker->s->lbfactor)/100.0);
@@ -1563,7 +1570,7 @@ static void balancer_display_page(request_rec *r, proxy_server_conf *conf,
                           "</httpd:redirect>\n", NULL);
                 ap_rprintf(r,
                            "          <httpd:busy>%" APR_SIZE_T_FMT "</httpd:busy>\n",
-                           ap_proxy_get_busy_count(worker));
+                           ap_atomic_size_get(&worker->s->busy));
                 ap_rprintf(r, "          <httpd:lbset>%d</httpd:lbset>\n",
                            worker->s->lbset);
                 /* End proxy_worker_stat */
@@ -1736,8 +1743,8 @@ static void balancer_display_page(request_rec *r, proxy_server_conf *conf,
                 ap_rvputs(r, ap_proxy_parse_wstatus(r->pool, worker), NULL);
                 ap_rputs("</td>", r);
                 ap_rprintf(r, "<td>%" APR_SIZE_T_FMT "</td>", worker->s->elected);
-                ap_rprintf(r, "<td>%" APR_SIZE_T_FMT "</td>", ap_proxy_get_busy_count(worker));
-                ap_rprintf(r, "<td>%d</td><td>", worker->s->lbstatus);
+                ap_rprintf(r, "<td>%" APR_SIZE_T_FMT "</td>", ap_atomic_size_get(&worker->s->busy));
+                ap_rprintf(r, "<td>%d</td><td>", ap_atomic_int_get(&worker->s->lbstatus));
                 ap_rputs(apr_strfsize(worker->s->transferred, fbuf), r);
                 ap_rputs("</td><td>", r);
                 ap_rputs(apr_strfsize(worker->s->read, fbuf), r);

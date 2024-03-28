@@ -9,7 +9,7 @@ LTLIBRARY_NAME    = libmain.la
 LTLIBRARY_SOURCES = \
 	config.c log.c main.c vhost.c util.c util_etag.c util_fcgi.c \
 	util_script.c util_md5.c util_cfgtree.c util_ebcdic.c util_time.c \
-	connection.c listen.c util_mutex.c \
+	connection.c listen.c util_mutex.c util_atomics.c \
 	mpm_common.c mpm_unix.c mpm_fdqueue.c \
 	util_charset.c util_cookies.c util_debug.c util_xml.c \
 	util_filter.c util_pcre.c util_regex.c $(EXPORTS_DOT_C) \
