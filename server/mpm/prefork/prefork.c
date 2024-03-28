@@ -49,6 +49,8 @@
 #include "apr_poll.h"
 #include "util_time.h"
 
+#include "ap_provider.h"
+
 #include <stdlib.h>
 
 #ifdef HAVE_TIME_H
@@ -408,6 +410,13 @@ static void child_sigmask(sigset_t *new_mask, sigset_t *old_mask)
 #endif
 }
 #endif
+
+/* hack to allow a module to restart gracefully child */
+static void graceful_stop(void)
+{                         
+    clean_child_exit(0);
+}   
+
 
 static void child_main(int child_num_arg, int child_bucket)
 {
@@ -1510,6 +1519,8 @@ static void prefork_hooks(apr_pool_t *p)
     ap_hook_mpm(prefork_run, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_mpm_query(prefork_query, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_mpm_get_name(prefork_get_name, NULL, NULL, APR_HOOK_MIDDLE);
+
+    ap_register_provider(p, "gracefull" , prefork_get_name(), "0", &graceful_stop);
 }
 
 static const char *set_daemons_to_start(cmd_parms *cmd, void *dummy, const char *arg)

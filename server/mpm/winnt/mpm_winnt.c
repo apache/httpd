@@ -1750,6 +1750,11 @@ static int winnt_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s )
     return OK; /* Restart */
 }
 
+static void graceful_stop(void)
+{
+    child_graceful_stop();
+}
+
 static void winnt_hooks(apr_pool_t *p)
 {
     /* Our open_logs hook function must run before the core's, or stderr
@@ -1766,6 +1771,8 @@ static void winnt_hooks(apr_pool_t *p)
     ap_hook_mpm(winnt_run, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_mpm_query(winnt_query, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_mpm_get_name(winnt_get_name, NULL, NULL, APR_HOOK_MIDDLE);
+
+    ap_register_provider(p, "gracefull" , winnt_get_name(), "0", &graceful_stop);
 }
 
 AP_DECLARE_MODULE(mpm_winnt) = {

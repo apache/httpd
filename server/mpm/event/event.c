@@ -95,6 +95,7 @@
 #include "http_vhost.h"
 #include "unixd.h"
 #include "apr_skiplist.h"
+#include "ap_provider.h"
 #include "util_time.h"
 
 #include <signal.h>
@@ -1322,6 +1323,13 @@ static apr_status_t event_resume_suspended (conn_rec *c)
 
     return OK;
 }
+
+/* hack to allow a module to restart gracefully child */
+static void graceful_stop(void)
+{   
+    signal_threads(ST_GRACEFUL);
+}
+
 
 /* conns_this_child has gone to zero or below.  See if the admin coded
    "MaxConnectionsPerChild 0", and keep going in that case.  Doing it this way
@@ -4288,6 +4296,8 @@ static void event_hooks(apr_pool_t * p)
 
     ap_hook_pre_connection(event_pre_connection, NULL, NULL, APR_HOOK_REALLY_FIRST);
     ap_hook_protocol_switch(event_protocol_switch, NULL, NULL, APR_HOOK_REALLY_FIRST);
+
+    ap_register_provider(p, "gracefull" , event_get_name(), "0", &graceful_stop);
 }
 
 static const char *set_daemons_to_start(cmd_parms *cmd, void *dummy,

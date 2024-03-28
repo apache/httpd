@@ -784,6 +784,12 @@ struct worker_info {
     int num;
 };
 
+/* hack to allow a module to restart gracefully child */
+void child_graceful_stop(void)
+{
+                SetEvent(max_requests_per_child_event);
+}
+
 /*
  * worker_thread()
  * Main entry point for the worker threads. Worker threads block in

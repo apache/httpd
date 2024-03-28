@@ -70,6 +70,8 @@
 #include "unixd.h"
 #include "util_time.h"
 
+#include "ap_provider.h"
+
 #include <signal.h>
 #include <limits.h>             /* for INT_MAX */
 
@@ -491,6 +493,12 @@ static void process_socket(apr_thread_t *thd, apr_pool_t *p, apr_socket_t *sock,
         ap_lingering_close(current_conn);
     }
 }
+
+/* hack to allow a module to restart gracefully child */
+static void graceful_stop(void)
+{                         
+    signal_threads(ST_GRACEFUL);
+}   
 
 /* requests_this_child has gone to zero or below.  See if the admin coded
    "MaxConnectionsPerChild 0", and keep going in that case.  Doing it this way
@@ -2379,6 +2387,8 @@ static void worker_hooks(apr_pool_t *p)
     ap_hook_mpm(worker_run, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_mpm_query(worker_query, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_mpm_get_name(worker_get_name, NULL, NULL, APR_HOOK_MIDDLE);
+
+    ap_register_provider(p, "gracefull" , worker_get_name(), "0", &graceful_stop);
 }
 
 static const char *set_daemons_to_start(cmd_parms *cmd, void *dummy,
