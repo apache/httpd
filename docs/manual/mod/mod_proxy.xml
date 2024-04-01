@@ -707,9 +707,10 @@ ProxyRemote "ftp" "http://ftpproxy.mydomain:8080"
 <name>ProxyRemoteMatch</name>
 <description>Remote proxy used to handle requests matched by regular
 expressions</description>
-<syntax>ProxyRemoteMatch <var>regex</var> <var>remote-server</var></syntax>
+<syntax>ProxyRemoteMatch <var>regex</var> <var>remote-server</var> [<var>username:password</var>]</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
+<compatibility>The optional third argument is usable only in httpd 2.4.59 and later.</compatibility>
 
 <usage>
     <p>The <directive>ProxyRemoteMatch</directive> is identical to the
