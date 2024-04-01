@@ -2076,15 +2076,13 @@ static const struct {
     },
 };
 
-#define ncompr (sizeof(compr) / sizeof(compr[0]))
-
 static int zmagic(request_rec *r, unsigned char *buf, apr_size_t nbytes)
 {
     unsigned char *newbuf;
     int newsize;
     int i;
 
-    for (i = 0; i < ncompr; i++) {
+    for (i = 0; i < ARRAY_LEN(compr); i++) {
         if (nbytes < compr[i].maglen)
             continue;
         if (memcmp(buf, compr[i].magic, compr[i].maglen) == 0)

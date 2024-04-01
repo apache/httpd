@@ -17,8 +17,6 @@
 #ifndef h2_proxy_session_h
 #define h2_proxy_session_h
 
-#define H2_ALEN(a)          (sizeof(a)/sizeof((a)[0]))
-
 #include <nghttp2/nghttp2.h>
 
 struct h2_proxy_iqueue;

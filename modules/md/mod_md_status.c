@@ -26,6 +26,8 @@
 #include <http_request.h>
 #include <http_log.h>
 
+#include "util_misc.h"
+
 #include "mod_status.h"
 
 #include "md.h"
@@ -720,14 +722,14 @@ static int add_md_row(void *baton, apr_size_t index, md_json_t *mdj)
 
     if (HTML_STATUS(ctx)) {
         apr_brigade_printf(ctx->bb, NULL, NULL, "<tr class=\"%s\">", (index % 2)? "odd" : "even");
-        for (i = 0; i < (int)(sizeof(status_infos)/sizeof(status_infos[0])); ++i) {
+        for (i = 0; i < (int)(ARRAY_LEN(status_infos)); ++i) {
             apr_brigade_puts(ctx->bb, NULL, NULL, "<td>");
             add_status_cell(ctx, mdj, &status_infos[i]);
             apr_brigade_puts(ctx->bb, NULL, NULL, "</td>");
         }
         apr_brigade_puts(ctx->bb, NULL, NULL, "</tr>");
     } else {
-        for (i = 0; i < (int)(sizeof(status_infos)/sizeof(status_infos[0])); ++i) {
+        for (i = 0; i < (int)(ARRAY_LEN(status_infos)); ++i) {
             ctx->prefix = apr_pstrcat(ctx->p, prefix, apr_psprintf(ctx->p, "[%" APR_SIZE_T_FMT "]", index), NULL);
             add_status_cell(ctx, mdj, &status_infos[i]);
             ctx->prefix = prefix;
@@ -791,7 +793,7 @@ int md_domains_status_hook(request_rec *r, int flags)
             ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r, "html managed domain status table");
             apr_brigade_puts(ctx.bb, NULL, NULL,
                              "<hr>\n<h3>Managed Certificates</h3>\n<table class='md_status'><thead><tr>\n");
-            for (i = 0; i < (int)(sizeof(status_infos)/sizeof(status_infos[0])); ++i) {
+            for (i = 0; i < (int)(ARRAY_LEN(status_infos)); ++i) {
                 si_add_header(&ctx, &status_infos[i]);
             }
             apr_brigade_puts(ctx.bb, NULL, NULL, "</tr>\n</thead><tbody>");
@@ -847,14 +849,14 @@ static int add_ocsp_row(void *baton, apr_size_t index, md_json_t *mdj)
 
     if (HTML_STATUS(ctx)) {
         apr_brigade_printf(ctx->bb, NULL, NULL, "<tr class=\"%s\">", (index % 2)? "odd" : "even");
-        for (i = 0; i < (int)(sizeof(ocsp_status_infos)/sizeof(ocsp_status_infos[0])); ++i) {
+        for (i = 0; i < (int)(ARRAY_LEN(ocsp_status_infos)); ++i) {
             apr_brigade_puts(ctx->bb, NULL, NULL, "<td>");
             add_status_cell(ctx, mdj, &ocsp_status_infos[i]);
             apr_brigade_puts(ctx->bb, NULL, NULL, "</td>");
         }
         apr_brigade_puts(ctx->bb, NULL, NULL, "</tr>");
     } else {
-        for (i = 0; i < (int)(sizeof(ocsp_status_infos)/sizeof(ocsp_status_infos[0])); ++i) {
+        for (i = 0; i < (int)(ARRAY_LEN(ocsp_status_infos)); ++i) {
             ctx->prefix = apr_pstrcat(ctx->p, prefix, apr_psprintf(ctx->p, "[%" APR_SIZE_T_FMT "]", index), NULL);
             add_status_cell(ctx, mdj, &ocsp_status_infos[i]);
             ctx->prefix = prefix;
@@ -907,7 +909,7 @@ int md_ocsp_status_hook(request_rec *r, int flags)
             ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r, "html ocsp stapling status table");
             apr_brigade_puts(ctx.bb, NULL, NULL,
                              "<hr>\n<h3>Managed Staplings</h3>\n<table class='md_ocsp_status'><thead><tr>\n");
-            for (i = 0; i < (int)(sizeof(ocsp_status_infos)/sizeof(ocsp_status_infos[0])); ++i) {
+            for (i = 0; i < (int)(ARRAY_LEN(ocsp_status_infos)); ++i) {
                 si_add_header(&ctx, &ocsp_status_infos[i]);
             }
             apr_brigade_puts(ctx.bb, NULL, NULL, "</tr>\n</thead><tbody>");

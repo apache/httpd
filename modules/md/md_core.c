@@ -24,6 +24,8 @@
 #include <apr_time.h>
 #include <apr_date.h>
 
+#include "util_misc.h"
+
 #include "md_json.h"
 #include "md.h"
 #include "md_crypt.h"
@@ -419,7 +421,7 @@ const char *md_get_ca_name_from_url(apr_pool_t *p, const char *url)
     apr_uri_t uri_parsed;
     unsigned int i;
 
-    for (i = 0; i < sizeof(KNOWN_CAs)/sizeof(KNOWN_CAs[0]); ++i) {
+    for (i = 0; i < ARRAY_LEN(KNOWN_CAs); ++i) {
         if (!apr_strnatcasecmp(KNOWN_CAs[i].url, url)) {
             return KNOWN_CAs[i].name;
         }
@@ -437,7 +439,7 @@ apr_status_t md_get_ca_url_from_name(const char **purl, apr_pool_t *p, const cha
     apr_status_t rv = APR_SUCCESS;
 
     *purl = NULL;
-    for (i = 0; i < sizeof(KNOWN_CAs)/sizeof(KNOWN_CAs[0]); ++i) {
+    for (i = 0; i < ARRAY_LEN(KNOWN_CAs); ++i) {
         if (!apr_strnatcasecmp(KNOWN_CAs[i].name, name)) {
             *purl = KNOWN_CAs[i].url;
             goto leave;
@@ -449,7 +451,7 @@ apr_status_t md_get_ca_url_from_name(const char **purl, apr_pool_t *p, const cha
         apr_array_header_t *names;
 
         names = apr_array_make(p, 10, sizeof(const char*));
-        for (i = 0; i < sizeof(KNOWN_CAs)/sizeof(KNOWN_CAs[0]); ++i) {
+        for (i = 0; i < ARRAY_LEN(KNOWN_CAs); ++i) {
             APR_ARRAY_PUSH(names, const char *) = KNOWN_CAs[i].name;
         }
         *purl = apr_psprintf(p,

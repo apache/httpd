@@ -27,6 +27,8 @@
 #include <http_request.h>
 #include <http_log.h>
 
+#include "util_misc.h"
+
 #include "h2_private.h"
 #include "h2_conn_ctx.h"
 #include "h2_headers.h"
@@ -74,7 +76,7 @@ static int h2_blist_count(h2_blist *blist)
     do { \
         if (APLOG_C_IS_LEVEL((c),(level))) { \
             char buffer[4 * 1024]; \
-            apr_size_t len, bmax = sizeof(buffer)/sizeof(buffer[0]); \
+            apr_size_t len, bmax = ARRAY_LEN(buffer); \
             len = bb? h2_util_bb_print(buffer, bmax, "", "", bb) : 0; \
             ap_log_cerror(APLOG_MARK, (level), rv, (c), \
                           "BEAM[%s,%s%sdata=%ld,buckets(send/consumed)=%d/%d]: %s %s", \

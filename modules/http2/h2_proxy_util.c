@@ -478,7 +478,7 @@ typedef struct {
 } literal;
 
 #define H2_DEF_LITERAL(n)   { (n), (sizeof(n)-1) }
-#define H2_LIT_ARGS(a)      (a),H2_ALEN(a)
+#define H2_LIT_ARGS(a)      (a),ARRAY_LEN(a)
 
 static literal IgnoredRequestHeaders[] = {
     H2_DEF_LITERAL("upgrade"),
@@ -653,7 +653,7 @@ apr_status_t h2_proxy_req_make(h2_proxy_request *req, apr_pool_t *pool,
 int h2_proxy_util_frame_print(const nghttp2_frame *frame, char *buffer, size_t maxlen)
 {
     char scratch[128];
-    size_t s_len = sizeof(scratch)/sizeof(scratch[0]);
+    size_t s_len = ARRAY_LEN(scratch);
     
     switch (frame->hd.type) {
         case NGHTTP2_DATA: {

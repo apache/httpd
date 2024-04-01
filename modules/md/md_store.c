@@ -26,6 +26,8 @@
 #include <apr_hash.h>
 #include <apr_strings.h>
 
+#include "util_misc.h"
+
 #include "md.h"
 #include "md_crypt.h"
 #include "md_log.h"
@@ -61,7 +63,7 @@ static const char *GROUP_NAME[] = {
 
 const char *md_store_group_name(unsigned int group)
 {
-    if (group < sizeof(GROUP_NAME)/sizeof(GROUP_NAME[0])) {
+    if (group < ARRAY_LEN(GROUP_NAME)) {
         return GROUP_NAME[group];
     }
     return "UNKNOWN";

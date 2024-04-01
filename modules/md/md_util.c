@@ -29,6 +29,8 @@
 #include <stdlib.h>
 #endif
 
+#include "util_misc.h"
+
 #include "md.h"
 #include "md_log.h"
 #include "md_util.h"
@@ -477,7 +479,7 @@ apr_status_t md_text_fread8k(const char **ptext, apr_pool_t *p, const char *fpat
 
     *ptext = NULL;
     if (APR_SUCCESS == (rv = apr_file_open(&f, fpath, APR_FOPEN_READ, 0, p))) {
-        apr_size_t blen = sizeof(buffer)/sizeof(buffer[0]) - 1;
+        apr_size_t blen = ARRAY_LEN(buffer) - 1;
         rv = apr_file_read_full(f, buffer, blen, &blen);
         if (APR_SUCCESS == rv || APR_STATUS_IS_EOF(rv)) {
             *ptext = apr_pstrndup(p, buffer, blen);
