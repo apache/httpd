@@ -664,7 +664,7 @@ ScriptAliasMatch "(?i)^/cgi-bin(.*)" "/usr/local/apache/cgi-bin$1"
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context>
 </contextlist>
-<compatibility>2.5.1 and later</compatibility>
+<compatibility>2.4.58 and later</compatibility>
 
 <usage>
     <p>When using the two parameter version of the
