@@ -657,7 +657,7 @@ context in 2.3.3 and later.</compatibility>
 <syntax>ProxyRemote <var>match</var> <var>remote-server</var> [<var>username:password</var>]</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
-<compatibility>The optional third argument is usable only in httpd 2.5.1 and later.</compatibility>
+<compatibility>The optional third argument is usable only in httpd 2.4.59 and later.</compatibility>
 
 <usage>
     <p>This defines remote proxies to this proxy. <var>match</var> is either the
