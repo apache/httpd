@@ -185,6 +185,7 @@ unset</default>
 <contextlist><context>server config</context>
 <context>virtual host</context><context>directory</context>
 <context>.htaccess</context></contextlist>
+<compatibility>Available in version 2.4.59 and later.</compatibility>
 
 <usage>
     <p>This directive limits the length of time to wait for more output from
