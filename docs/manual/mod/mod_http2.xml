@@ -1089,7 +1089,7 @@ H2EarlyHint Link "&lt;/my.css&gt;;rel=preload;as=style"
             <context>server config</context>
             <context>virtual host</context>
         </contextlist>
-        <compatibility>Available in version 2.5.1 and later.</compatibility>
+        <compatibility>Available in version 2.4.58 and later.</compatibility>
 
         <usage>
             <p>
@@ -1127,7 +1127,7 @@ H2EarlyHint Link "&lt;/my.css&gt;;rel=preload;as=style"
             <context>server config</context>
             <context>virtual host</context>
         </contextlist>
-        <compatibility>Available in version 2.5.1 and later.</compatibility>
+        <compatibility>Available in version 2.4.58 and later.</compatibility>
 
         <usage>
             <p>
