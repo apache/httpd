@@ -90,7 +90,7 @@
     モジュールの作成に小さな変更を行なう必要があります。
     つまり、モジュールのレコード (これは後で作成されます。
     以下を参照してください) が DLL からエクスポートされなければなりません。
-    これを行なうには、<code>AP_MODULE_DECLARE_DATA</code> (Apache httpd
+    これを行なうには、<code>AP_DECLARE_MODULE</code> (Apache httpd
     のヘッダファイルで定義されています) をモジュールのモジュールレコード
     定義の部分に追加してください。たとえば、モジュールに</p>
 <example>
@@ -99,7 +99,7 @@
 
     <p>があるとすると、それを次のもので置き換えてください。</p>
 <example>
-    module AP_MODULE_DECLARE_DATA foo_module;
+    AP_DECLARE_MODULE(foo);
 </example>
 
     <p>Unix 上でもこのモジュールを

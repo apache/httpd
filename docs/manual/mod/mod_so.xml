@@ -90,7 +90,7 @@ Windows</compatibility>
     <p>To create a module DLL, a small change is necessary to the
     module's source file: The module record must be exported from
     the DLL (which will be created later; see below). To do this,
-    add the <code>AP_MODULE_DECLARE_DATA</code> (defined in the
+    add the <code>AP_DECLARE_MODULE</code> (defined in the
     Apache httpd header files) to your module's module record definition.
     For example, if your module has:</p>
 
@@ -100,7 +100,7 @@ Windows</compatibility>
 
     <p>Replace the above with:</p>
 <example>
-    module AP_MODULE_DECLARE_DATA foo_module;
+    AP_DECLARE_MODULE(foo);
 </example>
 
     <p>Note that this will only be activated on Windows, so the
