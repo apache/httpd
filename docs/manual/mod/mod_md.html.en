@@ -371,7 +371,7 @@
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="MDActivationDelay" id="MDActivationDelay">MDActivationDelay</a> <a name="mdactivationdelay" id="mdactivationdelay">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td /></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>How long to delay activation of new certificates</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>MDActivationDelay <var>duration</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
@@ -485,7 +485,7 @@
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="MDCertificateCheck" id="MDCertificateCheck">MDCertificateCheck</a> <a name="mdcertificatecheck" id="mdcertificatecheck">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td /></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Set name and URL pattern for a certificate monitoring sitSet name and URL pattern for a certificate monitoring sitee</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>MDCertificateCheck <var>name</var> <var>url</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
@@ -630,7 +630,7 @@
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="MDChallengeDns01" id="MDChallengeDns01">MDChallengeDns01</a> <a name="mdchallengedns01" id="mdchallengedns01">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td /></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Set the command for setup/teardown of dns-01 challenges</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>MDChallengeDns01 <var>path-to-command</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
@@ -659,7 +659,7 @@
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="MDChallengeDns01Version" id="MDChallengeDns01Version">MDChallengeDns01Version</a> <a name="mdchallengedns01version" id="mdchallengedns01version">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td /></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Set the type of arguments to call MDChallengeDns01 with</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>MDChallengeDns01Version 1|2</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>MDChallengeDns01Version 1</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
@@ -678,7 +678,7 @@
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="MDContactEmail" id="MDContactEmail">MDContactEmail</a> <a name="mdcontactemail" id="mdcontactemail">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td /></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Email address used for account registration</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>MDContactEmail <var>address</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
@@ -713,7 +713,7 @@
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="MDExternalAccountBinding" id="MDExternalAccountBinding">MDExternalAccountBinding</a> <a name="mdexternalaccountbinding" id="mdexternalaccountbinding">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td /></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Set the external account binding keyid and hmac values to use at CA</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>MDExternalAccountBinding <var>key-id</var> <var>hmac-64</var> | none | <var>file</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>MDExternalAccountBinding none</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
@@ -768,7 +768,7 @@
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="MDMatchNames" id="MDMatchNames">MDMatchNames</a> <a name="mdmatchnames" id="mdmatchnames">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td /></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Determines how DNS names are matched to vhosts</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>MDMatchNames all|servernames</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>MDMatchNames all</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
@@ -1260,7 +1260,7 @@ MDRenewWindow 10%</pre>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="MDRetryDelay" id="MDRetryDelay">MDRetryDelay</a> <a name="mdretrydelay" id="mdretrydelay">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td /></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Time length for first retry, doubled on every consecutive error.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>MDRetryDelay <var>duration</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>MDRetryDelay 5s</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
@@ -1282,7 +1282,7 @@ MDRenewWindow 10%</pre>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="MDRetryFailover" id="MDRetryFailover">MDRetryFailover</a> <a name="mdretryfailover" id="mdretryfailover">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td /></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>The number of errors before a failover to another CA is triggered</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>MDRetryFailover <var>number</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>MDRetryFailover 13</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
@@ -1450,7 +1450,7 @@ MDRenewWindow 10%</pre>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="MDStoreLocks" id="MDStoreLocks">MDStoreLocks</a> <a name="mdstorelocks" id="mdstorelocks">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td /></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configure locking of store for updates</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>MDStoreLocks on|off|<var>duration</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>MDStoreLocks off</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
@@ -1527,7 +1527,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/2.4/mod/mod_md.html';
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2023 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2024 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

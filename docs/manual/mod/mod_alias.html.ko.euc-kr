@@ -190,7 +190,7 @@ Alias /foo /gaq
 <tr><th><a href="directive-dict.html#Context">사용장소:</a></th><td>주서버설정, 가상호스트, directory</td></tr>
 <tr><th><a href="directive-dict.html#Status">상태:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">모듈:</a></th><td>mod_alias</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">지원:</a></th><td>2.5.1 and later</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">지원:</a></th><td>2.4.58 and later</td></tr>
 </table><p>The documentation for this directive has
             not been translated yet. Please have a look at the English
             version.</p></div>
@@ -405,7 +405,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/2.4/mod/mod_alias.html';
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2023 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2024 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">모듈</a> | <a href="../mod/directives.html">지시어들</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">용어</a> | <a href="../sitemap.html">사이트맵</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
