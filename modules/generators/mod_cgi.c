@@ -935,18 +935,9 @@ static int cgi_handler(request_rec *r)
         char sbuf[MAX_STRING_LEN];
         int ret;
 
-        ret = ap_scan_script_header_err_brigade_ex(r, bb, sbuf,
-                                                   APLOG_MODULE_INDEX);
-
-        /* xCGI has its own body framing mechanism which we don't
-         * match against any provided Content-Length, so let the
-         * core determine C-L vs T-E based on what's actually sent.
-         */
-        if (!apr_table_get(r->subprocess_env, AP_TRUST_CGILIKE_CL_ENVVAR))
-            apr_table_unset(r->headers_out, "Content-Length");
-        apr_table_unset(r->headers_out, "Transfer-Encoding");
-
-        if (ret != OK) {
+        if ((ret = ap_scan_script_header_err_brigade_ex(r, bb, sbuf,
+                                                        APLOG_MODULE_INDEX)))
+        {
             ret = log_script(r, conf, ret, dbuf, sbuf, bb, script_err);
 
             /*

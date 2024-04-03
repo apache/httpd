@@ -319,13 +319,9 @@ static int on_header_cb(nghttp2_session *ngh2, const nghttp2_frame *frame,
     
     status = h2_stream_add_header(stream, (const char *)name, namelen,
                                   (const char *)value, valuelen);
-    if (status != APR_SUCCESS &&
-        (!stream->rtmp ||
-         stream->rtmp->http_status == H2_HTTP_STATUS_UNSET ||
-         /* We accept a certain amount of failures in order to reply
-          * with an informative HTTP error response like 413. But if the
-          * client is too wrong, we fail the request a RESET of the stream */
-         stream->request_headers_failed > 100)) {
+    if (status != APR_SUCCESS
+        && (!stream->rtmp
+            || stream->rtmp->http_status == H2_HTTP_STATUS_UNSET)) {
         return NGHTTP2_ERR_TEMPORAL_CALLBACK_FAILURE;
     }
     return 0;

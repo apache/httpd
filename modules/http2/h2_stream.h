@@ -76,7 +76,6 @@ struct h2_stream {
     struct h2_request *rtmp;    /* request being assembled */
     apr_table_t *trailers_in;   /* optional, incoming trailers */
     int request_headers_added;  /* number of request headers added */
-    int request_headers_failed; /* number of request headers failed to add */
 
 #if AP_HAS_RESPONSE_BUCKETS
     ap_bucket_response *response; /* the final, non-interim response or NULL */
