@@ -388,6 +388,14 @@ static int pass_response(request_rec *r, proxy_conn_rec *conn)
         return status;
     }
 
+    /* SCGI has its own body framing mechanism which we don't
+     * match against any provided Content-Length, so let the
+     * core determine C-L vs T-E based on what's actually sent.
+     */
+    if (!apr_table_get(r->subprocess_env, AP_TRUST_CGILIKE_CL_ENVVAR))
+        apr_table_unset(r->headers_out, "Content-Length");
+    apr_table_unset(r->headers_out, "Transfer-Encoding");
+
     conf = ap_get_module_config(r->per_dir_config, &proxy_scgi_module);
     if (conf->sendfile && conf->sendfile != scgi_sendfile_off) {
         short err = 1;

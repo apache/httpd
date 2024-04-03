@@ -764,6 +764,15 @@ recv_again:
 
                             status = ap_scan_script_header_err_brigade_ex(r, ob,
                                 NULL, APLOG_MODULE_INDEX);
+
+                            /* FCGI has its own body framing mechanism which we don't
+                             * match against any provided Content-Length, so let the
+                             * core determine C-L vs T-E based on what's actually sent.
+                             */
+                            if (!apr_table_get(r->subprocess_env, AP_TRUST_CGILIKE_CL_ENVVAR))
+                                apr_table_unset(r->headers_out, "Content-Length");
+                            apr_table_unset(r->headers_out, "Transfer-Encoding");
+
                             /* suck in all the rest */
                             if (status != OK) {
                                 apr_bucket *tmp_b;

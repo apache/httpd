@@ -364,6 +364,12 @@ static int uwsgi_response(request_rec *r, proxy_conn_rec * backend,
         apr_table_add(r->headers_out, buffer, value);
     }
 
+    /* T-E wins over C-L */
+    if (apr_table_get(r->headers_out, "Transfer-Encoding")) {
+        apr_table_unset(r->headers_out, "Content-Length");
+        backend->close = 1;
+    }
+
     if ((buf = apr_table_get(r->headers_out, "Content-Type"))) {
         ap_set_content_type(r, apr_pstrdup(r->pool, buf));
     }

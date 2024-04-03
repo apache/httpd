@@ -1616,9 +1616,18 @@ static int cgid_handler(request_rec *r)
         b = apr_bucket_eos_create(c->bucket_alloc);
         APR_BRIGADE_INSERT_TAIL(bb, b);
 
-        if ((ret = ap_scan_script_header_err_brigade_ex(r, bb, sbuf,
-                                                        APLOG_MODULE_INDEX)))
-        {
+        ret = ap_scan_script_header_err_brigade_ex(r, bb, sbuf,
+                                                   APLOG_MODULE_INDEX);
+
+        /* xCGI has its own body framing mechanism which we don't
+         * match against any provided Content-Length, so let the
+         * core determine C-L vs T-E based on what's actually sent.
+         */
+        if (!apr_table_get(r->subprocess_env, AP_TRUST_CGILIKE_CL_ENVVAR))
+            apr_table_unset(r->headers_out, "Content-Length");
+        apr_table_unset(r->headers_out, "Transfer-Encoding");
+
+        if (ret != OK) {
             ret = log_script(r, conf, ret, dbuf, sbuf, bb, NULL);
 
             /*

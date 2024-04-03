@@ -225,6 +225,8 @@ AP_DECLARE(int) ap_scan_script_header_err_core_ex(request_rec *r, char *buffer,
  */
 AP_DECLARE(void) ap_args_to_table(request_rec *r, apr_table_t **table);
 
+#define AP_TRUST_CGILIKE_CL_ENVVAR "ap_trust_cgilike_cl"
+
 #ifdef __cplusplus
 }
 #endif
