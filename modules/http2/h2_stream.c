@@ -759,6 +759,7 @@ apr_status_t h2_stream_add_header(h2_stream *stream,
     
 cleanup:
     if (error) {
+        ++stream->request_headers_failed;
         set_error_response(stream, error);
         return APR_EINVAL; 
     }
