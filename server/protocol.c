@@ -2603,3 +2603,4 @@ AP_IMPLEMENT_HOOK_RUN_FIRST(int,protocol_switch,
                             (c, r, s, protocol), DECLINED)
 AP_IMPLEMENT_HOOK_RUN_FIRST(const char *,protocol_get,
                             (const conn_rec *c), (c), NULL)
+
