@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.59
 
+  *) mod_deflate: Fixes and better logging for handling various
+     error and edge cases. [Eric Covener, Yann Ylavic, Joe Orton,
+     Eric Norris <enorris etsy.com>]
+
   *) Add CGIScriptTimeout to mod_cgi. [Eric Covener]
 
   *) mod_xml2enc: Tolerate libxml2 2.12.0 and later.  PR 68610

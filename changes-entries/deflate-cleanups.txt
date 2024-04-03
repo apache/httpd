@@ -1,4 +1,0 @@
-  *) mod_deflate: Fixes and better logging for handling various
-     error and edge cases. [Eric Covener, Yann Ylavic, Joe Orton,
-     Eric Norris <enorris etsy.com>]
-
