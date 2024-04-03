@@ -810,6 +810,18 @@ static APR_INLINE int check_headers(request_rec *r)
     struct check_header_ctx ctx;
     core_server_config *conf =
             ap_get_core_module_config(r->server->module_config);
+    const char *val;
+ 
+    if ((val = apr_table_get(r->headers_out, "Transfer-Encoding"))) {
+        if (apr_table_get(r->headers_out, "Content-Length")) {
+            apr_table_unset(r->headers_out, "Content-Length");
+            r->connection->keepalive = AP_CONN_CLOSE;
+        }
+        if (!ap_is_chunked(r->pool, val)) {
+            r->connection->keepalive = AP_CONN_CLOSE;
+            return 0;
+        }
+    }
 
     ctx.r = r;
     ctx.strict = (conf->http_conformance != AP_HTTP_CONFORMANCE_UNSAFE);
