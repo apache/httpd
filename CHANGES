@@ -1,5 +1,34 @@
                                                          -*- coding: utf-8 -*-
+Changes with Apache 2.4.60
+
 Changes with Apache 2.4.59
+
+  *) SECURITY: CVE-2024-27316: Apache HTTP Server: HTTP/2 DoS by
+     memory exhaustion on endless continuation frames (cve.mitre.org)
+     HTTP/2 incoming headers exceeding the limit are temporarily
+     buffered in nghttp2 in order to generate an informative HTTP 413
+     response. If a client does not stop sending headers, this leads
+     to memory exhaustion.
+     Credits: Bartek Nowotarski (https://nowotarski.info/)
+
+  *) SECURITY: CVE-2024-24795: Apache HTTP Server: HTTP Response
+     Splitting in multiple modules (cve.mitre.org)
+     HTTP Response splitting in multiple modules in Apache HTTP
+     Server allows an attacker that can inject malicious response
+     headers into backend applications to cause an HTTP
+     desynchronization attack.
+     Users are recommended to upgrade to version 2.4.59, which fixes
+     this issue.
+     Credits: Keran Mu, Tsinghua University and Zhongguancun
+     Laboratory.
+
+  *) SECURITY: CVE-2023-38709: Apache HTTP Server: HTTP response
+     splitting (cve.mitre.org)
+     Faulty input validation in the core of Apache allows malicious
+     or exploitable backend/content generators to split HTTP
+     responses.
+     This issue affects Apache HTTP Server: through 2.4.58.
+     Credits: Orange Tsai (@orange_8361) from DEVCORE
 
   *) mod_deflate: Fixes and better logging for handling various
      error and edge cases. [Eric Covener, Yann Ylavic, Joe Orton,
