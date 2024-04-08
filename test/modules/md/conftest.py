@@ -32,7 +32,8 @@ def env(pytestconfig) -> MDTestEnv:
     env.setup_httpd()
     env.apache_access_log_clear()
     env.httpd_error_log.clear_log()
-    return env
+    yield env
+    env.apache_stop()
 
 
 @pytest.fixture(autouse=True, scope="package")

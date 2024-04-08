@@ -84,6 +84,7 @@ static md_mod_conf_t defmc = {
     "crt.sh",                  /* default cert checker site name */
     "https://crt.sh?q=",       /* default cert checker site url */
     NULL,                      /* CA cert file to use */
+    apr_time_from_sec(MD_SECS_PER_DAY/2), /* default time between cert checks */
     apr_time_from_sec(5),      /* minimum delay for retries */
     13,                        /* retry_failover after 14 errors, with 5s delay ~ half a day */
     0,                         /* store locks, disabled by default */
@@ -622,6 +623,24 @@ static const char *md_config_set_base_server(cmd_parms *cmd, void *dc, const cha
     (void)dc;
     if (err) return err;
     return set_on_off(&config->mc->manage_base_server, value, cmd->pool);
+}
+
+static const char *md_config_set_check_interval(cmd_parms *cmd, void *dc, const char *value)
+{
+    md_srv_conf_t *config = md_config_get(cmd->server);
+    const char *err = md_conf_check_location(cmd, MD_LOC_NOT_MD);
+    apr_time_t interval;
+
+    (void)dc;
+    if (err) return err;
+    if (md_duration_parse(&interval, value, "s") != APR_SUCCESS) {
+        return "unrecognized duration format";
+    }
+    if (interval < apr_time_from_sec(1)) {
+        return "check interval cannot be less than one second";
+    }
+    config->mc->check_interval = interval;
+    return NULL;
 }
 
 static const char *md_config_set_min_delay(cmd_parms *cmd, void *dc, const char *value)
@@ -1304,7 +1323,8 @@ const command_rec md_cmds[] = {
                   "Configure locking of store for updates."),
     AP_INIT_TAKE1("MDMatchNames", md_config_set_match_mode, NULL, RSRC_CONF,
                   "Determines how DNS names are matched to vhosts."),
-
+    AP_INIT_TAKE1("MDCheckInterval", md_config_set_check_interval, NULL, RSRC_CONF,
+                  "Time between certificate checks."),
     AP_INIT_TAKE1(NULL, NULL, NULL, RSRC_CONF, NULL)
 };
 

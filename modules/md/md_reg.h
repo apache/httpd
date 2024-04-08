@@ -23,6 +23,7 @@ struct md_pkey_t;
 struct md_cert_t;
 struct md_result_t;
 struct md_pkey_spec_t;
+struct md_ocsp_reg_t;
 
 #include "md_store.h"
 
@@ -309,5 +310,11 @@ apr_status_t md_reg_lock_global(md_reg_t *reg, apr_pool_t *p);
  * Realease the global registry lock. Will do nothing if there is no lock.
  */
 void md_reg_unlock_global(md_reg_t *reg, apr_pool_t *p);
+
+/**
+ * @return != 0 iff `md` has any certificates known to be REVOKED.
+ */
+int md_reg_has_revoked_certs(md_reg_t *reg, struct md_ocsp_reg_t *ocsp,
+                             const md_t *md, apr_pool_t *p);
 
 #endif /* mod_md_md_reg_h */

@@ -73,7 +73,11 @@ class MDTestEnv(HttpdTestEnv):
 
     @classmethod
     def has_acme_eab(cls):
-        return cls.get_acme_server() == 'pebble'
+        return False
+        # Pebble, since v2.5.0 no longer supports HS256 for EAB, which
+        # is the only thing mod_md supports. Issue opened at pebble:
+        # https://github.com/letsencrypt/pebble/issues/455
+        # return cls.get_acme_server() == 'pebble'
 
     @classmethod
     def is_pebble(cls) -> bool:
@@ -356,13 +360,14 @@ class MDTestEnv(HttpdTestEnv):
         MDCertUtil.validate_privkey(self.store_domain_file(domain, 'privkey.pem'))
         cert = MDCertUtil(self.store_domain_file(domain, 'pubcert.pem'))
         cert.validate_cert_matches_priv_key(self.store_domain_file(domain, 'privkey.pem'))
-        # check SANs and CN
-        assert cert.get_cn() == domain
+        # No longer check CN, it may not be set or is not trusted anyway
+        # assert cert.get_cn() == domain, f'CN: expected "{domain}", got {cert.get_cn()}'
+        # check SANs
         # compare lists twice in opposite directions: SAN may not respect ordering
         san_list = list(cert.get_san_list())
         assert len(san_list) == len(domains)
-        assert set(san_list).issubset(domains)
-        assert set(domains).issubset(san_list)
+        assert set(san_list).issubset(domains), f'{san_list} not subset of {domains}'
+        assert set(domains).issubset(san_list), f'{domains} not subset of {san_list}'
         # check valid dates interval
         not_before = cert.get_not_before()
         not_after = cert.get_not_after()

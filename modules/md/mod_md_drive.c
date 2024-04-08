@@ -100,7 +100,7 @@ static void process_drive_job(md_renew_ctx_t *dctx, md_job_t *job, apr_pool_t *p
     }
     
     if (md_will_renew_cert(md)) {
-        /* Renew the MDs credentials in a STAGING area. Might be invoked repeatedly 
+        /* Renew the MDs credentials in a STAGING area. Might be invoked repeatedly
          * without discarding previous/intermediate results.
          * Only returns SUCCESS when the renewal is complete, e.g. STAGING has a
          * complete set of new credentials.
@@ -108,7 +108,12 @@ static void process_drive_job(md_renew_ctx_t *dctx, md_job_t *job, apr_pool_t *p
         ap_log_error( APLOG_MARK, APLOG_DEBUG, 0, dctx->s, APLOGNO(10052) 
                      "md(%s): state=%d, driving", job->mdomain, md->state);
 
-        if (!md_reg_should_renew(dctx->mc->reg, md, dctx->p)) {
+        if (md->stapling && dctx->mc->ocsp &&
+            md_reg_has_revoked_certs(dctx->mc->reg, dctx->mc->ocsp, md, dctx->p)) {
+            ap_log_error( APLOG_MARK, APLOG_DEBUG, 0, dctx->s, APLOGNO()
+                         "md(%s): has revoked certificates", job->mdomain);
+        }
+        else if (!md_reg_should_renew(dctx->mc->reg, md, dctx->p)) {
             ap_log_error( APLOG_MARK, APLOG_DEBUG, 0, dctx->s, APLOGNO(10053) 
                          "md(%s): no need to renew", job->mdomain);
             goto expiry;
@@ -180,10 +185,13 @@ int md_will_renew_cert(const md_t *md)
     return 1;
 }
 
-static apr_time_t next_run_default(void)
+static apr_time_t next_run_default(md_renew_ctx_t *dctx)
 {
-    /* we'd like to run at least twice a day by default */
-    return apr_time_now() + apr_time_from_sec(MD_SECS_PER_DAY / 2);
+    unsigned char c;
+    apr_time_t delay = dctx->mc->check_interval;
+
+    md_rand_bytes(&c, sizeof(c), dctx->p);
+    return apr_time_now() + delay + (delay * (c - 128) / 256);
 }
 
 static apr_status_t run_watchdog(int state, void *baton, apr_pool_t *ptemp)
@@ -211,7 +219,7 @@ static apr_status_t run_watchdog(int state, void *baton, apr_pool_t *ptemp)
              * and we schedule ourself at the earliest of all. A job may specify 0
              * as next_run to indicate that it wants to participate in the normal
              * regular runs. */
-            next_run = next_run_default();
+            next_run = next_run_default(dctx);
             for (i = 0; i < dctx->jobs->nelts; ++i) {
                 job = APR_ARRAY_IDX(dctx->jobs, i, md_job_t *);
                 
