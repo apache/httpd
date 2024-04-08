@@ -1,0 +1,3 @@
+  *) mod_ssl: Fix a regression that causes the default DH parameters for a key
+     no longer set and thus effectively disabling DH ciphers when no explicit
+     DH parameters are set. PR 68863 [Ruediger Pluem]
