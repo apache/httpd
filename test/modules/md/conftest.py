@@ -39,7 +39,9 @@ def env(pytestconfig) -> MDTestEnv:
 @pytest.fixture(autouse=True, scope="package")
 def _md_package_scope(env):
     env.httpd_error_log.add_ignored_lognos([
-        "AH10085"   # There are no SSL certificates configured and no other module contributed any
+        "AH10085",   # There are no SSL certificates configured and no other module contributed any
+        "AH10045",   # No VirtualHost matches Managed Domain
+        "AH10105",   # MDomain does not match any VirtualHost with 'SSLEngine on'
     ])
 
 
