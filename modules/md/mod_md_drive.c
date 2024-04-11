@@ -110,7 +110,7 @@ static void process_drive_job(md_renew_ctx_t *dctx, md_job_t *job, apr_pool_t *p
 
         if (md->stapling && dctx->mc->ocsp &&
             md_reg_has_revoked_certs(dctx->mc->reg, dctx->mc->ocsp, md, dctx->p)) {
-            ap_log_error( APLOG_MARK, APLOG_DEBUG, 0, dctx->s, APLOGNO()
+            ap_log_error( APLOG_MARK, APLOG_DEBUG, 0, dctx->s, APLOGNO(10500)
                          "md(%s): has revoked certificates", job->mdomain);
         }
         else if (!md_reg_should_renew(dctx->mc->reg, md, dctx->p)) {
