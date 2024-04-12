@@ -909,7 +909,10 @@ static void setup_threads_runtime(void)
         clean_child_exit(APEXIT_CHILDFATAL);
     }
 
-    /* Create the main pollset */
+    /* Create the main pollset. When APR_POLLSET_WAKEABLE is asked we account
+     * for the wakeup pipe explicitely with num_listensocks+1 because some
+     * pollset implementations don't do it implicitely in APR.
+     */
     pollset_flags = APR_POLLSET_NOCOPY | APR_POLLSET_WAKEABLE;
     rv = apr_pollset_create(&worker_pollset, num_listensocks + 1, pruntime,
                             pollset_flags);

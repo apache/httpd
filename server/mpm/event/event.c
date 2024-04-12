@@ -2628,7 +2628,10 @@ static void setup_threads_runtime(void)
         clean_child_exit(APEXIT_CHILDFATAL);
     }
 
-    /* Create the main pollset */
+    /* Create the main pollset. When APR_POLLSET_WAKEABLE is asked we account
+     * for the wakeup pipe explicitely with pollset_size+1 because some pollset
+     * implementations don't do it implicitely in APR.
+     */
     pollset_flags = APR_POLLSET_THREADSAFE | APR_POLLSET_NOCOPY |
                     APR_POLLSET_WAKEABLE | APR_POLLSET_NODEFAULT;
     for (i = 0; i < sizeof(good_methods) / sizeof(good_methods[0]); i++) {
