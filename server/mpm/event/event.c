@@ -2630,9 +2630,9 @@ static void setup_threads_runtime(void)
 
     /* Create the main pollset */
     pollset_flags = APR_POLLSET_THREADSAFE | APR_POLLSET_NOCOPY |
-                    APR_POLLSET_NODEFAULT | APR_POLLSET_WAKEABLE;
+                    APR_POLLSET_WAKEABLE | APR_POLLSET_NODEFAULT;
     for (i = 0; i < sizeof(good_methods) / sizeof(good_methods[0]); i++) {
-        rv = apr_pollset_create_ex(&event_pollset, pollset_size, pruntime,
+        rv = apr_pollset_create_ex(&event_pollset, pollset_size + 1, pruntime,
                                    pollset_flags, good_methods[i]);
         if (rv == APR_SUCCESS) {
             listener_is_wakeable = 1;
@@ -2640,19 +2640,17 @@ static void setup_threads_runtime(void)
         }
     }
     if (rv != APR_SUCCESS) {
-        pollset_flags &= ~APR_POLLSET_WAKEABLE;
-        for (i = 0; i < sizeof(good_methods) / sizeof(good_methods[0]); i++) {
-            rv = apr_pollset_create_ex(&event_pollset, pollset_size, pruntime,
-                                       pollset_flags, good_methods[i]);
-            if (rv == APR_SUCCESS) {
-                break;
-            }
-        }
-    }
-    if (rv != APR_SUCCESS) {
         pollset_flags &= ~APR_POLLSET_NODEFAULT;
-        rv = apr_pollset_create(&event_pollset, pollset_size, pruntime,
+        rv = apr_pollset_create(&event_pollset, pollset_size + 1, pruntime,
                                 pollset_flags);
+        if (rv == APR_SUCCESS) {
+            listener_is_wakeable = 1;
+        }
+        else {
+            pollset_flags &= ~APR_POLLSET_WAKEABLE;
+            rv = apr_pollset_create(&event_pollset, pollset_size, pruntime,
+                                    pollset_flags);
+        }
     }
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, ap_server_conf, APLOGNO(03103)
