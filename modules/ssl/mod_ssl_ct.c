@@ -2048,7 +2048,7 @@ static int client_extension_add_callback(SSL *ssl, unsigned ext_type,
 
     ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, c,
                   "client_extension_add_callback called, "
-                  "ext %hu will be in ClientHello",
+                  "ext %u will be in ClientHello",
                   ext_type);
 
     return 1;
@@ -2330,7 +2330,7 @@ static int server_extension_add_callback(SSL *ssl, unsigned ext_type,
 
     ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, c,
                   "server_extension_add_callback called, "
-                  "ext %hu will be in ServerHello",
+                  "ext %u will be in ServerHello",
                   ext_type);
 
     rv = read_scts(c->pool, fingerprint,
