@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1915950:1916705 (outdated) -->
+<!-- English Revision: 1916705 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -198,6 +198,7 @@ module="core">Timeout</directive> lorsqu'elle n'est pas définie</default>
 <contextlist><context>server config</context>
 <context>virtual host</context><context>directory</context>
 <context>.htaccess</context></contextlist>
+<compatibility>Disponible à partir de la version 2.4.59 du serveur HTTP Apache.</compatibility>
 
 <usage>
     <p>Cette directive permet de limiter le temps d'attente jusqu'à une

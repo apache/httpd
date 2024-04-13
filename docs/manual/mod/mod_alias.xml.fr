@@ -709,7 +709,7 @@ comme un script CGI</description>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context>
 </contextlist>
-<compatibility>Disponible à partir de la version 2.5.1 du serveur HTTP Apache</compatibility>
+<compatibility>Disponible à partir de la version 2.4.58 du serveur HTTP Apache.</compatibility>
 
 <usage>
     <p>Lorsqu'on utilise la version à deux paramètres de la directive

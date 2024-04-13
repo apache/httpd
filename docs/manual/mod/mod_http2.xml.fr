@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1911979:1916702 (outdated) -->
+<!-- English Revision: 1916702 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -1251,7 +1251,7 @@ H2EarlyHint Link "&lt;/my.css&gt;;rel=preload;as=style"
             <context>server config</context>
             <context>virtual host</context>
         </contextlist>
-        <compatibility>Disponible à partir de la version 2.5.1 du serveur HTTP
+        <compatibility>Disponible à partir de la version 2.4.58 du serveur HTTP
 	Apache</compatibility>
 
         <usage>
@@ -1294,7 +1294,7 @@ H2EarlyHint Link "&lt;/my.css&gt;;rel=preload;as=style"
             <context>server config</context>
             <context>virtual host</context>
         </contextlist>
-        <compatibility>Disponible à partir de la version 2.5.1 du serveur HTTP
+        <compatibility>Disponible à partir de la version 2.4.58 du serveur HTTP
 	Apache</compatibility>
 
         <usage>
