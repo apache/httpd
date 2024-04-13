@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1915459 -->
+<!-- English Revision: 1916708 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -815,9 +815,11 @@ ProxyRemote ftp http://ftpproxy.mydomain:8080
 <name>ProxyRemoteMatch</name>
 <description>Le mandataire distant à utiliser pour traiter les requêtes
 correspondant à une expression rationnelle</description>
-<syntax>ProxyRemoteMatch <var>regex</var> <var>serveur-distant</var></syntax>
+<syntax>ProxyRemoteMatch <var>regex</var> <var>remote-server</var> [<var>username:password</var>]</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
+<compatibility>Le troisième argument facultatif est disponible à partir de la
+version 2.5.1 du serveur HTTP Apache.</compatibility>
 
 <usage>
     <p>La directive <directive>ProxyRemoteMatch</directive> est

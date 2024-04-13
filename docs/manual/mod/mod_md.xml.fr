@@ -2,7 +2,7 @@
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
-<!-- English Revision: 1915423 -->
+<!-- English Revision: 1916861 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -1800,6 +1800,35 @@ MDMessageCmd /etc/apache/md-message
 		sous-domaines spécifiques.
             </p>
         </usage>
-    </directivesynopsis>    
+    </directivesynopsis>
+
+    <directivesynopsis>
+        <name>MDCheckInterval</name>
+        <description>Détermine la périodicité de la vérification des certificats</description>
+        <syntax>MDCheckInterval <var>duration</var></syntax>
+        <default>MDCheckInterval 12h</default>
+        <contextlist>
+            <context>server config</context>
+        </contextlist>
+        <compatibility>Disponible à partir de la version 2.4.60 du serveur HTTP
+	Apache</compatibility>
+        <usage>
+	    <p>
+	    Cette option permet de définir l’intervalle entre deux
+	    vérifications de certificat. Par défaut, la validité et le besoin de
+	    renouvellement sont vérifiés deux fois par jour. Cet intervalle
+	    n’est cependant pas appliqué avec précision. En effet, le module lui
+	    applique une plage de variation aléatoire de +/- 50%. Avec
+	    l’intervalle par défaut de 12 heures, cela signifie que l’intervalle
+	    réel entre deux vérifications varie entre 6 et 18 heures, la
+	    variation s’appliquant à nouveau à chaque vérification. Cela permet
+	    d’atténuer les pics de trafic sur les serveurs ACME.
+            </p><p>
+	    La valeur minimale pouvant être définie pour l’intervalle est de
+	    1 seconde. Il est cependant déconseillé de définir un intervalle
+	    aussi court sur un serveur en production.
+            </p>
+        </usage>
+    </directivesynopsis>
 
 </modulesynopsis>
