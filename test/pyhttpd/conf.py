@@ -26,15 +26,96 @@ class HttpdConf(object):
     def install(self):
         self.env.install_test_conf(self._lines)
 
+    def replacetlsstr(self, line):
+            l = line.replace("TLS_", "")
+            l = l.replace("\n", " ")
+            l = l.replace("\\", " ")
+            l = " ".join(l.split())
+            l = l.replace(" ", ":")
+            l = l.replace("_", "-")
+            l = l.replace("-WITH", "")
+            l = l.replace("AES-", "AES")
+            l = l.replace("POLY1305-SHA256", "POLY1305")
+            return l
+
+    def replaceinstr(self, line):
+        if line.startswith("TLSCiphersPrefer"):
+            # the "TLS_" are changed into "".
+            l = self.replacetlsstr(line)
+            l = l.replace("TLSCiphersPrefer:", "SSLCipherSuite ")
+        elif line.startswith("TLSCiphersSuppress"):
+            # like SSLCipherSuite but with :!
+            l = self.replacetlsstr(line)
+            l = l.replace("TLSCiphersSuppress:", "SSLCipherSuite !")
+            l = l.replace(":", ":!")
+        elif line.startswith("TLSCertificate"):
+            l = line.replace("TLSCertificate", "SSLCertificateFile")
+        elif line.startswith("TLSProtocol"):
+            # mod_ssl is different (+ no supported and 0x code have to be translated)
+            l = line.replace("TLSProtocol", "SSLProtocol")
+            l = l.replace("+", "")
+            l = l.replace("default", "all")
+            l = l.replace("0x0303", "1.2") # need to check 1.3 and 1.1
+        elif line.startswith("SSLProtocol"):
+            l = line # we have that in test/modules/tls/test_05_proto.py
+        elif line.startswith("TLSHonorClientOrder"):
+            # mod_ssl has SSLHonorCipherOrder on = use server off = use client.
+            l = line.lower()
+            if "on" in l:
+                l = "SSLHonorCipherOrder off"
+            else:
+                l = "SSLHonorCipherOrder on"
+        elif line.startswith("TLSEngine"):
+            # In fact it should go in the corresponding VirtualHost... Not sure how to do that.
+            l = "SSLEngine On"
+        else:
+            if line != "":
+                l = line.replace("TLS", "SSL")
+            else:
+                l = line
+        return l
+
     def add(self, line: Any):
+        # make we transform the TLS to SSL if we are using mod_ssl
         if isinstance(line, str):
+            if not HttpdTestEnv.has_shared_module("tls"):
+                line = self.replaceinstr(line)
             if self._indents > 0:
                 line = f"{'  ' * self._indents}{line}"
             self._lines.append(line)
         else:
-            if self._indents > 0:
-                line = [f"{'  ' * self._indents}{l}" for l in line]
-            self._lines.extend(line)
+            if not HttpdTestEnv.has_shared_module("tls"):
+                new = []
+                previous = ""
+                for l in line:
+                    if previous.startswith("SSLCipherSuite"):
+                        if l.startswith("TLSCiphersPrefer") or l.startswith("TLSCiphersSuppress"):
+                            # we need to merge it   
+                            l = self.replaceinstr(l)
+                            l = l.replace("SSLCipherSuite ", ":")
+                            previous = previous + l
+                            continue
+                        else:
+                            if self._indents > 0:
+                                previous = f"{'  ' * self._indents}{previous}"
+                            new.append(previous)
+                            previous = ""
+                    l = self.replaceinstr(l)
+                    if l.startswith("SSLCipherSuite"):
+                        previous = l
+                        continue
+                    if self._indents > 0:
+                        l = f"{'  ' * self._indents}{l}"
+                    new.append(l)
+                if previous != "":
+                    if self._indents > 0:
+                        previous = f"{'  ' * self._indents}{previous}"
+                    new.append(previous)
+                self._lines.extend(new)
+            else:
+                if self._indents > 0:
+                    line = [f"{'  ' * self._indents}{l}" for l in line]
+                self._lines.extend(line)
         return self
 
     def add_certificate(self, cert_file, key_file, ssl_module=None):
