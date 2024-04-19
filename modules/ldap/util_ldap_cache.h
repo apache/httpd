@@ -87,7 +87,7 @@ struct util_ald_cache {
 /*
  * Maintain a cache of LDAP URLs that the server handles. Each node in
  * the cache contains the search cache for that URL, and a compare cache
- * for the URL. The compare cash is populated when doing require group
+ * for the URL. The compare cache is populated when doing require group
  * compares.
  */
 typedef struct util_url_node_t {
@@ -116,8 +116,8 @@ typedef struct util_search_node_t {
     const char *bindpw;                 /* The most recently used bind password;
                                            NULL if the bind failed */
     apr_time_t lastbind;                /* Time of last successful bind */
-    const char **vals;                  /* Values of queried attributes */
-    int        numvals;         /* Number of queried attributes */
+    const void *vals;                   /* Packed arrays of values of queried attributes */
+    apr_size_t vals_len;                /* Length of the packed array */
 } util_search_node_t;
 
 /*
@@ -127,10 +127,10 @@ typedef struct util_search_node_t {
 typedef struct util_compare_node_t {
     const char *dn;                     /* DN, attrib and value combine to be the key */
     const char *attrib;
-    const char *value;
+    const apr_buffer_t *value;
     apr_time_t lastcompare;
     int result;
-    int sgl_processed;      /* 0 if no sgl processing yet. 1 if sgl has been processed (even if SGL is NULL). Saves repeat work on leaves. */
+    int sgl_processed;                  /* 0 if no sgl processing yet. 1 if sgl has been processed (even if SGL is NULL). Saves repeat work on leaves. */
     struct util_compare_subgroup_t *subgroupList;
 } util_compare_node_t;
 
@@ -139,7 +139,7 @@ typedef struct util_compare_node_t {
  * statement and the dn fetched based on the client-provided username.
  */
 typedef struct util_dn_compare_node_t {
-    const char *reqdn;          /* The DN in the require dn statement */
+    const char *reqdn;                  /* The DN in the require dn statement */
     const char *dn;                     /* The DN found in the search */
 } util_dn_compare_node_t;
 
@@ -182,6 +182,7 @@ void *util_ald_alloc(util_ald_cache_t *cache, unsigned long size);
 const char *util_ald_strdup(util_ald_cache_t *cache, const char *s);
 util_compare_subgroup_t *util_ald_sgl_dup(util_ald_cache_t *cache, util_compare_subgroup_t *sgl);
 void util_ald_sgl_free(util_ald_cache_t *cache, util_compare_subgroup_t **sgl);
+void *util_ald_buffer_alloc(void *ctx, apr_size_t size);
 
 /* Cache managing function */
 unsigned long util_ald_hash_string(int nstr, ...);
