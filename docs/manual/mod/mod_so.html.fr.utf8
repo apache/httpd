@@ -119,7 +119,7 @@ Windows</a> <a title="Lien permanent" href="#windows" class="permalink">&para;</
     modification à son fichier source : l'enregistrement du module doit
     être exporté depuis la DLL (qui sera elle-même créée plus tard ;
     voir plus loin). Pour ce faire, ajoutez la macro
-    <code>AP_MODULE_DECLARE_DATA</code> (définie dans les fichiers
+    <code>AP_DECLARE_MODULE</code> (définie dans les fichiers
     d'en-têtes d'Apache httpd) à la définition de l'enregistrement de votre
     module. Par exemple, si votre module est déclaré comme suit :</p>
 
@@ -129,7 +129,7 @@ Windows</a> <a title="Lien permanent" href="#windows" class="permalink">&para;</
 
     <p>Remplacez cette ligne par :</p>
 <div class="example"><p><code>
-    module AP_MODULE_DECLARE_DATA foo_module;
+    AP_DECLARE_MODULE(foo);
 </code></p></div>
 
     <p>Notez que cette macro ne sera prise en compte que sous Windows,
