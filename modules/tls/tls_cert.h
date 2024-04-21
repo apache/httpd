@@ -128,7 +128,7 @@ const char *tls_cert_reg_get_id(tls_cert_reg_t *reg, const rustls_certified_key 
  * @param pstore the loaded root store on success
  */
 apr_status_t tls_cert_load_root_store(
-    apr_pool_t *p, const char *store_file, rustls_root_cert_store **pstore);
+    apr_pool_t *p, const char *store_file, const rustls_root_cert_store **pstore);
 
 typedef struct tls_cert_root_stores_t tls_cert_root_stores_t;
 struct tls_cert_root_stores_t {
@@ -157,7 +157,7 @@ void tls_cert_root_stores_clear(tls_cert_root_stores_t *stores);
 apr_status_t tls_cert_root_stores_get(
     tls_cert_root_stores_t *stores,
     const char *store_file,
-    rustls_root_cert_store **pstore);
+    const rustls_root_cert_store **pstore);
 
 typedef struct tls_cert_verifiers_t tls_cert_verifiers_t;
 struct tls_cert_verifiers_t {
@@ -193,7 +193,7 @@ void tls_cert_verifiers_clear(
 apr_status_t tls_cert_client_verifiers_get(
     tls_cert_verifiers_t *verifiers,
     const char *store_file,
-    const rustls_allow_any_authenticated_client_verifier **pverifier);
+    const rustls_client_cert_verifier **pverifier);
 
 /**
  * Get the optional client certificate verifier for the
@@ -206,6 +206,6 @@ apr_status_t tls_cert_client_verifiers_get(
 apr_status_t tls_cert_client_verifiers_get_optional(
     tls_cert_verifiers_t *verifiers,
     const char *store_file,
-    const rustls_allow_any_anonymous_or_authenticated_client_verifier **pverifier);
+    const rustls_client_cert_verifier **pverifier);
 
 #endif /* tls_cert_h */

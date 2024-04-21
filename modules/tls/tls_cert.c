@@ -331,11 +331,12 @@ const char *tls_cert_reg_get_id(tls_cert_reg_t *reg, const rustls_certified_key 
 }
 
 apr_status_t tls_cert_load_root_store(
-    apr_pool_t *p, const char *store_file, rustls_root_cert_store **pstore)
+    apr_pool_t *p, const char *store_file, const rustls_root_cert_store **pstore)
 {
     const char *fpath;
     tls_data_t pem;
-    rustls_root_cert_store *store = NULL;
+    rustls_root_cert_store_builder *store_builder = NULL;
+    const rustls_root_cert_store *store = NULL;
     rustls_result rr = RUSTLS_RESULT_OK;
     apr_pool_t *ptemp = NULL;
     apr_status_t rv;
@@ -353,11 +354,17 @@ apr_status_t tls_cert_load_root_store(
     rv = tls_util_file_load(ptemp, fpath, 0, 1024*1024, &pem);
     if (APR_SUCCESS != rv) goto cleanup;
 
-    store = rustls_root_cert_store_new();
-    rr = rustls_root_cert_store_add_pem(store, pem.data, pem.len, 1);
+    store_builder = rustls_root_cert_store_builder_new();
+    rr = rustls_root_cert_store_builder_add_pem(store_builder, pem.data, pem.len, 1);
+    if (RUSTLS_RESULT_OK != rr) goto cleanup;
+
+    rr = rustls_root_cert_store_builder_build(store_builder, &store);
     if (RUSTLS_RESULT_OK != rr) goto cleanup;
 
 cleanup:
+    if (store_builder != NULL) {
+        rustls_root_cert_store_builder_free(store_builder);
+    }
     if (RUSTLS_RESULT_OK != rr) {
         const char *err_descr;
         rv = tls_util_rustls_error(p, rr, &err_descr);
@@ -378,7 +385,7 @@ cleanup:
 
 typedef struct {
     const char *id;
-    rustls_root_cert_store *store;
+    const rustls_root_cert_store *store;
 } tls_cert_root_stores_entry_t;
 
 static int stores_entry_cleanup(void *ctx, const void *key, apr_ssize_t klen, const void *val)
@@ -421,14 +428,14 @@ void tls_cert_root_stores_clear(tls_cert_root_stores_t *stores)
 apr_status_t tls_cert_root_stores_get(
     tls_cert_root_stores_t *stores,
     const char *store_file,
-    rustls_root_cert_store **pstore)
+    const rustls_root_cert_store **pstore)
 {
     apr_status_t rv = APR_SUCCESS;
     tls_cert_root_stores_entry_t *entry;
 
     entry = apr_hash_get(stores->file2store, store_file, APR_HASH_KEY_STRING);
     if (!entry) {
-        rustls_root_cert_store *store;
+        const rustls_root_cert_store *store;
         rv = tls_cert_load_root_store(stores->pool, store_file, &store);
         if (APR_SUCCESS != rv) goto cleanup;
         entry = apr_pcalloc(stores->pool, sizeof(*entry));
@@ -449,8 +456,8 @@ cleanup:
 
 typedef struct {
     const char *id;
-    const rustls_allow_any_authenticated_client_verifier *client_verifier;
-    const rustls_allow_any_anonymous_or_authenticated_client_verifier *client_verifier_opt;
+    rustls_client_cert_verifier *client_verifier;
+    rustls_client_cert_verifier *client_verifier_opt;
 } tls_cert_verifiers_entry_t;
 
 static int verifiers_entry_cleanup(void *ctx, const void *key, apr_ssize_t klen, const void *val)
@@ -458,11 +465,11 @@ static int verifiers_entry_cleanup(void *ctx, const void *key, apr_ssize_t klen,
     tls_cert_verifiers_entry_t *entry = (tls_cert_verifiers_entry_t*)val;
     (void)ctx; (void)key; (void)klen;
     if (entry->client_verifier) {
-        rustls_allow_any_authenticated_client_verifier_free(entry->client_verifier);
+        rustls_client_cert_verifier_free(entry->client_verifier);
         entry->client_verifier = NULL;
     }
     if (entry->client_verifier_opt) {
-        rustls_allow_any_anonymous_or_authenticated_client_verifier_free(entry->client_verifier_opt);
+        rustls_client_cert_verifier_free(entry->client_verifier_opt);
         entry->client_verifier_opt = NULL;
     }
     return 1;
@@ -511,27 +518,43 @@ static tls_cert_verifiers_entry_t * verifiers_get_or_make_entry(
     return entry;
 }
 
-apr_status_t tls_cert_client_verifiers_get(
-    tls_cert_verifiers_t *verifiers,
-    const char *store_file,
-    const rustls_allow_any_authenticated_client_verifier **pverifier)
+static apr_status_t tls_cert_client_verifiers_get_internal(
+        tls_cert_verifiers_t *verifiers,
+        const char *store_file,
+        const rustls_client_cert_verifier **pverifier,
+        bool allow_unauthenticated)
 {
     apr_status_t rv = APR_SUCCESS;
     tls_cert_verifiers_entry_t *entry;
-    struct rustls_allow_any_authenticated_client_builder *verifier_builder = NULL;
+    rustls_result rr = RUSTLS_RESULT_OK;
+    struct rustls_web_pki_client_cert_verifier_builder *verifier_builder = NULL;
 
     entry = verifiers_get_or_make_entry(verifiers, store_file);
     if (!entry->client_verifier) {
-        rustls_root_cert_store *store;
+        const rustls_root_cert_store *store;
         rv = tls_cert_root_stores_get(verifiers->stores, store_file, &store);
         if (APR_SUCCESS != rv) goto cleanup;
-        verifier_builder = rustls_allow_any_authenticated_client_builder_new(store);
-        entry->client_verifier = rustls_allow_any_authenticated_client_verifier_new(verifier_builder);
+        verifier_builder = rustls_web_pki_client_cert_verifier_builder_new(store);
+
+        if (allow_unauthenticated) {
+            rr = rustls_web_pki_client_cert_verifier_builder_allow_unauthenticated(verifier_builder);
+            if (rr != RUSTLS_RESULT_OK) {
+                goto cleanup;
+            }
+        }
+
+        rr = rustls_web_pki_client_cert_verifier_builder_build(verifier_builder, &entry->client_verifier);
+        if (rr != RUSTLS_RESULT_OK) {
+            goto cleanup;
+        }
     }
 
 cleanup:
     if (verifier_builder != NULL) {
-        rustls_allow_any_authenticated_client_builder_free(verifier_builder);
+        rustls_web_pki_client_cert_verifier_builder_free(verifier_builder);
+    }
+    if (rr != RUSTLS_RESULT_OK) {
+        rv = tls_util_rustls_error(verifiers->pool, rr, NULL);
     }
     if (APR_SUCCESS == rv) {
         *pverifier = entry->client_verifier;
@@ -542,33 +565,19 @@ cleanup:
     return rv;
 }
 
+
+apr_status_t tls_cert_client_verifiers_get(
+    tls_cert_verifiers_t *verifiers,
+    const char *store_file,
+    const rustls_client_cert_verifier **pverifier)
+{
+    return tls_cert_client_verifiers_get_internal(verifiers, store_file, pverifier, false);
+}
+
 apr_status_t tls_cert_client_verifiers_get_optional(
     tls_cert_verifiers_t *verifiers,
     const char *store_file,
-    const rustls_allow_any_anonymous_or_authenticated_client_verifier **pverifier)
+    const rustls_client_cert_verifier **pverifier)
 {
-    apr_status_t rv = APR_SUCCESS;
-    tls_cert_verifiers_entry_t *entry;
-    struct rustls_allow_any_anonymous_or_authenticated_client_builder *verifier_builder = NULL;
-
-    entry = verifiers_get_or_make_entry(verifiers, store_file);
-    if (!entry->client_verifier_opt) {
-        rustls_root_cert_store *store;
-        rv = tls_cert_root_stores_get(verifiers->stores, store_file, &store);
-        if (APR_SUCCESS != rv) goto cleanup;
-        verifier_builder = rustls_client_cert_verifier_optional_builder_new(store);
-        entry->client_verifier_opt = rustls_allow_any_anonymous_or_authenticated_client_verifier_new(verifier_builder);
-    }
-
-cleanup:
-    if (verifier_builder != NULL) {
-        rustls_client_cert_verifier_optional_builder_free(verifier_builder);
-    }
-    if (APR_SUCCESS == rv) {
-        *pverifier = entry->client_verifier_opt;
-    }
-    else {
-        *pverifier = NULL;
-    }
-    return rv;
+    return tls_cert_client_verifiers_get_internal(verifiers, store_file, pverifier, true);
 }

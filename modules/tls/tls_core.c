@@ -764,8 +764,10 @@ static apr_status_t init_outgoing_connection(conn_rec *c)
     tls_conf_proxy_t *pc;
     const apr_array_header_t *ciphersuites = NULL;
     apr_array_header_t *tls_versions = NULL;
+    rustls_web_pki_server_cert_verifier_builder *verifier_builder = NULL;
+    struct rustls_server_cert_verifier *verifier = NULL;
     rustls_client_config_builder *builder = NULL;
-    rustls_root_cert_store *ca_store = NULL;
+    const rustls_root_cert_store *ca_store = NULL;
     const char *hostname = NULL, *alpn_note = NULL;
     rustls_result rr = RUSTLS_RESULT_OK;
     apr_status_t rv = APR_SUCCESS;
@@ -809,7 +811,10 @@ static apr_status_t init_outgoing_connection(conn_rec *c)
     if (pc->proxy_ca && strcasecmp(pc->proxy_ca, "default")) {
         rv = tls_cert_root_stores_get(pc->global->stores, pc->proxy_ca, &ca_store);
         if (APR_SUCCESS != rv) goto cleanup;
-        rustls_client_config_builder_use_roots(builder, ca_store);
+        verifier_builder = rustls_web_pki_server_cert_verifier_builder_new(ca_store);
+        rr = rustls_web_pki_server_cert_verifier_builder_build(verifier_builder, &verifier);
+        if (RUSTLS_RESULT_OK != rr) goto cleanup;
+        rustls_client_config_builder_set_server_verifier(builder, verifier);
     }
 
 #if TLS_MACHINE_CERTS
@@ -881,6 +886,7 @@ static apr_status_t init_outgoing_connection(conn_rec *c)
     rustls_connection_set_userdata(cc->rustls_connection, c);
 
 cleanup:
+    if (verifier_builder != NULL) rustls_web_pki_server_cert_verifier_builder_free(verifier_builder);
     if (builder != NULL) rustls_client_config_builder_free(builder);
     if (RUSTLS_RESULT_OK != rr) {
         const char *err_descr = NULL;
@@ -1119,16 +1125,16 @@ static apr_status_t build_server_connection(rustls_connection **pconnection,
     if (cc->client_auth != TLS_CLIENT_AUTH_NONE) {
         ap_assert(sc->client_ca);  /* checked in server_setup */
         if (cc->client_auth == TLS_CLIENT_AUTH_REQUIRED) {
-            const rustls_allow_any_authenticated_client_verifier *verifier;
+            const rustls_client_cert_verifier *verifier;
             rv = tls_cert_client_verifiers_get(sc->global->verifiers, sc->client_ca, &verifier);
             if (APR_SUCCESS != rv) goto cleanup;
             rustls_server_config_builder_set_client_verifier(builder, verifier);
         }
         else {
-            const rustls_allow_any_anonymous_or_authenticated_client_verifier *verifier;
+            const rustls_client_cert_verifier *verifier;
             rv = tls_cert_client_verifiers_get_optional(sc->global->verifiers, sc->client_ca, &verifier);
             if (APR_SUCCESS != rv) goto cleanup;
-            rustls_server_config_builder_set_client_verifier_optional(builder, verifier);
+            rustls_server_config_builder_set_client_verifier(builder, verifier);
         }
     }
 
