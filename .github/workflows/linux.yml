@@ -241,7 +241,7 @@ jobs:
               APR_VERSION=1.7.4
               APU_VERSION=1.6.3
               APU_CONFIG="--with-crypto"
-              RUSTLS_VERSION="v0.10.0"
+              RUSTLS_VERSION="v0.11.0"
               NO_TEST_FRAMEWORK=1
               TEST_INSTALL=1
               TEST_MOD_TLS=1

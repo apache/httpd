@@ -193,7 +193,7 @@ void tls_cert_verifiers_clear(
 apr_status_t tls_cert_client_verifiers_get(
     tls_cert_verifiers_t *verifiers,
     const char *store_file,
-    const rustls_client_cert_verifier **pverifier);
+    const rustls_allow_any_authenticated_client_verifier **pverifier);
 
 /**
  * Get the optional client certificate verifier for the
@@ -206,6 +206,6 @@ apr_status_t tls_cert_client_verifiers_get(
 apr_status_t tls_cert_client_verifiers_get_optional(
     tls_cert_verifiers_t *verifiers,
     const char *store_file,
-    const rustls_client_cert_verifier_optional **pverifier);
+    const rustls_allow_any_anonymous_or_authenticated_client_verifier **pverifier);
 
 #endif /* tls_cert_h */

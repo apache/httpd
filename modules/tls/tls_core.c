@@ -1119,13 +1119,13 @@ static apr_status_t build_server_connection(rustls_connection **pconnection,
     if (cc->client_auth != TLS_CLIENT_AUTH_NONE) {
         ap_assert(sc->client_ca);  /* checked in server_setup */
         if (cc->client_auth == TLS_CLIENT_AUTH_REQUIRED) {
-            const rustls_client_cert_verifier *verifier;
+            const rustls_allow_any_authenticated_client_verifier *verifier;
             rv = tls_cert_client_verifiers_get(sc->global->verifiers, sc->client_ca, &verifier);
             if (APR_SUCCESS != rv) goto cleanup;
             rustls_server_config_builder_set_client_verifier(builder, verifier);
         }
         else {
-            const rustls_client_cert_verifier_optional *verifier;
+            const rustls_allow_any_anonymous_or_authenticated_client_verifier *verifier;
             rv = tls_cert_client_verifiers_get_optional(sc->global->verifiers, sc->client_ca, &verifier);
             if (APR_SUCCESS != rv) goto cleanup;
             rustls_server_config_builder_set_client_verifier_optional(builder, verifier);
