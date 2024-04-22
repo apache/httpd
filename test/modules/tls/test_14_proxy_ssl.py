@@ -100,7 +100,7 @@ class TestProxySSL:
 
     @pytest.mark.parametrize("name, pattern", [
         ("SSL_VERSION_INTERFACE", r'mod_tls/\d+\.\d+\.\d+'),
-        ("SSL_VERSION_LIBRARY", r'rustls-ffi/\d+\.\d+\.\d+/rustls/\d+\.\d+\.\d+'),
+        ("SSL_VERSION_LIBRARY", r'rustls-ffi/\d+\.\d+\.\d+/rustls/\d+\.\d+(\.\d+)?'),
     ])
     def test_tls_14_proxy_tsl_vars_match(self, env, name: str, pattern: str):
         if not HttpdTestEnv.has_shared_module("tls"):

@@ -266,7 +266,7 @@ fi
 if test -v TEST_MOD_TLS -a $RV -eq 0; then
     # Run mod_tls tests. The underlying librustls was build
     # and installed before we configured the server (see top of file).
-    # This will be replaved once librustls is available as a package.
+    # This will be replaced once librustls is available as a package.
     py.test-3 test/modules/tls
     RV=$?
 fi
