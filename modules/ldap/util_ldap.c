@@ -726,14 +726,14 @@ static util_ldap_connection_t *
                                              && !strcmp(l->host, host)))
             && ((!binddn && !l->binddn) || (binddn && l->binddn
                                              && !strcmp(binddn, l->binddn)))
-            && !apr_buffer_ncmp(&bindpw_buf, l->bindpw)
+            && !apr_buffer_cmp(&bindpw_buf, l->bindpw)
             && (deref == l->deref) && (secureflag == l->secure)
             && !compare_client_certs(dc->client_certs, l->client_certs)
-            && !apr_buffer_ncmp(dc->mech, l->mech)
-            && !apr_buffer_ncmp(dc->realm, l->realm)
-            && !apr_buffer_ncmp(dc->user, l->user)
-            && !apr_buffer_ncmp(dc->authname, l->authname)
-            && !apr_buffer_ncmp(dc->pass, l->pass)  )
+            && !apr_buffer_cmp(dc->mech, l->mech)
+            && !apr_buffer_cmp(dc->realm, l->realm)
+            && !apr_buffer_cmp(dc->user, l->user)
+            && !apr_buffer_cmp(dc->authname, l->authname)
+            && !apr_buffer_cmp(dc->pass, l->pass)  )
         {
             if (st->connection_pool_ttl > 0) {
                 if (l->bound && (now - l->last_backend_conn) > st->connection_pool_ttl) {
@@ -776,11 +776,11 @@ static util_ldap_connection_t *
                                              && !strcmp(host, l->host)))
                 && (deref == l->deref) && (secureflag == l->secure)
                 && !compare_client_certs(dc->client_certs, l->client_certs)
-                && !apr_buffer_ncmp(dc->mech, l->mech)
-                && !apr_buffer_ncmp(dc->realm, l->realm)
-                && !apr_buffer_ncmp(dc->user, l->user)
-                && !apr_buffer_ncmp(dc->authname, l->authname)
-                && !apr_buffer_ncmp(dc->pass, l->pass)  )
+                && !apr_buffer_cmp(dc->mech, l->mech)
+                && !apr_buffer_cmp(dc->realm, l->realm)
+                && !apr_buffer_cmp(dc->user, l->user)
+                && !apr_buffer_cmp(dc->authname, l->authname)
+                && !apr_buffer_cmp(dc->pass, l->pass)  )
             {
                 if (st->connection_pool_ttl > 0) {
                     if (l->bound && (now - l->last_backend_conn) > st->connection_pool_ttl) {
@@ -1241,7 +1241,7 @@ static apr_status_t uldap_cache_compare(request_rec *r, util_ldap_connection_t *
                 ap_log_rerror(APLOG_MARK, APLOG_TRACE5, status, r, 
                               "ldap_compare(%pp, %s, %s, %s) (cached)", 
                               ldc->ld, dn, attrib,
-                              apr_buffer_pstrncat(r->pool, value, 1, NULL, APR_BUFFER_NONE, NULL));
+                              apr_buffer_pstrncat(r->pool, value, 1, NULL, APR_BUFFER_PLAIN, NULL));
                 return status;
             }
         }
@@ -1346,7 +1346,7 @@ start_over:
     ap_log_rerror(APLOG_MARK, APLOG_TRACE5, status, r, 
                   "ldap_compare(%pp, %s, %s, %s)", 
                   ldc->ld, dn, attrib,
-                  apr_buffer_pstrncat(r->pool, value, 1, NULL, APR_BUFFER_NONE, NULL));
+                  apr_buffer_pstrncat(r->pool, value, 1, NULL, APR_BUFFER_PLAIN, NULL));
 
     return status;
 }
@@ -2009,7 +2009,7 @@ static apr_array_header_t **uldap_search_unpack(apr_pool_t *pool, const util_sea
 
     for (i = 0; i < numattrs; i++) {
         vals[i] = apr_array_make(pool, offsets[i].numvals, sizeof(apr_buffer_t));
-        vals[i]->elts = (char *)apr_buffer_arraydup(buffers + numvals, util_ldap_palloc, pool, offsets[i].numvals);
+        apr_buffer_arraydup((apr_buffer_t **)(&vals[i]->elts), buffers + numvals, util_ldap_palloc, pool, offsets[i].numvals);
         vals[i]->nelts = offsets[i].numvals;
         numvals += offsets[i].numvals;
     }
@@ -3145,23 +3145,23 @@ static const char *util_ldap_set_bind(cmd_parms *cmd,
     c = prompt[0];
 
     if (c == 'm' && !strcmp(prompt, "mechanism")) {
-        dc->mech = apr_buffer_str_make(cmd->pool, (char *)value, APR_BUFFER_STRING);
+        apr_buffer_str_create(&dc->mech, cmd->pool, (char *)value, APR_BUFFER_STRING);
         dc->mech_set = 1;
     }
     else if (c == 'r' && !strcmp(prompt, "realm")) {
-        dc->realm = apr_buffer_str_make(cmd->pool, (char *)value, APR_BUFFER_STRING);
+        apr_buffer_str_create(&dc->realm, cmd->pool, (char *)value, APR_BUFFER_STRING);
         dc->realm_set = 1;
     }
     else if (c == 'a' && !strcmp(prompt, "authname")) {
-        dc->authname = apr_buffer_str_make(cmd->pool, (char *)value, APR_BUFFER_STRING);
+        apr_buffer_str_create(&dc->authname, cmd->pool, (char *)value, APR_BUFFER_STRING);
         dc->authname_set = 1;
     }
     else if (c == 'u' && !strcmp(prompt, "user")) {
-        dc->user = apr_buffer_str_make(cmd->pool, (char *)value, APR_BUFFER_STRING);
+        apr_buffer_str_create(&dc->user, cmd->pool, (char *)value, APR_BUFFER_STRING);
         dc->user_set = 1;
     }
     else if (c == 'p' && !strcmp(prompt, "pass")) {
-        dc->pass = apr_buffer_str_make(cmd->pool, (char *)value, APR_BUFFER_STRING);
+        apr_buffer_str_create(&dc->pass, cmd->pool, (char *)value, APR_BUFFER_STRING);
         dc->pass_set = 1;
     }
     else {

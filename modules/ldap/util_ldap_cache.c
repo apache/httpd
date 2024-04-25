@@ -243,7 +243,7 @@ void *util_ldap_compare_node_copy(util_ald_cache_t *cache, void *c)
     if (node) {
         if (!(node->dn = util_ald_strdup(cache, n->dn)) ||
             !(node->attrib = util_ald_strdup(cache, n->attrib)) ||
-            !(node->value = apr_buffer_dup(n->value, util_ald_buffer_alloc, cache)) ||
+            (APR_SUCCESS != apr_buffer_dup((apr_buffer_t **)&node->value, n->value, util_ald_buffer_alloc, cache)) ||
             ((n->subgroupList) && !(node->subgroupList = util_ald_sgl_dup(cache, n->subgroupList)))) {
             util_ldap_compare_node_free(cache, node);
             return NULL;
