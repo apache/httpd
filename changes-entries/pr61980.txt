@@ -1,0 +1,2 @@
+  *) mod_cgid/mod_cgi: Distinguish script stderr output clearly in
+     error logs.  PR 61980.  [Hank Ibell <hwibell gmail.com>]
