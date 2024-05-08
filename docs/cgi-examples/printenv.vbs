@@ -2,8 +2,8 @@
 
 ' To permit this cgi, replace ' on the first line above with the
 ' appropriate shebang, f.e. '!c:/windows/system32/cscript -nologo
-' You will also need to uncomment lines matching cgid_module and
-' Scriptsock in http.conf and restart (or HUP) the server.
+' You will also need to uncomment lines matching cgi_module in
+' http.conf and restart the server.
 '
 ' ***** !!! WARNING !!! *****
 ' This script echoes the server environment variables and therefore
