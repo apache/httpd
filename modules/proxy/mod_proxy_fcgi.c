@@ -569,7 +569,11 @@ static apr_status_t dispatch(proxy_conn_rec *conn, proxy_dir_conf *conf,
     *err = NULL;
     if (conn->worker->s->io_buffer_size_set) {
         iobuf_size = conn->worker->s->io_buffer_size;
-        iobuf = apr_palloc(r->pool, iobuf_size);
+        /* Allocate a buffer if the configured size is larger than the
+         * stack buffer, otherwise use the stack buffer. */
+        if (iobuf_size > AP_IOBUFSIZE) {
+            iobuf = apr_palloc(r->pool, iobuf_size);
+        }
     }
 
     pfd.desc_type = APR_POLL_SOCKET;
