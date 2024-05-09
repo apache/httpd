@@ -825,7 +825,6 @@ struct SSLSrvConfigRec {
     const unsigned char *vhost_md5; /* = ap_md5_binary(vhost_id, ...) */
     int              session_cache_timeout;
     BOOL             cipher_server_pref;
-    BOOL             insecure_reneg;
     modssl_ctx_t    *server;
 #ifdef HAVE_TLSEXT
     ssl_enabled_t    strict_sni_vhost_check;

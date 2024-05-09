@@ -847,12 +847,6 @@ static apr_status_t ssl_init_ctx_protocol(server_rec *s,
     }
 #endif
 
-#ifdef SSL_OP_ALLOW_UNSAFE_LEGACY_RENEGOTIATION
-    if (sc->insecure_reneg == TRUE) {
-        SSL_CTX_set_options(ctx, SSL_OP_ALLOW_UNSAFE_LEGACY_RENEGOTIATION);
-    }
-#endif
-
     SSL_CTX_set_app_data(ctx, s);
 
     /*
