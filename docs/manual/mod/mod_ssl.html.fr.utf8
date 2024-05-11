@@ -73,7 +73,6 @@ disponibles avec Require</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslengine">SSLEngine</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslfips">SSLFIPS</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslhonorcipherorder">SSLHonorCipherOrder</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#sslinsecurerenegotiation">SSLInsecureRenegotiation</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslocspdefaultresponder">SSLOCSPDefaultResponder</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslocspenable">SSLOCSPEnable</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslocspnoverify">SSLOCSPNoverify</a></li>
@@ -1236,48 +1235,6 @@ négociation SSLv3 ou TLSv1. Si cette directive est activée, ce sont les
 préférences du serveur qui seront prises en compte à la place.</p>
 <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">SSLHonorCipherOrder on</pre>
 </div>
-
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="sslinsecurerenegotiation" id="sslinsecurerenegotiation">Directive</a> <a name="SSLInsecureRenegotiation" id="SSLInsecureRenegotiation">SSLInsecureRenegotiation</a> <a title="Lien permanent" href="#sslinsecurerenegotiation" class="permalink">&para;</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Option permettant d'activer le support de la renégociation
-non sécurisée</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SSLInsecureRenegotiation on|off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>SSLInsecureRenegotiation off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
-<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible si une version 0.9.8m
-ou supérieure d'OpenSSL est utilisée</td></tr>
-</table>
-<p>Comme il a été spécifié, toutes les versions des protocoles SSL et
-TLS (jusqu'à la version 1.2 de TLS incluse) étaient vulnérables à une
-attaque de type Man-in-the-Middle (<a href="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CAN-2009-3555">CVE-2009-3555</a>)
-au cours d'une renégociation. Cette vulnérabilité permettait à un
-attaquant de préfixer la requête HTTP (telle qu'elle était vue du
-serveur) avec un texte choisi. Une extension du protocole a été
-développée pour corriger cette vulnérabilité, sous réserve qu'elle soit
-supportée par le client et le serveur.</p>
-
-<p>Si <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> est lié à une version 0.9.8m ou
-supérieure d'OpenSSL, par défaut, la renégociation n'est accordée qu'aux
-clients qui supportent la nouvelle extension du protocole. Si
-cette directive est activée, la renégociation sera accordée aux anciens
-clients (non patchés), quoique de manière non sécurisée</p>
-
-<div class="warning"><h3>Avertissement à propos de la sécurité</h3>
-<p>Si cette directive est activée, les connexions SSL seront vulnérables
-aux attaques de type préfixe Man-in-the-Middle comme décrit dans <a href="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CAN-2009-3555">CVE-2009-3555</a>.</p>
-</div>
-
-<div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">SSLInsecureRenegotiation on</pre>
-</div>
-
-<p>La variable d'environnement <code>SSL_SECURE_RENEG</code> peut être
-utilisée dans un script SSI ou CGI pour déterminer si la renégociation
-sécurisée est supportée pour une connexion SSL donnée.</p>
-
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
