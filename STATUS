@@ -153,6 +153,16 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+   *) mod_ssl: Fix a regression that causes the default DH parameters for a key
+     no longer set and thus effectively disabling DH ciphers when no explicit
+     DH parameters are set. PR 68863
+      Trunk version of patch:
+         https://svn.apache.org/r1916863
+      Backport version for 2.4.x of patch:
+       Trunk version of patch works
+       svn merge -c 1916863 ^/httpd/httpd/trunk .
+      +1: rpluem, jorton, ylavic
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -226,17 +236,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       2.4.x version of patch:
             https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/209.patch
       PR: https://github.com/apache/httpd/pull/209
-      +1: jorton, 
-
-   *) mod_ssl: Fix a regression that causes the default DH parameters for a key
-     no longer set and thus effectively disabling DH ciphers when no explicit
-     DH parameters are set. PR 68863
-      Trunk version of patch:
-         https://svn.apache.org/r1916863
-      Backport version for 2.4.x of patch:
-       Trunk version of patch works
-       svn merge -c 1916863 ^/httpd/httpd/trunk .
-      +1: rpluem, jorton
+      +1: jorton, ylavic, 
 
    *) core: Add support for IPv6 link-local addresses with APR 1.7+
       Trunk version of patch: 
@@ -245,7 +245,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       Backport version for 2.4.x of patch:
          https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/440.patch
       PR: https://github.com/apache/httpd/pull/440
-      +1: jorton, 
+      +1: jorton, ylavic, 
 
    *) core: On Linux use the real thread id in error logging where available.
       Trunk version of patch:
@@ -253,7 +253,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       2.4.x version of patch:
         Trunk version of patch works
         svn merge -c 1917578 ^/httpd/httpd/trunk .
-      +1: jorton, 
+      +1: jorton, ylavic, 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
