@@ -17,8 +17,12 @@ Changes with Apache 2.4.59
      Server allows an attacker that can inject malicious response
      headers into backend applications to cause an HTTP
      desynchronization attack.
-     Users are recommended to upgrade to version 2.4.59, which fixes
-     this issue.
+
+     After this change, CGI-like scripts cannot set Transfer-Encoding
+     or Content-Length headers.  To restore the ability to set Content-Length
+     header, set per-request environment variable 'ap_trust_cgilike_cl' to any
+     non-empty value.
+
      Credits: Keran Mu, Tsinghua University and Zhongguancun
      Laboratory.
 
