@@ -438,7 +438,12 @@ static int cgi_handle_response(request_rec *r, int nph, apr_bucket_brigade *bb,
          */
         if (!apr_table_get(r->subprocess_env, AP_TRUST_CGILIKE_CL_ENVVAR))
             apr_table_unset(r->headers_out, "Content-Length");
-        apr_table_unset(r->headers_out, "Transfer-Encoding");
+
+        if (apr_table_get(r->headers_out, "Transfer-Encoding") != NULL) {
+            apr_brigade_cleanup(bb);
+            return log_scripterror(r, conf, HTTP_BAD_GATEWAY, 0, APLOGNO(10501),
+                                   "script sent Transfer-Encoding");
+        }
 
         if (ret != OK) {
             /* In the case of a timeout reading script output, clear
