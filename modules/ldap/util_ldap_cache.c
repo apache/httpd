@@ -230,8 +230,8 @@ void util_ldap_search_node_display(request_rec *r, util_ald_cache_t *cache, void
                "<td nowrap>%s</td>"
                "<td nowrap>%s</td>"
                "</tr>",
-               node->username,
-               node->dn,
+               ap_escape_html(r->pool, node->username),
+               ap_escape_html(r->pool, node->dn),
                date_str);
 }
 
@@ -331,9 +331,9 @@ void util_ldap_compare_node_display(request_rec *r, util_ald_cache_t *cache, voi
                "<td nowrap>%s</td>"
                "<td nowrap>%s</td>"
                "</tr>",
-               node->dn,
-               node->attrib,
-               node->value,
+               ap_escape_html(r->pool, node->dn),
+               ap_escape_html(r->pool, node->attrib),
+               ap_escape_html(r->pool, node->value),
                date_str,
                cmp_result,
                sub_groups_val,
@@ -391,8 +391,8 @@ void util_ldap_dn_compare_node_display(request_rec *r, util_ald_cache_t *cache, 
                "<td nowrap>%s</td>"
                "<td nowrap>%s</td>"
                "</tr>",
-               node->reqdn,
-               node->dn);
+               ap_escape_html(r->pool, node->reqdn),
+               ap_escape_html(r->pool, node->dn));
 }
 
 

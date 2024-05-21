@@ -108,9 +108,9 @@ typedef struct crypto_ctx
     apr_off_t remaining;
     apr_off_t written;
     apr_size_t osize;
-    int seen_eos:1;
-    int encrypt:1;
-    int clength:1;
+    unsigned int seen_eos   :1,
+                 encrypt    :1,
+                 clength    :1;
 } crypto_ctx;
 
 static const char *parse_pass_conf_binary(cmd_parms *cmd,

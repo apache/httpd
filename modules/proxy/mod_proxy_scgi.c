@@ -62,10 +62,10 @@ typedef struct {
     scgi_request_type type;  /* type of request */
 } scgi_request_config;
 
-const char *scgi_sendfile_off = "off";
-const char *scgi_sendfile_on = "X-Sendfile";
-const char *scgi_internal_redirect_off = "off";
-const char *scgi_internal_redirect_on = "Location";
+static const char *const scgi_sendfile_off = "off";
+static const char *const scgi_sendfile_on = "X-Sendfile";
+static const char *const scgi_internal_redirect_off = "off";
+static const char *const scgi_internal_redirect_on = "Location";
 
 typedef struct {
     const char *sendfile;
@@ -389,6 +389,14 @@ static int pass_response(request_rec *r, proxy_conn_rec *conn)
         apr_brigade_destroy(bb);
         return status;
     }
+
+    /* SCGI has its own body framing mechanism which we don't
+     * match against any provided Content-Length, so let the
+     * core determine C-L vs T-E based on what's actually sent.
+     */
+    if (!apr_table_get(r->subprocess_env, AP_TRUST_CGILIKE_CL_ENVVAR))
+        apr_table_unset(r->headers_out, "Content-Length");
+    apr_table_unset(r->headers_out, "Transfer-Encoding");
 
     conf = ap_get_module_config(r->per_dir_config, &proxy_scgi_module);
     if (conf->sendfile && conf->sendfile != scgi_sendfile_off) {

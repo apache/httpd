@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1911876 -->
+<!-- English Revision: 1915443 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -56,7 +56,11 @@ règles permettant de réécrire les URLs des requêtes
       vers un traitement secondaire interne, une redirection vers une
       requête externe ou vers le mandataire interne.</p>
 
-      <p>Vous trouverez d'avantage de détails, discussions et exemples
+      <p>Une expression rationnelle ne nécessite des guillemets que si elle
+      contient des espaces non échappées et dans ce cas, les guillemets simples
+      ou doubles sont équivalents.</p>
+
+      <p>Vous trouverez plus de détails, discussions et exemples
       dans la
       <a href="../rewrite/">documentation détaillée
       sur mod_rewrite</a>.</p>

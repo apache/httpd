@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="EUC-KR" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ko.xsl"?>
-<!-- English Revision: 420990:1727637 (outdated) -->
+<!-- English Revision: 420990:1917015 (outdated) -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -77,7 +77,7 @@
     <p>모듈 DLL을 만들기위해서는 모듈의 소스파일을 조금 수정해야
     한다. DLL은 module record를 export해야 한다. (아래 참고)
     이를 위해 모듈의 module record 정의에 (아파치 헤더파일에
-    정의된) <code>AP_MODULE_DECLARE_DATA</code>를 추가한다.
+    정의된) <code>AP_DECLARE_MODULE</code>를 추가한다.
     예를 들어, 다음과 같은 모듈이 있다면:</p>
 
 <example>
@@ -86,7 +86,7 @@
 
     <p>다음과 같이 수정한다:</p>
 <example>
-    module AP_MODULE_DECLARE_DATA foo_module;
+    AP_DECLARE_MODULE(foo);
 </example>
 
     <p>이 부분은 윈도우즈에서만 사용하기때문에 변경하여도 유닉스에서

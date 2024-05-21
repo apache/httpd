@@ -66,6 +66,13 @@ BrowserMatch MSIE !netscape</pre>
    are not separately evaluated in the subrequest due to the API phases
    <code class="module"><a href="../mod/mod_setenvif.html">mod_setenvif</a></code> takes action in.</p>
 
+   <p>A regular expression only needs quoting when it contains space, 
+   in which case single and double quotes are equivalent. Unlike 
+   <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>, <code class="module"><a href="../mod/mod_setenvif.html">mod_setenvif</a></code> strips every 
+   other backslash when parsing the expression; thus <code>\\</code> 
+   requires <code>\\\</code>, and <code>\\\</code> requires 
+   <code>\\\\\</code>.</p>
+
 </div>
 <div id="quickview"><h3 class="directives">Directives</h3>
 <ul id="toc">
@@ -281,11 +288,12 @@ for additional examples.
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_setenvif</td></tr>
 </table>
     <p>The <code class="directive">SetEnvIfExpr</code> directive defines
-    environment variables based on an <code class="directive"><a href="../mod/core.html#if">&lt;If&gt;</a></code>
-    <code>ap_expr</code>. These expressions will be evaluated at runtime,
-    and applied <em>env-variable</em> in the same fashion as <code class="directive">SetEnvIf</code>.</p>
+    environment variables based on an <a href="../expr.html">expression</a>.
+    These expressions will be evaluated at runtime,
+    and applied <em>env-variable</em> in the same fashion as <code class="directive">SetEnvIf</code>, including backreferences.</p>
 
-<pre class="prettyprint lang-config">SetEnvIfExpr "tolower(req('X-Sendfile')) == 'd:\images\very_big.iso')" iso_delivered</pre>
+<pre class="prettyprint lang-config">    SetEnvIfExpr "tolower(req('X-Sendfile')) == 'd:\images\very_big.iso')" iso_delivered
+    SetEnvIfExpr "tolower(req('X-Sendfile')) =~ /(.*\.iso$)/" iso-path=$1</pre>
 
 
     <p>This would set the environment variable <code>iso_delivered</code>

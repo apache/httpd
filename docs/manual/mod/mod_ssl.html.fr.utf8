@@ -73,7 +73,6 @@ disponibles avec Require</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslengine">SSLEngine</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslfips">SSLFIPS</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslhonorcipherorder">SSLHonorCipherOrder</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#sslinsecurerenegotiation">SSLInsecureRenegotiation</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslocspdefaultresponder">SSLOCSPDefaultResponder</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslocspenable">SSLOCSPEnable</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslocspnoverify">SSLOCSPNoverify</a></li>
@@ -775,7 +774,7 @@ passe de la clé s'ouvre au démarrage du serveur.
 on peut utiliser un identificateur de certificat pour identifier un certificat
 stocké dans un jeton. Actuellement, seuls les <a href="https://tools.ietf.org/html/rfc7512">URIs PKCS#11</a> sont reconnus comme
 identificateurs de certificats et peuvent être utilisés en conjonction avec le
-moteur OpenSSL <code>pkcs11</code>. Si la directive <code class="directive"><a href="#sslcertificatekeyfile">SSLCertificateKeyFile</a></code> est absente, le certificat et
+moteur ou le fournisseur OpenSSL <code>pkcs11</code>. Si la directive <code class="directive"><a href="#sslcertificatekeyfile">SSLCertificateKeyFile</a></code> est absente, le certificat et
 la clé privée peuvent être chargés avec l'identificateur spécifié via la
 directive <code class="directive">SSLCertificateFile</code>.</p>
 
@@ -869,7 +868,8 @@ certificats qui utilisent un fichier de clé séparé.</p>
 d'identifier une clé privée via un identifiant stocké dans un jeton.
 Actuellement, seuls les <a href="https://tools.ietf.org/html/rfc7512">PKCS#11
 URIs</a> sont reconnus comme identifiants de clés privées et peuvent être
-utilisés en conjonction avec le moteur OpenSSL <code>pkcs11</code>.</p>
+utilisés en conjonction avec le moteur ou le fournisseur OpenSSL
+<code>pkcs11</code>.</p>
 
 <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config"># Pour utiliser une clé privée stockée dans fichier encodé PEM :
 SSLCertificateKeyFile "/usr/local/apache2/conf/ssl.key/server.key"
@@ -1150,6 +1150,15 @@ qu'avec la version 0.9.6, il faut utiliser les distributions séparées
 SSLCryptoDevice ubsec</pre>
 </div>
 
+<p>
+À partir de la version 3.0 d'OpenSSL, si aucun moteur n'est spécifié alors
+que la clé ou le certificat sont spécifiés à l'aide d'<a href="https://tools.ietf.org/html/rfc7512">URIs PKCS#11</a>, le chargement de la
+clé et du certificat est tenté à partir d'un fournisseur OpenSSL. Le fournisseur
+OpenSSL à utiliser doit être défini et configuré dans le fichier de
+configuration d'OpenSSL et il doit prendre en charge la <a href="https://www.openssl.org/docs/man3.0/man7/provider-storemgmt.html">méthode
+STORE</a> pour les <a href="https://tools.ietf.org/html/rfc7512">URIs PKCS#11</a>.
+</p>
+
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="sslengine" id="sslengine">Directive</a> <a name="SSLEngine" id="SSLEngine">SSLEngine</a> <a title="Lien permanent" href="#sslengine" class="permalink">&para;</a></h2>
@@ -1226,48 +1235,6 @@ négociation SSLv3 ou TLSv1. Si cette directive est activée, ce sont les
 préférences du serveur qui seront prises en compte à la place.</p>
 <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">SSLHonorCipherOrder on</pre>
 </div>
-
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="sslinsecurerenegotiation" id="sslinsecurerenegotiation">Directive</a> <a name="SSLInsecureRenegotiation" id="SSLInsecureRenegotiation">SSLInsecureRenegotiation</a> <a title="Lien permanent" href="#sslinsecurerenegotiation" class="permalink">&para;</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Option permettant d'activer le support de la renégociation
-non sécurisée</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SSLInsecureRenegotiation on|off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>SSLInsecureRenegotiation off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
-<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible si une version 0.9.8m
-ou supérieure d'OpenSSL est utilisée</td></tr>
-</table>
-<p>Comme il a été spécifié, toutes les versions des protocoles SSL et
-TLS (jusqu'à la version 1.2 de TLS incluse) étaient vulnérables à une
-attaque de type Man-in-the-Middle (<a href="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CAN-2009-3555">CVE-2009-3555</a>)
-au cours d'une renégociation. Cette vulnérabilité permettait à un
-attaquant de préfixer la requête HTTP (telle qu'elle était vue du
-serveur) avec un texte choisi. Une extension du protocole a été
-développée pour corriger cette vulnérabilité, sous réserve qu'elle soit
-supportée par le client et le serveur.</p>
-
-<p>Si <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> est lié à une version 0.9.8m ou
-supérieure d'OpenSSL, par défaut, la renégociation n'est accordée qu'aux
-clients qui supportent la nouvelle extension du protocole. Si
-cette directive est activée, la renégociation sera accordée aux anciens
-clients (non patchés), quoique de manière non sécurisée</p>
-
-<div class="warning"><h3>Avertissement à propos de la sécurité</h3>
-<p>Si cette directive est activée, les connexions SSL seront vulnérables
-aux attaques de type préfixe Man-in-the-Middle comme décrit dans <a href="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CAN-2009-3555">CVE-2009-3555</a>.</p>
-</div>
-
-<div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">SSLInsecureRenegotiation on</pre>
-</div>
-
-<p>La variable d'environnement <code>SSL_SECURE_RENEG</code> peut être
-utilisée dans un script SSI ou CGI pour déterminer si la renégociation
-sécurisée est supportée pour une connexion SSL donnée.</p>
-
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -2216,10 +2183,10 @@ clients codés en PEM que le mandataire doit utiliser</td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, </td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Le contexte d'une section proxy est supporté à partir de la
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Le contexte d'une section proxy est pris en charge à partir de la
 version 2.4.30 du serveur HTTP Apache<br />
-L'inclusion de certificats non-feuilles (CA) est supportée à partir de la
-version 2.5.1.</td></tr>
+L'inclusion de certificats non-feuilles (CA) est prise en charge à partir de la
+version 2.4.59.</td></tr>
 </table>
 <p>
 Cette directive permet de définir le fichier tout-en-un où sont stockés
@@ -3294,7 +3261,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_ssl.html';
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2023 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2024 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

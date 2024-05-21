@@ -738,6 +738,11 @@ static apr_status_t ssl_init_ctx_protocol(server_rec *s,
         TLS_server_method();  /* server */
 #endif
     ctx = SSL_CTX_new(method);
+    if (ctx == NULL) {
+        /* Can fail for some system/install mis-configuration. */
+        ssl_log_ssl_error(SSLLOG_MARK, APLOG_EMERG, s);
+        return ssl_die(s);
+    }
 
     mctx->ssl_ctx = ctx;
 
@@ -839,12 +844,6 @@ static apr_status_t ssl_init_ctx_protocol(server_rec *s,
      */
     if (sc->session_tickets == FALSE) {
         SSL_CTX_set_options(ctx, SSL_OP_NO_TICKET);
-    }
-#endif
-
-#ifdef SSL_OP_ALLOW_UNSAFE_LEGACY_RENEGOTIATION
-    if (sc->insecure_reneg == TRUE) {
-        SSL_CTX_set_options(ctx, SSL_OP_ALLOW_UNSAFE_LEGACY_RENEGOTIATION);
     }
 #endif
 
@@ -1411,6 +1410,7 @@ static apr_status_t ssl_init_server_certs(server_rec *s,
     const char *vhost_id = mctx->sc->vhost_id, *key_id, *certfile, *keyfile;
     int i;
     EVP_PKEY *pkey;
+    int custom_dh_done = 0;
 #ifdef HAVE_ECC
     EC_GROUP *ecgroup = NULL;
     int curve_nid = 0;
@@ -1476,8 +1476,10 @@ static apr_status_t ssl_init_server_certs(server_rec *s,
             if (cert) {
                 if (SSL_CTX_use_certificate(mctx->ssl_ctx, cert) < 1) {
                     ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(10137)
-                                 "Failed to configure engine certificate %s, check %s",
-                                 key_id, certfile);
+                                 "Failed to configure certificate %s from %s, check %s",
+                                 key_id, mc->szCryptoDevice ?
+                                             mc->szCryptoDevice : "provider",
+                                 certfile);
                     ssl_log_ssl_error(SSLLOG_MARK, APLOG_EMERG, s);
                     return APR_EGENERAL;
                 }
@@ -1488,8 +1490,9 @@ static apr_status_t ssl_init_server_certs(server_rec *s,
             
             if (SSL_CTX_use_PrivateKey(mctx->ssl_ctx, pkey) < 1) {
                 ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(10130)
-                             "Failed to configure private key %s from engine",
-                             keyfile);
+                             "Failed to configure private key %s from %s",
+                             keyfile, mc->szCryptoDevice ?
+                                          mc->szCryptoDevice : "provider");
                 ssl_log_ssl_error(SSLLOG_MARK, APLOG_EMERG, s);
                 return APR_EGENERAL;
             }
@@ -1583,14 +1586,14 @@ static apr_status_t ssl_init_server_certs(server_rec *s,
      */
     certfile = APR_ARRAY_IDX(mctx->pks->cert_files, 0, const char *);
     if (certfile && !modssl_is_engine_id(certfile)) {
-        int done = 0, num_bits = 0;
+        int num_bits = 0;
 #if OPENSSL_VERSION_NUMBER < 0x30000000L
         DH *dh = modssl_dh_from_file(certfile);
         if (dh) {
             num_bits = DH_bits(dh);
             SSL_CTX_set_tmp_dh(mctx->ssl_ctx, dh);
             DH_free(dh);
-            done = 1;
+            custom_dh_done = 1;
         }
 #else
         pkey = modssl_dh_pkey_from_file(certfile);
@@ -1600,18 +1603,18 @@ static apr_status_t ssl_init_server_certs(server_rec *s,
                 EVP_PKEY_free(pkey);
             }
             else {
-                done = 1;
+                custom_dh_done = 1;
             }
         }
 #endif
-        if (done) {
+        if (custom_dh_done) {
             ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(02540)
                          "Custom DH parameters (%d bits) for %s loaded from %s",
                          num_bits, vhost_id, certfile);
         }
     }
 #if !MODSSL_USE_OPENSSL_PRE_1_1_API
-    else {
+    if (!custom_dh_done) {
         /* If no parameter is manually configured, enable auto
          * selection. */
         SSL_CTX_set_dh_auto(mctx->ssl_ctx, 1);

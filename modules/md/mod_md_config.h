@@ -75,6 +75,7 @@ struct md_mod_conf_t {
     const char *cert_check_name;       /* name of the linked certificate check site */
     const char *cert_check_url;        /* url "template for" checking a certificate */
     const char *ca_certs;              /* root certificates to use for connections */
+    apr_time_t check_interval;         /* duration between cert renewal checks */
     apr_time_t min_delay;              /* minimum delay for retries */
     int retry_failover;                /* number of errors to trigger CA failover */
     int use_store_locks;               /* use locks when updating store */

@@ -139,6 +139,15 @@ jobs:
               TESTS="t/modules/dav.t"
             pkgs: litmus
           # -------------------------------------------------------------------------
+          - name: litmus WebDAV tests, APR trunk, LMDB
+            config: --enable-dav --enable-dav-fs
+            pkgs: litmus liblmdb-dev
+            env: |
+              APR_VERSION=trunk
+              APR_CONFIG="--with-lmdb --with-dbm=lmdb"
+              LITMUS=1
+              TESTS="t/modules/dav.t"
+          # -------------------------------------------------------------------------
           # MFLAGS= works around https://bz.apache.org/bugzilla/show_bug.cgi?id=63942
           ## TODO if: *condition_not_24x
           - name: Regenerate ap_expr
@@ -225,7 +234,6 @@ jobs:
           #     TEST_MD=1
           # -------------------------------------------------------------------------
           ### TODO: if: *condition_not_24x
-          ### TODO: fix caching here.
           - name: MOD_TLS test suite
             config: --enable-mods-shared=reallyall --with-mpm=event --enable-mpms-shared=event
             pkgs: curl python3-pytest nghttp2-client python3-cryptography python3-requests python3-multipart python3-filelock python3-websockets cargo cbindgen
@@ -233,10 +241,16 @@ jobs:
               APR_VERSION=1.7.4
               APU_VERSION=1.6.3
               APU_CONFIG="--with-crypto"
+              RUSTLS_VERSION="v0.13.0"
               NO_TEST_FRAMEWORK=1
               TEST_INSTALL=1
               TEST_MOD_TLS=1
-              CLEAR_CACHE=1
+          - name: Configured w/reduced exports
+            config: --enable-reduced-exports --enable-maintainer-mode --enable-systemd
+            pkgs: libsystemd-dev
+            env: |
+              SKIP_TESTING=1
+              TEST_INSTALL=1
           # -------------------------------------------------------------------------
           ### TODO if: *condition_not_24x
           ### TODO: Fails because :i386 packages are not being found.
@@ -253,6 +267,43 @@ jobs:
           #     APR_VERSION=1.7.0
           #     APU_VERSION=1.6.3
           # APU_CONFIG="--with-crypto --with-ldap"
+          # -------------------------------------------------------------------------
+          - name: OpenSSL 3.1
+            config: --enable-mods-shared=most --enable-maintainer-mode --disable-md --disable-http2 --disable-ldap --disable-crypto
+            env: |
+              TEST_OPENSSL3=3.1.5
+              APR_VERSION=1.7.4
+              APU_VERSION=1.6.3
+              APU_CONFIG="--without-crypto"
+          # -------------------------------------------------------------------------
+          - name: OpenSSL 3.2 -Werror
+            config: --enable-mods-shared=most --enable-maintainer-mode --disable-md --disable-http2 --disable-ldap --disable-crypto
+            notest-cflags: -Werror -O2 -Wno-deprecated-declarations
+            env: |
+              TEST_OPENSSL3=3.2.1
+              APR_VERSION=1.7.4
+              APU_VERSION=1.6.3
+              APU_CONFIG="--without-crypto"
+          # -------------------------------------------------------------------------
+          - name: OpenSSL 3.2 no-engine
+            config: --enable-mods-shared=most --enable-maintainer-mode --disable-md --disable-http2 --disable-ldap --disable-crypto
+            env: |
+              TEST_OPENSSL3=3.2.1
+              OPENSSL_CONFIG=no-engine
+              APR_VERSION=1.7.4
+              APU_VERSION=1.6.3
+              APU_CONFIG="--without-crypto"
+          # -------------------------------------------------------------------------
+          - name: OpenSSL 3.3 no-engine -Werror
+            config: --enable-mods-shared=most --enable-maintainer-mode --disable-md --disable-http2 --disable-ldap --disable-crypto
+            notest-cflags: -Werror -O2
+            env: |
+              TEST_OPENSSL3=3.3.0
+              OPENSSL_CONFIG=no-engine
+              APR_VERSION=1.7.4
+              APU_VERSION=1.6.3
+              APU_CONFIG="--without-crypto"
+          # -------------------------------------------------------------------------
     runs-on: ubuntu-latest
     timeout-minutes: 30
     env:
@@ -261,7 +312,12 @@ jobs:
     name: ${{ matrix.name }}
     steps:
     - name: Set environment variables
-      run: echo "${{ matrix.env }}" >> $GITHUB_ENV
+      run: |
+        echo "${{ matrix.env }}" >> $GITHUB_ENV
+        echo JOBID=`echo "${{ matrix.notest-cflags }} ${{ matrix.env }} ${{ matrix.config }}'"| md5sum - | sed 's/ .*//'` >> $GITHUB_ENV
+    # https://github.com/actions/runner-images/issues/9491#issuecomment-1989718917
+    - name: Workaround ASAN issue in Ubuntu 22.04
+      run: sudo sysctl vm.mmap_rnd_bits=28
     - name: apt refresh
       run: sudo apt-get -o Acquire::Retries=5 update
     - name: Install prerequisites
@@ -270,35 +326,31 @@ jobs:
                     liblua5.3-dev libbrotli-dev libcurl4-openssl-dev     
                     libnghttp2-dev libjansson-dev libpcre2-dev gdb
                     perl-doc ${{ matrix.pkgs }}
-    - uses: actions/checkout@v3
-    - name: Cache APR build
-      uses: actions/cache@v3
-      env:
-        cache-name: cache-apru
+    - uses: actions/checkout@v4
+    - name: Cache installed libraries
+      uses: actions/cache@v4
       with:
         path: ~/root
-        key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('/home/runner/root/.key-*') }}
+        key: cache-libs-${{ env.JOBID }}
     - name: Cache CPAN modules
-      uses: actions/cache@v3
-      env:
-        cache-name: cache-cpan
+      uses: actions/cache@v4
       with:
         path: ~/perl5
-        key: ${{ runner.os }}-cpan-${{ env.cache-name }}-${{ hashFiles('/home/runner/perl5/.key') }}
+        key: cache-cpan-${{ env.JOBID }}
     - name: Configure environment
       run: ./test/travis_before_linux.sh
       timeout-minutes: 15
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       if: failure()
       with:
-        name: config.log ${{ matrix.node-version }}
+        name: config.log-${{ env.JOBID }}
         path: |
           /home/runner/build/**/config.log
     - name: Build and test
       run: ./test/travis_run_linux.sh
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       if: failure()
       with:
-        name: error_log ${{ matrix.node-version }}
+        name: error_log-${{ env.JOBID }}
         path: test/perl-framework/t/logs/error_log
 

@@ -42,11 +42,6 @@ function install_apx() {
     # Blow away the cached install root if the cached install is stale
     # or doesn't match the expected configuration.
     grep -q "${version} ${revision} ${config} CC=$CC" ${HOME}/root/.key-${name} || rm -rf ${prefix}
-    # TEST_H2 APR cache seems to be broken, do not use.
-    # Unknown why this happens on this CI job only and how to fix it
-    if test -v TEST_H2; then
-      rm -rf ${prefix}
-    fi
 
     if test -d ${prefix}; then
         return 0
@@ -64,10 +59,11 @@ function install_apx() {
 }
 
 # Allow to load $HOME/build/apache/httpd/.gdbinit
-echo "add-auto-load-safe-path $HOME/build/apache/httpd/.gdbinit" >> $HOME/.gdbinit
+echo "add-auto-load-safe-path $HOME/work/httpd/httpd/.gdbinit" >> $HOME/.gdbinit
 
-# Prepare perl-framework test environment
-if ! test -v SKIP_TESTING; then
+# Unless either SKIP_TESTING or NO_TEST_FRAMEWORK are set, install
+# CPAN modules required to run the Perl test framework.
+if ! test -v SKIP_TESTING -o -v NO_TEST_FRAMEWORK; then
     # Clear CPAN cache if necessary
     if [ -v CLEAR_CACHE ]; then rm -rf ~/perl5; fi
     
@@ -89,6 +85,13 @@ if ! test -v SKIP_TESTING; then
 
     # Make a shallow clone of httpd-tests git repo.
     git clone -q --depth=1 https://github.com/apache/httpd-tests.git test/perl-framework
+
+    # For OpenSSL 3.2+ testing, Apache::Test r1916067 is required, so
+    # use a checkout of trunk until there is an updated CPAN release
+    # with that revision.
+    if test -v TEST_OPENSSL3; then
+       svn co -q https://svn.apache.org/repos/asf/perl/Apache-Test/trunk test/perl-framework/Apache-Test
+    fi
 fi
 
 # For LDAP testing, run slapd listening on port 8389 and populate the
@@ -119,7 +122,7 @@ if test -v TEST_OPENSSL3; then
            curl "https://www.openssl.org/source/openssl-${TEST_OPENSSL3}.tar.gz" |
               tar -xzf -
            cd openssl-${TEST_OPENSSL3}
-           ./Configure --prefix=$HOME/root/openssl3 shared no-tests
+           ./Configure --prefix=$HOME/root/openssl3 shared no-tests ${OPENSSL_CONFIG}
            make $MFLAGS
            make install_sw
            touch $HOME/root/openssl-is-${TEST_OPENSSL3}
@@ -146,4 +149,16 @@ fi
 if test -v APU_VERSION; then
     install_apx apr-util ${APU_VERSION} "${APU_CONFIG}" --with-apr=$HOME/build/apr-${APR_VERSION}
     ldd $HOME/root/apr-util-${APU_VERSION}/lib/libaprutil-?.so || true
+fi
+
+# Since librustls is not a package (yet) on any platform, we
+# build the version we want from source
+if test -v TEST_MOD_TLS -a -v RUSTLS_VERSION; then
+    if ! test -d $HOME/root/rustls; then
+        RUSTLS_HOME="$HOME/build/rustls-ffi"
+        git clone -q --depth=1 -b "$RUSTLS_VERSION" https://github.com/rustls/rustls-ffi.git "$RUSTLS_HOME"
+        pushd "$RUSTLS_HOME"
+            make install DESTDIR="$HOME/root/rustls"
+        popd
+    fi
 fi

@@ -190,7 +190,7 @@ ProxyPass "/some/ws/capable/path/" "http://example.com/some/ws/capable/path/" up
       <example><title>Reverse Proxy PHP scripts</title>
       <highlight language="config">
 &lt;FilesMatch "\.php$"&gt;
-    SetHandler  "proxy:unix:/path/to/app.sock|fcgi://localhost/"
+    SetHandler  "proxy:unix:/path/to/app.sock|fcgi://localhost"
 &lt;/FilesMatch&gt;
       </highlight>
       </example>
@@ -728,9 +728,10 @@ ProxyRemote ftp http://ftpproxy.mydomain:8080
 <name>ProxyRemoteMatch</name>
 <description>Remote proxy used to handle requests matched by regular
 expressions</description>
-<syntax>ProxyRemoteMatch <var>regex</var> <var>remote-server</var></syntax>
+<syntax>ProxyRemoteMatch <var>regex</var> <var>remote-server</var> [<var>username:password</var>]</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
+<compatibility>The optional third argument is usable only in httpd 2.5.1 and later.</compatibility>
 
 <usage>
     <p>The <directive>ProxyRemoteMatch</directive> is identical to the
@@ -1319,6 +1320,11 @@ ProxyPass "/example" "http://backend.example.com" max=20 ttl=120 retry=300
             use the <code>mapping=servlet</code> setting to prevent path parameters and alike from
             interfering with the authorizations that are to be enforced in by the Apache httpd.</p>
         </note>
+    </td></tr>
+    <tr><td><a id="addressttl" name="addressttl">addressttl</a></td>
+        <td>-1</td>
+        <td><p>TTL in seconds for how long DNS resolutions of the backend address are cached.
+        -1 means until restart of Apache httpd.</p>
     </td></tr>
 
     </table>

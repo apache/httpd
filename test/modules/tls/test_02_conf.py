@@ -64,9 +64,15 @@ class TestConf:
     ])
     def test_tls_02_conf_cert_listen_valid(self, env, listen: str):
         conf = TlsTestConf(env=env)
-        conf.add("TLSEngine {listen}".format(listen=listen))
-        conf.install()
-        assert env.apache_restart() == 0
+        if not env.has_shared_module("tls"):
+            # Without cert/key openssl will complain
+            conf.add("SSLEngine on");
+            conf.install()
+            assert env.apache_restart() == 1
+        else:
+            conf.add("TLSEngine {listen}".format(listen=listen))
+            conf.install()
+            assert env.apache_restart() == 0
 
     def test_tls_02_conf_cert_listen_cert(self, env):
         domain = env.domain_a

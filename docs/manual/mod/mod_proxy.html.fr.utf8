@@ -252,7 +252,7 @@ ProxyVia On
     </p>
 
     <div class="example"><h3>Scripts PHP et mandataire inverse</h3><pre class="prettyprint lang-config">&lt;FilesMatch "\.php$"&gt;
-    SetHandler  "proxy:unix:/path/to/app.sock|fcgi://localhost/"
+    SetHandler  "proxy:unix:/path/to/app.sock|fcgi://localhost"
 &lt;/FilesMatch&gt;</pre>
 </div>
 
@@ -1653,6 +1653,12 @@ ProxyPass "/mirror/foo" "http://backend.example.com"</pre>
 	    autorisations qui doivent être définies par Apache httpd.</p>
         </div>
     </td></tr>
+    <tr><td><a id="addressttl" name="addressttl">addressttl</a></td>
+        <td>-1</td>
+        <td><p>Durée de vie (TTL) en secondes des résolutions DNS de l'adresse
+	du serveur d'arrière-plan dans le cache.
+        -1 signifie jusqu'au redémarrage de Apache httpd.</p>
+    </td></tr>
 
     </table>
 
@@ -2301,10 +2307,12 @@ ProxyRemote ftp http://ftpproxy.mydomain:8080</pre>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Le mandataire distant à utiliser pour traiter les requêtes
 correspondant à une expression rationnelle</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ProxyRemoteMatch <var>regex</var> <var>serveur-distant</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ProxyRemoteMatch <var>regex</var> <var>remote-server</var> [<var>username:password</var>]</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Le troisième argument facultatif est disponible à partir de la
+version 2.5.1 du serveur HTTP Apache.</td></tr>
 </table>
     <p>La directive <code class="directive">ProxyRemoteMatch</code> est
     identique à la directive <code class="directive"><a href="#proxyremote">ProxyRemote</a></code>, à l'exception du
@@ -2520,7 +2528,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_proxy.html
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2023 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2024 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

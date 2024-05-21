@@ -23,26 +23,26 @@
 <div id="path">
 <a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP-Server</a> &gt; <a href="http://httpd.apache.org/docs/">Dokumentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Module</a></div><div id="preamble"><h1>Verzeichnis der Direktiven</h1>
 <div class="toplang">
-<p><span>Verf&#252;gbare Sprachen: </span><a href="../de/mod/directives.html" title="Deutsch">&nbsp;de&nbsp;</a> |
+<p><span>Verfügbare Sprachen: </span><a href="../de/mod/directives.html" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="../en/mod/directives.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../es/mod/directives.html" hreflang="es" rel="alternate" title="Espa&#241;ol">&nbsp;es&nbsp;</a> |
-<a href="../fr/mod/directives.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
+<a href="../es/mod/directives.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
+<a href="../fr/mod/directives.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/directives.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/directives.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/mod/directives.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a> |
+<a href="../tr/mod/directives.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a> |
 <a href="../zh-cn/mod/directives.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div>
 
     <p>
-      Hier sind alle Apache-Direktiven aufgef&#252;hrt, die in der
-      Standard-Apache-Distribution verf&#252;gbar sind. Sie sind in
+      Hier sind alle Apache-Direktiven aufgeführt, die in der
+      Standard-Apache-Distribution verfügbar sind. Sie sind in
       einem einheitlichen Format beschrieben. Ein <a href="directive-dict.html" rel="Glossary">Glossar</a>
-      erl&#228;utert die in der Beschreibung verwendeten Begriffe.
+      erläutert die in der Beschreibung verwendeten Begriffe.
     </p>
 
     <p>
-      Au&#223;erdem existiert eine <a href="quickreference.html">Kurzreferenz der Direktiven</a>, welche
-      zu jeder Direktive eine Zusammenfassung der Details enth&#228;lt.
+      Außerdem existiert eine <a href="quickreference.html">Kurzreferenz der Direktiven</a>, welche
+      zu jeder Direktive eine Zusammenfassung der Details enthält.
     </p>
   
 <p class="letters"><a href="#A">&nbsp;A&nbsp;</a> | <a href="#B">&nbsp;B&nbsp;</a> | <a href="#C">&nbsp;C&nbsp;</a> | <a href="#D">&nbsp;D&nbsp;</a> | <a href="#E">&nbsp;E&nbsp;</a> | <a href="#F">&nbsp;F&nbsp;</a> | <a href="#G">&nbsp;G&nbsp;</a> | <a href="#H">&nbsp;H&nbsp;</a> | <a href="#I">&nbsp;I&nbsp;</a> | <a href="#K">&nbsp;K&nbsp;</a> | <a href="#L">&nbsp;L&nbsp;</a> | <a href="#M">&nbsp;M&nbsp;</a> | <a href="#N">&nbsp;N&nbsp;</a> | <a href="#O">&nbsp;O&nbsp;</a> | <a href="#P">&nbsp;P&nbsp;</a> | <a href="#Q">&nbsp;Q&nbsp;</a> | <a href="#R">&nbsp;R&nbsp;</a> | <a href="#S">&nbsp;S&nbsp;</a> | <a href="#T">&nbsp;T&nbsp;</a> | <a href="#U">&nbsp;U&nbsp;</a> | <a href="#V">&nbsp;V&nbsp;</a> | <a href="#W">&nbsp;W&nbsp;</a> | <a href="#X">&nbsp;X&nbsp;</a></p>
@@ -72,6 +72,7 @@
 <li><a href="mod_mime.html#addtype">AddType</a></li>
 <li><a href="mod_alias.html#alias">Alias</a></li>
 <li><a href="mod_alias.html#aliasmatch">AliasMatch</a></li>
+<li><a href="mod_alias.html#aliaspreservepath">AliasPreservePath</a></li>
 <li><a href="mod_access_compat.html#allow">Allow</a></li>
 <li><a href="mod_proxy_connect.html#allowconnect">AllowCONNECT</a></li>
 <li><a href="core.html#allowencodedslashes">AllowEncodedSlashes</a></li>
@@ -90,6 +91,9 @@
 <li><a href="mod_auth_basic.html#authbasicfake">AuthBasicFake</a></li>
 <li><a href="mod_auth_basic.html#authbasicprovider">AuthBasicProvider</a></li>
 <li><a href="mod_auth_basic.html#authbasicusedigestalgorithm">AuthBasicUseDigestAlgorithm</a></li>
+<li><a href="mod_auth_bearer.html#authbearerauthoritative">AuthBearerAuthoritative</a></li>
+<li><a href="mod_auth_bearer.html#authbearerprovider">AuthBearerProvider</a></li>
+<li><a href="mod_auth_bearer.html#authbearerproxy">AuthBearerProxy</a></li>
 <li><a href="mod_authn_dbd.html#authdbduserpwquery">AuthDBDUserPWQuery</a></li>
 <li><a href="mod_authn_dbd.html#authdbduserrealmquery">AuthDBDUserRealmQuery</a></li>
 <li><a href="mod_authz_dbm.html#authdbmgroupfile">AuthDBMGroupFile</a></li>
@@ -148,6 +152,11 @@
 <li><a href="mod_authn_core.html#authnprovideralias">&lt;AuthnProviderAlias&gt;</a></li>
 <li><a href="mod_authnz_fcgi.html#authnzfcgicheckauthnprovider">AuthnzFcgiCheckAuthnProvider</a></li>
 <li><a href="mod_authnz_fcgi.html#authnzfcgidefineprovider">AuthnzFcgiDefineProvider</a></li>
+<li><a href="mod_autht_jwt.html#authtjwtclaim">AuthtJwtClaim</a></li>
+<li><a href="mod_autht_jwt.html#authtjwtdriver">AuthtJwtDriver</a></li>
+<li><a href="mod_autht_jwt.html#authtjwtsign">AuthtJwtSign</a></li>
+<li><a href="mod_autht_jwt.html#authtjwtverify">AuthtJwtVerify</a></li>
+<li><a href="mod_autht_core.html#authtprovideralias">&lt;AuthtProviderAlias&gt;</a></li>
 <li><a href="mod_authn_core.html#authtype">AuthType</a></li>
 <li><a href="mod_authn_file.html#authuserfile">AuthUserFile</a></li>
 <li><a href="mod_authz_dbd.html#authzdbdlogintoreferer">AuthzDBDLoginToReferer</a></li>
@@ -243,11 +252,15 @@
 <li><a href="mod_ssl_ct.html#ctstaticscts">CTStaticSCTs</a></li>
 <li><a href="mod_log_config.html#customlog">CustomLog</a></li>
 <li><a href="mod_dav.html#dav" id="D" name="D">Dav</a></li>
+<li><a href="mod_dav.html#davbasepath">DavBasePath</a></li>
 <li><a href="mod_dav.html#davdepthinfinity">DavDepthInfinity</a></li>
 <li><a href="mod_dav_lock.html#davgenericlockdb">DavGenericLockDB</a></li>
 <li><a href="mod_dav_fs.html#davlockdb">DavLockDB</a></li>
+<li><a href="mod_dav_fs.html#davlockdbtype">DavLockDBType</a></li>
 <li><a href="mod_dav_fs.html#davlockdiscovery">DavLockDiscovery</a></li>
 <li><a href="mod_dav.html#davmintimeout">DavMinTimeout</a></li>
+<li><a href="mod_dav.html#davmsext">DavMSext</a></li>
+<li><a href="mod_dav_fs.html#davquota">DavQuota</a></li>
 <li><a href="mod_dbd.html#dbdexptime">DBDExptime</a></li>
 <li><a href="mod_dbd.html#dbdinitsql">DBDInitSQL</a></li>
 <li><a href="mod_dbd.html#dbdkeep">DBDKeep</a></li>
@@ -325,7 +338,9 @@
 <li><a href="mod_unixd.html#group">Group</a></li>
 <li><a href="mod_http2.html#h2copyfiles" id="H" name="H">H2CopyFiles</a></li>
 <li><a href="mod_http2.html#h2direct">H2Direct</a></li>
+<li><a href="mod_http2.html#h2earlyhint">H2EarlyHint</a></li>
 <li><a href="mod_http2.html#h2earlyhints">H2EarlyHints</a></li>
+<li><a href="mod_http2.html#h2maxdataframelen">H2MaxDataFrameLen</a></li>
 <li><a href="mod_http2.html#h2maxsessionstreams">H2MaxSessionStreams</a></li>
 <li><a href="mod_http2.html#h2maxworkeridleseconds">H2MaxWorkerIdleSeconds</a></li>
 <li><a href="mod_http2.html#h2maxworkers">H2MaxWorkers</a></li>
@@ -333,6 +348,7 @@
 <li><a href="mod_http2.html#h2moderntlsonly">H2ModernTLSOnly</a></li>
 <li><a href="mod_http2.html#h2outputbuffering">H2OutputBuffering</a></li>
 <li><a href="mod_http2.html#h2padding">H2Padding</a></li>
+<li><a href="mod_http2.html#h2proxyrequests">H2ProxyRequests</a></li>
 <li><a href="mod_http2.html#h2push">H2Push</a></li>
 <li><a href="mod_http2.html#h2pushdiarysize">H2PushDiarySize</a></li>
 <li><a href="mod_http2.html#h2pushpriority">H2PushPriority</a></li>
@@ -343,6 +359,7 @@
 <li><a href="mod_http2.html#h2tlscooldownsecs">H2TLSCoolDownSecs</a></li>
 <li><a href="mod_http2.html#h2tlswarmupsize">H2TLSWarmUpSize</a></li>
 <li><a href="mod_http2.html#h2upgrade">H2Upgrade</a></li>
+<li><a href="mod_http2.html#h2websockets">H2WebSockets</a></li>
 <li><a href="mod_http2.html#h2windowsize">H2WindowSize</a></li>
 <li><a href="mod_headers.html#header">Header</a></li>
 <li><a href="mod_autoindex.html#headername">HeaderName</a></li>
@@ -470,10 +487,12 @@
 <li><a href="mod_md.html#mdcertificateprotocol">MDCertificateProtocol</a></li>
 <li><a href="mod_md.html#mdcertificatestatus">MDCertificateStatus</a></li>
 <li><a href="mod_md.html#mdchallengedns01">MDChallengeDns01</a></li>
+<li><a href="mod_md.html#mdchallengedns01version">MDChallengeDns01Version</a></li>
 <li><a href="mod_md.html#mdcontactemail">MDContactEmail</a></li>
 <li><a href="mod_md.html#mddrivemode">MDDriveMode</a></li>
 <li><a href="mod_md.html#mdexternalaccountbinding">MDExternalAccountBinding</a></li>
 <li><a href="mod_md.html#mdhttpproxy">MDHttpProxy</a></li>
+<li><a href="mod_md.html#mdmatchnames">MDMatchNames</a></li>
 <li><a href="mod_md.html#mdmember">MDMember</a></li>
 <li><a href="mod_md.html#mdmembers">MDMembers</a></li>
 <li><a href="mod_md.html#mdmessagecmd">MDMessageCmd</a></li>
@@ -833,13 +852,13 @@
 <li><a href="mod_xml2enc.html#xml2startparse">xml2StartParse</a></li>
 </ul></div>
 <div class="bottomlang">
-<p><span>Verf&#252;gbare Sprachen: </span><a href="../de/mod/directives.html" title="Deutsch">&nbsp;de&nbsp;</a> |
+<p><span>Verfügbare Sprachen: </span><a href="../de/mod/directives.html" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="../en/mod/directives.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../es/mod/directives.html" hreflang="es" rel="alternate" title="Espa&#241;ol">&nbsp;es&nbsp;</a> |
-<a href="../fr/mod/directives.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
+<a href="../es/mod/directives.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
+<a href="../fr/mod/directives.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/directives.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/directives.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/mod/directives.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a> |
+<a href="../tr/mod/directives.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a> |
 <a href="../zh-cn/mod/directives.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Kommentare</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Libera.chat, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--

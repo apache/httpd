@@ -1,0 +1,4 @@
+  *) htcacheclean: In -a/-A mode, list all files per subdirectory
+     rather than only one. PR 65091.
+     [Artem Egorenkov <aegorenkov.91 gmail.com>]
+

@@ -94,8 +94,8 @@ typedef enum {
     hdr_merge = 'g',            /* merge (merge, but avoid duplicates) */
     hdr_unset = 'u',            /* unset header */
     hdr_echo = 'e',             /* echo headers from request to response */
-    hdr_edit = 'r',             /* change value by regexp, match once */
-    hdr_edit_r = 'R',           /* change value by regexp, everymatch */
+    hdr_edit = 'r',             /* substitute value by regexp, first match */
+    hdr_edit_all = 'R',         /* substitute value by regexp, all matches */
     hdr_setifempty = 'i',       /* set value if header not already present*/
     hdr_note = 'n'              /* set value of header in a note */
 } hdr_actions;
@@ -389,7 +389,7 @@ static char *parse_format_string(cmd_parms *cmd, header_entry *hdr, const char *
         return NULL;
     }
     /* Tags are in the replacement value for edit */
-    else if (hdr->action == hdr_edit || hdr->action == hdr_edit_r ) {
+    else if (hdr->action == hdr_edit || hdr->action == hdr_edit_all ) {
         s = hdr->subs;
     }
 
@@ -454,14 +454,14 @@ static APR_INLINE const char *header_inout_cmd(cmd_parms *cmd,
     else if (!strcasecmp(action, "edit"))
         new->action = hdr_edit;
     else if (!strcasecmp(action, "edit*"))
-        new->action = hdr_edit_r;
+        new->action = hdr_edit_all;
     else if (!strcasecmp(action, "note"))
         new->action = hdr_note;
     else
         return "first argument must be 'add', 'set', 'setifempty', 'append', 'merge', "
                "'unset', 'echo', 'note', 'edit', or 'edit*'.";
 
-    if (new->action == hdr_edit || new->action == hdr_edit_r) {
+    if (new->action == hdr_edit || new->action == hdr_edit_all) {
         if (subs == NULL) {
             return "Header edit requires a match and a substitution";
         }
@@ -622,39 +622,125 @@ static char* process_tags(header_entry *hdr, request_rec *r)
     }
     return str ? str : "";
 }
+
+/* Helper for process_regexp(), push a string in an iovec array */
+static void push_string(apr_array_header_t *iovecs,
+                        const char *str, apr_size_t len)
+{
+    if (len) {
+        struct iovec *vec = &APR_ARRAY_PUSH(iovecs, struct iovec);
+        vec->iov_base = (void *)str;
+        vec->iov_len = len;
+    }
+}
+
+/* Helper for process_regexp(), push a match/substitution in an iovec array */
+static int push_match(apr_array_header_t *iovecs,
+                      const char *str, apr_size_t len, apr_size_t *pos,
+                      int flags, ap_regmatch_t pmatch[AP_MAX_REG_MATCH],
+                      header_entry *hdr, request_rec *r)
+{
+    const char *sub;
+    int rc;
+
+    rc = ap_regexec_ex(hdr->regex, str, len, *pos,
+                       AP_MAX_REG_MATCH, pmatch, flags);
+    if (rc != 0) {
+        return (rc == AP_REG_NOMATCH) ? 0 : -1;
+    }
+
+    /* Sanity checks (note that the rm_so/rm_eo offsets include *pos) */
+    ap_assert(pmatch[0].rm_so >= 0 && pmatch[0].rm_so <= pmatch[0].rm_eo);
+
+    /* Process tags in the input string rather than the resulting
+     * substitution to avoid surprises
+     */
+    sub = ap_pregsub(r->pool, process_tags(hdr, r), str,
+                     AP_MAX_REG_MATCH, pmatch);
+    if (sub == NULL) {
+        return -1;
+    }
+
+    /* Keep what's before the match and substitute the latter */
+    push_string(iovecs, str + *pos, (apr_size_t)pmatch[0].rm_so - *pos);
+    push_string(iovecs, sub, strlen(sub));
+
+    /* Consumed up to the end of match */
+    *pos = pmatch[0].rm_eo;
+    return 1;
+}
+
 static const char *process_regexp(header_entry *hdr, const char *value,
                                   request_rec *r)
 {
+    apr_array_header_t *iovecs;
     ap_regmatch_t pmatch[AP_MAX_REG_MATCH];
-    const char *subs;
-    const char *remainder;
-    char *ret;
-    int diffsz;
-    if (ap_regexec(hdr->regex, value, AP_MAX_REG_MATCH, pmatch, 0)) {
-        /* no match, nothing to do */
+    apr_size_t length = strlen(value), offset = 0;
+    int rc;
+
+    iovecs = apr_array_make(r->pool, 5, sizeof(struct iovec));
+
+    /* Find, substitute and consume the first match */
+    rc = push_match(iovecs, value, length, &offset, 0, pmatch, hdr, r);
+    if (rc < 0) {
+        return NULL;
+    }
+    if (rc == 0) {
+        /* No match, no change */
         return value;
     }
-    /* Process tags in the input string rather than the resulting
-       * substitution to avoid surprises
-       */
-    subs = ap_pregsub(r->pool, process_tags(hdr, r), value, AP_MAX_REG_MATCH, pmatch);
-    if (subs == NULL)
-        return NULL;
-    diffsz = strlen(subs) - (pmatch[0].rm_eo - pmatch[0].rm_so);
-    if (hdr->action == hdr_edit) {
-        remainder = value + pmatch[0].rm_eo;
+
+    /* Loop to edit multiple matches if applicable */
+    if (hdr->action == hdr_edit_all) {
+        apr_size_t match_offset = pmatch[0].rm_so;
+
+        while (offset < length) {
+            int flags = 0;
+
+            /* Apply the same magic as pcre2_substitute() to avoid an
+             * infinite loop (and align with Perl's /g), that is: after
+             * an empty match ask for a match either non-empty or above
+             * offset; on success consume the match as usual, otherwise
+             * consume the next char; rinse and repeat from the new
+             * offset.
+             */
+            if (match_offset == offset) {
+                flags = AP_REG_NOTEMPTY_ATSTART | AP_REG_ANCHORED;
+            }
+            rc = push_match(iovecs, value, length, &offset, flags,
+                            pmatch, hdr, r);
+            if (rc < 0) {
+                return NULL;
+            }
+            if (rc == 0) {
+                if (flags == 0) {
+                    /* No more match */
+                    break;
+                }
+
+                /* Assume no CRLF in the value of a header.
+                 * TODO: handle UTF-8 matching, i.e. add an AP_REG_UTF8
+                 * option to the ap_regex API along with an ap_regoptions()
+                 * or so helper to get the options used at ->regex compile
+                 * time (including from "(*UTF*)" patterns); here if
+                 * AP_REG_UTF8 is set then consume a whole UTF-8 char,
+                 * potentially multibyte.
+                 */
+                push_string(iovecs, value + offset, 1);
+                ++offset;
+                continue;
+            }
+
+            match_offset = pmatch[0].rm_so;
+        }
     }
-    else { /* recurse to edit multiple matches if applicable */
-        remainder = process_regexp(hdr, value + pmatch[0].rm_eo, r);
-        if (remainder == NULL)
-            return NULL;
-        diffsz += strlen(remainder) - strlen(value + pmatch[0].rm_eo);
+
+    /* Keep the remainder if any */
+    if (offset < length) {
+        push_string(iovecs, value + offset, length - offset);
     }
-    ret = apr_palloc(r->pool, strlen(value) + 1 + diffsz);
-    memcpy(ret, value, pmatch[0].rm_so);
-    strcpy(ret + pmatch[0].rm_so, subs);
-    strcat(ret, remainder);
-    return ret;
+
+    return apr_pstrcatv(r->pool, (void *)iovecs->elts, iovecs->nelts, NULL);
 }
 
 static int echo_header(void *v, const char *key, const char *val)
@@ -810,7 +896,7 @@ static int do_headers_fixup(request_rec *r, apr_table_t *headers,
             apr_table_do(echo_header, &v, r->headers_in, NULL);
             break;
         case hdr_edit:
-        case hdr_edit_r:
+        case hdr_edit_all:
             if (!ap_cstr_casecmp(hdr->header, "Content-Type") && r->content_type) {
                 const char *repl = process_regexp(hdr, r->content_type, r);
                 if (repl == NULL)

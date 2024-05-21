@@ -569,7 +569,11 @@ static apr_status_t dispatch(proxy_conn_rec *conn, proxy_dir_conf *conf,
     *err = NULL;
     if (conn->worker->s->io_buffer_size_set) {
         iobuf_size = conn->worker->s->io_buffer_size;
-        iobuf = apr_palloc(r->pool, iobuf_size);
+        /* Allocate a buffer if the configured size is larger than the
+         * stack buffer, otherwise use the stack buffer. */
+        if (iobuf_size > AP_IOBUFSIZE) {
+            iobuf = apr_palloc(r->pool, iobuf_size);
+        }
     }
 
     pfd.desc_type = APR_POLL_SOCKET;
@@ -779,6 +783,15 @@ recv_again:
 
                             status = ap_scan_script_header_err_brigade_ex(r, ob,
                                 NULL, APLOG_MODULE_INDEX);
+
+                            /* FCGI has its own body framing mechanism which we don't
+                             * match against any provided Content-Length, so let the
+                             * core determine C-L vs T-E based on what's actually sent.
+                             */
+                            if (!apr_table_get(r->subprocess_env, AP_TRUST_CGILIKE_CL_ENVVAR))
+                                apr_table_unset(r->headers_out, "Content-Length");
+                            apr_table_unset(r->headers_out, "Transfer-Encoding");
+
                             /* suck in all the rest */
                             if (status != OK) {
                                 apr_bucket *tmp_b;

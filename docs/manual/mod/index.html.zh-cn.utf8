@@ -75,6 +75,7 @@ address)</dd>
 <dt><a href="mod_asis.html">mod_asis</a></dt><dd>Sends files that contain their own
 HTTP headers</dd>
 <dt><a href="mod_auth_basic.html">mod_auth_basic</a></dt><dd>Basic HTTP authentication</dd>
+<dt><a href="mod_auth_bearer.html">mod_auth_bearer</a></dt><dd>Bearer HTTP authentication</dd>
 <dt><a href="mod_auth_digest.html">mod_auth_digest</a></dt><dd>User authentication using MD5
     Digest Authentication</dd>
 <dt><a href="mod_auth_form.html">mod_auth_form</a></dt><dd>Form authentication</dd>
@@ -90,6 +91,8 @@ the load on backends</dd>
 httpd authentication and authorization</dd>
 <dt><a href="mod_authnz_ldap.html">mod_authnz_ldap</a></dt><dd>Allows an LDAP directory to be used to store the database
 for HTTP Basic authentication.</dd>
+<dt><a href="mod_autht_core.html">mod_autht_core</a></dt><dd>Core Token Handling</dd>
+<dt><a href="mod_autht_jwt.html">mod_autht_jwt</a></dt><dd>Token authentication using JWT tokens</dd>
 <dt><a href="mod_authz_core.html">mod_authz_core</a></dt><dd>Core Authorization</dd>
 <dt><a href="mod_authz_dbd.html">mod_authz_dbd</a></dt><dd>Group Authorization and Login using SQL</dd>
 <dt><a href="mod_authz_dbm.html">mod_authz_dbm</a></dt><dd>Group authorization using DBM files</dd>

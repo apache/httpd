@@ -120,6 +120,7 @@ apr_status_t h2_request_rcreate(h2_request **preq, apr_pool_t *pool,
     req->path        = path;
     req->headers     = apr_table_make(pool, 10);
     req->http_status = H2_HTTP_STATUS_UNSET;
+    req->request_time = apr_time_now();
 
     x.pool = pool;
     x.headers = req->headers;

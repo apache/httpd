@@ -232,7 +232,7 @@ ProxyVia On
       </p>
 
       <div class="example"><h3>Reverse Proxy PHP scripts</h3><pre class="prettyprint lang-config">&lt;FilesMatch "\.php$"&gt;
-    SetHandler  "proxy:unix:/path/to/app.sock|fcgi://localhost/"
+    SetHandler  "proxy:unix:/path/to/app.sock|fcgi://localhost"
 &lt;/FilesMatch&gt;</pre>
 </div>
 
@@ -1408,7 +1408,7 @@ ProxyPass "/mirror/foo"   "http://backend.example.com"</pre>
     </td></tr>
     <tr><td>timeout</td>
         <td><code class="directive"><a href="#proxytimeout">ProxyTimeout</a></code></td>
-        <td>Connection timeout in seconds.
+        <td>Socket timeout in seconds.
         The number of seconds Apache httpd waits for data sent by / to the backend.
         Uses the <a href="directive-dict.html#Syntax">time-interval</a> directive syntax.
     </td></tr>
@@ -1472,6 +1472,11 @@ ProxyPass "/mirror/foo"   "http://backend.example.com"</pre>
             use the <code>mapping=servlet</code> setting to prevent path parameters and alike from
             interfering with the authorizations that are to be enforced in by the Apache httpd.</p>
         </div>
+    </td></tr>
+    <tr><td><a id="addressttl" name="addressttl">addressttl</a></td>
+        <td>-1</td>
+        <td><p>TTL in seconds for how long DNS resolutions of the backend address are cached.
+        -1 means until restart of Apache httpd.</p>
     </td></tr>
 
     </table>

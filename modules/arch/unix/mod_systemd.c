@@ -18,6 +18,7 @@
 #include <stdint.h>
 #include <ap_config.h>
 #include "ap_mpm.h"
+#include "ap_listen.h"
 #include <http_core.h>
 #include <httpd.h>
 #include <http_log.h>
@@ -28,17 +29,15 @@
 #include "scoreboard.h"
 #include "mpm_common.h"
 
+#ifdef HAVE_SELINUX
+#include <selinux/selinux.h>
+#endif
+
 #include "systemd/sd-daemon.h"
 
 #if APR_HAVE_UNISTD_H
 #include <unistd.h>
 #endif
-
-APR_DECLARE_OPTIONAL_FN(int,
-                        ap_find_systemd_socket, (process_rec *, apr_port_t));
-
-APR_DECLARE_OPTIONAL_FN(int,
-                        ap_systemd_listen_fds, (int));
 
 static int systemd_pre_config(apr_pool_t *pconf, apr_pool_t *plog,
                               apr_pool_t *ptemp)
@@ -50,6 +49,20 @@ static int systemd_pre_config(apr_pool_t *pconf, apr_pool_t *plog,
     return OK;
 }
 
+#ifdef HAVE_SELINUX
+static void log_selinux_context(void)
+{
+    char *con;
+
+    if (is_selinux_enabled() && getcon(&con) == 0) {
+        ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, NULL,
+                     APLOGNO(10497) "SELinux is enabled; "
+                     "httpd running as context %s", con);
+        freecon(con);
+    }
+}
+#endif
+
 /* Report the service is ready in post_config, which could be during
  * startup or after a reload.  The server could still hit a fatal
  * startup error after this point during ap_run_mpm(), so this is
@@ -57,9 +70,16 @@ static int systemd_pre_config(apr_pool_t *pconf, apr_pool_t *plog,
  * the TCP ports so new connections will not be rejected.  There will
  * always be a possible async failure event simultaneous to the
  * service reporting "ready", so this should be good enough. */
-static int systemd_post_config(apr_pool_t *p, apr_pool_t *plog,
+static int systemd_post_config(apr_pool_t *pconf, apr_pool_t *plog,
                                apr_pool_t *ptemp, server_rec *main_server)
 {
+    if (ap_state_query(AP_SQ_MAIN_STATE) == AP_SQ_MS_CREATE_PRE_CONFIG)
+        return OK;
+
+#ifdef HAVE_SELINUX
+    log_selinux_context();
+#endif
+
     sd_notify(0, "READY=1\n"
               "STATUS=Configuration loaded.\n");
     return OK;

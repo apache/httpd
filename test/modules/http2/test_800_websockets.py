@@ -167,14 +167,14 @@ class TestWebSockets:
     def test_h2_800_03_not_found(self, env: H2TestEnv, ws_server):
         r, infos, frames = ws_run(env, path='/does-not-exist')
         assert r.exit_code == 0, f'{r}'
-        assert infos == ['[1] :status: 404', '[1] EOF'], f'{r}'
+        assert infos == ['[1] :status: 404', '[1] EOF'] or infos == ['[1] :status: 404', '[1] EOF', '[1] RST'], f'{r}'
 
     # CONNECT to a URL path that is a normal HTTP file resource
     # we do not want to receive the body of that
     def test_h2_800_04_non_ws_resource(self, env: H2TestEnv, ws_server):
         r, infos, frames = ws_run(env, path='/alive.json')
         assert r.exit_code == 0, f'{r}'
-        assert infos == ['[1] :status: 502', '[1] EOF'], f'{r}'
+        assert infos == ['[1] :status: 502', '[1] EOF'] or infos == ['[1] :status: 502', '[1] EOF', '[1] RST'], f'{r}'
         assert frames == b''
 
     # CONNECT to a URL path that sends a delayed HTTP response body
@@ -182,7 +182,7 @@ class TestWebSockets:
     def test_h2_800_05_non_ws_delay_resource(self, env: H2TestEnv, ws_server):
         r, infos, frames = ws_run(env, path='/h2test/error?body_delay=100ms')
         assert r.exit_code == 0, f'{r}'
-        assert infos == ['[1] :status: 502', '[1] EOF'], f'{r}'
+        assert infos == ['[1] :status: 502', '[1] EOF'] or infos == ['[1] :status: 502', '[1] EOF', '[1] RST'], f'{r}'
         assert frames == b''
 
     # CONNECT missing the sec-webSocket-version header
@@ -214,7 +214,7 @@ class TestWebSockets:
         r, infos, frames = ws_run(env, path='/ws/echo/',
                                   authority=f'test1.{env.http_tld}:{env.http_port}')
         assert r.exit_code == 0, f'{r}'
-        assert infos == ['[1] :status: 501', '[1] EOF'], f'{r}'
+        assert infos == ['[1] :status: 501', '[1] EOF'] or infos == ['[1] :status: 501', '[1] EOF', '[1] RST'], f'{r}'
 
     # CONNECT and exchange a PING
     def test_h2_800_10_ws_ping(self, env: H2TestEnv, ws_server):

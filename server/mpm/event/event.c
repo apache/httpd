@@ -2628,11 +2628,14 @@ static void setup_threads_runtime(void)
         clean_child_exit(APEXIT_CHILDFATAL);
     }
 
-    /* Create the main pollset */
+    /* Create the main pollset. When APR_POLLSET_WAKEABLE is asked we account
+     * for the wakeup pipe explicitely with pollset_size+1 because some pollset
+     * implementations don't do it implicitely in APR.
+     */
     pollset_flags = APR_POLLSET_THREADSAFE | APR_POLLSET_NOCOPY |
-                    APR_POLLSET_NODEFAULT | APR_POLLSET_WAKEABLE;
+                    APR_POLLSET_WAKEABLE | APR_POLLSET_NODEFAULT;
     for (i = 0; i < sizeof(good_methods) / sizeof(good_methods[0]); i++) {
-        rv = apr_pollset_create_ex(&event_pollset, pollset_size, pruntime,
+        rv = apr_pollset_create_ex(&event_pollset, pollset_size + 1, pruntime,
                                    pollset_flags, good_methods[i]);
         if (rv == APR_SUCCESS) {
             listener_is_wakeable = 1;
@@ -2640,19 +2643,17 @@ static void setup_threads_runtime(void)
         }
     }
     if (rv != APR_SUCCESS) {
-        pollset_flags &= ~APR_POLLSET_WAKEABLE;
-        for (i = 0; i < sizeof(good_methods) / sizeof(good_methods[0]); i++) {
-            rv = apr_pollset_create_ex(&event_pollset, pollset_size, pruntime,
-                                       pollset_flags, good_methods[i]);
-            if (rv == APR_SUCCESS) {
-                break;
-            }
-        }
-    }
-    if (rv != APR_SUCCESS) {
         pollset_flags &= ~APR_POLLSET_NODEFAULT;
-        rv = apr_pollset_create(&event_pollset, pollset_size, pruntime,
+        rv = apr_pollset_create(&event_pollset, pollset_size + 1, pruntime,
                                 pollset_flags);
+        if (rv == APR_SUCCESS) {
+            listener_is_wakeable = 1;
+        }
+        else {
+            pollset_flags &= ~APR_POLLSET_WAKEABLE;
+            rv = apr_pollset_create(&event_pollset, pollset_size, pruntime,
+                                    pollset_flags);
+        }
     }
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, ap_server_conf, APLOGNO(03103)
@@ -2745,10 +2746,28 @@ static void *APR_THREAD_FUNC start_threads(apr_thread_t * thd, void *dummy)
             rv = ap_thread_create(&threads[i], thread_attr,
                                   worker_thread, my_info, pruntime);
             if (rv != APR_SUCCESS) {
+                ap_update_child_status_from_indexes(my_child_num, i, SERVER_DEAD, NULL);
                 ap_log_error(APLOG_MARK, APLOG_ALERT, rv, ap_server_conf,
                              APLOGNO(03104)
                              "ap_thread_create: unable to create worker thread");
-                /* let the parent decide how bad this really is */
+                /* Let the parent decide how bad this really is by returning
+                 * APEXIT_CHILDSICK. If threads were created already let them
+                 * stop cleanly first to avoid deadlocks in clean_child_exit(),
+                 * just stop creating new ones here (but set resource_shortage
+                 * to return APEXIT_CHILDSICK still when the child exists).
+                 */
+                if (threads_created) {
+                    resource_shortage = 1;
+                    signal_threads(ST_GRACEFUL);
+                    if (!listener_started) {
+                        workers_may_exit = 1;
+                        ap_queue_term(worker_queue);
+                        /* wake up main POD thread too */
+                        kill(ap_my_pid, SIGTERM);
+                    }
+                    apr_thread_exit(thd, APR_SUCCESS);
+                    return NULL;
+                }
                 clean_child_exit(APEXIT_CHILDSICK);
             }
             threads_created++;

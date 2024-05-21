@@ -258,6 +258,7 @@
 <li><a href="mod_dav.html#davdepthinfinity">DavDepthInfinity</a></li>
 <li><a href="mod_dav_lock.html#davgenericlockdb">DavGenericLockDB</a></li>
 <li><a href="mod_dav_fs.html#davlockdb">DavLockDB</a></li>
+<li><a href="mod_dav_fs.html#davlockdbtype">DavLockDBType</a></li>
 <li><a href="mod_dav_fs.html#davlockdiscovery">DavLockDiscovery</a></li>
 <li><a href="mod_dav.html#davmintimeout">DavMinTimeout</a></li>
 <li><a href="mod_dav.html#davmsext">DavMSext</a></li>
@@ -489,6 +490,7 @@
 <li><a href="mod_md.html#mdcertificatestatus">MDCertificateStatus</a></li>
 <li><a href="mod_md.html#mdchallengedns01">MDChallengeDns01</a></li>
 <li><a href="mod_md.html#mdchallengedns01version">MDChallengeDns01Version</a></li>
+<li><a href="mod_md.html#mdcheckinterval">MDCheckInterval</a></li>
 <li><a href="mod_md.html#mdcontactemail">MDContactEmail</a></li>
 <li><a href="mod_md.html#mddrivemode">MDDriveMode</a></li>
 <li><a href="mod_md.html#mdexternalaccountbinding">MDExternalAccountBinding</a></li>
@@ -740,7 +742,6 @@
 <li><a href="mod_ssl.html#sslengine">SSLEngine</a></li>
 <li><a href="mod_ssl.html#sslfips">SSLFIPS</a></li>
 <li><a href="mod_ssl.html#sslhonorcipherorder">SSLHonorCipherOrder</a></li>
-<li><a href="mod_ssl.html#sslinsecurerenegotiation">SSLInsecureRenegotiation</a></li>
 <li><a href="mod_ssl.html#sslocspdefaultresponder">SSLOCSPDefaultResponder</a></li>
 <li><a href="mod_ssl.html#sslocspenable">SSLOCSPEnable</a></li>
 <li><a href="mod_ssl.html#sslocspnoverify">SSLOCSPNoverify</a></li>
@@ -879,7 +880,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/directives.htm
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2023 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2024 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

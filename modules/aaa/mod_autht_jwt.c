@@ -72,16 +72,15 @@ typedef struct {
     apr_hash_t *claims;
     apr_array_header_t *signs;
     apr_array_header_t *verifies;
-    int signs_set:1;
-    int verifies_set:1;
-    int fake_set:1;
+    unsigned int signs_set      :1,
+                 verifies_set   :1;
 } auth_bearer_config_rec;
 
 typedef struct {
     const char *library;
     const char *params;
     apr_crypto_t **crypto;
-    int library_set;
+    unsigned int library_set    :1;
 } auth_bearer_conf;
 
 static int auth_bearer_init(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp,

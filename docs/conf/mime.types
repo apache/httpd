@@ -1,6 +1,6 @@
 # This file maps Internet media types to unique file extension(s).
 # Although created for httpd, this file is used by many software systems
-# and has been placed in the public domain for unlimited redisribution.
+# and has been placed in the public domain for unlimited redistribution.
 #
 # The table below contains both registered and (common) unregistered types.
 # A type that has no unique extension can be ignored -- they are listed
@@ -1645,7 +1645,7 @@ model/vnd.gdl					gdl
 # model/vnd.gs.gdl
 model/vnd.gtw					gtw
 # model/vnd.moml+xml
-model/vnd.mts					mts
+# model/vnd.mts
 # model/vnd.opengex
 # model/vnd.parasolid.transmit.binary
 # model/vnd.parasolid.transmit.text
@@ -1784,7 +1784,7 @@ video/jpm					jpm jpgm
 video/mj2					mj2 mjp2
 # video/mp1s
 # video/mp2p
-# video/mp2t
+video/mp2t					ts m2t m2ts mts
 video/mp4					mp4 mp4v mpg4
 # video/mp4v-es
 video/mpeg					mpeg mpg mpe m1v m2v
