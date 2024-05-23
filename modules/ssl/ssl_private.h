@@ -102,6 +102,7 @@
 #include <openssl/dh.h>
 #if OPENSSL_VERSION_NUMBER >= 0x30000000
 #include <openssl/core_names.h>
+#include <openssl/decoder.h>
 #endif
 
 /* Avoid tripping over an engine build installed globally and detected

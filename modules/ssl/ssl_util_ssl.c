@@ -493,10 +493,20 @@ EVP_PKEY *modssl_dh_pkey_from_file(const char *file)
 {
     EVP_PKEY *pkey;
     BIO *bio;
+    OSSL_DECODER_CTX *dctx;
 
     if ((bio = BIO_new_file(file, "r")) == NULL)
         return NULL;
-    pkey = PEM_read_bio_Parameters(bio, NULL);
+    if ((dctx =
+         OSSL_DECODER_CTX_new_for_pkey(&pkey, "PEM", NULL, "DH",
+                                       EVP_PKEY_KEY_PARAMETERS, NULL,
+                                       NULL)) == NULL)
+        return NULL;
+    while (!OSSL_DECODER_from_bio(dctx, bio) || pkey == NULL) {
+        if (BIO_eof(bio))
+            break;
+    }
+    OSSL_DECODER_CTX_free(dctx);
     BIO_free(bio);
 
     return pkey;
