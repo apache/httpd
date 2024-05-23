@@ -797,7 +797,17 @@ static UI_METHOD *get_passphrase_ui(apr_pool_t *p)
 #endif
 
 #if MODSSL_HAVE_ENGINE_API
-static apr_status_t modssl_load_keypair_engine(server_rec *s, apr_pool_t *p,
+static apr_status_t modssl_engine_cleanup(void *engine)
+{
+    ENGINE *e = engine;
+
+    ENGINE_finish(e);
+
+    return APR_SUCCESS;
+}
+
+static apr_status_t modssl_load_keypair_engine(server_rec *s, apr_pool_t *pconf,
+                                               apr_pool_t *ptemp,
                                                const char *vhostid,
                                                const char *certid,
                                                const char *keyid,
@@ -806,12 +816,12 @@ static apr_status_t modssl_load_keypair_engine(server_rec *s, apr_pool_t *p,
 {
     const char *c, *scheme;
     ENGINE *e;
-    UI_METHOD *ui_method = get_passphrase_ui(p);
+    UI_METHOD *ui_method = get_passphrase_ui(ptemp);
     pphrase_cb_arg_t ppcb;
 
     memset(&ppcb, 0, sizeof ppcb);
     ppcb.s = s;
-    ppcb.p = p;
+    ppcb.p = ptemp;
     ppcb.bPassPhraseDialogOnce = TRUE;
     ppcb.key_id = vhostid;
     ppcb.pkey_file = keyid;
@@ -824,7 +834,7 @@ static apr_status_t modssl_load_keypair_engine(server_rec *s, apr_pool_t *p,
         return ssl_die(s);
     }
 
-    scheme = apr_pstrmemdup(p, keyid, c - keyid);
+    scheme = apr_pstrmemdup(ptemp, keyid, c - keyid);
     if (!(e = ENGINE_by_id(scheme))) {
         ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(10132)
                      "Init: Failed to load engine for private key %s",
@@ -873,7 +883,12 @@ static apr_status_t modssl_load_keypair_engine(server_rec *s, apr_pool_t *p,
         return ssl_die(s);
     }
 
-    ENGINE_finish(e);
+    /* Release the functional reference obtained by ENGINE_init() only
+     * when after the ENGINE is no longer used. */
+    apr_pool_cleanup_register(pconf, e, modssl_engine_cleanup, modssl_engine_cleanup);
+
+    /* Release the structural reference obtained by ENGINE_by_id()
+     * immediately. */
     ENGINE_free(e);
 
     return APR_SUCCESS;
@@ -974,7 +989,8 @@ static apr_status_t modssl_load_keypair_store(server_rec *s, apr_pool_t *p,
 }
 #endif
 
-apr_status_t modssl_load_engine_keypair(server_rec *s, apr_pool_t *p,
+apr_status_t modssl_load_engine_keypair(server_rec *s,
+                                        apr_pool_t *pconf, apr_pool_t *ptemp,
                                         const char *vhostid,
                                         const char *certid, const char *keyid,
                                         X509 **pubkey, EVP_PKEY **privkey)
@@ -986,11 +1002,12 @@ apr_status_t modssl_load_engine_keypair(server_rec *s, apr_pool_t *p,
      * support was not present compile-time, or if it's built but
      * SSLCryptoDevice is not configured. */
     if (mc->szCryptoDevice)
-        return modssl_load_keypair_engine(s, p, vhostid, certid, keyid,
+        return modssl_load_keypair_engine(s, pconf, ptemp,
+                                          vhostid, certid, keyid,
                                           pubkey, privkey);
 #endif
 #if MODSSL_HAVE_OPENSSL_STORE
-    return modssl_load_keypair_store(s, p, vhostid, certid, keyid,
+    return modssl_load_keypair_store(s, ptemp, vhostid, certid, keyid,
                                      pubkey, privkey);
 #else
     ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(10496)

@@ -1467,7 +1467,7 @@ static apr_status_t ssl_init_server_certs(server_rec *s,
         if (modssl_is_engine_id(keyfile)) {
             apr_status_t rv;
 
-            if ((rv = modssl_load_engine_keypair(s, ptemp, vhost_id,
+            if ((rv = modssl_load_engine_keypair(s, p, ptemp, vhost_id,
                                                  engine_certfile, keyfile,
                                                  &cert, &pkey))) {
                 return rv;
