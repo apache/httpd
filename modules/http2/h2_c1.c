@@ -116,7 +116,7 @@ cleanup:
 apr_status_t h2_c1_run(conn_rec *c)
 {
     apr_status_t status;
-    int mpm_state = 0;
+    int mpm_state = 0, keepalive = 0;
     h2_conn_ctx_t *conn_ctx = h2_conn_ctx_get(c);
     
     ap_assert(conn_ctx);
@@ -127,7 +127,7 @@ apr_status_t h2_c1_run(conn_rec *c)
             c->cs->state = CONN_STATE_HANDLER;
         }
     
-        status = h2_session_process(conn_ctx->session, async_mpm);
+        status = h2_session_process(conn_ctx->session, async_mpm, &keepalive);
         
         if (APR_STATUS_IS_EOF(status)) {
             ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, c, 
@@ -153,7 +153,7 @@ apr_status_t h2_c1_run(conn_rec *c)
             case H2_SESSION_ST_BUSY:
             case H2_SESSION_ST_WAIT:
                 c->cs->state = CONN_STATE_WRITE_COMPLETION;
-                if (c->cs && !conn_ctx->session->remote.emitted_count) {
+                if (!keepalive) {
                     /* let the MPM know that we are not done and want
                      * the Timeout behaviour instead of a KeepAliveTimeout
                      * See PR 63534. 

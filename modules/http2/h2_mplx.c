@@ -398,6 +398,7 @@ apr_status_t h2_mplx_c1_streams_do(h2_mplx *m, h2_mplx_stream_cb *cb, void *ctx)
 typedef struct {
     int stream_count;
     int stream_want_send;
+    int stream_send_win_exhausted;
 } stream_iter_aws_t;
 
 static int m_stream_want_send_data(void *ctx, void *stream)
@@ -418,6 +419,29 @@ int h2_mplx_c1_all_streams_want_send_data(h2_mplx *m)
     h2_ihash_iter(m->streams, m_stream_want_send_data, &x);
     H2_MPLX_LEAVE(m);
     return x.stream_count && (x.stream_count == x.stream_want_send);
+}
+
+static int m_stream_send_win_exh(void *ctx, void *s)
+{
+    h2_stream *stream = s;
+    int win;
+    stream_iter_aws_t *x = ctx;
+    ++x->stream_count;
+    win = nghttp2_session_get_stream_remote_window_size(stream->session->ngh2, stream->id);
+    if (win == 0)
+      ++x->stream_send_win_exhausted;
+    return 1;
+}
+
+int h2_mplx_c1_all_streams_send_win_exhausted(h2_mplx *m)
+{
+    stream_iter_aws_t x;
+    x.stream_count = 0;
+    x.stream_send_win_exhausted = 0;
+    H2_MPLX_ENTER(m);
+    h2_ihash_iter(m->streams, m_stream_send_win_exh, &x);
+    H2_MPLX_LEAVE(m);
+    return x.stream_count && (x.stream_count == x.stream_send_win_exhausted);
 }
 
 static int m_report_stream_iter(void *ctx, void *val) {
