@@ -255,6 +255,15 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         svn merge -c 1917578 ^/httpd/httpd/trunk .
       +1: jorton, ylavic, 
 
+   *) mod_http2: sync with github module. Add async handling
+      on newer httpd for blocked connections, fix yield handling.
+      Trunk version of patch:
+         https://svn.apache.org/r1918003
+      2.4.x version of patch:
+        Trunk version of patch works
+        svn merge -c 1918003 ^/httpd/httpd/trunk .
+      +1: icing,
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
