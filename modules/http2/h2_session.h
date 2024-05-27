@@ -144,8 +144,11 @@ void h2_session_event(h2_session *session, h2_session_event_t ev,
  * error occurred.
  *
  * @param session the sessionm to process
+ * @param async if mpm is async
+ * @param pkeepalive on return, != 0 if connection to be put into keepalive
+ *                   behaviour and timouts
  */
-apr_status_t h2_session_process(h2_session *session, int async);
+apr_status_t h2_session_process(h2_session *session, int async, int *pkeepalive);
 
 /**
  * Last chance to do anything before the connection is closed.
