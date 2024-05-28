@@ -152,20 +152,25 @@ apr_status_t h2_c1_run(conn_rec *c)
             case H2_SESSION_ST_IDLE:
             case H2_SESSION_ST_BUSY:
             case H2_SESSION_ST_WAIT:
-                c->cs->state = CONN_STATE_WRITE_COMPLETION;
-                if (!keepalive) {
+                if (keepalive) {
+                    /* flush then keep-alive */
+                    c->cs->state = CONN_STATE_WRITE_COMPLETION;
+                }
+                else {
                     /* let the MPM know that we are not done and want
                      * the Timeout behaviour instead of a KeepAliveTimeout
                      * See PR 63534. 
                      */
+                    c->cs->state = CONN_STATE_PROCESS;
                     c->cs->sense = CONN_SENSE_WANT_READ;
                 }
                 break;
+
             case H2_SESSION_ST_CLEANUP:
             case H2_SESSION_ST_DONE:
             default:
                 c->cs->state = CONN_STATE_LINGER;
-            break;
+                break;
         }
     }
 
