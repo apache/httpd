@@ -603,6 +603,7 @@
  *                           and AP_REQUEST_TRUSTED_CT BNOTE.
  * 20120211.133 (2.4.60-dev) Add ap_proxy_fixup_uds_filename()
  * 20120211.134 (2.4.60-dev) AP_SLASHES and AP_IS_SLASH
+ * 20120211.135 (2.4.59-dev) Add CONN_STATE_KEEPALIVE and CONN_STATE_PROCESS
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */
