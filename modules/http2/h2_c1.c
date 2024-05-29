@@ -161,7 +161,11 @@ apr_status_t h2_c1_run(conn_rec *c)
                      * the Timeout behaviour instead of a KeepAliveTimeout
                      * See PR 63534. 
                      */
+#if H2_USE_STATE_PROCESS
                     c->cs->state = CONN_STATE_PROCESS;
+#else
+                    c->cs->state = CONN_STATE_WRITE_COMPLETION;
+#endif
                     c->cs->sense = CONN_SENSE_WANT_READ;
                 }
                 break;

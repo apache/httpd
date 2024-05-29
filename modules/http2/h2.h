@@ -49,6 +49,12 @@ struct h2_stream;
 #define H2_USE_WEBSOCKETS       0
 #endif
 
+#if AP_MODULE_MAGIC_AT_LEAST(20211221, 20)
+#define H2_USE_STATE_PROCESS       1
+#else
+#define H2_USE_STATE_PROCESS       0
+#endif
+
 /**
  * The magic PRIamble of RFC 7540 that is always sent when starting
  * a h2 communication.

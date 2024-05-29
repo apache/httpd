@@ -1762,6 +1762,7 @@ static void unblock_c1_out(h2_session *session) {
     }
 }
 
+#if H2_USE_STATE_PROCESS
 static int h2_send_flow_blocked(h2_session *session)
 {
     /* We are completely send blocked if either the connection window
@@ -1769,6 +1770,7 @@ static int h2_send_flow_blocked(h2_session *session)
     return ((nghttp2_session_get_remote_window_size(session->ngh2) <= 0) ||
              h2_mplx_c1_all_streams_send_win_exhausted(session->mplx));
 }
+#endif
 
 apr_status_t h2_session_process(h2_session *session, int async,
                                 int *pkeepalive)
@@ -1952,7 +1954,7 @@ apr_status_t h2_session_process(h2_session *session, int async,
                     break;
                 }
             }
-#if AP_MODULE_MAGIC_AT_LEAST(20211221, 19)
+#if H2_USE_STATE_PROCESS
             else if (async && h2_send_flow_blocked(session)) {
                 /* On a recent HTTPD, we can return to mpm c1 monitoring,
                  * as it does not treat all connections as having KeepAlive
