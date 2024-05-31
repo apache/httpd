@@ -1358,10 +1358,8 @@ static void check_infinite_requests(void)
                      "Stopping process due to MaxConnectionsPerChild");
         signal_threads(ST_GRACEFUL);
     }
-    else {
-        /* keep going */
-        conns_this_child = APR_INT32_MAX;
-    }
+    /* keep going */
+    conns_this_child = APR_INT32_MAX;
 }
 
 static int close_listeners(int *closed)
