@@ -79,7 +79,7 @@ static apr_status_t simple_io_process(simple_conn_t * scon)
             scon->pfd.reqevents = 0;
         }
 
-        if (scon->cs.state == CONN_STATE_PROCESS) {
+        if (scon->cs.state == CONN_STATE_PROCESSING) {
             if (!c->aborted) {
                 ap_run_process_connection(c);
                 /* state will be updated upon return
@@ -132,7 +132,7 @@ static apr_status_t simple_io_process(simple_conn_t * scon)
                 scon->cs.state = CONN_STATE_LINGER;
             }
             else if (ap_run_input_pending(c) == OK) {
-                scon->cs.state = CONN_STATE_PROCESS;
+                scon->cs.state = CONN_STATE_PROCESSING;
             }
             else {
                 scon->cs.state = CONN_STATE_KEEPALIVE;
@@ -233,7 +233,7 @@ static void *simple_io_setup_conn(apr_thread_t * thread, void *baton)
                      "simple_io_setup_conn: connection aborted");
     }
 
-    scon->cs.state = CONN_STATE_PROCESS;
+    scon->cs.state = CONN_STATE_PROCESSING;
     scon->cs.sense = CONN_SENSE_DEFAULT;
 
     rv = simple_io_process(scon);

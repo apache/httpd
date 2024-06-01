@@ -1319,7 +1319,7 @@ struct conn_slave_rec {
  */
 typedef enum  {
     CONN_STATE_KEEPALIVE,           /* Kept alive in the MPM (using KeepAliveTimeout) */
-    CONN_STATE_PROCESS,             /* Handled by process_connection() hooks, may be returned
+    CONN_STATE_PROCESSING,          /* Handled by process_connection() hooks, may be returned
                                        to the MPM for POLLIN/POLLOUT (using Timeout) */
     CONN_STATE_HANDLER,             /* Processed by the modules handlers */
     CONN_STATE_WRITE_COMPLETION,    /* Flushed by the MPM before entering CONN_STATE_KEEPALIVE */
@@ -1332,7 +1332,7 @@ typedef enum  {
 
     /* Aliases (legacy) */
     CONN_STATE_CHECK_REQUEST_LINE_READABLE  = CONN_STATE_KEEPALIVE,
-    CONN_STATE_READ_REQUEST_LINE            = CONN_STATE_PROCESS,
+    CONN_STATE_READ_REQUEST_LINE            = CONN_STATE_PROCESSING,
 } conn_state_e;
 
 typedef enum  {

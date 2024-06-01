@@ -160,7 +160,7 @@ static void *motorz_io_setup_conn(apr_thread_t *thread, void *baton)
                      "motorz_io_setup_conn: connection aborted");
     }
 
-    scon->cs.state = CONN_STATE_PROCESS;
+    scon->cs.state = CONN_STATE_PROCESSING;
     scon->cs.sense = CONN_SENSE_DEFAULT;
 
     status = motorz_io_process(scon);
@@ -376,14 +376,14 @@ static apr_status_t motorz_io_process(motorz_conn_t *scon)
 
         if (scon->cs.state == CONN_STATE_KEEPALIVE) {
             ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO(03327)
-                                 "motorz_io_process(): Set to CONN_STATE_PROCESS");
-            scon->cs.state = CONN_STATE_PROCESS;
+                                 "motorz_io_process(): Set to CONN_STATE_PROCESSING");
+            scon->cs.state = CONN_STATE_PROCESSING;
         }
 
 read_request:
-        if (scon->cs.state == CONN_STATE_PROCESS) {
+        if (scon->cs.state == CONN_STATE_PROCESSING) {
             ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO(03328)
-                                 "motorz_io_process(): CONN_STATE_PROCESS");
+                                 "motorz_io_process(): CONN_STATE_PROCESSING");
             if (!c->aborted) {
                 ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO(03329)
                                      "motorz_io_process(): !aborted");
@@ -438,7 +438,7 @@ read_request:
                 scon->cs.state = CONN_STATE_LINGER;
             }
             else if (ap_run_input_pending(c) == OK) {
-                scon->cs.state = CONN_STATE_PROCESS;
+                scon->cs.state = CONN_STATE_PROCESSING;
                 goto read_request;
             }
             else {

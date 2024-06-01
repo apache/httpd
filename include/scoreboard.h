@@ -144,10 +144,12 @@ struct process_score {
                              * connections (for async MPMs)
                              */
     apr_uint32_t connections;       /* total connections (for async MPMs) */
-    apr_uint32_t write_completion;  /* async connections in write completion or POLLIN/POLLOUT */
+    apr_uint32_t write_completion;  /* async connections in write completion */
     apr_uint32_t lingering_close;   /* async connections in lingering close */
     apr_uint32_t keep_alive;        /* async connections in keep alive */
     apr_uint32_t suspended;         /* connections suspended by some module */
+    apr_uint32_t processing;        /* async connections in processing (returned
+                                       to the MPM for POLLIN/POLLOUT) */
 };
 
 /* Scoreboard is now in 'local' memory, since it isn't updated once created,
