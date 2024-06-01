@@ -603,7 +603,8 @@
  *                           and AP_REQUEST_TRUSTED_CT BNOTE.
  * 20120211.133 (2.4.60-dev) Add ap_proxy_fixup_uds_filename()
  * 20120211.134 (2.4.60-dev) AP_SLASHES and AP_IS_SLASH
- * 20120211.135 (2.4.59-dev) Add CONN_STATE_KEEPALIVE and CONN_STATE_PROCESS
+ * 20120211.135 (2.4.59-dev) Add CONN_STATE_KEEPALIVE and CONN_STATE_PROCESSING
+ * 20120211.136 (2.4.59-dev) Add processing field struct process_score
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */
@@ -611,7 +612,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20120211
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 134                 /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 136                 /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a
