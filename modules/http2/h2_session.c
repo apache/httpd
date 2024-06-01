@@ -1762,7 +1762,7 @@ static void unblock_c1_out(h2_session *session) {
     }
 }
 
-#if H2_USE_STATE_PROCESS
+#if H2_USE_STATE_PROCESSING
 static int h2_send_flow_blocked(h2_session *session)
 {
     /* We are completely send blocked if either the connection window
@@ -1954,7 +1954,7 @@ apr_status_t h2_session_process(h2_session *session, int async,
                     break;
                 }
             }
-#if H2_USE_STATE_PROCESS
+#if H2_USE_STATE_PROCESSING
             else if (async && h2_send_flow_blocked(session)) {
                 /* On a recent HTTPD, we can return to mpm c1 monitoring,
                  * as it does not treat all connections as having KeepAlive

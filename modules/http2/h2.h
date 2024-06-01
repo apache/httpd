@@ -50,9 +50,9 @@ struct h2_stream;
 #endif
 
 #if AP_MODULE_MAGIC_AT_LEAST(20120211, 132)
-#define H2_USE_STATE_PROCESS       1
+#define H2_USE_STATE_PROCESSING 1
 #else
-#define H2_USE_STATE_PROCESS       0
+#define H2_USE_STATE_PROCESSING 0
 #endif
 
 /**
