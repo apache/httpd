@@ -564,7 +564,7 @@ static int status_handler(request_rec *r)
         ap_rputs("</dl>", r);
 
     if (is_async) {
-        int processing, write_completion = 0, lingering_close = 0, keep_alive = 0,
+        int processing = 0, write_completion = 0, lingering_close = 0, keep_alive = 0,
             connections = 0, stopping = 0, procs = 0;
         if (!short_report)
             ap_rputs("\n\n<table rules=\"all\" cellpadding=\"1%\">\n"
