@@ -370,6 +370,13 @@ static apr_status_t h2_c2_filter_out(ap_filter_t* f, apr_bucket_brigade* bb)
     h2_conn_ctx_t *conn_ctx = h2_conn_ctx_get(f->c);
     apr_status_t rv;
 
+    if (bb == NULL) {
+#if !AP_MODULE_MAGIC_AT_LEAST(20180720, 1)
+        f->c->data_in_output_filters = 0;
+#endif
+        return APR_SUCCESS;
+    }
+
     ap_assert(conn_ctx);
 #if AP_HAS_RESPONSE_BUCKETS
     if (!conn_ctx->has_final_response) {

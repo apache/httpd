@@ -1308,6 +1308,7 @@ chemical/x-cml					cml
 chemical/x-csml					csml
 # chemical/x-pdb
 chemical/x-xyz					xyz
+image/avif					avif
 image/bmp					bmp
 image/cgm					cgm
 # image/example

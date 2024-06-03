@@ -1318,16 +1318,21 @@ struct conn_slave_rec {
  * only be set by the MPM. Use CONN_STATE_LINGER outside of the MPM.
  */
 typedef enum  {
-    CONN_STATE_CHECK_REQUEST_LINE_READABLE,
-    CONN_STATE_READ_REQUEST_LINE,
-    CONN_STATE_HANDLER,
-    CONN_STATE_WRITE_COMPLETION,
-    CONN_STATE_SUSPENDED,
-    CONN_STATE_LINGER,          /* connection may be closed with lingering */
-    CONN_STATE_LINGER_NORMAL,   /* MPM has started lingering close with normal timeout */
-    CONN_STATE_LINGER_SHORT,    /* MPM has started lingering close with short timeout */
+    CONN_STATE_KEEPALIVE,           /* Kept alive in the MPM (using KeepAliveTimeout) */
+    CONN_STATE_PROCESSING,          /* Handled by process_connection() hooks, may be returned
+                                       to the MPM for POLLIN/POLLOUT (using Timeout) */
+    CONN_STATE_HANDLER,             /* Processed by the modules handlers */
+    CONN_STATE_WRITE_COMPLETION,    /* Flushed by the MPM before entering CONN_STATE_KEEPALIVE */
+    CONN_STATE_SUSPENDED,           /* Suspended in the MPM until ap_run_resume_suspended() */
+    CONN_STATE_LINGER,              /* MPM flushes then closes the connection with lingering */
+    CONN_STATE_LINGER_NORMAL,       /* MPM has started lingering close with normal timeout */
+    CONN_STATE_LINGER_SHORT,        /* MPM has started lingering close with short timeout */
 
-    CONN_STATE_NUM              /* Number of states (keep/kept last) */
+    CONN_STATE_NUM,                 /* Number of states (keep here before aliases) */
+
+    /* Aliases (legacy) */
+    CONN_STATE_CHECK_REQUEST_LINE_READABLE  = CONN_STATE_KEEPALIVE,
+    CONN_STATE_READ_REQUEST_LINE            = CONN_STATE_PROCESSING,
 } conn_state_e;
 
 typedef enum  {
