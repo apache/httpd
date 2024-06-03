@@ -726,6 +726,7 @@
  * 20211221.20 (2.5.1-dev) Add CONN_STATE_KEEPALIVE and CONN_STATE_PROCESSING
  * 20211221.21 (2.5.1-dev) Add processing field struct process_score
  * 20211221.22 (2.5.1-dev) Add ap_remote_is_ssl() and hooks
+*/
 
 #define MODULE_MAGIC_COOKIE 0x41503235UL /* "AP25" */
 
