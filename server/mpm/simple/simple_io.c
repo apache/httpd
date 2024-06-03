@@ -126,11 +126,11 @@ static apr_status_t simple_io_process(simple_conn_t * scon)
                 }
                 return APR_SUCCESS;
             }
-            if (c->keepalive != AP_CONN_KEEPALIVE) {
-                pending = DONE;
-            }
-            else if (pending == OK) {
-                pending = ap_check_input_pending(c);
+            if (pending == OK) {
+                /* Some data to process immediately? */
+                pending = (c->keepalive == AP_CONN_KEEPALIVE
+                           ? ap_check_input_pending(c)
+                           : DONE);
                 if (pending == AGAIN) {
                     scon->cs.state = CONN_STATE_PROCESSING;
                     continue;

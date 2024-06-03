@@ -380,8 +380,8 @@ static apr_status_t motorz_io_process(motorz_conn_t *scon)
             scon->cs.state = CONN_STATE_PROCESSING;
         }
 
-read_request:
         if (scon->cs.state == CONN_STATE_PROCESSING) {
+ process_connection:
             ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO(03328)
                                  "motorz_io_process(): CONN_STATE_PROCESSING");
             if (!c->aborted) {
@@ -432,14 +432,14 @@ read_request:
                 }
                 return APR_SUCCESS;
             }
-            if (c->keepalive != AP_CONN_KEEPALIVE) {
-                pending = DONE;
-            }
-            else if (pending == OK) {
-                pending = ap_check_input_pending(c);
+            if (pending == OK) {
+                /* Some data to process immediately? */
+                pending = (c->keepalive == AP_CONN_KEEPALIVE
+                           ? ap_check_input_pending(c)
+                           : DONE);
                 if (pending == AGAIN) {
                     scon->cs.state = CONN_STATE_PROCESSING;
-                    goto read_request;
+                    goto process_connection;
                 }
             }
             if (pending == OK) {
