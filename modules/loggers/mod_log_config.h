@@ -71,6 +71,7 @@ typedef ap_log_formatted_data * ap_log_formatter(
 typedef struct ap_log_handler {
     ap_log_handler_fn_t *func;
     int want_orig_default;
+    int does_escape;
 } ap_log_handler;
 
 APR_DECLARE_OPTIONAL_FN(void, ap_register_log_handler,
@@ -79,7 +80,7 @@ APR_DECLARE_OPTIONAL_FN(void, ap_register_log_handler,
 
 APR_DECLARE_OPTIONAL_FN(void, ap_register_log_handler_ex,
                         (apr_pool_t *p, const char *tag, const char *long_name, ap_log_handler_fn_t *func,
-                         int def));
+                         int def, int does_escape));
 
 /**
  * you will need to set your init handler *BEFORE* the open_logs

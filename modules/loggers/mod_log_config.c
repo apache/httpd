@@ -311,7 +311,7 @@ typedef struct {
 
 typedef struct {
     const char *tag; /* tag that did create this lfi */
-    ap_log_handler_fn_t *func;
+    ap_log_handler *log_handler;
     const char *arg;
     int condition_sense;
     int want_orig;
@@ -958,7 +958,8 @@ static char *parse_log_misc_string(apr_pool_t *p, log_format_item *it,
     char *d;
 
     it->tag = NULL;
-    it->func = constant_item;
+    it->log_handler = apr_palloc(p, sizeof(*it->log_handler));
+    it->log_handler->func = constant_item;
     it->conditions = NULL;
 
     s = *sa;
@@ -1028,7 +1029,8 @@ static char *parse_log_item(apr_pool_t *p, log_format_item *it, const char **sa)
 
     if (*s == '%') {
         it->arg = "%";
-        it->func = constant_item;
+        it->log_handler = apr_palloc(p, sizeof(*it->log_handler));
+        it->log_handler->func = constant_item;
         *sa = ++s;
 
         return NULL;
@@ -1107,7 +1109,7 @@ static char *parse_log_item(apr_pool_t *p, log_format_item *it, const char **sa)
                 }
                 it->tag = apr_pstrmemdup(p, s++, 1);
             }
-            it->func = handler->func;
+            it->log_handler = handler;
             if (it->want_orig == -1) {
                 it->want_orig = handler->want_orig_default;
             }
@@ -1168,7 +1170,7 @@ static const char *process_item(request_rec *r, request_rec *orig,
 
     /* We do.  Do it... */
 
-    cp = (*item->func) (item->want_orig ? orig : r, (char *)item->arg);
+    cp = (*item->log_handler->func) (item->want_orig ? orig : r, (char *)item->arg);
     return cp;
 }
 
@@ -1248,7 +1250,7 @@ static int config_log_transaction(request_rec *r, config_log_state *cls,
          * handle NULL, and empty string also escape all values unconditionally,
          * else let the custom log formatter handle the escaping/formatting
          */
-        if (!cls->log_formatter) {
+        if (!cls->log_formatter && !items[i].log_handler->does_escape) {
             if (!lfd->portions[i]) {
                 lfd->portions[i] = "-";
             }
@@ -1759,11 +1761,12 @@ static void init_child(apr_pool_t *p, server_rec *s)
 
 static void ap_register_log_handler_ex(apr_pool_t *p, const char *tag,
                                     const char *long_name,
-                                    ap_log_handler_fn_t *handler, int def)
+                                    ap_log_handler_fn_t *handler, int def, int does_escape)
 {
     ap_log_handler *log_struct = apr_palloc(p, sizeof(*log_struct));
     log_struct->func = handler;
     log_struct->want_orig_default = def;
+    log_struct->does_escape = does_escape;
 
     apr_hash_set(log_hash, tag, strlen(tag), (const void *)log_struct);
     if(long_name) {
@@ -1774,7 +1777,7 @@ static void ap_register_log_handler_ex(apr_pool_t *p, const char *tag,
 static void ap_register_log_handler(apr_pool_t *p, char *tag,
                                     ap_log_handler_fn_t *handler, int def)
 {
-    ap_register_log_handler_ex(p, tag, NULL, handler, def);
+    ap_register_log_handler_ex(p, tag, NULL, handler, def, 1);
 }
 
 static ap_log_writer_init *ap_log_set_writer_init(ap_log_writer_init *handle)
@@ -2306,52 +2309,52 @@ static int log_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp)
      * - https://github.com/fluent/fluentd/blob/master/lib/fluent/plugin/parser_apache2.rb#L72
      */
     if (log_pfn_register) {
-        log_pfn_register(p, "a", "remoteAddr", log_remote_address, 0 );
-        log_pfn_register(p, "A", "localAddr", log_local_address, 0 );
-        log_pfn_register(p, "b", "size", clf_log_bytes_sent, 0);
-        log_pfn_register(p, "B", "byteSentNC", log_bytes_sent, 0);
-        log_pfn_register(p, "C", "cookie", log_cookie, 0); /* tomcat: "c" */
-        log_pfn_register(p, "D", "elapsedTime", log_request_duration_microseconds, 1);
-        log_pfn_register(p, "e", "env", log_env_var, 0);
-        log_pfn_register(p, "f", "file", log_request_file, 0);
-        log_pfn_register(p, "F", "requestFlushed", log_request_flushed, 1);
-        log_pfn_register(p, "h", "host", log_remote_host, 0);
-        log_pfn_register(p, "H", "protocol", log_request_protocol, 0);
-        log_pfn_register(p, "i", "requestHeaders", log_header_in, 0);
-        log_pfn_register(p, "k", "requestsOnConnection", log_requests_on_connection, 0);
-        log_pfn_register(p, "l", "logicalUserName", log_remote_logname, 0);
-        log_pfn_register(p, "L", "logId", log_log_id, 1);
-        log_pfn_register(p, "m", "method", log_request_method, 0);
-        log_pfn_register(p, "n", "note", log_note, 0);
-        log_pfn_register(p, "o", "responseHeaders", log_header_out, 0);
-        log_pfn_register(p, "p", "port", log_server_port, 0);
-        log_pfn_register(p, "P", "threadId", log_pid_tid, 0);
-        log_pfn_register(p, "q", "query", log_request_query, 0);
-        log_pfn_register(p, "r", "request", log_request_line, 1);
-        log_pfn_register(p, "R", "handler", log_handler, 1);
-        log_pfn_register(p, "s", "statusCode", log_status, 1);
-        log_pfn_register(p, "t", "time", log_request_time, 0);
-        log_pfn_register(p, "T", "elapsedTimeS", log_request_duration_scaled, 1);
-        log_pfn_register(p, "u", "user", log_remote_user, 0);
-        log_pfn_register(p, "U", "path", log_request_uri, 1);
-        log_pfn_register(p, "v", "virtualHost", log_virtual_host, 0); /* tomcat: localServerName */
-        log_pfn_register(p, "V", "serverName", log_server_name, 0);
-        log_pfn_register(p, "X", "connectionStatus", log_connection_status, 0);
+        log_pfn_register(p, "a", "remoteAddr", log_remote_address, 0, 0);
+        log_pfn_register(p, "A", "localAddr", log_local_address, 0, 0);
+        log_pfn_register(p, "b", "size", clf_log_bytes_sent, 0, 0);
+        log_pfn_register(p, "B", "byteSentNC", log_bytes_sent, 0, 0);
+        log_pfn_register(p, "C", "cookie", log_cookie, 0, 0); /* tomcat: "c" */
+        log_pfn_register(p, "D", "elapsedTime", log_request_duration_microseconds, 1, 0);
+        log_pfn_register(p, "e", "env", log_env_var, 0, 0);
+        log_pfn_register(p, "f", "file", log_request_file, 0, 0);
+        log_pfn_register(p, "F", "requestFlushed", log_request_flushed, 1, 0);
+        log_pfn_register(p, "h", "host", log_remote_host, 0, 0);
+        log_pfn_register(p, "H", "protocol", log_request_protocol, 0, 0);
+        log_pfn_register(p, "i", "requestHeaders", log_header_in, 0, 0);
+        log_pfn_register(p, "k", "requestsOnConnection", log_requests_on_connection, 0, 0);
+        log_pfn_register(p, "l", "logicalUserName", log_remote_logname, 0, 0);
+        log_pfn_register(p, "L", "logId", log_log_id, 1, 0);
+        log_pfn_register(p, "m", "method", log_request_method, 0, 0);
+        log_pfn_register(p, "n", "note", log_note, 0, 0);
+        log_pfn_register(p, "o", "responseHeaders", log_header_out, 0, 0);
+        log_pfn_register(p, "p", "port", log_server_port, 0, 0);
+        log_pfn_register(p, "P", "threadId", log_pid_tid, 0, 0);
+        log_pfn_register(p, "q", "query", log_request_query, 0, 0);
+        log_pfn_register(p, "r", "request", log_request_line, 1, 0);
+        log_pfn_register(p, "R", "handler", log_handler, 1, 0);
+        log_pfn_register(p, "s", "statusCode", log_status, 1, 0);
+        log_pfn_register(p, "t", "time", log_request_time, 0, 0);
+        log_pfn_register(p, "T", "elapsedTimeS", log_request_duration_scaled, 1, 0);
+        log_pfn_register(p, "u", "user", log_remote_user, 0, 0);
+        log_pfn_register(p, "U", "path", log_request_uri, 1, 0);
+        log_pfn_register(p, "v", "virtualHost", log_virtual_host, 0, 0); /* tomcat: localServerName */
+        log_pfn_register(p, "V", "serverName", log_server_name, 0, 0);
+        log_pfn_register(p, "X", "connectionStatus", log_connection_status, 0, 0);
 
         /* TODO: long names for
          * - "^ti", "^to", "c" and "x" -> new in trunk?
          * - mod_logio does register: "I", "O", "S", "^FU" and "^FB"
          */
 
-        log_pfn_register(p, "^ti", NULL, log_trailer_in, 0);
-        log_pfn_register(p, "^to", NULL, log_trailer_out, 0);
+        log_pfn_register(p, "^ti", NULL, log_trailer_in, 0, 0);
+        log_pfn_register(p, "^to", NULL, log_trailer_out, 0, 0);
 
         /* these used to be part of mod_ssl, but with the introduction
          * of ap_ssl_var_lookup() they are added here directly so lookups
          * from all installed SSL modules work.
          * We keep the old tag names to remain backward compatible. */
-        log_pfn_register(p, "c", NULL, log_ssl_var_short, 0);
-        log_pfn_register(p, "x", NULL, log_ssl_var, 0);
+        log_pfn_register(p, "c", NULL, log_ssl_var_short, 0, 0);
+        log_pfn_register(p, "x", NULL, log_ssl_var, 0, 0);
     }
 
     /* reset to default conditions */
