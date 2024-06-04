@@ -48,8 +48,11 @@ jobs:
           - name: Shared MPMs, all-modules
             config: --enable-mods-shared=reallyall --enable-mpms-shared=all
           # -------------------------------------------------------------------------
-          - name: Event MPM, all-modules, mod_cgid only
+          - name: Event MPM, mod_cgid only, php-fpm
             config: --enable-mods-shared=reallyall --with-mpm=event --disable-cgi
+            pkgs: php8.1-fpm
+            env: |
+              PHP_FPM=/usr/sbin/php-fpm8.1
           # -------------------------------------------------------------------------
           - name: Event MPM, all-modules, no CMSG_DATA
             config: --enable-mods-shared=reallyall --with-mpm=event ac_cv_have_decl_CMSG_DATA=no
