@@ -21,6 +21,8 @@ on:
 env:
   MARGS: "-j2"
   CFLAGS: "-g"
+  # This will need updating as the ubuntu-latest image changes:
+  PHP_FPM: "/usr/sbin/php-fpm8.1"
 
 jobs:
   build:
@@ -50,9 +52,6 @@ jobs:
           # -------------------------------------------------------------------------
           - name: Event MPM, mod_cgid only, php-fpm
             config: --enable-mods-shared=reallyall --with-mpm=event --disable-cgi
-            pkgs: php8.1-fpm
-            env: |
-              PHP_FPM=/usr/sbin/php-fpm8.1
           # -------------------------------------------------------------------------
           - name: Event MPM, all-modules, no CMSG_DATA
             config: --enable-mods-shared=reallyall --with-mpm=event ac_cv_have_decl_CMSG_DATA=no
