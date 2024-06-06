@@ -1,0 +1,2 @@
+ * mod_tls: update version of rustls-ffi to v0.13.0.
+   [Daniel McCarney (@cpu}]

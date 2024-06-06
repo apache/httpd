@@ -51,7 +51,7 @@ class TestVars:
 
     @pytest.mark.parametrize("name, pattern", [
         ("SSL_VERSION_INTERFACE", r'mod_tls/\d+\.\d+\.\d+'),
-        ("SSL_VERSION_LIBRARY", r'rustls-ffi/\d+\.\d+\.\d+/rustls/\d+\.\d+\.\d+'),
+        ("SSL_VERSION_LIBRARY", r'rustls-ffi/\d+\.\d+\.\d+/rustls/\d+\.\d+(\.\d+)?'),
     ])
     def test_tls_08_vars_match(self, env, name: str, pattern: str):
         r = env.tls_get(env.domain_b, f"/vars.py?name={name}")
