@@ -166,10 +166,10 @@ class MDCertUtil(object):
 
     def get_san_list(self):
         text = OpenSSL.crypto.dump_certificate(OpenSSL.crypto.FILETYPE_TEXT, self.cert).decode("utf-8")
-        m = re.search(r"X509v3 Subject Alternative Name:\s*(.*)", text)
+        m = re.search(r"X509v3 Subject Alternative Name:(\s+critical)?\s*(.*)", text)
         sans_list = []
         if m:
-            sans_list = m.group(1).split(",")
+            sans_list = m.group(2).split(",")
 
         def _strip_prefix(s):
             return s.split(":")[1] if s.strip().startswith("DNS:") else s.strip()

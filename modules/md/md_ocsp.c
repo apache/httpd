@@ -32,13 +32,6 @@
 #include <openssl/pem.h>
 #include <openssl/x509v3.h>
 
-#if defined(LIBRESSL_VERSION_NUMBER)
-/* Missing from LibreSSL */
-#define MD_USE_OPENSSL_PRE_1_1_API (LIBRESSL_VERSION_NUMBER < 0x2070000f)
-#else /* defined(LIBRESSL_VERSION_NUMBER) */
-#define MD_USE_OPENSSL_PRE_1_1_API (OPENSSL_VERSION_NUMBER < 0x10100000L)
-#endif
-
 #include "md.h"
 #include "md_crypt.h"
 #include "md_event.h"
@@ -563,7 +556,9 @@ static const char *single_resp_summary(OCSP_SINGLERESP* resp, apr_pool_t *p)
     ASN1_GENERALIZEDTIME *bup = NULL, *bnextup = NULL;
     md_timeperiod_t valid;
     
-#if MD_USE_OPENSSL_PRE_1_1_API
+#if OPENSSL_VERSION_NUMBER < 0x10100000L \
+    || (defined(LIBRESSL_VERSION_NUMBER) \
+        && LIBRESSL_VERSION_NUMBER < 0x2070000f)
     certid = resp->certId;
 #else
     certid = OCSP_SINGLERESP_get0_id(resp);
@@ -683,12 +678,6 @@ static apr_status_t ostat_on_resp(const md_http_response_t *resp, void *baton)
         md_result_log(update->result, MD_LOG_DEBUG);
         goto cleanup;
     }
-    if (!bnextup) {
-        rv = APR_EINVAL;
-        md_result_set(update->result, rv, "OCSP basicresponse reports not valid dates");
-        md_result_log(update->result, MD_LOG_DEBUG);
-        goto cleanup;
-    }
     
     /* Coming here, we have a response for our certid and it is either GOOD
      * or REVOKED. Both cases we want to remember and use in stapling. */
@@ -703,7 +692,14 @@ static apr_status_t ostat_on_resp(const md_http_response_t *resp, void *baton)
     new_der.free_data = md_openssl_free;
     nstat = (bstatus == V_OCSP_CERTSTATUS_GOOD)? MD_OCSP_CERT_ST_GOOD : MD_OCSP_CERT_ST_REVOKED;
     valid.start = bup? md_asn1_generalized_time_get(bup) : apr_time_now();
-    valid.end = md_asn1_generalized_time_get(bnextup);
+    if (bnextup) {
+        valid.end = md_asn1_generalized_time_get(bnextup);
+    }
+    else {
+        /* nextUpdate not set; default to 12 hours.
+         * Refresh attempts will be started some time earlier. */
+        valid.end = valid.start + apr_time_from_sec(MD_SECS_PER_DAY / 2);
+    }
     
     /* First, update the instance with a copy */
     apr_thread_mutex_lock(ostat->reg->mutex);
