@@ -2779,8 +2779,8 @@ static apr_status_t worker_address_resolve(proxy_worker *worker,
         apr_sockaddr_t *addr = *paddr;
         for (; addr; addr = addr->next) {
             addrs = apr_psprintf(pool, "%s%s%pI",
-                                 addrs ? ", " : "",
                                  addrs ? addrs : "",
+                                 addrs ? ", " : "",
                                  addr);
         }
         if (r) {
