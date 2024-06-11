@@ -178,6 +178,8 @@ AP_DECLARE(apr_status_t) ap_os_create_privileged_process(
 #define AP_MPMQ_GENERATION           15
 /** MPM can drive serf internally  */
 #define AP_MPMQ_HAS_SERF             16
+/** MPM reacts to AGAIN response */
+#define AP_MPMQ_CAN_AGAIN            19
 /** @} */
 
 /**
