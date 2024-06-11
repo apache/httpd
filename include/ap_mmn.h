@@ -725,6 +725,7 @@
  * 20211221.19 (2.5.1-dev) Add AP_REG_NOTEMPTY_ATSTART
  * 20211221.20 (2.5.1-dev) Add CONN_STATE_KEEPALIVE and CONN_STATE_PROCESSING
  * 20211221.21 (2.5.1-dev) Add processing field struct process_score
+ * 20211221.22 (2.5.1-dev) Add AGAIN, AP_MPMQ_CAN_AGAIN.
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503235UL /* "AP25" */
@@ -732,7 +733,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20211221
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 21             /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 22             /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a
