@@ -182,7 +182,7 @@ static dav_error *mswdv_combined_lock(request_rec *r)
     /* action */
     const char *failmsg = NULL;
     int http_error = HTTP_BAD_REQUEST;
-    enum { ERROR, LOCK, UNLOCK, REFRESH, PASS } action = ERROR;
+    enum { DAVERROR, LOCK, UNLOCK, REFRESH, PASS } action = DAVERROR;
 
     lock_token_hdr = apr_table_get(r->headers_in, "Lock-Token");
     lock_timeout_hdr = apr_table_get(r->headers_in, "X-MSDAVEXTLockTimeout");
@@ -413,7 +413,7 @@ done:
                   action == LOCK ? "LOCK" : "",
                   action == UNLOCK ? "UNLOCK" : "",
                   action == REFRESH ? "REFRESH" : "",
-                  action == ERROR ? "ERROR" : "",
+                  action == DAVERROR ? "ERROR" : "",
                   action == PASS ? "PASS" : "");
 
     if (failmsg) {
@@ -471,7 +471,7 @@ done:
         break;
     }
 
-    case ERROR: /* FALLTHROUGH */
+    case DAVERROR: /* FALLTHROUGH */
     default:
         /* NOTREACHED */
         err = dav_new_error(r->pool, HTTP_INTERNAL_SERVER_ERROR, 0, 0,

@@ -533,6 +533,14 @@ SOURCE=.\server\util.c
 # End Source File
 # Begin Source File
 
+SOURCE=.\server\util_atomics.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\include\ap_atomics.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\server\util_cfgtree.c
 # End Source File
 # Begin Source File
