@@ -1143,7 +1143,7 @@ struct request_rec {
      */
     unsigned int flushed:1;
     /** Request flags associated with this request. Use
-     * AP_REQUEST_GET_FLAGS() and AP_REQUEST_SET_FLAGS() to access
+     * AP_REQUEST_GET_BNOTE() and AP_REQUEST_SET_BNOTE() to access
      * the elements of this field.
      */
     ap_request_bnotes_t bnotes;
