@@ -163,6 +163,33 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
        svn merge -c 1916863 ^/httpd/httpd/trunk .
       +1: rpluem, jorton, ylavic
 
+   *) mod_cgi/mod_cgid: Factor out common code, and add optional
+      support for fd passing in mod_cgid, fixing stderr handling for
+      mod_cgid on Unix platforms (PR 54211). In the default configuration,
+      behaviour should not change significantly in either module.
+      Trunk version of patch:
+          https://svn.apache.org/r1862968 
+          https://svn.apache.org/r1863191 
+          https://svn.apache.org/r1867878 
+          https://svn.apache.org/r1867882 
+          https://svn.apache.org/r1867968 
+          https://svn.apache.org/r1867971 
+          https://svn.apache.org/r1869421 
+          https://svn.apache.org/r1874491 
+          https://svn.apache.org/r1874511 
+          https://svn.apache.org/r1879119 
+          https://svn.apache.org/r1879136 
+          https://svn.apache.org/r1879860 
+          https://svn.apache.org/r1881459 
+          https://svn.apache.org/r1881559 
+          https://svn.apache.org/r1867970 
+      2.4.x version of patch:
+            https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/209.patch
+      PR: https://github.com/apache/httpd/pull/209
+      +1: jorton, ylavic, covener
+
+
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -201,42 +228,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       2.4.x patch: svn merge -c r1914038 ^/httpd/httpd/trunk .
       +1: minfrin
 
-   *) Add an option to specify a source address. PR32524
-      trunk patch: http://svn.apache.org/r1914045
-      2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/httpd-2.4-ab-source-address.patch
-      +1: minfrin
-      -1: jorton, appears to be a duplicate of the existing -B option
-
    *) mod_proxy: Don't reset the balancer when we create a new child
       and don't change shared memory mod_lbmethod_bytraffic is not using.
       trunk patch: https://svn.apache.org/r1916004
       2.4.x patch: svn merge -c 1916004  ^/httpd/httpd/trunk .
       +1: jfclere,
-
-   *) mod_cgi/mod_cgid: Factor out common code, and add optional
-      support for fd passing in mod_cgid, fixing stderr handling for
-      mod_cgid on Unix platforms (PR 54211). In the default configuration,
-      behaviour should not change significantly in either module.
-      Trunk version of patch:
-          https://svn.apache.org/r1862968 
-          https://svn.apache.org/r1863191 
-          https://svn.apache.org/r1867878 
-          https://svn.apache.org/r1867882 
-          https://svn.apache.org/r1867968 
-          https://svn.apache.org/r1867971 
-          https://svn.apache.org/r1869421 
-          https://svn.apache.org/r1874491 
-          https://svn.apache.org/r1874511 
-          https://svn.apache.org/r1879119 
-          https://svn.apache.org/r1879136 
-          https://svn.apache.org/r1879860 
-          https://svn.apache.org/r1881459 
-          https://svn.apache.org/r1881559 
-          https://svn.apache.org/r1867970 
-      2.4.x version of patch:
-            https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/209.patch
-      PR: https://github.com/apache/httpd/pull/209
-      +1: jorton, ylavic, 
 
    *) core: Add support for IPv6 link-local addresses with APR 1.7+
       Trunk version of patch: 
@@ -460,3 +456,11 @@ PATCHES/ISSUES THAT ARE STALLED
              needed if the above configure.in proposal gets backported.
              Note that r1812339 could be backported in any case, even if
              the above configure.in proposal does not get accepted.
+
+   *) Add an option to specify a source address. PR32524
+      trunk patch: http://svn.apache.org/r1914045
+      2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/httpd-2.4-ab-source-address.patch
+      +1: minfrin
+      -1: jorton, appears to be a duplicate of the existing -B option
+
+
