@@ -48,11 +48,11 @@ jobs:
           - name: Shared MPMs, all-modules
             config: --enable-mods-shared=reallyall --enable-mpms-shared=all
           # -------------------------------------------------------------------------
-          - name: Event MPM, all-modules, mod_cgid only
-            config: --enable-mods-shared=reallyall --with-mpm=event --disable-cgi
+          - name: Event MPM, all-modules, mod_cgid fdpassing
+            config: --enable-mods-shared=reallyall --with-mpm=event --disable-cgi --enable-cgid-fdpassing
           # -------------------------------------------------------------------------
-          - name: Event MPM, all-modules, no CMSG_DATA
-            config: --enable-mods-shared=reallyall --with-mpm=event ac_cv_have_decl_CMSG_DATA=no
+          - name: Event MPM, all-modules, mod_cgid w/o fdpassing
+            config: --enable-mods-shared=reallyall --with-mpm=event --disable-cgi
           # -------------------------------------------------------------------------
           - name: Default, all-modules + install
             config: --enable-mods-shared=reallyall

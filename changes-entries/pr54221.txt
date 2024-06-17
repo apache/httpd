@@ -1,0 +1,3 @@
+  *) mod_cgid: Optional support for file descriptor passing, fixing
+     error log handling (configure --enable-cgid-fdpassing) on Unix
+     platforms. PR 54221.  [Joe Orton]
