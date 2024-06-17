@@ -153,42 +153,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   *) mod_ssl: Fix a regression that causes the default DH parameters for a key
-     no longer set and thus effectively disabling DH ciphers when no explicit
-     DH parameters are set. PR 68863
-      Trunk version of patch:
-         https://svn.apache.org/r1916863
-      Backport version for 2.4.x of patch:
-       Trunk version of patch works
-       svn merge -c 1916863 ^/httpd/httpd/trunk .
-      +1: rpluem, jorton, ylavic
-
-   *) mod_cgi/mod_cgid: Factor out common code, and add optional
-      support for fd passing in mod_cgid, fixing stderr handling for
-      mod_cgid on Unix platforms (PR 54211). In the default configuration,
-      behaviour should not change significantly in either module.
-      Trunk version of patch:
-          https://svn.apache.org/r1862968 
-          https://svn.apache.org/r1863191 
-          https://svn.apache.org/r1867878 
-          https://svn.apache.org/r1867882 
-          https://svn.apache.org/r1867968 
-          https://svn.apache.org/r1867971 
-          https://svn.apache.org/r1869421 
-          https://svn.apache.org/r1874491 
-          https://svn.apache.org/r1874511 
-          https://svn.apache.org/r1879119 
-          https://svn.apache.org/r1879136 
-          https://svn.apache.org/r1879860 
-          https://svn.apache.org/r1881459 
-          https://svn.apache.org/r1881559 
-          https://svn.apache.org/r1867970 
-      2.4.x version of patch:
-            https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/209.patch
-      PR: https://github.com/apache/httpd/pull/209
-      +1: jorton, ylavic, covener
-
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
