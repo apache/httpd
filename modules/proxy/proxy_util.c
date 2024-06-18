@@ -2959,15 +2959,16 @@ PROXY_DECLARE(apr_status_t) ap_proxy_determine_address(const char *proxy_functio
                      */
                     address->expiry = apr_atomic_read32(&worker->s->address_expiry);
                     if (address->expiry <= now) {
-                        apr_uint32_t new_expiry = address->expiry + ttl;
-                        while (new_expiry <= now) {
-                            new_expiry += ttl;
-                        }
-                        new_expiry = apr_atomic_cas32(&worker->s->address_expiry,
-                                                      new_expiry, address->expiry);
-                        /* race lost? well the expiry should grow anyway.. */
-                        AP_DEBUG_ASSERT(new_expiry > now);
-                        address->expiry = new_expiry;
+                        apr_uint32_t prev, next = (now + ttl) - (now % ttl);
+                        do {
+                            prev = apr_atomic_cas32(&worker->s->address_expiry,
+                                                    next, address->expiry);
+                            if (prev == address->expiry) {
+                                address->expiry = next;
+                                break;
+                            }
+                            address->expiry = prev;
+                        } while (prev <= now);
                     }
                 }
                 else {
