@@ -1514,8 +1514,9 @@ static void socket_cleanup(proxy_conn_rec *conn)
     conn->close = 0;
 }
 
-static void address_cleanup(proxy_conn_rec *conn)
+static void conn_cleanup(proxy_conn_rec *conn)
 {
+    socket_cleanup(conn);
     conn->address = NULL;
     conn->addr = NULL;
     conn->hostname = NULL;
@@ -1523,9 +1524,6 @@ static void address_cleanup(proxy_conn_rec *conn)
     conn->uds_path = NULL;
     if (conn->uds_pool) {
         apr_pool_clear(conn->uds_pool);
-    }
-    if (conn->sock) {
-        socket_cleanup(conn);
     }
 }
 
@@ -3004,13 +3002,25 @@ PROXY_DECLARE(apr_status_t) ap_proxy_determine_address(const char *proxy_functio
 
             PROXY_THREAD_UNLOCK(worker);
 
-            /* Kill any socket using the old address */
-            if (conn->sock) {
-                if (r ? APLOGrdebug(r) : APLOGdebug(s)) {
-                    /* XXX: this requires the old conn->addr[ess] to still
-                     * be alive since it's not copied by apr_socket_connect()
-                     * in ap_proxy_connect_backend().
-                     */
+            /* Release the old conn address */
+            if (conn->address) {
+                /* conn->address->addr cannot be released while it's used by
+                 * conn->sock->remote_addr, thus if the old address is still
+                 * the one used at apr_socket_connect() time AND the socket
+                 * shouldn't be closed because the newly resolved address is
+                 * the same. In this case let's (re)attach the old address to
+                 * the socket lifetime (scpool), in any other case just release
+                 * it now.
+                 */
+                int addr_alive = 0,
+                    conn_alive = (conn->sock && conn->addr &&
+                                  proxy_addrs_equal(conn->addr, address->addr));
+                if (conn_alive) {
+                    apr_sockaddr_t *remote_addr = NULL;
+                    apr_socket_addr_get(&remote_addr, APR_REMOTE, conn->sock);
+                    addr_alive = (conn->addr == remote_addr);
+                }
+                else if (conn->sock && (r ? APLOGrdebug(r) : APLOGdebug(s))) {
                     apr_sockaddr_t *local_addr = NULL;
                     apr_sockaddr_t *remote_addr = NULL;
                     apr_socket_addr_get(&local_addr, APR_LOCAL, conn->sock);
@@ -3028,18 +3038,26 @@ PROXY_DECLARE(apr_status_t) ap_proxy_determine_address(const char *proxy_functio
                                      local_addr, remote_addr);
                     }
                 }
-                socket_cleanup(conn);
+                if (addr_alive) {
+                    apr_pool_cleanup_kill(conn->pool, conn->address,
+                                          proxy_address_cleanup);
+                    apr_pool_cleanup_register(conn->scpool, conn->address,
+                                              proxy_address_cleanup,
+                                              apr_pool_cleanup_null);
+                }
+                else {
+                    apr_pool_cleanup_run(conn->pool, conn->address,
+                                         proxy_address_cleanup);
+                    if (!conn_alive) {
+                        conn_cleanup(conn);
+                    }
+                }
             }
 
-            /* Kill the old address (if any) and use the new one */
-            if (conn->address) {
-                apr_pool_cleanup_run(conn->pool, conn->address,
-                                     proxy_address_cleanup);
-            }
+            /* Use the new address */
             apr_pool_cleanup_register(conn->pool, address,
                                       proxy_address_cleanup,
                                       apr_pool_cleanup_null);
-            address_cleanup(conn);
             conn->address = address;
             conn->hostname = address->hostname;
             conn->port = address->hostport;
@@ -3120,7 +3138,7 @@ ap_proxy_determine_connection(apr_pool_t *p, request_rec *r,
         if (!conn->uds_path || strcmp(conn->uds_path, uds_path) != 0) {
             apr_pool_t *pool = conn->pool;
             if (conn->uds_path) {
-                address_cleanup(conn);
+                conn_cleanup(conn);
                 if (!conn->uds_pool) {
                     apr_pool_create(&conn->uds_pool, worker->cp->dns_pool);
                 }
@@ -3221,7 +3239,7 @@ ap_proxy_determine_connection(apr_pool_t *p, request_rec *r,
         if (conn->hostname
             && (conn->port != hostport
                 || ap_cstr_casecmp(conn->hostname, hostname) != 0)) {
-            address_cleanup(conn);
+            conn_cleanup(conn);
         }
 
         /* Resolve the connection address with the determined hostname/port */
