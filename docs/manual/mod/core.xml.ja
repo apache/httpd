@@ -1710,15 +1710,17 @@ module="core">Directory</directive></seealso>
 <description>クライアントから送られる HTTP リクエストのボディの
 総量を制限する</description>
 <syntax>LimitRequestBody <var>bytes</var></syntax>
-<default>LimitRequestBody 0</default>
+<default>LimitRequestBody 1073741824</default>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>All</override>
+<compatibility>Apache HTTP Server 2.4.53 以前では、デフォルト値は 0 (無制限)
+</compatibility>
 
 <usage>
     <p>このディレクティブは、リクエストボディに許されるバイト数、<var>bytes</var>
-    を 0 (無制限を意味します) から 2147483647 (2GB) までの数値で指定します。</p>
+    を 指定します。<var>0</var> は無制限を意味します。</p>
 
     <p><directive>LimitRequestBody</directive> ディレクティブは、
     ディレクティブが書かれたコンテキスト
