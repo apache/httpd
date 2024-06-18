@@ -1,6 +1,31 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.60
 
+  *) mod_ssl: Fix a regression that causes the default DH parameters for a key
+     no longer set and thus effectively disabling DH ciphers when no explicit
+     DH parameters are set. PR 68863 [Ruediger Pluem]
+
+  *) mod_cgid: Optional support for file descriptor passing, fixing
+     error log handling (configure --enable-cgid-fdpassing) on Unix
+     platforms. PR 54221.  [Joe Orton]
+
+  *) mod_cgid/mod_cgi: Distinguish script stderr output clearly in
+     error logs.  PR 61980.  [Hank Ibell <hwibell gmail.com>]
+
+  *) mod_tls: update version of rustls-ffi to v0.13.0.
+     [Daniel McCarney (@cpu}]
+
+  *) mod_md:
+     - Using OCSP stapling information to trigger certificate renewals. Proposed
+       by @frasertweedale.
+     - Added directive `MDCheckInterval` to control how often the server checks
+       for detected revocations. Added proposals for configurations in the
+       README.md chapter "Revocations".
+     - OCSP stapling: accept OCSP responses without a `nextUpdate` entry which is
+       allowed in RFC 6960. Treat those as having an update interval of 12 hours.
+       Added by @frasertweedale.
+     - Adapt OpenSSL usage to changes in their API. By Yann Ylavic.
+
 Changes with Apache 2.4.59
 
   *) SECURITY: CVE-2024-27316: Apache HTTP Server: HTTP/2 DoS by
