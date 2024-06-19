@@ -3004,31 +3004,36 @@ PROXY_DECLARE(apr_status_t) ap_proxy_determine_address(const char *proxy_functio
 
             /* Release the old conn address */
             if (conn->address) {
-                /* conn->address->addr cannot be released while it's used by
-                 * conn->sock->remote_addr, thus if the old address is still
-                 * the one used at apr_socket_connect() time AND the socket
-                 * shouldn't be closed because the newly resolved address is
-                 * the same. In this case let's (re)attach the old address to
-                 * the socket lifetime (scpool), in any other case just release
-                 * it now.
+                /* On Windows and OS/2, apr_socket_connect() called from
+                 * ap_proxy_connect_backend() does a simple pointer copy of
+                 * its given conn->addr[->next] into conn->sock->remote_addr.
+                 * Thus conn->addr cannot be freed if the conn->sock should be
+                 * kept alive (same new and old addresses) and the old address
+                 * is still in conn->sock->remote_addr. In this case we rather
+                 * delay the release of the old address by moving the cleanup
+                 * to conn->scpool such that it runs when the socket is closed.
+                 * In any other case, including other platforms, just release
+                 * the old address now since conn->sock->remote_addr is either
+                 * obsolete (socket forcibly closed) or a copy on conn->scpool
+                 * already (not a dangling pointer).
                  */
-                int addr_alive = 0,
-                    conn_alive = (conn->sock && conn->addr &&
-                                  proxy_addrs_equal(conn->addr, address->addr));
-                if (conn_alive) {
+                int keep_addr_alive = 0,
+                    keep_conn_alive = (conn->sock && conn->addr &&
+                                       proxy_addrs_equal(conn->addr,
+                                                         address->addr));
+                if (keep_conn_alive) {
+#if defined(WIN32) || defined(OS2)
                     apr_sockaddr_t *remote_addr = NULL;
-                    /* apr_socket_connect() in ap_proxy_connect_backend() will
-                     * do a simple pointer copy of its given conn->addr[->next]
-                     * so the current conn->addr is alive iif sock->remote_addr
-                     * is one of the conn->addr[->next].
-                     */
                     apr_socket_addr_get(&remote_addr, APR_REMOTE, conn->sock);
                     for (addr = conn->addr; addr; addr = addr->next) {
                         if (addr == remote_addr) {
-                            addr_alive = 1;
+                            keep_addr_alive = 1;
                             break;
                         }
                     }
+#else
+                    /* Nothing to do, keep_addr_alive = 0 */
+#endif
                 }
                 else if (conn->sock && (r ? APLOGrdebug(r) : APLOGdebug(s))) {
                     apr_sockaddr_t *local_addr = NULL;
@@ -3048,7 +3053,7 @@ PROXY_DECLARE(apr_status_t) ap_proxy_determine_address(const char *proxy_functio
                                      local_addr, remote_addr);
                     }
                 }
-                if (addr_alive) {
+                if (keep_addr_alive) {
                     apr_pool_cleanup_kill(conn->pool, conn->address,
                                           proxy_address_cleanup);
                     apr_pool_cleanup_register(conn->scpool, conn->address,
@@ -3056,11 +3061,11 @@ PROXY_DECLARE(apr_status_t) ap_proxy_determine_address(const char *proxy_functio
                                               apr_pool_cleanup_null);
                 }
                 else {
-                    apr_pool_cleanup_run(conn->pool, conn->address,
-                                         proxy_address_cleanup);
-                    if (!conn_alive) {
+                    if (!keep_conn_alive) {
                         conn_cleanup(conn);
                     }
+                    apr_pool_cleanup_run(conn->pool, conn->address,
+                                         proxy_address_cleanup);
                 }
             }
 
