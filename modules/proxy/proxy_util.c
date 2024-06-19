@@ -3061,11 +3061,11 @@ PROXY_DECLARE(apr_status_t) ap_proxy_determine_address(const char *proxy_functio
                                               apr_pool_cleanup_null);
                 }
                 else {
+                    apr_pool_cleanup_run(conn->pool, conn->address,
+                                         proxy_address_cleanup);
                     if (!keep_conn_alive) {
                         conn_cleanup(conn);
                     }
-                    apr_pool_cleanup_run(conn->pool, conn->address,
-                                         proxy_address_cleanup);
                 }
             }
 
