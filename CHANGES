@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.60
 
+  *) Updated mime.types.  [Mohamed Akram <mohd.akram outlook.com>,
+     Adam Silverstein <adamsilverstein earthboundhosting.com>]
+
   *) mod_ssl: Fix a regression that causes the default DH parameters for a key
      no longer set and thus effectively disabling DH ciphers when no explicit
      DH parameters are set. PR 68863 [Ruediger Pluem]
