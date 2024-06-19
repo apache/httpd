@@ -3022,8 +3022,18 @@ PROXY_DECLARE(apr_status_t) ap_proxy_determine_address(const char *proxy_functio
                                   proxy_addrs_equal(conn->addr, address->addr));
                 if (conn_alive) {
                     apr_sockaddr_t *remote_addr = NULL;
+                    /* apr_socket_connect() in ap_proxy_connect_backend() will
+                     * do a simple pointer copy of its given conn->addr[->next]
+                     * so the current conn->addr is alive iif sock->remote_addr
+                     * is one of the conn->addr[->next].
+                     */
                     apr_socket_addr_get(&remote_addr, APR_REMOTE, conn->sock);
-                    addr_alive = (conn->addr == remote_addr);
+                    for (addr = conn->addr; addr; addr = addr->next) {
+                        if (addr == remote_addr) {
+                            addr_alive = 1;
+                            break;
+                        }
+                    }
                 }
                 else if (conn->sock && (r ? APLOGrdebug(r) : APLOGdebug(s))) {
                     apr_sockaddr_t *local_addr = NULL;
