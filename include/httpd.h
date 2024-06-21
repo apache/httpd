@@ -460,9 +460,6 @@ AP_DECLARE(const char *) ap_get_server_built(void);
                          */
 #define SUSPENDED   -3  /**< Module will handle the remainder of the request.
                          *   The core will never invoke the request again */
-#define AGAIN       -4  /**< Module wants to be called again when more
-                         *   data is available.
-                         */
 
 /** Returned by the bottom-most filter if no data was written.
  *  @see ap_pass_brigade(). */
@@ -1260,17 +1257,18 @@ struct conn_rec {
  */
 typedef enum  {
     CONN_STATE_KEEPALIVE,           /* Kept alive in the MPM (using KeepAliveTimeout) */
-    CONN_STATE_PROCESSING,          /* Processed by process_connection() hooks, returning
-                                     * AGAIN to the MPM in this state will make it wait for
-                                     * the connection to be readable or writable according to
-                                     * CONN_SENSE_WANT_READ or CONN_SENSE_WANT_WRITE respectively,
-                                     * where Timeout applies */
+    CONN_STATE_PROCESSING,          /* Processed by process_connection hooks */
     CONN_STATE_HANDLER,             /* Processed by the modules handlers */
     CONN_STATE_WRITE_COMPLETION,    /* Flushed by the MPM before entering CONN_STATE_KEEPALIVE */
     CONN_STATE_SUSPENDED,           /* Suspended in the MPM until ap_run_resume_suspended() */
     CONN_STATE_LINGER,              /* MPM flushes then closes the connection with lingering */
     CONN_STATE_LINGER_NORMAL,       /* MPM has started lingering close with normal timeout */
     CONN_STATE_LINGER_SHORT,        /* MPM has started lingering close with short timeout */
+
+    CONN_STATE_ASYNC_WAITIO,        /* Returning this state to the MPM will make it wait for
+                                     * the connection to be readable or writable according to
+                                     * c->cs->sense (resp. CONN_SENSE_WANT_READ or _WRITE),
+                                     * using the configured Timeout */
 
     CONN_STATE_NUM,                 /* Number of states (keep here before aliases) */
 

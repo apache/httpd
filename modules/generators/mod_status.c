@@ -564,7 +564,7 @@ static int status_handler(request_rec *r)
         ap_rputs("</dl>", r);
 
     if (is_async) {
-        int processing = 0, write_completion = 0, lingering_close = 0, keep_alive = 0,
+        int wait_io = 0, write_completion = 0, lingering_close = 0, keep_alive = 0,
             connections = 0, stopping = 0, procs = 0;
         if (!short_report)
             ap_rputs("\n\n<table rules=\"all\" cellpadding=\"1%\">\n"
@@ -576,13 +576,13 @@ static int status_handler(request_rec *r)
                          "<th colspan=\"3\">Async connections</th></tr>\n"
                      "<tr><th>total</th><th>accepting</th>"
                          "<th>busy</th><th>graceful</th><th>idle</th>"
-                         "<th>processing</th><th>writing</th><th>keep-alive</th>"
+                         "<th>wait-io</th><th>writing</th><th>keep-alive</th>"
                          "<th>closing</th></tr>\n", r);
         for (i = 0; i < server_limit; ++i) {
             ps_record = ap_get_scoreboard_process(i);
             if (ps_record->pid) {
                 connections      += ps_record->connections;
-                processing       += ps_record->processing;
+                wait_io          += ps_record->wait_io;
                 write_completion += ps_record->write_completion;
                 keep_alive       += ps_record->keep_alive;
                 lingering_close  += ps_record->lingering_close;
@@ -611,7 +611,7 @@ static int status_handler(request_rec *r)
                                thread_busy_buffer[i],
                                thread_graceful_buffer[i],
                                thread_idle_buffer[i],
-                               ps_record->processing,
+                               ps_record->wait_io,
                                ps_record->write_completion,
                                ps_record->keep_alive,
                                ps_record->lingering_close);
@@ -628,20 +628,20 @@ static int status_handler(request_rec *r)
                           procs, stopping,
                           connections,
                           busy, graceful, idle,
-                          processing, write_completion, keep_alive,
+                          wait_io, write_completion, keep_alive,
                           lingering_close);
         }
         else {
             ap_rprintf(r, "Processes: %d\n"
                           "Stopping: %d\n"
                           "ConnsTotal: %d\n"
-                          "ConnsAsyncProcessing: %d\n"
+                          "ConnsAsyncWaitIO: %d\n"
                           "ConnsAsyncWriting: %d\n"
                           "ConnsAsyncKeepAlive: %d\n"
                           "ConnsAsyncClosing: %d\n",
                           procs, stopping,
                           connections,
-                          processing, write_completion, keep_alive,
+                          wait_io, write_completion, keep_alive,
                           lingering_close);
         }
     }

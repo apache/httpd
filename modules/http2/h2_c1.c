@@ -47,7 +47,7 @@
 
 static struct h2_workers *workers;
 
-static int async_mpm, mpm_can_again;
+static int async_mpm, mpm_can_waitio;
 
 APR_OPTIONAL_FN_TYPE(ap_logio_add_bytes_in) *h2_c_logio_add_bytes_in;
 APR_OPTIONAL_FN_TYPE(ap_logio_add_bytes_out) *h2_c_logio_add_bytes_out;
@@ -61,9 +61,9 @@ apr_status_t h2_c1_child_init(apr_pool_t *pool, server_rec *s)
         /* some MPMs do not implemnent this */
         async_mpm = 0;
     }
-#ifdef AP_MPMQ_CAN_AGAIN
-    if (!async_mpm || ap_mpm_query(AP_MPMQ_CAN_AGAIN, &mpm_can_again)) {
-        mpm_can_again = 0;
+#ifdef AP_MPMQ_CAN_WAITIO
+    if (!async_mpm || ap_mpm_query(AP_MPMQ_CAN_WAITIO, &mpm_can_waitio)) {
+        mpm_can_waitio = 0;
     }
 #endif
 
@@ -117,7 +117,6 @@ cleanup:
 
 int h2_c1_run(conn_rec *c)
 {
-    int rc = OK;
     apr_status_t status;
     int mpm_state = 0, keepalive = 0;
     h2_conn_ctx_t *conn_ctx = h2_conn_ctx_get(c);
@@ -165,15 +164,14 @@ int h2_c1_run(conn_rec *c)
                      * See PR 63534. 
                      */
                     c->cs->sense = CONN_SENSE_WANT_READ;
-#ifdef AP_MPMQ_CAN_AGAIN
-                    if (mpm_can_again) {
+#ifdef AP_MPMQ_CAN_WAITIO
+                    if (mpm_can_waitio) {
                         /* This tells the MPM to wait for the connection to be
                          * readable (CONN_SENSE_WANT_READ) within the configured
                          * Timeout and then come back to the process_connection()
                          * hooks again when ready.
                          */
-                        c->cs->state = CONN_STATE_PROCESSING;
-                        rc = AGAIN;
+                        c->cs->state = CONN_STATE_ASYNC_WAITIO;
                     }
                     else
 #endif
@@ -199,7 +197,7 @@ int h2_c1_run(conn_rec *c)
         }
     }
 
-    return rc;
+    return OK;
 }
 
 apr_status_t h2_c1_pre_close(struct h2_conn_ctx_t *ctx, conn_rec *c)

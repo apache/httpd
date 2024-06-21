@@ -151,8 +151,7 @@ struct process_score {
     int bucket;  /* Listener bucket used by this child; this field is DEPRECATED
                   * and no longer updated by the MPMs (i.e. always zero).
                   */
-    apr_uint32_t processing;        /* async connections in processing (returned
-                                       to the MPM for POLLIN/POLLOUT) */
+    apr_uint32_t wait_io;           /* async connections waiting an IO in the MPM */
 };
 
 /* Scoreboard is now in 'local' memory, since it isn't updated once created,
