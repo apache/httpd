@@ -182,8 +182,8 @@ AP_DECLARE(apr_status_t) ap_os_create_privileged_process(
 #define AP_MPMQ_CAN_SUSPEND          17
 /** MPM supports additional pollfds */
 #define AP_MPMQ_CAN_POLL             18
-/** MPM reacts to AGAIN response */
-#define AP_MPMQ_CAN_AGAIN            19
+/** MPM supports CONN_STATE_ASYNC_WAITIO */
+#define AP_MPMQ_CAN_WAITIO           19
 /** @} */
 
 /**
