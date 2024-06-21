@@ -246,7 +246,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   https://svn.apache.org/r1918024
      2.4.x patch: https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/455.diff
      PR: https://github.com/apache/httpd/pull/455
-     +1: jorton,      
+     +1: jorton, ylavic,
 
   *) mod_http2: sync with github module. Add async handling
      on newer httpd for blocked connections, fix yield handling.
