@@ -153,23 +153,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   *) core: On Linux use the real thread id in error logging where available.
-      Trunk version of patch:
-         https://svn.apache.org/r1917578
-      2.4.x version of patch:
-        Trunk version of patch works
-        svn merge -c 1917578 ^/httpd/httpd/trunk .
-      +1: jorton, ylavic, icing
-
-   *) mod_ssl: use SSL_OP_NO_RENEGOTIATION to block client-initiated
-      renogotiation at OpenSSL level
-      Trunk version of patch:
-         https://svn.apache.org/r1877397
-         https://svn.apache.org/r1877795
-      2.4.x version of patch:
-         https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/426.patch
-      PR: https://github.com/apache/httpd/pull/426
-      +1: jorton, ylavic, icing
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
