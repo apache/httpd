@@ -64,6 +64,10 @@
 #undef APLOG_MODULE_INDEX
 #define APLOG_MODULE_INDEX AP_CORE_MODULE_INDEX
 
+#ifndef DEFAULT_LOG_TID
+#define DEFAULT_LOG_TID NULL
+#endif
+
 typedef struct {
     const char *t_name;
     int t_val;
@@ -990,7 +994,7 @@ static int do_errorlog_default(const ap_errorlog_info *info, char *buf,
 #if APR_HAS_THREADS
         field_start = len;
         len += cpystrn(buf + len, ":tid ", buflen - len);
-        item_len = log_tid(info, NULL, buf + len, buflen - len);
+        item_len = log_tid(info, DEFAULT_LOG_TID, buf + len, buflen - len);
         if (!item_len)
             len = field_start;
         else
