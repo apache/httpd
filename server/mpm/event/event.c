@@ -1187,7 +1187,7 @@ static void process_socket(apr_thread_t *thd, apr_pool_t * p, apr_socket_t * soc
         else if (c->aborted) {
             cs->pub.state = CONN_STATE_LINGER;
         }
-        if (cs->pub.state >= CONN_STATE_LINGER) {
+        if (cs->pub.state == CONN_STATE_LINGER) {
             goto lingering_close;
         }
     }
