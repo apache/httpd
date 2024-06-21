@@ -242,6 +242,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         https://svn.apache.org/r1918257
         https://svn.apache.org/r1918482
         https://svn.apache.org/r1918483
+        https://svn.apache.org/r1918491
     2.4.x version of patch:
         https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/449.diff
     PR: https://github.com/apache/httpd/pull/449
