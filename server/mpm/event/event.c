@@ -146,6 +146,8 @@
 #define apr_time_from_msec(x) (x * 1000)
 #endif
 
+#define CONN_STATE_IS_LINGERING_CLOSE(s) ((s) >= CONN_STATE_LINGER && \
+                                          (s) <= CONN_STATE_LINGER_SHORT)
 #ifndef MAX_SECS_TO_LINGER
 #define MAX_SECS_TO_LINGER 30
 #endif
@@ -246,8 +248,11 @@ struct event_conn_state_t {
     conn_state_t pub;
     /** chaining in defer_linger_chain */
     struct event_conn_state_t *chain;
-    /** Is lingering close from defer_lingering_close()? */
-    int deferred_linger;
+    unsigned int 
+        /** Is lingering close from defer_lingering_close()? */
+        deferred_linger :1,
+        /** Has ap_start_lingering_close() been called? */
+        linger_started  :1;
 };
 
 APR_RING_HEAD(timeout_head_t, event_conn_state_t);
@@ -890,7 +895,7 @@ static void close_connection(event_conn_state_t *cs)
  */
 static int shutdown_connection(event_conn_state_t *cs)
 {
-    if (cs->pub.state < CONN_STATE_LINGER) {
+    if (!CONN_STATE_IS_LINGERING_CLOSE(cs->pub.state)) {
         apr_table_setn(cs->c->notes, "short-lingering-close", "1");
         defer_lingering_close(cs);
     }
@@ -1071,7 +1076,7 @@ static void process_socket(apr_thread_t *thd, apr_pool_t * p, apr_socket_t * soc
         c->id = conn_id;
     }
 
-    if (cs->pub.state >= CONN_STATE_LINGER) {
+    if (CONN_STATE_IS_LINGERING_CLOSE(cs->pub.state)) {
         goto lingering_close;
     }
 
@@ -1537,9 +1542,12 @@ static void process_lingering_close(event_conn_state_t *cs)
 
     ap_log_cerror(APLOG_MARK, APLOG_TRACE6, 0, cs->c,
                   "lingering close from state %i", (int)cs->pub.state);
-    AP_DEBUG_ASSERT(cs->pub.state >= CONN_STATE_LINGER);
+    AP_DEBUG_ASSERT(CONN_STATE_IS_LINGERING_CLOSE(cs->pub.state));
 
-    if (cs->pub.state == CONN_STATE_LINGER) {
+    if (!cs->linger_started) {
+        cs->pub.state = CONN_STATE_LINGER;
+        cs->linger_started = 1;
+
         /* defer_lingering_close() may have bumped lingering_count already */
         if (!cs->deferred_linger) {
             apr_atomic_inc32(&lingering_count);
