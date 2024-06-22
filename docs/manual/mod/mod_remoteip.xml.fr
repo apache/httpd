@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1825468 -->
+<!-- English Revision: 1918408 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -126,6 +126,7 @@ Spec</a></seealso>
 <description>Définit le champ d'en-tête qui contiendra les adresses IP
 du client</description>
 <syntax>RemoteIPHeader <var>en-tête</var></syntax>
+<default>none</default>
 <contextlist><context>server config</context><context>virtual host</context></contextlist>
 
 <usage>
