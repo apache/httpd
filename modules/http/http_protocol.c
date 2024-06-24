@@ -1097,7 +1097,13 @@ AP_DECLARE(void) ap_set_content_type(request_rec *r, const char *ct)
     }
     else if (!r->content_type || strcmp(r->content_type, ct)) {
         r->content_type = ct;
+        AP_REQUEST_SET_BNOTE(r, AP_REQUEST_TRUSTED_CT, 0);
     }
+}
+AP_DECLARE(void) ap_set_content_type_ex(request_rec *r, const char *ct, int trusted)
+{
+    ap_set_content_type(r, ct);
+    AP_REQUEST_SET_BNOTE(r, AP_REQUEST_TRUSTED_CT, trusted ? AP_REQUEST_TRUSTED_CT : 0);
 }
 
 AP_DECLARE(void) ap_set_accept_ranges(request_rec *r)
