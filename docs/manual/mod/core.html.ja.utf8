@@ -132,6 +132,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#stricthostcheck">StrictHostCheck</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#timeout">TimeOut</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#traceenable">TraceEnable</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#unclist">UNCList</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#undefine">UnDefine</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#usecanonicalname">UseCanonicalName</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#usecanonicalphysicalport">UseCanonicalPhysicalPort</a></li>
@@ -3546,6 +3547,20 @@ of a request or the last 63, assuming the request itself is greater than
     proxy サーバとしては、リクエストボディのサイズは 64k に制限されません。</p>
 
 </div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="UNCList" id="UNCList">UNCList</a> <a name="unclist" id="unclist">ディレクティブ</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>Controls what UNC host names can be accessed by the server
+</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>UNCList<var>hostname</var> ...</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>unset</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Core</td></tr>
+<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>core</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">互換性:</a></th><td>Added in 2.4.60, Windows only.</td></tr>
+</table><p>このディレクティブの解説文書は
+            まだ翻訳されていません。英語版をご覧ください。
+            </p></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="UnDefine" id="UnDefine">UnDefine</a> <a name="undefine" id="undefine">ディレクティブ</a></h2>
 <table class="directive">
