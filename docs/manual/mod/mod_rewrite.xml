@@ -1485,6 +1485,18 @@ cannot use <code>$N</code> in the substitution string!
         to be the specified type. <em><a
         href="../rewrite/flags.html#flag_t">details ...</a></em></td>
     </tr>
+    <tr>
+        <td>UnsafeAllow3F</td>
+        <td>Allows substitutions from URL's that may be unsafe.
+        <em><a href="../rewrite/flags.html#flag_unsafe_allow_3f">details ...</a></em>
+        </td>
+    </tr>
+    <tr>
+        <td>UnsafePrefixStat</td>
+        <td>Allows potentially unsafe substitutions from a leading variable or backreference to a filesystem path.</td>
+        <em><a href="../rewrite/flags.html#flag_unsafe_prefix_stat">details ...</a></em>
+        </td>
+    </tr>
     </table>
 
 <note><title>Home directory expansion</title>
