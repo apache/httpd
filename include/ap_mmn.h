@@ -599,6 +599,8 @@
  * 20120211.129 (2.4.58-dev) Add ap_get_pollfd_from_conn()
  * 20120211.130 (2.4.59-dev) Add ap_proxy_determine_address()
  * 20120211.131 (2.4.59-dev) Add DAV_WALKTYPE_TOLERANT
+ * 20120211.131 (2.4.60-dev) Add ap_set_content_type_ex(), ap_filepath_merge(),
+ *                           and AP_REQUEST_TRUSTED_CT BNOTE.
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */
