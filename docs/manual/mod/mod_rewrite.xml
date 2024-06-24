@@ -1493,7 +1493,7 @@ cannot use <code>$N</code> in the substitution string!
     </tr>
     <tr>
         <td>UnsafePrefixStat</td>
-        <td>Allows potentially unsafe substitutions from a leading variable or backreference to a filesystem path.</td>
+        <td>Allows potentially unsafe substitutions from a leading variable or backreference to a filesystem path.
         <em><a href="../rewrite/flags.html#flag_unsafe_prefix_stat">details ...</a></em>
         </td>
     </tr>

@@ -5188,7 +5188,7 @@ hostname or IP address</description>
     paths derived from untrusted inputs.</p>
 
 <note type="warning"><title>Security</title>
-UNC paths accessed outside of request processing, such as during startup,
+<p>UNC paths accessed outside of request processing, such as during startup,
 are not checked against the hosts configured with this directive.</p>
 </note>
 </usage>

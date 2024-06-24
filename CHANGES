@@ -1,6 +1,18 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.60
 
+  *) mod_proxy: Fix DNS requests and connections closed before the
+     configured addressTTL.  BZ 69126.  [Yann Ylavic]
+
+  *) core: On Linux, log the real thread ID in error logs.  [Joe Orton]
+
+  *) core: Support zone/scope in IPv6 link-local addresses in Listen and
+     VirtualHost directives (requires APR 1.7.x or later).  PR 59396
+     [Joe Orton]
+
+  *) mod_ssl: Reject client-initiated renegotiation with a TLS alert
+     (rather than connection closure).  [Joe Orton, Yann Ylavic]
+
   *) Updated mime.types.  [Mohamed Akram <mohd.akram outlook.com>,
      Adam Silverstein <adamsilverstein earthboundhosting.com>]
 
