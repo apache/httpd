@@ -1,2 +1,0 @@
-  *) mod_ssl: Reject client-initiated renegotiation with a TLS alert
-     (rather than connection closure).  [Joe Orton, Yann Ylavic]

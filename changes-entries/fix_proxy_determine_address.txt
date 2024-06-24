@@ -1,2 +1,0 @@
-  *) mod_proxy: Fix DNS requests and connections closed before the
-     configured addressTTL.  BZ 69126.  [Yann Ylavic]
