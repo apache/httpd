@@ -5172,6 +5172,33 @@ hostname or IP address</description>
 </directivesynopsis>
 
 <directivesynopsis>
+<name>UNCList</name>
+<description>Controls what UNC host names can be accessed by the server
+</description>
+<syntax>UNCList<var>hostname</var> ...</syntax>
+<default>unset</default>
+<contextlist><context>server config</context>
+</contextlist>
+<compatibility>Added in 2.4.60, Windows only.</compatibility>
+
+<usage>
+    <p> During request processing, requests to access a filesystem path that
+    resolves to a UNC path will fail unless the hostname in the UNC path
+    has been specified by this directive. The intent is to limit access to
+    paths derived from untrusted inputs.</p>
+
+<note type="warning"><title>Security</title>
+UNC paths accessed outside of request processing, such as during startup,
+are not checked against the hosts configured with this directive.</p>
+</note>
+</usage>
+</directivesynopsis>
+
+
+UNCList
+
+
+<directivesynopsis>
 <name>MergeTrailers</name>
 <description>Determines whether trailers are merged into headers</description>
 <syntax>MergeTrailers [on|off]</syntax>

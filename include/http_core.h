@@ -756,6 +756,9 @@ typedef struct {
     apr_size_t   flush_max_threshold;
     apr_int32_t  flush_max_pipelined;
     unsigned int strict_host_check;
+#ifdef WIN32
+    apr_array_header_t *unc_list;
+#endif
 } core_server_config;
 
 /* for AddOutputFiltersByType in core.c */
