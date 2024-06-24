@@ -684,6 +684,7 @@ typedef apr_uint64_t ap_request_bnotes_t;
  *
  */
 #define AP_REQUEST_STRONG_ETAG 1 >> 0
+#define AP_REQUEST_TRUSTED_CT  1 << 1
 
 /**
  * This is a convenience macro to ease with getting specific request
@@ -706,6 +707,12 @@ typedef apr_uint64_t ap_request_bnotes_t;
         AP_REQUEST_GET_BNOTE((r), AP_REQUEST_STRONG_ETAG)
 /** @} */
 
+/**
+ * Returns true if the content-type field is from a trusted source
+ */
+#define AP_REQUEST_IS_TRUSTED_CT(r) \
+    (!!AP_REQUEST_GET_BNOTE((r), AP_REQUEST_TRUSTED_CT))
+/** @} */
 
 /**
  * @defgroup module_magic Module Magic mime types

@@ -5419,7 +5419,7 @@ static int hook_mimetype(request_rec *r)
         rewritelog(r, 1, NULL, "force filename %s to have MIME-type '%s'",
                    r->filename, t);
 
-        ap_set_content_type(r, t);
+        ap_set_content_type_ex(r, t, 1);
     }
 
     /* handler */
