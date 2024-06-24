@@ -727,6 +727,8 @@
  *                         and CONN_STATE_PROCESSING
  * 20211221.21 (2.5.1-dev) Add wait_io field to struct process_score
  * 20211221.22 (2.5.1-dev) Add AP_MPMQ_CAN_WAITIO
+ * 20211221.23 (2.5.1-dev) Add ap_set_content_type_ex(), ap_filepath_merge(),
+ *                         and AP_REQUEST_TRUSTED_CT BNOTE.
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503235UL /* "AP25" */
@@ -734,7 +736,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20211221
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 22             /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 23             /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a
