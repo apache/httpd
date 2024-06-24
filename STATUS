@@ -153,19 +153,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_proxy: Fix DNS requests and connections closed before the
-     configured addressTTL.  BZ 69126.
-     trunk patch: http://svn.apache.org/r1918228
-                  http://svn.apache.org/r1918410
-                  http://svn.apache.org/r1918412
-                  http://svn.apache.org/r1918429
-                  http://svn.apache.org/r1918438
-                  http://svn.apache.org/r1918442
-     2.4.x patch: trunk works, or
-                  https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/454.diff
-     PR: https://github.com/apache/httpd/pull/454
-     +1: ylavic, jorton, icing
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
