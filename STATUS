@@ -153,6 +153,15 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+   *) core: Add support for IPv6 link-local addresses with APR 1.7+
+      Trunk version of patch:
+         https://svn.apache.org/r1816609
+         https://svn.apache.org/r1818030
+      Backport version for 2.4.x of patch:
+         https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/440.patch
+      PR: https://github.com/apache/httpd/pull/440
+      +1: jorton, ylavic, icing
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -197,15 +206,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       trunk patch: https://svn.apache.org/r1916004
       2.4.x patch: svn merge -c 1916004  ^/httpd/httpd/trunk .
       +1: jfclere,
-
-   *) core: Add support for IPv6 link-local addresses with APR 1.7+
-      Trunk version of patch: 
-         https://svn.apache.org/r1816609
-         https://svn.apache.org/r1818030
-      Backport version for 2.4.x of patch:
-         https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/440.patch
-      PR: https://github.com/apache/httpd/pull/440
-      +1: jorton, ylavic, 
 
   *) mod_proxy: Fix DNS requests and connections closed before the
      configured addressTTL.  BZ 69126.
