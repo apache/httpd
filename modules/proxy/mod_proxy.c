@@ -1320,15 +1320,18 @@ static int proxy_handler(request_rec *r)
     }
 
     if (!r->proxyreq) {
+        rc = DECLINED;
         /* We may have forced the proxy handler via config or .htaccess */
         if (r->handler &&
             strncmp(r->handler, "proxy:", 6) == 0 &&
             strncmp(r->filename, "proxy:", 6) != 0) {
             r->proxyreq = PROXYREQ_REVERSE;
             r->filename = apr_pstrcat(r->pool, r->handler, r->filename, NULL);
+            /* Still need to fixup/canonicalize r->filename */
+            rc = proxy_fixup(r);
         }
-        else {
-            return DECLINED;
+        if (rc != OK) {
+            return rc;
         }
     } else if (strncmp(r->filename, "proxy:", 6) != 0) {
         return DECLINED;
