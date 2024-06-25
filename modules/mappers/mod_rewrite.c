@@ -4347,6 +4347,32 @@ static rule_return_type apply_rewrite_rule(rewriterule_entry *p,
         return RULE_RC_NOSUB;
     }
 
+    /* Add the previously stripped per-directory location prefix, unless
+     * (1) it's an absolute URL path and
+     * (2) it's a full qualified URL
+     */
+    if (!is_proxyreq && *newuri != '/' && !is_absolute_uri(newuri, NULL)) {
+        if (ctx->perdir) {
+            rewritelog((r, 3, ctx->perdir, "add per-dir prefix: %s -> %s%s",
+                       newuri, ctx->perdir, newuri));
+
+            newuri = apr_pstrcat(r->pool, ctx->perdir, newuri, NULL);
+        }
+        else if (!(p->flags & (RULEFLAG_PROXY | RULEFLAG_FORCEREDIRECT))) {
+            /* Not an absolute URI-path and the scheme (if any) is unknown,
+             * and it won't be passed to fully_qualify_uri() below either,
+             * so add an implicit '/' prefix. This avoids potentially a common
+             * rule like "RewriteRule ^/some/path(.*) $1" that is given a path
+             * like "/some/pathscheme:..." to produce the fully qualified URL
+             * "scheme:..." which could be misinterpreted later.
+             */
+            rewritelog((r, 3, ctx->perdir, "add root prefix: %s -> /%s",
+                       newuri, newuri));
+
+            newuri = apr_pstrcat(r->pool, "/", newuri, NULL);
+        }
+    }
+
     /* Now adjust API's knowledge about r->filename and r->args */
     r->filename = newuri;
 
@@ -4355,18 +4381,6 @@ static rule_return_type apply_rewrite_rule(rewriterule_entry *p,
     }
 
     splitout_queryargs(r, p->flags);
-
-    /* Add the previously stripped per-directory location prefix, unless
-     * (1) it's an absolute URL path and
-     * (2) it's a full qualified URL
-     */
-    if (   ctx->perdir && !is_proxyreq && *r->filename != '/'
-        && !is_absolute_uri(r->filename, NULL)) {
-        rewritelog((r, 3, ctx->perdir, "add per-dir prefix: %s -> %s%s",
-                    r->filename, ctx->perdir, r->filename));
-
-        r->filename = apr_pstrcat(r->pool, ctx->perdir, r->filename, NULL);
-    }
 
     /* If this rule is forced for proxy throughput
      * (`RewriteRule ... ... [P]') then emulate mod_proxy's
