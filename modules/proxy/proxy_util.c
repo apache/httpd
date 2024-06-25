@@ -3108,6 +3108,13 @@ ap_proxy_determine_connection(apr_pool_t *p, request_rec *r,
                              apr_pstrcat(p,"URI cannot be parsed: ", *url,
                                          NULL));
     }
+
+    if (!uri->hostname) {
+        return ap_proxyerror(r, HTTP_BAD_REQUEST,
+                             apr_pstrcat(p,"URI has no hostname: ", *url,
+                                         NULL));
+    }
+
     if (!uri->port) {
         uri->port = ap_proxy_port_of_scheme(uri->scheme);
     }
@@ -4530,6 +4537,10 @@ PROXY_DECLARE(int) ap_proxy_create_hdrbrgd(apr_pool_t *p,
 
     /* Compute Host header */
     if (dconf->preserve_host == 0) {
+        if (!uri->hostname) {
+            rc = HTTP_BAD_REQUEST;
+            goto cleanup;
+        }
         if (ap_strchr_c(uri->hostname, ':')) { /* if literal IPv6 address */
             if (uri->port_str && uri->port != DEFAULT_HTTP_PORT) {
                 host = apr_pstrcat(r->pool, "[", uri->hostname, "]:",
