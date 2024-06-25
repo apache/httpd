@@ -2425,7 +2425,7 @@ static int ap_proxy_retry_worker(const char *proxy_function, proxy_worker *worke
  * were passed a UDS url (eg: from mod_proxy) and adjust uds_path
  * as required.  
  */
-static int fix_uds_filename(request_rec *r, char **url) 
+PROXY_DECLARE(int) ap_proxy_fixup_uds_filename(request_rec *r, char **url) 
 {
     char *uds_url = r->filename + 6, *origin_url;
 
@@ -2448,7 +2448,7 @@ static int fix_uds_filename(request_rec *r, char **url)
         if (!uds_path) {
             ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(10292)
                     "Invalid proxy UDS filename (%s)", r->filename);
-            return 0;
+            return HTTP_BAD_REQUEST;
         }
         apr_table_setn(r->notes, "uds_path", uds_path);
 
@@ -2460,8 +2460,10 @@ static int fix_uds_filename(request_rec *r, char **url)
         ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r,
                 "*: rewrite of url due to UDS(%s): %s (%s)",
                 uds_path, *url, r->filename);
+        return OK;
     }
-    return 1;
+
+    return DECLINED;
 }
 
 PROXY_DECLARE(int) ap_proxy_pre_request(proxy_worker **worker,
@@ -2480,9 +2482,6 @@ PROXY_DECLARE(int) ap_proxy_pre_request(proxy_worker **worker,
             ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r,
                           "%s: found worker %s for %s",
                           (*worker)->s->scheme, (*worker)->s->name, *url);
-            if (!forward && !fix_uds_filename(r, url)) {
-                return HTTP_INTERNAL_SERVER_ERROR;
-            }
             access_status = OK;
         }
         else if (forward) {
@@ -2512,9 +2511,6 @@ PROXY_DECLARE(int) ap_proxy_pre_request(proxy_worker **worker,
                  * regarding the Connection header in the request.
                  */
                 apr_table_setn(r->subprocess_env, "proxy-nokeepalive", "1");
-                if (!fix_uds_filename(r, url)) {
-                    return HTTP_INTERNAL_SERVER_ERROR;
-                }
             }
         }
     }
@@ -2524,6 +2520,13 @@ PROXY_DECLARE(int) ap_proxy_pre_request(proxy_worker **worker,
                       "all workers are busy.  Unable to serve %s", *url);
         access_status = HTTP_SERVICE_UNAVAILABLE;
     }
+
+    if (access_status == OK
+        && r->proxyreq == PROXYREQ_REVERSE
+        && ap_proxy_fixup_uds_filename(r, url) > OK) {
+        return HTTP_INTERNAL_SERVER_ERROR;
+    }
+
     return access_status;
 }
 
