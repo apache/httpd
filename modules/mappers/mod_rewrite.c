@@ -683,6 +683,19 @@ static unsigned is_absolute_uri(char *uri, int *supportsqs)
     return 0;
 }
 
+static int is_absolute_path(const char *path)
+{
+#ifndef WIN32
+    return (path[0] == '/');
+#else
+#define IS_SLASH(c) ((c) == '/' || (c) == '\\')
+    /* "//", "\\", "x:/" and "x:\" are absolute paths on Windows */
+    return ((IS_SLASH(path[0]) && path[1] == path[0])
+            || (apr_isalpha(path[0]) && path[1] == ':' && IS_SLASH(path[2])));
+#undef IS_SLASH
+#endif
+}
+
 static const char c2x_table[] = "0123456789abcdef";
 
 static APR_INLINE unsigned char *c2x(unsigned what, unsigned char prefix,
@@ -4396,7 +4409,9 @@ static rule_return_type apply_rewrite_rule(rewriterule_entry *p,
      * (1) it's an absolute URL path and
      * (2) it's a full qualified URL
      */
-    if (!is_proxyreq && *newuri != '/' && !is_absolute_uri(newuri, NULL)) {
+    if (!is_proxyreq
+        && !is_absolute_path(newuri)
+        && !is_absolute_uri(newuri, NULL)) {
         if (ctx->perdir) {
             rewritelog(r, 3, ctx->perdir, "add per-dir prefix: %s -> %s%s",
                        newuri, ctx->perdir, newuri);
