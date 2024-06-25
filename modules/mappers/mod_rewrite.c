@@ -4366,7 +4366,7 @@ static rule_return_type apply_rewrite_rule(rewriterule_entry *p,
         if (!(p->flags & RULEFLAG_UNSAFE_ALLOW3F) &&
             ap_strcasestr(r->unparsed_uri, "%3f") &&
             ap_strchr_c(newuri, '?')) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO()
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(10508)
                     "Unsafe URL with %%3f URL rewritten without "
                     "UnsafeAllow3F");
             r->status = HTTP_FORBIDDEN;
