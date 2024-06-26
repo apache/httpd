@@ -4408,17 +4408,13 @@ static rule_return_type apply_rewrite_rule(rewriterule_entry *p,
      */
     if (!is_proxyreq
         && !is_absolute_path(newuri)
+        && !AP_IS_SLASH(*newuri)
         && !is_absolute_uri(newuri, NULL)) {
         if (ctx->perdir) {
-            if (!AP_IS_SLASH(*newuri)) {
-                /* perdir, the newuri will be internally redirected, so
-                 * leading slash is enough even if it's an ambiguous fs path
-                 */
-                rewritelog(r, 3, ctx->perdir, "add per-dir prefix: %s -> %s%s",
-                           newuri, ctx->perdir, newuri);
+            rewritelog(r, 3, ctx->perdir, "add per-dir prefix: %s -> %s%s",
+                       newuri, ctx->perdir, newuri);
 
-                newuri = apr_pstrcat(r->pool, ctx->perdir, newuri, NULL);
-            }
+            newuri = apr_pstrcat(r->pool, ctx->perdir, newuri, NULL);
         }
         else if (!(p->flags & (RULEFLAG_PROXY | RULEFLAG_FORCEREDIRECT))) {
             /* Not an absolute URI-path and the scheme (if any) is unknown,
