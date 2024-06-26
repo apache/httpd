@@ -150,6 +150,14 @@ CURRENT RELEASE NOTES:
 
 RELEASE SHOWSTOPPERS:
 
+  *) rewrite regression fix, / should not be prefixed on Windows.
+     Trunk patch:
+       https://svn.apache.org/r1918651
+       https://svn.apache.org/r1918652
+     2.4.x patch: https://github.com/apache/httpd/pull/458/files
+     +1 covener
+
+
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
