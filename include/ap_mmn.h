@@ -601,6 +601,7 @@
  * 20120211.131 (2.4.59-dev) Add DAV_WALKTYPE_TOLERANT
  * 20120211.132 (2.4.60-dev) Add ap_set_content_type_ex(), ap_filepath_merge(),
  *                           and AP_REQUEST_TRUSTED_CT BNOTE.
+ * 20120211.133 (2.4.60-dev) AP_SLASHES and AP_IS_SLASH
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */
@@ -608,7 +609,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20120211
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 132                 /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 133             /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a

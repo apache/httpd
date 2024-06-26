@@ -75,17 +75,6 @@
  */
 #include "test_char.h"
 
-/* Win32/NetWare/OS2 need to check for both forward and back slashes
- * in ap_normalize_path() and ap_escape_url().
- */
-#ifdef CASE_BLIND_FILESYSTEM
-#define IS_SLASH(s) ((s == '/') || (s == '\\'))
-#define SLASHES "/\\"
-#else
-#define IS_SLASH(s) (s == '/')
-#define SLASHES "/"
-#endif
-
 /* we know core's module_index is 0 */
 #undef APLOG_MODULE_INDEX
 #define APLOG_MODULE_INDEX AP_CORE_MODULE_INDEX
@@ -492,7 +481,7 @@ AP_DECLARE(apr_status_t) ap_pregsub_ex(apr_pool_t *p, char **result,
 /* Forward declare */
 static char x2c(const char *what);
 
-#define IS_SLASH_OR_NUL(s) (s == '\0' || IS_SLASH(s))
+#define IS_SLASH_OR_NUL(s) (s == '\0' || AP_IS_SLASH(s))
 
 /*
  * Inspired by mod_jk's jk_servlet_normalize().
@@ -504,7 +493,7 @@ AP_DECLARE(int) ap_normalize_path(char *path, unsigned int flags)
     int decode_unreserved = (flags & AP_NORMALIZE_DECODE_UNRESERVED) != 0;
     int merge_slashes = (flags & AP_NORMALIZE_MERGE_SLASHES) != 0;
 
-    if (!IS_SLASH(path[0])) {
+    if (!AP_IS_SLASH(path[0])) {
         /* Besides "OPTIONS *", a request-target should start with '/'
          * per RFC 7230 section 5.3, so anything else is invalid.
          */
@@ -545,12 +534,12 @@ AP_DECLARE(int) ap_normalize_path(char *path, unsigned int flags)
             }
         }
 
-        if (w == 0 || IS_SLASH(path[w - 1])) {
+        if (w == 0 || AP_IS_SLASH(path[w - 1])) {
             /* Collapse ///// sequences to / */
-            if (merge_slashes && IS_SLASH(path[l])) {
+            if (merge_slashes && AP_IS_SLASH(path[l])) {
                 do {
                     l++;
-                } while (IS_SLASH(path[l]));
+                } while (AP_IS_SLASH(path[l]));
                 continue;
             }
 
@@ -579,7 +568,7 @@ AP_DECLARE(int) ap_normalize_path(char *path, unsigned int flags)
                     if (w > 1) {
                         do {
                             w--;
-                        } while (w && !IS_SLASH(path[w - 1]));
+                        } while (w && !AP_IS_SLASH(path[w - 1]));
                     }
                     else {
                         /* Already at root, ignore and return a failure
@@ -1915,7 +1904,7 @@ static int unescape_url(char *url, const char *forbid, const char *reserved,
                 char decoded;
                 decoded = x2c(y + 1);
                 if ((decoded == '\0')
-                    || (forbid_slashes && IS_SLASH(decoded))
+                    || (forbid_slashes && AP_IS_SLASH(decoded))
                     || (forbid && ap_strchr_c(forbid, decoded))) {
                     badpath = 1;
                     *x = decoded;
@@ -1923,7 +1912,7 @@ static int unescape_url(char *url, const char *forbid, const char *reserved,
                 }
                 else if ((keep_unreserved && TEST_CHAR(decoded,
                                                        T_URI_UNRESERVED))
-                         || (keep_slashes && IS_SLASH(decoded))
+                         || (keep_slashes && AP_IS_SLASH(decoded))
                          || (reserved && ap_strchr_c(reserved, decoded))) {
                     *x++ = *y++;
                     *x++ = *y++;
@@ -1950,7 +1939,7 @@ static int unescape_url(char *url, const char *forbid, const char *reserved,
 AP_DECLARE(int) ap_unescape_url(char *url)
 {
     /* Traditional */
-    return unescape_url(url, SLASHES, NULL, 0);
+    return unescape_url(url, AP_SLASHES, NULL, 0);
 }
 AP_DECLARE(int) ap_unescape_url_keep2f(char *url, int decode_slashes)
 {
@@ -1960,7 +1949,7 @@ AP_DECLARE(int) ap_unescape_url_keep2f(char *url, int decode_slashes)
         return unescape_url(url, NULL, NULL, 0);
     } else {
         /* reserve (do not decode) encoded slashes */
-        return unescape_url(url, NULL, SLASHES, 0);
+        return unescape_url(url, NULL, AP_SLASHES, 0);
     }
 }
 AP_DECLARE(int) ap_unescape_url_ex(char *url, unsigned int flags)
