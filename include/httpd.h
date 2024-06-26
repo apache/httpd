@@ -2688,6 +2688,17 @@ AP_DECLARE(apr_status_t) ap_filepath_merge(char **newpath,
 #define apr_filepath_merge  ap_filepath_merge
 #endif
 
+/* Win32/NetWare/OS2 need to check for both forward and back slashes
+ * in ap_normalize_path() and ap_escape_url().
+ */
+#ifdef CASE_BLIND_FILESYSTEM
+#define AP_IS_SLASH(s) ((s == '/') || (s == '\\'))
+#define AP_SLASHES "/\\"
+#else
+#define AP_IS_SLASH(s) (s == '/')
+#define AP_SLASHES "/"
+#endif
+
 #ifdef __cplusplus
 }
 #endif
