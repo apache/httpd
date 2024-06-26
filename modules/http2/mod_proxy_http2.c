@@ -317,7 +317,7 @@ static int proxy_http2_handler(request_rec *r,
                                apr_port_t proxyport)
 {
     const char *proxy_func;
-    char *locurl = url, *u;
+    char *locurl, *u;
     apr_size_t slen;
     int is_ssl = 0;
     apr_status_t status;
@@ -382,6 +382,7 @@ run_connect:
         goto cleanup;
     }
 
+    locurl = url;
     ctx->p_conn->is_ssl = ctx->is_ssl;
 
     /* Step One: Determine the URL to connect to (might be a proxy),
