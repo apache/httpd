@@ -157,6 +157,13 @@ RELEASE SHOWSTOPPERS:
      2.4.x patch: https://github.com/apache/httpd/pull/458/files
      +1 covener
 
+  *) proxy_fixup UDS stripping regression
+     Trunk patch:
+       https://svn.apache.org/r1918647
+       https://svn.apache.org/r1918626:
+     2.4.x patch: https://github.com/apache/httpd/pull/457/files
+     +1 covener
+
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
