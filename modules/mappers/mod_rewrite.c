@@ -685,7 +685,7 @@ static unsigned is_absolute_uri(char *uri, int *supportsqs)
 
 static int is_absolute_path(const char *path)
 {
-#ifndef WIN32
+#ifndef CASE_BLIND_FILESYSTEM
     return (path[0] == '/');
 #else
     return ((AP_IS_SLASH(path[0]) && path[1] == path[0])
