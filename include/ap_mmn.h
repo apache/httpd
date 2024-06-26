@@ -599,7 +599,7 @@
  * 20120211.129 (2.4.58-dev) Add ap_get_pollfd_from_conn()
  * 20120211.130 (2.4.59-dev) Add ap_proxy_determine_address()
  * 20120211.131 (2.4.59-dev) Add DAV_WALKTYPE_TOLERANT
- * 20120211.131 (2.4.60-dev) Add ap_set_content_type_ex(), ap_filepath_merge(),
+ * 20120211.132 (2.4.60-dev) Add ap_set_content_type_ex(), ap_filepath_merge(),
  *                           and AP_REQUEST_TRUSTED_CT BNOTE.
  */
 
@@ -608,7 +608,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20120211
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 131                 /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 132                 /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a
