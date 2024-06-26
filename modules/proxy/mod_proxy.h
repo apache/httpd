@@ -1004,14 +1004,12 @@ PROXY_DECLARE(proxy_balancer_shared *) ap_proxy_find_balancershm(ap_slotmem_prov
                                                                  unsigned int *index);
 
 /*
- * In the case of the reverse proxy, we need to see if we
- * were passed a UDS url (eg: from mod_proxy) and adjust uds_path
- * as required.  
+ * Strip the UDS part of r->filename if any, and put the UDS path in
+ * r->notes ("uds_path")
  * @param r        current request
- * @param url      request url to be fixed
  * @return         OK if fixed up, DECLINED if not UDS, or an HTTP_XXX error
  */
-PROXY_DECLARE(int) ap_proxy_fixup_uds_filename(request_rec *r, char **url);
+PROXY_DECLARE(int) ap_proxy_fixup_uds_filename(request_rec *r);
 
 /**
  * Get the most suitable worker and/or balancer for the request
