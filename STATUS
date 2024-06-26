@@ -155,7 +155,7 @@ RELEASE SHOWSTOPPERS:
        https://svn.apache.org/r1918651
        https://svn.apache.org/r1918652
      2.4.x patch: https://github.com/apache/httpd/pull/458/files
-     +1 covener
+     +1 covener, ylavic,
 
   *) mod_proxy: Fixup UDS filename for mod_proxy called through r->handler
      trunk patch: https://svn.apache.org/r1918626
