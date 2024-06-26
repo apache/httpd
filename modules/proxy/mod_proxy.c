@@ -1245,6 +1245,7 @@ static int proxy_fixup(request_rec *r)
 
     return OK;      /* otherwise; we've done the best we can */
 }
+
 /* Send a redirection if the request contains a hostname which is not */
 /* fully qualified, i.e. doesn't have a domain name appended. Some proxy */
 /* servers like Netscape's allow this and access hosts from the local */
@@ -1298,7 +1299,7 @@ static int proxy_handler(request_rec *r)
         ap_get_module_config(sconf, &proxy_module);
     apr_array_header_t *proxies = conf->proxies;
     struct proxy_remote *ents = (struct proxy_remote *) proxies->elts;
-    int i, rc, access_status;
+    int rc = DECLINED, access_status, i;
     int direct_connect = 0;
     const char *str;
     apr_int64_t maxfwd;
@@ -1313,22 +1314,28 @@ static int proxy_handler(request_rec *r)
         return DECLINED;
     }
 
-    if (!r->proxyreq) {
-        rc = DECLINED;
-        /* We may have forced the proxy handler via config or .htaccess */
-        if (r->handler &&
-            strncmp(r->handler, "proxy:", 6) == 0 &&
-            strncmp(r->filename, "proxy:", 6) != 0) {
-            r->proxyreq = PROXYREQ_REVERSE;
-            r->filename = apr_pstrcat(r->pool, r->handler, r->filename, NULL);
-            /* Still need to fixup/canonicalize r->filename */
+    /* We may have forced the proxy handler via config or .htaccess */
+    if (!r->proxyreq && r->handler && strncmp(r->handler, "proxy:", 6) == 0) {
+        char *old_filename = r->filename;
+
+        r->proxyreq = PROXYREQ_REVERSE;
+        r->filename = apr_pstrcat(r->pool, r->handler, r->filename, NULL);
+
+        /* Still need to fixup/canonicalize r->filename */
+        rc = ap_proxy_fixup_uds_filename(r);
+        if (rc <= OK) {
             rc = proxy_fixup(r);
         }
         if (rc != OK) {
-            return rc;
+            r->filename = old_filename;
+            r->proxyreq = 0;
         }
-    } else if (strncmp(r->filename, "proxy:", 6) != 0) {
-        return DECLINED;
+    }
+    else if (r->proxyreq && strncmp(r->filename, "proxy:", 6) == 0) {
+        rc = OK;
+    }
+    if (rc != OK) {
+        return rc;
     }
 
     /* handle max-forwards / OPTIONS / TRACE */
