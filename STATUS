@@ -150,24 +150,8 @@ CURRENT RELEASE NOTES:
 
 RELEASE SHOWSTOPPERS:
 
-
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
-
-  *) rewrite regression fix, / should not be prefixed on Windows.
-     Trunk patch:
-       https://svn.apache.org/r1918651
-       https://svn.apache.org/r1918652
-       https://svn.apache.org/r1918663
-     2.4.x patch: https://github.com/apache/httpd/pull/458/files
-     +1 covener, ylavic, rpluem
-
-  *) mod_proxy: Fixup UDS filename for mod_proxy called through r->handler
-     trunk patch: https://svn.apache.org/r1918626
-                  https://svn.apache.org/r1918647
-     2.4.x patch: https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/457.diff
-     PR: https://github.com/apache/httpd/pull/457
-     +1: ylavic, covener, repluem
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
