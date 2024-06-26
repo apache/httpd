@@ -688,11 +688,8 @@ static int is_absolute_path(const char *path)
 #ifndef WIN32
     return (path[0] == '/');
 #else
-#define IS_SLASH(c) ((c) == '/' || (c) == '\\')
-    /* "//", "\\", "x:/" and "x:\" are absolute paths on Windows */
-    return ((IS_SLASH(path[0]) && path[1] == path[0])
-            || (apr_isalpha(path[0]) && path[1] == ':' && IS_SLASH(path[2])));
-#undef IS_SLASH
+    return ((AP_IS_SLASH(path[0]) && path[1] == path[0])
+            || (apr_isalpha(path[0]) && path[1] == ':' && AP_IS_SLASH(path[2])));
 #endif
 }
 
@@ -4413,10 +4410,15 @@ static rule_return_type apply_rewrite_rule(rewriterule_entry *p,
         && !is_absolute_path(newuri)
         && !is_absolute_uri(newuri, NULL)) {
         if (ctx->perdir) {
-            rewritelog(r, 3, ctx->perdir, "add per-dir prefix: %s -> %s%s",
-                       newuri, ctx->perdir, newuri);
+            if (!AP_IS_SLASH(*newuri)) {
+                /* perdir, the newuri will be internally redirected, so
+                 * leading slash is enough even if it's an ambiguous fs path
+                 */
+                rewritelog(r, 3, ctx->perdir, "add per-dir prefix: %s -> %s%s",
+                           newuri, ctx->perdir, newuri);
 
-            newuri = apr_pstrcat(r->pool, ctx->perdir, newuri, NULL);
+                newuri = apr_pstrcat(r->pool, ctx->perdir, newuri, NULL);
+            }
         }
         else if (!(p->flags & (RULEFLAG_PROXY | RULEFLAG_FORCEREDIRECT))) {
             /* Not an absolute URI-path and the scheme (if any) is unknown,
