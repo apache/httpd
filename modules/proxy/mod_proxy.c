@@ -1328,8 +1328,7 @@ static int proxy_handler(request_rec *r)
         r->filename = apr_pstrcat(r->pool, r->handler, r->filename, NULL);
 
         /* Still need to fixup/canonicalize r->filename */
-        uri = r->filename + 6;
-        rc = ap_proxy_fixup_uds_filename(r, &uri);
+        rc = ap_proxy_fixup_uds_filename(r);
         if (rc <= OK) {
             rc = proxy_fixup(r);
         }
