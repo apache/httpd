@@ -157,13 +157,12 @@ RELEASE SHOWSTOPPERS:
      2.4.x patch: https://github.com/apache/httpd/pull/458/files
      +1 covener
 
-  *) proxy_fixup UDS stripping regression
-     Trunk patch:
-       https://svn.apache.org/r1918647
-       https://svn.apache.org/r1918626
-     2.4.x patch: https://github.com/apache/httpd/pull/457/files
-     +1 covener
-
+  *) mod_proxy: Fixup UDS filename for mod_proxy called through r->handler
+     trunk patch: https://svn.apache.org/r1918626
+                  https://svn.apache.org/r1918647
+     2.4.x patch: https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/457.diff
+     PR: https://github.com/apache/httpd/pull/457
+     +1: ylavic, covener,
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
@@ -239,13 +238,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/449.diff
     PR: https://github.com/apache/httpd/pull/449
     +1: ylavic, icing, 
-
-  *) mod_proxy: Fixup UDS filename for mod_proxy called through r->handler
-     trunk patch: https://svn.apache.org/r1918626
-                  https://svn.apache.org/r1918647
-     2.4.x patch: https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/457.diff
-     PR: https://github.com/apache/httpd/pull/457
-     +1: ylavic,
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
