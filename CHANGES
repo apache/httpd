@@ -27,7 +27,7 @@ Changes with Apache 2.4.60
      malicious or exploitable.
 
      Note: Some legacy uses of the 'AddType' directive to connect a
-     request to a handler must be ported to 'SetHandler' after this fix.
+     request to a handler must be ported to 'AddHandler' after this fix.
 
      Credits: Orange Tsai (@orange_8361) from DEVCORE
 
