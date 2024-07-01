@@ -1,5 +1,93 @@
                                                          -*- coding: utf-8 -*-
+Changes with Apache 2.4.61
+
 Changes with Apache 2.4.60
+
+  *) SECURITY: CVE-2024-39573: Apache HTTP Server: mod_rewrite proxy
+     handler substitution (cve.mitre.org)
+     Potential SSRF in mod_rewrite in Apache HTTP Server 2.4.59 and
+     earlier allows an attacker to cause unsafe RewriteRules to
+     unexpectedly setup URL's to be handled by mod_proxy.
+     Users are recommended to upgrade to version 2.4.60, which fixes
+     this issue.
+     Credits: Orange Tsai (@orange_8361) from DEVCORE
+
+  *) SECURITY: CVE-2024-38477: Apache HTTP Server: Crash resulting in
+     Denial of Service in mod_proxy via a malicious request
+     (cve.mitre.org)
+     null pointer dereference in mod_proxy in Apache HTTP Server
+     2.4.59 and earlier allows an attacker to crash the server via a
+     malicious request.
+     Users are recommended to upgrade to version 2.4.60, which fixes
+     this issue.
+     Credits: Orange Tsai (@orange_8361) from DEVCORE
+
+  *) SECURITY: CVE-2024-38476: Apache HTTP Server may use
+     exploitable/malicious backend application output to run local
+     handlers via internal redirect (cve.mitre.org)
+     Vulnerability in core of Apache HTTP Server 2.4.59 and earlier
+     are vulnerably to information disclosure, SSRF or local script
+     execution via backend applications whose response headers are
+     malicious or exploitable.
+     Users are recommended to upgrade to version 2.4.60, which fixes
+     this issue.
+     Credits: Orange Tsai (@orange_8361) from DEVCORE
+
+  *) SECURITY: CVE-2024-38475: Apache HTTP Server weakness in
+     mod_rewrite when first segment of substitution matches
+     filesystem path. (cve.mitre.org)
+     Improper escaping of output in mod_rewrite in Apache HTTP Server
+     2.4.59 and earlier allows an attacker to map URLs to filesystem
+     locations that are permitted to be served by the server but are
+     not intentionally/directly reachable by any URL, resulting in
+     code execution or source code disclosure.
+     Substitutions in server context that use a backreferences or
+     variables as the first segment of the substitution are affected.
+     Some unsafe RewiteRules will be broken by this change and the
+     rewrite flag "UnsafePrefixStat" can be used to opt back in once
+     ensuring the substitution is appropriately constrained.
+     Credits: Orange Tsai (@orange_8361) from DEVCORE
+
+  *) SECURITY: CVE-2024-38474: Apache HTTP Server weakness with
+     encoded question marks in backreferences (cve.mitre.org)
+     Substitution encoding issue in mod_rewrite in Apache HTTP Server
+     2.4.59 and earlier allows attacker to execute scripts in
+     directories permitted by the configuration but not directly
+     reachable by any URL or source disclosure of scripts meant to
+     only to be executed as CGI.
+     Users are recommended to upgrade to version 2.4.60, which fixes
+     this issue.
+     Some RewriteRules that capture and substitute unsafely will now
+     fail unless rewrite flag "UnsafeAllow3F" is specified.
+     Credits: Orange Tsai (@orange_8361) from DEVCORE
+
+  *) SECURITY: CVE-2024-38473: Apache HTTP Server proxy encoding
+     problem (cve.mitre.org)
+     Encoding problem in mod_proxy in Apache HTTP Server 2.4.59 and
+     earlier allows request URLs with incorrect encoding to be sent
+     to backend services, potentially bypassing authentication via
+     crafted requests.
+     Users are recommended to upgrade to version 2.4.60, which fixes
+     this issue.
+     Credits: Orange Tsai (@orange_8361) from DEVCORE
+
+  *) SECURITY: CVE-2024-38472: Apache HTTP Server on WIndows UNC SSRF
+     (cve.mitre.org)
+     SSRF in Apache HTTP Server on Windows allows to potentially leak
+     NTML hashes to a malicious server via SSRF and malicious
+     requests or content
+     Users are recommended to upgrade to version 2.4.60 which fixes
+     this issue.  Note: Existing configurations that access UNC paths
+     will have to configure new directive "UNCList" to allow access
+     during request processing.
+     Credits: Orange Tsai (@orange_8361) from DEVCORE
+
+  *) SECURITY: CVE-2024-36387: Apache HTTP Server: DoS by Null
+     pointer in websocket over HTTP/2 (cve.mitre.org)
+     Serving WebSocket protocol upgrades over a HTTP/2 connection
+     could result in a Null Pointer dereference, leading to a crash
+     of the server process, degrading performance.
+     Credits: Marc Stern (<marc.stern approach.be>)
 
   *) mod_proxy: Fix DNS requests and connections closed before the
      configured addressTTL.  BZ 69126.  [Yann Ylavic]
