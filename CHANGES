@@ -8,8 +8,6 @@ Changes with Apache 2.4.60
      Potential SSRF in mod_rewrite in Apache HTTP Server 2.4.59 and
      earlier allows an attacker to cause unsafe RewriteRules to
      unexpectedly setup URL's to be handled by mod_proxy.
-     Users are recommended to upgrade to version 2.4.60, which fixes
-     this issue.
      Credits: Orange Tsai (@orange_8361) from DEVCORE
 
   *) SECURITY: CVE-2024-38477: Apache HTTP Server: Crash resulting in
@@ -18,8 +16,6 @@ Changes with Apache 2.4.60
      null pointer dereference in mod_proxy in Apache HTTP Server
      2.4.59 and earlier allows an attacker to crash the server via a
      malicious request.
-     Users are recommended to upgrade to version 2.4.60, which fixes
-     this issue.
      Credits: Orange Tsai (@orange_8361) from DEVCORE
 
   *) SECURITY: CVE-2024-38476: Apache HTTP Server may use
@@ -29,8 +25,10 @@ Changes with Apache 2.4.60
      are vulnerably to information disclosure, SSRF or local script
      execution via backend applications whose response headers are
      malicious or exploitable.
-     Users are recommended to upgrade to version 2.4.60, which fixes
-     this issue.
+
+     Note: Some legacy uses of the 'AddType' directive to connect a
+     request to a handler must be ported to 'SetHandler' after this fix.
+
      Credits: Orange Tsai (@orange_8361) from DEVCORE
 
   *) SECURITY: CVE-2024-38475: Apache HTTP Server weakness in
@@ -55,10 +53,10 @@ Changes with Apache 2.4.60
      directories permitted by the configuration but not directly
      reachable by any URL or source disclosure of scripts meant to
      only to be executed as CGI.
-     Users are recommended to upgrade to version 2.4.60, which fixes
-     this issue.
-     Some RewriteRules that capture and substitute unsafely will now
+
+     Note: Some RewriteRules that capture and substitute unsafely will now
      fail unless rewrite flag "UnsafeAllow3F" is specified.
+
      Credits: Orange Tsai (@orange_8361) from DEVCORE
 
   *) SECURITY: CVE-2024-38473: Apache HTTP Server proxy encoding
@@ -67,8 +65,6 @@ Changes with Apache 2.4.60
      earlier allows request URLs with incorrect encoding to be sent
      to backend services, potentially bypassing authentication via
      crafted requests.
-     Users are recommended to upgrade to version 2.4.60, which fixes
-     this issue.
      Credits: Orange Tsai (@orange_8361) from DEVCORE
 
   *) SECURITY: CVE-2024-38472: Apache HTTP Server on WIndows UNC SSRF
@@ -76,10 +72,11 @@ Changes with Apache 2.4.60
      SSRF in Apache HTTP Server on Windows allows to potentially leak
      NTML hashes to a malicious server via SSRF and malicious
      requests or content
-     Users are recommended to upgrade to version 2.4.60 which fixes
-     this issue.  Note: Existing configurations that access UNC paths
+
+     Note: Existing configurations that access UNC paths
      will have to configure new directive "UNCList" to allow access
      during request processing.
+
      Credits: Orange Tsai (@orange_8361) from DEVCORE
 
   *) SECURITY: CVE-2024-36387: Apache HTTP Server: DoS by Null
