@@ -1261,7 +1261,7 @@ AP_DECLARE_NONSTD(int) ap_send_http_trace(request_rec *r)
         }
     }
 
-    ap_set_content_type(r, "message/http");
+    ap_set_content_type_ex(r, "message/http", 1);
 
     /* Now we recreate the request, and echo it back */
 
