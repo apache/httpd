@@ -157,7 +157,7 @@ RELEASE SHOWSTOPPERS:
         https://svn.apache.org/r1918815
         https://svn.apache.org/r1918823
      2.4.x patch:  https://github.com/apache/httpd/pull/459
-     +1 covener
+     +1 covener, jorton
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
