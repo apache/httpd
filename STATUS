@@ -153,8 +153,11 @@ RELEASE SHOWSTOPPERS:
 
   *) maintain ct trusted flag across ap_internal_fast_redirect
      Trunk version of patch: https://svn.apache.org/r1918795.
-     2.4.x patch:  svn merge -c 1918795 ^/httpd/httpd/trunk .
-     +1 covener, ylavic
+        https://svn.apache.org/r1918814
+        https://svn.apache.org/r1918815
+        https://svn.apache.org/r1918823
+     2.4.x patch:  https://github.com/apache/httpd/pull/459
+     +1 covener
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
