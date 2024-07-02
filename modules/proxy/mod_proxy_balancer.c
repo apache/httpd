@@ -1445,7 +1445,7 @@ static void balancer_display_page(request_rec *r, proxy_server_conf *conf,
 
     if (usexml) {
         char date[APR_RFC822_DATE_LEN];
-        ap_set_content_type(r, "text/xml");
+        ap_set_content_type_ex(r, "text/xml", 1);
         ap_rputs("<?xml version='1.0' encoding='UTF-8' ?>\n", r);
         ap_rputs("<httpd:manager xmlns:httpd='http://httpd.apache.org'>\n", r);
         ap_rputs("  <httpd:balancers>\n", r);
@@ -1618,7 +1618,7 @@ static void balancer_display_page(request_rec *r, proxy_server_conf *conf,
         ap_rputs("</httpd:manager>", r);
     }
     else {
-        ap_set_content_type(r, "text/html; charset=ISO-8859-1");
+        ap_set_content_type_ex(r, "text/html; charset=ISO-8859-1", 1);
         ap_rputs(DOCTYPE_HTML_4_01
                  "<html><head><title>Balancer Manager</title>\n", r);
         ap_rputs("<style type='text/css'>\n"

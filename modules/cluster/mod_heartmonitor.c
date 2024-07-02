@@ -782,7 +782,7 @@ static int hm_handler(request_rec *r)
     hmserver.seen = apr_time_now();
     hm_update_stat(ctx, &hmserver, r->pool);
 
-    ap_set_content_type(r, "text/plain");
+    ap_set_content_type_ex(r, "text/plain", 1);
     ap_set_content_length(r, 2);
     ap_rputs("OK", r);
     ap_rflush(r);

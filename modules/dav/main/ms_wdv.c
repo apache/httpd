@@ -572,7 +572,7 @@ static dav_error *mswdv_combined_propfind(request_rec *r)
     apr_brigade_printf(bb, NULL, NULL, "%016" APR_UINT64_T_HEX_FMT,
                        (apr_uint64_t)rr->finfo.size);
 
-    ap_set_content_type(r, "multipart/MSDAVEXTPrefixEncoded");
+    ap_set_content_type_ex(r, "multipart/MSDAVEXTPrefixEncoded", 1);
 
     ap_pass_brigade(r->output_filters, bb);
 

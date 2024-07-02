@@ -1013,7 +1013,7 @@ static int crypto_handler(request_rec *r)
             return HTTP_INTERNAL_SERVER_ERROR;
         }
 
-        ap_set_content_type(r, "application/octet-stream");
+        ap_set_content_type_ex(r, "application/octet-stream", 1);
         ap_set_content_length(r, rec->k.secret.secretLen);
         ap_rwrite(rec->k.secret.secret, rec->k.secret.secretLen, r);
 

@@ -200,7 +200,7 @@ static int util_ldap_handler(request_rec *r)
     st = (util_ldap_state_t *) ap_get_module_config(r->server->module_config,
             &ldap_module);
 
-    ap_set_content_type(r, "text/html; charset=ISO-8859-1");
+    ap_set_content_type_ex(r, "text/html; charset=ISO-8859-1", 1);
 
     if (r->header_only)
         return OK;

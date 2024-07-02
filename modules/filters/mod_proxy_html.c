@@ -1009,7 +1009,7 @@ static apr_status_t proxy_html_filter(ap_filter_t *f, apr_bucket_brigade *bb)
                         ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, f->r, APLOGNO(01422)
                                       "No i18n support found.  Install mod_xml2enc if required");
                     enc = XML_CHAR_ENCODING_NONE;
-                    ap_set_content_type(f->r, "text/html;charset=utf-8");
+                    ap_set_content_type_ex(f->r, "text/html;charset=utf-8", 1);
                 }
                 else {
                     /* if we wanted a non-default charset_out, insert the
@@ -1025,7 +1025,7 @@ static apr_status_t proxy_html_filter(ap_filter_t *f, apr_bucket_brigade *bb)
                                                         cenc, NULL));
                     }
                     else /* Normal case, everything worked, utf-8 output */
-                        ap_set_content_type(f->r, "text/html;charset=utf-8");
+                        ap_set_content_type_ex(f->r, "text/html;charset=utf-8", 1);
                 }
 
                 ap_fputs(f->next, ctxt->bb, ctxt->cfg->doctype);
