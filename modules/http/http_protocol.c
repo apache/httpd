@@ -1443,10 +1443,10 @@ AP_DECLARE(void) ap_send_error_response(request_rec *r, int recursive_error)
             request_conf->suppress_charset = 1; /* avoid adding default
                                                  * charset later
                                                  */
-            ap_set_content_type(r, "text/html");
+            ap_set_content_type_ex(r, "text/html", 1);
         }
         else {
-            ap_set_content_type(r, "text/html; charset=iso-8859-1");
+            ap_set_content_type_ex(r, "text/html; charset=iso-8859-1", 1);
         }
 
         if ((status == HTTP_METHOD_NOT_ALLOWED)
