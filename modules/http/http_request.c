@@ -805,7 +805,7 @@ AP_DECLARE(void) ap_internal_redirect_handler(const char *new_uri, request_rec *
     }
 
     if (r->handler)
-        ap_set_content_type(new, r->content_type);
+        ap_set_content_type_ex(new, r->content_type, AP_REQUEST_IS_TRUSTED_CT(r));
     access_status = ap_process_request_internal(new);
     if (access_status == OK) {
         access_status = ap_invoke_handler(new);
