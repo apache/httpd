@@ -4495,7 +4495,7 @@ static int dav_method_report(request_rec *r)
 
     /* set up defaults for the report response */
     r->status = HTTP_OK;
-    ap_set_content_type(r, DAV_XML_CONTENT_TYPE);
+    ap_set_content_type_ex(r, DAV_XML_CONTENT_TYPE, 1);
     err = NULL;
 
     /* run report hook */
@@ -4803,7 +4803,7 @@ static int dav_method_merge(request_rec *r)
        is going to do something different (i.e. an error), then it must
        return a dav_error, and we'll reset these values properly. */
     r->status = HTTP_OK;
-    ap_set_content_type(r, "text/xml");
+    ap_set_content_type_ex(r, "text/xml", 1);
 
     /* ### should we do any preliminary response generation? probably not,
        ### because we may have an error, thus demanding something else in
