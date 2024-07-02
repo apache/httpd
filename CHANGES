@@ -84,7 +84,7 @@ Changes with Apache 2.4.60
      Serving WebSocket protocol upgrades over a HTTP/2 connection
      could result in a Null Pointer dereference, leading to a crash
      of the server process, degrading performance.
-     Credits: Marc Stern (<marc.stern approach.be>)
+     Credits: Marc Stern (<marc.stern AT approach-cyber.com>)
 
   *) mod_proxy: Fix DNS requests and connections closed before the
      configured addressTTL.  BZ 69126.  [Yann Ylavic]
