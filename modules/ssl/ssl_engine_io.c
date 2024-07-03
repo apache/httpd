@@ -2281,9 +2281,7 @@ apr_status_t ssl_io_filter_init(conn_rec *c, request_rec *r, SSL *ssl)
     apr_pool_cleanup_register(c->pool, (void*)filter_ctx,
                               ssl_io_filter_cleanup, apr_pool_cleanup_null);
 
-    if (APLOG_CS_IS_LEVEL(c, mySrvFromConn(c), APLOG_TRACE4)) {
-        modssl_set_io_callbacks(ssl);
-    }
+    modssl_set_io_callbacks(ssl, c, mySrvFromConn(c));
 
     return APR_SUCCESS;
 }
@@ -2380,6 +2378,8 @@ static long modssl_io_cb(BIO *bio, int cmd, const char *argp,
     SSL *ssl;
     conn_rec *c;
     server_rec *s;
+
+    /* unused */
 #if OPENSSL_VERSION_NUMBER >= 0x30000000L
     (void)argi;
 #endif
@@ -2425,9 +2425,9 @@ static long modssl_io_cb(BIO *bio, int cmd, const char *argp,
                     "%s: %s %" APR_SIZE_T_FMT "/%" APR_SIZE_T_FMT 
                     " bytes %s BIO#%pp [mem: %pp] %s",
                     MODSSL_LIBRARY_NAME,
-                    (cmd == (BIO_CB_WRITE|BIO_CB_RETURN) ? "write" : "read"),
+                    (cmd & BIO_CB_WRITE) ? "write" : "read",
                     actual_len, requested_len,
-                    (cmd == (BIO_CB_WRITE|BIO_CB_RETURN) ? "to" : "from"),
+                    (cmd & BIO_CB_WRITE) ? "to" : "from",
                     bio, argp, dump);
             /*
              * *dump will only be != '\0' if
@@ -2445,7 +2445,7 @@ static long modssl_io_cb(BIO *bio, int cmd, const char *argp,
                     "%s: I/O error, %" APR_SIZE_T_FMT 
                     " bytes expected to %s on BIO#%pp [mem: %pp]",
                     MODSSL_LIBRARY_NAME, requested_len,
-                    (cmd == (BIO_CB_WRITE|BIO_CB_RETURN) ? "write" : "read"),
+                    (cmd & BIO_CB_WRITE) ? "write" : "read",
                     bio, argp);
         }
     }
@@ -2462,10 +2462,15 @@ static APR_INLINE void set_bio_callback(BIO *bio, void *arg)
     BIO_set_callback_arg(bio, arg);
 }
 
-void modssl_set_io_callbacks(SSL *ssl)
+void modssl_set_io_callbacks(SSL *ssl, conn_rec *c, server_rec *s)
 {
-    BIO *rbio = SSL_get_rbio(ssl),
-        *wbio = SSL_get_wbio(ssl);
+    BIO *rbio, *wbio;
+
+    if (!APLOG_CS_IS_LEVEL(c, s, APLOG_TRACE4))
+        return;
+
+    rbio = SSL_get_rbio(ssl);
+    wbio = SSL_get_wbio(ssl);
     if (rbio) {
         set_bio_callback(rbio, ssl);
     }
