@@ -5000,7 +5000,7 @@ certain events before failing a request</td></tr>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Controls what UNC host names can be accessed by the server
 </td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>UNCList<var>hostname</var> ...</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>UNCList <var>hostname</var> [<var>hostname</var>...]</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>unset</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
@@ -5012,10 +5012,20 @@ certain events before failing a request</td></tr>
     has been specified by this directive. The intent is to limit access to
     paths derived from untrusted inputs.</p>
 
-<div class="warning"><h3>Security</h3>
-<p>UNC paths accessed outside of request processing, such as during startup,
-are not checked against the hosts configured with this directive.</p>
-</div>
+    <div class="example"><p><code>
+    UNCList example.com other.example.com
+    </code></p></div>
+
+    <div class="warning"><h3>Security</h3>
+    <p>UNC paths accessed outside of request processing, such as during startup,
+    are not necessarily checked against the hosts configured with this directive.</p>
+    </div>
+
+    <div class="warning"><h3>Directive Ordering</h3>
+    <p>This directive should be placed before UNC paths used in httpd.conf. 
+    Multiple occurrences of the directive reset the list.</p>
+    </div>
+
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
