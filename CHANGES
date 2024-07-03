@@ -1,5 +1,18 @@
                                                          -*- coding: utf-8 -*-
+Changes with Apache 2.4.62
+
 Changes with Apache 2.4.61
+
+  *) SECURITY: CVE-2024-39884: Apache HTTP Server: source code
+     disclosure with handlers configured via AddType (cve.mitre.org)
+     A regression in the core of Apache HTTP Server 2.4.60 ignores
+     some use of the legacy content-type based configuration of
+     handlers.   "AddType" and similar configuration, under some
+     circumstances where files are requested indirectly, result in
+     source code disclosure of local content. For example, PHP
+     scripts may be served instead of interpreted.
+     Users are recommended to upgrade to version 2.4.61, which fixes
+     this issue.
 
 Changes with Apache 2.4.60
 
