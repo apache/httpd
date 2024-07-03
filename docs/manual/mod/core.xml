@@ -5322,7 +5322,7 @@ recognized methods to modules.</p>
 <name>UNCList</name>
 <description>Controls what UNC host names can be accessed by the server
 </description>
-<syntax>UNCList<var>hostname</var> ...</syntax>
+<syntax>UNCList <var>hostname</var> [<var>hostname</var>...]</syntax>
 <default>unset</default>
 <contextlist><context>server config</context>
 </contextlist>
@@ -5334,15 +5334,22 @@ recognized methods to modules.</p>
     has been specified by this directive. The intent is to limit access to
     paths derived from untrusted inputs.</p>
 
-<note type="warning"><title>Security</title>
-<p>UNC paths accessed outside of request processing, such as during startup,
-are not checked against the hosts configured with this directive.</p>
-</note>
+    <example>
+    UNCList example.com other.example.com
+    </example>
+
+    <note type="warning"><title>Security</title>
+    <p>UNC paths accessed outside of request processing, such as during startup,
+    are not necessarily checked against the hosts configured with this directive.</p>
+    </note>
+
+    <note type="warning"><title>Directive Ordering</title>
+    <p>This directive should be placed before UNC paths used in httpd.conf. 
+    Multiple occurrences of the directive reset the list.</p>
+    </note>
+
 </usage>
 </directivesynopsis>
-
-
-UNCList
 
 
 <directivesynopsis>
