@@ -1,0 +1,2 @@
+  *) mod_ssl: Restore SSL dumping on trace7 loglevel with OpenSSL >= 3.0.
+     [Ruediger Pluem, Yann Ylavic]

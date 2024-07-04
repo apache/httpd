@@ -156,15 +156,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_ssl: Restore SSL dumping on trace7 loglevel with OpenSSL >= 3.0.
-     Trunk version of patch:
-        https://svn.apache.org/r1918880
-        https://svn.apache.org/r1918881
-        https://svn.apache.org/r1918883
-     Backport version for 2.4.x of patch:
-      Trunk version of patch works
-      svn merge -c 1918880,1918881,1918883 ^/httpd/httpd/trunk .
-     +1: rpluem, ylavic, jorton
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]

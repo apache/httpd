@@ -2585,9 +2585,7 @@ static int ssl_find_vhost(void *servername, conn_rec *c, server_rec *s)
          * (and the first vhost doesn't use APLOG_TRACE4), then
          * we need to set that callback here.
          */
-        if (APLOGtrace4(s)) {
-            modssl_set_io_callbacks(ssl);
-        }
+        modssl_set_io_callbacks(ssl, c, s);
 
         return 1;
     }
