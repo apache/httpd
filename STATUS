@@ -239,6 +239,17 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c 1916925,1916926,1916929 ^/httpd/httpd/trunk .
     +1: rjung, 
 
+  *) mod_ssl: Restore SSL dumping on trace7 loglevel with OpenSSL >= 3.0.
+     Trunk version of patch:
+        https://svn.apache.org/r1918880
+        https://svn.apache.org/r1918881
+        https://svn.apache.org/r1918883
+     Backport version for 2.4.x of patch:
+      Trunk version of patch works
+      svn merge -c 1918880,1918881,1918883 ^/httpd/httpd/trunk .
+     +1: rpluem,
+
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
