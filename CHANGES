@@ -80,7 +80,7 @@ Changes with Apache 2.4.60
      crafted requests.
      Credits: Orange Tsai (@orange_8361) from DEVCORE
 
-  *) SECURITY: CVE-2024-38472: Apache HTTP Server on WIndows UNC SSRF
+  *) SECURITY: CVE-2024-38472: Apache HTTP Server on Windows UNC SSRF
      (cve.mitre.org)
      SSRF in Apache HTTP Server on Windows allows to potentially leak
      NTML hashes to a malicious server via SSRF and malicious
