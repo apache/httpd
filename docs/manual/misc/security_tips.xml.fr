@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1887636 -->
+<!-- English Revision: 1918789 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -131,11 +131,7 @@
       vous permet de traiter d'avantage de connexions simultanées, ce qui
       minimise l'effet des attaques DoS. Dans le futur, le module mpm
       <module>event</module> utilisera un traitement asynchrone afin de ne pas
-      dédier un thread à chaque connexion. De par la
-      nature de la bibliothèque OpenSSL, le module mpm <module>event</module> est actuellement incompatible
-      avec le module <module>mod_ssl</module> ainsi que d'autres filtres
-      en entrée. Dans ces cas, son comportement se ramène à celui
-      du module mpm <module>worker</module>.</li>
+      dédier un thread à chaque connexion.</li>
 
       <li>Il existe de nombreux modules tiers qui peuvent restreindre les
       comportements de certains clients et ainsi minimiser les problèmes de

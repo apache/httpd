@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1915443 -->
+<!-- English Revision: 1918565 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -1643,6 +1643,21 @@ substitution !
         <td>Force l'attribution du <glossary>Type-MIME</glossary>
 	spécifié au fichier cible. <em><a
         href="../rewrite/flags.html#flag_t">détails ...</a></em></td>
+    </tr>
+    <tr>
+        <td>UnsafeAllow3F</td>
+        <td>Autorise les substitutions à partir d’URL potentiellement non
+	fiables.
+        <em><a href="../rewrite/flags.html#flag_unsafe_allow_3f">détails ...</a></em>
+        </td>
+    </tr>
+    <tr>
+        <td>UnsafePrefixStat</td>
+        <td>Autorise les substitutions potentiellement non fiables à partir
+	d’une variable de tête ou d’une référence arrière vers un chemin du
+	système de fichiers.
+        <em><a href="../rewrite/flags.html#flag_unsafe_prefix_stat">détails ...</a></em>
+        </td>
     </tr>
     </table>
 
