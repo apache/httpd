@@ -1516,7 +1516,7 @@ traitent les connexions clients</td></tr>
 <code>TRACE</code></td></tr>
 <tr><td><a href="mod_log_config.html#transferlog">TransferLog <var>fichier</var>|<var>pipe</var></a></td><td></td><td>sv</td><td>B</td></tr><tr><td class="descr" colspan="4">Spécifie l'emplacement d'un fichier journal</td></tr>
 <tr class="odd"><td><a href="mod_mime.html#typesconfig">TypesConfig <var>chemin-fichier</var></a></td><td> conf/mime.types </td><td>s</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Le chemin du fichier <code>mime.types</code></td></tr>
-<tr><td><a href="core.html#unclist" id="U" name="U">UNCList<var>hostname</var> ...</a></td><td></td><td>s</td><td>C</td></tr><tr><td class="descr" colspan="4">Controls what UNC host names can be accessed by the server
+<tr><td><a href="core.html#unclist" id="U" name="U">UNCList <var>hostname</var> [<var>hostname</var>...]</a></td><td></td><td>s</td><td>C</td></tr><tr><td class="descr" colspan="4">Définit quels sont les noms d’hôte UNC auxquels le serveur peut accéder
 </td></tr>
 <tr class="odd"><td><a href="core.html#undefine">UnDefine <var>nom-variable</var></a></td><td></td><td>s</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Invalide la définition d'une variable</td></tr>
 <tr><td><a href="mod_macro.html#undefmacro">UndefMacro <var>nom</var></a></td><td></td><td>svd</td><td>B</td></tr><tr><td class="descr" colspan="4">Supprime une macro</td></tr>

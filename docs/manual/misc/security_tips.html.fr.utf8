@@ -28,8 +28,6 @@
 <a href="../ko/misc/security_tips.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/misc/security_tips.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
     <p>Ce document propose quelques conseils et astuces concernant les
     problèmes de sécurité liés
@@ -145,11 +143,7 @@
       vous permet de traiter d'avantage de connexions simultanées, ce qui
       minimise l'effet des attaques DoS. Dans le futur, le module mpm
       <code class="module"><a href="../mod/event.html">event</a></code> utilisera un traitement asynchrone afin de ne pas
-      dédier un thread à chaque connexion. De par la
-      nature de la bibliothèque OpenSSL, le module mpm <code class="module"><a href="../mod/event.html">event</a></code> est actuellement incompatible
-      avec le module <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> ainsi que d'autres filtres
-      en entrée. Dans ces cas, son comportement se ramène à celui
-      du module mpm <code class="module"><a href="../mod/worker.html">worker</a></code>.</li>
+      dédier un thread à chaque connexion.</li>
 
       <li>Il existe de nombreux modules tiers qui peuvent restreindre les
       comportements de certains clients et ainsi minimiser les problèmes de
