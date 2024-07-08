@@ -29,6 +29,7 @@
 #include "util_md5.h"
 #include "util_mutex.h"
 #include "ap_provider.h"
+#include "ap_mpm.h"
 #include "http_config.h"
 
 #include "mod_proxy.h" /* for proxy_hook_section_post_config() */
@@ -39,6 +40,8 @@
 #include <valgrind.h>
 int ssl_running_on_valgrind = 0;
 #endif
+
+static int mpm_can_waitio = 0;
 
 #if HAVE_OPENSSL_INIT_SSL || (OPENSSL_VERSION_NUMBER >= 0x10100000L && \
                               !defined(LIBRESSL_VERSION_NUMBER))
@@ -464,6 +467,16 @@ static int ssl_hook_pre_config(apr_pool_t *pconf,
     return OK;
 }
 
+static int ssl_hook_post_config(apr_pool_t *pconf, apr_pool_t *plog,
+                                apr_pool_t *ptemp, server_rec *s)
+{
+    if (ap_mpm_query(AP_MPMQ_CAN_WAITIO, &mpm_can_waitio) != APR_SUCCESS) {
+        mpm_can_waitio = 0;
+    }
+
+    return OK;
+}
+
 static SSLConnRec *ssl_init_connection_ctx(conn_rec *c,
                                            ap_conf_vector_t *per_dir_config,
                                            int reinit)
@@ -692,8 +705,9 @@ static int ssl_hook_pre_connection(conn_rec *c, void *csd)
 static int ssl_hook_process_connection(conn_rec* c)
 {
     SSLConnRec *sslconn = myConnConfig(c);
+    int status = DECLINED;
 
-    if (sslconn && !sslconn->disabled) {
+    if (sslconn && !sslconn->disabled && !sslconn->initialized) {
         /* On an active SSL connection, let the input filters initialize
          * themselves which triggers the handshake, which again triggers
          * all kinds of useful things such as SNI and ALPN.
@@ -701,23 +715,50 @@ static int ssl_hook_process_connection(conn_rec* c)
         apr_bucket_brigade* temp;
         apr_status_t rv;
 
-        temp = apr_brigade_create(c->pool, c->bucket_alloc);
-        rv = ap_get_brigade(c->input_filters, temp,
-                            AP_MODE_INIT, APR_BLOCK_READ, 0);
-        apr_brigade_destroy(temp);
+        temp = ap_acquire_brigade(c);
+        rv = ap_get_brigade(c->input_filters, temp, AP_MODE_INIT,
+                            mpm_can_waitio ? APR_NONBLOCK_READ : APR_BLOCK_READ,
+                            0);
+        ap_release_brigade(c, temp);
 
-        if (APR_SUCCESS != APR_SUCCESS) {
+        if (rv == APR_SUCCESS) {
+            /* great news, lets continue */
+            ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, APLOGNO(10370)
+                          "SSL handshake completed, continuing");
+            sslconn->initialized = 1;
+        }
+        else if (rv == MODSSL_ERROR_HTTP_ON_HTTPS) {
+            /* Plain HTTP spoken on https port, mod_ssl wants to be called
+             * without AP_MODE_INIT.
+             */
+            ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, APLOGNO(10371)
+                          "SSL handshake with plain HTTP, continuing");
+            sslconn->initialized = 1;
+        }
+        else if (mpm_can_waitio && APR_STATUS_IS_EAGAIN(rv)) {
+            /* Take advantage of an async MPM. If we see an EAGAIN,
+             * loop round and don't block.
+             */
+            ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, APLOGNO(10372)
+                          "SSL handshake in progress, try again later");
+            if (c->cs) {
+                c->cs->state = CONN_STATE_ASYNC_WAITIO;
+            }
+            status = OK;
+        }
+        else {
+            /* we failed, give up */
+            ap_log_cerror(APLOG_MARK, APLOG_INFO, rv, c, APLOGNO(10373)
+                          "SSL handshake was not completed, "
+                          "closing connection");
             if (c->cs) {
                 c->cs->state = CONN_STATE_LINGER;
             }
-            ap_log_cerror(APLOG_MARK, APLOG_ERR, rv, c, APLOGNO(10373)
-                          "SSL handshake was not completed, "
-                          "closing connection");
-            return OK;
+            status = OK;
         }
     }
-    
-    return DECLINED;
+
+    return status;
 }
 
 /*
@@ -746,6 +787,7 @@ static void ssl_register_hooks(apr_pool_t *p)
     ap_hook_http_scheme   (ssl_hook_http_scheme,   NULL,NULL, APR_HOOK_MIDDLE);
     ap_hook_default_port  (ssl_hook_default_port,  NULL,NULL, APR_HOOK_MIDDLE);
     ap_hook_pre_config    (ssl_hook_pre_config,    NULL,NULL, APR_HOOK_MIDDLE);
+    ap_hook_post_config   (ssl_hook_post_config,   NULL,NULL, APR_HOOK_MIDDLE);
     ap_hook_child_init    (ssl_init_Child,         NULL,NULL, APR_HOOK_MIDDLE);
     ap_hook_post_read_request(ssl_hook_ReadReq, pre_prr,NULL, APR_HOOK_MIDDLE);
     ap_hook_check_access  (ssl_hook_Access,        NULL,NULL, APR_HOOK_MIDDLE,

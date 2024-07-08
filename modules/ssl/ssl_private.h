@@ -368,6 +368,12 @@ APLOG_USE_MODULE(ssl);
 #define myModConfigFromConn(c) myModConfig(mySrvFromConn(c))
 
 /**
+ * Custom apr_status_t error code, used when a plain HTTP request is
+ * received on an SSL port.
+ */
+#define MODSSL_ERROR_HTTP_ON_HTTPS (APR_OS_START_USERERR + 0)
+
+/**
  * Defaults for the configuration
  */
 #ifndef SSL_SESSION_CACHE_TIMEOUT
@@ -582,6 +588,7 @@ typedef struct {
     const char *verify_info;
     const char *verify_error;
     int verify_depth;
+    int initialized;
     int disabled;
     enum {
         NON_SSL_OK = 0,        /* is SSL request, or error handling completed */
