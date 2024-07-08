@@ -2472,7 +2472,7 @@ PROXY_DECLARE(int) ap_proxy_fixup_uds_filename(request_rec *r)
         }
         else {
             /* Overwrite the UDS part of r->filename in place */
-            memmove(uds_url, origin_url, origin_len + 1);
+            memmove(uds_url, origin_url, strlen(origin_url) + 1);
         }
         return OK;
     }
