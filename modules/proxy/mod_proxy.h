@@ -1034,6 +1034,7 @@ PROXY_DECLARE(proxy_balancer_shared *) ap_proxy_find_balancershm(ap_slotmem_prov
  * r->notes ("uds_path")
  * @param r        current request
  * @return         OK if fixed up, DECLINED if not UDS, or an HTTP_XXX error
+ * @remark Deprecated (for internal use only)
  */
 PROXY_DECLARE(int) ap_proxy_fixup_uds_filename(request_rec *r);
 
