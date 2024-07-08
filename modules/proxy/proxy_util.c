@@ -2561,7 +2561,7 @@ PROXY_DECLARE(int) ap_proxy_canon_url(request_rec *r)
     }
 
     /* Keep this after fixup_uds_filename() */
-    url = ap_pstrdup(r->pool, r->filename + 6);
+    url = apr_pstrdup(r->pool, r->filename + 6);
 
     if ((dconf->interpolate_env == 1) && (r->proxyreq == PROXYREQ_REVERSE)) {
         /* create per-request copy of reverse proxy conf,
