@@ -2429,7 +2429,7 @@ static int ap_proxy_retry_worker(const char *proxy_function, proxy_worker *worke
  * were passed a UDS url (eg: from mod_proxy) and adjust uds_path
  * as required.  
  */
-PROXY_DECLARE(int) ap_proxy_fixup_uds_filename(request_rec *r) 
+static int fixup_uds_filename(request_rec *r) 
 {
     char *uds_url = r->filename + 6, *origin_url;
 
@@ -2481,7 +2481,113 @@ PROXY_DECLARE(int) ap_proxy_fixup_uds_filename(request_rec *r)
         return OK;
     }
 
+    apr_table_unset(r->notes, "uds_path");
     return DECLINED;
+}
+
+/* Deprecated (unused upstream) */
+PROXY_DECLARE(int) ap_proxy_fixup_uds_filename(request_rec *r)
+{
+    return fixup_uds_filename(r);
+}
+
+PROXY_DECLARE(const char *) ap_proxy_interpolate(request_rec *r,
+                                                 const char *str)
+{
+    /* Interpolate an env str in a configuration string
+     * Syntax ${var} --> value_of(var)
+     * Method: replace one var, and recurse on remainder of string
+     * Nothing clever here, and crap like nested vars may do silly things
+     * but we'll at least avoid sending the unwary into a loop
+     */
+    const char *start;
+    const char *end;
+    const char *var;
+    const char *val;
+    const char *firstpart;
+
+    start = ap_strstr_c(str, "${");
+    if (start == NULL) {
+        return str;
+    }
+    end = ap_strchr_c(start+2, '}');
+    if (end == NULL) {
+        return str;
+    }
+    /* OK, this is syntax we want to interpolate.  Is there such a var ? */
+    var = apr_pstrmemdup(r->pool, start+2, end-(start+2));
+    val = apr_table_get(r->subprocess_env, var);
+    firstpart = apr_pstrmemdup(r->pool, str, (start-str));
+
+    if (val == NULL) {
+        return apr_pstrcat(r->pool, firstpart,
+                           ap_proxy_interpolate(r, end+1), NULL);
+    }
+    else {
+        return apr_pstrcat(r->pool, firstpart, val,
+                           ap_proxy_interpolate(r, end+1), NULL);
+    }
+}
+
+static apr_array_header_t *proxy_vars(request_rec *r, apr_array_header_t *hdr)
+{
+    int i;
+    apr_array_header_t *ret = apr_array_make(r->pool, hdr->nelts,
+                                             sizeof (struct proxy_alias));
+    struct proxy_alias *old = (struct proxy_alias *) hdr->elts;
+
+    for (i = 0; i < hdr->nelts; ++i) {
+        struct proxy_alias *newcopy = apr_array_push(ret);
+        newcopy->fake = (old[i].flags & PROXYPASS_INTERPOLATE)
+                        ? ap_proxy_interpolate(r, old[i].fake) : old[i].fake;
+        newcopy->real = (old[i].flags & PROXYPASS_INTERPOLATE)
+                        ? ap_proxy_interpolate(r, old[i].real) : old[i].real;
+    }
+    return ret;
+}
+
+PROXY_DECLARE(int) ap_proxy_canon_url(request_rec *r)
+{
+    char *url, *p;
+    int access_status;
+    proxy_dir_conf *dconf = ap_get_module_config(r->per_dir_config,
+                                                 &proxy_module);
+
+    if (!r->proxyreq || !r->filename || strncmp(r->filename, "proxy:", 6) != 0)
+        return DECLINED;
+
+    /* Put the UDS path appart if any (and not already stripped) */
+    if (r->proxyreq == PROXYREQ_REVERSE) {
+        access_status = fixup_uds_filename(r);
+        if (ap_is_HTTP_ERROR(access_status)) {
+            return access_status;
+        }
+    }
+
+    /* Keep this after fixup_uds_filename() */
+    url = &r->filename[6];
+
+    if ((dconf->interpolate_env == 1) && (r->proxyreq == PROXYREQ_REVERSE)) {
+        /* create per-request copy of reverse proxy conf,
+         * and interpolate vars in it
+         */
+        proxy_req_conf *rconf = apr_palloc(r->pool, sizeof(proxy_req_conf));
+        ap_set_module_config(r->request_config, &proxy_module, rconf);
+        rconf->raliases = proxy_vars(r, dconf->raliases);
+        rconf->cookie_paths = proxy_vars(r, dconf->cookie_paths);
+        rconf->cookie_domains = proxy_vars(r, dconf->cookie_domains);
+    }
+
+    /* canonicalise each specific scheme */
+    if ((access_status = proxy_run_canon_handler(r, url))) {
+        return access_status;
+    }
+
+    p = strchr(url, ':');
+    if (p == NULL || p == url)
+        return HTTP_BAD_REQUEST;
+
+    return OK;      /* otherwise; we've done the best we can */
 }
 
 PROXY_DECLARE(int) ap_proxy_pre_request(proxy_worker **worker,
@@ -2493,16 +2599,16 @@ PROXY_DECLARE(int) ap_proxy_pre_request(proxy_worker **worker,
 
     access_status = proxy_run_pre_request(worker, balancer, r, conf, url);
     if (access_status == DECLINED && *balancer == NULL) {
-        const int forward = (r->proxyreq == PROXYREQ_PROXY);
+        /* UDS path stripped from *url by proxy_fixup() already */
         *worker = ap_proxy_get_worker_ex(r->pool, NULL, conf, *url,
-                                         forward ? AP_PROXY_WORKER_NO_UDS : 0);
+                                         AP_PROXY_WORKER_NO_UDS);
         if (*worker) {
             ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r,
                           "%s: found worker %s for %s",
                           (*worker)->s->scheme, (*worker)->s->name_ex, *url);
             access_status = OK;
         }
-        else if (forward) {
+        else if (r->proxyreq == PROXYREQ_PROXY) {
             if (conf->forward) {
                 ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r,
                               "*: found forward proxy worker for %s", *url);
@@ -2537,19 +2643,6 @@ PROXY_DECLARE(int) ap_proxy_pre_request(proxy_worker **worker,
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(00934)
                       "all workers are busy.  Unable to serve %s", *url);
         access_status = HTTP_SERVICE_UNAVAILABLE;
-    }
-
-    if (access_status == OK && r->proxyreq == PROXYREQ_REVERSE) {
-        int rc = ap_proxy_fixup_uds_filename(r);
-        if (ap_is_HTTP_ERROR(rc)) {
-            return rc;
-        }
-        /* If the URL has changed in r->filename, take everything after
-         * the "proxy:" prefix.
-         */
-        if (rc == OK) {
-            *url = apr_pstrdup(r->pool, r->filename + 6);
-        }
     }
 
     return access_status;

@@ -1,0 +1,3 @@
+  *) mod_proxy: Fix canonicalisation and FCGI env (PATH_INFO, SCRIPT_NAME) for
+     "balancer:" URLs set via SetHandler, also allowing for "unix:" sockets
+     with BalancerMember(s).  PR 69168.  [Yann Ylavic]
