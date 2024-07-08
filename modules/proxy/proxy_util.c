@@ -2436,7 +2436,7 @@ PROXY_DECLARE(int) ap_proxy_fixup_uds_filename(request_rec *r)
     if (!strncmp(r->filename, "proxy:", 6) &&
             !ap_cstr_casecmpn(uds_url, "unix:", 5) &&
             (origin_url = ap_strchr(uds_url + 5, '|'))) {
-        char *uds_path = NULL;
+        char *uds_path = NULL, *end;
         apr_uri_t urisock;
         apr_status_t rv;
 
@@ -2448,9 +2448,10 @@ PROXY_DECLARE(int) ap_proxy_fixup_uds_filename(request_rec *r)
                                                   || !urisock.hostname[0])) {
             uds_path = ap_runtime_dir_relative(r->pool, urisock.path);
         }
-        if (!uds_path) {
+        if (!uds_path || !(end = ap_strchr(origin_url, ':'))) {
             ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(10292)
                     "Invalid proxy UDS filename (%s)", r->filename);
+            apr_table_unset(r->notes, "uds_path");
             return HTTP_BAD_REQUEST;
         }
         apr_table_setn(r->notes, "uds_path", uds_path);
@@ -2459,8 +2460,24 @@ PROXY_DECLARE(int) ap_proxy_fixup_uds_filename(request_rec *r)
                 "*: fixup UDS from %s: %s (%s)",
                 r->filename, origin_url, uds_path);
 
-        /* Overwrite the UDS part in place */
-        memmove(uds_url, origin_url, strlen(origin_url) + 1);
+        /* The hostname part of the URL is not mandated for UDS though
+         * the canon_handler hooks will require it, so add "localhost"
+         * if it's missing (won't be used anyway for an AF_UNIX socket).
+         */
+        if (!end[1]) {
+            r->filename = apr_pstrcat(r->pool, "proxy:",
+                                      origin_url, "//localhost",
+                                      NULL);
+        }
+        else if (end[1] == '/' && end[2] == '/' && !end[3]) {
+            r->filename = apr_pstrcat(r->pool, "proxy:",
+                                      origin_url, "localhost",
+                                      NULL);
+        }
+        else {
+            /* Overwrite the UDS part of r->filename in place */
+            memmove(uds_url, origin_url, origin_len + 1);
+        }
         return OK;
     }
 
