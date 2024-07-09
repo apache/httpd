@@ -1315,6 +1315,9 @@ struct conn_rec {
     int async_filter;
 
     int outgoing;
+
+    /** Partial request being read (non-blocking) */
+    request_rec *partial_request;
 };
 
 struct conn_slave_rec {

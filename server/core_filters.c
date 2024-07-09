@@ -142,12 +142,17 @@ apr_status_t ap_core_input_filter(ap_filter_t *f, apr_bucket_brigade *b,
     if (mode == AP_MODE_GETLINE) {
         /* we are reading a single LF line, e.g. the HTTP headers */
         rv = apr_brigade_split_line(b, ctx->bb, block, HUGE_STRING_LEN);
-        /* We should treat EAGAIN here the same as we do for EOF (brigade is
-         * empty).  We do this by returning whatever we have read.  This may
-         * or may not be bogus, but is consistent (for now) with EOF logic.
+
+        /* To distinguish EAGAIN from EOS (for which apr_brigade_split_line()
+         * returns an empty brigade), return an empty brigade only for the
+         * former and APR_EOF for the latter.
          */
         if (APR_STATUS_IS_EAGAIN(rv) && block == APR_NONBLOCK_READ) {
             rv = APR_SUCCESS;
+        }
+        else if (rv == APR_SUCCESS && APR_BRIGADE_EMPTY(b)) {
+            AP_DEBUG_ASSERT(APR_BRIGADE_EMPTY(ctx->bb));
+            rv = APR_EOF;
         }
         goto cleanup;
     }
@@ -234,30 +239,42 @@ apr_status_t ap_core_input_filter(ap_filter_t *f, apr_bucket_brigade *b,
 
         AP_DEBUG_ASSERT(readbytes > 0);
 
-        e = APR_BRIGADE_FIRST(ctx->bb);
-        rv = apr_bucket_read(e, &str, &len, block);
-        if (rv != APR_SUCCESS) {
-            if (APR_STATUS_IS_EAGAIN(rv) && block == APR_NONBLOCK_READ) {
+        do {
+            e = APR_BRIGADE_FIRST(ctx->bb);
+            rv = apr_bucket_read(e, &str, &len, block);
+            if (rv != APR_SUCCESS) {
                 /* getting EAGAIN for a blocking read is an error; not for a
-                 * non-blocking read, return an empty brigade. */
-                rv = APR_SUCCESS;
+                 * non-blocking read, return an empty brigade w/ APR_SUCCESS */
+                if (APR_STATUS_IS_EAGAIN(rv) && block == APR_NONBLOCK_READ) {
+                    rv = APR_SUCCESS;
+                }
+                goto cleanup;
             }
-            goto cleanup;
-        }
-        else if (block == APR_BLOCK_READ && len == 0) {
-            /* We wanted to read some bytes in blocking mode.  We read
-             * 0 bytes.  Hence, we now assume we are EOS.
-             *
-             * When we are in normal mode, return an EOS bucket to the
-             * caller.
-             * When we are in speculative mode, leave ctx->bb empty, so
-             * that the next call returns an EOS bucket.
-             */
-            apr_bucket_delete(e);
+            if (len > 0) {
+                break;
+            }
+            if (APR_BUCKET_IS_METADATA(e)) {
+                APR_BUCKET_REMOVE(e);
+                APR_BRIGADE_INSERT_TAIL(b, e);
+            }
+            else {
+                apr_bucket_delete(e);
+            }
+        } while (!APR_BRIGADE_EMPTY(ctx->bb));
 
-            if (mode == AP_MODE_READBYTES) {
+        if (len == 0) {
+            /* We are at EOS.
+             * In normal blocking mode, return an EOS bucket.
+             * Otherwise it's not expected by the caller, so return APR_EOF
+             * directly.
+             */
+            AP_DEBUG_ASSERT(APR_BRIGADE_EMPTY(ctx->bb));
+            if (mode == AP_MODE_READBYTES && block == APR_BLOCK_READ) {
                 e = apr_bucket_eos_create(c->bucket_alloc);
                 APR_BRIGADE_INSERT_TAIL(b, e);
+            }
+            else if (APR_BRIGADE_EMPTY(b)) {
+                rv = APR_EOF;
             }
             goto cleanup;
         }
@@ -266,7 +283,7 @@ apr_status_t ap_core_input_filter(ap_filter_t *f, apr_bucket_brigade *b,
         if (len < readbytes) {
             apr_size_t bucket_len;
 
-            /* We already registered the data in e in len */
+            /* We already accounted for e in len */
             e = APR_BUCKET_NEXT(e);
             while ((len < readbytes) && (rv == APR_SUCCESS)
                    && (e != APR_BRIGADE_SENTINEL(ctx->bb))) {
@@ -290,11 +307,11 @@ apr_status_t ap_core_input_filter(ap_filter_t *f, apr_bucket_brigade *b,
                     }
                 }
             }
-        }
 
-        /* We can only return at most what we read. */
-        if (len < readbytes) {
-            readbytes = len;
+            /* We can only return at most what we read. */
+            if (len < readbytes) {
+                readbytes = len;
+            }
         }
 
         rv = apr_brigade_partition(ctx->bb, readbytes, &e);

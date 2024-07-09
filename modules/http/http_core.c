@@ -37,7 +37,7 @@
 
 /* Handles for core filters */
 AP_DECLARE_DATA ap_filter_rec_t *ap_http_input_filter_handle;
-AP_DECLARE_DATA ap_filter_rec_t *ap_h1_request_in_filter_handle;
+AP_DECLARE_DATA ap_filter_rec_t *ap_h1_header_in_filter_handle;
 AP_DECLARE_DATA ap_filter_rec_t *ap_h1_body_in_filter_handle;
 AP_DECLARE_DATA ap_filter_rec_t *ap_http_header_filter_handle;
 AP_DECLARE_DATA ap_filter_rec_t *ap_h1_response_out_filter_handle;
@@ -50,7 +50,8 @@ AP_DECLARE_DATA const char *ap_multipart_boundary;
 /* If we are using an MPM That Supports Async Connections,
  * use a different processing function
  */
-static int async_mpm = 0;
+static int mpm_is_async = 0;
+static int mpm_can_waitio = 0;
 
 static const char *set_keep_alive_timeout(cmd_parms *cmd, void *dummy,
                                           const char *arg)
@@ -145,18 +146,34 @@ static int ap_process_http_async_connection(conn_rec *c)
     AP_DEBUG_ASSERT(cs->state == CONN_STATE_PROCESSING);
 
     if (cs->state == CONN_STATE_PROCESSING) {
+        apr_read_type_e block = APR_BLOCK_READ;
+        apr_status_t rv;
+
+        /* slave connections (i.e. h2_c2) not ready for WAITIO yet */
+        if (mpm_can_waitio && !c->master) {
+            block = APR_NONBLOCK_READ;
+        }
+
         ap_update_child_status_from_conn(c->sbh, SERVER_BUSY_READ, c);
         if (ap_extended_status) {
             ap_set_conn_count(c->sbh, r, c->keepalives);
         }
-        if ((r = ap_read_request(c))) {
+
+        rv = ap_read_request_ex(&r, c, block);
+        if (APR_STATUS_IS_EAGAIN(rv)) {
+            cs->state = CONN_STATE_ASYNC_WAITIO;
+            return OK;
+        }
+        if (rv == APR_SUCCESS) {
             if (r->status == HTTP_OK) {
                 cs->state = CONN_STATE_HANDLER;
+
                 if (ap_extended_status) {
                     ap_set_conn_count(c->sbh, r, c->keepalives + 1);
                 }
                 ap_update_child_status(c->sbh, SERVER_BUSY_WRITE, r);
                 ap_process_async_request(r);
+
                 /* After the call to ap_process_request, the
                  * request pool may have been deleted.  We set
                  * r=NULL here to ensure that any dereference
@@ -168,7 +185,8 @@ static int ap_process_http_async_connection(conn_rec *c)
             }
 
             if (cs->state != CONN_STATE_WRITE_COMPLETION &&
-                cs->state != CONN_STATE_SUSPENDED) {
+                cs->state != CONN_STATE_SUSPENDED &&
+                cs->state != CONN_STATE_LINGER) {
                 /* Something went wrong; close the connection */
                 cs->state = CONN_STATE_LINGER;
             }
@@ -246,7 +264,7 @@ static int ap_process_http_sync_connection(conn_rec *c)
 
 static int ap_process_http_connection(conn_rec *c)
 {
-    if (async_mpm && !c->clogging_input_filters) {
+    if (mpm_is_async && !c->clogging_input_filters) {
         return ap_process_http_async_connection(c);
     }
     else {
@@ -276,7 +294,7 @@ static void h1_pre_read_request(request_rec *r, conn_rec *c)
     if (!r->main && !r->prev
         && !strcmp(AP_PROTOCOL_HTTP1, ap_get_protocol(c))) {
         if (r->proxyreq == PROXYREQ_NONE) {
-            ap_add_input_filter_handle(ap_h1_request_in_filter_handle,
+            ap_add_input_filter_handle(ap_h1_header_in_filter_handle,
                                        NULL, r, r->connection);
         }
         ap_add_output_filter_handle(ap_h1_response_out_filter_handle,
@@ -343,9 +361,14 @@ static int http_send_options(request_rec *r)
 static int http_post_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp, server_rec *s)
 {
     apr_uint64_t val;
-    if (ap_mpm_query(AP_MPMQ_IS_ASYNC, &async_mpm) != APR_SUCCESS) {
-        async_mpm = 0;
+
+    if (ap_mpm_query(AP_MPMQ_IS_ASYNC, &mpm_is_async) != APR_SUCCESS) {
+        mpm_is_async = 0;
     }
+    if (ap_mpm_query(AP_MPMQ_CAN_WAITIO, &mpm_can_waitio) != APR_SUCCESS) {
+        mpm_can_waitio = 0;
+    }
+
     ap_random_insecure_bytes(&val, sizeof(val));
     ap_multipart_boundary = apr_psprintf(p, "%0" APR_UINT64_T_HEX_FMT, val);
 
@@ -369,8 +392,8 @@ static void register_hooks(apr_pool_t *p)
     ap_http_input_filter_handle =
         ap_register_input_filter("HTTP_IN", ap_http_filter,
                                  NULL, AP_FTYPE_PROTOCOL);
-    ap_h1_request_in_filter_handle =
-        ap_register_input_filter("HTTP1_REQUEST_IN", ap_h1_request_in_filter,
+    ap_h1_header_in_filter_handle =
+        ap_register_input_filter("HTTP1_HEADER_IN", ap_h1_header_in_filter,
                                  NULL, AP_FTYPE_PROTOCOL);
     ap_h1_body_in_filter_handle =
         ap_register_input_filter("HTTP1_BODY_IN", ap_h1_body_in_filter,

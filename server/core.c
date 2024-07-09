@@ -5551,7 +5551,7 @@ static conn_rec *core_create_conn(apr_pool_t *ptrans, server_rec *s,
     c->id = id;
     c->bucket_alloc = alloc;
     c->async_filter = sconf->async_filter;
-
+    c->keepalive = AP_CONN_UNKNOWN;
     c->clogging_input_filters = 0;
 
     if (sconf->conn_log_level) {

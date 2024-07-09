@@ -755,7 +755,7 @@ apr_status_t h2_stream_add_header(h2_stream *stream,
     }
     
     if (session->s->limit_req_fields > 0 
-        && stream->request_headers_added > session->s->limit_req_fields) {
+        && stream->request_headers_added >= session->s->limit_req_fields) {
         /* already over limit, count this attempt, but do not take it in */
         ++stream->request_headers_added;
     }
