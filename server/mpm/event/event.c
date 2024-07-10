@@ -1669,7 +1669,7 @@ static void process_socket(apr_thread_t *thd, apr_pool_t *p,
                 goto process_connection;
             }
         }
-        if (pending != OK || listener_may_exit) {
+        if (pending != OK) {
             cs->pub.state = CONN_STATE_LINGER;
             goto lingering_close;
         }
@@ -2280,7 +2280,7 @@ static void process_lingering_close(event_conn_state_t *cs)
         apr_size_t nbytes = sizeof(dummybuf);
         rv = apr_socket_recv(csd, dummybuf, &nbytes);
     } while (rv == APR_SUCCESS);
-    if (APR_STATUS_IS_EAGAIN(rv)) {
+    if (APR_STATUS_IS_EAGAIN(rv) && !listensocks_disabled()) {
         struct timeout_queue *q;
         q = (cs->pub.state == CONN_STATE_LINGER_SHORT) ? short_linger_q : linger_q;
         if (pollset_add(cs, CONN_SENSE_WANT_READ, q, NULL)) {
@@ -2777,19 +2777,16 @@ do_maintenance:
 
             process_timeout_queue(waitio_q, now);
             process_timeout_queue(write_completion_q, now);
+            process_timeout_queue(keepalive_q, now);
 
-            /* The linger and keepalive queues can be shrinked any time
-             * under pressure.
-             */
+            /* The linger queues can be shrinked any time under pressure */
             if (workers_were_busy || dying) {
                 shrink_timeout_queue(linger_q, now);
                 shrink_timeout_queue(short_linger_q, now);
-                shrink_timeout_queue(keepalive_q, now);
             }
             else {
                 process_timeout_queue(linger_q, now);
                 process_timeout_queue(short_linger_q, now);
-                process_timeout_queue(keepalive_q, now);
             }
 
             /* Connections in backlog race with the workers (dequeuing) under
@@ -2819,14 +2816,11 @@ do_maintenance:
         }
         else if ((workers_were_busy || dying)
                  && (apr_atomic_read32(linger_q->total)
-                     || apr_atomic_read32(short_linger_q->total)
-                     || apr_atomic_read32(keepalive_q->total))) {
+                     || apr_atomic_read32(short_linger_q->total))) {
             apr_thread_mutex_lock(timeout_mutex);
             shrink_timeout_queue(linger_q, now);
             shrink_timeout_queue(short_linger_q, now);
-            shrink_timeout_queue(keepalive_q, now);
             apr_thread_mutex_unlock(timeout_mutex);
-            ps->keep_alive = 0;
         }
     } /* listener main loop */
 
