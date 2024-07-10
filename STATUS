@@ -157,6 +157,17 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
 
+  *) MPM worker: Improve the listener wakeup when stopping. Taken from the MPM event.
+     This fixes a possible warning (AH00045) about children processes not
+     terminating timely.  [Yann Ylavic]
+     This is a fix for pytest failures, observed at least on RHEL 9 with worker MPM.
+     Trunk version of patch:
+        https://svn.apache.org/r1916925
+        https://svn.apache.org/r1916926
+        https://svn.apache.org/r1916929
+     2.4.x patch: svn merge -c 1916925,1916926,1916929 ^/httpd/httpd/trunk .
+    +1: rjung, ylavic, jorton
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -228,17 +239,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/449.diff
     PR: https://github.com/apache/httpd/pull/449
     +1: ylavic, icing, 
-
-  *) MPM worker: Improve the listener wakeup when stopping. Taken from the MPM event.
-     This fixes a possible warning (AH00045) about children processes not
-     terminating timely.  [Yann Ylavic]
-     This is a fix for pytest failures, observed at least on RHEL 9 with worker MPM.
-     Trunk version of patch:
-        https://svn.apache.org/r1916925
-        https://svn.apache.org/r1916926
-        https://svn.apache.org/r1916929
-     2.4.x patch: svn merge -c 1916925,1916926,1916929 ^/httpd/httpd/trunk .
-    +1: rjung, ylavic,
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
