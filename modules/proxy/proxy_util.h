@@ -40,6 +40,23 @@ extern PROXY_DECLARE_DATA const apr_strmatch_pattern *ap_proxy_strmatch_domain;
  */
 void proxy_util_register_hooks(apr_pool_t *p);
 
+/*
+ * interpolate an env str in a configuration string
+ *
+ * @param r    current request
+ * @param str  the string to interpolcate
+ * @return     the interpolated string
+ */
+PROXY_DECLARE(const char *) ap_proxy_interpolate(request_rec *r,
+                                                 const char *str);
+
+/*
+ * Canonicalize the URL in r->filename
+ * @param r           current request
+ * @return            OK or an HTTP_XXX error
+ */
+PROXY_DECLARE(int) ap_proxy_canon_url(request_rec *r);
+
 /** @} */
 
 #endif /* PROXY_UTIL_H_ */

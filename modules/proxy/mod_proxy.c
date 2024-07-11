@@ -822,60 +822,6 @@ static int proxy_detect(request_rec *r)
     return DECLINED;
 }
 
-static const char *proxy_interpolate(request_rec *r, const char *str)
-{
-    /* Interpolate an env str in a configuration string
-     * Syntax ${var} --> value_of(var)
-     * Method: replace one var, and recurse on remainder of string
-     * Nothing clever here, and crap like nested vars may do silly things
-     * but we'll at least avoid sending the unwary into a loop
-     */
-    const char *start;
-    const char *end;
-    const char *var;
-    const char *val;
-    const char *firstpart;
-
-    start = ap_strstr_c(str, "${");
-    if (start == NULL) {
-        return str;
-    }
-    end = ap_strchr_c(start+2, '}');
-    if (end == NULL) {
-        return str;
-    }
-    /* OK, this is syntax we want to interpolate.  Is there such a var ? */
-    var = apr_pstrmemdup(r->pool, start+2, end-(start+2));
-    val = apr_table_get(r->subprocess_env, var);
-    firstpart = apr_pstrmemdup(r->pool, str, (start-str));
-
-    if (val == NULL) {
-        return apr_pstrcat(r->pool, firstpart,
-                           proxy_interpolate(r, end+1), NULL);
-    }
-    else {
-        return apr_pstrcat(r->pool, firstpart, val,
-                           proxy_interpolate(r, end+1), NULL);
-    }
-}
-static apr_array_header_t *proxy_vars(request_rec *r,
-                                      apr_array_header_t *hdr)
-{
-    int i;
-    apr_array_header_t *ret = apr_array_make(r->pool, hdr->nelts,
-                                             sizeof (struct proxy_alias));
-    struct proxy_alias *old = (struct proxy_alias *) hdr->elts;
-
-    for (i = 0; i < hdr->nelts; ++i) {
-        struct proxy_alias *newcopy = apr_array_push(ret);
-        newcopy->fake = (old[i].flags & PROXYPASS_INTERPOLATE)
-                        ? proxy_interpolate(r, old[i].fake) : old[i].fake;
-        newcopy->real = (old[i].flags & PROXYPASS_INTERPOLATE)
-                        ? proxy_interpolate(r, old[i].real) : old[i].real;
-    }
-    return ret;
-}
-
 PROXY_DECLARE(int) ap_proxy_trans_match(request_rec *r, struct proxy_alias *ent,
                                         proxy_dir_conf *dconf)
 {
@@ -891,8 +837,8 @@ PROXY_DECLARE(int) ap_proxy_trans_match(request_rec *r, struct proxy_alias *ent,
     const char *servlet_uri = NULL;
 
     if (dconf && (dconf->interpolate_env == 1) && (ent->flags & PROXYPASS_INTERPOLATE)) {
-        fake = proxy_interpolate(r, ent->fake);
-        real = proxy_interpolate(r, ent->real);
+        fake = ap_proxy_interpolate(r, ent->fake);
+        real = ap_proxy_interpolate(r, ent->real);
     }
     else {
         fake = ent->fake;
@@ -1212,38 +1158,12 @@ static int proxy_map_location(request_rec *r)
  */
 static int proxy_fixup(request_rec *r)
 {
-    char *url, *p;
-    int access_status;
-    proxy_dir_conf *dconf = ap_get_module_config(r->per_dir_config,
-                                                 &proxy_module);
-
     if (!r->proxyreq || !r->filename || strncmp(r->filename, "proxy:", 6) != 0)
         return DECLINED;
 
     /* XXX: Shouldn't we try this before we run the proxy_walk? */
-    url = &r->filename[6];
 
-    if ((dconf->interpolate_env == 1) && (r->proxyreq == PROXYREQ_REVERSE)) {
-        /* create per-request copy of reverse proxy conf,
-         * and interpolate vars in it
-         */
-        proxy_req_conf *rconf = apr_palloc(r->pool, sizeof(proxy_req_conf));
-        ap_set_module_config(r->request_config, &proxy_module, rconf);
-        rconf->raliases = proxy_vars(r, dconf->raliases);
-        rconf->cookie_paths = proxy_vars(r, dconf->cookie_paths);
-        rconf->cookie_domains = proxy_vars(r, dconf->cookie_domains);
-    }
-
-    /* canonicalise each specific scheme */
-    if ((access_status = proxy_run_canon_handler(r, url))) {
-        return access_status;
-    }
-
-    p = strchr(url, ':');
-    if (p == NULL || p == url)
-        return HTTP_BAD_REQUEST;
-
-    return OK;      /* otherwise; we've done the best we can */
+    return ap_proxy_canon_url(r);
 }
 
 /* Send a redirection if the request contains a hostname which is not */
@@ -1321,11 +1241,8 @@ static int proxy_handler(request_rec *r)
         r->proxyreq = PROXYREQ_REVERSE;
         r->filename = apr_pstrcat(r->pool, r->handler, r->filename, NULL);
 
-        /* Still need to fixup/canonicalize r->filename */
-        rc = ap_proxy_fixup_uds_filename(r);
-        if (rc <= OK) {
-            rc = proxy_fixup(r);
-        }
+        /* Still need to canonicalize r->filename */
+        rc = ap_proxy_canon_url(r);
         if (rc != OK) {
             r->filename = old_filename;
             r->proxyreq = 0;
@@ -1337,6 +1254,15 @@ static int proxy_handler(request_rec *r)
     if (rc != OK) {
         return rc;
     }
+
+    uri = r->filename + 6;
+    p = strchr(uri, ':');
+    if (p == NULL) {
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01141)
+                      "proxy_handler no URL in %s", r->filename);
+        return HTTP_BAD_REQUEST;
+    }
+    scheme = apr_pstrmemdup(r->pool, uri, p - uri);
 
     /* handle max-forwards / OPTIONS / TRACE */
     if ((str = apr_table_get(r->headers_in, "Max-Forwards"))) {
@@ -1417,14 +1343,6 @@ static int proxy_handler(request_rec *r)
         }
     }
 
-    uri = r->filename + 6;
-    p = strchr(uri, ':');
-    if (p == NULL) {
-        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01141)
-                      "proxy_handler no URL in %s", r->filename);
-        return HTTP_BAD_REQUEST;
-    }
-
     /* If the host doesn't have a domain name, add one and redirect. */
     if (conf->domain != NULL) {
         rc = proxy_needsdomain(r, uri, conf->domain);
@@ -1432,7 +1350,6 @@ static int proxy_handler(request_rec *r)
             return HTTP_MOVED_PERMANENTLY;
     }
 
-    scheme = apr_pstrmemdup(r->pool, uri, p - uri);
     /* Check URI's destination host against NoProxy hosts */
     /* Bypass ProxyRemote server lookup if configured as NoProxy */
     for (direct_connect = i = 0; i < conf->dirconn->nelts &&

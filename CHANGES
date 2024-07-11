@@ -1,6 +1,13 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.62
 
+  *) mod_proxy: Fix canonicalisation and FCGI env (PATH_INFO, SCRIPT_NAME) for
+     "balancer:" URLs set via SetHandler, also allowing for "unix:" sockets
+     with BalancerMember(s).  PR 69168.  [Yann Ylavic]
+
+  *) mod_proxy: Avoid AH01059 parsing error for SetHandler "unix:" URLs.
+     PR 69160 [Yann Ylavic]
+
   *) mod_ssl: Fix crashes in PKCS#11 ENGINE support with OpenSSL 3.2.
      [Joe Orton]
 
