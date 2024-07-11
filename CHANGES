@@ -1,6 +1,18 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.62
 
+  *) mod_ssl: Fix crashes in PKCS#11 ENGINE support with OpenSSL 3.2.
+     [Joe Orton]
+
+  *) mod_ssl: Add support for loading certs/keys from pkcs11: URIs
+     via OpenSSL 3.x providers.  [Ingo Franzki <ifranzki linux.ibm.com>]
+
+  *) mod_ssl: Restore SSL dumping on trace7 loglevel with OpenSSL >= 3.0.
+     [Ruediger Pluem, Yann Ylavic]
+
+  *) mpm_worker: Fix possible warning (AH00045) about children processes not
+     terminating timely.  [Yann Ylavic]
+
 Changes with Apache 2.4.61
 
   *) SECURITY: CVE-2024-39884: Apache HTTP Server: source code
