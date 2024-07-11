@@ -156,16 +156,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_ssl: add OpenSSL STORE based PKCS#11 support, and fix
-     crashes in ENGINE-based PKCS#11 with OpenSSL 3.2
-     trunk patch: https://svn.apache.org/r1914365
-                  https://svn.apache.org/r1914622
-                  https://svn.apache.org/r1916057
-                  https://svn.apache.org/r1918024
-     2.4.x patch: https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/455.diff
-     PR: https://github.com/apache/httpd/pull/455
-     +1: jorton, ylavic, rpluem
-
    *) mod_proxy: Don't reset the balancer when we create a new child
       and don't change shared memory mod_lbmethod_bytraffic is not using.
       trunk patch: https://svn.apache.org/r1916004
