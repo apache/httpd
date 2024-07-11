@@ -156,12 +156,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   *) mod_proxy: Don't reset the balancer when we create a new child
-      and don't change shared memory mod_lbmethod_bytraffic is not using.
-      trunk patch: https://svn.apache.org/r1916004
-      2.4.x patch: svn merge -c 1916004  ^/httpd/httpd/trunk .
-      +1: jfclere, rpluem, gbechis
-
   *) mod_http2: sync with github module. Add async handling
      on newer httpd for blocked connections, fix yield handling.
      Trunk version of patch:
