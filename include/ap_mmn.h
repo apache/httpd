@@ -735,14 +735,18 @@
  *                         ap_check_output_pending()
  * 20211221.27 (2.5.1-dev) Add min_connection_timeout hook and
  *                         ap_get_connection_timeout()
+ * 20211221.28 (2.5.1-dev) Add ap_mpm_poll_suspended() and
+ *                         AP_MPMQ_CAN_POLL_SUSPENDED
+ * 20240701.0 (2.5.1-dev)  Axe ap_mpm_register_poll_callback and
+ *                         ap_mpm_register_poll_callback_timeout
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503235UL /* "AP25" */
 
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
-#define MODULE_MAGIC_NUMBER_MAJOR 20211221
+#define MODULE_MAGIC_NUMBER_MAJOR 20240701
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 27             /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 0      /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a

@@ -1334,7 +1334,7 @@ typedef enum  {
     CONN_STATE_PROCESSING,          /* Processed by process_connection hooks */
     CONN_STATE_HANDLER,             /* Processed by the modules handlers */
     CONN_STATE_WRITE_COMPLETION,    /* Flushed by the MPM before entering CONN_STATE_KEEPALIVE */
-    CONN_STATE_SUSPENDED,           /* Suspended in the MPM until ap_run_resume_suspended() */
+    CONN_STATE_SUSPENDED,           /* Suspended from the MPM until ap_run_resume_suspended() */
     CONN_STATE_LINGER,              /* MPM flushes then closes the connection with lingering */
     CONN_STATE_LINGER_NORMAL,       /* MPM has started lingering close with normal timeout */
     CONN_STATE_LINGER_SHORT,        /* MPM has started lingering close with short timeout */

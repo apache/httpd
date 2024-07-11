@@ -182,20 +182,22 @@ static int ap_process_http_async_connection(conn_rec *c)
                  * of nondeterministic failures later.
                  */
                 r = NULL;
-            }
 
-            if (cs->state != CONN_STATE_WRITE_COMPLETION &&
-                cs->state != CONN_STATE_SUSPENDED &&
-                cs->state != CONN_STATE_LINGER) {
-                /* Something went wrong; close the connection */
-                cs->state = CONN_STATE_LINGER;
+                switch (cs->state) {
+                case CONN_STATE_WRITE_COMPLETION:
+                case CONN_STATE_SUSPENDED:
+                case CONN_STATE_LINGER:
+                    return OK;
+                default:
+                    /* Unexpected, close */
+                    break;
+                }
             }
-        }
-        else {   /* ap_read_request failed - client may have closed */
-            cs->state = CONN_STATE_LINGER;
         }
     }
 
+    /* Something went wrong; close the connection */
+    cs->state = CONN_STATE_LINGER;
     return OK;
 }
 
