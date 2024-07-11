@@ -170,12 +170,14 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
         https://svn.apache.org/r1918483
         https://svn.apache.org/r1918491
         https://svn.apache.org/r1919141
+        https://svn.apache.org/r1919148
     2.4.x version of patch:
         https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/449.diff
     PR: https://github.com/apache/httpd/pull/449
     +1: ylavic, icing, gbechis
     rpluem says: PR currently has merge conflicts that need to be resolved
     ylavic says: PR rebased and r1919141 added (colspan adjustment in mod_status)
+                 Added r1919148 too for another old) colspan issue
                  Tiny fix which needs vote reset?
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
