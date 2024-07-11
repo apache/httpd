@@ -1,0 +1,2 @@
+  *) mod_ssl: Fix crashes in PKCS#11 ENGINE support with OpenSSL 3.2.
+     [Joe Orton]

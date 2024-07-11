@@ -1424,7 +1424,7 @@ static apr_status_t ssl_init_server_certs(server_rec *s,
         if (modssl_is_engine_id(keyfile)) {
             apr_status_t rv;
 
-            if ((rv = modssl_load_engine_keypair(s, ptemp, vhost_id,
+            if ((rv = modssl_load_engine_keypair(s, p, ptemp, vhost_id,
                                                  engine_certfile, keyfile,
                                                  &cert, &pkey))) {
                 return rv;
@@ -1433,8 +1433,10 @@ static apr_status_t ssl_init_server_certs(server_rec *s,
             if (cert) {
                 if (SSL_CTX_use_certificate(mctx->ssl_ctx, cert) < 1) {
                     ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(10137)
-                                 "Failed to configure engine certificate %s, check %s",
-                                 key_id, certfile);
+                                 "Failed to configure certificate %s from %s, check %s",
+                                 key_id, mc->szCryptoDevice ?
+                                             mc->szCryptoDevice : "provider",
+                                 certfile);
                     ssl_log_ssl_error(SSLLOG_MARK, APLOG_EMERG, s);
                     return APR_EGENERAL;
                 }
@@ -1445,8 +1447,9 @@ static apr_status_t ssl_init_server_certs(server_rec *s,
             
             if (SSL_CTX_use_PrivateKey(mctx->ssl_ctx, pkey) < 1) {
                 ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(10130)
-                             "Failed to configure private key %s from engine",
-                             keyfile);
+                             "Failed to configure private key %s from %s",
+                             keyfile, mc->szCryptoDevice ?
+                                          mc->szCryptoDevice : "provider");
                 ssl_log_ssl_error(SSLLOG_MARK, APLOG_EMERG, s);
                 return APR_EGENERAL;
             }
