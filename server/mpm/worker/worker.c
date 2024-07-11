@@ -125,10 +125,11 @@ static int max_workers = 0;
 static int server_limit = 0;
 static int thread_limit = 0;
 static int had_healthy_child = 0;
-static int dying = 0;
+static volatile int dying = 0;
 static int workers_may_exit = 0;
 static int start_thread_may_exit = 0;
 static int listener_may_exit = 0;
+static int listener_is_wakeable = 0; /* Pollset supports APR_POLLSET_WAKEABLE */
 static int requests_this_child;
 static int num_listensocks = 0;
 static int resource_shortage = 0;
@@ -272,6 +273,15 @@ static void close_worker_sockets(void)
 static void wakeup_listener(void)
 {
     listener_may_exit = 1;
+
+    /* Unblock the listener if it's poll()ing */
+    if (worker_pollset && listener_is_wakeable) {
+        apr_pollset_wakeup(worker_pollset);
+    }
+
+    /* unblock the listener if it's waiting for a worker */
+    ap_queue_info_term(worker_queue_info);
+
     if (!listener_os_thread) {
         /* XXX there is an obscure path that this doesn't handle perfectly:
          *     right after listener thread is created but before
@@ -280,10 +290,6 @@ static void wakeup_listener(void)
          */
         return;
     }
-
-    /* unblock the listener if it's waiting for a worker */
-    ap_queue_info_term(worker_queue_info);
-
     /*
      * we should just be able to "kill(ap_my_pid, LISTENER_SIGNAL)" on all
      * platforms and wake up the listener thread since it is the only thread
@@ -861,6 +867,7 @@ static void create_listener_thread(thread_starter *ts)
 static void setup_threads_runtime(void)
 {
     ap_listen_rec *lr;
+    int pollset_flags;
     apr_status_t rv;
 
     /* All threads (listener, workers) and synchronization objects (queues,
@@ -893,9 +900,21 @@ static void setup_threads_runtime(void)
         clean_child_exit(APEXIT_CHILDFATAL);
     }
 
-    /* Create the main pollset */
-    rv = apr_pollset_create(&worker_pollset, num_listensocks, pruntime,
-                            APR_POLLSET_NOCOPY);
+    /* Create the main pollset. When APR_POLLSET_WAKEABLE is asked we account
+     * for the wakeup pipe explicitely with num_listensocks+1 because some
+     * pollset implementations don't do it implicitely in APR.
+     */
+    pollset_flags = APR_POLLSET_NOCOPY | APR_POLLSET_WAKEABLE;
+    rv = apr_pollset_create(&worker_pollset, num_listensocks + 1, pruntime,
+                            pollset_flags);
+    if (rv == APR_SUCCESS) {
+        listener_is_wakeable = 1;
+    }
+    else {
+        pollset_flags &= ~APR_POLLSET_WAKEABLE;
+        rv = apr_pollset_create(&worker_pollset, num_listensocks, pruntime,
+                                pollset_flags);
+    }
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_EMERG, rv, ap_server_conf, APLOGNO(03285)
                      "Couldn't create pollset in thread;"
@@ -1031,19 +1050,17 @@ static void join_workers(apr_thread_t *listener, apr_thread_t **threads,
          */
 
         iter = 0;
-        while (iter < 10 &&
-#ifdef HAVE_PTHREAD_KILL
-               pthread_kill(*listener_os_thread, 0)
-#else
-               kill(ap_my_pid, 0)
-#endif
-               == 0) {
-            /* listener not dead yet */
-            apr_sleep(apr_time_make(0, 500000));
+        while (!dying) {
+            apr_sleep(apr_time_from_msec(500));
+            if (dying || ++iter > 10) {
+                break;
+            }
+            /* listener has not stopped accepting yet */
+            ap_log_error(APLOG_MARK, APLOG_TRACE1, 0, ap_server_conf,
+                         "listener has not stopped accepting yet (%d iter)", iter);
             wakeup_listener();
-            ++iter;
         }
-        if (iter >= 10) {
+        if (iter > 10) {
             ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO(00276)
                          "the listener thread didn't exit");
         }
