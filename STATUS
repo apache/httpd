@@ -221,7 +221,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       and don't change shared memory mod_lbmethod_bytraffic is not using.
       trunk patch: https://svn.apache.org/r1916004
       2.4.x patch: svn merge -c 1916004  ^/httpd/httpd/trunk .
-      +1: jfclere,
+      +1: jfclere, rpluem
 
   *) mod_http2: sync with github module. Add async handling
      on newer httpd for blocked connections, fix yield handling.
