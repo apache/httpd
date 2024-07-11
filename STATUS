@@ -240,6 +240,18 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     PR: https://github.com/apache/httpd/pull/449
     +1: ylavic, icing, 
 
+  *) mod_proxy: Backport for PRs 69160 and 69168
+     Trunk version of patch:
+        https://svn.apache.org/r1919015
+        https://svn.apache.org/r1919019
+        https://svn.apache.org/r1919022
+        https://svn.apache.org/r1919023
+        https://svn.apache.org/r1919024
+    2.4.x version of patch:
+        https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/460.diff
+    PR: https://github.com/apache/httpd/pull/460
+    +1: rpluem,
+
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
