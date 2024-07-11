@@ -252,7 +252,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     2.4.x version of patch:
         https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/460.diff
     PR: https://github.com/apache/httpd/pull/460
-    +1: rpluem,
+    +1: rpluem,covener
+    covener: needs manual MMN bump after backport
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
