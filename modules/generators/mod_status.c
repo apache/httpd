@@ -572,7 +572,7 @@ static int status_handler(request_rec *r)
                          "<th rowspan=\"2\">PID</th>"
                          "<th rowspan=\"2\">Stopping</th>"
                          "<th colspan=\"2\">Connections</th>\n"
-                         "<th colspan=\"2\">Threads</th>"
+                         "<th colspan=\"3\">Threads</th>"
                          "<th colspan=\"4\">Async connections</th></tr>\n"
                      "<tr><th>total</th><th>accepting</th>"
                          "<th>busy</th><th>graceful</th><th>idle</th>"
