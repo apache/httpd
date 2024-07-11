@@ -115,3 +115,10 @@ class TestStatic:
         conf.add_vhost(domain)
         conf.install()
         assert env.apache_fail() == 0
+        #
+        env.httpd_error_log.ignore_recent(
+            lognos = [
+                "AH10170",  # Managed Domain needs one MDCertificateKeyFile for each MDCertificateFile
+                "AH10171"   # Managed Domain has MDCertificateKeyFile(s) but no MDCertificateFile
+            ]
+        )

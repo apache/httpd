@@ -64,6 +64,12 @@ class TestAutov2:
         # file system needs to have correct permissions
         env.check_dir_empty(env.store_challenges())
         env.check_file_permissions(domain)
+        #
+        env.httpd_error_log.ignore_recent(
+            lognos = [
+                "AH10045"   # No VirtualHost matches Managed Domain test-md-702-001-1688648129.org
+            ]
+        )
 
     # test case: same as test_702_001, but with two parallel managed domains
     def test_md_702_002(self, env):
@@ -234,6 +240,15 @@ class TestAutov2:
         cert = env.get_cert(name_a)
         assert name_a in cert.get_san_list()
         assert env.get_http_status(name_a, "/name.txt") == 503
+        #
+        env.httpd_error_log.ignore_recent(
+            lognos = [
+                "AH10056"   # None of offered challenge types
+            ],
+            matches = [
+                r'.*problem\[challenge-mismatch\].*'
+            ]
+        )
 
     # Specify a non-working http proxy
     def test_md_702_008(self, env):
@@ -254,6 +269,15 @@ class TestAutov2:
         assert md['renewal']['errors'] > 0
         assert md['renewal']['last']['status-description'] == 'Connection refused'
         assert 'account' not in md['ca']
+        #
+        env.httpd_error_log.ignore_recent(
+            lognos = [
+                "AH10056"   # Unsuccessful in contacting ACME server
+            ],
+            matches = [
+                r'.*Unsuccessful in contacting ACME server at .*'
+            ]
+        )
 
     # Specify a valid http proxy
     def test_md_702_008a(self, env):
@@ -335,6 +359,16 @@ class TestAutov2:
         assert env.apache_restart() == 0
         env.check_md(domains)
         assert env.await_completion([domain])
+        #
+        env.httpd_error_log.ignore_recent(
+            lognos = [
+                "AH10173",  # None of the ACME challenge methods configured for this domain are suitable
+                "AH10056"   # None of the ACME challenge methods configured for this domain are suitable
+            ],
+            matches = [
+                r'.*None of the ACME challenge methods configured for this domain are suitable.*'
+            ]
+        )
 
     def test_md_702_011(self, env):
         domain = self.test_domain
@@ -364,6 +398,16 @@ class TestAutov2:
         assert env.apache_restart() == 0
         env.check_md(domains)
         assert env.await_completion([domain])
+        #
+        env.httpd_error_log.ignore_recent(
+            lognos = [
+                "AH10173",  # None of the ACME challenge methods configured for this domain are suitable
+                "AH10056"   # None of the ACME challenge methods configured for this domain are suitable
+            ],
+            matches = [
+                r'.*None of the ACME challenge methods configured for this domain are suitable.*'
+            ]
+        )
 
     # test case: one MD with several dns names. sign up. remove the *first* name
     # in the MD. restart. should find and keep the existing MD.
@@ -648,6 +692,16 @@ class TestAutov2:
         conf.install()
         assert env.apache_restart() == 0
         assert env.await_error(domain)
+        #
+        env.httpd_error_log.ignore_recent(
+            lognos = [
+                "AH10173",  # None of the ACME challenge methods configured for this domain are suitable
+                "AH10056"   # None of the ACME challenge methods configured for this domain are suitable
+            ],
+            matches = [
+                r'.*None of the ACME challenge methods configured for this domain are suitable.*'
+            ]
+        )
 
     # Make a setup using the base server without http:, but with acme-tls/1, should work.
     def test_md_702_052(self, env):

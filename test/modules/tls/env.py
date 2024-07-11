@@ -129,7 +129,10 @@ class TlsTestEnv(HttpdTestEnv):
             ]),
             CertificateSpec(name="user1", client=True, single_file=True),
         ])
-        self.add_httpd_log_modules(['tls'])
+        if not HttpdTestEnv.has_shared_module("tls"):
+            self.add_httpd_log_modules(['ssl'])
+        else:
+            self.add_httpd_log_modules(['tls'])
 
 
     def setup_httpd(self, setup: TlsTestSetup = None):

@@ -46,6 +46,16 @@ class TestMessage:
         stat = env.get_md_status(domain)
         # this command should have failed and logged an error
         assert stat["renewal"]["last"]["problem"] == "urn:org:apache:httpd:log:AH10109:"
+        #
+        env.httpd_error_log.ignore_recent(
+            lognos = [
+                "AH10056"   # None of the offered challenge types
+            ],
+            matches = [
+                r'.*urn:org:apache:httpd:log:AH10109:.*',
+                r'.*problem\[challenge-setup-failure\].*'
+            ]
+        )
 
     # test: signup with configured message cmd that is valid but returns != 0
     def test_md_901_002(self, env):
@@ -63,6 +73,16 @@ class TestMessage:
         stat = env.get_md_status(domain)
         # this command should have failed and logged an error
         assert stat["renewal"]["last"]["problem"] == "urn:org:apache:httpd:log:AH10109:"
+        #
+        env.httpd_error_log.ignore_recent(
+            lognos = [
+                "AH10056"   # None of the offered challenge types
+            ],
+            matches = [
+                r'.*urn:org:apache:httpd:log:AH10109:.*',
+                r'.*problem\[challenge-setup-failure\].*'
+            ]
+        )
 
     # test: signup with working message cmd and see that it logs the right things
     def test_md_901_003(self, env):
@@ -247,7 +267,6 @@ class TestMessage:
                     assert job["last"]["problem"] == "urn:org:apache:httpd:log:AH10109:"
                     break
             time.sleep(0.1)
-        env.httpd_error_log.ignore_recent()
 
         # reconfigure to a working notification command and restart
         conf = MDConf(env)
@@ -294,4 +313,13 @@ class TestMessage:
         stat = env.get_md_status(domain)
         # this command should have failed and logged an error
         assert stat["renewal"]["last"]["problem"] == "challenge-setup-failure"
-
+        #
+        env.httpd_error_log.ignore_recent(
+            lognos = [
+                "AH10056"   # None of the offered challenge types
+            ],
+            matches = [
+                r'.*urn:org:apache:httpd:log:AH10109:.*',
+                r'.*problem\[challenge-setup-failure\].*'
+            ]
+        )

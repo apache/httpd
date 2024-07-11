@@ -153,6 +153,12 @@ Host: {domain}
         r2 = self.parse_response(rlines)
         assert r2.response
         assert r2.response['status'] == exp_status
+        #
+        env.httpd_error_log.ignore_recent(
+            lognos = [
+                "AH01144"   #  No protocol handler was valid for the URL
+            ]
+        )
 
     def parse_response(self, lines) -> ExecResult:
         exp_body = False

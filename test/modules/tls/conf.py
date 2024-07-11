@@ -13,7 +13,10 @@ class TlsTestConf(HttpdConf):
 
     def start_tls_vhost(self, domains: List[str], port=None, ssl_module=None):
         if ssl_module is None:
-            ssl_module = 'mod_tls'
+            if not self.env.has_shared_module("tls"):
+                ssl_module = "mod_ssl"
+            else:
+                ssl_module = 'mod_tls'
         super().start_vhost(domains=domains, port=port, doc_root=f"htdocs/{domains[0]}", ssl_module=ssl_module)
 
     def end_tls_vhost(self):
@@ -39,8 +42,12 @@ class TlsTestConf(HttpdConf):
                     f"    MDCertificateKeyFile {pkey_file}",
                     ])
             self.add("</MDomain>")
+            if self.env.has_shared_module("tls"):
+                ssl_module= "mod_tls"
+            else:
+                ssl_module= "mod_ssl"
             super().add_vhost(domains=[domain], port=port, doc_root=f"htdocs/{domain}",
-                              with_ssl=True, with_certificates=False, ssl_module='mod_tls')
+                              with_ssl=True, with_certificates=False, ssl_module=ssl_module)
 
     def add_md_base(self, domain: str):
         self.add([

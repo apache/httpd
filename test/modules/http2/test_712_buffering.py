@@ -33,7 +33,7 @@ class TestBuffering:
         url = env.mkurl("https", "cgi", "/h2test/echo")
         base_chunk = "0123456789"
         chunks = ["chunk-{0:03d}-{1}\n".format(i, base_chunk) for i in range(5)]
-        stutter = timedelta(seconds=0.2)  # this is short, but works on my machine (tm)
+        stutter = timedelta(seconds=0.2)
         piper = CurlPiper(env=env, url=url)
         piper.stutter_check(chunks, stutter)
 
@@ -43,6 +43,16 @@ class TestBuffering:
         url = env.mkurl("https", "cgi", "/h2proxy/h2test/echo")
         base_chunk = "0123456789"
         chunks = ["chunk-{0:03d}-{1}\n".format(i, base_chunk) for i in range(3)]
-        stutter = timedelta(seconds=1)  # need a bit more delay since we have the extra connection
+        stutter = timedelta(seconds=0.4)  # need a bit more delay since we have the extra connection
+        piper = CurlPiper(env=env, url=url)
+        piper.stutter_check(chunks, stutter)
+
+    def test_h2_712_03(self, env):
+        # same as 712_02 but with smaller chunks
+        #
+        url = env.mkurl("https", "cgi", "/h2proxy/h2test/echo")
+        base_chunk = "0"
+        chunks = ["ck{0}-{1}\n".format(i, base_chunk) for i in range(3)]
+        stutter = timedelta(seconds=0.4)  # need a bit more delay since we have the extra connection
         piper = CurlPiper(env=env, url=url)
         piper.stutter_check(chunks, stutter)

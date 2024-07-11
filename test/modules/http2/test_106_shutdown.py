@@ -73,3 +73,9 @@ class TestShutdown:
                 assert r.exit_code == 0, f"failed on {i}. request: {r.stdout} {r.stderr}"
                 assert r.response["status"] == 200
                 assert "HTTP/2" == r.response["protocol"]
+        #
+        env.httpd_error_log.ignore_recent(
+            lognos = [
+                "AH03490"   # scoreboard is full, not at MaxRequestWorkers
+            ]
+        )

@@ -1,10 +1,11 @@
-import re
 from datetime import timedelta
 
 import pytest
 
 from .conf import TlsTestConf
+from pyhttpd.env import HttpdTestEnv
 
+@pytest.mark.skipif(condition=not HttpdTestEnv.has_shared_module("tls"), reason="no mod_tls available")
 
 class TestProxyTLS:
 
@@ -53,6 +54,13 @@ class TestProxyTLS:
         # does not work, since SSLProxy* not configured
         data = env.tls_get_json(env.domain_b, "/proxy-local/index.json")
         assert data is None
+        #
+        env.httpd_error_log.ignore_recent(
+            lognos = [
+                "AH01961",  # failed to enable ssl support [Hint: if using mod_ssl, see SSLProxyEngine]
+                "AH00961"   # failed to enable ssl support (mod_proxy)
+            ]
+        )
 
     def test_tls_15_proxy_tls_h2_get(self, env):
         r = env.tls_get(env.domain_b, "/proxy-h2-tls/index.json")

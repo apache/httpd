@@ -149,9 +149,21 @@ class TestProxy:
         url = env.mkurl("https", "cgi", "/proxy/h2test/error?body_error=timeout")
         r = env.curl_get(url)
         assert r.exit_code != 0, r
+        #
+        env.httpd_error_log.ignore_recent(
+            lognos = [
+                "AH01110"   # Network error reading response
+            ]
+        )
 
     # produce an error, fail to generate an error bucket
     def test_h2_500_32(self, env, repeat):
         url = env.mkurl("https", "cgi", "/proxy/h2test/error?body_error=timeout&error_bucket=0")
         r = env.curl_get(url)
         assert r.exit_code != 0, r
+        #
+        env.httpd_error_log.ignore_recent(
+            lognos = [
+                "AH01110"   # Network error reading response
+            ]
+        )

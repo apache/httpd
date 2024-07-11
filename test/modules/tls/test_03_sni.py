@@ -34,6 +34,12 @@ class TestSni:
         domain_unknown = "unknown.test"
         r = env.tls_get(domain_unknown, "/index.json")
         assert r.exit_code != 0
+        #
+        env.httpd_error_log.ignore_recent(
+            lognos = [
+                "AH10353"   # cannot decrypt peer's message
+            ]
+        )
 
     def test_tls_03_sni_request_other_same_config(self, env):
         # do we see the first vhost response for another domain with different certs?
@@ -44,6 +50,12 @@ class TestSni:
         assert r.exit_code == 0
         assert r.json is None
         assert r.response['status'] == 421
+        #
+        env.httpd_error_log.ignore_recent(
+            lognos = [
+                "AH10345"   # Connection host selected via SNI and request have incompatible TLS configurations
+            ]
+        )
 
     def test_tls_03_sni_request_other_other_honor(self, env):
         # do we see the first vhost response for an unknown domain?
@@ -60,6 +72,12 @@ class TestSni:
         # request denied
         assert r.exit_code == 0
         assert r.json is None
+        #
+        env.httpd_error_log.ignore_recent(
+            lognos = [
+                "AH10345"   # Connection host selected via SNI and request have incompatible TLS configurations
+            ]
+        )
 
     @pytest.mark.skip('openssl behaviour changed on ventura, unreliable')
     def test_tls_03_sni_bad_hostname(self, env):
