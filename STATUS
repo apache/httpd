@@ -218,6 +218,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       2.4.x patch: svn merge -c r1914038 ^/httpd/httpd/trunk .
       +1: minfrin
 
+  *) CMake: Use full path to gen_test_char.exe in CUSTOM_COMMAND.
+     trunk patch: http://svn.apache.org/r1902366
+     2.4.x patch: svn merge -c r1902366 ^/httpd/httpd/trunk .
+     +1: ivan
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
@@ -268,11 +273,6 @@ PATCHES/ISSUES THAT ARE BEING WORKED
              Do you think we'd better remove the prefetch, or maybe just
              make it nonblocking (by default)?
         jim: Non-blocking seems the best way to handle...
-
-  *) CMake: Use full path to gen_test_char.exe in CUSTOM_COMMAND.
-     trunk patch: http://svn.apache.org/r1902366
-     2.4.x patch: svn merge -c r1902366 ^/httpd/httpd/trunk .
-     +1: ivan    
 
 PATCHES/ISSUES THAT ARE STALLED
 
