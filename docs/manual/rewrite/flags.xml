@@ -866,6 +866,10 @@ The <code>L</code> flag can be useful in this context to end the
     This protects from a malicious URL causing the expanded substitution to
     map to an unexpected filesystem location.</p>
 </section>
-
+<section id="flag_unc"><title>UNC</title>
+    <p> Setting this flag prevents the merging of multiple leading slashes,
+    as used in Windows UNC paths.  The flag is not necessary when the rules
+    substitution starts with multiple literal slashes. </p>
+</section>
 
 </manualpage>

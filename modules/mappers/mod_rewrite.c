@@ -179,6 +179,7 @@ static const char* really_last_key = "rewrite_really_last";
 #define RULEFLAG_ESCAPECTLS         (1<<21)
 #define RULEFLAG_UNSAFE_PREFIX_STAT (1<<22)
 #define RULEFLAG_UNSAFE_ALLOW3F     (1<<23)
+#define RULEFLAG_UNC                (1<<24)
 
 /* return code of the rewrite rule
  * the result may be escaped - or not
@@ -3884,6 +3885,9 @@ static const char *cmd_rewriterule_setflag(apr_pool_t *p, void *_cfg,
         else if(!strcasecmp(key, "nsafeAllow3F")) {
             cfg->flags |= RULEFLAG_UNSAFE_ALLOW3F;
         }
+        else if(!strcasecmp(key, "NC")) {
+            cfg->flags |= RULEFLAG_UNC;
+        }
         else {
             ++error;
         }
@@ -4506,6 +4510,16 @@ static rule_return_type apply_rewrite_rule(rewriterule_entry *p,
 
         r->status = p->forced_responsecode;
         return RULE_RC_MATCH;
+    }
+
+    if (!(p->flags & RULEFLAG_UNC)) {
+        /* merge leading slashes, unless they were literals in the sub */
+        if (!AP_IS_SLASH(p->output[0]) || !AP_IS_SLASH(p->output[1])) {
+            while (AP_IS_SLASH(r->filename[0]) &&
+                   AP_IS_SLASH(r->filename[1])) {
+                r->filename++;
+            }
+        }
     }
 
     /* Finally remember the forced mime-type */
