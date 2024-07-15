@@ -1181,7 +1181,7 @@ gerçekleşmesi için sunucunun geçmesini bekleyeceği süre.</td></tr>
 <tr><td><a href="mod_log_config.html#transferlog">TransferLog <var>dosya</var>|<var>borulu-süreç</var>
 [<var>takma-ad</var>]</a></td><td></td><td>sk</td><td>T</td></tr><tr><td class="descr" colspan="4">Bir günlük dosyasının yerini belirtir.</td></tr>
 <tr class="odd"><td><a href="mod_mime.html#typesconfig">TypesConfig <var>file-path</var></a></td><td> conf/mime.types </td><td>s</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">The location of the <code>mime.types</code> file</td></tr>
-<tr><td><a href="core.html#unclist" id="U" name="U">UNCList<var>hostname</var> ...</a></td><td></td><td>s</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Controls what UNC host names can be accessed by the server
+<tr><td><a href="core.html#unclist" id="U" name="U">UNCList <var>hostname</var> [<var>hostname</var>...]</a></td><td></td><td>s</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Controls what UNC host names can be accessed by the server
 </td></tr>
 <tr class="odd"><td><a href="core.html#undefine">UnDefine <code>değişken-ismi</code></a></td><td></td><td>s</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Bir değişkeni tanımsız yapar</td></tr>
 <tr><td><a href="mod_macro.html#undefmacro">UndefMacro <var>name</var></a></td><td></td><td>skd</td><td>T</td></tr><tr><td class="descr" colspan="4">Undefine a macro</td></tr>

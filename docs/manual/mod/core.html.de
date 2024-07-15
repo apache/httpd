@@ -3624,7 +3624,7 @@ bevor er die Anfrage abbricht</td></tr>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Beschreibung:</a></th><td>Controls what UNC host names can be accessed by the server
 </td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>UNCList<var>hostname</var> ...</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>UNCList <var>hostname</var> [<var>hostname</var>...]</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Voreinstellung:</a></th><td><code>unset</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Kontext:</a></th><td>Serverkonfiguration</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>

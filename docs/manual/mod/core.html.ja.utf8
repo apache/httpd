@@ -3552,7 +3552,7 @@ of a request or the last 63, assuming the request itself is greater than
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>Controls what UNC host names can be accessed by the server
 </td></tr>
-<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>UNCList<var>hostname</var> ...</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>UNCList <var>hostname</var> [<var>hostname</var>...]</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>unset</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル</td></tr>
 <tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Core</td></tr>
