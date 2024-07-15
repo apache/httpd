@@ -1497,6 +1497,13 @@ cannot use <code>$N</code> in the substitution string!
         <em><a href="../rewrite/flags.html#flag_unsafe_prefix_stat">details ...</a></em>
         </td>
     </tr>
+    <tr>
+        <td>UNC</td>
+        <td>Prevents the merging of multiple leading slashes, as used by Windows UNC paths.
+        <em><a href="../rewrite/flags.html#flag_unc">details ...</a></em>
+        </td>
+    </tr>
+
     </table>
 
 <note><title>Home directory expansion</title>
