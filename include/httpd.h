@@ -683,8 +683,8 @@ typedef apr_uint64_t ap_request_bnotes_t;
  * request. There are space for 64 bits in the apr_uint64_t.
  *
  */
-#define AP_REQUEST_STRONG_ETAG 1 >> 0
-#define AP_REQUEST_TRUSTED_CT  1 << 1
+#define AP_REQUEST_STRONG_ETAG (1u << 0)
+#define AP_REQUEST_TRUSTED_CT  (1u << 1)
 
 /**
  * This is a convenience macro to ease with getting specific request
