@@ -2,6 +2,7 @@ import re
 import pytest
 
 from .conf import TlsTestConf
+from .env import TlsTestEnv
 from pyhttpd.env import HttpdTestEnv
 
 
@@ -63,6 +64,7 @@ class TestProxySSL:
             ]
         )
 
+    @pytest.mark.skipif(condition=TlsTestEnv.is_unsupported, reason="h2 not supported here")
     def test_tls_14_proxy_ssl_h2_get(self, env):
         r = env.tls_get(env.domain_b, "/proxy-h2-ssl/index.json")
         assert r.exit_code == 0
