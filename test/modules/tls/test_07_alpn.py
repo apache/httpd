@@ -4,8 +4,10 @@ from datetime import timedelta
 import pytest
 
 from .conf import TlsTestConf
+from .env import TlsTestEnv
 
 
+@pytest.mark.skipif(condition=TlsTestEnv.is_unsupported, reason="h2 not supported here")
 class TestAlpn:
 
     @pytest.fixture(autouse=True, scope='class')
