@@ -1,5 +1,27 @@
                                                          -*- coding: utf-8 -*-
+Changes with Apache 2.4.63
+
 Changes with Apache 2.4.62
+
+  *) SECURITY: CVE-2024-40898: Apache HTTP Server: SSRF with
+     mod_rewrite in server/vhost context on Windows (cve.mitre.org)
+     SSRF in Apache HTTP Server on Windows with mod_rewrite in
+     server/vhost context, allows to potentially leak NTML hashes to
+     a malicious server via SSRF and malicious requests.
+     Users are recommended to upgrade to version 2.4.62 which fixes
+     this issue.
+     Credits: Smi1e (DBAPPSecurity Ltd.)
+
+  *) SECURITY: CVE-2024-40725: Apache HTTP Server: source code
+     disclosure with handlers configured via AddType (cve.mitre.org)
+     A partial fix for  CVE-2024-39884 in the core of Apache HTTP
+     Server 2.4.61 ignores some use of the legacy content-type based
+     configuration of handlers. "AddType" and similar configuration,
+     under some circumstances where files are requested indirectly,
+     result in source code disclosure of local content. For example,
+     PHP scripts may be served instead of interpreted.
+     Users are recommended to upgrade to version 2.4.62, which fixes
+     this issue.
 
   *) mod_proxy: Fix canonicalisation and FCGI env (PATH_INFO, SCRIPT_NAME) for
      "balancer:" URLs set via SetHandler, also allowing for "unix:" sockets

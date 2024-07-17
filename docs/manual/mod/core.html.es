@@ -4323,7 +4323,7 @@ certain events before failing a request</td></tr>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Descripci&#243;n:</a></th><td>Controls what UNC host names can be accessed by the server
 </td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Sintaxis:</a></th><td><code>UNCList<var>hostname</var> ...</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Sintaxis:</a></th><td><code>UNCList <var>hostname</var> [<var>hostname</var>...]</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Valor por defecto:</a></th><td><code>unset</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexto:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Status">Estado:</a></th><td>Core</td></tr>
