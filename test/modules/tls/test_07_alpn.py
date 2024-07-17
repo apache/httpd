@@ -36,7 +36,7 @@ class TestAlpn:
         assert protocol == "http/1.1", r.stderr
 
     def test_tls_07_alpn_get_b(self, env):
-        # do we see the correct json for the domain_a?
+        # do we see the correct json for the domain_b?
         r = env.tls_get(env.domain_b, "/index.json", options=["-vvvvvv"])
         assert r.exit_code == 0, r.stderr
         protocol = self._get_protocol(r.stderr)
