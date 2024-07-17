@@ -2,9 +2,10 @@ import pytest
 from typing import List, Optional
 
 from pyhttpd.env import HttpdTestEnv
-from .env import H2Conf
+from .env import H2Conf, H2TestEnv
 
 
+@pytest.mark.skipif(condition=H2TestEnv.is_unsupported, reason="mod_http2 not supported here")
 class TestRfc9113:
 
     @pytest.fixture(autouse=True, scope='class')
