@@ -2402,17 +2402,45 @@ static APR_INLINE char *find_char_in_curlies(char *s, int c)
  * of an earlier expansion to include expansion specifiers that
  * are interpreted by a later expansion, producing results that
  * were not intended by the administrator.
+ *
+ * unsafe_qmark if not NULL will be set to 1 or 0 if a question mark
+ * is found respectively in a literal or in a lookup/expansion (whether
+ * it's the first or last qmark depends on [QSL]). Should be initialized
+ * to -1 and remains so if no qmark is found.
  */
-static char *do_expand(char *input, rewrite_ctx *ctx, rewriterule_entry *entry, apr_pool_t *pool)
+static char *do_expand(char *input, rewrite_ctx *ctx, rewriterule_entry *entry,
+                       int *unsafe_qmark, apr_pool_t *pool)
 {
+#define EXPAND_SPECIALS "\\$%"
     result_list *result, *current;
     result_list sresult[SMALL_EXPANSION];
     unsigned spc = 0;
     apr_size_t span, inputlen, outlen;
     char *p, *c;
 
-    span = strcspn(input, "\\$%");
     inputlen = strlen(input);
+    if (!unsafe_qmark) {
+        span = strcspn(input, EXPAND_SPECIALS);
+    }
+    else {
+        span = strcspn(input, EXPAND_SPECIALS "?");
+        if (input[span] == '?') {
+            /* this qmark is not from an expansion thus safe */
+            *unsafe_qmark = 0;
+
+            /* keep tracking only if interested in the last qmark */
+            if (entry && (entry->flags & RULEFLAG_QSLAST)) {
+                do {
+                    span++;
+                    span += strcspn(input + span, EXPAND_SPECIALS "?");
+                } while (input[span] == '?');
+            }
+            else {
+                unsafe_qmark = NULL;
+                span += strcspn(input + span, EXPAND_SPECIALS);
+            }
+        }
+    }
 
     /* fast exit */
     if (inputlen == span) {
@@ -2430,6 +2458,8 @@ static char *do_expand(char *input, rewrite_ctx *ctx, rewriterule_entry *entry, 
 
     /* loop for specials */
     do {
+        int expanded = 0;
+
         /* prepare next entry */
         if (current->len) {
             current->next = (spc < SMALL_EXPANSION)
@@ -2475,6 +2505,8 @@ static char *do_expand(char *input, rewrite_ctx *ctx, rewriterule_entry *entry, 
                 current->len = span;
                 current->string = p;
                 outlen += span;
+
+                expanded = 1;
                 p = endp + 1;
             }
 
@@ -2514,19 +2546,19 @@ static char *do_expand(char *input, rewrite_ctx *ctx, rewriterule_entry *entry, 
                     }
 
                     /* reuse of key variable as result */
-                    key = lookup_map(ctx->r, map, do_expand(key, ctx, entry, pool));
-
+                    key = lookup_map(ctx->r, map, do_expand(key, ctx, entry,
+                                                            NULL, pool));
                     if (!key && dflt && *dflt) {
-                        key = do_expand(dflt, ctx, entry, pool);
+                        key = do_expand(dflt, ctx, entry, NULL, pool);
                     }
-
-                    if (key) {
+                    if (key && *key) {
                         span = strlen(key);
                         current->len = span;
                         current->string = key;
                         outlen += span;
                     }
 
+                    expanded = 1;
                     p = endp + 1;
                 }
             }
@@ -2556,8 +2588,9 @@ static char *do_expand(char *input, rewrite_ctx *ctx, rewriterule_entry *entry, 
                     current->len = span;
                     current->string = bri->source + bri->regmatch[n].rm_so;
                 }
-
                 outlen += span;
+
+                expanded = 1;
             }
 
             p += 2;
@@ -2570,8 +2603,41 @@ static char *do_expand(char *input, rewrite_ctx *ctx, rewriterule_entry *entry, 
             ++outlen;
         }
 
+        if (unsafe_qmark && expanded && current->len
+            && memchr(current->string, '?', current->len)) {
+            /* this qmark is from an expansion thus unsafe */
+            *unsafe_qmark = 1;
+
+            /* keep tracking only if interested in the last qmark */
+            if (!entry || !(entry->flags & RULEFLAG_QSLAST)) {
+                unsafe_qmark = NULL;
+            }
+        }
+
         /* check the remainder */
-        if (*p && (span = strcspn(p, "\\$%")) > 0) {
+        if (!unsafe_qmark) {
+            span = strcspn(p, EXPAND_SPECIALS);
+        }
+        else {
+            span = strcspn(p, EXPAND_SPECIALS "?");
+            if (p[span] == '?') {
+                /* this qmark is not from an expansion thus safe */
+                *unsafe_qmark = 0;
+
+                /* keep tracking only if interested in the last qmark */
+                if (entry && (entry->flags & RULEFLAG_QSLAST)) {
+                    do {
+                        span++;
+                        span += strcspn(p + span, EXPAND_SPECIALS "?");
+                    } while (p[span] == '?');
+                }
+                else {
+                    unsafe_qmark = NULL;
+                    span += strcspn(p + span, EXPAND_SPECIALS);
+                }
+            }
+        }
+        if (span > 0) {
             if (current->len) {
                 current->next = (spc < SMALL_EXPANSION)
                                 ? &(sresult[spc++])
@@ -2616,7 +2682,7 @@ static void do_expand_env(data_item *env, rewrite_ctx *ctx)
     char *name, *val;
 
     while (env) {
-        name = do_expand(env->data, ctx, NULL, ctx->r->pool);
+        name = do_expand(env->data, ctx, NULL, NULL, ctx->r->pool);
         if (*name == '!') {
             name++;
             apr_table_unset(ctx->r->subprocess_env, name);
@@ -2750,7 +2816,7 @@ static void add_cookie(request_rec *r, char *s)
 static void do_expand_cookie(data_item *cookie, rewrite_ctx *ctx)
 {
     while (cookie) {
-        add_cookie(ctx->r, do_expand(cookie->data, ctx, NULL, ctx->r->pool));
+        add_cookie(ctx->r, do_expand(cookie->data, ctx, NULL, NULL, ctx->r->pool));
         cookie = cookie->next;
     }
 
@@ -4056,7 +4122,7 @@ static int apply_rewrite_cond(rewritecond_entry *p, rewrite_ctx *ctx, apr_pool_t
     int basis;
 
     if (p->ptype != CONDPAT_AP_EXPR)
-        input = do_expand(p->input, ctx, NULL, pool);
+        input = do_expand(p->input, ctx, NULL, NULL, pool);
 
     switch (p->ptype) {
     case CONDPAT_FILE_EXISTS:
@@ -4220,7 +4286,7 @@ static APR_INLINE void force_type_handler(rewriterule_entry *p,
     char *expanded;
 
     if (p->forced_mimetype) {
-        expanded = do_expand(p->forced_mimetype, ctx, p, ctx->r->pool);
+        expanded = do_expand(p->forced_mimetype, ctx, p, NULL, ctx->r->pool);
 
         if (*expanded) {
             ap_str_tolower(expanded);
@@ -4234,7 +4300,7 @@ static APR_INLINE void force_type_handler(rewriterule_entry *p,
     }
 
     if (p->forced_handler) {
-        expanded = do_expand(p->forced_handler, ctx, p, ctx->r->pool);
+        expanded = do_expand(p->forced_handler, ctx, p, NULL, ctx->r->pool);
 
         if (*expanded) {
             ap_str_tolower(expanded);
@@ -4374,12 +4440,18 @@ static rule_return_type apply_rewrite_rule(rewriterule_entry *p,
 
     /* expand the result */
     if (!(p->flags & RULEFLAG_NOSUB)) {
-        newuri = do_expand(p->output, ctx, p, ctx->r->pool);
+        int unsafe_qmark = -1;
+
+        if (p->flags & RULEFLAG_UNSAFE_ALLOW3F) {
+            newuri = do_expand(p->output, ctx, p, NULL, ctx->r->pool);
+        }
+        else {
+            newuri = do_expand(p->output, ctx, p, &unsafe_qmark, ctx->r->pool);
+        }
         rewritelog(r, 2, ctx->perdir, "rewrite '%s' -> '%s'", ctx->uri,
                    newuri);
-        if (!(p->flags & RULEFLAG_UNSAFE_ALLOW3F) &&
-            ap_strcasestr(r->unparsed_uri, "%3f") &&
-            ap_strchr_c(newuri, '?')) {
+
+        if (unsafe_qmark > 0) {
             ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(10508)
                     "Unsafe URL with %%3f URL rewritten without "
                     "UnsafeAllow3F");
