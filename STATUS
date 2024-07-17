@@ -222,7 +222,15 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   *) CMake: Use full path to gen_test_char.exe in CUSTOM_COMMAND.
      trunk patch: http://svn.apache.org/r1902366
      2.4.x patch: svn merge -c r1902366 ^/httpd/httpd/trunk .
-     +1: ivan
+     +1: ivan, ylavic
+
+  *) mod_rewrite: Better question mark tracking to avoid UnsafeAllow3F. PR 69197.
+     Trunk version of patch:
+        https://svn.apache.org/r1919325
+    2.4.x version of patch:
+        https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/462.diff
+    PR: https://github.com/apache/httpd/pull/462
+    +1: ylavic,
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
