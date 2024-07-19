@@ -583,7 +583,7 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t *thd, void * dummy)
         if (listener_may_exit) break;
 
         if (!have_idle_worker) {
-            rv = ap_queue_info_wait_for_idler(worker_queue_info, NULL);
+            rv = ap_queue_info_wait_for_idler(worker_queue_info);
             if (APR_STATUS_IS_EOF(rv)) {
                 break; /* we've been signaled to die now */
             }
@@ -662,7 +662,7 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t *thd, void * dummy)
 
         if (!listener_may_exit) {
             /* the following pops a recycled ptrans pool off a stack */
-            ap_queue_info_pop_pool(worker_queue_info, &ptrans);
+            ptrans = ap_queue_info_pop_pool(worker_queue_info);
             if (ptrans == NULL) {
                 /* we can't use a recycled transaction pool this time.
                  * create a new transaction pool */
@@ -696,7 +696,7 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t *thd, void * dummy)
                 accept_mutex_error("unlock", rv, process_slot);
             }
             if (csd != NULL) {
-                rv = ap_queue_push_socket(worker_queue, csd, NULL, ptrans);
+                rv = ap_queue_push_socket(worker_queue, csd, ptrans);
                 if (rv) {
                     /* trash the connection; we couldn't queue the connected
                      * socket to a worker
@@ -901,8 +901,7 @@ static void setup_threads_runtime(void)
         clean_child_exit(APEXIT_CHILDFATAL);
     }
 
-    rv = ap_queue_info_create(&worker_queue_info, pruntime,
-                              threads_per_child, -1);
+    rv = ap_queue_info_create(&worker_queue_info, pruntime, -1);
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ALERT, rv, ap_server_conf, APLOGNO(03141)
                      "ap_queue_info_create() failed");

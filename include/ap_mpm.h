@@ -184,6 +184,8 @@ AP_DECLARE(apr_status_t) ap_os_create_privileged_process(
 #define AP_MPMQ_CAN_POLL             18
 /** MPM supports CONN_STATE_ASYNC_WAITIO */
 #define AP_MPMQ_CAN_WAITIO           19
+/** MPM implements the poll_suspended hook */
+#define AP_MPMQ_CAN_POLL_SUSPENDED   20
 /** @} */
 
 /**
@@ -206,53 +208,12 @@ typedef void (ap_mpm_callback_fn_t)(void *baton);
 /* only added support in the Event MPM....  check for APR_ENOTIMPL */
 AP_DECLARE(apr_status_t) ap_mpm_resume_suspended(conn_rec *c);
 /* only added support in the Event MPM....  check for APR_ENOTIMPL */
+AP_DECLARE(apr_status_t) ap_mpm_poll_suspended(conn_rec *c, apr_pool_t *p,
+                                               const apr_array_header_t *pfds,
+                                               apr_interval_time_t timeout);
+/* only added support in the Event MPM....  check for APR_ENOTIMPL */
 AP_DECLARE(apr_status_t) ap_mpm_register_timed_callback(
         apr_time_t t, ap_mpm_callback_fn_t *cbfn, void *baton);
-
-/**
- * Register a callback on the readability or writability on a group of
- * sockets/pipes.
- * @param p Pool used by the MPM for its internal allocations
- * @param pfds Array of apr_pollfd_t
- * @param cbfn The callback function
- * @param baton userdata for the callback function
- * @return APR_SUCCESS if all sockets/pipes could be added to a pollset,
- * APR_ENOTIMPL if no asynch support, or an apr_pollset_add error.
- * @remark When activity is found on any 1 socket/pipe in the list, all are removed
- * from the pollset and only 1 callback is issued.
- * @remark The passed in pool can be cleared by cbfn and tofn when called back,
- *         it retains no MPM persistent data and won't be used until the next call
- *         to ap_mpm_register_poll_callback[_timeout].
- */
-
-AP_DECLARE(apr_status_t) ap_mpm_register_poll_callback(
-        apr_pool_t *p, const apr_array_header_t *pfds,
-        ap_mpm_callback_fn_t *cbfn, void *baton);
-
-/**
- * Register a callback on the readability or writability on a group of sockets/pipes,
- * with a timeout.
- * @param p Pool used by the MPM for its internal allocations
- * @param pfds Array of apr_pollfd_t
- * @param cbfn The callback function
- * @param tofn The callback function if the timeout expires
- * @param baton userdata for the callback function
- * @param timeout timeout for I/O in microseconds, unlimited if <= 0
- * @return APR_SUCCESS if all sockets/pipes could be added to a pollset,
- * APR_ENOTIMPL if no asynch support, or an apr_pollset_add error.
- * @remark When activity is found on any 1 socket/pipe in the list, all are removed
- * from the pollset and only 1 callback is issued. 
- * @remark For each call, only one of tofn or cbfn will be called, never both.
- * @remark The passed in pool can be cleared by cbfn and tofn when called back,
- *         it retains no MPM persistent data and won't be used until the next call
- *         to ap_mpm_register_poll_callback[_timeout].
- */
-
-AP_DECLARE(apr_status_t) ap_mpm_register_poll_callback_timeout(
-        apr_pool_t *p, const apr_array_header_t *pfds,
-        ap_mpm_callback_fn_t *cbfn, ap_mpm_callback_fn_t *tofn,
-        void *baton, apr_time_t timeout);
-
 
 typedef enum mpm_child_status {
     MPM_CHILD_STARTED,

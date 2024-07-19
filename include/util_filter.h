@@ -645,16 +645,15 @@ AP_DECLARE(void) ap_filter_adopt_brigade(ap_filter_t *f,
 AP_DECLARE(int) ap_filter_should_yield(ap_filter_t *f);
 
 /**
- * This function determines whether there is unwritten data in the output
+ * This function determines whether there is pending data in the output
  * filters, and if so, attempts to make a single write to each filter
- * with unwritten data.
+ * with pending data.
  *
  * @param c The connection.
- * @return If no unwritten data remains, this function returns DECLINED.
- * If some unwritten data remains, this function returns OK. If any
- * attempt to write data failed, this functions returns a positive integer.
+ * @return OK if no pending data remain, AGAIN if some remain, DONE
+ * if the connection is aborted, anything else on error.
  */
-AP_DECLARE_NONSTD(int) ap_filter_output_pending(conn_rec *c);
+AP_DECLARE(int) ap_check_output_pending(conn_rec *c);
 
 /**
  * This function determines whether there is pending data in the input
@@ -662,10 +661,41 @@ AP_DECLARE_NONSTD(int) ap_filter_output_pending(conn_rec *c);
  * socket but not yet returned to the application.
  *
  * @param c The connection.
- * @return If no pending data remains, this function returns DECLINED.
- * If some pending data remains, this function returns OK.
+ * @return OK if no pending data remain, AGAIN if some remain, DONE
+ * if the connection is aborted, anything else on error.
  */
-AP_DECLARE_NONSTD(int) ap_filter_input_pending(conn_rec *c);
+AP_DECLARE(int) ap_check_input_pending(conn_rec *c);
+
+/**
+ * Hook called to determine whether we should stay within the write completion
+ * phase.
+ * @param c The current connection
+ * @return OK if we can write without blocking, AGAIN if a write would block,
+ * DECLINED to let the next hook decide, DONE if the connection is aborted,
+ * anything else on error.
+ * @ingroup hooks
+ */
+AP_DECLARE_HOOK(int, output_pending, (conn_rec *c))
+
+/**
+ * Hook called to determine whether any data is pending in the input filters.
+ * @param c The current connection
+ * @return OK if we can read without blocking, AGAIN if a read would block,
+ * DECLINED to let the next hook decide, DONE if the connection is aborted,
+ * anything else on error.
+ * @ingroup hooks
+ */
+AP_DECLARE_HOOK(int, input_pending, (conn_rec *c))
+
+/**
+ * The core output_pending hook.
+ */
+AP_DECLARE_NONSTD(int) ap_core_output_pending(conn_rec *c);
+
+/**
+ * The core input_pending hook.
+ */
+AP_DECLARE_NONSTD(int) ap_core_input_pending(conn_rec *c);
 
 /**
  * Flush function for apr_brigade_* calls.  This calls ap_pass_brigade

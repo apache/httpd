@@ -43,10 +43,15 @@ extern "C" {
  */
 AP_CORE_DECLARE(void) ap_process_connection(conn_rec *c, void *csd);
 
+#define AP_SHUTDOWN_CONN_NOFLUSH 0
+#define AP_SHUTDOWN_CONN_FLUSH   1
+#define AP_SHUTDOWN_CONN_WC      2
+
 /**
  * Shutdown the connection for writing.
  * @param c The connection to shutdown
- * @param flush Whether or not to flush pending data before
+ * @param flush Whether to flush pending data before, and if so how to
+ *              (AP_SHUTDOWN_CONN_* flags)
  * @return APR_SUCCESS or the underlying error
  */
 AP_CORE_DECLARE(apr_status_t) ap_shutdown_conn(conn_rec *c, int flush);
@@ -54,7 +59,7 @@ AP_CORE_DECLARE(apr_status_t) ap_shutdown_conn(conn_rec *c, int flush);
 /**
  * Flushes all remain data in the client send buffer
  * @param c The connection to flush
- * @remark calls ap_shutdown_conn(c, 1)
+ * @remark calls ap_shutdown_conn(c, AP_SHUTDOWN_CONN_FLUSH)
  */
 AP_CORE_DECLARE(void) ap_flush_conn(conn_rec *c);
 
@@ -196,6 +201,11 @@ AP_DECLARE(conn_rec *) ap_create_secondary_connection(apr_pool_t *pool,
                                                       conn_rec *master,
                                                       apr_bucket_alloc_t *alloc);
 
+AP_DECLARE_HOOK(int, min_connection_timeout,
+                (conn_rec *c, server_rec *s, apr_interval_time_t *min_timeout))
+
+AP_DECLARE(apr_interval_time_t) ap_get_connection_timeout(conn_rec *c,
+                                                          server_rec *s);
 
 /** End Of Connection (EOC) bucket */
 AP_DECLARE_DATA extern const apr_bucket_type_t ap_bucket_type_eoc;

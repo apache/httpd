@@ -422,22 +422,12 @@ AP_DECLARE_HOOK(int, mpm_query, (int query_code, int *result, apr_status_t *rv))
 AP_DECLARE_HOOK(apr_status_t, mpm_register_timed_callback,
                 (apr_time_t t, ap_mpm_callback_fn_t *cbfn, void *baton))
 
-/**
- * register the specified callback
+/** Put suspended connection's pollfds into the MPM's pollset
  * @ingroup hooks
  */
-AP_DECLARE_HOOK(apr_status_t, mpm_register_poll_callback,
-                (apr_pool_t *p, const apr_array_header_t *pds,
-                 ap_mpm_callback_fn_t *cbfn, void *baton))
-
-/* register the specified callback, with timeout 
- * @ingroup hooks
- *
- */
-AP_DECLARE_HOOK(apr_status_t, mpm_register_poll_callback_timeout,
-                (apr_pool_t *p, const apr_array_header_t *pds,
-                ap_mpm_callback_fn_t *cbfn, ap_mpm_callback_fn_t *tofn,
-                void *baton, apr_time_t timeout))
+AP_DECLARE_HOOK(apr_status_t, mpm_poll_suspended,
+                (conn_rec *c, apr_pool_t *p, const apr_array_header_t *pfds,
+                 apr_interval_time_t timeout))
 
 /** Resume the suspended connection 
  * @ingroup hooks
@@ -449,24 +439,6 @@ AP_DECLARE_HOOK(apr_status_t, mpm_resume_suspended, (conn_rec*))
  * @ingroup hooks
  */
 AP_DECLARE_HOOK(const char *,mpm_get_name,(void))
-
-/**
- * Hook called to determine whether we should stay within the write completion
- * phase.
- * @param c The current connection
- * @return OK if write completion should continue, DECLINED if write completion
- * should end gracefully, or a positive error if we should begin to linger.
- * @ingroup hooks
- */
-AP_DECLARE_HOOK(int, output_pending, (conn_rec *c))
-
-/**
- * Hook called to determine whether any data is pending in the input filters.
- * @param c The current connection
- * @return OK if we can read without blocking, DECLINED if a read would block.
- * @ingroup hooks
- */
-AP_DECLARE_HOOK(int, input_pending, (conn_rec *c))
 
 /**
  * Notification that connection handling is suspending (disassociating from the

@@ -96,8 +96,8 @@ static apr_status_t simple_io_process(simple_conn_t * scon)
             int pending;
 
             ap_update_child_status(c->sbh, SERVER_BUSY_WRITE, NULL);
-            pending = ap_run_output_pending(c);
-            if (pending == OK) {
+            pending = ap_check_output_pending(c);
+            if (pending == AGAIN) {
                 /* Still in WRITE_COMPLETION_STATE:
                  * Set a write timeout for this connection, and let the
                  * event thread poll for writeability.
@@ -126,16 +126,21 @@ static apr_status_t simple_io_process(simple_conn_t * scon)
                 }
                 return APR_SUCCESS;
             }
-            if (pending != DECLINED
-                    || c->keepalive != AP_CONN_KEEPALIVE
-                    || c->aborted) {
-                scon->cs.state = CONN_STATE_LINGER;
+            if (pending == OK) {
+                /* Some data to process immediately? */
+                pending = (c->keepalive == AP_CONN_KEEPALIVE
+                           ? ap_check_input_pending(c)
+                           : DONE);
+                if (pending == AGAIN) {
+                    scon->cs.state = CONN_STATE_PROCESSING;
+                    continue;
+                }
             }
-            else if (ap_run_input_pending(c) == OK) {
-                scon->cs.state = CONN_STATE_PROCESSING;
+            if (pending == OK) {
+                scon->cs.state = CONN_STATE_KEEPALIVE;
             }
             else {
-                scon->cs.state = CONN_STATE_KEEPALIVE;
+                scon->cs.state = CONN_STATE_LINGER;
             }
         }
 

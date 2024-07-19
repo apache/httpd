@@ -393,7 +393,7 @@ static apr_status_t request_filter_cleanup(void *arg)
 
     /* A request filter is cleaned up with an EOR bucket, so possibly
      * while it is handling/passing the EOR, and we want each filter or
-     * ap_filter_output_pending() to be able to dereference f until they
+     * ap_check_output_pending() to be able to dereference f until they
      * return. So request filters are recycled in dead_filters and will only
      * be moved to spare_filters when recycle_dead_filters() is called, i.e.
      * in ap_filter_{in,out}put_pending(). Set f->r to NULL still for any use
@@ -978,7 +978,7 @@ AP_DECLARE(apr_status_t) ap_filter_setaside_brigade(ap_filter_t *f,
              e = next) {
             next = APR_BUCKET_NEXT(e);
 
-            /* WC buckets will be added back by ap_filter_output_pending()
+            /* WC buckets will be added back by ap_check_output_pending()
              * at the tail.
              */
             if (AP_BUCKET_IS_WC(e)) {
@@ -1267,7 +1267,7 @@ AP_DECLARE(int) ap_filter_should_yield(ap_filter_t *f)
     return 0;
 }
 
-AP_DECLARE_NONSTD(int) ap_filter_output_pending(conn_rec *c)
+AP_DECLARE_NONSTD(int) ap_core_output_pending(conn_rec *c)
 {
     struct ap_filter_conn_ctx *x = c->filter_conn_ctx;
     struct ap_filter_private *fp, *prev;
@@ -1312,7 +1312,7 @@ AP_DECLARE_NONSTD(int) ap_filter_output_pending(conn_rec *c)
             }
 
             if (ap_filter_should_yield(f)) {
-                rc = OK;
+                rc = AGAIN;
                 break;
             }
         }
@@ -1320,15 +1320,26 @@ AP_DECLARE_NONSTD(int) ap_filter_output_pending(conn_rec *c)
     ap_release_brigade(c, bb);
 
 cleanup:
-    /* All filters have returned, time to recycle/unleak ap_filter_t-s
+    /* All filters have returned, time to recycle/unleak dead filters
      * before leaving (i.e. make them reusable).
      */
     recycle_dead_filters(c);
 
     return rc;
 }
+AP_DECLARE(int) ap_check_output_pending(conn_rec *c)
+{
+    int rc = ap_run_output_pending(c);
+    if (rc == DECLINED) {
+        rc = OK;
+    }
+    if (rc == OK && c->aborted) {
+        rc = DONE;
+    }
+    return rc;
+}
 
-AP_DECLARE_NONSTD(int) ap_filter_input_pending(conn_rec *c)
+AP_DECLARE_NONSTD(int) ap_core_input_pending(conn_rec *c)
 {
     struct ap_filter_conn_ctx *x = c->filter_conn_ctx;
     struct ap_filter_private *fp;
@@ -1349,19 +1360,29 @@ AP_DECLARE_NONSTD(int) ap_filter_input_pending(conn_rec *c)
          */
         AP_DEBUG_ASSERT(fp->bb);
         e = APR_BRIGADE_FIRST(fp->bb);
-        if (e != APR_BRIGADE_SENTINEL(fp->bb)
-                && e->length != (apr_size_t)(-1)) {
-            rc = OK;
+        if (e != APR_BRIGADE_SENTINEL(fp->bb) && e->length != (apr_size_t)-1) {
+            rc = AGAIN;
             break;
         }
     }
 
 cleanup:
-    /* All filters have returned, time to recycle/unleak ap_filter_t-s
+    /* All filters have returned, time to recycle/unleak dead filters
      * before leaving (i.e. make them reusable).
      */
     recycle_dead_filters(c);
 
+    return rc;
+}
+AP_DECLARE(int) ap_check_input_pending(conn_rec *c)
+{
+    int rc = ap_run_input_pending(c);
+    if (rc == DECLINED) {
+        rc = OK;
+    }
+    if (rc == OK && c->aborted) {
+        rc = DONE;
+    }
     return rc;
 }
 

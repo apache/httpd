@@ -54,18 +54,29 @@ AP_DECLARE_DATA extern ap_filter_rec_t *ap_old_write_func;
  */
 
 /**
- * Read an empty request and set reasonable defaults.
+ * Create an empty request and set reasonable defaults.
  * @param c The current connection
  * @return The new request_rec
  */
 AP_DECLARE(request_rec *) ap_create_request(conn_rec *c);
 
 /**
- * Read a request and fill in the fields.
+ * Read the request line and header fields.
  * @param c The current connection
  * @return The new request_rec
  */
 AP_DECLARE(request_rec *) ap_read_request(conn_rec *c);
+
+/**
+ * Read the request line and header fields, possibly non-blocking.
+ * @param r      The request read
+ * @param c      The connection to read from
+ * @param block  How the read should be performed
+ *               ::APR_BLOCK_READ, ::APR_NONBLOCK_READ
+ * @return APR_SUCCESS, APR_EAGAIN or APR_EGENERAL
+ */
+AP_DECLARE(apr_status_t) ap_read_request_ex(request_rec **r, conn_rec *c,
+                                            apr_read_type_e block);
 
 /**
  * Assign the method, uri and protocol (in HTTP/1.x the
@@ -108,6 +119,12 @@ AP_DECLARE(int) ap_parse_request_line(request_rec *r);
 AP_DECLARE(int) ap_check_request_header(request_rec *r);
 
 /**
+ * Reentrant state for ap_fgetline_ex() and ap_get_mime_headers_ex()
+ */
+struct ap_getline_state; /* opaque */
+typedef struct ap_getline_state ap_getline_state_t;
+
+/**
  * Read the mime-encoded headers.
  * @param r The current request
  */
@@ -121,6 +138,23 @@ AP_DECLARE(void) ap_get_mime_headers(request_rec *r);
  */
 AP_DECLARE(void) ap_get_mime_headers_core(request_rec *r,
                                           apr_bucket_brigade *bb);
+
+/**
+ * Reentrant version of ap_get_mime_headers() reading from an input
+ * filter in blocking or non-blocking mode.
+ * @param r The current request
+ * @param f Input filter to read from
+ * @param block  How the operations should be performed
+ *               ::APR_BLOCK_READ, ::APR_NONBLOCK_READ
+ * @param bb temp brigade
+ * @param state_p State of the parsing, must point to NULL on first call
+ *        and points to NULL on output if APR_EAGAIN is not returned
+ */
+AP_DECLARE(apr_status_t) ap_get_mime_headers_ex(request_rec *r,
+                                                ap_filter_t *f,
+                                                apr_read_type_e block,
+                                                apr_bucket_brigade *bb,
+                                                ap_getline_state_t **state_p);
 
 /**
  * Run post_read_request hook and validate.
@@ -744,11 +778,13 @@ AP_DECLARE(apr_status_t) ap_get_basic_auth_components(const request_rec *r,
  */
 AP_CORE_DECLARE(void) ap_parse_uri(request_rec *r, const char *uri);
 
-#define AP_GETLINE_FOLD      (1 << 0) /* Whether to merge continuation lines */
-#define AP_GETLINE_CRLF      (1 << 1) /* Whether line ends must be CRLF */
-#define AP_GETLINE_NOSPC_EOL (1 << 2) /* Whether to consume up to and including
-                                         the end of line on APR_ENOSPC */
-#define AP_GETLINE_NONBLOCK  (1 << 3) /* Whether to read non-blocking */
+#define AP_GETLINE_FOLD         (1 << 0) /* Whether to merge continuation lines */
+#define AP_GETLINE_CRLF         (1 << 1) /* Whether line ends must be CRLF */
+#define AP_GETLINE_NOSPC_EOL    (1 << 2) /* Whether to consume up to and including
+                                            the end of line on APR_ENOSPC */
+#define AP_GETLINE_NONBLOCK     (1 << 3) /* Whether to read non-blocking */
+#define AP_GETLINE_ALLOC        (1 << 4) /* Whether to allocate the returned line */
+#define AP_GETLINE_FOLD_COL     (1 << 5 | AP_GETLINE_FOLD) /* Fold after colon only */
 
 /**
  * Get the next line of input for the request
@@ -782,6 +818,31 @@ AP_DECLARE(apr_status_t) ap_fgetline(char **s, apr_size_t n,
                                      apr_size_t *read, ap_filter_t *f,
                                      int flags, apr_bucket_brigade *bb,
                                      apr_pool_t *p);
+
+/**
+ * Get the next line from an input filter, reentrant (e.g. EAGAIN).
+ *
+ * @param s Pointer to the pointer to the buffer into which the line
+ *          should be read; if *s==NULL, a buffer of the necessary size
+ *          to hold the data will be allocated from \p p
+ * @param n The size of the buffer
+ * @param read The length of the line.
+ * @param f Input filter to read from
+ * @param flags Bit mask of AP_GETLINE_* options
+ * @param bb Working brigade to use when reading buckets
+ * @param state_p State of the parsing, must point to NULL on first call
+ *        and points to NULL on output if APR_EAGAIN is not returned
+ * @param p The pool to allocate the buffer from (if needed)
+ * @return APR_SUCCESS, if successful
+ *         APR_ENOSPC, if the line is too big to fit in the buffer
+ *         APR_EAGAIN, if non-blocking IO would block
+ *         Other errors where appropriate
+ */
+AP_DECLARE(apr_status_t) ap_fgetline_ex(char **s, apr_size_t n,
+                                        apr_size_t *read, ap_filter_t *f,
+                                        int flags, apr_bucket_brigade *bb,
+                                        ap_getline_state_t **state_p,
+                                        apr_pool_t *p);
 
 /**
  * @see ap_fgetline

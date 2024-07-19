@@ -17,13 +17,15 @@
 #include "mod_proxy.h"
 #include "http_config.h"
 #include "ap_mpm.h"
+#include "mpm_common.h"
 
 module AP_MODULE_DECLARE_DATA proxy_wstunnel_module;
+
+static int mpm_can_poll_suspended = 0;
 
 typedef struct {
     unsigned int fallback_to_proxy_http     :1,
                  fallback_to_proxy_http_set :1;
-    int mpm_can_poll;
     apr_time_t idle_timeout;
     apr_time_t async_delay;
 } proxyws_dir_conf;
@@ -32,83 +34,130 @@ typedef struct ws_baton_t {
     request_rec *r;
     proxy_conn_rec *backend;
     proxy_tunnel_rec *tunnel;
+    apr_time_t idle_timeout;
     apr_pool_t *async_pool;
     const char *scheme;
+    int suspended;
 } ws_baton_t;
 
 static int can_fallback_to_proxy_http;
 
-static void proxy_wstunnel_callback(void *b);
-
-static int proxy_wstunnel_pump(ws_baton_t *baton, int async)
+static int proxy_wstunnel_pump(ws_baton_t *baton)
 {
     int status = ap_proxy_tunnel_run(baton->tunnel);
     if (status == HTTP_GATEWAY_TIME_OUT) {
-        if (!async) {
+        if (!mpm_can_poll_suspended) {
             /* ap_proxy_tunnel_run() didn't log this */
             ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, baton->r, APLOGNO(10225)
-                          "Tunnel timed out");
+                          "proxy: %s tunneling timed out",
+                          baton->scheme);
         }
         else {
-            ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, baton->r, APLOGNO(02542)
-                          "Attempting to go async");
             status = SUSPENDED;
         }
     }
     return status;
 }
 
-static void proxy_wstunnel_finish(ws_baton_t *baton)
-{ 
-    ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, baton->r, "proxy_wstunnel_finish");
-    ap_proxy_release_connection(baton->scheme, baton->backend, baton->r->server);
-    ap_finalize_request_protocol(baton->r);
-    ap_lingering_close(baton->r->connection);
-    ap_mpm_resume_suspended(baton->r->connection);
-    ap_process_request_after_handler(baton->r); /* don't touch baton or r after here */
+/* The backend and SUSPENDED client connections are done,
+ * release them (the latter in the MPM).
+ */
+static void proxy_wstunnel_done(ws_baton_t *baton, int cancelled)
+{
+    request_rec *r = baton->r;
+    conn_rec *c = r->connection;
+    proxy_conn_rec *backend = baton->backend;
+
+    ap_log_rerror(APLOG_MARK, APLOG_TRACE5, 0, r, "proxy %s: %s async",
+                  baton->scheme, cancelled ? "cancel" : "finish");
+
+    /* Upgraded connections not reusable */
+    c->keepalive = AP_CONN_CLOSE;
+    backend->close = 1;
+
+    ap_proxy_release_connection(baton->scheme, backend, r->server);
+
+    ap_finalize_request_protocol(r);
+    ap_process_request_after_handler(r);
+    /* don't dereference baton or r from here! */
+
+    /* Return the client connection to the MPM */
+    c->cs->state = CONN_STATE_LINGER;
+    ap_mpm_resume_suspended(c);
 }
 
-/* If neither socket becomes readable in the specified timeout,
- * this callback will kill the request.  We do not have to worry about
- * having a cancel and a IO both queued.
- */
-static void proxy_wstunnel_cancel_callback(void *b)
-{ 
-    ws_baton_t *baton = (ws_baton_t*)b;
-    ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, baton->r,
-                  "proxy_wstunnel_cancel_callback, IO timed out");
-    proxy_wstunnel_finish(baton);
+/* Tell the MPM to poll the connections and resume when ready */
+static void proxy_wstunnel_poll(ws_baton_t *baton)
+{
+    request_rec *r = baton->r;
+    conn_rec *c = r->connection;
+
+    ap_log_rerror(APLOG_MARK, APLOG_TRACE5, 0, r,
+                  "proxy %s: going async", baton->scheme);
+
+    /* Create/clear the subpool used by the MPM to allocate
+     * the temporary data needed for this polling.
+     */
+    if (baton->async_pool) {
+        apr_pool_clear(baton->async_pool);
+    }
+    else {
+        apr_pool_create(&baton->async_pool, r->pool);
+    }
+
+    c->cs->state = CONN_STATE_SUSPENDED;
+    ap_mpm_poll_suspended(c, baton->async_pool, baton->tunnel->pfds,
+                          baton->idle_timeout);
 }
 
-/* Invoked by the event loop when data is ready on either end. 
- *  Pump both ends until they'd block and then start over again 
- *  We don't need the invoke_mtx, since we never put multiple callback events
- *  in the queue.
- */
-static void proxy_wstunnel_callback(void *b)
-{ 
-    ws_baton_t *baton = (ws_baton_t*)b;
+/* The resume_connection hook called by the MPM when polling completes (or times out) */
+static void proxy_wstunnel_resume_connection(conn_rec *c, request_rec *r)
+{
+    ws_baton_t *baton = NULL;
+    int status;
 
-    /* Clear MPM's temporary data */
-    AP_DEBUG_ASSERT(baton->async_pool != NULL);
-    apr_pool_clear(baton->async_pool);
-
-    if (proxy_wstunnel_pump(baton, 1) == SUSPENDED) {
-        proxyws_dir_conf *dconf = ap_get_module_config(baton->r->per_dir_config,
-                                                       &proxy_wstunnel_module);
-
-        ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, baton->r,
-                      "proxy_wstunnel_callback suspend");
-
-        ap_mpm_register_poll_callback_timeout(baton->async_pool,
-                                              baton->tunnel->pfds,
-                                              proxy_wstunnel_callback, 
-                                              proxy_wstunnel_cancel_callback, 
-                                              baton, dconf->idle_timeout);
+    if (r) {
+        baton = ap_get_module_config(r->request_config, &proxy_wstunnel_module);
     }
-    else { 
-        proxy_wstunnel_finish(baton);
+    if (!baton || !baton->suspended) {
+        return;
     }
+    ap_assert(baton->r == r);
+
+    if (c->cs->state == CONN_STATE_SUSPENDED) {
+        status = proxy_wstunnel_pump(baton);
+    }
+    else {
+        AP_DEBUG_ASSERT(c->cs->state == CONN_STATE_LINGER);
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO()
+                      "proxy: %s async tunneling timed out (state %i)",
+                      baton->scheme, c->cs->state);
+        status = DONE;
+    }
+    if (status == SUSPENDED) {
+        /* Keep polling in the MPM */
+        proxy_wstunnel_poll(baton);
+    }
+    else {
+        /* Done with tunneling */
+        proxy_wstunnel_done(baton, status != OK);
+    }
+}
+
+/* The suspend_connection hook called once the MPM gets the SUSPENDED connection */
+static void proxy_wstunnel_suspend_connection(conn_rec *c, request_rec *r)
+{
+    ws_baton_t *baton = NULL;
+
+    if (r) {
+        baton = ap_get_module_config(r->request_config, &proxy_wstunnel_module);
+    }
+    if (!baton || !baton->suspended) {
+        return;
+    }
+    ap_assert(baton->r == r);
+
+    proxy_wstunnel_poll(baton);
 }
 
 static int proxy_wstunnel_check_trans(request_rec *r, const char *url)
@@ -296,51 +345,35 @@ static int proxy_wstunnel_request(apr_pool_t *p, request_rec *r,
                       "error creating websocket tunnel");
         return HTTP_INTERNAL_SERVER_ERROR;
     }
+    if (mpm_can_poll_suspended) {
+        tunnel->timeout = dconf->async_delay;
+    }  
+    else { 
+        tunnel->timeout = dconf->idle_timeout;
+    }
 
     baton = apr_pcalloc(r->pool, sizeof(*baton));
     baton->r = r;
     baton->backend = conn;
     baton->tunnel = tunnel;
     baton->scheme = scheme;
+    baton->idle_timeout = dconf->idle_timeout;
+    ap_set_module_config(r->request_config, &proxy_wstunnel_module, baton);
 
-    if (!dconf->mpm_can_poll) {
-        tunnel->timeout = dconf->idle_timeout;
-        status = proxy_wstunnel_pump(baton, 0);
-    }  
-    else { 
-        tunnel->timeout = dconf->async_delay;
-        status = proxy_wstunnel_pump(baton, 1);
-        if (status == SUSPENDED) {
-            /* Create the subpool used by the MPM to alloc its own
-             * temporary data, which we want to clear on the next
-             * round (above) to avoid leaks.
-             */
-            apr_pool_create(&baton->async_pool, baton->r->pool);
-
-            rv = ap_mpm_register_poll_callback_timeout(
-                         baton->async_pool,
-                         baton->tunnel->pfds,
-                         proxy_wstunnel_callback, 
-                         proxy_wstunnel_cancel_callback, 
-                         baton, 
-                         dconf->idle_timeout);
-            if (rv == APR_SUCCESS) { 
-                return SUSPENDED;
-            }
-
-            if (APR_STATUS_IS_ENOTIMPL(rv)) { 
-                ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r, APLOGNO(02544) "No async support");
-                tunnel->timeout = dconf->idle_timeout;
-                status = proxy_wstunnel_pump(baton, 0); /* force no async */
-            }
-            else { 
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(10211)
-                              "error registering websocket tunnel");
-                status = HTTP_INTERNAL_SERVER_ERROR;
-            }
-        }
+    status = proxy_wstunnel_pump(baton);
+    if (status == SUSPENDED) {
+        /* Let the MPM call proxy_wstunnel_suspend_connection() when
+         * the connection is returned to it (i.e. not handled anywhere
+         * else anymore). This prevents the connection from being seen
+         * or handled by multiple threads at the same time, which could
+         * happen if we'd call ap_mpm_poll_suspended() directly from
+         * here, during the time for the connection to actually reaches
+         * the MPM whilst a new IO causes the connection to be
+         * rescheduled quickly.
+         */
+        baton->suspended = 1;
+        return SUSPENDED;
     }
-
     if (ap_is_HTTP_ERROR(status)) {
         /* Don't send an error page down an upgraded connection */
         if (!tunnel->replied) {
@@ -462,8 +495,6 @@ static void *create_proxyws_dir_config(apr_pool_t *p, char *dummy)
     new->fallback_to_proxy_http = 1;
     new->idle_timeout = -1; /* no timeout */
 
-    ap_mpm_query(AP_MPMQ_CAN_POLL, &new->mpm_can_poll);
-
     return (void *) new;
 }
 
@@ -477,7 +508,6 @@ static void *merge_proxyws_dir_config(apr_pool_t *p, void *vbase, void *vadd)
                                   : base->fallback_to_proxy_http;
     new->fallback_to_proxy_http_set = (add->fallback_to_proxy_http_set
                                        || base->fallback_to_proxy_http_set);
-    new->mpm_can_poll = add->mpm_can_poll;
     new->idle_timeout = add->idle_timeout;
     new->async_delay = add->async_delay;
 
@@ -514,6 +544,12 @@ static int proxy_wstunnel_post_config(apr_pool_t *pconf, apr_pool_t *plog,
     can_fallback_to_proxy_http =
         (ap_find_linked_module("mod_proxy_http.c") != NULL);
 
+#ifdef AP_MPMQ_CAN_POLL_SUSPENDED
+    if (ap_mpm_query(AP_MPMQ_CAN_POLL_SUSPENDED, &mpm_can_poll_suspended)) {
+        mpm_can_poll_suspended = 0;
+    }
+#endif
+
     return OK;
 }
 
@@ -542,6 +578,10 @@ static void ws_proxy_hooks(apr_pool_t *p)
     proxy_hook_scheme_handler(proxy_wstunnel_handler, NULL, aszSucc, APR_HOOK_FIRST);
     proxy_hook_check_trans(proxy_wstunnel_check_trans, NULL, aszSucc, APR_HOOK_MIDDLE);
     proxy_hook_canon_handler(proxy_wstunnel_canon, NULL, aszSucc, APR_HOOK_FIRST);
+
+    /* For when the tunnel connections are suspended to and resumed from the MPM */
+    ap_hook_suspend_connection(proxy_wstunnel_suspend_connection, NULL, NULL, APR_HOOK_FIRST);
+    ap_hook_resume_connection(proxy_wstunnel_resume_connection, NULL, NULL, APR_HOOK_FIRST);
 }
 
 AP_DECLARE_MODULE(proxy_wstunnel) = {

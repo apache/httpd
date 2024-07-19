@@ -465,6 +465,8 @@ AP_DECLARE(const char *) ap_get_server_built(void);
                          */
 #define SUSPENDED   -3  /**< Module will handle the remainder of the request.
                          *   The core will never invoke the request again */
+#define AGAIN       -4  /**< Module wants to be called again when
+                         *   more data is availble */
 
 /** Returned by the bottom-most filter if no data was written.
  *  @see ap_pass_brigade(). */
@@ -1313,6 +1315,9 @@ struct conn_rec {
     int async_filter;
 
     int outgoing;
+
+    /** Partial request being read (non-blocking) */
+    request_rec *partial_request;
 };
 
 struct conn_slave_rec {
@@ -1329,7 +1334,7 @@ typedef enum  {
     CONN_STATE_PROCESSING,          /* Processed by process_connection hooks */
     CONN_STATE_HANDLER,             /* Processed by the modules handlers */
     CONN_STATE_WRITE_COMPLETION,    /* Flushed by the MPM before entering CONN_STATE_KEEPALIVE */
-    CONN_STATE_SUSPENDED,           /* Suspended in the MPM until ap_run_resume_suspended() */
+    CONN_STATE_SUSPENDED,           /* Suspended from the MPM until ap_run_resume_suspended() */
     CONN_STATE_LINGER,              /* MPM flushes then closes the connection with lingering */
     CONN_STATE_LINGER_NORMAL,       /* MPM has started lingering close with normal timeout */
     CONN_STATE_LINGER_SHORT,        /* MPM has started lingering close with short timeout */
