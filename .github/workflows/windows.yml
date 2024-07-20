@@ -39,7 +39,7 @@ jobs:
               core.exportVariable('ACTIONS_RUNTIME_TOKEN', process.env.ACTIONS_RUNTIME_TOKEN || '');
 
       - name: Install dependencies
-        run: vcpkg install --triplet ${{ matrix.triplet }} apr apr-util pcre2
+        run: vcpkg install --triplet ${{ matrix.triplet }} apr[private-headers] apr-util pcre2
 
       - uses: actions/checkout@v3
 
