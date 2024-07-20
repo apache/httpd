@@ -48,7 +48,7 @@ jobs:
                 -G "${{ matrix.generator }}"
                 -DCMAKE_TOOLCHAIN_FILE=C:/vcpkg/scripts/buildsystems/vcpkg.cmake
                 -DAPR_INCLUDE_DIR=C:/vcpkg/installed/${{ matrix.triplet }}/include
-                -DAPR_LIBRARIES=C:/vcpkg/installed/${{ matrix.triplet }}/lib/libapr-1.lib;C:/vcpkg/installed/${{ matrix.triplet }}/lib/libaprutil-1.lib
+                "-DAPR_LIBRARIES=C:/vcpkg/installed/${{ matrix.triplet }}/lib/libapr-1.lib;C:/vcpkg/installed/${{ matrix.triplet }}/lib/libaprutil-1.lib"
 
       - name: Build
         run: cmake --build ${{github.workspace}}/build --config ${{ matrix.build-type }}
