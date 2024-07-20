@@ -1,0 +1,54 @@
+name: Windows
+
+on:
+  push:
+    branches: [ "trunk" ]
+    paths-ignore:
+      - 'docs/**'
+      - STATUS
+      - CHANGES
+      - changes-entries/*
+  pull_request:
+    branches: [ "trunk" ]
+    paths-ignore:
+      - 'docs/**'
+      - STATUS
+      - CHANGES
+      - changes-entries/*
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: Default
+            triplet: x64-windows
+            build-type: Debug
+            generator: "Visual Studio 17 2022"
+
+    runs-on: windows-latest
+    timeout-minutes: 30
+    name: ${{ matrix.name }}
+    steps:
+      - name: Export GitHub Actions cache environment variables
+        uses: actions/github-script@v7
+        with:
+          script: |
+              core.exportVariable('ACTIONS_CACHE_URL', process.env.ACTIONS_CACHE_URL || '');
+              core.exportVariable('ACTIONS_RUNTIME_TOKEN', process.env.ACTIONS_RUNTIME_TOKEN || '');
+
+      - name: Install dependencies
+        run: vcpkg install --triplet ${{ matrix.triplet }} apr apr-util pcre2
+
+      - uses: actions/checkout@v3
+
+      - name: Configure CMake
+        run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{ matrix.build-type }}
+                -G "${{ matrix.generator }}"
+                -DCMAKE_TOOLCHAIN_FILE=C:/vcpkg/scripts/buildsystems/vcpkg.cmake
+                -DAPR_INCLUDE_DIR=C:/vcpkg/installed/${{ matrix.triplet }}/include
+                -DAPR_LIBRARIES=C:/vcpkg/installed/${{ matrix.triplet }}/lib/libapr-1.lib;C:/vcpkg/installed/${{ matrix.triplet }}/lib/libaprutil-1.lib
+
+      - name: Build
+        run: cmake --build ${{github.workspace}}/build --config ${{ matrix.build-type }}
