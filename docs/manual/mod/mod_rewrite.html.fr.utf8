@@ -1589,6 +1589,14 @@ substitution !
         <em><a href="../rewrite/flags.html#flag_unsafe_prefix_stat">détails ...</a></em>
         </td>
     </tr>
+<tr class="odd">
+        <td>UNC</td>
+        <td>
+	Empêche la fusion des slashes de début multiples tels que ceux utilisés
+	dans les chemins UNC de Windows.
+        <em><a href="../rewrite/flags.html#flag_unc">détails ...</a></em>
+        </td>
+    </tr>
 </table>
 
 <div class="note"><h3>Développement du répertoire home</h3>
