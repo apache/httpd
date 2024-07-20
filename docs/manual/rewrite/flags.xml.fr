@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1918566:1919248 (outdated) -->
+<!-- English Revision: 1919248 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -926,6 +926,13 @@ utiliser le drapeau <code>L</code> pour terminer la séquence
     d’une URL malveillante faisant correspondre la substitution expansée à un
     emplacement non souhaité du système de fichiers.</p>
  </section>
+
+ <section id="flag_unc"><title>UNC</title>
+    <p>Définir ce drapeau empêche la fusion des slashes de début multiples tels
+    que ceux utilisés dans les chemins UNC de Windows. Ce drapeau n’est pas
+    nécessaire lorsque la substitution de la règle commence par des slashes
+    multiples littéraux.</p>
+</section>
 
 </manualpage>
 
