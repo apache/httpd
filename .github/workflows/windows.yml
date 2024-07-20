@@ -41,8 +41,6 @@ jobs:
               core.exportVariable('ACTIONS_CACHE_URL', process.env.ACTIONS_CACHE_URL || '');
               core.exportVariable('ACTIONS_RUNTIME_TOKEN', process.env.ACTIONS_RUNTIME_TOKEN || '');
 
-      - name: Setup dev environment
-
       - name: Install dependencies
         run: vcpkg install --triplet ${{ matrix.triplet }} apr[private-headers] apr-util pcre2
 
