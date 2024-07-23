@@ -186,6 +186,13 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c r1902366 ^/httpd/httpd/trunk .
      +1: ivan, ylavic, covener
 
+  *) mod_rewrite: Better question mark tracking to avoid UnsafeAllow3F. PR 69197.
+     Trunk version of patch:
+        https://svn.apache.org/r1919325
+    2.4.x version of patch:
+        https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/462.diff
+    PR: https://github.com/apache/httpd/pull/462
+    +1: ylavic, covener, jorton
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -212,13 +219,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       2.4.x patch: svn merge -c r1914038 ^/httpd/httpd/trunk .
       +1: minfrin, covener
 
-  *) mod_rewrite: Better question mark tracking to avoid UnsafeAllow3F. PR 69197.
-     Trunk version of patch:
-        https://svn.apache.org/r1919325
-    2.4.x version of patch:
-        https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/462.diff
-    PR: https://github.com/apache/httpd/pull/462
-    +1: ylavic, covener
+  *) mod_rewrite: backport better/simpler rewritelog() macro to fix
+     line numbers logged and make merging trunk->2.4.x easier
+     trunk patch: https://svn.apache.org/r1866894
+     2.4.x patch: https://github.com/apache/httpd/commit/d2cd162d79d532ae14d273e835b4b6799a185a98.patch
+     PR: https://github.com/apache/httpd/pull/464
+     +1: jorton, 
+     
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
