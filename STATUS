@@ -224,7 +224,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: https://svn.apache.org/r1866894
      2.4.x patch: https://github.com/apache/httpd/commit/d2cd162d79d532ae14d273e835b4b6799a185a98.patch
      PR: https://github.com/apache/httpd/pull/464
-     +1: jorton, 
+     +1: jorton, ylavic,
      
 
 PATCHES/ISSUES THAT ARE BEING WORKED
