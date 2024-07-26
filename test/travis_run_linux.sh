@@ -191,14 +191,18 @@ if ! test -v NO_TEST_FRAMEWORK; then
     fi
 fi
 
+if test \( -v TEST_SSL -o -v TEST_OPENSSL3 \) \
+        -a -f test/perl-framework/t/logs/error_log; then
+    : -- Check OpenSSL version used by mod_ssl at compile- and run-time --
+    grep 'mod_ssl.*compiled against' test/perl-framework/t/logs/error_log | tail -n1 | grep --color=always 'OpenSSL/[^ ]*'
+    grep 'resuming normal operations' test/perl-framework/t/logs/error_log | tail -n1 | grep --color=always 'OpenSSL/[^ ]*'
+fi
+
 if test -v TEST_SSL -a $RV -eq 0; then
     pushd test/perl-framework
         # Test loading encrypted private keys
         ./t/TEST -defines "TEST_SSL_DES3_KEY TEST_SSL_PASSPHRASE_EXEC" t/ssl
         RV=$?
-
-        # Log the OpenSSL version.
-        grep 'mod_ssl.*compiled against' t/logs/error_log | tail -n 1
 
         # Test various session cache backends
         for cache in shmcb redis:localhost:6379 memcache:localhost:11211; do
