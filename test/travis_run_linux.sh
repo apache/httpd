@@ -61,7 +61,9 @@ fi
 
 if test -v TEST_OPENSSL3; then
     CONFIG="$CONFIG --with-ssl=$HOME/root/openssl3"
-    export LD_LIBRARY_PATH=$HOME/root/openssl3/lib:$HOME/root/openssl3/lib64
+    # Temporarily set LD_RUN_PATH so that httpd/mod_ssl binaries pick
+    # up the custom OpenSSL build
+    export LD_RUN_PATH=$HOME/root/openssl3/lib:$HOME/root/openssl3/lib64
     export PATH=$HOME/root/openssl3/bin:$PATH
     openssl version
 fi
@@ -75,6 +77,14 @@ fi
 
 $srcdir/configure --prefix=$PREFIX $CONFIG
 make $MFLAGS
+
+if test -v TEST_OPENSSL3; then
+   # Clear the library/run paths so that anything else run during
+   # testing is not forced to use the custom OpenSSL build; e.g. perl,
+   # php-fpm, ...
+   unset LD_LIBRARY_PATH
+   unset LD_RUN_PATH
+fi
 
 if test -v TEST_INSTALL; then
    make install
@@ -117,6 +127,11 @@ if test -v TEST_ASAN; then
     export ASAN_OPTIONS="log_path=$PWD/asan.log:detect_leaks=0"
 fi
 
+if test -v PHP_FPM; then
+    # Sanity test the executable exists.
+    $PHP_FPM --version
+fi
+
 # Try to keep all potential coredumps from all processes
 sudo sysctl -w kernel.core_uses_pid=1 2>/dev/null || true
 # Systemd based systems might process core dumps via systemd-coredump.
@@ -155,6 +170,13 @@ fi
 # suite run above.
 if test $RV -eq 0 && test -n "`ls test/perl-framework/t/core{,.*} 2>/dev/null`"; then
     RV=4
+fi
+
+if test \( -v TEST_SSL -o -v TEST_OPENSSL3 \) \
+        -a -f test/perl-framework/t/logs/error_log; then
+    : -- Check OpenSSL version used by mod_ssl at compile- and run-time --
+    grep 'mod_ssl.*compiled against' test/perl-framework/t/logs/error_log | tail -n1 | grep --color=always 'OpenSSL/[^ ]*'
+    grep 'resuming normal operations' test/perl-framework/t/logs/error_log | tail -n1 | grep --color=always 'OpenSSL/[^ ]*'
 fi
 
 if test -v TEST_SSL -a $RV -eq 0; then
