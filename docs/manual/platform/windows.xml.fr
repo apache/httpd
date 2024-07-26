@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1914040:1919468 (outdated) -->
+<!-- English Revision: 1919468 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -674,12 +674,14 @@ RewriteRule "(.*)" "${lowercase:$1}" [R,L]
 
   <example><title>Exemple de DocumentRoot avec chemin UNC</title>
   <highlight language="config">
+  UNCList dochost
   DocumentRoot "//dochost/www/html/"
   </highlight>
   </example>
 
   <example><title>Exemple de DocumentRoot avec adresse IP dans le chemin UNC</title>
   <highlight language="config">
+  UNCList 192.168.1.50
   DocumentRoot "//192.168.1.50/docs/"
   </highlight>
   </example>
@@ -687,9 +689,15 @@ RewriteRule "(.*)" "${lowercase:$1}" [R,L]
   <example><title>Exemple d'Alias et répertoire correspondant avec
   chemin UNC</title>
   <highlight language="config">
+
+UNCList imagehost1 imagehost2  
 Alias "/images/" "//imagehost/www/images/"
+Alias "/images2/" "//imagehost2/www/images/"
 
 &lt;Directory "//imagehost/www/images/"&gt;
+#...
+&lt;/Directory&gt;
+&lt;Directory "//imagehost2/www/images/"&gt;
 #...
 &lt;/Directory&gt;
   </highlight>
