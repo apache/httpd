@@ -61,7 +61,9 @@ fi
 
 if test -v TEST_OPENSSL3; then
     CONFIG="$CONFIG --with-ssl=$HOME/root/openssl3"
-    export LD_LIBRARY_PATH=$HOME/root/openssl3/lib:$HOME/root/openssl3/lib64
+    # Temporarily set LD_RUN_PATH so that httpd/mod_ssl binaries pick
+    # up the custom OpenSSL build
+    export LD_RUN_PATH=$HOME/root/openssl3/lib:$HOME/root/openssl3/lib64
     export PATH=$HOME/root/openssl3/bin:$PATH
     openssl version
 fi
@@ -77,6 +79,14 @@ builddir=$PWD
 
 $srcdir/configure --prefix=$PREFIX $CONFIG
 make $MFLAGS
+
+if test -v TEST_OPENSSL3; then
+   # Clear the library/run paths so that anything else run during
+   # testing is not forced to use the custom OpenSSL build; e.g. perl,
+   # php-fpm, ...
+   unset LD_LIBRARY_PATH
+   unset LD_RUN_PATH
+fi
 
 if test -v TEST_INSTALL; then
    make install
