@@ -1978,7 +1978,7 @@ PROXY_DECLARE(char *) ap_proxy_define_worker_ex(apr_pool_t *p,
             && (ptr = ap_strchr_c(url + 5, '|'))) {
         rv = apr_uri_parse(p, apr_pstrmemdup(p, url, ptr - url), &uri);
         if (rv == APR_SUCCESS) {
-            sockpath = ap_runtime_dir_relative(p, uri.path);;
+            sockpath = ap_runtime_dir_relative(p, uri.path);
             ptr++;    /* so we get the scheme for the uds */
         }
         else {
@@ -2044,7 +2044,7 @@ PROXY_DECLARE(char *) ap_proxy_define_worker_ex(apr_pool_t *p,
     if (!uri.scheme) {
         return apr_pstrcat(p, "URL must be absolute!: ", url, NULL);
     }
-    if (!uri.hostname) {
+    if (!uri.hostname || !*uri.hostname) {
         if (sockpath) {
             /* allow for unix:/path|http: */
             uri.hostname = "localhost";
