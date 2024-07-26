@@ -119,7 +119,7 @@ if test -v TEST_OPENSSL3; then
 
         mkdir -p build/openssl
         pushd build/openssl
-           curl "https://www.openssl.org/source/openssl-${TEST_OPENSSL3}.tar.gz" |
+           curl -L "https://github.com/openssl/openssl/releases/download/openssl-${TEST_OPENSSL3}/openssl-${TEST_OPENSSL3}.tar.gz" |
               tar -xzf -
            cd openssl-${TEST_OPENSSL3}
            ./Configure --prefix=$HOME/root/openssl3 shared no-tests ${OPENSSL_CONFIG}
