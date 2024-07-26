@@ -2432,7 +2432,7 @@ static int fixup_uds_filename(request_rec *r)
     if (!strncmp(r->filename, "proxy:", 6) &&
             !ap_cstr_casecmpn(uds_url, "unix:", 5) &&
             (origin_url = ap_strchr(uds_url + 5, '|'))) {
-        char *uds_path = NULL, *end;
+        char *uds_path = NULL, *col;
         apr_uri_t urisock;
         apr_status_t rv;
 
@@ -2444,7 +2444,7 @@ static int fixup_uds_filename(request_rec *r)
                                                   || !urisock.hostname[0])) {
             uds_path = ap_runtime_dir_relative(r->pool, urisock.path);
         }
-        if (!uds_path || !(end = ap_strchr(origin_url, ':'))) {
+        if (!uds_path || !(col = ap_strchr(origin_url, ':'))) {
             ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(10292)
                     "Invalid proxy UDS filename (%s)", r->filename);
             apr_table_unset(r->notes, "uds_path");
@@ -2457,21 +2457,39 @@ static int fixup_uds_filename(request_rec *r)
                 r->filename, origin_url, uds_path);
 
         /* The hostname part of the URL is not mandated for UDS though
-         * the canon_handler hooks will require it, so add "localhost"
-         * if it's missing (won't be used anyway for an AF_UNIX socket).
+         * the canon_handler hooks will require it. ProxyPass URLs are
+         * fixed at load time by adding "localhost" automatically in the
+         * worker URL, but SetHandler "proxy:unix:/udspath|scheme:[//]"
+         * URLs are not so we have to fix it here the same way.
          */
-        if (!end[1]) {
+        if (!col[1]) {
+            /* origin_url is "scheme:" */
             r->filename = apr_pstrcat(r->pool, "proxy:",
                                       origin_url, "//localhost",
                                       NULL);
         }
-        else if (end[1] == '/' && end[2] == '/' && !end[3]) {
+        /* For a SetHandler "proxy:..." in a <Location "/path">, the "/path"
+         * is appended to r->filename, hence the below origin_url cases too:
+         */
+        else if (col[1] == '/' && (col[2] != '/'    /* "scheme:/path" */
+                                   || col[3] == '/' /* "scheme:///path" */
+                                   || !col[3])) {   /* "scheme://" */
+            char *scheme = origin_url;
+            *col = '\0'; /* nul terminate scheme */
+            if (col[2] != '/') {
+                origin_url = col + 1;
+            }
+            else {
+                origin_url = col + 3;
+            }
             r->filename = apr_pstrcat(r->pool, "proxy:",
-                                      origin_url, "localhost",
-                                      NULL);
+                                      scheme, "://localhost",
+                                      origin_url, NULL);
         }
         else {
-            /* Overwrite the UDS part of r->filename in place */
+            /* origin_url is normal "scheme://host/path", can overwrite
+             * the UDS part of r->filename in place.
+             */
             memmove(uds_url, origin_url, strlen(origin_url) + 1);
         }
         return OK;
