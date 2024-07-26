@@ -666,16 +666,23 @@ RewriteRule "(.*)" "${lowercase:$1}" [R,L]</pre>
   restriction due aux associations de lettres de lecteur, mais leur
   utilisation est déconseillée).</p>
 
-  <div class="example"><h3>Exemple de DocumentRoot avec chemin UNC</h3><pre class="prettyprint lang-config">DocumentRoot "//dochost/www/html/"</pre>
+  <div class="example"><h3>Exemple de DocumentRoot avec chemin UNC</h3><pre class="prettyprint lang-config">  UNCList dochost
+  DocumentRoot "//dochost/www/html/"</pre>
 </div>
 
-  <div class="example"><h3>Exemple de DocumentRoot avec adresse IP dans le chemin UNC</h3><pre class="prettyprint lang-config">DocumentRoot "//192.168.1.50/docs/"</pre>
+  <div class="example"><h3>Exemple de DocumentRoot avec adresse IP dans le chemin UNC</h3><pre class="prettyprint lang-config">  UNCList 192.168.1.50
+  DocumentRoot "//192.168.1.50/docs/"</pre>
 </div>
 
   <div class="example"><h3>Exemple d'Alias et répertoire correspondant avec
-  chemin UNC</h3><pre class="prettyprint lang-config">Alias "/images/" "//imagehost/www/images/"
+  chemin UNC</h3><pre class="prettyprint lang-config">UNCList imagehost1 imagehost2  
+Alias "/images/" "//imagehost/www/images/"
+Alias "/images2/" "//imagehost2/www/images/"
 
 &lt;Directory "//imagehost/www/images/"&gt;
+#...
+&lt;/Directory&gt;
+&lt;Directory "//imagehost2/www/images/"&gt;
 #...
 &lt;/Directory&gt;</pre>
 </div>
