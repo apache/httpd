@@ -197,6 +197,11 @@ apr_status_t h2_mplx_c1_streams_do(h2_mplx *m, h2_mplx_stream_cb *cb, void *ctx)
 int h2_mplx_c1_all_streams_want_send_data(h2_mplx *m);
 
 /**
+ * Return != 0 iff all open streams have send window exhausted
+ */
+int h2_mplx_c1_all_streams_send_win_exhausted(h2_mplx *m);
+
+/**
  * A stream has been RST_STREAM by the client. Abort
  * any processing going on and remove from processing
  * queue.

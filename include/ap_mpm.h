@@ -178,6 +178,9 @@ AP_DECLARE(apr_status_t) ap_os_create_privileged_process(
 #define AP_MPMQ_GENERATION           15
 /** MPM can drive serf internally  */
 #define AP_MPMQ_HAS_SERF             16
+/* 17-18 are trunk only */
+/** MPM supports CONN_STATE_ASYNC_WAITIO */
+#define AP_MPMQ_CAN_WAITIO           19
 /** @} */
 
 /**
