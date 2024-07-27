@@ -133,7 +133,6 @@ static int proxy_fcgi_canon(request_rec *r, char *url)
         /* It has to be on disk for this to work */
         if (!strcasecmp(pathinfo_type, "full")) {
             rconf->need_dirwalk = 1;
-            ap_unescape_url_keep2f(path, 0);
         }
         else if (!strcasecmp(pathinfo_type, "first-dot")) {
             char *split = ap_strchr(path, '.');
@@ -348,10 +347,11 @@ static apr_status_t send_environment(proxy_conn_rec *conn, request_rec *r,
     fcgi_req_config_t *rconf = ap_get_module_config(r->request_config, &proxy_fcgi_module);
     fcgi_dirconf_t *dconf = ap_get_module_config(r->per_dir_config, &proxy_fcgi_module);
 
-    if (rconf) {
-       if (rconf->need_dirwalk) {
-          ap_directory_walk(r);
-       }
+    if (rconf && rconf->need_dirwalk) {
+        char *saved_filename = r->filename;
+        r->filename = r->uri;
+        ap_directory_walk(r);
+        r->filename = saved_filename;
     }
 
     /* Strip proxy: prefixes */
