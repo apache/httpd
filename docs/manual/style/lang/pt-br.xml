@@ -66,6 +66,8 @@
         <message id="moduleidentifier">Identificador de M&#243;dulo</message>
         <message id="sourcefile">Arquivo Fonte</message>
         <message id="compatibility">Compatibilidade</message>
+        <message id="before-since">Available in Apache HTTP Server </message>
+        <message id="after-since"> and later.</message>
 
         <!-- Used in manualpage -->
         <message id="relatedmodules">M&#243;dulos Relacionados</message>
