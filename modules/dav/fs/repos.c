@@ -777,10 +777,10 @@ static dav_error * dav_fs_get_resource(
             {
                 /*
                 ** The base of the path refers to a file -- nothing should
-                ** be in path_info. The resource is simply an error: it
+                ** be in path_info. The resource cannot exist: it
                 ** can't be a null or a locknull resource.
                 */
-                return dav_new_error(r->pool, HTTP_BAD_REQUEST, 0, 0,
+                return dav_new_error(r->pool, HTTP_NOT_FOUND, 0, 0,
                                      "The URL contains extraneous path "
                                      "components. The resource could not "
                                      "be identified.");
