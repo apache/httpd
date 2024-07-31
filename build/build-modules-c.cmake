@@ -19,7 +19,7 @@ function(generate_builtin_modules_c output_filename module_list)
   foreach(module ${module_list})
     string(APPEND MODULES_EXTERN "extern module ${module}_module;\n")
     string(APPEND MODULES_PRELINK "  &${module}_module,\n")
-    string(APPEND MODULES_SYNMBOLS "  {\"${module}_module\", &${module}_module},\n")
+    string(APPEND MODULES_SYMBOLS "  {\"${module}_module\", &${module}_module},\n")
     string(APPEND MODULES_PRELOAD "  &${module}_module,\n")
   endforeach()
 

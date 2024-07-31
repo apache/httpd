@@ -24,7 +24,7 @@ AP_DECLARE_DATA module *ap_prelinked_modules[] = {
  *  We need the symbols as strings for <IfModule> containers
  */
 ap_module_symbol_t ap_prelinked_module_symbols[] = {
-@MODULES_SYNMBOLS@
+@MODULES_SYMBOLS@
   {NULL, NULL}
 };
 
