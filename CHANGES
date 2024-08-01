@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.63
 
+  *) mod_rewrite: Better question mark tracking to avoid UnsafeAllow3F.
+     PR 69197 [Yann Ylavic, Eric Covener]
+
 Changes with Apache 2.4.62
 
   *) SECURITY: CVE-2024-40898: Apache HTTP Server: SSRF with
