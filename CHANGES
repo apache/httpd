@@ -2,7 +2,10 @@
 Changes with Apache 2.4.63
 
   *) mod_rewrite: Better question mark tracking to avoid UnsafeAllow3F.
-     PR 69197 [Yann Ylavic, Eric Covener]
+     PR 69197. [Yann Ylavic, Eric Covener]
+
+  *) mod_http2: Return connection monitoring to the event MPM when blocking
+     on client updates. [Stefan Eissing, Yann Ylavic]
 
 Changes with Apache 2.4.62
 
