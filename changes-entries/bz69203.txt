@@ -1,1 +1,1 @@
-mod_proxy_fcgi: Don't re-encode SCRIPT_FILENAME. PR 69203. [Yann Ylavic]
+  *) mod_proxy_fcgi: Don't re-encode SCRIPT_FILENAME. PR 69203. [Yann Ylavic]
