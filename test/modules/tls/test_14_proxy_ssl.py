@@ -2,6 +2,7 @@ import re
 import pytest
 
 from .conf import TlsTestConf
+from .env import TlsTestEnv
 from pyhttpd.env import HttpdTestEnv
 
 
@@ -63,6 +64,7 @@ class TestProxySSL:
             ]
         )
 
+    @pytest.mark.skipif(condition=TlsTestEnv.is_unsupported, reason="h2 not supported here")
     def test_tls_14_proxy_ssl_h2_get(self, env):
         r = env.tls_get(env.domain_b, "/proxy-h2-ssl/index.json")
         assert r.exit_code == 0
@@ -76,7 +78,7 @@ class TestProxySSL:
         ("SSL_CIPHER_EXPORT", "false"),
         ("SSL_CLIENT_VERIFY", "NONE"),
     ])
-    def test_tls_14_proxy_tsl_vars_const(self, env, name: str, value: str):
+    def test_tls_14_proxy_ssl_vars_const(self, env, name: str, value: str):
         if not HttpdTestEnv.has_shared_module("tls"):
             return
         r = env.tls_get(env.domain_b, f"/proxy-ssl/vars.py?name={name}")
@@ -102,7 +104,7 @@ class TestProxySSL:
         ("SSL_VERSION_INTERFACE", r'mod_tls/\d+\.\d+\.\d+'),
         ("SSL_VERSION_LIBRARY", r'rustls-ffi/\d+\.\d+\.\d+/rustls/\d+\.\d+(\.\d+)?'),
     ])
-    def test_tls_14_proxy_tsl_vars_match(self, env, name: str, pattern: str):
+    def test_tls_14_proxy_ssl_vars_match(self, env, name: str, pattern: str):
         if not HttpdTestEnv.has_shared_module("tls"):
             return
         r = env.tls_get(env.domain_b, f"/proxy-ssl/vars.py?name={name}")

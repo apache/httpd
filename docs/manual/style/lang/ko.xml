@@ -64,6 +64,8 @@
         <message id="moduleidentifier">모듈명</message>
         <message id="sourcefile">소스파일</message>
         <message id="compatibility">지원</message>
+        <message id="before-since">Available in Apache HTTP Server </message>
+        <message id="after-since"> and later.</message>
 
         <!-- Used in manualpage -->
         <message id="relatedmodules">관련된 모듈</message>

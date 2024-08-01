@@ -182,8 +182,10 @@ static int action_handler(request_rec *r)
         return DECLINED;
 
     /* Second, check for actions (which override the method scripts) */
-    action = r->handler ? r->handler :
-        ap_field_noparam(r->pool, r->content_type);
+    action = r->handler;
+    if (!action && AP_REQUEST_IS_TRUSTED_CT(r)) {
+        action = ap_field_noparam(r->pool, r->content_type);
+    }
 
     if (action && (t = apr_table_get(conf->action_types, action))) {
         int virtual = (*t++ == '0' ? 0 : 1);

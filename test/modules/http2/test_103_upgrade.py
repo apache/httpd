@@ -90,6 +90,9 @@ class TestUpgrade:
         url = env.mkurl("http", "test1", "/index.html")
         r = env.nghttp().get(url, options=["-u"])
         assert r.response["status"] == 200
+        # check issue #272
+        assert 'date' in r.response["header"], f'{r.response}'
+        assert r.response["header"]["date"] != 'Sun, 00 Jan 1900 00:00:00 GMT', f'{r.response}'
 
     # upgrade to h2c for a request where http/1.1 is preferred, but the clients upgrade
     # wish is honored nevertheless

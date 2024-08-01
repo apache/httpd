@@ -609,21 +609,29 @@ RewriteRule "(.*)"           "${lowercase:$1}" [R,L]
 
   <example><title>Example DocumentRoot with UNC path</title>
   <highlight language="config">
+  UNCList dochost
   DocumentRoot "//dochost/www/html/"
   </highlight>
   </example>
 
   <example><title>Example DocumentRoot with IP address in UNC path</title>
   <highlight language="config">
+  UNCList 192.168.1.50
   DocumentRoot "//192.168.1.50/docs/"
   </highlight>
   </example>
 
   <example><title>Example Alias and corresponding Directory with UNC path</title>
   <highlight language="config">
+
+UNCList imagehost1 imagehost2
 Alias "/images/" "//imagehost/www/images/"
+Alias "/images2/" "//imagehost2/www/images/"
 
 &lt;Directory "//imagehost/www/images/"&gt;
+#...
+&lt;/Directory&gt;
+&lt;Directory "//imagehost2/www/images/"&gt;
 #...
 &lt;/Directory&gt;
   </highlight>

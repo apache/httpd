@@ -58,6 +58,8 @@
         <message id="moduleidentifier">モジュール識別子</message>
         <message id="sourcefile">ソースファイル</message>
         <message id="compatibility">互換性</message>
+        <message id="before-since">Available in Apache HTTP Server </message>
+        <message id="after-since"> and later.</message>
 
         <!-- Used in manualpage -->
         <message id="relatedmodules">関連モジュール</message>

@@ -1053,7 +1053,7 @@ void         modssl_callback_keylog(const SSL *ssl, const char *line);
 /**  I/O  */
 apr_status_t ssl_io_filter_init(conn_rec *, request_rec *r, SSL *);
 void         ssl_io_filter_register(apr_pool_t *);
-void         modssl_set_io_callbacks(SSL *ssl);
+void         modssl_set_io_callbacks(SSL *ssl, conn_rec *c, server_rec *s);
 
 /* ssl_io_buffer_fill fills the setaside buffering of the HTTP request
  * to allow an SSL renegotiation to take place. */

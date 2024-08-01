@@ -70,23 +70,21 @@ extern void proxy_update_members(proxy_balancer **balancer, request_rec *r,
 
 static int proxy_balancer_canon(request_rec *r, char *url)
 {
-    char *host, *path;
-    char *search = NULL;
-    const char *err;
+    char *host;
     apr_port_t port = 0;
+    const char *err;
 
     /* TODO: offset of BALANCER_PREFIX ?? */
     if (ap_cstr_casecmpn(url, "balancer:", 9) == 0) {
+        ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r, "canonicalising URL %s", url);
         url += 9;
     }
     else {
         return DECLINED;
     }
 
-    ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r, "canonicalising URL %s", url);
-
     /* do syntatic check.
-     * We break the URL into host, port, path, search
+     * We break the URL into host, port, path
      */
     err = ap_proxy_canon_netloc(r->pool, &url, NULL, NULL, &host, &port);
     if (err) {
@@ -95,50 +93,12 @@ static int proxy_balancer_canon(request_rec *r, char *url)
                       url, err);
         return HTTP_BAD_REQUEST;
     }
-    /*
-     * now parse path/search args, according to rfc1738:
-     * process the path. With proxy-noncanon set (by
-     * mod_proxy) we use the raw, unparsed uri
+
+    /* The canon_handler hooks are run per the BalancerMember in
+     * balancer_fixup(), keep the original/raw path for now.
      */
-    if (apr_table_get(r->notes, "proxy-nocanon")) {
-        path = url;   /* this is the raw path */
-    }
-    else if (apr_table_get(r->notes, "proxy-noencode")) {
-        path = url;   /* this is the encoded path already */
-        search = r->args;
-    }
-    else {
-        core_dir_config *d = ap_get_core_module_config(r->per_dir_config);
-        int flags = d->allow_encoded_slashes && !d->decode_encoded_slashes ? PROXY_CANONENC_NOENCODEDSLASHENCODING : 0;
-
-        path = ap_proxy_canonenc_ex(r->pool, url, strlen(url), enc_path, flags,
-                                    r->proxyreq);
-        if (!path) {
-            return HTTP_BAD_REQUEST;
-        }
-        search = r->args;
-    }
-    /*
-     * If we have a raw control character or a ' ' in nocanon path or
-     * r->args, correct encoding was missed.
-     */
-    if (path == url && *ap_scan_vchar_obstext(path)) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(10416)
-                      "To be forwarded path contains control "
-                      "characters or spaces");
-        return HTTP_FORBIDDEN;
-    }
-    if (search && *ap_scan_vchar_obstext(search)) {
-         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(10407)
-                       "To be forwarded query string contains control "
-                       "characters or spaces");
-         return HTTP_FORBIDDEN;
-    }
-
-    r->filename = apr_pstrcat(r->pool, "proxy:" BALANCER_PREFIX, host,
-            "/", path, (search) ? "?" : "", (search) ? search : "", NULL);
-
-    r->path_info = apr_pstrcat(r->pool, "/", path, NULL);
+    r->filename = apr_pstrcat(r->pool, "proxy:" BALANCER_PREFIX,
+                              host, "/", url, NULL);
 
     return OK;
 }
@@ -428,25 +388,25 @@ static proxy_worker *find_best_worker(proxy_balancer *balancer,
 
 }
 
-static int rewrite_url(request_rec *r, proxy_worker *worker,
-                        char **url)
+static int balancer_fixup(request_rec *r, proxy_worker *worker, char **url)
 {
-    const char *scheme = strstr(*url, "://");
-    const char *path = NULL;
+    const char *path;
+    int rc;
 
-    if (scheme)
-        path = ap_strchr_c(scheme + 3, '/');
-
-    /* we break the URL into host, port, uri */
-    if (!worker) {
-        return ap_proxyerror(r, HTTP_BAD_REQUEST, apr_pstrcat(r->pool,
-                             "missing worker. URI cannot be parsed: ", *url,
-                             NULL));
+    /* Build the proxy URL from the worker URL and the actual path */
+    path = strstr(*url, "://");
+    if (path) {
+        path = ap_strchr_c(path + 3, '/');
     }
+    r->filename = apr_pstrcat(r->pool, "proxy:", worker->s->name, path, NULL);
 
-    *url = apr_pstrcat(r->pool, worker->s->name, path, NULL);
-
-    return OK;
+    /* Canonicalize r->filename per the worker scheme's canon_handler hook */
+    rc = ap_proxy_canon_url(r);
+    if (rc == OK) {
+        AP_DEBUG_ASSERT(strncmp(r->filename, "proxy:", 6) == 0);
+        *url = apr_pstrdup(r->pool, r->filename + 6);
+    }
+    return rc;
 }
 
 static void force_recovery(proxy_balancer *balancer, server_rec *s)
@@ -503,7 +463,8 @@ static int proxy_balancer_pre_request(proxy_worker **worker,
      * for balancer, because this is failover attempt.
      */
     if (!*balancer &&
-        !(*balancer = ap_proxy_get_balancer(r->pool, conf, *url, 1)))
+        (ap_cstr_casecmpn(*url, BALANCER_PREFIX, sizeof(BALANCER_PREFIX) - 1)
+         || !(*balancer = ap_proxy_get_balancer(r->pool, conf, *url, 1))))
         return DECLINED;
 
     /* Step 2: Lock the LoadBalancer
@@ -637,10 +598,12 @@ static int proxy_balancer_pre_request(proxy_worker **worker,
 
     /* Rewrite the url from 'balancer://url'
      * to the 'worker_scheme://worker_hostname[:worker_port]/url'
-     * This replaces the balancers fictional name with the
-     * real hostname of the elected worker.
+     * This replaces the balancers fictional name with the real
+     * hostname of the elected worker and canonicalizes according
+     * to the worker scheme (calls canon_handler hooks).
      */
-    access_status = rewrite_url(r, *worker, url);
+    access_status = balancer_fixup(r, *worker, url);
+
     /* Add the session route to request notes if present */
     if (route) {
         apr_table_setn(r->notes, "session-sticky", sticky);
@@ -1445,7 +1408,7 @@ static void balancer_display_page(request_rec *r, proxy_server_conf *conf,
 
     if (usexml) {
         char date[APR_RFC822_DATE_LEN];
-        ap_set_content_type(r, "text/xml");
+        ap_set_content_type_ex(r, "text/xml", 1);
         ap_rputs("<?xml version='1.0' encoding='UTF-8' ?>\n", r);
         ap_rputs("<httpd:manager xmlns:httpd='http://httpd.apache.org'>\n", r);
         ap_rputs("  <httpd:balancers>\n", r);
@@ -1618,7 +1581,7 @@ static void balancer_display_page(request_rec *r, proxy_server_conf *conf,
         ap_rputs("</httpd:manager>", r);
     }
     else {
-        ap_set_content_type(r, "text/html; charset=ISO-8859-1");
+        ap_set_content_type_ex(r, "text/html; charset=ISO-8859-1", 1);
         ap_rputs(DOCTYPE_HTML_4_01
                  "<html><head><title>Balancer Manager</title>\n", r);
         ap_rputs("<style type='text/css'>\n"

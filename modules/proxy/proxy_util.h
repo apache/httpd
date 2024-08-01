@@ -75,6 +75,24 @@ PROXY_DECLARE(apr_status_t) ap_proxy_decrement_busy_count(void *worker_);
  */
 PROXY_DECLARE(void) ap_proxy_increment_busy_count(proxy_worker *worker);
 
+
+/*
+ * interpolate an env str in a configuration string
+ *
+ * @param r    current request
+ * @param str  the string to interpolcate
+ * @return     the interpolated string
+ */
+PROXY_DECLARE(const char *) ap_proxy_interpolate(request_rec *r,
+                                                 const char *str);
+
+/*
+ * Canonicalize the URL in r->filename
+ * @param r           current request
+ * @return            OK or an HTTP_XXX error
+ */
+PROXY_DECLARE(int) ap_proxy_canon_url(request_rec *r);
+
 /** @} */
 
 #endif /* PROXY_UTIL_H_ */

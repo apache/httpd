@@ -2,6 +2,7 @@ import inspect
 import logging
 import os
 import subprocess
+from shutil import copyfile
 from typing import Dict, Any
 
 from pyhttpd.certs import CertificateSpec
@@ -52,6 +53,12 @@ class H2TestSetup(HttpdTestSetup):
         with open(os.path.join(self.env.gen_dir, "data-1m"), 'w') as f:
             for i in range(10000):
                 f.write(f"{i:09d}-{s90}")
+        test1_docs = os.path.join(self.env.server_docs_dir, 'test1')
+        self.env.mkpath(test1_docs)
+        for fname in ["data-1k", "data-10k", "data-100k", "data-1m"]:
+            src = os.path.join(self.env.gen_dir, fname)
+            dest = os.path.join(test1_docs, fname)
+            copyfile(src, dest)
 
 
 class H2TestEnv(HttpdTestEnv):

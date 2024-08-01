@@ -1504,7 +1504,7 @@ AP_DECLARE(int) ap_location_walk(request_rec *r)
     }
     else {
         char *uri = apr_pstrdup(r->pool, r->uri);
-        ap_no2slash(uri);
+        ap_no2slash_ex(uri, 0/*not an FS path*/);
         entry_uri = uri;
     }
 

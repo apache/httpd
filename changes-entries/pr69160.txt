@@ -1,0 +1,2 @@
+  *) mod_proxy: Avoid AH01059 parsing error for SetHandler "unix:" URLs.
+     PR 69160 [Yann Ylavic]

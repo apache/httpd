@@ -224,7 +224,7 @@ class Nghttp:
         if 0 == r.exit_code:
             lines = re.findall(r'[^\n]*\n', r.stdout, re.MULTILINE)
             for lidx, l in enumerate(lines):
-                m = re.match(r'\s*(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+/(.*)', l)
+                m = re.match(r'\s*(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+/*(/.*)', l)
                 if m:
                     assets.append({
                         "path": m.group(7),

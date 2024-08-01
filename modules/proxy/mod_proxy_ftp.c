@@ -1878,10 +1878,10 @@ static int proxy_ftp_handler(request_rec *r, proxy_worker *worker,
 
     /* set content-type */
     if (dirlisting) {
-        ap_set_content_type(r, apr_pstrcat(p, "text/html;charset=",
+        ap_set_content_type_ex(r, apr_pstrcat(p, "text/html;charset=",
                                            fdconf->ftp_directory_charset ?
                                            fdconf->ftp_directory_charset :
-                                           "ISO-8859-1",  NULL));
+                                           "ISO-8859-1",  NULL), 1);
     }
     else {
         if (xfer_type != 'A' && size != NULL) {

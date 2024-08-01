@@ -59,3 +59,7 @@ def acme(env):
     if acme_server is not None:
         acme_server.stop()
 
+@pytest.fixture(autouse=True, scope="package")
+def _stop_package_scope(env):
+    yield
+    assert env.apache_stop() == 0

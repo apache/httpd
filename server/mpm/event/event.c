@@ -152,6 +152,8 @@
 #define apr_time_from_msec(x) (x * 1000)
 #endif
 
+#define CONN_STATE_IS_LINGERING_CLOSE(s) ((s) >= CONN_STATE_LINGER && \
+                                          (s) <= CONN_STATE_LINGER_SHORT)
 #ifndef MAX_SECS_TO_LINGER
 #define MAX_SECS_TO_LINGER 30
 #endif
@@ -252,8 +254,11 @@ struct event_conn_state_t {
     conn_state_t pub;
     /** chaining in defer_linger_chain */
     struct event_conn_state_t *chain;
-    /** Is lingering close from defer_lingering_close()? */
-    int deferred_linger;
+    unsigned int 
+        /** Is lingering close from defer_lingering_close()? */
+        deferred_linger :1,
+        /** Has ap_start_lingering_close() been called? */
+        linger_started  :1;
 };
 
 APR_RING_HEAD(timeout_head_t, event_conn_state_t);
@@ -268,13 +273,13 @@ struct timeout_queue {
 /*
  * Several timeout queues that use different timeouts, so that we always can
  * simply append to the end.
- *   processing_q       uses vhost's TimeOut
+ *   waitio_q           uses vhost's TimeOut
  *   write_completion_q uses vhost's TimeOut
  *   keepalive_q        uses vhost's KeepAliveTimeOut
  *   linger_q           uses MAX_SECS_TO_LINGER
  *   short_linger_q     uses SECONDS_TO_LINGER
  */
-static struct timeout_queue *processing_q,
+static struct timeout_queue *waitio_q,
                             *write_completion_q,
                             *keepalive_q,
                             *linger_q,
@@ -448,7 +453,7 @@ static event_retained_data *retained;
 static int max_spawn_rate_per_bucket = MAX_SPAWN_RATE / 1;
 
 struct event_srv_cfg_s {
-    struct timeout_queue *ps_q,
+    struct timeout_queue *io_q,
                          *wc_q,
                          *ka_q;
 };
@@ -734,6 +739,9 @@ static int event_query(int query_code, int *result, apr_status_t *rv)
     case AP_MPMQ_CAN_POLL:
         *result = 1;
         break;
+    case AP_MPMQ_CAN_WAITIO:
+        *result = 1;
+        break;
     default:
         *rv = APR_ENOTIMPL;
         break;
@@ -930,7 +938,7 @@ static void close_connection(event_conn_state_t *cs)
  */
 static int shutdown_connection(event_conn_state_t *cs)
 {
-    if (cs->pub.state < CONN_STATE_LINGER) {
+    if (!CONN_STATE_IS_LINGERING_CLOSE(cs->pub.state)) {
         apr_table_setn(cs->c->notes, "short-lingering-close", "1");
         defer_lingering_close(cs);
     }
@@ -1082,6 +1090,8 @@ static void process_socket(apr_thread_t *thd, apr_pool_t * p, apr_socket_t * soc
         if (rc != OK && rc != DONE) {
             ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, APLOGNO(00469)
                           "process_socket: connection aborted");
+            close_connection(cs);
+            return;
         }
 
         /**
@@ -1099,7 +1109,6 @@ static void process_socket(apr_thread_t *thd, apr_pool_t * p, apr_socket_t * soc
          */
         cs->pub.state = CONN_STATE_PROCESSING;
         cs->pub.sense = CONN_SENSE_DEFAULT;
-        rc = OK;
     }
     else {
         c = cs->c;
@@ -1110,79 +1119,88 @@ static void process_socket(apr_thread_t *thd, apr_pool_t * p, apr_socket_t * soc
         c->id = conn_id;
     }
 
-    if (c->aborted) {
-        /* do lingering close below */
-        cs->pub.state = CONN_STATE_LINGER;
-    }
-    else if (cs->pub.state >= CONN_STATE_LINGER) {
-        /* fall through */
-    }
-    else {
-        if (cs->pub.state == CONN_STATE_PROCESSING
-            /* If we have an input filter which 'clogs' the input stream,
-             * like mod_ssl used to, lets just do the normal read from input
-             * filters, like the Worker MPM does. Filters that need to write
-             * where they would otherwise read, or read where they would
-             * otherwise write, should set the sense appropriately.
-             */
-             || c->clogging_input_filters) {
-process_connection:
-            clogging = c->clogging_input_filters;
-            if (clogging) {
-                apr_atomic_inc32(&clogged_count);
-            }
-            rc = ap_run_process_connection(c);
-            if (clogging) {
-                apr_atomic_dec32(&clogged_count);
-            }
-            /* The sense can be set in CONN_STATE_PROCESSING only */
-            if (cs->pub.state != CONN_STATE_PROCESSING) {
-                cs->pub.sense = CONN_SENSE_DEFAULT;
-            }
-            if (rc == DONE) {
-                rc = OK;
-            }
-        }
-        else if (cs->pub.state == CONN_STATE_WRITE_COMPLETION) {
-            from_wc_q = 1;
-        }
-    }
-    /*
-     * The process_connection hooks above should set the connection state
-     * appropriately upon return, for event MPM to either:
-     * - CONN_STATE_LINGER: do lingering close;
-     * - CONN_STATE_PROCESSING: wait for read/write-ability of the underlying
-     *   socket with respect to its Timeout and come back to process_connection()
-     *   hooks when ready;
-     * - CONN_STATE_WRITE_COMPLETION: flush pending outputs using Timeout and
-     *   wait for next incoming data using KeepAliveTimeout, then come back to
-     *   process_connection() hooks;
-     * - CONN_STATE_SUSPENDED: suspend the connection such that it now interacts
-     *   with the MPM through suspend/resume_connection() hooks, and/or registered
-     *   poll callbacks (PT_USER), and/or registered timed callbacks triggered by
-     *   timer events.
-     * If a process_connection hook returns an error or no hook sets the state
-     * to one of the above expected value, we forcibly close the connection w/
-     * CONN_STATE_LINGER.  This covers the cases where no process_connection
-     * hook executes (DECLINED), or one returns OK w/o touching the state (i.e.
-     * CONN_STATE_PROCESSING remains after the call) which can happen with
-     * third-party modules not updated to work specifically with event MPM
-     * while this was expected to do lingering close unconditionally with
-     * worker or prefork MPMs for instance.
-     */
-    if (rc != OK || (cs->pub.state != CONN_STATE_LINGER
-                     && cs->pub.state != CONN_STATE_PROCESSING
-                     && cs->pub.state != CONN_STATE_WRITE_COMPLETION
-                     && cs->pub.state != CONN_STATE_SUSPENDED)) {
-        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, APLOGNO(10111)
-                      "process_socket: connection processing %s: closing",
-                      rc ? apr_psprintf(c->pool, "returned error %i", rc)
-                         : apr_psprintf(c->pool, "unexpected state %i",
-                                                 (int)cs->pub.state));
-        cs->pub.state = CONN_STATE_LINGER;
+    if (CONN_STATE_IS_LINGERING_CLOSE(cs->pub.state)) {
+        goto lingering_close;
     }
 
-    if (cs->pub.state == CONN_STATE_PROCESSING) {
+    if (cs->pub.state == CONN_STATE_PROCESSING
+        /* If we have an input filter which 'clogs' the input stream,
+         * like mod_ssl used to, lets just do the normal read from input
+         * filters, like the Worker MPM does. Filters that need to write
+         * where they would otherwise read, or read where they would
+         * otherwise write, should set the sense appropriately.
+         */
+         || c->clogging_input_filters) {
+ process_connection:
+        cs->pub.state = CONN_STATE_PROCESSING;
+
+        clogging = c->clogging_input_filters;
+        if (clogging) {
+            apr_atomic_inc32(&clogged_count);
+        }
+        rc = ap_run_process_connection(c);
+        if (clogging) {
+            apr_atomic_dec32(&clogged_count);
+        }
+        /*
+         * The process_connection hooks should set the appropriate connection
+         * state upon return, for event MPM to either:
+         * - CONN_STATE_LINGER: do lingering close;
+         * - CONN_STATE_WRITE_COMPLETION: flush pending outputs using Timeout
+         *   and wait for next incoming data using KeepAliveTimeout, then come
+         *   back to process_connection() hooks;
+         * - CONN_STATE_SUSPENDED: suspend the connection such that it now
+         *   interacts with the MPM through suspend/resume_connection() hooks,
+         *   and/or registered poll callbacks (PT_USER), and/or registered
+         *   timed callbacks triggered by timer events;
+         * - CONN_STATE_ASYNC_WAITIO: wait for read/write-ability of the underlying
+         *   socket using Timeout and come back to process_connection() hooks when
+         *   ready;
+         * - CONN_STATE_KEEPALIVE: now handled by CONN_STATE_WRITE_COMPLETION
+         *   to flush before waiting for next data (that might depend on it).
+         * If a process_connection hook returns an error or no hook sets the state
+         * to one of the above expected value, forcibly close the connection w/
+         * CONN_STATE_LINGER.  This covers the cases where no process_connection
+         * hook executes (DECLINED), or one returns OK w/o touching the state (i.e.
+         * CONN_STATE_PROCESSING remains after the call) which can happen with
+         * third-party modules not updated to work specifically with event MPM
+         * while this was expected to do lingering close unconditionally with
+         * worker or prefork MPMs for instance.
+         */
+        switch (rc) {
+        case DONE:
+            rc = OK; /* same as OK, fall through */
+        case OK:
+            if (cs->pub.state == CONN_STATE_PROCESSING) {
+                cs->pub.state = CONN_STATE_LINGER;
+            }
+            else if (cs->pub.state == CONN_STATE_KEEPALIVE) {
+                cs->pub.state = CONN_STATE_WRITE_COMPLETION;
+            }
+            break;
+        }
+        if (rc != OK || (cs->pub.state != CONN_STATE_LINGER
+                         && cs->pub.state != CONN_STATE_ASYNC_WAITIO
+                         && cs->pub.state != CONN_STATE_WRITE_COMPLETION
+                         && cs->pub.state != CONN_STATE_SUSPENDED)) {
+            ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, APLOGNO(10111)
+                          "process_socket: connection processing returned %i "
+                          "(%sstate %i): closing",
+                          rc, rc ? "" : "unexpected ", (int)cs->pub.state);
+            cs->pub.state = CONN_STATE_LINGER;
+        }
+        else if (c->aborted) {
+            cs->pub.state = CONN_STATE_LINGER;
+        }
+        if (cs->pub.state == CONN_STATE_LINGER) {
+            goto lingering_close;
+        }
+    }
+    else if (cs->pub.state == CONN_STATE_WRITE_COMPLETION) {
+        from_wc_q = 1;
+    }
+
+    if (cs->pub.state == CONN_STATE_ASYNC_WAITIO) {
         /* Set a read/write timeout for this connection, and let the
          * event thread poll for read/writeability.
          */
@@ -1196,15 +1214,15 @@ process_connection:
          */
         update_reqevents_from_sense(cs, CONN_SENSE_WANT_READ);
         apr_thread_mutex_lock(timeout_mutex);
-        TO_QUEUE_APPEND(cs->sc->ps_q, cs);
+        TO_QUEUE_APPEND(cs->sc->io_q, cs);
         rv = apr_pollset_add(event_pollset, &cs->pfd);
         if (rv != APR_SUCCESS && !APR_STATUS_IS_EEXIST(rv)) {
             AP_DEBUG_ASSERT(0);
-            TO_QUEUE_REMOVE(cs->sc->ps_q, cs);
+            TO_QUEUE_REMOVE(cs->sc->io_q, cs);
             apr_thread_mutex_unlock(timeout_mutex);
             ap_log_error(APLOG_MARK, APLOG_ERR, rv, ap_server_conf, APLOGNO(10503)
                          "process_socket: apr_pollset_add failure in "
-                         "CONN_STATE_PROCESSING");
+                         "CONN_STATE_ASYNC_WAITIO");
             close_connection(cs);
             signal_threads(ST_GRACEFUL);
         }
@@ -1236,6 +1254,7 @@ process_connection:
             notify_suspend(cs);
 
             /* Add work to pollset. */
+            cs->pub.sense = CONN_SENSE_DEFAULT;
             update_reqevents_from_sense(cs, CONN_SENSE_WANT_WRITE);
             apr_thread_mutex_lock(timeout_mutex);
             TO_QUEUE_APPEND(cs->sc->wc_q, cs);
@@ -1257,17 +1276,18 @@ process_connection:
         }
         if (pending != DECLINED || c->aborted || c->keepalive != AP_CONN_KEEPALIVE) {
             cs->pub.state = CONN_STATE_LINGER;
+            goto lingering_close;
         }
-        else if (ap_run_input_pending(c) == OK) {
-            cs->pub.state = CONN_STATE_PROCESSING;
+        if (ap_run_input_pending(c) == OK) {
             goto process_connection;
         }
-        else if (!listener_may_exit) {
-            cs->pub.state = CONN_STATE_KEEPALIVE;
-        }
-        else {
+        if (listener_may_exit) {
             cs->pub.state = CONN_STATE_LINGER;
+            goto lingering_close;
         }
+
+        /* Fall through */
+        cs->pub.state = CONN_STATE_KEEPALIVE;
     }
 
     if (cs->pub.state == CONN_STATE_KEEPALIVE) {
@@ -1285,6 +1305,7 @@ process_connection:
         notify_suspend(cs);
 
         /* Add work to pollset. */
+        cs->pub.sense = CONN_SENSE_DEFAULT;
         update_reqevents_from_sense(cs, CONN_SENSE_WANT_READ);
         apr_thread_mutex_lock(timeout_mutex);
         TO_QUEUE_APPEND(cs->sc->ka_q, cs);
@@ -1312,6 +1333,7 @@ process_connection:
         return;
     }
 
+ lingering_close:
     /* CONN_STATE_LINGER[_*] fall through process_lingering_close() */
     process_lingering_close(cs);
 }
@@ -1332,10 +1354,11 @@ static apr_status_t event_resume_suspended (conn_rec *c)
     apr_atomic_dec32(&suspended_count);
     c->suspended_baton = NULL;
 
-    if (cs->pub.state < CONN_STATE_LINGER) {
+    if (!CONN_STATE_IS_LINGERING_CLOSE(cs->pub.state)) {
         cs->queue_timestamp = apr_time_now();
         notify_suspend(cs);
 
+        cs->pub.sense = CONN_SENSE_DEFAULT;
         cs->pub.state = CONN_STATE_WRITE_COMPLETION;
         update_reqevents_from_sense(cs, CONN_SENSE_WANT_WRITE);
         apr_thread_mutex_lock(timeout_mutex);
@@ -1344,7 +1367,6 @@ static apr_status_t event_resume_suspended (conn_rec *c)
         apr_thread_mutex_unlock(timeout_mutex);
     }
     else {
-        cs->pub.state = CONN_STATE_LINGER;
         process_lingering_close(cs);
     }
 
@@ -1751,9 +1773,12 @@ static void process_lingering_close(event_conn_state_t *cs)
 
     ap_log_cerror(APLOG_MARK, APLOG_TRACE6, 0, cs->c,
                   "lingering close from state %i", (int)cs->pub.state);
-    AP_DEBUG_ASSERT(cs->pub.state >= CONN_STATE_LINGER);
+    AP_DEBUG_ASSERT(CONN_STATE_IS_LINGERING_CLOSE(cs->pub.state));
 
-    if (cs->pub.state == CONN_STATE_LINGER) {
+    if (!cs->linger_started) {
+        cs->pub.state = CONN_STATE_LINGER;
+        cs->linger_started = 1;
+
         /* defer_lingering_close() may have bumped lingering_count already */
         if (!cs->deferred_linger) {
             apr_atomic_inc32(&lingering_count);
@@ -1765,12 +1790,11 @@ static void process_lingering_close(event_conn_state_t *cs)
             close_connection(cs);
             return;
         }
-
-        cs->queue_timestamp = apr_time_now();
-        /* Clear APR_INCOMPLETE_READ if it was ever set, we'll do the poll()
-         * at the listener only from now, if needed.
-         */
+        
+        /* All nonblocking from now, no need for APR_INCOMPLETE_READ either */
+        apr_socket_timeout_set(csd, 0);
         apr_socket_opt_set(csd, APR_INCOMPLETE_READ, 0);
+
         /*
          * If some module requested a shortened waiting period, only wait for
          * 2s (SECONDS_TO_LINGER). This is useful for mitigating certain
@@ -1784,9 +1808,17 @@ static void process_lingering_close(event_conn_state_t *cs)
         }
         cs->pub.sense = CONN_SENSE_DEFAULT;
         notify_suspend(cs);
+
+        /* One timestamp/duration for the whole lingering close time.
+         * XXX: This makes the (short_)linger_q not sorted/ordered by expiring
+         * timeouts whenever multiple schedules are necessary (EAGAIN below),
+         * but we probabaly don't care since these connections do not count
+         * for connections_above_limit() and all of them will be killed when
+         * busy or gracefully stopping anyway.
+         */
+        cs->queue_timestamp = apr_time_now();
     }
 
-    apr_socket_timeout_set(csd, 0);
     do {
         nbytes = sizeof(dummybuf);
         rv = apr_socket_recv(csd, dummybuf, &nbytes);
@@ -1969,11 +2001,11 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
             /* trace log status every second */
             if (now - last_log > apr_time_from_sec(1)) {
                 ap_log_error(APLOG_MARK, APLOG_TRACE6, 0, ap_server_conf,
-                             "connections: %u (processing:%d write-completion:%d"
-                             "keep-alive:%d lingering:%d suspended:%u clogged:%u), "
+                             "connections: %u (waitio:%u write-completion:%u"
+                             "keep-alive:%u lingering:%u suspended:%u clogged:%u), "
                              "workers: %u/%u shutdown",
                              apr_atomic_read32(&connection_count),
-                             apr_atomic_read32(processing_q->total),
+                             apr_atomic_read32(waitio_q->total),
                              apr_atomic_read32(write_completion_q->total),
                              apr_atomic_read32(keepalive_q->total),
                              apr_atomic_read32(&lingering_count),
@@ -2103,13 +2135,14 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
                 int blocking = 0;
 
                 switch (cs->pub.state) {
-                case CONN_STATE_PROCESSING:
-                    remove_from_q = cs->sc->ps_q;
+                case CONN_STATE_WRITE_COMPLETION:
+                    remove_from_q = cs->sc->wc_q;
                     blocking = 1;
                     break;
 
-                case CONN_STATE_WRITE_COMPLETION:
-                    remove_from_q = cs->sc->wc_q;
+                case CONN_STATE_ASYNC_WAITIO:
+                    cs->pub.state = CONN_STATE_PROCESSING;
+                    remove_from_q = cs->sc->io_q;
                     blocking = 1;
                     break;
 
@@ -2323,8 +2356,8 @@ do_maintenance:
                 process_keepalive_queue(now);
             }
 
-            /* Step 2: processing queue timeouts are flushed */
-            process_timeout_queue(processing_q, now, defer_lingering_close);
+            /* Step 2: waitio queue timeouts are flushed */
+            process_timeout_queue(waitio_q, now, defer_lingering_close);
 
             /* Step 3: write completion queue timeouts are flushed */
             process_timeout_queue(write_completion_q, now, defer_lingering_close);
@@ -2345,7 +2378,7 @@ do_maintenance:
                          queues_next_expiry > now ? queues_next_expiry - now
                                                   : -1);
 
-            ps->processing = apr_atomic_read32(processing_q->total);
+            ps->wait_io = apr_atomic_read32(waitio_q->total);
             ps->write_completion = apr_atomic_read32(write_completion_q->total);
             ps->keep_alive = apr_atomic_read32(keepalive_q->total);
             ps->lingering_close = apr_atomic_read32(&lingering_count);
@@ -4019,17 +4052,17 @@ static int event_post_config(apr_pool_t *pconf, apr_pool_t *plog,
     struct {
         struct timeout_queue *tail, *q;
         apr_hash_t *hash;
-    } ps, wc, ka;
+    } io, wc, ka;
 
     /* Not needed in pre_config stage */
     if (ap_state_query(AP_SQ_MAIN_STATE) == AP_SQ_MS_CREATE_PRE_CONFIG) {
         return OK;
     }
 
-    ps.hash = apr_hash_make(ptemp);
+    io.hash = apr_hash_make(ptemp);
     wc.hash = apr_hash_make(ptemp);
     ka.hash = apr_hash_make(ptemp);
-    ps.tail = wc.tail = ka.tail = NULL;
+    io.tail = wc.tail = ka.tail = NULL;
 
     linger_q = TO_QUEUE_MAKE(pconf, apr_time_from_sec(MAX_SECS_TO_LINGER),
                              NULL);
@@ -4040,11 +4073,11 @@ static int event_post_config(apr_pool_t *pconf, apr_pool_t *plog,
         event_srv_cfg *sc = apr_pcalloc(pconf, sizeof *sc);
 
         ap_set_module_config(s->module_config, &mpm_event_module, sc);
-        if (!ps.tail) {
+        if (!io.tail) {
             /* The main server uses the global queues */
-            ps.q = TO_QUEUE_MAKE(pconf, s->timeout, NULL);
-            apr_hash_set(ps.hash, &s->timeout, sizeof s->timeout, ps.q);
-            ps.tail = processing_q = ps.q;
+            io.q = TO_QUEUE_MAKE(pconf, s->timeout, NULL);
+            apr_hash_set(io.hash, &s->timeout, sizeof s->timeout, io.q);
+            io.tail = waitio_q = io.q;
 
             wc.q = TO_QUEUE_MAKE(pconf, s->timeout, NULL);
             apr_hash_set(wc.hash, &s->timeout, sizeof s->timeout, wc.q);
@@ -4058,11 +4091,11 @@ static int event_post_config(apr_pool_t *pconf, apr_pool_t *plog,
         else {
             /* The vhosts use any existing queue with the same timeout,
              * or their own queue(s) if there isn't */
-            ps.q = apr_hash_get(ps.hash, &s->timeout, sizeof s->timeout);
-            if (!ps.q) {
-                ps.q = TO_QUEUE_MAKE(pconf, s->timeout, ps.tail);
-                apr_hash_set(ps.hash, &s->timeout, sizeof s->timeout, ps.q);
-                ps.tail = ps.tail->next = ps.q;
+            io.q = apr_hash_get(io.hash, &s->timeout, sizeof s->timeout);
+            if (!io.q) {
+                io.q = TO_QUEUE_MAKE(pconf, s->timeout, io.tail);
+                apr_hash_set(io.hash, &s->timeout, sizeof s->timeout, io.q);
+                io.tail = io.tail->next = io.q;
             }
 
             wc.q = apr_hash_get(wc.hash, &s->timeout, sizeof s->timeout);
@@ -4081,7 +4114,7 @@ static int event_post_config(apr_pool_t *pconf, apr_pool_t *plog,
                 ka.tail = ka.tail->next = ka.q;
             }
         }
-        sc->ps_q = ps.q;
+        sc->io_q = io.q;
         sc->wc_q = wc.q;
         sc->ka_q = ka.q;
     }

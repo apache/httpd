@@ -3972,7 +3972,7 @@ static int include_fixup(request_rec *r)
     if (r->handler && (strcmp(r->handler, "server-parsed") == 0))
     {
         if (!r->content_type || !*r->content_type) {
-            ap_set_content_type(r, "text/html");
+            ap_set_content_type_ex(r, "text/html", 1);
         }
         r->handler = "default-handler";
     }
