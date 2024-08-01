@@ -59,7 +59,7 @@ static int proxy_fcgi_canon(request_rec *r, char *url)
 {
     char *host, sport[7];
     const char *err;
-    char *path = url, *pc;
+    char *path, *pc;
     apr_port_t port, def_port;
     fcgi_req_config_t *rconf = NULL;
     const char *pathinfo_type = NULL;
@@ -71,6 +71,7 @@ static int proxy_fcgi_canon(request_rec *r, char *url)
         return DECLINED;
     }
 
+    path = url;
     port = def_port = ap_proxy_port_of_scheme("fcgi");
 
     ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r,
