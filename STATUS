@@ -219,33 +219,6 @@ PATCHES/ISSUES THAT ARE BEING WORKED
              does a minor bump only.
      minfrin: Two new directives need to be documented.
 
-   * mod_proxy_http: Don't establish or reuse a backend connection before pre-
-     fetching the request body, so to minimize the delay between it is supposed
-     to be alive and the first bytes sent: this is a best effort to prevent the
-     backend from closing because of idle or keepalive timeout in the meantime.
-     Also, handle a new "proxy-flushall" environment variable which allows to
-     flush any forwarded body data immediately. PR 56541+37920.
-     trunk patch: http://svn.apache.org/r1656259
-                  http://svn.apache.org/r1656359 (CHANGES entry)
-     2.4.x patch: trunk works (modulo CHANGES, docs/log-message-tags)
-     +1: ylavic
-     -0: jim:  This seems to be a hit to normal performance, to handle an
-               error and/or non-normal condition. The pre-fetch is
-               expensive, and is always done, even before we know that
-               the backend is available to rec' it. I understand the
-               error described, but is the fix actually worth it (plus
-               it seems to allow for a DDoS vector).
-     ylavic: It seems to me that the problem is real since we reuse the
-             connection before prefetching 16K (either controlled by the
-             client, or by an input filter), we currently always prefetch
-             these bytes already. Regarding performance I don't see any
-             difference (more cycles) compared with the current code.
-             However I think I failed to rebuild the header_brigade when
-             the proxy loop is retried (ping), so I need to rework this.
-             Do you think we'd better remove the prefetch, or maybe just
-             make it nonblocking (by default)?
-        jim: Non-blocking seems the best way to handle...
-
 PATCHES/ISSUES THAT ARE STALLED
 
   *) core: avoid duplicate headers when using ap_send_error_response.
