@@ -493,6 +493,7 @@ typedef struct {
     unsigned int     address_ttl_set:1;
     apr_int32_t      address_ttl;    /* backend address' TTL (seconds) */
     apr_uint32_t     address_expiry; /* backend address' next expiry time */
+    unsigned int     is_host_matchable:1;
 } proxy_worker_shared;
 
 #define ALIGNED_PROXY_WORKER_SHARED_SIZE (APR_ALIGN_DEFAULT(sizeof(proxy_worker_shared)))

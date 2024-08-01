@@ -1826,23 +1826,26 @@ static int ap_proxy_strcmp_ematch(const char *str, const char *expected)
     return 0;
 }
 
-static APR_INLINE
-int worker_matches(proxy_worker *worker,
-                   const char *url, apr_size_t url_len,
-                   apr_size_t min_match, apr_size_t *max_match,
-                   unsigned int mask)
+static int worker_matches(proxy_worker *worker,
+                          const char *url, apr_size_t url_len,
+                          apr_size_t min_match, apr_size_t *max_match,
+                          unsigned int mask)
 {
     apr_size_t name_len = strlen(worker->s->name_ex);
-    int name_match = worker->s->is_name_matchable;
     if (name_len <= url_len
-        && name_len >= min_match
         && name_len > *max_match
-        && ((name_match
-             && (mask & AP_PROXY_WORKER_IS_MATCH)
-             && !ap_proxy_strcmp_ematch(url, worker->s->name_ex))
-            || (!name_match
-                && (mask & AP_PROXY_WORKER_IS_PREFIX)
-                && !strncmp(url, worker->s->name_ex, name_len)))) {
+        /* min_match is the length of the scheme://host part only of url,
+         * so it's used as a fast path to avoid the match when url is too
+         * small, but it's irrelevant when the worker host contains globs
+         * (i.e. ->is_host_matchable).
+         */
+        && (worker->s->is_name_matchable
+            ? ((mask & AP_PROXY_WORKER_IS_MATCH)
+               && (worker->s->is_host_matchable || name_len >= min_match)
+               && !ap_proxy_strcmp_ematch(url, worker->s->name_ex))
+            : ((mask & AP_PROXY_WORKER_IS_PREFIX)
+               && (name_len >= min_match)
+               && !strncmp(url, worker->s->name_ex, name_len)))) {
         *max_match = name_len;
         return 1;
     }
@@ -2132,6 +2135,7 @@ PROXY_DECLARE(char *) ap_proxy_define_worker_ex(apr_pool_t *p,
     wshared->was_malloced = (mask & AP_PROXY_WORKER_IS_MALLOCED) != 0;
     if (mask & AP_PROXY_WORKER_IS_MATCH) {
         wshared->is_name_matchable = 1;
+        wshared->is_host_matchable = (address_not_reusable != 0);
 
         /* Before AP_PROXY_WORKER_IS_MATCH (< 2.4.47), a regex worker with
          * dollar substitution was never matched against any actual URL, thus
