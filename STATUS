@@ -211,11 +211,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      PR: https://github.com/apache/httpd/pull/469
      +1: ylavic,
 
-  *) mod_proxy_fcgi: Don't re-encode SCRIPT_FILENAME. PR 69203.
+  *) mod_proxy_fcgi: Don't re-encode SCRIPT_FILENAME when set via SetHandler. PR 69203.
      trunk patch: https://svn.apache.org/r1919547
                   https://svn.apache.org/r1919620
                   https://svn.apache.org/r1919621
                   https://svn.apache.org/r1919623
+                  https://svn.apache.org/r1919628
      2.4.x patch: https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/470.diff
      PR: https://github.com/apache/httpd/pull/470
      +1: ylavic,
