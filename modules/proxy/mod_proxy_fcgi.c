@@ -63,6 +63,9 @@ static int proxy_fcgi_canon(request_rec *r, char *url)
     apr_port_t port, def_port;
     fcgi_req_config_t *rconf = NULL;
     const char *pathinfo_type = NULL;
+    fcgi_dirconf_t *dconf = ap_get_module_config(r->per_dir_config,
+                                                 &proxy_fcgi_module);
+    int from_handler;
 
     if (ap_cstr_casecmpn(url, "fcgi:", 5) == 0) {
         url += 5;
@@ -92,9 +95,29 @@ static int proxy_fcgi_canon(request_rec *r, char *url)
         host = apr_pstrcat(r->pool, "[", host, "]", NULL);
     }
 
-    if (apr_table_get(r->notes, "proxy-nocanon")
+    from_handler = apr_table_get(r->notes, "proxy-sethandler") != NULL;
+    if (from_handler
+        || apr_table_get(r->notes, "proxy-nocanon")
         || apr_table_get(r->notes, "proxy-noencode")) {
-        path = url;   /* this is the raw/encoded path */
+        char *c = path = url;   /* this is the raw path */
+
+        /* We do not call ap_proxy_canonenc_ex() on the path here, don't
+         * let control characters pass still, and for php-fpm no '?' either.
+         */
+        if (FCGI_MAY_BE_FPM(dconf)) {
+            while (!apr_iscntrl(*c) && *c != '?')
+                c++;
+        }
+        else {
+            while (!apr_iscntrl(*c))
+                c++;
+        }
+        if (*c) {
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(10414)
+                          "To be forwarded path contains control characters%s",
+                          FCGI_MAY_BE_FPM(dconf) ? " or '?'" : "");
+            return HTTP_FORBIDDEN;
+        }
     }
     else {
         core_dir_config *d = ap_get_core_module_config(r->per_dir_config);
@@ -105,16 +128,6 @@ static int proxy_fcgi_canon(request_rec *r, char *url)
         if (!path) {
             return HTTP_BAD_REQUEST;
         }
-    }
-    /*
-     * If we have a raw control character or a ' ' in nocanon path,
-     * correct encoding was missed.
-     */
-    if (path == url && *ap_scan_vchar_obstext(path)) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(10414)
-                      "To be forwarded path contains control "
-                      "characters or spaces");
-        return HTTP_FORBIDDEN;
     }
 
     r->filename = apr_pstrcat(r->pool, "proxy:fcgi://", host, sport, "/",

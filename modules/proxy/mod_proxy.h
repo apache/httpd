@@ -492,6 +492,7 @@ typedef struct {
     unsigned int     disablereuse_set:1;
     unsigned int     was_malloced:1;
     unsigned int     is_name_matchable:1;
+    unsigned int     is_host_matchable:1;
     unsigned int     response_field_size_set:1;
     unsigned int     address_ttl_set:1;
     apr_int32_t      address_ttl;    /* backend address' TTL (seconds) */
