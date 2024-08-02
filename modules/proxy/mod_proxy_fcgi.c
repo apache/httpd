@@ -59,10 +59,13 @@ static int proxy_fcgi_canon(request_rec *r, char *url)
 {
     char *host, sport[7];
     const char *err;
-    char *path, *pc;
+    char *path;
     apr_port_t port, def_port;
     fcgi_req_config_t *rconf = NULL;
     const char *pathinfo_type = NULL;
+    fcgi_dirconf_t *dconf = ap_get_module_config(r->per_dir_config,
+                                                 &proxy_fcgi_module);
+    int from_handler;
 
     if (ap_cstr_casecmpn(url, "fcgi:", 5) == 0) {
         url += 5;
@@ -71,12 +74,11 @@ static int proxy_fcgi_canon(request_rec *r, char *url)
         return DECLINED;
     }
 
-    path = url;
     port = def_port = ap_proxy_port_of_scheme("fcgi");
 
     ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r,
                  "canonicalising URL %s", url);
-    err = ap_proxy_canon_netloc(r->pool, &path, NULL, NULL, &host, &port);
+    err = ap_proxy_canon_netloc(r->pool, &url, NULL, NULL, &host, &port);
     if (err) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01059)
                       "error parsing URL %s: %s", url, err);
@@ -93,18 +95,38 @@ static int proxy_fcgi_canon(request_rec *r, char *url)
         host = apr_pstrcat(r->pool, "[", host, "]", NULL);
     }
 
-    /* We do not call ap_proxy_canonenc_ex() on the path here because the CGI
-     * environment variable SCRIPT_FILENAME based on it want the decoded/local
-     * path, don't let control characters pass still.
-     *
-     * XXX: should we encode based on dconf->backend_type though?
-     */
-    for (pc = path; *pc; pc++) {
-        if (apr_iscntrl(*pc)) {
+    from_handler = apr_table_get(r->notes, "proxy-sethandler") != NULL;
+    if (from_handler
+        || apr_table_get(r->notes, "proxy-nocanon")
+        || apr_table_get(r->notes, "proxy-noencode")) {
+        char *c = path = url;   /* this is the raw path */
+
+        /* We do not call ap_proxy_canonenc_ex() on the path here, don't
+         * let control characters pass still, and for php-fpm no '?' either.
+         */
+        if (FCGI_MAY_BE_FPM(dconf)) {
+            while (!apr_iscntrl(*c) && *c != '?')
+                c++;
+        }
+        else {
+            while (!apr_iscntrl(*c))
+                c++;
+        }
+        if (*c) {
             ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(10414)
-                          "To be forwarded path contains control "
-                          "characters");
+                          "To be forwarded path contains control characters%s",
+                          FCGI_MAY_BE_FPM(dconf) ? " or '?'" : "");
             return HTTP_FORBIDDEN;
+        }
+    }
+    else {
+        core_dir_config *d = ap_get_core_module_config(r->per_dir_config);
+        int flags = d->allow_encoded_slashes && !d->decode_encoded_slashes ? PROXY_CANONENC_NOENCODEDSLASHENCODING : 0;
+
+        path = ap_proxy_canonenc_ex(r->pool, url, strlen(url), enc_path, flags,
+                                    r->proxyreq);
+        if (!path) {
+            return HTTP_BAD_REQUEST;
         }
     }
 
