@@ -42,7 +42,7 @@
 <!-- Generic tag entities -->
 
 <!ENTITY % inlinetags "em | strong | code | a | br | directive | module |
-program | img | cite | q | dfn | var | transnote | glossary | phonetic">
+program | img | cite | q | dfn | var | transnote | glossary | phonetic | since">
 
 <!ENTITY % blocktags "p | example | note | table | ul | ol | dl | pre | 
 highlight | blockquote">
@@ -110,6 +110,8 @@ highlight | blockquote">
 <!ELEMENT dfn %Inline;>
 
 <!ELEMENT var %Inline;>
+
+<!ELEMENT since %Inline;>
 
 <!-- translators note -->
 <!ELEMENT transnote %Inline;>
