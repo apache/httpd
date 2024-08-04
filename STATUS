@@ -216,6 +216,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      PR: https://github.com/apache/httpd/pull/470
      +1: ylavic,
 
+  *) CMake: Remove awk dependency when building using CMake. Before this awk was
+     required for -DWITH_MODULES option.
+     trunk patch: https://svn.apache.org/r1919413
+                  https://svn.apache.org/r1919587
+                  https://svn.apache.org/r1919602
+     2.4.x patch: svn merge -c r1919413 -c r1919587 -c r1919602 ^/httpd/httpd/trunk .
+     +1: ivan
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
