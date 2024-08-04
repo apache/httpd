@@ -1,0 +1,63 @@
+name: Windows
+
+on:
+  push:
+    branches: [ "*" ]
+    paths-ignore:
+      - 'docs/**'
+      - STATUS
+      - CHANGES
+      - changes-entries/*
+  pull_request:
+    branches: [ "trunk", "2.4.x" ]
+    paths-ignore:
+      - 'docs/**'
+      - STATUS
+      - CHANGES
+      - changes-entries/*
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: Default
+            triplet: x64-windows
+            arch: x64
+            build-type: Debug
+            generator: "Ninja"
+
+    runs-on: windows-latest
+    timeout-minutes: 30
+    name: ${{ matrix.name }}
+    env: 
+      VCPKG_BINARY_SOURCES: "clear;x-gha,readwrite"
+    steps:
+      - name: Export GitHub Actions cache environment variables
+        uses: actions/github-script@v7
+        with:
+          script: |
+              core.exportVariable('ACTIONS_CACHE_URL', process.env.ACTIONS_CACHE_URL || '');
+              core.exportVariable('ACTIONS_RUNTIME_TOKEN', process.env.ACTIONS_RUNTIME_TOKEN || '');
+
+      - name: Install dependencies
+        run: vcpkg install --triplet ${{ matrix.triplet }} apr[private-headers] apr-util pcre2 openssl
+
+      - uses: actions/checkout@v3
+
+      - name: Configure CMake
+        shell: cmd
+        run: |
+            call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\Tools\VsDevCmd.bat" -arch=${{ matrix.arch }}
+            cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} ^
+                -G "${{ matrix.generator }}" ^
+                -DCMAKE_TOOLCHAIN_FILE=C:/vcpkg/scripts/buildsystems/vcpkg.cmake ^
+                -DAPR_INCLUDE_DIR=C:/vcpkg/installed/${{ matrix.triplet }}/include ^
+                "-DAPR_LIBRARIES=C:/vcpkg/installed/${{ matrix.triplet }}/lib/libapr-1.lib;C:/vcpkg/installed/${{ matrix.triplet }}/lib/libaprutil-1.lib"
+
+      - name: Build
+        shell: cmd
+        run: |
+            call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\Tools\VsDevCmd.bat" -arch=${{ matrix.arch }}
+            cmake --build ${{github.workspace}}/build --config ${{ matrix.build-type }}
