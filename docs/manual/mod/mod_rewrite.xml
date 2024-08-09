@@ -1494,13 +1494,15 @@ cannot use <code>$N</code> in the substitution string!
     <tr>
         <td>UnsafePrefixStat</td>
         <td>Allows potentially unsafe substitutions from a leading variable or backreference to a filesystem path.
-        <em><a href="../rewrite/flags.html#flag_unsafe_prefix_stat">details ...</a></em>
+        <em><a href="../rewrite/flags.html#flag_unsafe_prefix_stat">details ...</a></em><br />
+        <since>2.4.60</since>
         </td>
     </tr>
     <tr>
         <td>UNC</td>
         <td>Prevents the merging of multiple leading slashes, as used by Windows UNC paths.
-        <em><a href="../rewrite/flags.html#flag_unc">details ...</a></em>
+        <em><a href="../rewrite/flags.html#flag_unc">details ...</a></em><br />
+        <since>2.4.62</since>
         </td>
     </tr>
 

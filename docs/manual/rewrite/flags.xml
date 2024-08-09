@@ -865,11 +865,15 @@ The <code>L</code> flag can be useful in this context to end the
     These substitutions are not prefixed with the document root.
     This protects from a malicious URL causing the expanded substitution to
     map to an unexpected filesystem location.</p>
+
+    <p><since>2.4.60</since></p>
 </section>
 <section id="flag_unc"><title>UNC</title>
     <p> Setting this flag prevents the merging of multiple leading slashes,
     as used in Windows UNC paths.  The flag is not necessary when the rules
-    substitution starts with multiple literal slashes. </p>
+    substitution starts with multiple literal slashes.</p>
+
+    <p><since>2.4.62</since></p>
 </section>
 
 </manualpage>
