@@ -59,6 +59,8 @@
         <message id="moduleidentifier">Modulbezeichner</message>
         <message id="sourcefile">Quelltext-Datei</message>
         <message id="compatibility">Kompatibilit&#228;t</message>
+        <message id="before-since">Available in Apache HTTP Server </message>
+        <message id="after-since"> and later.</message>
 
         <!-- Used in manualpage -->
         <message id="relatedmodules">Referenzierte Module</message>
