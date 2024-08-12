@@ -633,6 +633,30 @@ int main(int argc, char *argv[])
         exit(119);
     }
 
+    /**
+    * Better understanding what exactly needs to be changed
+    */
+    if (prg_info.st_uid != uid) {
+        log_err("file uid (%lu) does not match caller uid (%lu): (%s/%s)\n",
+                (unsigned long)prg_info.st_uid, (unsigned long)uid, cwd, cmd);
+        exit(120);
+    }
+    if (prg_info.st_gid != gid) {
+        log_err("file gid (%lu) does not match caller gid (%lu): (%s/%s)\n",
+                (unsigned long)prg_info.st_gid, (unsigned long)gid, cwd, cmd);
+        exit(120);
+    }
+    if (dir_info.st_uid != uid) {
+        log_err("directory uid (%lu) does not match caller uid (%lu): (%s)\n",
+                (unsigned long)dir_info.st_uid, (unsigned long)uid, cwd);
+        exit(120);
+    }
+    if (dir_info.st_gid != gid) {
+        log_err("directory gid (%lu) does not match caller gid (%lu): (%s)\n",
+                (unsigned long)dir_info.st_gid, (unsigned long)gid, cwd);
+        exit(120);
+    }
+
     /*
      * Error out if the target name/group is different from
      * the name/group of the cwd or the program.
