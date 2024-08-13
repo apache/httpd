@@ -1307,7 +1307,7 @@ AP_DECLARE(request_rec *) ap_read_request(conn_rec *conn)
 {
     int access_status;
     apr_bucket_brigade *tmp_bb;
-    apr_bucket *e, *bdata = NULL;
+    apr_bucket *e, *bdata = NULL, *berr = NULL;
     ap_bucket_request *breq = NULL;
     const char *method, *uri, *protocol;
     apr_table_t *headers;
@@ -1337,16 +1337,89 @@ AP_DECLARE(request_rec *) ap_read_request(conn_rec *conn)
             if (!breq) breq = e->data;
         }
         else if (AP_BUCKET_IS_ERROR(e)) {
-            access_status = ((ap_bucket_error *)(e->data))->status;
-            goto die_unusable_input;
+            if (!berr) berr = e;
         }
         else if (!APR_BUCKET_IS_METADATA(e) && e->length != 0) {
-            if (!bdata) bdata = e;;
+            if (!bdata) bdata = e;
             break;
         }
     }
 
-    if (bdata) {
+    if (!breq && !berr) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(10389)
+                      "request failed: neither request bucket nor error at start of input");
+        access_status = HTTP_INTERNAL_SERVER_ERROR;
+        goto die_unusable_input;
+    }
+
+    if (breq) {
+        /* If there is a request, we always process it, as it defines
+         * the context in which a potential error bucket is handled. */
+        if (apr_pool_is_ancestor(r->pool, breq->pool)) {
+            method = breq->method;
+            uri = breq->uri;
+            protocol = breq->protocol;
+            headers = breq->headers;
+        }
+        else {
+            method = apr_pstrdup(r->pool, breq->method);
+            uri = apr_pstrdup(r->pool, breq->uri);
+            protocol = apr_pstrdup(r->pool, breq->protocol);
+            headers = breq->headers? apr_table_clone(r->pool, breq->headers) : NULL;
+        }
+
+        if (!method || !uri || !protocol) {
+            access_status = berr? ((ap_bucket_error *)(berr->data))->status :
+                                  HTTP_INTERNAL_SERVER_ERROR;
+            goto die_unusable_input;
+        }
+
+        if (headers) {
+            r->headers_in = headers;
+        }
+
+        ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r,
+                      "checking request: %s %s %s",
+                      method, uri, protocol);
+
+        if (!ap_assign_request_line(r, method, uri, protocol)) {
+            apr_brigade_cleanup(tmp_bb);
+            switch (r->status) {
+            case HTTP_REQUEST_URI_TOO_LARGE:
+            case HTTP_BAD_REQUEST:
+            case HTTP_VERSION_NOT_SUPPORTED:
+            case HTTP_NOT_IMPLEMENTED:
+                if (r->status == HTTP_REQUEST_URI_TOO_LARGE) {
+                    ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(00565)
+                                  "request failed: client's request-line exceeds LimitRequestLine (longer than %d)",
+                                  r->server->limit_req_line);
+                }
+                else if (!strcmp("-", r->method)) {
+                    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(00566)
+                                  "request failed: malformed request line");
+                }
+                access_status = r->status;
+                goto die_unusable_input;
+
+            case HTTP_REQUEST_TIME_OUT:
+                /* Just log, no further action on this connection. */
+                ap_update_child_status(conn->sbh, SERVER_BUSY_LOG, NULL);
+                if (!r->connection->keepalives)
+                    ap_run_log_transaction(r);
+                break;
+            }
+            /* Not worth dying with. */
+            conn->keepalive = AP_CONN_CLOSE;
+            apr_pool_destroy(r->pool);
+            goto ignore;
+        }
+    }
+
+    if (berr) {
+        access_status = ((ap_bucket_error *)(berr->data))->status;
+        goto die_unusable_input;
+    }
+    else if (bdata) {
         /* Since processing of a request body depends on knowing the request, we
          * cannot handle any data here. For example, chunked-encoding filters are
          * added after the request is read, so any data buckets here will not
@@ -1358,64 +1431,7 @@ AP_DECLARE(request_rec *) ap_read_request(conn_rec *conn)
         access_status = HTTP_INTERNAL_SERVER_ERROR;
         goto die_unusable_input;
     }
-    else if (!breq) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(10389)
-                      "request failed: neither request bucket nor error at start of input");
-        access_status = HTTP_INTERNAL_SERVER_ERROR;
-        goto die_unusable_input;
-    }
 
-    if (apr_pool_is_ancestor(r->pool, breq->pool)) {
-        method = breq->method;
-        uri = breq->uri;
-        protocol = breq->protocol;
-        headers = breq->headers;
-    }
-    else {
-        method = apr_pstrdup(r->pool, breq->method);
-        uri = apr_pstrdup(r->pool, breq->uri);
-        protocol = apr_pstrdup(r->pool, breq->protocol);
-        headers = breq->headers? apr_table_clone(r->pool, breq->headers) : NULL;
-    }
-
-    if (headers) {
-        r->headers_in = headers;
-    }
-    ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r,
-                  "checking request: %s %s %s",
-                  method, uri, protocol);
-
-    if (!ap_assign_request_line(r, method, uri, protocol)) {
-        apr_brigade_cleanup(tmp_bb);
-        switch (r->status) {
-        case HTTP_REQUEST_URI_TOO_LARGE:
-        case HTTP_BAD_REQUEST:
-        case HTTP_VERSION_NOT_SUPPORTED:
-        case HTTP_NOT_IMPLEMENTED:
-            if (r->status == HTTP_REQUEST_URI_TOO_LARGE) {
-                ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(00565)
-                              "request failed: client's request-line exceeds LimitRequestLine (longer than %d)",
-                              r->server->limit_req_line);
-            }
-            else if (!strcmp("-", r->method)) {
-                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(00566)
-                              "request failed: malformed request line");
-            }
-            access_status = r->status;
-            goto die_unusable_input;
-
-        case HTTP_REQUEST_TIME_OUT:
-            /* Just log, no further action on this connection. */
-            ap_update_child_status(conn->sbh, SERVER_BUSY_LOG, NULL);
-            if (!r->connection->keepalives)
-                ap_run_log_transaction(r);
-            break;
-        }
-        /* Not worth dying with. */
-        conn->keepalive = AP_CONN_CLOSE;
-        apr_pool_destroy(r->pool);
-        goto ignore;
-    }
     apr_brigade_cleanup(tmp_bb);
 
     /* We may have been in keep_alive_timeout mode, so toggle back

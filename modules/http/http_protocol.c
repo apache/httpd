@@ -927,7 +927,13 @@ AP_DECLARE(void) ap_set_content_type(request_rec *r, const char *ct)
     }
     else if (!r->content_type || strcmp(r->content_type, ct)) {
         r->content_type = ct;
+        AP_REQUEST_SET_BNOTE(r, AP_REQUEST_TRUSTED_CT, 0);
     }
+}
+AP_DECLARE(void) ap_set_content_type_ex(request_rec *r, const char *ct, int trusted)
+{
+    ap_set_content_type(r, ct);
+    AP_REQUEST_SET_BNOTE(r, AP_REQUEST_TRUSTED_CT, trusted ? AP_REQUEST_TRUSTED_CT : 0);
 }
 
 AP_DECLARE(void) ap_set_accept_ranges(request_rec *r)
@@ -1270,10 +1276,10 @@ AP_DECLARE(void) ap_send_error_response(request_rec *r, int recursive_error)
             request_conf->suppress_charset = 1; /* avoid adding default
                                                  * charset later
                                                  */
-            ap_set_content_type(r, "text/html");
+            ap_set_content_type_ex(r, "text/html", 1);
         }
         else {
-            ap_set_content_type(r, "text/html; charset=iso-8859-1");
+            ap_set_content_type_ex(r, "text/html; charset=iso-8859-1", 1);
         }
 
         if ((status == HTTP_METHOD_NOT_ALLOWED)

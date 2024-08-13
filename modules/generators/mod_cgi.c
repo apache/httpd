@@ -48,7 +48,6 @@
 #include "http_protocol.h"
 #include "http_main.h"
 #include "http_log.h"
-#include "util_script.h"
 #include "ap_mpm.h"
 #include "mod_core.h"
 #include "mod_cgi.h"
@@ -672,7 +671,7 @@ static apr_status_t include_cgi(include_ctx_t *ctx, ap_filter_t *f,
     /* Force sub_req to be treated as a CGI request, even if ordinary
      * typing rules would have called it something else.
      */
-    ap_set_content_type(rr, CGI_MAGIC_TYPE);
+    ap_set_content_type_ex(rr, CGI_MAGIC_TYPE, 1);
 
     /* Run it. */
     rr_status = ap_run_sub_req(rr);

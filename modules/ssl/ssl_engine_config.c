@@ -214,7 +214,6 @@ static SSLSrvConfigRec *ssl_config_server_new(apr_pool_t *p)
     sc->vhost_id               = NULL;  /* set during module init */
     sc->session_cache_timeout  = UNSET;
     sc->cipher_server_pref     = UNSET;
-    sc->insecure_reneg         = UNSET;
 #ifdef HAVE_TLSEXT
     sc->strict_sni_vhost_check = SSL_ENABLED_UNSET;
 #endif
@@ -348,7 +347,6 @@ void *ssl_config_server_merge(apr_pool_t *p, void *basev, void *addv)
     cfgMerge(enabled, SSL_ENABLED_UNSET);
     cfgMergeInt(session_cache_timeout);
     cfgMergeBool(cipher_server_pref);
-    cfgMergeBool(insecure_reneg);
 #ifdef HAVE_TLSEXT
     cfgMerge(strict_sni_vhost_check, SSL_ENABLED_UNSET);
 #endif
@@ -669,7 +667,6 @@ const char *ssl_cmd_SSLPassPhraseDialog(cmd_parms *cmd,
     return NULL;
 }
 
-#if defined(HAVE_OPENSSL_ENGINE_H) && defined(HAVE_ENGINE_INIT)
 const char *ssl_cmd_SSLCryptoDevice(cmd_parms *cmd,
                                     void *dcfg,
                                     const char *arg)
@@ -714,7 +711,6 @@ const char *ssl_cmd_SSLCryptoDevice(cmd_parms *cmd,
 
     return NULL;
 }
-#endif
 
 const char *ssl_cmd_SSLRandomSeed(cmd_parms *cmd,
                                   void *dcfg,
@@ -953,10 +949,12 @@ const char *ssl_cmd_SSLCompression(cmd_parms *cmd, void *dcfg, int flag)
         }
     }
     sc->compression = flag ? TRUE : FALSE;
-    return NULL;
 #else
-    return "Setting Compression mode unsupported; not implemented by the SSL library";
+    if (flag) {
+        return "Setting Compression mode unsupported; not implemented by the SSL library";
+    }
 #endif
+    return NULL;
 }
 
 const char *ssl_cmd_SSLHonorCipherOrder(cmd_parms *cmd, void *dcfg, int flag)
@@ -983,14 +981,7 @@ const char *ssl_cmd_SSLSessionTickets(cmd_parms *cmd, void *dcfg, int flag)
 
 const char *ssl_cmd_SSLInsecureRenegotiation(cmd_parms *cmd, void *dcfg, int flag)
 {
-#ifdef SSL_OP_ALLOW_UNSAFE_LEGACY_RENEGOTIATION
-    SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
-    sc->insecure_reneg = flag?TRUE:FALSE;
-    return NULL;
-#else
-    return "The SSLInsecureRenegotiation directive is not available "
-        "with this SSL library";
-#endif
+    return "The SSLInsecureRenegotiation directive is no longer supported";
 }
 
 
@@ -2648,7 +2639,6 @@ static void ssl_srv_dump(SSLSrvConfigRec *sc, apr_pool_t *p,
     modssl_ctx_dump(sc->server, p, 0, out, indent, psep);
 
     DMP_LONG(  "SSLSessionCacheTimeout", sc->session_cache_timeout);
-    DMP_ON_OFF("SSLInsecureRenegotiation", sc->insecure_reneg);
     DMP_ON_OFF("SSLStrictSNIVHostCheck", sc->strict_sni_vhost_check);
     DMP_ON_OFF("SSLSessionTickets", sc->session_tickets);
 }

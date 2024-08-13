@@ -1,0 +1,5 @@
+  *) core: add `final_resp_passed` flag to request_rec to allow
+     ap_die() to judge if it can send out a response. Bump mmn.
+     Enable test cases that check errors during response body to
+     appear as error on client side.
+     [Stefan Eissing]

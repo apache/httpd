@@ -21,42 +21,13 @@ if grep ip6-localhost /etc/hosts; then
     cat /etc/hosts
 fi
 
-# Use a rudimental retry workflow as workaround to svn export hanging for minutes.
-# Travis automatically kills a build if one step takes more than 10 minutes without
-# reporting any progress. 
-function run_svn_export() {
-   local url=$1
-   local revision=$2
-   local dest_dir=$3
-   local max_tries=$4
-
-   # Disable -e to allow fail/retry
-   set +e
-
-   for i in $(seq 1 $max_tries)
-   do
-       timeout 60 svn export -r ${revision} --force -q $url $dest_dir
-       if [ $? -eq 0 ]; then
-           break
-       else
-           if [ $i -eq $max_tries ]; then
-               exit 1
-           else
-               sleep $((100 * i))
-           fi
-       fi
-   done
-
-   # Restore -e behavior after fail/retry
-   set -e
-}
-
 function install_apx() {
     local name=$1
     local version=$2
     local root=https://svn.apache.org/repos/asf/apr/${name}
     local prefix=${HOME}/root/${name}-${version}
     local build=${HOME}/build/${name}-${version}
+    local giturl=https://github.com/apache/${name}.git
     local config=$3
     local buildconf=$4
 
@@ -76,7 +47,7 @@ function install_apx() {
         return 0
     fi
 
-    svn export -q -r ${revision} ${url} ${build}
+    git clone -q --depth=1 --branch=$version ${giturl} ${build}
     pushd $build
          ./buildconf ${buildconf}
          ./configure --prefix=${prefix} ${config}
@@ -88,10 +59,11 @@ function install_apx() {
 }
 
 # Allow to load $HOME/build/apache/httpd/.gdbinit
-echo "add-auto-load-safe-path $HOME/build/apache/httpd/.gdbinit" >> $HOME/.gdbinit
+echo "add-auto-load-safe-path $HOME/work/httpd/httpd/.gdbinit" >> $HOME/.gdbinit
 
-# Prepare perl-framework test environment
-if ! test -v SKIP_TESTING; then
+# Unless either SKIP_TESTING or NO_TEST_FRAMEWORK are set, install
+# CPAN modules required to run the Perl test framework.
+if ! test -v SKIP_TESTING -o -v NO_TEST_FRAMEWORK; then
     # Clear CPAN cache if necessary
     if [ -v CLEAR_CACHE ]; then rm -rf ~/perl5; fi
     
@@ -112,13 +84,20 @@ if ! test -v SKIP_TESTING; then
     unset pkgs
 
     # Make a shallow clone of httpd-tests git repo.
-    git clone --depth=1 https://github.com/apache/httpd-tests.git test/perl-framework
+    git clone -q --depth=1 https://github.com/apache/httpd-tests.git test/perl-framework
+
+    # For OpenSSL 3.2+ testing, Apache::Test r1916067 is required, so
+    # use a checkout of trunk until there is an updated CPAN release
+    # with that revision.
+    if test -v TEST_OPENSSL3; then
+       svn co -q https://svn.apache.org/repos/asf/perl/Apache-Test/trunk test/perl-framework/Apache-Test
+    fi
 fi
 
 # For LDAP testing, run slapd listening on port 8389 and populate the
 # directory as described in t/modules/ldap.t in the test framework:
 if test -v TEST_LDAP -a -x test/perl-framework/scripts/ldap-init.sh; then
-    docker build -t httpd_ldap -f test/travis_Dockerfile_slapd.centos7 test/
+    docker build -t httpd_ldap -f test/travis_Dockerfile_slapd.centos test/
     pushd test/perl-framework
        ./scripts/ldap-init.sh
     popd
@@ -140,10 +119,13 @@ if test -v TEST_OPENSSL3; then
 
         mkdir -p build/openssl
         pushd build/openssl
-           curl "https://www.openssl.org/source/openssl-${TEST_OPENSSL3}.tar.gz" |
+           curl -L "https://github.com/openssl/openssl/releases/download/openssl-${TEST_OPENSSL3}/openssl-${TEST_OPENSSL3}.tar.gz" |
               tar -xzf -
            cd openssl-${TEST_OPENSSL3}
-           ./Configure --prefix=$HOME/root/openssl3 shared no-tests
+           # Build with RPATH so ./bin/openssl doesn't require $LD_LIBRARY_PATH
+           ./Configure --prefix=$HOME/root/openssl3 \
+                       shared no-tests ${OPENSSL_CONFIG} \
+                       '-Wl,-rpath=$(LIBRPATH)'
            make $MFLAGS
            make install_sw
            touch $HOME/root/openssl-is-${TEST_OPENSSL3}
@@ -170,4 +152,16 @@ fi
 if test -v APU_VERSION; then
     install_apx apr-util ${APU_VERSION} "${APU_CONFIG}" --with-apr=$HOME/build/apr-${APR_VERSION}
     ldd $HOME/root/apr-util-${APU_VERSION}/lib/libaprutil-?.so || true
+fi
+
+# Since librustls is not a package (yet) on any platform, we
+# build the version we want from source
+if test -v TEST_MOD_TLS -a -v RUSTLS_VERSION; then
+    if ! test -d $HOME/root/rustls; then
+        RUSTLS_HOME="$HOME/build/rustls-ffi"
+        git clone -q --depth=1 -b "$RUSTLS_VERSION" https://github.com/rustls/rustls-ffi.git "$RUSTLS_HOME"
+        pushd "$RUSTLS_HOME"
+            make install DESTDIR="$HOME/root/rustls"
+        popd
+    fi
 fi

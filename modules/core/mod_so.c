@@ -210,8 +210,10 @@ static const char *load_module(cmd_parms *cmd, void *dummy,
         modi = &modie[i];
         if (modi->name != NULL && strcmp(modi->name, modname) == 0) {
             ap_log_perror(APLOG_MARK, APLOG_WARNING, 0, cmd->pool, APLOGNO(01574)
-                          "module %s is already loaded, skipping",
-                          modname);
+                          "module %s is already loaded, skipping "
+                          "(from LoadModule on line %d of %s)",
+                          modname, cmd->config_file->line_number,
+                          cmd->config_file->name);
             return NULL;
         }
     }

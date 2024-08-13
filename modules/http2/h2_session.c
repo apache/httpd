@@ -319,9 +319,13 @@ static int on_header_cb(nghttp2_session *ngh2, const nghttp2_frame *frame,
     
     status = h2_stream_add_header(stream, (const char *)name, namelen,
                                   (const char *)value, valuelen);
-    if (status != APR_SUCCESS
-        && (!stream->rtmp
-            || stream->rtmp->http_status == H2_HTTP_STATUS_UNSET)) {
+    if (status != APR_SUCCESS &&
+        (!stream->rtmp ||
+         stream->rtmp->http_status == H2_HTTP_STATUS_UNSET ||
+         /* We accept a certain amount of failures in order to reply
+          * with an informative HTTP error response like 413. But of the
+          * client is too wrong, we RESET the stream */
+         stream->request_headers_failed > 100)) {
         return NGHTTP2_ERR_TEMPORAL_CALLBACK_FAILURE;
     }
     return 0;
@@ -402,6 +406,10 @@ static int on_frame_recv_cb(nghttp2_session *ng2s,
                           H2_SSSN_STRM_MSG(session, frame->hd.stream_id,
                           "RST_STREAM by client, error=%d"),
                           (int)frame->rst_stream.error_code);
+            if (stream) {
+                rv = h2_stream_recv_frame(stream, NGHTTP2_RST_STREAM, frame->hd.flags,
+                    frame->hd.length + H2_FRAME_HDR_LEN);
+            }
             if (stream && stream->initiated_on) {
                 /* A stream reset on a request we sent it. Normal, when the
                  * client does not want it. */
@@ -410,7 +418,8 @@ static int on_frame_recv_cb(nghttp2_session *ng2s,
             else {
                 /* A stream reset on a request it sent us. Could happen in a browser
                  * when the user navigates away or cancels loading - maybe. */
-                h2_mplx_c1_client_rst(session->mplx, frame->hd.stream_id);
+                h2_mplx_c1_client_rst(session->mplx, frame->hd.stream_id,
+                                      stream);
             }
             ++session->streams_reset;
             break;
@@ -621,9 +630,8 @@ static int on_invalid_header_cb(nghttp2_session *ngh2,
     
     ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c1, APLOGNO(03456)
                   H2_SSSN_STRM_MSG(session, frame->hd.stream_id,
-                  "invalid header '%s: %s'"),
-                  apr_pstrndup(session->pool, (const char *)name, namelen),
-                  apr_pstrndup(session->pool, (const char *)value, valuelen));
+                  "invalid header '%.*s: %.*s'"),
+                  (int)namelen, name, (int)valuelen, value);
     stream = get_stream(session, frame->hd.stream_id);
     if (stream) {
         h2_stream_rst(stream, NGHTTP2_PROTOCOL_ERROR);
@@ -811,6 +819,17 @@ static apr_status_t session_cleanup(h2_session *session, const char *trigger)
                       H2_SSSN_LOG(APLOGNO(03199), session, 
                       "connection disappeared without proper "
                       "goodbye, clients will be confused, should not happen"));
+    }
+
+    if (!h2_iq_empty(session->ready_to_process)) {
+        int sid;
+        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c,
+                      H2_SSSN_LOG(APLOGNO(10485), session,
+                      "cleanup, resetting %d streams in ready-to-process"),
+                      h2_iq_count(session->ready_to_process));
+        while ((sid = h2_iq_shift(session->ready_to_process)) > 0) {
+          h2_mplx_c1_client_rst(session->mplx, sid, get_stream(session, sid));
+        }
     }
 
     transit(session, trigger, H2_SESSION_ST_CLEANUP);
@@ -1003,7 +1022,7 @@ apr_status_t h2_session_create(h2_session **psession, conn_rec *c, request_rec *
 static apr_status_t h2_session_start(h2_session *session, int *rv)
 {
     apr_status_t status = APR_SUCCESS;
-    nghttp2_settings_entry settings[3];
+    nghttp2_settings_entry settings[4];
     size_t slen;
     int win_size;
     
@@ -1070,7 +1089,14 @@ static apr_status_t h2_session_start(h2_session *session, int *rv)
         settings[slen].value = win_size;
         ++slen;
     }
-    
+#if H2_USE_WEBSOCKETS
+    if (h2_config_sgeti(session->s, H2_CONF_WEBSOCKETS)) {
+      settings[slen].settings_id = NGHTTP2_SETTINGS_ENABLE_CONNECT_PROTOCOL;
+      settings[slen].value = 1;
+      ++slen;
+    }
+#endif
+
     ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, session->c1,
                   H2_SSSN_LOG(APLOGNO(03201), session, 
                   "start, INITIAL_WINDOW_SIZE=%ld, MAX_CONCURRENT_STREAMS=%d"), 
@@ -1281,8 +1307,11 @@ static apr_status_t h2_session_send(h2_session *session)
                 goto cleanup;
             }
         }
-        if (h2_c1_io_needs_flush(&session->io)) {
+        if (h2_c1_io_needs_flush(&session->io) ||
+            ngrv == NGHTTP2_ERR_WOULDBLOCK) {
             rv = h2_c1_io_assure_flushed(&session->io);
+            if (rv != APR_SUCCESS)
+                goto cleanup;
             pending = 0;
         }
     }
@@ -1639,10 +1668,6 @@ static void on_stream_state_enter(void *ctx, h2_stream *stream)
             h2_mplx_c1_stream_cleanup(session->mplx, stream, &session->open_streams);
             ++session->streams_done;
             update_child_status(session, SERVER_BUSY_WRITE, "done", stream);
-            if (session->open_streams == 0) {
-                h2_session_dispatch_event(session, H2_SESSION_EV_NO_MORE_STREAMS,
-                                          0, "stream done");
-            }
             break;
         default:
             break;
@@ -1737,12 +1762,22 @@ static void unblock_c1_out(h2_session *session) {
     }
 }
 
-apr_status_t h2_session_process(h2_session *session, int async)
+static int h2_send_flow_blocked(h2_session *session)
+{
+    /* We are completely send blocked if either the connection window
+     * is 0 or all stream flow windows are 0. */
+    return ((nghttp2_session_get_remote_window_size(session->ngh2) <= 0) ||
+             h2_mplx_c1_all_streams_send_win_exhausted(session->mplx));
+}
+
+apr_status_t h2_session_process(h2_session *session, int async,
+                                int *pkeepalive)
 {
     apr_status_t status = APR_SUCCESS;
     conn_rec *c = session->c1;
     int rv, mpm_state, trace = APLOGctrace3(c);
 
+    *pkeepalive = 0;
     if (trace) {
         ap_log_cerror( APLOG_MARK, APLOG_TRACE3, status, c,
                       H2_SSSN_MSG(session, "process start, async=%d"), async);
@@ -1897,6 +1932,14 @@ apr_status_t h2_session_process(h2_session *session, int async)
             break;
 
         case H2_SESSION_ST_WAIT:
+            /* In this state, we might have returned processing to the MPM
+             * before. On a connection socket event, we are invoked again and
+             * need to process any input before proceeding. */
+            h2_c1_read(session);
+            if (session->state != H2_SESSION_ST_WAIT) {
+                break;
+            }
+
             status = h2_c1_io_assure_flushed(&session->io);
             if (APR_SUCCESS != status) {
                 h2_session_dispatch_event(session, H2_SESSION_EV_CONN_ERROR, status, NULL);
@@ -1909,8 +1952,16 @@ apr_status_t h2_session_process(h2_session *session, int async)
                     break;
                 }
             }
-            /* No IO happening and input is exhausted. Make sure we have
-             * flushed any possibly pending output and then wait with
+            else if (async && h2_send_flow_blocked(session)) {
+                /* By returning to the MPM, we do not block a worker
+                 * and async wait for the client send window updates. */
+                ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, c,
+                              H2_SSSN_LOG(APLOGNO(10502), session,
+                              "BLOCKED, return to mpm c1 monitoring"));
+                goto leaving;
+            }
+
+            /* No IO happening and input is exhausted. Wait with
              * the c1 connection timeout for sth to happen in our c1/c2 sockets/pipes */
             ap_log_cerror(APLOG_MARK, APLOG_TRACE2, status, c,
                           H2_SSSN_MSG(session, "polling timeout=%d, open_streams=%d"),
@@ -1918,7 +1969,15 @@ apr_status_t h2_session_process(h2_session *session, int async)
             status = h2_mplx_c1_poll(session->mplx, session->s->timeout,
                                      on_stream_input, on_stream_output, session);
             if (APR_STATUS_IS_TIMEUP(status)) {
-                if (session->open_streams == 0) {
+                /* If we timeout without streams open, no new request from client
+                 * arrived.
+                 * If we timeout without nghttp2 wanting to write something, but
+                 * all open streams have something to send, it means we are
+                 * blocked on HTTP/2 flow control and the client did not send
+                 * WINDOW_UPDATEs to us. */
+                if (session->open_streams == 0 ||
+                    (!h2_session_want_send(session) &&
+                     h2_mplx_c1_all_streams_want_send_data(session->mplx))) {
                     h2_session_dispatch_event(session, H2_SESSION_EV_CONN_TIMEOUT, status, NULL);
                     break;
                 }
@@ -1943,11 +2002,16 @@ apr_status_t h2_session_process(h2_session *session, int async)
     }
 
 leaving:
+    /* entering KeepAlive timing when we have no more open streams AND
+     * we have processed at least one stream. */
+    *pkeepalive = (session->open_streams == 0 && session->remote.emitted_count);
     if (trace) {
-        ap_log_cerror( APLOG_MARK, APLOG_TRACE3, status, c,
-                      H2_SSSN_MSG(session, "process returns")); 
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE3, status, c,
+                      H2_SSSN_MSG(session, "process returns, keepalive=%d"),
+                      *pkeepalive);
     }
-    
+    h2_mplx_c1_going_keepalive(session->mplx);
+
     if (session->state == H2_SESSION_ST_DONE) {
         if (session->local.error) {
             char buffer[128];

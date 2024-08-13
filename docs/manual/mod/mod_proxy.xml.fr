@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1907045 -->
+<!-- English Revision: 1916708 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -206,7 +206,7 @@ ProxyPass "/some/ws/capable/path/" "http://example.com/some/ws/capable/path/" up
     <example><title>Scripts PHP et mandataire inverse</title>
     <highlight language="config">
 &lt;FilesMatch "\.php$"&gt;
-    SetHandler  "proxy:unix:/path/to/app.sock|fcgi://localhost/"
+    SetHandler  "proxy:unix:/path/to/app.sock|fcgi://localhost"
 &lt;/FilesMatch&gt;
     </highlight>
       </example>
@@ -815,9 +815,11 @@ ProxyRemote ftp http://ftpproxy.mydomain:8080
 <name>ProxyRemoteMatch</name>
 <description>Le mandataire distant à utiliser pour traiter les requêtes
 correspondant à une expression rationnelle</description>
-<syntax>ProxyRemoteMatch <var>regex</var> <var>serveur-distant</var></syntax>
+<syntax>ProxyRemoteMatch <var>regex</var> <var>remote-server</var> [<var>username:password</var>]</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
+<compatibility>Le troisième argument facultatif est disponible à partir de la
+version 2.5.1 du serveur HTTP Apache.</compatibility>
 
 <usage>
     <p>La directive <directive>ProxyRemoteMatch</directive> est
@@ -1436,7 +1438,7 @@ ProxyPass "/mirror/foo/i" "!"
     </td></tr>
     <tr><td>timeout</td>
         <td><directive module="mod_proxy">ProxyTimeout</directive></td>
-        <td>Délai d'attente de la connexion en secondes. Le nombre de
+        <td>Délai d'attente du socket en secondes. Le nombre de
 	secondes pendant lesquelles Apache httpd attend l'envoi de
 	données vers le serveur d'arrière-plan. Utilise la syntaxe <a
 	href="directive-dict.html#Syntax">time-interval</a>.
@@ -1508,6 +1510,12 @@ ProxyPass "/mirror/foo/i" "!"
 	    paramètres du chemin et similaires n'interfèrent avec les
 	    autorisations qui doivent être définies par Apache httpd.</p>
         </note>
+    </td></tr>
+    <tr><td><a id="addressttl" name="addressttl">addressttl</a></td>
+        <td>-1</td>
+        <td><p>Durée de vie (TTL) en secondes des résolutions DNS de l'adresse
+	du serveur d'arrière-plan dans le cache.
+        -1 signifie jusqu'au redémarrage de Apache httpd.</p>
     </td></tr>
 
     </table>

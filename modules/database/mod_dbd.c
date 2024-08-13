@@ -15,7 +15,7 @@
  */
 
 /* Overview of what this is and does:
- * http://www.apache.org/~niq/dbd.html
+ * http://people.apache.org/~niq/dbd.html
  * or
  * http://apache.webthing.com/database/
  */

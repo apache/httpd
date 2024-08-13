@@ -182,7 +182,7 @@ static dav_error *mswdv_combined_lock(request_rec *r)
     /* action */
     const char *failmsg = NULL;
     int http_error = HTTP_BAD_REQUEST;
-    enum { ERROR, LOCK, UNLOCK, REFRESH, PASS } action = ERROR;
+    enum { ACTION_ERROR, ACTION_LOCK, ACTION_UNLOCK, ACTION_REFRESH, ACTION_PASS } action = ACTION_ERROR;
 
     lock_token_hdr = apr_table_get(r->headers_in, "Lock-Token");
     lock_timeout_hdr = apr_table_get(r->headers_in, "X-MSDAVEXTLockTimeout");
@@ -268,7 +268,7 @@ static dav_error *mswdv_combined_lock(request_rec *r)
          r->method_number == M_POST) {
 
         if (lock_token_hdr && !lock_timeout_hdr) {
-            action = PASS;
+            action = ACTION_PASS;
             goto done;
         }
 
@@ -290,12 +290,12 @@ static dav_error *mswdv_combined_lock(request_rec *r)
             }
 
             if (!timeout_zero) {
-                action = REFRESH;
+                action = ACTION_REFRESH;
                 goto done;
             }
 
             if (timeout_zero) {
-                action = UNLOCK;
+                action = ACTION_UNLOCK;
                 goto done;
             }
 
@@ -316,13 +316,13 @@ static dav_error *mswdv_combined_lock(request_rec *r)
             }
 
             if (!lock_exists) {
-                action = LOCK;
+                action = ACTION_LOCK;
                 goto done;
             }
         }
 
         if (!lock_token_hdr && !lock_timeout_hdr) {
-            action = PASS;
+            action = ACTION_PASS;
             goto done;
         }
     }
@@ -346,7 +346,7 @@ static dav_error *mswdv_combined_lock(request_rec *r)
             }
 
             if (token_match && lock_exists) {
-                action = PASS;
+                action = ACTION_PASS;
                 goto done;
             }
         }
@@ -369,12 +369,12 @@ static dav_error *mswdv_combined_lock(request_rec *r)
             }
 
             if (!timeout_zero) {
-                action = REFRESH;
+                action = ACTION_REFRESH;
                 goto done;
             }
 
             if (timeout_zero) {
-                action = UNLOCK;
+                action = ACTION_UNLOCK;
                 goto done;
             }
             /* NOTREACHED */
@@ -395,13 +395,13 @@ static dav_error *mswdv_combined_lock(request_rec *r)
             }
 
             if (!lock_exists) {
-                action = LOCK;
+                action = ACTION_LOCK;
                 goto done;
             }
         }
 
         if (!lock_token_hdr && !lock_timeout_hdr) {
-                action = PASS;
+                action = ACTION_PASS;
                 goto done;
         }
     }
@@ -410,11 +410,11 @@ done:
     ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
                   "%s failmsg = \"%s\", action = %s%s%s%s%s",
                   __func__, failmsg ? failmsg : "",
-                  action == LOCK ? "LOCK" : "",
-                  action == UNLOCK ? "UNLOCK" : "",
-                  action == REFRESH ? "REFRESH" : "",
-                  action == ERROR ? "ERROR" : "",
-                  action == PASS ? "PASS" : "");
+                  action == ACTION_LOCK ? "LOCK" : "",
+                  action == ACTION_UNLOCK ? "UNLOCK" : "",
+                  action == ACTION_REFRESH ? "REFRESH" : "",
+                  action == ACTION_ERROR ? "ERROR" : "",
+                  action == ACTION_PASS ? "PASS" : "");
 
     if (failmsg) {
          err = dav_new_error(r->pool, http_error, 0, 0, failmsg);
@@ -422,14 +422,14 @@ done:
     }
 
     switch (action) {
-    case PASS:
+    case ACTION_PASS:
         if (lock_token_hdr) {
             /* Add a If: lock header to palcate further processing */
             apr_table_setn(r->headers_in, "If",
                            apr_psprintf(r->pool, "(<%s>)", lock_token_hdr));
         }
         break;
-    case LOCK: {
+    case ACTION_LOCK: {
         dav_response *dontcare;
 
         if ((err = (*locks_hooks->create_lock)(lockdb, resource,
@@ -453,14 +453,14 @@ done:
         break;
     }
 
-    case UNLOCK:
+    case ACTION_UNLOCK:
         if ((err = (*locks_hooks->remove_lock)(lockdb, resource,
                                                 lock_token)) != NULL)
              goto out;
 
         break;
 
-    case REFRESH: {
+    case ACTION_REFRESH: {
         const dav_locktoken_list ltl = { lock_token, NULL };
 
         if ((err = (*locks_hooks->refresh_locks)(lockdb, resource, &ltl,
@@ -471,7 +471,7 @@ done:
         break;
     }
 
-    case ERROR: /* FALLTHROUGH */
+    case ACTION_ERROR: /* FALLTHROUGH */
     default:
         /* NOTREACHED */
         err = dav_new_error(r->pool, HTTP_INTERNAL_SERVER_ERROR, 0, 0,
@@ -572,7 +572,7 @@ static dav_error *mswdv_combined_propfind(request_rec *r)
     apr_brigade_printf(bb, NULL, NULL, "%016" APR_UINT64_T_HEX_FMT,
                        (apr_uint64_t)rr->finfo.size);
 
-    ap_set_content_type(r, "multipart/MSDAVEXTPrefixEncoded");
+    ap_set_content_type_ex(r, "multipart/MSDAVEXTPrefixEncoded", 1);
 
     ap_pass_brigade(r->output_filters, bb);
 

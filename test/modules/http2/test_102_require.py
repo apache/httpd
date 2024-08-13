@@ -39,3 +39,9 @@ class TestRequire:
         assert 0 == r.exit_code
         assert r.response
         assert 403 == r.response["status"]
+        #
+        env.httpd_error_log.ignore_recent(
+            lognos = [
+                "AH01630"   # client denied by server configuration
+            ]
+        )

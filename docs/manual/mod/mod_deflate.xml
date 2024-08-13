@@ -412,11 +412,11 @@ CustomLog "logs/deflate_log" deflate
 <default>DeflateAlterETag AddSuffix</default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
-<compatibility>Available in Apache 2.4.42 and later</compatibility>
+<compatibility>Available in Apache 2.4.58 and later</compatibility>
 
 <usage>
     <p>The <directive>DeflateAlterETag</directive> directive specifies
-    how the ETag hader should be altered when a response is compressed.</p>
+    how the ETag header should be altered when a response is compressed.</p>
     <dl>
     <dt>AddSuffix</dt>
     <dd><p>Append the compression method onto the end of the ETag, causing
@@ -427,11 +427,11 @@ CustomLog "logs/deflate_log" deflate
     <dt>NoChange</dt>
     <dd><p>Don't change the ETag on a compressed response. This was the default
         prior to 2.4.0, but does not satisfy the HTTP/1.1 property that all
-        representations of the same resource have unique ETags. </p></dd>
+        representations of the same resource have unique ETags.</p></dd>
     <dt>Remove</dt>
     <dd><p>Remove the ETag header from compressed responses. This prevents
         some conditional requests from being possible, but avoids the
-        shortcomings of the preceding options.  </p></dd>
+        shortcomings of the preceding options.</p></dd>
     </dl>
 </usage>
 </directivesynopsis>

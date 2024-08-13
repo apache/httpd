@@ -99,8 +99,6 @@ struct h2_mplx {
 
     struct h2_workers *workers;     /* h2 workers process wide instance */
 
-    request_rec *scratch_r;         /* pseudo request_rec for scoreboard reporting */
-
     apr_uint32_t max_spare_transits; /* max number of transit pools idling */
     apr_array_header_t *c2_transits; /* base pools for running c2 connections */
 };
@@ -194,11 +192,22 @@ typedef int h2_mplx_stream_cb(struct h2_stream *s, void *userdata);
 apr_status_t h2_mplx_c1_streams_do(h2_mplx *m, h2_mplx_stream_cb *cb, void *ctx);
 
 /**
+ * Return != 0 iff all open streams want to send data
+ */
+int h2_mplx_c1_all_streams_want_send_data(h2_mplx *m);
+
+/**
+ * Return != 0 iff all open streams have send window exhausted
+ */
+int h2_mplx_c1_all_streams_send_win_exhausted(h2_mplx *m);
+
+/**
  * A stream has been RST_STREAM by the client. Abort
  * any processing going on and remove from processing
  * queue.
  */
-apr_status_t h2_mplx_c1_client_rst(h2_mplx *m, int stream_id);
+apr_status_t h2_mplx_c1_client_rst(h2_mplx *m, int stream_id,
+                                   struct h2_stream *stream);
 
 /**
  * Get readonly access to a stream for a secondary connection.
@@ -211,6 +220,14 @@ const struct h2_stream *h2_mplx_c2_stream_get(h2_mplx *m, int stream_id);
  *               secondary connection to process.
  */
 apr_status_t h2_mplx_worker_pop_c2(h2_mplx *m, conn_rec **out_c2);
+
+
+/**
+ * Session processing is entering KEEPALIVE, e.g. giving control
+ * to the MPM for monitoring incoming socket events only.
+ * Last chance for maintenance work before losing control.
+ */
+void h2_mplx_c1_going_keepalive(h2_mplx *m);
 
 #define H2_MPLX_MSG(m, msg)     \
     "h2_mplx(%d-%lu): "msg, m->child_num, (unsigned long)m->id

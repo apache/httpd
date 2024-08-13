@@ -1,4 +1,3 @@
-
 Variables
 ---------
 
@@ -25,8 +24,9 @@ The CI scripts use the following environment variables:
 
 * MFLAGS - arguments to pass when running "make" for httpd.
 
-* SKIP_TESTING - if set, the Perl test framework is not run for the
-  build.
+* SKIP_TESTING - if set, no testing is done at all
+
+* NO_TEST_FRAMEWORK - if set, the Perl test framework is not used
 
 * TEST_UBSAN - set for job using UBSan ("Undefined Behaviour Sanitizer")
 
@@ -46,17 +46,34 @@ The CI scripts use the following environment variables:
 
 * CLEAR_CACHE - if set, the cached $HOME/root is removed before each build
 
-Caching -- NOTE, BROKEN IN GITHUB ACTIONS --
+Caching
 -------
 
-Perl modules installed in $HOME/perl5 are cached.
+Caching was designed in Travis then migrated to GitHub Actions, and
+should probably be redone from scratch.
 
-Anything installed into the $HOME/root directory is cached - notably,
-versions of APR/APR-util are installed here and cached across httpd
-build jobs without needing to be rebuilt every time.
+Caches in GHA are immutable. Currently the ~/perl5 and ~/root
+directories are cached (separately) for each unique job configuration,
+which is identified by the $JOBID variable. $JOBID is a hash of the
+variables defined in the matrix.
 
-The cached installs of APR/APR-util are refreshed if the
-last-changed-revision of the build is stale.
+Hence, if e.g. the APR_VERSION or APR_CONFIG changes, a different
+cache key will be used for future builds, but while it remains the
+same the cached install can be used across builds.
+
+This does not work optimally for e.g. APR_VERSION=trunk - in this
+case, a trunk build of APR is built and cached (assuming the job
+succeeds). Once the trunk revision changes, install_apx() will see the
+cached trunk install is stale and throw it away for every single
+subsequent job; the cache is never updated.
+
+(Similarly for CPAN - the cached version of ~/perl5 for each job will
+increasingly become stale over time as the version in CPAN changes
+from whatever was cached for the first build.)
+
+The solution (TBD) is likely to incorporate the versions of whatever
+is cached into the keys as in the example documentation:
+https://github.com/actions/cache/blob/main/examples.md
 
 If APR_VERSION and APU_VERSION are both set to 1.x versions, then
 CLEAR_CACHE should also be set to disable APR* caching.  APR-util can
@@ -67,17 +84,11 @@ cached, fresh APR plus a cached but stale APR-util)
 Travis to Github Actions Migration TODO
 ---------------------------------------
 
-* better path filtering so e.g. CHANGES changes don't trigger CI
+* enable ACME/mod_md testing
 * support branch conditionals again (some tests are 2.4.x only, some trunk only)
-* make caching work properly for APR + CPAN modules
-  - this is using the wrong model at the moment
-  - the cache key needs to be based off (source code, job configuration)
-  - rather than done on the fly in test/travis_before_linux.sh
-  - pebble + Rustls builds should also be cached
-* turn on failure notifications?
 * test across different Ubuntu versions again
  - and test against OpenSSL 1.x since we're now ONLY building against 3.x
-* update the docs below for testing from PRs/feature branches
+* container testing for non-Ubuntu hosts
 * introduce some job ordering rather than having a flat/concurrent
   set, if the default "./configure && make && test" works *then* start
   jobs doing 200 different variations on ./configure --enable-XXX 

@@ -160,7 +160,7 @@ static void *motorz_io_setup_conn(apr_thread_t *thread, void *baton)
                      "motorz_io_setup_conn: connection aborted");
     }
 
-    scon->cs.state = CONN_STATE_READ_REQUEST_LINE;
+    scon->cs.state = CONN_STATE_PROCESSING;
     scon->cs.sense = CONN_SENSE_DEFAULT;
 
     status = motorz_io_process(scon);
@@ -374,16 +374,16 @@ static apr_status_t motorz_io_process(motorz_conn_t *scon)
             scon->pfd.reqevents = 0;
         }
 
-        if (scon->cs.state == CONN_STATE_CHECK_REQUEST_LINE_READABLE) {
+        if (scon->cs.state == CONN_STATE_KEEPALIVE) {
             ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO(03327)
-                                 "motorz_io_process(): Set to CONN_STATE_READ_REQUEST_LINE");
-            scon->cs.state = CONN_STATE_READ_REQUEST_LINE;
+                                 "motorz_io_process(): Set to CONN_STATE_PROCESSING");
+            scon->cs.state = CONN_STATE_PROCESSING;
         }
 
 read_request:
-        if (scon->cs.state == CONN_STATE_READ_REQUEST_LINE) {
+        if (scon->cs.state == CONN_STATE_PROCESSING) {
             ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO(03328)
-                                 "motorz_io_process(): CONN_STATE_READ_REQUEST_LINE");
+                                 "motorz_io_process(): CONN_STATE_PROCESSING");
             if (!c->aborted) {
                 ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO(03329)
                                      "motorz_io_process(): !aborted");
@@ -438,11 +438,11 @@ read_request:
                 scon->cs.state = CONN_STATE_LINGER;
             }
             else if (ap_run_input_pending(c) == OK) {
-                scon->cs.state = CONN_STATE_READ_REQUEST_LINE;
+                scon->cs.state = CONN_STATE_PROCESSING;
                 goto read_request;
             }
             else {
-                scon->cs.state = CONN_STATE_CHECK_REQUEST_LINE_READABLE;
+                scon->cs.state = CONN_STATE_KEEPALIVE;
             }
         }
 
@@ -452,9 +452,9 @@ read_request:
             ap_lingering_close(c);
         }
 
-        if (scon->cs.state == CONN_STATE_CHECK_REQUEST_LINE_READABLE) {
+        if (scon->cs.state == CONN_STATE_KEEPALIVE) {
             ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO(03333)
-                                  "motorz_io_process(): CONN_STATE_CHECK_REQUEST_LINE_READABLE");
+                                  "motorz_io_process(): CONN_STATE_KEEPALIVE");
             motorz_register_timeout(scon,
                                   motorz_io_timeout_cb,
                                   motorz_get_keep_alive_timeout(scon));

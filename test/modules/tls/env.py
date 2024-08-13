@@ -56,6 +56,12 @@ class TlsTestEnv(HttpdTestEnv):
     CURL_SUPPORTS_TLS_1_3 = None
 
     @classmethod
+    @property
+    def is_unsupported(cls):
+        mpm_module = f"mpm_{os.environ['MPM']}" if 'MPM' in os.environ else 'mpm_event'
+        return mpm_module == 'mpm_prefork'
+
+    @classmethod
     def curl_supports_tls_1_3(cls) -> bool:
         if cls.CURL_SUPPORTS_TLS_1_3 is None:
             # Unfortunately, there is no reliable, platform-independant
@@ -129,7 +135,10 @@ class TlsTestEnv(HttpdTestEnv):
             ]),
             CertificateSpec(name="user1", client=True, single_file=True),
         ])
-        self.add_httpd_log_modules(['tls'])
+        if not HttpdTestEnv.has_shared_module("tls"):
+            self.add_httpd_log_modules(['ssl'])
+        else:
+            self.add_httpd_log_modules(['tls'])
 
 
     def setup_httpd(self, setup: TlsTestSetup = None):

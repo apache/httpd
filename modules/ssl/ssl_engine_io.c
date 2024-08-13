@@ -2281,9 +2281,7 @@ apr_status_t ssl_io_filter_init(conn_rec *c, request_rec *r, SSL *ssl)
     apr_pool_cleanup_register(c->pool, (void*)filter_ctx,
                               ssl_io_filter_cleanup, apr_pool_cleanup_null);
 
-    if (APLOG_CS_IS_LEVEL(c, mySrvFromConn(c), APLOG_TRACE4)) {
-        modssl_set_io_callbacks(ssl);
-    }
+    modssl_set_io_callbacks(ssl, c, mySrvFromConn(c));
 
     return APR_SUCCESS;
 }
@@ -2308,7 +2306,7 @@ void ssl_io_filter_register(apr_pool_t *p)
 #define DUMP_WIDTH 16
 
 static void ssl_io_data_dump(conn_rec *c, server_rec *s,
-                             const char *b, long len)
+                             const char *b, int len)
 {
     char buf[256];
     int i, j, rows, trunc, pos;
@@ -2361,10 +2359,12 @@ static void ssl_io_data_dump(conn_rec *c, server_rec *s,
     }
     if (trunc > 0)
         ap_log_cserror(APLOG_MARK, APLOG_TRACE7, 0, c, s,
-                "| %04ld - <SPACES/NULS>", len + trunc);
+                "| %04d - <SPACES/NULS>", len + trunc);
     ap_log_cserror(APLOG_MARK, APLOG_TRACE7, 0, c, s,
             "+-------------------------------------------------------------------------+");
 }
+
+#define MODSSL_IO_DUMP_MAX APR_UINT16_MAX
 
 #if OPENSSL_VERSION_NUMBER >= 0x30000000L
 static long modssl_io_cb(BIO *bio, int cmd, const char *argp,
@@ -2378,10 +2378,12 @@ static long modssl_io_cb(BIO *bio, int cmd, const char *argp,
     SSL *ssl;
     conn_rec *c;
     server_rec *s;
+
+    /* unused */
 #if OPENSSL_VERSION_NUMBER >= 0x30000000L
-    (void)len;
-    (void)processed;
+    (void)argi;
 #endif
+    (void)argl;
 
     if ((ssl = (SSL *)BIO_get_callback_arg(bio)) == NULL)
         return rc;
@@ -2391,28 +2393,59 @@ static long modssl_io_cb(BIO *bio, int cmd, const char *argp,
 
     if (   cmd == (BIO_CB_WRITE|BIO_CB_RETURN)
         || cmd == (BIO_CB_READ |BIO_CB_RETURN) ) {
-        if (rc >= 0) {
+#if OPENSSL_VERSION_NUMBER >= 0x30000000L
+        apr_size_t requested_len = len;
+        /*
+         * On OpenSSL >= 3 rc uses the meaning of the BIO_read_ex and
+         * BIO_write_ex functions return value and not the one of
+         * BIO_read and BIO_write. Hence 0 indicates an error.
+         */
+        int ok = (rc > 0);
+#else
+        apr_size_t requested_len = (apr_size_t)argi;
+        int ok = (rc >= 0);
+#endif
+        if (ok) {
+#if OPENSSL_VERSION_NUMBER >= 0x30000000L
+            apr_size_t actual_len = *processed;
+#else
+            apr_size_t actual_len = (apr_size_t)rc;
+#endif
             const char *dump = "";
             if (APLOG_CS_IS_LEVEL(c, s, APLOG_TRACE7)) {
-                if (argp != NULL)
-                    dump = "(BIO dump follows)";
-                else
+                if (argp == NULL)
                     dump = "(Oops, no memory buffer?)";
+                else if (actual_len > MODSSL_IO_DUMP_MAX)
+                    dump = "(BIO dump follows, truncated to "
+                             APR_STRINGIFY(MODSSL_IO_DUMP_MAX) ")";
+                else
+                    dump = "(BIO dump follows)";
             }
             ap_log_cserror(APLOG_MARK, APLOG_TRACE4, 0, c, s,
-                    "%s: %s %ld/%d bytes %s BIO#%pp [mem: %pp] %s",
+                    "%s: %s %" APR_SIZE_T_FMT "/%" APR_SIZE_T_FMT 
+                    " bytes %s BIO#%pp [mem: %pp] %s",
                     MODSSL_LIBRARY_NAME,
-                    (cmd == (BIO_CB_WRITE|BIO_CB_RETURN) ? "write" : "read"),
-                    (long)rc, argi, (cmd == (BIO_CB_WRITE|BIO_CB_RETURN) ? "to" : "from"),
+                    (cmd & BIO_CB_WRITE) ? "write" : "read",
+                    actual_len, requested_len,
+                    (cmd & BIO_CB_WRITE) ? "to" : "from",
                     bio, argp, dump);
-            if (*dump != '\0' && argp != NULL)
-                ssl_io_data_dump(c, s, argp, rc);
+            /*
+             * *dump will only be != '\0' if
+             * APLOG_CS_IS_LEVEL(c, s, APLOG_TRACE7)
+             */
+            if (*dump != '\0' && argp != NULL) {
+                int dump_len = (actual_len >= MODSSL_IO_DUMP_MAX
+                                       ? MODSSL_IO_DUMP_MAX
+                                       : actual_len);
+                ssl_io_data_dump(c, s, argp, dump_len);
+            }
         }
         else {
             ap_log_cserror(APLOG_MARK, APLOG_TRACE4, 0, c, s,
-                    "%s: I/O error, %d bytes expected to %s on BIO#%pp [mem: %pp]",
-                    MODSSL_LIBRARY_NAME, argi,
-                    (cmd == (BIO_CB_WRITE|BIO_CB_RETURN) ? "write" : "read"),
+                    "%s: I/O error, %" APR_SIZE_T_FMT 
+                    " bytes expected to %s on BIO#%pp [mem: %pp]",
+                    MODSSL_LIBRARY_NAME, requested_len,
+                    (cmd & BIO_CB_WRITE) ? "write" : "read",
                     bio, argp);
         }
     }
@@ -2429,10 +2462,15 @@ static APR_INLINE void set_bio_callback(BIO *bio, void *arg)
     BIO_set_callback_arg(bio, arg);
 }
 
-void modssl_set_io_callbacks(SSL *ssl)
+void modssl_set_io_callbacks(SSL *ssl, conn_rec *c, server_rec *s)
 {
-    BIO *rbio = SSL_get_rbio(ssl),
-        *wbio = SSL_get_wbio(ssl);
+    BIO *rbio, *wbio;
+
+    if (!APLOG_CS_IS_LEVEL(c, s, APLOG_TRACE4))
+        return;
+
+    rbio = SSL_get_rbio(ssl);
+    wbio = SSL_get_wbio(ssl);
     if (rbio) {
         set_bio_callback(rbio, ssl);
     }

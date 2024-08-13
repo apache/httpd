@@ -955,7 +955,7 @@ files, a certificate identifier can be used to identify a certificate
 stored in a token.  Currently, only <a
 href="https://tools.ietf.org/html/rfc7512">PKCS#11 URIs</a> are
 recognized as certificate identifiers, and can be used in conjunction
-with the OpenSSL <code>pkcs11</code> engine.  If <directive
+with the OpenSSL <code>pkcs11</code> engine or provider.  If <directive
 module="mod_ssl">SSLCertificateKeyFile</directive> is omitted, the
 certificate and private key can be loaded through the single
 identifier specified with <directive
@@ -1048,7 +1048,7 @@ key file.</p>
 identifier can be used to identify a private key stored in a
 token.  Currently, only <a href="https://tools.ietf.org/html/rfc7512">PKCS#11 URIs</a> are recognized as private key
 identifiers, and can be used in conjunction with the OpenSSL
-<code>pkcs11</code> engine.</p>
+<code>pkcs11</code> engine or provider.</p>
 
 <example><title>Example</title>
 <highlight language="config">
@@ -1880,7 +1880,7 @@ SSLProxyMachineCertificatePath "/usr/local/apache2/conf/proxy.crt/"
 <contextlist><context>server config</context> <context>virtual host</context>
 <context>proxy section</context></contextlist>
 <compatibility>The proxy section context is allowed in httpd 2.4.30 and later<br/>
-Inclusion of non-leaf (CA) certificates is permitted only in httpd 2.5.1 and later.</compatibility>
+Inclusion of non-leaf (CA) certificates is permitted only in httpd 2.4.59 and later.</compatibility>
 
 <usage>
 <p>
@@ -2442,6 +2442,15 @@ separate "-engine" releases of OpenSSL 0.9.6 must be used.</p>
 SSLCryptoDevice ubsec
 </highlight>
 </example>
+
+<p>
+With OpenSSL 3.0 or later, if no engine is specified but the key or certificate
+is specified using a <a href="https://tools.ietf.org/html/rfc7512">PKCS#11 URIs</a>
+then it is tried to load the key and certificate from an OpenSSL provider.
+The OpenSSL provider to use must be defined and configured in the OpenSSL config file,
+and it must support the <a href="https://www.openssl.org/docs/man3.0/man7/provider-storemgmt.html">STORE method</a>
+for <a href="https://tools.ietf.org/html/rfc7512">PKCS#11 URIs</a>.
+</p>
 </usage>
 </directivesynopsis>
 
@@ -2611,50 +2620,6 @@ response.</p>
 <usage>
 <p>This option allows to set the URL of a HTTP proxy that should be used for
 all queries to OCSP responders.</p>
-</usage>
-</directivesynopsis>
-
-<directivesynopsis>
-<name>SSLInsecureRenegotiation</name>
-<description>Option to enable support for insecure renegotiation</description>
-<syntax>SSLInsecureRenegotiation on|off</syntax>
-<default>SSLInsecureRenegotiation off</default>
-<contextlist><context>server config</context>
-<context>virtual host</context></contextlist>
-<compatibility>Available if using OpenSSL 0.9.8m or later</compatibility>
-
-<usage>
-<p>As originally specified, all versions of the SSL and TLS protocols
-(up to and including TLS/1.2) were vulnerable to a Man-in-the-Middle
-attack
-(<a href="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CAN-2009-3555">CVE-2009-3555</a>)
-during a renegotiation.  This vulnerability allowed an attacker to
-"prefix" a chosen plaintext to the HTTP request as seen by the web
-server.  A protocol extension was developed which fixed this
-vulnerability if supported by both client and server.</p>
-
-<p>If <module>mod_ssl</module> is linked against OpenSSL version 0.9.8m
-or later, by default renegotiation is only supported with
-clients supporting the new protocol extension.  If this directive is
-enabled, renegotiation will be allowed with old (unpatched) clients,
-albeit insecurely.</p>
-
-<note type="warning"><title>Security warning</title>
-<p>If this directive is enabled, SSL connections will be vulnerable to
-the Man-in-the-Middle prefix attack as described
-in <a href="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CAN-2009-3555">CVE-2009-3555</a>.</p>
-</note>
-
-<example><title>Example</title>
-<highlight language="config">
-SSLInsecureRenegotiation on
-</highlight>
-</example>
-
-<p>The <code>SSL_SECURE_RENEG</code> environment variable can be used
-from an SSI or CGI script to determine whether secure renegotiation is
-supported for a given SSL connection.</p>
-
 </usage>
 </directivesynopsis>
 

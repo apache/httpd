@@ -32,8 +32,7 @@ def env(pytestconfig) -> TlsTestEnv:
     env.httpd_error_log.clear_log()
     return env
 
-
 @pytest.fixture(autouse=True, scope="package")
-def _session_scope(env):
+def _stop_package_scope(env):
     yield
     assert env.apache_stop() == 0

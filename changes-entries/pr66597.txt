@@ -1,0 +1,2 @@
+  *) mod_http2: avoid double chunked-encoding on internal redirects.
+     PR 66597 [Yann Ylavic, Stefan Eissing]

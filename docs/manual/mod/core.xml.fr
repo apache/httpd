@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1907144 -->
+<!-- English Revision: 1918892 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -2250,7 +2250,7 @@ elles sont envoyées sur le réseau</description>
 <description>Seuil au-delà duquel les données en attente sont envoyées sur le
 réseau</description>
 <syntax>FlushMaxThreshold <var>number-of-bytes</var></syntax>
-<default>FlushMaxThreshold 65536</default>
+<default>FlushMaxThreshold 65535</default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 <compatibility>Disponible à partir de la version 2.5 du serveur HTTP Apache</compatibility>
@@ -5748,6 +5748,42 @@ Apache.</compatibility>
 	et non à l'exécution. Par conséquent, elle ne peut pas être évaluée de
 	manière conditionnelle en l'incluant dans une section <directive
 	type="section" module="core">If</directive>.</p>
+    </note>
+
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>UNCList</name>
+<description>Définit quels sont les noms d’hôte UNC auxquels le serveur peut accéder
+</description>
+<syntax>UNCList <var>hostname</var> [<var>hostname</var>...]</syntax>
+<default>unset</default>
+<contextlist><context>server config</context>
+</contextlist>
+<compatibility>Windows seulement. Disponible à partir de la version 2.4.60 du
+serveur HTTP Apache.</compatibility>
+
+<usage>
+    <p>Au cours de leur traitement, les requêtes pour accéder à un chemin du
+    système de fichiers qui aboutissent à un chemin UNC échoueront si le nom
+    d’hôte dans le chemin UNC n’a pas été spécifié par cette directive. Le but
+    est de limiter l’accès aux chemins dérivés d’entrées non fiables.</p>
+
+    <example>
+    UNCList example.com other.example.com
+    </example>
+
+    <note type="warning"><title>Sécurité</title>
+    <p>Les chemins UNC accédés en dehors du traitement d’une requête, par
+    exemple au cours du démarrage, ne font pas nécessairement l’objet d’une
+    vérification par rapport aux noms d’hôte configurés avec cette directive.</p>
+    </note>
+
+    <note type="warning"><title>Ordre des directives</title>
+    <p>Cette directive doit être placée avant les chemins UNC utilisés dans le
+    fichier httpd.conf. Plusieurs occurences de la directive redéfinissent la
+    liste.</p>
     </note>
 
 </usage>

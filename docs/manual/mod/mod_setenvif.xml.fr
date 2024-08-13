@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1872797 -->
+<!-- English Revision: 1915443 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -62,6 +62,13 @@ BrowserMatch MSIE !netscape
    part, les directives <directive
    module="mod_setenvif">SetEnvIf</directive> ne sont pas évaluées
    séparément dans la sous-requête.</p>
+
+   <p>Une expression rationnelle ne nécessite des guillemets que si elle
+   contient des espaces non échappées et dans ce cas, les guillemets simples ou
+   doubles sont équivalents. À la différence de <module>mod_rewrite</module>,
+   <module>mod_setenvif</module> élimine tous les autres anti-slashes lorsqu'il
+   interprète l'expression ; ainsi, <code>\\</code> nécessite <code>\\\</code>
+   et <code>\\\</code> nécessite <code>\\\\\</code>.</p>
 
 </summary>
 
@@ -289,15 +296,16 @@ serveur HTTP Apache</a> pour des exemples supplémentaires.
 <override>FileInfo</override>
 
 <usage>
-    <p>La directive <directive>SetEnvIfExpr</directive> permet de
-    définir des variables d'environnement en fonction d'une expression
-    <directive module="core" type="section">If</directive> <code>ap_expr</code>. Cette
-    expression est évaluée à l'exécution, et utilise les variables
-    d'environnement <em>env-variable</em> de la même manière que la
-    directive <directive>SetEnvIf</directive>.</p>
+    <p>La directive <directive>SetEnvIfExpr</directive> permet de définir des
+    variables d'environnement en fonction d'une <a
+    href="../expr.html">expression</a>. Cette expression est évaluée à
+    l'exécution, et les différentes variables d'environnement
+    <em>env-variable</em> définies de la même manière que la directive
+    <directive>SetEnvIf</directive>, y compris les références arrières.</p>
 
 <highlight language="config">
     SetEnvIfExpr "tolower(req('X-Sendfile')) == 'd:\images\very_big.iso')" iso_delivered
+    SetEnvIfExpr "tolower(req('X-Sendfile')) =~ /(.*\.iso$)/" iso-path=$1
 </highlight>
 
     <p>Dans cet exemple, la variable d'environnement

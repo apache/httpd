@@ -79,7 +79,7 @@ class TestH2Proxy:
         assert env.apache_restart() == 0
         url = env.mkurl("https", "cgi", f"/h2proxy/{env.http_port}/hello.py")
         # httpd 2.5.0 disables reuse, not matter the config
-        if enable_reuse == "on" and not env.httpd_is_at_least("2.5.0"):
+        if enable_reuse == "on" and not env.httpd_is_at_least("2.4.60"):
             # reuse is not guaranteed for each request, but we expect some
             # to do it and run on a h2 stream id > 1
             reused = False
@@ -132,9 +132,31 @@ class TestH2Proxy:
         assert int(r.json[0]["port"]) == env.http_port
         assert r.response["status"] == 200
         exp_port = env.http_port if enable_reuse == "on" \
-                                    and not env.httpd_is_at_least("2.5.0")\
+                                    and not env.httpd_is_at_least("2.4.60")\
             else env.http_port2
         assert int(r.json[1]["port"]) == exp_port
+
+    # test X-Forwarded-* headers
+    def test_h2_600_06(self, env):
+        conf = H2Conf(env, extras={
+            f'cgi.{env.http_tld}': [
+                "SetEnvIf Host (.+) X_HOST=$1",
+                f"ProxyPreserveHost on",
+                f"ProxyPass /h2c/ h2c://127.0.0.1:{env.http_port}/",
+                f"ProxyPass /h1c/ http://127.0.0.1:{env.http_port}/",
+            ]
+        })
+        conf.add_vhost_cgi(proxy_self=True)
+        conf.install()
+        assert env.apache_restart() == 0
+        url = env.mkurl("https", "cgi", "/h1c/hello.py")
+        r1 = env.curl_get(url, 5)
+        assert r1.response["status"] == 200
+        url = env.mkurl("https", "cgi", "/h2c/hello.py")
+        r2 = env.curl_get(url, 5)
+        assert r2.response["status"] == 200
+        for key in ['x-forwarded-for', 'x-forwarded-host','x-forwarded-server']:
+            assert r1.json[key] == r2.json[key], f'{key} differs proxy_http != proxy_http2'
 
     # lets do some error tests
     def test_h2_600_30(self, env):
@@ -153,7 +175,6 @@ class TestH2Proxy:
 
     # produce an error during response body
     def test_h2_600_31(self, env, repeat):
-        pytest.skip("needs fix in core protocol handling")
         conf = H2Conf(env)
         conf.add_vhost_cgi(h2proxy_self=True)
         conf.install()
@@ -163,11 +184,10 @@ class TestH2Proxy:
         # depending on when the error is detect in proxying, if may RST the
         # stream (exit_code != 0) or give a 503 response.
         if r.exit_code == 0:
-            assert r.response['status'] == 503
+            assert r.response['status'] == 502
 
     # produce an error, fail to generate an error bucket
     def test_h2_600_32(self, env, repeat):
-        pytest.skip("needs fix in core protocol handling")
         conf = H2Conf(env)
         conf.add_vhost_cgi(h2proxy_self=True)
         conf.install()
@@ -177,4 +197,4 @@ class TestH2Proxy:
         # depending on when the error is detect in proxying, if may RST the
         # stream (exit_code != 0) or give a 503 response.
         if r.exit_code == 0:
-            assert r.response['status'] == 503
+            assert r.response['status'] in [502, 503]

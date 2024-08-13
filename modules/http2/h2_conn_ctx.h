@@ -53,7 +53,8 @@ struct h2_conn_ctx_t {
     const struct h2_request *request; /* c2: the request to process */
     struct h2_bucket_beam *beam_out; /* c2: data out, created from req_pool */
     struct h2_bucket_beam *beam_in;  /* c2: data in or NULL, borrowed from request stream */
-    unsigned int input_chunked;      /* c2: if input needs HTTP/1.1 chunking applied */
+    unsigned input_chunked:1;        /* c2: if input needs HTTP/1.1 chunking applied */
+    unsigned is_upgrade:1;           /* c2: if requst is a HTTP Upgrade */
 
     apr_file_t *pipe_in[2];          /* c2: input produced notification pipe */
     apr_pollfd_t pfd;                /* c1: poll socket input, c2: NUL */
@@ -61,6 +62,7 @@ struct h2_conn_ctx_t {
     int has_final_response;          /* final HTTP response passed on out */
     apr_status_t last_err;           /* APR_SUCCES or last error encountered in filters */
 
+    apr_off_t bytes_sent;            /* c2: bytes acutaly sent via c1 */
     /* atomic */ apr_uint32_t started; /* c2: processing was started */
     apr_time_t started_at;           /* c2: when processing started */
     /* atomic */ apr_uint32_t done;  /* c2: processing has finished */

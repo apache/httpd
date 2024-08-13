@@ -90,9 +90,18 @@ h2_headers *h2_bucket_headers_get(apr_bucket *b)
     return NULL;
 }
 
+static void bucket_destroy(void *data)
+{
+    h2_bucket_headers *h = data;
+
+    if (apr_bucket_shared_destroy(h)) {
+        apr_bucket_free(h);
+    }
+}
+
 const apr_bucket_type_t h2_bucket_type_headers = {
     "H2HEADERS", 5, APR_BUCKET_METADATA,
-    apr_bucket_destroy_noop,
+    bucket_destroy,
     bucket_read,
     apr_bucket_setaside_noop,
     apr_bucket_split_notimpl,
@@ -144,6 +153,9 @@ h2_headers *h2_headers_rcreate(request_rec *r, int status,
                                const apr_table_t *header, apr_pool_t *pool)
 {
     h2_headers *headers = h2_headers_create(status, header, r->notes, 0, pool);
+    ap_log_rerror(APLOG_MARK, APLOG_TRACE1, headers->status, r,
+                  "h2_headers_rcreate(%ld): status=%d",
+                  (long)r->connection->id, status);
     if (headers->status == HTTP_FORBIDDEN) {
         request_rec *r_prev;
         for (r_prev = r; r_prev != NULL; r_prev = r_prev->prev) {

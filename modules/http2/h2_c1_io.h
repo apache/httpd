@@ -44,7 +44,8 @@ typedef struct {
     apr_off_t buffered_len;
     apr_off_t flush_threshold;
     unsigned int is_flushed : 1;
-    
+    unsigned int is_passing : 1;
+
     char *scratch;
     apr_size_t ssize;
     apr_size_t slen;

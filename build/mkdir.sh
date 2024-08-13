@@ -38,7 +38,13 @@ for file in ${1+"$@"} ; do
                  continue ;;
         esac
         if test ! -d "$pathcomp"; then
-            mkdir "$pathcomp" || errstatus=$?
+            thiserrstatus=0
+            mkdir "$pathcomp" || thiserrstatus=$?
+            # ignore errors due to races if a parallel mkdir.sh already
+            # created the dir
+            if test $thiserrstatus != 0 && test ! -d "$pathcomp" ; then
+                errstatus=$thiserrstatus
+            fi
         fi
         pathcomp="$pathcomp/"
     done

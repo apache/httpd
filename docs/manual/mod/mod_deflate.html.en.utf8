@@ -243,10 +243,10 @@ content</a> <a title="Permanent link" href="#precompressed" class="permalink">&p
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_deflate</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache 2.4.42 and later</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache 2.4.58 and later</td></tr>
 </table>
     <p>The <code class="directive">DeflateAlterETag</code> directive specifies
-    how the ETag hader should be altered when a response is compressed.</p>
+    how the ETag header should be altered when a response is compressed.</p>
     <dl>
     <dt>AddSuffix</dt>
     <dd><p>Append the compression method onto the end of the ETag, causing
@@ -257,11 +257,11 @@ content</a> <a title="Permanent link" href="#precompressed" class="permalink">&p
     <dt>NoChange</dt>
     <dd><p>Don't change the ETag on a compressed response. This was the default
         prior to 2.4.0, but does not satisfy the HTTP/1.1 property that all
-        representations of the same resource have unique ETags. </p></dd>
+        representations of the same resource have unique ETags.</p></dd>
     <dt>Remove</dt>
     <dd><p>Remove the ETag header from compressed responses. This prevents
         some conditional requests from being possible, but avoids the
-        shortcomings of the preceding options.  </p></dd>
+        shortcomings of the preceding options.</p></dd>
     </dl>
 
 </div>

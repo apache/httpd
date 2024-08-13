@@ -92,7 +92,7 @@ static int slotmem_filenames(apr_pool_t *pool,
     const char *fname = NULL, *pname = NULL;
 
     if (slotname && *slotname && strcasecmp(slotname, "none") != 0) {
-        if (slotname[0] != '/') {
+        if (!ap_os_is_path_absolute(pool, slotname)) {
             /* Each generation needs its own file name. */
             int generation = 0;
             ap_mpm_query(AP_MPMQ_GENERATION, &generation);
@@ -109,7 +109,7 @@ static int slotmem_filenames(apr_pool_t *pool,
 
         if (persistname) {
             /* Persisted file names are immutable... */
-            if (slotname[0] != '/') {
+            if (!ap_os_is_path_absolute(pool, slotname)) {
                 pname = apr_pstrcat(pool, DEFAULT_SLOTMEM_PREFIX,
                                     slotname, DEFAULT_SLOTMEM_SUFFIX,
                                     DEFAULT_SLOTMEM_PERSIST_SUFFIX,

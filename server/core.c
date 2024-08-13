@@ -92,6 +92,7 @@
 APR_HOOK_STRUCT(
     APR_HOOK_LINK(get_mgmt_items)
     APR_HOOK_LINK(insert_network_bucket)
+    APR_HOOK_LINK(get_pollfd_from_conn)
 )
 
 AP_IMPLEMENT_HOOK_RUN_ALL(int, get_mgmt_items,
@@ -102,6 +103,11 @@ AP_IMPLEMENT_HOOK_RUN_FIRST(apr_status_t, insert_network_bucket,
                             (conn_rec *c, apr_bucket_brigade *bb,
                              apr_socket_t *socket),
                             (c, bb, socket), AP_DECLINED)
+
+AP_IMPLEMENT_HOOK_RUN_FIRST(apr_status_t, get_pollfd_from_conn,
+                            (conn_rec *c, struct apr_pollfd_t *pfd,
+                             apr_interval_time_t *ptimeout),
+                              (c, pfd, ptimeout), APR_ENOTIMPL)
 
 /* Server core module... This module provides support for really basic
  * server operations, including options and commands which control the
@@ -1900,8 +1906,10 @@ static const char *set_override(cmd_parms *cmd, void *d_, const char *l)
         }
         else if (!ap_cstr_casecmp(k, "Options")) {
             d->override |= OR_OPTIONS;
-            if (v)
-                set_allow_opts(cmd, &(d->override_opts), v);
+            if (v) {
+                if ((err = set_allow_opts(cmd, &(d->override_opts), v)) != NULL)
+                    return err;
+	    }
             else
                 d->override_opts = OPT_ALL;
         }
@@ -4670,6 +4678,25 @@ static const char *set_merge_trailers(cmd_parms *cmd, void *dummy, int arg)
     return NULL;
 }
 
+#ifdef WIN32
+static const char *set_unc_list(cmd_parms *cmd, void *d_, int argc, char *const argv[])
+{
+    core_server_config *sconf = ap_get_core_module_config(cmd->server->module_config);
+    int i;
+    const char *err;
+
+    if ((err = ap_check_cmd_context(cmd, NOT_IN_VIRTUALHOST)) != NULL)
+        return err;
+
+    sconf->unc_list = apr_array_make(cmd->pool, argc, sizeof(char *));
+
+    for (i = 0; i < argc; i++) {
+        *(char **)apr_array_push(sconf->unc_list) = apr_pstrdup(cmd->pool, argv[i]);
+    }
+
+    return NULL;
+}
+#endif
 /* Note --- ErrorDocument will now work from .htaccess files.
  * The AllowOverride of Fileinfo allows webmasters to turn it off
  */
@@ -4773,6 +4800,10 @@ AP_INIT_TAKE1("FlushMaxThreshold", set_flush_max_threshold, NULL, RSRC_CONF,
 AP_INIT_TAKE1("FlushMaxPipelined", set_flush_max_pipelined, NULL, RSRC_CONF,
   "Maximum number of pipelined responses (pending) above which they are "
   "flushed to the network"),
+#ifdef WIN32
+AP_INIT_TAKE_ARGV("UNCList", set_unc_list, NULL, RSRC_CONF,
+  "Controls what UNC hosts may be looked up"),
+#endif
 
 /* Old server config file commands */
 
@@ -5067,7 +5098,7 @@ static int core_override_type(request_rec *r)
     /* Check for overrides with ForceType / SetHandler
      */
     if (conf->mime_type && strcmp(conf->mime_type, "none"))
-        ap_set_content_type(r, (char*) conf->mime_type);
+        ap_set_content_type_ex(r, (char*) conf->mime_type, 1);
 
     if (conf->expr_handler) { 
         const char *err;
@@ -5971,6 +6002,106 @@ static int core_upgrade_storage(request_rec *r)
     return DECLINED;
 }
 
+static apr_status_t core_get_pollfd_from_conn(conn_rec *c,
+                                              struct apr_pollfd_t *pfd,
+                                              apr_interval_time_t *ptimeout)
+{
+    if (c && !c->master) {
+        pfd->desc_type = APR_POLL_SOCKET;
+        pfd->desc.s = ap_get_conn_socket(c);
+        if (ptimeout) {
+            apr_socket_timeout_get(pfd->desc.s, ptimeout);
+        }
+        return APR_SUCCESS;
+    }
+    return APR_ENOTIMPL;
+}
+
+AP_CORE_DECLARE(apr_status_t) ap_get_pollfd_from_conn(conn_rec *c,
+                                      struct apr_pollfd_t *pfd,
+                                      apr_interval_time_t *ptimeout)
+{
+    return ap_run_get_pollfd_from_conn(c, pfd, ptimeout);
+}
+
+#ifdef WIN32
+static apr_status_t check_unc(const char *path, apr_pool_t *p)
+{
+    int i;
+    char *s, *teststring;
+    apr_status_t rv = APR_EACCES;
+    core_server_config *sconf = NULL;
+
+    if (!ap_server_conf) {
+        return APR_SUCCESS; /* this early, if we have a UNC, it's specified by an admin */
+    }
+
+    if (!path || (path != ap_strstr_c(path, "\\\\") && 
+                path != ap_strstr_c(path, "//"))) { 
+        return APR_SUCCESS; /* not a UNC */
+    }
+
+    sconf = ap_get_core_module_config(ap_server_conf->module_config);
+    s = teststring = apr_pstrdup(p, path);
+    *s++ = '/';
+    *s++ = '/';
+
+    ap_log_error(APLOG_MARK, APLOG_TRACE4, 0, ap_server_conf, 
+                 "ap_filepath_merge: check converted path %s allowed %d", 
+                 teststring,
+                 sconf->unc_list ? sconf->unc_list->nelts : 0);
+
+    for (i = 0; sconf->unc_list && i < sconf->unc_list->nelts; i++) {
+        char *configured_unc = ((char **)sconf->unc_list->elts)[i];
+        apr_uri_t uri;
+        if (APR_SUCCESS == apr_uri_parse(p, teststring, &uri) &&
+                (uri.hostinfo == NULL || 
+                 !ap_cstr_casecmp(uri.hostinfo, configured_unc))) { 
+            rv = APR_SUCCESS;
+            ap_log_error(APLOG_MARK, APLOG_TRACE4, 0, ap_server_conf, 
+                         "ap_filepath_merge: match %s %s", 
+                         uri.hostinfo, configured_unc);
+            break;
+        }
+        else { 
+            ap_log_error(APLOG_MARK, APLOG_TRACE4, 0, ap_server_conf, 
+                         "ap_filepath_merge: no match %s %s", uri.hostinfo, 
+                         configured_unc);
+        }
+    }
+    if (rv != APR_SUCCESS) {
+        ap_log_error(APLOG_MARK, APLOG_ERR, rv, ap_server_conf, APLOGNO(10504)
+                     "ap_filepath_merge: UNC path %s not allowed by UNCList", teststring);
+    }
+
+    return rv;
+}
+#endif
+
+AP_DECLARE(apr_status_t) ap_filepath_merge(char **newpath,
+                                            const char *rootpath,
+                                            const char *addpath,
+                                            apr_int32_t flags,
+                                            apr_pool_t *p)
+{
+#ifdef WIN32
+    apr_status_t rv;
+
+    if (APR_SUCCESS != (rv = check_unc(rootpath, p))) {
+        return rv;
+    }
+    if (APR_SUCCESS != (rv = check_unc(addpath, p))) {
+        return rv;
+    }
+#undef apr_filepath_merge
+#endif
+    return apr_filepath_merge(newpath, rootpath, addpath, flags, p);
+#ifdef WIN32
+#define apr_filepath_merge ap_filepath_merge
+#endif
+}
+
+
 static void register_hooks(apr_pool_t *p)
 {
     errorlog_hash = apr_hash_make(p);
@@ -6016,6 +6147,8 @@ static void register_hooks(apr_pool_t *p)
     ap_hook_open_htaccess(ap_open_htaccess, NULL, NULL, APR_HOOK_REALLY_LAST);
     ap_hook_optional_fn_retrieve(core_optional_fn_retrieve, NULL, NULL,
                                  APR_HOOK_MIDDLE);
+    ap_hook_get_pollfd_from_conn(core_get_pollfd_from_conn, NULL, NULL,
+                                 APR_HOOK_REALLY_LAST);
 
     ap_hook_input_pending(ap_filter_input_pending, NULL, NULL,
                           APR_HOOK_MIDDLE);

@@ -84,10 +84,12 @@ static md_mod_conf_t defmc = {
     "crt.sh",                  /* default cert checker site name */
     "https://crt.sh?q=",       /* default cert checker site url */
     NULL,                      /* CA cert file to use */
+    apr_time_from_sec(MD_SECS_PER_DAY/2), /* default time between cert checks */
     apr_time_from_sec(5),      /* minimum delay for retries */
     13,                        /* retry_failover after 14 errors, with 5s delay ~ half a day */
     0,                         /* store locks, disabled by default */
     apr_time_from_sec(5),      /* max time to wait to obaint a store lock */
+    MD_MATCH_ALL,              /* match vhost severname and aliases */
 };
 
 static md_timeslice_t def_renew_window = {
@@ -623,6 +625,24 @@ static const char *md_config_set_base_server(cmd_parms *cmd, void *dc, const cha
     return set_on_off(&config->mc->manage_base_server, value, cmd->pool);
 }
 
+static const char *md_config_set_check_interval(cmd_parms *cmd, void *dc, const char *value)
+{
+    md_srv_conf_t *config = md_config_get(cmd->server);
+    const char *err = md_conf_check_location(cmd, MD_LOC_NOT_MD);
+    apr_time_t interval;
+
+    (void)dc;
+    if (err) return err;
+    if (md_duration_parse(&interval, value, "s") != APR_SUCCESS) {
+        return "unrecognized duration format";
+    }
+    if (interval < apr_time_from_sec(1)) {
+        return "check interval cannot be less than one second";
+    }
+    config->mc->check_interval = interval;
+    return NULL;
+}
+
 static const char *md_config_set_min_delay(cmd_parms *cmd, void *dc, const char *value)
 {
     md_srv_conf_t *config = md_config_get(cmd->server);
@@ -680,6 +700,27 @@ static const char *md_config_set_store_locks(cmd_parms *cmd, void *dc, const cha
     config->mc->use_store_locks = use_store_locks;
     if (wait_time) {
         config->mc->lock_wait_timeout = wait_time;
+    }
+    return NULL;
+}
+
+static const char *md_config_set_match_mode(cmd_parms *cmd, void *dc, const char *s)
+{
+    md_srv_conf_t *config = md_config_get(cmd->server);
+    const char *err = md_conf_check_location(cmd, MD_LOC_NOT_MD);
+
+    (void)dc;
+    if (err) {
+        return err;
+    }
+    else if (!apr_strnatcasecmp("all", s)) {
+        config->mc->match_mode = MD_MATCH_ALL;
+    }
+    else if (!apr_strnatcasecmp("servernames", s)) {
+        config->mc->match_mode = MD_MATCH_SERVERNAMES;
+    }
+    else {
+        return "invalid argument, must be a 'all' or 'servernames'";
     }
     return NULL;
 }
@@ -985,6 +1026,24 @@ static const char *md_config_set_dns01_cmd(cmd_parms *cmd, void *mconfig, const 
     return NULL;
 }
 
+static const char *md_config_set_dns01_version(cmd_parms *cmd, void *mconfig, const char *value)
+{
+    md_srv_conf_t *sc = md_config_get(cmd->server);
+    const char *err;
+
+    (void)mconfig;
+    if ((err = md_conf_check_location(cmd, MD_LOC_NOT_MD))) {
+        return err;
+    }
+    if (!strcmp("1", value) || !strcmp("2", value)) {
+        apr_table_set(sc->mc->env, MD_KEY_DNS01_VERSION, value);
+    }
+    else {
+        return "Only versions `1` and `2` are supported";
+    }
+    return NULL;
+}
+
 static const char *md_config_add_cert_file(cmd_parms *cmd, void *mconfig, const char *arg)
 {
     md_srv_conf_t *sc = md_config_get(cmd->server);
@@ -1226,7 +1285,9 @@ const command_rec md_cmds[] = {
                   "Allow managing of base server outside virtual hosts."),
     AP_INIT_RAW_ARGS("MDChallengeDns01", md_config_set_dns01_cmd, NULL, RSRC_CONF, 
                   "Set the command for setup/teardown of dns-01 challenges"),
-    AP_INIT_TAKE1("MDCertificateFile", md_config_add_cert_file, NULL, RSRC_CONF, 
+    AP_INIT_TAKE1("MDChallengeDns01Version", md_config_set_dns01_version, NULL, RSRC_CONF,
+                  "Set the type of arguments to call `MDChallengeDns01` with"),
+    AP_INIT_TAKE1("MDCertificateFile", md_config_add_cert_file, NULL, RSRC_CONF,
                   "set the static certificate (chain) file to use for this domain."),
     AP_INIT_TAKE1("MDCertificateKeyFile", md_config_add_key_file, NULL, RSRC_CONF, 
                   "set the static private key file to use for this domain."),
@@ -1260,7 +1321,10 @@ const command_rec md_cmds[] = {
                   "The number of errors before a failover to another CA is triggered."),
     AP_INIT_TAKE1("MDStoreLocks", md_config_set_store_locks, NULL, RSRC_CONF,
                   "Configure locking of store for updates."),
-
+    AP_INIT_TAKE1("MDMatchNames", md_config_set_match_mode, NULL, RSRC_CONF,
+                  "Determines how DNS names are matched to vhosts."),
+    AP_INIT_TAKE1("MDCheckInterval", md_config_set_check_interval, NULL, RSRC_CONF,
+                  "Time between certificate checks."),
     AP_INIT_TAKE1(NULL, NULL, NULL, RSRC_CONF, NULL)
 };
 

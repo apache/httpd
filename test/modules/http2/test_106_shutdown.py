@@ -66,10 +66,16 @@ class TestShutdown:
             r = env.curl_get(url, options=['-v'])
             # requests should succeed, but rarely connections get closed
             # before the response is received
-            if r.exit_code == 55:
+            if r.exit_code in [16, 55]:
                 # curl send error
                 assert r.response is None
             else:
                 assert r.exit_code == 0, f"failed on {i}. request: {r.stdout} {r.stderr}"
                 assert r.response["status"] == 200
                 assert "HTTP/2" == r.response["protocol"]
+        #
+        env.httpd_error_log.ignore_recent(
+            lognos = [
+                "AH03490"   # scoreboard is full, not at MaxRequestWorkers
+            ]
+        )

@@ -44,8 +44,8 @@ typedef struct {
     autht_provider_list *providers;
     int authoritative;
     ap_expr_info_t *proxy;
-    int authoritative_set:1;
-    int proxy_set:1;
+    unsigned int authoritative_set:1;
+    unsigned int proxy_set:1;
 } auth_bearer_config_rec;
 
 static void *create_auth_bearer_dir_config(apr_pool_t *p, char *d)

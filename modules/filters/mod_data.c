@@ -117,7 +117,7 @@ static apr_status_t data_out_filter(ap_filter_t *f, apr_bucket_brigade *bb)
             }
         }
 
-        ap_set_content_type(r, "text/plain");
+        ap_set_content_type_ex(r, "text/plain", 1);
 
     }
 

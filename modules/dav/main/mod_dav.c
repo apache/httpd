@@ -85,6 +85,7 @@ typedef struct {
     const char *provider_name;
     const dav_provider *provider;
     const char *dir;
+    const char *base;
     int locktimeout;
     int allow_depthinfinity;
     int allow_lockdiscovery;
@@ -207,6 +208,7 @@ static void *dav_merge_dir_config(apr_pool_t *p, void *base, void *overrides)
 
     newconf->locktimeout = DAV_INHERIT_VALUE(parent, child, locktimeout);
     newconf->dir = DAV_INHERIT_VALUE(parent, child, dir);
+    newconf->base = DAV_INHERIT_VALUE(parent, child, base);
     newconf->allow_depthinfinity = DAV_INHERIT_VALUE(parent, child,
                                                      allow_depthinfinity);
     newconf->allow_lockdiscovery = DAV_INHERIT_VALUE(parent, child,
@@ -291,6 +293,18 @@ static const char *dav_cmd_dav(cmd_parms *cmd, void *config, const char *arg1)
                                 conf->provider_name);
         }
     }
+
+    return NULL;
+}
+
+/*
+ * Command handler for the DAVBasePath directive, which is TAKE1
+ */
+static const char *dav_cmd_davbasepath(cmd_parms *cmd, void *config, const char *arg1)
+{
+    dav_dir_conf *conf = config;
+
+    conf->base = arg1;
 
     return NULL;
 }
@@ -381,7 +395,7 @@ static int dav_error_response(request_rec *r, int status, const char *body)
     r->status = status;
     r->status_line = ap_get_status_line(status);
 
-    ap_set_content_type(r, "text/html; charset=ISO-8859-1");
+    ap_set_content_type_ex(r, "text/html; charset=ISO-8859-1", 1);
 
     /* begin the response now... */
     ap_rvputs(r,
@@ -412,7 +426,7 @@ static int dav_error_response_tag(request_rec *r,
 {
     r->status = err->status;
 
-    ap_set_content_type(r, DAV_XML_CONTENT_TYPE);
+    ap_set_content_type_ex(r, DAV_XML_CONTENT_TYPE, 1);
 
     ap_rputs(DAV_XML_HEADER DEBUG_CR
              "<D:error xmlns:D=\"DAV:\"", r);
@@ -570,7 +584,7 @@ DAV_DECLARE(void) dav_begin_multistatus(apr_bucket_brigade *bb,
 {
     /* Set the correct status and Content-Type */
     r->status = status;
-    ap_set_content_type(r, DAV_XML_CONTENT_TYPE);
+    ap_set_content_type_ex(r, DAV_XML_CONTENT_TYPE, 1);
 
     /* Send the headers and actual multistatus response now... */
     ap_fputs(r->output_filters, bb, DAV_XML_HEADER DEBUG_CR
@@ -788,7 +802,7 @@ DAV_DECLARE(dav_error *) dav_get_resource(request_rec *r, int label_allowed,
                                    int use_checked_in, dav_resource **res_p)
 {
     dav_dir_conf *conf;
-    const char *label = NULL;
+    const char *label = NULL, *base;
     dav_error *err;
 
     /* if the request target can be overridden, get any target selector */
@@ -805,11 +819,27 @@ DAV_DECLARE(dav_error *) dav_get_resource(request_rec *r, int label_allowed,
                              ap_escape_html(r->pool, r->uri)));
     }
 
+    /* Take the repos root from DAVBasePath if configured, else the
+     * path of the enclosing section. */
+    base = conf->base ? conf->base : conf->dir;
+
     /* resolve the resource */
-    err = (*conf->provider->repos->get_resource)(r, conf->dir,
+    err = (*conf->provider->repos->get_resource)(r, base,
                                                  label, use_checked_in,
                                                  res_p);
     if (err != NULL) {
+        /* In the error path, give a hint that DavBasePath needs to be
+         * used if the location was configured via a regex match. */
+        if (!conf->base) {
+            core_dir_config *cdc = ap_get_core_module_config(r->per_dir_config);
+
+            if (cdc->r) {
+                ap_log_error(APLOG_MARK, APLOG_ERR, 0, NULL, APLOGNO(10484)
+                             "failed to find repository for location configured "
+                             "via regex match - missing DAVBasePath?");
+            }
+        }
+
         err = dav_push_error(r->pool, err->status, 0,
                              "Could not fetch resource information.", err);
         return err;
@@ -2056,7 +2086,7 @@ static int dav_method_options(request_rec *r)
 
     /* send the options response */
     r->status = HTTP_OK;
-    ap_set_content_type(r, DAV_XML_CONTENT_TYPE);
+    ap_set_content_type_ex(r, DAV_XML_CONTENT_TYPE, 1);
 
     /* send the headers and response body */
     ap_rputs(DAV_XML_HEADER DEBUG_CR
@@ -2269,7 +2299,7 @@ static int dav_method_propfind(request_rec *r)
         return HTTP_BAD_REQUEST;
     }
 
-    ctx.w.walk_type = DAV_WALKTYPE_NORMAL | DAV_WALKTYPE_AUTH;
+    ctx.w.walk_type = DAV_WALKTYPE_NORMAL | DAV_WALKTYPE_AUTH | DAV_WALKTYPE_TOLERANT;
     ctx.w.func = dav_propfind_walker;
     ctx.w.walk_ctx = &ctx;
     ctx.w.pool = r->pool;
@@ -3407,7 +3437,7 @@ static int dav_method_lock(request_rec *r)
     (*locks_hooks->close_lockdb)(lockdb);
 
     r->status = HTTP_OK;
-    ap_set_content_type(r, DAV_XML_CONTENT_TYPE);
+    ap_set_content_type_ex(r, DAV_XML_CONTENT_TYPE, 1);
 
     ap_rputs(DAV_XML_HEADER DEBUG_CR "<D:prop xmlns:D=\"DAV:\">" DEBUG_CR, r);
     if (lock == NULL)
@@ -4465,7 +4495,7 @@ static int dav_method_report(request_rec *r)
 
     /* set up defaults for the report response */
     r->status = HTTP_OK;
-    ap_set_content_type(r, DAV_XML_CONTENT_TYPE);
+    ap_set_content_type_ex(r, DAV_XML_CONTENT_TYPE, 1);
     err = NULL;
 
     /* run report hook */
@@ -4773,7 +4803,7 @@ static int dav_method_merge(request_rec *r)
        is going to do something different (i.e. an error), then it must
        return a dav_error, and we'll reset these values properly. */
     r->status = HTTP_OK;
-    ap_set_content_type(r, "text/xml");
+    ap_set_content_type_ex(r, "text/xml", 1);
 
     /* ### should we do any preliminary response generation? probably not,
        ### because we may have an error, thus demanding something else in
@@ -5288,6 +5318,10 @@ static const command_rec dav_cmds[] =
     /* per directory/location */
     AP_INIT_TAKE1("DAV", dav_cmd_dav, NULL, ACCESS_CONF,
                   "specify the DAV provider for a directory or location"),
+
+    /* per directory/location */
+    AP_INIT_TAKE1("DAVBasePath", dav_cmd_davbasepath, NULL, ACCESS_CONF,
+                  "specify the DAV repository base URL"),
 
     /* per directory/location, or per server */
     AP_INIT_TAKE1("DAVMinTimeout", dav_cmd_davmintimeout, NULL,

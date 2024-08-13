@@ -1,0 +1,2 @@
+  *) mod_systemd: Log the SELinux context at startup if available and
+     enabled.  [Joe Orton]

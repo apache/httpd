@@ -31,6 +31,7 @@
 #include "apr_optional.h"
 #include "util_filter.h"
 #include "ap_expr.h"
+#include "apr_poll.h"
 #include "apr_tables.h"
 
 #include "http_config.h"
@@ -770,6 +771,9 @@ typedef struct {
     apr_int32_t  flush_max_pipelined;
     unsigned int strict_host_check;
     unsigned int merge_slashes;
+#ifdef WIN32
+    apr_array_header_t *unc_list;
+#endif
 } core_server_config;
 
 /* for AddOutputFiltersByType in core.c */
@@ -1109,6 +1113,30 @@ AP_DECLARE(int) ap_state_query(int query_code);
  */
 AP_CORE_DECLARE(conn_rec *) ap_create_slave_connection(conn_rec *c);
 
+/** Get a apr_pollfd_t populated with descriptor and descriptor type
+ * and the timeout to use for it.
+ * @return APR_ENOTIMPL if not supported for a connection.
+ */
+AP_DECLARE_HOOK(apr_status_t, get_pollfd_from_conn,
+                (conn_rec *c, struct apr_pollfd_t *pfd,
+                 apr_interval_time_t *ptimeout))
+
+/**
+ * Pass in a `struct apr_pollfd_t*` and get `desc_type` and `desc`
+ * populated with a suitable value for polling connection input.
+ * For primary connection (c->master == NULL), this will be the connection
+ * socket. For secondary connections this may differ or not be available
+ * at all.
+ * Note that APR_NO_DESC may be set to indicate that the connection
+ * input is already closed.
+ *
+ * @param pfd  the pollfd to set the descriptor in
+ * @param ptimeout  != NULL to retrieve the timeout in effect
+ * @return ARP_SUCCESS when the information was assigned.
+ */
+AP_CORE_DECLARE(apr_status_t) ap_get_pollfd_from_conn(conn_rec *c,
+                                      struct apr_pollfd_t *pfd,
+                                      apr_interval_time_t *ptimeout);
 
 /** Macro to provide a default value if the pointer is not yet initialised
  */

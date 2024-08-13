@@ -17,6 +17,7 @@
 /* Load balancer module for Apache proxy */
 
 #include "mod_proxy.h"
+#include "proxy_util.h"
 #include "scoreboard.h"
 #include "ap_mpm.h"
 #include "apr_version.h"
@@ -69,23 +70,21 @@ extern void proxy_update_members(proxy_balancer **balancer, request_rec *r,
 
 static int proxy_balancer_canon(request_rec *r, char *url)
 {
-    char *host, *path;
-    char *search = NULL;
-    const char *err;
+    char *host;
     apr_port_t port = 0;
+    const char *err;
 
     /* TODO: offset of BALANCER_PREFIX ?? */
     if (ap_cstr_casecmpn(url, "balancer:", 9) == 0) {
+        ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r, "canonicalising URL %s", url);
         url += 9;
     }
     else {
         return DECLINED;
     }
 
-    ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r, "canonicalising URL %s", url);
-
     /* do syntatic check.
-     * We break the URL into host, port, path, search
+     * We break the URL into host, port, path
      */
     err = ap_proxy_canon_netloc(r->pool, &url, NULL, NULL, &host, &port);
     if (err) {
@@ -94,68 +93,28 @@ static int proxy_balancer_canon(request_rec *r, char *url)
                       url, err);
         return HTTP_BAD_REQUEST;
     }
-    /*
-     * now parse path/search args, according to rfc1738:
-     * process the path. With proxy-noncanon set (by
-     * mod_proxy) we use the raw, unparsed uri
+
+    /* The canon_handler hooks are run per the BalancerMember in
+     * balancer_fixup(), keep the original/raw path for now.
      */
-    if (apr_table_get(r->notes, "proxy-nocanon")) {
-        path = url;   /* this is the raw path */
-    }
-    else if (apr_table_get(r->notes, "proxy-noencode")) {
-        path = url;   /* this is the encoded path already */
-        search = r->args;
-    }
-    else {
-        core_dir_config *d = ap_get_core_module_config(r->per_dir_config);
-        int flags = d->allow_encoded_slashes && !d->decode_encoded_slashes ? PROXY_CANONENC_NOENCODEDSLASHENCODING : 0;
-
-        path = ap_proxy_canonenc_ex(r->pool, url, strlen(url), enc_path, flags,
-                                    r->proxyreq);
-        if (!path) {
-            return HTTP_BAD_REQUEST;
-        }
-        search = r->args;
-    }
-    /*
-     * If we have a raw control character or a ' ' in nocanon path or
-     * r->args, correct encoding was missed.
-     */
-    if (path == url && *ap_scan_vchar_obstext(path)) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(10416)
-                      "To be forwarded path contains control "
-                      "characters or spaces");
-        return HTTP_FORBIDDEN;
-    }
-    if (search && *ap_scan_vchar_obstext(search)) {
-         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(10407)
-                       "To be forwarded query string contains control "
-                       "characters or spaces");
-         return HTTP_FORBIDDEN;
-    }
-
-    r->filename = apr_pstrcat(r->pool, "proxy:" BALANCER_PREFIX, host,
-            "/", path, (search) ? "?" : "", (search) ? search : "", NULL);
-
-    r->path_info = apr_pstrcat(r->pool, "/", path, NULL);
+    r->filename = apr_pstrcat(r->pool, "proxy:" BALANCER_PREFIX,
+                              host, "/", url, NULL);
 
     return OK;
 }
 
-static void init_balancer_members(apr_pool_t *p, server_rec *s,
-                                 proxy_balancer *balancer)
+static void init_balancer_members(proxy_balancer *balancer,
+                                  server_rec *s, apr_pool_t *p)
 {
     int i;
-    proxy_worker **workers;
-
-    workers = (proxy_worker **)balancer->workers->elts;
+    proxy_worker **workers = (proxy_worker **)balancer->workers->elts;
 
     for (i = 0; i < balancer->workers->nelts; i++) {
         int worker_is_initialized;
         proxy_worker *worker = *workers;
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(01158)
                      "Looking at %s -> %s initialized?", balancer->s->name,
-                     ap_proxy_worker_name(p, worker));
+                     ap_proxy_worker_get_name(worker));
         worker_is_initialized = PROXY_WORKER_IS_INITIALIZED(worker);
         if (!worker_is_initialized) {
             ap_proxy_initialize_worker(worker, s, p);
@@ -429,25 +388,25 @@ static proxy_worker *find_best_worker(proxy_balancer *balancer,
 
 }
 
-static int rewrite_url(request_rec *r, proxy_worker *worker,
-                        char **url)
+static int balancer_fixup(request_rec *r, proxy_worker *worker, char **url)
 {
-    const char *scheme = strstr(*url, "://");
-    const char *path = NULL;
+    const char *path;
+    int rc;
 
-    if (scheme)
-        path = ap_strchr_c(scheme + 3, '/');
-
-    /* we break the URL into host, port, uri */
-    if (!worker) {
-        return ap_proxyerror(r, HTTP_BAD_REQUEST, apr_pstrcat(r->pool,
-                             "missing worker. URI cannot be parsed: ", *url,
-                             NULL));
+    /* Build the proxy URL from the worker URL and the actual path */
+    path = strstr(*url, "://");
+    if (path) {
+        path = ap_strchr_c(path + 3, '/');
     }
+    r->filename = apr_pstrcat(r->pool, "proxy:", worker->s->name, path, NULL);
 
-    *url = apr_pstrcat(r->pool, worker->s->name, path, NULL);
-
-    return OK;
+    /* Canonicalize r->filename per the worker scheme's canon_handler hook */
+    rc = ap_proxy_canon_url(r);
+    if (rc == OK) {
+        AP_DEBUG_ASSERT(strncmp(r->filename, "proxy:", 6) == 0);
+        *url = apr_pstrdup(r->pool, r->filename + 6);
+    }
+    return rc;
 }
 
 static void force_recovery(proxy_balancer *balancer, server_rec *s)
@@ -486,17 +445,6 @@ static void force_recovery(proxy_balancer *balancer, server_rec *s)
     }
 }
 
-static apr_status_t decrement_busy_count(void *worker_)
-{
-    proxy_worker *worker = worker_;
-    
-    if (worker->s->busy) {
-        worker->s->busy--;
-    }
-
-    return APR_SUCCESS;
-}
-
 static int proxy_balancer_pre_request(proxy_worker **worker,
                                       proxy_balancer **balancer,
                                       request_rec *r,
@@ -515,7 +463,8 @@ static int proxy_balancer_pre_request(proxy_worker **worker,
      * for balancer, because this is failover attempt.
      */
     if (!*balancer &&
-        !(*balancer = ap_proxy_get_balancer(r->pool, conf, *url, 1)))
+        (ap_cstr_casecmpn(*url, BALANCER_PREFIX, sizeof(BALANCER_PREFIX) - 1)
+         || !(*balancer = ap_proxy_get_balancer(r->pool, conf, *url, 1))))
         return DECLINED;
 
     /* Step 2: Lock the LoadBalancer
@@ -635,8 +584,8 @@ static int proxy_balancer_pre_request(proxy_worker **worker,
         *worker = runtime;
     }
 
-    (*worker)->s->busy++;
-    apr_pool_cleanup_register(r->pool, *worker, decrement_busy_count,
+    ap_proxy_increment_busy_count(*worker);
+    apr_pool_cleanup_register(r->pool, *worker, ap_proxy_decrement_busy_count,
                               apr_pool_cleanup_null);
 
     /* Add balancer/worker info to env. */
@@ -649,10 +598,12 @@ static int proxy_balancer_pre_request(proxy_worker **worker,
 
     /* Rewrite the url from 'balancer://url'
      * to the 'worker_scheme://worker_hostname[:worker_port]/url'
-     * This replaces the balancers fictional name with the
-     * real hostname of the elected worker.
+     * This replaces the balancers fictional name with the real
+     * hostname of the elected worker and canonicalizes according
+     * to the worker scheme (calls canon_handler hooks).
      */
-    access_status = rewrite_url(r, *worker, url);
+    access_status = balancer_fixup(r, *worker, url);
+
     /* Add the session route to request notes if present */
     if (route) {
         apr_table_setn(r->notes, "session-sticky", sticky);
@@ -698,7 +649,7 @@ static int proxy_balancer_post_request(proxy_worker *worker,
                               "%s: Forcing worker (%s) into error state "
                               "due to status code %d matching 'failonstatus' "
                               "balancer parameter",
-                              balancer->s->name, ap_proxy_worker_name(r->pool, worker),
+                              balancer->s->name, ap_proxy_worker_get_name(worker),
                               val);
                 worker->s->status |= PROXY_WORKER_IN_ERROR;
                 worker->s->error_time = apr_time_now();
@@ -713,7 +664,7 @@ static int proxy_balancer_post_request(proxy_worker *worker,
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(02460)
                       "%s: Forcing worker (%s) into error state "
                       "due to timeout and 'failontimeout' parameter being set",
-                       balancer->s->name, ap_proxy_worker_name(r->pool, worker));
+                       balancer->s->name, ap_proxy_worker_get_name(worker));
         worker->s->status |= PROXY_WORKER_IN_ERROR;
         worker->s->error_time = apr_time_now();
 
@@ -1457,7 +1408,7 @@ static void balancer_display_page(request_rec *r, proxy_server_conf *conf,
 
     if (usexml) {
         char date[APR_RFC822_DATE_LEN];
-        ap_set_content_type(r, "text/xml");
+        ap_set_content_type_ex(r, "text/xml", 1);
         ap_rputs("<?xml version='1.0' encoding='UTF-8' ?>\n", r);
         ap_rputs("<httpd:manager xmlns:httpd='http://httpd.apache.org'>\n", r);
         ap_rputs("  <httpd:balancers>\n", r);
@@ -1496,7 +1447,7 @@ static void balancer_display_page(request_rec *r, proxy_server_conf *conf,
                 worker = *workers;
                 /* Start proxy_worker */
                 ap_rputs("        <httpd:worker>\n", r);
-                ap_rvputs(r, "          <httpd:name>", ap_proxy_worker_name(r->pool, worker),
+                ap_rvputs(r, "          <httpd:name>", ap_proxy_worker_get_name(worker),
                           "</httpd:name>\n", NULL);
                 ap_rvputs(r, "          <httpd:scheme>", worker->s->scheme,
                           "</httpd:scheme>\n", NULL);
@@ -1575,7 +1526,7 @@ static void balancer_display_page(request_rec *r, proxy_server_conf *conf,
                           "</httpd:redirect>\n", NULL);
                 ap_rprintf(r,
                            "          <httpd:busy>%" APR_SIZE_T_FMT "</httpd:busy>\n",
-                           worker->s->busy);
+                           ap_proxy_get_busy_count(worker));
                 ap_rprintf(r, "          <httpd:lbset>%d</httpd:lbset>\n",
                            worker->s->lbset);
                 /* End proxy_worker_stat */
@@ -1630,7 +1581,7 @@ static void balancer_display_page(request_rec *r, proxy_server_conf *conf,
         ap_rputs("</httpd:manager>", r);
     }
     else {
-        ap_set_content_type(r, "text/html; charset=ISO-8859-1");
+        ap_set_content_type_ex(r, "text/html; charset=ISO-8859-1", 1);
         ap_rputs(DOCTYPE_HTML_4_01
                  "<html><head><title>Balancer Manager</title>\n", r);
         ap_rputs("<style type='text/css'>\n"
@@ -1737,7 +1688,7 @@ static void balancer_display_page(request_rec *r, proxy_server_conf *conf,
                           ap_escape_uri(r->pool, worker->s->name),
                           "&amp;nonce=", balancer->s->nonce,
                           "\">", NULL);
-                ap_rvputs(r, (*worker->s->uds_path ? "<i>" : ""), ap_proxy_worker_name(r->pool, worker),
+                ap_rvputs(r, (*worker->s->uds_path ? "<i>" : ""), ap_proxy_worker_get_name(worker),
                           (*worker->s->uds_path ? "</i>" : ""), "</a></td>", NULL);
                 ap_rvputs(r, "<td>", ap_escape_html(r->pool, worker->s->route),
                           NULL);
@@ -1748,7 +1699,7 @@ static void balancer_display_page(request_rec *r, proxy_server_conf *conf,
                 ap_rvputs(r, ap_proxy_parse_wstatus(r->pool, worker), NULL);
                 ap_rputs("</td>", r);
                 ap_rprintf(r, "<td>%" APR_SIZE_T_FMT "</td>", worker->s->elected);
-                ap_rprintf(r, "<td>%" APR_SIZE_T_FMT "</td>", worker->s->busy);
+                ap_rprintf(r, "<td>%" APR_SIZE_T_FMT "</td>", ap_proxy_get_busy_count(worker));
                 ap_rprintf(r, "<td>%d</td><td>", worker->s->lbstatus);
                 ap_rputs(apr_strfsize(worker->s->transferred, fbuf), r);
                 ap_rputs("</td><td>", r);
@@ -1774,7 +1725,7 @@ static void balancer_display_page(request_rec *r, proxy_server_conf *conf,
         }
         if (wsel && bsel) {
             ap_rputs("<h3>Edit worker settings for ", r);
-            ap_rvputs(r, (*wsel->s->uds_path?"<i>":""), ap_proxy_worker_name(r->pool, wsel), (*wsel->s->uds_path?"</i>":""), "</h3>\n", NULL);
+            ap_rvputs(r, (*wsel->s->uds_path?"<i>":""), ap_proxy_worker_get_name(wsel), (*wsel->s->uds_path?"</i>":""), "</h3>\n", NULL);
             ap_rputs("<form method='POST' enctype='application/x-www-form-urlencoded' action=\"", r);
             ap_rvputs(r, ap_escape_uri(r->pool, action), "\">\n", NULL);
             ap_rputs("<table><tr><td>Load factor:</td><td><input name='w_lf' id='w_lf' type=text ", r);
@@ -2034,7 +1985,7 @@ static int balancer_handler(request_rec *r)
 
 static void balancer_child_init(apr_pool_t *p, server_rec *s)
 {
-    while (s) {
+    for (; s; s = s->next) {
         proxy_balancer *balancer;
         int i;
         void *sconf = s->module_config;
@@ -2065,17 +2016,16 @@ static void balancer_child_init(apr_pool_t *p, server_rec *s)
 
         balancer = (proxy_balancer *)conf->balancers->elts;
         for (i = 0; i < conf->balancers->nelts; i++, balancer++) {
-            rv = ap_proxy_initialize_balancer(balancer, s, p);
-
+            rv = ap_proxy_initialize_balancer(balancer, s, conf->pool);
             if (rv != APR_SUCCESS) {
                 ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s, APLOGNO(01206)
                              "Failed to init balancer %s in child",
                              balancer->s->name);
                 exit(1); /* Ugly, but what else? */
             }
-            init_balancer_members(p, s, balancer);
+
+            init_balancer_members(balancer, s, conf->pool);
         }
-        s = s->next;
     }
 
 }

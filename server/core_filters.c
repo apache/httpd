@@ -584,41 +584,41 @@ static apr_status_t send_brigade_nonblocking(apr_socket_t *s,
             if (!nvec) {
                 delete_meta_bucket(bucket);
             }
-            continue;
         }
-
-        /* Make sure that these new data fit in our iovec. */
-        if (nvec == ctx->nvec) {
-            if (nvec == NVEC_MAX) {
-                sock_nopush(s, 1);
-                rv = writev_nonblocking(s, bb, ctx, nbytes, nvec, c);
-                if (rv != APR_SUCCESS) {
-                    goto cleanup;
+        else {
+            /* Make sure that these new data fit in our iovec. */
+            if (nvec == ctx->nvec) {
+                if (nvec == NVEC_MAX) {
+                    sock_nopush(s, 1);
+                    rv = writev_nonblocking(s, bb, ctx, nbytes, nvec, c);
+                    if (rv != APR_SUCCESS) {
+                        goto cleanup;
+                    }
+                    nbytes = 0;
+                    nvec = 0;
                 }
-                nbytes = 0;
-                nvec = 0;
+                else {
+                    struct iovec *newvec;
+                    apr_size_t newn = nvec * 2;
+                    if (newn < NVEC_MIN) {
+                        newn = NVEC_MIN;
+                    }
+                    else if (newn > NVEC_MAX) {
+                        newn = NVEC_MAX;
+                    }
+                    newvec = apr_palloc(c->pool, newn * sizeof(struct iovec));
+                    if (nvec) {
+                        memcpy(newvec, ctx->vec, nvec * sizeof(struct iovec));
+                    }
+                    ctx->vec = newvec;
+                    ctx->nvec = newn;
+                }
             }
-            else {
-                struct iovec *newvec;
-                apr_size_t newn = nvec * 2;
-                if (newn < NVEC_MIN) {
-                    newn = NVEC_MIN;
-                }
-                else if (newn > NVEC_MAX) {
-                    newn = NVEC_MAX;
-                }
-                newvec = apr_palloc(c->pool, newn * sizeof(struct iovec));
-                if (nvec) {
-                    memcpy(newvec, ctx->vec, nvec * sizeof(struct iovec));
-                }
-                ctx->vec = newvec;
-                ctx->nvec = newn;
-            }
+            nbytes += length;
+            ctx->vec[nvec].iov_base = (void *)data;
+            ctx->vec[nvec].iov_len = length;
+            nvec++;
         }
-        nbytes += length;
-        ctx->vec[nvec].iov_base = (void *)data;
-        ctx->vec[nvec].iov_len = length;
-        nvec++;
 
         /* Flush above max threshold, unless the brigade still contains in
          * memory buckets which we want to try writing in the same pass (if

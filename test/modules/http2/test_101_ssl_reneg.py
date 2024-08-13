@@ -56,9 +56,17 @@ class TestSslRenegotiation:
         assert 0 == r.exit_code, f"{r}"
         assert r.response
         assert 403 == r.response["status"]
+        #
+        env.httpd_error_log.ignore_recent(
+            lognos = [
+                "AH01276" # No matching DirectoryIndex found
+            ]
+        )
         
     # try to renegotiate the cipher, should fail with correct code
     def test_h2_101_02(self, env):
+        if not (env.curl_is_at_least('8.2.0') or env.curl_is_less_than('8.1.0')):
+            pytest.skip("need curl != 8.1.x version")
         url = env.mkurl("https", "ssl", "/renegotiate/cipher/")
         r = env.curl_get(url, options=[
             "-vvv", "--tlsv1.2", "--tls-max", "1.2", "--ciphers", "ECDHE-RSA-AES256-GCM-SHA384"
@@ -66,24 +74,58 @@ class TestSslRenegotiation:
         assert 0 != r.exit_code
         assert not r.response
         assert re.search(r'HTTP_1_1_REQUIRED \(err 13\)', r.stderr)
+        #
+        env.httpd_error_log.ignore_recent(
+            lognos = [
+                "AH02261"   # Re-negotiation handshake failed
+            ],
+            matches = [
+                r'.*:tls_post_process_client_hello:.*',
+                r'.*SSL Library Error:.*:SSL routines::no shared cipher.*'
+            ]
+        )
         
     # try to renegotiate a client certificate from Location 
     # needs to fail with correct code
     def test_h2_101_03(self, env):
+        if not (env.curl_is_at_least('8.2.0') or env.curl_is_less_than('8.1.0')):
+            pytest.skip("need curl != 8.1.x version")
         url = env.mkurl("https", "ssl", "/renegotiate/verify/")
         r = env.curl_get(url, options=["-vvv", "--tlsv1.2", "--tls-max", "1.2"])
         assert 0 != r.exit_code
         assert not r.response
         assert re.search(r'HTTP_1_1_REQUIRED \(err 13\)', r.stderr)
+        #
+        env.httpd_error_log.ignore_recent(
+            lognos = [
+                "AH02261"   # Re-negotiation handshake failed
+            ],
+            matches = [
+                r'.*:tls_process_client_certificate:.*',
+                r'.*SSL Library Error:.*:SSL routines::peer did not return a certificate.*'
+            ]
+        )
         
     # try to renegotiate a client certificate from Directory 
     # needs to fail with correct code
     def test_h2_101_04(self, env):
+        if not (env.curl_is_at_least('8.2.0') or env.curl_is_less_than('8.1.0')):
+            pytest.skip("need curl != 8.1.x version")
         url = env.mkurl("https", "ssl", "/ssl-client-verify/index.html")
         r = env.curl_get(url, options=["-vvv", "--tlsv1.2", "--tls-max", "1.2"])
         assert 0 != r.exit_code, f"{r}"
         assert not r.response
         assert re.search(r'HTTP_1_1_REQUIRED \(err 13\)', r.stderr)
+        #
+        env.httpd_error_log.ignore_recent(
+            lognos = [
+                "AH02261"   # Re-negotiation handshake failed
+            ],
+            matches = [
+                r'.*:tls_process_client_certificate:.*',
+                r'.*SSL Library Error:.*:SSL routines::peer did not return a certificate.*'
+            ]
+        )
         
     # make 10 requests on the same connection, none should produce a status code
     # reported by erki@example.ee
@@ -121,6 +163,8 @@ class TestSslRenegotiation:
         
     # Check that status works with ErrorDoc, see pull #174, fixes #172
     def test_h2_101_11(self, env):
+        if not (env.curl_is_at_least('8.2.0') or env.curl_is_less_than('8.1.0')):
+            pytest.skip("need curl != 8.1.x version")
         url = env.mkurl("https", "ssl", "/renegotiate/err-doc-cipher")
         r = env.curl_get(url, options=[
             "-vvv", "--tlsv1.2", "--tls-max", "1.2", "--ciphers", "ECDHE-RSA-AES256-GCM-SHA384"
@@ -128,3 +172,13 @@ class TestSslRenegotiation:
         assert 0 != r.exit_code
         assert not r.response
         assert re.search(r'HTTP_1_1_REQUIRED \(err 13\)', r.stderr)
+        #
+        env.httpd_error_log.ignore_recent(
+            lognos = [
+                "AH02261"   # Re-negotiation handshake failed
+            ],
+            matches = [
+                r'.*:tls_post_process_client_hello:.*',
+                r'.*SSL Library Error:.*:SSL routines::no shared cipher.*'
+            ]
+        )

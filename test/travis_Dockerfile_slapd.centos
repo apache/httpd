@@ -1,0 +1,5 @@
+FROM quay.io/centos/centos:stream9
+RUN dnf install -y epel-release && \
+    dnf install -y openldap openldap-clients openldap-servers openldap-devel && \
+    dnf -y clean all --enablerepo='*'
+CMD /usr/sbin/slapd -u ldap -d1 '-h ldap:// ldapi:///'

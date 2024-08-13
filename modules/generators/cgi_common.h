@@ -26,6 +26,7 @@
 
 #include "httpd.h"
 #include "util_filter.h"
+#include "util_script.h"
 
 static APR_OPTIONAL_FN_TYPE(ap_ssi_get_tag_and_value) *cgi_pfn_gtv;
 static APR_OPTIONAL_FN_TYPE(ap_ssi_parse_string) *cgi_pfn_ps;
@@ -428,9 +429,23 @@ static int cgi_handle_response(request_rec *r, int nph, apr_bucket_brigade *bb,
         char sbuf[MAX_STRING_LEN];
         int ret;
 
-        if ((ret = ap_scan_script_header_err_brigade_ex(r, bb, sbuf,
-                                                        APLOG_MODULE_INDEX)))
-        {
+        ret = ap_scan_script_header_err_brigade_ex(r, bb, sbuf,
+                                                   APLOG_MODULE_INDEX);
+
+        /* xCGI has its own body framing mechanism which we don't
+         * match against any provided Content-Length, so let the
+         * core determine C-L vs T-E based on what's actually sent.
+         */
+        if (!apr_table_get(r->subprocess_env, AP_TRUST_CGILIKE_CL_ENVVAR))
+            apr_table_unset(r->headers_out, "Content-Length");
+
+        if (apr_table_get(r->headers_out, "Transfer-Encoding") != NULL) {
+            apr_brigade_cleanup(bb);
+            return log_scripterror(r, conf, HTTP_BAD_GATEWAY, 0, APLOGNO(10501),
+                                   "script sent Transfer-Encoding");
+        }
+
+        if (ret != OK) {
             /* In the case of a timeout reading script output, clear
              * the brigade to avoid a second attempt to read the
              * output. */

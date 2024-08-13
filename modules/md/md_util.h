@@ -133,7 +133,7 @@ int md_array_str_add_missing(struct apr_array_header_t *dest,
 /* process execution */
 
 apr_status_t md_util_exec(apr_pool_t *p, const char *cmd, const char * const *argv,
-                          struct apr_array_header_t *env, int *exit_code);
+                          int *exit_code);
 
 /**************************************************************************************************/
 /* dns name check */
@@ -173,6 +173,11 @@ struct apr_array_header_t *md_dns_make_minimal(apr_pool_t *p,
  * @return != 0 iff name is matched by list of domains
  */
 int md_dns_domains_match(const apr_array_header_t *domains, const char *name);
+
+/**
+ * @return != 0 iff `name` is matched by a wildcard pattern in `domains`
+ */
+int md_is_wild_match(const apr_array_header_t *domains, const char *name);
 
 /**************************************************************************************************/
 /* file system related */

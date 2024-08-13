@@ -1,11 +1,10 @@
 import pytest
+from typing import List, Optional
 
 from pyhttpd.conf import HttpdConf
 
 
 class TestEncoding:
-
-    EXP_AH10244_ERRS = 0
 
     @pytest.fixture(autouse=True, scope='class')
     def _class_scope(self, env):
@@ -57,29 +56,29 @@ class TestEncoding:
         assert r.response["status"] == 200
 
     # check path traversals
-    @pytest.mark.parametrize(["path", "status"], [
-        ["/../echo.py", 400],
-        ["/nothing/../../echo.py", 400],
-        ["/cgi-bin/../../echo.py", 400],
-        ["/nothing/%2e%2e/%2e%2e/echo.py", 400],
-        ["/cgi-bin/%2e%2e/%2e%2e/echo.py", 400],
-        ["/nothing/%%32%65%%32%65/echo.py", 400],
-        ["/cgi-bin/%%32%65%%32%65/echo.py", 400],
-        ["/nothing/%%32%65%%32%65/%%32%65%%32%65/h2_env.py", 400],
-        ["/cgi-bin/%%32%65%%32%65/%%32%65%%32%65/h2_env.py", 400],
-        ["/nothing/%25%32%65%25%32%65/echo.py", 404],
-        ["/cgi-bin/%25%32%65%25%32%65/echo.py", 404],
-        ["/nothing/%25%32%65%25%32%65/%25%32%65%25%32%65/h2_env.py", 404],
-        ["/cgi-bin/%25%32%65%25%32%65/%25%32%65%25%32%65/h2_env.py", 404],
+    @pytest.mark.parametrize(["path", "status", "lognos"], [
+        ["/../echo.py", 400, ["AH10244"]],
+        ["/nothing/../../echo.py", 400, ["AH10244"]],
+        ["/cgi-bin/../../echo.py", 400, ["AH10244"]],
+        ["/nothing/%2e%2e/%2e%2e/echo.py", 400, ["AH10244"]],
+        ["/cgi-bin/%2e%2e/%2e%2e/echo.py", 400, ["AH10244"]],
+        ["/nothing/%%32%65%%32%65/echo.py", 400, ["AH10244"]],
+        ["/cgi-bin/%%32%65%%32%65/echo.py", 400, ["AH10244"]],
+        ["/nothing/%%32%65%%32%65/%%32%65%%32%65/h2_env.py", 400, ["AH10244"]],
+        ["/cgi-bin/%%32%65%%32%65/%%32%65%%32%65/h2_env.py", 400, ["AH10244"]],
+        ["/nothing/%25%32%65%25%32%65/echo.py", 404, ["AH01264"]],
+        ["/cgi-bin/%25%32%65%25%32%65/echo.py", 404, ["AH01264"]],
+        ["/nothing/%25%32%65%25%32%65/%25%32%65%25%32%65/h2_env.py", 404, ["AH01264"]],
+        ["/cgi-bin/%25%32%65%25%32%65/%25%32%65%25%32%65/h2_env.py", 404, ["AH01264"]],
     ])
-    def test_core_001_04(self, env, path, status):
+    def test_core_001_04(self, env, path, status, lognos: Optional[List[str]]):
         url = env.mkurl("https", "test1", path)
         r = env.curl_get(url)
         assert r.response["status"] == status
-        if status == 400:
-            TestEncoding.EXP_AH10244_ERRS += 1
-            # the log will have a core:err about invalid URI path
-
+        #
+        if lognos is not None:
+            env.httpd_error_log.ignore_recent(lognos = lognos)
+ 
     # check handling of %2f url encodings that are not decoded by default
     @pytest.mark.parametrize(["host", "path", "status"], [
         ["test1", "/006%2f006.css", 404],

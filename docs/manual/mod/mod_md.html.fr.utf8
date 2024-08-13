@@ -386,10 +386,13 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#mdcertificateprotocol">MDCertificateProtocol</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mdcertificatestatus">MDCertificateStatus</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mdchallengedns01">MDChallengeDns01</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#mdchallengedns01version">MDChallengeDns01Version</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#mdcheckinterval">MDCheckInterval</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mdcontactemail">MDContactEmail</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mddrivemode">MDDriveMode</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mdexternalaccountbinding">MDExternalAccountBinding</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mdhttpproxy">MDHttpProxy</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#mdmatchnames">MDMatchNames</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mdmember">MDMember</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mdmembers">MDMembers</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mdmessagecmd">MDMessageCmd</a></li>
@@ -420,7 +423,7 @@
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="mdactivationdelay" id="mdactivationdelay">Directive</a> <a name="MDActivationDelay" id="MDActivationDelay">MDActivationDelay</a> <a title="Lien permanent" href="#mdactivationdelay" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td /></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit le délai d'activation des nouveaux certificats</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MDActivationDelay <var>duration</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
@@ -556,7 +559,9 @@
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="mdcertificatecheck" id="mdcertificatecheck">Directive</a> <a name="MDCertificateCheck" id="MDCertificateCheck">MDCertificateCheck</a> <a title="Lien permanent" href="#mdcertificatecheck" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td /></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit le motif de nom pour un nom sitSet de
+	vérification de certificat et un motif d'URL pour un sitee de
+	vérification de certificat</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MDCertificateCheck <var>name</var> <var>url</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
@@ -714,7 +719,8 @@
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="mdchallengedns01" id="mdchallengedns01">Directive</a> <a name="MDChallengeDns01" id="MDChallengeDns01">MDChallengeDns01</a> <a title="Lien permanent" href="#mdchallengedns01" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td /></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit la commande d'activation/désactivation des
+	vérifications dns-01</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MDChallengeDns01 <var>path-to-command</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
@@ -722,11 +728,13 @@
 </table>
             <p>
 		Cette directive permet de définir le programme à appeler
-		lorsque la vérification "dns-01" doit être générée/détruite. Le
+		lorsque la vérification "dns-01" doit être activée/désactivée. Le
 		programme prend respectivement comme arguments "setup" ou
 		"teardown" suivi du nom de domaine. Pour "setup", le programme
 		prend comme argument supplémentaire les données de vérification
-		"dns-01".
+		"dns-01". Lorsque <code class="directive"><a href="#mdchallengedns01version">MDChallengeDns01Version</a></code> est définie
+		à 2, `teardown` prend aussi comme argument le contenu de la
+		vérification.
             </p><p>
                 Tant que la méthode de vérification "http:" ou "https:" est
 		valable, vous n'avez pas besoin de définir cette directive.
@@ -747,9 +755,61 @@
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="mdchallengedns01version" id="mdchallengedns01version">Directive</a> <a name="MDChallengeDns01Version" id="MDChallengeDns01Version">MDChallengeDns01Version</a> <a title="Lien permanent" href="#mdchallengedns01version" class="permalink">&para;</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit le type des arguments avec lesquels appeler
+	MDChallengeDns01</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MDChallengeDns01Version 1|2</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>MDChallengeDns01Version 1</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_md</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.58 du serveur HTTP
+	Apache</td></tr>
+</table>
+            <p>
+                Cette directive permet de définir de quelle manière est invoquée
+		la commande MDChallengeDns01, à savoir le nombre et le type de
+		ses arguments. Voir <code class="directive"><a href="#mdchallengedns01">MDChallengeDns01</a></code> pour les
+		différences.
+		Cette définition est globale et ne peut pas s'appliquer
+		différemment pour chaque domaine.
+            </p>
+        
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="mdcheckinterval" id="mdcheckinterval">Directive</a> <a name="MDCheckInterval" id="MDCheckInterval">MDCheckInterval</a> <a title="Lien permanent" href="#mdcheckinterval" class="permalink">&para;</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Détermine la périodicité de la vérification des certificats</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MDCheckInterval <var>duration</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>MDCheckInterval 12h</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_md</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.60 du serveur HTTP
+	Apache</td></tr>
+</table>
+	    <p>
+	    Cette option permet de définir l’intervalle entre deux
+	    vérifications de certificat. Par défaut, la validité et le besoin de
+	    renouvellement sont vérifiés deux fois par jour. Cet intervalle
+	    n’est cependant pas appliqué avec précision. En effet, le module lui
+	    applique une plage de variation aléatoire de +/- 50%. Avec
+	    l’intervalle par défaut de 12&nbsp;heures, cela signifie que l’intervalle
+	    réel entre deux vérifications varie entre 6&nbsp;et 18&nbsp;heures, la
+	    variation s’appliquant à nouveau à chaque vérification. Cela permet
+	    d’atténuer les pics de trafic sur les serveurs ACME.
+            </p><p>
+	    La valeur minimale pouvant être définie pour l’intervalle est de
+	    1&nbsp;seconde. Il est cependant déconseillé de définir un intervalle
+	    aussi court sur un serveur en production.
+            </p>
+        
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="mdcontactemail" id="mdcontactemail">Directive</a> <a name="MDContactEmail" id="MDContactEmail">MDContactEmail</a> <a title="Lien permanent" href="#mdcontactemail" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td /></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Adresse Email pour l'enregistrement du compte</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MDContactEmail <var>address</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
@@ -789,7 +849,8 @@
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="mdexternalaccountbinding" id="mdexternalaccountbinding">Directive</a> <a name="MDExternalAccountBinding" id="MDExternalAccountBinding">MDExternalAccountBinding</a> <a title="Lien permanent" href="#mdexternalaccountbinding" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td /></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit les valeurs keyid et hmac de liaison avec les
+	comptes externes à utiliser dans les CA</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MDExternalAccountBinding <var>key-id</var> <var>hmac-64</var> | none | <var>file</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>MDExternalAccountBinding none</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
@@ -849,6 +910,40 @@
 	    <code class="directive"><a href="#mdcertificateauthority">MDCertificateAuthority</a></code>. Vous
 	    devez la définir si votre serveur web ne peut atteindre internet que
 	    via un serveur mandataire.
+            </p>
+        
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="mdmatchnames" id="mdmatchnames">Directive</a> <a name="MDMatchNames" id="MDMatchNames">MDMatchNames</a> <a title="Lien permanent" href="#mdmatchnames" class="permalink">&para;</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit comment les noms DNS sont comparés aux vhosts</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MDMatchNames all|servernames</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>MDMatchNames all</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_md</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.58 du serveur HTTP
+	Apache</td></tr>
+</table>
+            <p>
+                Le mode `all` correspond au comportement de toutes les versions
+		précédentes. ServerName et ServerAlias sont inspectés pour
+		trouver le MDomain qui correspond à un serveur virtuel. Les
+		recouvrements sont automatiquement détectés, même si vous n'avez
+		ajouté qu'un des noms à un MDomain.
+            </p><p>
+                Cet automatisme présente cependant des inconvénients avec les
+		configurations plus complexes. Si vous définissez cette
+		directive à `servernames`, seul le ServerName d'un serveur
+		virtuel est inspecté pour la correspondance et les ServerAliases
+		sont donc ignorés. Les Aliases seront tout de même ajoutés au
+		certificat obtenu, à moins que vous ne spécifiiez aussi `MDMembers manual`.
+            </p><p>
+                `servernames` possède un autre avantage : il vous confère plus
+		de souplesse avec les sous-domaines et les caractères
+		génériques. Vous pouvez ainsi définir un MDomain avec un
+		caractère générique et avoir d'autres MDomains pour des noms de
+		sous-domaines spécifiques.
             </p>
         
 </div>
@@ -1392,7 +1487,8 @@ MDRenewWindow 10%</pre>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="mdretrydelay" id="mdretrydelay">Directive</a> <a name="MDRetryDelay" id="MDRetryDelay">MDRetryDelay</a> <a title="Lien permanent" href="#mdretrydelay" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td /></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Temps d'attente avant de réessayer, doublé à chaque erreur
+	consécutive</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MDRetryDelay <var>duration</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>MDRetryDelay 5s</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
@@ -1416,7 +1512,7 @@ MDRenewWindow 10%</pre>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="mdretryfailover" id="mdretryfailover">Directive</a> <a name="MDRetryFailover" id="MDRetryFailover">MDRetryFailover</a> <a title="Lien permanent" href="#mdretryfailover" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td /></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Le nombre d'erreurs avant de se tourner vers un autre CA</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MDRetryFailover <var>number</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>MDRetryFailover 13</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
@@ -1622,7 +1718,7 @@ MDRenewWindow 10%</pre>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="mdstorelocks" id="mdstorelocks">Directive</a> <a name="MDStoreLocks" id="MDStoreLocks">MDStoreLocks</a> <a title="Lien permanent" href="#mdstorelocks" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td /></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configure le verrouillage du magasin pour les mises à jour</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MDStoreLocks on|off|<var>duration</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>MDStoreLocks off</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
@@ -1709,7 +1805,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_md.html';
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2023 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2024 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

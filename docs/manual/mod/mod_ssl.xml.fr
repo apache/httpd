@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1908132 -->
+<!-- English Revision: 1917600 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -1126,7 +1126,7 @@ on peut utiliser un identificateur de certificat pour identifier un certificat
 stocké dans un jeton. Actuellement, seuls les <a
 href="https://tools.ietf.org/html/rfc7512">URIs PKCS#11</a> sont reconnus comme
 identificateurs de certificats et peuvent être utilisés en conjonction avec le
-moteur OpenSSL <code>pkcs11</code>. Si la directive <directive
+moteur ou le fournisseur OpenSSL <code>pkcs11</code>. Si la directive <directive
 module="mod_ssl">SSLCertificateKeyFile</directive> est absente, le certificat et
 la clé privée peuvent être chargés avec l'identificateur spécifié via la
 directive <directive module="mod_ssl">SSLCertificateFile</directive>.</p>
@@ -1226,7 +1226,8 @@ certificats qui utilisent un fichier de clé séparé.</p>
 d'identifier une clé privée via un identifiant stocké dans un jeton.
 Actuellement, seuls les <a href="https://tools.ietf.org/html/rfc7512">PKCS#11
 URIs</a> sont reconnus comme identifiants de clés privées et peuvent être
-utilisés en conjonction avec le moteur OpenSSL <code>pkcs11</code>.</p>
+utilisés en conjonction avec le moteur ou le fournisseur OpenSSL
+<code>pkcs11</code>.</p>
 
 <example><title>Exemple</title>
 <highlight language="config">
@@ -2137,10 +2138,10 @@ clients codés en PEM que le mandataire doit utiliser</description>
 <syntax>SSLProxyMachineCertificateFile <em>file-path</em></syntax>
 <contextlist><context>server config</context> <context>virtual host</context>
 <context>proxy section</context></contextlist>
-<compatibility>Le contexte d'une section proxy est supporté à partir de la
+<compatibility>Le contexte d'une section proxy est pris en charge à partir de la
 version 2.4.30 du serveur HTTP Apache<br/>
-L'inclusion de certificats non-feuilles (CA) est supportée à partir de la
-version 2.5.1.</compatibility>
+L'inclusion de certificats non-feuilles (CA) est prise en charge à partir de la
+version 2.4.59.</compatibility>
 
 <usage>
 <p>
@@ -2780,6 +2781,17 @@ qu'avec la version 0.9.6, il faut utiliser les distributions séparées
 SSLCryptoDevice ubsec
 </highlight>
 </example>
+
+<p>
+À partir de la version 3.0 d'OpenSSL, si aucun moteur n'est spécifié alors
+que la clé ou le certificat sont spécifiés à l'aide d'<a
+href="https://tools.ietf.org/html/rfc7512">URIs PKCS#11</a>, le chargement de la
+clé et du certificat est tenté à partir d'un fournisseur OpenSSL. Le fournisseur
+OpenSSL à utiliser doit être défini et configuré dans le fichier de
+configuration d'OpenSSL et il doit prendre en charge la <a
+href="https://www.openssl.org/docs/man3.0/man7/provider-storemgmt.html">méthode
+STORE</a> pour les <a href="https://tools.ietf.org/html/rfc7512">URIs PKCS#11</a>.
+</p>
 </usage>
 </directivesynopsis>
 
@@ -2967,53 +2979,6 @@ de la réponse OCSP.</p>
 <usage>
 <p>Cette directive permet de définir l'URL d'un mandataire HTTP qui devra être
 utilisé pour toutes les requêtes vers un répondeur OCSP.</p>
-</usage>
-</directivesynopsis>
-
-<directivesynopsis>
-<name>SSLInsecureRenegotiation</name>
-<description>Option permettant d'activer le support de la renégociation
-non sécurisée</description>
-<syntax>SSLInsecureRenegotiation on|off</syntax>
-<default>SSLInsecureRenegotiation off</default>
-<contextlist><context>server config</context>
-<context>virtual host</context></contextlist>
-<compatibility>Disponible si une version 0.9.8m
-ou supérieure d'OpenSSL est utilisée</compatibility>
-
-<usage>
-<p>Comme il a été spécifié, toutes les versions des protocoles SSL et
-TLS (jusqu'à la version 1.2 de TLS incluse) étaient vulnérables à une
-attaque de type Man-in-the-Middle (<a
-href="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CAN-2009-3555">CVE-2009-3555</a>)
-au cours d'une renégociation. Cette vulnérabilité permettait à un
-attaquant de préfixer la requête HTTP (telle qu'elle était vue du
-serveur) avec un texte choisi. Une extension du protocole a été
-développée pour corriger cette vulnérabilité, sous réserve qu'elle soit
-supportée par le client et le serveur.</p>
-
-<p>Si <module>mod_ssl</module> est lié à une version 0.9.8m ou
-supérieure d'OpenSSL, par défaut, la renégociation n'est accordée qu'aux
-clients qui supportent la nouvelle extension du protocole. Si
-cette directive est activée, la renégociation sera accordée aux anciens
-clients (non patchés), quoique de manière non sécurisée</p>
-
-<note type="warning"><title>Avertissement à propos de la sécurité</title>
-<p>Si cette directive est activée, les connexions SSL seront vulnérables
-aux attaques de type préfixe Man-in-the-Middle comme décrit dans <a
-href="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CAN-2009-3555">CVE-2009-3555</a>.</p>
-</note>
-
-<example><title>Exemple</title>
-<highlight language="config">
-SSLInsecureRenegotiation on
-</highlight>
-</example>
-
-<p>La variable d'environnement <code>SSL_SECURE_RENEG</code> peut être
-utilisée dans un script SSI ou CGI pour déterminer si la renégociation
-sécurisée est supportée pour une connexion SSL donnée.</p>
-
 </usage>
 </directivesynopsis>
 

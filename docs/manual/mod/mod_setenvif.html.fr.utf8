@@ -66,6 +66,13 @@ BrowserMatch MSIE !netscape</pre>
    part, les directives <code class="directive"><a href="#setenvif">SetEnvIf</a></code> ne sont pas évaluées
    séparément dans la sous-requête.</p>
 
+   <p>Une expression rationnelle ne nécessite des guillemets que si elle
+   contient des espaces non échappées et dans ce cas, les guillemets simples ou
+   doubles sont équivalents. À la différence de <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>,
+   <code class="module"><a href="../mod/mod_setenvif.html">mod_setenvif</a></code> élimine tous les autres anti-slashes lorsqu'il
+   interprète l'expression&nbsp;; ainsi, <code>\\</code> nécessite <code>\\\</code>
+   et <code>\\\</code> nécessite <code>\\\\\</code>.</p>
+
 </div>
 <div id="quickview"><h3 class="directives">Directives</h3>
 <ul id="toc">
@@ -289,14 +296,14 @@ serveur HTTP Apache</a> pour des exemples supplémentaires.
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_setenvif</td></tr>
 </table>
-    <p>La directive <code class="directive">SetEnvIfExpr</code> permet de
-    définir des variables d'environnement en fonction d'une expression
-    <code class="directive"><a href="../mod/core.html#if">&lt;If&gt;</a></code> <code>ap_expr</code>. Cette
-    expression est évaluée à l'exécution, et utilise les variables
-    d'environnement <em>env-variable</em> de la même manière que la
-    directive <code class="directive">SetEnvIf</code>.</p>
+    <p>La directive <code class="directive">SetEnvIfExpr</code> permet de définir des
+    variables d'environnement en fonction d'une <a href="../expr.html">expression</a>. Cette expression est évaluée à
+    l'exécution, et les différentes variables d'environnement
+    <em>env-variable</em> définies de la même manière que la directive
+    <code class="directive">SetEnvIf</code>, y compris les références arrières.</p>
 
-<pre class="prettyprint lang-config">SetEnvIfExpr "tolower(req('X-Sendfile')) == 'd:\images\very_big.iso')" iso_delivered</pre>
+<pre class="prettyprint lang-config">    SetEnvIfExpr "tolower(req('X-Sendfile')) == 'd:\images\very_big.iso')" iso_delivered
+    SetEnvIfExpr "tolower(req('X-Sendfile')) =~ /(.*\.iso$)/" iso-path=$1</pre>
 
 
     <p>Dans cet exemple, la variable d'environnement
@@ -372,7 +379,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_setenvif.h
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2023 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2024 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

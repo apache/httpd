@@ -240,7 +240,7 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
     end of the ap_process_request_internal() processing so sub_req-esters
     know this request cannot be run.  This provides authors of older 
     modules better compatibility, while still improving the security and 
-    robustness of 2.0. 
+    robustness of 2.0.
 
     Status: still need to decide where this goes, OtherBill comments...
     Message-ID: <065701c14526$495203b0$96c0b0d0@roweclan.net>

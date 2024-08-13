@@ -1,0 +1,6 @@
+  *) mod_http2: fixed a bug that could lead to a crash in main connection
+     output handling. This occured only when the last request on a HTTP/2
+     connection had been processed and the session decided to shut down.
+     This could lead to an attempt to send a final GOAWAY while the previous
+     write was still in progress. See PR 66646.
+     [Stefan Eissing]

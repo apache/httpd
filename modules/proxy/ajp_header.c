@@ -17,6 +17,8 @@
 #include "ajp_header.h"
 #include "ajp.h"
 
+#include "util_script.h"
+
 APLOG_USE_MODULE(proxy_ajp);
 
 static const char *response_trans_headers[] = {
@@ -228,7 +230,7 @@ static apr_status_t ajp_marshal_into_msgb(ajp_msg_t *msg,
     ap_log_rerror(APLOG_MARK, APLOG_TRACE8, 0, r, "Into ajp_marshal_into_msgb");
 
     if ((method = sc_for_req_method_by_id(r)) == UNKNOWN_METHOD) {
-        ap_log_rerror(APLOG_MARK, APLOG_TRACE8, 0, r, APLOGNO(02437)
+        ap_log_rerror(APLOG_MARK, APLOG_TRACE8, 0, r,
                "ajp_marshal_into_msgb - Sending unknown method %s as request attribute",
                r->method);
         method = SC_M_JK_STORED;
@@ -668,6 +670,14 @@ static apr_status_t ajp_unmarshal_response(ajp_msg_t *msg,
                "ajp_unmarshal_response: ap_set_content_type to '%s'", value);
         }
     }
+
+    /* AJP has its own body framing mechanism which we don't
+     * match against any provided Content-Length, so let the
+     * core determine C-L vs T-E based on what's actually sent.
+     */
+    if (!apr_table_get(r->subprocess_env, AP_TRUST_CGILIKE_CL_ENVVAR))
+        apr_table_unset(r->headers_out, "Content-Length");
+    apr_table_unset(r->headers_out, "Transfer-Encoding");
 
     return APR_SUCCESS;
 }

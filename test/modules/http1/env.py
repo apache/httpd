@@ -1,7 +1,6 @@
 import inspect
 import logging
 import os
-import re
 import subprocess
 from typing import Dict, Any
 
@@ -60,13 +59,6 @@ class H1TestEnv(HttpdTestEnv):
     def __init__(self, pytestconfig=None):
         super().__init__(pytestconfig=pytestconfig)
         self.add_httpd_log_modules(["http", "core"])
-
-        self.httpd_error_log.set_ignored_lognos([
-            'AH00135', # unsafe/strict tests send invalid methods
-            'AH02430', # test of invalid chars in response headers
-        ])
-        self.httpd_error_log.add_ignored_patterns([
-        ])
 
     def setup_httpd(self, setup: HttpdTestSetup = None):
         super().setup_httpd(setup=H1TestSetup(env=self))

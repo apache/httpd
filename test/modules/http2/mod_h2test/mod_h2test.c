@@ -138,12 +138,51 @@ static int h2test_echo_handler(request_rec *r)
     char buffer[8192];
     const char *ct;
     long l;
-    
+    int i;
+    apr_time_t chunk_delay = 0;
+    apr_array_header_t *args = NULL;
+    apr_size_t blen, fail_after = 0;
+    int fail_requested = 0, error_bucket = 1;
+
     if (strcmp(r->handler, "h2test-echo")) {
         return DECLINED;
     }
     if (r->method_number != M_GET && r->method_number != M_POST) {
         return DECLINED;
+    }
+
+    if(r->args) {
+        args = apr_cstr_split(r->args, "&", 1, r->pool);
+        for(i = 0; i < args->nelts; ++i) {
+            char *s, *val, *arg = APR_ARRAY_IDX(args, i, char*);
+            s = strchr(arg, '=');
+            if(s) {
+                *s = '\0';
+                val = s + 1;
+                if(!strcmp("id", arg)) {
+                    /* accepted, but not processed */
+                    continue;
+                }
+                else if(!strcmp("chunk_delay", arg)) {
+                    rv = duration_parse(&chunk_delay, val, "s");
+                    if(APR_SUCCESS == rv) {
+                        continue;
+                    }
+                }
+                else if(!strcmp("fail_after", arg)) {
+                    fail_after = (int)apr_atoi64(val);
+                    if(fail_after >= 0) {
+                      fail_requested = 1;
+                      continue;
+                    }
+                }
+            }
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, "query parameter not "
+                          "understood: '%s' in %s",
+                          arg, r->args);
+            ap_die(HTTP_BAD_REQUEST, r);
+            return OK;
+        }
     }
 
     ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r, "echo_handler: processing request");
@@ -166,12 +205,26 @@ static int h2test_echo_handler(request_rec *r)
         while (0 < (l = ap_get_client_block(r, &buffer[0], sizeof(buffer)))) {
             ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r,
                           "echo_handler: copying %ld bytes from request body", l);
-            rv = apr_brigade_write(bb, NULL, NULL, buffer, l);
+            blen = (apr_size_t)l;
+            if (fail_requested) {
+              if (blen > fail_after) {
+                blen = fail_after;
+              }
+              fail_after -= blen;
+            }
+            rv = apr_brigade_write(bb, NULL, NULL, buffer, blen);
             if (APR_SUCCESS != rv) goto cleanup;
+            if (chunk_delay) {
+                apr_sleep(chunk_delay);
+            }
             rv = ap_pass_brigade(r->output_filters, bb);
             if (APR_SUCCESS != rv) goto cleanup;
             ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r,
                           "echo_handler: passed %ld bytes from request body", l);
+            if (fail_requested && fail_after == 0) {
+              rv = APR_EINVAL;
+              goto cleanup;
+            }
         }
     }
     /* we are done */
@@ -194,6 +247,12 @@ cleanup:
         || c->aborted) {
         ap_log_rerror(APLOG_MARK, APLOG_TRACE1, rv, r, "echo_handler: request handled");
         return OK;
+    }
+    else if (error_bucket) {
+        int status = ap_map_http_request_error(rv, HTTP_BAD_REQUEST);
+        b = ap_bucket_error_create(status, NULL, r->pool, c->bucket_alloc);
+        APR_BRIGADE_INSERT_TAIL(bb, b);
+        ap_pass_brigade(r->output_filters, bb);
     }
     else {
         /* no way to know what type of error occurred */
@@ -419,18 +478,20 @@ static int h2test_error_handler(request_rec *r)
                     }
                 }
                 else if (!strcmp("delay", arg)) {
-                    rv = duration_parse(&delay, r->args, "s");
+                    rv = duration_parse(&delay, val, "s");
                     if (APR_SUCCESS == rv) {
                         continue;
                     }
                 }
                 else if (!strcmp("body_delay", arg)) {
-                    rv = duration_parse(&body_delay, r->args, "s");
+                    rv = duration_parse(&body_delay, val, "s");
                     if (APR_SUCCESS == rv) {
                         continue;
                     }
                 }
             }
+            ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r, "error_handler: "
+                  "did not understand '%s'", arg);
             ap_die(HTTP_BAD_REQUEST, r);
             return OK;
         }

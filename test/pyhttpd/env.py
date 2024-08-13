@@ -93,6 +93,7 @@ class HttpdTestSetup:
         self._make_modules_conf()
         self._make_htdocs()
         self._add_aptest()
+        self._build_clients()
         self.env.clear_curl_headerfiles()
 
     def _make_dirs(self):
@@ -196,6 +197,16 @@ class HttpdTestSetup:
             # load our test module which is not installed
             fd.write(f"LoadModule aptest_module   \"{local_dir}/mod_aptest/.libs/mod_aptest.so\"\n")
 
+    def _build_clients(self):
+        clients_dir = os.path.join(
+            os.path.dirname(os.path.dirname(inspect.getfile(HttpdTestSetup))),
+            'clients')
+        p = subprocess.run(['make'], capture_output=True, cwd=clients_dir)
+        rv = p.returncode
+        if rv != 0:
+            log.error(f"compiling test clients failed: {p.stderr}")
+            raise Exception(f"compiling test clients failed: {p.stderr}")
+
 
 class HttpdTestEnv:
 
@@ -237,6 +248,8 @@ class HttpdTestEnv:
         if HttpdTestEnv.LIBEXEC_DIR is None:
             HttpdTestEnv.LIBEXEC_DIR = self._libexec_dir = self.get_apxs_var('LIBEXECDIR')
         self._curl = self.config.get('global', 'curl_bin')
+        if 'CURL' in os.environ:
+            self._curl = os.environ['CURL']
         self._nghttp = self.config.get('global', 'nghttp')
         if self._nghttp is None:
             self._nghttp = 'nghttp'
@@ -248,8 +261,10 @@ class HttpdTestEnv:
         self._http_port2 = int(self.config.get('test', 'http_port2'))
         self._https_port = int(self.config.get('test', 'https_port'))
         self._proxy_port = int(self.config.get('test', 'proxy_port'))
+        self._ws_port = int(self.config.get('test', 'ws_port'))
         self._http_tld = self.config.get('test', 'http_tld')
         self._test_dir = self.config.get('test', 'test_dir')
+        self._clients_dir = os.path.join(os.path.dirname(self._test_dir), 'clients')
         self._gen_dir = self.config.get('test', 'gen_dir')
         self._server_dir = os.path.join(self._gen_dir, 'apache')
         self._server_conf_dir = os.path.join(self._server_dir, "conf")
@@ -320,6 +335,16 @@ class HttpdTestEnv:
             for name in self._httpd_log_modules:
                 self._log_interesting += f" {name}:{log_level}"
 
+    def check_error_log(self):
+        errors, warnings = self._error_log.get_missed()
+        assert (len(errors), len(warnings)) == (0, 0),\
+                f"apache logged {len(errors)} errors and {len(warnings)} warnings: \n"\
+                "{0}\n{1}\n".format("\n".join(errors), "\n".join(warnings))
+
+    @property
+    def curl(self) -> str:
+        return self._curl
+
     @property
     def apxs(self) -> str:
         return self._apxs
@@ -361,6 +386,10 @@ class HttpdTestEnv:
         return self._proxy_port
 
     @property
+    def ws_port(self) -> int:
+        return self._ws_port
+
+    @property
     def http_tld(self) -> str:
         return self._http_tld
 
@@ -383,6 +412,10 @@ class HttpdTestEnv:
     @property
     def test_dir(self) -> str:
         return self._test_dir
+
+    @property
+    def clients_dir(self) -> str:
+        return self._clients_dir
 
     @property
     def server_dir(self) -> str:
@@ -487,6 +520,20 @@ class HttpdTestEnv:
             return self._curl_version >= self._versiontuple(minv)
         return False
 
+    def curl_is_less_than(self, version):
+        if self._curl_version is None:
+            p = subprocess.run([self._curl, '-V'], capture_output=True, text=True)
+            if p.returncode != 0:
+                return False
+            for l in p.stdout.splitlines():
+                m = re.match(r'curl ([0-9.]+)[- ].*', l)
+                if m:
+                    self._curl_version = self._versiontuple(m.group(1))
+                    break
+        if self._curl_version is not None:
+            return self._curl_version < self._versiontuple(version)
+        return False
+
     def has_nghttp(self):
         return self._nghttp != ""
 
@@ -513,12 +560,14 @@ class HttpdTestEnv:
         if not os.path.exists(path):
             return os.makedirs(path)
 
-    def run(self, args, stdout_list=False, intext=None, debug_log=True):
+    def run(self, args, stdout_list=False, intext=None, inbytes=None, debug_log=True):
         if debug_log:
             log.debug(f"run: {args}")
         start = datetime.now()
+        if intext is not None:
+            inbytes = intext.encode()
         p = subprocess.run(args, stderr=subprocess.PIPE, stdout=subprocess.PIPE,
-                           input=intext.encode() if intext else None)
+                           input=inbytes)
         stdout_as_list = None
         if stdout_list:
             try:
@@ -540,11 +589,22 @@ class HttpdTestEnv:
         return f"{scheme}://{hostname}.{self.http_tld}:{port}{path}"
 
     def install_test_conf(self, lines: List[str]):
+        self.apache_stop()
         with open(self._test_conf, 'w') as fd:
             fd.write('\n'.join(self._httpd_base_conf))
             fd.write('\n')
-            if self._verbosity >= 2:
-                fd.write(f"LogLevel core:trace5 {self.mpm_module}:trace5 http:trace5\n")
+            fd.write(f"CoreDumpDirectory {self._server_dir}\n")
+            fd.write('\n')
+            if self._verbosity >= 3:
+                fd.write(f"LogLevel trace7 ssl:trace6\n")
+                fd.write(f"DumpIoOutput on\n")
+                fd.write(f"DumpIoInput on\n")
+            elif self._verbosity >= 2:
+                fd.write(f"LogLevel debug core:trace5 {self.mpm_module}:trace5 ssl:trace5 http:trace5\n")
+            elif self._verbosity >= 1:
+                fd.write(f"LogLevel info\n")
+            else:
+                fd.write(f"LogLevel warn\n")
             if self._log_interesting:
                 fd.write(self._log_interesting)
             fd.write('\n\n')
@@ -665,19 +725,11 @@ class HttpdTestEnv:
                 os.remove(os.path.join(self.gen_dir, fname))
         self._curl_headerfiles_n = 0
 
-    def curl_complete_args(self, urls, stdout_list=False,
-                           timeout=None, options=None,
-                           insecure=False, force_resolve=True):
-        u = urlparse(urls[0])
-        #assert u.hostname, f"hostname not in url: {urls[0]}"
-        headerfile = f"{self.gen_dir}/curl.headers.{self._curl_headerfiles_n}"
-        self._curl_headerfiles_n += 1
+    def curl_resolve_args(self, url, insecure=False, force_resolve=True, options=None):
+        u = urlparse(url)
 
         args = [
-            self._curl, "-s", "--path-as-is", "-D", headerfile,
         ]
-        if stdout_list:
-            args.extend(['-w', '%{stdout}' + HttpdTestSetup.CURL_STDOUT_SEPARATOR])
         if u.scheme == 'http':
             pass
         elif insecure:
@@ -689,19 +741,33 @@ class HttpdTestEnv:
             if ca_pem:
                 args.extend(["--cacert", ca_pem])
 
-        if self._current_test is not None:
-            args.extend(["-H", f'AP-Test-Name: {self._current_test}'])
-
         if force_resolve and u.hostname and u.hostname != 'localhost' \
                 and u.hostname != self._httpd_addr \
                 and not re.match(r'^(\d+|\[|:).*', u.hostname):
-            assert u.port, f"port not in url: {urls[0]}"
+            assert u.port, f"port not in url: {url}"
             args.extend(["--resolve", f"{u.hostname}:{u.port}:{self._httpd_addr}"])
+        return args
+
+    def curl_complete_args(self, urls, stdout_list=False,
+                           timeout=None, options=None,
+                           insecure=False, force_resolve=True):
+        headerfile = f"{self.gen_dir}/curl.headers.{self._curl_headerfiles_n}"
+        self._curl_headerfiles_n += 1
+
+        args = [
+            self._curl, "-s", "--path-as-is", "-D", headerfile,
+        ]
+        args.extend(self.curl_resolve_args(urls[0], insecure=insecure,
+                                           force_resolve=force_resolve,
+                                           options=options))
+        if stdout_list:
+            args.extend(['-w', '%{stdout}' + HttpdTestSetup.CURL_STDOUT_SEPARATOR])
+        if self._current_test is not None:
+            args.extend(["-H", f'AP-Test-Name: {self._current_test}'])
         if timeout is not None and int(timeout) > 0:
             args.extend(["--connect-timeout", str(int(timeout))])
         if options:
             args.extend(options)
-        args += urls
         return args, headerfile
 
     def curl_parse_headerfile(self, headerfile: str, r: ExecResult = None) -> ExecResult:
@@ -769,6 +835,7 @@ class HttpdTestEnv:
             urls=urls, stdout_list=stdout_list,
             timeout=timeout, options=options, insecure=insecure,
             force_resolve=force_resolve)
+        args += urls
         r = self.run(args, stdout_list=stdout_list)
         if r.exit_code == 0:
             self.curl_parse_headerfile(headerfile, r=r)
@@ -837,3 +904,18 @@ class HttpdTestEnv:
                 }
             run.add_results({"h2load": stats})
         return run
+
+    def make_data_file(self, indir: str, fname: str, fsize: int) -> str:
+        fpath = os.path.join(indir, fname)
+        s10 = "0123456789"
+        s = (101 * s10) + s10[0:3]
+        with open(fpath, 'w') as fd:
+            for i in range(int(fsize / 1024)):
+                fd.write(f"{i:09d}-{s}\n")
+            remain = int(fsize % 1024)
+            if remain != 0:
+                i = int(fsize / 1024) + 1
+                s = f"{i:09d}-{s}\n"
+                fd.write(s[0:remain])
+        return fpath
+

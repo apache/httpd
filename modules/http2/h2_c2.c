@@ -48,8 +48,10 @@
 #include "h2_headers.h"
 #include "h2_session.h"
 #include "h2_stream.h"
+#include "h2_ws.h"
 #include "h2_c2.h"
 #include "h2_util.h"
+#include "mod_http2.h"
 
 
 static module *mpm_module;
@@ -133,10 +135,22 @@ apr_status_t h2_c2_child_init(apr_pool_t *pool, server_rec *s)
                              APR_PROTO_TCP, pool);
 }
 
+static void h2_c2_log_io(conn_rec *c2, apr_off_t bytes_sent)
+{
+    if (bytes_sent && h2_c_logio_add_bytes_out) {
+        h2_c_logio_add_bytes_out(c2, bytes_sent);
+    }
+}
+
 void h2_c2_destroy(conn_rec *c2)
 {
+    h2_conn_ctx_t *conn_ctx = h2_conn_ctx_get(c2);
+
     ap_log_cerror(APLOG_MARK, APLOG_TRACE3, 0, c2,
                   "h2_c2(%s): destroy", c2->log_id);
+    if(!c2->aborted && conn_ctx && conn_ctx->bytes_sent) {
+      h2_c2_log_io(c2, conn_ctx->bytes_sent);
+    }
     apr_pool_destroy(c2->pool);
 }
 
@@ -146,6 +160,10 @@ void h2_c2_abort(conn_rec *c2, conn_rec *from)
 
     AP_DEBUG_ASSERT(conn_ctx);
     AP_DEBUG_ASSERT(conn_ctx->stream_id);
+    if(!c2->aborted && conn_ctx->bytes_sent) {
+      h2_c2_log_io(c2, conn_ctx->bytes_sent);
+    }
+
     if (conn_ctx->beam_in) {
         h2_beam_abort(conn_ctx->beam_in, from);
     }
@@ -157,6 +175,7 @@ void h2_c2_abort(conn_rec *c2, conn_rec *from)
 
 typedef struct {
     apr_bucket_brigade *bb;       /* c2: data in holding area */
+    unsigned did_upgrade_eos:1;   /* for Upgrade, we added an extra EOS */
 } h2_c2_fctx_in_t;
 
 static apr_status_t h2_c2_filter_in(ap_filter_t* f,
@@ -200,7 +219,17 @@ static apr_status_t h2_c2_filter_in(ap_filter_t* f,
             APR_BRIGADE_INSERT_TAIL(fctx->bb, b);
         }
     }
-    
+
+    /* If this is a HTTP Upgrade, it means the request we process
+     * has not Content, although the stream is not necessarily closed.
+     * On first read, we insert an EOS to signal processing that it
+     * has the complete body. */
+    if (conn_ctx->is_upgrade && !fctx->did_upgrade_eos) {
+        b = apr_bucket_eos_create(f->c->bucket_alloc);
+        APR_BRIGADE_INSERT_TAIL(fctx->bb, b);
+        fctx->did_upgrade_eos = 1;
+    }
+
     while (APR_BRIGADE_EMPTY(fctx->bb)) {
         /* Get more input data for our request. */
         if (APLOGctrace2(f->c)) {
@@ -326,41 +355,12 @@ receive:
 
 static apr_status_t beam_out(conn_rec *c2, h2_conn_ctx_t *conn_ctx, apr_bucket_brigade* bb)
 {
-    apr_off_t written, header_len = 0;
+    apr_off_t written = 0;
     apr_status_t rv;
 
-    if (h2_c_logio_add_bytes_out) {
-        /* mod_logio wants to report the number of bytes  written in a
-         * response, including header and footer fields. Since h2 converts
-         * those during c1 processing into the HPACKed h2 HEADER frames,
-         * we need to give mod_logio something here and count just the
-         * raw lengths of all headers in the buckets. */
-        apr_bucket *b;
-        for (b = APR_BRIGADE_FIRST(bb);
-             b != APR_BRIGADE_SENTINEL(bb);
-             b = APR_BUCKET_NEXT(b)) {
-#if AP_HAS_RESPONSE_BUCKETS
-            if (AP_BUCKET_IS_RESPONSE(b)) {
-                header_len += (apr_off_t)response_length_estimate(b->data);
-            }
-            if (AP_BUCKET_IS_HEADERS(b)) {
-                header_len += (apr_off_t)headers_length_estimate(b->data);
-            }
-#else
-            if (H2_BUCKET_IS_HEADERS(b)) {
-                header_len += (apr_off_t)h2_bucket_headers_headers_length(b);
-            }
-#endif /* AP_HAS_RESPONSE_BUCKETS */
-        }
-    }
-
     rv = h2_beam_send(conn_ctx->beam_out, c2, bb, APR_BLOCK_READ, &written);
-
     if (APR_STATUS_IS_EAGAIN(rv)) {
         rv = APR_SUCCESS;
-    }
-    if (written && h2_c_logio_add_bytes_out) {
-        h2_c_logio_add_bytes_out(c2, written + header_len);
     }
     return rv;
 }
@@ -369,6 +369,20 @@ static apr_status_t h2_c2_filter_out(ap_filter_t* f, apr_bucket_brigade* bb)
 {
     h2_conn_ctx_t *conn_ctx = h2_conn_ctx_get(f->c);
     apr_status_t rv;
+
+    if (bb == NULL) {
+#if !AP_MODULE_MAGIC_AT_LEAST(20180720, 1)
+        f->c->data_in_output_filters = 0;
+#endif
+        return APR_SUCCESS;
+    }
+
+   if (bb == NULL) {
+#if !AP_MODULE_MAGIC_AT_LEAST(20180720, 1)
+        f->c->data_in_output_filters = 0;
+#endif
+        return APR_SUCCESS;
+    }
 
     ap_assert(conn_ctx);
 #if AP_HAS_RESPONSE_BUCKETS
@@ -403,30 +417,56 @@ static apr_status_t h2_c2_filter_out(ap_filter_t* f, apr_bucket_brigade* bb)
     return rv;
 }
 
-static void check_push(request_rec *r, const char *tag)
+static int addn_headers(void *udata, const char *name, const char *value)
+{
+    apr_table_t *dest = udata;
+    apr_table_addn(dest, name, value);
+    return 1;
+}
+
+static void check_early_hints(request_rec *r, const char *tag)
 {
     apr_array_header_t *push_list = h2_config_push_list(r);
+    apr_table_t *early_headers = h2_config_early_headers(r);
 
-    if (!r->expecting_100 && push_list && push_list->nelts > 0) {
-        int i, old_status;
-        const char *old_line;
+    if (!r->expecting_100 &&
+        ((push_list && push_list->nelts > 0) ||
+         (early_headers && !apr_is_empty_table(early_headers)))) {
+        int have_hints = 0, i;
 
-        ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r,
-                      "%s, early announcing %d resources for push",
-                      tag, push_list->nelts);
-        for (i = 0; i < push_list->nelts; ++i) {
-            h2_push_res *push = &APR_ARRAY_IDX(push_list, i, h2_push_res);
-            apr_table_add(r->headers_out, "Link",
-                           apr_psprintf(r->pool, "<%s>; rel=preload%s",
-                                        push->uri_ref, push->critical? "; critical" : ""));
+        if (push_list && push_list->nelts > 0) {
+            ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r,
+                          "%s, early announcing %d resources for push",
+                          tag, push_list->nelts);
+            for (i = 0; i < push_list->nelts; ++i) {
+                h2_push_res *push = &APR_ARRAY_IDX(push_list, i, h2_push_res);
+                apr_table_add(r->headers_out, "Link",
+                               apr_psprintf(r->pool, "<%s>; rel=preload%s",
+                                            push->uri_ref, push->critical? "; critical" : ""));
+            }
+            have_hints = 1;
         }
-        old_status = r->status;
-        old_line = r->status_line;
-        r->status = 103;
-        r->status_line = "103 Early Hints";
-        ap_send_interim_response(r, 1);
-        r->status = old_status;
-        r->status_line = old_line;
+        if (early_headers && !apr_is_empty_table(early_headers)) {
+            apr_table_do(addn_headers, r->headers_out, early_headers, NULL);
+            have_hints = 1;
+        }
+
+        if (have_hints) {
+          int old_status;
+          const char *old_line;
+
+          if (h2_config_rgeti(r, H2_CONF_PUSH) == 0 &&
+              h2_config_sgeti(r->server, H2_CONF_PUSH) != 0) {
+              apr_table_setn(r->connection->notes, H2_PUSH_MODE_NOTE, "0");
+          }
+          old_status = r->status;
+          old_line = r->status_line;
+          r->status = 103;
+          r->status_line = "103 Early Hints";
+          ap_send_interim_response(r, 1);
+          r->status = old_status;
+          r->status_line = old_line;
+        }
     }
 }
 
@@ -439,9 +479,40 @@ static int c2_hook_fixups(request_rec *r)
         return DECLINED;
     }
 
-    check_push(r, "late_fixup");
+    check_early_hints(r, "late_fixup");
 
     return DECLINED;
+}
+
+static apr_status_t http2_get_pollfd_from_conn(conn_rec *c,
+                                               struct apr_pollfd_t *pfd,
+                                               apr_interval_time_t *ptimeout)
+{
+#if H2_USE_PIPES
+    if (c->master) {
+        h2_conn_ctx_t *ctx = h2_conn_ctx_get(c);
+        if (ctx) {
+            if (ctx->beam_in && ctx->pipe_in[H2_PIPE_OUT]) {
+                pfd->desc_type = APR_POLL_FILE;
+                pfd->desc.f = ctx->pipe_in[H2_PIPE_OUT];
+                if (ptimeout)
+                    *ptimeout = h2_beam_timeout_get(ctx->beam_in);
+            }
+            else {
+                /* no input */
+                pfd->desc_type = APR_NO_DESC;
+                if (ptimeout)
+                    *ptimeout = -1;
+            }
+            return APR_SUCCESS;
+        }
+    }
+#else
+    (void)c;
+    (void)pfd;
+    (void)ptimeout;
+#endif /* H2_USE_PIPES */
+    return APR_ENOTIMPL;
 }
 
 #if AP_HAS_RESPONSE_BUCKETS
@@ -545,8 +616,14 @@ void h2_c2_register_hooks(void)
     /* We need to manipulate the standard HTTP/1.1 protocol filters and
      * install our own. This needs to be done very early. */
     ap_hook_pre_read_request(c2_pre_read_request, NULL, NULL, APR_HOOK_MIDDLE);
-    ap_hook_post_read_request(c2_post_read_request, NULL, NULL, APR_HOOK_REALLY_FIRST);
+    ap_hook_post_read_request(c2_post_read_request, NULL, NULL,
+                              APR_HOOK_REALLY_FIRST);
     ap_hook_fixups(c2_hook_fixups, NULL, NULL, APR_HOOK_LAST);
+#if H2_USE_POLLFD_FROM_CONN
+    ap_hook_get_pollfd_from_conn(http2_get_pollfd_from_conn, NULL, NULL,
+                                 APR_HOOK_MIDDLE);
+#endif
+    APR_REGISTER_OPTIONAL_FN(http2_get_pollfd_from_conn);
 
     c2_net_in_filter_handle =
         ap_register_input_filter("H2_C2_NET_IN", h2_c2_filter_in,
@@ -655,11 +732,21 @@ static apr_status_t c2_process(h2_conn_ctx_t *conn_ctx, conn_rec *c)
 {
     const h2_request *req = conn_ctx->request;
     conn_state_t *cs = c->cs;
-    request_rec *r;
+    request_rec *r = NULL;
     const char *tenc;
     apr_time_t timeout;
+    apr_status_t rv = APR_SUCCESS;
 
-    r = h2_create_request_rec(conn_ctx->request, c, conn_ctx->beam_in == NULL);
+    if (req->protocol && !strcmp("websocket", req->protocol)) {
+        req = h2_ws_rewrite_request(req, c, conn_ctx->beam_in == NULL);
+        if (!req) {
+            rv = APR_EGENERAL;
+            goto cleanup;
+        }
+    }
+
+    r = h2_create_request_rec(req, c, conn_ctx->beam_in == NULL);
+
     if (!r) {
         ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, c,
                       "h2_c2(%s-%d): create request_rec failed, r=NULL",
@@ -722,7 +809,7 @@ static apr_status_t c2_process(h2_conn_ctx_t *conn_ctx, conn_rec *c)
         cs->state = CONN_STATE_WRITE_COMPLETION;
 
 cleanup:
-    return APR_SUCCESS;
+    return rv;
 }
 
 conn_rec *h2_c2_create(conn_rec *c1, apr_pool_t *parent,
@@ -793,7 +880,7 @@ static int h2_c2_hook_post_read_request(request_rec *r)
 {
     h2_conn_ctx_t *conn_ctx = h2_conn_ctx_get(r->connection);
 
-    if (conn_ctx && conn_ctx->stream_id) {
+    if (conn_ctx && conn_ctx->stream_id && ap_is_initial_req(r)) {
 
         ap_log_rerror(APLOG_MARK, APLOG_TRACE3, 0, r,
                       "h2_c2(%s-%d): adding request filters",
@@ -845,6 +932,11 @@ void h2_c2_register_hooks(void)
      * install our own. This needs to be done very early. */
     ap_hook_post_read_request(h2_c2_hook_post_read_request, NULL, NULL, APR_HOOK_REALLY_FIRST);
     ap_hook_fixups(c2_hook_fixups, NULL, NULL, APR_HOOK_LAST);
+#if H2_USE_POLLFD_FROM_CONN
+    ap_hook_get_pollfd_from_conn(http2_get_pollfd_from_conn, NULL, NULL,
+                                 APR_HOOK_MIDDLE);
+#endif
+    APR_REGISTER_OPTIONAL_FN(http2_get_pollfd_from_conn);
 
     ap_register_input_filter("H2_C2_NET_IN", h2_c2_filter_in,
                              NULL, AP_FTYPE_NETWORK);

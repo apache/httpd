@@ -418,7 +418,7 @@ AP_CORE_DECLARE(int) ap_invoke_handler(request_rec *r)
     }
 
     if (!r->handler) {
-        if (r->content_type) {
+        if (r->content_type && AP_REQUEST_IS_TRUSTED_CT(r)) {
             handler = r->content_type;
             if ((p=ap_strchr_c(handler, ';')) != NULL) {
                 char *new_handler = (char *)apr_pmemdup(r->pool, handler,

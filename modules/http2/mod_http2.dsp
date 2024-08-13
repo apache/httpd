@@ -173,6 +173,10 @@ SOURCE=./h2_workers.c
 # End Source File
 # Begin Source File
 
+SOURCE=./h2_ws.c
+# End Source File
+# Begin Source File
+
 SOURCE=./mod_http2.c
 # End Source File
 # Begin Source File

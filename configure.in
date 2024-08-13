@@ -562,6 +562,12 @@ pid_t t = syscall(SYS_gettid); return t == -1 ? 1 : 0; },
   fi
 fi
 
+case ${host}X${ac_cv_func_gettid}X${ap_cv_gettid} in
+*linux-*XyesX* | *linux-*XnoXyes)
+     AC_DEFINE(DEFAULT_LOG_TID, ["g"], [Define as default argument for thread id in error logging])
+     ;;
+esac
+
 dnl ## Check for the tm_gmtoff field in struct tm to get the timezone diffs
 AC_CACHE_CHECK([for tm_gmtoff in struct tm], ac_cv_struct_tm_gmtoff,
 [AC_TRY_COMPILE([#include <sys/types.h>
@@ -999,6 +1005,7 @@ APACHE_FAST_OUTPUT(support/Makefile)
 if test -d ./test; then
     APACHE_FAST_OUTPUT(test/Makefile)
     AC_CONFIG_FILES([test/pyhttpd/config.ini])
+    APACHE_FAST_OUTPUT(test/clients/Makefile)
 fi
 
 dnl ## Finalize the variables

@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 1174747:1727637 (outdated) -->
+<!-- English Revision: 1174747:1917015 (outdated) -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -91,7 +91,7 @@ yeniden başlatılması sırasında yüklenmesini sağlar.</description>
       değişiklik yapmak gerekir: Modül kaydının daha sonra oluşturulacak olan
       DLL’den ihraç edilebilmesi gerekir (aşağıya bakınız). Bunu yapmak için
       modülün modül kaydı tanımına (Apache httpd başlık dosyalarında
-      tanımlanmış olan) <code>AP_MODULE_DECLARE_DATA</code> eklenmelidir.
+      tanımlanmış olan) <code>AP_DECLARE_MODULE</code> eklenmelidir.
       Örneğin, modülünüz</p>
 
     <example>
@@ -101,7 +101,7 @@ yeniden başlatılması sırasında yüklenmesini sağlar.</description>
     <p>diye bir satır içeriyorsa bunu,</p>
 
     <example>
-        module AP_MODULE_DECLARE_DATA foo_module;
+        AP_DECLARE_MODULE(foo);
     </example>
 
     <p>olarak değiştirmelisiniz. Bunun yalnız Windows üzerinde etkili olduğunu

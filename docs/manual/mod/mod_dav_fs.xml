@@ -60,11 +60,12 @@
 
 <usage>
     <p>Use the <directive>DavLockDB</directive> directive to specify
-    the full path to the lock database, excluding an extension. If
-    the path is not absolute, it will be taken relative to <directive
+    the full path to the lock database, excluding an extension. If the
+    path is not absolute, it will be taken relative to <directive
     module="core">ServerRoot</directive>. The implementation of
-    <module>mod_dav_fs</module> uses a SDBM database to track user
-    locks.</p>
+    <module>mod_dav_fs</module> uses a database to track user
+    locks. The type of database file can be changed using
+    <directive module="mod_dav_fs">DavLockDBType</directive>.</p>
 
     <!-- XXX: someone should add that tool to the support directory...
     The utility <code>modules/dav/util/lockview</code> can be used from
@@ -92,6 +93,23 @@
     module="core">DefaultStateDir</directive>) is used.</p>
     </note>
 
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>DavLockDBType</name>
+<description>Database type of the DAV lock database</description>
+<syntax>DavLockDBType <var>dbm-type</var></syntax>
+<default>DavLockDBType default</default>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+<compatibility>Available in version 2.5.1 and later.</compatibility>
+<usage>
+    <p>Use the <directive>DavLockDBType</directive> directive to
+    specify the type of the database file. If the directive is not
+    used, the <code>apr_dbm</code> hard-coded default database type is
+    used, which is equivalent to using <code>DavLockDBType default</code>.</p>
+    
 </usage>
 </directivesynopsis>
 
