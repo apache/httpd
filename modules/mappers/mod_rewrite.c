@@ -4284,6 +4284,7 @@ static rule_return_type apply_rewrite_rule(rewriterule_entry *p,
     char *newuri = NULL;
     request_rec *r = ctx->r;
     int is_proxyreq = 0;
+    int prefix_added = 0;
 
     ctx->uri = r->filename;
 
@@ -4444,6 +4445,7 @@ static rule_return_type apply_rewrite_rule(rewriterule_entry *p,
             rewritelog((r, 3, ctx->perdir, "add per-dir prefix: %s -> %s%s",
                        newuri, ctx->perdir, newuri));
             newuri = apr_pstrcat(r->pool, ctx->perdir, newuri, NULL);
+            prefix_added = 1;
         }
         else if (!(p->flags & (RULEFLAG_PROXY | RULEFLAG_FORCEREDIRECT))) {
             /* Not an absolute URI-path and the scheme (if any) is unknown,
@@ -4457,6 +4459,7 @@ static rule_return_type apply_rewrite_rule(rewriterule_entry *p,
                        newuri, newuri));
 
             newuri = apr_pstrcat(r->pool, "/", newuri, NULL);
+            prefix_added = 1;
         }
     }
 
@@ -4537,7 +4540,7 @@ static rule_return_type apply_rewrite_rule(rewriterule_entry *p,
         return RULE_RC_MATCH;
     }
 
-    if (!(p->flags & RULEFLAG_UNC)) {
+    if (!((p->flags & RULEFLAG_UNC) || prefix_added)) {
         /* merge leading slashes, unless they were literals in the sub */
         if (!AP_IS_SLASH(p->output[0]) || !AP_IS_SLASH(p->output[1])) {
             while (AP_IS_SLASH(r->filename[0]) &&
