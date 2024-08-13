@@ -195,7 +195,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   https://svn.apache.org/r1919533
      2.4.x patch: https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/467.diff
      PR: https://github.com/apache/httpd/pull/467
-     +1: ylavic,
+     +1: ylavic, covener
 
   *) mod_proxy: Honor parameters of ProxyPassMatch workers with substitution
                 in the host name or port. PR 69233.
@@ -214,7 +214,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   https://svn.apache.org/r1919628
      2.4.x patch: https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/470.diff
      PR: https://github.com/apache/httpd/pull/470
-     +1: ylavic,
+     +1: ylavic, covener
 
   *) CMake: Remove awk dependency when building using CMake. Before this awk was
      required for -DWITH_MODULES option.
