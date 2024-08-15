@@ -164,6 +164,14 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      PR: https://github.com/apache/httpd/pull/464
      +1: jorton, ylavic, covener
 
+  *) mod_proxy: Avoid AH01059 parsing error for SetHandler "unix:" URLs
+                in <Location> (incomplete fix in 2.4.62). PR 69160.
+     trunk patch: https://svn.apache.org/r1919532
+                  https://svn.apache.org/r1919533
+     2.4.x patch: https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/467.diff
+     PR: https://github.com/apache/httpd/pull/467
+     +1: ylavic, covener, rpluem
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -189,14 +197,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       2.4.x patch: svn merge -c r1914038 ^/httpd/httpd/trunk .
       +1: minfrin, covener
 
-  *) mod_proxy: Avoid AH01059 parsing error for SetHandler "unix:" URLs
-                in <Location> (incomplete fix in 2.4.62). PR 69160.
-     trunk patch: https://svn.apache.org/r1919532
-                  https://svn.apache.org/r1919533
-     2.4.x patch: https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/467.diff
-     PR: https://github.com/apache/httpd/pull/467
-     +1: ylavic, covener
-
   *) mod_proxy: Honor parameters of ProxyPassMatch workers with substitution
                 in the host name or port. PR 69233.
      trunk patch: https://svn.apache.org/r1912462
@@ -204,7 +204,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   https://svn.apache.org/r1919619
      2.4.x patch: https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/469.diff
      PR: https://github.com/apache/httpd/pull/469
-     +1: ylavic,
+     +1: ylavic, rpluem
 
   *) mod_proxy_fcgi: Don't re-encode SCRIPT_FILENAME when set via SetHandler. PR 69203.
      trunk patch: https://svn.apache.org/r1919547
@@ -231,7 +231,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      Backport version for 2.4.x of patch:
        https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/473.diff
      Can be applied via apply_backport_pr.sh 473
-     +1: covener
+     +1: covener, rpluem
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
