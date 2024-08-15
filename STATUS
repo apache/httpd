@@ -172,6 +172,11 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      PR: https://github.com/apache/httpd/pull/467
      +1: ylavic, covener, rpluem
 
+  *) mod_ldap: Add a hint to install the apr_ldap module on init failure.
+      trunk patch: http://svn.apache.org/r1914038
+      2.4.x patch: svn merge -c r1914038 ^/httpd/httpd/trunk .
+      +1: minfrin, covener, rpluem
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -191,11 +196,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      Backport version for 2.4.x of patch:
         https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/httpd-2.4-ldap-search5.patch
      +1: minfrin, covener
-
-  *) mod_ldap: Add a hint to install the apr_ldap module on init failure.
-      trunk patch: http://svn.apache.org/r1914038
-      2.4.x patch: svn merge -c r1914038 ^/httpd/httpd/trunk .
-      +1: minfrin, covener
+     rpluem says: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/httpd-2.4-ldap-search5.patch returns 404
 
   *) mod_proxy: Honor parameters of ProxyPassMatch workers with substitution
                 in the host name or port. PR 69233.
