@@ -215,7 +215,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   https://svn.apache.org/r1919628
      2.4.x patch: https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/470.diff
      PR: https://github.com/apache/httpd/pull/470
-     +1: ylavic, covener
+     +1: ylavic
+     covener: pending https://github.com/apache/httpd/pull/470#discussion_r1718079315 outcome
 
   *) CMake: Remove awk dependency when building using CMake. Before this awk was
      required for -DWITH_MODULES option.
