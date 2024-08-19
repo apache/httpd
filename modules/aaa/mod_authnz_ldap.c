@@ -31,6 +31,7 @@
 #define APR_WANT_STRFUNC
 #include "apr_want.h"
 #include "apr_lib.h"
+#include "apu_version.h"
 
 #include <ctype.h>
 
@@ -1542,7 +1543,11 @@ static const char *mod_auth_ldap_parse_url(cmd_parms *cmd,
 // FIXME - needed?
     int rc, i;
     apr_ldap_url_desc_t *urld;
+#if (APU_MAJOR_VERSION == 1 && APU_MINOR_VERSION >= 7)
+    apr_ldap_err_t *result;
+#else
     apu_err_t *result;
+#endif
     const char *end = url;
 
     authn_ldap_config_t *sec = config;
