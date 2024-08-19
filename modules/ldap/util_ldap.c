@@ -3180,7 +3180,7 @@ static void *util_ldap_create_dir_config(apr_pool_t *p, char *d)
 
     /* defaults are AP_LDAP_CHASEREFERRALS_ON and AP_LDAP_DEFAULT_HOPLIMIT */
     dc->client_certs = apr_array_make(p, 10, sizeof(apr_ldap_opt_tls_cert_t));
-    dc->ChaseReferrals = AP_LDAP_CHASEREFERRALS_ON;
+    dc->ChaseReferrals = AP_LDAP_CHASEREFERRALS_SDKDEFAULT;
     dc->ReferralHopLimit = AP_LDAP_HOPLIMIT_UNSET;
 
     dc->inherit = 0;
