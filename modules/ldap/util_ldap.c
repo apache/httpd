@@ -33,6 +33,7 @@
 #include "util_ldap_cache.h"
 
 #include <apr_strings.h>
+#include <apu_version.h>
 
 #if APR_HAVE_UNISTD_H
 #include <unistd.h>
@@ -49,14 +50,6 @@
  */
 #ifndef APR_LDAP_SIZELIMIT
 #define APR_LDAP_SIZELIMIT -1
-#endif
-
-#ifdef LDAP_OPT_DEBUG_LEVEL
-#define AP_LDAP_OPT_DEBUG LDAP_OPT_DEBUG_LEVEL
-#else
-#ifdef LDAP_OPT_DEBUG
-#define AP_LDAP_OPT_DEBUG LDAP_OPT_DEBUG
-#endif
 #endif
 
 #define AP_LDAP_HOPLIMIT_UNSET -1
@@ -3478,6 +3471,7 @@ static int util_ldap_post_config(apr_pool_t *p, apr_pool_t *plog,
                             ap_get_module_config(s->module_config,
                                                  &ldap_module);
 
+    apr_ldap_opt_t opt;
     apu_err_t err = { 0 };
     int rc;
 
@@ -3553,7 +3547,11 @@ static int util_ldap_post_config(apr_pool_t *p, apr_pool_t *plog,
     /* log the LDAP SDK used
      */
     {
-        apu_err_t *result = NULL;
+#if (APU_MAJOR_VERSION == 1 && APU_MINOR_VERSION >= 7)
+        apr_ldap_err_t *result;
+#else
+        apu_err_t *result;
+#endif
         /* first call to the LDAP library - library will be loaded and cleanup registered in p */
         rc = apr_ldap_info(p, &(result));
         if (APR_SUCCESS == rc) {
@@ -3587,16 +3585,15 @@ static int util_ldap_post_config(apr_pool_t *p, apr_pool_t *plog,
     (void) uldap_rebind_init(p);
 #endif
 
-#ifdef AP_LDAP_OPT_DEBUG
     if (st->debug_level > 0) {
-        result = apr_ldap_option_set(r->pool, NULL, AP_LDAP_OPT_DEBUG, &st->debug_level, &err);
-        if (result != LDAP_SUCCESS) {
+        opt.debug = st->debug_level;
+        result = apr_ldap_option_set(p, NULL, APR_LDAP_OPT_DEBUG_LEVEL, &opt, &err);
+        if (result != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_ERR, result, s, APLOGNO(01321)
                     "LDAP: Could not set the LDAP library debug level to %d: %s",
                     st->debug_level, err.reason ? err.reason : "");
         }
     }
-#endif
 
     return(OK);
 }
