@@ -29,6 +29,7 @@
 #include "apr_tables.h"
 #include "apr_time.h"
 #include "apr_version.h"
+#include "apu_version.h"
 
 #if APR_HAS_SHARED_MEMORY
 #include "apr_rmm.h"
@@ -39,6 +40,13 @@
 
 /* this whole thing disappears if LDAP is not enabled */
 #if APR_HAS_LDAP
+
+#if APU_MAJOR_VERSION > 1 || (APU_MAJOR_VERSION == 1 && APU_MINOR_VERSION >= 7)
+#else
+#error apr-util v1.7 or later or apr v2.0 or later is required
+#endif
+
+
 
 /* Apache header files */
 #include "ap_config.h"
