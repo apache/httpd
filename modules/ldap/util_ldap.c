@@ -3074,8 +3074,6 @@ static const char *util_ldap_set_chase_referrals(cmd_parms *cmd,
         return "LDAPReferrals must be 'on', 'off', or 'default'";
     }
 
-    dc->client_certs_set = 1;
-
     dc->ChaseReferrals_set = 1;
 
     return(NULL);
