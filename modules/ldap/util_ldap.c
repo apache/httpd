@@ -284,6 +284,7 @@ static int uldap_connection_init(request_rec *r,
 
     if (ldc->ChaseReferrals == AP_LDAP_CHASEREFERRALS_ON) {
         /* FIXME: implement this by responding to referral requests */
+        ldc->reason = "LDAP: chase referrals is enabled, but not currently supported";
         return APR_ENOTIMPL;
     }
 
