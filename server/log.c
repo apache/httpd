@@ -25,6 +25,10 @@
 #include "apr_general.h"        /* for signal stuff */
 #include "apr_strings.h"
 #include "apr_errno.h"
+#include "apu_version.h"
+#if (APU_MAJOR_VERSION == 1 && APU_MINOR_VERSION >= 7)
+#include "apu_errno.h"
+#endif
 #include "apr_thread_proc.h"
 #include "apr_lib.h"
 #include "apr_signal.h"
@@ -720,7 +724,7 @@ static int log_apr_status(const ap_errorlog_info *info, const char *arg,
     if (status < APR_UTIL_START_STATUS) {
         apr_strerror(status, buf + len, buflen - len);
     }
-    else if (statcode < (APR_UTIL_START_STATUS + APR_UTIL_ERRSPACE_SIZE)) {
+    else if (status < (APR_UTIL_START_STATUS + APR_UTIL_ERRSPACE_SIZE)) {
         apu_strerror(status, buf + len, buflen - len);
     }
     else {
