@@ -327,7 +327,7 @@ jobs:
                     cpanminus libtool-bin libapr1-dev libaprutil1-dev
                     liblua5.3-dev libbrotli-dev libcurl4-openssl-dev     
                     libnghttp2-dev libjansson-dev libpcre2-dev gdb
-                    perl-doc ${{ matrix.pkgs }}
+                    perl-doc libsasl2-dev ${{ matrix.pkgs }}
     - uses: actions/checkout@v4
     - name: Cache installed libraries
       uses: actions/cache@v4
