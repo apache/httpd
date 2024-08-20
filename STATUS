@@ -157,13 +157,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_rewrite: backport better/simpler rewritelog() macro to fix
-     line numbers logged and make merging trunk->2.4.x easier
-     trunk patch: https://svn.apache.org/r1866894
-     2.4.x patch: https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/464.diff
-     PR: https://github.com/apache/httpd/pull/464
-     +1: jorton, ylavic, covener
-
   *) mod_proxy: Avoid AH01059 parsing error for SetHandler "unix:" URLs
                 in <Location> (incomplete fix in 2.4.62). PR 69160.
      trunk patch: https://svn.apache.org/r1919532
