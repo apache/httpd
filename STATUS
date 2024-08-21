@@ -228,6 +228,18 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      Can be applied via apply_backport_pr.sh 473
      +1: covener, rpluem
 
+  *) mod_http: Trust content-type values set from configuration
+     r1918823 takes care of the content-type fix, while r1427465
+     is backported to avoid a conflict. It removes support for Request-Range
+     header sent by Navigator 2-3 and MSIE 3.
+     Trunk version of patch:
+        https://svn.apache.org/r1427465
+        https://svn.apache.org/r1918823
+     Backport version for 2.4.x of patch:
+       https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/475.diff
+     Can be applied via apply_backport_pr.sh 475
+     +1: rpluem,
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
