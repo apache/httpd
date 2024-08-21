@@ -859,7 +859,7 @@ The <code>L</code> flag can be useful in this context to end the
     URL taking advantage of a capture and re-substitution of the encoded
     question mark.</p>
 </section>
-<section id="flag_unsafe_prefix_status"><title>UnsafePrefixStat</title>
+<section id="flag_unsafe_prefix_stat"><title>UnsafePrefixStat</title>
     <p> Setting this flag is required in server-scoped substitutions
     start with a variable or backreference and resolve to a filesystem path.
     These substitutions are not prefixed with the document root.
