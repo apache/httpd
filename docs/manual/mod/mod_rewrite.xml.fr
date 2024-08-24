@@ -1644,7 +1644,8 @@ substitution !
         <td>Autorise les substitutions potentiellement non fiables à partir
 	d’une variable de tête ou d’une référence arrière vers un chemin du
 	système de fichiers.
-        <em><a href="../rewrite/flags.html#flag_unsafe_prefix_stat">détails ...</a></em>
+        <em><a href="../rewrite/flags.html#flag_unsafe_prefix_stat">détails ...</a></em><br />
+        <since>2.4.60</since>
         </td>
     </tr>
     <tr>
@@ -1652,7 +1653,8 @@ substitution !
         <td>
 	Empêche la fusion des slashes de début multiples tels que ceux utilisés
 	dans les chemins UNC de Windows.
-        <em><a href="../rewrite/flags.html#flag_unc">détails ...</a></em>
+        <em><a href="../rewrite/flags.html#flag_unc">détails ...</a></em><br />
+        <since>2.4.62</since>
         </td>
     </tr>
     </table>

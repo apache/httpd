@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1919248 -->
+<!-- English Revision: 1920110 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -918,13 +918,15 @@ utiliser le drapeau <code>L</code> pour terminer la séquence
     la substitution. Cela protège d’une URL malveillante tirant avantage d’une
     capture et d’une resubstitution du point d'interrogation encodé.</p>
 </section>
-<section id="flag_unsafe_prefix_status"><title>UnsafePrefixStat</title>
+<section id="flag_unsafe_prefix_stat"><title>UnsafePrefixStat</title>
     <p>La définition de ce drapeau est requise dans les substitutions à
     l'échelle du serveur qui commencent par une variable ou une référence
     arrière et se résolvent en un chemin du système de fichiers. Ces
     substitutions ne sont pas préfixées par la racine des documents. Cela protège
     d’une URL malveillante faisant correspondre la substitution expansée à un
     emplacement non souhaité du système de fichiers.</p>
+
+    <p><since>2.4.60</since></p>    
  </section>
 
  <section id="flag_unc"><title>UNC</title>
@@ -932,6 +934,8 @@ utiliser le drapeau <code>L</code> pour terminer la séquence
     que ceux utilisés dans les chemins UNC de Windows. Ce drapeau n’est pas
     nécessaire lorsque la substitution de la règle commence par des slashes
     multiples littéraux.</p>
+
+    <p><since>2.4.62</since></p>
 </section>
 
 </manualpage>
