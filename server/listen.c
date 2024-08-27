@@ -496,6 +496,12 @@ static const char *alloc_listener(process_rec *process, const char *addr,
 
     while (sa) {
         ap_listen_rec *new;
+        int sock_proto = 0;
+
+#ifdef IPPROTO_MPTCP
+        if (flags & AP_LISTEN_MPTCP)
+            sock_proto = IPPROTO_MPTCP;
+#endif
 
         /* this has to survive restarts */
         new = apr_palloc(process->pool, sizeof(ap_listen_rec));
@@ -509,7 +515,7 @@ static const char *alloc_listener(process_rec *process, const char *addr,
         sa = sa->next;
 
         status = apr_socket_create(&new->sd, new->bind_addr->family,
-                                    SOCK_STREAM, 0, process->pool);
+                                    SOCK_STREAM, sock_proto, process->pool);
 
 #if APR_HAVE_IPV6
         /* What could happen is that we got an IPv6 address, but this system
@@ -864,6 +870,7 @@ AP_DECLARE(apr_status_t) ap_duplicate_listeners(apr_pool_t *p, server_rec *s,
             char *hostname;
             apr_port_t port;
             apr_sockaddr_t *sa;
+            int sock_proto = 0;
 #ifdef HAVE_SYSTEMD
             if (use_systemd) {
                 int thesock;
@@ -891,8 +898,12 @@ AP_DECLARE(apr_status_t) ap_duplicate_listeners(apr_pool_t *p, server_rec *s,
                 duplr->bind_addr = sa;
                 duplr->next = NULL;
                 duplr->flags = lr->flags;
+#ifdef IPPROTO_MPTCP
+                if (duplr->flags & AP_LISTEN_MPTCP)
+                    sock_proto = IPPROTO_MPTCP;
+#endif
                 stat = apr_socket_create(&duplr->sd, duplr->bind_addr->family,
-                                         SOCK_STREAM, 0, p);
+                                         SOCK_STREAM, sock_proto, p);
                 if (stat != APR_SUCCESS) {
                     ap_log_perror(APLOG_MARK, APLOG_CRIT, 0, p, APLOGNO(02640)
                                 "ap_duplicate_listeners: for address %pI, "
@@ -1038,6 +1049,13 @@ static const char *parse_listen_flags(apr_pool_t *temp_pool, const char *arg,
             flags |= AP_LISTEN_REUSEPORT;
         else if (ap_cstr_casecmp(token, "v6only") == 0)
             flags |= AP_LISTEN_V6ONLY;
+        else if (ap_cstr_casecmp(token, "multipathtcp") == 0)
+#ifdef IPPROTO_MPTCP
+            flags |= AP_LISTEN_MPTCP;
+#else
+            return apr_psprintf(temp_pool, "Listen option '%s' in '%s' is not supported on this system",
+                                token, arg);
+#endif
         else
             return apr_psprintf(temp_pool, "Unknown Listen option '%s' in '%s'",
                                 token, arg);
