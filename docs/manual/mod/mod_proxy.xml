@@ -1326,6 +1326,10 @@ ProxyPass "/example" "http://backend.example.com" max=20 ttl=120 retry=300
         <td><p>TTL in seconds for how long DNS resolutions of the backend address are cached.
         -1 means until restart of Apache httpd.</p>
     </td></tr>
+    <tr><td><a id="multipathtcp" name="multipathtcp">multipathtcp</a></td>
+        <td>Off</td>
+        <td><p>Enable/disable the use of <a href="https://mptcp.dev">Multipath TCP (MPTCP)</a></p>
+    </td></tr>
 
     </table>
 

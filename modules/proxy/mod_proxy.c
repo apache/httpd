@@ -356,6 +356,18 @@ static const char *set_worker_param(apr_pool_t *p,
         worker->s->response_field_size = (s ? s : HUGE_STRING_LEN);
         worker->s->response_field_size_set = 1;
     }
+    else if (!strcasecmp(key, "multipathtcp")) {
+#ifdef IPPROTO_MPTCP
+        if (!strcasecmp(val, "On"))
+            worker->s->sock_proto = IPPROTO_MPTCP;
+        else if (!strcasecmp(val, "Off"))
+            worker->s->sock_proto = APR_PROTO_TCP;
+        else
+            return "multipathtcp must be On|Off";
+#else
+        return "multipathtcp is not supported on your platform";
+#endif
+    }
     else {
         if (set_worker_hc_param_f) {
             return set_worker_hc_param_f(p, s, worker, key, val, NULL);
