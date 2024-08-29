@@ -25,6 +25,7 @@
 #include "apr_general.h"        /* for signal stuff */
 #include "apr_strings.h"
 #include "apr_errno.h"
+#include "apu_version.h"
 #if (APU_MAJOR_VERSION == 1 && APU_MINOR_VERSION >= 7)
 #include "apu_errno.h"
 #endif
