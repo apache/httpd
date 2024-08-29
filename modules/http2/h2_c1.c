@@ -47,23 +47,25 @@
 
 static struct h2_workers *workers;
 
-static int async_mpm;
+static int async_mpm, mpm_can_waitio;
 
 APR_OPTIONAL_FN_TYPE(ap_logio_add_bytes_in) *h2_c_logio_add_bytes_in;
 APR_OPTIONAL_FN_TYPE(ap_logio_add_bytes_out) *h2_c_logio_add_bytes_out;
 
 apr_status_t h2_c1_child_init(apr_pool_t *pool, server_rec *s)
 {
-    apr_status_t status = APR_SUCCESS;
     int minw, maxw;
     apr_time_t idle_limit;
 
-    status = ap_mpm_query(AP_MPMQ_IS_ASYNC, &async_mpm);
-    if (status != APR_SUCCESS) {
+    if (ap_mpm_query(AP_MPMQ_IS_ASYNC, &async_mpm)) {
         /* some MPMs do not implemnent this */
         async_mpm = 0;
-        status = APR_SUCCESS;
     }
+#ifdef AP_MPMQ_CAN_WAITIO
+    if (!async_mpm || ap_mpm_query(AP_MPMQ_CAN_WAITIO, &mpm_can_waitio)) {
+        mpm_can_waitio = 0;
+    }
+#endif
 
     h2_config_init(pool);
 
@@ -113,23 +115,22 @@ cleanup:
     return rv;
 }
 
-apr_status_t h2_c1_run(conn_rec *c)
+int h2_c1_run(conn_rec *c)
 {
     apr_status_t status;
-    int mpm_state = 0;
+    int mpm_state = 0, keepalive = 0;
     h2_conn_ctx_t *conn_ctx = h2_conn_ctx_get(c);
     
     ap_assert(conn_ctx);
     ap_assert(conn_ctx->session);
+    c->clogging_input_filters = 0;
     do {
         if (c->cs) {
-            c->cs->sense = CONN_SENSE_DEFAULT;
             c->cs->state = CONN_STATE_HANDLER;
         }
     
-        status = h2_session_process(conn_ctx->session, async_mpm);
-        
-        if (APR_STATUS_IS_EOF(status)) {
+        status = h2_session_process(conn_ctx->session, async_mpm, &keepalive);
+        if (status != APR_SUCCESS) {
             ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, c, 
                           H2_SSSN_LOG(APLOGNO(03045), conn_ctx->session,
                           "process, closing conn"));
@@ -152,24 +153,51 @@ apr_status_t h2_c1_run(conn_rec *c)
             case H2_SESSION_ST_IDLE:
             case H2_SESSION_ST_BUSY:
             case H2_SESSION_ST_WAIT:
-                c->cs->state = CONN_STATE_WRITE_COMPLETION;
-                if (c->cs && !conn_ctx->session->remote.emitted_count) {
-                    /* let the MPM know that we are not done and want
-                     * the Timeout behaviour instead of a KeepAliveTimeout
+                if (keepalive) {
+                    /* Flush then keep-alive */
+                    c->cs->sense = CONN_SENSE_DEFAULT;
+                    c->cs->state = CONN_STATE_WRITE_COMPLETION;
+                }
+                else {
+                    /* Let the MPM know that we are not done and want to wait
+                     * for read using Timeout instead of KeepAliveTimeout.
                      * See PR 63534. 
                      */
                     c->cs->sense = CONN_SENSE_WANT_READ;
+#ifdef AP_MPMQ_CAN_WAITIO
+                    if (mpm_can_waitio) {
+                        /* This tells the MPM to wait for the connection to be
+                         * readable (CONN_SENSE_WANT_READ) within the configured
+                         * Timeout and then come back to the process_connection()
+                         * hooks again when ready.
+                         */
+                        c->cs->state = CONN_STATE_ASYNC_WAITIO;
+                    }
+                    else
+#endif
+                    {
+                        /* This is a compat workaround to do the same using the
+                         * CONN_STATE_WRITE_COMPLETION state but with both
+                         * CONN_SENSE_WANT_READ to wait for readability rather
+                         * than writing and c->clogging_input_filters to force
+                         * reentering the process_connection() hooks from any
+                         * state when ready. This somehow will use Timeout too.
+                         */
+                        c->cs->state = CONN_STATE_WRITE_COMPLETION;
+                        c->clogging_input_filters = 1;
+                    }
                 }
                 break;
+
             case H2_SESSION_ST_CLEANUP:
             case H2_SESSION_ST_DONE:
             default:
                 c->cs->state = CONN_STATE_LINGER;
-            break;
+                break;
         }
     }
 
-    return APR_SUCCESS;
+    return OK;
 }
 
 apr_status_t h2_c1_pre_close(struct h2_conn_ctx_t *ctx, conn_rec *c)
@@ -275,8 +303,7 @@ static int h2_c1_hook_process_connection(conn_rec* c)
             return !OK;
         }
     }
-    h2_c1_run(c);
-    return OK;
+    return h2_c1_run(c);
 
 declined:
     ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, c, "h2_h2, declined");

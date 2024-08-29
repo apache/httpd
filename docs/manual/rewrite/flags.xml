@@ -850,7 +850,30 @@ otherwise the MIME-type set with this flag is lost due to an internal
 re-processing (including subsequent rounds of mod_rewrite processing).
 The <code>L</code> flag can be useful in this context to end the
 <em>current</em> round of mod_rewrite processing.</p>
+</section>
 
+<section id="flag_unsafe_allow_3f"><title>UnsafeAllow3F</title>
+    <p> Setting this flag is required to allow a rewrite to continue If the
+    HTTP request being written has an encoded question mark, '%3f', and the
+    rewritten result has a '?' in the substiution.  This protects from a malicious
+    URL taking advantage of a capture and re-substitution of the encoded
+    question mark.</p>
+</section>
+<section id="flag_unsafe_prefix_stat"><title>UnsafePrefixStat</title>
+    <p> Setting this flag is required in server-scoped substitutions
+    start with a variable or backreference and resolve to a filesystem path.
+    These substitutions are not prefixed with the document root.
+    This protects from a malicious URL causing the expanded substitution to
+    map to an unexpected filesystem location.</p>
+
+    <p><since>2.5.1</since></p>
+</section>
+<section id="flag_unc"><title>UNC</title>
+    <p> Setting this flag prevents the merging of multiple leading slashes,
+    as used in Windows UNC paths.  The flag is not necessary when the rules
+    substitution starts with multiple literal slashes.</p>
+
+    <p><since>2.5.1</since></p>
 </section>
 
 </manualpage>

@@ -825,7 +825,6 @@ struct SSLSrvConfigRec {
     const unsigned char *vhost_md5; /* = ap_md5_binary(vhost_id, ...) */
     int              session_cache_timeout;
     BOOL             cipher_server_pref;
-    BOOL             insecure_reneg;
     modssl_ctx_t    *server;
 #ifdef HAVE_TLSEXT
     ssl_enabled_t    strict_sni_vhost_check;
@@ -1054,7 +1053,7 @@ void         modssl_callback_keylog(const SSL *ssl, const char *line);
 /**  I/O  */
 apr_status_t ssl_io_filter_init(conn_rec *, request_rec *r, SSL *);
 void         ssl_io_filter_register(apr_pool_t *);
-void         modssl_set_io_callbacks(SSL *ssl);
+void         modssl_set_io_callbacks(SSL *ssl, conn_rec *c, server_rec *s);
 
 /* ssl_io_buffer_fill fills the setaside buffering of the HTTP request
  * to allow an SSL renegotiation to take place. */
@@ -1090,7 +1089,8 @@ apr_status_t ssl_load_encrypted_pkey(server_rec *, apr_pool_t *, int,
 /* Load public and/or private key from the configured ENGINE. Private
  * key returned as *pkey.  certid can be NULL, in which case *pubkey
  * is not altered.  Errors logged on failure. */
-apr_status_t modssl_load_engine_keypair(server_rec *s, apr_pool_t *p,
+apr_status_t modssl_load_engine_keypair(server_rec *s,
+                                        apr_pool_t *pconf, apr_pool_t *ptemp,
                                         const char *vhostid,
                                         const char *certid, const char *keyid,
                                         X509 **pubkey, EVP_PKEY **privkey);

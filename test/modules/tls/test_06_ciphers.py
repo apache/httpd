@@ -181,7 +181,10 @@ class TestCiphers:
         })
         conf.add_tls_vhosts(domains=[env.domain_a, env.domain_b])
         conf.install()
-        assert env.apache_restart() == 0
+        if not conf.env.has_shared_module("tls"):
+            assert env.apache_restart() != 0
+        else:
+            assert env.apache_restart() == 0
         #
         env.httpd_error_log.ignore_recent(
             lognos = [
@@ -204,4 +207,6 @@ class TestCiphers:
         })
         conf.add_tls_vhosts(domains=[env.domain_a, env.domain_b])
         conf.install()
+        if not conf.env.has_shared_module("tls"):
+            return
         assert env.apache_restart() == 0

@@ -97,7 +97,7 @@ fi
 # For LDAP testing, run slapd listening on port 8389 and populate the
 # directory as described in t/modules/ldap.t in the test framework:
 if test -v TEST_LDAP -a -x test/perl-framework/scripts/ldap-init.sh; then
-    docker build -t httpd_ldap -f test/travis_Dockerfile_slapd.centos7 test/
+    docker build -t httpd_ldap -f test/travis_Dockerfile_slapd.centos test/
     pushd test/perl-framework
        ./scripts/ldap-init.sh
     popd
@@ -119,10 +119,13 @@ if test -v TEST_OPENSSL3; then
 
         mkdir -p build/openssl
         pushd build/openssl
-           curl "https://www.openssl.org/source/openssl-${TEST_OPENSSL3}.tar.gz" |
+           curl -L "https://github.com/openssl/openssl/releases/download/openssl-${TEST_OPENSSL3}/openssl-${TEST_OPENSSL3}.tar.gz" |
               tar -xzf -
            cd openssl-${TEST_OPENSSL3}
-           ./Configure --prefix=$HOME/root/openssl3 shared no-tests ${OPENSSL_CONFIG}
+           # Build with RPATH so ./bin/openssl doesn't require $LD_LIBRARY_PATH
+           ./Configure --prefix=$HOME/root/openssl3 \
+                       shared no-tests ${OPENSSL_CONFIG} \
+                       '-Wl,-rpath=$(LIBRPATH)'
            make $MFLAGS
            make install_sw
            touch $HOME/root/openssl-is-${TEST_OPENSSL3}

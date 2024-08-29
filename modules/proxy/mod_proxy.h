@@ -492,6 +492,7 @@ typedef struct {
     unsigned int     disablereuse_set:1;
     unsigned int     was_malloced:1;
     unsigned int     is_name_matchable:1;
+    unsigned int     is_host_matchable:1;
     unsigned int     response_field_size_set:1;
     unsigned int     address_ttl_set:1;
     apr_int32_t      address_ttl;    /* backend address' TTL (seconds) */
@@ -1028,6 +1029,15 @@ PROXY_DECLARE(proxy_balancer_shared *) ap_proxy_find_balancershm(ap_slotmem_prov
                                                                  ap_slotmem_instance_t *slot,
                                                                  proxy_balancer *balancer,
                                                                  unsigned int *index);
+
+/*
+ * Strip the UDS part of r->filename if any, and put the UDS path in
+ * r->notes ("uds_path")
+ * @param r        current request
+ * @return         OK if fixed up, DECLINED if not UDS, or an HTTP_XXX error
+ * @remark Deprecated (for internal use only)
+ */
+PROXY_DECLARE(int) ap_proxy_fixup_uds_filename(request_rec *r);
 
 /**
  * Get the most suitable worker and/or balancer for the request

@@ -63,6 +63,9 @@ static int proxy_fcgi_canon(request_rec *r, char *url)
     apr_port_t port, def_port;
     fcgi_req_config_t *rconf = NULL;
     const char *pathinfo_type = NULL;
+    fcgi_dirconf_t *dconf = ap_get_module_config(r->per_dir_config,
+                                                 &proxy_fcgi_module);
+    int from_handler;
 
     if (ap_cstr_casecmpn(url, "fcgi:", 5) == 0) {
         url += 5;
@@ -92,9 +95,29 @@ static int proxy_fcgi_canon(request_rec *r, char *url)
         host = apr_pstrcat(r->pool, "[", host, "]", NULL);
     }
 
-    if (apr_table_get(r->notes, "proxy-nocanon")
+    from_handler = apr_table_get(r->notes, "proxy-sethandler") != NULL;
+    if (from_handler
+        || apr_table_get(r->notes, "proxy-nocanon")
         || apr_table_get(r->notes, "proxy-noencode")) {
-        path = url;   /* this is the raw/encoded path */
+        char *c = path = url;   /* this is the raw path */
+
+        /* We do not call ap_proxy_canonenc_ex() on the path here, don't
+         * let control characters pass still, and for php-fpm no '?' either.
+         */
+        if (FCGI_MAY_BE_FPM(dconf)) {
+            while (!apr_iscntrl(*c) && *c != '?')
+                c++;
+        }
+        else {
+            while (!apr_iscntrl(*c))
+                c++;
+        }
+        if (*c) {
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(10414)
+                          "To be forwarded path contains control characters%s",
+                          FCGI_MAY_BE_FPM(dconf) ? " or '?'" : "");
+            return HTTP_FORBIDDEN;
+        }
     }
     else {
         core_dir_config *d = ap_get_core_module_config(r->per_dir_config);
@@ -105,16 +128,6 @@ static int proxy_fcgi_canon(request_rec *r, char *url)
         if (!path) {
             return HTTP_BAD_REQUEST;
         }
-    }
-    /*
-     * If we have a raw control character or a ' ' in nocanon path,
-     * correct encoding was missed.
-     */
-    if (path == url && *ap_scan_vchar_obstext(path)) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(10414)
-                      "To be forwarded path contains control "
-                      "characters or spaces");
-        return HTTP_FORBIDDEN;
     }
 
     r->filename = apr_pstrcat(r->pool, "proxy:fcgi://", host, sport, "/",
@@ -133,7 +146,6 @@ static int proxy_fcgi_canon(request_rec *r, char *url)
         /* It has to be on disk for this to work */
         if (!strcasecmp(pathinfo_type, "full")) {
             rconf->need_dirwalk = 1;
-            ap_unescape_url_keep2f(path, 0);
         }
         else if (!strcasecmp(pathinfo_type, "first-dot")) {
             char *split = ap_strchr(path, '.');
@@ -348,10 +360,11 @@ static apr_status_t send_environment(proxy_conn_rec *conn, request_rec *r,
     fcgi_req_config_t *rconf = ap_get_module_config(r->request_config, &proxy_fcgi_module);
     fcgi_dirconf_t *dconf = ap_get_module_config(r->per_dir_config, &proxy_fcgi_module);
 
-    if (rconf) {
-       if (rconf->need_dirwalk) {
-          ap_directory_walk(r);
-       }
+    if (rconf && rconf->need_dirwalk) {
+        char *saved_filename = r->filename;
+        r->filename = r->uri;
+        ap_directory_walk(r);
+        r->filename = saved_filename;
     }
 
     /* Strip proxy: prefixes */
@@ -569,7 +582,11 @@ static apr_status_t dispatch(proxy_conn_rec *conn, proxy_dir_conf *conf,
     *err = NULL;
     if (conn->worker->s->io_buffer_size_set) {
         iobuf_size = conn->worker->s->io_buffer_size;
-        iobuf = apr_palloc(r->pool, iobuf_size);
+        /* Allocate a buffer if the configured size is larger than the
+         * stack buffer, otherwise use the stack buffer. */
+        if (iobuf_size > AP_IOBUFSIZE) {
+            iobuf = apr_palloc(r->pool, iobuf_size);
+        }
     }
 
     pfd.desc_type = APR_POLL_SOCKET;

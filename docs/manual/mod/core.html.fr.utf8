@@ -131,6 +131,7 @@ disponibles</td></tr>
 <li><img alt="" src="../images/down.gif" /> <a href="#stricthostcheck">StrictHostCheck</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#timeout">TimeOut</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#traceenable">TraceEnable</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#unclist">UNCList</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#undefine">UnDefine</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#usecanonicalname">UseCanonicalName</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#usecanonicalphysicalport">UseCanonicalPhysicalPort</a></li>
@@ -5458,6 +5459,42 @@ dernière.
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="unclist" id="unclist">Directive</a> <a name="UNCList" id="UNCList">UNCList</a> <a title="Lien permanent" href="#unclist" class="permalink">&para;</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit quels sont les noms d’hôte UNC auxquels le serveur peut accéder
+</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>UNCList <var>hostname</var> [<var>hostname</var>...]</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>unset</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Noyau httpd</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Windows seulement. Disponible à partir de la version 2.4.60 du
+serveur HTTP Apache.</td></tr>
+</table>
+    <p>Au cours de leur traitement, les requêtes pour accéder à un chemin du
+    système de fichiers qui aboutissent à un chemin UNC échoueront si le nom
+    d’hôte dans le chemin UNC n’a pas été spécifié par cette directive. Le but
+    est de limiter l’accès aux chemins dérivés d’entrées non fiables.</p>
+
+    <div class="example"><p><code>
+    UNCList example.com other.example.com
+    </code></p></div>
+
+    <div class="warning"><h3>Sécurité</h3>
+    <p>Les chemins UNC accédés en dehors du traitement d’une requête, par
+    exemple au cours du démarrage, ne font pas nécessairement l’objet d’une
+    vérification par rapport aux noms d’hôte configurés avec cette directive.</p>
+    </div>
+
+    <div class="warning"><h3>Ordre des directives</h3>
+    <p>Cette directive doit être placée avant les chemins UNC utilisés dans le
+    fichier httpd.conf. Plusieurs occurences de la directive redéfinissent la
+    liste.</p>
+    </div>
+
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="undefine" id="undefine">Directive</a> <a name="UnDefine" id="UnDefine">UnDefine</a> <a title="Lien permanent" href="#undefine" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Invalide la définition d'une variable</td></tr>
@@ -5807,7 +5844,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/core.html';
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2023 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2024 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

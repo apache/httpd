@@ -465,6 +465,17 @@ AP_DECLARE(void) ap_clear_method_list(ap_method_list_t *l);
 AP_DECLARE(void) ap_set_content_type(request_rec *r, const char *ct);
 
 /**
+ * Set the content type for this request (r->content_type).
+ * @param r The current request
+ * @param ct The new content type
+ * @param trusted If non-zero, The content-type should come from a
+ *        trusted source such as server configuration rather
+ *        than application output.
+ * for the AddOutputFilterByType directive to work correctly.
+ */
+AP_DECLARE(void) ap_set_content_type_ex(request_rec *r, const char *ct, int trusted);
+
+/**
  * Set the Accept-Ranges header for this response
  * @param r The current request
  */

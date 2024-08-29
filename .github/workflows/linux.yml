@@ -21,13 +21,15 @@ on:
 env:
   MARGS: "-j2"
   CFLAGS: "-g"
+  # This will need updating as the ubuntu-latest image changes:
+  PHP_FPM: "/usr/sbin/php-fpm8.1"
 
 jobs:
   build:
     strategy:
       fail-fast: false
       matrix:
-        include: 
+        include:
           # -------------------------------------------------------------------------
           - name: Empty APLOGNO() test
             env: |
@@ -169,6 +171,19 @@ jobs:
               TEST_ARGS="-defines LDAP"
               TESTS="t/modules/"
           # -------------------------------------------------------------------------
+          - name: APR 1.7.x, APR-util 1.7.x, LDAP
+            config: --enable-mods-shared=reallyall
+            pkgs: ldap-utils
+            env: |
+              APR_VERSION=1.7.x
+              APU_VERSION=1.7.x
+              APU_CONFIG="--with-crypto --with-ldap"
+              TEST_MALLOC=1
+              TEST_LDAP=1
+              TEST_ARGS="-defines LDAP"
+              TESTS="t/modules/"
+              CLEAR_CACHE=1
+          # -------------------------------------------------------------------------
           ### TODO: if: *condition_not_24x
           - name: APR trunk thread debugging
             config: --enable-mods-shared=reallyall --with-mpm=event
@@ -241,7 +256,7 @@ jobs:
               APR_VERSION=1.7.4
               APU_VERSION=1.6.3
               APU_CONFIG="--with-crypto"
-              RUSTLS_VERSION="v0.10.0"
+              RUSTLS_VERSION="v0.13.0"
               NO_TEST_FRAMEWORK=1
               TEST_INSTALL=1
               TEST_MOD_TLS=1
@@ -271,7 +286,7 @@ jobs:
           - name: OpenSSL 3.1
             config: --enable-mods-shared=most --enable-maintainer-mode --disable-md --disable-http2 --disable-ldap --disable-crypto
             env: |
-              TEST_OPENSSL3=3.1.5
+              TEST_OPENSSL3=3.1.6
               APR_VERSION=1.7.4
               APU_VERSION=1.6.3
               APU_CONFIG="--without-crypto"
@@ -280,7 +295,7 @@ jobs:
             config: --enable-mods-shared=most --enable-maintainer-mode --disable-md --disable-http2 --disable-ldap --disable-crypto
             notest-cflags: -Werror -O2 -Wno-deprecated-declarations
             env: |
-              TEST_OPENSSL3=3.2.1
+              TEST_OPENSSL3=3.2.2
               APR_VERSION=1.7.4
               APU_VERSION=1.6.3
               APU_CONFIG="--without-crypto"
@@ -288,16 +303,17 @@ jobs:
           - name: OpenSSL 3.2 no-engine
             config: --enable-mods-shared=most --enable-maintainer-mode --disable-md --disable-http2 --disable-ldap --disable-crypto
             env: |
-              TEST_OPENSSL3=3.2.1
+              TEST_OPENSSL3=3.2.2
               OPENSSL_CONFIG=no-engine
               APR_VERSION=1.7.4
               APU_VERSION=1.6.3
               APU_CONFIG="--without-crypto"
           # -------------------------------------------------------------------------
-          - name: OpenSSL 3.3 (alpha) no-engine
+          - name: OpenSSL 3.3 no-engine -Werror
             config: --enable-mods-shared=most --enable-maintainer-mode --disable-md --disable-http2 --disable-ldap --disable-crypto
+            notest-cflags: -Werror -O2
             env: |
-              TEST_OPENSSL3=3.3.0-alpha1
+              TEST_OPENSSL3=3.3.1
               OPENSSL_CONFIG=no-engine
               APR_VERSION=1.7.4
               APU_VERSION=1.6.3
@@ -324,7 +340,7 @@ jobs:
                     cpanminus libtool-bin libapr1-dev libaprutil1-dev
                     liblua5.3-dev libbrotli-dev libcurl4-openssl-dev     
                     libnghttp2-dev libjansson-dev libpcre2-dev gdb
-                    perl-doc ${{ matrix.pkgs }}
+                    perl-doc libsasl2-dev ${{ matrix.pkgs }}
     - uses: actions/checkout@v4
     - name: Cache installed libraries
       uses: actions/cache@v4

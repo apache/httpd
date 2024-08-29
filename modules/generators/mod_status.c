@@ -273,7 +273,7 @@ static int status_handler(request_rec *r)
     if (r->method_number != M_GET)
         return DECLINED;
 
-    ap_set_content_type(r, "text/html; charset=ISO-8859-1");
+    ap_set_content_type_ex(r, "text/html; charset=ISO-8859-1", 1);
 
     /*
      * Simple table-driven form data set parser that lets you alter the header
@@ -301,7 +301,7 @@ static int status_handler(request_rec *r)
                     no_table_report = 1;
                     break;
                 case STAT_OPT_AUTO:
-                    ap_set_content_type(r, "text/plain; charset=ISO-8859-1");
+                    ap_set_content_type_ex(r, "text/plain; charset=ISO-8859-1", 1);
                     short_report = 1;
                     break;
                 }
@@ -564,7 +564,7 @@ static int status_handler(request_rec *r)
         ap_rputs("</dl>", r);
 
     if (is_async) {
-        int write_completion = 0, lingering_close = 0, keep_alive = 0,
+        int wait_io = 0, write_completion = 0, lingering_close = 0, keep_alive = 0,
             connections = 0, stopping = 0, procs = 0;
         if (!short_report)
             ap_rputs("\n\n<table rules=\"all\" cellpadding=\"1%\">\n"
@@ -572,15 +572,17 @@ static int status_handler(request_rec *r)
                          "<th rowspan=\"2\">PID</th>"
                          "<th rowspan=\"2\">Stopping</th>"
                          "<th colspan=\"2\">Connections</th>\n"
-                         "<th colspan=\"2\">Threads</th>"
-                         "<th colspan=\"3\">Async connections</th></tr>\n"
+                         "<th colspan=\"3\">Threads</th>"
+                         "<th colspan=\"4\">Async connections</th></tr>\n"
                      "<tr><th>total</th><th>accepting</th>"
                          "<th>busy</th><th>graceful</th><th>idle</th>"
-                         "<th>writing</th><th>keep-alive</th><th>closing</th></tr>\n", r);
+                         "<th>wait-io</th><th>writing</th><th>keep-alive</th>"
+                         "<th>closing</th></tr>\n", r);
         for (i = 0; i < server_limit; ++i) {
             ps_record = ap_get_scoreboard_process(i);
             if (ps_record->pid) {
                 connections      += ps_record->connections;
+                wait_io          += ps_record->wait_io;
                 write_completion += ps_record->write_completion;
                 keep_alive       += ps_record->keep_alive;
                 lingering_close  += ps_record->lingering_close;
@@ -600,7 +602,7 @@ static int status_handler(request_rec *r)
                                       "<td>%s%s</td>"
                                       "<td>%u</td><td>%s</td>"
                                       "<td>%u</td><td>%u</td><td>%u</td>"
-                                      "<td>%u</td><td>%u</td><td>%u</td>"
+                                      "<td>%u</td><td>%u</td><td>%u</td><td>%u</td>"
                                       "</tr>\n",
                                i, ps_record->pid,
                                dying, old,
@@ -609,6 +611,7 @@ static int status_handler(request_rec *r)
                                thread_busy_buffer[i],
                                thread_graceful_buffer[i],
                                thread_idle_buffer[i],
+                               ps_record->wait_io,
                                ps_record->write_completion,
                                ps_record->keep_alive,
                                ps_record->lingering_close);
@@ -620,23 +623,26 @@ static int status_handler(request_rec *r)
                           "<td>%d</td><td>%d</td>"
                           "<td>%d</td><td>&nbsp;</td>"
                           "<td>%d</td><td>%d</td><td>%d</td>"
-                          "<td>%d</td><td>%d</td><td>%d</td>"
+                          "<td>%d</td><td>%d</td><td>%d</td><td>%d</td>"
                           "</tr>\n</table>\n",
                           procs, stopping,
                           connections,
                           busy, graceful, idle,
-                          write_completion, keep_alive, lingering_close);
+                          wait_io, write_completion, keep_alive,
+                          lingering_close);
         }
         else {
             ap_rprintf(r, "Processes: %d\n"
                           "Stopping: %d\n"
                           "ConnsTotal: %d\n"
+                          "ConnsAsyncWaitIO: %d\n"
                           "ConnsAsyncWriting: %d\n"
                           "ConnsAsyncKeepAlive: %d\n"
                           "ConnsAsyncClosing: %d\n",
                           procs, stopping,
                           connections,
-                          write_completion, keep_alive, lingering_close);
+                          wait_io, write_completion, keep_alive,
+                          lingering_close);
         }
     }
 

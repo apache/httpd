@@ -82,14 +82,17 @@ class TestEab:
         assert env.apache_restart() == 0
         md = env.await_error(domain)
         assert md['renewal']['errors'] > 0
-        assert md['renewal']['last']['problem'] == 'urn:ietf:params:acme:error:unauthorized'
+        assert md['renewal']['last']['problem'] in [
+            'urn:ietf:params:acme:error:unauthorized',
+            'urn:ietf:params:acme:error:malformed',
+        ]
         #
         env.httpd_error_log.ignore_recent(
             lognos = [
                 "AH10056"   # the field 'kid' references a key that is not known to the ACME server
             ],
             matches = [
-                r'.*urn:ietf:params:acme:error:unauthorized.*'
+                r'.*urn:ietf:params:acme:error:(unauthorized|malformed).*'
             ]
         )
 
@@ -105,14 +108,17 @@ class TestEab:
         assert env.apache_restart() == 0
         md = env.await_error(domain)
         assert md['renewal']['errors'] > 0
-        assert md['renewal']['last']['problem'] == 'urn:ietf:params:acme:error:unauthorized'
+        assert md['renewal']['last']['problem'] in [
+            'urn:ietf:params:acme:error:unauthorized',
+            'urn:ietf:params:acme:error:malformed',
+        ]
         #
         env.httpd_error_log.ignore_recent(
             lognos = [
                 "AH10056"   # the field 'kid' references a key that is not known to the ACME server
             ],
             matches = [
-                r'.*urn:ietf:params:acme:error:unauthorized.*'
+                r'.*urn:ietf:params:acme:error:(unauthorized|malformed).*'
             ]
         )
 
@@ -128,14 +134,17 @@ class TestEab:
         assert env.apache_restart() == 0
         md = env.await_error(domain)
         assert md['renewal']['errors'] > 0
-        assert md['renewal']['last']['problem'] == 'urn:ietf:params:acme:error:unauthorized'
+        assert md['renewal']['last']['problem'] in [
+            'urn:ietf:params:acme:error:unauthorized',
+            'urn:ietf:params:acme:error:malformed',
+        ]
         #
         env.httpd_error_log.ignore_recent(
             lognos = [
                 "AH10056"   # external account binding JWS verification error: square/go-jose: error in cryptographic primitive
             ],
             matches = [
-                r'.*urn:ietf:params:acme:error:unauthorized.*'
+                r'.*urn:ietf:params:acme:error:(unauthorized|malformed).*'
             ]
         )
 

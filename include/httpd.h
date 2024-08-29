@@ -458,13 +458,13 @@ AP_DECLARE(const char *) ap_get_server_built(void);
 
 /* non-HTTP status codes returned by hooks */
 
-#define OK 0                    /**< Module has handled this stage. */
-#define DECLINED -1             /**< Module declines to handle */
-#define DONE -2                 /**< Module has served the response completely
-                                 *  - it's safe to die() with no more output
-                                 */
-#define SUSPENDED -3 /**< Module will handle the remainder of the request.
-                      * The core will never invoke the request again, */
+#define OK           0  /**< Module has handled this stage. */
+#define DECLINED    -1  /**< Module declines to handle */
+#define DONE        -2  /**< Module has served the response completely
+                         *   - it's safe to die() with no more output
+                         */
+#define SUSPENDED   -3  /**< Module will handle the remainder of the request.
+                         *   The core will never invoke the request again */
 
 /** Returned by the bottom-most filter if no data was written.
  *  @see ap_pass_brigade(). */
@@ -683,7 +683,8 @@ typedef apr_uint64_t ap_request_bnotes_t;
  * request. There are space for 64 bits in the apr_uint64_t.
  *
  */
-#define AP_REQUEST_STRONG_ETAG 1 >> 0
+#define AP_REQUEST_STRONG_ETAG (1u << 0)
+#define AP_REQUEST_TRUSTED_CT  (1u << 1)
 
 /**
  * This is a convenience macro to ease with getting specific request
@@ -706,6 +707,12 @@ typedef apr_uint64_t ap_request_bnotes_t;
         AP_REQUEST_GET_BNOTE((r), AP_REQUEST_STRONG_ETAG)
 /** @} */
 
+/**
+ * Returns true if the content-type field is from a trusted source
+ */
+#define AP_REQUEST_IS_TRUSTED_CT(r) \
+    (!!AP_REQUEST_GET_BNOTE((r), AP_REQUEST_TRUSTED_CT))
+/** @} */
 
 /**
  * @defgroup module_magic Module Magic mime types
@@ -1140,7 +1147,7 @@ struct request_rec {
      */
     unsigned int flushed:1;
     /** Request flags associated with this request. Use
-     * AP_REQUEST_GET_FLAGS() and AP_REQUEST_SET_FLAGS() to access
+     * AP_REQUEST_GET_BNOTE() and AP_REQUEST_SET_BNOTE() to access
      * the elements of this field.
      */
     ap_request_bnotes_t bnotes;
@@ -1318,16 +1325,25 @@ struct conn_slave_rec {
  * only be set by the MPM. Use CONN_STATE_LINGER outside of the MPM.
  */
 typedef enum  {
-    CONN_STATE_CHECK_REQUEST_LINE_READABLE,
-    CONN_STATE_READ_REQUEST_LINE,
-    CONN_STATE_HANDLER,
-    CONN_STATE_WRITE_COMPLETION,
-    CONN_STATE_SUSPENDED,
-    CONN_STATE_LINGER,          /* connection may be closed with lingering */
-    CONN_STATE_LINGER_NORMAL,   /* MPM has started lingering close with normal timeout */
-    CONN_STATE_LINGER_SHORT,    /* MPM has started lingering close with short timeout */
+    CONN_STATE_KEEPALIVE,           /* Kept alive in the MPM (using KeepAliveTimeout) */
+    CONN_STATE_PROCESSING,          /* Processed by process_connection hooks */
+    CONN_STATE_HANDLER,             /* Processed by the modules handlers */
+    CONN_STATE_WRITE_COMPLETION,    /* Flushed by the MPM before entering CONN_STATE_KEEPALIVE */
+    CONN_STATE_SUSPENDED,           /* Suspended in the MPM until ap_run_resume_suspended() */
+    CONN_STATE_LINGER,              /* MPM flushes then closes the connection with lingering */
+    CONN_STATE_LINGER_NORMAL,       /* MPM has started lingering close with normal timeout */
+    CONN_STATE_LINGER_SHORT,        /* MPM has started lingering close with short timeout */
 
-    CONN_STATE_NUM              /* Number of states (keep/kept last) */
+    CONN_STATE_ASYNC_WAITIO,        /* Returning this state to the MPM will make it wait for
+                                     * the connection to be readable or writable according to
+                                     * c->cs->sense (resp. CONN_SENSE_WANT_READ or _WRITE),
+                                     * using the configured Timeout */
+
+    CONN_STATE_NUM,                 /* Number of states (keep here before aliases) */
+
+    /* Aliases (legacy) */
+    CONN_STATE_CHECK_REQUEST_LINE_READABLE  = CONN_STATE_KEEPALIVE,
+    CONN_STATE_READ_REQUEST_LINE            = CONN_STATE_PROCESSING,
 } conn_state_e;
 
 typedef enum  {
@@ -2837,6 +2853,42 @@ AP_DECLARE(const char *)ap_dir_fnmatch(ap_dir_match_t *w, const char *path,
  * @return 1 if the last Transfer-Encoding is "chunked", else 0
  */
 AP_DECLARE(int) ap_is_chunked(apr_pool_t *p, const char *line);
+
+
+/**
+ * apr_filepath_merge with an allow-list
+ * Merge additional file path onto the previously processed rootpath
+ * @param newpath the merged paths returned
+ * @param rootpath the root file path (NULL uses the current working path)
+ * @param addpath the path to add to the root path
+ * @param flags the desired APR_FILEPATH_ rules to apply when merging
+ * @param p the pool to allocate the new path string from
+ * @remark if the flag APR_FILEPATH_TRUENAME is given, and the addpath
+ * contains wildcard characters ('*', '?') on platforms that don't support
+ * such characters within filenames, the paths will be merged, but the
+ * result code will be APR_EPATHWILD, and all further segments will not
+ * reflect the true filenames including the wildcard and following segments.
+ */
+AP_DECLARE(apr_status_t) ap_filepath_merge(char **newpath,
+                                             const char *rootpath,
+                                             const char *addpath,
+                                             apr_int32_t flags,
+                                             apr_pool_t *p);
+
+#ifdef WIN32
+#define apr_filepath_merge  ap_filepath_merge
+#endif
+
+/* Win32/NetWare/OS2 need to check for both forward and back slashes
+ * in ap_normalize_path() and ap_escape_url().
+ */
+#ifdef CASE_BLIND_FILESYSTEM
+#define AP_IS_SLASH(s) ((s == '/') || (s == '\\'))
+#define AP_SLASHES "/\\"
+#else
+#define AP_IS_SLASH(s) (s == '/')
+#define AP_SLASHES "/"
+#endif
 
 #ifdef __cplusplus
 }

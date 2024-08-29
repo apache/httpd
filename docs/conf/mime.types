@@ -1538,6 +1538,7 @@ font/otf					otf
 font/ttf					ttf
 font/woff					woff
 font/woff2					woff2
+image/avif					avif
 image/bmp					bmp
 image/cgm					cgm
 # image/dicom-rle

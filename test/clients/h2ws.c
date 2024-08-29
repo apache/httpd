@@ -141,14 +141,13 @@ static int parse_host_port(const char **phost, uint16_t *pport,
                            int *pipv6, size_t *pconsumed,
                            const char *s, size_t len, uint16_t def_port)
 {
-    size_t i, offset;
+    size_t i, offset=0;
     char *host = NULL;
     int port = 0;
     int rv = 1, ipv6 = 0;
 
     if (!len)
         goto leave;
-    offset = 0;
     if (s[offset] == '[') {
         ipv6 = 1;
         for (i = offset++; i < len; ++i) {

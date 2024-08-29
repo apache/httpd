@@ -387,6 +387,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#mdcertificatestatus">MDCertificateStatus</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mdchallengedns01">MDChallengeDns01</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mdchallengedns01version">MDChallengeDns01Version</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#mdcheckinterval">MDCheckInterval</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mdcontactemail">MDContactEmail</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mddrivemode">MDDriveMode</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mdexternalaccountbinding">MDExternalAccountBinding</a></li>
@@ -773,6 +774,35 @@
 		différences.
 		Cette définition est globale et ne peut pas s'appliquer
 		différemment pour chaque domaine.
+            </p>
+        
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="mdcheckinterval" id="mdcheckinterval">Directive</a> <a name="MDCheckInterval" id="MDCheckInterval">MDCheckInterval</a> <a title="Lien permanent" href="#mdcheckinterval" class="permalink">&para;</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Détermine la périodicité de la vérification des certificats</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MDCheckInterval <var>duration</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>MDCheckInterval 12h</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_md</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.60 du serveur HTTP
+	Apache</td></tr>
+</table>
+	    <p>
+	    Cette option permet de définir l’intervalle entre deux
+	    vérifications de certificat. Par défaut, la validité et le besoin de
+	    renouvellement sont vérifiés deux fois par jour. Cet intervalle
+	    n’est cependant pas appliqué avec précision. En effet, le module lui
+	    applique une plage de variation aléatoire de +/- 50%. Avec
+	    l’intervalle par défaut de 12&nbsp;heures, cela signifie que l’intervalle
+	    réel entre deux vérifications varie entre 6&nbsp;et 18&nbsp;heures, la
+	    variation s’appliquant à nouveau à chaque vérification. Cela permet
+	    d’atténuer les pics de trafic sur les serveurs ACME.
+            </p><p>
+	    La valeur minimale pouvant être définie pour l’intervalle est de
+	    1&nbsp;seconde. Il est cependant déconseillé de définir un intervalle
+	    aussi court sur un serveur en production.
             </p>
         
 </div>
@@ -1775,7 +1805,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_md.html';
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2023 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2024 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

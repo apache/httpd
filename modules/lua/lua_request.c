@@ -1264,6 +1264,10 @@ static int lua_ap_scoreboard_process(lua_State *L)
         lua_pushnumber(L, ps_record->suspended);
         lua_settable(L, -3);
 
+        lua_pushstring(L, "wait_io");
+        lua_pushnumber(L, ps_record->wait_io);
+        lua_settable(L, -3);
+
         lua_pushstring(L, "write_completion");
         lua_pushnumber(L, ps_record->write_completion);
         lua_settable(L, -3);

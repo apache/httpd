@@ -1,0 +1,10 @@
+ * mod_md:
+   - Using OCSP stapling information to trigger certificate renewals. Proposed
+     by @frasertweedale.
+   - Added directive `MDCheckInterval` to control how often the server checks
+     for detected revocations. Added proposals for configurations in the
+     README.md chapter "Revocations".
+   - OCSP stapling: accept OCSP responses without a `nextUpdate` entry which is
+     allowed in RFC 6960. Treat those as having an update interval of 12 hours.
+     Added by @frasertweedale.
+   - Adapt OpenSSL usage to changes in their API. By Yann Ylavic.

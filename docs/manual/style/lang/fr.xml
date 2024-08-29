@@ -63,6 +63,8 @@
         <message id="moduleidentifier">Identificateur&nbsp;de&nbsp;Module</message>
         <message id="sourcefile">Fichier&nbsp;Source</message>
         <message id="compatibility">Compatibilit&#233;</message>
+        <message id="before-since">Disponible &#224; partir de la version </message>
+        <message id="after-since"> du serveur HTTP Apache.</message>
 
         <!-- Used in manualpage -->
         <message id="relatedmodules">Modules Apparent&#233;s</message>

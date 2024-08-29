@@ -678,12 +678,6 @@ static apr_status_t ostat_on_resp(const md_http_response_t *resp, void *baton)
         md_result_log(update->result, MD_LOG_DEBUG);
         goto cleanup;
     }
-    if (!bnextup) {
-        rv = APR_EINVAL;
-        md_result_set(update->result, rv, "OCSP basicresponse reports not valid dates");
-        md_result_log(update->result, MD_LOG_DEBUG);
-        goto cleanup;
-    }
     
     /* Coming here, we have a response for our certid and it is either GOOD
      * or REVOKED. Both cases we want to remember and use in stapling. */
@@ -698,7 +692,14 @@ static apr_status_t ostat_on_resp(const md_http_response_t *resp, void *baton)
     new_der.free_data = md_openssl_free;
     nstat = (bstatus == V_OCSP_CERTSTATUS_GOOD)? MD_OCSP_CERT_ST_GOOD : MD_OCSP_CERT_ST_REVOKED;
     valid.start = bup? md_asn1_generalized_time_get(bup) : apr_time_now();
-    valid.end = md_asn1_generalized_time_get(bnextup);
+    if (bnextup) {
+        valid.end = md_asn1_generalized_time_get(bnextup);
+    }
+    else {
+        /* nextUpdate not set; default to 12 hours.
+         * Refresh attempts will be started some time earlier. */
+        valid.end = valid.start + apr_time_from_sec(MD_SECS_PER_DAY / 2);
+    }
     
     /* First, update the instance with a copy */
     apr_thread_mutex_lock(ostat->reg->mutex);

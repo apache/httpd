@@ -15,7 +15,8 @@ from .md_env import MDTestEnv
 class TestConf:
 
     @pytest.fixture(autouse=True, scope='class')
-    def _class_scope(self, env):
+    def _class_scope(self, env, acme):
+        acme.start(config='default')
         env.clear_store()
 
     # test case: just one MDomain definition
@@ -413,7 +414,7 @@ class TestConf:
     def test_md_300_026(self, env):
         assert env.apache_stop() == 0
         conf = MDConf(env)
-        domain = f"t300_026.{env.http_tld}"
+        domain = f"t300-026.{env.http_tld}"
         conf.add(f"""
             MDomain {domain}
             """)
@@ -460,11 +461,12 @@ class TestConf:
     def test_md_300_028(self, env):
         assert env.apache_stop() == 0
         conf = MDConf(env)
-        domaina = f"t300_028a.{env.http_tld}"
-        domainb = f"t300_028b.{env.http_tld}"
-        dalias = f"t300_028alias.{env.http_tld}"
+        domaina = f"t300-028a.{env.http_tld}"
+        domainb = f"t300-028b.{env.http_tld}"
+        dalias = f"t300-028alias.{env.http_tld}"
         conf.add_vhost(port=env.http_port, domains=[domaina, domainb, dalias], with_ssl=False)
         conf.add(f"""
+            MDMembers manual
             MDomain {domaina} 
             MDomain {domainb} {dalias}
             """)
@@ -481,23 +483,28 @@ class TestConf:
             </VirtualHost>
             """)
         conf.install()
-        # This does not work as we have both MDs match domaina's vhost
+        # This does not work as we have both MDs match domain's vhost
         assert env.apache_fail() == 0
         env.httpd_error_log.ignore_recent(
-            lognos = [
-                "AH10238"   # 2 MDs match the same vhost
+            lognos=[
+                "AH10238",   # 2 MDs match the same vhost
             ]
         )
         # It works, if we only match on ServerNames
         conf.add("MDMatchNames servernames")
         conf.install()
         assert env.apache_restart() == 0
+        env.httpd_error_log.ignore_recent(
+            lognos=[
+                "AH10040",  # ServerAlias not covered
+            ]
+        )
 
     # wildcard and specfic MD overlaps
     def test_md_300_029(self, env):
         assert env.apache_stop() == 0
         conf = MDConf(env)
-        domain = f"t300_029.{env.http_tld}"
+        domain = f"t300-029.{env.http_tld}"
         subdomain = f"sub.{domain}"
         conf.add_vhost(port=env.http_port, domains=[domain, subdomain], with_ssl=False)
         conf.add(f"""
@@ -531,4 +538,10 @@ class TestConf:
         conf.add("MDMatchNames servernames")
         conf.install()
         assert env.apache_restart() == 0
+        time.sleep(2)
+        assert env.apache_stop() == 0
+        # we need dns-01 challenge for the wildcard, which is not configured
+        env.httpd_error_log.ignore_recent(matches=[
+            r'.*None of offered challenge types.*are supported.*'
+        ])
 
