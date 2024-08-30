@@ -156,13 +156,17 @@ void *util_ldap_search_node_copy(util_ald_cache_t *cache, void *c)
 
         /* copy vals */
         if (node->vals) {
-            newnode->vals = util_ald_alloc(cache, node->vals_len);
-            newnode->vals_len = node->vals_len;
+            void *vals = util_ald_alloc(cache, node->vals_len);
 
-            if (!newnode->vals) {
+            if (!vals) {
                 util_ldap_search_node_free(cache, newnode);
                 return NULL;
             }
+
+            memcpy(vals, node->vals, node->vals_len);
+
+            newnode->vals = vals;
+            newnode->vals_len = node->vals_len;
         }
         else {
             newnode->vals = NULL;
