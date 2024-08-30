@@ -325,20 +325,15 @@ static int uldap_connection_init(request_rec *r,
     opt.deref = ldc->deref;
     apr_ldap_option_set(r->pool, ldc->ld, APR_LDAP_OPT_DEREF, &opt, &(ldc->result));
 
-#if 0
     if (ldc->ChaseReferrals != AP_LDAP_CHASEREFERRALS_SDKDEFAULT) {
-#if 0
         opt.refs = (ldc->ChaseReferrals == AP_LDAP_CHASEREFERRALS_ON) ?
                     APR_LDAP_OPT_ON : APR_LDAP_OPT_OFF;
         /* Set options for rebind and referrals. */
         ap_log_error(APLOG_MARK, APLOG_TRACE4, 0, r->server,
                 "LDAP: Setting referrals to %s.",
                 ((ldc->ChaseReferrals == AP_LDAP_CHASEREFERRALS_ON) ? "On" : "Off"));
-        status = apr_ldap_option_set(ldc->ld,
+        status = apr_ldap_option_set(r->pool, ldc->ld,
                 APR_LDAP_OPT_REFERRALS, &opt, &(ldc->result));
-#else
-        status = APR_ENOTIMPL;
-#endif
         if (status != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_DEBUG, status, r->server, APLOGNO(01279)
                     "Unable to set LDAP_OPT_REFERRALS option to %s: %d.",
@@ -350,7 +345,6 @@ static int uldap_connection_init(request_rec *r,
             return(status);
         }
     }
-#endif
 
     if (ldc->ChaseReferrals == AP_LDAP_CHASEREFERRALS_ON) {
         if (ldc->ReferralHopLimit != AP_LDAP_HOPLIMIT_UNSET)  {
