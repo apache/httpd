@@ -975,7 +975,7 @@ static char *ssl_var_lookup_ssl_handshake_rtt(apr_pool_t *p, SSL *ssl)
     result = NULL;
     handshakertt = 0;
 
-#if OPENSSL_VERSION_NUMBER > 0x30200000L
+#if OPENSSL_VERSION_NUMBER >= 0x30200000L
     ret = SSL_get_handshake_rtt(ssl, &rtt);
     if (ret > 0)
         handshakertt = (long) rtt;
