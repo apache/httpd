@@ -51,6 +51,7 @@ static const char *ssl_var_lookup_ssl_cert_rfc4523_cea(apr_pool_t *p, SSL *ssl);
 static const char *ssl_var_lookup_ssl_cert_verify(apr_pool_t *p, const SSLConnRec *sslconn);
 static const char *ssl_var_lookup_ssl_cipher(apr_pool_t *p, const SSLConnRec *sslconn, const char *var);
 static void  ssl_var_lookup_ssl_cipher_bits(SSL *ssl, int *usekeysize, int *algkeysize);
+static char *ssl_var_lookup_ssl_handshake_rtt(apr_pool_t *p, SSL *ssl);
 static const char *ssl_var_lookup_ssl_version(const char *var);
 static const char *ssl_var_lookup_ssl_compress_meth(SSL *ssl);
 
@@ -471,6 +472,9 @@ static const char *ssl_var_lookup_ssl(apr_pool_t *p, const SSLConnRec *sslconn,
     }
     else if (ssl != NULL && strlen(var) >= 6 && strcEQn(var, "CIPHER", 6)) {
         result = ssl_var_lookup_ssl_cipher(p, sslconn, var+6);
+    }
+    else if(ssl != NULL && strcEQ(var, "HANDSHAKE_RTT")) {
+        result = ssl_var_lookup_ssl_handshake_rtt(p, ssl);
     }
     else if (ssl != NULL && strlen(var) > 18 && strcEQn(var, "CLIENT_CERT_CHAIN_", 18)) {
         sk = SSL_get_peer_cert_chain(ssl);
@@ -959,6 +963,26 @@ static void ssl_var_lookup_ssl_cipher_bits(SSL *ssl, int *usekeysize, int *algke
         if ((cipher = SSL_get_current_cipher(ssl)) != NULL)
             *usekeysize = SSL_CIPHER_get_bits(cipher, algkeysize);
     return;
+}
+
+static char *ssl_var_lookup_ssl_handshake_rtt(apr_pool_t *p, SSL *ssl)
+{
+    char *result;
+    long handshakertt;
+    uint64_t rtt;
+    int ret;
+
+    result = NULL;
+    handshakertt = 0;
+
+#if OPENSSL_VERSION_NUMBER > 0x30200000L
+    ret = SSL_get_handshake_rtt(ssl, &rtt);
+    if (ret > 0)
+        handshakertt = (long) rtt;
+#endif
+
+    result = apr_ltoa(p, handshakertt);
+    return result;
 }
 
 static const char *ssl_var_lookup_ssl_version(const char *var)

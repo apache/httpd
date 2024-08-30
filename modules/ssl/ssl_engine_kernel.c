@@ -1546,6 +1546,7 @@ static const char *const ssl_hook_Fixup_vars[] = {
     "SSL_SRP_USER",
     "SSL_SRP_USERINFO",
 #endif
+    "SSL_HANDSHAKE_RTT",
     NULL
 };
 
