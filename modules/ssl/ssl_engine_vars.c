@@ -51,7 +51,7 @@ static const char *ssl_var_lookup_ssl_cert_rfc4523_cea(apr_pool_t *p, SSL *ssl);
 static const char *ssl_var_lookup_ssl_cert_verify(apr_pool_t *p, const SSLConnRec *sslconn);
 static const char *ssl_var_lookup_ssl_cipher(apr_pool_t *p, const SSLConnRec *sslconn, const char *var);
 static void  ssl_var_lookup_ssl_cipher_bits(SSL *ssl, int *usekeysize, int *algkeysize);
-static char *ssl_var_lookup_ssl_handshake_rtt(apr_pool_t *p, SSL *ssl);
+static const char *ssl_var_lookup_ssl_handshake_rtt(apr_pool_t *p, SSL *ssl);
 static const char *ssl_var_lookup_ssl_version(const char *var);
 static const char *ssl_var_lookup_ssl_compress_meth(SSL *ssl);
 
@@ -965,24 +965,14 @@ static void ssl_var_lookup_ssl_cipher_bits(SSL *ssl, int *usekeysize, int *algke
     return;
 }
 
-static char *ssl_var_lookup_ssl_handshake_rtt(apr_pool_t *p, SSL *ssl)
+static const char *ssl_var_lookup_ssl_handshake_rtt(apr_pool_t *p, SSL *ssl)
 {
-    char *result;
-    long handshakertt;
-    uint64_t rtt;
-    int ret;
-
-    result = NULL;
-    handshakertt = 0;
-
 #if OPENSSL_VERSION_NUMBER >= 0x30200000L
-    ret = SSL_get_handshake_rtt(ssl, &rtt);
-    if (ret > 0)
-        handshakertt = (long) rtt;
+    apr_uint64_t rtt;
+    if (SSL_get_handshake_rtt(ssl, &rtt) > 0)
+        return apr_psprintf(p, "%" APR_UINT64_T_FMT, rtt);
 #endif
-
-    result = apr_ltoa(p, handshakertt);
-    return result;
+    return NULL;
 }
 
 static const char *ssl_var_lookup_ssl_version(const char *var)
