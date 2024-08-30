@@ -239,7 +239,7 @@ if [ "$apr_src_dir" = "srclib/apr" ]; then
     rm -f srclib/apr/apr.spec
 fi
 
-apr_src_dir=`cd $apr_src_dir && pwd` 
+apr_src_dir=`cd -P $apr_src_dir && pwd` 
 
 if [ $apr_major_version -lt 2 ] ; then
     if [ "$apu_src_dir" = "srclib/apr-util" ]; then
