@@ -256,12 +256,16 @@ certificat serveur, sous la forme SRVName (OID 1.3.6.1.5.5.7.8.7, RFC 4985)</td>
 <td>Algorithme utilisé pour la clé publique du certificat du serveur</td></tr>
 <tr><td><code>SSL_SERVER_CERT</code></td>               <td>chaîne</td>
 <td>Certificat du serveur au format PEM</td></tr>
-<tr class="odd"><td><code>SSL_SRP_USER</code></td>                  <td>string</td>
+<tr class="odd"><td><code>SSL_SRP_USER</code></td>                  <td>chaîne</td>
 <td>nom d'utilisateur SRP</td></tr>
-<tr><td><code>SSL_SRP_USERINFO</code></td>              <td>string</td>
+<tr><td><code>SSL_SRP_USERINFO</code></td>              <td>chaîne</td>
 <td>informations sur l'utilisateur SRP</td></tr>
-<tr class="odd"><td><code>SSL_TLS_SNI</code></td>                   <td>string</td>
+<tr class="odd"><td><code>SSL_TLS_SNI</code></td>                   <td>chaîne</td>
 <td>Contenu de l'extension SNI TLS (si supporté par ClientHello)</td></tr>
+<tr><td><code>SSL_HANDSHAKE_RTT</code></td>             <td>nombre</td>
+<td>Temps d'aller-retour de la négociation TLS en microsecondes, y compris le
+traitement de l’étape finale (cette variable est définie à vide si la version d’OpenSSL est
+antérieure à 3.2 ou si le temps d'aller-retour ne peut pas être déterminé.</td></tr>
 </table>
 
 <p><em>x509</em> spécifie un élément de DN X.509 parmi
