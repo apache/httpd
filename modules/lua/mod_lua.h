@@ -183,5 +183,6 @@ const char *ap_lua_ssl_val(apr_pool_t *p, server_rec *s, conn_rec *c,
                            request_rec *r, const char *var);
 
 int ap_lua_ssl_is_https(conn_rec *c);
+int ap_lua_remote_is_https(request_rec *r);
 
 #endif /* !_MOD_LUA_H_ */

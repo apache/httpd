@@ -1712,6 +1712,11 @@ int ap_lua_ssl_is_https(conn_rec *c)
     return ap_ssl_conn_is_ssl(c);
 }
 
+int ap_lua_remote_is_https(request_rec *r)
+{
+    return ap_remote_is_ssl(r);
+}
+
 /*******************************/
 
 static const char *lua_authz_parse(cmd_parms *cmd, const char *require_line,
