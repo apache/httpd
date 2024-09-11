@@ -248,7 +248,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        https://svn.apache.org/r1920564
      Backport version for 2.4.x of patch:
        svn merge -c r1920564 ^/httpd/httpd/trunk .
-     +1 covener, rpluem
+     +1 covener, rpluem, steffenal
 
   *) mod_rewrite: Improve safe question mark detection
      Trunk version of patch:
