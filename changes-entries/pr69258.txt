@@ -1,0 +1,3 @@
+  *) mod_macro: Return an error if the expanded line would exceed the
+     maximum line length.  PR 69258.
+     [Marc Stern <marc.stern approach-cyber.com>]
