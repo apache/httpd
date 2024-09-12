@@ -483,13 +483,13 @@ static const char *process_content(apr_pool_t * pool,
     for (i = 0; i < contents->nelts; i++) {
         const char *errmsg;
         /* copy the line and substitute macro parameters */
-	if (strlen(((char**)contents->elts)[i]) >= MAX_STRING_LEN) {
+	if (strlen(((char**)contents->elts)[i]) >= sizeof(line)) {
 	    return apr_psprintf(pool,
 		    "while processing line %d of macro '%s' (%s) %s",
 		    i + 1, macro->name, macro->location, "macro too long");
 	}
-        apr_cpystrn(line, ((char **) contents->elts)[i], MAX_STRING_LEN);
-        errmsg = substitute_macro_args(line, MAX_STRING_LEN,
+        apr_cpystrn(line, ((char **) contents->elts)[i], sizeof(line));
+        errmsg = substitute_macro_args(line, sizeof(line),
                                        macro, replacements, used);
         if (errmsg) {
             return apr_psprintf(pool,
