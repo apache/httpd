@@ -278,6 +278,12 @@ Listen 192.170.2.5:8000
       to the same port.  (If the server is built with IPv4-mapped
       addresses <em>disabled</em>, this is the default behaviour and
       this option has no effect.)</li>
+
+      <li><code>multipathtcp</code>: Enable the use of
+      <a href="https://mptcp.dev">Multipath TCP (MPTCP)</a> for the
+      sockets. Beware that this option is currently limited to Linux
+      only.
+      </li>
     </ul>
        
     <note><title>Error condition</title>

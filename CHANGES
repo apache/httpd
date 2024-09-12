@@ -1,6 +1,12 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) core: Add "multipathtcp" Listen option. PR 69292.
+     [Anthony Doeraene <anthony.doeraene hotmail.com>]
+
+  *) mod_proxy: Add "multipathtcp" worker parameter.  PR 69292.
+     [Anthony Doeraene <anthony.doeraene hotmail.com>]
+
   *) mod_authnz_ldap.c: Make sure the authentication variables are set in
      all cases where another module is the source of the authentication,
      and that authenticated user is looked up in LDAP. [Graham Leggett]
