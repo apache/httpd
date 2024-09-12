@@ -155,6 +155,8 @@ RELEASE SHOWSTOPPERS:
 
 - PR69235
 - PR69260
+- PR69203
+
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
@@ -171,6 +173,15 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
       trunk patch: http://svn.apache.org/r1914038
       2.4.x patch: svn merge -c r1914038 ^/httpd/httpd/trunk .
       +1: minfrin, covener, rpluem
+
+  *) Windows: Make UNCList EXEC_ON_READ to be early enough for 
+     `Include //computername/include.conf`. PR69313
+     Trunk version of patch:
+       https://svn.apache.org/r1920564
+     Backport version for 2.4.x of patch:
+       svn merge -c r1920564 ^/httpd/httpd/trunk .
+     +1 covener, rpluem, steffenal
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -241,14 +252,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/475.diff
      Can be applied via apply_backport_pr.sh 475
      +1: rpluem, covener
-
-  *) Windows: Make UNCList EXEC_ON_READ to be early enough for 
-     `Include //computername/include.conf`. PR69313
-     Trunk version of patch:
-       https://svn.apache.org/r1920564
-     Backport version for 2.4.x of patch:
-       svn merge -c r1920564 ^/httpd/httpd/trunk .
-     +1 covener, rpluem, steffenal
 
   *) mod_rewrite: Improve safe question mark detection
      Trunk version of patch:
