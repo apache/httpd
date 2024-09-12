@@ -1,0 +1,2 @@
+  *) mod_ssl: Restore support for loading PKCS#11 keys via ENGINE
+     without "SSLCryptoDevice" configured.  [Joe Orton]

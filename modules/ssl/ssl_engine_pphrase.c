@@ -806,6 +806,9 @@ static apr_status_t modssl_engine_cleanup(void *engine)
     return APR_SUCCESS;
 }
 
+/* Tries to load the key and optionally certificate via the ENGINE
+ * API. Returns APR_ENOTIMPL if an ENGINE could not be identified
+ * loaded from the key name. */
 static apr_status_t modssl_load_keypair_engine(server_rec *s, apr_pool_t *pconf,
                                                apr_pool_t *ptemp,
                                                const char *vhostid,
@@ -831,7 +834,7 @@ static apr_status_t modssl_load_keypair_engine(server_rec *s, apr_pool_t *pconf,
         ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(10131)
                      "Init: Unrecognized private key identifier `%s'",
                      keyid);
-        return ssl_die(s);
+        return APR_ENOTIMPL;
     }
 
     scheme = apr_pstrmemdup(ptemp, keyid, c - keyid);
@@ -839,8 +842,8 @@ static apr_status_t modssl_load_keypair_engine(server_rec *s, apr_pool_t *pconf,
         ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(10132)
                      "Init: Failed to load engine for private key %s",
                      keyid);
-        ssl_log_ssl_error(SSLLOG_MARK, APLOG_EMERG, s);
-        return ssl_die(s);
+        ssl_log_ssl_error(SSLLOG_MARK, APLOG_NOTICE, s);
+        return APR_ENOTIMPL;
     }
 
     if (!ENGINE_init(e)) {
@@ -996,15 +999,21 @@ apr_status_t modssl_load_engine_keypair(server_rec *s,
                                         X509 **pubkey, EVP_PKEY **privkey)
 {
 #if MODSSL_HAVE_ENGINE_API 
-    SSLModConfigRec *mc = myModConfig(s);
+    apr_status_t rv;
 
-    /* For OpenSSL 3.x, use the STORE-based API if either ENGINE
-     * support was not present compile-time, or if it's built but
-     * SSLCryptoDevice is not configured. */
-    if (mc->szCryptoDevice)
-        return modssl_load_keypair_engine(s, pconf, ptemp,
-                                          vhostid, certid, keyid,
-                                          pubkey, privkey);
+    rv = modssl_load_keypair_engine(s, pconf, ptemp,
+                                    vhostid, certid, keyid,
+                                    pubkey, privkey);
+    if (rv == APR_SUCCESS) {
+        return rv;
+    }
+    /* If STORE support is not present, all errors are fatal here; if
+     * STORE is present and the ENGINE could not be loaded, ignore the
+     * error and fall through to try loading via the STORE API. */
+    else if (!MODSSL_HAVE_OPENSSL_STORE || rv != APR_ENOTIMPL) {
+        return ssl_die(s);
+    }
+
 #endif
 #if MODSSL_HAVE_OPENSSL_STORE
     return modssl_load_keypair_store(s, ptemp, vhostid, certid, keyid,
