@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1916708 -->
+<!-- English Revision: 1920586 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -1516,6 +1516,11 @@ ProxyPass "/mirror/foo/i" "!"
         <td><p>Durée de vie (TTL) en secondes des résolutions DNS de l'adresse
 	du serveur d'arrière-plan dans le cache.
         -1 signifie jusqu'au redémarrage de Apache httpd.</p>
+    </td></tr>
+    <tr><td><a id="multipathtcp" name="multipathtcp">multipathtcp</a></td>
+        <td>Off</td>
+        <td><p>Active/Désactive l’utilisation de <a
+	href="https://mptcp.dev">Multipath TCP (MPTCP)</a></p>
     </td></tr>
 
     </table>
