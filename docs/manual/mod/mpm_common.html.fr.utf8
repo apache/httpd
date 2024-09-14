@@ -310,6 +310,10 @@ Listen 192.170.2.5:8000</pre>
       Listen utilisant une adresse IPv4 avec le même port (si le serveur a été
       compilé en désactivant les adresses IPv4, il s'agit du comportement par
       défaut et cette option n'a alors aucun effet).</li>
+
+      <li><code>multipathtcp</code> : active l’utilisation de <a href="https://mptcp.dev">Multipath TCP (MPTCP)</a> pour les sockets. Notez
+      que cette option n’est actuellement prise en charge que par Linux.
+      </li>
     </ul>
 
     <div class="note"><h3>Condition d'erreur</h3>
