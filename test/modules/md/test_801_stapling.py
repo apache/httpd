@@ -335,6 +335,7 @@ class TestStapling:
         md = self.mdA
         domains = [md]
         testpath = os.path.join(env.gen_dir, 'test_801_009')
+        env.mkpath(testpath)
         # cert that is 30 more days valid
         creds = env.create_self_signed_cert(CertificateSpec(domains=domains),
                                             valid_from=timedelta(days=-60),

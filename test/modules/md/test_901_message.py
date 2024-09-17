@@ -157,6 +157,7 @@ class TestMessage:
         domain = self.test_domain
         domains = [domain, 'www.%s' % domain]
         testpath = os.path.join(env.gen_dir, 'test_901_010')
+        env.mkpath(testpath)
         # cert that is only 20 more days valid
         creds = env.create_self_signed_cert(CertificateSpec(domains=domains),
                                             valid_from=timedelta(days=-70),
@@ -182,6 +183,7 @@ class TestMessage:
         domain = self.test_domain
         domains = [domain, f'www.{domain}']
         testpath = os.path.join(env.gen_dir, 'test_901_011')
+        env.mkpath(testpath)
         # cert that is only 5 more days valid
         creds = env.create_self_signed_cert(CertificateSpec(domains=domains),
                                             valid_from=timedelta(days=-85),

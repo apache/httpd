@@ -166,6 +166,7 @@ Protocols h2 http/1.1 acme-tls/1
         domain = self.test_domain
         domains = [domain, 'www.%s' % domain]
         testpath = os.path.join(env.gen_dir, 'test_920_011')
+        env.mkpath(testpath)
         # cert that is only 20 more days valid
         creds = env.create_self_signed_cert(CertificateSpec(domains=domains),
                                             valid_from=timedelta(days=-70),

@@ -30,7 +30,8 @@ class TestStatic:
         # MD with static cert files, will not be driven
         domain = self.test_domain
         domains = [domain, 'www.%s' % domain]
-        testpath = os.path.join(env.gen_dir, 'test_920_001')
+        testpath = os.path.join(env.gen_dir, 'test_730_001')
+        env.mkpath(testpath)
         # cert that is only 10 more days valid
         creds = env.create_self_signed_cert(CertificateSpec(domains=domains),
                                             valid_from=timedelta(days=-80),
@@ -62,7 +63,8 @@ class TestStatic:
         # MD with static cert files, force driving
         domain = self.test_domain
         domains = [domain, 'www.%s' % domain]
-        testpath = os.path.join(env.gen_dir, 'test_920_001')
+        testpath = os.path.join(env.gen_dir, 'test_730_002')
+        env.mkpath(testpath)
         # cert that is only 10 more days valid
         creds = env.create_self_signed_cert(CertificateSpec(domains=domains),
                                             valid_from=timedelta(days=-80),
@@ -97,7 +99,8 @@ class TestStatic:
         # just configuring one file will not work
         domain = self.test_domain
         domains = [domain, 'www.%s' % domain]
-        testpath = os.path.join(env.gen_dir, 'test_920_001')
+        testpath = os.path.join(env.gen_dir, 'test_730_003')
+        env.mkpath(testpath)
         # cert that is only 10 more days valid
         creds = env.create_self_signed_cert(CertificateSpec(domains=domains),
                                             valid_from=timedelta(days=-80),
