@@ -4,11 +4,12 @@ import base64
 import json
 import os.path
 import re
-import time
+from datetime import timedelta
 
 import pytest
+from pyhttpd.certs import CertificateSpec
 
-from .md_conf import MDConf, MDConf
+from .md_conf import MDConf
 from .md_cert_util import MDCertUtil
 from .md_env import MDTestEnv
 
@@ -430,9 +431,12 @@ class TestDrivev2:
         print("TRACE: start testing renew window: %s" % renew_window)
         for tc in test_data_list:
             print("TRACE: create self-signed cert: %s" % tc["valid"])
-            env.create_self_signed_cert([name], tc["valid"])
-            cert2 = MDCertUtil(env.store_domain_file(name, 'pubcert.pem'))
-            assert not cert2.same_serial_as(cert1)
+            creds = env.create_self_signed_cert(CertificateSpec(domains=[name]),
+                                                valid_from=timedelta(days=tc["valid"]["notBefore"]),
+                                                valid_to=timedelta(days=tc["valid"]["notAfter"]))
+            assert creds.certificate.serial_number != cert1.get_serial_number()
+            # copy it over, assess status again
+            creds.save_cert_pem(env.store_domain_file(name, 'pubcert.pem'))
             md = env.a2md(["list", name]).json['output'][0]
             assert md["renew"] == tc["renew"], \
                 "Expected renew == {} indicator in {}, test case {}".format(tc["renew"], md, tc)
