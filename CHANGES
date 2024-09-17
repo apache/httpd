@@ -1,8 +1,8 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
- * mod_http2: improved early cleanup of streams.
-   [Stefan Eissing]
+  *) mod_http2: improved early cleanup of streams.
+     [Stefan Eissing]
 
   *) mod_proxy_fcgi: Don't re-encode SCRIPT_FILENAME when set via SetHandler.
      PR 69203. [Yann Ylavic]
@@ -18,11 +18,11 @@ Changes with Apache 2.5.1
   *) mod_rewrite: Better question mark tracking to avoid UnsafeAllow3F.
      PR 69197. [Yann Ylavic, Eric Covener]
 
- * mod_tls: update version of rustls-ffi to v0.13.0.
-   [Daniel McCarney (@cpu}]
+  *) mod_tls: update version of rustls-ffi to v0.13.0.
+     [Daniel McCarney (@cpu}]
 
- *) mod_xml2enc: Tolerate libxml2 2.12.0 and later.
-    [ttachi <tachihara AT hotmail.com>]
+  *) mod_xml2enc: Tolerate libxml2 2.12.0 and later.
+     [ttachi <tachihara AT hotmail.com>]
 
   *) mod_alias: Add AliasPreservePath directive to map the full
      path after the alias in a location. [Graham Leggett]
@@ -69,7 +69,7 @@ Changes with Apache 2.5.1
      '?' and the [QSA] flag did not have the query appended.  PR66672
      Frank Meier <frank.meier ergon.ch>
 
- *) core: On Linux, log the real thread ID in error logs.  [Joe Orton]
+  *) core: On Linux, log the real thread ID in error logs.  [Joe Orton]
 
   *) mod_http2: fixed a bug in flushing pending data on an already closed
      connection that could lead to a busy loop, preventing the HTTP/2 session
@@ -95,16 +95,16 @@ Changes with Apache 2.5.1
        The numbers are now the same with and without H2CopyFiles enabled.
      [Stefan Eissing]
 
- * mod_md:
-   - Using OCSP stapling information to trigger certificate renewals. Proposed
-     by @frasertweedale.
-   - Added directive `MDCheckInterval` to control how often the server checks
-     for detected revocations. Added proposals for configurations in the
-     README.md chapter "Revocations".
-   - OCSP stapling: accept OCSP responses without a `nextUpdate` entry which is
-     allowed in RFC 6960. Treat those as having an update interval of 12 hours.
-     Added by @frasertweedale.
-   - Adapt OpenSSL usage to changes in their API. By Yann Ylavic.
+  *) mod_md:
+     - Using OCSP stapling information to trigger certificate renewals. Proposed
+       by @frasertweedale.
+     - Added directive `MDCheckInterval` to control how often the server checks
+       for detected revocations. Added proposals for configurations in the
+       README.md chapter "Revocations".
+     - OCSP stapling: accept OCSP responses without a `nextUpdate` entry which is
+       allowed in RFC 6960. Treat those as having an update interval of 12 hours.
+       Added by @frasertweedale.
+     - Adapt OpenSSL usage to changes in their API. By Yann Ylavic.
 
   *) mod_proxy_http2: fix retry handling to not leak temporary errors.
      On detecting that that an existing connection was shutdown by the other
