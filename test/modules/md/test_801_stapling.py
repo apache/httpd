@@ -2,7 +2,9 @@
 
 import os
 import time
+from datetime import timedelta
 import pytest
+from pyhttpd.certs import CertificateSpec
 
 from .md_conf import MDConf
 from .md_env import MDTestEnv
@@ -334,12 +336,14 @@ class TestStapling:
         domains = [md]
         testpath = os.path.join(env.gen_dir, 'test_801_009')
         # cert that is 30 more days valid
-        env.create_self_signed_cert(domains, {"notBefore": -60, "notAfter": 30},
-                                        serial=801009, path=testpath)
+        creds = env.create_self_signed_cert(CertificateSpec(domains=domains),
+                                            valid_from=timedelta(days=-60),
+                                            valid_to=timedelta(days=30),
+                                            serial=801009)
         cert_file = os.path.join(testpath, 'pubcert.pem')
         pkey_file = os.path.join(testpath, 'privkey.pem')
-        assert os.path.exists(cert_file)
-        assert os.path.exists(pkey_file)
+        creds.save_cert_pem(cert_file)
+        creds.save_pkey_pem(pkey_file)
         conf = MDConf(env)
         conf.start_md(domains)
         conf.add("MDCertificateFile %s" % cert_file)

@@ -2,9 +2,10 @@
 
 import os
 import re
-import time
+from datetime import timedelta
 
 import pytest
+from pyhttpd.certs import CertificateSpec
 
 from .md_conf import MDConf
 from shutil import copyfile
@@ -165,13 +166,15 @@ Protocols h2 http/1.1 acme-tls/1
         domain = self.test_domain
         domains = [domain, 'www.%s' % domain]
         testpath = os.path.join(env.gen_dir, 'test_920_011')
-        # cert that is only 10 more days valid
-        env.create_self_signed_cert(domains, {"notBefore": -70, "notAfter": 20},
-                                    serial=920011, path=testpath)
+        # cert that is only 20 more days valid
+        creds = env.create_self_signed_cert(CertificateSpec(domains=domains),
+                                            valid_from=timedelta(days=-70),
+                                            valid_to=timedelta(days=20),
+                                            serial=920011)
         cert_file = os.path.join(testpath, 'pubcert.pem')
         pkey_file = os.path.join(testpath, 'privkey.pem')
-        assert os.path.exists(cert_file)
-        assert os.path.exists(pkey_file)
+        creds.save_cert_pem(cert_file)
+        creds.save_pkey_pem(pkey_file)
         conf = MDConf(env, std_vhosts=False, std_ports=False, text=f"""
         MDBaseServer on
         MDPortMap http:- https:{env.https_port}

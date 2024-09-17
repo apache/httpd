@@ -1,6 +1,8 @@
 import os
+from datetime import timedelta
 
 import pytest
+from pyhttpd.certs import CertificateSpec
 
 from .md_conf import MDConf
 from .md_env import MDTestEnv
@@ -30,12 +32,14 @@ class TestStatic:
         domains = [domain, 'www.%s' % domain]
         testpath = os.path.join(env.gen_dir, 'test_920_001')
         # cert that is only 10 more days valid
-        env.create_self_signed_cert(domains, {"notBefore": -80, "notAfter": 10},
-                                    serial=730001, path=testpath)
+        creds = env.create_self_signed_cert(CertificateSpec(domains=domains),
+                                            valid_from=timedelta(days=-80),
+                                            valid_to=timedelta(days=10),
+                                            serial=730001)
         cert_file = os.path.join(testpath, 'pubcert.pem')
         pkey_file = os.path.join(testpath, 'privkey.pem')
-        assert os.path.exists(cert_file)
-        assert os.path.exists(pkey_file)
+        creds.save_cert_pem(cert_file)
+        creds.save_pkey_pem(pkey_file)
         conf = MDConf(env)
         conf.start_md(domains)
         conf.add(f"MDCertificateFile {cert_file}")
@@ -60,12 +64,14 @@ class TestStatic:
         domains = [domain, 'www.%s' % domain]
         testpath = os.path.join(env.gen_dir, 'test_920_001')
         # cert that is only 10 more days valid
-        env.create_self_signed_cert(domains, {"notBefore": -80, "notAfter": 10},
-                                    serial=730001, path=testpath)
+        creds = env.create_self_signed_cert(CertificateSpec(domains=domains),
+                                            valid_from=timedelta(days=-80),
+                                            valid_to=timedelta(days=10),
+                                            serial=730001)
         cert_file = os.path.join(testpath, 'pubcert.pem')
         pkey_file = os.path.join(testpath, 'privkey.pem')
-        assert os.path.exists(cert_file)
-        assert os.path.exists(pkey_file)
+        creds.save_cert_pem(cert_file)
+        creds.save_pkey_pem(pkey_file)
         conf = MDConf(env)
         conf.start_md(domains)
         conf.add(f"MDPrivateKeys secp384r1 rsa3072")
@@ -93,13 +99,14 @@ class TestStatic:
         domains = [domain, 'www.%s' % domain]
         testpath = os.path.join(env.gen_dir, 'test_920_001')
         # cert that is only 10 more days valid
-        env.create_self_signed_cert(domains, {"notBefore": -80, "notAfter": 10},
-                                    serial=730001, path=testpath)
+        creds = env.create_self_signed_cert(CertificateSpec(domains=domains),
+                                            valid_from=timedelta(days=-80),
+                                            valid_to=timedelta(days=10),
+                                            serial=730001)
         cert_file = os.path.join(testpath, 'pubcert.pem')
         pkey_file = os.path.join(testpath, 'privkey.pem')
-        assert os.path.exists(cert_file)
-        assert os.path.exists(pkey_file)
-        
+        creds.save_cert_pem(cert_file)
+        creds.save_pkey_pem(pkey_file)
         conf = MDConf(env)
         conf.start_md(domains)
         conf.add(f"MDCertificateFile {cert_file}")

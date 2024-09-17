@@ -1194,7 +1194,7 @@ static apr_status_t run_load_staging(void *baton, apr_pool_t *p, apr_pool_t *pte
     result =  va_arg(ap, md_result_t*);
     
     if (APR_STATUS_IS_ENOENT(rv = md_load(reg->store, MD_SG_STAGING, md->name, NULL, ptemp))) {
-        md_log_perror(MD_LOG_MARK, MD_LOG_TRACE2, 0, ptemp, "%s: nothing staged", md->name);
+        md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, 0, ptemp, "%s: nothing staged", md->name);
         goto out;
     }
     
@@ -1259,7 +1259,9 @@ apr_status_t md_reg_load_stagings(md_reg_t *reg, apr_array_header_t *mds,
         }
         else if (!APR_STATUS_IS_ENOENT(rv)) {
             md_log_perror(MD_LOG_MARK, MD_LOG_ERR, rv, p, APLOGNO(10069)
-                          "%s: error loading staged set", md->name);
+                          "%s: error loading staged set, purging it", md->name);
+            md_store_purge(reg->store, p, MD_SG_STAGING, md->name);
+            md_store_purge(reg->store, p, MD_SG_CHALLENGES, md->name);
         }
     }
 
