@@ -1,2 +1,0 @@
-  *) mod_proxy_fcgi: Don't re-encode SCRIPT_FILENAME when set via SetHandler.
-     PR 69203. [Yann Ylavic]

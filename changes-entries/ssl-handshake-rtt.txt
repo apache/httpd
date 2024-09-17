@@ -1,1 +1,0 @@
-  *) mod_ssl: Add SSL_HANDSHAKE_RTT environment variable.  [csmutz]

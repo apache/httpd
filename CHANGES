@@ -1,6 +1,280 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+ * mod_http2: improved early cleanup of streams.
+   [Stefan Eissing]
+
+  *) mod_proxy_fcgi: Don't re-encode SCRIPT_FILENAME when set via SetHandler.
+     PR 69203. [Yann Ylavic]
+
+  *) mod_proxy_http2: improved error handling on connection errors while
+     response is already underway.
+     [Stefan Eissing]
+
+  *) mod_proxy: Fix canonicalisation and FCGI env (PATH_INFO, SCRIPT_NAME) for
+     "balancer:" URLs set via SetHandler, also allowing for "unix:" sockets
+     with BalancerMember(s).  PR 69168.  [Yann Ylavic]
+
+  *) mod_rewrite: Better question mark tracking to avoid UnsafeAllow3F.
+     PR 69197. [Yann Ylavic, Eric Covener]
+
+ * mod_tls: update version of rustls-ffi to v0.13.0.
+   [Daniel McCarney (@cpu}]
+
+ *) mod_xml2enc: Tolerate libxml2 2.12.0 and later.
+    [ttachi <tachihara AT hotmail.com>]
+
+  *) mod_alias: Add AliasPreservePath directive to map the full
+     path after the alias in a location. [Graham Leggett]
+
+  *) mod_rewrite, mod_proxy: mod_proxy to cononicalize rewritten [P] URLs,
+     including "unix:" ones.  PR 69235, PR 69260.  [Yann Ylavic, Ruediger Pluem]
+
+  *) mod_http2: fixed a bug that could lead to a crash in main connection
+     output handling. This occured only when the last request on a HTTP/2
+     connection had been processed and the session decided to shut down.
+     This could lead to an attempt to send a final GOAWAY while the previous
+     write was still in progress. See PR 66646.
+     [Stefan Eissing]
+
+  *) mod_proxy_http2: fix `X-Forward-Host` header to carry the correct value.
+     Fixed PR66752.
+     [Stefan Eissing]
+
+  *) mod_http2: added support for bootstrapping WebSockets via HTTP/2, as
+     described in RFC 8441. A new directive 'H2WebSockets on|off' has been
+     added. The feature is by default not enabled.
+     As also discussed in the manual, this feature should work for setups
+     using "ProxyPass backend-url upgrade=websocket" without further changes.
+     Special server modules for WebSockets will have to be adapted,
+     most likely, as the handling if IO events is different with HTTP/2.
+     HTTP/2 WebSockets are supported on platforms with native pipes. This
+     excludes Windows.
+     [Stefan Eissing]
+
+  *) mod_proxy: Fix DNS requests and connections closed before the
+     configured addressTTL.  BZ 69126.  [Yann Ylavic]
+
+  *) apxs: Fix -i in some cases where -n is not used.
+     [Jan Pazdziora <jpazdziora redhat.com>]
+
+  *) worker, event: Avoid possible hangs and crashes during shutdown of
+     child processes that fail to start their configured threads.
+     [Yann Ylavic, Eric Covener]
+
+  *) mod_ssl: Restore support for loading PKCS#11 keys via ENGINE
+     without "SSLCryptoDevice" configured.  [Joe Orton]
+
+  *) mod_rewrite: Fix a recent regression where a rule with both a trailing
+     '?' and the [QSA] flag did not have the query appended.  PR66672
+     Frank Meier <frank.meier ergon.ch>
+
+ *) core: On Linux, log the real thread ID in error logs.  [Joe Orton]
+
+  *) mod_http2: fixed a bug in flushing pending data on an already closed
+     connection that could lead to a busy loop, preventing the HTTP/2 session
+     to close down successfully. Fixed PR 66624.
+     [Stefan Eissing]
+
+  *) mod_http2: v2.0.15 with the following fixes and improvements
+     - New directive 'H2EarlyHint name value' to add headers to a response,
+       picked up already when a "103 Early Hints" response is sent. 'name' and
+       'value' must comply to the HTTP field restrictions.
+       This directive can be repeated several times and header fields of the
+       same names add. Sending a 'Link' header with 'preload' relation will
+       also cause a HTTP/2 PUSH if enabled and supported by the client.
+     - Fixed an issue where requests were not logged and accounted in a timely
+       fashion when the connection returns to "keepalive" handling, e.g. when
+       the request served was the last outstanding one.
+       This led to late appearance in access logs with wrong duration times
+       reported.
+     - Accurately report the bytes sent for a request in the '%O' Log format.
+       This addresses #203, a long outstanding issue where mod_h2 has reported
+       numbers over-eagerly from internal buffering and not what has actually
+       been placed on the connection.
+       The numbers are now the same with and without H2CopyFiles enabled.
+     [Stefan Eissing]
+
+ * mod_md:
+   - Using OCSP stapling information to trigger certificate renewals. Proposed
+     by @frasertweedale.
+   - Added directive `MDCheckInterval` to control how often the server checks
+     for detected revocations. Added proposals for configurations in the
+     README.md chapter "Revocations".
+   - OCSP stapling: accept OCSP responses without a `nextUpdate` entry which is
+     allowed in RFC 6960. Treat those as having an update interval of 12 hours.
+     Added by @frasertweedale.
+   - Adapt OpenSSL usage to changes in their API. By Yann Ylavic.
+
+  *) mod_proxy_http2: fix retry handling to not leak temporary errors.
+     On detecting that that an existing connection was shutdown by the other
+     side, a 503 response leaked even though the request was retried on a
+     fresh connection.
+     [Stefan Eissing]
+
+  *) mod_rewrite: Add server directory to include path as mod_rewrite requires
+     test_char.h. PR 66571 [Valeria Petrov <valeria.petrov@spinetix.com>]
+
+  *) Add an option to specify a source address. PR32524
+     [Daniel Rench <gauze omnimental tmetic com>]
+
+  *) http/1.1: For a chunked response body, ensure the last-chunk
+     terminator is flushed if necessary. [Joe Orton]
+
+  *) mod_rewrite: Don't require [UNC] flag to preserve a leading //
+     added by applying the perdir prefix to the substitution.
+     [Ruediger Pluem, Eric Covener]
+
+  *) mod_http2: new directive `H2ProxyRequests on|off` to enable handling
+     of HTTP/2 requests in a forward proxy configuration.
+     General forward proxying is enabled via `ProxyRequests`. If the
+     HTTP/2 protocol is also enabled for such a server/host, this new
+     directive is needed in addition.
+     [Stefan Eissing]
+
+  *) core: add `final_resp_passed` flag to request_rec to allow
+     ap_die() to judge if it can send out a response. Bump mmn.
+     Enable test cases that check errors during response body to
+     appear as error on client side.
+     [Stefan Eissing]
+
+  *) mod_ldap: HTML-escape data in the ldap-status handler.
+     [Eric Covener, Chamal De Silva]
+
+  *) htcacheclean: In -a/-A mode, list all files per subdirectory
+     rather than only one. PR 65091.
+     [Artem Egorenkov <aegorenkov.91 gmail.com>]
+
+  *) mod_proxy: In case that AllowEncodedSlashes is set to NoDecode do not
+     fail on literal '%' when doing the encoding of the backend URL.
+     PR 66580 [Ruediger Pluem]
+
+  *) mpm_worker: Fix possible warning (AH00045) about children processes not
+     terminating timely.  [Yann Ylavic]
+
+ * mod_proxy_http2: fixed using the wrong "bucket_alloc" from the backend
+   connection when sending data on the frontend one. This caused crashes
+   or infinite loops in rare situations.
+ * mod_proxy_http2: fixed a bug in retry/response handling that could lead
+   to wrong status codes or HTTP messages send at the end of response bodies
+   exceeding the announced content-length.
+ * mod_proxy_http2: fix retry handling to not leak temporary errors.
+   On detecting that that an existing connection was shutdown by the other
+   side, a 503 response leaked even though the request was retried on a
+   fresh connection.
+ * mod_http2: fixed a bug that did cleanup of consumed and pending buckets in
+   the wrong order when a bucket_beam was destroyed.
+   [Stefan Eissing]
+
+  *) mod_ssl: Add support for loading certs/keys from pkcs11: URIs
+     via OpenSSL 3.x providers.  [Ingo Franzki <ifranzki linux.ibm.com>]
+
+  *) mod_proxy: Allow to set a TTL for how long DNS resolutions to backend
+     systems are cached. [Yann Ylavic]
+
+  *) mod_http2: v2.0.26 with the following fixes:
+     - Fixed `Date` header on requests upgraded from HTTP/1.1 (h2c). Fixes
+       <https://github.com/icing/mod_h2/issues/272>.
+     - Fixed small memory leak in h2 header bucket free. Thanks to
+       Michael Kaufmann for finding this and providing the fix.
+
+  *) mod_ssl: Restore SSL dumping on trace7 loglevel with OpenSSL >= 3.0.
+     [Ruediger Pluem, Yann Ylavic]
+
+  *) mod_http2: avoid double chunked-encoding on internal redirects.
+     PR 66597 [Yann Ylavic, Stefan Eissing]
+
+  *) mod_cgi/mod_cgid: Reject CGI output with a Transfer-Encoding
+     header to avoid unexpected or corrupted responses.  PR 68970.
+     [Joe Orton]
+
+  *) Windows: Restore the ability to "Include" configuration files on UNC
+     paths. PR69313 [Eric Covener]
+
+  *) mod_http2: Fix reporting of `Total Accesses` in server-status to not count
+     HTTP/2 requests twice. Fixes PR 66801.
+     [Stefan Eissing]
+
+   *) mod_slotmem_shm: Use ap_os_is_path_absolute() to make it portable.
+      [Jean-Frederic Clere]
+
+  *) Optimise handling LDAP authorization where LDAP was not used
+     previously for LDAP authentication. [Yann Ylavic]
+
+  *) mod_macro: Return an error if the expanded line would exceed the
+     maximum line length.  PR 69258.
+     [Marc Stern <marc.stern approach-cyber.com>]
+
+ * mod_http2: fixed a bug in handling of stream timeouts.
+   [Stefan Eissing]
+
+  *) mod_systemd: Log the SELinux context at startup if available and
+     enabled.  [Joe Orton]
+
+  *) mod_proxy: Avoid AH01059 parsing error for SetHandler "unix:" URLs.
+     PR 69160 [Yann Ylavic]
+
+  *) mod_dav_fs: Add DavLockDBType directive.  [Joe Orton]
+
+  *) mod_ssl: Disable the OpenSSL ENGINE API when OPENSSL_NO_ENGINE is set.
+     Allow for "SSLCryptoDevice builtin" if the ENGINE API is not available,
+     notably with OpenSSL >= 3.  PR 68080.  [ Yann Ylavic, Joe Orton ]
+
+  *) mod_headers: Fix a possible infinite recursion with the edit* action and
+     empty matches.  [Yann Ylavic]
+
+  *) mod_tls: updating to rustls-ffi version 0.9.2 or higher.
+     Checking in configure for proper version installed. Code
+     fixes for changed clienthello member name.
+     [Stefan Eissing]
+
+ * mod_md:
+   - New directive `MDMatchNames all|servernames` to allow more control over how
+     MDomains are matched to VirtualHosts.
+   - New directive `MDChallengeDns01Version`. Setting this to `2` will provide
+     the command also with the challenge value on `teardown` invocation. In version
+     1, the default, only the `setup` invocation gets this parameter.
+     Refs #312. Thanks to @domrim for the idea.
+   - For Managed Domain in "manual" mode, the checks if all used ServerName and
+     ServerAlias are part of the MDomain now reports a warning instead of an error
+     (AH10040) when not all names are present.
+   - MDChallengeDns01 can now be configured for individual domains.
+     Using PR from Jérôme Billiras (@bilhackmac) and adding test case and fixing proper working
+   - Fixed a bug found by Jérôme Billiras (@bilhackmac) that caused the challenge
+     teardown not being invoked as it should.
+
+  *) mod_ssl: Fix a regression that causes the default DH parameters for a key
+     no longer set and thus effectively disabling DH ciphers when no explicit
+     DH parameters are set. PR 68863 [Ruediger Pluem]
+
+  *) mod_dav: Update redirect-carefully example BrowserMatch config
+     to match more recent client versions.  PR 66148, 67039.
+     [Michal Maloszewski <michal.maloszewski canonical.com>,
+      Romain Tartière <romain blogreen.org>]
+
+  *) mod_proxy: Avoid AH01059 parsing error for SetHandler "unix:" URLs
+     in <Location> (incomplete fix in 2.4.62). PR 69160. [Yann Ylavic]
+
+  *) mod_ssl: Add SSL_HANDSHAKE_RTT environment variable.  [csmutz]
+
+ * mod_md: fixed passing of the server environment variables to programs
+   started via MDMessageCmd and MDChallengeDns01 on *nix system.
+   See <https://github.com/icing/mod_md/issues/319>.
+   [Stefan Eissing]
+
+  *) mod_proxy: Honor parameters of ProxyPassMatch workers with substitution
+     in the host name or port. PR 69233. [Yann Ylavic]
+
+ * mod_md: Fix the reported "until" validity of a certificate in the status
+   handler. [Rainer Jung]
+   Fix possible NULL deref when logging the error that an authentication
+   resource could not be retrieved from the ACME server. [Stefan Eissing]
+
+  *) mod_ssl: Improve compatibility with OpenSSL 3, fix build warnings about
+     deprecated ENGINE_ API, honor OPENSSL_API_COMPAT setting while defaulting
+     to compatibitily with version 1.1.1 (including ENGINEs / SSLCryptoDevice).
+     [ Yann Ylavic ]
+
   *) core: Add "multipathtcp" Listen option. PR 69292.
      [Anthony Doeraene <anthony.doeraene hotmail.com>]
 

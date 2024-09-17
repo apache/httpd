@@ -1,3 +1,0 @@
-  *) mod_alias: Add AliasPreservePath directive to map the full
-     path after the alias in a location. [Graham Leggett]
-

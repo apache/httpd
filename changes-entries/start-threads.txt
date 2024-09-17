@@ -1,3 +1,0 @@
-  *) worker, event: Avoid possible hangs and crashes during shutdown of
-     child processes that fail to start their configured threads.
-     [Yann Ylavic, Eric Covener]

@@ -1,2 +1,0 @@
-  *) mod_rewrite, mod_proxy: mod_proxy to cononicalize rewritten [P] URLs,
-     including "unix:" ones.  PR 69235, PR 69260.  [Yann Ylavic, Ruediger Pluem]

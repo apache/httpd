@@ -1,2 +1,0 @@
-  *) Windows: Restore the ability to "Include" configuration files on UNC
-     paths. PR69313 [Eric Covener]

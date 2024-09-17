@@ -1,1 +1,0 @@
-  *) mod_dav_fs: Add DavLockDBType directive.  [Joe Orton]

@@ -1,4 +1,0 @@
-  *) mod_http2: fixed a bug in flushing pending data on an already closed
-     connection that could lead to a busy loop, preventing the HTTP/2 session
-     to close down successfully. Fixed PR 66624.
-     [Stefan Eissing]
