@@ -2917,7 +2917,7 @@ features are added to OpenSSL.</p>
 depends on the OpenSSL version being used for <module>mod_ssl</module>
 (at least version 1.0.2 is required). For a list of supported command
 names, see the section <em>Supported configuration file commands</em> in the
-<a href="http://www.openssl.org/docs/man1.0.2/ssl/SSL_CONF_cmd.html#SUPPORTED-CONFIGURATION-FILE-COMMANDS">SSL_CONF_cmd(3)</a> manual page for OpenSSL.</p>
+<a href="https://docs.openssl.org/3.0/man3/SSL_CONF_cmd/#supported-command-line-commands">SSL_CONF_cmd(3)</a> manual page for OpenSSL.</p>
 
 <example><title>Examples</title>
 <highlight language="config">
