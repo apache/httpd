@@ -161,11 +161,11 @@ SSLCipherSuite ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-E
 <section id="pq">
 <title>How can I create an SSL server which supports post-quantum key
 exchange methods?</title>
-    <p>Install <a href="https://github.com/open-quantum-safe/liboqs#linux-and-mac">liboqs</a>
-    export <code>liboqs_DIR</code>and install
+    <p>Install <a href="https://github.com/open-quantum-safe/liboqs#linux-and-mac">liboqs</a>,
+    export <code>liboqs_DIR</code>, and install
     <a href="https://github.com/open-quantum-safe/oqs-provider?tab=readme-ov-file#basic-steps">oqs-provider</a>.
     Next, activate <a href="https://github.com/open-quantum-safe/oqs-provider/blob/main/USAGE.md#configuration-file">oqs-provider</a>
-    and <a href="https://github.com/open-quantum-safe/oqs-provider/blob/main/USAGE.md#configuration-parameter">KEM groups</a>
+    and the <a href="https://github.com/open-quantum-safe/oqs-provider/blob/main/USAGE.md#configuration-parameter">KEM groups</a>
     you wish to accept in <code>openssl.cnf</code>. Only <code>x25519_kyber768</code>
     is currently supported by browsers. Now, add the following to your SSL
     configuration:</p>
