@@ -113,11 +113,11 @@ compatibility variables.</p>
 <tr><td><code>SSL_CLIENTHELLO_VERSION</code></td>       <td>string</td>    <td>Version field (legacy) from ClientHello as four hex encoded characters</td></tr>
 <tr><td><code>SSL_CLIENTHELLO_CIPHERS</code></td>       <td>string</td>    <td>Cipher Suites from ClientHello as four hex encoded characters per item</td></tr>
 <tr><td><code>SSL_CLIENTHELLO_EXTENSIONS</code></td>    <td>string</td>    <td>Extension IDs from ClientHello as four hex encoded characters per item</td></tr>
-<tr><td><code>SSL_CLIENTHELLO_GROUPS</code></td>        <td>string</td>    <td>Value of Supported Groups Extension (10) from ClientHello as four hex encoded characters per item</td></tr>
-<tr><td><code>SSL_CLIENTHELLO_EC_FORMATS</code></td>    <td>string</td>    <td>Value of EC Point Formats Extension (11) from ClientHello as two hex encoded characters per item</td></tr>
-
- 
- 
+<tr><td><code>SSL_CLIENTHELLO_GROUPS</code></td>        <td>string</td>    <td>Value of Supported Groups extension (10) from ClientHello as four hex encoded characters per item</td></tr>
+<tr><td><code>SSL_CLIENTHELLO_EC_FORMATS</code></td>    <td>string</td>    <td>Value of EC Point Formats extension (11) from ClientHello as two hex encoded characters per item</td></tr>
+<tr><td><code>SSL_CLIENTHELLO_SIG_ALGOS</code></td>     <td>string</td>    <td>Value of Signature Algorithms extension (13) from ClientHello as four hex encoded characters per item</td></tr>
+<tr><td><code>SSL_CLIENTHELLO_ALPN</code></td>          <td>string</td>    <td>Value of ALPN extension (16) from ClientHello as hex encoded string including leading string lengths</td></tr>
+<tr><td><code>SSL_CLIENTHELLO_VERSIONS</code></td>      <td>string</td>    <td>Value of Supported Versions extension (43) from ClientHello as four hex encoded characters per item</td></tr>
 </table>
 
 <p><em>x509</em> specifies a component of an X.509 DN; one of
