@@ -2867,6 +2867,20 @@ be protected with file permissions similar to those used for
 </directivesynopsis>
 
 <directivesynopsis>
+<name>SSLClientHelloVars</name>
+<description>Enable collection of ClientHello variables</description>
+<syntax>SSLClientHelloVars on|off</syntax>
+<default>SSLClientHelloVars off</default>
+<contextlist><context>server config</context>
+<context>virtual host</context></contextlist>
+<compatibility>Available in httpd 2.5.x and later, if using OpenSSL 1.1.1 or later</compatibility>
+
+<usage>
+<p>This directive enables collection of ClientHello data during the handshake that is retained for the length of the connection so it can be exposed as <code>SSL_CLIENTHELLLO_*</code> environment variables for requests depending upon the <code>StdEnvVars</code> setting.</p>
+</usage> 
+</directivesynopsis>
+ 
+<directivesynopsis>
 <name>SSLCompression</name>
 <description>Enable compression on the SSL level</description>
 <syntax>SSLCompression on|off</syntax>
