@@ -31,7 +31,7 @@
 </div>
 
 
-    <p>Apache HTTPD supporte la négociation de
+    <p>Apache HTTPD prend en charge la négociation de
     contenu telle qu'elle est décrite
     dans la spécification HTTP/1.1. Il peut choisir la meilleure représentation
     d'une ressource en fonction des préférences du navigateur pour ce qui
@@ -63,7 +63,7 @@ conventions de nommage</a></li>
     différents types de média, ou une combinaison des deux.
     Pour faire le meilleur choix, on peut fournir à l'utilisateur une page
     d'index, et le laisser choisir. Cependant, le serveur peut souvent faire
-    ce choix automatiquement. Ceci est possible car les navigateurs peuvent
+    ce choix automatiquement. Cela est possible car les navigateurs peuvent
     envoyer des informations sur les
     représentations qu'ils préfèrent à l'intérieur de chaque requête.
     Par exemple, un navigateur peut indiquer
@@ -81,7 +81,7 @@ conventions de nommage</a></li>
     <p>À titre d'exemple d'une requête plus complexe, ce navigateur a été
     configuré pour accepter le français et l'anglais, avec une préférence pour
     le français, et accepter différents types de média, avec une préférence
-    pour HTML par rapport à au texte plat ("plain text") ou autres types de fichiers texte, et
+    pour HTML par rapport à au texte plat («&nbsp;plain text&nbsp;») ou autres types de fichiers texte, et
     avec une préférence pour GIF ou JPEG par rapport à tout autre type de
     média, mais autorisant tout autre type de média en dernier ressort :</p>
 
@@ -90,24 +90,24 @@ conventions de nommage</a></li>
   Accept: text/html; q=1.0, text/*; q=0.8, image/gif; q=0.6, image/jpeg; q=0.6, image/*; q=0.5, */*; q=0.1
 </code></p></div>
 
-    <p>httpd supporte la négociation de contenu "server driven" (telle qu'elle
+    <p>httpd prend en charge la négociation de contenu «&nbsp;server driven&nbsp;» (telle qu'elle
     est définie dans la spécification HTTP/1.1), où c'est le serveur qui
-    décide quelle est la meilleure représentation à retourner pour la ressource
-    demandée. Il supporte entièrement les en-têtes de requête
+    décide quelle est la meilleure représentation à renvoyer pour la ressource
+    demandée. Il prend entièrement en charge les en-têtes de requête
     <code>Accept</code>, <code>Accept-Language</code>,
     <code>Accept-Charset</code> et <code>Accept-Encoding</code>.
-    httpd supporte aussi la négociation de contenu transparente, qui est un
+    httpd prend aussi en charge la négociation de contenu transparente, qui est un
     protocole de négociation expérimental défini dans les RFC 2295 et 2296.
-    Il ne supporte pas la négociation de fonctionnalité (feature negotiation)
+    Il ne prend pas en charge la négociation de fonctionnalité (feature negotiation)
     telle qu'elle est définie dans ces RFCs.</p>
 
     <p>Une <strong>ressource</strong> est une entité conceptuelle identifiée
-    par une URI (RFC 2396). Un serveur HTTP comme le serveur HTTP Apache
+    par un URI (RFC 2396). Un serveur HTTP comme le serveur HTTP Apache
     propose l'accès à des
     <strong>représentations</strong> de la ressource à l'intérieur de son
     espace de nommage, chaque représentation étant composée d'une séquence
     d'octets avec la définition d'un type de media, d'un jeu de caractères,
-    d'un encodage, etc... A un instant donné, chaque ressource peut être
+    d'un encodage, etc. À un instant donné, chaque ressource peut être
     associée avec zéro, une ou plusieurs représentations. Si plusieurs
     représentations sont disponibles, la ressource est qualifiée de
     <strong>négociable</strong> et chacune de ses représentations se nomme
@@ -118,16 +118,16 @@ conventions de nommage</a></li>
 <div class="section">
 <h2><a name="negotiation" id="negotiation">La négociation avec httpd</a> <a title="Lien permanent" href="#negotiation" class="permalink">&para;</a></h2>
 
-    <p>Afin de négocier une ressource, on doit fournir au serveur des
+    <p>Pour négocier une ressource, on doit fournir au serveur des
     informations à propos de chacune des variantes. Il y a deux manières
-    d'accomplir ceci :</p>
+    d'y parvenir :</p>
 
     <ul>
-      <li>Utiliser une liste de correspondances de type ("type-map") (<em>c'est à dire</em>
+      <li>Utiliser une liste de correspondances de type («&nbsp;type-map&nbsp;») (<em>c'est à dire</em>
       un fichier <code>*.var</code>) qui nomme explicitement les fichiers
       contenant les variantes, ou</li>
 
-      <li>Utiliser une recherche "multivues", où le serveur effectue une
+      <li>Utiliser une recherche «&nbsp;multivues&nbsp;», où le serveur effectue une
       recherche de correspondance sur un motif de nom de fichier implicite et
       fait son choix parmi les différents résultats.</li>
     </ul>
@@ -141,7 +141,7 @@ conventions de nommage</a></li>
     <a class="glossarylink" href="./glossary.html#type mime" title="voir glossaire">type MIME</a>
     <code>application/x-type-map</code>). Notez que pour utiliser cette
     fonctionnalité, vous devez, dans le fichier de configuration, définir un
-    gestionnaire qui associe un suffixe de fichier à une <code>type-map</code>;
+    gestionnaire qui associe un suffixe de fichier à une <code>type-map</code>,
     ce qui se fait simplement en ajoutant</p>
 
 <pre class="prettyprint lang-config">AddHandler type-map .var</pre>
@@ -156,13 +156,13 @@ conventions de nommage</a></li>
     <code>foo.var</code>.</p>
 
     <p>Ce fichier doit comporter une entrée pour chaque variante
-    disponible; chaque entrée consiste en une ligne contiguë d'en-têtes au
-    format HTTP. les entrées sont séparées par des lignes vides. Les lignes
+    disponible ; chaque entrée consiste en une ligne contiguë d'en-têtes au
+    format HTTP. Les entrées sont séparées par des lignes vides. Les lignes
     vides à l'intérieur d'une entrée sont interdites. Par convention, le
     fichier de correspondances de types débute par une entrée concernant l'entité
     considérée dans son ensemble (bien que ce ne soit pas obligatoire, et
     ignoré si présent). Un exemple de fichier de
-    correspondance de types est fourni
+    correspondances de types est fourni
     ci-dessous.</p>
 
     <p>Les URIs de ce fichier sont relatifs à la localisation du fichier
@@ -187,7 +187,7 @@ conventions de nommage</a></li>
     <p>Notez aussi qu'un fichier de correspondances de types prend le pas sur
     les extensions de noms de fichiers, même si les Multivues sont activées.
     Si les variantes sont de qualités différentes, on doit l'indiquer
-    à l'aide du paramètre "qs" à la suite du type de média, comme pour cette
+    à l'aide du paramètre «&nbsp;qs&nbsp;» à la suite du type de média, comme pour cette
     image
     (disponible aux formats JPEG, GIF, ou ASCII-art) : </p>
 
@@ -212,7 +212,7 @@ conventions de nommage</a></li>
     compte des capacités du client. Par exemple, un fichier JPEG possède
     en général une qualité supérieure à celle d'un fichier ASCII s'il
     représente une photographie. Cependant, si la ressource représentée est
-    à un ASCII art original, la représentation ASCII sera de meilleure qualité
+    un ASCII art original, la représentation ASCII sera de meilleure qualité
     que la représentation JPEG. Ainsi une valeur de qs est associée à une
     variante en fonction de la nature de la ressource qu'elle représente.</p>
 
@@ -230,13 +230,13 @@ conventions de nommage</a></li>
     <code>httpd.conf</code>, ou (si <code class="directive"><a href="./mod/core.html#allowoverride">AllowOverride</a></code> est correctement positionnée) dans
     des fichiers
     <code>.htaccess</code>. Notez que <code>Options All</code>
-    n'active pas <code>MultiViews</code>; vous devez activer cette option en
+    n'active pas <code>MultiViews</code> ; vous devez activer cette option en
     la nommant explicitement.</p>
 
     <p>L'effet de <code>MultiViews</code> est le suivant : si le serveur reçoit
     une requête pour <code>/tel/répertoire/foo</code>, si
     <code>MultiViews</code> est activée pour
-    <code>/tel/répertoire</code>, et si
+    <code>/tel/répertoire</code> et si
     <code>/tel/répertoire/foo</code> n'existe <em>pas</em>, le serveur parcourt
     le répertoire à la recherche de fichiers nommés foo.*, et simule
     littéralement une correspondance de types (type map) qui liste tous ces
@@ -252,15 +252,15 @@ conventions de nommage</a></li>
 
     <p>le serveur va choisir entre <code>index.html</code>
     et <code>index.html3</code> si les deux fichiers sont présents. Si aucun
-    n'est présent, mais <code>index.cgi</code> existe,
+    n'est présent, alors qu’<code>index.cgi</code> existe,
     le serveur l'exécutera.</p>
 
     <p>Si, parcequ'elle n'est pas reconnue par <code>mod_mime</code>,
     l'extension d'un des fichiers du répertoire ne permet pas de
     déterminer son jeu de caractères, son type de contenu, son langage, ou son
-    encodage,  alors
+    encodage,
     le résultat dépendra de la définition de la directive <code class="directive"><a href="./mod/mod_mime.html#multiviewsmatch">MultiViewsMatch</a></code>. Cette directive détermine
-    si les gestionnaires (handlers), les filtres, et autres types d'extensions
+    si les gestionnaires (handlers), les filtres et autres types d'extensions
     peuvent participer à la négociation MultiVues.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
@@ -269,8 +269,8 @@ conventions de nommage</a></li>
 
     <p>Une fois obtenue la liste des variantes pour une ressource donnée,
     httpd dispose de deux méthodes pour choisir la meilleure variante à
-    retourner, s'il y a lieu, soit à partir d'un fichier de
-    correspondances de types, soit en se basant sur les noms de fichiers du
+    renvoyer, s'il y a lieu, soit à partir d'un fichier de
+    correspondances de types, soit en se basant sur les noms de fichier du
     répertoire. Il n'est pas nécessaire de connaître en détails comment la
     négociation fonctionne réellement pour pouvoir utiliser les fonctionnalités
     de négociation de contenu de httpd. La suite de ce document explique
@@ -281,10 +281,10 @@ conventions de nommage</a></li>
 
     <ol>
       <li><strong>La négociation effectuée par le serveur selon l'algorithme
-      de httpd</strong> est normalement utilisée. l'algorithme de
+      de httpd</strong> est utilisée par défaut. L'algorithme de
       httpd est
       expliqué plus en détails ci-dessous. Quand cet algorithme est utilisé,
-      httpd peut parfois "bricoler" le facteur de qualité (qs) d'une dimension
+      httpd peut parfois «&nbsp;bricoler&nbsp;» le facteur de qualité (qs) d'une dimension
       particulière afin d'obtenir un meilleur résultat.
       La manière dont httpd peut modifier les facteurs de qualité est
       expliquée plus en détails ci-dessous.</li>
@@ -292,11 +292,11 @@ conventions de nommage</a></li>
       <li><strong>La négociation de contenu transparente</strong> est utilisée
       quand le navigateur le demande explicitement selon le mécanisme défini
       dans la RFC 2295. Cette méthode de négociation donne au navigateur le
-      contrôle total du choix de la meilleure variante; le résultat dépend
+      contrôle total du choix de la meilleure variante ; le résultat dépend
       cependant de la spécificité des algorithmes utilisés par le navigateur.
       Au cours du processus de négociation transparente, le navigateur peut
-      demander à httpd d'exécuter l'"algorithme de sélection de variante à
-      distance" défini dans la RFC 2296.</li>
+      demander à httpd d'exécuter l'«&nbsp;algorithme de sélection de variante à
+      distance&nbsp;» défini dans la RFC 2296.</li>
     </ol>
 
 <h3><a name="dimensions" id="dimensions">Les dimensions de la négociation</a></h3>
@@ -315,7 +315,7 @@ conventions de nommage</a></li>
         <td>Le navigateur affiche ses préférences à l'aide du champ d'en-tête
 	<code>Accept</code>. Chaque type de média peut se voir associé un facteur de
 	qualité. La description de la variante peut aussi avoir un facteur de
-	qualité (le paramètre "qs").</td>
+	qualité (le paramètre «&nbsp;qs&nbsp;»).</td>
       </tr>
 
       <tr valign="top">
@@ -328,7 +328,7 @@ conventions de nommage</a></li>
       </tr>
 
       <tr valign="top">
-        <td>Encoding</td>
+        <td>Encodage</td>
 
         <td>Le navigateur affiche ses préférences à l'aide du champ d'en-tête
         <code>Accept-Encoding</code>. Chaque encodage peut se voir associé un facteur de
@@ -336,7 +336,7 @@ conventions de nommage</a></li>
       </tr>
 
       <tr valign="top">
-        <td>Charset</td>
+        <td>Jeu de caractères</td>
 
         <td>Le navigateur affiche ses préférences à l'aide du champ d'en-tête
         <code>Accept-Charset</code>. Chaque jeu de caractère peut se voir associé un facteur de
@@ -349,8 +349,8 @@ conventions de nommage</a></li>
 <h3><a name="algorithm" id="algorithm">L'algorithme de négociation de
 httpd</a></h3>
 
-    <p>httpd peut utiliser l'algorithme suivant pour choisir la "meilleure"
-    variante (s'il y en a une) à retourner au navigateur. Cet algorithme n'est pas
+    <p>httpd peut utiliser l'algorithme suivant pour choisir la «&nbsp;meilleure&nbsp;»
+    variante (s'il y en a une) à renvoyer au navigateur. Cet algorithme n'est pas
     configurable. Il fonctionne comme suit :</p>
 
     <ol>
@@ -361,7 +361,7 @@ httpd</a></h3>
       S'il ne reste plus de variante, aller à l'étape 4.</li>
 
       <li>
-        Choisir la "meilleure" variante par élimination. Chacun des tests
+        Choisir la «&nbsp;meilleure&nbsp;» variante par élimination. Chacun des tests
 	suivants est effectué dans cet ordre. Toute variante non sélectionnée
 	à l'issue d'un test est éliminée. Après chaque test, s'il reste une
 	seule variante, choisir cette dernière comme celle qui correspond le
@@ -370,7 +370,7 @@ httpd</a></h3>
 
         <ol>
           <li>Multiplier le facteur de qualité de l'en-tête
-	  <code>Accept</code> par le facteur de qualité "qs" pour le type de
+	  <code>Accept</code> par le facteur de qualité «&nbsp;qs&nbsp;» pour le type de
 	  média de ces variantes, et choisir la variante qui possède la valeur
 	  la plus importante.</li>
 
@@ -383,18 +383,18 @@ httpd</a></h3>
 	  <code>LanguagePriority</code> (si elle existe).</li>
 
           <li>Sélectionner les variantes possédant le paramètre de média
-	  "level" le plus élevé (utilisé pour préciser la version des types de
+	  «&nbsp;level&nbsp;» le plus élevé (utilisé pour préciser la version des types de
 	  média text/html).</li>
 
           <li>Sélectionner les variantes possédant le paramètre de média
-	  "charset" (jeu de caractères) qui correspond le mieux, en se basant
+	  «&nbsp;charset&nbsp;» (jeu de caractères) qui correspond le mieux, en se basant
 	  sur la ligne d'en-tête <code>Accept-Charset</code> . Le jeu de
 	  caractères ISO-8859-1 est acceptable sauf s'il est explicitement
 	  exclus. Les variantes avec un type de média <code>text/*</code>
           mais non explicitement associées avec un jeu de caractères
 	  particulier sont supposées être en ISO-8859-1.</li>
 
-          <li>Sélectionner les variantes dont le paramètre de média "charset"
+          <li>Sélectionner les variantes dont le paramètre de média «&nbsp;charset&nbsp;»
 	  associé n'est <em>pas</em> ISO-8859-1. S'il n'en existe pas,
 	  sélectionner toutes les variantes.</li>
 
@@ -417,16 +417,16 @@ httpd</a></h3>
       </li>
 
       <li>L'algorithme a maintenant sélectionné une variante considérée comme
-      la "meilleure", il la retourne donc au client en guise de réponse.
+      la «&nbsp;meilleure&nbsp;», il la renvoie donc au client en guise de réponse.
       L'en-tête HTTP <code>Vary</code> de la réponse est renseigné de façon à
       indiquer les dimensions de la négociation (les navigateurs et les caches
       peuvent utiliser cette information lors de la mise en cache de la
       ressource).  Travail terminé.</li>
 
       <li>Le passage par cette étape signifie qu'aucune variante n'a été
-      sélectionnée (parcequ'aucune n'est acceptable pour le navigateur).
-      Envoyer une réponse avec un code de statut 406 (qui signifie "Aucune
-      représentation acceptable") et un corps comportant un document HTML qui
+      sélectionnée (parce qu'aucune n'est acceptable pour le navigateur).
+      Envoyer une réponse avec un code de statut 406 (qui signifie «&nbsp;Aucune
+      représentation acceptable&nbsp;») et un corps comportant un document HTML qui
       affiche les variantes disponibles. Renseigner aussi l'en-tête HTTP
       <code>Vary</code> de façon à indiquer les dimensions de la variante.</li>
     </ol>
@@ -437,7 +437,7 @@ httpd</a></h3>
 
     <p>Parfois httpd modifie les valeurs de qualité par rapport à celles qui
     découleraient d'une stricte interprétation de l'algorithme de négociation
-    de httpd ci-dessus, ceci pour améliorer les résultats de l'algorithme pour
+    de httpd ci-dessus, cela afin d’améliorer les résultats de l'algorithme pour
     les navigateurs qui envoient des informations incomplètes ou inappropriées.
     Certains des navigateurs les plus populaires envoient des informations dans
     l'en-tête <code>Accept</code> qui, sans ce traitement, provoqueraient la
@@ -449,13 +449,13 @@ httpd</a></h3>
 
     <p>L'en-tête de requête <code>Accept:</code> indique les types de média
     souhaités. Il peut aussi contenir des types de média avec caractères
-    génériques, comme "image/*" ou "*/*" où * correspond à n'importe quelle
+    génériques, comme «&nbsp;image/*&nbsp;» ou «&nbsp;*/*&nbsp;» où * correspond à n'importe quelle
     chaîne de caractères. Ainsi une requête contenant :</p>
 
 <div class="example"><p><code>Accept: image/*, */*</code></p></div>
 
     <p>indiquerait que tout type de média est acceptable, avec une préférence
-    pour les types commençant par "image/".
+    pour les types commençant par «&nbsp;image/&nbsp;».
     Certains navigateurs ajoutent par défaut des types de média avec caractères
     génériques aux types explicitement nommés qu'ils peuvent gérer.
     Par exemple :</p>
@@ -463,7 +463,7 @@ httpd</a></h3>
 <div class="example"><p><code>
   Accept: text/html, text/plain, image/gif, image/jpeg, */*
 </code></p></div>
-    <p>Ceci indique que les types explicitement listés sont préférés, mais
+    <p>Cela indique que les types explicitement listés sont préférés, mais
     qu'une représentation avec un type différent de ces derniers conviendra
     aussi.  Les valeurs de qualités explicites,
     afin de préciser ce que veut vraiment le navigateur, s'utilisent
@@ -474,15 +474,16 @@ httpd</a></h3>
     <p>Les types explicites n'ont pas de facteur de qualité, la valeur par
     défaut de leur préférence est donc de 1.0 (la plus haute). Le type avec
     caractères génériques */* se voit attribuer une préférence basse de 0.01,
-    si bien que les types autres que ceux explicitement listés ne seront retournés
+    si bien que les types autres que ceux explicitement listés ne seront
+    renvoyés
     que s'il n'existe pas de variante correspondant à un type explicitement
     listé.</p>
 
-    <p>Si l'en-tête <code>Accept:</code> ne contient <em>pas</em> aucun
+    <p>Si l'en-tête <code>Accept:</code> ne contient <em>pas</em> de
     facteur de qualité, httpd positionne la valeur de qualité de
-    "*/*", si present, à 0.01 pour simuler l'effet désiré. Il positionne aussi
+    «&nbsp;*/*&nbsp;», si présent, à 0.01 pour simuler l'effet désiré. Il positionne aussi
     la valeur de qualité des types avec caractères génériques au format
-    "type/*" à 0.02 (ils sont donc préférés à ceux correspondant à "*/*"). Si
+    «&nbsp;type/*&nbsp;» à 0.02 (ils sont donc préférés à ceux correspondant à «&nbsp;*/*&nbsp;»). Si
     un type de média dans l'en-tête <code>Accept:</code> contient un facteur de
     qualité, ces valeurs spéciales ne seront <em>pas</em> appliquées, de façon
     à ce que les requêtes de navigateurs qui envoient les informations
@@ -497,11 +498,11 @@ langage</a></h3>
     quand la négociation ne trouve aucun langage correspondant.</p>
 
     <p>Quand un client demande une page sur votre serveur, si ce dernier ne
-    parvient pas à trouver une page dont la langue corresponde à l'en-tête
+    parvient pas à trouver une page dont la langue correspond à l'en-tête
     <code>Accept-language</code> envoyé par le navigateur, il enverra au client
-    une réponse "Aucune variante acceptable" ou "Plusieurs choix possibles".
+    une réponse «&nbsp;Aucune variante acceptable&nbsp;» ou «&nbsp;Plusieurs choix possibles&nbsp;».
     Pour éviter ces
-    messages d'erreur, il est possible de configurer httpd de façon à ce que,
+    messages d'erreur, il est possible de configurer httpd de façon que,
     dans ces cas, il ignore l'en-tête <code>Accept-language</code> et fournisse
     tout de même un document, même s'il ne correspond pas exactement à la
     demande explicite du client. La directive <code class="directive"><a href="./mod/mod_negotiation.html#forcelanguagepriority">ForceLanguagePriority</a></code>
@@ -514,26 +515,26 @@ langage</a></h3>
     trouvée. Par exemple, si un client demande des documents possédant le
     langage <code>en-GB</code>, c'est à dire anglais britannique, le standard
     HTTP/1.1 n'autorise normalement pas le serveur à faire correspondre cette
-    demande à un document dont le langage est simplement <code>en</code>.
-    (Notez qu'inclure <code>en-GB</code> et non <code>en</code> dans l'en-tête
+    demande à un document dont le langage est simplement <code>en</code>
+    (notez qu'inclure <code>en-GB</code> et non <code>en</code> dans l'en-tête
     <code>Accept-Language</code> constitue une quasi-erreur de configuration,
     car il est très peu probable qu'un lecteur qui comprend l'anglais
     britannique, ne comprenne pas l'anglais en général. Malheureusement, de
-    nombreux clients ont réellement des configurations par défaut de ce type.)
-    Cependant, si aucune autre correspondance de langage n'est possible, et que le
-    serveur est sur le point de retourner une erreur "Aucune variable
-    acceptable" ou de choisir le langage défini par la directive <code class="directive"><a href="./mod/mod_negotiation.html#languagepriority">LanguagePriority</a></code>, le serveur ignorera
+    nombreux clients ont réellement des configurations par défaut de ce type).
+    Cependant, si aucune autre correspondance de langage n'est possible, et si le
+    serveur est sur le point de renvoyer une erreur «&nbsp;Aucune variable
+    acceptable&nbsp;» ou de choisir le langage défini par la directive <code class="directive"><a href="./mod/mod_negotiation.html#languagepriority">LanguagePriority</a></code>, le serveur ignorera
     la spécification du sous-ensemble de langage et associera la demande en
     <code>en-GB</code> à des documents en <code>en</code>.  Implicitement,
-    httpd ajoute le langage parent à la liste de langues acceptés par le
+    httpd ajoute le langage parent à la liste de langages acceptés par le
     client avec une valeur de qualité très basse. Notez cependant que si le
-    client demande "en-GB; q=0.9, fr; q=0.8", et le serveur dispose de
-    documents estampillés "en" et "fr", alors c'est le document "fr" qui sera
-    retourné, tout ceci dans un souci de compatibilité avec la spécification
+    client demande «&nbsp;en-GB; q=0.9, fr; q=0.8&nbsp;», et si le serveur dispose de
+    documents estampillés «&nbsp;en&nbsp;» et «&nbsp;fr&nbsp;», c'est le document «&nbsp;fr&nbsp;» qui sera
+    renvoyé, tout cela dans un souci de compatibilité avec la spécification
     HTTP/1.1 et afin de fonctionner efficacement avec les clients
     correctement configurés.</p>
 
-    <p>Pour supporter les techniques avancées (comme les cookies ou les chemins
+    <p>Pour prendre en charge les techniques avancées (comme les cookies ou les chemins
     d'URL spéciaux) afin de déterminer le langage préféré de l'utilisateur, le
     module <code class="module"><a href="./mod/mod_negotiation.html">mod_negotiation</a></code> reconnaît la
     <a href="env.html">variable d'environnement</a>
@@ -591,7 +592,7 @@ conventions de nommage</a> <a title="Lien permanent" href="#naming" class="perma
     </ul>
 
     <p>Ci-dessous d'autres exemples de noms de fichiers avec des liens
-    hypertextes valides et invalides :</p>
+    hypertextes valables et non valables :</p>
 
     <table class="bordered">
       
@@ -685,10 +686,10 @@ conventions de nommage</a> <a title="Lien permanent" href="#naming" class="perma
     niveau du serveur, il se peut que seule la première variante demandée soit
     mise en cache et de ce fait, la correspondance positive du cache peut
     entraîner une réponse inappropriée. Pour
-    éviter ceci, httpd marque par
-    défaut toutes les réponses qui sont retournées après une négociation de
-    contenu comme "non-cachables" par les clients HTTP/1.0. httpd supporte
-    aussi les fonctionnalités du protocole HTTP/1.1 afin de permettre la mise
+    éviter cela, httpd marque par
+    défaut toutes les réponses qui sont renvoyées après une négociation de
+    contenu comme «&nbsp;non-cachables&nbsp;» par les clients HTTP/1.0. httpd prend
+    aussi en charge les fonctionnalités du protocole HTTP/1.1 afin de permettre la mise
     en cache des réponses négociées.</p>
 
     <p>Pour les requêtes en provenance d'un client compatible HTTP/1.0
