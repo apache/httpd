@@ -150,6 +150,10 @@ suffix (if any). For example, <code>SSL_SERVER_S_DN_OU_RAW</code> or
 <p><code>SSL_CLIENT_V_REMAIN</code> is only available in version 2.1
 and later.</p>
 
+<p>The <code>SSL_CLIENTHELLO_*</code> variables require the directive 
+<directive module="mod_ssl">SSLClientHelloVars</directive> to be 
+enabled or they will not be populated.</p>
+ 
 <p>A number of additional environment variables can also be used
 in <directive>SSLRequire</directive> expressions, or in custom log
 formats:</p>
@@ -2873,10 +2877,16 @@ be protected with file permissions similar to those used for
 <default>SSLClientHelloVars off</default>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
-<compatibility>Available in httpd 2.5.x and later, if using OpenSSL 1.1.1 or later</compatibility>
+<compatibility>Available in httpd 2.5.2 and later, requires OpenSSL 1.1.1 or later</compatibility>
 
 <usage>
-<p>This directive enables collection of ClientHello data during the handshake that is retained for the length of the connection so it can be exposed as <code>SSL_CLIENTHELLLO_*</code> environment variables for requests depending upon the <code>StdEnvVars</code> setting.</p>
+<p>This directive enables collection of ClientHello data during the handshake that is retained for 
+the length of the connection so it can be exposed as <code>SSL_CLIENTHELLLO_*</code> environment 
+variables for requests depending upon the <code>StdEnvVars</code> setting. The variables are 
+formatted as the hex-encoded raw buffers seen in the raw network protocol and as provided 
+by OpenSSL. GREASE (RFC 8701) values are filtered by OpenSSL when enumerating extension IDs, but 
+otherwise, are passed through unchanged for other variables. If this directive is not enabled or 
+if OpenSSL prior to version 1.1.1 is used, these variables will not have a value set.</p>
 </usage> 
 </directivesynopsis>
  
