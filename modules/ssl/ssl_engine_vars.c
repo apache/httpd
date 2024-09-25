@@ -52,6 +52,7 @@ static const char *ssl_var_lookup_ssl_cert_verify(apr_pool_t *p, const SSLConnRe
 static const char *ssl_var_lookup_ssl_cipher(apr_pool_t *p, const SSLConnRec *sslconn, const char *var);
 static void  ssl_var_lookup_ssl_cipher_bits(SSL *ssl, int *usekeysize, int *algkeysize);
 static const char *ssl_var_lookup_ssl_handshake_rtt(apr_pool_t *p, SSL *ssl);
+static const char *ssl_var_lookup_ssl_clienthello(apr_pool_t *p, SSLConnRec *sslconn, char *var);
 static const char *ssl_var_lookup_ssl_version(const char *var);
 static const char *ssl_var_lookup_ssl_compress_meth(SSL *ssl);
 
@@ -475,6 +476,9 @@ static const char *ssl_var_lookup_ssl(apr_pool_t *p, const SSLConnRec *sslconn,
     }
     else if (ssl != NULL && strcEQ(var, "HANDSHAKE_RTT")) {
         result = ssl_var_lookup_ssl_handshake_rtt(p, ssl);
+    }
+    else if (ssl != NULL && strlen(var) >= 12 && strcEQn(var, "CLIENTHELLO_", 12)) {
+        result = ssl_var_lookup_ssl_clienthello(p, sslconn, var+12);
     }
     else if (ssl != NULL && strlen(var) > 18 && strcEQn(var, "CLIENT_CERT_CHAIN_", 18)) {
         sk = SSL_get_peer_cert_chain(ssl);
@@ -971,6 +975,56 @@ static const char *ssl_var_lookup_ssl_handshake_rtt(apr_pool_t *p, SSL *ssl)
     apr_uint64_t rtt;
     if (SSL_get_handshake_rtt(ssl, &rtt) > 0)
         return apr_psprintf(p, "%" APR_UINT64_T_FMT, rtt);
+#endif
+    return NULL;
+}
+
+static const char *ssl_var_lookup_ssl_clienthello(apr_pool_t *p, SSLConnRec *sslconn, char *var)
+{
+#if OPENSSL_VERSION_NUMBER >= 0x10101000L
+    char *value;
+    modssl_clienthello_vars *clienthello_vars;
+    int i;
+
+    clienthello_vars = sslconn->clienthello_vars;
+
+    if (!clienthello_vars)
+        return NULL; 
+
+    if (strEQ(var, "VERSION")) {
+        return apr_psprintf(p, "%04x", (uint16_t) clienthello_vars->version);
+    } else if (strEQ(var, "CIPHERS") && (clienthello_vars->ciphers_len > 0)) {
+        value = apr_palloc(p, clienthello_vars->ciphers_len * 2 + 1);
+        ap_bin2hex(clienthello_vars->ciphers_data, clienthello_vars->ciphers_len, value);
+        return value;
+    } else if (strEQ(var, "EXTENSIONS") && (clienthello_vars->extids_len > 0)) {
+        value = apr_palloc(p, clienthello_vars->extids_len * 4 + 1);
+        for (i = 0; i < clienthello_vars->extids_len; i++)
+        {
+            snprintf(value + i * 4, 5, "%04x", (uint16_t) clienthello_vars->extids_data[i]);
+        }
+        return value;
+    } else if (strEQ(var, "GROUPS") && (clienthello_vars->ecgroups_len > 2)) {
+        value = apr_palloc(p, clienthello_vars->ecgroups_len * 2 + 1 - 2);
+        ap_bin2hex(clienthello_vars->ecgroups_data + 2, clienthello_vars->ecgroups_len - 2, value);
+        return value;
+    } else if (strEQ(var, "EC_FORMATS") && (clienthello_vars->ecformats_len > 1)) {
+        value = apr_palloc(p, clienthello_vars->ecformats_len * 2 + 1 - 1);
+        ap_bin2hex(clienthello_vars->ecformats_data + 1, clienthello_vars->ecformats_len - 1, value);
+        return value;
+    } else if (strEQ(var, "SIG_ALGOS") && (clienthello_vars->sigalgos_len > 2)) {
+        value = apr_palloc(p, clienthello_vars->sigalgos_len * 2 + 1 - 2);
+        ap_bin2hex(clienthello_vars->sigalgos_data + 2, clienthello_vars->sigalgos_len - 2, value);
+        return value;
+    } else if (strEQ(var, "ALPN") && (clienthello_vars->alpn_len > 2)) {
+        value = apr_palloc(p, clienthello_vars->alpn_len * 2 + 1 - 2);
+        ap_bin2hex(clienthello_vars->alpn_data + 2, clienthello_vars->alpn_len - 2, value);
+        return value;
+    } else if (strEQ(var, "VERSIONS") && (clienthello_vars->versions_len > 1)) {
+        value = apr_palloc(p, clienthello_vars->versions_len * 2 + 1 - 1);
+        ap_bin2hex(clienthello_vars->versions_data + 1, clienthello_vars->versions_len - 1, value);
+        return value;
+    }
 #endif
     return NULL;
 }
