@@ -584,7 +584,7 @@ typedef struct {
     apr_size_t ciphers_len;
     const unsigned char *ciphers_data;
     apr_size_t extids_len;
-    int *extids_data;
+    const int *extids_data;
     apr_size_t ecgroups_len;
     const unsigned char *ecgroups_data;
     apr_size_t ecformats_len;
