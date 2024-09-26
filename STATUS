@@ -153,9 +153,9 @@ CURRENT RELEASE NOTES:
 
 RELEASE SHOWSTOPPERS:
 
-- PR69235
-- PR69260
-- PR69203
+- PR69235 (UDS+rewrite?)
+- PR69260 (dup of above)
+- PR69203 (FPM)
 
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
@@ -259,7 +259,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      Backport version for 2.4.x of patch:
       Trunk version of patch works
       svn merge -c 1920566 ^/httpd/httpd/trunk .
-     +1: rpluem,
+     +1: rpluem, covener
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
