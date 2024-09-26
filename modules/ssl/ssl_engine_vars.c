@@ -1002,7 +1002,7 @@ static const char *ssl_var_lookup_ssl_clienthello(apr_pool_t *p, const SSLConnRe
     else if (strEQ(var, "EXTENSIONS") && (clienthello_vars->extids_len > 0)) {
         value = apr_palloc(p, clienthello_vars->extids_len * 4 + 1);
         for (i = 0; i < clienthello_vars->extids_len; i++) {
-            snprintf(value + i * 4, 5, "%04x", (uint16_t) clienthello_vars->extids_data[i]);
+            apr_snprintf(value + i * 4, 5, "%04x", (uint16_t) clienthello_vars->extids_data[i]);
         }
         return value;
     }
