@@ -2488,25 +2488,23 @@ static void copy_clienthello_vars(conn_rec *c, SSL *ssl)
     sslcon->clienthello_vars = apr_palloc(c->pool, sizeof(*clienthello_vars));
     clienthello_vars = sslcon->clienthello_vars;
 
-    if (clienthello_vars) {
-        clienthello_vars->version = SSL_client_hello_get0_legacy_version(ssl);
-        clienthello_vars->ciphers_len = SSL_client_hello_get0_ciphers(ssl, &data);
-        clienthello_vars->ciphers_data = apr_pmemdup(c->pool, data, clienthello_vars->ciphers_len);
-        if (SSL_client_hello_get1_extensions_present(ssl, &ids, &clienthello_vars->extids_len) == 1) {
-            clienthello_vars->extids_data = apr_pmemdup(c->pool, ids, clienthello_vars->extids_len * sizeof(int));
-            OPENSSL_free(ids);
-        }
-        SSL_client_hello_get0_ext(ssl, 0x0a, &data, &clienthello_vars->ecgroups_len);
-        clienthello_vars->ecgroups_data = apr_pmemdup(c->pool, data, clienthello_vars->ecgroups_len);
-        SSL_client_hello_get0_ext(ssl, 0x0b, &data, &clienthello_vars->ecformats_len);
-        clienthello_vars->ecformats_data = apr_pmemdup(c->pool, data, clienthello_vars->ecformats_len);
-        SSL_client_hello_get0_ext(ssl, 0x0d, &data, &clienthello_vars->sigalgos_len);
-        clienthello_vars->sigalgos_data = apr_pmemdup(c->pool, data, clienthello_vars->sigalgos_len);
-        SSL_client_hello_get0_ext(ssl, 0x10, &data, &clienthello_vars->alpn_len);
-        clienthello_vars->alpn_data = apr_pmemdup(c->pool, data, clienthello_vars->alpn_len);
-        SSL_client_hello_get0_ext(ssl, 0x2b, &data, &clienthello_vars->versions_len);
-        clienthello_vars->versions_data = apr_pmemdup(c->pool, data, clienthello_vars->versions_len);
+    clienthello_vars->version = SSL_client_hello_get0_legacy_version(ssl);
+    clienthello_vars->ciphers_len = SSL_client_hello_get0_ciphers(ssl, &data);
+    clienthello_vars->ciphers_data = apr_pmemdup(c->pool, data, clienthello_vars->ciphers_len);
+    if (SSL_client_hello_get1_extensions_present(ssl, &ids, &clienthello_vars->extids_len) == 1) {
+        clienthello_vars->extids_data = apr_pmemdup(c->pool, ids, clienthello_vars->extids_len * sizeof(int));
+        OPENSSL_free(ids);
     }
+    SSL_client_hello_get0_ext(ssl, TLSEXT_TYPE_supported_groups, &data, &clienthello_vars->ecgroups_len);
+    clienthello_vars->ecgroups_data = apr_pmemdup(c->pool, data, clienthello_vars->ecgroups_len);
+    SSL_client_hello_get0_ext(ssl, TLSEXT_TYPE_ec_point_formats, &data, &clienthello_vars->ecformats_len);
+    clienthello_vars->ecformats_data = apr_pmemdup(c->pool, data, clienthello_vars->ecformats_len);
+    SSL_client_hello_get0_ext(ssl, TLSEXT_TYPE_signature_algorithms, &data, &clienthello_vars->sigalgos_len);
+    clienthello_vars->sigalgos_data = apr_pmemdup(c->pool, data, clienthello_vars->sigalgos_len);
+    SSL_client_hello_get0_ext(ssl, TLSEXT_TYPE_application_layer_protocol_negotiation, &data, &clienthello_vars->alpn_len);
+    clienthello_vars->alpn_data = apr_pmemdup(c->pool, data, clienthello_vars->alpn_len);
+    SSL_client_hello_get0_ext(ssl, TLSEXT_TYPE_supported_versions, &data, &clienthello_vars->versions_len);
+    clienthello_vars->versions_data = apr_pmemdup(c->pool, data, clienthello_vars->versions_len);
 }
 
 /*
@@ -2514,8 +2512,6 @@ static void copy_clienthello_vars(conn_rec *c, SSL *ssl)
  */
 int ssl_callback_ClientHello(SSL *ssl, int *al, void *arg)
 {
-    server_rec *s;
-    SSLSrvConfigRec *sc;
     char *servername = NULL;
     conn_rec *c = (conn_rec *)SSL_get_app_data(ssl);
     const unsigned char *pos;
@@ -2567,9 +2563,7 @@ int ssl_callback_ClientHello(SSL *ssl, int *al, void *arg)
 give_up:
     init_vhost(c, ssl, servername);
     
-    s = mySrvFromConn(c);
-    sc = mySrvConfig(s);
-    if (sc->clienthello_vars == TRUE)
+    if (mySrvConfigFromConn(c)->clienthello_vars == TRUE)
         copy_clienthello_vars(c, ssl);
 
     return SSL_CLIENT_HELLO_SUCCESS;
