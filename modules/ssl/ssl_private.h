@@ -578,7 +578,7 @@ typedef enum {
  * Define the structure to hold clienthello variables
  * (later exposed as environment vars)
  */
-#if OPENSSL_VERSION_NUMBER >= 0x10101000L
+#if OPENSSL_VERSION_NUMBER >= 0x10101000L && !defined(LIBRESSL_VERSION_NUMBER)
 typedef struct {
     unsigned int version;
     apr_size_t ciphers_len;
@@ -629,7 +629,7 @@ typedef struct {
     int service_unavailable;  /* thouugh we negotiate SSL, no requests will be served */
     int vhost_found;          /* whether we found vhost from SNI already */
 
-#if OPENSSL_VERSION_NUMBER >= 0x10101000L
+#if OPENSSL_VERSION_NUMBER >= 0x10101000L && !defined(LIBRESSL_VERSION_NUMBER)
     modssl_clienthello_vars *clienthello_vars;  /* info from clienthello callback */
 #endif
 } SSLConnRec;
