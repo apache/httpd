@@ -1,4 +1,0 @@
-  *) mod_tls: removed the experimental module. It now is availble standalone
-     from https://github.com/icing/mod_tls. The rustls provided API is not
-     stable and does not align with the httpd release cycle.
-     [Stefan Eissing]
