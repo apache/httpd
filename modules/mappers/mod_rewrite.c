@@ -2442,21 +2442,19 @@ static char *do_expand(char *input, rewrite_ctx *ctx, rewriterule_entry *entry,
             *unsafe_qmark = 0;
 
             /* keep tracking only if interested in the last qmark */
-            if (entry && (entry->flags & RULEFLAG_QSLAST)) {
-                do {
-                    span++;
-                    span += strcspn(input + span, EXPAND_SPECIALS "?");
-                } while (input[span] == '?');
-            }
-            else {
+            if (!entry || !(entry->flags & RULEFLAG_QSLAST)) {
                 unsafe_qmark = NULL;
-                span += strcspn(input + span, EXPAND_SPECIALS);
             }
+
+            /* find the next real special char, any (last) qmark up to
+             * there is safe too
+             */
+            span += strcspn(input + span, EXPAND_SPECIALS);
         }
     }
 
-    /* fast exit */
-    if (inputlen == span) {
+    /* fast path (no specials) */
+    if (span >= inputlen) {
         return apr_pstrmemdup(pool, input, inputlen);
     }
 
@@ -2637,16 +2635,14 @@ static char *do_expand(char *input, rewrite_ctx *ctx, rewriterule_entry *entry,
                 *unsafe_qmark = 0;
 
                 /* keep tracking only if interested in the last qmark */
-                if (entry && (entry->flags & RULEFLAG_QSLAST)) {
-                    do {
-                        span++;
-                        span += strcspn(p + span, EXPAND_SPECIALS "?");
-                    } while (p[span] == '?');
-                }
-                else {
+                if (!entry || !(entry->flags & RULEFLAG_QSLAST)) {
                     unsafe_qmark = NULL;
-                    span += strcspn(p + span, EXPAND_SPECIALS);
                 }
+
+                /* find the next real special char, any (last) qmark up to
+                 * there is safe too
+                 */
+                span += strcspn(p + span, EXPAND_SPECIALS);
             }
         }
         if (span > 0) {
