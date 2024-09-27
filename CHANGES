@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.63
 
+  *) mod_rewrite: Don't require [UNC] flag to preserve a leading //
+     added by applying the perdir prefix to the substitution.
+     [Ruediger Pluem, Eric Covener]
+
   *) Windows: Restore the ability to "Include" configuration files on UNC
      paths. PR69313 [Eric Covener]
 
