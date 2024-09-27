@@ -2493,7 +2493,8 @@ static void copy_clienthello_vars(conn_rec *c, SSL *ssl)
     clienthello_vars->ciphers_len = SSL_client_hello_get0_ciphers(ssl, &data);
     if (clienthello_vars->ciphers_len > 0) {
         clienthello_vars->ciphers_data = apr_pmemdup(c->pool, data, clienthello_vars->ciphers_len);
-    } else {
+    }
+    else {
         clienthello_vars->ciphers_data = NULL;
     }
 
@@ -2501,7 +2502,8 @@ static void copy_clienthello_vars(conn_rec *c, SSL *ssl)
         if (clienthello_vars->extids_len > 0)
             clienthello_vars->extids_data = apr_pmemdup(c->pool, ids, clienthello_vars->extids_len * sizeof(int));
         OPENSSL_free(ids);
-    } else {
+    }
+    else {
         clienthello_vars->extids_len = 0;
     }
     if (clienthello_vars->extids_len == 0)
@@ -2510,7 +2512,8 @@ static void copy_clienthello_vars(conn_rec *c, SSL *ssl)
     if (SSL_client_hello_get0_ext(ssl, TLSEXT_TYPE_supported_groups, &data, &clienthello_vars->ecgroups_len) == 1) {
         if (clienthello_vars->ecgroups_len > 0)
             clienthello_vars->ecgroups_data = apr_pmemdup(c->pool, data, clienthello_vars->ecgroups_len);
-    } else {
+    }
+    else {
         clienthello_vars->ecgroups_len = 0;
     }
     if (clienthello_vars->ecgroups_len == 0)
@@ -2519,7 +2522,8 @@ static void copy_clienthello_vars(conn_rec *c, SSL *ssl)
     if (SSL_client_hello_get0_ext(ssl, TLSEXT_TYPE_ec_point_formats, &data, &clienthello_vars->ecformats_len) == 1) {
         if (clienthello_vars->ecformats_len > 0)
             clienthello_vars->ecformats_data = apr_pmemdup(c->pool, data, clienthello_vars->ecformats_len);
-    } else {
+    }
+    else {
         clienthello_vars->ecformats_len = 0;
     }
     if (clienthello_vars->ecformats_len == 0)
@@ -2528,7 +2532,8 @@ static void copy_clienthello_vars(conn_rec *c, SSL *ssl)
     if (SSL_client_hello_get0_ext(ssl, TLSEXT_TYPE_signature_algorithms, &data, &clienthello_vars->sigalgos_len) == 1) {
         if (clienthello_vars->sigalgos_len > 0)
             clienthello_vars->sigalgos_data = apr_pmemdup(c->pool, data, clienthello_vars->sigalgos_len);
-    } else {
+    }
+    else {
         clienthello_vars->sigalgos_len = 0;
     }
     if (clienthello_vars->sigalgos_len == 0)
@@ -2537,7 +2542,8 @@ static void copy_clienthello_vars(conn_rec *c, SSL *ssl)
     if (SSL_client_hello_get0_ext(ssl, TLSEXT_TYPE_application_layer_protocol_negotiation, &data, &clienthello_vars->alpn_len) == 1) {
         if (clienthello_vars->alpn_len > 0)
             clienthello_vars->alpn_data = apr_pmemdup(c->pool, data, clienthello_vars->alpn_len);
-    } else {
+    }
+    else {
         clienthello_vars->alpn_len = 0;
     }
     if (clienthello_vars->alpn_len == 0)
@@ -2546,7 +2552,8 @@ static void copy_clienthello_vars(conn_rec *c, SSL *ssl)
     if (SSL_client_hello_get0_ext(ssl, TLSEXT_TYPE_supported_versions, &data, &clienthello_vars->versions_len) == 1) {
         if (clienthello_vars->versions_len > 0)
             clienthello_vars->versions_data = apr_pmemdup(c->pool, data, clienthello_vars->versions_len);
-    } else {
+    }
+    else {
         clienthello_vars->versions_len = 0;
     }
     if (clienthello_vars->versions_len == 0)
