@@ -981,10 +981,10 @@ static const char *ssl_var_lookup_ssl_handshake_rtt(apr_pool_t *p, SSL *ssl)
 
 static const char *ssl_var_lookup_ssl_clienthello(apr_pool_t *p, const SSLConnRec *sslconn, const char *var)
 {
-#if OPENSSL_VERSION_NUMBER >= 0x10101000L
+#if OPENSSL_VERSION_NUMBER >= 0x10101000L && !defined(LIBRESSL_VERSION_NUMBER)
     char *value;
     modssl_clienthello_vars *clienthello_vars;
-    int i;
+    apr_size_t i;
 
     clienthello_vars = sslconn->clienthello_vars;
 
