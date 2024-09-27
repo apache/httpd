@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.63
 
+  *) http: Remove support for Request-Range header sent by Navigator 2-3 and
+     MSIE 3. [Stefan Fritsch]
+
   *) mod_rewrite: Don't require [UNC] flag to preserve a leading //
      added by applying the perdir prefix to the substitution.
      [Ruediger Pluem, Eric Covener]
