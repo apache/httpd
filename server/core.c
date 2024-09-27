@@ -4547,7 +4547,7 @@ AP_INIT_TAKE1("FlushMaxPipelined", set_flush_max_pipelined, NULL, RSRC_CONF,
   "Maximum number of pipelined responses (pending) above which they are "
   "flushed to the network"),
 #ifdef WIN32
-AP_INIT_TAKE_ARGV("UNCList", set_unc_list, NULL, RSRC_CONF,
+AP_INIT_TAKE_ARGV("UNCList", set_unc_list, NULL, RSRC_CONF|EXEC_ON_READ,
   "Controls what UNC hosts may be looked up"),
 #endif
 

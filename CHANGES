@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.63
 
+  *) Windows: Restore the ability to "Include" configuration files on UNC
+     paths. PR69313 [Eric Covener]
+
   *) mod_proxy: Avoid AH01059 parsing error for SetHandler "unix:" URLs
      in <Location> (incomplete fix in 2.4.62). PR 69160. [Yann Ylavic]
 
