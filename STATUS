@@ -161,57 +161,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_proxy: Avoid AH01059 parsing error for SetHandler "unix:" URLs
-                in <Location> (incomplete fix in 2.4.62). PR 69160.
-     trunk patch: https://svn.apache.org/r1919532
-                  https://svn.apache.org/r1919533
-     2.4.x patch: https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/467.diff
-     PR: https://github.com/apache/httpd/pull/467
-     +1: ylavic, covener, rpluem
-
-  *) mod_ldap: Add a hint to install the apr_ldap module on init failure.
-      trunk patch: http://svn.apache.org/r1914038
-      2.4.x patch: svn merge -c r1914038 ^/httpd/httpd/trunk .
-      +1: minfrin, covener, rpluem
-
-  *) Windows: Make UNCList EXEC_ON_READ to be early enough for 
-     `Include //computername/include.conf`. PR69313
-     Trunk version of patch:
-       https://svn.apache.org/r1920564
-     Backport version for 2.4.x of patch:
-       svn merge -c r1920564 ^/httpd/httpd/trunk .
-     +1 covener, rpluem, steffenal
-
-
-  *) mod_rewrite: don't merge leading slashes when they come from a perdir prefix
-     (rather than the substitution)
-     Trunk version of patch:
-        https://svn.apache.org/r1919860
-     Backport version for 2.4.x of patch:
-       https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/473.diff
-     Can be applied via apply_backport_pr.sh 473
-     +1: covener, rpluem, jorton
-
-  *) mod_http: Trust content-type values set from configuration
-     r1918823 takes care of the content-type fix, while r1427465
-     is backported to avoid a conflict. It removes support for Request-Range
-     header sent by Navigator 2-3 and MSIE 3.
-     Trunk version of patch:
-        https://svn.apache.org/r1427465
-        https://svn.apache.org/r1918823
-     Backport version for 2.4.x of patch:
-       https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/475.diff
-     Can be applied via apply_backport_pr.sh 475
-     +1: rpluem, covener, jorton
-
-  *) mod_rewrite: Improve safe question mark detection
-     Trunk version of patch:
-        https://svn.apache.org/r1920566
-     Backport version for 2.4.x of patch:
-      Trunk version of patch works
-      svn merge -c 1920566 ^/httpd/httpd/trunk .
-     +1: rpluem, covener, jorton
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
