@@ -1948,15 +1948,18 @@ PROXY_DECLARE(const char *) ap_proxy_de_socketfy(apr_pool_t *p, const char *url)
         const char *ret, *c;
 
         ret = ptr + 1;
-        /* special case: "unix:....|scheme:" is OK, expand
-         * to "unix:....|scheme://localhost"
-         * */
+        /* special cases: "unix:...|scheme:" ind "unix:...|scheme://" are OK,
+         * expand to "unix:....|scheme://localhost"
+         */
         c = ap_strchr_c(ret, ':');
         if (c == NULL) {
             return NULL;
         }
         if (c[1] == '\0') {
             return apr_pstrcat(p, ret, "//localhost", NULL);
+        }
+        else if (c[1] == '/' && c[2] == '/' && !c[3]) {
+            return apr_pstrcat(p, ret, "localhost", NULL);
         }
         else {
             return ret;

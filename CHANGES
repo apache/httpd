@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.63
 
+  *) mod_proxy: Avoid AH01059 parsing error for SetHandler "unix:" URLs
+     in <Location> (incomplete fix in 2.4.62). PR 69160. [Yann Ylavic]
+
   *) mod_md: update to version 2.4.28
      - When the server starts, it looks for new, staged certificates to
        activate. If the staged set of files in 'md/staging/<domain>' is messed
