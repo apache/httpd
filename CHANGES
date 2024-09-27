@@ -27,7 +27,7 @@ Changes with Apache 2.5.1
   *) mod_alias: Add AliasPreservePath directive to map the full
      path after the alias in a location. [Graham Leggett]
 
-  *) mod_rewrite, mod_proxy: mod_proxy to cononicalize rewritten [P] URLs,
+  *) mod_rewrite, mod_proxy: mod_proxy to canonicalize rewritten [P] URLs,
      including "unix:" ones.  PR 69235, PR 69260.  [Yann Ylavic, Ruediger Pluem]
 
   *) mod_http2: fixed a bug that could lead to a crash in main connection
