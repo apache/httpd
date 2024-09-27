@@ -1,0 +1,3 @@
+  *) mod_rewrite: Error out in case a RewriteRule in directory context uses the
+     proxy, but mod_proxy is not loaded. PR 56264.
+     [Christophe Jaillet, Michael Streeter <mstreeter1@gmail.com>]
