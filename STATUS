@@ -215,7 +215,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      SSLCryptoDevice configured
      trunk patch: https://svn.apache.org/r1920597
      2.4.x patch: svn merge -c 1920597 ^/httpd/httpd/trunk .
-     +1: jorton, 
+     +1: jorton, ylavic,
 
   *) mod_rewrite, mod_proxy: mod_proxy to cononicalize rewritten [P] URLs,
      including "unix:" ones.  PR 69235, PR 69260, PR 56264
@@ -227,7 +227,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      Backport version for 2.4.x of patch:
        https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/484.diff
      Can be applied via apply_backport_pr.sh 484
-     +1: rpluem,
+     +1: rpluem, ylavic,
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
