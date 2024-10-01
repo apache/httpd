@@ -1547,6 +1547,14 @@ static const char *const ssl_hook_Fixup_vars[] = {
     "SSL_SRP_USERINFO",
 #endif
     "SSL_HANDSHAKE_RTT",
+    "SSL_CLIENTHELLO_VERSION",
+    "SSL_CLIENTHELLO_CIPHERS",
+    "SSL_CLIENTHELLO_EXTENSIONS",
+    "SSL_CLIENTHELLO_GROUPS",
+    "SSL_CLIENTHELLO_EC_FORMATS",
+    "SSL_CLIENTHELLO_SIG_ALGOS",
+    "SSL_CLIENTHELLO_ALPN",
+    "SSL_CLIENTHELLO_VERSIONS",
     NULL
 };
 
@@ -2466,6 +2474,53 @@ int ssl_callback_ServerNameIndication(SSL *ssl, int *al, modssl_ctx_t *mctx)
 
 #if OPENSSL_VERSION_NUMBER >= 0x10101000L && !defined(LIBRESSL_VERSION_NUMBER)
 /*
+ * Copy data from clienthello for env vars use later
+ */
+static void copy_clienthello_vars(conn_rec *c, SSL *ssl)
+{
+    SSLConnRec *sslcon;
+    modssl_clienthello_vars *clienthello_vars;
+    const unsigned char *data;
+    int *ids;
+
+    sslcon = myConnConfig(c);
+
+    sslcon->clienthello_vars = apr_pcalloc(c->pool, sizeof(*clienthello_vars));
+    clienthello_vars = sslcon->clienthello_vars;
+
+    clienthello_vars->version = SSL_client_hello_get0_legacy_version(ssl);
+    clienthello_vars->ciphers_len = SSL_client_hello_get0_ciphers(ssl, &data);
+    if (clienthello_vars->ciphers_len > 0) {
+        clienthello_vars->ciphers_data = apr_pmemdup(c->pool, data, clienthello_vars->ciphers_len);
+    }
+    if (SSL_client_hello_get1_extensions_present(ssl, &ids, &clienthello_vars->extids_len) == 1) {
+        if (clienthello_vars->extids_len > 0)
+            clienthello_vars->extids_data = apr_pmemdup(c->pool, ids, clienthello_vars->extids_len * sizeof(int));
+        OPENSSL_free(ids);
+    }
+    if (SSL_client_hello_get0_ext(ssl, TLSEXT_TYPE_supported_groups, &data, &clienthello_vars->ecgroups_len) == 1) {
+        if (clienthello_vars->ecgroups_len > 0)
+            clienthello_vars->ecgroups_data = apr_pmemdup(c->pool, data, clienthello_vars->ecgroups_len);
+    }
+    if (SSL_client_hello_get0_ext(ssl, TLSEXT_TYPE_ec_point_formats, &data, &clienthello_vars->ecformats_len) == 1) {
+        if (clienthello_vars->ecformats_len > 0)
+            clienthello_vars->ecformats_data = apr_pmemdup(c->pool, data, clienthello_vars->ecformats_len);
+    }
+    if (SSL_client_hello_get0_ext(ssl, TLSEXT_TYPE_signature_algorithms, &data, &clienthello_vars->sigalgos_len) == 1) {
+        if (clienthello_vars->sigalgos_len > 0)
+            clienthello_vars->sigalgos_data = apr_pmemdup(c->pool, data, clienthello_vars->sigalgos_len);
+    }
+    if (SSL_client_hello_get0_ext(ssl, TLSEXT_TYPE_application_layer_protocol_negotiation, &data, &clienthello_vars->alpn_len) == 1) {
+        if (clienthello_vars->alpn_len > 0)
+            clienthello_vars->alpn_data = apr_pmemdup(c->pool, data, clienthello_vars->alpn_len);
+    }
+    if (SSL_client_hello_get0_ext(ssl, TLSEXT_TYPE_supported_versions, &data, &clienthello_vars->versions_len) == 1) {
+        if (clienthello_vars->versions_len > 0)
+            clienthello_vars->versions_data = apr_pmemdup(c->pool, data, clienthello_vars->versions_len);
+    }
+}
+
+/*
  * This callback function is called when the ClientHello is received.
  */
 int ssl_callback_ClientHello(SSL *ssl, int *al, void *arg)
@@ -2520,6 +2575,10 @@ int ssl_callback_ClientHello(SSL *ssl, int *al, void *arg)
 
 give_up:
     init_vhost(c, ssl, servername);
+    
+    if (mySrvConfigFromConn(c)->clienthello_vars == TRUE)
+        copy_clienthello_vars(c, ssl);
+
     return SSL_CLIENT_HELLO_SUCCESS;
 }
 #endif /* OPENSSL_VERSION_NUMBER < 0x10101000L */

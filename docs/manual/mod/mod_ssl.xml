@@ -110,6 +110,14 @@ compatibility variables.</p>
 <tr><td><code>SSL_SRP_USERINFO</code></td>              <td>string</td>    <td>SRP user info</td></tr>
 <tr><td><code>SSL_TLS_SNI</code></td>                   <td>string</td>    <td>Contents of the SNI TLS extension (if supplied with ClientHello)</td></tr>
 <tr><td><code>SSL_HANDSHAKE_RTT</code></td>             <td>number</td>    <td>Round-trip time of TLS handshake in microseconds including endpoint processing (set to empty string if OpenSSL version prior to 3.2 or if round-trip time can not be determined)</td></tr>
+<tr><td><code>SSL_CLIENTHELLO_VERSION</code></td>       <td>string</td>    <td>Version field (legacy) from ClientHello as four hex encoded characters</td></tr>
+<tr><td><code>SSL_CLIENTHELLO_CIPHERS</code></td>       <td>string</td>    <td>Cipher Suites from ClientHello as four hex encoded characters per item</td></tr>
+<tr><td><code>SSL_CLIENTHELLO_EXTENSIONS</code></td>    <td>string</td>    <td>Extension IDs from ClientHello as four hex encoded characters per item</td></tr>
+<tr><td><code>SSL_CLIENTHELLO_GROUPS</code></td>        <td>string</td>    <td>Value of Supported Groups extension (10) from ClientHello as four hex encoded characters per item</td></tr>
+<tr><td><code>SSL_CLIENTHELLO_EC_FORMATS</code></td>    <td>string</td>    <td>Value of EC Point Formats extension (11) from ClientHello as two hex encoded characters per item</td></tr>
+<tr><td><code>SSL_CLIENTHELLO_SIG_ALGOS</code></td>     <td>string</td>    <td>Value of Signature Algorithms extension (13) from ClientHello as four hex encoded characters per item</td></tr>
+<tr><td><code>SSL_CLIENTHELLO_ALPN</code></td>          <td>string</td>    <td>Value of ALPN extension (16) from ClientHello as hex encoded string including leading string lengths</td></tr>
+<tr><td><code>SSL_CLIENTHELLO_VERSIONS</code></td>      <td>string</td>    <td>Value of Supported Versions extension (43) from ClientHello as four hex encoded characters per item</td></tr>
 </table>
 
 <p><em>x509</em> specifies a component of an X.509 DN; one of
@@ -142,6 +150,10 @@ suffix (if any). For example, <code>SSL_SERVER_S_DN_OU_RAW</code> or
 <p><code>SSL_CLIENT_V_REMAIN</code> is only available in version 2.1
 and later.</p>
 
+<p>The <code>SSL_CLIENTHELLO_*</code> variables require the directive 
+<directive module="mod_ssl">SSLClientHelloVars</directive> to be 
+enabled or they will not be populated.</p>
+ 
 <p>A number of additional environment variables can also be used
 in <directive>SSLRequire</directive> expressions, or in custom log
 formats:</p>
@@ -2858,6 +2870,26 @@ be protected with file permissions similar to those used for
 </usage>
 </directivesynopsis>
 
+<directivesynopsis>
+<name>SSLClientHelloVars</name>
+<description>Enable collection of ClientHello variables</description>
+<syntax>SSLClientHelloVars on|off</syntax>
+<default>SSLClientHelloVars off</default>
+<contextlist><context>server config</context>
+<context>virtual host</context></contextlist>
+<compatibility>Available in httpd 2.5.2 and later, requires OpenSSL 1.1.1 or later</compatibility>
+
+<usage>
+<p>This directive enables collection of ClientHello data during the handshake that is retained for 
+the length of the connection so it can be exposed as <code>SSL_CLIENTHELLLO_*</code> environment 
+variables for requests depending upon the <code>StdEnvVars</code> setting. The variables are 
+formatted as the hex-encoded raw buffers seen in the raw network protocol and as provided 
+by OpenSSL. GREASE (RFC 8701) values are filtered by OpenSSL when enumerating extension IDs, but 
+otherwise, are passed through unchanged for other variables. If this directive is not enabled or 
+if OpenSSL prior to version 1.1.1 is used, these variables will not have a value set.</p>
+</usage> 
+</directivesynopsis>
+ 
 <directivesynopsis>
 <name>SSLCompression</name>
 <description>Enable compression on the SSL level</description>

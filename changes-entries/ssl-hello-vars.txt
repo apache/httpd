@@ -1,0 +1,3 @@
+  *) mod_ssl: Add SSLClientHelloVars directive to expose various
+     ClientHello properties as SSL_CLIENTHELLO_* variables.
+     [Charles Smutz <csmutz gmail.com>]
