@@ -831,7 +831,7 @@ static apr_status_t modssl_load_keypair_engine(server_rec *s, apr_pool_t *pconf,
 
     c = ap_strchr_c(keyid, ':');
     if (!c || c == keyid) {
-        ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(10131)
+        ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, s, APLOGNO(10131)
                      "Init: Unrecognized private key identifier `%s'",
                      keyid);
         return APR_ENOTIMPL;
@@ -839,7 +839,7 @@ static apr_status_t modssl_load_keypair_engine(server_rec *s, apr_pool_t *pconf,
 
     scheme = apr_pstrmemdup(ptemp, keyid, c - keyid);
     if (!(e = ENGINE_by_id(scheme))) {
-        ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(10132)
+        ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, s, APLOGNO(10132)
                      "Init: Failed to load engine for private key %s",
                      keyid);
         ssl_log_ssl_error(SSLLOG_MARK, APLOG_NOTICE, s);
