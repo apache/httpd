@@ -214,8 +214,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   *) mod_ssl: Fix regression in PKCS#11 handling which should work without
      SSLCryptoDevice configured
      trunk patch: https://svn.apache.org/r1920597
-     2.4.x patch: svn merge -c 1920597 ^/httpd/httpd/trunk .
-     +1: jorton, ylavic,
+                  https://svn.apache.org/r1921076
+     2.4.x patch: svn merge -c 1920597 -c 1921076 ^/httpd/httpd/trunk .
+     +1: jorton, 
 
   *) mod_rewrite, mod_proxy: mod_proxy to cononicalize rewritten [P] URLs,
      including "unix:" ones.  PR 69235, PR 69260, PR 56264
