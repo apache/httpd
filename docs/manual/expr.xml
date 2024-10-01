@@ -762,7 +762,7 @@ Header set foo-checksum "expr=%{md5:foo}"
 
 # This delays the evaluation of the condition clause compared to &lt;If&gt;
 SetEnvIf REQUEST_URI ^/special_path\.php$ special
-Header set CustomHeader my-value env=special
+Header always set CustomHeader my-value env=special
 
 # Add a header to forward client's certificate SAN to some backend
 RequestHeader set X-Client-SAN "expr=%{:join PeerExtList('subjectAltName'):}"
