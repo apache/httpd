@@ -700,9 +700,11 @@ fail:
             return DECLINED;
         }
     }
-    conf->provider->socache_provider->remove(
-            conf->provider->socache_instance, r->server,
-            (unsigned char *) nkey, strlen(nkey), r->pool);
+    if (nkey) {
+        conf->provider->socache_provider->remove(
+                conf->provider->socache_instance, r->server,
+                (unsigned char *) nkey, strlen(nkey), r->pool);
+    }
     if (socache_mutex) {
         apr_status_t status = apr_global_mutex_unlock(socache_mutex);
         if (status != APR_SUCCESS) {
