@@ -161,18 +161,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_rewrite, mod_proxy: mod_proxy to cononicalize rewritten [P] URLs,
-     including "unix:" ones.  PR 69235, PR 69260, PR 56264
-     Trunk version of patch:
-        https://svn.apache.org/r1838684
-        https://svn.apache.org/r1920570
-        https://svn.apache.org/r1920571
-        https://svn.apache.org/r1920572
-     Backport version for 2.4.x of patch:
-       https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/484.diff
-     Can be applied via apply_backport_pr.sh 484
-     +1: rpluem, ylavic, covener
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -229,6 +217,19 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   https://svn.apache.org/r1921076
      2.4.x patch: svn merge -c 1920597 -c 1921076 ^/httpd/httpd/trunk .
      +1: jorton, 
+
+  *) mod_rewrite, mod_proxy: mod_proxy to cononicalize rewritten [P] URLs,
+     including "unix:" ones.  PR 69235, PR 69260, PR 56264
+     Trunk version of patch:
+        https://svn.apache.org/r1838684
+        https://svn.apache.org/r1920570
+        https://svn.apache.org/r1920571
+        https://svn.apache.org/r1920572
+     Backport version for 2.4.x of patch:
+       https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/484.diff
+     Can be applied via apply_backport_pr.sh 484
+     +1: rpluem, ylavic
+     covener: what about remaining parts of https://bz.apache.org/bugzilla/show_bug.cgi?id=69203 ? 69260 was marked dup of 69203.
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
