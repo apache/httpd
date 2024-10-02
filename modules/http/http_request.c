@@ -817,6 +817,7 @@ AP_DECLARE(void) ap_allow_methods(request_rec *r, int reset, ...)
 {
     const char *method;
     va_list methods;
+    apr_int64_t mask, method_number;
 
     /*
      * Get rid of any current settings if requested; not just the
@@ -826,11 +827,17 @@ AP_DECLARE(void) ap_allow_methods(request_rec *r, int reset, ...)
         ap_clear_method_list(r->allowed_methods);
     }
 
+    mask = 0;
     va_start(methods, reset);
     while ((method = va_arg(methods, const char *)) != NULL) {
-        ap_method_list_add(r->allowed_methods, method);
+        method_number = ap_method_number_of((method));
+        if (method_number == M_INVALID)
+            ap_method_list_add(r->allowed_methods, method);
+        mask |= (AP_METHOD_BIT << method_number);
     }
     va_end(methods);
+
+    r->allowed_methods->method_mask |= mask;
 }
 
 AP_DECLARE(void) ap_allow_standard_methods(request_rec *r, int reset, ...)
