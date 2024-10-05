@@ -3441,7 +3441,10 @@ ap_proxy_determine_connection(apr_pool_t *p, request_rec *r,
          * backend request URI.
          */
         dconf = ap_get_module_config(r->per_dir_config, &proxy_module);
-        if (dconf->preserve_host) {
+        if (worker->s->override_ssl_sni_set) {
+            ssl_hostname = worker->s->override_ssl_sni;
+        }
+        else if (dconf->preserve_host) {
             ssl_hostname = r->hostname;
         }
         else if (conn->forward
@@ -4675,7 +4678,11 @@ PROXY_DECLARE(int) ap_proxy_create_hdrbrgd(apr_pool_t *p,
         apr_table_unset(r->headers_in, "Trailer");
 
     /* Compute Host header */
-    if (dconf->preserve_host == 0) {
+    if (worker->s->override_http_host_set) {
+        host = worker->s->override_http_host;
+        apr_table_setn(r->headers_in, "Host", host);
+    }
+    else if (dconf->preserve_host == 0) {
         if (!uri->hostname) {
             rc = HTTP_BAD_REQUEST;
             goto cleanup;

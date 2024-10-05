@@ -368,6 +368,20 @@ static const char *set_worker_param(apr_pool_t *p,
         return "multipathtcp is not supported on your platform";
 #endif
     }
+    else if (!strcasecmp(key, "override_http_host")) {
+        if (strlen(val) >= sizeof(worker->s->override_http_host))
+            return apr_psprintf(p, "Override HTTP Host header length must be < %d characters",
+                                (int)sizeof(worker->s->override_http_host));
+        PROXY_STRNCPY(worker->s->override_http_host, val);
+        worker->s->override_http_host_set = 1;
+    }
+    else if (!strcasecmp(key, "override_ssl_sni")) {
+        if (strlen(val) >= sizeof(worker->s->override_ssl_sni))
+            return apr_psprintf(p, "Override SSL SNI length must be < %d characters",
+                                (int)sizeof(worker->s->override_ssl_sni));
+        PROXY_STRNCPY(worker->s->override_ssl_sni, val);
+        worker->s->override_ssl_sni_set = 1;
+    }
     else {
         if (set_worker_hc_param_f) {
             return set_worker_hc_param_f(p, s, worker, key, val, NULL);
