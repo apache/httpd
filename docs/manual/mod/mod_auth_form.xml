@@ -102,13 +102,13 @@
       and passwords should be checked against the chosen file.</p>
 
       <p>The directives <directive module="mod_session">Session</directive> and
-      <directive module="mod_session_cookie">SessionCookieName</directive>
+      <directive module="mod_session_cookie">SessionCookieName</directive> 
       session stored within an HTTP cookie on the browser. For more information
       on the different options for configuring a session, read the documentation for
       <module>mod_session</module>.</p>
 
-      <p>You can optionally add a
-      <directive module="mod_session_crypto">SessionCryptoPassphrase</directive> to
+      <p>You can optionally add a 
+      <directive module="mod_session_crypto">SessionCryptoPassphrase</directive> to 
       create an encrypted session cookie. This required the additional
       module <module>mod_session_crypto</module> be loaded.</p>
 
