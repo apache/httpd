@@ -38,7 +38,7 @@
       been taken into account before enabling the session functionality on
       your server.</p>
 
-      <p>When using any cookie based authentication in conjunction with
+      <p>When using any cookie based session identification in conjunction with
       <module>mod_cache</module>, ensure that the <code>Set-Cookie</code> header
       will not be cached by using directive <code>CacheIgnoreHeaders Set-Cookie</code>.
       Failure to do this may result in unintentional session hijacking.</p>
@@ -102,13 +102,13 @@
       and passwords should be checked against the chosen file.</p>
 
       <p>The directives <directive module="mod_session">Session</directive> and
-      <directive module="mod_session_cookie">SessionCookieName</directive> 
+      <directive module="mod_session_cookie">SessionCookieName</directive>
       session stored within an HTTP cookie on the browser. For more information
       on the different options for configuring a session, read the documentation for
       <module>mod_session</module>.</p>
 
-      <p>You can optionally add a 
-      <directive module="mod_session_crypto">SessionCryptoPassphrase</directive> to 
+      <p>You can optionally add a
+      <directive module="mod_session_crypto">SessionCryptoPassphrase</directive> to
       create an encrypted session cookie. This required the additional
       module <module>mod_session_crypto</module> be loaded.</p>
 

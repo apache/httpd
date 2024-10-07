@@ -36,6 +36,11 @@
       information to clients. Please ensure that the relevant risks have
       been taken into account before enabling the session functionality on
       your server.</p>
+
+      <p>When using any cookie based session identification in conjunction with
+      <module>mod_cache</module>, ensure that the <code>Set-Cookie</code> header
+      will not be cached by using directive <code>CacheIgnoreHeaders Set-Cookie</code>.
+      Failure to do this may result in unintentional session hijacking.</p>
     </note>
 
     <p>This submodule of <module>mod_session</module> provides support for the
@@ -182,8 +187,8 @@ SessionCookieName2 session path=/private;domain=example.com;httponly;secure;vers
 <override>AuthConfig</override>
 
 <usage>
-    <p>The <directive>SessionCookieMaxAge</directive> flag controls whether 
-    the session expiration will be specified in the Max-Age attribute on the 
+    <p>The <directive>SessionCookieMaxAge</directive> flag controls whether
+    the session expiration will be specified in the Max-Age attribute on the
     cookie sent to the client.  When set to 'Off', the attribute will not be
     added and clients will only return the cookie until "the current
     session is over". This often means until the browser is closed.  </p>
