@@ -65,7 +65,6 @@ static int proxy_fcgi_canon(request_rec *r, char *url)
     const char *pathinfo_type = NULL;
     fcgi_dirconf_t *dconf = ap_get_module_config(r->per_dir_config,
                                                  &proxy_fcgi_module);
-    int from_handler;
 
     if (ap_cstr_casecmpn(url, "fcgi:", 5) == 0) {
         url += 5;
@@ -95,11 +94,10 @@ static int proxy_fcgi_canon(request_rec *r, char *url)
         host = apr_pstrcat(r->pool, "[", host, "]", NULL);
     }
 
-    from_handler = apr_table_get(r->notes, "proxy-sethandler") != NULL;
-    if (from_handler
+    if (apr_table_get(r->notes, "proxy-sethandler")
         || apr_table_get(r->notes, "proxy-nocanon")
         || apr_table_get(r->notes, "proxy-noencode")) {
-        char *c = path = url;   /* this is the raw path */
+        char *c = url;
 
         /* We do not call ap_proxy_canonenc_ex() on the path here, don't
          * let control characters pass still, and for php-fpm no '?' either.
@@ -114,10 +112,12 @@ static int proxy_fcgi_canon(request_rec *r, char *url)
         }
         if (*c) {
             ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(10414)
-                          "To be forwarded path contains control characters%s",
-                          FCGI_MAY_BE_FPM(dconf) ? " or '?'" : "");
+                          "To be forwarded path contains control characters%s (%s)",
+                          FCGI_MAY_BE_FPM(dconf) ? " or '?'" : "", url);
             return HTTP_FORBIDDEN;
         }
+
+        path = url;  /* this is the raw path */
     }
     else {
         core_dir_config *d = ap_get_core_module_config(r->per_dir_config);
