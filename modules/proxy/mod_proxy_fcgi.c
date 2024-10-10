@@ -28,7 +28,7 @@ typedef struct {
 } sei_entry;
 
 typedef struct {
-    int need_dirwalk;
+    char *dirwalk_uri_path;
 } fcgi_req_config_t;
 
 /* We will assume FPM, but still differentiate */
@@ -141,11 +141,13 @@ static int proxy_fcgi_canon(request_rec *r, char *url)
         rconf = apr_pcalloc(r->pool, sizeof(fcgi_req_config_t));
         ap_set_module_config(r->request_config, &proxy_fcgi_module, rconf);
     }
+    rconf->dirwalk_uri_path = NULL;
 
-    if (NULL != (pathinfo_type = apr_table_get(r->subprocess_env, "proxy-fcgi-pathinfo"))) {
+    pathinfo_type = apr_table_get(r->subprocess_env, "proxy-fcgi-pathinfo");
+    if (pathinfo_type) {
         /* It has to be on disk for this to work */
         if (!strcasecmp(pathinfo_type, "full")) {
-            rconf->need_dirwalk = 1;
+            rconf->dirwalk_uri_path = apr_pstrcat(r->pool, "/", url, NULL);
         }
         else if (!strcasecmp(pathinfo_type, "first-dot")) {
             char *split = ap_strchr(path, '.');
@@ -359,16 +361,45 @@ static apr_status_t send_environment(proxy_conn_rec *conn, request_rec *r,
     int next_elem, starting_elem;
     fcgi_req_config_t *rconf = ap_get_module_config(r->request_config, &proxy_fcgi_module);
     fcgi_dirconf_t *dconf = ap_get_module_config(r->per_dir_config, &proxy_fcgi_module);
+    char *proxy_filename = r->filename;
 
-    if (rconf && rconf->need_dirwalk) {
-        char *saved_filename = r->filename;
-        r->filename = r->uri;
-        ap_directory_walk(r);
-        r->filename = saved_filename;
+    /* Resolve SCRIPT_NAME/FILENAME from the filesystem? */
+    if (rconf && rconf->dirwalk_uri_path) {
+        char *saved_uri = r->uri;
+        char *saved_path_info = r->path_info;
+        char *saved_canonical_filename = r->canonical_filename;
+        int saved_filetype = r->finfo.filetype;
+        int i = 0;
+
+        r->proxyreq = PROXYREQ_NONE;
+        do {
+            r->path_info = NULL;
+            r->finfo.filetype = APR_NOFILE;
+            r->uri = r->filename = r->canonical_filename = rconf->dirwalk_uri_path;
+            /* Try without than with DocumentRoot prefix */
+            if (i && ap_core_translate(r) != OK) {
+                continue;
+            }
+            ap_directory_walk(r);
+        } while (r->finfo.filetype != APR_REG && ++i < 2);
+        r->proxyreq = PROXYREQ_REVERSE;
+
+        /* If no actual script was found, fall back to the "proxy:"
+         * SCRIPT_FILENAME dealt with below or by FPM directly.
+         */
+        if (r->finfo.filetype != APR_REG) {
+            r->filename = proxy_filename;
+            r->canonical_filename = saved_canonical_filename;
+            r->finfo.filetype = saved_filetype;
+            r->path_info = saved_path_info;
+        }
+
+        /* Restore REQUEST_URI in any case */
+        r->uri = saved_uri;
     }
 
-    /* Strip proxy: prefixes */
-    if (r->filename) {
+    /* Strip "proxy:" prefixes? */
+    if (r->filename == proxy_filename) {
         char *newfname = NULL;
 
         if (!strncmp(r->filename, "proxy:balancer://", 17)) {
@@ -383,9 +414,12 @@ static apr_status_t send_environment(proxy_conn_rec *conn, request_rec *r,
                  */
                 newfname = apr_pstrdup(r->pool, r->filename+13);
             }
-            /* Query string in environment only */
+
+            /* Strip potential query string (nocanon) from SCRIPT_FILENAME
+             * if it's the same as QUERY_STRING.
+             */
             if (newfname && r->args && *r->args) {
-                char *qs = strrchr(newfname, '?');
+                char *qs = strchr(newfname, '?');
                 if (qs && !strcmp(qs+1, r->args)) {
                     *qs = '\0';
                 }
@@ -393,13 +427,15 @@ static apr_status_t send_environment(proxy_conn_rec *conn, request_rec *r,
         }
 
         if (newfname) {
-            newfname = ap_strchr(newfname, '/');
-            r->filename = newfname;
+            r->filename = ap_strchr(newfname, '/');
         }
     }
 
     ap_add_common_vars(r);
     ap_add_cgi_vars(r);
+
+    /* SCRIPT_NAME/FILENAME set, restore original */
+    r->filename = proxy_filename;
 
     /* XXX are there any FastCGI specific env vars we need to send? */
 
