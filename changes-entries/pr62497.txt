@@ -1,0 +1,2 @@
+  *) mod_lua: Make r.ap_auth_type writable.  PR 62497.
+     [Michael Osipov <michaelo apache.org>]
