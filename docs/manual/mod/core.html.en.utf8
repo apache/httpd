@@ -131,6 +131,7 @@ available</td></tr>
 <li><img alt="" src="../images/down.gif" /> <a href="#stricthostcheck">StrictHostCheck</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#timeout">TimeOut</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#traceenable">TraceEnable</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#unclist">UNCList</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#undefine">UnDefine</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#usecanonicalname">UseCanonicalName</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#usecanonicalphysicalport">UseCanonicalPhysicalPort</a></li>
@@ -1664,6 +1665,13 @@ ErrorLogFormat "[%t] [%l] [pid %P] %F: %E: [client %a] %M"</pre>
 <tr class="odd"><td><code>%{cu}t</code></td>
         <td>The current time in compact ISO 8601 format, including
             micro-seconds</td></tr>
+<tr><td><code>%{cuz}t</code></td>
+        <td>The current time in compact ISO 8601 format, including
+            micro-seconds and time zone in the ISO 8601:2000 standard format
+            (+hhmm or -hhmm offset from UTC). Since 2.4.58 only</td></tr>
+<tr class="odd"><td><code>%{&lt;strftime-format&gt;}t</code></td>
+        <td>The current time formatted per the <code>strftime(3)</code>
+            function. Since 2.4.58 only</td></tr>
 <tr><td><code>%v</code></td>
         <td>The canonical <code class="directive"><a href="#servername">ServerName</a></code>
             of the current server.</td></tr>
@@ -5096,6 +5104,39 @@ certain events before failing a request</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="UNCList" id="UNCList">UNCList</a> <a name="unclist" id="unclist">Directive</a> <a title="Permanent link" href="#unclist" class="permalink">&para;</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Controls what UNC host names can be accessed by the server
+</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>UNCList <var>hostname</var> [<var>hostname</var>...]</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>unset</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Added in 2.4.60, Windows only.</td></tr>
+</table>
+    <p> During request processing, requests to access a filesystem path that
+    resolves to a UNC path will fail unless the hostname in the UNC path
+    has been specified by this directive. The intent is to limit access to
+    paths derived from untrusted inputs.</p>
+
+    <div class="example"><p><code>
+    UNCList example.com other.example.com
+    </code></p></div>
+
+    <div class="warning"><h3>Security</h3>
+    <p>UNC paths accessed outside of request processing, such as during startup,
+    are not necessarily checked against the hosts configured with this directive.</p>
+    </div>
+
+    <div class="warning"><h3>Directive Ordering</h3>
+    <p>This directive should be placed before UNC paths used in httpd.conf. 
+    Multiple occurrences of the directive reset the list.</p>
+    </div>
+
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="UnDefine" id="UnDefine">UnDefine</a> <a name="undefine" id="undefine">Directive</a> <a title="Permanent link" href="#undefine" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Undefine the existence of a variable</td></tr>
@@ -5414,7 +5455,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/core.html';
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2023 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2024 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
