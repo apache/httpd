@@ -418,9 +418,9 @@ end</pre>
 <tr class="odd">
           <td><code>ap_auth_type</code></td>
           <td>string</td>
-          <td>non</td>
-	  <td>Ce champ contient le type d'authentification effectuée
-	  (par exemple <code>basic</code>)</td>
+          <td>oui</td>
+	  <td>Si une authentification a été effectuée, ce champ prend pour
+	  valeur le type d’authentification (par exemple <code>basic</code>)</td>
         </tr>
 <tr>
           <td><code>args</code></td>

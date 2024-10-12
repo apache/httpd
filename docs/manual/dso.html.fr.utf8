@@ -7,7 +7,7 @@
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>Support des objets dynamiques partagés (DSO) - Serveur HTTP Apache Version 2.5</title>
+<title>Prise en charge des objets dynamiques partagés (DSO) - Serveur HTTP Apache Version 2.5</title>
 <link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
 <link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
 <link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="./style/css/prettify.css" />
@@ -21,7 +21,7 @@
 <img alt="" src="./images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="./">Version 2.5</a></div><div id="page-content"><div id="preamble"><h1>Support des objets dynamiques partagés (DSO)</h1>
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="./">Version 2.5</a></div><div id="page-content"><div id="preamble"><h1>Prise en charge des objets dynamiques partagés (DSO)</h1>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="./en/dso.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="./es/dso.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
@@ -58,7 +58,7 @@
 
 <table class="related"><tr><th>Modules Apparentés</th><th>Directives Apparentées</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_so.html">mod_so</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_so.html#loadmodule">LoadModule</a></code></li></ul></td></tr></table>
 
-    <p>Le support DSO pour le chargement de modules individuels d'Apache
+    <p>La prise en charge de DSO pour le chargement de modules individuels d'Apache
     httpd est
     assuré par un module nommé <code class="module"><a href="./mod/mod_so.html">mod_so</a></code> qui doit être compilé
     statiquement dans le coeur d'Apache httpd. Il s'agit du seul module avec le
@@ -69,7 +69,7 @@
     module peut être chargé en mémoire au
     démarrage ou redémarrage du serveur à l'aide de
     la directive <code class="directive"><a href="./mod/mod_so.html#loadmodule">LoadModule</a></code> du module
-    <code class="module"><a href="./mod/mod_so.html">mod_so</a></code>, placée
+    <code class="module"><a href="./mod/mod_so.html">mod_so</a></code> placée
     dans votre fichier <code>httpd.conf</code>.</p>
     <p>La compilation en mode DSO peut être désactivée pour certains
     modules via l'option <code>--enable-mods-static</code> du script
@@ -85,11 +85,11 @@
     du script <code class="program"><a href="./programs/configure.html">configure</a></code> installe les fichiers d'en-têtes
     d'Apache httpd et positionne, pour la plateforme de compilation,  les drapeaux du compilateur et de
     l'éditeur de liens à l'intérieur du programme
-    <code class="program"><a href="./programs/apxs.html">apxs</a></code>, qui sera utilisé pour la construction de fichiers DSO.
+    <code class="program"><a href="./programs/apxs.html">apxs</a></code> qui sera utilisé pour la construction de fichiers DSO.
     Il est ainsi possible d'utiliser le programme <code class="program"><a href="./programs/apxs.html">apxs</a></code>
     pour compiler ses sources de modules Apache httpd sans avoir besoin de
     l'arborescence des sources de la distribution d'Apache, et sans avoir à
-    régler les drapeaux du compilateur et de l'éditeur de liens pour le support DSO.</p>
+    régler les drapeaux du compilateur et de l'éditeur de liens pour la prise en charge de DSO.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="usage" id="usage">Mode d'emploi succinct</a> <a title="Lien permanent" href="#usage" class="permalink">&para;</a></h2>
@@ -110,7 +110,7 @@ $ make install
       </li>
 
       <li>
-        <p>Configure le serveur HTTP Apache avec tous les modules
+        <p>Configurer le serveur HTTP Apache avec tous les modules
 	activés. Seul un jeu de modules de base sera chargé au
 	démarrage du serveur. Vous pouvez modifier ce jeu de modules
 	chargés au démarrage en activant ou désactivant les directives <code class="directive"><a href="./mod/mod_so.html#loadmodule">LoadModule</a></code> correspondantes dans le
@@ -165,7 +165,7 @@ $ apxs -cia mod_foo.c
 <div class="section">
 <h2><a name="background" id="background">Les dessous du fonctionnement des DSO</a> <a title="Lien permanent" href="#background" class="permalink">&para;</a></h2>
 
-    <p>Les clônes modernes d'UNIX proposent un mécanisme
+    <p>Les clones modernes d'UNIX proposent un mécanisme
     appelé édition de liens et chargement dynamiques d'
     <em>Objets Dynamiques Partagés</em> (DSO), qui permet de construire un
     morceau de programme dans un format spécial pour le rendre chargeable
@@ -174,7 +174,7 @@ $ apxs -cia mod_foo.c
     <p>Ce chargement peut s'effectuer de deux manières : automatiquement par
     un programme système appelé <code>ld.so</code> quand un programme
     exécutable est démarré, ou manuellement à partir du programme en cours
-    d'exécution via sa propre interface système vers le chargeur Unix à l'aide
+    d'exécution à l’aide de sa propre interface système vers le chargeur Unix à l'aide
     des appels système <code>dlopen()/dlsym()</code>.</p>
 
     <p>Dans la première méthode, les DSO sont en général appelés
@@ -185,7 +185,7 @@ $ apxs -cia mod_foo.c
     et le lien avec le programme exécutable est établi à la compilation en
     ajoutant <code>-lfoo</code> à la commande de l'éditeur de liens. Les
     références à la bibliothèque sont ainsi codées en dur dans le fichier du
-    programme exécutable de façon à ce qu'au démarrage du programme, le
+    programme exécutable de façon qu'au démarrage du programme, le
     chargeur Unix soit capable de localiser <code>libfoo.so</code> dans
     <code>/usr/lib</code>, dans des chemins codés en dur à l'aide d'options de
     l'éditeur de liens comme <code>-R</code> ou dans des chemins définis par la
@@ -229,7 +229,7 @@ $ apxs -cia mod_foo.c
     <p>Finalement, pour tirer profit de l'API des DSO, le programme exécutable
     doit résoudre certains symboles du DSO à l'aide de l'appel système
     <code>dlsym()</code> pour une utilisation ultérieure dans les tables de
-    distribution, <em>etc...</em> En d'autres termes, le programme exécutable doit
+    distribution, <em>etc.</em> En d'autres termes, le programme exécutable doit
     résoudre manuellement tous les symboles dont il a besoin pour pouvoir les
     utiliser.
     Avantage d'un tel mécanisme : les modules optionnels du programme n'ont pas
@@ -241,8 +241,8 @@ $ apxs -cia mod_foo.c
     <p>Bien que ce mécanisme DSO paraisse évident, il comporte au moins une
     étape difficile : la résolution des symboles depuis le programme exécutable
     pour le DSO lorsqu'on utilise un DSO pour étendre les fonctionnalités d'un
-    programme (la seconde méthode). Pourquoi ? Parce que la "résolution
-    inverse" des symboles DSO à partir du jeu de symboles du programme
+    programme (la seconde méthode). Pourquoi ? Parce que la «&nbsp;résolution
+    inverse&nbsp;» des symboles DSO à partir du jeu de symboles du programme
     exécutable dépend de la conception de la bibliothèque (la bibliothèque n'a
     aucune information sur le programme qui l'utilise) et n'est ni standardisée
     ni disponible sur toutes les plateformes. En pratique, les symboles globaux
@@ -273,7 +273,7 @@ $ apxs -cia mod_foo.c
       <code class="program"><a href="./programs/configure.html">configure</a></code> à la compilation. Par exemple,
       on peut ainsi exécuter différentes instances du serveur
       (standard et version SSL, version minimale et version dynamique
-      [mod_perl, mod_php], <em>etc...</em>) à partir d'une seule installation
+      [mod_perl, mod_php], <em>etc.</em>) à partir d'une seule installation
       d'Apache httpd.</li>
 
       <li>Le paquetage du serveur peut être facilement étendu avec des modules
@@ -281,7 +281,7 @@ $ apxs -cia mod_foo.c
       avantage pour les mainteneurs de paquetages destinés aux distributions,
       car ils peuvent créer un paquetage Apache httpd de base, et des paquetages
       additionnels contenant des extensions telles que PHP, mod_perl, mod_fastcgi,
-      <em>etc...</em></li>
+      <em>etc.</em></li>
 
       <li>Une facilité de prototypage des modules Apache httpd, car la paire
       DSO/<code class="program"><a href="./programs/apxs.html">apxs</a></code> vous permet d'une part de travailler en
@@ -320,7 +320,7 @@ $ apxs -cia mod_foo.c
       position (PIC).
       Il y a deux solutions pour utiliser un autre type de code : soit le
       coeur d'Apache httpd contient déjà lui-même une référence au code, soit vous
-      chargez le code vous-même via <code>dlopen()</code>.</li>
+      chargez le code vous-même à l’aide de <code>dlopen()</code>.</li>
     </ul>
 
 </div></div>
