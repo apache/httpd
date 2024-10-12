@@ -146,6 +146,7 @@
  *
  * --- rst */
 
+#include "apr_escape.h"
 #include "apr_strings.h"
 #include "apr_lib.h"
 #include "apr_hash.h"
@@ -166,6 +167,11 @@
 #include "util_time.h"
 #include "ap_mpm.h"
 #include "ap_provider.h"
+#include "apu_version.h"
+
+#if APU_MAJOR_VERSION > 1 || (APU_MAJOR_VERSION == 1 && APU_MINOR_VERSION >= 7)
+#include "apr_json.h"
+#endif
 
 #if APR_HAVE_UNISTD_H
 #include <unistd.h>
@@ -181,7 +187,10 @@ module AP_MODULE_DECLARE_DATA log_config_module;
 
 static int xfer_flags = (APR_WRITE | APR_APPEND | APR_CREATE | APR_LARGEFILE);
 static apr_fileperms_t xfer_perms = APR_OS_DEFAULT;
-static apr_hash_t *log_hash;
+
+static apr_hash_t *log_hash;  /* tag to log_struct */
+static apr_hash_t *llog_hash; /* tag to long name */
+
 static apr_status_t ap_default_log_writer(request_rec *r,
                            void *handle,
                            const char **strs,
@@ -194,6 +203,16 @@ static apr_status_t ap_buffered_log_writer(request_rec *r,
                            int *strl,
                            int nelts,
                            apr_size_t len);
+
+static ap_log_formatted_data * ap_json_log_formatter(request_rec *r,
+                           const void *handle,
+                           ap_log_formatted_data *lfd,
+                           const void *items);
+typedef struct {
+    int use_short_attribute_names;
+    int omit_null_values;
+} json_log_formatter_options;
+
 static void *ap_default_log_writer_init(apr_pool_t *p, server_rec *s,
                                         const char* name);
 static void *ap_buffered_log_writer_init(apr_pool_t *p, server_rec *s,
@@ -201,8 +220,10 @@ static void *ap_buffered_log_writer_init(apr_pool_t *p, server_rec *s,
 
 static ap_log_writer_init *ap_log_set_writer_init(ap_log_writer_init *handle);
 static ap_log_writer *ap_log_set_writer(ap_log_writer *handle);
+
 static ap_log_writer *log_writer = ap_default_log_writer;
 static ap_log_writer_init *log_writer_init = ap_default_log_writer_init;
+
 static int buffered_logs = 0; /* default unbuffered */
 static apr_array_header_t *all_buffered_logs = NULL;
 
@@ -265,7 +286,9 @@ typedef struct {
     const char *fname;
     const char *format_string;
     apr_array_header_t *format;
-    void *log_writer;
+    void *log_writer_data;
+    ap_log_formatter *log_formatter;
+    void *log_formatter_data;
     char *condition_var;
     int inherit;
     ap_expr_info_t *condition_expr;
@@ -287,8 +310,9 @@ typedef struct {
  */
 
 typedef struct {
-    ap_log_handler_fn_t *func;
-    char *arg;
+    const char *tag; /* tag that did create this lfi */
+    ap_log_handler *log_handler;
+    const char *arg;
     int condition_sense;
     int want_orig;
     apr_array_header_t *conditions;
@@ -326,7 +350,7 @@ typedef struct {
 static char *pfmt(apr_pool_t *p, int i)
 {
     if (i <= 0) {
-        return "-";
+        return NULL;
     }
     else {
         return apr_itoa(p, i);
@@ -348,7 +372,7 @@ static const char *log_remote_host(request_rec *r, char *a)
     else {
         remote_host = ap_get_useragent_host(r, REMOTE_NAME, NULL);
     }
-    return ap_escape_logitem(r->pool, remote_host);
+    return remote_host;
 }
 
 static const char *log_remote_address(request_rec *r, char *a)
@@ -368,23 +392,12 @@ static const char *log_local_address(request_rec *r, char *a)
 
 static const char *log_remote_logname(request_rec *r, char *a)
 {
-    return ap_escape_logitem(r->pool, ap_get_remote_logname(r));
+    return ap_get_remote_logname(r);
 }
 
 static const char *log_remote_user(request_rec *r, char *a)
 {
     char *rvalue = r->user;
-
-    if (rvalue == NULL) {
-        rvalue = "-";
-    }
-    else if (!*rvalue) {
-        rvalue = "\"\"";
-    }
-    else {
-        rvalue = ap_escape_logitem(r->pool, rvalue);
-    }
-
     return rvalue;
 }
 
@@ -395,49 +408,45 @@ static const char *log_request_line(request_rec *r, char *a)
      * (note the truncation before the protocol string for HTTP/0.9 requests)
      * (note also that r->the_request contains the unmodified request)
      */
-    return ap_escape_logitem(r->pool,
-                             (r->parsed_uri.password)
-                               ? apr_pstrcat(r->pool, r->method, " ",
-                                             apr_uri_unparse(r->pool,
-                                                             &r->parsed_uri, 0),
-                                             r->assbackwards ? NULL : " ",
-                                             r->protocol, NULL)
-                               : r->the_request);
+    return (r->parsed_uri.password) ? apr_pstrcat(r->pool, r->method, " ",
+                                                  apr_uri_unparse(r->pool, &r->parsed_uri, 0),
+                                                  r->assbackwards ? NULL : " ",
+                                                  r->protocol, NULL)
+                                    : r->the_request;
 }
 
 static const char *log_request_file(request_rec *r, char *a)
 {
-    return ap_escape_logitem(r->pool, r->filename);
+    return r->filename;
 }
 static const char *log_request_uri(request_rec *r, char *a)
 {
-    return ap_escape_logitem(r->pool, r->uri);
+    return r->uri;
 }
 static const char *log_request_method(request_rec *r, char *a)
 {
-    return ap_escape_logitem(r->pool, r->method);
+    return r->method;
 }
 static const char *log_request_flushed(request_rec *r, char *a)
 {
-    return (r->flushed) ? "F" : "-";
+    return (r->flushed) ? "F" : NULL;
 }
 static const char *log_log_id(request_rec *r, char *a)
 {
     if (a && !strcmp(a, "c")) {
-        return r->connection->log_id ? r->connection->log_id : "-";
+        return r->connection->log_id;
     }
     else {
-        return r->log_id ? r->log_id : "-";
+        return r->log_id;
     }
 }
 static const char *log_request_protocol(request_rec *r, char *a)
 {
-    return ap_escape_logitem(r->pool, r->protocol);
+    return r->protocol;
 }
 static const char *log_request_query(request_rec *r, char *a)
 {
-    return (r->args) ? apr_pstrcat(r->pool, "?",
-                                   ap_escape_logitem(r->pool, r->args), NULL)
+    return (r->args) ? apr_pstrcat(r->pool, "?", r->args, NULL)
                      : "";
 }
 static const char *log_status(request_rec *r, char *a)
@@ -447,13 +456,13 @@ static const char *log_status(request_rec *r, char *a)
 
 static const char *log_handler(request_rec *r, char *a)
 {
-    return ap_escape_logitem(r->pool, r->handler);
+    return r->handler;
 }
 
 static const char *clf_log_bytes_sent(request_rec *r, char *a)
 {
     if (!r->sent_bodyct || !r->bytes_sent) {
-        return "-";
+        return NULL;
     }
     else {
         return apr_off_t_toa(r->pool, r->bytes_sent);
@@ -473,12 +482,12 @@ static const char *log_bytes_sent(request_rec *r, char *a)
 
 static const char *log_header_in(request_rec *r, char *a)
 {
-    return ap_escape_logitem(r->pool, apr_table_get(r->headers_in, a));
+    return apr_table_get(r->headers_in, a);
 }
 
 static const char *log_trailer_in(request_rec *r, char *a)
 {
-    return ap_escape_logitem(r->pool, apr_table_get(r->trailers_in, a));
+    return apr_table_get(r->trailers_in, a);
 }
 
 
@@ -562,21 +571,21 @@ static const char *log_header_out(request_rec *r, char *a)
         cp = apr_table_get(r->headers_out, a);
     }
 
-    return ap_escape_logitem(r->pool, cp);
+    return cp;
 }
 
 static const char *log_trailer_out(request_rec *r, char *a)
 {
-    return ap_escape_logitem(r->pool, apr_table_get(r->trailers_out, a));
+    return apr_table_get(r->trailers_out, a);
 }
 
 static const char *log_note(request_rec *r, char *a)
 {
-    return ap_escape_logitem(r->pool, apr_table_get(r->notes, a));
+    return apr_table_get(r->notes, a);
 }
 static const char *log_env_var(request_rec *r, char *a)
 {
-    return ap_escape_logitem(r->pool, apr_table_get(r->subprocess_env, a));
+    return apr_table_get(r->subprocess_env, a);
 }
 
 static const char *log_cookie(request_rec *r, char *a)
@@ -622,7 +631,7 @@ static const char *log_cookie(request_rec *r, char *a)
                        --last;
                     }
 
-                    return ap_escape_logitem(r->pool, value);
+                    return value;
                 }
             }
             /* Iterate the remaining tokens using apr_strtok(NULL, ...) */
@@ -755,7 +764,7 @@ static const char *log_request_time(request_rec *r, char *a)
             apr_snprintf(buf, 20, "%06" APR_TIME_T_FMT, apr_time_usec(request_time));
             break;
         default:
-            return "-";
+            return NULL;
         }
         return buf;
     }
@@ -811,7 +820,7 @@ static const char *log_request_time(request_rec *r, char *a)
 }
 
 static const char *log_request_duration_microseconds(request_rec *r, char *a)
-{    
+{
     return apr_psprintf(r->pool, "%" APR_TIME_T_FMT,
                         (get_request_end_time(r) - r->request_time));
 }
@@ -839,7 +848,7 @@ static const char *log_request_duration_scaled(request_rec *r, char *a)
  */
 static const char *log_virtual_host(request_rec *r, char *a)
 {
-    return ap_escape_logitem(r->pool, r->server->server_hostname);
+    return r->server->server_hostname;
 }
 
 static const char *log_server_port(request_rec *r, char *a)
@@ -867,7 +876,7 @@ static const char *log_server_port(request_rec *r, char *a)
  */
 static const char *log_server_name(request_rec *r, char *a)
 {
-    return ap_escape_logitem(r->pool, ap_get_server_name(r));
+    return ap_get_server_name(r);
 }
 
 static const char *log_pid_tid(request_rec *r, char *a)
@@ -899,7 +908,7 @@ static const char *log_connection_status(request_rec *r, char *a)
          (r->server->keep_alive_max - r->connection->keepalives) > 0)) {
         return "+";
     }
-    return "-";
+    return NULL;
 }
 
 static const char *log_requests_on_connection(request_rec *r, char *a)
@@ -931,7 +940,7 @@ static const char *log_ssl_var_short(request_rec *r, char *a)
         return log_ssl_var(r, "SSL_CLIENT_I_DN");
     else if (!strcasecmp(a, "errcode"))
         /* Copied from mod_ssl for backward compatibility. */
-        return "-";
+        return NULL;
     else if (!strcasecmp(a, "errstr"))
         return log_ssl_var(r, "SSL_CLIENT_VERIFY_ERRSTR");
     return NULL;
@@ -948,7 +957,9 @@ static char *parse_log_misc_string(apr_pool_t *p, log_format_item *it,
     const char *s;
     char *d;
 
-    it->func = constant_item;
+    it->tag = NULL;
+    it->log_handler = apr_palloc(p, sizeof(*it->log_handler));
+    it->log_handler->func = constant_item;
     it->conditions = NULL;
 
     s = *sa;
@@ -959,9 +970,8 @@ static char *parse_log_misc_string(apr_pool_t *p, log_format_item *it,
      * This might allocate a few chars extra if there's a backslash
      * escape in the format string.
      */
-    it->arg = apr_palloc(p, s - *sa + 1);
+    it->arg = d = apr_palloc(p, s - *sa + 1);
 
-    d = it->arg;
     s = *sa;
     while (*s && *s != '%') {
         if (*s != '\\') {
@@ -1019,7 +1029,8 @@ static char *parse_log_item(apr_pool_t *p, log_format_item *it, const char **sa)
 
     if (*s == '%') {
         it->arg = "%";
-        it->func = constant_item;
+        it->log_handler = apr_palloc(p, sizeof(*it->log_handler));
+        it->log_handler->func = constant_item;
         *sa = ++s;
 
         return NULL;
@@ -1027,6 +1038,7 @@ static char *parse_log_item(apr_pool_t *p, log_format_item *it, const char **sa)
 
     it->want_orig = -1;
     it->arg = "";               /* For safety's sake... */
+    it->tag = NULL;
 
     while (*s) {
         int i;
@@ -1078,24 +1090,26 @@ static char *parse_log_item(apr_pool_t *p, log_format_item *it, const char **sa)
 
         default:
             /* check for '^' + two character format first */
-            if (*s == '^' && *(s+1) && *(s+2)) { 
-                handler = (ap_log_handler *)apr_hash_get(log_hash, s, 3); 
-                if (handler) { 
+            if (*s == '^' && *(s+1) && *(s+2)) {
+                handler = (ap_log_handler *)apr_hash_get(log_hash, s, 3);
+                if (handler) {
+                   it->tag = apr_pstrmemdup(p, s, 3);
                    s += 3;
                 }
             }
-            if (!handler) {  
-                handler = (ap_log_handler *)apr_hash_get(log_hash, s++, 1);  
-            }
             if (!handler) {
-                char dummy[2];
+                handler = (ap_log_handler *)apr_hash_get(log_hash, s, 1);
+                if (!handler) {
+                    char dummy[2];
 
-                dummy[0] = s[-1];
-                dummy[1] = '\0';
-                return apr_pstrcat(p, "Unrecognized LogFormat directive %",
-                               dummy, NULL);
+                    dummy[0] = s[0];
+                    dummy[1] = '\0';
+                    return apr_pstrcat(p, "Unrecognized LogFormat directive %",
+                                   dummy, NULL);
+                }
+                it->tag = apr_pstrmemdup(p, s++, 1);
             }
-            it->func = handler->func;
+            it->log_handler = handler;
             if (it->want_orig == -1) {
                 it->want_orig = handler->want_orig_default;
             }
@@ -1150,14 +1164,14 @@ static const char *process_item(request_rec *r, request_rec *orig,
 
         if ((item->condition_sense && in_list)
             || (!item->condition_sense && !in_list)) {
-            return "-";
+            return NULL;
         }
     }
 
     /* We do.  Do it... */
 
-    cp = (*item->func) (item->want_orig ? orig : r, item->arg);
-    return cp ? cp : "-";
+    cp = (*item->log_handler->func) (item->want_orig ? orig : r, (char *)item->arg);
+    return cp;
 }
 
 static void flush_log(buffered_log *buf)
@@ -1174,11 +1188,9 @@ static int config_log_transaction(request_rec *r, config_log_state *cls,
                                   apr_array_header_t *default_format)
 {
     log_format_item *items;
-    const char **strs;
-    int *strl;
+    ap_log_formatted_data *lfd;
     request_rec *orig;
     int i;
-    apr_size_t len = 0;
     apr_array_header_t *format;
     char *envar;
     apr_status_t rv;
@@ -1216,8 +1228,11 @@ static int config_log_transaction(request_rec *r, config_log_state *cls,
 
     format = cls->format ? cls->format : default_format;
 
-    strs = apr_palloc(r->pool, sizeof(char *) * (format->nelts));
-    strl = apr_palloc(r->pool, sizeof(int) * (format->nelts));
+    lfd = apr_palloc(r->pool, sizeof(ap_log_formatted_data));
+    lfd->portions = apr_palloc(r->pool, sizeof(char *) * (format->nelts));
+    lfd->lengths = apr_palloc(r->pool, sizeof(int) * (format->nelts));
+    lfd->nelts = format->nelts;
+    lfd->total_len = 0;
     items = (log_format_item *) format->elts;
 
     orig = r;
@@ -1229,8 +1244,29 @@ static int config_log_transaction(request_rec *r, config_log_state *cls,
     }
 
     for (i = 0; i < format->nelts; ++i) {
-        strs[i] = process_item(r, orig, &items[i]);
-        len += strl[i] = strlen(strs[i]);
+        lfd->portions[i] = process_item(r, orig, &items[i]);
+
+        /* if we don't have a custom log formatter,
+         * handle NULL, and empty string also escape all values unconditionally,
+         * else let the custom log formatter handle the escaping/formatting
+         */
+        if (!cls->log_formatter && !items[i].log_handler->does_escape) {
+            if (!lfd->portions[i]) {
+                lfd->portions[i] = "-";
+            }
+            else if (!*lfd->portions[i]) {
+                lfd->portions[i] = "\"\"";
+            }
+            else {
+                if(items[i].tag) { /* or check for constant_item function, don't escape those */
+                    lfd->portions[i] = ap_escape_logitem(r->pool, lfd->portions[i]);
+                }
+            }
+        }
+
+        if(lfd->portions[i]) {
+            lfd->total_len += lfd->lengths[i] = strlen(lfd->portions[i]);
+        }
     }
 
     if (!log_writer) {
@@ -1238,7 +1274,12 @@ static int config_log_transaction(request_rec *r, config_log_state *cls,
                 "log writer isn't correctly setup");
         return HTTP_INTERNAL_SERVER_ERROR;
     }
-    rv = log_writer(r, cls->log_writer, strs, strl, format->nelts, len);
+
+    if (cls->log_formatter) {
+        lfd = cls->log_formatter(r, cls->log_formatter_data, lfd, items);
+    }
+
+    rv = log_writer(r, cls->log_writer_data, lfd->portions, lfd->lengths, lfd->nelts, lfd->total_len);
     if (rv != APR_SUCCESS) {
         ap_log_rerror(APLOG_MARK, APLOG_WARNING, rv, r, APLOGNO(00646)
                       "Error writing to %s", cls->fname);
@@ -1355,26 +1396,64 @@ static const char *log_format(cmd_parms *cmd, void *dummy, const char *fmt,
 }
 
 
-static const char *add_custom_log(cmd_parms *cmd, void *dummy, const char *fn,
-                                  const char *fmt, const char *envclause)
+static int compare_log_format_item_by_tag(const void *i1, const void *i2) {
+    const log_format_item *lfi1 = i1;
+    const log_format_item *lfi2 = i2;
+    const char *t1 = lfi1->tag;
+    const char* t2 = lfi2->tag;
+    if(!t1) {
+        t1 = "";
+    }
+    if(!t2) {
+        t2 = "";
+    }
+    return strcmp(t1, t2);
+}
+
+static const char *add_custom_log(cmd_parms *cmd, void *dummy,
+                                  int argc,
+                                  char *const argv[])
 {
     const char *err_string = NULL;
     multi_log_state *mls = ap_get_module_config(cmd->server->module_config,
                                                 &log_config_module);
     config_log_state *cls;
 
+    const char *fn;
+    const char *fmt;
+
+    const char* envclause = NULL;
+    char* token;
+
+    int i;
+
     cls = (config_log_state *) apr_array_push(mls->config_logs);
     cls->condition_var = NULL;
     cls->condition_expr = NULL;
-    if (envclause != NULL) {
-        if (strncasecmp(envclause, "env=", 4) == 0) {
+    cls->log_writer_data = NULL;
+    cls->log_formatter = NULL;
+    cls->log_formatter_data = NULL;
+
+    if (argc < 2) {
+           return "wrong number of arguments";
+    }
+
+    fn = argv[0];
+    fmt = argv[1];
+
+    for (i = 2; i < argc; i++) {
+        if (argv[i] == NULL)
+            continue;
+
+        envclause = argv[i];
+        if (strncasecmp(argv[i], "env=", 4) == 0) {
             if ((envclause[4] == '\0')
                 || ((envclause[4] == '!') && (envclause[5] == '\0'))) {
                 return "missing environment variable name";
             }
             cls->condition_var = apr_pstrdup(cmd->pool, &envclause[4]);
         }
-        else if (strncasecmp(envclause, "expr=", 5) == 0) {
+        else if (strncasecmp(argv[i], "expr=", 5) == 0) {
             const char *err;
             if ((envclause[5] == '\0'))
                 return "missing condition";
@@ -1383,6 +1462,21 @@ static const char *add_custom_log(cmd_parms *cmd, void *dummy, const char *fn,
                                                     &err, NULL);
             if (err)
                 return err;
+        }
+        else if (strncasecmp(argv[i], "formatter=", 10) == 0) {
+            if (strncasecmp(argv[i], "formatter=json", 14) == 0) {
+                cls->log_formatter = ap_json_log_formatter;
+                cls->log_formatter_data = apr_pcalloc(cmd->pool, sizeof(json_log_formatter_options));
+                ((json_log_formatter_options *)cls->log_formatter_data)->omit_null_values = 1;
+
+                token = strtok(argv[i], ",");
+                while (token != NULL) {
+                    if(strcasecmp(token, "short") == 0) {
+                        ((json_log_formatter_options *)cls->log_formatter_data)->use_short_attribute_names = 1;
+                    }
+                    token = strtok(NULL, ",");
+                }
+            }
         }
         else {
             return "error in condition clause";
@@ -1397,14 +1491,23 @@ static const char *add_custom_log(cmd_parms *cmd, void *dummy, const char *fn,
     }
     else {
         cls->format = parse_log_string(cmd->pool, fmt, &err_string);
+        /* if fmt string was actually a nickname,
+         * cls->format will not be NULL, but an array with one entry (APR_EOL_STR)
+         * but cls->format_string will have the nickname
+         * lookup will then happen in open_multi_logs()!
+         * TODO: I assume the lookup cannot happen here for ordering reasons
+         *       of the config processing?!
+         * TODO: actually those kind of consistency checks should be done in
+         *       "ap_hook_check_config(log_check_config" IMHO and not in open_multi_logs!
+         */
     }
-    cls->log_writer = NULL;
 
     return err_string;
 }
 
-static const char *add_global_log(cmd_parms *cmd, void *dummy, const char *fn,
-                                  const char *fmt, const char *envclause) {
+static const char *add_global_log(cmd_parms *cmd, void *dummy,
+                                  int argc,
+                                  char *const argv[]) {
     multi_log_state *mls = ap_get_module_config(cmd->server->module_config,
                                                 &log_config_module);
     config_log_state *clsarray;
@@ -1412,13 +1515,12 @@ static const char *add_global_log(cmd_parms *cmd, void *dummy, const char *fn,
     const char *ret;
 
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
-
     if (err) {
         return err;
     }
 
     /* Add a custom log through the normal channel */
-    ret = add_custom_log(cmd, dummy, fn, fmt, envclause);
+    ret = add_custom_log(cmd, dummy, argc, argv);
 
     /* Set the inherit flag unless there was some error */
     if (ret == NULL) {
@@ -1433,7 +1535,8 @@ static const char *add_global_log(cmd_parms *cmd, void *dummy, const char *fn,
 static const char *set_transfer_log(cmd_parms *cmd, void *dummy,
                                     const char *fn)
 {
-    return add_custom_log(cmd, dummy, fn, NULL, NULL);
+    char *const argv[] = {(char *)fn, NULL, NULL};
+    return add_custom_log(cmd, dummy, sizeof(argv)/sizeof(argv[0]), argv);
 }
 
 static const char *set_buffered_logs_on(cmd_parms *parms, void *dummy, int flag)
@@ -1449,12 +1552,13 @@ static const char *set_buffered_logs_on(cmd_parms *parms, void *dummy, int flag)
     }
     return NULL;
 }
+
 static const command_rec config_log_cmds[] =
 {
-AP_INIT_TAKE23("CustomLog", add_custom_log, NULL, RSRC_CONF,
+AP_INIT_TAKE_ARGV("CustomLog", add_custom_log, NULL, RSRC_CONF,
      "a file name, a custom log format string or format name, "
      "and an optional \"env=\" or \"expr=\" clause (see docs)"),
-AP_INIT_TAKE23("GlobalLog", add_global_log, NULL, RSRC_CONF,
+AP_INIT_TAKE_ARGV("GlobalLog", add_global_log, NULL, RSRC_CONF,
      "Same as CustomLog, but forces virtualhosts to inherit the log"),
 AP_INIT_TAKE1("TransferLog", set_transfer_log, NULL, RSRC_CONF,
      "the filename of the access log"),
@@ -1469,7 +1573,7 @@ static config_log_state *open_config_log(server_rec *s, apr_pool_t *p,
                                          config_log_state *cls,
                                          apr_array_header_t *default_format)
 {
-    if (cls->log_writer != NULL) {
+    if (cls->log_writer_data != NULL) {
         return cls;             /* virtual config shared w/main server */
     }
 
@@ -1477,9 +1581,20 @@ static config_log_state *open_config_log(server_rec *s, apr_pool_t *p,
         return cls;             /* Leave it NULL to decline.  */
     }
 
-    cls->log_writer = log_writer_init(p, s, cls->fname);
-    if (cls->log_writer == NULL)
+    cls->log_writer_data = log_writer_init(p, s, cls->fname);
+    if (cls->log_writer_data == NULL)
         return NULL;
+
+    /* sort log_format_items array, to help json formatter in gruppenwechsel */
+    if (cls->log_formatter == ap_json_log_formatter /* sort_log_format_items */ ) {
+        /* no valid cls->format given in format string,
+           use default_format, if any valid */
+        if (!cls->format && default_format) {
+            /* copy here to not confuse non-json formatters */
+            cls->format = apr_array_copy(p, default_format);
+        }
+        qsort(cls->format->elts, cls->format->nelts, cls->format->elt_size, compare_log_format_item_by_tag);
+    }
 
     return cls;
 }
@@ -1501,6 +1616,9 @@ static int open_multi_logs(server_rec *s, apr_pool_t *p)
     }
 
     if (!mls->default_format) {
+        /* TODO: may use "CLF" instead from mls->formats here
+         *       which is added in make_config_log_state
+         */
         mls->default_format = parse_log_string(p, DEFAULT_LOG_FORMAT, &dummy);
     }
 
@@ -1569,7 +1687,7 @@ static apr_status_t flush_all_logs(void *data)
         if (log_list) {
             clsarray = (config_log_state *) log_list->elts;
             for (i = 0; i < log_list->nelts; ++i) {
-                buf = clsarray[i].log_writer;
+                buf = clsarray[i].log_writer_data;
                 flush_log(buf);
             }
         }
@@ -1641,23 +1759,35 @@ static void init_child(apr_pool_t *p, server_rec *s)
     }
 }
 
-static void ap_register_log_handler(apr_pool_t *p, char *tag,
-                                    ap_log_handler_fn_t *handler, int def)
+static void ap_register_log_handler_ex(apr_pool_t *p, const char *tag,
+                                    const char *long_name,
+                                    ap_log_handler_fn_t *handler, int def, int does_escape)
 {
     ap_log_handler *log_struct = apr_palloc(p, sizeof(*log_struct));
     log_struct->func = handler;
     log_struct->want_orig_default = def;
+    log_struct->does_escape = does_escape;
 
     apr_hash_set(log_hash, tag, strlen(tag), (const void *)log_struct);
+    if(long_name) {
+        apr_hash_set(llog_hash, tag, strlen(tag), long_name);
+    }
 }
+
+static void ap_register_log_handler(apr_pool_t *p, char *tag,
+                                    ap_log_handler_fn_t *handler, int def)
+{
+    ap_register_log_handler_ex(p, tag, NULL, handler, def, 1);
+}
+
 static ap_log_writer_init *ap_log_set_writer_init(ap_log_writer_init *handle)
 {
     ap_log_writer_init *old = log_writer_init;
     log_writer_init = handle;
 
     return old;
-
 }
+
 static ap_log_writer *ap_log_set_writer(ap_log_writer *handle)
 {
     ap_log_writer *old = log_writer;
@@ -1666,13 +1796,327 @@ static ap_log_writer *ap_log_set_writer(ap_log_writer *handle)
     return old;
 }
 
+#if APU_MAJOR_VERSION > 1 || (APU_MAJOR_VERSION == 1 && APU_MINOR_VERSION >= 7)
+static apr_status_t apr_brigade_to_log_formatted_data(apr_bucket_brigade *bb,
+                                     ap_log_formatted_data *lfd,
+                                     apr_pool_t *p)
+{
+    apr_status_t rv = APR_SUCCESS;
+    const char *str;
+    apr_size_t len;
+    apr_bucket *b;
+    int n = 0, i = 0;
+
+    /* first count elements */
+    for (b = APR_BRIGADE_FIRST(bb);
+         b != APR_BRIGADE_SENTINEL(bb);
+         b = APR_BUCKET_NEXT(b)) {
+         n++;
+    }
+
+    lfd->portions = apr_palloc(p, sizeof(char*) * n);
+    lfd->lengths = apr_palloc(p, sizeof(int) * n);
+    lfd->total_len = 0;
+    lfd->nelts = 0;
+
+    for (b = APR_BRIGADE_FIRST(bb);
+         b != APR_BRIGADE_SENTINEL(bb);
+         b = APR_BUCKET_NEXT(b), i++) {
+        rv = apr_bucket_read(b, &str, &len, APR_NONBLOCK_READ);
+        if (rv != APR_SUCCESS) {
+            break;
+        }
+        if (len) {
+            lfd->portions[i] = (void *)str;
+            lfd->lengths[i] = len;
+            lfd->total_len += len;
+            lfd->nelts++;
+        }
+    }
+
+    return rv;
+}
+
+static ap_log_formatted_data * ap_json_log_formatter( request_rec *r,
+                           const void *handle,
+                           ap_log_formatted_data *lfd,
+                           const void *itms)
+
+{
+    const json_log_formatter_options * formatter_options = (json_log_formatter_options *) handle;
+    const log_format_item *items = (log_format_item *) itms;
+
+    const char* attribute_name;
+    const char* attribute_value;
+
+    int i,j;
+    ap_log_formatted_data *lfdj = apr_palloc(r->pool, sizeof(ap_log_formatted_data));
+
+    apr_bucket_alloc_t *ba;
+    apr_bucket_brigade *bb;
+
+    apr_json_value_t *sub_log_object;
+    apr_json_value_t *json_null = apr_json_null_create(r->pool);
+    apr_json_value_t *json_empty_string = apr_json_string_create(r->pool, "\"\"", APR_JSON_VALUE_STRING);
+
+    /* build log object */
+    apr_json_value_t *log_object = apr_json_object_create(r->pool);
+
+    for (i = 0; i < lfd->nelts; ++i) {
+        if(!items[i].tag) {
+            continue;
+        }
+
+        if (formatter_options->use_short_attribute_names) {
+            attribute_name = NULL;
+        }
+        else {
+            attribute_name = apr_hash_get(llog_hash, items[i].tag, APR_HASH_KEY_STRING);
+        }
+
+        if (!attribute_name) {
+            attribute_name = items[i].tag; /* fallback: use tag as attribute name */
+        }
+
+        /* if the current tag has arguments, i.e. "i" (requestHeaders)
+         * create a sub object with items[i].arg as key and lfd->portions[i] values.
+         *
+         * as multiple same tags with different arguments can exist,
+         * the log_format_item is sorted before, so we can easily check for
+         * gruppenwechsel
+         */
+        if(items[i].arg != NULL && strlen(items[i].arg) > 0) {
+            /* start sub object */
+            sub_log_object = apr_json_object_create(r->pool);
+            for (j = i; j < lfd->nelts; ++j) {
+                /* skip empty tags, if any */
+                if(!items[j].tag) {
+                    continue;
+                }
+
+                /* is gruppenwechsel */
+                if(j > i && strcmp(items[j].tag, items[i].tag) != 0) {
+                    break;
+                }
+
+                attribute_name = items[j].arg;
+                if (!lfd->portions[j]) {
+                    if (!formatter_options->omit_null_values) {
+                        apr_json_object_set(sub_log_object,
+                                            attribute_name, APR_JSON_VALUE_STRING,
+                                            json_null, r->pool);
+                    }
+                }
+                else if (!*lfd->portions[j]) {
+                    apr_json_object_set(sub_log_object,
+                                        attribute_name, APR_JSON_VALUE_STRING,
+                                        json_empty_string,
+                                        r->pool);
+                }
+                else {
+                    attribute_value = lfd->portions[j];
+                    apr_json_object_set(sub_log_object,
+                                        attribute_name, APR_JSON_VALUE_STRING,
+                                        apr_json_string_create(r->pool, attribute_value,
+                                                               APR_JSON_VALUE_STRING),
+                                        r->pool);
+                }
+            }
+
+            if (apr_json_object_first(sub_log_object)) {
+                apr_json_object_set(log_object,
+                                    attribute_name, APR_JSON_VALUE_STRING,
+                                    sub_log_object,
+                                    r->pool);
+            }
+
+            /* restart outer loop with current item */
+            i = j - 1;
+            continue;
+        }
+
+        if (!lfd->portions[i]) {
+            if (!formatter_options->omit_null_values) {
+                apr_json_object_set(log_object,
+                                    attribute_name, APR_JSON_VALUE_STRING,
+                                    json_null, r->pool);
+            }
+        }
+        else if (!*lfd->portions[i]) {
+            apr_json_object_set(log_object,
+                                attribute_name, APR_JSON_VALUE_STRING,
+                                json_empty_string,
+                                r->pool);
+        }
+        else {
+            attribute_value = lfd->portions[i];
+            apr_json_object_set(log_object,
+                                attribute_name, APR_JSON_VALUE_STRING,
+                                apr_json_string_create(r->pool, attribute_value,
+                                                       APR_JSON_VALUE_STRING),
+                                r->pool);
+        }
+    }
+
+    ba = apr_bucket_alloc_create(r->pool);
+    bb = apr_brigade_create(r->pool, ba);
+
+    /* encode into bucket brigade */
+    apr_json_encode(bb, NULL, NULL, log_object, APR_JSON_FLAGS_WHITESPACE, r->pool);
+    apr_brigade_puts(bb, NULL, NULL, APR_EOL_STR);
+    apr_brigade_to_log_formatted_data(bb, lfdj, r->pool);
+    return lfdj;
+}
+#else
+static apr_size_t add_str(apr_array_header_t * ah_strs, apr_array_header_t * ah_strl, const char *str)
+{
+    char** strs = apr_array_push(ah_strs);
+    int* strl = apr_array_push(ah_strl);
+
+    *strs = (char*) str;
+    *strl = strlen(str);
+
+    return *strl;
+}
+
+static ap_log_formatted_data * ap_json_log_formatter( request_rec *r,
+                           const void *handle,
+                           ap_log_formatted_data *lfd,
+                           const void *itms)
+
+{
+    const json_log_formatter_options * formatter_options = (json_log_formatter_options *) handle;
+    const log_format_item *items = (log_format_item *) itms;
+
+    const char* attribute_name;
+
+    int i,j;
+
+    apr_size_t total_len_sub;
+    apr_array_header_t *strs_sub;
+    apr_array_header_t *strl_sub;
+
+    ap_log_formatted_data *lfdj = apr_palloc(r->pool, sizeof(ap_log_formatted_data));
+    apr_array_header_t *strs = apr_array_make(r->pool, lfd->nelts * 3, sizeof(char *)); /* array of pointers to char */
+    apr_array_header_t *strl = apr_array_make(r->pool, lfd->nelts * 3, sizeof(int));    /* array of int (strlen) */
+
+    lfdj->total_len = 0;
+
+    /* build json object */
+    lfdj->total_len += add_str(strs, strl, "{");
+    for (i = 0; i < lfd->nelts; ++i) {
+        if(items[i].tag == NULL) {
+            continue;
+        }
+
+        if (formatter_options->use_short_attribute_names) {
+            attribute_name = NULL;
+        }
+        else {
+            attribute_name = apr_hash_get(llog_hash, items[i].tag, APR_HASH_KEY_STRING);
+        }
+
+        if (!attribute_name) {
+            attribute_name = ap_pescape_json(r->pool, items[i].tag, APR_ESCAPE_STRING, 0); /* use tag as attribute name as fallback */
+        }
+
+        /* if the current tag has arguments, i.e. "i" (requestHeaders)
+         * create a sub object with items[i].arg as key and lfd->portions[i] values.
+         *
+         * as multiple same tags with different arguments can exist,
+         * the log_format_item is sorted before, so we can easily check for
+         * gruppenwechsel
+         */
+        if(items[i].arg != NULL && strlen(items[i].arg) > 0) {
+            /* TODO: or allocate once at the begining and use apr_array_clear here? */
+            /* start sub object */
+            strs_sub = apr_array_make(r->pool, 3, sizeof(char *)); /* array of pointers to char */
+            strl_sub = apr_array_make(r->pool, 3, sizeof(int));    /* array of int (strlen) */
+            total_len_sub = 0;
+
+            total_len_sub += add_str(strs_sub, strl_sub, "{");
+            for (j = i; j < lfd->nelts; ++j) {
+                /* skip empty tags, if any */
+                if(!items[j].tag) {
+                    continue;
+                }
+
+                /* is gruppenwechsel */
+                if(j > i && strcmp(items[j].tag, items[i].tag) != 0) {
+                    break;
+                }
+
+                if(!lfd->portions[j]) {
+                    if (formatter_options->omit_null_values) {
+                        continue;
+                    }
+                }
+
+                total_len_sub += add_str(strs_sub, strl_sub, ap_pescape_json(r->pool, items[j].arg, APR_ESCAPE_STRING, 1));
+                total_len_sub += add_str(strs_sub, strl_sub, ":");
+                total_len_sub += add_str(strs_sub, strl_sub, ap_pescape_json(r->pool, lfd->portions[j], APR_ESCAPE_STRING, 1));
+                total_len_sub += add_str(strs_sub, strl_sub, ",");
+            }
+            if (total_len_sub > 1) {
+                /* remove last "," */
+                apr_array_pop(strs_sub);
+                total_len_sub -= *(int *)apr_array_pop(strl_sub);
+
+                /* end sub object */
+                total_len_sub += add_str(strs_sub, strl_sub, "}");
+
+                /* append to super object */
+                lfdj->total_len += add_str(strs, strl, "\"");
+                lfdj->total_len += add_str(strs, strl, attribute_name);
+                lfdj->total_len += add_str(strs, strl, "\":");
+
+                apr_array_cat(strs, strs_sub);
+                apr_array_cat(strl, strl_sub);
+                lfdj->total_len += total_len_sub;
+
+                lfdj->total_len += add_str(strs, strl, ",");
+            }
+
+            /* restart outer loop with current item */
+            i = j - 1;
+            continue;
+        }
+
+        if(!lfd->portions[i]) {
+            if (formatter_options->omit_null_values) {
+                continue;
+            }
+        }
+
+        lfdj->total_len += add_str(strs, strl, "\"");
+        lfdj->total_len += add_str(strs, strl, attribute_name);
+        lfdj->total_len += add_str(strs, strl, "\":");
+        lfdj->total_len += add_str(strs, strl, ap_pescape_json(r->pool, lfd->portions[i], APR_ESCAPE_STRING, 1));
+        lfdj->total_len += add_str(strs, strl, ",");
+    }
+
+    if (lfdj->total_len > 1) {
+        /* replace last ',' with '}' */
+        apr_array_pop(strs);
+        lfdj->total_len -= *(int *)apr_array_pop(strl);
+    }
+
+    /* close object */
+    lfdj->total_len += add_str(strs, strl, "}" APR_EOL_STR);
+
+    lfdj->portions = (const char **)strs->elts;
+    lfdj->lengths = (int *)strl->elts;
+    lfdj->nelts = strs->nelts;
+    return lfdj;
+}
+#endif
+
 static apr_status_t ap_default_log_writer( request_rec *r,
                            void *handle,
                            const char **strs,
                            int *strl,
                            int nelts,
                            apr_size_t len)
-
 {
     default_log_writer *log_writer = handle;
     char *str;
@@ -1749,7 +2193,7 @@ static void *ap_default_log_writer_init(apr_pool_t *p, server_rec *s,
         provider_name, AP_ERRORLOG_PROVIDER_VERSION)) != NULL) {
         void *provider_handle;
         errorlog_provider_data *provider_data;
-    
+
         provider_handle = provider->init(p, s);
         if (!provider_handle) {
             /* provider must log something to the console */
@@ -1854,52 +2298,63 @@ static apr_status_t ap_buffered_log_writer(request_rec *r,
 
 static int log_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp)
 {
-    static APR_OPTIONAL_FN_TYPE(ap_register_log_handler) *log_pfn_register;
+    static APR_OPTIONAL_FN_TYPE(ap_register_log_handler_ex) *log_pfn_register;
 
-    log_pfn_register = APR_RETRIEVE_OPTIONAL_FN(ap_register_log_handler);
+    log_pfn_register = APR_RETRIEVE_OPTIONAL_FN(ap_register_log_handler_ex);
 
+    /*
+     * long names should align with tomcat attribute names:
+     * https://github.com/apache/tomcat/blob/9.0.x/java/org/apache/catalina/valves/JsonAccessLogValve.java#L78
+     * also interessting is fluentd resp. fluent-bit:
+     * - https://github.com/fluent/fluentd/blob/master/lib/fluent/plugin/parser_apache2.rb#L72
+     */
     if (log_pfn_register) {
-        log_pfn_register(p, "h", log_remote_host, 0);
-        log_pfn_register(p, "a", log_remote_address, 0 );
-        log_pfn_register(p, "A", log_local_address, 0 );
-        log_pfn_register(p, "l", log_remote_logname, 0);
-        log_pfn_register(p, "u", log_remote_user, 0);
-        log_pfn_register(p, "t", log_request_time, 0);
-        log_pfn_register(p, "f", log_request_file, 0);
-        log_pfn_register(p, "b", clf_log_bytes_sent, 0);
-        log_pfn_register(p, "B", log_bytes_sent, 0);
-        log_pfn_register(p, "i", log_header_in, 0);
-        log_pfn_register(p, "o", log_header_out, 0);
-        log_pfn_register(p, "n", log_note, 0);
-        log_pfn_register(p, "L", log_log_id, 1);
-        log_pfn_register(p, "e", log_env_var, 0);
-        log_pfn_register(p, "V", log_server_name, 0);
-        log_pfn_register(p, "v", log_virtual_host, 0);
-        log_pfn_register(p, "p", log_server_port, 0);
-        log_pfn_register(p, "P", log_pid_tid, 0);
-        log_pfn_register(p, "H", log_request_protocol, 0);
-        log_pfn_register(p, "m", log_request_method, 0);
-        log_pfn_register(p, "q", log_request_query, 0);
-        log_pfn_register(p, "F", log_request_flushed, 1);
-        log_pfn_register(p, "X", log_connection_status, 0);
-        log_pfn_register(p, "C", log_cookie, 0);
-        log_pfn_register(p, "k", log_requests_on_connection, 0);
-        log_pfn_register(p, "r", log_request_line, 1);
-        log_pfn_register(p, "D", log_request_duration_microseconds, 1);
-        log_pfn_register(p, "T", log_request_duration_scaled, 1);
-        log_pfn_register(p, "U", log_request_uri, 1);
-        log_pfn_register(p, "s", log_status, 1);
-        log_pfn_register(p, "R", log_handler, 1);
+        log_pfn_register(p, "a", "remoteAddr", log_remote_address, 0, 0);
+        log_pfn_register(p, "A", "localAddr", log_local_address, 0, 0);
+        log_pfn_register(p, "b", "size", clf_log_bytes_sent, 0, 0);
+        log_pfn_register(p, "B", "byteSentNC", log_bytes_sent, 0, 0);
+        log_pfn_register(p, "C", "cookie", log_cookie, 0, 0); /* tomcat: "c" */
+        log_pfn_register(p, "D", "elapsedTime", log_request_duration_microseconds, 1, 0);
+        log_pfn_register(p, "e", "env", log_env_var, 0, 0);
+        log_pfn_register(p, "f", "file", log_request_file, 0, 0);
+        log_pfn_register(p, "F", "requestFlushed", log_request_flushed, 1, 0);
+        log_pfn_register(p, "h", "host", log_remote_host, 0, 0);
+        log_pfn_register(p, "H", "protocol", log_request_protocol, 0, 0);
+        log_pfn_register(p, "i", "requestHeaders", log_header_in, 0, 0);
+        log_pfn_register(p, "k", "requestsOnConnection", log_requests_on_connection, 0, 0);
+        log_pfn_register(p, "l", "logicalUserName", log_remote_logname, 0, 0);
+        log_pfn_register(p, "L", "logId", log_log_id, 1, 0);
+        log_pfn_register(p, "m", "method", log_request_method, 0, 0);
+        log_pfn_register(p, "n", "note", log_note, 0, 0);
+        log_pfn_register(p, "o", "responseHeaders", log_header_out, 0, 0);
+        log_pfn_register(p, "p", "port", log_server_port, 0, 0);
+        log_pfn_register(p, "P", "threadId", log_pid_tid, 0, 0);
+        log_pfn_register(p, "q", "query", log_request_query, 0, 0);
+        log_pfn_register(p, "r", "request", log_request_line, 1, 0);
+        log_pfn_register(p, "R", "handler", log_handler, 1, 0);
+        log_pfn_register(p, "s", "statusCode", log_status, 1, 0);
+        log_pfn_register(p, "t", "time", log_request_time, 0, 0);
+        log_pfn_register(p, "T", "elapsedTimeS", log_request_duration_scaled, 1, 0);
+        log_pfn_register(p, "u", "user", log_remote_user, 0, 0);
+        log_pfn_register(p, "U", "path", log_request_uri, 1, 0);
+        log_pfn_register(p, "v", "virtualHost", log_virtual_host, 0, 0); /* tomcat: localServerName */
+        log_pfn_register(p, "V", "serverName", log_server_name, 0, 0);
+        log_pfn_register(p, "X", "connectionStatus", log_connection_status, 0, 0);
 
-        log_pfn_register(p, "^ti", log_trailer_in, 0);
-        log_pfn_register(p, "^to", log_trailer_out, 0);
+        /* TODO: long names for
+         * - "^ti", "^to", "c" and "x" -> new in trunk?
+         * - mod_logio does register: "I", "O", "S", "^FU" and "^FB"
+         */
+
+        log_pfn_register(p, "^ti", NULL, log_trailer_in, 0, 0);
+        log_pfn_register(p, "^to", NULL, log_trailer_out, 0, 0);
 
         /* these used to be part of mod_ssl, but with the introduction
          * of ap_ssl_var_lookup() they are added here directly so lookups
          * from all installed SSL modules work.
          * We keep the old tag names to remain backward compatible. */
-        log_pfn_register(p, "c", log_ssl_var_short, 0);
-        log_pfn_register(p, "x", log_ssl_var, 0);
+        log_pfn_register(p, "c", NULL, log_ssl_var_short, 0, 0);
+        log_pfn_register(p, "x", NULL, log_ssl_var, 0, 0);
     }
 
     /* reset to default conditions */
@@ -1974,7 +2429,9 @@ static void register_hooks(apr_pool_t *p)
      * before calling APR_REGISTER_OPTIONAL_FN.
      */
     log_hash = apr_hash_make(p);
+    llog_hash = apr_hash_make(p);
     APR_REGISTER_OPTIONAL_FN(ap_register_log_handler);
+    APR_REGISTER_OPTIONAL_FN(ap_register_log_handler_ex);
     APR_REGISTER_OPTIONAL_FN(ap_log_set_writer_init);
     APR_REGISTER_OPTIONAL_FN(ap_log_set_writer);
 }
