@@ -95,7 +95,7 @@ jobs:
             config: --enable-mods-shared=reallyall
             env: |
               APR_VERSION=1.7.x
-              APR_CONFIG="--enable-pool-debug"
+              APR_CONFIG="--enable-pool-debug ac_cv_o_nonblock_inherited=yes"
               APU_VERSION=1.7.x
               APU_CONFIG="--with-crypto --with-ldap"
               TEST_MALLOC=1
@@ -105,7 +105,7 @@ jobs:
             config: --enable-mods-shared=reallyall --enable-mpms-shared=all --with-mpm=event
             env: |
               APR_VERSION=1.7.x
-              APR_CONFIG="--enable-pool-debug"
+              APR_CONFIG="--enable-pool-debug ac_cv_o_nonblock_inherited=yes"
               APU_VERSION=1.7.x
               APU_CONFIG="--with-crypto --with-ldap"
               TEST_MALLOC=1
@@ -116,7 +116,7 @@ jobs:
             config: --enable-mods-shared=reallyall --enable-mpms-shared=all --with-mpm=worker
             env: |
               APR_VERSION=1.7.x
-              APR_CONFIG="--enable-pool-debug"
+              APR_CONFIG="--enable-pool-debug ac_cv_o_nonblock_inherited=yes"
               APU_VERSION=1.7.x
               APU_CONFIG="--with-crypto --with-ldap"
               TEST_MALLOC=1
@@ -127,7 +127,7 @@ jobs:
             config: --enable-mods-shared=reallyall --enable-mpms-shared=all --with-mpm=prefork
             env: |
               APR_VERSION=1.7.x
-              APR_CONFIG="--enable-pool-debug"
+              APR_CONFIG="--enable-pool-debug ac_cv_o_nonblock_inherited=yes"
               APU_VERSION=1.7.x
               APU_CONFIG="--with-crypto --with-ldap"
               TEST_MALLOC=1
@@ -146,7 +146,7 @@ jobs:
             pkgs: litmus liblmdb-dev
             env: |
               APR_VERSION=trunk
-              APR_CONFIG="--with-lmdb --with-dbm=lmdb"
+              APR_CONFIG="--with-lmdb --with-dbm=lmdb ac_cv_o_nonblock_inherited=yes"
               LITMUS=1
               TESTS="t/modules/dav.t"
           # -------------------------------------------------------------------------
@@ -189,7 +189,7 @@ jobs:
             config: --enable-mods-shared=reallyall --with-mpm=event
             env: |
               APR_VERSION=trunk
-              APR_CONFIG="--with-crypto --enable-thread-debug"
+              APR_CONFIG="--with-crypto --enable-thread-debug ac_cv_o_nonblock_inherited=yes"
           # -------------------------------------------------------------------------
           - name: UBSan
             notest-cflags: -fsanitize=undefined -fno-sanitize-recover=undefined
@@ -213,7 +213,7 @@ jobs:
             config: --enable-mods-shared=reallyall
             env: |
               APR_VERSION=1.7.x
-              APR_CONFIG="--enable-pool-debug"
+              APR_CONFIG="--enable-pool-debug ac_cv_o_nonblock_inherited=yes"
               APU_VERSION=1.7.x
               APU_CONFIG="--with-crypto --with-ldap"
               TEST_ASAN=1
