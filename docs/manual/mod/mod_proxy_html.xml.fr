@@ -154,7 +154,7 @@ précédentes.</compatibility>
     <p>Cette directive permet d'activer ou désactiver une
     préinterprétation supplémentaire des métadonnées dans les sections
     HTML <code>&lt;head&gt;</code>.</p>
-    
+
     <p>L'activation de <directive>ProxyHTMLMeta</directive> va entraîner
     l'interprétation de toutes les déclarations
     <code>&lt;meta http-equiv=...&gt;</code> et leur conversion en
@@ -168,7 +168,7 @@ précédentes.</compatibility>
     serveur mandataire. Avec cette directive en effet, si ce contenu est géré
     par des gens malintentionnés, ces derniers seront en mesure d'injecter des
     en-têtes HTTP arbitraires et peut-être malveillants dans les réponses de
-    votre serveur.  
+    votre serveur.
     </note>
 </usage>
 </directivesynopsis>
@@ -276,7 +276,7 @@ s'applique pas aux liens HTML.</p></dd>
 <dt>V</dt>
 <dd><p>Insère des variables d'environnement dans le
 <code>modèle-cible</code>. Un <code>modèle-cible</code> de la forme
-<code>${varname|default}</code> sera remplacé par la valeur de la
+<code>%{ENV:varname|default}</code> sera remplacé par la valeur de la
 variable d'environnement <code>varname</code>. Si cette dernière n'est
 pas définie, <code>modèle-cible</code> sera remplacé par
 <code>default</code>. La spécification de <code>|default</code> est
@@ -394,7 +394,7 @@ dans la configuration</li>
 <p>Cette directive doit être utilisée avec prudence. Elle peut corriger
 certaines erreurs de création, mais risque aussi de modifier par erreur
 des liens corrects. Ne l'utilisez que si vous êtes sûr que le serveur
-d'arrière-plan est déficient.</p> 
+d'arrière-plan est déficient.</p>
 </usage>
 </directivesynopsis>
 
