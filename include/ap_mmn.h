@@ -607,6 +607,7 @@
  *                           and CONN_STATE_PROCESSING
  * 20120211.136 (2.4.63-dev) Add wait_io field to struct process_score
  * 20120211.137 (2.4.63-dev) Add AP_MPMQ_CAN_WAITIO
+ * 20120211.138 (2.4.63-dev) Add is_host_matchable to proxy_worker_shared
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */
@@ -614,7 +615,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20120211
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 137                 /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 138                 /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a
