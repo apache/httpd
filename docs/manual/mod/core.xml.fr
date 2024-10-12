@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1918892:1921257 (outdated) -->
+<!-- English Revision: 1921259 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -858,7 +858,7 @@ DESACTIVÉS à partir de la version 2.3.0.</compatibility>
     variable définie par le premier. Cette variable peut être référencée
     dans le fichier de configuration via la syntaxe <code>${VAR}</code>.
     La portée de la variable est toujours globale, et n'est jamais
-    limitée à la section de configuration courante.</p>
+    limitée à la section de configuration actuelle.</p>
 
     <highlight language="config">
 &lt;IfDefine TEST&gt;
@@ -1898,29 +1898,38 @@ ErrorLogFormat "[%t] [%l] [pid %P] %F: %E: [client %a] %M"
         <td>Note de requête <em>name</em></td></tr>
 
     <tr><td><code>%P</code></td>
-        <td>Identifiant du processus courant</td></tr>
+        <td>Identifiant du processus actuel</td></tr>
 
     <tr><td><code>%T</code></td>
-        <td>Identifiant du thread courant</td></tr>
+        <td>Identifiant du thread actuel</td></tr>
 
     <tr><td><code>%{g}T</code></td>
-        <td>Identifiant unique de thread système du thread courant
+        <td>Identifiant unique de thread système du thread actuel
 	(l'identifiant affiché par la commande <code>top</code> par
 	exemple ; seulement sous Linux pour l'instant)</td></tr>
 
     <tr><td><code>%t</code></td>
-        <td>L'heure courante</td></tr>
+        <td>L'heure actuelle</td></tr>
 
     <tr><td><code>%{u}t</code></td>
-        <td>L'heure courante avec les microsecondes</td></tr>
+        <td>L'heure actuelle avec les microsecondes</td></tr>
 
     <tr><td><code>%{cu}t</code></td>
-        <td>L'heure courante au format compact ISO 8601, avec les
+        <td>L'heure actuelle au format ISO 8601 étendu (compact), avec les
 	microsecondes</td></tr>
+
+    <tr><td><code>%{cuz}t</code></td>
+        <td>L'heure actuelle au format ISO 8601 étendu (compact), avec les
+	microsecondes et la zone horaire au format standard ISO 8601:2000.
+	Depuis la version 2.4.58 seulement</td></tr>
+
+    <tr><td><code>%{&lt;%-format&gt;}t</code></td>
+        <td>L'heure actuelle formatée selon la fonction
+	<code>strftime(3)</code>. Depuis la version 2.4.58 seulement</td></tr>
 
     <tr><td><code>%v</code></td>
         <td>Le nom de serveur canonique <directive
-	module="core">ServerName</directive> du serveur courant.</td></tr>
+	module="core">ServerName</directive> du serveur actuel.</td></tr>
 
     <tr><td><code>%V</code></td>
         <td>Le nom de serveur du serveur qui sert la requête en accord
@@ -2328,7 +2337,7 @@ HTTP Content-Type pour les fichiers correspondants</description>
     <p>Lorsque des directives explicites comme <directive
     module="core">SetHandler</directive> ou
     <directive>module="mod_mime">AddHandler</directive> ne s'appliquent
-    pas à la requête courante, le nom du gestionnaire interne
+    pas à la requête actuelle, le nom du gestionnaire interne
     normalement défini par ces directives correspondra alors au type de
     contenu spécifié par cette directive.
     </p>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1920297 -->
+<!-- English Revision: 1921074-->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -179,6 +179,30 @@ certificat serveur, sous la forme SRVName (OID 1.3.6.1.5.5.7.8.7, RFC 4985)</td>
 <td>Temps d'aller-retour de la négociation TLS en microsecondes, y compris le
 traitement de l’étape finale (cette variable est définie à vide si la version d’OpenSSL est
 antérieure à 3.2 ou si le temps d'aller-retour ne peut pas être déterminé.</td></tr>
+<tr><td><code>SSL_CLIENTHELLO_VERSION</code></td>       <td>chaîne</td>
+<td>Champ de version (patrimonial) de ClientHello sous la forme de quatre
+caractères hexadécimaux</td></tr>
+<tr><td><code>SSL_CLIENTHELLO_CIPHERS</code></td>       <td>chaîne</td>
+<td>Suites d’algorithmes de chiffrement de ClientHello sous la forme de quatre
+caractères hexadécimaux par item</td></tr>
+<tr><td><code>SSL_CLIENTHELLO_EXTENSIONS</code></td>    <td>chaîne</td>
+<td>Identifiants d’extension de ClientHello sous la forme de quatre
+caractères hexadécimaux par item</td></tr>
+<tr><td><code>SSL_CLIENTHELLO_GROUPS</code></td>        <td>chaîne</td>
+<td>Valeur de l’extension Supported Groups (10) de ClientHello sous la forme de quatre
+caractères hexadécimaux par item</td></tr>
+<tr><td><code>SSL_CLIENTHELLO_EC_FORMATS</code></td>    <td>chaîne</td>
+<td>Valeur de l’extension EC Point Formats (11) de ClientHello sous la forme de
+deux caractères hexadécimaux par item</td></tr>
+<tr><td><code>SSL_CLIENTHELLO_SIG_ALGOS</code></td>     <td>chaîne</td>
+<td>Valeur de l’extension Signature Algorithms (13) de ClientHello sous la forme de quatre
+caractères hexadécimaux par item</td></tr>
+<tr><td><code>SSL_CLIENTHELLO_ALPN</code></td>          <td>chaîne</td>
+<td>Valeur de l’extension ALPN (16) de ClientHello sous la forme d’une chaîne
+hexadécimale avec la longueur de la chaîne au début</td></tr>
+<tr><td><code>SSL_CLIENTHELLO_VERSIONS</code></td>      <td>chaîne</td>
+<td>Valeur de l’extension Supported Versions (43) de ClientHello sous la forme de quatre
+caractères hexadécimaux par item</td></tr>
 </table>
 
 <p><em>x509</em> spécifie un élément de DN X.509 parmi
@@ -214,6 +238,10 @@ plus de détails.</p>
 
 <p><code>SSL_CLIENT_V_REMAIN</code> n'est disponible qu'à partir de la
 version 2.1.</p>
+
+<p>Pour que les variables <code>SSL_CLIENTHELLO_*</code> soient renseignées, la
+directive <directive module="mod_ssl">SSLClientHelloVars</directive> doit être
+activée.</p>
 
 <p>Plusieurs variables d'environnement additionnelles peuvent être
 utilisées dans les expressions <directive>SSLRequire</directive>, ou
@@ -3243,6 +3271,31 @@ par des permissions similaires à celles du fichier spécifié par la
 directive <directive module="mod_ssl">SSLCertificateKeyFile</directive>.</p>
 </note>
 </usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>SSLClientHelloVars</name>
+<description>Activer la collecte des variables de ClientHello</description>
+<syntax>SSLClientHelloVars on|off</syntax>
+<default>SSLClientHelloVars off</default>
+<contextlist><context>server config</context>
+<context>virtual host</context></contextlist>
+<compatibility>Disponible à partir de la version 2.5.2 du serveur HTTP Apache,
+requiert OpenSSL version 1.1.1 ou ultérieure</compatibility>
+
+<usage>
+<p>Cette directive permet la collecte des données de ClientHello pendant la
+négociation qui sont conservées pendant toute la durée de la connexion, de façon
+qu’elles soient disponibles sous la forme de variables d’environnement
+<code>SSL_CLIENTHELLLO_*</code> pour les requêtes qui dépendent de la définition
+de <code>StdEnvVars</code>. Les variables sont formatées comme les tampons bruts
+codés en hexadécimal observés dans le protocole réseau brut et tels que fournis
+par OpenSSL. Les valeurs de GREASE (RFC 8701) sont filtrées par OpenSSL lors de
+l’énumération des identifiants d’extension, mais sont transmises telles quelles
+pour les autres variables. Si cette directive n’est pas activée, ou si la
+version d’OpenSSL est antérieure à 1.1.1, ces variables ne seront pas
+renseignées.</p>
+</usage> 
 </directivesynopsis>
 
 <directivesynopsis>
