@@ -458,7 +458,7 @@ Vary: negotiate,accept-language,accept-charset
       <p>Typically the module will be configured as so;</p>
 
       <highlight language="config">
-CacheRoot   "/var/cache/apache/"
+CacheRoot   "/var/cache/apache"
 CacheEnable disk /
 CacheDirLevels 2
 CacheDirLength 1
