@@ -67,11 +67,11 @@ jobs:
             env: |
               TEST_ARGS=-order=random
           # -------------------------------------------------------------------------
-          - name: GCC 10 maintainer-mode w/-Werror, install + VPATH
+          - name: GCC 14 maintainer-mode w/-Werror, install + VPATH
             config: --enable-mods-shared=reallyall --enable-maintainer-mode
             notest-cflags: -Werror -O2
             env: |
-              CC=gcc-10
+              CC=gcc-14
               TEST_VPATH=1
               TEST_INSTALL=1
               SKIP_TESTING=1
