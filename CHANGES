@@ -1,6 +1,13 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.63
 
+  *) mod_rewrite, mod_proxy: mod_proxy to canonicalize rewritten [P] URLs,
+     including "unix:" ones.  PR 69235, PR 69260.  [Yann Ylavic, Ruediger Pluem]
+
+  *) mod_rewrite: Error out in case a RewriteRule in directory context uses the
+     proxy, but mod_proxy is not loaded. PR 56264.
+     [Christophe Jaillet, Michael Streeter <mstreeter1@gmail.com>]
+
   *) http: Remove support for Request-Range header sent by Navigator 2-3 and
      MSIE 3. [Stefan Fritsch]
 
