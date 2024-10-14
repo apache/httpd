@@ -177,6 +177,12 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      Can be applied via apply_backport_pr.sh 484
      +1: rpluem, ylavic, covener
 
+  *) mod_ssl: Fix regression in PKCS#11 handling which should work without
+     SSLCryptoDevice configured
+     trunk patch: https://svn.apache.org/r1920597
+                  https://svn.apache.org/r1921076
+     2.4.x patch: svn merge -c 1920597 -c 1921076 ^/httpd/httpd/trunk .
+     +1: jorton, ylavic, rpluem
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -217,13 +223,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c r1919413 -c r1919587 -c r1919602 ^/httpd/httpd/trunk .
      +1: ivan
      +0: jorton - falls under RTC exception for "non-Unix build" 
-
-  *) mod_ssl: Fix regression in PKCS#11 handling which should work without
-     SSLCryptoDevice configured
-     trunk patch: https://svn.apache.org/r1920597
-                  https://svn.apache.org/r1921076
-     2.4.x patch: svn merge -c 1920597 -c 1921076 ^/httpd/httpd/trunk .
-     +1: jorton, ylavic,
 
   *) mod_proxy_fcgi: Fix proxy-fcgi-pathinfo=full
      trunk patch: https://svn.apache.org/r1919547
