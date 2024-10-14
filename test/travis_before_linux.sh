@@ -67,7 +67,7 @@ if ! test -v SKIP_TESTING -o -v NO_TEST_FRAMEWORK; then
     # Clear CPAN cache if necessary
     if [ -v CLEAR_CACHE ]; then rm -rf ~/perl5; fi
 
-    if perl -V > perlver; then
+    if ! perl -V > perlver; then
         : Perl binary broken
         perl -V
         exit 1
