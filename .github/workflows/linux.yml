@@ -319,10 +319,14 @@ jobs:
       CONFIG: ${{ matrix.config }}
     name: ${{ matrix.name }}
     steps:
+    # JOBID is used in the cache keys, created here as a hash of all
+    # properties of the environment, including the image OS version,
+    # compiler flags and any job-specific properties.
     - name: Set environment variables
       run: |
         echo "${{ matrix.env }}" >> $GITHUB_ENV
-        echo JOBID=`echo "${{ matrix.notest-cflags }} ${{ matrix.env }} ${{ matrix.config }}'"| md5sum - | sed 's/ .*//'` >> $GITHUB_ENV
+        echo JOBID=`echo "OS=$ImageOS ${{ matrix.notest-cflags }} ${{ matrix.env }} ${{ matrix.config }}" \
+           | md5sum - | sed 's/ .*//'` >> $GITHUB_ENV
     # https://github.com/actions/runner-images/issues/9491#issuecomment-1989718917
     - name: Workaround ASAN issue in Ubuntu 22.04
       run: sudo sysctl vm.mmap_rnd_bits=28
