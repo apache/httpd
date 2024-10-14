@@ -360,5 +360,6 @@ jobs:
       if: failure()
       with:
         name: error_log-${{ env.JOBID }}
-        path: test/perl-framework/t/logs/error_log
-
+        path: |
+          **/config.log
+          test/perl-framework/t/logs/error_log
