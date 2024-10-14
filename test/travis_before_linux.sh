@@ -66,6 +66,13 @@ echo "add-auto-load-safe-path $HOME/work/httpd/httpd/.gdbinit" >> $HOME/.gdbinit
 if ! test -v SKIP_TESTING -o -v NO_TEST_FRAMEWORK; then
     # Clear CPAN cache if necessary
     if [ -v CLEAR_CACHE ]; then rm -rf ~/perl5; fi
+
+    # Also flush if the system Perl is newer than the cache, otherwise
+    # it may refuse to load the (older) XS modules.
+    if [ /usr/bin/perl -nt ~/perl5/.key ]; then
+        : Purging cache since /usr/bin/perl has been updated
+        rm -rf ~/perl5
+    fi
     
     cpanm --local-lib=~/perl5 local::lib && eval $(perl -I ~/perl5/lib/perl5/ -Mlocal::lib)
 
