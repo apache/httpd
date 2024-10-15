@@ -2935,8 +2935,7 @@ forward secrecy.</p>
 <name>SSLOpenSSLConfCmd</name>
 <description>Configure OpenSSL parameters through its <em>SSL_CONF</em> API</description>
 <syntax>SSLOpenSSLConfCmd <em>command-name</em> <em>command-value</em></syntax>
-<contextlist><context>server config</context>
-<context>virtual host</context></contextlist>
+<contextlist><context>server config</context></contextlist>
 <compatibility>Available in httpd 2.4.8 and later, if using OpenSSL 1.0.2 or later</compatibility>
 
 <usage>
