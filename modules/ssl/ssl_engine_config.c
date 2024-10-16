@@ -2162,10 +2162,6 @@ const char *ssl_cmd_SSLOpenSSLConfCmd(cmd_parms *cmd, void *dcfg,
     const char *err;
     ssl_ctx_param_t *param;
 
-    if ((err = ap_check_cmd_context(cmd, GLOBAL_ONLY))) {
-        return err;
-    }
-
     if (value_type == SSL_CONF_TYPE_UNKNOWN) {
         return apr_psprintf(cmd->pool,
                             "'%s': invalid OpenSSL configuration command",

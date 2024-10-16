@@ -1,2 +1,0 @@
-  *) mod_ssl: Disallow use of "SSLOpenSSLConfCmd" in <VirtualHost>
-     context.  PR 69397.  [Joe Orton]
