@@ -29,27 +29,24 @@
 #include "apr_tables.h"
 #include "apr_time.h"
 #include "apr_version.h"
-#if APR_MAJOR_VERSION < 2
-/* The LDAP API is currently only present in APR 1.x */
-#include "apr_ldap.h"
-#else
-#define APR_HAS_LDAP 0
-#endif
+#include "apu_version.h"
 
 #if APR_HAS_SHARED_MEMORY
 #include "apr_rmm.h"
 #include "apr_shm.h"
 #endif
 
+#include "apr_ldap.h"
+
 /* this whole thing disappears if LDAP is not enabled */
 #if APR_HAS_LDAP
 
-#if defined(LDAP_UNAVAILABLE) || APR_HAS_MICROSOFT_LDAPSDK
-#define AP_LDAP_IS_SERVER_DOWN(s)                ((s) == LDAP_SERVER_DOWN \
-                ||(s) == LDAP_UNAVAILABLE)
+#if APU_MAJOR_VERSION > 1 || (APU_MAJOR_VERSION == 1 && APU_MINOR_VERSION >= 7)
 #else
-#define AP_LDAP_IS_SERVER_DOWN(s)                ((s) == LDAP_SERVER_DOWN)
+#error apr-util v1.7 or later or apr v2.0 or later is required
 #endif
+
+
 
 /* Apache header files */
 #include "ap_config.h"
@@ -82,10 +79,6 @@
 #define LDAP_DECLARE_DATA             __declspec(dllimport)
 #endif
 
-#if APR_HAS_MICROSOFT_LDAPSDK
-#define timeval l_timeval
-#endif
-
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -94,17 +87,9 @@ extern "C" {
  * LDAP Connections
  */
 
-/* Values that the deref member can have */
-typedef enum {
-    never=LDAP_DEREF_NEVER,
-    searching=LDAP_DEREF_SEARCHING,
-    finding=LDAP_DEREF_FINDING,
-    always=LDAP_DEREF_ALWAYS
-} deref_options;
-
 /* Structure representing an LDAP connection */
 typedef struct util_ldap_connection_t {
-    LDAP *ldap;
+    void *ldap;
     apr_pool_t *pool;                   /* Pool from which this connection is created */
 #if APR_HAS_THREADS
     apr_thread_mutex_t *lock;           /* Lock to indicate this connection is in use */
@@ -112,10 +97,11 @@ typedef struct util_ldap_connection_t {
 
     const char *host;                   /* Name of the LDAP server (or space separated list) */
     int port;                           /* Port of the LDAP server */
-    deref_options deref;                /* how to handle alias dereferening */
+
+    apr_ldap_deref_e deref;             /* how to handle alias dereferening */
 
     const char *binddn;                 /* DN to bind to server (can be NULL) */
-    const char *bindpw;                 /* Password to bind to server (can be NULL) */
+    apr_buffer_t *bindpw;               /* Password to bind to server (can be NULL) */
 
     int bound;                          /* Flag to indicate whether this connection is bound yet */
 
@@ -125,8 +111,8 @@ typedef struct util_ldap_connection_t {
     const char *reason;                 /* Reason for an error failure */
 
     struct util_ldap_connection_t *next;
-    struct util_ldap_state_t *st;        /* The LDAP vhost config this connection belongs to */
-    int keep;                            /* Will this connection be kept when it's unlocked */
+    struct util_ldap_state_t *st;       /* The LDAP vhost config this connection belongs to */
+    int keep;                           /* Will this connection be kept when it's unlocked */
 
     int ChaseReferrals;                 /* [on|off] (default = AP_LDAP_CHASEREFERRALS_ON)*/
     int ReferralHopLimit;               /* # of referral hops to follow (default = AP_LDAP_DEFAULT_HOPLIMIT) */
@@ -135,12 +121,39 @@ typedef struct util_ldap_connection_t {
     int must_rebind;                    /* The connection was last bound with other then binddn/bindpw */
     request_rec *r;                     /* request_rec used to find this util_ldap_connection_t */
     apr_time_t last_backend_conn;       /* the approximate time of the last backend LDAP request */
+
+    apr_pollcb_t *poll;                 /* Poll for the poll */
+    apr_pool_t *init_pool;              /* Pool from which this connection is initialised */
+    apr_pool_t *scratch_pool;           /* Pool cleared when the connection is returned to the pool */
+    apu_err_t result;                   /* result of prior operations on this connection */
+    const char *url;                    /* URL of the LDAP server (or space separated list) */
+    apr_ldap_t *ld;
+    apr_buffer_t *mech;                 /* SASL bind mechanism */
+    apr_buffer_t *realm;                /* SASL realm for the authentication attempt */
+    apr_buffer_t *user;                 /* SASL username to use for proxy authorization */
+    apr_buffer_t *authname;             /* SASL username to authenticate */
+    apr_buffer_t *pass;                 /* SASL password for the provided username */
 } util_ldap_connection_t;
 
 typedef struct util_ldap_config_t {
     int ChaseReferrals;
     int ReferralHopLimit;
-    apr_array_header_t *client_certs;  /* Client certificates */
+    apr_array_header_t *client_certs;   /* Client certificates */
+    apr_buffer_t *mech;                   /* SASL mechanism */
+    apr_buffer_t *realm;                  /* SASL realm for the authentication attempt */
+    apr_buffer_t *user;                   /* SASL username to use for proxy authorization */
+    apr_buffer_t *authname;               /* SASL username to authenticate */
+    apr_buffer_t *pass;                   /* SASL password for the provided username */
+    unsigned int inherit:1;
+    unsigned int inherit_set:1;
+    unsigned int client_certs_set:1;
+    unsigned int ReferralHopLimit_set:1;
+    unsigned int ChaseReferrals_set:1;
+    unsigned int mech_set:1;
+    unsigned int realm_set:1;
+    unsigned int user_set:1;
+    unsigned int authname_set:1;
+    unsigned int pass_set:1;
 } util_ldap_config_t;
 
 /* LDAP cache state information */
@@ -160,7 +173,6 @@ typedef struct util_ldap_state_t {
 
     struct util_ldap_connection_t *connections;
     apr_array_header_t *global_certs;  /* Global CA certificates */
-    int   ssl_supported;
     int   secure;
     int   secure_set;
     int   verify_svr_cert;
@@ -173,10 +185,10 @@ typedef struct util_ldap_state_t {
     /* cache ald */
     void *util_ldap_cache;
 
-    long  connectionTimeout;
-    struct timeval *opTimeout;
+    apr_interval_time_t connectionTimeout;
+    apr_interval_time_t opTimeout;
 
-    int debug_level;                    /* SDK debug level */
+    apr_ldap_debug_e debug_level;       /* SDK debug level */
     apr_interval_time_t connection_pool_ttl;
     int retries;                        /* number of retries for failed bind/search/compare */
     apr_interval_time_t retry_delay;    /* delay between retries of failed bind/search/compare */
@@ -184,7 +196,7 @@ typedef struct util_ldap_state_t {
 
 /* Used to store arrays of attribute labels/values. */
 struct mod_auth_ldap_groupattr_entry_t {
-    char *name;
+    apr_buffer_t name;
 };
 
 /**
@@ -196,11 +208,11 @@ struct mod_auth_ldap_groupattr_entry_t {
  *      connect if already connected (ldc->ldap != NULL). Does not bind
  *      if already bound.
  * @return If successful LDAP_SUCCESS is returned.
- * @fn int util_ldap_connection_open(request_rec *r,
- *                                        util_ldap_connection_t *ldc)
+ * @fn apr_status_t util_ldap_connection_open(request_rec *r,
+ *                                            util_ldap_connection_t *ldc)
  */
-APR_DECLARE_OPTIONAL_FN(int,uldap_connection_open,(request_rec *r,
-                                            util_ldap_connection_t *ldc));
+APR_DECLARE_OPTIONAL_FN(apr_status_t,uldap_connection_open,(request_rec *r,
+                        util_ldap_connection_t *ldc));
 
 /**
  * Close a connection to an LDAP server
@@ -225,7 +237,7 @@ APR_DECLARE_OPTIONAL_FN(void,uldap_connection_close,(util_ldap_connection_t *ldc
 APR_DECLARE_OPTIONAL_FN(apr_status_t,uldap_connection_unbind,(void *param));
 
 /**
- * Find a connection in a list of connections
+ * Find a connection in a list of connections by host and port
  * @param r The request record
  * @param host The hostname to connect to (multiple hosts space separated)
  * @param port The port to connect to
@@ -238,11 +250,31 @@ APR_DECLARE_OPTIONAL_FN(apr_status_t,uldap_connection_unbind,(void *param));
  *      use this connection while it is busy. Once you are finished with a connection,
  *      apr_ldap_connection_close() must be called to release this connection.
  * @fn util_ldap_connection_t *util_ldap_connection_find(request_rec *r, const char *host, int port,
- *                                                           const char *binddn, const char *bindpw, deref_options deref,
+ *                                                           const char *binddn, const char *bindpw, apr_ldap_deref_e deref,
  *                                                           int netscapessl, int starttls)
  */
 APR_DECLARE_OPTIONAL_FN(util_ldap_connection_t *,uldap_connection_find,(request_rec *r, const char *host, int port,
-                                                  const char *binddn, const char *bindpw, deref_options deref,
+                                                  const char *binddn, const char *bindpw, apr_ldap_deref_e deref,
+                                                  int secure));
+
+/**
+ * Find a connection in a list of connections by uri
+ * @param r The request record
+ * @param url The URL to connect to (multiple URLs space separated)
+ * @param binddn The DN to bind with
+ * @param bindpw The password to bind with
+ * @param deref The dereferencing behavior
+ * @param secure use SSL on the connection
+ * @tip Once a connection is found and returned, a lock will be acquired to
+ *      lock that particular connection, so that another thread does not try and
+ *      use this connection while it is busy. Once you are finished with a connection,
+ *      apr_ldap_connection_close() must be called to release this connection.
+ * @fn util_ldap_connection_t *util_ldap_connection_find_uri(request_rec *r, const char *url,
+ *                                                           const char *binddn, const char *bindpw, apr_ldap_deref_e deref,
+ *                                                           int netscapessl, int starttls)
+ */
+APR_DECLARE_OPTIONAL_FN(util_ldap_connection_t *,uldap_connection_find_uri,(request_rec *r, const char *url,
+                                                  const char *binddn, const char *bindpw, apr_ldap_deref_e deref,
                                                   int secure));
 
 /**
@@ -259,13 +291,13 @@ APR_DECLARE_OPTIONAL_FN(util_ldap_connection_t *,uldap_connection_find,(request_
  * @tip Two DNs can be equal and still fail a string comparison. Eg "dc=example,dc=com"
  *      and "dc=example, dc=com". Use the compare_dn_on_server unless there are serious
  *      performance issues.
- * @fn int util_ldap_cache_comparedn(request_rec *r, util_ldap_connection_t *ldc,
- *                                        const char *url, const char *dn, const char *reqdn,
- *                                        int compare_dn_on_server)
+ * @fn apr_status_t util_ldap_cache_comparedn(request_rec *r, util_ldap_connection_t *ldc,
+ *                                            const char *url, const char *dn, const char *reqdn,
+ *                                            int compare_dn_on_server)
  */
-APR_DECLARE_OPTIONAL_FN(int,uldap_cache_comparedn,(request_rec *r, util_ldap_connection_t *ldc,
-                              const char *url, const char *dn, const char *reqdn,
-                              int compare_dn_on_server));
+APR_DECLARE_OPTIONAL_FN(apr_status_t,uldap_cache_comparedn,(request_rec *r, util_ldap_connection_t *ldc,
+                        const char *url, const char *dn, const char *reqdn,
+                        int compare_dn_on_server));
 
 /**
  * A generic LDAP compare function
@@ -278,11 +310,11 @@ APR_DECLARE_OPTIONAL_FN(int,uldap_cache_comparedn,(request_rec *r, util_ldap_con
  * @tip Use this function to determine whether an attribute/value pair exists within an
  *      object. Typically this would be used to determine LDAP top-level group
  *      membership.
- * @fn int util_ldap_cache_compare(request_rec *r, util_ldap_connection_t *ldc,
- *                                      const char *url, const char *dn, const char *attrib, const char *value)
+ * @fn apr_status_t util_ldap_cache_compare(request_rec *r, util_ldap_connection_t *ldc,
+ *                                          const char *url, const char *dn, const char *attrib, const apr_buffer_t *value)
  */
-APR_DECLARE_OPTIONAL_FN(int,uldap_cache_compare,(request_rec *r, util_ldap_connection_t *ldc,
-                            const char *url, const char *dn, const char *attrib, const char *value));
+APR_DECLARE_OPTIONAL_FN(apr_status_t,uldap_cache_compare,(request_rec *r, util_ldap_connection_t *ldc,
+                        const char *url, const char *dn, const char *attrib, const apr_buffer_t *value));
 
 /**
  * An LDAP function that checks if the specified user is a member of a subgroup.
@@ -302,17 +334,18 @@ APR_DECLARE_OPTIONAL_FN(int,uldap_cache_compare,(request_rec *r, util_ldap_conne
  * @tip Use this function to determine whether an attribute/value pair exists within a
  *      starting group object or one of its nested subgroups. Typically this would be
  *      used to determine LDAP nested group membership.
- * @deffunc int util_ldap_cache_check_subgroups(request_rec *r, util_ldap_connection_t
- *                                      *ldc, const char *url, const char *dn,
- *                                      const char *attrib, const char value,
- *                                      char **subgroupAttrs, apr_array_header_t
- *                                      *subgroupclasses, int cur_subgroup_depth, int
- *                                      max_subgroup_depth )
+ * @deffunc apr_status_t util_ldap_cache_check_subgroups(request_rec *r, util_ldap_connection_t
+ *                                                       *ldc, const char *url, const char *dn,
+ *                                                       const char *attrib, const apr_buffer_t *value,
+ *                                                       const char **subgroupAttrs, apr_array_header_t
+ *                                                       *subgroupclasses, int cur_subgroup_depth, int
+ *                                                       max_subgroup_depth )
  */
-APR_DECLARE_OPTIONAL_FN(int,uldap_cache_check_subgroups,(request_rec *r, util_ldap_connection_t *ldc,
-                                       const char *url, const char *dn, const char *attrib, const char *value,
-                                       char **subgroupAttrs, apr_array_header_t *subgroupclasses,
-                                       int cur_subgroup_depth, int max_subgroup_depth));
+APR_DECLARE_OPTIONAL_FN(apr_status_t,uldap_cache_check_subgroups,(request_rec *r, util_ldap_connection_t *ldc,
+                        const char *url, const char *dn, const char *attrib, const apr_buffer_t *value,
+                        const char **subgroupAttrs, apr_array_header_t *subgroupclasses,
+                        int cur_subgroup_depth, int max_subgroup_depth));
+
 
 /**
  * Checks a username/password combination by binding to the LDAP server
@@ -327,15 +360,16 @@ APR_DECLARE_OPTIONAL_FN(int,uldap_cache_check_subgroups,(request_rec *r, util_ld
  * @param bindpw The user password to bind as.
  * @param binddn The DN of the user will be returned in this variable.
  * @param retvals The values corresponding to the attributes requested in the attrs array.
+ *                This is returned as a NULL terminated array of apr_array_header_t.
  * @tip The filter supplied will be searched for. If a single entry is returned, an attempt
  *      is made to bind as that user. If this bind succeeds, the user is not validated.
- * @fn int util_ldap_cache_checkuserid(request_rec *r, util_ldap_connection_t *ldc,
- *                                          char *url, const char *basedn, int scope, char **attrs,
- *                                          char *filter, char *bindpw, char **binddn, char ***retvals)
+ * @fn apr_status_t util_ldap_cache_checkuserid(request_rec *r, util_ldap_connection_t *ldc,
+ *                                              char *url, const char *basedn, int scope, const char **attrs,
+ *                                              char *filter, char *bindpw, char **binddn, apr_array_header_t ***retvals)
  */
-APR_DECLARE_OPTIONAL_FN(int,uldap_cache_checkuserid,(request_rec *r, util_ldap_connection_t *ldc,
-                              const char *url, const char *basedn, int scope, char **attrs,
-                              const char *filter, const char *bindpw, const char **binddn, const char ***retvals));
+APR_DECLARE_OPTIONAL_FN(apr_status_t,uldap_cache_checkuserid,(request_rec *r, util_ldap_connection_t *ldc,
+                        const char *url, const char *basedn, int scope, const char **attrs,
+                        const char *filter, const char *bindpw, const char **binddn, apr_array_header_t ***retvals));
 
 /**
  * Searches for a specified user object in an LDAP directory
@@ -349,21 +383,16 @@ APR_DECLARE_OPTIONAL_FN(int,uldap_cache_checkuserid,(request_rec *r, util_ldap_c
  *               exactly one user for the check to be successful.
  * @param binddn The DN of the user will be returned in this variable.
  * @param retvals The values corresponding to the attributes requested in the attrs array.
+ *                This is returned as a NULL terminated array of apr_array_header_t.
  * @tip The filter supplied will be searched for. If a single entry is returned, an attempt
  *      is made to bind as that user. If this bind succeeds, the user is not validated.
- * @fn int util_ldap_cache_getuserdn(request_rec *r, util_ldap_connection_t *ldc,
- *                                          char *url, const char *basedn, int scope, char **attrs,
- *                                          char *filter, char **binddn, char ***retvals)
+ * @fn apr_status_t util_ldap_cache_getuserdn(request_rec *r, util_ldap_connection_t *ldc,
+ *                                            char *url, const char *basedn, int scope, char **attrs,
+ *                                            char *filter, char **binddn, apr_array_header_t ***retvals)
  */
-APR_DECLARE_OPTIONAL_FN(int,uldap_cache_getuserdn,(request_rec *r, util_ldap_connection_t *ldc,
-                              const char *url, const char *basedn, int scope, char **attrs,
-                              const char *filter, const char **binddn, const char ***retvals));
-
-/**
- * Checks if SSL support is available in mod_ldap
- * @fn int util_ldap_ssl_supported(request_rec *r)
- */
-APR_DECLARE_OPTIONAL_FN(int,uldap_ssl_supported,(request_rec *r));
+APR_DECLARE_OPTIONAL_FN(apr_status_t,uldap_cache_getuserdn,(request_rec *r, util_ldap_connection_t *ldc,
+                        const char *url, const char *basedn, int scope, const char **attrs,
+                        const char *filter, const char **binddn, apr_array_header_t ***retvals));
 
 /* from apr_ldap_cache.c */
 
