@@ -88,6 +88,7 @@ may require further steps to mitigate.)</p>
 <li><a href="#onlystrong">How can I create an SSL server which accepts strong encryption only?</a></li>
 <li><a href="#strongurl">How can I create an SSL server which accepts many types of ciphers in general, but
 requires a strong cipher for access to a particular URL?</a></li>
+<li><a href="#pq">How can I create an SSL server which supports post-quantum key exchange methods?</a></li>
 </ul>
 
 <section id="onlystrong">
@@ -154,6 +155,23 @@ SSLCipherSuite ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:ECDHE-E
 # but https://hostname/strong/area/ and below requires strong ciphersuites
 SSLCipherSuite ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA256
 &lt;/Location&gt;
+    </highlight>
+</section>
+
+<section id="pq">
+<title>How can I create an SSL server which supports post-quantum key
+exchange methods?</title>
+    <p>Install <a href="https://github.com/open-quantum-safe/liboqs#linux-and-mac">liboqs</a>,
+    export <code>liboqs_DIR</code>, and install
+    <a href="https://github.com/open-quantum-safe/oqs-provider?tab=readme-ov-file#basic-steps">oqs-provider</a>.
+    Next, activate <a href="https://github.com/open-quantum-safe/oqs-provider/blob/main/USAGE.md#configuration-file">oqs-provider</a>
+    and the <a href="https://github.com/open-quantum-safe/oqs-provider/blob/main/USAGE.md#configuration-parameter">KEM groups</a>
+    you wish to accept in <code>openssl.cnf</code>. Only <code>x25519_kyber768</code>
+    is currently supported by browsers. Now, add the following to your SSL
+    configuration:</p>
+    <highlight language="config">
+# "Curves" is a synonym for the "Groups" command.
+SSLOpenSSLConfCmd Curves x25519_kyber768:x25519:P-256:P-384
     </highlight>
 </section>
 </section>
