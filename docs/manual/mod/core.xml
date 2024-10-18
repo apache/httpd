@@ -1737,8 +1737,17 @@ ErrorLogFormat "[%t] [%l] [pid %P] %F: %E: [client %a] %M"
         <td>The current time including micro-seconds</td></tr>
 
     <tr><td><code>%{cu}t</code></td>
-        <td>The current time in compact ISO 8601 format, including
+        <td>The current time in ISO 8601 extended format (compact), including
             micro-seconds</td></tr>
+
+    <tr><td><code>%{cuz}t</code></td>
+        <td>The current time in ISO 8601 extended format (compact), including
+            micro-seconds and time zone in the ISO 8601:2000 standard format.
+            Available since 2.4.58 only</td></tr>
+
+    <tr><td><code>%{%-format}t</code></td>
+	<td>The current time formatted per the <code>strftime(3)</code> function.
+	    Available since 2.4.58 only</td></tr>
 
     <tr><td><code>%v</code></td>
         <td>The canonical <directive module="core">ServerName</directive>
