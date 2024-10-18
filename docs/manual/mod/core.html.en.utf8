@@ -1663,15 +1663,15 @@ ErrorLogFormat "[%t] [%l] [pid %P] %F: %E: [client %a] %M"</pre>
 <tr><td><code>%{u}t</code></td>
         <td>The current time including micro-seconds</td></tr>
 <tr class="odd"><td><code>%{cu}t</code></td>
-        <td>The current time in compact ISO 8601 format, including
+        <td>The current time in ISO 8601 extended format (compact), including
             micro-seconds</td></tr>
 <tr><td><code>%{cuz}t</code></td>
-        <td>The current time in compact ISO 8601 format, including
-            micro-seconds and time zone in the ISO 8601:2000 standard format
-            (+hhmm or -hhmm offset from UTC). Since 2.4.58 only</td></tr>
-<tr class="odd"><td><code>%{&lt;strftime-format&gt;}t</code></td>
-        <td>The current time formatted per the <code>strftime(3)</code>
-            function. Since 2.4.58 only</td></tr>
+        <td>The current time in ISO 8601 extended format (compact), including
+            micro-seconds and time zone in the ISO 8601:2000 standard format.
+            Available since 2.4.58 only</td></tr>
+<tr class="odd"><td><code>%{%-format}t</code></td>
+	<td>The current time formatted per the <code>strftime(3)</code> function.
+	    Available since 2.4.58 only</td></tr>
 <tr><td><code>%v</code></td>
         <td>The canonical <code class="directive"><a href="#servername">ServerName</a></code>
             of the current server.</td></tr>
