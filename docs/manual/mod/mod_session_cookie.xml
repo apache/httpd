@@ -36,6 +36,11 @@
       information to clients. Please ensure that the relevant risks have
       been taken into account before enabling the session functionality on
       your server.</p>
+
+      <p>When using any cookie based session identification in conjunction with
+      <module>mod_cache</module>, ensure that the <code>Set-Cookie</code> header
+      will not be cached by using directive <code>CacheIgnoreHeaders Set-Cookie</code>.
+      Failure to do this may result in unintentional session hijacking.</p>
     </note>
 
     <p>This submodule of <module>mod_session</module> provides support for the
