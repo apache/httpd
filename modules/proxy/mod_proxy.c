@@ -1240,6 +1240,7 @@ static int proxy_handler(request_rec *r)
 
         r->proxyreq = PROXYREQ_REVERSE;
         r->filename = apr_pstrcat(r->pool, r->handler, r->filename, NULL);
+        apr_table_setn(r->notes, "proxy-sethandler", "1");
 
         /* Still need to canonicalize r->filename */
         rc = ap_proxy_canon_url(r);
@@ -1249,6 +1250,7 @@ static int proxy_handler(request_rec *r)
         }
     }
     else if (r->proxyreq && strncmp(r->filename, "proxy:", 6) == 0) {
+        apr_table_unset(r->notes, "proxy-sethandler");
         rc = OK;
     }
     if (rc != OK) {
