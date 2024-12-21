@@ -454,6 +454,7 @@
 <description>Sets filename and format of log file</description>
 <syntax>CustomLog  <var>file</var>|<var>pipe</var>|<var>provider</var>
 <var>format</var>|<var>nickname</var>
+[formatter=json[,short]]
 [env=[!]<var>environment-variable</var>|
 expr=<var>expression</var>]</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
@@ -525,7 +526,18 @@ CustomLog "logs/access_log" common
 CustomLog "logs/access_log" "%h %l %u %t \"%r\" %&gt;s %b"
     </highlight>
 
-    <p>The third argument is optional and controls whether or
+    <p>The third argument is optional and controls whether to use a special
+    formatter to create the log records. Currently only the formatter "json" is
+    supported which will create all log records according to RFC8259 and
+    each printed log record will be a JSON object.
+    The optional formatter option "short" make the json formatter output short
+    JSON key names. The JSON key names in short format are directly derived
+    from the format string, i.e. "%s" will result in a JSON of {"s":"304"}.
+    If the "short" option is not specified long JSON key names will be used for
+    better readability in JSON object, e.g. {"statusCode":"304"}
+    </p>
+
+    <p>The last argument is optional and controls whether or
     not to log a particular request. The condition can be the
     presence or absence (in the case of a '<code>env=!<var>name</var></code>'
     clause) of a particular variable in the server

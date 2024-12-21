@@ -1585,7 +1585,7 @@ static config_log_state *open_config_log(server_rec *s, apr_pool_t *p,
     if (cls->log_writer_data == NULL)
         return NULL;
 
-    /* sort log_format_items array, to help json formatter in gruppenwechsel */
+    /* sort log_format_items array, to help json formatter in control break */
     if (cls->log_formatter == ap_json_log_formatter /* sort_log_format_items */ ) {
         /* no valid cls->format given in format string,
            use default_format, if any valid */
@@ -1883,7 +1883,7 @@ static ap_log_formatted_data * ap_json_log_formatter( request_rec *r,
          *
          * as multiple same tags with different arguments can exist,
          * the log_format_item is sorted before, so we can easily check for
-         * gruppenwechsel
+         * control break (https://en.wikipedia.org/wiki/Control_break)
          */
         if(items[i].arg != NULL && strlen(items[i].arg) > 0) {
             /* start sub object */
@@ -1894,7 +1894,7 @@ static ap_log_formatted_data * ap_json_log_formatter( request_rec *r,
                     continue;
                 }
 
-                /* is gruppenwechsel */
+                /* is control break */
                 if(j > i && strcmp(items[j].tag, items[i].tag) != 0) {
                     break;
                 }
@@ -2025,7 +2025,7 @@ static ap_log_formatted_data * ap_json_log_formatter( request_rec *r,
          *
          * as multiple same tags with different arguments can exist,
          * the log_format_item is sorted before, so we can easily check for
-         * gruppenwechsel
+         * control break
          */
         if(items[i].arg != NULL && strlen(items[i].arg) > 0) {
             /* TODO: or allocate once at the begining and use apr_array_clear here? */
@@ -2041,7 +2041,7 @@ static ap_log_formatted_data * ap_json_log_formatter( request_rec *r,
                     continue;
                 }
 
-                /* is gruppenwechsel */
+                /* is control break */
                 if(j > i && strcmp(items[j].tag, items[i].tag) != 0) {
                     break;
                 }
