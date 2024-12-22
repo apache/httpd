@@ -1604,11 +1604,13 @@ static int open_multi_logs(server_rec *s, apr_pool_t *p)
     int i;
     multi_log_state *mls = ap_get_module_config(s->module_config,
                                              &log_config_module);
-    config_log_state *clsarray;
+    config_log_state *clsarray = NULL;
+    int nelts = 0;
     const char *dummy;
     const char *format;
 
     if (mls->default_format_string) {
+        /* is the format string an defined alias, like "CLF" */
         format = apr_table_get(mls->formats, mls->default_format_string);
         if (format) {
             mls->default_format = parse_log_string(p, format, &dummy);
@@ -1616,39 +1618,32 @@ static int open_multi_logs(server_rec *s, apr_pool_t *p)
     }
 
     if (!mls->default_format) {
-        /* TODO: may use "CLF" instead from mls->formats here
-         *       which is added in make_config_log_state
-         */
-        mls->default_format = parse_log_string(p, DEFAULT_LOG_FORMAT, &dummy);
+        /* no default format set, fallback to CLF as default format string */
+        ap_log_error(APLOG_MARK, APLOG_INFO, 0, s, "Using CLF as default format for server \"%s\"", s->server_hostname);
+        mls->default_format_string = "CLF";
+        format = apr_table_get(mls->formats, mls->default_format_string);
+        mls->default_format = parse_log_string(p, format, &dummy);
     }
 
     if (mls->config_logs->nelts) {
         clsarray = (config_log_state *) mls->config_logs->elts;
-        for (i = 0; i < mls->config_logs->nelts; ++i) {
-            config_log_state *cls = &clsarray[i];
-
-            if (cls->format_string) {
-                format = apr_table_get(mls->formats, cls->format_string);
-                if (format) {
-                    cls->format = parse_log_string(p, format, &dummy);
-                }
-            }
-
-            if (!open_config_log(s, p, cls, mls->default_format)) {
-                /* Failure already logged by open_config_log */
-                return DONE;
-            }
-        }
+        nelts = mls->config_logs->nelts;
     }
     else if (mls->server_config_logs) {
         clsarray = (config_log_state *) mls->server_config_logs->elts;
-        for (i = 0; i < mls->server_config_logs->nelts; ++i) {
+        nelts = mls->server_config_logs->nelts;
+    }
+
+    if (clsarray && nelts) {
+        for (i = 0; i < nelts; ++i) {
             config_log_state *cls = &clsarray[i];
 
             if (cls->format_string) {
                 format = apr_table_get(mls->formats, cls->format_string);
                 if (format) {
                     cls->format = parse_log_string(p, format, &dummy);
+                } else {
+                    ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s, "Unknown log format alias \"%s\" using default \"%s\" instead", cls->format_string, mls->default_format_string);
                 }
             }
 
