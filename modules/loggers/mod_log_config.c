@@ -1490,16 +1490,11 @@ static const char *add_custom_log(cmd_parms *cmd, void *dummy,
         cls->format = NULL;
     }
     else {
-        cls->format = parse_log_string(cmd->pool, fmt, &err_string);
-        /* if fmt string was actually a nickname,
+        /* if fmt string was actually a LogFormat nickname,
          * cls->format will not be NULL, but an array with one entry (APR_EOL_STR)
          * but cls->format_string will have the nickname
-         * lookup will then happen in open_multi_logs()!
-         * TODO: I assume the lookup cannot happen here for ordering reasons
-         *       of the config processing?!
-         * TODO: actually those kind of consistency checks should be done in
-         *       "ap_hook_check_config(log_check_config" IMHO and not in open_multi_logs!
          */
+        cls->format = parse_log_string(cmd->pool, fmt, &err_string);
     }
 
     return err_string;
@@ -1606,24 +1601,6 @@ static int open_multi_logs(server_rec *s, apr_pool_t *p)
                                              &log_config_module);
     config_log_state *clsarray = NULL;
     int nelts = 0;
-    const char *dummy;
-    const char *format;
-
-    if (mls->default_format_string) {
-        /* is the format string an defined alias, like "CLF" */
-        format = apr_table_get(mls->formats, mls->default_format_string);
-        if (format) {
-            mls->default_format = parse_log_string(p, format, &dummy);
-        }
-    }
-
-    if (!mls->default_format) {
-        /* no default format set, fallback to CLF as default format string */
-        ap_log_error(APLOG_MARK, APLOG_INFO, 0, s, "Using CLF as default format for server \"%s\"", s->server_hostname);
-        mls->default_format_string = "CLF";
-        format = apr_table_get(mls->formats, mls->default_format_string);
-        mls->default_format = parse_log_string(p, format, &dummy);
-    }
 
     if (mls->config_logs->nelts) {
         clsarray = (config_log_state *) mls->config_logs->elts;
@@ -1637,15 +1614,6 @@ static int open_multi_logs(server_rec *s, apr_pool_t *p)
     if (clsarray && nelts) {
         for (i = 0; i < nelts; ++i) {
             config_log_state *cls = &clsarray[i];
-
-            if (cls->format_string) {
-                format = apr_table_get(mls->formats, cls->format_string);
-                if (format) {
-                    cls->format = parse_log_string(p, format, &dummy);
-                } else {
-                    ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s, "Unknown log format alias \"%s\" using default \"%s\" instead", cls->format_string, mls->default_format_string);
-                }
-            }
 
             if (!open_config_log(s, p, cls, mls->default_format)) {
                 /* Failure already logged by open_config_log */
@@ -2386,22 +2354,76 @@ static int check_log_dir(apr_pool_t *p, server_rec *s, config_log_state *cls)
     return OK;
 }
 
+static void log_check_config_warn_nickname(server_rec *s, apr_array_header_t *items, const char* format_string)
+{
+    int i, tag_count;
+    log_format_item * lfi = (log_format_item *) items->elts;
+    for (i = 0, tag_count = 0; i < items->nelts; ++i) {
+        if(lfi[i].tag) {
+            tag_count++;
+        }
+    }
+
+    /* a format string with no %-directives was found, which was probably meant
+     * to be a nickname reference warn about the potential misspelling */
+    if(!tag_count) {
+       ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s, "Unknown log format nickname \"%s\"", format_string);
+    }
+}
+
 static int log_check_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *ptemp, server_rec *s)
 {
     int rv = OK;
+    multi_log_state *mls;
+    apr_array_header_t *log_list;
+    config_log_state *clsarray;
+    int i;
+
+    const char *dummy;
+    const char *format;
+
     while (s) {
-        multi_log_state *mls = ap_get_module_config(s->module_config,
-                                                    &log_config_module);
+        mls = ap_get_module_config(s->module_config, &log_config_module);
+
+        /* try to lookup format_string as nickname */
+        if (mls->default_format_string) {
+            format = apr_table_get(mls->formats, mls->default_format_string);
+            if (format) {
+                mls->default_format = parse_log_string(plog, format, &dummy);
+            } else {
+                log_check_config_warn_nickname(s, mls->default_format, mls->default_format_string);
+            }
+        }
+
+        /* if no default_format is set at all, fallback to CLF */
+        if (!mls->default_format) {
+            ap_log_error(APLOG_MARK, APLOG_INFO, 0, s, "Using \"CLF\" as default_format for server \"%s\"", s->server_hostname);
+            mls->default_format_string = "CLF";
+            format = apr_table_get(mls->formats, mls->default_format_string);
+            mls->default_format = parse_log_string(plog, format, &dummy);
+        }
+
         /*
          * We don't need to check mls->server_config_logs because it just
          * points to the parent server's mls->config_logs.
          */
-        apr_array_header_t *log_list = mls->config_logs;
-        config_log_state *clsarray = (config_log_state *) log_list->elts;
-        int i;
+        log_list = mls->config_logs;
+        clsarray = (config_log_state *) log_list->elts;
         for (i = 0; i < log_list->nelts; ++i) {
-            if (check_log_dir(ptemp, s, &clsarray[i]) != OK)
+
+            /* try to lookup format_string as nickname */
+            if (clsarray[i].format_string) {
+                format = apr_table_get(mls->formats, clsarray[i].format_string);
+                if (format) {
+                    clsarray[i].format = parse_log_string(plog, format, &dummy);
+                } else {
+                    log_check_config_warn_nickname(s, clsarray[i].format, clsarray[i].format_string);
+                }
+            }
+
+            if (check_log_dir(ptemp, s, &clsarray[i]) != OK) {
                 rv = !OK;
+            }
         }
 
         s = s->next;
