@@ -325,7 +325,7 @@ For the  server\util_md5.c component:
 
 For the util_pcre.c and ap_regex.h components:
 
-           Copyright (c) 1997-2004 University of Cambridge
+           Copyright (c) 1997-2025 University of Cambridge
 
 -----------------------------------------------------------------------------
 Redistribution and use in source and binary forms, with or without
