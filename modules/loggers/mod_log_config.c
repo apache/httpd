@@ -1916,11 +1916,21 @@ static int check_log_dir(apr_pool_t *p, server_rec *s, config_log_state *cls)
         return OK;
     }
     else {
-        char *abs = ap_server_root_relative(p, cls->fname);
-        char *dir = ap_make_dirstr_parent(p, abs);
+        char *dir;
         apr_finfo_t finfo;
+        apr_status_t rv;
         const ap_directive_t *directive = cls->directive;
-        apr_status_t rv = apr_stat(&finfo, dir, APR_FINFO_TYPE, p);
+        char *abs = ap_server_root_relative(p, cls->fname);
+        if (!abs) {
+            ap_log_error(APLOG_MARK, APLOG_STARTUP|APLOG_EMERG, 0, s,
+                         APLOGNO()
+                         "Cannot construct log file path '%s' "
+                         "defined at %s:%d", cls->fname,
+                         directive->filename, directive->line_num);
+            return !OK;
+        }
+        dir = ap_make_dirstr_parent(p, abs);
+        rv = apr_stat(&finfo, dir, APR_FINFO_TYPE, p);
         cls->directive = NULL; /* Don't check this config_log_state again */
         if (rv == APR_SUCCESS && finfo.filetype != APR_DIR)
             rv = APR_ENOTDIR;
