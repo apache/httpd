@@ -5321,10 +5321,18 @@ static int check_errorlog_dir(apr_pool_t *p, server_rec *s)
         return APR_SUCCESS;
     }
     else {
-        char *abs = ap_server_root_relative(p, s->error_fname);
-        char *dir = ap_make_dirstr_parent(p, abs);
+        char *dir;
         apr_finfo_t finfo;
-        apr_status_t rv = apr_stat(&finfo, dir, APR_FINFO_TYPE, p);
+        apr_status_t rv;
+        char *abs = ap_server_root_relative(p, s->error_fname);
+        if (!abs) {
+            ap_log_error(APLOG_MARK, APLOG_STARTUP|APLOG_EMERG, 0,
+                          ap_server_conf, APLOGNO()
+                         "Cannot construct error log file path '%s'", s->error_fname);
+            return !OK;
+	}
+        dir = ap_make_dirstr_parent(p, abs);
+        rv = apr_stat(&finfo, dir, APR_FINFO_TYPE, p);
         if (rv == APR_SUCCESS && finfo.filetype != APR_DIR)
             rv = APR_ENOTDIR;
         if (rv != APR_SUCCESS) {
