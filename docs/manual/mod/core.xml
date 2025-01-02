@@ -3077,7 +3077,7 @@ LimitRequestLine 4094
 
     <highlight language="config">
 # Limit of 1 MiB
-LimitXMLRequestBody 1073741824
+LimitXMLRequestBody 1048576
     </highlight>
 
 </usage>
