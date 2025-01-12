@@ -19,7 +19,7 @@ on:
       - changes-entries/*
 
 env:
-  MARGS: "-j2"
+  MARGS: "-j2" # TODO: why not $(nproc) ?
   CFLAGS: "-g"
   # This will need updating as the ubuntu-latest image changes:
   PHP_FPM: "/usr/sbin/php-fpm8.1"
@@ -312,6 +312,11 @@ jobs:
               APU_CONFIG="--without-crypto"
             pkgs: subversion
           # -------------------------------------------------------------------------
+          - name: Code coverage
+            config: --enable-debugger-mode CFLAGS=--coverage LDFLAGS=-lgcov
+            env: |
+              CODE_COVERAGE=true
+          # -------------------------------------------------------------------------
     runs-on: ubuntu-latest
     timeout-minutes: 30
     env:
@@ -360,6 +365,18 @@ jobs:
           /home/runner/build/**/config.log
     - name: Build and test
       run: ./test/travis_run_linux.sh
+    - name: Code coverage
+      if: env.CODE_COVERAGE
+      run: |
+         # move shared object gcov data and notes into source folder
+         find . -type f -path "*/.libs/*.gcda" | while read file; do mv "$file" "$(dirname "$file")/.."; mv "${file/.gcda/.gcno}" "$(dirname "$file")/.."; done
+         find . -name "*.gcda" -execdir gcov {} +
+    - uses: actions/upload-artifact@v4
+      if: env.CODE_COVERAGE
+      with:
+        name: code_coverage-${{ env.JOBID }}
+        path: |
+          **/*.gcov
     - uses: actions/upload-artifact@v4
       if: failure()
       with:
