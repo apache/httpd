@@ -50,6 +50,10 @@ jobs:
           - name: Shared MPMs, all-modules
             config: --enable-mods-shared=reallyall --enable-mpms-shared=all
           # -------------------------------------------------------------------------
+          - name: Shared MPMs, all-modules
+            config: --enable-mods-shared=reallyall --enable-mpms-shared=all
+            os: ubuntu-22.04-arm64
+          # -------------------------------------------------------------------------
           - name: Event MPM, all-modules, mod_cgid only
             config: --enable-mods-shared=reallyall --with-mpm=event --disable-cgi
           # -------------------------------------------------------------------------
@@ -312,7 +316,7 @@ jobs:
               APU_CONFIG="--without-crypto"
             pkgs: subversion
           # -------------------------------------------------------------------------
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os == '' && 'ubuntu-latest' || matrix.os }}
     timeout-minutes: 30
     env:
       NOTEST_CFLAGS: ${{ matrix.notest-cflags }}
