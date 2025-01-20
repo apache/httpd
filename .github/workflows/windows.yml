@@ -8,13 +8,6 @@ on:
       - STATUS
       - CHANGES
       - changes-entries/*
-  pull_request:
-    branches: [ "trunk", "2.4.x" ]
-    paths-ignore:
-      - 'docs/**'
-      - STATUS
-      - CHANGES
-      - changes-entries/*
 
 jobs:
   build:
