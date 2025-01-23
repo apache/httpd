@@ -897,7 +897,7 @@ DAV_DECLARE(void) dav_close_lockdb(dav_lockdb *lockdb)
  *         -1 if malformed content-range
  */
 static int dav_parse_range(request_rec *r,
-                           apr_off_t *range_start, apr_off_t *range_end)
+                           apr_off_t *range_start, apr_off_t *range_end, apr_off_t *range_file_size)
 {
     const char *range_c;
     char *range;
@@ -928,10 +928,8 @@ static int dav_parse_range(request_rec *r,
     }
 
     if (*slash != '*') {
-        apr_off_t dummy;
-
-        if (!ap_parse_strict_length(&dummy, slash)
-                || dummy <= *range_end) {
+        if (!ap_parse_strict_length(range_file_size, slash)
+                || *range_file_size <= *range_end) {
             return -1;
         }
     }
@@ -1042,6 +1040,7 @@ static int dav_method_put(request_rec *r)
     int has_range;
     apr_off_t range_start;
     apr_off_t range_end;
+	apr_off_t range_file_size = -1;
     int rc;
 
     /* Ask repository module to resolve the resource */
@@ -1091,7 +1090,7 @@ static int dav_method_put(request_rec *r)
         return dav_handle_err(r, err, multi_response);
     }
 
-    has_range = dav_parse_range(r, &range_start, &range_end);
+    has_range = dav_parse_range(r, &range_start, &range_end, &apr_off_t range_file_size);
     if (has_range < 0) {
         /* RFC 2616 14.16: If we receive an invalid Content-Range we must
          * not use the content.
@@ -1101,7 +1100,24 @@ static int dav_method_put(request_rec *r)
                             ap_escape_html(r->pool, r->uri));
         return dav_error_response(r, HTTP_BAD_REQUEST, body);
     } else if (has_range) {
-        mode = DAV_MODE_WRITE_SEEKABLE;
+        apr_off_t limit_req_body = ap_get_limit_req_body(r);
+        if (limit_req_body > 0 && range_file_size > limit_req_body) {
+            body = apr_psprintf(r->pool,
+                                "Requested resource size of %" APR_OFF_T_FMT
+                                " in Content-Range header for PUT %s is larger"
+                                " than the configured limit of %" APR_OFF_T_FMT,
+                                range_file_size, ap_escape_html(r->pool, r->uri), limit_req_body);
+            return dav_error_response(r, HTTP_REQUEST_ENTITY_TOO_LARGE, body);
+        } else if (limit_req_body > 0 && range_end >= limit_req_body) {
+            body = apr_psprintf(r->pool,
+                                "Requested resource underlying size"
+                                " with end position index %" APR_OFF_T_FMT
+                                " in Content-Range header for PUT %s is larger"
+                                " than the configured limit of %" APR_OFF_T_FMT,
+                                range_end, ap_escape_html(r->pool, r->uri), limit_req_body);
+            return dav_error_response(r, HTTP_REQUEST_ENTITY_TOO_LARGE, body);
+        }
+		mode = DAV_MODE_WRITE_SEEKABLE;
     }
     else {
         mode = DAV_MODE_WRITE_TRUNC;
