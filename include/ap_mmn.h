@@ -733,6 +733,7 @@
  * 20211221.25 (2.5.1-dev) AP_SLASHES and AP_IS_SLASH
  * 20211221.26 (2.5.1-dev) Add is_host_matchable to proxy_worker_shared
  * 20211221.27 (2.5.1-dev) Add sock_proto to proxy_worker_shared, and AP_LISTEN_MPTCP
+ * 20211221.28 (2.5.1-dev) Add dav_get_base_path() to mod_dav
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503235UL /* "AP25" */
@@ -740,7 +741,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20211221
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 27             /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 28             /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a
