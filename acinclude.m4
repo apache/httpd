@@ -120,28 +120,6 @@ AC_DEFUN([APACHE_GEN_CONFIG_VARS],[
   done
 ])
 
-dnl
-dnl APACHE_TYPE_RLIM_T
-dnl
-dnl If rlim_t is not defined, define it to int
-dnl
-AC_DEFUN([APACHE_TYPE_RLIM_T], [
-  AC_CACHE_CHECK([for rlim_t], ac_cv_type_rlim_t, [
-    AC_TRY_COMPILE([
-#include <sys/types.h>
-#include <sys/time.h>
-#include <sys/resource.h>
-], [rlim_t spoon;], [
-      ac_cv_type_rlim_t=yes
-    ],[ac_cv_type_rlim_t=no
-    ])
-  ])
-  if test "$ac_cv_type_rlim_t" = "no" ; then
-      AC_DEFINE(rlim_t, int,
-          [Define to 'int' if <sys/resource.h> doesn't define it for us])
-  fi
-])
-
 dnl the list of build variables which are available for customization on a
 dnl per module subdir basis (to be inserted into modules.mk with a "MOD_"
 dnl prefix, i.e. MOD_CFLAGS etc.). Used in APACHE_MODPATH_{INIT,FINISH}.
