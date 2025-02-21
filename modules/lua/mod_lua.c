@@ -498,6 +498,7 @@ static apr_status_t lua_output_filter_handle(ap_filter_t *f, apr_bucket_brigade 
                     APR_BRIGADE_INSERT_TAIL(ctx->tmpBucket, pbktOut);
                     rv = ap_pass_brigade(f->next, ctx->tmpBucket);
                     apr_brigade_cleanup(ctx->tmpBucket);
+                    apr_bucket_delete(pbktIn);
                     if (rv != APR_SUCCESS) {
                         return rv;
                     }
