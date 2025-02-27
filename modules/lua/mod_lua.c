@@ -520,7 +520,7 @@ static apr_status_t lua_output_filter_handle(ap_filter_t *f, apr_bucket_brigade 
         }
         /* If we've safely reached the end, do a final call to Lua to allow for any 
         finishing moves by the script, such as appending a tail. */
-        if (APR_BUCKET_IS_EOS(APR_BRIGADE_LAST(pbbIn))) {
+        if (!APR_BRIGADE_EMPTY(pbbIn) && APR_BUCKET_IS_EOS(APR_BRIGADE_LAST(pbbIn))) {
             apr_bucket *pbktEOS;
             lua_pushnil(L);
             lua_setglobal(L, "bucket");
