@@ -219,7 +219,7 @@ static int on_invalid_frame_recv_cb(nghttp2_session *ngh2,
     if (APLOGcdebug(session->c1)) {
         char buffer[256];
         
-        h2_util_frame_print(frame, buffer, sizeof(buffer)/sizeof(buffer[0]));
+        h2_util_frame_print(frame, buffer, AP_ARRAY_LEN(buffer));
         ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c1,
                       H2_SSSN_LOG(APLOGNO(03063), session, 
                       "recv invalid FRAME[%s], frames=%ld/%ld (r/s)"),
@@ -352,7 +352,7 @@ static int on_frame_recv_cb(nghttp2_session *ng2s,
     if (APLOGcdebug(session->c1)) {
         char buffer[256];
 
-        h2_util_frame_print(frame, buffer, sizeof(buffer)/sizeof(buffer[0]));
+        h2_util_frame_print(frame, buffer, AP_ARRAY_LEN(buffer));
         if (stream) {
             ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c1,
                           H2_STRM_LOG(APLOGNO(10302), stream,
@@ -450,7 +450,7 @@ static int on_frame_recv_cb(nghttp2_session *ng2s,
                 char buffer[256];
                 
                 h2_util_frame_print(frame, buffer,
-                                    sizeof(buffer)/sizeof(buffer[0]));
+                                    AP_ARRAY_LEN(buffer));
                 ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, session->c1,
                               H2_SSSN_MSG(session, "on_frame_rcv %s"), buffer);
             }
@@ -600,7 +600,7 @@ static int on_frame_send_cb(nghttp2_session *ngh2,
     if (APLOGcdebug(session->c1)) {
         char buffer[256];
         
-        h2_util_frame_print(frame, buffer, sizeof(buffer)/sizeof(buffer[0]));
+        h2_util_frame_print(frame, buffer, AP_ARRAY_LEN(buffer));
         if (stream) {
             ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c1,
                           H2_STRM_LOG(APLOGNO(10303), stream,
@@ -635,7 +635,7 @@ static int on_frame_not_send_cb(nghttp2_session *ngh2,
     char buffer[256];
 
     stream = get_stream(session, stream_id);
-    h2_util_frame_print(frame, buffer, sizeof(buffer)/sizeof(buffer[0]));
+    h2_util_frame_print(frame, buffer, AP_ARRAY_LEN(buffer));
     ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, session->c1,
                   H2_SSSN_LOG(APLOGNO(), session,
                   "not sent FRAME[%s], error %d: %s"),

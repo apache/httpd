@@ -162,7 +162,7 @@ static apr_status_t notify(md_job_t *job, const char *reason,
     int i;
 
     log_msg_reason = apr_psprintf(p, "message-%s", reason);
-    for (i = 0; i < (int)(sizeof(notify_rates)/sizeof(notify_rates[0])); ++i) {
+    for (i = 0; i < (int)(AP_ARRAY_LEN(notify_rates)); ++i) {
         if (!strcmp(reason, notify_rates[i].reason)) {
             min_interim = notify_rates[i].min_interim;
         }
