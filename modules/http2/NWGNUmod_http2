@@ -259,7 +259,7 @@ FILES_nlm_exports = \
 #
 FILES_lib_objs := $(sort $(patsubst $(NGH2SRC)/lib/%.c,$(OBJDIR)/%.o,$(wildcard $(NGH2SRC)/lib/*.c)))
 #
-# implement targets and dependancies (leave this section alone)
+# implement targets and dependencies (leave this section alone)
 #
 
 libs :: $(OBJDIR) $(NGH2SRC)/lib/config.h $(TARGET_lib)

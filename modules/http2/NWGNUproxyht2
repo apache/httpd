@@ -259,7 +259,7 @@ FILES_nlm_exports = \
 #
 FILES_lib_objs :=
 #
-# implement targets and dependancies (leave this section alone)
+# implement targets and dependencies (leave this section alone)
 #
 
 libs :: $(OBJDIR) $(TARGET_lib)
