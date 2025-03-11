@@ -3922,3 +3922,30 @@ AP_DECLARE(const char *)ap_dir_fnmatch(ap_dir_match_t *w, const char *path,
 
     return NULL;
 }
+
+AP_DECLARE(apr_status_t) ap_varbuf_make(ap_varbuf **vb, apr_pool_t *p, apr_size_t initial_size)
+{
+    *vb = apr_pcalloc(p, sizeof(ap_varbuf));
+    (*vb)->pool = p;
+    (*vb)->buf = apr_palloc(p, initial_size);
+    (*vb)->avail = initial_size;
+    (*vb)->strlen = 0;
+    (*vb)->buf[0] = '\0';
+    return APR_SUCCESS;
+}
+
+AP_DECLARE(apr_status_t) ap_varbuf_strncat(ap_varbuf *vb, const char *str, apr_size_t len)
+{
+    if (vb->strlen + len + 1 > vb->avail) {
+        apr_size_t new_size = vb->strlen + len + 1;
+        char *newbuf = apr_palloc(vb->pool, new_size);
+        memcpy(newbuf, vb->buf, vb->strlen);
+        vb->buf = newbuf;
+        vb->avail = new_size;
+    }
+    memcpy(vb->buf + vb->strlen, str, len);
+    vb->strlen += len;
+    vb->buf[vb->strlen] = '\0';
+    return APR_SUCCESS;
+}
+
