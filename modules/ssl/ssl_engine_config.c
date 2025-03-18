@@ -1483,6 +1483,10 @@ const char *ssl_cmd_SSLOptions(cmd_parms *cmd,
         }
     }
 
+    if (*options == SSL_PROTOCOL_NONE) {
+        return "SSLProtocol: No SSL protocols available";
+    }
+
     return NULL;
 }
 
