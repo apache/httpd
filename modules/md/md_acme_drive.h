@@ -29,6 +29,8 @@ typedef struct md_acme_driver_t {
     md_t *md;
     struct apr_array_header_t *domains;
     apr_array_header_t *ca_challenges;
+    const char *profile;
+    int profile_mandatory;
     
     int complete;
     apr_array_header_t *creds;       /* the new md_credentials_t */

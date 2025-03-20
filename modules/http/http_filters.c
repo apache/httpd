@@ -189,9 +189,15 @@ static apr_status_t parse_chunk_size(http_ctx_t *ctx, const char *buffer,
             }
         }
         else if (c == ' ' || c == '\t') {
-            /* Be lenient up to 10 implied *LWS, a legacy of RFC 2616,
-             * and noted as errata to RFC7230;
+            /* This allows limited BWS (or 'implied *LWS' in RFC2616
+             * terms) between chunk-size and '[chunk-ext] CRLF'. This
+             * is not allowed by RFC7230/9112 though servers have been
+             * seen which emit spaces here. The code previously (and
+             * mistakenly?) referenced the 7230 errata concerning BWS
+             * *within* chunk-ext, but the conditional above is
+             * followed during chunk-ext (state BODY_CHUNK_EXT):
              * https://www.rfc-editor.org/errata_search.php?rfc=7230&eid=4667
+             * See also: https://github.com/squid-cache/squid/pull/1914
              */
             ctx->state = BODY_CHUNK_CR;
             if (++ctx->chunk_bws > 10) {

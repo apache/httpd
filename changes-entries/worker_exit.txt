@@ -1,2 +1,0 @@
-  *) mpm_worker: Fix possible warning (AH00045) about children processes not
-     terminating timely.  [Yann Ylavic]

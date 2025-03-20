@@ -44,6 +44,7 @@ typedef apr_status_t (*accept_function)(void **csd, ap_listen_rec *lr, apr_pool_
 #define AP_LISTEN_FREEBIND        (0x0002)
 #define AP_LISTEN_REUSEPORT       (0x0004)
 #define AP_LISTEN_V6ONLY          (0x0008)
+#define AP_LISTEN_MPTCP           (0x0010)
 
 /**
  * @brief Apache's listeners record.

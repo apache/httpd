@@ -5,12 +5,11 @@ import pytest
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '../..'))
 
-from .md_conf import HttpdConf
 from .md_env import MDTestEnv
 from .md_acme import MDPebbleRunner, MDBoulderRunner
 
 
-def pytest_report_header(config, startdir):
+def pytest_report_header(config):
     env = MDTestEnv()
     return "mod_md: [apache: {aversion}({prefix}), mod_{ssl}, ACME server: {acme}]".format(
         prefix=env.prefix,
@@ -39,9 +38,7 @@ def env(pytestconfig) -> MDTestEnv:
 @pytest.fixture(autouse=True, scope="package")
 def _md_package_scope(env):
     env.httpd_error_log.add_ignored_lognos([
-        "AH10085",   # There are no SSL certificates configured and no other module contributed any
-        "AH10045",   # No VirtualHost matches Managed Domain
-        "AH10105",   # MDomain does not match any VirtualHost with 'SSLEngine on'
+        "AH10085"   # There are no SSL certificates configured and no other module contributed any
     ])
 
 
@@ -59,7 +56,3 @@ def acme(env):
     if acme_server is not None:
         acme_server.stop()
 
-@pytest.fixture(autouse=True, scope="package")
-def _stop_package_scope(env):
-    yield
-    assert env.apache_stop() == 0

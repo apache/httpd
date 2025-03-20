@@ -1,0 +1,3 @@
+  *) mod_proxy_balancer: Fix the handling of the stickysession configuration
+     parameter by the balancer manager. PR 69510
+     [Yutaka Tokunou <tokunou.yutaka@fujitsu.com>]

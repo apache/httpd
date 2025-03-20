@@ -244,6 +244,7 @@ static apr_status_t internals_setup(md_http_request_t *req)
     md_curl_internals_t *internals;
     CURL *curl;
     apr_status_t rv = APR_SUCCESS;
+    long ssl_options = 0;
 
     curl = md_http_get_impl_data(req->http);
     if (!curl) {
@@ -302,6 +303,10 @@ static apr_status_t internals_setup(md_http_request_t *req)
     }
     if (req->ca_file) {
         curl_easy_setopt(curl, CURLOPT_CAINFO, req->ca_file);
+        /* for a custom CA, allow certificates checking to ignore the
+         * Schannel error CRYPT_E_NO_REVOCATION_CHECK (could be a missing OCSP
+         * responder URL in the certs???). See issue #361 */
+        ssl_options |= CURLSSLOPT_NO_REVOKE;
     }
     if (req->unix_socket_path) {
         curl_easy_setopt(curl, CURLOPT_UNIX_SOCKET_PATH, req->unix_socket_path);
@@ -340,7 +345,10 @@ static apr_status_t internals_setup(md_http_request_t *req)
         curl_easy_setopt(curl, CURLOPT_DEBUGFUNCTION, curl_debug_log);
         curl_easy_setopt(curl, CURLOPT_DEBUGDATA, req);
     }
-    
+
+    if (ssl_options)
+        curl_easy_setopt(curl, CURLOPT_SSL_OPTIONS, ssl_options);
+
 leave:
     req->internals = (APR_SUCCESS == rv)? internals : NULL;
     return rv;

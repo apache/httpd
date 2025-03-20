@@ -66,6 +66,21 @@ echo "add-auto-load-safe-path $HOME/work/httpd/httpd/.gdbinit" >> $HOME/.gdbinit
 if ! test -v SKIP_TESTING -o -v NO_TEST_FRAMEWORK; then
     # Clear CPAN cache if necessary
     if [ -v CLEAR_CACHE ]; then rm -rf ~/perl5; fi
+
+    if ! perl -V > perlver; then
+        : Perl binary broken
+        perl -V
+        exit 1
+    fi
+
+    # Compare the current "perl -V" output with the output at the time
+    # the cache was built; flush the cache if it's changed to avoid
+    # failure later when /usr/bin/perl refuses to load a mismatched XS
+    # module.
+    if ! cmp -s perlver ~/perl5/.perlver; then
+        : Purging cache since "perl -V" output has changed
+        rm -rf ~/perl5
+    fi
     
     cpanm --local-lib=~/perl5 local::lib && eval $(perl -I ~/perl5/lib/perl5/ -Mlocal::lib)
 
@@ -78,10 +93,10 @@ if ! test -v SKIP_TESTING -o -v NO_TEST_FRAMEWORK; then
     # CC=gcc, e.g. for the CC="gcc -m32" case the builds are not correct
     # otherwise.
     CC=gcc cpanm --notest $pkgs
-
-    # Set cache key.
-    echo $pkgs > ~/perl5/.key
     unset pkgs
+
+    # Cache the perl -V output for future verification.
+    mv perlver ~/perl5/.perlver
 
     # Make a shallow clone of httpd-tests git repo.
     git clone -q --depth=1 https://github.com/apache/httpd-tests.git test/perl-framework

@@ -3,9 +3,11 @@
 import json
 import os
 import time
+from datetime import timedelta
 import pytest
+from pyhttpd.certs import CertificateSpec
 
-from .md_conf import MDConf, MDConf
+from .md_conf import MDConf
 from .md_env import MDTestEnv
 
 
@@ -20,7 +22,7 @@ class TestMessage:
         env.check_acme()
         env.clear_store()
         MDConf(env).install()
-        assert env.apache_restart() == 0
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
 
     @pytest.fixture(autouse=True, scope='function')
     def _method_scope(self, env, request):
@@ -41,7 +43,7 @@ class TestMessage:
         conf.add_md(domains)
         conf.add_vhost(domains)
         conf.install()
-        assert env.apache_restart() == 0
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
         assert env.await_file(env.store_staged_file(domain, 'job.json'))
         stat = env.get_md_status(domain)
         # this command should have failed and logged an error
@@ -68,7 +70,7 @@ class TestMessage:
         conf.add_md(domains)
         conf.add_vhost(domains)
         conf.install()
-        assert env.apache_restart() == 0
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
         assert env.await_error(domain)
         stat = env.get_md_status(domain)
         # this command should have failed and logged an error
@@ -94,7 +96,7 @@ class TestMessage:
         conf.add_md(domains)
         conf.add_vhost(domains)
         conf.install()
-        assert env.apache_restart() == 0
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
         assert env.await_completion([domain], restart=False)
         time.sleep(1)
         stat = env.get_md_status(domain)
@@ -132,7 +134,7 @@ class TestMessage:
         conf.add_md(domains)
         conf.add_vhost(domains)
         conf.install()
-        assert env.apache_restart() == 0
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
         assert env.await_completion([domain])
         # force renew
         conf = MDConf(env)
@@ -142,7 +144,7 @@ class TestMessage:
         conf.add_md(domains)
         conf.add_vhost(domains)
         conf.install()
-        assert env.apache_restart() == 0
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
         assert env.await_completion([domain], restart=False)
         env.get_md_status(domain)
         assert env.await_file(self.mlog)
@@ -155,13 +157,16 @@ class TestMessage:
         domain = self.test_domain
         domains = [domain, 'www.%s' % domain]
         testpath = os.path.join(env.gen_dir, 'test_901_010')
-        # cert that is only 10 more days valid
-        env.create_self_signed_cert(domains, {"notBefore": -70, "notAfter": 20},
-                                    serial=901010, path=testpath)
+        env.mkpath(testpath)
+        # cert that is only 20 more days valid
+        creds = env.create_self_signed_cert(CertificateSpec(domains=domains),
+                                            valid_from=timedelta(days=-70),
+                                            valid_to=timedelta(days=20),
+                                            serial=901010)
         cert_file = os.path.join(testpath, 'pubcert.pem')
         pkey_file = os.path.join(testpath, 'privkey.pem')
-        assert os.path.exists(cert_file)
-        assert os.path.exists(pkey_file)
+        creds.save_cert_pem(cert_file)
+        creds.save_pkey_pem(pkey_file)
         conf = MDConf(env)
         conf.add(f"MDMessageCmd {self.mcmd} {self.mlog}")
         conf.start_md(domains)
@@ -170,7 +175,7 @@ class TestMessage:
         conf.end_md()
         conf.add_vhost(domain)
         conf.install()
-        assert env.apache_restart() == 0
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
         assert not os.path.isfile(self.mlog)
         
     def test_md_901_011(self, env):
@@ -178,13 +183,16 @@ class TestMessage:
         domain = self.test_domain
         domains = [domain, f'www.{domain}']
         testpath = os.path.join(env.gen_dir, 'test_901_011')
-        # cert that is only 10 more days valid
-        env.create_self_signed_cert(domains, {"notBefore": -85, "notAfter": 5},
-                                    serial=901011, path=testpath)
+        env.mkpath(testpath)
+        # cert that is only 5 more days valid
+        creds = env.create_self_signed_cert(CertificateSpec(domains=domains),
+                                            valid_from=timedelta(days=-85),
+                                            valid_to=timedelta(days=5),
+                                            serial=901010)
         cert_file = os.path.join(testpath, 'pubcert.pem')
         pkey_file = os.path.join(testpath, 'privkey.pem')
-        assert os.path.exists(cert_file)
-        assert os.path.exists(pkey_file)
+        creds.save_cert_pem(cert_file)
+        creds.save_pkey_pem(pkey_file)
         conf = MDConf(env)
         conf.add(f"MDMessageCmd {self.mcmd} {self.mlog}")
         conf.start_md(domains)
@@ -193,13 +201,13 @@ class TestMessage:
         conf.end_md()
         conf.add_vhost(domain)
         conf.install()
-        assert env.apache_restart() == 0
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
         assert env.await_file(self.mlog)
         nlines = open(self.mlog).readlines()
         assert len(nlines) == 1
         assert nlines[0].strip() == f"['{self.mcmd}', '{self.mlog}', 'expiring', '{domain}']"
         # check that we do not get it resend right away again
-        assert env.apache_restart() == 0
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
         time.sleep(1)
         nlines = open(self.mlog).readlines()
         assert len(nlines) == 1
@@ -217,7 +225,7 @@ class TestMessage:
         conf.add("MDStapling on")
         conf.add_vhost(domains)
         conf.install()
-        assert env.apache_restart() == 0
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
         assert env.await_completion([domain])
         env.await_ocsp_status(domain)
         assert env.await_file(self.mlog)
@@ -243,7 +251,7 @@ class TestMessage:
         conf.add_md(domains)
         conf.add_vhost(domains)
         conf.install()
-        assert env.apache_restart() == 0
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
         assert env.await_completion([domain])
         # set the warn window that triggers right away and a failing message command
         conf = MDConf(env)
@@ -254,7 +262,7 @@ class TestMessage:
             """)
         conf.add_vhost(domains)
         conf.install()
-        assert env.apache_restart() == 0
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
         env.get_md_status(domain)
         # this command should have failed and logged an error
         # shut down server to make sure that md has completed
@@ -277,7 +285,7 @@ class TestMessage:
             """)
         conf.add_vhost(domains)
         conf.install()
-        assert env.apache_restart() == 0
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
         assert env.await_file(self.mlog)
         # we see the notification logged by the command
         nlines = open(self.mlog).readlines()
@@ -300,7 +308,7 @@ class TestMessage:
         conf.add_md(domains)
         conf.add_vhost(domains)
         conf.install()
-        assert env.apache_restart() == 0
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
         assert env.await_error(domain)
         assert env.await_file(self.mlog)
         time.sleep(1)

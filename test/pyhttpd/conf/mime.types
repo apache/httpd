@@ -1320,6 +1320,7 @@ image/ief					ief
 image/jpeg					jpeg jpg jpe
 # image/jpm
 # image/jpx
+image/jxl					jxl
 image/ktx					ktx
 # image/naplps
 image/png					png

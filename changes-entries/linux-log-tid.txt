@@ -1,1 +1,0 @@
- *) core: On Linux, log the real thread ID in error logs.  [Joe Orton]

@@ -1,6 +1,0 @@
-  *) mod_http2: new directive `H2ProxyRequests on|off` to enable handling
-     of HTTP/2 requests in a forward proxy configuration.
-     General forward proxying is enabled via `ProxyRequests`. If the
-     HTTP/2 protocol is also enabled for such a server/host, this new
-     directive is needed in addition.
-     [Stefan Eissing]

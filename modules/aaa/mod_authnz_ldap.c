@@ -355,7 +355,7 @@ static void *create_authnz_ldap_dir_config(apr_pool_t *p, char *d)
     sec->group_attrib_is_dn = 1;
     sec->secure = -1;   /*Initialize to unset*/
     sec->maxNestingDepth = 0;
-    sec->sgAttributes = apr_pcalloc(p, sizeof (char *) * GROUPATTR_MAX_ELTS + 1);
+    sec->sgAttributes = apr_pcalloc(p, sizeof (char *) * (GROUPATTR_MAX_ELTS + 1));
 
     sec->user_is_dn = 0;
     sec->remote_user_attribute = NULL;

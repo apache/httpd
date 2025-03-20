@@ -18,7 +18,7 @@ class TestEab:
         env.check_acme()
         env.clear_store()
         MDConf(env).install()
-        assert env.apache_restart() == 0
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
 
     @pytest.fixture(autouse=True, scope='function')
     def _method_scope(self, env, request):
@@ -33,7 +33,7 @@ class TestEab:
         conf.add_md(domains)
         conf.add_vhost(domains=domains)
         conf.install()
-        assert env.apache_restart() == 0
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
         md = env.await_error(domain)
         assert md['renewal']['errors'] > 0
         assert md['renewal']['last']['problem'] == 'urn:ietf:params:acme:error:externalAccountRequired'
@@ -56,7 +56,7 @@ class TestEab:
         conf.add_md(domains)
         conf.add_vhost(domains=domains)
         conf.install()
-        assert env.apache_restart() == 0
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
         md = env.await_error(domain)
         assert md['renewal']['errors'] > 0
         assert md['renewal']['last']['problem'] == 'apache:eab-hmac-invalid'
@@ -79,7 +79,7 @@ class TestEab:
         conf.add_md(domains)
         conf.add_vhost(domains=domains)
         conf.install()
-        assert env.apache_restart() == 0
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
         md = env.await_error(domain)
         assert md['renewal']['errors'] > 0
         assert md['renewal']['last']['problem'] in [
@@ -105,7 +105,7 @@ class TestEab:
         conf.add_md(domains)
         conf.add_vhost(domains=domains)
         conf.install()
-        assert env.apache_restart() == 0
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
         md = env.await_error(domain)
         assert md['renewal']['errors'] > 0
         assert md['renewal']['last']['problem'] in [
@@ -131,7 +131,7 @@ class TestEab:
         conf.add_md(domains)
         conf.add_vhost(domains=domains)
         conf.install()
-        assert env.apache_restart() == 0
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
         md = env.await_error(domain)
         assert md['renewal']['errors'] > 0
         assert md['renewal']['last']['problem'] in [
@@ -158,7 +158,7 @@ class TestEab:
         conf.add_md(domains)
         conf.add_vhost(domains=domains)
         conf.install()
-        assert env.apache_restart() == 0
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
         assert env.await_completion(domains)
 
     def test_md_750_011(self, env):
@@ -174,7 +174,7 @@ class TestEab:
         conf.add_md([domain_b])
         conf.add_vhost(domains=[domain_b])
         conf.install()
-        assert env.apache_restart() == 0
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
         assert env.await_completion([domain_a], restart=False)
         md = env.await_error(domain_b)
         assert md['renewal']['errors'] > 0
@@ -202,7 +202,7 @@ class TestEab:
         conf.end_md()
         conf.add_vhost(domains=[domain_b])
         conf.install()
-        assert env.apache_restart() == 0
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
         assert env.await_completion([domain_b], restart=False)
         md = env.await_error(domain_a)
         assert md['renewal']['errors'] > 0
@@ -231,7 +231,7 @@ class TestEab:
         conf.end_md()
         conf.add_vhost(domains=[domain_b])
         conf.install()
-        assert env.apache_restart() == 0
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
         assert env.await_completion([domain_a, domain_b])
         md_a = env.get_md_status(domain_a)
         md_b = env.get_md_status(domain_b)
@@ -247,7 +247,7 @@ class TestEab:
         conf.add_md(domains)
         conf.add_vhost(domains=domains)
         conf.install()
-        assert env.apache_restart() == 0
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
         assert env.await_completion(domains)
         md_1 = env.get_md_status(domain)
         conf = MDConf(env)
@@ -258,7 +258,7 @@ class TestEab:
         conf.add_md(domains)
         conf.add_vhost(domains=domains)
         conf.install()
-        assert env.apache_restart() == 0
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
         assert env.await_completion(domains)
         md_2 = env.get_md_status(domain)
         assert md_1['ca'] != md_2['ca']
@@ -273,7 +273,7 @@ class TestEab:
         conf.add_md(domains)
         conf.add_vhost(domains=domains)
         conf.install()
-        assert env.apache_restart() == 0
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
         assert env.await_completion(domains)
         conf = MDConf(env)
         # this is another one of the values in conf/pebble-eab.json
@@ -282,7 +282,7 @@ class TestEab:
         conf.add_md(domains)
         conf.add_vhost(domains=domains)
         conf.install()
-        assert env.apache_restart() == 0
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
         assert env.await_error(domain)
         md = env.await_error(domain)
         assert md['renewal']['errors'] > 0
@@ -307,7 +307,7 @@ class TestEab:
         conf.add_md(domains)
         conf.add_vhost(domains=domains)
         conf.install()
-        assert env.apache_restart() == 0
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
         assert env.await_completion(domains)
         conf = MDConf(env)
         # this is another one of the values in conf/pebble-eab.json
@@ -317,7 +317,7 @@ class TestEab:
         conf.add_md(domains)
         conf.add_vhost(domains=domains)
         conf.install()
-        assert env.apache_restart() == 0
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
         assert env.await_error(domain)
         md = env.await_error(domain)
         assert md['renewal']['errors'] > 0
@@ -343,7 +343,7 @@ class TestEab:
         conf.end_md()
         conf.add_vhost(domains=domains)
         conf.install()
-        assert env.apache_restart() == 0
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
         md = env.await_error(domain)
         assert md['renewal']['errors'] > 0
         assert md['renewal']['last']['problem'] == 'urn:ietf:params:acme:error:externalAccountRequired'
@@ -432,5 +432,5 @@ class TestEab:
         conf.add_md(domains)
         conf.add_vhost(domains=domains)
         conf.install()
-        assert env.apache_restart() == 0
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
         assert env.await_completion(domains)

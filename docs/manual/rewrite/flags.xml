@@ -223,6 +223,7 @@ security model.</dd>
 <dd>A value of 0 indicates that the cookie will persist only for the
 current browser session. This is the default value if none is
 specified.</dd>
+<dd>A negative value causes the cookie to be unset in the browser.</dd>
 
 <dt>Path</dt>
 <dd>The path, on the current website, for which the cookie is valid,

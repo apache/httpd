@@ -256,6 +256,8 @@ ce style de cookie est interdit par le modèle de sécurité des cookies.</dd>
 <dd>La durée de vie du cookie, en minutes.</dd>
 <dd>Une valeur de 0 indique une durée de vie correspondant à la session
 courante du navigateur. Il s'agit de la valeur par défaut.</dd>
+<dd>Une valeur négative indique que la définition du cookie doit être annulée
+dans le navigateur.</dd>
 
 <dt>Path</dt>
 <dd>Le chemin, sur le site web concerné, pour lequel le cookie est
@@ -934,7 +936,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/rewrite/flags.html
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2024 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2025 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

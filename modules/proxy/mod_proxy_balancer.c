@@ -1643,7 +1643,7 @@ static void balancer_display_page(request_rec *r, proxy_server_conf *conf,
                        balancer->max_workers - (int)storage->num_free_slots(balancer->wslot));
             if (*balancer->s->sticky) {
                 if (strcmp(balancer->s->sticky, balancer->s->sticky_path)) {
-                    ap_rvputs(r, "<td>", ap_escape_html(r->pool, balancer->s->sticky), " | ",
+                    ap_rvputs(r, "<td>", ap_escape_html(r->pool, balancer->s->sticky), "|",
                               ap_escape_html(r->pool, balancer->s->sticky_path), NULL);
                 }
                 else {
@@ -1828,7 +1828,7 @@ static void balancer_display_page(request_rec *r, proxy_server_conf *conf,
             ap_rputs("</tr>\n", r);
             ap_rputs("<tr><td>Sticky Session:</td><td><input name='b_ss' id='b_ss' size=64 type=text ", r);
             if (strcmp(bsel->s->sticky, bsel->s->sticky_path)) {
-                ap_rvputs(r, "value =\"", ap_escape_html(r->pool, bsel->s->sticky), " | ",
+                ap_rvputs(r, "value =\"", ap_escape_html(r->pool, bsel->s->sticky), "|",
                           ap_escape_html(r->pool, bsel->s->sticky_path), NULL);
             }
             else {

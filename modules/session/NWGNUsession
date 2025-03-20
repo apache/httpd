@@ -225,7 +225,7 @@ FILES_lib_objs = \
 	$(EOLIST)
 
 #
-# implement targets and dependancies (leave this section alone)
+# implement targets and dependencies (leave this section alone)
 #
 
 libs :: $(OBJDIR) $(TARGET_lib)

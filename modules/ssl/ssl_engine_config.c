@@ -220,6 +220,7 @@ static SSLSrvConfigRec *ssl_config_server_new(apr_pool_t *p)
 #ifndef OPENSSL_NO_COMP
     sc->compression            = UNSET;
 #endif
+    sc->clienthello_vars       = UNSET;
     sc->session_tickets        = UNSET;
 
     modssl_ctx_init_server(sc, p);
@@ -347,6 +348,7 @@ void *ssl_config_server_merge(apr_pool_t *p, void *basev, void *addv)
     cfgMerge(enabled, SSL_ENABLED_UNSET);
     cfgMergeInt(session_cache_timeout);
     cfgMergeBool(cipher_server_pref);
+    cfgMergeBool(clienthello_vars);
 #ifdef HAVE_TLSEXT
     cfgMerge(strict_sni_vhost_check, SSL_ENABLED_UNSET);
 #endif
@@ -954,6 +956,13 @@ const char *ssl_cmd_SSLCompression(cmd_parms *cmd, void *dcfg, int flag)
         return "Setting Compression mode unsupported; not implemented by the SSL library";
     }
 #endif
+    return NULL;
+}
+
+const char *ssl_cmd_SSLClientHelloVars(cmd_parms *cmd, void *dcfg, int flag)
+{
+    SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
+    sc->clienthello_vars = flag ? TRUE : FALSE;
     return NULL;
 }
 

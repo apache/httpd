@@ -39,16 +39,16 @@ class TestRoundtripv2:
         conf.add_md(domains)
         conf.install()
         # - restart, check that md is in store
-        assert env.apache_restart() == 0
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
         env.check_md(domains)
         # - drive
         assert env.a2md(["-v", "drive", domain]).exit_code == 0
-        assert env.apache_restart() == 0
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
         env.check_md_complete(domain)
         # - append vhost to config
         conf.add_vhost(domains)
         conf.install()
-        assert env.apache_restart() == 0
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
         # check: SSL is running OK
         cert = env.get_cert(domain)
         assert domain in cert.get_san_list()
@@ -71,14 +71,14 @@ class TestRoundtripv2:
         conf.install()
 
         # - restart, check that md is in store
-        assert env.apache_restart() == 0
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
         env.check_md(domains_a)
         env.check_md(domains_b)
 
         # - drive
         assert env.a2md(["drive", domain_a]).exit_code == 0
         assert env.a2md(["drive", domain_b]).exit_code == 0
-        assert env.apache_restart() == 0
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
         env.check_md_complete(domain_a)
         env.check_md_complete(domain_b)
 
@@ -88,7 +88,7 @@ class TestRoundtripv2:
         conf.install()
 
         # check: SSL is running OK
-        assert env.apache_restart() == 0
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
         cert_a = env.get_cert(domain_a)
         assert domains_a == cert_a.get_san_list()
         cert_b = env.get_cert(domain_b)
@@ -108,12 +108,12 @@ class TestRoundtripv2:
         conf.install()
         
         # - restart, check that md is in store
-        assert env.apache_restart() == 0
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
         env.check_md(domains)
 
         # - drive
         assert env.a2md(["drive", domain]).exit_code == 0
-        assert env.apache_restart() == 0
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
         env.check_md_complete(domain)
 
         # - append vhost to config
@@ -126,7 +126,7 @@ class TestRoundtripv2:
         self._write_res_file(os.path.join(env.server_docs_dir, "b"), "name.txt", name_b)
 
         # check: SSL is running OK
-        assert env.apache_restart() == 0
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
         cert_a = env.get_cert(name_a)
         assert name_a in cert_a.get_san_list()
         cert_b = env.get_cert(name_b)

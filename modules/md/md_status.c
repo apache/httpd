@@ -47,11 +47,20 @@ static apr_status_t status_get_cert_json(md_json_t **pjson, const md_cert_t *cer
     apr_status_t rv = APR_SUCCESS;
     md_timeperiod_t valid;
     md_json_t *json;
-    
+    const char *issuer_uri, *issuer_name;
+
+
     json = md_json_create(p);
+    issuer_name = md_cert_get_issuer_name(cert, p);
+    if (issuer_name)
+      md_json_sets(issuer_name, json, MD_KEY_ISSUER_NAME, NULL);
+    rv = md_cert_get_issuers_uri(&issuer_uri, cert, p);
+    if(rv == APR_SUCCESS && issuer_uri)
+      md_json_sets(issuer_uri, json, MD_KEY_ISSUER_URI, NULL);
     valid.start = md_cert_get_not_before(cert);
     valid.end = md_cert_get_not_after(cert);
     md_json_set_timeperiod(&valid, json, MD_KEY_VALID, NULL);
+    md_json_sets(md_cert_get_serial_number(cert, p), json, MD_KEY_SERIAL, NULL);
     md_json_sets(md_cert_get_serial_number(cert, p), json, MD_KEY_SERIAL, NULL);
     if (APR_SUCCESS != (rv = md_cert_to_sha256_fingerprint(&finger, cert, p))) goto leave;
     md_json_sets(finger, json, MD_KEY_SHA256_FINGERPRINT, NULL);

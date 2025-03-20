@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1920109 -->
+<!-- English Revision: 1923725 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -247,6 +247,8 @@ ce style de cookie est interdit par le modèle de sécurité des cookies.</dd>
 <dd>La durée de vie du cookie, en minutes.</dd>
 <dd>Une valeur de 0 indique une durée de vie correspondant à la session
 courante du navigateur. Il s'agit de la valeur par défaut.</dd>
+<dd>Une valeur négative indique que la définition du cookie doit être annulée
+dans le navigateur.</dd>
 
 <dt>Path</dt>
 <dd>Le chemin, sur le site web concerné, pour lequel le cookie est

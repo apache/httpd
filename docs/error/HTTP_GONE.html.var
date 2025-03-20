@@ -82,19 +82,19 @@ Body:----------es--
 <!--#set var="TITLE" value="&iexcl;El recurso ya no est&aacute; disponible!" -->
 <!--#include virtual="include/top.html" -->
 
-    La URL solicitada ya no est&aacute; disponible en este servidor y
+   La URL solicitada ya no est&aacute; disponible en este servidor y
    no existe una direcci&oacute;n a la cual remitirle.
 
    <!--#if expr="-n v('HTTP_REFERER')" -->
 
-    Por favor, comunique al autor de la
+    Por favor, informe al autor de la
     <a href="<!--#echo encoding="url" var="HTTP_REFERER"-->">p&aacute;gina
-    que le ha remitido</a> que la URL est&aacute; obsoleta.
+    que le ha remitido</a> de que el enlace est&aacute; desactualizado.
 
   <!--#else -->
 
-    Si usted ha seguido un enlace de una p&aacute;gina externa,
-    por favor contacte con el autor de esa p&aacute;gina.
+    Si ha seguido un enlace de una p&aacute;gina externa, por favor,
+    p&oacute;ngase en contacto con el autor de esa p&aacute;gina.
 
   <!--#endif -->
 

@@ -571,6 +571,11 @@ static const char *set_cookie_name(cmd_parms * cmd, void *config, const char *ar
     char *line = apr_pstrdup(cmd->pool, args);
     session_dbd_dir_conf *conf = (session_dbd_dir_conf *) config;
     char *cookie = apr_strtok(line, " \t", &last);
+    if (!cookie) {
+        return apr_pstrcat(cmd->pool, cmd->directive->directive,
+                           " requires at least one argument!",
+                           NULL);
+    }
     conf->name = cookie;
     conf->name_set = 1;
     while (apr_isspace(*last)) {
@@ -586,6 +591,11 @@ static const char *set_cookie_name2(cmd_parms * cmd, void *config, const char *a
     char *line = apr_pstrdup(cmd->pool, args);
     session_dbd_dir_conf *conf = (session_dbd_dir_conf *) config;
     char *cookie = apr_strtok(line, " \t", &last);
+    if (!cookie) {
+        return apr_pstrcat(cmd->pool, cmd->directive->directive,
+                           " requires at least one argument!",
+                           NULL);
+    }
     conf->name2 = cookie;
     conf->name2_set = 1;
     while (apr_isspace(*last)) {

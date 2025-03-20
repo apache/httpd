@@ -664,6 +664,15 @@ typedef struct {
     md_result_t *result;
 } update_dir_ctx;
 
+static int collect_profiles(void *baton, const char* key, md_json_t *json)
+{
+    update_dir_ctx *ctx = baton;
+    (void)json;
+    APR_ARRAY_PUSH(ctx->acme->api.v2.profiles, const char *) =
+        apr_pstrdup(ctx->acme->p, key);
+    return 1;
+}
+
 static apr_status_t update_directory(const md_http_response_t *res, void *data)
 {
     md_http_request_t *req = res->req;
@@ -728,6 +737,20 @@ static apr_status_t update_directory(const md_http_response_t *res, void *data)
         acme->new_nonce_fn = acmev2_new_nonce;
         acme->req_init_fn = acmev2_req_init;
         acme->post_new_account_fn = acmev2_POST_new_account;
+
+        if (md_json_has_key(json, "meta", "profiles", NULL)) {
+            acme->api.v2.profiles = apr_array_make(acme->p, 5, sizeof(const char*));
+            md_json_iterkey(collect_profiles, data, json, "meta", "profiles", NULL);
+            md_log_perror(MD_LOG_MARK, MD_LOG_TRACE2, rv, req->pool,
+                          "found %d profiles in ACME directory meta",
+                          acme->api.v2.profiles->nelts);
+        }
+        else {
+            acme->api.v2.profiles = NULL;
+            md_log_perror(MD_LOG_MARK, MD_LOG_TRACE2, rv, req->pool,
+                          "no profiles in ACME directory meta");
+
+        }
     }
     else if ((s = md_json_dups(acme->p, json, "new-authz", NULL))) {
         acme->api.v1.new_authz = s;

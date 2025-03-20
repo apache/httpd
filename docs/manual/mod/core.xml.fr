@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1918892 -->
+<!-- English Revision: 1923917 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -519,10 +519,9 @@ All pour les versions antérieures</default>
       activée.
       </p></note>
 
-      <example>
+      <highlight language="config">
       AllowOverride Options=Indexes,MultiViews
-      </example>
-      
+      </highlight>
       </dd>
     </dl>
 
@@ -858,7 +857,7 @@ DESACTIVÉS à partir de la version 2.3.0.</compatibility>
     variable définie par le premier. Cette variable peut être référencée
     dans le fichier de configuration via la syntaxe <code>${VAR}</code>.
     La portée de la variable est toujours globale, et n'est jamais
-    limitée à la section de configuration courante.</p>
+    limitée à la section de configuration actuelle.</p>
 
     <highlight language="config">
 &lt;IfDefine TEST&gt;
@@ -1306,20 +1305,24 @@ host</context>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>FileInfo</override>
-<compatibility>Par défaut à Off depuis la version 2.3.9.</compatibility>
+<compatibility>Par défaut à Off depuis la version 2.3.9 du serveur HTTP
+Apache.</compatibility>
 
 <usage>
     <p>Cette directive définit si le programme <program>httpd</program>
     peut utiliser le support sendfile du noyau pour transmettre le
     contenu des fichiers aux clients. Par défaut, lorsque le traitement
     d'une requête ne requiert pas l'accès aux données contenues dans un
-    fichier -- par exemple, pour la transmission d'un fichier statique
-    -- Apache httpd utilise sendfile pour transmettre le contenu du fichier
+    fichier — par exemple, pour la transmission d'un fichier statique
+    — Apache httpd utilise sendfile pour transmettre le contenu du fichier
     sans même lire ce dernier, si le système d'exploitation le
-    permet.</p>
+    permet. Si la connexion utilise SSL/TLS ou si un <a
+    href="../filter.html">filtre en sortie</a> est configuré pour inspecter ou
+    modifier la sortie, le mécanisme sendfile ne sera pas utilisé quelle que
+    soit la valeur de cette option.</p>
 
     <p>Ce mécanisme sendfile évite la séparation des opérations de
-    lecture et d'envoi, ainsi que les réservations de tampons. sur
+    lecture et d'envoi, ainsi que les réservations de tampons. Sur
     certains systèmes cependant, ou sous certains systèmes de fichiers,
     il est préférable de désactiver cette fonctionnalité afin d'éviter
     certains problèmes opérationnels :</p>
@@ -1898,29 +1901,39 @@ ErrorLogFormat "[%t] [%l] [pid %P] %F: %E: [client %a] %M"
         <td>Note de requête <em>name</em></td></tr>
 
     <tr><td><code>%P</code></td>
-        <td>Identifiant du processus courant</td></tr>
+        <td>Identifiant du processus actuel</td></tr>
 
     <tr><td><code>%T</code></td>
-        <td>Identifiant du thread courant</td></tr>
+        <td>Identifiant du thread actuel</td></tr>
 
     <tr><td><code>%{g}T</code></td>
-        <td>Identifiant unique de thread système du thread courant
+        <td>Identifiant unique de thread système du thread actuel
 	(l'identifiant affiché par la commande <code>top</code> par
 	exemple ; seulement sous Linux pour l'instant)</td></tr>
 
     <tr><td><code>%t</code></td>
-        <td>L'heure courante</td></tr>
+        <td>L'heure actuelle</td></tr>
 
     <tr><td><code>%{u}t</code></td>
-        <td>L'heure courante avec les microsecondes</td></tr>
+        <td>L'heure actuelle avec les microsecondes</td></tr>
 
     <tr><td><code>%{cu}t</code></td>
-        <td>L'heure courante au format compact ISO 8601, avec les
+        <td>L'heure actuelle au format ISO 8601 étendu (compact), avec les
 	microsecondes</td></tr>
+
+    <tr><td><code>%{cuz}t</code></td>
+        <td>L'heure actuelle au format ISO 8601 étendu (compact), avec les
+	microsecondes et la zone horaire au format standard ISO 8601:2000.
+	Disponible depuis la version 2.4.58 seulement</td></tr>
+
+    <tr><td><code>%{%-format}t</code></td>
+        <td>L'heure actuelle formatée selon la fonction
+	<code>strftime(3)</code>. Disponible depuis la version 2.4.58
+	seulement</td></tr>
 
     <tr><td><code>%v</code></td>
         <td>Le nom de serveur canonique <directive
-	module="core">ServerName</directive> du serveur courant.</td></tr>
+	module="core">ServerName</directive> du serveur actuel.</td></tr>
 
     <tr><td><code>%V</code></td>
         <td>Le nom de serveur du serveur qui sert la requête en accord
@@ -2328,7 +2341,7 @@ HTTP Content-Type pour les fichiers correspondants</description>
     <p>Lorsque des directives explicites comme <directive
     module="core">SetHandler</directive> ou
     <directive>module="mod_mime">AddHandler</directive> ne s'appliquent
-    pas à la requête courante, le nom du gestionnaire interne
+    pas à la requête actuelle, le nom du gestionnaire interne
     normalement défini par ces directives correspondra alors au type de
     contenu spécifié par cette directive.
     </p>
@@ -3312,7 +3325,7 @@ host</context>
 
     <highlight language="config">
 # Limitation à 1 Mo
-LimitXMLRequestBody 1073741824
+LimitXMLRequestBody 1048576
     </highlight>
 
 </usage>
@@ -5543,7 +5556,7 @@ host</context>
       <li>Port physique (seulement avec
       <directive>UseCanonicalPhysicalPort</directive> ON)</li>
       <li>Port indiqué dans <directive module="core">Servername</directive></li>
-      <li>Port par défaut</li>
+      <li>Port par défaut pour le contexte/protocole (comme 80 ou 443)</li>
      </ol>
      </dd>
      <dt><code>UseCanonicalName On</code></dt>
@@ -5552,7 +5565,7 @@ host</context>
       <li>Port spécifié par <directive module="core">Servername</directive></li>
       <li>Port physique (seulement avec
       <directive>UseCanonicalPhysicalPort</directive> ON)</li>
-      <li>Port par défaut</li>
+      <li>Port par défaut pour le contexte/protocole (comme 80 ou 443)</li>
      </ol>
      </dd>
     </dl>
@@ -5770,9 +5783,9 @@ serveur HTTP Apache.</compatibility>
     d’hôte dans le chemin UNC n’a pas été spécifié par cette directive. Le but
     est de limiter l’accès aux chemins dérivés d’entrées non fiables.</p>
 
-    <example>
+    <highlight language="config">
     UNCList example.com other.example.com
-    </example>
+    </highlight>
 
     <note type="warning"><title>Sécurité</title>
     <p>Les chemins UNC accédés en dehors du traitement d’une requête, par

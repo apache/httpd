@@ -3376,6 +3376,9 @@ int main(int argc, const char * const argv[])
     }
 #endif /* APR_HAS_THREADS */
 
+    if (concurrency == 0) {
+        concurrency = num_workers;
+    }
     if (concurrency > ROUND_UP(MAX_CONCURRENCY, num_workers)) {
         fprintf(stderr, "%s: Invalid Concurrency [Range 0..%d]\n",
                 argv[0], ROUND_UP(MAX_CONCURRENCY, num_workers));

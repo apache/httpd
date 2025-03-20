@@ -65,17 +65,17 @@ Body:----------es--
 <!--#set var="TITLE" value="&iexcl;Autentificaci&oacute;n requerida!" -->
 <!--#include virtual="include/top.html" -->
 
-    El servidor no puede certificar que usted est&eacute; autorizado
+    El servidor no puede certificar que est&eacute; autorizado
     para acceder a la URL "<!--#echo encoding="url" var="REDIRECT_URL" -->".
-    Ha podido suministrar informaci&oacute;n incorrecta (ej.
+    O bien ha introducido unas credenciales incorrectas (por ejemplo, una
     contrase&ntilde;a no v&aacute;lida) o el navegador no sabe
-    c&oacute;mo suministrar la informaci&oacute;n requerida.
+    c&oacute;mo suministrar las credenciales requeridas.
 
   <!--#include virtual="include/spacer.html" -->
 
-    En caso de que usted tenga permiso para acceder al documento,
-    por favor verifique su nombre de usuario y contrase&ntilde;a y 
-    vu&eacute;lvalo a intentar.
+    En caso de que tenga permiso para acceder al documento,
+    revise su nombre de usuario y contrase&ntilde;a e
+    int&eacute;ntelo de nuevo.
 
 <!--#include virtual="include/bottom.html" -->
 ----------es--

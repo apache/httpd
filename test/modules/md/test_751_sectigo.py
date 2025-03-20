@@ -46,7 +46,7 @@ class TestSectigo:
         env.check_acme()
         env.clear_store()
         MDConf(env).install()
-        assert env.apache_restart() == 0
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
 
     @pytest.fixture(autouse=True, scope='function')
     def _method_scope(self, env, request):
@@ -65,7 +65,7 @@ class TestSectigo:
         conf.end_md()
         conf.add_vhost(domains=domains)
         conf.install()
-        assert env.apache_restart() == 0
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
         assert env.await_completion(domains)
         r = env.curl_get(f"https://{domain}:{env.https_port}", options=[
             "--cacert", f"{env.test_dir}/data/sectigo-demo-root.pem"
@@ -83,7 +83,7 @@ class TestSectigo:
         conf.end_md()
         conf.add_vhost(domains=domains)
         conf.install()
-        assert env.apache_restart() == 0
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
         assert env.await_error(domain)
         md = env.get_md_status(domain)
         assert md['renewal']['errors'] > 0
@@ -101,7 +101,7 @@ class TestSectigo:
         conf.end_md()
         conf.add_vhost(domains=domains)
         conf.install()
-        assert env.apache_restart() == 0
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
         assert env.await_error(domain)
         md = env.get_md_status(domain)
         assert md['renewal']['errors'] > 0
@@ -120,7 +120,7 @@ class TestSectigo:
         conf.end_md()
         conf.add_vhost(domains=domains)
         conf.install()
-        assert env.apache_restart() == 0
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
         assert env.await_completion(domains)
         r = env.curl_get(f"https://{domain}:{env.https_port}", options=[
             "--cacert", f"{env.test_dir}/data/sectigo-demo-root.pem"
@@ -142,7 +142,7 @@ class TestSectigo:
         conf.end_md()
         conf.add_vhost(domains=domains)
         conf.install()
-        assert env.apache_restart() == 0
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
         assert env.await_completion(domains)
         r = env.curl_get(f"https://{domain2}:{env.https_port}", options=[
             "--cacert", f"{env.test_dir}/data/sectigo-demo-root.pem"
@@ -167,7 +167,7 @@ class TestSectigo:
         conf.end_md()
         conf.add_vhost(domains=domains)
         conf.install()
-        assert env.apache_restart() == 0
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
         assert env.await_completion(domains)
         r = env.curl_get(f"https://{domain}:{env.https_port}", options=[
             "--cacert", f"{env.test_dir}/data/sectigo-demo-root.pem"

@@ -1321,7 +1321,7 @@ static void *merge_config_log_state(apr_pool_t *p, void *basev, void *addv)
         add->default_format_string = base->default_format_string;
         add->default_format = base->default_format;
     }
-    add->formats = apr_table_overlay(p, base->formats, add->formats);
+    add->formats = apr_table_overlay(p, add->formats, base->formats);
 
     return add;
 }

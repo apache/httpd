@@ -166,6 +166,9 @@ static const command_rec ssl_config_cmds[] = {
                 "('[+-][" SSL_PROTOCOLS "] ...' - see manual)")
     SSL_CMD_SRV(HonorCipherOrder, FLAG,
                 "Use the server's cipher ordering preference")
+    SSL_CMD_SRV(ClientHelloVars, FLAG,
+                "Enable SSL ClientHello variable collection "
+                "(`on', `off')")
     SSL_CMD_SRV(Compression, FLAG,
                 "Enable SSL level compression "
                 "(`on', `off')")

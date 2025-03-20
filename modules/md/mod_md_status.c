@@ -617,7 +617,7 @@ static void si_val_stapling(status_ctx *ctx, md_json_t *mdj, const status_info *
         apr_brigade_puts(ctx->bb, NULL, NULL, "on");
     }
     else {
-        apr_brigade_printf(ctx->bb, NULL, NULL, "%s: on", ctx->prefix);
+        apr_brigade_printf(ctx->bb, NULL, NULL, "%sStapling: on\n", ctx->prefix);
     }
 }
 

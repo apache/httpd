@@ -1,3 +1,0 @@
-  *) mod_rewrite: Don't require [UNC] flag to preserve a leading //
-     added by applying the perdir prefix to the substitution.
-     [Ruediger Pluem, Eric Covener]

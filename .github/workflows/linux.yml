@@ -50,6 +50,10 @@ jobs:
           - name: Shared MPMs, all-modules
             config: --enable-mods-shared=reallyall --enable-mpms-shared=all
           # -------------------------------------------------------------------------
+          - name: Shared MPMs, all-modules, 64-bit ARM
+            config: --enable-mods-shared=reallyall --enable-mpms-shared=all
+            os: ubuntu-24.04-arm
+          # -------------------------------------------------------------------------
           - name: Event MPM, all-modules, mod_cgid only
             config: --enable-mods-shared=reallyall --with-mpm=event --disable-cgi
           # -------------------------------------------------------------------------
@@ -67,11 +71,11 @@ jobs:
             env: |
               TEST_ARGS=-order=random
           # -------------------------------------------------------------------------
-          - name: GCC 10 maintainer-mode w/-Werror, install + VPATH
+          - name: GCC 12 maintainer-mode w/-Werror, install + VPATH
             config: --enable-mods-shared=reallyall --enable-maintainer-mode
             notest-cflags: -Werror -O2
             env: |
-              CC=gcc-10
+              CC=gcc-12
               TEST_VPATH=1
               TEST_INSTALL=1
               SKIP_TESTING=1
@@ -249,17 +253,6 @@ jobs:
           #     TEST_MD=1
           # -------------------------------------------------------------------------
           ### TODO: if: *condition_not_24x
-          - name: MOD_TLS test suite
-            config: --enable-mods-shared=reallyall --with-mpm=event --enable-mpms-shared=event
-            pkgs: curl python3-pytest nghttp2-client python3-cryptography python3-requests python3-multipart python3-filelock python3-websockets cargo cbindgen
-            env: |
-              APR_VERSION=1.7.4
-              APU_VERSION=1.6.3
-              APU_CONFIG="--with-crypto"
-              RUSTLS_VERSION="v0.13.0"
-              NO_TEST_FRAMEWORK=1
-              TEST_INSTALL=1
-              TEST_MOD_TLS=1
           - name: Configured w/reduced exports
             config: --enable-reduced-exports --enable-maintainer-mode --enable-systemd
             pkgs: libsystemd-dev
@@ -286,10 +279,11 @@ jobs:
           - name: OpenSSL 3.1
             config: --enable-mods-shared=most --enable-maintainer-mode --disable-md --disable-http2 --disable-ldap --disable-crypto
             env: |
-              TEST_OPENSSL3=3.1.6
+              TEST_OPENSSL3=3.1.7
               APR_VERSION=1.7.4
               APU_VERSION=1.6.3
               APU_CONFIG="--without-crypto"
+            pkgs: subversion
           # -------------------------------------------------------------------------
           - name: OpenSSL 3.2 -Werror
             config: --enable-mods-shared=most --enable-maintainer-mode --disable-md --disable-http2 --disable-ldap --disable-crypto
@@ -299,6 +293,7 @@ jobs:
               APR_VERSION=1.7.4
               APU_VERSION=1.6.3
               APU_CONFIG="--without-crypto"
+            pkgs: subversion
           # -------------------------------------------------------------------------
           - name: OpenSSL 3.2 no-engine
             config: --enable-mods-shared=most --enable-maintainer-mode --disable-md --disable-http2 --disable-ldap --disable-crypto
@@ -308,28 +303,34 @@ jobs:
               APR_VERSION=1.7.4
               APU_VERSION=1.6.3
               APU_CONFIG="--without-crypto"
+            pkgs: subversion
           # -------------------------------------------------------------------------
           - name: OpenSSL 3.3 no-engine -Werror
             config: --enable-mods-shared=most --enable-maintainer-mode --disable-md --disable-http2 --disable-ldap --disable-crypto
             notest-cflags: -Werror -O2
             env: |
-              TEST_OPENSSL3=3.3.1
+              TEST_OPENSSL3=3.3.2
               OPENSSL_CONFIG=no-engine
               APR_VERSION=1.7.4
               APU_VERSION=1.6.3
               APU_CONFIG="--without-crypto"
+            pkgs: subversion
           # -------------------------------------------------------------------------
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os == '' && 'ubuntu-latest' || matrix.os }}
     timeout-minutes: 30
     env:
       NOTEST_CFLAGS: ${{ matrix.notest-cflags }}
       CONFIG: ${{ matrix.config }}
     name: ${{ matrix.name }}
     steps:
+    # JOBID is used in the cache keys, created here as a hash of all
+    # properties of the environment, including the image OS version,
+    # compiler flags and any job-specific properties.
     - name: Set environment variables
       run: |
         echo "${{ matrix.env }}" >> $GITHUB_ENV
-        echo JOBID=`echo "${{ matrix.notest-cflags }} ${{ matrix.env }} ${{ matrix.config }}'"| md5sum - | sed 's/ .*//'` >> $GITHUB_ENV
+        echo JOBID=`echo "OS=$ImageOS ${{ matrix.notest-cflags }} ${{ matrix.env }} ${{ matrix.config }}" \
+           | md5sum - | sed 's/ .*//'` >> $GITHUB_ENV
     # https://github.com/actions/runner-images/issues/9491#issuecomment-1989718917
     - name: Workaround ASAN issue in Ubuntu 22.04
       run: sudo sysctl vm.mmap_rnd_bits=28
@@ -367,5 +368,6 @@ jobs:
       if: failure()
       with:
         name: error_log-${{ env.JOBID }}
-        path: test/perl-framework/t/logs/error_log
-
+        path: |
+          **/config.log
+          test/perl-framework/t/logs/error_log
