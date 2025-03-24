@@ -212,6 +212,15 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         svn merge -c 1924145,r1924164,1924197 ^/httpd/httpd/trunk .
      +1: icing
 
+  *) mod_proxy_http2: revert r1912193 for detecting broken backend connections
+     as this interferes with backend selection who a node is unresponsive.
+     PR69624.
+     Trunk version of patch:
+        https://svn.apache.org/r1924554
+     Backport version for 2.4.x of patch:
+        svn merge -c 1924554 ^/httpd/httpd/trunk .
+     +1: icing
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
