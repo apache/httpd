@@ -194,7 +194,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      Backport version for 2.4.x of patch:
         svn merge -c 1923754,1923806 ^/httpd/httpd/trunk .
      backport needs adjusting MMN
-     +1: icing
+     +1: icing, rpluem
 
   *) mod_lua: Fix memory handling in output filter
      Trunk version of patch:
