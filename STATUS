@@ -210,7 +210,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         https://svn.apache.org/r1924197
      Backport version for 2.4.x of patch:
         svn merge -c 1924145,r1924164,1924197 ^/httpd/httpd/trunk .
-     +1: icing
+     +1: icing, rpluem
+     rpluem says: The compatibility tag in docs/manual/mod/mod_http2.xml needs
+     to be adjusted to 2.4 (also in trunk after backporting)
 
   *) mod_proxy_http2: revert r1912193 for detecting broken backend connections
      as this interferes with backend selection who a node is unresponsive.
