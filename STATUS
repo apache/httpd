@@ -221,7 +221,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         https://svn.apache.org/r1924554
      Backport version for 2.4.x of patch:
         svn merge -c 1924554 ^/httpd/httpd/trunk .
-     +1: icing
+     +1: icing, rpluem
+     rpluem says: Is 2.0.31-git the correct value for  MOD_HTTP2_VERSION or
+     should it be 2.0.31?
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
