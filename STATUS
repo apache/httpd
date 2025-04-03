@@ -225,6 +225,15 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      rpluem says: Is 2.0.31-git the correct value for  MOD_HTTP2_VERSION or
      should it be 2.0.31?
 
+  *) mod_ssl: Remove warning over potential uninitialised value
+     for ssl protocol prior to protocol selection.
+     Trunk version of patch:
+        https://svn.apache.org/r1924757
+     Backport version for 2.4.x of patch:
+        https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/httpd-2.4-ssl-prot-fix.patch
+     +1: minfrin
+
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
