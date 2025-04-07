@@ -285,31 +285,31 @@ jobs:
               APU_CONFIG="--without-crypto"
             pkgs: subversion
           # -------------------------------------------------------------------------
-          - name: OpenSSL 3.2 -Werror
+          - name: OpenSSL 3.4 -Werror
             config: --enable-mods-shared=most --enable-maintainer-mode --disable-md --disable-http2 --disable-ldap --disable-crypto
             notest-cflags: -Werror -O2 -Wno-deprecated-declarations
             env: |
-              TEST_OPENSSL3=3.2.2
+              TEST_OPENSSL3=3.4.1
               APR_VERSION=1.7.4
               APU_VERSION=1.6.3
               APU_CONFIG="--without-crypto"
             pkgs: subversion
           # -------------------------------------------------------------------------
-          - name: OpenSSL 3.2 no-engine
+          - name: OpenSSL 3.4 no-engine
             config: --enable-mods-shared=most --enable-maintainer-mode --disable-md --disable-http2 --disable-ldap --disable-crypto
             env: |
-              TEST_OPENSSL3=3.2.2
+              TEST_OPENSSL3=3.4.1
               OPENSSL_CONFIG=no-engine
               APR_VERSION=1.7.4
               APU_VERSION=1.6.3
               APU_CONFIG="--without-crypto"
             pkgs: subversion
           # -------------------------------------------------------------------------
-          - name: OpenSSL 3.3 no-engine -Werror
+          - name: OpenSSL 3.5 (beta) no-engine -Werror
             config: --enable-mods-shared=most --enable-maintainer-mode --disable-md --disable-http2 --disable-ldap --disable-crypto
             notest-cflags: -Werror -O2
             env: |
-              TEST_OPENSSL3=3.3.2
+              TEST_OPENSSL3=3.5.0-beta
               OPENSSL_CONFIG=no-engine
               APR_VERSION=1.7.4
               APU_VERSION=1.6.3
