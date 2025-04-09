@@ -53,6 +53,10 @@ jobs:
           - name: Event MPM, all-modules, mod_cgid fdpassing
             config: --enable-mods-shared=reallyall --with-mpm=event --disable-cgi --enable-cgid-fdpassing
           # -------------------------------------------------------------------------
+          - name: Shared MPMs, all-modules, 64-bit ARM
+            config: --enable-mods-shared=reallyall --enable-mpms-shared=all
+            os: ubuntu-24.04-arm
+          # -------------------------------------------------------------------------
           - name: Event MPM, all-modules, mod_cgid w/o fdpassing
             config: --enable-mods-shared=reallyall --with-mpm=event --disable-cgi
           # -------------------------------------------------------------------------
@@ -240,7 +244,7 @@ jobs:
           #     APR_VERSION=1.7.3
           #     APU_VERSION=1.6.3
           # APU_CONFIG="--with-crypto --with-ldap"
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os == '' && 'ubuntu-latest' || matrix.os }}
     timeout-minutes: 30
     env:
       NOTEST_CFLAGS: ${{ matrix.notest-cflags }}
