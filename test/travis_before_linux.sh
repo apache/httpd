@@ -50,8 +50,12 @@ function install_apx() {
         return 0
     fi
 
-    git clone -q --depth=1 --branch=$version ${giturl} ${build}
+    git init -q ${build}
     pushd $build
+         # Clone and checkout the commit identified above.
+         git remote add origin ${giturl}
+         git fetch -q --depth=1 ${commit}
+         git checkout ${commit}
          ./buildconf ${buildconf}
          ./configure --prefix=${prefix} ${config}
          make -j2
