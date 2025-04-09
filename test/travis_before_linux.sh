@@ -44,7 +44,7 @@ function install_apx() {
 
     # Blow away the cached install root if the cached install is stale
     # or doesn't match the expected configuration.
-    grep -q "${version} ${commit} ${config} CC=$CC" ${HOME}/root/.key-${name} || rm -rf ${prefix}
+    grep -q "${version} xxx ${commit} ${config} CC=$CC" ${HOME}/root/.key-${name} || rm -rf ${prefix}
 
     if test -d ${prefix}; then
         return 0
