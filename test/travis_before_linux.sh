@@ -24,7 +24,6 @@ fi
 function install_apx() {
     local name=$1
     local version=$2
-    local root=https://svn.apache.org/repos/asf/apr/${name}
     local prefix=${HOME}/root/${name}-${version}
     local build=${HOME}/build/${name}-${version}
     local giturl=https://github.com/apache/${name}.git
@@ -32,30 +31,38 @@ function install_apx() {
     local buildconf=$4
 
     case $version in
-    trunk) url=${root}/trunk ;;
-    *.x) url=${root}/branches/${version} ;;
-    *) url=${root}/tags/${version} ;;
+    trunk|*.x) ref=refs/heads/${version} ;;
+    *) ref=refs/tags/${version} ;;
     esac
 
-    local revision=`svn info --show-item last-changed-revision ${url}`
+    # Fetch the object ID (hash) of latest commit
+    local commit=`git ls-remote ${giturl} ${ref} | cut -f1`
+    if test -z "$commit"; then
+        : Could not determine latest commit hash for ${ref} in ${giturl} - check branch is valid?
+        exit 1
+    fi
 
     # Blow away the cached install root if the cached install is stale
     # or doesn't match the expected configuration.
-    grep -q "${version} ${revision} ${config} CC=$CC" ${HOME}/root/.key-${name} || rm -rf ${prefix}
+    grep -q "${version} ${commit} ${config} CC=$CC" ${HOME}/root/.key-${name} || rm -rf ${prefix}
 
     if test -d ${prefix}; then
         return 0
     fi
 
-    git clone -q --depth=1 --branch=$version ${giturl} ${build}
+    git init -q ${build}
     pushd $build
+         # Clone and checkout the commit identified above.
+         git remote add origin ${giturl}
+         git fetch -q --depth=1 origin ${commit}
+         git checkout ${commit}
          ./buildconf ${buildconf}
          ./configure --prefix=${prefix} ${config}
          make -j2
          make install
     popd
 
-    echo ${version} ${revision} "${config}" "CC=${CC}" > ${HOME}/root/.key-${name}
+    echo ${version} ${commit} "${config}" "CC=${CC}" > ${HOME}/root/.key-${name}
 }
 
 # Allow to load $HOME/build/apache/httpd/.gdbinit
