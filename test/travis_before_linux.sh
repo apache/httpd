@@ -54,7 +54,7 @@ function install_apx() {
     pushd $build
          # Clone and checkout the commit identified above.
          git remote add origin ${giturl}
-         git fetch -q --depth=1 ${commit}
+         git fetch -q --depth=1 origin ${commit}
          git checkout ${commit}
          ./buildconf ${buildconf}
          ./configure --prefix=${prefix} ${config}
