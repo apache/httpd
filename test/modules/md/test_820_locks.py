@@ -37,7 +37,7 @@ class TestLocks:
         self.configure_httpd(env, [domain], add_lines=[
             "MDStoreLocks 1s"
         ])
-        assert env.apache_restart() == 0
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
         assert env.await_completion([domain])
 
     # renewal, with global lock held during restert
@@ -47,26 +47,26 @@ class TestLocks:
         self.configure_httpd(env, [domain], add_lines=[
             "MDStoreLocks 1s"
         ])
-        assert env.apache_restart() == 0
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
         assert env.await_completion([domain])
         # we have a cert now, add a dns name to force renewal
         certa = MDCertUtil(env.store_domain_file(domain, 'pubcert.pem'))
         self.configure_httpd(env, [domain, f"x.{domain}"], add_lines=[
             "MDStoreLocks 1s"
         ])
-        assert env.apache_restart() == 0
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
         # await new cert, but do not restart, keeps the cert in staging
         assert env.await_completion([domain], restart=False)
         # obtain global lock and restart
         lockfile = os.path.join(env.store_dir, "store.lock")
         with FileLock(lockfile):
-            assert env.apache_restart() == 0
+            assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
         # lock should have prevented staging from being activated,
         # meaning we will have the same cert
         certb = MDCertUtil(env.store_domain_file(domain, 'pubcert.pem'))
         assert certa.same_serial_as(certb)
         # now restart without lock
-        assert env.apache_restart() == 0
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
         certc = MDCertUtil(env.store_domain_file(domain, 'pubcert.pem'))
         assert not certa.same_serial_as(certc)
 

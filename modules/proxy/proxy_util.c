@@ -3858,7 +3858,7 @@ PROXY_DECLARE(int) ap_proxy_connect_backend(const char *proxy_function,
 #endif
         {
             if ((rv = apr_socket_create(&newsock, backend_addr->family,
-                                        SOCK_STREAM, APR_PROTO_TCP,
+                                        SOCK_STREAM, worker->s->sock_proto,
                                         conn->scpool)) != APR_SUCCESS) {
                 loglevel = backend_addr->next ? APLOG_DEBUG : APLOG_ERR;
                 ap_log_error(APLOG_MARK, loglevel, rv, s, APLOGNO(00952)

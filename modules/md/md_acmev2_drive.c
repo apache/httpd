@@ -56,6 +56,7 @@ static apr_status_t ad_setup_order(md_proto_driver_t *d, md_result_t *result, in
     md_acme_driver_t *ad = d->baton;
     apr_status_t rv;
     md_t *md = ad->md;
+    const char *profile = NULL;
     
     assert(ad->md);
     assert(ad->acme);
@@ -77,7 +78,33 @@ static apr_status_t ad_setup_order(md_proto_driver_t *d, md_result_t *result, in
     }
     
     md_result_activity_setn(result, "Creating new order");
-    rv = md_acme_order_register(&ad->order, ad->acme, d->p, d->md->name, ad->domains);
+    if (ad->profile) {
+        if(ad->acme->api.v2.profiles) {
+            int i;
+            for (i = 0; !profile && i < ad->acme->api.v2.profiles->nelts; ++i) {
+                const char *s = APR_ARRAY_IDX(ad->acme->api.v2.profiles, i, const char*);
+                if (!apr_strnatcasecmp(s, ad->profile))
+                   profile = s;
+            }
+        }
+        if (profile)
+            md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, rv, d->p,
+                          "%s: ordering ACME profile '%s'", md->name, profile);
+        else if (ad->profile_mandatory) {
+            md_log_perror(MD_LOG_MARK, MD_LOG_ERR, rv, d->p,
+                          "%s: mandatory ACME profile '%s' is not offered by CA",
+                          md->name, ad->profile);
+            rv = APR_EINVAL;
+            goto leave;
+        }
+        else {
+            md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, rv, d->p,
+                          "%s: ACME profile '%s' is not offered by CA, continuing without",
+                          md->name, ad->profile);
+        }
+    }
+
+    rv = md_acme_order_register(&ad->order, ad->acme, d->p, d->md->name, ad->domains, profile);
     if (APR_SUCCESS !=rv) goto leave;
     rv = md_acme_order_save(d->store, d->p, MD_SG_STAGING, d->md->name, ad->order, 0);
     if (APR_SUCCESS != rv) {
@@ -152,11 +179,17 @@ retry:
     
     rv = md_acme_order_monitor_authzs(ad->order, ad->acme, d->md,
                                       ad->authz_monitor_timeout, result, d->p);
-    if (APR_SUCCESS != rv) goto leave;
+    if (APR_SUCCESS != rv) {
+      md_result_set(result, rv, "Error waiting on domain names to be validated");
+      goto leave;
+    }
 
     rv = md_acme_order_await_ready(ad->order, ad->acme, d->md,
                                    ad->authz_monitor_timeout, result, d->p);
-    if (APR_SUCCESS != rv) goto leave;
+    if (APR_SUCCESS != rv) {
+      md_result_set(result, rv, "Error waiting for order to become ready");
+      goto leave;
+    }
 
     if (MD_ACME_ORDER_ST_READY == ad->order->status) {
         rv = md_acme_drive_setup_cred_chain(d, result);
@@ -166,7 +199,10 @@ retry:
 
     rv = md_acme_order_await_valid(ad->order, ad->acme, d->md, 
                                    ad->authz_monitor_timeout, result, d->p);
-    if (APR_SUCCESS != rv) goto leave;
+    if (APR_SUCCESS != rv) {
+      md_result_set(result, rv, "Error waiting for order to become valid.");
+      goto leave;
+    }
     
     if (!ad->order->certificate) {
         md_result_set(result, APR_EINVAL, "Order valid, but certificate url is missing.");

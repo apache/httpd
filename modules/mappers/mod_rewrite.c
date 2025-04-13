@@ -2443,21 +2443,19 @@ static char *do_expand(char *input, rewrite_ctx *ctx, rewriterule_entry *entry,
             *unsafe_qmark = 0;
 
             /* keep tracking only if interested in the last qmark */
-            if (entry && (entry->flags & RULEFLAG_QSLAST)) {
-                do {
-                    span++;
-                    span += strcspn(input + span, EXPAND_SPECIALS "?");
-                } while (input[span] == '?');
-            }
-            else {
+            if (!entry || !(entry->flags & RULEFLAG_QSLAST)) {
                 unsafe_qmark = NULL;
-                span += strcspn(input + span, EXPAND_SPECIALS);
             }
+
+            /* find the next real special char, any (last) qmark up to
+             * there is safe too
+             */
+            span += strcspn(input + span, EXPAND_SPECIALS);
         }
     }
 
-    /* fast exit */
-    if (inputlen == span) {
+    /* fast path (no specials) */
+    if (span >= inputlen) {
         return apr_pstrmemdup(pool, input, inputlen);
     }
 
@@ -2639,16 +2637,14 @@ static char *do_expand(char *input, rewrite_ctx *ctx, rewriterule_entry *entry,
                 *unsafe_qmark = 0;
 
                 /* keep tracking only if interested in the last qmark */
-                if (entry && (entry->flags & RULEFLAG_QSLAST)) {
-                    do {
-                        span++;
-                        span += strcspn(p + span, EXPAND_SPECIALS "?");
-                    } while (p[span] == '?');
-                }
-                else {
+                if (!entry || !(entry->flags & RULEFLAG_QSLAST)) {
                     unsafe_qmark = NULL;
-                    span += strcspn(p + span, EXPAND_SPECIALS);
                 }
+
+                /* find the next real special char, any (last) qmark up to
+                 * there is safe too
+                 */
+                span += strcspn(p + span, EXPAND_SPECIALS);
             }
         }
         if (span > 0) {
@@ -2776,7 +2772,7 @@ static void add_cookie(request_rec *r, char *s)
                 long exp_min;
 
                 exp_min = atol(expires);
-                if (exp_min) {
+                if (exp_min > 0) {
                     apr_time_exp_gmt(&tms, r->request_time
                                      + apr_time_from_sec((60 * exp_min)));
                     exp_time = apr_psprintf(r->pool, "%s, %.2d-%s-%.4d "
@@ -2786,6 +2782,9 @@ static void add_cookie(request_rec *r, char *s)
                                            apr_month_snames[tms.tm_mon],
                                            tms.tm_year+1900,
                                            tms.tm_hour, tms.tm_min, tms.tm_sec);
+                }
+                else if (exp_min < 0) {
+                    exp_time = "Thu, 01 Jan 1970 00:00:00 GMT";
                 }
             }
 
@@ -4341,6 +4340,7 @@ static rule_return_type apply_rewrite_rule(rewriterule_entry *p,
     char *newuri = NULL;
     request_rec *r = ctx->r;
     int is_proxyreq = 0;
+    int prefix_added = 0;
 
     ctx->uri = r->filename;
 
@@ -4505,6 +4505,7 @@ static rule_return_type apply_rewrite_rule(rewriterule_entry *p,
                        newuri, ctx->perdir, newuri);
 
             newuri = apr_pstrcat(r->pool, ctx->perdir, newuri, NULL);
+            prefix_added = 1;
         }
         else if (!(p->flags & (RULEFLAG_PROXY | RULEFLAG_FORCEREDIRECT))) {
             /* Not an absolute URI-path and the scheme (if any) is unknown,
@@ -4513,11 +4514,15 @@ static rule_return_type apply_rewrite_rule(rewriterule_entry *p,
              * rule like "RewriteRule ^/some/path(.*) $1" that is given a path
              * like "/some/pathscheme:..." to produce the fully qualified URL
              * "scheme:..." which could be misinterpreted later.
+             * Note: While this approach is broader to catch further possible
+             * cases the main immediate thread are RewriteRule results that
+             * would start with proxy:.
              */
             rewritelog(r, 3, ctx->perdir, "add root prefix: %s -> /%s",
                        newuri, newuri);
 
             newuri = apr_pstrcat(r->pool, "/", newuri, NULL);
+            prefix_added = 1;
         }
     }
 
@@ -4538,20 +4543,6 @@ static rule_return_type apply_rewrite_rule(rewriterule_entry *p,
      * ourself).
      */
     if (p->flags & RULEFLAG_PROXY) {
-        /* For rules evaluated in server context, the mod_proxy fixup
-         * hook can be relied upon to escape the URI as and when
-         * necessary, since it occurs later.  If in directory context,
-         * the ordering of the fixup hooks is forced such that
-         * mod_proxy comes first, so the URI must be escaped here
-         * instead.  See PR 39746, 46428, and other headaches. */
-        if (ctx->perdir && (p->flags & RULEFLAG_NOESCAPE) == 0) {
-            char *old_filename = r->filename;
-
-            r->filename = ap_escape_uri(r->pool, r->filename);
-            rewritelog(r, 2, ctx->perdir, "escaped URI in per-dir context "
-                       "for proxy, %s -> %s", old_filename, r->filename);
-        }
-
         fully_qualify_uri(r);
 
         rewritelog(r, 2, ctx->perdir, "forcing proxy-throughput with %s",
@@ -4598,7 +4589,7 @@ static rule_return_type apply_rewrite_rule(rewriterule_entry *p,
         return RULE_RC_MATCH;
     }
 
-    if (!(p->flags & RULEFLAG_UNC)) {
+    if (!((p->flags & RULEFLAG_UNC) || prefix_added)) {
         /* merge leading slashes, unless they were literals in the sub */
         if (!AP_IS_SLASH(p->output[0]) || !AP_IS_SLASH(p->output[1])) {
             while (AP_IS_SLASH(r->filename[0]) &&
@@ -5100,7 +5091,7 @@ static int hook_uri2file(request_rec *r)
             }
             if ((r->args != NULL)
                 && ((r->proxyreq == PROXYREQ_PROXY)
-                    || (rulestatus == ACTION_NOESCAPE))) {
+                    || apr_table_get(r->notes, "proxy-nocanon"))) {
                 /* see proxy_http:proxy_http_canon() */
                 r->filename = apr_pstrcat(r->pool, r->filename,
                                           "?", r->args, NULL);
@@ -5403,13 +5394,18 @@ static int hook_fixup(request_rec *r)
                 return HTTP_FORBIDDEN;
             }
 
-            /* make sure the QUERY_STRING and
-             * PATH_INFO parts get incorporated
+            if (rulestatus == ACTION_NOESCAPE) {
+                apr_table_setn(r->notes, "proxy-nocanon", "1");
+            }
+
+            /* make sure the QUERY_STRING gets incorporated in the case
+             * [NE] was specified on the Proxy rule. We are preventing
+             * mod_proxy canon handler from incorporating r->args as well
+             * as escaping the URL.
              * (r->path_info was already appended by the
              * rewriting engine because of the per-dir context!)
              */
-            if (r->args != NULL) {
-                /* see proxy_http:proxy_http_canon() */
+            if ((r->args != NULL) && apr_table_get(r->notes, "proxy-nocanon")) {
                 r->filename = apr_pstrcat(r->pool, r->filename,
                                           "?", r->args, NULL);
             }
@@ -5712,10 +5708,7 @@ static void ap_register_rewrite_mapfunc(char *name, rewrite_mapfunc_t *func)
 
 static void register_hooks(apr_pool_t *p)
 {
-    /* fixup after mod_proxy, so that the proxied url will not
-     * escaped accidentally by mod_proxy's fixup.
-     */
-    static const char * const aszPre[]={ "mod_proxy.c", NULL };
+    static const char * const aszModProxy[] = { "mod_proxy.c", NULL };
 
     /* make the hashtable before registering the function, so that
      * other modules are prevented from accessing uninitialized memory.
@@ -5727,10 +5720,12 @@ static void register_hooks(apr_pool_t *p)
     ap_hook_pre_config(pre_config, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_post_config(post_config, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_child_init(init_child, NULL, NULL, APR_HOOK_MIDDLE);
-
-    ap_hook_fixups(hook_fixup, aszPre, NULL, APR_HOOK_FIRST);
+    
+    /* allow to change the uri before mod_proxy takes over it */
+    ap_hook_translate_name(hook_uri2file, NULL, aszModProxy, APR_HOOK_FIRST);
+    /* fixup before mod_proxy so that a [P] URL gets fixed up there */
+    ap_hook_fixups(hook_fixup, NULL, aszModProxy, APR_HOOK_FIRST);
     ap_hook_fixups(hook_mimetype, NULL, NULL, APR_HOOK_LAST);
-    ap_hook_translate_name(hook_uri2file, NULL, NULL, APR_HOOK_FIRST);
 }
 
     /* the main config structure */

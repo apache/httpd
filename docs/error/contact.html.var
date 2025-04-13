@@ -24,9 +24,9 @@ the <a href="mailto:<!--#echo encoding="url" var="SERVER_ADMIN" -->">webmaster</
 Content-language: es
 Content-type: text/html
 Body:----------es--
-Si usted cree que esto es un error del servidor, por favor comun&iacute;queselo al
+Si cree que es un error del servidor, por favor, comun&iacute;queselo al
 <a href="mailto:<!--#echo encoding="none" var="SERVER_ADMIN" -->">administrador
-del portal</a>.
+del sitio web</a>.
 ----------es--
 
 Content-language: fr

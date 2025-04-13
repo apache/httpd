@@ -317,6 +317,8 @@ md_json_t *md_to_json(const md_t *md, apr_pool_t *p)
             md_json_sets(md->ca_eab_kid, json, MD_KEY_EAB, MD_KEY_KID, NULL);
             if (md->ca_eab_hmac) md_json_sets(md->ca_eab_hmac, json, MD_KEY_EAB, MD_KEY_HMAC, NULL);
         }
+        if (md->profile) md_json_sets(md->profile, json, MD_KEY_PROFILE, NULL);
+        md_json_setb(md->profile_mandatory > 0, json, MD_KEY_PROFILE_MANDATORY, NULL);
         return json;
     }
     return NULL;
@@ -383,6 +385,10 @@ md_t *md_from_json(md_json_t *json, apr_pool_t *p)
             md->ca_eab_kid = md_json_dups(p, json, MD_KEY_EAB, MD_KEY_KID, NULL);
             md->ca_eab_hmac = md_json_dups(p, json, MD_KEY_EAB, MD_KEY_HMAC, NULL);
         }
+
+        md->profile_mandatory = (int)md_json_getb(json, MD_KEY_PROFILE_MANDATORY, NULL);
+        if (md_json_has_key(json, MD_KEY_PROFILE, NULL))
+            md->profile = md_json_dups(p, json, MD_KEY_PROFILE, NULL);
         return md;
     }
     return NULL;

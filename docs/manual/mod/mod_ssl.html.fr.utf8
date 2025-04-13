@@ -40,7 +40,7 @@ Sockets Layer (SSL) et Transport Layer Security (TLS)</td></tr>
 <p>Ce module fournit le support SSL v3 et TLS v1.x au serveur HTTP
 Apache. SSL v2 n'est plus supporté.</p>
 
-<p>Ce module s'appuie sur <a href="http://www.openssl.org/">OpenSSL</a>
+<p>Ce module s'appuie sur <a href="https://www.openssl.org/">OpenSSL</a>
 pour fournir le moteur de chiffrement.</p>
 
 <p>D'autres détails, discussions et exemples sont fournis dans la <a href="../ssl/">documentation SSL</a>.</p>
@@ -68,6 +68,7 @@ disponibles avec Require</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslcertificatefile">SSLCertificateFile</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslcertificatekeyfile">SSLCertificateKeyFile</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslciphersuite">SSLCipherSuite</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#sslclienthellovars">SSLClientHelloVars</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslcompression">SSLCompression</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslcryptodevice">SSLCryptoDevice</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslengine">SSLEngine</a></li>
@@ -256,12 +257,40 @@ certificat serveur, sous la forme SRVName (OID 1.3.6.1.5.5.7.8.7, RFC 4985)</td>
 <td>Algorithme utilisé pour la clé publique du certificat du serveur</td></tr>
 <tr><td><code>SSL_SERVER_CERT</code></td>               <td>chaîne</td>
 <td>Certificat du serveur au format PEM</td></tr>
-<tr class="odd"><td><code>SSL_SRP_USER</code></td>                  <td>string</td>
+<tr class="odd"><td><code>SSL_SRP_USER</code></td>                  <td>chaîne</td>
 <td>nom d'utilisateur SRP</td></tr>
-<tr><td><code>SSL_SRP_USERINFO</code></td>              <td>string</td>
+<tr><td><code>SSL_SRP_USERINFO</code></td>              <td>chaîne</td>
 <td>informations sur l'utilisateur SRP</td></tr>
-<tr class="odd"><td><code>SSL_TLS_SNI</code></td>                   <td>string</td>
+<tr class="odd"><td><code>SSL_TLS_SNI</code></td>                   <td>chaîne</td>
 <td>Contenu de l'extension SNI TLS (si supporté par ClientHello)</td></tr>
+<tr><td><code>SSL_HANDSHAKE_RTT</code></td>             <td>nombre</td>
+<td>Temps d'aller-retour de la négociation TLS en microsecondes, y compris le
+traitement de l’étape finale (cette variable est définie à vide si la version d’OpenSSL est
+antérieure à 3.2 ou si le temps d'aller-retour ne peut pas être déterminé.</td></tr>
+<tr class="odd"><td><code>SSL_CLIENTHELLO_VERSION</code></td>       <td>chaîne</td>
+<td>Champ de version (patrimonial) de ClientHello sous la forme de quatre
+caractères hexadécimaux</td></tr>
+<tr><td><code>SSL_CLIENTHELLO_CIPHERS</code></td>       <td>chaîne</td>
+<td>Suites d’algorithmes de chiffrement de ClientHello sous la forme de quatre
+caractères hexadécimaux par item</td></tr>
+<tr class="odd"><td><code>SSL_CLIENTHELLO_EXTENSIONS</code></td>    <td>chaîne</td>
+<td>Identifiants d’extension de ClientHello sous la forme de quatre
+caractères hexadécimaux par item</td></tr>
+<tr><td><code>SSL_CLIENTHELLO_GROUPS</code></td>        <td>chaîne</td>
+<td>Valeur de l’extension Supported Groups (10) de ClientHello sous la forme de quatre
+caractères hexadécimaux par item</td></tr>
+<tr class="odd"><td><code>SSL_CLIENTHELLO_EC_FORMATS</code></td>    <td>chaîne</td>
+<td>Valeur de l’extension EC Point Formats (11) de ClientHello sous la forme de
+deux caractères hexadécimaux par item</td></tr>
+<tr><td><code>SSL_CLIENTHELLO_SIG_ALGOS</code></td>     <td>chaîne</td>
+<td>Valeur de l’extension Signature Algorithms (13) de ClientHello sous la forme de quatre
+caractères hexadécimaux par item</td></tr>
+<tr class="odd"><td><code>SSL_CLIENTHELLO_ALPN</code></td>          <td>chaîne</td>
+<td>Valeur de l’extension ALPN (16) de ClientHello sous la forme d’une chaîne
+hexadécimale avec la longueur de la chaîne au début</td></tr>
+<tr><td><code>SSL_CLIENTHELLO_VERSIONS</code></td>      <td>chaîne</td>
+<td>Valeur de l’extension Supported Versions (43) de ClientHello sous la forme de quatre
+caractères hexadécimaux par item</td></tr>
 </table>
 
 <p><em>x509</em> spécifie un élément de DN X.509 parmi
@@ -296,6 +325,10 @@ plus de détails.</p>
 
 <p><code>SSL_CLIENT_V_REMAIN</code> n'est disponible qu'à partir de la
 version 2.1.</p>
+
+<p>Pour que les variables <code>SSL_CLIENTHELLO_*</code> soient renseignées, la
+directive <code class="directive"><a href="#sslclienthellovars">SSLClientHelloVars</a></code> doit être
+activée.</p>
 
 <p>Plusieurs variables d'environnement additionnelles peuvent être
 utilisées dans les expressions <code class="directive">SSLRequire</code>, ou
@@ -785,7 +818,7 @@ plus de 1024 bits</h3>
 Depuis la version 2.4.7, mod_ssl utilise des
 paramètres DH standardisés avec des nombres premiers de 2048, 3072 et
 4096 bits, et avec des nombres premiers de 6144 et 8192 bits depuis la
-version 2.4.10 (voir <a href="http://www.ietf.org/rfc/rfc3526.txt">RFC
+version 2.4.10 (voir <a href="https://www.rfc-editor.org/rfc/rfc3526">RFC
 3526</a>), et les fournit aux clients en fonction de la longueur de la
 clé du certificat RSA/DSA. En particulier avec les clients basés sur
 Java (versions 7 et antérieures), ceci peut provoquer des erreurs au
@@ -916,8 +949,8 @@ TLSv1.3 n'autorise pas la renégociation, spécifier pour lui des algorithmes de
 chiffrement dans un contexte de répertoire n'est pas autorisé</p>
 <p>
 Pour obtenir la liste des noms d'algorithmes de chiffrement pour TLSv1.3, se
-référer à la <a href="https://www.openssl.org/docs/manmaster/man3/SSL_CTX_set_ciphersuites.html">the
-OpenSSL documentation</a>.</p>
+référer à la <a href="https://docs.openssl.org/master/man3/SSL_CTX_set_ciphersuites/">
+documentation OpenSSL</a>.</p>
 <p>
 La liste d'algorithmes de chiffrement SSL spécifiée par l'argument
 <em>cipher-spec</em> comporte quatre attributs principaux auxquels
@@ -1102,6 +1135,31 @@ spécifiques à SSL dans la <a href="#table2">Table 2</a>.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="sslclienthellovars" id="sslclienthellovars">Directive</a> <a name="SSLClientHelloVars" id="SSLClientHelloVars">SSLClientHelloVars</a> <a title="Lien permanent" href="#sslclienthellovars" class="permalink">&para;</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Activer la collecte des variables de ClientHello</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SSLClientHelloVars on|off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>SSLClientHelloVars off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.5.2 du serveur HTTP Apache,
+requiert OpenSSL version 1.1.1 ou ultérieure</td></tr>
+</table>
+<p>Cette directive permet la collecte des données de ClientHello pendant la
+négociation qui sont conservées pendant toute la durée de la connexion, de façon
+qu’elles soient disponibles sous la forme de variables d’environnement
+<code>SSL_CLIENTHELLLO_*</code> pour les requêtes qui dépendent de la définition
+de <code>StdEnvVars</code>. Les variables sont formatées comme les tampons bruts
+codés en hexadécimal observés dans le protocole réseau brut et tels que fournis
+par OpenSSL. Les valeurs de GREASE (RFC 8701) sont filtrées par OpenSSL lors de
+l’énumération des identifiants d’extension, mais sont transmises telles quelles
+pour les autres variables. Si cette directive n’est pas activée, ou si la
+version d’OpenSSL est antérieure à 1.1.1, ces variables ne seront pas
+renseignées.</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="sslcompression" id="sslcompression">Directive</a> <a name="SSLCompression" id="SSLCompression">SSLCompression</a> <a title="Lien permanent" href="#sslcompression" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Permet d'activer la compression au niveau SSL</td></tr>
@@ -1155,7 +1213,7 @@ SSLCryptoDevice ubsec</pre>
 que la clé ou le certificat sont spécifiés à l'aide d'<a href="https://tools.ietf.org/html/rfc7512">URIs PKCS#11</a>, le chargement de la
 clé et du certificat est tenté à partir d'un fournisseur OpenSSL. Le fournisseur
 OpenSSL à utiliser doit être défini et configuré dans le fichier de
-configuration d'OpenSSL et il doit prendre en charge la <a href="https://www.openssl.org/docs/man3.0/man7/provider-storemgmt.html">méthode
+configuration d'OpenSSL et il doit prendre en charge la <a href="https://docs.openssl.org/3.0/man7/provider-storemgmt/">méthode
 STORE</a> pour les <a href="https://tools.ietf.org/html/rfc7512">URIs PKCS#11</a>.
 </p>
 
@@ -1182,7 +1240,7 @@ SSLEngine on
 &lt;/VirtualHost&gt;</pre>
 </div>
 <p><code class="directive">SSLEngine</code> peut être définie à <code>optional</code>,
-ce qui active le support de <a href="http://www.ietf.org/rfc/rfc2817.txt">RFC
+ce qui active le support de <a href="https://www.rfc-editor.org/rfc/rfc2817">RFC
 2817</a>.
 </p>
 
@@ -1440,7 +1498,7 @@ ce dernier beaucoup plus souple.</p>
 utilisée pour <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> (la version minimale 1.0.2 est un
 prérequis). Pour obtenir la liste des commandes supportées, voir la
 section <em>Supported configuration file commands</em> de la page de
-manuel d'OpenSSL <a href="http://www.openssl.org/docs/man1.0.2/ssl/SSL_CONF_cmd.html#SUPPORTED-CONFIGURATION-FILE-COMMANDS">SSL_CONF_cmd(3)</a>.</p>
+manuel d'OpenSSL <a href="https://docs.openssl.org/master/man3/SSL_CONF_cmd/#supported-configuration-file-commands">SSL_CONF_cmd(3)</a>.</p>
 
 <div class="example"><h3>Exemples</h3><pre class="prettyprint lang-config">SSLOpenSSLConfCmd Options -SessionTicket,ServerPreference
 SSLOpenSSLConfCmd ECDHParameters brainpoolP256r1
@@ -1762,26 +1820,26 @@ casse) :</p>
     Il s'agit du protocole Secure Sockets Layer (SSL) version 3.0 de
     Netscape Corporation. C'est le successeur de SSLv2 et le
     prédécesseur de TLSv1, mais est considéré comme
-    obsolète dans la <a href="http://www.ietf.org/rfc/rfc7568.txt">RFC
+    obsolète dans la <a href="https://www.rfc-editor.org/rfc/rfc7568">RFC
     7568</a></p></li>
 
 <li><code>TLSv1</code>
     <p>
     Il s'agit du protocole  Transport Layer Security (TLS) version 1.0.
-    C'est le successeur de SSLv3, et il est défini dans la <a href="http://www.ietf.org/rfc/rfc2246.txt">RFC2246</a>.</p></li>
+    C'est le successeur de SSLv3, et il est défini dans la <a href="https://www.rfc-editor.org/rfc/rfc2246">RFC2246</a>.</p></li>
 
 <li><code>TLSv1.1</code> (à partir de la version 1.0.1 d'OpenSSL)
     <p>
-    Une révision du protocole TLS 1.0 définie dans la <a href="http://www.ietf.org/rfc/rfc4346.txt">RFC 4346</a>. Il est
+    Une révision du protocole TLS 1.0 définie dans la <a href="https://www.rfc-editor.org/rfc/rfc4346">RFC 4346</a>. Il est
     supporté par la plupart des clients.</p></li>
 
 <li><code>TLSv1.2</code> (à partir de la version 1.0.1 d'OpenSSL)
     <p>
-    Une révision du protocole TLS 1.1 définie dans la <a href="http://www.ietf.org/rfc/rfc5246.txt">RFC 5246</a>.</p></li>
+    Une révision du protocole TLS 1.1 définie dans la <a href="https://www.rfc-editor.org/rfc/rfc5246">RFC 5246</a>.</p></li>
 
 <li><code>TLSv1.3</code> (avec OpenSSL version 1.1.1 et supérieures)
     <p>
-    Une nouvelle version du protocole TLS définie dans la <a href="http://www.ietf.org/rfc/rfc8446.txt">RFC 8446</a>.</p></li>
+    Une nouvelle version du protocole TLS définie dans la <a href="https://www.rfc-editor.org/rfc/rfc8446">RFC 8446</a>.</p></li>
 
 <li><code>all</code>
     <p>
@@ -2786,7 +2844,7 @@ d'OpenSSL</td></tr>
 </table>
 <p>Cette directive permet de définir une clé secrète pour le chiffrement
 et le déchiffrement des tickets de session TLS selon les préconisations
-de la <a href="http://www.ietf.org/rfc/rfc5077.txt">RFC 5077</a>. Elle a
+de la <a href="https://www.rfc-editor.org/rfc/rfc5077">RFC 5077</a>. Elle a
 été conçue à l'origine pour les environnements de clusters où les
 données des sessions TLS doivent être partagées entre plusieurs noeuds.
 Pour les configurations ne comportant qu'une seule instance de httpd, il
@@ -3150,7 +3208,7 @@ certificats de serveur comportant des certificats de CA intermédiaires
 dans leur chaîne (c'est un cas typique de nos jours), l'implémentation
 actuelle de l'agrafage OCSP n'atteint que partiellement l'objectif d'
 "économie en questions/réponse et en ressources". Pour plus de détails,
-voir la <a href="http://www.ietf.org/rfc/rfc6961.txt">RFC 6961</a> (TLS
+voir la <a href="https://www.rfc-editor.org/rfc/rfc6961">RFC 6961</a> (TLS
 Multiple Certificate Status Extension).
 </p>
 
@@ -3261,7 +3319,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_ssl.html';
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2024 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2025 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

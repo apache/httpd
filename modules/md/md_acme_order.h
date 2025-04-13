@@ -76,7 +76,8 @@ apr_status_t md_acme_order_monitor_authzs(md_acme_order_t *order, md_acme_t *acm
 /* ACMEv2 only ************************************************************************************/
 
 apr_status_t md_acme_order_register(md_acme_order_t **porder, md_acme_t *acme, apr_pool_t *p, 
-                                    const char *name, struct apr_array_header_t *domains);
+                                    const char *name, struct apr_array_header_t *domains,
+                                    const char *profile);
 
 apr_status_t md_acme_order_update(md_acme_order_t *order, md_acme_t *acme, 
                                   struct md_result_t *result, apr_pool_t *p);

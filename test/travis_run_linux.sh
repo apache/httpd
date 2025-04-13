@@ -282,14 +282,6 @@ if test -v TEST_MD -a $RV -eq 0; then
     RV=$?
 fi
 
-if test -v TEST_MOD_TLS -a $RV -eq 0; then
-    # Run mod_tls tests. The underlying librustls was build
-    # and installed before we configured the server (see top of file).
-    # This will be replaced once librustls is available as a package.
-    py.test-3 test/modules/tls
-    RV=$?
-fi
-
 # Catch cases where abort()s get logged to stderr by libraries but
 # only cause child processes to terminate e.g. during shutdown,
 # which may not otherwise trigger test failures.

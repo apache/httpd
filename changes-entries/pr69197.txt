@@ -1,2 +1,0 @@
-  *) mod_rewrite: Better question mark tracking to avoid UnsafeAllow3F.
-     PR 69197. [Yann Ylavic, Eric Covener]

@@ -1291,6 +1291,18 @@ int md_cert_covers_md(md_cert_t *cert, const md_t *md)
     return 0;
 }
 
+const char *md_cert_get_issuer_name(const md_cert_t *cert, apr_pool_t *p)
+{
+    X509_NAME *xname = X509_get_issuer_name(cert->x509);
+    if(xname) {
+      char *name, *s = X509_NAME_oneline(xname, NULL, 0);
+      name = apr_pstrdup(p, s);
+      OPENSSL_free(s);
+      return name;
+    }
+    return NULL;
+}
+
 apr_status_t md_cert_get_issuers_uri(const char **puri, const md_cert_t *cert, apr_pool_t *p)
 {
     apr_status_t rv = APR_ENOENT;

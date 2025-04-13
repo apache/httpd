@@ -65,7 +65,7 @@ typedef struct h2_proxy_ctx {
     unsigned is_ssl : 1;
     
     request_rec *r;            /* the request processed in this ctx */
-    int r_status;              /* status of request work */
+    apr_status_t r_status;     /* status of request work */
     int r_done;                /* request was processed, not necessarily successfully */
     int r_may_retry;           /* request may be retried */
     int has_reusable_session;  /* http2 session is live and clean */
@@ -414,7 +414,7 @@ run_connect:
                       "setup new connection: is_ssl=%d %s %s %s", 
                       ctx->p_conn->is_ssl, ctx->p_conn->ssl_hostname, 
                       locurl, ctx->p_conn->hostname);
-        ctx->r_status = ap_map_http_request_error(status, HTTP_SERVICE_UNAVAILABLE);
+        ctx->r_status = status;
         goto cleanup;
     }
     
@@ -428,7 +428,7 @@ run_connect:
     if (ctx->cfront->aborted) goto cleanup;
     status = ctx_run(ctx);
 
-    if (ctx->r_status != OK && ctx->r_may_retry && !ctx->cfront->aborted) {
+    if (ctx->r_status != APR_SUCCESS && ctx->r_may_retry && !ctx->cfront->aborted) {
         /* Not successfully processed, but may retry, tear down old conn and start over */
         if (ctx->p_conn) {
             ctx->p_conn->close = 1;
@@ -464,12 +464,6 @@ cleanup:
     ap_set_module_config(ctx->cfront->conn_config, &proxy_http2_module, NULL);
     ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, ctx->cfront,
                   APLOGNO(03377) "leaving handler");
-    if (ctx->r_status != OK) {
-        ap_die(ctx->r_status, r);
-    }
-    else if (status != APR_SUCCESS) {
-        ap_die(ap_map_http_request_error(status, HTTP_SERVICE_UNAVAILABLE), r);
-    }
     return ctx->r_status;
 }
 

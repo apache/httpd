@@ -484,6 +484,7 @@
 <li><a href="mod_md.html#mdcertificatestatus">MDCertificateStatus</a></li>
 <li><a href="mod_md.html#mdchallengedns01">MDChallengeDns01</a></li>
 <li><a href="mod_md.html#mdchallengedns01version">MDChallengeDns01Version</a></li>
+<li><a href="mod_md.html#mdcheckinterval">MDCheckInterval</a></li>
 <li><a href="mod_md.html#mdcontactemail">MDContactEmail</a></li>
 <li><a href="mod_md.html#mddrivemode">MDDriveMode</a></li>
 <li><a href="mod_md.html#mdexternalaccountbinding">MDExternalAccountBinding</a></li>
@@ -730,12 +731,12 @@
 <li><a href="mod_ssl.html#sslcertificatefile">SSLCertificateFile</a></li>
 <li><a href="mod_ssl.html#sslcertificatekeyfile">SSLCertificateKeyFile</a></li>
 <li><a href="mod_ssl.html#sslciphersuite">SSLCipherSuite</a></li>
+<li><a href="mod_ssl.html#sslclienthellovars">SSLClientHelloVars</a></li>
 <li><a href="mod_ssl.html#sslcompression">SSLCompression</a></li>
 <li><a href="mod_ssl.html#sslcryptodevice">SSLCryptoDevice</a></li>
 <li><a href="mod_ssl.html#sslengine">SSLEngine</a></li>
 <li><a href="mod_ssl.html#sslfips">SSLFIPS</a></li>
 <li><a href="mod_ssl.html#sslhonorcipherorder">SSLHonorCipherOrder</a></li>
-<li><a href="mod_ssl.html#sslinsecurerenegotiation">SSLInsecureRenegotiation</a></li>
 <li><a href="mod_ssl.html#sslocspdefaultresponder">SSLOCSPDefaultResponder</a></li>
 <li><a href="mod_ssl.html#sslocspenable">SSLOCSPEnable</a></li>
 <li><a href="mod_ssl.html#sslocspnoverify">SSLOCSPNoverify</a></li>
@@ -803,25 +804,11 @@
 <li><a href="mpm_common.html#threadsperchild">ThreadsPerChild</a></li>
 <li><a href="mpm_common.html#threadstacksize">ThreadStackSize</a></li>
 <li><a href="core.html#timeout">TimeOut</a></li>
-<li><a href="mod_tls.html#tlscertificate">TLSCertificate</a></li>
-<li><a href="mod_tls.html#tlsciphersprefer">TLSCiphersPrefer</a></li>
-<li><a href="mod_tls.html#tlscipherssuppress">TLSCiphersSuppress</a></li>
-<li><a href="mod_tls.html#tlsengine">TLSEngine</a></li>
-<li><a href="mod_tls.html#tlshonorclientorder">TLSHonorClientOrder</a></li>
-<li><a href="mod_tls.html#tlsoptions">TLSOptions</a></li>
-<li><a href="mod_tls.html#tlsprotocol">TLSProtocol</a></li>
-<li><a href="mod_tls.html#tlsproxyca">TLSProxyCA</a></li>
-<li><a href="mod_tls.html#tlsproxyciphersprefer">TLSProxyCiphersPrefer</a></li>
-<li><a href="mod_tls.html#tlsproxycipherssuppress">TLSProxyCiphersSuppress</a></li>
-<li><a href="mod_tls.html#tlsproxyengine">TLSProxyEngine</a></li>
-<li><a href="mod_tls.html#tlsproxymachinecertificate">TLSProxyMachineCertificate</a></li>
-<li><a href="mod_tls.html#tlsproxyprotocol">TLSProxyProtocol</a></li>
-<li><a href="mod_tls.html#tlssessioncache">TLSSessionCache</a></li>
-<li><a href="mod_tls.html#tlsstrictsni">TLSStrictSNI</a></li>
 <li><a href="core.html#traceenable">TraceEnable</a></li>
 <li><a href="mod_log_config.html#transferlog">TransferLog</a></li>
 <li><a href="mod_mime.html#typesconfig">TypesConfig</a></li>
-<li><a href="core.html#undefine" id="U" name="U">UnDefine</a></li>
+<li><a href="core.html#unclist" id="U" name="U">UNCList</a></li>
+<li><a href="core.html#undefine">UnDefine</a></li>
 <li><a href="mod_macro.html#undefmacro">UndefMacro</a></li>
 <li><a href="mod_env.html#unsetenv">UnsetEnv</a></li>
 <li><a href="mod_macro.html#use">Use</a></li>
@@ -874,7 +861,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/directives.htm
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2023 The Apache Software Foundation.<br />基于 <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> 许可证.</p>
+<p class="apache">Copyright 2024 The Apache Software Foundation.<br />基于 <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> 许可证.</p>
 <p class="menu"><a href="../mod/">模块</a> | <a href="../mod/quickreference.html">指令</a> | <a href="http://wiki.apache.org/httpd/FAQ">常见问题</a> | <a href="../glossary.html">术语</a> | <a href="../sitemap.html">网站导航</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

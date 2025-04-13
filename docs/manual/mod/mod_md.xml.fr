@@ -2,7 +2,7 @@
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
-<!-- English Revision: 1916861 -->
+<!-- English Revision: 1923592 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -1549,25 +1549,9 @@ MDMessageCmd /etc/apache/md-message
 
     <directivesynopsis>
         <name>MDCertificateCheck</name>
-        <description>Définit le motif de nom pour un nom sitSet de
-	vérification de certificat et un motif d'URL pour un sitee de
+        <description>Définit le motif de nom et d’URL pour un site de
 	vérification de certificat</description>
         <syntax>MDCertificateCheck <var>name</var> <var>url</var></syntax>
-        <contextlist>
-            <context>server config</context>
-        </contextlist>
-        <compatibility>Disponible à partir de la version 2.4.42 du serveur HTTP
-	Apache</compatibility>
-        <usage>
-            <p>
-            </p>
-        </usage>
-    </directivesynopsis>
-
-    <directivesynopsis>
-        <name>MDActivationDelay</name>
-        <description>Définit le délai d'activation des nouveaux certificats</description>
-        <syntax>MDActivationDelay <var>duration</var></syntax>
         <contextlist>
             <context>server config</context>
         </contextlist>
@@ -1827,6 +1811,71 @@ MDMessageCmd /etc/apache/md-message
 	    La valeur minimale pouvant être définie pour l’intervalle est de
 	    1 seconde. Il est cependant déconseillé de définir un intervalle
 	    aussi court sur un serveur en production.
+            </p>
+        </usage>
+    </directivesynopsis>
+
+    <directivesynopsis>
+        <name>MDProfile</name>
+        <description>Utiliser un profile ACME spécifique depuis le CA</description>
+        <syntax>MDProfile name</syntax>
+        <contextlist>
+            <context>server config</context>
+        </contextlist>
+        <compatibility>Disponible à partir de la version 2.4.64 du serveur HTTP
+	Apache</compatibility>
+        <usage>
+            <p>
+                Il s’agit d’une extension non standard d’ACME par Let's Encrypt.
+            </p><p>
+		Lets Encrypt a annoncé qu’ils allaient ajouter la prise en
+		charge des profiles de certificat à leurs CA courant 2025, en
+		commençant par leurs serveurs de test. Cette fonctionnalité,
+		entre autres détails, vous permettra de définir la durée de
+		validité des certificats que vous recevez. À ce titre, le
+		profile « default » conservera la valeur de 90 jours, alors que
+		le profile « tlsserver » délivrera des certificats dont la durée
+		de validité sera de 6 jours seulement.
+            </p><p>
+                Si vous ne modifiez pas la configuration de votre module mod_md,
+		vous continuerez à recevoir des certificats d’une durée de
+		validité de 90 jours. Si vous pensez qu’une durée de validité
+		plus courte convient mieux à votre situation (et acceptez le
+		risque que le temps de renouvellement soit beaucoup plus court),
+		vous pouvez définir le profile à utiliser à l’aide de
+		« MDProfile tlsserver ».
+           </p><p>
+                Les noms de profile sont définis par le CA. Si vous tentez de
+		définie un profile non valable, aucun profile ne sera utilisé,
+		et le certificat sera délivré avec les valeurs par défaut du CA.
+           </p><p>
+                Voir la directive <directive
+		module="mod_md">MDProfileMandatory</directive> pour la manière
+		de désactiver les valeurs par défaut pour les profiles.
+            </p>
+        </usage>
+    </directivesynopsis>
+
+    <directivesynopsis>
+        <name>MDProfileMandatory</name>
+        <description>Contrôler si un MDProfile est obligatoire.</description>
+        <syntax>MDProfileMandatory on|off</syntax>
+        <default>MDProfileMandatory off</default>
+        <contextlist>
+            <context>server config</context>
+        </contextlist>
+        <usage>
+            <p>
+                Cette directive permet de contrôler si un <directive
+		module="mod_md">MDProfile</directive> que vous définissez est
+		obligatoire ou non. S’il est obligatoire et si le CA ne propose
+		pas de profile configuré, le renouvellement du certificat
+		échouera.
+           </p><p>
+                S’il n’est pas obligatoire et si le CA ne propose
+		pas de profile, les renouvellements seront effectués sans
+		profile particulier et le CA délivrera les certificats avec les
+		valeurs par défaut.
             </p>
         </usage>
     </directivesynopsis>

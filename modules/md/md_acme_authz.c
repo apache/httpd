@@ -263,9 +263,8 @@ static apr_status_t cha_http_01_setup(md_acme_authz_cha_t *cha, md_acme_authz_t 
     rv = md_store_load(store, MD_SG_CHALLENGES, authz->domain, MD_FN_HTTP01,
                        MD_SV_TEXT, (void**)&data, p);
     if ((APR_SUCCESS == rv && strcmp(cha->key_authz, data)) || APR_STATUS_IS_ENOENT(rv)) {
-        const char *content = apr_psprintf(p, "%s\n", cha->key_authz);
         rv = md_store_save(store, p, MD_SG_CHALLENGES, authz->domain, MD_FN_HTTP01,
-                           MD_SV_TEXT, (void*)content, 0);
+                           MD_SV_TEXT, (void*)cha->key_authz, 0);
         notify_server = 1;
     }
     

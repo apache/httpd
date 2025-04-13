@@ -275,6 +275,15 @@ static apr_status_t setup_store_file(void *baton, apr_pool_t *p, apr_pool_t *pte
 read:
     if (MD_OK(md_util_is_file(fname, ptemp))) {
         rv = read_store_file(s_fs, fname, p, ptemp);
+        if (rv != APR_SUCCESS) {
+            md_log_perror(MD_LOG_MARK, MD_LOG_ERR, rv, p,
+            "The central store file md/md_store.json seems to exist, but "
+            "its content are not readable as JSON. Either it got somehow corrupted "
+            "or the store directory was configured for a location with a foreign "
+            "md_store.json file. Either way, it is unclear how to proceeed. "
+            "You should either restore the correct file/location or clean the directory "
+            "so it gets initialized again.");
+        }
     }
     else if (APR_STATUS_IS_ENOENT(rv)
         && APR_STATUS_IS_EEXIST(rv = init_store_file(s_fs, fname, p, ptemp))) {

@@ -1923,8 +1923,13 @@ static int dsortf(struct ent **e1, struct ent **e2)
 
     /*
      * First, see if either of the entries is for the parent directory.
-     * If so, that *always* sorts lower than anything else.
+     * If so, that *always* sorts lower than anything else. The
+     * function must be transitive else behaviour is undefined, although
+     * in no real case should both entries start with a '/'.
      */
+    if ((*e1)->name[0] == '/' && (*e2)->name[0] == '/') {
+        return 0;
+    }
     if ((*e1)->name[0] == '/') {
         return -1;
     }

@@ -761,6 +761,11 @@ apr_status_t h2_stream_add_header(h2_stream *stream,
     }
     else if (H2_SS_IDLE == stream->state) {
         if (!stream->rtmp) {
+            if (H2_STREAM_CLIENT_INITIATED(stream->id)) {
+                ++stream->session->remote.emitted_count;
+              if (stream->id > stream->session->remote.emitted_max)
+                  session->remote.emitted_max = stream->id;
+            }
             stream->rtmp = h2_request_create(stream->id, stream->pool,
                                              NULL, NULL, NULL, NULL, NULL);
         }
@@ -1488,7 +1493,8 @@ static ssize_t stream_data_cb(nghttp2_session *ng2s,
             buf_len = output_data_buffered(stream, &eos, &header_blocked);
         }
         else if (APR_EOF == rv) {
-            if (!stream->output_eos) {
+            if (!stream->output_eos &&
+                !AP_STATUS_IS_HEADER_ONLY(stream->response->status)) {
                 /* Seeing APR_EOF without an EOS bucket received before indicates
                  * that stream output is incomplete. Commonly, we expect to see
                  * an ERROR bucket to have been generated. But faulty handlers
@@ -1596,8 +1602,9 @@ static apr_status_t stream_do_response(h2_stream *stream)
                 ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, c1,
                               H2_STRM_MSG(stream, "process response %d"),
                               resp->status);
-                is_empty = (e != APR_BRIGADE_SENTINEL(stream->out_buffer)
-                            && APR_BUCKET_IS_EOS(e));
+                is_empty = AP_STATUS_IS_HEADER_ONLY(resp->status) ||
+                           ((e != APR_BRIGADE_SENTINEL(stream->out_buffer) &&
+                            APR_BUCKET_IS_EOS(e)));
                 break;
             }
             else if (APR_BUCKET_IS_EOS(b)) {
@@ -1716,10 +1723,10 @@ static apr_status_t stream_do_response(h2_stream *stream)
     if (nghttp2_is_fatal(ngrv)) {
         rv = APR_EGENERAL;
         h2_session_dispatch_event(stream->session,
-                                 H2_SESSION_EV_PROTO_ERROR, ngrv, nghttp2_strerror(rv));
+                                 H2_SESSION_EV_PROTO_ERROR, ngrv, nghttp2_strerror(ngrv));
         ap_log_cerror(APLOG_MARK, APLOG_ERR, rv, c1,
                       APLOGNO(10402) "submit_response: %s",
-                      nghttp2_strerror(rv));
+                      nghttp2_strerror(ngrv));
         goto cleanup;
     }
 

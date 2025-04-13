@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1919246 -->
+<!-- English Revision: 1923725 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -247,6 +247,8 @@ ce style de cookie est interdit par le modèle de sécurité des cookies.</dd>
 <dd>La durée de vie du cookie, en minutes.</dd>
 <dd>Une valeur de 0 indique une durée de vie correspondant à la session
 courante du navigateur. Il s'agit de la valeur par défaut.</dd>
+<dd>Une valeur négative indique que la définition du cookie doit être annulée
+dans le navigateur.</dd>
 
 <dt>Path</dt>
 <dd>Le chemin, sur le site web concerné, pour lequel le cookie est
@@ -912,13 +914,15 @@ utiliser le drapeau <code>L</code> pour terminer la séquence
     la substitution. Cela protège d’une URL malveillante tirant avantage d’une
     capture et d’une resubstitution du point d'interrogation encodé.</p>
 </section>
-<section id="flag_unsafe_prefix_status"><title>UnsafePrefixStat</title>
+<section id="flag_unsafe_prefix_stat"><title>UnsafePrefixStat</title>
     <p>La définition de ce drapeau est requise dans les substitutions à
     l'échelle du serveur qui commencent par une variable ou une référence
     arrière et se résolvent en un chemin du système de fichiers. Ces
     substitutions ne sont pas préfixées par la racine des documents. Cela protège
     d’une URL malveillante faisant correspondre la substitution expansée à un
     emplacement non souhaité du système de fichiers.</p>
+
+    <p><since>2.5.1</since></p>
  </section>
 
  <section id="flag_unc"><title>UNC</title>
@@ -926,6 +930,8 @@ utiliser le drapeau <code>L</code> pour terminer la séquence
     que ceux utilisés dans les chemins UNC de Windows. Ce drapeau n’est pas
     nécessaire lorsque la substitution de la règle commence par des slashes
     multiples littéraux.</p>
+
+    <p><since>2.5.1</since></p>
 </section>
 
 </manualpage>

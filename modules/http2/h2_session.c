@@ -326,6 +326,10 @@ static int on_header_cb(nghttp2_session *ngh2, const nghttp2_frame *frame,
           * with an informative HTTP error response like 413. But of the
           * client is too wrong, we RESET the stream */
          stream->request_headers_failed > 100)) {
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, session->c1,
+                      H2_SSSN_STRM_MSG(session, frame->hd.stream_id,
+                      "RST stream, header failures: %d"),
+                      (int)stream->request_headers_failed);
         return NGHTTP2_ERR_TEMPORAL_CALLBACK_FAILURE;
     }
     return 0;
@@ -359,9 +363,11 @@ static int on_frame_recv_cb(nghttp2_session *ng2s,
         else {
             ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c1,
                           H2_SSSN_LOG(APLOGNO(03066), session,
-                          "recv FRAME[%s], frames=%ld/%ld (r/s)"),
+                          "recv FRAME[%s], frames=%ld/%ld (r/s), "
+                          "remote.emitted=%d"),
                           buffer, (long)session->frames_received,
-                         (long)session->frames_sent);
+                         (long)session->frames_sent,
+                         (int)session->remote.emitted_count);
         }
     }
 
@@ -618,6 +624,29 @@ static int on_frame_send_cb(nghttp2_session *ngh2,
     return 0;
 }
 
+static int on_frame_not_send_cb(nghttp2_session *ngh2,
+                            const nghttp2_frame *frame,
+                            int ngh2_err,
+                            void *user_data)
+{
+    h2_session *session = user_data;
+    int stream_id = frame->hd.stream_id;
+    h2_stream *stream;
+    char buffer[256];
+
+    stream = get_stream(session, stream_id);
+    h2_util_frame_print(frame, buffer, sizeof(buffer)/sizeof(buffer[0]));
+    ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, session->c1,
+                  H2_SSSN_LOG(APLOGNO(10509), session,
+                  "not sent FRAME[%s], error %d: %s"),
+                  buffer, ngh2_err, nghttp2_strerror(ngh2_err));
+    if(stream) {
+        h2_stream_rst(stream, NGHTTP2_PROTOCOL_ERROR);
+        return 0;
+    }
+    return NGHTTP2_ERR_CALLBACK_FAILURE;
+}
+
 #ifdef H2_NG2_INVALID_HEADER_CB
 static int on_invalid_header_cb(nghttp2_session *ngh2,
                                 const nghttp2_frame *frame, 
@@ -693,6 +722,7 @@ static apr_status_t init_callbacks(conn_rec *c, nghttp2_session_callbacks **pcb)
     NGH2_SET_CALLBACK(*pcb, on_header, on_header_cb);
     NGH2_SET_CALLBACK(*pcb, send_data, on_send_data_cb);
     NGH2_SET_CALLBACK(*pcb, on_frame_send, on_frame_send_cb);
+    NGH2_SET_CALLBACK(*pcb, on_frame_not_send, on_frame_not_send_cb);
 #ifdef H2_NG2_INVALID_HEADER_CB
     NGH2_SET_CALLBACK(*pcb, on_invalid_header, on_invalid_header_cb);
 #endif
@@ -982,6 +1012,11 @@ apr_status_t h2_session_create(h2_session **psession, conn_rec *c, request_rec *
      * handle them, just like the HTTP/1.1 parser does. */
     nghttp2_option_set_no_rfc9113_leading_and_trailing_ws_validation(options, 1);
 #endif
+
+    if(h2_config_sgeti(s, H2_CONF_MAX_HEADER_BLOCK_LEN) > 0)
+        nghttp2_option_set_max_send_header_block_length(options,
+            h2_config_sgeti(s, H2_CONF_MAX_HEADER_BLOCK_LEN));
+
     rv = nghttp2_session_server_new2(&session->ngh2, callbacks,
                                      session, options);
     nghttp2_session_callbacks_del(callbacks);
@@ -1498,7 +1533,8 @@ static void h2_session_ev_conn_error(h2_session *session, int arg, const char *m
         default:
             ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c1,
                           H2_SSSN_LOG(APLOGNO(03401), session, 
-                          "conn error -> shutdown"));
+                          "conn error -> shutdown, remote.emitted=%d"),
+                          (int)session->remote.emitted_count);
             h2_session_shutdown(session, arg, msg, 0);
             break;
     }
@@ -1591,9 +1627,7 @@ static void ev_stream_created(h2_session *session, h2_stream *stream)
 static void ev_stream_open(h2_session *session, h2_stream *stream)
 {
     if (H2_STREAM_CLIENT_INITIATED(stream->id)) {
-        ++session->remote.emitted_count;
-        if (stream->id > session->remote.emitted_max) {
-            session->remote.emitted_max = stream->id;
+        if (stream->id > session->remote.accepted_max) {
             session->local.accepted_max = stream->id;
         }
     }
@@ -1890,7 +1924,8 @@ apr_status_t h2_session_process(h2_session *session, int async,
                         /* Not an async mpm, we must continue waiting
                          * for client data to arrive until the configured
                          * server Timeout/KeepAliveTimeout happens */
-                        apr_time_t timeout = (session->open_streams == 0)?
+                        apr_time_t timeout = ((session->open_streams == 0) &&
+                                              session->remote.emitted_count)?
                             session->s->keep_alive_timeout :
                             session->s->timeout;
                         ap_log_cerror(APLOG_MARK, APLOG_TRACE2, status, c,

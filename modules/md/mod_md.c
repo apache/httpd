@@ -363,6 +363,12 @@ static void merge_srv_config(md_t *md, md_srv_conf_t *base_sc, apr_pool_t *p)
     if (md->stapling < 0) {
         md->stapling = md_config_geti(md->sc, MD_CONFIG_STAPLING);
     }
+    if (!md->profile) {
+        md->profile = md_config_gets(md->sc, MD_CONFIG_CA_PROFILE);
+    }
+    if (md->profile_mandatory < 0) {
+        md->profile_mandatory = md_config_geti(md->sc, MD_CONFIG_CA_PROFILE_MANDATORY);
+    }
 }
 
 static apr_status_t check_coverage(md_t *md, const char *domain, server_rec *s,
@@ -945,7 +951,8 @@ static apr_status_t md_post_config_before_ssl(apr_pool_t *p, apr_pool_t *plog,
     /*5*/
     md_reg_load_stagings(mc->reg, mc->mds, mc->env, p);
 leave:
-    md_reg_unlock_global(mc->reg, ptemp);
+    if (mc->reg)
+        md_reg_unlock_global(mc->reg, ptemp);
     return rv;
 }
 
@@ -1256,7 +1263,7 @@ static int md_add_cert_files(server_rec *s, apr_pool_t *p,
                          s->server_hostname);
         }
         ap_log_error(APLOG_MARK, APLOG_TRACE1, 0, s,
-                     "host '%s' is covered by a Managed Domaina and "
+                     "host '%s' is covered by a Managed Domain and "
                      "is being provided with %d key/certificate files.",
                      s->server_hostname, md_cert_files->nelts);
         apr_array_cat(cert_files, md_cert_files);

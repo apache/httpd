@@ -1,0 +1,2 @@
+  *) mod_proxy_ajp: Use iobuffersize set on worker level for the IO buffer
+     size. PR 69402 [Jari Ahonen <jah@progress.com>]

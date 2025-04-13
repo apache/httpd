@@ -24,7 +24,6 @@ fi
 function install_apx() {
     local name=$1
     local version=$2
-    local root=https://svn.apache.org/repos/asf/apr/${name}
     local prefix=${HOME}/root/${name}-${version}
     local build=${HOME}/build/${name}-${version}
     local giturl=https://github.com/apache/${name}.git
@@ -32,30 +31,38 @@ function install_apx() {
     local buildconf=$4
 
     case $version in
-    trunk) url=${root}/trunk ;;
-    *.x) url=${root}/branches/${version} ;;
-    *) url=${root}/tags/${version} ;;
+    trunk|*.x) ref=refs/heads/${version} ;;
+    *) ref=refs/tags/${version} ;;
     esac
 
-    local revision=`svn info --show-item last-changed-revision ${url}`
+    # Fetch the object ID (hash) of latest commit
+    local commit=`git ls-remote ${giturl} ${ref} | cut -f1`
+    if test -z "$commit"; then
+        : Could not determine latest commit hash for ${ref} in ${giturl} - check branch is valid?
+        exit 1
+    fi
 
     # Blow away the cached install root if the cached install is stale
     # or doesn't match the expected configuration.
-    grep -q "${version} ${revision} ${config} CC=$CC" ${HOME}/root/.key-${name} || rm -rf ${prefix}
+    grep -q "${version} ${commit} ${config} CC=$CC" ${HOME}/root/.key-${name} || rm -rf ${prefix}
 
     if test -d ${prefix}; then
         return 0
     fi
 
-    git clone -q --depth=1 --branch=$version ${giturl} ${build}
+    git init -q ${build}
     pushd $build
+         # Clone and checkout the commit identified above.
+         git remote add origin ${giturl}
+         git fetch -q --depth=1 origin ${commit}
+         git checkout ${commit}
          ./buildconf ${buildconf}
          ./configure --prefix=${prefix} ${config}
          make -j2
          make install
     popd
 
-    echo ${version} ${revision} "${config}" "CC=${CC}" > ${HOME}/root/.key-${name}
+    echo ${version} ${commit} "${config}" "CC=${CC}" > ${HOME}/root/.key-${name}
 }
 
 # Allow to load $HOME/build/apache/httpd/.gdbinit
@@ -66,6 +73,21 @@ echo "add-auto-load-safe-path $HOME/work/httpd/httpd/.gdbinit" >> $HOME/.gdbinit
 if ! test -v SKIP_TESTING -o -v NO_TEST_FRAMEWORK; then
     # Clear CPAN cache if necessary
     if [ -v CLEAR_CACHE ]; then rm -rf ~/perl5; fi
+
+    if ! perl -V > perlver; then
+        : Perl binary broken
+        perl -V
+        exit 1
+    fi
+
+    # Compare the current "perl -V" output with the output at the time
+    # the cache was built; flush the cache if it's changed to avoid
+    # failure later when /usr/bin/perl refuses to load a mismatched XS
+    # module.
+    if ! cmp -s perlver ~/perl5/.perlver; then
+        : Purging cache since "perl -V" output has changed
+        rm -rf ~/perl5
+    fi
     
     cpanm --local-lib=~/perl5 local::lib && eval $(perl -I ~/perl5/lib/perl5/ -Mlocal::lib)
 
@@ -78,10 +100,10 @@ if ! test -v SKIP_TESTING -o -v NO_TEST_FRAMEWORK; then
     # CC=gcc, e.g. for the CC="gcc -m32" case the builds are not correct
     # otherwise.
     CC=gcc cpanm --notest $pkgs
-
-    # Set cache key.
-    echo $pkgs > ~/perl5/.key
     unset pkgs
+
+    # Cache the perl -V output for future verification.
+    mv perlver ~/perl5/.perlver
 
     # Make a shallow clone of httpd-tests git repo.
     git clone -q --depth=1 https://github.com/apache/httpd-tests.git test/perl-framework

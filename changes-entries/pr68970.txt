@@ -1,4 +1,0 @@
-  *) mod_cgi/mod_cgid: Reject CGI output with a Transfer-Encoding
-     header to avoid unexpected or corrupted responses.  PR 68970.
-     [Joe Orton]
-

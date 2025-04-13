@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1749828 -->
+<!-- English Revision : 1924775 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -84,7 +84,7 @@ contenu</a></seealso>
       <dt><code>Content-Language:</code></dt>
       <dd>Le(s) langage(s) de la variante, sous la forme d'un symbole de
       langage Internet standard (<a
-      href="http://www.ietf.org/rfc/rfc1766.txt">RFC 1766</a>). Par
+      href="https://www.rfc-editor.org/rfc/rfc1766">RFC 1766</a>). Par
       exemple, <code>en</code> correspond à l'anglais. Si la variante
       contient plusieurs langages, ils sont séparés par des
       virgules.</dd>

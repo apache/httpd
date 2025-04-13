@@ -1,0 +1,2 @@
+  *) mod_lua: Fix memory handling in LuaOutputFilter. PR 69590.
+     [Guillermo Grandes <guillermo.grandes gmail.com>]

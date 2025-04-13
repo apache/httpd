@@ -263,6 +263,13 @@ DAV_DECLARE(const dav_hooks_search *) dav_get_search_hooks(request_rec *r)
     return dav_get_provider(r)->search;
 }
 
+DAV_DECLARE(const char *) dav_get_base_path(request_rec *r)
+{
+    dav_dir_conf *conf = ap_get_module_config(r->per_dir_config, &dav_module);
+
+    return conf && conf->base ? conf->base : NULL;
+}
+
 /*
  * Command handler for the DAV directive, which is TAKE1.
  */

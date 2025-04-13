@@ -92,6 +92,8 @@ struct md_t {
     struct apr_array_header_t *pkey_files; /* != NULL iff privkeys explicitly configured */
     const char *ca_eab_kid;         /* optional KEYID for external account binding */
     const char *ca_eab_hmac;        /* optional HMAC for external account binding */
+    const char *profile;            /* optional cert profile to order */
+    int profile_mandatory;          /* if profile, when given, is mandatory */
 
     const char *state_descr;        /* description of state of NULL */
     
@@ -154,6 +156,8 @@ struct md_t {
 #define MD_KEY_HTTPS            "https"
 #define MD_KEY_ID               "id"
 #define MD_KEY_IDENTIFIER       "identifier"
+#define MD_KEY_ISSUER_NAME      "issuer-name"
+#define MD_KEY_ISSUER_URI       "issuer-uri"
 #define MD_KEY_KEY              "key"
 #define MD_KEY_KID              "kid"
 #define MD_KEY_KEYAUTHZ         "keyAuthorization"
@@ -175,6 +179,8 @@ struct md_t {
 #define MD_KEY_PKEY             "privkey"
 #define MD_KEY_PKEY_FILES       "pkey-files"
 #define MD_KEY_PROBLEM          "problem"
+#define MD_KEY_PROFILE          "profile"
+#define MD_KEY_PROFILE_MANDATORY "profile-mandatory"
 #define MD_KEY_PROTO            "proto"
 #define MD_KEY_READY            "ready"
 #define MD_KEY_REGISTRATION     "registration"

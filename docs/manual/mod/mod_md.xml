@@ -37,7 +37,7 @@
         ACME protocol (<a href="https://tools.ietf.org/html/rfc8555">RFC 8555</a>). 
         Certificates will be renewed by the module ahead of their expiration to account 
         for disruption in internet services. There are ways to monitor the status of all 
-        certififcates managed this way and configurations that will run your own 
+        certificates managed this way and configurations that will run your own 
         notification commands on renewal, expiration and errors.
         </p><p>
         Second, mod_md offers an alternate OCSP Stapling implementation. This works with
@@ -495,7 +495,7 @@ MDomain example2.org auto
                 For testing, CAs commonly offer a second service URL.
                 The 'test' service does not give certificates valid in a browser,
                 but are more relaxed in regard to rate limits.
-                This allows for verfication of your own setup before switching
+                This allows for verification of your own setup before switching
                 to the production service URL.
             </p>
             <example><title>LE Test Setup</title>
@@ -1299,22 +1299,8 @@ MDMessageCmd /etc/apache/md-message
 
     <directivesynopsis>
         <name>MDCertificateCheck</name>
-        <description>Set name and URL pattern for a certificate monitoring sitSet name and URL pattern for a certificate monitoring sitee</description>
+        <description>Set name and URL pattern for a certificate monitoring site.</description>
         <syntax>MDCertificateCheck <var>name</var> <var>url</var></syntax>
-        <contextlist>
-            <context>server config</context>
-        </contextlist>
-        <compatibility>Available in version 2.4.42 and later</compatibility>
-        <usage>
-            <p>
-            </p>
-        </usage>
-    </directivesynopsis>
-
-    <directivesynopsis>
-        <name>MDActivationDelay</name>
-        <description>How long to delay activation of new certificates</description>
-        <syntax>MDActivationDelay <var>duration</var></syntax>
         <contextlist>
             <context>server config</context>
         </contextlist>
@@ -1369,7 +1355,7 @@ MDMessageCmd /etc/apache/md-message
             <p>
                 You can configure those globally or for a specific MDomain. Since
                 these values allow anyone to register under the same account, it is
-                adivsable to give the configuration file restricted permissions,
+                advisable to give the configuration file restricted permissions,
                 e.g. root only.
             </p>
             <p>
@@ -1537,4 +1523,61 @@ MDMessageCmd /etc/apache/md-message
         </usage>
     </directivesynopsis>
 
+    <directivesynopsis>
+        <name>MDProfile</name>
+        <description>Use a specific ACME profile from the CA</description>
+        <syntax>MDProfile name</syntax>
+        <contextlist>
+            <context>server config</context>
+        </contextlist>
+        <compatibility>Available in version 2.4.64 and later</compatibility>
+        <usage>
+            <p>
+                This about a non-standard ACME extension by Let's Encrypt.
+            </p><p>
+                Lets Encrypt announced they will add Certificate Profiles
+                support in their CA during 2025, beginning with their staging
+                servers. This, among some other details, let's you select the
+                lifetime of the certificates you get. The "default" profile
+                will keep the 90 days and a "tlsserver" profile will issue
+                certificates with only 6 days of validity.
+            </p><p>
+                If you do not change your mod_md configuration, you will
+                continue to get the 90 days certificates. Should you believe
+                that a shorter lifetime is beneficial for you (and take the
+                risk that the renewal time is way shorter),
+                you can configure the profile to use via 'MDProfile tlsserver'.
+           </p><p>
+                The profile names are defined by the CA. If a profile you
+                configure is not available, no profile will be used and
+                the certificate will be issue according to what the CA
+                considers default.
+           </p><p>
+                See <directive module="mod_md">MDProfileMandatory</directive>
+                on how to disable defaults for profiles.
+            </p>
+        </usage>
+    </directivesynopsis>
+
+    <directivesynopsis>
+        <name>MDProfileMandatory</name>
+        <description>Control if an MDProfile is mandatory.</description>
+        <syntax>MDProfileMandatory on|off</syntax>
+        <default>MDProfileMandatory off</default>
+        <contextlist>
+            <context>server config</context>
+        </contextlist>
+        <usage>
+            <p>
+                Controls if a <directive module="mod_md">MDProfile</directive>
+                you configure is mandatory or not. When mandatory and the CA
+                does not offer a configured profile, the certificate
+                renewal will fail.
+           </p><p>
+                When not mandatory and a profile is not offered by the CA,
+                renewals will be performed without specifying a profile and
+                the CA will issue a certificates according to its defaults.
+            </p>
+        </usage>
+    </directivesynopsis>
 </modulesynopsis>

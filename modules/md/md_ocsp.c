@@ -334,7 +334,7 @@ apr_status_t md_ocsp_prime(md_ocsp_reg_t *reg, const char *ext_id, apr_size_t ex
                   "md[%s]: getting ocsp responder from cert", name);
     rv = md_cert_get_ocsp_responder_url(&ostat->responder_url, reg->p, cert);
     if (APR_SUCCESS != rv) {
-        md_log_perror(MD_LOG_MARK, MD_LOG_ERR, rv, reg->p,
+        md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, rv, reg->p,
                       "md[%s]: certificate with serial %s has no OCSP responder URL",
                       name, md_cert_get_serial_number(cert, reg->p));
         goto cleanup;

@@ -574,6 +574,30 @@ typedef enum {
     SSL_SHUTDOWN_TYPE_ACCURATE
 } ssl_shutdown_type_e;
 
+/**
+ * Define the structure to hold clienthello variables
+ * (later exposed as environment vars)
+ */
+#if OPENSSL_VERSION_NUMBER >= 0x10101000L && !defined(LIBRESSL_VERSION_NUMBER)
+typedef struct {
+    unsigned int version;
+    apr_size_t ciphers_len;
+    const unsigned char *ciphers_data;
+    apr_size_t extids_len;
+    const int *extids_data;
+    apr_size_t ecgroups_len;
+    const unsigned char *ecgroups_data;
+    apr_size_t ecformats_len;
+    const unsigned char *ecformats_data;
+    apr_size_t sigalgos_len;
+    const unsigned char *sigalgos_data;
+    apr_size_t alpn_len;
+    const unsigned char *alpn_data;
+    apr_size_t versions_len;
+    const unsigned char *versions_data;
+} modssl_clienthello_vars;
+#endif
+
 typedef struct {
     SSL *ssl;
     const char *client_dn;
@@ -604,6 +628,10 @@ typedef struct {
     const char *cipher_suite; /* cipher suite used in last reneg */
     int service_unavailable;  /* thouugh we negotiate SSL, no requests will be served */
     int vhost_found;          /* whether we found vhost from SNI already */
+
+#if OPENSSL_VERSION_NUMBER >= 0x10101000L && !defined(LIBRESSL_VERSION_NUMBER)
+    modssl_clienthello_vars *clienthello_vars;  /* info from clienthello callback */
+#endif
 } SSLConnRec;
 
 /* Private keys are retained across reloads, since decryption
@@ -833,7 +861,7 @@ struct SSLSrvConfigRec {
     BOOL             compression;
 #endif
     BOOL             session_tickets;
-    
+    BOOL             clienthello_vars;
 };
 
 /**
@@ -893,6 +921,7 @@ const char  *ssl_cmd_SSLCARevocationPath(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLCARevocationFile(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLCARevocationCheck(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLHonorCipherOrder(cmd_parms *cmd, void *dcfg, int flag);
+const char  *ssl_cmd_SSLClientHelloVars(cmd_parms *, void *, int flag);
 const char  *ssl_cmd_SSLCompression(cmd_parms *, void *, int flag);
 const char  *ssl_cmd_SSLSessionTickets(cmd_parms *, void *, int flag);
 const char  *ssl_cmd_SSLVerifyClient(cmd_parms *, void *, const char *);

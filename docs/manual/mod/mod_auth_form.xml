@@ -212,7 +212,6 @@ ErrorDocument 401 "/login.shtml"
 AuthUserFile "conf/passwd"
 AuthType form
 AuthName /admin
-AuthFormLoginRequiredLocation "http://example.com/login.html"
 Session On
 SessionCookieName session path=/
         </highlight>

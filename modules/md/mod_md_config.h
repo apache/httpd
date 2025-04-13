@@ -39,6 +39,8 @@ typedef enum {
     MD_CONFIG_MESSGE_CMD,
     MD_CONFIG_STAPLING,
     MD_CONFIG_STAPLE_OTHERS,
+    MD_CONFIG_CA_PROFILE,
+    MD_CONFIG_CA_PROFILE_MANDATORY,
 } md_config_var_t;
 
 typedef enum {
@@ -103,6 +105,8 @@ typedef struct md_srv_conf_t {
     struct apr_array_header_t *ca_challenges; /* challenge types configured */
     const char *ca_eab_kid;            /* != NULL, external account binding keyid */
     const char *ca_eab_hmac;           /* != NULL, external account binding hmac */
+    const char *profile;               /* != NULL, ACME order profile */
+    int profile_mandatory;             /* if ACME profile, when set, is mandatory */
 
     int stapling;                      /* OCSP stapling enabled */
     int staple_others;                 /* Provide OCSP stapling for non-MD certificates */

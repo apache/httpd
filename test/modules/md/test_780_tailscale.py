@@ -103,7 +103,7 @@ class TestTailscale:
         acme.start(config='default')
         env.clear_store()
         MDConf(env).install()
-        assert env.apache_restart() == 0
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
         yield
         faker.stop()
 
@@ -133,7 +133,7 @@ class TestTailscale:
         conf.add_vhost(domains)
         conf.install()
         # restart and watch it fail due to wrong tailscale unix socket path
-        assert env.apache_restart() == 0
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
         md = env.await_error(domain)
         assert md
         assert md['renewal']['errors'] > 0
@@ -163,9 +163,9 @@ class TestTailscale:
         conf.add_vhost(domains)
         conf.install()
         # restart and watch it fail due to wrong tailscale unix socket path
-        assert env.apache_restart() == 0
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
         assert env.await_completion(domains)
-        assert env.apache_restart() == 0
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
         env.check_md_complete(domain)
 
     # create a MD using `tailscale` as protocol, but domain name not assigned by tailscale
@@ -184,7 +184,7 @@ class TestTailscale:
         conf.add_vhost(domains)
         conf.install()
         # restart and watch it fail due to wrong tailscale unix socket path
-        assert env.apache_restart() == 0
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
         md = env.await_error(domain)
         assert md
         assert md['renewal']['errors'] > 0

@@ -356,6 +356,18 @@ static const char *set_worker_param(apr_pool_t *p,
         worker->s->response_field_size = (s ? s : HUGE_STRING_LEN);
         worker->s->response_field_size_set = 1;
     }
+    else if (!strcasecmp(key, "multipathtcp")) {
+#ifdef IPPROTO_MPTCP
+        if (!strcasecmp(val, "On"))
+            worker->s->sock_proto = IPPROTO_MPTCP;
+        else if (!strcasecmp(val, "Off"))
+            worker->s->sock_proto = APR_PROTO_TCP;
+        else
+            return "multipathtcp must be On|Off";
+#else
+        return "multipathtcp is not supported on your platform";
+#endif
+    }
     else {
         if (set_worker_hc_param_f) {
             return set_worker_hc_param_f(p, s, worker, key, val, NULL);
@@ -3402,28 +3414,26 @@ static int proxy_pre_config(apr_pool_t *pconf, apr_pool_t *plog,
 }
 static void register_hooks(apr_pool_t *p)
 {
-    /* fixup before mod_rewrite, so that the proxied url will not
-     * escaped accidentally by our fixup.
-     */
-    static const char * const aszSucc[] = { "mod_rewrite.c", NULL};
     /* Only the mpm_winnt has child init hook handler.
      * make sure that we are called after the mpm
      * initializes.
      */
     static const char *const aszPred[] = { "mpm_winnt.c", "mod_proxy_balancer.c",
                                            "mod_proxy_hcheck.c", NULL};
+    static const char * const aszModRewrite[] = { "mod_rewrite.c", NULL };
 
     /* handler */
     ap_hook_handler(proxy_handler, NULL, NULL, APR_HOOK_FIRST);
     /* filename-to-URI translation */
     ap_hook_pre_translate_name(proxy_pre_translate_name, NULL, NULL,
                                APR_HOOK_MIDDLE);
-    ap_hook_translate_name(proxy_translate_name, aszSucc, NULL,
+    /* mod_rewrite has a say on the uri before proxy translation */
+    ap_hook_translate_name(proxy_translate_name, aszModRewrite, NULL,
                            APR_HOOK_FIRST);
     /* walk <Proxy > entries and suppress default TRACE behavior */
     ap_hook_map_to_storage(proxy_map_location, NULL,NULL, APR_HOOK_FIRST);
-    /* fixups */
-    ap_hook_fixups(proxy_fixup, NULL, aszSucc, APR_HOOK_FIRST);
+    /* fixup after mod_rewrite so that a [P] URL from there gets fixed up */
+    ap_hook_fixups(proxy_fixup, aszModRewrite, NULL, APR_HOOK_FIRST);
     /* post read_request handling */
     ap_hook_post_read_request(proxy_detect, NULL, NULL, APR_HOOK_FIRST);
     /* pre config handling */
