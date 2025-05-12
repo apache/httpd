@@ -33,7 +33,7 @@ Layer (SSL) and Transport Layer Security (TLS) protocols</description>
 <p>This module provides SSL v3 and TLS v1.x support for the Apache
 HTTP Server. SSL v2 is no longer supported.</p>
 
-<p>This module relies on <a href="http://www.openssl.org/">OpenSSL</a>
+<p>This module relies on <a href="https://www.openssl.org/">OpenSSL</a>
 to provide the cryptography engine.</p>
 
 <p>Further details, discussion, and examples are provided in the
@@ -736,7 +736,7 @@ Since TLSv1.3 does not offer renegotiations, specifying ciphers for it in
 a directory context is not allowed.</p>
 <p>
 For a list of TLSv1.3 cipher names, see 
-<a href="https://www.openssl.org/docs/manmaster/man3/SSL_CTX_set_ciphersuites.html">the OpenSSL
+<a href="https://docs.openssl.org/master/man3/SSL_CTX_set_ciphersuites/">the OpenSSL
 documentation</a>.</p>
 <p>
 An SSL cipher specification in <em>cipher-spec</em> is composed of 4 major
@@ -2428,7 +2428,7 @@ With OpenSSL 3.0 or later, if no engine is specified but the key or certificate
 is specified using a <a href="https://tools.ietf.org/html/rfc7512">PKCS#11 URIs</a>
 then it is tried to load the key and certificate from an OpenSSL provider.
 The OpenSSL provider to use must be defined and configured in the OpenSSL config file,
-and it must support the <a href="https://www.openssl.org/docs/man3.0/man7/provider-storemgmt.html">STORE method</a>
+and it must support the <a href="https://docs.openssl.org/3.0/man7/provider-storemgmt/">STORE method</a>
 for <a href="https://tools.ietf.org/html/rfc7512">PKCS#11 URIs</a>.
 </p>
 </usage>
@@ -2940,7 +2940,7 @@ features are added to OpenSSL.</p>
 depends on the OpenSSL version being used for <module>mod_ssl</module>
 (at least version 1.0.2 is required). For a list of supported command
 names, see the section <em>Supported configuration file commands</em> in the
-<a href="http://www.openssl.org/docs/man1.0.2/ssl/SSL_CONF_cmd.html#SUPPORTED-CONFIGURATION-FILE-COMMANDS">SSL_CONF_cmd(3)</a> manual page for OpenSSL.</p>
+<a href="https://docs.openssl.org/master/man3/SSL_CONF_cmd/#supported-configuration-file-commands">SSL_CONF_cmd(3)</a> manual page for OpenSSL.</p>
 
 <p>Some of the <directive>SSLOpenSSLConfCmd</directive> commands can be used
 as an alternative to existing directives (such as
