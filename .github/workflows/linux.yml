@@ -80,10 +80,10 @@ jobs:
               TEST_INSTALL=1
               SKIP_TESTING=1
           # -------------------------------------------------------------------------
-          - name: All-modules, APR 1.7.4, APR-util 1.6.3
+          - name: All-modules, APR 1.7.6, APR-util 1.6.3
             config: --enable-mods-shared=reallyall
             env: |
-              APR_VERSION=1.7.4
+              APR_VERSION=1.7.6
               APU_VERSION=1.6.3
               APU_CONFIG="--with-crypto --with-ldap"
           # -------------------------------------------------------------------------
@@ -163,11 +163,11 @@ jobs:
               BUILDCONFIG="--with-regen-expr"
               MFLAGS=
           # -------------------------------------------------------------------------
-          - name: APR 1.7.4, APR-util 1.6.3, LDAP
+          - name: APR 1.7.6, APR-util 1.6.3, LDAP
             config: --enable-mods-shared=reallyall
             pkgs: ldap-utils
             env: |
-              APR_VERSION=1.7.4
+              APR_VERSION=1.7.6
               APU_VERSION=1.6.3
               APU_CONFIG="--with-crypto --with-ldap"
               TEST_MALLOC=1
@@ -227,7 +227,7 @@ jobs:
             config: --enable-mods-shared=reallyall --with-mpm=event --enable-mpms-shared=all
             pkgs: curl python3-pytest nghttp2-client python3-cryptography python3-requests python3-multipart python3-filelock python3-websockets
             env: |
-              APR_VERSION=1.7.4
+              APR_VERSION=1.7.6
               APU_VERSION=1.6.3
               APU_CONFIG="--with-crypto"
               NO_TEST_FRAMEWORK=1
@@ -244,7 +244,7 @@ jobs:
           #     python3-pytest nghttp2-client python3-cryptography python3-requests python3-filelock
           #     golang-1.17 curl
           #   env: |
-          #     APR_VERSION=1.7.4
+          #     APR_VERSION=1.7.6
           #     APU_VERSION=1.6.3
           #     APU_CONFIG="--with-crypto"
           #     GOROOT=/usr/lib/go-1.17
@@ -280,7 +280,7 @@ jobs:
             config: --enable-mods-shared=most --enable-maintainer-mode --disable-md --disable-http2 --disable-ldap --disable-crypto
             env: |
               TEST_OPENSSL3=3.1.7
-              APR_VERSION=1.7.4
+              APR_VERSION=1.7.6
               APU_VERSION=1.6.3
               APU_CONFIG="--without-crypto"
             pkgs: subversion
@@ -290,7 +290,7 @@ jobs:
             notest-cflags: -Werror -O2 -Wno-deprecated-declarations
             env: |
               TEST_OPENSSL3=3.4.1
-              APR_VERSION=1.7.4
+              APR_VERSION=1.7.6
               APU_VERSION=1.6.3
               APU_CONFIG="--without-crypto"
             pkgs: subversion
@@ -300,18 +300,18 @@ jobs:
             env: |
               TEST_OPENSSL3=3.4.1
               OPENSSL_CONFIG=no-engine
-              APR_VERSION=1.7.4
+              APR_VERSION=1.7.6
               APU_VERSION=1.6.3
               APU_CONFIG="--without-crypto"
             pkgs: subversion
           # -------------------------------------------------------------------------
-          - name: OpenSSL 3.5 (beta) no-engine -Werror
+          - name: OpenSSL 3.5 no-engine -Werror
             config: --enable-mods-shared=most --enable-maintainer-mode --disable-md --disable-http2 --disable-ldap --disable-crypto
             notest-cflags: -Werror -O2
             env: |
-              TEST_OPENSSL3=3.5.0-beta1
+              TEST_OPENSSL3=3.5.0
               OPENSSL_CONFIG=no-engine
-              APR_VERSION=1.7.4
+              APR_VERSION=1.7.6
               APU_VERSION=1.6.3
               APU_CONFIG="--without-crypto"
             pkgs: subversion
