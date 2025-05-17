@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1919123:1925513 (outdated) -->
+<!-- English Revision: 1925513 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -35,7 +35,7 @@ Sockets Layer (SSL) et Transport Layer Security (TLS)</description>
 <p>Ce module fournit le support SSL v3 et TLS v1 au serveur HTTP
 Apache. SSL v2 n'est plus supporté.</p>
 
-<p>Ce module s'appuie sur <a href="http://www.openssl.org/">OpenSSL</a>
+<p>Ce module s'appuie sur <a href="https://www.openssl.org/">OpenSSL</a>
 pour fournir le moteur de chiffrement.</p>
 
 <p>D'autres détails, discussions et exemples sont fournis dans la <a
@@ -869,8 +869,8 @@ chiffrement dans un contexte de répertoire n'est pas autorisé</p>
 <p>
 Pour obtenir la liste des noms d'algorithmes de chiffrement pour TLSv1.3, se
 référer à la <a
-href="https://www.openssl.org/docs/manmaster/man3/SSL_CTX_set_ciphersuites.html">the
-OpenSSL documentation</a>.</p>
+href="https://docs.openssl.org/master/man3/SSL_CTX_set_ciphersuites/">documentation
+OpenSSL</a>.</p>
 <p>
 La liste d'algorithmes de chiffrement SSL spécifiée par l'argument
 <em>cipher-spec</em> comporte quatre attributs principaux auxquels
@@ -2746,7 +2746,7 @@ href="https://tools.ietf.org/html/rfc7512">URIs PKCS#11</a>, le chargement de la
 clé et du certificat est tenté à partir d'un fournisseur OpenSSL. Le fournisseur
 OpenSSL à utiliser doit être défini et configuré dans le fichier de
 configuration d'OpenSSL et il doit prendre en charge la <a
-href="https://www.openssl.org/docs/man3.0/man7/provider-storemgmt.html">méthode
+href="https://docs.openssl.org/3.0/man7/provider-storemgmt/">méthode
 STORE</a> pour les <a href="https://tools.ietf.org/html/rfc7512">URIs PKCS#11</a>.
 </p>
 
@@ -3289,8 +3289,7 @@ ce dernier beaucoup plus souple.</p>
 utilisée pour <module>mod_ssl</module> (la version minimale 1.0.2 est un
 prérequis). Pour obtenir la liste des commandes supportées, voir la
 section <em>Supported configuration file commands</em> de la page de
-manuel d'OpenSSL <a
-href="http://www.openssl.org/docs/man1.0.2/ssl/SSL_CONF_cmd.html#SUPPORTED-CONFIGURATION-FILE-COMMANDS">SSL_CONF_cmd(3)</a>.</p>
+manuel d'OpenSSL <a href="https://docs.openssl.org/master/man3/SSL_CONF_cmd/#supported-configuration-file-commands">SSL_CONF_cmd(3)</a>.</p>
 
 <p>Certaines commandes peuvent remplacer des directives existantes
 (comme <directive module="mod_ssl">SSLCipherSuite</directive> ou
