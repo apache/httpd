@@ -664,7 +664,12 @@ static apr_status_t ssl_init_ctx_protocol(server_rec *s,
     SSLSrvConfigRec *sc = mySrvConfig(s);
 #if OPENSSL_VERSION_NUMBER >= 0x10100000L  && \
 	(!defined(LIBRESSL_VERSION_NUMBER) || LIBRESSL_VERSION_NUMBER >= 0x20800000L)
-    int prot;
+    /* default is highest supported version, will be overridden below */
+#if SSL_HAVE_PROTOCOL_TLSV1_3 
+    int prot = TLS1_3_VERSION;
+#else
+    int prot = TLS1_2_VERSION;
+#endif
 #endif
 
     /*

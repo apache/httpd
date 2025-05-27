@@ -374,7 +374,6 @@
     </div>
 <div id="quickview"><h3 class="directives">Directives</h3>
 <ul id="toc">
-<li><img alt="" src="../images/down.gif" /> <a href="#mdactivationdelay">MDActivationDelay</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mdbaseserver">MDBaseServer</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mdcachallenges">MDCAChallenges</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mdcertificateagreement">MDCertificateAgreement</a></li>
@@ -402,6 +401,8 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#mdomainsetsection">&lt;MDomainSet&gt;</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mdportmap">MDPortMap</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mdprivatekeys">MDPrivateKeys</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#mdprofile">MDProfile</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#mdprofilemandatory">MDProfileMandatory</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mdrenewmode">MDRenewMode</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mdrenewwindow">MDRenewWindow</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mdrequirehttps">MDRequireHttps</a></li>
@@ -420,21 +421,6 @@
 <ul class="seealso">
 <li><a href="#comments_section">Commentaires</a></li></ul></div>
 
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="mdactivationdelay" id="mdactivationdelay">Directive</a> <a name="MDActivationDelay" id="MDActivationDelay">MDActivationDelay</a> <a title="Lien permanent" href="#mdactivationdelay" class="permalink">&para;</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit le délai d'activation des nouveaux certificats</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MDActivationDelay <var>duration</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
-<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_md</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.42 du serveur HTTP
-	Apache</td></tr>
-</table>
-            <p>
-            </p>
-        
-</div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="mdbaseserver" id="mdbaseserver">Directive</a> <a name="MDBaseServer" id="MDBaseServer">MDBaseServer</a> <a title="Lien permanent" href="#mdbaseserver" class="permalink">&para;</a></h2>
 <table class="directive">
@@ -559,8 +545,7 @@
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="mdcertificatecheck" id="mdcertificatecheck">Directive</a> <a name="MDCertificateCheck" id="MDCertificateCheck">MDCertificateCheck</a> <a title="Lien permanent" href="#mdcertificatecheck" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit le motif de nom pour un nom sitSet de
-	vérification de certificat et un motif d'URL pour un sitee de
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit le motif de nom et d’URL pour un site de
 	vérification de certificat</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MDCertificateCheck <var>name</var> <var>url</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
@@ -1348,6 +1333,69 @@ MDomain example2.org auto
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="mdprofile" id="mdprofile">Directive</a> <a name="MDProfile" id="MDProfile">MDProfile</a> <a title="Lien permanent" href="#mdprofile" class="permalink">&para;</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Utiliser un profile ACME spécifique depuis le CA</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MDProfile name</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_md</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.64 du serveur HTTP
+	Apache</td></tr>
+</table>
+            <p>
+                Il s’agit d’une extension non standard d’ACME par Let's Encrypt.
+            </p><p>
+		Lets Encrypt a annoncé qu’ils allaient ajouter la prise en
+		charge des profiles de certificat à leurs CA courant&nbsp;2025, en
+		commençant par leurs serveurs de test. Cette fonctionnalité,
+		entre autres détails, vous permettra de définir la durée de
+		validité des certificats que vous recevez. À ce titre, le
+		profile «&nbsp;default&nbsp;» conservera la valeur de 90&nbsp;jours, alors que
+		le profile «&nbsp;tlsserver&nbsp;» délivrera des certificats dont la durée
+		de validité sera de 6&nbsp;jours seulement.
+            </p><p>
+                Si vous ne modifiez pas la configuration de votre module mod_md,
+		vous continuerez à recevoir des certificats d’une durée de
+		validité de 90&nbsp;jours. Si vous pensez qu’une durée de validité
+		plus courte convient mieux à votre situation (et acceptez le
+		risque que le temps de renouvellement soit beaucoup plus court),
+		vous pouvez définir le profile à utiliser à l’aide de
+		«&nbsp;MDProfile tlsserver&nbsp;».
+           </p><p>
+                Les noms de profile sont définis par le CA. Si vous tentez de
+		définie un profile non valable, aucun profile ne sera utilisé,
+		et le certificat sera délivré avec les valeurs par défaut du CA.
+           </p><p>
+                Voir la directive <code class="directive"><a href="#mdprofilemandatory">MDProfileMandatory</a></code> pour la manière
+		de désactiver les valeurs par défaut pour les profiles.
+            </p>
+        
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="mdprofilemandatory" id="mdprofilemandatory">Directive</a> <a name="MDProfileMandatory" id="MDProfileMandatory">MDProfileMandatory</a> <a title="Lien permanent" href="#mdprofilemandatory" class="permalink">&para;</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Contrôler si un MDProfile est obligatoire.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MDProfileMandatory on|off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>MDProfileMandatory off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_md</td></tr>
+</table>
+            <p>
+                Cette directive permet de contrôler si un <code class="directive"><a href="#mdprofile">MDProfile</a></code> que vous définissez est
+		obligatoire ou non. S’il est obligatoire et si le CA ne propose
+		pas de profile configuré, le renouvellement du certificat
+		échouera.
+           </p><p>
+                S’il n’est pas obligatoire et si le CA ne propose
+		pas de profile, les renouvellements seront effectués sans
+		profile particulier et le CA délivrera les certificats avec les
+		valeurs par défaut.
+            </p>
+        
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="mdrenewmode" id="mdrenewmode">Directive</a> <a name="MDRenewMode" id="MDRenewMode">MDRenewMode</a> <a title="Lien permanent" href="#mdrenewmode" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Contrôle le renouvellement des certificats.</td></tr>
@@ -1805,7 +1853,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_md.html';
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2024 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2025 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

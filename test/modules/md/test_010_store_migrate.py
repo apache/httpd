@@ -13,7 +13,7 @@ class TestStoreMigrate:
     @pytest.fixture(autouse=True, scope='class')
     def _class_scope(self, env):
         MDConf(env).install()
-        assert env.apache_restart() == 0
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
 
     # install old store, start a2md list, check files afterwards
     def test_md_010_000(self, env):

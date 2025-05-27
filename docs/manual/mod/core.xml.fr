@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1921399 -->
+<!-- English Revision: 1923917 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -519,10 +519,9 @@ All pour les versions antérieures</default>
       activée.
       </p></note>
 
-      <example>
+      <highlight language="config">
       AllowOverride Options=Indexes,MultiViews
-      </example>
-      
+      </highlight>
       </dd>
     </dl>
 
@@ -1306,20 +1305,24 @@ host</context>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>FileInfo</override>
-<compatibility>Par défaut à Off depuis la version 2.3.9.</compatibility>
+<compatibility>Par défaut à Off depuis la version 2.3.9 du serveur HTTP
+Apache.</compatibility>
 
 <usage>
     <p>Cette directive définit si le programme <program>httpd</program>
     peut utiliser le support sendfile du noyau pour transmettre le
     contenu des fichiers aux clients. Par défaut, lorsque le traitement
     d'une requête ne requiert pas l'accès aux données contenues dans un
-    fichier -- par exemple, pour la transmission d'un fichier statique
-    -- Apache httpd utilise sendfile pour transmettre le contenu du fichier
+    fichier — par exemple, pour la transmission d'un fichier statique
+    — Apache httpd utilise sendfile pour transmettre le contenu du fichier
     sans même lire ce dernier, si le système d'exploitation le
-    permet.</p>
+    permet. Si la connexion utilise SSL/TLS ou si un <a
+    href="../filter.html">filtre en sortie</a> est configuré pour inspecter ou
+    modifier la sortie, le mécanisme sendfile ne sera pas utilisé quelle que
+    soit la valeur de cette option.</p>
 
     <p>Ce mécanisme sendfile évite la séparation des opérations de
-    lecture et d'envoi, ainsi que les réservations de tampons. sur
+    lecture et d'envoi, ainsi que les réservations de tampons. Sur
     certains systèmes cependant, ou sous certains systèmes de fichiers,
     il est préférable de désactiver cette fonctionnalité afin d'éviter
     certains problèmes opérationnels :</p>
@@ -3322,7 +3325,7 @@ host</context>
 
     <highlight language="config">
 # Limitation à 1 Mo
-LimitXMLRequestBody 1073741824
+LimitXMLRequestBody 1048576
     </highlight>
 
 </usage>
@@ -5553,7 +5556,7 @@ host</context>
       <li>Port physique (seulement avec
       <directive>UseCanonicalPhysicalPort</directive> ON)</li>
       <li>Port indiqué dans <directive module="core">Servername</directive></li>
-      <li>Port par défaut</li>
+      <li>Port par défaut pour le contexte/protocole (comme 80 ou 443)</li>
      </ol>
      </dd>
      <dt><code>UseCanonicalName On</code></dt>
@@ -5562,7 +5565,7 @@ host</context>
       <li>Port spécifié par <directive module="core">Servername</directive></li>
       <li>Port physique (seulement avec
       <directive>UseCanonicalPhysicalPort</directive> ON)</li>
-      <li>Port par défaut</li>
+      <li>Port par défaut pour le contexte/protocole (comme 80 ou 443)</li>
      </ol>
      </dd>
     </dl>
@@ -5780,9 +5783,9 @@ serveur HTTP Apache.</compatibility>
     d’hôte dans le chemin UNC n’a pas été spécifié par cette directive. Le but
     est de limiter l’accès aux chemins dérivés d’entrées non fiables.</p>
 
-    <example>
+    <highlight language="config">
     UNCList example.com other.example.com
-    </example>
+    </highlight>
 
     <note type="warning"><title>Sécurité</title>
     <p>Les chemins UNC accédés en dehors du traitement d’une requête, par

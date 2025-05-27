@@ -19,7 +19,7 @@ class TestStatic:
         env.check_acme()
         env.clear_store()
         MDConf(env).install()
-        assert env.apache_restart() == 0
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
 
     @pytest.fixture(autouse=True, scope='function')
     def _method_scope(self, env, request):
@@ -48,7 +48,7 @@ class TestStatic:
         conf.end_md()
         conf.add_vhost(domain)
         conf.install()
-        assert env.apache_restart() == 0
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
         
         # check if the domain uses it, it appears in our stats and renewal is off
         cert = env.get_cert(domain)
@@ -83,7 +83,7 @@ class TestStatic:
         conf.end_md()
         conf.add_vhost(domain)
         conf.install()
-        assert env.apache_restart() == 0
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
         # this should enforce a renewal
         stat = env.get_md_status(domain)
         assert stat['renew'] is True, stat

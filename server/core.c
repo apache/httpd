@@ -1909,7 +1909,7 @@ static const char *set_override(cmd_parms *cmd, void *d_, const char *l)
             if (v) {
                 if ((err = set_allow_opts(cmd, &(d->override_opts), v)) != NULL)
                     return err;
-	    }
+            }
             else
                 d->override_opts = OPT_ALL;
         }

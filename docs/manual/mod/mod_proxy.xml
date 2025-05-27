@@ -2087,7 +2087,7 @@ header for proxied requests</description>
     <p>This directive controls the use of the <code>Via:</code> HTTP
     header by the proxy. Its intended use is to control the flow of
     proxy requests along a chain of proxy servers.  See <a
-    href="http://www.ietf.org/rfc/rfc2616.txt">RFC 2616</a> (HTTP/1.1), section
+    href="https://www.rfc-editor.org/rfc/rfc2616">RFC 2616</a> (HTTP/1.1), section
     14.45 for an explanation of <code>Via:</code> header lines.</p>
 
     <ul>

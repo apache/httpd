@@ -243,7 +243,8 @@ class TestInvalidHeaders:
         conf.add_vhost_cgi()
         conf.install()
         assert env.apache_restart() == 0
-        re_emitted = re.compile(r'.* AH03401: .* shutdown, remote.emitted=1')
+        re_emitted = re.compile(r'.* (AH03401: .* shutdown,|'
+                                r'AH03066: .* FRAME\[GOAWAY.*) remote.emitted=1')
         url = env.mkurl("https", "cgi", "/")
         opt = []
         for i in range(10):
@@ -263,7 +264,8 @@ class TestInvalidHeaders:
         conf.add_vhost_cgi()
         conf.install()
         assert env.apache_restart() == 0
-        re_emitted = re.compile(r'.* AH03401: .* shutdown, remote.emitted=1')
+        re_emitted = re.compile(r'.* (AH03401: .* shutdown,|'
+                                r'AH03066: .* FRAME\[GOAWAY.*) remote.emitted=1')
         url = env.mkurl("https", "cgi", "/")
         opt = []
         for i in range(100):

@@ -18,7 +18,7 @@ class TestAutov2:
         env.check_acme()
         env.clear_store()
         MDConf(env).install()
-        assert env.apache_restart() == 0
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
 
     @pytest.fixture(autouse=True, scope='function')
     def _method_scope(self, env, request):
@@ -33,7 +33,7 @@ class TestAutov2:
             conf.add_md(domains)
             conf.add_vhost(domains)
         conf.install()
-        assert env.apache_restart() == 0
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
         assert env.await_completion([domain])
 
     def check_pkeys(self, env, domain, pkeys):
@@ -100,7 +100,7 @@ class TestAutov2:
         conf.add_md(domains)
         conf.add_vhost(domains)
         conf.install()
-        assert env.apache_restart() == 0
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
         md = env.await_error(domain)
         assert md
         assert md['renewal']['errors'] > 0
@@ -135,14 +135,14 @@ class TestAutov2:
         conf.add_md(domains)
         conf.add_vhost(domains)
         conf.install()
-        assert env.apache_restart() == 0
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
         assert env.await_completion(domains)
         conf = MDConf(env)
         conf.add("MDPrivateKeys rsa3072 secp384r1")
         conf.add_md(domains)
         conf.add_vhost(domains)
         conf.install()
-        assert env.apache_restart() == 0
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
         mds = env.get_md_status(domain, via_domain=domain, use_https=True)
         assert 'renew' in mds and mds['renew'] is True, f"{mds}"
         assert env.await_completion(domains)

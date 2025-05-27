@@ -274,11 +274,23 @@ static proxy_worker *find_session_route(proxy_balancer *balancer,
                                         char **url)
 {
     proxy_worker *worker = NULL;
+    char *url_with_qs;
 
     if (!*balancer->s->sticky)
         return NULL;
+    /*
+     * The route might be contained in the query string and *url is not
+     * supposed to contain the query string. Hence add it temporarily if
+     * present.
+     */
+    if (r->args) {
+        url_with_qs = apr_pstrcat(r->pool, *url, "?", r->args, NULL);
+    }
+    else {
+        url_with_qs = *url;
+    }
     /* Try to find the sticky route inside url */
-    *route = get_path_param(r->pool, *url, balancer->s->sticky_path, balancer->s->scolonsep);
+    *route = get_path_param(r->pool, url_with_qs, balancer->s->sticky_path, balancer->s->scolonsep);
     if (*route) {
         ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01159)
                      "Found value %s for stickysession %s",
@@ -1643,7 +1655,7 @@ static void balancer_display_page(request_rec *r, proxy_server_conf *conf,
                        balancer->max_workers - (int)storage->num_free_slots(balancer->wslot));
             if (*balancer->s->sticky) {
                 if (strcmp(balancer->s->sticky, balancer->s->sticky_path)) {
-                    ap_rvputs(r, "<td>", ap_escape_html(r->pool, balancer->s->sticky), " | ",
+                    ap_rvputs(r, "<td>", ap_escape_html(r->pool, balancer->s->sticky), "|",
                               ap_escape_html(r->pool, balancer->s->sticky_path), NULL);
                 }
                 else {
@@ -1828,7 +1840,7 @@ static void balancer_display_page(request_rec *r, proxy_server_conf *conf,
             ap_rputs("</tr>\n", r);
             ap_rputs("<tr><td>Sticky Session:</td><td><input name='b_ss' id='b_ss' size=64 type=text ", r);
             if (strcmp(bsel->s->sticky, bsel->s->sticky_path)) {
-                ap_rvputs(r, "value =\"", ap_escape_html(r->pool, bsel->s->sticky), " | ",
+                ap_rvputs(r, "value =\"", ap_escape_html(r->pool, bsel->s->sticky), "|",
                           ap_escape_html(r->pool, bsel->s->sticky_path), NULL);
             }
             else {

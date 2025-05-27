@@ -36,7 +36,7 @@ class TestStatus:
         conf.add_md(domains)
         conf.add_vhost(domain)
         conf.install()
-        assert env.apache_restart() == 0
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
         assert env.await_completion([domain], restart=False)
         # we started without a valid certificate, so we expect /.httpd/certificate-status
         # to not give information about one and - since we waited for the ACME signup
@@ -49,7 +49,7 @@ class TestStatus:
         assert 'sha256-fingerprint' in status['renewal']['cert']['rsa']
         # restart and activate
         # once activated, the staging must be gone and attributes exist for the active cert
-        assert env.apache_restart() == 0
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
         status = env.get_certificate_status(domain)
         assert 'renewal' not in status
         assert 'sha256-fingerprint' in status['rsa']
@@ -64,7 +64,7 @@ class TestStatus:
         conf.add_md(domains)
         conf.add_vhost(domain)
         conf.install()
-        assert env.apache_restart() == 0
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
         assert env.await_completion([domain], restart=False)
         # copy a real certificate from LE over to staging
         staged_cert = os.path.join(env.store_dir, 'staging', domain, 'pubcert.pem')
@@ -87,7 +87,7 @@ class TestStatus:
         conf.add("MDCertificateStatus off")
         conf.add_vhost(domain)
         conf.install()
-        assert env.apache_restart() == 0
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
         assert env.await_completion([domain], restart=False)
         status = env.get_certificate_status(domain)
         assert not status
@@ -100,7 +100,7 @@ class TestStatus:
         conf.add("MDCertificateStatus off")
         conf.add_vhost(domain)
         conf.install()
-        assert env.apache_restart() == 0
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
         assert env.await_completion([domain])
         status = env.get_md_status("")
         assert "version" in status
@@ -114,6 +114,7 @@ class TestStatus:
         conf = MDConf(env, std_vhosts=False, std_ports=False, text=f"""
 MDBaseServer on
 MDPortMap http:- https:{env.https_port}
+MDStapling on
 
 ServerName {domain}
 <IfModule ssl_module>
@@ -137,7 +138,7 @@ Protocols h2 http/1.1 acme-tls/1
             """)
         conf.add_md(domains)
         conf.install()
-        assert env.apache_restart() == 0
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
         assert env.await_completion([domain], restart=False,
                                     via_domain=env.http_addr, use_https=False)
         status = env.get_md_status("", via_domain=env.http_addr, use_https=False)
@@ -160,6 +161,8 @@ Protocols h2 http/1.1 acme-tls/1
         assert int(m.group(1)) == 0
         m = re.search(r'ManagedCertificatesReady: (\d+)', status, re.MULTILINE)
         assert int(m.group(1)) == 1
+        m = re.search(r'ManagedDomain\[0]Stapling: (on)', status, re.MULTILINE)
+        assert m, f'{status}'
 
     def test_md_920_011(self, env):
         # MD with static cert files in base server, see issue #161
@@ -205,13 +208,13 @@ Protocols h2 http/1.1 acme-tls/1
         conf.add("SSLEngine off")
         conf.end_vhost()
         conf.install()
-        assert env.apache_restart() == 0
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
         status = env.get_md_status(domain, via_domain=env.http_addr, use_https=False)
         assert status
         assert 'renewal' not in status
         print(status)
         assert status['state'] == env.MD_S_COMPLETE
-        assert status['renew-mode'] == 1  # manual
+        assert status['renew-mode'] == 0  # manual
 
     # MD with 2 certificates
     def test_md_920_020(self, env):
@@ -223,7 +226,7 @@ Protocols h2 http/1.1 acme-tls/1
         conf.add_md(domains)
         conf.add_vhost(domain)
         conf.install()
-        assert env.apache_restart() == 0
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
         assert env.await_completion([domain], restart=False)
         # In the stats JSON, we expect 2 certificates under 'renewal'
         stat = env.get_md_status(domain)
@@ -239,7 +242,7 @@ Protocols h2 http/1.1 acme-tls/1
         assert 'rsa' in status['renewal']['cert']
         # restart and activate
         # once activated, certs are listed in status
-        assert env.apache_restart() == 0
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
         stat = env.get_md_status(domain)
         assert 'cert' in stat
         assert 'valid' in stat['cert']

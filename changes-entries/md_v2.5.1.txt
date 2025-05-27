@@ -1,0 +1,14 @@
+  *) mod_md: update to version 2.5.1
+     - Added support for ACME profiles with new directives MDProfile and
+       MDProfileMandatory.
+     - When installing a custom CA file via `MDCACertificateFile`, also set the
+       libcurl option CURLSSLOPT_NO_REVOKE that suppresses complains by Schannel
+       (when curl is linked with it) about missing CRL/OCSP in certificates.
+     - Fixed handling of corrupted httpd.json and added test 300_30 for it.
+       File is removed on error and written again. Fixes #369.
+     - Added explanation in log for how to proceed when md_store.json could not be
+       parsed and prevented the server start.
+     - restored fixed to #336 and #337 which got lost in a sync with Apache svn
+     - Add Issue Name/Uris to certificate information in md-status handler
+     - MDomains with static certificate files have MDRenewMode "manual", unless
+       "always" is configured.

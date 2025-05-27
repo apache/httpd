@@ -1,0 +1,3 @@
+  *) mod_ssl: Fail when parsing SSLProtocol if the configuration 
+     would prevent use of all protocols.
+     [Michael Kaufmann <mail michael-kaufmann.ch>]

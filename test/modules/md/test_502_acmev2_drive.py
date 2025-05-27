@@ -25,7 +25,7 @@ class TestDrivev2:
         env.check_acme()
         env.APACHE_CONF_SRC = "data/test_drive"
         MDConf(env).install()
-        assert env.apache_restart() == 0
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
 
     @pytest.fixture(autouse=True, scope='function')
     def _method_scope(self, env, request):
@@ -76,7 +76,7 @@ class TestDrivev2:
         domain = self.test_domain
         name = "www." + domain
         self._prepare_md(env, [name])
-        assert env.apache_restart() == 0
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
         # drive
         prev_md = env.a2md(["list", name]).json['output'][0]
         r = env.a2md(["-vv", "drive", "-c", "http-01", name])
@@ -117,7 +117,7 @@ class TestDrivev2:
         domain = self.test_domain
         name = "www." + domain
         self._prepare_md(env, [name, "test." + domain])
-        assert env.apache_restart() == 0
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
         # drive
         r = env.a2md(["-vv", "drive", "-c", "http-01", name])
         assert r.exit_code == 0, "a2md drive failed: {0}".format(r.stderr)
@@ -132,7 +132,7 @@ class TestDrivev2:
         name = "www." + domain
         assert env.a2md(["add", name]).exit_code == 0
         assert env.a2md(["update", name, "contacts", "admin@" + domain]).exit_code == 0
-        assert env.apache_restart() == 0
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
         # setup: create account on server
         r = env.a2md(["-t", "accepted", "acme", "newreg", "admin@" + domain], raw=True)
         assert r.exit_code == 0
@@ -152,7 +152,7 @@ class TestDrivev2:
         domain = self.test_domain
         name = "www." + domain
         self._prepare_md(env, [name])
-        assert env.apache_restart() == 0
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
         # setup: create account on server
         r = env.a2md(["-t", "accepted", "acme", "newreg", "test@" + domain], raw=True)
         assert r.exit_code == 0
@@ -172,7 +172,7 @@ class TestDrivev2:
         domain = self.test_domain
         name = "www." + domain
         self._prepare_md(env, [name])
-        assert env.apache_restart() == 0
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
         # drive
         r = env.a2md(["-vv", "drive", name])
         assert r.exit_code == 0, "a2md drive failed: {0}".format(r.stderr)
@@ -204,7 +204,7 @@ class TestDrivev2:
         conf = MDConf(env, proxy=True)
         conf.add('LogLevel proxy:trace8')
         conf.install()
-        assert env.apache_restart() == 0
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
 
         # drive it, with wrong proxy url -> FAIL
         r = env.a2md(["-p", "http://localhost:1", "drive", name])
@@ -231,11 +231,11 @@ class TestDrivev2:
         # setup: create resource files
         self._write_res_file(os.path.join(env.server_docs_dir, "test"), "name.txt", name)
         self._write_res_file(os.path.join(env.server_docs_dir), "name.txt", "not-forbidden.org")
-        assert env.apache_restart() == 0
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
 
         # drive it
         assert env.a2md(["drive", name]).exit_code == 0
-        assert env.apache_restart() == 0
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
         # test HTTP access - no redirect
         jdata = env.get_json_content(f"test1.{env.http_tld}", "/alive.json", use_https=False)
         assert jdata['host']== "test1"
@@ -249,7 +249,7 @@ class TestDrivev2:
         # test HTTP access again -> redirect to default HTTPS port
         conf.add("MDRequireHttps temporary")
         conf.install()
-        assert env.apache_restart() == 0
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
         r = env.get_meta(name, "/name.txt", use_https=False)
         assert r.response['status'] == 302
         exp_location = "https://%s/name.txt" % name
@@ -266,7 +266,7 @@ class TestDrivev2:
         # test HTTP access again -> redirect permanent
         conf.add("MDRequireHttps permanent")
         conf.install()
-        assert env.apache_restart() == 0
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
         r = env.get_meta(name, "/name.txt", use_https=False)
         assert r.response['status'] == 301
         exp_location = "https://%s/name.txt" % name
@@ -288,15 +288,15 @@ class TestDrivev2:
         conf.add_vhost(name, port=env.http_port)
         conf.add_vhost(name)
         conf.install()
-        assert env.apache_restart() == 0
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
         # drive it
         assert env.a2md(["drive", name]).exit_code == 0
-        assert env.apache_restart() == 0
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
 
         # test override HSTS header
         conf.add('Header set Strict-Transport-Security "max-age=10886400; includeSubDomains; preload"')
         conf.install()
-        assert env.apache_restart() == 0
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
         r = env.get_meta(name, "/name.txt", use_https=True)
         assert 'strict-transport-security' in r.response['header'], r.response['header']
         assert r.response['header']['strict-transport-security'] == \
@@ -306,7 +306,7 @@ class TestDrivev2:
         conf.add('  Redirect /a /name.txt')
         conf.add('  Redirect seeother /b /name.txt')
         conf.install()
-        assert env.apache_restart() == 0
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
         # check: default redirect by mod_md still works
         exp_location = "https://%s/name.txt" % name
         r = env.get_meta(name, "/name.txt", use_https=False)
@@ -330,17 +330,17 @@ class TestDrivev2:
         conf.add_vhost(name, port=env.http_port)
         conf.add_vhost(name)
         conf.install()
-        assert env.apache_restart() == 0
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
         # drive it
         r = env.a2md(["-v", "drive", name])
         assert r.exit_code == 0, "a2md drive failed: {0}".format(r.stderr)
-        assert env.apache_restart() == 0
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
 
         # setup: place redirect rules
         conf.add('  Redirect /a /name.txt')
         conf.add('  Redirect seeother /b /name.txt')
         conf.install()
-        assert env.apache_restart() == 0
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
         # check: redirects on HTTP
         exp_location = "http://%s:%s/name.txt" % (name, env.http_port)
         r = env.get_meta(name, "/a", use_https=False)
@@ -367,12 +367,12 @@ class TestDrivev2:
         conf.add_md([name])
         conf.add_vhost(name)
         conf.install()
-        assert env.apache_restart() == 0
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
         env.run(["openssl", "s_client",
                  f"-connect", "localhost:{env.https_port}",
                  "-servername", "example.com", "-crlf"
                  ], intext="GET https:// HTTP/1.1\nHost: example.com\n\n")
-        assert env.apache_restart() == 0
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
 
     # --------- critical state change -> drive again ---------
 
@@ -382,7 +382,7 @@ class TestDrivev2:
         domain = self.test_domain
         name = "www." + domain
         self._prepare_md(env, [name])
-        assert env.apache_restart() == 0
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
         # setup: drive it
         r = env.a2md(["drive", name])
         assert r.exit_code == 0, "a2md drive failed: {0}".format(r.stderr)
@@ -419,7 +419,7 @@ class TestDrivev2:
         conf.add_renew_window(renew_window)
         conf.add_md([name])
         conf.install()
-        assert env.apache_restart() == 0
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
         assert env.a2md(["list", name]).json['output'][0]['state'] == env.MD_S_INCOMPLETE
         # setup: drive it
         r = env.a2md(["drive", name])
@@ -457,7 +457,7 @@ class TestDrivev2:
         conf.add_private_key(key_type, key_params)
         conf.add_md([name])
         conf.install()
-        assert env.apache_restart() == 0
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
         assert env.a2md(["list", name]).json['output'][0]['state'] == env.MD_S_INCOMPLETE
         # setup: drive it
         r = env.a2md(["-vv", "drive", name])
@@ -477,7 +477,7 @@ class TestDrivev2:
         domain = self.test_domain
         name = "www." + domain
         self._prepare_md(env, [name, "test." + domain, "xxx." + domain])
-        assert env.apache_restart() == 0
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
         # setup: drive it
         r = env.a2md(["drive", name])
         assert r.exit_code == 0, "a2md drive failed: {0}".format(r.stderr)
@@ -496,7 +496,7 @@ class TestDrivev2:
         domain = self.test_domain
         name = "www." + domain
         self._prepare_md(env, [name])
-        assert env.apache_restart() == 0
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
         # setup: drive it
         r = env.a2md(["drive", name])
         assert r.exit_code == 0, "a2md drive failed: {0}".format(r.stderr)

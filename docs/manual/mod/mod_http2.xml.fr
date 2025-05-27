@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1915531 -->
+<!-- English Revision: 1924145 -->
 <!-- French translation : Lucien GENTIS -->
 
 <!--
@@ -1311,6 +1311,33 @@ H2EarlyHint Link "&lt;/my.css&gt;;rel=preload;as=style"
             </p><p>
             </p>
         </usage>
-    </directivesynopsis>    
+    </directivesynopsis>
+
+    <directivesynopsis>
+        <name>H2MaxHeaderBlockLen</name>
+        <description>Taille maximale des en-têtes d’une réponse</description>
+        <syntax>H2MaxHeaderBlockLen <em>n</em></syntax>
+        <default>H2MaxHeaderBlockLen 0</default>
+        <contextlist>
+            <context>server config</context>
+            <context>virtual host</context>
+        </contextlist>
+        <compatibility>Disponible à partir de la version 2.5.1 du serveur HTTP
+	Apache.</compatibility>
+
+        <usage>
+            <p>
+                La directive <directive>H2MaxHeaderBlockLen</directive> permet
+		de définir la taille maximale globale des en-têtes d’une
+		réponse. Définir cette directive à 0 implique une taille maximale
+		de 64 ko dans nghttp2, ce qui correspond à la valeur par défaut.
+            </p>
+            <p>
+                Les réponses dont la somme des tailles de tous les en-têtes est
+		supérieure à la valeur de cette directive ne seront pas traitées
+		et provoqueront une réinitialisation du flux.
+            </p>
+        </usage>
+    </directivesynopsis>
 
 </modulesynopsis>

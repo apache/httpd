@@ -18,7 +18,7 @@ class TestSetupErrors:
         env.check_acme()
         env.clear_store()
         MDConf(env).install()
-        assert env.apache_restart() == 0
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
 
     @pytest.fixture(autouse=True, scope='function')
     def _method_scope(self, env, request):
@@ -42,7 +42,7 @@ class TestSetupErrors:
         conf.add_md(domains)
         conf.add_vhost(domains)
         conf.install()
-        assert env.apache_restart() == 0
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
         md = env.await_error(domain, errors=2, timeout=10)
         assert md
         assert md['renewal']['errors'] > 0
@@ -65,13 +65,13 @@ class TestSetupErrors:
         conf.add_md(domains)
         conf.add_vhost(domains)
         conf.install()
-        assert env.apache_restart() == 0
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
         env.check_md(domains)
         assert env.await_completion([domain], restart=False)
         staged_md_path = env.store_staged_file(domain, 'md.json')
         with open(staged_md_path, 'w') as fd:
             fd.write('garbage\n')
-        assert env.apache_restart() == 0
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
         assert env.await_completion([domain])
         env.check_md_complete(domain)
         env.httpd_error_log.ignore_recent(

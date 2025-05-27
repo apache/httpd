@@ -33,7 +33,7 @@ Layer (SSL) and Transport Layer Security (TLS) protocols</description>
 <p>This module provides SSL v3 and TLS v1.x support for the Apache
 HTTP Server. SSL v2 is no longer supported.</p>
 
-<p>This module relies on <a href="http://www.openssl.org/">OpenSSL</a>
+<p>This module relies on <a href="https://www.openssl.org/">OpenSSL</a>
 to provide the cryptographic engine.</p>
 
 <p>Further details, discussion, and examples are provided in the
@@ -601,7 +601,7 @@ SSLEngine on
 </example>
 <p><directive>SSLEngine</directive> can be set to <code>optional</code>: 
 this enables support for
-<a href="http://www.ietf.org/rfc/rfc2817.txt">RFC 2817</a>.
+<a href="https://www.rfc-editor.org/rfc/rfc2817">RFC 2817</a>.
 </p>
 </usage>
 </directivesynopsis>
@@ -653,29 +653,29 @@ The available (case-insensitive) <em>protocol</em>s are:</p>
     This is the Secure Sockets Layer (SSL) protocol, version 3.0, from
     the Netscape Corporation.
     It is the successor to SSLv2 and the predecessor to TLSv1, but is
-    deprecated in <a href="http://www.ietf.org/rfc/rfc7568.txt">RFC 7568</a>.</p></li>
+    deprecated in <a href="https://www.rfc-editor.org/rfc/rfc7568">RFC 7568</a>.</p></li>
 
 <li><code>TLSv1</code>
     <p>
     This is the Transport Layer Security (TLS) protocol, version 1.0.
     It is the successor to SSLv3 and is defined in
-    <a href="http://www.ietf.org/rfc/rfc2246.txt">RFC 2246</a>.
+    <a href="https://www.rfc-editor.org/rfc/rfc2246">RFC 2246</a>.
     It is supported by nearly every client.</p></li>
 
 <li><code>TLSv1.1</code> (when using OpenSSL 1.0.1 and later)
     <p>
     A revision of the TLS 1.0 protocol, as defined in
-    <a href="http://www.ietf.org/rfc/rfc4346.txt">RFC 4346</a>.</p></li>
+    <a href="https://www.rfc-editor.org/rfc/rfc4346">RFC 4346</a>.</p></li>
 
 <li><code>TLSv1.2</code> (when using OpenSSL 1.0.1 and later)
     <p>
     A revision of the TLS 1.1 protocol, as defined in
-    <a href="http://www.ietf.org/rfc/rfc5246.txt">RFC 5246</a>.</p></li>
+    <a href="https://www.rfc-editor.org/rfc/rfc5246">RFC 5246</a>.</p></li>
 
 <li><code>TLSv1.3</code> (when using OpenSSL 1.1.1 and later)
     <p>
     A new version of the TLS protocol, as defined in
-    <a href="http://www.ietf.org/rfc/rfc8446.txt">RFC 8446</a>.</p></li>
+    <a href="https://www.rfc-editor.org/rfc/rfc8446">RFC 8446</a>.</p></li>
 
 <li><code>all</code>
     <p>
@@ -752,7 +752,7 @@ Since TLSv1.3 does not offer renegotiations, specifying ciphers for it in
 a directory context is not allowed.</p>
 <p>
 For a list of TLSv1.3 cipher names, see 
-<a href="https://www.openssl.org/docs/manmaster/man3/SSL_CTX_set_ciphersuites.html">the OpenSSL
+<a href="https://docs.openssl.org/master/man3/SSL_CTX_set_ciphersuites/">the OpenSSL
 documentation</a>.</p>
 <p>
 An SSL cipher specification in <em>cipher-spec</em> is composed of 4 major
@@ -981,7 +981,7 @@ Beginning with version 2.4.7, mod_ssl makes use of
 standardized DH parameters with prime lengths of 2048, 3072 and 4096 bits
 and with additional prime lengths of 6144 and 8192 bits beginning with
 version 2.4.10
-(from <a href="http://www.ietf.org/rfc/rfc3526.txt">RFC 3526</a>), and hands
+(from <a href="https://www.rfc-editor.org/rfc/rfc3526">RFC 3526</a>), and hands
 them out to clients based on the length of the certificate's RSA/DSA key.
 With Java-based clients in particular (Java 7 or earlier), this may lead
 to handshake failures - see this
@@ -2461,7 +2461,7 @@ With OpenSSL 3.0 or later, if no engine is specified but the key or certificate
 is specified using a <a href="https://tools.ietf.org/html/rfc7512">PKCS#11 URIs</a>
 then it is tried to load the key and certificate from an OpenSSL provider.
 The OpenSSL provider to use must be defined and configured in the OpenSSL config file,
-and it must support the <a href="https://www.openssl.org/docs/man3.0/man7/provider-storemgmt.html">STORE method</a>
+and it must support the <a href="https://docs.openssl.org/3.0/man7/provider-storemgmt/">STORE method</a>
 for <a href="https://tools.ietf.org/html/rfc7512">PKCS#11 URIs</a>.
 </p>
 </usage>
@@ -2660,7 +2660,7 @@ OCSP response for a single cert. For server certificates with intermediate
 CA certificates in their chain (the typical case nowadays),
 stapling in its current implementation therefore only partially achieves the
 stated goal of "saving roundtrips and resources" - see also
-<a href="http://www.ietf.org/rfc/rfc6961.txt">RFC 6961</a>
+<a href="https://www.rfc-editor.org/rfc/rfc6961">RFC 6961</a>
 (TLS Multiple Certificate Status Extension).
 </p>
 
@@ -2843,7 +2843,7 @@ One potential use is when a proxy is used for retrieving OCSP queries.</p>
 <usage>
 <p>Optionally configures a secret key for encrypting and decrypting
 TLS session tickets, as defined in
-<a href="http://www.ietf.org/rfc/rfc5077.txt">RFC 5077</a>.
+<a href="https://www.rfc-editor.org/rfc/rfc5077">RFC 5077</a>.
 Primarily suitable for clustered environments where TLS sessions information
 should be shared between multiple nodes. For single-instance httpd setups,
 it is recommended to <em>not</em> configure a ticket key file, but to
@@ -2949,7 +2949,7 @@ features are added to OpenSSL.</p>
 depends on the OpenSSL version being used for <module>mod_ssl</module>
 (at least version 1.0.2 is required). For a list of supported command
 names, see the section <em>Supported configuration file commands</em> in the
-<a href="http://www.openssl.org/docs/man1.0.2/ssl/SSL_CONF_cmd.html#SUPPORTED-CONFIGURATION-FILE-COMMANDS">SSL_CONF_cmd(3)</a> manual page for OpenSSL.</p>
+<a href="https://docs.openssl.org/master/man3/SSL_CONF_cmd/#supported-configuration-file-commands">SSL_CONF_cmd(3)</a> manual page for OpenSSL.</p>
 
 <example><title>Examples</title>
 <highlight language="config">

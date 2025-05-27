@@ -575,10 +575,8 @@ All pour les versions antérieures</code></td></tr>
       activée.
       </p></div>
 
-      <div class="example"><p><code>
-      AllowOverride Options=Indexes,MultiViews
-      </code></p></div>
-      
+      <pre class="prettyprint lang-config">AllowOverride Options=Indexes,MultiViews</pre>
+
       </dd>
     </dl>
 
@@ -1345,19 +1343,22 @@ fichiers aux clients</td></tr>
 <tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Noyau httpd</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Par défaut à Off depuis la version 2.3.9.</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Par défaut à Off depuis la version 2.3.9 du serveur HTTP
+Apache.</td></tr>
 </table>
     <p>Cette directive définit si le programme <code class="program"><a href="../programs/httpd.html">httpd</a></code>
     peut utiliser le support sendfile du noyau pour transmettre le
     contenu des fichiers aux clients. Par défaut, lorsque le traitement
     d'une requête ne requiert pas l'accès aux données contenues dans un
-    fichier -- par exemple, pour la transmission d'un fichier statique
-    -- Apache httpd utilise sendfile pour transmettre le contenu du fichier
+    fichier —&nbsp;par exemple, pour la transmission d'un fichier statique
+    —&nbsp;Apache httpd utilise sendfile pour transmettre le contenu du fichier
     sans même lire ce dernier, si le système d'exploitation le
-    permet.</p>
+    permet. Si la connexion utilise SSL/TLS ou si un <a href="../filter.html">filtre en sortie</a> est configuré pour inspecter ou
+    modifier la sortie, le mécanisme sendfile ne sera pas utilisé quelle que
+    soit la valeur de cette option.</p>
 
     <p>Ce mécanisme sendfile évite la séparation des opérations de
-    lecture et d'envoi, ainsi que les réservations de tampons. sur
+    lecture et d'envoi, ainsi que les réservations de tampons. Sur
     certains systèmes cependant, ou sous certains systèmes de fichiers,
     il est préférable de désactiver cette fonctionnalité afin d'éviter
     certains problèmes opérationnels :</p>
@@ -3248,7 +3249,7 @@ XML</td></tr>
     <p>Exemple :</p>
 
     <pre class="prettyprint lang-config"># Limitation à 1 Mo
-LimitXMLRequestBody 1073741824</pre>
+LimitXMLRequestBody 1048576</pre>
 
 
 
@@ -5484,9 +5485,8 @@ serveur HTTP Apache.</td></tr>
     d’hôte dans le chemin UNC n’a pas été spécifié par cette directive. Le but
     est de limiter l’accès aux chemins dérivés d’entrées non fiables.</p>
 
-    <div class="example"><p><code>
-    UNCList example.com other.example.com
-    </code></p></div>
+    <pre class="prettyprint lang-config">UNCList example.com other.example.com</pre>
+
 
     <div class="warning"><h3>Sécurité</h3>
     <p>Les chemins UNC accédés en dehors du traitement d’une requête, par
@@ -5639,7 +5639,7 @@ détermine son propre port</td></tr>
       <li>Port physique (seulement avec
       <code class="directive">UseCanonicalPhysicalPort</code> ON)</li>
       <li>Port indiqué dans <code class="directive"><a href="#servername">Servername</a></code></li>
-      <li>Port par défaut</li>
+      <li>Port par défaut pour le contexte/protocole (comme 80 ou 443)</li>
      </ol>
      </dd>
      <dt><code>UseCanonicalName On</code></dt>
@@ -5648,7 +5648,7 @@ détermine son propre port</td></tr>
       <li>Port spécifié par <code class="directive"><a href="#servername">Servername</a></code></li>
       <li>Port physique (seulement avec
       <code class="directive">UseCanonicalPhysicalPort</code> ON)</li>
-      <li>Port par défaut</li>
+      <li>Port par défaut pour le contexte/protocole (comme 80 ou 443)</li>
      </ol>
      </dd>
     </dl>
@@ -5852,7 +5852,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/core.html';
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2024 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2025 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

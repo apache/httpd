@@ -29,6 +29,7 @@
 #include <http_connection.h>
 #include <http_log.h>
 #include <http_protocol.h>
+#include <scoreboard.h>
 
 #include <mpm_common.h>
 
@@ -975,7 +976,9 @@ static void s_c2_done(h2_mplx *m, conn_rec *c2, h2_conn_ctx_t *conn_ctx)
     /* From here on, the final handling of c2 is done by c1 processing.
      * Which means we can give it c1's scoreboard handle for updates. */
     c2->sbh = m->c1->sbh;
-
+#if AP_MODULE_MAGIC_AT_LEAST(20211221, 29)
+    ap_set_time_process_request(c2->sbh,conn_ctx->started_at,conn_ctx->done_at);
+#endif
     ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, c2,
                   "h2_mplx(%s-%d): request done, %f ms elapsed",
                   conn_ctx->id, conn_ctx->stream_id,

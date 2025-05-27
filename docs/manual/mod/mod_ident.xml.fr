@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1421821 -->
+<!-- English Revision : 1924775 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -33,7 +33,7 @@
 
 <summary>
     <p>Ce module interroge un d&eacute;mon compatible <a
-    href="http://www.ietf.org/rfc/rfc1413.txt">RFC 1413</a> sur un
+    href="https://www.rfc-editor.org/rfc/rfc1413">RFC 1413</a> sur un
     serveur distant afin de d&eacute;terminer le propri&eacute;taire d'une
     connexion.</p>
 </summary>
@@ -50,7 +50,7 @@ l'utilisateur distant</description>
 
 <usage>
     <p>Cette directive permet d'activer la journalisation compatible <a
-    href="http://www.ietf.org/rfc/rfc1413.txt">RFC 1413</a> du nom de
+    href="https://www.rfc-editor.org/rfc/rfc1413">RFC 1413</a> du nom de
     l'utilisateur distant pour chaque connexion, si la machine du client
     ex&eacute;cute identd ou un d&eacute;mon similaire. Cette information est
     enregistr&eacute;e dans le journal des acc&egrave;s en utilisant la <a
@@ -86,7 +86,7 @@ ident</description>
 <usage>
     <p>Cette directive permet de sp&eacute;cifier le d&eacute;lai d'attente d'une
     requ&ecirc;te ident. Une valeur par d&eacute;faut de 30 secondes est recommand&eacute;e
-    par la <a href="http://www.ietf.org/rfc/rfc1413.txt">RFC 1413</a>,
+    par la <a href="https://www.rfc-editor.org/rfc/rfc1413">RFC 1413</a>,
     principalement pour pr&eacute;venir les probl&egrave;mes qui pourraient &ecirc;tre
     induits par la charge du r&eacute;seau. Vous pouvez cependant ajuster la
     valeur de ce d&eacute;lai en fonction du d&eacute;bit de votre r&eacute;seau local.</p>

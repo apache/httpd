@@ -118,6 +118,7 @@ struct md_acme_t {
             const char *key_change;
             const char *revoke_cert;
             const char *new_nonce;
+            struct apr_array_header_t *profiles;
         } v2;
     } api;
     const char *ca_agreement;

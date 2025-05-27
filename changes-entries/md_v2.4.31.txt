@@ -1,0 +1,7 @@
+  *) mod_md: update to version 2.4.31
+     - Improved error reporting when waiting for ACME server to verify domains
+       or finalizing the order fails, e.g. times out.
+     - Increasing the timeouts to wait for ACME server to verify domain names
+       and issue the certificate from 30 seconds to 5 minutes.
+     - Change a log level from error to debug when Stapling is enabled but a
+       certificate carries no OCSP responder URL.

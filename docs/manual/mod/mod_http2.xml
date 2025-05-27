@@ -1144,4 +1144,28 @@ H2EarlyHint Link "&lt;/my.css&gt;;rel=preload;as=style"
         </usage>
     </directivesynopsis>
 
+    <directivesynopsis>
+        <name>H2MaxHeaderBlockLen</name>
+        <description>Maximum size of response headers</description>
+        <syntax>H2MaxHeaderBlockLen <em>n</em></syntax>
+        <default>H2MaxHeaderBlockLen 0</default>
+        <contextlist>
+            <context>server config</context>
+            <context>virtual host</context>
+        </contextlist>
+        <compatibility>Available in version 2.5.1 and later.</compatibility>
+
+        <usage>
+            <p>
+                <directive>H2MaxHeaderBlockLen</directive> sets the limit
+                on the overall size of response headers. A setting of 0
+                will leave this at the default of 64 KB in nghttp2.
+            </p>
+            <p>
+                Responses with headers larger than this (adding all headers)
+                will not be processed and result in a reset of the stream.
+            </p>
+        </usage>
+    </directivesynopsis>
+
 </modulesynopsis>

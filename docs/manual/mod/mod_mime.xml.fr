@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1861457 -->
+<!-- English Revision: 1924775 -->
 <!-- French translation : Lucien GENTIS -->
 
 <!--
@@ -170,10 +170,10 @@ multiples</title>
     qui est conçu pour transmettre un fichier binaire sous un format
     ASCII (texte).</p>
 
-    <p>La <a href="http://www.ietf.org/rfc/rfc2616.txt">RFC
+    <p>La <a href="https://www.rfc-editor.org/rfc/rfc2616">RFC
     HTTP/1.1</a>, section 14.11 stipule à ce titre :</p>
 
-    <blockquote cite="http://www.ietf.org/rfc/rfc2616.txt">
+    <blockquote cite="https://www.rfc-editor.org/rfc/rfc2616">
       <p>Le champ d'en-tête Content-Encoding de l'entité est utilisé en
       tant que modificateur du type de médium. Lorsqu'il est présent, sa
       valeur indique quels codages de contenu additionnels ont été

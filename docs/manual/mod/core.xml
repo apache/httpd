@@ -474,9 +474,9 @@ NoDecode option available in 2.3.12 and later.</compatibility>
          to remain <em>set</em> while allowing any others to be set.
       </p></note>
 
-      <example>
+      <highlight language="config">
       AllowOverride Options=Indexes,MultiViews
-      </example>
+      </highlight>
       </dd>
     </dl>
 
@@ -1215,7 +1215,10 @@ version 2.3.9.</compatibility>
     By default, when the handling of a request requires no access
     to the data within a file -- for example, when delivering a
     static file -- Apache httpd uses sendfile to deliver the file contents
-    without ever reading the file if the OS supports it.</p>
+    without ever reading the file if the OS supports it. If SSL/TLS is used
+    for the connection, or if any <a href="../filter.html">output filter</a>
+    is configured which inspects or modifies the output, the sendfile mechanism
+    will not be used regardless of this configuration option.</p>
 
     <p>This sendfile mechanism avoids separate read and send operations,
     and buffer allocations. But on some platforms or within some
@@ -3077,7 +3080,7 @@ LimitRequestLine 4094
 
     <highlight language="config">
 # Limit of 1 MiB
-LimitXMLRequestBody 1073741824
+LimitXMLRequestBody 1048576
     </highlight>
 
 </usage>
@@ -5139,7 +5142,7 @@ port</description>
       <li>Parsed port from <code>Host:</code> header</li>
       <li>Physical port (only with <directive>UseCanonicalPhysicalPort</directive> ON)</li>
       <li>Port provided in <directive module="core">Servername</directive></li>
-      <li>Default port</li>
+      <li>Default port for the scheme/protocol (such as 80 or 443)</li>
      </ol>
      </dd>
      <dt><code>UseCanonicalName On</code></dt>
@@ -5147,7 +5150,7 @@ port</description>
      <ol>
       <li>Port provided in <directive module="core">Servername</directive></li>
       <li>Physical port (only with <directive>UseCanonicalPhysicalPort</directive> ON)</li>
-      <li>Default port</li>
+      <li>Default port for the scheme/protocol (such as 80 or 443)</li>
      </ol>
      </dd>
     </dl>
@@ -5343,9 +5346,9 @@ recognized methods to modules.</p>
     has been specified by this directive. The intent is to limit access to
     paths derived from untrusted inputs.</p>
 
-    <example>
+    <highlight language="config">
     UNCList example.com other.example.com
-    </example>
+    </highlight>
 
     <note type="warning"><title>Security</title>
     <p>UNC paths accessed outside of request processing, such as during startup,
