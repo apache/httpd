@@ -782,7 +782,7 @@ static int do_headers_fixup(request_rec *r, apr_table_t *headers,
             }
             break;
         case hdr_set:
-            if (r->headers_in != headers && 
+            if (r->headers_in != headers &&
                 !ap_cstr_casecmp(hdr->header, "Content-Type")) {
                  ap_set_content_type_ex(r, process_tags(hdr, r), 1);
             }
