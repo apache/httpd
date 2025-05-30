@@ -245,6 +245,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         https://svn.apache.org/r1925975
      Backport version for 2.4.x of patch:
         svn merge -c 1925975 ^/httpd/httpd/trunk .
+     +1: icing
+
+  *) mod_md: update to v2.5.2
+     Trunk version of patch:
+        https://svn.apache.org/r1925979
+     Backport version for 2.4.x of patch:
+        svn merge -c 1925979 ^/httpd/httpd/trunk .
+     +1: icing
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
