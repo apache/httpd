@@ -168,6 +168,37 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      +0: jorton - falls under RTC exception for "non-Unix build"
 
 
+  *) mod_http2: update to v2.0.30
+     Trunk version of patch:
+        https://svn.apache.org/r1924145
+        https://svn.apache.org/r1924164
+        https://svn.apache.org/r1924197
+     Backport version for 2.4.x of patch:
+        svn merge -c 1924145,r1924164,1924197 ^/httpd/httpd/trunk .
+     +1: icing, rpluem, jorton
+     rpluem says: The compatibility tag in docs/manual/mod/mod_http2.xml needs
+     to be adjusted to 2.4 (also in trunk after backporting)
+
+  *) mod_proxy_http2: revert r1912193 for detecting broken backend connections
+     as this interferes with backend selection who a node is unresponsive.
+     PR69624.
+     Trunk version of patch:
+        https://svn.apache.org/r1924554
+     Backport version for 2.4.x of patch:
+        svn merge -c 1924554 ^/httpd/httpd/trunk .
+     +1: icing, rpluem, jorton
+     rpluem says: Is 2.0.31-git the correct value for  MOD_HTTP2_VERSION or
+     should it be 2.0.31?
+
+  *) scoreboard/mod_http2: record durations of HTTP/2 requests.
+     Trunk version of patch:
+        https://svn.apache.org/r1923754
+        https://svn.apache.org/r1923806
+     Backport version for 2.4.x of patch:
+        svn merge -c 1923754,1923806 ^/httpd/httpd/trunk .
+     backport needs adjusting MMN
+     +1: icing, rpluem, jorton
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -187,43 +218,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      Can be applied via apply_backport_pr.sh 515
      +1: rpluem, jorton
 
-  *) scoreboard/mod_http2: record durations of HTTP/2 requests.
-     Trunk version of patch:
-        https://svn.apache.org/r1923754
-        https://svn.apache.org/r1923806
-     Backport version for 2.4.x of patch:
-        svn merge -c 1923754,1923806 ^/httpd/httpd/trunk .
-     backport needs adjusting MMN
-     +1: icing, rpluem
-
   *) mod_lua: Fix memory handling in output filter
      Trunk version of patch:
         https://svn.apache.org/r1924095
      Backport version for 2.4.x of patch:
         svn merge -c 1924095 ^/httpd/httpd/trunk .
      +1: jorton, rpluem
-
-  *) mod_http2: update to v2.0.30
-     Trunk version of patch:
-        https://svn.apache.org/r1924145
-        https://svn.apache.org/r1924164
-        https://svn.apache.org/r1924197
-     Backport version for 2.4.x of patch:
-        svn merge -c 1924145,r1924164,1924197 ^/httpd/httpd/trunk .
-     +1: icing, rpluem
-     rpluem says: The compatibility tag in docs/manual/mod/mod_http2.xml needs
-     to be adjusted to 2.4 (also in trunk after backporting)
-
-  *) mod_proxy_http2: revert r1912193 for detecting broken backend connections
-     as this interferes with backend selection who a node is unresponsive.
-     PR69624.
-     Trunk version of patch:
-        https://svn.apache.org/r1924554
-     Backport version for 2.4.x of patch:
-        svn merge -c 1924554 ^/httpd/httpd/trunk .
-     +1: icing, rpluem
-     rpluem says: Is 2.0.31-git the correct value for  MOD_HTTP2_VERSION or
-     should it be 2.0.31?
 
   *) mod_ssl: Remove warning over potential uninitialised value
      for ssl protocol prior to protocol selection.
