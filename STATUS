@@ -262,6 +262,17 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/533.diff
      +1 covener, rpluem
 
+  *) mod_proxy_balancer: Fix a regression that caused stickysession keys no
+     longer be recognized if they are provided as query parameter in the URL.
+     PR 69443
+     Trunk version of patch:
+        https://svn.apache.org/r1925109
+     Backport version for 2.4.x of patch:
+      Trunk version of patch works
+      svn merge -c 1925109 ^/httpd/httpd/trunk .
+     +1: rpluem,
+
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
