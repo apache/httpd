@@ -473,13 +473,15 @@ static apr_status_t lua_output_filter_handle(ap_filter_t *f, apr_bucket_brigade 
     L = ctx->L;
     /* While the Lua function is still yielding, pass in buckets to the coroutine */
     if (!ctx->broken) {
-        for (pbktIn = APR_BRIGADE_FIRST(pbbIn);
-            pbktIn != APR_BRIGADE_SENTINEL(pbbIn);
-            pbktIn = APR_BUCKET_NEXT(pbktIn))
-            {
+        while (!APR_BRIGADE_EMPTY(pbbIn)) {
             const char *data;
             apr_size_t len;
             apr_bucket *pbktOut;
+
+            pbktIn = APR_BRIGADE_FIRST(pbbIn);
+            if (APR_BUCKET_IS_EOS(pbktIn)) {
+                break;
+            }
 
             /* read the bucket */
             apr_bucket_read(pbktIn,&data,&len,APR_BLOCK_READ);
@@ -514,10 +516,11 @@ static apr_status_t lua_output_filter_handle(ap_filter_t *f, apr_bucket_brigade 
                               lua_tostring(L, -1));
                 return HTTP_INTERNAL_SERVER_ERROR;
             }
+            apr_bucket_delete(pbktIn);
         }
         /* If we've safely reached the end, do a final call to Lua to allow for any 
         finishing moves by the script, such as appending a tail. */
-        if (APR_BUCKET_IS_EOS(APR_BRIGADE_LAST(pbbIn))) {
+        if (!APR_BRIGADE_EMPTY(pbbIn) && APR_BUCKET_IS_EOS(APR_BRIGADE_LAST(pbbIn))) {
             apr_bucket *pbktEOS;
             lua_pushnil(L);
             lua_setglobal(L, "bucket");
