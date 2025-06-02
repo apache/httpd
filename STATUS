@@ -254,6 +254,11 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
        https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/515.diff
      Can be applied via apply_backport_pr.sh 515
      +1: rpluem, jorton, ylavic
+     jailletc36: Should the apr_palloc() in alloc_systemd_listener()
+                 and ap_duplicate_listeners be apr_pcalloc() so that
+                 all fields are 0?
+                 make_sock() uses the 'flags' field that would be
+                 undefined otherwise.
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
