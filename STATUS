@@ -222,8 +222,22 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
         https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/533.diff
      +1 covener, rpluem, jorton
 
-PATCHES PROPOSED TO BACKPORT FROM TRUNK:
-  [ New proposals should be added at the end of the list ]
+  *) mod_http2: update to v2.0.32
+     Trunk version of patch:
+        https://svn.apache.org/r1925975
+     Backport version for 2.4.x of patch:
+        svn merge -c 1925975 ^/httpd/httpd/trunk .
+     +1: icing, rpluem, ylavic
+
+  *) mod_proxy_balancer: Fix a regression that caused stickysession keys no
+     longer be recognized if they are provided as query parameter in the URL.
+     PR 69443
+     Trunk version of patch:
+        https://svn.apache.org/r1925109
+     Backport version for 2.4.x of patch:
+      Trunk version of patch works
+      svn merge -c 1925109 ^/httpd/httpd/trunk .
+     +1: rpluem, covener, ylavic
 
   *) mod_systemd: Add systemd socket activation
      Trunk version of patch:
@@ -239,24 +253,17 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      Backport version for 2.4.x of patch:
        https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/515.diff
      Can be applied via apply_backport_pr.sh 515
-     +1: rpluem, jorton
+     +1: rpluem, jorton, ylavic
 
-  *) mod_http2: update to v2.0.32
-     Trunk version of patch:
-        https://svn.apache.org/r1925975
-     Backport version for 2.4.x of patch:
-        svn merge -c 1925975 ^/httpd/httpd/trunk .
-     +1: icing, rpluem
+PATCHES PROPOSED TO BACKPORT FROM TRUNK:
+  [ New proposals should be added at the end of the list ]
 
-  *) mod_proxy_balancer: Fix a regression that caused stickysession keys no
-     longer be recognized if they are provided as query parameter in the URL.
-     PR 69443
-     Trunk version of patch:
-        https://svn.apache.org/r1925109
-     Backport version for 2.4.x of patch:
-      Trunk version of patch works
-      svn merge -c 1925109 ^/httpd/httpd/trunk .
-     +1: rpluem, covener
+  *) mod_proxy: Reuse ProxyRemote connections when possible, like prior to 2.4.59.
+     trunk patch: https://svn.apache.org/r1925743
+                  https://svn.apache.org/r1912460
+     2.4.x patch: https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/532.diff
+                  (backport: dev-tools/github/apply_backport_pr.sh 532)
+     +1: ylavic,
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
