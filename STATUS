@@ -167,16 +167,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      +1: ivan
      +0: jorton - falls under RTC exception for "non-Unix build"
 
-
-  *) scoreboard/mod_http2: record durations of HTTP/2 requests.
-     Trunk version of patch:
-        https://svn.apache.org/r1923754
-        https://svn.apache.org/r1923806
-     Backport version for 2.4.x of patch:
-        svn merge -c 1923754,1923806 ^/httpd/httpd/trunk .
-     backport needs adjusting MMN
-     +1: icing, rpluem, jorton
-
   *) mod_ssl: Remove warning over potential uninitialised value
      for ssl protocol prior to protocol selection.
      Trunk version of patch:
