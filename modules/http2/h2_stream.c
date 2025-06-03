@@ -1721,10 +1721,10 @@ static apr_status_t stream_do_response(h2_stream *stream)
     if (nghttp2_is_fatal(ngrv)) {
         rv = APR_EGENERAL;
         h2_session_dispatch_event(stream->session,
-                                 H2_SESSION_EV_PROTO_ERROR, ngrv, nghttp2_strerror(rv));
+                                 H2_SESSION_EV_PROTO_ERROR, ngrv, nghttp2_strerror(ngrv));
         ap_log_cerror(APLOG_MARK, APLOG_ERR, rv, c1,
                       APLOGNO(10402) "submit_response: %s",
-                      nghttp2_strerror(rv));
+                      nghttp2_strerror(ngrv));
         goto cleanup;
     }
 
