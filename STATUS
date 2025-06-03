@@ -193,16 +193,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
       svn merge -c 1925109 ^/httpd/httpd/trunk .
      +1: rpluem, covener, ylavic
 
-PATCHES PROPOSED TO BACKPORT FROM TRUNK:
-  [ New proposals should be added at the end of the list ]
-
-  *) mod_proxy: Reuse ProxyRemote connections when possible, like prior to 2.4.59.
-     trunk patch: https://svn.apache.org/r1925743
-                  https://svn.apache.org/r1912460
-     2.4.x patch: https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/532.diff
-                  (backport: dev-tools/github/apply_backport_pr.sh 532)
-     +1: ylavic, jfclere
-
   *) mod_systemd: Add systemd socket activation
      Trunk version of patch:
         https://svn.apache.org/r1511033
@@ -218,7 +208,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      Backport version for 2.4.x of patch:
        https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/515.diff
      Can be applied via apply_backport_pr.sh 515
-     +1: rpluem, jorton
+     +1: rpluem, jorton, ylavic
      jailletc36: Should the apr_palloc() in alloc_systemd_listener() be
                  apr_pcalloc() so that all fields are 0?
                  make_sock() uses the 'flags' field that would be
@@ -231,7 +221,17 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      Backport version for 2.4.x of patch:
       Trunk version of patch works
       svn merge -c 1923806 ^/httpd/httpd/trunk .
-     +1: rpluem, jorton
+     +1: rpluem, jorton, ylavic
+
+PATCHES PROPOSED TO BACKPORT FROM TRUNK:
+  [ New proposals should be added at the end of the list ]
+
+  *) mod_proxy: Reuse ProxyRemote connections when possible, like prior to 2.4.59.
+     trunk patch: https://svn.apache.org/r1925743
+                  https://svn.apache.org/r1912460
+     2.4.x patch: https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/532.diff
+                  (backport: dev-tools/github/apply_backport_pr.sh 532)
+     +1: ylavic, jfclere
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
