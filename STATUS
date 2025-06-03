@@ -221,7 +221,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   https://svn.apache.org/r1912460
      2.4.x patch: https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/532.diff
                   (backport: dev-tools/github/apply_backport_pr.sh 532)
-     +1: ylavic,
+     +1: ylavic, jfclere
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
