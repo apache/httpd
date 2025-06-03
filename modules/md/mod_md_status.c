@@ -543,7 +543,7 @@ static void si_val_activity(status_ctx *ctx, md_json_t *mdj, const status_info *
             apr_brigade_puts(ctx->bb, NULL, NULL, "Pending");
         }
         else {
-            apr_brigade_printf(ctx->bb, NULL, NULL, "%s: %s", ctx->prefix, "Pending");
+            apr_brigade_printf(ctx->bb, NULL, NULL, "%s: %s", ctx->prefix, "Pending\n");
         }
     }
     else if (MD_RENEW_MANUAL == md_json_getl(mdj, MD_KEY_RENEW_MODE, NULL)) {
@@ -551,7 +551,7 @@ static void si_val_activity(status_ctx *ctx, md_json_t *mdj, const status_info *
             apr_brigade_puts(ctx->bb, NULL, NULL, "Manual renew");
         }
         else {
-            apr_brigade_printf(ctx->bb, NULL, NULL, "%s: %s", ctx->prefix, "Manual renew");
+            apr_brigade_printf(ctx->bb, NULL, NULL, "%s: %s", ctx->prefix, "Manual renew\n");
         }
     }
     if (!HTML_STATUS(ctx)) {

@@ -69,6 +69,10 @@
 #define MD_HAVE_CT 0
 #endif
 
+#if OPENSSL_VERSION_NUMBER < 0x10100000L
+#define MD_OPENSSL_10x
+#endif
+
 static int initialized;
 
 struct md_pkey_t {
@@ -257,9 +261,9 @@ static apr_time_t md_asn1_time_get(const ASN1_TIME* time)
 #endif
 }
 
-apr_time_t md_asn1_generalized_time_get(void *ASN1_GENERALIZEDTIME)
+apr_time_t md_asn1_generalized_time_get(void *asn1_gtime)
 {
-    return md_asn1_time_get(ASN1_GENERALIZEDTIME);
+    return md_asn1_time_get(asn1_gtime);
 }
 
 /**************************************************************************************************/
@@ -566,7 +570,7 @@ static md_pkey_spec_t PkeySpecDef = { MD_PKEY_TYPE_DEFAULT, {{ 0 }} };
 md_pkey_spec_t *md_pkeys_spec_get(const md_pkeys_spec_t *pks, int index)
 {
     if (md_pkeys_spec_is_empty(pks)) {
-        return index == 1? &PkeySpecDef : NULL;
+        return index == 0? &PkeySpecDef : NULL;
     }
     else if (pks && index >= 0 && index < pks->specs->nelts) {
         return APR_ARRAY_IDX(pks->specs, index, md_pkey_spec_t*);
@@ -803,7 +807,11 @@ static apr_status_t check_EC_curve(int nid, apr_pool_t *p) {
     int rv = APR_ENOENT;
     
     nc = EC_get_builtin_curves(NULL, 0);
+#ifdef MD_OPENSSL_10x
+    if (NULL == (curves = OPENSSL_malloc((int)(sizeof(*curves) * nc))) ||
+#else
     if (NULL == (curves = OPENSSL_malloc(sizeof(*curves) * nc)) ||
+#endif
         nc != EC_get_builtin_curves(curves, nc)) {
         rv = APR_EGENERAL;
         md_log_perror(MD_LOG_MARK, MD_LOG_ERR, rv, p, 
@@ -1515,7 +1523,11 @@ apr_status_t md_cert_read_chain(apr_array_header_t *chain, apr_pool_t *p,
     md_cert_t *cert;
     int added = 0;
 
+#ifdef MD_OPENSSL_10x
+    if (NULL == (bf = BIO_new_mem_buf((char *)pem, (int)pem_len))) {
+#else
     if (NULL == (bf = BIO_new_mem_buf(pem, (int)pem_len))) {
+#endif
         rv = APR_ENOMEM;
         goto cleanup;
     }
