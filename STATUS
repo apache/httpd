@@ -250,6 +250,14 @@ PATCHES/ISSUES THAT ARE BEING WORKED
                  undefined otherwise.
      rpluem says: Good catch. Added r1926091 and reset votes.
 
+  *) scoreboard.c: Fix variable declaration warning in scoreboard.c
+     Trunk version of patch:
+        https://svn.apache.org/r1923806
+     Backport version for 2.4.x of patch:
+      Trunk version of patch works
+      svn merge -c 1923806 ^/httpd/httpd/trunk .
+     +1: rpluem,
+
 PATCHES/ISSUES THAT ARE STALLED
 
   *) core: avoid duplicate headers when using ap_send_error_response.
