@@ -609,6 +609,7 @@
  * 20120211.137 (2.4.63-dev) Add AP_MPMQ_CAN_WAITIO
  * 20120211.138 (2.4.63-dev) Add is_host_matchable to proxy_worker_shared
  * 20120211.139 (2.4.63-dev) Add dav_get_base_path() to mod_dav
+ * 20211221.140 (2.4.64-dev) Add ap_set_time_process_request() to scoreboard.h
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */
@@ -616,7 +617,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20120211
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 139                 /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 140                 /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a
