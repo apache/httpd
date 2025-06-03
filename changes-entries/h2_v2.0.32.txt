@@ -1,0 +1,5 @@
+  *) mod_http2: update to version 2.0.32
+     The code setting the connection window size was set wrong,
+     preventing `H2WindowSize` to work.
+     Fixed <https://github.com/icing/mod_h2/issues/300>.
+     [Stefan Eissing, Michael Kaufmann]

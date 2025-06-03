@@ -1154,13 +1154,13 @@ static apr_status_t h2_session_start(h2_session *session, int *rv)
          * interim updates, any smaller connection window will lead to blocking
          * in DATA flow.
          */
-        *rv = nghttp2_submit_window_update(session->ngh2, NGHTTP2_FLAG_NONE,
-                                           0, NGHTTP2_MAX_WINDOW_SIZE - win_size);
+        *rv = nghttp2_session_set_local_window_size(
+            session->ngh2, NGHTTP2_FLAG_NONE, 0, NGHTTP2_MAX_WINDOW_SIZE);
         if (*rv != 0) {
             status = APR_EGENERAL;
             ap_log_cerror(APLOG_MARK, APLOG_ERR, status, session->c1,
                           H2_SSSN_LOG(APLOGNO(02970), session,
-                          "nghttp2_submit_window_update: %s"), 
+                          "nghttp2_session_set_local_window_size: %s"),
                           nghttp2_strerror(*rv));        
         }
     }
