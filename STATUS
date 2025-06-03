@@ -168,17 +168,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      +0: jorton - falls under RTC exception for "non-Unix build"
 
 
-  *) mod_proxy_http2: revert r1912193 for detecting broken backend connections
-     as this interferes with backend selection who a node is unresponsive.
-     PR69624.
-     Trunk version of patch:
-        https://svn.apache.org/r1924554
-     Backport version for 2.4.x of patch:
-        svn merge -c 1924554 ^/httpd/httpd/trunk .
-     +1: icing, rpluem, jorton
-     rpluem says: Is 2.0.31-git the correct value for  MOD_HTTP2_VERSION or
-     should it be 2.0.31?
-
   *) scoreboard/mod_http2: record durations of HTTP/2 requests.
      Trunk version of patch:
         https://svn.apache.org/r1923754
