@@ -215,6 +215,17 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   (backport: dev-tools/github/apply_backport_pr.sh 532)
      +1: ylavic, jfclere
 
+  *) Makefile.in: Correctly deal with change entries whose filenames contain
+     spaces.
+     Trunk version of patch:
+        https://svn.apache.org/r1926110
+        https://svn.apache.org/r1926111
+     Backport version for 2.4.x of patch:
+      Trunk version of patch works
+      svn merge -c 1926110,1926111 ^/httpd/httpd/trunk .
+     +1: rpluem,
+
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
