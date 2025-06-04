@@ -183,28 +183,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
         https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/533.diff
      +1 covener, rpluem, jorton
 
-  *) mod_systemd: Add systemd socket activation
-     Trunk version of patch:
-        https://svn.apache.org/r1511033
-        https://svn.apache.org/r1528032
-        https://svn.apache.org/r1608686
-        https://svn.apache.org/r1608694
-        https://svn.apache.org/r1608703
-        https://svn.apache.org/r1838271
-        https://svn.apache.org/r1899784
-        https://svn.apache.org/r1916312
-        https://svn.apache.org/r1916344
-        https://svn.apache.org/r1926091
-     Backport version for 2.4.x of patch:
-       https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/515.diff
-     Can be applied via apply_backport_pr.sh 515
-     +1: rpluem, jorton, ylavic
-     jailletc36: Should the apr_palloc() in alloc_systemd_listener() be
-                 apr_pcalloc() so that all fields are 0?
-                 make_sock() uses the 'flags' field that would be
-                 undefined otherwise.
-     rpluem says: Good catch. Added r1926091 and reset votes.
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 

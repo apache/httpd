@@ -1,6 +1,68 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.64
 
+  *) mod_systemd: Systemd socket activation can now be enabled at
+     build time but disabled at run time, if mod_systemd is not
+     loaded.  [Lubos Uhliarik <luhliari redhat.com>]
+
+  *) mod_systemd: Log the SELinux context at startup if available and
+     enabled.  [Joe Orton]
+
+  *) mod_http2: update to version 2.0.32
+     The code setting the connection window size was set wrong,
+     preventing `H2WindowSize` to work.
+     Fixed <https://github.com/icing/mod_h2/issues/300>.
+     [Stefan Eissing, Michael Kaufmann]
+
+  *) mod_http2: update to version 2.0.30
+     - Fixed bug in handling over long response headers. When the 64 KB limit
+       of nghttp2 was exceeded, the request was not reset and the client was
+       left hanging, waiting for it. Now the stream is reset.
+     - Added new directive `H2MaxHeaderBlockLen` to set the limit on response
+       header sizes.
+     - Fixed handling of Timeout vs. KeepAliveTimeout when first request on a
+       connection was reset.
+
+  *) mod_lua: Fix memory handling in LuaOutputFilter. PR 69590.
+     [Guillermo Grandes <guillermo.grandes gmail.com>]
+
+  * mod_proxy_http2: revert r1912193 for detecting broken backend connections
+    as this interferes with backend selection who a node is unresponsive.
+    PR69624.
+
+  *) mod_proxy_balancer: Fix a regression that caused stickysession keys no
+     longer be recognized if they are provided as query parameter in the URL.
+     PR 69443 [Ruediger Pluem]
+
+  *) mod_md: update to version 2.5.2
+     - Fixed TLS-ALPN-01 challenges when multiple `MDPrivateKeys` are specified
+       with EC keys before RSA ones. Fixes #377. [Stefan Eissing]
+     - Fixed missing newlines in the status page output. [Andreas Groth]
+
+  *) mod_dav: Add API to expose DavBasePath setting.  [Joe Orton]
+
+  *) mod_md: update to version 2.5.1
+     - Added support for ACME profiles with new directives MDProfile and
+       MDProfileMandatory.
+     - When installing a custom CA file via `MDCACertificateFile`, also set the
+       libcurl option CURLSSLOPT_NO_REVOKE that suppresses complains by Schannel
+       (when curl is linked with it) about missing CRL/OCSP in certificates.
+     - Fixed handling of corrupted httpd.json and added test 300_30 for it.
+       File is removed on error and written again. Fixes #369.
+     - Added explanation in log for how to proceed when md_store.json could not be
+       parsed and prevented the server start.
+     - restored fixed to #336 and #337 which got lost in a sync with Apache svn
+     - Add Issue Name/Uris to certificate information in md-status handler
+     - MDomains with static certificate files have MDRenewMode "manual", unless
+       "always" is configured.
+
+  *) core: Report invalid Options= argument when parsing AllowOverride
+     directives.
+     Github #310 [Zhou Qingyang <zhou1615 umn.edu>]
+
+  *) scoreboard/mod_http2: record durations of HTTP/2 requests.
+     PR 69579 [Pierre Brochard <pierre.brochard.1982@m4x.org>]
+
 Changes with Apache 2.4.63
 
   *) mod_dav: Update redirect-carefully example BrowserMatch config

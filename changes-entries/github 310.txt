@@ -1,3 +1,0 @@
-  *) core: Report invalid Options= argument when parsing AllowOverride
-     directives.
-     Github #310 [Zhou Qingyang <zhou1615 umn.edu>]

@@ -1,2 +1,0 @@
-  *) mod_dav: Add API to expose DavBasePath setting.  [Joe Orton]
-
