@@ -205,14 +205,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
                  undefined otherwise.
      rpluem says: Good catch. Added r1926091 and reset votes.
 
-  *) scoreboard.c: Fix variable declaration warning in scoreboard.c
-     Trunk version of patch:
-        https://svn.apache.org/r1923806
-     Backport version for 2.4.x of patch:
-      Trunk version of patch works
-      svn merge -c 1923806 ^/httpd/httpd/trunk .
-     +1: rpluem, jorton, ylavic
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
