@@ -1521,8 +1521,16 @@ static dav_error * dav_fs_remove_resource(dav_resource *resource,
 
     /* not a collection; remove the file and its properties */
     if ((status = apr_file_remove(info->pathname, info->pool)) != APR_SUCCESS) {
-        /* ### put a description in here */
-        return dav_new_error(info->pool, HTTP_FORBIDDEN, 0, status, NULL);
+        if (APR_STATUS_IS_ENOENT(status)) {
+            /* Return a 404 if there is a race with another DELETE,
+             * per RFC 4918§9.6. */
+            return dav_new_error(info->pool, HTTP_NOT_FOUND, 0, status,
+                                 "Cannot remove already-removed resource.");
+        }
+        else {
+            return dav_new_error(info->pool, HTTP_FORBIDDEN, 0, status,
+                                 "Cannot remove resource");
+        }
     }
 
     /* update resource state */
