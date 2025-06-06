@@ -203,6 +203,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       svn merge -c 1926110,1926111 ^/httpd/httpd/trunk .
      +1: rpluem, ylavic,
 
+  *) mod_session_dbd: set_cookie_name: ensure correct format 
+     trunk patch: https://svn.apache.org/r1922931
+                  https://svn.apache.org/r1926188
+                  https://svn.apache.org/r1926189
+     2.4.x patch: svn merge -c 1922931,1926188,1926189 ^/httpd/httpd/trunk . 
+     +1: jailletc36, 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
