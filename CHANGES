@@ -1,9 +1,8 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.64
 
-  *) mod_systemd: Systemd socket activation can now be enabled at
-     build time but disabled at run time, if mod_systemd is not
-     loaded.  [Lubos Uhliarik <luhliari redhat.com>]
+  *) mod_systemd: Add systemd socket activation support.  [Paul Querna,
+     Jan Kaluza, Lubos Uhliarik <luhliari redhat.com>, Joe Orton]
 
   *) mod_systemd: Log the SELinux context at startup if available and
      enabled.  [Joe Orton]
