@@ -387,6 +387,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#mdcertificatestatus">MDCertificateStatus</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mdchallengedns01">MDChallengeDns01</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mdchallengedns01version">MDChallengeDns01Version</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#mdcheckinterval">MDCheckInterval</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mdcontactemail">MDContactEmail</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mddrivemode">MDDriveMode</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mdexternalaccountbinding">MDExternalAccountBinding</a></li>
@@ -401,6 +402,8 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#mdomainsetsection">&lt;MDomainSet&gt;</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mdportmap">MDPortMap</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mdprivatekeys">MDPrivateKeys</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#mdprofile">MDProfile</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#mdprofilemandatory">MDProfileMandatory</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mdrenewmode">MDRenewMode</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mdrenewwindow">MDRenewWindow</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mdrequirehttps">MDRequireHttps</a></li>
@@ -558,9 +561,8 @@
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="mdcertificatecheck" id="mdcertificatecheck">Directive</a> <a name="MDCertificateCheck" id="MDCertificateCheck">MDCertificateCheck</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit le motif de nom pour un nom sitSet de
-	vérification de certificat et un motif d'URL pour un sitee de
-	vérification de certificat</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit le motif de nom et d’URL pour un nom de site de
+	vérification de certificat.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MDCertificateCheck <var>name</var> <var>url</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
@@ -773,6 +775,35 @@
 		différences.
 		Cette définition est globale et ne peut pas s'appliquer
 		différemment pour chaque domaine.
+            </p>
+        
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="mdcheckinterval" id="mdcheckinterval">Directive</a> <a name="MDCheckInterval" id="MDCheckInterval">MDCheckInterval</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Détermine la périodicité de la vérification des certificats</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MDCheckInterval <var>duration</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>MDCheckInterval 12h</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_md</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.60 du serveur HTTP
+	Apache</td></tr>
+</table>
+	    <p>
+	    Cette option permet de définir l’intervalle entre deux
+	    vérifications de certificat. Par défaut, la validité et le besoin de
+	    renouvellement sont vérifiés deux fois par jour. Cet intervalle
+	    n’est cependant pas appliqué avec précision. En effet, le module lui
+	    applique une plage de variation aléatoire de +/- 50%. Avec
+	    l’intervalle par défaut de 12&nbsp;heures, cela signifie que l’intervalle
+	    réel entre deux vérifications varie entre 6&nbsp;et 18&nbsp;heures, la
+	    variation s’appliquant à nouveau à chaque vérification. Cela permet
+	    d’atténuer les pics de trafic sur les serveurs ACME.
+            </p><p>
+	    La valeur minimale pouvant être définie pour l’intervalle est de
+	    1&nbsp;seconde. Il est cependant déconseillé de définir un intervalle
+	    aussi court sur un serveur en production.
             </p>
         
 </div>
@@ -1314,6 +1345,69 @@ MDomain example2.org auto
 		clés. Toute clé préexistante ne sera pas affectée. En outre,
 		seules les clés privées générées pour les certificats sont
 		concernées, les clés de comptes ACME n'étant pas affectées.
+            </p>
+        
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="mdprofile" id="mdprofile">Directive</a> <a name="MDProfile" id="MDProfile">MDProfile</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Utiliser un profile ACME spécifique depuis le CA</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MDProfile name</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_md</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.64 du serveur HTTP
+	Apache</td></tr>
+</table>
+            <p>
+                Il s’agit d’une extension non standard d’ACME par Let's Encrypt.
+            </p><p>
+		Lets Encrypt a annoncé qu’ils allaient ajouter la prise en
+		charge des profiles de certificat à leurs CA courant&nbsp;2025, en
+		commençant par leurs serveurs de test. Cette fonctionnalité,
+		entre autres détails, vous permettra de définir la durée de
+		validité des certificats que vous recevez. À ce titre, le
+		profile «&nbsp;default&nbsp;» conservera la valeur de 90&nbsp;jours, alors que
+		le profile «&nbsp;tlsserver&nbsp;» délivrera des certificats dont la durée
+		de validité sera de 6&nbsp;jours seulement.
+            </p><p>
+                Si vous ne modifiez pas la configuration de votre module mod_md,
+		vous continuerez à recevoir des certificats d’une durée de
+		validité de 90&nbsp;jours. Si vous pensez qu’une durée de validité
+		plus courte convient mieux à votre situation (et acceptez le
+		risque que le temps de renouvellement soit beaucoup plus court),
+		vous pouvez définir le profile à utiliser à l’aide de
+		«&nbsp;MDProfile tlsserver&nbsp;».
+           </p><p>
+                Les noms de profile sont définis par le CA. Si vous tentez de
+		définie un profile non valable, aucun profile ne sera utilisé,
+		et le certificat sera délivré avec les valeurs par défaut du CA.
+           </p><p>
+                Voir la directive <code class="directive"><a href="#mdprofilemandatory">MDProfileMandatory</a></code> pour la manière
+		de désactiver les valeurs par défaut pour les profiles.
+            </p>
+        
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="mdprofilemandatory" id="mdprofilemandatory">Directive</a> <a name="MDProfileMandatory" id="MDProfileMandatory">MDProfileMandatory</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Contrôler si un MDProfile est obligatoire.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MDProfileMandatory on|off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>MDProfileMandatory off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_md</td></tr>
+</table>
+            <p>
+                Cette directive permet de contrôler si un <code class="directive"><a href="#mdprofile">MDProfile</a></code> que vous définissez est
+		obligatoire ou non. S’il est obligatoire et si le CA ne propose
+		pas de profile configuré, le renouvellement du certificat
+		échouera.
+           </p><p>
+                S’il n’est pas obligatoire et si le CA ne propose
+		pas de profile, les renouvellements seront effectués sans
+		profile particulier et le CA délivrera les certificats avec les
+		valeurs par défaut.
             </p>
         
 </div>

@@ -87,6 +87,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#h2earlyhint">H2EarlyHint</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#h2earlyhints">H2EarlyHints</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#h2maxdataframelen">H2MaxDataFrameLen</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#h2maxheaderblocklen">H2MaxHeaderBlockLen</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#h2maxsessionstreams">H2MaxSessionStreams</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#h2maxworkeridleseconds">H2MaxWorkerIdleSeconds</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#h2maxworkers">H2MaxWorkers</a></li>
@@ -417,6 +418,31 @@
 		possible qui est d'environ 16 Ko. Il s'agit cependant de la
 		taille maximale, et lorsque la taille des données de la réponse
 		est inférieure, les trames envoyées sont plus courtes.
+            </p>
+        
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="h2maxheaderblocklen" id="h2maxheaderblocklen">Directive</a> <a name="H2MaxHeaderBlockLen" id="H2MaxHeaderBlockLen">H2MaxHeaderBlockLen</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Taille maximale des en-têtes d’une réponse</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>H2MaxHeaderBlockLen <em>n</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>H2MaxHeaderBlockLen 0</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_http2</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.64 du serveur HTTP
+	Apache.</td></tr>
+</table>
+            <p>
+                La directive <code class="directive">H2MaxHeaderBlockLen</code> permet
+		de définir la taille maximale globale des en-têtes d’une
+		réponse. Définir cette directive à&nbsp;0 implique une taille maximale
+		de&nbsp;64 ko dans nghttp2, ce qui correspond à la valeur par défaut.
+            </p>
+            <p>
+                Les réponses dont la somme des tailles de tous les en-têtes est
+		supérieure à la valeur de cette directive ne seront pas traitées
+		et provoqueront une réinitialisation du flux.
             </p>
         
 </div>
