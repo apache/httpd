@@ -158,13 +158,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_session_dbd: set_cookie_name: ensure correct format 
-     trunk patch: https://svn.apache.org/r1922931
-                  https://svn.apache.org/r1926188
-                  https://svn.apache.org/r1926189
-     2.4.x patch: svn merge -c 1922931,1926188,1926189 ^/httpd/httpd/trunk . 
-     +1: jailletc36, rpluem, ylavic
-
   *) mod_asis: Fix the log level of the message AH01236
      trunk patch: https://svn.apache.org/r1924954
                   https://svn.apache.org/r1926191
