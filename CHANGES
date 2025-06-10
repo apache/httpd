@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.64
 
+  *) mod_proxy: Reuse ProxyRemote connections when possible, like prior
+     to 2.4.59.  [Jean-Frederic Clere, Yann Ylavic]
+
   *) mod_systemd: Add systemd socket activation support.  [Paul Querna,
      Jan Kaluza, Lubos Uhliarik <luhliari redhat.com>, Joe Orton]
 

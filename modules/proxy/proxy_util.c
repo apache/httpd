@@ -45,16 +45,16 @@
 APLOG_USE_MODULE(proxy);
 
 /*
- * Opaque structure containing target server info when
- * using a forward proxy.
- * Up to now only used in combination with HTTP CONNECT to ProxyRemote
+ * Opaque structure containing infos for CONNECT-ing an origin server through a
+ * remote (forward) proxy. Saved in the (opaque) proxy_conn_rec::forward pointer
+ * field for backend connections kept alive, allowing for reuse when subsequent
+ * requests should be routed through the same remote proxy.
  */
 typedef struct {
-    int          use_http_connect; /* Use SSL Tunneling via HTTP CONNECT */
-    const char   *target_host;     /* Target hostname */
-    apr_port_t   target_port;      /* Target port */
     const char   *proxy_auth;      /* Proxy authorization */
-} forward_info;
+    const char   *target_host;     /* Target/origin hostname */
+    apr_port_t   target_port;      /* Target/origin port */
+} remote_connect_info;
 
 /*
  * Opaque structure containing a refcounted and TTL'ed address.
@@ -1508,6 +1508,7 @@ static void socket_cleanup(proxy_conn_rec *conn)
     conn->connection = NULL;
     conn->ssl_hostname = NULL;
     apr_pool_clear(conn->scpool);
+    conn->close = 0;
 }
 
 static void conn_cleanup(proxy_conn_rec *conn)
@@ -1525,6 +1526,7 @@ static void conn_cleanup(proxy_conn_rec *conn)
 
 static apr_status_t conn_pool_cleanup(void *theworker)
 {
+    /* Signal that the child is exiting */
     ((proxy_worker *)theworker)->cp = NULL;
     return APR_SUCCESS;
 }
@@ -1603,10 +1605,7 @@ PROXY_DECLARE(int) ap_proxy_connection_reusable(proxy_conn_rec *conn)
 {
     proxy_worker *worker = conn->worker;
 
-    return !(conn->close
-             || conn->forward
-             || worker->s->disablereuse
-             || !worker->s->is_address_reusable);
+    return !(conn->close || worker->s->disablereuse);
 }
 
 static proxy_conn_rec *connection_make(apr_pool_t *p, proxy_worker *worker)
@@ -1659,18 +1658,17 @@ static void connection_cleanup(void *theconn)
         apr_pool_clear(p);
         conn = connection_make(p, worker);
     }
-    else if (conn->close
-             || conn->forward
+    else if (!conn->sock
              || (conn->connection
                  && conn->connection->keepalive == AP_CONN_CLOSE)
-             || worker->s->disablereuse) {
+             || !ap_proxy_connection_reusable(conn)) {
         socket_cleanup(conn);
-        conn->close = 0;
     }
     else if (conn->is_ssl) {
-        /* Unbind/reset the SSL connection dir config (sslconn->dc) from
-         * r->per_dir_config, r will likely get destroyed before this proxy
-         * conn is reused.
+        /* The current ssl section/dir config of the conn is not necessarily
+         * the one it will be reused for, so while the conn is in the reslist
+         * reset its ssl config to the worker's, until a new user sets its own
+         * ssl config eventually in proxy_connection_create() and so on.
          */
         ap_proxy_ssl_engine(conn->connection, worker->section_config, 1);
     }
@@ -2822,7 +2820,6 @@ PROXY_DECLARE(int) ap_proxy_acquire_connection(const char *proxy_function,
                  (int)worker->s->port);
 
     (*conn)->worker = worker;
-    (*conn)->close  = 0;
     (*conn)->inreslist = 0;
 
     return OK;
@@ -3267,7 +3264,6 @@ ap_proxy_determine_connection(apr_pool_t *p, request_rec *r,
     /* Close a possible existing socket if we are told to do so */
     if (conn->close) {
         socket_cleanup(conn);
-        conn->close = 0;
     }
 
     /*
@@ -3333,11 +3329,9 @@ ap_proxy_determine_connection(apr_pool_t *p, request_rec *r,
                      uri->scheme, conn->uds_path, conn->hostname, conn->port);
     }
     else {
+        remote_connect_info *connect_info = NULL;
         const char *hostname = uri->hostname;
         apr_port_t hostport = uri->port;
-
-        /* Not a remote CONNECT until further notice */
-        conn->forward = NULL;
 
         if (proxyname) {
             hostname = proxyname;
@@ -3349,7 +3343,6 @@ ap_proxy_determine_connection(apr_pool_t *p, request_rec *r,
              * sending our actual HTTPS requests.
              */
             if (conn->is_ssl) {
-                forward_info *forward;
                 const char *proxy_auth;
 
                 /* Do we want to pass Proxy-Authorization along?
@@ -3368,13 +3361,15 @@ ap_proxy_determine_connection(apr_pool_t *p, request_rec *r,
                     proxy_auth = NULL;
                 }
 
-                /* Reset forward info if they changed */
-                if (!(forward = conn->forward)
-                    || forward->target_port != uri->port
-                    || ap_cstr_casecmp(forward->target_host, uri->hostname) != 0
-                    || (forward->proxy_auth != NULL) != (proxy_auth != NULL)
-                    || (forward->proxy_auth != NULL && proxy_auth != NULL &&
-                        strcmp(forward->proxy_auth, proxy_auth) != 0)) {
+                /* Save our real backend data for using it later during HTTP CONNECT */
+                connect_info = conn->forward;
+                if (!connect_info
+                    /* reset connect info if they changed */
+                    || connect_info->target_port != uri->port
+                    || ap_cstr_casecmp(connect_info->target_host, uri->hostname) != 0
+                    || (connect_info->proxy_auth != NULL) != (proxy_auth != NULL)
+                    || (connect_info->proxy_auth != NULL && proxy_auth != NULL &&
+                        strcmp(connect_info->proxy_auth, proxy_auth) != 0)) {
                     apr_pool_t *fwd_pool = conn->pool;
                     if (worker->s->is_address_reusable) {
                         if (conn->fwd_pool) {
@@ -3385,26 +3380,24 @@ ap_proxy_determine_connection(apr_pool_t *p, request_rec *r,
                         }
                         fwd_pool = conn->fwd_pool;
                     }
-                    forward = apr_pcalloc(fwd_pool, sizeof(forward_info));
-                    conn->forward = forward;
-
-                    /*
-                     * Save our real backend data for using it later during HTTP CONNECT.
-                     */
-                    forward->use_http_connect = 1;
-                    forward->target_host = apr_pstrdup(fwd_pool, uri->hostname);
-                    forward->target_port = uri->port;
+                    connect_info = apr_pcalloc(fwd_pool, sizeof(*connect_info));
+                    connect_info->target_host = apr_pstrdup(fwd_pool, uri->hostname);
+                    connect_info->target_port = uri->port;
                     if (proxy_auth) {
-                        forward->proxy_auth = apr_pstrdup(fwd_pool, proxy_auth);
+                        connect_info->proxy_auth = apr_pstrdup(fwd_pool, proxy_auth);
                     }
+                    conn->forward = NULL;
                 }
             }
         }
 
-        if (conn->hostname
-            && (conn->port != hostport
-                || ap_cstr_casecmp(conn->hostname, hostname) != 0)) {
+        /* Close the connection if the remote proxy or origin server don't match */
+        if (conn->forward != connect_info
+            || (conn->hostname 
+                && (conn->port != hostport
+                    || ap_cstr_casecmp(conn->hostname, hostname) != 0))) {
             conn_cleanup(conn);
+            conn->forward = connect_info;
         }
 
         /* Resolve the connection address with the determined hostname/port */
@@ -3448,9 +3441,8 @@ ap_proxy_determine_connection(apr_pool_t *p, request_rec *r,
         if (dconf->preserve_host) {
             ssl_hostname = r->hostname;
         }
-        else if (conn->forward
-                 && ((forward_info *)(conn->forward))->use_http_connect) {
-            ssl_hostname = ((forward_info *)conn->forward)->target_host;
+        else if (conn->forward) {
+            ssl_hostname = ((remote_connect_info *)conn->forward)->target_host;
         }
         else {
             ssl_hostname = conn->hostname;
@@ -3547,7 +3539,7 @@ PROXY_DECLARE(int) ap_proxy_is_socket_connected(apr_socket_t *sock)
 
 
 /*
- * Send a HTTP CONNECT request to a forward proxy.
+ * Send a HTTP CONNECT request to a remote proxy.
  * The proxy is given by "backend", the target server
  * is contained in the "forward" member of "backend".
  */
@@ -3560,24 +3552,24 @@ static apr_status_t send_http_connect(proxy_conn_rec *backend,
     int complete = 0;
     char buffer[HUGE_STRING_LEN];
     char drain_buffer[HUGE_STRING_LEN];
-    forward_info *forward = (forward_info *)backend->forward;
+    remote_connect_info *connect_info = backend->forward;
     int len = 0;
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(00948)
                  "CONNECT: sending the CONNECT request for %s:%d "
                  "to the remote proxy %pI (%s)",
-                 forward->target_host, forward->target_port,
+                 connect_info->target_host, connect_info->target_port,
                  backend->addr, backend->hostname);
     /* Create the CONNECT request */
     nbytes = apr_snprintf(buffer, sizeof(buffer),
                           "CONNECT %s:%d HTTP/1.0" CRLF,
-                          forward->target_host, forward->target_port);
+                          connect_info->target_host, connect_info->target_port);
     /* Add proxy authorization from the configuration, or initial
      * request if necessary */
-    if (forward->proxy_auth != NULL) {
+    if (connect_info->proxy_auth != NULL) {
         nbytes += apr_snprintf(buffer + nbytes, sizeof(buffer) - nbytes,
                                "Proxy-Authorization: %s" CRLF,
-                               forward->proxy_auth);
+                               connect_info->proxy_auth);
     }
     /* Set a reasonable agent and send everything */
     nbytes += apr_snprintf(buffer + nbytes, sizeof(buffer) - nbytes,
@@ -3621,7 +3613,7 @@ static apr_status_t send_http_connect(proxy_conn_rec *backend,
         char code_str[4];
 
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(00949)
-                     "send_http_connect: response from the forward proxy: %s",
+                     "send_http_connect: response from the remote proxy: %s",
                      buffer);
 
         /* Extract the returned code */
@@ -3632,7 +3624,7 @@ static apr_status_t send_http_connect(proxy_conn_rec *backend,
             }
             else {
                 ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO(00950)
-                             "send_http_connect: the forward proxy returned code is '%s'",
+                             "send_http_connect: the remote proxy returned code is '%s'",
                              code_str);
                 status = APR_INCOMPLETE;
             }
@@ -3796,7 +3788,7 @@ PROXY_DECLARE(int) ap_proxy_connect_backend(const char *proxy_function,
 {
     apr_status_t rv;
     int loglevel;
-    forward_info *forward = conn->forward;
+    remote_connect_info *connect_info = conn->forward;
     apr_sockaddr_t *backend_addr;
     /* the local address to use for the outgoing connection */
     apr_sockaddr_t *local_addr;
@@ -3997,27 +3989,25 @@ PROXY_DECLARE(int) ap_proxy_connect_backend(const char *proxy_function,
 
         conn->sock = newsock;
 
-        if (forward && forward->use_http_connect) {
-            /*
-             * For HTTP CONNECT we need to prepend CONNECT request before
-             * sending our actual HTTPS requests.
-             */
-            {
-                rv = send_http_connect(conn, s);
-                /* If an error occurred, loop round and try again */
-                if (rv != APR_SUCCESS) {
-                    conn->sock = NULL;
-                    apr_socket_close(newsock);
-                    loglevel = backend_addr->next ? APLOG_DEBUG : APLOG_ERR;
-                    ap_log_error(APLOG_MARK, loglevel, rv, s, APLOGNO(00958)
-                                 "%s: attempt to connect to %s:%hu "
-                                 "via http CONNECT through %pI (%s:%hu) failed",
-                                 proxy_function,
-                                 forward->target_host, forward->target_port,
-                                 backend_addr, conn->hostname, conn->port);
-                    backend_addr = backend_addr->next;
-                    continue;
-                }
+        /*
+         * For HTTP CONNECT we need to prepend CONNECT request before
+         * sending our actual HTTPS requests.
+         */
+        if (connect_info) {
+            rv = send_http_connect(conn, s);
+            /* If an error occurred, loop round and try again */
+            if (rv != APR_SUCCESS) {
+                conn->sock = NULL;
+                apr_socket_close(newsock);
+                loglevel = backend_addr->next ? APLOG_DEBUG : APLOG_ERR;
+                ap_log_error(APLOG_MARK, loglevel, rv, s, APLOGNO(00958)
+                             "%s: attempt to connect to %s:%hu "
+                             "via http CONNECT through %pI (%s:%hu) failed",
+                             proxy_function,
+                             connect_info->target_host, connect_info->target_port,
+                             backend_addr, conn->hostname, conn->port);
+                backend_addr = backend_addr->next;
+                continue;
             }
         }
     }
@@ -4058,13 +4048,13 @@ PROXY_DECLARE(int) ap_proxy_connect_backend(const char *proxy_function,
          * e.g. for a timeout or bad status. We should respect this and should
          * not continue with a connection via this worker even if we got one.
          */
-        if (rv == APR_SUCCESS) {
-            socket_cleanup(conn);
-        }
         rv = APR_EINVAL;
     }
-
-    return rv == APR_SUCCESS ? OK : DECLINED;
+    if (rv != APR_SUCCESS) {
+        socket_cleanup(conn);
+        return DECLINED;
+    }
+    return OK;
 }
 
 static apr_status_t connection_shutdown(void *theconn)
@@ -4101,9 +4091,9 @@ static int proxy_connection_create(const char *proxy_function,
     ap_conf_vector_t *per_dir_config = (r) ? r->per_dir_config
                                            : conn->worker->section_config;
     apr_sockaddr_t *backend_addr = conn->addr;
-    int rc;
     apr_interval_time_t current_timeout;
     apr_bucket_alloc_t *bucket_alloc;
+    int rc = OK;
 
     if (conn->connection) {
         if (conn->is_ssl) {
@@ -4115,15 +4105,15 @@ static int proxy_connection_create(const char *proxy_function,
         return OK;
     }
 
-    bucket_alloc = apr_bucket_alloc_create(conn->scpool);
-    conn->tmp_bb = apr_brigade_create(conn->scpool, bucket_alloc);
-    /*
-     * The socket is now open, create a new backend server connection
-     */
-    conn->connection = ap_run_create_connection(conn->scpool, s, conn->sock,
-                                                0, NULL,
-                                                bucket_alloc);
-
+    if (conn->sock) {
+        bucket_alloc = apr_bucket_alloc_create(conn->scpool);
+        conn->tmp_bb = apr_brigade_create(conn->scpool, bucket_alloc);
+        /*
+         * The socket is now open, create a new backend server connection
+         */
+        conn->connection = ap_run_create_connection(conn->scpool, s, conn->sock,
+                                                    0, NULL, bucket_alloc);
+    }
     if (!conn->connection) {
         /*
          * the peer reset the connection already; ap_run_create_connection()
@@ -4131,11 +4121,11 @@ static int proxy_connection_create(const char *proxy_function,
          */
         ap_log_error(APLOG_MARK, APLOG_ERR, 0,
                      s, APLOGNO(00960) "%s: an error occurred creating a "
-                     "new connection to %pI (%s)", proxy_function,
-                     backend_addr, conn->hostname);
-        /* XXX: Will be closed when proxy_conn is closed */
-        socket_cleanup(conn);
-        return HTTP_INTERNAL_SERVER_ERROR;
+                     "new connection to %pI (%s)%s",
+                     proxy_function, backend_addr, conn->hostname,
+                     conn->sock ? "" : " (not connected)");
+        rc = HTTP_INTERNAL_SERVER_ERROR;
+        goto cleanup;
     }
 
     /* For ssl connection to backend */
@@ -4145,7 +4135,8 @@ static int proxy_connection_create(const char *proxy_function,
                          s, APLOGNO(00961) "%s: failed to enable ssl support "
                          "for %pI (%s)", proxy_function,
                          backend_addr, conn->hostname);
-            return HTTP_INTERNAL_SERVER_ERROR;
+            rc = HTTP_INTERNAL_SERVER_ERROR;
+            goto cleanup;
         }
         if (conn->ssl_hostname) {
             /* Set a note on the connection about what CN is requested,
@@ -4180,7 +4171,7 @@ static int proxy_connection_create(const char *proxy_function,
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(00963)
                      "%s: pre_connection setup failed (%d)",
                      proxy_function, rc);
-        return rc;
+        goto cleanup;
     }
     apr_socket_timeout_set(conn->sock, current_timeout);
 
@@ -4190,6 +4181,10 @@ static int proxy_connection_create(const char *proxy_function,
     apr_pool_pre_cleanup_register(conn->scpool, conn, connection_shutdown);
 
     return OK;
+
+cleanup:
+    socket_cleanup(conn);
+    return rc;
 }
 
 PROXY_DECLARE(int) ap_proxy_connection_create_ex(const char *proxy_function,
