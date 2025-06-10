@@ -158,14 +158,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_ssl: Remove warning over potential uninitialised value
-     for ssl protocol prior to protocol selection.
-     Trunk version of patch:
-        https://svn.apache.org/r1924757
-     Backport version for 2.4.x of patch:
-        https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/httpd-2.4-ssl-prot-fix.patch
-     +1: minfrin, rpluem, covener
-
   *) mod_headers: don't call ap_set_content_type() when manipulating
      _request_ headers.
      Trunk version of patch:
