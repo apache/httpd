@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.64
 
+  *) mod_asis: Fix the log level of the message AH01236.
+     Github #527 [Michael Kaufmann <mail michael-kaufmann.ch>]
+
   *) mod_session_dbd: ensure format used with SessionDBDCookieName and
      SessionDBDCookieName2 are correct.
      Github #503 [Thomas Meyer <thomas m3y3r.de>]
