@@ -190,6 +190,19 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
                   (backport: dev-tools/github/apply_backport_pr.sh 532)
      +1: ylavic, jfclere, rpluem
 
+  *) mod_session_dbd: set_cookie_name: ensure correct format 
+     trunk patch: https://svn.apache.org/r1922931
+                  https://svn.apache.org/r1926188
+                  https://svn.apache.org/r1926189
+     2.4.x patch: svn merge -c 1922931,1926188,1926189 ^/httpd/httpd/trunk . 
+     +1: jailletc36, rpluem, ylavic
+
+  *) mod_asis: Fix the log level of the message AH01236
+     trunk patch: https://svn.apache.org/r1924954
+                  https://svn.apache.org/r1926191
+     2.4.x patch: svn merge -c 1924954,1926191 ^/httpd/httpd/trunk . 
+     +1: jailletc36, rpluem, ylavic
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -203,24 +216,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       svn merge -c 1926110,1926111 ^/httpd/httpd/trunk .
      +1: rpluem, ylavic,
 
-  *) mod_session_dbd: set_cookie_name: ensure correct format 
-     trunk patch: https://svn.apache.org/r1922931
-                  https://svn.apache.org/r1926188
-                  https://svn.apache.org/r1926189
-     2.4.x patch: svn merge -c 1922931,1926188,1926189 ^/httpd/httpd/trunk . 
-     +1: jailletc36, rpluem
-
-  *) mod_asis: Fix the log level of the message AH01236
-     trunk patch: https://svn.apache.org/r1924954
-                  https://svn.apache.org/r1926191
-     2.4.x patch: svn merge -c 1924954,1926191 ^/httpd/httpd/trunk . 
-     +1: jailletc36, rpluem
-
   *) mod_proxy_ajp: Use iobuffersize set on worker level for the IO buffer
      size.
      trunk patch: https://svn.apache.org/r1922115
      2.4.x patch: svn merge -c 1922115 ^/httpd/httpd/trunk . 
-     +1: rpluem
+     +1: rpluem, ylavic,
      jailletc36: Should a doc update be needed to explain since which
                  version the behavior changed?
 
