@@ -34,7 +34,6 @@ The following tools must be in PATH:
   cmake version 3.1.3 or later is required to work with current OpenSSL
   releases.  (OpenSSL is an optional prerequisite of httpd.)
 * Perl
-* If the WITH_MODULES feature is used: awk
 * If using a command-line compiler: compiler and linker and related tools
   (Refer to the cmake documentation for more information.)
 
@@ -100,8 +99,6 @@ How to build
 
 2. Make sure cmake and Perl are in PATH.  Additionally, some backends 
    require compile tools in PATH.  (Hint: "Visual Studio Command Prompt")
-   In the unlikely event that you use -DWITH_MODULES, described below, make
-   sure awk is in PATH.
 
 3. cmake -G "some backend, like 'NMake Makefiles'"
      -DCMAKE_INSTALL_PREFIX=d:/path/to/httpdinst
