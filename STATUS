@@ -183,13 +183,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
         https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/533.diff
      +1 covener, rpluem, jorton
 
-  *) mod_proxy: Reuse ProxyRemote connections when possible, like prior to 2.4.59.
-     trunk patch: https://svn.apache.org/r1925743
-                  https://svn.apache.org/r1912460
-     2.4.x patch: https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/532.diff
-                  (backport: dev-tools/github/apply_backport_pr.sh 532)
-     +1: ylavic, jfclere, rpluem
-
   *) mod_session_dbd: set_cookie_name: ensure correct format 
      trunk patch: https://svn.apache.org/r1922931
                   https://svn.apache.org/r1926188
