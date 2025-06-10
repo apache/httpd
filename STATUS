@@ -158,14 +158,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_headers: don't call ap_set_content_type() when manipulating
-     _request_ headers.
-     Trunk version of patch:
-        https://svn.apache.org/r1820750
-     Backport version for 2.4.x of patch:
-        https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/533.diff
-     +1 covener, rpluem, jorton
-
   *) mod_session_dbd: set_cookie_name: ensure correct format 
      trunk patch: https://svn.apache.org/r1922931
                   https://svn.apache.org/r1926188
