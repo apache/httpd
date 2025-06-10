@@ -158,12 +158,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_asis: Fix the log level of the message AH01236
-     trunk patch: https://svn.apache.org/r1924954
-                  https://svn.apache.org/r1926191
-     2.4.x patch: svn merge -c 1924954,1926191 ^/httpd/httpd/trunk . 
-     +1: jailletc36, rpluem, ylavic
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
