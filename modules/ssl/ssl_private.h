@@ -290,11 +290,15 @@ void free_bio_methods(void);
 #define X509_get_notAfter   X509_getm_notAfter
 #endif
 
-/* For OpenSSL 3.5.0+, don't handle $SSLKEYLOGFILE since libssl does -
- * unless OpenSSL was built with no-sslkeylog, which drops the env var
- * handling, but leaves the API intact. */
+/* The SSL_CTX_set_keylog_callback() API is present in 1.1.1+.
+ * 
+ * OpenSSL 3.5+ also provides optional native handling of
+ * $SSLKEYLOGFILE inside libssl, which duplicates the mod_ssl support.
+ * The mod_ssl support is hence disabled for 3.5+, unless that OpenSSL
+ * feature is itself disabled (and OPENSSL_NO_SSLKEYLOG is defined).
+ */
 #if OPENSSL_VERSION_NUMBER >= 0x10101000L && !defined(LIBRESSL_VERSION_NUMBER) \
-    && (OPENSSL_VERSION_NUMBER <= 0x30500000L || !defined(OPENSSL_NO_SSLKEYLOG))
+    && (OPENSSL_VERSION_NUMBER <= 0x30500000L || defined(OPENSSL_NO_SSLKEYLOG))
 #define HAVE_OPENSSL_KEYLOG 
 #endif
 
