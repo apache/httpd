@@ -290,8 +290,12 @@ void free_bio_methods(void);
 #define X509_get_notAfter   X509_getm_notAfter
 #endif
 
-#if OPENSSL_VERSION_NUMBER >= 0x10101000L && !defined(LIBRESSL_VERSION_NUMBER)
-#define HAVE_OPENSSL_KEYLOG
+/* For OpenSSL 3.5.0+, don't handle $SSLKEYLOGFILE since libssl does -
+ * unless OpenSSL was built with no-sslkeylog, which drops the env var
+ * handling, but leaves the API intact. */
+#if OPENSSL_VERSION_NUMBER >= 0x10101000L && !defined(LIBRESSL_VERSION_NUMBER) \
+    && (OPENSSL_VERSION_NUMBER <= 0x30500000L || !defined(OPENSSL_NO_SSLKEYLOG))
+#define HAVE_OPENSSL_KEYLOG 
 #endif
 
 #ifdef HAVE_FIPS
