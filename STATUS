@@ -158,6 +158,13 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) mod_ssl: Drop SSLKEYKOGFILE for OpenSSL 3.5+
+     trunk patch: https://svn.apache.org/r1926720
+                  https://svn.apache.org/r1926722
+     2.4.x patch: https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/538.diff
+             (backport: dev-tools/github/apply_backport_pr.sh 538)
+     +1: jorton, rpluem, ylavic
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -178,13 +185,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      +1: rpluem, ylavic,
      jailletc36: Should a doc update be needed to explain since which
                  version the behavior changed?
-
-  *) mod_ssl: Drop SSLKEYKOGFILE for OpenSSL 3.5+
-     trunk patch: https://svn.apache.org/r1926720
-                  https://svn.apache.org/r1926722
-     2.4.x patch: https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/538.diff
-             (backport: dev-tools/github/apply_backport_pr.sh 538)
-     +1: jorton, rpluem
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
