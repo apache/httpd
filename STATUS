@@ -158,16 +158,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_ssl: Drop SSLKEYKOGFILE for OpenSSL 3.5+
-     trunk patch: https://svn.apache.org/r1926720
-                  https://svn.apache.org/r1926722
-     2.4.x patch: https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/538.diff
-             (backport: dev-tools/github/apply_backport_pr.sh 538)
-     +1: jorton, rpluem, ylavic
-
-PATCHES PROPOSED TO BACKPORT FROM TRUNK:
-  [ New proposals should be added at the end of the list ]
-
   *) Makefile.in: Correctly deal with change entries whose filenames contain
      spaces.
      Trunk version of patch:
@@ -176,7 +166,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      Backport version for 2.4.x of patch:
       Trunk version of patch works
       svn merge -c 1926110,1926111 ^/httpd/httpd/trunk .
-     +1: rpluem, ylavic,
+     +1: rpluem, ylavic, jorton
+
+PATCHES PROPOSED TO BACKPORT FROM TRUNK:
+  [ New proposals should be added at the end of the list ]
 
   *) mod_proxy_ajp: Use iobuffersize set on worker level for the IO buffer
      size.
