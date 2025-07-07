@@ -5022,8 +5022,12 @@ certain events before failing a request</td></tr>
 
 
     <div class="warning"><h3>Security</h3>
-    <p>UNC paths accessed outside of request processing, such as during startup,
-    are not necessarily checked against the hosts configured with this directive.</p>
+        <p>The values specified by this directive are only checked by some
+        components of the server, prior to accessing filesystem paths that
+        may be inadvertently derived from untrusted inputs. </p>
+        <p> Windows systems should be isolated at the network layer from
+        making outbound SMB/NTLM calls to unexpected destinations as a
+        more comprehensive and pre-emptive measure.</p>
     </div>
 
     <div class="warning"><h3>Directive Ordering</h3>
