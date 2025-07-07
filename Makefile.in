@@ -156,19 +156,19 @@ docs:
 	fi
 
 update-changes:
-	@for i in `find changes-entries -type f`; do \
+	@find changes-entries -type f | while read -r i ; do \
 	    cp CHANGES CHANGES.tmp ; \
-	    awk -v fname=$$i 'BEGIN{done = 0; active = 0} \
+	    awk -v fname="$$i" 'BEGIN{done = 0; active = 0} \
 	                    done == 0 && active == 0 && /^Changes with Apache /{ active = 1; print; next}; \
-	                    /^( *\*|Changes with Apache )/ && active == 1 && done == 0{rec=$$0; while(getline<fname){if (! ($$0 ~ /^ *$$/)){print}}printf "\n";print rec; active = 0; done = 1; next} //;' \
+	                    /^( *\*|Changes with Apache )/ && active == 1 && done == 0{rec=$$0; while((getline<fname) > 0){if (! ($$0 ~ /^ *$$/)){print}}printf "\n";print rec; active = 0; done = 1; next} //;' \
 	    CHANGES.tmp > CHANGES ; \
 	    rm CHANGES.tmp ; \
 	    if [ -n "$(SVN)" ] ; then \
-	        if ! $(SVN) rm $$i 2>/dev/null ; then \
-	            $(RM) $$i ; \
+	        if ! $(SVN) rm "$$i" 2>/dev/null ; then \
+	            $(RM) "$$i" ; \
 	        fi ; \
 	    else \
-	        $(RM) $$i ; \
+	        $(RM) "$$i" ; \
 	    fi ; \
 	done ; \
 	if [ -n "$(SVN)" ] ; then \
