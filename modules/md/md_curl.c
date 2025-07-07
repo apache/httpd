@@ -306,7 +306,9 @@ static apr_status_t internals_setup(md_http_request_t *req)
         /* for a custom CA, allow certificates checking to ignore the
          * Schannel error CRYPT_E_NO_REVOCATION_CHECK (could be a missing OCSP
          * responder URL in the certs???). See issue #361 */
+#ifdef CURLSSLOPT_NO_REVOKE
         ssl_options |= CURLSSLOPT_NO_REVOKE;
+#endif
     }
     if (req->unix_socket_path) {
         curl_easy_setopt(curl, CURLOPT_UNIX_SOCKET_PATH, req->unix_socket_path);
