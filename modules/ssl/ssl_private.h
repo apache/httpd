@@ -526,7 +526,6 @@ typedef enum {
     SSL_ENABLED_UNSET    = UNSET,
     SSL_ENABLED_FALSE    = 0,
     SSL_ENABLED_TRUE     = 1,
-    SSL_ENABLED_OPTIONAL = 3
 } ssl_enabled_t;
 
 /**

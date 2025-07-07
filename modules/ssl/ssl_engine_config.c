@@ -741,11 +741,13 @@ const char *ssl_cmd_SSLEngine(cmd_parms *cmd, void *dcfg, const char *arg)
         return NULL;
     }
     else if (!strcasecmp(arg, "Optional")) {
-        sc->enabled = SSL_ENABLED_OPTIONAL;
+        sc->enabled = SSL_ENABLED_FALSE;
+        ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, cmd->server, APLOGNO(10510)
+                     "'SSLEngine optional' is no longer supported");
         return NULL;
     }
 
-    return "Argument must be On, Off, or Optional";
+    return "Argument must be On or Off";
 }
 
 const char *ssl_cmd_SSLFIPS(cmd_parms *cmd, void *dcfg, int flag)

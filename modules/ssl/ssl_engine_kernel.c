@@ -38,59 +38,6 @@ static void ssl_configure_env(request_rec *r, SSLConnRec *sslconn);
 static int ssl_find_vhost(void *servername, conn_rec *c, server_rec *s);
 #endif
 
-#define SWITCH_STATUS_LINE "HTTP/1.1 101 Switching Protocols"
-#define UPGRADE_HEADER "Upgrade: TLS/1.0, HTTP/1.1"
-#define CONNECTION_HEADER "Connection: Upgrade"
-
-/* Perform an upgrade-to-TLS for the given request, per RFC 2817. */
-static apr_status_t upgrade_connection(request_rec *r)
-{
-    struct conn_rec *conn = r->connection;
-    apr_bucket_brigade *bb;
-    SSLConnRec *sslconn;
-    apr_status_t rv;
-    SSL *ssl;
-
-    ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(02028)
-                  "upgrading connection to TLS");
-
-    bb = apr_brigade_create(r->pool, conn->bucket_alloc);
-
-    rv = ap_fputs(conn->output_filters, bb, SWITCH_STATUS_LINE CRLF
-                  UPGRADE_HEADER CRLF CONNECTION_HEADER CRLF CRLF);
-    if (rv == APR_SUCCESS) {
-        APR_BRIGADE_INSERT_TAIL(bb,
-                                apr_bucket_flush_create(conn->bucket_alloc));
-        rv = ap_pass_brigade(conn->output_filters, bb);
-    }
-
-    if (rv) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(02029)
-                      "failed to send 101 interim response for connection "
-                      "upgrade");
-        return rv;
-    }
-
-    ssl_init_ssl_connection(conn, r);
-
-    sslconn = myConnConfig(conn);
-    ssl = sslconn->ssl;
-
-    /* Perform initial SSL handshake. */
-    SSL_set_accept_state(ssl);
-    SSL_do_handshake(ssl);
-
-    if (!SSL_is_init_finished(ssl)) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(02030)
-                      "TLS upgrade handshake failed");
-        ssl_log_ssl_error(SSLLOG_MARK, APLOG_ERR, r->server);
-
-        return APR_ECONNABORTED;
-    }
-
-    return APR_SUCCESS;
-}
-
 /* Perform a speculative (and non-blocking) read from the connection
  * filters for the given request, to determine whether there is any
  * pending data to read.  Return non-zero if there is, else zero. */
@@ -270,39 +217,16 @@ int ssl_hook_ReadReq(request_rec *r)
 {
     SSLSrvConfigRec *sc = mySrvConfig(r->server);
     SSLConnRec *sslconn;
-    const char *upgrade;
 #ifdef HAVE_TLSEXT
     const char *servername;
 #endif
     SSL *ssl;
-
-    /* Perform TLS upgrade here if "SSLEngine optional" is configured,
-     * SSL is not already set up for this connection, and the client
-     * has sent a suitable Upgrade header. */
-    if (sc->enabled == SSL_ENABLED_OPTIONAL && !myConnConfig(r->connection)
-        && (upgrade = apr_table_get(r->headers_in, "Upgrade")) != NULL
-        && ap_find_token(r->pool, upgrade, "TLS/1.0")) {
-        if (upgrade_connection(r)) {
-            return AP_FILTER_ERROR;
-        }
-    }
 
     /* If we are on a slave connection, we do not expect to have an SSLConnRec,
      * but our master connection might. */
     sslconn = myConnConfig(r->connection);
     if (!(sslconn && sslconn->ssl) && r->connection->master) {
         sslconn = myConnConfig(r->connection->master);
-    }
-    
-    /* If "SSLEngine optional" is configured, this is not an SSL
-     * connection, and this isn't a subrequest, send an Upgrade
-     * response header.  Note this must happen before map_to_storage
-     * and OPTIONS * request processing is completed.
-     */
-    if (sc->enabled == SSL_ENABLED_OPTIONAL && !(sslconn && sslconn->ssl)
-        && !r->main) {
-        apr_table_setn(r->headers_out, "Upgrade", "TLS/1.0, HTTP/1.1");
-        apr_table_mergen(r->headers_out, "Connection", "upgrade");
     }
 
     if (!sslconn) {
@@ -1238,16 +1162,6 @@ int ssl_hook_Access(request_rec *r)
      * Support for SSLRequireSSL directive
      */
     if (dc->bSSLRequired && !ssl) {
-        if ((sc->enabled == SSL_ENABLED_OPTIONAL) && !r->connection->master) {
-            /* This vhost was configured for optional SSL, just tell the
-             * client that we need to upgrade.
-             */
-            apr_table_setn(r->err_headers_out, "Upgrade", "TLS/1.0, HTTP/1.1");
-            apr_table_setn(r->err_headers_out, "Connection", "Upgrade");
-
-            return HTTP_UPGRADE_REQUIRED;
-        }
-
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(02219)
                       "access to %s failed, reason: %s",
                       r->filename, "SSL connection required");
