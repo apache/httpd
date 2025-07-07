@@ -319,6 +319,12 @@ typedef enum {
                                to be returned in r->status */
 } rule_return_type;
 
+typedef enum {
+  COND_RC_NOMATCH = 0,      /* the cond didn't match                        */
+  COND_RC_MATCH = 1,        /* the cond matched                             */
+  COND_RC_STATUS_SET = 3    /* The condition eval set a final r->status     */
+} cond_return_type;
+
 typedef struct {
     char           *input;   /* Input string of RewriteCond   */
     char           *pattern; /* the RegExp pattern string     */
@@ -4103,13 +4109,13 @@ static APR_INLINE int compare_lexicography(char *a, char *b)
 /*
  * Apply a single rewriteCond
  */
-static int apply_rewrite_cond(rewritecond_entry *p, rewrite_ctx *ctx)
+static cond_return_type apply_rewrite_cond(rewritecond_entry *p, rewrite_ctx *ctx)
 {
     char *input = NULL;
     apr_finfo_t sb;
     request_rec *rsub, *r = ctx->r;
     ap_regmatch_t regmatch[AP_MAX_REG_MATCH];
-    int rc = 0;
+    int rc = COND_RC_NOMATCH;
     int basis;
 
     if (p->ptype != CONDPAT_AP_EXPR)
@@ -4117,40 +4123,65 @@ static int apply_rewrite_cond(rewritecond_entry *p, rewrite_ctx *ctx)
 
     switch (p->ptype) {
     case CONDPAT_FILE_EXISTS:
+        if (APR_SUCCESS != ap_stat_check(input, r->pool)) {
+            r->status = HTTP_FORBIDDEN;
+            rewritelog(r, 4, ctx->perdir, "RewriteCond: refusing to stat input='%s'", input);
+            return COND_RC_STATUS_SET;
+        }
         if (   apr_stat(&sb, input, APR_FINFO_MIN, r->pool) == APR_SUCCESS
             && sb.filetype == APR_REG) {
-            rc = 1;
+            rc = COND_RC_MATCH;
         }
         break;
 
     case CONDPAT_FILE_SIZE:
+        if (APR_SUCCESS != ap_stat_check(input, r->pool)) {
+            r->status = HTTP_FORBIDDEN;
+            rewritelog(r, 4, ctx->perdir, "RewriteCond: refusing to stat input='%s'", input);
+            return COND_RC_STATUS_SET;
+        }
         if (   apr_stat(&sb, input, APR_FINFO_MIN, r->pool) == APR_SUCCESS
             && sb.filetype == APR_REG && sb.size > 0) {
-            rc = 1;
+            rc = COND_RC_MATCH;
         }
         break;
 
     case CONDPAT_FILE_LINK:
+        if (APR_SUCCESS != ap_stat_check(input, r->pool)) {
+            r->status = HTTP_FORBIDDEN;
+            rewritelog(r, 4, ctx->perdir, "RewriteCond: refusing to stat input='%s'", input);
+            return COND_RC_STATUS_SET;
+        }
 #if !defined(OS2)
         if (   apr_stat(&sb, input, APR_FINFO_MIN | APR_FINFO_LINK,
                         r->pool) == APR_SUCCESS
             && sb.filetype == APR_LNK) {
-            rc = 1;
+            rc = COND_RC_MATCH;
         }
 #endif
         break;
 
     case CONDPAT_FILE_DIR:
+        if (APR_SUCCESS != ap_stat_check(input, r->pool)) {
+            r->status = HTTP_FORBIDDEN;
+            rewritelog(r, 4, ctx->perdir, "RewriteCond: refusing to stat input='%s'", input);
+            return COND_RC_STATUS_SET;
+        }
         if (   apr_stat(&sb, input, APR_FINFO_MIN, r->pool) == APR_SUCCESS
             && sb.filetype == APR_DIR) {
-            rc = 1;
+            rc = COND_RC_MATCH;
         }
         break;
 
     case CONDPAT_FILE_XBIT:
+        if (APR_SUCCESS != ap_stat_check(input, r->pool)) {
+            r->status = HTTP_FORBIDDEN;
+            rewritelog(r, 4, ctx->perdir, "RewriteCond: refusing to stat input='%s'", input);
+            return COND_RC_STATUS_SET;
+        }
         if (   apr_stat(&sb, input, APR_FINFO_PROT, r->pool) == APR_SUCCESS
             && (sb.protection & (APR_UEXECUTE | APR_GEXECUTE | APR_WEXECUTE))) {
-            rc = 1;
+            rc = COND_RC_MATCH;
         }
         break;
 
@@ -4158,7 +4189,7 @@ static int apply_rewrite_cond(rewritecond_entry *p, rewrite_ctx *ctx)
         if (*input && subreq_ok(r)) {
             rsub = ap_sub_req_lookup_uri(input, r, NULL);
             if (rsub->status < 400) {
-                rc = 1;
+                rc = COND_RC_MATCH;
             }
             rewritelog(r, 5, NULL, "RewriteCond URI (-U check: "
                         "path=%s -> status=%d", input, rsub->status);
@@ -4168,12 +4199,17 @@ static int apply_rewrite_cond(rewritecond_entry *p, rewrite_ctx *ctx)
 
     case CONDPAT_LU_FILE:
         if (*input && subreq_ok(r)) {
+            if (APR_SUCCESS != ap_stat_check(input, r->pool)) {
+                r->status = HTTP_FORBIDDEN;
+                rewritelog(r, 4, ctx->perdir, "RewriteCond: refusing to stat input='%s'", input);
+                return COND_RC_STATUS_SET;
+            }
             rsub = ap_sub_req_lookup_file(input, r, NULL);
             if (rsub->status < 300 &&
                 /* double-check that file exists since default result is 200 */
                 apr_stat(&sb, rsub->filename, APR_FINFO_MIN,
                          r->pool) == APR_SUCCESS) {
-                rc = 1;
+                rc = COND_RC_MATCH;
             }
             rewritelog(r, 5, NULL, "RewriteCond file (-F check: path=%s "
                         "-> file=%s status=%d", input, rsub->filename,
@@ -4189,10 +4225,10 @@ static int apply_rewrite_cond(rewritecond_entry *p, rewrite_ctx *ctx)
         basis = 1;
 test_str_g:
         if (p->flags & CONDFLAG_NOCASE) {
-            rc = (strcasecmp(input, p->pattern) >= basis) ? 1 : 0;
+            rc = (strcasecmp(input, p->pattern) >= basis) ? COND_RC_MATCH : COND_RC_NOMATCH;
         }
         else {
-            rc = (compare_lexicography(input, p->pattern) >= basis) ? 1 : 0;
+            rc = (compare_lexicography(input, p->pattern) >= basis) ? COND_RC_MATCH : COND_RC_NOMATCH;
         }
         break;
 
@@ -4203,10 +4239,10 @@ test_str_g:
         basis = -1;
 test_str_l:
         if (p->flags & CONDFLAG_NOCASE) {
-            rc = (strcasecmp(input, p->pattern) <= basis) ? 1 : 0;
+            rc = (strcasecmp(input, p->pattern) <= basis) ? COND_RC_MATCH : COND_RC_NOMATCH;
         }
         else {
-            rc = (compare_lexicography(input, p->pattern) <= basis) ? 1 : 0;
+            rc = (compare_lexicography(input, p->pattern) <= basis) ? COND_RC_MATCH : COND_RC_NOMATCH;
         }
         break;
 
@@ -4237,7 +4273,10 @@ test_str_l:
                 rewritelog(r, 1, ctx->perdir,
                             "RewriteCond: expr='%s' evaluation failed: %s",
                             p->pattern - p->pskip, err);
-                rc = 0;
+                rc = COND_RC_NOMATCH;
+            }
+            else {
+                rc = COND_RC_MATCH;
             }
             /* update briRC backref info */
             if (rc && !(p->flags & CONDFLAG_NOTMATCH)) {
@@ -4258,7 +4297,7 @@ test_str_l:
         break;
     }
 
-    if (p->flags & CONDFLAG_NOTMATCH) {
+    if (p->flags & CONDFLAG_NOTMATCH && rc <= COND_RC_MATCH) {
         rc = !rc;
     }
 
@@ -4391,6 +4430,12 @@ static rule_return_type apply_rewrite_rule(rewriterule_entry *p,
         rewritecond_entry *c = &conds[i];
 
         rc = apply_rewrite_cond(c, ctx);
+
+        /* Error while evaluating cond, r->status set */
+        if (COND_RC_STATUS_SET == rc) {
+            return RULE_RC_STATUS_SET;
+        }
+
         /*
          * Reset vary_this if the novary flag is set for this condition.
          */

@@ -2708,6 +2708,15 @@ AP_DECLARE(apr_status_t) ap_filepath_merge(char **newpath,
 #define AP_SLASHES "/"
 #endif
 
+/**
+ * Validates the path parameter is safe to pass to stat-like calls.
+ * @param path The filesystem path to cehck
+ * @param p a pool for temporary allocations
+ * @return APR_SUCCESS if the stat-like call should be allowed
+ */
+AP_DECLARE(apr_status_t) ap_stat_check(const char *path, apr_pool_t *pool);
+
+
 #ifdef __cplusplus
 }
 #endif

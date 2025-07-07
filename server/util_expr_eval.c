@@ -1147,10 +1147,21 @@ static const char *file_func(ap_expr_eval_ctx_t *ctx, const void *data,
     return buf;
 }
 
+static apr_status_t stat_check(ap_expr_eval_ctx_t *ctx, const void *data, const char *arg)
+{
+    apr_status_t rv = APR_SUCCESS;
+    if (APR_SUCCESS != (rv = ap_stat_check(arg, ctx->p))) {
+        *ctx->err = apr_psprintf(ctx->p, "stat of %s not allowed", arg);
+    }
+    return rv;
+}
 static const char *filesize_func(ap_expr_eval_ctx_t *ctx, const void *data,
                                   char *arg)
 {
     apr_finfo_t sb;
+    if (APR_SUCCESS != stat_check(ctx, data, arg)) {
+        return "";
+    }
     if (apr_stat(&sb, arg, APR_FINFO_MIN, ctx->p) == APR_SUCCESS
         && sb.filetype == APR_REG && sb.size > 0)
         return apr_psprintf(ctx->p, "%" APR_OFF_T_FMT, sb.size);
@@ -1185,6 +1196,9 @@ static int op_file_min(ap_expr_eval_ctx_t *ctx, const void *data, const char *ar
 {
     apr_finfo_t sb;
     const char *name = (const char *)data;
+    if (APR_SUCCESS != stat_check(ctx, data, arg)) {
+        return FALSE;
+    }
     if (apr_stat(&sb, arg, APR_FINFO_MIN, ctx->p) != APR_SUCCESS)
         return FALSE;
     switch (name[0]) {
@@ -1206,6 +1220,9 @@ static int op_file_link(ap_expr_eval_ctx_t *ctx, const void *data, const char *a
 {
 #if !defined(OS2)
     apr_finfo_t sb;
+    if (APR_SUCCESS != stat_check(ctx, data, arg)) {
+        return FALSE;
+    }
     if (apr_stat(&sb, arg, APR_FINFO_MIN | APR_FINFO_LINK, ctx->p) == APR_SUCCESS
         && sb.filetype == APR_LNK) {
         return TRUE;
@@ -1217,6 +1234,9 @@ static int op_file_link(ap_expr_eval_ctx_t *ctx, const void *data, const char *a
 static int op_file_xbit(ap_expr_eval_ctx_t *ctx, const void *data, const char *arg)
 {
     apr_finfo_t sb;
+    if (APR_SUCCESS != stat_check(ctx, data, arg)) {
+        return FALSE;
+    }
     if (apr_stat(&sb, arg, APR_FINFO_PROT| APR_FINFO_LINK, ctx->p) == APR_SUCCESS
         && (sb.protection & (APR_UEXECUTE | APR_GEXECUTE | APR_WEXECUTE))) {
         return TRUE;
@@ -1253,6 +1273,9 @@ static int op_file_subr(ap_expr_eval_ctx_t *ctx, const void *data, const char *a
     request_rec *rsub, *r = ctx->r;
     if (!r)
         return FALSE;
+    if (APR_SUCCESS != stat_check(ctx, data, arg)) {
+        return FALSE;
+    }
     rsub = ap_sub_req_lookup_file(arg, r, NULL);
     if (rsub->status < 300 &&
         /* double-check that file exists since default result is 200 */
