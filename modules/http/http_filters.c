@@ -1300,107 +1300,10 @@ typedef struct header_filter_ctx {
     int headers_sent;
 } header_filter_ctx;
 
-AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f,
-                                                           apr_bucket_brigade *b)
+static void merge_response_headers(request_rec *r, const char **protocol)
 {
-    request_rec *r = f->r;
-    conn_rec *c = r->connection;
-    const char *clheader;
-    int header_only = (r->header_only || AP_STATUS_IS_HEADER_ONLY(r->status));
-    const char *protocol = NULL;
-    apr_bucket *e;
-    apr_bucket_brigade *b2;
-    header_struct h;
-    header_filter_ctx *ctx = f->ctx;
-    const char *ctype;
-    ap_bucket_error *eb = NULL;
-    apr_status_t rv = APR_SUCCESS;
-    int recursive_error = 0;
-
-    AP_DEBUG_ASSERT(!r->main);
-
-    if (!ctx) {
-        ctx = f->ctx = apr_pcalloc(r->pool, sizeof(header_filter_ctx));
-    }
-    else if (ctx->headers_sent) {
-        /* Eat body if response must not have one. */
-        if (header_only) {
-            /* Still next filters may be waiting for EOS, so pass it (alone)
-             * when encountered and be done with this filter.
-             */
-            e = APR_BRIGADE_LAST(b);
-            if (e != APR_BRIGADE_SENTINEL(b) && APR_BUCKET_IS_EOS(e)) {
-                APR_BUCKET_REMOVE(e);
-                apr_brigade_cleanup(b);
-                APR_BRIGADE_INSERT_HEAD(b, e);
-                ap_remove_output_filter(f);
-                rv = ap_pass_brigade(f->next, b);
-            }
-            apr_brigade_cleanup(b);
-            return rv;
-        }
-    }
-
-    for (e = APR_BRIGADE_FIRST(b);
-         e != APR_BRIGADE_SENTINEL(b);
-         e = APR_BUCKET_NEXT(e))
-    {
-        if (AP_BUCKET_IS_ERROR(e) && !eb) {
-            eb = e->data;
-            continue;
-        }
-        /*
-         * If we see an EOC bucket it is a signal that we should get out
-         * of the way doing nothing.
-         */
-        if (AP_BUCKET_IS_EOC(e)) {
-            ap_remove_output_filter(f);
-            return ap_pass_brigade(f->next, b);
-        }
-    }
-
-    if (!ctx->headers_sent && !check_headers(r)) {
-        /* We may come back here from ap_die() below,
-         * so clear anything from this response.
-         */
-        apr_table_clear(r->headers_out);
-        apr_table_clear(r->err_headers_out);
-        r->content_type = r->content_encoding = NULL;
-        r->content_languages = NULL;
-        r->clength = r->chunked = 0;
-        apr_brigade_cleanup(b);
-
-        /* Don't recall ap_die() if we come back here (from its own internal
-         * redirect or error response), otherwise we can end up in infinite
-         * recursion; better fall through with 500, minimal headers and an
-         * empty body (EOS only).
-         */
-        if (!check_headers_recursion(r)) {
-            ap_die(HTTP_INTERNAL_SERVER_ERROR, r);
-            return AP_FILTER_ERROR;
-        }
-        r->status = HTTP_INTERNAL_SERVER_ERROR;
-        e = ap_bucket_eoc_create(c->bucket_alloc);
-        APR_BRIGADE_INSERT_TAIL(b, e);
-        e = apr_bucket_eos_create(c->bucket_alloc);
-        APR_BRIGADE_INSERT_TAIL(b, e);
-        ap_set_content_length(r, 0);
-        recursive_error = 1;
-    }
-    else if (eb) {
-        int status;
-        status = eb->status;
-        apr_brigade_cleanup(b);
-        ap_die(status, r);
-        return AP_FILTER_ERROR;
-    }
-
-    if (r->assbackwards) {
-        r->sent_bodyct = 1;
-        ap_remove_output_filter(f);
-        rv = ap_pass_brigade(f->next, b);
-        goto out;
-    }
+    const char *ctype = NULL;
+    const char *clheader = NULL;
 
     /*
      * Now that we are ready to send a response, we need to combine the two
@@ -1430,6 +1333,9 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f,
         fixup_vary(r);
     }
 
+    /* determine the protocol and whether we should use keepalives. */
+    basic_http_header_check(r, protocol);
+    ap_set_keepalive(r);
 
     /*
      * Control cachability for non-cacheable responses if not already set by
@@ -1448,10 +1354,6 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f,
     if (apr_table_get(r->notes, "no-etag") != NULL) {
         apr_table_unset(r->headers_out, "ETag");
     }
-
-    /* determine the protocol and whether we should use keepalives. */
-    basic_http_header_check(r, &protocol);
-    ap_set_keepalive(r);
 
     /* 204/304 responses don't have content related headers */
     if (AP_STATUS_IS_HEADER_ONLY(r->status)) {
@@ -1513,30 +1415,136 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f,
         && !strcmp(clheader, "0")) {
         apr_table_unset(r->headers_out, "Content-Length");
     }
+}
 
-    b2 = apr_brigade_create(r->pool, c->bucket_alloc);
-    basic_http_header(r, b2, protocol);
+AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f,
+                                                           apr_bucket_brigade *b)
+{
+    request_rec *r = f->r;
+    conn_rec *c = r->connection;
+    int header_only = (r->header_only || AP_STATUS_IS_HEADER_ONLY(r->status));
+    apr_bucket *e;
+    apr_bucket_brigade *b2;
+    header_struct h;
+    header_filter_ctx *ctx = f->ctx;
+    ap_bucket_error *eb = NULL;
+    apr_status_t rv = APR_SUCCESS;
+    int recursive_error = 0;
+    const char *protocol;
 
-    h.pool = r->pool;
-    h.bb = b2;
+    AP_DEBUG_ASSERT(!r->main);
 
-    send_all_header_fields(&h, r);
-
-    terminate_header(b2);
-
-    if (header_only) {
-        e = APR_BRIGADE_LAST(b);
-        if (e != APR_BRIGADE_SENTINEL(b) && APR_BUCKET_IS_EOS(e)) {
-            APR_BUCKET_REMOVE(e);
-            APR_BRIGADE_INSERT_TAIL(b2, e);
-            ap_remove_output_filter(f);
+    if (!ctx) {
+        ctx = f->ctx = apr_pcalloc(r->pool, sizeof(header_filter_ctx));
+    }
+    else if (ctx->headers_sent) {
+        /* Eat body if response must not have one. */
+        if (header_only) {
+            /* Still next filters may be waiting for EOS, so pass it (alone)
+             * when encountered and be done with this filter.
+             */
+            e = APR_BRIGADE_LAST(b);
+            if (e != APR_BRIGADE_SENTINEL(b) && APR_BUCKET_IS_EOS(e)) {
+                APR_BUCKET_REMOVE(e);
+                apr_brigade_cleanup(b);
+                APR_BRIGADE_INSERT_HEAD(b, e);
+                ap_remove_output_filter(f);
+                rv = ap_pass_brigade(f->next, b);
+            }
+            apr_brigade_cleanup(b);
+            return rv;
         }
-        apr_brigade_cleanup(b);
     }
 
-    rv = ap_pass_brigade(f->next, b2);
-    apr_brigade_cleanup(b2);
-    ctx->headers_sent = 1;
+    for (e = APR_BRIGADE_FIRST(b);
+         e != APR_BRIGADE_SENTINEL(b);
+         e = APR_BUCKET_NEXT(e))
+    {
+        if (AP_BUCKET_IS_ERROR(e) && !eb) {
+            eb = e->data;
+            continue;
+        }
+        /*
+         * If we see an EOC bucket it is a signal that we should get out
+         * of the way doing nothing.
+         */
+        if (AP_BUCKET_IS_EOC(e)) {
+            ap_remove_output_filter(f);
+            return ap_pass_brigade(f->next, b);
+        }
+    }
+
+    if (!ctx->headers_sent) {
+        merge_response_headers(r, &protocol);
+        if (!check_headers(r)) {
+            /* We may come back here from ap_die() below,
+             * so clear anything from this response.
+             */
+            apr_table_clear(r->headers_out);
+            apr_table_clear(r->err_headers_out);
+            r->content_type = r->content_encoding = NULL;
+            r->content_languages = NULL;
+            r->clength = r->chunked = 0;
+            apr_brigade_cleanup(b);
+
+            /* Don't recall ap_die() if we come back here (from its own internal
+             * redirect or error response), otherwise we can end up in infinite
+             * recursion; better fall through with 500, minimal headers and an
+             * empty body (EOS only).
+             */
+            if (!check_headers_recursion(r)) {
+                ap_die(HTTP_INTERNAL_SERVER_ERROR, r);
+                return AP_FILTER_ERROR;
+            }
+            r->status = HTTP_INTERNAL_SERVER_ERROR;
+            e = ap_bucket_eoc_create(c->bucket_alloc);
+            APR_BRIGADE_INSERT_TAIL(b, e);
+            e = apr_bucket_eos_create(c->bucket_alloc);
+            APR_BRIGADE_INSERT_TAIL(b, e);
+            ap_set_content_length(r, 0);
+            recursive_error = 1;
+        }
+        else if (eb) {
+            int status;
+            status = eb->status;
+            apr_brigade_cleanup(b);
+            ap_die(status, r);
+            return AP_FILTER_ERROR;
+        }
+    }
+
+    if (r->assbackwards) {
+        r->sent_bodyct = 1;
+        ap_remove_output_filter(f);
+        rv = ap_pass_brigade(f->next, b);
+        goto out;
+    }
+
+    if (!ctx->headers_sent) {
+        b2 = apr_brigade_create(r->pool, c->bucket_alloc);
+        basic_http_header(r, b2, protocol);
+
+        h.pool = r->pool;
+        h.bb = b2;
+
+        send_all_header_fields(&h, r);
+
+        terminate_header(b2);
+
+        if (header_only) {
+            e = APR_BRIGADE_LAST(b);
+            if (e != APR_BRIGADE_SENTINEL(b) && APR_BUCKET_IS_EOS(e)) {
+                APR_BUCKET_REMOVE(e);
+                APR_BRIGADE_INSERT_TAIL(b2, e);
+                ap_remove_output_filter(f);
+            }
+            apr_brigade_cleanup(b);
+        }
+
+        rv = ap_pass_brigade(f->next, b2);
+        apr_brigade_cleanup(b2);
+        ctx->headers_sent = 1;
+    }
 
     if (rv != APR_SUCCESS || header_only) {
         goto out;
