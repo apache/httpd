@@ -133,7 +133,7 @@ class TestInvalidHeaders:
         assert 431 == r.response["status"]
 
     # test header field count, LimitRequestFields (default 100)
-    # see #201: several headers with same name are mered and count only once
+    # see #201: several headers with same name are merged and counted
     def test_h2_200_12(self, env):
         url = env.mkurl("https", "cgi", "/")
         opt = []
@@ -143,7 +143,7 @@ class TestInvalidHeaders:
         r = env.curl_get(url, options=opt)
         assert r.response["status"] == 200
         r = env.curl_get(url, options=(opt + ["-H", "y: 2"]))
-        assert r.response["status"] == 200
+        assert r.response["status"] == 431
 
     # test header field count, LimitRequestFields (default 100)
     # different header names count each

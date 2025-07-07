@@ -29,6 +29,7 @@
  */
 
 #include "h2.h"
+#include "h2_util.h"
 
 struct apr_thread_mutext_t;
 struct apr_thread_cond_t;
@@ -117,6 +118,8 @@ typedef struct h2_session {
     int input_flushed;              /* stream input was flushed */
     struct h2_iqueue *out_c1_blocked;  /* all streams with output blocked on c1 buffer full */
     struct h2_iqueue *ready_to_process;  /* all streams ready for processing */
+
+    h2_hd_scratch hd_scratch;
 
 } h2_session;
 

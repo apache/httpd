@@ -64,18 +64,20 @@ typedef struct {
     apr_table_t *headers;
     apr_pool_t *pool;
     apr_status_t status;
+    h2_hd_scratch *scratch;
 } h1_ctx;
 
 static int set_h1_header(void *ctx, const char *key, const char *value)
 {
     h1_ctx *x = ctx;
     int was_added;
-    h2_req_add_header(x->headers, x->pool, key, strlen(key), value, strlen(value), 0, &was_added);
+    h2_req_add_header(x->headers, x->pool, key, strlen(key),
+                      value, strlen(value), x->scratch, &was_added);
     return 1;
 }
 
 apr_status_t h2_request_rcreate(h2_request **preq, apr_pool_t *pool, 
-                                request_rec *r)
+                                request_rec *r, h2_hd_scratch *scratch)
 {
     h2_request *req;
     const char *scheme, *authority, *path;
@@ -125,6 +127,7 @@ apr_status_t h2_request_rcreate(h2_request **preq, apr_pool_t *pool,
     x.pool = pool;
     x.headers = req->headers;
     x.status = APR_SUCCESS;
+    x.scratch = scratch;
     apr_table_do(set_h1_header, &x, r->headers_in, NULL);
 
     *preq = req;
@@ -134,7 +137,8 @@ apr_status_t h2_request_rcreate(h2_request **preq, apr_pool_t *pool,
 apr_status_t h2_request_add_header(h2_request *req, apr_pool_t *pool,
                                    const char *name, size_t nlen,
                                    const char *value, size_t vlen,
-                                   size_t max_field_len, int *pwas_added)
+                                   struct h2_hd_scratch *scratch,
+                                   int *pwas_added)
 {
     apr_status_t status = APR_SUCCESS;
 
@@ -185,7 +189,7 @@ apr_status_t h2_request_add_header(h2_request *req, apr_pool_t *pool,
     else {
         /* non-pseudo header, add to table */
         status = h2_req_add_header(req->headers, pool, name, nlen, value, vlen,
-                                   max_field_len, pwas_added);
+                                   scratch, pwas_added);
     }
 
     return status;

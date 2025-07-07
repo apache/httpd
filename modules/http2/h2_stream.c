@@ -659,7 +659,8 @@ apr_status_t h2_stream_set_request_rec(h2_stream *stream,
     if (stream->rst_error) {
         return APR_ECONNRESET;
     }
-    status = h2_request_rcreate(&req, stream->pool, r);
+    status = h2_request_rcreate(&req, stream->pool, r,
+                                &stream->session->hd_scratch);
     if (status == APR_SUCCESS) {
         ap_log_rerror(APLOG_MARK, APLOG_DEBUG, status, r, 
                       H2_STRM_LOG(APLOGNO(03058), stream, 
@@ -691,13 +692,11 @@ static void set_error_response(h2_stream *stream, int http_status)
 static apr_status_t add_trailer(h2_stream *stream,
                                 const char *name, size_t nlen,
                                 const char *value, size_t vlen,
-                                size_t max_field_len, int *pwas_added)
+                                h2_hd_scratch *scratch)
 {
     conn_rec *c = stream->session->c1;
-    char *hname, *hvalue;
     const char *existing;
 
-    *pwas_added = 0;
     if (nlen == 0 || name[0] == ':') {
         ap_log_cerror(APLOG_MARK, APLOG_DEBUG, APR_EINVAL, c, 
                       H2_STRM_LOG(APLOGNO(03060), stream, 
@@ -710,20 +709,35 @@ static apr_status_t add_trailer(h2_stream *stream,
     if (!stream->trailers_in) {
         stream->trailers_in = apr_table_make(stream->pool, 5);
     }
-    hname = apr_pstrndup(stream->pool, name, nlen);
-    h2_util_camel_case_header(hname, nlen);
-    existing = apr_table_get(stream->trailers_in, hname);
-    if (max_field_len 
-        && ((existing? strlen(existing)+2 : 0) + vlen + nlen + 2 > max_field_len)) {
-        /* "key: (oldval, )?nval" is too long */
+
+    if (((nlen + vlen + 2) > scratch->max_len))
         return APR_EINVAL;
+
+    /* We need 0-terminated strings to operate on apr_table */
+    AP_DEBUG_ASSERT(nlen < scratch->max_len);
+    memcpy(scratch->name, name, nlen);
+    scratch->name[nlen] = 0;
+    AP_DEBUG_ASSERT(vlen < scratch->max_len);
+    memcpy(scratch->value, value, vlen);
+    scratch->value[vlen] = 0;
+
+    existing = apr_table_get(stream->trailers_in, scratch->name);
+    if(existing) {
+      if (!vlen) /* not adding a 0-length value to existing */
+          return APR_SUCCESS;
+      if ((strlen(existing) + 2 + vlen + nlen + 2 > scratch->max_len)) {
+          /* "name: existing, value" is too long */
+          return APR_EINVAL;
+      }
+      apr_table_merge(stream->trailers_in, scratch->name, scratch->value);
     }
-    if (!existing) *pwas_added = 1;
-    hvalue = apr_pstrndup(stream->pool, value, vlen);
-    apr_table_mergen(stream->trailers_in, hname, hvalue);
-    ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, c, 
-                  H2_STRM_MSG(stream, "added trailer '%s: %s'"), hname, hvalue);
-    
+    else {
+        h2_util_camel_case_header(scratch->name, nlen);
+        apr_table_set(stream->trailers_in, scratch->name, scratch->value);
+    }
+    ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, c,
+                  H2_STRM_MSG(stream, "added trailer '%s: %s'"),
+                  scratch->name, scratch->value);
     return APR_SUCCESS;
 }
 
@@ -732,7 +746,7 @@ apr_status_t h2_stream_add_header(h2_stream *stream,
                                   const char *value, size_t vlen)
 {
     h2_session *session = stream->session;
-    int error = 0, was_added = 0;
+    int error = 0;
     apr_status_t status = APR_SUCCESS;
     
     H2_STRM_ASSERT_MAGIC(stream, H2_STRM_MAGIC_OK);
@@ -760,6 +774,7 @@ apr_status_t h2_stream_add_header(h2_stream *stream,
         ++stream->request_headers_added;
     }
     else if (H2_SS_IDLE == stream->state) {
+        int was_added;
         if (!stream->rtmp) {
             if (H2_STREAM_CLIENT_INITIATED(stream->id)) {
                 ++stream->session->remote.emitted_count;
@@ -771,7 +786,7 @@ apr_status_t h2_stream_add_header(h2_stream *stream,
         }
         status = h2_request_add_header(stream->rtmp, stream->pool,
                                        name, nlen, value, vlen,
-                                       session->s->limit_req_fieldsize, &was_added);
+                                       &session->hd_scratch, &was_added);
         ap_log_cerror(APLOG_MARK, APLOG_TRACE2, status, session->c1,
                       H2_STRM_MSG(stream, "add_header: '%.*s: %.*s"),
                       (int)nlen, name, (int)vlen, value);
@@ -779,8 +794,8 @@ apr_status_t h2_stream_add_header(h2_stream *stream,
     }
     else if (H2_SS_OPEN == stream->state) {
         status = add_trailer(stream, name, nlen, value, vlen,
-                             session->s->limit_req_fieldsize, &was_added);
-        if (was_added) ++stream->request_headers_added;
+                             &session->hd_scratch);
+        if (!status) ++stream->request_headers_added;
     }
     else {
         status = APR_EINVAL;
@@ -789,16 +804,17 @@ apr_status_t h2_stream_add_header(h2_stream *stream,
     
     if (APR_EINVAL == status) {
         /* header too long */
-        if (!h2_stream_is_ready(stream)) {
+        if (!h2_stream_is_ready(stream) && !stream->request_headers_failed) {
             ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, session->c1,
-                          H2_STRM_LOG(APLOGNO(10180), stream,"Request header exceeds "
-                                      "LimitRequestFieldSize: %.*s"),
+                          H2_STRM_LOG(APLOGNO(10180), stream,
+                          "Request header exceeds LimitRequestFieldSize(%d): %.*s"),
+                          (int)session->hd_scratch.max_len,
                           (int)H2MIN(nlen, 80), name);
         }
         error = HTTP_REQUEST_HEADER_FIELDS_TOO_LARGE;
         goto cleanup;
     }
-    
+
     if (session->s->limit_req_fields > 0 
         && stream->request_headers_added > session->s->limit_req_fields) {
         /* too many header lines */
@@ -810,12 +826,13 @@ apr_status_t h2_stream_add_header(h2_stream *stream,
         if (!h2_stream_is_ready(stream)) {
             ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, session->c1,
                           H2_STRM_LOG(APLOGNO(10181), stream, "Number of request headers "
-                                      "exceeds LimitRequestFields"));
+                                      "exceeds LimitRequestFields(%d)"),
+                                      (int)session->s->limit_req_fields);
         }
         error = HTTP_REQUEST_HEADER_FIELDS_TOO_LARGE;
         goto cleanup;
     }
-    
+
 cleanup:
     if (error) {
         ++stream->request_headers_failed;

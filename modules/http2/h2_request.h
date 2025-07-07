@@ -19,17 +19,21 @@
 
 #include "h2.h"
 
+struct h2_hd_scratch;
+
 h2_request *h2_request_create(int id, apr_pool_t *pool, const char *method,
                               const char *scheme, const char *authority,
                               const char *path, apr_table_t *header);
 
 apr_status_t h2_request_rcreate(h2_request **preq, apr_pool_t *pool,
-                                request_rec *r);
+                                request_rec *r,
+                                struct h2_hd_scratch *scratch);
 
 apr_status_t h2_request_add_header(h2_request *req, apr_pool_t *pool,
                                    const char *name, size_t nlen,
                                    const char *value, size_t vlen,
-                                   size_t max_field_len, int *pwas_added);
+                                   struct h2_hd_scratch *scratch,
+                                   int *pwas_added);
 
 apr_status_t h2_request_add_trailer(h2_request *req, apr_pool_t *pool,
                                     const char *name, size_t nlen,

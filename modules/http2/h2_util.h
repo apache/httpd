@@ -397,14 +397,21 @@ apr_status_t h2_req_create_ngheader(h2_ngheader **ph, apr_pool_t *p,
                                     const struct h2_request *req);
 #endif
 
+typedef struct h2_hd_scratch {
+    size_t max_len; /* header field size name + ': ' + value */
+    char *name;     /* max_len+1 sized */
+    char *value;    /* max_len+1 sized */
+
+} h2_hd_scratch;
+
 /**
  * Add a HTTP/2 header and return the table key if it really was added
  * and not ignored.
  */
-apr_status_t h2_req_add_header(apr_table_t *headers, apr_pool_t *pool, 
+apr_status_t h2_req_add_header(apr_table_t *headers, apr_pool_t *pool,
                                const char *name, size_t nlen,
                                const char *value, size_t vlen,
-                               size_t max_field_len, int *pwas_added);
+                               h2_hd_scratch *scratch, int *pwas_added);
 
 /*******************************************************************************
  * apr brigade helpers
