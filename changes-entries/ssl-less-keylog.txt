@@ -1,3 +1,0 @@
-  *) mod_ssl: Drop $SSLKEYLOGFILE handling internally for OpenSSL 3.5
-     builds which enable it in libssl natively.  [Joe Orton]
-

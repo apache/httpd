@@ -1,6 +1,12 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.64
 
+  *) mod_proxy_ajp: Use iobuffersize set on worker level for the IO buffer
+     size. PR 69402 [Jari Ahonen <jah@progress.com>]
+
+  *) mod_ssl: Drop $SSLKEYLOGFILE handling internally for OpenSSL 3.5
+     builds which enable it in libssl natively.  [Joe Orton]
+
   *) mod_asis: Fix the log level of the message AH01236.
      Github #527 [Michael Kaufmann <mail michael-kaufmann.ch>]
 
