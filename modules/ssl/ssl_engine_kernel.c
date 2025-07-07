@@ -371,19 +371,6 @@ int ssl_hook_ReadReq(request_rec *r)
                             " provided in HTTP request", servername);
                 return HTTP_BAD_REQUEST;
             }
-            if (r->server != handshakeserver 
-                && !ssl_server_compatible(sslconn->server, r->server)) {
-                /* 
-                 * The request does not select the virtual host that was
-                 * selected by the SNI and its SSL parameters are different
-                 */
-                
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(02032)
-                             "Hostname %s provided via SNI and hostname %s provided"
-                             " via HTTP have no compatible SSL setup",
-                             servername, r->hostname);
-                return HTTP_MISDIRECTED_REQUEST;
-            }
         }
         else if (((sc->strict_sni_vhost_check == SSL_ENABLED_TRUE)
                   || hssc->strict_sni_vhost_check == SSL_ENABLED_TRUE)
@@ -403,6 +390,21 @@ int ssl_hook_ReadReq(request_rec *r)
                            "hostname using Server Name Indication (SNI), "
                            "which is required to access this server.<br />\n");
             return HTTP_FORBIDDEN;
+        }
+        if (r->server != handshakeserver
+            && !ssl_server_compatible(sslconn->server, r->server)) {
+            /*
+             * The request does not select the virtual host that was
+             * selected for handshaking and its SSL parameters are different
+             */
+
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(02032)
+                         "Hostname %s %s and hostname %s provided"
+                         " via HTTP have no compatible SSL setup",
+                         servername ? servername : handshakeserver->server_hostname,
+                         servername ? "provided via SNI" : "(default host as no SNI was provided)",
+                         r->hostname);
+            return HTTP_MISDIRECTED_REQUEST;
         }
     }
 #endif
