@@ -1,5 +1,103 @@
                                                          -*- coding: utf-8 -*-
+Changes with Apache 2.4.65
+
 Changes with Apache 2.4.64
+
+  *) SECURITY: CVE-2025-53020: Apache HTTP Server: HTTP/2 DoS by
+     Memory Increase (cve.mitre.org)
+     Late Release of Memory after Effective Lifetime vulnerability in
+     Apache HTTP Server.
+     This issue affects Apache HTTP Server: from 2.4.17 up to 2.4.63.
+     Users are recommended to upgrade to version 2.4.64, which fixes
+     the issue.
+     Credits: Gal Bar Nahum
+
+  *) SECURITY: CVE-2025-49812: Apache HTTP Server: mod_ssl TLS
+     upgrade attack (cve.mitre.org)
+     In some mod_ssl configurations on Apache HTTP Server versions
+     through to 2.4.63, an HTTP desynchronisation attack allows a
+     man-in-the-middle attacker to hijack an HTTP session via a TLS
+     upgrade.
+     Only configurations using "SSLEngine optional" to enable TLS
+     upgrades are affected. Users are recommended to upgrade to
+     version 2.4.64, which removes support for TLS upgrade.
+     Credits: Robert Merget (Technology Innovation Institute)
+
+  *) SECURITY: CVE-2025-49630: Apache HTTP Server: mod_proxy_http2
+     denial of service (cve.mitre.org)
+     In certain proxy configurations, a denial of service attack
+     against Apache HTTP Server versions 2.4.26 through to 2.4.63
+     can be triggered by untrusted clients causing an assertion in
+     mod_proxy_http2.
+     Configurations affected are a reverse proxy is configured for an
+     HTTP/2 backend, with ProxyPreserveHost set to "on".
+     Credits: Anthony CORSIEZ
+
+  *) SECURITY: CVE-2025-23048: Apache HTTP Server: mod_ssl access
+     control bypass with session resumption (cve.mitre.org)
+     In some mod_ssl configurations on Apache HTTP Server 2.4.35
+     through to 2.4.62, an access control bypass by trusted clients
+     is possible using TLS 1.3 session resumption.
+     Configurations are affected when mod_ssl is configured for
+     multiple virtual hosts, with each restricted to a different set
+     of trusted client certificates (for example with a different
+     SSLCACertificateFile/Path setting). In such a case, a client
+     trusted to access one virtual host may be able to access another
+     virtual host, if SSLStrictSNIVHostCheck is not enabled in either
+     virtual host.
+     Credits: Sven Hebrok, Felix Cramer, Tim Storm, Maximilian Radoy,
+     and Juraj Somorovsky at Paderborn University
+
+  *) SECURITY: CVE-2024-47252: Apache HTTP Server: mod_ssl error log
+     variable escaping (cve.mitre.org)
+     Insufficient escaping of user-supplied data in mod_ssl in Apache
+     HTTP Server 2.4.63 and earlier allows an untrusted SSL/TLS
+     client to insert escape characters into log files in some
+     configurations.
+     In a logging configuration where CustomLog is used with
+     "%{varname}x" or "%{varname}c" to log variables provided by
+     mod_ssl such as SSL_TLS_SNI, no escaping is performed by either
+     mod_log_config or mod_ssl and unsanitized data provided by the
+     client may appear in log files.
+     Credits: John Runyon
+
+  *) SECURITY: CVE-2024-43394: Apache HTTP Server: SSRF on Windows
+     due to UNC paths (cve.mitre.org)
+     Server-Side Request Forgery (SSRF) in Apache HTTP Server on
+     Windows allows to potentially leak NTLM hashes to a malicious
+     server via
+     mod_rewrite or apache expressions that pass unvalidated request
+     input.
+     This issue affects Apache HTTP Server: from 2.4.0 through 2.4.63.
+     Note:  The Apache HTTP Server Project will be setting a higher
+     bar for accepting vulnerability reports regarding SSRF via UNC
+     paths.
+     The server offers limited protection against administrators
+     directing the server to open UNC paths.
+     Windows servers should limit the hosts they will connect over
+     via SMB based on the nature of NTLM authentication.
+     Credits: Kainan Zhang (@4xpl0r3r) from Fortinet
+
+  *) SECURITY: CVE-2024-43204: Apache HTTP Server: SSRF with
+     mod_headers setting Content-Type header (cve.mitre.org)
+     SSRF in Apache HTTP Server with mod_proxy loaded allows an
+     attacker to send outbound proxy requests to a URL controlled by
+     the attacker.  Requires an unlikely configuration where
+     mod_headers is configured to modify the Content-Type request or
+     response header with a value provided in the HTTP request.
+     Users are recommended to upgrade to version 2.4.64 which fixes
+     this issue.
+
+  *) SECURITY: CVE-2024-42516: Apache HTTP Server: HTTP response
+     splitting (cve.mitre.org)
+     HTTP response splitting in the core of Apache HTTP Server allows
+     an attacker who can manipulate the Content-Type response headers
+     of applications hosted or proxied by the server can split the
+     HTTP response.
+     This vulnerability was described as CVE-2023-38709 but the patch
+     included in Apache HTTP Server 2.4.59 did not address the issue.
+     Users are recommended to upgrade to version 2.4.64, which fixes
+     this issue.
 
   *) mod_proxy_ajp: Use iobuffersize set on worker level for the IO buffer
      size. PR 69402 [Jari Ahonen <jah@progress.com>]
