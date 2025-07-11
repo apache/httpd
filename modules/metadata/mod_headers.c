@@ -870,7 +870,7 @@ static int do_headers_fixup(request_rec *r, apr_table_t *headers,
         case hdr_set:
             if (r->headers_in != headers && 
                 !ap_cstr_casecmp(hdr->header, "Content-Type")) {
-                 ap_set_content_type_ex(r, process_tags(hdr, r), 1);
+                 ap_set_content_type(r, process_tags(hdr, r));
             }
             apr_table_setn(headers, hdr->header, process_tags(hdr, r));
             break;
@@ -878,7 +878,7 @@ static int do_headers_fixup(request_rec *r, apr_table_t *headers,
             if (NULL == apr_table_get(headers, hdr->header)) {
                 if (r->headers_in != headers &&
                     !ap_cstr_casecmp(hdr->header, "Content-Type")) {
-                    ap_set_content_type_ex(r, process_tags(hdr, r), 1);
+                    ap_set_content_type(r, process_tags(hdr, r));
                 }
                 apr_table_setn(headers, hdr->header, process_tags(hdr, r));
             }

@@ -42,6 +42,7 @@
 </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#synopsis">Syntaxe</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#options">Options</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#dumpconf">Affichage des options de configuration</a></li>
 </ul><h3>Voir aussi</h3><ul class="seealso"><li><a href="../invoking.html">Démarrer Apache httpd</a></li><li><a href="../stopping.html">Arrêter Apache httpd</a></li><li><a href="../configuring.html">Fichiers de configuration</a></li><li><a href="../platform/">Documentations spécifiques aux
 plates-formes</a></li><li><code class="program"><a href="../programs/apachectl.html">apachectl</a></code></li><li><a href="#comments_section">Commentaires</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -164,15 +165,8 @@ démarrage/redémarrage.</dd>
 configuration seulement. Le programme se termine immédiatement après ces
 tests de vérification de syntaxe avec soit un code de retour de 0
 (syntaxe OK), soit un code de retour différent de 0 (erreur de
-syntaxe). Si -D <var>DUMP</var>_<var>VHOSTS </var> est défini, les
-détails de la configuration des serveurs virtuels seront affichés. Si -D
-<var>DUMP</var>_<var>MODULES </var> est défini, tous les modules chargés
-seront affichés. Si -D <var>DUMP</var>_<var>CERTS </var> est défini et
-si <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> est utilisé, les certificats SSL définis
-seront affichés. Si -D <var>DUMP</var>_<var>CA</var>_<var>_CERTS </var>
-est défini et si <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> est utilisé, les certificats
-de CA SSL ainsi que les répertoires contenant de tels certificats
-seront affichés.</dd>
+syntaxe). Cette option peut être combinée avec plusieurs arguments <var>-D
+DUMP_...</var> pour afficher des informations à propos de la configuration <a href="#dumpconf">comme indiqué ci-après</a>.</dd>
 
 <dt><code>-v</code></dt>
 
@@ -211,6 +205,28 @@ que le message d'erreur puisse être lu.</dd>
 
 </dl>
 
+ </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="dumpconf" id="dumpconf">Affichage des options de configuration</a> <a title="Lien permanent" href="#dumpconf" class="permalink">&para;</a></h2>
+
+<p>Les options suivantes peuvent être combinées avec l’option <var>-t</var> pour
+afficher des informations à propos de la configuration :</p>
+
+<dl>
+  <dt><var>-D DUMP_VHOSTS</var></dt> <dd>affichage détaillé de la configuration
+  des serveurs virtuels.</dd>
+
+  <dt><var>-D DUMP_MODULES</var></dt> <dd>affichage détaillé de tous les modules
+  chargés dans un format lisible pour un humain.</dd>
+
+  <dt><var>-D DUMP_MODULES</var> <var>-D DUMP_MODULE_DATA</var></dt>
+  <dd>affichage détaillé de tous les modules chargés dans un format structuré
+  (TOML).</dd>
+
+  <dt><var>-D DUMP_CERTS</var></dt>
+  <dd>affichage détaillé des certificats SSL/TLS configurés (si
+  <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> est chargé).</dd>
+</dl>
 </div></div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/programs/httpd.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |

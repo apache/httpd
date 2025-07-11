@@ -1,0 +1,2 @@
+  *) mod_dav_fs: Return a 404 for DELETE if deletion fails because the
+     resource no longer exists.  PR 60746.  [Joe Orton]

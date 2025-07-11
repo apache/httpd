@@ -2,7 +2,7 @@
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
-<!-- English Revision: 1923592 -->
+<!-- English Revision: 1926075 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -1555,6 +1555,21 @@ MDMessageCmd /etc/apache/md-message
         <contextlist>
             <context>server config</context>
         </contextlist>
+        <compatibility>Disponible à partir de la version 2.4.42 du serveur HTTP
+	Apache</compatibility>
+        <usage>
+            <p>
+            </p>
+        </usage>
+    </directivesynopsis>
+
+    <directivesynopsis>
+        <name>MDActivationDelay</name>
+        <description>Délai d’activation des nouveaux certificays</description>
+        <syntax>MDActivationDelay <var>duration</var></syntax>
+        <contextlist>
+            <context>server config</context>
+        </contextlist>    
         <compatibility>Disponible à partir de la version 2.4.42 du serveur HTTP
 	Apache</compatibility>
         <usage>

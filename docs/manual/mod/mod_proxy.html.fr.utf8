@@ -1128,8 +1128,8 @@ mandatées correspondant à une expression rationnelle</td></tr>
     nommées) sont ignorées. Vous devez utiliser à la place des groupes
     nommés.</p>
 
-<pre class="prettyprint lang-config">&lt;ProxyMatch ^http://(?&lt;sitename&gt;[^/]+)&gt;
-    require ldap-group cn=%{env:MATCH_SITENAME},ou=combined,o=Example
+<pre class="prettyprint lang-config">&lt;ProxyMatch "^http://(?&lt;sitename&gt;[^/]+)"&gt;
+    Require ldap-group cn=%{env:MATCH_SITENAME},ou=combined,o=Example
 &lt;/ProxyMatch&gt;</pre>
 
 

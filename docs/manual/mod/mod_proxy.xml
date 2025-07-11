@@ -606,8 +606,8 @@ proxied resources</description>
     (unnamed) backreferences are ignored. Use named groups instead.</p>
 
 <highlight language="config">
-&lt;ProxyMatch ^http://(?&lt;sitename&gt;[^/]+)&gt;
-    require ldap-group cn=%{env:MATCH_SITENAME},ou=combined,o=Example
+&lt;ProxyMatch "^http://(?&lt;sitename&gt;[^/]+)"&gt;
+    Require ldap-group cn=%{env:MATCH_SITENAME},ou=combined,o=Example
 &lt;/ProxyMatch&gt;
 </highlight>
 </usage>

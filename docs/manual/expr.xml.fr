@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
-<!-- English Revision: 1898219 -->
+<!-- English Revision: 1926342 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -638,6 +638,9 @@ DIGIT       ::= &lt;any US-ASCII digit "0".."9"&gt;
         <td>replace(chaîne, "from", "to") remplace dans la chaîne
 	spécifiée toutes les occurrences de "from" par "to". Le premier
 	paramètre ne doit pas être une chaîne littérale.</td><td></td></tr>
+    <tr><td><code>escapehtml</code></td>
+        <td>Protège une chaîne HTML à l’aide de séquences
+	d’échappement.</td><td></td></tr>
 
     </table>
 

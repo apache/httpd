@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1924775 -->
+<!-- English Revision: 1926171 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -1116,8 +1116,9 @@ d'entité finale (feuille).  La directive peut être utilisée plusieurs fois (e
 référence des fichiers différents) pour accepter plusieurs algorithmes
 d'authentification au niveau du serveur - souvent RSA, DSA et ECC. Le nombre
 d'algorithmes supportés dépend de la version d'OpenSSL utilisée avec mod_ssl : à
-partir de la version 1.0.0, la commande <code>openssl
-list-public-key-algorithms</code> affiche la liste des algorithmes supportés.
+partir de la version 3.0, la commande <code>openssl
+list -public-key-algorithms</code> (ou <code>openssl
+list-public-key-algorithms</code> avec OpenSSL 1.0) affiche la liste des algorithmes supportés.
 Voir aussi la note ci-dessous à propos des limitations des versions d'OpenSSL
 antérieures à 1.0.2 et la manière de les contourner.
 </p>

@@ -374,6 +374,7 @@
     </div>
 <div id="quickview"><h3 class="directives">Directives</h3>
 <ul id="toc">
+<li><img alt="" src="../images/down.gif" /> <a href="#mdactivationdelay">MDActivationDelay</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mdbaseserver">MDBaseServer</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mdcachallenges">MDCAChallenges</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mdcertificateagreement">MDCertificateAgreement</a></li>
@@ -421,6 +422,21 @@
 <ul class="seealso">
 <li><a href="#comments_section">Commentaires</a></li></ul></div>
 
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="mdactivationdelay" id="mdactivationdelay">Directive</a> <a name="MDActivationDelay" id="MDActivationDelay">MDActivationDelay</a> <a title="Lien permanent" href="#mdactivationdelay" class="permalink">&para;</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Délai d’activation des nouveaux certificays</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MDActivationDelay <var>duration</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_md</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.42 du serveur HTTP
+	Apache</td></tr>
+</table>
+            <p>
+            </p>
+        
+</div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="mdbaseserver" id="mdbaseserver">Directive</a> <a name="MDBaseServer" id="MDBaseServer">MDBaseServer</a> <a title="Lien permanent" href="#mdbaseserver" class="permalink">&para;</a></h2>
 <table class="directive">

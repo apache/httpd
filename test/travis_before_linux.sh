@@ -21,6 +21,37 @@ if grep ip6-localhost /etc/hosts; then
     cat /etc/hosts
 fi
 
+# Use a rudimental retry workflow as workaround to svn export hanging
+# for minutes or failing randomly.  Travis automatically kills a build
+# if one step takes more than 10 minutes without reporting any
+# progress.
+function run_svn_export() {
+   local url=$1
+   local revision=$2
+   local dest_dir=$3
+   local max_tries=$4
+
+   # Disable -e to allow fail/retry
+   set +e
+
+   for i in $(seq 1 $max_tries)
+   do
+       timeout 60 svn export -r ${revision} --force -q $url $dest_dir
+       if [ $? -eq 0 ]; then
+           break
+       else
+           if [ $i -eq $max_tries ]; then
+               exit 1
+           else
+               sleep $((100 * i))
+           fi
+       fi
+   done
+
+   # Restore -e behavior after fail/retry
+   set -e
+}
+
 function install_apx() {
     local name=$1
     local version=$2
@@ -112,7 +143,7 @@ if ! test -v SKIP_TESTING -o -v NO_TEST_FRAMEWORK; then
     # use a checkout of trunk until there is an updated CPAN release
     # with that revision.
     if test -v TEST_OPENSSL3; then
-       svn co -q https://svn.apache.org/repos/asf/perl/Apache-Test/trunk test/perl-framework/Apache-Test
+       run_svn_export https://svn.apache.org/repos/asf/perl/Apache-Test/trunk HEAD test/perl-framework/Apache-Test 5
     fi
 fi
 

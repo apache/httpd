@@ -1265,7 +1265,7 @@ static apr_status_t mplx_pollset_poll(h2_mplx *m, apr_interval_time_t timeout,
                 if (on_stream_input) {
                     APR_ARRAY_PUSH(m->streams_ev_in, h2_stream*) = m->stream0;
                 }
-                continue;
+                break;
             }
         }
 

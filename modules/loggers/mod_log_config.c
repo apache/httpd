@@ -914,7 +914,7 @@ static const char *log_ssl_var(request_rec *r, char *a)
 
     /* Any SSL module responsible for the connection/request will provide the value */
     result = ap_ssl_var_lookup(r->pool, r->server, r->connection, r, a);
-    return (result && result[0])? result : NULL;
+    return (result && result[0])? ap_escape_logitem(r->pool, result) : NULL;
 }
 
 static const char *log_ssl_var_short(request_rec *r, char *a)

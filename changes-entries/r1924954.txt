@@ -1,0 +1,2 @@
+  *) mod_asis: Fix the log level of the message AH01236.
+     Github #527 [Michael Kaufmann <mail michael-kaufmann.ch>]

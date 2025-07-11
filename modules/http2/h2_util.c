@@ -1693,10 +1693,9 @@ int h2_ignore_resp_trailer(const char *name, size_t len)
 }
 
 static apr_status_t req_add_header(apr_table_t *headers, apr_pool_t *pool,
-                                   nghttp2_nv *nv, size_t max_field_len,
+                                   nghttp2_nv *nv, h2_hd_scratch *scratch,
                                    int *pwas_added)
 {
-    char *hname, *hvalue;
     const char *existing;
 
     *pwas_added = 0;
@@ -1712,15 +1711,14 @@ static apr_status_t req_add_header(apr_table_t *headers, apr_pool_t *pool,
             /* Cookie header come separately in HTTP/2, but need
              * to be merged by "; " (instead of default ", ")
              */
-            if (max_field_len
-                && strlen(existing) + nv->valuelen + nv->namelen + 4
-                   > max_field_len) {
+            if ((strlen(existing) + nv->valuelen + nv->namelen + 4)
+                   > scratch->max_len) {
                 /* "key: oldval, nval" is too long */
                 return APR_EINVAL;
             }
-            hvalue = apr_pstrndup(pool, (const char*)nv->value, nv->valuelen);
             apr_table_setn(headers, "Cookie",
-                           apr_psprintf(pool, "%s; %s", existing, hvalue));
+                           apr_psprintf(pool, "%s; %.*s", existing,
+                                        (int)nv->valuelen, nv->value));
             return APR_SUCCESS;
         }
     }
@@ -1731,27 +1729,40 @@ static apr_status_t req_add_header(apr_table_t *headers, apr_pool_t *pool,
         }
     }
 
-    hname = apr_pstrndup(pool, (const char*)nv->name, nv->namelen);
-    h2_util_camel_case_header(hname, nv->namelen);
-    existing = apr_table_get(headers, hname);
-    if (max_field_len) {
-        if ((existing? strlen(existing)+2 : 0) + nv->valuelen + nv->namelen + 2
-            > max_field_len) {
-            /* "key: (oldval, )?nval" is too long */
+    if (((nv->namelen + nv->valuelen + 2) > scratch->max_len))
+        return APR_EINVAL;
+
+    /* We need 0-terminated strings to operate on apr_table */
+    AP_DEBUG_ASSERT(nv->namelen < scratch->max_len);
+    memcpy(scratch->name, nv->name, nv->namelen);
+    scratch->name[nv->namelen] = 0;
+    AP_DEBUG_ASSERT(nv->valuelen < scratch->max_len);
+    memcpy(scratch->value, nv->value, nv->valuelen);
+    scratch->value[nv->valuelen] = 0;
+
+    *pwas_added = 1;
+    existing = apr_table_get(headers, scratch->name);
+    if (existing) {
+        if (!nv->valuelen) /* not adding a 0-length value to existing */
+            return APR_SUCCESS;
+        if ((strlen(existing) + 2 + nv->valuelen + nv->namelen + 2)
+            > scratch->max_len) {
+            /* "name: existing, value" is too long */
             return APR_EINVAL;
         }
+        apr_table_merge(headers, scratch->name, scratch->value);
     }
-    if (!existing) *pwas_added = 1;
-    hvalue = apr_pstrndup(pool, (const char*)nv->value, nv->valuelen);
-    apr_table_mergen(headers, hname, hvalue);
-
+    else {
+        h2_util_camel_case_header(scratch->name, nv->namelen);
+        apr_table_set(headers, scratch->name, scratch->value);
+    }
     return APR_SUCCESS;
 }
 
 apr_status_t h2_req_add_header(apr_table_t *headers, apr_pool_t *pool,
                               const char *name, size_t nlen,
                               const char *value, size_t vlen,
-                              size_t max_field_len, int *pwas_added)
+                              h2_hd_scratch *scratch, int *pwas_added)
 {
     nghttp2_nv nv;
 
@@ -1759,7 +1770,7 @@ apr_status_t h2_req_add_header(apr_table_t *headers, apr_pool_t *pool,
     nv.namelen = nlen;
     nv.value = (uint8_t*)value;
     nv.valuelen = vlen;
-    return req_add_header(headers, pool, &nv, max_field_len, pwas_added);
+    return req_add_header(headers, pool, &nv, scratch, pwas_added);
 }
 
 /*******************************************************************************

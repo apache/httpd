@@ -926,9 +926,10 @@ If using a PEM file, at minimum, the file must include an end-entity (leaf) cert
 The directive can be used multiple times (referencing different filenames)
 to support multiple algorithms for server authentication - typically
 RSA, DSA, and ECC. The number of supported algorithms depends on the
-OpenSSL version being used for mod_ssl: with version 1.0.0 or later,
-<code>openssl list-public-key-algorithms</code> will output a list
-of supported algorithms, see also the note below about limitations
+OpenSSL version being used for mod_ssl: with version 3.0 or later,
+<code>openssl list -public-key-algorithms</code> (or 
+<code>openssl list-public-key-algorithms</code> with OpenSSL 1.0)  will output a list
+of supported algorithms. See the note below about limitations
 of OpenSSL versions prior to 1.0.2 and the ways to work around them.
 </p>
 

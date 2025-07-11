@@ -333,9 +333,7 @@ static apr_status_t alloc_systemd_listener(process_rec * process,
     si.type = SOCK_STREAM;
     si.protocol = APR_PROTO_TCP;
 
-    rec = apr_palloc(process->pool, sizeof(ap_listen_rec));
-    rec->active = 0;
-    rec->next = 0;
+    rec = apr_pcalloc(process->pool, sizeof(ap_listen_rec));
 
     rv = apr_os_sock_make(&rec->sd, &si, process->pool);
     if (rv != APR_SUCCESS) {

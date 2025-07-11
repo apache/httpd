@@ -101,7 +101,6 @@ config files.</dd>
 <dd>Process the configuration <var>directive</var> after reading config
 files.</dd>
 
-
 <dt><code>-D <var>parameter</var></code></dt>
 
 <dd>Sets a configuration <var>parameter </var>which can be used with
@@ -154,15 +153,11 @@ shows the virtualhost settings).</dd>
 <dt><code>-t</code></dt>
 
 <dd>Run syntax tests for configuration files only.  The program
-immediately exits after these syntax parsing tests with either a return code
-of 0 (Syntax OK) or return code not equal to 0 (Syntax Error).  If -D
-<var>DUMP</var>_<var>VHOSTS </var>is also set, details of the virtual host
-configuration will be printed. If -D <var>DUMP</var>_<var>MODULES </var> is
-set, all loaded modules will be printed. If -D <var>DUMP</var>_<var>CERTS </var>
-is set and <module>mod_ssl</module> is used, configured SSL certificates will
-be printed.  If -D <var>DUMP</var>_<var>CA</var>_<var>_CERTS </var> is set and
-<module>mod_ssl</module> is used, configured SSL CA certificates and configured
-directories containing SSL CA certificates will be printed.</dd>
+immediately exits after these syntax parsing tests with either a
+return code of 0 (Syntax OK) or return code not equal to 0 (Syntax
+Error). This option can be combined with various <var>-D
+DUMP_...</var> arguments to print information about the configuration,
+<a href="#dumpconf">as listed below</a>.</dd>
 
 <dt><code>-v</code></dt>
 
@@ -201,6 +196,27 @@ be read.</dd>
 
 </dl>
 
+</section>
+
+<section id="dumpconf"><title>Dumping configuration data</title>
+
+<p>The following options can be combined with <var>-t</var> to show
+information about the configuration:</p>
+
+<dl>
+  <dt><var>-D DUMP_VHOSTS</var></dt> <dd>print details of the virtual
+  host configuration.</dd>
+
+  <dt><var>-D DUMP_MODULES</var></dt> <dd>print (human-readable)
+  details of all loaded modules.</dd>
+
+  <dt><var>-D DUMP_MODULES</var> <var>-D DUMP_MODULE_DATA</var></dt>
+  <dd>print details of all loaded modules in a structured (TOML) format.</dd>
+
+  <dt><var>-D DUMP_CERTS</var></dt>
+  <dd>If <module>mod_ssl</module> is loaded, print details of
+  configured SSL/TLS certificates.</dd>
+</dl>
 </section>
 
 </manualpage>

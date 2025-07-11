@@ -850,6 +850,18 @@ static apr_status_t open_stream(h2_proxy_session *session, const char *url,
     dconf = ap_get_module_config(r->per_dir_config, &proxy_module);
     if (dconf->preserve_host) {
         authority = orig_host;
+        if (!authority) {
+            /* Duplicate mod_proxy behaviour if ProxyPreserveHost is
+             * used but an "HTTP/0.9" request is received without a
+             * Host: header */
+            authority = r->server->server_hostname;
+            ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(10511)
+                          "HTTP/0.9 request (with no host line) "
+                          "on incoming request and preserve host set "
+                          "forcing hostname to be %s for uri %s",
+                          authority, r->uri);
+            apr_table_setn(r->headers_in, "Host", authority);
+        }
     }
     else {
         authority = puri.hostname;
