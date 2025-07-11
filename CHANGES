@@ -98,6 +98,7 @@ Changes with Apache 2.4.64
      included in Apache HTTP Server 2.4.59 did not address the issue.
      Users are recommended to upgrade to version 2.4.64, which fixes
      this issue.
+     Credits: xiaojunjie@安恒信息杭州市滨江区技能大师工作室
 
   *) mod_proxy_ajp: Use iobuffersize set on worker level for the IO buffer
      size. PR 69402 [Jari Ahonen <jah@progress.com>]
