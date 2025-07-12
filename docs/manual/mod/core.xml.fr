@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1923004:1927041 (outdated) -->
+<!-- English Revision: 1927041 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -5620,9 +5620,13 @@ serveur HTTP Apache.</compatibility>
     </highlight>
 
     <note type="warning"><title>Sécurité</title>
-    <p>Les chemins UNC accédés en dehors du traitement d’une requête, par
-    exemple au cours du démarrage, ne font pas nécessairement l’objet d’une
-    vérification par rapport aux noms d’hôte configurés avec cette directive.</p>
+        <p>Les valeurs spécifiées par cette directive ne sont vérifiées que par
+	certaines composantes du serveur, avant d’accéder à des chemins du
+	système de fichiers qui peuvent dériver par inadvertance d’entrées non
+	fiables. </p>
+        <p> Les systèmes Windows doivent être isolés au niveau de la couche
+	réseau pour éviter les appels SMB/NTLM sortants vers des destinations
+	inattendues, à titre de mesure plus complète et préventive.</p>
     </note>
 
     <note type="warning"><title>Ordre des directives</title>
