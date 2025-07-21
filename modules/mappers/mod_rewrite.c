@@ -4276,8 +4276,9 @@ test_str_l:
                 rc = COND_RC_NOMATCH;
             }
             else {
-                rc = COND_RC_MATCH;
+                rc = (rc > 0) ? COND_RC_MATCH : COND_RC_NOMATCH;
             }
+
             /* update briRC backref info */
             if (rc && !(p->flags & CONDFLAG_NOTMATCH)) {
                 ctx->briRC.source = source;
