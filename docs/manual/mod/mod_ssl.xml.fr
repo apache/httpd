@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1925513:1927321 (outdated) -->
+<!-- English Revision: 1927321 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -678,10 +678,14 @@ SSLSessionCacheTimeout 600
 <directivesynopsis>
 <name>SSLEngine</name>
 <description>Interrupteur marche/arrêt du moteur SSL</description>
-<syntax>SSLEngine on|off|optional</syntax>
+<syntax>SSLEngine on|off</syntax>
 <default>SSLEngine off</default>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
+<compatibility>
+La prise en charge de l’argument "optional" a été supprimée avec la version
+2.4.64. Cet argument activait la prise en charge de la RFC 2817 (mise à niveau de TLS).
+</compatibility>
 
 <usage>
 <p>
@@ -699,12 +703,6 @@ SSLEngine on
 &lt;/VirtualHost&gt;
 </highlight>
 </example>
-<p>Depuis la version 2.1 d'Apache, la directive
-<directive>SSLEngine</directive> peut être définie à
-<code>optional</code>, ce qui active le support de <a
-href="http://www.ietf.org/rfc/rfc2817.txt">RFC 2817</a>, Upgrading to
-TLS Within HTTP/1.1. Pour le moment, aucun navigateur web ne supporte
-RFC 2817.</p>
 </usage>
 </directivesynopsis>
 
