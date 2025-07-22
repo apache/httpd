@@ -197,7 +197,7 @@
 <!-- Portuguese                                                           -->
 <!-- ==================================================================== -->
 <property value=".xml.pt-br" name="inputext.pt-br"/>
-<property value=".html.pt-br" name="outputext.pt-br"/>
+<property value=".html.pt-br.utf8" name="outputext.pt-br"/>
 
 <target description="- builds Portuguese HTML files" name="pt-br">
     <html.generic lang="pt-br"/>
@@ -213,7 +213,9 @@
 <target description="- builds the Portuguese Konqueror Web Archive" depends="-off-pt-br" name="war-pt-br">
     <war.generic lang="pt-br"/>
 </target>
-
+<target description="- builds the Portuguese CHM file" name="chm-pt-br">
+    <chm.generic lang="pt-br"/>
+</target>
 <!-- Russian                                                              -->
 <!-- ==================================================================== -->
 <property value=".xml.ru" name="inputext.ru"/>
