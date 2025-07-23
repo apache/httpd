@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1926171 -->
+<!-- English Revision: 1927320 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -713,10 +713,14 @@ SSLSessionCacheTimeout 600
 <directivesynopsis>
 <name>SSLEngine</name>
 <description>Interrupteur marche/arrêt du moteur SSL</description>
-<syntax>SSLEngine on|off|optional</syntax>
+<syntax>SSLEngine on|off</syntax>
 <default>SSLEngine off</default>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
+<compatibility>
+La prise en charge de l’argument "optional" a été supprimée avec la version
+2.4.64. Cet argument activait la prise en charge de la RFC 2817 (mise à niveau de TLS).
+</compatibility>
 
 <usage>
 <p> Cette directive permet d'activer/désactiver le moteur du protocole SSL/TLS.
@@ -733,10 +737,6 @@ SSLEngine on
 &lt;/VirtualHost&gt;
 </highlight>
 </example>
-<p><directive>SSLEngine</directive> peut être définie à <code>optional</code>,
-ce qui active le support de <a href="https://www.rfc-editor.org/rfc/rfc2817">RFC
-2817</a>.
-</p>
 </usage>
 </directivesynopsis>
 
