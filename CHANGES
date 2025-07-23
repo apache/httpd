@@ -1,5 +1,14 @@
                                                          -*- coding: utf-8 -*-
+Changes with Apache 2.4.66
+
 Changes with Apache 2.4.65
+
+  *) SECURITY: CVE-2025-54090: Apache HTTP Server: 'RewriteCond expr'
+     always evaluates to true in 2.4.64 (cve.mitre.org)
+     A bug in Apache HTTP Server 2.4.64 results in all "RewriteCond
+     expr ..." tests evaluating as "true".
+     Users are recommended to upgrade to version 2.4.65, which fixes
+     the issue.
 
 Changes with Apache 2.4.64
 
