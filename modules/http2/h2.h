@@ -95,8 +95,6 @@ extern const char *H2_MAGIC_TOKEN;
 
 #define H2_STREAM_CLIENT_INITIATED(id)      (id&0x01)
 
-#define H2_ALEN(a)          (sizeof(a)/sizeof((a)[0]))
-
 #define H2MAX(x,y) ((x) > (y) ? (x) : (y))
 #define H2MIN(x,y) ((x) < (y) ? (x) : (y))
 

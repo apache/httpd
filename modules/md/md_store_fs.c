@@ -34,6 +34,7 @@
 #include "md_store_fs.h"
 #include "md_util.h"
 #include "md_version.h"
+#include "ap_config.h"
 
 /**************************************************************************************************/
 /* file system based implementation of md_store_t */
@@ -376,7 +377,7 @@ apr_status_t md_store_fs_group_perms_set(md_store_t *store, md_store_group_t gro
 {
     md_store_fs_t *s_fs = FS_STORE(store);
     
-    if (group >= (sizeof(s_fs->group_perms)/sizeof(s_fs->group_perms[0]))) {
+    if (group >= (AP_ARRAY_LEN(s_fs->group_perms))) {
         return APR_ENOTIMPL;
     }
     s_fs->group_perms[group].file = file_perms;
@@ -395,7 +396,7 @@ apr_status_t md_store_fs_set_event_cb(struct md_store_t *store, md_store_fs_cb *
 
 static const perms_t *gperms(md_store_fs_t *s_fs, md_store_group_t group)
 {
-    if (group >= (sizeof(s_fs->group_perms)/sizeof(s_fs->group_perms[0]))
+    if (group >= (AP_ARRAY_LEN(s_fs->group_perms))
         || !s_fs->group_perms[group].dir) {
         return &s_fs->def_perms;
     }

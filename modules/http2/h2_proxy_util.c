@@ -478,7 +478,7 @@ typedef struct {
 } literal;
 
 #define H2_DEF_LITERAL(n)   { (n), (sizeof(n)-1) }
-#define H2_LIT_ARGS(a)      (a),H2_ALEN(a)
+#define H2_LIT_ARGS(a)      (a),AP_ARRAY_LEN(a)
 
 static literal IgnoredRequestHeaders[] = {
     H2_DEF_LITERAL("upgrade"),

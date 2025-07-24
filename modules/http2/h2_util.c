@@ -1530,7 +1530,7 @@ apr_status_t h2_res_create_ngheader(h2_ngheader **ph, apr_pool_t *p,
         apr_psprintf(p, "%d", response->status)
     };
     return ngheader_create(ph, p, is_unsafe(response),
-                           H2_ALEN(keys), keys, values, response->headers);
+                           AP_ARRAY_LEN(keys), keys, values, response->headers);
 }
 
 #else /* AP_HAS_RESPONSE_BUCKETS */
@@ -1558,7 +1558,7 @@ apr_status_t h2_res_create_ngheader(h2_ngheader **ph, apr_pool_t *p,
         apr_psprintf(p, "%d", headers->status)
     };
     return ngheader_create(ph, p, is_unsafe(headers),
-                           H2_ALEN(keys), keys, values, headers->headers);
+                           AP_ARRAY_LEN(keys), keys, values, headers->headers);
 }
 
 #endif /* else AP_HAS_RESPONSE_BUCKETS */
@@ -1585,7 +1585,7 @@ apr_status_t h2_req_create_ngheader(h2_ngheader **ph, apr_pool_t *p,
     ap_assert(req->path);
     ap_assert(req->method);
 
-    return ngheader_create(ph, p, 0, H2_ALEN(keys), keys, values, req->headers);
+    return ngheader_create(ph, p, 0, AP_ARRAY_LEN(keys), keys, values, req->headers);
 }
 
 /*******************************************************************************
@@ -1599,7 +1599,7 @@ typedef struct {
 } literal;
 
 #define H2_DEF_LITERAL(n)   { (n), (sizeof(n)-1) }
-#define H2_LIT_ARGS(a)      (a),H2_ALEN(a)
+#define H2_LIT_ARGS(a)      (a),AP_ARRAY_LEN(a)
 
 static literal IgnoredRequestHeaders[] = {
     H2_DEF_LITERAL("upgrade"),

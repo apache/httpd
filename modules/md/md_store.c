@@ -32,6 +32,7 @@
 #include "md_json.h"
 #include "md_store.h"
 #include "md_util.h"
+#include "ap_config.h"
 
 /**************************************************************************************************/
 /* generic callback handling */
@@ -61,7 +62,7 @@ static const char *GROUP_NAME[] = {
 
 const char *md_store_group_name(unsigned int group)
 {
-    if (group < sizeof(GROUP_NAME)/sizeof(GROUP_NAME[0])) {
+    if (group < AP_ARRAY_LEN(GROUP_NAME)) {
         return GROUP_NAME[group];
     }
     return "UNKNOWN";

@@ -261,5 +261,18 @@
 #define AP_FN_ATTR_NONNULL(x)
 #endif
 
-
+#ifndef AP_ARRAY_LEN
+/**
+ * @def AP_ARRAY_LEN(a)
+ * @brief Computes the number of elements in a static array.
+ *
+ * This macro replaces `sizeof(a)/sizeof(a[0])` to improve readability.
+ * It should only be used with fixed-size arrays, not pointers or dynamically
+ * allocated memory.
+ *
+ * @param a The static array.
+ * @return The number of elements in the array.
+ */
+#define AP_ARRAY_LEN(a) (sizeof(a) / sizeof((a)[0]))
+#endif
 #endif /* AP_CONFIG_H */
