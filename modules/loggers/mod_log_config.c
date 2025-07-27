@@ -1306,19 +1306,15 @@ static int multi_log_transaction(request_rec *r)
     if (mls->config_logs->nelts) {
         clsarray = (config_log_state *) mls->config_logs->elts;
         for (i = 0; i < mls->config_logs->nelts; ++i) {
-            config_log_state *cls = &clsarray[i];
-
-            config_log_transaction(r, cls, mls->default_format);
+            config_log_transaction(r, &clsarray[i], mls->default_format);
         }
     }
 
     if (mls->server_config_logs) {
         clsarray = (config_log_state *) mls->server_config_logs->elts;
         for (i = 0; i < mls->server_config_logs->nelts; ++i) {
-            config_log_state *cls = &clsarray[i];
-
-            if (cls->inherit || !mls->config_logs->nelts) {
-                config_log_transaction(r, cls, mls->default_format);
+            if (clsarray[i].inherit || !mls->config_logs->nelts) {
+                config_log_transaction(r, &clsarray[i], mls->default_format);
             }
         }
     }
@@ -1484,17 +1480,18 @@ static const char *add_custom_log(cmd_parms *cmd, void *dummy,
     }
 
     cls->fname = fn;
-    cls->format_string = fmt;
     cls->directive = cmd->directive;
-    if (fmt == NULL) {
-        cls->format = NULL;
-    }
-    else {
+    cls->format = NULL;
+    cls->format_string = fmt;
+    if (fmt) {
         /* if fmt string was actually a LogFormat nickname,
          * cls->format will not be NULL, but an array with one entry (APR_EOL_STR)
          * but cls->format_string will have the nickname
          */
-        cls->format = parse_log_string(cmd->pool, fmt, &err_string);
+         /* try to parse as log string, report error only here
+          * actual nickname lookup and parsing will be done in log_check_config
+          */
+        parse_log_string(cmd->pool, fmt, &err_string);
     }
 
     return err_string;
@@ -1613,9 +1610,7 @@ static int open_multi_logs(server_rec *s, apr_pool_t *p)
 
     if (clsarray && nelts) {
         for (i = 0; i < nelts; ++i) {
-            config_log_state *cls = &clsarray[i];
-
-            if (!open_config_log(s, p, cls, mls->default_format)) {
+            if (!open_config_log(s, p, &clsarray[i], mls->default_format)) {
                 /* Failure already logged by open_config_log */
                 return DONE;
             }
@@ -2398,8 +2393,7 @@ static int log_check_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *pte
         /* if no default_format is set at all, fallback to CLF */
         if (!mls->default_format) {
             ap_log_error(APLOG_MARK, APLOG_INFO, 0, s, "Using \"CLF\" as default_format for server \"%s\"", s->server_hostname);
-            mls->default_format_string = "CLF";
-            format = apr_table_get(mls->formats, mls->default_format_string);
+            format = apr_table_get(mls->formats, "CLF");
             mls->default_format = parse_log_string(plog, format, &dummy);
         }
 
@@ -2414,11 +2408,14 @@ static int log_check_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *pte
             /* try to lookup format_string as nickname */
             if (clsarray[i].format_string) {
                 format = apr_table_get(mls->formats, clsarray[i].format_string);
-                if (format) {
-                    clsarray[i].format = parse_log_string(plog, format, &dummy);
-                } else {
-                    log_check_config_warn_nickname(s, clsarray[i].format, clsarray[i].format_string);
+                if (!format) {
+                    format = clsarray[i].format_string;
                 }
+                clsarray[i].format = parse_log_string(pconf, format, &dummy);
+                log_check_config_warn_nickname(s, clsarray[i].format, format);
+
+                /* delete original format string after parsing, only do this once */
+                clsarray[i].format_string = NULL;
             }
 
             if (check_log_dir(ptemp, s, &clsarray[i]) != OK) {
