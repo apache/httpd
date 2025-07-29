@@ -2383,18 +2383,21 @@ static int log_check_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *pte
         /* try to lookup format_string as nickname */
         if (mls->default_format_string) {
             format = apr_table_get(mls->formats, mls->default_format_string);
-            if (format) {
-                mls->default_format = parse_log_string(plog, format, &dummy);
-            } else {
-                log_check_config_warn_nickname(s, mls->default_format, mls->default_format_string);
+            if (!format) {
+               format = mls->default_format_string;
             }
+            mls->default_format = parse_log_string(pconf, format, &dummy);
+            log_check_config_warn_nickname(s, mls->default_format, format);
+
+            /* delete original format string after parsing, only do this once */
+            mls->default_format_string = NULL;
         }
 
         /* if no default_format is set at all, fallback to CLF */
         if (!mls->default_format) {
             ap_log_error(APLOG_MARK, APLOG_INFO, 0, s, "Using \"CLF\" as default_format for server \"%s\"", s->server_hostname);
             format = apr_table_get(mls->formats, "CLF");
-            mls->default_format = parse_log_string(plog, format, &dummy);
+            mls->default_format = parse_log_string(pconf, format, &dummy);
         }
 
         /*
