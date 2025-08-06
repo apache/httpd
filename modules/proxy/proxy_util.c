@@ -4697,8 +4697,8 @@ PROXY_DECLARE(int) ap_proxy_create_hdrbrgd(apr_pool_t *p,
         if (!host) {
             host =  r->server->server_hostname;
             ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(01092)
-                          "no HTTP 0.9 request (with no host line) "
-                          "on incoming request and preserve host set "
+                          "incoming HTTP/0.9 request (with no Host header) "
+                          "and preserve host set, "
                           "forcing hostname to be %s for uri %s",
                           host, r->uri);
             apr_table_setn(r->headers_in, "Host", host);
