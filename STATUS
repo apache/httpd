@@ -169,6 +169,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c 1927235 ^/httpd/httpd/trunk .
      +1: icing,
 
+  *) mod_proxy_http2: add support for ProxyErrorOverride. PR69771
+     trunk patch: http://svn.apache.org/r1927647
+     2.4.x patch: svn merge -c 1927647 ^/httpd/httpd/trunk .
+     +1: icing,
+
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
