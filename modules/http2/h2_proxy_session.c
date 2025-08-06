@@ -49,6 +49,7 @@ typedef struct h2_proxy_stream {
     unsigned int waiting_on_ping : 1;
     unsigned int headers_ended : 1;
     uint32_t error_code;
+    int proxy_status;
 
     apr_bucket_brigade *input;
     apr_off_t data_sent;
@@ -308,6 +309,15 @@ static int on_frame_recv(nghttp2_session *ngh2, const nghttp2_frame *frame,
                               session->id, r->status, forward);
                 if (forward) {
                     ap_send_interim_response(r, 1);
+                }
+            }
+            else if (r->status >= 400) {
+                proxy_dir_conf *dconf;
+                dconf = ap_get_module_config(r->per_dir_config, &proxy_module);
+                if (ap_proxy_should_override(dconf, r->status)) {
+                    apr_table_setn(r->notes, "proxy-error-override", "1");
+                    nghttp2_submit_rst_stream(ngh2, NGHTTP2_FLAG_NONE,
+                          frame->hd.stream_id, NGHTTP2_STREAM_CLOSED);
                 }
             }
             stream_resume(stream);
