@@ -344,6 +344,7 @@
 <li><a href="mod_http2.html#h2earlyhint">H2EarlyHint</a></li>
 <li><a href="mod_http2.html#h2earlyhints">H2EarlyHints</a></li>
 <li><a href="mod_http2.html#h2maxdataframelen">H2MaxDataFrameLen</a></li>
+<li><a href="mod_http2.html#h2maxheaderblocklen">H2MaxHeaderBlockLen</a></li>
 <li><a href="mod_http2.html#h2maxsessionstreams">H2MaxSessionStreams</a></li>
 <li><a href="mod_http2.html#h2maxworkeridleseconds">H2MaxWorkerIdleSeconds</a></li>
 <li><a href="mod_http2.html#h2maxworkers">H2MaxWorkers</a></li>
@@ -506,6 +507,8 @@
 <li><a href="mod_md.html#mdomainset">&lt;MDomainSet&gt;</a></li>
 <li><a href="mod_md.html#mdportmap">MDPortMap</a></li>
 <li><a href="mod_md.html#mdprivatekeys">MDPrivateKeys</a></li>
+<li><a href="mod_md.html#mdprofile">MDProfile</a></li>
+<li><a href="mod_md.html#mdprofilemandatory">MDProfileMandatory</a></li>
 <li><a href="mod_md.html#mdrenewmode">MDRenewMode</a></li>
 <li><a href="mod_md.html#mdrenewwindow">MDRenewWindow</a></li>
 <li><a href="mod_md.html#mdrequirehttps">MDRequireHttps</a></li>
@@ -868,7 +871,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/directives.htm
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2024 The Apache Software Foundation.<br />Licencia bajo los términos de la <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2025 The Apache Software Foundation.<br />Licencia bajo los términos de la <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Módulos</a> | <a href="../mod/quickreference.html">Directivas</a> | <a href="http://wiki.apache.org/httpd/FAQ">Preguntas Frecuentes</a> | <a href="../glossary.html">Glosario</a> | <a href="../sitemap.html">Mapa del sitio web</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
