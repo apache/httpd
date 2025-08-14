@@ -1805,9 +1805,11 @@ int h2_util_frame_print(const nghttp2_frame *frame, char *buffer, size_t maxlen)
         }
         case NGHTTP2_RST_STREAM: {
             return apr_snprintf(buffer, maxlen,
-                                "RST_STREAM[length=%d, flags=%d, stream=%d]",
+                                "RST_STREAM[length=%d, flags=%d, stream=%d"
+                                ",error=%d]",
                                 (int)frame->hd.length,
-                                frame->hd.flags, frame->hd.stream_id);
+                                frame->hd.flags, frame->hd.stream_id,
+                                frame->rst_stream.error_code);
         }
         case NGHTTP2_SETTINGS: {
             if (frame->hd.flags & NGHTTP2_FLAG_ACK) {

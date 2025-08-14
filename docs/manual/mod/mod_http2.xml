@@ -1168,4 +1168,31 @@ H2EarlyHint Link "&lt;/my.css&gt;;rel=preload;as=style"
         </usage>
     </directivesynopsis>
 
+        <directivesynopsis>
+        <name>H2MaxStreamErrors</name>
+        <description>Maximum amount of client caused errors to tolerate</description>
+        <syntax>H2MaxStreamErrors <em>n</em></syntax>
+        <default>H2MaxStreamErrors 8</default>
+        <contextlist>
+            <context>server config</context>
+            <context>virtual host</context>
+        </contextlist>
+        <compatibility>Available in version 2.5.1 and later.</compatibility>
+
+        <usage>
+            <p>
+                <directive>H2MaxStreamErrors</directive> sets the maxmimum amount
+                of tolerated HTTP/2 stream errors caused by the client.
+                When exceeding this limit, the connection will be closed.
+                Stream errors are protocol violations on an individual HTTP/2
+                stream that do not necessitate a connection close by the
+                protocol specification, but can be a sign of malicious
+                activity by a client.
+            </p>
+            <p>
+                Set to 0 to tolerate faulty clients.
+            </p>
+        </usage>
+    </directivesynopsis>
+
 </modulesynopsis>

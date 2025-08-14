@@ -1086,8 +1086,9 @@ static void s_mplx_be_happy(h2_mplx *m, conn_rec *c, h2_conn_ctx_t *conn_ctx)
             m->last_mood_change = now;
             m->irritations_since = 0;
             ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, c,
-                          H2_MPLX_MSG(m, "mood update, increasing worker limit to %d"),
-                          m->processing_limit);
+                          H2_MPLX_MSG(m, "mood update, increasing worker limit"
+                          "to %d, processing %d right now"),
+                          m->processing_limit, m->processing_count);
         }
     }
 }
@@ -1116,8 +1117,9 @@ static void m_be_annoyed(h2_mplx *m)
             m->last_mood_change = now;
             m->irritations_since = 0;
             ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, m->c1,
-                          H2_MPLX_MSG(m, "mood update, decreasing worker limit to %d"),
-                          m->processing_limit);
+                          H2_MPLX_MSG(m, "mood update, decreasing worker limit "
+                          "to %d, processing %d right now"),
+                          m->processing_limit, m->processing_count);
         }
     }
 }
@@ -1141,6 +1143,7 @@ static int reset_is_acceptable(h2_stream *stream)
      * The responses to such requests continue forever otherwise.
      *
      */
+    if (stream->rst_error) return 0; /* errored stream. bad. */
     if (!stream_is_running(stream)) return 1;
     if (!(stream->id & 0x01)) return 1; /* stream initiated by us. acceptable. */
     if (!stream->response) return 0; /* no response headers produced yet. bad. */

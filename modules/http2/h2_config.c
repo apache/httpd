@@ -78,6 +78,7 @@ typedef struct h2_config {
     apr_interval_time_t stream_timeout;/* beam timeout */
     int max_data_frame_len;          /* max # bytes in a single h2 DATA frame */
     int max_hd_block_len;            /* max # bytes in a response header block */
+    int max_stream_errors;           /* max # of tolerated stream errors */
     int proxy_requests;              /* act as forward proxy */
     int h2_websockets;               /* if mod_h2 negotiating WebSockets */
 } h2_config;
@@ -119,6 +120,7 @@ static h2_config defconf = {
     -1,                     /* beam timeout */
     0,                      /* max DATA frame len, 0 == no extra limit */
     0,                      /* max header block len, 0 == no extra limit */
+    8,                      /* max stream errors tolerated */
     0,                      /* forward proxy */
     0,                      /* WebSockets negotiation, enabled */
 };
@@ -168,6 +170,7 @@ void *h2_config_create_svr(apr_pool_t *pool, server_rec *s)
     conf->stream_timeout       = DEF_VAL;
     conf->max_data_frame_len   = DEF_VAL;
     conf->max_hd_block_len     = DEF_VAL;
+    conf->max_stream_errors    = DEF_VAL;
     conf->proxy_requests       = DEF_VAL;
     conf->h2_websockets        = DEF_VAL;
     return conf;
@@ -220,6 +223,7 @@ static void *h2_config_merge(apr_pool_t *pool, void *basev, void *addv)
     n->stream_timeout       = H2_CONFIG_GET(add, base, stream_timeout);
     n->max_data_frame_len   = H2_CONFIG_GET(add, base, max_data_frame_len);
     n->max_hd_block_len     = H2_CONFIG_GET(add, base, max_hd_block_len);
+    n->max_stream_errors    = H2_CONFIG_GET(add, base, max_stream_errors);
     n->proxy_requests       = H2_CONFIG_GET(add, base, proxy_requests);
     n->h2_websockets        = H2_CONFIG_GET(add, base, h2_websockets);
     return n;
@@ -319,6 +323,9 @@ static apr_int64_t h2_srv_config_geti64(const h2_config *conf, h2_config_var_t v
             return H2_CONFIG_GET(conf, &defconf, h2_websockets);
         case H2_CONF_MAX_HEADER_BLOCK_LEN:
             return H2_CONFIG_GET(conf, &defconf, max_hd_block_len);
+        case H2_CONF_MAX_STREAM_ERRORS:
+            return H2_CONFIG_GET(conf, &defconf, max_stream_errors);
+
         default:
             return DEF_VAL;
     }
@@ -389,6 +396,9 @@ static void h2_srv_config_seti(h2_config *conf, h2_config_var_t var, int val)
             break;
         case H2_CONF_MAX_HEADER_BLOCK_LEN:
             H2_CONFIG_SET(conf, max_hd_block_len, val);
+            break;
+        case H2_CONF_MAX_STREAM_ERRORS:
+            H2_CONFIG_SET(conf, max_stream_errors, val);
         default:
             break;
     }
@@ -666,6 +676,17 @@ static const char *h2_conf_set_max_hd_block_len(cmd_parms *cmd,
         return "value must be 0 or larger";
     }
     CONFIG_CMD_SET(cmd, dirconf, H2_CONF_MAX_HEADER_BLOCK_LEN, val);
+    return NULL;
+}
+
+static const char *h2_conf_set_max_stream_errors(cmd_parms *cmd,
+                                               void *dirconf, const char *value)
+{
+    int val = (int)apr_atoi64(value);
+    if (val < 0) {
+        return "value must be 0 or larger";
+    }
+    CONFIG_CMD_SET(cmd, dirconf, H2_CONF_MAX_STREAM_ERRORS, val);
     return NULL;
 }
 
@@ -1092,6 +1113,8 @@ const command_rec h2_cmds[] = {
                   RSRC_CONF, "maximum number of bytes in a single HTTP/2 DATA frame"),
     AP_INIT_TAKE1("H2MaxHeaderBlockLen", h2_conf_set_max_hd_block_len, NULL,
                   RSRC_CONF, "maximum number of bytes in a response header block"),
+    AP_INIT_TAKE1("H2MaxStreamErrors", h2_conf_set_max_stream_errors, NULL,
+                  RSRC_CONF, "maximum number of flow control errors tolerated"),
     AP_INIT_TAKE2("H2EarlyHint", h2_conf_add_early_hint, NULL,
                    OR_FILEINFO|OR_AUTHCFG, "add a a 'Link:' header for a 103 Early Hints response."),
     AP_INIT_TAKE1("H2ProxyRequests", h2_conf_set_proxy_requests, NULL,

@@ -47,6 +47,7 @@ typedef enum {
     H2_CONF_PROXY_REQUESTS,
     H2_CONF_WEBSOCKETS,
     H2_CONF_MAX_HEADER_BLOCK_LEN,
+    H2_CONF_MAX_STREAM_ERRORS,
 } h2_config_var_t;
 
 struct apr_hash_t;

@@ -1,0 +1,4 @@
+  *) mod_http2: update to version 2.0.35
+     New directive `H2MaxStreamErrors` to control how much bad behaviour
+     by clients is tolerated before the connection is closed.
+     [Stefan Eissing]
