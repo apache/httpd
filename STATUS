@@ -167,17 +167,17 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   *) mod_http2/mod_proxy_http2: Fix bug in log2() calculation
      trunk patch: http://svn.apache.org/r1927235
      2.4.x patch: svn merge -c 1927235 ^/httpd/httpd/trunk .
-     +1: icing,
+     +1: icing, rpluem
 
   *) mod_proxy_http2: add support for ProxyErrorOverride. PR69771
      trunk patch: http://svn.apache.org/r1927647
      2.4.x patch: svn merge -c 1927647 ^/httpd/httpd/trunk .
-     +1: icing,
+     +1: icing, rpluem
 
   *) mod_http2: new directive H2MaxStreamErrors.
      trunk patch: http://svn.apache.org/r1927792
      2.4.x patch: svn merge -c 1927792 ^/httpd/httpd/trunk .
-     +1: icing,
+     +1: icing, rpluem
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
