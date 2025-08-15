@@ -353,6 +353,24 @@ void md_pkeys_spec_add_ec(md_pkeys_spec_t *pks, const char *curve)
     md_pkeys_spec_add(pks, spec);
 }
 
+const char *md_pkey_spec_to_str(const md_pkey_spec_t *spec, apr_pool_t *p)
+{
+    switch (spec->type) {
+        case MD_PKEY_TYPE_DEFAULT:
+            return "default";
+        case MD_PKEY_TYPE_RSA:
+            if (spec->params.rsa.bits >= MD_PKEY_RSA_BITS_MIN)
+                return apr_psprintf(p, "rsa-%d", spec->params.rsa.bits);
+            return "rsa";
+        case MD_PKEY_TYPE_EC:
+            if (spec->params.ec.curve)
+                return apr_psprintf(p, "ec-%s", spec->params.ec.curve);
+            return "ec";
+        default:
+            return "unsupported";
+    }
+}
+
 md_json_t *md_pkey_spec_to_json(const md_pkey_spec_t *spec, apr_pool_t *p)
 {
     md_json_t *json = md_json_create(p);
@@ -460,7 +478,7 @@ md_pkeys_spec_t *md_pkeys_spec_from_json(struct md_json_t *json, apr_pool_t *p)
     return pks;
 }
 
-static int pkey_spec_eq(md_pkey_spec_t *s1, md_pkey_spec_t *s2)
+int md_pkey_spec_eq(const md_pkey_spec_t *s1, const md_pkey_spec_t *s2)
 {
     if (s1 == s2) {
         return 1;
@@ -496,8 +514,8 @@ int md_pkeys_spec_eq(md_pkeys_spec_t *pks1, md_pkeys_spec_t *pks2)
     }
     if (pks1 && pks2 && pks1->specs->nelts == pks2->specs->nelts) {
         for(i = 0; i < pks1->specs->nelts; ++i) {
-            if (!pkey_spec_eq(APR_ARRAY_IDX(pks1->specs, i, md_pkey_spec_t *),
-                              APR_ARRAY_IDX(pks2->specs, i, md_pkey_spec_t *))) {
+            if (!md_pkey_spec_eq(APR_ARRAY_IDX(pks1->specs, i, md_pkey_spec_t *),
+                                 APR_ARRAY_IDX(pks2->specs, i, md_pkey_spec_t *))) {
                 return 0;
             }
         }
@@ -1302,7 +1320,7 @@ int md_cert_covers_md(md_cert_t *cert, const md_t *md)
 const char *md_cert_get_issuer_name(const md_cert_t *cert, apr_pool_t *p)
 {
     X509_NAME *xname = X509_get_issuer_name(cert->x509);
-    if(xname) {
+    if (xname) {
       char *name, *s = X509_NAME_oneline(xname, NULL, 0);
       name = apr_pstrdup(p, s);
       OPENSSL_free(s);
@@ -2193,3 +2211,61 @@ apr_status_t md_check_cert_and_pkey(struct apr_array_header_t *certs, md_pkey_t 
 
     return APR_SUCCESS;
 }
+
+apr_status_t md_cert_get_ari_cert_id(const char **pari_cert_id,
+                                     const md_cert_t *cert, apr_pool_t *p)
+{
+#if OPENSSL_VERSION_NUMBER >= 0x10100000L
+    md_data_t akid_buf, ser_buf;
+    AUTHORITY_KEYID *s_aki;
+    const ASN1_INTEGER *aki;
+    const ASN1_INTEGER *serial;
+    BIGNUM *bn;
+    int i = -1, sder_len;
+    unsigned char *ucp, sbuf[256];
+
+    *pari_cert_id = NULL;
+    s_aki = X509_get_ext_d2i(cert->x509, NID_authority_key_identifier, &i, NULL);
+    if (s_aki == NULL) {
+        md_log_perror(MD_LOG_MARK, MD_LOG_ERR, 0, p,
+                      "cert has no authority key id extension");
+        return APR_ENOENT;
+    }
+    aki = s_aki->keyid;
+    if (aki == NULL) {
+        md_log_perror(MD_LOG_MARK, MD_LOG_ERR, 0, p,
+                      "cert has no authority key id in extension");
+        return APR_ENOENT;
+    }
+    akid_buf.len = (apr_size_t)ASN1_STRING_length(aki);
+    akid_buf.data = (const char *)ASN1_STRING_get0_data(aki);
+    akid_buf.free_data = NULL;
+
+    serial = X509_get0_serialNumber(cert->x509);
+    if (!serial) {
+        md_log_perror(MD_LOG_MARK, MD_LOG_ERR, 0, p,
+                      "cert has no serial number");
+        return APR_ENOENT;
+    }
+    memset(&ser_buf, 0, sizeof(ser_buf));
+    bn = ASN1_INTEGER_to_BN(serial, NULL);
+    sder_len = BN_bn2bin(bn, sbuf);
+    OPENSSL_free((void*)bn);
+    if (sder_len < 1)
+        return APR_EINVAL;
+    ser_buf.len = (apr_size_t)sder_len;
+    ser_buf.data = (const char *)sbuf;
+    (void)ucp;
+
+    *pari_cert_id = apr_psprintf(p, "%s.%s",
+                                 md_util_base64url_encode(&akid_buf, p),
+                                 md_util_base64url_encode(&ser_buf, p));
+    return APR_SUCCESS;
+#else
+    *pari_cert_id = NULL;
+    (void)cert;
+    (void)p;
+    return APR_ENOTIMPL;
+#endif
+}
+

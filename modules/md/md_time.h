@@ -74,4 +74,7 @@ const char *md_timeslice_format(const md_timeslice_t *ts, apr_pool_t *p);
 md_timeperiod_t md_timeperiod_slice_before_end(const md_timeperiod_t *period, 
                                                const md_timeslice_t *ts);
 
+/* parse rfc3339 timestamp, return 0 when not valid */
+apr_time_t md_time_parse_rfc3339(const char *s);
+
 #endif /* md_util_h */

@@ -57,7 +57,8 @@ static apr_status_t ad_setup_order(md_proto_driver_t *d, md_result_t *result, in
     apr_status_t rv;
     md_t *md = ad->md;
     const char *profile = NULL;
-    
+    const char *ari_cert_id = NULL;
+
     assert(ad->md);
     assert(ad->acme);
 
@@ -77,9 +78,34 @@ static apr_status_t ad_setup_order(md_proto_driver_t *d, md_result_t *result, in
         md_acme_order_purge(d->store, d->p, MD_SG_STAGING, md, d->env);
     }
     
-    md_result_activity_setn(result, "Creating new order");
+    if (ad->cred->spec && ad->md->ca_account) {
+        /* are we replacing a previous certificate on the same account? */
+        int i;
+        for (i = 0; i < md_pkeys_spec_count(d->md->pks); ++i) {
+            md_pkey_spec_t *spec = md_pkeys_spec_get(d->md->pks, i);
+            const md_pubcert_t *pubcert;
+            const md_cert_t *cert;
+            if (md_pkey_spec_eq(ad->cred->spec, spec)) {
+                rv = md_reg_get_pubcert(&pubcert, d->reg, d->md, i, d->p);
+                if (rv == APR_SUCCESS) {
+                    cert = APR_ARRAY_IDX(pubcert->certs, 0, const md_cert_t*);
+                    if (cert) {
+                        md_cert_get_ari_cert_id(&ari_cert_id, cert, d->p);
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    md_result_activity_printf(result, "Creating new order, key-spec=%s, "
+                              "profile=%s, replacing-cert=%s",
+                              ad->cred->spec? md_pkey_spec_to_str(ad->cred->spec, d->p) : "default",
+                              ad->profile? ad->profile : "none",
+                              ari_cert_id? ari_cert_id : "none");
+
     if (ad->profile) {
-        if(ad->acme->api.v2.profiles) {
+        if (ad->acme->api.v2.profiles) {
             int i;
             for (i = 0; !profile && i < ad->acme->api.v2.profiles->nelts; ++i) {
                 const char *s = APR_ARRAY_IDX(ad->acme->api.v2.profiles, i, const char*);
@@ -104,7 +130,8 @@ static apr_status_t ad_setup_order(md_proto_driver_t *d, md_result_t *result, in
         }
     }
 
-    rv = md_acme_order_register(&ad->order, ad->acme, d->p, d->md->name, ad->domains, profile);
+    rv = md_acme_order_register(&ad->order, ad->acme, d->p, d->md->name,
+                                ad->domains, profile, ari_cert_id);
     if (APR_SUCCESS !=rv) goto leave;
     rv = md_acme_order_save(d->store, d->p, MD_SG_STAGING, d->md->name, ad->order, 0);
     if (APR_SUCCESS != rv) {

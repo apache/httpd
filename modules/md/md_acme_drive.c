@@ -256,7 +256,7 @@ static apr_status_t get_cert(void *baton, int attempt)
     (void)attempt;
     md_log_perror(MD_LOG_MARK, MD_LOG_TRACE1, 0, d->p, "retrieving cert from %s",
                   ad->order->certificate);
-    return md_acme_GET(ad->acme, ad->order->certificate, NULL, NULL, on_add_cert, NULL, d);
+    return md_acme_GET(ad->acme, ad->order->certificate, NULL, NULL, on_add_cert, NULL, 1, d);
 }
 
 apr_status_t md_acme_drive_cert_poll(md_proto_driver_t *d, int only_once)
@@ -429,7 +429,7 @@ static apr_status_t get_chain(void *baton, int attempt)
 
             md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, rv, d->p, 
                           "next chain cert at  %s", ad->chain_up_link);
-            rv = md_acme_GET(ad->acme, ad->chain_up_link, NULL, NULL, on_add_chain, NULL, d);
+            rv = md_acme_GET(ad->acme, ad->chain_up_link, NULL, NULL, on_add_chain, NULL, 1, d);
             
             if (APR_SUCCESS == rv && nelts == ad->cred->chain->nelts) {
                 break;
@@ -1094,10 +1094,155 @@ static apr_status_t acme_complete_md(md_t *md, apr_pool_t *p)
     return APR_SUCCESS;
 }
 
+static apr_status_t acme_get_ari(md_proto_driver_t *d,
+                                 struct md_result_t *result,
+                                 apr_time_t *prenew_at,
+                                 const char **purl)
+{
+    md_acme_driver_t *ad = d->baton;
+    apr_status_t rv = APR_SUCCESS;
+    const char *ca_effective = NULL;
+    apr_array_header_t *certs;
+    const md_cert_t *cert;
+    int i;
+
+    *prenew_at = 0;
+    *purl = NULL;
+    md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, rv, d->p,
+                  "get ARI status for %s", d->md->name);
+
+    if (d->md->cert_files && d->md->cert_files->nelts) {
+        md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, rv, d->p,
+                      "%s is configured with static files, no ARI", d->md->name);
+        goto out;
+    }
+
+    if (!d->md->ca_urls || d->md->ca_urls->nelts <= 0) {
+        /* No CA defined? This is checked in several other places, but lets be sure */
+        md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, rv, d->p,
+                      "%s is missing MDCertificateAuthority", d->md->name);
+        goto out;
+    }
+
+    /* always pick the first CA for this */
+    ca_effective = APR_ARRAY_IDX(d->md->ca_urls, 0, const char*);
+
+    certs = apr_array_make(d->p, 5, sizeof(md_cert_t*));
+    for (i = 0; i < md_pkeys_spec_count(d->md->pks); ++i) {
+        const md_pubcert_t *pubcert;
+        if (APR_SUCCESS == md_reg_get_pubcert(&pubcert, d->reg, d->md, i, d->p)) {
+            cert = APR_ARRAY_IDX(pubcert->certs, 0, const md_cert_t*);
+            APR_ARRAY_PUSH(certs, const md_cert_t*) = cert;
+        }
+    }
+
+    if (!certs->nelts) {
+      rv = APR_SUCCESS;
+      goto out;
+    }
+
+    if (APR_SUCCESS != (rv = md_acme_create(&ad->acme, d->p, ca_effective,
+                                            d->proxy_url, d->ca_file))) {
+        md_log_perror(MD_LOG_MARK, MD_LOG_ERR, rv, d->p,
+                      "create ACME communications");
+        goto out;
+    }
+    if (APR_SUCCESS != (rv = md_acme_setup(ad->acme, result))) {
+        md_log_perror(MD_LOG_MARK, MD_LOG_ERR, rv, d->p,
+                      "setup ACME communications");
+        goto out;
+    }
+    if (ad->acme->version != MD_ACME_VERSION_2 || !ad->acme->api.v2.renewal_info) {
+        md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, rv, d->p,
+                      "ARI not supported by ACME CA %s", ca_effective);
+        goto out;
+    }
+
+    md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, rv, d->p,
+                  "assessing ARI status for %d certificates", certs->nelts);
+    for (i = 0; i < certs->nelts; ++i) {
+        const char *ari_cert_id;
+        const char *ari_url = NULL, *ari_expl_url;
+        const char *renew_start, *renew_end;
+        apr_time_t start, end;
+        md_json_t *json;
+        unsigned char c;
+
+        cert = APR_ARRAY_IDX(certs, i, md_cert_t*);
+        if (md_cert_get_ari_cert_id(&ari_cert_id, cert, d->p) != APR_SUCCESS)
+          continue;
+
+        ari_url = apr_psprintf(d->p, "%s/%s", ad->acme->api.v2.renewal_info,
+                               ari_cert_id);
+        md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, rv, d->p,
+                      "GET #%d ARI from %s", i, ari_url);
+        if ((rv = md_acme_get_json(&json, ad->acme, ari_url, 0, d->p)) != APR_SUCCESS) {
+            md_log_perror(MD_LOG_MARK, MD_LOG_WARNING, rv, d->p,
+                          "error retrieving ARI from %s", ari_url);
+            continue;
+        }
+
+        if(!json) {
+            md_log_perror(MD_LOG_MARK, MD_LOG_WARNING, rv, d->p,
+                          "ARI returned no JSON from %s", ari_url);
+            continue;
+        }
+
+        renew_start = md_json_gets(json, "suggestedWindow", "start", NULL);
+        renew_end = md_json_gets(json, "suggestedWindow", "end", NULL);
+        ari_expl_url = md_json_gets(json, "explanationURL", NULL);
+        if (!renew_start || !renew_end) {
+            md_log_perror(MD_LOG_MARK, MD_LOG_WARNING, rv, d->p,
+                          "renewal info from CA incomplete for %s", ari_url);
+            continue;
+        }
+        start = md_time_parse_rfc3339(renew_start);
+        end = md_time_parse_rfc3339(renew_end);
+        if (!start) {
+            md_log_perror(MD_LOG_MARK, MD_LOG_WARNING, rv, d->p,
+                          "error parsing CA renew start time: '%s'",
+                          renew_start);
+            continue;
+        }
+        if (!end) {
+            md_log_perror(MD_LOG_MARK, MD_LOG_WARNING, rv, d->p,
+                          "error parsing CA renew end time: '%s'",
+                          renew_end);
+            continue;
+        }
+        if (start > end) {
+            md_log_perror(MD_LOG_MARK, MD_LOG_WARNING, rv, d->p,
+                          "CA advises weird renewal between '%s' and '%s'",
+                          renew_start, renew_end);
+            continue;
+        }
+        md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, rv, d->p,
+                      "CA advises renew via ARI between %s and %s"
+                      " (explantion: %s)",
+                      renew_start, renew_end,
+                      ari_expl_url? ari_expl_url : "none given");
+        /* select a random value between start and end */
+        md_rand_bytes(&c, sizeof(c), d->p);
+        start += apr_time_from_sec((apr_time_sec(end - start) * (c - 128)) / 256);
+        if (!*prenew_at || (start < *prenew_at)) {
+          *prenew_at = start;
+          *purl = apr_pstrdup(d->p, ari_expl_url);
+        }
+    }
+
+    rv = APR_SUCCESS;
+out:
+    return rv;
+}
+
 static md_proto_t ACME_PROTO = {
-    MD_PROTO_ACME, acme_driver_init, acme_driver_renew, 
-    acme_driver_preload_init, acme_driver_preload,
+    MD_PROTO_ACME,
+    acme_driver_init,
+    acme_driver_renew,
+    acme_driver_preload_init,
+    acme_driver_preload,
     acme_complete_md,
+    acme_get_ari,
 };
  
 apr_status_t md_acme_protos_add(apr_hash_t *protos, apr_pool_t *p)

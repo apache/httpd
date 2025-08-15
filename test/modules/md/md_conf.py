@@ -15,6 +15,8 @@ class MDConf(HttpdConf):
             self.add_admin(admin)
         self.add([
             "MDRetryDelay 1s",  # speed up testing a little
+            "MDRenewViaARI off", # not on, logs unwanted errors when test
+                                 # acme server is not responding
         ])
         if local_ca:
             self.add([

@@ -332,7 +332,7 @@ static apr_status_t acmev2_GET_as_POST_init(md_acme_req_t *req, void *baton)
     return md_acme_req_body_init(req, NULL);
 }
 
-static apr_status_t md_acme_req_send(md_acme_req_t *req)
+static apr_status_t md_acme_req_send(md_acme_req_t *req, int get_as_post)
 {
     apr_status_t rv;
     md_acme_t *acme = req->acme;
@@ -352,7 +352,7 @@ static apr_status_t md_acme_req_send(md_acme_req_t *req)
         if (APR_SUCCESS != rv) goto leave;
     }
     
-    if (!strcmp("GET", req->method) && !req->on_init && !req->req_json) {
+    if (get_as_post && !strcmp("GET", req->method) && !req->on_init && !req->req_json) {
         /* See <https://ietf-wg-acme.github.io/acme/draft-ietf-acme-acme.html#rfc.section.6.3>
          * and <https://mailarchive.ietf.org/arch/msg/acme/sotffSQ0OWV-qQJodLwWYWcEVKI>
          * and <https://community.letsencrypt.org/t/acme-v2-scheduled-deprecation-of-unauthenticated-resource-gets/74380>
@@ -420,7 +420,7 @@ static apr_status_t md_acme_req_send(md_acme_req_t *req)
     
     if (APR_EAGAIN == rv && req->max_retries > 0) {
         --req->max_retries;
-        rv = md_acme_req_send(req);
+        rv = md_acme_req_send(req, 1);
     }
     req = NULL;
 
@@ -449,14 +449,15 @@ apr_status_t md_acme_POST(md_acme_t *acme, const char *url,
     req->on_err = on_err;
     req->baton = baton;
     
-    return md_acme_req_send(req);
+    return md_acme_req_send(req, 1);
 }
 
 apr_status_t md_acme_GET(md_acme_t *acme, const char *url,
                          md_acme_req_init_cb *on_init,
                          md_acme_req_json_cb *on_json,
                          md_acme_req_res_cb *on_res,
-                          md_acme_req_err_cb *on_err,
+                         md_acme_req_err_cb *on_err,
+                         int get_as_post,
                          void *baton)
 {
     md_acme_req_t *req;
@@ -472,7 +473,7 @@ apr_status_t md_acme_GET(md_acme_t *acme, const char *url,
     req->on_err = on_err;
     req->baton = baton;
     
-    return md_acme_req_send(req);
+    return md_acme_req_send(req, get_as_post);
 }
 
 void md_acme_report_result(md_acme_t *acme, apr_status_t rv, struct md_result_t *result)
@@ -507,7 +508,7 @@ static apr_status_t on_got_json(md_acme_t *acme, apr_pool_t *p, const apr_table_
 }
 
 apr_status_t md_acme_get_json(struct md_json_t **pjson, md_acme_t *acme, 
-                              const char *url, apr_pool_t *p)
+                              const char *url, int get_as_post, apr_pool_t *p)
 {
     apr_status_t rv;
     json_ctx ctx;
@@ -515,7 +516,7 @@ apr_status_t md_acme_get_json(struct md_json_t **pjson, md_acme_t *acme,
     ctx.pool = p;
     ctx.json = NULL;
     
-    rv = md_acme_GET(acme, url, NULL, on_got_json, NULL, NULL, &ctx);
+    rv = md_acme_GET(acme, url, NULL, on_got_json, NULL, NULL, get_as_post, &ctx);
     *pjson = (APR_SUCCESS == rv)? ctx.json : NULL;
     return rv;
 }
@@ -720,6 +721,7 @@ static apr_status_t update_directory(const md_http_response_t *res, void *data)
         acme->api.v2.revoke_cert = md_json_dups(acme->p, json, "revokeCert", NULL);
         acme->api.v2.key_change = md_json_dups(acme->p, json, "keyChange", NULL);
         acme->api.v2.new_nonce = md_json_dups(acme->p, json, "newNonce", NULL);
+        acme->api.v2.renewal_info = md_json_dups(acme->p, json, "renewalInfo", NULL);
         /* RFC 8555 only requires "directory" and "newNonce" resources.
          * mod_md uses "newAccount" and "newOrder" so check for them.
          * But mod_md does not use the "revokeCert" or "keyChange"

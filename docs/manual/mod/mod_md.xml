@@ -1393,7 +1393,7 @@ MDMessageCmd /etc/apache/md-message
         <name>MDRetryDelay</name>
         <description>Time length for first retry, doubled on every consecutive error.</description>
         <syntax>MDRetryDelay <var>duration</var></syntax>
-        <default>MDRetryDelay 5s</default>
+        <default>MDRetryDelay 30s</default>
         <contextlist>
             <context>server config</context>
         </contextlist>
@@ -1407,6 +1407,10 @@ MDMessageCmd /etc/apache/md-message
             <p>
                 It is kept separate for each certificate renewal. Meaning an error
                 on one MDomain does not delay the renewals of other domains.
+            </p>
+            <p>
+                In mod_md v2.6.1, the default delay has been increased from 5
+                seconds to 30.
             </p>
         </usage>
     </directivesynopsis>
@@ -1591,6 +1595,28 @@ MDMessageCmd /etc/apache/md-message
                 When not mandatory and a profile is not offered by the CA,
                 renewals will be performed without specifying a profile and
                 the CA will issue a certificates according to its defaults.
+            </p>
+        </usage>
+    </directivesynopsis>
+
+    <directivesynopsis>
+        <name>MDRenewViaARI</name>
+        <description>usage of the ACME ARI extension (rfc9773).</description>
+        <syntax>MDRenewViaARI on|off</syntax>
+        <default>MDRenewViaARI on</default>
+        <contextlist>
+            <context>server config</context>
+        </contextlist>
+        <usage>
+            <p>
+                En-/Disable certificate renewals triggered via the ACME ARI
+                extension (rfc9773). These renewals happen *in addition* to
+                the mechanism controlled by <directive>MDRenewWindow</directive>.
+           </p><p>
+                ACME ARI allows an ACME CA to somewhat shape incoming renewal
+                traffic. More importantly though, it can inform clients of
+                urgent renewals, e.g. when a certificate or part of its chain
+                has been revoked.
             </p>
         </usage>
     </directivesynopsis>

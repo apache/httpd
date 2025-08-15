@@ -122,7 +122,7 @@ class TestProfiles:
         assert stat["profile"] == "XXX", f'{stat}'
         assert len(stat['cert']) == 0, f'{stat}'
         assert stat['renewal']['errors'] > 0, f'{stat}'
-        assert stat['renewal']['last']['activity'] == 'Creating new order', f'{stat}'
+        assert stat['renewal']['last']['activity'] == 'Creating new order, key-spec=default, profile=XXX, replacing-cert=none', f'{stat}'
         MDConf(env).install()
         assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
         env.httpd_error_log.ignore_recent(matches=[
