@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1924145 -->
+<!-- English Revision: 1927816 -->
 <!-- French translation : Lucien GENTIS -->
 
 <!--
@@ -1336,6 +1336,36 @@ H2EarlyHint Link "&lt;/my.css&gt;;rel=preload;as=style"
                 Les réponses dont la somme des tailles de tous les en-têtes est
 		supérieure à la valeur de cette directive ne seront pas traitées
 		et provoqueront une réinitialisation du flux.
+            </p>
+        </usage>
+    </directivesynopsis>
+
+        <directivesynopsis>
+        <name>H2MaxStreamErrors</name>
+        <description>Nombre maximal toléré d’erreurs dues au client</description>
+        <syntax>H2MaxStreamErrors <em>n</em></syntax>
+        <default>H2MaxStreamErrors 8</default>
+        <contextlist>
+            <context>server config</context>
+            <context>virtual host</context>
+        </contextlist>
+        <compatibility>Disponible à partir de la version 2.5.1 du serveur HTTP
+	Apache.</compatibility>
+
+        <usage>
+            <p>
+		La directive <directive>H2MaxStreamErrors</directive> permet de
+		définir le nombre maximal toléré d’erreurs de flux HTTP/2
+		causées par le client. Si cette limite est dépassée, la
+		connexion sera fermée. Les erreurs de flux sont des violations
+		du protocole sur un flux HTTP/2 individuel pour lesquelles la
+		spécification du protocole n’exige pas de fermeture de la
+		connexion, mais qui peuvent être un signe d’activité
+		malveillante de la part du client.
+            </p>
+            <p>
+                Définissez cette directive à 0 pour vous prémunir contre les
+		clients qui provoquent des erreurs.
             </p>
         </usage>
     </directivesynopsis>

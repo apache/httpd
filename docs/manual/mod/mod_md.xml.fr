@@ -2,7 +2,7 @@
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
-<!-- English Revision: 1926075 -->
+<!-- English Revision: 1927807 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -1661,7 +1661,7 @@ MDMessageCmd /etc/apache/md-message
         <description>Temps d'attente avant de réessayer, doublé à chaque erreur
 	consécutive</description>
         <syntax>MDRetryDelay <var>duration</var></syntax>
-        <default>MDRetryDelay 5s</default>
+        <default>MDRetryDelay 30s</default>
         <contextlist>
             <context>server config</context>
         </contextlist>
@@ -1677,6 +1677,10 @@ MDMessageCmd /etc/apache/md-message
                 Ce temps d'attente est spécifique à chaque renouvellement de
 		certificat. Autrement dit, une erreur sur un MDomain ne retarde
 		pas les renouvellements des autres domaines.
+            </p>
+	    <p>
+		 Avec la version 2.6.1 de mod_md, le temps d’attente a été
+		 augmenté de 5 à 30 secondes.
             </p>
         </usage>
     </directivesynopsis>
@@ -1894,5 +1898,30 @@ MDMessageCmd /etc/apache/md-message
             </p>
         </usage>
     </directivesynopsis>
+
+    <directivesynopsis>
+        <name>MDRenewViaARI</name>
+        <description>Utilisation de l’extension ACME ARI (rfc9773).</description>
+        <syntax>MDRenewViaARI on|off</syntax>
+        <default>MDRenewViaARI on</default>
+        <contextlist>
+            <context>server config</context>
+        </contextlist>
+        <usage>
+            <p>
+                Cette directive permet d’activer ou de désactiver le
+		déclenchement du renouvellement des certificats à l’aide de
+		l’extension ACME ARI (rfc9773). Ces renouvellements s’ajoutent à
+		ceux déclenchés par le mécanisme contrôlé à l’aide de la
+		directive <directive>MDRenewWindow</directive>.
+           </p><p>
+                ACME ARI permet en quelque sorte à une CA ACME de façonner le
+		trafic entrant des renouvellements. Plus important cependant,
+		cette extension peut informer les clients de l’urgence d’un
+		renouvellement, par exemple lorsqu’un certificat ou une partie
+		de sa chaîne de certification a été révoqué(e).
+            </p>
+        </usage>
+    </directivesynopsis>    
 
 </modulesynopsis>
