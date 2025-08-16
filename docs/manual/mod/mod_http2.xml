@@ -1181,7 +1181,7 @@ H2EarlyHint Link "&lt;/my.css&gt;;rel=preload;as=style"
 
         <usage>
             <p>
-                <directive>H2MaxStreamErrors</directive> sets the maxmimum amount
+                <directive>H2MaxStreamErrors</directive> sets the maximum amount
                 of tolerated HTTP/2 stream errors caused by the client.
                 When exceeding this limit, the connection will be closed.
                 Stream errors are protocol violations on an individual HTTP/2
