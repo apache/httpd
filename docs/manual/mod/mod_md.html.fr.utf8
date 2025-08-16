@@ -405,6 +405,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#mdprofile">MDProfile</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mdprofilemandatory">MDProfileMandatory</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mdrenewmode">MDRenewMode</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#mdrenewviaari">MDRenewViaARI</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mdrenewwindow">MDRenewWindow</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mdrequirehttps">MDRequireHttps</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mdretrydelay">MDRetryDelay</a></li>
@@ -1447,6 +1448,31 @@ MDomain example2.org auto
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="mdrenewviaari" id="mdrenewviaari">Directive</a> <a name="MDRenewViaARI" id="MDRenewViaARI">MDRenewViaARI</a> <a title="Lien permanent" href="#mdrenewviaari" class="permalink">&para;</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Utilisation de l’extension ACME ARI (rfc9773).</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MDRenewViaARI on|off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>MDRenewViaARI on</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_md</td></tr>
+</table>
+            <p>
+                Cette directive permet d’activer ou de désactiver le
+		déclenchement du renouvellement des certificats à l’aide de
+		l’extension ACME ARI (rfc9773). Ces renouvellements s’ajoutent à
+		ceux déclenchés par le mécanisme contrôlé à l’aide de la
+		directive <code class="directive">MDRenewWindow</code>.
+           </p><p>
+                ACME ARI permet en quelque sorte à une CA ACME de façonner le
+		trafic entrant des renouvellements. Plus important cependant,
+		cette extension peut informer les clients de l’urgence d’un
+		renouvellement, par exemple lorsqu’un certificat ou une partie
+		de sa chaîne de certification a été révoqué(e).
+            </p>
+        
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="mdrenewwindow" id="mdrenewwindow">Directive</a> <a name="MDRenewWindow" id="MDRenewWindow">MDRenewWindow</a> <a title="Lien permanent" href="#mdrenewwindow" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit le moment auquel un certificat doit être renouvelé.</td></tr>
@@ -1554,7 +1580,7 @@ MDRenewWindow 10%</pre>
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Temps d'attente avant de réessayer, doublé à chaque erreur
 	consécutive</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MDRetryDelay <var>duration</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>MDRetryDelay 5s</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>MDRetryDelay 30s</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_md</td></tr>
@@ -1570,6 +1596,10 @@ MDRenewWindow 10%</pre>
                 Ce temps d'attente est spécifique à chaque renouvellement de
 		certificat. Autrement dit, une erreur sur un MDomain ne retarde
 		pas les renouvellements des autres domaines.
+            </p>
+	    <p>
+		 Avec la version 2.6.1 de mod_md, le temps d’attente a été
+		 augmenté de&nbsp;5 à 30&nbsp;secondes.
             </p>
         
 </div>

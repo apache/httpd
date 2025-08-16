@@ -89,6 +89,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#h2maxdataframelen">H2MaxDataFrameLen</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#h2maxheaderblocklen">H2MaxHeaderBlockLen</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#h2maxsessionstreams">H2MaxSessionStreams</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#h2maxstreamerrors">H2MaxStreamErrors</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#h2maxworkeridleseconds">H2MaxWorkerIdleSeconds</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#h2maxworkers">H2MaxWorkers</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#h2minworkers">H2MinWorkers</a></li>
@@ -466,6 +467,34 @@
             </p>
             <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">H2MaxSessionStreams 20</pre>
 </div>
+        
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="h2maxstreamerrors" id="h2maxstreamerrors">Directive</a> <a name="H2MaxStreamErrors" id="H2MaxStreamErrors">H2MaxStreamErrors</a> <a title="Lien permanent" href="#h2maxstreamerrors" class="permalink">&para;</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Nombre maximal toléré d’erreurs dues au client</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>H2MaxStreamErrors <em>n</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>H2MaxStreamErrors 8</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_http2</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.5.1 du serveur HTTP
+	Apache.</td></tr>
+</table>
+            <p>
+		La directive <code class="directive">H2MaxStreamErrors</code> permet de
+		définir le nombre maximal toléré d’erreurs de flux HTTP/2
+		causées par le client. Si cette limite est dépassée, la
+		connexion sera fermée. Les erreurs de flux sont des violations
+		du protocole sur un flux HTTP/2 individuel pour lesquelles la
+		spécification du protocole n’exige pas de fermeture de la
+		connexion, mais qui peuvent être un signe d’activité
+		malveillante de la part du client.
+            </p>
+            <p>
+                Définissez cette directive à 0 pour vous prémunir contre les
+		clients qui provoquent des erreurs.
+            </p>
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>

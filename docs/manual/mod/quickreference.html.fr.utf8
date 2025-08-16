@@ -671,343 +671,345 @@ requêtes</td></tr>
 <tr><td><a href="mod_http2.html#h2maxdataframelen">H2MaxDataFrameLen <em>n</em></a></td><td> 0 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Nombre maximal d'octets dans une trame HTTP/2 DATA</td></tr>
 <tr class="odd"><td><a href="mod_http2.html#h2maxheaderblocklen">H2MaxHeaderBlockLen <em>n</em></a></td><td> 0 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Taille maximale des en-têtes d’une réponse</td></tr>
 <tr><td><a href="mod_http2.html#h2maxsessionstreams">H2MaxSessionStreams <em>n</em></a></td><td> 100 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Nombre maximal de flux actifs par session HTTP/2.</td></tr>
-<tr class="odd"><td><a href="mod_http2.html#h2maxworkeridleseconds">H2MaxWorkerIdleSeconds <em>n</em></a></td><td> 600 </td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Nombre maximal de secondes pendant lequel une unité de
+<tr class="odd"><td><a href="mod_http2.html#h2maxstreamerrors">H2MaxStreamErrors <em>n</em></a></td><td> 8 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Nombre maximal toléré d’erreurs dues au client</td></tr>
+<tr><td><a href="mod_http2.html#h2maxworkeridleseconds">H2MaxWorkerIdleSeconds <em>n</em></a></td><td> 600 </td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Nombre maximal de secondes pendant lequel une unité de
 	traitement h2 pourra rester inactive sans être arrêtée.</td></tr>
-<tr><td><a href="mod_http2.html#h2maxworkers">H2MaxWorkers <em>n</em></a></td><td></td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Nombre maximal de threads à utiliser pour chaque processus
+<tr class="odd"><td><a href="mod_http2.html#h2maxworkers">H2MaxWorkers <em>n</em></a></td><td></td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Nombre maximal de threads à utiliser pour chaque processus
 	enfant.</td></tr>
-<tr class="odd"><td><a href="mod_http2.html#h2minworkers">H2MinWorkers <em>n</em></a></td><td></td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Nombre minimal de threads à utiliser pour chaque processus
+<tr><td><a href="mod_http2.html#h2minworkers">H2MinWorkers <em>n</em></a></td><td></td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Nombre minimal de threads à utiliser pour chaque processus
 	enfant.</td></tr>
-<tr><td><a href="mod_http2.html#h2moderntlsonly">H2ModernTLSOnly on|off</a></td><td> on </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Impose les connexions HTTP/2 en mode "TLS moderne"
+<tr class="odd"><td><a href="mod_http2.html#h2moderntlsonly">H2ModernTLSOnly on|off</a></td><td> on </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Impose les connexions HTTP/2 en mode "TLS moderne"
 	seulement</td></tr>
-<tr class="odd"><td><a href="mod_http2.html#h2outputbuffering">H2OutputBuffering on|off</a></td><td> on </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Contrôle la mise en tampon du flux de sortie</td></tr>
-<tr><td><a href="mod_http2.html#h2padding">H2Padding <em>numbits</em></a></td><td> 0 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Spécifie un intervalle de nombres d'octets de bourrage à
+<tr><td><a href="mod_http2.html#h2outputbuffering">H2OutputBuffering on|off</a></td><td> on </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Contrôle la mise en tampon du flux de sortie</td></tr>
+<tr class="odd"><td><a href="mod_http2.html#h2padding">H2Padding <em>numbits</em></a></td><td> 0 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Spécifie un intervalle de nombres d'octets de bourrage à
 	ajouter aux trames utiles</td></tr>
-<tr class="odd"><td><a href="mod_http2.html#h2proxyrequests">H2ProxyRequests  on|off</a></td><td> off </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Active/Désactive les requêtes sous mandat direct via HTTP/2</td></tr>
-<tr><td><a href="mod_http2.html#h2push">H2Push on|off</a></td><td> on </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Activation/désactivation du server push H2</td></tr>
-<tr class="odd"><td><a href="mod_http2.html#h2pushdiarysize">H2PushDiarySize n</a></td><td> 256 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Taille du journal des Pushes H2</td></tr>
-<tr><td><a href="mod_http2.html#h2pushpriority">H2PushPriority <em>mime-type</em> [after|before|interleaved] [<em>weight</em>]</a></td><td> * After 16 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Priorité des pushes H2</td></tr>
-<tr class="odd"><td><a href="mod_http2.html#h2pushresource">H2PushResource [add] <em>path</em> [critical]</a></td><td></td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Déclare des ressources à proposer ("pusher") au client</td></tr>
-<tr><td><a href="mod_http2.html#h2serializeheaders">H2SerializeHeaders on|off</a></td><td> off </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Active/désactive la sérialisation du traitement des
+<tr><td><a href="mod_http2.html#h2proxyrequests">H2ProxyRequests  on|off</a></td><td> off </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Active/Désactive les requêtes sous mandat direct via HTTP/2</td></tr>
+<tr class="odd"><td><a href="mod_http2.html#h2push">H2Push on|off</a></td><td> on </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Activation/désactivation du server push H2</td></tr>
+<tr><td><a href="mod_http2.html#h2pushdiarysize">H2PushDiarySize n</a></td><td> 256 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Taille du journal des Pushes H2</td></tr>
+<tr class="odd"><td><a href="mod_http2.html#h2pushpriority">H2PushPriority <em>mime-type</em> [after|before|interleaved] [<em>weight</em>]</a></td><td> * After 16 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Priorité des pushes H2</td></tr>
+<tr><td><a href="mod_http2.html#h2pushresource">H2PushResource [add] <em>path</em> [critical]</a></td><td></td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Déclare des ressources à proposer ("pusher") au client</td></tr>
+<tr class="odd"><td><a href="mod_http2.html#h2serializeheaders">H2SerializeHeaders on|off</a></td><td> off </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Active/désactive la sérialisation du traitement des
 	requêtes/réponses</td></tr>
-<tr class="odd"><td><a href="mod_http2.html#h2streammaxmemsize">H2StreamMaxMemSize <em>bytes</em></a></td><td> 65536 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Quantité maximale de données en sortie mises en tampon par
+<tr><td><a href="mod_http2.html#h2streammaxmemsize">H2StreamMaxMemSize <em>bytes</em></a></td><td> 65536 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Quantité maximale de données en sortie mises en tampon par
 	flux.</td></tr>
-<tr><td><a href="mod_http2.html#h2streamtimeout">H2StreamTimeout <var>time-interval</var>[s]</a></td><td></td><td>svd</td><td>E</td></tr><tr><td class="descr" colspan="4">Temps d'attente maximum lors de l'envoi/réception de
+<tr class="odd"><td><a href="mod_http2.html#h2streamtimeout">H2StreamTimeout <var>time-interval</var>[s]</a></td><td></td><td>svd</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Temps d'attente maximum lors de l'envoi/réception de
 	données pour le traitement d'un flux</td></tr>
-<tr class="odd"><td><a href="mod_http2.html#h2tlscooldownsecs">H2TLSCoolDownSecs <em>seconds</em></a></td><td> 1 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Durée d'inactivité d'une connexion TLS avant diminution de
+<tr><td><a href="mod_http2.html#h2tlscooldownsecs">H2TLSCoolDownSecs <em>seconds</em></a></td><td> 1 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Durée d'inactivité d'une connexion TLS avant diminution de
 	la taille des paquets</td></tr>
-<tr><td><a href="mod_http2.html#h2tlswarmupsize">H2TLSWarmUpSize <em>amount</em></a></td><td> 1048576 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Taille des paquets durant la phase initiale de la connexion
+<tr class="odd"><td><a href="mod_http2.html#h2tlswarmupsize">H2TLSWarmUpSize <em>amount</em></a></td><td> 1048576 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Taille des paquets durant la phase initiale de la connexion
 	TLS</td></tr>
-<tr class="odd"><td><a href="mod_http2.html#h2upgrade">H2Upgrade on|off</a></td><td> on pour h2c, off po +</td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Activation/Désactivation du protocole de mise à jour H2</td></tr>
-<tr><td><a href="mod_http2.html#h2websockets">H2WebSockets  on|off</a></td><td> off </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Active/désactive les WebSockets via HTTP/2</td></tr>
-<tr class="odd"><td><a href="mod_http2.html#h2windowsize">H2WindowSize <em>bytes</em></a></td><td> 65535 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Taille maximale des paquets de données pour les transmissions client
+<tr><td><a href="mod_http2.html#h2upgrade">H2Upgrade on|off</a></td><td> on pour h2c, off po +</td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Activation/Désactivation du protocole de mise à jour H2</td></tr>
+<tr class="odd"><td><a href="mod_http2.html#h2websockets">H2WebSockets  on|off</a></td><td> off </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Active/désactive les WebSockets via HTTP/2</td></tr>
+<tr><td><a href="mod_http2.html#h2windowsize">H2WindowSize <em>bytes</em></a></td><td> 65535 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Taille maximale des paquets de données pour les transmissions client
 	vers serveur.</td></tr>
-<tr><td><a href="mod_headers.html#header">Header [<var>condition</var>] add|append|echo|edit|edit*|merge|set|setifempty|unset|note
+<tr class="odd"><td><a href="mod_headers.html#header">Header [<var>condition</var>] add|append|echo|edit|edit*|merge|set|setifempty|unset|note
 <var>en-tête</var> [[expr=]<var>valeur</var>
 [<var>remplacement</var>]
 [early|env=[!]<var>variable</var>|expr=<var>expression</var>]]
-</a></td><td></td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Configure les en-têtes d'une réponse HTTP</td></tr>
-<tr class="odd"><td><a href="mod_autoindex.html#headername">HeaderName <var>nom fichier</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Nom du fichier qui sera inséré au début de la page
+</a></td><td></td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Configure les en-têtes d'une réponse HTTP</td></tr>
+<tr><td><a href="mod_autoindex.html#headername">HeaderName <var>nom fichier</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Nom du fichier qui sera inséré au début de la page
 contenant l'index</td></tr>
-<tr><td><a href="mod_heartbeat.html#heartbeataddress">HeartbeatAddress <var>addr:port</var></a></td><td></td><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">Adresse multicast à laquelle envoyer les requêtes
+<tr class="odd"><td><a href="mod_heartbeat.html#heartbeataddress">HeartbeatAddress <var>addr:port</var></a></td><td></td><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Adresse multicast à laquelle envoyer les requêtes
 heartbeat</td></tr>
-<tr class="odd"><td><a href="mod_heartmonitor.html#heartbeatlisten">HeartbeatListen <var>addr:port</var></a></td><td></td><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Adresse multicast d'écoute des requêtes entrantes heartbeat</td></tr>
-<tr><td><a href="mod_heartmonitor.html#heartbeatmaxservers">HeartbeatMaxServers <var>nombre-de-serveurs</var></a></td><td> 10 </td><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">Spécifie le nombre maximal de serveurs qui pourront envoyer
+<tr><td><a href="mod_heartmonitor.html#heartbeatlisten">HeartbeatListen <var>addr:port</var></a></td><td></td><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">Adresse multicast d'écoute des requêtes entrantes heartbeat</td></tr>
+<tr class="odd"><td><a href="mod_heartmonitor.html#heartbeatmaxservers">HeartbeatMaxServers <var>nombre-de-serveurs</var></a></td><td> 10 </td><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Spécifie le nombre maximal de serveurs qui pourront envoyer
 des requêtes heartbeat à ce serveur.</td></tr>
-<tr class="odd"><td><a href="mod_heartmonitor.html#heartbeatstorage">HeartbeatStorage <var>chemin fichier</var></a></td><td> logs/hb.dat </td><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Chemin vers le stockage des données heartbeat lorsqu'on utilise un
+<tr><td><a href="mod_heartmonitor.html#heartbeatstorage">HeartbeatStorage <var>chemin fichier</var></a></td><td> logs/hb.dat </td><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">Chemin vers le stockage des données heartbeat lorsqu'on utilise un
 fichier bidimensionnel (flat-file)</td></tr>
-<tr><td><a href="mod_lbmethod_heartbeat.html#heartbeatstorage">HeartbeatStorage <var>chemin-fichier</var></a></td><td> logs/hb.dat </td><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">Indique le chemin permettant de lire les données
+<tr class="odd"><td><a href="mod_lbmethod_heartbeat.html#heartbeatstorage">HeartbeatStorage <var>chemin-fichier</var></a></td><td> logs/hb.dat </td><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Indique le chemin permettant de lire les données
 heartbeat</td></tr>
-<tr class="odd"><td><a href="core.html#hostnamelookups">HostnameLookups On|Off|Double</a></td><td> Off </td><td>svd</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Active la recherche DNS sur les adresses IP des
+<tr><td><a href="core.html#hostnamelookups">HostnameLookups On|Off|Double</a></td><td> Off </td><td>svd</td><td>C</td></tr><tr><td class="descr" colspan="4">Active la recherche DNS sur les adresses IP des
 clients</td></tr>
-<tr><td><a href="core.html#httpprotocoloptions">HttpProtocolOptions [Strict|Unsafe] [RegisteredMethods|LenientMethods]
- [Allow0.9|Require1.0]</a></td><td> Strict LenientMetho +</td><td>sv</td><td>C</td></tr><tr><td class="descr" colspan="4">Modifie les contraintes sur le format des requêtes HTTP</td></tr>
-<tr class="odd"><td><a href="mod_ident.html#identitycheck" id="I" name="I">IdentityCheck On|Off</a></td><td> Off </td><td>svd</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Active la journalisation de l'identité RFC 1413 de
+<tr class="odd"><td><a href="core.html#httpprotocoloptions">HttpProtocolOptions [Strict|Unsafe] [RegisteredMethods|LenientMethods]
+ [Allow0.9|Require1.0]</a></td><td> Strict LenientMetho +</td><td>sv</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Modifie les contraintes sur le format des requêtes HTTP</td></tr>
+<tr><td><a href="mod_ident.html#identitycheck" id="I" name="I">IdentityCheck On|Off</a></td><td> Off </td><td>svd</td><td>E</td></tr><tr><td class="descr" colspan="4">Active la journalisation de l'identité RFC 1413 de
 l'utilisateur distant</td></tr>
-<tr><td><a href="mod_ident.html#identitychecktimeout">IdentityCheckTimeout <var>secondes</var></a></td><td> 30 </td><td>svd</td><td>E</td></tr><tr><td class="descr" colspan="4">Détermine le délai d'attente pour les requêtes
+<tr class="odd"><td><a href="mod_ident.html#identitychecktimeout">IdentityCheckTimeout <var>secondes</var></a></td><td> 30 </td><td>svd</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Détermine le délai d'attente pour les requêtes
 ident</td></tr>
-<tr class="odd"><td><a href="core.html#if">&lt;If <var>expression</var>&gt; ... &lt;/If&gt;</a></td><td></td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Contient des directives qui ne s'appliquent que si une
+<tr><td><a href="core.html#if">&lt;If <var>expression</var>&gt; ... &lt;/If&gt;</a></td><td></td><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">Contient des directives qui ne s'appliquent que si une
 condition est satisfaite au cours du traitement d'une
 requête</td></tr>
-<tr><td><a href="core.html#ifdefine">&lt;IfDefine [!]<var>paramètre</var>&gt; ...
-    &lt;/IfDefine&gt;</a></td><td></td><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">Contient des directives qui ne s'appliqueront que si un
+<tr class="odd"><td><a href="core.html#ifdefine">&lt;IfDefine [!]<var>paramètre</var>&gt; ...
+    &lt;/IfDefine&gt;</a></td><td></td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Contient des directives qui ne s'appliqueront que si un
 test retourne "vrai" au démarrage du serveur</td></tr>
-<tr class="odd"><td><a href="core.html#ifdirective">&lt;IfDirective [!]<var>directive-name</var>&gt; ...
-    &lt;/IfDirective&gt;</a></td><td></td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Regroupe des directives dont le traitement est conditionné par la
+<tr><td><a href="core.html#ifdirective">&lt;IfDirective [!]<var>directive-name</var>&gt; ...
+    &lt;/IfDirective&gt;</a></td><td></td><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">Regroupe des directives dont le traitement est conditionné par la
 présence ou l'absence d'une directive particulière</td></tr>
-<tr><td><a href="core.html#iffile">&lt;IfFile [!]<var>parameter-name</var>&gt; ...
-    &lt;/IfFile&gt;</a></td><td></td><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">Regroupe des directives qui ne seront traitées que si un fichier
+<tr class="odd"><td><a href="core.html#iffile">&lt;IfFile [!]<var>parameter-name</var>&gt; ...
+    &lt;/IfFile&gt;</a></td><td></td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Regroupe des directives qui ne seront traitées que si un fichier
 existe au démarrage</td></tr>
-<tr class="odd"><td><a href="core.html#ifmodule">&lt;IfModule [!]<var>fichier module</var>|<var>identificateur
-module</var>&gt; ... &lt;/IfModule&gt;</a></td><td></td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Contient des directives qui ne s'appliquent qu'en fonction
+<tr><td><a href="core.html#ifmodule">&lt;IfModule [!]<var>fichier module</var>|<var>identificateur
+module</var>&gt; ... &lt;/IfModule&gt;</a></td><td></td><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">Contient des directives qui ne s'appliquent qu'en fonction
 de la présence ou de l'absence d'un module spécifique</td></tr>
-<tr><td><a href="core.html#ifsection">&lt;IfSection [!]<var>section-name</var>&gt; ...
-    &lt;/IfSection&gt;</a></td><td></td><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">Regroupe des directives dont le traitement est conditionné par la
+<tr class="odd"><td><a href="core.html#ifsection">&lt;IfSection [!]<var>section-name</var>&gt; ...
+    &lt;/IfSection&gt;</a></td><td></td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Regroupe des directives dont le traitement est conditionné par la
 présence ou l'absence d'une section particulière</td></tr>
-<tr class="odd"><td><a href="mod_version.html#ifversion">&lt;IfVersion [[!]<var>opérateur</var>] <var>version</var>&gt; ...
-&lt;/IfVersion&gt;</a></td><td></td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Contient des portions de configuration dépendantes de la
+<tr><td><a href="mod_version.html#ifversion">&lt;IfVersion [[!]<var>opérateur</var>] <var>version</var>&gt; ...
+&lt;/IfVersion&gt;</a></td><td></td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Contient des portions de configuration dépendantes de la
 version</td></tr>
-<tr><td><a href="mod_imagemap.html#imapbase">ImapBase map|referer|<var>URL</var></a></td><td> http://nom_serveur/ +</td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Valeur par défaut de la directive <code>base</code> des
+<tr class="odd"><td><a href="mod_imagemap.html#imapbase">ImapBase map|referer|<var>URL</var></a></td><td> http://nom_serveur/ +</td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Valeur par défaut de la directive <code>base</code> des
 fichiers imagemap</td></tr>
-<tr class="odd"><td><a href="mod_imagemap.html#imapdefault">ImapDefault error|nocontent|map|referer|<var>URL</var></a></td><td> nocontent </td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Action à entreprendre par défaut lorsqu'un fichier imagemap
+<tr><td><a href="mod_imagemap.html#imapdefault">ImapDefault error|nocontent|map|referer|<var>URL</var></a></td><td> nocontent </td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Action à entreprendre par défaut lorsqu'un fichier imagemap
 est invoqué avec des coordonnées qui ne correspondent à aucune
 cible</td></tr>
-<tr><td><a href="mod_imagemap.html#imapmenu">ImapMenu none|formatted|semiformatted|unformatted</a></td><td> formatted </td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Action à entreprendre si aucune coordonnée n'est fournie
+<tr class="odd"><td><a href="mod_imagemap.html#imapmenu">ImapMenu none|formatted|semiformatted|unformatted</a></td><td> formatted </td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Action à entreprendre si aucune coordonnée n'est fournie
 lorsqu'on invoque un fichier imagemap</td></tr>
-<tr class="odd"><td><a href="core.html#include">Include <var>chemin-fichier</var>|<var>chemin-répertoire</var>|<var>wildcard</var></a></td><td></td><td>svd</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Inclut d'autres fichiers de configuration dans un des
+<tr><td><a href="core.html#include">Include <var>chemin-fichier</var>|<var>chemin-répertoire</var>|<var>wildcard</var></a></td><td></td><td>svd</td><td>C</td></tr><tr><td class="descr" colspan="4">Inclut d'autres fichiers de configuration dans un des
 fichiers de configuration du serveur</td></tr>
-<tr><td><a href="core.html#includeoptional">IncludeOptional
-<var>chemin-fichier</var>|<var>chemin-répertoire</var>|<var>wildcard</var></a></td><td></td><td>svd</td><td>C</td></tr><tr><td class="descr" colspan="4">Inclusion de fichiers dans le fichier de configuration</td></tr>
-<tr class="odd"><td><a href="mod_autoindex.html#indexforbiddenreturn404">IndexForbiddenReturn404 On|Off</a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Renvoie une erreur HTTP 404 au lieu de Forbidden lorsque les
+<tr class="odd"><td><a href="core.html#includeoptional">IncludeOptional
+<var>chemin-fichier</var>|<var>chemin-répertoire</var>|<var>wildcard</var></a></td><td></td><td>svd</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Inclusion de fichiers dans le fichier de configuration</td></tr>
+<tr><td><a href="mod_autoindex.html#indexforbiddenreturn404">IndexForbiddenReturn404 On|Off</a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Renvoie une erreur HTTP 404 au lieu de Forbidden lorsque les
 options n'autorisent pas le listing de répertoire</td></tr>
-<tr><td><a href="mod_autoindex.html#indexheadinsert">IndexHeadInsert <var>"marque ..."</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Insère du texte dans la section HEAD de la page
+<tr class="odd"><td><a href="mod_autoindex.html#indexheadinsert">IndexHeadInsert <var>"marque ..."</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Insère du texte dans la section HEAD de la page
 d'index.</td></tr>
-<tr class="odd"><td><a href="mod_autoindex.html#indexignore">IndexIgnore <var>fichier</var> [<var>fichier</var>] ...</a></td><td> "." </td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Ajouts à la liste des fichiers à cacher lors de l'affichage
+<tr><td><a href="mod_autoindex.html#indexignore">IndexIgnore <var>fichier</var> [<var>fichier</var>] ...</a></td><td> "." </td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Ajouts à la liste des fichiers à cacher lors de l'affichage
 de l'index d'un répertoire</td></tr>
-<tr><td><a href="mod_autoindex.html#indexignorereset">IndexIgnoreReset ON|OFF</a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Vide la liste des fichiers à cacher lors de l'affichage du
+<tr class="odd"><td><a href="mod_autoindex.html#indexignorereset">IndexIgnoreReset ON|OFF</a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Vide la liste des fichiers à cacher lors de l'affichage du
 contenu d'un répertoire</td></tr>
-<tr class="odd"><td><a href="mod_autoindex.html#indexoptions">IndexOptions  [+|-]<var>option</var> [[+|-]<var>option</var>]
-...</a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Diverses options de configuration pour l'indexation d'un
+<tr><td><a href="mod_autoindex.html#indexoptions">IndexOptions  [+|-]<var>option</var> [[+|-]<var>option</var>]
+...</a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Diverses options de configuration pour l'indexation d'un
 répertoire</td></tr>
-<tr><td><a href="mod_autoindex.html#indexorderdefault">IndexOrderDefault Ascending|Descending
-Name|Date|Size|Description</a></td><td> Ascending Name </td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Définit l'ordre d'affichage par défaut d'un index de
+<tr class="odd"><td><a href="mod_autoindex.html#indexorderdefault">IndexOrderDefault Ascending|Descending
+Name|Date|Size|Description</a></td><td> Ascending Name </td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Définit l'ordre d'affichage par défaut d'un index de
 répertoire</td></tr>
-<tr class="odd"><td><a href="mod_autoindex.html#indexstylesheet">IndexStyleSheet <var>chemin-url</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Ajoute une feuille de style CSS à l'index du
+<tr><td><a href="mod_autoindex.html#indexstylesheet">IndexStyleSheet <var>chemin-url</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Ajoute une feuille de style CSS à l'index du
 répertoire</td></tr>
-<tr><td><a href="mod_sed.html#inputsed">InputSed <var>commande-sed</var></a></td><td></td><td>dh</td><td /></tr><tr><td class="descr" colspan="4">Commande sed à exécuter pour le filtrage des données d'une
+<tr class="odd"><td><a href="mod_sed.html#inputsed">InputSed <var>commande-sed</var></a></td><td></td><td>dh</td><td /></tr><tr class="odd"><td class="descr" colspan="4">Commande sed à exécuter pour le filtrage des données d'une
 requête (en général des données <code>POST</code>)</td></tr>
-<tr class="odd"><td><a href="mod_isapi.html#isapiappendlogtoerrors">ISAPIAppendLogToErrors on|off</a></td><td> off </td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Enregistrement des requêtes
+<tr><td><a href="mod_isapi.html#isapiappendlogtoerrors">ISAPIAppendLogToErrors on|off</a></td><td> off </td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Enregistrement des requêtes
 <code>HSE_APPEND_LOG_PARAMETER</code> de la part des extensions ISAPI
 dans le journal des erreurs</td></tr>
-<tr><td><a href="mod_isapi.html#isapiappendlogtoquery">ISAPIAppendLogToQuery on|off</a></td><td> on </td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Enregistre les requêtes
+<tr class="odd"><td><a href="mod_isapi.html#isapiappendlogtoquery">ISAPIAppendLogToQuery on|off</a></td><td> on </td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Enregistre les requêtes
 <code>HSE_APPEND_LOG_PARAMETER</code> de la part des extensions ISAPI
 dans la partie arguments de la requête</td></tr>
-<tr class="odd"><td><a href="mod_isapi.html#isapicachefile">ISAPICacheFile <var>chemin-fichier</var>
+<tr><td><a href="mod_isapi.html#isapicachefile">ISAPICacheFile <var>chemin-fichier</var>
 [<var>chemin-fichier</var>]
-...</a></td><td></td><td>sv</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Fichiers .dll ISAPI devant être chargés au
+...</a></td><td></td><td>sv</td><td>B</td></tr><tr><td class="descr" colspan="4">Fichiers .dll ISAPI devant être chargés au
 démarrage</td></tr>
-<tr><td><a href="mod_isapi.html#isapifakeasync">ISAPIFakeAsync on|off</a></td><td> off </td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Emulation du support des entrées/sorties asynchrones pour
+<tr class="odd"><td><a href="mod_isapi.html#isapifakeasync">ISAPIFakeAsync on|off</a></td><td> off </td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Emulation du support des entrées/sorties asynchrones pour
 les appels ISAPI</td></tr>
-<tr class="odd"><td><a href="mod_isapi.html#isapilognotsupported">ISAPILogNotSupported on|off</a></td><td> off </td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Journalisation des demandes de fonctionnalités non
+<tr><td><a href="mod_isapi.html#isapilognotsupported">ISAPILogNotSupported on|off</a></td><td> off </td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Journalisation des demandes de fonctionnalités non
 supportées de la part des extensions ISAPI</td></tr>
-<tr><td><a href="mod_isapi.html#isapireadaheadbuffer">ISAPIReadAheadBuffer <var>taille</var></a></td><td> 49152 </td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Taille du tampon de lecture anticipée envoyé aux extensions
+<tr class="odd"><td><a href="mod_isapi.html#isapireadaheadbuffer">ISAPIReadAheadBuffer <var>taille</var></a></td><td> 49152 </td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Taille du tampon de lecture anticipée envoyé aux extensions
 ISAPI</td></tr>
-<tr class="odd"><td><a href="core.html#keepalive" id="K" name="K">KeepAlive On|Off</a></td><td> On </td><td>sv</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Active les connexions HTTP persistantes</td></tr>
-<tr><td><a href="core.html#keepalivetimeout">KeepAliveTimeout <var>num-seconds</var>|<var>num-milliseconds</var>ms</a></td><td> 5 </td><td>sv</td><td>C</td></tr><tr><td class="descr" colspan="4">Durée pendant laquelle le serveur va attendre une requête
+<tr><td><a href="core.html#keepalive" id="K" name="K">KeepAlive On|Off</a></td><td> On </td><td>sv</td><td>C</td></tr><tr><td class="descr" colspan="4">Active les connexions HTTP persistantes</td></tr>
+<tr class="odd"><td><a href="core.html#keepalivetimeout">KeepAliveTimeout <var>num-seconds</var>|<var>num-milliseconds</var>ms</a></td><td> 5 </td><td>sv</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Durée pendant laquelle le serveur va attendre une requête
 avant de fermer une connexion persistante</td></tr>
-<tr class="odd"><td><a href="mod_request.html#keptbodysize">KeptBodySize <var>taille maximale en octets</var></a></td><td> 0 </td><td>d</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Conserve le corps de la requête à concurrence de la taille
+<tr><td><a href="mod_request.html#keptbodysize">KeptBodySize <var>taille maximale en octets</var></a></td><td> 0 </td><td>d</td><td>B</td></tr><tr><td class="descr" colspan="4">Conserve le corps de la requête à concurrence de la taille
 maximale spécifiée, pour une utilisation éventuelle par des filtres
 comme mod_include.</td></tr>
-<tr><td><a href="mod_negotiation.html#languagepriority" id="L" name="L">LanguagePriority <var>langage-MIME</var> [<var>langage-MIME</var>]
-...</a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">L'ordre de priorité des variantes de langages pour les
+<tr class="odd"><td><a href="mod_negotiation.html#languagepriority" id="L" name="L">LanguagePriority <var>langage-MIME</var> [<var>langage-MIME</var>]
+...</a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">L'ordre de priorité des variantes de langages pour les
 cas où le client n'a pas formulé de préférences</td></tr>
-<tr class="odd"><td><a href="mod_ldap.html#ldapcacheentries">LDAPCacheEntries <var>nombre</var></a></td><td> 1024 </td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Nombre maximum d'entrées dans le cache LDAP
+<tr><td><a href="mod_ldap.html#ldapcacheentries">LDAPCacheEntries <var>nombre</var></a></td><td> 1024 </td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Nombre maximum d'entrées dans le cache LDAP
 primaire</td></tr>
-<tr><td><a href="mod_ldap.html#ldapcachettl">LDAPCacheTTL <var>secondes</var></a></td><td> 600 </td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Durée pendant laquelle les entrées du cache restent
+<tr class="odd"><td><a href="mod_ldap.html#ldapcachettl">LDAPCacheTTL <var>secondes</var></a></td><td> 600 </td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Durée pendant laquelle les entrées du cache restent
 valides.</td></tr>
-<tr class="odd"><td><a href="mod_ldap.html#ldapconnectionpoolttl">LDAPConnectionPoolTTL <var>n</var></a></td><td> -1 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Désactive les connexions d'arrière-plan qui sont restées
+<tr><td><a href="mod_ldap.html#ldapconnectionpoolttl">LDAPConnectionPoolTTL <var>n</var></a></td><td> -1 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Désactive les connexions d'arrière-plan qui sont restées
 inactives trop longtemps au sein du jeu de connexions.</td></tr>
-<tr><td><a href="mod_ldap.html#ldapconnectiontimeout">LDAPConnectionTimeout <var>secondes</var></a></td><td></td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Spécifie le délai d'attente en secondes de la socket de
+<tr class="odd"><td><a href="mod_ldap.html#ldapconnectiontimeout">LDAPConnectionTimeout <var>secondes</var></a></td><td></td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Spécifie le délai d'attente en secondes de la socket de
 connexion</td></tr>
-<tr class="odd"><td><a href="mod_ldap.html#ldaplibrarydebug">LDAPLibraryDebug <var>7</var></a></td><td></td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Active le débogage dans le SDK LDAP</td></tr>
-<tr><td><a href="mod_ldap.html#ldapopcacheentries">LDAPOpCacheEntries <var>nombre</var></a></td><td> 1024 </td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Nombre d'entrées utilisées pour mettre en cache les
+<tr><td><a href="mod_ldap.html#ldaplibrarydebug">LDAPLibraryDebug <var>7</var></a></td><td></td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Active le débogage dans le SDK LDAP</td></tr>
+<tr class="odd"><td><a href="mod_ldap.html#ldapopcacheentries">LDAPOpCacheEntries <var>nombre</var></a></td><td> 1024 </td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Nombre d'entrées utilisées pour mettre en cache les
 opérations de comparaison LDAP</td></tr>
-<tr class="odd"><td><a href="mod_ldap.html#ldapopcachettl">LDAPOpCacheTTL <var>secondes</var></a></td><td> 600 </td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Durée pendant laquelle les entrées du cache d'opérations
+<tr><td><a href="mod_ldap.html#ldapopcachettl">LDAPOpCacheTTL <var>secondes</var></a></td><td> 600 </td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Durée pendant laquelle les entrées du cache d'opérations
 restent valides</td></tr>
-<tr><td><a href="mod_ldap.html#ldapreferralhoplimit">LDAPReferralHopLimit <var>nombre</var></a></td><td></td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Le nombre maximum de redirections vers des serveurs
+<tr class="odd"><td><a href="mod_ldap.html#ldapreferralhoplimit">LDAPReferralHopLimit <var>nombre</var></a></td><td></td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Le nombre maximum de redirections vers des serveurs
 alternatifs (referrals) avant l'abandon de la requête
 LDAP.</td></tr>
-<tr class="odd"><td><a href="mod_ldap.html#ldapreferrals">LDAPReferrals On|Off|default</a></td><td> On </td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Active la redirection vers des serveurs alternatifs au
+<tr><td><a href="mod_ldap.html#ldapreferrals">LDAPReferrals On|Off|default</a></td><td> On </td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Active la redirection vers des serveurs alternatifs au
 cours des requêtes vers le serveur LDAP.</td></tr>
-<tr><td><a href="mod_ldap.html#ldapretries">LDAPRetries <var>nombre d'essais</var></a></td><td> 3 </td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Définit le nombre maximum de tentatives de connexions au
+<tr class="odd"><td><a href="mod_ldap.html#ldapretries">LDAPRetries <var>nombre d'essais</var></a></td><td> 3 </td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Définit le nombre maximum de tentatives de connexions au
 serveur LDAP.</td></tr>
-<tr class="odd"><td><a href="mod_ldap.html#ldapretrydelay">LDAPRetryDelay <var>secondes</var></a></td><td> 0 </td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Définit le temps d'attente avant un autre essai de connexion au
+<tr><td><a href="mod_ldap.html#ldapretrydelay">LDAPRetryDelay <var>secondes</var></a></td><td> 0 </td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Définit le temps d'attente avant un autre essai de connexion au
 serveur LDAP.</td></tr>
-<tr><td><a href="mod_ldap.html#ldapsharedcachefile">LDAPSharedCacheFile <var>chemin-fichier</var></a></td><td></td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Définit le fichier du cache en mémoire
+<tr class="odd"><td><a href="mod_ldap.html#ldapsharedcachefile">LDAPSharedCacheFile <var>chemin-fichier</var></a></td><td></td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Définit le fichier du cache en mémoire
 partagée</td></tr>
-<tr class="odd"><td><a href="mod_ldap.html#ldapsharedcachesize">LDAPSharedCacheSize <var>octets</var></a></td><td> 500000 </td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Taille en octets du cache en mémoire partagée</td></tr>
-<tr><td><a href="mod_ldap.html#ldaptimeout">LDAPTimeout <var>secondes</var></a></td><td> 60 </td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Spécifie le délai d'attente pour les opérations de
+<tr><td><a href="mod_ldap.html#ldapsharedcachesize">LDAPSharedCacheSize <var>octets</var></a></td><td> 500000 </td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Taille en octets du cache en mémoire partagée</td></tr>
+<tr class="odd"><td><a href="mod_ldap.html#ldaptimeout">LDAPTimeout <var>secondes</var></a></td><td> 60 </td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Spécifie le délai d'attente pour les opérations de
 recherche et d'identification LDAP en secondes</td></tr>
-<tr class="odd"><td><a href="mod_ldap.html#ldaptrustedclientcert">LDAPTrustedClientCert <var>type</var>
-<var>chemin/nom-fichier/alias</var> <var>[mot de passe]</var></a></td><td></td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Définit le nom de fichier contenant un certificat client ou
+<tr><td><a href="mod_ldap.html#ldaptrustedclientcert">LDAPTrustedClientCert <var>type</var>
+<var>chemin/nom-fichier/alias</var> <var>[mot de passe]</var></a></td><td></td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Définit le nom de fichier contenant un certificat client ou
 un alias renvoyant vers un certificat client spécifique à une connexion.
 Tous les SDK LDAP ne supportent pas les certificats clients par
 connexion.</td></tr>
-<tr><td><a href="mod_ldap.html#ldaptrustedglobalcert">LDAPTrustedGlobalCert <var>type</var>
-<var>chemin/nom-fichier</var> <var>[mot de passe]</var></a></td><td></td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Définit le nom de fichier ou la base de données contenant
+<tr class="odd"><td><a href="mod_ldap.html#ldaptrustedglobalcert">LDAPTrustedGlobalCert <var>type</var>
+<var>chemin/nom-fichier</var> <var>[mot de passe]</var></a></td><td></td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Définit le nom de fichier ou la base de données contenant
 les Autorités de Certification de confiance globales ou les certificats
 clients globaux</td></tr>
-<tr class="odd"><td><a href="mod_ldap.html#ldaptrustedmode">LDAPTrustedMode <var>type</var></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Spécifie le mode (SSL ou TLS) à utiliser lors de la
+<tr><td><a href="mod_ldap.html#ldaptrustedmode">LDAPTrustedMode <var>type</var></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Spécifie le mode (SSL ou TLS) à utiliser lors de la
 connexion à un serveur LDAP.</td></tr>
-<tr><td><a href="mod_ldap.html#ldapverifyservercert">LDAPVerifyServerCert On|Off</a></td><td> On </td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Force la vérification du certificat du
+<tr class="odd"><td><a href="mod_ldap.html#ldapverifyservercert">LDAPVerifyServerCert On|Off</a></td><td> On </td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Force la vérification du certificat du
 serveur</td></tr>
-<tr class="odd"><td><a href="core.html#limit">&lt;Limit <var>méthode</var> [<var>méthode</var>] ... &gt; ...
-    &lt;/Limit&gt;</a></td><td></td><td>dh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Limite les contrôles d'accès que la section contient à
+<tr><td><a href="core.html#limit">&lt;Limit <var>méthode</var> [<var>méthode</var>] ... &gt; ...
+    &lt;/Limit&gt;</a></td><td></td><td>dh</td><td>C</td></tr><tr><td class="descr" colspan="4">Limite les contrôles d'accès que la section contient à
 certaines méthodes HTTP</td></tr>
-<tr><td><a href="core.html#limitexcept">&lt;LimitExcept <var>méthode</var> [<var>méthode</var>] ... &gt; ...
-    &lt;/LimitExcept&gt;</a></td><td></td><td>dh</td><td>C</td></tr><tr><td class="descr" colspan="4">Applique les contrôles d'accès à toutes les méthodes HTTP,
+<tr class="odd"><td><a href="core.html#limitexcept">&lt;LimitExcept <var>méthode</var> [<var>méthode</var>] ... &gt; ...
+    &lt;/LimitExcept&gt;</a></td><td></td><td>dh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Applique les contrôles d'accès à toutes les méthodes HTTP,
 sauf celles qui sont spécifiées</td></tr>
-<tr class="odd"><td><a href="core.html#limitinternalrecursion">LimitInternalRecursion <var>nombre</var> [<var>nombre</var>]</a></td><td> 10 </td><td>sv</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Détermine le nombre maximal de redirections internes et de
+<tr><td><a href="core.html#limitinternalrecursion">LimitInternalRecursion <var>nombre</var> [<var>nombre</var>]</a></td><td> 10 </td><td>sv</td><td>C</td></tr><tr><td class="descr" colspan="4">Détermine le nombre maximal de redirections internes et de
 sous-requêtes imbriquées</td></tr>
-<tr><td><a href="core.html#limitrequestbody">LimitRequestBody <var>octets</var></a></td><td> 1073741824 </td><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">limite la taille maximale du corps de la requête HTTP
+<tr class="odd"><td><a href="core.html#limitrequestbody">LimitRequestBody <var>octets</var></a></td><td> 1073741824 </td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">limite la taille maximale du corps de la requête HTTP
 envoyée par le client</td></tr>
-<tr class="odd"><td><a href="core.html#limitrequestfields">LimitRequestFields <var>nombre</var></a></td><td> 100 </td><td>sv</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Limite le nombre de champs d'en-tête autorisés dans une
+<tr><td><a href="core.html#limitrequestfields">LimitRequestFields <var>nombre</var></a></td><td> 100 </td><td>sv</td><td>C</td></tr><tr><td class="descr" colspan="4">Limite le nombre de champs d'en-tête autorisés dans une
 requête HTTP</td></tr>
-<tr><td><a href="core.html#limitrequestfieldsize">LimitRequestFieldSize <var>octets</var></a></td><td> 8190 </td><td>sv</td><td>C</td></tr><tr><td class="descr" colspan="4">Dédinit la taille maximale autorisée d'un en-tête de
+<tr class="odd"><td><a href="core.html#limitrequestfieldsize">LimitRequestFieldSize <var>octets</var></a></td><td> 8190 </td><td>sv</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Dédinit la taille maximale autorisée d'un en-tête de
 requête HTTP</td></tr>
-<tr class="odd"><td><a href="core.html#limitrequestline">LimitRequestLine <var>octets</var></a></td><td> 8190 </td><td>sv</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Définit la taille maximale d'une ligne de requête
+<tr><td><a href="core.html#limitrequestline">LimitRequestLine <var>octets</var></a></td><td> 8190 </td><td>sv</td><td>C</td></tr><tr><td class="descr" colspan="4">Définit la taille maximale d'une ligne de requête
 HTTP</td></tr>
-<tr><td><a href="core.html#limitxmlrequestbody">LimitXMLRequestBody <var>octets</var></a></td><td> 1000000 </td><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">Définit la taille maximale du corps d'une requête au format
+<tr class="odd"><td><a href="core.html#limitxmlrequestbody">LimitXMLRequestBody <var>octets</var></a></td><td> 1000000 </td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Définit la taille maximale du corps d'une requête au format
 XML</td></tr>
-<tr class="odd"><td><a href="mpm_common.html#listen">Listen [<var>IP-address</var>:]<var>portnumber</var> [<var>protocol</var>] [options=<var>flag</var>[,<var>flag..</var>]]</a></td><td></td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Les adresses IP et ports sur lesquels le serveur écoute</td></tr>
-<tr><td><a href="mpm_common.html#listenbacklog">ListenBackLog <var>backlog</var></a></td><td> 511 </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Longueur maximale de la liste d'attente des
+<tr><td><a href="mpm_common.html#listen">Listen [<var>IP-address</var>:]<var>portnumber</var> [<var>protocol</var>] [options=<var>flag</var>[,<var>flag..</var>]]</a></td><td></td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Les adresses IP et ports sur lesquels le serveur écoute</td></tr>
+<tr class="odd"><td><a href="mpm_common.html#listenbacklog">ListenBackLog <var>backlog</var></a></td><td> 511 </td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Longueur maximale de la liste d'attente des
 connexions</td></tr>
-<tr class="odd"><td><a href="mpm_common.html#listencoresbucketsratio">ListenCoresBucketsRatio <var>ratio</var></a></td><td> 0 (disabled) </td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Rapport entre le nombre de coeurs de processeur activés et
+<tr><td><a href="mpm_common.html#listencoresbucketsratio">ListenCoresBucketsRatio <var>ratio</var></a></td><td> 0 (disabled) </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Rapport entre le nombre de coeurs de processeur activés et
 le nombre de segments d'écoute</td></tr>
-<tr><td><a href="mod_so.html#loadfile">LoadFile <em>nom-fichier</em> [<em>nom-fichier</em>] ...</a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Liaison du fichier objet ou de la bibliothèque
+<tr class="odd"><td><a href="mod_so.html#loadfile">LoadFile <em>nom-fichier</em> [<em>nom-fichier</em>] ...</a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Liaison du fichier objet ou de la bibliothèque
 spécifié</td></tr>
-<tr class="odd"><td><a href="mod_so.html#loadmodule">LoadModule <em>module nom-fichier</em></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Liaison avec le serveur du fichier objet ou de la
+<tr><td><a href="mod_so.html#loadmodule">LoadModule <em>module nom-fichier</em></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Liaison avec le serveur du fichier objet ou de la
 bibliothèque spécifié, et ajout de ce dernier à la liste des modules
 actifs</td></tr>
-<tr><td><a href="core.html#location">&lt;Location
-    <var>chemin URL</var>|<var>URL</var>&gt; ... &lt;/Location&gt;</a></td><td></td><td>sv</td><td>C</td></tr><tr><td class="descr" colspan="4">N'applique les directives contenues qu'aux URLs
+<tr class="odd"><td><a href="core.html#location">&lt;Location
+    <var>chemin URL</var>|<var>URL</var>&gt; ... &lt;/Location&gt;</a></td><td></td><td>sv</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">N'applique les directives contenues qu'aux URLs
 spécifiées</td></tr>
-<tr class="odd"><td><a href="core.html#locationmatch">&lt;LocationMatch
-    <var>regex</var>&gt; ... &lt;/LocationMatch&gt;</a></td><td></td><td>sv</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">N'applique les directives contenues qu'aux URLs
+<tr><td><a href="core.html#locationmatch">&lt;LocationMatch
+    <var>regex</var>&gt; ... &lt;/LocationMatch&gt;</a></td><td></td><td>sv</td><td>C</td></tr><tr><td class="descr" colspan="4">N'applique les directives contenues qu'aux URLs
 correspondant à une expression rationnelle</td></tr>
-<tr><td><a href="mod_log_config.html#logformat">LogFormat <var>format</var>|<var>alias</var>
-[<var>alias</var>]</a></td><td> "%h %l %u %t \"%r\" +</td><td>sv</td><td>B</td></tr><tr><td class="descr" colspan="4">Décrit un format utilisable dans un fichier
+<tr class="odd"><td><a href="mod_log_config.html#logformat">LogFormat <var>format</var>|<var>alias</var>
+[<var>alias</var>]</a></td><td> "%h %l %u %t \"%r\" +</td><td>sv</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Décrit un format utilisable dans un fichier
 journal</td></tr>
-<tr class="odd"><td><a href="mod_logio.html#logiotrackttfb">LogIOTrackTTFB ON|OFF</a></td><td> OFF </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Permet d'enregistrer le délai avant le premier octet (TTFB = time
+<tr><td><a href="mod_logio.html#logiotrackttfb">LogIOTrackTTFB ON|OFF</a></td><td> OFF </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Permet d'enregistrer le délai avant le premier octet (TTFB = time
 to first byte)</td></tr>
-<tr><td><a href="mod_logio.html#logiotrackttfu">LogIOTrackTTFU ON|OFF</a></td><td> OFF </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Active la mesure du temps jusqu'à l'arrivée du dernier octet de la
+<tr class="odd"><td><a href="mod_logio.html#logiotrackttfu">LogIOTrackTTFU ON|OFF</a></td><td> OFF </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Active la mesure du temps jusqu'à l'arrivée du dernier octet de la
 requête (TTFU = time to finish upload)</td></tr>
-<tr class="odd"><td><a href="core.html#loglevel">LogLevel [<var>module</var>:]<var>niveau</var>
+<tr><td><a href="core.html#loglevel">LogLevel [<var>module</var>:]<var>niveau</var>
     [<var>module</var>:<var>niveau</var>] ...
-</a></td><td> warn </td><td>svd</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Contrôle la verbosité du journal des erreurs</td></tr>
-<tr><td><a href="core.html#logleveloverride">LogLevel <var>ipaddress</var>[/<var>prefixlen</var>]
+</a></td><td> warn </td><td>svd</td><td>C</td></tr><tr><td class="descr" colspan="4">Contrôle la verbosité du journal des erreurs</td></tr>
+<tr class="odd"><td><a href="core.html#logleveloverride">LogLevel <var>ipaddress</var>[/<var>prefixlen</var>]
     [<var>module</var>:]<var>level</var> [<var>module</var>:<var>level</var>] ...
-</a></td><td></td><td>sv</td><td>C</td></tr><tr><td class="descr" colspan="4">Surcharge la verbosité du journal des erreurs pour certains
+</a></td><td></td><td>sv</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Surcharge la verbosité du journal des erreurs pour certains
 clients</td></tr>
-<tr class="odd"><td><a href="mod_log_debug.html#logmessage">LogMessage <var>message</var>
+<tr><td><a href="mod_log_debug.html#logmessage">LogMessage <var>message</var>
 [hook=<var>hook</var>] [expr=<var>expression</var>]
-</a></td><td></td><td>d</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Enregistre des messages personnalisés dans le journal des
+</a></td><td></td><td>d</td><td>X</td></tr><tr><td class="descr" colspan="4">Enregistre des messages personnalisés dans le journal des
 erreurs</td></tr>
-<tr><td><a href="mod_lua.html#luaauthzprovider">LuaAuthzProvider provider_name /path/to/lua/script.lua function_name</a></td><td></td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Branche une fonction fournisseur d'autorisation dans <code class="module"><a href="../mod/mod_authz_core.html">mod_authz_core</a></code>
+<tr class="odd"><td><a href="mod_lua.html#luaauthzprovider">LuaAuthzProvider provider_name /path/to/lua/script.lua function_name</a></td><td></td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Branche une fonction fournisseur d'autorisation dans <code class="module"><a href="../mod/mod_authz_core.html">mod_authz_core</a></code>
 </td></tr>
-<tr class="odd"><td><a href="mod_lua.html#luacodecache">LuaCodeCache stat|forever|never</a></td><td> stat </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Configure le cache de code compilé.</td></tr>
-<tr><td><a href="mod_lua.html#luahookaccesschecker">LuaHookAccessChecker  /chemin/vers/lua/script.lua  hook_function_name [early|late]</a></td><td></td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Fournit un point d'entrée pour la phase access_checker du
+<tr><td><a href="mod_lua.html#luacodecache">LuaCodeCache stat|forever|never</a></td><td> stat </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Configure le cache de code compilé.</td></tr>
+<tr class="odd"><td><a href="mod_lua.html#luahookaccesschecker">LuaHookAccessChecker  /chemin/vers/lua/script.lua  hook_function_name [early|late]</a></td><td></td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Fournit un point d'entrée pour la phase access_checker du
 traitement de la requête</td></tr>
-<tr class="odd"><td><a href="mod_lua.html#luahookauthchecker">LuaHookAuthChecker  /chemin/vers/lua/script.lua hook_function_name [early|late]</a></td><td></td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Fournit un point d'entrée pour la phase auth_checker du
+<tr><td><a href="mod_lua.html#luahookauthchecker">LuaHookAuthChecker  /chemin/vers/lua/script.lua hook_function_name [early|late]</a></td><td></td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Fournit un point d'entrée pour la phase auth_checker du
 traitement de la requête</td></tr>
-<tr><td><a href="mod_lua.html#luahookcheckuserid">LuaHookCheckUserID  /path/to/lua/script.lua hook_function_name</a></td><td></td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Fournit un point d'entrée pour la phase check_user_id du
+<tr class="odd"><td><a href="mod_lua.html#luahookcheckuserid">LuaHookCheckUserID  /path/to/lua/script.lua hook_function_name</a></td><td></td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Fournit un point d'entrée pour la phase check_user_id du
 traitement de la requête</td></tr>
-<tr class="odd"><td><a href="mod_lua.html#luahookfixups">LuaHookFixups  /chemin/vers/lua/script.lua hook_function_name</a></td><td></td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Fournit un point d'entrée pour la phase de correction du
+<tr><td><a href="mod_lua.html#luahookfixups">LuaHookFixups  /chemin/vers/lua/script.lua hook_function_name</a></td><td></td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Fournit un point d'entrée pour la phase de correction du
 traitement de la requête</td></tr>
-<tr><td><a href="mod_lua.html#luahookinsertfilter">LuaHookInsertFilter  /chemin/vers/lua/script.lua hook_function_name</a></td><td></td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Fournit un point d'entrée pour la phase insert_filter du
+<tr class="odd"><td><a href="mod_lua.html#luahookinsertfilter">LuaHookInsertFilter  /chemin/vers/lua/script.lua hook_function_name</a></td><td></td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Fournit un point d'entrée pour la phase insert_filter du
 traitement de la requête</td></tr>
-<tr class="odd"><td><a href="mod_lua.html#luahooklog">LuaHookLog  /path/to/lua/script.lua log_function_name</a></td><td></td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Permet une insertion dans la phase de journalisation du
+<tr><td><a href="mod_lua.html#luahooklog">LuaHookLog  /path/to/lua/script.lua log_function_name</a></td><td></td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Permet une insertion dans la phase de journalisation du
 traitement d'une requête</td></tr>
-<tr><td><a href="mod_lua.html#luahookmaptostorage">LuaHookMapToStorage  /chemin/vers/lua/script.lua hook_function_name</a></td><td></td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Fournit un point d'entrée pour la phase map_to_storage du
+<tr class="odd"><td><a href="mod_lua.html#luahookmaptostorage">LuaHookMapToStorage  /chemin/vers/lua/script.lua hook_function_name</a></td><td></td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Fournit un point d'entrée pour la phase map_to_storage du
 traitement de la requête</td></tr>
-<tr class="odd"><td><a href="mod_lua.html#luahookpretranslate">LuaHookPreTranslate  /path/to/lua/script.lua hook_function_name</a></td><td></td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Fournit un point d'entrée pour la phase de pré-traduction du
+<tr><td><a href="mod_lua.html#luahookpretranslate">LuaHookPreTranslate  /path/to/lua/script.lua hook_function_name</a></td><td></td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Fournit un point d'entrée pour la phase de pré-traduction du
 traitement d'une requête</td></tr>
-<tr><td><a href="mod_lua.html#luahooktranslatename">LuaHookTranslateName  /chemin/vers/lua/script.lua  nom_fonction_hook [early|late]</a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Fournit un point d'entrée à la phase du nom de
+<tr class="odd"><td><a href="mod_lua.html#luahooktranslatename">LuaHookTranslateName  /chemin/vers/lua/script.lua  nom_fonction_hook [early|late]</a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Fournit un point d'entrée à la phase du nom de
 traduction du traitement de la requête</td></tr>
-<tr class="odd"><td><a href="mod_lua.html#luahooktypechecker">LuaHookTypeChecker  /chemin/vers/lua/script.lua hook_function_name</a></td><td></td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Fournit un point d'entrée pour la phase type_checker du
+<tr><td><a href="mod_lua.html#luahooktypechecker">LuaHookTypeChecker  /chemin/vers/lua/script.lua hook_function_name</a></td><td></td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Fournit un point d'entrée pour la phase type_checker du
 traitement de la requête</td></tr>
-<tr><td><a href="mod_lua.html#luainherit">LuaInherit none|parent-first|parent-last</a></td><td> parent-first </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Contrôle la manière dont les sections de configuration
+<tr class="odd"><td><a href="mod_lua.html#luainherit">LuaInherit none|parent-first|parent-last</a></td><td> parent-first </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Contrôle la manière dont les sections de configuration
 parentes sont fusionnées dans les enfants</td></tr>
-<tr class="odd"><td><a href="mod_lua.html#luainputfilter">LuaInputFilter filter_name /path/to/lua/script.lua function_name</a></td><td></td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Fournit une fonction Lua pour le filtrage en entrée</td></tr>
-<tr><td><a href="mod_lua.html#luamaphandler">LuaMapHandler modele-uri /chemin/vers/lua/script.lua
-[nom-fonction]</a></td><td></td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Met en correspondance un chemin avec un gestionnaire lua</td></tr>
-<tr class="odd"><td><a href="mod_lua.html#luaoutputfilter">LuaOutputFilter filter_name /path/to/lua/script.lua function_name</a></td><td></td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Fournit une fonction Lua pour le filtrage de contenu en
+<tr><td><a href="mod_lua.html#luainputfilter">LuaInputFilter filter_name /path/to/lua/script.lua function_name</a></td><td></td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Fournit une fonction Lua pour le filtrage en entrée</td></tr>
+<tr class="odd"><td><a href="mod_lua.html#luamaphandler">LuaMapHandler modele-uri /chemin/vers/lua/script.lua
+[nom-fonction]</a></td><td></td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Met en correspondance un chemin avec un gestionnaire lua</td></tr>
+<tr><td><a href="mod_lua.html#luaoutputfilter">LuaOutputFilter filter_name /path/to/lua/script.lua function_name</a></td><td></td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Fournit une fonction Lua pour le filtrage de contenu en
 sortie</td></tr>
-<tr><td><a href="mod_lua.html#luapackagecpath">LuaPackageCPath /chemin/vers/include/?.soa</a></td><td></td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Ajoute un répertoire au package.cpath de lua</td></tr>
-<tr class="odd"><td><a href="mod_lua.html#luapackagepath">LuaPackagePath /chemin/vers/include/?.lua</a></td><td></td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Ajoute un répertoire au package.path de lua</td></tr>
-<tr><td><a href="mod_lua.html#luaquickhandler">LuaQuickHandler /path/to/script.lua hook_function_name</a></td><td></td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Fournit un point d'entrée pour la gestion rapide du
+<tr class="odd"><td><a href="mod_lua.html#luapackagecpath">LuaPackageCPath /chemin/vers/include/?.soa</a></td><td></td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Ajoute un répertoire au package.cpath de lua</td></tr>
+<tr><td><a href="mod_lua.html#luapackagepath">LuaPackagePath /chemin/vers/include/?.lua</a></td><td></td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Ajoute un répertoire au package.path de lua</td></tr>
+<tr class="odd"><td><a href="mod_lua.html#luaquickhandler">LuaQuickHandler /path/to/script.lua hook_function_name</a></td><td></td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Fournit un point d'entrée pour la gestion rapide du
 traitement de la requête</td></tr>
-<tr class="odd"><td><a href="mod_lua.html#luaroot">LuaRoot /chemin/vers/un/répertoire</a></td><td></td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Spécifie le chemin de base pour la résolution des chemins
+<tr><td><a href="mod_lua.html#luaroot">LuaRoot /chemin/vers/un/répertoire</a></td><td></td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Spécifie le chemin de base pour la résolution des chemins
 relatifs dans les directives de mod_lua</td></tr>
-<tr><td><a href="mod_lua.html#luascope">LuaScope once|request|conn|thread|server [min] [max]</a></td><td> once </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Une valeur parmi once, request, conn, thread -- la valeur par défaut est once</td></tr>
-<tr class="odd"><td><a href="mod_macro.html#macro" id="M" name="M">
+<tr class="odd"><td><a href="mod_lua.html#luascope">LuaScope once|request|conn|thread|server [min] [max]</a></td><td> once </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Une valeur parmi once, request, conn, thread -- la valeur par défaut est once</td></tr>
+<tr><td><a href="mod_macro.html#macro" id="M" name="M">
 &lt;Macro <var>nom</var> [<var>par1</var> .. <var>parN</var>]&gt;
-... &lt;/Macro&gt;</a></td><td></td><td>svd</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Définition d'une macro dans un fichier de configuration</td></tr>
-<tr><td><a href="mod_macro.html#macroignorebadnesting">MacroIgnoreBadNesting</a></td><td></td><td>svd</td><td>B</td></tr><tr><td class="descr" colspan="4">Ignore les avertissements et n'inscrit rien dans le journal à
+... &lt;/Macro&gt;</a></td><td></td><td>svd</td><td>B</td></tr><tr><td class="descr" colspan="4">Définition d'une macro dans un fichier de configuration</td></tr>
+<tr class="odd"><td><a href="mod_macro.html#macroignorebadnesting">MacroIgnoreBadNesting</a></td><td></td><td>svd</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Ignore les avertissements et n'inscrit rien dans le journal à
 propos d'une imbrication de Macros non conforme</td></tr>
-<tr class="odd"><td><a href="mod_macro.html#macroignoreemptyargs">MacroIgnoreEmptyArgs</a></td><td></td><td>svd</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Ignore les avertissements et n'inscrit rien dans le journal à
+<tr><td><a href="mod_macro.html#macroignoreemptyargs">MacroIgnoreEmptyArgs</a></td><td></td><td>svd</td><td>B</td></tr><tr><td class="descr" colspan="4">Ignore les avertissements et n'inscrit rien dans le journal à
 propos des arguments de Macro vides</td></tr>
-<tr><td><a href="mpm_common.html#maxconnectionsperchild">MaxConnectionsPerChild <var>number</var></a></td><td> 0 </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Limite le nombre de connexions qu'un processus enfant va
+<tr class="odd"><td><a href="mpm_common.html#maxconnectionsperchild">MaxConnectionsPerChild <var>number</var></a></td><td> 0 </td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Limite le nombre de connexions qu'un processus enfant va
 traiter au cours de son fonctionnement</td></tr>
-<tr class="odd"><td><a href="core.html#maxkeepaliverequests">MaxKeepAliveRequests <var>nombre</var></a></td><td> 100 </td><td>sv</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Nombre de requêtes permises pour une connexion
+<tr><td><a href="core.html#maxkeepaliverequests">MaxKeepAliveRequests <var>nombre</var></a></td><td> 100 </td><td>sv</td><td>C</td></tr><tr><td class="descr" colspan="4">Nombre de requêtes permises pour une connexion
 persistante</td></tr>
-<tr><td><a href="mpm_common.html#maxmemfree">MaxMemFree <var>KOctets</var></a></td><td> 2048 </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Quantité maximale de mémoire que l'allocateur principal est
+<tr class="odd"><td><a href="mpm_common.html#maxmemfree">MaxMemFree <var>KOctets</var></a></td><td> 2048 </td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Quantité maximale de mémoire que l'allocateur principal est
 autorisé à conserver sans appeler <code>free()</code></td></tr>
-<tr class="odd"><td><a href="core.html#maxrangeoverlaps">MaxRangeOverlaps default | unlimited | none | <var>nombre de
-    chevauchements</var></a></td><td> 20 </td><td>svd</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Nombre de chevauchements de segments de données autorisé
+<tr><td><a href="core.html#maxrangeoverlaps">MaxRangeOverlaps default | unlimited | none | <var>nombre de
+    chevauchements</var></a></td><td> 20 </td><td>svd</td><td>C</td></tr><tr><td class="descr" colspan="4">Nombre de chevauchements de segments de données autorisé
     (par exemple <code>100-200,150-300</code>) avant le renvoi de la
     ressource complète</td></tr>
-<tr><td><a href="core.html#maxrangereversals">MaxRangeReversals default | unlimited | none | <var>nombre
-    d'inversions</var></a></td><td> 20 </td><td>svd</td><td>C</td></tr><tr><td class="descr" colspan="4">Nombre d'inversions d'ordre autorisé dans la spécification des
+<tr class="odd"><td><a href="core.html#maxrangereversals">MaxRangeReversals default | unlimited | none | <var>nombre
+    d'inversions</var></a></td><td> 20 </td><td>svd</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Nombre d'inversions d'ordre autorisé dans la spécification des
     segments de données (par exemple <code>100-200,50-70</code>) avant le renvoi de la
     ressource complète</td></tr>
-<tr class="odd"><td><a href="core.html#maxranges">MaxRanges default | unlimited | none | <var>nombre de segments</var></a></td><td> 200 </td><td>svd</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Nombre de segments de données autorisé avant le renvoi de
+<tr><td><a href="core.html#maxranges">MaxRanges default | unlimited | none | <var>nombre de segments</var></a></td><td> 200 </td><td>svd</td><td>C</td></tr><tr><td class="descr" colspan="4">Nombre de segments de données autorisé avant le renvoi de
 l'intégralité de la ressource</td></tr>
-<tr><td><a href="mpm_common.html#maxrequestworkers">MaxRequestWorkers <var>nombre</var></a></td><td></td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Nombre maximum de connexions pouvant être traitées
+<tr class="odd"><td><a href="mpm_common.html#maxrequestworkers">MaxRequestWorkers <var>nombre</var></a></td><td></td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Nombre maximum de connexions pouvant être traitées
 simultanément</td></tr>
-<tr class="odd"><td><a href="prefork.html#maxspareservers">MaxSpareServers <var>nombre</var></a></td><td> 10 </td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Nombre maximum de processus serveurs enfants
+<tr><td><a href="prefork.html#maxspareservers">MaxSpareServers <var>nombre</var></a></td><td> 10 </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Nombre maximum de processus serveurs enfants
 inactifs</td></tr>
-<tr><td><a href="mpm_common.html#maxsparethreads">MaxSpareThreads <var>nombre</var></a></td><td></td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Nombre maximum de threads inactifs</td></tr>
-<tr class="odd"><td><a href="mpm_netware.html#maxthreads">MaxThreads <var>nombre</var></a></td><td> 2048 </td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Définit le nombre maximum de threads esclaves</td></tr>
-<tr><td><a href="mod_md.html#mdactivationdelay">MDActivationDelay <var>duration</var></a></td><td></td><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">Délai d’activation des nouveaux certificays</td></tr>
-<tr class="odd"><td><a href="mod_md.html#mdbaseserver">MDBaseServer on|off</a></td><td> off </td><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Définit si le serveur global peut être géré ou seulement
+<tr class="odd"><td><a href="mpm_common.html#maxsparethreads">MaxSpareThreads <var>nombre</var></a></td><td></td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Nombre maximum de threads inactifs</td></tr>
+<tr><td><a href="mpm_netware.html#maxthreads">MaxThreads <var>nombre</var></a></td><td> 2048 </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Définit le nombre maximum de threads esclaves</td></tr>
+<tr class="odd"><td><a href="mod_md.html#mdactivationdelay">MDActivationDelay <var>duration</var></a></td><td></td><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Délai d’activation des nouveaux certificays</td></tr>
+<tr><td><a href="mod_md.html#mdbaseserver">MDBaseServer on|off</a></td><td> off </td><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">Définit si le serveur global peut être géré ou seulement
 	les serveurs virtuels.</td></tr>
-<tr><td><a href="mod_md.html#mdcachallenges">MDCAChallenges <var>name</var> [ <var>name</var> ... ]</a></td><td> tls-alpn-01 http-01 +</td><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">Type de négociation ACME utilisée pour prouver l'appartenance
+<tr class="odd"><td><a href="mod_md.html#mdcachallenges">MDCAChallenges <var>name</var> [ <var>name</var> ... ]</a></td><td> tls-alpn-01 http-01 +</td><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Type de négociation ACME utilisée pour prouver l'appartenance
 	du domaine.</td></tr>
-<tr class="odd"><td><a href="mod_md.html#mdcertificateagreement">MDCertificateAgreement accepted</a></td><td></td><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Acceptation des conditions d'utilisation de l'autorité de
+<tr><td><a href="mod_md.html#mdcertificateagreement">MDCertificateAgreement accepted</a></td><td></td><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">Acceptation des conditions d'utilisation de l'autorité de
 	certification.</td></tr>
-<tr><td><a href="mod_md.html#mdcertificateauthority">MDCertificateAuthority <var>url</var></a></td><td> letsencrypt </td><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">Les URLs du service ACME de l'autorité de certification.</td></tr>
-<tr class="odd"><td><a href="mod_md.html#mdcertificatecheck">MDCertificateCheck <var>name</var> <var>url</var></a></td><td></td><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Définit le motif de nom et d’URL pour un site de
+<tr class="odd"><td><a href="mod_md.html#mdcertificateauthority">MDCertificateAuthority <var>url</var></a></td><td> letsencrypt </td><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Les URLs du service ACME de l'autorité de certification.</td></tr>
+<tr><td><a href="mod_md.html#mdcertificatecheck">MDCertificateCheck <var>name</var> <var>url</var></a></td><td></td><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">Définit le motif de nom et d’URL pour un site de
 	vérification de certificat</td></tr>
-<tr><td><a href="mod_md.html#mdcertificatefile">MDCertificateFile <var>path-to-pem-file</var></a></td><td></td><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">Définit un fichier de certificat statique pour le domaine géré.</td></tr>
-<tr class="odd"><td><a href="mod_md.html#mdcertificatekeyfile">MDCertificateKeyFile <var>path-to-file</var></a></td><td></td><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Définit une clé privée statique pour le certificat
+<tr class="odd"><td><a href="mod_md.html#mdcertificatefile">MDCertificateFile <var>path-to-pem-file</var></a></td><td></td><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Définit un fichier de certificat statique pour le domaine géré.</td></tr>
+<tr><td><a href="mod_md.html#mdcertificatekeyfile">MDCertificateKeyFile <var>path-to-file</var></a></td><td></td><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">Définit une clé privée statique pour le certificat
 	statique.</td></tr>
-<tr><td><a href="mod_md.html#mdcertificatemonitor">MDCertificateMonitor name url</a></td><td> crt.sh https://crt. +</td><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">L'URL d'un moniteur d'enregistrement de certificat.</td></tr>
-<tr class="odd"><td><a href="mod_md.html#mdcertificateprotocol">MDCertificateProtocol <var>protocol</var></a></td><td> ACME </td><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Le protocole à utiliser avec l'autorité de certification.</td></tr>
-<tr><td><a href="mod_md.html#mdcertificatestatus">MDCertificateStatus on|off</a></td><td> on </td><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">Extrait les informations publiques du certificat au format
+<tr class="odd"><td><a href="mod_md.html#mdcertificatemonitor">MDCertificateMonitor name url</a></td><td> crt.sh https://crt. +</td><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">L'URL d'un moniteur d'enregistrement de certificat.</td></tr>
+<tr><td><a href="mod_md.html#mdcertificateprotocol">MDCertificateProtocol <var>protocol</var></a></td><td> ACME </td><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">Le protocole à utiliser avec l'autorité de certification.</td></tr>
+<tr class="odd"><td><a href="mod_md.html#mdcertificatestatus">MDCertificateStatus on|off</a></td><td> on </td><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Extrait les informations publiques du certificat au format
 	JSON.</td></tr>
-<tr class="odd"><td><a href="mod_md.html#mdchallengedns01">MDChallengeDns01 <var>path-to-command</var></a></td><td></td><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Définit la commande d'activation/désactivation des
+<tr><td><a href="mod_md.html#mdchallengedns01">MDChallengeDns01 <var>path-to-command</var></a></td><td></td><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">Définit la commande d'activation/désactivation des
 	vérifications dns-01</td></tr>
-<tr><td><a href="mod_md.html#mdchallengedns01version">MDChallengeDns01Version 1|2</a></td><td> 1 </td><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">Définit le type des arguments avec lesquels appeler
+<tr class="odd"><td><a href="mod_md.html#mdchallengedns01version">MDChallengeDns01Version 1|2</a></td><td> 1 </td><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Définit le type des arguments avec lesquels appeler
 	MDChallengeDns01</td></tr>
-<tr class="odd"><td><a href="mod_md.html#mdcheckinterval">MDCheckInterval <var>duration</var></a></td><td> 12h </td><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Détermine la périodicité de la vérification des certificats</td></tr>
-<tr><td><a href="mod_md.html#mdcontactemail">MDContactEmail <var>address</var></a></td><td></td><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">Adresse Email pour l'enregistrement du compte</td></tr>
-<tr class="odd"><td><a href="mod_md.html#mddrivemode">MDDriveMode always|auto|manual</a></td><td> auto </td><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Ancien nom de MDRenewMode.</td></tr>
-<tr><td><a href="mod_md.html#mdexternalaccountbinding">MDExternalAccountBinding <var>key-id</var> <var>hmac-64</var> | none | <var>file</var></a></td><td> none </td><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">Définit les valeurs keyid et hmac de liaison avec les
+<tr><td><a href="mod_md.html#mdcheckinterval">MDCheckInterval <var>duration</var></a></td><td> 12h </td><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">Détermine la périodicité de la vérification des certificats</td></tr>
+<tr class="odd"><td><a href="mod_md.html#mdcontactemail">MDContactEmail <var>address</var></a></td><td></td><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Adresse Email pour l'enregistrement du compte</td></tr>
+<tr><td><a href="mod_md.html#mddrivemode">MDDriveMode always|auto|manual</a></td><td> auto </td><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">Ancien nom de MDRenewMode.</td></tr>
+<tr class="odd"><td><a href="mod_md.html#mdexternalaccountbinding">MDExternalAccountBinding <var>key-id</var> <var>hmac-64</var> | none | <var>file</var></a></td><td> none </td><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Définit les valeurs keyid et hmac de liaison avec les
 	comptes externes à utiliser dans les CA</td></tr>
-<tr class="odd"><td><a href="mod_md.html#mdhttpproxy">MDHttpProxy <var>url</var></a></td><td></td><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Spécifie un serveur mandataire pour les connexions
+<tr><td><a href="mod_md.html#mdhttpproxy">MDHttpProxy <var>url</var></a></td><td></td><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">Spécifie un serveur mandataire pour les connexions
 	sortantes.</td></tr>
-<tr><td><a href="mod_md.html#mdmatchnames">MDMatchNames all|servernames</a></td><td> all </td><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">Définit comment les noms DNS sont comparés aux vhosts</td></tr>
-<tr class="odd"><td><a href="mod_md.html#mdmember">MDMember <var>hostname</var></a></td><td></td><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Nom d'hôte additionnel pour le domaine géré.</td></tr>
-<tr><td><a href="mod_md.html#mdmembers">MDMembers auto|manual</a></td><td> auto </td><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">Définit si les alias de noms de domaines sont
+<tr class="odd"><td><a href="mod_md.html#mdmatchnames">MDMatchNames all|servernames</a></td><td> all </td><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Définit comment les noms DNS sont comparés aux vhosts</td></tr>
+<tr><td><a href="mod_md.html#mdmember">MDMember <var>hostname</var></a></td><td></td><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">Nom d'hôte additionnel pour le domaine géré.</td></tr>
+<tr class="odd"><td><a href="mod_md.html#mdmembers">MDMembers auto|manual</a></td><td> auto </td><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Définit si les alias de noms de domaines sont
 	automatiquement ajoutés.</td></tr>
-<tr class="odd"><td><a href="mod_md.html#mdmessagecmd">MDMessageCmd <var>path-to-cmd</var> <var>optional-args</var></a></td><td></td><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Gère les évènements pour les domaines gérés</td></tr>
-<tr><td><a href="mod_md.html#mdmuststaple">MDMustStaple on|off</a></td><td> off </td><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">Définit si les nouveaux certificats doivent avoir le
+<tr><td><a href="mod_md.html#mdmessagecmd">MDMessageCmd <var>path-to-cmd</var> <var>optional-args</var></a></td><td></td><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">Gère les évènements pour les domaines gérés</td></tr>
+<tr class="odd"><td><a href="mod_md.html#mdmuststaple">MDMustStaple on|off</a></td><td> off </td><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Définit si les nouveaux certificats doivent avoir le
 	drapeau OCSP Must Staple activé.</td></tr>
-<tr class="odd"><td><a href="mod_md.html#mdnotifycmd">MDNotifyCmd <var>path</var> [ <var>args</var> ]</a></td><td></td><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Lance un programme lorsqu'un domaine géré est opérationnel.</td></tr>
-<tr><td><a href="mod_md.html#mdomain">MDomain <var>dns-name</var> [ <var>other-dns-name</var>... ] [auto|manual]</a></td><td></td><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">Définit une liste de noms de domaines qui appartiennent à
+<tr><td><a href="mod_md.html#mdnotifycmd">MDNotifyCmd <var>path</var> [ <var>args</var> ]</a></td><td></td><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">Lance un programme lorsqu'un domaine géré est opérationnel.</td></tr>
+<tr class="odd"><td><a href="mod_md.html#mdomain">MDomain <var>dns-name</var> [ <var>other-dns-name</var>... ] [auto|manual]</a></td><td></td><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Définit une liste de noms de domaines qui appartiennent à
 	un groupe.</td></tr>
-<tr class="odd"><td><a href="mod_md.html#mdomainset">&lt;MDomainSet <var>dns-name</var> [ <var>other-dns-name</var>... ]&gt;...&lt;/MDomainSet&gt;</a></td><td></td><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Conteneur de directives à appliquer à un ou plusieurs
+<tr><td><a href="mod_md.html#mdomainset">&lt;MDomainSet <var>dns-name</var> [ <var>other-dns-name</var>... ]&gt;...&lt;/MDomainSet&gt;</a></td><td></td><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">Conteneur de directives à appliquer à un ou plusieurs
 	domaines gérés.</td></tr>
-<tr><td><a href="mod_md.html#mdportmap">MDPortMap <var>map1</var> [ <var>map2</var> ]</a></td><td> http:80 https:443 </td><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">Mappage des ports externes avec les ports internes pour
+<tr class="odd"><td><a href="mod_md.html#mdportmap">MDPortMap <var>map1</var> [ <var>map2</var> ]</a></td><td> http:80 https:443 </td><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Mappage des ports externes avec les ports internes pour
 	vérifier à qui appartient le domaine.</td></tr>
-<tr class="odd"><td><a href="mod_md.html#mdprivatekeys">MDPrivateKeys <var>type</var> [ <var>params</var>... ]</a></td><td> RSA 2048 </td><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Définit le type et la taille des clés privées générées.</td></tr>
-<tr><td><a href="mod_md.html#mdprofile">MDProfile name</a></td><td></td><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">Utiliser un profile ACME spécifique depuis le CA</td></tr>
-<tr class="odd"><td><a href="mod_md.html#mdprofilemandatory">MDProfileMandatory on|off</a></td><td> off </td><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Contrôler si un MDProfile est obligatoire.</td></tr>
-<tr><td><a href="mod_md.html#mdrenewmode">MDRenewMode always|auto|manual</a></td><td> auto </td><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">Contrôle le renouvellement des certificats.</td></tr>
+<tr><td><a href="mod_md.html#mdprivatekeys">MDPrivateKeys <var>type</var> [ <var>params</var>... ]</a></td><td> RSA 2048 </td><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">Définit le type et la taille des clés privées générées.</td></tr>
+<tr class="odd"><td><a href="mod_md.html#mdprofile">MDProfile name</a></td><td></td><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Utiliser un profile ACME spécifique depuis le CA</td></tr>
+<tr><td><a href="mod_md.html#mdprofilemandatory">MDProfileMandatory on|off</a></td><td> off </td><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">Contrôler si un MDProfile est obligatoire.</td></tr>
+<tr class="odd"><td><a href="mod_md.html#mdrenewmode">MDRenewMode always|auto|manual</a></td><td> auto </td><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Contrôle le renouvellement des certificats.</td></tr>
+<tr><td><a href="mod_md.html#mdrenewviaari">MDRenewViaARI on|off</a></td><td> on </td><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">Utilisation de l’extension ACME ARI (rfc9773).</td></tr>
 <tr class="odd"><td><a href="mod_md.html#mdrenewwindow">MDRenewWindow <var>duration</var></a></td><td> 33% </td><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Définit le moment auquel un certificat doit être renouvelé.</td></tr>
 <tr><td><a href="mod_md.html#mdrequirehttps">MDRequireHttps off|temporary|permanent</a></td><td> off </td><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">Redirige le trafic http: vers https: pour les domaines
 	gérés.</td></tr>
-<tr class="odd"><td><a href="mod_md.html#mdretrydelay">MDRetryDelay <var>duration</var></a></td><td> 5s </td><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Temps d'attente avant de réessayer, doublé à chaque erreur
+<tr class="odd"><td><a href="mod_md.html#mdretrydelay">MDRetryDelay <var>duration</var></a></td><td> 30s </td><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Temps d'attente avant de réessayer, doublé à chaque erreur
 	consécutive</td></tr>
 <tr><td><a href="mod_md.html#mdretryfailover">MDRetryFailover <var>number</var></a></td><td> 13 </td><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">Le nombre d'erreurs avant de se tourner vers un autre CA</td></tr>
 <tr class="odd"><td><a href="mod_md.html#mdserverstatus">MDServerStatus on|off</a></td><td> on </td><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Définit si les informations à propos des domaines gérés

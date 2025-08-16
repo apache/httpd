@@ -345,6 +345,7 @@
 <li><a href="mod_http2.html#h2maxdataframelen">H2MaxDataFrameLen</a></li>
 <li><a href="mod_http2.html#h2maxheaderblocklen">H2MaxHeaderBlockLen</a></li>
 <li><a href="mod_http2.html#h2maxsessionstreams">H2MaxSessionStreams</a></li>
+<li><a href="mod_http2.html#h2maxstreamerrors">H2MaxStreamErrors</a></li>
 <li><a href="mod_http2.html#h2maxworkeridleseconds">H2MaxWorkerIdleSeconds</a></li>
 <li><a href="mod_http2.html#h2maxworkers">H2MaxWorkers</a></li>
 <li><a href="mod_http2.html#h2minworkers">H2MinWorkers</a></li>
@@ -509,6 +510,7 @@
 <li><a href="mod_md.html#mdprofile">MDProfile</a></li>
 <li><a href="mod_md.html#mdprofilemandatory">MDProfileMandatory</a></li>
 <li><a href="mod_md.html#mdrenewmode">MDRenewMode</a></li>
+<li><a href="mod_md.html#mdrenewviaari">MDRenewViaARI</a></li>
 <li><a href="mod_md.html#mdrenewwindow">MDRenewWindow</a></li>
 <li><a href="mod_md.html#mdrequirehttps">MDRequireHttps</a></li>
 <li><a href="mod_md.html#mdretrydelay">MDRetryDelay</a></li>
