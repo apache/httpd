@@ -33,6 +33,10 @@
 #include "util_md5.h"
 #include "scoreboard.h"
 
+#ifdef HAVE_OPENSSL_ECH
+#include <openssl/ech.h>
+#endif
+
 static void ssl_configure_env(request_rec *r, SSLConnRec *sslconn);
 #ifdef HAVE_TLSEXT
 static int ssl_find_vhost(void *servername, conn_rec *c, server_rec *s);
@@ -1517,6 +1521,37 @@ int ssl_hook_Fixup(request_rec *r)
     }
 #endif
 
+#ifdef HAVE_OPENSSL_ECH
+    /*
+     * Add the ECH information to the environment 
+     */
+    char *inner_sni=NULL;
+    char *outer_sni=NULL;
+    char buf[PATH_MAX];
+    memset(buf,0,PATH_MAX);
+    int echrv=SSL_ech_get1_status((SSL*)ssl,&inner_sni,&outer_sni);
+    switch (echrv) {
+    case SSL_ECH_STATUS_NOT_TRIED:
+        snprintf(buf,PATH_MAX,"not attempted");
+        break;
+    case SSL_ECH_STATUS_FAILED:
+        snprintf(buf,PATH_MAX,"tried but failed");
+        break;
+    case SSL_ECH_STATUS_BAD_NAME:
+        snprintf(buf,PATH_MAX,"ECH worked but bad name");
+        break;
+    case SSL_ECH_STATUS_SUCCESS:
+        snprintf(buf,PATH_MAX,"success");
+        break;
+    default:
+        snprintf(buf,PATH_MAX, "error getting ECH status");
+    }
+    apr_table_set(env, "SSL_ECH_INNER_SNI", (inner_sni?inner_sni:"NONE"));
+    apr_table_set(env, "SSL_ECH_OUTER_SNI", (outer_sni?outer_sni:"NONE"));
+    apr_table_set(env, "SSL_ECH_STATUS", buf);
+
+#endif
+
     /* standard SSL environment variables */
     if (dc->nOptions & SSL_OPT_STDENVVARS) {
         modssl_var_extract_dns(env, ssl, r->pool);
@@ -2377,6 +2412,54 @@ static apr_status_t init_vhost(conn_rec *c, SSL *ssl, const char *servername)
     return APR_NOTFOUND;
 }
 
+#ifdef HAVE_OPENSSL_ECH
+unsigned int ssl_callback_ECH(SSL *ssl, const char *str)  
+{
+    char *inner_sni=NULL, *outer_sni=NULL;
+    int echrv;
+    conn_rec *c = NULL;
+    const char *ech_servername;
+
+    c = (conn_rec *)SSL_get_app_data(ssl);
+    ech_servername = SSL_get_servername(ssl, TLSEXT_NAMETYPE_host_name);
+    if (ech_servername == NULL) {
+        return SSL_TLSEXT_ERR_NOACK;
+    }
+    echrv=SSL_ech_get1_status((SSL*)ssl,&inner_sni,&outer_sni);
+    switch (echrv) {
+    case SSL_ECH_STATUS_NOT_TRIED:
+        ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, c, APLOGNO(10534)
+            "ECH not attempted");
+        break;
+    case SSL_ECH_STATUS_FAILED:
+        ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, c, APLOGNO(10535)
+            "ECH tried but failed");
+        break;
+    case SSL_ECH_STATUS_BAD_NAME:
+        ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, c, APLOGNO(10536)
+            "ECH worked but bad name");
+        break;
+    case SSL_ECH_STATUS_SUCCESS:
+        ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, c, APLOGNO(10537)
+            "ECH success outer_sni: %s inner_sni: %s",
+            (outer_sni?outer_sni:"NONE"),(inner_sni?inner_sni:"NONE"));
+        break;
+    default:
+        ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, c, APLOGNO(10538)
+            "Error getting ECH status");
+    }
+
+    /* try init vhost and see what breaks */
+    apr_status_t ivstatus=init_vhost(c, ssl, ech_servername);
+    if (ivstatus!=APR_SUCCESS) {
+        ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, c, APLOGNO(10539)
+                      "init_vhost failed for %s",ech_servername);
+        return SSL_TLSEXT_ERR_NOACK;
+    }
+    return 1;
+}
+#endif
+
 /*
  * This callback function is executed when OpenSSL encounters an extended
  * client hello with a server name indication extension ("SNI", cf. RFC 6066).
@@ -2447,7 +2530,18 @@ int ssl_callback_ClientHello(SSL *ssl, int *al, void *arg)
     const unsigned char *pos;
     size_t len, remaining;
     (void)arg;
- 
+
+#ifdef HAVE_OPENSSL_ECH
+
+    if (SSL_client_hello_get0_ext(ssl, TLSEXT_TYPE_ech, &pos, &remaining)) {
+        ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, c, APLOGNO(10540)
+                      "there is an ECH extension");
+    } else {
+        ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, c, APLOGNO(10541)
+                      "there is NO ECH extension");
+    }
+#endif
+
     /* We can't use SSL_get_servername() at this earliest OpenSSL connection
      * stage, and there is no SSL_client_hello_get0_servername() provided as
      * of OpenSSL 1.1.1. So the code below, that extracts the SNI from the

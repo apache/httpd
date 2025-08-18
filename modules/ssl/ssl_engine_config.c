@@ -222,6 +222,9 @@ static SSLSrvConfigRec *ssl_config_server_new(apr_pool_t *p)
 #endif
     sc->clienthello_vars       = UNSET;
     sc->session_tickets        = UNSET;
+#ifdef HAVE_OPENSSL_ECH
+    sc->echkeydir             = NULL;
+#endif
 
     modssl_ctx_init_server(sc, p);
 
@@ -356,6 +359,9 @@ void *ssl_config_server_merge(apr_pool_t *p, void *basev, void *addv)
     cfgMergeBool(compression);
 #endif
     cfgMergeBool(session_tickets);
+#ifdef HAVE_OPENSSL_ECH
+    cfgMergeString(echkeydir);
+#endif
 
     modssl_ctx_cfg_merge_server(p, base->server, add->server, mrg->server);
 
@@ -839,6 +845,21 @@ const char *ssl_cmd_SSLEngine(cmd_parms *cmd, void *dcfg, const char *arg)
 
     return "Argument must be On or Off";
 }
+
+#ifdef HAVE_OPENSSL_ECH
+const char *ssl_cmd_SSLECHKeyDir(cmd_parms *cmd, void *dcfg, const char *arg)
+{
+    SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
+    const char *err;
+
+    sc->echkeydir=arg;
+    ap_log_error(APLOG_MARK, APLOG_TRACE4, 0, cmd->server, APLOGNO(10519)
+                 "%s: ECHKeyDir set to %s",
+                 cmd->cmd->name, sc->echkeydir);
+
+    return NULL;
+}
+#endif
 
 const char *ssl_cmd_SSLFIPS(cmd_parms *cmd, void *dcfg, int flag)
 {
@@ -2654,6 +2675,9 @@ static void ssl_srv_dump(SSLSrvConfigRec *sc, apr_pool_t *p,
     DMP_LONG(  "SSLSessionCacheTimeout", sc->session_cache_timeout);
     DMP_ON_OFF("SSLStrictSNIVHostCheck", sc->strict_sni_vhost_check);
     DMP_ON_OFF("SSLSessionTickets", sc->session_tickets);
+#ifdef HAVE_OPENSSL_ECH
+    DMP_STRING("SSLECHKeyDir", sc->echkeydir);
+#endif
 }
 
 static void ssl_policy_dump(SSLSrvConfigRec *policy, apr_pool_t *p, 

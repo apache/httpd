@@ -118,6 +118,7 @@
 #define MODSSL_HAVE_ENGINE_API 0
 #endif
 
+
 /* Use OpenSSL 3.x STORE for loading URI keys and certificates starting with
  * OpenSSL 3.0
  */
@@ -125,6 +126,16 @@
 #define MODSSL_HAVE_OPENSSL_STORE 1
 #else
 #define MODSSL_HAVE_OPENSSL_STORE 0
+#endif
+
+/*
+ * Check if we have an ECH-enabled OpenSSL. If we do then this symbol will
+ * be defined in ssl.h and we compile in ECH code.
+ */
+#if defined(SSL_OP_ECH_GREASE)
+#define HAVE_OPENSSL_ECH
+#else
+#undef HAVE_OPENSSL_ECH
 #endif
 
 #if (OPENSSL_VERSION_NUMBER < 0x0090801f)
@@ -870,6 +881,9 @@ struct SSLSrvConfigRec {
 #endif
     BOOL             session_tickets;
     BOOL             clienthello_vars;
+#ifdef HAVE_OPENSSL_ECH
+    const char *echkeydir;
+#endif
 };
 
 /**
@@ -917,6 +931,9 @@ const char  *ssl_cmd_SSLPassPhraseDialog(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLCryptoDevice(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLRandomSeed(cmd_parms *, void *, const char *, const char *, const char *);
 const char  *ssl_cmd_SSLEngine(cmd_parms *, void *, const char *);
+#ifdef HAVE_OPENSSL_ECH
+const char  *ssl_cmd_SSLECHKeyDir(cmd_parms *cmd, void *dcfg, const char *arg);
+#endif
 const char  *ssl_cmd_SSLCipherSuite(cmd_parms *, void *, const char *, const char *);
 const char  *ssl_cmd_SSLCertificateFile(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLCertificateKeyFile(cmd_parms *, void *, const char *);
@@ -1031,6 +1048,9 @@ int          ssl_callback_ServerNameIndication(SSL *, int *, modssl_ctx_t *);
 #endif
 #if OPENSSL_VERSION_NUMBER >= 0x10101000L && !defined(LIBRESSL_VERSION_NUMBER)
 int          ssl_callback_ClientHello(SSL *, int *, void *);
+#ifdef HAVE_OPENSSL_ECH
+unsigned int ssl_callback_ECH(SSL *, const char *);
+#endif
 #endif
 #ifdef HAVE_TLS_SESSION_TICKETS
 int ssl_callback_SessionTicket(SSL *ssl,
