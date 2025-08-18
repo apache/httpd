@@ -167,7 +167,7 @@ sudo service apache2 start
       against your installed copy of APR and APR-Util.</dd>
 
       <dt>Perl-Compatible Regular Expressions Library (PCRE)</dt>
-      <dd>This library is required but not longer bundled with httpd.
+      <dd>This library is required but no longer bundled with httpd.
       Download the source code from <a href="http://www.pcre.org/">http://www.pcre.org</a>,
       or install a Port or Package.  If your build system can't find
       the pcre-config script installed by the PCRE build, point to it
