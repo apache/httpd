@@ -709,14 +709,23 @@ static int ssl_hook_process_connection(conn_rec* c)
                             AP_MODE_INIT, APR_BLOCK_READ, 0);
         apr_brigade_destroy(temp);
 
-        if (APR_SUCCESS != APR_SUCCESS) {
-            if (c->cs) {
-                c->cs->state = CONN_STATE_LINGER;
+        if (rv != APR_SUCCESS) {
+            /*
+             * We handle NON_SSL_SEND_REQLINE and NON_SSL_SEND_HDR_SEP
+             * later again in the input filter and in ssl_hook_ReadReq
+             * to return an appropriate error message to the client.
+             * Hence do not close the connection here.
+             */
+            if ((sslconn->non_ssl_request != NON_SSL_SEND_REQLINE) &&
+                (sslconn->non_ssl_request != NON_SSL_SEND_HDR_SEP)) {
+                if (c->cs) {
+                    c->cs->state = CONN_STATE_LINGER;
+                }
+                ap_log_cerror(APLOG_MARK, APLOG_ERR, rv, c, APLOGNO(10373)
+                              "SSL handshake was not completed, "
+                              "closing connection");
+                return OK;
             }
-            ap_log_cerror(APLOG_MARK, APLOG_ERR, rv, c, APLOGNO(10373)
-                          "SSL handshake was not completed, "
-                          "closing connection");
-            return OK;
         }
     }
     
