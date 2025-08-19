@@ -230,7 +230,8 @@ static const char *set_worker_hc_param(apr_pool_t *p,
         } else {
             temp->hcexpr = apr_pstrdup(p, val);
         } 
-    } else if(!strcasecmp(key, "hctimeout")) {
+    } 
+    else if(!strcasecmp(key, "hctimeout")) {
         apr_interval_time_t timeout;
         if (ap_timeout_parameter_parse(val, &timeout, "s") != APR_SUCCESS)
             return "Health check timeout value has wrong format";
@@ -244,7 +245,7 @@ static const char *set_worker_hc_param(apr_pool_t *p,
             temp->hc_timeout_set = 1;
         }
     }
-  else {
+    else {
         return "unknown Worker hcheck parameter";
     }
     return NULL;
@@ -528,14 +529,14 @@ static proxy_worker *hc_get_hcworker(sctx_t *ctx, proxy_worker *worker,
         hc->hash.def = hc->s->hash.def = ap_proxy_hashfunc(hc->s->name, PROXY_HASHFUNC_DEFAULT);
         hc->hash.fnv = hc->s->hash.fnv = ap_proxy_hashfunc(hc->s->name, PROXY_HASHFUNC_FNV);
         hc->s->port = port;
+        hc->s->conn_timeout_set = worker->s->conn_timeout_set;
+        hc->s->conn_timeout = worker->s->conn_timeout;
+        hc->s->ping_timeout_set = worker->s->ping_timeout_set;
+        hc->s->ping_timeout = worker->s->ping_timeout;
         if(worker->s->hc_timeout_set) {
             hc->s->timeout = worker->s->hc_timeout;
             hc->s->timeout_set = 1;
         } else {
-            hc->s->conn_timeout_set = worker->s->conn_timeout_set;
-            hc->s->conn_timeout = worker->s->conn_timeout;
-            hc->s->ping_timeout_set = worker->s->ping_timeout_set;
-            hc->s->ping_timeout = worker->s->ping_timeout;
             hc->s->timeout_set = worker->s->timeout_set;
             hc->s->timeout = worker->s->timeout;
         }
@@ -704,10 +705,10 @@ static apr_status_t hc_check_cping(baton_t *baton, apr_thread_t *thread)
     set_request_connection(r, backend->connection);
     backend->connection->current_thread = thread;
 
-    if (hc->s->hc_timeout_set) {
-        timeout = hc->s->hc_timeout;
-    } else if (hc->s->ping_timeout_set) {
+    if (hc->s->ping_timeout_set) {
         timeout = hc->s->ping_timeout;
+    } else if (hc->s->hc_timeout_set) {
+        timeout = hc->s->hc_timeout;
     } else if ( hc->s->conn_timeout_set) {
         timeout = hc->s->conn_timeout;
     } else if ( hc->s->timeout_set) {
