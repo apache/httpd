@@ -135,6 +135,7 @@ AP_DECLARE_NONSTD(int) ap_close_selected_listeners(ap_slave_t *);
  * called.
  */
 AP_DECLARE_NONSTD(const char *) ap_set_listenbacklog(cmd_parms *cmd, void *dummy, const char *arg);
+AP_DECLARE_NONSTD(const char *) ap_set_listentcpdeferaccept(cmd_parms *cmd, void *dummy, const char *arg);
 AP_DECLARE_NONSTD(const char *) ap_set_listencbratio(cmd_parms *cmd, void *dummy, const char *arg);
 AP_DECLARE_NONSTD(const char *) ap_set_listener(cmd_parms *cmd, void *dummy,
                                                 int argc, char *const argv[]);
@@ -163,7 +164,9 @@ AP_INIT_TAKE_ARGV("Listen", ap_set_listener, NULL, RSRC_CONF, \
 AP_INIT_TAKE1("SendBufferSize", ap_set_send_buffer_size, NULL, RSRC_CONF, \
   "Send buffer size in bytes"), \
 AP_INIT_TAKE1("ReceiveBufferSize", ap_set_receive_buffer_size, NULL, \
-              RSRC_CONF, "Receive buffer size in bytes")
+              RSRC_CONF, "Receive buffer size in bytes"), \
+AP_INIT_TAKE1("ListenTCPDeferAccept", ap_set_listentcpdeferaccept, NULL, RSRC_CONF, \
+  "Value set for the socket option TCP_DEFER_ACCEPT if it is set")
 
 #ifdef __cplusplus
 }
