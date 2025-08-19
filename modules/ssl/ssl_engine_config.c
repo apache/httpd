@@ -850,7 +850,6 @@ const char *ssl_cmd_SSLEngine(cmd_parms *cmd, void *dcfg, const char *arg)
 const char *ssl_cmd_SSLECHKeyDir(cmd_parms *cmd, void *dcfg, const char *arg)
 {
     SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
-    const char *err;
 
     sc->echkeydir=arg;
     ap_log_error(APLOG_MARK, APLOG_TRACE4, 0, cmd->server, APLOGNO(10519)
