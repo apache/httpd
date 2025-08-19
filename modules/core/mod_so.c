@@ -210,8 +210,10 @@ static const char *load_module(cmd_parms *cmd, void *dummy,
         modi = &modie[i];
         if (modi->name != NULL && strcmp(modi->name, modname) == 0) {
             ap_log_perror(APLOG_MARK, APLOG_WARNING, 0, cmd->pool, APLOGNO(01574)
-                          "module %s is already loaded, skipping",
-                          modname);
+                          "module %s is already loaded, skipping "
+                          "(from LoadModule on line %d of %s)",
+                          modname, cmd->config_file->line_number,
+                          cmd->config_file->name);
             return NULL;
         }
     }
@@ -359,12 +361,26 @@ static module *ap_find_loaded_module_symbol(server_rec *s, const char *modname)
     return NULL;
 }
 
+/* Print structured module data in TOML format for -D DUMP_MODULE_DATA
+ * output. */
+static void print_mod_data(apr_file_t *out, int is_static,
+                           const ap_module_symbol_t *modsym)
+{
+    const char *name = modsym->name;
+    const module *mod = modsym->modp;
+
+    apr_file_printf(out, "%s.static = %d\n", name, is_static);
+    apr_file_printf(out, "%s.source = \"%s\"\n", name, mod->name);
+    apr_file_printf(out, "%s.major = %d\n", name, mod->version);
+    apr_file_printf(out, "%s.minor = %d\n", name, mod->minor_version);
+}
+
 static void dump_loaded_modules(apr_pool_t *p, server_rec *s)
 {
     ap_module_symbol_t *modie;
     ap_module_symbol_t *modi;
     so_server_conf *sconf;
-    int i;
+    int i, toml = ap_exists_config_define("DUMP_MODULE_DATA");
     apr_file_t *out = NULL;
 
     if (!ap_exists_config_define("DUMP_MODULES")) {
@@ -373,14 +389,17 @@ static void dump_loaded_modules(apr_pool_t *p, server_rec *s)
 
     apr_file_open_stdout(&out, p);
 
-    apr_file_printf(out, "Loaded Modules:\n");
+    if (!toml) apr_file_printf(out, "Loaded Modules:\n");
 
     sconf = (so_server_conf *)ap_get_module_config(s->module_config,
                                                    &so_module);
     for (i = 0; ; i++) {
         modi = &ap_prelinked_module_symbols[i];
         if (modi->name != NULL) {
-            apr_file_printf(out, " %s (static)\n", modi->name);
+            if (toml)
+                print_mod_data(out, 1, modi);
+            else
+                apr_file_printf(out, " %s (static)\n", modi->name);
         }
         else {
             break;
@@ -391,7 +410,10 @@ static void dump_loaded_modules(apr_pool_t *p, server_rec *s)
     for (i = 0; i < sconf->loaded_modules->nelts; i++) {
         modi = &modie[i];
         if (modi->name != NULL) {
-            apr_file_printf(out, " %s (shared)\n", modi->name);
+            if (toml)
+                print_mod_data(out, 0, modi);
+            else
+                apr_file_printf(out, " %s (shared)\n", modi->name);
         }
     }
 }

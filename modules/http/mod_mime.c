@@ -817,7 +817,7 @@ static int find_ct(request_rec *r)
     int found_metadata = 0;
 
     if (r->finfo.filetype == APR_DIR) {
-        ap_set_content_type(r, DIR_MAGIC_TYPE);
+        ap_set_content_type_ex(r, DIR_MAGIC_TYPE, 1);
         return OK;
     }
 
@@ -918,7 +918,7 @@ static int find_ct(request_rec *r)
         if ((exinfo == NULL || !exinfo->forced_type) && !skipct) {
             if ((type = apr_hash_get(mime_type_extensions, ext,
                                      APR_HASH_KEY_STRING)) != NULL) {
-                ap_set_content_type(r, (char*) type);
+                ap_set_content_type_ex(r, (char*) type, 1);
                 found = 1;
             }
         }
@@ -927,7 +927,7 @@ static int find_ct(request_rec *r)
 
             /* empty string is treated as special case for RemoveType */
             if ((exinfo->forced_type && *exinfo->forced_type) && !skipct) {
-                ap_set_content_type(r, exinfo->forced_type);
+                ap_set_content_type_ex(r, exinfo->forced_type, 1);
                 found = 1;
             }
 
@@ -1032,33 +1032,33 @@ static int find_ct(request_rec *r)
             memcpy(tmp, ctp->subtype, ctp->subtype_len);
             tmp += ctp->subtype_len;
             *tmp = 0;
-            ap_set_content_type(r, base_content_type);
+            ap_set_content_type_ex(r, base_content_type, AP_REQUEST_IS_TRUSTED_CT(r));
             while (pp != NULL) {
                 if (charset && !strcmp(pp->attr, "charset")) {
                     if (!override) {
-                        ap_set_content_type(r,
+                        ap_set_content_type_ex(r,
                                             apr_pstrcat(r->pool,
                                                         r->content_type,
                                                         "; charset=",
                                                         charset,
-                                                        NULL));
+                                                        NULL), AP_REQUEST_IS_TRUSTED_CT(r));
                         override = 1;
                     }
                 }
                 else {
-                    ap_set_content_type(r,
+                    ap_set_content_type_ex(r,
                                         apr_pstrcat(r->pool,
                                                     r->content_type,
                                                     "; ", pp->attr,
                                                     "=", pp->val,
-                                                    NULL));
+                                                    NULL), AP_REQUEST_IS_TRUSTED_CT(r));
                 }
                 pp = pp->next;
             }
             if (charset && !override) {
-                ap_set_content_type(r, apr_pstrcat(r->pool, r->content_type,
+                ap_set_content_type_ex(r, apr_pstrcat(r->pool, r->content_type,
                                                    "; charset=", charset,
-                                                   NULL));
+                                                   NULL), AP_REQUEST_IS_TRUSTED_CT(r));
             }
         }
     }

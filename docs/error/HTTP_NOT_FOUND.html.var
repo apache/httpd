@@ -97,8 +97,8 @@ Body:----------es--
 
   <!--#else -->
 
-    Si usted ha introducido la URL manualmente, por favor revise su
-    ortograf&iacute;a e int&eacute;ntelo de nuevo.
+    Si ha introducido manualmente la URL, revise que
+    la haya introducido bien e int&eacute;ntelo de nuevo.
 
   <!--#endif -->
 

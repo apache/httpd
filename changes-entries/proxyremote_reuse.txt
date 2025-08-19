@@ -1,0 +1,2 @@
+  *) mod_proxy: Reuse ProxyRemote connections when possible, like prior
+     to 2.4.59.  [Jean-Frederic Clere, Yann Ylavic]

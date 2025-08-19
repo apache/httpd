@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1910253 -->
+<!-- English Revision: 1926185 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -206,7 +206,7 @@ ProxyPass "/some/ws/capable/path/" "http://example.com/some/ws/capable/path/" up
     <example><title>Scripts PHP et mandataire inverse</title>
     <highlight language="config">
 &lt;FilesMatch "\.php$"&gt;
-    SetHandler  "proxy:unix:/path/to/app.sock|fcgi://localhost/"
+    SetHandler  "proxy:unix:/path/to/app.sock|fcgi://localhost"
 &lt;/FilesMatch&gt;
     </highlight>
       </example>
@@ -681,8 +681,8 @@ mandatées correspondant à une expression rationnelle</description>
     nommés.</p>
 
 <highlight language="config">
-&lt;ProxyMatch ^http://(?&lt;sitename&gt;[^/]+)&gt;
-    require ldap-group cn=%{env:MATCH_SITENAME},ou=combined,o=Example
+&lt;ProxyMatch "^http://(?&lt;sitename&gt;[^/]+)"&gt;
+    Require ldap-group cn=%{env:MATCH_SITENAME},ou=combined,o=Example
 &lt;/ProxyMatch&gt;
 </highlight>
 </usage>
@@ -815,9 +815,11 @@ ProxyRemote ftp http://ftpproxy.mydomain:8080
 <name>ProxyRemoteMatch</name>
 <description>Le mandataire distant à utiliser pour traiter les requêtes
 correspondant à une expression rationnelle</description>
-<syntax>ProxyRemoteMatch <var>regex</var> <var>serveur-distant</var></syntax>
+<syntax>ProxyRemoteMatch <var>regex</var> <var>remote-server</var> [<var>username:password</var>]</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
+<compatibility>Le troisième argument facultatif est disponible à partir de la
+version 2.5.1 du serveur HTTP Apache.</compatibility>
 
 <usage>
     <p>La directive <directive>ProxyRemoteMatch</directive> est
@@ -1508,6 +1510,17 @@ ProxyPass "/mirror/foo/i" "!"
 	    paramètres du chemin et similaires n'interfèrent avec les
 	    autorisations qui doivent être définies par Apache httpd.</p>
         </note>
+    </td></tr>
+    <tr><td><a id="addressttl" name="addressttl">addressttl</a></td>
+        <td>-1</td>
+        <td><p>Durée de vie (TTL) en secondes des résolutions DNS de l'adresse
+	du serveur d'arrière-plan dans le cache.
+        -1 signifie jusqu'au redémarrage de Apache httpd.</p>
+    </td></tr>
+    <tr><td><a id="multipathtcp" name="multipathtcp">multipathtcp</a></td>
+        <td>Off</td>
+        <td><p>Active/Désactive l’utilisation de <a
+	href="https://mptcp.dev">Multipath TCP (MPTCP)</a></p>
     </td></tr>
 
     </table>
@@ -2377,7 +2390,7 @@ ProxyDomain       ".example.com"
     HTTP <code>Via:</code> par le mandataire. Le but recherché est de
     contrôler le flux des requêtes mandatées tout au long d'une chaîne
     de serveurs mandataires. Voir <a
-    href="http://www.ietf.org/rfc/rfc2616.txt">RFC 2616</a> (HTTP/1.1),
+    href="https://www.rfc-editor.org/rfc/rfc2616">RFC 2616</a> (HTTP/1.1),
     section 14.45 pour une description des lignes d'en-tête
     <code>Via:</code>.</p>
 

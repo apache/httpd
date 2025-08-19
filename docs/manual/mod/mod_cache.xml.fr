@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1851171 -->
+<!-- English Revision: 1924775 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -44,7 +44,7 @@
 
     <p><module>mod_cache</module> implémente un <strong>filtre de mise
     en cache de contenu HTTP</strong> conforme à la <a
-    href="http://www.ietf.org/rfc/rfc2616.txt">RFC 2616</a>, avec
+    href="https://www.rfc-editor.org/rfc/rfc2616">RFC 2616</a>, avec
     support de la mise en cache des réponses dont le contenu a été
     négocié et comportant l'en-tête Vary.</p>
 

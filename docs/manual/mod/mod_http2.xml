@@ -1044,7 +1044,7 @@ H2TLSCoolDownSecs 0
             </p><p>
                 The module, by default, tries to use the maximum size possible,
                 which is somewhat around 16KB. This sets the maximum. When less
-                response data is availble, smaller frames will be sent.
+                response data is available, smaller frames will be sent.
             </p>
         </usage>
     </directivesynopsis>
@@ -1140,6 +1140,57 @@ H2EarlyHint Link "&lt;/my.css&gt;;rel=preload;as=style"
                 triggers the needed treatment of requests when HTTP/2 is enabled
                 in a forward proxy configuration. Both directive should be enabled.
             </p><p>
+            </p>
+        </usage>
+    </directivesynopsis>
+
+    <directivesynopsis>
+        <name>H2MaxHeaderBlockLen</name>
+        <description>Maximum size of response headers</description>
+        <syntax>H2MaxHeaderBlockLen <em>n</em></syntax>
+        <default>H2MaxHeaderBlockLen 0</default>
+        <contextlist>
+            <context>server config</context>
+            <context>virtual host</context>
+        </contextlist>
+        <compatibility>Available in version 2.5.1 and later.</compatibility>
+
+        <usage>
+            <p>
+                <directive>H2MaxHeaderBlockLen</directive> sets the limit
+                on the overall size of response headers. A setting of 0
+                will leave this at the default of 64 KB in nghttp2.
+            </p>
+            <p>
+                Responses with headers larger than this (adding all headers)
+                will not be processed and result in a reset of the stream.
+            </p>
+        </usage>
+    </directivesynopsis>
+
+        <directivesynopsis>
+        <name>H2MaxStreamErrors</name>
+        <description>Maximum amount of client caused errors to tolerate</description>
+        <syntax>H2MaxStreamErrors <em>n</em></syntax>
+        <default>H2MaxStreamErrors 8</default>
+        <contextlist>
+            <context>server config</context>
+            <context>virtual host</context>
+        </contextlist>
+        <compatibility>Available in version 2.5.1 and later.</compatibility>
+
+        <usage>
+            <p>
+                <directive>H2MaxStreamErrors</directive> sets the maximum amount
+                of tolerated HTTP/2 stream errors caused by the client.
+                When exceeding this limit, the connection will be closed.
+                Stream errors are protocol violations on an individual HTTP/2
+                stream that do not necessitate a connection close by the
+                protocol specification, but can be a sign of malicious
+                activity by a client.
+            </p>
+            <p>
+                Set to 0 to tolerate faulty clients.
             </p>
         </usage>
     </directivesynopsis>

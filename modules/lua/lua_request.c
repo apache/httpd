@@ -1264,6 +1264,10 @@ static int lua_ap_scoreboard_process(lua_State *L)
         lua_pushnumber(L, ps_record->suspended);
         lua_settable(L, -3);
 
+        lua_pushstring(L, "wait_io");
+        lua_pushnumber(L, ps_record->wait_io);
+        lua_settable(L, -3);
+
         lua_pushstring(L, "write_completion");
         lua_pushnumber(L, ps_record->write_completion);
         lua_settable(L, -3);
@@ -2546,6 +2550,12 @@ static int req_newindex(lua_State *L)
     /* const char* key = luaL_checkstring(L, -2); */
     request_rec *r = ap_lua_check_request_rec(L, 1);
     key = luaL_checkstring(L, 2);
+
+    if (0 == strcmp("ap_auth_type", key)) {
+        const char *value = luaL_checkstring(L, 3);
+        r->ap_auth_type = apr_pstrdup(r->pool, value);
+        return 0;
+    }
 
     if (0 == strcmp("args", key)) {
         const char *value = luaL_checkstring(L, 3);

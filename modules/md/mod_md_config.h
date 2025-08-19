@@ -39,6 +39,9 @@ typedef enum {
     MD_CONFIG_MESSGE_CMD,
     MD_CONFIG_STAPLING,
     MD_CONFIG_STAPLE_OTHERS,
+    MD_CONFIG_CA_PROFILE,
+    MD_CONFIG_CA_PROFILE_MANDATORY,
+    MD_CONFIG_ARI_RENEWALS,
 } md_config_var_t;
 
 typedef enum {
@@ -75,6 +78,7 @@ struct md_mod_conf_t {
     const char *cert_check_name;       /* name of the linked certificate check site */
     const char *cert_check_url;        /* url "template for" checking a certificate */
     const char *ca_certs;              /* root certificates to use for connections */
+    apr_time_t check_interval;         /* duration between cert renewal checks */
     apr_time_t min_delay;              /* minimum delay for retries */
     int retry_failover;                /* number of errors to trigger CA failover */
     int use_store_locks;               /* use locks when updating store */
@@ -102,9 +106,12 @@ typedef struct md_srv_conf_t {
     struct apr_array_header_t *ca_challenges; /* challenge types configured */
     const char *ca_eab_kid;            /* != NULL, external account binding keyid */
     const char *ca_eab_hmac;           /* != NULL, external account binding hmac */
+    const char *profile;               /* != NULL, ACME order profile */
+    int profile_mandatory;             /* if ACME profile, when set, is mandatory */
 
     int stapling;                      /* OCSP stapling enabled */
     int staple_others;                 /* Provide OCSP stapling for non-MD certificates */
+    int ari_renewals;                  /* ACME ARI extension enabled */
 
     const char *dns01_cmd;             /* DNS challenge command, override global command */
 

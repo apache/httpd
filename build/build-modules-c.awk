@@ -47,7 +47,7 @@ END {
     print " *  initially linked into the Apache processing"
     print " *  [extendable under run-time via AddModule]"
     print " */"
-    print "module *ap_prelinked_modules[] = {"
+    print "AP_DECLARE_DATA module *ap_prelinked_modules[] = {"
     for (i = 0 ; i < n; ++i) {
         printf "  &%s_module,\n", modules[i]
     }
@@ -58,7 +58,7 @@ END {
     print " *  We need the symbols as strings for <IfModule> containers"
     print " */"
     print ""
-    print "ap_module_symbol_t ap_prelinked_module_symbols[] = {"
+    print "AP_DECLARE_DATA ap_module_symbol_t ap_prelinked_module_symbols[] = {"
     for (i = 0; i < n; ++i) {
         printf ("  {\"%s_module\", &%s_module},\n", modules[i], modules[i])
     }
@@ -72,7 +72,7 @@ END {
     print " *  initially loaded into the Apache process"
     print " *  [extendable under run-time via LoadModule]"
     print " */"
-    print "module *ap_preloaded_modules[] = {"
+    print "AP_DECLARE_DATA module *ap_preloaded_modules[] = {"
     for (i = 0; i < pn; ++i) {
         printf "  &%s_module,\n", pmodules[i]
     }

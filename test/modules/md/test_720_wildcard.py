@@ -18,7 +18,7 @@ class TestWildcard:
         env.check_acme()
         env.clear_store()
         MDConf(env).install()
-        assert env.apache_restart() == 0
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
 
     @pytest.fixture(autouse=True, scope='function')
     def _method_scope(self, env, request):
@@ -37,7 +37,7 @@ class TestWildcard:
         conf.install()
 
         # restart, check that md is in store
-        assert env.apache_restart() == 0
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
         env.check_md(domains)
         # await drive completion
         md = env.await_error(domain)
@@ -69,7 +69,7 @@ class TestWildcard:
         conf.install()
 
         # restart, check that md is in store
-        assert env.apache_restart() == 0
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
         env.check_md(domains)
         # await drive completion
         md = env.await_error(domain)
@@ -100,7 +100,7 @@ class TestWildcard:
         conf.install()
 
         # restart, check that md is in store
-        assert env.apache_restart() == 0
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
         env.check_md(domains)
         # await drive completion
         assert env.await_completion([domain])
@@ -125,7 +125,7 @@ class TestWildcard:
         conf.install()
 
         # restart, check that md is in store
-        assert env.apache_restart() == 0
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
         env.check_md(domains)
         # await drive completion
         md = env.await_error(domain)
@@ -156,7 +156,7 @@ class TestWildcard:
         conf.install()
 
         # restart, check that md is in store
-        assert env.apache_restart() == 0
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
         env.check_md(domains)
         # await drive completion
         assert env.await_completion([domain])
@@ -183,7 +183,7 @@ class TestWildcard:
         conf.install()
 
         # restart, check that md is in store
-        assert env.apache_restart() == 0
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
         env.check_md(domains)
         # await drive completion
         assert env.await_completion([domain])
@@ -211,7 +211,7 @@ class TestWildcard:
         conf.install()
 
         # restart, check that md is in store
-        assert env.apache_restart() == 0
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
         env.check_md(domains)
         # await drive completion
         assert env.await_completion([domain])
@@ -238,7 +238,7 @@ class TestWildcard:
         conf.install()
 
         # restart, check that md is in store
-        assert env.apache_restart() == 0
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
         env.check_md(domains)
         # await drive completion
         assert env.await_completion([wwwdomain])
@@ -270,7 +270,7 @@ class TestWildcard:
             fd.write(content)
 
         # restart, check that md is in store
-        assert env.apache_restart() == 0
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
         env.check_md(domains)
         # await drive completion
         assert env.await_completion([domain], restart=False)
@@ -278,5 +278,5 @@ class TestWildcard:
         r = env.curl_get(f"http://{domain}:{env.http_port}/.well-known/acme-challenge/123456")
         assert r.response['status'] == 200
         assert r.response['body'] == content
-        assert env.apache_restart() == 0
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
         env.check_md_complete(domain)

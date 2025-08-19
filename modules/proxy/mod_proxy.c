@@ -356,6 +356,18 @@ static const char *set_worker_param(apr_pool_t *p,
         worker->s->response_field_size = (s ? s : HUGE_STRING_LEN);
         worker->s->response_field_size_set = 1;
     }
+    else if (!strcasecmp(key, "multipathtcp")) {
+#ifdef IPPROTO_MPTCP
+        if (!strcasecmp(val, "On"))
+            worker->s->sock_proto = IPPROTO_MPTCP;
+        else if (!strcasecmp(val, "Off"))
+            worker->s->sock_proto = APR_PROTO_TCP;
+        else
+            return "multipathtcp must be On|Off";
+#else
+        return "multipathtcp is not supported on your platform";
+#endif
+    }
     else {
         if (set_worker_hc_param_f) {
             return set_worker_hc_param_f(p, s, worker, key, val, NULL);
@@ -828,60 +840,6 @@ static int proxy_detect(request_rec *r)
     return DECLINED;
 }
 
-static const char *proxy_interpolate(request_rec *r, const char *str)
-{
-    /* Interpolate an env str in a configuration string
-     * Syntax ${var} --> value_of(var)
-     * Method: replace one var, and recurse on remainder of string
-     * Nothing clever here, and crap like nested vars may do silly things
-     * but we'll at least avoid sending the unwary into a loop
-     */
-    const char *start;
-    const char *end;
-    const char *var;
-    const char *val;
-    const char *firstpart;
-
-    start = ap_strstr_c(str, "${");
-    if (start == NULL) {
-        return str;
-    }
-    end = ap_strchr_c(start+2, '}');
-    if (end == NULL) {
-        return str;
-    }
-    /* OK, this is syntax we want to interpolate.  Is there such a var ? */
-    var = apr_pstrmemdup(r->pool, start+2, end-(start+2));
-    val = apr_table_get(r->subprocess_env, var);
-    firstpart = apr_pstrmemdup(r->pool, str, (start-str));
-
-    if (val == NULL) {
-        return apr_pstrcat(r->pool, firstpart,
-                           proxy_interpolate(r, end+1), NULL);
-    }
-    else {
-        return apr_pstrcat(r->pool, firstpart, val,
-                           proxy_interpolate(r, end+1), NULL);
-    }
-}
-static apr_array_header_t *proxy_vars(request_rec *r,
-                                      apr_array_header_t *hdr)
-{
-    int i;
-    apr_array_header_t *ret = apr_array_make(r->pool, hdr->nelts,
-                                             sizeof (struct proxy_alias));
-    struct proxy_alias *old = (struct proxy_alias *) hdr->elts;
-
-    for (i = 0; i < hdr->nelts; ++i) {
-        struct proxy_alias *newcopy = apr_array_push(ret);
-        newcopy->fake = (old[i].flags & PROXYPASS_INTERPOLATE)
-                        ? proxy_interpolate(r, old[i].fake) : old[i].fake;
-        newcopy->real = (old[i].flags & PROXYPASS_INTERPOLATE)
-                        ? proxy_interpolate(r, old[i].real) : old[i].real;
-    }
-    return ret;
-}
-
 PROXY_DECLARE(int) ap_proxy_trans_match(request_rec *r, struct proxy_alias *ent,
                                         proxy_dir_conf *dconf)
 {
@@ -897,8 +855,8 @@ PROXY_DECLARE(int) ap_proxy_trans_match(request_rec *r, struct proxy_alias *ent,
     const char *servlet_uri = NULL;
 
     if (dconf && (dconf->interpolate_env == 1) && (ent->flags & PROXYPASS_INTERPOLATE)) {
-        fake = proxy_interpolate(r, ent->fake);
-        real = proxy_interpolate(r, ent->real);
+        fake = ap_proxy_interpolate(r, ent->fake);
+        real = ap_proxy_interpolate(r, ent->real);
     }
     else {
         fake = ent->fake;
@@ -1218,39 +1176,14 @@ static int proxy_map_location(request_rec *r)
  */
 static int proxy_fixup(request_rec *r)
 {
-    char *url, *p;
-    int access_status;
-    proxy_dir_conf *dconf = ap_get_module_config(r->per_dir_config,
-                                                 &proxy_module);
-
     if (!r->proxyreq || !r->filename || strncmp(r->filename, "proxy:", 6) != 0)
         return DECLINED;
 
     /* XXX: Shouldn't we try this before we run the proxy_walk? */
-    url = &r->filename[6];
 
-    if ((dconf->interpolate_env == 1) && (r->proxyreq == PROXYREQ_REVERSE)) {
-        /* create per-request copy of reverse proxy conf,
-         * and interpolate vars in it
-         */
-        proxy_req_conf *rconf = apr_palloc(r->pool, sizeof(proxy_req_conf));
-        ap_set_module_config(r->request_config, &proxy_module, rconf);
-        rconf->raliases = proxy_vars(r, dconf->raliases);
-        rconf->cookie_paths = proxy_vars(r, dconf->cookie_paths);
-        rconf->cookie_domains = proxy_vars(r, dconf->cookie_domains);
-    }
-
-    /* canonicalise each specific scheme */
-    if ((access_status = proxy_run_canon_handler(r, url))) {
-        return access_status;
-    }
-
-    p = strchr(url, ':');
-    if (p == NULL || p == url)
-        return HTTP_BAD_REQUEST;
-
-    return OK;      /* otherwise; we've done the best we can */
+    return ap_proxy_canon_url(r);
 }
+
 /* Send a redirection if the request contains a hostname which is not */
 /* fully qualified, i.e. doesn't have a domain name appended. Some proxy */
 /* servers like Netscape's allow this and access hosts from the local */
@@ -1304,7 +1237,7 @@ static int proxy_handler(request_rec *r)
         ap_get_module_config(sconf, &proxy_module);
     apr_array_header_t *proxies = conf->proxies;
     struct proxy_remote *ents = (struct proxy_remote *) proxies->elts;
-    int i, rc, access_status;
+    int rc = DECLINED, access_status, i;
     int direct_connect = 0;
     const char *str;
     apr_int64_t maxfwd;
@@ -1319,20 +1252,37 @@ static int proxy_handler(request_rec *r)
         return DECLINED;
     }
 
-    if (!r->proxyreq) {
-        /* We may have forced the proxy handler via config or .htaccess */
-        if (r->handler &&
-            strncmp(r->handler, "proxy:", 6) == 0 &&
-            strncmp(r->filename, "proxy:", 6) != 0) {
-            r->proxyreq = PROXYREQ_REVERSE;
-            r->filename = apr_pstrcat(r->pool, r->handler, r->filename, NULL);
+    /* We may have forced the proxy handler via config or .htaccess */
+    if (!r->proxyreq && r->handler && strncmp(r->handler, "proxy:", 6) == 0) {
+        char *old_filename = r->filename;
+
+        r->proxyreq = PROXYREQ_REVERSE;
+        r->filename = apr_pstrcat(r->pool, r->handler, r->filename, NULL);
+        apr_table_setn(r->notes, "proxy-sethandler", "1");
+
+        /* Still need to canonicalize r->filename */
+        rc = ap_proxy_canon_url(r);
+        if (rc != OK) {
+            r->filename = old_filename;
+            r->proxyreq = 0;
         }
-        else {
-            return DECLINED;
-        }
-    } else if (strncmp(r->filename, "proxy:", 6) != 0) {
-        return DECLINED;
     }
+    else if (r->proxyreq && strncmp(r->filename, "proxy:", 6) == 0) {
+        apr_table_unset(r->notes, "proxy-sethandler");
+        rc = OK;
+    }
+    if (rc != OK) {
+        return rc;
+    }
+
+    uri = r->filename + 6;
+    p = strchr(uri, ':');
+    if (p == NULL) {
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01141)
+                      "proxy_handler no URL in %s", r->filename);
+        return HTTP_BAD_REQUEST;
+    }
+    scheme = apr_pstrmemdup(r->pool, uri, p - uri);
 
     /* handle max-forwards / OPTIONS / TRACE */
     if ((str = apr_table_get(r->headers_in, "Max-Forwards"))) {
@@ -1413,14 +1363,6 @@ static int proxy_handler(request_rec *r)
         }
     }
 
-    uri = r->filename + 6;
-    p = strchr(uri, ':');
-    if (p == NULL) {
-        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01141)
-                      "proxy_handler no URL in %s", r->filename);
-        return HTTP_BAD_REQUEST;
-    }
-
     /* If the host doesn't have a domain name, add one and redirect. */
     if (conf->domain != NULL) {
         rc = proxy_needsdomain(r, uri, conf->domain);
@@ -1428,7 +1370,6 @@ static int proxy_handler(request_rec *r)
             return HTTP_MOVED_PERMANENTLY;
     }
 
-    scheme = apr_pstrmemdup(r->pool, uri, p - uri);
     /* Check URI's destination host against NoProxy hosts */
     /* Bypass ProxyRemote server lookup if configured as NoProxy */
     for (direct_connect = i = 0; i < conf->dirconn->nelts &&
@@ -2041,15 +1982,18 @@ PROXY_DECLARE(const char *) ap_proxy_de_socketfy(apr_pool_t *p, const char *url)
         const char *ret, *c;
 
         ret = ptr + 1;
-        /* special case: "unix:....|scheme:" is OK, expand
-         * to "unix:....|scheme://localhost"
-         * */
+        /* special cases: "unix:...|scheme:" ind "unix:...|scheme://" are OK,
+         * expand to "unix:....|scheme://localhost"
+         */
         c = ap_strchr_c(ret, ':');
         if (c == NULL) {
             return NULL;
         }
         if (c[1] == '\0') {
             return apr_pstrcat(p, ret, "//localhost", NULL);
+        }
+        else if (c[1] == '/' && c[2] == '/' && !c[3]) {
+            return apr_pstrcat(p, ret, "localhost", NULL);
         }
         else {
             return ret;
@@ -3470,28 +3414,26 @@ static int proxy_pre_config(apr_pool_t *pconf, apr_pool_t *plog,
 }
 static void register_hooks(apr_pool_t *p)
 {
-    /* fixup before mod_rewrite, so that the proxied url will not
-     * escaped accidentally by our fixup.
-     */
-    static const char * const aszSucc[] = { "mod_rewrite.c", NULL};
     /* Only the mpm_winnt has child init hook handler.
      * make sure that we are called after the mpm
      * initializes.
      */
     static const char *const aszPred[] = { "mpm_winnt.c", "mod_proxy_balancer.c",
                                            "mod_proxy_hcheck.c", NULL};
+    static const char * const aszModRewrite[] = { "mod_rewrite.c", NULL };
 
     /* handler */
     ap_hook_handler(proxy_handler, NULL, NULL, APR_HOOK_FIRST);
     /* filename-to-URI translation */
     ap_hook_pre_translate_name(proxy_pre_translate_name, NULL, NULL,
                                APR_HOOK_MIDDLE);
-    ap_hook_translate_name(proxy_translate_name, aszSucc, NULL,
+    /* mod_rewrite has a say on the uri before proxy translation */
+    ap_hook_translate_name(proxy_translate_name, aszModRewrite, NULL,
                            APR_HOOK_FIRST);
     /* walk <Proxy > entries and suppress default TRACE behavior */
     ap_hook_map_to_storage(proxy_map_location, NULL,NULL, APR_HOOK_FIRST);
-    /* fixups */
-    ap_hook_fixups(proxy_fixup, NULL, aszSucc, APR_HOOK_FIRST);
+    /* fixup after mod_rewrite so that a [P] URL from there gets fixed up */
+    ap_hook_fixups(proxy_fixup, aszModRewrite, NULL, APR_HOOK_FIRST);
     /* post read_request handling */
     ap_hook_post_read_request(proxy_detect, NULL, NULL, APR_HOOK_FIRST);
     /* pre config handling */

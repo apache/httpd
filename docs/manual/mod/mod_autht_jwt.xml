@@ -32,7 +32,7 @@
     <p>This module provides token parsing front-ends such as
     <module>mod_auth_bearer</module> the ability to authenticate users
     by verifying a JWT token as described in
-    <a href="http://www.ietf.org/rfc/rfc7519.txt">RFC 7519</a>.</p>
+    <a href="https://www.rfc-editor.org/rfc/rfc7519">RFC 7519</a>.</p>
 
     <p>A JWT token is read from the <var>Authorization</var> header
     with an <var>auth-scheme</var> of <var>Bearer</var>.</p>

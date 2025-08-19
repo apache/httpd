@@ -59,6 +59,7 @@ APLOG_USE_MODULE(http);
 
 static apr_bucket *create_trailers_bucket(request_rec *r, apr_bucket_alloc_t *bucket_alloc);
 static apr_bucket *create_response_bucket(request_rec *r, apr_bucket_alloc_t *bucket_alloc);
+static void merge_response_headers(request_rec *r);
 
 typedef struct http_filter_ctx
 {
@@ -188,9 +189,15 @@ static apr_status_t parse_chunk_size(http_ctx_t *ctx, const char *buffer,
             }
         }
         else if (c == ' ' || c == '\t') {
-            /* Be lenient up to 10 implied *LWS, a legacy of RFC 2616,
-             * and noted as errata to RFC7230;
+            /* This allows limited BWS (or 'implied *LWS' in RFC2616
+             * terms) between chunk-size and '[chunk-ext] CRLF'. This
+             * is not allowed by RFC7230/9112 though servers have been
+             * seen which emit spaces here. The code previously (and
+             * mistakenly?) referenced the 7230 errata concerning BWS
+             * *within* chunk-ext, but the conditional above is
+             * followed during chunk-ext (state BODY_CHUNK_EXT):
              * https://www.rfc-editor.org/errata_search.php?rfc=7230&eid=4667
+             * See also: https://github.com/squid-cache/squid/pull/1914
              */
             ctx->state = BODY_CHUNK_CR;
             if (++ctx->chunk_bws > 10) {
@@ -810,6 +817,18 @@ static APR_INLINE int check_headers(request_rec *r)
     struct check_header_ctx ctx;
     core_server_config *conf =
             ap_get_core_module_config(r->server->module_config);
+    const char *val;
+ 
+    if ((val = apr_table_get(r->headers_out, "Transfer-Encoding"))) {
+        if (apr_table_get(r->headers_out, "Content-Length")) {
+            apr_table_unset(r->headers_out, "Content-Length");
+            r->connection->keepalive = AP_CONN_CLOSE;
+        }
+        if (!ap_is_chunked(r->pool, val)) {
+            r->connection->keepalive = AP_CONN_CLOSE;
+            return 0;
+        }
+    }
 
     ctx.r = r;
     ctx.strict = (conf->http_conformance != AP_HTTP_CONFORMANCE_UNSAFE);
@@ -1102,7 +1121,7 @@ AP_DECLARE_NONSTD(int) ap_send_http_trace(request_rec *r)
         }
     }
 
-    ap_set_content_type(r, "message/http");
+    ap_set_content_type_ex(r, "message/http", 1);
 
     /* Now we recreate the request, and echo it back */
 
@@ -1227,12 +1246,16 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f,
             ap_log_rerror(APLOG_MARK, APLOG_TRACE3, 0, r,
                           "ap_http_header_filter prep response status %d",
                           r->status);
+            merge_response_headers(r);
             if (!check_headers(r)) {
                 /* We may come back here from ap_die() below,
                  * so clear anything from this response.
                  */
                 apr_table_clear(r->headers_out);
                 apr_table_clear(r->err_headers_out);
+                r->content_type = r->content_encoding = NULL;
+                r->content_languages = NULL;
+                r->clength = r->chunked = 0;
                 apr_brigade_cleanup(b);
 
                 /* Don't recall ap_die() if we come back here (from its own internal
@@ -1249,8 +1272,6 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f,
                 APR_BRIGADE_INSERT_TAIL(b, e);
                 e = apr_bucket_eos_create(c->bucket_alloc);
                 APR_BRIGADE_INSERT_TAIL(b, e);
-                r->content_type = r->content_encoding = NULL;
-                r->content_languages = NULL;
                 ap_set_content_length(r, 0);
                 recursive_error = 1;
             }
@@ -2032,7 +2053,7 @@ static const char *get_status_reason(const char *status_line)
     return NULL;
 }
 
-static apr_bucket *create_response_bucket(request_rec *r, apr_bucket_alloc_t *bucket_alloc)
+static void merge_response_headers(request_rec *r)
 {
     const char *ctype;
 
@@ -2044,6 +2065,7 @@ static apr_bucket *create_response_bucket(request_rec *r, apr_bucket_alloc_t *bu
     if (!apr_is_empty_table(r->err_headers_out)) {
         r->headers_out = apr_table_overlay(r->pool, r->err_headers_out,
                                            r->headers_out);
+        apr_table_clear(r->err_headers_out);
     }
 
     ap_set_std_response_headers(r);
@@ -2065,6 +2087,9 @@ static apr_bucket *create_response_bucket(request_rec *r, apr_bucket_alloc_t *bu
         fixup_vary(r);
     }
 
+    /* Determine the protocol and whether we should use keepalives. */
+    basic_http_header_check(r);
+
     /*
      * Now remove any ETag response header field if earlier processing
      * says so (such as a 'FileETag None' directive).
@@ -2073,10 +2098,19 @@ static apr_bucket *create_response_bucket(request_rec *r, apr_bucket_alloc_t *bu
         apr_table_unset(r->headers_out, "ETag");
     }
 
-    /* determine the protocol and whether we should use keepalives. */
-    basic_http_header_check(r);
+    /*
+     * Control cachability for non-cacheable responses if not already set by
+     * some other part of the server configuration.
+     */
+    if (r->no_cache && !apr_table_get(r->headers_out, "Expires")) {
+        char *date = apr_palloc(r->pool, APR_RFC822_DATE_LEN);
+        ap_recent_rfc822_date(date, r->request_time);
+        apr_table_addn(r->headers_out, "Expires", date);
+    }
 
+    /* 204/304 responses don't have content related headers */
     if (AP_STATUS_IS_HEADER_ONLY(r->status)) {
+        apr_table_unset(r->headers_out, "Transfer-Encoding");
         apr_table_unset(r->headers_out, "Content-Length");
         r->content_type = r->content_encoding = NULL;
         r->content_languages = NULL;
@@ -2112,17 +2146,10 @@ static apr_bucket *create_response_bucket(request_rec *r, apr_bucket_alloc_t *bu
         field = apr_array_pstrcat(r->pool, r->content_languages, ',');
         apr_table_setn(r->headers_out, "Content-Language", field);
     }
+}
 
-    /*
-     * Control cachability for non-cacheable responses if not already set by
-     * some other part of the server configuration.
-     */
-    if (r->no_cache && !apr_table_get(r->headers_out, "Expires")) {
-        char *date = apr_palloc(r->pool, APR_RFC822_DATE_LEN);
-        ap_recent_rfc822_date(date, r->request_time);
-        apr_table_addn(r->headers_out, "Expires", date);
-    }
-
+static apr_bucket *create_response_bucket(request_rec *r, apr_bucket_alloc_t *bucket_alloc)
+{
     /* r->headers_out fully prepared. Create a headers bucket
      * containing the response to send down the filter chain.
      */

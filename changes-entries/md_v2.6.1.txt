@@ -1,0 +1,13 @@
+  *) mod_md: update to version 2.6.1
+     - Increasing default `MDRetryDelay` to 30 seconds to generate less bursty
+       traffic on errored renewals for the ACME CA. This leads to error retries
+        of 30s, 1 minute, 2, 4, etc. up to daily attempts.
+     - Checking that configuring `MDRetryDelay` will result in a positive
+       duration. A delay of 0 is not accepted.
+     - Fix a bug in checking Content-Type of responses from the ACME server.
+     - Added ACME ARI support (rfc9773) to the module. Enabled by default. New
+       directive "MDRenewViaARI on|off" for controlling this.
+     - Removing tailscale support. It has not been working for a long time
+       as the company decided to change their APIs. Away with the dead code,
+       documentation and tests.
+     - Fixed a compilation issue with pre-industrial versions of libcurl.

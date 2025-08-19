@@ -651,4 +651,14 @@
 <xsl:apply-templates />
 </xsl:template>
 
+
+<!-- ==================================================================== -->
+<!-- since                                                                -->
+<!-- ==================================================================== -->
+<xsl:template match="since">
+<xsl:value-of select="$message[@id='before-since']" />
+<xsl:value-of select="text()" />
+<xsl:value-of select="$message[@id='after-since']" />
+</xsl:template>
+
 </xsl:stylesheet>

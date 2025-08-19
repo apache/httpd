@@ -218,6 +218,9 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
 
     if (psf->io_buffer_size_set)
        maxsize = psf->io_buffer_size;
+    /* Override with worker setting if present */
+    if (conn->worker->s->io_buffer_size_set)
+       maxsize = conn->worker->s->io_buffer_size;
     if (maxsize > AJP_MAX_BUFFER_SZ)
        maxsize = AJP_MAX_BUFFER_SZ;
     else if (maxsize < AJP_MSG_BUFFER_SZ)

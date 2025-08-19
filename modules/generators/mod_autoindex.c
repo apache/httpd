@@ -1923,8 +1923,13 @@ static int dsortf(struct ent **e1, struct ent **e2)
 
     /*
      * First, see if either of the entries is for the parent directory.
-     * If so, that *always* sorts lower than anything else.
+     * If so, that *always* sorts lower than anything else. The
+     * function must be transitive else behaviour is undefined, although
+     * in no real case should both entries start with a '/'.
      */
+    if ((*e1)->name[0] == '/' && (*e2)->name[0] == '/') {
+        return 0;
+    }
     if ((*e1)->name[0] == '/') {
         return -1;
     }
@@ -2060,11 +2065,11 @@ static int index_directory(request_rec *r,
 #endif
     }
     if (*charset) {
-        ap_set_content_type(r, apr_pstrcat(r->pool, ctype, ";charset=",
-                            charset, NULL));
+        ap_set_content_type_ex(r, apr_pstrcat(r->pool, ctype, ";charset=",
+                            charset, NULL), 1);
     }
     else {
-        ap_set_content_type(r, ctype);
+        ap_set_content_type_ex(r, ctype, 1);
     }
 
     if (autoindex_opts & TRACK_MODIFIED) {

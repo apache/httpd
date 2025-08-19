@@ -49,6 +49,7 @@ typedef struct h2_proxy_stream {
     unsigned int waiting_on_ping : 1;
     unsigned int headers_ended : 1;
     uint32_t error_code;
+    int proxy_status;
 
     apr_bucket_brigade *input;
     apr_off_t data_sent;
@@ -308,6 +309,15 @@ static int on_frame_recv(nghttp2_session *ngh2, const nghttp2_frame *frame,
                               session->id, r->status, forward);
                 if (forward) {
                     ap_send_interim_response(r, 1);
+                }
+            }
+            else if (r->status >= 400) {
+                proxy_dir_conf *dconf;
+                dconf = ap_get_module_config(r->per_dir_config, &proxy_module);
+                if (ap_proxy_should_override(dconf, r->status)) {
+                    apr_table_setn(r->notes, "proxy-error-override", "1");
+                    nghttp2_submit_rst_stream(ngh2, NGHTTP2_FLAG_NONE,
+                          frame->hd.stream_id, NGHTTP2_STREAM_CLOSED);
                 }
             }
             stream_resume(stream);
@@ -850,6 +860,18 @@ static apr_status_t open_stream(h2_proxy_session *session, const char *url,
     dconf = ap_get_module_config(r->per_dir_config, &proxy_module);
     if (dconf->preserve_host) {
         authority = orig_host;
+        if (!authority) {
+            /* Duplicate mod_proxy behaviour if ProxyPreserveHost is
+             * used but an "HTTP/0.9" request is received without a
+             * Host: header */
+            authority = r->server->server_hostname;
+            ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(10511)
+                          "incoming HTTP/0.9 request (with no Host header) "
+                          "and preserve host set, "
+                          "forcing hostname to be %s for uri %s",
+                          authority, r->uri);
+            apr_table_setn(r->headers_in, "Host", authority);
+        }
     }
     else {
         authority = puri.hostname;
@@ -1681,17 +1703,7 @@ static int done_iter(void *udata, void *val)
     h2_proxy_stream *stream = val;
     int touched = (stream->data_sent || stream->data_received ||
                    stream->id <= ctx->session->last_stream_id);
-    if (touched && stream->output) {
-      apr_bucket *b = ap_bucket_error_create(HTTP_BAD_GATEWAY, NULL,
-                                             stream->r->pool,
-                                             stream->cfront->bucket_alloc);
-      APR_BRIGADE_INSERT_TAIL(stream->output, b);
-      b = apr_bucket_eos_create(stream->cfront->bucket_alloc);
-      APR_BRIGADE_INSERT_TAIL(stream->output, b);
-      ap_pass_brigade(stream->r->output_filters, stream->output);
-    }
-    ctx->done(ctx->session, stream->r, APR_ECONNABORTED, touched,
-              stream->error_code);
+    ctx->done(ctx->session, stream->r, APR_ECONNABORTED, touched, stream->error_code);
     return 1;
 }
 

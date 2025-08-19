@@ -15,6 +15,8 @@ class TestTrailers:
 
     # check that we get a trailer out when telling the handler to add one
     def test_h1_005_01(self, env):
+        if not env.httpd_is_at_least("2.5.0"):
+            pytest.skip(f'need at least httpd 2.5.0 for this')
         url = env.mkurl("https", "cgi", "/h1test/echo")
         host = f"cgi.{env.http_tld}"
         fpath = os.path.join(env.gen_dir, "data-1k")
@@ -27,6 +29,8 @@ class TestTrailers:
 
     # check that we get out trailers through the proxy
     def test_h1_005_02(self, env):
+        if not env.httpd_is_at_least("2.5.0"):
+            pytest.skip(f'need at least httpd 2.5.0 for this')
         url = env.mkurl("https", "cgi", "/proxy/h1test/echo")
         host = f"cgi.{env.http_tld}"
         fpath = os.path.join(env.gen_dir, "data-1k")

@@ -1,0 +1,3 @@
+  *) mod_unixd: Drop test that effective user ID is zero in
+     a chroot configuration.  PR 69767.
+     [Bastien Roucaries <rouca debian.org>]

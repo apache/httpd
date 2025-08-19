@@ -92,6 +92,9 @@ struct md_t {
     struct apr_array_header_t *pkey_files; /* != NULL iff privkeys explicitly configured */
     const char *ca_eab_kid;         /* optional KEYID for external account binding */
     const char *ca_eab_hmac;        /* optional HMAC for external account binding */
+    const char *profile;            /* optional cert profile to order */
+    int profile_mandatory;          /* if profile, when given, is mandatory */
+    int ari_renewals;               /* if ACME ARI (RFC 9773) can trigger renewals */
 
     const char *state_descr;        /* description of state of NULL */
     
@@ -117,6 +120,8 @@ struct md_t {
 #define MD_KEY_ACTIVATION_DELAY "activation-delay"
 #define MD_KEY_ACTIVITY         "activity"
 #define MD_KEY_AGREEMENT        "agreement"
+#define MD_KEY_ARI_CERT_ID      "ari-cert-id"
+#define MD_KEY_ARI_RENEWALS     "ari-renewals"
 #define MD_KEY_AUTHORIZATIONS   "authorizations"
 #define MD_KEY_BITS             "bits"
 #define MD_KEY_CA               "ca"
@@ -154,6 +159,8 @@ struct md_t {
 #define MD_KEY_HTTPS            "https"
 #define MD_KEY_ID               "id"
 #define MD_KEY_IDENTIFIER       "identifier"
+#define MD_KEY_ISSUER_NAME      "issuer-name"
+#define MD_KEY_ISSUER_URI       "issuer-uri"
 #define MD_KEY_KEY              "key"
 #define MD_KEY_KID              "kid"
 #define MD_KEY_KEYAUTHZ         "keyAuthorization"
@@ -175,6 +182,8 @@ struct md_t {
 #define MD_KEY_PKEY             "privkey"
 #define MD_KEY_PKEY_FILES       "pkey-files"
 #define MD_KEY_PROBLEM          "problem"
+#define MD_KEY_PROFILE          "profile"
+#define MD_KEY_PROFILE_MANDATORY "profile-mandatory"
 #define MD_KEY_PROTO            "proto"
 #define MD_KEY_READY            "ready"
 #define MD_KEY_REGISTRATION     "registration"

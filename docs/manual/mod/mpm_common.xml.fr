@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1879106 -->
+<!-- English Revision: 1920586 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -305,6 +305,11 @@ Listen 192.170.2.5:8000
       Listen utilisant une adresse IPv4 avec le même port (si le serveur a été
       compilé en désactivant les adresses IPv4, il s'agit du comportement par
       défaut et cette option n'a alors aucun effet).</li>
+
+      <li><code>multipathtcp</code> : active l’utilisation de <a
+      href="https://mptcp.dev">Multipath TCP (MPTCP)</a> pour les sockets. Notez
+      que cette option n’est actuellement prise en charge que par Linux.
+      </li>
     </ul>
 
     <note><title>Condition d'erreur</title>

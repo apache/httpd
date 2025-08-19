@@ -595,8 +595,13 @@ static dav_error *dav_fs_copymoveset(int is_move, apr_pool_t *p,
 
     /* Get directory and filename for resources */
     /* ### should test these result values... */
-    (void) dav_fs_dir_file_name(src, &src_dir, &src_file);
-    (void) dav_fs_dir_file_name(dst, &dst_dir, &dst_file);
+    err = dav_fs_dir_file_name(src, &src_dir, &src_file);
+    if (err != NULL)
+        return err;
+
+    err = dav_fs_dir_file_name(dst, &dst_dir, &dst_file);
+    if (err != NULL)
+        return err;
 
     /* Get the corresponding state files for each resource */
     dav_dbm_get_statefiles(p, src_file, &src_state1, &src_state2);
@@ -644,11 +649,14 @@ static dav_error *dav_fs_deleteset(apr_pool_t *p, const dav_resource *resource)
     const char *state1;
     const char *state2;
     const char *pathname;
+    dav_error *err;
     apr_status_t status;
 
     /* Get directory, filename, and state-file names for the resource */
     /* ### should test this result value... */
-    (void) dav_fs_dir_file_name(resource, &dirpath, &fname);
+    err = dav_fs_dir_file_name(resource, &dirpath, &fname);
+    if (err != NULL)
+        return err;
     dav_dbm_get_statefiles(p, fname, &state1, &state2);
 
     /* build the propset pathname for the file */
@@ -777,10 +785,10 @@ static dav_error * dav_fs_get_resource(
             {
                 /*
                 ** The base of the path refers to a file -- nothing should
-                ** be in path_info. The resource is simply an error: it
+                ** be in path_info. The resource cannot exist: it
                 ** can't be a null or a locknull resource.
                 */
-                return dav_new_error(r->pool, HTTP_BAD_REQUEST, 0, 0,
+                return dav_new_error(r->pool, HTTP_NOT_FOUND, 0, 0,
                                      "The URL contains extraneous path "
                                      "components. The resource could not "
                                      "be identified.");
@@ -1513,8 +1521,16 @@ static dav_error * dav_fs_remove_resource(dav_resource *resource,
 
     /* not a collection; remove the file and its properties */
     if ((status = apr_file_remove(info->pathname, info->pool)) != APR_SUCCESS) {
-        /* ### put a description in here */
-        return dav_new_error(info->pool, HTTP_FORBIDDEN, 0, status, NULL);
+        if (APR_STATUS_IS_ENOENT(status)) {
+            /* Return a 404 if there is a race with another DELETE,
+             * per RFC 4918§9.6. */
+            return dav_new_error(info->pool, HTTP_NOT_FOUND, 0, status,
+                                 "Cannot remove already-removed resource.");
+        }
+        else {
+            return dav_new_error(info->pool, HTTP_FORBIDDEN, 0, status,
+                                 "Cannot remove resource");
+        }
     }
 
     /* update resource state */
@@ -2332,6 +2348,11 @@ int dav_fs_method_precondition(request_rec *r,
                                const apr_xml_doc *doc, dav_error **err)
 {
     int ret = DECLINED;
+
+    if ((src && src->hooks != &dav_hooks_repository_fs)
+        || (dst && dst->hooks != &dav_hooks_repository_fs)) {
+        return ret;
+    }
 
     switch (r->method_number) {
     case M_COPY: /* FALLTHROUGH */

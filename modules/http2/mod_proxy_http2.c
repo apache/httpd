@@ -65,7 +65,7 @@ typedef struct h2_proxy_ctx {
     unsigned is_ssl : 1;
     
     request_rec *r;            /* the request processed in this ctx */
-    int r_status;              /* status of request work */
+    apr_status_t r_status;     /* status of request work */
     int r_done;                /* request was processed, not necessarily successfully */
     int r_may_retry;           /* request may be retried */
     int has_reusable_session;  /* http2 session is live and clean */
@@ -239,9 +239,15 @@ static void request_done(h2_proxy_ctx *ctx, request_rec *r,
                       ctx->id, touched, error_code);
         ctx->r_done = 1;
         if (touched) ctx->r_may_retry = 0;
-        ctx->r_status = error_code? HTTP_BAD_GATEWAY :
-            ((status == APR_SUCCESS)? OK :
-             ap_map_http_request_error(status, HTTP_SERVICE_UNAVAILABLE));
+        if (apr_table_get(r->notes, "proxy-error-override")) {
+            ctx->r_status = r->status;
+            r->status = OK;
+        }
+        else {
+          ctx->r_status = error_code? HTTP_BAD_GATEWAY :
+              ((status == APR_SUCCESS)? OK :
+               ap_map_http_request_error(status, HTTP_SERVICE_UNAVAILABLE));
+        }
     }
 }    
 
@@ -317,7 +323,7 @@ static int proxy_http2_handler(request_rec *r,
                                apr_port_t proxyport)
 {
     const char *proxy_func;
-    char *locurl = url, *u;
+    char *locurl, *u;
     apr_size_t slen;
     int is_ssl = 0;
     apr_status_t status;
@@ -382,6 +388,7 @@ run_connect:
         goto cleanup;
     }
 
+    locurl = url;
     ctx->p_conn->is_ssl = ctx->is_ssl;
 
     /* Step One: Determine the URL to connect to (might be a proxy),
@@ -413,7 +420,7 @@ run_connect:
                       "setup new connection: is_ssl=%d %s %s %s", 
                       ctx->p_conn->is_ssl, ctx->p_conn->ssl_hostname, 
                       locurl, ctx->p_conn->hostname);
-        ctx->r_status = ap_map_http_request_error(status, HTTP_SERVICE_UNAVAILABLE);
+        ctx->r_status = status;
         goto cleanup;
     }
     
@@ -427,7 +434,12 @@ run_connect:
     if (ctx->cfront->aborted) goto cleanup;
     status = ctx_run(ctx);
 
-    if (ctx->r_status != OK && ctx->r_may_retry && !ctx->cfront->aborted) {
+    if (apr_table_get(r->notes, "proxy-error-override")) {
+        /* pass on out */
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, ctx->cfront,
+                      "proxy-error-override status %d", ctx->r_status);
+    }
+    else if (ctx->r_status != APR_SUCCESS && ctx->r_may_retry && !ctx->cfront->aborted) {
         /* Not successfully processed, but may retry, tear down old conn and start over */
         if (ctx->p_conn) {
             ctx->p_conn->close = 1;
@@ -462,13 +474,7 @@ cleanup:
 
     ap_set_module_config(ctx->cfront->conn_config, &proxy_http2_module, NULL);
     ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, ctx->cfront,
-                  APLOGNO(03377) "leaving handler");
-    if (ctx->r_status != OK) {
-        ap_die(ctx->r_status, r);
-    }
-    else if (status != APR_SUCCESS) {
-        ap_die(ap_map_http_request_error(status, HTTP_SERVICE_UNAVAILABLE), r);
-    }
+                  APLOGNO(03377) "leaving handler -> %d", ctx->r_status);
     return ctx->r_status;
 }
 

@@ -558,8 +558,6 @@ static int list_urls(char *path, apr_pool_t *pool, apr_off_t round)
                                         }
                                     }
                                 }
-
-                                break;
                             }
                         }
                     }

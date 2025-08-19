@@ -12,9 +12,9 @@ import subprocess
 import time
 
 from datetime import datetime, timedelta
-from typing import Dict, Optional
+from typing import Dict, Optional, Any
 
-from pyhttpd.certs import CertificateSpec
+from pyhttpd.certs import CertificateSpec, Credentials, HttpdTestCA
 from .md_cert_util import MDCertUtil
 from pyhttpd.env import HttpdTestSetup, HttpdTestEnv
 from pyhttpd.result import ExecResult
@@ -73,6 +73,10 @@ class MDTestEnv(HttpdTestEnv):
 
     @classmethod
     def has_acme_eab(cls):
+        # Pebble, in v2.5.0 no longer supported HS256 for EAB, which
+        # is the only thing mod_md supports. Issue opened at pebble:
+        # https://github.com/letsencrypt/pebble/issues/455
+        # is fixed in v2.6.0
         return cls.get_acme_server() == 'pebble'
 
     @classmethod
@@ -356,13 +360,14 @@ class MDTestEnv(HttpdTestEnv):
         MDCertUtil.validate_privkey(self.store_domain_file(domain, 'privkey.pem'))
         cert = MDCertUtil(self.store_domain_file(domain, 'pubcert.pem'))
         cert.validate_cert_matches_priv_key(self.store_domain_file(domain, 'privkey.pem'))
-        # check SANs and CN
-        assert cert.get_cn() == domain
+        # No longer check CN, it may not be set or is not trusted anyway
+        # assert cert.get_cn() == domain, f'CN: expected "{domain}", got {cert.get_cn()}'
+        # check SANs
         # compare lists twice in opposite directions: SAN may not respect ordering
         san_list = list(cert.get_san_list())
         assert len(san_list) == len(domains)
-        assert set(san_list).issubset(domains)
-        assert set(domains).issubset(san_list)
+        assert set(san_list).issubset(domains), f'{san_list} not subset of {domains}'
+        assert set(domains).issubset(san_list), f'{domains} not subset of {san_list}'
         # check valid dates interval
         not_before = cert.get_not_before()
         not_after = cert.get_not_after()
@@ -606,8 +611,13 @@ class MDTestEnv(HttpdTestEnv):
             time.sleep(0.1)
         raise TimeoutError(f"ocsp respopnse not available: {domain}")
 
-    def create_self_signed_cert(self, name_list, valid_days, serial=1000, path=None):
-        dirpath = path
-        if not path:
-            dirpath = os.path.join(self.store_domains(), name_list[0])
-        return MDCertUtil.create_self_signed_cert(dirpath, name_list, valid_days, serial)
+    def create_self_signed_cert(self, spec: CertificateSpec,
+                                valid_from: timedelta = timedelta(days=-1),
+                                valid_to: timedelta = timedelta(days=89),
+                                serial: Optional[int] = None) -> Credentials:
+        key_type = spec.key_type if spec.key_type else 'rsa4096'
+        return HttpdTestCA.create_credentials(spec=spec, issuer=None,
+                                              key_type=key_type,
+                                              valid_from=valid_from,
+                                              valid_to=valid_to,
+                                              serial=serial)

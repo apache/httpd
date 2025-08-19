@@ -474,9 +474,9 @@ NoDecode option available in 2.3.12 and later.</compatibility>
          to remain <em>set</em> while allowing any others to be set.
       </p></note>
 
-      <example>
+      <highlight language="config">
       AllowOverride Options=Indexes,MultiViews
-      </example>
+      </highlight>
       </dd>
     </dl>
 
@@ -1215,7 +1215,10 @@ version 2.3.9.</compatibility>
     By default, when the handling of a request requires no access
     to the data within a file -- for example, when delivering a
     static file -- Apache httpd uses sendfile to deliver the file contents
-    without ever reading the file if the OS supports it.</p>
+    without ever reading the file if the OS supports it. If SSL/TLS is used
+    for the connection, or if any <a href="../filter.html">output filter</a>
+    is configured which inspects or modifies the output, the sendfile mechanism
+    will not be used regardless of this configuration option.</p>
 
     <p>This sendfile mechanism avoids separate read and send operations,
     and buffer allocations. But on some platforms or within some
@@ -1759,8 +1762,17 @@ ErrorLogFormat "[%t] [%l] [pid %P] %F: %E: [client %a] %M"
         <td>The current time including micro-seconds</td></tr>
 
     <tr><td><code>%{cu}t</code></td>
-        <td>The current time in compact ISO 8601 format, including
+        <td>The current time in ISO 8601 extended format (compact), including
             micro-seconds</td></tr>
+
+    <tr><td><code>%{cuz}t</code></td>
+        <td>The current time in ISO 8601 extended format (compact), including
+            micro-seconds and time zone in the ISO 8601:2000 standard format.
+            Available since 2.4.58 only</td></tr>
+
+    <tr><td><code>%{%-format}t</code></td>
+	<td>The current time formatted per the <code>strftime(3)</code> function.
+	    Available since 2.4.58 only</td></tr>
 
     <tr><td><code>%v</code></td>
         <td>The canonical <directive module="core">ServerName</directive>
@@ -3068,7 +3080,7 @@ LimitRequestLine 4094
 
     <highlight language="config">
 # Limit of 1 MiB
-LimitXMLRequestBody 1073741824
+LimitXMLRequestBody 1048576
     </highlight>
 
 </usage>
@@ -5130,7 +5142,7 @@ port</description>
       <li>Parsed port from <code>Host:</code> header</li>
       <li>Physical port (only with <directive>UseCanonicalPhysicalPort</directive> ON)</li>
       <li>Port provided in <directive module="core">Servername</directive></li>
-      <li>Default port</li>
+      <li>Default port for the scheme/protocol (such as 80 or 443)</li>
      </ol>
      </dd>
      <dt><code>UseCanonicalName On</code></dt>
@@ -5138,7 +5150,7 @@ port</description>
      <ol>
       <li>Port provided in <directive module="core">Servername</directive></li>
       <li>Physical port (only with <directive>UseCanonicalPhysicalPort</directive> ON)</li>
-      <li>Default port</li>
+      <li>Default port for the scheme/protocol (such as 80 or 443)</li>
      </ol>
      </dd>
     </dl>
@@ -5317,6 +5329,44 @@ recognized methods to modules.</p>
     </note>
 </usage>
 </directivesynopsis>
+
+<directivesynopsis>
+<name>UNCList</name>
+<description>Controls what UNC host names can be accessed by the server
+</description>
+<syntax>UNCList <var>hostname</var> [<var>hostname</var>...]</syntax>
+<default>unset</default>
+<contextlist><context>server config</context>
+</contextlist>
+<compatibility>Added in 2.4.60, Windows only.</compatibility>
+
+<usage>
+    <p> During request processing, requests to access a filesystem path that
+    resolves to a UNC path will fail unless the hostname in the UNC path
+    has been specified by this directive. The intent is to limit access to
+    paths derived from untrusted inputs.</p>
+
+    <highlight language="config">
+    UNCList example.com other.example.com
+    </highlight>
+
+    <note type="warning"><title>Security</title>
+        <p>The values specified by this directive are only checked by some
+        components of the server, prior to accessing filesystem paths that
+        may be inadvertently derived from untrusted inputs. </p>
+        <p> Windows systems should be isolated at the network layer from
+        making outbound SMB/NTLM calls to unexpected destinations as a
+        more comprehensive and pre-emptive measure.</p>
+    </note>
+
+    <note type="warning"><title>Directive Ordering</title>
+    <p>This directive should be placed before UNC paths used in httpd.conf. 
+    Multiple occurrences of the directive reset the list.</p>
+    </note>
+
+</usage>
+</directivesynopsis>
+
 
 <directivesynopsis>
 <name>MergeTrailers</name>

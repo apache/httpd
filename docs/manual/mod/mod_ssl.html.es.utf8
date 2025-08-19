@@ -72,12 +72,12 @@ proveer el motor criptográfico.</p>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslcertificatefile">SSLCertificateFile</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslcertificatekeyfile">SSLCertificateKeyFile</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslciphersuite">SSLCipherSuite</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#sslclienthellovars">SSLClientHelloVars</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslcompression">SSLCompression</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslcryptodevice">SSLCryptoDevice</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslengine">SSLEngine</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslfips">SSLFIPS</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslhonorcipherorder">SSLHonorCipherOrder</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#sslinsecurerenegotiation">SSLInsecureRenegotiation</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslocspdefaultresponder">SSLOCSPDefaultResponder</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslocspenable">SSLOCSPEnable</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslocspnoverify">SSLOCSPNoverify</a></li>
@@ -948,6 +948,19 @@ la <a href="#table2">Tabla 2</a>.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="sslclienthellovars" id="sslclienthellovars">Directiva</a> <a name="SSLClientHelloVars" id="SSLClientHelloVars">SSLClientHelloVars</a> <a title="Enlace permanente" href="#sslclienthellovars" class="permalink">&para;</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Descripción:</a></th><td>Enable collection of ClientHello variables</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Sintaxis:</a></th><td><code>SSLClientHelloVars on|off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Valor por defecto:</a></th><td><code>SSLClientHelloVars off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexto:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Status">Estado:</a></th><td>Extensión</td></tr>
+<tr><th><a href="directive-dict.html#Module">Módulo:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilidad:</a></th><td>Available in httpd 2.5.2 and later, requires OpenSSL 1.1.1 or later</td></tr>
+</table><p>The documentation for this directive has
+            not been translated yet. Please have a look at the English
+            version.</p></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="sslcompression" id="sslcompression">Directiva</a> <a name="SSLCompression" id="SSLCompression">SSLCompression</a> <a title="Enlace permanente" href="#sslcompression" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Descripción:</a></th><td>Activa la compresión a nivel de SSL</td></tr>
@@ -1079,47 +1092,6 @@ se selecciona en función de las preferencias del cliente. Con esta directiva
 activada, se usará la preferencia del servidor en su lugar.</p>
 <div class="example"><h3>Ejemplo</h3><pre class="prettyprint lang-config">SSLHonorCipherOrder on</pre>
 </div>
-
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="sslinsecurerenegotiation" id="sslinsecurerenegotiation">Directiva</a> <a name="SSLInsecureRenegotiation" id="SSLInsecureRenegotiation">SSLInsecureRenegotiation</a> <a title="Enlace permanente" href="#sslinsecurerenegotiation" class="permalink">&para;</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">Descripción:</a></th><td>Opción para activar soporte de renegociación 
-  insegura</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Sintaxis:</a></th><td><code>SSLInsecureRenegotiation on|off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Valor por defecto:</a></th><td><code>SSLInsecureRenegotiation off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexto:</a></th><td>server config, virtual host</td></tr>
-<tr><th><a href="directive-dict.html#Status">Estado:</a></th><td>Extensión</td></tr>
-<tr><th><a href="directive-dict.html#Module">Módulo:</a></th><td>mod_ssl</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilidad:</a></th><td>Disponible si se usa OpenSSL 0.9.8m o posterior</td></tr>
-</table>
-<p>Tal y como se especificó originalmente, todas las versiones de protocolo SSL y
-TLS (incluído TLS/1.2) eran vulnerables a ataques tipo Man-in-the-Middle
-(<a href="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CAN-2009-3555">CVE-2009-3555</a>)
-durante una renegociación. Esta vulnerabilidad permitía a un atancante poner
-un prefijo a un texto plano específico en la petición HTTP tal y como se veía 
-en el servidor web. Se desarrolló una extensión del protocolo para esta vulnerabilidad si estaba soportada tanto por el cliente como por el 
-servidor.</p>
-
-<p>Si <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> está compilado contra la versión OpenSSL 0.9.8m
-o posterior, por defecto la renegociación sólo está soportada por clientes
-que tengan soporte para la nueva extensión del protocolo. Si esta directiva está
-activada, la renegociación se permitirá con los clientes antiguos (no 
-parcheados), aunque de manera insegura.</p>
-
-<div class="warning"><h3>Aviso de Seguridad</h3>
-<p>Si se activa esta directiva, las conexiones SSL serán vulnerables a ataques
-Man-in-the-Middle de prefijo tal y como se describe en
-<a href="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CAN-2009-3555">CVE-2009-3555</a>.</p>
-</div>
-
-<div class="example"><h3>Ejemplo</h3><pre class="prettyprint lang-config">SSLInsecureRenegotiation on</pre>
-</div>
-
-<p>La variable de entorno <code>SSL_SECURE_RENEG</code> se puede usar desde un 
-script CGI o desde SSI para determinar si la renegociación segura está soportada
-para la conexión SSL en cuestión.</p>
-
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -3010,7 +2982,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_ssl.html';
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2023 The Apache Software Foundation.<br />Licencia bajo los términos de la <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2025 The Apache Software Foundation.<br />Licencia bajo los términos de la <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Módulos</a> | <a href="../mod/quickreference.html">Directivas</a> | <a href="http://wiki.apache.org/httpd/FAQ">Preguntas Frecuentes</a> | <a href="../glossary.html">Glosario</a> | <a href="../sitemap.html">Mapa del sitio web</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

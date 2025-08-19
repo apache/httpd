@@ -84,7 +84,8 @@ static md_mod_conf_t defmc = {
     "crt.sh",                  /* default cert checker site name */
     "https://crt.sh?q=",       /* default cert checker site url */
     NULL,                      /* CA cert file to use */
-    apr_time_from_sec(5),      /* minimum delay for retries */
+    apr_time_from_sec(MD_SECS_PER_DAY/2), /* default time between cert checks */
+    apr_time_from_sec(30),     /* minimum delay for retries */
     13,                        /* retry_failover after 14 errors, with 5s delay ~ half a day */
     0,                         /* store locks, disabled by default */
     apr_time_from_sec(5),      /* max time to wait to obaint a store lock */
@@ -119,8 +120,11 @@ static md_srv_conf_t defconf = {
     NULL,                      /* ca challenges array */
     NULL,                      /* ca eab kid */
     NULL,                      /* ca eab hmac */
+    NULL,                      /* ACME profile */
+    0,                         /* ACME profile mandatory */
     0,                         /* stapling */
     1,                         /* staple others */
+    1,                         /* ACME ARI renewals */
     NULL,                      /* dns01_cmd */
     NULL,                      /* currently defined md */
     NULL,                      /* assigned md, post config */
@@ -174,8 +178,11 @@ static void srv_conf_props_clear(md_srv_conf_t *sc)
     sc->ca_challenges = NULL;
     sc->ca_eab_kid = NULL;
     sc->ca_eab_hmac = NULL;
+    sc->profile = NULL;
+    sc->profile_mandatory = DEF_VAL;
     sc->stapling = DEF_VAL;
     sc->staple_others = DEF_VAL;
+    sc->ari_renewals = DEF_VAL;
     sc->dns01_cmd = NULL;
 }
 
@@ -195,8 +202,11 @@ static void srv_conf_props_copy(md_srv_conf_t *to, const md_srv_conf_t *from)
     to->ca_challenges = from->ca_challenges;
     to->ca_eab_kid = from->ca_eab_kid;
     to->ca_eab_hmac = from->ca_eab_hmac;
+    to->profile = from->profile;
+    to->profile_mandatory = from->profile_mandatory;
     to->stapling = from->stapling;
     to->staple_others = from->staple_others;
+    to->ari_renewals = from->ari_renewals;
     to->dns01_cmd = from->dns01_cmd;
 }
 
@@ -220,6 +230,9 @@ static void srv_conf_props_apply(md_t *md, const md_srv_conf_t *from, apr_pool_t
     if (from->ca_challenges) md->ca_challenges = apr_array_copy(p, from->ca_challenges);
     if (from->ca_eab_kid) md->ca_eab_kid = from->ca_eab_kid;
     if (from->ca_eab_hmac) md->ca_eab_hmac = from->ca_eab_hmac;
+    if (from->profile) md->profile = from->profile;
+    if (from->profile_mandatory != DEF_VAL) md->profile_mandatory = from->profile_mandatory;
+    if (from->ari_renewals != DEF_VAL) md->ari_renewals = from->ari_renewals;
     if (from->stapling != DEF_VAL) md->stapling = from->stapling;
     if (from->dns01_cmd) md->dns01_cmd = from->dns01_cmd;
 }
@@ -265,8 +278,10 @@ static void *md_config_merge(apr_pool_t *pool, void *basev, void *addv)
                     : (base->ca_challenges? apr_array_copy(pool, base->ca_challenges) : NULL));
     nsc->ca_eab_kid = add->ca_eab_kid? add->ca_eab_kid : base->ca_eab_kid;
     nsc->ca_eab_hmac = add->ca_eab_hmac? add->ca_eab_hmac : base->ca_eab_hmac;
+    nsc->profile = add->profile? add->profile : base->profile;
+    nsc->profile_mandatory = (add->profile_mandatory != DEF_VAL)? add->profile_mandatory : base->profile_mandatory;
     nsc->stapling = (add->stapling != DEF_VAL)? add->stapling : base->stapling;
-    nsc->staple_others = (add->staple_others != DEF_VAL)? add->staple_others : base->staple_others;
+    nsc->ari_renewals = (add->ari_renewals != DEF_VAL)? add->ari_renewals : base->ari_renewals;
     nsc->dns01_cmd = (add->dns01_cmd)? add->dns01_cmd : base->dns01_cmd;
     nsc->current = NULL;
     
@@ -578,6 +593,31 @@ static const char *md_config_set_renew_mode(cmd_parms *cmd, void *dc, const char
     return NULL;
 }
 
+static const char *md_config_set_profile(cmd_parms *cmd, void *dc, const char *value)
+{
+    md_srv_conf_t *config = md_config_get(cmd->server);
+    const char *err;
+
+    (void)dc;
+    if ((err = md_conf_check_location(cmd, MD_LOC_ALL))) {
+        return err;
+    }
+    config->profile = value;
+    return NULL;
+}
+
+static const char *md_config_set_profile_mandatory(cmd_parms *cmd, void *dc, const char *value)
+{
+    md_srv_conf_t *config = md_config_get(cmd->server);
+    const char *err;
+
+    (void)dc;
+    if ((err = md_conf_check_location(cmd, MD_LOC_ALL))) {
+        return err;
+    }
+    return set_on_off(&config->profile_mandatory, value, cmd->pool);
+}
+
 static const char *md_config_set_must_staple(cmd_parms *cmd, void *dc, const char *value)
 {
     md_srv_conf_t *config = md_config_get(cmd->server);
@@ -614,6 +654,18 @@ static const char *md_config_set_staple_others(cmd_parms *cmd, void *dc, const c
     return set_on_off(&config->staple_others, value, cmd->pool);
 }
 
+static const char *md_config_set_ari(cmd_parms *cmd, void *dc, const char *value)
+{
+    md_srv_conf_t *config = md_config_get(cmd->server);
+    const char *err;
+
+    (void)dc;
+    if ((err = md_conf_check_location(cmd, MD_LOC_ALL))) {
+        return err;
+    }
+    return set_on_off(&config->ari_renewals, value, cmd->pool);
+}
+
 static const char *md_config_set_base_server(cmd_parms *cmd, void *dc, const char *value)
 {
     md_srv_conf_t *config = md_config_get(cmd->server);
@@ -622,6 +674,24 @@ static const char *md_config_set_base_server(cmd_parms *cmd, void *dc, const cha
     (void)dc;
     if (err) return err;
     return set_on_off(&config->mc->manage_base_server, value, cmd->pool);
+}
+
+static const char *md_config_set_check_interval(cmd_parms *cmd, void *dc, const char *value)
+{
+    md_srv_conf_t *config = md_config_get(cmd->server);
+    const char *err = md_conf_check_location(cmd, MD_LOC_NOT_MD);
+    apr_time_t interval;
+
+    (void)dc;
+    if (err) return err;
+    if (md_duration_parse(&interval, value, "s") != APR_SUCCESS) {
+        return "unrecognized duration format";
+    }
+    if (interval < apr_time_from_sec(1)) {
+        return "check interval cannot be less than one second";
+    }
+    config->mc->check_interval = interval;
+    return NULL;
 }
 
 static const char *md_config_set_min_delay(cmd_parms *cmd, void *dc, const char *value)
@@ -634,6 +704,9 @@ static const char *md_config_set_min_delay(cmd_parms *cmd, void *dc, const char 
     if (err) return err;
     if (md_duration_parse(&delay, value, "s") != APR_SUCCESS) {
         return "unrecognized duration format";
+    }
+    if (delay <= 0) {
+        return "minimum delay must be greater than 0";
     }
     config->mc->min_delay = delay;
     return NULL;
@@ -1304,7 +1377,14 @@ const command_rec md_cmds[] = {
                   "Configure locking of store for updates."),
     AP_INIT_TAKE1("MDMatchNames", md_config_set_match_mode, NULL, RSRC_CONF,
                   "Determines how DNS names are matched to vhosts."),
-
+    AP_INIT_TAKE1("MDCheckInterval", md_config_set_check_interval, NULL, RSRC_CONF,
+                  "Time between certificate checks."),
+    AP_INIT_TAKE1("MDProfile", md_config_set_profile, NULL, RSRC_CONF,
+                  "The name of an CA profile to order certificates for."),
+    AP_INIT_TAKE1("MDProfileMandatory", md_config_set_profile_mandatory, NULL, RSRC_CONF,
+                  "Determines if a configured CA profile is mandatory."),
+    AP_INIT_TAKE1("MDRenewViaARI", md_config_set_ari, NULL, RSRC_CONF,
+                  "Enable/Disable ACME ARI (RFC 9773) to trigger renewals."),
     AP_INIT_TAKE1(NULL, NULL, NULL, RSRC_CONF, NULL)
 };
 
@@ -1375,6 +1455,8 @@ const char *md_config_gets(const md_srv_conf_t *sc, md_config_var_t var)
             return sc->ca_agreement? sc->ca_agreement : defconf.ca_agreement;
         case MD_CONFIG_NOTIFY_CMD:
             return sc->mc->notify_cmd;
+        case MD_CONFIG_CA_PROFILE:
+            return sc->profile? sc->profile : defconf.profile;
         default:
             return NULL;
     }
@@ -1395,6 +1477,10 @@ int md_config_geti(const md_srv_conf_t *sc, md_config_var_t var)
             return (sc->stapling != DEF_VAL)? sc->stapling : defconf.stapling;
         case MD_CONFIG_STAPLE_OTHERS:
             return (sc->staple_others != DEF_VAL)? sc->staple_others : defconf.staple_others;
+        case MD_CONFIG_CA_PROFILE_MANDATORY:
+            return (sc->profile_mandatory != DEF_VAL)? sc->profile_mandatory : defconf.profile_mandatory;
+        case MD_CONFIG_ARI_RENEWALS:
+            return (sc->ari_renewals != DEF_VAL)? sc->ari_renewals : defconf.ari_renewals;
         default:
             return 0;
     }

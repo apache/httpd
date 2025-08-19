@@ -2,7 +2,7 @@
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
-<!-- English Revision: 1910996 -->
+<!-- English Revision: 1927807 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -1206,7 +1206,8 @@ MDRequireHttps permanent
 
     <directivesynopsis>
         <name>MDChallengeDns01</name>
-        <description></description>
+        <description>Définit la commande d'activation/désactivation des
+	vérifications dns-01</description>
         <syntax>MDChallengeDns01 <var>path-to-command</var></syntax>
         <contextlist>
             <context>server config</context>
@@ -1214,7 +1215,7 @@ MDRequireHttps permanent
         <usage>
             <p>
 		Cette directive permet de définir le programme à appeler
-		lorsque la vérification "dns-01" doit être générée/détruite. Le
+		lorsque la vérification "dns-01" doit être activée/désactivée. Le
 		programme prend respectivement comme arguments "setup" ou
 		"teardown" suivi du nom de domaine. Pour "setup", le programme
 		prend comme argument supplémentaire les données de vérification
@@ -1548,7 +1549,8 @@ MDMessageCmd /etc/apache/md-message
 
     <directivesynopsis>
         <name>MDCertificateCheck</name>
-        <description></description>
+        <description>Définit le motif de nom et d’URL pour un site de
+	vérification de certificat</description>
         <syntax>MDCertificateCheck <var>name</var> <var>url</var></syntax>
         <contextlist>
             <context>server config</context>
@@ -1563,11 +1565,11 @@ MDMessageCmd /etc/apache/md-message
 
     <directivesynopsis>
         <name>MDActivationDelay</name>
-        <description></description>
+        <description>Délai d’activation des nouveaux certificays</description>
         <syntax>MDActivationDelay <var>duration</var></syntax>
         <contextlist>
             <context>server config</context>
-        </contextlist>
+        </contextlist>    
         <compatibility>Disponible à partir de la version 2.4.42 du serveur HTTP
 	Apache</compatibility>
         <usage>
@@ -1578,7 +1580,7 @@ MDMessageCmd /etc/apache/md-message
 
     <directivesynopsis>
         <name>MDContactEmail</name>
-        <description></description>
+        <description>Adresse Email pour l'enregistrement du compte</description>
         <syntax>MDContactEmail <var>address</var></syntax>
         <contextlist>
             <context>server config</context>
@@ -1604,7 +1606,8 @@ MDMessageCmd /etc/apache/md-message
 
     <directivesynopsis>
         <name>MDExternalAccountBinding</name>
-        <description></description>
+        <description>Définit les valeurs keyid et hmac de liaison avec les
+	comptes externes à utiliser dans les CA</description>
         <syntax>MDExternalAccountBinding <var>key-id</var> <var>hmac-64</var> | none | <var>file</var></syntax>
         <default>MDExternalAccountBinding none</default>
         <contextlist>
@@ -1655,9 +1658,10 @@ MDMessageCmd /etc/apache/md-message
 
     <directivesynopsis>
         <name>MDRetryDelay</name>
-        <description></description>
+        <description>Temps d'attente avant de réessayer, doublé à chaque erreur
+	consécutive</description>
         <syntax>MDRetryDelay <var>duration</var></syntax>
-        <default>MDRetryDelay 5s</default>
+        <default>MDRetryDelay 30s</default>
         <contextlist>
             <context>server config</context>
         </contextlist>
@@ -1674,12 +1678,16 @@ MDMessageCmd /etc/apache/md-message
 		certificat. Autrement dit, une erreur sur un MDomain ne retarde
 		pas les renouvellements des autres domaines.
             </p>
+	    <p>
+		 Avec la version 2.6.1 de mod_md, le temps d’attente a été
+		 augmenté de 5 à 30 secondes.
+            </p>
         </usage>
     </directivesynopsis>
 
     <directivesynopsis>
         <name>MDRetryFailover</name>
-        <description></description>
+        <description>Le nombre d'erreurs avant de se tourner vers un autre CA</description>
         <syntax>MDRetryFailover <var>number</var></syntax>
         <default>MDRetryFailover 13</default>
         <contextlist>
@@ -1700,7 +1708,7 @@ MDMessageCmd /etc/apache/md-message
 
     <directivesynopsis>
         <name>MDStoreLocks</name>
-        <description></description>
+        <description>Configure le verrouillage du magasin pour les mises à jour</description>
         <syntax>MDStoreLocks on|off|<var>duration</var></syntax>
         <default>MDStoreLocks off</default>
         <contextlist>
@@ -1741,7 +1749,8 @@ MDMessageCmd /etc/apache/md-message
 
     <directivesynopsis>
         <name>MDChallengeDns01Version</name>
-        <description></description>
+        <description>Définit le type des arguments avec lesquels appeler
+	MDChallengeDns01</description>
         <syntax>MDChallengeDns01Version 1|2</syntax>
         <default>MDChallengeDns01Version 1</default>
         <contextlist>
@@ -1764,7 +1773,7 @@ MDMessageCmd /etc/apache/md-message
 
     <directivesynopsis>
         <name>MDMatchNames</name>
-        <description></description>
+        <description>Définit comment les noms DNS sont comparés aux vhosts</description>
         <syntax>MDMatchNames all|servernames</syntax>
         <default>MDMatchNames all</default>
         <contextlist>
@@ -1792,6 +1801,125 @@ MDMessageCmd /etc/apache/md-message
 		génériques. Vous pouvez ainsi définir un MDomain avec un
 		caractère générique et avoir d'autres MDomains pour des noms de
 		sous-domaines spécifiques.
+            </p>
+        </usage>
+    </directivesynopsis>
+
+    <directivesynopsis>
+        <name>MDCheckInterval</name>
+        <description>Détermine la périodicité de la vérification des certificats</description>
+        <syntax>MDCheckInterval <var>duration</var></syntax>
+        <default>MDCheckInterval 12h</default>
+        <contextlist>
+            <context>server config</context>
+        </contextlist>
+        <compatibility>Disponible à partir de la version 2.4.60 du serveur HTTP
+	Apache</compatibility>
+        <usage>
+	    <p>
+	    Cette option permet de définir l’intervalle entre deux
+	    vérifications de certificat. Par défaut, la validité et le besoin de
+	    renouvellement sont vérifiés deux fois par jour. Cet intervalle
+	    n’est cependant pas appliqué avec précision. En effet, le module lui
+	    applique une plage de variation aléatoire de +/- 50%. Avec
+	    l’intervalle par défaut de 12 heures, cela signifie que l’intervalle
+	    réel entre deux vérifications varie entre 6 et 18 heures, la
+	    variation s’appliquant à nouveau à chaque vérification. Cela permet
+	    d’atténuer les pics de trafic sur les serveurs ACME.
+            </p><p>
+	    La valeur minimale pouvant être définie pour l’intervalle est de
+	    1 seconde. Il est cependant déconseillé de définir un intervalle
+	    aussi court sur un serveur en production.
+            </p>
+        </usage>
+    </directivesynopsis>
+
+    <directivesynopsis>
+        <name>MDProfile</name>
+        <description>Utiliser un profile ACME spécifique depuis le CA</description>
+        <syntax>MDProfile name</syntax>
+        <contextlist>
+            <context>server config</context>
+        </contextlist>
+        <compatibility>Disponible à partir de la version 2.4.64 du serveur HTTP
+	Apache</compatibility>
+        <usage>
+            <p>
+                Il s’agit d’une extension non standard d’ACME par Let's Encrypt.
+            </p><p>
+		Lets Encrypt a annoncé qu’ils allaient ajouter la prise en
+		charge des profiles de certificat à leurs CA courant 2025, en
+		commençant par leurs serveurs de test. Cette fonctionnalité,
+		entre autres détails, vous permettra de définir la durée de
+		validité des certificats que vous recevez. À ce titre, le
+		profile « default » conservera la valeur de 90 jours, alors que
+		le profile « tlsserver » délivrera des certificats dont la durée
+		de validité sera de 6 jours seulement.
+            </p><p>
+                Si vous ne modifiez pas la configuration de votre module mod_md,
+		vous continuerez à recevoir des certificats d’une durée de
+		validité de 90 jours. Si vous pensez qu’une durée de validité
+		plus courte convient mieux à votre situation (et acceptez le
+		risque que le temps de renouvellement soit beaucoup plus court),
+		vous pouvez définir le profile à utiliser à l’aide de
+		« MDProfile tlsserver ».
+           </p><p>
+                Les noms de profile sont définis par le CA. Si vous tentez de
+		définie un profile non valable, aucun profile ne sera utilisé,
+		et le certificat sera délivré avec les valeurs par défaut du CA.
+           </p><p>
+                Voir la directive <directive
+		module="mod_md">MDProfileMandatory</directive> pour la manière
+		de désactiver les valeurs par défaut pour les profiles.
+            </p>
+        </usage>
+    </directivesynopsis>
+
+    <directivesynopsis>
+        <name>MDProfileMandatory</name>
+        <description>Contrôler si un MDProfile est obligatoire.</description>
+        <syntax>MDProfileMandatory on|off</syntax>
+        <default>MDProfileMandatory off</default>
+        <contextlist>
+            <context>server config</context>
+        </contextlist>
+        <usage>
+            <p>
+                Cette directive permet de contrôler si un <directive
+		module="mod_md">MDProfile</directive> que vous définissez est
+		obligatoire ou non. S’il est obligatoire et si le CA ne propose
+		pas de profile configuré, le renouvellement du certificat
+		échouera.
+           </p><p>
+                S’il n’est pas obligatoire et si le CA ne propose
+		pas de profile, les renouvellements seront effectués sans
+		profile particulier et le CA délivrera les certificats avec les
+		valeurs par défaut.
+            </p>
+        </usage>
+    </directivesynopsis>
+
+    <directivesynopsis>
+        <name>MDRenewViaARI</name>
+        <description>Utilisation de l’extension ACME ARI (rfc9773).</description>
+        <syntax>MDRenewViaARI on|off</syntax>
+        <default>MDRenewViaARI on</default>
+        <contextlist>
+            <context>server config</context>
+        </contextlist>
+        <usage>
+            <p>
+                Cette directive permet d’activer ou de désactiver le
+		déclenchement du renouvellement des certificats à l’aide de
+		l’extension ACME ARI (rfc9773). Ces renouvellements s’ajoutent à
+		ceux déclenchés par le mécanisme contrôlé à l’aide de la
+		directive <directive>MDRenewWindow</directive>.
+           </p><p>
+                ACME ARI permet en quelque sorte à une CA ACME de façonner le
+		trafic entrant des renouvellements. Plus important cependant,
+		cette extension peut informer les clients de l’urgence d’un
+		renouvellement, par exemple lorsqu’un certificat ou une partie
+		de sa chaîne de certification a été révoqué(e).
             </p>
         </usage>
     </directivesynopsis>    

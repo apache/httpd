@@ -1,0 +1,2 @@
+ *) Add the escapehtml function to the expression API, allowing to escape HTML
+    strings to guard against HTML injections. [Ruediger Pluem]

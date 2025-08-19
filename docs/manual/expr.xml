@@ -605,6 +605,8 @@ DIGIT       ::= &lt;any US-ASCII digit "0".."9"&gt;
         <td>replace(string, "from", "to") replaces all occurrences of "from"
             in the string with "to". The first parameter must not be a literal string.
             </td><td></td></tr>
+    <tr><td><code>escapehtml</code></td>
+        <td>Escape a HTML string</td><td></td></tr>
 
     </table>
 

@@ -25,6 +25,10 @@
 #include "apr_general.h"        /* for signal stuff */
 #include "apr_strings.h"
 #include "apr_errno.h"
+#include "apu_version.h"
+#if (APU_MAJOR_VERSION == 1 && APU_MINOR_VERSION >= 7)
+#include "apu_errno.h"
+#endif
 #include "apr_thread_proc.h"
 #include "apr_lib.h"
 #include "apr_signal.h"
@@ -68,6 +72,10 @@
 /* we know core's module_index is 0 */
 #undef APLOG_MODULE_INDEX
 #define APLOG_MODULE_INDEX AP_CORE_MODULE_INDEX
+
+#ifndef DEFAULT_LOG_TID
+#define DEFAULT_LOG_TID NULL
+#endif
 
 typedef struct {
     const char *t_name;
@@ -716,7 +724,19 @@ static int log_apr_status(const ap_errorlog_info *info, const char *arg,
         len = apr_snprintf(buf, buflen, "(os 0x%08x)",
                            status - APR_OS_START_SYSERR);
     }
+#if (APU_MAJOR_VERSION == 1 && APU_MINOR_VERSION >= 7)
+    if (status < APR_UTIL_START_STATUS) {
+        apr_strerror(status, buf + len, buflen - len);
+    }
+    else if (status < (APR_UTIL_START_STATUS + APR_UTIL_ERRSPACE_SIZE)) {
+        apu_strerror(status, buf + len, buflen - len);
+    }
+    else {
+        apr_strerror(status, buf + len, buflen - len);
+    }
+#else
     apr_strerror(status, buf + len, buflen - len);
+#endif
     len += strlen(buf + len);
     return len;
 }
@@ -907,7 +927,7 @@ static int do_errorlog_default(const ap_errorlog_info *info, char *buf,
 #if APR_HAS_THREADS
         field_start = len;
         len += cpystrn(buf + len, ":tid ", buflen - len);
-        item_len = log_tid(info, NULL, buf + len, buflen - len);
+        item_len = log_tid(info, DEFAULT_LOG_TID, buf + len, buflen - len);
         if (!item_len)
             len = field_start;
         else

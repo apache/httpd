@@ -325,7 +325,7 @@ static void si_val_valid_time(status_ctx *ctx, md_json_t *mdj, const status_info
             apr_pstrcat(ctx->p, info->label, "From", NULL));
         }
         if (until) {
-            print_date(ctx, from,
+            print_date(ctx, until,
             apr_pstrcat(ctx->p, info->label, "Until", NULL));
         }
     }
@@ -354,10 +354,8 @@ static void val_url_print(status_ctx *ctx, const status_info *info,
 {
     const char *s;
 
-    if (proto && !strcmp(proto, "tailscale")) {
-        s = "tailscale";
-    }
-    else if (url) {
+    (void)proto;
+    if (url) {
         s = md_get_ca_name_from_url(ctx->p, url);
     }
     else {
@@ -543,7 +541,7 @@ static void si_val_activity(status_ctx *ctx, md_json_t *mdj, const status_info *
             apr_brigade_puts(ctx->bb, NULL, NULL, "Pending");
         }
         else {
-            apr_brigade_printf(ctx->bb, NULL, NULL, "%s: %s", ctx->prefix, "Pending");
+            apr_brigade_printf(ctx->bb, NULL, NULL, "%s: %s", ctx->prefix, "Pending\n");
         }
     }
     else if (MD_RENEW_MANUAL == md_json_getl(mdj, MD_KEY_RENEW_MODE, NULL)) {
@@ -551,7 +549,7 @@ static void si_val_activity(status_ctx *ctx, md_json_t *mdj, const status_info *
             apr_brigade_puts(ctx->bb, NULL, NULL, "Manual renew");
         }
         else {
-            apr_brigade_printf(ctx->bb, NULL, NULL, "%s: %s", ctx->prefix, "Manual renew");
+            apr_brigade_printf(ctx->bb, NULL, NULL, "%s: %s", ctx->prefix, "Manual renew\n");
         }
     }
     if (!HTML_STATUS(ctx)) {
@@ -617,7 +615,7 @@ static void si_val_stapling(status_ctx *ctx, md_json_t *mdj, const status_info *
         apr_brigade_puts(ctx->bb, NULL, NULL, "on");
     }
     else {
-        apr_brigade_printf(ctx->bb, NULL, NULL, "%s: on", ctx->prefix);
+        apr_brigade_printf(ctx->bb, NULL, NULL, "%sStapling: on\n", ctx->prefix);
     }
 }
 

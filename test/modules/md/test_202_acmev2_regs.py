@@ -19,7 +19,7 @@ class TestAcmeAcc:
         env.check_acme()
         env.APACHE_CONF_SRC = "data/test_drive"
         MDConf(env).install()
-        assert env.apache_restart() == 0
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
 
     @pytest.fixture(autouse=True, scope='function')
     def _method_scope(self, env):

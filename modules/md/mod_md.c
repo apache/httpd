@@ -331,7 +331,8 @@ static void merge_srv_config(md_t *md, md_srv_conf_t *base_sc, apr_pool_t *p)
         APR_ARRAY_PUSH(md->contacts, const char *) =
         md_util_schemify(p, contact, "mailto");
     }
-    else if( md->sc->s->server_admin && strcmp(DEFAULT_ADMIN, md->sc->s->server_admin)) {
+    else if (md->sc->s->server_admin &&
+             strcmp(DEFAULT_ADMIN, md->sc->s->server_admin)) {
         apr_array_clear(md->contacts);
         APR_ARRAY_PUSH(md->contacts, const char *) =
         md_util_schemify(p, md->sc->s->server_admin, "mailto");
@@ -362,6 +363,15 @@ static void merge_srv_config(md_t *md, md_srv_conf_t *base_sc, apr_pool_t *p)
     }
     if (md->stapling < 0) {
         md->stapling = md_config_geti(md->sc, MD_CONFIG_STAPLING);
+    }
+    if (!md->profile) {
+        md->profile = md_config_gets(md->sc, MD_CONFIG_CA_PROFILE);
+    }
+    if (md->profile_mandatory < 0) {
+        md->profile_mandatory = md_config_geti(md->sc, MD_CONFIG_CA_PROFILE_MANDATORY);
+    }
+    if (md->ari_renewals < 0) {
+        md->ari_renewals = md_config_geti(md->sc, MD_CONFIG_ARI_RENEWALS);
     }
 }
 
@@ -945,7 +955,8 @@ static apr_status_t md_post_config_before_ssl(apr_pool_t *p, apr_pool_t *plog,
     /*5*/
     md_reg_load_stagings(mc->reg, mc->mds, mc->env, p);
 leave:
-    md_reg_unlock_global(mc->reg, ptemp);
+    if (mc->reg)
+        md_reg_unlock_global(mc->reg, ptemp);
     return rv;
 }
 
@@ -1256,7 +1267,7 @@ static int md_add_cert_files(server_rec *s, apr_pool_t *p,
                          s->server_hostname);
         }
         ap_log_error(APLOG_MARK, APLOG_TRACE1, 0, s,
-                     "host '%s' is covered by a Managed Domaina and "
+                     "host '%s' is covered by a Managed Domain and "
                      "is being provided with %d key/certificate files.",
                      s->server_hostname, md_cert_files->nelts);
         apr_array_cat(cert_files, md_cert_files);
@@ -1285,17 +1296,59 @@ static int md_add_fallback_cert_files(server_rec *s, apr_pool_t *p,
     return DECLINED;
 }
 
+static int md_get_challenge_cert(conn_rec *c, const char *servername,
+                                 md_srv_conf_t *sc,
+                                 md_pkey_type_t key_type,
+                                 const char **pcert_pem,
+                                 const char **pkey_pem)
+{
+    apr_status_t rv = APR_ENOENT;
+    int i;
+    char *cert_name, *pkey_name;
+    const char *cert_pem, *key_pem;
+    md_store_t *store = md_reg_store_get(sc->mc->reg);
+    md_pkey_spec_t *key_spec;
+
+    for (i = 0; i < md_pkeys_spec_count(sc->pks); i++) {
+        key_spec = md_pkeys_spec_get(sc->pks, i);
+        if (key_spec->type != key_type)
+          continue;
+
+        tls_alpn01_fnames(c->pool, key_spec, &pkey_name, &cert_name);
+
+        rv = md_store_load(store, MD_SG_CHALLENGES, servername, cert_name, MD_SV_TEXT,
+                           (void**)&cert_pem, c->pool);
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE1, rv, c,
+                      "Load challenge: cert %s", cert_name);
+        if (APR_STATUS_IS_ENOENT(rv)) continue;
+        if (APR_SUCCESS != rv) goto cleanup;
+
+        rv = md_store_load(store, MD_SG_CHALLENGES, servername, pkey_name, MD_SV_TEXT,
+                           (void**)&key_pem, c->pool);
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE1, rv, c,
+                      "Load challenge: key %s", pkey_name);
+        if (APR_STATUS_IS_ENOENT(rv)) continue;
+        if (APR_SUCCESS != rv) goto cleanup;
+
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, c,
+                      "Found challenge: cert %s, key %s for %s",
+                      cert_name, pkey_name, servername);
+        *pcert_pem = cert_pem;
+        *pkey_pem = key_pem;
+        return OK;
+    }
+cleanup:
+    return DECLINED;
+}
+
 static int md_answer_challenge(conn_rec *c, const char *servername,
                                const char **pcert_pem, const char **pkey_pem)
 {
     const char *protocol;
     int hook_rv = DECLINED;
-    apr_status_t rv = APR_ENOENT;
     md_srv_conf_t *sc;
-    md_store_t *store;
-    char *cert_name, *pkey_name;
-    const char *cert_pem, *key_pem;
-    int i;
+
+    *pcert_pem = *pkey_pem = NULL;
 
     if (!servername
         || !(protocol = md_protocol_get(c))
@@ -1307,33 +1360,31 @@ static int md_answer_challenge(conn_rec *c, const char *servername,
 
     ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, c,
                   "Answer challenge[tls-alpn-01] for %s", servername);
-    store = md_reg_store_get(sc->mc->reg);
 
-    for (i = 0; i < md_pkeys_spec_count( sc->pks ); i++) {
-        tls_alpn01_fnames(c->pool, md_pkeys_spec_get(sc->pks,i),
-                          &pkey_name, &cert_name);
-
-        rv = md_store_load(store, MD_SG_CHALLENGES, servername, cert_name, MD_SV_TEXT,
-                           (void**)&cert_pem, c->pool);
-        if (APR_STATUS_IS_ENOENT(rv)) continue;
-        if (APR_SUCCESS != rv) goto cleanup;
-
-        rv = md_store_load(store, MD_SG_CHALLENGES, servername, pkey_name, MD_SV_TEXT,
-                           (void**)&key_pem, c->pool);
-        if (APR_STATUS_IS_ENOENT(rv)) continue;
-        if (APR_SUCCESS != rv) goto cleanup;
-
-        ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, c,
-                      "Found challenge cert %s, key %s for %s",
-                      cert_name, pkey_name, servername);
-        *pcert_pem = cert_pem;
-        *pkey_pem = key_pem;
-        hook_rv = OK;
-        break;
-    }
+    /* A challenge for TLS-ALPN-01 used to have a single certificate,
+     * overriding the single fallback certificate already installed in
+     * the connections SSL* instance.
+     * Since the addition of `MDPrivateKeys`, there can be more than one,
+     * but the server API for a challenge cert can return only one. This
+     * is a short coming of the API.
+     * This means we cannot override all fallback certificates present, just
+     * a single one. If there is an RSA cert in fallback, we need to override
+     * that, because the ACME server has a preference for that (at least LE
+     * has). So we look for an RSA challenge cert first.
+     * The fallback is an EC cert and that works since without RSA challenges,
+     * there should also be no RSA fallbacks.
+     * Bit of a mess. */
+    hook_rv = md_get_challenge_cert(c, servername, sc, MD_PKEY_TYPE_DEFAULT,
+                                    pcert_pem, pkey_pem);
+    if (hook_rv == DECLINED)
+      hook_rv = md_get_challenge_cert(c, servername, sc, MD_PKEY_TYPE_RSA,
+                                      pcert_pem, pkey_pem);
+    if (hook_rv == DECLINED)
+      hook_rv = md_get_challenge_cert(c, servername, sc, MD_PKEY_TYPE_EC,
+                                      pcert_pem, pkey_pem);
 
     if (DECLINED == hook_rv) {
-        ap_log_cerror(APLOG_MARK, APLOG_INFO, rv, c, APLOGNO(10080)
+        ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, c, APLOGNO(10080)
                       "%s: unknown tls-alpn-01 challenge host", servername);
     }
 

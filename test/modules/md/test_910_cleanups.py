@@ -19,7 +19,7 @@ class TestCleanups:
         env.check_acme()
         env.clear_store()
         MDConf(env).install()
-        assert env.apache_restart() == 0
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
 
     @pytest.fixture(autouse=True, scope='function')
     def _method_scope(self, env, request):
@@ -45,7 +45,7 @@ class TestCleanups:
         for name in dirs_before:
             os.makedirs(os.path.join(challenges_dir, name))
 
-        assert env.apache_restart() == 0
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
         # the one we use is still there
         assert os.path.isdir(os.path.join(challenges_dir, domain))
         # and the others are gone

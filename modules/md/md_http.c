@@ -242,11 +242,13 @@ static apr_status_t req_create(md_http_request_t **preq, md_http_t *http,
 
 void md_http_req_destroy(md_http_request_t *req) 
 {
-    if (req->internals) {
-        req->http->impl->req_cleanup(req);
-        req->internals = NULL;
+    if (req) {
+        if (req->internals) {
+            req->http->impl->req_cleanup(req);
+            req->internals = NULL;
+        }
+        apr_pool_destroy(req->pool);
     }
-    apr_pool_destroy(req->pool);
 }
 
 void md_http_set_on_status_cb(md_http_request_t *req, md_http_status_cb *cb, void *baton)
@@ -341,7 +343,7 @@ cleanup:
     }
     else {
         *preq = NULL;
-        if (req) md_http_req_destroy(req);
+        md_http_req_destroy(req);
     }
     return rv;
 }

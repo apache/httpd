@@ -100,22 +100,80 @@ static void process_drive_job(md_renew_ctx_t *dctx, md_job_t *job, apr_pool_t *p
     }
     
     if (md_will_renew_cert(md)) {
-        /* Renew the MDs credentials in a STAGING area. Might be invoked repeatedly 
+        /* Renew the MDs credentials in a STAGING area. Might be invoked repeatedly
          * without discarding previous/intermediate results.
          * Only returns SUCCESS when the renewal is complete, e.g. STAGING has a
          * complete set of new credentials.
          */
-        ap_log_error( APLOG_MARK, APLOG_DEBUG, 0, dctx->s, APLOGNO(10052) 
+        apr_time_t renew_at, now;
+        const char *ari_explain_url = NULL;
+
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, dctx->s, APLOGNO(10052)
                      "md(%s): state=%d, driving", job->mdomain, md->state);
 
-        if (!md_reg_should_renew(dctx->mc->reg, md, dctx->p)) {
-            ap_log_error( APLOG_MARK, APLOG_DEBUG, 0, dctx->s, APLOGNO(10053) 
-                         "md(%s): no need to renew", job->mdomain);
-            goto expiry;
+        renew_at = md_reg_renew_at(dctx->mc->reg, md, ptemp);
+        now = apr_time_now();
+
+        if (md->stapling && dctx->mc->ocsp &&
+            md_reg_has_revoked_certs(dctx->mc->reg, dctx->mc->ocsp, md, ptemp)) {
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, dctx->s, APLOGNO(10500)
+                         "md(%s): need to renew, OCSP reports revoked "
+                         "certificate(s)", job->mdomain);
+        }
+        else if (!renew_at || renew_at <= now) {
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, dctx->s, APLOGNO(10512)
+                         "md(%s): need to renew now", job->mdomain);
+        }
+        else {
+            apr_time_t ari_renew_at = 0;
+            char ts[APR_RFC822_DATE_LEN];
+
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, dctx->s, APLOGNO(10513)
+                         "md(%s): ARI is %senabled", job->mdomain,
+                         md->ari_renewals? "" : "not ");
+            if (md->ari_renewals)
+                ari_renew_at = md_reg_ari_renew_at(&ari_explain_url, dctx->mc->reg, md,
+                                                   dctx->mc->env, result, ptemp);
+            if (!ari_renew_at || (ari_renew_at > renew_at)) {
+                ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, dctx->s, APLOGNO(10514)
+                             "md(%s): %sup for configured renewal in %s",
+                             job->mdomain,
+                             (ari_renew_at || !md->ari_renewals) ? "" : "no ARI available, ",
+                             md_duration_print(ptemp, renew_at - now));
+                goto expiry;
+            }
+            else if (ari_renew_at > now) {
+                long secs = (long)apr_time_sec(ari_renew_at - now);
+                apr_rfc822_date(ts, ari_renew_at);
+                if (ari_explain_url) {
+                    ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, dctx->s, APLOGNO(10515)
+                                 "md(%s): CA advises renew via ARI at %s"
+                                 ", for explanation see %s",
+                                 job->mdomain, ts, ari_explain_url);
+                }
+                else
+                    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, dctx->s, APLOGNO(10516)
+                                 "md(%s): CA advises renew via ARI at %s",
+                                 job->mdomain, ts);
+                if (secs < MD_SECS_PER_DAY) { /* earlier than regular run */
+                  job->next_run = ari_renew_at;
+                }
+                goto expiry;
+            }
+            /* ARI says we should renew *now* */
+            if (ari_explain_url) {
+                ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, dctx->s, APLOGNO(10517)
+                             "md(%s): CA advises renew via ARI now"
+                             ", for explanation see %s",
+                             job->mdomain, ari_explain_url);
+            }
+            else
+                ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, dctx->s, APLOGNO(10518)
+                             "md(%s): CA advises renew via ARI now", job->mdomain);
         }
     
         /* The (possibly configured) event handler may veto renewals. This
-         * is used in cluster installtations, see #233. */
+         * is used in cluster installations, see #233. */
         rv = md_event_raise("renewing", md->name, job, result, ptemp);
         if (APR_SUCCESS != rv) {
                 ap_log_error(APLOG_MARK, APLOG_INFO, 0, dctx->s, APLOGNO(10060)
@@ -125,6 +183,10 @@ static void process_drive_job(md_renew_ctx_t *dctx, md_job_t *job, apr_pool_t *p
         }
 
         md_job_start_run(job, result, md_reg_store_get(dctx->mc->reg));
+        if (ari_explain_url)
+            md_result_printf(result, 0,
+                             "Renewal triggered by CA via ARI, explanation at %s",
+                             ari_explain_url);
         md_reg_renew(dctx->mc->reg, md, dctx->mc->env, 0, job->error_runs, result, ptemp);
         md_job_end_run(job, result);
         
@@ -154,7 +216,7 @@ static void process_drive_job(md_renew_ctx_t *dctx, md_job_t *job, apr_pool_t *p
     }
 
 expiry:
-    if (!job->finished && md_reg_should_warn(dctx->mc->reg, md, dctx->p)) {
+    if (!job->finished && md_reg_should_warn(dctx->mc->reg, md, ptemp)) {
         ap_log_error( APLOG_MARK, APLOG_TRACE1, 0, dctx->s,
                      "md(%s): warn about expiration", md->name);
         md_job_start_run(job, result, md_reg_store_get(dctx->mc->reg));
@@ -180,10 +242,13 @@ int md_will_renew_cert(const md_t *md)
     return 1;
 }
 
-static apr_time_t next_run_default(void)
+static apr_time_t next_run_default(md_renew_ctx_t *dctx)
 {
-    /* we'd like to run at least twice a day by default */
-    return apr_time_now() + apr_time_from_sec(MD_SECS_PER_DAY / 2);
+    unsigned char c;
+    apr_time_t delay = dctx->mc->check_interval;
+
+    md_rand_bytes(&c, sizeof(c), dctx->p);
+    return apr_time_now() + delay + (delay * (c - 128) / 256);
 }
 
 static apr_status_t run_watchdog(int state, void *baton, apr_pool_t *ptemp)
@@ -211,7 +276,7 @@ static apr_status_t run_watchdog(int state, void *baton, apr_pool_t *ptemp)
              * and we schedule ourself at the earliest of all. A job may specify 0
              * as next_run to indicate that it wants to participate in the normal
              * regular runs. */
-            next_run = next_run_default();
+            next_run = next_run_default(dctx);
             for (i = 0; i < dctx->jobs->nelts; ++i) {
                 job = APR_ARRAY_IDX(dctx->jobs, i, md_job_t *);
                 

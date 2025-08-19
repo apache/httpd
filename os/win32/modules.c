@@ -19,6 +19,7 @@
  * the core server
  */
 
+#include "ap_config.h"
 #include "httpd.h"
 #include "http_config.h"
 
@@ -37,7 +38,7 @@ AP_DECLARE_DATA module *ap_prelinked_modules[] = {
   NULL
 };
 
-ap_module_symbol_t ap_prelinked_module_symbols[] = {
+AP_DECLARE_DATA ap_module_symbol_t ap_prelinked_module_symbols[] = {
   {"core_module", &core_module},
   {"win32_module", &win32_module},
   {"mpm_winnt_module", &mpm_winnt_module},

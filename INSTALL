@@ -80,6 +80,10 @@
 
     Check out APR trunk in srclib/apr with the following command:
 
+    git clone https://github.com/apache/apr.git srclib/apr
+
+    or alternatively using svn:
+
     svn co http://svn.apache.org/repos/asf/apr/apr/trunk srclib/apr
 
     buildconf will find it automatically.  Use the --with-included-apr
@@ -89,6 +93,11 @@
 
     Check out the current branches as srclib/apr and srclib/apr-util with
     the following commands:
+
+    git clone -b 1.7.x https://github.com/apache/apr.git srclib/apr
+    git clone -b 1.6.x https://github.com/apache/apr-util.git srclib/apr-util
+
+    or alternatively using svn:
 
     svn co http://svn.apache.org/repos/asf/apr/apr/branches/1.7.x srclib/apr
     svn co http://svn.apache.org/repos/asf/apr/apr-util/branches/1.6.x srclib/apr-util

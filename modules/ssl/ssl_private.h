@@ -107,9 +107,10 @@
 /* Avoid tripping over an engine build installed globally and detected
  * when the user points at an explicit non-engine flavor of OpenSSL
  */
-#if defined(HAVE_OPENSSL_ENGINE_H) && defined(HAVE_ENGINE_INIT)
-#if OPENSSL_VERSION_NUMBER < 0x30000000 \
-    || (defined(OPENSSL_API_LEVEL) && OPENSSL_API_LEVEL < 30000)
+#if defined(HAVE_OPENSSL_ENGINE_H) && defined(HAVE_ENGINE_INIT) \
+    && (OPENSSL_VERSION_NUMBER < 0x30000000 \
+        || (defined(OPENSSL_API_LEVEL) && OPENSSL_API_LEVEL < 30000)) \
+    && !defined(OPENSSL_NO_ENGINE)
 #include <openssl/engine.h>
 #define MODSSL_HAVE_ENGINE_API 1
 #endif
@@ -117,6 +118,13 @@
 #define MODSSL_HAVE_ENGINE_API 0
 #endif
 
+/* Use OpenSSL 3.x STORE for loading URI keys and certificates starting with
+ * OpenSSL 3.0
+ */
+#if OPENSSL_VERSION_NUMBER >= 0x30000000
+#define MODSSL_HAVE_OPENSSL_STORE 1
+#else
+#define MODSSL_HAVE_OPENSSL_STORE 0
 #endif
 
 #if (OPENSSL_VERSION_NUMBER < 0x0090801f)
@@ -256,11 +264,9 @@
 #define BN_get_rfc3526_prime_4096  get_rfc3526_prime_4096
 #define BN_get_rfc3526_prime_6144  get_rfc3526_prime_6144
 #define BN_get_rfc3526_prime_8192  get_rfc3526_prime_8192
-#if !defined(LIBRESSL_VERSION_NUMBER) || LIBRESSL_VERSION_NUMBER < 0x2070000fL
 #define BIO_set_init(x,v)          (x->init=v)
 #define BIO_get_data(x)            (x->ptr)
 #define BIO_set_data(x,v)          (x->ptr=v)
-#endif
 #define BIO_get_shutdown(x)        (x->shutdown)
 #define BIO_set_shutdown(x,v)      (x->shutdown=v)
 #define DH_bits(x)                 (BN_num_bits(x->p))
@@ -290,8 +296,16 @@ void free_bio_methods(void);
 #define X509_get_notAfter   X509_getm_notAfter
 #endif
 
-#if OPENSSL_VERSION_NUMBER >= 0x10101000L && !defined(LIBRESSL_VERSION_NUMBER)
-#define HAVE_OPENSSL_KEYLOG
+/* The SSL_CTX_set_keylog_callback() API is present in 1.1.1+.
+ * 
+ * OpenSSL 3.5+ also provides optional native handling of
+ * $SSLKEYLOGFILE inside libssl, which duplicates the mod_ssl support.
+ * The mod_ssl support is hence disabled for 3.5+, unless that OpenSSL
+ * feature is itself disabled (and OPENSSL_NO_SSLKEYLOG is defined).
+ */
+#if OPENSSL_VERSION_NUMBER >= 0x10101000L && !defined(LIBRESSL_VERSION_NUMBER) \
+    && (OPENSSL_VERSION_NUMBER <= 0x30500000L || defined(OPENSSL_NO_SSLKEYLOG))
+#define HAVE_OPENSSL_KEYLOG 
 #endif
 
 #ifdef HAVE_FIPS
@@ -453,7 +467,8 @@ typedef enum {
     || (errnum == X509_V_ERR_SELF_SIGNED_CERT_IN_CHAIN) \
     || (errnum == X509_V_ERR_UNABLE_TO_GET_ISSUER_CERT_LOCALLY) \
     || (errnum == X509_V_ERR_CERT_UNTRUSTED) \
-    || (errnum == X509_V_ERR_UNABLE_TO_VERIFY_LEAF_SIGNATURE))
+    || (errnum == X509_V_ERR_UNABLE_TO_VERIFY_LEAF_SIGNATURE) \
+    || (errnum == X509_V_ERR_CERT_HAS_EXPIRED))
 
 /**
   * CRL checking mask (mode | flags)
@@ -503,7 +518,6 @@ typedef enum {
     SSL_ENABLED_UNSET    = UNSET,
     SSL_ENABLED_FALSE    = 0,
     SSL_ENABLED_TRUE     = 1,
-    SSL_ENABLED_OPTIONAL = 3
 } ssl_enabled_t;
 
 /**
@@ -568,6 +582,30 @@ typedef enum {
     SSL_SHUTDOWN_TYPE_ACCURATE
 } ssl_shutdown_type_e;
 
+/**
+ * Define the structure to hold clienthello variables
+ * (later exposed as environment vars)
+ */
+#if OPENSSL_VERSION_NUMBER >= 0x10101000L && !defined(LIBRESSL_VERSION_NUMBER)
+typedef struct {
+    unsigned int version;
+    apr_size_t ciphers_len;
+    const unsigned char *ciphers_data;
+    apr_size_t extids_len;
+    const int *extids_data;
+    apr_size_t ecgroups_len;
+    const unsigned char *ecgroups_data;
+    apr_size_t ecformats_len;
+    const unsigned char *ecformats_data;
+    apr_size_t sigalgos_len;
+    const unsigned char *sigalgos_data;
+    apr_size_t alpn_len;
+    const unsigned char *alpn_data;
+    apr_size_t versions_len;
+    const unsigned char *versions_data;
+} modssl_clienthello_vars;
+#endif
+
 typedef struct {
     SSL *ssl;
     const char *client_dn;
@@ -598,6 +636,10 @@ typedef struct {
     const char *cipher_suite; /* cipher suite used in last reneg */
     int service_unavailable;  /* thouugh we negotiate SSL, no requests will be served */
     int vhost_found;          /* whether we found vhost from SNI already */
+
+#if OPENSSL_VERSION_NUMBER >= 0x10101000L && !defined(LIBRESSL_VERSION_NUMBER)
+    modssl_clienthello_vars *clienthello_vars;  /* info from clienthello callback */
+#endif
 } SSLConnRec;
 
 /* Private keys are retained across reloads, since decryption
@@ -652,9 +694,7 @@ typedef struct {
     apr_array_header_t   *aRandSeed;
 #endif
 
-#if defined(HAVE_OPENSSL_ENGINE_H) && defined(HAVE_ENGINE_INIT)
-    const char     *szCryptoDevice;
-#endif
+    const char     *szCryptoDevice; /* ENGINE device (if available) */
 
 #ifdef HAVE_OCSP_STAPLING
     const ap_socache_provider_t *stapling_cache;
@@ -821,7 +861,6 @@ struct SSLSrvConfigRec {
     const unsigned char *vhost_md5; /* = ap_md5_binary(vhost_id, ...) */
     int              session_cache_timeout;
     BOOL             cipher_server_pref;
-    BOOL             insecure_reneg;
     modssl_ctx_t    *server;
 #ifdef HAVE_TLSEXT
     ssl_enabled_t    strict_sni_vhost_check;
@@ -830,7 +869,7 @@ struct SSLSrvConfigRec {
     BOOL             compression;
 #endif
     BOOL             session_tickets;
-    
+    BOOL             clienthello_vars;
 };
 
 /**
@@ -890,6 +929,7 @@ const char  *ssl_cmd_SSLCARevocationPath(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLCARevocationFile(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLCARevocationCheck(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLHonorCipherOrder(cmd_parms *cmd, void *dcfg, int flag);
+const char  *ssl_cmd_SSLClientHelloVars(cmd_parms *, void *, int flag);
 const char  *ssl_cmd_SSLCompression(cmd_parms *, void *, int flag);
 const char  *ssl_cmd_SSLSessionTickets(cmd_parms *, void *, int flag);
 const char  *ssl_cmd_SSLVerifyClient(cmd_parms *, void *, const char *);
@@ -1050,7 +1090,7 @@ void         modssl_callback_keylog(const SSL *ssl, const char *line);
 /**  I/O  */
 apr_status_t ssl_io_filter_init(conn_rec *, request_rec *r, SSL *);
 void         ssl_io_filter_register(apr_pool_t *);
-void         modssl_set_io_callbacks(SSL *ssl);
+void         modssl_set_io_callbacks(SSL *ssl, conn_rec *c, server_rec *s);
 
 /* ssl_io_buffer_fill fills the setaside buffering of the HTTP request
  * to allow an SSL renegotiation to take place. */
@@ -1086,7 +1126,8 @@ apr_status_t ssl_load_encrypted_pkey(server_rec *, apr_pool_t *, int,
 /* Load public and/or private key from the configured ENGINE. Private
  * key returned as *pkey.  certid can be NULL, in which case *pubkey
  * is not altered.  Errors logged on failure. */
-apr_status_t modssl_load_engine_keypair(server_rec *s, apr_pool_t *p,
+apr_status_t modssl_load_engine_keypair(server_rec *s,
+                                        apr_pool_t *pconf, apr_pool_t *ptemp,
                                         const char *vhostid,
                                         const char *certid, const char *keyid,
                                         X509 **pubkey, EVP_PKEY **privkey);

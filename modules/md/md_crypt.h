@@ -68,6 +68,8 @@ typedef struct md_pkey_spec_t {
     } params;
 } md_pkey_spec_t;
 
+int md_pkey_spec_eq(const md_pkey_spec_t *s1, const md_pkey_spec_t *s2);
+
 typedef struct md_pkeys_spec_t {
     apr_pool_t *p;
     struct apr_array_header_t *specs;
@@ -89,6 +91,8 @@ int md_pkeys_spec_is_empty(const md_pkeys_spec_t *pks);
 md_pkey_spec_t *md_pkeys_spec_get(const md_pkeys_spec_t *pks, int index);
 int md_pkeys_spec_count(const md_pkeys_spec_t *pks);
 void md_pkeys_spec_add(md_pkeys_spec_t *pks, md_pkey_spec_t *spec);
+
+const char *md_pkey_spec_to_str(const md_pkey_spec_t *spec, apr_pool_t *p);
 
 struct md_json_t *md_pkey_spec_to_json(const md_pkey_spec_t *spec, apr_pool_t *p);
 md_pkey_spec_t *md_pkey_spec_from_json(struct md_json_t *json, apr_pool_t *p);
@@ -190,6 +194,7 @@ struct md_timeperiod_t md_cert_get_valid(const md_cert_t *cert);
  */
 int md_certs_are_equal(const md_cert_t *a, const md_cert_t *b);
 
+const char *md_cert_get_issuer_name(const md_cert_t *cert, apr_pool_t *p);
 apr_status_t md_cert_get_issuers_uri(const char **puri, const md_cert_t *cert, apr_pool_t *p);
 apr_status_t md_cert_get_alt_names(apr_array_header_t **pnames, const md_cert_t *cert, apr_pool_t *p);
 
@@ -233,6 +238,9 @@ apr_status_t md_cert_get_ct_scts(apr_array_header_t *scts, apr_pool_t *p, const 
 apr_status_t md_cert_get_ocsp_responder_url(const char **purl, apr_pool_t *p, const md_cert_t *cert);
 
 apr_status_t md_check_cert_and_pkey(struct apr_array_header_t *certs, md_pkey_t *pkey);
+
+apr_status_t md_cert_get_ari_cert_id(const char **pari_cert_id,
+                                     const md_cert_t *cert, apr_pool_t *p);
 
 
 /**************************************************************************************************/

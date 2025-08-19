@@ -45,7 +45,11 @@ APACHE_MODULE(proxy_fdpass, Apache proxy to Unix Daemon Socket module.  Requires
   fi
 ],proxy)
 APACHE_MODULE(proxy_wstunnel, Apache proxy Websocket Tunnel module.  Requires --enable-proxy., $proxy_wstunnel_objs, , most, , proxy)
-APACHE_MODULE(proxy_ajp, Apache proxy AJP module.  Requires --enable-proxy., $proxy_ajp_objs, , most, , proxy)
+APACHE_MODULE(proxy_ajp, Apache proxy AJP module.  Requires --enable-proxy., $proxy_ajp_objs, , most, [
+  # Don't export all the ajp_* functions.
+  if test "x$enable_proxy_ajp" = "xshared"; then
+     APR_ADDTO(MOD_PROXY_AJP_LDADD, [-export-symbols-regex proxy_ajp_module])
+  fi], proxy)
 APACHE_MODULE(proxy_balancer, Apache proxy BALANCER module.  Requires --enable-proxy., $proxy_balancer_objs, , most, , proxy)
 
 APACHE_MODULE(serf, [Reverse proxy module using Serf], , , no, [

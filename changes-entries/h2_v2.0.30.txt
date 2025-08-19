@@ -1,0 +1,8 @@
+  *) mod_http2: update to version 2.0.30
+     - Fixed bug in handling over long response headers. When the 64 KB limit
+       of nghttp2 was exceeded, the request was not reset and the client was
+       left hanging, waiting for it. Now the stream is reset.
+     - Added new directive `H2MaxHeaderBlockLen` to set the limit on response
+       header sizes.
+     - Fixed handling of Timeout vs. KeepAliveTimeout when first request on a
+       connection was reset.

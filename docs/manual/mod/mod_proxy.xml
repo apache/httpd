@@ -190,7 +190,7 @@ ProxyPass "/some/ws/capable/path/" "http://example.com/some/ws/capable/path/" up
       <example><title>Reverse Proxy PHP scripts</title>
       <highlight language="config">
 &lt;FilesMatch "\.php$"&gt;
-    SetHandler  "proxy:unix:/path/to/app.sock|fcgi://localhost/"
+    SetHandler  "proxy:unix:/path/to/app.sock|fcgi://localhost"
 &lt;/FilesMatch&gt;
       </highlight>
       </example>
@@ -606,8 +606,8 @@ proxied resources</description>
     (unnamed) backreferences are ignored. Use named groups instead.</p>
 
 <highlight language="config">
-&lt;ProxyMatch ^http://(?&lt;sitename&gt;[^/]+)&gt;
-    require ldap-group cn=%{env:MATCH_SITENAME},ou=combined,o=Example
+&lt;ProxyMatch "^http://(?&lt;sitename&gt;[^/]+)"&gt;
+    Require ldap-group cn=%{env:MATCH_SITENAME},ou=combined,o=Example
 &lt;/ProxyMatch&gt;
 </highlight>
 </usage>
@@ -728,9 +728,10 @@ ProxyRemote ftp http://ftpproxy.mydomain:8080
 <name>ProxyRemoteMatch</name>
 <description>Remote proxy used to handle requests matched by regular
 expressions</description>
-<syntax>ProxyRemoteMatch <var>regex</var> <var>remote-server</var></syntax>
+<syntax>ProxyRemoteMatch <var>regex</var> <var>remote-server</var> [<var>username:password</var>]</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
+<compatibility>The optional third argument is usable only in httpd 2.5.1 and later.</compatibility>
 
 <usage>
     <p>The <directive>ProxyRemoteMatch</directive> is identical to the
@@ -1324,6 +1325,10 @@ ProxyPass "/example" "http://backend.example.com" max=20 ttl=120 retry=300
         <td>-1</td>
         <td><p>TTL in seconds for how long DNS resolutions of the backend address are cached.
         -1 means until restart of Apache httpd.</p>
+    </td></tr>
+    <tr><td><a id="multipathtcp" name="multipathtcp">multipathtcp</a></td>
+        <td>Off</td>
+        <td><p>Enable/disable the use of <a href="https://mptcp.dev">Multipath TCP (MPTCP)</a></p>
     </td></tr>
 
     </table>
@@ -2082,7 +2087,7 @@ header for proxied requests</description>
     <p>This directive controls the use of the <code>Via:</code> HTTP
     header by the proxy. Its intended use is to control the flow of
     proxy requests along a chain of proxy servers.  See <a
-    href="http://www.ietf.org/rfc/rfc2616.txt">RFC 2616</a> (HTTP/1.1), section
+    href="https://www.rfc-editor.org/rfc/rfc2616">RFC 2616</a> (HTTP/1.1), section
     14.45 for an explanation of <code>Via:</code> header lines.</p>
 
     <ul>

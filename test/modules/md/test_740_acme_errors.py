@@ -16,7 +16,7 @@ class TestAcmeErrors:
         env.check_acme()
         env.clear_store()
         MDConf(env).install()
-        assert env.apache_restart() == 0
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
 
     @pytest.fixture(autouse=True, scope='function')
     def _method_scope(self, env, request):
@@ -33,7 +33,7 @@ class TestAcmeErrors:
         conf.add_md(domains)
         conf.add_vhost(domains)
         conf.install()
-        assert env.apache_restart() == 0
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
         md = env.await_error(domain)
         assert md
         assert md['renewal']['errors'] > 0
@@ -65,7 +65,7 @@ class TestAcmeErrors:
         conf.add_md(domains)
         conf.add_vhost(domains)
         conf.install()
-        assert env.apache_restart() == 0
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
         md = env.await_error(domain)
         assert md
         assert md['renewal']['errors'] > 0

@@ -262,7 +262,7 @@
 <tr><th><a href="directive-dict.html#Context">사용장소:</a></th><td>주서버설정, 가상호스트</td></tr>
 <tr><th><a href="directive-dict.html#Status">상태:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">모듈:</a></th><td>mod_deflate</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">지원:</a></th><td>Available in Apache 2.4.42 and later</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">지원:</a></th><td>Available in Apache 2.4.58 and later</td></tr>
 </table><p>The documentation for this directive has
             not been translated yet. Please have a look at the English
             version.</p></div>

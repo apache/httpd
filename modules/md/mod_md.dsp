@@ -205,10 +205,6 @@ SOURCE=./md_store_fs.c
 # End Source File
 # Begin Source File
 
-SOURCE=./md_tailscale.c
-# End Source File
-# Begin Source File
-
 SOURCE=./md_time.c
 # End Source File
 # Begin Source File

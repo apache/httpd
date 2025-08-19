@@ -76,7 +76,6 @@
     <p>Popular options for deploying Apache httpd, and, optionally, PHP
     and MySQL, on Microsoft Windows, include:</p>
     <ul>
-    <li><a href="http://www.apachehaus.com/cgi-bin/download.plx">ApacheHaus</a></li>
     <li><a href="http://www.apachelounge.com/download/">Apache Lounge</a></li>
     <li><a href="http://bitnami.com/stack/wamp">Bitnami WAMP Stack</a></li>
     <li><a href="http://www.wampserver.com/">WampServer</a></li>
@@ -92,6 +91,13 @@
     version, but there are a few different directives for Apache on
     Windows. See the <a href="../mod/directives.html">directive index</a>
     for all the available directives.</p>
+
+    <p>The default configuration of the source distribution expects the server
+    to be installed into \Apache2x. This can be customized at compilation time,
+    but it's important that ultimately the <code class="directive">ServerRoot</code> in
+    httpd.conf match the actual installation root. Binary distributions may
+    customize either the default installation root or the overall layout of
+    the initial configuration.</p>
 
     <p>The main differences in Apache for Windows are:</p>
     <ul>
@@ -607,15 +613,22 @@ RewriteRule "(.*)"           "${lowercase:$1}" [R,L]</pre>
   (Arcane and error prone procedures may work around the restriction
   on mapped drive letters, but this is not recommended.)</p>
 
-  <div class="example"><h3>Example DocumentRoot with UNC path</h3><pre class="prettyprint lang-config">DocumentRoot "//dochost/www/html/"</pre>
+  <div class="example"><h3>Example DocumentRoot with UNC path</h3><pre class="prettyprint lang-config">  UNCList dochost
+  DocumentRoot "//dochost/www/html/"</pre>
 </div>
 
-  <div class="example"><h3>Example DocumentRoot with IP address in UNC path</h3><pre class="prettyprint lang-config">DocumentRoot "//192.168.1.50/docs/"</pre>
+  <div class="example"><h3>Example DocumentRoot with IP address in UNC path</h3><pre class="prettyprint lang-config">  UNCList 192.168.1.50
+  DocumentRoot "//192.168.1.50/docs/"</pre>
 </div>
 
-  <div class="example"><h3>Example Alias and corresponding Directory with UNC path</h3><pre class="prettyprint lang-config">Alias "/images/" "//imagehost/www/images/"
+  <div class="example"><h3>Example Alias and corresponding Directory with UNC path</h3><pre class="prettyprint lang-config">UNCList imagehost1 imagehost2
+Alias "/images/" "//imagehost/www/images/"
+Alias "/images2/" "//imagehost2/www/images/"
 
 &lt;Directory "//imagehost/www/images/"&gt;
+#...
+&lt;/Directory&gt;
+&lt;Directory "//imagehost2/www/images/"&gt;
 #...
 &lt;/Directory&gt;</pre>
 </div>
@@ -655,7 +668,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/platform/windows.h
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2023 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2024 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

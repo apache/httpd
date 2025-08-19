@@ -168,6 +168,7 @@
 <li><a href="mod/mod_allowmethods.html">Apache モジュール mod_allowmethods</a></li>
 <li><a href="mod/mod_asis.html">Apache モジュール mod_asis</a></li>
 <li><a href="mod/mod_auth_basic.html">Apache モジュール mod_auth_basic</a></li>
+<li><a href="mod/mod_auth_bearer.html">Apache モジュール mod_auth_bearer</a></li>
 <li><a href="mod/mod_auth_digest.html">Apache モジュール mod_auth_digest</a></li>
 <li><a href="mod/mod_auth_form.html">Apache モジュール mod_auth_form</a></li>
 <li><a href="mod/mod_authn_anon.html">Apache モジュール mod_authn_anon</a></li>
@@ -178,6 +179,8 @@
 <li><a href="mod/mod_authn_socache.html">Apache モジュール mod_authn_socache</a></li>
 <li><a href="mod/mod_authnz_fcgi.html">Apache モジュール mod_authnz_fcgi</a></li>
 <li><a href="mod/mod_authnz_ldap.html">Apache モジュール mod_authnz_ldap</a></li>
+<li><a href="mod/mod_autht_core.html">Apache モジュール mod_autht_core</a></li>
+<li><a href="mod/mod_autht_jwt.html">Apache モジュール mod_autht_jwt</a></li>
 <li><a href="mod/mod_authz_core.html">Apache モジュール mod_authz_core</a></li>
 <li><a href="mod/mod_authz_dbd.html">Apache モジュール mod_authz_dbd</a></li>
 <li><a href="mod/mod_authz_dbm.html">Apache モジュール mod_authz_dbm</a></li>
@@ -284,7 +287,6 @@
 <li><a href="mod/mod_suexec.html">Apache モジュール mod_suexec</a></li>
 <li><a href="mod/mod_syslog.html">Apache モジュール mod_syslog</a></li>
 <li><a href="mod/mod_systemd.html">Apache モジュール mod_systemd</a></li>
-<li><a href="mod/mod_tls.html">Apache モジュール mod_tls</a></li>
 <li><a href="mod/mod_unique_id.html">Apache モジュール mod_unique_id</a></li>
 <li><a href="mod/mod_unixd.html">Apache モジュール mod_unixd</a></li>
 <li><a href="mod/mod_userdir.html">Apache モジュール mod_userdir</a></li>
@@ -342,7 +344,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/sitemap.html';
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2023 The Apache Software Foundation.<br />この文書は <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> のライセンスで提供されています。.</p>
+<p class="apache">Copyright 2025 The Apache Software Foundation.<br />この文書は <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> のライセンスで提供されています。.</p>
 <p class="menu"><a href="./mod/">モジュール</a> | <a href="./mod/quickreference.html">ディレクティブ</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="./glossary.html">用語</a> | <a href="./sitemap.html">サイトマップ</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

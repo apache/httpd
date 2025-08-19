@@ -94,7 +94,7 @@ that defines a module as <em>a separate entity within Apache</em>:</p>
 
 <!-- BEGIN EXAMPLE CODE -->
 <highlight language="c">
-module AP_MODULE_DECLARE_DATA   example_module =
+AP_DECLARE_MODULE(example) =
 {
     STANDARD20_MODULE_STUFF,
     create_dir_conf, /* Per-directory configuration handler */
@@ -110,11 +110,12 @@ module AP_MODULE_DECLARE_DATA   example_module =
 <p>
 This bit of code lets the server know that we have now registered a new module
 in the system, and that its name is <code>example_module</code>. The name
-of the module is used primarily for two things:<br/>
+of the module is used primarily for three things:<br/>
 </p>
 <ul>
 <li>Letting the server know how to load the module using the LoadModule</li>
 <li>Setting up a namespace for the module to use in configurations</li>
+<li>Allowing the user to distinguish an origin of log messages</li>
 </ul>
 <p>
 For now, we're only concerned with the first purpose of the module name,
@@ -188,7 +189,7 @@ definition will look like this:</p>
 
 <!-- BEGIN EXAMPLE CODE -->
 <highlight language="c">
-module AP_MODULE_DECLARE_DATA   example_module =
+AP_DECLARE_MODULE(example) =
 {
     STANDARD20_MODULE_STUFF,
     NULL,
@@ -795,7 +796,7 @@ static void register_hooks(apr_pool_t *pool)
 
 /* Define our module as an entity and assign a function for registering hooks  */
 
-module AP_MODULE_DECLARE_DATA   example_module =
+AP_DECLARE_MODULE(example) =
 {
     STANDARD20_MODULE_STUFF,
     NULL,            /* Per-directory configuration handler */
@@ -834,7 +835,7 @@ reference to the configuration directives we want to register with the server:
 
 <!-- BEGIN EXAMPLE CODE -->
 <highlight language="c">
-module AP_MODULE_DECLARE_DATA   example_module =
+AP_DECLARE_MODULE(example) =
 {
     STANDARD20_MODULE_STUFF,
     NULL,               /* Per-directory configuration handler */
@@ -1045,7 +1046,7 @@ static void register_hooks(apr_pool_t *pool)
  Our module name tag:
  ==============================================================================
  */
-module AP_MODULE_DECLARE_DATA   example_module =
+AP_DECLARE_MODULE(example) =
 {
     STANDARD20_MODULE_STUFF,
     NULL,               /* Per-directory configuration handler */
@@ -1210,7 +1211,7 @@ per-directory creator and merger function reference in our tag:</p>
 
 <!-- BEGIN EXAMPLE CODE -->
 <highlight language="c">
-module AP_MODULE_DECLARE_DATA   example_module =
+AP_DECLARE_MODULE(example) =
 {
     STANDARD20_MODULE_STUFF,
     create_dir_conf, /* Per-directory configuration handler */
@@ -1408,7 +1409,7 @@ static const command_rec    directives[] =
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  */
 
-module AP_MODULE_DECLARE_DATA    example_module =
+AP_DECLARE_MODULE(example) =
 {
     STANDARD20_MODULE_STUFF,
     create_dir_conf,    /* Per-directory configuration handler */

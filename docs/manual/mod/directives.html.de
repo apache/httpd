@@ -72,6 +72,7 @@
 <li><a href="mod_mime.html#addtype">AddType</a></li>
 <li><a href="mod_alias.html#alias">Alias</a></li>
 <li><a href="mod_alias.html#aliasmatch">AliasMatch</a></li>
+<li><a href="mod_alias.html#aliaspreservepath">AliasPreservePath</a></li>
 <li><a href="mod_access_compat.html#allow">Allow</a></li>
 <li><a href="mod_proxy_connect.html#allowconnect">AllowCONNECT</a></li>
 <li><a href="core.html#allowencodedslashes">AllowEncodedSlashes</a></li>
@@ -90,6 +91,9 @@
 <li><a href="mod_auth_basic.html#authbasicfake">AuthBasicFake</a></li>
 <li><a href="mod_auth_basic.html#authbasicprovider">AuthBasicProvider</a></li>
 <li><a href="mod_auth_basic.html#authbasicusedigestalgorithm">AuthBasicUseDigestAlgorithm</a></li>
+<li><a href="mod_auth_bearer.html#authbearerauthoritative">AuthBearerAuthoritative</a></li>
+<li><a href="mod_auth_bearer.html#authbearerprovider">AuthBearerProvider</a></li>
+<li><a href="mod_auth_bearer.html#authbearerproxy">AuthBearerProxy</a></li>
 <li><a href="mod_authn_dbd.html#authdbduserpwquery">AuthDBDUserPWQuery</a></li>
 <li><a href="mod_authn_dbd.html#authdbduserrealmquery">AuthDBDUserRealmQuery</a></li>
 <li><a href="mod_authz_dbm.html#authdbmgroupfile">AuthDBMGroupFile</a></li>
@@ -148,6 +152,11 @@
 <li><a href="mod_authn_core.html#authnprovideralias">&lt;AuthnProviderAlias&gt;</a></li>
 <li><a href="mod_authnz_fcgi.html#authnzfcgicheckauthnprovider">AuthnzFcgiCheckAuthnProvider</a></li>
 <li><a href="mod_authnz_fcgi.html#authnzfcgidefineprovider">AuthnzFcgiDefineProvider</a></li>
+<li><a href="mod_autht_jwt.html#authtjwtclaim">AuthtJwtClaim</a></li>
+<li><a href="mod_autht_jwt.html#authtjwtdriver">AuthtJwtDriver</a></li>
+<li><a href="mod_autht_jwt.html#authtjwtsign">AuthtJwtSign</a></li>
+<li><a href="mod_autht_jwt.html#authtjwtverify">AuthtJwtVerify</a></li>
+<li><a href="mod_autht_core.html#authtprovideralias">&lt;AuthtProviderAlias&gt;</a></li>
 <li><a href="mod_authn_core.html#authtype">AuthType</a></li>
 <li><a href="mod_authn_file.html#authuserfile">AuthUserFile</a></li>
 <li><a href="mod_authz_dbd.html#authzdbdlogintoreferer">AuthzDBDLoginToReferer</a></li>
@@ -243,11 +252,15 @@
 <li><a href="mod_ssl_ct.html#ctstaticscts">CTStaticSCTs</a></li>
 <li><a href="mod_log_config.html#customlog">CustomLog</a></li>
 <li><a href="mod_dav.html#dav" id="D" name="D">Dav</a></li>
+<li><a href="mod_dav.html#davbasepath">DavBasePath</a></li>
 <li><a href="mod_dav.html#davdepthinfinity">DavDepthInfinity</a></li>
 <li><a href="mod_dav_lock.html#davgenericlockdb">DavGenericLockDB</a></li>
 <li><a href="mod_dav_fs.html#davlockdb">DavLockDB</a></li>
+<li><a href="mod_dav_fs.html#davlockdbtype">DavLockDBType</a></li>
 <li><a href="mod_dav_fs.html#davlockdiscovery">DavLockDiscovery</a></li>
 <li><a href="mod_dav.html#davmintimeout">DavMinTimeout</a></li>
+<li><a href="mod_dav.html#davmsext">DavMSext</a></li>
+<li><a href="mod_dav_fs.html#davquota">DavQuota</a></li>
 <li><a href="mod_dbd.html#dbdexptime">DBDExptime</a></li>
 <li><a href="mod_dbd.html#dbdinitsql">DBDInitSQL</a></li>
 <li><a href="mod_dbd.html#dbdkeep">DBDKeep</a></li>
@@ -325,7 +338,10 @@
 <li><a href="mod_unixd.html#group">Group</a></li>
 <li><a href="mod_http2.html#h2copyfiles" id="H" name="H">H2CopyFiles</a></li>
 <li><a href="mod_http2.html#h2direct">H2Direct</a></li>
+<li><a href="mod_http2.html#h2earlyhint">H2EarlyHint</a></li>
 <li><a href="mod_http2.html#h2earlyhints">H2EarlyHints</a></li>
+<li><a href="mod_http2.html#h2maxdataframelen">H2MaxDataFrameLen</a></li>
+<li><a href="mod_http2.html#h2maxheaderblocklen">H2MaxHeaderBlockLen</a></li>
 <li><a href="mod_http2.html#h2maxsessionstreams">H2MaxSessionStreams</a></li>
 <li><a href="mod_http2.html#h2maxworkeridleseconds">H2MaxWorkerIdleSeconds</a></li>
 <li><a href="mod_http2.html#h2maxworkers">H2MaxWorkers</a></li>
@@ -333,6 +349,7 @@
 <li><a href="mod_http2.html#h2moderntlsonly">H2ModernTLSOnly</a></li>
 <li><a href="mod_http2.html#h2outputbuffering">H2OutputBuffering</a></li>
 <li><a href="mod_http2.html#h2padding">H2Padding</a></li>
+<li><a href="mod_http2.html#h2proxyrequests">H2ProxyRequests</a></li>
 <li><a href="mod_http2.html#h2push">H2Push</a></li>
 <li><a href="mod_http2.html#h2pushdiarysize">H2PushDiarySize</a></li>
 <li><a href="mod_http2.html#h2pushpriority">H2PushPriority</a></li>
@@ -343,6 +360,7 @@
 <li><a href="mod_http2.html#h2tlscooldownsecs">H2TLSCoolDownSecs</a></li>
 <li><a href="mod_http2.html#h2tlswarmupsize">H2TLSWarmUpSize</a></li>
 <li><a href="mod_http2.html#h2upgrade">H2Upgrade</a></li>
+<li><a href="mod_http2.html#h2websockets">H2WebSockets</a></li>
 <li><a href="mod_http2.html#h2windowsize">H2WindowSize</a></li>
 <li><a href="mod_headers.html#header">Header</a></li>
 <li><a href="mod_autoindex.html#headername">HeaderName</a></li>
@@ -470,10 +488,13 @@
 <li><a href="mod_md.html#mdcertificateprotocol">MDCertificateProtocol</a></li>
 <li><a href="mod_md.html#mdcertificatestatus">MDCertificateStatus</a></li>
 <li><a href="mod_md.html#mdchallengedns01">MDChallengeDns01</a></li>
+<li><a href="mod_md.html#mdchallengedns01version">MDChallengeDns01Version</a></li>
+<li><a href="mod_md.html#mdcheckinterval">MDCheckInterval</a></li>
 <li><a href="mod_md.html#mdcontactemail">MDContactEmail</a></li>
 <li><a href="mod_md.html#mddrivemode">MDDriveMode</a></li>
 <li><a href="mod_md.html#mdexternalaccountbinding">MDExternalAccountBinding</a></li>
 <li><a href="mod_md.html#mdhttpproxy">MDHttpProxy</a></li>
+<li><a href="mod_md.html#mdmatchnames">MDMatchNames</a></li>
 <li><a href="mod_md.html#mdmember">MDMember</a></li>
 <li><a href="mod_md.html#mdmembers">MDMembers</a></li>
 <li><a href="mod_md.html#mdmessagecmd">MDMessageCmd</a></li>
@@ -483,6 +504,8 @@
 <li><a href="mod_md.html#mdomainset">&lt;MDomainSet&gt;</a></li>
 <li><a href="mod_md.html#mdportmap">MDPortMap</a></li>
 <li><a href="mod_md.html#mdprivatekeys">MDPrivateKeys</a></li>
+<li><a href="mod_md.html#mdprofile">MDProfile</a></li>
+<li><a href="mod_md.html#mdprofilemandatory">MDProfileMandatory</a></li>
 <li><a href="mod_md.html#mdrenewmode">MDRenewMode</a></li>
 <li><a href="mod_md.html#mdrenewwindow">MDRenewWindow</a></li>
 <li><a href="mod_md.html#mdrequirehttps">MDRequireHttps</a></li>
@@ -715,12 +738,12 @@
 <li><a href="mod_ssl.html#sslcertificatefile">SSLCertificateFile</a></li>
 <li><a href="mod_ssl.html#sslcertificatekeyfile">SSLCertificateKeyFile</a></li>
 <li><a href="mod_ssl.html#sslciphersuite">SSLCipherSuite</a></li>
+<li><a href="mod_ssl.html#sslclienthellovars">SSLClientHelloVars</a></li>
 <li><a href="mod_ssl.html#sslcompression">SSLCompression</a></li>
 <li><a href="mod_ssl.html#sslcryptodevice">SSLCryptoDevice</a></li>
 <li><a href="mod_ssl.html#sslengine">SSLEngine</a></li>
 <li><a href="mod_ssl.html#sslfips">SSLFIPS</a></li>
 <li><a href="mod_ssl.html#sslhonorcipherorder">SSLHonorCipherOrder</a></li>
-<li><a href="mod_ssl.html#sslinsecurerenegotiation">SSLInsecureRenegotiation</a></li>
 <li><a href="mod_ssl.html#sslocspdefaultresponder">SSLOCSPDefaultResponder</a></li>
 <li><a href="mod_ssl.html#sslocspenable">SSLOCSPEnable</a></li>
 <li><a href="mod_ssl.html#sslocspnoverify">SSLOCSPNoverify</a></li>
@@ -788,25 +811,11 @@
 <li><a href="mpm_common.html#threadsperchild">ThreadsPerChild</a></li>
 <li><a href="mpm_common.html#threadstacksize">ThreadStackSize</a></li>
 <li><a href="core.html#timeout">TimeOut</a></li>
-<li><a href="mod_tls.html#tlscertificate">TLSCertificate</a></li>
-<li><a href="mod_tls.html#tlsciphersprefer">TLSCiphersPrefer</a></li>
-<li><a href="mod_tls.html#tlscipherssuppress">TLSCiphersSuppress</a></li>
-<li><a href="mod_tls.html#tlsengine">TLSEngine</a></li>
-<li><a href="mod_tls.html#tlshonorclientorder">TLSHonorClientOrder</a></li>
-<li><a href="mod_tls.html#tlsoptions">TLSOptions</a></li>
-<li><a href="mod_tls.html#tlsprotocol">TLSProtocol</a></li>
-<li><a href="mod_tls.html#tlsproxyca">TLSProxyCA</a></li>
-<li><a href="mod_tls.html#tlsproxyciphersprefer">TLSProxyCiphersPrefer</a></li>
-<li><a href="mod_tls.html#tlsproxycipherssuppress">TLSProxyCiphersSuppress</a></li>
-<li><a href="mod_tls.html#tlsproxyengine">TLSProxyEngine</a></li>
-<li><a href="mod_tls.html#tlsproxymachinecertificate">TLSProxyMachineCertificate</a></li>
-<li><a href="mod_tls.html#tlsproxyprotocol">TLSProxyProtocol</a></li>
-<li><a href="mod_tls.html#tlssessioncache">TLSSessionCache</a></li>
-<li><a href="mod_tls.html#tlsstrictsni">TLSStrictSNI</a></li>
 <li><a href="core.html#traceenable">TraceEnable</a></li>
 <li><a href="mod_log_config.html#transferlog">TransferLog</a></li>
 <li><a href="mod_mime.html#typesconfig">TypesConfig</a></li>
-<li><a href="core.html#undefine" id="U" name="U">UnDefine</a></li>
+<li><a href="core.html#unclist" id="U" name="U">UNCList</a></li>
+<li><a href="core.html#undefine">UnDefine</a></li>
 <li><a href="mod_macro.html#undefmacro">UndefMacro</a></li>
 <li><a href="mod_env.html#unsetenv">UnsetEnv</a></li>
 <li><a href="mod_macro.html#use">Use</a></li>
@@ -859,7 +868,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/directives.htm
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2023 The Apache Software Foundation.<br />Lizenziert unter der <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2025 The Apache Software Foundation.<br />Lizenziert unter der <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Module</a> | <a href="../mod/quickreference.html">Direktiven</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossar</a> | <a href="../sitemap.html">Seitenindex</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

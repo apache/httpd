@@ -38,58 +38,6 @@ static void ssl_configure_env(request_rec *r, SSLConnRec *sslconn);
 static int ssl_find_vhost(void *servername, conn_rec *c, server_rec *s);
 #endif
 
-#define SWITCH_STATUS_LINE "HTTP/1.1 101 Switching Protocols"
-#define UPGRADE_HEADER "Upgrade: TLS/1.0, HTTP/1.1"
-#define CONNECTION_HEADER "Connection: Upgrade"
-
-/* Perform an upgrade-to-TLS for the given request, per RFC 2817. */
-static apr_status_t upgrade_connection(request_rec *r)
-{
-    struct conn_rec *conn = r->connection;
-    apr_bucket_brigade *bb;
-    SSLConnRec *sslconn;
-    apr_status_t rv;
-    SSL *ssl;
-
-    ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(02028)
-                  "upgrading connection to TLS");
-
-    bb = apr_brigade_create(r->pool, conn->bucket_alloc);
-
-    rv = ap_fputs(conn->output_filters, bb, SWITCH_STATUS_LINE CRLF
-                  UPGRADE_HEADER CRLF CONNECTION_HEADER CRLF CRLF);
-    if (rv == APR_SUCCESS) {
-        APR_BRIGADE_INSERT_TAIL(bb,
-                                apr_bucket_flush_create(conn->bucket_alloc));
-        rv = ap_pass_brigade(conn->output_filters, bb);
-    }
-
-    if (rv) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(02029)
-                      "failed to send 101 interim response for connection "
-                      "upgrade");
-        return rv;
-    }
-
-    ssl_init_ssl_connection(conn, r);
-
-    sslconn = myConnConfig(conn);
-    ssl = sslconn->ssl;
-
-    /* Perform initial SSL handshake. */
-    SSL_set_accept_state(ssl);
-
-    if ((SSL_do_handshake(ssl) != 1) || !SSL_is_init_finished(ssl)) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(02030)
-                      "TLS upgrade handshake failed");
-        ssl_log_ssl_error(SSLLOG_MARK, APLOG_ERR, r->server);
-
-        return APR_ECONNABORTED;
-    }
-
-    return APR_SUCCESS;
-}
-
 /* Perform a speculative (and non-blocking) read from the connection
  * filters for the given request, to determine whether there is any
  * pending data to read.  Return non-zero if there is, else zero. */
@@ -269,39 +217,16 @@ int ssl_hook_ReadReq(request_rec *r)
 {
     SSLSrvConfigRec *sc = mySrvConfig(r->server);
     SSLConnRec *sslconn;
-    const char *upgrade;
 #ifdef HAVE_TLSEXT
     const char *servername;
 #endif
     SSL *ssl;
-
-    /* Perform TLS upgrade here if "SSLEngine optional" is configured,
-     * SSL is not already set up for this connection, and the client
-     * has sent a suitable Upgrade header. */
-    if (sc->enabled == SSL_ENABLED_OPTIONAL && !myConnConfig(r->connection)
-        && (upgrade = apr_table_get(r->headers_in, "Upgrade")) != NULL
-        && ap_find_token(r->pool, upgrade, "TLS/1.0")) {
-        if (upgrade_connection(r)) {
-            return AP_FILTER_ERROR;
-        }
-    }
 
     /* If we are on a slave connection, we do not expect to have an SSLConnRec,
      * but our master connection might. */
     sslconn = myConnConfig(r->connection);
     if (!(sslconn && sslconn->ssl) && r->connection->master) {
         sslconn = myConnConfig(r->connection->master);
-    }
-    
-    /* If "SSLEngine optional" is configured, this is not an SSL
-     * connection, and this isn't a subrequest, send an Upgrade
-     * response header.  Note this must happen before map_to_storage
-     * and OPTIONS * request processing is completed.
-     */
-    if (sc->enabled == SSL_ENABLED_OPTIONAL && !(sslconn && sslconn->ssl)
-        && !r->main) {
-        apr_table_setn(r->headers_out, "Upgrade", "TLS/1.0, HTTP/1.1");
-        apr_table_mergen(r->headers_out, "Connection", "upgrade");
     }
 
     if (!sslconn) {
@@ -370,19 +295,6 @@ int ssl_hook_ReadReq(request_rec *r)
                             " provided in HTTP request", servername);
                 return HTTP_BAD_REQUEST;
             }
-            if (r->server != handshakeserver 
-                && !ssl_server_compatible(sslconn->server, r->server)) {
-                /* 
-                 * The request does not select the virtual host that was
-                 * selected by the SNI and its SSL parameters are different
-                 */
-                
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(02032)
-                             "Hostname %s provided via SNI and hostname %s provided"
-                             " via HTTP have no compatible SSL setup",
-                             servername, r->hostname);
-                return HTTP_MISDIRECTED_REQUEST;
-            }
         }
         else if (((sc->strict_sni_vhost_check == SSL_ENABLED_TRUE)
                   || hssc->strict_sni_vhost_check == SSL_ENABLED_TRUE)
@@ -402,6 +314,21 @@ int ssl_hook_ReadReq(request_rec *r)
                            "hostname using Server Name Indication (SNI), "
                            "which is required to access this server.<br />\n");
             return HTTP_FORBIDDEN;
+        }
+        if (r->server != handshakeserver
+            && !ssl_server_compatible(sslconn->server, r->server)) {
+            /*
+             * The request does not select the virtual host that was
+             * selected for handshaking and its SSL parameters are different
+             */
+
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(02032)
+                         "Hostname %s %s and hostname %s provided"
+                         " via HTTP have no compatible SSL setup",
+                         servername ? servername : handshakeserver->server_hostname,
+                         servername ? "provided via SNI" : "(default host as no SNI was provided)",
+                         r->hostname);
+            return HTTP_MISDIRECTED_REQUEST;
         }
     }
 #endif
@@ -1248,16 +1175,6 @@ int ssl_hook_Access(request_rec *r)
      * Support for SSLRequireSSL directive
      */
     if (dc->bSSLRequired && !ssl) {
-        if ((sc->enabled == SSL_ENABLED_OPTIONAL) && !r->connection->master) {
-            /* This vhost was configured for optional SSL, just tell the
-             * client that we need to upgrade.
-             */
-            apr_table_setn(r->err_headers_out, "Upgrade", "TLS/1.0, HTTP/1.1");
-            apr_table_setn(r->err_headers_out, "Connection", "Upgrade");
-
-            return HTTP_UPGRADE_REQUIRED;
-        }
-
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(02219)
                       "access to %s failed, reason: %s",
                       r->filename, "SSL connection required");
@@ -1546,6 +1463,15 @@ static const char *const ssl_hook_Fixup_vars[] = {
     "SSL_SRP_USER",
     "SSL_SRP_USERINFO",
 #endif
+    "SSL_HANDSHAKE_RTT",
+    "SSL_CLIENTHELLO_VERSION",
+    "SSL_CLIENTHELLO_CIPHERS",
+    "SSL_CLIENTHELLO_EXTENSIONS",
+    "SSL_CLIENTHELLO_GROUPS",
+    "SSL_CLIENTHELLO_EC_FORMATS",
+    "SSL_CLIENTHELLO_SIG_ALGOS",
+    "SSL_CLIENTHELLO_ALPN",
+    "SSL_CLIENTHELLO_VERSIONS",
     NULL
 };
 
@@ -2465,6 +2391,53 @@ int ssl_callback_ServerNameIndication(SSL *ssl, int *al, modssl_ctx_t *mctx)
 
 #if OPENSSL_VERSION_NUMBER >= 0x10101000L && !defined(LIBRESSL_VERSION_NUMBER)
 /*
+ * Copy data from clienthello for env vars use later
+ */
+static void copy_clienthello_vars(conn_rec *c, SSL *ssl)
+{
+    SSLConnRec *sslcon;
+    modssl_clienthello_vars *clienthello_vars;
+    const unsigned char *data;
+    int *ids;
+
+    sslcon = myConnConfig(c);
+
+    sslcon->clienthello_vars = apr_pcalloc(c->pool, sizeof(*clienthello_vars));
+    clienthello_vars = sslcon->clienthello_vars;
+
+    clienthello_vars->version = SSL_client_hello_get0_legacy_version(ssl);
+    clienthello_vars->ciphers_len = SSL_client_hello_get0_ciphers(ssl, &data);
+    if (clienthello_vars->ciphers_len > 0) {
+        clienthello_vars->ciphers_data = apr_pmemdup(c->pool, data, clienthello_vars->ciphers_len);
+    }
+    if (SSL_client_hello_get1_extensions_present(ssl, &ids, &clienthello_vars->extids_len) == 1) {
+        if (clienthello_vars->extids_len > 0)
+            clienthello_vars->extids_data = apr_pmemdup(c->pool, ids, clienthello_vars->extids_len * sizeof(int));
+        OPENSSL_free(ids);
+    }
+    if (SSL_client_hello_get0_ext(ssl, TLSEXT_TYPE_supported_groups, &data, &clienthello_vars->ecgroups_len) == 1) {
+        if (clienthello_vars->ecgroups_len > 0)
+            clienthello_vars->ecgroups_data = apr_pmemdup(c->pool, data, clienthello_vars->ecgroups_len);
+    }
+    if (SSL_client_hello_get0_ext(ssl, TLSEXT_TYPE_ec_point_formats, &data, &clienthello_vars->ecformats_len) == 1) {
+        if (clienthello_vars->ecformats_len > 0)
+            clienthello_vars->ecformats_data = apr_pmemdup(c->pool, data, clienthello_vars->ecformats_len);
+    }
+    if (SSL_client_hello_get0_ext(ssl, TLSEXT_TYPE_signature_algorithms, &data, &clienthello_vars->sigalgos_len) == 1) {
+        if (clienthello_vars->sigalgos_len > 0)
+            clienthello_vars->sigalgos_data = apr_pmemdup(c->pool, data, clienthello_vars->sigalgos_len);
+    }
+    if (SSL_client_hello_get0_ext(ssl, TLSEXT_TYPE_application_layer_protocol_negotiation, &data, &clienthello_vars->alpn_len) == 1) {
+        if (clienthello_vars->alpn_len > 0)
+            clienthello_vars->alpn_data = apr_pmemdup(c->pool, data, clienthello_vars->alpn_len);
+    }
+    if (SSL_client_hello_get0_ext(ssl, TLSEXT_TYPE_supported_versions, &data, &clienthello_vars->versions_len) == 1) {
+        if (clienthello_vars->versions_len > 0)
+            clienthello_vars->versions_data = apr_pmemdup(c->pool, data, clienthello_vars->versions_len);
+    }
+}
+
+/*
  * This callback function is called when the ClientHello is received.
  */
 int ssl_callback_ClientHello(SSL *ssl, int *al, void *arg)
@@ -2519,6 +2492,10 @@ int ssl_callback_ClientHello(SSL *ssl, int *al, void *arg)
 
 give_up:
     init_vhost(c, ssl, servername);
+    
+    if (mySrvConfigFromConn(c)->clienthello_vars == TRUE)
+        copy_clienthello_vars(c, ssl);
+
     return SSL_CLIENT_HELLO_SUCCESS;
 }
 #endif /* OPENSSL_VERSION_NUMBER < 0x10101000L */
@@ -2552,14 +2529,13 @@ static int ssl_find_vhost(void *servername, conn_rec *c, server_rec *s)
 #if OPENSSL_VERSION_NUMBER >= 0x1010007fL \
         && (!defined(LIBRESSL_VERSION_NUMBER) \
             || LIBRESSL_VERSION_NUMBER >= 0x20800000L)
-        /*
-         * Don't switch the protocol if none is configured for this vhost,
-         * the default in this case is still the base server's SSLProtocol.
-         */
-        if (myConnCtxConfig(c, sc)->protocol_set) {
-            SSL_set_min_proto_version(ssl, SSL_CTX_get_min_proto_version(ctx));
-            SSL_set_max_proto_version(ssl, SSL_CTX_get_max_proto_version(ctx));
-        }
+         /* Switch to the vhost's protocols. Note that 2.4 used to do this
+          * only if SSLProtocol was configured/inherited for this vhost, using
+          * the base server's SSLProtocol otherwise. From 2.5 usual merging
+          * applies.
+          */
+        SSL_set_min_proto_version(ssl, SSL_CTX_get_min_proto_version(ctx));
+        SSL_set_max_proto_version(ssl, SSL_CTX_get_max_proto_version(ctx));
 #endif
         if ((SSL_get_verify_mode(ssl) == SSL_VERIFY_NONE) ||
             (SSL_num_renegotiations(ssl) == 0)) {
@@ -2607,9 +2583,7 @@ static int ssl_find_vhost(void *servername, conn_rec *c, server_rec *s)
          * (and the first vhost doesn't use APLOG_TRACE4), then
          * we need to set that callback here.
          */
-        if (APLOGtrace4(s)) {
-            modssl_set_io_callbacks(ssl);
-        }
+        modssl_set_io_callbacks(ssl, c, s);
 
         return 1;
     }

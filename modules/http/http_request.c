@@ -127,6 +127,7 @@ static void ap_die_r(int type, request_rec *r, int recursive_error)
              */
             update_r_in_filters(r_1st_err->proto_output_filters, r, r_1st_err);
             update_r_in_filters(r_1st_err->input_filters, r, r_1st_err);
+            recursive_error = type;
         }
 
         custom_response = NULL; /* Do NOT retry the custom thing! */
@@ -705,7 +706,7 @@ AP_DECLARE(void) ap_internal_fast_redirect(request_rec *rr, request_rec *r)
     r->args = rr->args;
     r->finfo = rr->finfo;
     r->handler = rr->handler;
-    ap_set_content_type(r, rr->content_type);
+    ap_set_content_type_ex(r, rr->content_type, AP_REQUEST_IS_TRUSTED_CT(rr));
     r->content_encoding = rr->content_encoding;
     r->content_languages = rr->content_languages;
     r->per_dir_config = rr->per_dir_config;
@@ -805,7 +806,7 @@ AP_DECLARE(void) ap_internal_redirect_handler(const char *new_uri, request_rec *
     }
 
     if (r->handler)
-        ap_set_content_type(new, r->content_type);
+        ap_set_content_type_ex(new, r->content_type, AP_REQUEST_IS_TRUSTED_CT(r));
     access_status = ap_process_request_internal(new);
     if (access_status == OK) {
         access_status = ap_invoke_handler(new);

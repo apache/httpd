@@ -131,6 +131,7 @@ disponibles</td></tr>
 <li><img alt="" src="../images/down.gif" /> <a href="#stricthostcheck">StrictHostCheck</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#timeout">TimeOut</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#traceenable">TraceEnable</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#unclist">UNCList</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#undefine">UnDefine</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#usecanonicalname">UseCanonicalName</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#usecanonicalphysicalport">UseCanonicalPhysicalPort</a></li>
@@ -574,10 +575,8 @@ All pour les versions antérieures</code></td></tr>
       activée.
       </p></div>
 
-      <div class="example"><p><code>
-      AllowOverride Options=Indexes,MultiViews
-      </code></p></div>
-      
+      <pre class="prettyprint lang-config">AllowOverride Options=Indexes,MultiViews</pre>
+
       </dd>
     </dl>
 
@@ -917,7 +916,7 @@ DESACTIVÉS à partir de la version 2.3.0.</td></tr>
     variable définie par le premier. Cette variable peut être référencée
     dans le fichier de configuration via la syntaxe <code>${VAR}</code>.
     La portée de la variable est toujours globale, et n'est jamais
-    limitée à la section de configuration courante.</p>
+    limitée à la section de configuration actuelle.</p>
 
     <pre class="prettyprint lang-config">&lt;IfDefine TEST&gt;
   Define servername test.example.com
@@ -1344,19 +1343,22 @@ fichiers aux clients</td></tr>
 <tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Noyau httpd</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Par défaut à Off depuis la version 2.3.9.</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Par défaut à Off depuis la version 2.3.9 du serveur HTTP
+Apache.</td></tr>
 </table>
     <p>Cette directive définit si le programme <code class="program"><a href="../programs/httpd.html">httpd</a></code>
     peut utiliser le support sendfile du noyau pour transmettre le
     contenu des fichiers aux clients. Par défaut, lorsque le traitement
     d'une requête ne requiert pas l'accès aux données contenues dans un
-    fichier -- par exemple, pour la transmission d'un fichier statique
-    -- Apache httpd utilise sendfile pour transmettre le contenu du fichier
+    fichier —&nbsp;par exemple, pour la transmission d'un fichier statique
+    —&nbsp;Apache httpd utilise sendfile pour transmettre le contenu du fichier
     sans même lire ce dernier, si le système d'exploitation le
-    permet.</p>
+    permet. Si la connexion utilise SSL/TLS ou si un <a href="../filter.html">filtre en sortie</a> est configuré pour inspecter ou
+    modifier la sortie, le mécanisme sendfile ne sera pas utilisé quelle que
+    soit la valeur de cette option.</p>
 
     <p>Ce mécanisme sendfile évite la séparation des opérations de
-    lecture et d'envoi, ainsi que les réservations de tampons. sur
+    lecture et d'envoi, ainsi que les réservations de tampons. Sur
     certains systèmes cependant, ou sous certains systèmes de fichiers,
     il est préférable de désactiver cette fonctionnalité afin d'éviter
     certains problèmes opérationnels :</p>
@@ -1760,22 +1762,30 @@ ErrorLogFormat "[%t] [%l] [pid %P] %F: %E: [client %a] %M"</pre>
 <tr class="odd"><td><code>%{<em>name</em>}n</code></td>
         <td>Note de requête <em>name</em></td></tr>
 <tr><td><code>%P</code></td>
-        <td>Identifiant du processus courant</td></tr>
+        <td>Identifiant du processus actuel</td></tr>
 <tr class="odd"><td><code>%T</code></td>
-        <td>Identifiant du thread courant</td></tr>
+        <td>Identifiant du thread actuel</td></tr>
 <tr><td><code>%{g}T</code></td>
-        <td>Identifiant unique de thread système du thread courant
+        <td>Identifiant unique de thread système du thread actuel
 	(l'identifiant affiché par la commande <code>top</code> par
 	exemple ; seulement sous Linux pour l'instant)</td></tr>
 <tr class="odd"><td><code>%t</code></td>
-        <td>L'heure courante</td></tr>
+        <td>L'heure actuelle</td></tr>
 <tr><td><code>%{u}t</code></td>
-        <td>L'heure courante avec les microsecondes</td></tr>
+        <td>L'heure actuelle avec les microsecondes</td></tr>
 <tr class="odd"><td><code>%{cu}t</code></td>
-        <td>L'heure courante au format compact ISO 8601, avec les
+        <td>L'heure actuelle au format ISO 8601 étendu (compact), avec les
 	microsecondes</td></tr>
+<tr><td><code>%{cuz}t</code></td>
+        <td>L'heure actuelle au format ISO 8601 étendu (compact), avec les
+	microsecondes et la zone horaire au format standard ISO 8601:2000.
+	Disponible depuis la version 2.4.58 seulement</td></tr>
+<tr class="odd"><td><code>%{%-format}t</code></td>
+        <td>L'heure actuelle formatée selon la fonction
+	<code>strftime(3)</code>. Disponible depuis la version 2.4.58
+	seulement</td></tr>
 <tr><td><code>%v</code></td>
-        <td>Le nom de serveur canonique <code class="directive"><a href="#servername">ServerName</a></code> du serveur courant.</td></tr>
+        <td>Le nom de serveur canonique <code class="directive"><a href="#servername">ServerName</a></code> du serveur actuel.</td></tr>
 <tr class="odd"><td><code>%V</code></td>
         <td>Le nom de serveur du serveur qui sert la requête en accord
 	avec la définition de la directive <code class="directive"><a href="#usecanonicalname">UseCanonicalName</a></code>.</td></tr>
@@ -2160,7 +2170,7 @@ HTTP Content-Type pour les fichiers correspondants</td></tr>
    
     <p>Lorsque des directives explicites comme <code class="directive"><a href="#sethandler">SetHandler</a></code> ou
     <code class="directive">module="mod_mime"&gt;AddHandler</code> ne s'appliquent
-    pas à la requête courante, le nom du gestionnaire interne
+    pas à la requête actuelle, le nom du gestionnaire interne
     normalement défini par ces directives correspondra alors au type de
     contenu spécifié par cette directive.
     </p>
@@ -3239,7 +3249,7 @@ XML</td></tr>
     <p>Exemple :</p>
 
     <pre class="prettyprint lang-config"># Limitation à 1 Mo
-LimitXMLRequestBody 1073741824</pre>
+LimitXMLRequestBody 1048576</pre>
 
 
 
@@ -5458,6 +5468,45 @@ dernière.
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="unclist" id="unclist">Directive</a> <a name="UNCList" id="UNCList">UNCList</a> <a title="Lien permanent" href="#unclist" class="permalink">&para;</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit quels sont les noms d’hôte UNC auxquels le serveur peut accéder
+</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>UNCList <var>hostname</var> [<var>hostname</var>...]</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>unset</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Noyau httpd</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Windows seulement. Disponible à partir de la version 2.4.60 du
+serveur HTTP Apache.</td></tr>
+</table>
+    <p>Au cours de leur traitement, les requêtes pour accéder à un chemin du
+    système de fichiers qui aboutissent à un chemin UNC échoueront si le nom
+    d’hôte dans le chemin UNC n’a pas été spécifié par cette directive. Le but
+    est de limiter l’accès aux chemins dérivés d’entrées non fiables.</p>
+
+    <pre class="prettyprint lang-config">UNCList example.com other.example.com</pre>
+
+
+    <div class="warning"><h3>Sécurité</h3>
+        <p>Les valeurs spécifiées par cette directive ne sont vérifiées que par
+	certaines composantes du serveur, avant d’accéder à des chemins du
+	système de fichiers qui peuvent dériver par inadvertance d’entrées non
+	fiables. </p>
+        <p> Les systèmes Windows doivent être isolés au niveau de la couche
+	réseau pour éviter les appels SMB/NTLM sortants vers des destinations
+	inattendues, à titre de mesure plus complète et préventive.</p>    
+    </div>
+
+    <div class="warning"><h3>Ordre des directives</h3>
+    <p>Cette directive doit être placée avant les chemins UNC utilisés dans le
+    fichier httpd.conf. Plusieurs occurences de la directive redéfinissent la
+    liste.</p>
+    </div>
+
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="undefine" id="undefine">Directive</a> <a name="UnDefine" id="UnDefine">UnDefine</a> <a title="Lien permanent" href="#undefine" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Invalide la définition d'une variable</td></tr>
@@ -5594,7 +5643,7 @@ détermine son propre port</td></tr>
       <li>Port physique (seulement avec
       <code class="directive">UseCanonicalPhysicalPort</code> ON)</li>
       <li>Port indiqué dans <code class="directive"><a href="#servername">Servername</a></code></li>
-      <li>Port par défaut</li>
+      <li>Port par défaut pour le contexte/protocole (comme 80 ou 443)</li>
      </ol>
      </dd>
      <dt><code>UseCanonicalName On</code></dt>
@@ -5603,7 +5652,7 @@ détermine son propre port</td></tr>
       <li>Port spécifié par <code class="directive"><a href="#servername">Servername</a></code></li>
       <li>Port physique (seulement avec
       <code class="directive">UseCanonicalPhysicalPort</code> ON)</li>
-      <li>Port par défaut</li>
+      <li>Port par défaut pour le contexte/protocole (comme 80 ou 443)</li>
      </ol>
      </dd>
     </dl>
@@ -5807,7 +5856,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/core.html';
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2023 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2025 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

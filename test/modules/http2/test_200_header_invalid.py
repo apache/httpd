@@ -1,3 +1,4 @@
+import re
 import pytest
 
 from .env import H2Conf, H2TestEnv
@@ -132,7 +133,7 @@ class TestInvalidHeaders:
         assert 431 == r.response["status"]
 
     # test header field count, LimitRequestFields (default 100)
-    # see #201: several headers with same name are mered and count only once
+    # see #201: several headers with same name are merged and counted
     def test_h2_200_12(self, env):
         url = env.mkurl("https", "cgi", "/")
         opt = []
@@ -142,7 +143,7 @@ class TestInvalidHeaders:
         r = env.curl_get(url, options=opt)
         assert r.response["status"] == 200
         r = env.curl_get(url, options=(opt + ["-H", "y: 2"]))
-        assert r.response["status"] == 200
+        assert r.response["status"] == 431
 
     # test header field count, LimitRequestFields (default 100)
     # different header names count each
@@ -227,3 +228,59 @@ class TestInvalidHeaders:
         r = env.nghttp().get(url, options=opt)
         assert r.exit_code == 0, r
         assert r.response is None
+
+    # test few failed headers, should
+    def test_h2_200_17(self, env):
+        url = env.mkurl("https", "cgi", "/")
+
+    # test few failed headers, should give response
+    def test_h2_200_17(self, env):
+        conf = H2Conf(env)
+        conf.add("""
+            LimitRequestFieldSize 20
+            LogLevel http2:debug
+            """)
+        conf.add_vhost_cgi()
+        conf.install()
+        assert env.apache_restart() == 0
+        re_emitted = re.compile(r'.* (AH03401: .* shutdown,|'
+                                r'AH03066: .* FRAME\[GOAWAY.*) remote.emitted=1')
+        url = env.mkurl("https", "cgi", "/")
+        opt = []
+        for i in range(10):
+            opt += ["-H", f"x{i}: 012345678901234567890123456789"]
+        r = env.curl_get(url, options=opt)
+        assert r.response
+        assert r.response["status"] == 431
+        assert env.httpd_error_log.scan_recent(re_emitted)
+
+    # test too many failed headers, should give RST
+    def test_h2_200_18(self, env):
+        conf = H2Conf(env)
+        conf.add("""
+            LimitRequestFieldSize 20
+            LogLevel http2:debug
+            """)
+        conf.add_vhost_cgi()
+        conf.install()
+        assert env.apache_restart() == 0
+        re_emitted = re.compile(r'.* (AH03401: .* shutdown,|'
+                                r'AH03066: .* FRAME\[GOAWAY.*) remote.emitted=1')
+        url = env.mkurl("https", "cgi", "/")
+        opt = []
+        for i in range(100):
+            opt += ["-H", f"x{i}: 012345678901234567890123456789"]
+        r = env.curl_get(url, options=opt)
+        assert r.response is None
+        assert env.httpd_error_log.scan_recent(re_emitted)
+
+    # test header 10 invalid headers, should trigger stream RST
+    def test_h2_200_19(self, env):
+        url = env.mkurl("https", "cgi", "/")
+        opt = []
+        invalid = '\x7f'
+        for i in range(10):
+            opt += ["-H", f"x{i}: {invalid}"]
+        r = env.curl_get(url, options=opt)
+        assert r.response is None
+

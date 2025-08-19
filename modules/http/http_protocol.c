@@ -927,7 +927,13 @@ AP_DECLARE(void) ap_set_content_type(request_rec *r, const char *ct)
     }
     else if (!r->content_type || strcmp(r->content_type, ct)) {
         r->content_type = ct;
+        AP_REQUEST_SET_BNOTE(r, AP_REQUEST_TRUSTED_CT, 0);
     }
+}
+AP_DECLARE(void) ap_set_content_type_ex(request_rec *r, const char *ct, int trusted)
+{
+    ap_set_content_type(r, ct);
+    AP_REQUEST_SET_BNOTE(r, AP_REQUEST_TRUSTED_CT, trusted ? AP_REQUEST_TRUSTED_CT : 0);
 }
 
 AP_DECLARE(void) ap_set_accept_ranges(request_rec *r)
@@ -963,6 +969,9 @@ static const char *get_canned_error_string(int status,
 {
     apr_pool_t *p = r->pool;
     const char *error_notes, *h1, *s1;
+    const char *method = r->method;
+    if (r->subprocess_env && apr_table_get(r->subprocess_env, "REQUEST_METHOD"))
+        method =  apr_table_get(r->subprocess_env, "REQUEST_METHOD");
 
     switch (status) {
     case HTTP_MOVED_PERMANENTLY:
@@ -1007,7 +1016,7 @@ static const char *get_canned_error_string(int status,
     case HTTP_METHOD_NOT_ALLOWED:
         return(apr_pstrcat(p,
                            "<p>The requested method ",
-                           ap_escape_html(r->pool, r->method),
+                           ap_escape_html(r->pool, method),
                            " is not allowed for this URL.</p>\n",
                            NULL));
     case HTTP_NOT_ACCEPTABLE:
@@ -1020,7 +1029,7 @@ static const char *get_canned_error_string(int status,
     case HTTP_LENGTH_REQUIRED:
         s1 = apr_pstrcat(p,
                          "<p>A request of the requested method ",
-                         ap_escape_html(r->pool, r->method),
+                         ap_escape_html(r->pool, method),
                          " requires a valid Content-length.<br />\n",
                          NULL);
         return(add_optional_notes(r, s1, "error-notes", "</p>\n"));
@@ -1030,7 +1039,7 @@ static const char *get_canned_error_string(int status,
     case HTTP_NOT_IMPLEMENTED:
         s1 = apr_pstrcat(p,
                          "<p>",
-                         ap_escape_html(r->pool, r->method),
+                         ap_escape_html(r->pool, method),
                          " not supported for current URL.<br />\n",
                          NULL);
         return(add_optional_notes(r, s1, "error-notes", "</p>\n"));
@@ -1052,7 +1061,7 @@ static const char *get_canned_error_string(int status,
     case HTTP_REQUEST_ENTITY_TOO_LARGE:
         return(apr_pstrcat(p,
                            "The requested resource does not allow request data with ",
-                           ap_escape_html(r->pool, r->method),
+                           ap_escape_html(r->pool, method),
                            " requests, or the amount of data provided in\n"
                            "the request exceeds the capacity limit.\n",
                            NULL));
@@ -1270,10 +1279,10 @@ AP_DECLARE(void) ap_send_error_response(request_rec *r, int recursive_error)
             request_conf->suppress_charset = 1; /* avoid adding default
                                                  * charset later
                                                  */
-            ap_set_content_type(r, "text/html");
+            ap_set_content_type_ex(r, "text/html", 1);
         }
         else {
-            ap_set_content_type(r, "text/html; charset=iso-8859-1");
+            ap_set_content_type_ex(r, "text/html; charset=iso-8859-1", 1);
         }
 
         if ((status == HTTP_METHOD_NOT_ALLOWED)

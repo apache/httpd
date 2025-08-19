@@ -108,9 +108,9 @@ typedef struct crypto_ctx
     apr_off_t remaining;
     apr_off_t written;
     apr_size_t osize;
-    int seen_eos:1;
-    int encrypt:1;
-    int clength:1;
+    unsigned int seen_eos   :1,
+                 encrypt    :1,
+                 clength    :1;
 } crypto_ctx;
 
 static const char *parse_pass_conf_binary(cmd_parms *cmd,
@@ -1013,7 +1013,7 @@ static int crypto_handler(request_rec *r)
             return HTTP_INTERNAL_SERVER_ERROR;
         }
 
-        ap_set_content_type(r, "application/octet-stream");
+        ap_set_content_type_ex(r, "application/octet-stream", 1);
         ap_set_content_length(r, rec->k.secret.secretLen);
         ap_rwrite(rec->k.secret.secret, rec->k.secret.secretLen, r);
 

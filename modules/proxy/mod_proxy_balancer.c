@@ -70,23 +70,21 @@ extern void proxy_update_members(proxy_balancer **balancer, request_rec *r,
 
 static int proxy_balancer_canon(request_rec *r, char *url)
 {
-    char *host, *path;
-    char *search = NULL;
-    const char *err;
+    char *host;
     apr_port_t port = 0;
+    const char *err;
 
     /* TODO: offset of BALANCER_PREFIX ?? */
     if (ap_cstr_casecmpn(url, "balancer:", 9) == 0) {
+        ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r, "canonicalising URL %s", url);
         url += 9;
     }
     else {
         return DECLINED;
     }
 
-    ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r, "canonicalising URL %s", url);
-
     /* do syntatic check.
-     * We break the URL into host, port, path, search
+     * We break the URL into host, port, path
      */
     err = ap_proxy_canon_netloc(r->pool, &url, NULL, NULL, &host, &port);
     if (err) {
@@ -95,50 +93,12 @@ static int proxy_balancer_canon(request_rec *r, char *url)
                       url, err);
         return HTTP_BAD_REQUEST;
     }
-    /*
-     * now parse path/search args, according to rfc1738:
-     * process the path. With proxy-noncanon set (by
-     * mod_proxy) we use the raw, unparsed uri
+
+    /* The canon_handler hooks are run per the BalancerMember in
+     * balancer_fixup(), keep the original/raw path for now.
      */
-    if (apr_table_get(r->notes, "proxy-nocanon")) {
-        path = url;   /* this is the raw path */
-    }
-    else if (apr_table_get(r->notes, "proxy-noencode")) {
-        path = url;   /* this is the encoded path already */
-        search = r->args;
-    }
-    else {
-        core_dir_config *d = ap_get_core_module_config(r->per_dir_config);
-        int flags = d->allow_encoded_slashes && !d->decode_encoded_slashes ? PROXY_CANONENC_NOENCODEDSLASHENCODING : 0;
-
-        path = ap_proxy_canonenc_ex(r->pool, url, strlen(url), enc_path, flags,
-                                    r->proxyreq);
-        if (!path) {
-            return HTTP_BAD_REQUEST;
-        }
-        search = r->args;
-    }
-    /*
-     * If we have a raw control character or a ' ' in nocanon path or
-     * r->args, correct encoding was missed.
-     */
-    if (path == url && *ap_scan_vchar_obstext(path)) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(10416)
-                      "To be forwarded path contains control "
-                      "characters or spaces");
-        return HTTP_FORBIDDEN;
-    }
-    if (search && *ap_scan_vchar_obstext(search)) {
-         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(10407)
-                       "To be forwarded query string contains control "
-                       "characters or spaces");
-         return HTTP_FORBIDDEN;
-    }
-
-    r->filename = apr_pstrcat(r->pool, "proxy:" BALANCER_PREFIX, host,
-            "/", path, (search) ? "?" : "", (search) ? search : "", NULL);
-
-    r->path_info = apr_pstrcat(r->pool, "/", path, NULL);
+    r->filename = apr_pstrcat(r->pool, "proxy:" BALANCER_PREFIX,
+                              host, "/", url, NULL);
 
     return OK;
 }
@@ -314,11 +274,23 @@ static proxy_worker *find_session_route(proxy_balancer *balancer,
                                         char **url)
 {
     proxy_worker *worker = NULL;
+    char *url_with_qs;
 
     if (!*balancer->s->sticky)
         return NULL;
+    /*
+     * The route might be contained in the query string and *url is not
+     * supposed to contain the query string. Hence add it temporarily if
+     * present.
+     */
+    if (r->args) {
+        url_with_qs = apr_pstrcat(r->pool, *url, "?", r->args, NULL);
+    }
+    else {
+        url_with_qs = *url;
+    }
     /* Try to find the sticky route inside url */
-    *route = get_path_param(r->pool, *url, balancer->s->sticky_path, balancer->s->scolonsep);
+    *route = get_path_param(r->pool, url_with_qs, balancer->s->sticky_path, balancer->s->scolonsep);
     if (*route) {
         ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01159)
                      "Found value %s for stickysession %s",
@@ -428,25 +400,25 @@ static proxy_worker *find_best_worker(proxy_balancer *balancer,
 
 }
 
-static int rewrite_url(request_rec *r, proxy_worker *worker,
-                        char **url)
+static int balancer_fixup(request_rec *r, proxy_worker *worker, char **url)
 {
-    const char *scheme = strstr(*url, "://");
-    const char *path = NULL;
+    const char *path;
+    int rc;
 
-    if (scheme)
-        path = ap_strchr_c(scheme + 3, '/');
-
-    /* we break the URL into host, port, uri */
-    if (!worker) {
-        return ap_proxyerror(r, HTTP_BAD_REQUEST, apr_pstrcat(r->pool,
-                             "missing worker. URI cannot be parsed: ", *url,
-                             NULL));
+    /* Build the proxy URL from the worker URL and the actual path */
+    path = strstr(*url, "://");
+    if (path) {
+        path = ap_strchr_c(path + 3, '/');
     }
+    r->filename = apr_pstrcat(r->pool, "proxy:", worker->s->name, path, NULL);
 
-    *url = apr_pstrcat(r->pool, worker->s->name, path, NULL);
-
-    return OK;
+    /* Canonicalize r->filename per the worker scheme's canon_handler hook */
+    rc = ap_proxy_canon_url(r);
+    if (rc == OK) {
+        AP_DEBUG_ASSERT(strncmp(r->filename, "proxy:", 6) == 0);
+        *url = apr_pstrdup(r->pool, r->filename + 6);
+    }
+    return rc;
 }
 
 static void force_recovery(proxy_balancer *balancer, server_rec *s)
@@ -503,7 +475,8 @@ static int proxy_balancer_pre_request(proxy_worker **worker,
      * for balancer, because this is failover attempt.
      */
     if (!*balancer &&
-        !(*balancer = ap_proxy_get_balancer(r->pool, conf, *url, 1)))
+        (ap_cstr_casecmpn(*url, BALANCER_PREFIX, sizeof(BALANCER_PREFIX) - 1)
+         || !(*balancer = ap_proxy_get_balancer(r->pool, conf, *url, 1))))
         return DECLINED;
 
     /* Step 2: Lock the LoadBalancer
@@ -623,8 +596,8 @@ static int proxy_balancer_pre_request(proxy_worker **worker,
         *worker = runtime;
     }
 
-    increment_busy_count(*worker);
-    apr_pool_cleanup_register(r->pool, *worker, decrement_busy_count,
+    ap_proxy_increment_busy_count(*worker);
+    apr_pool_cleanup_register(r->pool, *worker, ap_proxy_decrement_busy_count,
                               apr_pool_cleanup_null);
 
     /* Add balancer/worker info to env. */
@@ -637,10 +610,12 @@ static int proxy_balancer_pre_request(proxy_worker **worker,
 
     /* Rewrite the url from 'balancer://url'
      * to the 'worker_scheme://worker_hostname[:worker_port]/url'
-     * This replaces the balancers fictional name with the
-     * real hostname of the elected worker.
+     * This replaces the balancers fictional name with the real
+     * hostname of the elected worker and canonicalizes according
+     * to the worker scheme (calls canon_handler hooks).
      */
-    access_status = rewrite_url(r, *worker, url);
+    access_status = balancer_fixup(r, *worker, url);
+
     /* Add the session route to request notes if present */
     if (route) {
         apr_table_setn(r->notes, "session-sticky", sticky);
@@ -1445,7 +1420,7 @@ static void balancer_display_page(request_rec *r, proxy_server_conf *conf,
 
     if (usexml) {
         char date[APR_RFC822_DATE_LEN];
-        ap_set_content_type(r, "text/xml");
+        ap_set_content_type_ex(r, "text/xml", 1);
         ap_rputs("<?xml version='1.0' encoding='UTF-8' ?>\n", r);
         ap_rputs("<httpd:manager xmlns:httpd='http://httpd.apache.org'>\n", r);
         ap_rputs("  <httpd:balancers>\n", r);
@@ -1563,7 +1538,7 @@ static void balancer_display_page(request_rec *r, proxy_server_conf *conf,
                           "</httpd:redirect>\n", NULL);
                 ap_rprintf(r,
                            "          <httpd:busy>%" APR_SIZE_T_FMT "</httpd:busy>\n",
-                           getbusy_count(worker));
+                           ap_proxy_get_busy_count(worker));
                 ap_rprintf(r, "          <httpd:lbset>%d</httpd:lbset>\n",
                            worker->s->lbset);
                 /* End proxy_worker_stat */
@@ -1618,7 +1593,7 @@ static void balancer_display_page(request_rec *r, proxy_server_conf *conf,
         ap_rputs("</httpd:manager>", r);
     }
     else {
-        ap_set_content_type(r, "text/html; charset=ISO-8859-1");
+        ap_set_content_type_ex(r, "text/html; charset=ISO-8859-1", 1);
         ap_rputs(DOCTYPE_HTML_4_01
                  "<html><head><title>Balancer Manager</title>\n", r);
         ap_rputs("<style type='text/css'>\n"
@@ -1680,7 +1655,7 @@ static void balancer_display_page(request_rec *r, proxy_server_conf *conf,
                        balancer->max_workers - (int)storage->num_free_slots(balancer->wslot));
             if (*balancer->s->sticky) {
                 if (strcmp(balancer->s->sticky, balancer->s->sticky_path)) {
-                    ap_rvputs(r, "<td>", ap_escape_html(r->pool, balancer->s->sticky), " | ",
+                    ap_rvputs(r, "<td>", ap_escape_html(r->pool, balancer->s->sticky), "|",
                               ap_escape_html(r->pool, balancer->s->sticky_path), NULL);
                 }
                 else {
@@ -1736,7 +1711,7 @@ static void balancer_display_page(request_rec *r, proxy_server_conf *conf,
                 ap_rvputs(r, ap_proxy_parse_wstatus(r->pool, worker), NULL);
                 ap_rputs("</td>", r);
                 ap_rprintf(r, "<td>%" APR_SIZE_T_FMT "</td>", worker->s->elected);
-                ap_rprintf(r, "<td>%" APR_SIZE_T_FMT "</td>", getbusy_count(worker));
+                ap_rprintf(r, "<td>%" APR_SIZE_T_FMT "</td>", ap_proxy_get_busy_count(worker));
                 ap_rprintf(r, "<td>%d</td><td>", worker->s->lbstatus);
                 ap_rputs(apr_strfsize(worker->s->transferred, fbuf), r);
                 ap_rputs("</td><td>", r);
@@ -1865,7 +1840,7 @@ static void balancer_display_page(request_rec *r, proxy_server_conf *conf,
             ap_rputs("</tr>\n", r);
             ap_rputs("<tr><td>Sticky Session:</td><td><input name='b_ss' id='b_ss' size=64 type=text ", r);
             if (strcmp(bsel->s->sticky, bsel->s->sticky_path)) {
-                ap_rvputs(r, "value =\"", ap_escape_html(r->pool, bsel->s->sticky), " | ",
+                ap_rvputs(r, "value =\"", ap_escape_html(r->pool, bsel->s->sticky), "|",
                           ap_escape_html(r->pool, bsel->s->sticky_path), NULL);
             }
             else {

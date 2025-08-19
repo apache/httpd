@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1864913 -->
+<!-- English Revision: 1918407 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -125,6 +125,7 @@ répartiteur de charge via les en-têtes de la requête.
 <description>Définit le champ d'en-tête qui contiendra les adresses IP
 du client</description>
 <syntax>RemoteIPHeader <var>en-tête</var></syntax>
+<default>none</default>
 <contextlist><context>server config</context><context>virtual host</context></contextlist>
 
 <usage>

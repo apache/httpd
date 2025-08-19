@@ -29,6 +29,7 @@
  */
 
 #include "h2.h"
+#include "h2_util.h"
 
 struct apr_thread_mutext_t;
 struct apr_thread_cond_t;
@@ -59,6 +60,7 @@ typedef enum {
     H2_SESSION_EV_MPM_STOPPING,     /* the process is stopping */
     H2_SESSION_EV_PRE_CLOSE,        /* connection will close after this */
     H2_SESSION_EV_NO_MORE_STREAMS,  /* no more streams to process */
+    H2_SESSION_EV_BAD_CLIENT,       /* client misbehaving badly */
 } h2_session_event_t;
 
 typedef struct h2_session {
@@ -97,7 +99,9 @@ typedef struct h2_session {
     unsigned int pushes_promised;   /* number of http/2 push promises submitted */
     unsigned int pushes_submitted;  /* number of http/2 pushed responses submitted */
     unsigned int pushes_reset;      /* number of http/2 pushed reset by client */
-    
+    unsigned int max_stream_errors; /* max client stream errors tolerated */
+    unsigned int stream_errors;     /* number of stream errors by client */
+
     apr_size_t frames_received;     /* number of http/2 frames received */
     apr_size_t frames_sent;         /* number of http/2 frames sent */
     
@@ -117,6 +121,8 @@ typedef struct h2_session {
     int input_flushed;              /* stream input was flushed */
     struct h2_iqueue *out_c1_blocked;  /* all streams with output blocked on c1 buffer full */
     struct h2_iqueue *ready_to_process;  /* all streams ready for processing */
+
+    h2_hd_scratch hd_scratch;
 
 } h2_session;
 
@@ -144,8 +150,11 @@ void h2_session_event(h2_session *session, h2_session_event_t ev,
  * error occurred.
  *
  * @param session the sessionm to process
+ * @param async if mpm is async
+ * @param pkeepalive on return, != 0 if connection to be put into keepalive
+ *                   behaviour and timouts
  */
-apr_status_t h2_session_process(h2_session *session, int async);
+apr_status_t h2_session_process(h2_session *session, int async, int *pkeepalive);
 
 /**
  * Last chance to do anything before the connection is closed.

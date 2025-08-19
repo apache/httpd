@@ -34,3 +34,8 @@ def env(pytestconfig) -> H1TestEnv:
     env.apache_access_log_clear()
     env.httpd_error_log.clear_log()
     return env
+
+@pytest.fixture(autouse=True, scope="package")
+def _stop_package_scope(env):
+    yield
+    assert env.apache_stop() == 0

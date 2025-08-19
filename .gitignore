@@ -76,6 +76,19 @@ Release
 /build/config.sub
 /build/config.guess
 /build/config_vars.sh
+/build/confdefs.h
+/build/config.log
+/build/config.nice
+/build/srclib/
+/build/srclib/pth
+/build/srclib/apr
+/build/srclib/apr-util
+/build/srclib/apr-iconv
+/build/srclib/distcache
+/build/srclib/lua
+/build/srclib/pcre
+/build/srclib/openssl
+/build/srclib/zlib
 
 # /build/pkg/
 /build/pkg/pkginfo

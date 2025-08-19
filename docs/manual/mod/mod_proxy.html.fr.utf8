@@ -252,7 +252,7 @@ ProxyVia On
     </p>
 
     <div class="example"><h3>Scripts PHP et mandataire inverse</h3><pre class="prettyprint lang-config">&lt;FilesMatch "\.php$"&gt;
-    SetHandler  "proxy:unix:/path/to/app.sock|fcgi://localhost/"
+    SetHandler  "proxy:unix:/path/to/app.sock|fcgi://localhost"
 &lt;/FilesMatch&gt;</pre>
 </div>
 
@@ -1128,8 +1128,8 @@ mandatées correspondant à une expression rationnelle</td></tr>
     nommées) sont ignorées. Vous devez utiliser à la place des groupes
     nommés.</p>
 
-<pre class="prettyprint lang-config">&lt;ProxyMatch ^http://(?&lt;sitename&gt;[^/]+)&gt;
-    require ldap-group cn=%{env:MATCH_SITENAME},ou=combined,o=Example
+<pre class="prettyprint lang-config">&lt;ProxyMatch "^http://(?&lt;sitename&gt;[^/]+)"&gt;
+    Require ldap-group cn=%{env:MATCH_SITENAME},ou=combined,o=Example
 &lt;/ProxyMatch&gt;</pre>
 
 
@@ -1652,6 +1652,16 @@ ProxyPass "/mirror/foo" "http://backend.example.com"</pre>
 	    paramètres du chemin et similaires n'interfèrent avec les
 	    autorisations qui doivent être définies par Apache httpd.</p>
         </div>
+    </td></tr>
+    <tr><td><a id="addressttl" name="addressttl">addressttl</a></td>
+        <td>-1</td>
+        <td><p>Durée de vie (TTL) en secondes des résolutions DNS de l'adresse
+	du serveur d'arrière-plan dans le cache.
+        -1 signifie jusqu'au redémarrage de Apache httpd.</p>
+    </td></tr>
+    <tr><td><a id="multipathtcp" name="multipathtcp">multipathtcp</a></td>
+        <td>Off</td>
+        <td><p>Active/Désactive l’utilisation de <a href="https://mptcp.dev">Multipath TCP (MPTCP)</a></p>
     </td></tr>
 
     </table>
@@ -2301,10 +2311,12 @@ ProxyRemote ftp http://ftpproxy.mydomain:8080</pre>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Le mandataire distant à utiliser pour traiter les requêtes
 correspondant à une expression rationnelle</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ProxyRemoteMatch <var>regex</var> <var>serveur-distant</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ProxyRemoteMatch <var>regex</var> <var>remote-server</var> [<var>username:password</var>]</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Le troisième argument facultatif est disponible à partir de la
+version 2.5.1 du serveur HTTP Apache.</td></tr>
 </table>
     <p>La directive <code class="directive">ProxyRemoteMatch</code> est
     identique à la directive <code class="directive"><a href="#proxyremote">ProxyRemote</a></code>, à l'exception du
@@ -2473,7 +2485,7 @@ mandatées</td></tr>
     <p>Cette directive permet de contrôler l'utilisation de l'en-tête
     HTTP <code>Via:</code> par le mandataire. Le but recherché est de
     contrôler le flux des requêtes mandatées tout au long d'une chaîne
-    de serveurs mandataires. Voir <a href="http://www.ietf.org/rfc/rfc2616.txt">RFC 2616</a> (HTTP/1.1),
+    de serveurs mandataires. Voir <a href="https://www.rfc-editor.org/rfc/rfc2616">RFC 2616</a> (HTTP/1.1),
     section 14.45 pour une description des lignes d'en-tête
     <code>Via:</code>.</p>
 
@@ -2520,7 +2532,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_proxy.html
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2023 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2025 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

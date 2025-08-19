@@ -120,11 +120,7 @@
       mitigating DoS attacks.  Further, the
       <module>event</module> mpm
       uses asynchronous processing to avoid devoting a thread to each
-      connection. Due to the nature of the OpenSSL library the
-      <module>event</module> mpm is currently incompatible with
-      <module>mod_ssl</module> and other input filters. In these
-      cases it falls back to the behaviour of the
-      <module>worker</module> mpm.</li>
+      connection. </li>
 
       <li>There are a number of third-party modules available
       that can restrict certain client behaviors and thereby mitigate

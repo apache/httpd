@@ -654,6 +654,22 @@ AP_DECLARE(void) ap_time_process_request(ap_sb_handle_t *sbh, int status)
     }
 }
 
+AP_DECLARE(void) ap_set_time_process_request(ap_sb_handle_t* const sbh,
+		const apr_time_t timebeg,const apr_time_t timeend)
+{
+    worker_score *ws;
+    if (!sbh || sbh->child_num < 0)
+        return;
+
+    ws = &ap_scoreboard_image->servers[sbh->child_num][sbh->thread_num];
+    
+    ws->start_time = timebeg;
+    ws->stop_time = ws->last_used = timeend;
+    
+    if (ap_extended_status)
+	ws->duration += timeend - timebeg;
+}
+
 AP_DECLARE(int) ap_update_global_status(void)
 {
 #ifdef HAVE_TIMES

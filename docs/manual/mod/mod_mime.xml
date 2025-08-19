@@ -161,10 +161,10 @@ module="mod_mime_magic">MimeMagicFile</directive></seealso>
     designed for transmitting a binary file in an ASCII (text)
     format.</p>
 
-    <p>The <a href="http://www.ietf.org/rfc/rfc2616.txt">HTTP/1.1
+    <p>The <a href="https://www.rfc-editor.org/rfc/rfc2616">HTTP/1.1
     RFC</a>, section 14.11 puts it this way:</p>
 
-    <blockquote cite="http://www.ietf.org/rfc/rfc2616.txt">
+    <blockquote cite="https://www.rfc-editor.org/rfc/rfc2616">
       <p>The Content-Encoding entity-header field is used as a modifier to
       the media-type. When present, its value indicates what additional
       content codings have been applied to the entity-body, and thus what

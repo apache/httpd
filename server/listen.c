@@ -60,6 +60,7 @@ AP_DECLARE_DATA int ap_accept_errors_nonfatal = 0;
 
 static ap_listen_rec *old_listeners;
 static int ap_listenbacklog;
+static int ap_listentcpdeferaccept;
 static int ap_listencbratio;
 static int send_buffer_size;
 static int receive_buffer_size;
@@ -287,7 +288,7 @@ static void ap_apply_accept_filter(apr_pool_t *p, ap_listen_rec *lis,
                           accf);
         }
 #else
-        rv = apr_socket_opt_set(s, APR_TCP_DEFER_ACCEPT, 30);
+        rv = apr_socket_opt_set(s, APR_TCP_DEFER_ACCEPT, ap_listenbacklog);
         if (rv != APR_SUCCESS && !APR_STATUS_IS_ENOTIMPL(rv)) {
             ap_log_perror(APLOG_MARK, APLOG_WARNING, rv, p, APLOGNO(00076)
                               "Failed to enable APR_TCP_DEFER_ACCEPT");
@@ -333,9 +334,7 @@ static apr_status_t alloc_systemd_listener(process_rec * process,
     si.type = SOCK_STREAM;
     si.protocol = APR_PROTO_TCP;
 
-    rec = apr_palloc(process->pool, sizeof(ap_listen_rec));
-    rec->active = 0;
-    rec->next = 0;
+    rec = apr_pcalloc(process->pool, sizeof(ap_listen_rec));
 
     rv = apr_os_sock_make(&rec->sd, &si, process->pool);
     if (rv != APR_SUCCESS) {
@@ -496,6 +495,12 @@ static const char *alloc_listener(process_rec *process, const char *addr,
 
     while (sa) {
         ap_listen_rec *new;
+        int sock_proto = 0;
+
+#ifdef IPPROTO_MPTCP
+        if (flags & AP_LISTEN_MPTCP)
+            sock_proto = IPPROTO_MPTCP;
+#endif
 
         /* this has to survive restarts */
         new = apr_palloc(process->pool, sizeof(ap_listen_rec));
@@ -509,7 +514,7 @@ static const char *alloc_listener(process_rec *process, const char *addr,
         sa = sa->next;
 
         status = apr_socket_create(&new->sd, new->bind_addr->family,
-                                    SOCK_STREAM, 0, process->pool);
+                                    SOCK_STREAM, sock_proto, process->pool);
 
 #if APR_HAVE_IPV6
         /* What could happen is that we got an IPv6 address, but this system
@@ -864,6 +869,7 @@ AP_DECLARE(apr_status_t) ap_duplicate_listeners(apr_pool_t *p, server_rec *s,
             char *hostname;
             apr_port_t port;
             apr_sockaddr_t *sa;
+            int sock_proto = 0;
 #ifdef HAVE_SYSTEMD
             if (use_systemd) {
                 int thesock;
@@ -891,8 +897,12 @@ AP_DECLARE(apr_status_t) ap_duplicate_listeners(apr_pool_t *p, server_rec *s,
                 duplr->bind_addr = sa;
                 duplr->next = NULL;
                 duplr->flags = lr->flags;
+#ifdef IPPROTO_MPTCP
+                if (duplr->flags & AP_LISTEN_MPTCP)
+                    sock_proto = IPPROTO_MPTCP;
+#endif
                 stat = apr_socket_create(&duplr->sd, duplr->bind_addr->family,
-                                         SOCK_STREAM, 0, p);
+                                         SOCK_STREAM, sock_proto, p);
                 if (stat != APR_SUCCESS) {
                     ap_log_perror(APLOG_MARK, APLOG_CRIT, 0, p, APLOGNO(02640)
                                 "ap_duplicate_listeners: for address %pI, "
@@ -977,6 +987,7 @@ AP_DECLARE(void) ap_listen_pre_config(void)
     ap_listen_buckets = NULL;
     ap_num_listen_buckets = 0;
     ap_listenbacklog = DEFAULT_LISTENBACKLOG;
+    ap_listentcpdeferaccept = DEFAULT_TCP_DEFER_ACCEPT;
     ap_listencbratio = 0;
 
     /* Check once whether or not SO_REUSEPORT is supported. */
@@ -1038,6 +1049,13 @@ static const char *parse_listen_flags(apr_pool_t *temp_pool, const char *arg,
             flags |= AP_LISTEN_REUSEPORT;
         else if (ap_cstr_casecmp(token, "v6only") == 0)
             flags |= AP_LISTEN_V6ONLY;
+        else if (ap_cstr_casecmp(token, "multipathtcp") == 0)
+#ifdef IPPROTO_MPTCP
+            flags |= AP_LISTEN_MPTCP;
+#else
+            return apr_psprintf(temp_pool, "Listen option '%s' in '%s' is not supported on this system",
+                                token, arg);
+#endif
         else
             return apr_psprintf(temp_pool, "Unknown Listen option '%s' in '%s'",
                                 token, arg);
@@ -1173,6 +1191,26 @@ AP_DECLARE_NONSTD(const char *) ap_set_listenbacklog(cmd_parms *cmd,
     }
 
     ap_listenbacklog = b;
+    return NULL;
+}
+
+AP_DECLARE_NONSTD(const char *) ap_set_listentcpdeferaccept(cmd_parms *cmd,
+                                                            void *dummy,
+                                                            const char *arg)
+{
+    int b;
+    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
+
+    if (err != NULL) {
+        return err;
+    }
+
+    b = atoi(arg);
+    if (b < 1) {
+        return "ListenTCPDeferAccept must be > 0";
+    }
+
+    ap_listentcpdeferaccept = b;
     return NULL;
 }
 

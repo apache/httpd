@@ -16,7 +16,7 @@ class TestFailover:
         conf = MDConf(env)
         conf.install()
 
-        assert env.apache_restart() == 0
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
 
     @pytest.fixture(autouse=True, scope='function')
     def _method_scope(self, env, request):
@@ -39,7 +39,7 @@ class TestFailover:
         conf.end_md()
         conf.add_vhost(domains)
         conf.install()
-        assert env.apache_restart() == 0
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
         assert env.await_completion([domain])
         env.check_md_complete(domain)
 
@@ -60,7 +60,7 @@ class TestFailover:
         conf.end_md()
         conf.add_vhost(domains)
         conf.install()
-        assert env.apache_restart() == 0
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
         assert env.await_completion([domain])
         env.check_md_complete(domain)
         #
@@ -91,7 +91,7 @@ class TestFailover:
         conf.end_md()
         conf.add_vhost(domains)
         conf.install()
-        assert env.apache_restart() == 0
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
         assert env.await_completion([domain])
         env.check_md_complete(domain)
         #

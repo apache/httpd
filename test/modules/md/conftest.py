@@ -5,12 +5,11 @@ import pytest
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '../..'))
 
-from .md_conf import HttpdConf
 from .md_env import MDTestEnv
 from .md_acme import MDPebbleRunner, MDBoulderRunner
 
 
-def pytest_report_header(config, startdir):
+def pytest_report_header(config):
     env = MDTestEnv()
     return "mod_md: [apache: {aversion}({prefix}), mod_{ssl}, ACME server: {acme}]".format(
         prefix=env.prefix,
@@ -32,7 +31,8 @@ def env(pytestconfig) -> MDTestEnv:
     env.setup_httpd()
     env.apache_access_log_clear()
     env.httpd_error_log.clear_log()
-    return env
+    yield env
+    env.apache_stop()
 
 
 @pytest.fixture(autouse=True, scope="package")

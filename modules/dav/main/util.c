@@ -1286,7 +1286,7 @@ static dav_error * dav_validate_resource_state(apr_pool_t *p,
                         const char *errmsg;
 
                         errmsg = apr_pstrcat(p, "User \"",
-                                            r->user,
+                                             r->user ? r->user : "[none]",
                                             "\" submitted a locktoken created "
                                             "by user \"",
                                             lock->auth_user, "\".", NULL);

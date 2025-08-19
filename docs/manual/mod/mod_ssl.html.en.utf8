@@ -40,7 +40,7 @@ Layer (SSL) and Transport Layer Security (TLS) protocols</td></tr>
 <p>This module provides SSL v3 and TLS v1.x support for the Apache
 HTTP Server. SSL v2 is no longer supported.</p>
 
-<p>This module relies on <a href="http://www.openssl.org/">OpenSSL</a>
+<p>This module relies on <a href="https://www.openssl.org/">OpenSSL</a>
 to provide the cryptographic engine.</p>
 
 <p>Further details, discussion, and examples are provided in the
@@ -66,12 +66,12 @@ to provide the cryptographic engine.</p>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslcertificatefile">SSLCertificateFile</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslcertificatekeyfile">SSLCertificateKeyFile</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslciphersuite">SSLCipherSuite</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#sslclienthellovars">SSLClientHelloVars</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslcompression">SSLCompression</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslcryptodevice">SSLCryptoDevice</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslengine">SSLEngine</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslfips">SSLFIPS</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslhonorcipherorder">SSLHonorCipherOrder</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#sslinsecurerenegotiation">SSLInsecureRenegotiation</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslocspdefaultresponder">SSLOCSPDefaultResponder</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslocspenable">SSLOCSPEnable</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslocspnoverify">SSLOCSPNoverify</a></li>
@@ -198,6 +198,15 @@ compatibility variables.</p>
 <tr class="odd"><td><code>SSL_SRP_USER</code></td>                  <td>string</td>    <td>SRP username</td></tr>
 <tr><td><code>SSL_SRP_USERINFO</code></td>              <td>string</td>    <td>SRP user info</td></tr>
 <tr class="odd"><td><code>SSL_TLS_SNI</code></td>                   <td>string</td>    <td>Contents of the SNI TLS extension (if supplied with ClientHello)</td></tr>
+<tr><td><code>SSL_HANDSHAKE_RTT</code></td>             <td>number</td>    <td>Round-trip time of TLS handshake in microseconds including endpoint processing (set to empty string if OpenSSL version prior to 3.2 or if round-trip time can not be determined)</td></tr>
+<tr class="odd"><td><code>SSL_CLIENTHELLO_VERSION</code></td>       <td>string</td>    <td>Version field (legacy) from ClientHello as four hex encoded characters</td></tr>
+<tr><td><code>SSL_CLIENTHELLO_CIPHERS</code></td>       <td>string</td>    <td>Cipher Suites from ClientHello as four hex encoded characters per item</td></tr>
+<tr class="odd"><td><code>SSL_CLIENTHELLO_EXTENSIONS</code></td>    <td>string</td>    <td>Extension IDs from ClientHello as four hex encoded characters per item</td></tr>
+<tr><td><code>SSL_CLIENTHELLO_GROUPS</code></td>        <td>string</td>    <td>Value of Supported Groups extension (10) from ClientHello as four hex encoded characters per item</td></tr>
+<tr class="odd"><td><code>SSL_CLIENTHELLO_EC_FORMATS</code></td>    <td>string</td>    <td>Value of EC Point Formats extension (11) from ClientHello as two hex encoded characters per item</td></tr>
+<tr><td><code>SSL_CLIENTHELLO_SIG_ALGOS</code></td>     <td>string</td>    <td>Value of Signature Algorithms extension (13) from ClientHello as four hex encoded characters per item</td></tr>
+<tr class="odd"><td><code>SSL_CLIENTHELLO_ALPN</code></td>          <td>string</td>    <td>Value of ALPN extension (16) from ClientHello as hex encoded string including leading string lengths</td></tr>
+<tr><td><code>SSL_CLIENTHELLO_VERSIONS</code></td>      <td>string</td>    <td>Value of Supported Versions extension (43) from ClientHello as four hex encoded characters per item</td></tr>
 </table>
 
 <p><em>x509</em> specifies a component of an X.509 DN; one of
@@ -230,6 +239,10 @@ suffix (if any). For example, <code>SSL_SERVER_S_DN_OU_RAW</code> or
 <p><code>SSL_CLIENT_V_REMAIN</code> is only available in version 2.1
 and later.</p>
 
+<p>The <code>SSL_CLIENTHELLO_*</code> variables require the directive 
+<code class="directive"><a href="#sslclienthellovars">SSLClientHelloVars</a></code> to be 
+enabled or they will not be populated.</p>
+ 
 <p>A number of additional environment variables can also be used
 in <code class="directive">SSLRequire</code> expressions, or in custom log
 formats:</p>
@@ -625,9 +638,10 @@ If using a PEM file, at minimum, the file must include an end-entity (leaf) cert
 The directive can be used multiple times (referencing different filenames)
 to support multiple algorithms for server authentication - typically
 RSA, DSA, and ECC. The number of supported algorithms depends on the
-OpenSSL version being used for mod_ssl: with version 1.0.0 or later,
-<code>openssl list-public-key-algorithms</code> will output a list
-of supported algorithms, see also the note below about limitations
+OpenSSL version being used for mod_ssl: with version 3.0 or later,
+<code>openssl list -public-key-algorithms</code> (or 
+<code>openssl list-public-key-algorithms</code> with OpenSSL 1.0)  will output a list
+of supported algorithms. See the note below about limitations
 of OpenSSL versions prior to 1.0.2 and the ways to work around them.
 </p>
 
@@ -666,7 +680,7 @@ key is encrypted, the pass phrase dialog is forced at startup time.
 files, a certificate identifier can be used to identify a certificate
 stored in a token.  Currently, only <a href="https://tools.ietf.org/html/rfc7512">PKCS#11 URIs</a> are
 recognized as certificate identifiers, and can be used in conjunction
-with the OpenSSL <code>pkcs11</code> engine.  If <code class="directive"><a href="#sslcertificatekeyfile">SSLCertificateKeyFile</a></code> is omitted, the
+with the OpenSSL <code>pkcs11</code> engine or provider.  If <code class="directive"><a href="#sslcertificatekeyfile">SSLCertificateKeyFile</a></code> is omitted, the
 certificate and private key can be loaded through the single
 identifier specified with <code class="directive">SSLCertificateFile</code>.</p>
 
@@ -677,7 +691,7 @@ Beginning with version 2.4.7, mod_ssl makes use of
 standardized DH parameters with prime lengths of 2048, 3072 and 4096 bits
 and with additional prime lengths of 6144 and 8192 bits beginning with
 version 2.4.10
-(from <a href="http://www.ietf.org/rfc/rfc3526.txt">RFC 3526</a>), and hands
+(from <a href="https://www.rfc-editor.org/rfc/rfc3526">RFC 3526</a>), and hands
 them out to clients based on the length of the certificate's RSA/DSA key.
 With Java-based clients in particular (Java 7 or earlier), this may lead
 to handshake failures - see this
@@ -754,7 +768,7 @@ key file.</p>
 identifier can be used to identify a private key stored in a
 token.  Currently, only <a href="https://tools.ietf.org/html/rfc7512">PKCS#11 URIs</a> are recognized as private key
 identifiers, and can be used in conjunction with the OpenSSL
-<code>pkcs11</code> engine.</p>
+<code>pkcs11</code> engine or provider.</p>
 
 <div class="example"><h3>Example</h3><pre class="prettyprint lang-config"># To use a private key from a PEM-encoded file:
 SSLCertificateKeyFile "/usr/local/apache2/conf/ssl.key/server.key"
@@ -796,7 +810,7 @@ Since TLSv1.3 does not offer renegotiations, specifying ciphers for it in
 a directory context is not allowed.</p>
 <p>
 For a list of TLSv1.3 cipher names, see 
-<a href="https://www.openssl.org/docs/manmaster/man3/SSL_CTX_set_ciphersuites.html">the OpenSSL
+<a href="https://docs.openssl.org/master/man3/SSL_CTX_set_ciphersuites/">the OpenSSL
 documentation</a>.</p>
 <p>
 An SSL cipher specification in <em>cipher-spec</em> is composed of 4 major
@@ -945,6 +959,26 @@ KRB5-RC4-SHA            SSLv3 Kx=KRB5     Au=KRB5 Enc=RC4(128)  Mac=SHA1</pre></
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="SSLClientHelloVars" id="SSLClientHelloVars">SSLClientHelloVars</a> <a name="sslclienthellovars" id="sslclienthellovars">Directive</a> <a title="Permanent link" href="#sslclienthellovars" class="permalink">&para;</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enable collection of ClientHello variables</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLClientHelloVars on|off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>SSLClientHelloVars off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in httpd 2.5.2 and later, requires OpenSSL 1.1.1 or later</td></tr>
+</table>
+<p>This directive enables collection of ClientHello data during the handshake that is retained for 
+the length of the connection so it can be exposed as <code>SSL_CLIENTHELLLO_*</code> environment 
+variables for requests depending upon the <code>StdEnvVars</code> setting. The variables are 
+formatted as the hex-encoded raw buffers seen in the raw network protocol and as provided 
+by OpenSSL. GREASE (RFC 8701) values are filtered by OpenSSL when enumerating extension IDs, but 
+otherwise, are passed through unchanged for other variables. If this directive is not enabled or 
+if OpenSSL prior to version 1.1.1 is used, these variables will not have a value set.</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="SSLCompression" id="SSLCompression">SSLCompression</a> <a name="sslcompression" id="sslcompression">Directive</a> <a title="Permanent link" href="#sslcompression" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enable compression on the SSL level</td></tr>
@@ -988,16 +1022,29 @@ separate "-engine" releases of OpenSSL 0.9.6 must be used.</p>
 SSLCryptoDevice ubsec</pre>
 </div>
 
+<p>
+With OpenSSL 3.0 or later, if no engine is specified but the key or certificate
+is specified using a <a href="https://tools.ietf.org/html/rfc7512">PKCS#11 URIs</a>
+then it is tried to load the key and certificate from an OpenSSL provider.
+The OpenSSL provider to use must be defined and configured in the OpenSSL config file,
+and it must support the <a href="https://docs.openssl.org/3.0/man7/provider-storemgmt/">STORE method</a>
+for <a href="https://tools.ietf.org/html/rfc7512">PKCS#11 URIs</a>.
+</p>
+
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="SSLEngine" id="SSLEngine">SSLEngine</a> <a name="sslengine" id="sslengine">Directive</a> <a title="Permanent link" href="#sslengine" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>SSL Engine Operation Switch</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLEngine on|off|optional</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLEngine on|off</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>SSLEngine off</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>
+  Support for the "optional" argument was removed in 2.4.64. It enabled
+  RFC 2817 (TLS Upgrade) support.
+</td></tr>
 </table>
 <p>
 This directive toggles the usage of the SSL/TLS Protocol Engine. This
@@ -1009,10 +1056,6 @@ SSLEngine on
 #...
 &lt;/VirtualHost&gt;</pre>
 </div>
-<p><code class="directive">SSLEngine</code> can be set to <code>optional</code>: 
-this enables support for
-<a href="http://www.ietf.org/rfc/rfc2817.txt">RFC 2817</a>.
-</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -1058,47 +1101,6 @@ the client's preference is used.  If this directive is enabled, the
 server's preference will be used instead.</p>
 <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">SSLHonorCipherOrder on</pre>
 </div>
-
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSLInsecureRenegotiation" id="SSLInsecureRenegotiation">SSLInsecureRenegotiation</a> <a name="sslinsecurerenegotiation" id="sslinsecurerenegotiation">Directive</a> <a title="Permanent link" href="#sslinsecurerenegotiation" class="permalink">&para;</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Option to enable support for insecure renegotiation</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLInsecureRenegotiation on|off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>SSLInsecureRenegotiation off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available if using OpenSSL 0.9.8m or later</td></tr>
-</table>
-<p>As originally specified, all versions of the SSL and TLS protocols
-(up to and including TLS/1.2) were vulnerable to a Man-in-the-Middle
-attack
-(<a href="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CAN-2009-3555">CVE-2009-3555</a>)
-during a renegotiation.  This vulnerability allowed an attacker to
-"prefix" a chosen plaintext to the HTTP request as seen by the web
-server.  A protocol extension was developed which fixed this
-vulnerability if supported by both client and server.</p>
-
-<p>If <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> is linked against OpenSSL version 0.9.8m
-or later, by default renegotiation is only supported with
-clients supporting the new protocol extension.  If this directive is
-enabled, renegotiation will be allowed with old (unpatched) clients,
-albeit insecurely.</p>
-
-<div class="warning"><h3>Security warning</h3>
-<p>If this directive is enabled, SSL connections will be vulnerable to
-the Man-in-the-Middle prefix attack as described
-in <a href="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CAN-2009-3555">CVE-2009-3555</a>.</p>
-</div>
-
-<div class="example"><h3>Example</h3><pre class="prettyprint lang-config">SSLInsecureRenegotiation on</pre>
-</div>
-
-<p>The <code>SSL_SECURE_RENEG</code> environment variable can be used
-from an SSI or CGI script to determine whether secure renegotiation is
-supported for a given SSL connection.</p>
-
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -1286,7 +1288,7 @@ features are added to OpenSSL.</p>
 depends on the OpenSSL version being used for <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code>
 (at least version 1.0.2 is required). For a list of supported command
 names, see the section <em>Supported configuration file commands</em> in the
-<a href="http://www.openssl.org/docs/man1.0.2/ssl/SSL_CONF_cmd.html#SUPPORTED-CONFIGURATION-FILE-COMMANDS">SSL_CONF_cmd(3)</a> manual page for OpenSSL.</p>
+<a href="https://docs.openssl.org/master/man3/SSL_CONF_cmd/#supported-configuration-file-commands">SSL_CONF_cmd(3)</a> manual page for OpenSSL.</p>
 
 <div class="example"><h3>Examples</h3><pre class="prettyprint lang-config">SSLOpenSSLConfCmd Options -SessionTicket,ServerPreference
 SSLOpenSSLConfCmd ECDHParameters brainpoolP256r1
@@ -1568,29 +1570,29 @@ The available (case-insensitive) <em>protocol</em>s are:</p>
     This is the Secure Sockets Layer (SSL) protocol, version 3.0, from
     the Netscape Corporation.
     It is the successor to SSLv2 and the predecessor to TLSv1, but is
-    deprecated in <a href="http://www.ietf.org/rfc/rfc7568.txt">RFC 7568</a>.</p></li>
+    deprecated in <a href="https://www.rfc-editor.org/rfc/rfc7568">RFC 7568</a>.</p></li>
 
 <li><code>TLSv1</code>
     <p>
     This is the Transport Layer Security (TLS) protocol, version 1.0.
     It is the successor to SSLv3 and is defined in
-    <a href="http://www.ietf.org/rfc/rfc2246.txt">RFC 2246</a>.
+    <a href="https://www.rfc-editor.org/rfc/rfc2246">RFC 2246</a>.
     It is supported by nearly every client.</p></li>
 
 <li><code>TLSv1.1</code> (when using OpenSSL 1.0.1 and later)
     <p>
     A revision of the TLS 1.0 protocol, as defined in
-    <a href="http://www.ietf.org/rfc/rfc4346.txt">RFC 4346</a>.</p></li>
+    <a href="https://www.rfc-editor.org/rfc/rfc4346">RFC 4346</a>.</p></li>
 
 <li><code>TLSv1.2</code> (when using OpenSSL 1.0.1 and later)
     <p>
     A revision of the TLS 1.1 protocol, as defined in
-    <a href="http://www.ietf.org/rfc/rfc5246.txt">RFC 5246</a>.</p></li>
+    <a href="https://www.rfc-editor.org/rfc/rfc5246">RFC 5246</a>.</p></li>
 
 <li><code>TLSv1.3</code> (when using OpenSSL 1.1.1 and later)
     <p>
     A new version of the TLS protocol, as defined in
-    <a href="http://www.ietf.org/rfc/rfc8446.txt">RFC 8446</a>.</p></li>
+    <a href="https://www.rfc-editor.org/rfc/rfc8446">RFC 8446</a>.</p></li>
 
 <li><code>all</code>
     <p>
@@ -1953,7 +1955,7 @@ SSLProxyCACertificateFile</a></code>.</p>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>The proxy section context is allowed in httpd 2.4.30 and later<br />
-Inclusion of non-leaf (CA) certificates is permitted only in httpd 2.5.1 and later.</td></tr>
+Inclusion of non-leaf (CA) certificates is permitted only in httpd 2.4.59 and later.</td></tr>
 </table>
 <p>
 This directive sets the all-in-one file where you keep the certificates and
@@ -2501,7 +2503,7 @@ values like 300 in real life.</p>
 </table>
 <p>Optionally configures a secret key for encrypting and decrypting
 TLS session tickets, as defined in
-<a href="http://www.ietf.org/rfc/rfc5077.txt">RFC 5077</a>.
+<a href="https://www.rfc-editor.org/rfc/rfc5077">RFC 5077</a>.
 Primarily suitable for clustered environments where TLS sessions information
 should be shared between multiple nodes. For single-instance httpd setups,
 it is recommended to <em>not</em> configure a ticket key file, but to
@@ -2836,7 +2838,7 @@ OCSP response for a single cert. For server certificates with intermediate
 CA certificates in their chain (the typical case nowadays),
 stapling in its current implementation therefore only partially achieves the
 stated goal of "saving roundtrips and resources" - see also
-<a href="http://www.ietf.org/rfc/rfc6961.txt">RFC 6961</a>
+<a href="https://www.rfc-editor.org/rfc/rfc6961">RFC 6961</a>
 (TLS Multiple Certificate Status Extension).
 </p>
 
@@ -2941,7 +2943,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_ssl.html';
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2023 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2025 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

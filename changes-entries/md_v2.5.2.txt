@@ -1,0 +1,4 @@
+  *) mod_md: update to version 2.5.2
+     - Fixed TLS-ALPN-01 challenges when multiple `MDPrivateKeys` are specified
+       with EC keys before RSA ones. Fixes #377. [Stefan Eissing]
+     - Fixed missing newlines in the status page output. [Andreas Groth]

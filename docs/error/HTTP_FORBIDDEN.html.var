@@ -73,14 +73,14 @@ Body:----------es--
 
    <!--#if expr="v('REDIRECT_URL') =~ m:/$:" -->
 
-      Usted no tiene permiso para acceder al directorio solicitado.
-      No existe un documento &iacute;ndice, o el directorio est&aacute;
+      No tiene permiso para acceder al directorio solicitado.
+      No hay ning&uacute;n documento &iacute;ndice (index) o el directorio est&aacute;
       protegido contra lectura.
 
   <!--#else -->
 
-      Usted no tiene permiso para acceder al objeto solicitado.
-      El objeto est&aacute; protegido contra lectura o
+      No tiene permiso para acceder al objeto solicitado.
+      Est&aacute; protegido contra lectura o
       el servidor no puede leerlo.
 
   <!--#endif -->

@@ -473,9 +473,9 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(ap_filter_t *f,
         /* Is ap_make_content_type required here? */
         const char *orig_ct = ap_make_content_type(r, r->content_type);
 
-        ap_set_content_type(r, apr_pstrcat(r->pool,
+        ap_set_content_type_ex(r, apr_pstrcat(r->pool,
                                            "multipart/byteranges; boundary=",
-                                           ap_multipart_boundary, NULL));
+                                           ap_multipart_boundary, NULL), 1);
 
         if (orig_ct) {
             bound_head = apr_pstrcat(r->pool,

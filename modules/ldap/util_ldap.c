@@ -200,7 +200,7 @@ static int util_ldap_handler(request_rec *r)
     st = (util_ldap_state_t *) ap_get_module_config(r->server->module_config,
             &ldap_module);
 
-    ap_set_content_type(r, "text/html; charset=ISO-8859-1");
+    ap_set_content_type_ex(r, "text/html; charset=ISO-8859-1", 1);
 
     if (r->header_only)
         return OK;
@@ -379,7 +379,7 @@ static int uldap_connection_init(request_rec *r,
         /* something really bad happened */
         ldc->bound = 0;
         if (NULL == ldc->reason) {
-            ldc->reason = "LDAP: ldap initialization failed";
+            ldc->reason = "LDAP: ldap initialization failed. Make sure the apr_ldap module is installed.";
         }
         return(APR_EGENERAL);
     }

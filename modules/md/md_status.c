@@ -47,11 +47,20 @@ static apr_status_t status_get_cert_json(md_json_t **pjson, const md_cert_t *cer
     apr_status_t rv = APR_SUCCESS;
     md_timeperiod_t valid;
     md_json_t *json;
-    
+    const char *issuer_uri, *issuer_name;
+
+
     json = md_json_create(p);
+    issuer_name = md_cert_get_issuer_name(cert, p);
+    if (issuer_name)
+      md_json_sets(issuer_name, json, MD_KEY_ISSUER_NAME, NULL);
+    rv = md_cert_get_issuers_uri(&issuer_uri, cert, p);
+    if (rv == APR_SUCCESS && issuer_uri)
+        md_json_sets(issuer_uri, json, MD_KEY_ISSUER_URI, NULL);
     valid.start = md_cert_get_not_before(cert);
     valid.end = md_cert_get_not_after(cert);
     md_json_set_timeperiod(&valid, json, MD_KEY_VALID, NULL);
+    md_json_sets(md_cert_get_serial_number(cert, p), json, MD_KEY_SERIAL, NULL);
     md_json_sets(md_cert_get_serial_number(cert, p), json, MD_KEY_SERIAL, NULL);
     if (APR_SUCCESS != (rv = md_cert_to_sha256_fingerprint(&finger, cert, p))) goto leave;
     md_json_sets(finger, json, MD_KEY_SHA256_FINGERPRINT, NULL);
@@ -111,9 +120,14 @@ static apr_status_t status_get_cert_json_ex(
     md_json_t *certj, *jobj;
     md_timeperiod_t ocsp_valid;
     md_ocsp_cert_stat_t cert_stat;
+    const char *ari_cert_id;
     apr_status_t rv;
 
     if (APR_SUCCESS != (rv = status_get_cert_json(&certj, cert, p))) goto leave;
+
+    if (APR_SUCCESS == md_cert_get_ari_cert_id(&ari_cert_id, cert, p))
+        md_json_sets(ari_cert_id, certj, MD_KEY_ARI_CERT_ID, NULL);
+
     if (md->stapling && ocsp) {
         rv = md_ocsp_get_meta(&cert_stat, &ocsp_valid, ocsp, cert, p, md);
         if (APR_SUCCESS == rv) {
@@ -126,6 +140,7 @@ static apr_status_t status_get_cert_json_ex(
             md_json_setj(jobj, certj, MD_KEY_OCSP, MD_KEY_RENEWAL, NULL);
         }
     }
+
 leave:
     *pjson = (APR_SUCCESS == rv)? certj : NULL;
     return rv;
@@ -206,7 +221,7 @@ static apr_status_t status_get_md_json(md_json_t **pjson, const md_t *md,
                                        md_reg_t *reg, md_ocsp_reg_t *ocsp, 
                                        int with_logs, apr_pool_t *p)
 {
-    md_json_t *mdj, *certsj, *jobj;
+    md_json_t *mdj, *certsj, *jobj = NULL;
     int renew;
     const md_pubcert_t *pubcert;
     const md_cert_t *cert = NULL;
@@ -236,20 +251,28 @@ static apr_status_t status_get_md_json(md_json_t **pjson, const md_t *md,
     
     md_json_setb(md->stapling, mdj, MD_KEY_STAPLING, NULL);
     md_json_setb(md->watched, mdj, MD_KEY_WATCHED, NULL);
-    renew = md_reg_should_renew(reg, md, p);
+
+    renew = FALSE;
+    rv = job_loadj(&jobj, MD_SG_STAGING, md->name, reg, with_logs, p);
+    if (rv == APR_SUCCESS)
+        renew = TRUE;
+    else if (APR_STATUS_IS_ENOENT(rv)) {
+        rv = APR_SUCCESS;
+        renew = md_reg_should_renew(reg, md, p);
+    }
+    else
+        goto leave;
+
     if (renew) {
         md_json_setb(renew, mdj, MD_KEY_RENEW, NULL);
-        rv = job_loadj(&jobj, MD_SG_STAGING, md->name, reg, with_logs, p);
-        if (APR_SUCCESS == rv) {
+        if (jobj) {
             if (APR_SUCCESS == get_staging_certs_json(&certsj, md, reg, p)) {
                 md_json_setj(certsj, jobj, MD_KEY_CERT, NULL);
             }
             md_json_setj(jobj, mdj, MD_KEY_RENEWAL, NULL);
         }
-        else if (APR_STATUS_IS_ENOENT(rv)) rv = APR_SUCCESS;
-        else goto leave;
     }
-    
+
 leave:
     if (APR_SUCCESS != rv) {
         md_json_setl(rv, mdj, MD_KEY_ERROR, NULL);
@@ -589,10 +612,16 @@ apr_time_t md_job_delay_on_errors(md_job_t *job, int err_count, const char *last
         delay = max_delay;
     }
     else if (err_count > 0) {
-        /* back off duration, depending on the errors we encounter in a row */
-        delay = job->min_delay << (err_count - 1);
-        if (delay > max_delay) {
-            delay = max_delay;
+        /* back off duration, depending on the errors we encounter in a row.
+         * As apr_time_t is signed, this might wrap around*/
+        int i;
+        delay = job->min_delay;
+        for (i = 0; i < (err_count - 1); ++i) {
+          delay <<= 1;
+          if ((delay <= 0) || (delay > max_delay)) {
+              delay = max_delay;
+              break;
+          }
         }
     }
     if (delay > 0) {

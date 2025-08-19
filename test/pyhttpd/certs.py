@@ -181,6 +181,14 @@ class Credentials:
             creds.issue_certs(spec.sub_specs, chain=subchain)
         return creds
 
+    def save_cert_pem(self, fpath):
+        with open(fpath, "wb") as fd:
+            fd.write(self.cert_pem)
+
+    def save_pkey_pem(self, fpath):
+        with open(fpath, "wb") as fd:
+            fd.write(self.pkey_pem)
+
 
 class CertStore:
 
@@ -282,6 +290,7 @@ class HttpdTestCA:
     def create_credentials(spec: CertificateSpec, issuer: Credentials, key_type: Any,
                            valid_from: timedelta = timedelta(days=-1),
                            valid_to: timedelta = timedelta(days=89),
+                           serial: Optional[int] = None,
                            ) -> Credentials:
         """Create a certificate signed by this CA for the given domains.
         :returns: the certificate and private key PEM file paths
@@ -289,15 +298,18 @@ class HttpdTestCA:
         if spec.domains and len(spec.domains):
             creds = HttpdTestCA._make_server_credentials(name=spec.name, domains=spec.domains,
                                                          issuer=issuer, valid_from=valid_from,
-                                                         valid_to=valid_to, key_type=key_type)
+                                                         valid_to=valid_to, key_type=key_type,
+                                                         serial=serial)
         elif spec.client:
             creds = HttpdTestCA._make_client_credentials(name=spec.name, issuer=issuer,
                                                          email=spec.email, valid_from=valid_from,
-                                                         valid_to=valid_to, key_type=key_type)
+                                                         valid_to=valid_to, key_type=key_type,
+                                                         serial=serial)
         elif spec.name:
             creds = HttpdTestCA._make_ca_credentials(name=spec.name, issuer=issuer,
                                                      valid_from=valid_from, valid_to=valid_to,
-                                                     key_type=key_type)
+                                                     key_type=key_type,
+                                                     serial=serial)
         else:
             raise Exception(f"unrecognized certificate specification: {spec}")
         return creds
@@ -320,7 +332,8 @@ class HttpdTestCA:
             pkey: Any,
             issuer_subject: Optional[Credentials],
             valid_from_delta: timedelta = None,
-            valid_until_delta: timedelta = None
+            valid_until_delta: timedelta = None,
+            serial: Optional[int] = None
     ):
         pubkey = pkey.public_key()
         issuer_subject = issuer_subject if issuer_subject is not None else subject
@@ -331,7 +344,8 @@ class HttpdTestCA:
         valid_until = datetime.now()
         if valid_until_delta is not None:
             valid_until += valid_until_delta
-
+        if serial is None:
+            serial = x509.random_serial_number()
         return (
             x509.CertificateBuilder()
             .subject_name(subject)
@@ -339,7 +353,7 @@ class HttpdTestCA:
             .public_key(pubkey)
             .not_valid_before(valid_from)
             .not_valid_after(valid_until)
-            .serial_number(x509.random_serial_number())
+            .serial_number(serial)
             .add_extension(
                 x509.SubjectKeyIdentifier.from_public_key(pubkey),
                 critical=False,
@@ -374,23 +388,28 @@ class HttpdTestCA:
 
     @staticmethod
     def _add_leaf_usages(csr: Any, domains: List[str], issuer: Credentials) -> Any:
-        return csr.add_extension(
+        csr = csr.add_extension(
             x509.BasicConstraints(ca=False, path_length=None),
             critical=True,
-        ).add_extension(
-            x509.AuthorityKeyIdentifier.from_issuer_subject_key_identifier(
-                issuer.certificate.extensions.get_extension_for_class(
-                    x509.SubjectKeyIdentifier).value),
-            critical=False
-        ).add_extension(
+        )
+        if issuer is not None:
+            csr = csr.add_extension(
+                x509.AuthorityKeyIdentifier.from_issuer_subject_key_identifier(
+                    issuer.certificate.extensions.get_extension_for_class(
+                        x509.SubjectKeyIdentifier).value),
+                critical=False
+            )
+        csr = csr.add_extension(
             x509.SubjectAlternativeName([x509.DNSName(domain) for domain in domains]),
             critical=True,
-        ).add_extension(
+        )
+        csr = csr.add_extension(
             x509.ExtendedKeyUsage([
                 ExtendedKeyUsageOID.SERVER_AUTH,
             ]),
             critical=True
         )
+        return csr
 
     @staticmethod
     def _add_client_usages(csr: Any, issuer: Credentials, rfc82name: str = None) -> Any:
@@ -421,6 +440,7 @@ class HttpdTestCA:
                              issuer: Credentials = None,
                              valid_from: timedelta = timedelta(days=-1),
                              valid_to: timedelta = timedelta(days=89),
+                             serial: Optional[int] = None,
                              ) -> Credentials:
         pkey = _private_key(key_type=key_type)
         if issuer is not None:
@@ -432,7 +452,8 @@ class HttpdTestCA:
         subject = HttpdTestCA._make_x509_name(org_name=name, parent=issuer.subject if issuer else None)
         csr = HttpdTestCA._make_csr(subject=subject,
                                     issuer_subject=issuer_subject, pkey=pkey,
-                                    valid_from_delta=valid_from, valid_until_delta=valid_to)
+                                    valid_from_delta=valid_from, valid_until_delta=valid_to,
+                                    serial=serial)
         csr = HttpdTestCA._add_ca_usages(csr)
         cert = csr.sign(private_key=issuer_key,
                         algorithm=hashes.SHA256(),
@@ -444,15 +465,23 @@ class HttpdTestCA:
                                  key_type: Any,
                                  valid_from: timedelta = timedelta(days=-1),
                                  valid_to: timedelta = timedelta(days=89),
+                                 serial: Optional[int] = None,
                                  ) -> Credentials:
         name = name
         pkey = _private_key(key_type=key_type)
-        subject = HttpdTestCA._make_x509_name(common_name=name, parent=issuer.subject)
+        if issuer is not None:
+            issuer_subject = issuer.certificate.subject
+            issuer_key = issuer.private_key
+        else:
+            issuer_subject = None
+            issuer_key = pkey
+        subject = HttpdTestCA._make_x509_name(common_name=name, parent=issuer_subject)
         csr = HttpdTestCA._make_csr(subject=subject,
-                                    issuer_subject=issuer.certificate.subject, pkey=pkey,
-                                    valid_from_delta=valid_from, valid_until_delta=valid_to)
+                                    issuer_subject=issuer_subject, pkey=pkey,
+                                    valid_from_delta=valid_from, valid_until_delta=valid_to,
+                                    serial=serial)
         csr = HttpdTestCA._add_leaf_usages(csr, domains=domains, issuer=issuer)
-        cert = csr.sign(private_key=issuer.private_key,
+        cert = csr.sign(private_key=issuer_key,
                         algorithm=hashes.SHA256(),
                         backend=default_backend())
         return Credentials(name=name, cert=cert, pkey=pkey, issuer=issuer)
@@ -463,14 +492,22 @@ class HttpdTestCA:
                                  key_type: Any,
                                  valid_from: timedelta = timedelta(days=-1),
                                  valid_to: timedelta = timedelta(days=89),
+                                 serial: Optional[int] = None,
                                  ) -> Credentials:
         pkey = _private_key(key_type=key_type)
-        subject = HttpdTestCA._make_x509_name(common_name=name, parent=issuer.subject)
+        if issuer is not None:
+            issuer_subject = issuer.certificate.subject
+            issuer_key = issuer.private_key
+        else:
+            issuer_subject = None
+            issuer_key = pkey
+        subject = HttpdTestCA._make_x509_name(common_name=name, parent=issuer_subject)
         csr = HttpdTestCA._make_csr(subject=subject,
-                                    issuer_subject=issuer.certificate.subject, pkey=pkey,
-                                    valid_from_delta=valid_from, valid_until_delta=valid_to)
+                                    issuer_subject=issuer_subject, pkey=pkey,
+                                    valid_from_delta=valid_from, valid_until_delta=valid_to,
+                                    serial=serial)
         csr = HttpdTestCA._add_client_usages(csr, issuer=issuer, rfc82name=email)
-        cert = csr.sign(private_key=issuer.private_key,
+        cert = csr.sign(private_key=issuer_key,
                         algorithm=hashes.SHA256(),
                         backend=default_backend())
         return Credentials(name=name, cert=cert, pkey=pkey, issuer=issuer)

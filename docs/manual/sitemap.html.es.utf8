@@ -202,6 +202,7 @@ usados para describir las directivas de Apache</a></li>
 <li><a href="mod/mod_allowmethods.html">Módulo Apache mod_allowmethods</a></li>
 <li><a href="mod/mod_asis.html">Módulo Apache mod_asis</a></li>
 <li><a href="mod/mod_auth_basic.html">Módulo Apache mod_auth_basic</a></li>
+<li><a href="mod/mod_auth_bearer.html">Módulo Apache mod_auth_bearer</a></li>
 <li><a href="mod/mod_auth_digest.html">Módulo Apache mod_auth_digest</a></li>
 <li><a href="mod/mod_auth_form.html">Módulo Apache mod_auth_form</a></li>
 <li><a href="mod/mod_authn_anon.html">Módulo Apache mod_authn_anon</a></li>
@@ -212,6 +213,8 @@ usados para describir las directivas de Apache</a></li>
 <li><a href="mod/mod_authn_socache.html">Módulo Apache mod_authn_socache</a></li>
 <li><a href="mod/mod_authnz_fcgi.html">Módulo Apache mod_authnz_fcgi</a></li>
 <li><a href="mod/mod_authnz_ldap.html">Módulo Apache mod_authnz_ldap</a></li>
+<li><a href="mod/mod_autht_core.html">Módulo Apache mod_autht_core</a></li>
+<li><a href="mod/mod_autht_jwt.html">Módulo Apache mod_autht_jwt</a></li>
 <li><a href="mod/mod_authz_core.html">Módulo Apache mod_authz_core</a></li>
 <li><a href="mod/mod_authz_dbd.html">Módulo Apache mod_authz_dbd</a></li>
 <li><a href="mod/mod_authz_dbm.html">Módulo Apache mod_authz_dbm</a></li>
@@ -318,7 +321,6 @@ usados para describir las directivas de Apache</a></li>
 <li><a href="mod/mod_suexec.html">Módulo Apache mod_suexec</a></li>
 <li><a href="mod/mod_syslog.html">Módulo Apache mod_syslog</a></li>
 <li><a href="mod/mod_systemd.html">Módulo Apache mod_systemd</a></li>
-<li><a href="mod/mod_tls.html">Módulo Apache mod_tls</a></li>
 <li><a href="mod/mod_unique_id.html">Módulo Apache mod_unique_id</a></li>
 <li><a href="mod/mod_unixd.html">Módulo Apache mod_unixd</a></li>
 <li><a href="mod/mod_userdir.html">Módulo Apache mod_userdir</a></li>
@@ -379,7 +381,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/sitemap.html';
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2023 The Apache Software Foundation.<br />Licencia bajo los términos de la <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2025 The Apache Software Foundation.<br />Licencia bajo los términos de la <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="./mod/">Módulos</a> | <a href="./mod/quickreference.html">Directivas</a> | <a href="http://wiki.apache.org/httpd/FAQ">Preguntas Frecuentes</a> | <a href="./glossary.html">Glosario</a> | <a href="./sitemap.html">Mapa del sitio web</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

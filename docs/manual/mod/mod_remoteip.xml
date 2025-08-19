@@ -112,6 +112,7 @@ via the request headers.
 <name>RemoteIPHeader</name>
 <description>Declare the header field which should be parsed for useragent IP addresses</description>
 <syntax>RemoteIPHeader <var>header-field</var></syntax>
+<default>none</default>
 <contextlist><context>server config</context><context>virtual host</context></contextlist>
 
 <usage>

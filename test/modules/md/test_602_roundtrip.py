@@ -39,26 +39,22 @@ class TestRoundtripv2:
         conf.add_md(domains)
         conf.install()
         # - restart, check that md is in store
-        assert env.apache_restart() == 0
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
         env.check_md(domains)
         # - drive
         assert env.a2md(["-v", "drive", domain]).exit_code == 0
-        assert env.apache_restart() == 0
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
         env.check_md_complete(domain)
         # - append vhost to config
         conf.add_vhost(domains)
         conf.install()
-        assert env.apache_restart() == 0
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
         # check: SSL is running OK
         cert = env.get_cert(domain)
         assert domain in cert.get_san_list()
+
         # check file system permissions:
         env.check_file_permissions(domain)
-        env.httpd_error_log.ignore_recent(
-            lognos = [
-                "AH10045"   # No VirtualHost matches Managed Domain
-            ]
-        )
 
     def test_md_602_001(self, env):
         # test case: same as test_600_000, but with two parallel managed domains
@@ -75,14 +71,14 @@ class TestRoundtripv2:
         conf.install()
 
         # - restart, check that md is in store
-        assert env.apache_restart() == 0
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
         env.check_md(domains_a)
         env.check_md(domains_b)
 
         # - drive
         assert env.a2md(["drive", domain_a]).exit_code == 0
         assert env.a2md(["drive", domain_b]).exit_code == 0
-        assert env.apache_restart() == 0
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
         env.check_md_complete(domain_a)
         env.check_md_complete(domain_b)
 
@@ -92,16 +88,11 @@ class TestRoundtripv2:
         conf.install()
 
         # check: SSL is running OK
-        assert env.apache_restart() == 0
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
         cert_a = env.get_cert(domain_a)
         assert domains_a == cert_a.get_san_list()
         cert_b = env.get_cert(domain_b)
         assert domains_b == cert_b.get_san_list()
-        env.httpd_error_log.ignore_recent(
-            lognos = [
-                "AH10045"   # No VirtualHost matches Managed Domain
-            ]
-        )
 
     def test_md_602_002(self, env):
         # test case: one md, that covers two vhosts
@@ -117,12 +108,12 @@ class TestRoundtripv2:
         conf.install()
         
         # - restart, check that md is in store
-        assert env.apache_restart() == 0
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
         env.check_md(domains)
 
         # - drive
         assert env.a2md(["drive", domain]).exit_code == 0
-        assert env.apache_restart() == 0
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
         env.check_md_complete(domain)
 
         # - append vhost to config
@@ -135,7 +126,7 @@ class TestRoundtripv2:
         self._write_res_file(os.path.join(env.server_docs_dir, "b"), "name.txt", name_b)
 
         # check: SSL is running OK
-        assert env.apache_restart() == 0
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
         cert_a = env.get_cert(name_a)
         assert name_a in cert_a.get_san_list()
         cert_b = env.get_cert(name_b)
@@ -143,11 +134,6 @@ class TestRoundtripv2:
         assert cert_a.same_serial_as(cert_b)
         assert env.get_content(name_a, "/name.txt") == name_a
         assert env.get_content(name_b, "/name.txt") == name_b
-        env.httpd_error_log.ignore_recent(
-            lognos = [
-                "AH10045"   # No VirtualHost matches Managed Domain
-            ]
-        )
 
     # --------- _utils_ ---------
 

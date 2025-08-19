@@ -1,0 +1,5 @@
+FROM quay.io/centos/centos:stream9
+RUN rpm -q openldap-servers || (dnf install --refresh -y epel-release && \
+    dnf install --nobest -y openldap-clients openldap-servers openldap-devel && \
+    dnf -y clean all --enablerepo='*')
+CMD /usr/sbin/slapd -u ldap -d1 '-h ldap:// ldapi:///'

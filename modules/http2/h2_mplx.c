@@ -29,6 +29,7 @@
 #include <http_connection.h>
 #include <http_log.h>
 #include <http_protocol.h>
+#include <scoreboard.h>
 
 #include <mpm_common.h>
 
@@ -398,6 +399,7 @@ apr_status_t h2_mplx_c1_streams_do(h2_mplx *m, h2_mplx_stream_cb *cb, void *ctx)
 typedef struct {
     int stream_count;
     int stream_want_send;
+    int stream_send_win_exhausted;
 } stream_iter_aws_t;
 
 static int m_stream_want_send_data(void *ctx, void *stream)
@@ -418,6 +420,29 @@ int h2_mplx_c1_all_streams_want_send_data(h2_mplx *m)
     h2_ihash_iter(m->streams, m_stream_want_send_data, &x);
     H2_MPLX_LEAVE(m);
     return x.stream_count && (x.stream_count == x.stream_want_send);
+}
+
+static int m_stream_send_win_exh(void *ctx, void *s)
+{
+    h2_stream *stream = s;
+    int win;
+    stream_iter_aws_t *x = ctx;
+    ++x->stream_count;
+    win = nghttp2_session_get_stream_remote_window_size(stream->session->ngh2, stream->id);
+    if (win == 0)
+      ++x->stream_send_win_exhausted;
+    return 1;
+}
+
+int h2_mplx_c1_all_streams_send_win_exhausted(h2_mplx *m)
+{
+    stream_iter_aws_t x;
+    x.stream_count = 0;
+    x.stream_send_win_exhausted = 0;
+    H2_MPLX_ENTER(m);
+    h2_ihash_iter(m->streams, m_stream_send_win_exh, &x);
+    H2_MPLX_LEAVE(m);
+    return x.stream_count && (x.stream_count == x.stream_send_win_exhausted);
 }
 
 static int m_report_stream_iter(void *ctx, void *val) {
@@ -951,7 +976,9 @@ static void s_c2_done(h2_mplx *m, conn_rec *c2, h2_conn_ctx_t *conn_ctx)
     /* From here on, the final handling of c2 is done by c1 processing.
      * Which means we can give it c1's scoreboard handle for updates. */
     c2->sbh = m->c1->sbh;
-
+#if AP_MODULE_MAGIC_AT_LEAST(20211221, 29)
+    ap_set_time_process_request(c2->sbh,conn_ctx->started_at,conn_ctx->done_at);
+#endif
     ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, c2,
                   "h2_mplx(%s-%d): request done, %f ms elapsed",
                   conn_ctx->id, conn_ctx->stream_id,
@@ -994,7 +1021,8 @@ static void s_c2_done(h2_mplx *m, conn_rec *c2, h2_conn_ctx_t *conn_ctx)
         int i;
 
         for (i = 0; i < m->spurge->nelts; ++i) {
-            if (stream == APR_ARRAY_IDX(m->spurge, i, h2_stream*)) {
+            stream = APR_ARRAY_IDX(m->spurge, i, h2_stream*);
+            if (stream && (stream->id == conn_ctx->stream_id)) {
                 ap_log_cerror(APLOG_MARK, APLOG_WARNING, 0, c2,
                               H2_STRM_LOG(APLOGNO(03517), stream, "already in spurge"));
                 ap_assert("stream should not be in spurge" == NULL);
@@ -1058,8 +1086,9 @@ static void s_mplx_be_happy(h2_mplx *m, conn_rec *c, h2_conn_ctx_t *conn_ctx)
             m->last_mood_change = now;
             m->irritations_since = 0;
             ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, c,
-                          H2_MPLX_MSG(m, "mood update, increasing worker limit to %d"),
-                          m->processing_limit);
+                          H2_MPLX_MSG(m, "mood update, increasing worker limit"
+                          "to %d, processing %d right now"),
+                          m->processing_limit, m->processing_count);
         }
     }
 }
@@ -1088,8 +1117,9 @@ static void m_be_annoyed(h2_mplx *m)
             m->last_mood_change = now;
             m->irritations_since = 0;
             ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, m->c1,
-                          H2_MPLX_MSG(m, "mood update, decreasing worker limit to %d"),
-                          m->processing_limit);
+                          H2_MPLX_MSG(m, "mood update, decreasing worker limit "
+                          "to %d, processing %d right now"),
+                          m->processing_limit, m->processing_count);
         }
     }
 }
@@ -1113,6 +1143,7 @@ static int reset_is_acceptable(h2_stream *stream)
      * The responses to such requests continue forever otherwise.
      *
      */
+    if (stream->rst_error) return 0; /* errored stream. bad. */
     if (!stream_is_running(stream)) return 1;
     if (!(stream->id & 0x01)) return 1; /* stream initiated by us. acceptable. */
     if (!stream->response) return 0; /* no response headers produced yet. bad. */
@@ -1237,7 +1268,7 @@ static apr_status_t mplx_pollset_poll(h2_mplx *m, apr_interval_time_t timeout,
                 if (on_stream_input) {
                     APR_ARRAY_PUSH(m->streams_ev_in, h2_stream*) = m->stream0;
                 }
-                continue;
+                break;
             }
         }
 

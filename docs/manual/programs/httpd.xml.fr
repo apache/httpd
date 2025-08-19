@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1779469 -->
+<!-- English Revision: 1926737 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -171,15 +171,9 @@ démarrage/redémarrage.</dd>
 configuration seulement. Le programme se termine immédiatement après ces
 tests de vérification de syntaxe avec soit un code de retour de 0
 (syntaxe OK), soit un code de retour différent de 0 (erreur de
-syntaxe). Si -D <var>DUMP</var>_<var>VHOSTS </var> est défini, les
-détails de la configuration des serveurs virtuels seront affichés. Si -D
-<var>DUMP</var>_<var>MODULES </var> est défini, tous les modules chargés
-seront affichés. Si -D <var>DUMP</var>_<var>CERTS </var> est défini et
-si <module>mod_ssl</module> est utilisé, les certificats SSL définis
-seront affichés. Si -D <var>DUMP</var>_<var>CA</var>_<var>_CERTS </var>
-est défini et si <module>mod_ssl</module> est utilisé, les certificats
-de CA SSL ainsi que les répertoires contenant de tels certificats
-seront affichés.</dd>
+syntaxe). Cette option peut être combinée avec plusieurs arguments <var>-D
+DUMP_...</var> pour afficher des informations à propos de la configuration <a
+href="#dumpconf">comme indiqué ci-après</a>.</dd>
 
 <dt><code>-v</code></dt>
 
@@ -219,6 +213,28 @@ que le message d'erreur puisse être lu.</dd>
 
 </dl>
 
+ </section>
+ 
+<section id="dumpconf"><title>Affichage des options de configuration</title>
+
+<p>Les options suivantes peuvent être combinées avec l’option <var>-t</var> pour
+afficher des informations à propos de la configuration :</p>
+
+<dl>
+  <dt><var>-D DUMP_VHOSTS</var></dt> <dd>affichage détaillé de la configuration
+  des serveurs virtuels.</dd>
+
+  <dt><var>-D DUMP_MODULES</var></dt> <dd>affichage détaillé de tous les modules
+  chargés dans un format lisible pour un humain.</dd>
+
+  <dt><var>-D DUMP_MODULES</var> <var>-D DUMP_MODULE_DATA</var></dt>
+  <dd>affichage détaillé de tous les modules chargés dans un format structuré
+  (TOML).</dd>
+
+  <dt><var>-D DUMP_CERTS</var></dt>
+  <dd>affichage détaillé des certificats SSL/TLS configurés (si
+  <module>mod_ssl</module> est chargé).</dd>
+</dl>
 </section>
 
 </manualpage>

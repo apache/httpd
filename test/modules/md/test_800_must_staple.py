@@ -17,7 +17,7 @@ class TestMustStaple:
         env.check_acme()
         env.clear_store()
         MDConf(env).install()
-        assert env.apache_restart() == 0
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
 
     @pytest.fixture(autouse=True, scope='function')
     def _method_scope(self, env, request):
@@ -33,7 +33,7 @@ class TestMustStaple:
     # MD with default, e.g. not staple
     def test_md_800_001(self, env):
         self.configure_httpd(env, self.domain)
-        assert env.apache_restart() == 0
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
         assert env.await_completion([self.domain])
         env.check_md_complete(self.domain)
         cert1 = MDCertUtil(env.store_domain_file(self.domain, 'pubcert.pem'))
@@ -42,7 +42,7 @@ class TestMustStaple:
     # MD that should explicitly not staple
     def test_md_800_002(self, env):
         self.configure_httpd(env, self.domain, "MDMustStaple off")
-        assert env.apache_restart() == 0
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
         env.check_md_complete(self.domain)
         cert1 = MDCertUtil(env.store_domain_file(self.domain, 'pubcert.pem'))
         assert not cert1.get_must_staple()
@@ -53,13 +53,13 @@ class TestMustStaple:
     @pytest.mark.skipif(MDTestEnv.lacks_ocsp(), reason="no OCSP responder")
     def test_md_800_003(self, env):
         self.configure_httpd(env, self.domain, "MDMustStaple on")
-        assert env.apache_restart() == 0
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
         assert env.await_completion([self.domain])
         env.check_md_complete(self.domain)
         cert1 = MDCertUtil(env.store_domain_file(self.domain, 'pubcert.pem'))
         assert cert1.get_must_staple()
         self.configure_httpd(env, self.domain, "MDMustStaple off")
-        assert env.apache_restart() == 0
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
         assert env.await_completion([self.domain])
         env.check_md_complete(self.domain)
         cert1 = MDCertUtil(env.store_domain_file(self.domain, 'pubcert.pem'))
@@ -78,7 +78,7 @@ class TestMustStaple:
             SSLUseStapling On
             SSLStaplingCache shmcb:stapling_cache(128000)
             """)
-        assert env.apache_restart() == 0
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
         stat = env.get_ocsp_status(self.domain)
         assert stat['ocsp'] == "successful (0x0)" 
         assert stat['verify'] == "0 (ok)"

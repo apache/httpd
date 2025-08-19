@@ -178,6 +178,7 @@ Windows ile Apache Kullanımı</a></li>
 <li><a href="mod/mod_allowmethods.html">Apache Modülü mod_allowmethods</a></li>
 <li><a href="mod/mod_asis.html">Apache Modülü mod_asis</a></li>
 <li><a href="mod/mod_auth_basic.html">Apache Modülü mod_auth_basic</a></li>
+<li><a href="mod/mod_auth_bearer.html">Apache Modülü mod_auth_bearer</a></li>
 <li><a href="mod/mod_auth_digest.html">Apache Modülü mod_auth_digest</a></li>
 <li><a href="mod/mod_auth_form.html">Apache Modülü mod_auth_form</a></li>
 <li><a href="mod/mod_authn_anon.html">Apache Modülü mod_authn_anon</a></li>
@@ -188,6 +189,8 @@ Windows ile Apache Kullanımı</a></li>
 <li><a href="mod/mod_authn_socache.html">Apache Modülü mod_authn_socache</a></li>
 <li><a href="mod/mod_authnz_fcgi.html">Apache Modülü mod_authnz_fcgi</a></li>
 <li><a href="mod/mod_authnz_ldap.html">Apache Modülü mod_authnz_ldap</a></li>
+<li><a href="mod/mod_autht_core.html">Apache Modülü mod_autht_core</a></li>
+<li><a href="mod/mod_autht_jwt.html">Apache Modülü mod_autht_jwt</a></li>
 <li><a href="mod/mod_authz_core.html">Apache Modülü mod_authz_core</a></li>
 <li><a href="mod/mod_authz_dbd.html">Apache Modülü mod_authz_dbd</a></li>
 <li><a href="mod/mod_authz_dbm.html">Apache Modülü mod_authz_dbm</a></li>
@@ -294,7 +297,6 @@ Windows ile Apache Kullanımı</a></li>
 <li><a href="mod/mod_suexec.html">Apache Modülü mod_suexec</a></li>
 <li><a href="mod/mod_syslog.html">Apache Modülü mod_syslog</a></li>
 <li><a href="mod/mod_systemd.html">Apache Modülü mod_systemd</a></li>
-<li><a href="mod/mod_tls.html">Apache Modülü mod_tls</a></li>
 <li><a href="mod/mod_unique_id.html">Apache Modülü mod_unique_id</a></li>
 <li><a href="mod/mod_unixd.html">Apache Modülü mod_unixd</a></li>
 <li><a href="mod/mod_userdir.html">Apache Modülü mod_userdir</a></li>
@@ -351,7 +353,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/sitemap.html';
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2023 The Apache Software Foundation.<br /><a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> altında lisanslıdır.</p>
+<p class="apache">Copyright 2025 The Apache Software Foundation.<br /><a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> adı altında lisanslıdır.</p>
 <p class="menu"><a href="./mod/">Modüller</a> | <a href="./mod/quickreference.html">Yönergeler</a> | <a href="http://wiki.apache.org/httpd/FAQ">SSS</a> | <a href="./glossary.html">Terimler</a> | <a href="./sitemap.html">Site Haritası</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

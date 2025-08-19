@@ -35,3 +35,5 @@ def _h2_package_scope(env):
         'AH10400',  # warning that 'enablereuse' has not effect in certain configs
         'AH00045',  # child did not exit in time, SIGTERM was sent
     ])
+    yield
+    assert env.apache_stop() == 0

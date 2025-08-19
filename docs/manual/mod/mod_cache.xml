@@ -39,7 +39,7 @@
     variable.</note>
 
     <p><module>mod_cache</module> implements an <a
-    href="http://www.ietf.org/rfc/rfc2616.txt">RFC 2616</a> compliant
+    href="https://www.rfc-editor.org/rfc/rfc2616">RFC 2616</a> compliant
     <strong>HTTP content caching filter</strong>, with support for the caching
     of content negotiated responses containing the Vary header.</p>
 

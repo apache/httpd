@@ -23,6 +23,7 @@ struct md_pkey_t;
 struct md_cert_t;
 struct md_result_t;
 struct md_pkey_spec_t;
+struct md_ocsp_reg_t;
 
 #include "md_store.h"
 
@@ -182,6 +183,14 @@ int md_reg_should_renew(md_reg_t *reg, const md_t *md, apr_pool_t *p);
  */
 apr_time_t md_reg_renew_at(md_reg_t *reg, const md_t *md, apr_pool_t *p);
 
+/* Check ACME Renewal Info, if available, for the CA recommended time
+ * (and optional reason URL) for certificate renewal.
+ * Returns 0 if not availble.
+ */
+apr_time_t md_reg_ari_renew_at(const char **purl, md_reg_t *reg,
+                               const md_t *md, struct apr_table_t *env,
+                               struct md_result_t *result, apr_pool_t *p);
+
 /**
  * Return the timestamp up to which *all* certificates for the MD can be used.
  * A value of 0 indicates that there is no certificate.
@@ -232,6 +241,8 @@ typedef apr_status_t md_proto_init_preload_cb(md_proto_driver_t *driver, struct 
 typedef apr_status_t md_proto_preload_cb(md_proto_driver_t *driver, 
                                          md_store_group_t group, struct md_result_t *result);
 typedef apr_status_t md_proto_complete_md_cb(md_t *md, apr_pool_t *p);
+typedef apr_status_t md_proto_get_ari(md_proto_driver_t *driver, struct md_result_t *result,
+                                      apr_time_t *prenew_at, const char **purl);
 
 struct md_proto_t {
     const char *protocol;
@@ -240,6 +251,7 @@ struct md_proto_t {
     md_proto_init_preload_cb *init_preload;
     md_proto_preload_cb *preload;
     md_proto_complete_md_cb *complete_md;
+    md_proto_get_ari *get_ari;
 };
 
 /**
@@ -309,5 +321,11 @@ apr_status_t md_reg_lock_global(md_reg_t *reg, apr_pool_t *p);
  * Realease the global registry lock. Will do nothing if there is no lock.
  */
 void md_reg_unlock_global(md_reg_t *reg, apr_pool_t *p);
+
+/**
+ * @return != 0 iff `md` has any certificates known to be REVOKED.
+ */
+int md_reg_has_revoked_certs(md_reg_t *reg, struct md_ocsp_reg_t *ocsp,
+                             const md_t *md, apr_pool_t *p);
 
 #endif /* mod_md_md_reg_h */

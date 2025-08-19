@@ -994,7 +994,7 @@ static int x_handler(request_rec *r)
      * Set the Content-type header. Note that we do not actually have to send
      * the headers: this is done by the http core.
      */
-    ap_set_content_type(r, "text/html");
+    ap_set_content_type_ex(r, "text/html", 1);
     /*
      * If we're only supposed to send header information (HEAD request), we're
      * already there.

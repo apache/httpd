@@ -25,6 +25,11 @@ APACHE_MODULE(systemd, Systemd support, , , no, [
     AC_MSG_WARN([Your system does not support systemd.])
     enable_systemd="no"
   else
+    AC_CHECK_LIB(selinux, is_selinux_enabled, [
+      AC_DEFINE(HAVE_SELINUX, 1, [Defined if SELinux is supported])
+      APR_ADDTO(MOD_SYSTEMD_LDADD, [-lselinux])
+    ])
+
     APR_ADDTO(MOD_SYSTEMD_LDADD, [$SYSTEMD_LIBS])
   fi
 ])
