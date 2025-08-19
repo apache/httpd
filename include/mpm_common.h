@@ -63,6 +63,14 @@ extern "C" {
 #define DEFAULT_LISTENBACKLOG 511
 #endif
 
+/*
+ * Define the default value set for the socket option TCP_DEFER_ACCEPT
+ * if it is set.
+ */
+#ifndef DEFAULT_TCP_DEFER_ACCEPT
+#define DEFAULT_TCP_DEFER_ACCEPT 30
+#endif
+
 /* Signal used to gracefully restart */
 #define AP_SIG_GRACEFUL SIGUSR1
 
