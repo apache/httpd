@@ -179,9 +179,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c 1927792 ^/httpd/httpd/trunk .
      +1: icing, rpluem
 
-  *) mod_md: update to version 2.6.1
-     trunk patch: http://svn.apache.org/r1927807
-     2.4.x patch: svn merge -c 1927807 ^/httpd/httpd/trunk .
+  *) mod_md: update to version 2.6.2
+     trunk patch:
+        http://svn.apache.org/r1927807
+        http://svn.apache.org/r1927874
+     2.4.x patch: svn merge -c 1927807,1927874 ^/httpd/httpd/trunk .
      Might need some resolving in test code, as trunk and 2.4.x
      are not in sync.
      +1: icing,
