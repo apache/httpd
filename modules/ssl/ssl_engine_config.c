@@ -223,7 +223,7 @@ static SSLSrvConfigRec *ssl_config_server_new(apr_pool_t *p)
     sc->clienthello_vars       = UNSET;
     sc->session_tickets        = UNSET;
 #ifdef HAVE_OPENSSL_ECH
-    sc->echkeydir             = NULL;
+    sc->echkeydir              = NULL;
 #endif
 
     modssl_ctx_init_server(sc, p);
@@ -852,10 +852,9 @@ const char *ssl_cmd_SSLECHKeyDir(cmd_parms *cmd, void *dcfg, const char *arg)
     SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
 
     sc->echkeydir=arg;
-    ap_log_error(APLOG_MARK, APLOG_TRACE4, 0, cmd->server, APLOGNO(10519)
+    ap_log_error(APLOG_MARK, APLOG_TRACE4, 0, cmd->server,
                  "%s: ECHKeyDir set to %s",
                  cmd->cmd->name, sc->echkeydir);
-
     return NULL;
 }
 #endif

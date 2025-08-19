@@ -1502,6 +1502,11 @@ int ssl_hook_Fixup(request_rec *r)
     SSLConnRec *sslconn;
     SSL *ssl;
     int i;
+#ifdef HAVE_OPENSSL_ECH
+    char *inner_sni = NULL, *outer_sni = NULL;
+    char buf[PATH_MAX];
+    int echrv;
+#endif
 
     if (!modssl_request_is_tls(r, &sslconn)) {
         return DECLINED;
@@ -1522,34 +1527,28 @@ int ssl_hook_Fixup(request_rec *r)
 #endif
 
 #ifdef HAVE_OPENSSL_ECH
-    /*
-     * Add the ECH information to the environment 
-     */
-    char *inner_sni=NULL;
-    char *outer_sni=NULL;
-    char buf[PATH_MAX];
-    memset(buf,0,PATH_MAX);
-    int echrv=SSL_ech_get1_status((SSL*)ssl,&inner_sni,&outer_sni);
+    /* Add the ECH information to the environment */
+    memset(buf, 0, PATH_MAX);
+    echrv = SSL_ech_get1_status((SSL*)ssl, &inner_sni, &outer_sni);
     switch (echrv) {
     case SSL_ECH_STATUS_NOT_TRIED:
-        snprintf(buf,PATH_MAX,"not attempted");
+        snprintf(buf, PATH_MAX, "not attempted");
         break;
     case SSL_ECH_STATUS_FAILED:
-        snprintf(buf,PATH_MAX,"tried but failed");
+        snprintf(buf, PATH_MAX, "tried but failed");
         break;
     case SSL_ECH_STATUS_BAD_NAME:
-        snprintf(buf,PATH_MAX,"ECH worked but bad name");
+        snprintf(buf, PATH_MAX, "ECH worked but bad name");
         break;
     case SSL_ECH_STATUS_SUCCESS:
-        snprintf(buf,PATH_MAX,"success");
+        snprintf(buf, PATH_MAX, "success");
         break;
     default:
-        snprintf(buf,PATH_MAX, "error getting ECH status");
+        snprintf(buf, PATH_MAX, "error getting ECH status");
     }
-    apr_table_set(env, "SSL_ECH_INNER_SNI", (inner_sni?inner_sni:"NONE"));
-    apr_table_set(env, "SSL_ECH_OUTER_SNI", (outer_sni?outer_sni:"NONE"));
+    apr_table_set(env, "SSL_ECH_INNER_SNI", (inner_sni ? inner_sni : "NONE"));
+    apr_table_set(env, "SSL_ECH_OUTER_SNI", (outer_sni ? outer_sni : "NONE"));
     apr_table_set(env, "SSL_ECH_STATUS", buf);
-
 #endif
 
     /* standard SSL environment variables */
@@ -2419,13 +2418,14 @@ unsigned int ssl_callback_ECH(SSL *ssl, const char *str)
     int echrv;
     conn_rec *c = NULL;
     const char *ech_servername;
+    apr_status_t ivstatus;
 
     c = (conn_rec *)SSL_get_app_data(ssl);
     ech_servername = SSL_get_servername(ssl, TLSEXT_NAMETYPE_host_name);
     if (ech_servername == NULL) {
         return SSL_TLSEXT_ERR_NOACK;
     }
-    echrv=SSL_ech_get1_status((SSL*)ssl,&inner_sni,&outer_sni);
+    echrv = SSL_ech_get1_status((SSL*)ssl, &inner_sni, &outer_sni);
     switch (echrv) {
     case SSL_ECH_STATUS_NOT_TRIED:
         ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, c, APLOGNO(10534)
@@ -2442,18 +2442,19 @@ unsigned int ssl_callback_ECH(SSL *ssl, const char *str)
     case SSL_ECH_STATUS_SUCCESS:
         ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, c, APLOGNO(10537)
             "ECH success outer_sni: %s inner_sni: %s",
-            (outer_sni?outer_sni:"NONE"),(inner_sni?inner_sni:"NONE"));
+            (outer_sni ? outer_sni : "NONE"),
+            (inner_sni ? inner_sni : "NONE"));
         break;
     default:
         ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, c, APLOGNO(10538)
             "Error getting ECH status");
     }
 
-    /* try init vhost and see what breaks */
-    apr_status_t ivstatus=init_vhost(c, ssl, ech_servername);
-    if (ivstatus!=APR_SUCCESS) {
+    /* try init vhost and see if it works */
+    ivstatus = init_vhost(c, ssl, ech_servername);
+    if (ivstatus != APR_SUCCESS) {
         ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, c, APLOGNO(10539)
-                      "init_vhost failed for %s",ech_servername);
+                      "init_vhost failed for %s", ech_servername);
         return SSL_TLSEXT_ERR_NOACK;
     }
     return 1;
@@ -2532,7 +2533,6 @@ int ssl_callback_ClientHello(SSL *ssl, int *al, void *arg)
     (void)arg;
 
 #ifdef HAVE_OPENSSL_ECH
-
     if (SSL_client_hello_get0_ext(ssl, TLSEXT_TYPE_ech, &pos, &remaining)) {
         ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, c, APLOGNO(10540)
                       "there is an ECH extension");
