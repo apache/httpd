@@ -269,7 +269,7 @@ static void ap_apply_accept_filter(apr_pool_t *p, ap_listen_rec *lis,
                           accf);
         }
 #else
-        rv = apr_socket_opt_set(s, APR_TCP_DEFER_ACCEPT, ap_listenbacklog);
+        rv = apr_socket_opt_set(s, APR_TCP_DEFER_ACCEPT, ap_listentcpdeferaccept);
         if (rv != APR_SUCCESS && !APR_STATUS_IS_ENOTIMPL(rv)) {
             ap_log_perror(APLOG_MARK, APLOG_WARNING, rv, p, APLOGNO(00076)
                               "Failed to enable APR_TCP_DEFER_ACCEPT");
