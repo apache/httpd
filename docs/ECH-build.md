@@ -219,3 +219,35 @@ of the configuration, without dropping existing connections.
 > code](https://github.com/lighttpd/lighttpd1.4/blob/master/src/mod_openssl.c#L799)
 > for details.
 
+## Building the docs
+
+Early comments suggested moving some of the above into XML source
+docuemnts, especially `docs/manual/mod/mod_ssl.xml`. That then needs
+to be built which requires another repo:
+
+```bash
+$ cd /home/user/code/httpd
+$ cd docs/manual
+$ git clone https://github.com/apache/httpd-docs-build.git build
+$ cd build
+```
+
+To get things working I needed to install an OpenJDK version,
+to set the `JAVA_HOME` environment variable and to also modify
+the `build.sh` script to remove `-Xbootclasspath/p:"$LOCALCLASSPATH"`
+from the last line of the script, and then:
+
+```bash
+$ ./build.sh
+...
+``` 
+
+This re-builds many files we don't want to commit, so only add the
+`mod_ssl.xml` file and directly derived files that seem to mention ECH, at
+present, that set being:
+
+- `docs/manual/mod/mod_ssl.xml` 
+- `docs/manual/mod/mod_ssl.html.en.utf8` 
+- `docs/manual/mod/directives.html.en.utf8`
+- `docs/manual/mod/quickreference.html.en.utf8`
+

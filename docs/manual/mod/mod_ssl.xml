@@ -118,6 +118,9 @@ compatibility variables.</p>
 <tr><td><code>SSL_CLIENTHELLO_SIG_ALGOS</code></td>     <td>string</td>    <td>Value of Signature Algorithms extension (13) from ClientHello as four hex encoded characters per item</td></tr>
 <tr><td><code>SSL_CLIENTHELLO_ALPN</code></td>          <td>string</td>    <td>Value of ALPN extension (16) from ClientHello as hex encoded string including leading string lengths</td></tr>
 <tr><td><code>SSL_CLIENTHELLO_VERSIONS</code></td>      <td>string</td>    <td>Value of Supported Versions extension (43) from ClientHello as four hex encoded characters per item</td></tr>
+<tr><td><code>SSL_ECH_STATUS</code></td>                <td>string</td>    <td><code>success</code> means that others also mean what they say</td></tr>
+<tr><td><code>SSL_ECH_INNER_SNI</code></td>             <td>string</td>    <td>SNI value that was encrypted in ECH (or `NONE`)</td></tr>
+<tr><td><code>SSL_ECH_OUTER_SNI</code></td>             <td>string</td>    <td>SNI value that was seen in plaintext SNI (or `NONE`)</td></tr>
 </table>
 
 <p><em>x509</em> specifies a component of an X.509 DN; one of
@@ -3012,6 +3015,124 @@ overwritten. Configuration directives following an SSLPolicy may overwrite it.
 httpd -t -D DUMP_SSL_POLICIES
 </highlight>
 </example>
+
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>SSLECHKeyDir</name>
+<description>Load the set of Encrypted Client Hello (ECH) PEM files in the named directory</description>
+<syntax>SSLECHKeyDir <em>dirname</em></syntax>
+<contextlist><context>server config</context></contextlist>
+<compatibility>Available in httpd 2.X.0 and later</compatibility>
+
+<usage>
+
+<p>
+ECH is specified in
+    <a href="https://datatracker.ietf.org/doc/draft-ietf-tls-esni/">draft-ietf-tls-esni</a>
+httpd supports ECH "shared-mode" where the httpd instance does the
+ECH decryption and also hosts both the ECH `public-name` and `backend` web
+sites.  
+</p>
+
+<p>
+The <code>SSLECHKeyDir</code> directive 
+names the directory where ECH PEM files (named <code>*.ech</code>) are stored.
+Once an ECH PEM file is successfully loaded, httpd will perform ECH decryption
+and, if that succeeds, will process the relevant TLS session using the 
+SNI from the inner ClientHello.
+</p>
+
+<example><title>Example ECH Config</title>
+<highlight language="config">
+...
+SSLEngine On
+SSLProtocol TLSv1.3
+SSLECHKeyDir /etc/apache2/echkeydir
+...
+# virtual hosts
+&lt;VirtualHost *:443&gt;
+    SSLEngine On
+    SSLProtocol TLSv1.3
+    ServerName example.com
+    DocumentRoot "/var/www/dir-example.com"
+&lt;/VirtualHost&gt;
+&lt;VirtualHost *:443&gt;
+    SSLEngine On
+    SSLProtocol TLSv1.3
+    ServerName foo.example.com
+    DocumentRoot "/var/www/dir-foo.example.com"
+&lt;/VirtualHost&gt;
+...
+</highlight>
+</example>
+
+<note><title>ECH Key Generation and Publication</title>
+<p>
+In the above, we describe a configuration that uses <code>example.com</code> as the
+ECH <code>public-name</code> and where <code>foo.example.com</code> is a web-site for which we want
+ECH to be used, with both hosted on the same httpd instance.
+</p>
+<p>
+Using ECH requries that httpd load an ECH key pair with a private value for ECH
+decryption. Browsers will require that the public component of that key pair be
+published in the DNS. With OpenSSL we generate and store that key pair in an ECH PEM
+formatted file as shown below.
+</p>
+<p>
+To generate ECH PEM files, use the ECH-enabled openssl command line
+to generate an ECH key pair and store the result in an ECH PEM file.
+You must also supply the <code>public-name</code> required by the ECH protocol.
+</p>
+<p>
+Key generation operations should be carried out under whatever local account is
+used for httpd configuration.
+</p>
+<example><title>Example: ECH Key Generation</title>
+<highlight language="config">
+~# OSSL=/home/user/code/openssl/apps/openssl
+~# mkdir -p /etc/apache2/echkeydir
+~# chmod 700 /etc/apache2/echkeydir
+~# cd /etc/apache2/echkeydir
+~# $OSSL ech -public-name example.com -o example.com.pem.ech
+~# cat example.com.pem.ech
+-----BEGIN PRIVATE KEY-----
+MC4CAQAwBQYDK2VuBCIEIJi22Im2rJ/lJqzNFZdGfsVfmknXAc8xz3fYPhD0Na5I
+-----END PRIVATE KEY-----
+-----BEGIN ECHCONFIG-----
+AD7+DQA6QwAgACA8mxkEsSTp2xXC/RUFCC6CZMMgdM4x1iTWKu3EONjbMAAEAAEA
+AQALZXhhbXBsZS5vcmcAAA==
+-----END ECHCONFIG-----
+</highlight>
+</example>
+<p>
+The ECHConfig value then needs to be published in an HTTPS resource record in
+the DNS, so as to be accessible as shown below:
+</p>
+<example>
+$ dig +short HTTPS foo.example.com
+1 . ech=AD7+DQA6QwAgACA8mxkEsSTp2xXC/RUFCC6CZMMgdM4x1iTWKu3EONjbMAAEAAEAAQALZXhhbXBsZS5vcmcAAA==
+$ 
+</example>
+<p>
+Various other fields may be included in an HTTPS resource record. For many
+httpd deployments, existing methods for publishing DNS records may be used to
+achieve the above.  In some cases, one might use
+<a href="https://datatracker.ietf.org/doc/html/draft-ietf-tls-wkech">
+A well-known URI for publishing service parameters</a>
+designed to assist web servers in handling e.g. frequent ECH key rotation.
+</p>
+</note>
+
+<note><title>Reloading ECH Keys</title>
+
+<p>
+Giving httpd a command line argument of <code>-k graceful</code> causes a graceful reload
+of the configuration, without dropping existing connections.
+</p>
+
+</note>
 
 </usage>
 </directivesynopsis>
