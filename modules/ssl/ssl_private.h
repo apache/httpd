@@ -1230,6 +1230,12 @@ void modssl_var_extract_dns(apr_table_t *t, SSL *ssl, apr_pool_t *p);
  * from SSL object 'ssl', allocating from 'p'. */
 void modssl_var_extract_san_entries(apr_table_t *t, SSL *ssl, apr_pool_t *p);
 
+#ifdef HAVE_OPENSSL_ECH
+/* Extract SSL_ ECH status variables into table 't'
+ * from SSL object 'ssl', allocating from 'p'. */
+void modssl_var_extract_ech_status(apr_table_t *t, SSL *ssl, apr_pool_t *p);
+#endif
+
 #ifndef OPENSSL_NO_OCSP
 /* Perform OCSP validation of the current cert in the given context.
  * Returns non-zero on success or zero on failure.  On failure, the

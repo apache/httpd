@@ -3024,7 +3024,7 @@ httpd -t -D DUMP_SSL_POLICIES
 <description>Load the set of Encrypted Client Hello (ECH) PEM files in the named directory</description>
 <syntax>SSLECHKeyDir <em>dirname</em></syntax>
 <contextlist><context>server config</context></contextlist>
-<compatibility>Available in httpd 2.X.0 and later</compatibility>
+<compatibility>Available in Apache HTTP Server 2.5.1 and later</compatibility>
 
 <usage>
 
@@ -3110,10 +3110,11 @@ AQALZXhhbXBsZS5vcmcAAA==
 The ECHConfig value then needs to be published in an HTTPS resource record in
 the DNS, so as to be accessible as shown below:
 </p>
-<example>
+<example><title>Accessing an ECH config from DNS</title>
+<highlight language="config">
 $ dig +short HTTPS foo.example.com
 1 . ech=AD7+DQA6QwAgACA8mxkEsSTp2xXC/RUFCC6CZMMgdM4x1iTWKu3EONjbMAAEAAEAAQALZXhhbXBsZS5vcmcAAA==
-$ 
+</highlight>
 </example>
 <p>
 Various other fields may be included in an HTTPS resource record. For many

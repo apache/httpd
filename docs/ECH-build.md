@@ -242,12 +242,9 @@ $ ./build.sh
 ...
 ``` 
 
-This re-builds many files we don't want to commit, so only add the
-`mod_ssl.xml` file and directly derived files that seem to mention ECH, at
-present, that set being:
-
-- `docs/manual/mod/mod_ssl.xml` 
-- `docs/manual/mod/mod_ssl.html.en.utf8` 
-- `docs/manual/mod/directives.html.en.utf8`
-- `docs/manual/mod/quickreference.html.en.utf8`
+This re-builds many files we don't want to commit, so we only
+need to include the `mod_ssl.xml` file in the PR. Building the
+documentation is likely better done in a separate directory
+as it touches a lot of other files to make the HTML that can
+be used to check the xml structure and content.
 

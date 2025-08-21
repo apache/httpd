@@ -230,7 +230,6 @@ static int load_echkeys(SSL_CTX *ctx, const char *echdir, server_rec *s,
     while ((apr_dir_read(&direntry, finfo_flags, dir)) == APR_SUCCESS) {
         const char *fname;
         size_t pnlen = 0;
-        struct stat thestat;
         apr_finfo_t theinfo;
 
         if (direntry.filetype == APR_DIR) {
