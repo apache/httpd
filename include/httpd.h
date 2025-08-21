@@ -487,11 +487,12 @@ AP_DECLARE(const char *) ap_get_server_built(void);
  * When adding a new code here add it to status_lines as well.
  * A future version should dynamically generate the apr_table_t at startup.
  */
-#define RESPONSE_CODES 103
+#define RESPONSE_CODES 104
 
 #define HTTP_CONTINUE                        100
 #define HTTP_SWITCHING_PROTOCOLS             101
 #define HTTP_PROCESSING                      102
+#define HTTP_EARLY_HINTS                     103
 #define HTTP_OK                              200
 #define HTTP_CREATED                         201
 #define HTTP_ACCEPTED                        202
