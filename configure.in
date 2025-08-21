@@ -173,7 +173,7 @@ reconfig.yes)
 yes.reconfig)
   AC_MSG_ERROR([Cannot use an external APR with the bundled APR-util])
   ;;
-esac  
+esac
 
 if test "$apu_found" = "reconfig"; then
   APR_SUBDIR_CONFIG(srclib/apr-util,
