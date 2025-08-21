@@ -1520,14 +1520,14 @@ int ssl_hook_Fixup(request_rec *r)
         apr_table_set(env, "SSL_TLS_SNI", servername);
     }
 #endif
+#ifdef HAVE_OPENSSL_ECH
+    modssl_var_extract_ech_status(env, ssl, r->pool);
+#endif
 
     /* standard SSL environment variables */
     if (dc->nOptions & SSL_OPT_STDENVVARS) {
         modssl_var_extract_dns(env, ssl, r->pool);
         modssl_var_extract_san_entries(env, ssl, r->pool);
-#ifdef HAVE_OPENSSL_ECH
-        modssl_var_extract_ech_status(env, ssl, r->pool);
-#endif
 
         for (i = 0; ssl_hook_Fixup_vars[i]; i++) {
             var = ssl_hook_Fixup_vars[i];
