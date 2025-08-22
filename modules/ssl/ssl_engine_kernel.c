@@ -1521,7 +1521,9 @@ int ssl_hook_Fixup(request_rec *r)
     }
 #endif
 #ifdef HAVE_OPENSSL_ECH
-    modssl_var_extract_ech_status(env, ssl, r->pool);
+    extract_to_env(r, env, "SSL_ECH_INNER_SNI");
+    extract_to_env(r, env, "SSL_ECH_OUTER_SNI");
+    extract_to_env(r, env, "SSL_ECH_STATUS");
 #endif
 
     /* standard SSL environment variables */
