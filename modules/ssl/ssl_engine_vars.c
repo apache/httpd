@@ -432,44 +432,45 @@ const char *ssl_var_lookup(apr_pool_t *p, server_rec *s,
 
 #ifdef HAVE_OPENSSL_ECH
 /* Extract ECH status variable from SSL object 'ssl' */
-static const char *ssl_var_lookup_ech_status(apr_pool_t *p, const char *var, SSL *ssl)
+static const char *ssl_var_lookup_ech_status(apr_pool_t *p, const char *var,
+                                             SSL *ssl)
 {
     char *inner_sni = NULL, *outer_sni = NULL;
     int echrv;
     const char *result = NULL;
 
     if (ssl == NULL)
-        return "";
+        return result;
     echrv = SSL_ech_get1_status(ssl, &inner_sni, &outer_sni);
-    if(strcEQ(var, "ECH_STATUS")) {
+    if(strcEQ(var, "STATUS")) {
         switch (echrv) {
         case SSL_ECH_STATUS_NOT_TRIED:
-            result = apr_pstrdup(p, "not attempted");
+            result = "not attempted";
             break;
         case SSL_ECH_STATUS_FAILED:
-            result = apr_pstrdup(p, "tried but failed");
+            result = "tried but failed";
             break;
         case SSL_ECH_STATUS_BAD_NAME:
-            result = apr_pstrdup(p, "ECH worked but bad name");
+            result = "ECH worked but bad name";
             break;
         case SSL_ECH_STATUS_SUCCESS:
-            result = apr_pstrdup(p, "success");
+            result = "success";
             break;
         default:
-            result = apr_pstrdup(p, "error getting ECH status");
+            result = "error getting ECH status";
         }
     }
     else if (echrv == SSL_ECH_STATUS_SUCCESS) {
-        if(strcEQ(var, "ECH_INNER_SNI")) {
+        if(strcEQ(var, "INNER_SNI")) {
             result = apr_pstrdup(p, inner_sni);
         }
-        if(strcEQ(var, "ECH_OUTER_SNI")) {
+        if(strcEQ(var, "OUTER_SNI")) {
             result = apr_pstrdup(p, outer_sni);
         }
     }
     OPENSSL_free(inner_sni);
     OPENSSL_free(outer_sni);
-    return result ? result : "";
+    return result;
 }
 #endif
 
@@ -589,14 +590,8 @@ static const char *ssl_var_lookup_ssl(apr_pool_t *p, const SSLConnRec *sslconn,
     }
 #endif
 #ifdef HAVE_OPENSSL_ECH
-    else if(ssl != NULL && strcEQ(var, "ECH_INNER_SNI")) {
-        result = ssl_var_lookup_ech_status(p, var, ssl);
-    }
-    else if(ssl != NULL && strcEQ(var, "ECH_OUTER_SNI")) {
-        result = ssl_var_lookup_ech_status(p, var, ssl);
-    }
-    else if(ssl != NULL && strcEQ(var, "ECH_STATUS")) {
-        result = ssl_var_lookup_ech_status(p, var, ssl);
+    else if (ssl != NULL && strcEQn(var, "ECH_", 4)) {
+        result = ssl_var_lookup_ech_status(p, var+4, ssl);
     }
 #endif
 
