@@ -364,6 +364,29 @@ in *BSDs.</compatibility>
 </directivesynopsis>
 
 <directivesynopsis>
+<name>ListenTCPDeferAccept</name>
+<description>Value set for the socket option TCP_DEFER_ACCEPT if it is set</description>
+<syntax>ListenTCPDeferAccept <var>integer</var></syntax>
+<default>ListenTCPDeferAccept 30</default>
+<contextlist><context>server config</context></contextlist>
+<modulelist><module>event</module><module>worker</module>
+<module>prefork</module>
+</modulelist>
+<compatibility>Available in Apache HTTP Server 2.5.1 and later</compatibility>
+
+<usage>
+    <p>The value specified here is set as a value for the socket option
+    <code>TCP_DEFER_ACCEPT</code> if it is set on the listen socket.
+    This happens when running on Linux and <directive
+    module="core">AcceptFilter</directive> is set to anything besides
+    <code>none</code>. In any other cases this setting is ignored.
+    For more details see the Linux
+    <a href="http://man7.org/linux/man-pages/man7/tcp.7.html">
+    tcp(7)</a> man page.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
 <name>MaxRequestWorkers</name>
 <description>Maximum number of connections that will be processed
 simultaneously</description>
