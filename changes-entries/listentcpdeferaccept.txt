@@ -1,0 +1,3 @@
+  *) mpm_common: Add new ListenTCPDeferAccept directive that allows to specify
+     the value set for the TCP_DEFER_ACCEPT socket option on listen sockets.
+     [Ruediger Pluem]
