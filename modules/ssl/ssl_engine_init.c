@@ -193,6 +193,7 @@ static void ssl_add_version_components(apr_pool_t *ptemp, apr_pool_t *pconf,
 /*
  * Load any ECH PEM files we find in the ECHKeyDir directory
  * Those are files matching "*.ech"
+ * The caller checks that echdir is non-NULL.
  */
 static int load_echkeys(SSL_CTX *ctx, const char *echdir, server_rec *s,
                         apr_pool_t *ptemp)
@@ -203,25 +204,24 @@ static int load_echkeys(SSL_CTX *ctx, const char *echdir, server_rec *s,
     apr_dir_t *dir = NULL;
     apr_finfo_t direntry;
     apr_int32_t finfo_flags = APR_FINFO_TYPE|APR_FINFO_NAME;
+    apr_status_t dorv;
 
-    if (echdir == NULL) {
-        ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(10520)
-                "load_echkeys: no directory name - exiting");
-        return -1;
-    }
     elen = strlen(echdir);
     if ((elen + 7) >= PATH_MAX) {
         ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(10521)
                 "load_echkeys: directory name too long: %s - exiting", echdir);
         return -1;
     }
-    if (!echdir || (apr_dir_open(&dir, echdir, ptemp) != APR_SUCCESS)) {
+    dorv = apr_dir_open(&dir, echdir, ptemp);
+    if (dorv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(10522)
-                "load_echkeys: can't open directory %s - exiting", echdir);
+                "load_echkeys: can't open directory %s - exiting (error %d)",
+                echdir, dorv);
         return -1;
     }
     es = OSSL_ECHSTORE_new(NULL, NULL);
     if (es == NULL) {
+        apr_dir_close(dir);
         ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(10523)
                 "load_echkeys: can't alloc store");
         return -1;
@@ -273,6 +273,7 @@ static int load_echkeys(SSL_CTX *ctx, const char *echdir, server_rec *s,
     if (!OSSL_ECHSTORE_num_keys(es, &keysloaded)) {
         ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(10526)
             "OSSL_ECHSTORE_num_keys failed - exiting");
+        OSSL_ECHSTORE_free(es);
         return -1;
     }
     if (1 != SSL_CTX_set1_echstore(ctx, es)) {
@@ -1031,7 +1032,7 @@ static apr_status_t ssl_init_ctx_protocol(server_rec *s,
     if (sc->echkeydir) {
         if (prot == TLS1_3_VERSION) {
             /* try load the keys */
-            if (load_echkeys(ctx,sc->echkeydir,s,ptemp) != 0) {
+            if (load_echkeys(ctx, sc->echkeydir, s, ptemp) != 0) {
                 ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(10531)
                     "ECHKeyDir failed to load keys - exiting");
                 SSL_CTX_free(ctx);
@@ -1049,8 +1050,8 @@ static apr_status_t ssl_init_ctx_protocol(server_rec *s,
 
 #else
     if (sc->echkeydir) {
-        ap_log_error(APLOG_MARK, APLOG_WARN, 0, s, APLOGNO(10533)
-                 "ECHKeyDir configured but no TLSv1.3 so ECH will be ignored.");
+        ap_log_error(APLOG_MARK, APLOG_EMREG, 0, s, APLOGNO(10533)
+                 "ECHKeyDir configured but TLSv1.3 not supported.");
     }
 #endif
 #endif
