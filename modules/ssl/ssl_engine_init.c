@@ -1052,9 +1052,9 @@ static apr_status_t ssl_init_ctx_protocol(server_rec *s,
     if (sc->echkeydir) {
         ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(10533)
                  "ECHKeyDir configured but TLSv1.3 not supported - exiting..");
-            SSL_CTX_free(ctx);
-            mctx->ssl_ctx = NULL;
-            return ssl_die(s);
+        SSL_CTX_free(ctx);
+        mctx->ssl_ctx = NULL;
+        return ssl_die(s);
     }
 #endif
 #endif
