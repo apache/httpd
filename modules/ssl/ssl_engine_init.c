@@ -1025,8 +1025,6 @@ static apr_status_t ssl_init_ctx_protocol(server_rec *s,
 #endif
 
 #ifdef HAVE_OPENSSL_ECH
-#if SSL_HAVE_PROTOCOL_TLSV1_3
-
     /* ECH only really makes sense for TLSv1.3 */
     prot = SSL_CTX_get_max_proto_version(ctx);
     if (sc->echkeydir) {
@@ -1034,7 +1032,7 @@ static apr_status_t ssl_init_ctx_protocol(server_rec *s,
             /* try load the keys */
             if (load_echkeys(ctx, sc->echkeydir, s, ptemp) != 0) {
                 ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(10531)
-                    "ECHKeyDir failed to load keys - exiting");
+                    "ECHKeyDir failed to load keys - exiting.");
                 SSL_CTX_free(ctx);
                 mctx->ssl_ctx = NULL;
                 return ssl_die(s);
@@ -1047,16 +1045,6 @@ static apr_status_t ssl_init_ctx_protocol(server_rec *s,
             return ssl_die(s);
         } 
     }
-
-#else
-    if (sc->echkeydir) {
-        ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(10533)
-                 "ECHKeyDir configured but TLSv1.3 not supported - exiting..");
-        SSL_CTX_free(ctx);
-        mctx->ssl_ctx = NULL;
-        return ssl_die(s);
-    }
-#endif
 #endif
 
     return APR_SUCCESS;

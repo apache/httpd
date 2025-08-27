@@ -852,6 +852,12 @@ const char *ssl_cmd_SSLECHKeyDir(cmd_parms *cmd, void *dcfg, const char *arg)
     SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
 
     sc->echkeydir=arg;
+
+#if !defined(SSL_HAVE_PROTOCOL_TLSV1_3)
+    ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(10533)
+                 "ECHKeyDir configured but TLSv1.3 not supported - exiting.");
+    return "ECHKeyDir configured but TLSv1.3 not supported";
+#endif
     ap_log_error(APLOG_MARK, APLOG_TRACE4, 0, cmd->server,
                  "%s: ECHKeyDir set to %s",
                  cmd->cmd->name, sc->echkeydir);
