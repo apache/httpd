@@ -183,7 +183,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch:
         http://svn.apache.org/r1927807
         http://svn.apache.org/r1927874
-     2.4.x patch: svn merge -c 1927807,1927874 ^/httpd/httpd/trunk .
+        http://svn.apache.org/r1928039
+     2.4.x patch: svn merge -c 1927807,1927874,1928039 ^/httpd/httpd/trunk .
      Might need some resolving in test code, as trunk and 2.4.x
      are not in sync.
      +1: icing,
