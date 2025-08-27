@@ -683,18 +683,14 @@ static apr_status_t ssl_init_ctx_tls_extensions(server_rec *s,
      * protocol version(s) according to the selected (name-based-)vhost, which
      * is not possible at the SNI callback stage (due to OpenSSL internals).
      */
+    SSL_CTX_set_client_hello_cb(mctx->ssl_ctx, ssl_callback_ClientHello, NULL);
+#endif
 
 #ifdef HAVE_OPENSSL_ECH
     if (sc != NULL && sc->echkeydir != NULL) {
+        /* callback logs ECH outcome */
         SSL_CTX_ech_set_callback(mctx->ssl_ctx, ssl_callback_ECH);
-    } else {
-        ap_log_error(APLOG_MARK, APLOG_TRACE4, 0, s,
-            "ECHKeyDir not set - using ClientHello callback for SNI");
-        SSL_CTX_set_client_hello_cb(mctx->ssl_ctx, ssl_callback_ClientHello, NULL);
-    }
-#else
-    SSL_CTX_set_client_hello_cb(mctx->ssl_ctx, ssl_callback_ClientHello, NULL);
-#endif
+    } 
 #endif
 
 #ifdef HAVE_OCSP_STAPLING

@@ -2426,14 +2426,6 @@ unsigned int ssl_callback_ECH(SSL *ssl, const char *str)
     }
     OPENSSL_free(inner_sni);
     OPENSSL_free(outer_sni);
-
-    /* try init vhost and see if it works */
-    ivstatus = init_vhost(c, ssl, ech_servername);
-    if (ivstatus != APR_SUCCESS) {
-        ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, c, APLOGNO(10539)
-                      "init_vhost failed for %s", ech_servername);
-        return SSL_TLSEXT_ERR_NOACK;
-    }
     return 1;
 }
 #endif
