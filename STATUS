@@ -195,7 +195,18 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      Backport version for 2.4.x of patch:
        https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/553.diff
      Can be applied via apply_backport_pr.sh 553
-     +1: rpluem
+     +1: rpluem,
+
+  *) mpm_common: Add new ListenTCPDeferAccept directive that allows to specify
+     the value set for the TCP_DEFER_ACCEPT socket option on listen sockets.
+     Trunk version of patch:
+        https://svn.apache.org/r1927885
+        https://svn.apache.org/r1927916
+        https://svn.apache.org/r1928022
+     Backport version for 2.4.x of patch:
+       https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/555.diff
+     Can be applied via apply_backport_pr.sh 555
+     +1: rpluem,
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
