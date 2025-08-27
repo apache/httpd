@@ -187,7 +187,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c 1927807,1927874,1928039 ^/httpd/httpd/trunk .
      Might need some resolving in test code, as trunk and 2.4.x
      are not in sync.
-     +1: icing,
+     +1: icing, rpluem
 
   *) various: Update DOCTYPE tags in server-generated HTML to 4.01
      Trunk version of patch:
