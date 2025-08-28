@@ -2393,7 +2393,6 @@ unsigned int ssl_callback_ECH(SSL *ssl, const char *str)
     int echrv;
     conn_rec *c = NULL;
     const char *ech_servername;
-    apr_status_t ivstatus;
 
     c = (conn_rec *)SSL_get_app_data(ssl);
     ech_servername = SSL_get_servername(ssl, TLSEXT_NAMETYPE_host_name);
