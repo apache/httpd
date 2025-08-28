@@ -2500,16 +2500,6 @@ int ssl_callback_ClientHello(SSL *ssl, int *al, void *arg)
     size_t len, remaining;
     (void)arg;
 
-#ifdef HAVE_OPENSSL_ECH
-    if (SSL_client_hello_get0_ext(ssl, TLSEXT_TYPE_ech, &pos, &remaining)) {
-        ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, c, APLOGNO(10540)
-                      "there is an ECH extension");
-    } else {
-        ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, c, APLOGNO(10541)
-                      "there is NO ECH extension");
-    }
-#endif
-
     /* We can't use SSL_get_servername() at this earliest OpenSSL connection
      * stage, and there is no SSL_client_hello_get0_servername() provided as
      * of OpenSSL 1.1.1. So the code below, that extracts the SNI from the
