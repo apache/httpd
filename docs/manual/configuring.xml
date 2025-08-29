@@ -66,19 +66,24 @@ Server.</p>
     <p>httpd configuration files contain one directive per line.
     The backslash "\" may be used as the last character on a line
     to indicate that the directive continues onto the next line.
-    There must be no other characters or white space between the
-    backslash and the end of the line.</p>
+    To be interpreted as such a continuation, there must be no
+    other characters or white space between the backslash and the
+    end of the line. </p>
 
-    <p>Arguments to directives are separated by whitespace. If an
+    <p>Lines that begin with the hash character "#" are considered
+    comments, and are ignored. Comments may <strong>not</strong> be
+    included on the same line as a configuration directive, including
+    at the start of a line that has been continued as described in the
+    preceding pargraph.
+    </p>
+
+    <p> White space occurring before a directive is ignored, so
+    you may indent directives for clarity. Blank lines are also ignored.
+    Arguments to directives are separated by whitespace. If an
     argument contains spaces, you must enclose that argument in quotes.</p>
 
     <p>Directives in the configuration files are case-insensitive,
-    but arguments to directives are often case sensitive. Lines
-    that begin with the hash character "#" are considered
-    comments, and are ignored. Comments may <strong>not</strong> be
-    included on the same line as a configuration directive.
-    White space occurring before a directive is ignored, so
-    you may indent directives for clarity. Blank lines are also ignored.</p>
+    but arguments to directives are often case sensitive. </p>
 
     <p>The values of variables defined with the <directive
     module="core">Define</directive> or of shell environment variables can
