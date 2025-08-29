@@ -176,10 +176,10 @@
     designed for transmitting a binary file in an ASCII (text)
     format.</p>
 
-    <p>The <a href="http://www.ietf.org/rfc/rfc2616.txt">HTTP/1.1
+    <p>The <a href="https://www.rfc-editor.org/rfc/rfc2616">HTTP/1.1
     RFC</a>, section 14.11 puts it this way:</p>
 
-    <blockquote cite="http://www.ietf.org/rfc/rfc2616.txt">
+    <blockquote cite="https://www.rfc-editor.org/rfc/rfc2616">
       <p>The Content-Encoding entity-header field is used as a modifier to
       the media-type. When present, its value indicates what additional
       content codings have been applied to the entity-body, and thus what
@@ -1091,7 +1091,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_mime.html'
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2023 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2025 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

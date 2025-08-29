@@ -68,19 +68,24 @@ Server.</p>
     <p>httpd configuration files contain one directive per line.
     The backslash "\" may be used as the last character on a line
     to indicate that the directive continues onto the next line.
-    There must be no other characters or white space between the
-    backslash and the end of the line.</p>
+    To be interpreted as such a continuation, there must be no
+    other characters or white space between the backslash and the
+    end of the line. </p>
 
-    <p>Arguments to directives are separated by whitespace. If an
+    <p>Lines that begin with the hash character "#" are considered
+    comments, and are ignored. Comments may <strong>not</strong> be
+    included on the same line as a configuration directive, including
+    at the start of a line that has been continued as described in the
+    preceding pargraph.
+    </p>
+
+    <p> White space occurring before a directive is ignored, so
+    you may indent directives for clarity. Blank lines are also ignored.
+    Arguments to directives are separated by whitespace. If an
     argument contains spaces, you must enclose that argument in quotes.</p>
 
     <p>Directives in the configuration files are case-insensitive,
-    but arguments to directives are often case sensitive. Lines
-    that begin with the hash character "#" are considered
-    comments, and are ignored. Comments may <strong>not</strong> be
-    included on the same line as a configuration directive.
-    White space occurring before a directive is ignored, so
-    you may indent directives for clarity. Blank lines are also ignored.</p>
+    but arguments to directives are often case sensitive. </p>
 
     <p>The values of variables defined with the <code class="directive"><a href="./mod/core.html#define">Define</a></code> or of shell environment variables can
     be used in configuration file lines using the syntax
@@ -234,7 +239,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/configuring.html';
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2023 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2025 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossary</a> | <a href="./sitemap.html">Sitemap</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

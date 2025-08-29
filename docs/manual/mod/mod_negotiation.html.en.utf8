@@ -95,7 +95,7 @@ Negotiation</a></li>
 
       <dt><code>Content-Language:</code></dt>
       <dd>The language(s) of the variant, as an Internet standard
-      language tag (<a href="http://www.ietf.org/rfc/rfc1766.txt">RFC 1766</a>). An example is <code>en</code>,
+      language tag (<a href="https://www.rfc-editor.org/rfc/rfc1766">RFC 1766</a>). An example is <code>en</code>,
       meaning English. If the variant contains more than one
       language, they are separated by a comma.</dd>
 
@@ -363,7 +363,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_negotiatio
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2023 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2025 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
