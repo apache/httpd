@@ -46,7 +46,7 @@ static BIO *serialize_request(OCSP_REQUEST *req, const apr_uri_t *uri,
         BIO_printf(bio, "http://%s:%d",
                    uri->hostname, uri->port);
     }
-    BIO_printf(bio, "%s%s%s HTTP/1.1\r\n"
+    BIO_printf(bio, "%s%s%s HTTP/1.0\r\n"
                "Host: %s:%d\r\n"
                "Content-Type: application/ocsp-request\r\n"
                "Connection: close\r\n"
