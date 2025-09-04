@@ -964,6 +964,37 @@ static int dav_parse_range(request_rec *r,
     return 1;
 }
 
+/**
+ * @return  1 if valid x-oc-mtime,
+ *          0 if no x-oc-mtime,
+ *         -1 if malformed x-oc-mtime
+ */
+static int dav_parse_mtime(request_rec *r, apr_time_t *mtime)
+{
+    const char *hdr;
+    char *endp;
+    apr_int64_t n;
+
+    if ((hdr = apr_table_get(r->headers_in, "x-oc-mtime")) == NULL) {
+        return 0;
+    }
+
+    for (apr_size_t i = 0; i < strlen(hdr); i++) {
+        if (!apr_isdigit(hdr[i])) {
+            return -1;
+        }
+    }
+
+    errno = 0;
+    n = apr_strtoi64(hdr, &endp, 10);
+    if (errno || endp == hdr) {
+        return -1;
+    }
+
+    *mtime = (apr_time_t) apr_time_from_sec(n);
+    return 1;
+}
+
 /* handle the GET method */
 static int dav_method_get(request_rec *r)
 {
