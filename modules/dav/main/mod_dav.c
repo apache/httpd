@@ -1091,6 +1091,7 @@ static int dav_method_put(request_rec *r)
     const char *body;
     dav_error *err;
     dav_error *err2;
+    dav_error *err3;
     dav_stream_mode mode;
     dav_stream *stream;
     dav_response *multi_response;
@@ -1098,6 +1099,8 @@ static int dav_method_put(request_rec *r)
     apr_off_t range_start;
     apr_off_t range_end;
     int rc;
+    int mtime_ret;
+    apr_time_t mtime;
 
     /* Ask repository module to resolve the resource */
     err = dav_get_resource(r, 0 /* label_allowed */, 0 /* use_checked_in */,
@@ -1160,6 +1163,14 @@ static int dav_method_put(request_rec *r)
     }
     else {
         mode = DAV_MODE_WRITE_TRUNC;
+    }
+
+    /* try parsing x-oc-mtime header */
+    if ((mtime_ret = dav_parse_mtime(r, &mtime)) == -1) {
+        body = apr_psprintf(r->pool,
+                            "Malformed X-OC-Mtime header for MKCOL %s.",
+                            ap_escape_html(r->pool, r->uri));
+        return dav_error_response(r, HTTP_BAD_REQUEST, body);
     }
 
     /* make sure the resource can be modified (if versioning repository) */
@@ -1255,7 +1266,13 @@ static int dav_method_put(request_rec *r)
 
         err2 = (*resource->hooks->close_stream)(stream,
                                                 err == NULL /* commit */);
+
+        if (err == NULL && mtime_ret == 1) {
+            err3 = (*resource->hooks->set_mtime)(resource, mtime);
+        }
+
         err = dav_join_error(err, err2);
+        err = dav_join_error(err, err3);
     }
 
     /*
