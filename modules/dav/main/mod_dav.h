@@ -2166,6 +2166,13 @@ struct dav_hooks_repository
 
     /* Get the pathname for a resource */
     const char * (*get_pathname)(const dav_resource *resource);
+
+    /* Set modification time for a resource */
+    dav_error * (*set_mtime)(
+        dav_resource *resource,
+        const apr_time_t mtime
+    );
+
 };
 
 

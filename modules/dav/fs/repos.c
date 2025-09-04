@@ -1164,6 +1164,20 @@ static dav_error * dav_fs_deliver(const dav_resource *resource,
 
 #endif /* DEBUG_GET_HANDLER */
 
+static dav_error * dav_fs_set_mtime(dav_resource *resource, apr_time_t mtime)
+{
+    apr_pool_t *pool;
+    apr_status_t status;
+
+    pool = resource->pool;
+    status = apr_file_mtime_set(resource->info->pathname, mtime, pool);
+
+    if (status != APR_SUCCESS) {
+        return dav_new_error(pool, HTTP_BAD_REQUEST, 0, status, "Could not set mtime.");
+    }
+
+    return NULL;
+}
 
 static dav_error * dav_fs_create_collection(dav_resource *resource)
 {
@@ -1972,7 +1986,8 @@ static const dav_hooks_repository dav_hooks_repository_fs =
     dav_fs_getetag,
     NULL,
     dav_fs_get_request_rec,
-    dav_fs_pathname
+    dav_fs_pathname,
+    dav_fs_set_mtime
 };
 
 static dav_prop_insert dav_fs_insert_prop(const dav_resource *resource,
