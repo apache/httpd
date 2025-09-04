@@ -90,6 +90,7 @@ typedef struct {
     int allow_depthinfinity;
     int allow_lockdiscovery;
     int msext_opts;
+    int honor_mtime_header;
 } dav_dir_conf;
 
 /* per-server configuration */
@@ -213,6 +214,8 @@ static void *dav_merge_dir_config(apr_pool_t *p, void *base, void *overrides)
                                                      allow_depthinfinity);
     newconf->allow_lockdiscovery = DAV_INHERIT_VALUE(parent, child,
                                                      allow_lockdiscovery);
+    newconf->honor_mtime_header = DAV_INHERIT_VALUE(parent, child,
+                                                    honor_mtime_header);
     newconf->msext_opts = DAV_INHERIT_VALUE(parent, child,
                                             msext_opts);
 
@@ -301,6 +304,20 @@ static const char *dav_cmd_dav(cmd_parms *cmd, void *config, const char *arg1)
         }
     }
 
+    return NULL;
+}
+
+/*
+ * Command handler for the DAVHonorMtimeHeader directive, which is FLAG.
+ */
+static const char *dav_cmd_davhonormtimeheader(cmd_parms *cmd, void *config, const int arg)
+{
+    dav_dir_conf *conf = (dav_dir_conf *)config;
+
+    if (arg)
+        conf->honor_mtime_header = DAV_ENABLED_ON;
+    else
+        conf->honor_mtime_header = DAV_ENABLED_OFF;
     return NULL;
 }
 
@@ -5344,6 +5361,11 @@ static const command_rec dav_cmds[] =
     AP_INIT_FLAG("DAVLockDiscovery", dav_cmd_davlockdiscovery, NULL,
                  ACCESS_CONF|RSRC_CONF,
                  "allow lock discovery by PROPFIND requests"),
+
+    /* per directory/location */
+    AP_INIT_FLAG("DAVHonorMtimeHeader", dav_cmd_davhonormtimeheader, NULL,
+                 ACCESS_CONF,
+                 "Set modification time based on X-OC-Mtime header"),
 
     /* per directory/location, or per server */
     AP_INIT_ITERATE("DAVMSext", dav_cmd_davmsext, NULL,
