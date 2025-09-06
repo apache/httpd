@@ -74,7 +74,7 @@ Server.</p>
     comments, and are ignored. Comments may <strong>not</strong> be
     included on the same line as a configuration directive, including
     at the start of a line that has been continued as described in the
-    preceding pargraph. Commented lines may also be continued, meaning
+    preceding paragraph. Commented lines may also be continued, meaning
     the next physical line is also interpreted as a comment because the
     logical line begins with a hash character.
     </p>
