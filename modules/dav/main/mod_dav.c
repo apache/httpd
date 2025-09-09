@@ -1099,6 +1099,7 @@ static int dav_method_put(request_rec *r)
     apr_off_t range_start;
     apr_off_t range_end;
     int rc;
+    int mtime_aware;
     int mtime_ret;
     apr_time_t mtime;
 
@@ -1166,11 +1167,13 @@ static int dav_method_put(request_rec *r)
     }
 
     /* try parsing x-oc-mtime header */
-    if ((mtime_ret = dav_parse_mtime(r, &mtime)) == -1) {
-        body = apr_psprintf(r->pool,
-                            "Malformed X-OC-Mtime header for MKCOL %s.",
-                            ap_escape_html(r->pool, r->uri));
-        return dav_error_response(r, HTTP_BAD_REQUEST, body);
+    if (conf->honor_mtime_header == DAV_ENABLED_ON) {
+        if ((mtime_ret = dav_parse_mtime(r, &mtime)) == -1) {
+            body = apr_psprintf(r->pool,
+                                "Malformed X-OC-Mtime header for MKCOL %s.",
+                                ap_escape_html(r->pool, r->uri));
+            return dav_error_response(r, HTTP_BAD_REQUEST, body);
+        }
     }
 
     /* make sure the resource can be modified (if versioning repository) */
@@ -1267,12 +1270,24 @@ static int dav_method_put(request_rec *r)
         err2 = (*resource->hooks->close_stream)(stream,
                                                 err == NULL /* commit */);
 
-        if (err == NULL && mtime_ret == 1) {
-            err3 = (*resource->hooks->set_mtime)(resource, mtime);
+
+        mtime_aware = *resource->hooks->set_mtime != NULL;
+        if (err == NULL && conf->honor_mtime_header == DAV_ENABLED_ON && mtime_ret == 1) {
+            if (mtime_aware) {
+                err3 = (*resource->hooks->set_mtime)(resource, mtime);
+                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(10519)
+                      "Setting mtime for file.");
+            } else {
+                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(10520)
+                      "Unable to set mtime: provider does not support \"set_mtime\".");
+            }
         }
 
         err = dav_join_error(err, err2);
-        err = dav_join_error(err, err3);
+
+        if (conf->honor_mtime_header == DAV_ENABLED_ON && mtime_aware) {
+            err = dav_join_error(err, err3);
+        }
     }
 
     /*
