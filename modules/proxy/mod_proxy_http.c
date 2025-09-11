@@ -28,6 +28,34 @@ static int (*ap_proxy_clear_connection_fn)(request_rec *r, apr_table_t *headers)
 static apr_status_t ap_proxygetline(apr_bucket_brigade *bb, char *s, int n,
                                     request_rec *r, int flags, int *read);
 
+static int filter_underscored_headers(request_rec *r, proxy_server_conf *conf)
+{
+    const apr_array_header_t *hdrs_arr = apr_table_elts(r->headers_in);
+    const apr_table_entry_t *hdrs = (const apr_table_entry_t *) hdrs_arr->elts;
+    int i;
+
+    if (conf->underscored_headers == underscored_headers_allow)
+        return OK;
+
+    for (i = 0; i < hdrs_arr->nelts; i++) {
+        if (!hdrs[i].key) continue;
+        if (!ap_strchr(hdrs[i].key, '_')) continue;
+        if (conf->underscored_headers == underscored_headers_drop) {
+            ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r,
+                          "dropped underscored header '%s'", hdrs[i].key);
+            apr_table_unset(r->headers_in, hdrs[i].key);
+        }
+        if (conf->underscored_headers == underscored_headers_reject) {
+            ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r,
+                          "rejected request for underscored header '%s'",
+                          hdrs[i].key);
+            return HTTP_BAD_REQUEST;
+        }
+    }
+
+    return OK;
+}
+
 static const char *get_url_scheme(const char **url, int *is_ssl)
 {
     const char *u = *url;
@@ -1965,6 +1993,13 @@ static int proxy_http_handler(request_rec *r, proxy_worker *worker,
         return DECLINED;
     }
     ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r, "HTTP: serving URL %s", url);
+
+    /* check if any request header contains underscore (_), 
+       drop such header or reject the whole request accordingly to conf
+    */
+    if ((status = filter_underscored_headers(r, conf)) != OK) {
+        return status;
+    }
 
     /* create space for state information */
     if ((status = ap_proxy_acquire_connection(scheme, &backend,

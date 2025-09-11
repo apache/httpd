@@ -1591,6 +1591,8 @@ static void * create_proxy_config(apr_pool_t *p, server_rec *s)
     ps->id = apr_psprintf(p, "p%x", 1); /* simply for storage size */
     ps->viaopt = via_off; /* initially backward compatible with 1.3.1 */
     ps->viaopt_set = 0; /* 0 means default */
+    ps->underscored_headers = underscored_headers_allow; /* don't introduce breaking change */
+    ps->underscored_headers_set = 0;
     ps->req = 0;
     ps->max_balancers = 0;
     ps->bal_persist = 0;
@@ -1752,6 +1754,8 @@ static void * merge_proxy_config(apr_pool_t *p, void *basev, void *overridesv)
     ps->id = (overrides->id == NULL) ? base->id : overrides->id;
     ps->viaopt = (overrides->viaopt_set == 0) ? base->viaopt : overrides->viaopt;
     ps->viaopt_set = overrides->viaopt_set || base->viaopt_set;
+    ps->underscored_headers = (overrides->underscored_headers_set == 0) ? base->underscored_headers : overrides->underscored_headers;
+    ps->underscored_headers_set = overrides->underscored_headers_set || base->underscored_headers_set;
     ps->req = (overrides->req_set == 0) ? base->req : overrides->req;
     ps->req_set = overrides->req_set || base->req_set;
     ps->bgrowth = (overrides->bgrowth_set == 0) ? base->bgrowth : overrides->bgrowth;
@@ -2578,6 +2582,25 @@ static const char*
 }
 
 static const char*
+    set_underscored_headers(cmd_parms *parms, void *dummy, const char *arg)
+{
+    proxy_server_conf *psf =
+    ap_get_module_config(parms->server->module_config, &proxy_module);
+
+    if (strcasecmp(arg, "Allow") == 0)
+        psf->underscored_headers = underscored_headers_allow;
+    else if (strcasecmp(arg, "Drop") == 0)
+        psf->underscored_headers = underscored_headers_drop;
+    else if (strcasecmp(arg, "Reject") == 0)
+        psf->underscored_headers = underscored_headers_reject;
+    else
+        return "ProxyUnderscoredHeaders must be one of: Allow | Drop | Reject";
+
+    psf->underscored_headers_set = 1;
+    return NULL;
+}
+
+static const char*
     set_bad_opt(cmd_parms *parms, void *dummy, const char *arg)
 {
     proxy_server_conf *psf =
@@ -3066,6 +3089,8 @@ static const command_rec proxy_cmds[] =
      "The default intranet domain name (in absence of a domain in the URL)"),
     AP_INIT_TAKE1("ProxyVia", set_via_opt, NULL, RSRC_CONF,
      "Configure Via: proxy header header to one of: on | off | block | full"),
+    AP_INIT_TAKE1("ProxyUnderscoredHeaders", set_underscored_headers, NULL, RSRC_CONF,
+     "Handling of headers with underscores to backend: allow | drop | reject"),
     AP_INIT_ITERATE("ProxyErrorOverride", set_proxy_error_override, NULL, RSRC_CONF|ACCESS_CONF,
      "use our error handling pages instead of the servers' we are proxying"),
     AP_INIT_FLAG("ProxyPreserveHost", set_preserve_host, NULL, RSRC_CONF|ACCESS_CONF,
