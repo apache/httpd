@@ -33,6 +33,10 @@
 #include "util_md5.h"
 #include "scoreboard.h"
 
+#ifdef HAVE_OPENSSL_ECH
+#include <openssl/ech.h>
+#endif
+
 static void ssl_configure_env(request_rec *r, SSLConnRec *sslconn);
 #ifdef HAVE_TLSEXT
 static int ssl_find_vhost(void *servername, conn_rec *c, server_rec *s);
@@ -1516,6 +1520,11 @@ int ssl_hook_Fixup(request_rec *r)
         apr_table_set(env, "SSL_TLS_SNI", servername);
     }
 #endif
+#ifdef HAVE_OPENSSL_ECH
+    extract_to_env(r, env, "SSL_ECH_INNER_SNI");
+    extract_to_env(r, env, "SSL_ECH_OUTER_SNI");
+    extract_to_env(r, env, "SSL_ECH_STATUS");
+#endif
 
     /* standard SSL environment variables */
     if (dc->nOptions & SSL_OPT_STDENVVARS) {
@@ -2376,6 +2385,46 @@ static apr_status_t init_vhost(conn_rec *c, SSL *ssl, const char *servername)
     
     return APR_NOTFOUND;
 }
+
+#ifdef HAVE_OPENSSL_ECH
+unsigned int ssl_callback_ECH(SSL *ssl, const char *str)  
+{
+    char *inner_sni = NULL, *outer_sni = NULL;
+    int echrv;
+    conn_rec *c = NULL;
+    const char *ech_servername;
+
+    c = (conn_rec *)SSL_get_app_data(ssl);
+    ech_servername = SSL_get_servername(ssl, TLSEXT_NAMETYPE_host_name);
+    if (ech_servername == NULL) {
+        return SSL_TLSEXT_ERR_NOACK;
+    }
+    echrv = SSL_ech_get1_status(ssl, &inner_sni, &outer_sni);
+    switch (echrv) {
+    case SSL_ECH_STATUS_NOT_TRIED:
+        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, "ECH not attempted");
+        break;
+    case SSL_ECH_STATUS_FAILED:
+        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, "ECH tried but failed");
+        break;
+    case SSL_ECH_STATUS_BAD_NAME:
+        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, "ECH worked but bad name");
+        break;
+    case SSL_ECH_STATUS_SUCCESS:
+        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, 
+                      "ECH success outer_sni: %s inner_sni: %s",
+                      (outer_sni ? outer_sni : "NONE"),
+                      (inner_sni ? inner_sni : "NONE"));
+        break;
+    default:
+        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c,
+                      "Error getting ECH status");
+    }
+    OPENSSL_free(inner_sni);
+    OPENSSL_free(outer_sni);
+    return 1;
+}
+#endif
 
 /*
  * This callback function is executed when OpenSSL encounters an extended

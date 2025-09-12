@@ -430,6 +430,50 @@ const char *ssl_var_lookup(apr_pool_t *p, server_rec *s,
     return result ? result : "";
 }
 
+#ifdef HAVE_OPENSSL_ECH
+/* Extract ECH status variable from SSL object 'ssl' */
+static const char *ssl_var_lookup_ech_status(apr_pool_t *p, const char *var,
+                                             SSL *ssl)
+{
+    char *inner_sni = NULL, *outer_sni = NULL;
+    int echrv;
+    const char *result = NULL;
+
+    if (ssl == NULL)
+        return result;
+    echrv = SSL_ech_get1_status(ssl, &inner_sni, &outer_sni);
+    if (strcEQ(var, "STATUS")) {
+        switch (echrv) {
+        case SSL_ECH_STATUS_NOT_TRIED:
+            result = "not attempted";
+            break;
+        case SSL_ECH_STATUS_FAILED:
+            result = "tried but failed";
+            break;
+        case SSL_ECH_STATUS_BAD_NAME:
+            result = "ECH worked but bad name";
+            break;
+        case SSL_ECH_STATUS_SUCCESS:
+            result = "success";
+            break;
+        default:
+            result = "error getting ECH status";
+        }
+    }
+    else if (echrv == SSL_ECH_STATUS_SUCCESS) {
+        if (strcEQ(var, "INNER_SNI")) {
+            result = apr_pstrdup(p, inner_sni);
+        }
+        if (strcEQ(var, "OUTER_SNI")) {
+            result = apr_pstrdup(p, outer_sni);
+        }
+    }
+    OPENSSL_free(inner_sni);
+    OPENSSL_free(outer_sni);
+    return result;
+}
+#endif
+
 static const char *ssl_var_lookup_ssl(apr_pool_t *p, const SSLConnRec *sslconn,
                                       request_rec *r, const char *var)
 {
@@ -542,6 +586,11 @@ static const char *ssl_var_lookup_ssl(apr_pool_t *p, const SSLConnRec *sslconn,
         if ((result = SSL_get_srp_userinfo(ssl)) != NULL) {
             result = apr_pstrdup(p, result);
         }
+    }
+#endif
+#ifdef HAVE_OPENSSL_ECH
+    else if (ssl != NULL && strcEQn(var, "ECH_", 4)) {
+        result = ssl_var_lookup_ech_status(p, var+4, ssl);
     }
 #endif
 

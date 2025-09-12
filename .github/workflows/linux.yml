@@ -316,6 +316,18 @@ jobs:
               APU_CONFIG="--without-crypto"
             pkgs: subversion
           # -------------------------------------------------------------------------
+          - name: OpenSSL ECH branch
+            config: --enable-mods-shared=most --enable-maintainer-mode --disable-md --disable-http2 --disable-ldap --disable-crypto
+            notest-cflags: -Werror -O2
+            env: |
+              TEST_OPENSSL3=ech
+              TEST_OPENSSL3_BRANCH=feature/ech
+              OPENSSL_CONFIG=no-engine
+              APR_VERSION=1.7.6
+              APU_VERSION=1.6.3
+              APU_CONFIG="--without-crypto"
+            pkgs: subversion
+          # -------------------------------------------------------------------------
     runs-on: ${{ matrix.os == '' && 'ubuntu-latest' || matrix.os }}
     timeout-minutes: 30
     env:
