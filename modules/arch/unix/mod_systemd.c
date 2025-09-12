@@ -114,7 +114,7 @@ static int systemd_monitor(apr_pool_t *p, server_rec *s)
                                  / (float) up_time), bps);
 
     sd_notifyf(0, "READY=1\n"
-               "STATUS=Total requests: %lu; Idle/Busy workers %d/%d;"
+               "STATUS=Total requests: %lu; Idle/Busy workers %d/%d; "
                "Requests/sec: %.3g; Bytes served/sec: %sB/sec\n",
                sload.access_count, sload.idle, sload.busy,
                ((float) sload.access_count) / (float) up_time, bps);
