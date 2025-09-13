@@ -3075,7 +3075,7 @@ ECH <code>public-name</code> and where <code>foo.example.com</code> is a web-sit
 ECH to be used, with both hosted on the same httpd instance.
 </p>
 <p>
-Using ECH requries that httpd load an ECH key pair with a private value for ECH
+Using ECH requires that httpd load an ECH key pair with a private value for ECH
 decryption. Browsers will require that the public component of that key pair be
 published in the DNS. With OpenSSL we generate and store that key pair in an ECH PEM
 formatted file as shown below.
