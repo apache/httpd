@@ -71,6 +71,7 @@ disponibles avec Require</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslclienthellovars">SSLClientHelloVars</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslcompression">SSLCompression</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslcryptodevice">SSLCryptoDevice</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#sslechkeydir">SSLECHKeyDir</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslengine">SSLEngine</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslfips">SSLFIPS</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslhonorcipherorder">SSLHonorCipherOrder</a></li>
@@ -291,6 +292,13 @@ hexadécimale avec la longueur de la chaîne au début</td></tr>
 <tr><td><code>SSL_CLIENTHELLO_VERSIONS</code></td>      <td>chaîne</td>
 <td>Valeur de l’extension Supported Versions (43) de ClientHello sous la forme de quatre
 caractères hexadécimaux par item</td></tr>
+<tr class="odd"><td><code>SSL_ECH_STATUS</code></td>                <td>chaîne</td>
+<td><code>success</code> signifie que les autres pensent aussi ce qu'ils
+disent</td></tr>
+<tr><td><code>SSL_ECH_INNER_SNI</code></td>             <td>chaîne</td>
+<td>la valeur SNI chiffrée en ECH (ou `NONE`)</td></tr>
+<tr class="odd"><td><code>SSL_ECH_OUTER_SNI</code></td>             <td>chaîne</td>
+<td>la valeur SNI vue au format texte (ou `NONE`)</td></tr>
 </table>
 
 <p><em>x509</em> spécifie un élément de DN X.509 parmi
@@ -1217,6 +1225,122 @@ OpenSSL à utiliser doit être défini et configuré dans le fichier de
 configuration d'OpenSSL et il doit prendre en charge la <a href="https://docs.openssl.org/3.0/man7/provider-storemgmt/">méthode
 STORE</a> pour les <a href="https://tools.ietf.org/html/rfc7512">URIs PKCS#11</a>.
 </p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="sslechkeydir" id="sslechkeydir">Directive</a> <a name="SSLECHKeyDir" id="SSLECHKeyDir">SSLECHKeyDir</a> <a title="Lien permanent" href="#sslechkeydir" class="permalink">&para;</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Chargement des fichiers PEM «&nbsp;Encrypted Client Hello&nbsp;» (ECH) dans le
+répertoire spécifié</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SSLECHKeyDir <em>dirname</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.5.1 du serveur HTTP Apache</td></tr>
+</table>
+
+<p>
+ECH est décrit dans <a href="https://datatracker.ietf.org/doc/draft-ietf-tls-esni/">draft-ietf-tls-esni</a>
+; httpd prend en charge ECH «&nbsp;shared-mode&nbsp;» où l’instance de httpd effectue le
+déchiffrement ECH et héberge les sites web ECH «&nbsp;public-name&nbsp;» et «&nbsp;backend&nbsp;».  
+</p>
+
+<p>La directive <code>SSLECHKeyDir</code> permet de définir le répertoire où les
+fichiers PEM ECH (nommés <code>*.ech</code>) sont stockés. Lorsqu’un fichier PEM
+ECH a été chargé avec succès, httpd va effectuer un déchiffrement ECH et, si ce
+dernier réussit, va ouvrir la session TLS correspondante en utilisant le SNI
+depuis le ClientHello interne.
+</p>
+
+<div class="example"><h3>Exemple de configuration ECH</h3><pre class="prettyprint lang-config">...
+SSLEngine On
+SSLProtocol TLSv1.3
+SSLECHKeyDir /etc/apache2/echkeydir
+...
+# virtual hosts
+&lt;VirtualHost *:443&gt;
+    SSLEngine On
+    SSLProtocol TLSv1.3
+    ServerName example.com
+    DocumentRoot "/var/www/dir-example.com"
+&lt;/VirtualHost&gt;
+&lt;VirtualHost *:443&gt;
+    SSLEngine On
+    SSLProtocol TLSv1.3
+    ServerName foo.example.com
+    DocumentRoot "/var/www/dir-foo.example.com"
+&lt;/VirtualHost&gt;
+...</pre>
+</div>
+
+<div class="note"><h3>Génération et publication de la clé ECH</h3>
+<p>
+Dans ce qui précède, nous décrivons une configuration qui utilise
+<code>example.com</code> comme <code>public-name</code> ECH et où
+<code>foo.example.com</code> est un site web pour lequel nous voulons utiliser
+ECH, les deux étant hébergés par la même instance de httpd.
+</p>
+<p>
+L’utilisation d’ECH nécessite le chargement par httpd d’une paire de clés ECH
+avec une composante privée pour le déchiffrement ECH. Pour les navigateurs, il
+sera nécessaire que la composante publique de cette paire de clés soit publiée
+dans le DNS. À l’aide d’OpenSSL, nous générons et stockons cette paire de clés
+dans un fichier formaté PEM ECH comme indiqué ci-après.
+</p>
+<p>
+Pour générer une paire de clés ECH et stocker le résultat dans un fichier PEM
+ECH, utilisez la ligne de commande openssl prenant en charge ECH. Vous devez
+aussi fournir le <code>«&nbsp;nom publique&nbsp;»</code> (<code>public-name</code>) requis
+par le protocole ECH.
+</p>
+<p>
+Les opérations de génération des clés doivent être effectuées sous n’importe
+quel compte local utilisé pour la configuration de httpd.
+</p>
+<div class="example"><h3>Exemple : Génération de clés ECH</h3><pre class="prettyprint lang-config">~# OSSL=/home/user/code/openssl/apps/openssl
+~# mkdir -p /etc/apache2/echkeydir
+~# chmod 700 /etc/apache2/echkeydir
+~# cd /etc/apache2/echkeydir
+~# $OSSL ech -public-name example.com -o example.com.pem.ech
+~# cat example.com.pem.ech
+-----BEGIN PRIVATE KEY-----
+MC4CAQAwBQYDK2VuBCIEIJi22Im2rJ/lJqzNFZdGfsVfmknXAc8xz3fYPhD0Na5I
+-----END PRIVATE KEY-----
+-----BEGIN ECHCONFIG-----
+AD7+DQA6QwAgACA8mxkEsSTp2xXC/RUFCC6CZMMgdM4x1iTWKu3EONjbMAAEAAEA
+AQALZXhhbXBsZS5vcmcAAA==
+-----END ECHCONFIG-----</pre>
+</div>
+<p>
+La valeur ECHConfig doit ensuite être publiée dans le DNS sous forme d’un
+enregistrement ressource HTTPS de façon à être accessible comme indiqué
+ci-après :
+</p>
+<div class="example"><h3>Accéder à une configuration ECH depuis le DNS</h3><pre class="prettyprint lang-config">$ dig +short HTTPS foo.example.com
+1 . ech=AD7+DQA6QwAgACA8mxkEsSTp2xXC/RUFCC6CZMMgdM4x1iTWKu3EONjbMAAEAAEAAQALZXhhbXBsZS5vcmcAAA==</pre>
+</div>
+<p>
+Divers autres champs peuvent être inclus dans un enregistrement ressource HTTPS.
+Les méthodes existantes pour publier des enregistrements DNS peuvent être
+utilisées pour effectuer ce qui précède pour de nombreux déploiements de httpd.
+Dans certains cas, il pourra être intéressant d’utiliser 
+<a href="https://datatracker.ietf.org/doc/html/draft-ietf-tls-wkech">
+un URI connu pour les paramètres du service de publication</a> conçu pour
+assister les serveurs web , par exemple dans la gestion des rotations fréquentes
+de clés ECH.
+</p>
+</div>
+
+<div class="note"><h3>Rechargement des clés ECH</h3>
+
+<p>
+Invoquer httpd avec l’argument de ligne de commande <code>-k graceful</code>
+provoque un rechargement «&nbsp;en douceur&nbsp;» de la configuration sans fermer les
+connexions existantes.
+</p>
+
+</div>
+
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>

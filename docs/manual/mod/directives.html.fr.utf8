@@ -746,6 +746,7 @@
 <li><a href="mod_ssl.html#sslclienthellovars">SSLClientHelloVars</a></li>
 <li><a href="mod_ssl.html#sslcompression">SSLCompression</a></li>
 <li><a href="mod_ssl.html#sslcryptodevice">SSLCryptoDevice</a></li>
+<li><a href="mod_ssl.html#sslechkeydir">SSLECHKeyDir</a></li>
 <li><a href="mod_ssl.html#sslengine">SSLEngine</a></li>
 <li><a href="mod_ssl.html#sslfips">SSLFIPS</a></li>
 <li><a href="mod_ssl.html#sslhonorcipherorder">SSLHonorCipherOrder</a></li>
