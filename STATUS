@@ -208,6 +208,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      Can be applied via apply_backport_pr.sh 555
      +1: rpluem,
 
+  *) mod_http2: Fix handling of 304 responses from mod_cache. PR 69580.
+     Trunk version of patch:
+        https://svn.apache.org/r1924267
+     Backport version for 2.4.x of patch:
+      Trunk version of patch works
+      svn merge -c 1924267 ^/httpd/httpd/trunk .
+     +1: rpluem,
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
