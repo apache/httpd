@@ -1170,7 +1170,7 @@ static int dav_method_put(request_rec *r)
     if (conf->honor_mtime_header == DAV_ENABLED_ON) {
         if ((mtime_ret = dav_parse_mtime(r, &mtime)) == -1) {
             body = apr_psprintf(r->pool,
-                                "Malformed X-OC-Mtime header for MKCOL %s.",
+                                "Malformed X-OC-Mtime header for PUT %s.",
                                 ap_escape_html(r->pool, r->uri));
             return dav_error_response(r, HTTP_BAD_REQUEST, body);
         }
