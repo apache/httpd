@@ -2814,6 +2814,13 @@ static int dav_method_mkcol(request_rec *r)
     int result;
     int rc;
     dav_response *multi_status;
+    dav_dir_conf *conf;
+    int mtime_aware;
+    int mtime_ret;
+    apr_time_t mtime;
+
+    /* retrieve module config */
+    conf = ap_get_module_config(r->per_dir_config, &dav_module);
 
     /* handle the request body */
     /* ### this may move lower once we start processing bodies */
@@ -2839,6 +2846,16 @@ static int dav_method_mkcol(request_rec *r)
         /* Apache will supply a default error for this. */
         /* ### we should provide a specific error message! */
         return HTTP_METHOD_NOT_ALLOWED;
+    }
+
+    /* try parsing x-oc-mtime header */
+    if (conf->honor_mtime_header == DAV_ENABLED_ON) {
+        if ((mtime_ret = dav_parse_mtime(r, &mtime)) == -1) {
+            return dav_error_response(r, HTTP_BAD_REQUEST,
+                                      apr_psprintf(r->pool,
+                                                   "Malformed X-OC-Mtime header for MKCOL %s.",
+                                                   ap_escape_html(r->pool, r->uri)));
+        }
     }
 
     resource_state = dav_get_resource_state(r, resource);
@@ -2919,6 +2936,27 @@ static int dav_method_mkcol(request_rec *r)
                                  err);
             return dav_handle_err(r, err, NULL);
         }
+    }
+
+    mtime_aware = resource->hooks->set_mtime != NULL;
+    if (conf->honor_mtime_header == DAV_ENABLED_ON && mtime_ret == 1) {
+        if (mtime_aware) {
+            err = (resource->hooks->set_mtime)(resource, mtime);
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO()
+                          "Setting mtime for file.");
+        } else {
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO()
+                          "Unable to set mtime: provider does not support \"set_mtime\".");
+        }
+    }
+
+    if (err != NULL) {
+        /* The dir creation was successful, but setting mtime failed. */
+        err = dav_push_error(r->pool, err->status, 0,
+                             "The MKCOL was successful, but there "
+                             "was a problem setting its modification time.",
+                             err);
+        return dav_handle_err(r, err, NULL);
     }
 
     /* return an appropriate response (HTTP_CREATED) */
