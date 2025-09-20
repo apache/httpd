@@ -1103,6 +1103,9 @@ static int dav_method_put(request_rec *r)
     int mtime_ret;
     apr_time_t mtime;
 
+    /* retrieve module config */
+    conf = ap_get_module_config(r->per_dir_config, &dav_module);
+
     /* Ask repository module to resolve the resource */
     err = dav_get_resource(r, 0 /* label_allowed */, 0 /* use_checked_in */,
                            &resource);
@@ -1320,7 +1323,6 @@ static int dav_method_put(request_rec *r)
     }
 
     /* This performs MS-WDV PROPPATCH combined with PUT */
-    conf = ap_get_module_config(r->per_dir_config, &dav_module);
     if (conf->msext_opts & DAV_MSEXT_OPT_WDV)
         (void)dav_mswdv_postprocessing(r);
 
