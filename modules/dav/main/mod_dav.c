@@ -1280,7 +1280,8 @@ static int dav_method_put(request_rec *r)
                 err3 = (*resource->hooks->set_mtime)(resource, mtime);
                 ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(10519)
                       "Setting mtime for file.");
-            } else {
+            }
+            else {
                 ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(10520)
                       "Unable to set mtime: provider does not support \"set_mtime\".");
             }
@@ -2944,7 +2945,8 @@ static int dav_method_mkcol(request_rec *r)
             err = (resource->hooks->set_mtime)(resource, mtime);
             ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO()
                           "Setting mtime for file.");
-        } else {
+        }
+        else {
             ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO()
                           "Unable to set mtime: provider does not support \"set_mtime\".");
         }
