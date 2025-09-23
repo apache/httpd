@@ -1168,17 +1168,16 @@ static dav_error * dav_fs_set_mtime(dav_resource *resource, apr_time_t mtime)
 {
     apr_pool_t *pool;
     apr_status_t status;
-    char errbuf[1024];
 
     pool = resource->pool;
     status = apr_file_mtime_set(resource->info->pathname, mtime, pool);
 
     if (status != APR_SUCCESS) {
-        apr_strerror(status, errbuf, sizeof(errbuf));
         ap_log_perror(APLOG_MARK, APLOG_ERR, status, pool, APLOGNO(10521)
-                      "Failed setting mtime for file %s: apr_file_mtime_set: %s",
-                      resource->info->pathname, errbuf);
-        return dav_new_error(pool, HTTP_INTERNAL_SERVER_ERROR, 0, status, "Could not set mtime");
+                      "Failed setting modification time for file %s.",
+                      resource->info->pathname);
+        return dav_new_error(pool, HTTP_INTERNAL_SERVER_ERROR, 0, status,
+                             "Could not set modification time.");
     }
 
     return NULL;
