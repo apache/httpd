@@ -985,9 +985,8 @@ static int dav_parse_mtime(request_rec *r, apr_time_t *mtime)
         }
     }
 
-    errno = 0;
     n = apr_strtoi64(hdr, &endp, 10);
-    if (errno || endp == hdr) {
+    if (errno != 0 || endp == hdr) {
         return -1;
     }
 
