@@ -296,7 +296,7 @@ void *md_config_merge_svr(apr_pool_t *pool, void *basev, void *addv)
 static int inside_section(cmd_parms *cmd, const char *section) {
     ap_directive_t *d;
     for (d = cmd->directive->parent; d; d = d->parent) {
-       if (!ap_cstr_casecmp(d->directive, section)) {
+       if (!apr_cstr_casecmp(d->directive, section)) {
            return 1;
        }
     }
@@ -341,10 +341,10 @@ static const char *md_conf_check_location(cmd_parms *cmd, int flags)
 
 static const char *set_on_off(int *pvalue, const char *s, apr_pool_t *p)
 {
-    if (!apr_strnatcasecmp("off", s)) {
+    if (!apr_cstr_casecmp("off", s)) {
         *pvalue = 0;
     }
-    else if (!apr_strnatcasecmp("on", s)) {
+    else if (!apr_cstr_casecmp("on", s)) {
         *pvalue = 1;
     }
     else {
@@ -364,11 +364,11 @@ static void add_domain_name(apr_array_header_t *domains, const char *name, apr_p
 
 static const char *set_transitive(int *ptransitive, const char *value)
 {
-    if (!apr_strnatcasecmp("auto", value)) {
+    if (!apr_cstr_casecmp("auto", value)) {
         *ptransitive = 1;
         return NULL;
     }
-    else if (!apr_strnatcasecmp("manual", value)) {
+    else if (!apr_cstr_casecmp("manual", value)) {
         *ptransitive = 0;
         return NULL;
     }
@@ -573,13 +573,13 @@ static const char *md_config_set_renew_mode(cmd_parms *cmd, void *dc, const char
     md_renew_mode_t renew_mode;
 
     (void)dc;
-    if (!apr_strnatcasecmp("auto", value) || !apr_strnatcasecmp("automatic", value)) {
+    if (!apr_cstr_casecmp("auto", value) || !apr_cstr_casecmp("automatic", value)) {
         renew_mode = MD_RENEW_AUTO;
     }
-    else if (!apr_strnatcasecmp("always", value)) {
+    else if (!apr_cstr_casecmp("always", value)) {
         renew_mode = MD_RENEW_ALWAYS;
     }
-    else if (!apr_strnatcasecmp("manual", value) || !apr_strnatcasecmp("stick", value)) {
+    else if (!apr_cstr_casecmp("manual", value) || !apr_cstr_casecmp("stick", value)) {
         renew_mode = MD_RENEW_MANUAL;
     }
     else {
@@ -739,10 +739,10 @@ static const char *md_config_set_store_locks(cmd_parms *cmd, void *dc, const cha
     if (err) {
         return err;
     }
-    else if (!apr_strnatcasecmp("off", s)) {
+    else if (!apr_cstr_casecmp("off", s)) {
         use_store_locks = 0;
     }
-    else if (!apr_strnatcasecmp("on", s)) {
+    else if (!apr_cstr_casecmp("on", s)) {
         use_store_locks = 1;
     }
     else {
@@ -767,10 +767,10 @@ static const char *md_config_set_match_mode(cmd_parms *cmd, void *dc, const char
     if (err) {
         return err;
     }
-    else if (!apr_strnatcasecmp("all", s)) {
+    else if (!apr_cstr_casecmp("all", s)) {
         config->mc->match_mode = MD_MATCH_ALL;
     }
-    else if (!apr_strnatcasecmp("servernames", s)) {
+    else if (!apr_cstr_casecmp("servernames", s)) {
         config->mc->match_mode = MD_MATCH_SERVERNAMES;
     }
     else {
@@ -788,13 +788,13 @@ static const char *md_config_set_require_https(cmd_parms *cmd, void *dc, const c
         return err;
     }
     (void)dc;
-    if (!apr_strnatcasecmp("off", value)) {
+    if (!apr_cstr_casecmp("off", value)) {
         config->require_https = MD_REQUIRE_OFF;
     }
-    else if (!apr_strnatcasecmp(MD_KEY_TEMPORARY, value)) {
+    else if (!apr_cstr_casecmp(MD_KEY_TEMPORARY, value)) {
         config->require_https = MD_REQUIRE_TEMPORARY;
     }
-    else if (!apr_strnatcasecmp(MD_KEY_PERMANENT, value)) {
+    else if (!apr_cstr_casecmp(MD_KEY_PERMANENT, value)) {
         config->require_https = MD_REQUIRE_PERMANENT;
     }
     else {
@@ -979,7 +979,7 @@ static const char *md_config_set_pkeys(cmd_parms *cmd, void *dc,
     config->pks = md_pkeys_spec_make(cmd->pool);
     for (i = 0; i < argc; ++i) {
         ptype = argv[i];
-        if (!apr_strnatcasecmp("Default", ptype)) {
+        if (!apr_cstr_casecmp("Default", ptype)) {
             if (argc > 1) {
                 return "'Default' allows no other parameter";
             }
@@ -1004,7 +1004,7 @@ static const char *md_config_set_pkeys(cmd_parms *cmd, void *dc,
             }
             md_pkeys_spec_add_rsa(config->pks, (unsigned int)bits);
         }
-        else if (!apr_strnatcasecmp("RSA", ptype)) {
+        else if (!apr_cstr_casecmp("RSA", ptype)) {
             if (i+1 >= argc || !isdigit(argv[i+1][0])) {
                 bits = MD_PKEY_RSA_BITS_DEF;
             }
@@ -1240,7 +1240,7 @@ static const char *md_config_set_eab(cmd_parms *cmd, void *dc,
         return err;
     }
     if (!hmac) {
-        if (!apr_strnatcasecmp("None", keyid)) {
+        if (!apr_cstr_casecmp("None", keyid)) {
             keyid = "none";
         }
         else {

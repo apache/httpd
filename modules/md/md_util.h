@@ -20,6 +20,16 @@
 #include <stdio.h>
 #include <apr_file_io.h>
 
+#include <apr_version.h>
+
+#if APR_VERSION_AT_LEAST(1,6,0)
+#include <apr_cstr.h>
+#else
+/* Define a (poor) backwards-compatibility entry point for
+ * apr_cstr_casecmp() from APR 1.6. */
+#define apr_cstr_casecmp apr_natcasecmp
+#endif
+
 struct apr_array_header_t;
 struct apr_table_t;
 

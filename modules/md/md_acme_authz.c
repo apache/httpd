@@ -594,7 +594,7 @@ static apr_status_t find_type(void *baton, size_t index, md_json_t *json)
     cha_find_ctx *ctx = baton;
     
     const char *ctype = md_json_gets(json, MD_KEY_TYPE, NULL);
-    if (ctype && !apr_strnatcasecmp(ctx->type, ctype)) {
+    if (ctype && !apr_cstr_casecmp(ctx->type, ctype)) {
         ctx->accepted = cha_from_json(ctx->p, index, json);
         return 0;
     }
@@ -644,7 +644,7 @@ apr_status_t md_acme_authz_respond(md_acme_authz_t *authz, md_acme_t *acme, md_s
 
         if (fctx.accepted) {
             for (j = 0; j < (int)CHA_TYPES_LEN; ++j) {
-                if (!apr_strnatcasecmp(CHA_TYPES[j].name, fctx.accepted->type)) {
+                if (!apr_cstr_casecmp(CHA_TYPES[j].name, fctx.accepted->type)) {
                     md_result_activity_printf(result, "Setting up challenge '%s' for domain %s", 
                                               fctx.accepted->type, authz->domain);
                     rv = CHA_TYPES[j].setup(fctx.accepted, authz, acme, store, key_specs,
@@ -702,7 +702,7 @@ apr_status_t md_acme_authz_teardown(struct md_store_t *store, const char *token,
         domain = strchr(challenge, ':');
         *domain = '\0'; domain++;
         for (i = 0; i < (int)CHA_TYPES_LEN; ++i) {
-            if (!apr_strnatcasecmp(CHA_TYPES[i].name, challenge)) {
+            if (!apr_cstr_casecmp(CHA_TYPES[i].name, challenge)) {
                 if (CHA_TYPES[i].teardown) {
                     return CHA_TYPES[i].teardown(store, domain, md, env, p);
                 }

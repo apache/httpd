@@ -430,7 +430,7 @@ const char *md_get_ca_name_from_url(apr_pool_t *p, const char *url)
     unsigned int i;
 
     for (i = 0; i < sizeof(KNOWN_CAs)/sizeof(KNOWN_CAs[0]); ++i) {
-        if (!apr_strnatcasecmp(KNOWN_CAs[i].url, url)) {
+        if (!apr_cstr_casecmp(KNOWN_CAs[i].url, url)) {
             return KNOWN_CAs[i].name;
         }
     }
@@ -448,7 +448,7 @@ apr_status_t md_get_ca_url_from_name(const char **purl, apr_pool_t *p, const cha
 
     *purl = NULL;
     for (i = 0; i < sizeof(KNOWN_CAs)/sizeof(KNOWN_CAs[0]); ++i) {
-        if (!apr_strnatcasecmp(KNOWN_CAs[i].name, name)) {
+        if (!apr_cstr_casecmp(KNOWN_CAs[i].name, name)) {
             *purl = KNOWN_CAs[i].url;
             goto leave;
         }

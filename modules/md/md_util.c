@@ -256,7 +256,7 @@ int md_array_str_index(const apr_array_header_t *array, const char *s,
         for (i = start; i < array->nelts; i++) {
             const char *p = APR_ARRAY_IDX(array, i, const char *);
             if ((case_sensitive && !strcmp(p, s))
-                || (!case_sensitive && !apr_strnatcasecmp(p, s))) {
+                || (!case_sensitive && !apr_cstr_casecmp(p, s))) {
                 return i;
             }
         }
@@ -278,7 +278,7 @@ int md_array_str_eq(const struct apr_array_header_t *a1,
         s1 = APR_ARRAY_IDX(a1, i, const char *);
         s2 = APR_ARRAY_IDX(a2, i, const char *);
         if ((case_sensitive && strcmp(s1, s2))
-            || (!case_sensitive && apr_strnatcasecmp(s1, s2))) {
+            || (!case_sensitive && apr_cstr_casecmp(s1, s2))) {
             return 0;
         }
     }
@@ -325,7 +325,7 @@ apr_array_header_t *md_array_str_remove(apr_pool_t *p, apr_array_header_t *src,
             const char *s = APR_ARRAY_IDX(src, i, const char *);
             if (!exclude 
                 || (case_sensitive && strcmp(exclude, s))
-                || (!case_sensitive && apr_strnatcasecmp(exclude, s))) {
+                || (!case_sensitive && apr_cstr_casecmp(exclude, s))) {
                 APR_ARRAY_PUSH(dest, const char *) = apr_pstrdup(p, s); 
             }
         }
@@ -859,10 +859,10 @@ int md_dns_matches(const char *pattern, const char *domain)
 {
     const char *s;
     
-    if (!apr_strnatcasecmp(pattern, domain)) return 1;
+    if (!apr_cstr_casecmp(pattern, domain)) return 1;
     if (pattern[0] == '*' && pattern[1] == '.') {
         s = strchr(domain, '.');
-        if (s && !apr_strnatcasecmp(pattern+1, s)) return 1;
+        if (s && !apr_cstr_casecmp(pattern+1, s)) return 1;
     }
     return 0;
 }
@@ -1026,8 +1026,8 @@ apr_status_t md_util_abs_http_uri_check(apr_pool_t *p, const char *uri, const ch
             *perr = "missing uri scheme";
             return APR_EINVAL;
         }
-        if (apr_strnatcasecmp("http", uri_parsed.scheme) 
-            && apr_strnatcasecmp("https", uri_parsed.scheme)) {
+        if (apr_cstr_casecmp("http", uri_parsed.scheme) 
+            && apr_cstr_casecmp("https", uri_parsed.scheme)) {
             *perr = "uri scheme must be http or https";
             return APR_EINVAL;
         }
@@ -1509,7 +1509,7 @@ static int find_url(void *baton, const char *key, const char *value)
 {
     find_ctx *outer = baton;
     
-    if (!apr_strnatcasecmp("link", key)) {
+    if (!apr_cstr_casecmp("link", key)) {
         link_ctx ctx;
         
         memset(&ctx, 0, sizeof(ctx));

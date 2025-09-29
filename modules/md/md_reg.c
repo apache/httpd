@@ -111,7 +111,7 @@ apr_status_t md_reg_create(md_reg_t **preg, apr_pool_t *p, struct md_store_t *st
     reg->can_http = 1;
     reg->can_https = 1;
     reg->proxy_url = proxy_url? apr_pstrdup(p, proxy_url) : NULL;
-    reg->ca_file = (ca_file && apr_strnatcasecmp("none", ca_file))?
+    reg->ca_file = (ca_file && apr_cstr_casecmp("none", ca_file))?
                     apr_pstrdup(p, ca_file) : NULL;
     reg->min_delay = min_delay;
     reg->retry_failover = retry_failover;

@@ -81,7 +81,7 @@ static apr_status_t problem_status_get(const char *type) {
     }
      
     for(i = 0; i < (sizeof(Problems)/sizeof(Problems[0])); ++i) {
-        if (!apr_strnatcasecmp(type, Problems[i].type)) {
+        if (!apr_cstr_casecmp(type, Problems[i].type)) {
             return Problems[i].rv;
         }
     }
@@ -100,7 +100,7 @@ int md_acme_problem_is_input_related(const char *problem) {
     }
 
     for(i = 0; i < (sizeof(Problems)/sizeof(Problems[0])); ++i) {
-        if (!apr_strnatcasecmp(problem, Problems[i].type)) {
+        if (!apr_cstr_casecmp(problem, Problems[i].type)) {
             return Problems[i].input_related;
         }
     }

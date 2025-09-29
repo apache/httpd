@@ -109,7 +109,7 @@ static apr_status_t ad_setup_order(md_proto_driver_t *d, md_result_t *result, in
             int i;
             for (i = 0; !profile && i < ad->acme->api.v2.profiles->nelts; ++i) {
                 const char *s = APR_ARRAY_IDX(ad->acme->api.v2.profiles, i, const char*);
-                if (!apr_strnatcasecmp(s, ad->profile))
+                if (!apr_cstr_casecmp(s, ad->profile))
                    profile = s;
             }
         }

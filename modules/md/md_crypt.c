@@ -338,7 +338,7 @@ int md_pkeys_spec_contains_ec(md_pkeys_spec_t *pks, const char *curve)
     for (i = 0; i < pks->specs->nelts; ++i) {
         spec = APR_ARRAY_IDX(pks->specs, i, md_pkey_spec_t*);
         if (MD_PKEY_TYPE_EC == spec->type 
-            && !apr_strnatcasecmp(curve, spec->params.ec.curve)) return 1;   
+            && !apr_cstr_casecmp(curve, spec->params.ec.curve)) return 1;   
     }
     return 0;
 }
@@ -428,10 +428,10 @@ md_pkey_spec_t *md_pkey_spec_from_json(struct md_json_t *json, apr_pool_t *p)
     
     if (spec) {
         s = md_json_gets(json, MD_KEY_TYPE, NULL);
-        if (!s || !apr_strnatcasecmp("Default", s)) {
+        if (!s || !apr_cstr_casecmp("Default", s)) {
             spec->type = MD_PKEY_TYPE_DEFAULT;
         }
-        else if (!apr_strnatcasecmp("RSA", s)) {
+        else if (!apr_cstr_casecmp("RSA", s)) {
             spec->type = MD_PKEY_TYPE_RSA;
             l = md_json_getl(json, MD_KEY_BITS, NULL);
             if (l >= MD_PKEY_RSA_BITS_MIN) {
@@ -441,7 +441,7 @@ md_pkey_spec_t *md_pkey_spec_from_json(struct md_json_t *json, apr_pool_t *p)
                 spec->params.rsa.bits = MD_PKEY_RSA_BITS_DEF;
             }
         }
-        else if (!apr_strnatcasecmp("EC", s)) {
+        else if (!apr_cstr_casecmp("EC", s)) {
             spec->type = MD_PKEY_TYPE_EC;
             s = md_json_gets(json, MD_KEY_CURVE, NULL);
             if (s) {
@@ -861,26 +861,26 @@ static apr_status_t gen_ec(md_pkey_t **ppkey, apr_pool_t *p, const char *curve)
     curve_nid = EC_curve_nist2nid(curve);
     /* In case this fails, try some names from other standards, like SECG */
 #ifdef NID_secp384r1
-    if (NID_undef == curve_nid && !apr_strnatcasecmp("secp384r1", curve)) {
+    if (NID_undef == curve_nid && !apr_cstr_casecmp("secp384r1", curve)) {
         curve_nid = NID_secp384r1;
         curve = EC_curve_nid2nist(curve_nid);
     }
 #endif
 #ifdef NID_X9_62_prime256v1
-    if (NID_undef == curve_nid && !apr_strnatcasecmp("secp256r1", curve)) {
+    if (NID_undef == curve_nid && !apr_cstr_casecmp("secp256r1", curve)) {
         curve_nid = NID_X9_62_prime256v1;
         curve = EC_curve_nid2nist(curve_nid);
     }
 #endif
 #ifdef NID_X9_62_prime192v1
-    if (NID_undef == curve_nid && !apr_strnatcasecmp("secp192r1", curve)) {
+    if (NID_undef == curve_nid && !apr_cstr_casecmp("secp192r1", curve)) {
         curve_nid = NID_X9_62_prime192v1;
         curve = EC_curve_nid2nist(curve_nid);
     }
 #endif
 #if defined(NID_X25519) && (!defined(LIBRESSL_VERSION_NUMBER) || \
                             LIBRESSL_VERSION_NUMBER >= 0x3070000fL)
-    if (NID_undef == curve_nid && !apr_strnatcasecmp("X25519", curve)) {
+    if (NID_undef == curve_nid && !apr_cstr_casecmp("X25519", curve)) {
         curve_nid = NID_X25519;
         curve = EC_curve_nid2nist(curve_nid);
     }
