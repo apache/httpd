@@ -704,7 +704,9 @@ typedef struct {
     apr_array_header_t   *aRandSeed;
 #endif
 
+#if MODSSL_HAVE_ENGINE_API
     const char     *szCryptoDevice; /* ENGINE device (if available) */
+#endif
 
 #ifdef HAVE_OCSP_STAPLING
     const ap_socache_provider_t *stapling_cache;
