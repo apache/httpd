@@ -1277,12 +1277,12 @@ static int dav_method_put(request_rec *r)
         if (err == NULL && conf->honor_mtime_header == DAV_ENABLED_ON && mtime_ret == 1) {
             if (mtime_aware) {
                 err3 = (*resource->hooks->set_mtime)(resource, mtime);
-                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(10519)
-                      "Setting modification time for file.");
+                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+                              "Setting modification time for file.");
             }
             else {
-                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(10520)
-                      "Provider does not support setting modification times.");
+                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+                              "Provider does not support setting modification times.");
             }
         }
 
@@ -2942,11 +2942,11 @@ static int dav_method_mkcol(request_rec *r)
     if (conf->honor_mtime_header == DAV_ENABLED_ON && mtime_ret == 1) {
         if (mtime_aware) {
             err = (resource->hooks->set_mtime)(resource, mtime);
-            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO()
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
                           "Setting mtime for file.");
         }
         else {
-            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO()
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
                           "Unable to set mtime: provider does not support \"set_mtime\".");
         }
     }

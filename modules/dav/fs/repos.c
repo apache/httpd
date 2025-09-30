@@ -1173,7 +1173,7 @@ static dav_error * dav_fs_set_mtime(dav_resource *resource, apr_time_t mtime)
     status = apr_file_mtime_set(resource->info->pathname, mtime, pool);
 
     if (status != APR_SUCCESS) {
-        ap_log_perror(APLOG_MARK, APLOG_ERR, status, pool, APLOGNO(10521)
+        ap_log_perror(APLOG_MARK, APLOG_ERR, status, pool, APLOGNO()
                       "Failed setting modification time for file %s.",
                       resource->info->pathname);
         return dav_new_error(pool, HTTP_INTERNAL_SERVER_ERROR, 0, status,
