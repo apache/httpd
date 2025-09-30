@@ -2943,11 +2943,11 @@ static int dav_method_mkcol(request_rec *r)
         if (mtime_aware) {
             err = (resource->hooks->set_mtime)(resource, mtime);
             ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
-                          "Setting mtime for file.");
+                          "Setting modification time for directory.");
         }
         else {
             ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
-                          "Unable to set mtime: provider does not support \"set_mtime\".");
+                          "Provider does not support setting modification times.");
         }
     }
 
