@@ -121,21 +121,21 @@ static void process_drive_job(md_renew_ctx_t *dctx, md_job_t *job, apr_pool_t *p
                          "certificate(s)", job->mdomain);
         }
         else if (!renew_at || renew_at <= now) {
-            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, dctx->s, APLOGNO()
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, dctx->s, APLOGNO(10512)
                          "md(%s): need to renew now", job->mdomain);
         }
         else {
             apr_time_t ari_renew_at = 0;
             char ts[APR_RFC822_DATE_LEN];
 
-            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, dctx->s, APLOGNO()
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, dctx->s, APLOGNO(10513)
                          "md(%s): ARI is %senabled", job->mdomain,
                          md->ari_renewals? "" : "not ");
             if (md->ari_renewals)
                 ari_renew_at = md_reg_ari_renew_at(&ari_explain_url, dctx->mc->reg, md,
                                                    dctx->mc->env, result, ptemp);
             if (!ari_renew_at || (ari_renew_at > renew_at)) {
-                ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, dctx->s, APLOGNO()
+                ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, dctx->s, APLOGNO(10514)
                              "md(%s): %sup for configured renewal in %s",
                              job->mdomain,
                              (ari_renew_at || !md->ari_renewals) ? "" : "no ARI available, ",
@@ -146,13 +146,13 @@ static void process_drive_job(md_renew_ctx_t *dctx, md_job_t *job, apr_pool_t *p
                 long secs = (long)apr_time_sec(ari_renew_at - now);
                 apr_rfc822_date(ts, ari_renew_at);
                 if (ari_explain_url) {
-                    ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, dctx->s, APLOGNO()
+                    ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, dctx->s, APLOGNO(10515)
                                  "md(%s): CA advises renew via ARI at %s"
                                  ", for explanation see %s",
                                  job->mdomain, ts, ari_explain_url);
                 }
                 else
-                    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, dctx->s, APLOGNO()
+                    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, dctx->s, APLOGNO(10516)
                                  "md(%s): CA advises renew via ARI at %s",
                                  job->mdomain, ts);
                 if (secs < MD_SECS_PER_DAY) { /* earlier than regular run */
@@ -162,13 +162,13 @@ static void process_drive_job(md_renew_ctx_t *dctx, md_job_t *job, apr_pool_t *p
             }
             /* ARI says we should renew *now* */
             if (ari_explain_url) {
-                ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, dctx->s, APLOGNO()
+                ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, dctx->s, APLOGNO(10517)
                              "md(%s): CA advises renew via ARI now"
                              ", for explanation see %s",
                              job->mdomain, ari_explain_url);
             }
             else
-                ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, dctx->s, APLOGNO()
+                ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, dctx->s, APLOGNO(10518)
                              "md(%s): CA advises renew via ARI now", job->mdomain);
         }
     
