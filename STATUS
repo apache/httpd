@@ -167,17 +167,17 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   *) mod_http2/mod_proxy_http2: Fix bug in log2() calculation
      trunk patch: http://svn.apache.org/r1927235
      2.4.x patch: svn merge -c 1927235 ^/httpd/httpd/trunk .
-     +1: icing, rpluem
+     +1: icing, rpluem, jorton
 
   *) mod_proxy_http2: add support for ProxyErrorOverride. PR69771
      trunk patch: http://svn.apache.org/r1927647
      2.4.x patch: svn merge -c 1927647 ^/httpd/httpd/trunk .
-     +1: icing, rpluem
+     +1: icing, rpluem, jorton
 
   *) mod_http2: new directive H2MaxStreamErrors.
      trunk patch: http://svn.apache.org/r1927792
      2.4.x patch: svn merge -c 1927792 ^/httpd/httpd/trunk .
-     +1: icing, rpluem
+     +1: icing, rpluem, jorton
 
   *) mod_md: update to version 2.6.2
      trunk patch:
@@ -188,7 +188,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c 1927807,1927874,1928039,1928839 ^/httpd/httpd/trunk .
      Might need some resolving in test code, as trunk and 2.4.x
      are not in sync.
-     +1: icing, rpluem
+     +1: icing, rpluem, jorton
 
   *) various: Update DOCTYPE tags in server-generated HTML to 4.01
      Trunk version of patch:
@@ -196,7 +196,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      Backport version for 2.4.x of patch:
        https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/553.diff
      Can be applied via apply_backport_pr.sh 553
-     +1: rpluem,
+     +1: rpluem, jorton, 
 
   *) mpm_common: Add new ListenTCPDeferAccept directive that allows to specify
      the value set for the TCP_DEFER_ACCEPT socket option on listen sockets.
@@ -207,7 +207,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      Backport version for 2.4.x of patch:
        https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/555.diff
      Can be applied via apply_backport_pr.sh 555
-     +1: rpluem,
+     +1: rpluem, jorton, 
 
   *) mod_http2: Fix handling of 304 responses from mod_cache. PR 69580.
      Trunk version of patch:
