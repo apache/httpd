@@ -1546,6 +1546,12 @@ static int ssl_no_passwd_prompt_cb(char *buf, int size, int rwflag,
                                      && ERR_GET_REASON(ec) != X509_R_UNKNOWN_KEY_TYPE))
 #endif
 
+#if MODSSL_HAVE_ENGINE_API
+#define LOG_SOURCE(mc_) ((mc_)->szCryptoDevice ? (mc_)->szCryptoDevice : "provider")
+#else
+#define LOG_SOURCE(mc_) "provider"
+#endif
+
 static apr_status_t ssl_init_server_certs(server_rec *s,
                                           apr_pool_t *p,
                                           apr_pool_t *ptemp,
@@ -1623,9 +1629,7 @@ static apr_status_t ssl_init_server_certs(server_rec *s,
                 if (SSL_CTX_use_certificate(mctx->ssl_ctx, cert) < 1) {
                     ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(10137)
                                  "Failed to configure certificate %s from %s, check %s",
-                                 key_id, mc->szCryptoDevice ?
-                                             mc->szCryptoDevice : "provider",
-                                 certfile);
+                                 key_id, LOG_SOURCE(mc), certfile);
                     ssl_log_ssl_error(SSLLOG_MARK, APLOG_EMERG, s);
                     return APR_EGENERAL;
                 }
@@ -1637,8 +1641,7 @@ static apr_status_t ssl_init_server_certs(server_rec *s,
             if (SSL_CTX_use_PrivateKey(mctx->ssl_ctx, pkey) < 1) {
                 ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(10130)
                              "Failed to configure private key %s from %s",
-                             keyfile, mc->szCryptoDevice ?
-                                          mc->szCryptoDevice : "provider");
+                             keyfile, LOG_SOURCE(mc));
                 ssl_log_ssl_error(SSLLOG_MARK, APLOG_EMERG, s);
                 return APR_EGENERAL;
             }

@@ -693,14 +693,17 @@ const char *ssl_cmd_SSLCryptoDevice(cmd_parms *cmd,
     }
 
     if (strcEQ(arg, "builtin")) {
+#if !MODSSL_HAVE_ENGINE_API
+        ap_log_error(APLOG_MARK, APLOG_WARNING, 0, cmd->server, APLOGNO(10542)
+                     "'SSLCryptoDevice builtin' is deprecated and has no effect");
+#else
         mc->szCryptoDevice = NULL;
     }
-#if MODSSL_HAVE_ENGINE_API
     else if ((e = ENGINE_by_id(arg))) {
         mc->szCryptoDevice = arg;
         ENGINE_free(e);
-    }
 #endif
+    }
     else {
         err = "SSLCryptoDevice: Invalid argument; must be one of: "
               "'builtin' (none)";
