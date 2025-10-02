@@ -176,7 +176,7 @@
     <script type="text/javascript" src="{$path}/style/scripts/prettify.min.js">&lf;</script>&lf;
     <!-- chm files do not need a favicon -->
     <xsl:if test="not($is-chm or $is-zip)">&lf;
-        <link rel="shortcut icon" href="{$path}/images/favicon.ico" />
+        <link rel="shortcut icon" href="{$path}/images/favicon.png" />
         <xsl:if test="$is-retired">
             <xsl:choose>
             <xsl:when test="$upgrade">
