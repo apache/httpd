@@ -189,6 +189,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      Might need some resolving in test code, as trunk and 2.4.x
      are not in sync.
      +1: icing, rpluem, jorton
+     rpluem says: Don't we need to add r1928861 as well to fix the LOGNO's?
 
   *) various: Update DOCTYPE tags in server-generated HTML to 4.01
      Trunk version of patch:
