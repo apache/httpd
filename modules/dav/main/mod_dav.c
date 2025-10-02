@@ -974,12 +974,13 @@ static int dav_parse_mtime(request_rec *r, apr_time_t *mtime)
     const char *hdr;
     char *endp;
     apr_int64_t n;
+    apr_size_t i;
 
     if ((hdr = apr_table_get(r->headers_in, "x-oc-mtime")) == NULL) {
         return 0;
     }
 
-    for (apr_size_t i = 0; i < strlen(hdr); i++) {
+    for (i = 0; i < strlen(hdr); i++) {
         if (!apr_isdigit(hdr[i])) {
             return -1;
         }
