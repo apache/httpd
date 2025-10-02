@@ -1091,7 +1091,6 @@ static int dav_method_put(request_rec *r)
     const char *body;
     dav_error *err;
     dav_error *err2;
-    dav_error *err3;
     dav_stream_mode mode;
     dav_stream *stream;
     dav_response *multi_response;
@@ -1099,7 +1098,6 @@ static int dav_method_put(request_rec *r)
     apr_off_t range_start;
     apr_off_t range_end;
     int rc;
-    int mtime_aware;
     int mtime_ret;
     apr_time_t mtime;
 
@@ -1170,6 +1168,7 @@ static int dav_method_put(request_rec *r)
     }
 
     /* try parsing x-oc-mtime header */
+    mtime_ret = 0;
     if (conf->honor_mtime_header == DAV_ENABLED_ON) {
         if ((mtime_ret = dav_parse_mtime(r, &mtime)) == -1) {
             body = apr_psprintf(r->pool,
@@ -1273,11 +1272,12 @@ static int dav_method_put(request_rec *r)
         err2 = (*resource->hooks->close_stream)(stream,
                                                 err == NULL /* commit */);
 
+        err = dav_join_error(err, err2);
 
-        mtime_aware = *resource->hooks->set_mtime != NULL;
-        if (err == NULL && conf->honor_mtime_header == DAV_ENABLED_ON && mtime_ret == 1) {
-            if (mtime_aware) {
-                err3 = (*resource->hooks->set_mtime)(resource, mtime);
+        if (err == NULL && mtime_ret == 1) {
+            if (*resource->hooks->set_mtime != NULL) {
+                err2 = (*resource->hooks->set_mtime)(resource, mtime);
+                err = dav_join_error(err, err2);
                 ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
                               "Setting modification time for file.");
             }
@@ -1285,12 +1285,6 @@ static int dav_method_put(request_rec *r)
                 ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
                               "Provider does not support setting modification times.");
             }
-        }
-
-        err = dav_join_error(err, err2);
-
-        if (conf->honor_mtime_header == DAV_ENABLED_ON && mtime_aware) {
-            err = dav_join_error(err, err3);
         }
     }
 
@@ -2816,7 +2810,6 @@ static int dav_method_mkcol(request_rec *r)
     int rc;
     dav_response *multi_status;
     dav_dir_conf *conf;
-    int mtime_aware;
     int mtime_ret;
     apr_time_t mtime;
 
@@ -2850,6 +2843,7 @@ static int dav_method_mkcol(request_rec *r)
     }
 
     /* try parsing x-oc-mtime header */
+    mtime_ret = 0;
     if (conf->honor_mtime_header == DAV_ENABLED_ON) {
         if ((mtime_ret = dav_parse_mtime(r, &mtime)) == -1) {
             return dav_error_response(r, HTTP_BAD_REQUEST,
@@ -2939,10 +2933,16 @@ static int dav_method_mkcol(request_rec *r)
         }
     }
 
-    mtime_aware = resource->hooks->set_mtime != NULL;
-    if (conf->honor_mtime_header == DAV_ENABLED_ON && mtime_ret == 1) {
-        if (mtime_aware) {
+    if (mtime_ret == 1) {
+        if (resource->hooks->set_mtime != NULL) {
             err = (resource->hooks->set_mtime)(resource, mtime);
+            if (err != NULL) {
+                err = dav_push_error(r->pool, err->status, 0,
+                                     "The MKCOL was successful, but there "
+                                     "was a problem setting its modification time.",
+                                     err);
+                return dav_handle_err(r, err, NULL);
+            }
             ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
                           "Setting modification time for directory.");
         }
@@ -2950,15 +2950,6 @@ static int dav_method_mkcol(request_rec *r)
             ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
                           "Provider does not support setting modification times.");
         }
-    }
-
-    if (err != NULL) {
-        /* The dir creation was successful, but setting mtime failed. */
-        err = dav_push_error(r->pool, err->status, 0,
-                             "The MKCOL was successful, but there "
-                             "was a problem setting its modification time.",
-                             err);
-        return dav_handle_err(r, err, NULL);
     }
 
     /* return an appropriate response (HTTP_CREATED) */
