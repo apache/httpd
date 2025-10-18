@@ -624,10 +624,6 @@ static void *merge_core_server_configs(apr_pool_t *p, void *basev, void *virtv)
                                   ? virt->flush_max_pipelined
                                   : base->flush_max_pipelined;
 
-    conf->strict_host_check = (virt->strict_host_check != AP_CORE_CONFIG_UNSET)
-                              ? virt->strict_host_check 
-                              : base->strict_host_check;
-
     AP_CORE_MERGE_FLAG(strict_host_check, conf, base, virt);
     AP_CORE_MERGE_FLAG(merge_slashes, conf, base, virt);
 
