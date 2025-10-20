@@ -558,6 +558,17 @@ typedef struct {
     int          nBytes;
 } ssl_randseed_t;
 
+typedef enum {
+    MODSSL_SNIVH_STRICT   = 0, /* default */
+    MODSSL_SNIVH_SECURE   = 1,
+    MODSSL_SNIVH_AUTHONLY = 2,
+    MODSSL_SNIVH_INSECURE = 3
+} modssl_snivhpolicy_t;
+
+#define MODSSL_SNIVH_NAME(p_) ((p_) == MODSSL_SNIVH_STRICT ? "strict" : \
+                               ((p_) == MODSSL_SNIVH_SECURE ? "secure" : \
+                                ((p_) == MODSSL_SNIVH_AUTHONLY ? "authonly" : "insecure" )))
+
 /**
  * Define the structure of an ASN.1 anything
  */
@@ -723,6 +734,8 @@ typedef struct {
 #ifdef HAVE_FIPS
     BOOL             fips;
 #endif
+
+    modssl_snivhpolicy_t snivh_policy;
 } SSLModConfigRec;
 
 /** Structure representing configured filenames for certs and keys for
@@ -876,6 +889,7 @@ struct SSLSrvConfigRec {
     modssl_ctx_t    *server;
 #ifdef HAVE_TLSEXT
     ssl_enabled_t    strict_sni_vhost_check;
+    const char      *sni_policy_hash;
 #endif
 #ifndef OPENSSL_NO_COMP
     BOOL             compression;
@@ -961,6 +975,7 @@ const char  *ssl_cmd_SSLRequire(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLUserName(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLRenegBufferSize(cmd_parms *cmd, void *dcfg, const char *arg);
 const char  *ssl_cmd_SSLStrictSNIVHostCheck(cmd_parms *cmd, void *dcfg, int flag);
+const char  *ssl_cmd_SSLVHostSNIPolicy(cmd_parms *cmd, void *dcfg, const char *arg);
 const char *ssl_cmd_SSLInsecureRenegotiation(cmd_parms *cmd, void *dcfg, int flag);
 
 const char  *ssl_cmd_SSLProxyEngine(cmd_parms *cmd, void *dcfg, int flag);
