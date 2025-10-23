@@ -60,6 +60,9 @@ static SSLModConfigRec *ssl_config_global_create(apr_pool_t *pool, server_rec *s
      * initialize per-module configuration
      */
     mc->sesscache_mode         = SSL_SESS_CACHE_OFF;
+#ifdef HAVE_TLSEXT
+    mc->snivh_policy           = MODSSL_SNIVH_SECURE;
+#endif
 #ifdef MODSSL_USE_SSLRAND
     mc->aRandSeed              = apr_array_make(pool, 4,
                                                 sizeof(ssl_randseed_t));
@@ -2035,6 +2038,44 @@ const char  *ssl_cmd_SSLStrictSNIVHostCheck(cmd_parms *cmd, void *dcfg, int flag
     return "SSLStrictSNIVHostCheck failed; OpenSSL is not built with support "
            "for TLS extensions and SNI indication. Refer to the "
            "documentation, and build a compatible version of OpenSSL.";
+#endif
+}
+
+const char *ssl_cmd_SSLVHostSNIPolicy(cmd_parms *cmd, void *dcfg, const char *arg)
+{
+#ifdef HAVE_TLSEXT
+    SSLModConfigRec *mc = myModConfig(cmd->server);
+    const char *err;
+
+    if ((err = ap_check_cmd_context(cmd, GLOBAL_ONLY))) {
+        return err;
+    }
+    if (!mc) {
+        return "SSLVHostSNIPolicy cannot be used inside SSLPolicyDefine";
+    }
+
+    if (strcEQ(arg, "secure")) {
+        mc->snivh_policy = MODSSL_SNIVH_SECURE;
+    }
+    else if (strcEQ(arg, "strict")) {
+        mc->snivh_policy = MODSSL_SNIVH_STRICT;
+    }
+    else if (strcEQ(arg, "insecure")) {
+        mc->snivh_policy = MODSSL_SNIVH_INSECURE;
+    }
+    else if (strcEQ(arg, "authonly")) {
+        mc->snivh_policy = MODSSL_SNIVH_AUTHONLY;
+    }
+    else {
+        return apr_psprintf(cmd->pool, "Invalid SSLVhostSNIPolicy "
+                            "argument '%s'", arg);
+    }
+
+    return NULL;
+#else
+    return "SSLVHostSNIPolicy cannot be used, OpenSSL is not built with "
+        "support for TLS extensions and SNI indication. Refer to the "
+        "documentation, and build a compatible version of OpenSSL."
 #endif
 }
 
