@@ -14,7 +14,7 @@
 <script src="../style/scripts/prettify.min.js" type="text/javascript">
 </script>
 
-<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<link href="../images/favicon.png" rel="shortcut icon" /></head>
 <body id="manual-page"><div id="page-header">
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
 <p class="apache">Apache HTTP Server Version 2.5</p>
@@ -57,6 +57,9 @@ providing detailed explanations and examples.</p>
 <li><img alt="" src="../images/down.gif" /> <a href="#flag_r">R|redirect</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#flag_s">S|skip</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#flag_t">T|type</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#flag_unsafe_allow_3f">UnsafeAllow3F</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#flag_unsafe_prefix_stat">UnsafePrefixStat</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#flag_unc">UNC</a></li>
 </ul><h3>See also</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">Module documentation</a></li><li><a href="intro.html">mod_rewrite introduction</a></li><li><a href="remapping.html">Redirection and remapping</a></li><li><a href="access.html">Controlling access</a></li><li><a href="vhosts.html">Virtual hosts</a></li><li><a href="proxy.html">Proxying</a></li><li><a href="rewritemap.html">Using RewriteMap</a></li><li><a href="advanced.html">Advanced techniques</a></li><li><a href="avoid.html">When not to use mod_rewrite</a></li><li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -230,6 +233,7 @@ security model.</dd>
 <dd>A value of 0 indicates that the cookie will persist only for the
 current browser session. This is the default value if none is
 specified.</dd>
+<dd>A negative value causes the cookie to be unset in the browser.</dd>
 
 <dt>Path</dt>
 <dd>The path, on the current website, for which the cookie is valid,
@@ -820,7 +824,32 @@ otherwise the MIME-type set with this flag is lost due to an internal
 re-processing (including subsequent rounds of mod_rewrite processing).
 The <code>L</code> flag can be useful in this context to end the
 <em>current</em> round of mod_rewrite processing.</p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="flag_unsafe_allow_3f" id="flag_unsafe_allow_3f">UnsafeAllow3F</a> <a title="Permanent link" href="#flag_unsafe_allow_3f" class="permalink">&para;</a></h2>
+    <p> Setting this flag is required to allow a rewrite to continue If the
+    HTTP request being written has an encoded question mark, '%3f', and the
+    rewritten result has a '?' in the substiution.  This protects from a malicious
+    URL taking advantage of a capture and re-substitution of the encoded
+    question mark.</p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="flag_unsafe_prefix_stat" id="flag_unsafe_prefix_stat">UnsafePrefixStat</a> <a title="Permanent link" href="#flag_unsafe_prefix_stat" class="permalink">&para;</a></h2>
+    <p> Setting this flag is required in server-scoped substitutions
+    start with a variable or backreference and resolve to a filesystem path.
+    These substitutions are not prefixed with the document root.
+    This protects from a malicious URL causing the expanded substitution to
+    map to an unexpected filesystem location.</p>
 
+    <p>Available in Apache HTTP Server 2.5.1 and later.</p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="flag_unc" id="flag_unc">UNC</a> <a title="Permanent link" href="#flag_unc" class="permalink">&para;</a></h2>
+    <p> Setting this flag prevents the merging of multiple leading slashes,
+    as used in Windows UNC paths.  The flag is not necessary when the rules
+    substitution starts with multiple literal slashes.</p>
+
+    <p>Available in Apache HTTP Server 2.5.1 and later.</p>
 </div></div>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../en/rewrite/flags.html" title="English">&nbsp;en&nbsp;</a> |
@@ -843,7 +872,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/rewrite/flags.html
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2023 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2025 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

@@ -14,7 +14,7 @@
 <script src="../style/scripts/prettify.min.js" type="text/javascript">
 </script>
 
-<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<link href="../images/favicon.png" rel="shortcut icon" /></head>
 <body>
 <div id="page-header">
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
@@ -110,7 +110,7 @@ Windows</td></tr></table>
     <p>To create a module DLL, a small change is necessary to the
     module's source file: The module record must be exported from
     the DLL (which will be created later; see below). To do this,
-    add the <code>AP_MODULE_DECLARE_DATA</code> (defined in the
+    add the <code>AP_DECLARE_MODULE</code> (defined in the
     Apache httpd header files) to your module's module record definition.
     For example, if your module has:</p>
 
@@ -120,7 +120,7 @@ Windows</td></tr></table>
 
     <p>Replace the above with:</p>
 <div class="example"><p><code>
-    module AP_MODULE_DECLARE_DATA foo_module;
+    AP_DECLARE_MODULE(foo);
 </code></p></div>
 
     <p>Note that this will only be activated on Windows, so the
@@ -219,7 +219,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_so.html';
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2023 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2025 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

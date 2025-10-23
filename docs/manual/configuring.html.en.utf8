@@ -14,7 +14,7 @@
 <script src="./style/scripts/prettify.min.js" type="text/javascript">
 </script>
 
-<link href="./images/favicon.ico" rel="shortcut icon" /></head>
+<link href="./images/favicon.png" rel="shortcut icon" /></head>
 <body id="manual-page"><div id="page-header">
 <p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossary</a> | <a href="./sitemap.html">Sitemap</a></p>
 <p class="apache">Apache HTTP Server Version 2.5</p>
@@ -76,7 +76,7 @@ Server.</p>
     comments, and are ignored. Comments may <strong>not</strong> be
     included on the same line as a configuration directive, including
     at the start of a line that has been continued as described in the
-    preceding pargraph. Commented lines may also be continued, meaning
+    preceding paragraph. Commented lines may also be continued, meaning
     the next physical line is also interpreted as a comment because the
     logical line begins with a hash character.
     </p>

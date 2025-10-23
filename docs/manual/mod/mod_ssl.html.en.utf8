@@ -14,7 +14,7 @@
 <script src="../style/scripts/prettify.min.js" type="text/javascript">
 </script>
 
-<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<link href="../images/favicon.png" rel="shortcut icon" /></head>
 <body>
 <div id="page-header">
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
@@ -69,6 +69,7 @@ to provide the cryptographic engine.</p>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslclienthellovars">SSLClientHelloVars</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslcompression">SSLCompression</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslcryptodevice">SSLCryptoDevice</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#sslechkeydir">SSLECHKeyDir</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslengine">SSLEngine</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslfips">SSLFIPS</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslhonorcipherorder">SSLHonorCipherOrder</a></li>
@@ -127,6 +128,7 @@ to provide the cryptographic engine.</p>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslusestapling">SSLUseStapling</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslverifyclient">SSLVerifyClient</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslverifydepth">SSLVerifyDepth</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#sslvhostsnipolicy">SSLVHostSNIPolicy</a></li>
 </ul>
 <h3>Bugfix checklist</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd changelog</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_ssl">Known issues</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_ssl">Report a bug</a></li></ul><h3>See also</h3>
 <ul class="seealso">
@@ -207,6 +209,9 @@ compatibility variables.</p>
 <tr><td><code>SSL_CLIENTHELLO_SIG_ALGOS</code></td>     <td>string</td>    <td>Value of Signature Algorithms extension (13) from ClientHello as four hex encoded characters per item</td></tr>
 <tr class="odd"><td><code>SSL_CLIENTHELLO_ALPN</code></td>          <td>string</td>    <td>Value of ALPN extension (16) from ClientHello as hex encoded string including leading string lengths</td></tr>
 <tr><td><code>SSL_CLIENTHELLO_VERSIONS</code></td>      <td>string</td>    <td>Value of Supported Versions extension (43) from ClientHello as four hex encoded characters per item</td></tr>
+<tr class="odd"><td><code>SSL_ECH_STATUS</code></td>                <td>string</td>    <td><code>success</code> means that others also mean what they say</td></tr>
+<tr><td><code>SSL_ECH_INNER_SNI</code></td>             <td>string</td>    <td>SNI value that was encrypted in ECH (or `NONE`)</td></tr>
+<tr class="odd"><td><code>SSL_ECH_OUTER_SNI</code></td>             <td>string</td>    <td>SNI value that was seen in plaintext SNI (or `NONE`)</td></tr>
 </table>
 
 <p><em>x509</em> specifies a component of an X.509 DN; one of
@@ -1030,6 +1035,117 @@ The OpenSSL provider to use must be defined and configured in the OpenSSL config
 and it must support the <a href="https://docs.openssl.org/3.0/man7/provider-storemgmt/">STORE method</a>
 for <a href="https://tools.ietf.org/html/rfc7512">PKCS#11 URIs</a>.
 </p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="SSLECHKeyDir" id="SSLECHKeyDir">SSLECHKeyDir</a> <a name="sslechkeydir" id="sslechkeydir">Directive</a> <a title="Permanent link" href="#sslechkeydir" class="permalink">&para;</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Load the set of Encrypted Client Hello (ECH) PEM files in the named directory</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLECHKeyDir <em>dirname</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache HTTP Server 2.5.1 and later</td></tr>
+</table>
+
+<p>
+ECH is specified in
+    <a href="https://datatracker.ietf.org/doc/draft-ietf-tls-esni/">draft-ietf-tls-esni</a>
+httpd supports ECH "shared-mode" where the httpd instance does the
+ECH decryption and also hosts both the ECH `public-name` and `backend` web
+sites.  
+</p>
+
+<p>
+The <code>SSLECHKeyDir</code> directive 
+names the directory where ECH PEM files (named <code>*.ech</code>) are stored.
+Once an ECH PEM file is successfully loaded, httpd will perform ECH decryption
+and, if that succeeds, will process the relevant TLS session using the 
+SNI from the inner ClientHello.
+</p>
+
+<div class="example"><h3>Example ECH Config</h3><pre class="prettyprint lang-config">...
+SSLEngine On
+SSLProtocol TLSv1.3
+SSLECHKeyDir /etc/apache2/echkeydir
+...
+# virtual hosts
+&lt;VirtualHost *:443&gt;
+    SSLEngine On
+    SSLProtocol TLSv1.3
+    ServerName example.com
+    DocumentRoot "/var/www/dir-example.com"
+&lt;/VirtualHost&gt;
+&lt;VirtualHost *:443&gt;
+    SSLEngine On
+    SSLProtocol TLSv1.3
+    ServerName foo.example.com
+    DocumentRoot "/var/www/dir-foo.example.com"
+&lt;/VirtualHost&gt;
+...</pre>
+</div>
+
+<div class="note"><h3>ECH Key Generation and Publication</h3>
+<p>
+In the above, we describe a configuration that uses <code>example.com</code> as the
+ECH <code>public-name</code> and where <code>foo.example.com</code> is a web-site for which we want
+ECH to be used, with both hosted on the same httpd instance.
+</p>
+<p>
+Using ECH requires that httpd load an ECH key pair with a private value for ECH
+decryption. Browsers will require that the public component of that key pair be
+published in the DNS. With OpenSSL we generate and store that key pair in an ECH PEM
+formatted file as shown below.
+</p>
+<p>
+To generate ECH PEM files, use the ECH-enabled openssl command line
+to generate an ECH key pair and store the result in an ECH PEM file.
+You must also supply the <code>public-name</code> required by the ECH protocol.
+</p>
+<p>
+Key generation operations should be carried out under whatever local account is
+used for httpd configuration.
+</p>
+<div class="example"><h3>Example: ECH Key Generation</h3><pre class="prettyprint lang-config">~# OSSL=/home/user/code/openssl/apps/openssl
+~# mkdir -p /etc/apache2/echkeydir
+~# chmod 700 /etc/apache2/echkeydir
+~# cd /etc/apache2/echkeydir
+~# $OSSL ech -public-name example.com -o example.com.pem.ech
+~# cat example.com.pem.ech
+-----BEGIN PRIVATE KEY-----
+MC4CAQAwBQYDK2VuBCIEIJi22Im2rJ/lJqzNFZdGfsVfmknXAc8xz3fYPhD0Na5I
+-----END PRIVATE KEY-----
+-----BEGIN ECHCONFIG-----
+AD7+DQA6QwAgACA8mxkEsSTp2xXC/RUFCC6CZMMgdM4x1iTWKu3EONjbMAAEAAEA
+AQALZXhhbXBsZS5vcmcAAA==
+-----END ECHCONFIG-----</pre>
+</div>
+<p>
+The ECHConfig value then needs to be published in an HTTPS resource record in
+the DNS, so as to be accessible as shown below:
+</p>
+<div class="example"><h3>Accessing an ECH config from DNS</h3><pre class="prettyprint lang-config">$ dig +short HTTPS foo.example.com
+1 . ech=AD7+DQA6QwAgACA8mxkEsSTp2xXC/RUFCC6CZMMgdM4x1iTWKu3EONjbMAAEAAEAAQALZXhhbXBsZS5vcmcAAA==</pre>
+</div>
+<p>
+Various other fields may be included in an HTTPS resource record. For many
+httpd deployments, existing methods for publishing DNS records may be used to
+achieve the above.  In some cases, one might use
+<a href="https://datatracker.ietf.org/doc/html/draft-ietf-tls-wkech">
+A well-known URI for publishing service parameters</a>
+designed to assist web servers in handling e.g. frequent ECH key rotation.
+</p>
+</div>
+
+<div class="note"><h3>Reloading ECH Keys</h3>
+
+<p>
+Giving httpd a command line argument of <code>-k graceful</code> causes a graceful reload
+of the configuration, without dropping existing connections.
+</p>
+
+</div>
+
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -2917,6 +3033,75 @@ certificate can be self-signed or has to be signed by a CA which is directly
 known to the server (i.e. the CA's certificate is under
 <code class="directive"><a href="#sslcacertificatepath">SSLCACertificatePath</a></code>), etc.</p>
 <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">SSLVerifyDepth 10</pre>
+</div>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="SSLVHostSNIPolicy" id="SSLVHostSNIPolicy">SSLVHostSNIPolicy</a> <a name="sslvhostsnipolicy" id="sslvhostsnipolicy">Directive</a> <a title="Permanent link" href="#sslvhostsnipolicy" class="permalink">&para;</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Set compatibility policy for SNI client access to virtual hosts.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLVHostSNIPolicy strict|secure|authonly|insecure</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>SSLVHostSNIPolicy secure</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in httpd 2.5 and later</td></tr>
+</table><p>This directive sets policy applied when checking whether the
+<code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>
+identified by the <code>Host</code> request header in an HTTP request
+is compatible with the <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> identified from the SNI
+extension sent during the initial TLS connection handshake. If an HTTP
+request is associated with a virtual host which has an incompatible
+SSL/TLS configuration under the policy used, an HTTP error response
+with status code 421 ("Misdirected Request") will be sent.</p>
+
+<p>The <code>strict</code> policy blocks all HTTP requests which are
+identified with a different virtual host to that identifed by SNI.
+The <code>insecure</code> policy allows all HTTP requests regardless
+of virtual host identified; such a configuration may be vulnerable to
+<a href="https://httpd.apache.org/security/vulnerabilities_24.html">CVE-2025-23048</a>.
+</p>
+
+<p>The (default) <code>secure</code>, and <code>authonly</code>
+policies compare specific aspects of the SSL configuration for the two
+virtual hosts, which are grouped into two categories:
+
+<ul>
+  <li><strong>client vertification and authentication
+  settings</strong>: directives which affect TLS client certificate
+  verification or authentication, such as <code class="directive"><a href="#sslverifyclient">SSLVerifyClient</a></code>, <code class="directive"><a href="#sslverifymode">SSLVerifyMode</a></code>, <code class="directive"><a href="#sslcacertificatepath">SSLCACertificatePath</a></code>, <code class="directive"><a href="#sslsrpverifierfile">SSLSRPVerifierFile</a></code>; any use of <code class="directive"><a href="#sslopensslconfcmd">SSLOpenSSLConfCmd</a></code></li>
+
+  <li><strong>server certificate/key, or protocol/cipher
+  restrictions</strong>: directives which determine the server
+  certificate or key (<code class="directive"><a href="#sslcertificatekeyfile">SSLCertificateKeyFile</a></code> etc), cipher or
+  protocol restrictions (<code class="directive"><a href="#sslciphersuite">SSLCipherSuite</a></code> and <code class="directive"><a href="#sslprotocol">SSLProtocol</a></code>)</li>
+</ul>
+
+This table illustrates whether an HTTP request will be blocked or
+allowed when the virtual host configurations differ as described,
+under each different policy setting:
+
+<table class="bordered"><tr class="header">
+  <th>Policy mode</th>
+  <th>Any VirtualHost mismatch</th>
+  <th>Client verification/<br />authentication settings</th>
+  <th>Server certificate/key, <br />or protocol/cipher restrictions</th>
+</tr>
+<tr>
+  <td><code>strict</code><td>blocked</td><td>blocked</td><td>blocked</td></td>
+</tr>
+<tr class="odd">
+  <td><code>secure</code><td>allowed</td><td>blocked</td><td>blocked</td></td>
+</tr>
+<tr>
+  <td><code>authonly</code><td>allowed</td><td>blocked</td><td>allowed</td></td>
+</tr>
+<tr class="odd">
+  <td><code>insecure</code><td>allowed</td><td>allowed</td><td>allowed</td></td>
+</tr>
+</table>
+</p>
+<div class="example"><h3>Example</h3><pre class="prettyprint lang-config">SSLVHostSNIPolicy authonly</pre>
 </div>
 
 </div>

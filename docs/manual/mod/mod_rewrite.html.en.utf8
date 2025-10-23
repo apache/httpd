@@ -14,7 +14,7 @@
 <script src="../style/scripts/prettify.min.js" type="text/javascript">
 </script>
 
-<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<link href="../images/favicon.png" rel="shortcut icon" /></head>
 <body>
 <div id="page-header">
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
@@ -1461,6 +1461,26 @@ cannot use <code>$N</code> in the substitution string!
         <td>Force the <a class="glossarylink" href="../glossary.html#mime-type" title="see glossary">MIME-type</a> of the target file
         to be the specified type. <em><a href="../rewrite/flags.html#flag_t">details ...</a></em></td>
     </tr>
+<tr class="odd">
+        <td>UnsafeAllow3F</td>
+        <td>Allows substitutions from URL's that may be unsafe.
+        <em><a href="../rewrite/flags.html#flag_unsafe_allow_3f">details ...</a></em>
+        </td>
+    </tr>
+<tr>
+        <td>UnsafePrefixStat</td>
+        <td>Allows potentially unsafe substitutions from a leading variable or backreference to a filesystem path.
+        <em><a href="../rewrite/flags.html#flag_unsafe_prefix_stat">details ...</a></em><br />
+        Available in Apache HTTP Server 2.5.1 and later.
+        </td>
+    </tr>
+<tr class="odd">
+        <td>UNC</td>
+        <td>Prevents the merging of multiple leading slashes, as used by Windows UNC paths.
+        <em><a href="../rewrite/flags.html#flag_unc">details ...</a></em><br />
+        Available in Apache HTTP Server 2.5.1 and later.
+        </td>
+    </tr>
 </table>
 
 <div class="note"><h3>Home directory expansion</h3>
@@ -1625,7 +1645,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_rewrite.ht
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2023 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2025 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

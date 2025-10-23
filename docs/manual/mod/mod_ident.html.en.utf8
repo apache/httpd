@@ -14,7 +14,7 @@
 <script src="../style/scripts/prettify.min.js" type="text/javascript">
 </script>
 
-<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<link href="../images/favicon.png" rel="shortcut icon" /></head>
 <body>
 <div id="page-header">
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
@@ -37,7 +37,7 @@
 <tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_ident.c</td></tr></table>
 <h3>Summary</h3>
 
-    <p>This module queries an <a href="http://www.ietf.org/rfc/rfc1413.txt">RFC 1413</a> compatible daemon on a remote host to look up the owner of
+    <p>This module queries an <a href="https://www.rfc-editor.org/rfc/rfc1413">RFC 1413</a> compatible daemon on a remote host to look up the owner of
     a connection.</p>
 </div>
 <div id="quickview"><h3 class="directives">Directives</h3>
@@ -61,7 +61,7 @@ user</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ident</td></tr>
 </table>
-    <p>This directive enables <a href="http://www.ietf.org/rfc/rfc1413.txt">RFC 1413</a>-compliant logging of the remote user name for each
+    <p>This directive enables <a href="https://www.rfc-editor.org/rfc/rfc1413">RFC 1413</a>-compliant logging of the remote user name for each
     connection, where the client machine runs identd or something similar.
     This information is logged in the access log using the <code>%...l</code>
     <a href="mod_log_config.html#formats">format string</a>.</p>
@@ -91,7 +91,7 @@ user</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ident</td></tr>
 </table>
     <p>This directive specifies the timeout duration of an ident
-    request. The default value of 30 seconds is recommended by <a href="http://www.ietf.org/rfc/rfc1413.txt">RFC 1413</a>, mainly because
+    request. The default value of 30 seconds is recommended by <a href="https://www.rfc-editor.org/rfc/rfc1413">RFC 1413</a>, mainly because
     of possible network latency. However, you may want to adjust the
     timeout value according to your local network speed.</p>
 
@@ -120,7 +120,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_ident.html
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2023 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2025 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
