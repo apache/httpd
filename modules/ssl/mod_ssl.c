@@ -80,6 +80,8 @@ static const command_rec ssl_config_cmds[] = {
     SSL_CMD_SRV(RandomSeed, TAKE23,
                 "SSL Pseudo Random Number Generator (PRNG) seeding source "
                 "('startup|connect builtin|file:/path|exec:/path [bytes]')")
+    SSL_CMD_SRV(VHostSNIPolicy, TAKE1,
+                "SSL VirtualHost SNI compatibility policy setting")
 
     /*
      * Per-server context configuration directives

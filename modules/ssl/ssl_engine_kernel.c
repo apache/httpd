@@ -101,112 +101,28 @@ static int fill_reneg_buffer(request_rec *r, SSLDirConfigRec *dc)
 }
 
 #ifdef HAVE_TLSEXT
-static int ap_array_same_str_set(apr_array_header_t *s1, apr_array_header_t *s2)
+/* Check whether a transition from vhost sc1 to sc2 from SNI to Host:
+ * vhost selection is permitted according to the SSLVHostSNIPolicy
+ * setting.  Returns 1 if the policy treats the vhosts as compatible,
+ * else 0. */
+static int ssl_check_vhost_sni_policy(SSLSrvConfigRec *sc1,
+                                      SSLSrvConfigRec *sc2)
 {
-    int i;
-    const char *c;
-    
-    if (s1 == s2) {
+    modssl_snivhpolicy_t policy = sc1->mc->snivh_policy;
+
+    /* Policy: insecure => allow everything. */
+    if (policy == MODSSL_SNIVH_INSECURE)
         return 1;
-    }
-    else if (!s1 || !s2 || (s1->nelts != s2->nelts)) {
-        return 0;
-    }
     
-    for (i = 0; i < s1->nelts; i++) {
-        c = APR_ARRAY_IDX(s1, i, const char *);
-        if (!c || !ap_array_str_contains(s2, c)) {
-            return 0;
-        }
-    }
-    return 1;
-}
+    /* Policy: strict => fail for any vhost transition. */
+    if (policy == MODSSL_SNIVH_STRICT && sc1 != sc2)
+        return 0;
 
-static int ssl_pk_server_compatible(modssl_pk_server_t *pks1, 
-                                    modssl_pk_server_t *pks2) 
-{
-    if (!pks1 || !pks2) {
-        return 0;
-    }
-    /* both have the same certificates? */
-    if ((pks1->ca_name_path != pks2->ca_name_path)
-        && (!pks1->ca_name_path || !pks2->ca_name_path 
-            || strcmp(pks1->ca_name_path, pks2->ca_name_path))) {
-        return 0;
-    }
-    if ((pks1->ca_name_file != pks2->ca_name_file)
-        && (!pks1->ca_name_file || !pks2->ca_name_file 
-            || strcmp(pks1->ca_name_file, pks2->ca_name_file))) {
-        return 0;
-    }
-    if (!ap_array_same_str_set(pks1->cert_files, pks2->cert_files)
-        || !ap_array_same_str_set(pks1->key_files, pks2->key_files)) {
-        return 0;
-    }
-    return 1;
-}
+    /* For authonly/secure policy, compare the hash. */
+    AP_DEBUG_ASSERT(sc1->sni_policy_hash);
+    AP_DEBUG_ASSERT(sc2->sni_policy_hash);
 
-static int ssl_auth_compatible(modssl_auth_ctx_t *a1, 
-                               modssl_auth_ctx_t *a2) 
-{
-    if (!a1 || !a2) {
-        return 0;
-    }
-    /* both have the same verification */
-    if ((a1->verify_depth != a2->verify_depth)
-        || (a1->verify_mode != a2->verify_mode)) {
-        return 0;
-    }
-    /* both have the same ca path/file */
-    if ((a1->ca_cert_path != a2->ca_cert_path)
-        && (!a1->ca_cert_path || !a2->ca_cert_path 
-            || strcmp(a1->ca_cert_path, a2->ca_cert_path))) {
-        return 0;
-    }
-    if ((a1->ca_cert_file != a2->ca_cert_file)
-        && (!a1->ca_cert_file || !a2->ca_cert_file 
-            || strcmp(a1->ca_cert_file, a2->ca_cert_file))) {
-        return 0;
-    }
-    /* both have the same ca cipher suite string */
-    if ((a1->cipher_suite != a2->cipher_suite)
-        && (!a1->cipher_suite || !a2->cipher_suite 
-            || strcmp(a1->cipher_suite, a2->cipher_suite))) {
-        return 0;
-    }
-    /* both have the same ca cipher suite string */
-    if ((a1->tls13_ciphers != a2->tls13_ciphers)
-        && (!a1->tls13_ciphers || !a2->tls13_ciphers 
-            || strcmp(a1->tls13_ciphers, a2->tls13_ciphers))) {
-        return 0;
-    }
-    return 1;
-}
-
-static int ssl_ctx_compatible(modssl_ctx_t *ctx1, 
-                              modssl_ctx_t *ctx2) 
-{
-    if (!ctx1 || !ctx2 
-        || (ctx1->protocol != ctx2->protocol)
-        || !ssl_auth_compatible(&ctx1->auth, &ctx2->auth)
-        || !ssl_pk_server_compatible(ctx1->pks, ctx2->pks)) {
-        return 0;
-    }
-    return 1;
-}
-
-static int ssl_server_compatible(server_rec *s1, server_rec *s2)
-{
-    SSLSrvConfigRec *sc1 = s1? mySrvConfig(s1) : NULL;
-    SSLSrvConfigRec *sc2 = s2? mySrvConfig(s2) : NULL;
-
-    /* both use the same TLS protocol? */
-    if (!sc1 || !sc2 
-        || !ssl_ctx_compatible(sc1->server, sc2->server)) {
-        return 0;
-    }
-    
-    return 1;
+    return strcmp(sc1->sni_policy_hash, sc2->sni_policy_hash) == 0;
 }
 #endif
 
@@ -275,6 +191,8 @@ int ssl_hook_ReadReq(request_rec *r)
         server_rec *handshakeserver = sslconn->server;
         SSLSrvConfigRec *hssc = mySrvConfig(handshakeserver);
 
+        AP_DEBUG_ASSERT(hssc);
+
         if ((servername = SSL_get_servername(ssl, TLSEXT_NAMETYPE_host_name))) {
             /*
              * The SNI extension supplied a hostname. So don't accept requests
@@ -315,19 +233,14 @@ int ssl_hook_ReadReq(request_rec *r)
                            "which is required to access this server.<br />\n");
             return HTTP_FORBIDDEN;
         }
-        if (r->server != handshakeserver
-            && !ssl_server_compatible(sslconn->server, r->server)) {
-            /*
-             * The request does not select the virtual host that was
-             * selected for handshaking and its SSL parameters are different
-             */
-
+        /* Enforce SSL SNI vhost compatibility policy. */
+        if (!ssl_check_vhost_sni_policy(sc, hssc)) {
             ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(02032)
                          "Hostname %s %s and hostname %s provided"
-                         " via HTTP have no compatible SSL setup",
+                         " via HTTP have no compatible SSL setup for policy '%s'",
                          servername ? servername : handshakeserver->server_hostname,
                          servername ? "provided via SNI" : "(default host as no SNI was provided)",
-                         r->hostname);
+                          r->hostname, MODSSL_SNIVH_NAME(sc->mc->snivh_policy));
             return HTTP_MISDIRECTED_REQUEST;
         }
     }
