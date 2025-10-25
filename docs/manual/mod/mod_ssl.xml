@@ -1881,7 +1881,7 @@ href="https://httpd.apache.org/security/vulnerabilities_24.html">CVE-2025-23048<
 
 <p>The (default) <code>secure</code>, and <code>authonly</code>
 policies compare specific aspects of the SSL configuration for the two
-virtual hosts, which are grouped into two categories:
+virtual hosts, which are grouped into two categories:</p>
 
 <ul>
   <li><strong>client vertification and authentication
@@ -1902,9 +1902,9 @@ virtual hosts, which are grouped into two categories:
   module="mod_ssl">SSLProtocol</directive>)</li>
 </ul>
 
-This table illustrates whether an HTTP request will be blocked or
+<p>This table illustrates whether an HTTP request will be blocked or
 allowed when the virtual host configurations differ as described,
-under each different policy setting:
+under each different policy setting:</p>
 
 <table border="1" style="zebra">
 <columnspec><column width=".3"/><column width=".2"/><column width=".5"/>
@@ -1916,19 +1916,19 @@ under each different policy setting:
   <th>Server certificate/key, <br />or protocol/cipher restrictions</th>
 </tr>
 <tr>
-  <td><code>strict</code><td>blocked</td><td>blocked</td><td>blocked</td></td>
+  <td><code>strict</code></td><td>blocked</td><td>blocked</td><td>blocked</td>
 </tr>
 <tr>
-  <td><code>secure</code><td>allowed</td><td>blocked</td><td>blocked</td></td>
+  <td><code>secure</code></td><td>allowed</td><td>blocked</td><td>blocked</td>
 </tr>
 <tr>
-  <td><code>authonly</code><td>allowed</td><td>blocked</td><td>allowed</td></td>
+  <td><code>authonly</code></td><td>allowed</td><td>blocked</td><td>allowed</td>
 </tr>
 <tr>
-  <td><code>insecure</code><td>allowed</td><td>allowed</td><td>allowed</td></td>
+  <td><code>insecure</code></td><td>allowed</td><td>allowed</td><td>allowed</td>
 </tr>
 </table>
-</p>
+
 <example><title>Example</title>
 <highlight language="config">
 SSLVHostSNIPolicy authonly
