@@ -14,7 +14,7 @@
 <script src="../style/scripts/prettify.min.js" type="text/javascript">
 </script>
 
-<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<link href="../images/favicon.png" rel="shortcut icon" /></head>
 <body>
 <div id="page-header">
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p>
@@ -130,6 +130,7 @@ disponibles avec Require</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslusestapling">SSLUseStapling</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslverifyclient">SSLVerifyClient</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslverifydepth">SSLVerifyDepth</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#sslvhostsnipolicy">SSLVHostSNIPolicy</a></li>
 </ul>
 <h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_ssl">Problèmes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_ssl">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
 <ul class="seealso">
@@ -3418,6 +3419,76 @@ de 1 signifie que le certificat client peut être soit auto-signé, soit
 signé par une CA connue directement du serveur (c'est à dire que le
 certificat de la CA doit être référencé par la directive <code class="directive"><a href="#sslcacertificatepath">SSLCACertificatePath</a></code>), etc...</p>
 <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">SSLVerifyDepth 10</pre>
+</div>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="sslvhostsnipolicy" id="sslvhostsnipolicy">Directive</a> <a name="SSLVHostSNIPolicy" id="SSLVHostSNIPolicy">SSLVHostSNIPolicy</a> <a title="Lien permanent" href="#sslvhostsnipolicy" class="permalink">&para;</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définir la politique de compatibilité pour l’accès des clients SNI
+aux serveurs virtuels.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SSLVHostSNIPolicy strict|secure|authonly|insecure</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>SSLVHostSNIPolicy secure</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.5 du serveur HTTP Apache</td></tr>
+</table><p>Cette directive permet de définir la politique à appliquer lors de la
+vérification de la compatibilité du <code class="directive"><a href="../mod/core.html#serveur virtuel">&lt;serveur virtuel&gt;</a></code> identifié par l’en-tête
+<code>Host</code> d’une requête HTTP avec le <code class="directive"><a href="../mod/core.html#serveur virtuel">&lt;serveur virtuel&gt;</a></code> identifié depuis l’extension SNI
+envoyée au cours de la négociation de la connexion TLS initiale. Si une requête
+HTTP est associée à un serveur virtuel comportant une configuration SSL/TLS
+incompatible selon la politique utilisée, un message d’erreur HTTP avec code
+d’état 421 ("Misdirected Request") sera envoyé.</p>
+
+<p>La politique <code>strict</code> bloque toute requête HTTP associée à un
+serveur virtuel différent de celui identifié par SNI. La politique
+<code>insecure</code> autorise toute requête, quel que soit le serveur virtuel
+associé&nbsp;; une telle configuration pourra être vulnérable à <a href="https://httpd.apache.org/security/vulnerabilities_24.html">CVE-2025-23048</a>.
+</p>
+
+<p>Les politiques <code>secure</code> (politique par défaut) et
+<code>authonly</code> comparent certains aspects spécifiques des deux serveurs
+virtuels, qui sont regroupés en deux catégories&nbsp;:</p>
+
+<ul>
+  <li><strong>configuration de la certification et de l’authentification du
+  client</strong>&nbsp;: directives qui affectent l’authentification du client et la
+  vérification de son certificat via TLS, telles que <code class="directive"><a href="#sslverifyclient">SSLVerifyClient</a></code>, <code class="directive"><a href="#sslverifymode">SSLVerifyMode</a></code>, <code class="directive"><a href="#sslcacertificatepath">SSLCACertificatePath</a></code>, <code class="directive"><a href="#sslsrpverifierfile">SSLSRPVerifierFile</a></code>; toute utilisation de <code class="directive"><a href="#sslopensslconfcmd">SSLOpenSSLConfCmd</a></code></li>
+
+  <li><strong>certificat/clé de serveur ou restrictions de protocole/algorithme
+  de chiffrement</strong>&nbsp;: directives qui déterminent le certificat ou la clé
+  du serveur (<code class="directive"><a href="#sslcertificatekeyfile">SSLCertificateKeyFile</a></code>, etc.), restrictions de
+  protocole ou d’algorithme
+  de chiffrement (<code class="directive"><a href="#sslprotocol">SSLProtocol</a></code> et <code class="directive"><a href="#sslciphersuite">SSLCipherSuite</a></code>)</li>
+</ul>
+
+<p>Le tableau suivant indique quand une requête HTTP sera bloquée ou autorisée
+lorsque les configurations des serveurs virtuels diffèrent de la manière
+décrite, et en fonction des différentes politiques utilisées&nbsp;:</p>
+
+<table class="bordered"><tr class="header">
+  <th>Politique utilisée</th>
+  <th>Toute incohérence dans les serveurs virtuels</th>
+  <th>Certification client/<br />configuration de l’authentification</th>
+  <th>Certificat/clé du serveur, <br />ou restrictions de protocole/algorithme
+  de chiffrement</th>
+</tr>
+<tr>
+  <td><code>strict</code></td><td>bloquée</td><td>bloquée</td><td>bloquée</td>
+</tr>
+<tr class="odd">
+  <td><code>secure</code></td><td>autorisée</td><td>bloquée</td><td>bloquée</td>
+</tr>
+<tr>
+  <td><code>authonly</code></td><td>autorisée</td><td>bloquée</td><td>autorisée</td>
+</tr>
+<tr class="odd">
+  <td><code>insecure</code></td><td>autorisée</td><td>autorisée</td><td>autorisée</td>
+</tr>
+</table>
+
+<div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">SSLVHostSNIPolicy authonly</pre>
 </div>
 
 </div>
