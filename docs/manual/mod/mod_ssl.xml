@@ -1871,6 +1871,12 @@ request is associated with a virtual host which has an incompatible
 SSL/TLS configuration under the policy used, an HTTP error response
 with status code 421 ("Misdirected Request") will be sent.</p>
 
+<p>The policy also applies to TLS connections where an SNI extension
+is not sent during the handshake, implicitly using the default or
+first virtual host definition. If the Host header in an HTTP request
+on such a connection identifies any other non-default virtual host,
+the compatibility policy is tested.</p>
+
 <p>The <code>strict</code> policy blocks all HTTP requests which are
 identified with a different virtual host to that identifed by SNI.
 The <code>insecure</code> policy allows all HTTP requests regardless
@@ -1884,6 +1890,14 @@ policies compare specific aspects of the SSL configuration for the two
 virtual hosts, which are grouped into two categories:</p>
 
 <ul>
+  <li><strong>server certificate/key, or protocol/cipher
+  restrictions</strong>: directives which determine the server
+  certificate or key (<directive
+  module="mod_ssl">SSLCertificateKeyFile</directive> etc), cipher or
+  protocol restrictions (<directive
+  module="mod_ssl">SSLCipherSuite</directive> and <directive
+  module="mod_ssl">SSLProtocol</directive>)</li>
+
   <li><strong>client vertification and authentication
   settings</strong>: directives which affect TLS client certificate
   verification or authentication, such as <directive
@@ -1892,14 +1906,6 @@ virtual hosts, which are grouped into two categories:</p>
   module="mod_ssl">SSLCACertificatePath</directive>, <directive
   module="mod_ssl">SSLSRPVerifierFile</directive>; any use of <directive
   module="mod_ssl">SSLOpenSSLConfCmd</directive></li>
-
-  <li><strong>server certificate/key, or protocol/cipher
-  restrictions</strong>: directives which determine the server
-  certificate or key (<directive
-  module="mod_ssl">SSLCertificateKeyFile</directive> etc), cipher or
-  protocol restrictions (<directive
-  module="mod_ssl">SSLCipherSuite</directive> and <directive
-  module="mod_ssl">SSLProtocol</directive>)</li>
 </ul>
 
 <p>This table illustrates whether an HTTP request will be blocked or
@@ -1912,8 +1918,8 @@ under each different policy setting:</p>
 <tr>
   <th>Policy mode</th>
   <th>Any VirtualHost mismatch</th>
-  <th>Client verification/<br />authentication settings</th>
   <th>Server certificate/key, <br />or protocol/cipher restrictions</th>
+  <th>Client verification/<br />authentication settings</th>
 </tr>
 <tr>
   <td><code>strict</code></td><td>blocked</td><td>blocked</td><td>blocked</td>
@@ -1922,7 +1928,7 @@ under each different policy setting:</p>
   <td><code>secure</code></td><td>allowed</td><td>blocked</td><td>blocked</td>
 </tr>
 <tr>
-  <td><code>authonly</code></td><td>allowed</td><td>blocked</td><td>allowed</td>
+  <td><code>authonly</code></td><td>allowed</td><td>allowed</td><td>blocked</td>
 </tr>
 <tr>
   <td><code>insecure</code></td><td>allowed</td><td>allowed</td><td>allowed</td>
