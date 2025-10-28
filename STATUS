@@ -215,7 +215,16 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      Backport version for 2.4.x of patch:
       Trunk version of patch works
       svn merge -c 1924267 ^/httpd/httpd/trunk .
-     +1: rpluem,
+     +1: rpluem, jorton, 
+
+  *) mod_ssl: Add SSLVHostSNIPolicy directive. PR 69743
+     Trunk version of patch:
+        https://svn.apache.org/r1929308
+     PR: https://github.com/apache/httpd/pull/562
+     Backport version for 2.4.x of patch:
+       https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/562.diff
+     +1: jorton, 
+
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
