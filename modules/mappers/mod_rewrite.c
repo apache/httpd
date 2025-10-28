@@ -4614,7 +4614,7 @@ static rule_return_type apply_rewrite_rule(rewriterule_entry *p,
      * directly force an external HTTP redirect.
      */
     if (is_absolute_uri(r->filename, NULL)) {
-        rewritelog(r, 2, ctx->perdir, "implicitly forcing redirect (rc=%d "
+        rewritelog(r, 2, ctx->perdir, "implicitly forcing redirect (rc=%d) "
                    "with %s", p->forced_responsecode, r->filename);
 
         r->status = p->forced_responsecode;
