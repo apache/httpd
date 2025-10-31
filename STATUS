@@ -223,7 +223,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      PR: https://github.com/apache/httpd/pull/562
      Backport version for 2.4.x of patch:
        https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/562.diff
-     +1: jorton, 
+     +1: jorton, rpluem
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
