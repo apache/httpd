@@ -3441,6 +3441,13 @@ HTTP est associée à un serveur virtuel comportant une configuration SSL/TLS
 incompatible selon la politique utilisée, un message d’erreur HTTP avec code
 d’état 421 ("Misdirected Request") sera envoyé.</p>
 
+<p>La politique s’applique aussi aux connexions TLS pour lesquelles une
+extension SNI n’est pas envoyée lors de la négociation de connexion, et
+utilisant la première définition de serveur virtuel ou la définition par défaut.
+Si l’en-tête Host d’une requête HTTP sur une telle connexion identifie un
+serveur virtuel autre que celui par défaut, la politique de compatibilité sera
+testée.</p>
+
 <p>La politique <code>strict</code> bloque toute requête HTTP associée à un
 serveur virtuel différent de celui identifié par SNI. La politique
 <code>insecure</code> autorise toute requête, quel que soit le serveur virtuel
@@ -3452,15 +3459,15 @@ associé&nbsp;; une telle configuration pourra être vulnérable à <a href="htt
 virtuels, qui sont regroupés en deux catégories&nbsp;:</p>
 
 <ul>
-  <li><strong>configuration de la certification et de l’authentification du
-  client</strong>&nbsp;: directives qui affectent l’authentification du client et la
-  vérification de son certificat via TLS, telles que <code class="directive"><a href="#sslverifyclient">SSLVerifyClient</a></code>, <code class="directive"><a href="#sslverifymode">SSLVerifyMode</a></code>, <code class="directive"><a href="#sslcacertificatepath">SSLCACertificatePath</a></code>, <code class="directive"><a href="#sslsrpverifierfile">SSLSRPVerifierFile</a></code>; toute utilisation de <code class="directive"><a href="#sslopensslconfcmd">SSLOpenSSLConfCmd</a></code></li>
-
   <li><strong>certificat/clé de serveur ou restrictions de protocole/algorithme
   de chiffrement</strong>&nbsp;: directives qui déterminent le certificat ou la clé
   du serveur (<code class="directive"><a href="#sslcertificatekeyfile">SSLCertificateKeyFile</a></code>, etc.), restrictions de
   protocole ou d’algorithme
   de chiffrement (<code class="directive"><a href="#sslprotocol">SSLProtocol</a></code> et <code class="directive"><a href="#sslciphersuite">SSLCipherSuite</a></code>)</li>
+  
+  <li><strong>configuration de la certification et de l’authentification du
+  client</strong>&nbsp;: directives qui affectent l’authentification du client et la
+  vérification de son certificat via TLS, telles que <code class="directive"><a href="#sslverifyclient">SSLVerifyClient</a></code>, <code class="directive"><a href="#sslverifymode">SSLVerifyMode</a></code>, <code class="directive"><a href="#sslcacertificatepath">SSLCACertificatePath</a></code>, <code class="directive"><a href="#sslsrpverifierfile">SSLSRPVerifierFile</a></code>; toute utilisation de <code class="directive"><a href="#sslopensslconfcmd">SSLOpenSSLConfCmd</a></code></li>  
 </ul>
 
 <p>Le tableau suivant indique quand une requête HTTP sera bloquée ou autorisée
@@ -3470,9 +3477,9 @@ décrite, et en fonction des différentes politiques utilisées&nbsp;:</p>
 <table class="bordered"><tr class="header">
   <th>Politique utilisée</th>
   <th>Toute incohérence dans les serveurs virtuels</th>
-  <th>Certification client/<br />configuration de l’authentification</th>
   <th>Certificat/clé du serveur, <br />ou restrictions de protocole/algorithme
   de chiffrement</th>
+  <th>Certification client/<br />configuration de l’authentification</th>
 </tr>
 <tr>
   <td><code>strict</code></td><td>bloquée</td><td>bloquée</td><td>bloquée</td>
