@@ -190,6 +190,7 @@ static apr_status_t ostat_from_json(md_ocsp_cert_stat_t *pstat,
     md_timeperiod_t valid;
     apr_status_t rv = APR_ENOENT;
     
+    memset(&valid, 0, sizeof(valid));
     memset(resp_der, 0, sizeof(*resp_der));
     memset(resp_valid, 0, sizeof(*resp_valid));
     s = md_json_dups(p, json, MD_KEY_VALID, MD_KEY_FROM, NULL);

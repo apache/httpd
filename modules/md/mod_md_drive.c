@@ -403,7 +403,7 @@ apr_status_t md_renew_start_watching(md_mod_conf_t *mc, server_rec *s, apr_pool_
                      "create md renew watchdog(%s)", MD_RENEW_WATCHDOG_NAME);
         return rv;
     }
-    rv = wd_register_callback(dctx->watchdog, 0, dctx, run_watchdog);
+    rv = wd_register_callback(dctx->watchdog, mc->initial_delay, dctx, run_watchdog);
     ap_log_error(APLOG_MARK, rv? APLOG_CRIT : APLOG_DEBUG, rv, s, APLOGNO(10067) 
                  "register md renew watchdog(%s)", MD_RENEW_WATCHDOG_NAME);
     return rv;

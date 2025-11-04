@@ -206,7 +206,7 @@ static int pem_passwd(char *buf, int size, int rwflag, void *baton)
 
 /* Get the apr time (micro seconds, since 1970) from an ASN1 time, as stored in X509
  * certificates. OpenSSL now has a utility function, but other *SSL derivatives have
- * not caughts up yet or chose to ignore. An alternative is implemented, we prefer 
+ * not caught up yet or chose to ignore. An alternative is implemented, we prefer
  * however the *SSL to maintain such things.
  */
 static apr_time_t md_asn1_time_get(const ASN1_TIME* time)
@@ -219,6 +219,10 @@ static apr_time_t md_asn1_time_get(const ASN1_TIME* time)
     apr_time_t ts;
     const char* str = (const char*) time->data;
     apr_size_t i = 0;
+
+    if ((time->length < 12) || (
+        (time->type == V_ASN1_GENERALIZEDTIME) && time->length < 16))
+      return 0;
 
     memset(&t, 0, sizeof(t));
 
