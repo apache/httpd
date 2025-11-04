@@ -224,9 +224,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   *) mod_http2: use nghttp2 supplied lengths when checking trailers.
      Trunk version of patch:
         https://svn.apache.org/r1929517
+        https://svn.apache.org/r1929527
      Backport version for 2.4.x of patch:
       Trunk version of patch works
-      svn merge -c 1929517 ^/httpd/httpd/trunk .
+      svn merge -c 1929517,1929527 ^/httpd/httpd/trunk .
      +1: icing,  
 
 PATCHES/ISSUES THAT ARE BEING WORKED
