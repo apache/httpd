@@ -1824,7 +1824,7 @@ SSLStrictSNIVHostCheck on
 <contextlist><context>server config</context></contextlist>
 <compatibility>Available in httpd 2.5 and later</compatibility>
 
-<usage><p>This directive sets policy applied when checking whether the
+<usage><p>This directive sets the policy applied when checking whether the
 <directive module="core" type="section">VirtualHost</directive>
 identified by the <code>Host</code> request header in an HTTP request
 is compatible with the <directive module="core"
