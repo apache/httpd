@@ -41,6 +41,7 @@ typedef enum {
     MD_CONFIG_STAPLE_OTHERS,
     MD_CONFIG_CA_PROFILE,
     MD_CONFIG_CA_PROFILE_MANDATORY,
+    MD_CONFIG_ARI_RENEWALS,
 } md_config_var_t;
 
 typedef enum {
@@ -110,6 +111,7 @@ typedef struct md_srv_conf_t {
 
     int stapling;                      /* OCSP stapling enabled */
     int staple_others;                 /* Provide OCSP stapling for non-MD certificates */
+    int ari_renewals;                  /* ACME ARI extension enabled */
 
     const char *dns01_cmd;             /* DNS challenge command, override global command */
 

@@ -118,6 +118,7 @@ struct md_acme_t {
             const char *key_change;
             const char *revoke_cert;
             const char *new_nonce;
+            const char *renewal_info;
             struct apr_array_header_t *profiles;
         } v2;
     } api;
@@ -275,6 +276,7 @@ apr_status_t md_acme_GET(md_acme_t *acme, const char *url,
                          md_acme_req_json_cb *on_json,
                          md_acme_req_res_cb *on_res,
                          md_acme_req_err_cb *on_err,
+                         int get_as_post,
                          void *baton);
 /**
  * Perform a POST against the ACME url. If a on_json callback is given and
@@ -301,7 +303,7 @@ apr_status_t md_acme_POST(md_acme_t *acme, const char *url,
  * Retrieve a JSON resource from the ACME server 
  */
 apr_status_t md_acme_get_json(struct md_json_t **pjson, md_acme_t *acme, 
-                              const char *url, apr_pool_t *p);
+                              const char *url, int get_as_post, apr_pool_t *p);
 
 
 apr_status_t md_acme_req_body_init(md_acme_req_t *req, struct md_json_t *jpayload);

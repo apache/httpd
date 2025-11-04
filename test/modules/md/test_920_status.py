@@ -215,6 +215,11 @@ Protocols h2 http/1.1 acme-tls/1
         print(status)
         assert status['state'] == env.MD_S_COMPLETE
         assert status['renew-mode'] == 0  # manual
+        env.httpd_error_log.ignore_recent(
+            matches = [
+                r'.*cert has no authority key id extension.*'
+            ]
+        )
 
     # MD with 2 certificates
     def test_md_920_020(self, env):

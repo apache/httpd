@@ -285,44 +285,6 @@ MDChallengeDns01 /usr/bin/acme-setup-dns
             </p>
         </note>
 
-        <note><title>tailscale</title>
-            <p>
-                Since version 2.4.14 of the module, you can use it to get certificates
-                for your <a href="https://tailscale.com">tailscale</a> domains.
-            </p>
-            <highlight language="config">
-&lt;MDomain mydomain.some-thing.ts.net>
-  MDCertificateProtocol tailscale
-  MDCertificateAuthority file://localhost/var/run/tailscale/tailscaled.sock",
-&lt;/MDomain>
-            </highlight>
-            <p>
-                Tailscale provides secure networking between your machines, where ever
-                they are, and can provide domain names in the *.ts.net space for them.
-                For those, it will then provide Let's Encrypt certificates as well, so
-                you can open these domains in your browser securely.
-            </p>
-            <p>
-                The directives listed above tell Apache to contact the local tailscale
-                demon for obtaining and renewing certificates. This will only work for
-                the domain name that tailscale assigns to your machine.
-            </p>
-            <p>
-                Otherwise, these certificates work exactly like the ones retrieved
-                via the ACME protocol from Lets Encrypt. You see them in status reporting
-                and MDMessageCmd directives are executed for them as well.
-            </p>
-            <p>
-                More details are <a href="https://github.com/icing/mod_md#tailscale">
-                available at the mod_md github documentation</a>.
-            </p>
-            <p>
-                Note that this feature only works on machines where the tailscale
-                demon provides a unix domain socket. This, so far, seems only the
-                case on *nix systems.
-            </p>
-        </note>
-
     </summary>
     
     <directivesynopsis>
@@ -1393,7 +1355,7 @@ MDMessageCmd /etc/apache/md-message
         <name>MDRetryDelay</name>
         <description>Time length for first retry, doubled on every consecutive error.</description>
         <syntax>MDRetryDelay <var>duration</var></syntax>
-        <default>MDRetryDelay 5s</default>
+        <default>MDRetryDelay 30s</default>
         <contextlist>
             <context>server config</context>
         </contextlist>
@@ -1407,6 +1369,10 @@ MDMessageCmd /etc/apache/md-message
             <p>
                 It is kept separate for each certificate renewal. Meaning an error
                 on one MDomain does not delay the renewals of other domains.
+            </p>
+            <p>
+                In mod_md v2.6.1, the default delay has been increased from 5
+                seconds to 30.
             </p>
         </usage>
     </directivesynopsis>
@@ -1591,6 +1557,28 @@ MDMessageCmd /etc/apache/md-message
                 When not mandatory and a profile is not offered by the CA,
                 renewals will be performed without specifying a profile and
                 the CA will issue a certificates according to its defaults.
+            </p>
+        </usage>
+    </directivesynopsis>
+
+    <directivesynopsis>
+        <name>MDRenewViaARI</name>
+        <description>usage of the ACME ARI extension (rfc9773).</description>
+        <syntax>MDRenewViaARI on|off</syntax>
+        <default>MDRenewViaARI on</default>
+        <contextlist>
+            <context>server config</context>
+        </contextlist>
+        <usage>
+            <p>
+                En-/Disable certificate renewals triggered via the ACME ARI
+                extension (rfc9773). These renewals happen *in addition* to
+                the mechanism controlled by <directive>MDRenewWindow</directive>.
+           </p><p>
+                ACME ARI allows an ACME CA to somewhat shape incoming renewal
+                traffic. More importantly though, it can inform clients of
+                urgent renewals, e.g. when a certificate or part of its chain
+                has been revoked.
             </p>
         </usage>
     </directivesynopsis>

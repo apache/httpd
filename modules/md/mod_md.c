@@ -331,7 +331,8 @@ static void merge_srv_config(md_t *md, md_srv_conf_t *base_sc, apr_pool_t *p)
         APR_ARRAY_PUSH(md->contacts, const char *) =
         md_util_schemify(p, contact, "mailto");
     }
-    else if( md->sc->s->server_admin && strcmp(DEFAULT_ADMIN, md->sc->s->server_admin)) {
+    else if (md->sc->s->server_admin &&
+             strcmp(DEFAULT_ADMIN, md->sc->s->server_admin)) {
         apr_array_clear(md->contacts);
         APR_ARRAY_PUSH(md->contacts, const char *) =
         md_util_schemify(p, md->sc->s->server_admin, "mailto");
@@ -368,6 +369,9 @@ static void merge_srv_config(md_t *md, md_srv_conf_t *base_sc, apr_pool_t *p)
     }
     if (md->profile_mandatory < 0) {
         md->profile_mandatory = md_config_geti(md->sc, MD_CONFIG_CA_PROFILE_MANDATORY);
+    }
+    if (md->ari_renewals < 0) {
+        md->ari_renewals = md_config_geti(md->sc, MD_CONFIG_ARI_RENEWALS);
     }
 }
 

@@ -58,6 +58,11 @@ class TestStatic:
         assert 'cert' in stat
         assert stat['renew'] is True
         assert 'renewal' not in stat
+        env.httpd_error_log.ignore_recent(
+            matches = [
+                r'.*cert has no authority key id extension.*'
+            ]
+        )
 
     def test_md_730_002(self, env):
         # MD with static cert files, force driving
@@ -94,6 +99,11 @@ class TestStatic:
         assert 'cert' in stat['renewal']
         assert 'secp384r1' in stat['renewal']['cert']
         assert 'rsa' in stat['renewal']['cert']
+        env.httpd_error_log.ignore_recent(
+            matches = [
+                r'.*cert has no authority key id extension.*'
+            ]
+        )
 
     def test_md_730_003(self, env):
         # just configuring one file will not work

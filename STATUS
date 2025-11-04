@@ -178,18 +178,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
-  *) mod_md: update to version 2.6.2
-     trunk patch:
-        http://svn.apache.org/r1927807
-        http://svn.apache.org/r1927874
-        http://svn.apache.org/r1928039
-        http://svn.apache.org/r1928839
-     2.4.x patch: svn merge -c 1927807,1927874,1928039,1928839 ^/httpd/httpd/trunk .
-     Might need some resolving in test code, as trunk and 2.4.x
-     are not in sync.
-     +1: icing, rpluem, jorton
-     rpluem says: Don't we need to add r1928861 as well to fix the LOGNO's?
-
   *) various: Update DOCTYPE tags in server-generated HTML to 4.01
      Trunk version of patch:
         https://svn.apache.org/r1873397

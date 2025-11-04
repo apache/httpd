@@ -299,7 +299,7 @@ class TestAutov2:
 
     # Force cert renewal due to critical remaining valid duration
     # Assert that new cert activation is delayed
-    def test_md_702_009(self, env):
+    def test_md_702_009(self, env, acme):
         domain = self.test_domain
         domains = [domain]
         #
@@ -329,6 +329,7 @@ class TestAutov2:
         assert env.await_completion([domain], must_renew=True)
         stat = env.get_certificate_status(domain)
         assert creds.certificate.serial_number != int(stat['rsa']['serial'], 16)
+        env.httpd_error_log.clear_log()
 
     # test case: drive with an unsupported challenge due to port availability 
     def test_md_702_010(self, env):

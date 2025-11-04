@@ -354,10 +354,8 @@ static void val_url_print(status_ctx *ctx, const status_info *info,
 {
     const char *s;
 
-    if (proto && !strcmp(proto, "tailscale")) {
-        s = "tailscale";
-    }
-    else if (url) {
+    (void)proto;
+    if (url) {
         s = md_get_ca_name_from_url(ctx->p, url);
     }
     else {

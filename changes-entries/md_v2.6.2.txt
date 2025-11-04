@@ -1,0 +1,3 @@
+  *) mod_md: update to version 2.6.2
+     - Fix error retry delay calculation to not already doubling the wait
+       on the first error.

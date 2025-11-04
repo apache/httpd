@@ -323,3 +323,70 @@ md_timeperiod_t md_timeperiod_common(const md_timeperiod_t *a, const md_timeperi
     }
     return c;
 }
+
+apr_time_t md_time_parse_rfc3339(const char *s)
+{
+    apr_time_exp_t t;
+    apr_time_t ts;
+    apr_size_t i = 0;
+
+    memset(&t, 0, sizeof(t));
+    if (!apr_isdigit(s[0]) || !apr_isdigit(s[1]) || !apr_isdigit(s[2]) ||
+        !apr_isdigit(s[3]) ||
+        (s[4] != '-') ||
+        !apr_isdigit(s[5]) || !apr_isdigit(s[6]) ||
+        (s[7] != '-') ||
+        !apr_isdigit(s[8]) || !apr_isdigit(s[9]) ||
+        ((s[10] != 'T') && (s[10] != 't')) ||
+        !apr_isdigit(s[11]) || !apr_isdigit(s[12]) ||
+        (s[13] != ':') ||
+        !apr_isdigit(s[14]) || !apr_isdigit(s[15]) ||
+        (s[16] != ':') ||
+        !apr_isdigit(s[17]) || !apr_isdigit(s[18])
+        )
+        return 0;
+    t.tm_year = (s[0] - '0') * 1000;
+    t.tm_year += (s[1] - '0') * 100;
+    t.tm_year += (s[2] - '0') * 10;
+    t.tm_year += (s[3] - '0');
+    t.tm_year -= 1900; /* the apr time 0 point */
+    t.tm_mon = (s[5] - '0') * 10;
+    t.tm_mon += (s[6] - '0') - 1; /* -1 since January is 0 not 1. */
+    t.tm_mday = (s[8] - '0') * 10;
+    t.tm_mday += (s[9] - '0');
+    t.tm_hour = (s[11] - '0') * 10;
+    t.tm_hour += (s[12] - '0');
+    t.tm_min = (s[14] - '0') * 10;
+    t.tm_min += (s[15] - '0');
+    t.tm_sec = (s[17] - '0') * 10;
+    t.tm_sec += (s[18] - '0');
+
+    i = 19;
+    if (s[i] == '.') {
+        for(i += 1; apr_isdigit(s[i]); ++i)
+            ; /* skip for now */
+    }
+
+    if ((s[i] == 'Z') || (s[i] == 'z')) {
+        /* alredy GMT, done */
+        t.tm_gmtoff = 0;
+    }
+    else if (((s[i] == '+') || (s[i] == '-')) &&
+            apr_isdigit(s[i+1]) && apr_isdigit(s[i+2]) &&
+            (s[i+3] == ':') &&
+            apr_isdigit(s[i+4]) && apr_isdigit(s[i+5])) {
+        /* tm_gmtoff is in seconds */
+        t.tm_gmtoff = (s[i+1] - '0') * 10 * (60 * 60);
+        t.tm_gmtoff += (s[i+2] - '0') * (60 * 60);
+        t.tm_gmtoff = (s[i+4] - '0') * 10 * 60;
+        t.tm_gmtoff += (s[i+5] - '0') * 60;
+        if (s[i] == '-')
+            t.tm_gmtoff *= -1;
+    }
+    else
+        return 0;
+
+    if (APR_SUCCESS == apr_time_exp_gmt_get(&ts, &t))
+        return ts;
+    return 0;
+}

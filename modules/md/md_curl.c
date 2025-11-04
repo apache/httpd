@@ -22,6 +22,7 @@
 #include <apr_strings.h>
 #include <apr_buckets.h>
 
+#include "md.h"
 #include "md_http.h"
 #include "md_log.h"
 #include "md_util.h"
@@ -275,13 +276,13 @@ static apr_status_t internals_setup(md_http_request_t *req)
     internals->response->body = apr_brigade_create(req->pool, req->bucket_alloc);
     
     curl_easy_setopt(curl, CURLOPT_URL, req->url);
-    if (!apr_strnatcasecmp("GET", req->method)) {
+    if (!apr_cstr_casecmp("GET", req->method)) {
         /* nop */
     }
-    else if (!apr_strnatcasecmp("HEAD", req->method)) {
+    else if (!apr_cstr_casecmp("HEAD", req->method)) {
         curl_easy_setopt(curl, CURLOPT_NOBODY, 1L);
     }
-    else if (!apr_strnatcasecmp("POST", req->method)) {
+    else if (!apr_cstr_casecmp("POST", req->method)) {
         curl_easy_setopt(curl, CURLOPT_POST, 1L);
     }
     else {

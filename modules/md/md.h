@@ -94,6 +94,7 @@ struct md_t {
     const char *ca_eab_hmac;        /* optional HMAC for external account binding */
     const char *profile;            /* optional cert profile to order */
     int profile_mandatory;          /* if profile, when given, is mandatory */
+    int ari_renewals;               /* if ACME ARI (RFC 9773) can trigger renewals */
 
     const char *state_descr;        /* description of state of NULL */
     
@@ -119,6 +120,8 @@ struct md_t {
 #define MD_KEY_ACTIVATION_DELAY "activation-delay"
 #define MD_KEY_ACTIVITY         "activity"
 #define MD_KEY_AGREEMENT        "agreement"
+#define MD_KEY_ARI_CERT_ID      "ari-cert-id"
+#define MD_KEY_ARI_RENEWALS     "ari-renewals"
 #define MD_KEY_AUTHORIZATIONS   "authorizations"
 #define MD_KEY_BITS             "bits"
 #define MD_KEY_CA               "ca"
