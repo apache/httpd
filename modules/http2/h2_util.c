@@ -1677,7 +1677,7 @@ int h2_ignore_req_trailer(const char *name, size_t len)
     nghttp2_nv nv;
 
     nv.name = (uint8_t*)name;
-    nv.namelen = strlen(name);
+    nv.namelen = len;
     return (h2_req_ignore_header(&nv)
             || contains_name(H2_LIT_ARGS(IgnoredRequestTrailers), &nv));
 }
@@ -1687,7 +1687,7 @@ int h2_ignore_resp_trailer(const char *name, size_t len)
     nghttp2_nv nv;
 
     nv.name = (uint8_t*)name;
-    nv.namelen = strlen(name);
+    nv.namelen = len;
     return (contains_name(H2_LIT_ARGS(IgnoredResponseHeaders), &nv)
             || contains_name(H2_LIT_ARGS(IgnoredResponseTrailers), &nv));
 }
