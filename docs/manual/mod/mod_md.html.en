@@ -14,7 +14,7 @@
 <script src="../style/scripts/prettify.min.js" type="text/javascript">
 </script>
 
-<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<link href="../images/favicon.png" rel="shortcut icon" /></head>
 <body>
 <div id="page-header">
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
@@ -283,43 +283,6 @@
             </p>
         </div>
 
-        <div class="note"><h3>tailscale</h3>
-            <p>
-                Since version 2.4.14 of the module, you can use it to get certificates
-                for your <a href="https://tailscale.com">tailscale</a> domains.
-            </p>
-            <pre class="prettyprint lang-config">&lt;MDomain mydomain.some-thing.ts.net&gt;
-  MDCertificateProtocol tailscale
-  MDCertificateAuthority file://localhost/var/run/tailscale/tailscaled.sock",
-&lt;/MDomain&gt;</pre>
-
-            <p>
-                Tailscale provides secure networking between your machines, where ever
-                they are, and can provide domain names in the *.ts.net space for them.
-                For those, it will then provide Let's Encrypt certificates as well, so
-                you can open these domains in your browser securely.
-            </p>
-            <p>
-                The directives listed above tell Apache to contact the local tailscale
-                demon for obtaining and renewing certificates. This will only work for
-                the domain name that tailscale assigns to your machine.
-            </p>
-            <p>
-                Otherwise, these certificates work exactly like the ones retrieved
-                via the ACME protocol from Lets Encrypt. You see them in status reporting
-                and MDMessageCmd directives are executed for them as well.
-            </p>
-            <p>
-                More details are <a href="https://github.com/icing/mod_md#tailscale">
-                available at the mod_md github documentation</a>.
-            </p>
-            <p>
-                Note that this feature only works on machines where the tailscale
-                demon provides a unix domain socket. This, so far, seems only the
-                case on *nix systems.
-            </p>
-        </div>
-
     </div>
 <div id="quickview"><a href="https://www.apache.org/foundation/contributing.html" class="badge"><img src="https://www.apache.org/images/SupportApache-small.png" alt="Support Apache!" /></a><h3 class="directives">Directives</h3>
 <ul id="toc">
@@ -354,6 +317,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#mdprofile">MDProfile</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mdprofilemandatory">MDProfileMandatory</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mdrenewmode">MDRenewMode</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#mdrenewviaari">MDRenewViaARI</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mdrenewwindow">MDRenewWindow</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mdrequirehttps">MDRequireHttps</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mdretrydelay">MDRetryDelay</a></li>
@@ -1254,6 +1218,28 @@ MDomain example2.org auto
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="MDRenewViaARI" id="MDRenewViaARI">MDRenewViaARI</a> <a name="mdrenewviaari" id="mdrenewviaari">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>usage of the ACME ARI extension (rfc9773).</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>MDRenewViaARI on|off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>MDRenewViaARI on</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_md</td></tr>
+</table>
+            <p>
+                En-/Disable certificate renewals triggered via the ACME ARI
+                extension (rfc9773). These renewals happen *in addition* to
+                the mechanism controlled by <code class="directive">MDRenewWindow</code>.
+           </p><p>
+                ACME ARI allows an ACME CA to somewhat shape incoming renewal
+                traffic. More importantly though, it can inform clients of
+                urgent renewals, e.g. when a certificate or part of its chain
+                has been revoked.
+            </p>
+        
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="MDRenewWindow" id="MDRenewWindow">MDRenewWindow</a> <a name="mdrenewwindow" id="mdrenewwindow">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Control when a certificate will be renewed.</td></tr>
@@ -1348,7 +1334,7 @@ MDRenewWindow 10%</pre>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Time length for first retry, doubled on every consecutive error.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>MDRetryDelay <var>duration</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>MDRetryDelay 5s</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>MDRetryDelay 30s</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_md</td></tr>
@@ -1362,6 +1348,10 @@ MDRenewWindow 10%</pre>
             <p>
                 It is kept separate for each certificate renewal. Meaning an error
                 on one MDomain does not delay the renewals of other domains.
+            </p>
+            <p>
+                In mod_md v2.6.1, the default delay has been increased from 5
+                seconds to 30.
             </p>
         
 </div>
