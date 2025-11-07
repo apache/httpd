@@ -1031,6 +1031,7 @@ static void ssl_filter_io_shutdown(ssl_filter_ctx_t *filter_ctx,
     SSL *ssl = filter_ctx->pssl;
     const char *type = "";
     SSLConnRec *sslconn = myConnConfig(c);
+    int quiet_shutdown;
     int shutdown_type;
     int loglevel = APLOG_DEBUG;
     const char *logno;
@@ -1076,6 +1077,7 @@ static void ssl_filter_io_shutdown(ssl_filter_ctx_t *filter_ctx,
      * to force the type of handshake via SetEnvIf directive
      */
     if (abortive) {
+        quiet_shutdown = 1;
         shutdown_type = SSL_SENT_SHUTDOWN|SSL_RECEIVED_SHUTDOWN;
         type = "abortive";
         logno = APLOGNO(01998);
@@ -1085,6 +1087,7 @@ static void ssl_filter_io_shutdown(ssl_filter_ctx_t *filter_ctx,
       case SSL_SHUTDOWN_TYPE_UNCLEAN:
         /* perform no close notify handshake at all
            (violates the SSL/TLS standard!) */
+        quiet_shutdown = 1;
         shutdown_type = SSL_SENT_SHUTDOWN|SSL_RECEIVED_SHUTDOWN;
         type = "unclean";
         logno = APLOGNO(01999);
@@ -1092,7 +1095,8 @@ static void ssl_filter_io_shutdown(ssl_filter_ctx_t *filter_ctx,
       case SSL_SHUTDOWN_TYPE_ACCURATE:
         /* send close notify and wait for clients close notify
            (standard compliant, but usually causes connection hangs) */
-        shutdown_type = 0;
+        quiet_shutdown = 0;
+        shutdown_type = SSL_get_shutdown(ssl);
         type = "accurate";
         logno = APLOGNO(02000);
         break;
@@ -1103,12 +1107,16 @@ static void ssl_filter_io_shutdown(ssl_filter_ctx_t *filter_ctx,
          */
         /* send close notify, but don't wait for clients close notify
            (standard compliant and safe, so it's the DEFAULT!) */
-        shutdown_type = SSL_RECEIVED_SHUTDOWN;
+        quiet_shutdown = 0;
+        shutdown_type = SSL_get_shutdown(ssl) | SSL_RECEIVED_SHUTDOWN;
         type = "standard";
         logno = APLOGNO(02001);
         break;
     }
 
+    if (quiet_shutdown) {
+        SSL_set_quiet_shutdown(ssl, 1);
+    }
     SSL_set_shutdown(ssl, shutdown_type);
     modssl_smart_shutdown(ssl);
 
