@@ -90,6 +90,7 @@ typedef struct {
     int allow_depthinfinity;
     int allow_lockdiscovery;
     int msext_opts;
+    int honor_mtime_header;
 } dav_dir_conf;
 
 /* per-server configuration */
@@ -213,6 +214,8 @@ static void *dav_merge_dir_config(apr_pool_t *p, void *base, void *overrides)
                                                      allow_depthinfinity);
     newconf->allow_lockdiscovery = DAV_INHERIT_VALUE(parent, child,
                                                      allow_lockdiscovery);
+    newconf->honor_mtime_header = DAV_INHERIT_VALUE(parent, child,
+                                                    honor_mtime_header);
     newconf->msext_opts = DAV_INHERIT_VALUE(parent, child,
                                             msext_opts);
 
@@ -301,6 +304,20 @@ static const char *dav_cmd_dav(cmd_parms *cmd, void *config, const char *arg1)
         }
     }
 
+    return NULL;
+}
+
+/*
+ * Command handler for the DAVHonorMtimeHeader directive, which is FLAG.
+ */
+static const char *dav_cmd_davhonormtimeheader(cmd_parms *cmd, void *config, const int arg)
+{
+    dav_dir_conf *conf = (dav_dir_conf *)config;
+
+    if (arg)
+        conf->honor_mtime_header = DAV_ENABLED_ON;
+    else
+        conf->honor_mtime_header = DAV_ENABLED_OFF;
     return NULL;
 }
 
@@ -947,6 +964,37 @@ static int dav_parse_range(request_rec *r,
     return 1;
 }
 
+/**
+ * @return  1 if valid x-oc-mtime,
+ *          0 if no x-oc-mtime,
+ *         -1 if malformed x-oc-mtime
+ */
+static int dav_parse_mtime(request_rec *r, apr_time_t *mtime)
+{
+    const char *hdr;
+    char *endp;
+    apr_int64_t n;
+    apr_size_t i;
+
+    if ((hdr = apr_table_get(r->headers_in, "x-oc-mtime")) == NULL) {
+        return 0;
+    }
+
+    for (i = 0; i < strlen(hdr); i++) {
+        if (!apr_isdigit(hdr[i])) {
+            return -1;
+        }
+    }
+
+    n = apr_strtoi64(hdr, &endp, 10);
+    if (errno != 0 || endp == hdr) {
+        return -1;
+    }
+
+    *mtime = (apr_time_t) apr_time_from_sec(n);
+    return 1;
+}
+
 /* handle the GET method */
 static int dav_method_get(request_rec *r)
 {
@@ -1050,6 +1098,11 @@ static int dav_method_put(request_rec *r)
     apr_off_t range_start;
     apr_off_t range_end;
     int rc;
+    int mtime_ret;
+    apr_time_t mtime;
+
+    /* retrieve module config */
+    conf = ap_get_module_config(r->per_dir_config, &dav_module);
 
     /* Ask repository module to resolve the resource */
     err = dav_get_resource(r, 0 /* label_allowed */, 0 /* use_checked_in */,
@@ -1112,6 +1165,17 @@ static int dav_method_put(request_rec *r)
     }
     else {
         mode = DAV_MODE_WRITE_TRUNC;
+    }
+
+    /* try parsing x-oc-mtime header */
+    mtime_ret = 0;
+    if (conf->honor_mtime_header == DAV_ENABLED_ON) {
+        if ((mtime_ret = dav_parse_mtime(r, &mtime)) == -1) {
+            body = apr_psprintf(r->pool,
+                                "Malformed X-OC-Mtime header for PUT %s.",
+                                ap_escape_html(r->pool, r->uri));
+            return dav_error_response(r, HTTP_BAD_REQUEST, body);
+        }
     }
 
     /* make sure the resource can be modified (if versioning repository) */
@@ -1208,6 +1272,19 @@ static int dav_method_put(request_rec *r)
         err2 = (*resource->hooks->close_stream)(stream,
                                                 err == NULL /* commit */);
         err = dav_join_error(err, err2);
+
+        if (err == NULL && mtime_ret == 1) {
+            if (*resource->hooks->set_mtime != NULL) {
+                err2 = (*resource->hooks->set_mtime)(resource, mtime);
+                err = dav_join_error(err, err2);
+                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+                              "Setting modification time for file.");
+            }
+            else {
+                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+                              "Provider does not support setting modification times.");
+            }
+        }
     }
 
     /*
@@ -1240,7 +1317,6 @@ static int dav_method_put(request_rec *r)
     }
 
     /* This performs MS-WDV PROPPATCH combined with PUT */
-    conf = ap_get_module_config(r->per_dir_config, &dav_module);
     if (conf->msext_opts & DAV_MSEXT_OPT_WDV)
         (void)dav_mswdv_postprocessing(r);
 
@@ -2732,6 +2808,12 @@ static int dav_method_mkcol(request_rec *r)
     int result;
     int rc;
     dav_response *multi_status;
+    dav_dir_conf *conf;
+    int mtime_ret;
+    apr_time_t mtime;
+
+    /* retrieve module config */
+    conf = ap_get_module_config(r->per_dir_config, &dav_module);
 
     /* handle the request body */
     /* ### this may move lower once we start processing bodies */
@@ -2757,6 +2839,17 @@ static int dav_method_mkcol(request_rec *r)
         /* Apache will supply a default error for this. */
         /* ### we should provide a specific error message! */
         return HTTP_METHOD_NOT_ALLOWED;
+    }
+
+    /* try parsing x-oc-mtime header */
+    mtime_ret = 0;
+    if (conf->honor_mtime_header == DAV_ENABLED_ON) {
+        if ((mtime_ret = dav_parse_mtime(r, &mtime)) == -1) {
+            return dav_error_response(r, HTTP_BAD_REQUEST,
+                                      apr_psprintf(r->pool,
+                                                   "Malformed X-OC-Mtime header for MKCOL %s.",
+                                                   ap_escape_html(r->pool, r->uri)));
+        }
     }
 
     resource_state = dav_get_resource_state(r, resource);
@@ -2836,6 +2929,25 @@ static int dav_method_mkcol(request_rec *r)
                                  "information.",
                                  err);
             return dav_handle_err(r, err, NULL);
+        }
+    }
+
+    if (mtime_ret == 1) {
+        if (resource->hooks->set_mtime != NULL) {
+            err = (resource->hooks->set_mtime)(resource, mtime);
+            if (err != NULL) {
+                err = dav_push_error(r->pool, err->status, 0,
+                                     "The MKCOL was successful, but there "
+                                     "was a problem setting its modification time.",
+                                     err);
+                return dav_handle_err(r, err, NULL);
+            }
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+                          "Setting modification time for directory.");
+        }
+        else {
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+                          "Provider does not support setting modification times.");
         }
     }
 
@@ -5344,6 +5456,11 @@ static const command_rec dav_cmds[] =
     AP_INIT_FLAG("DAVLockDiscovery", dav_cmd_davlockdiscovery, NULL,
                  ACCESS_CONF|RSRC_CONF,
                  "allow lock discovery by PROPFIND requests"),
+
+    /* per directory/location */
+    AP_INIT_FLAG("DAVHonorMtimeHeader", dav_cmd_davhonormtimeheader, NULL,
+                 ACCESS_CONF,
+                 "Set modification time based on X-OC-Mtime header"),
 
     /* per directory/location, or per server */
     AP_INIT_ITERATE("DAVMSext", dav_cmd_davmsext, NULL,
