@@ -57,6 +57,7 @@ AP_DECLARE_DATA int ap_have_so_reuseport = -1;
 
 static ap_listen_rec *old_listeners;
 static int ap_listenbacklog;
+static int ap_listentcpdeferaccept;
 static int ap_listencbratio;
 static int send_buffer_size;
 static int receive_buffer_size;
@@ -268,7 +269,7 @@ static void ap_apply_accept_filter(apr_pool_t *p, ap_listen_rec *lis,
                           accf);
         }
 #else
-        rv = apr_socket_opt_set(s, APR_TCP_DEFER_ACCEPT, 30);
+        rv = apr_socket_opt_set(s, APR_TCP_DEFER_ACCEPT, ap_listentcpdeferaccept);
         if (rv != APR_SUCCESS && !APR_STATUS_IS_ENOTIMPL(rv)) {
             ap_log_perror(APLOG_MARK, APLOG_WARNING, rv, p, APLOGNO(00076)
                               "Failed to enable APR_TCP_DEFER_ACCEPT");
@@ -947,6 +948,7 @@ AP_DECLARE(void) ap_listen_pre_config(void)
     ap_listen_buckets = NULL;
     ap_num_listen_buckets = 0;
     ap_listenbacklog = DEFAULT_LISTENBACKLOG;
+    ap_listentcpdeferaccept = DEFAULT_TCP_DEFER_ACCEPT;
     ap_listencbratio = 0;
 
     /* Check once whether or not SO_REUSEPORT is supported. */
@@ -1073,6 +1075,26 @@ AP_DECLARE_NONSTD(const char *) ap_set_listenbacklog(cmd_parms *cmd,
     }
 
     ap_listenbacklog = b;
+    return NULL;
+}
+
+AP_DECLARE_NONSTD(const char *) ap_set_listentcpdeferaccept(cmd_parms *cmd,
+                                                            void *dummy,
+                                                            const char *arg)
+{
+    int b;
+    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
+
+    if (err != NULL) {
+        return err;
+    }
+
+    b = atoi(arg);
+    if (b < 1) {
+        return "ListenTCPDeferAccept must be > 0";
+    }
+
+    ap_listentcpdeferaccept = b;
     return NULL;
 }
 

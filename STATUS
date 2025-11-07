@@ -175,17 +175,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c 1927792 ^/httpd/httpd/trunk .
      +1: icing, rpluem, jorton
 
-  *) mpm_common: Add new ListenTCPDeferAccept directive that allows to specify
-     the value set for the TCP_DEFER_ACCEPT socket option on listen sockets.
-     Trunk version of patch:
-        https://svn.apache.org/r1927885
-        https://svn.apache.org/r1927916
-        https://svn.apache.org/r1928022
-     Backport version for 2.4.x of patch:
-       https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/555.diff
-     Can be applied via apply_backport_pr.sh 555
-     +1: rpluem, jorton, covener
-
   *) mod_http2: Fix handling of 304 responses from mod_cache. PR 69580.
      Trunk version of patch:
         https://svn.apache.org/r1924267

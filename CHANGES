@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.66
 
+  *) mpm_common: Add new ListenTCPDeferAccept directive that allows to specify
+     the value set for the TCP_DEFER_ACCEPT socket option on listen sockets.
+     [Ruediger Pluem]
+
   *) mod_ssl: Add SSLVHostSNIPolicy directive to control the virtual
      host compatibility policy.  PR 69743.  [Joe Orton]
 
