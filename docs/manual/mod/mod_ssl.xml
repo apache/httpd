@@ -1859,7 +1859,7 @@ SSLStrictSNIVHostCheck on
 <syntax>SSLVHostSNIPolicy strict|secure|authonly|insecure</syntax>
 <default>SSLVHostSNIPolicy secure</default>
 <contextlist><context>server config</context></contextlist>
-<compatibility>Available in httpd 2.5 and later</compatibility>
+<compatibility>Available in httpd 2.4.66 and later</compatibility>
 
 <usage><p>This directive sets the policy applied when checking whether the
 <directive module="core" type="section">VirtualHost</directive>
