@@ -1,3 +1,0 @@
-  *) mod_ssl: Add SSLVHostSNIPolicy directive to control the virtual
-     host compatibility policy.  PR 69743.  [Joe Orton]
-
