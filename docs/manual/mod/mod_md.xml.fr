@@ -2,7 +2,7 @@
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
-<!-- English Revision: 1928039 -->
+<!-- English Revision: 1929514 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -1876,6 +1876,25 @@ MDMessageCmd /etc/apache/md-message
 		de sa chaîne de certification a été révoqué(e).
             </p>
         </usage>
-    </directivesynopsis>    
+    </directivesynopsis>
+
+    <directivesynopsis>
+        <name>MDInitialDelay</name>
+        <description>Le délai avant la première vérification de certificat.</description>
+        <syntax>MDInitialDelay <var>duration</var></syntax>
+        <default>MDInitialDelay 0s</default>
+        <contextlist>
+            <context>server config</context>
+        </contextlist>
+        <compatibility>Disponible à partir de la version 2.4.66 du serveur HTTP
+	Apache</compatibility>
+        <usage>
+            <p>
+                Le temps d’attente, après le démarrage du serveur, avant de
+		vérifier si des certificats doivent être renouvelés. Par défaut,
+		cette vérification est immédiate.
+            </p>
+        </usage>
+    </directivesynopsis>
 
 </modulesynopsis>

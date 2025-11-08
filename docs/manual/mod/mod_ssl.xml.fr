@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1929361 -->
+<!-- English Revision: 1929582 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -2140,7 +2140,7 @@ aux serveurs virtuels.</description>
 <syntax>SSLVHostSNIPolicy strict|secure|authonly|insecure</syntax>
 <default>SSLVHostSNIPolicy secure</default>
 <contextlist><context>server config</context></contextlist>
-<compatibility>Disponible à partir de la version 2.5 du serveur HTTP Apache</compatibility>
+<compatibility>Disponible à partir de la version 2.4.66 du serveur HTTP Apache</compatibility>
 
 <usage><p>Cette directive permet de définir la politique à appliquer lors de la
 vérification de la compatibilité du <directive module="core"
