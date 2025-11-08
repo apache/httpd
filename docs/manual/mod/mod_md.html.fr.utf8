@@ -349,6 +349,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#mddrivemode">MDDriveMode</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mdexternalaccountbinding">MDExternalAccountBinding</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mdhttpproxy">MDHttpProxy</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#mdinitialdelay">MDInitialDelay</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mdmatchnames">MDMatchNames</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mdmember">MDMember</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mdmembers">MDMembers</a></li>
@@ -869,6 +870,25 @@
 	    <code class="directive"><a href="#mdcertificateauthority">MDCertificateAuthority</a></code>. Vous
 	    devez la définir si votre serveur web ne peut atteindre internet que
 	    via un serveur mandataire.
+            </p>
+        
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="mdinitialdelay" id="mdinitialdelay">Directive</a> <a name="MDInitialDelay" id="MDInitialDelay">MDInitialDelay</a> <a title="Lien permanent" href="#mdinitialdelay" class="permalink">&para;</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Le délai avant la première vérification de certificat.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MDInitialDelay <var>duration</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>MDInitialDelay 0s</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_md</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.66 du serveur HTTP
+	Apache</td></tr>
+</table>
+            <p>
+                Le temps d’attente, après le démarrage du serveur, avant de
+		vérifier si des certificats doivent être renouvelés. Par défaut,
+		cette vérification est immédiate.
             </p>
         
 </div>
