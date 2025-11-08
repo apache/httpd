@@ -14,7 +14,7 @@
 <script src="../style/scripts/prettify.min.js" type="text/javascript">
 </script>
 
-<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<link href="../images/favicon.png" rel="shortcut icon" /></head>
 <body>
 <div id="page-header">
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p>
@@ -328,49 +328,6 @@
             </p>
         </div>
 
-        <div class="note"><h3>tailscale</h3>
-            <p>
-                Depuis la version 2.4.14 du module, vous pouvez l'utiliser pour
-		obtenir des certificats pour vos domaines <a href="https://tailscale.com">tailscale</a>.
-            </p>
-            <pre class="prettyprint lang-config">&lt;MDomain mydomain.some-thing.ts.net&gt;
-  MDCertificateProtocol tailscale
-  MDCertificateAuthority file://localhost/var/run/tailscale/tailscaled.sock",
-&lt;/MDomain&gt;</pre>
-
-            <p>
-                Tailscale permet des communications sécurisées entre vos
-		machines, où qu'elles se trouvent, et peut leur fournir des noms de
-		domaine dans l'espace *.ts.net. Pour ceux-ci, il fournira
-		aussi ensuite des certificats Let's Encrypt de façon à ce que
-		vous puissiez ouvrir ces domaines dans votre navigateur en toute
-		sécurité.
-            </p>
-            <p>
-                Apache va contacter le démon tailscale local à l'aide des
-		directives listées ci-dessous pour obtenir et renouveler les
-		certificats. Ceci ne fonctionnera cependant que pour les noms de
-		domaine que tailscale aura assigné à votre machine.
-            </p>
-            <p>
-                Dans le cas contraire, ces certificats fonctionneront exactement
-		de la même façon que ceux qui auront été obtenus à l'aide du
-		protocole ACME de Lets Encrypt. Vous les verrez dans le rapport
-		d'état et les directives MDMessageCmd seront aussi exécutées
-		pour eux.
-            </p>
-            <p>
-		Vous trouverez plus de détails dans la <a href="https://github.com/icing/mod_md#tailscale">documentation
-		github de mod_md</a>.
-            </p>
-            <p>
-                Notez que cette fonctionnalité n'est disponible que sur les
-		machines où le démon tailscale fournit un socket de domaine unix.
-		Jusqu'à présent, ceci ne semble être le cas que sur les systèmes
-		de style Unix.
-            </p>
-        </div>
-
     </div>
 <div id="quickview"><a href="https://www.apache.org/foundation/contributing.html" class="badge"><img src="https://www.apache.org/images/SupportApache-small.png" alt="Support Apache!" /></a><h3 class="directives">Directives</h3>
 <ul id="toc">
@@ -405,6 +362,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#mdprofile">MDProfile</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mdprofilemandatory">MDProfileMandatory</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mdrenewmode">MDRenewMode</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#mdrenewviaari">MDRenewViaARI</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mdrenewwindow">MDRenewWindow</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mdrequirehttps">MDRequireHttps</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mdretrydelay">MDRetryDelay</a></li>
@@ -1447,6 +1405,31 @@ MDomain example2.org auto
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="mdrenewviaari" id="mdrenewviaari">Directive</a> <a name="MDRenewViaARI" id="MDRenewViaARI">MDRenewViaARI</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Utilisation de l’extension ACME ARI (rfc9773).</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MDRenewViaARI on|off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>MDRenewViaARI on</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_md</td></tr>
+</table>
+            <p>
+                Cette directive permet d’activer ou de désactiver le
+		déclenchement du renouvellement des certificats à l’aide de
+		l’extension ACME ARI (rfc9773). Ces renouvellements s’ajoutent à
+		ceux déclenchés par le mécanisme contrôlé à l’aide de la
+		directive <code class="directive">MDRenewWindow</code>.
+           </p><p>
+                ACME ARI permet en quelque sorte à une CA ACME de façonner le
+		trafic entrant des renouvellements. Plus important cependant,
+		cette extension peut informer les clients de l’urgence d’un
+		renouvellement, par exemple lorsqu’un certificat ou une partie
+		de sa chaîne de certification a été révoqué(e).
+            </p>
+        
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="mdrenewwindow" id="mdrenewwindow">Directive</a> <a name="MDRenewWindow" id="MDRenewWindow">MDRenewWindow</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit le moment auquel un certificat doit être renouvelé.</td></tr>
@@ -1554,7 +1537,7 @@ MDRenewWindow 10%</pre>
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Temps d'attente avant de réessayer, doublé à chaque erreur
 	consécutive</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MDRetryDelay <var>duration</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>MDRetryDelay 5s</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>MDRetryDelay 30s</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_md</td></tr>
@@ -1570,6 +1553,10 @@ MDRenewWindow 10%</pre>
                 Ce temps d'attente est spécifique à chaque renouvellement de
 		certificat. Autrement dit, une erreur sur un MDomain ne retarde
 		pas les renouvellements des autres domaines.
+            </p>
+	    <p>
+                Dans mod_md version 2.6.1, le délai par défaut a été augmenté de
+		5 à 30 secondes.
             </p>
         
 </div>
