@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1927321:1929556 (outdated) -->
+<!-- English Revision: 1929583 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -2047,6 +2047,100 @@ version d'OpenSSL supportant SNI.
 <example><title>Exemple</title>
 <highlight language="config">
 SSLStrictSNIVHostCheck on
+</highlight>
+
+</example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>SSLVHostSNIPolicy</name>
+<description>Définir la politique de compatibilité pour l’accès des clients SNI
+aux serveurs virtuels.</description>
+<syntax>SSLVHostSNIPolicy strict|secure|authonly|insecure</syntax>
+<default>SSLVHostSNIPolicy secure</default>
+<contextlist><context>server config</context></contextlist>
+<compatibility>Disponible à partir de la version 2.4.66 du serveur HTTP Apache</compatibility>
+
+<usage><p>Cette directive permet de définir la politique à appliquer lors de la
+vérification de la compatibilité du <directive module="core"
+type="section">serveur virtuel</directive> identifié par l’en-tête
+<code>Host</code> d’une requête HTTP avec le <directive module="core"
+type="section">serveur virtuel</directive> identifié depuis l’extension SNI
+envoyée au cours de la négociation de la connexion TLS initiale. Si une requête
+HTTP est associée à un serveur virtuel comportant une configuration SSL/TLS
+incompatible selon la politique utilisée, un message d’erreur HTTP avec code
+d’état 421 ("Misdirected Request") sera envoyé.</p>
+
+<p>La politique s’applique aussi aux connexions TLS pour lesquelles une
+extension SNI n’est pas envoyée lors de la négociation de connexion, et
+utilisant la première définition de serveur virtuel ou la définition par défaut.
+Si l’en-tête Host d’une requête HTTP sur une telle connexion identifie un
+serveur virtuel autre que celui par défaut, la politique de compatibilité sera
+testée.</p>
+
+<p>La politique <code>strict</code> bloque toute requête HTTP associée à un
+serveur virtuel différent de celui identifié par SNI. La politique
+<code>insecure</code> autorise toute requête, quel que soit le serveur virtuel
+associé ; une telle configuration pourra être vulnérable à <a
+href="https://httpd.apache.org/security/vulnerabilities_24.html">CVE-2025-23048</a>.
+</p>
+
+<p>Les politiques <code>secure</code> (politique par défaut) et
+<code>authonly</code> comparent certains aspects spécifiques des deux serveurs
+virtuels, qui sont regroupés en deux catégories :</p>
+
+<ul>
+  <li><strong>certificat/clé de serveur ou restrictions de protocole/algorithme
+  de chiffrement</strong> : directives qui déterminent le certificat ou la clé
+  du serveur (<directive
+  module="mod_ssl">SSLCertificateKeyFile</directive>, etc.), restrictions de
+  protocole ou d’algorithme
+  de chiffrement (<directive
+  module="mod_ssl">SSLProtocol</directive> et <directive
+  module="mod_ssl">SSLCipherSuite</directive>)</li>
+  
+  <li><strong>configuration de la certification et de l’authentification du
+  client</strong> : directives qui affectent l’authentification du client et la
+  vérification de son certificat via TLS, telles que <directive
+  module="mod_ssl">SSLVerifyClient</directive>, <directive
+  module="mod_ssl">SSLVerifyMode</directive>, <directive
+  module="mod_ssl">SSLCACertificatePath</directive>, <directive
+  module="mod_ssl">SSLSRPVerifierFile</directive>; toute utilisation de <directive
+  module="mod_ssl">SSLOpenSSLConfCmd</directive></li>  
+</ul>
+
+<p>Le tableau suivant indique quand une requête HTTP sera bloquée ou autorisée
+lorsque les configurations des serveurs virtuels diffèrent de la manière
+décrite, et en fonction des différentes politiques utilisées :</p>
+
+<table border="1" style="zebra">
+<columnspec><column width=".3"/><column width=".2"/><column width=".5"/>
+</columnspec>
+<tr>
+  <th>Politique utilisée</th>
+  <th>Toute incohérence dans les serveurs virtuels</th>
+  <th>Certificat/clé du serveur, <br />ou restrictions de protocole/algorithme
+  de chiffrement</th>
+  <th>Certification client/<br />configuration de l’authentification</th>
+</tr>
+<tr>
+  <td><code>strict</code></td><td>bloquée</td><td>bloquée</td><td>bloquée</td>
+</tr>
+<tr>
+  <td><code>secure</code></td><td>autorisée</td><td>bloquée</td><td>bloquée</td>
+</tr>
+<tr>
+  <td><code>authonly</code></td><td>autorisée</td><td>bloquée</td><td>autorisée</td>
+</tr>
+<tr>
+  <td><code>insecure</code></td><td>autorisée</td><td>autorisée</td><td>autorisée</td>
+</tr>
+</table>
+
+<example><title>Exemple</title>
+<highlight language="config">
+SSLVHostSNIPolicy authonly
 </highlight>
 
 </example>

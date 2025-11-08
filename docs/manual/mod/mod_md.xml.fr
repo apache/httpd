@@ -2,7 +2,7 @@
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
-<!-- English Revision: 1926086:1929515 (outdated) -->
+<!-- English Revision: 1929515 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -338,52 +338,6 @@ MDChallengeDns01 /usr/bin/acme-setup-dns
 		mod_ssl est incapable d'ajouter une dépendance à mod_watchdog
 		sans rendre inutilisables de nombreuses configurations
 		existantes qui ne chargent pas ce module.
-            </p>
-        </note>
-
-        <note><title>tailscale</title>
-            <p>
-                Depuis la version 2.4.14 du module, vous pouvez l'utiliser pour
-		obtenir des certificats pour vos domaines <a
-		href="https://tailscale.com">tailscale</a>.
-            </p>
-            <highlight language="config">
-&lt;MDomain mydomain.some-thing.ts.net>
-  MDCertificateProtocol tailscale
-  MDCertificateAuthority file://localhost/var/run/tailscale/tailscaled.sock",
-&lt;/MDomain>
-            </highlight>
-            <p>
-                Tailscale permet des communications sécurisées entre vos
-		machines, où qu'elles se trouvent, et peut leur fournir des noms de
-		domaine dans l'espace *.ts.net. Pour ceux-ci, il fournira
-		aussi ensuite des certificats Let's Encrypt de façon à ce que
-		vous puissiez ouvrir ces domaines dans votre navigateur en toute
-		sécurité.
-            </p>
-            <p>
-                Apache va contacter le démon tailscale local à l'aide des
-		directives listées ci-dessous pour obtenir et renouveler les
-		certificats. Ceci ne fonctionnera cependant que pour les noms de
-		domaine que tailscale aura assigné à votre machine.
-            </p>
-            <p>
-                Dans le cas contraire, ces certificats fonctionneront exactement
-		de la même façon que ceux qui auront été obtenus à l'aide du
-		protocole ACME de Lets Encrypt. Vous les verrez dans le rapport
-		d'état et les directives MDMessageCmd seront aussi exécutées
-		pour eux.
-            </p>
-            <p>
-		Vous trouverez plus de détails dans la <a
-		href="https://github.com/icing/mod_md#tailscale">documentation
-		github de mod_md</a>.
-            </p>
-            <p>
-                Notez que cette fonctionnalité n'est disponible que sur les
-		machines où le démon tailscale fournit un socket de domaine unix.
-		Jusqu'à présent, ceci ne semble être le cas que sur les systèmes
-		de style Unix.
             </p>
         </note>
 
@@ -1661,7 +1615,7 @@ MDMessageCmd /etc/apache/md-message
         <description>Temps d'attente avant de réessayer, doublé à chaque erreur
 	consécutive</description>
         <syntax>MDRetryDelay <var>duration</var></syntax>
-        <default>MDRetryDelay 5s</default>
+        <default>MDRetryDelay 30s</default>
         <contextlist>
             <context>server config</context>
         </contextlist>
@@ -1677,6 +1631,10 @@ MDMessageCmd /etc/apache/md-message
                 Ce temps d'attente est spécifique à chaque renouvellement de
 		certificat. Autrement dit, une erreur sur un MDomain ne retarde
 		pas les renouvellements des autres domaines.
+            </p>
+	    <p>
+                Dans mod_md version 2.6.1, le délai par défaut a été augmenté de
+		5 à 30 secondes.
             </p>
         </usage>
     </directivesynopsis>
@@ -1891,6 +1849,31 @@ MDMessageCmd /etc/apache/md-message
 		pas de profile, les renouvellements seront effectués sans
 		profile particulier et le CA délivrera les certificats avec les
 		valeurs par défaut.
+            </p>
+        </usage>
+    </directivesynopsis>
+
+    <directivesynopsis>
+        <name>MDRenewViaARI</name>
+        <description>Utilisation de l’extension ACME ARI (rfc9773).</description>
+        <syntax>MDRenewViaARI on|off</syntax>
+        <default>MDRenewViaARI on</default>
+        <contextlist>
+            <context>server config</context>
+        </contextlist>
+        <usage>
+            <p>
+                Cette directive permet d’activer ou de désactiver le
+		déclenchement du renouvellement des certificats à l’aide de
+		l’extension ACME ARI (rfc9773). Ces renouvellements s’ajoutent à
+		ceux déclenchés par le mécanisme contrôlé à l’aide de la
+		directive <directive>MDRenewWindow</directive>.
+           </p><p>
+                ACME ARI permet en quelque sorte à une CA ACME de façonner le
+		trafic entrant des renouvellements. Plus important cependant,
+		cette extension peut informer les clients de l’urgence d’un
+		renouvellement, par exemple lorsqu’un certificat ou une partie
+		de sa chaîne de certification a été révoqué(e).
             </p>
         </usage>
     </directivesynopsis>
