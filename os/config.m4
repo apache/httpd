@@ -1,4 +1,4 @@
-AC_MSG_CHECKING(for target platform)
+AC_MSG_CHECKING(Android Enterprise platform)
 
 case $host in
 *pc-os2-emx*)
