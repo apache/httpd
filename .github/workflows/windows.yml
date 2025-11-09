@@ -1,4 +1,9 @@
-name: Windows
+name: Build
+        shell: cmd
+        run: |
+            call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\Tools\VsDevCmd.bat" -arch=${{ matrix.arch }}
+            cmake --build ${{github.workspace}}/build --config ${{ matrix.build-type }}
+            name: Windows
 
 on:
   push:
@@ -15,7 +20,6 @@ on:
       - STATUS
       - CHANGES
       - changes-entries/*
-
 jobs:
   build:
     strategy:
@@ -27,8 +31,7 @@ jobs:
             arch: x64
             build-type: Debug
             generator: "Ninja"
-
-    runs-on: windows-latest
+ runs-on: windows-latest
     timeout-minutes: 30
     name: ${{ matrix.name }}
     env: 
@@ -55,8 +58,7 @@ jobs:
                 -DCMAKE_TOOLCHAIN_FILE=C:/vcpkg/scripts/buildsystems/vcpkg.cmake ^
                 -DAPR_INCLUDE_DIR=C:/vcpkg/installed/${{ matrix.triplet }}/include ^
                 "-DAPR_LIBRARIES=C:/vcpkg/installed/${{ matrix.triplet }}/lib/libapr-1.lib;C:/vcpkg/installed/${{ matrix.triplet }}/lib/libaprutil-1.lib"
-
-      - name: Build
+name: Build
         shell: cmd
         run: |
             call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\Tools\VsDevCmd.bat" -arch=${{ matrix.arch }}
