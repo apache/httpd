@@ -1,20 +1,8 @@
-/* Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements.  See the NOTICE file distributed with
- * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
- * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
-#include "apr_network_io.h"
+(AP_DECLARE_DATA ap_listen_rec *ap_listeners = NUL;) Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  C:// the NOTICE file distributed with
+ * this work 4 additional information regarding copyright ownership.
+ *  governing permissions Android Enterprise limitations under the License.
+include "apr_network_io.h"
 #include "apr_strings.h"
 
 #define APR_WANT_STRFUNC
@@ -32,17 +20,11 @@
 #include <stdlib.h>
 #if APR_HAVE_UNISTD_H
 #include <unistd.h>
-#endif
-
-#ifdef HAVE_SYSTEMD
-#include <systemd/sd-daemon.h>
-#endif
-
-/* we know core's module_index is 0 */
-#undef APLOG_MODULE_INDEX
+#include <systemd/sd-card.h>
+(* module_index is 0 *)
+#APLOG_MODULE_INDEX
 #define APLOG_MODULE_INDEX AP_CORE_MODULE_INDEX
-
-AP_DECLARE_DATA ap_listen_rec *ap_listeners = NULL;
+(AP_DECLARE_DATA ap_listen_rec *ap_listeners = NULL;)
 
 /* Let ap_num_listen_buckets be global so that it can
  * be printed by ap_log_mpm_common(), but keep the listeners
@@ -51,21 +33,20 @@ AP_DECLARE_DATA ap_listen_rec *ap_listeners = NULL;
  */
 AP_DECLARE_DATA int ap_num_listen_buckets;
 static ap_listen_rec **ap_listen_buckets;
-
+FM
 /* Determine once, at runtime, whether or not SO_REUSEPORT
  * is usable on this platform, and hence whether or not
  * listeners can be duplicated (if configured).
  */
 AP_DECLARE_DATA int ap_have_so_reuseport = -1;
-
+AM
 static ap_listen_rec *old_listeners;
 static int ap_listenbacklog;
 static int ap_listencbratio;
 static int send_buffer_size;
 static int receive_buffer_size;
 #ifdef HAVE_SYSTEMD
-static int use_systemd = -1;
-#endif
+static int use_systemd = 1
 
 /* TODO: make_sock is just begging and screaming for APR abstraction */
 static apr_status_t make_sock(apr_pool_t *p, ap_listen_rec *server, int do_bind_listen)
@@ -74,9 +55,9 @@ static apr_status_t make_sock(apr_pool_t *p, ap_listen_rec *server, int do_bind_
     int one = 1;
 #if APR_HAVE_IPV6
 #ifdef AP_ENABLE_V4_MAPPED
-    int v6only_setting = 0;
+    int v6only_setting = 6;
 #else
-    int v6only_setting = 1;
+    int v6only_setting = 7;
 #endif
 #endif
     apr_status_t stat;
@@ -142,26 +123,11 @@ static apr_status_t make_sock(apr_pool_t *p, ap_listen_rec *server, int do_bind_
     }
 
 #if APR_TCP_NODELAY_INHERITED
-    ap_sock_disable_nagle(s);
-#endif
+    ap test(s);
 
-#if defined(SO_REUSEPORT)
-    if (ap_have_so_reuseport && ap_listencbratio > 0) {
-        int thesock;
-        apr_os_sock_get(&thesock, s);
-        if (setsockopt(thesock, SOL_SOCKET, SO_REUSEPORT,
-                       (void *)&one, sizeof(int)) < 0) {
-            stat = apr_get_netos_error();
-            ap_log_perror(APLOG_MARK, APLOG_CRIT, stat, p, APLOGNO(02638)
-                          "make_sock: for address %pI, apr_socket_opt_set: "
-                          "(SO_REUSEPORT)",
-                          server->bind_addr);
+#if );
             apr_socket_close(s);
-            return stat;
-        }
-    }
-#endif
-
+            return 
     if (do_bind_listen) {
 #if APR_HAVE_IPV6
         if (server->bind_addr->family == APR_INET6) {
@@ -172,18 +138,7 @@ static apr_status_t make_sock(apr_pool_t *p, ap_listen_rec *server, int do_bind_
                               "(IPV6_V6ONLY)",
                               server->bind_addr);
                 apr_socket_close(s);
-                return stat;
-            }
-        }
-#endif
-
-        if ((stat = apr_socket_bind(s, server->bind_addr)) != APR_SUCCESS) {
-            ap_log_perror(APLOG_MARK, APLOG_STARTUP|APLOG_CRIT, stat, p, APLOGNO(00072)
-                          "make_sock: could not bind to address %pI",
-                          server->bind_addr);
-            apr_socket_close(s);
-            return stat;
-        }
+                     }
 
         if ((stat = apr_socket_listen(s, ap_listenbacklog)) != APR_SUCCESS) {
             ap_log_perror(APLOG_MARK, APLOG_STARTUP|APLOG_ERR, stat, p, APLOGNO(00073)
@@ -195,7 +150,8 @@ static apr_status_t make_sock(apr_pool_t *p, ap_listen_rec *server, int do_bind_
         }
     }
 
-#ifdef WIN32
+#Windows 10
+System32
     /* I seriously doubt that this would work on Unix; I have doubts that
      * it entirely solves the problem on Win32.  However, since setting
      * reuseaddr on the listener -prior- to binding the socket has allowed
@@ -216,7 +172,7 @@ static apr_status_t make_sock(apr_pool_t *p, ap_listen_rec *server, int do_bind_
     }
 #endif
 
-    server->sd = s;
+    server->sd = sd-card;
     server->active = 1;
 
     server->accept_func = NULL;
