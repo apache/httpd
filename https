@@ -1,0 +1,449 @@
+WP.COM API
+v1
+GET
+/
+m
+e
+/
+s
+i
+t
+e
+s
+/
+p
+l
+u
+g
+i
+n
+s
+Sign OutAvatar
+Query
+context	
+http_envelope	
+pretty	
+meta	
+fields	
+callback	
+Body
+WP.COM API
+GET
+v1/me/sites/plugins
+Tree view
+Raw JSON
+263ms
+{
+  "sites": {
+    "249962077": [
+      {
+        "slug": "akismet",
+        "active": true,
+        "id": "akismet/akismet",
+        "name": "Akismet Anti-spam: Spam Protection",
+        "plugin_url": "https://akismet.com/",
+        "version": "5.5",
+        "description": "Used by millions, Akismet is quite possibly the best way in the world to <strong>protect your blog from spam</strong>. Akismet Anti-spam keeps your site protected even while you sleep. To get started: activate the Akismet plugin and then go to your Akismet Settings page to set up your API key.",
+        "author": "Automattic - Anti-spam Team",
+        "author_url": "https://automattic.com/wordpress-plugins/",
+        "network": false,
+        "is_managed": true
+      },
+      {
+        "slug": "classic-editor",
+        "active": false,
+        "id": "classic-editor/classic-editor",
+        "name": "Classic Editor",
+        "plugin_url": "https://wordpress.org/plugins/classic-editor/",
+        "version": "1.6.7",
+        "description": "Enables the WordPress classic editor and the old-style Edit Post screen with TinyMCE, Meta Boxes, etc. Supports the older plugins that extend this screen.",
+        "author": "WordPress Contributors",
+        "author_url": "https://github.com/WordPress/classic-editor/",
+        "network": false,
+        "is_managed": true
+      },
+      {
+        "slug": "crowdsignal-forms",
+        "active": true,
+        "id": "crowdsignal-forms/crowdsignal-forms",
+        "name": "Crowdsignal Forms",
+        "plugin_url": "https://crowdsignal.com/crowdsignal-forms/",
+        "version": "1.7.2",
+        "description": "Crowdsignal Form Blocks",
+        "author": "Automattic",
+        "author_url": "https://automattic.com/",
+        "network": false,
+        "is_managed": true
+      },
+      {
+        "slug": "polldaddy",
+        "active": true,
+        "id": "polldaddy/polldaddy",
+        "name": "Crowdsignal Polls &amp; Ratings",
+        "plugin_url": "https://wordpress.org/plugins/polldaddy/",
+        "version": "3.1.4",
+        "description": "Create and manage Crowdsignal polls and ratings in WordPress",
+        "author": "Automattic, Inc.",
+        "author_url": "",
+        "network": false,
+        "is_managed": true
+      },
+      {
+        "slug": "gravatar-enhanced",
+        "active": true,
+        "id": "gravatar-enhanced/gravatar-enhanced",
+        "name": "Gravatar Enhanced",
+        "plugin_url": "https://wordpress.org/extend/plugins/gravatar-enhanced/",
+        "version": "0.13.0",
+        "description": "Enhanced functionality for Gravatar-ifying your WordPress site. Once you've enabled the plugin, go to the \"Avatars\" section on the <a href=\"options-discussion.php\">Discussion Settings page</a> to get started.",
+        "author": "Automattic",
+        "author_url": "",
+        "network": false,
+        "is_managed": true
+      },
+      {
+        "slug": "gutenberg",
+        "active": true,
+        "id": "gutenberg/gutenberg",
+        "name": "Gutenberg",
+        "plugin_url": "https://github.com/WordPress/gutenberg",
+        "version": "20.6.0",
+        "description": "Printing since 1440. This is the development plugin for the block editor, site editor, and other future WordPress core functionality.",
+        "author": "Gutenberg Team",
+        "author_url": "",
+        "network": false,
+        "is_managed": true
+      },
+      {
+        "slug": "jetpack",
+        "active": true,
+        "id": "jetpack/jetpack",
+        "name": "Jetpack",
+        "plugin_url": "https://jetpack.com",
+        "version": "15.2",
+        "description": "Security, performance, and marketing tools made by WordPress experts. Jetpack keeps your site protected so you can focus on more important things.",
+        "author": "Automattic",
+        "author_url": "https://jetpack.com",
+        "network": false,
+        "is_managed": true,
+        "action_links": {
+          "My Jetpack": "https://mccoystevens78-cfuqd.wpcomstaging.com/wp-admin/admin.php?page=my-jetpack"
+        }
+      },
+      {
+        "slug": "layout-grid",
+        "active": true,
+        "id": "layout-grid/index",
+        "name": "Layout Grid",
+        "plugin_url": "",
+        "version": "1.8.5",
+        "description": "Let any blocks align to a global grid",
+        "author": "Automattic",
+        "author_url": "https://automattic.com",
+        "network": false,
+        "is_managed": true
+      },
+      {
+        "slug": "page-optimize",
+        "active": true,
+        "id": "page-optimize/page-optimize",
+        "name": "Page Optimize",
+        "plugin_url": "https://wordpress.org/plugins/page-optimize/",
+        "version": "0.5.7",
+        "description": "Optimizes JS and CSS for faster page load and render in the browser.",
+        "author": "Automattic",
+        "author_url": "http://automattic.com/",
+        "network": false,
+        "is_managed": true
+      }
+    ],
+    "249962197": [
+      {
+        "slug": "akismet",
+        "active": true,
+        "id": "akismet/akismet",
+        "name": "Akismet Anti-spam: Spam Protection",
+        "plugin_url": "https://akismet.com/",
+        "version": "5.5",
+        "description": "Used by millions, Akismet is quite possibly the best way in the world to <strong>protect your blog from spam</strong>. Akismet Anti-spam keeps your site protected even while you sleep. To get started: activate the Akismet plugin and then go to your Akismet Settings page to set up your API key.",
+        "author": "Automattic - Anti-spam Team",
+        "author_url": "https://automattic.com/wordpress-plugins/",
+        "network": false,
+        "is_managed": true
+      },
+      {
+        "slug": "classic-editor",
+        "active": false,
+        "id": "classic-editor/classic-editor",
+        "name": "Classic Editor",
+        "plugin_url": "https://wordpress.org/plugins/classic-editor/",
+        "version": "1.6.7",
+        "description": "Enables the WordPress classic editor and the old-style Edit Post screen with TinyMCE, Meta Boxes, etc. Supports the older plugins that extend this screen.",
+        "author": "WordPress Contributors",
+        "author_url": "https://github.com/WordPress/classic-editor/",
+        "network": false,
+        "is_managed": true
+      },
+      {
+        "slug": "crowdsignal-forms",
+        "active": true,
+        "id": "crowdsignal-forms/crowdsignal-forms",
+        "name": "Crowdsignal Forms",
+        "plugin_url": "https://crowdsignal.com/crowdsignal-forms/",
+        "version": "1.7.2",
+        "description": "Crowdsignal Form Blocks",
+        "author": "Automattic",
+        "author_url": "https://automattic.com/",
+        "network": false,
+        "is_managed": true
+      },
+      {
+        "slug": "polldaddy",
+        "active": true,
+        "id": "polldaddy/polldaddy",
+        "name": "Crowdsignal Polls &amp; Ratings",
+        "plugin_url": "https://wordpress.org/plugins/polldaddy/",
+        "version": "3.1.4",
+        "description": "Create and manage Crowdsignal polls and ratings in WordPress",
+        "author": "Automattic, Inc.",
+        "author_url": "",
+        "network": false,
+        "is_managed": true
+      },
+      {
+        "slug": "gravatar-enhanced",
+        "active": true,
+        "id": "gravatar-enhanced/gravatar-enhanced",
+        "name": "Gravatar Enhanced",
+        "plugin_url": "https://wordpress.org/extend/plugins/gravatar-enhanced/",
+        "version": "0.13.0",
+        "description": "Enhanced functionality for Gravatar-ifying your WordPress site. Once you've enabled the plugin, go to the \"Avatars\" section on the <a href=\"options-discussion.php\">Discussion Settings page</a> to get started.",
+        "author": "Automattic",
+        "author_url": "",
+        "network": false,
+        "is_managed": true
+      },
+      {
+        "slug": "gutenberg",
+        "active": true,
+        "id": "gutenberg/gutenberg",
+        "name": "Gutenberg",
+        "plugin_url": "https://github.com/WordPress/gutenberg",
+        "version": "20.6.0",
+        "description": "Printing since 1440. This is the development plugin for the block editor, site editor, and other future WordPress core functionality.",
+        "author": "Gutenberg Team",
+        "author_url": "",
+        "network": false,
+        "is_managed": true
+      },
+      {
+        "slug": "jetpack",
+        "active": true,
+        "id": "jetpack/jetpack",
+        "name": "Jetpack",
+        "plugin_url": "https://jetpack.com",
+        "version": "15.2",
+        "description": "Security, performance, and marketing tools made by WordPress experts. Jetpack keeps your site protected so you can focus on more important things.",
+        "author": "Automattic",
+        "author_url": "https://jetpack.com",
+        "network": false,
+        "is_managed": true,
+        "action_links": {
+          "My Jetpack": "https://staging-54d7-mccoystevens78-cfuqd.wpcomstaging.com/wp-admin/admin.php?page=my-jetpack"
+        }
+      },
+      {
+        "slug": "layout-grid",
+        "active": true,
+        "id": "layout-grid/index",
+        "name": "Layout Grid",
+        "plugin_url": "",
+        "version": "1.8.5",
+        "description": "Let any blocks align to a global grid",
+        "author": "Automattic",
+        "author_url": "https://automattic.com",
+        "network": false,
+        "is_managed": true
+      },
+      {
+        "slug": "page-optimize",
+        "active": true,
+        "id": "page-optimize/page-optimize",
+        "name": "Page Optimize",
+        "plugin_url": "https://wordpress.org/plugins/page-optimize/",
+        "version": "0.5.7",
+        "description": "Optimizes JS and CSS for faster page load and render in the browser.",
+        "author": "Automattic",
+        "author_url": "http://automattic.com/",
+        "network": false,
+        "is_managed": true
+      }
+    ]
+  }
+}
+WP.COM API
+POST
+v1/jetpack-blogs//mine/delete
+Tree view
+Raw JSON
+404 - Unknown error (check browser console)
+366ms
+WP.COM API
+POST
+v1/me/settings/profile-links//delete
+Tree view
+Raw JSON
+404 - Unknown error (check browser console)
+420ms
+WP.COM API
+POST
+v1/sites//sync/now
+Tree view
+Raw JSON
+404 - Unknown error (check browser console)
+190ms
+WP.COM API
+GET
+v1/manual_payment/%s?pretty=c%3A%2F%2F
+Tree view
+Raw JSON
+400 - Unknown error (check browser console)
+113ms
+WP.COM API
+GET
+v1/manual_payment/%s?http_envelope=bool
+Tree view
+Raw JSON
+400 - Unknown error (check browser console)
+74ms
+WP.COM API
+GET
+v1/manual_payment/%s?context=%25
+Tree view
+Raw JSON
+400 - Unknown error (check browser console)
+69ms
+WP.COM API
+GET
+v1/manual_payment/%s
+Tree view
+Raw JSON
+400 - Unknown error (check browser console)
+117ms
+WP.COM API
+GET
+v1/manual_payment/%s?context=Edit
+Tree view
+Raw JSON
+400 - Unknown error (check browser console)
+1396ms
+WP.COM API
+GET
+v1/me/posts
+Tree view
+Raw JSON
+778ms
+▶
+root:2 keys { posts: [ 0: { ID: 3, site_ID: 249985790, author: { ID: 273561443, login: "mccoystevens78", email: false, name: "MCCOY STEVENS" …} …} …] …}
+WP.COM API
+POST
+v1.1/me/two-step/sms/new?pretty=true
+Tree view
+Raw JSON
+429 - Unknown error (check browser console)
+171ms
+WP.COM API
+POST
+v1.1/me/two-step/sms/new?pretty=true
+Tree view
+Raw JSON
+429 - Unknown error (check browser console)
+199ms
+WP.COM API
+POST
+v1.1/me/two-step/sms/new?http_envelope=false
+Tree view
+Raw JSON
+429 - Unknown error (check browser console)
+200ms
+WP.COM API
+POST
+v1.1/me/two-step/sms/new?http_envelope=false
+Tree view
+Raw JSON
+429 - Unknown error (check browser console)
+215ms
+WP.COM API
+POST
+v1.1/me/two-step/sms/new
+Tree view
+Raw JSON
+1145ms
+▶
+root:1 key { sent: true }
+WP.COM API
+POST
+v1.1/me/settings/profile-links/new
+Tree view
+Raw JSON
+400 - Unknown error (check browser console)
+253ms
+WP.COM API
+POST
+v1.1/me/settings/profile-links/new
+Tree view
+Raw JSON
+400 - Unknown error (check browser console)
+432ms
+WP.COM API
+POST
+v1.1/me/settings/profile-links/new
+Tree view
+Raw JSON
+400 - Unknown error (check browser console)
+243ms
+WP.COM API
+POST
+v1.1/me/settings/profile-links/new?pretty=Test
+Tree view
+Raw JSON
+400 - Unknown error (check browser console)
+216ms
+WP.COM API
+POST
+v1.1/me/settings/profile-links/new?pretty=Test
+Tree view
+Raw JSON
+400 - Unknown error (check browser console)
+189ms
+WP.COM API
+POST
+v1.1/me/settings/profile-links/new?pretty=false
+Tree view
+Raw JSON
+400 - Unknown error (check browser console)
+197ms
+WP.COM API
+POST
+v1.1/me/settings/profile-links/new
+Tree view
+Raw JSON
+396ms
+▶
+root:4 keys { success: true, title: "Owner", value: "https://github.com", link_slug: "https-github-com" }
+WP.COM API
+POST
+v1.1/me/settings/profile-links/new
+Tree view
+Raw JSON
+375ms
+▶
+root:4 keys { success: true, title: "Owner", value: "http://1", link_slug: "http-1" }
+WP.COM API
+GET
+v1.1/me/mailboxes
+Tree view
+Raw JSON
+646ms
+▶
+root:1 item [ 0: { account_id: 546536, account_type: "titan", product_slug: "wp_titan_mail_yearly" …} ]
