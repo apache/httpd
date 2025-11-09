@@ -60,7 +60,7 @@ struct sed_label_s {
 };
 
 typedef apr_status_t (sed_err_fn_t)(void *data, const char *error);
-typedef apr_status_t (sed_write_fn_t)(void *ctx, char *buf, int sz);
+typedef apr_status_t (sed_write_fn_t)(void *ctx, char *buf, apr_size_t sz);
 
 typedef struct sed_commands_s sed_commands_t;
 #define NWFILES 11 /* 10 plus one for standard output */
@@ -69,7 +69,7 @@ struct sed_commands_s {
     sed_err_fn_t *errfn;
     void         *data;
 
-    unsigned     lsize;
+    apr_size_t   lsize;
     char         *linebuf;
     char         *lbend;
     const char   *saveq;
@@ -116,15 +116,15 @@ struct sed_eval_s {
     apr_int64_t    lnum;
     void           *fout;
 
-    unsigned       lsize;
+    apr_size_t     lsize;
     char           *linebuf;
     char           *lspend;
 
-    unsigned       hsize;
+    apr_size_t     hsize;
     char           *holdbuf;
     char           *hspend;
 
-    unsigned       gsize;
+    apr_size_t     gsize;
     char           *genbuf;
     char           *lcomend;
 
@@ -160,7 +160,7 @@ apr_status_t sed_init_eval(sed_eval_t *eval, sed_commands_t *commands,
                            sed_err_fn_t *errfn, void *data,
                            sed_write_fn_t *writefn, apr_pool_t *p);
 apr_status_t sed_reset_eval(sed_eval_t *eval, sed_commands_t *commands, sed_err_fn_t *errfn, void *data);
-apr_status_t sed_eval_buffer(sed_eval_t *eval, const char *buf, int bufsz, void *fout);
+apr_status_t sed_eval_buffer(sed_eval_t *eval, const char *buf, apr_size_t bufsz, void *fout);
 apr_status_t sed_eval_file(sed_eval_t *eval, apr_file_t *fin, void *fout);
 apr_status_t sed_finalize_eval(sed_eval_t *eval, void *f);
 void sed_destroy_eval(sed_eval_t *eval);

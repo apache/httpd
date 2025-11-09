@@ -111,6 +111,33 @@ SOURCE=.\ab.c
 # End Source File
 # Begin Source File
 
+SOURCE=../include\ap_release.h
+
+!IF  "$(CFG)" == "abs - Win32 Release"
+
+# Begin Custom Build - Create applink.c from ms/applink.c
+InputPath=../include\ap_release.h
+
+"..\srclib\openssl\include\openssl\applink.c" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	IF EXIST ..\srclib\openssl\ms\applink.c type ..\srclib\openssl\ms\applink.c > ..\srclib\openssl\include\openssl\applink.c
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "abs - Win32 Debug"
+
+# Begin Custom Build - Create applink.c from ms/applink.c
+InputPath=../include\ap_release.h
+
+"..\srclib\openssl\include\openssl\applink.c" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	IF EXIST ..\srclib\openssl\ms\applink.c type ..\srclib\openssl\ms\applink.c > ..\srclib\openssl\include\openssl\applink.c
+
+# End Custom Build
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
 SOURCE=..\build\win32\httpd.rc
 # End Source File
 # End Target

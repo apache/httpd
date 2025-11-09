@@ -24,8 +24,8 @@ PREFIX=/usr/local/apache2
 TEMPDIR=/var/tmp/$USER/httpd-root
 rm -rf $TEMPDIR
 
-apr_config=`which apr-1-config`
-apu_config=`which apu-1-config`
+apr_config=`command -v apr-1-config`
+apu_config=`command -v apu-1-config`
 
 while test $# -gt 0 
 do

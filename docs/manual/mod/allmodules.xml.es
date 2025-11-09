@@ -3,13 +3,14 @@
 
 <modulefilelist>
   <modulefile>core.xml.es</modulefile>
-  <modulefile>mod_access_compat.xml</modulefile>
-  <modulefile>mod_actions.xml</modulefile>
-  <modulefile>mod_alias.xml</modulefile>
-  <modulefile>mod_allowhandlers.xml</modulefile>
-  <modulefile>mod_allowmethods.xml</modulefile>
-  <modulefile>mod_asis.xml</modulefile>
-  <modulefile>mod_auth_basic.xml</modulefile>
+  <modulefile>mod_access_compat.xml.es</modulefile>
+  <modulefile>mod_actions.xml.es</modulefile>
+  <modulefile>mod_alias.xml.es</modulefile>
+  <modulefile>mod_allowhandlers.xml.es</modulefile>
+  <modulefile>mod_allowmethods.xml.es</modulefile>
+  <modulefile>mod_asis.xml.es</modulefile>
+  <modulefile>mod_auth_basic.xml.es</modulefile>
+  <modulefile>mod_auth_bearer.xml</modulefile>
   <modulefile>mod_auth_digest.xml</modulefile>
   <modulefile>mod_auth_form.xml</modulefile>
   <modulefile>mod_authn_anon.xml</modulefile>
@@ -20,6 +21,8 @@
   <modulefile>mod_authn_socache.xml</modulefile>
   <modulefile>mod_authnz_fcgi.xml</modulefile>
   <modulefile>mod_authnz_ldap.xml</modulefile>
+  <modulefile>mod_autht_core.xml</modulefile>
+  <modulefile>mod_autht_jwt.xml</modulefile>
   <modulefile>mod_authz_core.xml</modulefile>
   <modulefile>mod_authz_dbd.xml</modulefile>
   <modulefile>mod_authz_dbm.xml</modulefile>
@@ -28,6 +31,7 @@
   <modulefile>mod_authz_owner.xml</modulefile>
   <modulefile>mod_authz_user.xml</modulefile>
   <modulefile>mod_autoindex.xml</modulefile>
+  <modulefile>mod_brotli.xml</modulefile>
   <modulefile>mod_buffer.xml</modulefile>
   <modulefile>mod_cache.xml</modulefile>
   <modulefile>mod_cache_disk.xml</modulefile>
@@ -75,6 +79,7 @@
   <modulefile>mod_logio.xml</modulefile>
   <modulefile>mod_lua.xml</modulefile>
   <modulefile>mod_macro.xml</modulefile>
+  <modulefile>mod_md.xml</modulefile>
   <modulefile>mod_mime.xml</modulefile>
   <modulefile>mod_mime_magic.xml</modulefile>
   <modulefile>mod_negotiation.xml</modulefile>
@@ -94,6 +99,7 @@
   <modulefile>mod_proxy_http.xml</modulefile>
   <modulefile>mod_proxy_http2.xml</modulefile>
   <modulefile>mod_proxy_scgi.xml</modulefile>
+  <modulefile>mod_proxy_uwsgi.xml</modulefile>
   <modulefile>mod_proxy_wstunnel.xml</modulefile>
   <modulefile>mod_ratelimit.xml</modulefile>
   <modulefile>mod_reflector.xml</modulefile>
@@ -113,11 +119,12 @@
   <modulefile>mod_socache_dbm.xml</modulefile>
   <modulefile>mod_socache_dc.xml</modulefile>
   <modulefile>mod_socache_memcache.xml</modulefile>
+  <modulefile>mod_socache_redis.xml</modulefile>
   <modulefile>mod_socache_shmcb.xml</modulefile>
   <modulefile>mod_speling.xml</modulefile>
-  <modulefile>mod_ssl.xml</modulefile>
+  <modulefile>mod_ssl.xml.es</modulefile>
   <modulefile>mod_ssl_ct.xml</modulefile>
-  <modulefile>mod_status.xml</modulefile>
+  <modulefile>mod_status.xml.es</modulefile>
   <modulefile>mod_substitute.xml</modulefile>
   <modulefile>mod_suexec.xml</modulefile>
   <modulefile>mod_syslog.xml</modulefile>
@@ -131,7 +138,7 @@
   <modulefile>mod_watchdog.xml</modulefile>
   <modulefile>mod_xml2enc.xml</modulefile>
   <modulefile>mpm_common.xml</modulefile>
-  <modulefile>event.xml</modulefile>
+  <modulefile>event.xml.es</modulefile>
   <modulefile>mpm_netware.xml</modulefile>
   <modulefile>mpmt_os2.xml</modulefile>
   <modulefile>prefork.xml</modulefile>

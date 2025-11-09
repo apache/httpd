@@ -492,7 +492,7 @@ static void trace_nocontext(apr_pool_t *p, const char *file, int line,
      */
 
 #ifdef EXAMPLE_LOG_EACH
-    ap_log_perror(file, line, APLOG_MODULE_INDEX, APLOG_NOTICE, 0, p,
+    ap_log_perror(file, line, APLOG_MODULE_INDEX, APLOG_DEBUG, 0, p,
                   APLOGNO(03297) "%s", note);
 #endif
 }
@@ -743,7 +743,7 @@ static int x_pre_config(apr_pool_t *pconf, apr_pool_t *plog,
     /*
      * Log the call and exit.
      */
-    trace_startup(ptemp, NULL, NULL, "x_pre_config()");
+    trace_startup(pconf, NULL, NULL, "x_pre_config()");
     return OK;
 }
 
@@ -764,7 +764,7 @@ static int x_check_config(apr_pool_t *pconf, apr_pool_t *plog,
     /*
      * Log the call and exit.
      */
-    trace_startup(ptemp, s, NULL, "x_check_config()");
+    trace_startup(pconf, s, NULL, "x_check_config()");
     return OK;
 }
 
@@ -801,7 +801,7 @@ static int x_open_logs(apr_pool_t *pconf, apr_pool_t *plog,
     /*
      * Log the call and exit.
      */
-    trace_startup(ptemp, s, NULL, "x_open_logs()");
+    trace_startup(pconf, s, NULL, "x_open_logs()");
     return OK;
 }
 
@@ -821,7 +821,7 @@ static int x_post_config(apr_pool_t *pconf, apr_pool_t *plog,
     /*
      * Log the call and exit.
      */
-    trace_startup(ptemp, s, NULL, "x_post_config()");
+    trace_startup(pconf, s, NULL, "x_post_config()");
     return OK;
 }
 
@@ -994,7 +994,7 @@ static int x_handler(request_rec *r)
      * Set the Content-type header. Note that we do not actually have to send
      * the headers: this is done by the http core.
      */
-    ap_set_content_type(r, "text/html");
+    ap_set_content_type_ex(r, "text/html", 1);
     /*
      * If we're only supposed to send header information (HEAD request), we're
      * already there.
@@ -1007,7 +1007,7 @@ static int x_handler(request_rec *r)
      * Now send our actual output.  Since we tagged this as being
      * "text/html", we need to embed any HTML.
      */
-    ap_rputs(DOCTYPE_HTML_3_2, r);
+    ap_rputs(DOCTYPE_HTML_4_01, r);
     ap_rputs("<HTML>\n", r);
     ap_rputs(" <HEAD>\n", r);
     ap_rputs("  <TITLE>mod_example_hooks Module Content-Handler Output\n", r);
@@ -1171,6 +1171,22 @@ static int x_post_read_request(request_rec *r)
      * called.
      */
     trace_request(r, "x_post_read_request()");
+    return DECLINED;
+}
+
+/*
+ * This routine gives our module an opportunity to translate the URI into an
+ * actual filename, before URL decoding happens.
+ *
+ * This is a RUN_FIRST hook.
+ */
+static int x_pre_translate_name(request_rec *r)
+{
+    /*
+     * We don't actually *do* anything here, except note the fact that we were
+     * called.
+     */
+    trace_request(r, "x_pre_translate_name()");
     return DECLINED;
 }
 
@@ -1449,6 +1465,7 @@ static int x_monitor(apr_pool_t *p, server_rec *s)
  */
 static void x_register_hooks(apr_pool_t *p)
 {
+    trace = NULL;
     ap_hook_pre_config(x_pre_config, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_check_config(x_check_config, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_test_config(x_test_config, NULL, NULL, APR_HOOK_MIDDLE);
@@ -1467,6 +1484,7 @@ static void x_register_hooks(apr_pool_t *p)
     ap_hook_log_transaction(x_log_transaction, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_http_scheme(x_http_scheme, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_default_port(x_default_port, NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_pre_translate_name(x_pre_translate_name, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_translate_name(x_translate_name, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_map_to_storage(x_map_to_storage, NULL,NULL, APR_HOOK_MIDDLE);
     ap_hook_header_parser(x_header_parser, NULL, NULL, APR_HOOK_MIDDLE);

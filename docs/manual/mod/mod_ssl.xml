@@ -33,8 +33,8 @@ Layer (SSL) and Transport Layer Security (TLS) protocols</description>
 <p>This module provides SSL v3 and TLS v1.x support for the Apache
 HTTP Server. SSL v2 is no longer supported.</p>
 
-<p>This module relies on <a href="http://www.openssl.org/">OpenSSL</a>
-to provide the cryptography engine.</p>
+<p>This module relies on <a href="https://www.openssl.org/">OpenSSL</a>
+to provide the cryptographic engine.</p>
 
 <p>Further details, discussion, and examples are provided in the
 <a href="../ssl/">SSL documentation</a>.</p>
@@ -43,28 +43,31 @@ to provide the cryptography engine.</p>
 <section id="envvars"><title>Environment Variables</title>
 
 <p>This module can be configured to provide several items of SSL information
-as additional environment variables to the SSI and CGI namespace. This
+as additional environment variables to the SSI and CGI namespace. Except for
+<code>HTTPS</code> and <code>SSL_TLS_SNI</code> which are always defined, this
 information is not provided by default for performance reasons. (See
-<directive>SSLOptions</directive> StdEnvVars, below.) The generated variables
+<directive module="mod_ssl">SSLOptions</directive> <code>StdEnvVars</code>, below)
+The generated variables
 are listed in the table below. For backward compatibility the information can
 be made available under different names, too. Look in the <a
 href="../ssl/ssl_compat.html">Compatibility</a> chapter for details on the
 compatibility variables.</p>
 
-<table border="1">
+<table border="1" style="zebra">
 <columnspec><column width=".3"/><column width=".2"/><column width=".5"/>
 </columnspec>
 <tr>
- <th><a name="table3">Variable Name:</a></th>
- <th>Value Type:</th>
- <th>Description:</th>
+ <th><a name="table3">Variable Name</a></th>
+ <th>Value Type</th>
+ <th>Description</th>
 </tr>
 <tr><td><code>HTTPS</code></td>                         <td>flag</td>      <td>HTTPS is being used.</td></tr>
 <tr><td><code>SSL_PROTOCOL</code></td>                  <td>string</td>    <td>The SSL protocol version (SSLv3, TLSv1, TLSv1.1, TLSv1.2)</td></tr>
 <tr><td><code>SSL_SESSION_ID</code></td>                <td>string</td>    <td>The hex-encoded SSL session id</td></tr>
 <tr><td><code>SSL_SESSION_RESUMED</code></td>           <td>string</td>    <td>Initial or Resumed SSL Session.  Note: multiple requests may be served over the same (Initial or Resumed) SSL session if HTTP KeepAlive is in use</td></tr>
 <tr><td><code>SSL_SECURE_RENEG</code></td>              <td>string</td>    <td><code>true</code> if secure renegotiation is supported, else <code>false</code></td></tr>
-<tr><td><code>SSL_CIPHER</code></td>                    <td>string</td>    <td>The cipher specification name</td></tr>
+<tr><td><code>SSL_SHARED_CIPHERS</code></td>            <td>string</td>    <td>Colon separated list of shared ciphers (i.e. the subset of ciphers that are configured on both server and on the client)</td></tr>
+<tr><td><code>SSL_CIPHER</code></td>                    <td>string</td>    <td>The name of the cipher agreed between client and server</td></tr>
 <tr><td><code>SSL_CIPHER_EXPORT</code></td>             <td>string</td>    <td><code>true</code> if cipher is an export cipher</td></tr>
 <tr><td><code>SSL_CIPHER_USEKEYSIZE</code></td>         <td>number</td>    <td>Number of cipher bits (actually used)</td></tr>
 <tr><td><code>SSL_CIPHER_ALGKEYSIZE</code></td>         <td>number</td>    <td>Number of cipher bits (possible)</td></tr>
@@ -106,10 +109,22 @@ compatibility variables.</p>
 <tr><td><code>SSL_SRP_USER</code></td>                  <td>string</td>    <td>SRP username</td></tr>
 <tr><td><code>SSL_SRP_USERINFO</code></td>              <td>string</td>    <td>SRP user info</td></tr>
 <tr><td><code>SSL_TLS_SNI</code></td>                   <td>string</td>    <td>Contents of the SNI TLS extension (if supplied with ClientHello)</td></tr>
+<tr><td><code>SSL_HANDSHAKE_RTT</code></td>             <td>number</td>    <td>Round-trip time of TLS handshake in microseconds including endpoint processing (set to empty string if OpenSSL version prior to 3.2 or if round-trip time can not be determined)</td></tr>
+<tr><td><code>SSL_CLIENTHELLO_VERSION</code></td>       <td>string</td>    <td>Version field (legacy) from ClientHello as four hex encoded characters</td></tr>
+<tr><td><code>SSL_CLIENTHELLO_CIPHERS</code></td>       <td>string</td>    <td>Cipher Suites from ClientHello as four hex encoded characters per item</td></tr>
+<tr><td><code>SSL_CLIENTHELLO_EXTENSIONS</code></td>    <td>string</td>    <td>Extension IDs from ClientHello as four hex encoded characters per item</td></tr>
+<tr><td><code>SSL_CLIENTHELLO_GROUPS</code></td>        <td>string</td>    <td>Value of Supported Groups extension (10) from ClientHello as four hex encoded characters per item</td></tr>
+<tr><td><code>SSL_CLIENTHELLO_EC_FORMATS</code></td>    <td>string</td>    <td>Value of EC Point Formats extension (11) from ClientHello as two hex encoded characters per item</td></tr>
+<tr><td><code>SSL_CLIENTHELLO_SIG_ALGOS</code></td>     <td>string</td>    <td>Value of Signature Algorithms extension (13) from ClientHello as four hex encoded characters per item</td></tr>
+<tr><td><code>SSL_CLIENTHELLO_ALPN</code></td>          <td>string</td>    <td>Value of ALPN extension (16) from ClientHello as hex encoded string including leading string lengths</td></tr>
+<tr><td><code>SSL_CLIENTHELLO_VERSIONS</code></td>      <td>string</td>    <td>Value of Supported Versions extension (43) from ClientHello as four hex encoded characters per item</td></tr>
+<tr><td><code>SSL_ECH_STATUS</code></td>                <td>string</td>    <td><code>success</code> means that others also mean what they say</td></tr>
+<tr><td><code>SSL_ECH_INNER_SNI</code></td>             <td>string</td>    <td>SNI value that was encrypted in ECH (or `NONE`)</td></tr>
+<tr><td><code>SSL_ECH_OUTER_SNI</code></td>             <td>string</td>    <td>SNI value that was seen in plaintext SNI (or `NONE`)</td></tr>
 </table>
 
 <p><em>x509</em> specifies a component of an X.509 DN; one of
-<code>C,ST,L,O,OU,CN,T,I,G,S,D,UID,Email</code>.  In Apache 2.1 and
+<code>C,ST,L,O,OU,CN,T,I,G,S,D,UID,Email</code>.  In httpd 2.2.0 and
 later, <em>x509</em> may also include a numeric <code>_n</code>
 suffix.  If the DN in question contains multiple attributes of the
 same name, this suffix is used as a zero-based index to select a
@@ -125,6 +140,12 @@ the <directive module="mod_ssl">SSLOptions</directive> directive, the
 first (or only) attribute of any DN is added only under a non-suffixed
 name; i.e. no <code>_0</code> suffixed entries are added.</p>
 
+<p>In httpd 2.4.32 and later, an optional <em>_RAW</em> suffix may be
+added to <em>x509</em> in a DN component, to suppress conversion of
+the attribute value to UTF-8. This must be placed after the index
+suffix (if any). For example, <code>SSL_SERVER_S_DN_OU_RAW</code> or
+<code>SSL_SERVER_S_DN_OU_0_RAW</code> could be used.</p>
+
 <p>The format of the <em>*_DN</em> variables has changed in Apache HTTPD
 2.3.11. See the <code>LegacyDNStringFormat</code> option for
 <directive module="mod_ssl">SSLOptions</directive> for details.</p>
@@ -132,6 +153,10 @@ name; i.e. no <code>_0</code> suffixed entries are added.</p>
 <p><code>SSL_CLIENT_V_REMAIN</code> is only available in version 2.1
 and later.</p>
 
+<p>The <code>SSL_CLIENTHELLO_*</code> variables require the directive 
+<directive module="mod_ssl">SSLClientHelloVars</directive> to be 
+enabled or they will not be populated.</p>
+ 
 <p>A number of additional environment variables can also be used
 in <directive>SSLRequire</directive> expressions, or in custom log
 formats:</p>
@@ -350,7 +375,7 @@ query can be done in two ways which can be configured by
 </ul>
 <example><title>Example</title>
 <highlight language="config">
-SSLPassPhraseDialog exec:/usr/local/apache/sbin/pp-filter
+SSLPassPhraseDialog "exec:/usr/local/apache/sbin/pp-filter"
 </highlight>
 </example>
 </usage>
@@ -365,6 +390,13 @@ source</description>
 <contextlist><context>server config</context></contextlist>
 
 <usage>
+<note><title>SSLRandomSeed is deprecated</title>
+
+<p>The <code>SSLRandomSeed</code> directive is deprecated, and is
+completely ignored if httpd is built using OpenSSL version 1.1.1 or
+later.</p>
+</note>
+
 <p>
 This configures one or more sources for seeding the Pseudo Random Number
 Generator (PRNG) in OpenSSL at startup time (<em>context</em> is
@@ -378,8 +410,8 @@ The following <em>source</em> variants are available:</p>
     <p> This is the always available builtin seeding source. Its usage
     consumes minimum CPU cycles under runtime and hence can be always used
     without drawbacks. The source used for seeding the PRNG contains of the
-    current time, the current process id and (when applicable) a randomly
-    chosen 1KB extract of the inter-process scoreboard structure of Apache.
+    current time, the current process id and a randomly
+    chosen 128 bytes extract of the stack.
     The drawback is that this is not really a strong source and at startup
     time (where the scoreboard is still not available) this source just
     produces a few bytes of entropy. So you should always, at least for the
@@ -433,12 +465,12 @@ The following <em>source</em> variants are available:</p>
 <example><title>Example</title>
 <highlight language="config">
 SSLRandomSeed startup builtin
-SSLRandomSeed startup file:/dev/random
-SSLRandomSeed startup file:/dev/urandom 1024
-SSLRandomSeed startup exec:/usr/local/bin/truerand 16
+SSLRandomSeed startup "file:/dev/random"
+SSLRandomSeed startup "file:/dev/urandom" 1024
+SSLRandomSeed startup "exec:/usr/local/bin/truerand" 16
 SSLRandomSeed connect builtin
-SSLRandomSeed connect file:/dev/random
-SSLRandomSeed connect file:/dev/urandom 1024
+SSLRandomSeed connect "file:/dev/random"
+SSLRandomSeed connect "file:/dev/urandom" 1024
 </highlight>
 </example>
 </usage>
@@ -511,8 +543,8 @@ The following five storage <em>type</em>s are currently supported:</p>
 
 <example><title>Examples</title>
 <highlight language="config">
-SSLSessionCache dbm:/usr/local/apache/logs/ssl_gcache_data
-SSLSessionCache shmcb:/usr/local/apache/logs/ssl_gcache_data(512000)
+SSLSessionCache "dbm:/usr/local/apache/logs/ssl_gcache_data"
+SSLSessionCache "shmcb:/usr/local/apache/logs/ssl_gcache_data(512000)"
 </highlight>
 </example>
 
@@ -550,10 +582,15 @@ SSLSessionCacheTimeout 600
 <directivesynopsis>
 <name>SSLEngine</name>
 <description>SSL Engine Operation Switch</description>
-<syntax>SSLEngine on|off|optional</syntax>
+<syntax>SSLEngine on|off</syntax>
 <default>SSLEngine off</default>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
+<compatibility>
+  Support for the "optional" argument was removed in 2.4.64. It enabled
+  RFC 2817 (TLS Upgrade) support.
+</compatibility>
+
 
 <usage>
 <p>
@@ -570,10 +607,6 @@ SSLEngine on
 &lt;/VirtualHost&gt;
 </highlight>
 </example>
-<p>In Apache 2.1 and later, <directive>SSLEngine</directive> can be set to
-<code>optional</code>. This enables support for
-<a href="http://www.ietf.org/rfc/rfc2817.txt">RFC 2817</a>, Upgrading to TLS
-Within HTTP/1.1. At this time no web browsers support RFC 2817.</p>
 </usage>
 </directivesynopsis>
 
@@ -624,24 +657,29 @@ The available (case-insensitive) <em>protocol</em>s are:</p>
     This is the Secure Sockets Layer (SSL) protocol, version 3.0, from
     the Netscape Corporation.
     It is the successor to SSLv2 and the predecessor to TLSv1, but is
-    deprecated in <a href="http://www.ietf.org/rfc/rfc7568.txt">RFC 7568</a>.</p></li>
+    deprecated in <a href="https://www.rfc-editor.org/rfc/rfc7568">RFC 7568</a>.</p></li>
 
 <li><code>TLSv1</code>
     <p>
     This is the Transport Layer Security (TLS) protocol, version 1.0.
     It is the successor to SSLv3 and is defined in
-    <a href="http://www.ietf.org/rfc/rfc2246.txt">RFC 2246</a>.
+    <a href="https://www.rfc-editor.org/rfc/rfc2246">RFC 2246</a>.
     It is supported by nearly every client.</p></li>
 
 <li><code>TLSv1.1</code> (when using OpenSSL 1.0.1 and later)
     <p>
     A revision of the TLS 1.0 protocol, as defined in
-    <a href="http://www.ietf.org/rfc/rfc4346.txt">RFC 4346</a>.</p></li>
+    <a href="https://www.rfc-editor.org/rfc/rfc4346">RFC 4346</a>.</p></li>
 
 <li><code>TLSv1.2</code> (when using OpenSSL 1.0.1 and later)
     <p>
     A revision of the TLS 1.1 protocol, as defined in
-    <a href="http://www.ietf.org/rfc/rfc5246.txt">RFC 5246</a>.</p></li>
+    <a href="https://www.rfc-editor.org/rfc/rfc5246">RFC 5246</a>.</p></li>
+
+<li><code>TLSv1.3</code> (when using OpenSSL 1.1.1 and later)
+    <p>
+    A new version of the TLS protocol, as defined in
+    <a href="https://www.rfc-editor.org/rfc/rfc8446">RFC 8446</a>.</p></li>
 
 <li><code>all</code>
     <p>
@@ -656,6 +694,31 @@ The available (case-insensitive) <em>protocol</em>s are:</p>
 SSLProtocol TLSv1
 </highlight>
 </example>
+<note>
+<title><directive>SSLProtocol</directive> for name-based virtual hosts</title>
+<p>
+Before OpenSSL 1.1.1, even though the Server Name Indication (SNI) allowed to
+determine the targeted virtual host early in the TLS handshake, it was not
+possible to switch the TLS protocol version of the connection at this point,
+and thus the <directive>SSLProtocol</directive> negotiated was always based off
+the one of the <em>base virtual host</em> (first virtual host declared on the
+listening <code>IP:port</code> of the connection).
+</p>
+<p>
+Beginning with Apache HTTP server version 2.5.1, when built/linked against
+OpenSSL 1.1.1 or later, and when the SNI is provided by the client in the TLS
+handshake, the <directive>SSLProtocol</directive> of each (name-based) virtual
+host can and will be honored.
+</p>
+<p>
+For compatibility with previous versions, if no
+<directive>SSLProtocol</directive> is configured in a name-based virtual host,
+the one from the base virtual host still applies, <strong>unless</strong>
+<directive>SSLProtocol</directive> is configured globally in which case the
+global value applies (this latter exception is more sensible than compatible,
+though).
+</p>
+</note>
 </usage>
 </directivesynopsis>
 
@@ -663,7 +726,7 @@ SSLProtocol TLSv1
 <name>SSLCipherSuite</name>
 <description>Cipher Suite available for negotiation in SSL
 handshake</description>
-<syntax>SSLCipherSuite <em>cipher-spec</em></syntax>
+<syntax>SSLCipherSuite [<em>protocol</em>] <em>cipher-spec</em></syntax>
 <default>SSLCipherSuite DEFAULT (depends on OpenSSL version)</default>
 <contextlist><context>server config</context>
 <context>virtual host</context>
@@ -675,12 +738,26 @@ handshake</description>
 <p>
 This complex directive uses a colon-separated <em>cipher-spec</em> string
 consisting of OpenSSL cipher specifications to configure the Cipher Suite the
-client is permitted to negotiate in the SSL handshake phase. Notice that this
-directive can be used both in per-server and per-directory context. In
-per-server context it applies to the standard SSL handshake when a connection
+client is permitted to negotiate in the SSL handshake phase. The optional 
+protocol specifier can configure the Cipher Suite for a specific SSL version.
+Possible values include "SSL" for all SSL Protocols up to and including TLSv1.2.
+</p>
+<p>
+Notice that this
+directive can be used both in per-server and per-directory context. 
+In per-server context it applies to the standard SSL handshake when a connection
 is established. In per-directory context it forces a SSL renegotiation with the
 reconfigured Cipher Suite after the HTTP request was read but before the HTTP
 response is sent.</p>
+<p>
+If the SSL library supports TLSv1.3 (OpenSSL 1.1.1 and later), the protocol 
+specifier "TLSv1.3" can be used to configure the cipher suites for that protocol.
+Since TLSv1.3 does not offer renegotiations, specifying ciphers for it in
+a directory context is not allowed.</p>
+<p>
+For a list of TLSv1.3 cipher names, see 
+<a href="https://docs.openssl.org/master/man3/SSL_CTX_set_ciphersuites/">the OpenSSL
+documentation</a>.</p>
 <p>
 An SSL cipher specification in <em>cipher-spec</em> is composed of 4 major
 attributes plus a few extra minor ones:</p>
@@ -840,21 +917,23 @@ SSLCipherSuite RSA:!EXP:!NULL:+HIGH:+MEDIUM:-LOW
 
 <directivesynopsis>
 <name>SSLCertificateFile</name>
-<description>Server PEM-encoded X.509 certificate data file</description>
-<syntax>SSLCertificateFile <em>file-path</em></syntax>
+<description>Server PEM-encoded X.509 certificate data file or token identifier</description>
+<syntax>SSLCertificateFile <var>file-path</var>|<var>certid</var></syntax>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
+<compatibility><var>certid</var> available in 2.4.42 and later.</compatibility>
 
 <usage>
 <p>
-This directive points to a file with certificate data in PEM format.
-At a minimum, the file must include an end-entity (leaf) certificate.
+This directive points to a file with certificate data in PEM format, or the certificate identifier through a configured cryptographic token.
+If using a PEM file, at minimum, the file must include an end-entity (leaf) certificate.
 The directive can be used multiple times (referencing different filenames)
 to support multiple algorithms for server authentication - typically
 RSA, DSA, and ECC. The number of supported algorithms depends on the
-OpenSSL version being used for mod_ssl: with version 1.0.0 or later,
-<code>openssl list-public-key-algorithms</code> will output a list
-of supported algorithms, see also the note below about limitations
+OpenSSL version being used for mod_ssl: with version 3.0 or later,
+<code>openssl list -public-key-algorithms</code> (or 
+<code>openssl list-public-key-algorithms</code> with OpenSSL 1.0)  will output a list
+of supported algorithms. See the note below about limitations
 of OpenSSL versions prior to 1.0.2 and the ways to work around them.
 </p>
 
@@ -889,6 +968,17 @@ after the certificates using a separate key file. If the private
 key is encrypted, the pass phrase dialog is forced at startup time.
 </p>
 
+<p>As an alternative to storing certificates and private keys in
+files, a certificate identifier can be used to identify a certificate
+stored in a token.  Currently, only <a
+href="https://tools.ietf.org/html/rfc7512">PKCS#11 URIs</a> are
+recognized as certificate identifiers, and can be used in conjunction
+with the OpenSSL <code>pkcs11</code> engine or provider.  If <directive
+module="mod_ssl">SSLCertificateKeyFile</directive> is omitted, the
+certificate and private key can be loaded through the single
+identifier specified with <directive
+module="mod_ssl">SSLCertificateFile</directive>.</p>
+
 <note>
 <title>DH parameter interoperability with primes > 1024 bit</title>
 <p>
@@ -896,7 +986,7 @@ Beginning with version 2.4.7, mod_ssl makes use of
 standardized DH parameters with prime lengths of 2048, 3072 and 4096 bits
 and with additional prime lengths of 6144 and 8192 bits beginning with
 version 2.4.10
-(from <a href="http://www.ietf.org/rfc/rfc3526.txt">RFC 3526</a>), and hands
+(from <a href="https://www.rfc-editor.org/rfc/rfc3526">RFC 3526</a>), and hands
 them out to clients based on the length of the certificate's RSA/DSA key.
 With Java-based clients in particular (Java 7 or earlier), this may lead
 to handshake failures - see this
@@ -934,7 +1024,10 @@ thus using a custom/suitable length.
 
 <example><title>Example</title>
 <highlight language="config">
-SSLCertificateFile /usr/local/apache2/conf/ssl.crt/server.crt
+# Example using a PEM-encoded file.
+SSLCertificateFile "/usr/local/apache2/conf/ssl.crt/server.crt"
+# Example use of a certificate and private key from a PKCS#11 token:
+SSLCertificateFile "pkcs11:token=My%20Token%20Name;id=45"
 </highlight>
 </example>
 </usage>
@@ -943,15 +1036,17 @@ SSLCertificateFile /usr/local/apache2/conf/ssl.crt/server.crt
 <directivesynopsis>
 <name>SSLCertificateKeyFile</name>
 <description>Server PEM-encoded private key file</description>
-<syntax>SSLCertificateKeyFile <em>file-path</em></syntax>
+<syntax>SSLCertificateKeyFile <var>file-path</var>|<var>keyid</var></syntax>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
+<compatibility><var>keyid</var> available in 2.4.42 and later.</compatibility>
 
 <usage>
 <p>
 This directive points to the PEM-encoded private key file for the
-server. If the contained private key is encrypted, the pass phrase
-dialog is forced at startup time.</p>
+server, or the key ID through a configured cryptographic token. If the
+contained private key is encrypted, the pass phrase dialog is forced
+at startup time.</p>
 
 <p>
 The directive can be used multiple times (referencing different filenames)
@@ -967,9 +1062,18 @@ is highly discouraged. If it is used, the certificate files using such
 an embedded key must be configured after the certificates using a separate
 key file.</p>
 
+<p>As an alternative to storing private keys in files, a key
+identifier can be used to identify a private key stored in a
+token.  Currently, only <a href="https://tools.ietf.org/html/rfc7512">PKCS#11 URIs</a> are recognized as private key
+identifiers, and can be used in conjunction with the OpenSSL
+<code>pkcs11</code> engine or provider.</p>
+
 <example><title>Example</title>
 <highlight language="config">
-SSLCertificateKeyFile /usr/local/apache2/conf/ssl.key/server.key
+# To use a private key from a PEM-encoded file:
+SSLCertificateKeyFile "/usr/local/apache2/conf/ssl.key/server.key"
+# To use a private key from a PKCS#11 token:
+SSLCertificateKeyFile "pkcs11:token=My%20Token%20Name;id=45"
 </highlight>
 </example>
 </usage>
@@ -978,7 +1082,7 @@ SSLCertificateKeyFile /usr/local/apache2/conf/ssl.key/server.key
 <directivesynopsis>
 <name>SSLCertificateChainFile</name>
 <description>File of PEM-encoded Server CA Certificates</description>
-<syntax>SSLCertificateChainFile <em>file-path</em></syntax>
+<syntax>SSLCertificateChainFile <var>file-path</var></syntax>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
 
@@ -1017,7 +1121,7 @@ certificates use the <em>same</em> certificate chain. Else the browsers will be
 confused in this situation.</p>
 <example><title>Example</title>
 <highlight language="config">
-SSLCertificateChainFile /usr/local/apache2/conf/ssl.crt/ca.crt
+SSLCertificateChainFile "/usr/local/apache2/conf/ssl.crt/ca.crt"
 </highlight>
 </example>
 </usage>
@@ -1030,6 +1134,7 @@ Client Auth</description>
 <syntax>SSLCACertificatePath <em>directory-path</em></syntax>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
+<override>AuthConfig</override>
 
 <usage>
 <p>
@@ -1044,7 +1149,7 @@ there: you also have to create symbolic links named
 contains the appropriate symbolic links.</p>
 <example><title>Example</title>
 <highlight language="config">
-SSLCACertificatePath /usr/local/apache2/conf/ssl.crt/
+SSLCACertificatePath "/usr/local/apache2/conf/ssl.crt/"
 </highlight>
 </example>
 </usage>
@@ -1054,9 +1159,10 @@ SSLCACertificatePath /usr/local/apache2/conf/ssl.crt/
 <name>SSLCACertificateFile</name>
 <description>File of concatenated PEM-encoded CA Certificates
 for Client Auth</description>
-<syntax>SSLCACertificateFile <em>file-path</em></syntax>
+<syntax>SSLCACertificateFile <var>file-path</var></syntax>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
+<override>AuthConfig</override>
 
 <usage>
 <p>
@@ -1068,7 +1174,7 @@ preference. This can be used alternatively and/or additionally to
 <directive module="mod_ssl">SSLCACertificatePath</directive>.</p>
 <example><title>Example</title>
 <highlight language="config">
-SSLCACertificateFile /usr/local/apache2/conf/ssl.crt/ca-bundle-client.crt
+SSLCACertificateFile "/usr/local/apache2/conf/ssl.crt/ca-bundle-client.crt"
 </highlight>
 </example>
 </usage>
@@ -1078,7 +1184,7 @@ SSLCACertificateFile /usr/local/apache2/conf/ssl.crt/ca-bundle-client.crt
 <name>SSLCADNRequestFile</name>
 <description>File of concatenated PEM-encoded CA Certificates
 for defining acceptable CA names</description>
-<syntax>SSLCADNRequestFile <em>file-path</em></syntax>
+<syntax>SSLCADNRequestFile <var>file-path</var></syntax>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
 
@@ -1115,7 +1221,7 @@ PEM-encoded CA certificates.</p>
 
 <example><title>Example</title>
 <highlight language="config">
-SSLCADNRequestFile /usr/local/apache2/conf/ca-names.crt
+SSLCADNRequestFile "/usr/local/apache2/conf/ca-names.crt"
 </highlight>
 </example>
 </usage>
@@ -1144,7 +1250,7 @@ Certificate files there: you also have to create symbolic links named
 this directory contains the appropriate symbolic links.</p>
 <example><title>Example</title>
 <highlight language="config">
-SSLCADNRequestPath /usr/local/apache2/conf/ca-names.crt/
+SSLCADNRequestPath "/usr/local/apache2/conf/ca-names.crt/"
 </highlight>
 </example>
 </usage>
@@ -1171,7 +1277,7 @@ Additionally you have to create symbolic links named
 contains the appropriate symbolic links.</p>
 <example><title>Example</title>
 <highlight language="config">
-SSLCARevocationPath /usr/local/apache2/conf/ssl.crl/
+SSLCARevocationPath "/usr/local/apache2/conf/ssl.crl/"
 </highlight>
 </example>
 </usage>
@@ -1181,7 +1287,7 @@ SSLCARevocationPath /usr/local/apache2/conf/ssl.crl/
 <name>SSLCARevocationFile</name>
 <description>File of concatenated PEM-encoded CA CRLs for
 Client Auth</description>
-<syntax>SSLCARevocationFile <em>file-path</em></syntax>
+<syntax>SSLCARevocationFile <var>file-path</var></syntax>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
 
@@ -1196,7 +1302,7 @@ used alternatively and/or additionally to <directive
 module="mod_ssl">SSLCARevocationPath</directive>.</p>
 <example><title>Example</title>
 <highlight language="config">
-SSLCARevocationFile /usr/local/apache2/conf/ssl.crl/ca-bundle-client.crl
+SSLCARevocationFile "/usr/local/apache2/conf/ssl.crl/ca-bundle-client.crl"
 </highlight>
 </example>
 </usage>
@@ -1205,11 +1311,11 @@ SSLCARevocationFile /usr/local/apache2/conf/ssl.crl/ca-bundle-client.crl
 <directivesynopsis>
 <name>SSLCARevocationCheck</name>
 <description>Enable CRL-based revocation checking</description>
-<syntax>SSLCARevocationCheck chain|leaf|none <em>flag</em>s</syntax>
+<syntax>SSLCARevocationCheck chain|leaf|none [<em>flag</em>s ...]</syntax>
 <default>SSLCARevocationCheck none</default>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
-<compatibility>Optional <em>flag</em>s available in httpd 2.5-dev or
+<compatibility>Optional <em>flag</em>s available in httpd 2.4.21 or
 later</compatibility>
 
 <usage>
@@ -1338,7 +1444,7 @@ SSLVerifyDepth 10
 <directivesynopsis>
 <name>SSLSRPVerifierFile</name>
 <description>Path to SRP verifier file</description>
-<syntax>SSLSRPVerifierFile <em>file-path</em></syntax>
+<syntax>SSLSRPVerifierFile <var>file-path</var></syntax>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
 <compatibility>Available in httpd 2.4.4 and later, if using OpenSSL 1.0.1 or
@@ -1359,7 +1465,7 @@ utility:</p>
 openssl srp -srpvfile passwd.srpv -userinfo "some info" -add username
 </example>
 <p> The value given with the optional <code>-userinfo</code> parameter is
-avalable in the <code>SSL_SRP_USERINFO</code> request environment variable.</p>
+available in the <code>SSL_SRP_USERINFO</code> request environment variable.</p>
 
 </usage>
 </directivesynopsis>
@@ -1399,10 +1505,10 @@ SSLSRPUnknownUserSeed "secret"
 <usage>
 <p>
 This directive can be used to control various run-time options on a
-per-directory basis. Normally, if multiple <code>SSLOptions</code>
+per-directory basis. Normally, if multiple <directive>SSLOptions</directive>
 could apply to a directory, then the most specific one is taken
 completely; the options are not merged. However if <em>all</em> the
-options on the <code>SSLOptions</code> directive are preceded by a
+options on the <directive>SSLOptions</directive> directive are preceded by a
 plus (<code>+</code>) or minus (<code>-</code>) symbol, the options
 are merged. Any options preceded by a <code>+</code> are added to the
 options currently in force, and any options preceded by a
@@ -1451,12 +1557,25 @@ The available <em>option</em>s are:</p>
     <p>Note that the <directive module="mod_auth_basic">AuthBasicFake</directive>
     directive within <module>mod_auth_basic</module> can be used as a more
     general mechanism for faking basic authentication, giving control over the
-    structure of both the username and password.</p>
+    structure of both the username and password. </p>
+
+    <note>Unlike the <code>FakeBasicAuth</code>
+    option, the <directive module="mod_auth_basic">AuthBasicFake</directive> directive
+    does not set an Authorization header early enough to be processed by authentication
+    and authorization in the local server, it is only intended for upstream servers.
+    </note>
+
+    <note type="warning">
+      <p>The usernames used for <code>FakeBasicAuth</code> must not
+      include any non-ASCII characters, ASCII escape characters (such
+      a newline), or a colon.  If a colon is found, a 403 Forbidden
+      error will be generated with httpd 2.5.1 and later.</p>
+    </note>
 </li>
 <li><code>StrictRequire</code>
     <p>
-    This <em>forces</em> forbidden access when <code>SSLRequireSSL</code> or
-    <code>SSLRequire</code> successfully decided that access should be
+    This <em>forces</em> forbidden access when <directive module="mod_ssl">SSLRequireSSL</directive> or
+    <directive module="mod_ssl">SSLRequire</directive> successfully decided that access should be
     forbidden. Usually the default is that in the case where a ``<code>Satisfy
     any</code>'' directive is used, and other access restrictions are passed,
     denial of access due to <code>SSLRequireSSL</code> or
@@ -1729,6 +1848,98 @@ version of OpenSSL.
 <highlight language="config">
 SSLStrictSNIVHostCheck on
 </highlight>
+
+</example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>SSLVHostSNIPolicy</name>
+<description>Set compatibility policy for SNI client access to virtual hosts.</description>
+<syntax>SSLVHostSNIPolicy strict|secure|authonly|insecure</syntax>
+<default>SSLVHostSNIPolicy secure</default>
+<contextlist><context>server config</context></contextlist>
+<compatibility>Available in httpd 2.4.66 and later</compatibility>
+
+<usage><p>This directive sets the policy applied when checking whether the
+<directive module="core" type="section">VirtualHost</directive>
+identified by the <code>Host</code> request header in an HTTP request
+is compatible with the <directive module="core"
+type="section">VirtualHost</directive> identified from the SNI
+extension sent during the initial TLS connection handshake. If an HTTP
+request is associated with a virtual host which has an incompatible
+SSL/TLS configuration under the policy used, an HTTP error response
+with status code 421 ("Misdirected Request") will be sent.</p>
+
+<p>The policy also applies to TLS connections where an SNI extension
+is not sent during the handshake, implicitly using the default or
+first virtual host definition. If the Host header in an HTTP request
+on such a connection identifies any other non-default virtual host,
+the compatibility policy is tested.</p>
+
+<p>The <code>strict</code> policy blocks all HTTP requests which are
+identified with a different virtual host to that identifed by SNI.
+The <code>insecure</code> policy allows all HTTP requests regardless
+of virtual host identified; such a configuration may be vulnerable to
+<a
+href="https://httpd.apache.org/security/vulnerabilities_24.html">CVE-2025-23048</a>.
+</p>
+
+<p>The (default) <code>secure</code>, and <code>authonly</code>
+policies compare specific aspects of the SSL configuration for the two
+virtual hosts, which are grouped into two categories:</p>
+
+<ul>
+  <li><strong>server certificate/key, or protocol/cipher
+  restrictions</strong>: directives which determine the server
+  certificate or key (<directive
+  module="mod_ssl">SSLCertificateKeyFile</directive> etc), cipher or
+  protocol restrictions (<directive
+  module="mod_ssl">SSLCipherSuite</directive> and <directive
+  module="mod_ssl">SSLProtocol</directive>)</li>
+
+  <li><strong>client vertification and authentication
+  settings</strong>: directives which affect TLS client certificate
+  verification or authentication, such as <directive
+  module="mod_ssl">SSLVerifyClient</directive>, <directive
+  module="mod_ssl">SSLVerifyMode</directive>, <directive
+  module="mod_ssl">SSLCACertificatePath</directive>, <directive
+  module="mod_ssl">SSLSRPVerifierFile</directive>; any use of <directive
+  module="mod_ssl">SSLOpenSSLConfCmd</directive></li>
+</ul>
+
+<p>This table illustrates whether an HTTP request will be blocked or
+allowed when the virtual host configurations differ as described,
+under each different policy setting:</p>
+
+<table border="1" style="zebra">
+<columnspec><column width=".3"/><column width=".2"/><column width=".5"/>
+</columnspec>
+<tr>
+  <th>Policy mode</th>
+  <th>Any VirtualHost mismatch</th>
+  <th>Server certificate/key, <br />or protocol/cipher restrictions</th>
+  <th>Client verification/<br />authentication settings</th>
+</tr>
+<tr>
+  <td><code>strict</code></td><td>blocked</td><td>blocked</td><td>blocked</td>
+</tr>
+<tr>
+  <td><code>secure</code></td><td>allowed</td><td>blocked</td><td>blocked</td>
+</tr>
+<tr>
+  <td><code>authonly</code></td><td>allowed</td><td>allowed</td><td>blocked</td>
+</tr>
+<tr>
+  <td><code>insecure</code></td><td>allowed</td><td>allowed</td><td>allowed</td>
+</tr>
+</table>
+
+<example><title>Example</title>
+<highlight language="config">
+SSLVHostSNIPolicy authonly
+</highlight>
+
 </example>
 </usage>
 </directivesynopsis>
@@ -1739,23 +1950,32 @@ SSLStrictSNIVHostCheck on
 <syntax>SSLProxyMachineCertificatePath <em>directory</em></syntax>
 <contextlist><context>server config</context> <context>virtual host</context>
 <context>proxy section</context></contextlist>
-<override>Not applicable</override>
+<compatibility>The proxy section context is allowed in httpd 2.4.30 and later</compatibility>
 
 <usage>
 <p>
-This directive sets the directory where you keep the certificates and
-keys used for authentication of the proxy server to remote servers.
+This directive sets the directory where you keep the client
+certificates and keys used for authentication of the proxy server to
+remote servers.
 </p>
-<p>The files in this directory must be PEM-encoded and are accessed through
-hash filenames. Additionally, you must create symbolic links named
-<code><em>hash-value</em>.N</code>. And you should always make sure this
-directory contains the appropriate symbolic links.</p>
+<p>
+mod_ssl will attempt to load every file inside the specified directory
+as if it was configured individually with <directive
+module="mod_ssl">SSLProxyMachineCertificateFile</directive>.
+</p>
 <note type="warning">
 <p>Currently there is no support for encrypted private keys</p>
 </note>
+<note type="warning">
+<p>Only keys encoded in PKCS1 RSA, DSA or EC format are supported.
+Keys encoded in PKCS8 format, ie. starting with
+&quot;<code>-----BEGIN PRIVATE KEY-----</code>&quot;,
+must be converted, eg. using
+&quot;<code>openssl rsa -in private-pkcs8.pem -outform pem</code>&quot;.</p>
+</note>
 <example><title>Example</title>
 <highlight language="config">
-SSLProxyMachineCertificatePath /usr/local/apache2/conf/proxy.crt/
+SSLProxyMachineCertificatePath "/usr/local/apache2/conf/proxy.crt/"
 </highlight>
 </example>
 </usage>
@@ -1768,7 +1988,8 @@ SSLProxyMachineCertificatePath /usr/local/apache2/conf/proxy.crt/
 <syntax>SSLProxyMachineCertificateFile <em>filename</em></syntax>
 <contextlist><context>server config</context> <context>virtual host</context>
 <context>proxy section</context></contextlist>
-<override>Not applicable</override>
+<compatibility>The proxy section context is allowed in httpd 2.4.30 and later<br/>
+Inclusion of non-leaf (CA) certificates is permitted only in httpd 2.4.59 and later.</compatibility>
 
 <usage>
 <p>
@@ -1776,16 +1997,47 @@ This directive sets the all-in-one file where you keep the certificates and
 keys used for authentication of the proxy server to remote servers.
 </p>
 <p>
-This referenced file is simply the concatenation of the various PEM-encoded
-certificate files, in order of preference. Use this directive alternatively
-or additionally to <code>SSLProxyMachineCertificatePath</code>.
-</p>
+This referenced file is simply the concatenation of the various
+PEM-encoded certificate files. Use this directive alternatively or
+additionally to <code>SSLProxyMachineCertificatePath</code>.  The referenced file can contain any number of pairs of client
+certificate and associated private key.  Each pair can be specified in
+either (certificate, key) or (key, certificate) order.  Non-leaf (CA) certificates can
+also be included in the file, and are treated as if configured with  <directive
+module="mod_ssl">SSLProxyMachineCertificateChainFile</directive>.</p>
+
+<p>When challenged to provide a client certificate by a remote server,
+the server should provide a list of <em>acceptable certificate
+authority names</em> in the challenge.  If such a list is <em>not</em>
+provided, <module>mod_ssl</module> will use the first configured
+client cert/key.  If a list of CA names <em>is</em> provided,
+<module>mod_ssl</module> will iterate through that list, and attempt
+to find a configured client cert which was issued either directly by
+that CA, or indirectly via any number of intermediary CA certificates.
+The chain of intermediate CA certificates can be built from those
+included in the file, or configured with <directive
+module="mod_ssl">SSLProxyMachineCertificateChainFile</directive>.  The
+first configured matching certificate will then be supplied in
+response to the challenge.</p>
+
+<p>If the list of CA names <em>is</em> provided by the remote server,
+and <em>no</em> matching client certificate can be found, no client
+certificate will be provided by <module>mod_ssl</module>, which will
+likely fail the SSL/TLS handshake (depending on the remote server
+configuration).</p>
+
 <note type="warning">
 <p>Currently there is no support for encrypted private keys</p>
 </note>
+<note type="warning">
+<p>Only keys encoded in PKCS1 RSA, DSA or EC format are supported.
+Keys encoded in PKCS8 format, ie. starting with
+&quot;<code>-----BEGIN PRIVATE KEY-----</code>&quot;,
+must be converted, eg. using
+&quot;<code>openssl rsa -in private-pkcs8.pem -outform pem</code>&quot;.</p>
+</note>
 <example><title>Example</title>
 <highlight language="config">
-SSLProxyMachineCertificateFile /usr/local/apache2/conf/ssl.crt/proxy.pem
+SSLProxyMachineCertificateFile "/usr/local/apache2/conf/ssl.crt/proxy.pem"
 </highlight>
 </example>
 </usage>
@@ -1797,7 +2049,7 @@ SSLProxyMachineCertificateFile /usr/local/apache2/conf/ssl.crt/proxy.pem
 <syntax>SSLProxyMachineCertificateChainFile <em>filename</em></syntax>
 <contextlist><context>server config</context> <context>virtual host</context>
 <context>proxy section</context></contextlist>
-<override>Not applicable</override>
+<compatibility>The proxy section context is allowed in httpd 2.4.30 and later</compatibility>
 
 <usage>
 <p>
@@ -1818,7 +2070,7 @@ SSLProxyCACertificateFile</directive>.</p>
 </note>
 <example><title>Example</title>
 <highlight language="config">
-SSLProxyMachineCertificateChainFile /usr/local/apache2/conf/ssl.crt/proxyCA.pem
+SSLProxyMachineCertificateChainFile "/usr/local/apache2/conf/ssl.crt/proxyCA.pem"
 </highlight>
 </example>
 </usage>
@@ -1831,7 +2083,7 @@ SSLProxyMachineCertificateChainFile /usr/local/apache2/conf/ssl.crt/proxyCA.pem
 <default>SSLProxyVerify none</default>
 <contextlist><context>server config</context> <context>virtual host</context>
 <context>proxy section</context></contextlist>
-<override>Not applicable</override>
+<compatibility>The proxy section context is allowed in httpd 2.4.30 and later</compatibility>
 
 <usage>
 
@@ -1872,7 +2124,7 @@ Certificate verification</description>
 <default>SSLProxyVerifyDepth 1</default>
 <contextlist><context>server config</context> <context>virtual host</context>
 <context>proxy section</context></contextlist>
-<override>Not applicable</override>
+<compatibility>The proxy section context is allowed in httpd 2.4.30 and later</compatibility>
 
 <usage>
 <p>
@@ -1902,7 +2154,7 @@ SSLProxyVerifyDepth 10
 <default>SSLProxyCheckPeerExpire on</default>
 <contextlist><context>server config</context> <context>virtual host</context>
 <context>proxy section</context></contextlist>
-<override>Not applicable</override>
+<compatibility>The proxy section context is allowed in httpd 2.4.30 and later</compatibility>
 
 <usage>
 <p>
@@ -1926,7 +2178,7 @@ SSLProxyCheckPeerExpire on
 <default>SSLProxyCheckPeerCN on</default>
 <contextlist><context>server config</context> <context>virtual host</context>
 <context>proxy section</context></contextlist>
-<override>Not applicable</override>
+<compatibility>The proxy section context is allowed in httpd 2.4.30 and later</compatibility>
 
 <usage>
 <p>
@@ -1950,7 +2202,7 @@ As of release 2.4.21, all configurations which enable either one of the
 will use the new <directive module="mod_ssl">SSLProxyCheckPeerName</directive>
 behavior, and all configurations which disable either one of the 
 <code>SSLProxyCheckPeerName</code> or <code>SSLProxyCheckPeerCN</code> options
-will supress all remote server certificate name validation. Only the following
+will suppress all remote server certificate name validation. Only the following
 configuration will trigger the legacy certificate CN comparison in 2.4.21 and
 later releases;
 </p>
@@ -1971,8 +2223,8 @@ SSLProxyCheckPeerName off
 <default>SSLProxyCheckPeerName on</default>
 <contextlist><context>server config</context> <context>virtual host</context>
 <context>proxy section</context></contextlist>
-<override>Not applicable</override>
-<compatibility>Apache HTTP Server 2.4.5 and later</compatibility>
+<compatibility>Apache HTTP Server 2.4.5 and later<br />
+The proxy section context is allowed in httpd 2.4.30 and later</compatibility>
 
 <usage>
 <p>
@@ -2011,7 +2263,7 @@ improvements.
 <default>SSLProxyEngine off</default>
 <contextlist><context>server config</context> <context>virtual host</context>
 <context>proxy section</context></contextlist>
-<override>Not applicable</override>
+<compatibility>The proxy section context is allowed in httpd 2.4.30 and later</compatibility>
 
 <usage>
 <p>
@@ -2046,7 +2298,7 @@ server to proxy SSL/TLS requests.</p>
 <default>SSLProxyProtocol all -SSLv3</default>
 <contextlist><context>server config</context> <context>virtual host</context>
 <context>proxy section</context></contextlist>
-<override>Not applicable</override>
+<compatibility>The proxy section context is allowed in httpd 2.4.30 and later</compatibility>
 
 <usage>
 <!-- XXX Why does this have an override and not .htaccess context? -->
@@ -2064,11 +2316,11 @@ for additional information.
 <name>SSLProxyCipherSuite</name>
 <description>Cipher Suite available for negotiation in SSL
 proxy handshake</description>
-<syntax>SSLProxyCipherSuite <em>cipher-spec</em></syntax>
+<syntax>SSLProxyCipherSuite [<em>protocol</em>] <em>cipher-spec</em></syntax>
 <default>SSLProxyCipherSuite ALL:!ADH:RC4+RSA:+HIGH:+MEDIUM:+LOW:+EXP</default>
 <contextlist><context>server config</context> <context>virtual host</context>
 <context>proxy section</context></contextlist>
-<override>Not applicable</override>
+<compatibility>The proxy section context is allowed in httpd 2.4.30 and later</compatibility>
 
 <usage>
 <p>Equivalent to <directive module="mod_ssl">SSLCipherSuite</directive>, but
@@ -2085,7 +2337,7 @@ Remote Server Auth</description>
 <syntax>SSLProxyCACertificatePath <em>directory-path</em></syntax>
 <contextlist><context>server config</context> <context>virtual host</context>
 <context>proxy section</context></contextlist>
-<override>Not applicable</override>
+<compatibility>The proxy section context is allowed in httpd 2.4.30 and later</compatibility>
 
 <usage>
 <p>
@@ -2100,7 +2352,7 @@ there: you also have to create symbolic links named
 contains the appropriate symbolic links.</p>
 <example><title>Example</title>
 <highlight language="config">
-SSLProxyCACertificatePath /usr/local/apache2/conf/ssl.crt/
+SSLProxyCACertificatePath "/usr/local/apache2/conf/ssl.crt/"
 </highlight>
 </example>
 </usage>
@@ -2110,10 +2362,10 @@ SSLProxyCACertificatePath /usr/local/apache2/conf/ssl.crt/
 <name>SSLProxyCACertificateFile</name>
 <description>File of concatenated PEM-encoded CA Certificates
 for Remote Server Auth</description>
-<syntax>SSLProxyCACertificateFile <em>file-path</em></syntax>
+<syntax>SSLProxyCACertificateFile <var>file-path</var></syntax>
 <contextlist><context>server config</context> <context>virtual host</context>
 <context>proxy section</context></contextlist>
-<override>Not applicable</override>
+<compatibility>The proxy section context is allowed in httpd 2.4.30 and later</compatibility>
 
 <usage>
 <p>
@@ -2125,7 +2377,7 @@ preference. This can be used alternatively and/or additionally to
 <directive module="mod_ssl">SSLProxyCACertificatePath</directive>.</p>
 <example><title>Example</title>
 <highlight language="config">
-SSLProxyCACertificateFile /usr/local/apache2/conf/ssl.crt/ca-bundle-remote-server.crt
+SSLProxyCACertificateFile "/usr/local/apache2/conf/ssl.crt/ca-bundle-remote-server.crt"
 </highlight>
 </example>
 </usage>
@@ -2138,7 +2390,7 @@ Remote Server Auth</description>
 <syntax>SSLProxyCARevocationPath <em>directory-path</em></syntax>
 <contextlist><context>server config</context> <context>virtual host</context>
 <context>proxy section</context></contextlist>
-<override>Not applicable</override>
+<compatibility>The proxy section context is allowed in httpd 2.4.30 and later</compatibility>
 
 <usage>
 <p>
@@ -2153,7 +2405,7 @@ Additionally you have to create symbolic links named
 contains the appropriate symbolic links.</p>
 <example><title>Example</title>
 <highlight language="config">
-SSLProxyCARevocationPath /usr/local/apache2/conf/ssl.crl/
+SSLProxyCARevocationPath "/usr/local/apache2/conf/ssl.crl/"
 </highlight>
 </example>
 </usage>
@@ -2163,10 +2415,10 @@ SSLProxyCARevocationPath /usr/local/apache2/conf/ssl.crl/
 <name>SSLProxyCARevocationFile</name>
 <description>File of concatenated PEM-encoded CA CRLs for
 Remote Server Auth</description>
-<syntax>SSLProxyCARevocationFile <em>file-path</em></syntax>
+<syntax>SSLProxyCARevocationFile <var>file-path</var></syntax>
 <contextlist><context>server config</context> <context>virtual host</context>
 <context>proxy section</context></contextlist>
-<override>Not applicable</override>
+<compatibility>The proxy section context is allowed in httpd 2.4.30 and later</compatibility>
 
 <usage>
 <p>
@@ -2179,7 +2431,7 @@ used alternatively and/or additionally to <directive
 module="mod_ssl">SSLProxyCARevocationPath</directive>.</p>
 <example><title>Example</title>
 <highlight language="config">
-SSLProxyCARevocationFile /usr/local/apache2/conf/ssl.crl/ca-bundle-remote-server.crl
+SSLProxyCARevocationFile "/usr/local/apache2/conf/ssl.crl/ca-bundle-remote-server.crl"
 </highlight>
 </example>
 </usage>
@@ -2192,7 +2444,7 @@ SSLProxyCARevocationFile /usr/local/apache2/conf/ssl.crl/ca-bundle-remote-server
 <default>SSLProxyCARevocationCheck none</default>
 <contextlist><context>server config</context> <context>virtual host</context>
 <context>proxy section</context></contextlist>
-<override>Not applicable</override>
+<compatibility>The proxy section context is allowed in httpd 2.4.30 and later</compatibility>
 
 <usage>
 <p>
@@ -2299,22 +2551,33 @@ separate "-engine" releases of OpenSSL 0.9.6 must be used.</p>
 SSLCryptoDevice ubsec
 </highlight>
 </example>
+
+<p>
+With OpenSSL 3.0 or later, if no engine is specified but the key or certificate
+is specified using a <a href="https://tools.ietf.org/html/rfc7512">PKCS#11 URIs</a>
+then it is tried to load the key and certificate from an OpenSSL provider.
+The OpenSSL provider to use must be defined and configured in the OpenSSL config file,
+and it must support the <a href="https://docs.openssl.org/3.0/man7/provider-storemgmt/">STORE method</a>
+for <a href="https://tools.ietf.org/html/rfc7512">PKCS#11 URIs</a>.
+</p>
 </usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>SSLOCSPEnable</name>
 <description>Enable OCSP validation of the client certificate chain</description>
-<syntax>SSLOCSPEnable on|off</syntax>
+<syntax>SSLOCSPEnable on|leaf|off</syntax>
 <default>SSLOCSPEnable off</default>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
+<compatibility>Mode <em>leaf</em> available in httpd 2.4.34 and later</compatibility>
 
 <usage>
 <p>This option enables OCSP validation of the client certificate
 chain.  If this option is enabled, certificates in the client's
 certificate chain will be validated against an OCSP responder after
-normal verification (including CRL checks) have taken place.</p>
+normal verification (including CRL checks) have taken place. In 
+mode 'leaf', only the client certificate itself will be validated.</p>
 
 <p>The OCSP responder used is either extracted from the certificate
 itself, or derived by configuration; see the
@@ -2326,7 +2589,7 @@ directives.</p>
 <highlight language="config">
 SSLVerifyClient on
 SSLOCSPEnable on
-SSLOCSPDefaultResponder http://responder.example.com:8888/responder
+SSLOCSPDefaultResponder "http://responder.example.com:8888/responder"
 SSLOCSPOverrideResponder on
 </highlight>
 </example>
@@ -2336,7 +2599,7 @@ SSLOCSPOverrideResponder on
 <directivesynopsis>
 <name>SSLOCSPDefaultResponder</name>
 <description>Set the default responder URI for OCSP validation</description>
-<syntax>SSLOCSDefaultResponder <em>uri</em></syntax>
+<syntax>SSLOCSPDefaultResponder <em>uri</em></syntax>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
 
@@ -2425,6 +2688,37 @@ Responder), this option should be turned <code>off</code>.</p>
 </directivesynopsis>
 
 <directivesynopsis>
+<name>SSLOCSPNoverify</name>
+<description>skip the OCSP responder certificates verification</description>
+<syntax>SSLOCSPNoverify on|off</syntax>
+<default>SSLOCSPNoverify off</default>
+<contextlist><context>server config</context>
+<context>virtual host</context></contextlist>
+<compatibility>Available in httpd 2.4.26 and later, if using OpenSSL 0.9.7 or later</compatibility>
+<usage>
+<p>Skip the OCSP responder certificates verification, mostly useful when
+testing an OCSP server.</p>
+</usage>
+</directivesynopsis>
+
+
+<directivesynopsis>
+<name>SSLOCSPResponderCertificateFile</name>
+<description>Set of trusted PEM encoded OCSP responder certificates</description>
+<syntax>SSLOCSPResponderCertificateFile <em>file</em></syntax>
+<contextlist><context>server config</context>
+<context>virtual host</context></contextlist>
+<compatibility>Available in httpd 2.4.26 and later, if using OpenSSL 0.9.7 or later</compatibility>
+<usage>
+<p>This supplies a list of trusted OCSP responder certificates to be used
+during OCSP responder certificate validation. The supplied certificates are
+implicitly trusted without any further validation. This is typically used
+where the OCSP responder certificate is self signed or omitted from the OCSP
+response.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
 <name>SSLOCSPProxyURL</name>
 <description>Proxy URL to use for OCSP requests</description>
 <syntax>SSLOCSPProxyURL <em>url</em></syntax>
@@ -2435,50 +2729,6 @@ Responder), this option should be turned <code>off</code>.</p>
 <usage>
 <p>This option allows to set the URL of a HTTP proxy that should be used for
 all queries to OCSP responders.</p>
-</usage>
-</directivesynopsis>
-
-<directivesynopsis>
-<name>SSLInsecureRenegotiation</name>
-<description>Option to enable support for insecure renegotiation</description>
-<syntax>SSLInsecureRenegotiation on|off</syntax>
-<default>SSLInsecureRenegotiation off</default>
-<contextlist><context>server config</context>
-<context>virtual host</context></contextlist>
-<compatibility>Available if using OpenSSL 0.9.8m or later</compatibility>
-
-<usage>
-<p>As originally specified, all versions of the SSL and TLS protocols
-(up to and including TLS/1.2) were vulnerable to a Man-in-the-Middle
-attack
-(<a href="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CAN-2009-3555">CVE-2009-3555</a>)
-during a renegotiation.  This vulnerability allowed an attacker to
-"prefix" a chosen plaintext to the HTTP request as seen by the web
-server.  A protocol extension was developed which fixed this
-vulnerability if supported by both client and server.</p>
-
-<p>If <module>mod_ssl</module> is linked against OpenSSL version 0.9.8m
-or later, by default renegotiation is only supported with
-clients supporting the new protocol extension.  If this directive is
-enabled, renegotiation will be allowed with old (unpatched) clients,
-albeit insecurely.</p>
-
-<note type="warning"><title>Security warning</title>
-<p>If this directive is enabled, SSL connections will be vulnerable to
-the Man-in-the-Middle prefix attack as described
-in <a href="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CAN-2009-3555">CVE-2009-3555</a>.</p>
-</note>
-
-<example><title>Example</title>
-<highlight language="config">
-SSLInsecureRenegotiation on
-</highlight>
-</example>
-
-<p>The <code>SSL_SECURE_RENEG</code> environment variable can be used
-from an SSI or CGI script to determine whether secure renegotiation is
-supported for a given SSL connection.</p>
-
 </usage>
 </directivesynopsis>
 
@@ -2506,7 +2756,7 @@ OCSP response for a single cert. For server certificates with intermediate
 CA certificates in their chain (the typical case nowadays),
 stapling in its current implementation therefore only partially achieves the
 stated goal of "saving roundtrips and resources" - see also
-<a href="http://www.ietf.org/rfc/rfc6961.txt">RFC 6961</a>
+<a href="https://www.rfc-editor.org/rfc/rfc6961">RFC 6961</a>
 (TLS Multiple Certificate Status Extension).
 </p>
 
@@ -2681,7 +2931,7 @@ One potential use is when a proxy is used for retrieving OCSP queries.</p>
 <directivesynopsis>
 <name>SSLSessionTicketKeyFile</name>
 <description>Persistent encryption/decryption key for TLS session tickets</description>
-<syntax>SSLSessionTicketKeyFile <em>file-path</em></syntax>
+<syntax>SSLSessionTicketKeyFile <var>file-path</var></syntax>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
 <compatibility>Available in httpd 2.4.0 and later, if using OpenSSL 0.9.8h or later</compatibility>
@@ -2689,13 +2939,13 @@ One potential use is when a proxy is used for retrieving OCSP queries.</p>
 <usage>
 <p>Optionally configures a secret key for encrypting and decrypting
 TLS session tickets, as defined in
-<a href="http://www.ietf.org/rfc/rfc5077.txt">RFC 5077</a>.
+<a href="https://www.rfc-editor.org/rfc/rfc5077">RFC 5077</a>.
 Primarily suitable for clustered environments where TLS sessions information
 should be shared between multiple nodes. For single-instance httpd setups,
 it is recommended to <em>not</em> configure a ticket key file, but to
 rely on (random) keys generated by mod_ssl at startup, instead.</p>
 <p>The ticket key file must contain 48 bytes of random data,
-preferrably created from a high-entropy source. On a Unix-based system,
+preferably created from a high-entropy source. On a Unix-based system,
 a ticket key file can be created as follows:</p>
 
 <example>
@@ -2716,6 +2966,26 @@ be protected with file permissions similar to those used for
 </usage>
 </directivesynopsis>
 
+<directivesynopsis>
+<name>SSLClientHelloVars</name>
+<description>Enable collection of ClientHello variables</description>
+<syntax>SSLClientHelloVars on|off</syntax>
+<default>SSLClientHelloVars off</default>
+<contextlist><context>server config</context>
+<context>virtual host</context></contextlist>
+<compatibility>Available in httpd 2.5.2 and later, requires OpenSSL 1.1.1 or later</compatibility>
+
+<usage>
+<p>This directive enables collection of ClientHello data during the handshake that is retained for 
+the length of the connection so it can be exposed as <code>SSL_CLIENTHELLLO_*</code> environment 
+variables for requests depending upon the <code>StdEnvVars</code> setting. The variables are 
+formatted as the hex-encoded raw buffers seen in the raw network protocol and as provided 
+by OpenSSL. GREASE (RFC 8701) values are filtered by OpenSSL when enumerating extension IDs, but 
+otherwise, are passed through unchanged for other variables. If this directive is not enabled or 
+if OpenSSL prior to version 1.1.1 is used, these variables will not have a value set.</p>
+</usage> 
+</directivesynopsis>
+ 
 <directivesynopsis>
 <name>SSLCompression</name>
 <description>Enable compression on the SSL level</description>
@@ -2775,24 +3045,187 @@ features are added to OpenSSL.</p>
 depends on the OpenSSL version being used for <module>mod_ssl</module>
 (at least version 1.0.2 is required). For a list of supported command
 names, see the section <em>Supported configuration file commands</em> in the
-<a href="http://www.openssl.org/docs/man1.0.2/ssl/SSL_CONF_cmd.html#SUPPORTED-CONFIGURATION-FILE-COMMANDS">SSL_CONF_cmd(3)</a> manual page for OpenSSL.</p>
-
-<p>Some of the <directive>SSLOpenSSLConfCmd</directive> commands can be used
-as an alternative to existing directives (such as
-<directive module="mod_ssl">SSLCipherSuite</directive> or
-<directive module="mod_ssl">SSLProtocol</directive>),
-though it should be noted that the syntax / allowable values for the parameters
-may sometimes differ.</p>
+<a href="https://docs.openssl.org/master/man3/SSL_CONF_cmd/#supported-configuration-file-commands">SSL_CONF_cmd(3)</a> manual page for OpenSSL.</p>
 
 <example><title>Examples</title>
 <highlight language="config">
 SSLOpenSSLConfCmd Options -SessionTicket,ServerPreference
 SSLOpenSSLConfCmd ECDHParameters brainpoolP256r1
-SSLOpenSSLConfCmd ServerInfoFile /usr/local/apache2/conf/server-info.pem
+SSLOpenSSLConfCmd ServerInfoFile "/usr/local/apache2/conf/server-info.pem"
 SSLOpenSSLConfCmd Protocol "-ALL, TLSv1.2"
 SSLOpenSSLConfCmd SignatureAlgorithms RSA+SHA384:ECDSA+SHA256
 </highlight>
 </example>
+
+<note type="warning"><title>Compatibility and Stability
+warning</title>
+
+<p>Some of the <directive>SSLOpenSSLConfCmd</directive> commands can be used
+as an alternative to existing directives (such as
+<directive module="mod_ssl">SSLCipherSuite</directive> or
+<directive module="mod_ssl">SSLProtocol</directive>),
+though the syntax / allowable values for the parameters may sometimes differ.</p>
+
+<p>It is recommended that directives provided by mod_ssl are used
+where available to configure OpenSSL, and
+<directive>SSLOpenSSLConfCmd</directive> is only used for features of
+OpenSSL which are not configurable by mod_ssl.  It is possible that
+mod_ssl behaviour will change across versions of httpd where
+<directive>SSLOpenSSLConfCmd</directive> is used.</p>
+</note>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>SSLPolicy</name>
+<description>Apply a SSLPolicy by name</description>
+<syntax>SSLPolicy <em>name</em></syntax>
+<contextlist><context>server config</context>
+<context>virtual host</context></contextlist>
+<compatibility>Available in httpd 2.5.0 and later</compatibility>
+
+<usage>
+<p>This directive applies the set of SSL* directives defined
+under 'name' as the <em>base</em> settings in the current context. Apache comes with the 
+following pre-defined policies from Mozilla, the makers of the Firefox browser 
+(<a href="https://wiki.mozilla.org/Security/Server_Side_TLS#Recommended_configurations">see here
+for a detailed description by them.</a>):
+</p>
+<ul>
+    <li><code>modern</code>: recommended when your server is accessible on the open Internet. Works with all modern browsers, but old devices might be unable to connect.</li>
+    <li><code>intermediate</code>: the fallback if you need to support old (but not very old) clients.</li>
+    <li><code>old</code>: when you need to give Windows XP/Internet Explorer 6 access. The last resort.</li>
+</ul>
+<p>SSLPolicy applies configuration settings in place, meaning previous values are
+overwritten. Configuration directives following an SSLPolicy may overwrite it.
+</p> 
+
+<p>You can check the detailed description of all defined policies via the command line:</p>
+<example><title>List all Defined Policies</title>
+<highlight language="sh">
+httpd -t -D DUMP_SSL_POLICIES
+</highlight>
+</example>
+
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>SSLECHKeyDir</name>
+<description>Load the set of Encrypted Client Hello (ECH) PEM files in the named directory</description>
+<syntax>SSLECHKeyDir <em>dirname</em></syntax>
+<contextlist><context>server config</context></contextlist>
+<compatibility>Available in Apache HTTP Server 2.5.1 and later</compatibility>
+
+<usage>
+
+<p>
+ECH is specified in
+    <a href="https://datatracker.ietf.org/doc/draft-ietf-tls-esni/">draft-ietf-tls-esni</a>
+httpd supports ECH "shared-mode" where the httpd instance does the
+ECH decryption and also hosts both the ECH `public-name` and `backend` web
+sites.  
+</p>
+
+<p>
+The <code>SSLECHKeyDir</code> directive 
+names the directory where ECH PEM files (named <code>*.ech</code>) are stored.
+Once an ECH PEM file is successfully loaded, httpd will perform ECH decryption
+and, if that succeeds, will process the relevant TLS session using the 
+SNI from the inner ClientHello.
+</p>
+
+<example><title>Example ECH Config</title>
+<highlight language="config">
+...
+SSLEngine On
+SSLProtocol TLSv1.3
+SSLECHKeyDir /etc/apache2/echkeydir
+...
+# virtual hosts
+&lt;VirtualHost *:443&gt;
+    SSLEngine On
+    SSLProtocol TLSv1.3
+    ServerName example.com
+    DocumentRoot "/var/www/dir-example.com"
+&lt;/VirtualHost&gt;
+&lt;VirtualHost *:443&gt;
+    SSLEngine On
+    SSLProtocol TLSv1.3
+    ServerName foo.example.com
+    DocumentRoot "/var/www/dir-foo.example.com"
+&lt;/VirtualHost&gt;
+...
+</highlight>
+</example>
+
+<note><title>ECH Key Generation and Publication</title>
+<p>
+In the above, we describe a configuration that uses <code>example.com</code> as the
+ECH <code>public-name</code> and where <code>foo.example.com</code> is a web-site for which we want
+ECH to be used, with both hosted on the same httpd instance.
+</p>
+<p>
+Using ECH requires that httpd load an ECH key pair with a private value for ECH
+decryption. Browsers will require that the public component of that key pair be
+published in the DNS. With OpenSSL we generate and store that key pair in an ECH PEM
+formatted file as shown below.
+</p>
+<p>
+To generate ECH PEM files, use the ECH-enabled openssl command line
+to generate an ECH key pair and store the result in an ECH PEM file.
+You must also supply the <code>public-name</code> required by the ECH protocol.
+</p>
+<p>
+Key generation operations should be carried out under whatever local account is
+used for httpd configuration.
+</p>
+<example><title>Example: ECH Key Generation</title>
+<highlight language="config">
+~# OSSL=/home/user/code/openssl/apps/openssl
+~# mkdir -p /etc/apache2/echkeydir
+~# chmod 700 /etc/apache2/echkeydir
+~# cd /etc/apache2/echkeydir
+~# $OSSL ech -public-name example.com -o example.com.pem.ech
+~# cat example.com.pem.ech
+-----BEGIN PRIVATE KEY-----
+MC4CAQAwBQYDK2VuBCIEIJi22Im2rJ/lJqzNFZdGfsVfmknXAc8xz3fYPhD0Na5I
+-----END PRIVATE KEY-----
+-----BEGIN ECHCONFIG-----
+AD7+DQA6QwAgACA8mxkEsSTp2xXC/RUFCC6CZMMgdM4x1iTWKu3EONjbMAAEAAEA
+AQALZXhhbXBsZS5vcmcAAA==
+-----END ECHCONFIG-----
+</highlight>
+</example>
+<p>
+The ECHConfig value then needs to be published in an HTTPS resource record in
+the DNS, so as to be accessible as shown below:
+</p>
+<example><title>Accessing an ECH config from DNS</title>
+<highlight language="config">
+$ dig +short HTTPS foo.example.com
+1 . ech=AD7+DQA6QwAgACA8mxkEsSTp2xXC/RUFCC6CZMMgdM4x1iTWKu3EONjbMAAEAAEAAQALZXhhbXBsZS5vcmcAAA==
+</highlight>
+</example>
+<p>
+Various other fields may be included in an HTTPS resource record. For many
+httpd deployments, existing methods for publishing DNS records may be used to
+achieve the above.  In some cases, one might use
+<a href="https://datatracker.ietf.org/doc/html/draft-ietf-tls-wkech">
+A well-known URI for publishing service parameters</a>
+designed to assist web servers in handling e.g. frequent ECH key rotation.
+</p>
+</note>
+
+<note><title>Reloading ECH Keys</title>
+
+<p>
+Giving httpd a command line argument of <code>-k graceful</code> causes a graceful reload
+of the configuration, without dropping existing connections.
+</p>
+
+</note>
+
 </usage>
 </directivesynopsis>
 

@@ -200,6 +200,18 @@ Body:----------ro--
 <!--#include virtual="include/bottom.html" -->
 ----------ro--
 
+Content-language: ru
+Content-type: text/html; charset=UTF-8
+Body:----------ru--
+<!--#set var="TITLE" value="Вариант также варьируется!"
+--><!--#include virtual="include/top.html" -->
+
+    Вариант запрашиваемого объекта - и сам ресурс непостоянный.
+    Доступ к объекту невозможен.
+
+<!--#include virtual="include/bottom.html" -->
+----------ru--
+
 Content-language: sr
 Content-type: text/html; charset=UTF-8
 Body:----------sr--
@@ -240,3 +252,27 @@ Body:----------tr--
 
 <!--#include virtual="include/bottom.html" -->
 ----------tr--
+
+Content-language: zh-cn
+Content-type: text/html; charset=UTF-8
+Body:----------zh-cn--
+<!--#set var="CONTENT_LANGUAGE" value="zh-cn"
+--><!--#set var="TITLE" value="变元是可变的！"
+--><!--#include virtual="include/top.html" -->
+
+    请求实体的一个变元自身是一个可被协商的资源。无法访问。
+
+<!--#include virtual="include/bottom.html" -->
+----------zh-cn--
+
+Content-language: zh-tw
+Content-type: text/html; charset=UTF-8
+Body:----------zh-tw--
+<!--#set var="CONTENT_LANGUAGE" value="zh-tw"
+--><!--#set var="TITLE" value="變元是可變的！"
+--><!--#include virtual="include/top.html" -->
+
+    請求實體的一個變元自身是一個可被協商的資源。無法訪問。
+
+<!--#include virtual="include/bottom.html" -->
+----------zh-tw--

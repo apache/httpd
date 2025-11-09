@@ -73,14 +73,14 @@ Body:----------es--
 
    <!--#if expr="v('REDIRECT_URL') =~ m:/$:" -->
 
-      Usted no tiene permiso para acceder al directorio solicitado.
-      No existe un documento &iacute;ndice, o el directorio est&aacute;
+      No tiene permiso para acceder al directorio solicitado.
+      No hay ning&uacute;n documento &iacute;ndice (index) o el directorio est&aacute;
       protegido contra lectura.
 
   <!--#else -->
 
-      Usted no tiene permiso para acceder al objeto solicitado.
-      El objeto est&aacute; protegido contra lectura o
+      No tiene permiso para acceder al objeto solicitado.
+      Est&aacute; protegido contra lectura o
       el servidor no puede leerlo.
 
   <!--#endif -->
@@ -341,6 +341,27 @@ Body:----------ro--
 <!--#include virtual="include/bottom.html" -->
 ----------ro--
 
+Content-language: ru
+Content-type: text/html; charset=UTF-8
+Body:----------ru--
+<!--#set var="TITLE" value="Доступ запрещён!"
+--><!--#include virtual="include/top.html" -->
+
+  <!--#if expr="v('REDIRECT_URL') =~ m:/$:" -->
+
+    У Вас нет прав доступа к этой директории.
+    Отсутствует индексный файл, или директория недоступна для чтения.
+
+  <!--#else -->
+
+    У Вас нет прав доступа к этому объекту.
+    Файл недоступен для чтения, или сервер не может его прочитать.
+
+  <!--#endif -->
+
+<!--#include virtual="include/bottom.html" -->
+----------ru--
+
 Content-language: sr
 Content-type: text/html; charset=UTF-8
 Body:----------sr--
@@ -409,3 +430,47 @@ Body:----------tr--
 
 <!--#include virtual="include/bottom.html" -->
 ----------tr--
+
+Content-language: zh-cn
+Content-type: text/html; charset=UTF-8
+Body:----------zh-cn--
+<!--#set var="CONTENT_LANGUAGE" value="zh-cn"
+--><!--#set var="TITLE" value="禁止访问！"
+--><!--#include virtual="include/top.html" -->
+
+  <!--#if expr="v('REDIRECT_URL') =~ m:/$:" -->
+
+    您无权访问所请求的目录。
+    这是由于没有主页或该目录不允许被读取导致的。
+
+  <!--#else -->
+
+    您无权访问所请求的对象。
+    它可能不允许被读取或无法被服务器读取。
+
+  <!--#endif -->
+
+<!--#include virtual="include/bottom.html" -->
+----------zh-cn--
+
+Content-language: zh-tw
+Content-type: text/html; charset=UTF-8
+Body:----------zh-tw--
+<!--#set var="CONTENT_LANGUAGE" value="zh-tw"
+--><!--#set var="TITLE" value="禁止訪問！"
+--><!--#include virtual="include/top.html" -->
+
+  <!--#if expr="v('REDIRECT_URL') =~ m:/$:" -->
+
+    您無權訪問所請求的目錄。
+    這是由於沒有主頁或該目錄不允許被讀取導致的。
+
+  <!--#else -->
+
+    您無權訪問所請求的物件。
+    它可能不允許被讀取或無法被伺服器讀取。
+
+  <!--#endif -->
+
+<!--#include virtual="include/bottom.html" -->
+----------zh-tw--

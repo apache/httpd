@@ -1,0 +1,139 @@
+Apache httpd pytest suite
+=========================
+Using pytest (<https://docs.pytest.org/en/6.2.x/>) and a Python >= 3.8
+for a more flexible testing of Apache httpd.
+
+Install
+-------
+If not already installed, you will need to install 'pytest' and 'OpenSSL' for
+python:
+> apt install python3-pip
+> pip install -U pytest
+> pip install -U pyopenssl
+
+And for 'h2load':
+> apt install nghttp2-client
+
+
+Usage
+-----
+In your httpd source checkout, do:
+
+> make install
+> pytest
+
+and all tests defined run on the installed executable and modules.
+> pytest test/modules/core
+runs all the core tests. You can run tests also by name selection:
+> pytest -k test_core
+runs all test cases starting with 'test_core'. Similar:
+> pytest -k test_core_001_04
+runs the test cases starting with that.
+
+Test output gets more verbose, by adding one or several '-v'. This
+also raises the error log level of the tested modules.
+> pytest -vvv -k test_h2_004_01
+run the specific test with mod_http2 at log level TRACE2.
+
+By default, test cases will configure httpd with mpm_event. You
+can change that with the invocation:
+> MPM=worker pytest test/modules/http2
+
+Some tests rely on additional tools installed in your environment
+and will 'skip' if those are not present. In a non-verbose run,
+these will appear as 's' in the output. If you run pytest more
+verbose, the skipped test cases will mention a reason for why
+they are disabled.
+
+For example, most tests in test/modules/md require an installation
+of 'pebble', an ACME test server, and look for it in $PATH.
+
+
+Workings
+--------
+All tests start httpd on their own and try hard to shut it down
+afterwards. You can abort tests with ^C and they clean up.
+
+httpd is started/stopped repeatedly in testing as configurations
+for individual test cases are changed. This is a main difference to
+the Perl test framework which starts the server with all possible
+combinations configured that are needed by tests.
+
+In test/gen/apache a server root is created with config, logs and htdocs
+directories. test/gen/apache/logs/error_log will be the log.
+Configs start in test/gen/apache/conf/httpd.conf. modules.conf is
+dynamically created for the list of modules that a test suite needs.
+
+Test cases write their specific setup in test.conf and reload/restart
+the httpd process. This makes for a small configuration in a test case.
+
+
+Development
+-----------
+
+Adding a test in an existing file is done by adding a method. Its name
+must start with 'test_' and the common practice is to have the name
+of the test suite there as well. All http2 tests start with 'test_h2_'.
+
+Following this can be any characters. If you make test cases of a
+certain feature with a common prefix, it is easier to invoke just
+them using the '-k' selector on the command line.
+
+You can also add just a new file to a test suite, if you do a new
+range of test cases that do not fit anywhere else. A very simple
+one is found in test/modules/http2/test_001_httpd_alive.py.
+
+There is a python class defined with 2 methods. One is the test
+method itself and the other one ' is
+
+    @pytest.fixture(autouse=True, scope='class')
+    def _class_scope(self, env):
+        code
+
+is marked as a pytest 'fixture'. This is some pytest magic.
+'autouse=True' means that this fixture is run, even though
+no test case uses it directly. scope='class' means that it
+is run once for all test cases in this class.
+
+As you see, this fixture gets a parameter named 'env' and
+that is the name of another pytest fixture, defined in the
+file 'conftest.py' in the same directory.
+
+    @pytest.fixture(scope="package")
+    def env(pytestconfig) -> H2TestEnv:
+        code
+
+This one runs one time per 'package', meaning for all test
+cases in this directory. And it gets the 'pytestconfig'
+as parameter which is a standard pytest fixture.
+
+So, when you run 'pytest -k test_h2_004', pytest will look
+at _all_ test cases defined and collect those with that
+prefix. For each directory with test cases found, it will
+process the 'conftest.py', boot-strapping the 'env' fixture,
+and the process the files with active test cases.
+
+As a result, if you invoke just a single test case, only
+the fixtures needed for that test case are created. This
+gives good turn around times when debugging a test case.
+
+If you want to add a new test suite, create a new directory.
+Add the files '__init__.py', 'conftest.py' and a first
+'test_suitename_something.py'. test/modules/core is the
+simplest example. 'test/modules/http2' shows how you load
+other modules. 'test/modules/md' checks and starts external
+processes (an ACME test server).
+
+
+Infrastructure
+--------------
+The test cases rely on the classes provided in 'test/pyhttpd'
+for common code in managing a httpd test instance and do
+provide some base setups:
+- a small set of virtual hosts with some files
+- access to paths and definitions (env fixture)
+- start/stop httpd and inspect the error log
+- run clients like curl and nghttp
+- create certificates for your hosts and make curl use
+  the root certs (so no --insecure calls by curl).
+

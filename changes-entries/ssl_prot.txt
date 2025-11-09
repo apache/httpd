@@ -1,0 +1,5 @@
+
+  *) mod_ssl: Remove warning over potential uninitialised value
+     for ssl protocol prior to protocol selection.
+     [Graham Leggett]
+

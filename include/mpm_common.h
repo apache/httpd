@@ -63,6 +63,14 @@ extern "C" {
 #define DEFAULT_LISTENBACKLOG 511
 #endif
 
+/*
+ * Define the default value set for the socket option TCP_DEFER_ACCEPT
+ * if it is set.
+ */
+#ifndef DEFAULT_TCP_DEFER_ACCEPT
+#define DEFAULT_TCP_DEFER_ACCEPT 30
+#endif
+
 /* Signal used to gracefully restart */
 #define AP_SIG_GRACEFUL SIGUSR1
 
@@ -387,7 +395,7 @@ extern const char *ap_mpm_set_thread_stacksize(cmd_parms *cmd, void *dummy,
 extern void ap_core_child_status(server_rec *s, pid_t pid, ap_generation_t gen,
                                  int slot, mpm_child_status status);
 
-#if AP_ENABLE_EXCEPTION_HOOK
+#if defined(AP_ENABLE_EXCEPTION_HOOK) && AP_ENABLE_EXCEPTION_HOOK
 extern const char *ap_mpm_set_exception_hook(cmd_parms *cmd, void *dummy,
                                              const char *arg);
 #endif
@@ -427,25 +435,17 @@ AP_DECLARE_HOOK(apr_status_t, mpm_register_timed_callback,
  * @ingroup hooks
  */
 AP_DECLARE_HOOK(apr_status_t, mpm_register_poll_callback,
-                (apr_array_header_t *pds, ap_mpm_callback_fn_t *cbfn, void *baton))
+                (apr_pool_t *p, const apr_array_header_t *pds,
+                 ap_mpm_callback_fn_t *cbfn, void *baton))
 
 /* register the specified callback, with timeout 
  * @ingroup hooks
  *
  */
 AP_DECLARE_HOOK(apr_status_t, mpm_register_poll_callback_timeout,
-        (apr_array_header_t *pds,
-                ap_mpm_callback_fn_t *cbfn,
-                ap_mpm_callback_fn_t *tofn,
-                void *baton,
-                apr_time_t timeout))
-
-/**
- * Unregister the specified callback
- * @ingroup hooks
- */
-AP_DECLARE_HOOK(apr_status_t, mpm_unregister_poll_callback,
-                (apr_array_header_t *pds))
+                (apr_pool_t *p, const apr_array_header_t *pds,
+                ap_mpm_callback_fn_t *cbfn, ap_mpm_callback_fn_t *tofn,
+                void *baton, apr_time_t timeout))
 
 /** Resume the suspended connection 
  * @ingroup hooks
@@ -518,6 +518,31 @@ AP_DECLARE_HOOK(void, suspend_connection,
  */
 AP_DECLARE_HOOK(void, resume_connection,
                 (conn_rec *c, request_rec *r))
+
+/**
+ * Notification that the child is stopping. No new requests
+ * or other tasks to be started.
+ * If graceful, already started requests/tasks should be
+ * processed normally.
+ * @param pchild The child pool
+ * @param graceful != 0 iff this is a graceful shutdown.
+ */
+AP_DECLARE_HOOK(void, child_stopping,
+                (apr_pool_t *pchild, int graceful))
+
+/**
+ * Notification that the child has stopped processing
+ * requests completely. Any running threads should be
+ * shut down now.
+ * Ideally, when this hook completes, no more threads
+ * are running in the child process.
+ * Note that de-allocation of global resources should
+ * be run via memory pool destroy callback after this.
+ * @param pchild The child pool
+ * @param graceful != 0 iff this is a graceful shutdown.
+ */
+AP_DECLARE_HOOK(void, child_stopped,
+                (apr_pool_t *pchild, int graceful))
 
 /* mutex type string for accept mutex, if any; MPMs should use the
  * same mutex type for ease of configuration

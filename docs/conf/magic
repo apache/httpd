@@ -87,7 +87,7 @@
 # Microsoft WAVE format (*.wav)
 # [GRR 950115:  probably all of the shorts and longs should be leshort/lelong]
 #					Microsoft RIFF
-0	string		RIFF		audio/unknown
+0	string		RIFF		
 #					- WAVE format
 >8	string		WAVE		audio/x-wav
 # MPEG audio.

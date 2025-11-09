@@ -1,0 +1,179 @@
+Variables
+---------
+
+The CI scripts use the following environment variables:
+
+* APR_VERSION - if set, APR of this version is built and installed in
+  $HOME/root/apr-$APR_VERSION - a value of "trunk" means trunk is
+  used, "*.x" means a branch, otherwise a tagged version is implied.
+
+* APR_CONFIG - arguments to pass when running APR's configure script
+  if APR_VERSION is set
+
+* APU_VERSION - if set, APR-util of this version is built and
+  installed in $HOME/root/apr-util-$APU_VERSION - a value of "*.x"
+  means a branch, otherwise a tagged version is implied.  (Since there
+  is no "trunk" for apr-util, that value cannot be used here.)
+
+* APU_CONFIG - arguments to pass when running APR-util's configure
+  script if APU_VERSION is set
+
+* CONFIG - arguments to pass to httpd's configure script.
+
+* BUILDCONFIG - arguments to pass when running httpd's ./buildconf script
+
+* MFLAGS - arguments to pass when running "make" for httpd.
+
+* SKIP_TESTING - if set, no testing is done at all
+
+* NO_TEST_FRAMEWORK - if set, the Perl test framework is not used
+
+* TEST_UBSAN - set for job using UBSan ("Undefined Behaviour Sanitizer")
+
+* TEST_MALLOC - set for job using enhanced malloc debugging.
+
+* TEST_INSTALL - set for job testing "make install"
+
+* TEST_VPATH - set for job testing srcdir!=builddir 
+
+* TEST_LDAP - set for job with slapd, running LDAP tests
+
+* TEST_SSL - set for job with SSL/TLS testing variants
+
+* TESTS - a list of Perl framework tests to run
+
+* TEST_ARGS - arguments to pass to ./t/TEST in the Perl test framework
+
+* CLEAR_CACHE - if set, the cached $HOME/root is removed before each build
+
+Caching
+-------
+
+Caching was designed in Travis then migrated to GitHub Actions, and
+should probably be redone from scratch.
+
+Caches in GHA are immutable. Currently the ~/perl5 and ~/root
+directories are cached (separately) for each unique job configuration,
+which is identified by the $JOBID variable. $JOBID is a hash of the
+variables defined in the matrix.
+
+Hence, if e.g. the APR_VERSION or APR_CONFIG changes, a different
+cache key will be used for future builds, but while it remains the
+same the cached install can be used across builds.
+
+This does not work optimally for e.g. APR_VERSION=trunk - in this
+case, a trunk build of APR is built and cached (assuming the job
+succeeds). Once the trunk revision changes, install_apx() will see the
+cached trunk install is stale and throw it away for every single
+subsequent job; the cache is never updated.
+
+(Similarly for CPAN - the cached version of ~/perl5 for each job will
+increasingly become stale over time as the version in CPAN changes
+from whatever was cached for the first build.)
+
+The solution (TBD) is likely to incorporate the versions of whatever
+is cached into the keys as in the example documentation:
+https://github.com/actions/cache/blob/main/examples.md
+
+If APR_VERSION and APU_VERSION are both set to 1.x versions, then
+CLEAR_CACHE should also be set to disable APR* caching.  APR-util can
+only be rebuilt if an APR checkout is present, so a APR-util cannot be
+built from source alone.  (i.e. the scripts do not handle the case of
+cached, fresh APR plus a cached but stale APR-util)
+
+Travis to Github Actions Migration TODO
+---------------------------------------
+
+* enable ACME/mod_md testing
+* support branch conditionals again (some tests are 2.4.x only, some trunk only)
+* test across different Ubuntu versions again
+ - and test against OpenSSL 1.x since we're now ONLY building against 3.x
+* container testing for non-Ubuntu hosts
+* introduce some job ordering rather than having a flat/concurrent
+  set, if the default "./configure && make && test" works *then* start
+  jobs doing 200 different variations on ./configure --enable-XXX 
+  i.e. stop burning CPU time for a typo which breaks every job
+
+TODO list
+---------
+
+* non-x86 builds
+* MacOS build
+* Windows build
+* clang-on-Linux build
+* Use containers for non-Ubuntu-based Linux testing
+
+Known Failures
+--------------
+
+Some known failures:
+
+* prefork, and more rarely non-prefork testing sometimes catches child
+  segfaults under pool-debug from assert()s in (e.g.)
+  __pthread_tpp_change_priority where one child is destroying threads
+  which another is waiting for, or iterating through via
+  apr_pool_walk_tree().
+
+  See dev@httpd threads:
+  msg <5f4abde1b5789_13fde2ecacb40795a1@travis-tasks-5b566d48fc-drkb9.mail>
+  msg <73060f7b-df7f-ad3c-a9fa-dd666a59b31e@kippdata.de> and
+  https://bz.apache.org/bugzilla/show_bug.cgi?id=63098
+  https://bz.apache.org/bugzilla/show_bug.cgi?id=46185
+
+  Not clear if there is a real bug here which can be reproduced
+  outside of pool-debug.
+
+Testing from a Feature Branch
+-----------------------------
+
+An SVN branch off trunk should be mirrored to github, and will be
+tested in the same way that trunk is in CI, so this workflow is
+available for those familiar with using Subversion and the standard
+ASF/httpd repository layout.
+
+Test runs are listed at: https://github.com/apache/httpd/actions
+
+A workflow to enable testing would be as follows, substituting
+$USERNAME for your github username:
+
+  $ git clone https://github.com/apache/httpd
+  $ cd httpd
+  $ git remote add $USERNAME git@github.com:$USERNAME/httpd.git
+  $ git checkout -b my-feature origin/trunk
+  ... do some work ...
+  $ git commit ...
+  $ git push -u $USERNAME my-feature:my-feature
+
+To create a Pull Request, go to the URL produced in the "git push"
+command output when pushing to your fork, which is something like:
+https://github.com/apache/httpd/compare/trunk...$USERNAME:trunk
+
+Once a PR has been created, the tests will run and test results
+displayed directly in the PR.
+
+To merge from github back to SVN trunk, create a patch from e.g.:
+
+  $ git diff origin/trunk..my-feature
+
+and then apply it in SVN.  To rebase a feature once trunk has
+diverged, from a feature branch run:
+
+  $ git pull
+  $ git rebase -i origin/trunk
+
+and follow the standard rebase steps.
+
+An alternative way to apply a PR into an SVN checkout is to use the
+apply_trunk_pr.sh script:
+https://svn.apache.org/repos/asf/httpd/dev-tools/github/apply_trunk_pr.sh
+
+If you use keywords in the SVN commit message, the PR will be closed
+when the commit is mirrored to Github, e.g. a commit message like:
+
+   mod_foo: Fix the baz feature.
+
+   PR: 12345
+   Submitted by: Jane Doe <jane example.com>
+   Github: closes #1
+
+will close PR #1 when it's merged.

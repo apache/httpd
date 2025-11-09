@@ -48,10 +48,15 @@
 
 %token  <cpVal> T_DIGIT             "number"
 %token  <cpVal> T_ID                "identifier"
-%token  <cpVal> T_STRING            "cstring"
-%token  <cpVal> T_REGEX             "regex"
-%token  <cpVal> T_REGEX_I           "case-indendent regex"
-%token  <num>   T_REGEX_BACKREF     "regex back reference"
+%token  <cpVal> T_STRING            "string literal"
+
+%token          T_REGEX             "start of matching regex"
+%token          T_REGSUB            "start of substitution regex"
+%token  <cpVal> T_REG_MATCH         "pattern of the regex"
+%token  <cpVal> T_REG_SUBST         "substitution of the regex"
+%token  <cpVal> T_REG_FLAGS         "pattern flags of the regex"
+%token  <num>   T_BACKREF           "regex back reference"
+
 %token  <cpVal> T_OP_UNARY          "unary operator"
 %token  <cpVal> T_OP_BINARY         "binary operator"
 
@@ -59,6 +64,8 @@
 %token  T_STR_END                   "end of string"
 %token  T_VAR_BEGIN                 "start of variable name"
 %token  T_VAR_END                   "end of variable name"
+%token  T_VAREXP_BEGIN              "start of variable expression"
+%token  T_VAREXP_END                "end of variable expression"
 
 %token  T_OP_EQ                     "integer equal"
 %token  T_OP_NE                     "integer not equal"
@@ -75,29 +82,38 @@
 %token  T_OP_STR_LE                 "string less or equal"
 %token  T_OP_STR_GT                 "string greater than"
 %token  T_OP_STR_GE                 "string greater or equal"
+
 %token  T_OP_CONCAT                 "string concatenation"
+
+%token  T_OP_JOIN                   "join operator"
+%token  T_OP_SPLIT                  "split operator"
+%token  T_OP_SUB                    "substitute operator"
 
 %token  T_OP_OR                     "logical or"
 %token  T_OP_AND                    "logical and"
 %token  T_OP_NOT                    "logical not"
 
-%right  T_OP_OR
-%right  T_OP_AND
+%left   T_OP_OR
+%left   T_OP_AND
 %right  T_OP_NOT
 %right  T_OP_CONCAT
 
-%type   <exVal>   expr
-%type   <exVal>   comparison
-%type   <exVal>   strfunccall   "function"
-%type   <exVal>   lstfunccall   "listfunction"
-%type   <exVal>   regex
-%type   <exVal>   words
-%type   <exVal>   wordlist
-%type   <exVal>   word
-%type   <exVal>   string
-%type   <exVal>   strpart       "stringpart"
-%type   <exVal>   var           "variable"
-%type   <exVal>   backref       "rebackref"
+%nterm  <exVal>   cond
+%nterm  <exVal>   comp
+%nterm  <exVal>   strfunc
+%nterm  <exVal>   listfunc
+%nterm  <exVal>   list
+%nterm  <exVal>   words
+%nterm  <exVal>   word
+%nterm  <exVal>   string
+%nterm  <exVal>   substr
+%nterm  <exVal>   var
+%nterm  <exVal>   regex
+%nterm  <exVal>   regsub
+%nterm  <exVal>   regany
+%nterm  <exVal>   split
+%nterm  <exVal>   join
+%nterm  <exVal>   sub
 
 %{
 #include "util_expr_private.h"
@@ -109,24 +125,29 @@ int ap_expr_yylex(YYSTYPE *lvalp, void *scanner);
 
 %%
 
-root      : T_EXPR_BOOL   expr           { ctx->expr = $2; }
-          | T_EXPR_STRING string         { ctx->expr = $2; }
+expr      : T_EXPR_STRING string         { ctx->expr = $2; }
+          | T_EXPR_BOOL   cond           { ctx->expr = $2; }
           | T_ERROR                      { YYABORT; }
           ;
 
-expr      : T_TRUE                       { $$ = ap_expr_make(op_True,        NULL, NULL, ctx); }
+string    : substr                       { $$ = $1; }
+          | string substr                { $$ = ap_expr_concat_make($1, $2, ctx); }
+          | T_ERROR                      { YYABORT; }
+          ;
+
+cond      : T_TRUE                       { $$ = ap_expr_make(op_True,        NULL, NULL, ctx); }
           | T_FALSE                      { $$ = ap_expr_make(op_False,       NULL, NULL, ctx); }
-          | T_OP_NOT expr                { $$ = ap_expr_make(op_Not,         $2,   NULL, ctx); }
-          | expr T_OP_OR expr            { $$ = ap_expr_make(op_Or,          $1,   $3,   ctx); }
-          | expr T_OP_AND expr           { $$ = ap_expr_make(op_And,         $1,   $3,   ctx); }
-          | comparison                   { $$ = ap_expr_make(op_Comp,        $1,   NULL, ctx); }
+          | T_OP_NOT cond                { $$ = ap_expr_make(op_Not,         $2,   NULL, ctx); }
+          | cond T_OP_OR cond            { $$ = ap_expr_make(op_Or,          $1,   $3,   ctx); }
+          | cond T_OP_AND cond           { $$ = ap_expr_make(op_And,         $1,   $3,   ctx); }
+          | comp                         { $$ = ap_expr_make(op_Comp,        $1,   NULL, ctx); }
           | T_OP_UNARY word              { $$ = ap_expr_unary_op_make(       $1,   $2,   ctx); }
           | word T_OP_BINARY word        { $$ = ap_expr_binary_op_make($2,   $1,   $3,   ctx); }
-          | '(' expr ')'                 { $$ = $2; }
+          | '(' cond ')'                 { $$ = $2; }
           | T_ERROR                      { YYABORT; }
           ;
 
-comparison: word T_OP_EQ word            { $$ = ap_expr_make(op_EQ,      $1, $3, ctx); }
+comp      : word T_OP_EQ word            { $$ = ap_expr_make(op_EQ,      $1, $3, ctx); }
           | word T_OP_NE word            { $$ = ap_expr_make(op_NE,      $1, $3, ctx); }
           | word T_OP_LT word            { $$ = ap_expr_make(op_LT,      $1, $3, ctx); }
           | word T_OP_LE word            { $$ = ap_expr_make(op_LE,      $1, $3, ctx); }
@@ -138,75 +159,88 @@ comparison: word T_OP_EQ word            { $$ = ap_expr_make(op_EQ,      $1, $3,
           | word T_OP_STR_LE word        { $$ = ap_expr_make(op_STR_LE,  $1, $3, ctx); }
           | word T_OP_STR_GT word        { $$ = ap_expr_make(op_STR_GT,  $1, $3, ctx); }
           | word T_OP_STR_GE word        { $$ = ap_expr_make(op_STR_GE,  $1, $3, ctx); }
-          | word T_OP_IN wordlist        { $$ = ap_expr_make(op_IN,      $1, $3, ctx); }
           | word T_OP_REG regex          { $$ = ap_expr_make(op_REG,     $1, $3, ctx); }
           | word T_OP_NRE regex          { $$ = ap_expr_make(op_NRE,     $1, $3, ctx); }
+          | word T_OP_IN list            { $$ = ap_expr_make(op_IN,      $1, $3, ctx); }
           ;
 
-wordlist  : lstfunccall                  { $$ = $1; }
-          | '{' words '}'                { $$ = $2; }
-          ;
-
-words     : word                         { $$ = ap_expr_make(op_ListElement, $1, NULL, ctx); }
-          | words ',' word               { $$ = ap_expr_make(op_ListElement, $3, $1,   ctx); }
-          ;
-
-string    : string strpart               { $$ = ap_expr_make(op_Concat, $1, $2, ctx); }
-          | strpart                      { $$ = $1; }
-          | T_ERROR                      { YYABORT; }
-          ;
-
-strpart   : T_STRING                     { $$ = ap_expr_make(op_String, $1, NULL, ctx); }
+word      : T_DIGIT                      { $$ = ap_expr_make(op_Digit,  $1, NULL, ctx); }
+          | T_STR_BEGIN T_STR_END        { $$ = ap_expr_make(op_String, "", NULL, ctx); }
+          | T_STR_BEGIN string T_STR_END { $$ = $2; }
+          | word T_OP_CONCAT word        { $$ = ap_expr_make(op_Concat, $1, $3,   ctx); }
           | var                          { $$ = $1; }
-          | backref                      { $$ = $1; }
+          | sub                          { $$ = $1; }
+          | join                         { $$ = $1; }
+          | strfunc                      { $$ = $1; }
+          | '(' word ')'                 { $$ = $2; }
+          ;
+
+list      : split                        { $$ = $1; }
+          | listfunc                     { $$ = $1; }
+          | '{' words '}'                { $$ = $2; }
+          | '(' list ')'                 { $$ = $2; }
+          ;
+
+substr    : T_STRING                     { $$ = ap_expr_make(op_String, $1, NULL, ctx); }
+          | var                          { $$ = $1; }
           ;
 
 var       : T_VAR_BEGIN T_ID T_VAR_END            { $$ = ap_expr_var_make($2, ctx); }
           | T_VAR_BEGIN T_ID ':' string T_VAR_END { $$ = ap_expr_str_func_make($2, $4, ctx); }
+          | T_VAREXP_BEGIN cond T_VAREXP_END      { $$ = ap_expr_make(op_Bool, $2, NULL, ctx); }
+          | T_VAREXP_BEGIN word T_VAREXP_END      { $$ = ap_expr_make(op_Word, $2, NULL, ctx); }
+          | T_BACKREF                             { $$ = ap_expr_backref_make($1, ctx); }
           ;
 
-word      : T_DIGIT                      { $$ = ap_expr_make(op_Digit,  $1, NULL, ctx); }
-          | word T_OP_CONCAT word        { $$ = ap_expr_make(op_Concat, $1, $3,   ctx); }
-          | var                          { $$ = $1; }
-          | backref                      { $$ = $1; }
-          | strfunccall                  { $$ = $1; }
-          | T_STR_BEGIN string T_STR_END { $$ = $2; }
-          | T_STR_BEGIN T_STR_END        { $$ = ap_expr_make(op_String, "", NULL, ctx); }
+strfunc   : T_ID '(' word ')'            { $$ = ap_expr_str_func_make($1, $3, ctx); }
+          | T_ID '(' words ')'           { $$ = ap_expr_str_func_make($1, $3, ctx); }
           ;
 
-regex     : T_REGEX {
-                ap_regex_t *regex;
-                if ((regex = ap_pregcomp(ctx->pool, $1,
-                                         AP_REG_EXTENDED|AP_REG_NOSUB)) == NULL) {
+listfunc  : T_ID '(' word ')'            { $$ = ap_expr_list_func_make($1, $3, ctx); }
+       /* | T_ID '(' words ')'           { $$ = ap_expr_list_func_make($1, $3, ctx); } */
+          ;
+
+sub       : T_OP_SUB     regsub ',' word     { $$ = ap_expr_make(op_Sub, $4, $2, ctx); }
+          | T_OP_SUB '(' regsub ',' word ')' { $$ = ap_expr_make(op_Sub, $5, $3, ctx); }
+          ;
+
+join      : T_OP_JOIN     list              { $$ = ap_expr_make(op_Join, $2, NULL, ctx); }
+          | T_OP_JOIN '(' list ')'          { $$ = ap_expr_make(op_Join, $3, NULL, ctx); }
+          | T_OP_JOIN     list ',' word     { $$ = ap_expr_make(op_Join, $2, $4,   ctx); }
+          | T_OP_JOIN '(' list ',' word ')' { $$ = ap_expr_make(op_Join, $3, $5,   ctx); }
+          ;
+
+split     : T_OP_SPLIT     regany ',' list     { $$ = ap_expr_make(op_Split, $4, $2, ctx); }
+          | T_OP_SPLIT '(' regany ',' list ')' { $$ = ap_expr_make(op_Split, $5, $3, ctx); }
+          | T_OP_SPLIT     regany ',' word     { $$ = ap_expr_make(op_Split, $4, $2, ctx); }
+          | T_OP_SPLIT '(' regany ',' word ')' { $$ = ap_expr_make(op_Split, $5, $3, ctx); }
+          ;
+
+words     : word                         { $$ = ap_expr_make(op_ListElement, $1, NULL, ctx); }
+          | word ',' words               { $$ = ap_expr_make(op_ListElement, $1, $3,   ctx); }
+          ;
+
+regex     : T_REGEX T_REG_MATCH T_REG_FLAGS {
+                ap_expr_t *e = ap_expr_regex_make($2, NULL, $3, ctx);
+                if (!e) {
                     ctx->error = "Failed to compile regular expression";
                     YYERROR;
                 }
-                $$ = ap_expr_make(op_Regex, regex, NULL, ctx);
+                $$ = e;
             }
-          | T_REGEX_I {
-                ap_regex_t *regex;
-                if ((regex = ap_pregcomp(ctx->pool, $1,
-                                         AP_REG_EXTENDED|AP_REG_NOSUB|AP_REG_ICASE)) == NULL) {
+          ;
+regsub    : T_REGSUB T_REG_MATCH string T_REG_FLAGS {
+                ap_expr_t *e = ap_expr_regex_make($2, $3, $4, ctx);
+                if (!e) {
                     ctx->error = "Failed to compile regular expression";
                     YYERROR;
                 }
-                $$ = ap_expr_make(op_Regex, regex, NULL, ctx);
+                $$ = e;
             }
           ;
-
-backref     : T_REGEX_BACKREF   {
-                int *n = apr_palloc(ctx->pool, sizeof(int));
-                *n = $1;
-                $$ = ap_expr_make(op_RegexBackref, n, NULL, ctx);
-            }
-            ;
-
-lstfunccall : T_ID '(' word ')' { $$ = ap_expr_list_func_make($1, $3, ctx); }
-            ;
-
-strfunccall : T_ID '(' word ')' { $$ = ap_expr_str_func_make($1, $3, ctx); }
-            | T_ID '(' words ')' { $$ = ap_expr_str_func_make($1, $3, ctx); }
-            ;
+regany    : regex   { $$ = $1; }
+          | regsub  { $$ = $1; }
+          ;
 
 %%
 

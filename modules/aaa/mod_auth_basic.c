@@ -171,8 +171,8 @@ static const char *add_basic_fake(cmd_parms * cmd, void *config,
                         &err, NULL);
         if (err) {
             return apr_psprintf(cmd->pool,
-                    "Could not parse fake password expression '%s': %s", pass,
-                    err);
+                    "Could not parse fake password expression associated to user '%s': %s",
+                    user, err);
         }
         conf->fake_set = 1;
     }
@@ -270,7 +270,7 @@ static int get_basic_auth(request_rec *r, const char **user,
     }
 
     /* Skip leading spaces. */
-    while (apr_isspace(*auth_line)) {
+    while (*auth_line == ' ' || *auth_line == '\t') {
         auth_line++;
     }
 
@@ -320,7 +320,7 @@ static int authenticate_basic_user(request_rec *r)
     }
 
     if (conf->use_digest_algorithm
-        && !strcasecmp(conf->use_digest_algorithm, "MD5")) {
+        && !ap_cstr_casecmp(conf->use_digest_algorithm, "MD5")) {
         realm = ap_auth_name(r);
         digest = ap_md5(r->pool,
                         (unsigned char *)apr_pstrcat(r->pool, sent_user, ":",

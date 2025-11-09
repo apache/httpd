@@ -183,6 +183,17 @@ Body:----------ro--
 <!--#include virtual="include/bottom.html" -->
 ----------ro--
 
+Content-language: ru
+Content-type: text/html; charset=UTF-8
+Body:----------ru--
+<!--#set var="TITLE" value="Условие ложно!"
+--><!--#include virtual="include/top.html" -->
+
+    Условие в запросе к данному ресурсу не было выполнено.
+
+<!--#include virtual="include/bottom.html" -->
+----------ru--
+
 Content-language: sr
 Content-type: text/html; charset=UTF-8
 Body:----------sr--
@@ -220,3 +231,27 @@ Body:----------tr--
 
 <!--#include virtual="include/bottom.html" -->
 ----------tr--
+
+Content-language: zh-cn
+Content-type: text/html; charset=UTF-8
+Body:----------zh-cn--
+<!--#set var="CONTENT_LANGUAGE" value="zh-cn"
+--><!--#set var="TITLE" value="先决条件不成立！"
+--><!--#include virtual="include/top.html" -->
+
+    对该 URL 发送的请求，包含的先决条件不成立。
+  
+<!--#include virtual="include/bottom.html" -->
+----------zh-cn--
+
+Content-language: zh-tw
+Content-type: text/html; charset=UTF-8
+Body:----------zh-tw--
+<!--#set var="CONTENT_LANGUAGE" value="zh-tw"
+--><!--#set var="TITLE" value="先決條件不成立！"
+--><!--#include virtual="include/top.html" -->
+
+    對該 URL 發送的請求，包含的先決條件不成立。
+  
+<!--#include virtual="include/bottom.html" -->
+----------zh-tw--

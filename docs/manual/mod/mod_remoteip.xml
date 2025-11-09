@@ -65,7 +65,7 @@ via the request headers.
 <seealso><module>mod_authz_host</module></seealso>
 <seealso><module>mod_status</module></seealso>
 <seealso><module>mod_log_config</module></seealso>
-<seealso><a href="http://www.haproxy.org/download/1.5/doc/proxy-protocol.txt">Proxy Protocol Spec</a></seealso>
+<seealso><a href="http://www.haproxy.org/download/1.8/doc/proxy-protocol.txt">Proxy Protocol Spec</a></seealso>
 
 <section id="processing"><title>Remote IP Processing</title>
 
@@ -112,10 +112,11 @@ via the request headers.
 <name>RemoteIPHeader</name>
 <description>Declare the header field which should be parsed for useragent IP addresses</description>
 <syntax>RemoteIPHeader <var>header-field</var></syntax>
+<default>none</default>
 <contextlist><context>server config</context><context>virtual host</context></contextlist>
 
 <usage>
-    <p>The <directive module="mod_remoteip">RemoteIPHeader</directive> directive triggers
+    <p>The <directive>RemoteIPHeader</directive> directive triggers
     <module>mod_remoteip</module> to treat the value of the specified
     <var>header-field</var> header as the useragent IP address, or list
     of intermediate useragent IP addresses, subject to further configuration
@@ -124,7 +125,7 @@ via the request headers.
 
     <note type="warning"> Unless these other directives are used, <module>mod_remoteip</module> 
     will trust all hosts presenting a non internal address in the 
-    <directive module="mod_remoteip">RemoteIPHeader</directive> header value.
+    <directive>RemoteIPHeader</directive> header value.
     </note>
 
     <example><title>Internal (Load Balancer) Example</title>
@@ -148,7 +149,7 @@ via the request headers.
 <contextlist><context>server config</context><context>virtual host</context></contextlist>
 
 <usage>
-    <p>The <directive module="mod_remoteip">RemoteIPInternalProxy</directive> directive adds one
+    <p>The <directive>RemoteIPInternalProxy</directive> directive adds one
     or more addresses (or address blocks) to trust as presenting a valid
     RemoteIPHeader value of the useragent IP.  Unlike the
     <directive module="mod_remoteip">RemoteIPTrustedProxy</directive> directive, any IP address
@@ -172,7 +173,7 @@ RemoteIPInternalProxy gateway.localdomain
 <contextlist><context>server config</context><context>virtual host</context></contextlist>
 
 <usage>
-    <p>The <directive module="mod_remoteip">RemoteIPInternalProxyList</directive> directive specifies
+    <p>The <directive>RemoteIPInternalProxyList</directive> directive specifies
     a file parsed at startup, and builds a list of addresses (or address blocks)
     to trust as presenting a valid RemoteIPHeader value of the useragent IP.</p>
 
@@ -204,7 +205,7 @@ gateway.localdomain #The front end balancer
 <contextlist><context>server config</context><context>virtual host</context></contextlist>
 
 <usage>
-    <p>The <directive module="mod_remoteip">RemoteIPProxiesHeader</directive> directive specifies
+    <p>The <directive>RemoteIPProxiesHeader</directive> directive specifies
     a header into which <module>mod_remoteip</module> will collect a list of
     all of the intermediate client IP addresses trusted to resolve the useragent
     IP of the request. Note that intermediate
@@ -223,57 +224,34 @@ RemoteIPProxiesHeader X-Forwarded-By
 
 <directivesynopsis>
 <name>RemoteIPProxyProtocol</name>
-<description>Enable, optionally enable or disable the PROXY protocol handling</description>
-<syntax>RemoteIPProxyProtocol On|Optional|Off</syntax>
+<description>Enable or disable PROXY protocol handling</description>
+<syntax>RemoteIPProxyProtocol On|Off</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
+<compatibility>RemoteIPProxyProtocol is only available in httpd 2.4.31 and newer</compatibility>
 
 <usage>
-    <p>The <directive>RemoteIPProxyProtocol</directive> enables or 
+    <p>The <directive>RemoteIPProxyProtocol</directive> directive enables or 
     disables the reading and handling of the PROXY protocol connection header.
     If enabled with the <code>On</code> flag, the upstream client <em>must</em>
     send the header every time it opens a connection or the connection will
-    be aborted. If enabled with the <code>Optional</code> flag, the upstream
-    client <em>may</em> send the header.</p>
+    be aborted unless it is in the list of disabled hosts provided by the
+    <directive module="mod_remoteip">RemoteIPProxyProtocolExceptions</directive>
+    directive.</p>
 
     <p>While this directive may be specified in any virtual host, it is
     important to understand that because the PROXY protocol is connection
     based and protocol agnostic, the enabling and disabling is actually based
-    on ip-address and port. This means that if you have multiple name-based
-    virtual hosts for the same host and port, and you enable it any one of
-    them, then it is enabled for all them (with that host and port). It also
+    on IP address and port. This means that if you have multiple name-based
+    virtual hosts for the same host and port, and you enable it for any one of
+    them, then it is enabled for all of them (with that host and port). It also
     means that if you attempt to enable the PROXY protocol in one and disable
-    in the other, that won't work; in such a case the last one wins and a
+    in the other, that won't work; in such a case, the last one wins and a
     notice will be logged indicating which setting was being overridden.</p>
 
-    <note type="hint">When multiple virtual hosts on the same IP and port are
-    configured with a combination of <code>On</code> and <code>Optional</code>
-    flags, connections will not be aborted if the header is not sent.
-    Instead, enforcement will happen after the request is read so virtual
-    hosts configured with <code>On</code> will return a 400 Bad Request.
-    Virtual hosts configured with <code>Optional</code> will continue as
-    usual but without replacing the client IP information</note>
-    
     <highlight language="config">
 Listen 80
 &lt;VirtualHost *:80&gt;
-    ServerName www.example.com
-    RemoteIPProxyProtocol Optional
-
-    #Requests to this virtual host may optionally not have
-    # a PROXY protocol header provided
-&lt;/VirtualHost&gt;
-
-&lt;VirtualHost *:80&gt;
-    ServerName www.example.com
-    RemoteIPProxyProtocol On
-
-    #Requests to this virtual host must have a PROXY protocol
-    # header provided. If it is missing, a 400 will result
-&lt;/VirtualHost&gt;
-
-Listen 8080
-&lt;VirtualHost *:8080&gt;
     ServerName www.example.com
     RemoteIPProxyProtocol On
 
@@ -281,7 +259,37 @@ Listen 8080
     # header provided. If it is missing, the connection will
     # be aborted
 &lt;/VirtualHost&gt;
+
+Listen 8080
+&lt;VirtualHost *:8080&gt;
+    ServerName www.example.com
+    RemoteIPProxyProtocol On
+    RemoteIPProxyProtocolExceptions 127.0.0.1 10.0.0.0/8
+
+    #Requests to this virtual host must have a PROXY protocol
+    # header provided. If it is missing, the connection will
+    # be aborted except when coming from localhost or the
+    # 10.x.x.x RFC1918 range
+&lt;/VirtualHost&gt;
     </highlight>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>RemoteIPProxyProtocolExceptions</name>
+<description>Disable processing of PROXY header for certain hosts or networks</description>
+<syntax>RemoteIPProxyProtocolExceptions host|range [host|range] [host|range]</syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+<compatibility>RemoteIPProxyProtocolExceptions is only available in httpd 2.4.31 and newer</compatibility>
+
+<usage>
+    <p>The <directive>RemoteIPProxyProtocolExceptions</directive> directive enables or
+    disables the reading and handling of the PROXY protocol connection header.
+    Sometimes it is desirable to require clients to provide the PROXY header, but
+    permit other clients to connect without it. This directive allows a server 
+    administrator to configure a single host or CIDR range of hosts that may do
+    so.</p>
 </usage>
 </directivesynopsis>
 
@@ -292,7 +300,7 @@ Listen 8080
 <contextlist><context>server config</context><context>virtual host</context></contextlist>
 
 <usage>
-    <p>The <directive module="mod_remoteip">RemoteIPTrustedProxy</directive> 
+    <p>The <directive>RemoteIPTrustedProxy</directive> 
     directive restricts which peer IP addresses (or address blocks) will be
     trusted to present  a valid RemoteIPHeader value of the useragent IP.</p>
   
@@ -324,7 +332,7 @@ RemoteIPTrustedProxy proxy.example.com
 <contextlist><context>server config</context><context>virtual host</context></contextlist>
 
 <usage>
-    <p>The <directive module="mod_remoteip">RemoteIPTrustedProxyList</directive> directive specifies
+    <p>The <directive>RemoteIPTrustedProxyList</directive> directive specifies
     a file parsed at startup, and builds a list of addresses (or address blocks)
     to trust as presenting a valid RemoteIPHeader value of the useragent IP.</p>
 

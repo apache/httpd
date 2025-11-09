@@ -18,8 +18,9 @@
 -->
 
 <!DOCTYPE xsl:stylesheet [
-    <!ENTITY nbsp SYSTEM "util/nbsp.xml">
     <!ENTITY lf SYSTEM "util/lf.xml">
+    <!ENTITY nbsp SYSTEM "util/nbsp.xml">
+    <!ENTITY para SYSTEM "util/para.xml">
     <!ENTITY % HTTPD-VERSION SYSTEM "../version.ent">
     %HTTPD-VERSION;
 ]>
@@ -64,6 +65,7 @@
 <xsl:include href="indexpage.xsl" />
 <xsl:include href="quickreference.xsl" />
 <xsl:include href="faq.xsl" />
+<xsl:include href="overrideindex.xsl" />
 
 <!-- load utility snippets -->
 <xsl:include href="util/modtrans.xsl" />
@@ -175,7 +177,7 @@
     <script type="text/javascript" src="{$path}/style/scripts/prettify.min.js">&lf;</script>&lf;
     <!-- chm files do not need a favicon -->
     <xsl:if test="not($is-chm or $is-zip)">&lf;
-        <link rel="shortcut icon" href="{$path}/images/favicon.ico" />
+        <link rel="shortcut icon" href="{$path}/images/favicon.png" />
         <xsl:if test="$is-retired">
             <xsl:choose>
             <xsl:when test="$upgrade">
@@ -393,7 +395,7 @@
 <div class="top"><a href="#page-header"><img alt="top" src="{$path}/images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="comments_section" id="comments_section"><xsl:value-of select="$message[@id='comments']" /></a></h2>
-<div class="warning"><strong>Notice:</strong><br/>This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>&lf;
+<div class="warning"><strong>Notice:</strong><br/>This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Libera.chat, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>&lf;
 <script type="text/javascript">
 <xsl:text disable-output-escaping="yes"><![CDATA[<!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
@@ -417,7 +419,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/]]></xsl:text>&httpd.com
 </xsl:choose>
 <div id="footer">&lf;
     <p class="apache">
-        <xsl:text>Copyright 2017 The Apache Software Foundation.</xsl:text><br />
+        <xsl:text>Copyright 2025 The Apache Software Foundation.</xsl:text><br />
         <xsl:if test="normalize-space($message[@id='before-license'])">
             <xsl:value-of select="$message[@id='before-license']"/>
             <xsl:text> </xsl:text>
@@ -521,6 +523,8 @@ if (typeof(prettyPrint) !== 'undefined') {
           <a id="{@id}" name="{@id}">
               <xsl:apply-templates select="title" mode="print" />
           </a>
+          <xsl:text> </xsl:text>
+          <a class="permalink" href="#{@id}" title="{$message[@id='permalink']}">&para;</a>
         </xsl:when>
 
         <xsl:otherwise>
@@ -539,7 +543,7 @@ if (typeof(prettyPrint) !== 'undefined') {
 <!-- ==================================================================== -->
 <!-- handle subsections (lower level headings)                            -->
 <!-- ==================================================================== -->
-<xsl:template match="section/section">
+<xsl:template match="section/section" priority="3">
 <!-- Section heading -->
 <h3>
     <xsl:choose>
@@ -564,7 +568,7 @@ if (typeof(prettyPrint) !== 'undefined') {
 <!-- ==================================================================== -->
 <!-- handle subsubsections (h4)                                           -->
 <!-- ==================================================================== -->
-<xsl:template match="section/section/section">
+<xsl:template match="section/section/section" priority="4">
 <!-- Section heading -->
 <h4>
     <xsl:choose>
@@ -684,7 +688,7 @@ if (typeof(prettyPrint) !== 'undefined') {
     <xsl:call-template name="pre" />
 </pre>&lf; <!-- /.highlight -->
 </xsl:template>
-<!-- /higlight -->
+<!-- /highlight -->
 
 
 <!-- ==================================================================== -->
@@ -886,17 +890,24 @@ if (typeof(prettyPrint) !== 'undefined') {
         <xsl:variable name="lowerdirective">
             <xsl:choose>
             <xsl:when test="@name">
-                <xsl:value-of select="normalize-space(translate(@name,
-                                        $uppercase, $lowercase))" />
+                <xsl:value-of select="normalize-space(concat(translate(@name,
+                                        $uppercase, $lowercase),@idtype))" />
             </xsl:when>
             <xsl:otherwise>
-                <xsl:value-of select="normalize-space(translate(.,
-                                        $uppercase, $lowercase))" />
+                <xsl:value-of select="normalize-space(concat(translate(.,
+                                        $uppercase, $lowercase),@idtype))" />
             </xsl:otherwise>
             </xsl:choose>
         </xsl:variable>
 
         <xsl:choose>
+        <!-- No link if within the block that describes the directive itself -->
+        <xsl:when test="$in-modulesynopsis and normalize-space(.) = ancestor::directivesynopsis/name">
+                <xsl:if test="@type='section'">&lt;</xsl:if>
+                <xsl:value-of select="."/>
+                <xsl:if test="@type='section'">&gt;</xsl:if>
+                <xsl:message>Removing link to '<xsl:value-of select="."/>'</xsl:message>
+        </xsl:when>
         <xsl:when test="$in-modulesynopsis and normalize-space(@module) = /modulesynopsis/name">
             <a href="#{$lowerdirective}">
                 <xsl:if test="@type='section'">&lt;</xsl:if>
@@ -918,6 +929,17 @@ if (typeof(prettyPrint) !== 'undefined') {
         <xsl:if test="@type='section'">&lt;</xsl:if>
         <xsl:value-of select="."/>
         <xsl:if test="@type='section'">&gt;</xsl:if>
+        <!-- Missing module reference -->
+        <xsl:choose>
+            <!-- within another directive synopsis -->
+            <xsl:when test="normalize-space(.) != ancestor::directivesynopsis/name">
+                <xsl:message>link to '<xsl:value-of select="."/>' directive could be added in directive '<xsl:value-of select="ancestor::directivesynopsis/name"/>'</xsl:message>
+            </xsl:when>
+            <!-- somewhere else (try to find module name to give a hint) -->
+            <xsl:when test="not(ancestor::directivesynopsis/name)">
+                <xsl:message>link to '<xsl:value-of select="."/>' directive could be added in MODULE '<xsl:value-of select="/modulesynopsis/name"/>'</xsl:message>
+            </xsl:when>
+        </xsl:choose>
     </xsl:otherwise>
     </xsl:choose>
 </code>
@@ -1226,7 +1248,7 @@ if (typeof(prettyPrint) !== 'undefined') {
 <!-- ==================================================================== -->
 <!-- Filter &#160; in text() nodes.                                       -->
 <!-- In some environments this character won't be transformed correctly,  -->
-<!-- so we just write it explicitely as "&nbsp;" into the output.         -->
+<!-- so we just write it explicitly as "&nbsp;" into the output.         -->
 <!-- ==================================================================== -->
 <xsl:template match="text()" name="filter.nbsp">
 <xsl:param name="text" select="." />
@@ -1257,11 +1279,7 @@ if (typeof(prettyPrint) !== 'undefined') {
     <xsl:text>Is the document valid (try `build validate-xml`)?</xsl:text>
 </xsl:message>
 </xsl:template>
-<xsl:template match="@*">
-<xsl:copy>
-    <xsl:apply-templates select="*|@*|text()" />
-</xsl:copy>
-</xsl:template>
+<xsl:template match="@*"><xsl:copy /></xsl:template>
 <xsl:template match="br"><br /></xsl:template>
 <xsl:template match="tr"><tr><xsl:apply-templates select="*|@*|text()" /></tr></xsl:template>
 <xsl:template match="th"><th><xsl:apply-templates select="*|@*|text()" /></th></xsl:template>

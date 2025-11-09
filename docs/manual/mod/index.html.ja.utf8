@@ -78,6 +78,7 @@ CGI スクリプトを実行する機能を提供</dd>
 <dt><a href="mod_allowmethods.html">mod_allowmethods</a></dt><dd>Easily restrict what HTTP methods can be used on the server</dd>
 <dt><a href="mod_asis.html">mod_asis</a></dt><dd>自分用の HTTP ヘッダの書かれているファイルを送信する</dd>
 <dt><a href="mod_auth_basic.html">mod_auth_basic</a></dt><dd>基本認証</dd>
+<dt><a href="mod_auth_bearer.html">mod_auth_bearer</a></dt><dd>Bearer HTTP authentication</dd>
 <dt><a href="mod_auth_digest.html">mod_auth_digest</a></dt><dd>User authentication using MD5
     Digest Authentication</dd>
 <dt><a href="mod_auth_form.html">mod_auth_form</a></dt><dd>Form authentication</dd>
@@ -93,6 +94,8 @@ the load on backends</dd>
 httpd authentication and authorization</dd>
 <dt><a href="mod_authnz_ldap.html">mod_authnz_ldap</a></dt><dd>Allows an LDAP directory to be used to store the database
 for HTTP Basic authentication.</dd>
+<dt><a href="mod_autht_core.html">mod_autht_core</a></dt><dd>Core Token Handling</dd>
+<dt><a href="mod_autht_jwt.html">mod_autht_jwt</a></dt><dd>Token authentication using JWT tokens</dd>
 <dt><a href="mod_authz_core.html">mod_authz_core</a></dt><dd>Core Authorization</dd>
 <dt><a href="mod_authz_dbd.html">mod_authz_dbd</a></dt><dd>Group Authorization and Login using SQL</dd>
 <dt><a href="mod_authz_dbm.html">mod_authz_dbm</a></dt><dd>Group authorization using DBM files</dd>
@@ -104,7 +107,9 @@ address)</dd>
 <dt><a href="mod_autoindex.html">mod_autoindex</a></dt><dd>Unix の <code>ls</code> コマンドや
     Win32 の <code>dir</code> シェルコマンドに似た
     ディレクトリインデックスを生成する</dd>
-<dt><a href="mod_buffer.html" id="B" name="B">mod_buffer</a></dt><dd>Support for request buffering</dd>
+<dt><a href="mod_brotli.html" id="B" name="B">mod_brotli</a></dt><dd>Compress content via Brotli before it is delivered to the
+client</dd>
+<dt><a href="mod_buffer.html">mod_buffer</a></dt><dd>Support for request buffering</dd>
 <dt><a href="mod_cache.html" id="C" name="C">mod_cache</a></dt><dd>URI をキーにしたコンテンツのキャッシュ</dd>
 <dt><a href="mod_cache_disk.html">mod_cache_disk</a></dt><dd>URI をキーにしたコンテンツキャッシュストレージ管理</dd>
 <dt><a href="mod_cache_socache.html">mod_cache_socache</a></dt><dd>Shared object cache (socache) based storage module for the
@@ -159,6 +164,9 @@ by other LDAP modules</dd>
 <dt><a href="mod_lua.html">mod_lua</a></dt><dd>Provides Lua hooks into various portions of the httpd
 request processing</dd>
 <dt><a href="mod_macro.html" id="M" name="M">mod_macro</a></dt><dd>Provides macros within apache httpd runtime configuration files</dd>
+<dt><a href="mod_md.html">mod_md</a></dt><dd>Managing domains across virtual hosts, certificate provisioning 
+        via the ACME protocol
+    </dd>
 <dt><a href="mod_mime.html">mod_mime</a></dt><dd>リクエストされたファイルの拡張子とファイルの振る舞い
     (ハンドラとフィルタ)、内容 (MIME タイプ、言語、文字セット、エンコーディング)
     とを関連付ける</dd>
@@ -193,6 +201,7 @@ from Clients' networks in a proxy context.</dd>
 <dt><a href="mod_proxy_http2.html">mod_proxy_http2</a></dt><dd>HTTP/2 support module for
 <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></dd>
 <dt><a href="mod_proxy_scgi.html">mod_proxy_scgi</a></dt><dd>SCGI gateway module for <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></dd>
+<dt><a href="mod_proxy_uwsgi.html">mod_proxy_uwsgi</a></dt><dd>UWSGI gateway module for <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></dd>
 <dt><a href="mod_proxy_wstunnel.html">mod_proxy_wstunnel</a></dt><dd>Websockets support module for
 <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></dd>
 <dt><a href="mod_ratelimit.html" id="R" name="R">mod_ratelimit</a></dt><dd>Bandwidth Rate Limiting for Clients</dd>
@@ -219,6 +228,7 @@ URLs on the fly</dd>
 <dt><a href="mod_socache_dbm.html">mod_socache_dbm</a></dt><dd>DBM based shared object cache provider.</dd>
 <dt><a href="mod_socache_dc.html">mod_socache_dc</a></dt><dd>Distcache based shared object cache provider.</dd>
 <dt><a href="mod_socache_memcache.html">mod_socache_memcache</a></dt><dd>Memcache based shared object cache provider.</dd>
+<dt><a href="mod_socache_redis.html">mod_socache_redis</a></dt><dd>Redis based shared object cache provider.</dd>
 <dt><a href="mod_socache_shmcb.html">mod_socache_shmcb</a></dt><dd>shmcb based shared object cache provider.</dd>
 <dt><a href="mod_speling.html">mod_speling</a></dt><dd>ユーザが入力したであろう間違った URL を、
 大文字小文字の区別を無視することと一つ以下の綴り間違いを許容することで
@@ -258,7 +268,7 @@ filter modules</dd>
 <a href="../tr/mod/" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a> |
 <a href="../zh-cn/mod/" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2017 The Apache Software Foundation.<br />この文書は <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> のライセンスで提供されています。.</p>
+<p class="apache">Copyright 2025 The Apache Software Foundation.<br />この文書は <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> のライセンスで提供されています。.</p>
 <p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/quickreference.html">ディレクティブ</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

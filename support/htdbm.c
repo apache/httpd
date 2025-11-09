@@ -193,6 +193,10 @@ static apr_status_t htdbm_verify(htdbm_t *htdbm)
     char *pwd;
     char *rec, *cmnt;
 
+    if(htdbm->username == NULL) {
+      return APR_ENOENT;
+    }
+
     key.dptr = htdbm->username;
     key.dsize = strlen(htdbm->username);
     if (!apr_dbm_exists(htdbm->dbm, key))
@@ -290,13 +294,13 @@ static void htdbm_usage(void)
         "   -n   Don't update database; display results on stdout.\n"
         "   -b   Use the password from the command line rather than prompting for it.\n"
         "   -i   Read password from stdin without verification (for script usage).\n"
-        "   -m   Force MD5 encryption of the password (default).\n"
-        "   -B   Force BCRYPT encryption of the password (very secure).\n"
+        "   -m   Force MD5 hashing of the password (default).\n"
+        "   -B   Force BCRYPT hashing of the password (very secure).\n"
         "   -C   Set the computing time used for the bcrypt algorithm\n"
         "        (higher is more secure but slower, default: %d, valid: 4 to 31).\n"
-        "   -d   Force CRYPT encryption of the password (8 chars max, insecure).\n"
-        "   -s   Force SHA encryption of the password (insecure).\n"
-        "   -p   Do not encrypt the password (plaintext, insecure).\n"
+        "   -d   Force CRYPT hashing of the password (8 chars max, insecure).\n"
+        "   -s   Force SHA hashing of the password (insecure).\n"
+        "   -p   Do not hash the password (plaintext, insecure).\n"
         "   -T   DBM Type (SDBM|GDBM|DB|default).\n"
         "   -l   Display usernames from database on stdout.\n"
         "   -v   Verify the username/password.\n"

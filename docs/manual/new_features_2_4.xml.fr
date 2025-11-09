@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 1726940 -->
+<!-- English Revision: 1883045 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -112,11 +112,11 @@ serveur HTTP Apache</title>
     <dl>      
 
       <dt><module>mod_proxy_fcgi</module></dt>
-      <dd>Mise à disposition du protocole FastCGI pour
+      <dd>Support des serveur FastCGI d'arrière-plan pour
       <module>mod_proxy</module>.</dd>
 
       <dt><module>mod_proxy_scgi</module></dt>
-      <dd>Mise à disposition du protocole SCGI pour
+      <dd>Support des serveurs SCGI d'arrière-plan pour
       <module>mod_proxy</module>.</dd>
 
       <dt><module>mod_proxy_express</module></dt>
@@ -209,6 +209,30 @@ serveur HTTP Apache</title>
       <dt><module>mod_http2</module> (disponible à partir de la
       version 2.4.17)</dt>
       <dd>Support de la couche transport HTTP/2.</dd>
+
+      <dt><module>mod_proxy_http2</module> (disponible à partir de la version 2.4.19)</dt>
+      <dd>Support du protocole HTTP/2 pour <module>mod_proxy</module></dd>
+
+      <dt><module>mod_proxy_hcheck</module> (disponible à partir de la version 2.4.21)</dt>
+      <dd>Support d'un bilan de santé dynamique indépendant pour les serveurs
+      d'arrière-plan mandatés distants.</dd>
+
+      <dt><module>mod_brotli</module> (disponible à partir de la version 2.4.26)</dt>
+      <dd>Support de l'algorithme de compression Brotli.</dd>
+
+      <dt><module>mod_md</module> (disponible à partir de la version 2.4.30)</dt>
+      <dd>Automatisation de l'obtention de certificats via le protocole ACME.</dd>
+
+      <dt><module>mod_proxy_uwsgi</module> (disponible à partir de la version 2.4.30)</dt>
+      <dd>module passerelle UWSGI pour <module>mod_proxy</module>.</dd>
+
+      <dt><module>mod_socache_redis</module> (disponible à partir de la version 2.4.39)</dt>
+      <dd>Supporte le fournisseur de cache d'objets partagés basé sur <a
+      href="http://redis.io/">Redis</a>.</dd>
+
+      <dt><module>mod_systemd</module> (disponible à partir de la version 2.4.42)</dt>
+      <dd>intégration de systemd. Permet d'utiliser httpd en tant que service avec
+      le paramètre systemd <code>Type=notify</code>.</dd>
 
     </dl>
   </section>
@@ -308,9 +332,9 @@ serveur HTTP Apache</title>
           <module>mod_isapi</module>, ...</dt>
       <dd>La traduction des en-têtes en variables d'environnement est
       plus stricte qu'avant, ce qui permet de diminuer l'exposition aux attaques
-      de type cross-site-scripting via injection d'en-têtes. Les
-      en-têtes contenant des caractères invalides (comme les caractères
-      de soulignement) sont maintenant ignorés. Le document <a
+      de type cross-site-scripting via injection d'en-têtes. Les noms
+      d'en-têtes contenant des caractères invalides (comme les caractères
+      de soulignement) ne sont plus convertis en variables d'environnement. Le document <a
       href="env.html">Les variables d'environnement dans Apache</a>
       présente quelques pistes pour contourner ce problème avec les
       clients anciens qui nécessitent de tels en-têtes (Ceci affecte

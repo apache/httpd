@@ -32,7 +32,7 @@ static apr_status_t verify_signature(sct_fields_t *sctf,
         return APR_EINVAL;
     }
 
-#if OPENSSL_VERSION_NUMBER < 0x10100000L
+#if OPENSSL_VERSION_NUMBER < 0x10100000L || defined(LIBRESSL_VERSION_NUMBER)
     ctx = EVP_MD_CTX_create();
 #else
     ctx = EVP_MD_CTX_new();
@@ -41,7 +41,7 @@ static apr_status_t verify_signature(sct_fields_t *sctf,
     ap_assert(1 == EVP_VerifyUpdate(ctx, sctf->signed_data,
                                     sctf->signed_data_len));
     rc = EVP_VerifyFinal(ctx, sctf->sig, sctf->siglen, pkey);
-#if OPENSSL_VERSION_NUMBER < 0x10100000L
+#if OPENSSL_VERSION_NUMBER < 0x10100000L || defined(LIBRESSL_VERSION_NUMBER)
     EVP_MD_CTX_destroy(ctx);
 #else
     EVP_MD_CTX_free(ctx);
@@ -217,7 +217,7 @@ apr_status_t sct_parse(const char *source,
                 + 2 + fields->extlen /* 16-bit length + extensions */
                 ;
             avail = orig_len;
-            mem = malloc(avail);
+            mem = ap_malloc(avail);
             orig_mem = mem;
             
             rv = ctutil_serialize_uint8(&mem, &avail, 0); /* version 1 */

@@ -1,0 +1,160 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
+<!-- $LastChangedRevision: 1907762 $ -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_auth_bearer.xml.meta">
+
+<name>mod_auth_bearer</name>
+<description>Bearer HTTP authentication</description>
+<status>Base</status>
+<sourcefile>mod_auth_bearer.c</sourcefile>
+<identifier>auth_bearer_module</identifier>
+
+<summary>
+    <p>This module allows the use of HTTP Bearer Authentication to
+    restrict access by passing the bearer token to the given providers.
+    This module should be combined with at least one token module
+    such as <module>mod_autht_jwt</module> and one authorization
+    module such as <module>mod_authz_user</module>.</p>
+</summary>
+<seealso><directive module="mod_authn_core">AuthName</directive></seealso>
+<seealso><directive module="mod_authn_core">AuthType</directive></seealso>
+<seealso><directive module="mod_authz_core">Require</directive></seealso>
+<seealso><a href="../howto/auth.html">Authentication howto</a></seealso>
+
+<directivesynopsis>
+<name>AuthBearerProvider</name>
+<description>Sets the authentication provider(s) for this location</description>
+<syntax>AuthBearerProvider <var>provider-name</var>
+[<var>provider-name</var>] ...</syntax>
+<default>AuthBearerProvider file</default>
+<contextlist><context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>AuthConfig</override>
+
+<usage>
+    <p>The <directive>AuthBearerProvider</directive> directive sets
+    which provider is used to verify tokens for this location.
+    The default <code>jwt</code> provider is implemented
+    by the <module>mod_autht_jwt</module> module.  Make sure
+    that the chosen provider module is present in the server.</p>
+    <example><title>Example</title>
+    <highlight language="config">
+&lt;Location "/secure"&gt;
+    AuthType bearer
+    AuthName "private area"
+    AuthBearerProvider jwt
+    AuthtJwtVerify hs256 file "/www/etc/jwt.secret"
+    Require            valid-user
+&lt;/Location&gt;
+    </highlight>
+    </example>
+    <p>Providers are queried in order until a provider finds a match
+    for the requested token. This usually means that the token has been
+    correctly signed, or that the token has not expired.</p>
+
+    <p>The first implemented provider is <module>mod_autht_jwt</module>.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>AuthBearerAuthoritative</name>
+<description>Sets whether token verification is passed to lower level
+modules</description>
+<syntax>AuthBearerAuthoritative On|Off</syntax>
+<default>AuthBearerAuthoritative On</default>
+<contextlist><context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>AuthConfig</override>
+
+<usage>
+    <p>Normally, each token verification module listed in <directive
+    module="mod_auth_bearer">AuthBearerProvider</directive> will attempt
+    to verify the token, and if the token is not found to be valid,
+    access will be denied. Setting the
+    <directive>AuthBearerAuthoritative</directive> directive explicitly
+    to <code>Off</code> allows for token verification to be passed on to
+    other non-provider-based modules if the token is not recognised.
+    This should only be necessary when combining
+    <module>mod_auth_bearer</module> with third-party modules that are not
+    configured with the
+    <directive module="mod_auth_bearer">AuthBearerProvider</directive>
+    directive.  When using such modules, the order of processing
+    is determined in the modules' source code and is not configurable.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>AuthBearerProxy</name>
+<description>Pass a bearer authentication token over a proxy connection
+generated using the given expression</description>
+<syntax>AuthBearerProxy off|<var>expression</var></syntax>
+<default>none</default>
+<contextlist><context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>AuthConfig</override>
+<compatibility>Apache HTTP Server 2.5.1 and later</compatibility>
+<usage>
+    <p>The expression specified is passed as a bearer token in the
+    Authorization header, which is passed to the server or service
+    behind the webserver. The expression is interpreted using the
+    <a href="../expr.html">expression parser</a>, which allows the
+    token to be set based on request parameters.</p>
+
+    <note>
+    The Authorization header added by this directive is <em>not</em>
+    input into any authentication or authorization within the local 
+    server.  It is designed to be passed along to upstream servers.
+    </note>
+
+    <p>In this example, we pass a fixed token to a backend server.</p>
+
+    <example><title>Fixed Example</title>
+    <highlight language="config">
+&lt;Location "/demo"&gt;
+    AuthBearerProxy my-fixed-token
+&lt;/Location&gt;
+    </highlight>
+    </example>
+
+    <p>In this example, we pass the query string as the token to the
+    backend server.</p>
+
+    <example><title>Query String Example</title>
+    <highlight language="config">
+&lt;Location "/secure"&gt;
+    AuthBearerProxy "%{QUERY_STRING}"
+&lt;/Location&gt;
+    </highlight>
+    </example>
+
+    <example><title>Exclusion Example</title>
+    <highlight language="config">
+&lt;Location "/public"&gt;
+    AuthBearerProxy off
+&lt;/Location&gt;
+    </highlight>
+    </example>
+
+</usage>
+</directivesynopsis>
+
+</modulesynopsis>

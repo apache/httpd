@@ -128,9 +128,9 @@ AP_DECLARE(apr_status_t) ap_parse_mutex(const char *arg, apr_pool_t *pool,
 
 typedef struct {
     apr_int32_t options;
-    int set;
-    int none;
-    int omit_pid;
+    unsigned int set :      1;
+    unsigned int none :     1;
+    unsigned int omit_pid : 1;
     apr_lockmech_e mech;
     const char *dir;
 } mutex_cfg_t;
@@ -505,7 +505,7 @@ AP_CORE_DECLARE(void) ap_dump_mutexes(apr_pool_t *p, server_rec *s, apr_file_t *
     for (idx = apr_hash_first(p, mxcfg_by_type); idx; idx = apr_hash_next(idx))
     {
         mutex_cfg_t *mxcfg;
-        const char *name, *mech;
+        const char *name, *mech = "<unknown>";
         const void *name_;
         const char *dir = "";
         apr_hash_this(idx, &name_, NULL, NULL);

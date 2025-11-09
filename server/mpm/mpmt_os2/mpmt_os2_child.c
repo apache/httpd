@@ -110,6 +110,7 @@ void ap_mpm_child_main(apr_pool_t *pconf)
 
     /* Create pool for child */
     apr_pool_create(&pchild, pconf);
+    apr_pool_tag(pchild, "pchild");
 
     ap_run_child_init(pchild, ap_server_conf);
 
@@ -199,6 +200,7 @@ void ap_mpm_child_main(apr_pool_t *pconf)
         int last_poll_idx = 0;
 
         apr_pool_create(&pconn, pchild);
+        apr_pool_tag(pconn, "transaction");
         worker_args = apr_palloc(pconn, sizeof(worker_args_t));
         worker_args->pconn = pconn;
 

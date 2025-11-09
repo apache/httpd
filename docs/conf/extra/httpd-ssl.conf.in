@@ -42,6 +42,34 @@ Listen @@SSLPort@@
 ##  the main server and all SSL-enabled virtual hosts.
 ##
 
+#   SSL Policy:
+#   Choose from a pre-defined setting of SSL* configurations, based on 
+#   the Mozilla recommendations from:
+#      https://wiki.mozilla.org/Security/Server_Side_TLS 
+#   These policies will be updated over time in new releases to keep
+#   settings compatible and secure with "modern" browser, or if you
+#   need to support legacy installtions, "intermediate" might be your
+#   choice.
+#   If you run the following command on your installation, the exact
+#   contents of the defined SSL policies will be listed:
+#
+#     > httpd -t -D DUMP_SSL_POLICIES
+#
+#   Worth noting, a SSLPolicy defines the ground rules. What ever is
+#   configured beside it, is added "on top". If a configuration has
+#   a SSLPolicy *and* a SSLCipherSuite, any cipher suite in the policy
+#   will be overwritten in this context.
+#
+#   If your OpenSSL library does not support TLSv1.2 (OpenSSL 1.0.2
+#   and later), "modern" will not be available.
+#   If you enable one of the policies below, we recommend that you
+#   refrain from configuring any of the following, unless you are
+#   certain that you want to override: 
+#      SSLCipherSuite, SSLProxyCipherSuite, SSLHonorCipherOrder,
+#      SSLProtocol, SSLProxyProtocol
+#SSLPolicy intermediate
+#SSLPolicy modern
+
 #   SSL Cipher Suite:
 #   List the ciphers that the client is permitted to negotiate,
 #   and that httpd will negotiate as the client of a proxied server.
@@ -49,8 +77,8 @@ Listen @@SSLPort@@
 #   ensure these follow appropriate best practices for this deployment.
 #   httpd 2.2.30, 2.4.13 and later force-disable aNULL, eNULL and EXP ciphers,
 #   while OpenSSL disabled these by default in 0.9.8zf/1.0.0r/1.0.1m/1.0.2a.
-SSLCipherSuite HIGH:MEDIUM:!MD5:!RC4
-SSLProxyCipherSuite HIGH:MEDIUM:!MD5:!RC4
+SSLCipherSuite HIGH:MEDIUM:!MD5:!RC4:!3DES
+SSLProxyCipherSuite HIGH:MEDIUM:!MD5:!RC4:!3DES
 
 #  By the end of 2016, only TLSv1.2 ciphers should remain in use.
 #  Older ciphers should be disallowed as soon as possible, while the
@@ -252,34 +280,6 @@ SSLCertificateKeyFile "@rel_sysconfdir@/server.key"
 <Directory "@exp_cgidir@">
     SSLOptions +StdEnvVars
 </Directory>
-
-#   SSL Protocol Adjustments:
-#   The safe and default but still SSL/TLS standard compliant shutdown
-#   approach is that mod_ssl sends the close notify alert but doesn't wait for
-#   the close notify alert from client. When you need a different shutdown
-#   approach you can use one of the following variables:
-#   o ssl-unclean-shutdown:
-#     This forces an unclean shutdown when the connection is closed, i.e. no
-#     SSL close notify alert is sent or allowed to be received.  This violates
-#     the SSL/TLS standard but is needed for some brain-dead browsers. Use
-#     this when you receive I/O errors because of the standard approach where
-#     mod_ssl sends the close notify alert.
-#   o ssl-accurate-shutdown:
-#     This forces an accurate shutdown when the connection is closed, i.e. a
-#     SSL close notify alert is sent and mod_ssl waits for the close notify
-#     alert of the client. This is 100% SSL/TLS standard compliant, but in
-#     practice often causes hanging connections with brain-dead browsers. Use
-#     this only for browsers where you know that their SSL implementation
-#     works correctly. 
-#   Notice: Most problems of broken clients are also related to the HTTP
-#   keep-alive facility, so you usually additionally want to disable
-#   keep-alive for those clients, too. Use variable "nokeepalive" for this.
-#   Similarly, one has to force some clients to use HTTP/1.0 to workaround
-#   their broken HTTP/1.1 implementation. Use variables "downgrade-1.0" and
-#   "force-response-1.0" for this.
-BrowserMatch "MSIE [2-5]" \
-         nokeepalive ssl-unclean-shutdown \
-         downgrade-1.0 force-response-1.0
 
 #   Per-Server Logging:
 #   The home of a custom SSL log file. Use this when you want a

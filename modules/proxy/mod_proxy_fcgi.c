@@ -17,12 +17,37 @@
 #include "mod_proxy.h"
 #include "util_fcgi.h"
 #include "util_script.h"
+#include "ap_expr.h"
 
 module AP_MODULE_DECLARE_DATA proxy_fcgi_module;
 
 typedef struct {
-    int need_dirwalk;
+    ap_expr_info_t *cond;
+    ap_expr_info_t *subst;
+    const char *envname;
+} sei_entry;
+
+typedef struct {
+    char *dirwalk_uri_path;
 } fcgi_req_config_t;
+
+/* We will assume FPM, but still differentiate */
+typedef enum {
+    BACKEND_DEFAULT_UNKNOWN = 0,
+    BACKEND_FPM,
+    BACKEND_GENERIC,
+} fcgi_backend_t;
+
+
+#define FCGI_MAY_BE_FPM(dconf)                              \
+        (dconf &&                                           \
+        ((dconf->backend_type == BACKEND_DEFAULT_UNKNOWN) || \
+        (dconf->backend_type == BACKEND_FPM)))
+
+typedef struct {
+    fcgi_backend_t backend_type;
+    apr_array_header_t *env_fixups;
+} fcgi_dirconf_t;
 
 /*
  * Canonicalise http-like URLs.
@@ -38,6 +63,8 @@ static int proxy_fcgi_canon(request_rec *r, char *url)
     apr_port_t port, def_port;
     fcgi_req_config_t *rconf = NULL;
     const char *pathinfo_type = NULL;
+    fcgi_dirconf_t *dconf = ap_get_module_config(r->per_dir_config,
+                                                 &proxy_fcgi_module);
 
     if (ap_cstr_casecmpn(url, "fcgi:", 5) == 0) {
         url += 5;
@@ -67,15 +94,41 @@ static int proxy_fcgi_canon(request_rec *r, char *url)
         host = apr_pstrcat(r->pool, "[", host, "]", NULL);
     }
 
-    if (apr_table_get(r->notes, "proxy-nocanon")) {
-        path = url;   /* this is the raw path */
+    if (apr_table_get(r->notes, "proxy-sethandler")
+        || apr_table_get(r->notes, "proxy-nocanon")
+        || apr_table_get(r->notes, "proxy-noencode")) {
+        char *c = url;
+
+        /* We do not call ap_proxy_canonenc_ex() on the path here, don't
+         * let control characters pass still, and for php-fpm no '?' either.
+         */
+        if (FCGI_MAY_BE_FPM(dconf)) {
+            while (!apr_iscntrl(*c) && *c != '?')
+                c++;
+        }
+        else {
+            while (!apr_iscntrl(*c))
+                c++;
+        }
+        if (*c) {
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(10414)
+                          "To be forwarded path contains control characters%s (%s)",
+                          FCGI_MAY_BE_FPM(dconf) ? " or '?'" : "", url);
+            return HTTP_FORBIDDEN;
+        }
+
+        path = url;  /* this is the raw path */
     }
     else {
-        path = ap_proxy_canonenc(r->pool, url, strlen(url), enc_path, 0,
-                             r->proxyreq);
+        core_dir_config *d = ap_get_core_module_config(r->per_dir_config);
+        int flags = d->allow_encoded_slashes && !d->decode_encoded_slashes ? PROXY_CANONENC_NOENCODEDSLASHENCODING : 0;
+
+        path = ap_proxy_canonenc_ex(r->pool, url, strlen(url), enc_path, flags,
+                                    r->proxyreq);
+        if (!path) {
+            return HTTP_BAD_REQUEST;
+        }
     }
-    if (path == NULL)
-        return HTTP_BAD_REQUEST;
 
     r->filename = apr_pstrcat(r->pool, "proxy:fcgi://", host, sport, "/",
                               path, NULL);
@@ -84,45 +137,46 @@ static int proxy_fcgi_canon(request_rec *r, char *url)
                   "set r->filename to %s", r->filename);
 
     rconf = ap_get_module_config(r->request_config, &proxy_fcgi_module);
-    if (rconf == NULL) { 
+    if (rconf == NULL) {
         rconf = apr_pcalloc(r->pool, sizeof(fcgi_req_config_t));
         ap_set_module_config(r->request_config, &proxy_fcgi_module, rconf);
     }
+    rconf->dirwalk_uri_path = NULL;
 
-    if (NULL != (pathinfo_type = apr_table_get(r->subprocess_env, "proxy-fcgi-pathinfo"))) {
+    pathinfo_type = apr_table_get(r->subprocess_env, "proxy-fcgi-pathinfo");
+    if (pathinfo_type) {
         /* It has to be on disk for this to work */
-        if (!strcasecmp(pathinfo_type, "full")) { 
-            rconf->need_dirwalk = 1;
-            ap_unescape_url_keep2f(path, 0);
+        if (!strcasecmp(pathinfo_type, "full")) {
+            rconf->dirwalk_uri_path = apr_pstrcat(r->pool, "/", url, NULL);
         }
-        else if (!strcasecmp(pathinfo_type, "first-dot")) { 
+        else if (!strcasecmp(pathinfo_type, "first-dot")) {
             char *split = ap_strchr(path, '.');
-            if (split) { 
+            if (split) {
                 char *slash = ap_strchr(split, '/');
-                if (slash) { 
+                if (slash) {
                     r->path_info = apr_pstrdup(r->pool, slash);
                     ap_unescape_url_keep2f(r->path_info, 0);
                     *slash = '\0'; /* truncate path */
                 }
             }
         }
-        else if (!strcasecmp(pathinfo_type, "last-dot")) { 
+        else if (!strcasecmp(pathinfo_type, "last-dot")) {
             char *split = ap_strrchr(path, '.');
-            if (split) { 
+            if (split) {
                 char *slash = ap_strchr(split, '/');
-                if (slash) { 
+                if (slash) {
                     r->path_info = apr_pstrdup(r->pool, slash);
                     ap_unescape_url_keep2f(r->path_info, 0);
                     *slash = '\0'; /* truncate path */
                 }
             }
         }
-        else { 
+        else {
             /* before proxy-fcgi-pathinfo had multi-values. This requires the
              * the FCGI server to fixup PATH_INFO because it's the entire path
              */
             r->path_info = apr_pstrcat(r->pool, "/", path, NULL);
-            if (!strcasecmp(pathinfo_type, "unescape")) { 
+            if (!strcasecmp(pathinfo_type, "unescape")) {
                 ap_unescape_url_keep2f(r->path_info, 0);
             }
             ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01061)
@@ -131,6 +185,58 @@ static int proxy_fcgi_canon(request_rec *r, char *url)
     }
 
     return OK;
+}
+
+
+/*
+  ProxyFCGISetEnvIf "reqenv('PATH_INFO') =~ m#/foo(\d+)\.php$#" COVENV1 "$1"
+  ProxyFCGISetEnvIf "reqenv('PATH_INFO') =~ m#/foo(\d+)\.php$#" PATH_INFO "/foo.php"
+  ProxyFCGISetEnvIf "reqenv('PATH_TRANSLATED') =~ m#(/.*foo)(\d+)(.*)#" PATH_TRANSLATED "$1$3"
+*/
+static apr_status_t fix_cgivars(request_rec *r, fcgi_dirconf_t *dconf)
+{
+    sei_entry *entries;
+    const char *err, *src;
+    int i = 0, rc = 0;
+    ap_regmatch_t regm[AP_MAX_REG_MATCH];
+
+    entries = (sei_entry *) dconf->env_fixups->elts;
+    for (i = 0; i < dconf->env_fixups->nelts; i++) {
+        sei_entry *entry = &entries[i];
+
+        rc = ap_expr_exec_re(r, entry->cond, AP_MAX_REG_MATCH, regm, &src, &err);
+        if (rc < 0) { 
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(10241) 
+                          "fix_cgivars: Condition eval returned %d: %s", 
+                          rc, err);
+            return APR_EGENERAL;
+        }
+        else if (rc == 0) { 
+            continue; /* evaluated false */
+        }
+
+        if (entry->envname[0] == '!') {
+            apr_table_unset(r->subprocess_env, entry->envname+1);
+        }
+        else {
+            const char *val = ap_expr_str_exec_re(r, entry->subst, AP_MAX_REG_MATCH, regm, &src, &err);
+            if (err) {
+                ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(03514)
+                              "Error evaluating expression for replacement of %s: '%s'",
+                               entry->envname, err);
+                continue;
+            }
+            if (APLOGrtrace4(r)) {
+                const char *oldval = apr_table_get(r->subprocess_env, entry->envname);
+                ap_log_rerror(APLOG_MARK, APLOG_TRACE4, 0, r,
+                              "fix_cgivars: override %s from '%s' to '%s'",
+                              entry->envname, oldval, val);
+
+            }
+            apr_table_setn(r->subprocess_env, entry->envname, val);
+        }
+    }
+    return APR_SUCCESS;
 }
 
 /* Wrapper for apr_socket_sendv that handles updating the worker stats. */
@@ -254,41 +360,89 @@ static apr_status_t send_environment(proxy_conn_rec *conn, request_rec *r,
     apr_size_t avail_len, len, required_len;
     int next_elem, starting_elem;
     fcgi_req_config_t *rconf = ap_get_module_config(r->request_config, &proxy_fcgi_module);
+    fcgi_dirconf_t *dconf = ap_get_module_config(r->per_dir_config, &proxy_fcgi_module);
+    char *proxy_filename = r->filename;
 
-    if (rconf) { 
-       if (rconf->need_dirwalk) { 
-          ap_directory_walk(r);
-       }
+    /* Resolve SCRIPT_NAME/FILENAME from the filesystem? */
+    if (rconf && rconf->dirwalk_uri_path) {
+        char *saved_uri = r->uri;
+        char *saved_path_info = r->path_info;
+        char *saved_canonical_filename = r->canonical_filename;
+        int saved_filetype = r->finfo.filetype;
+        int i = 0;
+
+        r->proxyreq = PROXYREQ_NONE;
+        do {
+            r->path_info = NULL;
+            r->finfo.filetype = APR_NOFILE;
+            r->uri = r->filename = r->canonical_filename = rconf->dirwalk_uri_path;
+            /* Try without than with DocumentRoot prefix */
+            if (i && ap_core_translate(r) != OK) {
+                continue;
+            }
+            ap_directory_walk(r);
+        } while (r->finfo.filetype != APR_REG && ++i < 2);
+        r->proxyreq = PROXYREQ_REVERSE;
+
+        /* If no actual script was found, fall back to the "proxy:"
+         * SCRIPT_FILENAME dealt with below or by FPM directly.
+         */
+        if (r->finfo.filetype != APR_REG) {
+            r->filename = proxy_filename;
+            r->canonical_filename = saved_canonical_filename;
+            r->finfo.filetype = saved_filetype;
+            r->path_info = saved_path_info;
+        }
+
+        /* Restore REQUEST_URI in any case */
+        r->uri = saved_uri;
     }
 
-    /* Strip proxy: prefixes */
-    if (r->filename) {
+    /* Strip "proxy:" prefixes? */
+    if (r->filename == proxy_filename) {
         char *newfname = NULL;
 
         if (!strncmp(r->filename, "proxy:balancer://", 17)) {
             newfname = apr_pstrdup(r->pool, r->filename+17);
         }
-        else if (!strncmp(r->filename, "proxy:fcgi://", 13)) {
-            newfname = apr_pstrdup(r->pool, r->filename+13);
-        }
-        /* Query string in environment only */
-        if (newfname && r->args && *r->args) { 
-            char *qs = strrchr(newfname, '?');
-            if (qs && !strcmp(qs+1, r->args)) { 
-                *qs = '\0';
+
+        if (!FCGI_MAY_BE_FPM(dconf))  {
+            if (!strncmp(r->filename, "proxy:fcgi://", 13)) {
+                /* If we strip this under FPM, and any internal redirect occurs
+                 * on PATH_INFO, FPM may use PATH_TRANSLATED instead of
+                 * SCRIPT_FILENAME (a la mod_fastcgi + Action).
+                 */
+                newfname = apr_pstrdup(r->pool, r->filename+13);
+            }
+
+            /* Strip potential query string (nocanon) from SCRIPT_FILENAME
+             * if it's the same as QUERY_STRING.
+             */
+            if (newfname && r->args && *r->args) {
+                char *qs = strchr(newfname, '?');
+                if (qs && !strcmp(qs+1, r->args)) {
+                    *qs = '\0';
+                }
             }
         }
 
         if (newfname) {
-            newfname = ap_strchr(newfname, '/');
-            r->filename = newfname;
+            r->filename = ap_strchr(newfname, '/');
         }
     }
 
     ap_add_common_vars(r);
     ap_add_cgi_vars(r);
- 
+
+    /* SCRIPT_NAME/FILENAME set, restore original */
+    r->filename = proxy_filename;
+
     /* XXX are there any FastCGI specific env vars we need to send? */
+
+    /* Give admins final option to fine-tune env vars */
+    if (APR_SUCCESS != (rv = fix_cgivars(r, dconf))) { 
+        return rv;
+    }
 
     /* XXX mod_cgi/mod_cgid use ap_create_environment here, which fills in
      *     the TZ value specially.  We could use that, but it would mean
@@ -301,7 +455,7 @@ static apr_status_t send_environment(proxy_conn_rec *conn, request_rec *r,
 
     if (APLOGrtrace8(r)) {
         int i;
-        
+
         for (i = 0; i < envarr->nelts; ++i) {
             ap_log_rerror(APLOG_MARK, APLOG_TRACE8, 0, r, APLOGNO(01062)
                           "sending env var '%s' value '%s'",
@@ -442,7 +596,8 @@ static int handle_headers(request_rec *r, int *state,
 static apr_status_t dispatch(proxy_conn_rec *conn, proxy_dir_conf *conf,
                              request_rec *r, apr_pool_t *setaside_pool,
                              apr_uint16_t request_id, const char **err,
-                             int *bad_request, int *has_responded)
+                             int *bad_request, int *has_responded,
+                             apr_bucket_brigade *input_brigade)
 {
     apr_bucket_brigade *ib, *ob;
     int seen_end_of_headers = 0, done = 0, ignore_body = 0;
@@ -453,6 +608,8 @@ static apr_status_t dispatch(proxy_conn_rec *conn, proxy_dir_conf *conf,
     ap_fcgi_header header;
     unsigned char farray[AP_FCGI_HEADER_LEN];
     apr_pollfd_t pfd;
+    apr_pollfd_t *flushpoll = NULL;
+    apr_int32_t flushpoll_fd;
     int header_state = HDR_STATE_READING_HEADERS;
     char stack_iobuf[AP_IOBUFSIZE];
     apr_size_t iobuf_size = AP_IOBUFSIZE;
@@ -461,13 +618,24 @@ static apr_status_t dispatch(proxy_conn_rec *conn, proxy_dir_conf *conf,
     *err = NULL;
     if (conn->worker->s->io_buffer_size_set) {
         iobuf_size = conn->worker->s->io_buffer_size;
-        iobuf = apr_palloc(r->pool, iobuf_size);
+        /* Allocate a buffer if the configured size is larger than the
+         * stack buffer, otherwise use the stack buffer. */
+        if (iobuf_size > AP_IOBUFSIZE) {
+            iobuf = apr_palloc(r->pool, iobuf_size);
+        }
     }
 
     pfd.desc_type = APR_POLL_SOCKET;
     pfd.desc.s = conn->sock;
     pfd.p = r->pool;
     pfd.reqevents = APR_POLLIN | APR_POLLOUT;
+
+    if (conn->worker->s->flush_packets == flush_auto) {
+        flushpoll = apr_pcalloc(r->pool, sizeof(apr_pollfd_t));
+        flushpoll->reqevents = APR_POLLIN;
+        flushpoll->desc_type = APR_POLL_SOCKET;
+        flushpoll->desc.s = conn->sock;
+    }
 
     ib = apr_brigade_create(r->pool, c->bucket_alloc);
     ob = apr_brigade_create(r->pool, c->bucket_alloc);
@@ -495,9 +663,26 @@ static apr_status_t dispatch(proxy_conn_rec *conn, proxy_dir_conf *conf,
             int last_stdin = 0;
             char *iobuf_cursor;
 
-            rv = ap_get_brigade(r->input_filters, ib,
-                                AP_MODE_READBYTES, APR_BLOCK_READ,
-                                iobuf_size);
+            if (APR_BRIGADE_EMPTY(input_brigade)) {
+                rv = ap_get_brigade(r->input_filters, ib,
+                                    AP_MODE_READBYTES, APR_BLOCK_READ,
+                                    iobuf_size);
+            }
+            else {
+                apr_bucket *e;
+                APR_BRIGADE_CONCAT(ib, input_brigade);
+                rv = apr_brigade_partition(ib, iobuf_size, &e);
+                if (rv == APR_SUCCESS) {
+                    while (e != APR_BRIGADE_SENTINEL(ib)
+                           && APR_BUCKET_IS_METADATA(e)) {
+                        e = APR_BUCKET_NEXT(e);
+                    }
+                    apr_brigade_split_ex(ib, e, input_brigade);
+                }
+                else if (rv == APR_INCOMPLETE) {
+                    rv = APR_SUCCESS;
+                }
+            }
             if (rv != APR_SUCCESS) {
                 *err = "reading input brigade";
                 *bad_request = 1;
@@ -579,6 +764,7 @@ static apr_status_t dispatch(proxy_conn_rec *conn, proxy_dir_conf *conf,
             apr_bucket *b;
             unsigned char plen;
             unsigned char type, version;
+            int mayflush = 0;
 
             /* First, we grab the header... */
             rv = get_data_full(conn, (char *) farray, AP_FCGI_HEADER_LEN);
@@ -646,6 +832,15 @@ recv_again:
 
                             status = ap_scan_script_header_err_brigade_ex(r, ob,
                                 NULL, APLOG_MODULE_INDEX);
+
+                            /* FCGI has its own body framing mechanism which we don't
+                             * match against any provided Content-Length, so let the
+                             * core determine C-L vs T-E based on what's actually sent.
+                             */
+                            if (!apr_table_get(r->subprocess_env, AP_TRUST_CGILIKE_CL_ENVVAR))
+                                apr_table_unset(r->headers_out, "Content-Length");
+                            apr_table_unset(r->headers_out, "Transfer-Encoding");
+
                             /* suck in all the rest */
                             if (status != OK) {
                                 apr_bucket *tmp_b;
@@ -682,8 +877,7 @@ recv_again:
                                 }
                             }
 
-                            if (conf->error_override
-                                && ap_is_HTTP_ERROR(r->status) && ap_is_initial_req(r)) {
+                            if (ap_proxy_should_override(conf, r->status) && ap_is_initial_req(r)) {
                                 /*
                                  * set script_error_status to discard
                                  * everything after the headers
@@ -707,6 +901,7 @@ recv_again:
                                     *err = "passing brigade to output filters";
                                     break;
                                 }
+                                mayflush = 1;
                             }
                             apr_brigade_cleanup(ob);
 
@@ -733,6 +928,7 @@ recv_again:
                                 *err = "passing brigade to output filters";
                                 break;
                             }
+                            mayflush = 1;
                         }
                         apr_brigade_cleanup(ob);
                     }
@@ -797,6 +993,20 @@ recv_again:
                     break;
                 }
             }
+
+            if (mayflush && ((conn->worker->s->flush_packets == flush_on) ||
+                             ((conn->worker->s->flush_packets == flush_auto) && 
+                              (apr_poll(flushpoll, 1, &flushpoll_fd,
+                               conn->worker->s->flush_wait) == APR_TIMEUP)))) {
+                apr_bucket* flush_b = apr_bucket_flush_create(r->connection->bucket_alloc);
+                APR_BRIGADE_INSERT_TAIL(ob, flush_b);
+                rv = ap_pass_brigade(r->output_filters, ob);
+                if (rv != APR_SUCCESS) {
+                    *err = "passing headers brigade to output filters";
+                    break;
+                }
+                mayflush = 0;
+            }
         }
     }
 
@@ -819,7 +1029,8 @@ static int fcgi_do_request(apr_pool_t *p, request_rec *r,
                            conn_rec *origin,
                            proxy_dir_conf *conf,
                            apr_uri_t *uri,
-                           char *url, char *server_portstr)
+                           char *url, char *server_portstr,
+                           apr_bucket_brigade *input_brigade)
 {
     /* Request IDs are arbitrary numbers that we assign to a
      * single request. This would allow multiplex/pipelining of
@@ -843,6 +1054,7 @@ static int fcgi_do_request(apr_pool_t *p, request_rec *r,
     }
 
     apr_pool_create(&temp_pool, r->pool);
+    apr_pool_tag(temp_pool, "proxy_fcgi_do_request");
 
     /* Step 2: Send Environment via FCGI_PARAMS */
     rv = send_environment(conn, r, temp_pool, request_id);
@@ -855,13 +1067,14 @@ static int fcgi_do_request(apr_pool_t *p, request_rec *r,
 
     /* Step 3: Read records from the back end server and handle them. */
     rv = dispatch(conn, conf, r, temp_pool, request_id,
-                  &err, &bad_request, &has_responded);
+                  &err, &bad_request, &has_responded,
+                  input_brigade);
     if (rv != APR_SUCCESS) {
         /* If the client aborted the connection during retrieval or (partially)
          * sending the response, don't return a HTTP_SERVICE_UNAVAILABLE, since
          * this is not a backend problem. */
         if (r->connection->aborted) {
-            ap_log_rerror(APLOG_MARK, APLOG_TRACE1, rv, r, 
+            ap_log_rerror(APLOG_MARK, APLOG_TRACE1, rv, r,
                           "The client aborted the connection.");
             conn->close = 1;
             return OK;
@@ -891,6 +1104,8 @@ static int fcgi_do_request(apr_pool_t *p, request_rec *r,
 
 #define FCGI_SCHEME "FCGI"
 
+#define MAX_MEM_SPOOL 16384
+
 /*
  * This handles fcgi:(dest) URLs
  */
@@ -903,6 +1118,8 @@ static int proxy_fcgi_handler(request_rec *r, proxy_worker *worker,
     char server_portstr[32];
     conn_rec *origin = NULL;
     proxy_conn_rec *backend = NULL;
+    apr_bucket_brigade *input_brigade;
+    apr_off_t input_bytes = 0;
     apr_uri_t *uri;
 
     proxy_dir_conf *dconf = ap_get_module_config(r->per_dir_config,
@@ -945,13 +1162,108 @@ static int proxy_fcgi_handler(request_rec *r, proxy_worker *worker,
         goto cleanup;
     }
 
+    /* We possibly reuse input data prefetched in previous call(s), e.g. for a
+     * balancer fallback scenario.
+     */
+    apr_pool_userdata_get((void **)&input_brigade, "proxy-fcgi-input", p);
+    if (input_brigade == NULL) {
+        const char *old_te = apr_table_get(r->headers_in, "Transfer-Encoding");
+        const char *old_cl = NULL;
+        if (old_te) {
+            apr_table_unset(r->headers_in, "Content-Length");
+        }
+        else {
+            old_cl = apr_table_get(r->headers_in, "Content-Length");
+        }
+
+        input_brigade = apr_brigade_create(p, r->connection->bucket_alloc);
+        apr_pool_userdata_setn(input_brigade, "proxy-fcgi-input", NULL, p);
+
+        /* Prefetch (nonlocking) the request body so to increase the chance
+         * to get the whole (or enough) body and determine Content-Length vs
+         * chunked or spooled. By doing this before connecting or reusing the
+         * backend, we want to minimize the delay between this connection is
+         * considered alive and the first bytes sent (should the client's link
+         * be slow or some input filter retain the data). This is a best effort
+         * to prevent the backend from closing (from under us) what it thinks is
+         * an idle connection, hence to reduce to the minimum the unavoidable
+         * local is_socket_connected() vs remote keepalive race condition.
+         */
+        status = ap_proxy_prefetch_input(r, backend, input_brigade,
+                                         APR_NONBLOCK_READ, &input_bytes,
+                                         MAX_MEM_SPOOL);
+        if (status != OK) {
+            goto cleanup;
+        }
+
+        /*
+         * The request body is streamed by default, using either C-L or
+         * chunked T-E, like this:
+         *
+         *   The whole body (including no body) was received on prefetch, i.e.
+         *   the input brigade ends with EOS => C-L = input_bytes.
+         *
+         *   C-L is known and reliable, i.e. only protocol filters in the input
+         *   chain thus none should change the body => use C-L from client.
+         *
+         *   The administrator has not "proxy-sendcl" which prevents T-E => use
+         *   T-E and chunks.
+         *
+         *   Otherwise we need to determine and set a content-length, so spool
+         *   the entire request body to memory/temporary file (MAX_MEM_SPOOL),
+         *   such that we finally know its length => C-L = input_bytes.
+         */
+        if (!APR_BRIGADE_EMPTY(input_brigade)
+                && APR_BUCKET_IS_EOS(APR_BRIGADE_LAST(input_brigade))) {
+            /* The whole thing fit, so our decision is trivial, use the input
+             * bytes for the Content-Length. If we expected no body, and read
+             * no body, do not set the Content-Length.
+             */
+            if (old_cl || old_te || input_bytes) {
+                apr_table_setn(r->headers_in, "Content-Length",
+                               apr_off_t_toa(p, input_bytes));
+                if (old_te) {
+                    apr_table_unset(r->headers_in, "Transfer-Encoding");
+                }
+            }
+        }
+        else if (old_cl && r->input_filters == r->proto_input_filters) {
+            /* Streaming is possible by preserving the existing C-L */
+        }
+        else if (!apr_table_get(r->subprocess_env, "proxy-sendcl")) {
+            /* Streaming is possible using T-E: chunked */
+        }
+        else {
+            /* No streaming, C-L is the only option so spool to memory/file */
+            apr_bucket_brigade *tmp_bb;
+            apr_off_t remaining_bytes = 0;
+
+            AP_DEBUG_ASSERT(MAX_MEM_SPOOL >= input_bytes);
+            tmp_bb = apr_brigade_create(p, r->connection->bucket_alloc);
+            status = ap_proxy_spool_input(r, backend, tmp_bb, &remaining_bytes,
+                                          MAX_MEM_SPOOL - input_bytes);
+            if (status != OK) {
+                goto cleanup;
+            }
+
+            APR_BRIGADE_CONCAT(input_brigade, tmp_bb);
+            input_bytes += remaining_bytes;
+
+            apr_table_setn(r->headers_in, "Content-Length",
+                           apr_off_t_toa(p, input_bytes));
+            if (old_te) {
+                apr_table_unset(r->headers_in, "Transfer-Encoding");
+            }
+        }
+    }
+
     /* This scheme handler does not reuse connections by default, to
-     * avoid tying up a fastcgi that isn't expecting to work on 
+     * avoid tying up a fastcgi that isn't expecting to work on
      * parallel requests.  But if the user went out of their way to
      * type the default value of disablereuse=off, we'll allow it.
-     */  
+     */
     backend->close = 1;
-    if (worker->s->disablereuse_set && !worker->s->disablereuse) { 
+    if (worker->s->disablereuse_set && !worker->s->disablereuse) {
         backend->close = 0;
     }
 
@@ -969,25 +1281,127 @@ static int proxy_fcgi_handler(request_rec *r, proxy_worker *worker,
 
     /* Step Three: Process the Request */
     status = fcgi_do_request(p, r, backend, origin, dconf, uri, url,
-                             server_portstr);
+                             server_portstr, input_brigade);
 
 cleanup:
     ap_proxy_release_connection(FCGI_SCHEME, backend, r->server);
     return status;
 }
 
+static void *fcgi_create_dconf(apr_pool_t *p, char *path)
+{
+    fcgi_dirconf_t *a;
+
+    a = (fcgi_dirconf_t *)apr_pcalloc(p, sizeof(fcgi_dirconf_t));
+    a->backend_type = BACKEND_DEFAULT_UNKNOWN;
+    a->env_fixups = apr_array_make(p, 20, sizeof(sei_entry));
+
+    return a;
+}
+
+static void *fcgi_merge_dconf(apr_pool_t *p, void *basev, void *overridesv)
+{
+    fcgi_dirconf_t *a, *base, *over;
+
+    a     = (fcgi_dirconf_t *)apr_pcalloc(p, sizeof(fcgi_dirconf_t));
+    base  = (fcgi_dirconf_t *)basev;
+    over  = (fcgi_dirconf_t *)overridesv;
+
+    a->backend_type = (over->backend_type != BACKEND_DEFAULT_UNKNOWN)
+                      ? over->backend_type
+                      : base->backend_type;
+    a->env_fixups = apr_array_append(p, base->env_fixups, over->env_fixups);
+    return a;
+}
+
+static const char *cmd_servertype(cmd_parms *cmd, void *in_dconf,
+                                   const char *val)
+{
+    fcgi_dirconf_t *dconf = in_dconf;
+
+    if (!strcasecmp(val, "GENERIC")) {
+       dconf->backend_type = BACKEND_GENERIC;
+    }
+    else if (!strcasecmp(val, "FPM")) {
+       dconf->backend_type = BACKEND_FPM;
+    }
+    else {
+        return "ProxyFCGIBackendType requires one of the following arguments: "
+               "'GENERIC', 'FPM'";
+    }
+
+    return NULL;
+}
+
+
+static const char *cmd_setenv(cmd_parms *cmd, void *in_dconf,
+                              const char *arg1, const char *arg2,
+                              const char *arg3)
+{
+    fcgi_dirconf_t *dconf = in_dconf;
+    const char *err;
+    sei_entry *new;
+    const char *envvar = arg2;
+
+    new = apr_array_push(dconf->env_fixups);
+    new->cond = ap_expr_parse_cmd(cmd, arg1, 0, &err, NULL);
+    if (err) {
+        return apr_psprintf(cmd->pool, "Could not parse expression \"%s\": %s",
+                            arg1, err);
+    }
+
+    if (envvar[0] == '!') {
+        /* Unset mode. */
+        if (arg3) {
+            return apr_psprintf(cmd->pool, "Third argument (\"%s\") is not "
+                                "allowed when using ProxyFCGISetEnvIf's unset "
+                                "mode (%s)", arg3, envvar);
+        }
+        else if (!envvar[1]) {
+            /* i.e. someone tried to give us a name of just "!" */
+            return "ProxyFCGISetEnvIf: \"!\" is not a valid variable name";
+        }
+
+        new->subst = NULL;
+    }
+    else {
+        /* Set mode. */
+        if (!arg3) {
+            /* A missing expr-value should be treated as empty. */
+            arg3 = "";
+        }
+
+        new->subst = ap_expr_parse_cmd(cmd, arg3, AP_EXPR_FLAG_STRING_RESULT, &err, NULL);
+        if (err) {
+            return apr_psprintf(cmd->pool, "Could not parse expression \"%s\": %s",
+                                arg3, err);
+        }
+    }
+
+    new->envname = envvar;
+
+    return NULL;
+}
 static void register_hooks(apr_pool_t *p)
 {
     proxy_hook_scheme_handler(proxy_fcgi_handler, NULL, NULL, APR_HOOK_FIRST);
     proxy_hook_canon_handler(proxy_fcgi_canon, NULL, NULL, APR_HOOK_FIRST);
 }
 
+static const command_rec command_table[] = {
+    AP_INIT_TAKE1("ProxyFCGIBackendType", cmd_servertype, NULL, OR_FILEINFO,
+                  "Specify the type of FastCGI server: 'Generic', 'FPM'"),
+    AP_INIT_TAKE23("ProxyFCGISetEnvIf", cmd_setenv, NULL, OR_FILEINFO,
+                  "expr-condition env-name expr-value"),
+    { NULL }
+};
+
 AP_DECLARE_MODULE(proxy_fcgi) = {
     STANDARD20_MODULE_STUFF,
-    NULL,                       /* create per-directory config structure */
-    NULL,                       /* merge per-directory config structures */
+    fcgi_create_dconf,          /* create per-directory config structure */
+    fcgi_merge_dconf,           /* merge per-directory config structures */
     NULL,                       /* create per-server config structure */
     NULL,                       /* merge per-server config structures */
-    NULL,                       /* command apr_table_t */
+    command_table,              /* command apr_table_t */
     register_hooks              /* register hooks */
 };

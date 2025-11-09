@@ -27,6 +27,7 @@
 <div id="preamble"><h1>Apache モジュール mod_proxy_ajp</h1>
 <div class="toplang">
 <p><span>翻訳済み言語: </span><a href="../en/mod/mod_proxy_ajp.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../fr/mod/mod_proxy_ajp.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_proxy_ajp.html" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div>
 <div class="outofdate">この日本語訳はすでに古くなっている
@@ -68,7 +69,7 @@
 <li><a href="#comments_section">コメント</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="overviewprotocol" id="overviewprotocol">プロトコルの概要</a></h2>
+<h2><a name="overviewprotocol" id="overviewprotocol">プロトコルの概要</a> <a title="Permanent link" href="#overviewprotocol" class="permalink">&para;</a></h2>
     <p><code>AJP13</code> プロトコルはパケット指向です。
     可読なプレーンテキスト形式ではなくバイナリ形式になったのは、
     おそらくパフォーマンス上の理由によります。
@@ -109,7 +110,7 @@
     後述の「レスポンスパケットの構造」を参照してください。</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="basppacketstruct" id="basppacketstruct">基本パケット構造</a></h2>
+<h2><a name="basppacketstruct" id="basppacketstruct">基本パケット構造</a> <a title="Permanent link" href="#basppacketstruct" class="permalink">&para;</a></h2>
     <p>このプロトコルには XDR から受け継いだ部分が少しありますが、多くの点で
     異なります (例えば 4 バイトアライメントでないことなど) 。</p>
     <p>バイトオーダー: 個々のバイトのエンディアンがどうなっているかは、
@@ -283,7 +284,7 @@
   
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="rpacetstruct" id="rpacetstruct">リクエストパケット構造</a></h2>
+<h2><a name="rpacetstruct" id="rpacetstruct">リクエストパケット構造</a> <a title="Permanent link" href="#rpacetstruct" class="permalink">&para;</a></h2>
     <p>サーバからコンテナへ送られるメッセージが
     <em>Forward Request</em> 型の場合 :</p>
     <div class="example"><pre>AJP13_FORWARD_REQUEST :=
@@ -456,7 +457,7 @@ attribute_value := (string)</pre></div>
   
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="resppacketstruct" id="resppacketstruct">レスポンスパケット構造</a></h2>
+<h2><a name="resppacketstruct" id="resppacketstruct">レスポンスパケット構造</a> <a title="Permanent link" href="#resppacketstruct" class="permalink">&para;</a></h2>
     <p>コンテナがサーバに送り返すことのできるメッセージ:</p>
     <div class="example"><pre>AJP13_SEND_BODY_CHUNK :=
   prefix_code   3
@@ -535,8 +536,9 @@ AJP13_GET_BODY_CHUNK :=
 </div>
 <div class="bottomlang">
 <p><span>翻訳済み言語: </span><a href="../en/mod/mod_proxy_ajp.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../fr/mod/mod_proxy_ajp.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_proxy_ajp.html" title="Japanese">&nbsp;ja&nbsp;</a></p>
-</div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">コメント</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
+</div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">コメント</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Libera.chat, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
 var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_proxy_ajp.html';
@@ -554,7 +556,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_proxy_ajp.
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2017 The Apache Software Foundation.<br />この文書は <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> のライセンスで提供されています。.</p>
+<p class="apache">Copyright 2023 The Apache Software Foundation.<br />この文書は <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> のライセンスで提供されています。.</p>
 <p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/quickreference.html">ディレクティブ</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

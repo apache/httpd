@@ -24,6 +24,8 @@
 #include "apr_env.h"
 #include "apreq_util.h"
 
+#include "httpd.h"
+
 #define USER_DATA_KEY "apreq"
 
 /* Parroting APLOG_* ... */
@@ -42,7 +44,7 @@
 
 /** Interactive patch:
  * TODO Don't use 65K buffer
- * TODO Handle empty/non-existant parameters
+ * TODO Handle empty/non-existent parameters
  * TODO Allow body elements to be files
  * TODO When running body/get/cookies all at once, include previous cached
  * values (and don't start at 0 in count)
@@ -351,16 +353,15 @@ static void init_body(apreq_handle_t *handle)
     apr_bucket *eos, *pipe;
 
     if (cl_header != NULL) {
-        char *dummy;
-        apr_int64_t content_length = apr_strtoi64(cl_header, &dummy, 10);
+        apr_off_t content_length;
 
-        if (dummy == NULL || *dummy != 0) {
+        if (!ap_parse_strict_length(&content_length, cl_header)) {
             req->body_status = APREQ_ERROR_BADHEADER;
             cgi_log_error(CGILOG_MARK, CGILOG_ERR, req->body_status, handle,
                           "Invalid Content-Length header (%s)", cl_header);
             return;
         }
-        else if ((apr_uint64_t)content_length > req->read_limit) {
+        if ((apr_uint64_t)content_length > req->read_limit) {
             req->body_status = APREQ_ERROR_OVERLIMIT;
             cgi_log_error(CGILOG_MARK, CGILOG_ERR, req->body_status, handle,
                           "Content-Length header (%s) exceeds configured "
@@ -515,6 +516,8 @@ static apr_status_t cgi_jar(apreq_handle_t *handle,
             if (val == NULL)
                 val = "";
             p = apreq_cookie_make(handle->pool, name, strlen(name), val, strlen(val));
+            if (p == NULL)
+                return APR_ENOMEM;
             apreq_cookie_tainted_on(p);
             apreq_value_table_add(&p->v, req->jar);
         }
@@ -559,6 +562,8 @@ static apr_status_t cgi_args(apreq_handle_t *handle,
             if (val == NULL)
                 val = "";
             p = apreq_param_make(handle->pool, name, strlen(name), val, strlen(val));
+            if (p == NULL)
+                return APR_ENOMEM;
             apreq_param_tainted_on(p);
             apreq_value_table_add(&p->v, req->args);
             val = p->v.data;
@@ -605,6 +610,8 @@ static apreq_cookie_t *cgi_jar_get(apreq_handle_t *handle,
             if (val == NULL)
                 return NULL;
             p = apreq_cookie_make(handle->pool, name, strlen(name), val, strlen(val));
+            if (p == NULL)
+                return NULL;
             apreq_cookie_tainted_on(p);
             apreq_value_table_add(&p->v, req->jar);
             val = p->v.data;
@@ -637,6 +644,8 @@ static apreq_param_t *cgi_args_get(apreq_handle_t *handle,
             if (val == NULL)
                 return NULL;
             p = apreq_param_make(handle->pool, name, strlen(name), val, strlen(val));
+            if (p == NULL)
+                return NULL;
             apreq_param_tainted_on(p);
             apreq_value_table_add(&p->v, req->args);
             val = p->v.data;
@@ -673,6 +682,8 @@ static apr_status_t cgi_body(apreq_handle_t *handle,
             if (val == NULL)
                 val = "";
             p = apreq_param_make(handle->pool, name, strlen(name), val, strlen(val));
+            if (p == NULL)
+                return APR_ENOMEM;
             apreq_param_tainted_on(p);
             apreq_value_table_add(&p->v, req->body);
             val = p->v.data;
@@ -715,6 +726,8 @@ static apreq_param_t *cgi_body_get(apreq_handle_t *handle,
             if (val == NULL)
                 return NULL;
             p = apreq_param_make(handle->pool, name, strlen(name), val, strlen(val));
+            if (p == NULL)
+                return NULL;
             apreq_param_tainted_on(p);
             apreq_value_table_add(&p->v, req->body);
             val = p->v.data;
@@ -947,7 +960,7 @@ static apr_status_t ba_cleanup(void *data)
  Always check query_string before prompting user,
   but rewrite body/cookies to get if interactive
 
- Definately more work needed here...
+ Definitely more work needed here...
 */
 static int is_interactive_mode(apr_pool_t *pool)
 {

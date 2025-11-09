@@ -22,8 +22,18 @@
 
 module AP_MODULE_DECLARE_DATA lbmethod_byrequests_module;
 
-static int (*ap_proxy_retry_worker_fn)(const char *proxy_function,
-        proxy_worker *worker, server_rec *s) = NULL;
+static APR_OPTIONAL_FN_TYPE(proxy_balancer_get_best_worker)
+                            *ap_proxy_balancer_get_best_worker_fn = NULL;
+
+static int is_best_byrequests(proxy_worker *current, proxy_worker *prev_best, void *baton)
+{
+    int *total_factor = (int *)baton;
+
+    current->s->lbstatus += current->s->lbfactor;
+    *total_factor += current->s->lbfactor;
+
+    return (!prev_best || (current->s->lbstatus > prev_best->s->lbstatus));
+}
 
 /*
  * The idea behind the find_best_byrequests scheduler is the following:
@@ -70,82 +80,17 @@ static int (*ap_proxy_retry_worker_fn)(const char *proxy_function,
  *   b a d c d a c d b d ...
  *
  */
-
 static proxy_worker *find_best_byrequests(proxy_balancer *balancer,
                                 request_rec *r)
 {
-    int i;
     int total_factor = 0;
-    proxy_worker **worker;
-    proxy_worker *mycandidate = NULL;
-    int cur_lbset = 0;
-    int max_lbset = 0;
-    int checking_standby;
-    int checked_standby;
+    proxy_worker *worker = ap_proxy_balancer_get_best_worker_fn(balancer, r, is_best_byrequests, &total_factor);
 
-    if (!ap_proxy_retry_worker_fn) {
-        ap_proxy_retry_worker_fn =
-                APR_RETRIEVE_OPTIONAL_FN(ap_proxy_retry_worker);
-        if (!ap_proxy_retry_worker_fn) {
-            /* can only happen if mod_proxy isn't loaded */
-            return NULL;
-        }
+    if (worker) {
+        worker->s->lbstatus -= total_factor;
     }
 
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server, APLOGNO(01207)
-                 "proxy: Entering byrequests for BALANCER (%s)",
-                 balancer->s->name);
-
-    /* First try to see if we have available candidate */
-    do {
-        checking_standby = checked_standby = 0;
-        while (!mycandidate && !checked_standby) {
-            worker = (proxy_worker **)balancer->workers->elts;
-            for (i = 0; i < balancer->workers->nelts; i++, worker++) {
-                if (!checking_standby) {    /* first time through */
-                    if ((*worker)->s->lbset > max_lbset)
-                        max_lbset = (*worker)->s->lbset;
-                }
-                if (
-                    ((*worker)->s->lbset != cur_lbset) ||
-                    (checking_standby ? !PROXY_WORKER_IS_STANDBY(*worker) : PROXY_WORKER_IS_STANDBY(*worker)) ||
-                    (PROXY_WORKER_IS_DRAINING(*worker))
-                    ) {
-                    continue;
-                }
-
-                /* If the worker is in error state run
-                 * retry on that worker. It will be marked as
-                 * operational if the retry timeout is elapsed.
-                 * The worker might still be unusable, but we try
-                 * anyway.
-                 */
-                if (!PROXY_WORKER_IS_USABLE(*worker))
-                    ap_proxy_retry_worker_fn("BALANCER", *worker, r->server);
-                /* Take into calculation only the workers that are
-                 * not in error state or not disabled.
-                 */
-                if (PROXY_WORKER_IS_USABLE(*worker)) {
-                    (*worker)->s->lbstatus += (*worker)->s->lbfactor;
-                    total_factor += (*worker)->s->lbfactor;
-                    if (!mycandidate || (*worker)->s->lbstatus > mycandidate->s->lbstatus)
-                        mycandidate = *worker;
-                }
-            }
-            checked_standby = checking_standby++;
-        }
-        cur_lbset++;
-    } while (cur_lbset <= max_lbset && !mycandidate);
-
-    if (mycandidate) {
-        mycandidate->s->lbstatus -= total_factor;
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server, APLOGNO(01208)
-                     "proxy: byrequests selected worker \"%s\" : busy %" APR_SIZE_T_FMT " : lbstatus %d",
-                     mycandidate->s->name, mycandidate->s->busy, mycandidate->s->lbstatus);
-
-    }
-
-    return mycandidate;
+    return worker;
 }
 
 /* assumed to be mutex protected by caller */
@@ -177,16 +122,36 @@ static const proxy_balancer_method byrequests =
     &find_best_byrequests,
     NULL,
     &reset,
-    &age
+    &age,
+    NULL
 };
+
+/* post_config hook: */
+static int lbmethod_byrequests_post_config(apr_pool_t *pconf, apr_pool_t *plog,
+        apr_pool_t *ptemp, server_rec *s)
+{
+
+    /* lbmethod_byrequests_post_config() will be called twice during startup.  So, don't
+     * set up the static data the 1st time through. */
+    if (ap_state_query(AP_SQ_MAIN_STATE) == AP_SQ_MS_CREATE_PRE_CONFIG) {
+        return OK;
+    }
+
+    ap_proxy_balancer_get_best_worker_fn =
+                 APR_RETRIEVE_OPTIONAL_FN(proxy_balancer_get_best_worker);
+    if (!ap_proxy_balancer_get_best_worker_fn) {
+        ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(10152)
+                     "mod_proxy must be loaded for mod_lbmethod_byrequests");
+        return !OK;
+    }
+
+    return OK;
+}
 
 static void register_hook(apr_pool_t *p)
 {
-    /* Only the mpm_winnt has child init hook handler.
-     * make sure that we are called after the mpm
-     * initializes and after the mod_proxy
-     */
     ap_register_provider(p, PROXY_LBMETHOD, "byrequests", "0", &byrequests);
+    ap_hook_post_config(lbmethod_byrequests_post_config, NULL, NULL, APR_HOOK_MIDDLE);
 }
 
 AP_DECLARE_MODULE(lbmethod_byrequests) = {

@@ -61,12 +61,19 @@
     </note>
 </summary>
 <seealso><module>mod_proxy</module></seealso>
+<seealso><directive module="mod_proxy">BalancerMember</directive></seealso>
+<seealso><directive module="mod_proxy">BalancerGrowth</directive></seealso>
+<seealso><directive module="mod_proxy">BalancerPersist</directive></seealso>
+<seealso><directive module="mod_proxy">BalancerInherit</directive></seealso>
 
 <section id="scheduler">
     <title>Load balancer scheduler algorithm</title>
-    <p>At present, there are 3 load balancer scheduler algorithms available
-    for use: Request Counting, Weighted Traffic Counting and Pending Request
-    Counting. These are controlled via the <code>lbmethod</code> value of
+    <p>At present, there are 4 load balancer scheduler algorithms available
+    for use: Request Counting (<module>mod_lbmethod_byrequests</module>),
+    Weighted Traffic Counting (<module>mod_lbmethod_bytraffic</module>),
+    Pending Request Counting (<module>mod_lbmethod_bybusyness</module>) and
+    Heartbeat Traffic Counting (<module>mod_lbmethod_heartbeat</module>).
+    These are controlled via the <code>lbmethod</code> value of
     the Balancer definition. See the <directive module="mod_proxy">ProxyPass</directive>
     directive for more information, especially regarding how to
     configure the Balancer and BalancerMembers.</p>
@@ -246,7 +253,7 @@ ProxyPassReverse "/test" "balancer://mycluster"
     a path info appended to the URL using a semicolon (<code>;</code>)
     as the separator and add the session id behind. As in the cookie case,
     Apache Tomcat can include the configured <code>jvmRoute</code> in this path
-    info. To let Apache find this sort of path info, you neet to set
+    info. To let Apache find this sort of path info, you need to set
     <code>scolonpathdelim</code> to <code>On</code> in
     <directive module="mod_proxy">ProxyPass</directive> or
     <directive module="mod_proxy">ProxySet</directive>.</p>
@@ -304,7 +311,7 @@ ProxyPass "/test" "balancer://mycluster" stickysession=JSESSIONID|jsessionid sco
     stickyness to the error log, if the log level is set to
     <code>debug</code> or higher. This is an easy way to
     troubleshoot stickyness problems, but the log volume might
-    be to high for production servers under high load.</p>
+    be too high for production servers under high load.</p>
 </section>
 
 </modulesynopsis>

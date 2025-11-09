@@ -153,7 +153,7 @@ CustomLog "logs/clickstream.log" usertrack
 <name>CookieStyle</name>
 <description>Format of the cookie header field</description>
 <syntax>CookieStyle
-    <em>Netscape|Cookie|Cookie2|RFC2109|RFC2965</em></syntax>
+    Netscape|Cookie|Cookie2|RFC2109|RFC2965</syntax>
 <default>CookieStyle Netscape</default>
 <contextlist>
 <context>server config</context>
@@ -219,6 +219,76 @@ CustomLog "logs/clickstream.log" usertrack
     CookieTracking on
     </highlight>
 
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CookieSecure</name>
+<description>Adds the 'Secure' attribute to the cookie</description>
+<syntax>CookieSecure on|off</syntax>
+<default>CookieSecure off</default>
+<contextlist>
+<context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+<context>.htaccess</context>
+</contextlist>
+<override>FileInfo</override>
+<compatibility>2.5.1 and later</compatibility>
+
+<usage>
+    <p>When set to 'ON', the 'Secure' cookie attribute is added to this 
+    modules tracking cookie. This attribute instructs browsers to only
+    transmit the cookie over HTTPS.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CookieHTTPOnly</name>
+<description>Adds the 'HTTPOnly' attribute to the cookie</description>
+<syntax>CookieHTTPOnly on|off</syntax>
+<default>CookieHTTPOnly off</default>
+<contextlist>
+<context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+<context>.htaccess</context>
+</contextlist>
+<override>FileInfo</override>
+<compatibility>2.5.1 and later</compatibility>
+
+<usage>
+    <p>When set to 'ON', the 'HTTPOnly' cookie attribute is added to this 
+    modules tracking cookie. This attribute instructs browsers to block javascript
+    from reading the value of the cookie.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CookieSameSite</name>
+<description>Adds the 'SameSite' attribute to the cookie</description>
+<syntax>CookieSameSite None|Lax|Strict</syntax>
+<default>unset</default>
+<contextlist>
+<context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+<context>.htaccess</context>
+</contextlist>
+<override>FileInfo</override>
+<compatibility>2.5.1 and later</compatibility>
+
+<usage>
+    <p>When set to 'None', 'Lax', or 'Strict', the 'SameSite' cookie attribute 
+    is added to this modules tracking cookie with the corresponding value.  
+    This attribute instructs browser on how to treat the cookie when it is 
+    requested in a cross-site context.</p>
+
+     <note type="Warning">
+        <p>A value of 'None' sets 'SameSite=None', which is the most liberal setting. To 
+        omit this attribute, omit the directive entirely.</p>
+    </note>
+  
 </usage>
 </directivesynopsis>
 

@@ -33,6 +33,17 @@
     href="ip-based.html">IP-based</a> virtual hosts.
     </p>
 
+    <note><title>Context note</title><p>Virtual hosts must be specified in 
+    global scope.  Third-party distributions of the server may use an
+    alternate initial configuration file or multiple configuration files
+    that all accept directives with global scope.  These distributions may
+    also suggest a convention for specifying virtual hosts in their own individual
+    files included into the global configuration via the
+    <directive module="core">Include</directive> directive. Further details
+    may be provided in a third-party README, such as 
+    /usr/share/doc/apache2/README.Debian.gz on Debian and Ubuntu based 
+    distributions.</p>
+    </note>
 </summary>
 
   <section id="purename"><title>Running several name-based web

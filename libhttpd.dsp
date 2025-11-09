@@ -193,6 +193,10 @@ SOURCE=.\include\http_request.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\include\http_ssl.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\include\http_vhost.h
 # End Source File
 # Begin Source File
@@ -410,6 +414,10 @@ InputPath=.\os\win32\os.h
 
 SOURCE=.\server\test_char.h
 # End Source File
+# Begin Source File
+
+SOURCE=.\include\util_cookies.h
+# End Source File
 # End Group
 # Begin Group "httpd"
 
@@ -449,10 +457,6 @@ SOURCE=.\modules\http\http_core.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\modules\http\http_etag.c
-# End Source File
-# Begin Source File
-
 SOURCE=.\modules\http\http_filters.c
 # End Source File
 # Begin Source File
@@ -474,6 +478,10 @@ SOURCE=.\server\protocol.c
 # Begin Source File
 
 SOURCE=.\server\request.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\server\ssl.c
 # End Source File
 # Begin Source File
 
@@ -517,6 +525,10 @@ SOURCE=.\server\error_bucket.c
 # End Source File
 # Begin Source File
 
+SOURCE=.\server\headers_bucket.c
+# End Source File
+# Begin Source File
+
 SOURCE=.\server\util.c
 # End Source File
 # Begin Source File
@@ -537,11 +549,15 @@ SOURCE=.\server\util_cookies.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\server\util_cookies.h
+SOURCE=.\server\util_debug.c
 # End Source File
 # Begin Source File
 
 SOURCE=.\include\util_ebcdic.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\server\util_etag.c
 # End Source File
 # Begin Source File
 

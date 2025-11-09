@@ -1,9 +1,9 @@
-<?xml version="1.0" ?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision : 1221670 -->
+<!-- English Revision : 1887636 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -27,7 +27,7 @@
   <title>Filtres</title>
 
   <summary>
-    <p>Ce document d&eacute;crit l'utilisation des filtres avec Apache.</p>
+    <p>Ce document décrit l'utilisation des filtres avec Apache.</p>
   </summary>
 
   <section id="intro">
@@ -68,47 +68,45 @@
       </directivelist>
     </related>
 
-<p>La cha&icirc;ne de filtrage est disponible depuis la version 2.0 d'Apache,
-et permet aux applications de traiter les donn&eacute;es en entr&eacute;e et en sortie
-d'une mani&egrave;re hautement flexible et configurable, quelle que soit la
-provenance de ces donn&eacute;es.  Il est possible de pr&eacute;-traiter les donn&eacute;es
-en entr&eacute;e, et post-traiter les donn&eacute;es en sortie, selon
+<p>La chaîne de filtrage est disponible depuis la version 2.0 d'Apache,
+et permet aux applications de traiter les données en entrée et en sortie
+d'une manière hautement flexible et configurable, quelle que soit la
+provenance de ces données.  Il est possible de pré-traiter les données
+en entrée, et post-traiter les données en sortie, selon
 vos souhaits.
-Ces traitements sont tout &agrave; fait ind&eacute;pendants des traditionnelles phases
-de traitement des requ&ecirc;tes.</p>
+Ces traitements sont tout à fait indépendants des traditionnelles phases
+de traitement des requêtes.</p>
 <p class="figure">
 <img src="images/filter_arch.png" width="569" height="392" alt=
-"les filtres peuvent s'encha&icirc;ner, perpendiculairement au traitement
-des requ&ecirc;tes"
+"les filtres peuvent s'enchaîner, perpendiculairement au traitement
+des requêtes"
 />
 </p>
 <p>Voici quelques exemples de filtrage avec la distribution standard d'Apache:</p>
 <ul>
-<li><module>mod_include</module>, impl&eacute;mente les inclusions c&ocirc;t&eacute; serveur.</li>
-<li><module>mod_ssl</module>, impl&eacute;mente le cryptage SSL (https).</li>
-<li><module>mod_deflate</module>, impl&eacute;mente la compression/d&eacute;compression
-&agrave; la vol&eacute;e.</li>
-<li><module>mod_charset_lite</module>, transcodage entre diff&eacute;rents
-jeux de caract&egrave;res.</li>
+<li><module>mod_include</module>, implémente les inclusions côté serveur.</li>
+<li><module>mod_ssl</module>, implémente le cryptage SSL (https).</li>
+<li><module>mod_deflate</module>, implémente la compression/décompression
+à la volée.</li>
+<li><module>mod_charset_lite</module>, transcodage entre différents
+jeux de caractères.</li>
 <li><module>mod_ext_filter</module>, utilisation d'un programme externe
 comme filtre.</li>
 </ul>
-<p>Apache utilise aussi plusieurs filtres en interne pour accomplir des t&acirc;ches
-comme le d&eacute;coupage des grosses requ&ecirc;tes (chunking) et la gestion des
-requ&ecirc;tes portant sur une partie d'un fichier (byte-range).</p>
+<p>Apache utilise aussi plusieurs filtres en interne pour accomplir des tâches
+comme le découpage des grosses requêtes (chunking) et la gestion des
+requêtes portant sur une partie d'un fichier (byte-range).</p>
 
-<p>Un grand choix d'applications sont impl&eacute;ment&eacute;es par des modules de filtrage
-tiers disponibles &agrave; <a
-href="http://modules.apache.org/">modules.apache.org</a> entre autres.
-En voici quelques exemples :</p>
+<p>Un grand choix d'applications sont implémentées par des modules de filtrage
+tiers. En voici quelques exemples :</p>
 
 <ul>
-<li>Traitement et r&eacute;&eacute;criture HTML et XML</li>
+<li>Traitement et réécriture HTML et XML</li>
 <li>Transformations XSLT et inclusions XML (XIncludes)</li>
 <li>Support de l'espace de nommage XML</li>
-<li>Gestion du chargement de fichier et d&eacute;codage des formulaires HTML</li>
+<li>Gestion du chargement de fichier et décodage des formulaires HTML</li>
 <li>Traitement d'image</li>
-<li>Protection des applications vuln&eacute;rables comme les scripts PHP</li>
+<li>Protection des applications vulnérables comme les scripts PHP</li>
 <li>Edition de texte par Chercher/Remplacer</li>
 </ul>
 </section>
@@ -117,67 +115,67 @@ En voici quelques exemples :</p>
 <title>Filtrage intelligent</title>
 <p class="figure">
 <img src="images/mod_filter_new.png" width="423" height="331"
-alt="Le filtrage intelligent applique diff&eacute;rents fournisseurs de filtrage en
-fonction de l'&eacute;tat du traitement de la requ&ecirc;te"/>
+alt="Le filtrage intelligent applique différents fournisseurs de filtrage en
+fonction de l'état du traitement de la requête"/>
 </p>
-<p><module>mod_filter</module>, inclus dans les version 2.1 et sup&eacute;rieures
-d'Apache, permet de configurer la cha&icirc;ne de filtrage dynamiquement
-&agrave; l'ex&eacute;cution.
-Ainsi par exemple, vous pouvez d&eacute;finir un proxy pour r&eacute;&eacute;crire du code HTML
+<p><module>mod_filter</module>, inclus dans les version 2.1 et supérieures
+d'Apache, permet de configurer la chaîne de filtrage dynamiquement
+à l'exécution.
+Ainsi par exemple, vous pouvez définir un proxy pour réécrire du code HTML
 avec un filtre HTML et traiter des images JPEG avec un filtre totalement
-s&eacute;par&eacute;, bien que le proxy ne poss&egrave;de aucune information pr&eacute;liminaire
-sur ce que le serveur &agrave; l'origine des donn&eacute;es &agrave; filtrer va envoyer.
-Ceci fonctionne gr&acirc;ce &agrave; l'utilisation d'un gestionnaire de filtre,
-qui distribue les t&acirc;ches &agrave; diff&eacute;rents fournisseurs de filtrage en fonction
-du contenu r&eacute;el &agrave; filtrer &agrave; l'ex&eacute;cution.  Tout filtre peut se voir soit
-ins&eacute;r&eacute; directement dans la cha&icirc;ne et lanc&eacute; inconditionnellement, soit
-utilis&eacute; comme un fournisseur de filtrage et ins&eacute;r&eacute; dynamiquement.
+séparé, bien que le proxy ne possède aucune information préliminaire
+sur ce que le serveur à l'origine des données à filtrer va envoyer.
+Ceci fonctionne grâce à l'utilisation d'un gestionnaire de filtre,
+qui distribue les tâches à différents fournisseurs de filtrage en fonction
+du contenu réel à filtrer à l'exécution.  Tout filtre peut se voir soit
+inséré directement dans la chaîne et lancé inconditionnellement, soit
+utilisé comme un fournisseur de filtrage et inséré dynamiquement.
 Par exemple,</p>
 <ul>
-<li>un filtre de traitement HTML sera lanc&eacute; uniquement si le contenu est
+<li>un filtre de traitement HTML sera lancé uniquement si le contenu est
 de type text/html ou application/xhtml+xml</li>
-<li>Un filtre de compression sera lanc&eacute; uniquement si les donn&eacute;es en entr&eacute;e
-sont de type compressible et non d&eacute;j&agrave; compress&eacute;es</li>
-<li>Un filtre de conversion de jeux de caract&egrave;res ne sera ins&eacute;r&eacute; que si
-le document texte n'est pas d&eacute;j&agrave; dans le jeu de caract&egrave;res voulu</li>
+<li>Un filtre de compression sera lancé uniquement si les données en entrée
+sont de type compressible et non déjà compressées</li>
+<li>Un filtre de conversion de jeux de caractères ne sera inséré que si
+le document texte n'est pas déjà dans le jeu de caractères voulu</li>
 </ul>
 </section>
 
 <section id="service">
 
-<title>Pr&eacute;sentation des filtres en tant que service HTTP</title>
-<p>Les filtres permettent de traiter les requ&ecirc;tes des clients avant
+<title>Présentation des filtres en tant que service HTTP</title>
+<p>Les filtres permettent de traiter les requêtes des clients avant
 traitement par le serveur, ainsi que les contenus issus du serveur avant de les renvoyer
 au client. Le module <module>mod_reflector</module> permet aussi
-d'utiliser les filtres pour traiter les requ&ecirc;tes des clients avant de
-les renvoyer directement &agrave; ces derniers.</p>
+d'utiliser les filtres pour traiter les requêtes des clients avant de
+les renvoyer directement à ces derniers.</p>
 
-<p>Le module <module>mod_reflector</module> re&ccedil;oit les requ&ecirc;tes POST des
-clients, et en r&eacute;percute le corps dans la requ&ecirc;te POST constituant la
-r&eacute;ponse, lors de l'envoi de cette derni&egrave;re au client en passant &agrave; travers la
+<p>Le module <module>mod_reflector</module> reçoit les requêtes POST des
+clients, et en répercute le corps dans la requête POST constituant la
+réponse, lors de l'envoi de cette dernière au client en passant à travers la
 pile de filtres en sortie.</p>
 
-<p>Cette technique peut &ecirc;tre utilis&eacute;e comme alternative &agrave; un service web
-s'ex&eacute;cutant &agrave; l'int&eacute;rieur de la pile d'un serveur d'applications, o&ugrave; un
+<p>Cette technique peut être utilisée comme alternative à un service web
+s'exécutant à l'intérieur de la pile d'un serveur d'applications, où un
 filtre en sortie effectue la transformation requise sur le corps de la
-requ&ecirc;te. Par exemple, on peut utiliser le module
-<module>mod_deflate</module> pour fournir un service g&eacute;n&eacute;ral de
+requête. Par exemple, on peut utiliser le module
+<module>mod_deflate</module> pour fournir un service général de
 compression ; un filtre de transformation d'images peut aussi se voir
-mu&eacute; en service de transformation d'images.</p>
+mué en service de transformation d'images.</p>
 
 </section>
 
 
 <section id="using">
 <title>Utilisation des filtres</title>
-<p>Il y a deux mani&egrave;res d'utiliser le filtrage : Simple et Dynamique.
-En g&eacute;n&eacute;ral, vous utiliserez l'une ou l'autre m&eacute;thode; le m&eacute;lange des deux
-peut avoir des cons&eacute;quences inattendues (bien que le filtrage simple en entr&eacute;e
-puisse &ecirc;tre associ&eacute; sans probl&egrave;me avec le filtrage simple ou dynamique
+<p>Il y a deux manières d'utiliser le filtrage : Simple et Dynamique.
+En général, vous utiliserez l'une ou l'autre méthode; le mélange des deux
+peut avoir des conséquences inattendues (bien que le filtrage simple en entrée
+puisse être associé sans problème avec le filtrage simple ou dynamique
 en sortie).</p>
-<p>La m&eacute;thode Simple est la seule permettant de configurer les filtres
-en entr&eacute;e, et suffit pour les filtres en sortie pour lesquels vous avez besoin
-d'une cha&icirc;ne de filtres statique.
+<p>La méthode Simple est la seule permettant de configurer les filtres
+en entrée, et suffit pour les filtres en sortie pour lesquels vous avez besoin
+d'une chaîne de filtres statique.
 Les directives correspondantes sont
     <directive module="core">SetInputFilter</directive>,
     <directive module="core">SetOutputFilter</directive>,
@@ -186,8 +184,8 @@ Les directives correspondantes sont
     <directive module="mod_mime">RemoveInputFilter</directive>, et
     <directive module="mod_mime">RemoveOutputFilter</directive>.</p>
 
-<p>La m&eacute;thode Dynamique permet une configuration dynamique des filtres en
-sortie &agrave; la fois statique et flexible, comme discut&eacute; dans la page
+<p>La méthode Dynamique permet une configuration dynamique des filtres en
+sortie à la fois statique et flexible, comme discuté dans la page
 <module>mod_filter</module>.
 Les directives correspondantes sont
     <directive module="mod_filter">FilterChain</directive>,
@@ -195,9 +193,9 @@ Les directives correspondantes sont
     <directive module="mod_filter">FilterProvider</directive>.</p>
 
 <p>Une autre directive <directive
-module="mod_filter">AddOutputFilterByType</directive> est encore support&eacute;e,
-mais obsol&egrave;te. Utilisez la
-configuration dynamique &agrave; la place.</p>
+module="mod_filter">AddOutputFilterByType</directive> est encore supportée,
+mais obsolète. Utilisez la
+configuration dynamique à la place.</p>
 
   </section>
 </manualpage>

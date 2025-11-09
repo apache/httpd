@@ -1,11 +1,12 @@
-/* Copyright 2015 greenbytes GmbH (https://www.greenbytes.de)
+/* Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * http://www.apache.org/licenses/LICENSE-2.0
- 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -14,403 +15,617 @@
  */
 
 #include <assert.h>
-#include <apr_atomic.h>
+#include <apr_ring.h>
 #include <apr_thread_mutex.h>
 #include <apr_thread_cond.h>
 
 #include <mpm_common.h>
 #include <httpd.h>
+#include <http_connection.h>
 #include <http_core.h>
 #include <http_log.h>
+#include <http_protocol.h>
 
 #include "h2.h"
 #include "h2_private.h"
 #include "h2_mplx.h"
-#include "h2_task.h"
-#include "h2_worker.h"
+#include "h2_c2.h"
 #include "h2_workers.h"
+#include "h2_util.h"
+
+typedef enum {
+    PROD_IDLE,
+    PROD_ACTIVE,
+    PROD_JOINED,
+} prod_state_t;
+
+struct ap_conn_producer_t {
+    APR_RING_ENTRY(ap_conn_producer_t) link;
+    const char *name;
+    void *baton;
+    ap_conn_producer_next *fn_next;
+    ap_conn_producer_done *fn_done;
+    ap_conn_producer_shutdown *fn_shutdown;
+    volatile prod_state_t state;
+    volatile int conns_active;
+};
 
 
-static int in_list(h2_workers *workers, h2_mplx *m)
+typedef enum {
+    H2_SLOT_FREE,
+    H2_SLOT_RUN,
+    H2_SLOT_ZOMBIE,
+} h2_slot_state_t;
+
+typedef struct h2_slot h2_slot;
+struct h2_slot {
+    APR_RING_ENTRY(h2_slot) link;
+    apr_uint32_t id;
+    apr_pool_t *pool;
+    h2_slot_state_t state;
+    volatile int should_shutdown;
+    volatile int is_idle;
+    h2_workers *workers;
+    ap_conn_producer_t *prod;
+    apr_thread_t *thread;
+    struct apr_thread_cond_t *more_work;
+    int activations;
+};
+
+struct h2_workers {
+    server_rec *s;
+    apr_pool_t *pool;
+
+    apr_uint32_t max_slots;
+    apr_uint32_t min_active;
+    volatile apr_time_t idle_limit;
+    volatile int aborted;
+    volatile int shutdown;
+    int dynamic;
+
+    volatile apr_uint32_t active_slots;
+    volatile apr_uint32_t idle_slots;
+
+    apr_threadattr_t *thread_attr;
+    h2_slot *slots;
+
+    APR_RING_HEAD(h2_slots_free, h2_slot) free;
+    APR_RING_HEAD(h2_slots_idle, h2_slot) idle;
+    APR_RING_HEAD(h2_slots_busy, h2_slot) busy;
+    APR_RING_HEAD(h2_slots_zombie, h2_slot) zombie;
+
+    APR_RING_HEAD(ap_conn_producer_active, ap_conn_producer_t) prod_active;
+    APR_RING_HEAD(ap_conn_producer_idle, ap_conn_producer_t) prod_idle;
+
+    struct apr_thread_mutex_t *lock;
+    struct apr_thread_cond_t *prod_done;
+    struct apr_thread_cond_t *all_done;
+};
+
+
+static void* APR_THREAD_FUNC slot_run(apr_thread_t *thread, void *wctx);
+
+static apr_status_t activate_slot(h2_workers *workers)
 {
-    h2_mplx *e;
-    for (e = H2_MPLX_LIST_FIRST(&workers->mplxs); 
-         e != H2_MPLX_LIST_SENTINEL(&workers->mplxs);
-         e = H2_MPLX_NEXT(e)) {
-        if (e == m) {
-            return 1;
-        }
+    h2_slot *slot;
+    apr_pool_t *pool;
+    apr_status_t rv;
+
+    if (APR_RING_EMPTY(&workers->free, h2_slot, link)) {
+        return APR_EAGAIN;
     }
-    return 0;
+    slot = APR_RING_FIRST(&workers->free);
+    ap_assert(slot->state == H2_SLOT_FREE);
+    APR_RING_REMOVE(slot, link);
+
+    ap_log_error(APLOG_MARK, APLOG_TRACE3, 0, workers->s,
+                 "h2_workers: activate slot %d", slot->id);
+
+    slot->state = H2_SLOT_RUN;
+    slot->should_shutdown = 0;
+    slot->is_idle = 0;
+    slot->pool = NULL;
+    ++workers->active_slots;
+    rv = apr_pool_create(&pool, workers->pool);
+    if (APR_SUCCESS != rv) goto cleanup;
+    apr_pool_tag(pool, "h2_worker_slot");
+    slot->pool = pool;
+
+#if defined(AP_HAS_THREAD_LOCAL)
+    rv = ap_thread_create(&slot->thread, workers->thread_attr,
+                          slot_run, slot, slot->pool);
+#else
+    rv = apr_thread_create(&slot->thread, workers->thread_attr,
+                           slot_run, slot, slot->pool);
+#endif
+
+cleanup:
+    if (rv != APR_SUCCESS) {
+        AP_DEBUG_ASSERT(0);
+        slot->state = H2_SLOT_FREE;
+        if (slot->pool) {
+            apr_pool_destroy(slot->pool);
+            slot->pool = NULL;
+        }
+        APR_RING_INSERT_TAIL(&workers->free, slot, h2_slot, link);
+        --workers->active_slots;
+    }
+    return rv;
 }
 
-static void cleanup_zombies(h2_workers *workers, int lock)
+static void join_zombies(h2_workers *workers)
 {
-    if (lock) {
-        apr_thread_mutex_lock(workers->lock);
-    }
-    while (!H2_WORKER_LIST_EMPTY(&workers->zombies)) {
-        h2_worker *zombie = H2_WORKER_LIST_FIRST(&workers->zombies);
-        H2_WORKER_REMOVE(zombie);
-        ap_log_error(APLOG_MARK, APLOG_TRACE3, 0, workers->s,
-                      "h2_workers: cleanup zombie %d", zombie->id);
-        h2_worker_destroy(zombie);
-    }
-    if (lock) {
+    h2_slot *slot;
+    apr_status_t status;
+
+    while (!APR_RING_EMPTY(&workers->zombie, h2_slot, link)) {
+        slot = APR_RING_FIRST(&workers->zombie);
+        APR_RING_REMOVE(slot, link);
+        ap_assert(slot->state == H2_SLOT_ZOMBIE);
+        ap_assert(slot->thread != NULL);
+
         apr_thread_mutex_unlock(workers->lock);
+        apr_thread_join(&status, slot->thread);
+        apr_thread_mutex_lock(workers->lock);
+
+        slot->thread = NULL;
+        slot->state = H2_SLOT_FREE;
+        if (slot->pool) {
+            apr_pool_destroy(slot->pool);
+            slot->pool = NULL;
+        }
+        APR_RING_INSERT_TAIL(&workers->free, slot, h2_slot, link);
     }
 }
 
-static h2_task *next_task(h2_workers *workers)
+static void wake_idle_worker(h2_workers *workers, ap_conn_producer_t *prod)
 {
-    h2_task *task = NULL;
-    h2_mplx *last = NULL;
-    int has_more;
-    
-    /* Get the next h2_mplx to process that has a task to hand out.
-     * If it does, place it at the end of the queu and return the
-     * task to the worker.
-     * If it (currently) has no tasks, remove it so that it needs
-     * to register again for scheduling.
-     * If we run out of h2_mplx in the queue, we need to wait for
-     * new mplx to arrive. Depending on how many workers do exist,
-     * we do a timed wait or block indefinitely.
-     */
-    while (!task && !H2_MPLX_LIST_EMPTY(&workers->mplxs)) {
-        h2_mplx *m = H2_MPLX_LIST_FIRST(&workers->mplxs);
-        
-        if (last == m) {
-            break;
-        }
-        H2_MPLX_REMOVE(m);
-        --workers->mplx_count;
-        
-        task = h2_mplx_pop_task(m, &has_more);
-        if (has_more) {
-            H2_MPLX_LIST_INSERT_TAIL(&workers->mplxs, m);
-            ++workers->mplx_count;
-            if (!last) {
-                last = m;
-            }
+    if (!APR_RING_EMPTY(&workers->idle, h2_slot, link)) {
+        h2_slot *slot;
+        for (slot = APR_RING_FIRST(&workers->idle);
+             slot != APR_RING_SENTINEL(&workers->idle, h2_slot, link);
+             slot = APR_RING_NEXT(slot, link)) {
+             if (slot->is_idle && !slot->should_shutdown) {
+                apr_thread_cond_signal(slot->more_work);
+                slot->is_idle = 0;
+                return;
+             }
         }
     }
-    return task;
+    if (workers->dynamic && !workers->shutdown
+        && (workers->active_slots < workers->max_slots)) {
+        activate_slot(workers);
+    }
 }
 
 /**
- * Get the next task for the given worker. Will block until a task arrives
- * or the max_wait timer expires and more than min workers exist.
+ * Get the next connection to work on.
  */
-static apr_status_t get_mplx_next(h2_worker *worker, void *ctx, 
-                                  h2_task **ptask, int *psticky)
+static conn_rec *get_next(h2_slot *slot)
 {
-    apr_status_t status;
-    apr_time_t wait_until = 0, now;
-    h2_workers *workers = ctx;
-    h2_task *task = NULL;
-    
-    *ptask = NULL;
-    *psticky = 0;
-    
-    status = apr_thread_mutex_lock(workers->lock);
-    if (status == APR_SUCCESS) {
-        ++workers->idle_workers;
-        ap_log_error(APLOG_MARK, APLOG_TRACE3, 0, workers->s,
-                     "h2_worker(%d): looking for work", worker->id);
-        
-        while (!h2_worker_is_aborted(worker) && !workers->aborted
-               && !(task = next_task(workers))) {
-        
-            /* Need to wait for a new tasks to arrive. If we are above
-             * minimum workers, we do a timed wait. When timeout occurs
-             * and we have still more workers, we shut down one after
-             * the other. */
-            cleanup_zombies(workers, 0);
-            if (workers->worker_count > workers->min_workers) {
-                now = apr_time_now();
-                if (now >= wait_until) {
-                    wait_until = now + apr_time_from_sec(workers->max_idle_secs);
-                }
-                
-                ap_log_error(APLOG_MARK, APLOG_TRACE3, 0, workers->s,
-                             "h2_worker(%d): waiting signal, "
-                             "workers=%d, idle=%d", worker->id, 
-                             (int)workers->worker_count, 
-                             workers->idle_workers);
-                status = apr_thread_cond_timedwait(workers->mplx_added,
-                                                   workers->lock, 
-                                                   wait_until - now);
-                if (status == APR_TIMEUP
-                    && workers->worker_count > workers->min_workers) {
-                    /* waited long enough without getting a task and
-                     * we are above min workers, abort this one. */
-                    ap_log_error(APLOG_MARK, APLOG_TRACE3, 0, 
-                                 workers->s,
-                                 "h2_workers: aborting idle worker");
-                    h2_worker_abort(worker);
+    h2_workers *workers = slot->workers;
+    conn_rec *c = NULL;
+    ap_conn_producer_t *prod;
+    int has_more;
+
+    slot->prod = NULL;
+    if (!APR_RING_EMPTY(&workers->prod_active, ap_conn_producer_t, link)) {
+        slot->prod = prod = APR_RING_FIRST(&workers->prod_active);
+        APR_RING_REMOVE(prod, link);
+        AP_DEBUG_ASSERT(PROD_ACTIVE == prod->state);
+
+        c = prod->fn_next(prod->baton, &has_more);
+        if (c && has_more) {
+            APR_RING_INSERT_TAIL(&workers->prod_active, prod, ap_conn_producer_t, link);
+            wake_idle_worker(workers, slot->prod);
+        }
+        else {
+            prod->state = PROD_IDLE;
+            APR_RING_INSERT_TAIL(&workers->prod_idle, prod, ap_conn_producer_t, link);
+        }
+        if (c) {
+            ++prod->conns_active;
+        }
+    }
+
+    return c;
+}
+
+static void* APR_THREAD_FUNC slot_run(apr_thread_t *thread, void *wctx)
+{
+    h2_slot *slot = wctx;
+    h2_workers *workers = slot->workers;
+    conn_rec *c;
+    apr_status_t rv;
+
+    apr_thread_mutex_lock(workers->lock);
+    slot->state = H2_SLOT_RUN;
+    ++slot->activations;
+    APR_RING_ELEM_INIT(slot, link);
+    for(;;) {
+        if (APR_RING_NEXT(slot, link) != slot) {
+            /* slot is part of the idle ring from the last loop */
+            APR_RING_REMOVE(slot, link);
+            --workers->idle_slots;
+        }
+        slot->is_idle = 0;
+
+        if (!workers->aborted && !slot->should_shutdown) {
+            APR_RING_INSERT_TAIL(&workers->busy, slot, h2_slot, link);
+            do {
+                c = get_next(slot);
+                if (!c) {
                     break;
                 }
-            }
-            else {
-                ap_log_error(APLOG_MARK, APLOG_TRACE3, 0, workers->s,
-                             "h2_worker(%d): waiting signal (eternal), "
-                             "worker_count=%d, idle=%d", worker->id, 
-                             (int)workers->worker_count,
-                             workers->idle_workers);
-                apr_thread_cond_wait(workers->mplx_added, workers->lock);
+                apr_thread_mutex_unlock(workers->lock);
+                /* See the discussion at <https://github.com/icing/mod_h2/issues/195>
+                 *
+                 * Each conn_rec->id is supposed to be unique at a point in time. Since
+                 * some modules (and maybe external code) uses this id as an identifier
+                 * for the request_rec they handle, it needs to be unique for secondary
+                 * connections also.
+                 *
+                 * The MPM module assigns the connection ids and mod_unique_id is using
+                 * that one to generate identifier for requests. While the implementation
+                 * works for HTTP/1.x, the parallel execution of several requests per
+                 * connection will generate duplicate identifiers on load.
+                 *
+                 * The original implementation for secondary connection identifiers used
+                 * to shift the master connection id up and assign the stream id to the
+                 * lower bits. This was cramped on 32 bit systems, but on 64bit there was
+                 * enough space.
+                 *
+                 * As issue 195 showed, mod_unique_id only uses the lower 32 bit of the
+                 * connection id, even on 64bit systems. Therefore collisions in request ids.
+                 *
+                 * The way master connection ids are generated, there is some space "at the
+                 * top" of the lower 32 bits on allmost all systems. If you have a setup
+                 * with 64k threads per child and 255 child processes, you live on the edge.
+                 *
+                 * The new implementation shifts 8 bits and XORs in the worker
+                 * id. This will experience collisions with > 256 h2 workers and heavy
+                 * load still. There seems to be no way to solve this in all possible
+                 * configurations by mod_h2 alone.
+                 */
+                if (c->master) {
+                    c->id = (c->master->id << 8)^slot->id;
+                }
+                c->current_thread = thread;
+                AP_DEBUG_ASSERT(slot->prod);
+
+#if AP_HAS_RESPONSE_BUCKETS
+                ap_process_connection(c, ap_get_conn_socket(c));
+#else
+                h2_c2_process(c, thread, slot->id);
+#endif
+                slot->prod->fn_done(slot->prod->baton, c);
+
+                apr_thread_mutex_lock(workers->lock);
+                if (--slot->prod->conns_active <= 0) {
+                    apr_thread_cond_broadcast(workers->prod_done);
+                }
+                if (slot->prod->state == PROD_IDLE) {
+                    APR_RING_REMOVE(slot->prod, link);
+                    slot->prod->state = PROD_ACTIVE;
+                    APR_RING_INSERT_TAIL(&workers->prod_active, slot->prod, ap_conn_producer_t, link);
+                }
+
+            } while (!workers->aborted && !slot->should_shutdown);
+            APR_RING_REMOVE(slot, link); /* no longer busy */
+        }
+
+        if (workers->aborted || slot->should_shutdown) {
+            break;
+        }
+
+        join_zombies(workers);
+
+        /* we are idle */
+        APR_RING_INSERT_TAIL(&workers->idle, slot, h2_slot, link);
+        ++workers->idle_slots;
+        slot->is_idle = 1;
+        if (slot->id >= workers->min_active && workers->idle_limit > 0) {
+            rv = apr_thread_cond_timedwait(slot->more_work, workers->lock,
+                                           workers->idle_limit);
+            if (APR_TIMEUP == rv) {
+                APR_RING_REMOVE(slot, link);
+                --workers->idle_slots;
+                ap_log_error(APLOG_MARK, APLOG_TRACE1, 0, workers->s,
+                             "h2_workers: idle timeout slot %d in state %d (%d activations)",
+                             slot->id, slot->state, slot->activations);
+                break;
             }
         }
-        
-        /* Here, we either have gotten task or decided to shut down
-         * the calling worker.
-         */
-        if (task) {
-            /* Ok, we got something to give back to the worker for execution. 
-             * If we have more idle workers than h2_mplx in our queue, then
-             * we let the worker be sticky, e.g. making it poll the task's
-             * h2_mplx instance for more work before asking back here.
-             * This avoids entering our global lock as long as enough idle
-             * workers remain. Stickiness of a worker ends when the connection
-             * has no new tasks to process, so the worker will get back here
-             * eventually.
-             */
-            *ptask = task;
-            *psticky = (workers->max_workers >= workers->mplx_count);
-            
-            if (workers->mplx_count && workers->idle_workers > 1) {
-                apr_thread_cond_signal(workers->mplx_added);
-            }
+        else {
+            apr_thread_cond_wait(slot->more_work, workers->lock);
         }
-        
-        --workers->idle_workers;
-        apr_thread_mutex_unlock(workers->lock);
     }
-    
-    return *ptask? APR_SUCCESS : APR_EOF;
-}
 
-static void worker_done(h2_worker *worker, void *ctx)
-{
-    h2_workers *workers = ctx;
-    apr_status_t status = apr_thread_mutex_lock(workers->lock);
-    if (status == APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_TRACE3, 0, workers->s,
-                     "h2_worker(%d): done", worker->id);
-        H2_WORKER_REMOVE(worker);
-        --workers->worker_count;
-        H2_WORKER_LIST_INSERT_TAIL(&workers->zombies, worker);
-        
-        apr_thread_mutex_unlock(workers->lock);
-    }
-}
-
-static apr_status_t add_worker(h2_workers *workers)
-{
-    h2_worker *w = h2_worker_create(workers->next_worker_id++,
-                                    workers->pool, workers->thread_attr,
-                                    get_mplx_next, worker_done, workers);
-    if (!w) {
-        return APR_ENOMEM;
-    }
     ap_log_error(APLOG_MARK, APLOG_TRACE3, 0, workers->s,
-                 "h2_workers: adding worker(%d)", w->id);
-    ++workers->worker_count;
-    H2_WORKER_LIST_INSERT_TAIL(&workers->workers, w);
+                 "h2_workers: terminate slot %d in state %d (%d activations)",
+                 slot->id, slot->state, slot->activations);
+    slot->is_idle = 0;
+    slot->state = H2_SLOT_ZOMBIE;
+    slot->should_shutdown = 0;
+    APR_RING_INSERT_TAIL(&workers->zombie, slot, h2_slot, link);
+    --workers->active_slots;
+    if (workers->active_slots <= 0) {
+        apr_thread_cond_broadcast(workers->all_done);
+    }
+    apr_thread_mutex_unlock(workers->lock);
+
+    apr_thread_exit(thread, APR_SUCCESS);
+    return NULL;
+}
+
+static void wake_all_idles(h2_workers *workers)
+{
+    h2_slot *slot;
+    for (slot = APR_RING_FIRST(&workers->idle);
+         slot != APR_RING_SENTINEL(&workers->idle, h2_slot, link);
+         slot = APR_RING_NEXT(slot, link))
+    {
+        apr_thread_cond_signal(slot->more_work);
+    }
+}
+
+static apr_status_t workers_pool_cleanup(void *data)
+{
+    h2_workers *workers = data;
+    apr_time_t end, timeout = apr_time_from_sec(1);
+    apr_status_t rv;
+    int n = 0, wait_sec = 5;
+
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, workers->s,
+                 "h2_workers: cleanup %d workers (%d idle)",
+                 workers->active_slots, workers->idle_slots);
+    apr_thread_mutex_lock(workers->lock);
+    workers->shutdown = 1;
+    workers->aborted = 1;
+    wake_all_idles(workers);
+    apr_thread_mutex_unlock(workers->lock);
+
+    /* wait for all the workers to become zombies and join them.
+     * this gets called after the mpm shuts down and all connections
+     * have either been handled (graceful) or we are forced exiting
+     * (ungrateful). Either way, we show limited patience. */
+    end = apr_time_now() + apr_time_from_sec(wait_sec);
+    while (apr_time_now() < end) {
+        apr_thread_mutex_lock(workers->lock);
+        if (!(n = workers->active_slots)) {
+            apr_thread_mutex_unlock(workers->lock);
+            break;
+        }
+        wake_all_idles(workers);
+        rv = apr_thread_cond_timedwait(workers->all_done, workers->lock, timeout);
+        apr_thread_mutex_unlock(workers->lock);
+
+        if (APR_TIMEUP == rv) {
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, workers->s,
+                         APLOGNO(10290) "h2_workers: waiting for workers to close, "
+                         "still seeing %d workers (%d idle) living",
+                         workers->active_slots, workers->idle_slots);
+        }
+    }
+    if (n) {
+        ap_log_error(APLOG_MARK, APLOG_WARNING, 0, workers->s,
+                     APLOGNO(10291) "h2_workers: cleanup, %d workers (%d idle) "
+                     "did not exit after %d seconds.",
+                     n, workers->idle_slots, wait_sec);
+    }
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, workers->s,
+                 "h2_workers: cleanup all workers terminated");
+    apr_thread_mutex_lock(workers->lock);
+    join_zombies(workers);
+    apr_thread_mutex_unlock(workers->lock);
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, workers->s,
+                 "h2_workers: cleanup zombie workers joined");
+
     return APR_SUCCESS;
 }
 
-static apr_status_t h2_workers_start(h2_workers *workers)
+h2_workers *h2_workers_create(server_rec *s, apr_pool_t *pchild,
+                              int max_slots, int min_active,
+                              apr_time_t idle_limit)
 {
-    apr_status_t status = apr_thread_mutex_lock(workers->lock);
-    if (status == APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_TRACE3, 0, workers->s,
-                      "h2_workers: starting");
-
-        while (workers->worker_count < workers->min_workers
-               && status == APR_SUCCESS) {
-            status = add_worker(workers);
-        }
-        apr_thread_mutex_unlock(workers->lock);
-    }
-    return status;
-}
-
-h2_workers *h2_workers_create(server_rec *s, apr_pool_t *server_pool,
-                              int min_workers, int max_workers,
-                              apr_size_t max_tx_handles)
-{
-    apr_status_t status;
+    apr_status_t rv;
     h2_workers *workers;
     apr_pool_t *pool;
+    apr_allocator_t *allocator;
+    int locked = 0;
+    apr_uint32_t i;
 
     ap_assert(s);
-    ap_assert(server_pool);
+    ap_assert(pchild);
+    ap_assert(idle_limit > 0);
 
     /* let's have our own pool that will be parent to all h2_worker
      * instances we create. This happens in various threads, but always
      * guarded by our lock. Without this pool, all subpool creations would
      * happen on the pool handed to us, which we do not guard.
      */
-    apr_pool_create(&pool, server_pool);
+    rv = apr_allocator_create(&allocator);
+    if (rv != APR_SUCCESS) {
+        goto cleanup;
+    }
+    rv = apr_pool_create_ex(&pool, pchild, NULL, allocator);
+    if (rv != APR_SUCCESS) {
+        apr_allocator_destroy(allocator);
+        goto cleanup;
+    }
+    apr_allocator_owner_set(allocator, pool);
     apr_pool_tag(pool, "h2_workers");
     workers = apr_pcalloc(pool, sizeof(h2_workers));
-    if (workers) {
-        workers->s = s;
-        workers->pool = pool;
-        workers->min_workers = min_workers;
-        workers->max_workers = max_workers;
-        workers->max_idle_secs = 10;
-        
-        workers->max_tx_handles = max_tx_handles;
-        workers->spare_tx_handles = workers->max_tx_handles;
-        
-        apr_threadattr_create(&workers->thread_attr, workers->pool);
-        if (ap_thread_stacksize != 0) {
-            apr_threadattr_stacksize_set(workers->thread_attr,
-                                         ap_thread_stacksize);
-            ap_log_error(APLOG_MARK, APLOG_TRACE3, 0, s,
-                         "h2_workers: using stacksize=%ld", 
-                         (long)ap_thread_stacksize);
-        }
-        
-        APR_RING_INIT(&workers->workers, h2_worker, link);
-        APR_RING_INIT(&workers->zombies, h2_worker, link);
-        APR_RING_INIT(&workers->mplxs, h2_mplx, link);
-        
-        status = apr_thread_mutex_create(&workers->lock,
-                                         APR_THREAD_MUTEX_DEFAULT,
-                                         workers->pool);
-        if (status == APR_SUCCESS) {
-            status = apr_thread_cond_create(&workers->mplx_added, workers->pool);
-        }
-        
-        if (status == APR_SUCCESS) {
-            status = apr_thread_mutex_create(&workers->tx_lock,
-                                             APR_THREAD_MUTEX_DEFAULT,
-                                             workers->pool);
-        }
-        
-        if (status == APR_SUCCESS) {
-            status = h2_workers_start(workers);
-        }
-        
-        if (status != APR_SUCCESS) {
-            h2_workers_destroy(workers);
-            workers = NULL;
-        }
+    if (!workers) {
+        return NULL;
     }
-    return workers;
-}
-
-void h2_workers_destroy(h2_workers *workers)
-{
-    /* before we go, cleanup any zombie workers that may have accumulated */
-    cleanup_zombies(workers, 1);
     
-    if (workers->mplx_added) {
-        apr_thread_cond_destroy(workers->mplx_added);
-        workers->mplx_added = NULL;
-    }
-    if (workers->lock) {
-        apr_thread_mutex_destroy(workers->lock);
-        workers->lock = NULL;
-    }
-    while (!H2_MPLX_LIST_EMPTY(&workers->mplxs)) {
-        h2_mplx *m = H2_MPLX_LIST_FIRST(&workers->mplxs);
-        H2_MPLX_REMOVE(m);
-    }
-    while (!H2_WORKER_LIST_EMPTY(&workers->workers)) {
-        h2_worker *w = H2_WORKER_LIST_FIRST(&workers->workers);
-        H2_WORKER_REMOVE(w);
-    }
-    if (workers->pool) {
-        apr_pool_destroy(workers->pool);
-        /* workers is gone */
-    }
-}
+    workers->s = s;
+    workers->pool = pool;
+    workers->min_active = min_active;
+    workers->max_slots = max_slots;
+    workers->idle_limit = idle_limit;
+    workers->dynamic = (workers->min_active < workers->max_slots);
 
-apr_status_t h2_workers_register(h2_workers *workers, struct h2_mplx *m)
-{
-    apr_status_t status = apr_thread_mutex_lock(workers->lock);
-    if (status == APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_TRACE3, status, workers->s,
-                     "h2_workers: register mplx(%ld), idle=%d", 
-                     m->id, workers->idle_workers);
-        if (in_list(workers, m)) {
-            status = APR_EAGAIN;
-        }
-        else {
-            H2_MPLX_LIST_INSERT_TAIL(&workers->mplxs, m);
-            ++workers->mplx_count;
-            status = APR_SUCCESS;
-        }
-        
-        if (workers->idle_workers > 0) { 
-            apr_thread_cond_signal(workers->mplx_added);
-        }
-        else if (status == APR_SUCCESS 
-                 && workers->worker_count < workers->max_workers) {
-            ap_log_error(APLOG_MARK, APLOG_TRACE3, 0, workers->s,
-                         "h2_workers: got %d worker, adding 1", 
-                         workers->worker_count);
-            add_worker(workers);
-        }
+    ap_log_error(APLOG_MARK, APLOG_INFO, 0, s,
+                 "h2_workers: created with min=%d max=%d idle_ms=%d",
+                 workers->min_active, workers->max_slots,
+                 (int)apr_time_as_msec(idle_limit));
+
+    APR_RING_INIT(&workers->idle, h2_slot, link);
+    APR_RING_INIT(&workers->busy, h2_slot, link);
+    APR_RING_INIT(&workers->free, h2_slot, link);
+    APR_RING_INIT(&workers->zombie, h2_slot, link);
+
+    APR_RING_INIT(&workers->prod_active, ap_conn_producer_t, link);
+    APR_RING_INIT(&workers->prod_idle, ap_conn_producer_t, link);
+
+    rv = apr_threadattr_create(&workers->thread_attr, workers->pool);
+    if (rv != APR_SUCCESS) goto cleanup;
+
+    if (ap_thread_stacksize != 0) {
+        apr_threadattr_stacksize_set(workers->thread_attr,
+                                     ap_thread_stacksize);
+        ap_log_error(APLOG_MARK, APLOG_TRACE3, 0, s,
+                     "h2_workers: using stacksize=%ld", 
+                     (long)ap_thread_stacksize);
+    }
+    
+    rv = apr_thread_mutex_create(&workers->lock,
+                                 APR_THREAD_MUTEX_DEFAULT,
+                                 workers->pool);
+    if (rv != APR_SUCCESS) goto cleanup;
+    rv = apr_thread_cond_create(&workers->all_done, workers->pool);
+    if (rv != APR_SUCCESS) goto cleanup;
+    rv = apr_thread_cond_create(&workers->prod_done, workers->pool);
+    if (rv != APR_SUCCESS) goto cleanup;
+
+    apr_thread_mutex_lock(workers->lock);
+    locked = 1;
+
+    /* create the slots and put them on the free list */
+    workers->slots = apr_pcalloc(workers->pool, workers->max_slots * sizeof(h2_slot));
+
+    for (i = 0; i < workers->max_slots; ++i) {
+        workers->slots[i].id = i;
+        workers->slots[i].state = H2_SLOT_FREE;
+        workers->slots[i].workers = workers;
+        APR_RING_ELEM_INIT(&workers->slots[i], link);
+        APR_RING_INSERT_TAIL(&workers->free, &workers->slots[i], h2_slot, link);
+        rv = apr_thread_cond_create(&workers->slots[i].more_work, workers->pool);
+        if (rv != APR_SUCCESS) goto cleanup;
+    }
+
+    /* activate the min amount of workers */
+    for (i = 0; i < workers->min_active; ++i) {
+        rv = activate_slot(workers);
+        if (rv != APR_SUCCESS) goto cleanup;
+    }
+
+cleanup:
+    if (locked) {
         apr_thread_mutex_unlock(workers->lock);
     }
-    return status;
+    if (rv == APR_SUCCESS) {
+        /* Stop/join the workers threads when the MPM child exits (pchild is
+         * destroyed), and as a pre_cleanup of pchild thus before the threads
+         * pools (children of workers->pool) so that they are not destroyed
+         * before/under us.
+         */
+        apr_pool_pre_cleanup_register(pchild, workers, workers_pool_cleanup);    
+        return workers;
+    }
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, s,
+                 "h2_workers: errors initializing");
+    return NULL;
 }
 
-apr_status_t h2_workers_unregister(h2_workers *workers, struct h2_mplx *m)
+apr_uint32_t h2_workers_get_max_workers(h2_workers *workers)
 {
-    apr_status_t status = apr_thread_mutex_lock(workers->lock);
-    if (status == APR_SUCCESS) {
-        status = APR_EAGAIN;
-        if (in_list(workers, m)) {
-            H2_MPLX_REMOVE(m);
-            status = APR_SUCCESS;
+    return workers->max_slots;
+}
+
+void h2_workers_shutdown(h2_workers *workers, int graceful)
+{
+    ap_conn_producer_t *prod;
+
+    apr_thread_mutex_lock(workers->lock);
+    ap_log_error(APLOG_MARK, APLOG_TRACE1, 0, workers->s,
+                 "h2_workers: shutdown graceful=%d", graceful);
+    workers->shutdown = 1;
+    workers->idle_limit = apr_time_from_sec(1);
+    wake_all_idles(workers);
+    for (prod = APR_RING_FIRST(&workers->prod_idle);
+        prod != APR_RING_SENTINEL(&workers->prod_idle, ap_conn_producer_t, link);
+        prod = APR_RING_NEXT(prod, link)) {
+        if (prod->fn_shutdown) {
+            prod->fn_shutdown(prod->baton, graceful);
         }
-        apr_thread_mutex_unlock(workers->lock);
     }
-    return status;
+    apr_thread_mutex_unlock(workers->lock);
 }
 
-void h2_workers_set_max_idle_secs(h2_workers *workers, int idle_secs)
+ap_conn_producer_t *h2_workers_register(h2_workers *workers,
+                                        apr_pool_t *producer_pool,
+                                        const char *name,
+                                        ap_conn_producer_next *fn_next,
+                                        ap_conn_producer_done *fn_done,
+                                        ap_conn_producer_shutdown *fn_shutdown,
+                                        void *baton)
 {
-    if (idle_secs <= 0) {
-        ap_log_error(APLOG_MARK, APLOG_WARNING, 0, workers->s,
-                     APLOGNO(02962) "h2_workers: max_worker_idle_sec value of %d"
-                     " is not valid, ignored.", idle_secs);
-        return;
-    }
-    workers->max_idle_secs = idle_secs;
+    ap_conn_producer_t *prod;
+
+    prod = apr_pcalloc(producer_pool, sizeof(*prod));
+    APR_RING_ELEM_INIT(prod, link);
+    prod->name = name;
+    prod->fn_next = fn_next;
+    prod->fn_done = fn_done;
+    prod->fn_shutdown = fn_shutdown;
+    prod->baton = baton;
+
+    apr_thread_mutex_lock(workers->lock);
+    prod->state = PROD_IDLE;
+    APR_RING_INSERT_TAIL(&workers->prod_idle, prod, ap_conn_producer_t, link);
+    apr_thread_mutex_unlock(workers->lock);
+
+    return prod;
 }
 
-apr_size_t h2_workers_tx_reserve(h2_workers *workers, apr_size_t count)
+apr_status_t h2_workers_join(h2_workers *workers, ap_conn_producer_t *prod)
 {
-    apr_status_t status = apr_thread_mutex_lock(workers->tx_lock);
-    if (status == APR_SUCCESS) {
-        count = H2MIN(workers->spare_tx_handles, count);
-        workers->spare_tx_handles -= count;
-        ap_log_error(APLOG_MARK, APLOG_TRACE2, 0, workers->s,
-                     "h2_workers: reserved %d tx handles, %d/%d left", 
-                     (int)count, (int)workers->spare_tx_handles,
-                     (int)workers->max_tx_handles);
-        apr_thread_mutex_unlock(workers->tx_lock);
-        return count;
+    apr_status_t rv = APR_SUCCESS;
+
+    apr_thread_mutex_lock(workers->lock);
+    if (PROD_JOINED == prod->state) {
+        AP_DEBUG_ASSERT(APR_RING_NEXT(prod, link) == prod); /* should be in no ring */
+        rv = APR_EINVAL;
     }
-    return 0;
+    else {
+        AP_DEBUG_ASSERT(PROD_ACTIVE == prod->state || PROD_IDLE == prod->state);
+        APR_RING_REMOVE(prod, link);
+        prod->state = PROD_JOINED; /* prevent further activations */
+        while (prod->conns_active > 0) {
+            apr_thread_cond_wait(workers->prod_done, workers->lock);
+        }
+        APR_RING_ELEM_INIT(prod, link); /* make it link to itself */
+    }
+    apr_thread_mutex_unlock(workers->lock);
+    return rv;
 }
 
-void h2_workers_tx_free(h2_workers *workers, apr_size_t count)
+apr_status_t h2_workers_activate(h2_workers *workers, ap_conn_producer_t *prod)
 {
-    apr_status_t status = apr_thread_mutex_lock(workers->tx_lock);
-    if (status == APR_SUCCESS) {
-        workers->spare_tx_handles += count;
-        ap_log_error(APLOG_MARK, APLOG_TRACE2, 0, workers->s,
-                     "h2_workers: freed %d tx handles, %d/%d left", 
-                     (int)count, (int)workers->spare_tx_handles,
-                     (int)workers->max_tx_handles);
-        apr_thread_mutex_unlock(workers->tx_lock);
+    apr_status_t rv = APR_SUCCESS;
+    apr_thread_mutex_lock(workers->lock);
+    if (PROD_IDLE == prod->state) {
+        APR_RING_REMOVE(prod, link);
+        prod->state = PROD_ACTIVE;
+        APR_RING_INSERT_TAIL(&workers->prod_active, prod, ap_conn_producer_t, link);
+        wake_idle_worker(workers, prod);
     }
+    else if (PROD_JOINED == prod->state) {
+        rv = APR_EINVAL;
+    }
+    apr_thread_mutex_unlock(workers->lock);
+    return rv;
 }
-

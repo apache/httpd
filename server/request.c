@@ -59,6 +59,7 @@
 #define APLOG_MODULE_INDEX AP_CORE_MODULE_INDEX
 
 APR_HOOK_STRUCT(
+    APR_HOOK_LINK(pre_translate_name)
     APR_HOOK_LINK(translate_name)
     APR_HOOK_LINK(map_to_storage)
     APR_HOOK_LINK(check_user_id)
@@ -72,8 +73,11 @@ APR_HOOK_STRUCT(
     APR_HOOK_LINK(post_perdir_config)
     APR_HOOK_LINK(dirwalk_stat)
     APR_HOOK_LINK(force_authn)
+    APR_HOOK_LINK(token_checker)
 )
 
+AP_IMPLEMENT_HOOK_RUN_FIRST(int,pre_translate_name,
+                            (request_rec *r), (r), DECLINED)
 AP_IMPLEMENT_HOOK_RUN_FIRST(int,translate_name,
                             (request_rec *r), (r), DECLINED)
 AP_IMPLEMENT_HOOK_RUN_FIRST(int,map_to_storage,
@@ -100,6 +104,8 @@ AP_IMPLEMENT_HOOK_RUN_FIRST(apr_status_t,dirwalk_stat,
                             (finfo, r, wanted), AP_DECLINED)
 AP_IMPLEMENT_HOOK_RUN_FIRST(int,force_authn,
                             (request_rec *r), (r), DECLINED)
+AP_IMPLEMENT_HOOK_RUN_FIRST(int,token_checker,
+                            (request_rec *r), (r), DECLINED)
 
 static int auth_internal_per_conf = 0;
 static int auth_internal_per_conf_hooks = 0;
@@ -124,6 +130,8 @@ static int decl_die(int status, const char *phase, request_rec *r)
 AP_DECLARE(int) ap_some_authn_required(request_rec *r)
 {
     int access_status;
+    char *olduser = r->user;
+    int rv = FALSE;
 
     switch (ap_satisfies(r)) {
     case SATISFY_ALL:
@@ -134,7 +142,7 @@ AP_DECLARE(int) ap_some_authn_required(request_rec *r)
 
         access_status = ap_run_access_checker_ex(r);
         if (access_status == DECLINED) {
-            return TRUE;
+            rv = TRUE;
         }
 
         break;
@@ -145,13 +153,35 @@ AP_DECLARE(int) ap_some_authn_required(request_rec *r)
 
         access_status = ap_run_access_checker_ex(r);
         if (access_status == DECLINED) {
-            return TRUE;
+            rv = TRUE;
         }
 
         break;
     }
 
-    return FALSE;
+    r->user = olduser;
+    return rv;
+}
+
+static int walk_location_and_if(request_rec *r)
+{
+    int access_status;
+
+    if ((access_status = ap_location_walk(r))) {
+        return access_status;
+    }
+    if ((access_status = ap_if_walk(r))) {
+        return access_status;
+    }
+
+    /* Don't set per-dir loglevel if LogLevelOverride is set */
+    if (!r->connection->log) {
+        core_dir_config *d = ap_get_core_module_config(r->per_dir_config);
+        if (d->log)
+            r->log = d->log;
+    }
+
+    return OK;
 }
 
 /* This is the master logic for processing requests.  Do NOT duplicate
@@ -161,51 +191,93 @@ AP_DECLARE(int) ap_some_authn_required(request_rec *r)
  */
 AP_DECLARE(int) ap_process_request_internal(request_rec *r)
 {
+    int access_status = DECLINED;
     int file_req = (r->main && r->filename);
-    int access_status;
-    core_dir_config *d;
+    core_server_config *sconf =
+        ap_get_core_module_config(r->server->module_config);
+    unsigned int normalize_flags;
 
-    /* Ignore embedded %2F's in path for proxy requests */
-    if (!r->proxyreq && r->parsed_uri.path) {
-        d = ap_get_core_module_config(r->per_dir_config);
-        if (d->allow_encoded_slashes) {
-            access_status = ap_unescape_url_keep2f(r->parsed_uri.path, d->decode_encoded_slashes);
+    normalize_flags = AP_NORMALIZE_NOT_ABOVE_ROOT;
+    if (sconf->merge_slashes != AP_CORE_CONFIG_OFF) { 
+        normalize_flags |= AP_NORMALIZE_MERGE_SLASHES;
+    }
+    if (file_req) {
+        /* File subrequests can have a relative path. */
+        normalize_flags |= AP_NORMALIZE_ALLOW_RELATIVE;
+    }
+
+    if (r->parsed_uri.path) {
+        /* Normalize: remove /./ and shrink /../ segments, plus
+         * decode unreserved chars (first time only to avoid
+         * double decoding after ap_unescape_url() below).
+         */
+        if (!ap_normalize_path(r->parsed_uri.path,
+                               normalize_flags |
+                               AP_NORMALIZE_DECODE_UNRESERVED)) {
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(10244)
+                          "invalid URI path (%s)", r->unparsed_uri);
+            return HTTP_BAD_REQUEST;
         }
-        else {
-            access_status = ap_unescape_url(r->parsed_uri.path);
+    }
+
+    /* All file subrequests are a huge pain... they cannot bubble through the
+     * next several steps.  Only file subrequests are allowed an empty uri,
+     * otherwise let (pre_)translate_name kill the request.
+     */
+    if (!file_req) {
+        ap_conf_vector_t *per_dir_config = r->per_dir_config;
+
+        if ((access_status = walk_location_and_if(r))) {
+            return access_status;
         }
+
+        /* Let pre_translate_name hooks work with non-decoded URIs, and
+         * eventually prevent further URI transformations (return DONE).
+         */
+        access_status = ap_run_pre_translate_name(r);
+        if (ap_is_HTTP_ERROR(access_status)) {
+            return access_status;
+        }
+
+        /* Throw away pre_trans only merging */
+        r->per_dir_config = per_dir_config;
+    }
+
+    /* Ignore URL unescaping for translated URIs already */
+    if (access_status != DONE && r->parsed_uri.path) {
+        core_dir_config *d = ap_get_core_module_config(r->per_dir_config);
+        /* Unreserved chars were already decoded by ap_normalize_path() */
+        unsigned int unescape_flags = AP_UNESCAPE_URL_KEEP_UNRESERVED;
+        if (!d->allow_encoded_slashes) {
+            unescape_flags |= AP_UNESCAPE_URL_FORBID_SLASHES;
+        }
+        else if (!d->decode_encoded_slashes) {
+            unescape_flags |= AP_UNESCAPE_URL_KEEP_SLASHES;
+        }
+        access_status = ap_unescape_url_ex(r->parsed_uri.path, unescape_flags);
         if (access_status) {
             if (access_status == HTTP_NOT_FOUND) {
                 if (! d->allow_encoded_slashes) {
                     ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(00026)
-                                  "found %%2f (encoded '/') in URI "
-                                  "(decoded='%s'), returning 404",
-                                  r->parsed_uri.path);
+                                  "found %%2f (encoded '/') in URI path (%s), "
+                                  "returning 404", r->unparsed_uri);
                 }
             }
             return access_status;
         }
+
+        if (d->allow_encoded_slashes && d->decode_encoded_slashes) {
+            /* Decoding slashes might have created new // or /./ or /../
+             * segments (e.g. "/.%2F/"), so re-normalize.
+             */
+            ap_normalize_path(r->parsed_uri.path, normalize_flags);
+        }
     }
 
-    ap_getparents(r->uri);     /* OK --- shrinking transformations... */
-
-    /* All file subrequests are a huge pain... they cannot bubble through the
-     * next several steps.  Only file subrequests are allowed an empty uri,
-     * otherwise let translate_name kill the request.
-     */
+    /* Same, translate_name is not suited for file subrequests */
     if (!file_req) {
-        if ((access_status = ap_location_walk(r))) {
+        if ((access_status = walk_location_and_if(r))) {
             return access_status;
-        }
-        if ((access_status = ap_if_walk(r))) {
-            return access_status;
-        }
-
-        /* Don't set per-dir loglevel if LogLevelOverride is set */
-        if (!r->connection->log) {
-            d = ap_get_core_module_config(r->per_dir_config);
-            if (d->log)
-                r->log = d->log;
         }
 
         if ((access_status = ap_run_translate_name(r))) {
@@ -224,18 +296,8 @@ AP_DECLARE(int) ap_process_request_internal(request_rec *r)
 
     /* Rerun the location walk, which overrides any map_to_storage config.
      */
-    if ((access_status = ap_location_walk(r))) {
+    if ((access_status = walk_location_and_if(r))) {
         return access_status;
-    }
-    if ((access_status = ap_if_walk(r))) {
-        return access_status;
-    }
-
-    /* Don't set per-dir loglevel if LogLevelOverride is set */
-    if (!r->connection->log) {
-        d = ap_get_core_module_config(r->per_dir_config);
-        if (d->log)
-            r->log = d->log;
     }
 
     if ((access_status = ap_run_post_perdir_config(r))) {
@@ -263,9 +325,23 @@ AP_DECLARE(int) ap_process_request_internal(request_rec *r)
         r->ap_auth_type = r->main->ap_auth_type;
     }
     else {
+        /* A module using a confusing API (ap_get_basic_auth_pw) caused
+        ** r->user to be filled out prior to check_authn hook. We treat
+        ** it is inadvertent.
+        */
+        if (r->user && apr_table_get(r->notes, AP_GET_BASIC_AUTH_PW_NOTE)) { 
+            r->user = NULL;
+        }
+
         switch (ap_satisfies(r)) {
         case SATISFY_ALL:
         case SATISFY_NOSPEC:
+            if ((access_status = ap_run_token_checker(r)) != OK &&
+            		access_status != DECLINED) {
+                return decl_die(access_status,
+                                "check token (with Satisfy All)", r);
+            }
+
             if ((access_status = ap_run_access_checker(r)) != OK) {
                 return decl_die(access_status,
                                 "check access (with Satisfy All)", r);
@@ -301,6 +377,14 @@ AP_DECLARE(int) ap_process_request_internal(request_rec *r)
             }
             break;
         case SATISFY_ANY:
+            if ((access_status = ap_run_token_checker(r)) == OK) {
+                ap_log_rerror(APLOG_MARK, APLOG_TRACE3, 0, r,
+                              "request authorized bypassing access_checker by "
+                              "token_checker hook and 'Satisfy any': %s",
+                              r->uri);
+                break;
+            }
+
             if ((access_status = ap_run_access_checker(r)) == OK) {
                 ap_log_rerror(APLOG_MARK, APLOG_TRACE3, 0, r,
                               "request authorized without authentication by "
@@ -1249,6 +1333,7 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
             if (entry_core->refs && entry_core->refs->nelts) {
                 if (!rxpool) {
                     apr_pool_create(&rxpool, r->pool);
+                    apr_pool_tag(rxpool, "directory_walk_rxpool");
                 }
                 nmatch = entry_core->refs->nelts;
                 pmatch = apr_palloc(rxpool, nmatch*sizeof(ap_regmatch_t));
@@ -1354,7 +1439,7 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
     r->canonical_filename = r->filename;
 
     if (r->finfo.filetype == APR_DIR) {
-        cache->cached = r->filename;
+        cache->cached = apr_pstrdup(r->pool, r->filename);
     }
     else {
         cache->cached = ap_make_dirstr_parent(r->pool, r->filename);
@@ -1405,17 +1490,17 @@ AP_DECLARE(int) ap_location_walk(request_rec *r)
     cache = prep_walk_cache(AP_NOTE_LOCATION_WALK, r);
     cached = (cache->cached != NULL);
 
-    /* Location and LocationMatch differ on their behaviour w.r.t. multiple
-     * slashes.  Location matches multiple slashes with a single slash,
-     * LocationMatch doesn't.  An exception, for backwards brokenness is
-     * absoluteURIs... in which case neither match multiple slashes.
-     */
-    if (r->uri[0] != '/') {
+   /*
+    * When merge_slashes is set to AP_CORE_CONFIG_OFF the slashes in r->uri
+    * have not been merged. But for Location walks we always go with merged
+    * slashes no matter what merge_slashes is set to.
+    */
+    if (sconf->merge_slashes != AP_CORE_CONFIG_OFF) {
         entry_uri = r->uri;
     }
     else {
         char *uri = apr_pstrdup(r->pool, r->uri);
-        ap_no2slash(uri);
+        ap_no2slash_ex(uri, 0/*not an FS path*/);
         entry_uri = uri;
     }
 
@@ -1451,7 +1536,7 @@ AP_DECLARE(int) ap_location_walk(request_rec *r)
         apr_pool_t *rxpool = NULL;
 
         cached &= auth_internal_per_conf;
-        cache->cached = entry_uri;
+        cache->cached = apr_pstrdup(r->pool, entry_uri);
 
         /* Go through the location entries, and check for matches.
          * We apply the directive sections in given order, we should
@@ -1479,6 +1564,7 @@ AP_DECLARE(int) ap_location_walk(request_rec *r)
                 if (entry_core->refs && entry_core->refs->nelts) {
                     if (!rxpool) {
                         apr_pool_create(&rxpool, r->pool);
+                        apr_pool_tag(rxpool, "location_walk_rxpool");
                     }
                     nmatch = entry_core->refs->nelts;
                     pmatch = apr_palloc(rxpool, nmatch*sizeof(ap_regmatch_t));
@@ -1681,6 +1767,7 @@ AP_DECLARE(int) ap_file_walk(request_rec *r)
                 if (entry_core->refs && entry_core->refs->nelts) {
                     if (!rxpool) {
                         apr_pool_create(&rxpool, r->pool);
+                        apr_pool_tag(rxpool, "file_walk_rxpool");
                     }
                     nmatch = entry_core->refs->nelts;
                     pmatch = apr_palloc(rxpool, nmatch*sizeof(ap_regmatch_t));
@@ -1781,10 +1868,9 @@ AP_DECLARE(int) ap_file_walk(request_rec *r)
     return OK;
 }
 
-AP_DECLARE(int) ap_if_walk(request_rec *r)
+static int ap_if_walk_sub(request_rec *r, core_dir_config* dconf)
 {
     ap_conf_vector_t *now_merged = NULL;
-    core_dir_config *dconf = ap_get_core_module_config(r->per_dir_config);
     ap_conf_vector_t **sec_ent = NULL;
     int num_sec = 0;
     walk_cache_t *cache;
@@ -1795,7 +1881,7 @@ AP_DECLARE(int) ap_if_walk(request_rec *r)
     int prev_result = -1;
     walk_walked_t *last_walk;
 
-    if (dconf->sec_if) {
+    if (dconf && dconf->sec_if) {
         sec_ent = (ap_conf_vector_t **)dconf->sec_if->elts;
         num_sec = dconf->sec_if->nelts;
     }
@@ -1910,7 +1996,23 @@ AP_DECLARE(int) ap_if_walk(request_rec *r)
     }
     cache->per_dir_result = r->per_dir_config;
 
+    if (now_merged) {
+        core_dir_config *dconf_merged = ap_get_core_module_config(now_merged);
+
+        /* Allow nested <If>s and their configs to get merged
+         * with the current one.
+         */
+        return ap_if_walk_sub(r, dconf_merged);
+    }
+
     return OK;
+}
+
+AP_DECLARE(int) ap_if_walk(request_rec *r)
+{
+    core_dir_config *dconf = ap_get_core_module_config(r->per_dir_config);
+    int status = ap_if_walk_sub(r, dconf);
+    return status;
 }
 
 /*****************************************************************
@@ -2037,73 +2139,6 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_sub_req_output_filter(ap_filter_t *f,
     return APR_SUCCESS;
 }
 
-AP_CORE_DECLARE_NONSTD(apr_status_t) ap_request_core_filter(ap_filter_t *f,
-                                                            apr_bucket_brigade *bb)
-{
-    apr_bucket *flush_upto = NULL;
-    apr_status_t status = APR_SUCCESS;
-    apr_bucket_brigade *tmp_bb = f->ctx;
-
-    /*
-     * Handle the AsyncFilter directive. We limit the filters that are
-     * eligible for asynchronous handling here.
-     */
-    if (f->frec->ftype < f->c->async_filter) {
-        ap_remove_output_filter(f);
-        return ap_pass_brigade(f->next, bb);
-    }
-
-    if (!tmp_bb) {
-        tmp_bb = f->ctx = apr_brigade_create(f->r->pool, f->c->bucket_alloc);
-    }
-
-    /* Reinstate any buffered content */
-    ap_filter_reinstate_brigade(f, bb, &flush_upto);
-
-    while (!APR_BRIGADE_EMPTY(bb)) {
-        apr_bucket *bucket = APR_BRIGADE_FIRST(bb);
-
-        /* if the core has set aside data, back off and try later */
-        if (!flush_upto) {
-            if (ap_filter_should_yield(f)) {
-                break;
-            }
-        }
-        else if (flush_upto == bucket) {
-            flush_upto = NULL;
-        }
-
-        /* have we found a morphing bucket? if so, force it to morph into something
-         * safe to pass down to the connection filters without needing to be set
-         * aside.
-         */
-        if (!APR_BUCKET_IS_METADATA(bucket)) {
-            if (bucket->length == (apr_size_t) - 1) {
-                const char *data;
-                apr_size_t size;
-                if (APR_SUCCESS
-                        != (status = apr_bucket_read(bucket, &data, &size,
-                                APR_BLOCK_READ))) {
-                    return status;
-                }
-            }
-        }
-
-        /* pass each bucket down the chain */
-        APR_BUCKET_REMOVE(bucket);
-        APR_BRIGADE_INSERT_TAIL(tmp_bb, bucket);
-
-        status = ap_pass_brigade(f->next, tmp_bb);
-        if (!APR_STATUS_IS_EOF(status) && (status != APR_SUCCESS)) {
-            return status;
-        }
-
-    }
-
-    ap_filter_setaside_brigade(f, bb);
-    return status;
-}
-
 extern APR_OPTIONAL_FN_TYPE(authz_some_auth_required) *ap__authz_ap_some_auth_required;
 
 AP_DECLARE(int) ap_some_auth_required(request_rec *r)
@@ -2197,6 +2232,18 @@ AP_DECLARE(void) ap_hook_check_access_ex(ap_HOOK_access_checker_ex_t *pf,
     }
 
     ap_hook_access_checker_ex(pf, aszPre, aszSucc, nOrder);
+}
+
+AP_DECLARE(void) ap_hook_check_autht(ap_HOOK_token_checker_t *pf,
+                                     const char * const *aszPre,
+                                     const char * const *aszSucc,
+                                     int nOrder, int type)
+{
+    if ((type & AP_AUTH_INTERNAL_MASK) == AP_AUTH_INTERNAL_PER_CONF) {
+        ++auth_internal_per_conf_hooks;
+    }
+
+    ap_hook_token_checker(pf, aszPre, aszSucc, nOrder);
 }
 
 AP_DECLARE(void) ap_hook_check_authn(ap_HOOK_check_user_id_t *pf,

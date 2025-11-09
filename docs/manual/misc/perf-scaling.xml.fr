@@ -1,0 +1,1644 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
+<!-- English Revision: 1874148 -->
+<!-- French translation : Lucien GENTIS -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+<manualpage metafile="perf-scaling.xml.meta"> 
+
+    <parentdocument href="./">Documentations diverses</parentdocument>
+    
+    <title>Am&eacute;lioration des performances</title>
+    
+    <summary>
+        
+        <p>Il est dit dans la documentation d'Apache 1.3
+	&agrave; propos de l'am&eacute;lioration des performances : 
+        </p>
+        <blockquote><p>
+            "Apache est un serveur web &agrave; vocation g&eacute;n&eacute;rale, con&ccedil;u pour
+	    &ecirc;tre non seulement efficace mais aussi rapide. Dans sa
+	    configuration de base, ses performances sont d&eacute;j&agrave;
+	    relativement satisfaisantes. La plupart des sites poss&egrave;dent
+	    une bande passante en sortie inf&eacute;rieure &agrave; 10 Mbits que le
+	    serveur Apache peut mettre pleinement &agrave; profit en utilisant un serveur &agrave; base
+	    de processeur Pentium bas de gamme."</p>
+        </blockquote>
+        <p>Cette phrase ayant &eacute;t&eacute; &eacute;crite il y a plusieurs ann&eacute;es,
+	entre temps de nombreuses choses ont chang&eacute;. D'une part, les
+	serveurs sont devenus beaucoup plus rapides. D'autre part, de
+	nombreux sites se voient maintenant allou&eacute;e une bande passante
+	en sortie bien sup&eacute;rieure &agrave; 10 Mbits. En outre, les applications
+	web sont devenues beaucoup plus complexes. Les sites classiques
+	ne proposant que des pages du style brochure sont toujours
+	pr&eacute;sents, mais le web a souvent &eacute;volu&eacute; vers une plateforme
+	ex&eacute;cutant des traitements, et les webmasters peuvent maintenant
+	mettre en ligne des contenus dynamiques en Perl, PHP ou Java,
+	qui exigent un niveau de performances bien sup&eacute;rieur. 
+        </p>
+        <p>C'est pourquoi en d&eacute;pit des progr&egrave;s en mati&egrave;re de bandes passantes
+	allou&eacute;es et de rapidit&eacute;	des serveurs, les performances
+	des serveurs web et des applications web sont toujours un sujet
+	d'actualit&eacute;. C'est dans ce cadre que cette documentation s'attache &agrave;
+	pr&eacute;senter de nombreux points concernant les performances des
+	serveurs web. 
+        </p>
+        
+    </summary>
+    
+  <section id="what-will-and-will-not-be-discussed">
+        <title>Ce qui sera abord&eacute; et ce qui ne le sera pas</title>
+        <p>Ce document se concentre sur l'am&eacute;lioration des performances
+	via des options facilement accessibles, ainsi que sur les outils
+	de monitoring. Les outils de monitoring vous permettront de
+	surveiller le fonctionnement de votre serveur web afin de
+	rassembler des informations &agrave; propos de ses performances et des
+	&eacute;ventuels probl&egrave;mes qui s'y rapportent. Nous supposerons
+	que votre budget n'est pas illimit&eacute; ; c'est pourquoi les
+	am&eacute;liorations apport&eacute;es le seront sans modifier l'infrastructure
+	mat&eacute;rielle existante. Vous ne souhaitez probablement pas
+	compiler vous-m&ecirc;me votre serveur Apache, ni recompiler le noyau
+	de votre syst&egrave;me d'exploitation ; nous supposerons cependant que
+	vous poss&eacute;dez quelques notions &agrave; propos du fichier de
+	configuration du serveur HTTP Apache. 
+        </p>
+        
+    </section>
+    
+    <section id="monitoring-your-server">
+        <title>Monitoring de votre serveur</title>
+	<p>Si vous envisagez de redimensionner ou d'am&eacute;liorer les performances
+	de votre serveur, vous devez tout d'abord observer la mani&egrave;re dont il
+	fonctionne. En observant son fonctionnement en conditions r&eacute;elles ou
+	sous une charge cr&eacute;&eacute;e artificiellement, vous serez en mesure
+	d'extrapoler son fonctionnement sous une charge accrue, par exemple dans
+	le cas o&ugrave; il serait mentionn&eacute; sur Slashdot.  </p>
+        
+        
+        <section id="monitoring-tools">
+            <title>Outils de monitoring</title>
+            
+            <section id="top">
+                <title>top
+                </title>
+                <p>L'outil top est fourni avec Linux et FreeBSD. Solaris
+		quant &agrave; lui, fournit <code>prstat(1)</code>. Cet outil
+		permet de rassembler de nombreuses donn&eacute;es statistiques
+		&agrave; propos du syst&egrave;me et de chaque processus en cours
+		d'ex&eacute;cution avant de les afficher de mani&egrave;re
+		interactive sur votre terminal. Les donn&eacute;es affich&eacute;es
+		sont rafra&icirc;chies toutes les secondes et varient en
+		fonction de la plateforme, mais elles comportent en
+		g&eacute;n&eacute;ral la charge moyenne du syst&egrave;me, le nombre de
+		processus et leur &eacute;tat courant, le pourcentage de temps
+		CPU(s) pass&eacute; &agrave; ex&eacute;cuter le code syst&egrave;me et utilisateur,
+		et l'&eacute;tat de la m&eacute;moire virtuelle syst&egrave;me. Les donn&eacute;es
+		affich&eacute;es pour chaque processus sont en g&eacute;n&eacute;ral
+		configurables et comprennent le nom et l'identifiant du
+		processus, sa priorit&eacute; et la valeur d&eacute;finie par nice,
+		l'empreinte m&eacute;moire, et le pourcentage d'utilisation CPU.
+		L'exemple suivant montre plusieurs processus httpd (avec
+		les MPM worker et event) s'ex&eacute;cutant sur un syst&egrave;me
+		Linux (Xen) : 
+                </p>
+                
+                <example><pre>
+top - 23:10:58 up 71 days,  6:14,  4 users,  load average: 0.25, 0.53, 0.47
+Tasks: 163 total,   1 running, 162 sleeping,   0 stopped,   0 zombie
+Cpu(s): 11.6%us,  0.7%sy,  0.0%ni, 87.3%id,  0.4%wa,  0.0%hi,  0.0%si,  0.0%st
+Mem:   2621656k total,  2178684k used,   442972k free,   100500k buffers
+Swap:  4194296k total,   860584k used,  3333712k free,  1157552k cached
+
+  PID USER      PR  NI  VIRT  RES  SHR S %CPU %MEM    TIME+  COMMAND
+16687 example_  20   0 1200m 547m 179m S   45 21.4   1:09.59 httpd-worker
+15195 www       20   0  441m  33m 2468 S    0  1.3   0:41.41 httpd-worker
+    1 root      20   0 10312  328  308 S    0  0.0   0:33.17 init
+    2 root      15  -5     0    0    0 S    0  0.0   0:00.00 kthreadd
+    3 root      RT  -5     0    0    0 S    0  0.0   0:00.14 migration/0
+    4 root      15  -5     0    0    0 S    0  0.0   0:04.58 ksoftirqd/0
+    5 root      RT  -5     0    0    0 S    0  0.0   4:45.89 watchdog/0
+    6 root      15  -5     0    0    0 S    0  0.0   1:42.52 events/0
+    7 root      15  -5     0    0    0 S    0  0.0   0:00.00 khelper
+   19 root      15  -5     0    0    0 S    0  0.0   0:00.00 xenwatch
+   20 root      15  -5     0    0    0 S    0  0.0   0:00.00 xenbus
+   28 root      RT  -5     0    0    0 S    0  0.0   0:00.14 migration/1
+   29 root      15  -5     0    0    0 S    0  0.0   0:00.20 ksoftirqd/1
+   30 root      RT  -5     0    0    0 S    0  0.0   0:05.96 watchdog/1
+   31 root      15  -5     0    0    0 S    0  0.0   1:18.35 events/1
+   32 root      RT  -5     0    0    0 S    0  0.0   0:00.08 migration/2
+   33 root      15  -5     0    0    0 S    0  0.0   0:00.18 ksoftirqd/2
+   34 root      RT  -5     0    0    0 S    0  0.0   0:06.00 watchdog/2
+   35 root      15  -5     0    0    0 S    0  0.0   1:08.39 events/2
+   36 root      RT  -5     0    0    0 S    0  0.0   0:00.10 migration/3
+   37 root      15  -5     0    0    0 S    0  0.0   0:00.16 ksoftirqd/3
+   38 root      RT  -5     0    0    0 S    0  0.0   0:06.08 watchdog/3
+   39 root      15  -5     0    0    0 S    0  0.0   1:22.81 events/3
+   68 root      15  -5     0    0    0 S    0  0.0   0:06.28 kblockd/0
+   69 root      15  -5     0    0    0 S    0  0.0   0:00.04 kblockd/1
+   70 root      15  -5     0    0    0 S    0  0.0   0:00.04 kblockd/2</pre></example>
+                
+                <p>Top est un merveilleux outil, m&ecirc;me s'il est
+		relativement gourmand en ressources (lorsqu'il
+		s'ex&eacute;cute, son propre processus se trouve en g&eacute;n&eacute;ral
+		dans le top dix des consommations CPU). Il est
+		indispensable pour d&eacute;terminer la taille d'un processus
+		en cours d'ex&eacute;cution, information pr&eacute;cieuse lorsque vous
+		voudrez d&eacute;terminer combien de processus httpd vous
+		pourrez ex&eacute;cuter sur votre machine. La m&eacute;thode pour
+		effectuer ce calcul est d&eacute;crite ici : <a
+		href="#sizing-maxClients">calculer MaxClients</a>. Top
+		est cependant un outil interactif, et l'ex&eacute;cuter de
+		mani&egrave;re continu pr&eacute;sente peu ou pas d'avantage. 
+                </p>
+            </section>
+            <section id="free">
+                <title>free
+                </title>
+                <p>Cette commande n'est disponible que sous Linux. Elle
+		indique la m&eacute;moire vive et l'espace de swap utilis&eacute;s.
+		Linux alloue la m&eacute;moire inutilis&eacute;e en tant que cache du
+		syst&egrave;me de fichiers. La commande free montre
+		l'utilisation de la m&eacute;moire avec et sans ce cache. On
+		peut utiliser la commande free pour d&eacute;terminer la
+		quantit&eacute; de m&eacute;moire utilis&eacute;e par le syst&egrave;me, comme
+		d&eacute;crit dans le paragraphe <a
+		href="#sizing-maxClients">calculer MaxClients</a>.
+		L'affichage de la sortie de la commande free ressemble &agrave;
+		ceci : 
+                </p>
+                
+                <example><pre>
+sctemme@brutus:~$ free
+              total       used     free   shared    buffers    cached
+Mem:        4026028    3901892   124136         0    253144    841044
+-/+ buffers/cache:     2807704  1218324
+Swap:       3903784      12540  3891244
+                </pre></example>
+            </section>
+            
+            <section id="vmstat">
+                <title>vmstat
+                </title>
+                <p>Cette commande est disponible sur de nombreuses
+		plateformes de style Unix. Elle affiche un grand nombre
+		de donn&eacute;es syst&egrave;me. Lanc&eacute;e sans argument, elle affiche
+		une ligne d'&eacute;tat pour l'instant actuel. Lorsqu'on lui
+		ajoute un chiffre, la ligne d'&eacute;tat actuelle est ajout&eacute;e &agrave;
+		intervalles r&eacute;guliers &agrave; l'affichage existant.
+		Par exemple, la commande
+		<code>vmstat 5</code> ajoute la ligne d'&eacute;tat actuelle
+		toutes les 5 secondes. La commande vmstat affiche la
+		quantit&eacute; de m&eacute;moire virtuelle utilis&eacute;e, la quantit&eacute; de
+		m&eacute;moire &eacute;chang&eacute;e avec l'espace de swap en entr&eacute;e et en
+		sortie &agrave; chaque seconde, le nombre de processus
+		actuellement en cours d'ex&eacute;cution ou inactifs, le nombre
+		d'interruptions et de changements de contexte par
+		seconde, et le pourcentage d'utilisation du CPU. 
+                </p>
+                <p>
+                    Voici la sortie de la commande <code>vmstat</code>
+		    pour un serveur inactif : 
+                </p>
+                
+                
+                <example><pre>
+[sctemme@GayDeceiver sctemme]$ vmstat 5 3
+   procs                      memory     swap         io    system        cpu
+ r b w     swpd   free   buff cache si so       bi    bo in     cs us  sy id
+ 0 0 0        0 186252   6688 37516    0    0   12     5 47    311  0   1 99
+ 0 0 0        0 186244   6696 37516    0    0    0    16 41    314  0   0 100
+ 0 0 0        0 186236   6704 37516    0    0    0     9 44    314  0   0 100
+                  </pre></example>
+                
+                <p>Et voici cette m&ecirc;me sortie pour un serveur en charge
+		de cent connexions simultan&eacute;es pour du contenu statique	: 
+                </p>
+                
+                <example><pre>
+[sctemme@GayDeceiver sctemme]$ vmstat 5 3
+   procs                      memory     swap    io      system       cpu
+ r b w     swpd   free   buff cache si so     bi bo   in     cs us sy  id
+ 1 0 1        0 162580   6848 40056    0    0 11  5 150     324  1  1  98
+ 6 0 1        0 163280   6856 40248    0    0  0 66 6384 1117   42 25  32
+11 0 0        0 162780   6864 40436    0    0  0 61 6309 1165   33 28  40
+                  </pre></example>
+                
+                <p>La premi&egrave;re ligne indique des valeurs moyennes depuis
+		le dernier red&eacute;marrage. Les lignes suivantes donnent des
+		informations d'&eacute;tat &agrave; intervalles de 5 secondes. Le
+		second argument demande &agrave; vmstat de g&eacute;n&eacute;rer 3 lignes
+		d'&eacute;tat, puis de s'arr&ecirc;ter. 
+                </p>
+                 
+            </section>
+            <section id="se-toolkit">
+                <title>Bo&icirc;te &agrave; outils SE
+                </title>
+                <p>La bo&icirc;te &agrave; outils SE est une solution de supervision
+		pour Solaris. Son langage de programmation est bas&eacute; sur
+		le pr&eacute;processeur C et est fourni avec de nombreux
+		exemples de scripts. Les informations fournies
+		peuvent &ecirc;tre exploit&eacute;es en mode console ou en mode
+		graphique. Cette bo&icirc;te &agrave; outils peut aussi &ecirc;tre programm&eacute;e pour
+		appliquer des r&egrave;gles aux donn&eacute;es syst&egrave;me. Avec l'exemple
+		de script de la Figure 2, Zoom.se, des voyants verts,
+		oranges ou rouges s'allument lorsque certaines valeurs
+		du syst&egrave;me d&eacute;passent un seuil sp&eacute;cifi&eacute;. Un autre script
+		fourni, Virtual Adrian, permet d'affiner les
+		performances en tenant compte de ces valeurs. 
+                </p>
+                <p>Depuis sa cr&eacute;ation, de nombreux propri&eacute;taires se sont
+		succ&eacute;d&eacute;s &agrave; la t&ecirc;te de la bo&icirc;te &agrave; outils SE, et elle a de
+		ce fait largement &eacute;volu&eacute;. Il semble qu'elle ait
+		maintenant trouv&eacute; sa place chez Sunfreeware.com d'o&ugrave;
+		elle peut &ecirc;tre t&eacute;l&eacute;charg&eacute;e gratuitement. Il n'y a qu'un
+		seul paquet pour Solaris 8, 9 et 10 sur SPARC et x86, et
+		il inclut le code source. Le concepteur de la bo&icirc;te &agrave;
+		outils SE, Richard Pettit, a fond&eacute; une nouvelle soci&eacute;te,
+		Captive Metrics4, et a l'intention de mettre sur le
+		march&eacute; un outil de supervision multiplateforme en Java bas&eacute; sur
+		les m&ecirc;mes principes que la bo&icirc;te &agrave; outils SE. 
+                </p>
+                
+                
+            </section>
+            <section id="dtrace">
+                <title>DTrace
+                </title>
+                <p>Etant donn&eacute; que DTrace est disponible sous Solaris,
+		FreeBSD et OS X, il serait int&eacute;ressant de l'&eacute;tudier. Il
+		y a aussi le module mod_dtrace pour httpd. 
+                </p>
+                
+                
+            </section>
+            <section id="mod_status">
+                <title>mod_status
+                </title>
+                <p>Le module mod_status donne un aper&ccedil;u des performances
+		du serveur &agrave; un instant donn&eacute;. Il g&eacute;n&egrave;re une page HTML
+		comportant, entre autres, le nombre de processus Apache
+		en cours d'ex&eacute;cution avec la quantit&eacute; de donn&eacute;es qu'ils
+		ont servies, ainsi que la charge CPU induite par httpd
+		et le reste du syst&egrave;me. L'Apache Software Foundation
+		utilise elle-m&ecirc;me <module>mod_status</module> pour son
+		propre <a href="http://apache.org/server-status">site
+		web</a>. Si vous ajoutez une directive
+		<code>ExtendedStatus On</code> &agrave; votre fichier
+		<code>httpd.conf</code>, la page de
+		<module>mod_status</module> vous fournira d'avantage
+		d'informations, au prix d'une consommation de ressources
+		l&eacute;g&egrave;rement sup&eacute;rieure par requ&ecirc;te. 
+                </p>
+                
+                
+            </section>
+        </section>
+        <section id="web-server-log-files">
+            <title>Les journaux du serveur web
+            </title>
+            <p>Le moyen le plus efficace pour v&eacute;rifier la bonne sant&eacute; et
+	    le niveau de performance de votre serveur consiste &agrave;
+	    surveiller et analyser les journaux &eacute;crits par httpd. La
+	    surveillance du journal des erreurs vous permet de
+	    d&eacute;terminer les sources d'erreurs, de d&eacute;tecter des attaques
+	    ou des probl&egrave;mes de performance. L'analyse du journal des
+	    acc&egrave;s vous indique le niveau de charge de votre serveur,
+	    quelles sont les ressources les plus populaires, ainsi que
+	    la provenance de vos utilisateurs. Une analyse historique des
+	    donn&eacute;es de journalisation peut vous fournir des informations
+	    pr&eacute;cieuses quant aux tendances d'utilisation de votre
+	    serveur au cours du temps, ce qui vous permet de pr&eacute;voir les
+	    p&eacute;riodes o&ugrave; les besoins en performance risquent de d&eacute;passer
+	    les capacit&eacute;s du serveur. 
+            </p>
+            
+            
+            <section id="ErrorLog">
+                <title>Journal des erreurs
+                </title>
+                <p>Le journal des erreurs peut indiquer que le nombre
+		maximum de processus actifs ou de fichiers ouverts
+		simultan&eacute;ment a &eacute;t&eacute; atteint. Le journal des erreurs
+		signele aussi le lancement de processus suppl&eacute;mentaires selon un
+		taux sup&eacute;rieur &agrave; la normale en r&eacute;ponse &agrave;
+		une augmentation soudaine de la charge. Lorsque le
+		serveur d&eacute;marre, le descripteur de fichier stderr est
+		redirig&eacute; vers le journal des erreurs, si bien que toute
+		erreur rencontr&eacute;e par httpd apr&egrave;s avoir ouvert ses
+		fichiers journaux appara&icirc;tra dans ce journal. Consulter
+		fr&eacute;quemment le journal des erreurs est donc une bonne
+		habitude. 
+                </p>
+                <p>Lorsque Apache httpd n'a pas encore ouvert ses
+		fichiers journaux, tout message d'erreur sera envoy&eacute;
+		vers la sortie d'erreur standard stderr. Si vous
+		d&eacute;marrez httpd manuellement, ces messages d'erreur
+		appara&icirc;tront sur votre terminal, et vous pourrez les
+		utiliser directement pour r&eacute;soudre les probl&egrave;mes de
+		votre serveur. Si httpd est lanc&eacute; via un script de
+		d&eacute;marrage, la destination de ces messages d'erreur
+		d&eacute;pend de leur conception.
+		<code>/var/log/messages</code> est alors le premier fichier &agrave;
+		consulter. Sous Windows, ces messages d'erreur pr&eacute;coces
+		sont &eacute;crits dans le journal des &eacute;v&egrave;nements des
+		applications, qui peut &ecirc;tre visualis&eacute; via l'observateur
+		d'&eacute;v&egrave;nements dans les outils d'administration. 
+                </p>
+                <p>
+                    Le journal des erreurs est configur&eacute; via les
+		    directives de configuration <directive
+		    module="core">ErrorLog</directive> et <directive
+		    module="core">LogLevel</directive>. Le journal des
+		    erreurs de la configuration du serveur principal de
+		    httpd re&ccedil;oit les messages d'erreur concernant
+		    l'ensemble du serveur : d&eacute;marrage, arr&ecirc;t, crashes,
+		    lancement de processus suppl&eacute;mentaires excessif,
+		    etc... La directive <directive
+		    module="core">ErrorLog</directive> peut aussi &ecirc;tre
+		    utilis&eacute;e dans les blocs de configuration des
+		    serveurs virtuels. Le journal des erreurs d'un
+		    serveur virtuel ne re&ccedil;oit que les messages d'erreur
+		    sp&eacute;cifiques &agrave; ce serveur virtuel, comme les erreurs
+		    d'authentification et les erreurs du style 'File not
+		    Found'. 
+                </p>
+                <p>Dans le cas d'un serveur accessible depuis Internet,
+		attendez-vous &agrave; voir de nombreuses tentatives
+		d'exploitation et attaques de vers dans le journal des
+		erreurs. La plupart d'entre elles ciblent des serveurs
+		autres qu'Apache, mais dans l'&eacute;tat actuel des choses,
+		les scripts se contentent d'envoyer leurs attaques vers
+		tout port ouvert, sans tenir compte du serveur web
+		effectivement en cours d'ex&eacute;cution ou du type
+		des applications install&eacute;es. Vous pouvez bloquer ces
+		tentatives d'attaque en utilisant un pare-feu ou le
+		module <a
+		href="http://www.modsecurity.org/">mod_security</a>,
+		mais ceci d&eacute;passe la port&eacute;e de cette discussion. 
+                </p>
+                <p>
+                    La directive <directive
+		    module="core">LogLevel</directive> permet de d&eacute;finir
+		    le niveau de d&eacute;tail des messages enregistr&eacute;s dans
+		    les journaux. Il existe huit niveaux de
+		    journalisation : 
+                </p>
+                <table>
+                    <tr>
+                        <td>
+                            <p><strong>Niveau</strong></p>
+                        </td>
+                        <td>
+                            <p><strong>Description</strong></p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <p>emerg</p>
+                        </td>
+                        <td>
+                            <p>Urgence - le syst&egrave;me est inutilisable.</p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <p>alert</p>
+                        </td>
+                        <td>
+                            <p>Une action doit &ecirc;tre entreprise
+			    imm&eacute;diatement.</p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <p>crit</p>
+                        </td>
+                        <td>
+                            <p>Situations critiques.</p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <p>error</p>
+                        </td>
+                        <td>
+                            <p>Situations d'erreur.</p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <p>warn</p>
+                        </td>
+                        <td>
+                            <p>Situations provoquant un avertissement.</p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <p>notice</p>
+                        </td>
+                        <td>
+                            <p>Ev&egrave;nement normal, mais important.</p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <p>info</p>
+                        </td>
+                        <td>
+                            <p>Informations.</p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <p>debug</p>
+                        </td>
+                        <td>
+                            <p>Messages de d&eacute;bogage.</p>
+                        </td>
+                    </tr>
+                </table>
+                <p>Le niveau de journalisation par d&eacute;faut est warn. Un
+		serveur en production ne doit pas s'ex&eacute;cuter en mode
+		debug, mais augmenter le niveau de d&eacute;tail dans le
+		journal des erreurs peut s'av&eacute;rer utile pour r&eacute;soudre
+		certains probl&egrave;mes. A partir de la
+		version 2.3.8, la directive <directive
+		module="core">LogLevel</directive> peut &ecirc;tre d&eacute;finie au
+		niveau de chaque module : 
+                </p>
+                
+                <highlight language="config">
+                    LogLevel debug mod_ssl:warn
+                </highlight>
+                
+                <p>
+                  Dans cet exemple, l'ensemble du serveur est en mode
+		  debug, sauf le module <module>mod_ssl</module>
+		  qui a tendance &agrave; &ecirc;tre tr&egrave;s bavard. 
+                </p>
+                
+                
+            </section>
+            <section id="AccessLog">
+                <title>Journal des acc&egrave;s
+                </title>
+                <p>Apache httpd garde la trace de toutes les requ&ecirc;tes
+		qu'il re&ccedil;oit dans son journal des acc&egrave;s. En plus de
+		l'heure et de la nature d'une requ&ecirc;te, httpd peut
+		enregistrer l'adresse IP du client, la date et l'heure
+		de la requ&ecirc;te, le r&eacute;sultat et quantit&eacute; d'autres
+		informations. Les diff&eacute;rents formats de journaux sont
+		document&eacute;s dans le manuel. Le fichier concerne par
+		d&eacute;faut le serveur principal, mais il peut &ecirc;tre configur&eacute;
+		pour chaque serveur virtuel via les directives de
+		configuration  <directive
+		module="mod_log_config">TransferLog</directive> ou
+		<directive
+		module="mod_log_config">CustomLog</directive>. 
+                </p>
+                <p>De nombreux programmes libres ou commerciaux
+		permettent d'analyser les journaux d'acc&egrave;s. Analog et
+		Webalyser sont des programmes d'analyse libres parmi les
+		plus populaires. L'analyse des journaux doit s'effectuer
+		hors ligne afin de ne pas surcharger le serveur web avec
+		le traitement des fichiers journaux. La plupart des
+		programmes d'analyse des journaux sont compatibles avec le format
+		de journal "Common". Voici une description des
+		diff&eacute;rents champs pr&eacute;sents dans une entr&eacute;e du journal :  
+                </p>
+                
+                
+                <example><pre>
+195.54.228.42 - - [24/Mar/2007:23:05:11 -0400] "GET /sander/feed/ HTTP/1.1" 200 9747
+64.34.165.214 - - [24/Mar/2007:23:10:11 -0400] "GET /sander/feed/atom HTTP/1.1" 200 9068
+60.28.164.72 - - [24/Mar/2007:23:11:41 -0400] "GET / HTTP/1.0" 200 618
+85.140.155.56 - - [24/Mar/2007:23:14:12 -0400] "GET /sander/2006/09/27/44/ HTTP/1.1" 200 14172
+85.140.155.56 - - [24/Mar/2007:23:14:15 -0400] "GET /sander/2006/09/21/gore-tax-pollution/ HTTP/1.1" 200 15147
+74.6.72.187 - - [24/Mar/2007:23:18:11 -0400] "GET /sander/2006/09/27/44/ HTTP/1.0" 200 14172
+74.6.72.229 - - [24/Mar/2007:23:24:22 -0400] "GET /sander/2006/11/21/os-java/ HTTP/1.0" 200 13457
+                </pre></example>
+                
+                <table>
+                    <tr>
+                        <td>
+                            <p><strong>Champ</strong></p>
+                        </td>
+                        <td>
+                            <p><strong>Contenu</strong></p>
+                        </td>
+                        <td>
+                            <p><strong>Explication</strong></p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <p>Adresse IP client</p>
+                        </td>
+                        <td>
+                            <p>195.54.228.42</p>
+                        </td>
+                        <td>
+                            <p>Adresse IP d'o&ugrave; provient la requ&ecirc;te</p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <p>Identit&eacute; RFC 1413</p>
+                        </td>
+                        <td>
+                            <p>-</p>
+                        </td>
+                        <td>
+                          <p>Identit&eacute; de l'utilisateur distant renvoy&eacute;e
+			  par son d&eacute;mon identd</p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <p>Nom utilisateur</p>
+                        </td>
+                        <td>
+                            <p>-</p>
+                        </td>
+                        <td>
+                            <p>Nom de l'utilisateur distant issu de
+			    l'authentification Apache</p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <p>Horodatage</p>
+                        </td>
+                        <td>
+                            <p>[24/Mar/2007:23:05:11 -0400]</p>
+                        </td>
+                        <td>
+                            <p>Date et heure de la requ&ecirc;te</p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <p>Requ&ecirc;te</p>
+                        </td>
+                        <td>
+                            <p>&quot;GET /sander/feed/ HTTP/1.1&quot;</p>
+                        </td>
+                        <td>
+                            <p>La requ&ecirc;te proprement dite</p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <p>Code d'&eacute;tat</p>
+                        </td>
+                        <td>
+                            <p>200</p>
+                        </td>
+                        <td>
+                            <p>Code d'&eacute;tat renvoy&eacute; avec la r&eacute;ponse</p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <p>Contenu en octets</p>
+                        </td>
+                        <td>
+                            <p>9747</p>
+                        </td>
+                        <td>
+                            <p>Total des octets transf&eacute;r&eacute;s sans les
+			    en-t&ecirc;tes</p>
+                        </td>
+                    </tr>
+                </table>
+                
+            </section>
+            <section id="rotating-log-files">
+                <title>Rotation des fichiers journaux
+                </title>
+                <p>Il y a de nombreuses raisons pour mettre en oeuvre la
+		rotation des fichiers journaux. M&ecirc;me si pratiquement
+		plus aucun syst&egrave;me d'exploitation n'impose une limite de
+		taille pour les fichiers de deux GigaOctets, avec le
+		temps, les fichiers journaux deviennent trop gros pour
+		pouvoir &ecirc;tre trait&eacute;s. En outre, toute analyse de journal
+		ne doit pas &ecirc;tre effectu&eacute;e sur un fichier dans lequel le
+		serveur est en train d'&eacute;crire. Une rotation p&eacute;riodique
+		des fichiers journaux permet de faciliter leur analyse,
+		et de se faire une id&eacute;e plus pr&eacute;cise des habitudes
+		d'utilisation. 
+                </p>
+                <p>Sur les syst&egrave;mes unix, vous pouvez simplement
+		effectuer cette rotation en changeant le nom du fichier
+		journal via la commande mv. Le serveur continuera &agrave;
+		&eacute;crire dans le fichier ouvert m&ecirc;me s'il a chang&eacute; de nom.
+		Lorsque vous enverrez un signal de red&eacute;marrage
+		"Graceful" au serveur, il ouvrira un nouveau fichier
+		journal avec le nom configur&eacute; par d&eacute;faut. Par exemple,
+		vous pouvez &eacute;crire un script de ce style pour cron : 
+                </p>
+                
+                
+                <example>
+                    APACHE=/usr/local/apache2<br />
+                    HTTPD=$APACHE/bin/httpd<br />
+                    mv $APACHE/logs/access_log
+                    $APACHE/logarchive/access_log-`date +%F`<br />
+                    $HTTPD -k graceful
+                </example>
+                
+                <p>Cette approche fonctionne aussi sous Windows, mais
+		avec moins de souplesse. Alors que le processus httpd de
+		votre serveur sous Windows continuera &agrave; &eacute;crire dans le
+		fichier journal une fois ce dernier renomm&eacute;, le service
+		Windows qui ex&eacute;cute Apache n'est pas en mesure
+		d'effectuer un red&eacute;marrage graceful. Sous Windows, le
+		red&eacute;marrage d'un service consiste simplement &agrave; l'arr&ecirc;ter
+		et &agrave; le d&eacute;marrer &agrave; nouveau, alors qu'avec un red&eacute;marrage
+		graceful, les processus enfants terminent
+		le traitement des requ&ecirc;tes en cours avant de s'arr&ecirc;ter,
+		et le serveur httpd est alors imm&eacute;diatement &agrave;
+		nouveau disponible pour traiter les nouvelles requ&ecirc;tes.
+		Sous Windows, le processus d'arr&ecirc;t/red&eacute;marrage du
+		service interrompt les traitements de requ&ecirc;tes en cours,
+		et le serveur demeure indisponible jusqu'&agrave; ce qu'il ait
+		termin&eacute; son red&eacute;marrage. Vous devez donc tenir compte de
+		toutes ces contraintes lorsque vous planifiez un
+		red&eacute;marrage. 
+                </p>
+                <p>
+                  Une seconde approche consiste &agrave; utiliser la
+		  redirection des logs. Les directives <directive
+		  module="mod_log_config">CustomLog</directive>,
+		  <directive
+		  module="mod_log_config">TransferLog</directive> ou
+		  <directive module="core">ErrorLog</directive>
+		  permettent de rediriger les donn&eacute;es de journalisation
+		  vers tout programme via le caract&egrave;re pipe
+		  (<code>|</code>) comme dans cet exemple : 
+                </p>
+                
+                <example>CustomLog "|/usr/local/apache2/bin/rotatelogs
+                    /var/log/access_log 86400" common
+                </example>
+                
+                <p>Le programme cible de la redirection recevra alors les
+		donn&eacute;es de journalisation d'Apache sur son entr&eacute;e
+		standard stdin, et pourra en faire ce qu'il voudra. Le
+		programme rotatelogs fourni avec Apache effectue une
+		rotation des journaux de mani&egrave;re transparente en
+		fonction du temps ou de la quantit&eacute; de donn&eacute;es &eacute;crites,
+		et archive l'ancien fichier journal en ajoutant un
+		suffixe d'horodatage &agrave; son nom. Cependant, si cette
+		m&eacute;thode fonctionne de mani&egrave;re satisfaisante sur les
+		plateformes de style unix, il n'en est pas de m&ecirc;me sous
+		Windows. 
+                </p>
+                
+                
+            </section>
+            <section id="logging-and-performance">
+                <title>Journalisation et performances
+                </title>
+                <p>L'&eacute;criture d'entr&eacute;es dans les fichiers journaux est
+		consommatrice de ressources, mais l'importance de ces
+		donn&eacute;es est telle qu'il est fortement d&eacute;conseill&eacute; de
+		d&eacute;sactiver la journalisation. Pour optimiser les
+		performances, vous devez enregistrer vos journaux sur un
+		disque physique diff&eacute;rent de celui o&ugrave; se situe votre
+		site web car les modes d'acc&egrave;s sont tr&egrave;s diff&eacute;rents. La
+		lecture de donn&eacute;es sur un disque poss&egrave;de un caract&egrave;re
+		essentiellement al&eacute;atoire, alors que l'&eacute;criture dans les
+		fichiers journaux s'effectue de mani&egrave;re s&eacute;quentielle. 
+                </p>
+                <p>
+                  Ne d&eacute;finissez jamais la directive <directive
+		  module="core">LogLevel</directive> &agrave; debug pour un
+		  serveur en production. En effet, lorsque ce niveau de
+		  journalisation est d&eacute;fini, une grande quantit&eacute; de
+		  donn&eacute;es est &eacute;crite dans le journal des erreurs, y
+		  compris, dans le cas d'un acc&egrave;s SSL, toutes les
+		  op&eacute;rations de lecture/&eacute;criture de la n&eacute;gociation de la
+		  connexion. Les implications en mati&egrave;re de performances
+		  sont donc importantes et vous devez plut&ocirc;t utiliser le
+		  niveau de journalisation warn. 
+                </p>
+                <p>Si votre serveur poss&egrave;de plus d'un serveur virtuel,
+		il est conseill&eacute; d'attribuer un journal des acc&egrave;s s&eacute;par&eacute; &agrave;
+		chacun d'entre eux, ce qui a pour effet de faciliter son
+		exploitation ult&eacute;rieure. Par contre, si votre serveur
+		poss&egrave;de un grand nombre de serveurs virtuels, le nombre
+		de fichiers journaux &agrave; ouvrir va repr&eacute;senter une
+		consommation de ressources importante pour votre
+		syst&egrave;me, et il sera peut-&ecirc;tre alors plus judicieux
+		d'utiliser un seul fichier journal avec l'am&eacute;nagement
+		suivant : utiliser l'&eacute;l&eacute;ment de format <code>%v</code>
+		en t&ecirc;te de votre directive <directive
+		module="mod_log_config">LogFormat</directive> (et de
+		votre directive <directive
+		module="core">ErrorLog</directive> depuis la version
+		2.3.8) afin que httpd enregistre le nom du serveur
+		virtuel qui traite la requ&ecirc;te ou l'erreur au d&eacute;but de
+		chaque entr&eacute;e du journal. Un simple script Perl peut
+		alors &eacute;clater le journal en fichiers sp&eacute;cifiques &agrave;
+		chaque serveur virtuel apr&egrave;s sa rotation ; Apache
+		fournit un tel script dans le r&eacute;pertoire
+		<code>support/split-logfile</code>.
+                </p>
+                <p>
+                    Vous pouvez aussi utiliser la directive <directive
+		    module="mod_log_config">BufferedLogs</directive>
+		    pour qu'Apache conserve en m&eacute;moire plusieurs entr&eacute;es
+		    de journal avant de les &eacute;crire sur disque. Gardez
+		    cependant &agrave; l'esprit que si les performances peuvent
+		    s'en trouver am&eacute;lior&eacute;es, la chronologie des
+		    &eacute;v&egrave;nements enregistr&eacute;s peut quant &agrave; elle s'en
+		    trouver affect&eacute;e. 
+                </p>
+                
+                
+            </section>
+        </section>
+        <section id="generating-a-test-load">
+            <title>Mise en oeuvre d'une charge de test
+            </title>
+            <p>Il est interessant de mettre en oeuvre une charge de test
+	    afin d'&eacute;valuer les performances du syst&egrave;me en conditions
+	    r&eacute;elles de fonctionnement. A cet effet, il existe des
+	    paquets commerciaux comme <a
+	    href="http://learnloadrunner.com/">LoadRunner</a>, mais
+	    aussi de nombreux outils libres permettant de g&eacute;n&eacute;rer une
+	    charge de test pour votre serveur web. 
+            </p>
+            <ul>
+                <li>Apache est fourni avec un programme de test nomm&eacute; ab
+		(initiales de Apache Bench). Ce dernier peut g&eacute;n&eacute;rer une
+		charge de serveur web consistant &agrave; demander le m&ecirc;me
+		fichier de mani&egrave;re r&eacute;p&eacute;titive &agrave; un rythme rapide. Vous
+		pouvez sp&eacute;cifier le nombre de connexions simultan&eacute;es, et
+		choisir entre une dur&eacute;e de fonctionnement ou un nombre
+		de requ&ecirc;tes. 
+                </li>
+                <li>http load11 est un autre exemple de g&eacute;n&eacute;rateur de
+		charge libre. Ce programme fonctionne avec un ficher
+		d'URLs et peut &ecirc;tre compil&eacute; avec le support SSL. 
+                </li>
+                <li>L'Apache Software Foundation propose un outil nomm&eacute;
+		flood12. Flood est un programme assez sophistiqu&eacute; que
+		l'on configure via un fichier XML. 
+                </li>
+                <li>Pour finir, JMeter13, un sous-projet de Jakarta, est
+		un outil de test en charge enti&egrave;rement en Java. Alors
+		que les premi&egrave;res versions de cette application &eacute;taient
+		lentes et difficiles d'utilisation, la version 2.1.1
+		actuelle semble &ecirc;tre plus souple d'utilisation et
+		efficace. 
+                </li>
+                <li>
+                    <p>Des projets externes &agrave; l'ASF et r&eacute;put&eacute;s
+		    relativement corrects : grinder, httperf, tsung, <a
+		    href="http://funkload.nuxeo.org/">FunkLoad</a>.
+                    </p>
+                </li>
+            </ul>
+            <p>Lorsque vous appliquez une charge de test &agrave; votre serveur
+	    web, gardez &agrave; l'esprit que si ce dernier est en production,
+	    la charge de test peut en affecter n&eacute;gativement les
+	    performances. En outre, le transfert de donn&eacute;es
+	    suppl&eacute;mentaires induit peut &ecirc;tre comptabilis&eacute; dans le
+	    quota mensuel qui vous a &eacute;t&eacute; &eacute;ventuellement allou&eacute;.
+            </p>
+            
+            
+        </section>
+    </section>
+    <section id="configuring-for-performance">
+        <title>Configuration dans une optique de performances
+        </title>
+        
+        
+        <section id="apache-configuration">
+            <title>Configuration de httpd
+            </title>
+            <p>httpd version 2.2 est par d&eacute;faut un serveur web avec des
+	    processus enfants lanc&eacute;s au pr&eacute;alable. Au d&eacute;marrage du
+	    serveur, le processus parent lance un certain nombre de
+	    processus enfants et ce sont eux qui seront charg&eacute;s de traiter les
+	    requ&ecirc;tes. Mais avec httpd version 2.0 est apparu le concept
+	    de module multi-process (MPM). Les d&eacute;veloppeurs purent alors
+	    &eacute;crire des MPMs qui pouvaient fonctionner avec l'architecture
+	    &agrave; base de processus ou de threads de leur syst&egrave;me
+	    d'exploitation sp&eacute;cifique. Apache 2 est fourni avec des MPMs
+	    sp&eacute;cifiques pour Windows, OS/2, Netware et BeOS. Pour les
+	    plateformes de style unix, les deux MPMS les plus connus
+	    sont Prefork et Worker. Le MPM Prefork offre le m&ecirc;me mod&egrave;le
+	    de processus enfants pr&eacute;lanc&eacute;s que celui d'Apache 1.3. Le
+	    MPM Worker quant &agrave; lui, lance un nombre de processus enfants
+	    moins important, mais attribue &agrave; chacun d'entre eux un
+	    certain nombre de threads pour traiter les requ&ecirc;tes. Avec la
+	    version 2.4, le MPM n'est plus d&eacute;fini &agrave; la compilation,
+	    mais peut &ecirc;tre charg&eacute; &agrave; l'ex&eacute;cution via la directive
+	    <directive module="core">LoadModule</directive>. Le MPM par
+	    d&eacute;faut pour la version 2.4 est le MPM event. 
+            </p>
+            <p>Le nombre maximum de process, &agrave; savoir le nombre de  processus
+	    enfants pr&eacute;lanc&eacute;s et/ou de threads, donne une approximation
+	    du nombre de requ&ecirc;tes que votre serveur peut traiter
+	    simultan&eacute;ment. Ce n'est cependant qu'une estimation car le
+	    noyau peut mettre en file d'attente des tentatives de
+	    connexion &agrave; votre serveur. Lorsque votre site approche de la
+	    saturation et si le nombre maximum de process est atteint, la
+	    machine n'impose pas de limite absolue au
+	    del&agrave; de laquelle les clients se verront refuser l'acc&egrave;s.
+	    Cependant, lorsque les requ&ecirc;tes commencent &agrave; &ecirc;tre mises en
+	    file d'attente, les performances du syst&egrave;me se d&eacute;gradent
+	    rapidement. 
+            </p>
+	    <p>Enfin, si le serveur httpd en question n'ex&eacute;cute aucun
+	    code tiers via <code>mod_php</code>, <code>mod_perl</code>,
+	    etc..., nous recommandons l'utilisation de
+	    <module outdated="true">mpm_event</module>. Ce MPM est id&eacute;al pour les
+	    situations o&ugrave; httpd sert d'interm&eacute;diaire entre les clients
+	    et des serveurs d'arri&egrave;re-plan qui accomplissent le travail
+	    proprement dit (par exemple en mode	mandataire ou cache).
+            </p>
+            
+            
+            <section id="MaxClients">
+                <title>MaxClients
+                </title>
+                <p>La directive <code>MaxClients</code> permet de
+		sp&eacute;cifier le nombre maximum de process que votre serveur
+		pourra cr&eacute;er. Deux autres directives lui sont associ&eacute;es
+		: <code>MinSpareServers</code> et
+		<code>MaxSpareServers</code>, qui permettent d'encadrer
+		le nombre de process que httpd garde en r&eacute;serve pour
+		traiter les requ&ecirc;tes. Le nombre total de process que
+		httpd peut cr&eacute;er peut
+		&ecirc;tre d&eacute;fini via la directive <code>ServerLimit</code>. 
+                </p>
+                
+                
+            </section>
+            <section id="spinning-threads">
+                <title>Rotation des threads
+                </title>
+                <p>Les directives ci-dessus suffisent pour d&eacute;finir les
+		limites des nombres de process dans le cas du MPM Prefork.
+		Cependant, si vous utilisez un MPM &agrave; base de threads, la
+		situation est un peu plus compliqu&eacute;e. Les MPMs &agrave; base de
+		threads supportent la directive
+		<code>ThreadsPerChild</code>. httpd impose le fait que
+		<code>MaxClients</code> doit &ecirc;tre divisible par
+		<code>ThreadsPerChild</code>. Si les valeurs que vous
+		attribuez &agrave; ces deux directives ne respectent pas cette
+		r&egrave;gle, httpd affichera un message d'erreur et corrigera
+		la valeur de la directive <code>ThreadsPerChild</code>
+		en la diminuant jusqu'&agrave; ce que la valeur de la directive
+		<code>MaxClients</code> soit divisible par elle.
+                </p>
+                
+                
+            </section>
+            <section id="sizing-maxClients">
+                <title>Choix de la valeur de MaxClients
+                </title>
+                <p>Id&eacute;alement, le nombre maximum de processus devrait
+		&ecirc;tre choisi de fa&ccedil;on &agrave; ce que toute la m&eacute;moire syst&egrave;me
+		soit utilis&eacute;e, sans la d&eacute;passer. En effet, si votre
+		syst&egrave;me est surcharg&eacute; au point de devoir faire appel de
+		mani&egrave;re intensive au swap (utilisation de la m&eacute;moire
+		disque), les performances vont se d&eacute;grader rapidement.
+		La formule permettant de d&eacute;terminer la valeur de
+		<directive module="mpm_common"
+		name="MaxRequestWorkers">MaxClients</directive>
+		est assez simple : 
+                </p>
+                
+                <example>
+                    MaxClients = (RAM totale − RAM syst&egrave;me − RAM pour
+		    les programmes externes) divis&eacute; par la RAM n&eacute;cessaire pour
+		    chaque processus enfant.
+                </example>
+                
+                <p>L'observation est la meilleure mani&egrave;re de d&eacute;terminer
+		les diff&eacute;rentes quantit&eacute;s de m&eacute;moire allou&eacute;es au
+		syst&egrave;me, aux programmes externes et aux processus httpd
+		: &agrave; cet effet, vous pouvez utiliser les commandes top et
+		free d&eacute;crites plus haut pour &eacute;tudier l'empreinte m&eacute;moire
+		du syst&egrave;me lorsque le serveur web n'est pas en cours
+		d'ex&eacute;cution. Vous pouvez aussi &eacute;tudier l'empreinte d'un
+		processus type du serveur web via la commande top ; en
+		effet, la plupart des impl&eacute;mentations de cette commande
+		pr&eacute;sentent une colonne M&eacute;moire r&eacute;sidente (RSS - Resident
+		Size) et M&eacute;moire partag&eacute;e (Shared Memory). 
+                </p>
+                <p>La diff&eacute;rence entre ces deux colonnes est la
+		quantit&eacute; de m&eacute;moire par processus. Le segment de m&eacute;moire
+		partag&eacute;e n'existe effectivement qu'une seule fois, et
+		est utilis&eacute; par le code et les biblioth&egrave;ques charg&eacute;es et
+		la concurrence inter-processus (ou tableau de r&eacute;sultat -
+		scoreboard) g&eacute;r&eacute; par Apache. La quantit&eacute; de m&eacute;moire
+		utilis&eacute;e par chaque processus d&eacute;pend fortement du nombre
+		et du type de modules utilis&eacute;s. La meilleure fa&ccedil;on d'en
+		d&eacute;terminer les besoins consiste &agrave; g&eacute;n&eacute;rer une charge
+		type pour votre site web et &agrave; observer l'importance que
+		prennent les processus httpd. 
+                </p>
+                <p>La RAM pour les programmes externes comprend
+		principalement la m&eacute;moire utilis&eacute;e pour les programmes
+		CGI et les scripts qui s'ex&eacute;cutent ind&eacute;pendamment des
+		processus httpd. Par contre, si vous utilisez une
+		machine virtuelle Java qui ex&eacute;cute Tomcat sur le m&ecirc;me
+		serveur, cette derni&egrave;re va aussi n&eacute;cessiter une quantit&eacute;
+		de m&eacute;moire significative. En cons&eacute;quence, la formule
+		ci-dessus qui sert &agrave; calculer la valeur maximale de
+		<code>MaxClients</code> permet d'effectuer une premi&egrave;re approche,
+		mais ne constitue en aucun cas une science exacte. En
+		cas de doute, soyez pragmatique et utilisez une valeur assez
+		basse pour <code>MaxClients</code>. Le noyau Linux
+		r&eacute;serve une certaine quantit&eacute; de m&eacute;moire pour la mise en
+		cache des acc&egrave;s disque. Sous Solaris par contre, il faut disposer
+		de suffisamment de m&eacute;moire RAM pour cr&eacute;er un processus,
+		et si ce n'est pas le cas, httpd va d&eacute;marrer avec un
+		message d'erreur du style "No space left on device" dans
+		le journal des erreurs, et sera incapable de cr&eacute;er
+		d'autres processus httpd enfants ; une valeur trop
+		&eacute;lev&eacute;e pour <code>MaxClients</code> constituera alors
+		r&eacute;ellement un d&eacute;savantage. 
+                </p>
+                
+            </section>
+            <section id="selecting-your-mpm">
+                <title>Choisir votre MPM
+                </title>
+                <p>La commutation entre threads est plus
+		ais&eacute;e pour le syst&egrave;me, et ceux-ci consomment moins de
+		ressources que les processus ; c'est la raison
+		principale pour	laquelle il est recommand&eacute; de choisir un
+		MPM thread&eacute;. Et
+		ceci est encore plus flagrant pour certains syst&egrave;mes
+		d'exploitation que pour d'autres. Par exemple, sous
+		Solaris ou AIX, la manipulation des processus est assez
+		lourde en termes de ressources syst&egrave;me ; l'utilisation
+		d'un MPM thread&eacute; est donc tout &agrave; fait indiqu&eacute;e pour ces
+		syst&egrave;mes. Sous Linux en revanche, l'impl&eacute;mentation des
+		threads utilise en fait un processus par thread. Les
+		processus Linux sont assez l&eacute;gers, mais cela signifie qu'un
+		MPM thread&eacute; pr&eacute;sentera ici un gain en performance
+		moindre que sous d'autres syst&egrave;mes. 
+                </p>
+                <p>Dans certaines situations cependant, l'utilisation
+		d'un MPM thread&eacute; peut induire des probl&egrave;mes de
+		stabilit&eacute;. Par exemple, si un processus enfant du MPM
+		prefork se crashe, au plus une connexion client sera
+		affect&eacute;e ; par contre, si un processus enfant thread&eacute; se
+		crashe, ce sont tous les threads de ce processus qui
+		vont se crasher &agrave; leur tour, ce qui signifie que tous
+		les clients qui &eacute;taient servis par ce processus verront
+		leur connexion interrompue. De plus, certains probl&egrave;mes
+		de s&eacute;curit&eacute; des threads (&quot;thread-safety&quot;)
+		peuvent appara&icirc;tre, particuli&egrave;rement avec les
+		biblioth&egrave;ques tierces. Avec les applications thread&eacute;es,
+		les diff&eacute;rents threads peuvent avoir acc&egrave;s aux m&ecirc;mes
+		variables sans distinction, sans savoir si une variable
+		n'a pas &eacute;t&eacute; modifi&eacute;e par un autre thread.
+                </p>
+                <p>Ce probl&egrave;me a fait l'objet d'un point sensible au
+		sein de la communaut&eacute; PHP car Le processeur PHP repose
+		fortement sur des biblioth&egrave;ques tierces, et il n'est pas
+		garanti que la totalit&eacute; d'entre elles soient
+		"thread-safe". Bonne nouvelle cependant : si vous
+		ex&eacute;cutez Apache sous Linux, vous pouvez utiliser PHP
+		avec le MPM prefork sans craindre une diminution de
+		performance trop importante par rapport &agrave; une option
+		thread&eacute;e. 
+                </p>
+                
+                
+            </section>
+            <section id="spinning-locks">
+                <title>Verrous tournants</title>
+                <p>Apache httpd maintient un verrou inter-processus du
+		point de vue de son &eacute;coute du r&eacute;seau. Dans les faits,
+		cela signifie qu'un seul processus httpd enfant &agrave; la
+		fois peut recevoir une requ&ecirc;te. Ainsi, soient les autres
+		processus en profitent alors pour traiter les requ&ecirc;tes
+		qu'ils ont d&eacute;j&agrave; re&ccedil;ues, soient ils attendent de pouvoir
+		&agrave; leur tour r&eacute;cup&eacute;rer le verrou et ainsi &eacute;couter le
+		r&eacute;seau pour recevoir une nouvelle requ&ecirc;te. Ceci peut se
+		voir comme une porte tournante par laquelle un seul
+		processus peut passer &agrave; la fois. Sur un serveur web
+		fortement charg&eacute; o&ugrave; les requ&ecirc;tes arrivent constamment,
+		la porte tourne rapidement et les requ&ecirc;tes sont
+		accept&eacute;es &agrave; un rythme soutenu. Sur un serveur faiblement
+		charg&eacute; en revanche, le processus qui &quot;d&eacute;tient&quot;
+		le verrou est suceptible de garder sa porte ouverte un
+		certain temps durant lequel tous les autres processus
+		seront inactifs, attendant de pouvoir s'approprier le
+		verrou. Dans une telle situation, le processus parent
+		pourra d&eacute;cider d'arr&ecirc;ter quelques processus enfants en
+		fonction de la valeur de la directive
+		<code>MaxSpareServers</code>.</p>
+                
+            </section>
+            <section id="the-thundering-herd">
+                <title>L'assaut de la foule
+                </title>
+                <p>La fonction de l'"accept mutex" (c'est le nom donn&eacute; au
+		verrou inter-processus) consiste &agrave; g&eacute;rer la r&eacute;ception
+		des requ&ecirc;tes de mani&egrave;re ordonn&eacute;e. Si ce verrou est
+		absent, le syndrome de l'"assaut de la foule" peut
+		appara&icirc;tre. 
+                </p>
+                <p>Imaginez une &eacute;quipe de football am&eacute;ricain en attente
+		devant la ligne de remise en jeu. Si les joueurs se
+		comportaient comme des processus Apache, ils se
+		pr&eacute;cipiteraient tous &agrave; la fois pour r&eacute;cup&eacute;rer la balle au
+		signal de la reprise. Un seul d'entre eux y
+		parviendrait, et tous les autres n'auraient plus qu'&agrave; se
+		regrouper &agrave; nouveau sur la ligne jusqu'&agrave; la reprise
+		suivante. Dans cette m&eacute;taphore, c'est le quaterback qui
+		va jouer le r&ocirc;le d'"accept mutex" en donnant la balle
+		au joueur appropri&eacute;. 
+                </p>
+                <p>La transmission d'une telle quantit&eacute; d'informations
+		repr&eacute;sente naturellement beaucoup de travail et, comme
+		une personne intelligente, un serveur intelligent
+		tentera d'&eacute;viter cette surcharge dans la mesure du
+		possible, d'o&ugrave; l'id&eacute;e de la porte tournante. Dans les
+		derni&egrave;res ann&eacute;es, de nombreux syst&egrave;mes d'exploitation,
+		comme Linux et Solaris, ont d&eacute;velopp&eacute; du code pour
+		&eacute;viter le syndrome de l'"assaut de la foule". Apache
+		reconna&icirc;t ce code, et si vous n'effectuez qu'une seule
+		&eacute;coute du r&eacute;seau, autrement dit si vous n'utilisez que
+		le serveur principal ou un seul serveur virtuel, Apache
+		n'utilisera pas d'"accept mutex" ; par contre, si vous
+		effectuez plusieurs &eacute;coutes du r&eacute;seau (par exemple si
+		un serveur virtuel sert les requ&ecirc;tes SSL), Apache
+		utilisera un "accept mutex" afin d'&eacute;viter les conflits
+		internes. 
+                </p>
+                <p>Vous pouvez manipuler l'"accept mutex" via la
+		directive <code>AcceptMutex</code>. Cette derni&egrave;re
+		permet en particulier de fermer l'"accept mutex", mais
+		aussi de s&eacute;lectionner le m&eacute;canisme de verrouillage. Les
+		m&eacute;canismes de verrouillage courants comprennent fcntl,
+		les s&eacute;maphores System V et le verrouillage par threads.
+		Tous ne sont pas support&eacute;s par toutes les plateformes,
+		et leur disponibilit&eacute; d&eacute;pend aussi des options de
+		compilation. Les diff&eacute;rents m&eacute;canismes de verrouillage
+		peuvent avoir des exigences particuli&egrave;res en mati&egrave;re de
+		ressources syst&egrave;me ; il est donc recommand&eacute; de les
+		utiliser avec pr&eacute;cautions. 
+                </p>
+                <p>Il n'existe aucune raison particuli&egrave;re pour
+		d&eacute;sactiver l'"accept mutex". Apache d&eacute;termine
+		automatiquement s'il doit utiliser ou non mutex sur
+		votre plateforme en fonction du nombre d'&eacute;coutes r&eacute;seau
+		de votre serveur, comme d&eacute;crit pr&eacute;c&eacute;demment. 
+                </p>
+                
+            </section>
+        </section>
+        <section id="tuning-the-operating-system">
+            <title>Optimisation du syst&egrave;me d'exploitation
+            </title>
+            <p>Souvent, les utilisateurs recherchent le param&egrave;tre magique qui va
+	    multiplier par quatre les performances de leur syst&egrave;me. En
+	    fait, les syst&egrave;mes de type Unix actuels sont d&eacute;j&agrave; optimis&eacute;s
+	    &agrave; l'origine, et il n'y a plus grand chose &agrave; faire pour
+	    am&eacute;liorer leurs performances. L'administrateur peut
+	    cependant encore effectuer quelques modifications qui
+	    permettront de peaufiner la configuration. 
+            </p>
+            
+            
+            <section id="ram-and-swap-space">
+                <title>RAM et swap
+                </title>
+                <p>Le leitmotiv en mati&egrave;re de m&eacute;moire est souvent "plus
+		on en a, mieux c'est". En effet, comme nous avons dit
+		plus haut, la m&eacute;moire inutilis&eacute;e peut &ecirc;tre
+		avantageusement utilis&eacute;e comme cache du syst&egrave;me de
+		fichiers. Plus vous chargez de modules, plus les processus
+		Apache grossissent, et ceci d'autant plus si vous
+		utilisez des modules qui g&eacute;n&egrave;rent des contenus
+		dynamiques comme PHP et mod_perl. Un gros fichier de
+		configuration - avec de nombreux serveurs virtuels - a
+		aussi tendance &agrave; augmenter l'empreinte m&eacute;moire des
+		processus. Une quantit&eacute; de m&eacute;moire importante vous
+		permettra d'ex&eacute;cuter Apache avec plus de processus
+		enfants, et donc de traiter d'avantage de requ&ecirc;tes
+		simultan&eacute;ment. 
+                </p>
+                <p>M&ecirc;me si les diff&eacute;rentes plateformes traitent leur
+		m&eacute;moire virtuelle de diff&eacute;rentes mani&egrave;res, il est
+		d&eacute;conseill&eacute; de configurer un espace disque de swap
+		inf&eacute;rieur &agrave; la m&eacute;moire RAM. En effet, le syst&egrave;me de m&eacute;moire
+		virtuelle a &eacute;t&eacute; con&ccedil;u de mani&egrave;re &agrave; prendre le relai
+		lorsque la m&eacute;moire RAM fait d&eacute;faut, et lorsque l'espace
+		disque, et donc l'espace de swap vient &agrave; manquer, votre
+		serveur risque de s'arr&ecirc;ter. Vous devrez alors
+		red&eacute;marrer physiquement votre serveur, et votre
+		h&eacute;bergeur pourra vous facturer le service. 
+                </p>
+                <p>Evidemment, ce genre probl&egrave;me survient au moment le
+		plus d&eacute;favorable : lorsque le monde vient d&eacute;couvrir votre
+		site web et se pr&eacute;sente avec insistance &agrave; votre porte.
+		Si votre espace de swap est suffisant, m&ecirc;me si la
+		machine sera de plus en plus surcharg&eacute;e et deviendra
+		tr&egrave;s tr&egrave;s lente car le syst&egrave;me devra swapper les pages
+		entre la m&eacute;moire et le disque, lorsque la charge diminuera &agrave;
+		nouveau, le syst&egrave;me reviendra dans son mode de
+		fonctionnement normal. Rappelez-vous que vous disposez
+		de la directive <code>MaxClients</code> pour garder le contr&ocirc;le.
+                </p>
+                <p>La plupart des syst&egrave;mes de type Unix utilisent des
+		partitions d&eacute;di&eacute;es au swap. Au d&eacute;marrage du syst&egrave;me,
+		celui-ci enregistre toutes les partitions de swap du ou
+		des disques en fonction du type de la partition ou du
+		contenu du fichier <code>/etc/fstab</code> et les
+		active de mani&egrave;re automatique. Lorsque vous ajoutez un
+		disque, ou lorsque vous installez le syst&egrave;me
+		d'exploitation, assurez-vous d'allouer suffisamment
+		d'espace de swap afin de rester en ad&eacute;quation avec une
+		&eacute;ventuelle augmentation de la m&eacute;moire RAM. La
+		r&eacute;allocation d'espace disque sur un syst&egrave;me en
+		production est en effet p&eacute;nible et fastidieuse. 
+                </p>
+                <p>Pr&eacute;voyez un espace de swap de deux fois la taille de
+		votre m&eacute;moire RAM, et m&ecirc;me jusqu'&agrave; quatre fois lorsque
+		les surcharges peuvent s'av&eacute;rer fr&eacute;quentes. Assurez-vous
+		de r&eacute;ajuster ces valeurs lorsque vous augmentez la
+		quantit&eacute; de m&eacute;moire RAM de votre syst&egrave;me. En secours,
+		vous pouvez aussi utilisez un fichier comme espace de
+		swap. Pour ce faire, vous trouverez les instructions
+		dans les pages de manuel de <code>mkswap</code> et
+		<code>swapon</code>, ou dans celles des programmes de
+		<code>swap</code>. 
+                </p>
+                
+               
+            </section>
+            <section id="ulimit-files-and-processes">
+                <title>ulimit: fichiers et processus
+                </title>
+                <p>Supposons que vous disposiez d'une machine poss&eacute;dant
+		une &eacute;norme quantit&eacute; de m&eacute;moire RAM et un processeur aux
+		performances astronomiques ; vous pourrez alors ex&eacute;cuter
+		des centaines de processus Apache selon vos besoins,
+		mais tout en restant en de&ccedil;&agrave; des limites impos&eacute;es par le
+		noyau de votre syst&egrave;me. 
+                </p>
+                <p>Consid&eacute;rez maintenant une situation o&ugrave; plusieurs
+		centaines de serveurs web sont en cours d'ex&eacute;cution ; si
+		certains d'entre eux doivent &agrave; leur tour lancer des
+		processus CGI, le nombre maximum de processus autoris&eacute;
+		par le noyau sera vite atteint.
+                </p>
+                <p>Dans ce cas, vous pouvez modifier cette limite avec
+		la commande : 
+                </p>
+                
+                <example>
+                    ulimit [-H|-S] -u [nouvelle valeur]
+                </example>
+                
+                <p>Cette modification doit &ecirc;tre effectu&eacute;e avant le
+		d&eacute;marrage du serveur, car la nouvelle valeur ne sera
+		prise en compte que dans le shell courant et pour les
+		programmes lanc&eacute;s depuis ce dernier. Dans les derniers
+		noyaux Linux, la valeur par d&eacute;faut a &eacute;t&eacute; fix&eacute;e &agrave; 2048.
+		Sous FreeBSD, ce nombre semble &ecirc;tre limit&eacute; &agrave; la valeur
+		inhabituelle de 513. Dans le shell par d&eacute;faut de ce
+		syst&egrave;me, <code>csh</code>, la commande &eacute;quivalente est
+		<code>limit</code> et poss&egrave;de une syntaxe analogue &agrave;
+		celle de la commande de style Bourne <code>ulimit</code> :
+                </p>
+                
+                <example>
+                    limit [-h] maxproc [newvalue]
+                </example>
+                
+                <p>En outre, le noyau peut limiter le nombre de fichiers
+		ouverts par processus. Ce n'est g&eacute;n&eacute;ralement pas un
+		probl&egrave;me pour les serveurs dont les processus sont lanc&eacute;s
+		&agrave; l'avance, et o&ugrave; chacun de ceux-ci ne traite qu'une
+		requ&ecirc;te &agrave; la fois. Les processus des serveurs thread&eacute;s,
+		quant &agrave; eux, traitent plusieurs requ&ecirc;tes simultan&eacute;ment,
+		et sont d'avantage susceptibles de d&eacute;passer la limite du
+		nombre de descripteurs de fichiers. Vous pouvez alors
+		augmenter cette valeur limite du nombre de fichiers
+		ouverts avec la commande : 
+                </p>
+                
+                <example>ulimit -n [newvalue]
+                </example>
+                
+                <p>L&agrave; encore, cette modification doit &ecirc;tre effectu&eacute;e
+		avant le d&eacute;marrage du serveur Apache. 
+                </p>
+                
+                
+            </section>
+            <section id="setting-user-limits-on-system-startup">
+                <title>D&eacute;finition des limites en fonction de l'utilisateur ou du
+		groupe au d&eacute;marrage du syst&egrave;me
+                </title>
+                <p>Sous Linux, vous pouvez d&eacute;finir les param&egrave;tres de
+		ulimit au d&eacute;marrage en &eacute;ditant le fichier
+		<code>/etc/security/limits.conf</code>. Ce fichier vous
+		permet de d&eacute;finir des limites "soft" et "hard"
+		en fonction de l'utilisateur ou du groupe ;
+		vous y trouverez aussi des commentaires explicatifs des
+		diff&eacute;rentes options. Pour que ce fichier soit pris en
+		compte, le fichier <code>/etc/pam.d/login</code> doit
+		contenir la ligne : 
+                </p>
+                
+                <example>session required /lib/security/pam_limits.so
+                </example>
+                
+                <p>Chaque item peut poss&eacute;der une valeur "soft" et
+		"hard" : la premi&egrave;re est la valeur
+		par d&eacute;faut, et la seconde la valeur maximale de cet
+		item. 
+                </p>
+                <p>Dans le fichier <code>/etc/login.conf</code> de
+		FreeBSD, ces valeurs peuvent &ecirc;tre limit&eacute;es ou &eacute;tendues &agrave;
+		tout le syst&egrave;me de mani&egrave;re analogue au fichier
+		<code>limits.conf</code>. Les limites "soft" sont
+		sp&eacute;cifi&eacute;es via le param&egrave;tre <code>-cur</code>, et les
+		limites "hard" via le param&egrave;tre <code>-max</code>.
+                </p>
+                <p>Solaris poss&egrave;de un m&eacute;canisme similaire pour manipuler
+		les valeurs limites au d&eacute;marrage du syst&egrave;me : dans le
+		fichier <code>/etc/system</code>, vous pouvez d&eacute;finir au
+		d&eacute;marrage des param&egrave;tres du noyau valables pour
+		l'ensemble du syst&egrave;me. Ce sont les m&ecirc;mes param&egrave;tres que
+		ceux d&eacute;finis &agrave; l'ex&eacute;cution par le d&eacute;bogueur de noyau
+		<code>mdb</code>. Les commandes &eacute;quivalentes &agrave; ulimit -u
+		pour d&eacute;finir les limites hard et soft seront du style : 
+                </p>
+                
+                <example>
+                    set rlim_fd_max=65536<br />
+                    set rlim_fd_cur=2048
+                </example>
+                
+                <p>Solaris calcule le nombre maximal de processus
+		autoris&eacute; par utilisateur (<code>maxuprc</code>) en
+		fonction de la m&eacute;moire syst&egrave;me disponible
+		(<code>maxusers</code>). Vous pouvez obtenir ces valeurs
+		avec la commande : 
+                </p>
+                
+                <example>sysdef -i | grep maximum
+                </example>
+                
+                <p>Il est cependant d&eacute;conseill&eacute; de les modifier. 
+                </p>
+                
+                
+            </section>
+            <section id="turn-off-unused-services-and-modules">
+                <title>D&eacute;sactiver les services et modules non utilis&eacute;s
+                </title>
+                <p>Dans la plupart des distributions Unix et Linux, de
+		nombreux services sont activ&eacute;s par d&eacute;faut, et vous n'
+		avez probablement besoin que d'une minorit&eacute; d'entre eux.
+		Par exemple, votre serveur web n'a pas besoin de
+		sendmail, de fournir le service NFS, etc... D&eacute;sactivez
+		les tout simplement. 
+                </p>
+                <p>Pour ce faire, sous RedHat Linux, vous
+		disposez de l'utilitaire chkconfig en ligne de commande.
+		Sous Solaris, les commandes <code>svcs</code> et
+		<code>svcadm</code> vous permettent respectivement
+		de lister les services activ&eacute;s et de d&eacute;sactiver ceux
+		dont vous n'avez pas besoin. 
+                </p>
+                <p>Vous devez aussi pr&ecirc;ter attention aux modules Apache
+		charg&eacute;s par d&eacute;faut. La plupart des distributions binaires
+		d'Apache httpd et des versions pr&eacute;install&eacute;es fournies
+		avec les distributions de Linux chargent les modules
+		Apache via la directive
+		<directive>LoadModule</directive>. 
+                </p>
+                <p>Les modules inutilis&eacute;s peuvent &ecirc;tre d&eacute;sactiv&eacute;s : si
+		vous n'avez pas besoin de leurs fonctionnalit&eacute;s et des
+		directives de configuration qu'ils impl&eacute;mentent,
+		d&eacute;sactivez-les en commentant les lignes
+		<directive>LoadModule</directive> correspondantes. Vous
+		devez cependant lire la documentation relative &agrave; ces
+		modules avant de les d&eacute;sactiver, et garder &agrave; l'esprit que
+		la d&eacute;sactivation d'un module tr&egrave;s peu gourmand en
+		ressources n'est pas absolument n&eacute;cessaire. 
+                </p>
+                
+                
+            </section>
+        </section>
+    </section>
+    <section id="caching-content">
+        <title>Mise en cache des contenus
+        </title>
+        <p>Les requ&ecirc;tes impliquant des contenus dynamiques n&eacute;cessitent
+	en g&eacute;n&eacute;ral d'avantage de ressources que les
+	requ&ecirc;tes pour des contenus statiques. Les contenus statiques
+	consistent en simples pages issues de documents ou images
+	sur disque, et sont servis tr&egrave;s rapidement. En outre, de
+	nombreux syst&egrave;mes d'exploitation mettent automatiquement en
+	cache en m&eacute;moire les contenus des fichiers fr&eacute;quemment acc&eacute;d&eacute;s. 
+        </p>
+        <p>Comme indiqu&eacute; pr&eacute;c&eacute;demment, le traitement des requ&ecirc;tes dynamiques peut
+	n&eacute;cessiter beaucoup plus de ressources. L'ex&eacute;cution de scripts
+	CGI, le transfert de requ&ecirc;tes &agrave; un serveur d'applications
+	externe, ou les acc&egrave;s &agrave; une base de donn&eacute;es peuvent impliquer
+	des temps d'attente et charges de travail significatifs pour un
+	serveur web fortement sollicit&eacute;. Dans de nombreuses
+	circonstances, vous pourrez alors am&eacute;liorer les performances en
+	transformant les requ&ecirc;tes dynamiques courantes en requ&ecirc;tes
+	statiques. Pour ce faire, deux approches seront discut&eacute;es dans
+	la suite de cette section. 
+        </p>
+        
+        
+        <section id="making-popular-pages-static">
+            <title>Transformation des pages courantes en contenus
+	    statiques
+            </title>
+            <p>En g&eacute;n&eacute;rant &agrave; l'avance les r&eacute;ponses pour les requ&ecirc;tes les
+	    plus courantes de votre application, vous pouvez am&eacute;liorer
+	    de mani&egrave;re significative les performances de votre serveur
+	    sans abandonner la flexibilit&eacute; des contenus g&eacute;n&eacute;r&eacute;s
+	    dynamiquement. Par exemple, si votre application est un
+	    service de livraison de fleurs, vous aurez tout int&eacute;r&ecirc;t &agrave;
+	    g&eacute;n&eacute;rer &agrave; l'avance les pages de votre catalogue concernant
+	    les roses rouges dans les semaines pr&eacute;c&eacute;dant le jour de la
+	    Saint Valentin. Lorsqu'un utilisateur cherchera des roses
+	    rouges, il t&eacute;l&eacute;chargera alors les pages g&eacute;n&eacute;r&eacute;es &agrave;
+	    l'avance. Par contre, les recherches de roses jaunes seront
+	    quant &agrave; elles trait&eacute;es directement via une requ&ecirc;te vers la
+	    base de donn&eacute;es. Pour effectuer ces aiguillages de requ&ecirc;tes,
+	    vous disposez d'un outil particuli&egrave;rement appropri&eacute; fourni
+	    avec Apache : le module mod_rewrite. 
+            </p>
+            
+            
+            <section id="example-a-statically-rendered-blog">
+                <title>Exemple : un blog servi statiquement
+                </title>
+                    <!--we should provide a more useful example here.
+                        One showing how to make Wordpress or Drupal suck less. -->
+                    
+                <p>Blosxom est un programme CGI de journalisation web
+		l&eacute;ger. Il est &eacute;crit en Perl et utilise des fichiers
+		texte pour ses entr&eacute;es. Outre sa qualit&eacute; de programme
+		CGI, Blosxom peut &ecirc;tre ex&eacute;cut&eacute; en ligne de commande pour
+		g&eacute;n&eacute;rer &agrave; l'avance des pages de blog. Lorsque votre blog
+		commence &agrave; &ecirc;tre lu par un grand nombre de personnes, la
+		g&eacute;n&eacute;ration &agrave; l'avance de pages en HTML satique peut
+		am&eacute;liorer de mani&egrave;re significative les performances de
+		votre serveur. 
+                </p>
+                <p>Pour g&eacute;n&eacute;rer des pages statiques avec blosxom, &eacute;ditez
+		le script CGI selon la documentation. D&eacute;finissez la
+		variable $static dir &agrave; la valeur de
+		<directive>DocumentRoot</directive> de votre serveur
+		web, et ex&eacute;cutez le script en ligne de commande comme
+		suit : 
+                </p>
+                
+                <example>$ perl blosxom.cgi -password='whateveryourpassword'
+                </example>
+                
+                <p>Vous pouvez ex&eacute;cuter ce script p&eacute;riodiquement via
+		cron, &agrave; chaque fois que vous ajoutez un nouveau contenu. Pour
+		faire en sorte qu'Apache substitue les pages
+		statiques au contenu dynamique, nous
+		utiliserons mod_rewrite. Ce module est fourni avec le
+		code source d'Apache, mais n'est pas compil&eacute; par d&eacute;faut.
+		Pour le compiler avec la distribution d'Apache, vous
+		pouvez utiliser l'option de la commande configure
+		<code>--enable-rewrite[=shared]</code>. De nombreuses
+		distributions binaires d'Apache sont fournies avec
+		<module>mod_rewrite</module> inclus. Dans l'exemple
+		suivant, un serveur virtuel Apache utilise les pages de
+		blog g&eacute;n&eacute;r&eacute;es &agrave; l'avance : 
+                </p>
+                
+<highlight language="config">
+Listen *:8001
+  &lt;VirtualHost *:8001&gt;
+      ServerName blog.sandla.org:8001
+      ServerAdmin sander@temme.net
+      DocumentRoot "/home/sctemme/inst/blog/httpd/htdocs"
+      &lt;Directory "/home/sctemme/inst/blog/httpd/htdocs"&gt;
+          Options +Indexes
+          Require all granted
+          RewriteEngine on
+          RewriteCond "%{REQUEST_FILENAME}" "!-f"
+          RewriteCond "%{REQUEST_FILENAME}" "!-d"
+          RewriteRule "^(.*)$" "/cgi-bin/blosxom.cgi/$1" [L,QSA]
+      &lt;/Directory&gt;
+      RewriteLog "/home/sctemme/inst/blog/httpd/logs/rewrite_log"
+      RewriteLogLevel 9
+      ErrorLog "/home/sctemme/inst/blog/httpd/logs/error_log"
+      LogLevel debug
+      CustomLog "/home/sctemme/inst/blog/httpd/logs/access_log common"
+      ScriptAlias "/cgi-bin/" "/home/sctemme/inst/blog/bin/"
+      &lt;Directory "/home/sctemme/inst/blog/bin"&gt;
+          Options +ExecCGI
+          Require all granted
+      &lt;/Directory&gt;
+  &lt;/VirtualHost&gt;
+</highlight>
+                
+                <p>
+                    Si les directives <directive>RewriteCond</directive>
+		    indiquent que la ressource demand&eacute;e n'existe ni en tant que
+		    fichier, ni en tant que r&eacute;pertoire, son
+		    chemin sera redirig&eacute; par la directive		    
+		    <directive>RewriteRule</directive> vers le programme
+		    CGI Blosxom qui va g&eacute;n&eacute;rer la r&eacute;ponse. Blosxom
+		    utilise Path Info pour sp&eacute;cifier les entr&eacute;es de blog
+		    en tant que pages d'index, et si un chemin dans
+		    Blosxom existe en tant que fichier statique dans le syst&egrave;me de
+		    fichiers, c'est ce dernier qui sera par cons&eacute;quent privil&eacute;gi&eacute;.
+		    Toute requ&ecirc;te dont la r&eacute;ponse n'a pas &eacute;t&eacute; g&eacute;n&eacute;r&eacute;e &agrave;
+		    l'avance sera trait&eacute;e par le programme CGI. Cela
+		    signifie que les entr&eacute;es individuelles comme les
+		    commentaires seront toujours servies par le
+		    programme CGI, et seront donc toujours visibles.
+		    Cette configuration permet aussi de ne pas faire
+		    appara&icirc;tre le programme CGI Blosxom dans l'URL de la barre
+		    d'adresse. Enfin, mod_rewrite est un module extr&ecirc;mement
+		    souple et puissant ; prenez le temps de bien
+		    l'&eacute;tudier afin de parvenir &agrave; la configuration qui
+		    correspondra le mieux &agrave; votre situation. 
+                </p>
+                
+                
+            </section>
+        </section>
+        <section id="caching-content-with-mod_cache">
+            <title>Mise en cache du contenu avec mod_cache
+            </title>
+            <p>Le module mod_cache impl&eacute;mente une mise en cache
+	    intelligente des r&eacute;ponses HTTP : il tient compte des d&eacute;lais
+	    de p&eacute;remption et des contraintes en mati&egrave;re de contenu
+	    inh&eacute;rentes &agrave; la sp&eacute;cification HTTP. Le module mod_cache met
+	    en cache les URL des contenus des r&eacute;ponses. Si un contenu envoy&eacute; au
+	    client peut &ecirc;tre mis en cache, il est sauvegard&eacute; sur disque.
+	    Les requ&ecirc;tes ult&eacute;rieures pour cette URL seront alors servies
+	    directement depuis le cache. Le module fournisseur pour
+	    mod_cache, mod_disk_cache, d&eacute;termine la mani&egrave;re dont les
+	    contenus sont stock&eacute;s sur disque. La plupart des syst&egrave;mes de
+	    serveur poss&egrave;dent plus d'espace disque que de m&eacute;moire, et il
+	    est bon de garder &agrave; l'esprit que certains noyaux syst&egrave;me mettent en
+	    cache de mani&egrave;re transparente en m&eacute;moire les contenus sur
+	    disque fr&eacute;quemment acc&eacute;d&eacute;s ; il n'est donc pas tr&egrave;s utile de
+	    r&eacute;p&eacute;ter cette op&eacute;ration au niveau du serveur. 
+            </p>
+            <p>Pour mettre en oeuvre une mise en cache de contenu
+	    efficace et &eacute;viter de pr&eacute;senter &agrave; l'utilisateur un contenu
+	    invalide ou p&eacute;rim&eacute;, l'application qui g&eacute;n&egrave;re le contenu &agrave;
+	    jour doit envoyer les en-t&ecirc;tes de r&eacute;ponse corrects. En
+	    effet, en l'absence d'en-t&ecirc;tes comme <code>Etag:</code>,
+	    <code>Last-Modified:</code> ou <code>Expires:</code>,
+	    <module>mod_cache</module> ne sera pas en mesure de d&eacute;cider
+	    de mani&egrave;re appropri&eacute;e
+	    s'il doit mettre le contenu en cache, s'il doit le servir
+	    directement depuis ce dernier, ou s'il doit tout simplement
+	    ne rien faire. Lorsque vous testerez la mise en cache, vous
+	    devrez peut-&ecirc;tre modifier votre application ou, en cas
+	    d'impossibilit&eacute;, d&eacute;sactiver de mani&egrave;re s&eacute;lective la mise en
+	    cache des URLs qui posent probl&egrave;me. Les modules mod_cache ne
+	    sont pas compil&eacute;s par d&eacute;faut ; pour ce faire, vous devez
+	    utiliser l'option <code>--enable-cache[=shared]</code> du
+	    script configure. Si vous utilisez une distribution binaire
+	    d'Apache httpd, ou si elle fait partie de votre portage ou
+	    de votre s&eacute;lection de paquets, <module>mod_cache</module>
+	    sera probablement d&eacute;j&agrave; inclus. 
+            </p>
+            
+            
+            <section id="example-wiki">
+                <title>Exemple : wiki.apache.org
+                </title>
+                    <!-- Is this still the case? Maybe we should give
+                        a better example here too.-->
+                <p>
+                    Le Wiki de l'Apache Software Foundation est servi
+		    par MoinMoin. MoinMoin est &eacute;crit en Python et
+		    s'ex&eacute;cute en tant que programme CGI. A l'heure
+		    actuelle, toute tentative pour l'ex&eacute;cuter via
+		    mod_python s'est sold&eacute;e par un &eacute;chec. Le programme
+		    CGI induit une charge inacceptable sur le serveur,
+		    particuli&egrave;rement lorsque le Wiki est index&eacute; par des
+		    moteurs de recherche comme Google. Pour all&eacute;ger la
+		    charge de la machine, l'&eacute;quipe d'infrastructure
+		    d'Apache s'est tourn&eacute;e vers mod_cache. Il s'est
+		    av&eacute;r&eacute; que <a href="/httpd/MoinMoin">MoinMoin</a>
+		    n&eacute;cessitait un petit patch pour adopter un
+		    comportement appropri&eacute; en aval du serveur de mise
+		    en cache : certaines requ&ecirc;tes ne pouvaient jamais
+		    &ecirc;tre mises en cache, et les modules Python
+		    concern&eacute;s ont &eacute;t&eacute; mis &agrave; jour pour pouvoir envoyer
+		    les en-t&ecirc;tes de r&eacute;ponse HTTP corrects. Apr&egrave;s cette
+		    modification, la mise en cache en amont du Wiki a
+		    &eacute;t&eacute; activ&eacute;e via l'insertion des lignes suivantes
+		    dans le fichier de configuration
+		    <code>httpd.conf</code> :
+                </p>
+                
+<highlight language="config">
+CacheRoot /raid1/cacheroot
+CacheEnable disk /
+# Une page modifi&eacute;e il y a 100 minutes expirera dans 10 minutes
+CacheLastModifiedFactor .1
+# Dans tous les cas, v&eacute;rifier la validit&eacute; des pages apr&egrave;s 6 heures
+CacheMaxExpire 21600
+</highlight>
+                
+                <p>Cette configuration essaie de mettre en cache tout
+		contenu de son serveur virtuel. Elle ne mettra jamais en
+		cache un contenu plus vieux que 6 heures (voir la
+		directive <directive
+		module="mod_cache">CacheMaxExpire</directive>). Si
+		l'en-t&ecirc;te <code>Expires:</code> est absent de la
+		r&eacute;ponse, <module>mod_cache</module> va calculer une date
+		d'expiration en fonction du contenu de l'en-t&ecirc;te
+		<code>Last-Modified:</code>. Le principe de ce calcul
+		qui utilise la directive <directive
+		module="mod_cache">CacheLastModifiedFactor</directive>
+		se base sur l'hypoth&egrave;se que si une page a &eacute;t&eacute; modifi&eacute;e
+		r&eacute;cemment, il y a de fortes chances pour qu'elle le soit
+		&agrave; nouveau dans un futur proche et devra donc &ecirc;tre remise
+		en cache. 
+                </p>
+                <p>
+                    Notez qu'il peut s'av&eacute;rer payant de
+		    <em>d&eacute;sactiver</em> l'en-t&ecirc;te <code>ETag:</code> :
+		    pour les fichiers inf&eacute;rieurs &agrave; 1 ko, le serveur
+		    doit calculer la somme de v&eacute;rification checksum (en
+		    g&eacute;n&eacute;ral MD5) et envoyer une r&eacute;ponse <code>304 Not
+		    Modified</code>, ce qui utilise des ressources CPU
+		    et r&eacute;seau pour le transfert (1 paquet TCP). Pour les
+		    ressources sup&eacute;rieures &agrave; 1 ko, les ressources CPU
+		    consomm&eacute;es peuvent devenir importantes car l'en-t&ecirc;te
+		    est calcul&eacute; &agrave; chaque requ&ecirc;te. Malheureusement, il
+		    n'existe actuellement aucun moyen pour mettre en
+		    cache ces en-t&ecirc;tes. 
+                </p>
+<highlight language="config">
+&lt;FilesMatch "\.(jpe?g|png|gif|js|css|x?html|xml)"&gt;
+    FileETag None
+&lt;/FilesMatch&gt;
+</highlight>
+                
+                <p>
+                    Dans l'exemple pr&eacute;c&eacute;dent: la g&eacute;n&eacute;ration d'un en-t&ecirc;te
+		    <code>ETag:</code> sera d&eacute;sactiv&eacute;e pour la plupart
+		    des ressources statiques. Le serveur ne g&eacute;n&egrave;re pas
+		    ces en-t&ecirc;tes pour les ressources dynamiques. 
+                </p>
+                
+                
+            </section>
+        </section>
+    </section>
+    <section id="further-considerations">
+        <title>Pour aller plus loin
+        </title>
+        <p>Arm&eacute;s du savoir-faire pour personnaliser un syst&egrave;me afin
+	qu'il affiche les performances d&eacute;sir&eacute;es, nous d&eacute;couvrirons vite
+	qu'<em>1</em> syt&egrave;me &agrave; lui seul peut constituer un goulot
+	d'&eacute;tranglement. A ce sujet, la page du Wiki <a
+	href="http://wiki.apache.org/httpd/PerformanceScalingOut">PerformanceScalingOut</a>
+	d&eacute;crit comment adapter un syst&egrave;me &agrave; mesure qu'il prend de
+	l'ampleur, ou comment personnaliser plusieurs syst&egrave;mes dans leur
+	ensemble.
+        </p>
+    </section>
+</manualpage>

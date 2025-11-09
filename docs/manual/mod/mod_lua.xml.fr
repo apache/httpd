@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1741842 -->
+<!-- English Revision: 1921260 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -28,7 +28,7 @@
 
 <description>Fournit des points d'entrée Lua dans différentes parties du
 traitement des requêtes httpd</description>
-<status>Experimental</status>
+<status>Extension</status>
 <sourcefile>mod_lua.c</sourcefile>
 <identifier>lua_module</identifier>
 <compatibility>versions 2.3 et supérieures</compatibility>
@@ -45,12 +45,6 @@ l'autorisation.</p>
 <p>Vous trouverez davantage d'informations à propos du langage de
 programmation Lua sur <a href="http://www.lua.org/">le site web de
 Lua</a>.</p>
-
-<note><code>mod_lua</code> est encore au stade expérimental. Son mode
-d'utilisation et son comportement pourront changer à tout moment jusqu'à
-ce qu'il passe au stade stable, et ce même entre deux versions stables
-2.4.x. N'oublez pas de consulter le fichier CHANGES avant toute mise à
-jour.</note>
 
 <note type="warning"><title>Avertissement</title>
 <p>Ce module possède une grande capacité d'action sur le fonctrionnement
@@ -232,6 +226,13 @@ ou la définition de types MIME : </p>
 	a été associée à un serveur ou un serveur virtuel.</td>
     </tr>
     <tr>
+        <td>Phase de pré-traduction</td>
+        <td><directive module="mod_lua">LuaHookPreTranslateName</directive></td>
+        <td>Cette phase traduit l'URI de la requête en nom de fichier
+	sur le système avant la phase de décodage. Les modules tels que
+	<module>mod_proxy</module> peuvent intervenir au cours de cette phase.</td>
+    </tr>
+    <tr>    
         <td>Phase de traduction</td>
         <td><directive module="mod_lua">LuaHookTranslateName</directive></td>
         <td>Cette phase traduit l'URI de la requête en nom de fichier
@@ -382,9 +383,9 @@ end
         <tr>
           <td><code>ap_auth_type</code></td>
           <td>string</td>
-          <td>non</td>
-	  <td>Ce champ contient le type d'authentification effectuée
-	  (par exemple <code>basic</code>)</td>
+          <td>oui</td>
+	  <td>Si une authentification a été effectuée, ce champ prend pour
+	  valeur le type d’authentification (par exemple <code>basic</code>)</td>
         </tr>
         <tr>
           <td><code>args</code></td>
@@ -467,19 +468,19 @@ end
           <td>non</td>
 	  <td>L'en-tête MIME de l'environnement pour la réponse, écrit
 	  même en cas d'erreur et conservé pendant les redirections
-	  internes</td>
+	  internes. Une table lua en lecture seule est disponible pour
+	  l'itération sous la forme r:err_headers_out_table().</td>
         </tr>
         <tr>
           <td><code>filename</code></td>
           <td>string</td>
           <td>oui</td>
 	  <td>Le nom de fichier correspondant à la requête, par exemple
-	  /www/example.com/foo.txt. Il peut être modifié au cours des
-	  phases translate-name ou map-to-storage du traitement de la
-	  requête pour permettre au gestionnaire par défaut (ou aux
-	  gestionnaires de script) de servir une version du fichier
-	  autre que celle demandée.</td>
-        </tr>
+	  /www/example.com/foo.txt. Il peut être modifié au cours des phases
+	  pre-translate-name, translate-name ou map-to-storage du traitement de
+	  la requête pour permettre au gestionnaire par défaut (ou aux
+	  gestionnaires de script) de servir une version du fichier autre que
+	  celle demandée.</td> </tr>
         <tr>
           <td><code>handler</code></td>
           <td>string</td>
@@ -501,13 +502,15 @@ end
           <td>oui</td>
 	  <td>Les en-têtes MIME de l'environnement de la requête. Il
 	  s'agit des en-têtes comme <code>Host, User-Agent,
-	  Referer</code>, etc...</td>
+	  Referer</code>, etc... Une table lua en lecture seule est disponible pour
+	  l'itération sous la forme r:headers_in_table().</td>
         </tr>
         <tr>
           <td><code>headers_out</code></td>
           <td>table</td>
           <td>oui</td>
-	  <td>Les en-têtes MIME de l'environnement de la réponse.</td>
+	  <td>Les en-têtes MIME de l'environnement de la réponse. Une table lua en lecture seule est disponible pour
+	  l'itération sous la forme r:headers_out_table().</td>
         </tr>
         <tr>
           <td><code>hostname</code></td>
@@ -555,7 +558,8 @@ end
           <td>table</td>
           <td>oui</td>
 	  <td>Une liste de notes qui peuvent être transmises d'un module
-	  à l'autre.</td>
+	  à l'autre. Une table lua en lecture seule est disponible pour
+	  l'itération sous la forme r:notes_table().</td>
         </tr>
         <tr>
           <td><code>options</code></td>
@@ -586,9 +590,10 @@ end
           <td><code>proxyreq</code></td>
           <td>string</td>
           <td>oui</td>
-	  <td>Indique s'il s'agit d'une requête mandatée ou non. Cette
-	  valeur est en général définie au cours de la phase
-	  post_read_request/translate_name du traitement de la requête.</td>
+	  <td>Indique s'il s'agit d'une requête mandatée ou non. Cette valeur
+	  est en général définie au cours de la phase
+	  post_read_request/pre_translate_name/translate_name du traitement de
+	  la requête.</td>
         </tr>
         <tr>
 	  <td><code>range</code></td>
@@ -625,7 +630,9 @@ end
           <td><code>subprocess_env</code></td>
           <td>table</td>
           <td>oui</td>
-	  <td>Le jeu de variables d'environnement pour cette requête.</td>
+	  <td>Le jeu de variables d'environnement pour cette requête. Une table
+	  lua en lecture seule est disponible pour l'itération sous la forme
+	  r:subprocess_env_table().</td>
         </tr>
         <tr>
           <td><code>started</code></td>
@@ -694,9 +701,9 @@ end
 </highlight>
 
 <highlight language="lua">
-r:addoutputfilter(name|function) -- ajoute un filtre en sortie
+r:add_output_filter(filter_name) -- ajoute un filtre en sortie
 
-r:addoutputfilter("fooFilter") -- insère le filtre fooFilter dans le flux de sortie
+r:add_output_filter("fooFilter") -- insère le filtre fooFilter dans le flux de sortie
 </highlight>
 
 <highlight language="lua">
@@ -1217,7 +1224,14 @@ end
     <p>Mod_lua implémente une fonctionnalité basique de connexion aux
 bases de données permettant d'envoyer des requêtes ou d'exécuter des
 commandes auprès des moteurs de base de données les plus courants
-(mySQL, PostgreSQL, FreeTDS, ODBC, SQLite, Oracle), ainsi que mod_dbd.
+(mySQL, PostgreSQL, FreeTDS, ODBC, SQLite, Oracle), ainsi que mod_dbd.</p>
+    <p>
+    <code>dbType</code>, le premier paramètre de <code>dbacquire</code>, est
+    sensible à la casse.</p>
+    <p>
+    Ses valeurs possibles sont <code>mysql</code>, <code>pgsql</code>,
+    <code>freetds</code>, <code>odbc</code>, <code>sqlite2</code>,
+    <code>sqlite3</code>, <code>oracle</code> ou <code>mod_dbd</code>.
     </p>
     <p>L'exemple suivant montre comment se connecter à une base de
 données et extraire des informations d'une table :</p>
@@ -1633,6 +1647,24 @@ end
 </directivesynopsis>
 
 <directivesynopsis>
+<name>LuaHookPreTranslate</name>
+<description>Fournit un point d'entrée pour la phase de pré-traduction du
+traitement d'une requête</description>
+<syntax>LuaHookPreTranslate  /path/to/lua/script.lua hook_function_name</syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>All</override>
+<usage>
+<p>
+    Identique à LuaHookTranslateName, mais s'exécute au cours de la phase de
+    pré-traduction où les pourcentages du chemin de l'URI ne sont pas encore
+    décodés.
+</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
 <name>LuaHookFixups</name>
 <description>Fournit un point d'entrée pour la phase de correction du
 traitement de la requête</description>
@@ -1715,10 +1747,10 @@ traitement de la requête</description>
 <override>All</override>
     <usage>
     <p>Identique à la directive
-    <directive>LuaHookTranslateName</directive>, mais s'exécute à la
-    phase map-to-storage du traitement de la requête. Les modules comme
-    mod_cache agissent pendant cette phase, ce qui permet de présenter
-    un exemple intéressant de ce que l'on peut faire ici :</p>
+    <directive>LuaHookTranslateName</directive>, mais s'exécute à la phase
+    map-to-storage du traitement de la requête. Les modules comme
+    <module>mod_cache</module> agissent pendant cette phase, ce qui permet de
+    présenter un exemple intéressant de ce que l'on peut faire ici :</p>
     <highlight language="config">
     LuaHookMapToStorage /path/to/lua/script.lua check_cache
     </highlight>
@@ -1989,6 +2021,7 @@ end
 <description>Fournit une fonction Lua pour le filtrage en entrée</description>
 <syntax>LuaInputFilter filter_name /path/to/lua/script.lua function_name</syntax>
 <contextlist><context>server config</context> </contextlist>
+<override>All</override>
 <compatibility>Disponible depuis la version 2.4.5 du serveur HTTP
 Apache</compatibility>
 
@@ -2051,6 +2084,7 @@ filtres Lua</a>" pour plus de détails.
 sortie</description>
 <syntax>LuaOutputFilter filter_name /path/to/lua/script.lua function_name</syntax>
 <contextlist><context>server config</context> </contextlist>
+<override>All</override>
 <compatibility>Disponible à partir de la version 2.4.5 du serveur HTTP
 Apache</compatibility>
 

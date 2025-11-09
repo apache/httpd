@@ -30,13 +30,21 @@
 #include "mpm_common.h"
 #include "mod_log_config.h"
 
-#define SD_JOURNAL_SUPPRESS_LOCATION 1
-
-#include "systemd/sd-journal.h"
-
 #if APR_HAVE_UNISTD_H
 #include <unistd.h>
 #endif
+
+/* XXX: keep this after any other #include.
+ * Some systemd versions use the "inline" keyword which is not
+ * c89/c90 compliant, so override it...
+ */
+#if defined(__STDC__) && (!defined(__STDC_VERSION__) \
+                          || __STDC_VERSION__ < 199901L)
+#undef inline
+#define inline APR_INLINE
+#endif
+#define SD_JOURNAL_SUPPRESS_LOCATION 1
+#include <systemd/sd-journal.h>
 
 #define MAX_ENTRIES 15
 
@@ -108,6 +116,7 @@ static void journald_log(apr_pool_t *pool, const char *log,
                     NULL);
         return;
     }
+    apr_pool_tag(subpool, "journald_log");
 
     /* Adds new entry to iovec if previous additions were successful. */
 #define IOVEC_ADD_LEN(FORMAT, VAR, LEN) \

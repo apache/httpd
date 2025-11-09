@@ -53,16 +53,19 @@
 <name>DavLockDB</name>
 <description>Location of the DAV lock database</description>
 <syntax>DavLockDB <var>file-path</var></syntax>
+<default>DavLockDB DEFAULT_REL_STATEDIR/davlockdb</default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
+<compatibility>No default prior to version 2.5.1.</compatibility>
 
 <usage>
     <p>Use the <directive>DavLockDB</directive> directive to specify
-    the full path to the lock database, excluding an extension. If
-    the path is not absolute, it will be taken relative to <directive
+    the full path to the lock database, excluding an extension. If the
+    path is not absolute, it will be taken relative to <directive
     module="core">ServerRoot</directive>. The implementation of
-    <module>mod_dav_fs</module> uses a SDBM database to track user
-    locks.</p>
+    <module>mod_dav_fs</module> uses a database to track user
+    locks. The type of database file can be changed using
+    <directive module="mod_dav_fs">DavLockDBType</directive>.</p>
 
     <!-- XXX: someone should add that tool to the support directory...
     The utility <code>modules/dav/util/lockview</code> can be used from
@@ -84,6 +87,80 @@
     module="core">ServerRoot</directive> with the base filename
     <code>DavLock</code> and extension name chosen by the server.</p>
 
+    <note><title>Default setting</title>
+    <p>In httpd version 2.5.1 and later, a hard-coded default path
+    relative to the state directory (configurable via <directive
+    module="core">DefaultStateDir</directive>) is used.</p>
+    </note>
+
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>DavLockDBType</name>
+<description>Database type of the DAV lock database</description>
+<syntax>DavLockDBType <var>dbm-type</var></syntax>
+<default>DavLockDBType default</default>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+<compatibility>Available in version 2.5.1 and later.</compatibility>
+<usage>
+    <p>Use the <directive>DavLockDBType</directive> directive to
+    specify the type of the database file. If the directive is not
+    used, the <code>apr_dbm</code> hard-coded default database type is
+    used, which is equivalent to using <code>DavLockDBType default</code>.</p>
+    
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>DavLockDiscovery</name>
+<description>Enable lock discovery</description>
+<syntax>DavLockDiscovery on|off</syntax>
+<default>DavLockDiscovery on</default>
+<contextlist><context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+<context>.htaccess</context>
+</contextlist>
+<compatibility>Available from Apache 2.5.0 and later.</compatibility>
+
+<usage>
+    <p><directive>DavLockDiscovery</directive> controls if the lock
+    discovery feature is enabled for <code>PROPFIND</code> method.
+    When disabled, <code>PROPFIND</code> always returns an empty
+    <code>lockdiscovery</code> section. This improves performance
+    if clients use <code>PROPFIND</code> a lot.</p>
+    <example><title>Example</title>
+     <highlight language="config">
+      DavLockDiscovery off
+     </highlight>
+    </example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>DavQuota</name>
+<description>Set usage quota</description>
+<syntax>DavQuota Off | None | #bytes</syntax>
+<default>DavQuota Off</default>
+<contextlist><context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+<context>.htaccess</context>
+</contextlist>
+
+<usage>
+    <p><directive>DavQuota</directive> sets a quota in bytes for
+    a given directory as specified by RFC 4331. There are two
+    special values:</p>
+        <ul>
+            <li><code>Off</code> Quotas are disabled.</li>
+            <li><code>None</code> No quota is enforced, but
+            used and available disk space is reported to 
+            clients that request it.</li>
+        </ul>
+    
 </usage>
 </directivesynopsis>
 

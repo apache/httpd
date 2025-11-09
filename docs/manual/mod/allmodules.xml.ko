@@ -10,6 +10,7 @@
   <modulefile>mod_allowmethods.xml</modulefile>
   <modulefile>mod_asis.xml.ko</modulefile>
   <modulefile>mod_auth_basic.xml.ko</modulefile>
+  <modulefile>mod_auth_bearer.xml</modulefile>
   <modulefile>mod_auth_digest.xml.ko</modulefile>
   <modulefile>mod_auth_form.xml</modulefile>
   <modulefile>mod_authn_anon.xml.ko</modulefile>
@@ -20,6 +21,8 @@
   <modulefile>mod_authn_socache.xml</modulefile>
   <modulefile>mod_authnz_fcgi.xml</modulefile>
   <modulefile>mod_authnz_ldap.xml</modulefile>
+  <modulefile>mod_autht_core.xml</modulefile>
+  <modulefile>mod_autht_jwt.xml</modulefile>
   <modulefile>mod_authz_core.xml</modulefile>
   <modulefile>mod_authz_dbd.xml</modulefile>
   <modulefile>mod_authz_dbm.xml.ko</modulefile>
@@ -28,6 +31,7 @@
   <modulefile>mod_authz_owner.xml.ko</modulefile>
   <modulefile>mod_authz_user.xml.ko</modulefile>
   <modulefile>mod_autoindex.xml.ko</modulefile>
+  <modulefile>mod_brotli.xml</modulefile>
   <modulefile>mod_buffer.xml</modulefile>
   <modulefile>mod_cache.xml.ko</modulefile>
   <modulefile>mod_cache_disk.xml.ko</modulefile>
@@ -75,6 +79,7 @@
   <modulefile>mod_logio.xml.ko</modulefile>
   <modulefile>mod_lua.xml</modulefile>
   <modulefile>mod_macro.xml</modulefile>
+  <modulefile>mod_md.xml</modulefile>
   <modulefile>mod_mime.xml</modulefile>
   <modulefile>mod_mime_magic.xml</modulefile>
   <modulefile>mod_negotiation.xml</modulefile>
@@ -94,6 +99,7 @@
   <modulefile>mod_proxy_http.xml</modulefile>
   <modulefile>mod_proxy_http2.xml</modulefile>
   <modulefile>mod_proxy_scgi.xml</modulefile>
+  <modulefile>mod_proxy_uwsgi.xml</modulefile>
   <modulefile>mod_proxy_wstunnel.xml</modulefile>
   <modulefile>mod_ratelimit.xml</modulefile>
   <modulefile>mod_reflector.xml</modulefile>
@@ -113,6 +119,7 @@
   <modulefile>mod_socache_dbm.xml</modulefile>
   <modulefile>mod_socache_dc.xml</modulefile>
   <modulefile>mod_socache_memcache.xml</modulefile>
+  <modulefile>mod_socache_redis.xml</modulefile>
   <modulefile>mod_socache_shmcb.xml</modulefile>
   <modulefile>mod_speling.xml.ko</modulefile>
   <modulefile>mod_ssl.xml</modulefile>

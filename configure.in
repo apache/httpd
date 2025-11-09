@@ -4,7 +4,7 @@ dnl
 dnl     Use ./buildconf to produce a configure script
 dnl
 
-AC_PREREQ(2.50)
+AC_PREREQ(2.60)
 AC_INIT(ABOUT_APACHE)
 
 AC_CONFIG_HEADER(include/ap_config_auto.h)
@@ -41,7 +41,7 @@ dnl Something seems broken here.
 AC_PREFIX_DEFAULT(/usr/local/apache2)
 
 dnl Get the layout here, so we can pass the required variables to apr
-APR_ENABLE_LAYOUT(Apache, [errordir iconsdir htdocsdir cgidir])
+APR_ENABLE_LAYOUT(Apache, [errordir iconsdir htdocsdir cgidir statedir manualdir proxycachedir])
 
 dnl reparse the configure arguments.
 APR_PARSE_ARGUMENTS
@@ -96,8 +96,8 @@ else
   APR_FIND_APR("$srcdir/srclib/apr", "./srclib/apr", 1, 1 2, [
     version=`$apr_config --version`
     case x${version} in
-    x1.[[0-3]].*) 
-      AC_MSG_WARN([APR version 1.4.0 or later is required, found $version])
+    x1.[[0-5]].*)
+      AC_MSG_WARN([APR version 1.6.0 or later is required, found $version])
       apr_acceptable=no
       ;;
     esac
@@ -173,7 +173,7 @@ reconfig.yes)
 yes.reconfig)
   AC_MSG_ERROR([Cannot use an external APR with the bundled APR-util])
   ;;
-esac  
+esac
 
 if test "$apu_found" = "reconfig"; then
   APR_SUBDIR_CONFIG(srclib/apr-util,
@@ -224,13 +224,13 @@ AC_ARG_WITH(pcre,
 APACHE_HELP_STRING(--with-pcre=PATH,Use external PCRE library))
 if test "x$with_pcre" = "x" || test "$with_pcre" = "yes"; then
   with_pcre="$PATH"
-else if which $with_pcre 2>/dev/null; then :; else
+else if command -v $with_pcre 2>/dev/null; then :; else
   with_pcre="$with_pcre/bin:$with_pcre"
 fi
 fi
 
 AC_CHECK_TARGET_TOOLS(PCRE_CONFIG, [pcre2-config pcre-config],
-                      [`which $with_pcre 2>/dev/null`], $with_pcre)
+                      [`command -v $with_pcre 2>/dev/null`], $with_pcre)
 
 if test "x$PCRE_CONFIG" != "x"; then
   if $PCRE_CONFIG --version >/dev/null 2>&1; then :; else
@@ -284,9 +284,13 @@ save_CPPFLAGS="$CPPFLAGS"
 CPPFLAGS="$CPPFLAGS $PCRE_INCLUDES"
 AC_EGREP_CPP(yes,
 [
+#ifdef HAVE_PCRE2
+yes
+#else
 #include <pcre.h>
 #ifdef PCRE_DUPNAMES
 yes
+#endif
 #endif
 ],pcre_have_dupnames=yes,pcre_have_dupnames=no)
 if test "$pcre_have_dupnames" != "yes"; then
@@ -404,6 +408,7 @@ dnl ## Check for programs
 AC_PATH_PROG(RM, rm)
 AC_PATH_PROG(PKGCONFIG, pkg-config)
 AC_PATH_PROG(RSYNC, rsync)
+AC_PATH_PROG(SVN, svn)
 AC_PROG_AWK
 AC_PROG_LN_S
 AC_CHECK_TOOL(RANLIB, ranlib, true)
@@ -469,8 +474,10 @@ unistd.h \
 sys/socket.h \
 pwd.h \
 grp.h \
+pthread_np.h \
 strings.h \
 sys/prctl.h \
+sys/procctl.h \
 sys/processor.h \
 sys/sem.h \
 sys/sdt.h \
@@ -496,6 +503,28 @@ LIBS=""
 AC_SEARCH_LIBS(crypt, crypt)
 CRYPT_LIBS="$LIBS"
 APACHE_SUBST(CRYPT_LIBS)
+
+if test "$ac_cv_search_crypt" != "no"; then
+   # Test crypt() with the SHA-512 test vector from https://akkadia.org/drepper/SHA-crypt.txt
+   AC_CACHE_CHECK([whether crypt() supports SHA-2], [ap_cv_crypt_sha2], [
+    AC_RUN_IFELSE([AC_LANG_PROGRAM([[
+#include <crypt.h>
+#include <stdlib.h>
+#include <string.h>
+
+#define PASSWD_0 "Hello world!"
+#define SALT_0 "\$6\$saltstring"
+#define EXPECT_0 "\$6\$saltstring\$svn8UoSVapNtMuq1ukKS4tPQd8iKwSMHWjl/O817G3uBnIFNjnQJu" \
+               "esI68u4OTLiBFdcbYEdFCoEOfaS35inz1"
+]], [char *result = crypt(PASSWD_0, SALT_0);
+     if (!result) return 1;
+     if (strcmp(result, EXPECT_0)) return 2;
+])], [ap_cv_crypt_sha2=yes], [ap_cv_crypt_sha2=no], [ap_cv_crypt_sha2=no])])
+   if test "$ap_cv_crypt_sha2" = yes; then
+     AC_DEFINE([HAVE_CRYPT_SHA2], 1, [Define if crypt() supports SHA-2 hashes])
+   fi
+fi
+
 LIBS="$saved_LIBS"
 
 dnl See Comment #Spoon
@@ -506,26 +535,38 @@ getgrnam \
 initgroups \
 bindprocessor \
 prctl \
+procctl \
+pthread_getthreadid_np \
 timegm \
 getpgid \
 fopen64 \
-getloadavg
+getloadavg \
+gettid
 )
 
 dnl confirm that a void pointer is large enough to store a long integer
 APACHE_CHECK_VOID_PTR_LEN
 
-AC_CACHE_CHECK([for gettid()], ac_cv_gettid,
+if test $ac_cv_func_gettid = no; then
+  # On Linux before glibc 2.30, gettid() is only usable via syscall()
+  AC_CACHE_CHECK([for gettid() via syscall], ap_cv_gettid,
 [AC_TRY_RUN(#define _GNU_SOURCE
 #include <unistd.h>
 #include <sys/syscall.h>
 #include <sys/types.h>
 int main(int argc, char **argv) {
 pid_t t = syscall(SYS_gettid); return t == -1 ? 1 : 0; },
-[ac_cv_gettid=yes], [ac_cv_gettid=no], [ac_cv_gettid=no])])
-if test "$ac_cv_gettid" = "yes"; then
-    AC_DEFINE(HAVE_GETTID, 1, [Define if you have gettid()])
+  [ap_cv_gettid=yes], [ap_cv_gettid=no], [ap_cv_gettid=no])])
+  if test "$ap_cv_gettid" = "yes"; then
+      AC_DEFINE(HAVE_SYS_GETTID, 1, [Define if you have gettid() via syscall()])
+  fi
 fi
+
+case ${host}X${ac_cv_func_gettid}X${ap_cv_gettid} in
+*linux-*XyesX* | *linux-*XnoXyes)
+     AC_DEFINE(DEFAULT_LOG_TID, ["g"], [Define as default argument for thread id in error logging])
+     ;;
+esac
 
 dnl ## Check for the tm_gmtoff field in struct tm to get the timezone diffs
 AC_CACHE_CHECK([for tm_gmtoff in struct tm], ac_cv_struct_tm_gmtoff,
@@ -534,6 +575,16 @@ AC_CACHE_CHECK([for tm_gmtoff in struct tm], ac_cv_struct_tm_gmtoff,
   ac_cv_struct_tm_gmtoff=yes, ac_cv_struct_tm_gmtoff=no)])
 if test "$ac_cv_struct_tm_gmtoff" = "yes"; then
     AC_DEFINE(HAVE_GMTOFF, 1, [Define if struct tm has a tm_gmtoff field])
+fi
+
+AC_CHECK_DECL(CMSG_DATA,,, [#include <sys/types.h>
+#include <sys/socket.h>])
+if test $ac_cv_have_decl_CMSG_DATA = "yes"; then
+   AC_DEFINE([HAVE_FDPASSING], 1, [Define if file descriptor passing is supported])
+   ap_has_fdpassing=1
+else
+   ap_has_fdpassing=0
+   AC_MSG_WARN([This system does not support file descriptor passing.])
 fi
 
 APACHE_CHECK_SYSTEMD
@@ -627,17 +678,21 @@ AC_ARG_ENABLE(load-all-modules,APACHE_HELP_STRING(--enable-load-all-modules,Load
 AC_ARG_ENABLE(maintainer-mode,APACHE_HELP_STRING(--enable-maintainer-mode,Turn on debugging and compile time warnings and load all compiled modules),
 [
   if test "$enableval" = "yes"; then
-    APR_ADDTO(CPPFLAGS, -DAP_DEBUG)
+    APR_ADDTO(NOTEST_CPPFLAGS, -DAP_DEBUG)
     if test "$GCC" = "yes"; then
-      APR_ADDTO(CFLAGS,[-Wall -Wmissing-prototypes -Wstrict-prototypes -Wmissing-declarations -Wpointer-arith])
       APACHE_ADD_GCC_CFLAG([-std=c89])
       APACHE_ADD_GCC_CFLAG([-Werror])
+      APACHE_ADD_GCC_CFLAG([-Wall])
+      APACHE_ADD_GCC_CFLAG([-Wstrict-prototypes])
+      APACHE_ADD_GCC_CFLAG([-Wmissing-prototypes])
+      APACHE_ADD_GCC_CFLAG([-Wmissing-declarations])
       APACHE_ADD_GCC_CFLAG([-Wdeclaration-after-statement])
+      APACHE_ADD_GCC_CFLAG([-Wpointer-arith])
       APACHE_ADD_GCC_CFLAG([-Wformat])
       APACHE_ADD_GCC_CFLAG([-Wformat-security])
       APACHE_ADD_GCC_CFLAG([-Wunused])
     elif test "$AIX_XLC" = "yes"; then
-      APR_ADDTO(CFLAGS,-qfullpath -qinitauto=FE -qcheck=all -qinfo=pro)
+      APR_ADDTO(NOTEST_CFLAGS,-qfullpath -qcheck=all -qinfo=pro)
     fi
     if test "x$enable_load_all_modules" = "x"; then
       LOAD_ALL_MODULES=yes
@@ -653,16 +708,21 @@ AC_ARG_ENABLE(maintainer-mode,APACHE_HELP_STRING(--enable-maintainer-mode,Turn o
 AC_ARG_ENABLE(debugger-mode,APACHE_HELP_STRING(--enable-debugger-mode,Turn on debugging and compile time warnings and turn off optimization),
 [
   if test "$enableval" = "yes"; then
-    APR_ADDTO(CPPFLAGS, -DAP_DEBUG)
+    APR_ADDTO(NOTEST_CPPFLAGS, -DAP_DEBUG)
     if test "$GCC" = "yes"; then
-      APR_ADDTO(CFLAGS,[-Wall -Wmissing-prototypes -Wstrict-prototypes -Wmissing-declarations -Wpointer-arith -O0])
+      APACHE_ADD_GCC_CFLAG([-O0])
+      APACHE_ADD_GCC_CFLAG([-Wall])
+      APACHE_ADD_GCC_CFLAG([-Wstrict-prototypes])
+      APACHE_ADD_GCC_CFLAG([-Wmissing-prototypes])
+      APACHE_ADD_GCC_CFLAG([-Wmissing-declarations])
       APACHE_ADD_GCC_CFLAG([-Wdeclaration-after-statement])
       APACHE_ADD_GCC_CFLAG([-Werror=declaration-after-statement])
+      APACHE_ADD_GCC_CFLAG([-Wpointer-arith])
       APACHE_ADD_GCC_CFLAG([-Wformat])
       APACHE_ADD_GCC_CFLAG([-Wformat-security])
       APACHE_ADD_GCC_CFLAG([-Werror=format-security])
     elif test "$AIX_XLC" = "yes"; then
-      APR_ADDTO(CFLAGS,-qfullpath -qinitauto=FE -qcheck=all -qinfo=pro)
+      APR_ADDTO(NOTEST_CFLAGS,-qfullpath -qinitauto=FE -qcheck=all -qinfo=pro)
     fi
   fi
 ])dnl
@@ -690,6 +750,28 @@ fi
 APACHE_SUBST(PICFLAGS)
 APACHE_SUBST(PILDFLAGS)
 
+ap_reduced_exports=no
+EXPORTS_DOT_C=exports.c
+LIBMAIN_LIB=server/libmain.la
+APACHE_SUBST(EXPORTS_DOT_C)
+APACHE_SUBST(LIBMAIN_LIB)
+
+AC_ARG_ENABLE(reduced-exports,
+APACHE_HELP_STRING(--enable-reduced-exports,Reduce binary size if using shared APR libraries),
+[
+  if test "$enableval" = "yes" -a "$GCC" = "yes"; then
+    ap_reduced_exports=yes
+  fi
+])
+
+if test "$ap_reduced_exports" = "yes"; then
+  EXPORTS_DOT_C=
+  LIBMAIN_LIB="-Wl,--whole-archive,server/.libs/libmain.a,--no-whole-archive"
+  AC_MSG_NOTICE([Using reduced symbol exports])
+else
+  AC_DEFINE(AP_FORCE_EXPORTS, 1, [Force symbol exports for dependent libraries])
+fi
+
 AC_ARG_WITH(valgrind,
   [  --with-valgrind[[=DIR]]   Enable code to reduce valgrind false positives
                           (optionally: set path to valgrind headers) ],
@@ -705,6 +787,22 @@ AC_ARG_WITH(valgrind,
       )
     fi ]
 )
+
+dnl Enable the unit test executable if Check is installed.
+dnl TODO: at the moment, only pkg-config discovery is supported.
+AC_MSG_CHECKING([for Check to enable unit tests])
+if test "x$PKGCONFIG" != "x" -a "$ap_reduced_exports" = "no" && `$PKGCONFIG --atleast-version='0.9.12' check`; then
+  UNITTEST_CFLAGS=`$PKGCONFIG --cflags check`
+  UNITTEST_LIBS=`$PKGCONFIG --libs check`
+  other_targets="$other_targets test/httpdunit"
+
+  AC_MSG_RESULT([yes])
+else
+  AC_MSG_RESULT([no])
+fi
+APACHE_SUBST(UNITTEST_CFLAGS)
+APACHE_SUBST(UNITTEST_LIBS)
+
 
 prefix="$orig_prefix"
 APACHE_ENABLE_MODULES
@@ -794,7 +892,7 @@ APACHE_HELP_STRING(--with-suexec-logfile,Set the logfile),[
 ])
 
 AC_ARG_WITH(suexec-syslog,
-APACHE_HELP_STRING(--with-suexec-syslog,Set the logfile),[
+APACHE_HELP_STRING(--with-suexec-syslog,Use syslog for suexec logging),[
   if test $withval = "yes"; then
     if test "x${with_suexec_logfile}" != "xno"; then
       AC_MSG_NOTICE([hint: use "--without-suexec-logfile --with-suexec-syslog"])
@@ -834,9 +932,6 @@ AP_LIBS="$AP_LIBS `$apr_config --link-libtool --libs`"
 APACHE_SUBST(AP_LIBS)
 APACHE_SUBST(AP_BUILD_SRCLIB_DIRS)
 APACHE_SUBST(AP_CLEAN_SRCLIB_DIRS)
-
-AC_DEFINE(AP_USING_AUTOCONF, 1,
-		[Using autoconf to configure Apache])
 
 if test "$SINGLE_LISTEN_UNSERIALIZED_ACCEPT" = "1"; then
     AC_DEFINE(SINGLE_LISTEN_UNSERIALIZED_ACCEPT, 1, 
@@ -894,12 +989,14 @@ AC_ARG_WITH([test-suite],
         else
             test -f "$withval/Makefile.PL" || AC_MSG_ERROR([--with-test-suite directory $withval does not contain the expected Makefile.PL])
             TEST_SUITE_LOCATION="$withval"
+            WITH_TEST_SUITE=yes
         fi
     ],
-    [ TEST_SUITE_LOCATION="no" ]
+    [ WITH_TEST_SUITE=no ]
 )
 
 APACHE_SUBST(TEST_SUITE_LOCATION)
+APACHE_SUBST(WITH_TEST_SUITE)
 
 APACHE_FAST_OUTPUT(Makefile modules/Makefile srclib/Makefile) 
 APACHE_FAST_OUTPUT(os/Makefile server/Makefile)
@@ -907,6 +1004,8 @@ APACHE_FAST_OUTPUT(support/Makefile)
 
 if test -d ./test; then
     APACHE_FAST_OUTPUT(test/Makefile)
+    AC_CONFIG_FILES([test/pyhttpd/config.ini])
+    APACHE_FAST_OUTPUT(test/clients/Makefile)
 fi
 
 dnl ## Finalize the variables
@@ -915,10 +1014,10 @@ AC_MSG_NOTICE([Restore user-defined environment settings...])
 AC_MSG_NOTICE([])
 
 APACHE_CONF_SEL_CC=${CC}
-APACHE_CONF_SEL_CFLAGS=${CFLAGS}
-APACHE_CONF_SEL_LDFLAGS=${LDFLAGS}
-APACHE_CONF_SEL_LIBS=${LIBS}
-APACHE_CONF_SEL_CPPFLAGS=${CPPFLAGS}
+APACHE_CONF_SEL_CFLAGS="${CFLAGS} ${EXTRA_CFLAGS} ${NOTEST_CFLAGS}"
+APACHE_CONF_SEL_CPPFLAGS="${CPPFLAGS} ${EXTRA_CPPFLAGS} ${NOTEST_CPPFLAGS}"
+APACHE_CONF_SEL_LDFLAGS="${LDFLAGS} ${EXTRA_LDFLAGS} ${NOTEST_LDFLAGS}"
+APACHE_CONF_SEL_LIBS="${LIBS} ${EXTRA_LIBS} ${NOTEST_LIBS}"
 APACHE_CONF_SEL_CPP=${CPP}
 
 APR_RESTORE_THE_ENVIRONMENT(CPPFLAGS, EXTRA_)
@@ -933,10 +1032,6 @@ AC_MSG_NOTICE([Construct makefiles and header files...])
 AC_MSG_NOTICE([])
 
 APACHE_GEN_CONFIG_VARS
-
-dnl ## Build modules.c
-rm -f modules.c
-echo $MODLIST | $AWK -f $srcdir/build/build-modules-c.awk > modules.c
 
 APR_EXPAND_VAR(ap_prefix, $prefix)
 AC_DEFINE_UNQUOTED(HTTPD_ROOT, "${ap_prefix}",
@@ -998,8 +1093,18 @@ AC_SUBST(ap_make_delimiter)
 dnl Ensure that docs/conf is created.
 test -d docs/conf||$mkdir_p docs/conf
 
-AC_CONFIG_FILES(docs/conf/httpd.conf docs/conf/extra/httpd-autoindex.conf docs/conf/extra/httpd-dav.conf docs/conf/extra/httpd-default.conf docs/conf/extra/httpd-info.conf docs/conf/extra/httpd-languages.conf docs/conf/extra/httpd-manual.conf docs/conf/extra/httpd-mpm.conf docs/conf/extra/httpd-multilang-errordoc.conf docs/conf/extra/httpd-policy.conf docs/conf/extra/httpd-ssl.conf docs/conf/extra/httpd-userdir.conf docs/conf/extra/httpd-vhosts.conf docs/conf/extra/proxy-html.conf include/ap_config_layout.h support/apxs support/apachectl support/dbmmanage support/envvars-std support/log_server_status support/logresolve.pl support/phf_abuse_log.cgi support/split-logfile build/rules.mk build/pkg/pkginfo build/config_vars.sh)
-AC_CONFIG_COMMANDS([default], [true], [APACHE_GEN_MAKEFILES])
+AC_CONFIG_FILES(docs/conf/httpd.conf docs/conf/extra/httpd-autoindex.conf docs/conf/extra/httpd-dav.conf docs/conf/extra/httpd-default.conf docs/conf/extra/httpd-info.conf docs/conf/extra/httpd-languages.conf docs/conf/extra/httpd-manual.conf docs/conf/extra/httpd-mpm.conf docs/conf/extra/httpd-multilang-errordoc.conf docs/conf/extra/httpd-policy.conf docs/conf/extra/httpd-ssl.conf docs/conf/extra/httpd-userdir.conf docs/conf/extra/httpd-vhosts.conf docs/conf/extra/proxy-html.conf docs/conf/extra/httpd-macro.conf include/ap_config_layout.h support/apxs support/apachectl support/dbmmanage support/envvars-std support/log_server_status support/logresolve.pl support/phf_abuse_log.cgi support/split-logfile build/rules.mk build/pkg/pkginfo build/config_vars.sh)
+AC_CONFIG_COMMANDS([default],
+  [$SHELL $srcdir/build/fastgen.sh $srcdir $ac_cv_mkdir_p $BSD_MAKEFILE $APACHE_FAST_OUTPUT_FILES >&AS_MESSAGE_FD],
+  [ac_cv_mkdir_p=$ac_cv_mkdir_p
+BSD_MAKEFILE=$BSD_MAKEFILE
+APACHE_FAST_OUTPUT_FILES="$APACHE_FAST_OUTPUT_FILES"
+])
+AC_CONFIG_COMMANDS([modules.c], [
+## Build modules.c
+rm -f modules.c
+echo $MODLIST | $AWK -f $srcdir/build/build-modules-c.awk > modules.c
+], [MODLIST="$MODLIST"])
 AC_OUTPUT
 
 AC_MSG_NOTICE([summary of build options:
@@ -1008,8 +1113,8 @@ AC_MSG_NOTICE([summary of build options:
     Install prefix: ${prefix}
     C compiler:     ${APACHE_CONF_SEL_CC}
     CFLAGS:         ${APACHE_CONF_SEL_CFLAGS}
+    CPPFLAGS:       ${APACHE_CONF_SEL_CPPFLAGS}
     LDFLAGS:        ${APACHE_CONF_SEL_LDFLAGS}
     LIBS:           ${APACHE_CONF_SEL_LIBS}
-    CPPFLAGS:       ${APACHE_CONF_SEL_CPPFLAGS}
     C preprocessor: ${APACHE_CONF_SEL_CPP}
 ])

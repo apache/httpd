@@ -26,7 +26,7 @@
 
 <description>Provides Lua hooks into various portions of the httpd
 request processing</description>
-<status>Experimental</status>
+<status>Extension</status>
 <sourcefile>mod_lua.c</sourcefile>
 <identifier>lua_module</identifier>
 <compatibility>2.3 and later</compatibility>
@@ -41,11 +41,6 @@ authorization</p>
 
 <p>More information on the Lua programming language can be found at the
 <a href="http://www.lua.org/">the Lua website</a>.</p>
-
-<note><code>mod_lua</code> is still in experimental state.
-Until it is declared stable, usage and behavior may change
-at any time, even between stable releases of the 2.4.x series.
-Be sure to check the CHANGES file before upgrading.</note>
 
 <note type="warning"><title>Warning</title>
 <p>This module holds a great deal of power over httpd, which is both a
@@ -221,6 +216,13 @@ performing access control, or setting mime types:</p>
             been mapped to a host or virtual host</td>
     </tr>
     <tr>
+        <td>Pre-Translate name</td>
+        <td><directive module="mod_lua">LuaHookPreTranslateName</directive></td>
+        <td>This phase translates the requested URI into a filename on the
+            system, before decoding occurs. Modules such as <module>mod_proxy</module>
+            can operate in this phase.</td>
+    </tr>
+    <tr>
         <td>Translate name</td>
         <td><directive module="mod_lua">LuaHookTranslateName</directive></td>
         <td>This phase translates the requested URI into a filename on the
@@ -358,7 +360,7 @@ end
         <tr>
           <td><code>ap_auth_type</code></td>
           <td>string</td>
-          <td>no</td>
+          <td>yes</td>
           <td>If an authentication check was made, this is set to the type
           of authentication (f.x. <code>basic</code>)</td>
         </tr>
@@ -437,14 +439,14 @@ end
           <td>table</td>
           <td>no</td>
           <td>MIME header environment for the response, printed even on errors and
-            persist across internal redirects</td>
+            persist across internal redirects.  A read-only lua table suitable for iteration is available as r:err_headers_out_table().</td>
         </tr>
         <tr>
           <td><code>filename</code></td>
           <td>string</td>
           <td>yes</td>
           <td>The file name that the request maps to, f.x. /www/example.com/foo.txt. This can be
-            changed in the translate-name or map-to-storage phases of a request to allow the
+            changed in the pre-translate-name, translate-name or map-to-storage phases of a request to allow the
             default handler (or script handlers) to serve a different file than what was requested.</td>
         </tr>
         <tr>
@@ -464,13 +466,13 @@ end
           <td>table</td>
           <td>yes</td>
           <td>MIME header environment from the request. This contains headers such as <code>Host,
-            User-Agent, Referer</code> and so on.</td>
+            User-Agent, Referer</code> and so on. A read-only lua table suitable for iteration is available as r:headers_in_table().</td>
         </tr>
         <tr>
           <td><code>headers_out</code></td>
           <td>table</td>
           <td>yes</td>
-          <td>MIME header environment for the response.</td>
+          <td>MIME header environment for the response. A read-only lua table suitable for iteration is available as r:headers_out_table().</td>
         </tr>
         <tr>
           <td><code>hostname</code></td>
@@ -512,7 +514,7 @@ end
           <td><code>notes</code></td>
           <td>table</td>
           <td>yes</td>
-          <td>A list of notes that can be passed on from one module to another.</td>
+          <td>A list of notes that can be passed on from one module to another.  A read-only lua table suitable for iteration is available as r:notes_table().</td>
         </tr>
         <tr>
           <td><code>options</code></td>
@@ -543,7 +545,7 @@ end
           <td>string</td>
           <td>yes</td>
           <td>Denotes whether this is a proxy request or not. This value is generally set in
-            the post_read_request/translate_name phase of a request.</td>
+              the post_read_request/pre_translate_name/translate_name phase of a request.</td>
         </tr>
         <tr>
           <td><code>range</code></td>
@@ -579,7 +581,7 @@ end
           <td><code>subprocess_env</code></td>
           <td>table</td>
           <td>yes</td>
-          <td>The environment variables set for this request.</td>
+          <td>The environment variables set for this request. A read-only lua table suitable for iteration is available as r:subprocess_env_table().</td>
         </tr>
         <tr>
           <td><code>started</code></td>
@@ -643,9 +645,9 @@ end
 </highlight>
 
 <highlight language="lua">
-r:addoutputfilter(name|function) -- add an output filter:
+r:add_output_filter(filter_name) -- add an output filter:
 
-r:addoutputfilter("fooFilter") -- add the fooFilter to the output stream
+r:add_output_filter("fooFilter") -- add the fooFilter to the output stream
 </highlight>
 
 <highlight language="lua">
@@ -936,11 +938,11 @@ r:htpassword(string [,algorithm [,cost]]) -- Creates a password hash from a stri
 </highlight>
 
 <highlight language="lua">
-r:mkdir(dir [,mode]) -- Creates a directory and sets mode to optional mode paramter.
+r:mkdir(dir [,mode]) -- Creates a directory and sets mode to optional mode parameter.
 </highlight>
 
 <highlight language="lua">
-r:mkrdir(dir [,mode]) -- Creates directories recursive and sets mode to optional mode paramter.
+r:mkrdir(dir [,mode]) -- Creates directories recursive and sets mode to optional mode parameter.
 </highlight>
 
 <highlight language="lua">
@@ -1105,7 +1107,7 @@ r:emerg("This is an emerg log message")
 function filter(r)
     -- Our first yield is to signal that we are ready to receive buckets.
     -- Before this yield, we can set up our environment, check for conditions,
-    -- and, if we deem it necessary, decline filtering a request alltogether:
+    -- and, if we deem it necessary, decline filtering a request altogether:
     if something_bad then
         return -- This would skip this filter.
     end
@@ -1137,7 +1139,14 @@ end
     <p>
     Mod_lua implements a simple database feature for querying and running commands
     on the most popular database engines (mySQL, PostgreSQL, FreeTDS, ODBC, SQLite, Oracle)
-    as well as mod_dbd.
+    as well as mod_dbd.</p>
+    <p>
+    The <code>dbType</code> to use as the first parameter of <code>dbacquire</code>
+    is case sensitive.</p>
+    <p>
+    It should be one of <code>mysql</code>, <code>pgsql</code>, <code>freetds</code>,
+    <code>odbc</code>, <code>sqlite2</code>, <code>sqlite3</code>, <code>oracle</code>
+    or <code>mod_dbd</code>.
     </p>
     <p>The example below shows how to acquire a database handle and return information from a table:</p>
     <highlight language="lua">
@@ -1522,6 +1531,23 @@ end
 </directivesynopsis>
 
 <directivesynopsis>
+<name>LuaHookPreTranslate</name>
+<description>Provide a hook for the pre_translate phase of a request
+processing</description>
+<syntax>LuaHookPreTranslate  /path/to/lua/script.lua hook_function_name</syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>All</override>
+<usage>
+<p>
+    Just like LuaHookTranslateName, but executed at the pre_translate phase,
+    where the URI-path is not percent decoded.
+</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
 <name>LuaHookFixups</name>
 <description>Provide a hook for the fixups phase of a request
 processing</description>
@@ -1596,7 +1622,7 @@ end
 <override>All</override>
     <usage>
     <p>Like <directive>LuaHookTranslateName</directive> but executed at the
-    map-to-storage phase of a request. Modules like mod_cache run at this phase,
+    map-to-storage phase of a request. Modules like <module>mod_cache</module> run at this phase,
     which makes for an interesting example on what to do here:</p>
     <highlight language="config">
     LuaHookMapToStorage /path/to/lua/script.lua check_cache
@@ -1792,7 +1818,7 @@ hook function usually returns OK, DECLINED, or HTTP_FORBIDDEN.</p>
 <override>All</override>
 <usage>
     <p>
-    This phase is run immediately after the request has been mapped to a virtal host,
+    This phase is run immediately after the request has been mapped to a virtual host,
     and can be used to either do some request processing before the other phases kick
     in, or to serve a request without the need to translate, map to storage et cetera.
     As this phase is run before anything else, directives such as <directive
@@ -1844,6 +1870,7 @@ end
 <description>Provide a Lua function for content input filtering</description>
 <syntax>LuaInputFilter filter_name /path/to/lua/script.lua function_name</syntax>
 <contextlist><context>server config</context> </contextlist>
+<override>All</override>
 <compatibility>2.4.5 and later</compatibility>
 
 <usage>
@@ -1901,6 +1928,7 @@ filters</a>" for more information.
 <description>Provide a Lua function for content output filtering</description>
 <syntax>LuaOutputFilter filter_name /path/to/lua/script.lua function_name</syntax>
 <contextlist><context>server config</context> </contextlist>
+<override>All</override>
 <compatibility>2.4.5 and later</compatibility>
 
 <usage>

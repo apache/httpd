@@ -1,6 +1,6 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE language SYSTEM "../lang.dtd">
-<!-- English revision: 1659855 -->
+<!-- English revision: 1828588 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -21,9 +21,9 @@
 
 <language id="fr">
     <name>French</name>
-    <charset>ISO-8859-1</charset>
+    <charset>UTF-8</charset>
     <source-ext>.xml.fr</source-ext>
-    <target-ext>.html.fr</target-ext>
+    <target-ext>.html.fr.utf8</target-ext>
 
     <chm>
         <lang>0x40c French (France)</lang>
@@ -34,7 +34,7 @@
 
 <!-- currently no deployment of non-english man pages
     <man>
-        <charset>ISO-8859-1</charset>
+        <charset>UTF-8</charset>
     </man>
 -->
     <!-- Some strings might be used in other contexts, than stated in the -->
@@ -63,6 +63,8 @@
         <message id="moduleidentifier">Identificateur&nbsp;de&nbsp;Module</message>
         <message id="sourcefile">Fichier&nbsp;Source</message>
         <message id="compatibility">Compatibilit&#233;</message>
+        <message id="before-since">Disponible &#224; partir de la version </message>
+        <message id="after-since"> du serveur HTTP Apache.</message>
 
         <!-- Used in manualpage -->
         <message id="relatedmodules">Modules Apparent&#233;s</message>
@@ -75,25 +77,26 @@
         <message id="httpdchangelog">Journal des modifications de httpd</message>
         <message id="httpdknownissues">Probl&#232;mes connus</message>
         <message id="httpdreportabug">Signaler un bug</message>
+        <message id="permalink">Lien permanent</message>
 
         <!-- Used in description box for directives -->
         <message id="syntax">Syntaxe</message>
         <message id="default">D&#233;faut</message>
         <message id="context">Contexte</message>
-        <message id="override">AllowOverride</message>
+        <message id="override">Surcharges autoris&#233;es</message>
         <message id="status">Statut</message>
         <message id="module">Module</message>
 
         <!-- Status descriptions -->
         <message id="base" letter="B">Base</message>
         <message id="mpm" letter="M">MPM</message>
-        <message id="core" letter="C">Core</message>
+        <message id="core" letter="C">Noyau httpd</message>
         <message id="extension" letter="E">Extension</message>
         <message id="experimental" letter="X">Exp&#233;rimental</message>
         <message id="external" letter="T">Externe</message>
 
         <!-- Used in directive context lists -->
-        <message id="serverconfig" letter="s">configuration du serveur</message>
+        <message id="serverconfig" letter="s">configuration globale</message>
         <message id="virtualhost" letter="v">serveur virtuel</message>
         <message id="directory" letter="d">r&#233;pertoire</message>
         <message id="htaccess" letter="h">.htaccess</message>
@@ -117,8 +120,8 @@
         <message id="glossarylink">voir glossaire</message>
 
         <!-- Used in headers and footers -->
-        <message id="apachetitle">- Serveur Apache HTTP</message>
-        <message id="apachehttpserver">Serveur Apache HTTP Version
+        <message id="apachetitle">- Serveur HTTP Apache</message>
+        <message id="apachehttpserver">Serveur HTTP Apache Version
             &httpd.major;.&httpd.minor;</message>
         <message id="apachedocalt">[DOCUMENTATION APACHE]</message>
         <message id="search">Recherche Google</message> <!-- search button -->

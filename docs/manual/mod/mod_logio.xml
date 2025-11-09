@@ -73,6 +73,13 @@
         cannot be zero. This is the combination of %I and %O.<br />
         Available in Apache 2.4.7 and later</td></tr>
 
+    <tr><td><code>%^FU</code></td>
+        <td>Delay in microseconds between when the request arrived and the
+        last byte of the request body was read (finished upload).
+        Only available if <directive>LogIOTrackTTFU</directive> is set to
+        ON.<br />
+        Available in Apache 2.4.34 and later</td></tr>
+
     <tr><td><code>%^FB</code></td>
         <td>Delay in microseconds between when the request arrived and the
         first byte of the response headers are written.  Only available if
@@ -90,13 +97,34 @@
 </section>
 
 <directivesynopsis>
+<name>LogIOTrackTTFU</name>
+<description>Enable tracking of time to last request byte (TTFU = time to finish
+upload)</description>
+<syntax>LogIOTrackTTFU ON|OFF</syntax>
+<default>LogIOTrackTTFU OFF</default>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context></contextlist>
+<override>All</override>
+<compatibility>Apache HTTP Server 2.4.34 and later</compatibility>
+
+<usage>
+    <p>This directive configures whether this module tracks the delay
+    between the request being read and the last byte of the request
+    body being read (finished upload).  The resulting value may be logged
+    with the <code>%^FU</code> format.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
 <name>LogIOTrackTTFB</name>
-<description>Enable tracking of time to first byte (TTFB)</description>
+<description>Enable tracking of time to first byte (TTFB = time to first byte)
+</description>
 <syntax>LogIOTrackTTFB ON|OFF</syntax>
 <default>LogIOTrackTTFB OFF</default>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
-<override>none</override>
+<override>All</override>
+<compatibility>Apache HTTP Server 2.4.13 and later</compatibility>
 
 <usage>
     <p>This directive configures whether this module tracks the delay

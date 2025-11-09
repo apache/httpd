@@ -70,14 +70,13 @@
 #endif
 
 #include "mod_proxy.h"
-#include "mod_ssl.h"
-#include "mod_ssl_openssl.h"
 
+#include "mod_ssl_openssl.h"
 #include "ssl_ct_util.h"
 #include "ssl_ct_sct.h"
 
-#include "openssl/x509v3.h"
-#include "openssl/ocsp.h"
+#include <openssl/x509v3.h>
+#include <openssl/ocsp.h>
 
 #if OPENSSL_VERSION_NUMBER < 0x10002003L
 #error "mod_ssl_ct requires OpenSSL 1.0.2-beta3 or later"
@@ -681,7 +680,7 @@ static apr_status_t update_log_list_for_cert(server_rec *s, apr_pool_t *p,
                 rv = apr_uri_parse(p, elts[i], &uri);
                 if (rv != APR_SUCCESS) {
                     ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s,
-                                 APLOGNO(02697) "unparseable log URL %s in file "
+                                 APLOGNO(02697) "unparsable log URL %s in file "
                                  "%s - ignoring",
                                  elts[i], listfile);
                     /* some garbage in the file? can't map to an auto-maintained SCT,
@@ -864,6 +863,7 @@ static void * APR_THREAD_FUNC run_service_thread(apr_thread_t *me, void *data)
     ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, s, APLOGNO(03243)
                  SERVICE_THREAD_NAME " exiting");
 
+    apr_thread_exit(me, APR_SUCCESS);
     return NULL;
 }
 
@@ -1038,6 +1038,7 @@ static int sct_daemon(server_rec *s_main)
 
     /* ptemp - temporary pool for refresh cycles */
     apr_pool_create(&ptemp, pdaemon);
+    apr_pool_tag(ptemp, "sct_daemon_refresh");
 
     while (!daemon_should_exit) {
         sct_daemon_cycle(sconf, s_main, ptemp, DAEMON_NAME);
@@ -1062,6 +1063,7 @@ static int daemon_start(apr_pool_t *p, server_rec *main_server,
     else if (daemon_pid == 0) {
         if (pdaemon == NULL) {
             apr_pool_create(&pdaemon, p);
+            apr_pool_tag(pdaemon, "sct_daemon");
         }
         exit(sct_daemon(main_server) > 0 ? DAEMON_STARTUP_ERROR : -1);
     }
@@ -1091,6 +1093,7 @@ static void *sct_daemon_thread(apr_thread_t *me, void *data)
 
     /* ptemp - temporary pool for refresh cycles */
     apr_pool_create(&ptemp, pdaemon);
+    apr_pool_tag(ptemp, "sct_daemon_thread");
 
     while (1) {
         if ((rv = ap_mpm_query(AP_MPMQ_MPM_STATE, &mpmq_s)) != APR_SUCCESS) {
@@ -1109,6 +1112,7 @@ static void *sct_daemon_thread(apr_thread_t *me, void *data)
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(03246)
                  DAEMON_THREAD_NAME " - exiting");
 
+    apr_thread_exit(me, APR_SUCCESS);
     return NULL;
 }
 
@@ -1117,8 +1121,9 @@ static int daemon_thread_start(apr_pool_t *pconf, server_rec *s_main)
     apr_status_t rv;
 
     apr_pool_create(&pdaemon, pconf);
-    rv = apr_thread_create(&daemon_thread, NULL, sct_daemon_thread, s_main,
-                           pconf);
+    apr_pool_tag(pdaemon, "sct_daemon");
+    rv = ap_thread_create(&daemon_thread, NULL, sct_daemon_thread, s_main,
+                          pconf);
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s_main,
                      APLOGNO(02709) "could not create " DAEMON_THREAD_NAME 
@@ -1126,8 +1131,7 @@ static int daemon_thread_start(apr_pool_t *pconf, server_rec *s_main)
         return HTTP_INTERNAL_SERVER_ERROR;
     }
 
-    apr_pool_cleanup_register(pconf, daemon_thread, wait_for_thread,
-                              apr_pool_cleanup_null);
+    apr_pool_pre_cleanup_register(pconf, daemon_thread, wait_for_thread);
 
     return OK;
 }
@@ -1260,6 +1264,7 @@ static int ssl_ct_post_config(apr_pool_t *pconf, apr_pool_t *plog,
         if (!sconf->db_log_config) {
             /* log config db in separate pool that can be cleared */
             apr_pool_create(&sconf->db_log_config_pool, pconf);
+            apr_pool_tag(sconf->db_log_config_pool, "sct_db_log_config");
             sconf->db_log_config =
                 apr_array_make(sconf->db_log_config_pool, 2,
                                sizeof(ct_log_config *));
@@ -1586,26 +1591,55 @@ static const char *gen_key(conn_rec *c, cert_chain *cc,
                            ct_conn_config *conncfg)
 {
     const char *fp;
-    SHA256_CTX sha256ctx;
     unsigned char digest[SHA256_DIGEST_LENGTH];
 
     fp = get_cert_fingerprint(c->pool, cc->leaf);
 
-    SHA256_Init(&sha256ctx); /* UNDOC */
-    SHA256_Update(&sha256ctx, (unsigned char *)fp, strlen(fp)); /* UNDOC */
-    if (conncfg->cert_sct_list) {
-        SHA256_Update(&sha256ctx, conncfg->cert_sct_list, 
-                      conncfg->cert_sct_list_size);
+#if OPENSSL_VERSION_NUMBER < 0x30000000L
+    {
+        SHA256_CTX sha256ctx;
+        SHA256_Init(&sha256ctx); /* UNDOC */
+        SHA256_Update(&sha256ctx, (unsigned char *)fp, strlen(fp)); /* UNDOC */
+        if (conncfg->cert_sct_list) {
+            SHA256_Update(&sha256ctx, conncfg->cert_sct_list, 
+                          conncfg->cert_sct_list_size);
+        }
+        if (conncfg->serverhello_sct_list) {
+            SHA256_Update(&sha256ctx, conncfg->serverhello_sct_list,
+                          conncfg->serverhello_sct_list_size);
+        }
+        if (conncfg->ocsp_sct_list) {
+            SHA256_Update(&sha256ctx, conncfg->ocsp_sct_list,
+                          conncfg->ocsp_sct_list_size);
+        }
+        SHA256_Final(digest, &sha256ctx); /* UNDOC */
     }
-    if (conncfg->serverhello_sct_list) {
-        SHA256_Update(&sha256ctx, conncfg->serverhello_sct_list,
-                      conncfg->serverhello_sct_list_size);
+#else
+    {
+        EVP_MD_CTX *md_ctx;
+        unsigned int dlen = 0;
+        md_ctx = EVP_MD_CTX_create();
+        ap_assert(md_ctx != NULL);
+        ap_assert(EVP_DigestInit_ex(md_ctx, EVP_sha256(), NULL));
+        ap_assert(EVP_DigestUpdate(md_ctx, (unsigned char *)fp, strlen(fp)));
+        if (conncfg->cert_sct_list) {
+            ap_assert(EVP_DigestUpdate(md_ctx, conncfg->cert_sct_list, 
+                                       conncfg->cert_sct_list_size));
+        }
+        if (conncfg->serverhello_sct_list) {
+            ap_assert(EVP_DigestUpdate(md_ctx, conncfg->serverhello_sct_list,
+                                       conncfg->serverhello_sct_list_size));
+        }
+        if (conncfg->ocsp_sct_list) {
+            ap_assert(EVP_DigestUpdate(md_ctx, conncfg->ocsp_sct_list,
+                                       conncfg->ocsp_sct_list_size));
+        }
+        ap_assert(EVP_DigestFinal_ex(md_ctx, digest, &dlen));
+        ap_assert(dlen == SHA256_DIGEST_LENGTH);
+        EVP_MD_CTX_destroy(md_ctx);
     }
-    if (conncfg->ocsp_sct_list) {
-        SHA256_Update(&sha256ctx, conncfg->ocsp_sct_list,
-                      conncfg->ocsp_sct_list_size);
-    }
-    SHA256_Final(digest, &sha256ctx); /* UNDOC */
+#endif
+
     return apr_pescape_hex(c->pool, digest, sizeof digest, 0);
 }
 
@@ -2014,7 +2048,7 @@ static int client_extension_add_callback(SSL *ssl, unsigned ext_type,
 
     ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, c,
                   "client_extension_add_callback called, "
-                  "ext %hu will be in ClientHello",
+                  "ext %u will be in ClientHello",
                   ext_type);
 
     return 1;
@@ -2286,7 +2320,7 @@ static int server_extension_add_callback(SSL *ssl, unsigned ext_type,
         ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, APLOGNO(03032)
                       "server_extension_callback_2: client isn't CT-aware");
         /* Skip this extension for ServerHello */
-        return -1;
+        return 0;
     }
 
     /* need to reply with SCT */
@@ -2296,7 +2330,7 @@ static int server_extension_add_callback(SSL *ssl, unsigned ext_type,
 
     ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, c,
                   "server_extension_add_callback called, "
-                  "ext %hu will be in ServerHello",
+                  "ext %u will be in ServerHello",
                   ext_type);
 
     rv = read_scts(c->pool, fingerprint,
@@ -2309,7 +2343,7 @@ static int server_extension_add_callback(SSL *ssl, unsigned ext_type,
     }
     else {
         /* Skip this extension for ServerHello */
-        return -1;
+        return 0;
     }
 
     return 1;
@@ -2387,7 +2421,7 @@ static int ssl_ct_init_server(server_rec *s, apr_pool_t *p, int is_proxy,
                                            NULL, NULL,
                                            client_extension_parse_callback, cbi)) {
             ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s,
-                         APLOGNO(02740) "Unable to initalize Certificate "
+                         APLOGNO(02740) "Unable to initialize Certificate "
                          "Transparency client extension callbacks "
                          "(callback for %d already registered?)",
                          CT_EXTENSION_TYPE);
@@ -2409,7 +2443,7 @@ static int ssl_ct_init_server(server_rec *s, apr_pool_t *p, int is_proxy,
                                            NULL, NULL,
                                            server_extension_parse_callback, cbi)) {
             ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s,
-                         APLOGNO(02741) "Unable to initalize Certificate "
+                         APLOGNO(02741) "Unable to initialize Certificate "
                          "Transparency server extension callback "
                          "(callbacks for %d already registered?)",
                          CT_EXTENSION_TYPE);
@@ -2516,7 +2550,7 @@ static void ssl_ct_child_init(apr_pool_t *p, server_rec *s)
         exit(APEXIT_CHILDSICK);
     }
 
-    rv = apr_thread_create(&service_thread, NULL, run_service_thread, s, p);
+    rv = ap_thread_create(&service_thread, NULL, run_service_thread, s, p);
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s,
                      APLOGNO(02745) "could not create " SERVICE_THREAD_NAME
@@ -2527,8 +2561,7 @@ static void ssl_ct_child_init(apr_pool_t *p, server_rec *s)
         exit(APEXIT_CHILDSICK);
     }
 
-    apr_pool_cleanup_register(p, service_thread, wait_for_thread,
-                              apr_pool_cleanup_null);
+    apr_pool_pre_cleanup_register(p, service_thread, wait_for_thread);
 
     if (sconf->proxy_awareness != PROXY_OBLIVIOUS) {
         rv = apr_thread_mutex_create(&cached_server_data_mutex,
@@ -2961,12 +2994,12 @@ static const char *ct_static_scts(cmd_parms *cmd, void *x, const char *cert_fn,
     }
     
     cert = PEM_read_X509(pemfile, NULL, NULL, NULL);
+    fclose(pemfile);
+
     if (!cert) {
         return apr_psprintf(p, "could not read certificate from file %s",
                             cert_fn);
     }
-
-    fclose(pemfile);
 
     fingerprint = get_cert_fingerprint(p, cert);
     X509_free(cert);

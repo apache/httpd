@@ -63,6 +63,9 @@ To Do List
 - mod_substitute and reverse proxies: Add example using mod_filter
   (see: http://marc.info/?l=apache-httpd-users&m=128830729603423&w=2)
 
+-Mod auth spanish doc add the following that a community member has created.
+https://github.com/valenbg1/auth-example-mod-apache
+
 - MPM documentation
      - explain what the following command line options do
        (perhaps in the developer/debugging docs):

@@ -54,8 +54,9 @@
     applicable to a general-purpose web server.</p>
 
     <p> Name-based virtual hosting builds off of the IP-based virtual host
-    selection algorithm, meaning that searches for the proper server name
-    occur only between virtual hosts that have the best IP-based address.</p>
+    selection algorithm, meaning that comparisons of ther requested hostname
+    to configured hostnames occurs only within the set of virtual hosts that 
+    share the most specific IP:PORT based match at the network layer.</p>
 
 </section>
 
@@ -64,7 +65,7 @@
     <p>It is important to recognize that the first step in name-based virtual
     host resolution is IP-based resolution.  Name-based virtual host
     resolution only chooses the most appropriate name-based virtual host
-    after narrowing down the candidates to the best IP-based match.  Using a wildcard (*)
+    after narrowing down the candidates to the best (most specific) IP-based match.  Using a wildcard (*)
     for the IP address in all of the VirtualHost directives makes this
     IP-based mapping irrelevant.</p>
 
@@ -187,17 +188,23 @@
     first have your DNS server properly configured to map those names to an IP
     address associated with your server.</p>
 
+    <p>Typically, IP addresses of local interfaces or the wildcard '*' are specified within the 
+    <directive type="section" module="core">virtualhost</directive> tag and hostnames are
+    specified only in <directive module="core">ServerName</directive> or <directive module="core"
+    >ServerAlias</directive>.  When a hostname is specified within the virtualhost tag,
+    its addresses are resolved and added for IP based virtual host resolution and the hostname:port
+    combination is also checked prior to ServerName and ServerAlias checks for name-based virtual host
+    resolution.  The use of hostnames within the virtualhost tag is relatively obscure, error prone,
+    and should generally be avoided.
+    </p>
+
     <p>Name-based virtual hosts for the best-matching set of  <directive
     type="section" module="core">virtualhost</directive>s are processed
     in the order they appear in the configuration.  The first matching <directive
     module="core">ServerName</directive> or <directive module="core"
     >ServerAlias</directive> is used, with no different precedence for wildcards
-    (nor for ServerName vs. ServerAlias).  </p>
-
-    <p>The complete list of names in the <directive module="core"
-    >VirtualHost</directive>
-    directive are treated just like a (non wildcard)
-    <directive module="core">ServerAlias</directive>.</p>
+    (nor for ServerName vs. ServerAlias).  
+    </p>
 
     <p>Finally, you can fine-tune the configuration of the virtual hosts
     by placing other directives inside the <directive type="section"

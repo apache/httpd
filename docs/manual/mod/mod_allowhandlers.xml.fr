@@ -1,0 +1,83 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
+<!-- English Revision : 1869811 -->
+<!-- French translation : Lucien GENTIS -->
+<!-- Reviewed by : Vincent Deffontaines -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_allowhandlers.xml.meta">
+<name>mod_allowhandlers</name>
+<description>Facilite la d&eacute;finition de la liste des gestionnaires HTTP
+qui peuvent &ecirc;tre utilis&eacute;s pour le serveur</description>
+<status>Experimental</status>
+<sourcefile>mod_allowhandlers.c</sourcefile>
+<identifier>allowhandlers_module</identifier>
+
+
+<summary>
+<p>Ce module facilite la d&eacute;finition de la liste des gestionnaires HTTP
+qui peuvent &ecirc;tre utilis&eacute;s pour une requ&ecirc;te. Voici un exemple de ligne de
+configuration :</p>
+
+<highlight language="config">
+&lt;Location "/"&gt;
+  AllowHandlers not server-info server-status balancer-manager ldap-status
+&lt;/Location&gt;
+</highlight>
+
+<p>Il impl&eacute;mente aussi un gestionnaire nomm&eacute; <code>forbidden</code> qui
+ne fait que renvoyer la r&eacute;ponse "403 FORBIDDEN" au client. Ce
+gestionnaire peut &ecirc;tre sp&eacute;cifi&eacute; par des directives comme <directive
+module="mod_mime">AddHandler</directive>.</p>
+
+</summary>
+
+<seealso><directive module="core">SetHandler</directive></seealso>
+<seealso><directive module="mod_mime">AddHandler</directive></seealso>
+
+<directivesynopsis>
+<name>AllowHandlers</name>
+<description>Restreint l'acc&egrave;s aux gestionnaires sp&eacute;cifi&eacute;s</description>
+<syntax>AllowHandlers [not] none|<em>nom-gestionnaire</em>
+[none|<em>nom-gestionnaire</em>]...</syntax>
+<default>AllowHandlers all</default>
+<contextlist><context>directory</context></contextlist>
+<status>Experimental</status>
+
+<usage>
+
+<p>Les noms de gestionnaires sont sensibles &agrave; la casse. Le nom r&eacute;serv&eacute;
+<code>none</code> peut &ecirc;tre utilis&eacute; dans le cas o&ugrave; aucun gestionnaire
+n'a &eacute;t&eacute; d&eacute;fini. Le nom r&eacute;serv&eacute; <code>all</code>, quant &agrave; lui, peut &ecirc;tre
+utilis&eacute; pour autoriser &agrave; nouveau tous les gestionnaires dans une section
+de configuration ult&eacute;rieure, m&ecirc;me si certains en-t&ecirc;tes ont &eacute;t&eacute; interdits
+en aval :</p>
+
+<highlight language="config">
+&lt;Location "/server-status"&gt;
+  AllowHandlers all
+  SetHandler server-status
+&lt;/Location&gt;
+</highlight>
+
+</usage>
+</directivesynopsis>
+
+</modulesynopsis>

@@ -12,12 +12,12 @@ Install Lua 5.1
     
     
 Install Apache HTTPD 2.2
-    http://httpd.apache.org/download.cgi
+    https://httpd.apache.org/download.cgi
     
     You can build apache pretty much any way you like, as long as you enable
-    dynamic module loading (--enable-so) so that mod_wombat can be loaded.
+    dynamic module loading (--enable-so) so that mod_lua can be loaded.
     
-    You may user (and I encourage you to!) the threaded MPMs -- mod_wombat
+    You may user (and I encourage you to!) the threaded MPMs -- mod_lua
     plays nicely with them.
 
     I build it with these flags:
@@ -28,11 +28,11 @@ Install Apache HTTPD 2.2
     
     
 Install libapreq2
-    http://httpd.apache.org/apreq/download.cgi
+    https://httpd.apache.org/apreq/download.cgi
         The download link is in the page body, NOT under the "Download!" link
         in the left hand column.
     
-    Right now, mod_wombat requires libapreq2 for parsing entity bodies. This
+    Right now, mod_lua requires libapreq2 for parsing entity bodies. This
     dependency will probably be made optional in the near future, but for now
     you need it.
     
@@ -42,8 +42,8 @@ Install libapreq2
       --with-apache2-apxs=/Users/brianm/.opt/httpd-2.2.4-worker-wombat/bin/apxs
     
     
-Install mod_wombat from subversion
-    http://svn.apache.org/repos/asf/httpd/mod_wombat/trunk
+Install mod_lua from subversion
+    http://svn.apache.org/repos/asf/httpd/httpd/trunk/modules/lua
     
     The first step, when building from subversion, is to bootstrap autoconf. 
     To do this run the bootstrap script:
@@ -69,4 +69,4 @@ Install mod_wombat from subversion
     option, it always seems to work.
   
       
-That is it. To configure mod_wombat, look at the basic-configuration.txt document.
+That is it. To configure mod_lua, look at the basic-configuration.txt document.

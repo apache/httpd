@@ -147,7 +147,7 @@
 </xsl:template>
 
 
-<!-- Value-of used here explicitly because we don't wan't latex-escaping
+<!-- Value-of used here explicitly because we don't want latex-escaping
 performed.  Of course, this will conflict with html where some tags are
 interpreted in pre -->
 <xsl:template match="pre|highlight">

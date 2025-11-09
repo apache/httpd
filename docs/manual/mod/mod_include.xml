@@ -140,10 +140,12 @@ Options +Includes
       <p>This command doesn't output anything. Its only use is to
       add comments within a file. These comments are not printed.</p>
 
-      <p>This syntax is available in version 2.5 and later.</p>
+      <p>This syntax is available in version 2.4.21 and later.</p>
 
       <example>
-      &lt;!--#comment Blah Blah Blah --&gt;
+      &lt;!--#comment Blah Blah Blah --&gt;<br/>
+      &nbsp;&nbsp;&nbsp;or<br/>
+      &lt;!--#comment text="Blah Blah Blah" --&gt;
       </example>
     </section> <!-- /comment -->
 
@@ -318,7 +320,7 @@ Options +Includes
       to the usual set of CGI variables.</p>
 
       <p>The use of <code><a href="#includevirtual"
-      >#include virtual</a></code> is almost always prefered to using
+      >#include virtual</a></code> is almost always preferred to using
       either <code>#exec cgi</code> or <code>#exec cmd</code>. The former
       (<code>#include virtual</code>) uses the standard Apache sub-request
       mechanism to include files or scripts. It is much better tested and
@@ -552,6 +554,11 @@ Options +Includes
       <dd>The filename (excluding directories) of the document
       requested by the user.</dd>
 
+      <dt><code>DOCUMENT_PATH_INFO</code></dt>
+      <dd>The trailing pathname information. See directive <directive
+      module="core">AcceptPathInfo</directive> for more information
+      about <code>PATH_INFO</code>.</dd>
+
       <dt><code>DOCUMENT_URI</code></dt>
       <dd>The (%-decoded) URL path of the document requested by the
       user. Note that in the case of nested include files, this is
@@ -573,6 +580,9 @@ Options +Includes
       backslashes).  It is not set if a query string is not
       present.  Use <code>DOCUMENT_ARGS</code> if shell escaping
       is not desired.</dd>
+
+      <dt><code>USER_NAME</code></dt>
+      <dd>The user name of the owner of the file.</dd>
     </dl>
 </section>
 
@@ -956,6 +966,7 @@ SSITimeFormat "%R, %B %d, %Y"
 <syntax>SSIETag on|off</syntax>
 <default>SSIETag off</default>
 <contextlist><context>directory</context><context>.htaccess</context></contextlist>
+<override>Limit</override>
 
 <usage>
       <p>Under normal circumstances, a file filtered by <module>mod_include</module>
@@ -996,6 +1007,7 @@ server.</description>
 <syntax>SSILastModified on|off</syntax>
 <default>SSILastModified off</default>
 <contextlist><context>directory</context><context>.htaccess</context></contextlist>
+<override>Limit</override>
 
 <usage>
       <p>Under normal circumstances, a file filtered by <module>mod_include</module>
@@ -1034,6 +1046,7 @@ server.</description>
 <syntax>SSILegacyExprParser on|off</syntax>
 <default>SSILegacyExprParser off</default>
 <contextlist><context>directory</context><context>.htaccess</context></contextlist>
+<override>Limit</override>
 <compatibility>Available in version 2.3.13 and later.</compatibility>
 
 <usage>

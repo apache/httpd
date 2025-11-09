@@ -293,7 +293,7 @@ static apr_status_t encrypt_string(request_rec * r, const apr_crypto_t *f,
             *cipher, APR_MODE_CBC, 1, 4096, f, r->pool);
     if (APR_STATUS_IS_ENOKEY(res)) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, res, r, APLOGNO(01825)
-                "the passphrase '%s' was empty", passphrase);
+                "failure generating key from passphrase");
     }
     if (APR_STATUS_IS_EPADDING(res)) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, res, r, APLOGNO(01826)
@@ -381,7 +381,7 @@ static apr_status_t decrypt_string(request_rec * r, const apr_crypto_t *f,
 
     /* sanity check - decoded too short? */
     if (decodedlen < (AP_SIPHASH_DSIZE + sizeof(apr_uuid_t))) {
-        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS, r, APLOGNO()
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS, r, APLOGNO(10005)
                 "too short to decrypt, aborting");
         return APR_ECRYPT;
     }
@@ -390,6 +390,8 @@ static apr_status_t decrypt_string(request_rec * r, const apr_crypto_t *f,
     if (res != APR_SUCCESS) {
         return res;
     }
+
+    res = APR_ECRYPT; /* in case we exhaust all passphrases */
 
     /* try each passphrase in turn */
     for (; i < dconf->passphrases->nelts; i++) {
@@ -403,7 +405,7 @@ static apr_status_t decrypt_string(request_rec * r, const apr_crypto_t *f,
          */
         compute_auth(slider, len, passphrase, passlen, auth);
         if (!ap_crypto_equals(auth, decoded, AP_SIPHASH_DSIZE)) {
-            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, res, r, APLOGNO()
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, res, r, APLOGNO(10006)
                     "auth does not match, skipping");
             continue;
         }
@@ -415,7 +417,7 @@ static apr_status_t decrypt_string(request_rec * r, const apr_crypto_t *f,
                                     f, r->pool);
         if (APR_STATUS_IS_ENOKEY(res)) {
             ap_log_rerror(APLOG_MARK, APLOG_DEBUG, res, r, APLOGNO(01832)
-                    "the passphrase '%s' was empty", passphrase);
+                    "failure generating key from passphrase");
             continue;
         }
         else if (APR_STATUS_IS_EPADDING(res)) {

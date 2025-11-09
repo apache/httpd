@@ -49,6 +49,9 @@ URLs on the fly</description>
       sub-processing, external request redirection, or internal proxy
       throughput.</p>
 
+      <p>A regular expression only needs quoting if it contains unescaped space, 
+      in which case single and double quotes are equivalent.</p>
+
       <p>Further details, discussion, and examples, are provided in the
       <a href="../rewrite/">detailed mod_rewrite documentation</a>.</p>
 </summary>
@@ -291,6 +294,13 @@ LogLevel alert rewrite:trace3
          URL.  Available in 2.4.26 and later.</p>
       </dd>
 
+      <dt><code>LongURLOptimization</code></dt>
+      <dd>
+      <p>This option reduces memory usage of long, unoptimized rule sets 
+         that repeatedly expand long values in RewriteCond and RewriteRule
+         variables. Available in 2.5 and later.</p>
+      </dd>
+
       </dl>
 </usage>
 
@@ -300,10 +310,12 @@ LogLevel alert rewrite:trace3
 <name>RewriteMap</name>
 <description>Defines a mapping function for key-lookup</description>
 <syntax>RewriteMap <em>MapName</em> <em>MapType</em>:<em>MapSource</em>
-    <em>MapTypeOptions</em>
+    [<em>MapTypeOptions</em>]
 </syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
+<compatibility>The 3rd parameter, MapTypeOptions, in only available from Apache
+2.4.29 and later</compatibility>
 
 <usage>
       <p>The <directive>RewriteMap</directive> directive defines a
@@ -342,7 +354,7 @@ RewriteMap examplemap "txt:/path/to/file/map.txt"
       </highlight>
 
       <p>You would then be able to use this map in a
-      <directive>RewriteRule</directive> as follows:</p>
+      <directive module="mod_rewrite">RewriteRule</directive> as follows:</p>
 
       <highlight language="config">
 RewriteRule "^/ex/(.*)" "${examplemap:$1}"
@@ -590,7 +602,7 @@ AliasMatch "^/myapp" "/opt/myapp-1.2.3"
                 <directive module="core">UseCanonicalPhysicalPort</directive>
                 respectively.</p>
 
-                <p>Those that are special to mod_rewrite include those below.</p>
+                <p>Those that are special to <module>mod_rewrite</module> include those below.</p>
                 <dl>
                   <dt><code>API_VERSION</code></dt>
 
@@ -652,7 +664,11 @@ AliasMatch "^/myapp" "/opt/myapp-1.2.3"
                   <dd>The path component of the requested URI,
                   such as "/index.html".  This notably excludes the
                   query string which is available as its own variable
-                  named <code>QUERY_STRING</code>.</dd>
+                  named <code>QUERY_STRING</code>. The value returned for
+                  <code>REQUEST_URI</code> 
+                  has already been %-decoded, to re-encode it pass it through
+                  the "escape" <a href="#mapfunc">mapping-function</a>.
+                  </dd>
 
                   <dt><code>THE_REQUEST</code></dt>
 
@@ -743,9 +759,9 @@ AliasMatch "^/myapp" "/opt/myapp-1.2.3"
         per-server context (<code>httpd.conf</code> file) you must
         use <code>%{LA-U:REMOTE_USER}</code> - this
         variable is set by the authorization phases, which come
-        <em>after</em> the URL translation phase (during which mod_rewrite
-        operates).</p>
-        <p>On the other hand, because mod_rewrite implements
+        <em>after</em> the URL translation phase (during which
+        <module>mod_rewrite</module> operates).</p>
+        <p>On the other hand, because <module>mod_rewrite</module> implements
         its per-directory context (<code>.htaccess</code> file) via
         the Fixup phase of the API and because the authorization
         phases come <em>before</em> this phase, you just can use
@@ -819,6 +835,15 @@ AliasMatch "^/myapp" "/opt/myapp-1.2.3"
             <em>CondPattern</em>, or is equal to <em>CondPattern</em>
             (the two strings are equal, character for character).</dd>
         </dl>
+        <note><title>Note</title>
+        The string comparison operator is part of the <em>CondPattern</em>
+        argument and must be included in the quotes if those are used. Eg.
+        
+        <highlight language="config">
+RewriteCond %{HTTP_USER_AGENT} "=This Robot/1.0"
+        </highlight>
+        </note>
+        
         </li>
 
         <li>
@@ -980,7 +1005,7 @@ RewriteRule "^/images" "-" [F]
 
      <p>You can also set special flags for <em>CondPattern</em> by appending
         <strong><code>[</code><em>flags</em><code>]</code></strong>
-      as the third argument to the <code>RewriteCond</code>
+      as the third argument to the <directive>RewriteCond</directive>
       directive, where <em>flags</em> is a comma-separated list of any of the
       following flags:</p>
       
@@ -1041,6 +1066,13 @@ RewriteRule  "^/$"                 "/homepage.std.html"     [L]
         the homepage is served. Otherwise, the standard page is served.
         </p>
 
+        <p>By default, multiple <directive>RewriteCond</directive>s
+        are evaluated in sequence with an implied logical <strong>AND</strong>.
+        If a condition fails, in the absence of an
+        <strong><code>OR</code></strong> flag, the entire ruleset is abandoned,
+        and further conditions are not evaluated.
+        </p>
+
 </usage>
 
 </directivesynopsis>
@@ -1086,8 +1118,8 @@ RewriteRule  "^/$"                 "/homepage.std.html"     [L]
       this context only match against the portion of the currently mapped filesystem path 
       "below" where the rule is defined.</p>
 
-      <p>Directives such as <directive
-      >DocumentRoot</directive> and <directive>Alias</directive>, or even the 
+      <p>Directives such as <directive module="core"
+      >DocumentRoot</directive> and <directive module="mod_alias">Alias</directive>, or even the 
       result of previous <directive>RewriteRule</directive> substitutions, determine
       the currently mapped filesystem path.  
       </p>
@@ -1132,7 +1164,35 @@ type="section" module="core">Files</directive> sections
 (including their regular expression counterparts), this
 should never be necessary and is unsupported. A likely feature
 to break in these contexts is relative substitutions.</li>
+
+<li>The <directive module="core">If</directive> blocks
+follow the rules of the <em>directory</em> context.</li>
+
+<li>By default, mod_rewrite overrides rules when <a href="../sections.html#merging">
+merging sections</a> belonging to the same context. The <directive
+module="mod_rewrite">RewriteOptions</directive> directive can change this behavior,
+for example using the <em>Inherit</em> setting.</li>
+
+<li>The <directive module="mod_rewrite">RewriteOptions</directive> also regulates the
+behavior of sections that are stated at the same nesting level of the configuration. In the
+following example, by default only the RewriteRules stated in the second 
+<directive module="core">If</directive> block
+are considered, since the first ones are overridden. Using <directive
+module="mod_rewrite">RewriteOptions</directive> Inherit forces mod_rewrite to merge the two
+sections and consider both set of statements, rather than only the last one.</li>
 </ul>
+<example>
+<highlight language="config">
+&lt;If "true"&gt;
+  # Without RewriteOptions Inherit, this rule is overridden by the next
+  # section and no redirect will happen for URIs containing 'foo'
+  RewriteRule foo http://example.com/foo [R]
+&lt;/If&gt;
+&lt;If "true"&gt;
+  RewriteRule bar http://example.com/bar [R]
+&lt;/If&gt;
+</highlight>
+</example>
 </note>
 
       <p>For some hints on <glossary ref="regex">regular
@@ -1140,7 +1200,7 @@ to break in these contexts is relative substitutions.</li>
       the <a href="../rewrite/intro.html#regex">mod_rewrite
       Introduction</a>.</p>
 
-      <p>In mod_rewrite, the NOT character
+      <p>In <module>mod_rewrite</module>, the NOT character
       ('<code>!</code>') is also available as a possible pattern
       prefix. This enables you to negate a pattern; to say, for instance:
       ``<em>if the current URL does <strong>NOT</strong> match this
@@ -1193,13 +1253,16 @@ cannot use <code>$N</code> in the substitution string!
 
         <dt>Absolute URL</dt>
 
-        <dd>If an absolute URL is specified,
+        <dd><p>If an absolute URL is specified,
         <module>mod_rewrite</module> checks to see whether the
         hostname matches the current host. If it does, the scheme and
         hostname are stripped out and the resulting path is treated as
         a URL-path. Otherwise, an external redirect is performed for
         the given URL. To force an external redirect back to the
-        current host, see the <code>[R]</code> flag below.</dd>
+        current host, see the <code>[R]</code> flag below.</p>
+        <p>Note that a redirect (implicit or not) using an absolute URI
+        will include the requested query-string, to prevent this see the
+        <code>[QSD]</code> flag below.</p></dd>
 
         <dt><code>-</code> (dash)</dt>
 
@@ -1277,8 +1340,19 @@ cannot use <code>$N</code> in the substitution string!
     <tr>
         <td>B</td>
         <td>Escape non-alphanumeric characters in backreferences <em>before</em>
-        applying the transformation. <em><a
+        applying the transformation. For similar escaping of server-variables, see
+        the "escape" <a href="#mapfunc">mapping-function</a>.<em><a
         href="../rewrite/flags.html#flag_b">details ...</a></em></td>
+    </tr>
+    <tr>
+        <td>BCTLS</td>
+        <td>Like [B], but only escape control characters and spaces.
+        <em><a href="../rewrite/flags.html#flag_bctls">details ...</a></em></td>
+    </tr>
+    <tr>
+        <td>BNE</td>
+        <td>Characters of [B] or [BCTLS] which should <strong>not</strong> be escaped.
+        <em><a href="../rewrite/flags.html#flag_bne">details ...</a></em></td>
     </tr>
     <tr>
         <td>backrefnoplus|BNP</td>
@@ -1297,7 +1371,7 @@ cannot use <code>$N</code> in the substitution string!
     <tr>
         <td>cookie|CO=<em>NAME</em>:<em>VAL</em></td>
         <td>Sets a cookie in the client browser. Full syntax is:
-        CO=<em>NAME</em>:<em>VAL</em>:<em>domain</em>[:<em>lifetime</em>[:<em>path</em>[:<em>secure</em>[:<em>httponly</em>]]]] <em><a href="../rewrite/flags.html#flag_co">details ...</a></em>
+        CO=<em>NAME</em>:<em>VAL</em>:<em>domain</em>[:<em>lifetime</em>[:<em>path</em>[:<em>secure</em>[:<em>httponly</em>[<em>samesite</em>]]]]] <em><a href="../rewrite/flags.html#flag_co">details ...</a></em>
         </td>
     </tr>
     <tr>
@@ -1358,8 +1432,9 @@ cannot use <code>$N</code> in the substitution string!
     <tr>
         <td>noescape|NE</td>
         <td>Prevent mod_rewrite from applying hexcode escaping of
-        special characters in the result of the rewrite. <em><a
-        href="../rewrite/flags.html#flag_ne">details ...</a></em></td>
+            special characters in the result of rewrites that result in 
+            redirection. <em>
+            <a href="../rewrite/flags.html#flag_ne">details ...</a></em></td>
     </tr>
     <tr>
         <td>nosubreq|NS</td>
@@ -1396,7 +1471,7 @@ cannot use <code>$N</code> in the substitution string!
     <tr>
         <td>qslast|QSL</td>
         <td>Interpret the last (right-most) question mark as the query string
-            delimeter, instead of the first (left-most) as normally used.  
+            delimiter, instead of the first (left-most) as normally used.  
             Available in 2.4.19 and later.
         <em><a href="../rewrite/flags.html#flag_qsl">details
         ...</a></em></td>
@@ -1421,11 +1496,32 @@ cannot use <code>$N</code> in the substitution string!
         to be the specified type. <em><a
         href="../rewrite/flags.html#flag_t">details ...</a></em></td>
     </tr>
+    <tr>
+        <td>UnsafeAllow3F</td>
+        <td>Allows substitutions from URL's that may be unsafe.
+        <em><a href="../rewrite/flags.html#flag_unsafe_allow_3f">details ...</a></em>
+        </td>
+    </tr>
+    <tr>
+        <td>UnsafePrefixStat</td>
+        <td>Allows potentially unsafe substitutions from a leading variable or backreference to a filesystem path.
+        <em><a href="../rewrite/flags.html#flag_unsafe_prefix_stat">details ...</a></em><br />
+        <since>2.5.1</since>
+        </td>
+    </tr>
+    <tr>
+        <td>UNC</td>
+        <td>Prevents the merging of multiple leading slashes, as used by Windows UNC paths.
+        <em><a href="../rewrite/flags.html#flag_unc">details ...</a></em><br />
+        <since>2.5.1</since>
+        </td>
+    </tr>
+
     </table>
 
 <note><title>Home directory expansion</title>
 <p> When the substitution string begins with a string
-resembling "/~user" (via explicit text or backreferences), mod_rewrite performs
+resembling "/~user" (via explicit text or backreferences), <module>mod_rewrite</module> performs
 home directory expansion independent of the presence or configuration
 of <module>mod_userdir</module>.</p>
 

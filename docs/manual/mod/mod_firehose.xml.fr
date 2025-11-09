@@ -1,0 +1,294 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
+<!-- English Revision : 1673947 -->
+<!-- French translation : Lucien GENTIS -->
+<!-- $LastChangedRevision: 2015042601 $ -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_firehose.xml.meta">
+
+<name>mod_firehose</name>
+<description>Multiplexage des entr&eacute;es/sorties vers un fichier ou un pipe.</description>
+<status>Extension</status>
+<sourcefile>mod_firehose.c</sourcefile>
+<identifier>firehose_module</identifier>
+
+<summary>
+    <p><code>mod_firehose</code> fournit un m&eacute;canisme permettant
+    d'enregistrer les donn&eacute;es transmises entre le serveur httpd et le
+    client au niveau &eacute;l&eacute;mentaire de la connexion dans un fichier ou un
+    pipe, de fa&ccedil;on &agrave; ce que les donn&eacute;es puissent &ecirc;tre analys&eacute;es ou
+    rejou&eacute;es ult&eacute;rieurement par le serveur. Il s'apparente &agrave; un "tcpdump
+    pour httpd".</p>
+
+    <p>Les connexions sont enregistr&eacute;es apr&egrave;s d&eacute;codage de la couche SSL,
+    et peuvent ainsi &ecirc;tre utilis&eacute;es dans le cadre d'une r&eacute;quisition
+    l&eacute;gale.</p>
+
+    <p>L'utilitaire <program>firehose</program> permet en retour de
+    d&eacute;multiplexer le flux enregistr&eacute; dans des fichiers individuels pour
+    analyse ou rejeu via des outils tels que <code>netcat</code>.</p>
+
+    <note><title>AVERTISSEMENT</title>Ce module ignore tout m&eacute;canisme
+    invoqu&eacute; au niveau de la requ&ecirc;te pour rendre les donn&eacute;es priv&eacute;es. Il
+    est donc de la responsabilit&eacute; de l'administrateur de s'assurer que
+    les donn&eacute;es priv&eacute;es ne seront pas compromises par son utilisation.
+    </note>
+
+</summary>
+<seealso><program>firehose</program></seealso>
+
+<section id="enable">
+    <title>Activation de la "Lance &agrave; incendie" (Firehose)</title>
+
+    <p>Pour activer ce module, il doit &ecirc;tre compil&eacute; et charg&eacute; via la
+    configuration de votre instance httpd courante, et les directives
+    ci-dessous permettent de s&eacute;lectionner les donn&eacute;es que vous souhaitez
+    enregistrer.</p>
+    
+    <p>Il est possible d'enregistrer les donn&eacute;es entrantes et sortantes
+    dans le m&ecirc;me fichier, car la direction du flux est indiqu&eacute;e dans
+    chaque fragment.</p>
+
+    <p>Il est possible d'&eacute;crire vers des fichiers normaux ou des listes
+    fifos (pipes). Dans le cas des listes fifos, mod_firehose fait en
+    sorte que la taille des paquets ne d&eacute;passe pas la valeur de PIPE_BUF
+    afin de s'assurer que l'&eacute;criture de ces derniers s'effectue en une
+    seule fois.</p>
+
+    <p>Si une liste fifo sous forme de pipe doit &ecirc;tre utilis&eacute;e, pour que
+    cette derni&egrave;re soit ouverte en &eacute;criture, certaines donn&eacute;es doivent
+    en &ecirc;tre extraites avant le d&eacute;marrage de httpd. Si l'ouverture du
+    pipe &eacute;choue, mod_firehose ne sera pas activ&eacute;, et le serveur sera
+    lanc&eacute; normalement.</p>
+
+    <p>Par d&eacute;faut, toute tentative d'&eacute;criture bloque le serveur. Si le
+    serveur a &eacute;t&eacute; compil&eacute; avec APR version 2.0 ou sup&eacute;rieure, et si le
+    param&egrave;tre "nonblock" a &eacute;t&eacute; sp&eacute;cifi&eacute;, les &eacute;critures dans les fichiers
+    seront non blocantes, et tout d&eacute;passement de tampon entra&icirc;nera la
+    perte des donn&eacute;es de d&eacute;bogage. Dans ce cas, il est possible donner
+    la priorit&eacute; &agrave; l'ex&eacute;cution du serveur sur l'enregistrement des
+    donn&eacute;es firehose.</p>
+
+</section>
+
+<section id="format">
+    <title>Format du flux</title>
+
+    <p>En g&eacute;n&eacute;ral, le serveur g&egrave;re plusieurs connexions simultan&eacute;ment,
+    et de ce fait, les requ&ecirc;tes et les r&eacute;ponses doivent &ecirc;tre
+    multiplex&eacute;es avant d'&ecirc;tre &eacute;crites dans le firehose.</p>
+    
+    <p>Chaque fragment se pr&eacute;sente sous la forme d'un texte en clair
+    de fa&ccedil;on &agrave; ce qu'un firehose puisse &ecirc;tre ouvert et inspect&eacute; par un
+    &eacute;diteur de texte standard. Il est aussi possible d'utiliser
+    l'utilitaire <program>firehose</program> pour d&eacute;multiplexer le
+    firehose en requ&ecirc;tes ou connexions individuelles.</p>
+
+    <p>La taille maximale des fragments multiplex&eacute;s est d&eacute;finie par la
+    variable PIPE_BUF. Elle correspond &agrave; la taille maximale d'un
+    &eacute;l&eacute;ment que le syst&egrave;me peut &eacute;crire. Si la taille des fragments
+    multiplex&eacute;s reste en dessous de PIPE_BUF, le module garantit que les
+    contenus des diff&eacute;rents fragments ne se recouperont pas. La valeur
+    de PIPE_BUF varie en fonction du syst&egrave;me d'exploitation.</p>
+
+    <p>La BNF du format du fragment est la suivante :</p>
+
+    <pre>
+ stream = 0*(fragment)
+
+ fragment = header CRLF body CRLF
+
+ header = length SPC timestamp SPC ( request | response ) SPC uuid SPC count
+
+ length = &lt;longueur de fragment sur 16 octets hexad&eacute;cimaux>
+ timestamp = &lt;temps depuis 1970 en microsecondes sur 16 octets hexad&eacute;cimaux>
+ request = "&lt;"
+ response = ">"
+ uuid = &lt;uuid format&eacute; de la connexion>
+ count = &lt;num&eacute;ro hexad&eacute;cimal du fragment dans la connexion>
+
+ body = &lt;contenu binaire du fragment>
+
+ SPC = &lt;un espace>
+ CRLF = &lt;un retour chariot suivi d'une nouvelle ligne>
+    </pre>
+
+    <p>Tous les fragments d'une connexion ou d'une requ&ecirc;te partagent le
+    m&ecirc;me UUID, selon que les connexions ou les requ&ecirc;tes sont
+    enregistr&eacute;es ou non. Si les connexions sont enregistr&eacute;es, plusieurs
+    requ&ecirc;tes peuvent appara&icirc;tre dans la m&ecirc;me connexion. Un fragment de
+    longueur nulle indique la fin de la connexion.</p>
+
+    <p>Certains fragments peuvent manquer ou &ecirc;tre supprim&eacute;s si le
+    processus qui les lit est trop lent. Si cela se produit, il y aura
+    des trous dans le comptage des connections. Un avertissement
+    indiquant l'UUID et le num&eacute;ro du fragment supprim&eacute; sera enregistr&eacute;
+    dans le journal des erreurs.</p>
+
+    <p>En cas de crash ou d'arr&ecirc;t forc&eacute; du processus httpd, il est
+    possible que le fragment vide de terminaison n'apparaisse pas. Cela
+    peut aussi se produire si le processus qui lit les fragments n'est
+    pas assez rapide.</p>
+
+</section>
+
+<directivesynopsis>
+
+<name>FirehoseConnectionInput</name>
+<description>Capture le trafic entrant dans le serveur &agrave; chaque
+connexion.</description>
+<syntax>FirehoseConnectionInput <var>[ block | nonblock ]</var> <var>filename</var></syntax>
+<default>none</default>
+<contextlist><context>server config</context></contextlist>
+<compatibility>Disponible &agrave; partir de la version 2.5.0 du serveur HTTP
+Apache.</compatibility>
+
+<usage>
+    <p>Capture le trafic entrant dans le serveur &agrave; chaque connexion.
+    Plusieurs requ&ecirc;tes seront captur&eacute;es pour la m&ecirc;me connexion si les
+    connexions persistantes sont activ&eacute;es.</p>
+
+    <example><title>Exemple</title>
+    <highlight language="config">
+      FirehoseConnectionInput connection-input.firehose
+      </highlight>
+    </example>
+</usage>
+
+</directivesynopsis>
+
+<directivesynopsis>
+
+<name>FirehoseConnectionOutput</name>
+<description>Capture le trafic sortant du serveur &agrave; chaque connexion</description>
+<syntax>FirehoseConnectionOutput <var>[ block | nonblock ]</var> <var>filename</var></syntax>
+<default>none</default>
+<contextlist><context>server config</context></contextlist>
+<compatibility>Disponible &agrave; partir de la version 2.5.0 du serveur HTTP
+Apache.</compatibility>
+
+<usage>
+    <p>Capture le trafic sortant du serveur &agrave; chaque connexion.
+    Plusieurs requ&ecirc;tes seront captur&eacute;es pour la m&ecirc;me connexion si les
+    connexions persistantes sont activ&eacute;es.
+    </p>
+
+    <example><title>Exemple</title>
+    <highlight language="config">
+      FirehoseConnectionOutput connection-output.firehose
+      </highlight>
+    </example>
+</usage>
+
+</directivesynopsis>
+
+<directivesynopsis>
+
+<name>FirehoseRequestInput</name>
+<description>Capture le trafic entrant dans le serveur &agrave; chaque requ&ecirc;te</description>
+<syntax>FirehoseRequestInput <var>[ block | nonblock ]</var> <var>filename</var></syntax>
+<default>none</default>
+<contextlist><context>server config</context></contextlist>
+<compatibility>Disponible &agrave; partir de la version 2.5.0 du serveur HTTP
+Apache.</compatibility>
+
+<usage>
+    <p>Capture le trafic entrant dans le serveur &agrave; chaque requ&ecirc;te. Les
+    requ&ecirc;tes sont captur&eacute;es s&eacute;par&eacute;ment, que les connexions persistantes
+    soient activ&eacute;es ou non.</p>
+
+    <example><title>Exemple</title>
+    <highlight language="config">
+      FirehoseRequestInput request-input.firehose
+      </highlight>
+    </example>
+</usage>
+
+</directivesynopsis>
+
+<directivesynopsis>
+
+<name>FirehoseRequestOutput</name>
+<description>Capture le trafic sortant du serveur &agrave; chaque requ&ecirc;te</description>
+<syntax>FirehoseRequestOutput <var>[ block | nonblock ]</var> <var>filename</var></syntax>
+<default>none</default>
+<contextlist><context>server config</context></contextlist>
+<compatibility>Disponible &agrave; partir de la version 2.5.0 du serveur HTTP
+Apache.</compatibility>
+
+<usage>
+    <p>Capture le trafic sortant du serveur &agrave; chaque requ&ecirc;te. Les
+    requ&ecirc;tes sont captur&eacute;es s&eacute;par&eacute;ment, que les connexions persistantes
+    soient activ&eacute;es ou non.</p>
+
+    <example><title>Exemple</title>
+    <highlight language="config">
+      FirehoseRequestOutput request-output.firehose
+      </highlight>
+    </example>
+</usage>
+
+</directivesynopsis>
+
+<directivesynopsis>
+
+<name>FirehoseProxyConnectionInput</name>
+<description>Capture le trafic entrant dans mod_proxy</description>
+<syntax>FirehoseProxyConnectionInput <var>[ block | nonblock ]</var> <var>filename</var></syntax>
+<default>none</default>
+<contextlist><context>server config</context></contextlist>
+<compatibility></compatibility>
+
+<usage>
+    <p>Capture le trafic re&ccedil;u par mod_proxy.</p>
+
+    <example><title>Exemple</title>
+    <highlight language="config">
+      FirehoseProxyConnectionInput proxy-input.firehose
+      </highlight>
+    </example>
+</usage>
+
+</directivesynopsis>
+
+<directivesynopsis>
+
+<name>FirehoseProxyConnectionOutput</name>
+<description>Capture le trafic envoy&eacute; par mod_proxy</description>
+<syntax>FirehoseProxyConnectionOutput <var>[ block | nonblock ]</var> <var>filename</var></syntax>
+<default>none</default>
+<contextlist><context>server config</context></contextlist>
+<compatibility>Disponible &agrave; partir de la version 2.5.0 du serveur HTTP
+Apache.</compatibility>
+
+<usage>
+    <p>Capture le trafic envoy&eacute; par mod_proxy.</p>
+
+    <example><title>Exemple</title>
+    <highlight language="config">
+      FirehoseProxyConnectionOutput proxy-output.firehose
+      </highlight>
+    </example>
+</usage>
+
+</directivesynopsis>
+
+</modulesynopsis>

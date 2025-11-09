@@ -139,6 +139,7 @@ AP_INIT_TAKE1("ThreadLimit", set_thread_limit, NULL, RSRC_CONF,
 static void winnt_note_child_started(int slot, pid_t pid)
 {
     ap_scoreboard_image->parent[slot].pid = pid;
+    ap_scoreboard_image->parent[slot].generation = my_generation;
     ap_run_child_status(ap_server_conf,
                         ap_scoreboard_image->parent[slot].pid,
                         my_generation, slot, MPM_CHILD_STARTED);
@@ -435,7 +436,7 @@ static int send_handles_to_child(apr_pool_t *p,
  * get_listeners_from_parent()
  * The listen sockets are opened in the parent. This function, which runs
  * exclusively in the child process, receives them from the parent and
- * makes them availeble in the child.
+ * makes them available in the child.
  */
 static void get_listeners_from_parent(server_rec *s)
 {
@@ -557,6 +558,7 @@ static int create_process(apr_pool_t *p, HANDLE *child_proc, HANDLE *child_exit_
     int envc;
 
     apr_pool_create_ex(&ptemp, p, NULL, NULL);
+    apr_pool_tag(ptemp, "create_process");
 
     /* Build the command line. Should look something like this:
      * C:/apache/bin/httpd.exe -f ap_server_confname
@@ -584,10 +586,10 @@ static int create_process(apr_pool_t *p, HANDLE *child_proc, HANDLE *child_exit_
             return -1;
         }
 
-        args = malloc((ap_server_conf->process->argc + 1) * sizeof (char*));
+        args = ap_malloc((ap_server_conf->process->argc + 1) * sizeof (char*));
         memcpy(args + 1, ap_server_conf->process->argv + 1,
                (ap_server_conf->process->argc - 1) * sizeof (char*));
-        args[0] = malloc(strlen(cmd) + 1);
+        args[0] = ap_malloc(strlen(cmd) + 1);
         strcpy(args[0], cmd);
         args[ap_server_conf->process->argc] = NULL;
     }
@@ -741,7 +743,7 @@ static int create_process(apr_pool_t *p, HANDLE *child_proc, HANDLE *child_exit_
  * of this event means that the child process has exited prematurely
  * due to a seg fault or other irrecoverable error. For server
  * robustness, master_main will restart the child process under this
- * condtion.
+ * condition.
  *
  * master_main uses the child_exit_event to signal the child process
  * to exit.
@@ -1128,7 +1130,7 @@ static void winnt_rewrite_args(process_rec *process)
                      "Failed to get the full path of %s", process->argv[0]);
         exit(APEXIT_INIT);
     }
-    /* WARNING: There is an implict assumption here that the
+    /* WARNING: There is an implicit assumption here that the
      * executable resides in ServerRoot or ServerRoot\bin
      */
     def_server_root = (char *) apr_filepath_name_get(binpath);
@@ -1375,7 +1377,7 @@ static int winnt_pre_config(apr_pool_t *pconf_, apr_pool_t *plog, apr_pool_t *pt
         ap_exists_config_define("DEBUG"))
         one_process = -1;
 
-    /* XXX: presume proper privilages; one nice thing would be
+    /* XXX: presume proper privileges; one nice thing would be
      * a loud emit if running as "LocalSystem"/"SYSTEM" to indicate
      * they should change to a user with write access to logs/ alone.
      */
@@ -1572,7 +1574,6 @@ static int winnt_post_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *pt
             /* This code should be run once in the parent and not run
              * across a restart
              */
-            PSECURITY_ATTRIBUTES sa = GetNullACL();  /* returns NULL if invalid (Win95?) */
             setup_signal_names(apr_psprintf(pconf, "ap%lu", parent_pid));
 
             ap_log_pid(pconf, ap_pid_fname);
@@ -1580,29 +1581,26 @@ static int winnt_post_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *pt
             /* Create shutdown event, apPID_shutdown, where PID is the parent
              * Apache process ID. Shutdown is signaled by 'apache -k shutdown'.
              */
-            shutdown_event = CreateEvent(sa, FALSE, FALSE, signal_shutdown_name);
+            shutdown_event = CreateEvent(NULL, FALSE, FALSE, signal_shutdown_name);
             if (!shutdown_event) {
                 ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_os_error(), ap_server_conf, APLOGNO(00448)
                              "Parent: Cannot create shutdown event %s", signal_shutdown_name);
-                CleanNullACL((void *)sa);
                 return HTTP_INTERNAL_SERVER_ERROR;
             }
 
             /* Create restart event, apPID_restart, where PID is the parent
              * Apache process ID. Restart is signaled by 'apache -k restart'.
              */
-            restart_event = CreateEvent(sa, FALSE, FALSE, signal_restart_name);
+            restart_event = CreateEvent(NULL, FALSE, FALSE, signal_restart_name);
             if (!restart_event) {
                 CloseHandle(shutdown_event);
                 ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_os_error(), ap_server_conf, APLOGNO(00449)
                              "Parent: Cannot create restart event %s", signal_restart_name);
-                CleanNullACL((void *)sa);
                 return HTTP_INTERNAL_SERVER_ERROR;
             }
-            CleanNullACL((void *)sa);
 
             /* Create the start mutex, as an unnamed object for security.
-             * Ths start mutex is used during a restart to prevent more than
+             * The start mutex is used during a restart to prevent more than
              * one child process from entering the accept loop at once.
              */
             rv =  apr_proc_mutex_create(&start_mutex, NULL,

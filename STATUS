@@ -21,12 +21,12 @@ Patches considered for backport are noted in their branches' STATUS:
   * http://svn.apache.org/repos/asf/httpd/httpd/branches/2.4.x/STATUS
 
 
-
 Release history:
     [NOTE that x.{odd}.z versions are strictly Alpha/Beta releases,
           while x.{even}.z versions are Stable/GA releases.]
 
-    2.5.0   : In Development.
+    2.5.1   : In development
+    2.5.0   : Tagged on November 8, 2017. Not released.
 
 Contributors looking for a mission:
 
@@ -56,6 +56,13 @@ CURRENT VOTES:
 
 THINGS THAT SHOULD BE CONSIDERED EARLY IN THE 2.6/3.0 DEVELOPMENT CYCLE:
 
+  * Remove directives whose purpose was to preserve existing buggy behaviour
+    in v2.4.x.
+
+  * Re-align structures to be memory efficient. Move bit fields to the
+    top of structures so that they can be extended without adding a
+    memory overhead.
+
   * Seriously ramp up/replace test framework and cases to have better
     coverage of existing special cases and behaviours users rely on.
 
@@ -81,14 +88,14 @@ THINGS THAT SHOULD BE CONSIDERED EARLY IN THE 2.6/3.0 DEVELOPMENT CYCLE:
 
   * Event's timeout_mutex to enter keepalive state probably needs some
     analysis/attention.
-  
+
   * Better H2 integration?
-    - adding handling of slave connections to mpm, no extra H2 workers, 
+    - adding handling of slave connections to mpm, no extra H2 workers,
       triggering "events" read/write/timer from main/slave
     - add slave writes/done/abort to events that wake up master connection
     - disentangle core filters to server one purpose only, so that H2
       versions can reuse them properly.
- 
+
   * Remove mod_access_compat?
 
   * Ditch platforms/89/old prereqs or anything else?
@@ -96,17 +103,17 @@ THINGS THAT SHOULD BE CONSIDERED EARLY IN THE 2.6/3.0 DEVELOPMENT CYCLE:
   * Leverage libmill? Drop serf?
 
   * Better abstraction of slave connections and "requests".
-    - add abstraction for "response" as something that can be passed 
+    - add abstraction for "response" as something that can be passed
       through filters. To be serialized into the correct HTTP bytes on
       the main connection.
     - solve multi-threaded access to master connection props/module conf
       (e.g. ssl vars)
-    
+
   * make mod_ssl more "core"?
-  
+
   * add high-level server configuration directives that can steer/influence
-    module defaults/warn/rejects related to security 
-  
+    module defaults/warn/rejects related to security
+
   * Ditch HTTP/0.9? At least, make HttpProtocolOptions Require1.0 the default.
 
   * Restructure merge fn table/indexes to ignore modules with no directives,
@@ -127,11 +134,15 @@ THINGS THAT SHOULD BE CONSIDERED EARLY IN THE 2.6/3.0 DEVELOPMENT CYCLE:
   * True event-loop/asynchronous support in the server core.
 
   * Modify configuration syntax to separate meta-directives from runtime
-    directives (e.g. If vs. IfVersion).
+    directives (e.g. If vs. IfVersion). Allow as much static analysis of the
+    configuration as possible without needing to start the server to figure out
+    what's going on.
 
   * Support JSON-like configuration files
 
-  * Opaque data structures w/ getters/setters 
+  * Support YAML based configuration files (JSON does not support comments)
+
+  * Opaque data structures w/ getters/setters
 
   * Generic interface to enable runtime changes (adjusting log level, modifying
     balancer information, toggling flags on/off). Perhaps modules can register
@@ -148,6 +159,15 @@ THINGS THAT SHOULD BE CONSIDERED EARLY IN THE 2.6/3.0 DEVELOPMENT CYCLE:
     understanding what worth looking at in order to improve overall performance.
     (https://cdn.wp.nginx.com/wp-content/uploads/2016/12/Amplify-Dashboards-page-base-for-filters.png)
 
+  * Drop CGI-1.1-incompatible behaviors kept for compatibility reasons with
+    "broken" server implementations (PR 51517). (Note that many of them are
+    "broken" *because* of our behaviors.)
+
+  * Add a "normalized" list of headers for a HTTP response, rather then relying
+    on r->headers_out and r->err_headers_out, since mod_headers' behavior is
+    not really user friendly in some scenarios (example in PR 62380).
+
+
 OLD ISSUES THAT WERE THOUGHT TO BE SHOWSTOPPERS FOR 2.4 BUT OBVIOUSLY WEREN'T:
 
   * Handling of non-trailing / config by non-default handler is broken
@@ -157,13 +177,13 @@ OLD ISSUES THAT WERE THOUGHT TO BE SHOWSTOPPERS FOR 2.4 BUT OBVIOUSLY WEREN'T:
       clearly wrong, and even if so, it doesn't seem like a
       showstopper.
 
-  * the edge connection filter cannot be removed 
+  * the edge connection filter cannot be removed
     http://marc.theaimsgroup.com/?l=apache-httpd-dev&m=105366252619530&w=2
     http://mail-archives.apache.org/mod_mbox/httpd-dev/200501.mbox/%3C41E30B42.4060202@stason.org%3E
     jerenkrantz asks: Why should this block a release?
     stas replies: because it requires a rewrite of the filters stack
           implementation (you have suggested that) and once 2.2 is
-          released you can't do that anymore. 
+          released you can't do that anymore.
     pgollucci: this affects mod_perl I'm pretty sure.
 
 
@@ -188,18 +208,6 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
                  point.
              Once we have a clean solution, we can try to optimize
              it, so that the server won't be slow down too much.
-
-  * RFC 2616 violations.
-    Closed PRs: 15852, 15857, 15859, 15861, 15864, 15869, 15870, 16120,
-                16125, 16135, 16136, 16137, 16138, 16139, 16140, 16518,
-                16520, 49825
-    Open PRs:   15865, 15866, 15868, 16126, 16133, 16142, 16521, 42978 
-    jerenkrantz says: need to decide how many we need to backport and/or
-                      if these rise to showstopper status.
-    wrowe suggests: it would be nice to see "MUST" v.s. "SHOULD" v.s. "MAY"
-                    out of this list, without reviewing them individually.
-    wrowe asks: what is lingering after 2.4.25 release? Offhand, only
-                URI conformance
 
   * pipes deadlock on all platforms with limited pipe buffers (e.g. both
     Linux and Win32, as opposed to only Win32 on 1.3).  The right solution
@@ -232,7 +240,7 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
     end of the ap_process_request_internal() processing so sub_req-esters
     know this request cannot be run.  This provides authors of older 
     modules better compatibility, while still improving the security and 
-    robustness of 2.0. 
+    robustness of 2.0.
 
     Status: still need to decide where this goes, OtherBill comments...
     Message-ID: <065701c14526$495203b0$96c0b0d0@roweclan.net>
@@ -305,7 +313,7 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
     and in-your-face.)  DocumentRoot unset would be accepted [and would
     not permit content to be served, only virtual resources such as
     server-info or server-status.
-    This proposed change would _not_ depricate Alias.
+    This proposed change would _not_ deprecate Alias.
       striker: See the thread starting with Message-ID:
         JLEGKKNELMHCJPNMOKHOGEEJFBAA.striker@apache.org.
 
@@ -439,7 +447,7 @@ WISH LIST
     HTTP or SNMP?
     jerenkrantz says: Yawn.  Who cares.
 
-  * Regex containers don't work in an intutive way
+  * Regex containers don't work in an intuitive way
       Status: No one has come up with an efficient way to fix this
       behavior. Dean has suggested getting rid of regex containers
       completely.
@@ -462,5 +470,4 @@ EXPERIMENTAL MODULES:
     status or removed from the repository entirely (ie, the
     'experiment' failed). This section tracks what needs to happen to 
     get the modules promoted to fully supported status.
-
 

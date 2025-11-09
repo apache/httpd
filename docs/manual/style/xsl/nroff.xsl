@@ -46,7 +46,7 @@
  * dealings in this Software without prior written authorization
  * from the individuals in question.
  *
- * Any stylesheet derived from this Software that is publically
+ * Any stylesheet derived from this Software that is publicly
  * distributed will be identified with a different name and the
  * version strings in any derived Software will be changed so that
  * no possibility of confusion between the derived package and this
@@ -264,7 +264,7 @@
 <!-- <strong>                                                             -->
 <!-- show it somewhat special (bold)                                      -->
 <!-- ==================================================================== -->
-<xsl:template match="strong">
+<xsl:template match="strong|code">
 <xsl:text>\fB</xsl:text>
     <xsl:apply-templates />
 <xsl:text>\fR</xsl:text>
@@ -373,7 +373,7 @@ FATAL: only tables with two (2) columns are supported.
 <!-- ==================================================================== -->
 <!-- pass through content                                                 -->
 <!-- ==================================================================== -->
-<xsl:template match="a|code|module|table|program|glossary">
+<xsl:template match="a|module|table|program|glossary|highlight">
 <xsl:apply-templates />
 </xsl:template>
 

@@ -115,7 +115,6 @@ static apr_status_t readfile_heartbeats(const char *path, apr_hash_t *servers,
 
     {
         char *t;
-        int lineno = 0;
         apr_bucket_alloc_t *ba = apr_bucket_alloc_create(pool);
         apr_bucket_brigade *bb = apr_brigade_create(pool, ba);
         apr_bucket_brigade *tmpbb = apr_brigade_create(pool, ba);
@@ -137,7 +136,6 @@ static apr_status_t readfile_heartbeats(const char *path, apr_hash_t *servers,
 
             rv = apr_brigade_split_line(tmpbb, bb,
                                         APR_BLOCK_READ, sizeof(buf));
-            lineno++;
 
             if (rv) {
                 return rv;
@@ -273,16 +271,15 @@ static proxy_worker *find_best_hb(proxy_balancer *balancer,
         ap_get_module_config(r->server->module_config,
                              &lbmethod_heartbeat_module);
 
+    ap_proxy_retry_worker_fn =
+            APR_RETRIEVE_OPTIONAL_FN(ap_proxy_retry_worker);
     if (!ap_proxy_retry_worker_fn) {
-        ap_proxy_retry_worker_fn =
-                APR_RETRIEVE_OPTIONAL_FN(ap_proxy_retry_worker);
-        if (!ap_proxy_retry_worker_fn) {
-            /* can only happen if mod_proxy isn't loaded */
-            return NULL;
-        }
+        /* can only happen if mod_proxy isn't loaded */
+        return NULL;
     }
 
     apr_pool_create(&tpool, r->pool);
+    apr_pool_tag(tpool, "lb_heartbeat_tpool");
 
     servers = apr_hash_make(tpool);
 
@@ -300,7 +297,7 @@ static proxy_worker *find_best_hb(proxy_balancer *balancer,
 
     for (i = 0; i < balancer->workers->nelts; i++) {
         worker = &APR_ARRAY_IDX(balancer->workers, i, proxy_worker *);
-        server = apr_hash_get(servers, (*worker)->s->hostname, APR_HASH_KEY_STRING);
+        server = apr_hash_get(servers, (*worker)->s->hostname_ex, APR_HASH_KEY_STRING);
 
         if (!server) {
             ap_log_rerror(APLOG_MARK, APLOG_DEBUG, rv, r, APLOGNO(01214)
@@ -358,7 +355,8 @@ static const proxy_balancer_method heartbeat =
     &find_best_hb,
     NULL,
     &reset,
-    &age
+    &age,
+    NULL
 };
 
 static int lb_hb_init(apr_pool_t *p, apr_pool_t *plog,

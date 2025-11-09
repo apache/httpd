@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE indexpage SYSTEM "./style/sitemap.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.es.xsl"?>
-<!-- English Revision: 1767808 -->
+<!-- English Revision: 1880986 -->
 <!-- Translated by: Luis Gil de Bernabé Pfeiffer  -->
 <!-- Reviewed by: Sergio Ramos -->
 
@@ -29,6 +29,7 @@
 Documentación</title>
 
 <category id="release"><title>Notas de la versión</title>
+    <page href="new_features_2_6.html">Nuevas funcionalidades en Apache 2.5/2.6</page>
     <page href="new_features_2_4.html">Nuevas funcionalidades en Apache 2.3/2.4</page>
     <page href="new_features_2_2.html">Nuevas funcionalidades en Apache 2.1/2.2</page>
     <page href="new_features_2_0.html">Nuevas funcionalidades en Apache 2.0</page>
@@ -46,6 +47,7 @@ Documentación</title>
     <page href="filter.html">Filtros</page>
     <page href="handler.html">Handlers</page>
     <page href="expr.html">Analizador de Expresiones</page>
+    <page href="mod/overrides.html">Sobreescritura de la clase índice .htaccess</page>
     <page href="programs/">Programas de Soporte y Servidor</page>
     <page href="glossary.html">Glosario</page>
 </category>
@@ -65,7 +67,7 @@ Documentación</title>
     <page href="misc/perf-tuning.html">Optimización del Rendimiento</page>
     <page href="misc/security_tips.html">Consejos de seguridad</page>
     <page href="server-wide.html">Configuración básica del Servidor</page>
-    <page href="ssl/">Encryptado SSL/TLS</page>
+    <page href="ssl/">Cifrado SSL/TLS</page>
     <page href="suexec.html">Ejecución de Suexec para CGI</page>
     <page href="rewrite/">Reescritura de URL con mod_rewrite</page>
     <page href="vhosts/">Servidores Virtuales</page>
@@ -81,6 +83,7 @@ Documentación</title>
     <page href="howto/public_html.html">Directorios Web por Usuario
     (public_html)</page>
     <page href="howto/reverse_proxy.html">Guía de configuración de Proxy Inverso</page>
+     <page href="howto/http2.html">guía HTTP/2 </page>
 </category>
 
 <category id="platform"><title>Notas Sobre Plataformas Específicas</title>

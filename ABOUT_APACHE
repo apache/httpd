@@ -69,7 +69,7 @@ is today more widely used than all other web servers combined.
 
  ============================================================================
 
-The current project management committe of the Apache HTTP Server
+The current project management committee of the Apache HTTP Server
 project (as of March, 2011) is:
 
     Aaron Bannert       André Malo              Astrid Stolper
@@ -128,7 +128,7 @@ group of volunteers who vote on changes to the distributed server), then
 you need to start by subscribing to the dev@httpd.apache.org mailing list.
 One warning though: traffic is high, 1000 to 1500 messages/month.
 To subscribe to the list, send an email to dev-subscribe@httpd.apache.org.
-We recommend reading the list for a while before trying to jump in to 
+We recommend reading the list for a while before trying to jump in to
 development.
 
    NOTE: The developer mailing list (dev@httpd.apache.org) is not

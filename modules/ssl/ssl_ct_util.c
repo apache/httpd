@@ -91,21 +91,6 @@ void ctutil_buffer_to_array(apr_pool_t *p, const char *b,
     *out = arr;
 }
 
-int ctutil_in_array(const char *needle, const apr_array_header_t *haystack)
-{
-    const char * const *elts;
-    int i;
-
-    elts = (const char * const *)haystack->elts;
-    for (i = 0; i < haystack->nelts; i++) {
-        if (!strcmp(needle, elts[i])) {
-            return 1;
-        }
-    }
-
-    return 0;
-}
-
 apr_status_t ctutil_fopen(const char *fn, const char *mode, FILE **f)
 {
     apr_status_t rv;
@@ -674,10 +659,10 @@ void ctutil_run_internal_tests(apr_pool_t *p)
 
     ctutil_buffer_to_array(p, filecontents, strlen(filecontents), &arr);
     
-    ap_assert(ctutil_in_array(TESTURL1, arr));
-    ap_assert(ctutil_in_array(TESTURL2, arr));
-    ap_assert(ctutil_in_array(TESTURL3, arr));
-    ap_assert(!ctutil_in_array(TESTURL1 "x", arr));
+    ap_assert(ap_array_str_contains(arr, TESTURL1));
+    ap_assert(ap_array_str_contains(arr, TESTURL2));
+    ap_assert(ap_array_str_contains(arr, TESTURL3));
+    ap_assert(!ap_array_str_contains(arr, TESTURL1 "x"));
 
     ch = buf;
     avail = 8;

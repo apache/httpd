@@ -45,7 +45,7 @@
 </ul><h3>Ayrıca bakınız:</h3><ul class="seealso"><li><a href="#comments_section">Yorum</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="introduction" id="introduction">Giriş</a></h2>
+<h2><a name="introduction" id="introduction">Giriş</a> <a title="Permanent link" href="#introduction" class="permalink">&para;</a></h2>
     
 
     <p>Apache HTTP sunucusu, sunucunun başarımını çeşitli yollarla arttırmak
@@ -93,7 +93,7 @@
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="http-caching" id="http-caching">Üç durumlu RFC2616 HTTP önbelleklemesi</a></h2>
+<h2><a name="http-caching" id="http-caching">Üç durumlu RFC2616 HTTP önbelleklemesi</a> <a title="Permanent link" href="#http-caching" class="permalink">&para;</a></h2>
 
     
 
@@ -503,7 +503,7 @@ CacheDirLength 1
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="socache-caching" id="socache-caching">İki durumlu Anahtar/Değer Paylaşımlı Nesne Önbellekleme</a></h2>
+<h2><a name="socache-caching" id="socache-caching">İki durumlu Anahtar/Değer Paylaşımlı Nesne Önbellekleme</a> <a title="Permanent link" href="#socache-caching" class="permalink">&para;</a></h2>
     
 
     <table class="related"><tr><th>İlgili Modüller</th><th>İlgili Yönergeler</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_authn_socache.html">mod_authn_socache</a></code></li><li><code class="module"><a href="./mod/mod_socache_dbm.html">mod_socache_dbm</a></code></li><li><code class="module"><a href="./mod/mod_socache_dc.html">mod_socache_dc</a></code></li><li><code class="module"><a href="./mod/mod_socache_memcache.html">mod_socache_memcache</a></code></li><li><code class="module"><a href="./mod/mod_socache_shmcb.html">mod_socache_shmcb</a></code></li><li><code class="module"><a href="./mod/mod_ssl.html">mod_ssl</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_authn_socache.html#authncachesocache">AuthnCacheSOCache</a></code></li><li><code class="directive"><a href="./mod/mod_ssl.html#sslsessioncache">SSLSessionCache</a></code></li><li><code class="directive"><a href="./mod/mod_ssl.html#sslstaplingcache">SSLStaplingCache</a></code></li></ul></td></tr></table>
@@ -546,7 +546,7 @@ CacheDirLength 1
     
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="file-caching" id="file-caching">Uzmanlaşmış Dosya Önbellekleme</a></h2>
+<h2><a name="file-caching" id="file-caching">Uzmanlaşmış Dosya Önbellekleme</a> <a title="Permanent link" href="#file-caching" class="permalink">&para;</a></h2>
     
 
      <table class="related"><tr><th>İlgili Modüller</th><th>İlgili Yönergeler</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_file_cache.html">mod_file_cache</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_file_cache.html#cachefile">CacheFile</a></code></li><li><code class="directive"><a href="./mod/mod_file_cache.html#mmapfile">MMapFile</a></code></li></ul></td></tr></table>
@@ -697,7 +697,7 @@ CacheDirLength 1
     
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="security" id="security">Güvenlik Kaygıları</a></h2>
+<h2><a name="security" id="security">Güvenlik Kaygıları</a> <a title="Permanent link" href="#security" class="permalink">&para;</a></h2>
     
 
     <h3>Erişim Denetimi ve Yetkilendirme</h3>
@@ -811,7 +811,7 @@ CacheDirLength 1
 <p><span>Mevcut Diller: </span><a href="./en/caching.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="./fr/caching.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="./tr/caching.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
-</div><div class="top"><a href="#page-header"><img src="./images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Yorum</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
+</div><div class="top"><a href="#page-header"><img src="./images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Yorum</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Libera.chat, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
 var comments_identifier = 'http://httpd.apache.org/docs/trunk/caching.html';
@@ -829,7 +829,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/caching.html';
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2017 The Apache Software Foundation.<br /><a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> altında lisanslıdır.</p>
+<p class="apache">Copyright 2023 The Apache Software Foundation.<br /><a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> altında lisanslıdır.</p>
 <p class="menu"><a href="./mod/">Modüller</a> | <a href="./mod/quickreference.html">Yönergeler</a> | <a href="http://wiki.apache.org/httpd/FAQ">SSS</a> | <a href="./glossary.html">Terimler</a> | <a href="./sitemap.html">Site Haritası</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

@@ -27,6 +27,7 @@
 <div id="preamble"><h1>Apache モジュール mod_alias</h1>
 <div class="toplang">
 <p><span>翻訳済み言語: </span><a href="../en/mod/mod_alias.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../es/mod/mod_alias.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
 <a href="../fr/mod/mod_alias.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_alias.html" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_alias.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
@@ -73,9 +74,11 @@
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#alias">Alias</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#aliasmatch">AliasMatch</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#aliaspreservepath">AliasPreservePath</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#redirect">Redirect</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#redirectmatch">RedirectMatch</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#redirectpermanent">RedirectPermanent</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#redirectrelative">RedirectRelative</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#redirecttemp">RedirectTemp</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#scriptalias">ScriptAlias</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#scriptaliasmatch">ScriptAliasMatch</a></li>
@@ -87,7 +90,7 @@
 <li><a href="#comments_section">コメント</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="order" id="order">処理の順番</a></h2>
+<h2><a name="order" id="order">処理の順番</a> <a title="Permanent link" href="#order" class="permalink">&para;</a></h2>
 
 <p>様々なコンテキスト中での Alias や Redirect は他のディレクティブと
 同じように標準の <a href="../sections.html#mergin">マージ規則</a> に
@@ -114,7 +117,7 @@ Alias /foo /gaq
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="Alias" id="Alias">Alias</a> <a name="alias" id="alias">ディレクティブ</a></h2>
+<div class="directive-section"><h2><a name="Alias" id="Alias">Alias</a> <a name="alias" id="alias">ディレクティブ</a> <a title="Permanent link" href="#alias" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>URL をファイルシステムの位置にマップする</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>Alias <var>URL-path</var>
@@ -172,7 +175,7 @@ Alias /foo /gaq
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AliasMatch" id="AliasMatch">AliasMatch</a> <a name="aliasmatch" id="aliasmatch">ディレクティブ</a></h2>
+<div class="directive-section"><h2><a name="AliasMatch" id="AliasMatch">AliasMatch</a> <a name="aliasmatch" id="aliasmatch">ディレクティブ</a> <a title="Permanent link" href="#aliasmatch" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>正規表現を使って URL をファイルシステムの位置にマップする</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>AliasMatch <var>regex</var>
@@ -195,7 +198,20 @@ Alias /foo /gaq
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="Redirect" id="Redirect">Redirect</a> <a name="redirect" id="redirect">ディレクティブ</a></h2>
+<div class="directive-section"><h2><a name="AliasPreservePath" id="AliasPreservePath">AliasPreservePath</a> <a name="aliaspreservepath" id="aliaspreservepath">ディレクティブ</a> <a title="Permanent link" href="#aliaspreservepath" class="permalink">&para;</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>Map the full path after the alias in a location.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>AliasPreservePath OFF|ON</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>AliasPreservePath OFF</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト, ディレクトリ</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_alias</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">互換性:</a></th><td>2.5.1 and later</td></tr>
+</table><p>このディレクティブの解説文書は
+            まだ翻訳されていません。英語版をご覧ください。
+            </p></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="Redirect" id="Redirect">Redirect</a> <a name="redirect" id="redirect">ディレクティブ</a> <a title="Permanent link" href="#redirect" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>クライアントが違う URL を取得するように外部へのリダイレクトを
 送る</td></tr>
@@ -273,7 +289,7 @@ Redirect 系のディレクティブは Alias
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="RedirectMatch" id="RedirectMatch">RedirectMatch</a> <a name="redirectmatch" id="redirectmatch">ディレクティブ</a></h2>
+<div class="directive-section"><h2><a name="RedirectMatch" id="RedirectMatch">RedirectMatch</a> <a name="redirectmatch" id="redirectmatch">ディレクティブ</a> <a title="Permanent link" href="#redirectmatch" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>現在の URL への正規表現のマッチにより
 外部へのリダイレクトを送る</td></tr>
@@ -299,7 +315,7 @@ Redirect 系のディレクティブは Alias
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="RedirectPermanent" id="RedirectPermanent">RedirectPermanent</a> <a name="redirectpermanent" id="redirectpermanent">ディレクティブ</a></h2>
+<div class="directive-section"><h2><a name="RedirectPermanent" id="RedirectPermanent">RedirectPermanent</a> <a name="redirectpermanent" id="redirectpermanent">ディレクティブ</a> <a title="Permanent link" href="#redirectpermanent" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>クライアントが違う URL を取得するように外部への永久的な
 リダイレクトを送る</td></tr>
@@ -315,7 +331,20 @@ Redirect 系のディレクティブは Alias
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="RedirectTemp" id="RedirectTemp">RedirectTemp</a> <a name="redirecttemp" id="redirecttemp">ディレクティブ</a></h2>
+<div class="directive-section"><h2><a name="RedirectRelative" id="RedirectRelative">RedirectRelative</a> <a name="redirectrelative" id="redirectrelative">ディレクティブ</a> <a title="Permanent link" href="#redirectrelative" class="permalink">&para;</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>Allows relative redirect targets.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>RedirectRelative On|Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>RedirectRelative Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト, ディレクトリ</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_alias</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">互換性:</a></th><td>2.5.1 and later</td></tr>
+</table><p>このディレクティブの解説文書は
+            まだ翻訳されていません。英語版をご覧ください。
+            </p></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="RedirectTemp" id="RedirectTemp">RedirectTemp</a> <a name="redirecttemp" id="redirecttemp">ディレクティブ</a> <a title="Permanent link" href="#redirecttemp" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>クライアントが違う URL を取得するように外部への一時的な
 リダイレクトを送る</td></tr>
@@ -331,7 +360,7 @@ Redirect 系のディレクティブは Alias
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ScriptAlias" id="ScriptAlias">ScriptAlias</a> <a name="scriptalias" id="scriptalias">ディレクティブ</a></h2>
+<div class="directive-section"><h2><a name="ScriptAlias" id="ScriptAlias">ScriptAlias</a> <a name="scriptalias" id="scriptalias">ディレクティブ</a> <a title="Permanent link" href="#scriptalias" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>URL をファイルシステムの位置へマップし、マップ先を
 CGI スクリプトに指定</td></tr>
@@ -361,7 +390,7 @@ CGI スクリプトに指定</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ScriptAliasMatch" id="ScriptAliasMatch">ScriptAliasMatch</a> <a name="scriptaliasmatch" id="scriptaliasmatch">ディレクティブ</a></h2>
+<div class="directive-section"><h2><a name="ScriptAliasMatch" id="ScriptAliasMatch">ScriptAliasMatch</a> <a name="scriptaliasmatch" id="scriptaliasmatch">ディレクティブ</a> <a title="Permanent link" href="#scriptaliasmatch" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>URL を正規表現を使ってファイルシステムの位置へマップし、マップ先を
 CGI スクリプトに指定</td></tr>
@@ -388,11 +417,12 @@ CGI スクリプトに指定</td></tr>
 </div>
 <div class="bottomlang">
 <p><span>翻訳済み言語: </span><a href="../en/mod/mod_alias.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../es/mod/mod_alias.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
 <a href="../fr/mod/mod_alias.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_alias.html" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_alias.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/mod/mod_alias.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
-</div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">コメント</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
+</div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">コメント</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Libera.chat, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
 var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_alias.html';
@@ -410,7 +440,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_alias.html
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2017 The Apache Software Foundation.<br />この文書は <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> のライセンスで提供されています。.</p>
+<p class="apache">Copyright 2023 The Apache Software Foundation.<br />この文書は <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> のライセンスで提供されています。.</p>
 <p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/quickreference.html">ディレクティブ</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

@@ -162,6 +162,7 @@
 #include "http_core.h"          /* For REMOTE_NAME */
 #include "http_log.h"
 #include "http_protocol.h"
+#include "http_ssl.h"
 #include "util_time.h"
 #include "ap_mpm.h"
 #include "ap_provider.h"
@@ -377,7 +378,7 @@ static const char *log_remote_user(request_rec *r, char *a)
     if (rvalue == NULL) {
         rvalue = "-";
     }
-    else if (strlen(rvalue) == 0) {
+    else if (!*rvalue) {
         rvalue = "\"\"";
     }
     else {
@@ -415,6 +416,10 @@ static const char *log_request_uri(request_rec *r, char *a)
 static const char *log_request_method(request_rec *r, char *a)
 {
     return ap_escape_logitem(r->pool, r->method);
+}
+static const char *log_request_flushed(request_rec *r, char *a)
+{
+    return (r->flushed) ? "F" : "-";
 }
 static const char *log_log_id(request_rec *r, char *a)
 {
@@ -877,14 +882,8 @@ static const char *log_pid_tid(request_rec *r, char *a)
         int tid = 0; /* APR will format "0" anyway but an arg is needed */
 #endif
         return apr_psprintf(r->pool,
-#if APR_MAJOR_VERSION > 1 || (APR_MAJOR_VERSION == 1 && APR_MINOR_VERSION >= 2)
                             /* APR can format a thread id in hex */
-                            *a == 'h' ? "%pt" : "%pT",
-#else
-                            /* APR is missing the feature, so always use decimal */
-                            "%pT",
-#endif
-                            &tid);
+                            *a == 'h' ? "%pt" : "%pT", &tid);
     }
     /* bogus format */
     return a;
@@ -907,6 +906,35 @@ static const char *log_requests_on_connection(request_rec *r, char *a)
 {
     int num = r->connection->keepalives ? r->connection->keepalives - 1 : 0;
     return apr_itoa(r->pool, num);
+}
+
+static const char *log_ssl_var(request_rec *r, char *a)
+{
+    const char *result;
+
+    /* Any SSL module responsible for the connection/request will provide the value */
+    result = ap_ssl_var_lookup(r->pool, r->server, r->connection, r, a);
+    return (result && result[0])? ap_escape_logitem(r->pool, result) : NULL;
+}
+
+static const char *log_ssl_var_short(request_rec *r, char *a)
+{
+    /* Several shortcut names, previously defined and installed in mod_ssl
+     * that lookup SSL variables. */
+    if (!strcasecmp(a, "version"))
+        return log_ssl_var(r, "SSL_PROTOCOL");
+    else if (!strcasecmp(a, "cipher"))
+        return log_ssl_var(r, "SSL_CIPHER");
+    else if (!strcasecmp(a, "subjectdn") || !strcasecmp(a, "clientcert"))
+        return log_ssl_var(r, "SSL_CLIENT_S_DN");
+    else if (!strcasecmp(a, "issuerdn") || !strcasecmp(a, "cacert"))
+        return log_ssl_var(r, "SSL_CLIENT_I_DN");
+    else if (!strcasecmp(a, "errcode"))
+        /* Copied from mod_ssl for backward compatibility. */
+        return "-";
+    else if (!strcasecmp(a, "errstr"))
+        return log_ssl_var(r, "SSL_CLIENT_VERIFY_ERRSTR");
+    return NULL;
 }
 
 /*****************************************************************
@@ -1202,11 +1230,9 @@ static int config_log_transaction(request_rec *r, config_log_state *cls,
 
     for (i = 0; i < format->nelts; ++i) {
         strs[i] = process_item(r, orig, &items[i]);
-    }
-
-    for (i = 0; i < format->nelts; ++i) {
         len += strl[i] = strlen(strs[i]);
     }
+
     if (!log_writer) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(00645)
                 "log writer isn't correctly setup");
@@ -1295,7 +1321,7 @@ static void *merge_config_log_state(apr_pool_t *p, void *basev, void *addv)
         add->default_format_string = base->default_format_string;
         add->default_format = base->default_format;
     }
-    add->formats = apr_table_overlay(p, base->formats, add->formats);
+    add->formats = apr_table_overlay(p, add->formats, base->formats);
 
     return add;
 }
@@ -1854,6 +1880,7 @@ static int log_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp)
         log_pfn_register(p, "H", log_request_protocol, 0);
         log_pfn_register(p, "m", log_request_method, 0);
         log_pfn_register(p, "q", log_request_query, 0);
+        log_pfn_register(p, "F", log_request_flushed, 1);
         log_pfn_register(p, "X", log_connection_status, 0);
         log_pfn_register(p, "C", log_cookie, 0);
         log_pfn_register(p, "k", log_requests_on_connection, 0);
@@ -1866,6 +1893,13 @@ static int log_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp)
 
         log_pfn_register(p, "^ti", log_trailer_in, 0);
         log_pfn_register(p, "^to", log_trailer_out, 0);
+
+        /* these used to be part of mod_ssl, but with the introduction
+         * of ap_ssl_var_lookup() they are added here directly so lookups
+         * from all installed SSL modules work.
+         * We keep the old tag names to remain backward compatible. */
+        log_pfn_register(p, "c", log_ssl_var_short, 0);
+        log_pfn_register(p, "x", log_ssl_var, 0);
     }
 
     /* reset to default conditions */

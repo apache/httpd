@@ -468,6 +468,7 @@ AuthName "realm"
 <context>directory</context>
 <context>.htaccess</context>
 </contextlist>
+<override>AuthConfig</override>
 
 <usage>
     <p>The <directive>SessionExclude</directive> directive allows sessions to
@@ -498,6 +499,7 @@ the session being updated</description>
 <context>directory</context>
 <context>.htaccess</context>
 </contextlist>
+<override>AuthConfig</override>
 
 <usage>
     <p>The <directive>SessionExpiryUpdateInterval</directive> directive allows

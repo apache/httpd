@@ -7,13 +7,14 @@ SUBDIRS = mpm
 
 LTLIBRARY_NAME    = libmain.la
 LTLIBRARY_SOURCES = \
-	config.c log.c main.c vhost.c util.c util_fcgi.c \
+	config.c log.c main.c vhost.c util.c util_etag.c util_fcgi.c \
 	util_script.c util_md5.c util_cfgtree.c util_ebcdic.c util_time.c \
-	connection.c listen.c util_mutex.c mpm_common.c mpm_unix.c \
+	connection.c listen.c util_mutex.c \
+	mpm_common.c mpm_unix.c mpm_fdqueue.c \
 	util_charset.c util_cookies.c util_debug.c util_xml.c \
-	util_filter.c util_pcre.c util_regex.c exports.c \
-	scoreboard.c error_bucket.c protocol.c core.c request.c provider.c \
-	eoc_bucket.c eor_bucket.c core_filters.c \
+	util_filter.c util_pcre.c util_regex.c $(EXPORTS_DOT_C) \
+	scoreboard.c error_bucket.c protocol.c core.c request.c ssl.c provider.c \
+	eoc_bucket.c eor_bucket.c headers_bucket.c core_filters.c \
 	util_expr_parse.c util_expr_scan.c util_expr_eval.c \
 	apreq_cookie.c apreq_error.c apreq_module.c \
 	apreq_module_cgi.c apreq_module_custom.c apreq_param.c \
@@ -67,6 +68,8 @@ export_files:
 	( for dir in $(EXPORT_DIRS); do \
 	      ls $$dir/*.h ; \
 	  done; \
+          echo "$(top_srcdir)/server/core.h"; \
+	  echo "$(top_srcdir)/server/mpm_fdqueue.h"; \
 	  for dir in $(EXPORT_DIRS_APR); do \
 	      ls $$dir/ap[ru].h $$dir/ap[ru]_*.h 2>/dev/null; \
 	  done; \

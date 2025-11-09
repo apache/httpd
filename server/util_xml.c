@@ -85,7 +85,7 @@ AP_DECLARE(int) ap_xml_parse_input(request_rec * r, apr_xml_doc **pdoc)
             }
 
             total_read += len;
-            if (limit_xml_body && total_read > limit_xml_body) {
+            if (total_read > limit_xml_body) {
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(00539)
                               "XML request body is larger than the configured "
                               "limit of %lu", (unsigned long)limit_xml_body);

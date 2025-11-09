@@ -823,6 +823,7 @@ static apr_status_t cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
     apr_pool_t *p;
     apr_bucket *e;
     apr_table_t *headers;
+    const char *query;
 
     conf = (cache_server_conf *) ap_get_module_config(r->server->module_config,
                                                       &cache_module);
@@ -908,8 +909,8 @@ static apr_status_t cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
 
             /* add a revalidation warning */
             warn_head = apr_table_get(r->err_headers_out, "Warning");
-            if ((warn_head == NULL) || ((warn_head != NULL)
-                    && (ap_strstr_c(warn_head, "111") == NULL))) {
+            if ((warn_head == NULL) ||
+                    (ap_strstr_c(warn_head, "111") == NULL)) {
                 apr_table_mergen(r->err_headers_out, "Warning",
                         "111 Revalidation failed");
             }
@@ -926,6 +927,8 @@ static apr_status_t cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
             return ap_pass_brigade(f, in);
         }
     }
+
+    query = cache_use_early_url(r) ? r->parsed_uri.query : r->args;
 
     /* read expiry date; if a bad date, then leave it so the client can
      * read it
@@ -983,7 +986,7 @@ static apr_status_t cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
 
         /* 304 does not contain Content-Type and mod_mime regenerates the
          * Content-Type based on the r->filename. This would lead to original
-         * Content-Type to be lost (overwriten by whatever mod_mime generates).
+         * Content-Type to be lost (overwritten by whatever mod_mime generates).
          * We preserves the original Content-Type here. */
         ap_set_content_type(r, apr_table_get(
                 cache->stale_handle->resp_hdrs, "Content-Type"));
@@ -1037,8 +1040,11 @@ static apr_status_t cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
     if (reason) {
         /* noop */
     }
-    else if (exps != NULL && exp == APR_DATE_BAD) {
-        /* if a broken Expires header is present, don't cache it */
+    else if (!control.s_maxage && !control.max_age && !dconf->store_expired
+             && exps != NULL && exp == APR_DATE_BAD) {
+        /* if a broken Expires header is present, don't cache it
+         * Unless CC: s-maxage or max-age is present
+         */
         reason = apr_pstrcat(p, "Broken expires header: ", exps, NULL);
     }
     else if (!control.s_maxage && !control.max_age
@@ -1057,7 +1063,7 @@ static apr_status_t cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
         reason
                 = "s-maxage or max-age zero and no Last-Modified or Etag; not cacheable";
     }
-    else if (!conf->ignorequerystring && r->parsed_uri.query && exps == NULL
+    else if (!conf->ignorequerystring && query && exps == NULL
             && !control.max_age && !control.s_maxage) {
         /* if a query string is present but no explicit expiration time,
          * don't cache it (RFC 2616/13.9 & 13.2.1)
@@ -1223,6 +1229,16 @@ static apr_status_t cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
         return APR_SUCCESS;
     }
 
+    /* Set the content length if known.
+     */
+    cl = apr_table_get(r->err_headers_out, "Content-Length");
+    if (cl == NULL) {
+        cl = apr_table_get(r->headers_out, "Content-Length");
+    }
+    if (cl && !ap_parse_strict_length(&size, cl)) {
+        reason = "invalid content length";
+    }
+
     if (reason) {
         ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(00768)
                 "cache: %s not cached for request %s. Reason: %s",
@@ -1244,19 +1260,6 @@ static apr_status_t cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
 
     /* Make it so that we don't execute this path again. */
     cache->in_checked = 1;
-
-    /* Set the content length if known.
-     */
-    cl = apr_table_get(r->err_headers_out, "Content-Length");
-    if (cl == NULL) {
-        cl = apr_table_get(r->headers_out, "Content-Length");
-    }
-    if (cl) {
-        char *errp;
-        if (apr_strtoff(&size, cl, &errp, 10) || *errp || size < 0) {
-            cl = NULL; /* parse error, see next 'if' block */
-        }
-    }
 
     if (!cl) {
         /* if we don't get the content-length, see if we have all the
@@ -1895,8 +1898,8 @@ static void cache_insert_error_filter(request_rec *r)
 
             /* add a revalidation warning */
             warn_head = apr_table_get(r->err_headers_out, "Warning");
-            if ((warn_head == NULL) || ((warn_head != NULL)
-                    && (ap_strstr_c(warn_head, "111") == NULL))) {
+            if ((warn_head == NULL)
+                    || ap_strstr_c(warn_head, "111") == NULL) {
                 apr_table_mergen(r->err_headers_out, "Warning",
                         "111 Revalidation failed");
             }
@@ -2523,7 +2526,7 @@ static const command_rec cache_cmds[] =
 {
     /* XXX
      * Consider a new config directive that enables loading specific cache
-     * implememtations (like mod_cache_mem, mod_cache_file, etc.).
+     * implementations (like mod_cache_mem, mod_cache_file, etc.).
      * Rather than using a LoadModule directive, admin would use something
      * like CacheModule  mem_cache_module | file_cache_module, etc,
      * which would cause the approprpriate cache module to be loaded.

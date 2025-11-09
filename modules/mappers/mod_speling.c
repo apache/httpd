@@ -76,7 +76,7 @@ static void *mkconfig(apr_pool_t *p)
 
     cfg->enabled = 0;
     cfg->check_case_only = 0;
-    cfg->check_basename_match = 0;
+    cfg->check_basename_match = 1;
     return cfg;
 }
 
@@ -419,6 +419,7 @@ static int check_speling(request_rec *r)
 
             if (apr_pool_create(&sub_pool, p) != APR_SUCCESS)
                 return DECLINED;
+            apr_pool_tag(sub_pool, "speling_sub");
 
             t = apr_array_make(sub_pool, candidates->nelts * 8 + 8,
                               sizeof(char *));
@@ -482,10 +483,10 @@ static int check_speling(request_rec *r)
             if (ref != NULL) {
                 *(const char **)apr_array_push(t) =
                                "Please consider informing the owner of the "
-                               "<a href=\"";
-                *(const char **)apr_array_push(t) = ap_escape_uri(sub_pool, ref);
-                *(const char **)apr_array_push(t) = "\">referring page</a> "
-                               "about the broken link.\n";
+                               "referring page <tt>";
+                *(const char **)apr_array_push(t) = ap_escape_html(sub_pool, ref);
+                *(const char **)apr_array_push(t) =
+                               "</tt> about the broken link.\n";
             }
 
 

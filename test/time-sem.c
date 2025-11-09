@@ -548,6 +548,7 @@ void main (int argc, char **argv)
             exit (0);
         } else if (pid == -1) {
             perror ("fork");
+            accept_mutex_off ();
             exit (1);
         }
     }
@@ -555,6 +556,7 @@ void main (int argc, char **argv)
     /* a quick test to see that nothing is screwed up */
     if (*shared_counter != 0) {
         puts ("WTF! shared_counter != 0 before the children have been started!");
+        accept_mutex_off ();
         exit (1);
     }
 

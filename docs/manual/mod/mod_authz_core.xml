@@ -180,7 +180,7 @@ SetEnvIf User-Agent "^KnockKnock/2\.0" let_me_in
   decisions on arbitrary expressions.</p>
 
     <highlight language="config">
-        Require expr %{TIME_HOUR} -ge 9 &amp;&amp; %{TIME_HOUR} -le 17
+        Require expr "%{TIME_HOUR} -ge 9 &amp;&amp; %{TIME_HOUR} -le 17"
     </highlight>
 
     <highlight language="config">
@@ -195,7 +195,8 @@ SetEnvIf User-Agent "^KnockKnock/2\.0" let_me_in
     </highlight>
 
   <p>The syntax is described in the <a href="../expr.html">ap_expr</a>
-  documentation.</p>
+  documentation. Before httpd 2.4.16, the surrounding double-quotes MUST be
+  omitted.</p>
 
   <p>Normally, the expression is evaluated before authentication. However, if
   the expression returns false and references the variable
@@ -230,13 +231,13 @@ SetEnvIf User-Agent "^KnockKnock/2\.0" let_me_in
 &lt;AuthzProviderAlias ldap-group ldap-group-alias1 "cn=my-group,o=ctx"&gt;
     AuthLDAPBindDN "cn=youruser,o=ctx"
     AuthLDAPBindPassword yourpassword
-    AuthLDAPURL "ldap://ldap.host/o=ctx"
+    AuthLDAPUrl "ldap://ldap.host/o=ctx"
 &lt;/AuthzProviderAlias&gt;
 
 &lt;AuthzProviderAlias ldap-group ldap-group-alias2 "cn=my-other-group,o=dev"&gt;
     AuthLDAPBindDN "cn=yourotheruser,o=dev"
     AuthLDAPBindPassword yourotherpassword
-    AuthLDAPURL "ldap://other.ldap.host/o=dev?cn"
+    AuthLDAPUrl "ldap://other.ldap.host/o=dev?cn"
 &lt;/AuthzProviderAlias&gt;
 
 Alias "/secure" "/webpages/secure"
@@ -315,6 +316,11 @@ an authorization provider.</description>
       <dt><code>Require ip 10 172.20 192.168.2</code></dt>
       <dd>Clients in the specified IP address ranges can access the
       resource.</dd>
+
+      <dt><code>Require forward-dns dynamic.example.org</code></dt>
+      <dd>A client the IP of which is resolved from the name dynamic.example.org will be granted access.
+      </dd>
+
     </dl>
 
     <p>Other authorization modules that implement require options
@@ -599,6 +605,23 @@ alias</description>
     authorization directives that can be referenced by the alias name using the
     directive <directive module="mod_authz_core">Require</directive>.</p>
 
+    <p>If several parameters are needed in <var>Require-Parameters</var>,
+    they must be enclosed in quotation marks.  Otherwise, only the first one
+    is taken into account.</p>
+    
+    <highlight language="config">
+# In this example, for both addresses to be taken into account, they MUST be enclosed
+# between quotation marks
+&lt;AuthzProviderAlias ip reject-ips "XXX.XXX.XXX.XXX YYY.YYY.YYY.YYY"&gt;
+&lt;/AuthzProviderAlias&gt;
+
+&lt;Directory "/path/to/dir"&gt;
+    &lt;RequireAll&gt;
+        Require not reject-ips
+        Require all granted
+    &lt;/RequireAll&gt;
+&lt;/Directory&gt;
+    </highlight>
 </usage>
 </directivesynopsis>
 
@@ -611,6 +634,7 @@ authentication succeeds but authorization fails
 <default>AuthzSendForbiddenOnFailure Off</default>
 <contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
+<override>AuthConfig</override>
 <compatibility>Available in Apache HTTPD 2.3.11 and later</compatibility>
 
 <usage>

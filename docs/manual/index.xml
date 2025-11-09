@@ -27,6 +27,7 @@
 Documentation</title>
 
 <category id="release"><title>Release Notes</title>
+    <page href="new_features_2_6.html">New features with Apache 2.5/2.6</page>
     <page href="new_features_2_4.html">New features with Apache 2.3/2.4</page>
     <page href="new_features_2_2.html">New features with Apache 2.1/2.2</page>
     <page href="new_features_2_0.html">New features with Apache 2.0</page>
@@ -44,6 +45,7 @@ Documentation</title>
     <page href="filter.html">Filters</page>
     <page href="handler.html">Handlers</page>
     <page href="expr.html">Expression parser</page>
+    <page href="mod/overrides.html">Override Class Index for .htaccess</page>
     <page href="programs/">Server and Supporting Programs</page>
     <page href="glossary.html">Glossary</page>
 </category>
@@ -78,6 +80,7 @@ Documentation</title>
     <page href="howto/ssi.html">Server Side Includes (SSI)</page>
     <page href="howto/public_html.html">Per-user Web Directories (public_html)</page>
     <page href="howto/reverse_proxy.html">Reverse proxy setup guide</page>
+    <page href="howto/http2.html">HTTP/2 guide</page>
 </category>
 
 <category id="platform"><title>Platform Specific Notes</title>

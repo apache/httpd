@@ -25,8 +25,8 @@
                   xmlns="http://www.w3.org/1999/xhtml">
 
 <!--                                                                      -->
-<!-- Three columns, select where the particular categories shall be        -->
-<!-- placed. (Order is irrelevant, they're placed in document order)   -->
+<!-- Three columns, select where the particular categories shall be       -->
+<!-- placed. (Order is irrelevant, they're placed in document order)      -->
 <!--                                                                      -->
 <xsl:variable name="indexpage-column1" select="'
     release
@@ -153,7 +153,7 @@
 <!-- ==================================================================== -->
 <xsl:template name="search.spec">
 <xsl:attribute name="method">get</xsl:attribute>
-<xsl:attribute name="action">http://www.google.com/search</xsl:attribute>
+<xsl:attribute name="action">https://www.google.com/search</xsl:attribute>
 <xsl:if test="$ext-target">
     <xsl:attribute name="target">_blank</xsl:attribute>
 </xsl:if>

@@ -62,19 +62,6 @@ typedef VOID (WINAPI *LPFN_GETACCEPTEXSOCKADDRS)(PVOID, DWORD, DWORD, DWORD,
 
 #endif /* __MINGW32__ */
 
-/*
- * The Windows MPM uses a queue of completion contexts that it passes
- * between the accept threads and the worker threads. Declare the
- * functions to access the queue and the structures passed on the
- * queue in the header file to enable modules to access them
- * if necessary. The queue resides in the MPM.
- */
-#ifdef CONTAINING_RECORD
-#undef CONTAINING_RECORD
-#endif
-#define CONTAINING_RECORD(address, type, field) ((type *)( \
-                                                  (char *)(address) - \
-                                                  (char *)(&((type *)0)->field)))
 #if APR_HAVE_IPV6
 #define PADDED_ADDR_SIZE (sizeof(SOCKADDR_IN6)+16)
 #else
@@ -83,8 +70,33 @@ typedef VOID (WINAPI *LPFN_GETACCEPTEXSOCKADDRS)(PVOID, DWORD, DWORD, DWORD,
 
 APLOG_USE_MODULE(mpm_winnt);
 
-/* Queue for managing the passing of winnt_conn_ctx_t between
- * the accept and worker threads.
+/*
+ * Pool for managing the passing of winnt_conn_ctx_t between the accept
+ * and worker threads (see ctxpool_head below). Note that the actual order
+ * of how the contexts are processed is a LIFO stack, not a FIFO queue,
+ * as LIFO order may significantly reduce the memory usage.
+ *
+ * Every completion context in the pool has an associated allocator, and
+ * every allocator has its ap_max_mem_free memory limit which is not given
+ * back to the OS. Once the pool grows, it cannot shrink back, and every
+ * allocator in each of the pooled completion contexts keeps up to its
+ * max_free amount of memory. The pool can only grow when a server has
+ * to serve multiple concurrent connections at once.
+ *
+ * Consider a server that doesn't see many concurrent connections most
+ * of the time, but has occasional spikes when it has to deal with
+ * concurrency. During such spikes, the size of the pool grows. The
+ * difference between LIFO and FIFO shows up after such spikes, when the
+ * server is back to light load.
+ *
+ * With FIFO order, every completion context in the pool will be used in
+ * a round-robin manner, thus using *every* available allocator one by one
+ * and claiming up to (N * ap_max_mem_free memory) from the OS.  With LIFO
+ * order, only the completion contexts that are close to the top of the
+ * stack will be used and reused for subsequent connections.  Hence, only
+ * a small part of the allocators will be used, and this can prevent all
+ * other allocators from unnecessarily acquiring memory from the OS (and
+ * keeping it).
  */
 typedef struct winnt_conn_ctx_t_s {
     struct winnt_conn_ctx_t_s *next;
@@ -106,31 +118,27 @@ typedef struct winnt_conn_ctx_t_s {
 
 typedef enum {
     IOCP_CONNECTION_ACCEPTED = 1,
-    IOCP_WAIT_FOR_RECEIVE = 2,
-    IOCP_WAIT_FOR_TRANSMITFILE = 3,
-    IOCP_SHUTDOWN = 4
+    IOCP_SHUTDOWN = 2
 } io_state_e;
 
 static apr_pool_t *pchild;
-static int shutdown_in_progress = 0;
+static HANDLE listener_shutdown_event;
 static int workers_may_exit = 0;
-static unsigned int g_blocked_threads = 0;
 static HANDLE max_requests_per_child_event;
 
 static apr_thread_mutex_t  *child_lock;
-static apr_thread_mutex_t  *qlock;
-static winnt_conn_ctx_t *qhead = NULL;
-static winnt_conn_ctx_t *qtail = NULL;
+static apr_thread_mutex_t  *ctxpool_lock;
+static winnt_conn_ctx_t *ctxpool_head = NULL;
 static apr_uint32_t num_completion_contexts = 0;
 static apr_uint32_t max_num_completion_contexts = 0;
 static HANDLE ThreadDispatchIOCP = NULL;
-static HANDLE qwait_event = NULL;
+static HANDLE ctxpool_wait_event = NULL;
 
 static void mpm_recycle_completion_context(winnt_conn_ctx_t *context)
 {
     /* Recycle the completion context.
      * - clear the ptrans pool
-     * - put the context on the queue to be consumed by the accept thread
+     * - put the context on the ctxpool to be consumed by the accept thread
      * Note:
      * context->accept_socket may be in a disconnected but reusable
      * state so -don't- close it.
@@ -147,44 +155,41 @@ static void mpm_recycle_completion_context(winnt_conn_ctx_t *context)
         context->overlapped.hEvent = saved_event;
         ResetEvent(context->overlapped.hEvent);
 
-        apr_thread_mutex_lock(qlock);
-        if (qtail) {
-            qtail->next = context;
-        } else {
-            qhead = context;
-            SetEvent(qwait_event);
+        apr_thread_mutex_lock(ctxpool_lock);
+        if (!ctxpool_head) {
+            SetEvent(ctxpool_wait_event);
         }
-        qtail = context;
-        apr_thread_mutex_unlock(qlock);
+        context->next = ctxpool_head;
+        ctxpool_head = context;
+        apr_thread_mutex_unlock(ctxpool_lock);
     }
 }
 
-static winnt_conn_ctx_t *mpm_get_completion_context(int *timeout)
+static apr_status_t mpm_get_completion_context(winnt_conn_ctx_t **context_p)
 {
-    apr_status_t rv;
+    apr_status_t status;
     winnt_conn_ctx_t *context = NULL;
 
-    *timeout = 0;
+    *context_p = NULL;
     while (1) {
-        /* Grab a context off the queue */
-        apr_thread_mutex_lock(qlock);
-        if (qhead) {
-            context = qhead;
-            qhead = qhead->next;
-            if (!qhead)
-                qtail = NULL;
+        /* Do we have an available context in the pool? */
+        apr_thread_mutex_lock(ctxpool_lock);
+        if (ctxpool_head) {
+            context = ctxpool_head;
+            ctxpool_head = ctxpool_head->next;
         } else {
-            ResetEvent(qwait_event);
+            ResetEvent(ctxpool_wait_event);
         }
-        apr_thread_mutex_unlock(qlock);
+        apr_thread_mutex_unlock(ctxpool_lock);
 
         if (!context) {
-            /* We failed to grab a context off the queue, consider allocating
-             * a new one out of the child pool. There may be up to
-             * (ap_threads_per_child + num_listeners) contexts in the system
-             * at once.
+            /* We failed to grab a context from the pool, consider allocating
+             * a new one. There may be up to (ap_threads_per_child + num_listeners)
+             * contexts in the system at once.
              */
             if (num_completion_contexts >= max_num_completion_contexts) {
+                DWORD rv;
+                HANDLE events[2];
                 /* All workers are busy, need to wait for one */
                 static int reported = 0;
                 if (!reported) {
@@ -197,28 +202,34 @@ static winnt_conn_ctx_t *mpm_get_completion_context(int *timeout)
 
                 /* Wait for a worker to free a context. Once per second, give
                  * the caller a chance to check for shutdown. If the wait
-                 * succeeds, get the context off the queue. It must be
+                 * succeeds, get the context off the context pool. It must be
                  * available, since there's only one consumer.
                  */
-                rv = WaitForSingleObject(qwait_event, 1000);
-                if (rv == WAIT_OBJECT_0)
+                events[0] = ctxpool_wait_event;
+                events[1] = listener_shutdown_event;
+                rv = WaitForMultipleObjects(2, events, FALSE, 1000);
+                if (rv == WAIT_OBJECT_0) {
                     continue;
+                }
+                else if (rv == WAIT_OBJECT_0 + 1) {
+                    /* Got the exit event */
+                    return APR_SUCCESS;
+                }
+                else if (rv == WAIT_TIMEOUT) {
+                    /* Workers are busy, write a diagnostic message and retry */
+                    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO(00327)
+                                 "mpm_get_completion_context: Failed to get a "
+                                 "free context within 1 second");
+                    continue;
+                }
                 else {
-                    if (rv == WAIT_TIMEOUT) {
-                        /* somewhat-normal condition where threads are busy */
-                        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO(00327)
-                                     "mpm_get_completion_context: Failed to get a "
-                                     "free context within 1 second");
-                        *timeout = 1;
-                    }
-                    else {
-                        /* should be the unexpected, generic WAIT_FAILED */
-                        ap_log_error(APLOG_MARK, APLOG_WARNING, apr_get_os_error(),
-                                     ap_server_conf, APLOGNO(00328)
-                                     "mpm_get_completion_context: "
-                                     "WaitForSingleObject failed to get free context");
-                    }
-                    return NULL;
+                    /* should be the unexpected, generic WAIT_FAILED */
+                    status = APR_FROM_OS_ERROR(rv);
+                    ap_log_error(APLOG_MARK, APLOG_WARNING, status,
+                                 ap_server_conf, APLOGNO(00328)
+                                 "mpm_get_completion_context: "
+                                 "WaitForSingleObject failed to get free context");
+                    return status;
                 }
             } else {
                 /* Allocate another context.
@@ -237,28 +248,29 @@ static winnt_conn_ctx_t *mpm_get_completion_context(int *timeout)
                                                          FALSE, NULL);
                 if (context->overlapped.hEvent == NULL) {
                     /* Hopefully this is a temporary condition ... */
-                    ap_log_error(APLOG_MARK, APLOG_WARNING, apr_get_os_error(),
+                    status = apr_get_os_error();
+                    ap_log_error(APLOG_MARK, APLOG_WARNING, status,
                                  ap_server_conf, APLOGNO(00329)
                                  "mpm_get_completion_context: "
                                  "CreateEvent failed.");
 
                     apr_thread_mutex_unlock(child_lock);
-                    return NULL;
+                    return status;
                 }
 
                 /* Create the transaction pool */
                 apr_allocator_create(&allocator);
                 apr_allocator_max_free_set(allocator, ap_max_mem_free);
-                rv = apr_pool_create_ex(&context->ptrans, pchild, NULL,
-                                        allocator);
-                if (rv != APR_SUCCESS) {
-                    ap_log_error(APLOG_MARK, APLOG_WARNING, rv, ap_server_conf, APLOGNO(00330)
+                status = apr_pool_create_ex(&context->ptrans, pchild, NULL,
+                                            allocator);
+                if (status != APR_SUCCESS) {
+                    ap_log_error(APLOG_MARK, APLOG_WARNING, status, ap_server_conf, APLOGNO(00330)
                                  "mpm_get_completion_context: Failed "
                                  "to create the transaction pool.");
                     CloseHandle(context->overlapped.hEvent);
 
                     apr_thread_mutex_unlock(child_lock);
-                    return NULL;
+                    return status;
                 }
                 apr_allocator_owner_set(allocator, context->ptrans);
                 apr_pool_tag(context->ptrans, "transaction");
@@ -271,14 +283,66 @@ static winnt_conn_ctx_t *mpm_get_completion_context(int *timeout)
                 break;
             }
         } else {
-            /* Got a context from the queue */
+            /* Got a context from the context pool */
             break;
         }
     }
 
-    return context;
+    *context_p = context;
+    return APR_SUCCESS;
 }
 
+typedef enum {
+    ACCEPT_FILTER_NONE = 0,
+    ACCEPT_FILTER_CONNECT = 1
+} accept_filter_e;
+
+static const char * accept_filter_to_string(accept_filter_e accf)
+{
+    switch (accf) {
+    case ACCEPT_FILTER_NONE:
+        return "none";
+    case ACCEPT_FILTER_CONNECT:
+        return "connect";
+    default:
+        return "";
+    }
+}
+
+static accept_filter_e get_accept_filter(const char *protocol)
+{
+    core_server_config *core_sconf;
+    const char *name;
+
+    core_sconf = ap_get_core_module_config(ap_server_conf->module_config);
+    name = apr_table_get(core_sconf->accf_map, protocol);
+    if (!name) {
+        ap_log_error(APLOG_MARK, APLOG_WARNING, 0, ap_server_conf,
+                     APLOGNO(02531) "winnt_accept: Listen protocol '%s' has "
+                     "no known accept filter. Using 'none' instead",
+                     protocol);
+        return ACCEPT_FILTER_NONE;
+    }
+    else if (strcmp(name, "data") == 0) {
+        ap_log_error(APLOG_MARK, APLOG_INFO, 0, ap_server_conf,
+                     APLOGNO(03458) "winnt_accept: 'data' accept filter is no "
+                     "longer supported. Using 'connect' instead");
+        return ACCEPT_FILTER_CONNECT;
+    }
+    else if (strcmp(name, "connect") == 0) {
+        return ACCEPT_FILTER_CONNECT;
+    }
+    else if (strcmp(name, "none") == 0) {
+        return ACCEPT_FILTER_NONE;
+    }
+    else {
+        ap_log_error(APLOG_MARK, APLOG_WARNING, 0, ap_server_conf, APLOGNO(00331)
+                     "winnt_accept: unrecognized AcceptFilter '%s', "
+                     "only 'data', 'connect' or 'none' are valid. "
+                     "Using 'none' instead", name);
+        return ACCEPT_FILTER_NONE;
+    }
+}
 
 /* Windows NT/2000 specific code...
  * Accept processing for on Windows NT uses a producer/consumer queue
@@ -301,16 +365,14 @@ static unsigned int __stdcall winnt_accept(void *lr_)
     ap_listen_rec *lr = (ap_listen_rec *)lr_;
     apr_os_sock_info_t sockinfo;
     winnt_conn_ctx_t *context = NULL;
-    DWORD BytesRead;
+    DWORD BytesRead = 0;
     SOCKET nlsd;
     LPFN_ACCEPTEX lpfnAcceptEx = NULL;
     LPFN_GETACCEPTEXSOCKADDRS lpfnGetAcceptExSockaddrs = NULL;
     GUID GuidAcceptEx = WSAID_ACCEPTEX;
     GUID GuidGetAcceptExSockaddrs = WSAID_GETACCEPTEXSOCKADDRS;
-    core_server_config *core_sconf;
-    const char *accf_name;
-    int rv;
-    int accf;
+    apr_status_t rv;
+    accept_filter_e accf;
     int err_count = 0;
     HANDLE events[3];
 #if APR_HAVE_IPV6
@@ -318,37 +380,6 @@ static unsigned int __stdcall winnt_accept(void *lr_)
     int namelen = sizeof(ss_listen);
 #endif
     u_long zero = 0;
-
-    core_sconf = ap_get_core_module_config(ap_server_conf->module_config);
-    accf_name = apr_table_get(core_sconf->accf_map, lr->protocol);
-
-    if (!accf_name) {
-        accf = 0;
-        accf_name = "none";
-        ap_log_error(APLOG_MARK, APLOG_WARNING, 0, ap_server_conf,
-                     APLOGNO(02531) "winnt_accept: Listen protocol '%s' has "
-                     "no known accept filter. Using 'none' instead",
-                     lr->protocol);
-    }
-    else if (strcmp(accf_name, "data") == 0) {
-        accf = 1;
-        accf_name = "connect";
-        ap_log_error(APLOG_MARK, APLOG_INFO, 0, ap_server_conf,
-                     APLOGNO(03458) "winnt_accept: 'data' accept filter is no "
-                     "longer supported. Using 'connect' instead");
-    }
-    else if (strcmp(accf_name, "connect") == 0)
-        accf = 1;
-    else if (strcmp(accf_name, "none") == 0)
-        accf = 0;
-    else {
-        accf = 0;
-        accf_name = "none";
-        ap_log_error(APLOG_MARK, APLOG_WARNING, 0, ap_server_conf, APLOGNO(00331)
-                     "winnt_accept: unrecognized AcceptFilter '%s', "
-                     "only 'data', 'connect' or 'none' are valid. "
-                     "Using 'none' instead", accf_name);
-    }
 
     apr_os_sock_get(&nlsd, lr->sd);
 
@@ -362,7 +393,8 @@ static unsigned int __stdcall winnt_accept(void *lr_)
    }
 #endif
 
-    if (accf > 0) /* 'connect' */
+    accf = get_accept_filter(lr->protocol);
+    if (accf == ACCEPT_FILTER_CONNECT)
     {
         if (WSAIoctl(nlsd, SIO_GET_EXTENSION_FUNCTION_POINTER,
                      &GuidAcceptEx, sizeof GuidAcceptEx, 
@@ -383,15 +415,15 @@ static unsigned int __stdcall winnt_accept(void *lr_)
             return 1;
         }
         /* first, high priority event is an already accepted connection */
-        events[1] = exit_event;
+        events[1] = listener_shutdown_event;
         events[2] = max_requests_per_child_event;
     }
-    else /* accf == 0, 'none' */
+    else /* accf == ACCEPT_FILTER_NONE */
     {
 reinit: /* target of connect upon too many AcceptEx failures */
 
         /* last, low priority event is a not yet accepted connection */
-        events[0] = exit_event;
+        events[0] = listener_shutdown_event;
         events[1] = max_requests_per_child_event;
         events[2] = CreateEvent(NULL, FALSE, FALSE, NULL);
 
@@ -410,30 +442,23 @@ reinit: /* target of connect upon too many AcceptEx failures */
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO(00334)
                  "Child: Accept thread listening on %pI using AcceptFilter %s",
-                 lr->bind_addr, accf_name);
+                 lr->bind_addr, accept_filter_to_string(accf));
 
-    while (!shutdown_in_progress) {
+    while (1) {
         if (!context) {
-            int timeout;
-
-            context = mpm_get_completion_context(&timeout);
-            if (!context) {
-                if (!timeout) {
-                    /* Hopefully a temporary condition in the provider? */
-                    ++err_count;
-                    if (err_count > MAX_ACCEPTEX_ERR_COUNT) {
-                        ap_log_error(APLOG_MARK, APLOG_CRIT, 0, ap_server_conf, APLOGNO(00335)
-                                     "winnt_accept: Too many failures grabbing a "
-                                     "connection ctx.  Aborting.");
-                        break;
-                    }
-                }
-                Sleep(100);
-                continue;
+            rv = mpm_get_completion_context(&context);
+            if (rv) {
+                /* We have an irrecoverable error, tell the child to die */
+                SetEvent(exit_event);
+                break;
+            }
+            else if (rv == APR_SUCCESS && !context) {
+                /* Normal exit */
+                break;
             }
         }
 
-        if (accf > 0) /* 'connect' */
+        if (accf == ACCEPT_FILTER_CONNECT)
         {
             char *buf;
 
@@ -506,7 +531,7 @@ reinit: /* target of connect upon too many AcceptEx failures */
                                      "winnt_mpm: falling back to "
                                      "'AcceptFilter none'.");
                         err_count = 0;
-                        accf = 0;
+                        accf = ACCEPT_FILTER_NONE;
                     }
                     continue;
                 }
@@ -523,7 +548,7 @@ reinit: /* target of connect upon too many AcceptEx failures */
                                      "winnt_mpm: falling back to "
                                      "'AcceptFilter none'.");
                         err_count = 0;
-                        accf = 0;
+                        accf = ACCEPT_FILTER_NONE;
                         goto reinit;
                     }
                     continue;
@@ -549,7 +574,7 @@ reinit: /* target of connect upon too many AcceptEx failures */
                     }
                 }
                 else {
-                    /* exit_event triggered or event handle was closed */
+                    /* listener_shutdown_event triggered or event handle was closed */
                     closesocket(context->accept_socket);
                     context->accept_socket = INVALID_SOCKET;
                     break;
@@ -582,7 +607,7 @@ reinit: /* target of connect upon too many AcceptEx failures */
                                      &context->sa_server, &context->sa_server_len,
                                      &context->sa_client, &context->sa_client_len);
         }
-        else /* (accf = 0)  e.g. 'none' */
+        else /* accf == ACCEPT_FILTER_NONE */
         {
             /* There is no socket reuse without AcceptEx() */
             if (context->accept_socket != INVALID_SOCKET)
@@ -602,7 +627,7 @@ reinit: /* target of connect upon too many AcceptEx failures */
 
             if (rv != WAIT_OBJECT_0 + 2) {
                 /* not FD_ACCEPT;
-                 * exit_event triggered or event handle was closed
+                 * listener_shutdown_event triggered or event handle was closed
                  */
                 break;
             }
@@ -642,10 +667,15 @@ reinit: /* target of connect upon too many AcceptEx failures */
                         ap_log_error(APLOG_MARK, APLOG_ERR, rv, ap_server_conf, APLOGNO(00345)
                                      "Child: Encountered too many accept() "
                                      "resource faults, aborting.");
+                        /* We have an irrecoverable error, tell the child to die */
+                        SetEvent(exit_event);
                         break;
                     }
                     continue;
                 }
+
+                /* We have an irrecoverable error, tell the child to die */
+                SetEvent(exit_event);
                 break;
             }
             /* Per MSDN, cancel the inherited association of this socket
@@ -697,13 +727,8 @@ reinit: /* target of connect upon too many AcceptEx failures */
                                    &context->overlapped);
         context = NULL;
     }
-    if (!accf)
+    if (accf == ACCEPT_FILTER_NONE)
         CloseHandle(events[2]);
-
-    if (!shutdown_in_progress) {
-        /* Yow, hit an irrecoverable error! Tell the child to die. */
-        SetEvent(exit_event);
-    }
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS, ap_server_conf, APLOGNO(00348)
                  "Child: Accept thread exiting.");
@@ -724,10 +749,8 @@ static winnt_conn_ctx_t *winnt_get_connection(winnt_conn_ctx_t *context)
 
     mpm_recycle_completion_context(context);
 
-    apr_atomic_inc32(&g_blocked_threads);
     while (1) {
         if (workers_may_exit) {
-            apr_atomic_dec32(&g_blocked_threads);
             return NULL;
         }
         rc = GetQueuedCompletionStatus(ThreadDispatchIOCP, &BytesRead,
@@ -735,7 +758,7 @@ static winnt_conn_ctx_t *winnt_get_connection(winnt_conn_ctx_t *context)
         if (!rc) {
             rc = apr_get_os_error();
             ap_log_error(APLOG_MARK, APLOG_DEBUG, rc, ap_server_conf, APLOGNO(00349)
-                         "Child: GetQueuedComplationStatus returned %d",
+                         "Child: GetQueuedCompletionStatus returned %d",
                          rc);
             continue;
         }
@@ -745,36 +768,36 @@ static winnt_conn_ctx_t *winnt_get_connection(winnt_conn_ctx_t *context)
             context = CONTAINING_RECORD(pol, winnt_conn_ctx_t, overlapped);
             break;
         case IOCP_SHUTDOWN:
-            apr_atomic_dec32(&g_blocked_threads);
             return NULL;
         default:
-            apr_atomic_dec32(&g_blocked_threads);
             return NULL;
         }
         break;
     }
-    apr_atomic_dec32(&g_blocked_threads);
 
     return context;
 }
 
+struct worker_info {
+    apr_thread_t *thd;
+    HANDLE handle;
+    int num;
+};
+
 /*
- * worker_main()
+ * worker_thread()
  * Main entry point for the worker threads. Worker threads block in
  * win*_get_connection() awaiting a connection to service.
  */
-static DWORD __stdcall worker_main(void *thread_num_val)
+static void *APR_THREAD_FUNC worker_thread(apr_thread_t *thd, void *ctx)
 {
-    apr_thread_t *thd;
-    apr_os_thread_t osthd;
+    struct worker_info *info = ctx;
     static int requests_this_child = 0;
     winnt_conn_ctx_t *context = NULL;
-    int thread_num = (int)thread_num_val;
+    int thread_num = info->num;
     ap_sb_handle_t *sbh;
     conn_rec *c;
     apr_int32_t disconnected;
-
-    osthd = apr_os_thread_current();
 
     while (1) {
 
@@ -807,37 +830,22 @@ static DWORD __stdcall worker_main(void *thread_num_val)
             continue;
         }
 
-        thd = NULL;
-        apr_os_thread_put(&thd, &osthd, context->ptrans);
         c->current_thread = thd;
 
         ap_process_connection(c, context->sock);
 
-        apr_socket_opt_get(context->sock, APR_SO_DISCONNECTED, &disconnected);
+        ap_lingering_close(c);
 
+        apr_socket_opt_get(context->sock, APR_SO_DISCONNECTED, &disconnected);
         if (!disconnected) {
             context->accept_socket = INVALID_SOCKET;
-            if (!c->aborted) { 
-                ap_lingering_close(c);
-            }
         }
     }
 
     ap_update_child_status_from_indexes(0, thread_num, SERVER_DEAD, NULL);
 
+    SetEvent(info->handle);
     return 0;
-}
-
-
-static void cleanup_thread(HANDLE *handles, int *thread_cnt,
-                           int thread_to_clean)
-{
-    int i;
-
-    CloseHandle(handles[thread_to_clean]);
-    for (i = thread_to_clean; i < ((*thread_cnt) - 1); i++)
-        handles[i] = handles[i + 1];
-    (*thread_cnt)--;
 }
 
 
@@ -886,25 +894,33 @@ static void create_listener_thread(void)
 void child_main(apr_pool_t *pconf, DWORD parent_pid)
 {
     apr_status_t status;
-    apr_hash_t *ht;
     ap_listen_rec *lr;
     HANDLE child_events[3];
-    HANDLE *child_handles;
+    struct worker_info *workers;
     int listener_started = 0;
     int threads_created = 0;
-    int watch_thread;
     int time_remains;
     int cld;
     DWORD tid;
     int rv;
     int i;
     int num_events;
+    int graceful_shutdown = 0;
 
+    /* Get a sub context for global allocations in this child, so that
+     * we can have cleanups occur when the child exits.
+     */
     apr_pool_create(&pchild, pconf);
     apr_pool_tag(pchild, "pchild");
 
     ap_run_child_init(pchild, ap_server_conf);
-    ht = apr_hash_make(pchild);
+
+    listener_shutdown_event = CreateEvent(NULL, TRUE, FALSE, NULL);
+    if (!listener_shutdown_event) {
+        ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_os_error(), ap_server_conf, APLOGNO(10035)
+                     "Child: Failed to create a listener_shutdown event.");
+        exit(APEXIT_CHILDINIT);
+    }
 
     /* Initialize the child_events */
     max_requests_per_child_event = CreateEvent(NULL, TRUE, FALSE, NULL);
@@ -952,15 +968,14 @@ void child_main(apr_pool_t *pconf, DWORD parent_pid)
     /*
      * Create the worker thread dispatch IOCompletionPort
      */
-    /* Create the worker thread dispatch IOCP */
     ThreadDispatchIOCP = CreateIoCompletionPort(INVALID_HANDLE_VALUE,
                                                 NULL, 0, 0);
-    apr_thread_mutex_create(&qlock, APR_THREAD_MUTEX_DEFAULT, pchild);
-    qwait_event = CreateEvent(NULL, TRUE, FALSE, NULL);
-    if (!qwait_event) {
+    apr_thread_mutex_create(&ctxpool_lock, APR_THREAD_MUTEX_DEFAULT, pchild);
+    ctxpool_wait_event = CreateEvent(NULL, TRUE, FALSE, NULL);
+    if (!ctxpool_wait_event) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_os_error(),
                      ap_server_conf, APLOGNO(00353)
-                     "Child: Failed to create a qwait event.");
+                     "Child: Failed to create a ctxpool_wait event.");
         exit(APEXIT_CHILDINIT);
     }
 
@@ -969,15 +984,13 @@ void child_main(apr_pool_t *pconf, DWORD parent_pid)
      */
     ap_log_error(APLOG_MARK, APLOG_NOTICE, APR_SUCCESS, ap_server_conf, APLOGNO(00354)
                  "Child: Starting %d worker threads.", ap_threads_per_child);
-    child_handles = (HANDLE) apr_pcalloc(pchild, ap_threads_per_child
-                                                  * sizeof(HANDLE));
+    workers = apr_pcalloc(pchild, ap_threads_per_child * sizeof(*workers));
     apr_thread_mutex_create(&child_lock, APR_THREAD_MUTEX_DEFAULT, pchild);
 
     while (1) {
         int from_previous_generation = 0, starting_up = 0;
 
         for (i = 0; i < ap_threads_per_child; i++) {
-            int *score_idx;
             int status = ap_scoreboard_image->servers[0][i].status;
             if (status != SERVER_GRACEFUL && status != SERVER_DEAD) {
                 if (ap_scoreboard_image->servers[0][i].generation != my_generation) {
@@ -990,13 +1003,24 @@ void child_main(apr_pool_t *pconf, DWORD parent_pid)
             }
             ap_update_child_status_from_indexes(0, i, SERVER_STARTING, NULL);
 
-            child_handles[i] = CreateThread(NULL, ap_thread_stacksize,
-                                            worker_main, (void *) i,
-                                            stack_res_flag, &tid);
-            if (child_handles[i] == 0) {
-                ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_os_error(),
-                             ap_server_conf, APLOGNO(00355)
-                             "Child: CreateThread failed. Unable to "
+            workers[i].num = i;
+            workers[i].handle = CreateEvent(NULL, TRUE, FALSE, NULL);
+            if (!workers[i].handle) {
+                rv = apr_get_os_error();
+            }
+            else {
+                apr_threadattr_t *thread_attr = NULL;
+                apr_threadattr_create(&thread_attr, pchild);
+                if (ap_thread_stacksize != 0) {
+                    apr_threadattr_stacksize_set(thread_attr,
+                                                 ap_thread_stacksize);
+                }
+                rv = ap_thread_create(&workers[i].thd, thread_attr,
+                                      worker_thread, &workers[i], pchild);
+            }
+            if (rv != APR_SUCCESS) {
+                ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ap_server_conf, APLOGNO(00355)
+                             "Child: thread creation failed. Unable to "
                              "create all worker threads. Created %d of the %d "
                              "threads requested with the ThreadsPerChild "
                              "configuration directive.",
@@ -1007,14 +1031,6 @@ void child_main(apr_pool_t *pconf, DWORD parent_pid)
             ap_scoreboard_image->servers[0][i].pid = my_pid;
             ap_scoreboard_image->servers[0][i].generation = my_generation;
             threads_created++;
-            /* Save the score board index in ht keyed to the thread handle.
-             * We need this when cleaning up threads down below...
-             */
-            apr_thread_mutex_lock(child_lock);
-            score_idx = apr_pcalloc(pchild, sizeof(int));
-            *score_idx = i;
-            apr_hash_set(ht, &child_handles[i], sizeof(HANDLE), score_idx);
-            apr_thread_mutex_unlock(child_lock);
         }
         /* Start the listener only when workers are available */
         if (!listener_started && threads_created) {
@@ -1099,6 +1115,7 @@ void child_main(apr_pool_t *pconf, DWORD parent_pid)
             ap_log_error(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS, ap_server_conf, APLOGNO(00357)
                          "Child: Exit event signaled. Child process is "
                          "ending.");
+            graceful_shutdown = 1;
             break;
         }
         else if (cld == 2) {
@@ -1117,6 +1134,7 @@ void child_main(apr_pool_t *pconf, DWORD parent_pid)
                          "MaxConnectionsPerChild. Signaling the parent to "
                          "restart a new child process.");
             ap_signal_parent(SIGNAL_PARENT_RESTART);
+            graceful_shutdown = 1;
             break;
         }
     }
@@ -1138,10 +1156,14 @@ void child_main(apr_pool_t *pconf, DWORD parent_pid)
     }
 
     /* Shutdown listener threads and pending AcceptEx sockets
-     * but allow the worker threads to continue consuming from
-     * the queue of accepted connections.
+     * but allow the worker threads to continue consuming the
+     * already accepted connections.
      */
-    shutdown_in_progress = 1;
+    SetEvent(listener_shutdown_event);
+
+    /* Notify anyone interested that this child is stopping.
+     */
+    ap_run_child_stopping(pchild, graceful_shutdown);
 
     Sleep(1000);
 
@@ -1161,115 +1183,91 @@ void child_main(apr_pool_t *pconf, DWORD parent_pid)
                      "Child: Failure releasing the start mutex");
     }
 
-    /* Shutdown the worker threads
-     * Post worker threads blocked on the ThreadDispatch IOCompletion port
+    /* Shutdown the worker threads by posting a number of IOCP_SHUTDOWN
+     * completion packets equal to the amount of created threads
      */
-    while (g_blocked_threads > 0) {
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS, ap_server_conf, APLOGNO(00361)
-                     "Child: %d threads blocked on the completion port",
-                     g_blocked_threads);
-        for (i=g_blocked_threads; i > 0; i--) {
-            PostQueuedCompletionStatus(ThreadDispatchIOCP, 0,
-                                       IOCP_SHUTDOWN, NULL);
-        }
-        Sleep(1000);
+    for (i = 0; i < threads_created; i++) {
+        PostQueuedCompletionStatus(ThreadDispatchIOCP, 0, IOCP_SHUTDOWN, NULL);
     }
-    /* Empty the accept queue of completion contexts */
-    apr_thread_mutex_lock(qlock);
-    while (qhead) {
-        CloseHandle(qhead->overlapped.hEvent);
-        closesocket(qhead->accept_socket);
-        qhead = qhead->next;
+
+    /* Empty the pool of completion contexts */
+    apr_thread_mutex_lock(ctxpool_lock);
+    while (ctxpool_head) {
+        CloseHandle(ctxpool_head->overlapped.hEvent);
+        closesocket(ctxpool_head->accept_socket);
+        ctxpool_head = ctxpool_head->next;
     }
-    apr_thread_mutex_unlock(qlock);
+    apr_thread_mutex_unlock(ctxpool_lock);
 
     /* Give busy threads a chance to service their connections
      * (no more than the global server timeout period which
      * we track in msec remaining).
      */
-    watch_thread = 0;
     time_remains = (int)(ap_server_conf->timeout / APR_TIME_C(1000));
 
     while (threads_created)
     {
-        int nFailsafe = MAXIMUM_WAIT_OBJECTS;
+        struct worker_info *info = &workers[threads_created - 1];
         DWORD dwRet;
 
-        /* Every time we roll over to wait on the first group
-         * of MAXIMUM_WAIT_OBJECTS threads, take a breather,
-         * and infrequently update the error log.
-         */
-        if (watch_thread >= threads_created) {
-            if ((time_remains -= 100) < 0)
-                break;
-
-            /* Every 30 seconds give an update */
-            if ((time_remains % 30000) == 0) {
-                ap_log_error(APLOG_MARK, APLOG_NOTICE, APR_SUCCESS,
-                             ap_server_conf, APLOGNO(00362)
-                             "Child: Waiting %d more seconds "
-                             "for %d worker threads to finish.",
-                             time_remains / 1000, threads_created);
-            }
-            /* We'll poll from the top, 10 times per second */
-            Sleep(100);
-            watch_thread = 0;
-        }
-
-        /* Fairness, on each iteration we will pick up with the thread
-         * after the one we just removed, even if it's a single thread.
-         * We don't block here.
-         */
-        dwRet = WaitForMultipleObjects(min(threads_created - watch_thread,
-                                           MAXIMUM_WAIT_OBJECTS),
-                                       child_handles + watch_thread, 0, 0);
-
-        if (dwRet == WAIT_FAILED) {
+        if (time_remains < 0)
             break;
+        /* Every 30 seconds give an update */
+        if ((time_remains % 30000) == 0) {
+            ap_log_error(APLOG_MARK, APLOG_NOTICE, APR_SUCCESS,
+                         ap_server_conf, APLOGNO(00362)
+                         "Child: Waiting %d more seconds "
+                         "for %d worker threads to finish.",
+                         time_remains / 1000, threads_created);
         }
+
+        dwRet = WaitForSingleObject(info->handle, 100);
+        time_remains -= 100;
         if (dwRet == WAIT_TIMEOUT) {
-            /* none ready */
-            watch_thread += MAXIMUM_WAIT_OBJECTS;
-            continue;
+            /* Keep waiting */
         }
-        else if (dwRet >= WAIT_ABANDONED_0) {
-            /* We just got the ownership of the object, which
-             * should happen at most MAXIMUM_WAIT_OBJECTS times.
-             * It does NOT mean that the object is signaled.
-             */
-            if ((nFailsafe--) < 1)
-                break;
+        else if (dwRet == WAIT_OBJECT_0) {
+            apr_status_t thread_rv;
+            apr_thread_join(&thread_rv, info->thd);
+            CloseHandle(info->handle);
+            threads_created--;
         }
         else {
-            watch_thread += (dwRet - WAIT_OBJECT_0);
-            if (watch_thread >= threads_created)
-                break;
-            cleanup_thread(child_handles, &threads_created, watch_thread);
+            break;
         }
     }
 
-    /* Kill remaining threads off the hard way */
     if (threads_created) {
         ap_log_error(APLOG_MARK, APLOG_NOTICE, APR_SUCCESS, ap_server_conf, APLOGNO(00363)
-                     "Child: Terminating %d threads that failed to exit.",
+                     "Child: Waiting for %d threads timed out, terminating process.",
                      threads_created);
-    }
-    for (i = 0; i < threads_created; i++) {
-        int *idx;
-        TerminateThread(child_handles[i], 1);
-        CloseHandle(child_handles[i]);
-        /* Reset the scoreboard entry for the thread we just whacked */
-        idx = apr_hash_get(ht, &child_handles[i], sizeof(HANDLE));
-        if (idx) {
-            ap_update_child_status_from_indexes(0, *idx, SERVER_DEAD, NULL);
+        for (i = 0; i < threads_created; i++) {
+            struct worker_info *info = &workers[i];
+            ap_update_child_status_from_indexes(0, info->num, SERVER_DEAD, NULL);
         }
+        /* We can't wait for any longer, but still have some threads remaining.
+         *
+         * The only thing we can do is terminate the process and let the OS
+         * perform the required cleanup. Terminate with exit code 0, as we do
+         * not want the parent process to restart the child. Note that we use
+         * TerminateProcess() instead of ExitProcess(), as the latter function
+         * causes all DLLs to be unloaded, and it can potentially deadlock if
+         * a DLL unload handler tries to acquire the same lock that is being
+         * held by one of the remaining worker threads.
+         *
+         * See https://msdn.microsoft.com/en-us/library/windows/desktop/ms682658
+         */
+        TerminateProcess(GetCurrentProcess(), 0);
     }
     ap_log_error(APLOG_MARK, APLOG_NOTICE, APR_SUCCESS, ap_server_conf, APLOGNO(00364)
                  "Child: All worker threads have exited.");
 
+    ap_run_child_stopped(pchild, graceful_shutdown);
+
     apr_thread_mutex_destroy(child_lock);
-    apr_thread_mutex_destroy(qlock);
-    CloseHandle(qwait_event);
+    apr_thread_mutex_destroy(ctxpool_lock);
+    CloseHandle(ctxpool_wait_event);
+    CloseHandle(ThreadDispatchIOCP);
 
     apr_pool_destroy(pchild);
     CloseHandle(exit_event);

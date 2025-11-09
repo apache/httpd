@@ -110,7 +110,7 @@ static apr_file_t *errfile;   /* stderr file handle */
 static apr_file_t *outfile;   /* stdout file handle */
 static apr_off_t unsolicited; /* file size summary for deleted unsolicited
                                  files */
-static APR_RING_ENTRY(_entry) root; /* ENTRY ring anchor */
+static ENTRY root; /* ENTRY ring anchor */
 
 /* short program name as called */
 static const char *shortname = "htcacheclean";
@@ -253,7 +253,8 @@ static void printstats(char *path, struct stats *s)
 /**
  * Round the value up to the given threshold.
  */
-static apr_size_t round_up(apr_size_t val, apr_off_t round) {
+static apr_size_t round_up(apr_size_t val, apr_off_t round)
+{
     if (round > 1) {
         return (apr_size_t)(((val + round - 1) / round) * round);
     }
@@ -557,8 +558,6 @@ static int list_urls(char *path, apr_pool_t *pool, apr_off_t round)
                                         }
                                     }
                                 }
-
-                                break;
                             }
                         }
                     }
@@ -604,13 +603,12 @@ static int process_dir(char *path, apr_pool_t *pool, apr_off_t *nodes)
     apr_size_t len;
     apr_time_t current, deviation;
     char *nextpath, *base, *ext;
-    APR_RING_ENTRY(_direntry) anchor;
-    DIRENTRY *d, *t, *n;
+    DIRENTRY *d, *t, *n, anchor;
     ENTRY *e;
     int skip, retries;
     disk_cache_info_t disk_info;
 
-    APR_RING_INIT(&anchor, _direntry, link);
+    APR_RING_INIT(&anchor.link, _direntry, link);
     apr_pool_create(&p, pool);
     h = apr_hash_make(p);
     fd = NULL;
@@ -626,7 +624,7 @@ static int process_dir(char *path, apr_pool_t *pool, apr_off_t *nodes)
         }
         d = apr_pcalloc(p, sizeof(DIRENTRY));
         d->basename = apr_pstrcat(p, path, "/", info.name, NULL);
-        APR_RING_INSERT_TAIL(&anchor, d, _direntry, link);
+        APR_RING_INSERT_TAIL(&anchor.link, d, _direntry, link);
         (*nodes)++;
     }
 
@@ -638,8 +636,8 @@ static int process_dir(char *path, apr_pool_t *pool, apr_off_t *nodes)
 
     skip = baselen + 1;
 
-    for (d = APR_RING_FIRST(&anchor);
-         !interrupted && d != APR_RING_SENTINEL(&anchor, _direntry, link);
+    for (d = APR_RING_FIRST(&anchor.link);
+         !interrupted && d != APR_RING_SENTINEL(&anchor.link, _direntry, link);
          d=n) {
         n = APR_RING_NEXT(d, link);
         base = strrchr(d->basename, '/');
@@ -684,8 +682,18 @@ static int process_dir(char *path, apr_pool_t *pool, apr_off_t *nodes)
         }
 
         if (info.filetype == APR_DIR) {
+            char *dirpath = apr_pstrdup(p, d->basename);
+
             if (process_dir(d->basename, pool, nodes)) {
                 return 1;
+            }
+            /* When given the -t option htcacheclean does not
+             * delete directories that are already empty, so we'll do that here
+             * since process_dir checks all the directories.
+             * If it fails, it likely means there was something else there.
+             */
+            if (deldirs && !dryrun) {
+                apr_dir_remove(dirpath, p);
             }
             continue;
         }
@@ -774,7 +782,7 @@ static int process_dir(char *path, apr_pool_t *pool, apr_off_t *nodes)
                                                &len) == APR_SUCCESS) {
                             apr_file_close(fd);
                             e = apr_palloc(pool, sizeof(ENTRY));
-                            APR_RING_INSERT_TAIL(&root, e, _entry, link);
+                            APR_RING_INSERT_TAIL(&root.link, e, _entry, link);
                             e->expire = disk_info.expire;
                             e->response_time = disk_info.response_time;
                             e->htime = d->htime;
@@ -890,7 +898,7 @@ static int process_dir(char *path, apr_pool_t *pool, apr_off_t *nodes)
                                                &len) == APR_SUCCESS) {
                             apr_file_close(fd);
                             e = apr_palloc(pool, sizeof(ENTRY));
-                            APR_RING_INSERT_TAIL(&root, e, _entry, link);
+                            APR_RING_INSERT_TAIL(&root.link, e, _entry, link);
                             e->expire = disk_info.expire;
                             e->response_time = disk_info.response_time;
                             e->htime = d->htime;
@@ -977,8 +985,8 @@ static void purge(char *path, apr_pool_t *pool, apr_off_t max,
     s.inodes = inodes;
     s.ntotal = nodes;
 
-    for (e = APR_RING_FIRST(&root);
-         e != APR_RING_SENTINEL(&root, _entry, link);
+    for (e = APR_RING_FIRST(&root.link);
+         e != APR_RING_SENTINEL(&root.link, _entry, link);
          e = APR_RING_NEXT(e, link)) {
         s.sum += round_up((apr_size_t)e->hsize, round);
         s.sum += round_up((apr_size_t)e->dsize, round);
@@ -997,8 +1005,8 @@ static void purge(char *path, apr_pool_t *pool, apr_off_t max,
      * happen if a wrong system time is corrected
      */
 
-    for (e = APR_RING_FIRST(&root);
-         e != APR_RING_SENTINEL(&root, _entry, link) && !interrupted;) {
+    for (e = APR_RING_FIRST(&root.link);
+         e != APR_RING_SENTINEL(&root.link, _entry, link) && !interrupted;) {
         n = APR_RING_NEXT(e, link);
         if (e->response_time > now || e->htime > now || e->dtime > now) {
             delete_entry(path, e->basename, &s.nodes, pool);
@@ -1021,9 +1029,9 @@ static void purge(char *path, apr_pool_t *pool, apr_off_t max,
         return;
     }
 
-    /* process all entries with are expired */
-    for (e = APR_RING_FIRST(&root);
-         e != APR_RING_SENTINEL(&root, _entry, link) && !interrupted;) {
+    /* process all entries which are expired */
+    for (e = APR_RING_FIRST(&root.link);
+         e != APR_RING_SENTINEL(&root.link, _entry, link) && !interrupted;) {
         n = APR_RING_NEXT(e, link);
         if (e->expire != APR_DATE_BAD && e->expire < now) {
             delete_entry(path, e->basename, &s.nodes, pool);
@@ -1052,11 +1060,11 @@ static void purge(char *path, apr_pool_t *pool, apr_off_t max,
      * than sorry
      */
     while (!((!s.max || s.sum <= s.max) && (!s.inodes || s.nodes <= s.inodes))
-            && !interrupted && !APR_RING_EMPTY(&root, _entry, link)) {
-        oldest = APR_RING_FIRST(&root);
+            && !interrupted && !APR_RING_EMPTY(&root.link, _entry, link)) {
+        oldest = APR_RING_FIRST(&root.link);
 
         for (e = APR_RING_NEXT(oldest, link);
-             e != APR_RING_SENTINEL(&root, _entry, link);
+             e != APR_RING_SENTINEL(&root.link, _entry, link);
              e = APR_RING_NEXT(e, link)) {
             if (e->dtime < oldest->dtime) {
                 oldest = e;
@@ -1274,8 +1282,8 @@ static void usage(const char *error)
     }
     apr_file_printf(errfile,
     "%s -- program for cleaning the disk cache."                             NL
-    "Usage: %s [-Dvtrn] -pPATH [-lLIMIT|-LLIMIT] [-PPIDFILE]"                NL
-    "       %s [-nti] -dINTERVAL -pPATH [-lLIMIT|-LLIMIT] [-PPIDFILE]"       NL
+    "Usage: %s [-Dvtrn] -pPATH [-lLIMIT] [-LLIMIT] [-PPIDFILE]"              NL
+    "       %s [-nti] -dINTERVAL -pPATH [-lLIMIT] [-LLIMIT] [-PPIDFILE]"     NL
     "       %s [-Dvt] -pPATH URL ..."                                        NL
                                                                              NL
     "Options:"                                                               NL
@@ -1309,10 +1317,12 @@ static void usage(const char *error)
                                                                              NL
     "  -R   Specify amount to round sizes up to."                            NL
                                                                              NL
-    "  -l   Specify LIMIT as the total disk cache size limit. Attach 'K'"    NL
-    "       or 'M' to the number for specifying KBytes or MBytes."           NL
+    "  -l   Specify LIMIT as the total disk cache size limit. Attach 'K',"   NL
+    "       'M' or 'G' to the number for specifying KBytes, MBytes or"       NL
+    "        GBytes."                                                        NL
                                                                              NL
-    "  -L   Specify LIMIT as the total disk cache inode limit."              NL
+    "  -L   Specify LIMIT as the total disk cache inode limit. 'K', 'M' or"  NL
+    "       'G' suffix can also be used."                                    NL
                                                                              NL
     "  -i   Be intelligent and run only when there was a modification of"    NL
     "       the disk cache. This option is only possible together with the"  NL
@@ -1342,7 +1352,8 @@ static void usage(const char *error)
 }
 #undef NL
 
-static void usage_repeated_arg(apr_pool_t *pool, char option) {
+static void usage_repeated_arg(apr_pool_t *pool, char option)
+{
     usage(apr_psprintf(pool,
                        "The option '%c' cannot be specified more than once",
                        option));
@@ -1516,7 +1527,7 @@ int main(int argc, const char * const argv[])
                         usage(apr_psprintf(pool, "Invalid limit: %s"
                                                  APR_EOL_STR APR_EOL_STR, arg));
                     }
-                } while(0);
+                } while (0);
                 break;
 
             case 'L':
@@ -1546,7 +1557,7 @@ int main(int argc, const char * const argv[])
                         usage(apr_psprintf(pool, "Invalid limit: %s"
                                                  APR_EOL_STR APR_EOL_STR, arg));
                     }
-                } while(0);
+                } while (0);
                 break;
 
             case 'a':
@@ -1625,7 +1636,7 @@ int main(int argc, const char * const argv[])
             usage("Option -i cannot be used with URL arguments, aborting");
         }
         if (limit_found) {
-            usage("Option -l cannot be used with URL arguments, aborting");
+            usage("Option -l and -L cannot be used with URL arguments, aborting");
         }
         while (o->ind < argc) {
             status = delete_url(pool, proxypath, argv[o->ind]);
@@ -1704,7 +1715,7 @@ int main(int argc, const char * const argv[])
         apr_pool_create(&instance, pool);
 
         now = apr_time_now();
-        APR_RING_INIT(&root, _entry, link);
+        APR_RING_INIT(&root.link, _entry, link);
         delcount = 0;
         unsolicited = 0;
         dowork = 0;

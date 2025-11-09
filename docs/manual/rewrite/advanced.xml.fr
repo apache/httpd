@@ -1,0 +1,381 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
+<!-- French translation : Lucien GENTIS -->
+<!-- Reviewed by : Vincent Deffontaines -->
+<!-- English Revision: 1897425 -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="advanced.xml.meta">
+  <parentdocument href="./">Rewrite</parentdocument>
+
+<title>Advanced Techniques with mod_rewrite</title>
+
+<summary>
+
+<p>Ce document complète la <a
+    href="../mod/mod_rewrite.html">documentation de référence</a> du
+    module <module>mod_rewrite</module>. Il présente un certain nombre
+    de techniques avancées quant à
+    l'utilisation de mod_rewrite.</p>
+
+<!--
+I question whether anything remailing in this document qualifies as
+"advanced". It's probably time to take inventory of the examples that we
+have in the various docs, and consider a reorg of the stuff in this
+directory. Again.
+-->
+
+<note type="warning">Notez que la plupart des exemples ne fonctionneront
+pas en l'état dans la configuration particulière de votre serveur ; il
+est donc important de bien comprendre leur fonctionnement, plutôt que de
+simplement les copier/coller dans votre configuration.</note>
+
+</summary>
+<seealso><a href="../mod/mod_rewrite.html">Documentation du module</a></seealso>
+<seealso><a href="intro.html">Introduction à mod_rewrite</a></seealso>
+<seealso><a href="remapping.html">Redirection et remise en
+correspondance</a></seealso>
+<seealso><a href="access.html">Contrôler l'accès</a></seealso>
+<seealso><a href="vhosts.html">serveurs virtuels</a></seealso>
+<seealso><a href="proxy.html">serveurs mandataires</a></seealso>
+<seealso><a href="rewritemap.html">Utilisation de RewriteMap</a></seealso>
+<!--<seealso><a href="advanced.html">Techniques avancées</a></seealso>-->
+<seealso><a href="avoid.html">Quand ne pas utiliser mod_rewrite</a></seealso>
+
+<section id="sharding">
+
+  <title>Distribution de la charge entre plusieurs serveurs
+  d'arrière-plan en fonction de l'adresse IP</title>
+
+  <dl>
+    <dt>Description :</dt>
+
+    <dd>
+      <p>La fragmentation ou "sharding" est une technique courante de
+      distribution de la charge du serveur ou de l'espace de stockage.
+      Quand on utilise cette méthode, un serveur frontal utilise l'URL
+      pour répartir de manière appropriée les utilisateurs et objets
+      entre différents serveurs d'arrière-plan.</p>
+    </dd>
+
+    <dt>Solution :</dt>
+
+    <dd>
+      <p>On maintient une table de correspondance entre utilisateurs et
+      serveurs cibles dans des fichiers externes. Ces derniers se
+      présentent comme suit :</p>
+
+<example>
+utilisateur1  serveur_physique_utilisateur1<br />
+utilisateur2  serveur_physique_utilisateur2<br />
+# etc ...
+</example>
+
+  <p>Tout ceci est enregistré dans un fichier
+  <code>correspondances-utilisateurs-serveurs</code>. Le but est de
+  faire correspondre</p>
+
+<example>
+/u/utilisateur1/chemin
+</example>
+
+  <p>avec</p>
+
+<example>
+http://serveur_physique_utilisateur1/u/utilisateur/chemin
+</example>
+
+      <p>il n'est ainsi pas nécessaire que tous les chemins URL soient
+      valides sur tous les serveurs physiques d'arrière-plan. Le jeu de
+      règles suivant fait tout ceci pour nous, en s'appuyant sur les
+      fichiers de correspondances, en supposant que serveur0 est un
+      serveur par défaut qui sera utilisé lorsqu'un utilisateur ne
+      possèdera pas d'entrée dans la table de correspondances :</p>
+
+<highlight language="config">
+RewriteEngine on
+RewriteMap      users-to-hosts   "txt:/path/to/map.users-to-hosts"
+RewriteRule   "^/u/([^/]+)/?(.*)"   "http://${users-to-hosts:$1|server0}/u/$1/$2"
+</highlight>
+    </dd>
+  </dl>
+
+  <p>Voir la documentation de <directive
+  module="mod_rewrite">RewriteMap</directive> et le <a
+  href="./rewritemap.html">RewriteMap HowTo</a> pour une description plus
+  approfondie de la syntaxe de cette directive.</p>
+
+</section>
+
+<section id="on-the-fly-content">
+
+  <title>Régéneration de contenu à la volée</title>
+
+  <dl>
+    <dt>Description :</dt>
+
+    <dd>
+      <p>Nous voulons générer du contenu de manière dynamique, mais le
+      conserver de manière statique lorsqu'il a été généré. La règle
+      suivante vérifie l'existence du fichier statique, et le génère
+      s'il est absent. Les fichiers statiques peuvent être supprimés
+      périodiquement si on le désire (par exemple via cron), et seront
+      régénérés à la demande.</p>
+    </dd>
+
+    <dt>Solution :</dt>
+
+    <dd>
+      A cet effet, on utilise le jeu de règles suivant :
+
+<highlight language="config">
+# Cet exemple n'est valable que dans un contexte de répertoire
+RewriteCond "%{REQUEST_URI}"   !-U
+RewriteRule "^(.+)\.html$"          "/regenerate_page.cgi"   [PT,L]
+</highlight>
+
+      <p>L'opérateur <code>-U</code> permet de déterminer si la chaîne
+      de test (dans ce cas <code>REQUEST_URI</code>) est une URL valide.
+      Pour ce faire, il utilise une sous-requête. Si cette sous-requête
+      échoue, ou en d'autres termes, si la ressource demandée n'existe pas,
+      cette règle invoque le programme CGI
+      <code>/regenerate_page.cgi</code> qui génère la ressource
+      demandée et la sauvegarde dans le répertoire des documents, de
+      façon à ce qu'une copie statique puisse être servie lors d'une
+      demande ultérieure.</p>
+
+    <p>De cette façon, les documents qui ne sont pas mis à jour
+    régulièrement peuvent être servis sous une forme statique. Si ces
+    documents doivent être réactualisés, on peut les supprimer du
+    répertoire des documents, et ils seront ainsi régénérés à la
+    prochaine demande.</p>
+    </dd>
+  </dl>
+
+</section>
+
+<section id="load-balancing">
+
+  <title>Répartition de charge</title>
+
+  <dl>
+    <dt>Description :</dt>
+
+    <dd>
+      <p>Nous voulons répartir la charge de manière aléatoire entre
+      plusieurs serveurs en utilisant mod_rewrite.</p>
+    </dd>
+
+    <dt>Solution :</dt>
+
+    <dd>
+      <p>Pour y parvenir, nous allons utiliser la directive <directive
+      module="mod_rewrite">RewriteMap</directive> et une liste de
+      serveurs.</p>
+
+<highlight language="config">
+RewriteEngine on
+RewriteMap lb "rnd:/path/to/serverlist.txt"
+RewriteRule "^/(.*)" "http://${lb:serveurs}/$1" [P,L]
+</highlight>
+
+<p><code>liste-serveurs.txt</code> contiendra la liste des serveurs :</p>
+
+<example>
+## liste-serveurs.txt<br />
+<br />
+serveurs un.example.com|deux.example.com|trois.example.com<br />
+</example>
+
+<p>Si vous voulez qu'un serveur se voit confier d'avantage de charge que
+les autres, faites le figurer plusieurs fois dans la liste.</p>
+
+   </dd>
+
+   <dt>Discussion</dt>
+   <dd>
+<p>Apache possède un module de répartition de charge -
+<module>mod_proxy_balancer</module> - beaucoup plus souple et présentant
+plus de fonctionnalités dans ce domaine que mod_rewrite.</p>
+   </dd>
+  </dl>
+
+</section>
+
+<section id="structuredhomedirs">
+
+  <title>Répertoires Home structurés</title>
+
+  <dl>
+    <dt>Description :</dt>
+
+    <dd>
+      <p>Certains sites avec des milliers d'utilisateurs organisent
+	  les répertoires utilisateurs de manière structurée, c'est à
+	  dire que chaque répertoire utilisateur se trouve dans un
+	  sous-répertoire dont le nom commence (par exemple) par le
+	  premier caractère du nom de l'utilisateur. Ainsi,
+	  <code>/~larry/chemin</code> correspond à
+	  <code>/home/<strong>l</strong>/larry/public_html/chemin</code>, alors
+	  que <code>/~waldo/chemin</code> correspond à
+	  <code>/home/<strong>w</strong>/waldo/public_html/chemin</code>.</p>
+    </dd>
+
+    <dt>Solution :</dt>
+
+    <dd>
+      <p>On utilise le jeu de règles suivant pour développer les
+	  URLs avec tilde selon l'organisation structurée précédente.</p>
+
+<highlight language="config">
+RewriteEngine on
+RewriteRule   "^/~(<strong>([a-z])</strong>[a-z0-9]+)(.*)"  "/home/<strong>$2</strong>/$1/public_html$3"
+</highlight>
+    </dd>
+  </dl>
+
+</section>
+
+<section id="redirectanchors">
+
+  <title>Redirection des ancrages</title>
+
+  <dl>
+    <dt>Description :</dt>
+
+    <dd>
+    <p>Par défaut, la redirection vers un ancrage HTML ne fonctionne
+	pas, car mod_rewrite échappe le caractère <code>#</code> en le
+	transformant en <code>%23</code>, ce qui rend la redirection
+	inopérante.</p>
+    </dd>
+
+    <dt>Solution :</dt>
+
+    <dd>
+      <p>On utilise le drapeau <code>[NE]</code> dans la règle
+	  <code>RewriteRule</code>. NE signifie "No Escape".
+      </p>
+    </dd>
+
+    <dt>Discussion :</dt>
+    <dd>Cette technique fonctionne bien entendu pour tout autre
+    caractère spécial que mod_rewrite, par défaut, code pour insertion
+    dans une URL.</dd>
+  </dl>
+
+</section>
+
+<section id="time-dependent">
+
+  <title>Réécriture dépendant de l'heure</title>
+
+  <dl>
+    <dt>Description :</dt>
+
+    <dd>
+      <p>Nous voulons servir des contenus différents selon l'heure du
+      jour en utilisant mod_rewrite.</p>
+    </dd>
+
+    <dt>Solution :</dt>
+
+    <dd>
+      <p>Il existe de nombreuses variables nommées
+	  <code>TIME_xxx</code> utilisables dans les conditions de
+	  réécriture. Utilisées en conjonction avec les modèles de
+	  comparaison lexicographique spéciaux <code>&lt;STRING</code>,
+	  <code>&gt;STRING</code> et <code>=STRING</code>, elles
+	  permettent d'effectuer des redirections dépendant de
+	  l'heure :</p>
+
+<highlight language="config">
+RewriteEngine on
+RewriteCond   "%{TIME_HOUR}%{TIME_MIN}" &gt;0700
+RewriteCond   "%{TIME_HOUR}%{TIME_MIN}" &lt;1900
+RewriteRule   "^foo\.html$"             "foo.day.html" [L]
+RewriteRule   "^foo\.html$"             "foo.night.html"
+</highlight>
+
+      <p>Avec cet exemple, l'URL <code>foo.html</code> renvoie
+	  le contenu de <code>foo.jour.html</code> durant le
+	  créneau horaire <code>07:01-18:59</code>, et le contenu de
+	  <code>foo.nuit.html</code> le reste du temps.</p>
+
+      <note type="warning"><module>mod_cache</module>, les mandataires
+	intermédiaires et les navigateurs peuvent chacun mettre en cache
+	les réponses et ainsi afficher une des deux pages en dehors de
+	la fenêtre de temps configurée. On peut utiliser
+	<module>mod_expires</module> pour contourner ce problème. Il est
+	cependant bien plus commode de servir un contenu dynamique, et
+	de le personnaliser en fonction de l'heure du jour.</note> </dd>
+  </dl>
+
+</section>
+
+<section id="setenvvars">
+
+  <title>Définir des variables d'environnement en fonction de
+      certaines parties de l'URL</title>
+
+  <dl>
+    <dt>Description :</dt>
+
+    <dd>
+      <p>Parfois, nous voulons conserver une certaine forme de statut
+      lorsqu'une réécriture a eu lieu. Par exemple, vous souhaitez
+      consigner le fait que cette réécriture a eu lieu, et vous servir
+      plus tard de cette information pour déterminer si une requête était
+      concernée par cette réécriture. Pour y parvenir, on peut utiliser
+      une variable d'environnement.</p>
+    </dd>
+
+    <dt>Solution :</dt>
+
+    <dd>
+      <p>Utiliser le drapeau [E] pour définir une variable
+      d'environnement.</p>
+
+<highlight language="config">
+RewriteEngine on
+RewriteRule   "^/cheval/(.*)"   "/poney/$1" [E=<strong>rewritten:1</strong>]
+</highlight>
+
+    <p>Plus loin dans votre jeu de règles, vous pouvez vérifier le
+    contenu de cette variable d'environnement via une directive
+    RewriteCond :</p>
+
+<highlight language="config">
+RewriteCond "%{ENV:rewritten}" =1
+</highlight>
+
+    <p>Notez que les variables d'environnement ne survivent pas à une
+    redirection externe. Vous devez alors utiliser le drapeau [CO] pour définir
+    un cookie. Pour les redirections de niveau répertoire et htaccess où la
+    substitution finale est traitée en tant que redirection interne, les
+    variables d'environnement du tour de réécriture précédent sont préfixées par
+    "REDIRECT_".</p>
+
+    </dd>
+  </dl>
+
+</section>
+
+</manualpage>

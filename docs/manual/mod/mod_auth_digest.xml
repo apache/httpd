@@ -70,7 +70,7 @@
     should list the locations that will be protected by this
     configuration.</p>
 
-    <p>The pasword file referenced in the <directive
+    <p>The password file referenced in the <directive
     module="mod_auth_digest">AuthUserFile</directive> directive may be
     created and managed using the <program>htdigest</program> tool.</p>
 

@@ -7,6 +7,7 @@ include "apr_network_io.h"
 
 #define APR_WANT_STRFUNC
 #include "apr_want.h"
+#include "apr_version.h"
 
 #include "ap_config.h"
 #include "httpd.h"
@@ -42,6 +43,7 @@ AP_DECLARE_DATA int ap_have_so_reuseport = -1;
 AM
 static ap_listen_rec *old_listeners;
 static int ap_listenbacklog;
+static int ap_listentcpdeferaccept;
 static int ap_listencbratio;
 static int send_buffer_size;
 static int receive_buffer_size;
@@ -227,7 +229,7 @@ static void ap_apply_accept_filter(apr_pool_t *p, ap_listen_rec *lis,
                           accf);
         }
 #else
-        rv = apr_socket_opt_set(s, APR_TCP_DEFER_ACCEPT, 30);
+        rv = apr_socket_opt_set(s, APR_TCP_DEFER_ACCEPT, ap_listentcpdeferaccept);
         if (rv != APR_SUCCESS && !APR_STATUS_IS_ENOTIMPL(rv)) {
             ap_log_perror(APLOG_MARK, APLOG_WARNING, rv, p, APLOGNO(00076)
                               "Failed to enable APR_TCP_DEFER_ACCEPT");
@@ -244,34 +246,6 @@ static apr_status_t close_listeners_on_exec(void *v)
 
 
 #ifdef HAVE_SYSTEMD
-
-static int find_systemd_socket(process_rec * process, apr_port_t port)
-{
-    int fdcount, fd;
-    int sdc = sd_listen_fds(0);
-
-    if (sdc < 0) {
-        ap_log_perror(APLOG_MARK, APLOG_CRIT, sdc, process->pool, APLOGNO(02486)
-                      "find_systemd_socket: Error parsing enviroment, sd_listen_fds returned %d",
-                      sdc);
-        return -1;
-    }
-
-    if (sdc == 0) {
-        ap_log_perror(APLOG_MARK, APLOG_CRIT, sdc, process->pool, APLOGNO(02487)
-                      "find_systemd_socket: At least one socket must be set.");
-        return -1;
-    }
-
-    fdcount = atoi(getenv("LISTEN_FDS"));
-    for (fd = SD_LISTEN_FDS_START; fd < SD_LISTEN_FDS_START + fdcount; fd++) {
-        if (sd_is_socket_inet(fd, 0, 0, -1, port) > 0) {
-            return fd;
-        }
-    }
-
-    return -1;
-}
 
 static apr_status_t alloc_systemd_listener(process_rec * process,
                                            int fd, const char *proto,
@@ -301,9 +275,7 @@ static apr_status_t alloc_systemd_listener(process_rec * process,
     si.type = SOCK_STREAM;
     si.protocol = APR_PROTO_TCP;
 
-    rec = apr_palloc(process->pool, sizeof(ap_listen_rec));
-    rec->active = 0;
-    rec->next = 0;
+    rec = apr_pcalloc(process->pool, sizeof(ap_listen_rec));
 
     rv = apr_os_sock_make(&rec->sd, &si, process->pool);
     if (rv != APR_SUCCESS) {
@@ -331,7 +303,16 @@ static const char *set_systemd_listener(process_rec *process, apr_port_t port,
 {
     ap_listen_rec *last, *new;
     apr_status_t rv;
-    int fd = find_systemd_socket(process, port);
+    APR_OPTIONAL_FN_TYPE(ap_find_systemd_socket) *find_systemd_socket;
+    int fd;
+
+    find_systemd_socket = APR_RETRIEVE_OPTIONAL_FN(ap_find_systemd_socket);
+
+    if (!find_systemd_socket)
+       return "Systemd socket activation is used, but mod_systemd is probably "
+               "not loaded";
+
+    fd = find_systemd_socket(process, port);
     if (fd < 0) {
         return "Systemd socket activation is used, but this port is not "
                 "configured in systemd";
@@ -348,55 +329,90 @@ static const char *set_systemd_listener(process_rec *process, apr_port_t port,
     }
 
     if (last == NULL) {
-        ap_listeners = last = new;
+        ap_listeners = new;
     }
     else {
         last->next = new;
-        last = new;
     }
 
     return NULL;
 }
-
 #endif /* HAVE_SYSTEMD */
 
-static const char *alloc_listener(process_rec *process, char *addr,
-                                  apr_port_t port, const char* proto,
-                                  void *slave)
+/* Returns non-zero if socket address SA matches hostname, port and
+ * scope_id.  p is used for temporary allocations. */
+static int match_address(const apr_sockaddr_t *sa,
+                         const char *hostname, apr_port_t port,
+                         const char *scope_id, apr_pool_t *p)
 {
-    ap_listen_rec **walk, *last;
-    apr_status_t status;
-    apr_sockaddr_t *sa;
-    int found_listener = 0;
+    const char *old_scope = NULL;
 
-    /* see if we've got an old listener for this address:port */
-    for (walk = &old_listeners; *walk;) {
-        sa = (*walk)->bind_addr;
+#if APR_VERSION_AT_LEAST(1,7,0)
+    /* To be clever here we could correctly match numeric and
+     * non-numeric zone ids.  Ignore failure, old_scope will be left
+     * as NULL. */
+    (void) apr_sockaddr_zone_get(sa, &old_scope, NULL, p);
+#endif
+    
+    return port == sa->port
+        && ((!hostname && !sa->hostname)
+            || (hostname && sa->hostname && !strcmp(sa->hostname, hostname)))
+        && ((!scope_id && !old_scope)
+            || (scope_id && old_scope && !strcmp(scope_id, old_scope)));            
+}
+
+/* ### This logic doesn't cope with DNS changes across a restart. */
+static int find_listeners(ap_listen_rec **from, ap_listen_rec **to,
+                          const char *addr, apr_port_t port,
+                          const char *scope_id, apr_pool_t *temp_pool)
+{
+    int found = 0;
+
+    while (*from) {
+        apr_sockaddr_t *sa = (*from)->bind_addr;
+
         /* Some listeners are not real so they will not have a bind_addr. */
         if (sa) {
             ap_listen_rec *new;
-            apr_port_t oldport;
 
-            oldport = sa->port;
-            /* If both ports are equivalent, then if their names are equivalent,
-             * then we will re-use the existing record.
-             */
-            if (port == oldport &&
-                ((!addr && !sa->hostname) ||
-                 ((addr && sa->hostname) && !strcmp(sa->hostname, addr)))) {
-                new = *walk;
-                *walk = new->next;
-                new->next = ap_listeners;
-                ap_listeners = new;
-                found_listener = 1;
+            /* Re-use the existing record if it matches completely
+             * against an existing listener. */
+            if (match_address(sa, addr, port, scope_id, temp_pool)) {
+                found = 1;
+                if (!to) {
+                    break;
+                }
+                new = *from;
+                *from = new->next;
+                new->next = *to;
+                *to = new;
                 continue;
             }
         }
 
-        walk = &(*walk)->next;
+        from = &(*from)->next;
     }
 
-    if (found_listener) {
+    return found;
+}
+
+static const char *alloc_listener(process_rec *process, const char *addr,
+                                  apr_port_t port, const char* proto,
+                                  const char *scope_id, void *slave,
+                                  apr_pool_t *temp_pool, apr_uint32_t flags)
+{
+    ap_listen_rec *last;
+    apr_status_t status;
+    apr_sockaddr_t *sa;
+
+    /* see if we've got a listener for this address:port, which is an error */
+    if (find_listeners(&ap_listeners, NULL, addr, port, scope_id, temp_pool)) {
+        return "Cannot define multiple Listeners on the same IP:port";
+    }
+
+    /* see if we've got an old listener for this address:port */
+    if (find_listeners(&old_listeners, &ap_listeners, addr, port,
+                       scope_id, temp_pool)) {
         if (ap_listeners->slave != slave) {
             return "Cannot define a slave on the same IP:port as a Listener";
         }
@@ -420,6 +436,12 @@ static const char *alloc_listener(process_rec *process, char *addr,
 
     while (sa) {
         ap_listen_rec *new;
+        int sock_proto = 0;
+
+#ifdef IPPROTO_MPTCP
+        if (flags & AP_LISTEN_MPTCP)
+            sock_proto = IPPROTO_MPTCP;
+#endif
 
         /* this has to survive restarts */
         new = apr_palloc(process->pool, sizeof(ap_listen_rec));
@@ -427,12 +449,13 @@ static const char *alloc_listener(process_rec *process, char *addr,
         new->next = 0;
         new->bind_addr = sa;
         new->protocol = apr_pstrdup(process->pool, proto);
+        new->flags = flags;
 
         /* Go to the next sockaddr. */
         sa = sa->next;
 
         status = apr_socket_create(&new->sd, new->bind_addr->family,
-                                    SOCK_STREAM, 0, process->pool);
+                                    SOCK_STREAM, sock_proto, process->pool);
 
 #if APR_HAVE_IPV6
         /* What could happen is that we got an IPv6 address, but this system
@@ -449,6 +472,18 @@ static const char *alloc_listener(process_rec *process, char *addr,
                           addr);
             return "Listen setup failed";
         }
+
+#if APR_VERSION_AT_LEAST(1,7,0)
+        if (scope_id) {
+            status = apr_sockaddr_zone_set(new->bind_addr, scope_id);
+            if (status) {
+                ap_log_perror(APLOG_MARK, APLOG_CRIT, status, process->pool, APLOGNO(10102)
+                              "alloc_listener: failed to set scope for %pI to %s",
+                              new->bind_addr, scope_id);
+                return "Listen step failed";
+            }
+        }
+#endif
 
         /* We need to preserve the order returned by getaddrinfo() */
         if (last == NULL) {
@@ -648,6 +683,9 @@ AP_DECLARE(int) ap_setup_listeners(server_rec *s)
     int num_listeners = 0;
     const char* proto;
     int found;
+#ifdef HAVE_SYSTEMD
+    APR_OPTIONAL_FN_TYPE(ap_systemd_listen_fds) *systemd_listen_fds;
+#endif
 
     for (ls = s; ls; ls = ls->next) {
         proto = ap_get_server_protocol(ls);
@@ -678,7 +716,7 @@ AP_DECLARE(int) ap_setup_listeners(server_rec *s)
     if (use_systemd) {
         const char *userdata_key = "ap_open_systemd_listeners";
         void *data;
-        /* clear the enviroment on our second run
+        /* clear the environment on our second run
         * so that none of our future children get confused.
         */
         apr_pool_userdata_get(&data, userdata_key, s->process->pool);
@@ -687,7 +725,10 @@ AP_DECLARE(int) ap_setup_listeners(server_rec *s)
                                 apr_pool_cleanup_null, s->process->pool);
         }
         else {
-            sd_listen_fds(1);
+            systemd_listen_fds = APR_RETRIEVE_OPTIONAL_FN(ap_systemd_listen_fds);
+            if (systemd_listen_fds != NULL) {
+                systemd_listen_fds(1);
+            }
         }        
     }
     else
@@ -699,6 +740,7 @@ AP_DECLARE(int) ap_setup_listeners(server_rec *s)
     }
 
     for (lr = ap_listeners; lr; lr = lr->next) {
+        if (ap_accept_errors_nonfatal) lr->flags |= AP_LISTEN_SPECIFIC_ERRORS;
         num_listeners++;
         found = 0;
         for (ls = s; ls && !found; ls = ls->next) {
@@ -739,7 +781,7 @@ AP_DECLARE(apr_status_t) ap_duplicate_listeners(apr_pool_t *p, server_rec *s,
                 if (val > 1) {
                     *num_buckets = val;
                 }
-                ap_log_perror(APLOG_MARK, APLOG_INFO, 0, p, APLOGNO(02819)
+                ap_log_error(APLOG_MARK, APLOG_INFO, 0, s, APLOGNO(02819)
                               "Using %i listeners bucket(s) based on %i "
                               "online CPU cores and a ratio of %i",
                               *num_buckets, num_online_cores,
@@ -748,7 +790,7 @@ AP_DECLARE(apr_status_t) ap_duplicate_listeners(apr_pool_t *p, server_rec *s,
             else
 #endif
             if (!warn_once) {
-                ap_log_perror(APLOG_MARK, APLOG_WARNING, 0, p, APLOGNO(02820)
+                ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s, APLOGNO(02820)
                               "ListenCoresBucketsRatio ignored without "
                               "SO_REUSEPORT and _SC_NPROCESSORS_ONLN "
                               "support: using a single listeners bucket");
@@ -768,6 +810,7 @@ AP_DECLARE(apr_status_t) ap_duplicate_listeners(apr_pool_t *p, server_rec *s,
             char *hostname;
             apr_port_t port;
             apr_sockaddr_t *sa;
+            int sock_proto = 0;
 #ifdef HAVE_SYSTEMD
             if (use_systemd) {
                 int thesock;
@@ -785,11 +828,22 @@ AP_DECLARE(apr_status_t) ap_duplicate_listeners(apr_pool_t *p, server_rec *s,
                 duplr->protocol = apr_pstrdup(p, lr->protocol);
                 hostname = apr_pstrdup(p, lr->bind_addr->hostname);
                 port = lr->bind_addr->port;
-                apr_sockaddr_info_get(&sa, hostname, APR_UNSPEC, port, 0, p);
+                stat = apr_sockaddr_info_get(&sa, hostname, APR_UNSPEC, port, 0, p);
+                if (stat != APR_SUCCESS) {
+                    ap_log_perror(APLOG_MARK, APLOG_CRIT, stat, p, APLOGNO(10397)
+                                  "failure looking up %s to duplicate "
+                                  "listening socket", hostname);
+                    return stat;
+                }
                 duplr->bind_addr = sa;
                 duplr->next = NULL;
+                duplr->flags = lr->flags;
+#ifdef IPPROTO_MPTCP
+                if (duplr->flags & AP_LISTEN_MPTCP)
+                    sock_proto = IPPROTO_MPTCP;
+#endif
                 stat = apr_socket_create(&duplr->sd, duplr->bind_addr->family,
-                                         SOCK_STREAM, 0, p);
+                                         SOCK_STREAM, sock_proto, p);
                 if (stat != APR_SUCCESS) {
                     ap_log_perror(APLOG_MARK, APLOG_CRIT, 0, p, APLOGNO(02640)
                                 "ap_duplicate_listeners: for address %pI, "
@@ -874,6 +928,7 @@ AP_DECLARE(void) ap_listen_pre_config(void)
     ap_listen_buckets = NULL;
     ap_num_listen_buckets = 0;
     ap_listenbacklog = DEFAULT_LISTENBACKLOG;
+    ap_listentcpdeferaccept = DEFAULT_TCP_DEFER_ACCEPT;
     ap_listencbratio = 0;
 
     /* Check once whether or not SO_REUSEPORT is supported. */
@@ -884,7 +939,7 @@ AP_DECLARE(void) ap_listen_pre_config(void)
          *
          * *BSDs have SO_REUSEPORT too but with a different semantic: the first
          * wildcard address bound socket or the last non-wildcard address bound
-         * socket will receive connections (no evenness garantee); the rest of
+         * socket will receive connections (no evenness guarantee); the rest of
          * the sockets bound to the same port will not.
          * This can't (always) work for httpd.
          *
@@ -910,24 +965,77 @@ AP_DECLARE(void) ap_listen_pre_config(void)
     }
 }
 
+AP_DECLARE(int) ap_accept_error_is_nonfatal(apr_status_t status)
+{
+
+   return APR_STATUS_IS_ECONNREFUSED(status)
+             || APR_STATUS_IS_ECONNABORTED(status)
+             || APR_STATUS_IS_ECONNRESET(status);
+}
+
+/* Parse optional flags argument for Listen.  Currently just boolean
+ * flags handled; would need to be extended to incorporate
+ * ListenBacklog */
+static const char *parse_listen_flags(apr_pool_t *temp_pool, const char *arg,
+                                      apr_uint32_t *flags_out)
+{
+    apr_uint32_t flags = 0;
+    char *str = apr_pstrdup(temp_pool, arg), *token, *state = NULL;
+
+    token = apr_strtok(str, ",", &state);
+    while (token) {
+        if (ap_cstr_casecmp(token, "freebind") == 0)
+            flags |= AP_LISTEN_FREEBIND;
+        else if (ap_cstr_casecmp(token, "reuseport") == 0)
+            flags |= AP_LISTEN_REUSEPORT;
+        else if (ap_cstr_casecmp(token, "v6only") == 0)
+            flags |= AP_LISTEN_V6ONLY;
+        else if (ap_cstr_casecmp(token, "multipathtcp") == 0)
+#ifdef IPPROTO_MPTCP
+            flags |= AP_LISTEN_MPTCP;
+#else
+            return apr_psprintf(temp_pool, "Listen option '%s' in '%s' is not supported on this system",
+                                token, arg);
+#endif
+        else
+            return apr_psprintf(temp_pool, "Unknown Listen option '%s' in '%s'",
+                                token, arg);
+
+        token = apr_strtok(NULL, ",", &state);
+    }
+
+    *flags_out = flags;
+
+    return NULL;
+}
+
 AP_DECLARE_NONSTD(const char *) ap_set_listener(cmd_parms *cmd, void *dummy,
                                                 int argc, char *const argv[])
 {
-    char *host, *scope_id, *proto;
+    char *host, *scope_id, *proto = NULL;
     apr_port_t port;
     apr_status_t rv;
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
+    apr_uint32_t flags = 0;
+#ifdef HAVE_SYSTEMD
+    APR_OPTIONAL_FN_TYPE(ap_systemd_listen_fds) *systemd_listen_fds;
+#endif
 
     if (err != NULL) {
         return err;
     }
 
-    if (argc < 1 || argc > 2) {
-        return "Listen requires 1 or 2 arguments.";
+    if (argc < 1 || argc > 3) {
+        return "Listen requires 1-3 arguments.";
     }
 #ifdef HAVE_SYSTEMD
     if (use_systemd == -1) {
-        use_systemd = sd_listen_fds(0) > 0;
+        systemd_listen_fds = APR_RETRIEVE_OPTIONAL_FN(ap_systemd_listen_fds);
+        if (systemd_listen_fds != NULL) {
+            use_systemd = systemd_listen_fds(0) > 0;
+        } else {
+            use_systemd = 0;
+        }
     }
 #endif
 
@@ -940,25 +1048,61 @@ AP_DECLARE_NONSTD(const char *) ap_set_listener(cmd_parms *cmd, void *dummy,
         host = NULL;
     }
 
+#if !APR_VERSION_AT_LEAST(1,7,0)
     if (scope_id) {
-        /* XXX scope id support is useful with link-local IPv6 addresses */
-        return "Scope id is not supported";
+        return apr_pstrcat(cmd->pool,
+                           "Scope ID in address '", argv[0],
+                           "' not supported with APR " APR_VERSION_STRING,
+                           NULL);
     }
+#endif
 
     if (!port) {
         return "Port must be specified";
     }
 
-    if (argc != 2) {
+    if (argc == 3) {
+        if (strncasecmp(argv[2], "options=", 8)) {
+            return "Third argument to Listen must be options=...";
+        }
+
+        err = parse_listen_flags(cmd->temp_pool, argv[2] + 8, &flags);
+        if (err) {
+            return err;
+        }
+
+        proto = argv[1];
+    }
+
+    if (argc == 2) {
+        /* 2-arg form is either 'Listen host:port options=...' or
+         * 'Listen host:port protocol' */
+        if (strncasecmp(argv[1], "options=", 8) == 0) {
+            err = parse_listen_flags(cmd->temp_pool, argv[1] + 8, &flags);
+            if (err) {
+                return err;
+            }
+        }
+        else {
+            proto = argv[1];
+        }
+    }
+
+    /* Catch case where 2-arg form has typoed options=X and doesn't
+     * match above. */
+    if (proto && ap_strchr_c(proto, '=') != NULL) {
+        return apr_psprintf(cmd->pool, "Invalid protocol name '%s'", proto);
+    }
+    else if (proto) {
+        proto = apr_pstrdup(cmd->pool, proto);
+        ap_str_tolower(proto);
+    }
+    else {
         if (port == 443) {
             proto = "https";
         } else {
             proto = "http";
         }
-    }
-    else {
-        proto = apr_pstrdup(cmd->pool, argv[1]);
-        ap_str_tolower(proto);
     }
 
 #ifdef HAVE_SYSTEMD
@@ -967,7 +1111,8 @@ AP_DECLARE_NONSTD(const char *) ap_set_listener(cmd_parms *cmd, void *dummy,
     }
 #endif
 
-    return alloc_listener(cmd->server->process, host, port, proto, NULL);
+    return alloc_listener(cmd->server->process, host, port, proto,
+                          scope_id, NULL, cmd->temp_pool, flags);
 }
 
 AP_DECLARE_NONSTD(const char *) ap_set_listenbacklog(cmd_parms *cmd,
@@ -987,6 +1132,26 @@ AP_DECLARE_NONSTD(const char *) ap_set_listenbacklog(cmd_parms *cmd,
     }
 
     ap_listenbacklog = b;
+    return NULL;
+}
+
+AP_DECLARE_NONSTD(const char *) ap_set_listentcpdeferaccept(cmd_parms *cmd,
+                                                            void *dummy,
+                                                            const char *arg)
+{
+    int b;
+    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
+
+    if (err != NULL) {
+        return err;
+    }
+
+    b = atoi(arg);
+    if (b < 1) {
+        return "ListenTCPDeferAccept must be > 0";
+    }
+
+    ap_listentcpdeferaccept = b;
     return NULL;
 }
 
@@ -1026,6 +1191,18 @@ AP_DECLARE_NONSTD(const char *) ap_set_send_buffer_size(cmd_parms *cmd,
     }
 
     send_buffer_size = s;
+    return NULL;
+}
+
+AP_DECLARE_NONSTD(const char *) ap_set_accept_errors_nonfatal(cmd_parms *cmd,
+                                                           void *dummy,
+                                                           int flag)
+{
+    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
+    if (err != NULL) {
+        return err;
+    }
+    ap_accept_errors_nonfatal = flag;
     return NULL;
 }
 

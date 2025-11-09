@@ -1,0 +1,2 @@
+  *) scoreboard/mod_http2: record durations of HTTP/2 requests.
+     PR 69579 [Pierre Brochard <pierre.brochard.1982@m4x.org>]

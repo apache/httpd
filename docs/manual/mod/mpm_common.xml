@@ -50,6 +50,17 @@ switch before dumping core</description>
     operating system is not configured to write core files to the working directory
     of the crashing processes.</p>
 
+    <note type="warning">
+      <title>Security note for Linux systems</title>
+
+      <p>Using this directive on Linux may allow other processes on
+      the system (if running with similar privileges, such as CGI
+      scripts) to attach to httpd children via the <code>ptrace</code>
+      system call.  This may make weaken the protection from certain
+      security attacks.  It is not recommended to use this directive
+      on production systems.</p>
+    </note>
+    
     <note><title>Core Dumps on Linux</title>
       <p>If Apache httpd starts as root and switches to another user, the
       Linux kernel <em>disables</em> core dumps even if the directory is
@@ -138,7 +149,7 @@ of the daemon</description>
 <usage>
     <p>The <directive>PidFile</directive> directive sets the file to
     which the server records the process id of the daemon. If the
-    filename is not absolute then it is assumed to be relative to the
+    filename is not absolute, then it is assumed to be relative to the
     <directive module="core">DefaultRuntimeDir</directive>.</p>
 
     <example><title>Example</title>
@@ -171,12 +182,13 @@ of the daemon</description>
 <name>Listen</name>
 <description>IP addresses and ports that the server
 listens to</description>
-<syntax>Listen [<var>IP-address</var>:]<var>portnumber</var> [<var>protocol</var>]</syntax>
+<syntax>Listen [<var>IP-address</var>:]<var>portnumber</var> [<var>protocol</var>] [options=<var>flag</var>[,<var>flag..</var>]]</syntax>
 <contextlist><context>server config</context></contextlist>
 <modulelist><module>event</module><module>worker</module>
 <module>prefork</module><module>mpm_winnt</module>
 <module>mpm_netware</module><module>mpmt_os2</module>
 </modulelist>
+<compatibility>The optional <code>options=</code> argument is available in httpd 2.5.1 and later.</compatibility>
 
 <usage>
     <p>The <directive>Listen</directive> directive instructs Apache httpd to
@@ -220,6 +232,15 @@ Listen 192.170.2.5:8000
       Listen [2001:db8::a00:20ff:fea7:ccea]:80
     </highlight>
 
+    <p>In httpd 2.5.1 and later, if built against APR 1.7.0 or later,
+    scoped (or "zoned") literal IPv6 addresses are accepted in the
+    <directive>Listen</directive> directive, such as the following
+    example.</p>
+
+    <highlight language="config">
+      Listen [fe80::4bfe:88aa:5d42:64d0%eth2]:8081
+    </highlight>
+    
     <p>The optional <var>protocol</var> argument is not required for most
        configurations. If not specified, <code>https</code> is the default for
        port 443 and <code>http</code> the default for all other ports.  The
@@ -234,8 +255,39 @@ Listen 192.170.2.5:8000
       Listen 192.170.2.1:8443 https
     </highlight>
 
+    <p>The optional <var>options=flag,flag...</var> argument can be
+    used to enable certain socket options for the listening port.
+    These options are not required for most configurations and should
+    be used with care.  Availability of each flag varies across
+    operating systems.  The available <em>flag</em>s are:</p>
+
+    <ul>
+      <li><code>freebind</code>: The <code>IP_FREEBIND</code> socket
+      option is enabled, allowing a Listen directive to be used for an
+      address which is not (yet) available on the system. (Linux
+      only)</li>
+
+      <li><code>reuseport</code>: The <code>SO_REUSEPORT</code> socket
+      option is enabled, allowing a Listen directive to bind to a port
+      which may already be in use by another process.</li>
+
+      <li><code>v6only</code>: The <code>IPV6_V6ONLY</code> socket
+      option is enabled, allowing a Listen directive to bind to an
+      IPv6 address without also accepting connections via IPv4, or
+      conflicting with a Listen directive using an IPv4 address bound
+      to the same port.  (If the server is built with IPv4-mapped
+      addresses <em>disabled</em>, this is the default behaviour and
+      this option has no effect.)</li>
+
+      <li><code>multipathtcp</code>: Enable the use of
+      <a href="https://mptcp.dev">Multipath TCP (MPTCP)</a> for the
+      sockets. Beware that this option is currently limited to Linux
+      only.
+      </li>
+    </ul>
+       
     <note><title>Error condition</title>
-      Multiple <directive>Listen</directive> directives for the same ip
+      Multiple <directive>Listen</directive> directives for the same IP
       address and port will result in an <code>Address already in use</code>
       error message.
     </note>
@@ -270,7 +322,7 @@ in *BSDs.</compatibility>
     <p>A <var>ratio</var> between the number of (online) CPU cores and the
     number of listeners' buckets can be used to make Apache HTTP Server create
     <code>num_cpu_cores / ratio</code> listening buckets, each containing its
-    own <directive>Listen</directive>-ing socket(s) on the same port(s), and
+    own <directive module="mpm_common">Listen</directive>-ing socket(s) on the same port(s), and
     then make each child handle a single bucket (with round-robin distribution
     of the buckets at children creation time).</p>
 
@@ -300,14 +352,35 @@ in *BSDs.</compatibility>
     <directive module="mpm_common">MaxSpareThreads</directive> lower bound values.
     The number of children processes needs to be a multiple of the number 
     of buckets to optimally accept connections.</p>
+
+    <note>
+    <title>Multiple <directive>Listen</directive>ers or Apache HTTP servers on
+    the same IP address and port</title>
+    <p>Setting the <code>SO_REUSEPORT</code> option on the listening socket(s)
+    consequently allows multiple processes (sharing the same <code>EUID</code>,
+    e.g. <code>root</code>) to bind to the the same IP address and port,
+    without the binding error raised by the system in the usual case.</p>
+    <p>This also means that multiple instances of Apache httpd configured on a
+    same <code>IP:port</code> and with a positive <directive>ListenCoresBucketsRatio</directive>
+    would start without an error too, and then run with incoming connections
+    evenly distributed across both instances (this is NOT a recommendation or
+    a sensible usage in any case, but just a notice that it would prevent such
+    possible issues to be detected).</p>
+    <p>Within the same instance, Apache httpd will check and fail to start if
+    multiple <directive>Listen</directive> directives on the exact same IP (or
+    hostname) and port are configured, thus avoiding the creation of some
+    duplicated buckets which would be useless and kill performances.  However
+    it can't (and won't try harder to) catch all the possible overlapping cases
+    (like a hostname resolving to an IP used elsewhere).</p>
+    </note>
 </usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>ListenBackLog</name>
 <description>Maximum length of the queue of pending connections</description>
-<syntax>ListenBacklog <var>backlog</var></syntax>
-<default>ListenBacklog 511</default>
+<syntax>ListenBackLog <var>backlog</var></syntax>
+<default>ListenBackLog 511</default>
 <contextlist><context>server config</context></contextlist>
 <modulelist><module>event</module><module>worker</module>
 <module>prefork</module><module>mpm_winnt</module>
@@ -316,8 +389,8 @@ in *BSDs.</compatibility>
 
 <usage>
     <p>The maximum length of the queue of pending connections.
-    Generally no tuning is needed or desired, however on some
-    systems it is desirable to increase this when under a TCP SYN
+    Generally no tuning is needed or desired; however, on some
+    systems, it is desirable to increase this when under a TCP SYN
     flood attack. See the backlog parameter to the
     <code>listen(2)</code> system call.</p>
 
@@ -326,6 +399,29 @@ in *BSDs.</compatibility>
     many OSes do not use exactly what is specified as the backlog,
     but use a number based on (but normally larger than) what is
     set.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>ListenTCPDeferAccept</name>
+<description>Value set for the socket option TCP_DEFER_ACCEPT if it is set</description>
+<syntax>ListenTCPDeferAccept <var>integer</var></syntax>
+<default>ListenTCPDeferAccept 30</default>
+<contextlist><context>server config</context></contextlist>
+<modulelist><module>event</module><module>worker</module>
+<module>prefork</module>
+</modulelist>
+<compatibility>Available in Apache HTTP Server 2.5.1 and later</compatibility>
+
+<usage>
+    <p>The value specified here is set as a value for the socket option
+    <code>TCP_DEFER_ACCEPT</code> if it is set on the listen socket.
+    This happens when running on Linux and <directive
+    module="core">AcceptFilter</directive> is set to anything besides
+    <code>none</code>. In any other cases this setting is ignored.
+    For more details see the Linux
+    <a href="http://man7.org/linux/man-pages/man7/tcp.7.html">
+    tcp(7)</a> man page.</p>
 </usage>
 </directivesynopsis>
 
@@ -356,9 +452,9 @@ simultaneously</description>
     <directive module="mpm_common">ServerLimit</directive>.</p>
 
     <p>For threaded and hybrid servers (<em>e.g.</em> <module>event</module>
-    or <module>worker</module>) <directive>MaxRequestWorkers</directive> restricts
+    or <module>worker</module>), <directive>MaxRequestWorkers</directive> restricts
     the total number of threads that will be available to serve clients.
-    For hybrid MPMs the default value is <code>16</code> (<directive
+    For hybrid MPMs, the default value is <code>16</code> (<directive
     module="mpm_common">ServerLimit</directive>) multiplied by the value of
     <code>25</code> (<directive module="mpm_common"
     >ThreadsPerChild</directive>). Therefore, to increase <directive
@@ -416,7 +512,7 @@ will handle during its life</description>
     <code>0</code>, then the process will never expire.</p>
 
     <p>Setting <directive>MaxConnectionsPerChild</directive> to a
-    non-zero value limits the amount of memory that process can consume
+    non-zero value limits the amount of memory that a process can consume
     by (accidental) memory leakage.</p>
 </usage>
 </directivesynopsis>
@@ -438,7 +534,7 @@ will handle during its life</description>
     <p>For <module>worker</module> and <module>event</module>, the default is
     <code>MaxSpareThreads 250</code>. These MPMs deal with idle threads
     on a server-wide basis. If there are too many idle threads in the
-    server then child processes are killed until the number of idle
+    server, then child processes are killed until the number of idle
     threads is less than this number. Additional processes/threads
     might be created if <directive module="mpm_common">ListenCoresBucketsRatio</directive> 
     is enabled.</p>
@@ -488,7 +584,7 @@ spikes</description>
 
     <p><module>worker</module> and <module>event</module> use a default of
     <code>MinSpareThreads 75</code> and deal with idle threads on a server-wide
-    basis. If there aren't enough idle threads in the server then child
+    basis. If there aren't enough idle threads in the server, then child
     processes are created until the number of idle threads is greater
     than <var>number</var>. Additional processes/threads
     might be created if <directive module="mpm_common">ListenCoresBucketsRatio</directive> 
@@ -496,7 +592,7 @@ spikes</description>
 
     <p><module>mpm_netware</module> uses a default of
     <code>MinSpareThreads 10</code> and, since it is a single-process
-    MPM, tracks this on a server-wide bases.</p>
+    MPM, tracks this on a server-wide basis.</p>
 
     <p><module>mpmt_os2</module> works
     similar to <module>mpm_netware</module>.  For
@@ -540,7 +636,7 @@ the child processes</description>
     <p>File-based shared memory is useful for third-party applications
     that require direct access to the scoreboard.</p>
 
-    <p>If you use a <directive>ScoreBoardFile</directive> then
+    <p>If you use a <directive>ScoreBoardFile</directive>, then
     you may see improved speed by placing it on a RAM disk. But be
     careful that you heed the same warnings about log file placement
     and <a href="../misc/security_tips.html">security</a>.</p>
@@ -791,6 +887,12 @@ per child process</description>
     <p>The default value for <directive>ThreadsPerChild</directive> is
     <code>64</code> when used with <module>mpm_winnt</module> and
     <code>25</code> when used with the others.</p>
+    
+    <p>The value of <directive>ThreadsPerChild</directive> can not exceed the
+    value of <directive module="mpm_common">ThreadLimit</directive>. If a
+    higher value is configured, it will be automatically reduced at start-up
+    and a warning will be logged. The relationship between these 2 directives
+    is explained in <directive module="mpm_common">ThreadLimit</directive>.</p>
 </usage>
 </directivesynopsis>
 
@@ -832,7 +934,7 @@ client connections</description>
       will be achievable if <directive>ThreadStackSize</directive> is
       set to a value lower than the operating system default.  This type
       of adjustment should only be made in a test environment which allows
-      the full set of web server processing can be exercised, as there
+      the full set of web server processing to be exercised, as there
       may be infrequent requests which require more stack to process.
       The minimum required stack size strongly depends on the modules
       used, but any change in the web server configuration can invalidate
@@ -849,6 +951,37 @@ client connections</description>
     unless a high number of threads per child process is needed. On some
     platforms (including Linux), a setting of 128000 is already too low and
     causes crashes with some common modules.</note>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>AcceptErrorsNonFatal</name>
+<description>Treat some errors accepting a new connection as non-fatal
+to the httpd process.</description>
+<syntax>AcceptErrorsNonFatal ON</syntax>
+<default>OFF (ECONNREFUSED, ECONNABORTED, ECONNRESET cause the process to 
+         exit)</default>
+<contextlist><context>server config</context></contextlist>
+<modulelist><module>event</module><module>worker</module>
+<module>prefork</module>
+</modulelist>
+<compatibility>2.5.1 and later</compatibility>
+
+<usage>
+    <p>The <directive>AcceptErrorsNonFatal</directive> alters the servers
+    behavior under some rare errors that may occur while accepting a new 
+    client connection.  By default, the child process handling a request
+    will gracefully exit when nearly any socket error occurs during the
+    accept() system call.  This is to ensure a potentially unhealthy
+    child process does not try to take on more new connections.</p>
+
+    <p>With <directive>AcceptErrorsNonFatal</directive> set to "ON",
+    the process will <em>not</em> begin to exit if the accept() error is
+    ECONNREFUSED, ECONNABORTED, or ECONNRESET.</p>
+ 
+    <note>Some third-party firwewall software components may inject errors
+    into accept() processing, using return codes not specified by the 
+    operating system.</note>
 </usage>
 </directivesynopsis>
 

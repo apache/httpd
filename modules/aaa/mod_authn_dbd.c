@@ -143,7 +143,6 @@ static authn_status authn_dbd_password(request_rec *r, const char *user,
             return AUTH_GENERAL_ERROR;
         }
         if (dbd_password == NULL) {
-#if APU_MAJOR_VERSION > 1 || (APU_MAJOR_VERSION == 1 && APU_MINOR_VERSION >= 3)
             /* add the rest of the columns to the environment */
             int i = 1;
             const char *name;
@@ -168,7 +167,7 @@ static authn_status authn_dbd_password(request_rec *r, const char *user,
                               apr_dbd_get_entry(dbd->driver, row, i));
                 i++;
             }
-#endif
+
             dbd_password = apr_pstrdup(r->pool,
                                        apr_dbd_get_entry(dbd->driver, row, 0));
         }
@@ -239,7 +238,6 @@ static authn_status authn_dbd_realm(request_rec *r, const char *user,
             return AUTH_GENERAL_ERROR;
         }
         if (dbd_hash == NULL) {
-#if APU_MAJOR_VERSION > 1 || (APU_MAJOR_VERSION == 1 && APU_MINOR_VERSION >= 3)
             /* add the rest of the columns to the environment */
             int i = 1;
             const char *name;
@@ -264,7 +262,7 @@ static authn_status authn_dbd_realm(request_rec *r, const char *user,
                               apr_dbd_get_entry(dbd->driver, row, i));
                 i++;
             }
-#endif
+
             dbd_hash = apr_pstrdup(r->pool,
                                    apr_dbd_get_entry(dbd->driver, row, 0));
         }

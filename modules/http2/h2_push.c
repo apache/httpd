@@ -1,18 +1,19 @@
-/* Copyright 2015 greenbytes GmbH (https://www.greenbytes.de)
+/* Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * http://www.apache.org/licenses/LICENSE-2.0
- 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+ 
 #include <assert.h>
 #include <stdio.h>
 
@@ -22,19 +23,19 @@
 #include <apr_time.h>
 
 #ifdef H2_OPENSSL
-#include <openssl/sha.h>
+#include <openssl/evp.h>
 #endif
 
 #include <httpd.h>
 #include <http_core.h>
 #include <http_log.h>
+#include <http_protocol.h>
 
 #include "h2_private.h"
-#include "h2_h2.h"
+#include "h2_protocol.h"
 #include "h2_util.h"
 #include "h2_push.h"
 #include "h2_request.h"
-#include "h2_headers.h"
 #include "h2_session.h"
 #include "h2_stream.h"
 
@@ -58,7 +59,7 @@ static const char *policy_str(h2_push_policy policy)
 
 typedef struct {
     const h2_request *req;
-    int push_policy;
+    apr_uint32_t push_policy;
     apr_pool_t *pool;
     apr_array_header_t *pushes;
     const char *s;
@@ -347,11 +348,10 @@ static int add_push(link_ctx *ctx)
                 }
                 headers = apr_table_make(ctx->pool, 5);
                 apr_table_do(set_push_header, headers, ctx->req->headers, NULL);
-                req = h2_req_create(0, ctx->pool, method, ctx->req->scheme,
-                                    ctx->req->authority, path, headers,
-                                    ctx->req->serialize);
+                req = h2_request_create(0, ctx->pool, method, ctx->req->scheme,
+                                        ctx->req->authority, path, headers);
                 /* atm, we do not push on pushes */
-                h2_request_end_headers(req, ctx->pool, 1);
+                h2_request_end_headers(req, ctx->pool, 0);
                 push->req = req;
                 if (has_param(ctx, "critical")) {
                     h2_priority *prio = apr_pcalloc(ctx->pool, sizeof(*prio));
@@ -426,14 +426,23 @@ static void inspect_link(link_ctx *ctx, const char *s, size_t slen)
 
 static int head_iter(void *ctx, const char *key, const char *value) 
 {
-    if (!apr_strnatcasecmp("link", key)) {
+    if (!ap_cstr_casecmp("link", key)) {
         inspect_link(ctx, value, strlen(value));
     }
     return 1;
 }
 
-apr_array_header_t *h2_push_collect(apr_pool_t *p, const h2_request *req,
-                                    int push_policy, const h2_headers *res)
+#if AP_HAS_RESPONSE_BUCKETS
+apr_array_header_t *h2_push_collect(apr_pool_t *p,
+                                    const struct h2_request *req,
+                                    apr_uint32_t push_policy,
+                                    const ap_bucket_response *res)
+#else
+apr_array_header_t *h2_push_collect(apr_pool_t *p,
+                                    const struct h2_request *req,
+                                    apr_uint32_t push_policy,
+                                    const struct h2_headers *res)
+#endif
 {
     if (req && push_policy != H2_PUSH_NONE) {
         /* Collect push candidates from the request/response pair.
@@ -463,33 +472,6 @@ apr_array_header_t *h2_push_collect(apr_pool_t *p, const h2_request *req,
     return NULL;
 }
 
-/*******************************************************************************
- * push diary 
- *
- * - The push diary keeps track of resources already PUSHed via HTTP/2 on this
- *   connection. It records a hash value from the absolute URL of the resource
- *   pushed.
- * - Lacking openssl, it uses 'apr_hashfunc_default' for the value
- * - with openssl, it uses SHA256 to calculate the hash value
- * - whatever the method to generate the hash, the diary keeps a maximum of 64
- *   bits per hash, limiting the memory consumption to about 
- *      H2PushDiarySize * 8 
- *   bytes. Entries are sorted by most recently used and oldest entries are
- *   forgotten first.
- * - Clients can initialize/replace the push diary by sending a 'Cache-Digest'
- *   header. Currently, this is the base64url encoded value of the cache digest
- *   as specified in https://datatracker.ietf.org/doc/draft-kazuho-h2-cache-digest/
- *   This draft can be expected to evolve and the definition of the header
- *   will be added there and refined.
- * - The cache digest header is a Golomb Coded Set of hash values, but it may
- *   limit the amount of bits per hash value even further. For a good description
- *   of GCS, read here:
- *      http://giovanni.bajo.it/post/47119962313/golomb-coded-sets-smaller-than-bloom-filters
- * - The means that the push diary might be initialized with hash values of much
- *   less than 64 bits, leading to more false positives, but smaller digest size.
- ******************************************************************************/
- 
- 
 #define GCSLOG_LEVEL   APLOG_TRACE1
 
 typedef struct h2_push_diary_entry {
@@ -498,27 +480,32 @@ typedef struct h2_push_diary_entry {
 
 
 #ifdef H2_OPENSSL
-static void sha256_update(SHA256_CTX *ctx, const char *s)
+static void sha256_update(EVP_MD_CTX *ctx, const char *s)
 {
-    SHA256_Update(ctx, s, strlen(s));
+    EVP_DigestUpdate(ctx, s, strlen(s));
 }
 
 static void calc_sha256_hash(h2_push_diary *diary, apr_uint64_t *phash, h2_push *push) 
 {
-    SHA256_CTX sha256;
+    EVP_MD_CTX *md;
     apr_uint64_t val;
-    unsigned char hash[SHA256_DIGEST_LENGTH];
-    int i;
-    
-    SHA256_Init(&sha256);
-    sha256_update(&sha256, push->req->scheme);
-    sha256_update(&sha256, "://");
-    sha256_update(&sha256, push->req->authority);
-    sha256_update(&sha256, push->req->path);
-    SHA256_Final(hash, &sha256);
+    unsigned char hash[EVP_MAX_MD_SIZE];
+    unsigned len, i;
+
+    md = EVP_MD_CTX_create();
+    ap_assert(md != NULL);
+
+    i = EVP_DigestInit_ex(md, EVP_sha256(), NULL);
+    ap_assert(i == 1);
+    sha256_update(md, push->req->scheme);
+    sha256_update(md, "://");
+    sha256_update(md, push->req->authority);
+    sha256_update(md, push->req->path);
+    EVP_DigestFinal(md, hash, &len);
+    EVP_MD_CTX_destroy(md);
 
     val = 0;
-    for (i = 0; i != sizeof(val); ++i)
+    for (i = 0; i != len; ++i)
         val = val * 256 + hash[i];
     *phash = val >> (64 - diary->mask_bits);
 }
@@ -527,13 +514,14 @@ static void calc_sha256_hash(h2_push_diary *diary, apr_uint64_t *phash, h2_push 
 
 static unsigned int val_apr_hash(const char *str) 
 {
-    apr_ssize_t len = strlen(str);
+    apr_ssize_t len = (apr_ssize_t)strlen(str);
     return apr_hashfunc_default(str, &len);
 }
 
 static void calc_apr_hash(h2_push_diary *diary, apr_uint64_t *phash, h2_push *push) 
 {
     apr_uint64_t val;
+    (void)diary;
 #if APR_UINT64_MAX > UINT_MAX
     val = ((apr_uint64_t)(val_apr_hash(push->req->scheme)) << 32);
     val ^= ((apr_uint64_t)(val_apr_hash(push->req->authority)) << 16);
@@ -616,38 +604,48 @@ static int h2_push_diary_find(h2_push_diary *diary, apr_uint64_t hash)
     return -1;
 }
 
-static h2_push_diary_entry *move_to_last(h2_push_diary *diary, apr_size_t idx)
+static void move_to_last(h2_push_diary *diary, apr_size_t idx)
 {
     h2_push_diary_entry *entries = (h2_push_diary_entry*)diary->entries->elts;
     h2_push_diary_entry e;
-    apr_size_t lastidx = diary->entries->nelts-1;
+    apr_size_t lastidx;
     
+    /* Move an existing entry to the last place */
+    if (diary->entries->nelts <= 0)
+        return;
+
     /* move entry[idx] to the end */
+    lastidx = diary->entries->nelts - 1;
     if (idx < lastidx) {
         e =  entries[idx];
-        memmove(entries+idx, entries+idx+1, sizeof(e) * (lastidx - idx));
+        memmove(entries+idx, entries+idx+1, sizeof(h2_push_diary_entry) * (lastidx - idx));
         entries[lastidx] = e;
     }
-    return &entries[lastidx];
+}
+
+static void remove_first(h2_push_diary *diary)
+{
+    h2_push_diary_entry *entries = (h2_push_diary_entry*)diary->entries->elts;
+    int lastidx;
+    
+    /* move remaining entries to index 0 */
+    lastidx = diary->entries->nelts - 1;
+    if (lastidx > 0) {
+        --diary->entries->nelts;
+        memmove(entries, entries+1, sizeof(h2_push_diary_entry) * diary->entries->nelts);
+    }
 }
 
 static void h2_push_diary_append(h2_push_diary *diary, h2_push_diary_entry *e)
 {
-    h2_push_diary_entry *ne;
-    
-    if (diary->entries->nelts < diary->N) {
-        /* append a new diary entry at the end */
-        APR_ARRAY_PUSH(diary->entries, h2_push_diary_entry) = *e;
-        ne = &APR_ARRAY_IDX(diary->entries, diary->entries->nelts-1, h2_push_diary_entry);
+    while (diary->entries->nelts >= diary->N) {
+        remove_first(diary);
     }
-    else {
-        /* replace content with new digest. keeps memory usage constant once diary is full */
-        ne = move_to_last(diary, 0);
-        *ne = *e;
-    }
+    /* append a new diary entry at the end */
+    APR_ARRAY_PUSH(diary->entries, h2_push_diary_entry) = *e;
     /* Intentional no APLOGNO */
     ap_log_perror(APLOG_MARK, GCSLOG_LEVEL, 0, diary->entries->pool,
-                  "push_diary_append: %"APR_UINT64_T_HEX_FMT, ne->hash);
+                  "push_diary_append: %"APR_UINT64_T_HEX_FMT, e->hash);
 }
 
 apr_array_header_t *h2_push_diary_update(h2_session *session, apr_array_header_t *pushes)
@@ -667,13 +665,13 @@ apr_array_header_t *h2_push_diary_update(h2_session *session, apr_array_header_t
             idx = h2_push_diary_find(session->push_diary, e.hash);
             if (idx >= 0) {
                 /* Intentional no APLOGNO */
-                ap_log_cerror(APLOG_MARK, GCSLOG_LEVEL, 0, session->c,
+                ap_log_cerror(APLOG_MARK, GCSLOG_LEVEL, 0, session->c1,
                               "push_diary_update: already there PUSH %s", push->req->path);
-                move_to_last(session->push_diary, idx);
+                move_to_last(session->push_diary, (apr_size_t)idx);
             }
             else {
                 /* Intentional no APLOGNO */
-                ap_log_cerror(APLOG_MARK, GCSLOG_LEVEL, 0, session->c,
+                ap_log_cerror(APLOG_MARK, GCSLOG_LEVEL, 0, session->c1,
                               "push_diary_update: adding PUSH %s", push->req->path);
                 if (!npushes) {
                     npushes = apr_array_make(pushes->pool, 5, sizeof(h2_push_diary_entry*));
@@ -686,34 +684,21 @@ apr_array_header_t *h2_push_diary_update(h2_session *session, apr_array_header_t
     return npushes;
 }
     
-apr_array_header_t *h2_push_collect_update(h2_stream *stream, 
-                                           const struct h2_request *req, 
+#if AP_HAS_RESPONSE_BUCKETS
+apr_array_header_t *h2_push_collect_update(struct h2_stream *stream,
+                                           const struct h2_request *req,
+                                           const ap_bucket_response *res)
+#else
+apr_array_header_t *h2_push_collect_update(struct h2_stream *stream,
+                                           const struct h2_request *req,
                                            const struct h2_headers *res)
+#endif
 {
-    h2_session *session = stream->session;
-    const char *cache_digest = apr_table_get(req->headers, "Cache-Digest");
     apr_array_header_t *pushes;
-    apr_status_t status;
     
-    if (cache_digest && session->push_diary) {
-        status = h2_push_diary_digest64_set(session->push_diary, req->authority, 
-                                            cache_digest, stream->pool);
-        if (status != APR_SUCCESS) {
-            ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, session->c,
-                          APLOGNO(03057)
-                          "h2_session(%ld): push diary set from Cache-Digest: %s", 
-                          session->id, cache_digest);
-        }
-    }
     pushes = h2_push_collect(stream->pool, req, stream->push_policy, res);
     return h2_push_diary_update(stream->session, pushes);
 }
-
-static apr_int32_t h2_log2inv(unsigned char log2)
-{
-    return log2? (1 << log2) : 1;
-}
-
 
 typedef struct {
     h2_push_diary *diary;
@@ -822,23 +807,18 @@ apr_status_t h2_push_diary_digest_get(h2_push_diary *diary, apr_pool_t *pool,
                                       int maxP, const char *authority, 
                                       const char **pdata, apr_size_t *plen)
 {
-    int nelts, N, i;
+    int nelts, N;
     unsigned char log2n, log2pmax;
     gset_encoder encoder;
     apr_uint64_t *hashes;
-    apr_size_t hash_count;
+    apr_size_t hash_count, i;
     
     nelts = diary->entries->nelts;
-    
-    if (nelts > APR_UINT32_MAX) {
-        /* should not happen */
-        return APR_ENOTIMPL;
-    }
     N = ceil_power_of_2(nelts);
     log2n = h2_log2(N);
     
     /* Now log2p is the max number of relevant bits, so that
-     * log2p + log2n == mask_bits. We can uise a lower log2p
+     * log2p + log2n == mask_bits. We can use a lower log2p
      * and have a shorter set encoding...
      */
     log2pmax = h2_log2(ceil_power_of_2(maxP));
@@ -893,168 +873,5 @@ apr_status_t h2_push_diary_digest_get(h2_push_diary *diary, apr_pool_t *pool,
     *plen = encoder.offset + 1;
     
     return APR_SUCCESS;
-}
-
-typedef struct {
-    h2_push_diary *diary;
-    apr_pool_t *pool;
-    unsigned char log2p;
-    const unsigned char *data;
-    apr_size_t datalen;
-    apr_size_t offset;
-    unsigned int bit;
-    apr_uint64_t last_val;
-} gset_decoder;
-
-static int gset_decode_next_bit(gset_decoder *decoder)
-{
-    if (++decoder->bit >= 8) {
-        if (++decoder->offset >= decoder->datalen) {
-            return -1;
-        }
-        decoder->bit = 0;
-    }
-    return (decoder->data[decoder->offset] & cbit_mask[decoder->bit])? 1 : 0;
-}
-
-static apr_status_t gset_decode_next(gset_decoder *decoder, apr_uint64_t *phash)
-{
-    apr_uint64_t flex = 0, fixed = 0, delta;
-    int i;
-    
-    /* read 1 bits until we encounter 0, then read log2n(diary-P) bits.
-     * On a malformed bit-string, this will not fail, but produce results
-     * which are pbly too large. Luckily, the diary will modulo the hash.
-     */
-    while (1) {
-        int bit = gset_decode_next_bit(decoder);
-        if (bit == -1) {
-            return APR_EINVAL;
-        }
-        if (!bit) {
-            break;
-        }
-        ++flex;
-    }
-    
-    for (i = 0; i < decoder->log2p; ++i) {
-        int bit = gset_decode_next_bit(decoder);
-        if (bit == -1) {
-            return APR_EINVAL;
-        }
-        fixed = (fixed << 1) | bit;
-    }
-    
-    delta = (flex << decoder->log2p) | fixed;
-    *phash = delta + decoder->last_val;
-    decoder->last_val = *phash;
-    
-    /* Intentional no APLOGNO */
-    ap_log_perror(APLOG_MARK, GCSLOG_LEVEL, 0, decoder->pool,
-                  "h2_push_diary_digest_dec: val=%"APR_UINT64_T_HEX_FMT", delta=%"
-                  APR_UINT64_T_HEX_FMT", flex=%d, fixed=%"APR_UINT64_T_HEX_FMT, 
-                  *phash, delta, (int)flex, fixed);
-                  
-    return APR_SUCCESS;
-}
-
-/**
- * Initialize the push diary by a cache digest as described in 
- * https://datatracker.ietf.org/doc/draft-kazuho-h2-cache-digest/
- * .
- * @param diary the diary to set the digest into
- * @param data the binary cache digest
- * @param len the length of the cache digest
- * @return APR_EINVAL if digest was not successfully parsed
- */
-apr_status_t h2_push_diary_digest_set(h2_push_diary *diary, const char *authority, 
-                                      const char *data, apr_size_t len)
-{
-    gset_decoder decoder;
-    unsigned char log2n, log2p;
-    int N, i;
-    apr_pool_t *pool = diary->entries->pool;
-    h2_push_diary_entry e;
-    apr_status_t status = APR_SUCCESS;
-    
-    if (len < 2) {
-        /* at least this should be there */
-        return APR_EINVAL;
-    }
-    log2n = data[0];
-    log2p = data[1];
-    diary->mask_bits = log2n + log2p;
-    if (diary->mask_bits > 64) {
-        /* cannot handle */
-        return APR_ENOTIMPL;
-    }
-    
-    /* whatever is in the digest, it replaces the diary entries */
-    apr_array_clear(diary->entries);
-    if (!authority || !strcmp("*", authority)) {
-        diary->authority = NULL;
-    }
-    else if (!diary->authority || strcmp(diary->authority, authority)) {
-        diary->authority = apr_pstrdup(diary->entries->pool, authority);
-    }
-
-    N = h2_log2inv(log2n + log2p);
-
-    decoder.diary    = diary;
-    decoder.pool     = pool;
-    decoder.log2p    = log2p;
-    decoder.data     = (const unsigned char*)data;
-    decoder.datalen  = len;
-    decoder.offset   = 1;
-    decoder.bit      = 8;
-    decoder.last_val = 0;
-    
-    diary->N = N;
-    /* Determine effective N we use for storage */
-    if (!N) {
-        /* a totally empty cache digest. someone tells us that she has no
-         * entries in the cache at all. Use our own preferences for N+mask 
-         */
-        diary->N = diary->NMax;
-        return APR_SUCCESS;
-    }
-    else if (N > diary->NMax) {
-        /* Store not more than diary is configured to hold. We open us up
-         * to DOS attacks otherwise. */
-        diary->N = diary->NMax;
-    }
-    
-    /* Intentional no APLOGNO */
-    ap_log_perror(APLOG_MARK, GCSLOG_LEVEL, 0, pool,
-                  "h2_push_diary_digest_set: N=%d, log2n=%d, "
-                  "diary->mask_bits=%d, dec.log2p=%d", 
-                  (int)diary->N, (int)log2n, diary->mask_bits, 
-                  (int)decoder.log2p);
-                  
-    for (i = 0; i < diary->N; ++i) {
-        if (gset_decode_next(&decoder, &e.hash) != APR_SUCCESS) {
-            /* the data may have less than N values */
-            break;
-        }
-        h2_push_diary_append(diary, &e);
-    }
-    
-    /* Intentional no APLOGNO */
-    ap_log_perror(APLOG_MARK, GCSLOG_LEVEL, 0, pool,
-                  "h2_push_diary_digest_set: diary now with %d entries, mask_bits=%d", 
-                  (int)diary->entries->nelts, diary->mask_bits);
-    return status;
-}
-
-apr_status_t h2_push_diary_digest64_set(h2_push_diary *diary, const char *authority, 
-                                        const char *data64url, apr_pool_t *pool)
-{
-    const char *data;
-    apr_size_t len = h2_util_base64url_decode(&data, data64url, pool);
-    /* Intentional no APLOGNO */
-    ap_log_perror(APLOG_MARK, GCSLOG_LEVEL, 0, pool,
-                  "h2_push_diary_digest64_set: digest=%s, dlen=%d", 
-                  data64url, (int)len);
-    return h2_push_diary_digest_set(diary, authority, data, len);
 }
 

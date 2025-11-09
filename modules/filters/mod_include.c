@@ -3855,6 +3855,7 @@ static apr_status_t includes_filter(ap_filter_t *f, apr_bucket_brigade *b)
         ctx->intern = intern = apr_palloc(r->pool, sizeof(*ctx->intern));
         ctx->pool = r->pool;
         apr_pool_create(&ctx->dpool, ctx->pool);
+        apr_pool_tag(ctx->dpool, "includes_dpool");
 
         /* runtime data */
         intern->tmp_bb = apr_brigade_create(ctx->pool, f->c->bucket_alloc);
@@ -3971,7 +3972,7 @@ static int include_fixup(request_rec *r)
     if (r->handler && (strcmp(r->handler, "server-parsed") == 0))
     {
         if (!r->content_type || !*r->content_type) {
-            ap_set_content_type(r, "text/html");
+            ap_set_content_type_ex(r, "text/html", 1);
         }
         r->handler = "default-handler";
     }

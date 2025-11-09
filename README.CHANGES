@@ -1,0 +1,19 @@
+Changes can be documented in two ways now: Either by directly editing the
+CHANGES file like it was done until now or by storing each entry for the
+CHANGES file correctly formated in a separate file in the changes-entries
+directory.
+
+The benefit of the single file per change approach is that it eases backporting
+the CHANGES entry to a stable branch as it avoids the frequent merge conflicts
+as changes are merged in different orders or not at all in the stable branch.
+
+In order to keep the current CHANGES file for the users as is there is a new
+make target called 'update-changes'. It merges all change files in the
+changes-entries directory to the top of the CHANGES file and removes them
+afterwards.
+
+This make target can be seen in a similar way as the scripts to update the
+documentation files from its xml sources. It can be executed immediately
+after the new file in the changes-entries directory has been created / merged
+and committed or it can be executed later. It should be executed at least before
+a release gets tagged.

@@ -41,7 +41,7 @@
 </li><li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="requirements" id="requirements">시스템 요구사항</a></h2>
+<h2><a name="requirements" id="requirements">시스템 요구사항</a> <a title="Permanent link" href="#requirements" class="permalink">&para;</a></h2>
 
     <p><cite>IP기반</cite>이란 말이 의미하듯이 서버는
     <strong>IP기반 가상호스트 각각에 대해 다른 IP 주소를
@@ -52,7 +52,7 @@
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="howto" id="howto">아파치 설정방법</a></h2>
+<h2><a name="howto" id="howto">아파치 설정방법</a> <a title="Permanent link" href="#howto" class="permalink">&para;</a></h2>
 
     <p>여러 호스트를 지원하도록 아파치를 설정하는 방법은 두가지다.
     하나는 각 호스트마다 별도의 웹서버를 실행하는
@@ -86,7 +86,7 @@
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="multiple" id="multiple">여러 서버를 실행하기</a></h2>
+<h2><a name="multiple" id="multiple">여러 서버를 실행하기</a> <a title="Permanent link" href="#multiple" class="permalink">&para;</a></h2>
 
     <p>각 가상호스트별로 웹서버를 설치한다. 설정파일의
     <code class="directive"><a href="../mod/mpm_common.html#listen">Listen</a></code> 지시어에
@@ -102,7 +102,7 @@
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="single" id="single">서버 하나로 가상호스트 실행하기</a></h2>
+<h2><a name="single" id="single">서버 하나로 가상호스트 실행하기</a> <a title="Permanent link" href="#single" class="permalink">&para;</a></h2>
 
     <p>이 경우 웹서버 한개로 주서버와 모든 가상호스트에 대한
     요청을 서비스한다. 설정파일의 <code class="directive"><a href="../mod/core.html#virtualhost">VirtualHost</a></code> 지시어에 가상호스트마다
@@ -153,7 +153,7 @@
 <a href="../ja/vhosts/ip-based.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/vhosts/ip-based.html" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/vhosts/ip-based.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a></p>
-</div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comments</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
+</div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comments</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Libera.chat, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
 var comments_identifier = 'http://httpd.apache.org/docs/trunk/vhosts/ip-based.html';
@@ -171,7 +171,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/vhosts/ip-based.ht
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2017 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2023 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">모듈</a> | <a href="../mod/quickreference.html">지시어들</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">용어</a> | <a href="../sitemap.html">사이트맵</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

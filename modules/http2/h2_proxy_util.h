@@ -1,11 +1,12 @@
-/* Copyright 2015 greenbytes GmbH (https://www.greenbytes.de)
+/* Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * http://www.apache.org/licenses/LICENSE-2.0
- 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -149,7 +150,7 @@ int h2_proxy_iq_shift(h2_proxy_iqueue *q);
  * common helpers
  ******************************************************************************/
 /* h2_proxy_log2(n) iff n is a power of 2 */
-unsigned char h2_proxy_log2(int n);
+unsigned char h2_proxy_log2(unsigned int n);
 
 /*******************************************************************************
  * HTTP/2 header helpers
@@ -167,6 +168,8 @@ typedef struct h2_proxy_ngheader {
 h2_proxy_ngheader *h2_proxy_util_nghd_make_req(apr_pool_t *p, 
                                                const struct h2_proxy_request *req);
 
+h2_proxy_ngheader *h2_proxy_util_nghd_make(apr_pool_t *p, apr_table_t *headers);
+
 /*******************************************************************************
  * h2_proxy_request helpers
  ******************************************************************************/
@@ -182,11 +185,10 @@ struct h2_proxy_request {
     
     apr_time_t request_time;
     
-    unsigned int chunked : 1;   /* iff requst body needs to be forwarded as chunked */
-    unsigned int serialize : 1; /* iff this request is written in HTTP/1.1 serialization */
+    int chunked;   /* iff request body needs to be forwarded as chunked */
 };
 
-h2_proxy_request *h2_proxy_req_create(int id, apr_pool_t *pool, int serialize);
+h2_proxy_request *h2_proxy_req_create(int id, apr_pool_t *pool);
 apr_status_t h2_proxy_req_make(h2_proxy_request *req, apr_pool_t *pool,
                                const char *method, const char *scheme, 
                                const char *authority, const char *path, 
@@ -200,5 +202,56 @@ const char *h2_proxy_link_reverse_map(request_rec *r,
                                       const char *real_server_uri,
                                       const char *proxy_server_uri,
                                       const char *s);
+
+/*******************************************************************************
+ * FIFO queue
+ ******************************************************************************/
+
+/**
+ * A thread-safe FIFO queue with some extra bells and whistles, if you
+ * do not need anything special, better use 'apr_queue'.
+ */
+typedef struct h2_proxy_fifo h2_proxy_fifo;
+
+/**
+ * Create a FIFO queue that can hold up to capacity elements. Elements can
+ * appear several times.
+ */
+apr_status_t h2_proxy_fifo_create(h2_proxy_fifo **pfifo, apr_pool_t *pool, int capacity);
+
+/**
+ * Create a FIFO set that can hold up to capacity elements. Elements only
+ * appear once. Pushing an element already present does not change the
+ * queue and is successful.
+ */
+apr_status_t h2_proxy_fifo_set_create(h2_proxy_fifo **pfifo, apr_pool_t *pool, int capacity);
+
+apr_status_t h2_proxy_fifo_term(h2_proxy_fifo *fifo);
+apr_status_t h2_proxy_fifo_interrupt(h2_proxy_fifo *fifo);
+
+int h2_proxy_fifo_capacity(h2_proxy_fifo *fifo);
+int h2_proxy_fifo_count(h2_proxy_fifo *fifo);
+
+/**
+ * Push en element into the queue. Blocks if there is no capacity left.
+ * 
+ * @param fifo the FIFO queue
+ * @param elem the element to push
+ * @return APR_SUCCESS on push, APR_EAGAIN on try_push on a full queue,
+ *         APR_EEXIST when in set mode and elem already there.
+ */
+apr_status_t h2_proxy_fifo_push(h2_proxy_fifo *fifo, void *elem);
+apr_status_t h2_proxy_fifo_try_push(h2_proxy_fifo *fifo, void *elem);
+
+apr_status_t h2_proxy_fifo_pull(h2_proxy_fifo *fifo, void **pelem);
+apr_status_t h2_proxy_fifo_try_pull(h2_proxy_fifo *fifo, void **pelem);
+
+/**
+ * Remove the elem from the queue, will remove multiple appearances.
+ * @param elem  the element to remove
+ * @return APR_SUCCESS iff > 0 elems were removed, APR_EAGAIN otherwise.
+ */
+apr_status_t h2_proxy_fifo_remove(h2_proxy_fifo *fifo, void *elem);
+
 
 #endif /* defined(__mod_h2__h2_proxy_util__) */

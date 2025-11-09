@@ -123,7 +123,7 @@ static char *log_escape(char *q, const char *e, const char *p)
 {
     for ( ; *p ; ++p) {
         ap_assert(q < e);
-        if (test_char_table[*(unsigned char *)p]&T_ESCAPE_FORENSIC) {
+        if (TEST_CHAR(*p, T_ESCAPE_FORENSIC)) {
             ap_assert(q+2 < e);
             *q++ = '%';
             ap_bin2hex(p, 1, q);
@@ -146,12 +146,12 @@ typedef struct hlog {
     apr_size_t count;
 } hlog;
 
-static int count_string(const char *p)
+static apr_size_t count_string(const char *p)
 {
-    int n;
+    apr_size_t n;
 
     for (n = 0 ; *p ; ++p, ++n)
-        if (test_char_table[*(unsigned char *)p]&T_ESCAPE_FORENSIC)
+        if (TEST_CHAR(*p, T_ESCAPE_FORENSIC))
             n += 2;
     return n;
 }

@@ -33,10 +33,6 @@
 #define FILTER_POOL     apr_hook_global_pool
 #include "ap_hooks.h"   /* for apr_hook_global_pool */
 
-/* XXX: Should these be configurable parameters? */
-#define THRESHOLD_MAX_BUFFER 65536
-#define MAX_REQUESTS_IN_PIPELINE 5
-
 /*
 ** This macro returns true/false if a given filter should be inserted BEFORE
 ** another filter. This will happen when one of: 1) there isn't another
@@ -54,6 +50,36 @@
 /* we know core's module_index is 0 */
 #undef APLOG_MODULE_INDEX
 #define APLOG_MODULE_INDEX AP_CORE_MODULE_INDEX
+
+struct ap_filter_private {
+    /* Link to a pending_ring (keep first preferably) */
+    APR_RING_ENTRY(ap_filter_private) pending;
+
+    /* Backref to owning filter */
+    ap_filter_t *f;
+
+    /* Pending buckets */
+    apr_bucket_brigade *bb;
+    /* Dedicated pool to use for deferred writes. */
+    apr_pool_t *deferred_pool;
+};
+APR_RING_HEAD(pending_ring, ap_filter_private);
+
+struct spare_data {
+    APR_RING_ENTRY(spare_data) link;
+    void *data;
+};
+APR_RING_HEAD(spare_ring, spare_data);
+
+struct ap_filter_conn_ctx {
+    struct pending_ring *pending_input_filters;
+    struct pending_ring *pending_output_filters;
+
+    struct spare_ring *spare_containers,
+                      *spare_brigades,
+                      *spare_filters,
+                      *dead_filters;
+};
 
 typedef struct filter_trie_node filter_trie_node;
 
@@ -286,15 +312,121 @@ AP_DECLARE(ap_filter_rec_t *) ap_register_output_filter_protocol(
     return ret ;
 }
 
+static struct ap_filter_conn_ctx *get_conn_ctx(conn_rec *c)
+{
+    struct ap_filter_conn_ctx *x = c->filter_conn_ctx;
+    if (!x) {
+        c->filter_conn_ctx = x = apr_pcalloc(c->pool, sizeof(*x));
+    }
+    return x;
+}
+
+static APR_INLINE
+void make_spare_ring(struct spare_ring **ring, apr_pool_t *p)
+{
+    if (!*ring) {
+        *ring = apr_palloc(p, sizeof(**ring));
+        APR_RING_INIT(*ring, spare_data, link);
+    }
+}
+
+static void *get_spare(conn_rec *c, struct spare_ring *ring)
+{
+    void *data = NULL;
+
+    if (ring && !APR_RING_EMPTY(ring, spare_data, link)) {
+        struct spare_data *sdata = APR_RING_FIRST(ring);
+        struct ap_filter_conn_ctx *x = c->filter_conn_ctx;
+
+        data = sdata->data;
+        sdata->data = NULL;
+        APR_RING_REMOVE(sdata, link);
+        make_spare_ring(&x->spare_containers, c->pool);
+        APR_RING_INSERT_TAIL(x->spare_containers, sdata, spare_data, link);
+    }
+
+    return data;
+}
+
+static void put_spare(conn_rec *c, void *data, struct spare_ring **ring)
+{
+    struct ap_filter_conn_ctx *x = c->filter_conn_ctx;
+    struct spare_data *sdata;
+
+    if (!x->spare_containers || APR_RING_EMPTY(x->spare_containers,
+                                               spare_data, link)) {
+        sdata = apr_palloc(c->pool, sizeof(*sdata));
+    }
+    else {
+        sdata = APR_RING_FIRST(x->spare_containers);
+        APR_RING_REMOVE(sdata, link);
+    }
+    sdata->data = data;
+
+    make_spare_ring(ring, c->pool);
+    APR_RING_INSERT_TAIL(*ring, sdata, spare_data, link);
+}
+
+AP_DECLARE(apr_bucket_brigade *) ap_acquire_brigade(conn_rec *c)
+{
+    struct ap_filter_conn_ctx *x = get_conn_ctx(c);
+    apr_bucket_brigade *bb = get_spare(c, x->spare_brigades);
+
+    return bb ? bb : apr_brigade_create(c->pool, c->bucket_alloc);
+}
+
+AP_DECLARE(void) ap_release_brigade(conn_rec *c, apr_bucket_brigade *bb)
+{
+    struct ap_filter_conn_ctx *x = get_conn_ctx(c);
+
+    AP_DEBUG_ASSERT(bb->p == c->pool && bb->bucket_alloc == c->bucket_alloc);
+
+    apr_brigade_cleanup(bb);
+    put_spare(c, bb, &x->spare_brigades);
+}
+
+static apr_status_t request_filter_cleanup(void *arg)
+{
+    ap_filter_t *f = arg;
+    conn_rec *c = f->c;
+    struct ap_filter_conn_ctx *x = c->filter_conn_ctx;
+
+    /* A request filter is cleaned up with an EOR bucket, so possibly
+     * while it is handling/passing the EOR, and we want each filter or
+     * ap_filter_output_pending() to be able to dereference f until they
+     * return. So request filters are recycled in dead_filters and will only
+     * be moved to spare_filters when recycle_dead_filters() is called, i.e.
+     * in ap_filter_{in,out}put_pending(). Set f->r to NULL still for any use
+     * after free to crash quite reliably.
+     */
+    f->r = NULL;
+    put_spare(c, f, &x->dead_filters);
+
+    return APR_SUCCESS;
+}
+
+static void recycle_dead_filters(conn_rec *c)
+{
+    struct ap_filter_conn_ctx *x = c->filter_conn_ctx;
+
+    if (!x || !x->dead_filters) {
+        return;
+    }
+
+    make_spare_ring(&x->spare_filters, c->pool);
+    APR_RING_CONCAT(x->spare_filters, x->dead_filters, spare_data, link);
+}
+
 static ap_filter_t *add_any_filter_handle(ap_filter_rec_t *frec, void *ctx,
                                           request_rec *r, conn_rec *c,
                                           ap_filter_t **r_filters,
                                           ap_filter_t **p_filters,
                                           ap_filter_t **c_filters)
 {
-    apr_pool_t *p = frec->ftype < AP_FTYPE_CONNECTION && r ? r->pool : c->pool;
-    ap_filter_t *f = apr_palloc(p, sizeof(*f));
+    ap_filter_t *f;
     ap_filter_t **outf;
+    struct ap_filter_conn_ctx *x;
+    struct ap_filter_private *fp;
 
     if (frec->ftype < AP_FTYPE_PROTOCOL) {
         if (r) {
@@ -320,14 +452,30 @@ static ap_filter_t *add_any_filter_handle(ap_filter_rec_t *frec, void *ctx,
         outf = c_filters;
     }
 
+    x = get_conn_ctx(c);
+    f = get_spare(c, x->spare_filters);
+    if (f) {
+        fp = f->priv;
+    }
+    else {
+        f = apr_palloc(c->pool, sizeof(*f));
+        fp = apr_palloc(c->pool, sizeof(*fp));
+    }
+    memset(f, 0, sizeof(*f));
+    memset(fp, 0, sizeof(*fp));
+    APR_RING_ELEM_INIT(fp, pending);
+    f->priv = fp;
+    fp->f = f;
+
     f->frec = frec;
     f->ctx = ctx;
     /* f->r must always be NULL for connection filters */
-    f->r = frec->ftype < AP_FTYPE_CONNECTION ? r : NULL;
+    if (r && frec->ftype < AP_FTYPE_CONNECTION) {
+        apr_pool_cleanup_register(r->pool, f, request_filter_cleanup,
+                                  apr_pool_cleanup_null);
+        f->r = r;
+    }
     f->c = c;
-    f->next = NULL;
-    f->bb = NULL;
-    f->deferred_pool = NULL;
 
     if (INSERT_BEFORE(f, *outf)) {
         f->next = *outf;
@@ -451,11 +599,37 @@ AP_DECLARE(ap_filter_t *) ap_add_output_filter_handle(ap_filter_rec_t *f,
                                  &c->output_filters);
 }
 
+static APR_INLINE int is_pending_filter(ap_filter_t *f)
+{
+    struct ap_filter_private *fp = f->priv;
+    return APR_RING_NEXT(fp, pending) != fp;
+}
+
+static apr_status_t pending_filter_cleanup(void *arg)
+{
+    ap_filter_t *f = arg;
+    struct ap_filter_private *fp = f->priv;
+
+    if (is_pending_filter(f)) {
+        APR_RING_REMOVE(fp, pending);
+        APR_RING_ELEM_INIT(fp, pending);
+    }
+
+    if (fp->bb) {
+        ap_release_brigade(f->c, fp->bb);
+        fp->bb = NULL;
+    }
+
+    return APR_SUCCESS;
+}
+
 static void remove_any_filter(ap_filter_t *f, ap_filter_t **r_filt, ap_filter_t **p_filt,
                               ap_filter_t **c_filt)
 {
     ap_filter_t **curr = r_filt ? r_filt : c_filt;
     ap_filter_t *fscan = *curr;
+
+    pending_filter_cleanup(f);
 
     if (p_filt && *p_filt == f)
         *p_filt = (*p_filt)->next;
@@ -483,14 +657,13 @@ AP_DECLARE(void) ap_remove_input_filter(ap_filter_t *f)
 
 AP_DECLARE(void) ap_remove_output_filter(ap_filter_t *f)
 {
+    struct ap_filter_private *fp = f->priv;
 
-    if ((f->bb) && !APR_BRIGADE_EMPTY(f->bb)) {
-        apr_brigade_cleanup(f->bb);
-    }
-
-    if (f->deferred_pool) {
-        apr_pool_destroy(f->deferred_pool);
-        f->deferred_pool = NULL;
+    if (fp->deferred_pool) {
+        AP_DEBUG_ASSERT(fp->bb);
+        apr_brigade_cleanup(fp->bb);
+        apr_pool_destroy(fp->deferred_pool);
+        fp->deferred_pool = NULL;
     }
 
     remove_any_filter(f, f->r ? &f->r->output_filters : NULL,
@@ -584,9 +757,9 @@ AP_DECLARE(apr_status_t) ap_pass_brigade(ap_filter_t *next,
                                          apr_bucket_brigade *bb)
 {
     if (next) {
-        apr_bucket *e;
+        apr_bucket *e = APR_BRIGADE_LAST(bb);
 
-        if ((e = APR_BRIGADE_LAST(bb)) && APR_BUCKET_IS_EOS(e) && next->r) {
+        if (e != APR_BRIGADE_SENTINEL(bb) && APR_BUCKET_IS_EOS(e) && next->r) {
             /* This is only safe because HTTP_HEADER filter is always in
              * the filter stack.   This ensures that there is ALWAYS a
              * request-based filter that we can attach this to.  If the
@@ -695,95 +868,202 @@ AP_DECLARE(apr_status_t) ap_save_brigade(ap_filter_t *f,
     return srv;
 }
 
-static apr_status_t filters_cleanup(void *data)
+AP_DECLARE(int) ap_filter_prepare_brigade(ap_filter_t *f)
 {
-    ap_filter_t **key = data;
+    conn_rec *c = f->c;
+    struct ap_filter_conn_ctx *x = get_conn_ctx(c);
+    struct ap_filter_private *fp = f->priv, *e;
+    struct pending_ring **ref, *pendings;
+    ap_filter_t *next;
 
-    apr_hash_set((*key)->c->filters, key, sizeof *key, NULL);
-
-    return APR_SUCCESS;
-}
-
-AP_DECLARE(int) ap_filter_prepare_brigade(ap_filter_t *f, apr_pool_t **p)
-{
-    apr_pool_t *pool;
-    ap_filter_t **key;
-
-    if (!f->bb) {
-
-        pool = f->r ? f->r->pool : f->c->pool;
-
-        key = apr_pmemdup(pool, &f, sizeof f);
-        apr_hash_set(f->c->filters, key, sizeof *key, f);
-
-        f->bb = apr_brigade_create(pool, f->c->bucket_alloc);
-
-        apr_pool_pre_cleanup_register(pool, key, filters_cleanup);
-
-        if (p) {
-            *p = pool;
-        }
-
-        return OK;
+    if (is_pending_filter(f)) {
+        return DECLINED;
     }
 
-    return DECLINED;
+    if (!fp->bb) {
+        fp->bb = ap_acquire_brigade(c);
+        if (f->r) {
+            /* Take care of request filters that don't remove themselves
+             * from the chain(s), when f->r is being destroyed.
+             */
+            apr_pool_cleanup_register(f->r->pool, f,
+                                      pending_filter_cleanup,
+                                      apr_pool_cleanup_null);
+        }
+        else {
+            /* In fp->bb there may be buckets on fp->deferred_pool, so take
+             * care to always pre_cleanup the former before the latter.
+             */
+            apr_pool_pre_cleanup_register(c->pool, f,
+                                          pending_filter_cleanup);
+        }
+    }
+
+    if (f->frec->direction == AP_FILTER_INPUT) {
+        ref = &x->pending_input_filters;
+    }
+    else {
+        ref = &x->pending_output_filters;
+    }
+    pendings = *ref;
+
+    /* Pending reads/writes must happen in the reverse order of the actual
+     * in/output filters (in/outer most first), though we still maintain the
+     * ring in the same "next" order as filters (walking is backward). So find
+     * the first f->next filter already in place and insert before if
+     * any, otherwise insert last.
+     */
+    if (pendings) {
+        for (next = f->next; next; next = next->next) {
+            for (e = APR_RING_FIRST(pendings);
+                 e != APR_RING_SENTINEL(pendings, ap_filter_private, pending);
+                 e = APR_RING_NEXT(e, pending)) {
+                if (e == next->priv) {
+                    APR_RING_INSERT_BEFORE(e, fp, pending);
+                    return OK;
+                }
+            }
+        }
+    }
+    else {
+        pendings = *ref = apr_palloc(c->pool, sizeof(*pendings));
+        APR_RING_INIT(pendings, ap_filter_private, pending);
+    }
+    APR_RING_INSERT_TAIL(pendings, fp, ap_filter_private, pending);
+    return OK;
+}
+
+static apr_status_t save_aside_brigade(struct ap_filter_private *fp,
+                                       apr_bucket_brigade *bb)
+{
+    if (!fp->deferred_pool) {
+        apr_pool_create(&fp->deferred_pool, fp->f->c->pool);
+        apr_pool_tag(fp->deferred_pool, "deferred_pool");
+    }
+    return ap_save_brigade(fp->f, &fp->bb, &bb, fp->deferred_pool);
 }
 
 AP_DECLARE(apr_status_t) ap_filter_setaside_brigade(ap_filter_t *f,
-        apr_bucket_brigade *bb)
+                                                    apr_bucket_brigade *bb)
 {
-    int loglevel = ap_get_conn_module_loglevel(f->c, APLOG_MODULE_INDEX);
+    apr_status_t rv = APR_SUCCESS;
+    struct ap_filter_private *fp = f->priv;
 
-    if (loglevel >= APLOG_TRACE6) {
-        ap_log_cerror(
-            APLOG_MARK, APLOG_TRACE6, 0, f->c,
-            "setaside %s brigade to %s brigade in '%s' output filter",
-            (APR_BRIGADE_EMPTY(bb) ? "empty" : "full"),
-            (!f->bb || APR_BRIGADE_EMPTY(f->bb) ? "empty" : "full"), f->frec->name);
+    if (!APR_BRIGADE_EMPTY(bb) || (fp->bb && !APR_BRIGADE_EMPTY(fp->bb))) {
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE6, 0, f->c,
+                      "setaside %s brigade to %s brigade in '%s' %sput filter",
+                      APR_BRIGADE_EMPTY(bb) ? "empty" : "full",
+                      (!fp->bb || APR_BRIGADE_EMPTY(fp->bb)) ? "empty" : "full",
+                      f->frec->name,
+                      f->frec->direction == AP_FILTER_INPUT ? "in" : "out");
+    }
+
+    /* This API is not suitable for request filters */
+    if (f->frec->ftype < AP_FTYPE_CONNECTION) {
+        return APR_ENOTIMPL;
     }
 
     if (!APR_BRIGADE_EMPTY(bb)) {
-        apr_pool_t *pool = NULL;
+        apr_bucket_brigade *tmp_bb = NULL;
+        int batched_buckets = 0;
+        apr_bucket *e, *next;
+
         /*
-         * Set aside the brigade bb within f->bb.
+         * Set aside the brigade bb to fp->bb.
          */
-        ap_filter_prepare_brigade(f, &pool);
+        ap_filter_prepare_brigade(f);
 
-        /* decide what pool we setaside to, request pool or deferred pool? */
-        if (f->r) {
-            apr_bucket *e;
-            for (e = APR_BRIGADE_FIRST(bb); e != APR_BRIGADE_SENTINEL(bb); e =
-                    APR_BUCKET_NEXT(e)) {
-                if (APR_BUCKET_IS_TRANSIENT(e)) {
-                    int rv = apr_bucket_setaside(e, f->r->pool);
-                    if (rv != APR_SUCCESS) {
-                        return rv;
+        for (e = APR_BRIGADE_FIRST(bb);
+             e != APR_BRIGADE_SENTINEL(bb);
+             e = next) {
+            next = APR_BUCKET_NEXT(e);
+
+            /* WC buckets will be added back by ap_filter_output_pending()
+             * at the tail.
+             */
+            if (AP_BUCKET_IS_WC(e)) {
+                apr_bucket_delete(e);
+                continue;
+            }
+
+            /* Opaque buckets (length == -1) are moved, so assumed to have
+             * next EOR's lifetime or at least the lifetime of the connection.
+             */
+            if (e->length == (apr_size_t)-1) {
+                /* First save buckets batched below, if any. */
+                if (batched_buckets) {
+                    batched_buckets = 0;
+                    if (!tmp_bb) {
+                        tmp_bb = ap_acquire_brigade(f->c);
                     }
+                    apr_brigade_split_ex(bb, e, tmp_bb);
+                    rv = save_aside_brigade(fp, bb);
+                    APR_BRIGADE_CONCAT(bb, tmp_bb);
+                    if (rv != APR_SUCCESS) {
+                        break;
+                    }
+                    AP_DEBUG_ASSERT(APR_BRIGADE_FIRST(bb) == e);
                 }
+                APR_BUCKET_REMOVE(e);
+                APR_BRIGADE_INSERT_TAIL(fp->bb, e);
             }
-            pool = f->r->pool;
-            APR_BRIGADE_CONCAT(f->bb, bb);
-        }
-        else {
-            if (!f->deferred_pool) {
-                apr_pool_create(&f->deferred_pool, f->c->pool);
-                apr_pool_tag(f->deferred_pool, "deferred_pool");
+            else {
+                /* Batch successive buckets to save. */
+                batched_buckets = 1;
             }
-            pool = f->deferred_pool;
-            return ap_save_brigade(f, &f->bb, &bb, pool);
         }
-
+        if (tmp_bb) {
+            ap_release_brigade(f->c, tmp_bb);
+        }
+        if (batched_buckets) {
+            /* Save any remainder. */
+            rv = save_aside_brigade(fp, bb);
+        }
+        if (!APR_BRIGADE_EMPTY(bb)) {
+            /* Anything left in bb is what we could not save (error), clean up.
+             * This destroys anything pipelined so far, including EOR(s), and
+             * swallows all data, so from now this filter should only be passed
+             * connection close data like TLS close_notify.
+             *
+             * XXX: Should we cleanup all previous c->output_filters' setaside
+             *      brigades?
+             */
+            AP_DEBUG_ASSERT(rv != APR_SUCCESS);
+            f->c->keepalive = AP_CONN_CLOSE;
+            apr_brigade_cleanup(bb);
+        }
     }
-    else if (f->deferred_pool) {
+    else if (fp->deferred_pool) {
         /*
          * There are no more requests in the pipeline. We can just clear the
          * pool.
          */
-        apr_brigade_cleanup(f->bb);
-        apr_pool_clear(f->deferred_pool);
+        AP_DEBUG_ASSERT(fp->bb);
+        apr_brigade_cleanup(fp->bb);
+        apr_pool_clear(fp->deferred_pool);
     }
-    return APR_SUCCESS;
+
+    return rv;
+}
+
+AP_DECLARE(void) ap_filter_adopt_brigade(ap_filter_t *f,
+                                         apr_bucket_brigade *bb)
+{
+    struct ap_filter_private *fp = f->priv;
+
+    if (!APR_BRIGADE_EMPTY(bb) || (fp->bb && !APR_BRIGADE_EMPTY(fp->bb))) {
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE6, 0, f->c,
+                      "adopt %s brigade to %s brigade in '%s' %sput filter",
+                      APR_BRIGADE_EMPTY(bb) ? "empty" : "full",
+                      (!fp->bb || APR_BRIGADE_EMPTY(fp->bb)) ? "empty" : "full",
+                      f->frec->name,
+                      f->frec->direction == AP_FILTER_INPUT ? "in" : "out");
+    }
+
+    if (!APR_BRIGADE_EMPTY(bb)) {
+        ap_filter_prepare_brigade(f);
+        APR_BRIGADE_CONCAT(fp->bb, bb);
+    }
 }
 
 AP_DECLARE(apr_status_t) ap_filter_reinstate_brigade(ap_filter_t *f,
@@ -791,128 +1071,146 @@ AP_DECLARE(apr_status_t) ap_filter_reinstate_brigade(ap_filter_t *f,
                                                      apr_bucket **flush_upto)
 {
     apr_bucket *bucket, *next;
-    apr_size_t bytes_in_brigade, non_file_bytes_in_brigade;
-    int eor_buckets_in_brigade, morphing_bucket_in_brigade;
-    int loglevel = ap_get_conn_module_loglevel(f->c, APLOG_MODULE_INDEX);
-
-    if (loglevel >= APLOG_TRACE6) {
-        ap_log_cerror(
-            APLOG_MARK, APLOG_TRACE6, 0, f->c,
-            "reinstate %s brigade to %s brigade in '%s' output filter",
-            (!f->bb || APR_BRIGADE_EMPTY(f->bb) ? "empty" : "full"),
-            (APR_BRIGADE_EMPTY(bb) ? "empty" : "full"), f->frec->name);
+    apr_size_t flush_max_threshold;
+    apr_int32_t flush_max_pipelined;
+    apr_size_t bytes_in_brigade, memory_bytes_in_brigade;
+    int eor_buckets_in_brigade, opaque_buckets_in_brigade;
+    struct ap_filter_private *fp = f->priv;
+    core_server_config *conf;
+    int is_flush;
+ 
+    if (flush_upto) {
+        *flush_upto = NULL;
     }
 
-    if (f->bb && !APR_BRIGADE_EMPTY(f->bb)) {
-        APR_BRIGADE_PREPEND(bb, f->bb);
+    if (!APR_BRIGADE_EMPTY(bb) || (fp->bb && !APR_BRIGADE_EMPTY(fp->bb))) {
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE6, 0, f->c,
+                      "reinstate %s brigade to %s brigade in '%s' %sput filter",
+                      (!fp->bb || APR_BRIGADE_EMPTY(fp->bb) ? "empty" : "full"),
+                      (APR_BRIGADE_EMPTY(bb) ? "empty" : "full"),
+                      f->frec->name,
+                      f->frec->direction == AP_FILTER_INPUT ? "in" : "out");
+    }
+
+    /* This API is not suitable for request filters */
+    if (f->frec->ftype < AP_FTYPE_CONNECTION) {
+        return APR_ENOTIMPL;
+    }
+
+    /* Buckets in fp->bb are leftover from previous call to setaside, so
+     * they happen before anything in bb already.
+     */
+    if (fp->bb) {
+        APR_BRIGADE_PREPEND(bb, fp->bb);
+    }
+    if (!flush_upto || APR_BRIGADE_EMPTY(bb)) {
+        /* Just prepend all, or nothing to do. */
+        return APR_SUCCESS;
     }
 
     /*
-     * Determine if and up to which bucket we need to do a blocking write:
+     * Determine if and up to which bucket the caller needs to do a blocking
+     * write:
      *
-     *  a) The brigade contains a flush bucket: Do a blocking write
-     *     of everything up that point.
+     *  a) The brigade contains at least one flush bucket: do blocking writes
+     *     of everything up to the last one.
      *
-     *  b) The request is in CONN_STATE_HANDLER state, and the brigade
-     *     contains at least THRESHOLD_MAX_BUFFER bytes in non-file
-     *     buckets: Do blocking writes until the amount of data in the
-     *     buffer is less than THRESHOLD_MAX_BUFFER.  (The point of this
-     *     rule is to provide flow control, in case a handler is
-     *     streaming out lots of data faster than the data can be
+     *  b) The brigade contains at least flush_max_threshold bytes in memory,
+     *     that is non-file and non-opaque (length != -1) buckets: do blocking
+     *     writes of everything up the last bucket above flush_max_threshold.
+     *     (The point of this rule is to provide flow control, in case a
+     *     handler is streaming out lots of data faster than the data can be
      *     sent to the client.)
      *
-     *  c) The request is in CONN_STATE_HANDLER state, and the brigade
-     *     contains at least MAX_REQUESTS_IN_PIPELINE EOR buckets:
-     *     Do blocking writes until less than MAX_REQUESTS_IN_PIPELINE EOR
-     *     buckets are left. (The point of this rule is to prevent too many
-     *     FDs being kept open by pipelined requests, possibly allowing a
-     *     DoS).
+     *  c) The brigade contains at least flush_max_pipelined EOR buckets: do
+     *     blocking writes until after the last EOR above flush_max_pipelined.
+     *     (The point of this rule is to prevent too many FDs being kept open
+     *     by pipelined requests, possibly allowing a DoS).
      *
-     *  d) The request is being served by a connection filter and the
-     *     brigade contains a morphing bucket: If there was no other
-     *     reason to do a blocking write yet, try reading the bucket. If its
-     *     contents fit into memory before THRESHOLD_MAX_BUFFER is reached,
-     *     everything is fine. Otherwise we need to do a blocking write the
-     *     up to and including the morphing bucket, because ap_save_brigade()
-     *     would read the whole bucket into memory later on.
+     * Morphing buckets (opaque and FILE) use no memory until read, so they
+     * don't account for point b) above. Both ap_filter_reinstate_brigade()
+     * and setaside_brigade() assume that opaque buckets have an appropriate
+     * lifetime (until next EOR for instance), so they are simply setaside or
+     * reinstated by moving them from/to fp->bb to/from user bb.
      */
 
-    *flush_upto = NULL;
+    conf = ap_get_core_module_config(f->c->base_server->module_config);
+    flush_max_threshold = conf->flush_max_threshold;
+    flush_max_pipelined = conf->flush_max_pipelined;
 
     bytes_in_brigade = 0;
-    non_file_bytes_in_brigade = 0;
+    memory_bytes_in_brigade = 0;
     eor_buckets_in_brigade = 0;
-    morphing_bucket_in_brigade = 0;
+    opaque_buckets_in_brigade = 0;
 
     for (bucket = APR_BRIGADE_FIRST(bb); bucket != APR_BRIGADE_SENTINEL(bb);
          bucket = next) {
         next = APR_BUCKET_NEXT(bucket);
 
-        if (!APR_BUCKET_IS_METADATA(bucket)) {
-            if (bucket->length == (apr_size_t)-1) {
-                /*
-                 * A setaside of morphing buckets would read everything into
-                 * memory. Instead, we will flush everything up to and
-                 * including this bucket.
-                 */
-                morphing_bucket_in_brigade = 1;
-            }
-            else {
-                bytes_in_brigade += bucket->length;
-                if (!APR_BUCKET_IS_FILE(bucket))
-                    non_file_bytes_in_brigade += bucket->length;
-            }
+        /* When called with flush_upto != NULL, we assume that the caller does
+         * the right thing to potentially setaside WC buckets (per semantics),
+         * so we don't treat them as FLUSH(_upto) here.
+         */
+        is_flush = (APR_BUCKET_IS_FLUSH(bucket) && !AP_BUCKET_IS_WC(bucket));
+        if (is_flush) {
+            /* handled below */
         }
         else if (AP_BUCKET_IS_EOR(bucket)) {
             eor_buckets_in_brigade++;
         }
+        else if (bucket->length == (apr_size_t)-1) {
+            opaque_buckets_in_brigade++;
+        }
+        else if (bucket->length) {
+            bytes_in_brigade += bucket->length;
+            if (!APR_BUCKET_IS_FILE(bucket)) {
+                memory_bytes_in_brigade += bucket->length;
+            }
+        }
 
-        if (APR_BUCKET_IS_FLUSH(bucket)
-            || non_file_bytes_in_brigade >= THRESHOLD_MAX_BUFFER
-            || (!f->r && morphing_bucket_in_brigade)
-            || eor_buckets_in_brigade > MAX_REQUESTS_IN_PIPELINE) {
+        if (is_flush
+            || (memory_bytes_in_brigade > flush_max_threshold)
+            || (flush_max_pipelined >= 0
+                && eor_buckets_in_brigade > flush_max_pipelined)) {
             /* this segment of the brigade MUST be sent before returning. */
 
-            if (loglevel >= APLOG_TRACE6) {
-                char *reason = APR_BUCKET_IS_FLUSH(bucket) ?
+            if (APLOGctrace6(f->c)) {
+                char *reason = is_flush ?
                                "FLUSH bucket" :
-                               (non_file_bytes_in_brigade >= THRESHOLD_MAX_BUFFER) ?
-                               "THRESHOLD_MAX_BUFFER" :
-                               (!f->r && morphing_bucket_in_brigade) ? "morphing bucket" :
-                               "MAX_REQUESTS_IN_PIPELINE";
+                               (memory_bytes_in_brigade > conf->flush_max_threshold) ?
+                               "max threshold" : "max requests in pipeline";
                 ap_log_cerror(APLOG_MARK, APLOG_TRACE6, 0, f->c,
                               "will flush because of %s", reason);
                 ap_log_cerror(APLOG_MARK, APLOG_TRACE8, 0, f->c,
-                              "seen in brigade%s: bytes: %" APR_SIZE_T_FMT
-                              ", non-file bytes: %" APR_SIZE_T_FMT ", eor "
-                              "buckets: %d, morphing buckets: %d",
-                              *flush_upto == NULL ? " so far"
-                                                  : " since last flush point",
+                              "seen in brigade so far: bytes: %" APR_SIZE_T_FMT
+                              ", memory bytes: %" APR_SIZE_T_FMT ", eor "
+                              "buckets: %d, opaque buckets: %d",
                               bytes_in_brigade,
-                              non_file_bytes_in_brigade,
+                              memory_bytes_in_brigade,
                               eor_buckets_in_brigade,
-                              morphing_bucket_in_brigade);
+                              opaque_buckets_in_brigade);
             }
             /*
              * Defer the actual blocking write to avoid doing many writes.
              */
+            if (memory_bytes_in_brigade > flush_max_threshold) {
+                flush_max_threshold = APR_SIZE_MAX;
+            }
+            if (flush_max_pipelined >= 0
+                && eor_buckets_in_brigade > flush_max_pipelined) {
+                flush_max_pipelined = APR_INT32_MAX;
+            }
             *flush_upto = next;
-
-            bytes_in_brigade = 0;
-            non_file_bytes_in_brigade = 0;
-            eor_buckets_in_brigade = 0;
-            morphing_bucket_in_brigade = 0;
         }
     }
 
-    if (loglevel >= APLOG_TRACE8) {
-        ap_log_cerror(APLOG_MARK, APLOG_TRACE8, 0, f->c,
-                      "brigade contains: bytes: %" APR_SIZE_T_FMT
-                      ", non-file bytes: %" APR_SIZE_T_FMT
-                      ", eor buckets: %d, morphing buckets: %d",
-                      bytes_in_brigade, non_file_bytes_in_brigade,
-                      eor_buckets_in_brigade, morphing_bucket_in_brigade);
-    }
+    ap_log_cerror(APLOG_MARK, APLOG_TRACE6, 0, f->c,
+                  "brigade contains%s: bytes: %" APR_SIZE_T_FMT
+                  ", non-file bytes: %" APR_SIZE_T_FMT
+                  ", eor buckets: %d, opaque buckets: %d",
+                  *flush_upto == NULL ? "" : " since last flush point",
+                  bytes_in_brigade, memory_bytes_in_brigade,
+                  eor_buckets_in_brigade, opaque_buckets_in_brigade);
 
     return APR_SUCCESS;
 }
@@ -960,7 +1258,8 @@ AP_DECLARE(int) ap_filter_should_yield(ap_filter_t *f)
      * from us.
      */
     while (f) {
-        if (f->bb && !APR_BRIGADE_EMPTY(f->bb)) {
+        struct ap_filter_private *fp = f->priv;
+        if (fp->bb && !APR_BRIGADE_EMPTY(fp->bb)) {
             return 1;
         }
         f = f->next;
@@ -968,65 +1267,102 @@ AP_DECLARE(int) ap_filter_should_yield(ap_filter_t *f)
     return 0;
 }
 
-AP_DECLARE(int) ap_filter_output_pending(conn_rec *c)
+AP_DECLARE_NONSTD(int) ap_filter_output_pending(conn_rec *c)
 {
-    apr_hash_index_t *rindex;
-    int data_in_output_filters = DECLINED;
+    struct ap_filter_conn_ctx *x = c->filter_conn_ctx;
+    struct ap_filter_private *fp, *prev;
+    apr_bucket_brigade *bb;
+    int rc = DECLINED;
 
-    rindex = apr_hash_first(NULL, c->filters);
-    while (rindex) {
-        ap_filter_t *f = apr_hash_this_val(rindex);
+    if (!x || !x->pending_output_filters) {
+        goto cleanup;
+    }
 
-        if (f->frec->direction == AP_FILTER_OUTPUT && f->bb
-                && !APR_BRIGADE_EMPTY(f->bb)) {
+    /* Flush outer most filters first for ap_filter_should_yield(f->next)
+     * to be relevant in the previous ones (async filters won't pass their
+     * buckets if their next filters yield already).
+     */
+    bb = ap_acquire_brigade(c);
+    for (fp = APR_RING_LAST(x->pending_output_filters);
+         fp != APR_RING_SENTINEL(x->pending_output_filters,
+                                 ap_filter_private, pending);
+         fp = prev) {
+        /* If a filter removes itself from the filters stack (when run), it
+         * also orphans itself from the ring, so save "prev" here to avoid
+         * an infinite loop in this case.
+         */
+        prev = APR_RING_PREV(fp, pending);
 
+        AP_DEBUG_ASSERT(fp->bb);
+        if (!APR_BRIGADE_EMPTY(fp->bb)) {
+            ap_filter_t *f = fp->f;
             apr_status_t rv;
+            apr_bucket *b;
 
-            rv = ap_pass_brigade(f, c->empty);
-            apr_brigade_cleanup(c->empty);
-            if (APR_SUCCESS != rv) {
-                ap_log_cerror(
-                        APLOG_MARK, APLOG_DEBUG, rv, c, APLOGNO(00470)
+            b = ap_bucket_wc_create(bb->bucket_alloc);
+            APR_BRIGADE_INSERT_TAIL(bb, b);
+            rv = ap_pass_brigade(f, bb);
+            apr_brigade_cleanup(bb);
+
+            if (rv != APR_SUCCESS) {
+                ap_log_cerror(APLOG_MARK, APLOG_DEBUG, rv, c, APLOGNO(00470)
                         "write failure in '%s' output filter", f->frec->name);
-                return rv;
+                rc = AP_FILTER_ERROR;
+                break;
             }
 
             if (ap_filter_should_yield(f)) {
-                data_in_output_filters = OK;
+                rc = OK;
+                break;
             }
         }
-
-        rindex = apr_hash_next(rindex);
     }
+    ap_release_brigade(c, bb);
 
-    return data_in_output_filters;
+cleanup:
+    /* All filters have returned, time to recycle/unleak ap_filter_t-s
+     * before leaving (i.e. make them reusable).
+     */
+    recycle_dead_filters(c);
+
+    return rc;
 }
 
-AP_DECLARE(int) ap_filter_input_pending(conn_rec *c)
+AP_DECLARE_NONSTD(int) ap_filter_input_pending(conn_rec *c)
 {
-    apr_hash_index_t *rindex;
+    struct ap_filter_conn_ctx *x = c->filter_conn_ctx;
+    struct ap_filter_private *fp;
+    int rc = DECLINED;
 
-    rindex = apr_hash_first(NULL, c->filters);
-    while (rindex) {
-        ap_filter_t *f = apr_hash_this_val(rindex);
-
-        if (f->frec->direction == AP_FILTER_INPUT && f->bb) {
-            apr_bucket *e = APR_BRIGADE_FIRST(f->bb);
-
-            /* if there is at least one non-morphing bucket
-             * in place, then we have data pending
-             */
-            if (e != APR_BRIGADE_SENTINEL(f->bb)
-                    && e->length != (apr_size_t)(-1)) {
-                return OK;
-            }
-
-        }
-
-        rindex = apr_hash_next(rindex);
+    if (!x || !x->pending_input_filters) {
+        goto cleanup;
     }
 
-    return DECLINED;
+    for (fp = APR_RING_LAST(x->pending_input_filters);
+         fp != APR_RING_SENTINEL(x->pending_input_filters,
+                                 ap_filter_private, pending);
+         fp = APR_RING_PREV(fp, pending)) {
+        apr_bucket *e;
+
+        /* if there is a leading non-opaque (length != -1) bucket
+         * in place, then we have data pending
+         */
+        AP_DEBUG_ASSERT(fp->bb);
+        e = APR_BRIGADE_FIRST(fp->bb);
+        if (e != APR_BRIGADE_SENTINEL(fp->bb)
+                && e->length != (apr_size_t)(-1)) {
+            rc = OK;
+            break;
+        }
+    }
+
+cleanup:
+    /* All filters have returned, time to recycle/unleak ap_filter_t-s
+     * before leaving (i.e. make them reusable).
+     */
+    recycle_dead_filters(c);
+
+    return rc;
 }
 
 AP_DECLARE_NONSTD(apr_status_t) ap_filter_flush(apr_bucket_brigade *bb,
@@ -1081,7 +1417,30 @@ AP_DECLARE_NONSTD(apr_status_t) ap_fprintf(ap_filter_t *f,
     va_end(args);
     return rv;
 }
+
 AP_DECLARE(void) ap_filter_protocol(ap_filter_t *f, unsigned int flags)
 {
     f->frec->proto_flags = flags ;
+}
+
+/* Write Completion (WC) bucket implementation */
+
+AP_DECLARE_DATA const char ap_bucket_wc_data;
+
+AP_DECLARE(apr_bucket *) ap_bucket_wc_make(apr_bucket *b)
+{
+    /* FLUSH bucket with special ->data mark (instead of NULL) */
+    b = apr_bucket_flush_make(b);
+    b->data = (void *)&ap_bucket_wc_data;
+    return b;
+}
+
+AP_DECLARE(apr_bucket *) ap_bucket_wc_create(apr_bucket_alloc_t *list)
+{
+    apr_bucket *b = apr_bucket_alloc(sizeof(*b), list);
+
+    APR_BUCKET_INIT(b);
+    b->free = apr_bucket_free;
+    b->list = list;
+    return ap_bucket_wc_make(b);
 }

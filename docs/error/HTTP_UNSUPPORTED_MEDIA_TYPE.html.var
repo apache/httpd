@@ -180,6 +180,17 @@ Body:----------ro--
 <!--#include virtual="include/bottom.html" -->
 ----------ro--
 
+Content-language: ru
+Content-type: text/html; charset=UTF-8
+Body:----------ru--
+<!--#set var="TITLE" value="Неподдерживаемый тип данных!"
+--><!--#include virtual="include/top.html" -->
+
+    Сервер не поддерживает работу с указанным типом данных.
+
+<!--#include virtual="include/bottom.html" -->
+----------ru--
+
 Content-language: sr
 Content-type: text/html; charset=UTF-8
 Body:----------sr--
@@ -215,3 +226,27 @@ Body:----------tr--
 
 <!--#include virtual="include/bottom.html" -->
 ----------tr--
+
+Content-language: zh-cn
+Content-type: text/html; charset=UTF-8
+Body:----------zh-cn--
+<!--#set var="CONTENT_LANGUAGE" value="zh-cn"
+--><!--#set var="TITLE" value="不支持的媒体类型！"
+--><!--#include virtual="include/top.html" -->
+
+    服务器不支持请求中传输的媒体类型。
+
+<!--#include virtual="include/bottom.html" -->
+----------zh-cn--
+
+Content-language: zh-tw
+Content-type: text/html; charset=UTF-8
+Body:----------zh-tw--
+<!--#set var="CONTENT_LANGUAGE" value="zh-tw"
+--><!--#set var="TITLE" value="不支持的媒體型式！"
+--><!--#include virtual="include/top.html" -->
+
+    伺服器不支持請求中傳輸的媒體型式。
+
+<!--#include virtual="include/bottom.html" -->
+----------zh-tw--

@@ -42,17 +42,17 @@ RSC=rc.exe
 # PROP Intermediate_Dir "Release"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
-# ADD BASE CPP /nologo /MD /W3 /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "mod_socache_redis_EXPORTS" /FD /c
-# ADD CPP /nologo /MD /W3 /O2 /Oy- /Zi /I "../../srclib/apr-util/include" /I "../../srclib/apr/include" /I "../../include" /I "../generators" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /Fd"Release\mod_socache_redis_src" /FD /c
-# ADD BASE MTL /nologo /D "NDEBUG" /mktyplib203 /win32
-# ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
+# ADD BASE CPP /nologo /MD /W3 /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /FD /c
+# ADD CPP /nologo /MD /W3 /O2 /Oy- /Zi /I "../generators" /I "../../include" /I "../../srclib/apr/include" /I "../../srclib/apr-util/include" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "AAA_DECLARE_EXPORT" /Fd"Release\mod_socache_redis_src" /FD /c
+# ADD BASE MTL /nologo /D "NDEBUG" /mktyplib203 /o /win32 "NUL"
+# ADD MTL /nologo /D "NDEBUG" /mktyplib203 /o /win32 "NUL"
 # ADD BASE RSC /l 0x409 /d "NDEBUG"
-# ADD RSC /l 0x409 /fo"Release/mod_socache_redis.res" /i "../../include" /i "../../srclib/apr/include" /d "NDEBUG" /d BIN_NAME="mod_socache_redis.so" /d LONG_NAME="socache_redis_module for Apache"
+# ADD RSC /l 0x409 /fo"Release/mod_socache_redis.res" /i "../../include" /i "../../srclib/apr/include" /d "NDEBUG" /d BIN_NAME="mod_socache_redis.so" /d LONG_NAME="socache_redis module for Apache"
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LINK32=link.exe
-# ADD BASE LINK32 kernel32.lib /nologo /subsystem:windows /dll
+# ADD BASE LINK32 kernel32.lib /nologo /subsystem:windows /dll /out:".\Release\mod_socache_redis.so" /base:@..\..\os\win32\BaseAddr.ref,mod_socache_redis.so
 # ADD LINK32 kernel32.lib /nologo /subsystem:windows /dll /incremental:no /debug /out:".\Release\mod_socache_redis.so" /base:@..\..\os\win32\BaseAddr.ref,mod_socache_redis.so /opt:ref
 # Begin Special Build Tool
 TargetPath=.\Release\mod_socache_redis.so
@@ -75,16 +75,16 @@ PostBuild_Cmds=if exist $(TargetPath).manifest mt.exe -manifest $(TargetPath).ma
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MDd /W3 /EHsc /Zi /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /FD /c
-# ADD CPP /nologo /MDd /W3 /EHsc /Zi /Od /I "../../srclib/apr-util/include" /I "../../srclib/apr/include" /I "../../include" /I "../generators" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /Fd"Debug\mod_socache_redis_src" /FD /c
-# ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /win32
-# ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
+# ADD CPP /nologo /MDd /W3 /EHsc /Zi /Od /I "../generators" /I "../../include" /I "../../srclib/apr/include" /I "../../srclib/apr-util/include" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "AAA_DECLARE_EXPORT" /Fd"Debug\mod_socache_redis_src" /FD /c
+# ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /o /win32 "NUL"
+# ADD MTL /nologo /D "_DEBUG" /mktyplib203 /o /win32 "NUL"
 # ADD BASE RSC /l 0x409 /d "_DEBUG"
-# ADD RSC /l 0x409 /fo"Debug/mod_socache_redis.res" /i "../../include" /i "../../srclib/apr/include" /d "_DEBUG" /d BIN_NAME="mod_socache_redis.so" /d LONG_NAME="socache_redis_module for Apache"
+# ADD RSC /l 0x409 /fo"Debug/mod_socache_redis.res" /i "../../include" /i "../../srclib/apr/include" /d "_DEBUG" /d BIN_NAME="mod_socache_redis.so" /d LONG_NAME="socache_redis module for Apache"
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LINK32=link.exe
-# ADD BASE LINK32 kernel32.lib /nologo /subsystem:windows /dll /incremental:no /debug
+# ADD BASE LINK32 kernel32.lib /nologo /subsystem:windows /dll /incremental:no /debug /out:".\Debug\mod_socache_redis.so" /base:@..\..\os\win32\BaseAddr.ref,mod_socache_redis.so
 # ADD LINK32 kernel32.lib /nologo /subsystem:windows /dll /incremental:no /debug /out:".\Debug\mod_socache_redis.so" /base:@..\..\os\win32\BaseAddr.ref,mod_socache_redis.so
 # Begin Special Build Tool
 TargetPath=.\Debug\mod_socache_redis.so

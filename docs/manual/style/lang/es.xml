@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE language SYSTEM "../lang.dtd">
-<!-- English revision: 1741065 -->
+<!-- English revision: 1880980 -->
 <!-- Updated by Luis Gil de Bernabé Pfeiffer lgilbernabe[AT]apache.org -->
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -21,9 +21,9 @@
 
 <language id="es">
     <name>Spanish</name>
-    <charset>ISO-8859-1</charset>
+    <charset>UTF-8</charset>
     <source-ext>.xml.es</source-ext>
-    <target-ext>.html.es</target-ext>
+    <target-ext>.html.es.utf8</target-ext>
 
     <chm>
         <lang>0xC0A Spanish (International)</lang>
@@ -67,6 +67,8 @@
         <message id="moduleidentifier">Identificador de Módulos</message>
         <message id="sourcefile">Fichero de Código Fuente</message>
         <message id="compatibility">Compatibilidad</message>
+        <message id="before-since">Available in Apache HTTP Server </message>
+        <message id="after-since"> and later.</message>
 
         <!-- Used in manualpage -->
         <message id="relatedmodules">Módulos Relacionados</message>
@@ -75,10 +77,11 @@
         <message id="uppercase">ABCDEFGHIJKLMNÑOPQRSTUVWXYZ</message>
         <message id="name-section">Nombre</message>
         <message id="hyphenation">Cesura</message>
-        <message id="foundabug">Bugfix checklist</message>
-        <message id="httpdchangelog">httpd changelog</message>
-        <message id="httpdknownissues">Known issues</message>
-        <message id="httpdreportabug">Report a bug</message>
+        <message id="foundabug">Lista de comprobación de errores corregidos</message>
+        <message id="httpdchangelog">httpd historial de cambios</message>
+        <message id="httpdknownissues">Problemas Conocidos</message>
+        <message id="httpdreportabug">Reportar un error</message>
+        <message id="permalink">Enlace permanente</message>
 
         <!-- Used in description box for directives -->
         <message id="syntax">Sintaxis</message>
@@ -112,7 +115,7 @@
         <!-- the optional attribute before-name takes a string.
              if "yes", the 'Directive' word is place before the name instead of
              being placed behind. See fr.xml for an example. -->
-        <message id="directive">Directiva</message>
+        <message id="directive" before-name="yes">Directiva</message>
         <message id="nodirectives">Este módulo no suministra ninguna
             directiva.</message>
 

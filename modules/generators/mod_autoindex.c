@@ -113,8 +113,8 @@ struct item {
 typedef struct ai_desc_t {
     char *pattern;
     char *description;
-    int full_path;
-    int wildcards;
+    unsigned int full_path : 1;
+    unsigned int wildcards : 1;
 } ai_desc_t;
 
 typedef struct autoindex_config_struct {
@@ -133,6 +133,7 @@ typedef struct autoindex_config_struct {
     int desc_adjust;
     int icon_width;
     int icon_height;
+    int not_found;
     char default_keyid;
     char default_direction;
 
@@ -144,6 +145,7 @@ typedef struct autoindex_config_struct {
 
     char *ctype;
     char *charset;
+    char *datetime_format;
 } autoindex_config_rec;
 
 static char c_by_encoding, c_by_type, c_by_path;
@@ -155,9 +157,9 @@ static char c_by_encoding, c_by_type, c_by_path;
 static APR_INLINE int response_is_html(request_rec *r)
 {
     char *ctype = ap_field_noparam(r->pool, r->content_type);
-    ap_str_tolower(ctype);
-    return !strcmp(ctype, "text/html")
-        || !strcmp(ctype, "application/xhtml+xml");
+
+    return !ap_cstr_casecmp(ctype, "text/html")
+        || !ap_cstr_casecmp(ctype, "application/xhtml+xml");
 }
 
 /*
@@ -178,7 +180,7 @@ static void emit_preamble(request_rec *r, int xhtml, const char *title)
                   " <head>\n  <title>Index of ", title,
                   "</title>\n", NULL);
     } else {
-        ap_rvputs(r, DOCTYPE_HTML_3_2,
+        ap_rvputs(r, DOCTYPE_HTML_4_01,
                   "<html>\n <head>\n"
                   "  <title>Index of ", title,
                   "</title>\n", NULL);
@@ -213,11 +215,8 @@ static void push_item(apr_array_header_t *arr, char *type, const char *to,
     if ((type == BY_PATH) && (!ap_is_matchexp(to))) {
         p->apply_to = apr_pstrcat(arr->pool, "*", to, NULL);
     }
-    else if (to) {
-        p->apply_to = apr_pstrdup(arr->pool, to);
-    }
     else {
-        p->apply_to = NULL;
+        p->apply_to = apr_pstrdup(arr->pool, to);
     }
 }
 
@@ -230,7 +229,7 @@ static const char *add_alt(cmd_parms *cmd, void *d, const char *alt,
         }
     }
     if (cmd->info == BY_ENCODING) {
-        char *tmp = apr_pstrdup(cmd->pool, to);
+        char *tmp = apr_pstrdup(cmd->temp_pool, to);
         ap_str_tolower(tmp);
         to = tmp;
     }
@@ -243,7 +242,7 @@ static const char *add_alt(cmd_parms *cmd, void *d, const char *alt,
 static const char *add_icon(cmd_parms *cmd, void *d, const char *icon,
                             const char *to)
 {
-    char *iconbak = apr_pstrdup(cmd->pool, icon);
+    char *iconbak = apr_pstrdup(cmd->temp_pool, icon);
 
     if (icon[0] == '(') {
         char *alt;
@@ -252,7 +251,7 @@ static const char *add_icon(cmd_parms *cmd, void *d, const char *icon,
         if (cl == NULL) {
             return "missing closing paren";
         }
-        alt = ap_getword_nc(cmd->pool, &iconbak, ',');
+        alt = ap_getword_nc(cmd->temp_pool, &iconbak, ',');
         *cl = '\0';                             /* Lose closing paren */
         add_alt(cmd, d, &alt[1], to);
     }
@@ -262,7 +261,7 @@ static const char *add_icon(cmd_parms *cmd, void *d, const char *icon,
         }
     }
     if (cmd->info == BY_ENCODING) {
-        char *tmp = apr_pstrdup(cmd->pool, to);
+        char *tmp = apr_pstrdup(cmd->temp_pool, to);
         ap_str_tolower(tmp);
         to = tmp;
     }
@@ -497,6 +496,9 @@ static const char *add_opts(cmd_parms *cmd, void *d, int argc, char *const argv[
         else if (!strncasecmp(w, "Charset=", 8)) {
             d_cfg->charset = apr_pstrdup(cmd->pool, &w[8]);
         }
+        else if (!strcasecmp(w, "UseOldDateFormat")) {
+            d_cfg->datetime_format = "%d-%b-%Y %H:%M";
+        }
         else {
             return "Invalid directory indexing option";
         }
@@ -607,6 +609,11 @@ static const command_rec autoindex_cmds[] =
     AP_INIT_TAKE1("IndexHeadInsert", ap_set_string_slot,
                   (void *)APR_OFFSETOF(autoindex_config_rec, head_insert),
                   DIR_CMD_PERMS, "String to insert in HTML HEAD section"),
+    AP_INIT_FLAG("IndexForbiddenReturn404", ap_set_flag_slot,
+                 (void *)APR_OFFSETOF(autoindex_config_rec, not_found),
+                 DIR_CMD_PERMS,
+                 "Return 404 in place of 403 when Options doesn't allow indexes"),
+
     {NULL}
 };
 
@@ -656,6 +663,7 @@ static void *merge_autoindex_configs(apr_pool_t *p, void *basev, void *addv)
 
     new->ctype = add->ctype ? add->ctype : base->ctype;
     new->charset = add->charset ? add->charset : base->charset;
+    new->datetime_format = add->datetime_format ? add->datetime_format : base->datetime_format;
 
     new->alt_list = apr_array_append(p, add->alt_list, base->alt_list);
     new->desc_list = apr_array_append(p, add->desc_list, base->desc_list);
@@ -751,9 +759,11 @@ struct ent {
     apr_off_t size;
     apr_time_t lm;
     struct ent *next;
-    int ascending, ignore_case, version_sort;
+    unsigned int ascending    : 1;
+    unsigned int ignore_case  : 1;
+    unsigned int version_sort : 1;
+    unsigned int isdir        : 1;
     char key;
-    int isdir;
 };
 
 static char *find_item(const char *content_type, const char *content_encoding,
@@ -1264,8 +1274,9 @@ static struct ent *make_parent_entry(apr_int32_t autoindex_opts,
     if (!(p->name = ap_make_full_path(r->pool, r->uri, "../"))) {
         return (NULL);
     }
-    ap_getparents(p->name);
-    if (!*p->name) {
+    if (!ap_normalize_path(p->name, AP_NORMALIZE_ALLOW_RELATIVE |
+                                    AP_NORMALIZE_NOT_ABOVE_ROOT)
+            || p->name[0] == '\0') {
         return (NULL);
     }
 
@@ -1279,7 +1290,7 @@ static struct ent *make_parent_entry(apr_int32_t autoindex_opts,
     p->lm = -1;
     p->key = apr_toupper(keyid);
     p->ascending = (apr_toupper(direction) == D_ASCENDING);
-    p->version_sort = autoindex_opts & VERSION_SORT;
+    p->version_sort = !!(autoindex_opts & VERSION_SORT);
     if (autoindex_opts & FANCY_INDEXING) {
         if (!(p->icon = find_default_icon(d, testpath))) {
             p->icon = find_default_icon(d, "^^DIRECTORY^^");
@@ -1509,14 +1520,17 @@ static void output_directories(struct ent **ar, int n,
     apr_pool_t *scratch;
     int name_width;
     int desc_width;
+    char *datetime_format;
     char *name_scratch;
     char *pad_scratch;
     char *breakrow = "";
 
     apr_pool_create(&scratch, r->pool);
+    apr_pool_tag(scratch, "autoindex_scratch");
 
     name_width = d->name_width;
     desc_width = d->desc_width;
+    datetime_format = d->datetime_format ? d->datetime_format : "%Y-%m-%d %H:%M";
 
     if ((autoindex_opts & (FANCY_INDEXING | TABLE_INDEXING))
                         == FANCY_INDEXING) {
@@ -1756,9 +1770,9 @@ static void output_directories(struct ent **ar, int n,
                     apr_time_exp_t ts;
                     apr_time_exp_lt(&ts, ar[x]->lm);
                     apr_strftime(time_str, &rv, sizeof(time_str),
-                                 "%Y-%m-%d %H:%M  ",
+                                 datetime_format,
                                  &ts);
-                    ap_rvputs(r, "</td><td", (d->style_sheet != NULL) ? " class=\"indexcollastmod\">" : " align=\"right\">",time_str, NULL);
+                    ap_rvputs(r, "</td><td", (d->style_sheet != NULL) ? " class=\"indexcollastmod\">" : " align=\"right\">", time_str, "  ", NULL);
                 }
                 else {
                     ap_rvputs(r, "</td><td", (d->style_sheet != NULL) ? " class=\"indexcollastmod\">&nbsp;" : ">&nbsp;", NULL);
@@ -1844,11 +1858,15 @@ static void output_directories(struct ent **ar, int n,
                     apr_time_exp_t ts;
                     apr_time_exp_lt(&ts, ar[x]->lm);
                     apr_strftime(time_str, &rv, sizeof(time_str),
-                                "%Y-%m-%d %H:%M  ", &ts);
-                    ap_rputs(time_str, r);
+                                datetime_format,
+                                &ts);
+                    ap_rvputs(r, time_str, "  ", NULL);
                 }
                 else {
-                    /*Length="1975-04-07 01:23  " (see 4 lines above) */
+                   /* Length="1975-04-07 01:23  "  (default in 2.4 and later) or
+                    * Length="07-Apr-1975 01:24  ". (2.2 and UseOldDateFormat) 
+                    * See 'datetime_format' above.
+                    */
                     ap_rputs("                   ", r);
                 }
             }
@@ -1905,8 +1923,13 @@ static int dsortf(struct ent **e1, struct ent **e2)
 
     /*
      * First, see if either of the entries is for the parent directory.
-     * If so, that *always* sorts lower than anything else.
+     * If so, that *always* sorts lower than anything else. The
+     * function must be transitive else behaviour is undefined, although
+     * in no real case should both entries start with a '/'.
      */
+    if ((*e1)->name[0] == '/' && (*e2)->name[0] == '/') {
+        return 0;
+    }
     if ((*e1)->name[0] == '/') {
         return -1;
     }
@@ -2042,11 +2065,11 @@ static int index_directory(request_rec *r,
 #endif
     }
     if (*charset) {
-        ap_set_content_type(r, apr_pstrcat(r->pool, ctype, ";charset=",
-                            charset, NULL));
+        ap_set_content_type_ex(r, apr_pstrcat(r->pool, ctype, ";charset=",
+                            charset, NULL), 1);
     }
     else {
-        ap_set_content_type(r, ctype);
+        ap_set_content_type_ex(r, ctype, 1);
     }
 
     if (autoindex_opts & TRACK_MODIFIED) {
@@ -2319,7 +2342,7 @@ static int handle_autoindex(request_rec *r)
                       "Options directive",
                        r->filename,
                        index_names ? index_names : "none");
-        return HTTP_FORBIDDEN;
+        return d->not_found ? HTTP_NOT_FOUND : HTTP_FORBIDDEN;
     }
 }
 

@@ -16,7 +16,7 @@
 
 /**
  * @file  util_fcgi.h
- * @brief FastCGI protocol defitions and support routines
+ * @brief FastCGI protocol definitions and support routines
  *
  * @defgroup APACHE_CORE_FASTCGI FastCGI Tools
  * @ingroup  APACHE_CORE

@@ -52,6 +52,33 @@
 <section id="overview"><title>Overview for the
     impatient</title>
 
+    <dl>
+    <dt>Installing on Fedora/CentOS/Red Hat Enterprise Linux</dt>
+    <dd>
+    <highlight>
+sudo dnf install httpd
+sudo service httpd start
+    </highlight>
+
+    <note type="warning">Older releases of these distros use
+    <code>yum</code> rather than <code>dnf</code>. See <a
+    href="https://fedoraproject.org/wiki/Apache_HTTP_Server">the
+    Fedora project's documentation</a> for platform-specific notes.</note>
+    </dd>
+
+    <dt>Installing on Ubuntu/Debian</dt>
+    <dd>
+<highlight>
+sudo apt install apache2
+sudo service apache2 start
+</highlight>
+
+    <note type="warning">See <a href="https://help.ubuntu.com/lts/serverguide/httpd.html">Ubuntu's documentation</a> for platform-specific notes.</note>
+
+    </dd>
+
+    <dt>Installing from source</dt>
+    <dd>
     <table>
       <columnspec><column width=".13"/><column width=".80"/></columnspec>
       <tr>
@@ -102,15 +129,22 @@
       </tr>
     </table>
 
-    <p><em>NN</em> must be replaced with the current version
-    number, and <em>PREFIX</em> must be replaced with the
-    filesystem path under which the server should be installed. If
-    <em>PREFIX</em> is not specified, it defaults to
-    <code>/usr/local/apache2</code>.</p>
+        <p><em>NN</em> must be replaced with the current version
+        number, and <em>PREFIX</em> must be replaced with the
+        filesystem path under which the server should be installed. If
+        <em>PREFIX</em> is not specified, it defaults to
+        <code>/usr/local/apache2</code>.</p>
 
-    <p>Each section of the compilation and installation process is
-    described in more detail below, beginning with the requirements
-    for compiling and installing Apache httpd.</p>
+        <p>Each section of the compilation and installation process is
+        described in more detail below, beginning with the requirements
+        for compiling and installing Apache httpd.</p>
+    </dd>
+    </dl>
+
+    <note type="warning">Don't see your favorite platform mentioned
+    here? <a href="http://httpd.apache.org/docs-project/">Come help us
+    improve this doc.</a></note>
+
 </section>
 
 <section id="requirements"><title>Requirements</title>
@@ -123,7 +157,7 @@
       your system. If you don't, or prefer to not use the system-provided
       versions, download the latest versions of both APR and APR-Util
       from <a href="http://apr.apache.org/">Apache APR</a>, unpack
-      them into <code>/httpd_source_tree_root/srclib/apr</code> and /httpd_source_tree_root<code>/srclib/apr-util</code>
+      them into <code>/httpd_source_tree_root/srclib/apr</code> and <code>/httpd_source_tree_root/srclib/apr-util</code>
       (be sure the directory names do not have version numbers; for example,
       the APR distribution must be under /httpd_source_tree_root/srclib/apr/) and use
       <code>./configure</code>'s <code>--with-included-apr</code>
@@ -132,7 +166,7 @@
       against your installed copy of APR and APR-Util.</dd>
 
       <dt>Perl-Compatible Regular Expressions Library (PCRE)</dt>
-      <dd>This library is required but not longer bundled with httpd.
+      <dd>This library is required but no longer bundled with httpd.
       Download the source code from <a href="http://www.pcre.org/">http://www.pcre.org</a>,
       or install a Port or Package.  If your build system can't find
       the pcre-config script installed by the PCRE build, point to it
@@ -426,7 +460,7 @@ $ tar xvf httpd-<em>NN</em>.tar
 
     <p>A <a
     href="http://wiki.apache.org/httpd/DistrosDefaultLayout">description
-    of these third-party distrubutions</a> is maintained in the HTTP
+    of these third-party distributions</a> is maintained in the HTTP
     Server wiki, and should reflect the current state of these
     third-party distributions. However, you will need to familiarize
     yourself with your particular platform's package management and

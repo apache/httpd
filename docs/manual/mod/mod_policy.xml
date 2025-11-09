@@ -493,7 +493,7 @@ later.</compatibility>
 
     <example><title>Example</title>
     <highlight language="config">
-# reject reponses with "User-Agent" listed in the Vary header
+# reject responses with "User-Agent" listed in the Vary header
 PolicyVary enforce User-Agent
     </highlight>
     </example>

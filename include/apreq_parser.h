@@ -278,7 +278,7 @@ typedef struct apreq_hook_find_param_ctx_t {
 
 /**
  * Special purpose utility for locating a parameter
- * during parsing.  The hook's ctx shoud be initialized
+ * during parsing.  The hook's ctx should be initialized
  * to an apreq_hook_find_param_ctx_t *, with the name
  * attribute set to the sought parameter name, the param
  * attribute set to NULL, and the prev attribute set to

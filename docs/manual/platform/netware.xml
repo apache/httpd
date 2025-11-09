@@ -644,7 +644,7 @@
           <example>
               Netware\build netware-libc nw-nasm enable-mdc2 enable-md5
           </example>
-          Warning: dont use the CodeWarrior Assembler - it produces broken code!
+          Warning: don't use the CodeWarrior Assembler - it produces broken code!
           </li>
 
           <li>Before building Apache, set the environment variable

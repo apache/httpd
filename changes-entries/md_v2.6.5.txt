@@ -1,0 +1,9 @@
+  *) mod_md: update to version 2.6.5
+     - New directive `MDInitialDelay`, controlling how longer to wait after
+       a server restart before checking certificates for renewal.
+       [Michael Kaufmann]
+     - Hardening: when build with OpenSSL older than 1.0.2 or old libressl
+       versions, the parsing of ASN.1 time strings did not do a length check.
+     - Hardening: when reading back OCSP responses stored in the local JSON
+       store, missing 'valid' key led to uninitialized values, resulting in
+       wrong refresh behaviour.

@@ -27,6 +27,7 @@
 <div id="preamble"><h1>Apache モジュール mod_include</h1>
 <div class="toplang">
 <p><span>翻訳済み言語: </span><a href="../en/mod/mod_include.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../fr/mod/mod_include.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_include.html" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div>
 <div class="outofdate">この日本語訳はすでに古くなっている
@@ -75,7 +76,7 @@
 <li><a href="#comments_section">コメント</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="enabling" id="enabling">Server-Side Includes を有効にする</a></h2>
+<h2><a name="enabling" id="enabling">Server-Side Includes を有効にする</a> <a title="Permanent link" href="#enabling" class="permalink">&para;</a></h2>
     
 
     <p>Server Side Includes は <code>INCLUDES</code>
@@ -109,7 +110,7 @@
     <p>詳しい情報は <a href="../howto/ssi.html">Tutorial on Server Side Includes</a>.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="pathinfo" id="pathinfo">サーバサイドインクルード (SSI) での PATH_INFO</a></h2>
+<h2><a name="pathinfo" id="pathinfo">サーバサイドインクルード (SSI) での PATH_INFO</a> <a title="Permanent link" href="#pathinfo" class="permalink">&para;</a></h2>
     
 
     <p>SSI で処理されるファイルはデフォルトでは <code>PATH_INFO</code>
@@ -119,7 +120,7 @@
     設定できます。</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="elements" id="elements">基本要素</a></h2>
+<h2><a name="elements" id="elements">基本要素</a> <a title="Permanent link" href="#elements" class="permalink">&para;</a></h2>
     <p>ドキュメントは、SGML のコメントとして特別なコマンドが埋め込まれた
     HTML ドキュメントとしてパースされます。コマンドの構文は次のように
     なっています:</p>
@@ -408,7 +409,7 @@
      
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="includevars" id="includevars">Include 変数</a></h2>
+<h2><a name="includevars" id="includevars">Include 変数</a> <a title="Permanent link" href="#includevars" class="permalink">&para;</a></h2>
     
 
     <p>標準 CGI 環境の変数に加えて、<code>echo</code> コマンドや、
@@ -441,7 +442,7 @@
     </dl>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="substitution" id="substitution">変数置換</a></h2>
+<h2><a name="substitution" id="substitution">変数置換</a> <a title="Permanent link" href="#substitution" class="permalink">&para;</a></h2>
 
     <p>変数置換はたいていの場合 SSI ディレクティブの引数として妥当な場所にある
     引用符で囲まれた文字列中で行なわれます。これに該当するものには、
@@ -488,7 +489,7 @@
     </code></p></div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="flowctrl" id="flowctrl">フロー制御要素</a></h2>
+<h2><a name="flowctrl" id="flowctrl">フロー制御要素</a> <a title="Permanent link" href="#flowctrl" class="permalink">&para;</a></h2>
     
 
     <p>基本的なフローコントロール要素は次の通りです。</p>
@@ -650,7 +651,7 @@
     </div>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSIEndTag" id="SSIEndTag">SSIEndTag</a> <a name="ssiendtag" id="ssiendtag">ディレクティブ</a></h2>
+<div class="directive-section"><h2><a name="SSIEndTag" id="SSIEndTag">SSIEndTag</a> <a name="ssiendtag" id="ssiendtag">ディレクティブ</a> <a title="Permanent link" href="#ssiendtag" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>include 要素を終了させる文字列</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>SSIEndTag <var>tag</var></code></td></tr>
@@ -674,7 +675,7 @@
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSIErrorMsg" id="SSIErrorMsg">SSIErrorMsg</a> <a name="ssierrormsg" id="ssierrormsg">ディレクティブ</a></h2>
+<div class="directive-section"><h2><a name="SSIErrorMsg" id="SSIErrorMsg">SSIErrorMsg</a> <a name="ssierrormsg" id="ssierrormsg">ディレクティブ</a> <a title="Permanent link" href="#ssierrormsg" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>SSI のエラーがあったときに表示されるエラーメッセージ</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>SSIErrorMsg <var>message</var></code></td></tr>
@@ -701,37 +702,40 @@ directive]"</code></td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSIETag" id="SSIETag">SSIETag</a> <a name="ssietag" id="ssietag">ディレクティブ</a></h2>
+<div class="directive-section"><h2><a name="SSIETag" id="SSIETag">SSIETag</a> <a name="ssietag" id="ssietag">ディレクティブ</a> <a title="Permanent link" href="#ssietag" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>Controls whether ETags are generated by the server.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>SSIETag on|off</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>SSIETag off</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>ディレクトリ, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">上書き:</a></th><td>Limit</td></tr>
 <tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_include</td></tr>
 </table><p>このディレクティブの解説文書は
             まだ翻訳されていません。英語版をご覧ください。
             </p></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSILastModified" id="SSILastModified">SSILastModified</a> <a name="ssilastmodified" id="ssilastmodified">ディレクティブ</a></h2>
+<div class="directive-section"><h2><a name="SSILastModified" id="SSILastModified">SSILastModified</a> <a name="ssilastmodified" id="ssilastmodified">ディレクティブ</a> <a title="Permanent link" href="#ssilastmodified" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>Controls whether <code>Last-Modified</code> headers are generated by the
 server.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>SSILastModified on|off</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>SSILastModified off</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>ディレクトリ, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">上書き:</a></th><td>Limit</td></tr>
 <tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_include</td></tr>
 </table><p>このディレクティブの解説文書は
             まだ翻訳されていません。英語版をご覧ください。
             </p></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSILegacyExprParser" id="SSILegacyExprParser">SSILegacyExprParser</a> <a name="ssilegacyexprparser" id="ssilegacyexprparser">ディレクティブ</a></h2>
+<div class="directive-section"><h2><a name="SSILegacyExprParser" id="SSILegacyExprParser">SSILegacyExprParser</a> <a name="ssilegacyexprparser" id="ssilegacyexprparser">ディレクティブ</a> <a title="Permanent link" href="#ssilegacyexprparser" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>Enable compatibility mode for conditional expressions.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>SSILegacyExprParser on|off</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>SSILegacyExprParser off</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>ディレクトリ, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">上書き:</a></th><td>Limit</td></tr>
 <tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_include</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">互換性:</a></th><td>Available in version 2.3.13 and later.</td></tr>
@@ -739,7 +743,7 @@ server.</td></tr>
             まだ翻訳されていません。英語版をご覧ください。
             </p></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSIStartTag" id="SSIStartTag">SSIStartTag</a> <a name="ssistarttag" id="ssistarttag">ディレクティブ</a></h2>
+<div class="directive-section"><h2><a name="SSIStartTag" id="SSIStartTag">SSIStartTag</a> <a name="ssistarttag" id="ssistarttag">ディレクティブ</a> <a title="Permanent link" href="#ssistarttag" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>include 要素を開始する文字列</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>SSIStartTag <var>tag</var></code></td></tr>
@@ -776,7 +780,7 @@ server.</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSITimeFormat" id="SSITimeFormat">SSITimeFormat</a> <a name="ssitimeformat" id="ssitimeformat">ディレクティブ</a></h2>
+<div class="directive-section"><h2><a name="SSITimeFormat" id="SSITimeFormat">SSITimeFormat</a> <a name="ssitimeformat" id="ssitimeformat">ディレクティブ</a> <a title="Permanent link" href="#ssitimeformat" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>日付けを現す文字列の書式を設定する</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>SSITimeFormat <var>formatstring</var></code></td></tr>
@@ -803,7 +807,7 @@ server.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSIUndefinedEcho" id="SSIUndefinedEcho">SSIUndefinedEcho</a> <a name="ssiundefinedecho" id="ssiundefinedecho">ディレクティブ</a></h2>
+<div class="directive-section"><h2><a name="SSIUndefinedEcho" id="SSIUndefinedEcho">SSIUndefinedEcho</a> <a name="ssiundefinedecho" id="ssiundefinedecho">ディレクティブ</a> <a title="Permanent link" href="#ssiundefinedecho" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>未定義の変数が echo されたときに表示される文字列</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>SSIUndefinedEcho <var>string</var></code></td></tr>
@@ -824,7 +828,7 @@ server.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="XBitHack" id="XBitHack">XBitHack</a> <a name="xbithack" id="xbithack">ディレクティブ</a></h2>
+<div class="directive-section"><h2><a name="XBitHack" id="XBitHack">XBitHack</a> <a name="xbithack" id="xbithack">ディレクティブ</a> <a title="Permanent link" href="#xbithack" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>実行ビットが設定されたファイルの SSI ディレクティブを
 解析する</td></tr>
@@ -869,8 +873,9 @@ server.</td></tr>
 </div>
 <div class="bottomlang">
 <p><span>翻訳済み言語: </span><a href="../en/mod/mod_include.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../fr/mod/mod_include.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_include.html" title="Japanese">&nbsp;ja&nbsp;</a></p>
-</div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">コメント</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
+</div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">コメント</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Libera.chat, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
 var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_include.html';
@@ -888,7 +893,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_include.ht
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2017 The Apache Software Foundation.<br />この文書は <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> のライセンスで提供されています。.</p>
+<p class="apache">Copyright 2023 The Apache Software Foundation.<br />この文書は <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> のライセンスで提供されています。.</p>
 <p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/quickreference.html">ディレクティブ</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

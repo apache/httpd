@@ -97,8 +97,8 @@ Body:----------es--
 
   <!--#else -->
 
-    Si usted ha introducido la URL manualmente, por favor revise su
-    ortograf&iacute;a e int&eacute;ntelo de nuevo.
+    Si ha introducido manualmente la URL, revise que
+    la haya introducido bien e int&eacute;ntelo de nuevo.
 
   <!--#endif -->
 
@@ -385,6 +385,32 @@ Body:----------ro--
 <!--#include virtual="include/bottom.html" -->
 ----------ro--
 
+Content-language: ru
+Content-type: text/html; charset=UTF-8
+Body:----------ru--
+<!--#set var="TITLE" value="Объект не найден!"
+--><!--#include virtual="include/top.html" -->
+
+    Запрашиваемый ресурс не найден.
+
+  <!--#if expr="-n v('HTTP_REFERER')" -->
+
+    Ссылка на
+    <a href="<!--#echo encoding="url" var="HTTP_REFERER" -->">странице
+    </a> неверна или устарела. Пожалуйста, сообщите автору
+    <a href="<!--#echo encoding="url" var="HTTP_REFERER" -->">этой страницы</a>
+    об ошибке.
+
+  <!--#else -->
+
+    Если Вы ввели адрес данного ресурса вручную, пожалуйста, удостовертесь,
+    что в написании адреса нет ошибок.
+
+  <!--#endif -->
+
+<!--#include virtual="include/bottom.html" -->
+----------ru--
+
 Content-language: sr
 Content-type: text/html; charset=UTF-8
 Body:----------sr--
@@ -462,3 +488,49 @@ Body:----------tr--
 
 <!--#include virtual="include/bottom.html" -->
 ----------tr--
+
+Content-language: zh-cn
+Content-type: text/html; charset=UTF-8
+Body:----------zh-cn--
+<!--#set var="CONTENT_LANGUAGE" value="zh-cn"
+--><!--#set var="TITLE" value="找不到对象！"
+--><!--#include virtual="include/top.html" -->
+
+    您请求的 URL 在该服务器上未找到。
+
+  <!--#if expr="-n v('HTTP_REFERER')" -->
+
+    您的<a href="<!--#echo encoding="url" var="HTTP_REFERER" -->">来源页面</a>上的链接可能出错或过期。
+    请将错误通知给<a href="<!--#echo encoding="url" var="HTTP_REFERER" -->">该页面</a>的作者。
+
+  <!--#else -->
+
+    如果您是手动输入的 URL ，请检查拼写并重试。
+
+  <!--#endif -->
+
+<!--#include virtual="include/bottom.html" -->
+----------zh-cn--
+
+Content-language: zh-tw
+Content-type: text/html; charset=UTF-8
+Body:----------zh-tw--
+<!--#set var="CONTENT_LANGUAGE" value="zh-tw"
+--><!--#set var="TITLE" value="找不到物件！"
+--><!--#include virtual="include/top.html" -->
+
+    您請求的 URL 在該伺服器上未找到。
+
+  <!--#if expr="-n v('HTTP_REFERER')" -->
+
+    您的<a href="<!--#echo encoding="url" var="HTTP_REFERER" -->">來源頁面</a>上的連結可能出錯或過期。
+    請將錯誤通知給<a href="<!--#echo encoding="url" var="HTTP_REFERER" -->">該來源頁面</a>的作者。
+
+  <!--#else -->
+
+    如果您是手動輸入的 URL ，請檢查拼寫並重試。
+
+  <!--#endif -->
+
+<!--#include virtual="include/bottom.html" -->
+----------zh-tw--

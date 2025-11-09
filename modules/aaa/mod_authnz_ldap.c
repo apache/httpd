@@ -84,10 +84,10 @@ typedef struct {
 } authn_ldap_config_t;
 
 typedef struct {
-    char *dn;                       /* The saved dn from a successful search */
-    char *user;                     /* The username provided by the client */
+    const char *dn;                 /* The saved dn from a successful search */
+    const char *user;               /* The username provided by the client */
     const char **vals;              /* The additional values pulled during the DN search*/
-    char *password;                 /* if this module successfully authenticates, the basic auth password, else null */
+    const char *password;           /* if this module successfully authenticates, the basic auth password, else null */
     apr_pool_t *ldc_pool;           /* a short-lived pool to trigger cleanups on any acquired LDCs */
 } authn_ldap_request_t;
 
@@ -126,9 +126,13 @@ static char* derive_codepage_from_lang (apr_pool_t *p, char *language)
 
     charset = (char*) apr_hash_get(charset_conversions, language, APR_HASH_KEY_STRING);
 
-    if (!charset) {
-        language[2] = '\0';
-        charset = (char*) apr_hash_get(charset_conversions, language, APR_HASH_KEY_STRING);
+    /*
+     * Test if language values like 'en-US' return a match from the charset
+     * conversion map when shortened to 'en'.
+     */
+    if (!charset && strlen(language) > 3 && language[2] == '-') {
+        char *language_short = apr_pstrndup(p, language, 2);
+        charset = (char*) apr_hash_get(charset_conversions, language_short, APR_HASH_KEY_STRING);
     }
 
     if (charset) {
@@ -202,7 +206,7 @@ static const char* authn_ldap_xlate_password(request_rec *r,
  * search filter will be (&(posixid=*)(uid=userj)).
  */
 #define FILTER_LENGTH MAX_STRING_LEN
-static apr_status_t authn_ldap_build_filter(char *filtbuf,
+static apr_status_t authn_ldap_build_filter(char filtbuf[FILTER_LENGTH],
                              request_rec *r,
                              const char *user,
                              const char *filter,
@@ -215,6 +219,7 @@ static apr_status_t authn_ldap_build_filter(char *filtbuf,
     apr_size_t outbytes;
     char *outbuf;
     int nofilter = 0, len;
+    apr_status_t rv = APR_SUCCESS;
 
     if (!filter) {
         filter = sec->filter;
@@ -240,7 +245,7 @@ static apr_status_t authn_ldap_build_filter(char *filtbuf,
      * config-supplied portions.
      */
 
-    if ((nofilter = (filter && !strcasecmp(filter, "none")))) { 
+    if ((nofilter = (!filter || !*filter || !strcasecmp(filter, "none")))) { 
         len = apr_snprintf(filtbuf, FILTER_LENGTH, "(%s=", sec->attribute);
     }
     else { 
@@ -252,12 +257,13 @@ static apr_status_t authn_ldap_build_filter(char *filtbuf,
      * LDAP filter metachars are escaped.
      */
     filtbuf_end = filtbuf + FILTER_LENGTH - 1;
-#if APR_HAS_MICROSOFT_LDAPSDK
-    for (p = user, q=filtbuf + len;
-         *p && q < filtbuf_end; ) {
+    for (p = user, q = filtbuf + len; *p; ) {
         if (strchr("*()\\", *p) != NULL) {
-            if ( q + 3 >= filtbuf_end)
-              break;  /* Don't write part of escape sequence if we can't write all of it */
+#if APR_HAS_MICROSOFT_LDAPSDK
+            if (q + 3 >= filtbuf_end) { /* accounts for final \0 */
+                rv = APR_EGENERAL;
+                goto out;
+            }
             *q++ = '\\';
             switch ( *p++ )
             {
@@ -277,23 +283,24 @@ static apr_status_t authn_ldap_build_filter(char *filtbuf,
                 *q++ = '5';
                 *q++ = 'c';
                 break;
-                        }
-        }
-        else
-            *q++ = *p++;
-    }
-#else
-    for (p = user, q=filtbuf + len;
-         *p && q < filtbuf_end; *q++ = *p++) {
-        if (strchr("*()\\", *p) != NULL) {
-            *q++ = '\\';
-            if (q >= filtbuf_end) {
-              break;
             }
+#else
+            if (q + 2 >= filtbuf_end) { /* accounts for final \0 */
+                rv = APR_EGENERAL;
+                goto out;
+            }
+            *q++ = '\\';
+            *q++ = *p++;
+#endif
+        }
+        else {
+            if (q + 1 >= filtbuf_end) { /* accounts for final \0 */
+                rv = APR_EGENERAL;
+                goto out;
+            }
+            *q++ = *p++;
         }
     }
-#endif
-    *q = '\0';
 
     /*
      * Append the closing parens of the filter, unless doing so would
@@ -301,23 +308,24 @@ static apr_status_t authn_ldap_build_filter(char *filtbuf,
      */
 
     if (nofilter) { 
-        if (q + 1 <= filtbuf_end) {
-            strcat(filtbuf, ")");
+        if (q + 1 >= filtbuf_end) { /* accounts for final \0 */
+            rv = APR_EGENERAL;
+            goto out;
         }
-        else {
-            return APR_EGENERAL;
-        }
+        *q++ = ')';
     } 
     else { 
-        if (q + 2 <= filtbuf_end) {
-            strcat(filtbuf, "))");
+        if (q + 2 >= filtbuf_end) { /* accounts for final \0 */
+            rv = APR_EGENERAL;
+            goto out;
         }
-        else {
-            return APR_EGENERAL;
-        }
+        *q++ = ')';
+        *q++ = ')';
     }
 
-    return APR_SUCCESS;
+out:
+    *q = '\0';
+    return rv;
 }
 
 static void *create_authnz_ldap_dir_config(apr_pool_t *p, char *d)
@@ -347,7 +355,7 @@ static void *create_authnz_ldap_dir_config(apr_pool_t *p, char *d)
     sec->group_attrib_is_dn = 1;
     sec->secure = -1;   /*Initialize to unset*/
     sec->maxNestingDepth = 0;
-    sec->sgAttributes = apr_pcalloc(p, sizeof (char *) * GROUPATTR_MAX_ELTS + 1);
+    sec->sgAttributes = apr_pcalloc(p, sizeof (char *) * (GROUPATTR_MAX_ELTS + 1));
 
     sec->user_is_dn = 0;
     sec->remote_user_attribute = NULL;
@@ -366,7 +374,8 @@ static apr_status_t authnz_ldap_cleanup_connection_close(void *param)
     return APR_SUCCESS;
 }
 
-static int set_request_vars(request_rec *r, enum auth_ldap_phase phase, const char **vals) {
+static int set_request_vars(request_rec *r, enum auth_ldap_phase phase, const char **vals)
+{
     char *prefix = NULL;
     int prefix_len;
     int remote_user_attribute_set = 0;
@@ -401,7 +410,8 @@ static int set_request_vars(request_rec *r, enum auth_ldap_phase phase, const ch
     return remote_user_attribute_set;
 }
 
-static const char *ldap_determine_binddn(request_rec *r, const char *user) {
+static const char *ldap_determine_binddn(request_rec *r, const char *user)
+{
     authn_ldap_config_t *sec =
         (authn_ldap_config_t *)ap_get_module_config(r->per_dir_config, &authnz_ldap_module);
     const char *result = user;
@@ -437,8 +447,8 @@ static util_ldap_connection_t *get_connection_for_authz(request_rec *r, enum aut
         (authn_ldap_config_t *)ap_get_module_config(r->per_dir_config, &authnz_ldap_module);
     util_ldap_connection_t *ldc = NULL;
 
-    char *binddn = sec->binddn;
-    char *bindpw = sec->bindpw;
+    const char *binddn = sec->binddn;
+    const char *bindpw = sec->bindpw;
 
     if (!req) { 
         ap_log_rerror(APLOG_MARK, APLOG_CRIT, 0, r, APLOGNO(02659)
@@ -452,7 +462,7 @@ static util_ldap_connection_t *get_connection_for_authz(request_rec *r, enum aut
     if (req->password &&
          ((type == LDAP_SEARCH && sec->search_as_user)    ||
           (type == LDAP_COMPARE && sec->compare_as_user)  ||
-          (type == LDAP_COMPARE_AND_SEARCH && sec->compare_as_user && sec->search_as_user))){
+          (type == LDAP_COMPARE_AND_SEARCH && sec->compare_as_user && sec->search_as_user))) {
             binddn = req->dn;
             bindpw = req->password;
     }
@@ -469,11 +479,13 @@ static util_ldap_connection_t *get_connection_for_authz(request_rec *r, enum aut
 }
 
 
-static authn_ldap_request_t* build_request_config(request_rec *r) { 
+static authn_ldap_request_t* build_request_config(request_rec *r)
+{ 
     authn_ldap_request_t *req =
         (authn_ldap_request_t *)apr_pcalloc(r->pool, sizeof(authn_ldap_request_t));
     ap_set_module_config(r->request_config, &authnz_ldap_module, req);
     apr_pool_create(&(req->ldc_pool), r->pool);
+    apr_pool_tag(req->ldc_pool, "authn_ldap_req_ldc");
     ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01740)
                  "ldap authorize: Creating LDAP req structure");
     return req;
@@ -531,6 +543,32 @@ static authn_status authn_ldap_check_password(request_rec *r, const char *user,
         return AUTH_GENERAL_ERROR;
     }
 
+    /* Get the password that the client sent */
+    if (password == NULL) {
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01692)
+                      "auth_ldap authenticate: no password specified");
+        return AUTH_GENERAL_ERROR;
+    }
+
+    if (user == NULL) {
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01693)
+                      "auth_ldap authenticate: no user specified");
+        return AUTH_GENERAL_ERROR;
+    }
+
+    /*
+     * A bind to the server with an empty password always succeeds, so
+     * we check to ensure that the password is not empty. This implies
+     * that users who actually do have empty passwords will never be
+     * able to authenticate with this module. I don't see this as a big
+     * problem.
+     */
+    if (!(*password)) {
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(10263)
+                      "auth_ldap authenticate: empty password specified");
+        return AUTH_DENIED;
+    }
+
     /* There is a good AuthLDAPURL, right? */
     if (sec->host) {
         const char *binddn = sec->binddn;
@@ -553,21 +591,6 @@ static authn_status authn_ldap_check_password(request_rec *r, const char *user,
 
     ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01691)
                   "auth_ldap authenticate: using URL %s", sec->url);
-
-    /* Get the password that the client sent */
-    if (password == NULL) {
-        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01692)
-                      "auth_ldap authenticate: no password specified");
-        release_ldc(r, ldc);
-        return AUTH_GENERAL_ERROR;
-    }
-
-    if (user == NULL) {
-        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01693)
-                      "auth_ldap authenticate: no user specified");
-        release_ldc(r, ldc);
-        return AUTH_GENERAL_ERROR;
-    }
 
     /* build the username filter */
     if (APR_SUCCESS != authn_ldap_build_filter(filtbuf, r, user, NULL, sec)) {
@@ -633,11 +656,11 @@ static authn_status authn_ldap_check_password(request_rec *r, const char *user,
     }
 
     /* mark the user and DN */
-    req->dn = apr_pstrdup(r->pool, dn);
-    req->user = apr_pstrdup(r->pool, user);
-    req->password = apr_pstrdup(r->pool, password);
+    req->dn = dn;
+    req->user = user;
+    req->password = password;
     if (sec->user_is_dn) {
-        r->user = req->dn;
+        r->user = (char *)req->dn;
     }
 
     /* add environment variables */
@@ -669,6 +692,7 @@ static authz_status get_dn_for_nonldap_authn(request_rec *r, util_ldap_connectio
     authn_ldap_config_t *sec =
         (authn_ldap_config_t *)ap_get_module_config(r->per_dir_config, &authnz_ldap_module);
     const char *dn = NULL;
+    int remote_user_attribute_set = 0;
 
     /* Build the username filter */
     if (APR_SUCCESS != authn_ldap_build_filter(filtbuf, r, r->user, NULL, sec)) {
@@ -689,8 +713,23 @@ static authz_status get_dn_for_nonldap_authn(request_rec *r, util_ldap_connectio
         return AUTHZ_DENIED;
     }
 
-    req->dn = apr_pstrdup(r->pool, dn);
+    req->dn = dn;
     req->user = r->user;
+
+    /* add environment variables */
+    remote_user_attribute_set = set_request_vars(r, LDAP_AUTHN, req->vals);
+
+    /* sanity check */
+    if (sec->remote_user_attribute && !remote_user_attribute_set) {
+        ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(10450)
+                  "auth_ldap non-ldap authenticate: "
+                  "REMOTE_USER was to be set with attribute '%s', "
+                  "but this attribute was not requested for in the "
+                  "LDAP query for the user. REMOTE_USER will fall "
+                  "back to username or DN as appropriate.",
+                  sec->remote_user_attribute);
+    }
+
     return AUTHZ_GRANTED;
 }
 
@@ -728,33 +767,28 @@ static authz_status ldapuser_check_authorization(request_rec *r,
         return AUTHZ_DENIED;
     }
 
-    if (!req) {
-        authz_status rv = AUTHZ_DENIED;
-        req = build_request_config(r);
-        ldc = get_connection_for_authz(r, LDAP_COMPARE);
-        if (AUTHZ_GRANTED != (rv = get_dn_for_nonldap_authn(r, ldc))) { 
-            return rv;
-        }
-    }
-    else { 
-        ldc = get_connection_for_authz(r, LDAP_COMPARE);
-    }
-
-
     /*
      * If we have been authenticated by some other module than mod_authnz_ldap,
      * the req structure needed for authorization needs to be created
      * and populated with the userid and DN of the account in LDAP
      */
-
-
-    if (!strlen(r->user)) {
-        ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(01699)
-            "ldap authorize: Userid is blank, AuthType=%s",
-            r->ap_auth_type);
+    if (!req) {
+        req = build_request_config(r);
     }
-
-    if (req->dn == NULL || strlen(req->dn) == 0) {
+    ldc = get_connection_for_authz(r, LDAP_COMPARE);
+    if (!req->dn) {
+        authz_status rv;
+        if (!*r->user) {
+            ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(01699)
+                          "ldap authorize: Userid is blank, AuthType=%s",
+                          r->ap_auth_type);
+        }
+        rv = get_dn_for_nonldap_authn(r, ldc);
+        if (rv != AUTHZ_GRANTED) {
+            return rv;
+        }
+    }
+    if (req->dn == NULL || !*req->dn) {
         ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01702)
                       "auth_ldap authorize: require user: user's DN has not "
                       "been defined; failing authorization");
@@ -856,16 +890,26 @@ static authz_status ldapgroup_check_authorization(request_rec *r,
         return AUTHZ_DENIED;
     }
 
+    /*
+     * If we have been authenticated by some other module than mod_authnz_ldap,
+     * the req structure needed for authorization needs to be created
+     * and populated with the userid and DN of the account in LDAP
+     */
     if (!req) {
-        authz_status rv = AUTHZ_DENIED;
         req = build_request_config(r);
-        ldc = get_connection_for_authz(r, LDAP_COMPARE);
-        if (AUTHZ_GRANTED != (rv = get_dn_for_nonldap_authn(r, ldc))) {
+    }
+    ldc = get_connection_for_authz(r, LDAP_COMPARE);
+    if (!req->dn) {
+        authz_status rv;
+        if (!*r->user) {
+            ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(10490)
+                          "ldap authorize: Userid is blank, AuthType=%s",
+                          r->ap_auth_type);
+        }
+        rv = get_dn_for_nonldap_authn(r, ldc);
+        if (rv != AUTHZ_GRANTED) {
             return rv;
         }
-    }
-    else { 
-        ldc = get_connection_for_authz(r, LDAP_COMPARE);
     }
 
     /*
@@ -910,7 +954,7 @@ static authz_status ldapgroup_check_authorization(request_rec *r,
      * and populated with the userid and DN of the account in LDAP
      */
 
-    if (!strlen(r->user)) {
+    if (!*r->user) {
         ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(01709)
             "ldap authorize: Userid is blank, AuthType=%s",
             r->ap_auth_type);
@@ -920,7 +964,7 @@ static authz_status ldapgroup_check_authorization(request_rec *r,
     ent = (struct mod_auth_ldap_groupattr_entry_t *) sec->groupattr->elts;
 
     if (sec->group_attrib_is_dn) {
-        if (req->dn == NULL || strlen(req->dn) == 0) {
+        if (req->dn == NULL || !*req->dn) {
             ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01712)
                           "auth_ldap authorize: require group: user's DN has "
                           "not been defined; failing authorization for user %s",
@@ -929,7 +973,7 @@ static authz_status ldapgroup_check_authorization(request_rec *r,
         }
     }
     else {
-        if (req->user == NULL || strlen(req->user) == 0) {
+        if (req->user == NULL || !*req->user) {
             /* We weren't called in the authentication phase, so we didn't have a
              * chance to set the user field. Do so now. */
             req->user = r->user;
@@ -1062,23 +1106,21 @@ static authz_status ldapdn_check_authorization(request_rec *r,
      * the req structure needed for authorization needs to be created
      * and populated with the userid and DN of the account in LDAP
      */
-
-    if (!strlen(r->user)) {
-        ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(01722)
-            "ldap authorize: Userid is blank, AuthType=%s",
-            r->ap_auth_type);
-    }
-
     if (!req) {
-        authz_status rv = AUTHZ_DENIED;
         req = build_request_config(r);
-        ldc = get_connection_for_authz(r, LDAP_SEARCH); /* comparedn is a search */
-        if (AUTHZ_GRANTED != (rv = get_dn_for_nonldap_authn(r, ldc))) {
+    }
+    ldc = get_connection_for_authz(r, LDAP_SEARCH); /* comparedn is a search */
+    if (!req->dn) {
+        authz_status rv;
+        if (!*r->user) {
+            ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(01722)
+                          "ldap authorize: Userid is blank, AuthType=%s",
+                          r->ap_auth_type);
+        }
+        rv = get_dn_for_nonldap_authn(r, ldc);
+        if (rv != AUTHZ_GRANTED) {
             return rv;
         }
-    }
-    else { 
-        ldc = get_connection_for_authz(r, LDAP_SEARCH); /* comparedn is a search */
     }
 
     require = ap_expr_str_exec(r, expr, &err);
@@ -1091,7 +1133,7 @@ static authz_status ldapdn_check_authorization(request_rec *r,
 
     t = require;
 
-    if (req->dn == NULL || strlen(req->dn) == 0) {
+    if (req->dn == NULL || !*req->dn) {
         ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01725)
                       "auth_ldap authorize: require dn: user's DN has not "
                       "been defined; failing authorization");
@@ -1162,26 +1204,23 @@ static authz_status ldapattribute_check_authorization(request_rec *r,
      * the req structure needed for authorization needs to be created
      * and populated with the userid and DN of the account in LDAP
      */
-
-    if (!strlen(r->user)) {
-        ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(01730)
-            "ldap authorize: Userid is blank, AuthType=%s",
-            r->ap_auth_type);
-    }
-
     if (!req) {
-        authz_status rv = AUTHZ_DENIED;
         req = build_request_config(r);
-        ldc = get_connection_for_authz(r, LDAP_COMPARE);
-        if (AUTHZ_GRANTED != (rv = get_dn_for_nonldap_authn(r, ldc))) {
+    }
+    ldc = get_connection_for_authz(r, LDAP_COMPARE);
+    if (!req->dn) {
+        authz_status rv;
+        if (!*r->user) {
+            ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(01730)
+                          "ldap authorize: Userid is blank, AuthType=%s",
+                          r->ap_auth_type);
+        }
+        rv = get_dn_for_nonldap_authn(r, ldc);
+        if (rv != AUTHZ_GRANTED) {
             return rv;
         }
     }
-    else { 
-        ldc = get_connection_for_authz(r, LDAP_COMPARE);
-    }
-
-    if (req->dn == NULL || strlen(req->dn) == 0) {
+    if (req->dn == NULL || !*req->dn) {
         ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01733)
                       "auth_ldap authorize: require ldap-attribute: user's DN "
                       "has not been defined; failing authorization");
@@ -1271,26 +1310,23 @@ static authz_status ldapfilter_check_authorization(request_rec *r,
      * the req structure needed for authorization needs to be created
      * and populated with the userid and DN of the account in LDAP
      */
-
-    if (!strlen(r->user)) {
-        ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(01739)
-            "ldap authorize: Userid is blank, AuthType=%s",
-            r->ap_auth_type);
-    }
-
     if (!req) {
-        authz_status rv = AUTHZ_DENIED;
         req = build_request_config(r);
-        ldc = get_connection_for_authz(r, LDAP_SEARCH);
-        if (AUTHZ_GRANTED != (rv = get_dn_for_nonldap_authn(r, ldc))) {
+    }
+    ldc = get_connection_for_authz(r, LDAP_SEARCH);
+    if (!req->dn) {
+        authz_status rv;
+        if (!*r->user) {
+            ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(01739)
+                          "ldap authorize: Userid is blank, AuthType=%s",
+                          r->ap_auth_type);
+        }
+        rv = get_dn_for_nonldap_authn(r, ldc);
+        if (rv != AUTHZ_GRANTED) {
             return rv;
         }
     }
-    else { 
-        ldc = get_connection_for_authz(r, LDAP_SEARCH);
-    }
-
-    if (req->dn == NULL || strlen(req->dn) == 0) {
+    if (req->dn == NULL || !*req->dn) {
         ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01742)
                       "auth_ldap authorize: require ldap-filter: user's DN "
                       "has not been defined; failing authorization");
@@ -1373,6 +1409,8 @@ static authz_status ldapsearch_check_authorization(request_rec *r,
                                                    const void *parsed_require_args)
 {
     int result = 0;
+    authn_ldap_request_t *req =
+        (authn_ldap_request_t *)ap_get_module_config(r->request_config, &authnz_ldap_module);
     authn_ldap_config_t *sec =
         (authn_ldap_config_t *)ap_get_module_config(r->per_dir_config, &authnz_ldap_module);
 
@@ -1388,14 +1426,21 @@ static authz_status ldapsearch_check_authorization(request_rec *r,
         return AUTHZ_DENIED;
     }
 
-    if (sec->host) {
-        ldc = get_connection_for_authz(r, LDAP_SEARCH);
-    }
-    else {
-        ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(02636)
+    if (!sec->host) {
+        ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(10486)
                       "auth_ldap authorize: no sec->host - weird...?");
         return AUTHZ_DENIED;
     }
+
+    /*
+     * If we have been authenticated by some other module than mod_auth_ldap,
+     * the req structure needed for authorization needs to be created
+     * and populated with the userid and DN of the account in LDAP
+     */
+    if (!req) {
+        req = build_request_config(r);
+    }
+    ldc = get_connection_for_authz(r, LDAP_SEARCH);
 
     require = ap_expr_str_exec(r, expr, &err);
     if (err) {
@@ -1408,20 +1453,21 @@ static authz_status ldapsearch_check_authorization(request_rec *r,
     t = require;
 
     if (t[0]) {
-        const char **vals;
 
         ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02630)
                       "auth_ldap authorize: checking filter %s", t);
 
         /* Search for the user DN */
         result = util_ldap_cache_getuserdn(r, ldc, sec->url, sec->basedn,
-             sec->scope, sec->attributes, t, &dn, &vals);
+             sec->scope, sec->attributes, t, &dn, &(req->vals));
 
         /* Make sure that the filtered search returned a single dn */
         if (result == LDAP_SUCCESS && dn) {
+            req->dn = dn;
             ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02631)
                           "auth_ldap authorize: require ldap-search: "
                           "authorization successful");
+            set_request_vars(r, LDAP_AUTHZ, req->vals);
             return AUTHZ_GRANTED;
         }
         else {
@@ -1597,8 +1643,7 @@ static const char *mod_auth_ldap_set_deref(cmd_parms *cmd, void *config, const c
 
 static const char *mod_auth_ldap_add_subgroup_attribute(cmd_parms *cmd, void *config, const char *arg)
 {
-    int i = 0;
-
+    int i;
     authn_ldap_config_t *sec = config;
 
     for (i = 0; sec->sgAttributes[i]; i++) {
@@ -1710,6 +1755,10 @@ static const char *set_bind_password(cmd_parms *cmd, void *_cfg, const char *arg
     }
     else {
         sec->bindpw = (char *)arg;
+    }
+
+    if (!(*sec->bindpw)) {
+        return "Empty passwords are invalid for AuthLDAPBindPassword";
     }
 
     return NULL;
@@ -1911,6 +1960,7 @@ static int authnz_ldap_post_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *
 static const authn_provider authn_ldap_provider =
 {
     &authn_ldap_check_password,
+    NULL,
 };
 
 static const authz_provider authz_ldapuser_provider =
@@ -1964,7 +2014,8 @@ static void ImportULDAPOptFn(void)
 /** Cleanup LDAP connections before EOR. Note, if the authorization is unsuccessful,
  *  this will not run, but EOR is unlikely to be delayed as in a successful request.
  */
-static apr_status_t authnz_ldap_fixups(request_rec *r) { 
+static apr_status_t authnz_ldap_fixups(request_rec *r)
+{ 
     authn_ldap_request_t *req =
         (authn_ldap_request_t *)ap_get_module_config(r->request_config, &authnz_ldap_module);
     if (req && req->ldc_pool) { 
@@ -1972,6 +2023,7 @@ static apr_status_t authnz_ldap_fixups(request_rec *r) {
     }
     return OK;
 }
+
 static void register_hooks(apr_pool_t *p)
 {
     /* Register authn provider */

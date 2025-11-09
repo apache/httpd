@@ -30,7 +30,10 @@ the document to validate. -->
 <status>Extension</status>
 <sourcefile>mod_ratelimit.c</sourcefile>
 <identifier>ratelimit_module</identifier>
-<compatibility><code>rate-initial-burst</code> available in httpd 2.4.24 and later.</compatibility>
+<compatibility>
+    <code>rate-initial-burst</code> available in httpd 2.4.24 and later.
+    Rate limiting proxied content does not work correctly up to httpd 2.4.33.
+</compatibility>
 
 <summary>
 

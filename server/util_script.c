@@ -45,7 +45,7 @@
 /*
  * Various utility functions which are common to a whole lot of
  * script-type extensions mechanisms, and might as well be gathered
- * in one place (if only to avoid creating inter-module dependancies
+ * in one place (if only to avoid creating inter-module dependencies
  * where there don't have to be).
  */
 
@@ -92,9 +92,21 @@ static void add_unless_null(apr_table_t *table, const char *name, const char *va
     }
 }
 
-static void env2env(apr_table_t *table, const char *name)
+/* Sets variable @name in table @dest from r->subprocess_env if
+ * available, else from the environment, else from @fallback if
+ * non-NULL. */
+static void env2env(apr_table_t *dest, request_rec *r,
+                    const char *name, const char *fallback)
 {
-    add_unless_null(table, name, getenv(name));
+    const char *val;
+
+    val = apr_table_get(r->subprocess_env, name);
+    if (!val)
+        val = apr_pstrdup(r->pool, getenv(name));
+    if (!val)
+        val = apr_pstrdup(r->pool, fallback);
+    if (val)
+        apr_table_addn(dest, name, val);
 }
 
 AP_DECLARE(char **) ap_create_environment(apr_pool_t *p, apr_table_t *t)
@@ -211,37 +223,29 @@ AP_DECLARE(void) ap_add_common_vars(request_rec *r)
             add_unless_null(e, http2env(r, hdrs[i].key), hdrs[i].val);
     }
 
-    env_temp = apr_table_get(r->subprocess_env, "PATH");
-    if (env_temp == NULL) {
-        env_temp = getenv("PATH");
-    }
-    if (env_temp == NULL) {
-        env_temp = DEFAULT_PATH;
-    }
-    apr_table_addn(e, "PATH", apr_pstrdup(r->pool, env_temp));
-
+    env2env(e, r, "PATH", DEFAULT_PATH);
 #if defined(WIN32)
-    env2env(e, "SystemRoot");
-    env2env(e, "COMSPEC");
-    env2env(e, "PATHEXT");
-    env2env(e, "WINDIR");
+    env2env(e, r, "SystemRoot", NULL);
+    env2env(e, r, "COMSPEC", NULL);
+    env2env(e, r, "PATHEXT", NULL);
+    env2env(e, r, "WINDIR", NULL);
 #elif defined(OS2)
-    env2env(e, "COMSPEC");
-    env2env(e, "ETC");
-    env2env(e, "DPATH");
-    env2env(e, "PERLLIB_PREFIX");
+    env2env(e, r, "COMSPEC", NULL);
+    env2env(e, r, "ETC", NULL);
+    env2env(e, r, "DPATH", NULL);
+    env2env(e, r, "PERLLIB_PREFIX", NULL);
 #elif defined(BEOS)
-    env2env(e, "LIBRARY_PATH");
+    env2env(e, r, "LIBRARY_PATH", NULL);
 #elif defined(DARWIN)
-    env2env(e, "DYLD_LIBRARY_PATH");
+    env2env(e, r, "DYLD_LIBRARY_PATH", NULL);
 #elif defined(_AIX)
-    env2env(e, "LIBPATH");
+    env2env(e, r, "LIBPATH", NULL);
 #elif defined(__HPUX__)
     /* HPUX PARISC 2.0W knows both, otherwise redundancy is harmless */
-    env2env(e, "SHLIB_PATH");
-    env2env(e, "LD_LIBRARY_PATH");
+    env2env(e, r, "SHLIB_PATH", NULL);
+    env2env(e, r, "LD_LIBRARY_PATH", NULL);
 #else /* Some Unix */
-    env2env(e, "LD_LIBRARY_PATH");
+    env2env(e, r, "LD_LIBRARY_PATH", NULL);
 #endif
 
     apr_table_addn(e, "SERVER_SIGNATURE", ap_psignature("", r));
@@ -260,9 +264,8 @@ AP_DECLARE(void) ap_add_common_vars(request_rec *r)
     apr_table_addn(e, "CONTEXT_DOCUMENT_ROOT", ap_context_document_root(r));
     apr_table_addn(e, "SERVER_ADMIN", s->server_admin); /* Apache */
     if (apr_table_get(r->notes, "proxy-noquery") && (q = ap_strchr(r->filename, '?'))) {
-        *q = '\0';
-        apr_table_addn(e, "SCRIPT_FILENAME", apr_pstrdup(r->pool, r->filename));
-        *q = '?';
+        char *script_filename = apr_pstrmemdup(r->pool, r->filename, q - r->filename);
+        apr_table_addn(e, "SCRIPT_FILENAME", script_filename);
     }
     else {
         apr_table_addn(e, "SCRIPT_FILENAME", r->filename);  /* Apache */
@@ -463,7 +466,7 @@ AP_DECLARE(int) ap_scan_script_header_err_core_ex(request_rec *r, char *buffer,
 {
     char x[MAX_STRING_LEN];
     char *w, *l;
-    int p;
+    apr_size_t p;
     int cgi_status = HTTP_UNSET;
     apr_table_t *merge;
     apr_table_t *cookie_table;
@@ -715,9 +718,8 @@ AP_DECLARE(int) ap_scan_script_header_err_core_ex(request_rec *r, char *buffer,
                 }
             }
             else {
-                if (APLOGrtrace1(r))
-                   ap_log_rerror(SCRIPT_LOG_MARK, APLOG_TRACE1, 0, r,
-                                 "Ignored invalid header value: Last-Modified: '%s'", l);
+                ap_log_rerror(SCRIPT_LOG_MARK, APLOG_INFO, 0, r, APLOGNO(10247)
+                              "Ignored invalid header value: Last-Modified: '%s'", l);
             }
         }
         else if (!ap_cstr_casecmp(w, "Set-Cookie")) {
@@ -835,7 +837,7 @@ static int getsfunc_STRING(char *w, int len, void *pvastrs)
 {
     struct vastrs *strs = (struct vastrs*) pvastrs;
     const char *p;
-    int t;
+    apr_size_t t;
 
     if (!strs->curpos || !*strs->curpos) {
         w[0] = '\0';

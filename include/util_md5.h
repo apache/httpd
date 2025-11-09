@@ -49,21 +49,6 @@ AP_DECLARE(char *) ap_md5(apr_pool_t *a, const unsigned char *string);
  */
 AP_DECLARE(char *) ap_md5_binary(apr_pool_t *a, const unsigned char *buf, int len);
 
-/**
- * Convert an MD5 checksum into a base64 encoding.
- * @param   p       The pool to allocate out of
- * @param   context The context to convert
- * @return The converted encoding
- */
-AP_DECLARE(char *) ap_md5contextTo64(apr_pool_t *p, apr_md5_ctx_t *context);
-
-/**
- * Create an MD5 Digest for a given file.
- * @param   p       The pool to allocate out of
- * @param   infile  The file to create the digest for
- */
-AP_DECLARE(char *) ap_md5digest(apr_pool_t *p, apr_file_t *infile);
-
 #ifdef __cplusplus
 }
 #endif

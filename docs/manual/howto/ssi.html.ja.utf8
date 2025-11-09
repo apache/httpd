@@ -24,6 +24,7 @@
 <a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs/">ドキュメンテーション</a> &gt; <a href="../">バージョン 2.5</a> &gt; <a href="./">How-To / チュートリアル</a></div><div id="page-content"><div id="preamble"><h1>Apache チュートリアル: Server Side Includes 入門</h1>
 <div class="toplang">
 <p><span>翻訳済み言語: </span><a href="../en/howto/ssi.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../es/howto/ssi.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
 <a href="../fr/howto/ssi.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/howto/ssi.html" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/howto/ssi.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
@@ -48,7 +49,7 @@
 </ul><h3>参照</h3><ul class="seealso"><li><a href="#comments_section">コメント</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="related" id="related">はじめに</a></h2>
+<h2><a name="related" id="related">はじめに</a> <a title="Permanent link" href="#related" class="permalink">&para;</a></h2>
  <table class="related"><tr><th>関連モジュール</th><th>関連ディレクティブ</th></tr><tr><td><ul><li><code class="module"><a href="../mod/mod_include.html">mod_include</a></code></li><li><code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code></li><li><code class="module"><a href="../mod/mod_expires.html">mod_expires</a></code></li></ul></td><td><ul><li><code class="directive"><a href="../mod/core.html#options">Options</a></code></li><li><code class="directive"><a href="../mod/mod_include.html#xbithack">XBitHack</a></code></li><li><code class="directive"><a href="../mod/mod_mime.html#addtype">AddType</a></code></li><li><code class="directive"><a href="../mod/core.html#setoutputfilter">SetOutputFilter</a></code></li><li><code class="directive"><a href="../mod/mod_setenvif.html#browsermatchnocase">BrowserMatchNoCase</a></code></li></ul></td></tr></table>
 
     <p>この記事は、通常は単に SSI と呼ばれる Server Side Includes
@@ -62,7 +63,7 @@
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="what" id="what">SSI とは ?</a></h2>
+<h2><a name="what" id="what">SSI とは ?</a> <a title="Permanent link" href="#what" class="permalink">&para;</a></h2>
 
     <p>SSI (Server Side Includes) は、HTML
     ページ中に配置されるディレクティブであり、
@@ -78,7 +79,7 @@
     他の方法を探す必要があります。</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="configuring" id="configuring">SSI を許可するためのサーバの設定</a></h2>
+<h2><a name="configuring" id="configuring">SSI を許可するためのサーバの設定</a> <a title="Permanent link" href="#configuring" class="permalink">&para;</a></h2>
 
 
     <p>サーバで SSI を許可するには、<code>httpd.conf</code>
@@ -163,7 +164,7 @@
     </ol>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="basic" id="basic">基本的な SSI ディレクティブ</a></h2>
+<h2><a name="basic" id="basic">基本的な SSI ディレクティブ</a> <a title="Permanent link" href="#basic" class="permalink">&para;</a></h2>
 
     <p>SSI ディレクティブは以下の文法で記述します:</p>
 <div class="example"><p><code>
@@ -224,7 +225,7 @@
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="additionalexamples" id="additionalexamples">追加の例</a></h2>
+<h2><a name="additionalexamples" id="additionalexamples">追加の例</a> <a title="Permanent link" href="#additionalexamples" class="permalink">&para;</a></h2>
 
 
     <p>以下は、SSI を使用して HTML
@@ -294,7 +295,7 @@
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="config" id="config">他に何が設定できるのか ?</a></h2>
+<h2><a name="config" id="config">他に何が設定できるのか ?</a> <a title="Permanent link" href="#config" class="permalink">&para;</a></h2>
 
 
     <p>時刻書式を <code>config</code> で設定できることに加えて、
@@ -323,7 +324,7 @@
     に短縮させるには <code>abbrev</code> を指定することができます。</p>
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="exec" id="exec">コマンドの実行</a></h2>
+<h2><a name="exec" id="exec">コマンドの実行</a> <a title="Permanent link" href="#exec" class="permalink">&para;</a></h2>
     
 
     <p>今後数ヶ月のうちに、小さな CGI プログラムと SSI
@@ -359,7 +360,7 @@
     機能は許可しないようにすることができます。</p>
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="advanced" id="advanced">高度な SSI テクニック</a></h2>
+<h2><a name="advanced" id="advanced">高度な SSI テクニック</a> <a title="Permanent link" href="#advanced" class="permalink">&para;</a></h2>
 
 
     <p>コンテンツを出力することに加え、Apache SSI は変数を設定し、
@@ -474,7 +475,7 @@
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="conclusion" id="conclusion">終わりに</a></h2>
+<h2><a name="conclusion" id="conclusion">終わりに</a> <a title="Permanent link" href="#conclusion" class="permalink">&para;</a></h2>
 
     <p>SSI は確かに CGI
     や動的なウェブページを生成する他の技術に代わるものではありません。
@@ -483,10 +484,11 @@
 </div></div>
 <div class="bottomlang">
 <p><span>翻訳済み言語: </span><a href="../en/howto/ssi.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../es/howto/ssi.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
 <a href="../fr/howto/ssi.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/howto/ssi.html" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/howto/ssi.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
-</div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">コメント</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
+</div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">コメント</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Libera.chat, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
 var comments_identifier = 'http://httpd.apache.org/docs/trunk/howto/ssi.html';
@@ -504,7 +506,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/howto/ssi.html';
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2017 The Apache Software Foundation.<br />この文書は <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> のライセンスで提供されています。.</p>
+<p class="apache">Copyright 2023 The Apache Software Foundation.<br />この文書は <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> のライセンスで提供されています。.</p>
 <p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/quickreference.html">ディレクティブ</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

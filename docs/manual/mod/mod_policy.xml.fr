@@ -1,0 +1,756 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
+<!-- English Revision : 1869811 -->
+<!-- French translation : Lucien GENTIS -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_policy.xml.meta">
+
+<name>mod_policy</name>
+<description>Mise en conformit&eacute; avec le protocole HTTP.</description>
+<status>Extension</status>
+<sourcefile>mod_policy.c</sourcefile>
+<identifier>policy_module</identifier>
+
+<summary>
+    <p>Le protocole HTTP recommande aux clients d'&ecirc;tre "indulgents pour
+    ce qu'ils doivent accepter", et aux serveurs d'&ecirc;tre "stricts pour ce
+    qu'ils envoient". Dans certains cas, il peut s'av&eacute;rer difficile de
+    d&eacute;terminer si un serveur ou une application a &eacute;t&eacute; mal configur&eacute;,
+    sert un contenu qui ne peut pas &ecirc;tre mis en cache ou se comporte de
+    mani&egrave;re non optimale, car le client HTTP est souvent en mesure de
+    compenser les d&eacute;fauts du serveur. Ces probl&egrave;mes peuvent induire une
+    consommation de bande passante excessive, ou m&ecirc;me une interruption
+    de service suite &agrave; une charge trop importante du serveur.</p>
+
+    <p>Le module <module>mod_policy</module> propose un jeu de filtres
+    qui permettent de tester la conformit&eacute; du serveur au protocole HTTP.
+    Ces tests permettent &agrave; l'administrateur du serveur de journaliser
+    les violations, ou m&ecirc;me de rejeter une r&eacute;ponse losque certaines
+    conditions sp&eacute;cifi&eacute;es se r&eacute;alisent.</p>
+
+    <p>Il devient ainsi possible de d&eacute;finir des crit&egrave;res de conformit&eacute;
+    minimale au protocole HTTP pour d&eacute;velopper des applications
+    sans probl&egrave;me. En outre, il est possible de configurer un
+    mandataire inverse ou un cache pour qu'il se prot&egrave;ge lui-m&ecirc;me contre
+    les serveurs d'origine mal configur&eacute;s ou les contenus indument
+    impossible &agrave; &ecirc;tre mis en cache, ou un m&eacute;canisme qui d&eacute;tecte les
+    erreurs de configuration au sein du serveur lui-m&ecirc;me.</p>
+
+</summary>
+<seealso><a href="../filter.html">Les filtres</a></seealso>
+<seealso><a href="../compliance.html">Conformit&eacute; au protocole HTTP</a></seealso>
+
+<section id="actions">
+    <title>Actions</title>
+
+    <p>Si une r&egrave;gle est viol&eacute;e, il possible d'effectuer les actions
+    suivantes :</p>
+
+    <dl>
+    <dt><strong>ignore</strong></dt>
+    <dd>La v&eacute;rification de la politique de conformit&eacute; sera d&eacute;sactiv&eacute;e
+    pour l'espace d'URL sp&eacute;cifi&eacute;, m&ecirc;me si le filtre est pr&eacute;sent.</dd>
+
+    <dt><strong>log</strong></dt>
+    <dd>La v&eacute;rification de la politique de conformit&eacute; sera ex&eacute;cut&eacute;e, et
+    si une violation est d&eacute;tect&eacute;e, un avertissement sera enregistr&eacute; dans
+    le journal error_log du serveur, et un en-t&ecirc;te <code>Warning</code>
+    ajout&eacute; &agrave; la r&eacute;ponse en tant qu'information &agrave; destination du client.</dd>
+
+    <dt><strong>enforce</strong></dt>
+    <dd>La v&eacute;rification de la politique de conformit&eacute; sera ex&eacute;cut&eacute;e,
+
+    The policy check will be executed, and if a violation is detected
+    an error will be logged to the server error_log, a
+    <code>Warning</code> header added to the response, and a <code>502
+    Bad Gateway</code> will be returned to the client. Optional links to
+    explanatory documentation can be added to each error message,
+    detailing the origin of each policy.</dd>
+
+    </dl>
+
+    <p>Il est aussi possible de d&eacute;sactiver toutes les r&egrave;gles pour un
+    espace d'URL donn&eacute;, si le besoin s'en fait sentir, via la directive
+    <directive module="mod_policy">PolicyFilter</directive>.</p>
+
+    <p>En outre, la directive <directive
+    module="mod_policy">PolicyEnvironment</directive> permet de
+    sp&eacute;cifier une variable d'environnement qui, si elle est d&eacute;finie, va
+    court-circuiter les r&egrave;gles ou diminuer leur port&eacute;e.</p>
+
+</section>
+
+<section id="tests">
+    <title>Tests de la politique de filtrage</title>
+
+    <p>Les filtres suivants sont disponibles :</p>
+
+    <dl>
+    <dt><strong><a href="../compliance.html#policytype">POLICY_TYPE</a>
+    </strong>: Impose la validit&eacute; des types de contenus</dt>
+    <dd>La requ&ecirc;te peut &ecirc;tre rejet&eacute;e suite &agrave; la pr&eacute;sence de types de contenus vides
+    ou syntaxiquement invalides. Les types peuvent aussi &ecirc;tre restreints
+    &agrave; une liste pouvant contenir des caract&egrave;res g&eacute;n&eacute;riques ? et *.</dd>
+
+    <dt><strong><a href="../compliance.html#policylength">POLICY_LENGTH</a>
+    </strong>: Impose la pr&eacute;sence de l'en-t&ecirc;te Content-Length</dt>
+    <dd>La longueur des r&eacute;ponses peut &ecirc;tre sp&eacute;cifi&eacute;e de trois mani&egrave;res
+    diff&eacute;rentes : en sp&eacute;cifiant &agrave; l'avance une longueur explicite, en
+    utilisant un codage de morcellement (chunking) pour d&eacute;finir la
+    longueur, ou en ne sp&eacute;cifiant aucune longueur et en terminant la
+    requ&ecirc;te lorsque son traitement est achev&eacute;. L'absence de
+    sp&eacute;cification d'une longueur de contenu peut affecter la possibilit&eacute;
+    de mise en cache de la r&eacute;ponse, et emp&ecirc;cher l'utilisation de la
+    persistance avec les requ&ecirc;tes de type HTTP/1.0. Ce filtre impose la
+    pr&eacute;sence d'une longueur de contenu explicite dans la r&eacute;ponse.</dd>
+
+    <dt><strong><a href="../compliance.html#policykeepalive">POLICY_KEEPALIVE
+    </a></strong>: Impose l'option de persistance</dt>
+    <dd>Moins restrictif que le filtre POLICY_LENGTH, ce filtre impose
+    la possibilit&eacute; de persistance de la r&eacute;ponse. Si la r&eacute;ponse n'a pas
+    de longueur d&eacute;finie &agrave; 0 par le protocole, si elle n'est pas une
+    erreur, et si elle ne contient pas d'en-t&ecirc;te Content-Length ou si
+    elle est de type HTTP/1.1 et ne contient pas l'en-t&ecirc;te
+    Content-Encoding: chunked, alors elle sera rejet&eacute;e.</dd>
+
+    <dt><strong><a href="../compliance.html#policyvary">POLICY_VARY</a>
+    </strong>: Interdit la pr&eacute;sence de certains en-t&ecirc;tes au sein des
+    en-t&ecirc;tes Vary</dt>
+    <dd>Si l'en-t&ecirc;te Vary contient un des en-t&ecirc;tes sp&eacute;cifi&eacute;s, ce filtre
+    va rejeter la requ&ecirc;te. Un cas typique est la pr&eacute;sence de l'en-t&ecirc;te
+    User-Agent dans l'en-t&ecirc;te Vary, ce qui peut &ecirc;tre &agrave; l'origine d'une
+    condition de d&eacute;ni de service au niveau du cache.</dd>
+
+    <dt><strong><a href="../compliance.html#policyvalidation">
+    POLICY_VALIDATION</a></strong>: Impose la pr&eacute;sence d'un en-t&ecirc;te Etag
+    et/ou Last-Modified</dt>
+    <dd>La possibilit&eacute; pour un cache de d&eacute;terminer si une entit&eacute; qu'il
+    contient peut &ecirc;tre rafra&icirc;chie d&eacute;pend de la pr&eacute;sence d'un en-t&ecirc;te
+    Etag et/ou Last-Modified pour v&eacute;rifier si elle est valide. La requ&ecirc;te sera
+    rejet&eacute;e en cas d'absence de ces deux en-t&ecirc;tes, ou d'une syntaxe
+    invalide d'un de ces deux en-t&ecirc;tes.</dd>
+
+    <dt><strong><a href="../compliance.html#policyconditional">
+    POLICY_CONDITIONAL</a></strong>: Impose un traitement conforme des
+    en-t&ecirc;tes conditionnels</dt>
+    <dd>Lorsqu'une requ&ecirc;te contient des en-t&ecirc;tes conditonnels, un
+    serveur doit r&eacute;pondre dans certaines conditions avec un code
+    <code>304 Not Modified</code> ou <code>412 Precondition
+    Failed</code>. Il arrive q'un serveur ignore les en-t&ecirc;tes
+    conditionnels, et cela diminue l'efficacit&eacute; du m&eacute;canisme de mise en
+    cache HTTP. Ce filtre rej&egrave;te les requ&ecirc;tes lorsqu'un en-t&ecirc;te
+    conditionnel &eacute;tait pr&eacute;sent, et une r&eacute;ponse 2xx a &eacute;t&eacute; renvoy&eacute;e au
+    lieu de la r&eacute;ponse 304 ou 412 attendue.</dd>
+
+    <dt><strong><a href="../compliance.html#policynocache">POLICY_NOCACHE</a>
+    </strong>: Impose la possibilit&eacute; de mise en cache des r&eacute;ponses</dt>
+    <dd>Lorsqu'une requ&ecirc;te se d&eacute;clare elle-m&ecirc;me impossible &agrave; mettre en
+    cache, elle est rejet&eacute;e. C'est le cas si elle contient l'un des
+    en-t&ecirc;tes suivants :
+    <ul><li><code>Cache-Control: no-cache</code></li>
+    <li><code>Pragma: no-cache</code></li>
+    <li><code>Cache-Control: no-store</code></li>
+    <li><code>Cache-Control: private</code></li>
+    </ul></dd>
+
+    <dt><strong><a href="../compliance.html#policymaxage">POLICY_MAXAGE</a>
+    </strong>: Impose une dur&eacute;e de vie minimale</dt>
+    <dd>Lorsqu'une r&eacute;ponse poss&egrave;de une dur&eacute;e de vie inf&eacute;rieure &agrave; la
+    valeur sp&eacute;cifi&eacute;e, ou si cette dur&eacute;e de vie est heuristique, la
+    requ&ecirc;te est rejet&eacute;e. La chronologie de la v&eacute;rification d'une r&eacute;ponse
+    est la suivante :
+    <ul><li>Si <code>s-maxage</code> est pr&eacute;sent mais d'une valeur trop
+    faible; ou</li>
+    <li>Si <code>max-age</code> est pr&eacute;sent mais d'une valeur trop
+    faible; ou</li>
+    <li>Si <code>Expires</code> est pr&eacute;sent et invalide; ou</li>
+    <li><code>Date</code> est pr&eacute;sent et invalide; ou</li>
+    <li><code>Expires</code> moins Date est trop faible ; ou</li>
+    <li>Aucun en-t&ecirc;te <code>s-maxage</code>, <code>maxage</code>, ou
+    <code>Expires</code>/<code>Date</code> n'est pr&eacute;sent</li>
+    </ul></dd>
+
+    <dt><strong><a href="../compliance.html#policyversion">POLICY_VERSION</a>
+    </strong>: Impose une version HTTP minimale dans la requ&ecirc;te</dt>
+    <dd>Lorsqu'une requ&ecirc;te poss&egrave;de un num&eacute;ro de version HTTP inf&eacute;rieur
+    au num&eacute;ro de version minimum requis, la requ&ecirc;te est rejet&eacute;e. Les
+    num&eacute;ros de version suivants sont reconnus :
+    <ul><li><code>HTTP/1.1</code></li>
+    <li><code>HTTP/1.0</code></li>
+    <li><code>HTTP/0.9</code></li>
+    </ul></dd>
+
+    </dl>
+
+</section>
+
+<section id="example">
+    <title>Exemple de configuration</title>
+
+    <p>Voici un exemple de configuration qui prot&egrave;ge un serveur qui
+    d&eacute;livre du contenu statique :</p>
+
+    <highlight language="config">
+&lt;Location "/"&gt;
+  SetOutputFilter POLICY_TYPE;POLICY_LENGTH;POLICY_KEEPALIVE;POLICY_VARY;POLICY_VALIDATION; \
+    POLICY_CONDITIONAL;POLICY_NOCACHE;POLICY_MAXAGE;POLICY_VERSION
+
+  # le contenu peut &ecirc;tre quelconque, mais l'en-t&ecirc;te Content-Type doit &ecirc;tre
+     # pr&eacute;sent et valide
+  PolicyType enforce */*
+
+  # rejet si aucune longueur de contenu d&eacute;clar&eacute;e
+  PolicyLength enforce
+
+  # pris en charge par le filtre policy length
+  PolicyKeepalive ignore
+
+  # rejet si l'en-t&ecirc;te User-Agent apara&icirc;t dans les en-t&ecirc;tes Vary
+  PolicyVary enforce User-Agent
+
+  # la validation est impos&eacute;e
+  PolicyValidation enforce
+
+  # les r&eacute;ponses conditionnelles non conformes sont rejet&eacute;es
+  PolicyConditional enforce
+
+  # les r&eacute;ponses impossibles &agrave; mettre en cache sont rejet&eacute;es
+  PolicyNocache enforce
+
+  # la dur&eacute;e de vie doit &ecirc;tre au moins d'un jour
+  PolicyMaxage enforce 86400
+
+  # le num&eacute;ro de version de la requ&ecirc;te peut &ecirc;tre quelconque
+  PolicyVersion ignore HTTP/1.1
+&lt;/Location&gt;
+
+# d&eacute;sactivation du filtrage pour le r&eacute;pertoire /server-status
+&lt;Location "/server-status"&gt;
+  PolicyFilter off
+&lt;/Location&gt;
+    </highlight>
+
+</section>
+
+<directivesynopsis>
+
+<name>PolicyFilter</name>
+<description>Active ou d&eacute;sactive le filtrage pour un espace d'URL donn&eacute;.</description>
+<syntax>PolicyFilter <var>on|off</var></syntax>
+<default>on</default>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context></contextlist>
+<compatibility>Disponible &agrave; partir de la version 2.5.0 du serveur HTTP
+Apache.</compatibility>
+
+<usage>
+    <p>Commutateur principal qui permet d'activer ou de d&eacute;sactiver le
+    filtrage pour un espace d'URL donn&eacute;.</p>
+
+    <example><title>Example</title>
+    <highlight language="config">
+# activ&eacute; par d&eacute;faut
+&lt;Location "/"&gt;
+  PolicyFilter on
+&lt;/Location&gt;
+
+# d&eacute;sactivation du filtrage pour le r&eacute;pertoire /server-status
+&lt;Location "/server-status"&gt;
+  PolicyFilter off
+&lt;/Location&gt;
+</highlight>
+</example>
+</usage>
+
+</directivesynopsis>
+
+<directivesynopsis>
+
+<name>PolicyEnvironment</name>
+<description>Modification des r&egrave;gles de filtrage en fonction d'une
+variable d'environnement.</description>
+<syntax>PolicyEnvironment <var>variable</var> <var>log-value</var> <var>ignore-value</var></syntax>
+<default>none</default>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context></contextlist>
+<compatibility>Disponible &agrave; partir de la version 2.5.0 du serveur HTTP
+Apache.</compatibility>
+
+<usage>
+    <p>Limite l'action des r&egrave;gles &agrave; la journalisation ou les d&eacute;sactive
+    totalement en fonction de la pr&eacute;sence d'une variable d'environnement. Si
+    la variable sp&eacute;cifi&eacute;e est pr&eacute;sente et &eacute;gale &agrave; la valeur de
+    l'argument log-value, les erreurs rencontr&eacute;es par les filtres ne
+    seront que journalis&eacute;es. Si la variable sp&eacute;cifi&eacute;e est pr&eacute;sente et
+    &eacute;gale &agrave; la valeur de l'argument ignore-value, toutes les r&egrave;gles
+    seront ignor&eacute;es.</p>
+
+    <example><title>Example</title>
+    <highlight language="config">
+# limitation de l'action des r&egrave;gles si la variable POLICY_CONTROL
+# est pr&eacute;sente
+PolicyEnvironment POLICY_CONTROL log ignore
+    </highlight>
+    </example>
+</usage>
+
+</directivesynopsis>
+
+<directivesynopsis>
+
+<name>PolicyConditional</name>
+<description>Active le filtrage des requ&ecirc;tes conditionnelles.</description>
+<syntax>PolicyConditional <var>ignore|log|enforce</var></syntax>
+<default>ignore</default>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context></contextlist>
+<compatibility>Disponible &agrave; partir de la version 2.5.0 du serveur HTTP
+Apache.</compatibility>
+
+<usage>
+    <p>Avec l'argument enforce, une r&eacute;ponse qui aurait du &ecirc;tre
+    conditionnelle mais ne l'est pas sera rejet&eacute;e.</p>
+
+    <example><title>Exemple</title>
+    <highlight language="config">
+# les r&eacute;ponses conditionnelles non conformes doivent &ecirc;tre rejet&eacute;es
+PolicyConditional enforce
+    </highlight>
+    </example>
+
+
+</usage>
+
+</directivesynopsis>
+
+<directivesynopsis>
+
+<name>PolicyConditionalURL</name>
+<description>URL contenant la description de la politique de filtrage
+des requ&ecirc;tes conditionnelles.</description>
+<syntax>PolicyConditionalURL <var>url</var></syntax>
+<default>none</default>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context></contextlist>
+<compatibility>Disponible &agrave; partir de la version 2.5.0 du serveur HTTP
+Apache.</compatibility>
+
+<usage>
+    <p>Cette directive permet de sp&eacute;cifier l'URL de la documentation
+    d&eacute;crivant la politique de filtrage des requ&ecirc;tes conditionnelles ;
+    elle appara&icirc;tra dans les messages d'erreur.</p>
+</usage>
+
+</directivesynopsis>
+
+<directivesynopsis>
+
+<name>PolicyLength</name>
+<description>Active le filtrage de la sp&eacute;cification de la longueur du
+contenu.</description>
+<syntax>PolicyLength <var>ignore|log|enforce</var></syntax>
+<default>ignore</default>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context></contextlist>
+<compatibility>Disponible &agrave; partir de la version 2.5.0 du serveur HTTP
+Apache.</compatibility>
+
+<usage>
+    <p>Avec l'argument enforce, une r&eacute;ponse qui ne contient pas
+    d'en-t&ecirc;te <code>Content-Length</code> sera rejet&eacute;e.</p>
+
+    <example><title>Exemple</title>
+    <highlight language="config">
+# rejet suite &agrave; l'absence de l'en-t&ecirc;te Content-Length
+PolicyLength enforce
+    </highlight>
+    </example>
+</usage>
+
+</directivesynopsis>
+
+<directivesynopsis>
+
+<name>PolicyLengthURL</name>
+<description>URL contenant la description de la politique de filtrage de
+la sp&eacute;cification de la longueur du contenu.</description>
+<syntax>PolicyLengthURL <var>url</var></syntax>
+<default>none</default>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context></contextlist>
+<compatibility>Disponible &agrave; partir de la version 2.5.0 du serveur HTTP
+Apache.</compatibility>
+
+<usage>
+    <p>Cette directive permet de sp&eacute;cifier l'URL contenant la
+    documentation d&eacute;crivant la politique de filtrage de la sp&eacute;cification
+    de la longueur du contenu ; elle appara&icirc;tra dans les messages
+    d'erreur.</p>
+</usage>
+
+</directivesynopsis>
+
+<directivesynopsis>
+
+<name>PolicyKeepalive</name>
+<description>Active la politique de persistance.</description>
+<syntax>PolicyKeepalive <var>ignore|log|enforce</var></syntax>
+<default>ignore</default>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context></contextlist>
+<compatibility>Disponible &agrave; partir de la version 2.5.0 du serveur HTTP
+Apache.</compatibility>
+
+<usage>
+    <p>Avec l'argument enforce, une r&eacute;ponse qui ne contient ni en-t&ecirc;te
+    <code>Content-Length</code>, ni en-t&ecirc;te
+    <code>Transfer-Encoding</code> de valeur <code>chunked</code> sera
+    rejet&eacute;e.</p>
+
+    <example><title>Exemple</title>
+    <highlight language="config">
+# rejet suite a absence d'en-t&ecirc;te Content-Length ou Transfer-Encoding
+PolicyKeepalive enforce
+</highlight>
+    </example>
+</usage>
+
+</directivesynopsis>
+
+<directivesynopsis>
+
+<name>PolicyKeepaliveURL</name>
+<description>URL contenant la description de la politique de persistance.</description>
+<syntax>PolicyKeepaliveURL <var>url</var></syntax>
+<default>none</default>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context></contextlist>
+<compatibility>Disponible &agrave; partir de la version 2.5.0 du serveur HTTP
+Apache.</compatibility>
+
+<usage>
+    <p>Cette directive permet de sp&eacute;cifier l'URL contenant la
+    description de la politique de persistance ; elle appara&icirc;tra dans
+    les messages d'erreur.</p>
+</usage>
+
+</directivesynopsis>
+
+<directivesynopsis>
+
+<name>PolicyType</name>
+<description>Active la politique des types de contenus.</description>
+<syntax>PolicyType <var>ignore|log|enforce</var> <var>type</var> [ <var>type</var> [ ... ]]</syntax>
+<default>ignore</default>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context></contextlist>
+<compatibility>Disponible &agrave; partir de la version 2.5.0 du serveur HTTP
+Apache.</compatibility>
+
+<usage>
+    <p>Avec l'argument enforce, une r&eacute;ponse qui ne contient pas
+    d'en-t&ecirc;te <code>Content-Type</code>, ou dont l'en-t&ecirc;te
+    <code>Content-Type</code> est mal form&eacute;, ou dont l'en-t&ecirc;te
+    <code>Content-Type</code> contient une valeur qui ne correspond pas
+    au(x) mod&egrave;le(s) sp&eacute;cifi&eacute;(s) sera rejet&eacute;e.</p>
+
+    <example><title>Exemple</title>
+    <highlight language="config">
+# impose le type de contenu json ou XML
+PolicyType enforce application/json text/xml
+    </highlight>
+    </example>
+
+    <example><title>Exemple</title>
+    <highlight language="config">
+# rejet suite &agrave; type de contenu mal form&eacute;
+PolicyType enforce */*
+    </highlight>
+    </example>
+
+</usage>
+
+</directivesynopsis>
+
+<directivesynopsis>
+
+<name>PolicyTypeURL</name>
+<description>URL contenant la description de la politique des types de
+contenu.</description>
+<syntax>PolicyTypeURL <var>url</var></syntax>
+<default>none</default>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context></contextlist>
+<compatibility>Disponible &agrave; partir de la version 2.5.0 du serveur HTTP
+Apache.</compatibility>
+
+<usage>
+    <p>Cette directive permet de sp&eacute;cifier l'URL contenant la
+    description de la politique des types de contenu ; elle appara&icirc;tra
+    dans les messages d'erreur.</p>
+</usage>
+
+</directivesynopsis>
+
+<directivesynopsis>
+
+<name>PolicyVary</name>
+<description>Active la politique de filtrage de l'en-t&ecirc;te Vary.</description>
+<syntax>PolicyVary <var>ignore|log|enforce</var> <var>header</var> [ <var>header</var> [ ... ]]</syntax>
+<default>ignore</default>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context></contextlist>
+<compatibility>Disponible &agrave; partir de la version 2.5.0 du serveur HTTP
+Apache.</compatibility>
+
+<usage>
+    <p>Avec l'argument enforce, une r&eacute;ponse dont l'en-t&ecirc;te
+    <code>Vary</code> contient un des en-t&ecirc;tes sp&eacute;cifi&eacute;s sera rejet&eacute;e.</p>
+
+    <example><title>Exemple</title>
+   <highlight language="config">
+# rejet suite &agrave; la pr&eacute;sence de l'en-t&ecirc;te "User-Agent" dans l'en-t&ecirc;te
+# Vary
+PolicyVary enforce User-Agent
+    </highlight>
+    </example>
+
+</usage>
+
+</directivesynopsis>
+
+<directivesynopsis>
+
+<name>PolicyVaryURL</name>
+<description>URL contenant la description de la politique de filtrage de
+l'en-t&ecirc;te Vary.</description>
+<syntax>PolicyVaryURL <var>url</var></syntax>
+<default>none</default>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context></contextlist>
+<compatibility>Disponible &agrave; partir de la version 2.5.0 du serveur HTTP
+Apache.</compatibility>
+
+<usage>
+    <p>Cette directive permet de sp&eacute;cifier l'URL contenant la
+    description de la politique de filtrage de l'en-t&ecirc;te Vary ; elle
+    appara&icirc;tra dans les messages d'erreur.</p>
+</usage>
+
+</directivesynopsis>
+
+<directivesynopsis>
+
+<name>PolicyValidation</name>
+<description>Active le filtrage de la validation du contenu.</description>
+<syntax>PolicyValidation <var>ignore|log|enforce</var></syntax>
+<default>ignore</default>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context></contextlist>
+<compatibility>Disponible &agrave; partir de la version 2.5.0 du serveur HTTP
+Apache.</compatibility>
+
+<usage>
+    <p>Avec l'argument enforce, une r&eacute;ponse qui ne contient ni en-t&ecirc;te
+    <code>ETag</code> valide, ni en-t&ecirc;te <code>Last-Modified</code>, ou
+    dont la syntaxe d'un de ces deux en-t&ecirc;tes est incorrecte sera
+    rejet&eacute;e.</p>
+
+    <example><title>Exemple</title>
+    <highlight language="config">
+# rejet suite &agrave; l'absence des en-t&ecirc;tes Etag et/ou Last-Modified
+PolicyValidation enforce
+    </highlight>
+    </example>
+
+</usage>
+
+</directivesynopsis>
+
+<directivesynopsis>
+
+<name>PolicyValidationURL</name>
+<description>URL contenant la description de la politique de filtrage de
+la validation du contenu.</description>
+<syntax>PolicyValidationURL <var>url</var></syntax>
+<default>none</default>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context></contextlist>
+<compatibility>Disponible &agrave; partir de la version 2.5.0 du serveur HTTP
+Apache.</compatibility>
+
+<usage>
+    <p>Cette directive permet de sp&eacute;cifier l'URL contenant la
+    description de la politique de filtrage de la validation du contenu
+    ; elle appara&icirc;tra dans les messages d'erreur.</p>
+</usage>
+
+</directivesynopsis>
+
+<directivesynopsis>
+
+<name>PolicyNocache</name>
+<description>Active le filtrage des r&eacute;ponses qui se d&eacute;finissent
+elles-m&ecirc;mes comme impossibles &agrave; mettre en cache.</description>
+<syntax>PolicyNocache <var>ignore|log|enforce</var></syntax>
+<default>ignore</default>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context></contextlist>
+<compatibility>Disponible &agrave; partir de la version 2.5.0 du serveur HTTP
+Apache.</compatibility>
+
+<usage>
+    <p>Avec l'argument enforce, une r&eacute;ponse qui se d&eacute;finit elle-m&ecirc;me
+    comme impossible &agrave; mettre en cache via l'en-t&ecirc;te
+    <code>Cache-Control</code> ou <code>Pragma</code> sera rejet&eacute;e.</p>
+
+    <example><title>Exemple</title>
+    <highlight language="config">
+# une r&eacute;ponse contenant l'en-t&ecirc;te Cache-Control: no-cache sera
+# rejet&eacute;e
+PolicyNocache enforce
+    </highlight>
+    </example>
+
+</usage>
+
+</directivesynopsis>
+
+<directivesynopsis>
+
+<name>PolicyNocacheURL</name>
+<description>URL contenant la description de la politique de filtrage
+des r&eacute;ponses qui se d&eacute;finissent elles-m&ecirc;mes comme impossibles &agrave; mettre
+en cache.</description>
+<syntax>PolicyNocacheURL <var>url</var></syntax>
+<default>none</default>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context></contextlist>
+<compatibility>Disponible &agrave; partir de la version 2.5.0 du serveur HTTP
+Apache.</compatibility>
+
+<usage>
+    <p>Cette directive permet de sp&eacute;cifier l'URL contenant la
+    description de la politique de filtrage des r&eacute;ponses qui se
+    d&eacute;finissent elles-m&ecirc;mes comme impossibles &agrave; mettre en cache ; elle
+    appara&icirc;tra dans les messages d'erreur.</p>
+</usage>
+
+</directivesynopsis>
+
+<directivesynopsis>
+
+<name>PolicyMaxage</name>
+<description>Active le filtrage de la dur&eacute;e de vie des r&eacute;ponses.</description>
+<syntax>PolicyMaxage <var>ignore|log|enforce</var> <var>age</var></syntax>
+<default>ignore</default>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context></contextlist>
+<compatibility>Disponible &agrave; partir de la version 2.5.0 du serveur HTTP
+Apache.</compatibility>
+
+<usage>
+    <p>Avec l'argument enforce, une r&eacute;ponse dont la dur&eacute;e de vie n'est
+    pas explicitement sp&eacute;cifi&eacute;e via un en-t&ecirc;te <code>max-age</code>,
+    <code>s-maxage</code> ou <code>Expires</code>, ou dont la dur&eacute;e de
+    vie est inf&eacute;rieure &agrave; la valeur donn&eacute;e sera rejet&eacute;e.</p>
+
+    <example><title>Exemple</title>
+    <highlight language="config">
+# rejet des r&eacute;ponses dont la dur&eacute;e de vie est inf&eacute;rieure &agrave; une
+# journ&eacute;e
+PolicyMaxage enforce 86400
+    </highlight>
+    </example>
+
+</usage>
+
+</directivesynopsis>
+
+<directivesynopsis>
+
+<name>PolicyMaxageURL</name>
+<description>URL contenant la description de la politique de filtrage
+des r&eacute;ponses en fonction de leur dur&eacute;e de vie.</description>
+<syntax>PolicyMaxageURL <var>url</var></syntax>
+<default>none</default>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context></contextlist>
+<compatibility>Disponible &agrave; partir de la version 2.5.0 du serveur HTTP
+Apache.</compatibility>
+
+<usage>
+    <p>Cette directive permet de sp&eacute;cifier l'URL contenant la
+    description de la politique de filtrage des r&eacute;ponses en fonction de
+    leur dur&eacute;e de vie ; elle appara&icirc;tra dans les messages d'erreur.</p>
+</usage>
+
+</directivesynopsis>
+
+<directivesynopsis>
+
+<name>PolicyVersion</name>
+<description>Active le filtrage des requ&ecirc;tes en fonction du num&eacute;ro de
+version HTTP.</description>
+<syntax>PolicyVersion <var>ignore|log|enforce</var> <var>HTTP/0.9|HTTP/1.0|HTTP/1.1</var></syntax>
+<default>ignore</default>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context></contextlist>
+<compatibility>Disponible &agrave; partir de la version 2.5.0 du serveur HTTP
+Apache.</compatibility>
+
+<usage>
+    <p>Avec l'argument enforce, une requ&ecirc;te dont le num&eacute;ro de version
+    HTTP est inf&eacute;rieur &agrave; la valeur sp&eacute;cifi&eacute;e sera rejet&eacute;e.</p>
+
+    <example><title>Exemple</title>
+    <highlight language="config">
+# rejet des requ&ecirc;tes dont le num&eacute;ro de version HTTP est inf&eacute;rieur &agrave;
+# HTTP/1.1
+PolicyVersion enforce HTTP/1.1
+    </highlight>
+    </example>
+
+</usage>
+
+</directivesynopsis>
+
+<directivesynopsis>
+
+<name>PolicyVersionURL</name>
+<description>URL contenant la description de la politique de filtrage
+des requ&ecirc;tes en fonction du num&eacute;ro de version HTTP.</description>
+<syntax>PolicyVersionURL <var>url</var></syntax>
+<default>none</default>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context></contextlist>
+<compatibility>Disponible &agrave; partir de la version 2.5.0 du serveur HTTP
+Apache.</compatibility>
+
+<usage>
+    <p>Cette directive permet de sp&eacute;cifier l'URL contenant la
+    description de la politique de filtrage des requ&ecirc;tes en fonction du
+    num&eacute;ro de version HTTP ; elle appara&icirc;tra dans les messages d'erreur.</p>
+</usage>
+
+</directivesynopsis>
+
+</modulesynopsis>

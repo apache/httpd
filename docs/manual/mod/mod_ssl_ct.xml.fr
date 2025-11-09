@@ -1,0 +1,621 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
+<!-- English Revision : 1690137 -->
+<!-- French translation : Lucien GENTIS -->
+<!-- $LastChangedRevision: 2015071101 $ -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_ssl_ct.xml.meta">
+
+<name>mod_ssl_ct</name>
+<description>Impl&eacute;mentation de la transparence des certificats
+(Certificat Transparency - RFC 6962)
+</description>
+<status>Extension</status>
+<sourcefile>mod_ssl_ct.c</sourcefile>
+<identifier>ssl_ct_module</identifier>
+
+<summary>
+
+<p>Ce module impl&eacute;mente la transparence des certificats en conjonction
+avec <module>mod_ssl</module> et les outils en ligne de commande du
+projet open source <a
+href="https://code.google.com/p/certificate-transparency/">certificate-transparency</a>.
+Le but de la transparence des certificats consiste &agrave; r&eacute;v&eacute;ler
+l'utilisation de certificats de confiance d&eacute;livr&eacute;s par
+erreur ou dans un but malintentionn&eacute;. Vous trouverez plus de d&eacute;tails &agrave;
+propos de la transparence des certificats ici : <a
+href="http://www.certificate-transparency.org/">http://www.certificate-transparency.org/</a>.
+Voici la signification des termes utilis&eacute;s dans cette documentation :</p>
+
+<dl>
+  <dt>Certificate log</dt>
+  <dd>Un Certificate log, auquel on fera r&eacute;f&eacute;rence avec le simple
+  terme <q>log</q> tout au long de ce document, est un service r&eacute;seau
+  auquel les certificats de serveurs sont soumis. Un agent
+  utilisateur peut v&eacute;rifier que le certificat d'un serveur auquel il
+  acc&egrave;de a bien &eacute;t&eacute; soumis &agrave; un log auquel il fait confiance, et que le log
+  lui-m&ecirc;me n'a pas rencontr&eacute; de probl&egrave;me avec ce certificat.</dd>
+
+  <dt>Horodatage sign&eacute; du certificat (Signed Certificate Timestamp - SCT)</dt>
+  <dd>Il s'agit d'une information en provenance d'un log indiquant qu'il
+  a valid&eacute; un certificat. Cet horodatage est sign&eacute; avec la cl&eacute; publique
+  du log. Un ou plusieurs SCTs sont pass&eacute;s au client durant la phase de
+  n&eacute;gociation de la connexion, soit dans le ServerHello (extension TLS),
+  soit dans l'extension du certificat, soit dans une r&eacute;ponse OCSP
+  jointe.</dd>
+</dl>
+
+<p>Cette impl&eacute;mentation pour Apache httpd fournit les fonctionnalit&eacute;s
+suivantes pout les serveurs et mandataires TLS :</p>
+
+<ul>
+  <li>Les SCTs peuvent &ecirc;tre extraits automatiquement des logs, et en
+  conjonction avec tout SCT d&eacute;fini statiquement, envoy&eacute;s aux clients
+  qui les supportent durant la phase ServerHello de la n&eacute;gociation de la
+  connexion.</li>
+  <li>Le serveur mandataire peut recevoir les SCTs en provenance du
+  serveur original au cours de la phase ServerHello sous la forme d'une
+  extension de certificat, et/ou au sein des r&eacute;ponses OCSP agraf&eacute;es ;
+  tout SCT re&ccedil;u peut &ecirc;tre valid&eacute; partiellement en ligne, et
+  &eacute;ventuellement mis en file d'attente pour un examen plus approfondi
+  hors ligne.</li>
+  <li>Le serveur mandataire peut &ecirc;tre configur&eacute; de fa&ccedil;on &agrave; refuser la
+  communication avec un serveur original qui ne fournit pas de SCT
+  pouvant &acirc;tre valid&eacute; en ligne.</li>
+</ul>
+
+<p>La configuration des logs peut &ecirc;tre d&eacute;finie statiquement au niveau de
+la configuration du serveur web, ou enregistr&eacute;e dans une base de donn&eacute;es
+SQLite3. Dans ce dernier cas, <module>mod_ssl_ct</module> rechargera &agrave;
+intervalles r&eacute;guliers la base de donn&eacute;es, de fa&ccedil;on &agrave; ce que tout
+changement dans la configuration de la maintenance et de la propagation
+des logs pour un site sp&eacute;cifique ne n&eacute;cessite pas de red&eacute;marrer httpd.</p>
+
+<note>Ce module en est au stade exp&eacute;rimental pour les raisons suivantes
+:
+<ul>
+  <li>Tests et retours d'information insuffisants</li>
+  <li>Repose sur une version non stable (version 1.0.2, Beta 3 ou
+  sup&eacute;rieure) d'OpenSSL pour les
+  op&eacute;rations de base</li>
+  <li>Impl&eacute;mentation de la <a href="#audit">fonctionnalit&eacute; d'audit hors
+  ligne</a> incompl&egrave;te</li>
+</ul>
+
+<p>Les m&eacute;canismes de configuration, le format des donn&eacute;es enregistr&eacute;es
+pour l'audit hors ligne, ainsi que d'autres caract&eacute;ristiques sont
+appel&eacute;s &agrave; &eacute;voluer en fonction des tests et retours d'informations &agrave;
+venir.</p>
+</note>
+</summary>
+
+<section id="server">
+  <title>Vue d'ensemble du fonctionnement au niveau du serveur</title>
+
+  <p>Les serveurs doivent pouvoir envoyer les SCTs aux clients. Les SCTs
+  seront envoy&eacute;s sous la forme d'une extension de certificat ou au sein
+  d'une r&eacute;ponse OCSP agraf&eacute;e sans logique pr&eacute;programm&eacute;e. Ce module g&egrave;re
+  l'envoi des SCTs configur&eacute;s par l'administrateur ou en provenance des
+  logs d&eacute;finis.</p>
+
+  <p>Le nombre de SCTs envoy&eacute;s au cours de la phase ServerHello (c'est &agrave;
+  dire les SCTs autres que ceux inclus dans une extension de certificat
+  ou une r&eacute;ponse OCSP agraf&eacute;e) peut &ecirc;tre limit&eacute; via la directive
+  <directive module="mod_ssl_ct">CTServerHelloSCTLimit</directive>.</p>
+
+  <p>Pour chaque certificat de serveur, un processus maintient une liste
+  de SCTs &agrave; envoyer au cours de la phase ServerHello ; cette liste est
+  cr&eacute;&eacute;e &agrave; partir des SCTs configur&eacute;s statiquement, mais aussi &agrave; partir
+  de ceux re&ccedil;us depuis les logs. Les logs marqu&eacute;s comme suspects ou
+  arriv&eacute;s &agrave; p&eacute;remption seront ignor&eacute;s. A intervalles r&eacute;guliers, le
+  processus va soumettre les certificats &agrave; un log selon les besoins
+  (suite &agrave; un changement de configuration du log ou de sa dur&eacute;e de vie),
+  et reconstruire la concat&eacute;nation des SCTs.</p>
+
+  <p>La liste des SCTs pour un certificat de serveur sera envoy&eacute;e au
+  cours de la phase ClientHello, lorsque ce certificat de serveur
+  particulier est utilis&eacute;, &agrave; tout client qui fait savoir qu'il supporte
+  cette fonctionnalit&eacute;.</p>
+
+</section>
+
+<section id="proxy">
+  <title>Vue d'ensemble du fonctionnement au niveau du serveur
+  mandataire</title>
+
+  <p>Le serveur mandataire indique qu'il supporte la Transparence des
+  Certificats au cours de la phase ClientHello en incluant l'extension
+  <em>signed_certificate_timestamp</em>. Il peut reconna&icirc;tre les SCTs
+  re&ccedil;us au cours de la phase ServerHello dans une extension du
+  certificat du serveur original, ou au sein d'une r&eacute;ponse OCSP agraf&eacute;e.</p>
+
+  <p>Une v&eacute;rification en ligne est effectu&eacute;e pour tout SCT re&ccedil;u :</p>
+
+  <ul>
+    <li>Le rep&egrave;re de temps de chaque SCT peut &ecirc;tre v&eacute;rifi&eacute; pour voir
+    s'il n'est pas encore valide en le comparant avec l'heure actuelle
+    ou tout intervalle de temps valide d&eacute;fini pour le log.</li>
+    <li>Dans le cas d'un SCT issu d'un log pour lequel une cl&eacute; publique
+    a &eacute;t&eacute; d&eacute;finie, la signature du serveur sera v&eacute;rifi&eacute;e.</li>
+  </ul>
+
+  <p>Si la v&eacute;rification &eacute;choue ou renvoie un r&eacute;sultat n&eacute;gatif pour au
+  moins un SCT et si la directive <directive
+  module="mod_ssl_ct">CTProxyAwareness</directive> est d&eacute;finie &agrave;
+  <em>require</em>, la tentative de connexion est abandonn&eacute;e.</p>
+
+  <p>En outre, si la directive <directive
+  module="mod_ssl_ct">CTAuditStorage</directive> est d&eacute;finie, la cha&icirc;ne
+  de certification du serveur et les SCTs sont stock&eacute;s pour une
+  v&eacute;rification hors ligne.</p>
+
+  <p>A titre d'optimisation, la v&eacute;rification en ligne et le stockage des
+  donn&eacute;es en provenance du serveur ne sont effectu&eacute;s que la premi&egrave;re
+  fois o&ugrave; un processus enfant du serveur web re&ccedil;oit ces donn&eacute;es, ce qui
+  permet d'&eacute;conomiser du temps processeur et de l'espace disque. Dans le
+  cas d'une configuration typique de mandataire inverse, seule une
+  l&eacute;g&egrave;re augmentation de la charge processeur sera induite.</p>
+
+</section>
+
+<section id="logconf">
+  <title>Configuration du log</title>
+
+  <p>Les serveurs et les mandataires utilisent des informations
+  diff&eacute;rentes en ce qui concerne les logs et leurs traitements. Cette
+  <em>configuration des logs</em> peut &ecirc;tre effectu&eacute;e de deux mani&egrave;res :</p>
+
+  <ul>
+    <li>On peut cr&eacute;er une base de donn&eacute;es pour configurer le log en
+    utilisant la commande <program>ctlogconfig</program> et en
+    d&eacute;finissant le chemin vers cette base de donn&eacute;es via la directive
+    <directive module="mod_ssl_ct">CTLogConfig</directive>.
+    <module>mod_ssl_ct</module> relit la base de donn&eacute;es &agrave;
+    intervalles r&eacute;guliers ; cette m&eacute;thode de configuration supporte donc
+    les mises &agrave; jour dynamiques. En outre, la commande d'audit hors
+    ligne <code>ctauditscts</code> peut utiliser cette configuration pour
+    trouver l'URL des logs.</li>
+
+    <li>On peut aussi configurer les logs statiquement via la directive
+    <directive module="mod_ssl_ct">CTStaticLogConfig</directive>. Toute
+    modification de cette directive n&eacute;cessitera alors un red&eacute;marrage du serveur
+    pour &ecirc;tre prise en compte, comme pour toutes les autres directives.</li>
+  </ul>
+
+  <p>Les &eacute;l&eacute;ments de configuration pouvant &ecirc;tre d&eacute;finis par l'une ou
+  l'autre m&eacute;thode sont les suivants :</p>
+
+  <dl>
+    <dt>Identifiant du log</dt>
+    <dd>L'identifiant du log est le hash SHA-256 de sa cl&eacute; publique, et
+    est inclus dans tout SCT. Ceci permet d'identifier ais&eacute;ment un log
+    particulier lorsqu'on d&eacute;finit des plages de rep&egrave;res de temps
+    valides ou certaines autres informations.</dd>
+
+    <dt>Cl&eacute; publique du log</dt>
+    <dd>Un mandataire doit disposer de la cl&eacute; publique du log afin de
+    pouvoir v&eacute;rifier la signature dans les SCTs en provenance de ce log.
+    <br />
+    Un serveur doit poss&eacute;der la cl&eacute; publique du log afin de pouvoir lui
+    soumettre des certificats.</dd>
+
+    <dt>Configuration g&eacute;n&eacute;rale confiance/m&eacute;fiance</dt>
+    <dd>Il s'agit d'un m&eacute;canisme permettant d'instaurer une m&eacute;fiance ou
+    de restaurer une confiance envers un log donn&eacute; pour certaines
+    raisons particuli&egrave;res (y compris la simple interruption des
+    interactions avec le log dans les situations o&ugrave; il est hors ligne).</dd>
+
+    <dt>Rep&egrave;res de temps minima et/ou maxima valides</dt>
+    <dd>Lorsqu'ils sont d&eacute;finis, le mandataire pourra v&eacute;rifier que les
+    rep&egrave;res de temps contenus dans les SCTs sont compris dans une plage
+    valide</dd>
+
+    <dt>URL du log</dt>
+    <dd>Pour qu'un serveur puisse soumettre des certificats de serveur &agrave;
+    un log, il doit conna&icirc;tre l'URL de ce dernier (pour son API). Le
+    serveur soumettra chaque certificat de serveur afin d'obtenir un
+    SCT pour chaque log dont l'URL est d&eacute;finie, sauf pour les logs aussi
+    marqu&eacute;s comme non dignes de confiance ou si l'heure actuelle ne se
+    situe dans aucune des plages de temps valides d&eacute;finies.
+    <br />
+    L'audit hors ligne des SCTs re&ccedil;us par un mandataire n&eacute;cessite aussi
+    de conna&icirc;tre l'URL du log.</dd>
+  </dl>
+
+  <p>En g&eacute;n&eacute;ral, seuls quelque uns de ces &eacute;l&eacute;ments de configuration sont
+  d&eacute;finis pour un log donn&eacute;. Pour plus de d&eacute;tails, veuillez vous r&eacute;f&eacute;rer
+  &agrave; la documentation de la directive <directive
+  module="mod_ssl_ct">CTStaticLogConfig</directive> et de la commande
+  <program>ctlogconfig</program>.</p>
+
+</section>
+
+<section id="static">
+  <title>Stockage des SCTs sous une forme compr&eacute;hensible pour mod_ssl_ct</title>
+
+  <p>Le module <module>mod_ssl_ct</module> permet de configurer les SCTs
+  de mani&egrave;re statique via la directive
+  <directive>CTStaticSCTs</directive>. Ils doivent alors &ecirc;tre sous une forme
+  binaire pr&ecirc;te &agrave; &ecirc;tre envoy&eacute;e au client.</p>
+
+  <p>Vous trouverez dans le <a
+  href="https://github.com/tomrittervg/ct-tools">D&eacute;p&ocirc;t ct-tools de Tom
+  Ritter</a> un exemple de code sous la forme d'un script Python
+  (<code>write-sct.py</code>) permettant de g&eacute;n&eacute;rer un SCT sous un
+  format correct avec des donn&eacute;es en provenance d'un log.</p>
+</section>
+
+<section id="logging">
+  <title>Journalisation des rep&egrave;res de temps des certificats (CT) dans
+  le journal des acc&egrave;s</title>
+
+  <p>Dans les deux modes mandataire et serveur, les variables
+  <code>SSL_CT_PROXY_STATUS</code> et
+  <code>SSL_CT_CLIENT_STATUS</code> sont d&eacute;finies et indiquent si le
+  serveur supporte les CTs.</p>
+
+  <p>Dans le mode mandataire, la variable
+  <code>SSL_CT_PROXY_SCT_SOURCES</code> est d&eacute;finie pour indiquer si des
+  SCTs ont &eacute;t&eacute; re&ccedil;us ainsi que leur source (phase ServerHello de la
+  connexion, extension de certificat, etc...).</p>
+
+  <p>Les valeurs de ces variables peuvent &ecirc;tre journalis&eacute;es via la
+  cha&icirc;ne de format <code>%{<em>varname</em>}e</code> de
+  <module>mod_log_config</module>.</p>
+</section>
+
+<section id="audit">
+  <title>Audit hors ligne pour mandataire</title>
+
+  <p>Le support de cette fonctionnalit&eacute; en est au stade exp&eacute;rimental, et
+  est impl&eacute;ment&eacute; par la commande <code>ctauditscts</code>, qui repose
+  elle-m&ecirc;me sur l'utilitaire <code>verify_single_proof.py</code> du
+  projet open source <em>certificate-transparency</em>. La commande
+  <code>ctauditscts</code> peut parcourir des donn&eacute;es, et ainsi effectuer
+  un audit hors ligne (activ&eacute; via la directive <directive
+  module="mod_ssl_ct">CTAuditStorage</directive>) en invoquant
+  l'utilitaire <code>verify_single_proof.py</code>.</p>
+
+  <p>Voici quelques indication &agrave; l'&eacute;tat brut pour l'utilisation de
+  <code>ctauditscts</code> :</p>
+
+  <ul>
+    <li>Cr&eacute;ez un <em>virtualenv</em> en utilisant le fichier
+    <code>requirements.txt</code> du projet
+    <em>certificate-transparency</em>, et ex&eacute;cuter les &eacute;tapes suivantes
+    avec ce <em>virtualenv</em> activ&eacute;.</li>
+    <li>D&eacute;finissez <code>PYTHONPATH</code> de fa&ccedil;on &agrave; inclure le
+    r&eacute;pertoire <code>python</code> dans les chemins par d&eacute;faut des
+    utilitaires du projet <em>certificate-transparency</em>.</li>
+    <li>D&eacute;finissez <code>PATH</code> de fa&ccedil;on &agrave; inclure le chemin du
+    r&eacute;pertoire <code>python/ct/client/tools</code>.</li>
+    <li>Ex&eacute;cutez la commande <code>ctauditscts</code> avec comme
+    arguments la valeur de la directive
+    <directive>CTAuditStorage</directive>, et &eacute;ventuellement le chemin
+    de la base de donn&eacute;es de configuration des logs. Cette derni&egrave;re sera
+    utilis&eacute;e pour extraire les URLs des logs en fonction de leurs
+    identifiants.</li>
+  </ul>
+
+  <p>Les donn&eacute;es stock&eacute;es &agrave; des fins d'audit peuvent aussi &ecirc;tre
+  utilis&eacute;es par d'autres programmes ; veuillez vous r&eacute;f&eacute;rer au code
+  source de <code>ctauditscts</code> pour plus de d&eacute;tails &agrave; propos du
+  traitement des donn&eacute;es.</p>
+</section>
+
+<directivesynopsis>
+<name>CTAuditStorage</name>
+<description>R&eacute;pertoire de stockage des donn&eacute;es pour l'audit hors ligne</description>
+<syntax>CTAuditStorage <em>directory</em></syntax>
+<default>none</default>
+<contextlist><context>server config</context></contextlist>
+
+<usage>
+  <p>La directive <directive>CTAuditStorage</directive> permet de
+  d&eacute;finir le chemin du r&eacute;pertoire o&ugrave; les donn&eacute;es destin&eacute;es &agrave; un audit hors
+  ligne seront stock&eacute;es. Ce r&eacute;pertoire doit exister au pr&eacute;alable. Si le
+  chemin contenu dans l'argument <em>directory</em> n'est pas absolu, il
+  sera consid&eacute;r&eacute; comme relatif au chemin d&eacute;fini par la directive
+  <directive module="core">DefaultRuntimeDir</directive>.</p>
+
+  <p>Si cette directive n'est pas d&eacute;finie, aucune donn&eacute;e ne sera stock&eacute;e
+  en vue d'un audit hors ligne.</p>
+
+  <p>Le r&eacute;pertoire consid&eacute;r&eacute; contiendra des fichiers nomm&eacute;s
+  <code><em>PID</em>.tmp</code> pour les processus enfants actifs et
+  <code><em>PID</em>.out</code> pour les processus enfants termin&eacute;s. Les
+  donn&eacute;es disponibles pour un audit hors ligne sont donc contenues dans les
+  fichiers <code>.out</code>. La commande exp&eacute;rimentale
+  <code>ctauditscts</code> (situ&eacute;e dans l'arborescence des sources de
+  httpd, mais non encore prise en compte par le processus
+  d'installation), fait appel aux utilitaires du projet
+  <em>certificate-transparency</em> pour effectuer l'audit.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CTLogClient</name>
+<description>Chemin de l'utilitaire client du log certificate-transparency</description>
+<syntax>CTLogClient <em>executable</em></syntax>
+<default>none</default>
+<contextlist><context>server config</context>
+</contextlist>
+
+<usage>
+  <p><em>executable</em> est le chemin complet de l'utilitaire client du
+  log qui est normalement le fichier <code>cpp/client/ct</code> (ou
+  <code>ct.exe</code>) de l'arborescence des sources du projet open
+  source <a
+  href="https://code.google.com/p/certificate-transparency/">certificate-transparency</a>.</p>
+
+  <p>Il est possible d'utiliser une impl&eacute;mentation alternative pour
+  extraire les SCTs d'un certificat de serveur &agrave; partir du moment o&ugrave;
+  l'interface de la ligne de commande est &eacute;quivalente.</p>
+
+  <p>Si cette directive n'est pas d&eacute;finie, il n'est pas possible de
+  soumettre les certificats aux logs pour en extraire les SCTs ; seuls
+  les SCTs g&eacute;r&eacute;s par l'administrateur ou situ&eacute;s dans une extension de
+  certificat seront alors fournis aux clients.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CTLogConfigDB</name>
+<description>Base de donn&eacute;es pour la configuration des logs avec mises &agrave;
+jour dynamiques</description>
+<syntax>CTLogConfigDB <em>filename</em></syntax>
+<default>none</default>
+<contextlist><context>server config</context></contextlist>
+
+<usage>
+  <p>La directive <directive>CTLogConfigDB</directive> permet de d&eacute;finir
+  le nom de la base de donn&eacute;es contenant la configuration des logs
+  connus. Si le chemin contenu dans <em>filename</em> n'est pas absolu,
+  il est consid&eacute;r&eacute; comme relatif au chemin d&eacute;fini par la directive
+  <directive module="core">ServerRoot</directive>.</p>
+
+  <p>Veuillez vous r&eacute;f&eacute;rer &agrave; la documentation du programme
+  <program>ctlogconfig</program> qui g&egrave;re la base de donn&eacute;es.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CTMaxSCTAge</name>
+<description>Age maximum d'un SCT obtenu depuis un log avant son
+raffra&icirc;chissement</description>
+<syntax>CTMaxSCTAge <em>num-seconds</em></syntax>
+<default>1 jour</default>
+<contextlist><context>server config</context></contextlist>
+
+<usage>
+  <p>Les certificats de serveur dont les SCTs sont sup&eacute;rieurs &agrave; cet &acirc;ge
+  maximum seront soumis &agrave; nouveau aux logs d&eacute;finis. En g&eacute;n&eacute;ral, le log
+  va renvoyer le m&ecirc;me SCT que pr&eacute;c&eacute;demment, mais ceux-ci font alors l'objet
+  d'une op&eacute;ration de la part du log. Les SCTs seront raffra&icirc;chis autant que
+  n&eacute;cessaire au cours du fonctionnement normal du serveur, les nouveaux
+  SCTs &eacute;tant envoy&eacute;s aux clients au fur et &agrave; mesure de leur
+  disponibilit&eacute;.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CTProxyAwareness</name>
+<description>Niveau de prise en compte et de mise en oeuvre des CTs pour un
+mandataire
+</description>
+<syntax>CTProxyAwareness <em>oblivious|aware|require</em></syntax>
+<default>aware</default>
+<contextlist><context>server config</context>
+<context>virtual host</context></contextlist>
+
+<usage>
+  <p>Cette directive permet de contr&ocirc;ler la prise en compte et les
+  recherches de SCTs valides pour un mandataire. Les options disponibles
+  sont les suivantes :</p>
+
+  <dl>
+    <dt>oblivious</dt>
+    <dd>Le mandataire de demandera jamais de SCTs, et par cons&eacute;quent
+    n'en examinera pas. Le processus de transparance des certificats est
+    alors enti&egrave;rement d&eacute;sactiv&eacute; pour ce mandataire.</dd>
+
+    <dt>aware</dt>
+    <dd>Le mandataire prendra en charge l'ensemble du processus de
+    transparence des certificats, &agrave; savoir la recherche de SCTs et leur
+    examen. Le mandataire n'interrompra cependant pas la connexion si le
+    serveur original ne fournit pas de SCTs valides.</dd>
+
+    <dt>require</dt>
+    <dd>Le mandataire interrompra la connexion avec le serveur original
+    si ce dernir ne fournit pas au moins un SCT qui passe avec succ&egrave;s le
+    test de validation en ligne.</dd>
+  </dl>
+
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CTSCTStorage</name>
+<description>R&eacute;pertoire o&ugrave; les SCTs sont stock&eacute;s</description>
+<syntax>CTSCTStorage <em>directory</em></syntax>
+<default>none</default>
+<contextlist><context>server config</context>
+</contextlist>
+
+<usage>
+  <p>La directive <directive>CTSCTStorage</directive> permet de d&eacute;finir
+  le nom du r&eacute;pertoire o&ugrave; les SCTs et listes de SCTs seront stock&eacute;s. Si
+  le chemin contenu dans <em>directory</em> n'est pas absolu, il sera
+  consid&eacute;r&eacute; comme relatif au chemin d&eacute;fini par la directive <directive
+  module="core">DefaultRuntimeDir</directive>.</p>
+
+  <p>Chaque certificat voit ses informations stock&eacute;es dans un sous-r&eacute;pertoire
+  qui lui est propre ; le nom de ce sous-r&eacute;pertoire correspond au hash
+  SHA-256 du certificat consid&eacute;r&eacute;.</p>
+
+  <p>Les sous-r&eacute;pertoires propres &agrave; chaque certificat contiennent des
+  SCTs en provenance des logs d&eacute;finis, des listes de SCTs pr&eacute;par&eacute;es &agrave;
+  partir des SCTs configur&eacute;s statiquement et des SCTs extraits, ainsi
+  que diverses informations utilis&eacute;es pour g&eacute;rer les SCTs.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CTServerHelloSCTLimit</name>
+<description>Nombre maximum de SCTs pouvant &ecirc;tre renvoy&eacute;s au cours de la
+phase ServerHello</description>
+<syntax>CTServerHelloSCTLimit <em>limit</em></syntax>
+<default>100</default>
+<contextlist><context>server config</context>
+</contextlist>
+
+<usage>
+  <p>Cette directive permet de d&eacute;finir le nombre maximum de SCTs pouvant
+  &ecirc;tre renvoy&eacute;s par un serveur TLS au cours de la phase ServerHello dans
+  le cas o&ugrave; le nombre de logs d&eacute;finis et de SCTs d&eacute;finis statiquement
+  est assez important.</p>
+
+  <p>En g&eacute;n&eacute;ral, seuls quelques SCTs sont disponibles, cette directive
+  n'est donc n&eacute;cessaire que dans certaines circonstances particuli&egrave;res.</p>
+
+  <p>Cette directive ne tient pas compte des SCTs contenus dans les
+  extensions de certificats ou les r&eacute;ponses OCSP agraf&eacute;es.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CTStaticLogConfig</name>
+<description>Configuration statique d'un log</description>
+<syntax>CTStaticLogConfig <em>log-id|-</em> <em>public-key-file|-</em>
+<em>1|0|-</em> <em>min-timestamp|-</em> <em>max-timestamp|-</em>
+<em>log-URL|-</em></syntax>
+<default>none</default>
+<contextlist><context>server config</context>
+</contextlist>
+
+<usage>
+  <p>Cette directive permet de configurer un log particulier. Elle est
+  particuli&egrave;rement appropri&eacute;e dans les cas o&ugrave; cette configuration est
+  rarement modifi&eacute;e. Si votre cas n&eacute;cessite plut&ocirc;t une configuration
+  dynamique, veuillez vous r&eacute;f&eacute;rer &agrave; la documentation de la directive
+  <directive module="mod_ssl_ct">CTLogConfigDB</directive>.</p>
+
+  <p>Chacun des six champs doit &ecirc;tre renseign&eacute;, mais en g&eacute;n&eacute;ral, la
+  configuration d'un log n&eacute;cessite peu d'information ; utilisez
+  <em>-</em> lorsque vous ne disposez d'aucune information &agrave; sp&eacute;cifier
+  pour un champ particulier. Par exemple, dans le cas d'une
+  configuration de serveur simple (non mandataire), l'administrateur n'a
+  besoin de sp&eacute;cifier que l'URL du log auquel soumettre des certificats de
+  serveur afin d'en extraire les SCTs.</p>
+
+  <p>Les champs se d&eacute;finissent comme suit :</p>
+
+  <dl>
+    <dt><em>log-id</em></dt>
+    <dd>Il s'agit de l'identifiant du log qui correspond au hash SHA-256
+    de la cl&eacute; publique du log, cod&eacute; en hexad&eacute;cimal. Cette cha&icirc;ne a une
+    taille de 64 caract&egrave;res.
+    <br />
+    Ce champ peut &ecirc;tre omis lorsque <em>public-key-file</em> est
+    renseign&eacute;.</dd>
+
+    <dt><em>public-key-file</em></dt>
+    <dd>Il s'agit du chemin d'un fichier contenant la cl&eacute; publique du log
+    cod&eacute;e au format PEM. Si ce chemin n'est pas absolu, il est consid&eacute;r&eacute;
+    comme relatif au chemin d&eacute;fini par la directive <directive
+    module="core">ServerRoot</directive>.</dd>
+
+    <dt><em>trust/distrust</em></dt>
+    <dd>D&eacute;finissez ce champ &agrave; <em>1</em> pour marquer le log comme non
+    digne de confiance, ou pour tout simplement interdire son
+    utilisation pour le traitement des certificats. D&eacute;finissez ce champ
+    &agrave; <em>-</em> ou <em>0</em> (valeur par d&eacute;faut) pour accorder votre
+    confiance au log.</dd>
+
+    <dt><em>min-timestamp</em> et <em>max-timestamp</em></dt>
+    <dd>Un rep&egrave;re de temps (timestamp) est un temps exprim&eacute; en
+    millisecondes depuis le temps epoch, sans tenir compte des secondes
+    saut&eacute;es. C'est le format de temps utilis&eacute; dans les SCTs. Le rep&egrave;re
+    de temps doit &ecirc;tre fourni sous la forme d'un nombre d&eacute;cimal.
+    <br />
+    Sp&eacute;cifiez <strong><code>-</code></strong> pour un des rep&egrave;res de
+    temps s'il n'est pas connu. Par exemple, lorsque vous d&eacute;finissez le
+    rep&egrave;re de temps minimum valide pour un log qui reste valide,
+    sp&eacute;cifiez <strong><code>-</code></strong> pour
+    <em>max-timestamp</em>.
+    <br />
+    Les SCTs re&ccedil;u par le mandataire depuis ce log seront invalides si le
+    rep&egrave;re de temps est plus ancien que <em>min-timestamp</em> ou plus
+    r&eacute;cent que <em>max-timestamp</em>.</dd>
+
+    <dt><em>log-URL</em></dt>
+    <dd>Il s'agit de l'URL du log auquel soumettre les certificats de
+    serveur et ainsi obtenir des SCTs &agrave; envoyer aux clients.</dd>
+  </dl>
+</usage>
+
+<seealso>Le paragraphe <a href="#logconf">Configuration des logs</a>
+contient des informations &agrave; caract&egrave;re plus g&eacute;n&eacute;ral &agrave; propos des champs qui
+peuvent &ecirc;tre d&eacute;finis via cette directive.</seealso>
+
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CTStaticSCTs</name>
+<description>Configuration statique d'un ou plusieurs SCTs pour un
+certificat de serveur
+</description>
+<syntax>CTStaticSCTs <em>certificate-pem-file</em> <em>sct-directory</em></syntax>
+<default>none</default>
+<contextlist><context>server config</context>
+</contextlist>
+
+<usage>
+  <p>Cette directive permet de d&eacute;finir statiquement un ou plusieurs SCTs
+  correspondant &agrave; un certificat de serveur. Ce m&eacute;canisme peut &ecirc;tre
+  utilis&eacute; &agrave; la place ou en compl&eacute;ment de l'obtention dynamique des SCTs
+  en provenance des logs. Toute modification dans le jeu de SCTs d'un
+  certificat de serveur particulier sera prise en compte de mani&egrave;re
+  dynamique sans avoir &agrave; red&eacute;marrer le serveur.</p>
+
+  <p><em>certificate-pem-file</em> fait r&eacute;f&eacute;rence au fichier contenant
+  le certificat de serveur au format PEM. Si ce chemin n'est pas absolu,
+  il sera consid&eacute;r&eacute; comme relatif au chemin d&eacute;fini par la directive
+  <directive module="core">ServerRoot</directive>.</p>
+
+  <p><em>sct-directory</em> doit contenir le chemin vers un ou plusieurs
+  fichiers poss&eacute;dant l'extension de nom de fichier <code>.sct</code>,
+  repr&eacute;sentant un ou plusieurs SCTs correspondant au certificat de
+  serveur. Si ce chemin n'est pas absolu,
+  il sera consid&eacute;r&eacute; comme relatif au chemin d&eacute;fini par la directive
+  <directive module="core">ServerRoot</directive>.</p>
+
+  <p>Si <em>sct-directory</em> est vide, aucun message d'erreur ne sera
+  affich&eacute;.</p>
+
+  <p>Cette directive peut servir &agrave; identifier des r&eacute;pertoires de SCTs
+  g&eacute;r&eacute;s par une autre infrastructure, sous r&eacute;serve qu'ils soient
+  enregistr&eacute;s au format binaire avec l'extension de nom de fichier
+  <em>.sct</em>.</p>
+</usage>
+</directivesynopsis>
+
+</modulesynopsis>

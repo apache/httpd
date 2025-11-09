@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 1741842 -->
+<!-- English Revision: 1897300 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -217,15 +217,12 @@
     décrit comment configurer le serveur pour l'enregistrement des informations
     dans le journal des accès.</p>
 
-    <p>Bien évidemment, le stockage d'informations dans le journal des accès
+    <p>Le stockage d'informations dans le journal des accès
     n'est que le point de départ de la gestion de la journalisation. L'étape
     suivante consiste à analyser ces informations de façon à pouvoir en
     extraire des statistiques utiles. L'analyse de journaux en général est en
     dehors du sujet de ce document et ne fait pas vraiment partie intégrante
-    du travail du serveur web lui-même. Pour plus d'informations à propos de ce
-    sujet et des applications dédiées à l'analyse de journaux, vous pouvez vous
-    référer à <a href="http://dmoz.org/Computers/Software/Internet/
-    Site_Management/Log_analysis/">Open Directory</a>.
+    du travail du serveur web lui-même.
     </p>
 
     <p>Différentes versions du démon Apache httpd utilisaient d'autres modules
@@ -533,7 +530,7 @@ LogFormat "%!200,304,302{Referer}i" refererlog
       enregistré si le code d'état HTTP est 400 ou 501. Dans le cas
       contraire, c'est un caractère "-" qui sera enregistré à la place.
       Dans le second exemple, le <code>Referer</code> sera enregistré si
-      le code d'état HTTP n'est <strong>pas</strong> 200, 204, ou 302
+      le code d'état HTTP n'est <strong>pas</strong> 200, 304, ou 302
       (remarquez le caractère "!" avant les codes d'état).</p>
 
       <p>Bien que nous venions de montrer que la journalisation conditionnelle
@@ -719,13 +716,15 @@ CustomLog "logs/access_log" comonvhost
       <modulelist>
         <module>mod_logio</module>
 	<module>mod_log_config</module>
+	<module>mod_log_debug</module>
         <module>mod_log_forensic</module>
         <module>mod_cgi</module>
       </modulelist>
       <directivelist>
-        <directive module="mod_log_config">LogFormat</directive>
 	<directive module="mod_log_config">BufferedLogs</directive>
         <directive module="mod_log_forensic">ForensicLog</directive>
+	<directive module="mod_log_config">LogFormat</directive>
+        <directive module="mod_log_debug">LogMessage</directive>
         <directive module="mpm_common">PidFile</directive>
         <directive module="mod_cgi">ScriptLog</directive>
         <directive module="mod_cgi">ScriptLogBuffer</directive>
@@ -775,6 +774,15 @@ CustomLog "logs/access_log" comonvhost
       utilisée que pendant la phase de test, et en aucun cas sur un
       serveur en production. Vous trouverez plus d'informations dans la
       documentation du module <a href="mod/mod_cgi.html">mod_cgi</a>.</p>
+    </section>
+
+    <section id="debug">
+        <title>Journalisation de débogage configurable</title>
+
+        <p>La directive <directive module="mod_log_debug">LogMessage</directive>
+	vous permet de créer vos propres messages de journalisation
+	personnalisés pour faciliter vos opérations de débogage.
+        </p>
     </section>
     
   </section>

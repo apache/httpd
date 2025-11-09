@@ -136,9 +136,16 @@ static int ap_set_byterange(request_rec *r, apr_off_t clength,
     }
     *indexes = apr_array_make(r->pool, ranges, sizeof(indexes_t));
     while ((cur = ap_getword(r->pool, &range, ','))) {
-        char *dash;
-        char *errp;
+        char *dash, *end_cur;
         apr_off_t number, start, end;
+
+         /* Remove leading and trailing white spaces */
+        while (apr_isspace(*cur))
+            ++cur;
+        /* blast trailing whitespace */
+        end_cur = &cur[strlen(cur)];
+        while (--end_cur >= cur && apr_isspace(*end_cur))
+            *end_cur = '\0';
 
         if (!*cur)
             break;
@@ -154,7 +161,7 @@ static int ap_set_byterange(request_rec *r, apr_off_t clength,
 
         if (dash == cur) {
             /* In the form "-5" */
-            if (apr_strtoff(&number, dash+1, &errp, 10) || *errp) {
+            if (!ap_parse_strict_length(&number, dash+1)) {
                 return 0;
             }
             if (number < 1) {
@@ -165,12 +172,12 @@ static int ap_set_byterange(request_rec *r, apr_off_t clength,
         }
         else {
             *dash++ = '\0';
-            if (apr_strtoff(&number, cur, &errp, 10) || *errp) {
+            if (!ap_parse_strict_length(&number, cur)) {
                 return 0;
             }
             start = number;
             if (*dash) {
-                if (apr_strtoff(&number, dash, &errp, 10) || *errp) {
+                if (!ap_parse_strict_length(&number, dash)) {
                     return 0;
                 }
                 end = number;
@@ -474,9 +481,9 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(ap_filter_t *f,
         /* Is ap_make_content_type required here? */
         const char *orig_ct = ap_make_content_type(r, r->content_type);
 
-        ap_set_content_type(r, apr_pstrcat(r->pool,
+        ap_set_content_type_ex(r, apr_pstrcat(r->pool,
                                            "multipart/byteranges; boundary=",
-                                           ap_multipart_boundary, NULL));
+                                           ap_multipart_boundary, NULL), 1);
 
         if (orig_ct) {
             bound_head = apr_pstrcat(r->pool,

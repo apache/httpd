@@ -58,9 +58,10 @@ for 2.2.x versions</compatibility>
     </dd>
     <dt>Non-enabled modules</dt><dd>
     <p>To use it with a libxml2-based module that isn't explicitly enabled for
-    mod_xml2enc, you will have to configure the filter chain yourself.
-    So to use it with a filter foo provided by a module mod_foo to
-    improve the latter's i18n support with HTML and XML, you could use</p>
+    mod_xml2enc, you will have to configure the filter chain yourself.  So to
+    use it with a filter <strong>foo</strong> provided by a module
+    <strong>mod_foo</strong> to improve the latter's i18n support with HTML and
+    XML, you could use</p>
     <pre><code>
     FilterProvider iconv    xml2enc Content-Type $text/html
     FilterProvider iconv    xml2enc Content-Type $xml
@@ -68,7 +69,7 @@ for 2.2.x versions</compatibility>
     FilterProvider markup   foo Content-Type $xml
     FilterChain     iconv markup
     </code></pre>
-    <p>mod_foo will now support any character set supported by either
+    <p><strong>mod_foo</strong> will now support any character set supported by either
     (or both) of libxml2 or apr_xlate/iconv.</p>
     </dd></dl>
 </section>
@@ -124,14 +125,13 @@ can be <a href="#sniffing">automatically detected</a></description>
 <contextlist><context>server config</context>
 <context>virtual host</context><context>directory</context>
 <context>.htaccess</context></contextlist>
-<compatibility>Version 2.4.0 and later; available as a third-party
-module for earlier versions.</compatibility>
+<override>All</override>
 
 <usage>
     <p>If you are processing data with known encoding but no encoding
     information, you can set this default to help mod_xml2enc process
     the data correctly.  For example, to work with the default value
-    of Latin1 (<var>iso-8859-1</var> specified in HTTP/1.0, use</p>
+    of Latin1 (<var>iso-8859-1</var>) specified in HTTP/1.0, use:</p>
     <highlight language="config">
 xml2EncDefault iso-8859-1
     </highlight>
@@ -160,6 +160,7 @@ xml2EncDefault iso-8859-1
 <syntax>xml2StartParse <var>element [element ...]</var></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
+<override>All</override>
 
 <usage>
     <p>Specify that the markup parser should start at the first instance

@@ -66,7 +66,7 @@ RewriteMap <em>MapName</em> <em>MapType</em>:<em>MapSource</em>
 </highlight>
 
     <p>The <a id="mapfunc" name="mapfunc"><em>MapName</em></a> is an
-    arbitray name that you assign to the map, and which you will use in
+    arbitrary name that you assign to the map, and which you will use in
     directives later on. Arguments are passed to the map via the
     following syntax:</p>
 
@@ -328,7 +328,7 @@ RewriteMap mapname "dbm:/etc/apache/mapfile.map"
 <note>
 <p>Note that with some dbm types, more than one file is generated, with
 a common base name. For example, you may have two files named
-<code>mapfile.map.dir</code> and <code>mapfiile.map.pag</code>. This is
+<code>mapfile.map.dir</code> and <code>mapfile.map.pag</code>. This is
 normal, and you need only use the base name <code>mapfile.map</code> in
 your <directive module="mod_rewrite">RewriteMap</directive> directive.</p>
 </note>
@@ -441,6 +441,11 @@ this process, or if the script itself is very slow.</li>
 RewriteMap myquery "fastdbd:SELECT destination FROM rewrite WHERE source = %s"
     </highlight>
     </example>
+
+    <note><title>Note</title>
+    <p>The query name is passed to the database driver as a label for
+    an SQL prepared statement, and will therefore need to follow any rules
+    (such as case-sensitivity) required for your database.</p></note>
 
   </section>
   <section id="summary">

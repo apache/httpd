@@ -194,6 +194,18 @@ Body:----------ro--
 <!--#include virtual="include/bottom.html" -->
 ----------ro--
 
+Content-language: ru
+Content-type: text/html; charset=UTF-8
+Body:----------ru--
+<!--#set var="TITLE" value="Истекло время ожидания!"
+--><!--#include virtual="include/top.html" -->
+
+    Сервер закрыл соединение из-за истечения времени,
+    отведённого браузеру на выполнение запроса.
+
+<!--#include virtual="include/bottom.html" -->
+----------ru--
+
 Content-language: sr
 Content-type: text/html; charset=UTF-8
 Body:----------sr--
@@ -232,3 +244,27 @@ Body:----------tr--
 
 <!--#include virtual="include/bottom.html" --> 
 ----------tr--
+
+Content-language: zh-cn
+Content-type: text/html; charset=UTF-8
+Body:----------zh-cn--
+<!--#set var="CONTENT_LANGUAGE" value="zh-cn"
+--><!--#set var="TITLE" value="请求超时！"
+--><!--#include virtual="include/top.html" -->
+
+    由于浏览器未在指定时间内完成请求，服务器关闭了网络连接。
+   
+<!--#include virtual="include/bottom.html" --> 
+----------zh-cn--
+
+Content-language: zh-tw
+Content-type: text/html; charset=UTF-8
+Body:----------zh-tw--
+<!--#set var="CONTENT_LANGUAGE" value="zh-tw"
+--><!--#set var="TITLE" value="請求超時！"
+--><!--#include virtual="include/top.html" -->
+
+    由於瀏覽器未在指定時間內完成請求，伺服器關閉了網路連接。
+   
+<!--#include virtual="include/bottom.html" --> 
+----------zh-tw--

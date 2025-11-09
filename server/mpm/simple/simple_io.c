@@ -79,7 +79,7 @@ static apr_status_t simple_io_process(simple_conn_t * scon)
             scon->pfd.reqevents = 0;
         }
 
-        if (scon->cs.state == CONN_STATE_READ_REQUEST_LINE) {
+        if (scon->cs.state == CONN_STATE_PROCESSING) {
             if (!c->aborted) {
                 ap_run_process_connection(c);
                 /* state will be updated upon return
@@ -93,15 +93,11 @@ static apr_status_t simple_io_process(simple_conn_t * scon)
         }
 
         if (scon->cs.state == CONN_STATE_WRITE_COMPLETION) {
-            int not_complete_yet;
+            int pending;
 
             ap_update_child_status(c->sbh, SERVER_BUSY_WRITE, NULL);
-            not_complete_yet = ap_run_output_pending(c);
-
-            if (not_complete_yet > OK) {
-                scon->cs.state = CONN_STATE_LINGER;
-            }
-            else if (not_complete_yet == OK) {
+            pending = ap_run_output_pending(c);
+            if (pending == OK) {
                 /* Still in WRITE_COMPLETION_STATE:
                  * Set a write timeout for this connection, and let the
                  * event thread poll for writeability.
@@ -130,14 +126,16 @@ static apr_status_t simple_io_process(simple_conn_t * scon)
                 }
                 return APR_SUCCESS;
             }
-            else if (c->keepalive != AP_CONN_KEEPALIVE || c->aborted) {
+            if (pending != DECLINED
+                    || c->keepalive != AP_CONN_KEEPALIVE
+                    || c->aborted) {
                 scon->cs.state = CONN_STATE_LINGER;
             }
-            else if (c->data_in_input_filters || ap_run_input_pending(c) == OK) {
-                scon->cs.state = CONN_STATE_READ_REQUEST_LINE;
+            else if (ap_run_input_pending(c) == OK) {
+                scon->cs.state = CONN_STATE_PROCESSING;
             }
             else {
-                scon->cs.state = CONN_STATE_CHECK_REQUEST_LINE_READABLE;
+                scon->cs.state = CONN_STATE_KEEPALIVE;
             }
         }
 
@@ -147,7 +145,7 @@ static apr_status_t simple_io_process(simple_conn_t * scon)
             return APR_SUCCESS;
         }
 
-        if (scon->cs.state == CONN_STATE_CHECK_REQUEST_LINE_READABLE) {
+        if (scon->cs.state == CONN_STATE_KEEPALIVE) {
             simple_register_timer(scon->sc,
                                   simple_io_timeout_cb,
                                   scon,
@@ -229,14 +227,13 @@ static void *simple_io_setup_conn(apr_thread_t * thread, void *baton)
 
     ap_update_vhost_given_ip(scon->c);
 
-    rv = ap_run_pre_connection(scon->c, scon->sock);
+    rv = ap_pre_connection(scon->c, scon->sock);
     if (rv != OK && rv != DONE) {
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO(00253)
                      "simple_io_setup_conn: connection aborted");
-        scon->c->aborted = 1;
     }
 
-    scon->cs.state = CONN_STATE_READ_REQUEST_LINE;
+    scon->cs.state = CONN_STATE_PROCESSING;
     scon->cs.sense = CONN_SENSE_DEFAULT;
 
     rv = simple_io_process(scon);
@@ -292,7 +289,7 @@ apr_status_t simple_io_accept(simple_core_t * sc, simple_sb_t * sb)
 apr_status_t simple_io_event_process(simple_core_t * sc, simple_sb_t * sb)
 {
     /* pqXXXXX: In theory, if we have non-blocking operations on the connection
-     *  we can do them here, before pushing to another thread, thats just
+     *  we can do them here, before pushing to another thread, that's just
      * not implemented right now.
      */
     return apr_thread_pool_push(sc->workers,

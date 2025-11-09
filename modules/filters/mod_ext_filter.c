@@ -161,7 +161,7 @@ static const char *parse_cmd(apr_pool_t *p, const char **args, ef_filter_t *filt
 
         ++*args; /* move past leading " */
         /* find true end of args string (accounting for escaped quotes) */
-        while (**args && (**args != '"' || (**args == '"' && escaping))) {
+        while (**args && (**args != '"' || escaping)) {
             if (escaping) {
                 escaping = 0;
             }
@@ -610,7 +610,7 @@ static apr_status_t init_filter_instance(ap_filter_t *f)
         }
         if (ctx->filter->outtype &&
             ctx->filter->outtype != OUTTYPE_UNCHANGED) {
-            ap_set_content_type(f->r, ctx->filter->outtype);
+            ap_set_content_type_ex(f->r, ctx->filter->outtype, 1);
         }
         if (ctx->filter->preserves_content_length != 1) {
             /* nasty, but needed to avoid confusing the browser
@@ -655,8 +655,7 @@ static apr_status_t drain_available_output(ap_filter_t *f,
         if (rv && !APR_STATUS_IS_EAGAIN(rv))
            lvl = APLOG_DEBUG;
         ap_log_rerror(APLOG_MARK, lvl, rv, r, APLOGNO(01460)
-                      "apr_file_read(child output), len %" APR_SIZE_T_FMT,
-                      !rv ? len : -1);
+                      "apr_file_read(child output), len %" APR_SIZE_T_FMT, len);
         if (rv != APR_SUCCESS) {
             return rv;
         }
@@ -727,13 +726,47 @@ static apr_status_t pass_data_to_filter(ap_filter_t *f, const char *data,
     return rv;
 }
 
+/* check_filter_process_on_eos():
+ *
+ * if we hit end-of-stream, check the exit status of the filter process, and log
+ * an appropriate message if it failed
+ */
+static apr_status_t check_filter_process_on_eos(ef_ctx_t *ctx, request_rec *r)
+{
+    if (ctx->hit_eos) {
+        int exitcode;
+        apr_exit_why_e exitwhy;
+        apr_status_t waitret = apr_proc_wait(ctx->proc, &exitcode, &exitwhy,
+                                             APR_WAIT);
+        if (waitret != APR_CHILD_DONE) {
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, waitret, r, APLOGNO(10451)
+                          "apr_proc_wait() failed, uri=%s", r->uri);
+            return waitret;
+        }
+        else if (exitwhy != APR_PROC_EXIT) {
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, APR_SUCCESS, r, APLOGNO(10452)
+                          "child process %s killed by signal %d, uri=%s",
+                          ctx->filter->command, exitcode, r->uri);
+            return APR_EGENERAL;
+        }
+        else if (exitcode != 0) {
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, APR_SUCCESS, r, APLOGNO(10453)
+                          "child process %s exited with non-zero status %d, "
+                          "uri=%s", ctx->filter->command, exitcode, r->uri);
+            return APR_EGENERAL;
+        }
+    }
+
+    return APR_SUCCESS;
+}
+
 /* ef_unified_filter:
  *
  * runs the bucket brigade bb through the filter and puts the result into
  * bb, dropping the previous content of bb (the input)
  */
 
-static int ef_unified_filter(ap_filter_t *f, apr_bucket_brigade *bb)
+static apr_status_t ef_unified_filter(ap_filter_t *f, apr_bucket_brigade *bb)
 {
     request_rec *r = f->r;
     conn_rec *c = r->connection;
@@ -810,8 +843,7 @@ static int ef_unified_filter(ap_filter_t *f, apr_bucket_brigade *bb)
         if (rv && !APR_STATUS_IS_EOF(rv) && !APR_STATUS_IS_EAGAIN(rv))
             lvl = APLOG_ERR;
         ap_log_rerror(APLOG_MARK, lvl, rv, r, APLOGNO(01466)
-                      "apr_file_read(child output), len %" APR_SIZE_T_FMT,
-                      !rv ? len : -1);
+                      "apr_file_read(child output), len %" APR_SIZE_T_FMT, len);
         if (APR_STATUS_IS_EAGAIN(rv)) {
             if (eos) {
                 /* should not occur, because we have an APR timeout in place */
@@ -882,6 +914,11 @@ static apr_status_t ef_output_filter(ap_filter_t *f, apr_bucket_brigade *bb)
     if (rv != APR_SUCCESS) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(01468)
                       "ef_unified_filter() failed");
+        return rv;
+    }
+
+    if ((rv = check_filter_process_on_eos(ctx, r)) != APR_SUCCESS) {
+        return rv;
     }
 
     if ((rv = ap_pass_brigade(f->next, bb)) != APR_SUCCESS) {
@@ -941,7 +978,13 @@ static apr_status_t ef_input_filter(ap_filter_t *f, apr_bucket_brigade *bb,
     }
 
     rv = ef_unified_filter(f, bb);
-    return rv;
+    if (rv != APR_SUCCESS) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, f->r, APLOGNO(10454)
+                      "ef_unified_filter() failed");
+        return rv;
+    }
+
+    return check_filter_process_on_eos(ctx, f->r);
 }
 
 AP_DECLARE_MODULE(ext_filter) =

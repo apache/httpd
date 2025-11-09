@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1770843 -->
+<!-- English Revision: 1850539 -->
 <!-- French translation: Fabien Coelho -->
 <!-- Updated by Lucien Gentis -->
 
@@ -30,6 +30,7 @@ de configuration Apache.</description>
 <status>Base</status>
 <sourcefile>mod_macro.c</sourcefile>
 <identifier>macro_module</identifier>
+<compatibility>Disponible à partir de la version 2.4.5 du serveur HTTP Apache</compatibility>
 
 <summary>
 
@@ -203,6 +204,7 @@ UndefMacro DirGroup
 <context>virtual host</context>
 <context>directory</context>
 </contextlist>
+<override>All</override>
 
 <usage>
     <p>La directive <directive type="section">Macro</directive> permet de définir une macro
@@ -236,6 +238,7 @@ UndefMacro DirGroup
 <context>virtual host</context>
 <context>directory</context>
 </contextlist>
+<override>All</override>
 
 <usage>
     <p> La directive <directive>Use</directive> permet d'utiliser une macro.
@@ -271,6 +274,7 @@ Require ip 192.54.172.0/24 192.54.148.0/24
 <context>virtual host</context>
 <context>directory</context>
 </contextlist>
+<override>All</override>
 
 <usage>
     <p>La directive <directive>UndefMacro</directive> annule la définition
@@ -295,6 +299,7 @@ propos des arguments de Macro vides</description>
 <context>virtual host</context>
 <context>directory</context>
 </contextlist>
+<override>All</override>
 
 </directivesynopsis>
 
@@ -310,6 +315,7 @@ propos d'une imbrication de Macros non conforme</description>
 <context>virtual host</context>
 <context>directory</context>
 </contextlist>
+<override>All</override>
 
 </directivesynopsis>
 

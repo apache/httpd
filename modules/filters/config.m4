@@ -5,7 +5,6 @@ dnl APACHE_MODULE(name, helptext[, objects[, structname[, default[, config]]]])
 APACHE_MODPATH_INIT(filters)
 
 APACHE_MODULE(buffer, Filter Buffering, , , most)
-APACHE_MODULE(crypto, Symmetrical encryption / decryption, , , no)
 APACHE_MODULE(data, RFC2397 data encoder, , , )
 APACHE_MODULE(ratelimit, Output Bandwidth Limiting, , , most)
 APACHE_MODULE(reqtimeout, Limit time waiting for request from client, , , yes)
@@ -101,7 +100,7 @@ AC_DEFUN([FIND_LIBXML2], [
   AC_CACHE_CHECK([for libxml2], [ac_cv_libxml2], [
     AC_ARG_WITH(libxml2,
       [APACHE_HELP_STRING(--with-libxml2=PATH,location for libxml2)],
-      [test_paths="${with_libxml2}"],
+      [test_paths="${with_libxml2}/include/libxml2 ${with_libxml2}/include ${with_libxml2}"],
       [test_paths="/usr/include/libxml2 /usr/local/include/libxml2 /usr/include /usr/local/include"]
     )
     AC_MSG_CHECKING(for libxml2)
@@ -152,10 +151,11 @@ APACHE_MODULE(brotli, Brotli compression support, , , most, [
   if test -n "$ap_brotli_base"; then
     ap_save_cppflags=$CPPFLAGS
     APR_ADDTO(CPPFLAGS, [-I${ap_brotli_base}/include])
-    AC_MSG_CHECKING([for Brotli library >= 1.0.0 via prefix])
+    AC_MSG_CHECKING([for Brotli library >= 0.6.0 via prefix])
     AC_TRY_COMPILE(
       [#include <brotli/encode.h>],[
-const uint8_t *o = BrotliEncoderTakeOutput((BrotliEncoderState*)0, (size_t*)0);],
+const uint8_t *o = BrotliEncoderTakeOutput((BrotliEncoderState*)0, (size_t*)0);
+if (o) return *o;],
       [AC_MSG_RESULT(yes)
        ap_brotli_found=yes
        ap_brotli_cflags="-I${ap_brotli_base}/include"
@@ -165,14 +165,12 @@ const uint8_t *o = BrotliEncoderTakeOutput((BrotliEncoderState*)0, (size_t*)0);]
     CPPFLAGS=$ap_save_cppflags
   else
     if test -n "$PKGCONFIG"; then
-      AC_MSG_CHECKING([for Brotli library >= 1.0.0 via pkg-config])
-      if $PKGCONFIG --exists "brotli >= 1.0.0"; then
+      AC_MSG_CHECKING([for Brotli library >= 0.6.0 via pkg-config])
+      if $PKGCONFIG --exists "libbrotlienc >= 0.6.0"; then
         AC_MSG_RESULT(yes)
         ap_brotli_found=yes
-        ap_brotli_cflags=`$PKGCONFIG brotli --cflags`
-        ap_brotli_libs=`$PKGCONFIG brotli --libs`
-        dnl We only support compression, drop -lbrotlidec.
-        APR_REMOVEFROM(ap_brotli_libs, [-lbrotlidec])
+        ap_brotli_cflags=`$PKGCONFIG libbrotlienc --cflags`
+        ap_brotli_libs=`$PKGCONFIG libbrotlienc --libs`
       else
         AC_MSG_RESULT(no)
       fi
@@ -191,6 +189,25 @@ const uint8_t *o = BrotliEncoderTakeOutput((BrotliEncoderState*)0, (size_t*)0);]
     if test "$ap_brotli_with" = "yes"; then
       AC_MSG_ERROR([Brotli library was missing or unusable])
     fi
+  fi
+])
+
+APACHE_MODULE(crypto, Symmetrical encryption / decryption, , , no, [
+  dnl Check for the required APR-util version.
+  AC_MSG_CHECKING([for APR-util >= 1.6])
+  if test "$apr_major_version" -lt 2; then
+    case "$APU_VERSION" in
+    dnl Sorry for the quadrigraphs; this expands to "1.[0-5].*)"
+    1.@<:@0-5@:>@.*)
+      AC_MSG_RESULT(no)
+      enable_crypto=no
+      ;;
+    *)
+      AC_MSG_RESULT(yes)
+      ;;
+    esac
+  else
+    AC_MSG_RESULT([yes (APR 2)])
   fi
 ])
 

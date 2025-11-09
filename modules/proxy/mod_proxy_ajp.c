@@ -65,13 +65,37 @@ static int proxy_ajp_canon(request_rec *r, char *url)
     if (apr_table_get(r->notes, "proxy-nocanon")) {
         path = url;   /* this is the raw path */
     }
-    else {
-        path = ap_proxy_canonenc(r->pool, url, strlen(url), enc_path, 0,
-                                 r->proxyreq);
+    else if (apr_table_get(r->notes, "proxy-noencode")) {
+        path = url;   /* this is the encoded path already */
         search = r->args;
     }
-    if (path == NULL)
-        return HTTP_BAD_REQUEST;
+    else {
+        core_dir_config *d = ap_get_core_module_config(r->per_dir_config);
+        int flags = d->allow_encoded_slashes && !d->decode_encoded_slashes ? PROXY_CANONENC_NOENCODEDSLASHENCODING : 0;
+
+        path = ap_proxy_canonenc_ex(r->pool, url, strlen(url), enc_path, flags,
+                                    r->proxyreq);
+        if (!path) {
+            return HTTP_BAD_REQUEST;
+        }
+        search = r->args;
+    }
+    /*
+     * If we have a raw control character or a ' ' in nocanon path or
+     * r->args, correct encoding was missed.
+     */
+    if (path == url && *ap_scan_vchar_obstext(path)) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(10418)
+                      "To be forwarded path contains control "
+                      "characters or spaces");
+        return HTTP_FORBIDDEN;
+    }
+    if (search && *ap_scan_vchar_obstext(search)) {
+         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(10406)
+                       "To be forwarded query string contains control "
+                       "characters or spaces");
+         return HTTP_FORBIDDEN;
+    }
 
     if (port != def_port)
          apr_snprintf(sport, sizeof(sport), ":%d", port);
@@ -126,11 +150,8 @@ static apr_off_t get_content_length(request_rec * r)
     if (r->main == NULL) {
         const char *clp = apr_table_get(r->headers_in, "Content-Length");
 
-        if (clp) {
-            char *errp;
-            if (apr_strtoff(&len, clp, &errp, 10) || *errp || len < 0) {
-                len = 0; /* parse error */
-            }
+        if (clp && !ap_parse_strict_length(&len, clp)) {
+            len = -1; /* parse error */
         }
     }
 
@@ -197,6 +218,9 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
 
     if (psf->io_buffer_size_set)
        maxsize = psf->io_buffer_size;
+    /* Override with worker setting if present */
+    if (conn->worker->s->io_buffer_size_set)
+       maxsize = conn->worker->s->io_buffer_size;
     if (maxsize > AJP_MAX_BUFFER_SZ)
        maxsize = AJP_MAX_BUFFER_SZ;
     else if (maxsize < AJP_MSG_BUFFER_SZ)
@@ -215,9 +239,8 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
     if (status != APR_SUCCESS) {
         conn->close = 1;
         ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r, APLOGNO(00868)
-                      "request failed to %pI (%s)",
-                      conn->worker->cp->addr,
-                      conn->worker->s->hostname);
+                      "request failed to %pI (%s:%hu)",
+                      conn->addr, conn->hostname, conn->port);
         if (status == AJP_EOVERFLOW)
             return HTTP_BAD_REQUEST;
         else {
@@ -244,19 +267,34 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
         return HTTP_INTERNAL_SERVER_ERROR;
     }
 
-    /* read the first bloc of data */
+    /* read the first block of data */
     input_brigade = apr_brigade_create(p, r->connection->bucket_alloc);
     tenc = apr_table_get(r->headers_in, "Transfer-Encoding");
-    if (tenc && (ap_cstr_casecmp(tenc, "chunked") == 0)) {
-        /* The AJP protocol does not want body data yet */
-        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(00870) "request is chunked");
+    if (tenc) {
+        if (ap_cstr_casecmp(tenc, "chunked") == 0) {
+            /* The AJP protocol does not want body data yet */
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(00870)
+                          "request is chunked");
+        }
+        else {
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(10396)
+                          "%s Transfer-Encoding is not supported",
+                          tenc);
+            /* We had a failure: Close connection to backend */
+            conn->close = 1;
+            return HTTP_INTERNAL_SERVER_ERROR;
+        }
     } else {
         /* Get client provided Content-Length header */
         content_length = get_content_length(r);
-        status = ap_get_brigade(r->input_filters, input_brigade,
-                                AP_MODE_READBYTES, APR_BLOCK_READ,
-                                maxsize - AJP_HEADER_SZ);
-
+        if (content_length < 0) {
+            status = APR_EINVAL;
+        }
+        else {
+            status = ap_get_brigade(r->input_filters, input_brigade,
+                                    AP_MODE_READBYTES, APR_BLOCK_READ,
+                                    maxsize - AJP_HEADER_SZ);
+        }
         if (status != APR_SUCCESS) {
             /* We had a failure: Close connection to backend */
             conn->close = 1;
@@ -297,9 +335,8 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
                 conn->close = 1;
                 apr_brigade_destroy(input_brigade);
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r, APLOGNO(00876)
-                              "send failed to %pI (%s)",
-                              conn->worker->cp->addr,
-                              conn->worker->s->hostname);
+                              "send failed to %pI (%s:%hu)",
+                              conn->addr, conn->hostname, conn->port);
                 /*
                  * It is fatal when we failed to send a (part) of the request
                  * body.
@@ -324,6 +361,7 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
              * Close it to clean things up.
              */
             conn->close = 1;
+            apr_brigade_destroy(input_brigade);
             return HTTP_BAD_REQUEST;
         }
     }
@@ -337,9 +375,8 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
         conn->close = 1;
         apr_brigade_destroy(input_brigade);
         ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r, APLOGNO(00878)
-                      "read response failed from %pI (%s)",
-                      conn->worker->cp->addr,
-                      conn->worker->s->hostname);
+                      "read response failed from %pI (%s:%hu)",
+                      conn->addr, conn->hostname, conn->port);
 
         /* If we had a successful cping/cpong and then a timeout
          * we assume it is a request that cause a back-end timeout,
@@ -347,6 +384,7 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
          */
         if (APR_STATUS_IS_TIMEUP(status) &&
                 conn->worker->s->ping_timeout_set) {
+            apr_table_setn(r->notes, "proxy_timedout", "1");
             return HTTP_GATEWAY_TIME_OUT;
         }
 
@@ -472,7 +510,7 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
                     /* If we are overriding the errors, we can't put the content
                      * of the page into the brigade.
                      */
-                    if (!conf->error_override || !ap_is_HTTP_ERROR(r->status)) {
+                    if (!ap_proxy_should_override(conf, r->status)) {
                         /* AJP13_SEND_BODY_CHUNK with zero length
                          * is explicit flush message
                          */
@@ -495,8 +533,7 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
                              * error status so that an underlying error (eg HTTP_NOT_FOUND)
                              * doesn't become an HTTP_OK.
                              */
-                            if (conf->error_override && !ap_is_HTTP_ERROR(r->status)
-                                    && ap_is_HTTP_ERROR(original_status)) {
+                            if (ap_proxy_should_override(conf, original_status)) {
                                 r->status = original_status;
                                 r->status_line = original_status_line;
                             }
@@ -545,7 +582,7 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
                 if (status != APR_SUCCESS) {
                     backend_failed = 1;
                 }
-                if (!conf->error_override || !ap_is_HTTP_ERROR(r->status)) {
+                if (!ap_proxy_should_override(conf, r->status)) {
                     e = apr_bucket_eos_create(r->connection->bucket_alloc);
                     APR_BRIGADE_INSERT_TAIL(output_brigade, e);
                     if (ap_pass_brigade(r->output_filters,
@@ -636,11 +673,10 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
     }
     else {
         ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(00892)
-                      "got response from %pI (%s)",
-                      conn->worker->cp->addr,
-                      conn->worker->s->hostname);
+                      "got response from %pI (%s:%hu)",
+                      conn->addr, conn->hostname, conn->port);
 
-        if (conf->error_override && ap_is_HTTP_ERROR(r->status)) {
+        if (ap_proxy_should_override(conf, r->status)) {
             /* clear r->status for override error, otherwise ErrorDocument
              * thinks that this is a recursive error, and doesn't find the
              * custom error page
@@ -660,15 +696,14 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
 
     if (backend_failed) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r, APLOGNO(00893)
-                      "dialog to %pI (%s) failed",
-                      conn->worker->cp->addr,
-                      conn->worker->s->hostname);
+                      "dialog to %pI (%s:%hu) failed",
+                      conn->addr, conn->hostname, conn->port);
         /*
          * If we already send data, signal a broken backend connection
          * upwards in the chain.
          */
         if (data_sent) {
-            ap_proxy_backend_broke(r, output_brigade);
+            ap_proxy_fill_error_brigade(r, HTTP_BAD_GATEWAY, output_brigade, -1);
         } else if (!send_body && (is_idempotent(r) == METHOD_IDEMPOTENT)) {
             /*
              * This is only non fatal when we have not send (parts) of a possible
@@ -704,12 +739,9 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
 
     /*
      * Ensure that we sent an EOS bucket thru the filter chain, if we already
-     * have sent some data. Maybe ap_proxy_backend_broke was called and added
-     * one to the brigade already (no longer making it empty). So we should
-     * not do this in this case.
+     * have sent some data.
      */
-    if (data_sent && !r->eos_sent && !r->connection->aborted
-            && APR_BRIGADE_EMPTY(output_brigade)) {
+    if (data_sent && !r->eos_sent && !r->connection->aborted) {
         e = apr_bucket_eos_create(r->connection->bucket_alloc);
         APR_BRIGADE_INSERT_TAIL(output_brigade, e);
     }
@@ -807,8 +839,8 @@ static int proxy_ajp_handler(request_rec *r, proxy_worker *worker,
             if (status != APR_SUCCESS) {
                 backend->close = 1;
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r, APLOGNO(00897)
-                              "cping/cpong failed to %pI (%s)",
-                              worker->cp->addr, worker->s->hostname);
+                              "cping/cpong failed to %pI (%s:%hu)",
+                              backend->addr, backend->hostname, backend->port);
                 status = HTTP_SERVICE_UNAVAILABLE;
                 retry++;
                 continue;
@@ -829,6 +861,7 @@ static void ap_proxy_http_register_hook(apr_pool_t *p)
 {
     proxy_hook_scheme_handler(proxy_ajp_handler, NULL, NULL, APR_HOOK_FIRST);
     proxy_hook_canon_handler(proxy_ajp_canon, NULL, NULL, APR_HOOK_FIRST);
+    APR_REGISTER_OPTIONAL_FN(ajp_handle_cping_cpong);
 }
 
 AP_DECLARE_MODULE(proxy_ajp) = {

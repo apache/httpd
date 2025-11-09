@@ -399,7 +399,7 @@ static apr_status_t setup_request(serf_request_t *request,
     return APR_SUCCESS;
 }
 
-/* TOOD: rewrite drive_serf to make it async */
+/* TODO: rewrite drive_serf to make it async */
 static int drive_serf(request_rec *r, serf_config_t *conf)
 {
     apr_status_t rv = 0;
@@ -418,6 +418,7 @@ static int drive_serf(request_rec *r, serf_config_t *conf)
      * from the main serf context in the async mpm mode.
      */
     apr_pool_create(&pool, r->pool);
+    apr_pool_tag(pool, "mod_serf_drive");
     if (strcmp(conf->url.scheme, "cluster") == 0) {
         int rc;
         ap_serf_cluster_provider_t *cp;
@@ -469,7 +470,7 @@ static int drive_serf(request_rec *r, serf_config_t *conf)
             return HTTP_INTERNAL_SERVER_ERROR;
         }
 
-        /* TOOD: restructure try all servers in the array !! */
+        /* TODO: restructure try all servers in the array !! */
         pick = ap_random_pick(0, servers->nelts-1);
         choice = APR_ARRAY_IDX(servers, pick, ap_serf_server_t *);
 
@@ -955,6 +956,7 @@ static int hb_list_servers(void *baton,
     const char *path = apr_table_get(params, "path");
 
     apr_pool_create(&tpool, r->pool);
+    apr_pool_tag(tpool, "mod_serf_hb");
 
     path = ap_server_root_relative(tpool, path);
 

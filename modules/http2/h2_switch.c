@@ -1,18 +1,19 @@
-/* Copyright 2015 greenbytes GmbH (https://www.greenbytes.de)
+/* Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * http://www.apache.org/licenses/LICENSE-2.0
- 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+ 
 #include <assert.h>
 
 #include <apr_strings.h>
@@ -24,14 +25,17 @@
 #include <http_config.h>
 #include <http_connection.h>
 #include <http_protocol.h>
+#include <http_ssl.h>
 #include <http_log.h>
 
 #include "h2_private.h"
+#include "h2.h"
 
 #include "h2_config.h"
-#include "h2_ctx.h"
-#include "h2_conn.h"
-#include "h2_h2.h"
+#include "h2_conn_ctx.h"
+#include "h2_c1.h"
+#include "h2_c2.h"
+#include "h2_protocol.h"
 #include "h2_switch.h"
 
 /*******************************************************************************
@@ -51,10 +55,13 @@ static int h2_protocol_propose(conn_rec *c, request_rec *r,
                                apr_array_header_t *proposals)
 {
     int proposed = 0;
-    int is_tls = h2_h2_is_tls(c);
-    const char **protos = is_tls? h2_tls_protos : h2_clear_protos;
+    int is_tls = ap_ssl_conn_is_ssl(c);
+    const char **protos = is_tls? h2_protocol_ids_tls : h2_protocol_ids_clear;
     
-    (void)s;
+    if (!h2_mpm_supported()) {
+        return DECLINED;
+    }
+    
     if (strcmp(AP_PROTOCOL_HTTP1, ap_get_protocol(c))) {
         /* We do not know how to switch from anything else but http/1.1.
          */
@@ -63,7 +70,7 @@ static int h2_protocol_propose(conn_rec *c, request_rec *r,
         return DECLINED;
     }
     
-    if (!h2_is_acceptable_connection(c, 0)) {
+    if (!h2_protocol_is_acceptable_c1(c, r, 0)) {
         ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, APLOGNO(03084)
                       "protocol propose: connection requirements not met");
         return DECLINED;
@@ -76,7 +83,7 @@ static int h2_protocol_propose(conn_rec *c, request_rec *r,
          */
         const char *p;
         
-        if (!h2_allows_h2_upgrade(c)) {
+        if (!h2_c1_can_upgrade(r)) {
             return DECLINED;
         }
          
@@ -97,9 +104,10 @@ static int h2_protocol_propose(conn_rec *c, request_rec *r,
         /* We also allow switching only for requests that have no body.
          */
         p = apr_table_get(r->headers_in, "Content-Length");
-        if (p && strcmp(p, "0")) {
+        if ((p && strcmp(p, "0"))
+            || (!p && apr_table_get(r->headers_in, "Transfer-Encoding"))) {
             ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(03087)
-                          "upgrade with content-length: %s, declined", p);
+                          "upgrade with body declined");
             return DECLINED;
         }
     }
@@ -119,14 +127,42 @@ static int h2_protocol_propose(conn_rec *c, request_rec *r,
     return proposed? DECLINED : OK;
 }
 
+#if AP_HAS_RESPONSE_BUCKETS
+static void remove_output_filters_below(ap_filter_t *f, ap_filter_type ftype)
+{
+    ap_filter_t *fnext;
+
+    while (f && f->frec->ftype < ftype) {
+        fnext = f->next;
+        ap_remove_output_filter(f);
+        f = fnext;
+    }
+}
+
+static void remove_input_filters_below(ap_filter_t *f, ap_filter_type ftype)
+{
+    ap_filter_t *fnext;
+
+    while (f && f->frec->ftype < ftype) {
+        fnext = f->next;
+        ap_remove_input_filter(f);
+        f = fnext;
+    }
+}
+#endif
+
 static int h2_protocol_switch(conn_rec *c, request_rec *r, server_rec *s,
                               const char *protocol)
 {
     int found = 0;
-    const char **protos = h2_h2_is_tls(c)? h2_tls_protos : h2_clear_protos;
+    const char **protos = ap_ssl_conn_is_ssl(c)? h2_protocol_ids_tls : h2_protocol_ids_clear;
     const char **p = protos;
     
     (void)s;
+    if (!h2_mpm_supported()) {
+        return DECLINED;
+    }
+
     while (*p) {
         if (!strcmp(*p, protocol)) {
             found = 1;
@@ -136,37 +172,43 @@ static int h2_protocol_switch(conn_rec *c, request_rec *r, server_rec *s,
     }
     
     if (found) {
-        h2_ctx *ctx = h2_ctx_get(c, 1);
-        
         ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, c,
                       "switching protocol to '%s'", protocol);
-        h2_ctx_protocol_set(ctx, protocol);
-        h2_ctx_server_set(ctx, s);
-        
+        h2_conn_ctx_create_for_c1(c, s, protocol);
+
         if (r != NULL) {
             apr_status_t status;
+#if AP_HAS_RESPONSE_BUCKETS
+            /* Switching in the middle of a request means that
+             * we have to send out the response to this one in h2
+             * format. So we need to take over the connection
+             * and remove all old filters with type up to the
+             * CONNEDCTION/NETWORK ones.
+             */
+            remove_input_filters_below(r->input_filters, AP_FTYPE_CONNECTION);
+            remove_output_filters_below(r->output_filters, AP_FTYPE_CONNECTION);
+#else
             /* Switching in the middle of a request means that
              * we have to send out the response to this one in h2
              * format. So we need to take over the connection
              * right away.
              */
             ap_remove_input_filter_byhandle(r->input_filters, "http_in");
-            ap_remove_input_filter_byhandle(r->input_filters, "reqtimeout");
             ap_remove_output_filter_byhandle(r->output_filters, "HTTP_HEADER");
-            
+#endif
             /* Ok, start an h2_conn on this one. */
-            h2_ctx_server_set(ctx, r->server);
-            status = h2_conn_setup(ctx, r->connection, r);
+            status = h2_c1_setup(c, r, s);
+            
             if (status != APR_SUCCESS) {
                 ap_log_rerror(APLOG_MARK, APLOG_DEBUG, status, r, APLOGNO(03088)
                               "session setup");
-                return status;
+                h2_conn_ctx_detach(c);
+                return !OK;
             }
             
-            h2_conn_run(ctx, c);
-            return DONE;
+            h2_c1_run(c);
         }
-        return DONE;
+        return OK;
     }
     
     return DECLINED;
@@ -174,7 +216,13 @@ static int h2_protocol_switch(conn_rec *c, request_rec *r, server_rec *s,
 
 static const char *h2_protocol_get(const conn_rec *c)
 {
-    return h2_ctx_protocol_get(c);
+    h2_conn_ctx_t *ctx;
+
+    if (c->master) {
+        c = c->master;
+    }
+    ctx = h2_conn_ctx_get(c);
+    return ctx? ctx->protocol : NULL;
 }
 
 void h2_switch_register_hooks(void)

@@ -90,6 +90,9 @@ Package=<4>
     Project_Dep_Name httpd
     End Project Dependency
     Begin Project Dependency
+    Project_Dep_Name mod_apreq
+    End Project Dependency
+    Begin Project Dependency
     Project_Dep_Name ApacheMonitor
     End Project Dependency
     Begin Project Dependency
@@ -193,9 +196,6 @@ Package=<4>
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name mod_charset_lite
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name mod_crypto
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name mod_data
@@ -313,6 +313,9 @@ Package=<4>
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name mod_proxy_scgi
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mod_proxy_uwsgi
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name mod_proxy_wstunnel
@@ -513,7 +516,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "apr_dbd_freetds"=".\srclib\apr-util\dbd\apr_dbd_freetds.dsp" - Package Owner=<4>
+Project: "apr_dbd_freetds"=".\srclib\apr-util\dbd\unsupported\apr_dbd_freetds.dsp" - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -903,6 +906,30 @@ Package=<4>
 
 ###############################################################################
 
+Project: "libapreq"=.\libapreq.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name libapr
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libapriconv
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libaprutil
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libhttpd
+    End Project Dependency
+}}}
+
+###############################################################################
+
 Project: "libhttpd"=.\libhttpd.dsp - Package Owner=<4>
 
 Package=<5>
@@ -1029,6 +1056,30 @@ Package=<4>
 
 ###############################################################################
 
+Project: "mod_apreq"=.\modules\apreq\mod_apreq.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name libapr
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libaprutil
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libhttpd
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libapreq
+    End Project Dependency
+}}}
+
+###############################################################################
+
 Project: "mod_asis"=.\modules\generators\mod_asis.dsp - Package Owner=<4>
 
 Package=<5>
@@ -1047,7 +1098,6 @@ Package=<4>
     Project_Dep_Name libhttpd
     End Project Dependency
 }}}
-
 
 ###############################################################################
 
@@ -1496,6 +1546,27 @@ Package=<4>
 ###############################################################################
 
 Project: "mod_autoindex"=.\modules\generators\mod_autoindex.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name libapr
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libaprutil
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libhttpd
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "mod_brotli"=.\modules\filters\mod_brotli.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -2506,6 +2577,27 @@ Package=<4>
 
 ###############################################################################
 
+Project: "mod_log_json"=.\modules\loggers\mod_log_json.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name libapr
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libaprutil
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libhttpd
+    End Project Dependency
+}}}
+
+###############################################################################
+
 Project: "mod_logio"=.\modules\loggers\mod_logio.dsp - Package Owner=<4>
 
 Package=<5>
@@ -2549,6 +2641,27 @@ Package=<4>
 ###############################################################################
 
 Project: "mod_macro"=.\modules\core\mod_macro.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name libapr
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libaprutil
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libhttpd
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "mod_md"=.\modules\md\mod_md.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -2895,6 +3008,30 @@ Package=<4>
 ###############################################################################
 
 Project: "mod_proxy_scgi"=.\modules\proxy\mod_proxy_scgi.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name libapr
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libaprutil
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libhttpd
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mod_proxy
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "mod_proxy_uwsgi"=.\modules\proxy\mod_proxy_uwsgi.dsp - Package Owner=<4>
 
 Package=<5>
 {{{

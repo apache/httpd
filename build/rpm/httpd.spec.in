@@ -97,16 +97,6 @@ a filter to rewrite HTML links within web content when used within
 a reverse proxy environment. The mod_xml2enc module provides
 enhanced charset/internationalisation support for mod_proxy_html.
 
-%package -n mod_socache_dc
-Group: System Environment/Daemons
-Summary: Distcache shared object cache module for the Apache HTTP server
-BuildRequires: distcache-devel
-Requires: httpd = %{version}-%{release}, httpd-mmn = %{mmn}
-
-%description -n mod_socache_dc
-The mod_socache_dc module for the Apache HTTP server allows the shared
-object cache to use the distcache shared caching mechanism.
-
 %package -n mod_ssl
 Group: System Environment/Daemons
 Summary: SSL/TLS module for the Apache HTTP server
@@ -156,9 +146,10 @@ rm -rf srclib/{apr,apr-util,pcre}
         --enable-pie \
         --with-pcre \
         --enable-mods-shared=all \
-        --enable-ssl --with-ssl --enable-socache-dc --enable-bucketeer \
+        --enable-ssl --with-ssl --enable-bucketeer \
         --enable-case-filter --enable-case-filter-in \
         --enable-policy --enable-crypto \
+        --enable-ssl-ct \
         --disable-imagemap
 
 make %{?_smp_mflags}
@@ -377,6 +368,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/httpd/modules/mod_mime_magic.so
 %{_libdir}/httpd/modules/mod_mime.so
 %{_libdir}/httpd/modules/mod_mpm_event.so
+%{_libdir}/httpd/modules/mod_mpm_motorz.so
 %{_libdir}/httpd/modules/mod_mpm_prefork.so
 %{_libdir}/httpd/modules/mod_mpm_simple.so
 %{_libdir}/httpd/modules/mod_mpm_worker.so
@@ -391,7 +383,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/httpd/modules/mod_proxy_ftp.so
 %{_libdir}/httpd/modules/mod_proxy_http.so
 %{_libdir}/httpd/modules/mod_proxy_scgi.so
+%{_libdir}/httpd/modules/mod_proxy_uwsgi.so
 %{_libdir}/httpd/modules/mod_proxy_wstunnel.so
+%{_libdir}/httpd/modules/mod_proxy_hcheck.so
 %{_libdir}/httpd/modules/mod_proxy.so
 %{_libdir}/httpd/modules/mod_ratelimit.so
 %{_libdir}/httpd/modules/mod_reflector.so
@@ -409,11 +403,13 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/httpd/modules/mod_slotmem_shm.so
 %{_libdir}/httpd/modules/mod_socache_dbm.so
 %{_libdir}/httpd/modules/mod_socache_memcache.so
+%{_libdir}/httpd/modules/mod_socache_redis.so
 %{_libdir}/httpd/modules/mod_socache_shmcb.so
 %{_libdir}/httpd/modules/mod_speling.so
 %{_libdir}/httpd/modules/mod_status.so
 %{_libdir}/httpd/modules/mod_substitute.so
 %{_libdir}/httpd/modules/mod_suexec.so
+%{_libdir}/httpd/modules/mod_syslog.so
 %{_libdir}/httpd/modules/mod_unique_id.so
 %{_libdir}/httpd/modules/mod_unixd.so
 %{_libdir}/httpd/modules/mod_userdir.so
@@ -485,13 +481,12 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/httpd/modules/mod_proxy_html.so
 %{_libdir}/httpd/modules/mod_xml2enc.so
 
-%files -n mod_socache_dc
-%defattr(-,root,root)
-%{_libdir}/httpd/modules/mod_socache_dc.so
-
 %files -n mod_ssl
 %defattr(-,root,root)
 %{_libdir}/httpd/modules/mod_ssl.so
+%{_libdir}/httpd/modules/mod_ssl_ct.so
+%{_sbindir}/ctlogconfig
+%{_mandir}/man8/ctlogconfig.8*
 %config(noreplace) %{_sysconfdir}/httpd/conf/original/extra/httpd-ssl.conf
 %config(noreplace) %{_sysconfdir}/httpd/conf/extra/httpd-ssl.conf
 %attr(0700,apache,root) %dir %{_localstatedir}/cache/mod_ssl

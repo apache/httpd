@@ -22,6 +22,11 @@
 #include "apr_thread_proc.h"    /* for RLIMIT stuff */
 #include "apr_random.h"
 
+#include "apr_version.h"
+#if APR_MAJOR_VERSION < 2
+#include "apu_version.h"
+#endif
+
 #define APR_WANT_IOVEC
 #define APR_WANT_STRFUNC
 #define APR_WANT_MEMFUNC
@@ -33,10 +38,10 @@
 #include "http_core.h"
 #include "http_protocol.h" /* For index_of_response().  Grump. */
 #include "http_request.h"
+#include "http_ssl.h"
 #include "http_vhost.h"
 #include "http_main.h"     /* For the default_handler below... */
 #include "http_log.h"
-#include "util_md5.h"
 #include "http_connection.h"
 #include "apr_buckets.h"
 #include "util_filter.h"
@@ -49,6 +54,8 @@
 #include "mod_proxy.h"
 #include "ap_listen.h"
 #include "ap_provider.h"
+#include "ap_regex.h"
+#include "core.h"
 
 #include "mod_so.h" /* for ap_find_loaded_module_symbol */
 
@@ -61,11 +68,13 @@
 
 /* LimitRequestBody handling */
 #define AP_LIMIT_REQ_BODY_UNSET         ((apr_off_t) -1)
-#define AP_DEFAULT_LIMIT_REQ_BODY       ((apr_off_t) 0)
+#define AP_DEFAULT_LIMIT_REQ_BODY       ((apr_off_t) 1<<30) /* 1GB */
 
 /* LimitXMLRequestBody handling */
 #define AP_LIMIT_UNSET                  ((long) -1)
 #define AP_DEFAULT_LIMIT_XML_BODY       ((apr_size_t)1000000)
+/* Hard limit for ap_escape_html2() */
+#define AP_MAX_LIMIT_XML_BODY           ((apr_size_t)(APR_SIZE_MAX / 6 - 1))
 
 #define AP_MIN_SENDFILE_BYTES           (256)
 
@@ -77,13 +86,13 @@
 /* valid in core-conf, but not in runtime r->used_path_info */
 #define AP_ACCEPT_PATHINFO_UNSET 3
 
-#define AP_CONTENT_MD5_OFF   0
-#define AP_CONTENT_MD5_ON    1
-#define AP_CONTENT_MD5_UNSET 2
+#define AP_FLUSH_MAX_THRESHOLD 65535
+#define AP_FLUSH_MAX_PIPELINED 4
 
 APR_HOOK_STRUCT(
     APR_HOOK_LINK(get_mgmt_items)
     APR_HOOK_LINK(insert_network_bucket)
+    APR_HOOK_LINK(get_pollfd_from_conn)
 )
 
 AP_IMPLEMENT_HOOK_RUN_ALL(int, get_mgmt_items,
@@ -94,6 +103,11 @@ AP_IMPLEMENT_HOOK_RUN_FIRST(apr_status_t, insert_network_bucket,
                             (conn_rec *c, apr_bucket_brigade *bb,
                              apr_socket_t *socket),
                             (c, bb, socket), AP_DECLINED)
+
+AP_IMPLEMENT_HOOK_RUN_FIRST(apr_status_t, get_pollfd_from_conn,
+                            (conn_rec *c, struct apr_pollfd_t *pfd,
+                             apr_interval_time_t *ptimeout),
+                              (c, pfd, ptimeout), APR_ENOTIMPL)
 
 /* Server core module... This module provides support for really basic
  * server operations, including options and commands which control the
@@ -112,7 +126,6 @@ AP_IMPLEMENT_HOOK_RUN_FIRST(apr_status_t, insert_network_bucket,
 
 /* Handles for core filters */
 AP_DECLARE_DATA ap_filter_rec_t *ap_subreq_core_filter_handle;
-AP_DECLARE_DATA ap_filter_rec_t *ap_request_core_filter_handle;
 AP_DECLARE_DATA ap_filter_rec_t *ap_core_output_filter_handle;
 AP_DECLARE_DATA ap_filter_rec_t *ap_content_length_filter_handle;
 AP_DECLARE_DATA ap_filter_rec_t *ap_core_input_filter_handle;
@@ -123,8 +136,13 @@ AP_DECLARE_DATA int ap_document_root_check = 1;
 /* magic pointer for ErrorDocument xxx "default" */
 static char errordocument_default;
 
+/* Global state allocated out of pconf: variables here MUST be
+ * cleared/reset in reset_config(), a pconf cleanup, to avoid the
+ * variable getting reused after the pool is cleared. */
 static apr_array_header_t *saved_server_config_defines = NULL;
 static apr_table_t *server_config_defined_vars = NULL;
+AP_DECLARE_DATA const char *ap_runtime_dir = NULL;
+static const char *core_state_dir;
 
 AP_DECLARE_DATA int ap_main_state = AP_SQ_MS_INITIAL_STARTUP;
 AP_DECLARE_DATA int ap_run_mode = AP_SQ_RM_UNKNOWN;
@@ -134,6 +152,8 @@ typedef struct {
     apr_ipsubnet_t *subnet;
     struct ap_logconf log;
 } conn_log_config;
+
+static apr_socket_t *dummy_socket;
 
 static void *create_core_dir_config(apr_pool_t *a, char *dir)
 {
@@ -148,7 +168,6 @@ static void *create_core_dir_config(apr_pool_t *a, char *dir)
     conf->override = OR_UNSET|OR_NONE;
     conf->override_opts = OPT_UNSET | OPT_ALL | OPT_SYM_OWNER | OPT_MULTI;
 
-    conf->content_md5 = AP_CONTENT_MD5_UNSET;
     conf->accept_path_info = AP_ACCEPT_PATHINFO_UNSET;
 
     conf->use_canonical_name = USE_CANONICAL_NAME_UNSET;
@@ -275,10 +294,6 @@ static void *merge_core_dir_configs(apr_pool_t *a, void *basev, void *newv)
         conf->hostname_lookups = new->hostname_lookups;
     }
 
-    if (new->content_md5 != AP_CONTENT_MD5_UNSET) {
-        conf->content_md5 = new->content_md5;
-    }
-
     if (new->accept_path_info != AP_ACCEPT_PATHINFO_UNSET) {
         conf->accept_path_info = new->accept_path_info;
     }
@@ -396,6 +411,13 @@ static void *merge_core_dir_configs(apr_pool_t *a, void *basev, void *newv)
     if (new->enable_sendfile != ENABLE_SENDFILE_UNSET) {
         conf->enable_sendfile = new->enable_sendfile;
     }
+ 
+    if (new->read_buf_size) {
+        conf->read_buf_size = new->read_buf_size;
+    }
+    else {
+        conf->read_buf_size = base->read_buf_size;
+    }
 
     if (new->allow_encoded_slashes_set) {
         conf->allow_encoded_slashes = new->allow_encoded_slashes;
@@ -472,14 +494,18 @@ static void *create_core_server_config(apr_pool_t *a, server_rec *s)
         apr_table_setn(conf->accf_map, "http", "data");
         apr_table_setn(conf->accf_map, "https", "data");
 #endif
+
+        conf->flush_max_threshold = AP_FLUSH_MAX_THRESHOLD;
+        conf->flush_max_pipelined = AP_FLUSH_MAX_PIPELINED;
     }
-    /* pcalloc'ed - we have NULL's/0's
-    else ** is_virtual ** {
-        conf->ap_document_root = NULL;
-        conf->access_name = NULL;
-        conf->accf_map = NULL;
+    else {
+        /* Use main ErrorLogFormat while the vhost is loading */
+        core_server_config *main_conf =
+            ap_get_core_module_config(ap_server_conf->module_config);
+        conf->error_log_format = main_conf->error_log_format;
+
+        conf->flush_max_pipelined = -1;
     }
-     */
 
     /* initialization, no special case for global context */
 
@@ -501,6 +527,8 @@ static void *create_core_server_config(apr_pool_t *a, server_rec *s)
     conf->protocols = apr_array_make(a, 5, sizeof(const char *));
     conf->protocols_honor_order = -1;
     conf->async_filter = 0;
+    conf->strict_host_check= AP_CORE_CONFIG_UNSET; 
+    conf->merge_slashes    = AP_CORE_CONFIG_UNSET; 
 
     return (void *)conf;
 }
@@ -583,10 +611,21 @@ static void *merge_core_server_configs(apr_pool_t *p, void *basev, void *virtv)
     conf->protocols_honor_order = ((virt->protocols_honor_order < 0) ?
                                        base->protocols_honor_order :
                                        virt->protocols_honor_order);
+
     conf->async_filter = ((virt->async_filter_set) ?
                                        virt->async_filter :
                                        base->async_filter);
     conf->async_filter_set = base->async_filter_set || virt->async_filter_set;
+
+    conf->flush_max_threshold = (virt->flush_max_threshold)
+                                  ? virt->flush_max_threshold
+                                  : base->flush_max_threshold;
+    conf->flush_max_pipelined = (virt->flush_max_pipelined >= 0)
+                                  ? virt->flush_max_pipelined
+                                  : base->flush_max_pipelined;
+
+    AP_CORE_MERGE_FLAG(strict_host_check, conf, base, virt);
+    AP_CORE_MERGE_FLAG(merge_slashes, conf, base, virt);
 
     return conf;
 }
@@ -725,6 +764,7 @@ void ap_core_reorder_directories(apr_pool_t *p, server_rec *s)
 
     /* we have to allocate tmp space to do a stable sort */
     apr_pool_create(&tmp, p);
+    apr_pool_tag(tmp, "core_reorder_directories");
     sortbin = apr_palloc(tmp, sec_dir->nelts * sizeof(*sortbin));
     for (i = 0; i < nelts; ++i) {
         sortbin[i].orig_index = i;
@@ -767,7 +807,7 @@ AP_DECLARE(int) ap_allow_overrides(request_rec *r)
 
 /*
  * Optional function coming from mod_authn_core, used for
- * retrieving the type of autorization
+ * retrieving the type of authorization
  */
 static APR_OPTIONAL_FN_TYPE(authn_ap_auth_type) *authn_ap_auth_type;
 
@@ -1249,6 +1289,13 @@ AP_DECLARE(apr_off_t) ap_get_limit_req_body(const request_rec *r)
     return d->limit_req_body;
 }
 
+AP_DECLARE(apr_size_t) ap_get_read_buf_size(const request_rec *r)
+{
+    core_dir_config *d = ap_get_core_module_config(r->per_dir_config);
+
+    return d->read_buf_size ? d->read_buf_size : AP_IOBUFSIZE;
+}
+
 
 /*****************************************************************
  *
@@ -1285,8 +1332,7 @@ AP_DECLARE(const char *) ap_check_cmd_context(cmd_parms *cmd,
                            " cannot occur within <VirtualHost> section", NULL);
     }
 
-    if ((forbidden & (NOT_IN_LIMIT | NOT_IN_DIR_LOC_FILE))
-        && cmd->limited != -1) {
+    if ((forbidden & NOT_IN_DIR_CONTEXT) && cmd->limited != -1) {
         return apr_pstrcat(cmd->pool, cmd->cmd->name, gt,
                            " cannot occur within <Limit> or <LimitExcept> "
                            "section", NULL);
@@ -1297,14 +1343,13 @@ AP_DECLARE(const char *) ap_check_cmd_context(cmd_parms *cmd,
                             " cannot occur within htaccess files", NULL);
     }
 
-    if ((forbidden & NOT_IN_DIR_LOC_FILE) == NOT_IN_DIR_LOC_FILE) {
+    if ((forbidden & NOT_IN_DIR_CONTEXT) == NOT_IN_DIR_CONTEXT) {
         if (cmd->path != NULL) {
             return apr_pstrcat(cmd->pool, cmd->cmd->name, gt,
-                            " cannot occur within <Directory/Location/Files> "
-                            "section", NULL);
+                            " cannot occur within directory context", NULL);
         }
         if (cmd->cmd->req_override & EXEC_ON_READ) {
-            /* EXEC_ON_READ must be NOT_IN_DIR_LOC_FILE, if not, it will
+            /* EXEC_ON_READ must be NOT_IN_DIR_CONTEXT, if not, it will
              * (deliberately) segfault below in the individual tests...
              */
             return NULL;
@@ -1340,7 +1385,7 @@ static const char *set_access_name(cmd_parms *cmd, void *dummy,
     void *sconf = cmd->server->module_config;
     core_server_config *conf = ap_get_core_module_config(sconf);
 
-    const char *err = ap_check_cmd_context(cmd, NOT_IN_DIR_LOC_FILE);
+    const char *err = ap_check_cmd_context(cmd, NOT_IN_DIR_CONTEXT);
     if (err != NULL) {
         return err;
     }
@@ -1391,14 +1436,25 @@ AP_DECLARE(const char *) ap_resolve_env(apr_pool_t *p, const char * word)
         if (*s == '$') {
             if (s[1] == '{' && (e = ap_strchr_c(s+2, '}'))) {
                 char *name = apr_pstrmemdup(p, s+2, e-s-2);
+                char *dflt = ap_strstr(name, "?=");
+                if (dflt) {
+                    /* Default value for when var is not defined */
+                    *dflt = '\0';
+                    dflt += 2;
+                }
                 word = NULL;
                 if (server_config_defined_vars)
                     word = apr_table_get(server_config_defined_vars, name);
                 if (!word)
-                    word = getenv(name);
+                    word = apr_pstrdup(p, getenv(name));
                 if (word) {
                     current->string = word;
                     current->len = strlen(word);
+                    outlen += current->len;
+                }
+                else if (dflt) {
+                    current->string = dflt;
+                    current->len = strlen(dflt);
                     outlen += current->len;
                 }
                 else {
@@ -1441,12 +1497,16 @@ AP_DECLARE(const char *) ap_resolve_env(apr_pool_t *p, const char * word)
     return res_buf;
 }
 
-static int reset_config_defines(void *dummy)
+/* pconf cleanup - clear global variables set from config here. */
+static apr_status_t reset_config(void *dummy)
 {
     ap_server_config_defines = saved_server_config_defines;
     saved_server_config_defines = NULL;
     server_config_defined_vars = NULL;
-    return OK;
+    core_state_dir = NULL;
+    ap_runtime_dir = NULL;
+
+    return APR_SUCCESS;
 }
 
 /*
@@ -1481,8 +1541,7 @@ static const char *set_define(cmd_parms *cmd, void *dummy,
         init_config_defines(cmd->pool);
     }
     if (!ap_exists_config_define(name)) {
-        const char **newv = (const char **)apr_array_push(ap_server_config_defines);
-        *newv = name;
+        *(const char **)apr_array_push(ap_server_config_defines) = name;
     }
     if (value) {
         if (!server_config_defined_vars) {
@@ -1498,7 +1557,7 @@ static const char *unset_define(cmd_parms *cmd, void *dummy,
                                 const char *name)
 {
     int i;
-    char **defines;
+    const char **defines;
     if (cmd->parent && ap_cstr_casecmp(cmd->parent->directive, "<VirtualHost")) {
         return apr_pstrcat(cmd->pool, cmd->cmd->name, " is not valid in ",
                                       cmd->parent->directive, " context", NULL);
@@ -1512,10 +1571,10 @@ static const char *unset_define(cmd_parms *cmd, void *dummy,
         init_config_defines(cmd->pool);
     }
 
-    defines = (char **)ap_server_config_defines->elts;
+    defines = (const char **)ap_server_config_defines->elts;
     for (i = 0; i < ap_server_config_defines->nelts; i++) {
         if (strcmp(defines[i], name) == 0) {
-            defines[i] = *(char **)apr_array_pop(ap_server_config_defines);
+            defines[i] = *(const char **)apr_array_pop(ap_server_config_defines);
             break;
         }
     }
@@ -1578,12 +1637,12 @@ static const char *set_gprof_dir(cmd_parms *cmd, void *dummy, const char *arg)
     void *sconf = cmd->server->module_config;
     core_server_config *conf = ap_get_core_module_config(sconf);
 
-    const char *err = ap_check_cmd_context(cmd, NOT_IN_DIR_LOC_FILE);
+    const char *err = ap_check_cmd_context(cmd, NOT_IN_DIR_CONTEXT);
     if (err != NULL) {
         return err;
     }
 
-    conf->gprof_dir = arg;
+    conf->gprof_dir = apr_pstrdup(cmd->pool, arg);
     return NULL;
 }
 #endif /*GPROF*/
@@ -1614,7 +1673,7 @@ static const char *set_document_root(cmd_parms *cmd, void *dummy,
     void *sconf = cmd->server->module_config;
     core_server_config *conf = ap_get_core_module_config(sconf);
 
-    const char *err = ap_check_cmd_context(cmd, NOT_IN_DIR_LOC_FILE);
+    const char *err = ap_check_cmd_context(cmd, NOT_IN_DIR_CONTEXT);
     if (err != NULL) {
         return err;
     }
@@ -1843,8 +1902,10 @@ static const char *set_override(cmd_parms *cmd, void *d_, const char *l)
         }
         else if (!ap_cstr_casecmp(k, "Options")) {
             d->override |= OR_OPTIONS;
-            if (v)
-                set_allow_opts(cmd, &(d->override_opts), v);
+            if (v) {
+                if ((err = set_allow_opts(cmd, &(d->override_opts), v)) != NULL)
+                    return err;
+            }
             else
                 d->override_opts = OPT_ALL;
         }
@@ -1858,7 +1919,10 @@ static const char *set_override(cmd_parms *cmd, void *d_, const char *l)
             d->override |= OR_INDEXES;
         }
         else if (!ap_cstr_casecmp(w, "Nonfatal")) {
-            if (!ap_cstr_casecmp(v, "Override")) {
+            if (!v) {
+                return apr_pstrcat(cmd->pool, "=Override, =Unknown or =All expected after ", w, NULL);
+            }
+            else if (!ap_cstr_casecmp(v, "Override")) {
                 d->override |= NONFATAL_OVERRIDE;
             }
             else if (!ap_cstr_casecmp(v, "Unknown")) {
@@ -1926,7 +1990,12 @@ static const char *set_qualify_redirect_url(cmd_parms *cmd, void *d_, int flag)
 
     return NULL;
 }
-
+static const char *set_core_server_flag(cmd_parms *cmd, void *s_, int flag)
+{
+    core_server_config *conf =
+        ap_get_core_module_config(cmd->server->module_config);
+    return ap_set_flag_slot(cmd, conf, flag);
+}
 static const char *set_override_list(cmd_parms *cmd, void *d_, int argc, char *const argv[])
 {
     core_dir_config *d = d_;
@@ -2183,6 +2252,9 @@ static const char *set_etag_bits(cmd_parms *cmd, void *mconfig,
         else if (ap_cstr_casecmp(token, "INode") == 0) {
             bit = ETAG_INODE;
         }
+        else if (ap_cstr_casecmp(token, "Digest") == 0) {
+            bit = ETAG_DIGEST;
+        }
         else {
             return apr_pstrcat(cmd->pool, "Unknown keyword '",
                                token, "' for ", cmd->cmd->name,
@@ -2278,6 +2350,64 @@ static const char *set_enable_sendfile(cmd_parms *cmd, void *d_,
     return NULL;
 }
 
+static const char *set_read_buf_size(cmd_parms *cmd, void *d_,
+                                     const char *arg)
+{
+    core_dir_config *d = d_;
+    apr_off_t size;
+    char *end;
+
+    if (apr_strtoff(&size, arg, &end, 10)
+            || *end || size < 0 || size > APR_UINT32_MAX)
+        return apr_pstrcat(cmd->pool,
+                           "parameter must be a number between 0 and "
+                           APR_STRINGIFY(APR_UINT32_MAX) "): ",
+                           arg, NULL);
+
+    d->read_buf_size = (apr_size_t)size;
+
+    return NULL;
+}
+
+static const char *set_flush_max_threshold(cmd_parms *cmd, void *d_,
+                                           const char *arg)
+{
+    core_server_config *conf =
+        ap_get_core_module_config(cmd->server->module_config);
+    apr_off_t size;
+    char *end;
+
+    if (apr_strtoff(&size, arg, &end, 10)
+            || *end || size < 0 || size > APR_UINT32_MAX)
+        return apr_pstrcat(cmd->pool,
+                           "parameter must be a number between 0 and "
+                           APR_STRINGIFY(APR_UINT32_MAX) "): ",
+                           arg, NULL);
+
+    conf->flush_max_threshold = (apr_size_t)size;
+
+    return NULL;
+}
+
+static const char *set_flush_max_pipelined(cmd_parms *cmd, void *d_,
+                                           const char *arg)
+{
+    core_server_config *conf =
+        ap_get_core_module_config(cmd->server->module_config);
+    apr_off_t num;
+    char *end;
+
+    if (apr_strtoff(&num, arg, &end, 10)
+            || *end || num < -1 || num > APR_INT32_MAX)
+        return apr_pstrcat(cmd->pool,
+                           "parameter must be a number between -1 and "
+                           APR_STRINGIFY(APR_INT32_MAX) ": ",
+                           arg, NULL);
+
+    conf->flush_max_pipelined = (apr_int32_t)num;
+
+    return NULL;
+}
 
 /*
  * Report a missing-'>' syntax error.
@@ -2332,6 +2462,12 @@ AP_CORE_DECLARE_NONSTD(const char *) ap_limit_section(cmd_parms *cmd,
             /* method has not been registered yet, but resource restriction
              * is always checked before method handling, so register it.
              */
+            if (cmd->pool == cmd->temp_pool) {
+                /* In .htaccess, we can't globally register new methods. */
+                return apr_psprintf(cmd->pool, "Could not register method '%s' "
+                                   "for %s from .htaccess configuration",
+                                    method, cmd->cmd->name);
+            }
             methnum = ap_method_register(cmd->pool,
                                          apr_pstrdup(cmd->pool, method));
         }
@@ -2381,12 +2517,12 @@ static const char *dirsection(cmd_parms *cmd, void *mconfig, const char *arg)
     const char *endp = ap_strrchr_c(arg, '>');
     int old_overrides = cmd->override;
     char *old_path = cmd->path;
+    ap_regex_t *old_regex = cmd->regex;
     core_dir_config *conf;
     ap_conf_vector_t *new_dir_conf = ap_create_per_dir_config(cmd->pool);
-    ap_regex_t *r = NULL;
     const command_rec *thiscmd = cmd->cmd;
 
-    const char *err = ap_check_cmd_context(cmd, NOT_IN_DIR_LOC_FILE);
+    const char *err = ap_check_cmd_context(cmd, NOT_IN_DIR_CONTEXT);
     if (err != NULL) {
         return err;
     }
@@ -2406,31 +2542,43 @@ static const char *dirsection(cmd_parms *cmd, void *mconfig, const char *arg)
 
     if (!strcmp(cmd->path, "~")) {
         cmd->path = ap_getword_conf(cmd->pool, &arg);
-        if (!cmd->path)
+        if (!cmd->path) {
             return "<Directory ~ > block must specify a path";
-        r = ap_pregcomp(cmd->pool, cmd->path, AP_REG_EXTENDED|USE_ICASE);
-        if (!r) {
+        }
+        cmd->regex = ap_pregcomp(cmd->pool, cmd->path, AP_REG_EXTENDED|USE_ICASE);
+        if (!cmd->regex) {
             return "Regex could not be compiled";
         }
     }
     else if (thiscmd->cmd_data) { /* <DirectoryMatch> */
-        r = ap_pregcomp(cmd->pool, cmd->path, AP_REG_EXTENDED|USE_ICASE);
-        if (!r) {
+        cmd->regex = ap_pregcomp(cmd->pool, cmd->path, AP_REG_EXTENDED|USE_ICASE);
+        if (!cmd->regex) {
             return "Regex could not be compiled";
         }
     }
-    else if (strcmp(cmd->path, "/") != 0)
-    {
+    else if (strcmp(cmd->path, "/") != 0) {
+        int run_mode = ap_state_query(AP_SQ_RUN_MODE);
+        apr_status_t rv;
         char *newpath;
+
+        cmd->regex = NULL;
 
         /*
          * Ensure that the pathname is canonical, and append the trailing /
          */
-        apr_status_t rv = apr_filepath_merge(&newpath, NULL, cmd->path,
-                                             APR_FILEPATH_TRUENAME, cmd->pool);
+        rv = apr_filepath_merge(&newpath, NULL, cmd->path,
+                                APR_FILEPATH_TRUENAME, cmd->pool);
         if (rv != APR_SUCCESS && rv != APR_EPATHWILD) {
             return apr_pstrcat(cmd->pool, "<Directory \"", cmd->path,
                                "\"> path is invalid.", NULL);
+        }
+
+        if (run_mode == AP_SQ_RM_CONFIG_TEST &&
+            !ap_is_directory(cmd->temp_pool, cmd->path)) {
+            ap_log_perror(APLOG_MARK, APLOG_STARTUP, 0,
+                          cmd->temp_pool, APLOGNO(10234)
+                          "Warning: <Directory \"%s\"> does not exist or is not a directory",
+                          cmd->path);
         }
 
         cmd->path = newpath;
@@ -2446,13 +2594,13 @@ static const char *dirsection(cmd_parms *cmd, void *mconfig, const char *arg)
     if (errmsg != NULL)
         return errmsg;
 
-    conf->r = r;
+    conf->r = cmd->regex;
     conf->d = cmd->path;
     conf->d_is_fnmatch = (apr_fnmatch_test(conf->d) != 0);
 
-    if (r) {
+    if (cmd->regex) {
         conf->refs = apr_array_make(cmd->pool, 8, sizeof(char *));
-        ap_regname(r, conf->refs, AP_REG_MATCH, 1);
+        ap_regname(cmd->regex, conf->refs, AP_REG_MATCH, 1);
     }
 
     /* Make this explicit - the "/" root has 0 elements, that is, we
@@ -2473,6 +2621,7 @@ static const char *dirsection(cmd_parms *cmd, void *mconfig, const char *arg)
 
     cmd->path = old_path;
     cmd->override = old_overrides;
+    cmd->regex = old_regex;
 
     return NULL;
 }
@@ -2483,11 +2632,11 @@ static const char *urlsection(cmd_parms *cmd, void *mconfig, const char *arg)
     const char *endp = ap_strrchr_c(arg, '>');
     int old_overrides = cmd->override;
     char *old_path = cmd->path;
+    ap_regex_t *old_regex = cmd->regex;
     core_dir_config *conf;
-    ap_regex_t *r = NULL;
     const command_rec *thiscmd = cmd->cmd;
     ap_conf_vector_t *new_url_conf = ap_create_per_dir_config(cmd->pool);
-    const char *err = ap_check_cmd_context(cmd, NOT_IN_DIR_LOC_FILE);
+    const char *err = ap_check_cmd_context(cmd, NOT_IN_DIR_CONTEXT);
     if (err != NULL) {
         return err;
     }
@@ -2506,17 +2655,20 @@ static const char *urlsection(cmd_parms *cmd, void *mconfig, const char *arg)
     cmd->override = OR_ALL|ACCESS_CONF;
 
     if (thiscmd->cmd_data) { /* <LocationMatch> */
-        r = ap_pregcomp(cmd->pool, cmd->path, AP_REG_EXTENDED);
-        if (!r) {
+        cmd->regex = ap_pregcomp(cmd->pool, cmd->path, AP_REG_EXTENDED);
+        if (!cmd->regex) {
             return "Regex could not be compiled";
         }
     }
     else if (!strcmp(cmd->path, "~")) {
         cmd->path = ap_getword_conf(cmd->pool, &arg);
-        r = ap_pregcomp(cmd->pool, cmd->path, AP_REG_EXTENDED);
-        if (!r) {
+        cmd->regex = ap_pregcomp(cmd->pool, cmd->path, AP_REG_EXTENDED);
+        if (!cmd->regex) {
             return "Regex could not be compiled";
         }
+    }
+    else {
+        cmd->regex = NULL;
     }
 
     /* initialize our config and fetch it */
@@ -2529,11 +2681,11 @@ static const char *urlsection(cmd_parms *cmd, void *mconfig, const char *arg)
 
     conf->d = apr_pstrdup(cmd->pool, cmd->path);     /* No mangling, please */
     conf->d_is_fnmatch = apr_fnmatch_test(conf->d) != 0;
-    conf->r = r;
+    conf->r = cmd->regex;
 
-    if (r) {
+    if (cmd->regex) {
         conf->refs = apr_array_make(cmd->pool, 8, sizeof(char *));
-        ap_regname(r, conf->refs, AP_REG_MATCH, 1);
+        ap_regname(cmd->regex, conf->refs, AP_REG_MATCH, 1);
     }
 
     ap_add_per_url_conf(cmd->server, new_url_conf);
@@ -2545,6 +2697,7 @@ static const char *urlsection(cmd_parms *cmd, void *mconfig, const char *arg)
 
     cmd->path = old_path;
     cmd->override = old_overrides;
+    cmd->regex = old_regex;
 
     return NULL;
 }
@@ -2555,8 +2708,8 @@ static const char *filesection(cmd_parms *cmd, void *mconfig, const char *arg)
     const char *endp = ap_strrchr_c(arg, '>');
     int old_overrides = cmd->override;
     char *old_path = cmd->path;
+    ap_regex_t *old_regex = cmd->regex;
     core_dir_config *conf;
-    ap_regex_t *r = NULL;
     const command_rec *thiscmd = cmd->cmd;
     ap_conf_vector_t *new_file_conf = ap_create_per_dir_config(cmd->pool);
     const char *err = ap_check_cmd_context(cmd,
@@ -2583,20 +2736,23 @@ static const char *filesection(cmd_parms *cmd, void *mconfig, const char *arg)
     }
 
     if (thiscmd->cmd_data) { /* <FilesMatch> */
-        r = ap_pregcomp(cmd->pool, cmd->path, AP_REG_EXTENDED|USE_ICASE);
-        if (!r) {
+        cmd->regex = ap_pregcomp(cmd->pool, cmd->path, AP_REG_EXTENDED|USE_ICASE);
+        if (!cmd->regex) {
             return "Regex could not be compiled";
         }
     }
     else if (!strcmp(cmd->path, "~")) {
         cmd->path = ap_getword_conf(cmd->pool, &arg);
-        r = ap_pregcomp(cmd->pool, cmd->path, AP_REG_EXTENDED|USE_ICASE);
-        if (!r) {
+        cmd->regex = ap_pregcomp(cmd->pool, cmd->path, AP_REG_EXTENDED|USE_ICASE);
+        if (!cmd->regex) {
             return "Regex could not be compiled";
         }
     }
     else {
         char *newpath;
+
+        cmd->regex = NULL;
+
         /* Ensure that the pathname is canonical, but we
          * can't test the case/aliases without a fixed path */
         if (apr_filepath_merge(&newpath, "", cmd->path,
@@ -2616,11 +2772,11 @@ static const char *filesection(cmd_parms *cmd, void *mconfig, const char *arg)
 
     conf->d = cmd->path;
     conf->d_is_fnmatch = apr_fnmatch_test(conf->d) != 0;
-    conf->r = r;
+    conf->r = cmd->regex;
 
-    if (r) {
+    if (cmd->regex) {
         conf->refs = apr_array_make(cmd->pool, 8, sizeof(char *));
-        ap_regname(r, conf->refs, AP_REG_MATCH, 1);
+        ap_regname(cmd->regex, conf->refs, AP_REG_MATCH, 1);
     }
 
     ap_add_file_conf(cmd->pool, (core_dir_config *)mconfig, new_file_conf);
@@ -2632,6 +2788,7 @@ static const char *filesection(cmd_parms *cmd, void *mconfig, const char *arg)
 
     cmd->path = old_path;
     cmd->override = old_overrides;
+    cmd->regex = old_regex;
 
     return NULL;
 }
@@ -2768,43 +2925,57 @@ static module *find_module(server_rec *s, const char *name)
     return found;
 }
 
+/* Callback function type used by start_cond_section. */
+typedef int (*test_cond_section_fn)(cmd_parms *cmd, const char *arg);
 
-static const char *start_ifmod(cmd_parms *cmd, void *mconfig, const char *arg)
+/* Implementation of <IfXXXXX>-style conditional sections.  Callback
+ * to test condition must be in cmd->info, matching function type
+ * test_cond_section_fn. */
+static const char *start_cond_section(cmd_parms *cmd, void *mconfig, const char *arg)
 {
     const char *endp = ap_strrchr_c(arg, '>');
-    int not = (arg[0] == '!');
-    module *found;
+    int result, not = (arg[0] == '!');
+    test_cond_section_fn testfn = (test_cond_section_fn)cmd->info;
+    const char *arg1;
 
     if (endp == NULL) {
         return unclosed_directive(cmd);
     }
 
-    arg = apr_pstrndup(cmd->temp_pool, arg, endp - arg);
+    arg = apr_pstrmemdup(cmd->temp_pool, arg, endp - arg);
 
     if (not) {
         arg++;
     }
 
-    if (!arg[0]) {
+    arg1 = ap_getword_conf(cmd->temp_pool, &arg);
+
+    if (!arg1[0]) {
         return missing_container_arg(cmd);
     }
 
-    found = find_module(cmd->server, arg);
+    result = testfn(cmd, arg1);
 
-    if ((!not && found) || (not && !found)) {
+    if ((!not && result) || (not && !result)) {
         ap_directive_t *parent = NULL;
         ap_directive_t *current = NULL;
         const char *retval;
 
         retval = ap_build_cont_config(cmd->pool, cmd->temp_pool, cmd,
-                                      &current, &parent, "<IfModule");
+                                      &current, &parent, cmd->cmd->name);
         *(ap_directive_t **)mconfig = current;
         return retval;
     }
     else {
         *(ap_directive_t **)mconfig = NULL;
-        return ap_soak_end_container(cmd, "<IfModule");
+        return ap_soak_end_container(cmd, cmd->cmd->name);
     }
+}
+
+/* Callback to implement <IfModule> test for start_cond_section. */
+static int test_ifmod_section(cmd_parms *cmd, const char *arg)
+{
+    return find_module(cmd->server, arg) != NULL;
 }
 
 AP_DECLARE(int) ap_exists_config_define(const char *name)
@@ -2812,86 +2983,36 @@ AP_DECLARE(int) ap_exists_config_define(const char *name)
     return ap_array_str_contains(ap_server_config_defines, name);
 }
 
-static const char *start_ifdefine(cmd_parms *cmd, void *dummy, const char *arg)
+static int test_ifdefine_section(cmd_parms *cmd, const char *arg)
 {
-    const char *endp;
-    int defined;
-    int not = 0;
-
-    endp = ap_strrchr_c(arg, '>');
-    if (endp == NULL) {
-        return unclosed_directive(cmd);
-    }
-
-    arg = apr_pstrndup(cmd->temp_pool, arg, endp - arg);
-
-    if (arg[0] == '!') {
-        not = 1;
-        arg++;
-    }
-
-    if (!arg[0]) {
-        return missing_container_arg(cmd);
-    }
-
-    defined = ap_exists_config_define(arg);
-    if ((!not && defined) || (not && !defined)) {
-        ap_directive_t *parent = NULL;
-        ap_directive_t *current = NULL;
-        const char *retval;
-
-        retval = ap_build_cont_config(cmd->pool, cmd->temp_pool, cmd,
-                                      &current, &parent, "<IfDefine");
-        *(ap_directive_t **)dummy = current;
-        return retval;
-    }
-    else {
-        *(ap_directive_t **)dummy = NULL;
-        return ap_soak_end_container(cmd, "<IfDefine");
-    }
+    return ap_exists_config_define(arg);
 }
 
-static const char *start_iffile(cmd_parms *cmd, void *dummy, const char *arg)
+static int test_iffile_section(cmd_parms *cmd, const char *arg)
 {
-    apr_finfo_t sb;
-    const char *endp;
-    int file_exists = 0;
-    int not = 0;
     const char *relative;
+    apr_finfo_t sb;
 
-    endp = ap_strrchr_c(arg, '>');
-    if (endp == NULL) {
-        return unclosed_directive(cmd);
-    }
-
-    arg = apr_pstrndup(cmd->temp_pool, arg, endp - arg);
-
-    if (arg[0] == '!') {
-        not = 1;
-        arg++;
-    }
-
-    if (!arg[0]) {
-        return missing_container_arg(cmd);
-    }
-
+    /*
+     * At least on Windows, if the path we are testing is not valid (for example
+     * a path on a USB key that is not plugged), 'ap_server_root_relative()' will
+     * return NULL. In such a case, consider that the file is not there and that
+     * the section should be skipped.
+     */
     relative = ap_server_root_relative(cmd->temp_pool, arg);
-    file_exists = (apr_stat(&sb, relative, 0, cmd->pool) == APR_SUCCESS);
+    return (relative &&
+           (apr_stat(&sb, relative, APR_FINFO_TYPE, cmd->temp_pool) == APR_SUCCESS));
+}
 
-    if ((!not && file_exists) || (not && !file_exists)) {
-        ap_directive_t *parent = NULL;
-        ap_directive_t *current = NULL;
-        const char *retval;
+static int test_ifdirective_section(cmd_parms *cmd, const char *arg)
+{
+    return ap_exists_directive(cmd->temp_pool, arg);
+}
 
-        retval = ap_build_cont_config(cmd->pool, cmd->temp_pool, cmd,
-                                      &current, &parent, "<IfFile");
-        *(ap_directive_t **)dummy = current;
-        return retval;
-    }
-    else {
-        *(ap_directive_t **)dummy = NULL;
-        return ap_soak_end_container(cmd, "<IfFile");
-    }
+static int test_ifsection_section(cmd_parms *cmd, const char *arg)
+{
+    const char *name = apr_pstrcat(cmd->temp_pool, "<", arg, NULL);
+    return ap_exists_directive(cmd->temp_pool, name);
 }
 
 /* httpd.conf commands... beginning with the <VirtualHost> business */
@@ -2947,6 +3068,58 @@ static const char *virtualhost_section(cmd_parms *cmd, void *dummy,
     cmd->server = main_server;
 
     return errmsg;
+}
+
+static const char *set_regex_default_options(cmd_parms *cmd,
+                                             void *dummy,
+                                             const char *arg)
+{
+    const command_rec *thiscmd = cmd->cmd;
+    int cflags, cflag;
+
+    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
+    if (err != NULL) {
+        return err;
+    }
+
+    cflags = ap_regcomp_get_default_cflags();
+    while (*arg) {
+        const char *name = ap_getword_conf(cmd->pool, &arg);
+        int how = 0;
+
+        if (strcasecmp(name, "none") == 0) {
+            cflags = 0;
+            continue;
+        }
+
+        if (*name == '+') {
+            name++;
+            how = +1;
+        }
+        else if (*name == '-') {
+            name++;
+            how = -1;
+        }
+
+        cflag = ap_regcomp_default_cflag_by_name(name);
+        if (!cflag) {
+            return apr_psprintf(cmd->pool, "%s: option '%s' unknown",
+                                thiscmd->name, name);
+        }
+
+        if (how > 0) {
+            cflags |= cflag;
+        }
+        else if (how < 0) {
+            cflags &= ~cflag;
+        }
+        else {
+            cflags = cflag;
+        }
+    }
+    ap_regcomp_set_default_cflags(cflags);
+
+    return NULL;
 }
 
 static const char *set_server_alias(cmd_parms *cmd, void *dummy,
@@ -3008,7 +3181,7 @@ AP_DECLARE(void) ap_set_server_protocol(server_rec* s, const char* proto)
 static const char *set_protocol(cmd_parms *cmd, void *dummy,
                                 const char *arg)
 {
-    const char *err = ap_check_cmd_context(cmd, NOT_IN_DIR_LOC_FILE);
+    const char *err = ap_check_cmd_context(cmd, NOT_IN_DIR_CONTEXT);
     core_server_config *conf =
         ap_get_core_module_config(cmd->server->module_config);
     char* proto;
@@ -3032,8 +3205,7 @@ static const char *set_server_string_slot(cmd_parms *cmd, void *dummy,
     int offset = (int)(long)cmd->info;
     char *struct_ptr = (char *)cmd->server;
 
-    const char *err = ap_check_cmd_context(cmd,
-                                           NOT_IN_DIR_LOC_FILE);
+    const char *err = ap_check_cmd_context(cmd, NOT_IN_DIR_CONTEXT);
     if (err != NULL) {
         return err;
     }
@@ -3052,7 +3224,7 @@ static const char *set_server_string_slot(cmd_parms *cmd, void *dummy,
 
 static const char *server_hostname_port(cmd_parms *cmd, void *dummy, const char *arg)
 {
-    const char *err = ap_check_cmd_context(cmd, NOT_IN_DIR_LOC_FILE);
+    const char *err = ap_check_cmd_context(cmd, NOT_IN_DIR_CONTEXT);
     const char *portstr, *part;
     char *scheme;
     int port;
@@ -3154,9 +3326,27 @@ static const char *set_runtime_dir(cmd_parms *cmd, void *dummy, const char *arg)
     return NULL;
 }
 
+static const char *set_state_dir(cmd_parms *cmd, void *dummy, const char *arg)
+{
+    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
+
+    if (err != NULL) {
+        return err;
+    }
+
+    if ((apr_filepath_merge((char**)&core_state_dir, NULL,
+                            ap_server_root_relative(cmd->temp_pool, arg),
+                            APR_FILEPATH_TRUENAME, cmd->pool) != APR_SUCCESS)
+        || !ap_is_directory(cmd->temp_pool, core_state_dir)) {
+        return "DefaultStateDir must be a valid directory, absolute or relative to ServerRoot";
+    }
+
+    return NULL;
+}
+
 static const char *set_timeout(cmd_parms *cmd, void *dummy, const char *arg)
 {
-    const char *err = ap_check_cmd_context(cmd, NOT_IN_DIR_LOC_FILE);
+    const char *err = ap_check_cmd_context(cmd, NOT_IN_DIR_CONTEXT);
 
     if (err != NULL) {
         return err;
@@ -3215,7 +3405,7 @@ static const char *set_hostname_lookups(cmd_parms *cmd, void *d_,
 static const char *set_serverpath(cmd_parms *cmd, void *dummy,
                                   const char *arg)
 {
-    const char *err = ap_check_cmd_context(cmd, NOT_IN_DIR_LOC_FILE);
+    const char *err = ap_check_cmd_context(cmd, NOT_IN_DIR_CONTEXT);
 
     if (err != NULL) {
         return err;
@@ -3223,14 +3413,6 @@ static const char *set_serverpath(cmd_parms *cmd, void *dummy,
 
     cmd->server->path = arg;
     cmd->server->pathlen = (int)strlen(arg);
-    return NULL;
-}
-
-static const char *set_content_md5(cmd_parms *cmd, void *d_, int arg)
-{
-    core_dir_config *d = d_;
-
-    d->content_md5 = arg ? AP_CONTENT_MD5_ON : AP_CONTENT_MD5_OFF;
     return NULL;
 }
 
@@ -3647,7 +3829,7 @@ static const char *set_serv_tokens(cmd_parms *cmd, void *dummy,
 static const char *set_limit_req_line(cmd_parms *cmd, void *dummy,
                                       const char *arg)
 {
-    const char *err = ap_check_cmd_context(cmd, NOT_IN_DIR_LOC_FILE);
+    const char *err = ap_check_cmd_context(cmd, NOT_IN_DIR_CONTEXT);
     int lim;
 
     if (err != NULL) {
@@ -3667,7 +3849,7 @@ static const char *set_limit_req_line(cmd_parms *cmd, void *dummy,
 static const char *set_limit_req_fieldsize(cmd_parms *cmd, void *dummy,
                                            const char *arg)
 {
-    const char *err = ap_check_cmd_context(cmd, NOT_IN_DIR_LOC_FILE);
+    const char *err = ap_check_cmd_context(cmd, NOT_IN_DIR_CONTEXT);
     int lim;
 
     if (err != NULL) {
@@ -3688,7 +3870,7 @@ static const char *set_limit_req_fieldsize(cmd_parms *cmd, void *dummy,
 static const char *set_limit_req_fields(cmd_parms *cmd, void *dummy,
                                         const char *arg)
 {
-    const char *err = ap_check_cmd_context(cmd, NOT_IN_DIR_LOC_FILE);
+    const char *err = ap_check_cmd_context(cmd, NOT_IN_DIR_CONTEXT);
     int lim;
 
     if (err != NULL) {
@@ -3730,6 +3912,11 @@ static const char *set_limit_xml_req_body(cmd_parms *cmd, void *conf_,
     conf->limit_xml_body = atol(arg);
     if (conf->limit_xml_body < 0)
         return "LimitXMLRequestBody requires a non-negative integer.";
+
+    /* zero is AP_MAX_LIMIT_XML_BODY (implicitly) */
+    if ((apr_size_t)conf->limit_xml_body > AP_MAX_LIMIT_XML_BODY)
+        return apr_psprintf(cmd->pool, "LimitXMLRequestBody must not exceed "
+                            "%" APR_SIZE_T_FMT, AP_MAX_LIMIT_XML_BODY);
 
     return NULL;
 }
@@ -3819,6 +4006,8 @@ AP_DECLARE(apr_size_t) ap_get_limit_xml_body(const request_rec *r)
     conf = ap_get_core_module_config(r->per_dir_config);
     if (conf->limit_xml_body == AP_LIMIT_UNSET)
         return AP_DEFAULT_LIMIT_XML_BODY;
+    if (conf->limit_xml_body == 0)
+        return AP_MAX_LIMIT_XML_BODY;
 
     return (apr_size_t)conf->limit_xml_body;
 }
@@ -3912,24 +4101,26 @@ static const char *set_recursion_limit(cmd_parms *cmd, void *dummy,
 
 static void log_backtrace(const request_rec *r)
 {
-    const request_rec *top = r;
+    if (APLOGrdebug(r)) {
+        const request_rec *top = r;
 
-    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(00121)
-                  "r->uri = %s", r->uri ? r->uri : "(unexpectedly NULL)");
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(00121)
+                      "r->uri = %s", r->uri ? r->uri : "(unexpectedly NULL)");
 
-    while (top && (top->prev || top->main)) {
-        if (top->prev) {
-            top = top->prev;
-            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(00122)
-                          "redirected from r->uri = %s",
-                          top->uri ? top->uri : "(unexpectedly NULL)");
-        }
+        while (top && (top->prev || top->main)) {
+            if (top->prev) {
+                top = top->prev;
+                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(00122)
+                              "redirected from r->uri = %s",
+                              top->uri ? top->uri : "(unexpectedly NULL)");
+            }
 
-        if (!top->prev && top->main) {
-            top = top->main;
-            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(00123)
-                          "subrequested from r->uri = %s",
-                          top->uri ? top->uri : "(unexpectedly NULL)");
+            if (!top->prev && top->main) {
+                top = top->main;
+                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(00123)
+                              "subrequested from r->uri = %s",
+                              top->uri ? top->uri : "(unexpectedly NULL)");
+            }
         }
     }
 }
@@ -3955,12 +4146,15 @@ AP_DECLARE(int) ap_is_recursion_limit_exceeded(const request_rec *r)
         if (top->prev) {
             if (++redirects >= rlimit) {
                 /* uuh, too much. */
+                /* As we check before a new internal redirect, top->prev->uri
+                 * should be the original request causing this.
+                 */
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(00124)
-                              "Request exceeded the limit of %d internal "
+                              "Request (%s) exceeded the limit of %d internal "
                               "redirects due to probable configuration error. "
                               "Use 'LimitInternalRecursion' to increase the "
                               "limit if necessary. Use 'LogLevel debug' to get "
-                              "a backtrace.", rlimit);
+                              "a backtrace.", top->prev->uri, rlimit);
 
                 /* post backtrace */
                 log_backtrace(r);
@@ -3975,12 +4169,15 @@ AP_DECLARE(int) ap_is_recursion_limit_exceeded(const request_rec *r)
         if (!top->prev && top->main) {
             if (++subreqs >= slimit) {
                 /* uuh, too much. */
+                /* As we check before a new subrequest, top->main->uri should
+                 * be the original request causing this.
+                 */
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(00125)
-                              "Request exceeded the limit of %d subrequest "
+                              "Request (%s) exceeded the limit of %d subrequest "
                               "nesting levels due to probable configuration "
                               "error. Use 'LimitInternalRecursion' to increase "
                               "the limit if necessary. Use 'LogLevel debug' to "
-                              "get a backtrace.", slimit);
+                              "get a backtrace.", top->main->uri, slimit);
 
                 /* post backtrace */
                 log_backtrace(r);
@@ -4025,7 +4222,7 @@ static const char *set_protocols(cmd_parms *cmd, void *dummy,
     core_server_config *conf =
     ap_get_core_module_config(cmd->server->module_config);
     const char **np;
-    const char *err = ap_check_cmd_context(cmd, NOT_IN_DIR_LOC_FILE);
+    const char *err = ap_check_cmd_context(cmd, NOT_IN_DIR_CONTEXT);
 
     if (err) {
         return err;
@@ -4042,7 +4239,7 @@ static const char *set_protocols_honor_order(cmd_parms *cmd, void *dummy,
 {
     core_server_config *conf =
     ap_get_core_module_config(cmd->server->module_config);
-    const char *err = ap_check_cmd_context(cmd, NOT_IN_DIR_LOC_FILE);
+    const char *err = ap_check_cmd_context(cmd, NOT_IN_DIR_CONTEXT);
     
     if (err) {
         return err;
@@ -4108,7 +4305,7 @@ static const char *set_async_filter(cmd_parms *cmd, void *dummy,
 {
     core_server_config *conf =
     ap_get_core_module_config(cmd->server->module_config);
-    const char *err = ap_check_cmd_context(cmd, NOT_IN_DIR_LOC_FILE);
+    const char *err = ap_check_cmd_context(cmd, NOT_IN_DIR_CONTEXT);
 
     if (err) {
         return err;
@@ -4477,6 +4674,25 @@ static const char *set_merge_trailers(cmd_parms *cmd, void *dummy, int arg)
     return NULL;
 }
 
+#ifdef WIN32
+static const char *set_unc_list(cmd_parms *cmd, void *d_, int argc, char *const argv[])
+{
+    core_server_config *sconf = ap_get_core_module_config(cmd->server->module_config);
+    int i;
+    const char *err;
+
+    if ((err = ap_check_cmd_context(cmd, NOT_IN_VIRTUALHOST)) != NULL)
+        return err;
+
+    sconf->unc_list = apr_array_make(cmd->pool, argc, sizeof(char *));
+
+    for (i = 0; i < argc; i++) {
+        *(char **)apr_array_push(sconf->unc_list) = apr_pstrdup(cmd->pool, argv[i]);
+    }
+
+    return NULL;
+}
+#endif
 /* Note --- ErrorDocument will now work from .htaccess files.
  * The AllowOverride of Fileinfo allows webmasters to turn it off
  */
@@ -4503,12 +4719,21 @@ AP_INIT_RAW_ARGS("<LimitExcept", ap_limit_section, (void*)1,
                  OR_LIMIT | OR_AUTHCFG,
   "Container for authentication directives to be applied when any HTTP "
   "method other than those specified is used to access the resource"),
-AP_INIT_TAKE1("<IfModule", start_ifmod, NULL, EXEC_ON_READ | OR_ALL,
+AP_INIT_RAW_ARGS("<IfModule", start_cond_section, (void *)test_ifmod_section,
+              EXEC_ON_READ | OR_ALL,
   "Container for directives based on existence of specified modules"),
-AP_INIT_TAKE1("<IfDefine", start_ifdefine, NULL, EXEC_ON_READ | OR_ALL,
+AP_INIT_RAW_ARGS("<IfDefine", start_cond_section, (void *)test_ifdefine_section,
+              EXEC_ON_READ | OR_ALL,
   "Container for directives based on existence of command line defines"),
-AP_INIT_TAKE1("<IfFile", start_iffile, NULL, EXEC_ON_READ | OR_ALL,
+AP_INIT_RAW_ARGS("<IfFile", start_cond_section, (void *)test_iffile_section,
+              EXEC_ON_READ | OR_ALL,
   "Container for directives based on existence of files on disk"),
+AP_INIT_RAW_ARGS("<IfDirective", start_cond_section, (void *)test_ifdirective_section,
+              EXEC_ON_READ | OR_ALL,
+  "Container for directives based on existence of named directive"),
+AP_INIT_RAW_ARGS("<IfSection", start_cond_section, (void *)test_ifsection_section,
+              EXEC_ON_READ | OR_ALL,
+  "Container for directives based on existence of named section"),
 AP_INIT_RAW_ARGS("<DirectoryMatch", dirsection, (void*)1, RSRC_CONF,
   "Container for directives affecting resources located in the "
   "specified directories"),
@@ -4564,6 +4789,17 @@ AP_INIT_TAKE1("EnableMMAP", set_enable_mmap, NULL, OR_FILEINFO,
   "Controls whether memory-mapping may be used to read files"),
 AP_INIT_TAKE1("EnableSendfile", set_enable_sendfile, NULL, OR_FILEINFO,
   "Controls whether sendfile may be used to transmit files"),
+AP_INIT_TAKE1("ReadBufferSize", set_read_buf_size, NULL, ACCESS_CONF|RSRC_CONF,
+  "Size (in bytes) of the memory buffers used to read data"),
+AP_INIT_TAKE1("FlushMaxThreshold", set_flush_max_threshold, NULL, RSRC_CONF,
+  "Maximum threshold above which pending data are flushed to the network"),
+AP_INIT_TAKE1("FlushMaxPipelined", set_flush_max_pipelined, NULL, RSRC_CONF,
+  "Maximum number of pipelined responses (pending) above which they are "
+  "flushed to the network"),
+#ifdef WIN32
+AP_INIT_TAKE_ARGV("UNCList", set_unc_list, NULL, RSRC_CONF|EXEC_ON_READ,
+  "Controls what UNC hosts may be looked up"),
+#endif
 
 /* Old server config file commands */
 
@@ -4588,6 +4824,8 @@ AP_INIT_TAKE1("ServerRoot", set_server_root, NULL, RSRC_CONF | EXEC_ON_READ,
   "Common directory of server-related files (logs, confs, etc.)"),
 AP_INIT_TAKE1("DefaultRuntimeDir", set_runtime_dir, NULL, RSRC_CONF | EXEC_ON_READ,
   "Common directory for run-time files (shared memory, locks, etc.)"),
+AP_INIT_TAKE1("DefaultStateDir", set_state_dir, NULL, RSRC_CONF | EXEC_ON_READ,
+  "Common directory for persistent state (databases, long-lived caches, etc.)"),
 AP_INIT_TAKE12("ErrorLog", set_errorlog,
   (void *)APR_OFFSETOF(server_rec, error_fname), RSRC_CONF,
   "The filename of the error log"),
@@ -4599,8 +4837,6 @@ AP_INIT_TAKE1("ServerPath", set_serverpath, NULL, RSRC_CONF,
   "The pathname the server can be reached at"),
 AP_INIT_TAKE1("Timeout", set_timeout, NULL, RSRC_CONF,
   "Timeout duration (sec)"),
-AP_INIT_FLAG("ContentDigest", set_content_md5, NULL, OR_OPTIONS,
-  "whether or not to send a Content-MD5 header with each request"),
 AP_INIT_TAKE1("UseCanonicalName", set_use_canonical_name, NULL,
   RSRC_CONF|ACCESS_CONF,
   "How to work out the ServerName : Port when constructing URLs"),
@@ -4677,6 +4913,9 @@ AP_INIT_TAKE12("RLimitNPROC", no_set_limit, NULL,
    OR_ALL, "soft/hard limits for max number of processes per uid"),
 #endif
 
+AP_INIT_RAW_ARGS("RegexDefaultOptions", set_regex_default_options, NULL, RSRC_CONF,
+                 "default options for regexes (prefixed by '+' to add, '-' to del)"),
+
 /* internal recursion stopper */
 AP_INIT_TAKE12("LimitInternalRecursion", set_recursion_limit, NULL, RSRC_CONF,
               "maximum recursion depth of internal redirects and subrequests"),
@@ -4689,7 +4928,10 @@ AP_INIT_TAKE2("CGIVar", set_cgi_var, NULL, OR_FILEINFO,
 AP_INIT_FLAG("QualifyRedirectURL", set_qualify_redirect_url, NULL, OR_FILEINFO,
              "Controls whether the REDIRECT_URL environment variable is fully "
              "qualified"),
-
+AP_INIT_FLAG("StrictHostCheck", set_core_server_flag, 
+             (void *)APR_OFFSETOF(core_server_config, strict_host_check),  
+             RSRC_CONF,
+             "Controls whether a hostname match is required"),
 AP_INIT_TAKE1("ForceType", ap_set_string_slot_lower,
        (void *)APR_OFFSETOF(core_dir_config, mime_type), OR_FILEINFO,
      "a mime type that overrides other configured type"),
@@ -4758,6 +5000,10 @@ AP_INIT_TAKE1("ProtocolsHonorOrder", set_protocols_honor_order, NULL, RSRC_CONF,
 AP_INIT_TAKE1("AsyncFilter", set_async_filter, NULL, RSRC_CONF,
               "'network', 'connection' (default) or 'request' to limit the "
               "types of filters that support asynchronous handling"),
+AP_INIT_FLAG("MergeSlashes", set_core_server_flag, 
+             (void *)APR_OFFSETOF(core_server_config, merge_slashes),  
+             RSRC_CONF,
+             "Controls whether consecutive slashes in the URI path are merged"),
 { NULL }
 };
 
@@ -4779,7 +5025,7 @@ AP_DECLARE_NONSTD(int) ap_core_translate(request_rec *r)
     }
     if (!r->uri || ((r->uri[0] != '/') && strcmp(r->uri, "*"))) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(00126)
-                     "Invalid URI in request %s", r->the_request);
+                     "Invalid URI in request '%s' '%s'", r->uri, r->the_request);
         return HTTP_BAD_REQUEST;
     }
 
@@ -4848,7 +5094,7 @@ static int core_override_type(request_rec *r)
     /* Check for overrides with ForceType / SetHandler
      */
     if (conf->mime_type && strcmp(conf->mime_type, "none"))
-        ap_set_content_type(r, (char*) conf->mime_type);
+        ap_set_content_type_ex(r, (char*) conf->mime_type, 1);
 
     if (conf->expr_handler) { 
         const char *err;
@@ -4904,18 +5150,8 @@ static int default_handler(request_rec *r)
     int errstatus;
     apr_file_t *fd = NULL;
     apr_status_t status;
-    /* XXX if/when somebody writes a content-md5 filter we either need to
-     *     remove this support or coordinate when to use the filter vs.
-     *     when to use this code
-     *     The current choice of when to compute the md5 here matches the 1.3
-     *     support fairly closely (unlike 1.3, we don't handle computing md5
-     *     when the charset is translated).
-     */
-    int bld_content_md5;
 
     d = (core_dir_config *)ap_get_core_module_config(r->per_dir_config);
-    bld_content_md5 = (d->content_md5 == AP_CONTENT_MD5_ON)
-                      && r->output_filters->frec->ftype != AP_FTYPE_RESOURCE;
 
     ap_allow_standard_methods(r, MERGE_ALLOW, M_GET, M_OPTIONS, M_POST, -1);
 
@@ -4989,13 +5225,9 @@ static int default_handler(request_rec *r)
 
         ap_update_mtime(r, r->finfo.mtime);
         ap_set_last_modified(r);
-        ap_set_etag(r);
+        ap_set_etag_fd(r, fd);
         ap_set_accept_ranges(r);
         ap_set_content_length(r, r->finfo.size);
-        if (bld_content_md5) {
-            apr_table_setn(r->headers_out, "Content-MD5",
-                           ap_md5digest(r->pool, fd));
-        }
 
         bb = apr_brigade_create(r->pool, c->bucket_alloc);
 
@@ -5011,12 +5243,19 @@ static int default_handler(request_rec *r)
                 (void)apr_bucket_file_enable_mmap(e, 0);
             }
 #endif
+#if APR_MAJOR_VERSION > 1 || (APU_MAJOR_VERSION == 1 && APU_MINOR_VERSION >= 6)
+            if (d->read_buf_size) {
+                apr_bucket_file_set_buf_size(e, d->read_buf_size);
+            }
+#endif
         }
 
         e = apr_bucket_eos_create(c->bucket_alloc);
         APR_BRIGADE_INSERT_TAIL(bb, e);
 
         status = ap_pass_brigade(r->output_filters, bb);
+        apr_brigade_cleanup(bb);
+
         if (status == APR_SUCCESS
             || r->status != HTTP_OK
             || c->aborted) {
@@ -5116,8 +5355,9 @@ static int core_pre_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *ptem
 
     if (!saved_server_config_defines)
         init_config_defines(pconf);
-    apr_pool_cleanup_register(pconf, NULL, reset_config_defines,
-                              apr_pool_cleanup_null);
+    apr_pool_cleanup_register(pconf, NULL, reset_config, apr_pool_cleanup_null);
+
+    ap_regcomp_set_default_cflags(AP_REG_DEFAULT);
 
     mpm_common_pre_config(pconf);
 
@@ -5136,6 +5376,7 @@ static int core_post_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *pte
     set_banner(pconf);
     ap_setup_make_content_type(pconf);
     ap_setup_auth_internal(ptemp);
+    ap_setup_ssl_optional_fns(pconf);
     if (!sys_privileges) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, 0, NULL, APLOGNO(00136)
                      "Server MUST relinquish startup privileges before "
@@ -5203,7 +5444,9 @@ AP_DECLARE(void **) ap_get_request_note(request_rec *r, apr_size_t note_num)
 
 AP_DECLARE(apr_socket_t *) ap_get_conn_socket(conn_rec *c)
 {
-    return ap_get_core_module_config(c->conn_config);
+    conn_config_t *conn_config = ap_get_core_module_config(c->conn_config);
+
+    return AP_CORE_DEFAULT(conn_config, socket, NULL);
 }
 
 static int core_create_req(request_rec *r)
@@ -5263,7 +5506,6 @@ static conn_rec *core_create_conn(apr_pool_t *ptrans, server_rec *s,
     c->slaves = apr_array_make(c->pool, 20, sizeof(conn_slave_rec *));
     c->requests = apr_array_make(c->pool, 20, sizeof(request_rec *));
 
-
     if ((rv = apr_socket_addr_get(&c->local_addr, APR_LOCAL, csd))
         != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_INFO, rv, s, APLOGNO(00137)
@@ -5271,8 +5513,17 @@ static conn_rec *core_create_conn(apr_pool_t *ptrans, server_rec *s,
         apr_socket_close(csd);
         return NULL;
     }
+    if (apr_sockaddr_ip_get(&c->local_ip, c->local_addr)) {
+#if APR_HAVE_SOCKADDR_UN
+        if (c->local_addr->family == APR_UNIX) {
+            c->local_ip = apr_pstrndup(c->pool, c->local_addr->ipaddr_ptr,
+                                       c->local_addr->ipaddr_len);
+        }
+        else
+#endif
+        c->local_ip = apr_pstrdup(c->pool, "unknown");
+    }
 
-    apr_sockaddr_ip_get(&c->local_ip, c->local_addr);
     if ((rv = apr_socket_addr_get(&c->client_addr, APR_REMOTE, csd))
         != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_INFO, rv, s, APLOGNO(00138)
@@ -5280,14 +5531,21 @@ static conn_rec *core_create_conn(apr_pool_t *ptrans, server_rec *s,
         apr_socket_close(csd);
         return NULL;
     }
+    if (apr_sockaddr_ip_get(&c->client_ip, c->client_addr)) {
+#if APR_HAVE_SOCKADDR_UN
+        if (c->client_addr->family == APR_UNIX) {
+            c->client_ip = apr_pstrndup(c->pool, c->client_addr->ipaddr_ptr,
+                                        c->client_addr->ipaddr_len);
+        }
+        else
+#endif
+        c->client_ip = apr_pstrdup(c->pool, "unknown");
+    }
 
-    apr_sockaddr_ip_get(&c->client_ip, c->client_addr);
     c->base_server = s;
 
     c->id = id;
     c->bucket_alloc = alloc;
-    c->empty = apr_brigade_create(c->pool, c->bucket_alloc);
-    c->filters = apr_hash_make(c->pool);
     c->async_filter = sconf->async_filter;
 
     c->clogging_input_filters = 0;
@@ -5313,10 +5571,63 @@ static conn_rec *core_create_conn(apr_pool_t *ptrans, server_rec *s,
     return c;
 }
 
+static conn_rec *core_create_secondary_conn(apr_pool_t *ptrans,
+                                            conn_rec *master,
+                                            apr_bucket_alloc_t *alloc)
+{
+    apr_pool_t *pool;
+    conn_config_t *conn_config;
+    conn_rec *c = (conn_rec *) apr_pmemdup(ptrans, master, sizeof(*c));
+
+    /* Got a connection structure, so initialize what fields we can
+     * (the rest are zeroed out by pcalloc).
+     */
+    apr_pool_create(&pool, ptrans);
+    apr_pool_tag(pool, "secondary_conn");
+
+    /* we copied everything, now replace what is different */
+    c->master = master;
+    c->pool = pool;
+    c->bucket_alloc = alloc;
+    c->conn_config = ap_create_conn_config(pool);
+    c->notes = apr_table_make(pool, 5);
+    c->slaves = apr_array_make(pool, 20, sizeof(conn_slave_rec *));
+    c->requests = apr_array_make(pool, 20, sizeof(request_rec *));
+    c->input_filters = NULL;
+    c->output_filters = NULL;
+    c->filter_conn_ctx = NULL;
+
+    /* prevent mpm_event from making wrong assumptions about this connection,
+     * like e.g. using its socket for an async read check. */
+    c->clogging_input_filters = 1;
+
+    c->log = NULL;
+    c->aborted = 0;
+    c->keepalives = 0;
+
+    /* FIXME: mpms (and maybe other) parts think that there is always
+     * a socket for a connection. We cannot use the master socket for
+     * secondary connections, as this gets modified (closed?) when
+     * the secondary connection terminates.
+     * There seem to be some checks for c->master necessary in other
+     * places.
+     */
+    conn_config = apr_pcalloc(pool, sizeof(*conn_config));
+    conn_config->socket = dummy_socket;
+    ap_set_core_module_config(c->conn_config, conn_config);
+
+    return c;
+}
+
 static int core_pre_connection(conn_rec *c, void *csd)
 {
-    core_net_rec *net = apr_palloc(c->pool, sizeof(*net));
+    conn_config_t *conn_config;
     apr_status_t rv;
+
+    /* only the master connection talks to the network */
+    if (c->master) {
+        return DONE;
+    }
 
     /* The Nagle algorithm says that we should delay sending partial
      * packets in hopes of getting more data.  We don't want to do
@@ -5347,20 +5658,39 @@ static int core_pre_connection(conn_rec *c, void *csd)
                       "apr_socket_timeout_set");
     }
 
-    net->c = c;
-    net->in_ctx = NULL;
-    net->out_ctx = NULL;
-    net->client_socket = csd;
+    conn_config = apr_pcalloc(c->pool, sizeof(*conn_config));
+    conn_config->socket = csd;
+    ap_set_core_module_config(c->conn_config, conn_config);
 
-    ap_set_core_module_config(net->c->conn_config, csd);
-    /* only the master connection talks to the network */
-    if (c->master == NULL) {
-        ap_add_input_filter_handle(ap_core_input_filter_handle, net, NULL,
-                                   net->c);
-        ap_add_output_filter_handle(ap_core_output_filter_handle, net, NULL,
-                                    net->c);
-    }
+    ap_add_input_filter_handle(ap_core_input_filter_handle, NULL, NULL, c);
+    ap_add_output_filter_handle(ap_core_output_filter_handle, NULL, NULL, c);
+
     return DONE;
+}
+
+AP_DECLARE(int) ap_pre_connection(conn_rec *c, void *csd)
+{
+    int rc = OK;
+
+    rc = ap_run_pre_connection(c, csd);
+    if (rc != OK && rc != DONE) {
+        c->aborted = 1;
+        /*
+         * In case we errored, the pre_connection hook of the core
+         * module maybe did not run (it is APR_HOOK_REALLY_LAST) and
+         * hence we missed to
+         *
+         * - Put the socket in c->conn_config
+         * - Setup core output and input filters
+         * - Set socket options and timeouts
+         *
+         * Hence call it in this case.
+         */
+        if (!ap_get_conn_socket(c)) {
+            core_pre_connection(c, csd);
+        }
+    }
+    return rc;
 }
 
 AP_CORE_DECLARE(conn_rec *) ap_create_slave_connection(conn_rec *c)
@@ -5376,6 +5706,7 @@ AP_CORE_DECLARE(conn_rec *) ap_create_slave_connection(conn_rec *c)
     sc->master = c;
     sc->input_filters = NULL;
     sc->output_filters = NULL;
+    sc->filter_conn_ctx = NULL;
     sc->pool = pool;
     new = apr_array_push(c->slaves);
     new->c = sc;
@@ -5396,6 +5727,28 @@ AP_DECLARE(int) ap_state_query(int query)
     }
 }
 
+AP_DECLARE(char *) ap_state_dir_relative(apr_pool_t *p, const char *file)
+{
+    char *newpath = NULL;
+    apr_status_t rv;
+    const char *state_dir;
+
+    state_dir = core_state_dir
+        ? core_state_dir
+        : ap_server_root_relative(p, DEFAULT_REL_STATEDIR);
+
+    rv = apr_filepath_merge(&newpath, state_dir, file, APR_FILEPATH_TRUENAME, p);
+    if (newpath && (rv == APR_SUCCESS || APR_STATUS_IS_EPATHWILD(rv)
+                                      || APR_STATUS_IS_ENOENT(rv)
+                                      || APR_STATUS_IS_ENOTDIR(rv))) {
+        return newpath;
+    }
+    else {
+        return NULL;
+    }
+}
+
+
 static apr_random_t *rng = NULL;
 #if APR_HAS_THREADS
 static apr_thread_mutex_t *rng_mutex = NULL;
@@ -5405,11 +5758,13 @@ static void core_child_init(apr_pool_t *pchild, server_rec *s)
 {
     apr_proc_t proc;
 #if APR_HAS_THREADS
-    int threaded_mpm;
-    if (ap_mpm_query(AP_MPMQ_IS_THREADED, &threaded_mpm) == APR_SUCCESS
-        && threaded_mpm)
     {
-        apr_thread_mutex_create(&rng_mutex, APR_THREAD_MUTEX_DEFAULT, pchild);
+        int threaded_mpm;
+        if (ap_mpm_query(AP_MPMQ_IS_THREADED, &threaded_mpm) == APR_SUCCESS
+            && threaded_mpm)
+        {
+            apr_thread_mutex_create(&rng_mutex, APR_THREAD_MUTEX_DEFAULT, pchild);
+        }
     }
 #endif
     /* The MPMs use plain fork() and not apr_proc_fork(), so we have to call
@@ -5417,6 +5772,11 @@ static void core_child_init(apr_pool_t *pchild, server_rec *s)
      */
     proc.pid = getpid();
     apr_random_after_fork(&proc);
+
+    /* needed for secondary connections so people do not change the master
+     * connection socket. */
+    apr_socket_create(&dummy_socket, APR_INET, SOCK_STREAM,
+                      APR_PROTO_TCP, pchild);
 }
 
 static void core_optional_fn_retrieve(void)
@@ -5520,9 +5880,13 @@ static apr_status_t core_insert_network_bucket(conn_rec *c,
 }
 
 static apr_status_t core_dirwalk_stat(apr_finfo_t *finfo, request_rec *r,
-                                      apr_int32_t wanted) 
+                                      apr_int32_t wanted)
 {
-    return apr_stat(finfo, r->filename, wanted, r->pool);
+    apr_status_t rv = ap_stat_check(r->filename, r->pool);
+    if (rv == APR_SUCCESS) {
+        rv = apr_stat(finfo, r->filename, wanted, r->pool);
+    }
+    return rv;
 }
 
 static void core_dump_config(apr_pool_t *p, server_rec *s)
@@ -5638,6 +6002,117 @@ static int core_upgrade_storage(request_rec *r)
     return DECLINED;
 }
 
+static apr_status_t core_get_pollfd_from_conn(conn_rec *c,
+                                              struct apr_pollfd_t *pfd,
+                                              apr_interval_time_t *ptimeout)
+{
+    if (c && !c->master) {
+        pfd->desc_type = APR_POLL_SOCKET;
+        pfd->desc.s = ap_get_conn_socket(c);
+        if (ptimeout) {
+            apr_socket_timeout_get(pfd->desc.s, ptimeout);
+        }
+        return APR_SUCCESS;
+    }
+    return APR_ENOTIMPL;
+}
+
+AP_CORE_DECLARE(apr_status_t) ap_get_pollfd_from_conn(conn_rec *c,
+                                      struct apr_pollfd_t *pfd,
+                                      apr_interval_time_t *ptimeout)
+{
+    return ap_run_get_pollfd_from_conn(c, pfd, ptimeout);
+}
+
+#ifdef WIN32
+static apr_status_t check_unc(const char *path, apr_pool_t *p)
+{
+    int i;
+    char *s, *teststring;
+    apr_status_t rv = APR_EACCES;
+    core_server_config *sconf = NULL;
+
+    if (!ap_server_conf) {
+        return APR_SUCCESS; /* this early, if we have a UNC, it's specified by an admin */
+    }
+
+    if (!path || (path != ap_strstr_c(path, "\\\\") && 
+                path != ap_strstr_c(path, "//"))) { 
+        return APR_SUCCESS; /* not a UNC */
+    }
+
+    sconf = ap_get_core_module_config(ap_server_conf->module_config);
+    s = teststring = apr_pstrdup(p, path);
+    *s++ = '/';
+    *s++ = '/';
+
+    ap_log_error(APLOG_MARK, APLOG_TRACE4, 0, ap_server_conf, 
+                 "check_unc: check converted path %s allowed %d", 
+                 teststring,
+                 sconf->unc_list ? sconf->unc_list->nelts : 0);
+
+    for (i = 0; sconf->unc_list && i < sconf->unc_list->nelts; i++) {
+        char *configured_unc = ((char **)sconf->unc_list->elts)[i];
+        apr_uri_t uri;
+        if (APR_SUCCESS == apr_uri_parse(p, teststring, &uri) &&
+                (uri.hostinfo == NULL || 
+                 !ap_cstr_casecmp(uri.hostinfo, configured_unc))) { 
+            rv = APR_SUCCESS;
+            ap_log_error(APLOG_MARK, APLOG_TRACE4, 0, ap_server_conf, 
+                         "check_unc: match %s %s", 
+                         uri.hostinfo, configured_unc);
+            break;
+        }
+        else { 
+            ap_log_error(APLOG_MARK, APLOG_TRACE4, 0, ap_server_conf, 
+                         "check_unc: no match %s %s", uri.hostinfo, 
+                         configured_unc);
+        }
+    }
+    if (rv != APR_SUCCESS) {
+        ap_log_error(APLOG_MARK, APLOG_ERR, rv, ap_server_conf, APLOGNO(10504)
+                     "check_unc: UNC path %s not allowed by UNCList", teststring);
+    }
+
+    return rv;
+}
+#endif
+
+AP_DECLARE(apr_status_t) ap_filepath_merge(char **newpath,
+                                            const char *rootpath,
+                                            const char *addpath,
+                                            apr_int32_t flags,
+                                            apr_pool_t *p)
+{
+#ifdef WIN32
+    apr_status_t rv;
+
+    if (APR_SUCCESS != (rv = check_unc(rootpath, p))) {
+        return rv;
+    }
+    if (APR_SUCCESS != (rv = check_unc(addpath, p))) {
+        return rv;
+    }
+#undef apr_filepath_merge
+#endif
+    return apr_filepath_merge(newpath, rootpath, addpath, flags, p);
+#ifdef WIN32
+#define apr_filepath_merge ap_filepath_merge
+#endif
+}
+
+#ifdef WIN32
+AP_DECLARE(apr_status_t) ap_stat_check(const char *path, apr_pool_t *p)
+{
+   return check_unc(path, p);
+}
+#else
+AP_DECLARE(apr_status_t) ap_stat_check(const char *path, apr_pool_t *p)
+{
+    return APR_SUCCESS;
+}
+#endif
+
 static void register_hooks(apr_pool_t *p)
 {
     errorlog_hash = apr_hash_make(p);
@@ -5652,6 +6127,8 @@ static void register_hooks(apr_pool_t *p)
      */
     ap_hook_create_connection(core_create_conn, NULL, NULL,
                               APR_HOOK_REALLY_LAST);
+    ap_hook_create_secondary_connection(core_create_secondary_conn, NULL, NULL,
+                                        APR_HOOK_REALLY_LAST);
     ap_hook_pre_connection(core_pre_connection, NULL, NULL,
                            APR_HOOK_REALLY_LAST);
 
@@ -5681,8 +6158,13 @@ static void register_hooks(apr_pool_t *p)
     ap_hook_open_htaccess(ap_open_htaccess, NULL, NULL, APR_HOOK_REALLY_LAST);
     ap_hook_optional_fn_retrieve(core_optional_fn_retrieve, NULL, NULL,
                                  APR_HOOK_MIDDLE);
+    ap_hook_get_pollfd_from_conn(core_get_pollfd_from_conn, NULL, NULL,
+                                 APR_HOOK_REALLY_LAST);
+
+    ap_hook_input_pending(ap_filter_input_pending, NULL, NULL,
+                          APR_HOOK_MIDDLE);
     ap_hook_output_pending(ap_filter_output_pending, NULL, NULL,
-            APR_HOOK_MIDDLE);
+                           APR_HOOK_MIDDLE);
 
     /* register the core's insert_filter hook and register core-provided
      * filters
@@ -5698,9 +6180,6 @@ static void register_hooks(apr_pool_t *p)
     ap_core_output_filter_handle =
         ap_register_output_filter("CORE", ap_core_output_filter,
                                   NULL, AP_FTYPE_NETWORK);
-    ap_request_core_filter_handle =
-        ap_register_output_filter("REQ_CORE", ap_request_core_filter,
-                                  NULL, AP_FTYPE_TRANSCODE);
     ap_subreq_core_filter_handle =
         ap_register_output_filter("SUBREQ_CORE", ap_sub_req_output_filter,
                                   NULL, AP_FTYPE_CONTENT_SET);
@@ -5719,4 +6198,3 @@ AP_DECLARE_MODULE(core) = {
     core_cmds,                    /* command apr_table_t */
     register_hooks                /* register hooks */
 };
-

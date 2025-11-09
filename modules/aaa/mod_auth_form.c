@@ -40,11 +40,10 @@
 #define FORM_REDIRECT_HANDLER "form-redirect-handler"
 #define MOD_AUTH_FORM_HASH "site"
 
-static int (*ap_session_load_fn) (request_rec * r, session_rec ** z) = NULL;
-static apr_status_t (*ap_session_get_fn)(request_rec * r, session_rec * z,
-        const char *key, const char **value) = NULL;
-static apr_status_t (*ap_session_set_fn)(request_rec * r, session_rec * z,
-        const char *key, const char *value) = NULL;
+static APR_OPTIONAL_FN_TYPE(ap_session_load) *ap_session_load_fn = NULL;
+static APR_OPTIONAL_FN_TYPE(ap_session_get)  *ap_session_get_fn = NULL;
+static APR_OPTIONAL_FN_TYPE(ap_session_set)  *ap_session_set_fn = NULL;
+
 static void (*ap_request_insert_filter_fn) (request_rec * r) = NULL;
 static void (*ap_request_remove_filter_fn) (request_rec * r) = NULL;
 

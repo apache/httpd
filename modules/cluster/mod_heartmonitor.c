@@ -39,7 +39,7 @@
 
 static const ap_slotmem_provider_t *storage = NULL;
 static ap_slotmem_instance_t *slotmem = NULL;
-static int maxworkers = 0;
+static int maxworkers = 10;
 
 module AP_MODULE_DECLARE_DATA heartmonitor_module;
 
@@ -171,7 +171,7 @@ static apr_status_t hm_update(void* mem, void *data, apr_pool_t *p)
     hm_slot_server_t *old = (hm_slot_server_t *) mem;
     hm_slot_server_ctx_t *s = (hm_slot_server_ctx_t *) data;
     hm_server_t *new = s->s;
-    if (strncmp(old->ip, new->ip, MAXIPSIZE)==0) {
+    if (strcmp(old->ip, new->ip)==0) {
         s->found = 1;
         old->busy = new->busy;
         old->ready = new->ready;
@@ -185,7 +185,7 @@ static apr_status_t hm_readid(void* mem, void *data, apr_pool_t *p)
     hm_slot_server_t *old = (hm_slot_server_t *) mem;
     hm_slot_server_ctx_t *s = (hm_slot_server_ctx_t *) data;
     hm_server_t *new = s->s;
-    if (strncmp(old->ip, new->ip, MAXIPSIZE)==0) {
+    if (strcmp(old->ip, new->ip)==0) {
         s->found = 1;
         s->item_id = old->id;
     }
@@ -202,7 +202,8 @@ static  apr_status_t  hm_slotmem_update_stat(hm_server_t *s, apr_pool_t *pool)
     if (!ctx.found) {
         unsigned int i;
         hm_slot_server_t hmserver;
-        memcpy(hmserver.ip, s->ip, MAXIPSIZE);
+        memset(&hmserver, 0, sizeof(hmserver));
+        apr_cpystrn(hmserver.ip, s->ip, sizeof(hmserver.ip));
         hmserver.busy = s->busy;
         hmserver.ready = s->ready;
         hmserver.seen = s->seen;
@@ -528,7 +529,7 @@ static hm_server_t *hm_get_server(hm_ctx_t *ctx, const char *ip, const int port)
 
 /* Process a message received from a backend node */
 static void hm_processmsg(hm_ctx_t *ctx, apr_pool_t *p,
-                                  apr_sockaddr_t *from, char *buf, int len)
+                          apr_sockaddr_t *from, char *buf, apr_size_t len)
 {
     apr_table_t *tbl;
 
@@ -624,9 +625,7 @@ static apr_status_t hm_watchdog_callback(int state, void *data,
             /* store in the slotmem or in the file depending on configuration */
             hm_update_stats(ctx, pool);
             cur = now = apr_time_sec(apr_time_now());
-            /* TODO: Insted HN_UPDATE_SEC use
-             * the ctx->interval
-             */
+
             while ((now - cur) < apr_time_sec(ctx->interval)) {
                 int n;
                 apr_status_t rc;
@@ -635,6 +634,7 @@ static apr_status_t hm_watchdog_callback(int state, void *data,
                 apr_interval_time_t timeout;
 
                 apr_pool_create(&p, pool);
+                apr_pool_tag(p, "hm_running");
 
                 pfd.desc_type = APR_POLL_SOCKET;
                 pfd.desc.s = ctx->sock;
@@ -782,7 +782,7 @@ static int hm_handler(request_rec *r)
     hmserver.seen = apr_time_now();
     hm_update_stat(ctx, &hmserver, r->pool);
 
-    ap_set_content_type(r, "text/plain");
+    ap_set_content_type_ex(r, "text/plain", 1);
     ap_set_content_length(r, 2);
     ap_rputs("OK", r);
     ap_rflush(r);
@@ -809,6 +809,7 @@ static void *hm_create_config(apr_pool_t *p, server_rec *s)
     ctx->interval = apr_time_from_sec(HM_UPDATE_SEC);
     ctx->s = s;
     apr_pool_create(&ctx->p, p);
+    apr_pool_tag(ctx->p, "hm_ctx");
     ctx->servers = apr_hash_make(ctx->p);
 
     return ctx;
@@ -891,8 +892,9 @@ static const char *cmd_hm_maxworkers(cmd_parms *cmd,
     }
 
     maxworkers = atoi(data);
-    if (maxworkers <= 10)
-        return "HeartbeatMaxServers: Should be bigger than 10";
+    if (maxworkers != 0 && maxworkers < 10)
+        return "HeartbeatMaxServers: Should be 0 for file storage, "
+               "or greater or equal than 10 for slotmem";
 
     return NULL;
 }

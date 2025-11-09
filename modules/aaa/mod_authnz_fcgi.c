@@ -570,6 +570,14 @@ static apr_status_t handle_response(const fcgi_provider_conf *conf,
                                       "parsing -> %d/%d",
                                       fn, status, r->status);
 
+                        /* FCGI has its own body framing mechanism which we don't
+                         * match against any provided Content-Length, so let the
+                         * core determine C-L vs T-E based on what's actually sent.
+                         */
+                        if (!apr_table_get(r->subprocess_env, AP_TRUST_CGILIKE_CL_ENVVAR))
+                            apr_table_unset(r->headers_out, "Content-Length");
+                        apr_table_unset(r->headers_out, "Transfer-Encoding");
+
                         if (rspbuf) { /* caller wants to see response body,
                                        * if any
                                        */
@@ -713,6 +721,7 @@ static void req_rsp(request_rec *r, const fcgi_provider_conf *conf,
     }
 
     apr_pool_create(&temp_pool, r->pool);
+    apr_pool_tag(temp_pool, "mod_authnz_fcgi (req_rsp)");
 
     setupenv(r, password, apache_role);
 
@@ -855,7 +864,7 @@ static int fcgi_check_authn(request_rec *r)
             const char *err;
             const char *user = ap_expr_str_exec(r, dconf->user_expr,
                                                 &err);
-            if (user && strlen(user)) {
+            if (user && *user) {
                 r->user = apr_pstrdup(r->pool, user);
                 ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
                               APLOGNO(02519) "%s: Setting user to '%s'",

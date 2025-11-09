@@ -107,7 +107,9 @@ dialup_callback(void *baton)
     dialup_baton_t *db = (dialup_baton_t *)baton;
     conn_rec *c = db->r->connection;
 
+#if APR_HAS_THREADS
     apr_thread_mutex_lock(db->r->invoke_mtx);
+#endif
 
     status = dialup_send_pulse(db);
 
@@ -115,7 +117,9 @@ dialup_callback(void *baton)
         ap_mpm_register_timed_callback(apr_time_from_sec(1), dialup_callback, baton);
     }
     else if (status == DONE) {
+#if APR_HAS_THREADS
         apr_thread_mutex_unlock(db->r->invoke_mtx);
+#endif
         ap_finalize_request_protocol(db->r);
         ap_process_request_after_handler(db->r);
         return;
@@ -127,7 +131,9 @@ dialup_callback(void *baton)
         ap_die(status, db->r);
     }
 
+#if APR_HAS_THREADS
     apr_thread_mutex_unlock(db->r->invoke_mtx);
+#endif
 
     ap_mpm_resume_suspended(c);
 }
@@ -151,17 +157,17 @@ dialup_handler(request_rec *r)
         return DECLINED;
     }
 
-    rv = ap_mpm_query(AP_MPMQ_CAN_SUSPEND, &mpm_can_suspend);
-    if (!mpm_can_suspend) {
-        ap_log_rerror (APLOG_MARK, APLOG_NOTICE, rv, r, APLOGNO(02637)
-                "dialup: MPM doesn't support suspending");
-        return DECLINED;
-    }
-
     dcfg = ap_get_module_config(r->per_dir_config,
                                 &dialup_module);
 
     if (dcfg->bytes_per_second == 0) {
+        return DECLINED;
+    }
+
+    rv = ap_mpm_query(AP_MPMQ_CAN_SUSPEND, &mpm_can_suspend);
+    if (!mpm_can_suspend) {
+        ap_log_rerror (APLOG_MARK, APLOG_NOTICE, rv, r, APLOGNO(02637)
+                "dialup: MPM doesn't support suspending");
         return DECLINED;
     }
 
@@ -181,7 +187,7 @@ dialup_handler(request_rec *r)
     /* copied from default handler: */
     ap_update_mtime(r, r->finfo.mtime);
     ap_set_last_modified(r);
-    ap_set_etag(r);
+    ap_set_etag_fd(r, fd);
     ap_set_accept_ranges(r);
     ap_set_content_length(r, r->finfo.size);
 
@@ -279,7 +285,7 @@ cmd_modem_standard(cmd_parms *cmd,
     }
 
     if (dcfg->bytes_per_second == 0) {
-        return "mod_diaulup: Unkonwn Modem Standard specified.";
+        return "mod_dialup: Unknown Modem Standard specified.";
     }
 
     return NULL;

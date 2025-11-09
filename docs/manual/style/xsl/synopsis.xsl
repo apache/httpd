@@ -19,6 +19,7 @@
 
 <!DOCTYPE xsl:stylesheet [
     <!ENTITY lf SYSTEM "util/lf.xml">
+    <!ENTITY para SYSTEM "util/para.xml">
 ]>
 <xsl:stylesheet version="1.0"
               xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -194,8 +195,8 @@
                                     /modulesynopsis/directivesynopsis">
                             <xsl:sort select="name" />
                                 <xsl:variable name="lowername"
-                                    select="translate(name, $uppercase,
-                                                      $lowercase)" />
+                                    select="concat(translate(name, $uppercase,
+                                                   $lowercase),@idtype)" />
 
                                 <xsl:choose>
                                 <xsl:when test="not(@location)">
@@ -273,7 +274,7 @@
                             </a>
                         </li>
                         <li>
-                            <!-- The line below is not splitted in multiple
+                            <!-- The line below is not split into multiple
                                  lines to avoid rendering a broken URL. -->
                             <a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component={$bugzilla_prefix}{name}">
                                 <xsl:value-of
@@ -281,7 +282,7 @@
                             </a>
                         </li>
                         <li>
-                            <!-- The line below is not splitted in multiple
+                            <!-- The line below is not split into multiple
                                  lines to avoid rendering a broken URL. -->
                             <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component={$bugzilla_prefix}{name}">
                                 <xsl:value-of
@@ -325,7 +326,22 @@
             <xsl:sort select="name" />
                 <xsl:choose>
                 <xsl:when test="$this[name=current()/name]">
-                    <xsl:apply-templates select="$this[name=current()/name]" />
+                    <!-- A directive name is allowed to be repeated if its type
+                         is different. There is currently only one allowed type
+                         to set, namely 'section', that represents
+                         directive/containers like <DirectiveName>.
+                         The following check is needed to avoid rendering
+                         multiple times the same content when a directive name
+                         is repeated.
+                     -->
+                    <xsl:choose>
+                        <xsl:when test="@type='section'">
+                            <xsl:apply-templates select="$this[name=current()/name and @type='section']" />
+                        </xsl:when>
+                        <xsl:otherwise>
+                            <xsl:apply-templates select="$this[name=current()/name and not(@type='section')]" />
+                        </xsl:otherwise>
+                    </xsl:choose>
                 </xsl:when>
                 <xsl:otherwise>
                     <xsl:apply-templates select=".">
@@ -353,9 +369,12 @@
     <xsl:call-template name="toplink" />&lf;
 
     <div class="directive-section">
+        <!-- Concatenate the Directive name with its type to allow
+             a directive to be referenced multiple times
+             with different types -->
         <xsl:variable name="lowername"
-            select="translate(name, $uppercase, $lowercase)" />
-
+            select="concat(translate(name, $uppercase, $lowercase),@idtype)" />
+        <xsl:variable name="directivename" select="concat(name,@idtype)" />
         <!-- Directive heading gets both mixed case and lowercase      -->
         <!-- anchors, and includes lt/gt only for "section" directives -->
         <h2>
@@ -377,7 +396,7 @@
                 </xsl:otherwise>
                 </xsl:choose>
 
-                <a id="{name}" name="{name}">
+                <a id="{$directivename}" name="{$directivename}">
                     <xsl:if test="@type='section'">&lt;</xsl:if>
                     <xsl:value-of select="name" />
                     <xsl:if test="@type='section'">&gt;</xsl:if>
@@ -385,7 +404,7 @@
             </xsl:when>
 
             <xsl:otherwise>
-                <a id="{name}" name="{name}">
+                <a id="{$directivename}" name="{$directivename}">
                     <xsl:if test="@type='section'">&lt;</xsl:if>
                     <xsl:value-of select="name" />
                     <xsl:if test="@type='section'">&gt;</xsl:if>
@@ -407,6 +426,8 @@
                 </a>
             </xsl:otherwise>
             </xsl:choose>
+        <xsl:text> </xsl:text>
+        <a class="permalink" href="#{$lowername}" title="{$message[@id='permalink']}">&para;</a>
         </h2>&lf;
 
         <!-- Directive header -->
@@ -568,7 +589,7 @@
 
 <!-- ==================================================================== -->
 <!-- <context>                                                            -->
-<!-- Each entry is separeted with a comma                                 -->
+<!-- Each entry is separated with a comma                                 -->
 <!-- ==================================================================== -->
 <xsl:template match="context">
 <xsl:choose>
@@ -628,6 +649,16 @@
 <!-- ==================================================================== -->
 <xsl:template match="directivesynopsis/compatibility">
 <xsl:apply-templates />
+</xsl:template>
+
+
+<!-- ==================================================================== -->
+<!-- since                                                                -->
+<!-- ==================================================================== -->
+<xsl:template match="since">
+<xsl:value-of select="$message[@id='before-since']" />
+<xsl:value-of select="text()" />
+<xsl:value-of select="$message[@id='after-since']" />
 </xsl:template>
 
 </xsl:stylesheet>

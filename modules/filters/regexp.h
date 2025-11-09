@@ -93,8 +93,8 @@ extern void command_errf(sed_commands_t *commands, const char *fmt, ...)
 #define SEDERR_COMES "cannot open %s"
 #define SEDERR_CCMES "cannot create %s"
 #define SEDERR_TMLNMES "too many line numbers"
-#define SEDERR_TMAMES "too many appends after line %lld"
-#define SEDERR_TMRMES "too many reads after line %lld"
+#define SEDERR_TMAMES "too many appends after line %" APR_INT64_T_FMT
+#define SEDERR_TMRMES "too many reads after line %" APR_INT64_T_FMT
 #define SEDERR_DOORNG "``\\digit'' out of range: %s"
 #define SEDERR_EDMOSUB "ending delimiter missing on substitution: %s"
 #define SEDERR_EDMOSTR "ending delimiter missing on string: %s"

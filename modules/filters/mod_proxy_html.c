@@ -29,8 +29,27 @@
 #define VERBOSEB(x) if (verbose) {x}
 #endif
 
+/* libxml2 includes unicode/[...].h files which uses C++ comments */
+#if defined(__clang__)
+#pragma clang diagnostic push
+#pragma clang diagnostic warning "-Wcomment"
+#elif defined(__GNUC__)
+#if __GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic warning "-Wcomment"
+#endif
+#endif
+
 /* libxml2 */
 #include <libxml/HTMLparser.h>
+
+#if defined(__clang__)
+#pragma clang diagnostic pop
+#elif defined(__GNUC__)
+#if __GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6)
+#pragma GCC diagnostic pop
+#endif
+#endif
 
 #include "http_protocol.h"
 #include "http_config.h"
@@ -88,7 +107,7 @@ typedef struct {
     const char *doctype;
     const char *etag;
     unsigned int flags;
-    size_t bufsz;
+    int bufsz;
     apr_hash_t *links;
     apr_array_header_t *events;
     const char *charset_out;
@@ -109,6 +128,9 @@ typedef struct {
     const char *encoding;
     urlmap *map;
     const char *etag;
+    char rbuf[4];
+    apr_size_t rlen;
+    apr_size_t rmin;
 } saxctxt;
 
 
@@ -181,7 +203,7 @@ static void preserve(saxctxt *ctx, const size_t len)
     else while (len > (ctx->avail - ctx->offset))
         ctx->avail += ctx->cfg->bufsz;
 
-    newbuf = realloc(ctx->buf, ctx->avail);
+    newbuf = ap_realloc(ctx->buf, ctx->avail);
     if (newbuf != ctx->buf) {
         if (ctx->buf)
             apr_pool_cleanup_kill(ctx->f->r->pool, ctx->buf,
@@ -395,40 +417,52 @@ static void pstartElement(void *ctxt, const xmlChar *uname,
     const char** attrs = (const char**) uattrs;
     const htmlElemDesc* desc = htmlTagLookup(uname);
     urlmap *themap = ctx->map;
+    const char *accept_charset = NULL;
+
+
 #ifdef HAVE_STACK
     const void** descp;
 #endif
     int enforce = 0;
     if ((ctx->cfg->doctype == fpi_html) || (ctx->cfg->doctype == fpi_xhtml)) {
         /* enforce html */
-        enforce = 2;
-        if (!desc || desc->depr)
-            return;
-    
-    }
-    else if ((ctx->cfg->doctype == fpi_html)
-             || (ctx->cfg->doctype == fpi_xhtml)) {
-        enforce = 1;
-        /* enforce html legacy */
-        if (!desc) {
+        if (!desc || desc->depr) {
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, ctx->f->r, APLOGNO(01416)
+                          "Bogus HTML element %s dropped", name);
             return;
         }
+        enforce = 2;
     }
-    if (!desc && enforce) {
-        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, ctx->f->r, APLOGNO(01416)
-                      "Bogus HTML element %s dropped", name);
-        return;
-    }
-    if (desc && desc->depr && (enforce == 2)) {
-        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, ctx->f->r, APLOGNO(01417)
-                      "Deprecated HTML element %s dropped", name);
-        return;
+    else if ((ctx->cfg->doctype == fpi_html_legacy)
+             || (ctx->cfg->doctype == fpi_xhtml_legacy)) {
+        /* enforce html legacy */
+        if (!desc) {
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, ctx->f->r, APLOGNO(01417)
+                          "Deprecated HTML element %s dropped", name);
+            return;
+        }
+        enforce = 1;
     }
 #ifdef HAVE_STACK
     descp = apr_array_push(ctx->stack);
     *descp = desc;
     /* TODO - implement HTML "allowed here" */
 #endif
+
+    /* PR#64443: for <FORM>, insert accept-charset attribute if necessary
+     * It's necessary if we've changed the charset (i.e. input not UTF-8)
+     *  UNLESS someone has taken charge.
+     * If there's already an accept-charset, then the backend is in charge.
+     * If ProxyHTMLCharsetOut is set, the sysop has taken charge.
+     */
+    if ((xml2enc_charset != NULL) && (ctx->cfg->charset_out == NULL)
+        && !strcasecmp(name, "FORM")) {
+        xmlCharEncoding enc;
+        if ((xml2enc_charset(ctx->f->r, &enc, &accept_charset) != APR_SUCCESS)
+            || (enc == XML_CHAR_ENCODING_UTF8)) {
+            accept_charset = NULL;  /* Now pay attention if not NULL */
+        }
+    }
 
     ap_fputc(ctx->f->next, ctx->bb, '<');
     ap_fputs(ctx->f->next, ctx->bb, name);
@@ -656,7 +690,16 @@ static void pstartElement(void *ctxt, const xmlChar *uname,
                 pcharacters(ctx, (const xmlChar*)ctx->buf, strlen(ctx->buf));
                 ap_fputc(ctx->f->next, ctx->bb, '"');
             }
+            /* PR#64443: watch for accept-charset from backend */
+            if (accept_charset && !strcasecmp(a[0], "accept-charset")) {
+                accept_charset = NULL;
+            }
         }
+    }
+    /* PR#64443: we've seen all we need, so add accept-charset if necessary */
+    if (accept_charset != NULL) {
+        ap_fprintf(ctx->f->next, ctx->bb, " accept-charset=\"%s\"",
+                   accept_charset);
     }
     ctx->offset = 0;
     if (desc && desc->empty)
@@ -672,7 +715,7 @@ static void pstartElement(void *ctxt, const xmlChar *uname,
     }
 }
 
-static meta *metafix(request_rec *r, const char *buf)
+static meta *metafix(request_rec *r, const char *buf, apr_size_t len)
 {
     meta *ret = NULL;
     size_t offs = 0;
@@ -683,14 +726,20 @@ static meta *metafix(request_rec *r, const char *buf)
     ap_regmatch_t pmatch[2];
     char delim;
 
-    while (!ap_regexec(seek_meta, buf+offs, 2, pmatch, 0)) {
+    while (offs < len &&
+           !ap_regexec_len(seek_meta, buf + offs, len - offs, 2, pmatch, 0)) {
         header = NULL;
         content = NULL;
         p = buf+offs+pmatch[1].rm_eo;
         while (!apr_isalpha(*++p));
         for (q = p; apr_isalnum(*q) || (*q == '-'); ++q);
-        header = apr_pstrndup(r->pool, p, q-p);
-        if (ap_cstr_casecmpn(header, "Content-", 8)) {
+        header = apr_pstrmemdup(r->pool, p, q-p);
+        if (!ap_cstr_casecmpn(header, "Content-Type", 12)) {
+            ret = apr_palloc(r->pool, sizeof(meta));
+            ret->start = offs+pmatch[0].rm_so;
+            ret->end = offs+pmatch[0].rm_eo;
+        }
+        else {
             /* find content=... string */
             p = apr_strmatch(seek_content, buf+offs+pmatch[0].rm_so,
                               pmatch[0].rm_eo - pmatch[0].rm_so);
@@ -707,21 +756,16 @@ static meta *metafix(request_rec *r, const char *buf)
                     if ((*p == '\'') || (*p == '"')) {
                         delim = *p++;
                         for (q = p; *q && *q != delim; ++q);
-                        /* No terminating delimiter found? Skip the boggus directive */
+                        /* No terminating delimiter found? Skip the bogus directive */
                         if (*q != delim)
                            break;
                     } else {
                         for (q = p; *q && !apr_isspace(*q) && (*q != '>'); ++q);
                     }
-                    content = apr_pstrndup(r->pool, p, q-p);
+                    content = apr_pstrmemdup(r->pool, p, q-p);
                     break;
                 }
             }
-        }
-        else if (!ap_cstr_casecmpn(header, "Content-Type", 12)) {
-            ret = apr_palloc(r->pool, sizeof(meta));
-            ret->start = offs+pmatch[0].rm_so;
-            ret->end = offs+pmatch[0].rm_eo;
         }
         if (header && content) {
 #ifndef GO_FASTER
@@ -746,26 +790,31 @@ static const char *interpolate_vars(request_rec *r, const char *str)
     const char *replacement;
     const char *var;
     for (;;) {
-        start = str;
-        if (start = ap_strstr_c(start, "${"), start == NULL)
+        if ((start = ap_strstr_c(str, "${")) == NULL)
             break;
 
-        if (end = ap_strchr_c(start+2, '}'), end == NULL)
+        if ((end = ap_strchr_c(start+2, '}')) == NULL)
             break;
 
-        delim = ap_strchr_c(start, '|');
-        before = apr_pstrndup(r->pool, str, start-str);
+        delim = ap_strchr_c(start+2, '|');
+
+        /* Restrict delim to ${...} */
+        if (delim && delim >= end) {
+            delim = NULL;
+        }
+
+        before = apr_pstrmemdup(r->pool, str, start-str);
         after = end+1;
         if (delim) {
-            var = apr_pstrndup(r->pool, start+2, delim-start-2);
+            var = apr_pstrmemdup(r->pool, start+2, delim-start-2);
         }
         else {
-            var = apr_pstrndup(r->pool, start+2, end-start-2);
+            var = apr_pstrmemdup(r->pool, start+2, end-start-2);
         }
         replacement = apr_table_get(r->subprocess_env, var);
         if (!replacement) {
             if (delim)
-                replacement = apr_pstrndup(r->pool, delim+1, end-delim-1);
+                replacement = apr_pstrmemdup(r->pool, delim+1, end-delim-1);
             else
                 replacement = "";
         }
@@ -856,7 +905,6 @@ static saxctxt *check_filter_init (ap_filter_t *f)
 #ifndef GO_FASTER
             ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, f->r, "%s", errmsg);
 #endif
-            ap_remove_output_filter(f);
             return NULL;
         }
 
@@ -879,39 +927,55 @@ static saxctxt *check_filter_init (ap_filter_t *f)
     return f->ctx;
 }
 
+static void prepend_rbuf(saxctxt *ctxt, apr_bucket_brigade *bb)
+{
+    if (ctxt->rlen) {
+        apr_bucket *b = apr_bucket_transient_create(ctxt->rbuf,
+                                                    ctxt->rlen,
+                                                    bb->bucket_alloc);
+        APR_BRIGADE_INSERT_HEAD(bb, b);
+        ctxt->rlen = 0;
+    }
+}
+
 static apr_status_t proxy_html_filter(ap_filter_t *f, apr_bucket_brigade *bb)
 {
-    apr_bucket* b;
-    meta *m = NULL;
     xmlCharEncoding enc;
-    const char *buf = 0;
-    apr_size_t bytes = 0;
+    const char *buf;
+    apr_size_t bytes;
 #ifndef USE_OLD_LIBXML2
     int xmlopts = XML_PARSE_RECOVER | XML_PARSE_NONET |
                   XML_PARSE_NOBLANKS | XML_PARSE_NOERROR | XML_PARSE_NOWARNING;
 #endif
 
     saxctxt *ctxt = check_filter_init(f);
-    if (!ctxt)
+    if (!ctxt) {
+        ap_remove_output_filter(f);
         return ap_pass_brigade(f->next, bb);
-    for (b = APR_BRIGADE_FIRST(bb);
-         b != APR_BRIGADE_SENTINEL(bb);
-         b = APR_BUCKET_NEXT(b)) {
+    }
+
+    while (!APR_BRIGADE_EMPTY(bb)) {
+        apr_bucket *b = APR_BRIGADE_FIRST(bb);
+
         if (APR_BUCKET_IS_METADATA(b)) {
             if (APR_BUCKET_IS_EOS(b)) {
                 if (ctxt->parser != NULL) {
-                    consume_buffer(ctxt, buf, 0, 1);
+                    consume_buffer(ctxt, "", 0, 1);
+                    APR_BRIGADE_PREPEND(bb, ctxt->bb);
                 }
-                APR_BRIGADE_INSERT_TAIL(ctxt->bb,
-                apr_bucket_eos_create(ctxt->bb->bucket_alloc));
-                ap_pass_brigade(ctxt->f->next, ctxt->bb);
+                else {
+                    prepend_rbuf(ctxt, bb);
+                }
+                ap_remove_output_filter(f);
+                return ap_pass_brigade(f->next, bb);
             }
             else if (APR_BUCKET_IS_FLUSH(b)) {
                 /* pass on flush, except at start where it would cause
                  * headers to be sent before doc sniffing
                  */
                 if (ctxt->parser != NULL) {
-                    ap_fflush(ctxt->f->next, ctxt->bb);
+                    ap_fflush(f->next, ctxt->bb);
+                    apr_brigade_cleanup(ctxt->bb);
                 }
             }
         }
@@ -924,18 +988,28 @@ static apr_status_t proxy_html_filter(ap_filter_t *f, apr_bucket_brigade *bb)
                  * HTML rewriting. The URL schema (i.e. 'http') needs four bytes alone.
                  * And the HTML parser needs at least four bytes to initialise correctly.
                  */
-                if ((bytes < 4) && APR_BUCKET_IS_EOS(APR_BUCKET_NEXT(b))) {
-                    ap_remove_output_filter(f) ;
-                    return ap_pass_brigade(f->next, bb) ;
+                ctxt->rmin += bytes;
+                if (ctxt->rmin < sizeof(ctxt->rbuf)) {
+                    memcpy(ctxt->rbuf + ctxt->rlen, buf, bytes);
+                    ctxt->rlen += bytes;
+                    apr_bucket_delete(b);
+                    continue;
+                }
+                if (ctxt->rlen && ctxt->rlen < sizeof(ctxt->rbuf)) {
+                    apr_size_t rem = sizeof(ctxt->rbuf) - ctxt->rlen;
+                    memcpy(ctxt->rbuf + ctxt->rlen, buf, rem);
+                    ctxt->rlen += rem;
+                    buf += rem;
+                    bytes -= rem;
                 }
 
                 if (!xml2enc_charset ||
                     (xml2enc_charset(f->r, &enc, &cenc) != APR_SUCCESS)) {
                     if (!xml2enc_charset)
                         ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, f->r, APLOGNO(01422)
-                     "No i18n support found.  Install mod_xml2enc if required");
+                                      "No i18n support found.  Install mod_xml2enc if required");
                     enc = XML_CHAR_ENCODING_NONE;
-                    ap_set_content_type(f->r, "text/html;charset=utf-8");
+                    ap_set_content_type_ex(f->r, "text/html;charset=utf-8", 1);
                 }
                 else {
                     /* if we wanted a non-default charset_out, insert the
@@ -951,19 +1025,29 @@ static apr_status_t proxy_html_filter(ap_filter_t *f, apr_bucket_brigade *bb)
                                                         cenc, NULL));
                     }
                     else /* Normal case, everything worked, utf-8 output */
-                        ap_set_content_type(f->r, "text/html;charset=utf-8");
+                        ap_set_content_type_ex(f->r, "text/html;charset=utf-8", 1);
                 }
 
                 ap_fputs(f->next, ctxt->bb, ctxt->cfg->doctype);
-                ctxt->parser = htmlCreatePushParserCtxt(&sax, ctxt, buf,
-                                                        4, 0, enc);
-                buf += 4;
-                bytes -= 4;
-                if (ctxt->parser == NULL) {
-                    apr_status_t rv = ap_pass_brigade(f->next, bb);
-                    ap_remove_output_filter(f);
-                    return rv;
+
+                if (ctxt->rlen) {
+                    ctxt->parser = htmlCreatePushParserCtxt(&sax, ctxt,
+                                                            ctxt->rbuf,
+                                                            ctxt->rlen,
+                                                            NULL, enc);
                 }
+                else {
+                    ctxt->parser = htmlCreatePushParserCtxt(&sax, ctxt, buf, 4,
+                                                            NULL, enc);
+                    buf += 4;
+                    bytes -= 4;
+                }
+                if (ctxt->parser == NULL) {
+                    prepend_rbuf(ctxt, bb);
+                    ap_remove_output_filter(f);
+                    return ap_pass_brigade(f->next, bb);
+                }
+                ctxt->rlen = 0;
                 apr_pool_cleanup_register(f->r->pool, ctxt->parser,
                                           (int(*)(void*))htmlFreeParserCtxt,
                                           apr_pool_cleanup_null);
@@ -972,27 +1056,28 @@ static apr_status_t proxy_html_filter(ap_filter_t *f, apr_bucket_brigade *bb)
                     ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, f->r, APLOGNO(01423)
                                   "Unsupported parser opts %x", xmlopts);
 #endif
-                if (ctxt->cfg->metafix)
-                    m = metafix(f->r, buf);
-                if (m) {
-                    consume_buffer(ctxt, buf, m->start, 0);
-                    consume_buffer(ctxt, buf+m->end, bytes-m->end, 0);
-                }
-                else {
-                    consume_buffer(ctxt, buf, bytes, 0);
+                if (ctxt->cfg->metafix) {
+                    meta *m = metafix(f->r, buf, bytes);
+                    if (m) {
+                        consume_buffer(ctxt, buf, m->start, 0);
+                        buf += m->end;
+                        bytes -= m->end;
+                    }
                 }
             }
-            else {
-                consume_buffer(ctxt, buf, bytes, 0);
-            }
+            consume_buffer(ctxt, buf, bytes, 0);
         }
         else {
             ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, f->r, APLOGNO(01424)
                           "Error in bucket read");
         }
+
+        apr_bucket_delete(b);
     }
-    /*ap_fflush(ctxt->f->next, ctxt->bb);        // uncomment for debug */
-    apr_brigade_cleanup(bb);
+#if 0  /* uncomment for debug */
+    ap_fflush(f->next, ctxt->bb);
+    apr_brigade_cleanup(ctxt->bb);
+#endif
     return APR_SUCCESS;
 }
 
@@ -1181,7 +1266,7 @@ static const char *set_doctype(cmd_parms *cmd, void *CFG,
         cfg->doctype = fpi_html5;
     }
     else {
-        cfg->doctype = apr_pstrdup(cmd->pool, t);
+        cfg->doctype = t;
         if (l && ((l[0] == 'x') || (l[0] == 'X')))
             cfg->etag = xhtml_etag;
         else

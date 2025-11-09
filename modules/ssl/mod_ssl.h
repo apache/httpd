@@ -29,6 +29,7 @@
 #include "httpd.h"
 #include "http_config.h"
 #include "apr_optional.h"
+#include "apr_tables.h" /* for apr_array_header_t */
 
 /* Create a set of SSL_DECLARE(type), SSL_DECLARE_NONSTD(type) and
  * SSL_DECLARE_DATA with appropriate export and import tags for the platform
@@ -52,11 +53,13 @@
 #endif
 
 /** The ssl_var_lookup() optional function retrieves SSL environment
- * variables. */
-APR_DECLARE_OPTIONAL_FN(char *, ssl_var_lookup,
-                        (apr_pool_t *, server_rec *,
-                         conn_rec *, request_rec *,
-                         char *));
+ * variables.  The pool in which to allocate the return value must be
+ * non-NULL since httpd 2.5.1.  c and/or r may be NULL. */
+APR_DECLARE_OPTIONAL_FN(const char *, ssl_var_lookup,
+                        (apr_pool_t *p, server_rec *s,
+                         conn_rec *c, request_rec *r,
+                         const char *name))
+    AP_FN_ATTR_NONNULL((1, 2, 5)) AP_FN_ATTR_WARN_UNUSED_RESULT;
 
 /** The ssl_ext_list() optional function attempts to build an array
  * of all the values contained in the named X.509 extension. The
@@ -95,6 +98,34 @@ APR_DECLARE_OPTIONAL_FN(int, ssl_engine_disable, (conn_rec *));
 APR_DECLARE_OPTIONAL_FN(int, ssl_engine_set, (conn_rec *,
                                               ap_conf_vector_t *,
                                               int proxy, int enable));
+                                              
+/* Check for availability of new hooks */
+#define SSL_CERT_HOOKS
+#ifdef SSL_CERT_HOOKS
+
+/** Lets others add certificate and key files to the given server.
+ * For each cert a key must also be added.
+ * @param cert_file and array of const char* with the path to the certificate chain
+ * @param key_file and array of const char* with the path to the private key file
+ */
+APR_DECLARE_EXTERNAL_HOOK(ssl, SSL, int, add_cert_files,
+                          (server_rec *s, apr_pool_t *p, 
+                           apr_array_header_t *cert_files,
+                           apr_array_header_t *key_files))
+
+/** In case no certificates are available for a server, this
+ * lets other modules add a fallback certificate for the time
+ * being. Regular requests against this server will be answered
+ * with a 503. 
+ * @param cert_file and array of const char* with the path to the certificate chain
+ * @param key_file and array of const char* with the path to the private key file
+ */
+APR_DECLARE_EXTERNAL_HOOK(ssl, SSL, int, add_fallback_cert_files,
+                          (server_rec *s, apr_pool_t *p, 
+                           apr_array_header_t *cert_files,
+                           apr_array_header_t *key_files))
+
+#endif /* SSL_CERT_HOOKS */
 
 #endif /* __MOD_SSL_H__ */
 /** @} */

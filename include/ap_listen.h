@@ -29,6 +29,7 @@
 #include "apr_network_io.h"
 #include "httpd.h"
 #include "http_config.h"
+#include "apr_optional.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -37,6 +38,13 @@ extern "C" {
 typedef struct ap_slave_t ap_slave_t;
 typedef struct ap_listen_rec ap_listen_rec;
 typedef apr_status_t (*accept_function)(void **csd, ap_listen_rec *lr, apr_pool_t *ptrans);
+
+/* Flags for ap_listen_rec.flags */
+#define AP_LISTEN_SPECIFIC_ERRORS (0x0001)
+#define AP_LISTEN_FREEBIND        (0x0002)
+#define AP_LISTEN_REUSEPORT       (0x0004)
+#define AP_LISTEN_V6ONLY          (0x0008)
+#define AP_LISTEN_MPTCP           (0x0010)
 
 /**
  * @brief Apache's listeners record.
@@ -71,6 +79,11 @@ struct ap_listen_rec {
     const char* protocol;
 
     ap_slave_t *slave;
+
+    /**
+     * Various AP_LISTEN_* flags.
+     */
+    apr_uint32_t flags;
 };
 
 /**
@@ -79,6 +92,9 @@ struct ap_listen_rec {
 AP_DECLARE_DATA extern ap_listen_rec *ap_listeners;
 AP_DECLARE_DATA extern int ap_num_listen_buckets;
 AP_DECLARE_DATA extern int ap_have_so_reuseport;
+AP_DECLARE_DATA extern int ap_accept_errors_nonfatal;
+
+AP_DECLARE(int) ap_accept_error_is_nonfatal(apr_status_t rv);
 
 /**
  * Setup all of the defaults for the listener list
@@ -134,6 +150,7 @@ AP_DECLARE_NONSTD(int) ap_close_selected_listeners(ap_slave_t *);
  * called.
  */
 AP_DECLARE_NONSTD(const char *) ap_set_listenbacklog(cmd_parms *cmd, void *dummy, const char *arg);
+AP_DECLARE_NONSTD(const char *) ap_set_listentcpdeferaccept(cmd_parms *cmd, void *dummy, const char *arg);
 AP_DECLARE_NONSTD(const char *) ap_set_listencbratio(cmd_parms *cmd, void *dummy, const char *arg);
 AP_DECLARE_NONSTD(const char *) ap_set_listener(cmd_parms *cmd, void *dummy,
                                                 int argc, char *const argv[]);
@@ -142,6 +159,19 @@ AP_DECLARE_NONSTD(const char *) ap_set_send_buffer_size(cmd_parms *cmd, void *du
 AP_DECLARE_NONSTD(const char *) ap_set_receive_buffer_size(cmd_parms *cmd,
                                                            void *dummy,
                                                            const char *arg);
+
+AP_DECLARE_NONSTD(const char *) ap_set_accept_errors_nonfatal(cmd_parms *cmd,
+                                                           void *dummy,
+                                                           int flag);
+
+#ifdef HAVE_SYSTEMD
+APR_DECLARE_OPTIONAL_FN(int,
+                        ap_find_systemd_socket, (process_rec *, apr_port_t));
+
+APR_DECLARE_OPTIONAL_FN(int,
+                        ap_systemd_listen_fds, (int));
+#endif
+
 
 #define LISTEN_COMMANDS \
 AP_INIT_TAKE1("ListenBacklog", ap_set_listenbacklog, NULL, RSRC_CONF, \
@@ -153,8 +183,11 @@ AP_INIT_TAKE_ARGV("Listen", ap_set_listener, NULL, RSRC_CONF, \
 AP_INIT_TAKE1("SendBufferSize", ap_set_send_buffer_size, NULL, RSRC_CONF, \
   "Send buffer size in bytes"), \
 AP_INIT_TAKE1("ReceiveBufferSize", ap_set_receive_buffer_size, NULL, \
-              RSRC_CONF, "Receive buffer size in bytes")
-
+              RSRC_CONF, "Receive buffer size in bytes"), \
+AP_INIT_FLAG("AcceptErrorsNonFatal", ap_set_accept_errors_nonfatal, NULL, \
+              RSRC_CONF, "Some accept() errors are not fatal to the process"), \
+AP_INIT_TAKE1("ListenTCPDeferAccept", ap_set_listentcpdeferaccept, NULL, RSRC_CONF, \
+  "Value set for the socket option TCP_DEFER_ACCEPT if it is set")
 #ifdef __cplusplus
 }
 #endif

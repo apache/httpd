@@ -257,7 +257,7 @@ static int fsmagic(request_rec *r, const char *fn);
 #define L_MAIL    8   /* Electronic mail */
 #define L_NEWS    9   /* Usenet Netnews */
 
-static const char *types[] =
+static const char *const types[] =
 {
     "text/html",             /* HTML */
     "text/plain",            /* "c program text", */
@@ -462,7 +462,6 @@ typedef struct {
 typedef struct {
     magic_rsl *head;          /* result string list */
     magic_rsl *tail;
-    unsigned suf_recursion;   /* recursion depth in suffix check */
 } magic_req_rec;
 
 /*
@@ -789,7 +788,7 @@ static int magic_rsl_to_request(request_rec *r)
     /* XXX: this could be done at config time I'm sure... but I'm
      * confused by all this magic_rsl stuff. -djg */
     ap_content_type_tolower(tmp);
-    ap_set_content_type(r, tmp);
+    ap_set_content_type_ex(r, tmp, 1);
 
     if (state == rsl_encoding) {
         tmp = rsl_strdup(r, encoding_frag,
@@ -984,7 +983,7 @@ static int apprentice(server_rec *s, apr_pool_t *p)
 
 #if MIME_MAGIC_DEBUG
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(01516)
-                MODNAME ": apprentice conf=%x file=%s m=%s m->next=%s last=%s",
+                MODNAME ": apprentice conf=%pp file=%s m=%s m->next=%s last=%s",
                 conf,
                 conf->magicfile ? conf->magicfile : "NULL",
                 conf->magic ? "set" : "NULL",
@@ -1007,10 +1006,10 @@ static int apprentice(server_rec *s, apr_pool_t *p)
             ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(01519)
                         MODNAME ": apprentice: POINTER CLOBBERED! "
                         "m=\"%c%c%c%c\" line=%d",
-                        (((unsigned long) m) >> 24) & 255,
-                        (((unsigned long) m) >> 16) & 255,
-                        (((unsigned long) m) >> 8) & 255,
-                        ((unsigned long) m) & 255,
+                        (char)((((unsigned long) m) >> 24) & 255),
+                        (char)((((unsigned long) m) >> 16) & 255),
+                        (char)((((unsigned long) m) >> 8 ) & 255),
+                        (char)(( (unsigned long) m       ) & 255),
                         prevm ? prevm->lineno : -1);
             break;
         }
@@ -1276,7 +1275,7 @@ static int parse(server_rec *serv, apr_pool_t *p, char *l, int lineno)
 
 #if MIME_MAGIC_DEBUG
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, serv, APLOGNO(01525)
-                MODNAME ": parse line=%d m=%x next=%x cont=%d desc=%s",
+                MODNAME ": parse line=%d m=%pp next=%pp cont=%d desc=%s",
                 lineno, m, m->next, m->cont_level, m->desc);
 #endif /* MIME_MAGIC_DEBUG */
 
@@ -1541,7 +1540,7 @@ static int match(request_rec *r, unsigned char *s, apr_size_t nbytes)
 
 #if MIME_MAGIC_DEBUG
     ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01529)
-                MODNAME ": match conf=%x file=%s m=%s m->next=%s last=%s",
+                MODNAME ": match conf=%pp file=%s m=%s m->next=%s last=%s",
                 conf,
                 conf->magicfile ? conf->magicfile : "NULL",
                 conf->magic ? "set" : "NULL",
@@ -1558,10 +1557,10 @@ static int match(request_rec *r, unsigned char *s, apr_size_t nbytes)
             ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01530)
                         MODNAME ": match: POINTER CLOBBERED! "
                         "m=\"%c%c%c%c\"",
-                        (((unsigned long) m) >> 24) & 255,
-                        (((unsigned long) m) >> 16) & 255,
-                        (((unsigned long) m) >> 8) & 255,
-                        ((unsigned long) m) & 255);
+                        (char)((((unsigned long) m) >> 24) & 255),
+                        (char)((((unsigned long) m) >> 16) & 255),
+                        (char)((((unsigned long) m) >> 8 ) & 255),
+                        (char)(( (unsigned long) m       ) & 255));
             break;
         }
     }
@@ -1591,7 +1590,7 @@ static int match(request_rec *r, unsigned char *s, apr_size_t nbytes)
 #if MIME_MAGIC_DEBUG
                 rule_counter++;
                 ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01532)
-                        MODNAME ": line=%d mc=%x mc->next=%x cont=%d desc=%s",
+                        MODNAME ": line=%d mc=%pp mc->next=%pp cont=%d desc=%s",
                             m_cont->lineno, m_cont,
                             m_cont->next, m_cont->cont_level,
                             m_cont->desc);
@@ -2044,12 +2043,12 @@ static int ascmagic(request_rec *r, unsigned char *buf, apr_size_t nbytes)
  * - uncompress old into new, using method, return sizeof new
  */
 
-static struct {
-    char *magic;
+static const struct {
+    const char *magic;
     apr_size_t maglen;
-    char *argv[3];
+    const char *argv[3];
     int silent;
-    char *encoding;  /* MUST be lowercase */
+    const char *encoding;  /* MUST be lowercase */
 } compr[] = {
 
     /* we use gzip here rather than uncompress because we have to pass
@@ -2077,7 +2076,7 @@ static struct {
     },
 };
 
-static int ncompr = sizeof(compr) / sizeof(compr[0]);
+#define ncompr (sizeof(compr) / sizeof(compr[0]))
 
 static int zmagic(request_rec *r, unsigned char *buf, apr_size_t nbytes)
 {
@@ -2177,11 +2176,12 @@ static int uncompress(request_rec *r, int method,
     parm.method = method;
 
     /* We make a sub_pool so that we can collect our child early, otherwise
-     * there are cases (i.e. generating directory indicies with mod_autoindex)
+     * there are cases (i.e. generating directory indices with mod_autoindex)
      * where we would end up with LOTS of zombies.
      */
     if (apr_pool_create(&sub_context, r->pool) != APR_SUCCESS)
         return -1;
+    apr_pool_tag(sub_context, "magic_uncompress");
 
     if ((rv = create_uncompress_child(&parm, sub_context, &pipe_out)) != APR_SUCCESS) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(01553)
@@ -2326,7 +2326,7 @@ static int revision_suffix(request_rec *r)
 
     /* extract content type/encoding/language from sub-request */
     if (sub->content_type) {
-        ap_set_content_type(r, apr_pstrdup(r->pool, sub->content_type));
+        ap_set_content_type_ex(r, apr_pstrdup(r->pool, sub->content_type), 1);
 #if MIME_MAGIC_DEBUG
         ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01557)
                     MODNAME ": subrequest %s got %s",
@@ -2389,10 +2389,10 @@ static int magic_init(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp, server
                     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(01559)
                                 MODNAME ": magic_init 1: POINTER CLOBBERED! "
                                 "m=\"%c%c%c%c\" line=%d",
-                                (((unsigned long) m) >> 24) & 255,
-                                (((unsigned long) m) >> 16) & 255,
-                                (((unsigned long) m) >> 8) & 255,
-                                ((unsigned long) m) & 255,
+                                (char)((((unsigned long) m) >> 24) & 255),
+                                (char)((((unsigned long) m) >> 16) & 255),
+                                (char)((((unsigned long) m) >> 8 ) & 255),
+                                (char)(( (unsigned long) m       ) & 255),
                                 prevm ? prevm->lineno : -1);
                     break;
                 }

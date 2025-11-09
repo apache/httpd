@@ -21,6 +21,7 @@
 #include <http_core.h>
 #include <http_connection.h>
 #include <http_log.h>
+#include <http_protocol.h>
 
 #include "h2_private.h"
 #include "h2.h"
@@ -95,7 +96,7 @@ static void bucket_destroy(void *data)
         }
         apr_bucket_free(h);
         if (stream) {
-            h2_stream_eos_destroy(stream);
+            h2_stream_dispatch(stream, H2_SEV_EOS_SENT);
         }
     }
 }

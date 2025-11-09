@@ -25,25 +25,34 @@
 <name>mod_proxy_http2</name>
 <description>HTTP/2 support module for
 <module>mod_proxy</module></description>
-<status>Extension</status>
+<status>Experimental</status>
 <sourcefile>mod_proxy_http2.c</sourcefile>
 <identifier>proxy_http2_module</identifier>
+<compatibility>Available in httpd 2.4.19 and later</compatibility>
 
 <summary>
+    <p><module>mod_proxy_http2</module>
+    supports HTTP/2 only, it does <em>not</em>
+    provide any downgrades to HTTP/1.1. This means that the backend
+    needs to support HTTP/2 because HTTP/1.1 will not be used instead.</p>
+
     <p>This module <em>requires</em> the service of <module
-    >mod_proxy</module>. It provides the features used for
-    proxying HTTP/2 requests. <module>mod_proxy_http2</module>
-    supports HTTP/2 only. It does <em>not</em>
-    provide any downgrades to HTTP/1.1.</p>
-
-    <p>Thus, in order to get the ability of handling HTTP/2 proxy requests,
+    >mod_proxy</module>, so in order to get the ability of
+    handling HTTP/2 proxy requests,
     <module>mod_proxy</module> and <module>mod_proxy_http2</module>
-    have to be present in the server.</p>
+    need to be both loaded by the server.</p>
 
-    <p><module>mod_proxy_http2</module> works with incoming requests
-    over HTTP/1.1 and HTTP/2 requests. If <module>mod_http2</module>
-    handles the frontend connection, requests against the same HTTP/2
-    backend are sent over a single connection, whenever possible.</p>
+    <p><module>mod_proxy_http2</module> works with incoming fronted requests
+    using HTTP/1.1 or HTTP/2. In both cases, requests proxied
+    to the same backend are sent over a single TCP connection
+    whenever possible (namely when the connection can be re-used).</p>
+
+    <p>Caveat: there will be no attempt to consolidate multiple HTTP/1.1 
+    frontend requests (configured to be proxied to the same backend)
+    into HTTP/2 streams belonging to the same HTTP/2 request.
+    Each HTTP/1.1 frontend request will be proxied to the backend using
+    a separate HTTP/2 request (trying to re-use the same TCP connection
+    if possible).</p>
 
     <p>This module relies on <a href="http://nghttp2.org/">libnghttp2</a>
     to provide the core http/2 engine.</p>
@@ -74,16 +83,24 @@
     <example><title>HTTP/2 (TLS)</title>
     <highlight language="config">
 ProxyPass "/app" "h2://app.example.com"
-ProxyPassReverse "/app" "h2://app.example.com"
+ProxyPassReverse "/app" "https://app.example.com"
     </highlight>
     </example>
 
     <example><title>HTTP/2 (cleartext)</title>
     <highlight language="config">
 ProxyPass "/app" "h2c://app.example.com"
-ProxyPassReverse "/app" "h2c://app.example.com"
+ProxyPassReverse "/app" "http://app.example.com"
     </highlight>
     </example>
+
+    <note>
+      <p>The schemes to configure above in
+      <directive>ProxyPassReverse</directive> for reverse proxying
+      <code>h2</code> (or <code>h2c</code>) protocols are the usual
+      <code>https</code> (resp. <code>http</code>) as expected/used by
+      the user agent.</p>
+    </note>
     </section> <!-- /examples -->
 
 <section id="notes"><title>Request notes</title>
@@ -98,6 +115,19 @@ ProxyPassReverse "/app" "h2c://app.example.com"
         <dt>proxy-status</dt>
         <dd>The HTTP/2 status received from the backend server.</dd>
     </dl>
+</section>
+
+<section id="h2push"><title>HTTP/2 PUSH</title>
+    <p>The module does not support the HTTP/2 feature PUSH. Backend servers
+    that would like to advertise preload resources should send the appropriate 
+    <code>Link</code> headers.</p>
+    <p>If available, they may do so using the <code>"103 Early Hints"</code> 
+    intermediate responses as specified in 
+    <a href="https://tools.ietf.org/html/rfc8297">RFC 8297</a>. This will give
+    the best performance. If the client is talking HTTP/2 as well, this may
+    then result in a PUSH from Apache to the client or just in forwarding
+    the 103 response.</p>
+    
 </section>
 
 </modulesynopsis>

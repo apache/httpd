@@ -76,6 +76,7 @@ eşlenmesini sağlar ve URL yönlendirmesi yapar.</dd>
 <dt><a href="mod_asis.html">mod_asis</a></dt><dd>Sends files that contain their own
 HTTP headers</dd>
 <dt><a href="mod_auth_basic.html">mod_auth_basic</a></dt><dd>Basic HTTP authentication</dd>
+<dt><a href="mod_auth_bearer.html">mod_auth_bearer</a></dt><dd>Bearer HTTP authentication</dd>
 <dt><a href="mod_auth_digest.html">mod_auth_digest</a></dt><dd>User authentication using MD5
     Digest Authentication</dd>
 <dt><a href="mod_auth_form.html">mod_auth_form</a></dt><dd>Form authentication</dd>
@@ -91,6 +92,8 @@ the load on backends</dd>
 httpd authentication and authorization</dd>
 <dt><a href="mod_authnz_ldap.html">mod_authnz_ldap</a></dt><dd>Allows an LDAP directory to be used to store the database
 for HTTP Basic authentication.</dd>
+<dt><a href="mod_autht_core.html">mod_autht_core</a></dt><dd>Core Token Handling</dd>
+<dt><a href="mod_autht_jwt.html">mod_autht_jwt</a></dt><dd>Token authentication using JWT tokens</dd>
 <dt><a href="mod_authz_core.html">mod_authz_core</a></dt><dd>Core Authorization</dd>
 <dt><a href="mod_authz_dbd.html">mod_authz_dbd</a></dt><dd>Group Authorization and Login using SQL</dd>
 <dt><a href="mod_authz_dbm.html">mod_authz_dbm</a></dt><dd>Group authorization using DBM files</dd>
@@ -101,7 +104,9 @@ address)</dd>
 <dt><a href="mod_authz_user.html">mod_authz_user</a></dt><dd>User Authorization</dd>
 <dt><a href="mod_autoindex.html">mod_autoindex</a></dt><dd>Unix <code>ls</code> veya Win32 <code>dir</code> kabuk komutunun
 yaptığı gibi dizin içeriğini listeler.</dd>
-<dt><a href="mod_buffer.html" id="B" name="B">mod_buffer</a></dt><dd>Support for request buffering</dd>
+<dt><a href="mod_brotli.html" id="B" name="B">mod_brotli</a></dt><dd>Compress content via Brotli before it is delivered to the
+client</dd>
+<dt><a href="mod_buffer.html">mod_buffer</a></dt><dd>Support for request buffering</dd>
 <dt><a href="mod_cache.html" id="C" name="C">mod_cache</a></dt><dd>RFC 2616 compliant HTTP caching filter.</dd>
 <dt><a href="mod_cache_disk.html">mod_cache_disk</a></dt><dd>Disk based storage module for the HTTP caching filter.</dd>
 <dt><a href="mod_cache_socache.html">mod_cache_socache</a></dt><dd>Shared object cache (socache) based storage module for the
@@ -163,6 +168,9 @@ by other LDAP modules</dd>
 <dt><a href="mod_lua.html">mod_lua</a></dt><dd>Provides Lua hooks into various portions of the httpd
 request processing</dd>
 <dt><a href="mod_macro.html" id="M" name="M">mod_macro</a></dt><dd>Provides macros within apache httpd runtime configuration files</dd>
+<dt><a href="mod_md.html">mod_md</a></dt><dd>Managing domains across virtual hosts, certificate provisioning 
+        via the ACME protocol
+    </dd>
 <dt><a href="mod_mime.html">mod_mime</a></dt><dd>Associates the requested filename's extensions
     with the file's behavior (handlers and filters)
     and content (mime-type, language, character set and
@@ -197,6 +205,7 @@ from Clients' networks in a proxy context.</dd>
 <dt><a href="mod_proxy_http2.html">mod_proxy_http2</a></dt><dd>HTTP/2 support module for
 <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></dd>
 <dt><a href="mod_proxy_scgi.html">mod_proxy_scgi</a></dt><dd>SCGI gateway module for <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></dd>
+<dt><a href="mod_proxy_uwsgi.html">mod_proxy_uwsgi</a></dt><dd>UWSGI gateway module for <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></dd>
 <dt><a href="mod_proxy_wstunnel.html">mod_proxy_wstunnel</a></dt><dd>Websockets support module for
 <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></dd>
 <dt><a href="mod_ratelimit.html" id="R" name="R">mod_ratelimit</a></dt><dd>Bandwidth Rate Limiting for Clients</dd>
@@ -223,6 +232,7 @@ yeniden başlatılması sırasında yüklenmesini sağlar.</dd>
 <dt><a href="mod_socache_dbm.html">mod_socache_dbm</a></dt><dd>DBM based shared object cache provider.</dd>
 <dt><a href="mod_socache_dc.html">mod_socache_dc</a></dt><dd>Distcache based shared object cache provider.</dd>
 <dt><a href="mod_socache_memcache.html">mod_socache_memcache</a></dt><dd>Memcache based shared object cache provider.</dd>
+<dt><a href="mod_socache_redis.html">mod_socache_redis</a></dt><dd>Redis based shared object cache provider.</dd>
 <dt><a href="mod_socache_shmcb.html">mod_socache_shmcb</a></dt><dd>shmcb based shared object cache provider.</dd>
 <dt><a href="mod_speling.html">mod_speling</a></dt><dd>Attempts to correct mistaken URLs by ignoring
 capitalization, or attempting to correct various minor
@@ -261,7 +271,7 @@ filter modules</dd>
 <a href="../tr/mod/" title="Türkçe">&nbsp;tr&nbsp;</a> |
 <a href="../zh-cn/mod/" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2017 The Apache Software Foundation.<br /><a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> altında lisanslıdır.</p>
+<p class="apache">Copyright 2025 The Apache Software Foundation.<br /><a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> adı altında lisanslıdır.</p>
 <p class="menu"><a href="../mod/">Modüller</a> | <a href="../mod/quickreference.html">Yönergeler</a> | <a href="http://wiki.apache.org/httpd/FAQ">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

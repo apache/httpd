@@ -19,7 +19,7 @@
  * Proxy backend module for the SCGI protocol
  * (http://python.ca/scgi/protocol.txt)
  *
- * André Malo (nd/perlig.de), August 2007
+ * Andrï¿½ Malo (nd/perlig.de), August 2007
  */
 
 #define APR_WANT_MEMFUNC
@@ -62,10 +62,10 @@ typedef struct {
     scgi_request_type type;  /* type of request */
 } scgi_request_config;
 
-const char *scgi_sendfile_off = "off";
-const char *scgi_sendfile_on = "X-Sendfile";
-const char *scgi_internal_redirect_off = "off";
-const char *scgi_internal_redirect_on = "Location";
+static const char *const scgi_sendfile_off = "off";
+static const char *const scgi_sendfile_on = "X-Sendfile";
+static const char *const scgi_internal_redirect_off = "off";
+static const char *const scgi_internal_redirect_on = "Location";
 
 typedef struct {
     const char *sendfile;
@@ -179,6 +179,8 @@ static int scgi_canon(request_rec *r, char *url)
     char *host, sport[sizeof(":65535")];
     const char *err, *path;
     apr_port_t port, def_port;
+    core_dir_config *d = ap_get_core_module_config(r->per_dir_config);
+    int flags = d->allow_encoded_slashes && !d->decode_encoded_slashes ? PROXY_CANONENC_NOENCODEDSLASHENCODING : 0;
 
     if (ap_cstr_casecmpn(url, SCHEME "://", sizeof(SCHEME) + 2)) {
         return DECLINED;
@@ -205,8 +207,8 @@ static int scgi_canon(request_rec *r, char *url)
         host = apr_pstrcat(r->pool, "[", host, "]", NULL);
     }
 
-    path = ap_proxy_canonenc(r->pool, url, strlen(url), enc_path, 0,
-                             r->proxyreq);
+    path = ap_proxy_canonenc_ex(r->pool, url, strlen(url), enc_path, flags,
+                                r->proxyreq);
     if (!path) {
         return HTTP_BAD_REQUEST;
     }
@@ -334,11 +336,11 @@ static int send_request_body(request_rec *r, proxy_conn_rec *conn)
     if (ap_should_client_block(r)) {
         char *buf = apr_palloc(r->pool, AP_IOBUFSIZE);
         int status;
-        apr_size_t readlen;
+        long readlen;
 
         readlen = ap_get_client_block(r, buf, AP_IOBUFSIZE);
         while (readlen > 0) {
-            status = sendall(conn, buf, readlen, r);
+            status = sendall(conn, buf, (apr_size_t)readlen, r);
             if (status != OK) {
                 return HTTP_SERVICE_UNAVAILABLE;
             }
@@ -387,6 +389,14 @@ static int pass_response(request_rec *r, proxy_conn_rec *conn)
         apr_brigade_destroy(bb);
         return status;
     }
+
+    /* SCGI has its own body framing mechanism which we don't
+     * match against any provided Content-Length, so let the
+     * core determine C-L vs T-E based on what's actually sent.
+     */
+    if (!apr_table_get(r->subprocess_env, AP_TRUST_CGILIKE_CL_ENVVAR))
+        apr_table_unset(r->headers_out, "Content-Length");
+    apr_table_unset(r->headers_out, "Transfer-Encoding");
 
     conf = ap_get_module_config(r->per_dir_config, &proxy_scgi_module);
     if (conf->sendfile && conf->sendfile != scgi_sendfile_off) {

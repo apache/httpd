@@ -51,6 +51,7 @@ to change the scope of other configuration directives.</p>
 <directive type="section" module="mod_version">IfVersion</directive>
 <directive type="section" module="core">Location</directive>
 <directive type="section" module="core">LocationMatch</directive>
+<directive type="section" idtype="section" module="mod_md">MDomainSet</directive>
 <directive type="section" module="mod_proxy">Proxy</directive>
 <directive type="section" module="mod_proxy">ProxyMatch</directive>
 <directive type="section" module="core">VirtualHost</directive>
@@ -70,7 +71,8 @@ not true, the enclosed directives will be ignored.</p>
 
 <p>The <directive type="section" module="core">IfDefine</directive> directive
 encloses directives that will only be applied if an appropriate
-parameter is defined on the <program>httpd</program> command line.  For example,
+parameter is defined on the <program>httpd</program> command line, 
+or with a <directive module="core">Define</directive> directive. For example,
 with the following configuration, all requests will be redirected
 to another site only if the server is started using
 <code>httpd -DClosedForNow</code>:</p>
@@ -99,7 +101,7 @@ applied only if <module>mod_mime_magic</module> is available.</p>
 
 <highlight language="config">
 &lt;IfModule mod_mime_magic.c&gt;
-    MimeMagicFile conf/magic
+    MimeMagicFile "conf/magic"
 &lt;/IfModule&gt;
 </highlight>
 
@@ -304,7 +306,7 @@ and modules like <module>mod_rewrite</module>.</p>
 
 <highlight language="config">
 &lt;DirectoryMatch "^/var/www/combined/(?&lt;SITENAME&gt;[^/]+)"&gt;
-    require ldap-group cn=%{env:MATCH_SITENAME},ou=combined,o=Example
+    Require ldap-group "cn=%{env:MATCH_SITENAME},ou=combined,o=Example"
 &lt;/DirectoryMatch&gt;
 </highlight>
 
@@ -381,7 +383,8 @@ inside <directive type="section" module="core">Directory</directive>.  On
 the other hand, <directive type="section" module="core">If</directive> can
 be used inside <directive type="section" module="core">Directory</directive>,
 <directive type="section" module="core">Location</directive>, and <directive
-type="section" module="core">Files</directive> sections. The regex
+type="section" module="core">Files</directive> sections (but not inside another
+<directive type="section" module="core">If</directive>). The regex
 counterparts of the named section behave identically.</p>
 
 <p>Nested sections are merged after non-nested sections of the same type.</p>
@@ -410,7 +413,7 @@ will allow only a subset of clients to access the
 <code>www.example.com</code> website using the proxy server:</p>
 
 <highlight language="config">
-&lt;Proxy http://www.example.com/*&gt;
+&lt;Proxy "http://www.example.com/*"&gt;
     Require host yournetwork.example.com
 &lt;/Proxy&gt;
 </highlight>
@@ -467,7 +470,7 @@ are interpreted, it is important to understand how this works.</p>
       <directive type="section" module="core">Directory</directive>)</li>
 
       <li><directive type="section" module="core">DirectoryMatch</directive>
-      (and <code>&lt;Directory ~&gt;</code>)</li>
+      (and <code>&lt;Directory "~"&gt;</code>)</li>
 
       <li><directive type="section"
       module="core">Files</directive> and <directive
@@ -478,37 +481,55 @@ are interpreted, it is important to understand how this works.</p>
       and <directive type="section"
       module="core">LocationMatch</directive> done simultaneously</li>
 
-      <li><directive type="section" module="core">If</directive>
+      <li><directive type="section" module="core">If</directive> sections, even when
+      they are enclosed in any of the preceding contexts.
       </li>
 
     </ol>
 
-    <p>Apart from <directive type="section"
-    module="core">Directory</directive>, each group is processed in
-    the order that they appear in the configuration files.  <directive
-    type="section" module="core">Directory</directive> (group 1 above)
-    is processed in the order shortest directory component to longest.
-    So for example, <code>&lt;Directory "/var/web/dir"&gt;</code> will
-    be processed before <code>&lt;Directory
-    "/var/web/dir/subdir"&gt;</code>.  If multiple <directive
-    type="section" module="core">Directory</directive> sections apply
-    to the same directory they are processed in the configuration file
-    order. Configurations included via the <directive
-    module="core">Include</directive> directive will be treated as if
-    they were inside the including file at the location of the
-    <directive module="core">Include</directive> directive.</p>
-
-    <p>Sections inside <directive type="section"
-    module="core">VirtualHost</directive> sections
-    are applied <em>after</em> the corresponding sections outside
-    the virtual host definition. This allows virtual hosts to
-    override the main server configuration.</p>
-
-    <p>When the request is served by <module>mod_proxy</module>, the
-    <directive module="mod_proxy" type="section">Proxy</directive>
-    container takes the place of the <directive module="core"
-    type="section">Directory</directive> container in the processing
-    order.</p>
+    <p>Some important remarks:</p>
+    <ul>
+        <li>Apart from <directive type="section"
+        module="core">Directory</directive>, within each group the sections are
+        processed in the order they appear in the configuration files.
+        For example, a request for <em>/foo/bar</em> will match
+        <code>&lt;Location "/foo/bar"&gt;</code> and 
+        <code>&lt;Location "/foo"&gt;</code> (group 4 in this case):
+        both sections will be evaluated
+        but in the order they appear in the configuration files.</li>
+        <li><directive type="section" module="core">Directory</directive>
+        (group 1 above) is processed in the order shortest directory
+        component to longest. For example,
+        <code>&lt;Directory "/var/web/dir"&gt;</code> will be processed before
+        <code>&lt;Directory "/var/web/dir/subdir"&gt;</code>.</li>
+        <li>If multiple <directive
+        type="section" module="core">Directory</directive> sections apply
+        to the same directory they are processed in the configuration file
+        order.</li>
+        <li>Configurations included via the <directive
+        module="core">Include</directive> directive will be treated as if
+        they were inside the including file at the location of the
+        <directive module="core">Include</directive> directive.</li>
+        <li>Sections inside <directive type="section"
+        module="core">VirtualHost</directive> sections
+        are applied <em>after</em> the corresponding sections outside
+        the virtual host definition. This allows virtual hosts to
+        override the main server configuration.</li>
+        <li>When the request is served by <module>mod_proxy</module>, the
+        <directive module="mod_proxy" type="section">Proxy</directive>
+        container takes the place of the <directive module="core"
+        type="section">Directory</directive> container in the processing
+        order.</li>
+        <li> Caution should be exercised when mixing related configuration
+        directives inside and outside of <directive type="section" module="core"
+        >If</directive> because of the effect on merging order.  Explicit use
+        of <directive type="section" module="core" >Else</directive> can help.
+        </li>
+        <li> When <directive type="section" module="core" >If</directive> is 
+        used in <code>.htaccess</code>, the enclosed directives in a parent 
+        directory will be merged <em>after</em> non-enclosed directives in a 
+        subdirectory.</li>
+    </ul>
 
     <note><title>Technical Note</title>
       There is actually a
@@ -557,7 +578,7 @@ are interpreted, it is important to understand how this works.</p>
         <li><directive>Directory</directive> "/" matches and an initial configuration to set the <code>CustomHeaderName</code> header with the value <code>one</code> is created.</li>
         <li><directive>Directory</directive> "/example" matches, and since <module>mod_headers</module> specifies in its code to override in case of a merge, a new configuration is created to set the <code>CustomHeaderName</code> header with the value <code>two</code>.</li>
         <li><directive>FilesMatch</directive> ".*" matches and another merge opportunity arises, causing the <code>CustomHeaderName</code> header to be set with the value <code>three</code>.</li>
-        <li>Eventually during the next steps of the HTTP request processing <module>mod_headers</module> will be called and it will receive the configuration to set the <code>CustomHeaderName</code> header with the value <code>three</code>. <module>mod_headers</module> normally uses this configuration to perfom its job, namely setting the foo header. This does not mean that a module can't perform a more complex action like discarding directives because not needed or deprecated, etc..</li>
+        <li>Eventually during the next steps of the HTTP request processing <module>mod_headers</module> will be called and it will receive the configuration to set the <code>CustomHeaderName</code> header with the value <code>three</code>. <module>mod_headers</module> normally uses this configuration to perform its job, namely setting the foo header. This does not mean that a module can't perform a more complex action like discarding directives because not needed or deprecated, etc..</li>
     </ul>
 
     <p>This is true for .htaccess too since they have the same priority as <directive>Directory</directive> in the merge order. The important concept to understand is that configuration sections like  <directive>Directory</directive> and <directive>FilesMatch</directive> are not comparable to module specific directives like <directive module="mod_headers">Header</directive> or <directive module="mod_rewrite">RewriteRule</directive> because they operate on different levels.

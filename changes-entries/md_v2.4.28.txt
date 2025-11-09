@@ -1,0 +1,11 @@
+  *) mod_md: update to version 2.4.28
+     - When the server starts, it looks for new, staged certificates to
+       activate. If the staged set of files in 'md/staging/<domain>' is messed
+       up, this could prevent further renewals to happen. Now, when the staging
+       set is present, but could not be activated due to an error, purge the
+       whole directory. [icing]
+     - Fix certificate retrieval on ACME renewal to not require a 'Location:'
+       header returned by the ACME CA. This was the way it was done in ACME
+       before it became an IETF standard. Let's Encrypt still supports this,
+       but other CAs do not. [icing]
+     - Restore compatibility with OpenSSL < 1.1. [ylavic]

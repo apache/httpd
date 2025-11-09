@@ -20,15 +20,6 @@
 #include "http_protocol.h"
 
 #include "apr.h"
-#include "apu_version.h"
-
-/* apr_memcache support requires >= 1.3 */
-#if APU_MAJOR_VERSION > 1 || \
-    (APU_MAJOR_VERSION == 1 && APU_MINOR_VERSION > 2)
-#define HAVE_APU_MEMCACHE 1
-#endif
-
-#ifdef HAVE_APU_MEMCACHE
 
 #include "ap_socache.h"
 #include "ap_mpm.h"
@@ -371,8 +362,6 @@ static const ap_socache_provider_t socache_mc = {
     socache_mc_iterate
 };
 
-#endif /* HAVE_APU_MEMCACHE */
-
 static void *create_server_config(apr_pool_t *p, server_rec *s)
 {
     socache_mc_svr_cfg *sconf = apr_pcalloc(p, sizeof(socache_mc_svr_cfg));
@@ -407,11 +396,9 @@ static const char *socache_mc_set_ttl(cmd_parms *cmd, void *dummy,
 
 static void register_hooks(apr_pool_t *p)
 {
-#ifdef HAVE_APU_MEMCACHE
     ap_register_provider(p, AP_SOCACHE_PROVIDER_GROUP, "memcache",
                          AP_SOCACHE_PROVIDER_VERSION,
                          &socache_mc);
-#endif
 }
 
 static const command_rec socache_memcache_cmds[] = {

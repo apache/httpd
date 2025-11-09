@@ -1,0 +1,122 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
+<!-- $LastChangedRevision$ -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_socache_redis.xml.meta">
+
+<name>mod_socache_redis</name>
+<description>Redis based shared object cache provider.</description>
+<status>Extension</status>
+<sourcefile>mod_socache_redis.c</sourcefile>
+<identifier>socache_redis_module</identifier>
+<compatibility>Available in Apache 2.4.39 and later</compatibility>
+
+<summary>
+    <p><module>mod_socache_redis</module> is a shared object cache provider
+    which provides for creation and access to a cache backed by the
+    <a href="https://redis.io/">Redis</a>
+    high-performance, distributed memory object caching system.
+    </p>
+
+
+    <p>This shared object cache provider's "create" method requires a
+       comma separated list of memcached host/port specifications. If using
+       this provider via another modules configuration (such as
+       <directive module="mod_ssl">SSLSessionCache</directive>), provide
+       the list of servers as the optional "arg" parameter.</p>
+
+    <highlight language="config">
+        SSLSessionCache redis:redis.example.com:12345,redis2.example.com:12345
+    </highlight>
+
+    <p>Details of other shared object cache providers can be found
+    <a href="../socache.html">here</a>.
+    </p>
+
+</summary>
+
+<directivesynopsis>
+<name>RedisConnPoolTTL</name>
+<description>TTL used for the connection pool with the Redis server(s)</description>
+<syntax>RedisConnPoolTTL <em>num</em>[<em>units</em>]</syntax>
+<default>RedisConnPoolTTL 15s</default>
+<contextlist>
+<context>server config</context>
+<context>virtual host</context>
+</contextlist>
+<compatibility>Available in Apache 2.4.39 and later</compatibility>
+
+<usage>
+    <p>Set the time to keep idle connections with the Redis server(s)
+    alive (threaded platforms only).</p>
+    
+    <p>Valid values for <directive>RedisConnPoolTTL</directive> are times
+    up to one hour. 0 means no timeout.</p>
+
+    <note><p>This timeout defaults to units of seconds, but accepts
+    suffixes for milliseconds (ms), seconds (s), minutes (min), and hours (h).
+    </p></note>
+
+    <example>
+    <highlight language="config">
+# Set a timeout of 10 minutes
+RedisConnPoolTTL 10min
+# Set a timeout of 60 seconds
+RedisConnPoolTTL 60
+    </highlight>
+    </example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>RedisTimeout</name>
+<description>R/W timeout used for the connection with the Redis server(s)</description>
+<syntax>RedisTimeout <em>num</em>[<em>units</em>]</syntax>
+<default>RedisTimeout 5s</default>
+<contextlist>
+<context>server config</context>
+<context>virtual host</context>
+</contextlist>
+<compatibility>Available in Apache 2.4.39 and later</compatibility>
+
+<usage>
+    <p>Set the Read/Write timeout used for the connection with the Redis
+    server(s).</p>
+    
+    <p>Valid values for <directive>RedisTimeout</directive> are times
+    up to one hour. 0 means no timeout.</p>
+
+    <note><p>This timeout defaults to units of seconds, but accepts
+    suffixes for milliseconds (ms), seconds (s), minutes (min), and hours (h).
+    </p></note>
+
+    <example>
+    <highlight language="config">
+# Set a timeout of 10 minutes
+RedisTimeout 10min
+# Set a timeout of 60 seconds
+RedisTimeout 60
+    </highlight>
+    </example>
+</usage>
+</directivesynopsis>
+
+</modulesynopsis>

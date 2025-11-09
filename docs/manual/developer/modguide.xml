@@ -94,7 +94,7 @@ that defines a module as <em>a separate entity within Apache</em>:</p>
 
 <!-- BEGIN EXAMPLE CODE -->
 <highlight language="c">
-module AP_MODULE_DECLARE_DATA   example_module =
+AP_DECLARE_MODULE(example) =
 {
     STANDARD20_MODULE_STUFF,
     create_dir_conf, /* Per-directory configuration handler */
@@ -110,11 +110,12 @@ module AP_MODULE_DECLARE_DATA   example_module =
 <p>
 This bit of code lets the server know that we have now registered a new module
 in the system, and that its name is <code>example_module</code>. The name
-of the module is used primarily for two things:<br/>
+of the module is used primarily for three things:<br/>
 </p>
 <ul>
 <li>Letting the server know how to load the module using the LoadModule</li>
 <li>Setting up a namespace for the module to use in configurations</li>
+<li>Allowing the user to distinguish an origin of log messages</li>
 </ul>
 <p>
 For now, we're only concerned with the first purpose of the module name,
@@ -180,7 +181,7 @@ the server based on the value of this tag.
 </section>
 <section id="hook_declaration"><title>Hooking into httpd</title>
 <p>
-To begin with, we only want to create a simple handler, that replies to the
+To begin with, we only want to create a simple handler that replies to the
 client browser when a specific URL is requested, so we won't bother setting
 up configuration handlers and directives just yet. Our initial module
 definition will look like this:</p>
@@ -188,7 +189,7 @@ definition will look like this:</p>
 
 <!-- BEGIN EXAMPLE CODE -->
 <highlight language="c">
-module AP_MODULE_DECLARE_DATA   example_module =
+AP_DECLARE_MODULE(example) =
 {
     STANDARD20_MODULE_STUFF,
     NULL,
@@ -209,7 +210,7 @@ just want to hook onto the requests and possibly handle some of them. </p>
 is the name of a function we will create to manage how we hook onto the
 request process. In this example module, the function has just one purpose;
 To create a simple hook that gets called after all the rewrites, access
-control etc has been handled. Thus, we will let the server know, that we want
+control etc has been handled. Thus, we will let the server know that we want
 to hook into its process as one of the last modules:
 </p>
 
@@ -237,6 +238,7 @@ can create. Some other ways of hooking are:
 <li><code>ap_hook_child_init</code>: Place a hook that executes when a child process is spawned (commonly used for initializing modules after the server has forked)</li>
 <li><code>ap_hook_pre_config</code>: Place a hook that executes before any configuration data has been read (very early hook)</li>
 <li><code>ap_hook_post_config</code>: Place a hook that executes after configuration has been parsed, but before the server has forked</li>
+<li><code>ap_hook_pre_translate_name</code>: Place a hook that executes when a URI needs to be translated into a filename on the server, before decoding</li>
 <li><code>ap_hook_translate_name</code>: Place a hook that executes when a URI needs to be translated into a filename on the server (think <code>mod_rewrite</code>)</li>
 <li><code>ap_hook_quick_handler</code>: Similar to <code>ap_hook_handler</code>, except it is run before any other request hooks (translation, auth, fixups etc)</li>
 <li><code>ap_hook_log_transaction</code>: Place a hook that executes when the server is about to add a log entry of the current request</li>
@@ -794,7 +796,7 @@ static void register_hooks(apr_pool_t *pool)
 
 /* Define our module as an entity and assign a function for registering hooks  */
 
-module AP_MODULE_DECLARE_DATA   example_module =
+AP_DECLARE_MODULE(example) =
 {
     STANDARD20_MODULE_STUFF,
     NULL,            /* Per-directory configuration handler */
@@ -833,7 +835,7 @@ reference to the configuration directives we want to register with the server:
 
 <!-- BEGIN EXAMPLE CODE -->
 <highlight language="c">
-module AP_MODULE_DECLARE_DATA   example_module =
+AP_DECLARE_MODULE(example) =
 {
     STANDARD20_MODULE_STUFF,
     NULL,               /* Per-directory configuration handler */
@@ -1044,7 +1046,7 @@ static void register_hooks(apr_pool_t *pool)
  Our module name tag:
  ==============================================================================
  */
-module AP_MODULE_DECLARE_DATA   example_module =
+AP_DECLARE_MODULE(example) =
 {
     STANDARD20_MODULE_STUFF,
     NULL,               /* Per-directory configuration handler */
@@ -1209,7 +1211,7 @@ per-directory creator and merger function reference in our tag:</p>
 
 <!-- BEGIN EXAMPLE CODE -->
 <highlight language="c">
-module AP_MODULE_DECLARE_DATA   example_module =
+AP_DECLARE_MODULE(example) =
 {
     STANDARD20_MODULE_STUFF,
     create_dir_conf, /* Per-directory configuration handler */
@@ -1407,7 +1409,7 @@ static const command_rec    directives[] =
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  */
 
-module AP_MODULE_DECLARE_DATA    example_module =
+AP_DECLARE_MODULE(example) =
 {
     STANDARD20_MODULE_STUFF,
     create_dir_conf,    /* Per-directory configuration handler */

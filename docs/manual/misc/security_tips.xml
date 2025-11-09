@@ -120,15 +120,9 @@
       mitigating DoS attacks.  Further, the
       <module>event</module> mpm
       uses asynchronous processing to avoid devoting a thread to each
-      connection. Due to the nature of the OpenSSL library the
-      <module>event</module> mpm is currently incompatible with
-      <module>mod_ssl</module> and other input filters. In these
-      cases it falls back to the behaviour of the
-      <module>worker</module> mpm.</li>
+      connection. </li>
 
-      <li>There are a number of third-party modules available through
-      <a
-      href="http://modules.apache.org/">http://modules.apache.org/</a>
+      <li>There are a number of third-party modules available
       that can restrict certain client behaviors and thereby mitigate
       DoS problems.</li>
 
@@ -454,7 +448,7 @@ UserDir disabled root
     on how directives are merged.</p>
 
     <p> For modules that don't implement any merging logic, such as
-    <directive>mod_access_compat</directive>, the behavior in later sections
+    <module>mod_access_compat</module>, the behavior in later sections
     depends on whether the later section has any directives
     from the module.  The configuration is inherited until a change is made,
     at which point the configuration is <em>replaced</em> and not merged.</p>

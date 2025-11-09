@@ -126,24 +126,36 @@ static apr_status_t ap_session_load(request_rec * r, session_rec ** z)
 
     /* found a session that hasn't expired? */
     now = apr_time_now();
+
     if (zz) {
-        if (zz->expiry && zz->expiry < now) {
-            zz = NULL;
+        /* load the session attributes */
+        rv = ap_run_session_decode(r, zz);
+ 
+        /* having a session we cannot decode is just as good as having
+           none at all */
+       if (OK != rv) {
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(01817)
+                    "error while decoding the session, "
+                    "session not loaded: %s", r->uri);
+            /* preserve pointers to zz in load/save providers */
+            memset(zz, 0, sizeof(session_rec));
+            zz->pool = r->pool;
+            zz->entries = apr_table_make(zz->pool, 10);
         }
-        else {
-            /* having a session we cannot decode is just as good as having
-               none at all */
-            rv = ap_run_session_decode(r, zz);
-            if (OK != rv) {
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(01817)
-                              "error while decoding the session, "
-                              "session not loaded: %s", r->uri);
-                zz = NULL;
-            }
+
+       /* invalidate session if session is expired */
+        if (zz && zz->expiry && zz->expiry < now) {
+            ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r, "session is expired");
+            /* preserve pointers to zz in load/save providers */
+            memset(zz, 0, sizeof(session_rec));
+            zz->pool = r->pool;
+            zz->entries = apr_table_make(zz->pool, 10);
         }
     }
 
-    /* no luck, create a blank session */
+    /* no luck, create a blank session. Note that the included session_load 
+     * providers will return new sessions during session_load when configured.
+     */
     if (!zz) {
         zz = (session_rec *) apr_pcalloc(r->pool, sizeof(session_rec));
         zz->pool = r->pool;
@@ -313,15 +325,17 @@ static apr_status_t ap_session_set(request_rec * r, session_rec * z,
 
 static int identity_count(void *v, const char *key, const char *val)
 {
-    int *count = v;
-    *count += strlen(key) * 3 + strlen(val) * 3 + 1;
+    apr_size_t *count = v;
+
+    *count += strlen(key) * 3 + strlen(val) * 3 + 2;
     return 1;
 }
 
 static int identity_concat(void *v, const char *key, const char *val)
 {
     char *slider = v;
-    int length = strlen(slider);
+    apr_size_t length = strlen(slider);
+
     slider += length;
     if (length) {
         *slider = '&';
@@ -350,9 +364,9 @@ static int identity_concat(void *v, const char *key, const char *val)
  */
 static apr_status_t session_identity_encode(request_rec * r, session_rec * z)
 {
-
     char *buffer = NULL;
-    int length = 0;
+    apr_size_t length = 0;
+
     if (z->expiry) {
         char *expiry = apr_psprintf(z->pool, "%" APR_INT64_T_FMT, z->expiry);
         apr_table_setn(z->entries, SESSION_EXPIRY, expiry);
@@ -401,8 +415,8 @@ static apr_status_t session_identity_decode(request_rec * r, session_rec * z)
         char *plast = NULL;
         const char *psep = "=";
         char *key = apr_strtok(pair, psep, &plast);
-        char *val = apr_strtok(NULL, psep, &plast);
         if (key && *key) {
+            char *val = apr_strtok(NULL, psep, &plast);
             if (!val || !*val) {
                 apr_table_unset(z->entries, key);
             }
@@ -522,12 +536,15 @@ static int session_fixups(request_rec * r)
      */
     ap_session_load(r, &z);
 
-    if (z && conf->env) {
-        session_identity_encode(r, z);
-        if (z->encoded) {
-            apr_table_set(r->subprocess_env, HTTP_SESSION, z->encoded);
-            z->encoded = NULL;
+    if (conf->env) {
+        if (z) {
+            session_identity_encode(r, z);
+            if (z->encoded) {
+                apr_table_set(r->subprocess_env, HTTP_SESSION, z->encoded);
+                z->encoded = NULL;
+            }
         }
+        apr_table_unset(r->headers_in, "Session");
     }
 
     return OK;
@@ -642,7 +659,7 @@ static const char *
 
     conf->expiry_update_time = atoi(arg);
     if (conf->expiry_update_time < 0) {
-        return "SessionExpiryUpdateInterval must be positive or nul";
+        return "SessionExpiryUpdateInterval must be zero (disable) or a positive value";
     }
     conf->expiry_update_time = apr_time_from_sec(conf->expiry_update_time);
     conf->expiry_update_set = 1;

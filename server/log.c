@@ -25,6 +25,10 @@
 #include "apr_general.h"        /* for signal stuff */
 #include "apr_strings.h"
 #include "apr_errno.h"
+#include "apu_version.h"
+#if (APU_MAJOR_VERSION == 1 && APU_MINOR_VERSION >= 7)
+#include "apu_errno.h"
+#endif
 #include "apr_thread_proc.h"
 #include "apr_lib.h"
 #include "apr_signal.h"
@@ -56,14 +60,22 @@
 #include "ap_provider.h"
 #include "ap_listen.h"
 
-#if HAVE_GETTID
+#ifdef HAVE_SYS_GETTID
 #include <sys/syscall.h>
 #include <sys/types.h>
+#endif
+
+#ifdef HAVE_PTHREAD_NP_H
+#include <pthread_np.h>
 #endif
 
 /* we know core's module_index is 0 */
 #undef APLOG_MODULE_INDEX
 #define APLOG_MODULE_INDEX AP_CORE_MODULE_INDEX
+
+#ifndef DEFAULT_LOG_TID
+#define DEFAULT_LOG_TID NULL
+#endif
 
 typedef struct {
     const char *t_name;
@@ -185,14 +197,14 @@ AP_DECLARE(apr_status_t) ap_replace_stderr_log(apr_pool_t *p,
     char *filename = ap_server_root_relative(p, fname);
     if (!filename) {
         ap_log_error(APLOG_MARK, APLOG_STARTUP|APLOG_CRIT,
-                     APR_EBADPATH, NULL, APLOGNO(00085) "Invalid -E error log file %s",
+                     APR_EBADPATH, ap_server_conf, APLOGNO(00085) "Invalid -E error log file %s",
                      fname);
         return APR_EBADPATH;
     }
     if ((rc = apr_file_open(&stderr_file, filename,
                             APR_APPEND | APR_WRITE | APR_CREATE | APR_LARGEFILE,
                             APR_OS_DEFAULT, p)) != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_STARTUP, rc, NULL, APLOGNO(00086)
+        ap_log_error(APLOG_MARK, APLOG_STARTUP, rc, ap_server_conf, APLOGNO(00086)
                      "%s: could not open error log file %s.",
                      ap_server_argv0, fname);
         return rc;
@@ -212,7 +224,7 @@ AP_DECLARE(apr_status_t) ap_replace_stderr_log(apr_pool_t *p,
             /*
              * You might ponder why stderr_pool should survive?
              * The trouble is, stderr_pool may have s_main->error_log,
-             * so we aren't in a position to destory stderr_pool until
+             * so we aren't in a position to destroy stderr_pool until
              * the next recycle.  There's also an apparent bug which
              * is not; if some folk decided to call this function before
              * the core open error logs hook, this pool won't survive.
@@ -239,7 +251,7 @@ static void log_child_errfn(apr_pool_t *pool, apr_status_t err,
 }
 
 /* Create a child process running PROGNAME with a pipe connected to
- * the childs stdin.  The write-end of the pipe will be placed in
+ * the child's stdin.  The write-end of the pipe will be placed in
  * *FPIN on successful return.  If dummy_stderr is non-zero, the
  * stderr for the child will be the same as the stdout of the parent.
  * Otherwise the child will inherit the stderr from the parent. */
@@ -324,7 +336,7 @@ static int open_error_log(server_rec *s, int is_main, apr_pool_t *p)
          * child inherits the parents stderr. */
         rc = log_child(p, fname, &dummy, cmdtype, is_main);
         if (rc != APR_SUCCESS) {
-            ap_log_error(APLOG_MARK, APLOG_STARTUP, rc, NULL, APLOGNO(00089)
+            ap_log_error(APLOG_MARK, APLOG_STARTUP, rc, ap_server_conf, APLOGNO(00089)
                          "Couldn't start ErrorLog process '%s'.",
                          s->error_fname + 1);
             return DONE;
@@ -343,7 +355,7 @@ static int open_error_log(server_rec *s, int is_main, apr_pool_t *p)
     else {
         fname = ap_server_root_relative(p, s->error_fname);
         if (!fname) {
-            ap_log_error(APLOG_MARK, APLOG_STARTUP, APR_EBADPATH, NULL, APLOGNO(00090)
+            ap_log_error(APLOG_MARK, APLOG_STARTUP, APR_EBADPATH, ap_server_conf, APLOGNO(00090)
                          "%s: Invalid error log path %s.",
                          ap_server_argv0, s->error_fname);
             return DONE;
@@ -351,7 +363,7 @@ static int open_error_log(server_rec *s, int is_main, apr_pool_t *p)
         if ((rc = apr_file_open(&s->error_log, fname,
                                APR_APPEND | APR_WRITE | APR_CREATE | APR_LARGEFILE,
                                APR_OS_DEFAULT, p)) != APR_SUCCESS) {
-            ap_log_error(APLOG_MARK, APLOG_STARTUP, rc, NULL, APLOGNO(00091)
+            ap_log_error(APLOG_MARK, APLOG_STARTUP, rc, ap_server_conf, APLOGNO(00091)
                          "%s: could not open error log file %s.",
                          ap_server_argv0, fname);
             return DONE;
@@ -538,14 +550,20 @@ static int log_tid(const ap_errorlog_info *info, const char *arg,
 #if APR_HAS_THREADS
     int result;
 #endif
-#if HAVE_GETTID
+#if defined(HAVE_GETTID) || defined(HAVE_SYS_GETTID) || defined(HAVE_PTHREAD_GETTHREADID_NP)
     if (arg && *arg == 'g') {
+#if defined(HAVE_GETTID)
+        pid_t tid = gettid();
+#elif defined(HAVE_PTHREAD_GETTHREADID_NP)
+        pid_t tid = pthread_getthreadid_np();
+#else
         pid_t tid = syscall(SYS_gettid);
+#endif
         if (tid == -1)
             return 0;
         return apr_snprintf(buf, buflen, "%"APR_PID_T_FMT, tid);
     }
-#endif
+#endif /* HAVE_GETTID || HAVE_SYS_GETTID */
 #if APR_HAS_THREADS
     if (ap_mpm_query(AP_MPMQ_IS_THREADED, &result) == APR_SUCCESS
         && result != AP_MPMQ_NOT_SUPPORTED)
@@ -563,14 +581,32 @@ static int log_ctime(const ap_errorlog_info *info, const char *arg,
     int time_len = buflen;
     int option = AP_CTIME_OPTION_NONE;
 
-    while (arg && *arg) {
-        switch (*arg) {
-            case 'u':   option |= AP_CTIME_OPTION_USEC;
-                        break;
-            case 'c':   option |= AP_CTIME_OPTION_COMPACT;
-                        break;
+    if (arg) {
+        if (arg[0] == 'u' && !arg[1]) { /* no ErrorLogFormat (fast path) */
+            option |= AP_CTIME_OPTION_USEC;
         }
-        arg++;
+        else if (!ap_strchr_c(arg, '%')) { /* special "%{cuz}t" formats */
+            while (*arg) {
+                switch (*arg++) {
+                case 'u':
+                    option |= AP_CTIME_OPTION_USEC;
+                    break;
+                case 'c':
+                    option |= AP_CTIME_OPTION_COMPACT;
+                    break;
+                case 'z':
+                    option |= AP_CTIME_OPTION_GMTOFF;
+                    break;
+                }
+            }
+        }
+        else { /* "%{strftime %-format}t" */
+            apr_size_t len = 0;
+            apr_time_exp_t expt;
+            ap_explode_recent_localtime(&expt, apr_time_now());
+            apr_strftime(buf, &len, buflen, arg, &expt);
+            return (int)len;
+        }
     }
 
     ap_recent_ctime_ex(buf, apr_time_now(), option, &time_len);
@@ -688,7 +724,19 @@ static int log_apr_status(const ap_errorlog_info *info, const char *arg,
         len = apr_snprintf(buf, buflen, "(os 0x%08x)",
                            status - APR_OS_START_SYSERR);
     }
+#if (APU_MAJOR_VERSION == 1 && APU_MINOR_VERSION >= 7)
+    if (status < APR_UTIL_START_STATUS) {
+        apr_strerror(status, buf + len, buflen - len);
+    }
+    else if (status < (APR_UTIL_START_STATUS + APR_UTIL_ERRSPACE_SIZE)) {
+        apu_strerror(status, buf + len, buflen - len);
+    }
+    else {
+        apr_strerror(status, buf + len, buflen - len);
+    }
+#else
     apr_strerror(status, buf + len, buflen - len);
+#endif
     len += strlen(buf + len);
     return len;
 }
@@ -879,7 +927,7 @@ static int do_errorlog_default(const ap_errorlog_info *info, char *buf,
 #if APR_HAS_THREADS
         field_start = len;
         len += cpystrn(buf + len, ":tid ", buflen - len);
-        item_len = log_tid(info, NULL, buf + len, buflen - len);
+        item_len = log_tid(info, DEFAULT_LOG_TID, buf + len, buflen - len);
         if (!item_len)
             len = field_start;
         else
@@ -910,14 +958,14 @@ static int do_errorlog_default(const ap_errorlog_info *info, char *buf,
      * a scoreboard handle, it is likely a client.
      */
     if (info->r) {
-        len += apr_snprintf(buf + len, buflen - len,
-                            info->r->connection->sbh ? "[client %s:%d] " : "[remote %s:%d] ",
+        len += apr_snprintf(buf + len, buflen - len, "[%s %s:%d] ",
+                            info->r->connection->outgoing ? "remote" : "client",
                             info->r->useragent_ip,
                             info->r->useragent_addr ? info->r->useragent_addr->port : 0);
     }
     else if (info->c) {
-        len += apr_snprintf(buf + len, buflen - len,
-                            info->c->sbh ? "[client %s:%d] " : "[remote %s:%d] ",
+        len += apr_snprintf(buf + len, buflen - len, "[%s %s:%d] ",
+                            info->c->outgoing ? "remote" : "client",
                             info->c->client_ip,
                             info->c->client_addr ? info->c->client_addr->port : 0);
     }
@@ -1070,6 +1118,11 @@ static void log_error_core(const char *file, int line, int module_index,
             errorlog_provider = ap_server_conf->errorlog_provider;
             errorlog_provider_handle = ap_server_conf->errorlog_provider_handle;
         }
+
+        /* Use the main ErrorLogFormat if any */
+        if (ap_server_conf) {
+            sconf = ap_get_core_module_config(ap_server_conf->module_config);
+        }
     }
     else {
         int configured_level = r ? ap_get_request_module_loglevel(r, module_index)        :
@@ -1117,11 +1170,15 @@ static void log_error_core(const char *file, int line, int module_index,
                 }
             }
         }
+        else if (ap_server_conf) {
+            /* Use the main ErrorLogFormat if any */
+            sconf = ap_get_core_module_config(ap_server_conf->module_config);
+        }
     }
 
     if (!logf && !(errorlog_provider && errorlog_provider_handle)) {
         /* There is no file to send the log message to (or it is
-         * redirected to /dev/null and therefore any formating done below
+         * redirected to /dev/null and therefore any formatting done below
          * would be lost anyway) and there is no initialized log provider
          * available, so we just return here.
          */
@@ -1524,6 +1581,9 @@ AP_DECLARE(void) ap_log_pid(apr_pool_t *p, const char *filename)
     pid_t mypid;
     apr_status_t rv;
     const char *fname;
+    char *temp_fname;
+    apr_fileperms_t perms;
+    char pidstr[64];
 
     if (!filename) {
         return;
@@ -1532,7 +1592,7 @@ AP_DECLARE(void) ap_log_pid(apr_pool_t *p, const char *filename)
     fname = ap_runtime_dir_relative(p, filename);
     if (!fname) {
         ap_log_error(APLOG_MARK, APLOG_STARTUP|APLOG_CRIT, APR_EBADPATH,
-                     NULL, APLOGNO(00097) "Invalid PID file path %s, ignoring.", filename);
+                     ap_server_conf, APLOGNO(00097) "Invalid PID file path %s, ignoring.", filename);
         return;
     }
 
@@ -1552,19 +1612,31 @@ AP_DECLARE(void) ap_log_pid(apr_pool_t *p, const char *filename)
                       fname);
     }
 
-    if ((rv = apr_file_open(&pid_file, fname,
-                            APR_WRITE | APR_CREATE | APR_TRUNCATE,
-                            APR_UREAD | APR_UWRITE | APR_GREAD | APR_WREAD, p))
-        != APR_SUCCESS) {
+    temp_fname = apr_pstrcat(p, fname, ".XXXXXX", NULL);
+    rv = apr_file_mktemp(&pid_file, temp_fname,
+                         APR_FOPEN_WRITE | APR_FOPEN_CREATE | APR_FOPEN_TRUNCATE, p);
+    if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, NULL, APLOGNO(00099)
-                     "could not create %s", fname);
+                     "could not create %s", temp_fname);
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, NULL, APLOGNO(00100)
                      "%s: could not log pid to file %s",
                      ap_server_argv0, fname);
         exit(1);
     }
-    apr_file_printf(pid_file, "%" APR_PID_T_FMT APR_EOL_STR, mypid);
-    apr_file_close(pid_file);
+
+    apr_snprintf(pidstr, sizeof pidstr, "%" APR_PID_T_FMT APR_EOL_STR, mypid);
+
+    perms = APR_UREAD | APR_UWRITE | APR_GREAD | APR_WREAD;
+    if (((rv = apr_file_perms_set(temp_fname, perms)) != APR_SUCCESS && rv != APR_ENOTIMPL)
+        || (rv = apr_file_write_full(pid_file, pidstr, strlen(pidstr), NULL)) != APR_SUCCESS
+        || (rv = apr_file_close(pid_file)) != APR_SUCCESS
+        || (rv = apr_file_rename(temp_fname, fname, p)) != APR_SUCCESS) {
+        ap_log_error(APLOG_MARK, APLOG_ERR, rv, NULL, APLOGNO(10231)
+                     "%s: Failed creating pid file %s",
+                     ap_server_argv0, temp_fname);
+        exit(1);
+    }
+
     saved_pid = mypid;
 }
 
@@ -1585,7 +1657,7 @@ AP_DECLARE(apr_status_t) ap_read_pid(apr_pool_t *p, const char *filename,
     fname = ap_runtime_dir_relative(p, filename);
     if (!fname) {
         ap_log_error(APLOG_MARK, APLOG_STARTUP|APLOG_CRIT, APR_EBADPATH,
-                     NULL, APLOGNO(00101) "Invalid PID file path %s, ignoring.", filename);
+                     ap_server_conf, APLOGNO(00101) "Invalid PID file path %s, ignoring.", filename);
         return APR_EGENERAL;
     }
 
@@ -1657,7 +1729,7 @@ static apr_status_t piped_log_spawn(piped_log *pl)
          != APR_SUCCESS) ||
         ((status = apr_procattr_error_check_set(procattr, 1)) != APR_SUCCESS)) {
         /* Something bad happened, give up and go away. */
-        ap_log_error(APLOG_MARK, APLOG_STARTUP, status, NULL, APLOGNO(00103)
+        ap_log_error(APLOG_MARK, APLOG_STARTUP, status, ap_server_conf, APLOGNO(00103)
                      "piped_log_spawn: unable to setup child process '%s'",
                      pl->program);
     }
@@ -1682,7 +1754,7 @@ static apr_status_t piped_log_spawn(piped_log *pl)
         }
         else {
             /* Something bad happened, give up and go away. */
-            ap_log_error(APLOG_MARK, APLOG_STARTUP, status, NULL, APLOGNO(00104)
+            ap_log_error(APLOG_MARK, APLOG_STARTUP, status, ap_server_conf, APLOGNO(00104)
                          "unable to start piped log program '%s'",
                          pl->program);
         }
@@ -1812,7 +1884,7 @@ AP_DECLARE(piped_log *) ap_open_piped_log_ex(apr_pool_t *p,
 
     rc = log_child(p, program, &dummy, cmdtype, 0);
     if (rc != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_STARTUP, rc, NULL, APLOGNO(00108)
+        ap_log_error(APLOG_MARK, APLOG_STARTUP, rc, ap_server_conf, APLOGNO(00108)
                      "Couldn't start piped log process '%s'.",
                      (program == NULL) ? "NULL" : program);
         return NULL;
@@ -1856,8 +1928,8 @@ AP_DECLARE(void) ap_close_piped_log(piped_log *pl)
 
 AP_DECLARE(const char *) ap_parse_log_level(const char *str, int *val)
 {
-    char *err = "Log level keyword must be one of emerg/alert/crit/error/warn/"
-                "notice/info/debug/trace1/.../trace8";
+    const char *err = "Log level keyword must be one of emerg/alert/crit/error/"
+                      "warn/notice/info/debug/trace1/.../trace8";
     int i = 0;
 
     if (str == NULL)

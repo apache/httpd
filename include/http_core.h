@@ -31,6 +31,7 @@
 #include "apr_optional.h"
 #include "util_filter.h"
 #include "ap_expr.h"
+#include "apr_poll.h"
 #include "apr_tables.h"
 
 #include "http_config.h"
@@ -252,6 +253,13 @@ AP_DECLARE(const char *) ap_get_server_name_for_url(request_rec *r);
  * @return The server's port
  */
 AP_DECLARE(apr_port_t) ap_get_server_port(const request_rec *r);
+
+/**
+ * Get the size of read buffers
+ * @param r The current request
+ * @return The read buffers size
+ */
+AP_DECLARE(apr_size_t) ap_get_read_buf_size(const request_rec *r);
 
 /**
  * Return the limit on bytes in request msg body
@@ -482,12 +490,13 @@ typedef unsigned int overrides_t;
  */
 typedef unsigned long etag_components_t;
 
-#define ETAG_UNSET 0
-#define ETAG_NONE  (1 << 0)
-#define ETAG_MTIME (1 << 1)
-#define ETAG_INODE (1 << 2)
-#define ETAG_SIZE  (1 << 3)
-#define ETAG_ALL   (ETAG_MTIME | ETAG_INODE | ETAG_SIZE)
+#define ETAG_UNSET  0
+#define ETAG_NONE   (1 << 0)
+#define ETAG_MTIME  (1 << 1)
+#define ETAG_INODE  (1 << 2)
+#define ETAG_SIZE   (1 << 3)
+#define ETAG_DIGEST (1 << 4)
+#define ETAG_ALL    (ETAG_MTIME | ETAG_INODE | ETAG_SIZE)
 /* This is the default value used */
 #define ETAG_BACKWARD (ETAG_MTIME | ETAG_SIZE)
 
@@ -544,8 +553,6 @@ typedef struct {
 #define HOSTNAME_LOOKUP_DOUBLE  2
 #define HOSTNAME_LOOKUP_UNSET   3
     unsigned int hostname_lookups : 4;
-
-    unsigned int content_md5 : 2;  /* calculate Content-MD5? */
 
 #define USE_CANONICAL_NAME_OFF   (0)
 #define USE_CANONICAL_NAME_ON    (1)
@@ -655,6 +662,12 @@ typedef struct {
     /** Named back references */
     apr_array_header_t *refs;
 
+    /** Custom response config with expression support. The hash table
+     * contains compiled expressions keyed against the custom response
+     * code.
+     */
+    apr_hash_t *response_code_exprs;
+
 #define AP_CGI_PASS_AUTH_OFF     (0)
 #define AP_CGI_PASS_AUTH_ON      (1)
 #define AP_CGI_PASS_AUTH_UNSET   (2)
@@ -664,18 +677,13 @@ typedef struct {
      * advice
      */
     unsigned int cgi_pass_auth : 2;
-
-    /** Custom response config with expression support. The hash table
-     * contains compiled expressions keyed against the custom response
-     * code.
-     */
-    apr_hash_t *response_code_exprs;
-
     unsigned int qualify_redirect_url :2;
     ap_expr_info_t  *expr_handler;         /* forced with SetHandler */
 
     /** Table of rules for building CGI variables, NULL if none configured */
     apr_hash_t *cgi_var_rules;
+
+    apr_size_t read_buf_size;
 } core_dir_config;
 
 /* macro to implement off by default behaviour */
@@ -758,6 +766,14 @@ typedef struct {
     int protocols_honor_order;
     int async_filter;
     unsigned int async_filter_set:1;
+ 
+    apr_size_t   flush_max_threshold;
+    apr_int32_t  flush_max_pipelined;
+    unsigned int strict_host_check;
+    unsigned int merge_slashes;
+#ifdef WIN32
+    apr_array_header_t *unc_list;
+#endif
 } core_server_config;
 
 /* for AddOutputFiltersByType in core.c */
@@ -782,20 +798,6 @@ apr_status_t ap_core_output_filter(ap_filter_t *f, apr_bucket_brigade *b);
 
 AP_DECLARE(const char*) ap_get_server_protocol(server_rec* s);
 AP_DECLARE(void) ap_set_server_protocol(server_rec* s, const char* proto);
-
-typedef struct core_output_filter_ctx core_output_filter_ctx_t;
-typedef struct core_filter_ctx        core_ctx_t;
-
-typedef struct core_net_rec {
-    /** Connection to the client */
-    apr_socket_t *client_socket;
-
-    /** connection record */
-    conn_rec *c;
-
-    core_output_filter_ctx_t *out_ctx;
-    core_ctx_t *in_ctx;
-} core_net_rec;
 
 /**
  * Insert the network bucket into the core input filter's input brigade.
@@ -839,7 +841,6 @@ AP_DECLARE_DATA extern ap_filter_rec_t *ap_subreq_core_filter_handle;
 AP_DECLARE_DATA extern ap_filter_rec_t *ap_core_output_filter_handle;
 AP_DECLARE_DATA extern ap_filter_rec_t *ap_content_length_filter_handle;
 AP_DECLARE_DATA extern ap_filter_rec_t *ap_core_input_filter_handle;
-AP_DECLARE_DATA extern ap_filter_rec_t *ap_request_core_filter_handle;
 
 /**
  * This hook provdes a way for modules to provide metrics/statistics about
@@ -1111,6 +1112,35 @@ AP_DECLARE(int) ap_state_query(int query_code);
  * @return The slave connection
  */
 AP_CORE_DECLARE(conn_rec *) ap_create_slave_connection(conn_rec *c);
+
+/** Get a apr_pollfd_t populated with descriptor and descriptor type
+ * and the timeout to use for it.
+ * @return APR_ENOTIMPL if not supported for a connection.
+ */
+AP_DECLARE_HOOK(apr_status_t, get_pollfd_from_conn,
+                (conn_rec *c, struct apr_pollfd_t *pfd,
+                 apr_interval_time_t *ptimeout))
+
+/**
+ * Pass in a `struct apr_pollfd_t*` and get `desc_type` and `desc`
+ * populated with a suitable value for polling connection input.
+ * For primary connection (c->master == NULL), this will be the connection
+ * socket. For secondary connections this may differ or not be available
+ * at all.
+ * Note that APR_NO_DESC may be set to indicate that the connection
+ * input is already closed.
+ *
+ * @param pfd  the pollfd to set the descriptor in
+ * @param ptimeout  != NULL to retrieve the timeout in effect
+ * @return ARP_SUCCESS when the information was assigned.
+ */
+AP_CORE_DECLARE(apr_status_t) ap_get_pollfd_from_conn(conn_rec *c,
+                                      struct apr_pollfd_t *pfd,
+                                      apr_interval_time_t *ptimeout);
+
+/** Macro to provide a default value if the pointer is not yet initialised
+ */
+#define AP_CORE_DEFAULT(X, Y, Z)    (X ? X->Y : Z)
 
 #ifdef __cplusplus
 }

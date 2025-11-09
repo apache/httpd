@@ -75,23 +75,22 @@
 <li><a href="#comments_section">Comments</a></li></ul></div>
 
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="CGIDScriptTimeout" id="CGIDScriptTimeout">CGIDScriptTimeout</a> <a name="cgidscripttimeout" id="cgidscripttimeout">지시어</a></h2>
+<div class="directive-section"><h2><a name="CGIDScriptTimeout" id="CGIDScriptTimeout">CGIDScriptTimeout</a> <a name="cgidscripttimeout" id="cgidscripttimeout">지시어</a> <a title="Permanent link" href="#cgidscripttimeout" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">설명:</a></th><td>The length of time to wait for more output from the
 CGI program</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">문법:</a></th><td><code>CGIDScriptTimeout <var>time</var>[s|ms]</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">기본값:</a></th><td><code>value of <code class="directive"><a href="../mod/core.html#timeout">Timeout</a></code> directive when
-unset</code></td></tr>
+unset or set to 0</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">사용장소:</a></th><td>주서버설정, 가상호스트, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Status">상태:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">모듈:</a></th><td>mod_cgid</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">지원:</a></th><td>CGIDScriptTimeout defaults to zero in releases 2.4 and earlier
-</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">지원:</a></th><td>Available in httpd 2.4.10 and later; in prior releases no timeout was applied</td></tr>
 </table><p>The documentation for this directive has
             not been translated yet. Please have a look at the English
             version.</p></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ScriptSock" id="ScriptSock">ScriptSock</a> <a name="scriptsock" id="scriptsock">지시어</a></h2>
+<div class="directive-section"><h2><a name="ScriptSock" id="ScriptSock">ScriptSock</a> <a name="scriptsock" id="scriptsock">지시어</a> <a title="Permanent link" href="#scriptsock" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">설명:</a></th><td>cgi 데몬과 통신을 위해 사용할 소켓의 이름</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">문법:</a></th><td><code>ScriptSock <var>file-path</var></code></td></tr>
@@ -117,7 +116,7 @@ unset</code></td></tr>
 <a href="../fr/mod/mod_cgid.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_cgid.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_cgid.html" title="Korean">&nbsp;ko&nbsp;</a></p>
-</div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comments</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
+</div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comments</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Libera.chat, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
 var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_cgid.html';
@@ -135,7 +134,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_cgid.html'
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2017 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2023 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">모듈</a> | <a href="../mod/quickreference.html">지시어들</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">용어</a> | <a href="../sitemap.html">사이트맵</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

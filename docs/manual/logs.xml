@@ -203,15 +203,11 @@
     the contents of the logs. This section describes how to configure the server
     to record information in the access log.</p>
 
-    <p>Of course, storing the information in the access log is only
+    <p>Storing the information in the access log is only
     the start of log management. The next step is to analyze this
     information to produce useful statistics. Log analysis in
     general is beyond the scope of this document, and not really
-    part of the job of the web server itself. For more information
-    about this topic, and for applications which perform log
-    analysis, check the <a
-    href="http://dmoz.org/Computers/Software/Internet/Site_Management/Log_Analysis/">
-    Open Directory</a>.
+    part of the job of the web server itself.
     </p>
 
     <p>Various versions of Apache httpd have used other modules and
@@ -509,7 +505,7 @@ LogFormat "%!200,304,302{Referer}i" refererlog
       logged if the HTTP status code is 400 or 501. In other cases, a
       literal "-" will be logged instead. Likewise, in the second
       example, the <code>Referer</code> will be logged if the HTTP
-      status code is <strong>not</strong> 200, 204, or 302. (Note the
+      status code is <strong>not</strong> 200, 304, or 302. (Note the
       "!" before the status codes.</p>
 
       <p>Although we have just shown that conditional logging is very
@@ -680,14 +676,16 @@ CustomLog "logs/access_log" comonvhost
       <modulelist>
         <module>mod_logio</module>
         <module>mod_log_config</module>
+        <module>mod_log_debug</module>
         <module>mod_log_forensic</module>
         <module>mod_cgi</module>
       </modulelist>
 
       <directivelist>
-        <directive module="mod_log_config">LogFormat</directive>
         <directive module="mod_log_config">BufferedLogs</directive>
         <directive module="mod_log_forensic">ForensicLog</directive>
+        <directive module="mod_log_config">LogFormat</directive>
+        <directive module="mod_log_debug">LogMessage</directive>
         <directive module="mpm_common">PidFile</directive>
         <directive module="mod_cgi">ScriptLog</directive>
         <directive module="mod_cgi">ScriptLogBuffer</directive>
@@ -737,6 +735,14 @@ CustomLog "logs/access_log" comonvhost
       This should only be used in testing - not for live servers.
       More information is available in the <a
       href="mod/mod_cgi.html">mod_cgi</a> documentation.</p>
+    </section>
+
+    <section id="debug">
+        <title>Configurable debug logging</title>
+
+        <p>The <directive module="mod_log_debug">LogMessage</directive> 
+        lets you create your own custom log messages to aid in debugging.
+        </p>
     </section>
 
   </section>

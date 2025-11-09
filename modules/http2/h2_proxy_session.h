@@ -1,11 +1,12 @@
-/* Copyright 2015 greenbytes GmbH (https://www.greenbytes.de)
+/* Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * http://www.apache.org/licenses/LICENSE-2.0
- 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -22,6 +23,16 @@
 
 struct h2_proxy_iqueue;
 struct h2_proxy_ihash_t;
+
+typedef enum {
+    H2_STREAM_ST_IDLE,
+    H2_STREAM_ST_OPEN,
+    H2_STREAM_ST_RESV_LOCAL,
+    H2_STREAM_ST_RESV_REMOTE,
+    H2_STREAM_ST_CLOSED_INPUT,
+    H2_STREAM_ST_CLOSED_OUTPUT,
+    H2_STREAM_ST_CLOSED,
+} h2_proxy_stream_state_t;
 
 typedef enum {
     H2_PROXYS_ST_INIT,             /* send initial SETTINGS, etc. */
@@ -49,10 +60,16 @@ typedef enum {
     H2_PROXYS_EV_PRE_CLOSE,        /* connection will close after this */
 } h2_proxys_event_t;
 
+typedef enum {
+    H2_PING_ST_NONE,               /* normal connection mode, ProxyTimeout rules */
+    H2_PING_ST_AWAIT_ANY,          /* waiting for any frame from backend */
+    H2_PING_ST_AWAIT_PING,         /* waiting for PING frame from backend */
+} h2_ping_state_t;
 
 typedef struct h2_proxy_session h2_proxy_session;
 typedef void h2_proxy_request_done(h2_proxy_session *s, request_rec *r,
-                                   apr_status_t status, int touched);
+                                   apr_status_t status, int touched,
+                                   int error_code);
 
 struct h2_proxy_session {
     const char *id;
@@ -63,7 +80,6 @@ struct h2_proxy_session {
     nghttp2_session *ngh2;   /* the nghttp2 session itself */
     
     unsigned int aborted : 1;
-    unsigned int check_ping : 1;
     unsigned int h2_front : 1; /* if front-end connection is HTTP/2 */
 
     h2_proxy_request_done *done;
@@ -83,6 +99,10 @@ struct h2_proxy_session {
     
     apr_bucket_brigade *input;
     apr_bucket_brigade *output;
+
+    h2_ping_state_t ping_state;
+    apr_time_t ping_timeout;
+    apr_time_t save_timeout;
 };
 
 h2_proxy_session *h2_proxy_session_setup(const char *id, proxy_conn_rec *p_conn,
@@ -109,9 +129,8 @@ void h2_proxy_session_cancel_all(h2_proxy_session *s);
 
 void h2_proxy_session_cleanup(h2_proxy_session *s, h2_proxy_request_done *done);
 
-void h2_proxy_session_update_window(h2_proxy_session *s, 
-                                    conn_rec *c, apr_off_t bytes);
-
 #define H2_PROXY_REQ_URL_NOTE   "h2-proxy-req-url"
+
+int h2_proxy_session_is_reusable(h2_proxy_session *s);
 
 #endif /* h2_proxy_session_h */

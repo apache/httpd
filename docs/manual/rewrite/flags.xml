@@ -70,15 +70,15 @@ of how you might use them.</p>
 <p>The [B] flag instructs <directive
 module="mod_rewrite">RewriteRule</directive> to escape non-alphanumeric
 characters before applying the transformation.</p>
-<p>In 2.4.10 and later, you can limit the escaping to specific characters
-in backreferences by listing them: <code>[B=#?;]</code>. Note: The space
-character can be used in the list of characters to escape, but it cannot be
-the last character in the list.</p>
 
 <p><code>mod_rewrite</code> has to unescape URLs before mapping them,
 so backreferences are unescaped at the time they are applied.
 Using the B flag, non-alphanumeric characters in backreferences
 will be escaped. For example, consider the rule:</p>
+
+<p>For similar escaping of server-variables, see
+    the "escape" <a href="#mapfunc">mapping-function</a></p>
+
 
 <highlight language="config">
 RewriteRule "^search/(.*)$" "/search.php?term=$1"
@@ -109,6 +109,21 @@ when the backend may break if presented with an unescaped URL.</p>
 <p>An alternative to this flag is using a <directive module="mod_rewrite"
 >RewriteCond</directive> to capture against %{THE_REQUEST} which will capture
 strings in the encoded form.</p>
+
+<p>In 2.4.26 and later, you can limit the escaping to specific characters
+in backreferences by listing them: <code>[B=#?;]</code>. Note: The space
+character can be used in the list of characters to escape, but you must quote
+the entire third argument of <directive module="mod_rewrite">RewriteRule</directive>
+and the space must not be the last character in the list.</p>
+
+<highlight language="config">
+# Escape spaces and question marks.  The quotes around the final argument 
+# are required when a space is included.
+RewriteRule "^search/(.*)$" "/search.php?term=$1" "[B= ?]"
+</highlight>
+
+<p>To limit the characters escaped this way, see <a href="#flag_bne">#flag_bne</a>
+        and <a href="#flag_bctls">#flag_bctls</a></p>
 </section>
 
 <section id="flag_bnp"><title>BNP|backrefnoplus (don't escape space to +)</title>
@@ -116,6 +131,44 @@ strings in the encoded form.</p>
 module="mod_rewrite">RewriteRule</directive> to escape the space character
 in a backreference to %20 rather than '+'. Useful when the backreference
 will be used in the path component rather than the query string.</p>
+
+<highlight language="config">
+# Escape spaces to %20 in the path instead of + as used in form submission via
+# the query string
+RewriteRule "^search/(.*)$" "/search.php/$1" "[B,BNP]"
+</highlight>
+
+
+<p>This flag is available in version 2.4.26 and later.</p>
+</section>
+
+<section id="flag_bctls"><title>BCTLS</title>
+<p>The [BCTLS] flag is similar to the [B] flag, but only escapes
+control characters and the space character. This is the same set of
+characters rejected when they are copied into the query string unencoded.
+</p>
+
+<highlight language="config">
+# Escape control characters and spaces
+RewriteRule "^search/(.*)$" "/search.php/$1" "[BCTLS]"
+</highlight>
+
+<p>This flag is available in version 2.5.1 and later.</p>
+
+</section>
+
+<section id="flag_bne"><title>BNE</title>
+<p>The list of characters in [BNE=...] are treated as exclusions to the
+characters of the [B] or [BCTLS] flags. The listed characters will not be
+escaped.
+</p>
+
+<highlight language="config">
+# Escape the default characters, but leave /
+RewriteRule "^search/(.*)$" "/search.php?term=$1" "[B,BNE=/]"
+</highlight>
+
+<p>This flag is available in version 2.5.1 and later.</p>
 </section>
 
 <section id="flag_c"><title>C|chain</title>
@@ -131,14 +184,14 @@ skipped.</p>
 <section id="flag_co"><title>CO|cookie</title>
 <p>The [CO], or [cookie] flag, allows you to set a cookie when a
 particular <directive module="mod_rewrite">RewriteRule</directive>
-matches. The argument consists of three required fields and four optional
+matches. The argument consists of three required fields and five optional
 fields.</p>
 
 <p>The full syntax for the flag, including all attributes, is as
 follows:</p>
 
 <example>
-[CO=NAME:VALUE:DOMAIN:lifetime:path:secure:httponly]
+[CO=NAME:VALUE:DOMAIN:lifetime:path:secure:httponly:samesite]
 </example>
 
 <p>If a literal ':' character is needed in any of the cookie fields, an 
@@ -147,7 +200,7 @@ alternate syntax is available.  To opt-in to the alternate syntax, the cookie
 specified as ';'.</p>
 
 <example>
-[CO=;NAME;VALUE:MOREVALUE;DOMAIN;lifetime;path;secure;httponly]
+[CO=;NAME;VALUE:MOREVALUE;DOMAIN;lifetime;path;secure;httponly;samesite]
 </example>
 
 <p>You must declare a name, a value, and a domain for the cookie to be set.</p>
@@ -170,6 +223,7 @@ security model.</dd>
 <dd>A value of 0 indicates that the cookie will persist only for the
 current browser session. This is the default value if none is
 specified.</dd>
+<dd>A negative value causes the cookie to be unset in the browser.</dd>
 
 <dt>Path</dt>
 <dd>The path, on the current website, for which the cookie is valid,
@@ -187,7 +241,13 @@ connections.</dd>
 <code>1</code>, the cookie will have the <code>HttpOnly</code> flag set,
 which means that the cookie is inaccessible to JavaScript code on
 browsers that support this feature.</dd>
+
+<dt>samesite</dt>
+<dd>If set to anything other than <code>false</code> or <code>0</code>, the <code>SameSite</code>
+attribute is set to the specified value.  Typical values are <code>None</code>,
+<code>Lax</code>, and <code>Strict</code>. Available in 2.5.1 and later.</dd>
 </dl>
+
 
 <p>Consider this example:</p>
 
@@ -467,7 +527,8 @@ RewriteRule "(.*\.(jpg|gif|png))$" "http://images.example.com$1" [P,NC]
 <section id="flag_ne"><title>NE|noescape</title>
 <p>By default, special characters, such as <code>&amp;</code> and
 <code>?</code>, for example, will be converted to their hexcode
-equivalent. Using the [NE] flag prevents that from happening.
+equivalent for rules that result in external redirects. 
+Using the [NE] flag prevents that from happening.
 </p>
 
 <highlight language="config">
@@ -541,11 +602,17 @@ client undue influence.</p>
 
 <note type="warning">
 <title>Performance warning</title>
-<p>Using this flag triggers the use of <module>mod_proxy</module>, without handling of persistent connections. This
-means the performance of your proxy will be better if you set it up with <directive module="mod_proxy">ProxyPass</directive> or
-<directive module="mod_proxy">ProxyPassMatch</directive></p>
-<p>This is because this flag triggers the use of the default worker, which does not handle connection pooling.</p>
-<p>Avoid using this flag and prefer those directives, whenever you can.</p>
+<p>Using this flag triggers the use of <module>mod_proxy</module>, without
+handling of persistent connections as the default worker is used in this case,
+which does not handle connection pooling/reuse.</p>
+<p>In order to use persistent connections you need to setup a
+<directive module="mod_proxy">Proxy</directive> block at least for the scheme
+and host part of the target URL containing a
+<directive module="mod_proxy">ProxySet</directive> directive where you e.g. set
+a timeout.</p>
+<p>If you set it up with <directive module="mod_proxy">ProxyPass</directive> or
+<directive module="mod_proxy">ProxyPassMatch</directive> persistent connections
+will be used automatically.</p>
 </note>
 
 <p>Note: <module>mod_proxy</module> must be enabled in order
@@ -784,7 +851,30 @@ otherwise the MIME-type set with this flag is lost due to an internal
 re-processing (including subsequent rounds of mod_rewrite processing).
 The <code>L</code> flag can be useful in this context to end the
 <em>current</em> round of mod_rewrite processing.</p>
+</section>
 
+<section id="flag_unsafe_allow_3f"><title>UnsafeAllow3F</title>
+    <p> Setting this flag is required to allow a rewrite to continue If the
+    HTTP request being written has an encoded question mark, '%3f', and the
+    rewritten result has a '?' in the substiution.  This protects from a malicious
+    URL taking advantage of a capture and re-substitution of the encoded
+    question mark.</p>
+</section>
+<section id="flag_unsafe_prefix_stat"><title>UnsafePrefixStat</title>
+    <p> Setting this flag is required in server-scoped substitutions
+    start with a variable or backreference and resolve to a filesystem path.
+    These substitutions are not prefixed with the document root.
+    This protects from a malicious URL causing the expanded substitution to
+    map to an unexpected filesystem location.</p>
+
+    <p><since>2.5.1</since></p>
+</section>
+<section id="flag_unc"><title>UNC</title>
+    <p> Setting this flag prevents the merging of multiple leading slashes,
+    as used in Windows UNC paths.  The flag is not necessary when the rules
+    substitution starts with multiple literal slashes.</p>
+
+    <p><since>2.5.1</since></p>
 </section>
 
 </manualpage>

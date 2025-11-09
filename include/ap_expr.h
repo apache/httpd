@@ -57,7 +57,7 @@ typedef struct {
  * operators)
  */
 #define AP_EXPR_FLAG_SSL_EXPR_COMPAT       1
-/** Don't add siginificant request headers to the Vary response header */
+/** Don't add significant request headers to the Vary response header */
 #define AP_EXPR_FLAG_DONT_VARY             2
 /** Don't allow functions/vars that bypass the current request's access
  *  restrictions or would otherwise leak confidential information.
@@ -287,14 +287,15 @@ typedef struct {
 
     /** arg for pre-parsing (only if a simple string).
      *  For binary ops, this is the right argument.
-     *  For functions with more arguments, this is the first string
-     *  argument. */
+     *  For AP_EXPR_FUNC_STRING functions with multiple arguments, this is the first 
+     *  simple/literal string argument. 
+     */
     const char *arg;
 } ap_expr_lookup_parms;
 
 /** Function for looking up the provider function for a variable, operator
  *  or function in an expression.
- *  @param parms The parameter struct, also determins where the result is
+ *  @param parms The parameter struct, also determines where the result is
  *               stored.
  *  @return OK on success,
  *          !OK on failure,

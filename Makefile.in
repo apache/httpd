@@ -4,12 +4,17 @@ CLEAN_SUBDIRS = test
 
 PROGRAM_NAME         = $(progname)
 PROGRAM_SOURCES      = modules.c
-PROGRAM_LDADD        = buildmark.o $(HTTPD_LDFLAGS) $(PROGRAM_DEPENDENCIES) $(HTTPD_LIBS) $(EXTRA_LIBS) $(AP_LIBS) $(LIBS)
+PROGRAM_LDADD        = buildmark.o $(HTTPD_LDFLAGS) $(PROGRAM_LDDEPS) $(HTTPD_LIBS) $(EXTRA_LIBS) $(AP_LIBS) $(LIBS)
 PROGRAM_PRELINK      = $(COMPILE) -c $(top_srcdir)/server/buildmark.c
-PROGRAM_DEPENDENCIES = \
-  server/libmain.la \
+PROGRAM_LDDEPS = \
   $(BUILTIN_LIBS) \
   $(MPM_LIB) \
+  $(LIBMAIN_LIB) \
+  os/$(OS_DIR)/libos.la
+PROGRAM_DEPENDENCIES = \
+  $(BUILTIN_LIBS) \
+  $(MPM_LIB) \
+  server/libmain.la \
   os/$(OS_DIR)/libos.la
 
 sbin_PROGRAMS   = $(PROGRAM_NAME)
@@ -18,9 +23,10 @@ INSTALL_TARGETS = install-conf install-htdocs install-error install-icons \
 	install-other install-cgi install-include install-suexec install-build \
 	install-man
 
-CLEAN_TARGETS      = check/apxs check/build/config_vars.mk \
+CLEAN_TARGETS  = check/bin/* check/build/config_vars.mk \
 	check/conf/$(PROGRAM_NAME).conf check/conf/magic check/conf/mime.types \
-	check/conf/extra/* check/include/*
+	check/conf/extra/* check/include/* $(testcase_OBJECTS) $(testcase_STUBS) \
+	test/httpdunit.cases test/unit/*.o
 DISTCLEAN_TARGETS  = include/ap_config_auto.h include/ap_config_layout.h \
 	include/apache_probes.h \
 	modules.c config.cache config.log config.status build/config_vars.mk \
@@ -28,7 +34,10 @@ DISTCLEAN_TARGETS  = include/ap_config_auto.h include/ap_config_layout.h \
 	build/pkg/pkginfo build/config_vars.sh bsd_converted
 EXTRACLEAN_TARGETS = configure include/ap_config_auto.h.in generated_lists \
 	httpd.spec
-PHONY_TARGETS := check check-conf check-dirs check-include
+PHONY_TARGETS := check check-conf check-dirs check-include unittest-objdir
+
+TESTS =
+TEST_CONFIG =
 
 include $(top_builddir)/build/rules.mk
 include $(top_srcdir)/build/program.mk
@@ -49,7 +58,7 @@ install-conf:
 	    	if [ -f $$i ] ; then \
 	    	( \
 	    		n_lm=`awk 'BEGIN {n=0} /@@LoadModule@@/ {n+=1} END {print n}' < $$i`; \
-	    		if test $$n_lm -eq 0 -o "x$(MPM_MODULE)$(DSO_MODULES)" = "x"; then \
+	    		if test $$n_lm -eq 0 -o "x$(MPM_MODULES)$(DSO_MODULES)" = "x"; then \
 	    			sed -e 's#@@ServerRoot@@#$(prefix)#g' \
 	    				-e 's#@@Port@@#$(PORT)#g' \
 	    				-e 's#@@SSLPort@@#$(SSLPORT)#g' \
@@ -132,7 +141,7 @@ install-conf:
 	fi
 
 # Create a sanitized config_vars.mk
-build/config_vars.out: build/config_vars.mk
+build/config_vars.out: build/config_vars.mk build/config_vars.sh
 	@$(SHELL) build/config_vars.sh < build/config_vars.mk > build/config_vars.out
 
 install-build: build/config_vars.out
@@ -155,6 +164,26 @@ docs:
 	else \
 	    echo 'For details on generating the docs, please read:'; \
 	    echo '  http://httpd.apache.org/docs-project/docsformat.html'; \
+	fi
+
+update-changes:
+	@find changes-entries -type f | while read -r i ; do \
+	    cp CHANGES CHANGES.tmp ; \
+	    awk -v fname="$$i" 'BEGIN{done = 0; active = 0} \
+	                    done == 0 && active == 0 && /^Changes with Apache /{ active = 1; print; next}; \
+	                    /^( *\*|Changes with Apache )/ && active == 1 && done == 0{rec=$$0; while((getline<fname) > 0){if (! ($$0 ~ /^ *$$/)){print}}printf "\n";print rec; active = 0; done = 1; next} //;' \
+	    CHANGES.tmp > CHANGES ; \
+	    rm CHANGES.tmp ; \
+	    if [ -n "$(SVN)" ] ; then \
+	        if ! $(SVN) rm "$$i" 2>/dev/null ; then \
+	            $(RM) "$$i" ; \
+	        fi ; \
+	    else \
+	        $(RM) "$$i" ; \
+	    fi ; \
+	done ; \
+	if [ -n "$(SVN)" ] ; then \
+	    $(SVN) diff CHANGES ; \
 	fi
 
 validate-xml:
@@ -215,6 +244,7 @@ install-cgi:
 install-other:
 	@test -d $(DESTDIR)$(logfiledir) || $(MKINSTALLDIRS) $(DESTDIR)$(logfiledir)
 	@test -d $(DESTDIR)$(runtimedir) || $(MKINSTALLDIRS) $(DESTDIR)$(runtimedir)
+	@test -d $(DESTDIR)$(statedir) || $(MKINSTALLDIRS) $(DESTDIR)$(statedir)
 	@for ext in dll x; do \
 		file=apachecore.$$ext; \
 		if test -f $$file; then \
@@ -271,7 +301,7 @@ install-man:
 	  cd $(DESTDIR)$(manualdir) && find . -name ".svn" -type d -print | xargs rm -rf 2>/dev/null || true; \
 	fi
 
-install-suexec: install-suexec-binary install-suexec-$(INSTALL_SUEXEC)
+install-suexec: install-suexec-$(INSTALL_SUEXEC)
 
 install-suexec-binary:
 	@if test -f $(builddir)/support/suexec; then \
@@ -279,12 +309,12 @@ install-suexec-binary:
             $(INSTALL_PROGRAM) $(top_builddir)/support/suexec $(DESTDIR)$(sbindir); \
 	fi
 
-install-suexec-setuid:
+install-suexec-setuid: install-suexec-binary
 	@if test -f $(builddir)/support/suexec; then \
 	    chmod 4755 $(DESTDIR)$(sbindir)/suexec; \
 	fi
 
-install-suexec-caps:
+install-suexec-caps: install-suexec-binary
 	@if test -f $(builddir)/support/suexec; then \
             setcap 'cap_setuid,cap_setgid+pe' $(DESTDIR)$(sbindir)/suexec; \
 	fi
@@ -403,31 +433,83 @@ check-conf:
 # configuration check on our in-tree build. To pass, we have to have all of the
 # correct directories, even though they won't be used.
 check-dirs:
-	@mkdir -p check/htdocs
-	@mkdir -p check/logs
+	@mkdir -p check/htdocs check/logs check/bin
 
-# A version of apxs with the PREFIX overridden to point inside the build tree.
-check/apxs:
+check-binaries: check/bin/apxs check/bin/httpd check/bin/ab
+
+check/bin/httpd:
+	ln -s $(top_builddir)/httpd check/bin/httpd
+
+check/bin/ab:
+	ln -s $(top_builddir)/support/ab check/bin/ab
+
+# A version of apxs with the PREFIX overridden to point inside the install root
+check/bin/apxs:
 	mkdir -p check
 	sed -e 's#$(prefix)#$(top_builddir)/check#g' support/apxs > $@
 	chmod +x $@
 
-# A version of config_vars.mk with the PREFIX and SBINDIR overridden to point
-# inside the build tree.
+# A version of config_vars.mk with PREFIX and SBINDIR and BINDIR overridden.
 check/build/config_vars.mk: build/config_vars.out
 	mkdir -p check/build
 	cp $< $@
 	echo "prefix = $(top_builddir)/check" >> $@
-	echo "sbindir = $(top_builddir)" >> $@
+	echo "sbindir = $(top_builddir)/check/bin" >> $@
+	echo "bindir = $(top_builddir)/check/bin" >> $@
+
+# Generate config & modules etc from scratch any time a header file is
+# touched, so e.g. we don't get MMN mismatch against the modules built
+# in .../c-modules.
+$(TEST_SUITE_LOCATION)/Makefile: $(TEST_SUITE_LOCATION)/Makefile.PL $(INSTALL_HEADERS)
+	cd "$(TEST_SUITE_LOCATION)" && \
+	    perl Makefile.PL -apxs "$(top_builddir)/check/bin/apxs" && \
+	    ./t/TEST -clean && \
+	    ./t/TEST -config $(TEST_CONFIG)
+
+check-make: $(TEST_SUITE_LOCATION)/Makefile
+
+check-no:
+	@echo 'Re-run configure with the --with-test-suite option to enable in-tree tests.'
+	@false
+
+check-yes: check-include check-dirs check-conf check/build/config_vars.mk \
+	check-binaries $(TEST_SUITE_LOCATION)/Makefile
+	cd $(TEST_SUITE_LOCATION) && $(MAKE) && ./t/TEST $(TEST_CONFIG) $(TESTS)
 
 # Run the Apache::Test suite if it has been configured with --with-test-suite.
-check: check-include check-dirs check-conf check/build/config_vars.mk check/apxs
-	@if test "x$(TEST_SUITE_LOCATION)" = "xno"; then \
-	    echo 'Re-run configure with the --with-test-suite option to enable in-tree tests.'; \
-	    false; \
-	fi
-	cd "$(TEST_SUITE_LOCATION)" && \
-	    perl Makefile.PL -apxs "$(top_builddir)/check/apxs" && \
-	    ./t/TEST -clean && \
-	    ./t/TEST -config && \
-	    ./t/TEST
+check: check-$(WITH_TEST_SUITE)
+
+#
+# Unit Test Suite
+#
+
+# Make sure the object subdirectories we use exist in the build directory during
+# VPATH builds.
+unittest-objdir:
+	@mkdir -p test/unit
+
+# Normally I don't like wildcard sources, but for tests, autodiscovery is the
+# way to go.
+testcase_SOURCES := $(patsubst $(top_srcdir)/%,%,$(wildcard $(top_srcdir)/test/unit/*.c))
+testcase_OBJECTS := $(testcase_SOURCES:%.c=%.lo)
+testcase_STUBS   := $(testcase_SOURCES:%.c=%.tests)
+
+# Each testcase depends on the source file as well as the autogenerated .tests
+# stub.
+$(testcase_OBJECTS): %.lo: %.c %.tests | unittest-objdir
+
+$(testcase_STUBS): %.tests: %.c
+	$(top_srcdir)/build/httpdunit_gen_stubs.pl < "$<" > "$@"
+
+test/httpdunit.cases: $(testcase_SOURCES) | unittest-objdir
+	cat $^ | $(top_srcdir)/build/httpdunit_gen_cases.pl --declaration > $@
+	cat $^ | $(top_srcdir)/build/httpdunit_gen_cases.pl >> $@
+
+test/httpdunit.lo: test/httpdunit.c test/httpdunit.cases | unittest-objdir
+
+# httpdunit is only added to $(other_targets) if configure detects a working
+# libcheck on the system.
+httpdunit_OBJECTS := test/httpdunit.lo $(testcase_OBJECTS)
+$(httpdunit_OBJECTS): override LTCFLAGS += $(UNITTEST_CFLAGS)
+test/httpdunit: $(httpdunit_OBJECTS) $(PROGRAM_DEPENDENCIES) $(PROGRAM_OBJECTS)
+	$(LINK) $(httpdunit_OBJECTS) $(PROGRAM_OBJECTS) $(UNITTEST_LIBS) $(PROGRAM_LDADD)

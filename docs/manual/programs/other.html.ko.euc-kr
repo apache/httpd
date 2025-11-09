@@ -24,6 +24,7 @@
 <a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Programs</a></div><div id="page-content"><div id="preamble"><h1>Other Programs</h1>
 <div class="toplang">
 <p><span>가능한 언어: </span><a href="../en/programs/other.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../fr/programs/other.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ko/programs/other.html" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/programs/other.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a></p>
 </div>
@@ -40,14 +41,14 @@
 </ul><h3>참고</h3><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="log_server_status" id="log_server_status">log_server_status</a></h2>
+<h2><a name="log_server_status" id="log_server_status">log_server_status</a> <a title="Permanent link" href="#log_server_status" class="permalink">&para;</a></h2>
     <p>이 perl 스크립트는 cron 등에서 자주 실행하도록 설계되었다.
     이 스크립트를 서버에 연결하여 상태 정보를 다운로드한다.
     그런후 이 정보를 한줄로 정리하여 파일에 기록한다. 로그파일의
     위치를 지정하려면 스크립트 앞부분의 변수를 수정한다.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="split-logfile" id="split-logfile">split-logfile</a></h2>
+<h2><a name="split-logfile" id="split-logfile">split-logfile</a> <a title="Permanent link" href="#split-logfile" class="permalink">&para;</a></h2>
     <p>이 perl 스크립트는 결합된 웹서버 접근로그파일의 내용을
     여러 파일로 나눈다. 각 줄의 첫번째 항목이 ("<code>%v</code>"로
     추가한) 가상호스트 정보이고, 로그파일명은 현재 디렉토리에
@@ -58,9 +59,10 @@
 </div></div>
 <div class="bottomlang">
 <p><span>가능한 언어: </span><a href="../en/programs/other.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../fr/programs/other.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ko/programs/other.html" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/programs/other.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a></p>
-</div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comments</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
+</div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comments</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Libera.chat, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
 var comments_identifier = 'http://httpd.apache.org/docs/trunk/programs/other.html';
@@ -78,7 +80,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/programs/other.htm
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2017 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2023 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">모듈</a> | <a href="../mod/quickreference.html">지시어들</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">용어</a> | <a href="../sitemap.html">사이트맵</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

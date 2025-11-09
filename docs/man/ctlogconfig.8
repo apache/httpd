@@ -1,0 +1,149 @@
+.\" XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+.\" DO NOT EDIT! Generated from XML source.
+.\" XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+.de Sh \" Subsection
+.br
+.if t .Sp
+.ne 5
+.PP
+\fB\\$1\fR
+.PP
+..
+.de Sp \" Vertical space (when we can't use .PP)
+.if t .sp .5v
+.if n .sp
+..
+.de Ip \" List item
+.br
+.ie \\n(.$>=3 .ne \\$3
+.el .ne 3
+.IP "\\$1" \\$2
+..
+.TH "CTLOGCONFIG" 8 "2018-09-27" "Apache HTTP Server" "ctlogconfig"
+
+.SH NAME
+ctlogconfig \- Certificate Transparency log configuration tool
+
+.SH "SYNOPSIS"
+  
+.PP
+\fB \fBctlogconfig\fR \fI/path/to/db\fR \fBdump\fR \fR
+ 
+.PP
+\fB \fBctlogconfig\fR \fI/path/to/db\fR \fBconfigure-public-key\fR [ \fIlog-id\fR|\fIrecord-id\fR ] \fI/path/to/public-key\&.pem\fR \fR
+ 
+.PP
+\fB \fBctlogconfig\fR \fI/path/to/db\fR \fBconfigure-url\fR [ \fIlog-id\fR|\fIrecord-id\fR ] \fIlog-URL\fR \fR
+ 
+.PP
+\fB \fBctlogconfig\fR \fI/path/to/db\fR \fBvalid-time-range\fR \fIlog-id\fR|\fIrecord-id\fR \fImin-timestamp\fR \fImax-timestamp\fR \fR
+ 
+.PP
+\fB \fBctlogconfig\fR \fI/path/to/db\fR \fBtrust\fR \fIlog-id\fR|\fIrecord-id\fR \fR
+ 
+.PP
+\fB \fBctlogconfig\fR \fI/path/to/db\fR \fBdistrust\fR \fIlog-id\fR|\fIrecord-id\fR \fR
+ 
+.PP
+\fB \fBctlogconfig\fR \fI/path/to/db\fR \fBforget\fR \fIlog-id\fR|\fIrecord-id\fR \fR
+ 
+ 
+.TP
+\fIlog-id\fR
+This is the id of the log, which is the SHA-256 hash of the log's public key, provided in hexadecimal format\&. This string is 64 characters in length\&.  
+.TP
+\fIrecord-id\fR
+This is the record number in the database, as displayed by the \fBdump\fR sub-command, prefixed with \fB#\fR\&. As an example, \fB#4\fR references the fourth record in the database\&. (Use shell escaping as necessary\&.)  
+.TP
+\fI/path/to/public-key\&.pem\fR
+This is a file containing the log's public key in PEM format\&. The public key is not stored in the database\&. Instead, a reference to the file is stored\&. Thus, the file cannot be removed until the public key in the database is removed or changed\&.  
+.TP
+\fImin-timestamp\fR, \fImax-timestamp\fR
+A timestamp is a time as expressed in the number of milliseconds since the epoch, ignoring leap seconds\&. This is the form of time used in Signed Certificate Timestamps\&. This must be provided as a decimal number\&. Specify \fB\fB-\fR\fR for one of the timestamps if it is unknown\&. For example, when configuring the minimum valid timestamp for a log which remains valid, specify \fB\fB-\fR\fR for \fImax-timestamp\fR\&. SCTs received from this log by the proxy are invalid if the timestamp is older than \fImin-timestamp\fR or newer than \fImax-timestamp\fR\&.  
+ 
+
+.SH "SUMMARY"
+ 
+.PP
+\fBctlogconfig\fR is a tool for creating and maintaining a log configuration database, for use with mod_ssl_ct\&.
+ 
+.PP
+Refer first to Log configuration in the mod_ssl_ct documentation\&.
+ 
+.PP
+Refer to the examples below for typical use\&.
+ 
+
+.SH "SUB-COMMANDS"
+  
+ 
+.TP
+dump
+Display configuration database contents\&. The record id shown in the output of this sub-command can be used to identify the affected record in other sub-commands\&.  
+.TP
+configure-public-key
+Add a log's public key to the database or set the public key for an existing entry\&. The log's public key is needed to validate the signature of SCTs received by a proxy from a backend server\&. (The database will be created if it does not yet exist\&.)  
+.TP
+configure-url
+Add a log's URL to the database or set the URL for an existing entry\&. The log's URL is used when submitting server certificates to logs in order to obtain SCTs to send to clients\&. (The database will be created if it does not yet exist\&.)  
+.TP
+valid-time-range
+Set the minimum valid time and/or the maximum valid time for a log\&. SCTs from the log with timestamps outside of the valid range will not be accepted\&. Use \fB-\fR for a time that is not being configured\&. (The database will be created if it does not yet exist\&.)  
+.TP
+trust
+Mark a log as trusted, which is the default setting\&. This sub-command is used to reverse a \fIdistrust\fR setting\&. (The database will be created if it does not yet exist\&.)  
+.TP
+distrust
+Mark a log as distrusted\&. (The database will be created if it does not yet exist\&.)  
+.TP
+forget
+Remove information about a log from the database\&.  
+ 
+.SH "EXAMPLES"
+  
+.PP
+Consider an Apache httpd instance which serves as a TLS server and a proxy\&. The TLS server needs to obtain SCTs from a couple of known logs in order to pass those to clients, and the proxy needs to be able to validate the signature of SCTs received from backend servers\&.
+ 
+.PP
+First we'll configure the URLs for logs where server certificates are logged:
+ 
+.nf
+
+    $ ctlogconfig /path/to/conf/log-config configure-url http://log1\&.example\&.com/
+    $ ctlogconfig /path/to/conf/log-config configure-url http://log2\&.example\&.com/
+    $ ctlogconfig /path/to/conf/log-config dump
+    Log entry:
+      Record 1
+      Log id         : (not configured)
+      Public key file: (not configured)
+      URL            : http://log1\&.example\&.com/
+      Time range     : -INF to +INF 
+    Log entry:
+      Record 2
+      Log id         : (not configured)
+      Public key file: (not configured)
+      URL            : http://log2\&.example\&.com/
+      Time range     : -INF to +INF 
+.fi
+ 
+.PP
+Next we'll set the public key of a log where the certificate of our only backend server is published\&. In this case it is the log with URL http://log2\&.example\&.com/ which has already been configured\&.
+ 
+.nf
+
+    $ ctlogconfig /path/to/conf/log-config configure-public-key \\
+    $ ctlogconfig /path/to/conf/log-config dump
+    Log entry:
+      Record 1
+      Log id         : (not configured)
+      Public key file: (not configured)
+      URL            : http://log1\&.example\&.com/
+      Time range     : -INF to +INF 
+    Log entry:
+      Record 2
+      Log id         : (not configured)
+      Public key file: /path/to/conf/log2-pub\&.pem
+      URL            : http://log2\&.example\&.com/
+      Time range     : -INF to +INF 
+.fi
+ 

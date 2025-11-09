@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 1767808 -->
+<!-- English Revision: 1880986 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -29,7 +29,8 @@
 </title>
 
 <category id="release"><title>Notes de version</title>
-    <page href="new_features_2_4.html">Nouvelles fonctionnalités dApache 2.3/2.4</page>
+    <page href="new_features_2_6.html">Nouvelles fonctionnalités d'Apache 2.5/2.6</page>
+    <page href="new_features_2_4.html">Nouvelles fonctionnalités d'Apache 2.3/2.4</page>
     <page href="new_features_2_2.html">Nouvelles fonctionnalités d'Apache 2.1/2.2</page>
     <page href="new_features_2_0.html.fr">Nouvelles fonctionnalités d'Apache 2.0</page>
     <page href="upgrading.html">Mise à jour de la version 2.2 vers la version 2.4</page>
@@ -46,6 +47,8 @@
     <page href="filter.html">Filtres</page>
     <page href="handler.html">Gestionnaires</page>
     <page href="expr.html">Interpréteur d'expressions</page>
+    <page href="mod/overrides.html">Index des directives disponibles dans les
+    fichiers .htaccess</page>
     <page href="programs/">Le serveur et ses utilitaires</page>
     <page href="glossary.html">Glossaire</page>
 </category>
@@ -81,6 +84,7 @@
     <page href="howto/public_html.html">Répertoires Web des utilisateurs (public_html)</page>
     <page href="howto/reverse_proxy.html">Guide de configuration d'un mandataire
     inverse</page>
+    <page href="howto/http2.html">Guide HTTP/2</page>
 </category>
 
 <category id="platform"><title>Notes spécifiques aux différentes plateformes</title>

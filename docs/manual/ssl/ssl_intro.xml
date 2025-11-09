@@ -530,7 +530,7 @@ the Internet Engineering Task Force (IETF).</p>
     >AC96</a>, ch13].</p>
 </section>
 
-<section id="digestfuntion">
+<section id="digestfunction">
 <title>Digest Function</title>
     <p>The choice of digest function determines how a digest is created
     from a record unit. SSL supports the following:</p>

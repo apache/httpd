@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1772512 -->
+<!-- English Revision: 1873372 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -133,15 +133,33 @@ propose le MPM <module>worker</module>, avec l'unique addition de la directive
 	    fermer immédiatement la connexion n'est pas une bonne solution car
 	    le client (qui est encore en train d'envoyer le reste de la requête)
 	    verrait sa connexion réinitialisée et ne pourrait pas lire la
-	    réponse de httpd. Si cela se produit, httpd essaie donc de lire le
-	    reste de la requête afin de permettre au client de lire la réponse
-	    entièrement. La fermeture progressive est limitée dans le temps,
-	    mais elle peut tout de même être assez longue, si bien qu'il est
-	    intéressant qu'un thread de travail puisse se décharger de cette
-	    tâche sur le thread d'écoute.</dd>
+	    réponse de httpd. 	    
+	    La fermeture progressive est limitée dans le temps,
+	    mais elle peut tout de même être assez longue, si bien qu'elle est
+	    confiée à un thread de travail (y compris les procédures d'arrêt et
+	    la fermeture effective du socket). A partir de la version 2.4.28,
+	    c'est aussi le cas lorsque des connexions finissent par dépasser
+	    leur délai d'attente (le thread d'écoute ne gère jamais les
+	    connexions, si ce n'est attendre et dispatcher les évènements
+	    qu'elles génèrent).</dd>
         </dl>
 
         <p>Ces améliorations sont disponible pour les connexions HTTP ou HTTPS.</p> 
+
+	<p>Les états de connexions ci-dessus sont gérés par le thread d'écoute
+	via des files d'attente dédiées qui, jusqu'à la version 2.4.27, étaient
+	lues toutes les 100ms pour déterminer quelles connexions avaient atteint
+	des limites de durées définies comme <directive
+	module="mpm_common">Timeout</directive> et <directive
+	module="core">KeepAliveTimeout</directive>. C'était une solution simple
+	et efficace mais qui présentait un inconvénient : ces lectures
+	régulières forçaient le thread d'écoute à se réveiller, souvent sans
+	nécessité (alors qu'il était totalement inactif), ce qui consommait des
+	ressources pour rien. A partir de la version 2.4.28, ces files d'attente
+	sont entièrement gérées selon une logique basées sur les évènements, et
+	ne font donc plus l'objet d'une lecture systématique. Les environnements
+	aux ressources limitées, comme les serveurs embarqués, seront les plus
+	grands bénéficiaires de cette amélioration.</p>
 
     </section>
 
@@ -172,14 +190,14 @@ propose le MPM <module>worker</module>, avec l'unique addition de la directive
 	keep-alive). Voici deux scénarios courants :</p>
         <ul>
             <li>Pendant un <a href="../stopping.html#graceful">graceful
-	    restart</a>. Le processus parent demande à tous ses processus
+	    restart</a>, le processus parent demande à tous ses processus
 	    enfants de terminer leur travail et de s'arrêter pendant qu'il
 	    recharge la configuration et lance de nouveaux processus. Si les
 	    processus existants continuent de s'exécuter pendant un certain
 	    temps avant de s'arrêter, le scoreboard sera partiellement occupé
 	    jusqu'à ce que les entrées correspondantes soient libérées.
             </li>
-            <li>Lorsque la charge du serveur diminue suffisamment pour que httpd
+            <li>La charge du serveur diminue suffisamment pour que httpd
 	    commence à stopper certains processus (par exemple pour respecter la
 	    valeur de la directive <directive
 	    module="mpm_common">MaxSpareThreads</directive>). Cette situation

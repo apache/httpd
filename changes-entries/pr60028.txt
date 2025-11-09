@@ -1,0 +1,3 @@
+  *) mod_ssl: For "SSLVerifyClient optional_no_ca" mode, accept
+     expired client certificates.  PR 60028
+     [Naveen Albert <apache2 phreaknet.org>]

@@ -53,7 +53,7 @@
     </ul>
 </section>
 
-<section id="external"><title>External Resources</title>
+<section id="external"><title>Other Resources</title>
     <ul>
       <li><a
         href="http://ci.apache.org/projects/httpd/trunk/doxygen/"
@@ -69,6 +69,7 @@
         <li><a href="http://www.apachetutor.org/dev/reslist">Connection Pooling</a></li>
         <li><a href="http://www.apachetutor.org/dev/brigades">Introduction to Buckets and Brigades</a></li>
       </ul></li>
+      <li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug or feature request</a></li>
     </ul>
 </section>
 </manualpage>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1745883 -->
+<!-- English Revision: 1922246 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -91,10 +91,10 @@ l'authentification</a></seealso>
     AuthType form
     AuthName "/admin"
     AuthFormLoginRequiredLocation "http://example.com/login.html"
+
     Session On
     SessionCookieName session path=/
-    SessionCryptoPassphrase secret
-
+    
     Require valid-user
 &lt;/Location&gt;
         </highlight>
@@ -109,14 +109,18 @@ l'authentification</a></seealso>
       vérifiés en utilisant le fichier choisi.</p>
 
       <p>Les directives <directive
-      module="mod_session">Session</directive>, <directive
-      module="mod_session_cookie">SessionCookieName</directive> et
-      <directive
-      module="mod_session_crypto">SessionCryptoPassphrase</directive>
-      créent une session chiffrée stockée dans un cookie HTTP au niveau
+      module="mod_session">Session</directive> et <directive
+      module="mod_session_cookie">SessionCookieName</directive>
+      créent une session stockée dans un cookie HTTP au niveau
       du navigateur. Pour plus d'informations à propos des différentes
       options de configuration des sessions, reportez-vous à la
       documentation du module <module>mod_session</module>.</p>
+
+      <p>Si vous le souhaitez, vous pouvez ajoutez une directive <directive
+      module="mod_session_crypto">SessionCryptoPassphrase</directive> pour créer
+      un cookie de session chiffré. Le module
+      <module>mod_session_crypto</module> doit alors avoir été préalablement
+      chargé.</p>
 
       <p>Dans l'exemple simple ci-dessus, une URL a été protégée par
       <module>mod_auth_form</module>, mais on doit maintenant fournir
@@ -161,14 +165,13 @@ l'authentification</a></seealso>
 &lt;Location "/dologin.html"&gt;
     SetHandler form-login-handler
     AuthFormLoginRequiredLocation "http://example.com/login.html"
-    AuthFormLoginSuccessLocation "http://example.com/success.html"
+    AuthFormLoginSuccessLocation "http://example.com/admin/index.html"
     AuthFormProvider file
     AuthUserFile "conf/passwd"
     AuthType form
-    AuthName realm
+    AuthName /admin
     Session On
     SessionCookieName session path=/
-    SessionCryptoPassphrase secret
 &lt;/Location&gt;
         </highlight>
       </example>
@@ -243,11 +246,9 @@ AuthFormProvider file
 ErrorDocument 401 "/login.shtml"
 AuthUserFile "conf/passwd"
 AuthType form
-AuthName realm
-AuthFormLoginRequiredLocation "http://example.com/login.html"
+AuthName /admin
 Session On
 SessionCookieName session path=/
-SessionCryptoPassphrase secret
         </highlight>
       </example>
 
@@ -362,7 +363,6 @@ AuthName realm
 AuthFormLogoutLocation "http://example.com/loggedout.html"
 Session On
 SessionCookieName session path=/
-SessionCryptoPassphrase secret
         </highlight>
       </example>
 
@@ -385,7 +385,6 @@ AuthFormLogoutLocation "http://example.com/loggedout.html"
 Session On
 SessionMaxAge 1
 SessionCookieName session path=/
-SessionCryptoPassphrase secret
         </highlight>
       </example>
 
@@ -476,9 +475,10 @@ des modules de plus bas niveau</description>
 <description>Le nom du champ de formulaire qui contient le nom de
 connexion</description>
 <syntax>AuthFormUsername <var>nom du champ</var></syntax>
-<default>httpd_username</default>
+<default>AuthFormUsername httpd_username</default>
 <contextlist><context>directory</context>
 </contextlist>
+<override>AuthConfig</override>
 <compatibility>Disponible depuis la version 2.3.3 du serveur HTTP Apache</compatibility>
 
 <usage>
@@ -494,9 +494,10 @@ connexion</description>
 <description>Le nom du champ de formulaire qui contient le mot de passe
 de connexion</description>
 <syntax>AuthFormPassword <var>nom du champ</var></syntax>
-<default>httpd_password</default>
+<default>AuthFormPassword httpd_password</default>
 <contextlist><context>directory</context>
 </contextlist>
+<override>AuthConfig</override>
 <compatibility>Disponible depuis la version 2.3.0 du serveur HTTP Apache</compatibility>
 
 <usage>
@@ -513,9 +514,10 @@ de connexion</description>
 laquelle l'utilisateur sera redirigé en cas de connexion
 réussie</description>
 <syntax>AuthFormLocation <var>nom du champ</var></syntax>
-<default>httpd_location</default>
+<default>AuthFormLocation httpd_location</default>
 <contextlist><context>directory</context>
 </contextlist>
+<override>AuthConfig</override>
 <compatibility>Disponible depuis la version 2.3.0 du serveur HTTP Apache</compatibility>
 
 <usage>
@@ -532,9 +534,10 @@ réussie</description>
 <description>Le nom du champ de formulaire contenant la méthode de la
 requête à effectuer en cas de connexion réussie</description>
 <syntax>AuthFormMethod <var>nom du champ</var></syntax>
-<default>httpd_method</default>
+<default>AuthFormMethod httpd_method</default>
 <contextlist><context>directory</context>
 </contextlist>
+<override>AuthConfig</override>
 <compatibility>Disponible depuis la version 2.3.0 du serveur HTTP Apache</compatibility>
 
 <usage>
@@ -559,9 +562,10 @@ requête à effectuer en cas de connexion réussie</description>
 corps de la requête à effectuer en cas de connexion
 réussie</description>
 <syntax>AuthFormMimetype <var>nom du champ</var></syntax>
-<default>httpd_mimetype</default>
+<default>AuthFormMimetype httpd_mimetype</default>
 <contextlist><context>directory</context>
 </contextlist>
+<override>AuthConfig</override>
 <compatibility>Disponible depuis la version 2.3.0 du serveur HTTP Apache</compatibility>
 
 <usage>
@@ -585,9 +589,10 @@ réussie</description>
 <description>Le nom du champ de formulaire contenant le corps de la
 requête à effectuer en cas de connexion réussie</description>
 <syntax>AuthFormBody <var>nom du champ</var></syntax>
-<default>httpd_body</default>
+<default>AuthFormBody httpd_body</default>
 <contextlist><context>directory</context>
 </contextlist>
+<override>AuthConfig</override>
 <compatibility>Disponible depuis la version 2.3.0 du serveur HTTP Apache</compatibility>
 
 <usage>
@@ -611,7 +616,7 @@ requête à effectuer en cas de connexion réussie</description>
 <description>La taille maximale en octets du formulaire dont seront
 extraites les informations de connexion</description>
 <syntax>AuthFormSize <var>taille</var></syntax>
-<default>8192</default>
+<default>AuthFormSize 8192</default>
 <contextlist><context>directory</context>
 </contextlist>
 <compatibility>Disponible depuis la version 2.3.0 du serveur HTTP Apache</compatibility>
@@ -644,6 +649,7 @@ authentification est requise</description>
 <default>none</default>
 <contextlist><context>directory</context>
 </contextlist>
+<override>AuthConfig</override>
 <compatibility>Disponible depuis la version 2.3.0 du serveur HTTP
 Apache. L'interprétation des expressions rationnelles est supportée
 depuis la version 2.4.4.</compatibility>
@@ -676,6 +682,7 @@ de connexion réussie</description>
 <default>none</default>
 <contextlist><context>directory</context>
 </contextlist>
+<override>AuthConfig</override>
 <compatibility>Disponible depuis la version 2.3.0 du serveur HTTP
 Apache. L'interprétation des expressions rationnelles est supportée
 depuis la version 2.4.4.</compatibility>
@@ -701,10 +708,11 @@ depuis la version 2.4.4.</compatibility>
 <directivesynopsis>
 <name>AuthFormFakeBasicAuth</name>
 <description>Simule une en-tête d'authentification de base</description>
-<syntax>AuthFormFakeBasicAuth <var>On|Off</var></syntax>
+<syntax>AuthFormFakeBasicAuth On|Off</syntax>
 <default>AuthFormFakeBasicAuth Off</default>
 <contextlist><context>directory</context>
 </contextlist>
+<override>AuthConfig</override>
 <compatibility>Disponible depuis la version 2.3.0 du serveur HTTP Apache</compatibility>
 
 <usage>
@@ -728,6 +736,7 @@ après s'être déconnecté</description>
 <default>none</default>
 <contextlist><context>directory</context>
 </contextlist>
+<override>AuthConfig</override>
 <compatibility>Disponible depuis la version 2.3.0 du serveur HTTP
 Apache. L'interprétation des expressions rationnelles est supportée
 depuis la version 2.4.4.</compatibility>
@@ -768,10 +777,11 @@ depuis la version 2.4.4.</compatibility>
 <name>AuthFormDisableNoStore</name>
 <description>Désactive l'en-tête CacheControl no-store sur la page de
 connexion</description>
-<syntax>AuthFormDisableNoStore <var>On|Off</var></syntax>
+<syntax>AuthFormDisableNoStore On|Off</syntax>
 <default>AuthFormDisableNoStore Off</default>
 <contextlist><context>directory</context>
 </contextlist>
+<override>AuthConfig</override>
 <compatibility>Disponible depuis la version 2.3.0 du serveur HTTP Apache</compatibility>
 
 <usage>
@@ -796,6 +806,7 @@ trafic</description>
 <default>none</default>
 <contextlist><context>directory</context>
 </contextlist>
+<override>AuthConfig</override>
 <compatibility>Disponible depuis la version 2.3.0 du serveur HTTP Apache</compatibility>
 
 <usage>

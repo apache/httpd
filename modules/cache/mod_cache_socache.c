@@ -18,6 +18,12 @@
 #include "apr_file_io.h"
 #include "apr_strings.h"
 #include "apr_buckets.h"
+
+#include "apr_version.h"
+#if !APR_VERSION_AT_LEAST(2,0,0)
+#include "apu_version.h"
+#endif
+
 #include "httpd.h"
 #include "http_config.h"
 #include "http_log.h"
@@ -77,13 +83,13 @@ typedef struct cache_socache_object_t
     cache_socache_info_t socache_info; /* Header information. */
     apr_size_t body_offset; /* offset to the start of the body */
     apr_off_t body_length; /* length of the cached entity body */
-    unsigned int newbody :1; /* whether a new body is present */
     apr_time_t expire; /* when to expire the entry */
 
     const char *name; /* Requested URI without vary bits - suitable for mortals. */
     const char *key; /* On-disk prefix; URI with Vary bits (if present) */
     apr_off_t offset; /* Max size to set aside */
     apr_time_t timeout; /* Max time to set aside */
+    unsigned int newbody :1; /* whether a new body is present */
     unsigned int done :1; /* Is the attempt to cache complete? */
 } cache_socache_object_t;
 
@@ -213,11 +219,12 @@ static apr_status_t read_table(cache_handle_t *handle, request_rec *r,
                         "Premature end of cache headers.");
                 return APR_EGENERAL;
             }
-            while (apr_isspace(buffer[colon])) {
+            /* Do not go past the \r from above as apr_isspace('\r') is true */
+            while (apr_isspace(buffer[colon]) && (colon < *slider)) {
                 colon++;
             }
-            apr_table_addn(table, apr_pstrndup(r->pool, (const char *) buffer
-                    + key, len - key), apr_pstrndup(r->pool,
+            apr_table_addn(table, apr_pstrmemdup(r->pool, (const char *) buffer
+                    + key, len - key), apr_pstrmemdup(r->pool,
                     (const char *) buffer + colon, *slider - colon));
             (*slider)++;
             if (buffer[*slider] == '\n') {
@@ -270,7 +277,8 @@ static apr_status_t store_table(apr_table_t *table, unsigned char *buffer,
 }
 
 static const char* regen_key(apr_pool_t *p, apr_table_t *headers,
-        apr_array_header_t *varray, const char *oldkey)
+                             apr_array_header_t *varray, const char *oldkey,
+                             apr_size_t *newkeylen)
 {
     struct iovec *iov;
     int i, k;
@@ -296,11 +304,11 @@ static const char* regen_key(apr_pool_t *p, apr_table_t *headers,
      *  HTTP URI's (3.2.3) [host and scheme are insensitive]
      *  HTTP method (5.1.1)
      *  HTTP-date values (3.3.1)
-     *  3.7 Media Types [exerpt]
+     *  3.7 Media Types [excerpt]
      *     The type, subtype, and parameter attribute names are case-
      *     insensitive. Parameter values might or might not be case-sensitive,
      *     depending on the semantics of the parameter name.
-     *  4.20 Except [exerpt]
+     *  4.20 Except [excerpt]
      *     Comparison of expectation values is case-insensitive for unquoted
      *     tokens (including the 100-continue token), and is case-sensitive for
      *     quoted-string expectation-extensions.
@@ -322,7 +330,7 @@ static const char* regen_key(apr_pool_t *p, apr_table_t *headers,
     iov[k].iov_len = strlen(oldkey);
     k++;
 
-    return apr_pstrcatv(p, iov, k, NULL);
+    return apr_pstrcatv(p, iov, k, newkeylen);
 }
 
 static int array_alphasort(const void *fn1, const void *fn2)
@@ -427,6 +435,14 @@ static int create_entity(cache_handle_t *h, request_rec *r, const char *key,
     return OK;
 }
 
+static apr_status_t sobj_body_pre_cleanup(void *baton)
+{
+    cache_socache_object_t *sobj = baton;
+    apr_brigade_cleanup(sobj->body);
+    sobj->body = NULL;
+    return APR_SUCCESS;
+}
+
 static int open_entity(cache_handle_t *h, request_rec *r, const char *key)
 {
     cache_socache_dir_conf *dconf =
@@ -461,6 +477,7 @@ static int open_entity(cache_handle_t *h, request_rec *r, const char *key)
      * about for the lifetime of the response.
      */
     apr_pool_create(&sobj->pool, r->pool);
+    apr_pool_tag(sobj->pool, "mod_cache_socache (open_entity)");
 
     sobj->buffer = apr_palloc(sobj->pool, dconf->max);
     sobj->buffer_len = dconf->max;
@@ -526,7 +543,7 @@ static int open_entity(cache_handle_t *h, request_rec *r, const char *key)
             return DECLINED;
         }
 
-        nkey = regen_key(r->pool, r->headers_in, varray, key);
+        nkey = regen_key(r->pool, r->headers_in, varray, key, &len);
 
         /* attempt to retrieve the cached entry */
         if (socache_mutex) {
@@ -542,7 +559,7 @@ static int open_entity(cache_handle_t *h, request_rec *r, const char *key)
         buffer_len = sobj->buffer_len;
         rc = conf->provider->socache_provider->retrieve(
                 conf->provider->socache_instance, r->server,
-                (unsigned char *) nkey, strlen(nkey), sobj->buffer,
+                (unsigned char *) nkey, len, sobj->buffer,
                 &buffer_len, r->pool);
         if (socache_mutex) {
             apr_status_t status = apr_global_mutex_unlock(socache_mutex);
@@ -646,35 +663,24 @@ static int open_entity(cache_handle_t *h, request_rec *r, const char *key)
     }
 
     /* Retrieve the body if we have one */
-    sobj->body = apr_brigade_create(r->pool, r->connection->bucket_alloc);
     len = buffer_len - slider;
-
-    /*
-     *  Optimisation: if the body is small, we want to make a
-     *  copy of the body and free the temporary pool, as we
-     *  don't want large blocks of unused memory hanging around
-     *  to the end of the response. In contrast, if the body is
-     *  large, we would rather leave the body where it is in the
-     *  temporary pool, and save ourselves the copy.
-     */
-    if (len * 2 > dconf->max) {
+    if (len > 0) {
         apr_bucket *e;
-
-        /* large - use the brigade as is, we're done */
-        e = apr_bucket_immortal_create((const char *) sobj->buffer + slider,
-                len, r->connection->bucket_alloc);
-
+        /* Create the body brigade later concatenated to the output filters'
+         * brigade by recall_body(). Since sobj->buffer (the data) point to
+         * sobj->pool (a subpool of r->pool), be safe by using a pool bucket
+         * which can morph to heap if sobj->pool is destroyed while the bucket
+         * is still alive. But if sobj->pool gets destroyed while the bucket is
+         * still in sobj->body (i.e. recall_body() was never called), we don't
+         * need to morph to something just about to be freed, so a pre_cleanup
+         * will take care of cleaning up sobj->body before this happens (and is
+         * a noop otherwise).
+         */
+        sobj->body = apr_brigade_create(sobj->pool, r->connection->bucket_alloc);
+        apr_pool_pre_cleanup_register(sobj->pool, sobj, sobj_body_pre_cleanup);
+        e = apr_bucket_pool_create((const char *) sobj->buffer + slider, len,
+                                   sobj->pool, r->connection->bucket_alloc);
         APR_BRIGADE_INSERT_TAIL(sobj->body, e);
-    }
-    else {
-
-        /* small - make a copy of the data... */
-        apr_brigade_write(sobj->body, NULL, NULL, (const char *) sobj->buffer
-                + slider, len);
-
-        /* ...and get rid of the large memory buffer */
-        apr_pool_destroy(sobj->pool);
-        sobj->pool = NULL;
     }
 
     /* make the configuration stick */
@@ -694,9 +700,11 @@ fail:
             return DECLINED;
         }
     }
-    conf->provider->socache_provider->remove(
-            conf->provider->socache_instance, r->server,
-            (unsigned char *) nkey, strlen(nkey), r->pool);
+    if (nkey) {
+        conf->provider->socache_provider->remove(
+                conf->provider->socache_instance, r->server,
+                (unsigned char *) nkey, strlen(nkey), r->pool);
+    }
     if (socache_mutex) {
         apr_status_t status = apr_global_mutex_unlock(socache_mutex);
         if (status != APR_SUCCESS) {
@@ -764,13 +772,9 @@ static apr_status_t recall_body(cache_handle_t *h, apr_pool_t *p,
         apr_bucket_brigade *bb)
 {
     cache_socache_object_t *sobj = (cache_socache_object_t*) h->cache_obj->vobj;
-    apr_bucket *e;
 
-    e = APR_BRIGADE_FIRST(sobj->body);
-
-    if (e != APR_BRIGADE_SENTINEL(sobj->body)) {
-        APR_BUCKET_REMOVE(e);
-        APR_BRIGADE_INSERT_TAIL(bb, e);
+    if (sobj->body) {
+        APR_BRIGADE_CONCAT(bb, sobj->body);
     }
 
     return APR_SUCCESS;
@@ -805,6 +809,7 @@ static apr_status_t store_headers(cache_handle_t *h, request_rec *r,
                     : obj->info.expire + dconf->mintime;
 
     apr_pool_create(&sobj->pool, r->pool);
+    apr_pool_tag(sobj->pool, "mod_cache_socache (store_headers)");
 
     sobj->buffer = apr_palloc(sobj->pool, dconf->max);
     sobj->buffer_len = dconf->max;
@@ -869,7 +874,7 @@ static apr_status_t store_headers(cache_handle_t *h, request_rec *r,
             }
 
             obj->key = sobj->key = regen_key(r->pool, sobj->headers_in, varray,
-                    sobj->name);
+                                             sobj->name, NULL);
         }
     }
 
@@ -1049,7 +1054,8 @@ static apr_status_t store_body(cache_handle_t *h, request_rec *r,
     /* Was this the final bucket? If yes, perform sanity checks.
      */
     if (seen_eos) {
-        const char *cl_header = apr_table_get(r->headers_out, "Content-Length");
+        const char *cl_header;
+        apr_off_t cl;
 
         if (r->connection->aborted || r->no_cache) {
             ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(02380)
@@ -1060,18 +1066,16 @@ static apr_status_t store_body(cache_handle_t *h, request_rec *r,
             sobj->pool = NULL;
             return APR_EGENERAL;
         }
-        if (cl_header) {
-            apr_off_t cl;
-            char *cl_endp;
-            if (apr_strtoff(&cl, cl_header, &cl_endp, 10) != APR_SUCCESS
-                    || *cl_endp != '\0' || cl != sobj->body_length) {
-                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02381)
-                        "URL %s didn't receive complete response, not caching",
-                        h->cache_obj->key);
-                apr_pool_destroy(sobj->pool);
-                sobj->pool = NULL;
-                return APR_EGENERAL;
-            }
+
+        cl_header = apr_table_get(r->headers_out, "Content-Length");
+        if (cl_header && (!ap_parse_strict_length(&cl, cl_header)
+                          || cl != sobj->body_length)) {
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02381)
+                    "URL %s didn't receive complete response, not caching",
+                    h->cache_obj->key);
+            apr_pool_destroy(sobj->pool);
+            sobj->pool = NULL;
+            return APR_EGENERAL;
         }
 
         /* All checks were fine, we're good to go when the commit comes */
@@ -1248,7 +1252,7 @@ static const char *set_cache_socache(cmd_parms *cmd, void *in_struct_ptr,
             name, AP_SOCACHE_PROVIDER_VERSION);
     if (provider->socache_provider == NULL) {
         err = apr_psprintf(cmd->pool,
-                "Unknown socache provider '%s'. Maybe you need "
+                    "Unknown socache provider '%s'. Maybe you need "
                     "to load the appropriate socache module "
                     "(mod_socache_%s?)", name, name);
     }
@@ -1416,7 +1420,7 @@ static int socache_precfg(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *ptmp)
             APR_LOCK_DEFAULT, 0);
     if (rv != APR_SUCCESS) {
         ap_log_perror(APLOG_MARK, APLOG_CRIT, rv, plog, APLOGNO(02390)
-        "failed to register %s mutex", cache_socache_id);
+                "failed to register %s mutex", cache_socache_id);
         return 500; /* An HTTP status would be a misnomer! */
     }
 
@@ -1450,7 +1454,7 @@ static int socache_post_config(apr_pool_t *pconf, apr_pool_t *plog,
                     NULL, s, pconf, 0);
             if (rv != APR_SUCCESS) {
                 ap_log_perror(APLOG_MARK, APLOG_CRIT, rv, plog, APLOGNO(02391)
-                "failed to create %s mutex", cache_socache_id);
+                        "failed to create %s mutex", cache_socache_id);
                 return 500; /* An HTTP status would be a misnomer! */
             }
             apr_pool_cleanup_register(pconf, NULL, remove_lock,
@@ -1471,7 +1475,7 @@ static int socache_post_config(apr_pool_t *pconf, apr_pool_t *plog,
                 &socache_hints, s, pconf);
         if (rv != APR_SUCCESS) {
             ap_log_perror(APLOG_MARK, APLOG_CRIT, rv, plog, APLOGNO(02393)
-            "failed to initialise %s cache", cache_socache_id);
+                    "failed to initialise %s cache", cache_socache_id);
             return 500; /* An HTTP status would be a misnomer! */
         }
         apr_pool_cleanup_register(pconf, (void *) s, destroy_cache,

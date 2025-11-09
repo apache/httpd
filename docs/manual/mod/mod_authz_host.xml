@@ -28,7 +28,7 @@ address)</description>
 <status>Base</status>
 <sourcefile>mod_authz_host.c</sourcefile>
 <identifier>authz_host_module</identifier>
-<compatibility>Available in Apache 2.3 and later</compatibility>
+<compatibility>The <code>forward-dns</code> provider was added in 2.4.19</compatibility>
 
 <summary>
     <p>The authorization providers implemented by <module>mod_authz_host</module> are
@@ -169,16 +169,18 @@ Require host .net example.edu
     <p>In contrast to the <code>host</code> provider, this provider does not
     rely on reverse DNS lookups: it simply queries the DNS for the host name
     and allows a client if its IP matches.  As a consequence, it will only
-    work with host names, not domain names.  However, as the reverse DNS is
-    not used, it will work with clients which use a dynamic DNS service.</p>
+    work with complete host names that can be resolved in DNS, not partial domain names.  
+    However, as the reverse DNS is not used, and DNS lookups occur at request processing
+    time (instead of startup), it will work with clients which use a dynamic DNS service.</p>
 
     <highlight language="config">
-Require forward-dns bla.example.org
+Require forward-dns dynamic.example.org
     </highlight>
 
     <p>A client the IP of which is resolved from the name
-    <code>bla.example.org</code> will be granted access.</p>
+    <code>dynamic.example.org</code> will be granted access.</p>
 
+    <p>The <code>forward-dns</code> provider was added in 2.4.19.</p>
 </section>
 
 <section id="reqlocal"><title>Require local</title>

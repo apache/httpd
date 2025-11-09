@@ -45,7 +45,7 @@ AC_DEFUN([APACHE_GEN_CONFIG_VARS],[
   APACHE_SUBST(installbuilddir)
   APACHE_SUBST(runtimedir)
   APACHE_SUBST(proxycachedir)
-  APACHE_SUBST(davlockdb)
+  APACHE_SUBST(statedir)
   APACHE_SUBST(other_targets)
   APACHE_SUBST(progname)
   APACHE_SUBST(prefix)
@@ -82,6 +82,7 @@ AC_DEFUN([APACHE_GEN_CONFIG_VARS],[
   APACHE_SUBST(LIBTOOL)
   APACHE_SUBST(SHELL)
   APACHE_SUBST(RSYNC)
+  APACHE_SUBST(SVN)
   APACHE_SUBST(MODULE_DIRS)
   APACHE_SUBST(MODULE_CLEANDIRS)
   APACHE_SUBST(PORT)
@@ -117,12 +118,6 @@ AC_DEFUN([APACHE_GEN_CONFIG_VARS],[
   for i in $APACHE_VAR_SUBST; do
     eval echo "$i = \$$i" >> build/config_vars.mk
   done
-])
-
-dnl APACHE_GEN_MAKEFILES
-dnl Creates Makefiles
-AC_DEFUN([APACHE_GEN_MAKEFILES],[
-  $SHELL $srcdir/build/fastgen.sh $srcdir $ac_cv_mkdir_p $BSD_MAKEFILE $APACHE_FAST_OUTPUT_FILES
 ])
 
 dnl
@@ -542,12 +537,18 @@ AC_DEFUN([APACHE_CHECK_OPENSSL],[
     dnl Before doing anything else, load in pkg-config variables
     if test -n "$PKGCONFIG"; then
       saved_PKG_CONFIG_PATH="$PKG_CONFIG_PATH"
-      if test "x$ap_openssl_base" != "x" -a \
-              -f "${ap_openssl_base}/lib/pkgconfig/openssl.pc"; then
-        dnl Ensure that the given path is used by pkg-config too, otherwise
-        dnl the system openssl.pc might be picked up instead.
-        PKG_CONFIG_PATH="${ap_openssl_base}/lib/pkgconfig${PKG_CONFIG_PATH+:}${PKG_CONFIG_PATH}"
-        export PKG_CONFIG_PATH
+      if test "x$ap_openssl_base" != "x"; then
+        if test -f "${ap_openssl_base}/lib/pkgconfig/openssl.pc"; then
+          dnl Ensure that the given path is used by pkg-config too, otherwise
+          dnl the system openssl.pc might be picked up instead.
+          PKG_CONFIG_PATH="${ap_openssl_base}/lib/pkgconfig${PKG_CONFIG_PATH+:}${PKG_CONFIG_PATH}"
+          export PKG_CONFIG_PATH
+        elif test -f "${ap_openssl_base}/lib64/pkgconfig/openssl.pc"; then
+          dnl Ensure that the given path is used by pkg-config too, otherwise
+          dnl the system openssl.pc might be picked up instead.
+          PKG_CONFIG_PATH="${ap_openssl_base}/lib64/pkgconfig${PKG_CONFIG_PATH+:}${PKG_CONFIG_PATH}"
+          export PKG_CONFIG_PATH
+        fi
       fi
       AC_ARG_ENABLE(ssl-staticlib-deps,APACHE_HELP_STRING(--enable-ssl-staticlib-deps,[link mod_ssl with dependencies of OpenSSL's static libraries (as indicated by "pkg-config --static"). Must be specified in addition to --enable-ssl.]), [
         if test "$enableval" = "yes"; then
@@ -592,23 +593,25 @@ AC_DEFUN([APACHE_CHECK_OPENSSL],[
 #if OPENSSL_VERSION_NUMBER < 0x0090801f
 #error "Unsupported OpenSSL version " OPENSSL_VERSION_TEXT
 #endif],
-      [AC_MSG_RESULT(OK)
+      [AC_MSG_RESULT(yes)
        ac_cv_openssl=yes],
-      [AC_MSG_RESULT(FAILED)])
+      [AC_MSG_RESULT(no)])
 
     if test "x$ac_cv_openssl" = "xyes"; then
       ap_openssl_libs="${ap_openssl_libs:--lssl -lcrypto} `$apr_config --libs`"
       APR_ADDTO(MOD_LDFLAGS, [$ap_openssl_libs])
       APR_ADDTO(LIBS, [$ap_openssl_libs])
-      APR_SETVAR(ab_LDFLAGS, [$MOD_LDFLAGS])
+      APR_SETVAR(ab_LIBS, [$MOD_LDFLAGS])
       APACHE_SUBST(ab_CFLAGS)
-      APACHE_SUBST(ab_LDFLAGS)
+      APACHE_SUBST(ab_LIBS)
 
       dnl Run library and function checks
       liberrors=""
       AC_CHECK_HEADERS([openssl/engine.h])
       AC_CHECK_FUNCS([SSL_CTX_new], [], [liberrors="yes"])
-      AC_CHECK_FUNCS([ENGINE_init ENGINE_load_builtin_engines RAND_egd])
+      AC_CHECK_FUNCS([OPENSSL_init_ssl])
+      AC_CHECK_FUNCS([ENGINE_init ENGINE_load_builtin_engines RAND_egd \
+                      CRYPTO_set_id_callback])
       if test "x$liberrors" != "x"; then
         AC_MSG_WARN([OpenSSL libraries are unusable])
       fi
@@ -629,6 +632,145 @@ AC_DEFUN([APACHE_CHECK_OPENSSL],[
     AC_DEFINE(HAVE_OPENSSL, 1, [Define if OpenSSL is available])
     APR_ADDTO(MOD_LDFLAGS, [$ap_openssl_mod_ldflags])
     APR_ADDTO(MOD_CFLAGS, [$ap_openssl_mod_cflags])
+  fi
+
+  dnl On most platforms, the default multithreading logic in OpenSSL 1.0.x uses
+  dnl a threadid that is based on the address of errno. We need to double-check
+  dnl that &errno is, in fact, different for each thread before using that
+  dnl default.
+  AC_CACHE_CHECK([if OpenSSL can use &errno as a THREADID],
+                 [ac_cv_openssl_use_errno_threadid], [
+    ac_cv_openssl_use_errno_threadid=no
+
+    save_CFLAGS=$CFLAGS
+    save_LIBS=$LIBS
+
+    CFLAGS=`$apr_config --cflags --cppflags --includes`
+    LIBS=`$apr_config --link-ld`
+
+    AC_RUN_IFELSE([
+      AC_LANG_PROGRAM([[
+          #include <stdlib.h>
+
+          #include "apr_pools.h"
+          #include "apr_thread_cond.h"
+          #include "apr_thread_proc.h"
+
+          #define NUM_THREADS 10
+
+          struct thread_data {
+              apr_thread_mutex_t *mutex;
+              apr_thread_cond_t  *cv;
+              int                *init_count;
+              void               *errno_addr;
+          };
+
+          /**
+           * Thread entry point. Waits for all the threads to be started, then
+           * records the address of errno into the thread_data.
+           */
+          void * APR_THREAD_FUNC tmain(apr_thread_t *thread, void *data)
+          {
+              struct thread_data *tdata = data;
+
+              /* The only point of this barrier is to make sure that all threads
+               * are started before we record &errno, hopefully preventing any
+               * false negatives in case a platform "recycles" threads. */
+              apr_thread_mutex_lock(tdata->mutex);
+              ++(*tdata->init_count);
+
+              if (*tdata->init_count == NUM_THREADS) {
+                  apr_thread_cond_broadcast(tdata->cv);
+              } else {
+                  while (*tdata->init_count != NUM_THREADS) {
+                      apr_thread_cond_wait(tdata->cv, tdata->mutex);
+                  }
+              }
+              apr_thread_mutex_unlock(tdata->mutex);
+
+              tdata->errno_addr = &errno;
+              return NULL;
+          }
+      ]], [[
+          int ret = 0;
+          apr_status_t status;
+          int i;
+          int j;
+
+          apr_pool_t         *pool;
+          apr_thread_mutex_t *mutex;
+          apr_thread_cond_t  *cv;
+          int                init_count = 0;
+
+          struct thread_data tdata[NUM_THREADS] = { 0 };
+          apr_thread_t *threads[NUM_THREADS] = { 0 };
+
+          if (apr_initialize() != APR_SUCCESS) {
+              exit(1);
+          }
+
+          /* Set up the shared APR primitives. */
+          if ((apr_pool_create(&pool, NULL) != APR_SUCCESS)
+              || (apr_thread_mutex_create(&mutex, 0, pool) != APR_SUCCESS)
+              || (apr_thread_cond_create(&cv, pool) != APR_SUCCESS)) {
+              ret = 2;
+              goto out;
+          }
+
+          /* Start every thread. */
+          for (i = 0; i < NUM_THREADS; ++i) {
+              tdata[i].mutex = mutex;
+              tdata[i].cv = cv;
+              tdata[i].init_count = &init_count;
+
+              status = apr_thread_create(&threads[i], NULL, tmain, &tdata[i],
+                                         pool);
+              if (status != APR_SUCCESS) {
+                  ret = 3;
+                  goto out;
+              }
+          }
+
+          /* Wait for them to finish (they'll record and exit after every one
+           * has been started). */
+          for (i = 0; i < NUM_THREADS; ++i) {
+              apr_thread_join(&status, threads[i]);
+              if (status != APR_SUCCESS) {
+                  ret = 4;
+                  goto out;
+              }
+          }
+
+          /* Check that no addresses were duplicated. */
+          for (i = 0; i < NUM_THREADS - 1; ++i) {
+              for (j = i + 1; j < NUM_THREADS; ++j) {
+                  if (tdata[i].errno_addr == tdata[j].errno_addr) {
+                      ret = 5;
+                      goto out;
+                  }
+              }
+          }
+
+      out:
+          apr_terminate();
+          exit(ret);
+      ]])
+    ], [
+      ac_cv_openssl_use_errno_threadid=yes
+    ], [
+      ac_cv_openssl_use_errno_threadid=no
+    ], [
+      dnl Assume the worst when cross-compiling; users can override via either
+      dnl cachevars or the config header if necessary.
+      ac_cv_openssl_use_errno_threadid=no
+    ])
+
+    CFLAGS=$save_CFLAGS
+    LIBS=$save_LIBS
+  ])
+  if test "x$ac_cv_openssl_use_errno_threadid" = "xyes"; then
+    AC_DEFINE(AP_OPENSSL_USE_ERRNO_THREADID, 1,
+              [Define if OpenSSL can use an errno-based threadid callback on this platform])
   fi
 ])
 
@@ -686,10 +828,9 @@ case $host in
    fi
    if test -n "$SYSTEMD_LIBS"; then
       AC_CHECK_HEADERS(systemd/sd-daemon.h)
-      if test "${ac_cv_header_systemd_sd_daemon_h}" = "no" || test -z "${SYSTEMD_LIBS}"; then
+      if test "${ac_cv_header_systemd_sd_daemon_h}" = "no"; then
         AC_MSG_WARN([Your system does not support systemd.])
       else
-        APR_ADDTO(HTTPD_LIBS, [$SYSTEMD_LIBS])
         AC_DEFINE(HAVE_SYSTEMD, 1, [Define if systemd is supported])
       fi
    fi
@@ -730,7 +871,7 @@ AC_DEFUN([APACHE_EXPORT_ARGUMENTS],[
   APACHE_SUBST_EXPANDED_ARG(runtimedir)
   APACHE_SUBST_EXPANDED_ARG(logfiledir)
   APACHE_SUBST_EXPANDED_ARG(proxycachedir)
-  APACHE_SUBST_EXPANDED_ARG(davlockdb)
+  APACHE_SUBST_EXPANDED_ARG(statedir)
 ])
 
 dnl 
@@ -818,23 +959,133 @@ YES_IS_DEFINED
 ])
 
 dnl
-dnl APACHE_ADD_GCC_CFLAGS
+dnl APACHE_ADD_GCC_CFLAG
 dnl
-dnl Check if compiler is gcc and supports flag. If yes, add to CFLAGS.
+dnl Check if compiler is gcc and supports flag. If yes, add to NOTEST_CFLAGS.
+dnl NOTEST_CFLAGS is merged lately, thus it won't accumulate in CFLAGS here.
+dnl Also, AC_LANG_PROGRAM() itself is known to trigger [-Wstrict-prototypes]
+dnl with some autoconf versions, so we force -Wno-strict-prototypes for the
+dnl check to avoid spurious failures when adding flags like -Werror.
 dnl
 AC_DEFUN([APACHE_ADD_GCC_CFLAG], [
   define([ap_gcc_ckvar], [ac_cv_gcc_]translit($1, [-:.=], [____]))
   if test "$GCC" = "yes"; then
     AC_CACHE_CHECK([whether gcc accepts $1], ap_gcc_ckvar, [
       save_CFLAGS="$CFLAGS"
-      CFLAGS="$CFLAGS $1"
+      CFLAGS="$CFLAGS $1 -Wno-strict-prototypes"
       AC_COMPILE_IFELSE([AC_LANG_PROGRAM()],
         [ap_gcc_ckvar=yes], [ap_gcc_ckvar=no])
       CFLAGS="$save_CFLAGS"
     ])
     if test "$]ap_gcc_ckvar[" = "yes" ; then
-       APR_ADDTO(CFLAGS,[$1])
+       APR_ADDTO(NOTEST_CFLAGS,[$1])
     fi
   fi
   undefine([ap_gcc_ckvar])
+])
+
+
+dnl
+dnl APACHE_CHECK_JANSSON
+dnl
+dnl Configure for libjansson, giving preference to
+dnl "--with-jansson=<path>" if it was specified.
+dnl
+AC_DEFUN([APACHE_CHECK_JANSSON],[
+  AC_CACHE_CHECK([for jansson], [ac_cv_jansson], [
+    dnl initialise the variables we use
+    ac_cv_jansson=no
+    ap_jansson_found=""
+    ap_jansson_base=""
+    ap_jansson_libs=""
+
+    dnl Determine the jansson base directory, if any
+    AC_MSG_CHECKING([for user-provided jansson base directory])
+    AC_ARG_WITH(jansson, APACHE_HELP_STRING(--with-jansson=PATH, jansson installation directory), [
+      dnl If --with-jansson specifies a directory, we use that directory
+      if test "x$withval" != "xyes" -a "x$withval" != "x"; then
+        dnl This ensures $withval is actually a directory and that it is absolute
+        ap_jansson_base="`cd $withval ; pwd`"
+      fi
+    ])
+    if test "x$ap_jansson_base" = "x"; then
+      AC_MSG_RESULT(none)
+    else
+      AC_MSG_RESULT($ap_jansson_base)
+    fi
+
+    dnl Run header and version checks
+    saved_CPPFLAGS="$CPPFLAGS"
+    saved_LIBS="$LIBS"
+    saved_LDFLAGS="$LDFLAGS"
+
+    dnl Before doing anything else, load in pkg-config variables
+    if test -n "$PKGCONFIG"; then
+      saved_PKG_CONFIG_PATH="$PKG_CONFIG_PATH"
+      AC_MSG_CHECKING([for pkg-config along $PKG_CONFIG_PATH])
+      if test "x$ap_jansson_base" != "x" ; then
+        if test -f "${ap_jansson_base}/lib/pkgconfig/libjansson.pc"; then
+          dnl Ensure that the given path is used by pkg-config too, otherwise
+          dnl the system libjansson.pc might be picked up instead.
+          PKG_CONFIG_PATH="${ap_jansson_base}/lib/pkgconfig${PKG_CONFIG_PATH+:}${PKG_CONFIG_PATH}"
+          export PKG_CONFIG_PATH
+        elif test -f "${ap_jansson_base}/lib64/pkgconfig/libjansson.pc"; then
+          dnl Ensure that the given path is used by pkg-config too, otherwise
+          dnl the system libjansson.pc might be picked up instead.
+          PKG_CONFIG_PATH="${ap_jansson_base}/lib64/pkgconfig${PKG_CONFIG_PATH+:}${PKG_CONFIG_PATH}"
+          export PKG_CONFIG_PATH
+        fi
+      fi
+      AC_ARG_ENABLE(jansson-staticlib-deps,APACHE_HELP_STRING(--enable-jansson-staticlib-deps,[link mod_md with dependencies of libjansson's static libraries (as indicated by "pkg-config --static"). Must be specified in addition to --enable-md.]), [
+        if test "$enableval" = "yes"; then
+          PKGCONFIG_LIBOPTS="--static"
+        fi
+      ])
+      ap_jansson_libs="`$PKGCONFIG $PKGCONFIG_LIBOPTS --libs-only-l --silence-errors libjansson`"
+      if test $? -eq 0; then
+        ap_jansson_found="yes"
+        pkglookup="`$PKGCONFIG --cflags-only-I libjansson`"
+        APR_ADDTO(CPPFLAGS, [$pkglookup])
+        APR_ADDTO(MOD_CFLAGS, [$pkglookup])
+        pkglookup="`$PKGCONFIG $PKGCONFIG_LIBOPTS --libs-only-L libjansson`"
+        APR_ADDTO(LDFLAGS, [$pkglookup])
+        APR_ADDTO(MOD_LDFLAGS, [$pkglookup])
+        pkglookup="`$PKGCONFIG $PKGCONFIG_LIBOPTS --libs-only-other libjansson`"
+        APR_ADDTO(LDFLAGS, [$pkglookup])
+        APR_ADDTO(MOD_LDFLAGS, [$pkglookup])
+      fi
+      PKG_CONFIG_PATH="$saved_PKG_CONFIG_PATH"
+    fi
+
+    dnl fall back to the user-supplied directory if not found via pkg-config
+    if test "x$ap_jansson_base" != "x" -a "x$ap_jansson_found" = "x"; then
+      APR_ADDTO(CPPFLAGS, [-I$ap_jansson_base/include])
+      APR_ADDTO(MOD_CFLAGS, [-I$ap_jansson_base/include])
+      APR_ADDTO(LDFLAGS, [-L$ap_jansson_base/lib])
+      APR_ADDTO(MOD_LDFLAGS, [-L$ap_jansson_base/lib])
+      if test "x$ap_platform_runtime_link_flag" != "x"; then
+        APR_ADDTO(LDFLAGS, [$ap_platform_runtime_link_flag$ap_jansson_base/lib])
+        APR_ADDTO(MOD_LDFLAGS, [$ap_platform_runtime_link_flag$ap_jansson_base/lib])
+      fi
+    fi
+
+    # attempts to include jansson.h fail me. So lets make sure we can at least
+    # include its other header file
+    AC_TRY_COMPILE([#include <jansson_config.h>],[],
+      [AC_MSG_RESULT(OK) 
+       ac_cv_jansson=yes], 
+       [AC_MSG_RESULT(FAILED)])
+
+    if test "x$ac_cv_jansson" = "xyes"; then
+      ap_jansson_libs="${ap_jansson_libs:--ljansson} `$apr_config --libs`"
+    fi
+
+    dnl restore
+    CPPFLAGS="$saved_CPPFLAGS"
+    LIBS="$saved_LIBS"
+    LDFLAGS="$saved_LDFLAGS"
+  ])
+  if test "x$ac_cv_jansson" = "xyes"; then
+    AC_DEFINE(HAVE_JANSSON, 1, [Define if jansson is available])
+  fi
 ])

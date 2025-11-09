@@ -483,7 +483,7 @@
 
     <p>This policy will be rejected if the server response contains a
     <code>Vary</code> header, and that header in turn contains a header
-    blacklisted by the administrator.</p>
+    forbidden by the administrator.</p>
 
     <p>The <code>Vary</code> header is described in full in
     <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.44">

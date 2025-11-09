@@ -178,7 +178,7 @@ static const command_rec isapi_cmds[] = {
                      " on or off (default: off)"),
     AP_INIT_FLAG("ISAPIAppendLogToQuery", ap_set_flag_slot,
         (void *)APR_OFFSETOF(isapi_dir_conf, log_to_query),
-        OR_FILEINFO, "Append Log requests are concatinated to the query args"
+        OR_FILEINFO, "Append Log requests are concatenated to the query args"
                      " on or off (default: on)"),
     AP_INIT_FLAG("ISAPIFakeAsync", ap_set_flag_slot,
         (void *)APR_OFFSETOF(isapi_dir_conf, fake_async),
@@ -257,7 +257,7 @@ static apr_status_t isapi_load(apr_pool_t *p, server_rec *s, isapi_loaded *isa)
 
     isa->isapi_version = apr_pcalloc(p, sizeof(HSE_VERSION_INFO));
 
-    /* TODO: These aught to become overrideable, so that we
+    /* TODO: These aught to become overridable, so that we
      * assure a given isapi can be fooled into behaving well.
      *
      * The tricky bit, they aren't really a per-dir sort of
@@ -976,11 +976,11 @@ static int APR_THREAD_FUNC regfnServerSupportFunction(isapi_cid    *cid,
             return 0;
         }
 
-        len = (apr_uint32_t)strlen(r->filename);
+        len = (apr_uint32_t)strlen(subreq->filename);
 
         if ((subreq->finfo.filetype == APR_DIR)
               && (!subreq->path_info)
-              && (file[len - 1] != '/'))
+              && (subreq->filename[len - 1] != '/'))
             file = apr_pstrcat(cid->r->pool, subreq->filename, "/", NULL);
         else
             file = apr_pstrcat(cid->r->pool, subreq->filename,
@@ -1692,6 +1692,7 @@ static int isapi_pre_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *pte
                      "could not create the isapi cache pool");
         return APR_EGENERAL;
     }
+    apr_pool_tag(loaded.pool, "mod_isapi_load");
 
     loaded.hash = apr_hash_make(loaded.pool);
     if (!loaded.hash) {

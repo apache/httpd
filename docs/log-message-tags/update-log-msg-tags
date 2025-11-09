@@ -8,6 +8,16 @@ my $serial_file = "$basedir/next-number";
 my $serial = read_serial($serial_file);
 my $orig_serial = $serial;
 my %tags;
+my $rv = 0;
+
+my %intended_duplicate_tags;
+if (open(my $fh, "<", "$basedir/intended-duplicates")) {
+    while (my $line = <$fh>) {
+        if ($line =~ /^(\d+)\b/) {
+            $intended_duplicate_tags{$1} = "true";
+        }
+    }
+}
 
 foreach my $file (@ARGV) {
     if ($file !~ /\.c$/) {
@@ -25,7 +35,7 @@ foreach my $tag (sort keys %tags) {
 }
 write_file("$basedir/list", $list);
 
-exit 0;
+exit $rv;
 
 sub process
 {
@@ -37,7 +47,7 @@ sub process
     my $modified;
     my $result = "";
     while (defined $line) {
-        if ($line =~ s{APLOGNO\(\),?}{gen_tag($file)}e) {
+        if ($line =~ s{APLOGNO\(\)}{gen_tag($file)}e) {
             $modified = 1;
         }
         if ($line =~ /APLOGNO\(\s*(\d{5})\s*\)/ ) {
@@ -124,11 +134,13 @@ sub note_tag
             $oneline .= $1;
         }
     }
-    if (exists $tags{$tag}) {
+    if (exists $tags{$tag} and not exists $intended_duplicate_tags{$tag}) {
         print STDERR "WARNING: Duplicate tag $tag at $tags{$tag}->{file}:$tags{$tag}->{line} and $file:$lineno\n";
+        $rv = 1;
     }
     if ($tag >= $serial) {
         print STDERR "WARNING: next-number $serial inconsistent with tag $tag at $file:$lineno, adjusting\n";
+        $rv = 1;
         $serial = $tag + 1;
     }
     $tags{$tag} = { file => $file, line => $lineno, msg => $oneline };

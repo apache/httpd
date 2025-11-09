@@ -44,7 +44,7 @@
 </ul><h3>参照</h3><ul class="seealso"><li><a href="ip-based.html">ネームベースのバーチャルホスト</a></li><li><a href="details.html">バーチャルホストのマッチングについての詳細</a></li><li><a href="mass.html">大量のバーチャルホストの動的な設定</a></li><li><a href="examples.html">バーチャルホストの一般的な設定例</a></li><li><a href="examples.html#serverpath">ServerPath 設定例</a></li><li><a href="#comments_section">コメント</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="namevip" id="namevip">名前ベースと IP ベースのバーチャルホストの比較</a></h2>
+<h2><a name="namevip" id="namevip">名前ベースと IP ベースのバーチャルホストの比較</a> <a title="Permanent link" href="#namevip" class="permalink">&para;</a></h2>
 
     <p>IP ベースのバーチャルホストでは、応答する
     バーチャルホストへのコネクションを決定するために IP
@@ -82,7 +82,7 @@
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="using" id="using">名前ベースのバーチャルホストを利用する</a></h2>
+<h2><a name="using" id="using">名前ベースのバーチャルホストを利用する</a> <a title="Permanent link" href="#using" class="permalink">&para;</a></h2>
 
 <table class="related"><tr><th>関連モジュール</th><th>関連ディレクティブ</th></tr><tr><td><ul><li><code class="module"><a href="../mod/core.html">core</a></code></li></ul></td><td><ul><li><code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code></li><li><code class="directive"><a href="../mod/core.html#namevirtualhost">NameVirtualHost</a></code></li><li><code class="directive"><a href="../mod/core.html#serveralias">ServerAlias</a></code></li><li><code class="directive"><a href="../mod/core.html#servername">ServerName</a></code></li><li><code class="directive"><a href="../mod/core.html#serverpath">ServerPath</a></code></li><li><code class="directive"><a href="../mod/core.html#virtualhost">VirtualHost</a></code></li><li><code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code></li></ul></td></tr></table>
 
@@ -212,7 +212,7 @@
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="compat" id="compat">古いブラウザとの互換性</a></h2>
+<h2><a name="compat" id="compat">古いブラウザとの互換性</a> <a title="Permanent link" href="#compat" class="permalink">&para;</a></h2>
 
     <p>以前述べたように、名前ベースのバーチャルホストが正しく動作する
     ために必要な情報を送ってこないクライアントが依然として存在しています。
@@ -276,7 +276,7 @@
 <a href="../ja/vhosts/name-based.html" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/vhosts/name-based.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/vhosts/name-based.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
-</div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">コメント</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
+</div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">コメント</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Libera.chat, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
 var comments_identifier = 'http://httpd.apache.org/docs/trunk/vhosts/name-based.html';
@@ -294,7 +294,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/vhosts/name-based.
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2017 The Apache Software Foundation.<br />この文書は <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> のライセンスで提供されています。.</p>
+<p class="apache">Copyright 2023 The Apache Software Foundation.<br />この文書は <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> のライセンスで提供されています。.</p>
 <p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/quickreference.html">ディレクティブ</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

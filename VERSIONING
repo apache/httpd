@@ -31,7 +31,7 @@ STABLE RELEASES, 2.{even}.{revision}
 
 All even numbered releases will be considered stable revisions. 
 
-Stable revisions will retain forward compatiblity to the maximum
+Stable revisions will retain forward compatibility to the maximum
 possible extent.  Features may be added during minor revisions, and
 features may be deprecated by making appropriate notations in the
 documentation, but no features may be removed.
@@ -96,12 +96,12 @@ the current stable release.  Work proceeds on development releases, permitting
 the modification of the MMN at any time in order to correct deficiencies 
 or shortcomings in the API.  This means that modules from one development
 release to another may not be binary compatible, or may not successfully
-compile without modification to accomodate the API changes.
+compile without modification to accommodate the API changes.
 
 The only 'supported' development release at any time will be the most
 recently released version.  Developers will not be answering bug reports
 of older development releases once a new release is available.  It becomes
-the resposibility of the reporter to use the latest development version
+the responsibility of the reporter to use the latest development version
 to confirm that any issue still exists.
 
 Any new code, new API features or new ('experimental') modules may be

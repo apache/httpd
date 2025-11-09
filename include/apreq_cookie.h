@@ -155,7 +155,7 @@ void apreq_cookie_tainted_off(apreq_cookie_t *c) {
  * @param header the header value
  *
  * @return APR_SUCCESS.
- * @return ::APREQ_ERROR_BADSEQ if an unparseable character sequence appears.
+ * @return ::APREQ_ERROR_BADSEQ if an unparsable character sequence appears.
  * @return ::APREQ_ERROR_MISMATCH if an rfc-cookie attribute appears in a
  *         netscape cookie header.
  * @return ::APR_ENOTIMPL if an unrecognized rfc-cookie attribute appears.

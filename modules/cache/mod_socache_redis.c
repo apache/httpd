@@ -79,7 +79,7 @@ static const char *socache_rd_create(ap_socache_instance_t **context,
 {
     ap_socache_instance_t *ctx;
 
-    *context = ctx = apr_palloc(p, sizeof *ctx);
+    *context = ctx = apr_pcalloc(p, sizeof *ctx);
 
     if (!arg || !*arg) {
         return "List of server names required to create redis socache.";
@@ -468,7 +468,7 @@ static void register_hooks(apr_pool_t *p)
 static const command_rec socache_redis_cmds[] =
 {
     AP_INIT_TAKE1("RedisConnPoolTTL", socache_rd_set_ttl, NULL, RSRC_CONF,
-                      "TTL used for the connection pool with the Redis server(s)"),
+                  "TTL used for the connection pool with the Redis server(s)"),
     AP_INIT_TAKE1("RedisTimeout", socache_rd_set_rwto, NULL, RSRC_CONF,
                   "R/W timeout used for the connection with the Redis server(s)"),
     {NULL}

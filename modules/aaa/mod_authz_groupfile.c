@@ -98,6 +98,8 @@ static apr_status_t groups_for_user(apr_pool_t *p, char *user, char *grpfile,
     }
 
     apr_pool_create(&sp, p);
+    apr_pool_tag(sp, "authz_groupfile (groups_for_user)");
+
     ap_varbuf_init(p, &vb, VARBUF_INIT_LEN);
 
     while (!(ap_varbuf_cfg_getline(&vb, f, VARBUF_MAX_LEN))) {
@@ -172,7 +174,7 @@ static authz_status group_check_authorization(request_rec *r,
 
     if (apr_is_empty_table(grpstatus)) {
         /* no groups available, so exit immediately */
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01666)
+        ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(01666)
                       "Authorization of user %s to access %s failed, reason: "
                       "user doesn't appear in group file (%s).",
                       r->user, r->uri, conf->groupfile);

@@ -43,10 +43,11 @@
 #include "apr_general.h"
 #include "util_filter.h"
 #include "apr_buckets.h"
+#include "http_protocol.h"
 #include "http_request.h"
+#include "http_ssl.h"
 #define APR_WANT_STRFUNC
 #include "apr_want.h"
-#include "mod_ssl.h"
 
 #include "zlib.h"
 
@@ -98,8 +99,6 @@ static const char deflate_magic[2] = { '\037', '\213' };
 #define DEFAULT_WINDOWSIZE -15
 #define DEFAULT_MEMLEVEL 9
 #define DEFAULT_BUFFERSIZE 8096
-
-static APR_OPTIONAL_FN_TYPE(ssl_var_lookup) *mod_deflate_ssl_var = NULL;
 
 /* Check whether a request is gzipped, so we can un-gzip it.
  * If a request has multiple encodings, we need the gzip
@@ -553,10 +552,8 @@ static int check_ratio(request_rec *r, deflate_ctx *ctx,
 static int have_ssl_compression(request_rec *r)
 {
     const char *comp;
-    if (mod_deflate_ssl_var == NULL)
-        return 0;
-    comp = mod_deflate_ssl_var(r->pool, r->server, r->connection, r,
-                               "SSL_COMPRESS_METHOD");
+    comp = ap_ssl_var_lookup(r->pool, r->server, r->connection, r,
+                             "SSL_COMPRESS_METHOD");
     if (comp == NULL || *comp == '\0' || strcmp(comp, "NULL") == 0)
         return 0;
     return 1;
@@ -626,9 +623,14 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
                     continue;
                 }
 
-                rc = apr_bucket_read(e, &data, &blen, APR_BLOCK_READ);
-                if (rc != APR_SUCCESS)
-                    return rc;
+                if (e->length == (apr_size_t)-1) {
+                    rc = apr_bucket_read(e, &data, &blen, APR_BLOCK_READ);
+                    if (rc != APR_SUCCESS)
+                        return rc;
+                }
+                else {
+                    blen = e->length;
+                }
                 len += blen;
                 /* 50 is for Content-Encoding and Vary headers and ETag suffix */
                 if (len > sizeof(gzip_header) + VALIDATION_SIZE + 50)
@@ -645,6 +647,9 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
          * that are not a 204 response with no content
          * and are not tagged with the no-gzip env variable
          * and not a partial response to a Range request.
+         *
+         * Note that responding to 304 is handled separately to
+         * set the required headers (such as ETag) per RFC7232, 4.1.
          */
         if ((r->main != NULL) || (r->status == HTTP_NO_CONTENT) ||
             apr_table_get(r->subprocess_env, "no-gzip") ||
@@ -736,6 +741,8 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
          */
         if (!apr_table_get(r->subprocess_env, "force-gzip")) {
             const char *accepts;
+            const char *q = NULL;
+
             /* if they don't have the line, then they can't play */
             accepts = apr_table_get(r->headers_in, "Accept-Encoding");
             if (accepts == NULL) {
@@ -758,10 +765,21 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
                 token = (*accepts) ? ap_get_token(r->pool, &accepts, 0) : NULL;
             }
 
-            /* No acceptable token found. */
-            if (token == NULL || token[0] == '\0') {
+            /* Find the qvalue, if provided */
+            if (*accepts) {
+                while (*accepts == ';') {
+                    ++accepts;
+                }
+                q = ap_get_token(r->pool, &accepts, 1);
                 ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r,
-                              "Not compressing (no Accept-Encoding: gzip)");
+                              "token: '%s' - q: '%s'", token ? token : "NULL", q);
+            }
+
+            /* No acceptable token found or q=0 */
+            if (!token || token[0] == '\0' ||
+                (q && strlen(q) >= 3 && strncmp("q=0.000", q, strlen(q)) == 0)) {
+                ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r,
+                              "Not compressing (no Accept-Encoding: gzip or q=0)");
                 ap_remove_output_filter(f);
                 return ap_pass_brigade(f->next, bb);
             }
@@ -890,8 +908,10 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
                                        f->c->bucket_alloc);
             APR_BRIGADE_INSERT_TAIL(ctx->bb, b);
             ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01384)
-                          "Zlib: Compressed %ld to %ld : URL %s",
-                          ctx->stream.total_in, ctx->stream.total_out, r->uri);
+                          "Zlib: Compressed %" APR_UINT64_T_FMT
+                          " to %" APR_UINT64_T_FMT " : URL %s",
+                          (apr_uint64_t)ctx->stream.total_in,
+                          (apr_uint64_t)ctx->stream.total_out, r->uri);
 
             /* leave notes for logging */
             if (c->note_input_name) {
@@ -904,7 +924,7 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
 
             if (c->note_output_name) {
                 apr_table_setn(r->notes, c->note_output_name,
-                               (ctx->stream.total_in > 0)
+                               (ctx->stream.total_out > 0)
                                 ? apr_off_t_toa(r->pool,
                                                 ctx->stream.total_out)
                                 : "-");
@@ -921,6 +941,10 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
             }
 
             deflateEnd(&ctx->stream);
+
+            /* We've ended the libz stream, so remove ourselves. */
+            ap_remove_output_filter(f);
+
             /* No need for cleanup any longer */
             apr_pool_cleanup_kill(r->pool, ctx, deflate_ctx_cleanup);
 
@@ -969,7 +993,12 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
         }
 
         /* read */
-        apr_bucket_read(e, &data, &len, APR_BLOCK_READ);
+        rv = apr_bucket_read(e, &data, &len, APR_BLOCK_READ);
+        if (rv) {
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(10298)
+                          "failed reading from %s bucket", e->type->name);
+            return rv;
+        }
         if (!len) {
             apr_bucket_delete(e);
             continue;
@@ -1291,38 +1320,40 @@ static apr_status_t deflate_in_filter(ap_filter_t *f,
             if (APR_BUCKET_IS_FLUSH(bkt)) {
                 apr_bucket *tmp_b;
 
-                ctx->inflate_total += ctx->stream.avail_out;
-                zRC = inflate(&(ctx->stream), Z_SYNC_FLUSH);
-                ctx->inflate_total -= ctx->stream.avail_out;
-                if (zRC != Z_OK) {
-                    inflateEnd(&ctx->stream);
-                    ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(01391)
-                                  "Zlib error %d inflating data (%s)", zRC,
-                                  ctx->stream.msg);
-                    return APR_EGENERAL;
-                }
+                if (!ctx->done) {
+                    ctx->inflate_total += ctx->stream.avail_out;
+                    zRC = inflate(&(ctx->stream), Z_SYNC_FLUSH);
+                    ctx->inflate_total -= ctx->stream.avail_out;
+                    if (zRC != Z_OK) {
+                        inflateEnd(&ctx->stream);
+                        ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(01391)
+                                      "Zlib error %d inflating data (%s)", zRC,
+                                      ctx->stream.msg);
+                        return APR_EGENERAL;
+                    }
  
-                if (inflate_limit && ctx->inflate_total > inflate_limit) { 
-                    inflateEnd(&ctx->stream);
-                    ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(02647)
-                            "Inflated content length of %" APR_OFF_T_FMT
-                            " is larger than the configured limit"
-                            " of %" APR_OFF_T_FMT, 
-                            ctx->inflate_total, inflate_limit);
-                    return APR_ENOSPC;
-                }
+                    if (inflate_limit && ctx->inflate_total > inflate_limit) { 
+                        inflateEnd(&ctx->stream);
+                        ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(02647)
+                                      "Inflated content length of %" APR_OFF_T_FMT
+                                      " is larger than the configured limit"
+                                      " of %" APR_OFF_T_FMT, 
+                                      ctx->inflate_total, inflate_limit);
+                        return APR_ENOSPC;
+                    }
 
-                if (!check_ratio(r, ctx, dc)) {
-                    inflateEnd(&ctx->stream);
-                    ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(02805)
-                            "Inflated content ratio is larger than the "
-                            "configured limit %i by %i time(s)",
-                            dc->ratio_limit, dc->ratio_burst);
-                    return APR_EINVAL;
-                }
+                    if (!check_ratio(r, ctx, dc)) {
+                        inflateEnd(&ctx->stream);
+                        ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(02805)
+                                      "Inflated content ratio is larger than the "
+                                      "configured limit %i by %i time(s)",
+                                      dc->ratio_limit, dc->ratio_burst);
+                        return APR_EINVAL;
+                    }
 
-                consume_buffer(ctx, c, c->bufferSize - ctx->stream.avail_out,
-                               UPDATE_CRC, ctx->proc_bb);
+                    consume_buffer(ctx, c, c->bufferSize - ctx->stream.avail_out,
+                                   UPDATE_CRC, ctx->proc_bb);
+                }
 
                 /* Flush everything so far in the returning brigade, but continue
                  * reading should EOS/more follow (don't lose them).
@@ -1364,8 +1395,6 @@ static apr_status_t deflate_in_filter(ap_filter_t *f,
             /* pass through zlib inflate. */
             ctx->stream.next_in = (unsigned char *)data;
             ctx->stream.avail_in = (int)len;
-
-            zRC = Z_OK;
 
             if (!ctx->validation_buffer) {
                 while (ctx->stream.avail_in != 0) {
@@ -1437,9 +1466,10 @@ static apr_status_t deflate_in_filter(ap_filter_t *f,
                 ctx->validation_buffer_length += valid;
 
                 ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01393)
-                              "Zlib: Inflated %ld to %ld : URL %s",
-                              ctx->stream.total_in, ctx->stream.total_out,
-                              r->uri);
+                              "Zlib: Inflated %" APR_UINT64_T_FMT
+                              " to %" APR_UINT64_T_FMT " : URL %s",
+                              (apr_uint64_t)ctx->stream.total_in,
+                              (apr_uint64_t)ctx->stream.total_out, r->uri);
 
                 consume_buffer(ctx, c, c->bufferSize - ctx->stream.avail_out,
                                UPDATE_CRC, ctx->proc_bb);
@@ -1458,9 +1488,10 @@ static apr_status_t deflate_in_filter(ap_filter_t *f,
                     if ((ctx->stream.total_out & 0xFFFFFFFF) != compLen) {
                         inflateEnd(&ctx->stream);
                         ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(01395)
-                                      "Zlib: Length %ld of inflated data does "
-                                      "not match expected value %ld",
-                                      ctx->stream.total_out, compLen);
+                                      "Zlib: Length %" APR_UINT64_T_FMT
+                                      " of inflated data does not match"
+                                      " expected value %ld",
+                                      (apr_uint64_t)ctx->stream.total_out, compLen);
                         return APR_EGENERAL;
                     }
                 }
@@ -1535,6 +1566,9 @@ static apr_status_t inflate_out_filter(ap_filter_t *f,
          * that are not a 204 response with no content
          * and not a partial response to a Range request,
          * and only when Content-Encoding ends in gzip.
+         *
+         * Note that responding to 304 is handled separately to
+         * set the required headers (such as ETag) per RFC7232, 4.1.
          */
         if (!ap_is_initial_req(r) || (r->status == HTTP_NO_CONTENT) ||
             (apr_table_get(r->headers_out, "Content-Range") != NULL) ||
@@ -1624,8 +1658,10 @@ static apr_status_t inflate_out_filter(ap_filter_t *f,
              */
             flush_libz_buffer(ctx, c, inflate, Z_SYNC_FLUSH, UPDATE_CRC);
             ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01398)
-                          "Zlib: Inflated %ld to %ld : URL %s",
-                          ctx->stream.total_in, ctx->stream.total_out, r->uri);
+                          "Zlib: Inflated %" APR_UINT64_T_FMT 
+                          " to %" APR_UINT64_T_FMT " : URL %s",
+                          (apr_uint64_t)ctx->stream.total_in,
+                          (apr_uint64_t)ctx->stream.total_out, r->uri);
 
             if (ctx->validation_buffer_length == VALIDATION_SIZE) {
                 unsigned long compCRC, compLen;
@@ -1866,7 +1902,6 @@ static apr_status_t inflate_out_filter(ap_filter_t *f,
 static int mod_deflate_post_config(apr_pool_t *pconf, apr_pool_t *plog,
                                    apr_pool_t *ptemp, server_rec *s)
 {
-    mod_deflate_ssl_var = APR_RETRIEVE_OPTIONAL_FN(ssl_var_lookup);
     return OK;
 }
 

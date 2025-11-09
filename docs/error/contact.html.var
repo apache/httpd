@@ -24,9 +24,9 @@ the <a href="mailto:<!--#echo encoding="url" var="SERVER_ADMIN" -->">webmaster</
 Content-language: es
 Content-type: text/html
 Body:----------es--
-Si usted cree que esto es un error del servidor, por favor comun&iacute;queselo al
+Si cree que es un error del servidor, por favor, comun&iacute;queselo al
 <a href="mailto:<!--#echo encoding="none" var="SERVER_ADMIN" -->">administrador
-del portal</a>.
+del sitio web</a>.
 ----------es--
 
 Content-language: fr
@@ -96,6 +96,13 @@ por favor entre em contato com o
 <a href="mailto:<!--#echo encoding="url" var="SERVER_ADMIN" -->">webmaster</a>.
 -------pt-br--
 
+Content-language: pt
+Content-type: text/html; charset=ISO-8859-1
+Body:----------pt--
+Se considera que o servidor est&aacute; errado, por favor contacte o
+<a href="mailto:<!--#echo encoding="url" var="SERVER_ADMIN" -->">webmaster</a>.
+----------pt--
+
 Content-language: ro
 Content-type: text/html; charset=UTF-8
 Body:----------ro--
@@ -103,6 +110,13 @@ Va rugam sa il contactati pe
 <a href="mailto:<!--#echo encoding="url" var="SERVER_ADMIN" -->">webmaster</a>
 in cazul in care credeti ca aceasta este o eroare a serverului.
 ----------ro--
+
+Content-language: ru
+Content-type: text/html; charset=UTF-8
+Body:----------ru--
+Если Вы считаете, что это ошибка сервера, пожалуйста, сообщите об этом
+<a href="mailto:<!--#echo encoding="url" var="SERVER_ADMIN" -->">веб-мастеру</a>.
+----------ru--
 
 Content-language: sr
 Content-type: text/html; charset=UTF-8
@@ -125,3 +139,15 @@ Bunun bir sunucu hatas&#305; oldu&#287;unu dü&#351;ünüyorsan&#305;z, lütfen
 <a href="mailto:<!--#echo encoding="url" var="SERVER_ADMIN" -->">site
 yöneticisi</a> ile ileti&#351;ime geçin.
 ----------tr--
+
+Content-language: zh-cn
+Content-type: text/html; charset=UTF-8
+Body:----------zh-cn--
+如果您认为这是一个服务器错误，请联系<a href="mailto:<!--#echo encoding="url" var="SERVER_ADMIN" -->">网站管理员</a>。
+----------zh-cn--
+
+Content-language: zh-tw
+Content-type: text/html; charset=UTF-8
+Body:----------zh-tw--
+如果您認為這是一個伺服器錯誤，請聯繫<a href="mailto:<!--#echo encoding="url" var="SERVER_ADMIN" -->">網站管理員</a>。
+----------zh-tw--

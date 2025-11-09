@@ -41,7 +41,7 @@
 #define AP_SERF_CLUSTER_PROVIDER "serf_cluster"
 typedef struct ap_serf_server_t ap_serf_server_t;
 struct ap_serf_server_t {
-    /* TOOD: consider using apr_sockaddr_t, except they suck. */
+    /* TODO: consider using apr_sockaddr_t, except they suck. */
     const char *ip;
     apr_port_t port;
 };
@@ -77,7 +77,7 @@ struct ap_serf_cluster_provider_t {
      * unable to contact any of the servers, a 502 will be returned to the
      * client.
      *
-     * Returns OK on sucess, all other return codes will result in a 500.
+     * Returns OK on success, all other return codes will result in a 500.
      *
      * This field must be set.
      */

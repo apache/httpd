@@ -244,7 +244,7 @@ static apr_status_t cleanup_lua(void *l)
     return APR_SUCCESS;
 }
 
-static apr_status_t server_cleanup_lua(void *resource)
+static apr_status_t server_cleanup_lua(void *resource, void *params, apr_pool_t *pool)
 {
     ap_lua_server_spec* spec = (ap_lua_server_spec*) resource;
     AP_DEBUG_ASSERT(spec != NULL);
@@ -311,7 +311,8 @@ static void munge_path(lua_State *L,
 }
 
 #ifdef AP_ENABLE_LUAJIT
-static int loadjitmodule(lua_State *L, apr_pool_t *lifecycle_pool) {
+static int loadjitmodule(lua_State *L, apr_pool_t *lifecycle_pool)
+{
     lua_getglobal(L, "require");
     lua_pushliteral(L, "jit.");
     lua_pushvalue(L, -3);

@@ -231,7 +231,8 @@ static int ReportStatusToSCMgr(int currentState, int waitHint,
             ctx->ssStatus.dwWaitHint = 0;
             ctx->ssStatus.dwCheckPoint = 0;
             ctx->ssStatus.dwControlsAccepted = SERVICE_ACCEPT_STOP
-                                             | SERVICE_ACCEPT_SHUTDOWN;
+                                             | SERVICE_ACCEPT_SHUTDOWN
+                                             | SERVICE_ACCEPT_PRESHUTDOWN;
         }
         else if (currentState == SERVICE_STOPPED) {
             ctx->ssStatus.dwWaitHint = 0;
@@ -345,7 +346,8 @@ static DWORD WINAPI service_nt_ctrl(DWORD dwCtrlCode, DWORD dwEventType,
 
     /* SHUTDOWN is offered before STOP, accept the first opportunity */
     if ((dwCtrlCode == SERVICE_CONTROL_STOP)
-         || (dwCtrlCode == SERVICE_CONTROL_SHUTDOWN))
+         || (dwCtrlCode == SERVICE_CONTROL_SHUTDOWN)
+         || (dwCtrlCode == SERVICE_CONTROL_PRESHUTDOWN))
     {
         ap_signal_parent(SIGNAL_PARENT_SHUTDOWN);
         ReportStatusToSCMgr(SERVICE_STOP_PENDING, 30000, ctx);
@@ -381,7 +383,7 @@ static void __stdcall service_nt_main_fn_w(DWORD argc, LPWSTR *argv)
     apr_size_t wslen = wcslen(argv[0]) + 1;
     apr_size_t slen = wslen * 3 - 2;
 
-    service_name = malloc(slen);
+    service_name = ap_malloc(slen);
     (void)apr_conv_ucs2_to_utf8(argv[0], &wslen, service_name, &slen);
 
     /* args and service names live in the same pool */
@@ -413,7 +415,7 @@ static void __stdcall service_nt_main_fn_w(DWORD argc, LPWSTR *argv)
         DWORD i;
 
         mpm_new_argv->nalloc = mpm_new_argv->nelts + argc - 1;
-        cmb_data = malloc(mpm_new_argv->nalloc * sizeof(const char *));
+        cmb_data = ap_malloc(mpm_new_argv->nalloc * sizeof(const char *));
 
         /* mpm_new_argv remains first (of lower significance) */
         memcpy (cmb_data, mpm_new_argv->elts,
@@ -429,7 +431,7 @@ static void __stdcall service_nt_main_fn_w(DWORD argc, LPWSTR *argv)
         {
             wslen = wcslen(argv[i]) + 1;
             slen = wslen * 3 - 2;
-            service_name = malloc(slen);
+            service_name = ap_malloc(slen);
             (void)apr_conv_ucs2_to_utf8(argv[i], &wslen, *(cmb++), &slen);
         }
 
@@ -467,7 +469,7 @@ static void __stdcall service_nt_main_fn(DWORD argc, LPSTR *argv)
         {
         ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_STARTUP, 
                      apr_get_os_error(), NULL, 
-                     APLOGNO(00365) "Failure registering service handler");
+                     APLOGNO(10008) "Failure registering service handler");
         return;
     }
 
@@ -483,7 +485,7 @@ static void __stdcall service_nt_main_fn(DWORD argc, LPSTR *argv)
         char **cmb_data;
 
         mpm_new_argv->nalloc = mpm_new_argv->nelts + argc - 1;
-        cmb_data = malloc(mpm_new_argv->nalloc * sizeof(const char *));
+        cmb_data = ap_malloc(mpm_new_argv->nalloc * sizeof(const char *));
 
         /* mpm_new_argv remains first (of lower significance) */
         memcpy (cmb_data, mpm_new_argv->elts,
@@ -641,7 +643,7 @@ apr_status_t mpm_merge_service_args(apr_pool_t *p,
      * the service's default arguments (all others override them)...
      */
     args->nalloc = args->nelts + svc_args->nelts;
-    cmb_data = malloc(args->nalloc * sizeof(const char *));
+    cmb_data = ap_malloc(args->nalloc * sizeof(const char *));
 
     /* First three args (argv[0], -f, path) remain first */
     memcpy(cmb_data, args->elts, args->elt_size * fixed_args);
@@ -801,7 +803,7 @@ apr_status_t mpm_service_install(apr_pool_t *ptemp, int argc,
         rv = apr_get_os_error();
         ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_STARTUP, rv, NULL,
                      APLOGNO(00369)  "Failed to open the Windows service "
-                     "manager, perhaps you forgot to log in as Adminstrator?");
+                     "manager, perhaps you forgot to log in as Administrator?");
         return (rv);
     }
 
@@ -956,8 +958,8 @@ apr_status_t mpm_service_uninstall(void)
     if (!schSCManager) {
         rv = apr_get_os_error();
         ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_STARTUP, rv, NULL,
-                     APLOGNO(00369)  "Failed to open the Windows service "
-                     "manager, perhaps you forgot to log in as Adminstrator?");
+                     APLOGNO(10009)  "Failed to open the Windows service "
+                     "manager, perhaps you forgot to log in as Administrator?");
         return (rv);
     }
 
@@ -976,7 +978,7 @@ apr_status_t mpm_service_uninstall(void)
     if (!schService) {
         rv = apr_get_os_error();
         ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_STARTUP, rv, NULL,
-                     APLOGNO(00373) "Failed to open the '%s' service",
+                     APLOGNO(10010) "Failed to open the '%s' service",
                      mpm_display_name);
         return (rv);
     }
@@ -1046,8 +1048,8 @@ apr_status_t mpm_service_start(apr_pool_t *ptemp, int argc,
     if (!schSCManager) {
         rv = apr_get_os_error();
         ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_STARTUP, rv, NULL,
-                     APLOGNO(00369)  "Failed to open the Windows service "
-                     "manager, perhaps you forgot to log in as Adminstrator?");
+                     APLOGNO(10011)  "Failed to open the Windows service "
+                     "manager, perhaps you forgot to log in as Administrator?");
         return (rv);
     }
 
@@ -1068,7 +1070,7 @@ apr_status_t mpm_service_start(apr_pool_t *ptemp, int argc,
     if (!schService) {
         rv = apr_get_os_error();
         ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_STARTUP, rv, NULL, 
-                     APLOGNO(00373) "Failed to open the '%s' service",
+                     APLOGNO(10012) "Failed to open the '%s' service",
                      mpm_display_name);
         CloseServiceHandle(schSCManager);
         return (rv);
@@ -1088,14 +1090,14 @@ apr_status_t mpm_service_start(apr_pool_t *ptemp, int argc,
 #if APR_HAS_UNICODE_FS
     IF_WIN_OS_IS_UNICODE
     {
-        LPWSTR *start_argv_w = malloc((argc + 1) * sizeof(LPCWSTR));
+        LPWSTR *start_argv_w = ap_malloc((argc + 1) * sizeof(LPCWSTR));
         int i;
 
         for (i = 0; i < argc; ++i)
         {
             apr_size_t slen = strlen(argv[i]) + 1;
             apr_size_t wslen = slen;
-            start_argv_w[i] = malloc(wslen * sizeof(WCHAR));
+            start_argv_w[i] = ap_malloc(wslen * sizeof(WCHAR));
             rv = apr_conv_utf8_to_ucs2(argv[i], &slen, start_argv_w[i], &wslen);
             if (rv != APR_SUCCESS)
                 return rv;
@@ -1114,7 +1116,7 @@ apr_status_t mpm_service_start(apr_pool_t *ptemp, int argc,
 #if APR_HAS_ANSI_FS
     ELSE_WIN_OS_IS_ANSI
     {
-        char **start_argv = malloc((argc + 1) * sizeof(const char *));
+        char **start_argv = ap_malloc((argc + 1) * sizeof(const char *));
         memcpy(start_argv, argv, argc * sizeof(const char *));
         start_argv[argc] = NULL;
 
@@ -1156,8 +1158,8 @@ void mpm_signal_service(apr_pool_t *ptemp, int signal)
     if (!schSCManager) {
         ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_STARTUP,
                      apr_get_os_error(), NULL,
-                     APLOGNO(00369)  "Failed to open the Windows service "
-                     "manager, perhaps you forgot to log in as Adminstrator?");
+                     APLOGNO(10013)  "Failed to open the Windows service "
+                     "manager, perhaps you forgot to log in as Administrator?");
         return;
     }
 
@@ -1183,7 +1185,7 @@ void mpm_signal_service(apr_pool_t *ptemp, int signal)
         /* Could not open the service */
         ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_STARTUP,
                      apr_get_os_error(), NULL,
-                     APLOGNO(00373) "Failed to open the '%s' service",
+                     APLOGNO(10014) "Failed to open the '%s' service",
                      mpm_display_name);
         CloseServiceHandle(schSCManager);
         return;

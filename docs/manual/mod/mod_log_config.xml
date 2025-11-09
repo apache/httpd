@@ -93,7 +93,7 @@
         to the server. Only version 0 cookies are fully supported.</td></tr>
 
     <tr><td><code>%D</code></td>
-        <td>The time taken to serve the request, in microseconds.</td></tr>
+        <td>The time taken to serve the request, in microseconds. See %T for details.</td></tr>
 
     <tr><td><code>%{<var>VARNAME</var>}e</code></td>
         <td>The contents of the environment variable
@@ -109,7 +109,13 @@
         for only a few hosts, you probably have access control
         directives mentioning them by name. See <a
         href="mod_authz_host.html#reqhost">the Require host
-        documentation</a>.</td></tr>
+        documentation</a>. This format is affected by modifications to the 
+        remote hostname by modules like <module>mod_remoteip</module>.</td></tr>
+
+    <tr><td><code>%{c}h</code></td>
+        <td>Like <code>%h</code>, but always reports on the hostname of the
+        underlying TCP connection and not any modifications to the 
+        remote hostname by modules like <module>mod_remoteip</module>.</td></tr>
 
     <tr><td><code>%H</code></td>
         <td>The request protocol.</td></tr>
@@ -143,6 +149,11 @@
             logged to the error log for this request). Look for the
             matching error log line to see what request caused what error.</td></tr>
 
+    <tr><td><code>%{c}L</code></td>
+        <td>The connection log ID from the error log (or '-' if nothing has been
+            logged to the error log for this request). Look for the
+            matching error log line to see what request caused what error.</td></tr>
+
     <tr><td><code>%m</code></td>
         <td>The request method.</td></tr>
 
@@ -169,8 +180,7 @@
     <tr><td><code>%{<var>format</var>}P</code></td>
         <td>The process ID or thread ID of the child that serviced the
         request.  Valid formats are <code>pid</code>, <code>tid</code>,
-        and <code>hextid</code>.  <code>hextid</code> requires APR 1.2.0 or
-        higher.
+        and <code>hextid</code>.
         </td></tr>
 
     <tr><td><code>%q</code></td>
@@ -214,7 +224,22 @@
         </td></tr>
 
     <tr><td><code>%T</code></td>
-        <td>The time taken to serve the request, in seconds.</td></tr>
+        <td><p>The time taken to serve the request, in seconds. The time measured
+        begins when the first line of the HTTP request is read from the host
+        operating system by the HTTP server and ends when the last byte of
+        the response is written by the HTTP server to the host operating system.</p>
+        <p>The time measured does <em>not</em> include any of the following:</p>
+        <ul>
+         <li> Time spent in TCP or TLS handshakes.</li>
+         <li> The time before a webserver thread is able to read the first 
+              line of the request.</li>
+         <li> Delays in the operating system putting the response data out 
+              onto the network.</li>
+         <li> Time taken for the response to arrive at the client host.</li>
+         <li> Time taken for the the useragent to read and process the 
+              response.</li>
+       </ul>
+    </td></tr>
 
     <tr><td><code>%{<var>UNIT</var>}T</code></td>
         <td>The time taken to serve the request, in a time unit given by

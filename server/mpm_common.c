@@ -70,7 +70,6 @@
     APR_HOOK_LINK(mpm_register_timed_callback) \
     APR_HOOK_LINK(mpm_register_poll_callback) \
     APR_HOOK_LINK(mpm_register_poll_callback_timeout) \
-    APR_HOOK_LINK(mpm_unregister_poll_callback) \
     APR_HOOK_LINK(mpm_get_name) \
     APR_HOOK_LINK(mpm_resume_suspended) \
     APR_HOOK_LINK(end_generation) \
@@ -78,7 +77,9 @@
     APR_HOOK_LINK(output_pending) \
     APR_HOOK_LINK(input_pending) \
     APR_HOOK_LINK(suspend_connection) \
-    APR_HOOK_LINK(resume_connection)
+    APR_HOOK_LINK(resume_connection) \
+    APR_HOOK_LINK(child_stopping) \
+    APR_HOOK_LINK(child_stopped)
 
 #if AP_ENABLE_EXCEPTION_HOOK
 APR_HOOK_STRUCT(
@@ -111,14 +112,15 @@ AP_IMPLEMENT_HOOK_RUN_FIRST(apr_status_t, mpm_resume_suspended,
                             (conn_rec *c),
                             (c), APR_ENOTIMPL)
 AP_IMPLEMENT_HOOK_RUN_FIRST(apr_status_t, mpm_register_poll_callback,
-                            (apr_array_header_t *pds, ap_mpm_callback_fn_t *cbfn, void *baton),
-                            (pds, cbfn, baton), APR_ENOTIMPL)
+                            (apr_pool_t *p, const apr_array_header_t *pds,
+                             ap_mpm_callback_fn_t *cbfn, void *baton),
+                            (p, pds, cbfn, baton), APR_ENOTIMPL)
 AP_IMPLEMENT_HOOK_RUN_FIRST(apr_status_t, mpm_register_poll_callback_timeout,
-                            (apr_array_header_t *pds, ap_mpm_callback_fn_t *cbfn, ap_mpm_callback_fn_t *tofn, void *baton, apr_time_t timeout),
-                            (pds, cbfn, tofn, baton, timeout), APR_ENOTIMPL)
-AP_IMPLEMENT_HOOK_RUN_FIRST(apr_status_t, mpm_unregister_poll_callback,
-                            (apr_array_header_t *pds),
-                            (pds), APR_ENOTIMPL)
+                            (apr_pool_t *p, const apr_array_header_t *pds,
+                             ap_mpm_callback_fn_t *cbfn,
+                             ap_mpm_callback_fn_t *tofn,
+                             void *baton, apr_time_t timeout),
+                            (p, pds, cbfn, tofn, baton, timeout), APR_ENOTIMPL)
 AP_IMPLEMENT_HOOK_RUN_FIRST(int, output_pending,
                             (conn_rec *c), (c), DECLINED)
 AP_IMPLEMENT_HOOK_RUN_FIRST(int, input_pending,
@@ -136,6 +138,12 @@ AP_IMPLEMENT_HOOK_VOID(suspend_connection,
 AP_IMPLEMENT_HOOK_VOID(resume_connection,
                        (conn_rec *c, request_rec *r),
                        (c, r))
+AP_IMPLEMENT_HOOK_VOID(child_stopping,
+                       (apr_pool_t *pchild, int graceful),
+                       (pchild, graceful))
+AP_IMPLEMENT_HOOK_VOID(child_stopped,
+                       (apr_pool_t *pchild, int graceful),
+                       (pchild, graceful))
 
 /* hooks with no args are implemented last, after disabling APR hook probes */
 #if defined(APR_HOOK_PROBES_ENABLED)
@@ -172,10 +180,10 @@ AP_DECLARE_DATA int ap_max_requests_per_child;
 AP_DECLARE_DATA char ap_coredump_dir[MAX_STRING_LEN];
 AP_DECLARE_DATA int ap_coredumpdir_configured;
 AP_DECLARE_DATA int ap_graceful_shutdown_timeout;
-AP_DECLARE_DATA apr_uint32_t ap_max_mem_free;
 AP_DECLARE_DATA apr_size_t ap_thread_stacksize;
 
 #define ALLOCATOR_MAX_FREE_DEFAULT (2048*1024)
+AP_DECLARE_DATA apr_uint32_t ap_max_mem_free = ALLOCATOR_MAX_FREE_DEFAULT;
 
 /* Set defaults for config directives implemented here.  This is
  * called from core's pre-config hook, so MPMs which need to override
@@ -211,6 +219,8 @@ AP_DECLARE(void) ap_wait_or_timeout(apr_exit_why_e *status, int *exitcode,
     }
 
     rv = apr_proc_wait_all_procs(ret, exitcode, status, APR_NOWAIT, p);
+    ap_update_global_status();
+
     if (APR_STATUS_IS_EINTR(rv)) {
         ret->pid = -1;
         return;
@@ -534,6 +544,7 @@ void ap_core_child_status(server_rec *s, pid_t pid,
         ++cur->active;
         break;
     case MPM_CHILD_EXITED:
+        ap_update_global_status();
         status_msg = "exited";
         if (cur == APR_RING_SENTINEL(geninfo, mpm_gen_info_t, link)) {
             ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO(00546)
@@ -568,24 +579,20 @@ AP_DECLARE(apr_status_t) ap_mpm_register_timed_callback(apr_time_t t,
     return ap_run_mpm_register_timed_callback(t, cbfn, baton);
 }
 
-AP_DECLARE(apr_status_t) ap_mpm_register_poll_callback(apr_array_header_t *pfds,
+AP_DECLARE(apr_status_t) ap_mpm_register_poll_callback(
+        apr_pool_t *p, const apr_array_header_t *pfds,
         ap_mpm_callback_fn_t *cbfn, void *baton)
 {
-    return ap_run_mpm_register_poll_callback(pfds, cbfn, baton);
+    return ap_run_mpm_register_poll_callback(p, pfds, cbfn, baton);
 }
 
 AP_DECLARE(apr_status_t) ap_mpm_register_poll_callback_timeout(
-        apr_array_header_t *pfds, ap_mpm_callback_fn_t *cbfn,
-        ap_mpm_callback_fn_t *tofn, void *baton, apr_time_t timeout)
+        apr_pool_t *p, const apr_array_header_t *pfds,
+        ap_mpm_callback_fn_t *cbfn, ap_mpm_callback_fn_t *tofn,
+        void *baton, apr_time_t timeout)
 {
-    return ap_run_mpm_register_poll_callback_timeout(pfds, cbfn, tofn, baton,
-            timeout);
-}
-
-AP_DECLARE(apr_status_t) ap_mpm_unregister_poll_callback(
-        apr_array_header_t *pfds)
-{
-    return ap_run_mpm_unregister_poll_callback(pfds);
+    return ap_run_mpm_register_poll_callback_timeout(p, pfds, cbfn, tofn,
+                                                     baton, timeout);
 }
 
 AP_DECLARE(const char *)ap_show_mpm(void)

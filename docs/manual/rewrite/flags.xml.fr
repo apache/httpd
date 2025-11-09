@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1762651 -->
+<!-- English Revision: 1923725 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -73,13 +73,7 @@ d'utilisation.</p>
 <section id="flag_b"><title>B (échappement dans les références arrières)</title>
 <p>Avec le drapeau [B], la directive <directive
 module="mod_rewrite">RewriteRule</directive> échappe les caractères
-non-alphanumériques avant d'appliquer la transformation. A partir
-de la version 2.4.10, vous pouvez limiter l'échappement dans les
-références arrières à une liste de caractères que vous pouvez spécifiez comme
-dans cet exemple : <code>[B=#?;]</code>. Notez que l'espace peut faire
-partie de la liste des caractères à échapper, mais qu'il ne doit pas
-être le dernier caractère de cette liste.
-</p>
+non-alphanumériques avant d'appliquer la transformation.</p>
 
 <p><code>mod_rewrite</code> doit supprimer les séquences d'échappement
 des URLs avant leur
@@ -89,7 +83,13 @@ ces dernières sont appliquées. Avec le drapeau B, les caractères
 non-alphanumériques des références arrières seront échappés. Considérons
 par exemple cette règle :</p>
 
-<highlight language="config">RewriteRule "^search/(.*)$" "/search.php?term=$1"</highlight>
+<p>Pour un échappement similaire des variables du serveur, voir la <a
+href="#mapfunc">fonction de mappage</a> "escape".
+</p>
+
+<highlight language="config">
+RewriteRule "^search/(.*)$" "/search.php?term=$1"
+</highlight>
 
 <p>Soit le terme de recherche 'x &amp; y/z' ; un navigateur va le coder
 en 'x%20%26%20y%2Fz', transformant la requête en
@@ -123,6 +123,25 @@ si on présente à ce dernier une URL non échappée.</p>
 %{THE_REQUEST}, les chaînes capturées se présentant
 alors sous la forme codée.</p>
 
+<p>A partir
+de la version 2.4.26, vous pouvez limiter l'échappement dans les
+références arrières à une liste de caractères que vous pouvez spécifiez comme
+dans cet exemple : <code>[B=#?;]</code>. Notez que l'espace peut faire
+partie de la liste des caractères à échapper, mais que vous devez mettre entre
+guillemets le troisième argument de la directive <directive
+module="mod_rewrite">RewriteRule</directive> et que l'espace ne doit pas
+être le dernier caractère de cette liste.
+</p>
+
+<highlight language="config">
+# Échappement des espaces et des points d'interrogation. Les guillemets autour
+# du dernier argument sont obligatoires lorsque l'espace est inclus.
+RewriteRule "^search/(.*)$" "/search.php?term=$1" "[B= ?]"
+</highlight>
+
+<p>Pour définir la liste des caractères à échapper de cette manière, voir <a
+href="#flag_bne">#flag_bne</a> et <a href="#flag_bctls">#flag_bctls</a></p>
+
 </section>
 
 <section id="flag_bnp"><title>BNP|backrefnoplus (ne pas échapper
@@ -132,6 +151,47 @@ module="mod_rewrite">RewriteRule</directive> échappera le caractère
 espace en %20 au lieu de '+' dans les références arrières. Ceci s'avère
 utile lorsque la référence arrière est utilisée dans la partie chemin,
 et non dans les paramètres de la requête.</p>
+
+<highlight language="config">
+# Échappe le caractère espace en %20 dans le chemin au lieu de + comme dans la
+# soumission de formulaire à l'aide de la chaîne de paramètres
+RewriteRule "^search/(.*)$" "/search.php/$1" "[B,BNP]"
+</highlight>
+
+<p>Ce drapeau est disponible à partir de la version 2.4.26 du serveur HTTP
+Apache.</p>
+
+</section>
+
+<section id="flag_bctls"><title>BCTLS</title>
+<p>Le drapeau [BCTLS] est similaire à [B], à la différence que seuls les espaces
+et les caractères de contrôle sont échappés. Il s'agit du même jeu de caractères
+rejetés lorsqu'ils sont copiés dans la chaîne de paramètres non codée.
+</p>
+
+<highlight language="config">
+# Échappe les espaces et les caractères de contrôle
+RewriteRule "^search/(.*)$" "/search.php/$1" "[BCTLS]"
+</highlight>
+
+<p>Ce drapeau est disponible à partir de la version 2.5.1 du serveur HTTP
+Apache.</p>
+
+</section>
+
+<section id="flag_bne"><title>BNE</title>
+<p>Les caractères listés dans [BNE=...] sont exclus des listes de caractères
+correspondant aux drapeaux [B] ou [BCTLS]. Ils ne seront donc pas échappés.
+</p>
+
+<highlight language="config">
+# Échappe les caractères par défaut, sauf /
+RewriteRule "^search/(.*)$" "/search.php?term=$1" "[B,BNE=/]"
+</highlight>
+ 
+<p>Ce drapeau est disponible à partir de la version 2.5.1 du serveur HTTP
+Apache.</p>
+
 </section>
 
 <section id="flag_c"><title>C|chain</title>
@@ -148,13 +208,13 @@ chaînées qui suivent, seront sautées.</p>
 <p>Le drapeau [CO], ou [cookie], vous permet de définir un cookie
 lorsqu'une règle <directive module="mod_rewrite">RewriteRule</directive>
 s'applique. Il possède trois arguments obligatoires et
-quatre arguments optionnels.</p>
+cinq arguments optionnels.</p>
 
 <p>La syntaxe complète de ce drapeau, avec tous ses attributs, est la
 suivante :</p>
 
 <example>
-[CO=NAME:VALUE:DOMAIN:lifetime:path:secure:httponly]
+[CO=NAME:VALUE:DOMAIN:lifetime:path:secure:httponly:samesite]
 </example>
 
 <p>Si un caractère littéral ':' doit être insérer dans un des champs du
@@ -163,7 +223,7 @@ alternative, le contenu du champ "Name" doit être précédé du caractère
 ';', et les sépateurs de champs deviendront des ';'.</p>
 
 <example>
-[CO=;NAME;VALUE:MOREVALUE;DOMAIN;lifetime;path;secure;httponly]
+[CO=;NAME;VALUE:MOREVALUE;DOMAIN;lifetime;path;secure;httponly;samesite]
 </example>
 
 <p>Vous devez déclarer un nom, une valeur et un domaine pour que
@@ -187,6 +247,8 @@ ce style de cookie est interdit par le modèle de sécurité des cookies.</dd>
 <dd>La durée de vie du cookie, en minutes.</dd>
 <dd>Une valeur de 0 indique une durée de vie correspondant à la session
 courante du navigateur. Il s'agit de la valeur par défaut.</dd>
+<dd>Une valeur négative indique que la définition du cookie doit être annulée
+dans le navigateur.</dd>
 
 <dt>Path</dt>
 <dd>Le chemin, sur le site web concerné, pour lequel le cookie est
@@ -206,6 +268,12 @@ que dans le cadre d'une connexion sécurisée (https).</dd>
 <code>HttpOnly</code> activé, ce qui signifie qu'il sera inaccessible au
 code JavaScript pour les navigateurs qui supportent cette
 fonctionnalité.</dd>
+
+<dt>samesite</dt>
+<dd>S'il est différent de <code>false</code> ou <code>0</code>, l'attribut
+<code>SameSite</code> est défini à la valeur spécifiée. Les valeurs typiques
+sont <code>None</code>, <code>Lax</code> et <code>Strict</code>. Disponible à
+partir de la version 2.5.1 du serveur HTTP Apache.</dd>
 </dl>
 
 <p>Voici un exemple :</p>
@@ -495,9 +563,9 @@ bien que <code>.JPG</code> seront acceptés.</p>
 
 <section id="flag_ne"><title>NE|noescape</title>
 <p>Par défaut, les caractères spéciaux, comme <code>&amp;</code> et
-<code>?</code>, sont convertis en leur équivalent
-hexadécimal. Le drapeau [NE] permet d'éviter cette conversion.
-</p>
+<code>?</code>, sont convertis en leur équivalent hexadécimal pour les règles
+qui génèrent des redirections externes. Le drapeau [NE] permet d'éviter cette
+conversion.</p>
 
 <highlight language="config">RewriteRule "^/anchor/(.+)" "/bigpage.html#$1" [NE,R]</highlight>
 
@@ -571,13 +639,20 @@ local.</p>
 </note>
 
 <note type="warning">
-      <title>Avertissement au sujet des performances</title>
-      <p>Utiliser ce drapeau fait intervenir <module>mod_proxy</module> sans la gestion des connexions
-      persistantes, ce qui signifie que vous obtiendrez des performances meilleurs si vous utilisez
-      <directive module="mod_proxy">ProxyPass</directive> ou <directive module="mod_proxy">ProxyPassMatch</directive>.</p>
-      <p>Ceci est du au fait que ce drapeau induit l'utilisation du worker par défaut, qui
-      ne gère pas la mise en commun des connexions.</p>
-      <p>Partout où cela est possible, préférez l'utilisation de ces directives.</p>
+      <title>Avertissement au sujet des performances</title> 
+      <p>Utiliser ce drapeau fait intervenir <module>mod_proxy</module> sans la
+      gestion des connexions persistantes car dans ce cas, c'est le worker par
+      défaut qui est utilisé, et ce dernier ne gère pas la mise en commun et la
+      réutilisation des connexions.</p> 
+      <p>Pour utiliser les connexions persistantes, vous devez définir un bloc
+      <directive module="mod_proxy">Proxy</directive>, au moins pour les parties
+      protocole et hôte de l'URL cible, et contenant une directive <directive
+      module="mod_proxy">ProxySet</directive> où vous définissez par exemple un
+      délai.</p> 
+      <p>Si vous le définissez avec une directive <directive
+      module="mod_proxy">ProxyPass</directive> ou <directive
+      module="mod_proxy">ProxyPassMatch</directive>, les connexions persistantes
+      seront automatiquement utilisées.</p>
 </note>
 
 <p>Note: <module>mod_proxy</module> doit être activé pour pouvoir
@@ -771,13 +846,14 @@ contenues dans le bloc else :</p>
 # Est-ce que le fichier existe ?
 RewriteCond "%{REQUEST_FILENAME}" !-f
 RewriteCond "%{REQUEST_FILENAME}" !-d
-# Create an if-then-else construct by skipping 3 lines if we meant to go to the &quot;else&quot; stanza.
+# Créer une structure conditionnelle if-then-else en sautant 3 lignes si nous
+# avions l'intention d'aller au bloc &quot;else&quot;.
 RewriteRule ".?" "-" [S=3]
 
 # Si le fichier existe, alors :
 RewriteRule "(.*\.gif)" "images.php?$1"
     RewriteRule "(.*\.html)" "docs.php?$1"
-    # Skip past the &quot;else&quot; stanza.
+    # Passer le bloc &quot;else&quot;.
     RewriteRule ".?" "-" [S=1]
 # ELSE...
 RewriteRule "(.*)" "404.php?file=$1"
@@ -830,6 +906,32 @@ réécriture suivantes de mod_rewrite). Dans ce contexte, vous pouvez
 utiliser le drapeau <code>L</code> pour terminer la séquence
 <em>courante</em> de réécriture de mod_rewrite.</p>
 
+</section>
+
+<section id="flag_unsafe_allow_3f"><title>UnsafeAllow3F</title>
+    <p>Il est nécessaire de définir ce drapeau pour permettre à une réécriture
+    de continuer si la requête HTTP en cours d’écriture possède un point d'interrogation encodé, « %3f », et si le résultat réécrit contient un « ? » dans
+    la substitution. Cela protège d’une URL malveillante tirant avantage d’une
+    capture et d’une resubstitution du point d'interrogation encodé.</p>
+</section>
+<section id="flag_unsafe_prefix_stat"><title>UnsafePrefixStat</title>
+    <p>La définition de ce drapeau est requise dans les substitutions à
+    l'échelle du serveur qui commencent par une variable ou une référence
+    arrière et se résolvent en un chemin du système de fichiers. Ces
+    substitutions ne sont pas préfixées par la racine des documents. Cela protège
+    d’une URL malveillante faisant correspondre la substitution expansée à un
+    emplacement non souhaité du système de fichiers.</p>
+
+    <p><since>2.5.1</since></p>
+ </section>
+
+ <section id="flag_unc"><title>UNC</title>
+    <p>Définir ce drapeau empêche la fusion des slashes de début multiples tels
+    que ceux utilisés dans les chemins UNC de Windows. Ce drapeau n’est pas
+    nécessaire lorsque la substitution de la règle commence par des slashes
+    multiples littéraux.</p>
+
+    <p><since>2.5.1</since></p>
 </section>
 
 </manualpage>

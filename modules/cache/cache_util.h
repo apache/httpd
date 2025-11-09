@@ -99,7 +99,6 @@ extern "C" {
 #define CACHE_LOCKNAME_KEY "mod_cache-lockname"
 #define CACHE_LOCKFILE_KEY "mod_cache-lockfile"
 #define CACHE_CTX_KEY "mod_cache-ctx"
-#define CACHE_SEPARATOR ", \t"
 
 /**
  * cache_util.c
@@ -316,16 +315,22 @@ const char *cache_table_getm(apr_pool_t *p, const apr_table_t *t,
         const char *key);
 
 /**
- * String tokenizer that ignores separator characters within quoted strings
- * and escaped characters, as per RFC2616 section 2.2.
+ * String tokenizer per RFC 7234 section 5.2 (1#token[=["]arg["]]).
+ * If any (and arg not NULL), the argument is also returned (unquoted).
  */
-char *cache_strqtok(char *str, const char *sep, char **last);
+apr_status_t cache_strqtok(char *str, char **token, char **arg, char **last);
 
 /**
  * Merge err_headers_out into headers_out and add request's Content-Type and
  * Content-Encoding if available.
  */
 apr_table_t *cache_merge_headers_out(request_rec *r);
+
+/**
+ * Return whether to use request's path/query from early stage (r->parsed_uri)
+ * or the current/rewritable ones (r->uri/r->args).
+ */
+int cache_use_early_url(request_rec *r);
 
 #ifdef __cplusplus
 }

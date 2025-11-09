@@ -1,0 +1,2 @@
+  *) mod_http2: Fix handling of 304 responses from mod_cache. PR 69580.
+     [Stefan Eissing]

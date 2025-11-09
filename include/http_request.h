@@ -149,18 +149,6 @@ AP_DECLARE(int) ap_run_sub_req(request_rec *r);
  */
 AP_DECLARE(void) ap_destroy_sub_req(request_rec *r);
 
-/**
- * An output filter to ensure that we avoid passing morphing buckets to
- * connection filters and in so doing defeat async write completion when
- * they are set aside. This should be inserted at the end of a request
- * filter stack.
- * @param f The current filter
- * @param bb The brigade to filter
- * @return status code
- */
-AP_CORE_DECLARE_NONSTD(apr_status_t) ap_request_core_filter(ap_filter_t *f,
-                                                            apr_bucket_brigade *bb);
-
 /*
  * Then there's the case that you want some other request to be served
  * as the top-level request INSTEAD of what the client requested directly.
@@ -199,7 +187,6 @@ AP_DECLARE(void) ap_internal_fast_redirect(request_rec *sub_req, request_rec *r)
  * @return 1 if authentication is required, 0 otherwise
  * @bug Behavior changed in 2.4.x refactoring, API no longer usable
  * @deprecated @see ap_some_authn_required()
- *
  */
 AP_DECLARE(int) ap_some_auth_required(request_rec *r);
 
@@ -345,14 +332,14 @@ void ap_process_async_request(request_rec *r);
 
 /**
  * Kill the current request
- * @param type Why the request is dieing
+ * @param type Why the request is dying
  * @param r The current request
  */
 AP_DECLARE(void) ap_die(int type, request_rec *r);
 
 /**
  * Check whether a connection is still established and has data available,
- * optionnaly consuming blank lines ([CR]LF).
+ * optionally consuming blank lines ([CR]LF).
  * @param c The current connection
  * @param bb The brigade to filter
  * @param max_blank_lines Max number of blank lines to consume, or zero
@@ -374,6 +361,18 @@ AP_DECLARE(apr_status_t) ap_check_pipeline(conn_rec *c, apr_bucket_brigade *bb,
  * @ingroup hooks
  */
 AP_DECLARE_HOOK(int,create_request,(request_rec *r))
+
+/**
+ * This hook allow modules an opportunity to translate the URI into an
+ * actual filename, before URL decoding happens.
+ * @param r The current request
+ * @return DECLINED to let other modules handle the pre-translation,
+ *         OK if it was handled and no other module should process it,
+ *         DONE if no further transformation should happen on the URI,
+ *         HTTP_... in case of error.
+ * @ingroup hooks
+ */
+AP_DECLARE_HOOK(int,pre_translate_name,(request_rec *r))
 
 /**
  * This hook allow modules an opportunity to translate the URI into an
@@ -458,7 +457,7 @@ AP_DECLARE_HOOK(int,access_checker,(request_rec *r))
  * If "Satisfy any" is in effect, this hook may be skipped.
  *
  * @param r the current request
- * @return OK (allow acces), DECLINED (let later modules decide),
+ * @return OK (allow access), DECLINED (let later modules decide),
  *         or HTTP_... (deny access)
  * @ingroup hooks
  * @see ap_hook_check_access_ex
@@ -480,6 +479,19 @@ AP_DECLARE_HOOK(int,access_checker_ex,(request_rec *r))
  * @see ap_hook_check_authz
  */
 AP_DECLARE_HOOK(int,auth_checker,(request_rec *r))
+
+/**
+ * This hook is used to parse any tokens in the request that might key
+ * or contain metadata such as users or IP addresses that may be
+ * relevant to the request. It runs before the access checker. This
+ * hook should be registered with ap_hook_check_autht().
+ *
+ * @param r the current request
+ * @return OK, DECLINED, or HTTP_...
+ * @ingroup hooks
+ * @see ap_hook_check_authz
+ */
+AP_DECLARE_HOOK(int,token_checker,(request_rec *r))
 
 /**
  * Register a hook function that will apply additional access control to
@@ -517,6 +529,24 @@ AP_DECLARE(void) ap_hook_check_access_ex(ap_HOOK_access_checker_ex_t *pf,
                                          const char * const *aszSucc,
                                          int nOrder, int type);
 
+/**
+ * Register a hook function that will analyze the request headers, extract
+ * any tokens, and apply and metadata contained in the tokens or keyed against
+ * the tokens to the request record.
+ * @param pf A token_checker hook function
+ * @param aszPre A NULL-terminated array of strings that name modules whose
+ *               hooks should precede this one
+ * @param aszSucc A NULL-terminated array of strings that name modules whose
+ *                hooks should succeed this one
+ * @param nOrder An integer determining order before honouring aszPre and
+ *               aszSucc (for example, HOOK_MIDDLE)
+ * @param type Internal request processing mode, either
+ *             AP_AUTH_INTERNAL_PER_URI or AP_AUTH_INTERNAL_PER_CONF
+ */
+AP_DECLARE(void) ap_hook_check_autht(ap_HOOK_token_checker_t *pf,
+                                     const char * const *aszPre,
+                                     const char * const *aszSucc,
+                                     int nOrder, int type);
 
 /**
  * Register a hook function that will analyze the request headers,
@@ -565,7 +595,7 @@ AP_DECLARE_HOOK(void,insert_filter,(request_rec *r))
  * This hook allows modules to affect the request immediately after the
  * per-directory configuration for the request has been generated.
  * @param r The current request
- * @return OK (allow acces), DECLINED (let later modules decide),
+ * @return OK (allow access), DECLINED (let later modules decide),
  *         or HTTP_... (deny access)
  * @ingroup hooks
  */
@@ -605,7 +635,7 @@ AP_DECLARE_DATA extern const apr_bucket_type_t ap_bucket_type_eor;
  * @param e The bucket to inspect
  * @return true or false
  */
-#define AP_BUCKET_IS_EOR(e)         (e->type == &ap_bucket_type_eor)
+#define AP_BUCKET_IS_EOR(e)         ((e)->type == &ap_bucket_type_eor)
 
 /**
  * Make the bucket passed in an End Of REQUEST (EOR) bucket
@@ -626,6 +656,13 @@ AP_DECLARE(apr_bucket *) ap_bucket_eor_make(apr_bucket *b, request_rec *r);
  */
 AP_DECLARE(apr_bucket *) ap_bucket_eor_create(apr_bucket_alloc_t *list,
                                               request_rec *r);
+
+/**
+ * Get the request bound to an End Of Request (EOR) bucket.
+ * @param b The EOR bucket
+ * @return Its associated request
+ */
+AP_DECLARE(request_rec *) ap_bucket_eor_request(apr_bucket *b);
 
 /**
  * Can be used within any handler to determine if any authentication

@@ -310,7 +310,7 @@
 
 <!-- ==================================================================== -->
 <!-- <context>                                                            -->
-<!-- Each entry is separeted with a comma                                 -->
+<!-- Each entry is separated with a comma                                 -->
 <!-- ==================================================================== -->
 <xsl:template match="context">
 <xsl:choose>

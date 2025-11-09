@@ -136,6 +136,17 @@
       </dd>
     </dl>
 
+    <dl>
+      <dt>Rewriting URLs with mod_rewrite</dt>
+      <dd>
+        <p>Rewriting URLs with (and without)
+        <module>mod_rewrite</module> tends to be one of the most
+        frequently asked topics on our mailing lists and IRC channels.
+        We have devoted <a href="../rewrite/">and entire section of our
+        documentation</a> to howtos and recipes around this topic.</p>
+      </dd>
+    </dl>
+
   </section>
 
 </manualpage>

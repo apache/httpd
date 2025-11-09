@@ -59,7 +59,7 @@
 </ul><h3>Ayrıca bakınız:</h3><ul class="seealso"><li><a href="#comments_section">Yorum</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="before" id="before">Başlamadan önce</a></h2>
+<h2><a name="before" id="before">Başlamadan önce</a> <a title="Permanent link" href="#before" class="permalink">&para;</a></h2>
 
     <p>Belgeye balıklama dalmadan önce, suexec'i kullanacağınız ortam ve
       kendiniz hakkında yapılmış çeşitli kabuller hakkında bilgi sahibi
@@ -103,7 +103,7 @@
     <p>Hala bizimle misiniz? Evet mi? Pekala, o halde devam!</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="model" id="model">SuEXEC Güvenlik Modeli</a></h2>
+<h2><a name="model" id="model">SuEXEC Güvenlik Modeli</a> <a title="Permanent link" href="#model" class="permalink">&para;</a></h2>
 
     <p>SuEXEC yapılandırması ve kurulumuna girişmeden önce biraz da
       gerçekleşmesini istediğiniz güvenlik modelinin ayrıntıları üzerinde
@@ -309,7 +309,7 @@
       ayrıntılı bilgi edinmek için bu belgenin <a href="#jabberwock">"Uyarılar ve Örnekler"</a> bölümüne bakınız.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="install" id="install">suEXEC’in Yapılandırılması ve Kurulumu</a></h2>
+<h2><a name="install" id="install">suEXEC’in Yapılandırılması ve Kurulumu</a> <a title="Permanent link" href="#install" class="permalink">&para;</a></h2>
 
     <p>Eğlence başlıyor.</p>
 
@@ -448,7 +448,7 @@
     
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="enable" id="enable">suEXEC’in etkin kılınması ve iptal edilmesi</a></h2>
+<h2><a name="enable" id="enable">suEXEC’in etkin kılınması ve iptal edilmesi</a> <a title="Permanent link" href="#enable" class="permalink">&para;</a></h2>
     
 
     <p>httpd başlatıldığı sırada <code class="program"><a href="./programs/suexec.html">suexec</a></code> çalıştırıcısı için
@@ -474,7 +474,7 @@
       dosyasını sildikten sonra httpd'yi öldürüp yeniden başlamalısınız.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="usage" id="usage">SuEXEC’in kullanımı</a></h2>
+<h2><a name="usage" id="usage">SuEXEC’in kullanımı</a> <a title="Permanent link" href="#usage" class="permalink">&para;</a></h2>
 
     <p>CGI programlarına yapılan isteklerin suEXEC çalıştırıcısı tarafından
       yerine getirilebilmesi için sanal konağın bir <code class="directive"><a href="./mod/mod_suexec.html#suexecusergroup">SuexecUserGroup</a></code> yönergesi içermesi veya
@@ -499,7 +499,7 @@
     geçebilmesidir. Ayrıca,  <code>--with-suexec-userdir</code> <a href="#install">derleme</a> seçeneğinin açıklamasına da bakınız.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="debug" id="debug">SuEXEC ve hata ayıklama</a></h2>
+<h2><a name="debug" id="debug">SuEXEC ve hata ayıklama</a> <a title="Permanent link" href="#debug" class="permalink">&para;</a></h2>
 
     <p>SuEXEC çalıştırıcısı yukarıda değinildiği gibi günlük bilgilerini
       <code>--with-suexec-logfile</code> seçeneği ile belirtilen dosyaya
@@ -509,7 +509,7 @@
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="jabberwock" id="jabberwock">Uyarılar ve Örnekler</a></h2>
+<h2><a name="jabberwock" id="jabberwock">Uyarılar ve Örnekler</a> <a title="Permanent link" href="#jabberwock" class="permalink">&para;</a></h2>
     
 
     <p><strong>UYARI!</strong> Bu bölüm henüz bitmedi. Bu bölümün son hali
@@ -558,7 +558,7 @@
 <a href="./ja/suexec.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/suexec.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./tr/suexec.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
-</div><div class="top"><a href="#page-header"><img src="./images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Yorum</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
+</div><div class="top"><a href="#page-header"><img src="./images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Yorum</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Libera.chat, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
 var comments_identifier = 'http://httpd.apache.org/docs/trunk/suexec.html';
@@ -576,7 +576,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/suexec.html';
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2017 The Apache Software Foundation.<br /><a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> altında lisanslıdır.</p>
+<p class="apache">Copyright 2023 The Apache Software Foundation.<br /><a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> altında lisanslıdır.</p>
 <p class="menu"><a href="./mod/">Modüller</a> | <a href="./mod/quickreference.html">Yönergeler</a> | <a href="http://wiki.apache.org/httpd/FAQ">SSS</a> | <a href="./glossary.html">Terimler</a> | <a href="./sitemap.html">Site Haritası</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

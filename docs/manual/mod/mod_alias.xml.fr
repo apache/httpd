@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1756706 -->
+<!-- English Revision: 1911948 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -210,6 +210,24 @@ Alias "/image" "/ftp/pub/image"
 &lt;/LocationMatch&gt;
     </highlight>
 
+    <p>Notez que lorsque la directive <directive>AliasPreservePath</directive>
+    est à "on", la destination contient le chemin entier, alors que lorsque la
+    directive <directive>AliasPreservePath</directive> est à "off", tous les
+    URLs sont associés à l'URL cible unique.</p>
+
+    <highlight language="config">
+# /files/foo et /files/bar associés à /ftp/pub/files/foo et /ftp/pub/files/bar
+&lt;Location "/files"&gt;
+    AliasPreservePath on
+    Alias "/ftp/pub/files"
+&lt;/Location&gt;
+# /errors/foo et /errors/bar associés à /var/www/errors.html
+&lt;Location "/errors"&gt;
+    AliasPreservePath off
+    Alias "/var/www/errors.html"
+&lt;/Location&gt;
+    </highlight>    
+
 </usage>
 </directivesynopsis>
 
@@ -332,7 +350,10 @@ d'effectuer une autre requête avec une URL différente</description>
     peut être une URL absolue commençant par un protocole et un nom
     d'hôte, mais on peut aussi utiliser un chemin URL commençant par un
     slash, auquel cas le protocole et le nom d'hôte du serveur local
-    seront ajoutés.</p>
+    seront ajoutés, si vous avez défini <directive
+    module="core">UseCanonicalName</directive> à on. Si <directive
+    module="core">UseCanonicalName</directive> n'a pas été défini à on, le nom
+    d'hôte sera remplacé par la valeur de l'en-tête requested Host.</p>
 
     <p>Ensuite, toute requête commençant par <em>URL-path</em> va
     renvoyer une redirection au client vers l'<em>URL</em> cible. Tout
@@ -658,6 +679,52 @@ comme un script CGI</description>
     module="mod_alias">ScriptAliasMatch</directive>. Voir la directive
     <directive module="mod_alias">AliasMatch</directive> pour plus de
     détails.</p>
+
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>RedirectRelative</name>
+<description>Redirection relative de cibles.</description>
+<syntax>RedirectRelative On|Off</syntax>
+<default>RedirectRelative Off</default>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context>
+</contextlist>
+<compatibility>Disponible à partir de la version 2.5.1 du serveur HTTP Apache</compatibility>
+
+<usage>
+    <p>Par défaut, si l'URL cible d'une directive <directive
+    module="mod_alias">Redirect</directive> est une URL relative commençant par
+    un caractère '/', le serveur convertit cette dernière en URL absolue avant
+    de répondre au client. En définissant
+    <directive>RedirectRelative</directive> à "On", l'URL relative est présentée
+    au client sans modification.</p>
+
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>AliasPreservePath</name>
+<description>Associer le chemin entier à l'alias dans une section location.</description>
+<syntax>AliasPreservePath OFF|ON</syntax>
+<default>AliasPreservePath OFF</default>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context>
+</contextlist>
+<compatibility>Disponible à partir de la version 2.5.1 du serveur HTTP Apache</compatibility>
+
+<usage>
+    <p>Lorsqu'on utilise la version à deux paramètres de la directive
+    <directive>Alias</directive>, le chemin complet après l'alias est préservé.
+    Lorsqu'on utilise la version à un paramètre de la directive
+    <directive>Alias</directive> dans une section
+    <directive>Location</directive>, le chemin entier est supprimé, et tous les
+    URLs sont associés à l'expression cible.</p>
+
+    <p>Pour que la version à un paramètre de la directive
+    <directive>Alias</directive> préserve les chemins de la même façon que la
+    version à deux paramètres, activez cette directive.</p>
 
 </usage>
 </directivesynopsis>

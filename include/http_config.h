@@ -295,7 +295,7 @@ struct cmd_parms_struct {
     /** Table of directives allowed per AllowOverrideList */
     apr_table_t *override_list;
     /** Which methods are &lt;Limit&gt;ed */
-    apr_int64_t limited;
+    ap_method_mask_t limited;
     /** methods which are limited */
     apr_array_header_t *limited_xmethods;
     /** methods which are xlimited */
@@ -313,12 +313,9 @@ struct cmd_parms_struct {
     apr_pool_t *temp_pool;
     /** Server_rec being configured for */
     server_rec *server;
-    /** If configuring for a directory, pathname of that directory.
-     *  NOPE!  That's what it meant previous to the existence of &lt;Files&gt;,
-     * &lt;Location&gt; and regex matching.  Now the only usefulness that can be
-     * derived from this field is whether a command is being called in a
-     * server context (path == NULL) or being called in a dir context
-     * (path != NULL).  */
+    /** If configuring for a directory, pathname of that directory. If the
+     *  pathname is a regex, regex will be non-NULL below. If path is NULL,
+     *  the directive is being called from a server context. */
     char *path;
     /** configuration command */
     const command_rec *cmd;
@@ -331,7 +328,16 @@ struct cmd_parms_struct {
     /** If the current directive is EXEC_ON_READ, this is the last 
         (non-EXEC_ON_READ)  enclosing directive  */
     ap_directive_t *parent;
+
+    /** If the path is a regex, compiled regex will be not NULL. */
+    ap_regex_t *regex;
 };
+
+/**
+ * Flags associated with a module.
+ */
+#define AP_MODULE_FLAG_NONE         (0)
+#define AP_MODULE_FLAG_ALWAYS_MERGE (1 << 0)
 
 /**
  * Module structures.  Just about everything is dispatched through
@@ -412,13 +418,16 @@ struct module_struct {
      *  @param p the pool to use for all allocations
      */
     void (*register_hooks) (apr_pool_t *p);
+
+    /** A bitmask of AP_MODULE_FLAG_* */
+    int flags;
 };
 
 /**
  * The AP_MAYBE_UNUSED macro is used for variable declarations that
  * might potentially exhibit "unused var" warnings on some compilers if
  * left untreated.
- * Since static intializers are not part of the C language (C89), making
+ * Since static initializers are not part of the C language (C89), making
  * (void) usage is not possible. However many compiler have proprietary 
  * mechanism to suppress those warnings.  
  */
@@ -523,6 +532,21 @@ AP_DECLARE(void *) ap_get_module_config(const ap_conf_vector_t *cv,
  */
 AP_DECLARE(void) ap_set_module_config(ap_conf_vector_t *cv, const module *m,
                                       void *val);
+
+/**
+ * When module flags have been introduced, and a way to check this.
+ */
+#define AP_MODULE_FLAGS_MMN_MAJOR 20161018
+#define AP_MODULE_FLAGS_MMN_MINOR 7
+#define AP_MODULE_HAS_FLAGS(m) \
+        AP_MODULE_MAGIC_AT_LEAST(AP_MODULE_FLAGS_MMN_MAJOR, \
+                                 AP_MODULE_FLAGS_MMN_MINOR)
+/**
+ * Generic accessor for the module's flags
+ * @param m The module to get the flags from.
+ * @return The module-specific flags
+ */
+AP_DECLARE(int) ap_get_module_flags(const module *m);
 
 #if !defined(AP_DEBUG)
 
@@ -736,6 +760,14 @@ AP_DECLARE(char *) ap_server_root_relative(apr_pool_t *p, const char *fname);
  */
 AP_DECLARE(char *) ap_runtime_dir_relative(apr_pool_t *p, const char *fname);
 
+/**
+ * Compute the name of a persistent state file (e.g. a database or
+ * long-lived cache) relative to the appropriate state directory.
+ * Absolute paths are returned as-is.  The state directory is
+ * configured via the DefaultStateDir directive or at build time.
+ */
+AP_DECLARE(char *) ap_state_dir_relative(apr_pool_t *p, const char *fname);
+
 /* Finally, the hook for dynamically loading modules in... */
 
 /**
@@ -765,7 +797,7 @@ AP_DECLARE(void) ap_remove_module(module *m);
 AP_DECLARE(const char *) ap_add_loaded_module(module *mod, apr_pool_t *p,
                                               const char *s);
 /**
- * Remove a module fromthe chained modules list and the list of loaded modules
+ * Remove a module from the chained modules list and the list of loaded modules
  * @param mod the module structure of the module to remove
  */
 AP_DECLARE(void) ap_remove_loaded_module(module *mod);
@@ -858,7 +890,7 @@ AP_DECLARE(const char *) ap_pcfg_strerror(apr_pool_t *p, ap_configfile_t *cfp,
  * @note If cmd->pool == cmd->temp_pool, ap_soak_end_container() will assume
  *       .htaccess context and use a lower maximum line length.
  */
-AP_DECLARE(const char *) ap_soak_end_container(cmd_parms *cmd, char *directive);
+AP_DECLARE(const char *) ap_soak_end_container(cmd_parms *cmd, const char *directive);
 
 /**
  * Read all data between the current &lt;foo&gt; and the matching &lt;/foo&gt; and build
@@ -878,7 +910,7 @@ AP_DECLARE(const char *) ap_build_cont_config(apr_pool_t *p,
                                               cmd_parms *parms,
                                               ap_directive_t **current,
                                               ap_directive_t **curr_parent,
-                                              char *orig_directive);
+                                              const char *orig_directive);
 
 /**
  * Build a config tree from a config file
@@ -886,7 +918,7 @@ AP_DECLARE(const char *) ap_build_cont_config(apr_pool_t *p,
  * @param conf_pool The pconf pool
  * @param temp_pool The temporary pool
  * @param conftree Place to store the root node of the config tree
- * @return Error string on erro, NULL otherwise
+ * @return Error string on error, NULL otherwise
  * @note If conf_pool == temp_pool, ap_build_config() will assume .htaccess
  *       context and use a lower maximum line length.
  */
@@ -905,6 +937,21 @@ AP_DECLARE(const char *) ap_build_config(cmd_parms *parms,
 AP_DECLARE(const char *) ap_walk_config(ap_directive_t *conftree,
                                         cmd_parms *parms,
                                         ap_conf_vector_t *section_vector);
+
+/**
+ * Convenience function to create a ap_dir_match_t structure from a cmd_parms.
+ *
+ * @param cmd The command.
+ * @param flags Flags to indicate whether optional or recursive.
+ * @param cb Callback for each file found that matches the wildcard. Return NULL on
+ *        success, an error string on error.
+ * @param ctx Context for the callback.
+ * @return Structure ap_dir_match_t with fields populated, allocated from the
+ *         cmd->temp_pool.
+ */
+AP_DECLARE(ap_dir_match_t *)ap_dir_cfgmatch(cmd_parms *cmd, int flags,
+        const char *(*cb)(ap_dir_match_t *w, const char *fname), void *ctx)
+        __attribute__((nonnull(1,3)));
 
 /**
  * @defgroup ap_check_cmd_context Check command context
@@ -926,10 +973,12 @@ AP_DECLARE(const char *) ap_check_cmd_context(cmd_parms *cmd,
 #define  NOT_IN_FILES           0x10 /**< Forbidden in &lt;Files&gt; or &lt;If&gt;*/
 #define  NOT_IN_HTACCESS        0x20 /**< Forbidden in .htaccess files */
 #define  NOT_IN_PROXY           0x40 /**< Forbidden in &lt;Proxy&gt; */
+/** Forbidden in &lt;Directory&gt;/&lt;Location&gt;/&lt;Files&gt;&lt;If&gt;*/
+#define  NOT_IN_DIR_LOC_FILE    (NOT_IN_DIRECTORY|NOT_IN_LOCATION|NOT_IN_FILES)
 /** Forbidden in &lt;Directory&gt;/&lt;Location&gt;/&lt;Files&gt;&lt;If&gt;&lt;Proxy&gt;*/
-#define  NOT_IN_DIR_LOC_FILE    (NOT_IN_DIRECTORY|NOT_IN_LOCATION|NOT_IN_FILES|NOT_IN_PROXY)
+#define  NOT_IN_DIR_CONTEXT     (NOT_IN_LIMIT|NOT_IN_DIR_LOC_FILE|NOT_IN_PROXY)
 /** Forbidden in &lt;VirtualHost&gt;/&lt;Limit&gt;/&lt;Directory&gt;/&lt;Location&gt;/&lt;Files&gt;/&lt;If&gt;&lt;Proxy&gt;*/
-#define  GLOBAL_ONLY            (NOT_IN_VIRTUALHOST|NOT_IN_LIMIT|NOT_IN_DIR_LOC_FILE)
+#define  GLOBAL_ONLY            (NOT_IN_VIRTUALHOST|NOT_IN_DIR_CONTEXT)
 
 /** @} */
 
@@ -992,6 +1041,14 @@ AP_DECLARE(const char *) ap_setup_prelinked_modules(process_rec *process);
 AP_DECLARE(void) ap_show_directives(void);
 
 /**
+ * Returns non-zero if a configuration directive of the given name has
+ * been registered by a module at the time of calling.
+ * @param p Pool for temporary allocations
+ * @param name Directive name
+ */
+AP_DECLARE(int) ap_exists_directive(apr_pool_t *p, const char *name);
+
+/**
  * Show the preloaded module names.  Used for httpd -l.
  */
 AP_DECLARE(void) ap_show_modules(void);
@@ -1023,7 +1080,7 @@ AP_DECLARE(void) ap_run_rewrite_args(process_rec *process);
 
 /**
  * Run the register hooks function for a specified module
- * @param m The module to run the register hooks function fo
+ * @param m The module to run the register hooks function from
  * @param p The pool valid for the lifetime of the module
  */
 AP_DECLARE(void) ap_register_hooks(module *m, apr_pool_t *p);
@@ -1293,6 +1350,16 @@ AP_DECLARE_HOOK(void,test_config,(apr_pool_t *pconf, server_rec *s))
 
 /**
  * Run the post_config function for each module
+ *
+ * The function might be called multiple times.  @a pconf, @a plog, and
+ * @a ptemp may be cleared and/or destroyed between calls.
+ *
+ * The function will be called zero or one times with the server's state being
+ * #AP_SQ_MS_CREATE_PRE_CONFIG, and will be called one or more times with
+ * the server's state being #AP_SQ_MS_CREATE_CONFIG.
+ *
+ * @see ap_state_query(), #AP_SQ_MAIN_STATE
+ *
  * @param pconf The config pool
  * @param plog The logging streams pool
  * @param ptemp The temporary pool

@@ -73,7 +73,7 @@
 <li><a href="#comments_section">コメント</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="AltSyn" id="AltSyn">代替期間指定構文</a></h2>
+<h2><a name="AltSyn" id="AltSyn">代替期間指定構文</a> <a title="Permanent link" href="#AltSyn" class="permalink">&para;</a></h2>
    
     <p><code class="directive"><a href="#expiresdefault">ExpiresDefault</a></code> ディレクティブと
     <code class="directive"><a href="#expiresbytype">ExpiresByType</a></code> ディレクティブは
@@ -135,7 +135,7 @@
     してください。そのようなコンテンツには修正時刻は存在しないからです。</p>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ExpiresActive" id="ExpiresActive">ExpiresActive</a> <a name="expiresactive" id="expiresactive">ディレクティブ</a></h2>
+<div class="directive-section"><h2><a name="ExpiresActive" id="ExpiresActive">ExpiresActive</a> <a name="expiresactive" id="expiresactive">ディレクティブ</a> <a title="Permanent link" href="#expiresactive" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td><code>Expires</code> ヘッダの生成を有効にする</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>ExpiresActive On|Off</code></td></tr>
@@ -164,7 +164,7 @@
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ExpiresByType" id="ExpiresByType">ExpiresByType</a> <a name="expiresbytype" id="expiresbytype">ディレクティブ</a></h2>
+<div class="directive-section"><h2><a name="ExpiresByType" id="ExpiresByType">ExpiresByType</a> <a name="expiresbytype" id="expiresbytype">ディレクティブ</a> <a title="Permanent link" href="#expiresbytype" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>MIME タイプによって設定される <code>Expires</code> ヘッダの値</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>ExpiresByType <var>MIME-type</var>
@@ -218,7 +218,7 @@
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ExpiresDefault" id="ExpiresDefault">ExpiresDefault</a> <a name="expiresdefault" id="expiresdefault">ディレクティブ</a></h2>
+<div class="directive-section"><h2><a name="ExpiresDefault" id="ExpiresDefault">ExpiresDefault</a> <a name="expiresdefault" id="expiresdefault">ディレクティブ</a> <a title="Permanent link" href="#expiresdefault" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>期限切れ期日を計算するデフォルトアルゴリズム</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>ExpiresDefault <var>&lt;code&gt;seconds</var></code></td></tr>
@@ -240,7 +240,7 @@
 <a href="../fr/mod/mod_expires.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_expires.html" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_expires.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
-</div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">コメント</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
+</div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">コメント</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Libera.chat, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
 var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_expires.html';
@@ -258,7 +258,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_expires.ht
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2017 The Apache Software Foundation.<br />この文書は <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> のライセンスで提供されています。.</p>
+<p class="apache">Copyright 2023 The Apache Software Foundation.<br />この文書は <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> のライセンスで提供されています。.</p>
 <p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/quickreference.html">ディレクティブ</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

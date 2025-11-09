@@ -32,7 +32,6 @@
 #if APR_MAJOR_VERSION < 2
 /* The LDAP API is currently only present in APR 1.x */
 #include "apr_ldap.h"
-#include "apr_ldap_rebind.h"
 #else
 #define APR_HAS_LDAP 0
 #endif
@@ -135,7 +134,7 @@ typedef struct util_ldap_connection_t {
     apr_pool_t *rebind_pool;            /* frequently cleared pool for rebind data */
     int must_rebind;                    /* The connection was last bound with other then binddn/bindpw */
     request_rec *r;                     /* request_rec used to find this util_ldap_connection_t */
-    apr_time_t last_backend_conn;       /* the approximate time of the last backend LDAP requst */
+    apr_time_t last_backend_conn;       /* the approximate time of the last backend LDAP request */
 } util_ldap_connection_t;
 
 typedef struct util_ldap_config_t {

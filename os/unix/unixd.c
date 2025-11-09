@@ -18,12 +18,14 @@
 #include "httpd.h"
 #include "http_config.h"
 #include "http_main.h"
+#include "http_core.h"
 #include "http_log.h"
 #include "unixd.h"
 #include "mpm_common.h"
 #include "os.h"
 #include "ap_mpm.h"
 #include "apr_thread_proc.h"
+#include "apr_signal.h"
 #include "apr_strings.h"
 #include "apr_portable.h"
 #ifdef HAVE_PWD_H
@@ -180,7 +182,7 @@ static apr_status_t ap_unix_create_privileged_process(
     ** we force everything to be APR_PROGRAM, and never
     ** APR_SHELLCMD
     */
-    if(apr_procattr_cmdtype_set(attr, APR_PROGRAM) != APR_SUCCESS) {
+    if (apr_procattr_cmdtype_set(attr, APR_PROGRAM) != APR_SUCCESS) {
         return APR_EGENERAL;
     }
 
@@ -319,6 +321,12 @@ AP_DECLARE(apr_status_t) ap_unixd_accept(void **accepted, ap_listen_rec *lr,
     if (APR_STATUS_IS_EINTR(status)) {
         return status;
     }
+  
+    /* Let the caller handle slightly more varied return values */
+    if ((lr->flags & AP_LISTEN_SPECIFIC_ERRORS) && ap_accept_error_is_nonfatal(status)) {
+        return status;
+    }
+
     /* Our old behaviour here was to continue after accept()
      * errors.  But this leads us into lots of troubles
      * because most of the errors are quite fatal.  For
@@ -431,6 +439,196 @@ AP_DECLARE(apr_status_t) ap_unixd_accept(void **accepted, ap_listen_rec *lr,
             return APR_EGENERAL;
     }
     return status;
+}
+
+
+/* Unixes MPMs' */
+
+static ap_unixd_mpm_retained_data *retained_data = NULL;
+static apr_status_t retained_data_cleanup(void *unused)
+{
+    (void)unused;
+    retained_data = NULL;
+    return APR_SUCCESS;
+}
+
+AP_DECLARE(ap_unixd_mpm_retained_data *) ap_unixd_mpm_get_retained_data(void)
+{
+    if (!retained_data) {
+        retained_data = ap_retained_data_create("ap_unixd_mpm_retained_data",
+                                                sizeof(*retained_data));
+        apr_pool_pre_cleanup_register(ap_pglobal, NULL, retained_data_cleanup);
+        retained_data->mpm_state = AP_MPMQ_STARTING;
+    }
+    return retained_data;
+}
+
+static void sig_term(int sig)
+{
+    if (!retained_data) {
+        /* Main process (ap_pglobal) is dying */
+        return;
+    }
+    if (retained_data->shutdown_pending
+            && (retained_data->is_ungraceful
+                || sig == AP_SIG_GRACEFUL_STOP)) {
+        /* Already handled */
+        return;
+    }
+
+    retained_data->mpm_state = AP_MPMQ_STOPPING;
+    retained_data->shutdown_pending = 1;
+    if (sig != AP_SIG_GRACEFUL_STOP) {
+        retained_data->is_ungraceful = 1;
+    }
+}
+
+static void sig_restart(int sig)
+{
+    if (!retained_data) {
+        /* Main process (ap_pglobal) is dying */
+        return;
+    }
+    if (retained_data->restart_pending
+            && (retained_data->is_ungraceful
+                || sig == AP_SIG_GRACEFUL)) {
+        /* Already handled */
+        return;
+    }
+
+    retained_data->mpm_state = AP_MPMQ_STOPPING;
+    retained_data->restart_pending = 1;
+    if (sig != AP_SIG_GRACEFUL) {
+        retained_data->is_ungraceful = 1;
+    }
+}
+
+static apr_status_t unset_signals(void *unused)
+{
+    if (!retained_data) {
+        /* Main process (ap_pglobal) is dying */
+        return APR_SUCCESS;
+    }
+    retained_data->shutdown_pending = retained_data->restart_pending = 0;
+    retained_data->was_graceful = !retained_data->is_ungraceful;
+    retained_data->is_ungraceful = 0;
+
+    return APR_SUCCESS;
+}
+
+static void ap_terminate(void)
+{
+    ap_main_state = AP_SQ_MS_EXITING;
+    apr_pool_destroy(ap_pglobal);
+    apr_terminate();
+}
+
+AP_DECLARE(void) ap_unixd_mpm_set_signals(apr_pool_t *pconf, int one_process)
+{
+#ifndef NO_USE_SIGACTION
+    struct sigaction sa;
+#endif
+
+    if (!one_process) {
+        ap_fatal_signal_setup(ap_server_conf, pconf);
+    }
+    else if (!ap_retained_data_get("ap_unixd_mpm_one_process_cleanup")) {
+        /* In one process mode (debug), httpd will exit immediately when asked
+         * to (SIGTERM/SIGINT) and never restart. We still want the cleanups to
+         * run though (such that e.g. temporary files/IPCs don't leak on the
+         * system), so the first time around we use atexit() to cleanup after
+         * ourselves.
+         */
+        ap_retained_data_create("ap_unixd_mpm_one_process_cleanup", 1);
+        atexit(ap_terminate);
+    }
+
+    /* Signals' handlers depend on retained data */
+    (void)ap_unixd_mpm_get_retained_data();
+
+#ifndef NO_USE_SIGACTION
+    memset(&sa, 0, sizeof sa);
+    sigemptyset(&sa.sa_mask);
+
+#ifdef SIGPIPE
+    sa.sa_handler = SIG_IGN;
+    if (sigaction(SIGPIPE, &sa, NULL) < 0)
+        ap_log_error(APLOG_MARK, APLOG_WARNING, errno, ap_server_conf, APLOGNO(00269)
+                     "sigaction(SIGPIPE)");
+#endif
+#ifdef SIGXCPU
+    sa.sa_handler = SIG_DFL;
+    if (sigaction(SIGXCPU, &sa, NULL) < 0)
+        ap_log_error(APLOG_MARK, APLOG_WARNING, errno, ap_server_conf, APLOGNO(00267)
+                     "sigaction(SIGXCPU)");
+#endif
+#ifdef SIGXFSZ
+    /* For systems following the LFS standard, ignoring SIGXFSZ allows
+     * a write() beyond the 2GB limit to fail gracefully with E2BIG
+     * rather than terminate the process. */
+    sa.sa_handler = SIG_IGN;
+    if (sigaction(SIGXFSZ, &sa, NULL) < 0)
+        ap_log_error(APLOG_MARK, APLOG_WARNING, errno, ap_server_conf, APLOGNO(00268)
+                     "sigaction(SIGXFSZ)");
+#endif
+
+    sa.sa_handler = sig_term;
+    if (sigaction(SIGTERM, &sa, NULL) < 0)
+        ap_log_error(APLOG_MARK, APLOG_WARNING, errno, ap_server_conf, APLOGNO(00264)
+                     "sigaction(SIGTERM)");
+#ifdef SIGINT
+    if (sigaction(SIGINT, &sa, NULL) < 0)
+        ap_log_error(APLOG_MARK, APLOG_WARNING, errno, ap_server_conf, APLOGNO(00266)
+                     "sigaction(SIGINT)");
+#endif
+#ifdef AP_SIG_GRACEFUL_STOP
+    if (sigaction(AP_SIG_GRACEFUL_STOP, &sa, NULL) < 0)
+        ap_log_error(APLOG_MARK, APLOG_WARNING, errno, ap_server_conf, APLOGNO(00265)
+                     "sigaction(" AP_SIG_GRACEFUL_STOP_STRING ")");
+#endif
+
+    /* Don't catch restart signals in ONE_PROCESS mode :) */
+    if (!one_process) {
+        sa.sa_handler = sig_restart;
+        if (sigaction(SIGHUP, &sa, NULL) < 0)
+            ap_log_error(APLOG_MARK, APLOG_WARNING, errno, ap_server_conf, APLOGNO(00270)
+                         "sigaction(SIGHUP)");
+        if (sigaction(AP_SIG_GRACEFUL, &sa, NULL) < 0)
+            ap_log_error(APLOG_MARK, APLOG_WARNING, errno, ap_server_conf, APLOGNO(00271)
+                         "sigaction(" AP_SIG_GRACEFUL_STRING ")");
+    }
+
+#else  /* NO_USE_SIGACTION */
+
+#ifdef SIGPIPE
+    apr_signal(SIGPIPE, SIG_IGN);
+#endif /* SIGPIPE */
+#ifdef SIGXCPU
+    apr_signal(SIGXCPU, SIG_DFL);
+#endif /* SIGXCPU */
+#ifdef SIGXFSZ
+    apr_signal(SIGXFSZ, SIG_IGN);
+#endif /* SIGXFSZ */
+
+    apr_signal(SIGTERM, sig_term);
+#ifdef AP_SIG_GRACEFUL_STOP
+    apr_signal(AP_SIG_GRACEFUL_STOP, sig_term);
+#endif /* AP_SIG_GRACEFUL_STOP */
+
+    if (!one_process) {
+        /* Don't restart in ONE_PROCESS mode :) */
+#ifdef SIGHUP
+        apr_signal(SIGHUP, sig_restart);
+#endif /* SIGHUP */
+#ifdef AP_SIG_GRACEFUL
+        apr_signal(AP_SIG_GRACEFUL, sig_restart);
+#endif /* AP_SIG_GRACEFUL */
+    }
+
+#endif /* NO_USE_SIGACTION */
+
+    apr_pool_cleanup_register(pconf, NULL, unset_signals,
+                              apr_pool_cleanup_null);
 }
 
 

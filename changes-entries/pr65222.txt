@@ -1,0 +1,2 @@
+  *) mod_log_config: Fix merging for the "LogFormat" directive.
+     PR: 65222. [Michael Kaufmann <mail michael-kaufmann.ch>]

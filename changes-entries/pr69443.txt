@@ -1,0 +1,3 @@
+  *) mod_proxy_balancer: Fix a regression that caused stickysession keys no
+     longer be recognized if they are provided as query parameter in the URL.
+     PR 69443 [Ruediger Pluem]

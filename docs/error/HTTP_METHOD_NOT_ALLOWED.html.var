@@ -190,6 +190,18 @@ Body:----------ro--
 <!--#include virtual="include/bottom.html" -->
 ----------ro--
 
+Content-language: ru
+Content-type: text/html; charset=UTF-8
+Body:----------ru--
+<!--#set var="TITLE" value="Метод не поддерживается!"
+--><!--#include virtual="include/top.html" -->
+
+    Метод <!--#echo var="REDIRECT_REQUEST_METHOD" -->
+    нельзя применить к запрашиваемому ресурсу.
+
+<!--#include virtual="include/bottom.html" -->
+----------ru--
+
 Content-language: sr
 Content-type: text/html; charset=UTF-8
 Body:----------sr--
@@ -229,3 +241,29 @@ Body:----------tr--
     
 <!--#include virtual="include/bottom.html" -->
 ----------tr--
+
+Content-language: zh-cn
+Content-type: text/html; charset=UTF-8
+Body:----------zh-cn--
+<!--#set var="CONTENT_LANGUAGE" value="zh-cn"
+--><!--#set var="TITLE" value="请求的方法不允许！"
+--><!--#include virtual="include/top.html" -->
+
+    在请求的 URL 上不允许使用
+    <!--#echo var="REDIRECT_REQUEST_METHOD" --> 方法。
+    
+<!--#include virtual="include/bottom.html" -->
+----------zh-cn--
+
+Content-language: zh-tw
+Content-type: text/html; charset=UTF-8
+Body:----------zh-tw--
+<!--#set var="CONTENT_LANGUAGE" value="zh-tw"
+--><!--#set var="TITLE" value="請求的方法不允許！"
+--><!--#include virtual="include/top.html" -->
+
+    在請求的 URL 上不允許使用
+    <!--#echo var="REDIRECT_REQUEST_METHOD" --> 方法。
+    
+<!--#include virtual="include/bottom.html" -->
+----------zh-tw--

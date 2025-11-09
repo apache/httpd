@@ -19,29 +19,25 @@ APACHE_MODPATH_INIT(http2)
 dnl #  list of module object files
 http2_objs="dnl
 mod_http2.lo dnl
-h2_alt_svc.lo dnl
 h2_bucket_beam.lo dnl
-h2_bucket_eoc.lo dnl
 h2_bucket_eos.lo dnl
+h2_c1.lo dnl
+h2_c1_io.lo dnl
+h2_c2.lo dnl
+h2_c2_filter.lo dnl
 h2_config.lo dnl
-h2_conn.lo dnl
-h2_conn_io.lo dnl
-h2_ctx.lo dnl
-h2_filter.lo dnl
-h2_from_h1.lo dnl
-h2_h2.lo dnl
+h2_conn_ctx.lo dnl
 h2_headers.lo dnl
 h2_mplx.lo dnl
-h2_ngn_shed.lo dnl
+h2_protocol.lo dnl
 h2_push.lo dnl
 h2_request.lo dnl
 h2_session.lo dnl
 h2_stream.lo dnl
 h2_switch.lo dnl
-h2_task.lo dnl
 h2_util.lo dnl
-h2_worker.lo dnl
 h2_workers.lo dnl
+h2_ws.lo dnl
 "
 
 dnl
@@ -82,12 +78,18 @@ AC_DEFUN([APACHE_CHECK_NGHTTP2],[
     if test -n "$PKGCONFIG"; then
       saved_PKG_CONFIG_PATH="$PKG_CONFIG_PATH"
       AC_MSG_CHECKING([for pkg-config along $PKG_CONFIG_PATH])
-      if test "x$ap_nghttp2_base" != "x" -a \
-              -f "${ap_nghttp2_base}/lib/pkgconfig/libnghttp2.pc"; then
-        dnl Ensure that the given path is used by pkg-config too, otherwise
-        dnl the system libnghttp2.pc might be picked up instead.
-        PKG_CONFIG_PATH="${ap_nghttp2_base}/lib/pkgconfig${PKG_CONFIG_PATH+:}${PKG_CONFIG_PATH}"
-        export PKG_CONFIG_PATH
+      if test "x$ap_nghttp2_base" != "x" ; then
+        if test -f "${ap_nghttp2_base}/lib/pkgconfig/libnghttp2.pc"; then
+          dnl Ensure that the given path is used by pkg-config too, otherwise
+          dnl the system libnghttp2.pc might be picked up instead.
+          PKG_CONFIG_PATH="${ap_nghttp2_base}/lib/pkgconfig${PKG_CONFIG_PATH+:}${PKG_CONFIG_PATH}"
+          export PKG_CONFIG_PATH
+        elif test -f "${ap_nghttp2_base}/lib64/pkgconfig/libnghttp2.pc"; then
+          dnl Ensure that the given path is used by pkg-config too, otherwise
+          dnl the system libnghttp2.pc might be picked up instead.
+          PKG_CONFIG_PATH="${ap_nghttp2_base}/lib64/pkgconfig${PKG_CONFIG_PATH+:}${PKG_CONFIG_PATH}"
+          export PKG_CONFIG_PATH
+        fi
       fi
       AC_ARG_ENABLE(nghttp2-staticlib-deps,APACHE_HELP_STRING(--enable-nghttp2-staticlib-deps,[link mod_http2 with dependencies of libnghttp2's static libraries (as indicated by "pkg-config --static"). Must be specified in addition to --enable-http2.]), [
         if test "$enableval" = "yes"; then
@@ -157,6 +159,15 @@ dnl # nghttp2 >= 1.5.0: changing stream priorities
 dnl # nghttp2 >= 1.14.0: invalid header callback
       AC_CHECK_FUNCS([nghttp2_session_callbacks_set_on_invalid_header_callback], 
         [APR_ADDTO(MOD_CPPFLAGS, ["-DH2_NG2_INVALID_HEADER_CB"])], [])
+dnl # nghttp2 >= 1.15.0: get/set stream window sizes
+      AC_CHECK_FUNCS([nghttp2_session_get_stream_local_window_size], 
+        [APR_ADDTO(MOD_CPPFLAGS, ["-DH2_NG2_LOCAL_WIN_SIZE"])], [])
+dnl # nghttp2 >= 1.15.0: don't keep info on closed streams
+      AC_CHECK_FUNCS([nghttp2_option_set_no_closed_streams],
+        [APR_ADDTO(MOD_CPPFLAGS, ["-DH2_NG2_NO_CLOSED_STREAMS"])], [])
+dnl # nghttp2 >= 1.50.0: rfc9113 leading/trailing whitespec strictness
+      AC_CHECK_FUNCS([nghttp2_option_set_no_rfc9113_leading_and_trailing_ws_validation],
+        [APR_ADDTO(MOD_CPPFLAGS, ["-DH2_NG2_RFC9113_STRICTNESS"])], [])
     else
       AC_MSG_WARN([nghttp2 version is too old])
     fi

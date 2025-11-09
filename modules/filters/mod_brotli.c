@@ -53,6 +53,10 @@ static void *create_server_config(apr_pool_t *p, server_rec *s)
      */
     conf->quality = 5;
     conf->lgwin = 18;
+    /* Zero is a special value for BROTLI_PARAM_LGBLOCK that allows
+     * Brotli to automatically select the optimal input block size based
+     * on other encoder parameters.  See enc/quality.h: ComputeLgBlock().
+     */
     conf->lgblock = 0;
     conf->etag_mode = ETAG_MODE_ADDSUFFIX;
 
@@ -208,11 +212,11 @@ static apr_status_t process_chunk(brotli_ctx_t *ctx,
                                   apr_size_t len,
                                   ap_filter_t *f)
 {
-    const uint8_t *next_in = data;
+    const apr_byte_t *next_in = data;
     apr_size_t avail_in = len;
 
     while (avail_in > 0) {
-        uint8_t *next_out = NULL;
+        apr_byte_t *next_out = NULL;
         apr_size_t avail_out = 0;
 
         if (!BrotliEncoderCompressStream(ctx->state,
@@ -226,7 +230,7 @@ static apr_status_t process_chunk(brotli_ctx_t *ctx,
 
         if (BrotliEncoderHasMoreOutput(ctx->state)) {
             apr_size_t output_len = 0;
-            const uint8_t *output;
+            const apr_byte_t *output;
             apr_status_t rv;
             apr_bucket *b;
 
@@ -261,12 +265,12 @@ static apr_status_t flush(brotli_ctx_t *ctx,
                           ap_filter_t *f)
 {
     while (1) {
-        const uint8_t *next_in = NULL;
+        const apr_byte_t *next_in = NULL;
         apr_size_t avail_in = 0;
-        uint8_t *next_out = NULL;
+        apr_byte_t *next_out = NULL;
         apr_size_t avail_out = 0;
         apr_size_t output_len;
-        const uint8_t *output;
+        const apr_byte_t *output;
         apr_bucket *b;
 
         if (!BrotliEncoderCompressStream(ctx->state, op,
@@ -340,11 +344,15 @@ static apr_status_t compress_filter(ap_filter_t *f, apr_bucket_brigade *bb)
         const char *encoding;
         const char *token;
         const char *accepts;
+        const char *q = NULL;
 
         /* Only work on main request, not subrequests, that are not
          * a 204 response with no content, and are not tagged with the
          * no-brotli env variable, and are not a partial response to
          * a Range request.
+         *
+         * Note that responding to 304 is handled separately to set
+         * the required headers (such as ETag) per RFC7232, 4.1.
          */
         if (r->main || r->status == HTTP_NO_CONTENT
             || apr_table_get(r->subprocess_env, "no-brotli")
@@ -404,7 +412,19 @@ static apr_status_t compress_filter(ap_filter_t *f, apr_bucket_brigade *bb)
             token = (*accepts) ? ap_get_token(r->pool, &accepts, 0) : NULL;
         }
 
-        if (!token || token[0] == '\0') {
+        /* Find the qvalue, if provided */
+        if (*accepts) {
+            while (*accepts == ';') {
+                ++accepts;
+            }
+            q = ap_get_token(r->pool, &accepts, 1);
+            ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r,
+                          "token: '%s' - q: '%s'", token ? token : "NULL", q);
+        }
+
+        /* No acceptable token found or q=0 */
+        if (!token || token[0] == '\0' ||
+            (q && strlen(q) >= 3 && strncmp("q=0.000", q, strlen(q)) == 0)) {
             ap_remove_output_filter(f);
             return ap_pass_brigade(f->next, bb);
         }
@@ -443,9 +463,9 @@ static apr_status_t compress_filter(ap_filter_t *f, apr_bucket_brigade *bb)
                 apr_size_t len = strlen(etag);
 
                 if (len > 2 && etag[len - 1] == '"') {
-                    etag = apr_pstrndup(r->pool, etag, len - 1);
+                    etag = apr_pstrmemdup(r->pool, etag, len - 1);
                     etag = apr_pstrcat(r->pool, etag, "-br\"", NULL);
-                    apr_table_set(r->headers_out, "ETag", etag);
+                    apr_table_setn(r->headers_out, "ETag", etag);
                 }
             }
         }
@@ -573,7 +593,7 @@ static const command_rec cmds[] = {
     AP_INIT_TAKE1("BrotliAlterETag", set_etag_mode,
                   NULL, RSRC_CONF,
                   "Set how mod_brotli should modify ETag response headers: "
-                  "'AddSuffix' (default), 'NoChange' (2.2.x behavior), 'Remove'"),
+                  "'AddSuffix' (default), 'NoChange', 'Remove'"),
     {NULL}
 };
 

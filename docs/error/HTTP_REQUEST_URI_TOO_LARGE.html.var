@@ -194,6 +194,18 @@ Body:----------ro--
 <!--#include virtual="include/bottom.html" -->
 ----------ro--
 
+Content-language: ru
+Content-type: text/html; charset=UTF-8
+Body:----------ru--
+<!--#set var="TITLE" value="URI слишком длинный!"
+--><!--#include virtual="include/top.html" -->
+
+    Длина запрашиваемого URL превышает максимально допустимую
+    сервером. Запрос не может быть обработан.
+
+<!--#include virtual="include/bottom.html" -->
+----------ru--
+
 Content-language: sr
 Content-type: text/html; charset=UTF-8
 Body:----------sr--
@@ -233,3 +245,27 @@ Body:----------tr--
 
 <!--#include virtual="include/bottom.html" -->
 ----------tr--
+
+Content-language: zh-cn
+Content-type: text/html; charset=UTF-8
+Body:----------zh-cn--
+<!--#set var="CONTENT_LANGUAGE" value="zh-cn"
+--><!--#set var="TITLE" value="提交的 URI 过长！"
+--><!--#include virtual="include/top.html" -->
+
+    请求 URL 的长度超出了服务器的长度限制。该请求无法处理。
+   
+<!--#include virtual="include/bottom.html" -->
+----------zh-cn--
+
+Content-language: zh-tw
+Content-type: text/html; charset=UTF-8
+Body:----------zh-tw--
+<!--#set var="CONTENT_LANGUAGE" value="zh-tw"
+--><!--#set var="TITLE" value="提交的 URI 過長！"
+--><!--#include virtual="include/top.html" -->
+
+    請求 URL 的長度超出了伺服器的長度限制。該請求無法處理。
+   
+<!--#include virtual="include/bottom.html" -->
+----------zh-tw--

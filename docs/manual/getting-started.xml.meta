@@ -8,6 +8,8 @@
 
   <variants>
     <variant>en</variant>
+    <variant>es</variant>
     <variant>fr</variant>
+    <variant>ru</variant>
   </variants>
 </metafile>

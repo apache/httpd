@@ -50,7 +50,7 @@ AP_DECLARE(void) ap_fini_vhost_config(apr_pool_t *p, server_rec *main_server);
  * @param hostname The hostname in the VirtualHost statement
  * @param s The list of Virtual Hosts.
  */
-const char *ap_parse_vhost_addrs(apr_pool_t *p, const char *hostname, server_rec *s);
+AP_DECLARE(const char *) ap_parse_vhost_addrs(apr_pool_t *p, const char *hostname, server_rec *s);
 
 /**
  * handle NameVirtualHost directive
@@ -98,6 +98,19 @@ AP_DECLARE(void) ap_update_vhost_given_ip(conn_rec *conn);
  * @param r The current request
  */
 AP_DECLARE(void) ap_update_vhost_from_headers(request_rec *r);
+
+/**
+ * Updates r->server with the best name-based virtual host match, within
+ * the chain of matching virtual hosts selected by ap_update_vhost_given_ip.
+ * @param r The current request
+ * @param require_match 1 to return an HTTP error if the requested hostname is
+ * not explicitly matched to a VirtualHost. 
+ * @return return HTTP_OK unless require_match was specified and the requested
+ * hostname did not match any ServerName, ServerAlias, or VirtualHost 
+ * address-spec.
+ */
+AP_DECLARE(int) ap_update_vhost_from_headers_ex(request_rec *r, int require_match);
+
 
 /**
  * Match the host in the header with the hostname of the server for this

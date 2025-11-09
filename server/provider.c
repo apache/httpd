@@ -55,7 +55,6 @@ AP_DECLARE(apr_status_t) ap_register_provider(apr_pool_t *pool,
         provider_group_hash = apr_hash_make(pool);
         apr_hash_set(global_providers, provider_group, APR_HASH_KEY_STRING,
                      provider_group_hash);
-
     }
 
     provider_version_hash = apr_hash_get(provider_group_hash, provider_name,
@@ -65,7 +64,6 @@ AP_DECLARE(apr_status_t) ap_register_provider(apr_pool_t *pool,
         provider_version_hash = apr_hash_make(pool);
         apr_hash_set(provider_group_hash, provider_name, APR_HASH_KEY_STRING,
                      provider_version_hash);
-
     }
 
     /* just set it. no biggy if it was there before. */
@@ -80,7 +78,6 @@ AP_DECLARE(apr_status_t) ap_register_provider(apr_pool_t *pool,
         provider_group_hash = apr_hash_make(pool);
         apr_hash_set(global_providers_names, provider_group, APR_HASH_KEY_STRING,
                      provider_group_hash);
-
     }
 
     provider_version_hash = apr_hash_get(provider_group_hash, provider_version,
@@ -90,7 +87,6 @@ AP_DECLARE(apr_status_t) ap_register_provider(apr_pool_t *pool,
         provider_version_hash = apr_hash_make(pool);
         apr_hash_set(provider_group_hash, provider_version, APR_HASH_KEY_STRING,
                      provider_version_hash);
-
     }
 
     /* just set it. no biggy if it was there before. */
@@ -132,34 +128,39 @@ AP_DECLARE(apr_array_header_t *) ap_list_provider_names(apr_pool_t *pool,
                                               const char *provider_group,
                                               const char *provider_version)
 {
-    apr_array_header_t *ret = apr_array_make(pool, 10, sizeof(ap_list_provider_names_t));
+    apr_array_header_t *ret = NULL;
     ap_list_provider_names_t *entry;
     apr_hash_t *provider_group_hash, *h;
     apr_hash_index_t *hi;
     char *val;
 
     if (global_providers_names == NULL) {
-        return ret;
+        goto out;
     }
 
     provider_group_hash = apr_hash_get(global_providers_names, provider_group,
                                        APR_HASH_KEY_STRING);
 
     if (provider_group_hash == NULL) {
-        return ret;
+        goto out;
     }
 
-    h = apr_hash_get(provider_group_hash, provider_version,
-                                      APR_HASH_KEY_STRING);
+    h = apr_hash_get(provider_group_hash, provider_version, APR_HASH_KEY_STRING);
 
     if (h == NULL) {
-        return ret;
+        goto out;
     }
 
+    ret = apr_array_make(pool, apr_hash_count(h), sizeof(ap_list_provider_names_t));
     for (hi = apr_hash_first(pool, h); hi; hi = apr_hash_next(hi)) {
         apr_hash_this(hi, NULL, NULL, (void *)&val);
         entry = apr_array_push(ret);
         entry->provider_name = apr_pstrdup(pool, val);
+    }
+    
+out:
+    if (ret == NULL) {
+        ret = apr_array_make(pool, 1, sizeof(ap_list_provider_names_t));
     }
     return ret;
 }

@@ -184,6 +184,28 @@
       <dt><module>mod_http2</module> (available since 2.4.17)</dt>
       <dd>Support for the HTTP/2 transport layer.</dd>
 
+      <dt><module>mod_proxy_http2</module> (available since 2.4.19)</dt>
+      <dd>HTTP/2 Protocol backend for <module>mod_proxy</module></dd>
+
+      <dt><module>mod_proxy_hcheck</module> (available since 2.4.21)</dt>
+      <dd>Support independent dynamic health checks for remote proxiy backend servers.</dd>
+
+      <dt><module>mod_brotli</module> (available since 2.4.26)</dt>
+      <dd>Support the Brotli compression algorithm.</dd>
+
+      <dt><module>mod_md</module> (available since 2.4.30)</dt>
+      <dd>Support the ACME protocol to automate certificate provisionning.</dd>
+
+      <dt><module>mod_proxy_uwsgi</module> (available since 2.4.30)</dt>
+      <dd>UWSGI gateway module for <module>mod_proxy</module>.</dd>
+
+      <dt><module>mod_socache_redis</module> (available since 2.4.39)</dt>
+      <dd>Support <a href="http://redis.io/">Redis</a> based shared object cache provider.</dd>
+
+      <dt><module>mod_systemd</module> (available since 2.4.42)</dt>
+      <dd>systemd integration. It allows httpd to be used in a service with the systemd
+      <code>Type=notify</code>.</dd>
+
     </dl>
   </section>
 
@@ -263,8 +285,8 @@
           <module>mod_isapi</module>, ...</dt>
       <dd>Translation of headers to environment variables is more strict than
       before to mitigate some possible cross-site-scripting attacks via header
-      injection. Headers containing invalid characters (including underscores)
-      are now silently dropped. <a href="env.html">Environment Variables
+      injection. Header names containing invalid characters (including underscores)
+      are no longer converted to environment variables. <a href="env.html">Environment Variables
       in Apache</a> has some pointers on how to work around broken legacy
       clients which require such headers. (This affects all modules which
       use these environment variables.)</dd>

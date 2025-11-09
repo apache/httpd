@@ -405,7 +405,7 @@ LogLevel warn
 #Include @rel_sysconfdir@/extra/httpd-policy.conf
 
 # Configuration macros
-#Included @rel_sysconfdir@/extra/httpd-macro.conf
+#Include @rel_sysconfdir@/extra/httpd-macro.conf
 
 # Configure mod_proxy_html to understand HTML4/XHTML1
 <IfModule proxy_html_module>

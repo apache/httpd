@@ -176,6 +176,7 @@ TARGET_lib = \
 FILES_nlm_objs = \
 	$(OBJDIR)/mod_dav.o \
 	$(OBJDIR)/liveprop.o \
+	$(OBJDIR)/ms_wdv.o \
 	$(OBJDIR)/props.o \
 	$(OBJDIR)/providers.o \
 	$(OBJDIR)/std_liveprop.o \
@@ -240,7 +241,7 @@ FILES_lib_objs = \
 	$(EOLIST)
 
 #
-# implement targets and dependancies (leave this section alone)
+# implement targets and dependencies (leave this section alone)
 #
 
 libs :: $(OBJDIR) $(TARGET_lib)

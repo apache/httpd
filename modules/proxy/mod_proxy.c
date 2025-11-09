@@ -17,6 +17,7 @@
 #include "mod_proxy.h"
 #include "mod_core.h"
 #include "apr_optional.h"
+#include "apr_strings.h"
 #include "scoreboard.h"
 #include "mod_status.h"
 #include "proxy_util.h"
@@ -29,10 +30,6 @@ APR_DECLARE_OPTIONAL_FN(int, ssl_engine_disable, (conn_rec *));
 APR_DECLARE_OPTIONAL_FN(int, ssl_engine_set, (conn_rec *,
                                               ap_conf_vector_t *,
                                               int proxy, int enable));
-APR_DECLARE_OPTIONAL_FN(int, ssl_is_https, (conn_rec *));
-APR_DECLARE_OPTIONAL_FN(char *, ssl_var_lookup,
-                        (apr_pool_t *, server_rec *,
-                         conn_rec *, request_rec *, char *));
 #endif
 
 #ifndef MAX
@@ -48,14 +45,17 @@ static APR_OPTIONAL_FN_TYPE(set_worker_hc_param) *set_worker_hc_param_f = NULL;
 
 /* Externals */
 proxy_hcmethods_t PROXY_DECLARE_DATA proxy_hcmethods[] = {
-        {NONE, "NONE", 1},
-        {TCP, "TCP", 1},
-        {OPTIONS, "OPTIONS", 1},
-        {HEAD, "HEAD", 1},
-        {GET, "GET", 1},
-        {CPING, "CPING", 0},
-        {PROVIDER, "PROVIDER", 0},
-        {EOT, NULL, 1}
+    {NONE, "NONE", 1},
+    {TCP, "TCP", 1},
+    {OPTIONS, "OPTIONS", 1},
+    {HEAD, "HEAD", 1},
+    {GET, "GET", 1},
+    {CPING, "CPING", 0},
+    {PROVIDER, "PROVIDER", 0},
+    {OPTIONS11, "OPTIONS11", 1},
+    {HEAD11, "HEAD11", 1},
+    {GET11, "GET11", 1},
+    {EOT, NULL, 1}
 };
 
 proxy_wstat_t PROXY_DECLARE_DATA proxy_wstat_tbl[] = {
@@ -68,6 +68,7 @@ proxy_wstat_t PROXY_DECLARE_DATA proxy_wstat_tbl[] = {
     {PROXY_WORKER_STOPPED,       PROXY_WORKER_STOPPED_FLAG,       "Stop "},
     {PROXY_WORKER_IN_ERROR,      PROXY_WORKER_IN_ERROR_FLAG,      "Err "},
     {PROXY_WORKER_HOT_STANDBY,   PROXY_WORKER_HOT_STANDBY_FLAG,   "Stby "},
+    {PROXY_WORKER_HOT_SPARE,     PROXY_WORKER_HOT_SPARE_FLAG,     "Spar "},
     {PROXY_WORKER_FREE,          PROXY_WORKER_FREE_FLAG,          "Free "},
     {PROXY_WORKER_HC_FAIL,       PROXY_WORKER_HC_FAIL_FLAG,       "HcFl "},
     {0x0, '\0', NULL}
@@ -106,8 +107,9 @@ static const char *set_worker_param(apr_pool_t *p,
         /* Normalized load factor. Used with BalancerMember,
          * it is a number between 1 and 100.
          */
-        ival = atoi(val);
-        if (ival < 1 || ival > 100)
+        double fval = atof(val);
+        ival = fval * 100.0;
+        if (ival < 100 || ival > 10000)
             return "LoadFactor must be a number between 1..100";
         worker->s->lbfactor = ival;
     }
@@ -116,13 +118,15 @@ static const char *set_worker_param(apr_pool_t *p,
          * The default value is 60 seconds, meaning that if
          * in error state, it will be retried after that timeout.
          */
-        ival = atoi(val);
-        if (ival < 0)
-            return "Retry must be a positive value";
-        worker->s->retry = apr_time_from_sec(ival);
+        if (ap_timeout_parameter_parse(val, &timeout, "s") != APR_SUCCESS)
+            return "Retry value has wrong format";
+        if (timeout < 1000)
+            return "Retry must be at least one millisecond";
+        worker->s->retry = timeout;
         worker->s->retry_set = 1;
     }
     else if (!strcasecmp(key, "ttl")) {
+        /* XXX Second granularity is OK */
         /* Time in seconds that will destroy all the connections
          * that exceed the smax
          */
@@ -147,7 +151,7 @@ static const char *set_worker_param(apr_pool_t *p,
             return "Max must be a positive number";
         worker->s->hmax = ival;
     }
-    /* XXX: More inteligent naming needed */
+    /* XXX: More intelligent naming needed */
     else if (!strcasecmp(key, "smax")) {
         /* Maximum number of connections to remote that
          * will not be destroyed
@@ -173,10 +177,11 @@ static const char *set_worker_param(apr_pool_t *p,
         /* Connection timeout in seconds.
          * Defaults to server timeout.
          */
-        ival = atoi(val);
-        if (ival < 1)
-            return "Timeout must be at least one second";
-        worker->s->timeout = apr_time_from_sec(ival);
+        if (ap_timeout_parameter_parse(val, &timeout, "s") != APR_SUCCESS)
+            return "Timeout value has wrong format";
+        if (timeout < 1000)
+            return "Timeout must be at least one millisecond";
+        worker->s->timeout = timeout;
         worker->s->timeout_set = 1;
     }
     else if (!strcasecmp(key, "iobuffersize")) {
@@ -221,6 +226,24 @@ static const char *set_worker_param(apr_pool_t *p,
         else
             return "EnableReuse must be On|Off";
         worker->s->disablereuse_set = 1;
+    }
+    else if (!strcasecmp(key, "addressttl")) {
+        /* Address TTL in seconds
+         */
+        apr_interval_time_t ttl;
+        if (strcmp(val, "-1") == 0) {
+            worker->s->address_ttl = -1;
+        }
+        else if (ap_timeout_parameter_parse(val, &ttl, "s") == APR_SUCCESS
+                 && (ttl <= apr_time_from_sec(APR_INT32_MAX))
+                 && (ttl % apr_time_from_sec(1)) == 0) {
+            worker->s->address_ttl = apr_time_sec(ttl);
+        }
+        else {
+            return "AddressTTL must be -1 or a number of seconds not "
+                   "exceeding " APR_STRINGIFY(APR_INT32_MAX);
+        }
+        worker->s->address_ttl_set = 1;
     }
     else if (!strcasecmp(key, "route")) {
         /* Worker route.
@@ -269,14 +292,15 @@ static const char *set_worker_param(apr_pool_t *p,
             return "flushpackets must be on|off|auto";
     }
     else if (!strcasecmp(key, "flushwait")) {
-        ival = atoi(val);
-        if (ival > 1000 || ival < 0) {
-            return "flushwait must be <= 1000, or 0 for system default of 10 millseconds.";
+        if (ap_timeout_parameter_parse(val, &timeout, "ms") != APR_SUCCESS)
+            return "flushwait has wrong format";
+        if (timeout > 1000000 || timeout < 0) {
+            return "flushwait must be <= 1s, or 0 for system default of 10 millseconds.";
         }
-        if (ival == 0)
+        if (timeout == 0)
             worker->s->flush_wait = PROXY_FLUSH_WAIT;
         else
-            worker->s->flush_wait = ival * 1000;    /* change to microseconds */
+            worker->s->flush_wait = timeout;
     }
     else if (!strcasecmp(key, "ping")) {
         /* Ping/Pong timeout in given unit (default is second).
@@ -317,6 +341,33 @@ static const char *set_worker_param(apr_pool_t *p,
                                 (int)sizeof(worker->s->secret));
         }
     }
+    else if (!strcasecmp(key, "upgrade")) {
+        if (PROXY_STRNCPY(worker->s->upgrade,
+                          strcasecmp(val, "ANY") ? val : "*") != APR_SUCCESS) {
+            return apr_psprintf(p, "upgrade protocol length must be < %d characters",
+                                (int)sizeof(worker->s->upgrade));
+        }
+    }
+    else if (!strcasecmp(key, "responsefieldsize")) {
+        long s = atol(val);
+        if (s < 0) {
+            return "ResponseFieldSize must be greater than 0 bytes, or 0 for system default.";
+        }
+        worker->s->response_field_size = (s ? s : HUGE_STRING_LEN);
+        worker->s->response_field_size_set = 1;
+    }
+    else if (!strcasecmp(key, "multipathtcp")) {
+#ifdef IPPROTO_MPTCP
+        if (!strcasecmp(val, "On"))
+            worker->s->sock_proto = IPPROTO_MPTCP;
+        else if (!strcasecmp(val, "Off"))
+            worker->s->sock_proto = APR_PROTO_TCP;
+        else
+            return "multipathtcp must be On|Off";
+#else
+        return "multipathtcp is not supported on your platform";
+#endif
+    }
     else {
         if (set_worker_hc_param_f) {
             return set_worker_hc_param_f(p, s, worker, key, val, NULL);
@@ -335,6 +386,7 @@ static const char *set_balancer_param(proxy_server_conf *conf,
 {
 
     int ival;
+    apr_interval_time_t timeout;
     if (!strcasecmp(key, "stickysession")) {
         char *path;
         /* Balancer sticky session name.
@@ -385,10 +437,11 @@ static const char *set_balancer_param(proxy_server_conf *conf,
          * wait for a free worker.
          * Default is not to wait.
          */
-        ival = atoi(val);
-        if (ival < 1)
-            return "timeout must be at least one second";
-        balancer->s->timeout = apr_time_from_sec(ival);
+        if (ap_timeout_parameter_parse(val, &timeout, "s") != APR_SUCCESS)
+            return "Timeout value has wrong format";
+        if (timeout < 10000)
+            return "Timeout must be at least ten milliseconds";
+        balancer->s->timeout = timeout;
     }
     else if (!strcasecmp(key, "maxattempts")) {
         /* Maximum number of failover attempts before
@@ -547,6 +600,201 @@ static int alias_match(const char *uri, const char *alias_fakename)
     return urip - uri;
 }
 
+/*
+ * Inspired by mod_jk's jk_servlet_normalize().
+ */
+static int alias_match_servlet(apr_pool_t *p,
+                               const char **urip,
+                               const char *alias)
+{
+    char *map;
+    const char *uri = *urip;
+    apr_array_header_t *stack;
+    int map_pos, uri_pos, alias_pos, first_pos;
+    int alias_depth = 0, depth;
+
+    /* Both uri and alias should start with '/' */
+    if (uri[0] != '/' || alias[0] != '/') {
+        return 0;
+    }
+
+    stack = apr_array_make(p, 5, sizeof(int));
+    map = apr_palloc(p, strlen(uri) + 1);
+    map[0] = '/';
+    map[1] = '\0';
+
+    map_pos = uri_pos = alias_pos = first_pos = 1;
+    while (uri[uri_pos] != '\0') {
+        /* Remove path parameters ;foo=bar/ from any path segment */
+        if (uri[uri_pos] == ';') {
+            do {
+                uri_pos++;
+            } while (uri[uri_pos] != '/' && uri[uri_pos] != '\0');
+            continue;
+        }
+
+        if (map[map_pos - 1] == '/') {
+            /* Collapse ///// sequences to / */
+            if (uri[uri_pos] == '/') {
+                do {
+                    uri_pos++;
+                } while (uri[uri_pos] == '/');
+                continue;
+            }
+
+            if (uri[uri_pos] == '.') {
+                /* Remove /./ segments */
+                if (uri[uri_pos + 1] == '/'
+                        || uri[uri_pos + 1] == ';'
+                        || uri[uri_pos + 1] == '\0') {
+                    uri_pos++;
+                    if (uri[uri_pos] == '/') {
+                        uri_pos++;
+                    }
+                    continue;
+                }
+
+                /* Remove /xx/../ segments */
+                if (uri[uri_pos + 1] == '.'
+                    && (uri[uri_pos + 2] == '/'
+                        || uri[uri_pos + 2] == ';'
+                        || uri[uri_pos + 2] == '\0')) {
+                    /* Wind map segment back the previous one */
+                    if (map_pos == 1) {
+                        /* Above root */
+                        return 0;
+                    }
+                    do {
+                        map_pos--;
+                    } while (map[map_pos - 1] != '/');
+                    map[map_pos] = '\0';
+
+                    /* Wind alias segment back, unless in deeper segment */
+                    if (alias_depth == stack->nelts) {
+                        if (alias[alias_pos] == '\0') {
+                            alias_pos--;
+                        }
+                        while (alias_pos > 0 && alias[alias_pos] == '/') {
+                            alias_pos--;
+                        }
+                        while (alias_pos > 0 && alias[alias_pos - 1] != '/') {
+                            alias_pos--;
+                        }
+                        AP_DEBUG_ASSERT(alias_pos > 0);
+                        alias_depth--;
+                    }
+                    apr_array_pop(stack);
+
+                    /* Move uri forward to the next segment */
+                    uri_pos += 2;
+                    if (uri[uri_pos] == '/') {
+                        uri_pos++;
+                    }
+                    first_pos = 0;
+                    continue;
+                }
+            }
+            if (first_pos) {
+                while (uri[first_pos] == '/') {
+                    first_pos++;
+                }
+            }
+
+            /* New segment */
+            APR_ARRAY_PUSH(stack, int) = first_pos ? first_pos : uri_pos;
+            if (alias[alias_pos] != '\0') {
+                if (alias[alias_pos - 1] != '/') {
+                    /* Remain in pair with uri segments */
+                    do {
+                        alias_pos++;
+                    } while (alias[alias_pos - 1] != '/' && alias[alias_pos]);
+                }
+                while (alias[alias_pos] == '/') {
+                    alias_pos++;
+                }
+                if (alias[alias_pos] != '\0') {
+                    alias_depth++;
+                }
+            }
+        }
+
+        if (alias[alias_pos] != '\0') {
+            int *match = &APR_ARRAY_IDX(stack, alias_depth - 1, int);
+            if (*match) {
+                if (alias[alias_pos] != uri[uri_pos]) {
+                    /* Current segment does not match */
+                    *match = 0;
+                }
+                else if (alias[alias_pos + 1] == '\0'
+                         && alias[alias_pos] != '/') {
+                    if (uri[uri_pos + 1] == ';') {
+                        /* We'll preserve the parameters of the last
+                         * segment if it does not end with '/', so mark
+                         * the match as negative for below handling.
+                         */
+                        *match = -(uri_pos + 1);
+                    }
+                    else if (uri[uri_pos + 1] != '/'
+                             && uri[uri_pos + 1] != '\0') {
+                        /* Last segment does not match all the way */
+                        *match = 0;
+                    }
+                }
+            }
+            /* Don't go past the segment if the uri isn't there yet */
+            if (alias[alias_pos] != '/' || uri[uri_pos] == '/') {
+                alias_pos++;
+            }
+        }
+
+        if (uri[uri_pos] == '/') {
+            first_pos = uri_pos + 1;
+        }
+        map[map_pos++] = uri[uri_pos++];
+        map[map_pos] = '\0';
+    }
+
+    /* Can't reach the end of uri before the end of the alias,
+     * for example if uri is "/" and alias is "/examples"
+     */
+    if (alias[alias_pos] != '\0') {
+        return 0;
+    }
+
+    /* Check whether each alias segment matched */
+    for (depth = 0; depth < alias_depth; ++depth) {
+        if (!APR_ARRAY_IDX(stack, depth, int)) {
+            return 0;
+        }
+    }
+
+    /* If alias_depth == stack->nelts we have a full match, i.e.
+     * uri == alias so we can return uri_pos as is (the end of uri)
+     */
+    if (alias_depth < stack->nelts) {
+        /* Return the segment following the alias */
+        uri_pos = APR_ARRAY_IDX(stack, alias_depth, int);
+        if (alias_depth) {
+            /* But if the last segment of the alias does not end with '/'
+             * and the corresponding segment of the uri has parameters,
+             * we want to forward those parameters (see above for the
+             * negative pos trick/mark).
+             */
+            int pos = APR_ARRAY_IDX(stack, alias_depth - 1, int);
+            if (pos < 0) {
+                uri_pos = -pos;
+            }
+        }
+    }
+    /* If the alias lacks a trailing slash, take it from the uri (if any) */
+    if (alias[alias_pos - 1] != '/' && uri[uri_pos - 1] == '/') {
+        uri_pos--;
+    }
+
+    *urip = map;
+    return uri_pos;
+}
+
 /* Detect if an absoluteURI should be proxied or not.  Note that we
  * have to do this during this phase because later phases are
  * "short-circuiting"... i.e. translate_names will end when the first
@@ -568,11 +816,12 @@ static int proxy_detect(request_rec *r)
 
     if (conf->req && r->parsed_uri.scheme) {
         /* but it might be something vhosted */
-        if (!(r->parsed_uri.hostname
-              && !ap_cstr_casecmp(r->parsed_uri.scheme, ap_http_scheme(r))
-              && ap_matches_request_vhost(r, r->parsed_uri.hostname,
-                                          (apr_port_t)(r->parsed_uri.port_str ? r->parsed_uri.port
-                                                       : ap_default_port(r))))) {
+        if (!r->parsed_uri.hostname
+            || ap_cstr_casecmp(r->parsed_uri.scheme, ap_http_scheme(r)) != 0
+            || !ap_matches_request_vhost(r, r->parsed_uri.hostname,
+                                         (apr_port_t)(r->parsed_uri.port_str
+                                                      ? r->parsed_uri.port
+                                                      : ap_default_port(r)))) {
             r->proxyreq = PROXYREQ_PROXY;
             r->uri = r->unparsed_uri;
             r->filename = apr_pstrcat(r->pool, "proxy:", r->uri, NULL);
@@ -591,60 +840,6 @@ static int proxy_detect(request_rec *r)
     return DECLINED;
 }
 
-static const char *proxy_interpolate(request_rec *r, const char *str)
-{
-    /* Interpolate an env str in a configuration string
-     * Syntax ${var} --> value_of(var)
-     * Method: replace one var, and recurse on remainder of string
-     * Nothing clever here, and crap like nested vars may do silly things
-     * but we'll at least avoid sending the unwary into a loop
-     */
-    const char *start;
-    const char *end;
-    const char *var;
-    const char *val;
-    const char *firstpart;
-
-    start = ap_strstr_c(str, "${");
-    if (start == NULL) {
-        return str;
-    }
-    end = ap_strchr_c(start+2, '}');
-    if (end == NULL) {
-        return str;
-    }
-    /* OK, this is syntax we want to interpolate.  Is there such a var ? */
-    var = apr_pstrmemdup(r->pool, start+2, end-(start+2));
-    val = apr_table_get(r->subprocess_env, var);
-    firstpart = apr_pstrmemdup(r->pool, str, (start-str));
-
-    if (val == NULL) {
-        return apr_pstrcat(r->pool, firstpart,
-                           proxy_interpolate(r, end+1), NULL);
-    }
-    else {
-        return apr_pstrcat(r->pool, firstpart, val,
-                           proxy_interpolate(r, end+1), NULL);
-    }
-}
-static apr_array_header_t *proxy_vars(request_rec *r,
-                                      apr_array_header_t *hdr)
-{
-    int i;
-    apr_array_header_t *ret = apr_array_make(r->pool, hdr->nelts,
-                                             sizeof (struct proxy_alias));
-    struct proxy_alias *old = (struct proxy_alias *) hdr->elts;
-
-    for (i = 0; i < hdr->nelts; ++i) {
-        struct proxy_alias *newcopy = apr_array_push(ret);
-        newcopy->fake = (old[i].flags & PROXYPASS_INTERPOLATE)
-                        ? proxy_interpolate(r, old[i].fake) : old[i].fake;
-        newcopy->real = (old[i].flags & PROXYPASS_INTERPOLATE)
-                        ? proxy_interpolate(r, old[i].real) : old[i].real;
-    }
-    return ret;
-}
-
 PROXY_DECLARE(int) ap_proxy_trans_match(request_rec *r, struct proxy_alias *ent,
                                         proxy_dir_conf *dconf)
 {
@@ -657,10 +852,11 @@ PROXY_DECLARE(int) ap_proxy_trans_match(request_rec *r, struct proxy_alias *ent,
     int mismatch = 0;
     unsigned int nocanon = ent->flags & PROXYPASS_NOCANON;
     const char *use_uri = nocanon ? r->unparsed_uri : r->uri;
+    const char *servlet_uri = NULL;
 
     if (dconf && (dconf->interpolate_env == 1) && (ent->flags & PROXYPASS_INTERPOLATE)) {
-        fake = proxy_interpolate(r, ent->fake);
-        real = proxy_interpolate(r, ent->real);
+        fake = ap_proxy_interpolate(r, ent->fake);
+        real = ap_proxy_interpolate(r, ent->real);
     }
     else {
         fake = ent->fake;
@@ -717,7 +913,14 @@ PROXY_DECLARE(int) ap_proxy_trans_match(request_rec *r, struct proxy_alias *ent,
         }
     }
     else {
-        len = alias_match(r->uri, fake);
+        if ((ent->flags & PROXYPASS_MAP_SERVLET) == PROXYPASS_MAP_SERVLET) {
+            servlet_uri = r->uri;
+            len = alias_match_servlet(r->pool, &servlet_uri, fake);
+            nocanon = 0; /* ignored since servlet's normalization applies */
+        }
+        else {
+            len = alias_match(r->uri, fake);
+        }
 
         if (len != 0) {
             if ((real[0] == '!') && (real[1] == '\0')) {
@@ -726,7 +929,7 @@ PROXY_DECLARE(int) ap_proxy_trans_match(request_rec *r, struct proxy_alias *ent,
                               "'%s'; declining", r->uri);
                 return DECLINED;
             }
-            if (nocanon && len != alias_match(r->unparsed_uri, ent->fake)) {
+            if (nocanon && len != alias_match(r->unparsed_uri, fake)) {
                 mismatch = 1;
                 use_uri = r->uri;
             }
@@ -742,6 +945,17 @@ PROXY_DECLARE(int) ap_proxy_trans_match(request_rec *r, struct proxy_alias *ent,
     }
 
     if (found) {
+        unsigned int encoded = ent->flags & PROXYPASS_MAP_ENCODED;
+
+        /* A proxy module is assigned this URL, check whether it's interested
+         * in the request itself (e.g. proxy_wstunnel cares about Upgrade
+         * requests only, and could hand over to proxy_http otherwise).
+         */
+        int rc = proxy_run_check_trans(r, found + 6);
+        if (rc != OK && rc != DECLINED) {
+            return HTTP_CONTINUE;
+        }
+
         r->filename = found;
         r->handler = "proxy-server";
         r->proxyreq = PROXYREQ_REVERSE;
@@ -752,76 +966,112 @@ PROXY_DECLARE(int) ap_proxy_trans_match(request_rec *r, struct proxy_alias *ent,
         if (ent->flags & PROXYPASS_NOQUERY) {
             apr_table_setn(r->notes, "proxy-noquery", "1");
         }
+        if (encoded) {
+            apr_table_setn(r->notes, "proxy-noencode", "1");
+        }
 
-        ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r, APLOGNO(03464)
-                      "URI path '%s' matches proxy handler '%s'", r->uri,
-                      found);
-
-        return OK;
+        if (servlet_uri) {
+            ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r, APLOGNO(10248)
+                          "Servlet path '%s' (%s) matches proxy handler '%s'",
+                          r->uri, servlet_uri, found);
+            /* Apply servlet normalization to r->uri so that <Location> or any
+             * directory context match does not have to handle path parameters.
+             * We change r->uri in-place so that r->parsed_uri.path is updated
+             * too. Since normalized servlet_uri is necessarily shorter than
+             * the original r->uri, strcpy() is fine.
+             */
+            AP_DEBUG_ASSERT(strlen(r->uri) >= strlen(servlet_uri));
+            strcpy(r->uri, servlet_uri);
+        }
+        else {
+            ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r, APLOGNO(03464)
+                          "URI path '%s' matches proxy handler '%s'", r->uri,
+                          found);
+        }
+        return (encoded) ? DONE : OK;
     }
 
-    return DONE;
+    return HTTP_CONTINUE;
 }
 
-static int proxy_trans(request_rec *r)
+static int proxy_trans(request_rec *r, int pre_trans)
 {
-    int i;
+    int i, enc;
     struct proxy_alias *ent;
     proxy_dir_conf *dconf;
     proxy_server_conf *conf;
 
     if (r->proxyreq) {
         /* someone has already set up the proxy, it was possibly ourselves
-         * in proxy_detect
+         * in proxy_detect (DONE will prevent further decoding of r->uri,
+         * only if proxyreq is set before pre_trans already).
          */
-        return OK;
+        return pre_trans ? DONE : OK;
     }
 
-    if ((r->unparsed_uri[0] == '*' && r->unparsed_uri[1] == '\0')
-        || !r->uri || r->uri[0] != '/') {
-        return DECLINED;
-    }
-
-    /* XXX: since r->uri has been manipulated already we're not really
-     * compliant with RFC1945 at this point.  But this probably isn't
+    /* In early pre_trans hook, r->uri was not manipulated yet so we are
+     * compliant with RFC1945 at this point. Otherwise, it probably isn't
      * an issue because this is a hybrid proxy/origin server.
      */
 
     dconf = ap_get_module_config(r->per_dir_config, &proxy_module);
     conf = (proxy_server_conf *) ap_get_module_config(r->server->module_config,
                                                       &proxy_module);
-    /* short way - this location is reverse proxied? */
-    if (dconf->alias) {
-        int rv = ap_proxy_trans_match(r, dconf->alias, dconf);
-        if (OK == rv) { 
-            /* Got a hit. Need to make sure it's not explicitly declined */
-            if (conf->aliases->nelts) {
-                ent = (struct proxy_alias *) conf->aliases->elts;
-                for (i = 0; i < conf->aliases->nelts; i++) {
-                    int rv = ap_proxy_trans_match(r, &ent[i], dconf);
-                    if (DECLINED == rv) { 
-                        return DECLINED;
-                    }
-                }
-            }
-            return OK; 
-        }
-        if (DONE != rv) {
-            return rv;
-        }
+
+    /* Always and only do PROXY_MAP_ENCODED mapping in pre_trans, when
+     * r->uri is still encoded, or we might consider for instance that
+     * a decoded sub-delim is now a delimiter (e.g. "%3B" => ';' for
+     * path parameters), which it's not.
+     */
+    if ((pre_trans && !conf->map_encoded_one)
+            || (!pre_trans && conf->map_encoded_all)) {
+        /* Fast path, nothing at this stage */
+        return DECLINED;
     }
 
-    /* long way - walk the list of aliases, find a match */
-    if (conf->aliases->nelts) {
-        ent = (struct proxy_alias *) conf->aliases->elts;
-        for (i = 0; i < conf->aliases->nelts; i++) {
-            int rv = ap_proxy_trans_match(r, &ent[i], dconf);
-            if (DONE != rv) {
+    if ((r->unparsed_uri[0] == '*' && r->unparsed_uri[1] == '\0')
+        || !r->uri || r->uri[0] != '/') {
+        return DECLINED;
+    }
+   
+    if (apr_table_get(r->subprocess_env, "no-proxy")) { 
+        return DECLINED;
+    }
+
+    /* short way - this location is reverse proxied? */
+    if (dconf->alias) {
+        enc = (dconf->alias->flags & PROXYPASS_MAP_ENCODED) != 0;
+        if (!(pre_trans ^ enc)) {
+            int rv = ap_proxy_trans_match(r, dconf->alias, dconf);
+            if (rv != HTTP_CONTINUE) {
                 return rv;
             }
         }
     }
+
+    /* long way - walk the list of aliases, find a match */
+    for (i = 0; i < conf->aliases->nelts; i++) {
+        ent = &((struct proxy_alias *)conf->aliases->elts)[i];
+        enc = (ent->flags & PROXYPASS_MAP_ENCODED) != 0;
+        if (!(pre_trans ^ enc)) {
+            int rv = ap_proxy_trans_match(r, ent, dconf);
+            if (rv != HTTP_CONTINUE) {
+                return rv;
+            }
+        }
+    }
+
     return DECLINED;
+}
+
+static int proxy_pre_translate_name(request_rec *r)
+{
+    return proxy_trans(r, 1);
+}
+
+static int proxy_translate_name(request_rec *r)
+{
+    return proxy_trans(r, 0);
 }
 
 static int proxy_walk(request_rec *r)
@@ -854,6 +1104,7 @@ static int proxy_walk(request_rec *r)
             if (entry_proxy->refs && entry_proxy->refs->nelts) {
                 if (!rxpool) {
                     apr_pool_create(&rxpool, r->pool);
+                    apr_pool_tag(rxpool, "proxy_rxpool");
                 }
                 nmatch = entry_proxy->refs->nelts;
                 pmatch = apr_palloc(rxpool, nmatch*sizeof(ap_regmatch_t));
@@ -925,39 +1176,14 @@ static int proxy_map_location(request_rec *r)
  */
 static int proxy_fixup(request_rec *r)
 {
-    char *url, *p;
-    int access_status;
-    proxy_dir_conf *dconf = ap_get_module_config(r->per_dir_config,
-                                                 &proxy_module);
-
     if (!r->proxyreq || !r->filename || strncmp(r->filename, "proxy:", 6) != 0)
         return DECLINED;
 
     /* XXX: Shouldn't we try this before we run the proxy_walk? */
-    url = &r->filename[6];
 
-    if ((dconf->interpolate_env == 1) && (r->proxyreq == PROXYREQ_REVERSE)) {
-        /* create per-request copy of reverse proxy conf,
-         * and interpolate vars in it
-         */
-        proxy_req_conf *rconf = apr_palloc(r->pool, sizeof(proxy_req_conf));
-        ap_set_module_config(r->request_config, &proxy_module, rconf);
-        rconf->raliases = proxy_vars(r, dconf->raliases);
-        rconf->cookie_paths = proxy_vars(r, dconf->cookie_paths);
-        rconf->cookie_domains = proxy_vars(r, dconf->cookie_domains);
-    }
-
-    /* canonicalise each specific scheme */
-    if ((access_status = proxy_run_canon_handler(r, url))) {
-        return access_status;
-    }
-
-    p = strchr(url, ':');
-    if (p == NULL || p == url)
-        return HTTP_BAD_REQUEST;
-
-    return OK;      /* otherwise; we've done the best we can */
+    return ap_proxy_canon_url(r);
 }
+
 /* Send a redirection if the request contains a hostname which is not */
 /* fully qualified, i.e. doesn't have a domain name appended. Some proxy */
 /* servers like Netscape's allow this and access hosts from the local */
@@ -1011,7 +1237,7 @@ static int proxy_handler(request_rec *r)
         ap_get_module_config(sconf, &proxy_module);
     apr_array_header_t *proxies = conf->proxies;
     struct proxy_remote *ents = (struct proxy_remote *) proxies->elts;
-    int i, rc, access_status;
+    int rc = DECLINED, access_status, i;
     int direct_connect = 0;
     const char *str;
     apr_int64_t maxfwd;
@@ -1026,29 +1252,47 @@ static int proxy_handler(request_rec *r)
         return DECLINED;
     }
 
-    if (!r->proxyreq) {
-        /* We may have forced the proxy handler via config or .htaccess */
-        if (r->handler &&
-            strncmp(r->handler, "proxy:", 6) == 0 &&
-            strncmp(r->filename, "proxy:", 6) != 0) {
-            r->proxyreq = PROXYREQ_REVERSE;
-            r->filename = apr_pstrcat(r->pool, r->handler, r->filename, NULL);
+    /* We may have forced the proxy handler via config or .htaccess */
+    if (!r->proxyreq && r->handler && strncmp(r->handler, "proxy:", 6) == 0) {
+        char *old_filename = r->filename;
+
+        r->proxyreq = PROXYREQ_REVERSE;
+        r->filename = apr_pstrcat(r->pool, r->handler, r->filename, NULL);
+        apr_table_setn(r->notes, "proxy-sethandler", "1");
+
+        /* Still need to canonicalize r->filename */
+        rc = ap_proxy_canon_url(r);
+        if (rc != OK) {
+            r->filename = old_filename;
+            r->proxyreq = 0;
         }
-        else {
-            return DECLINED;
-        }
-    } else if (strncmp(r->filename, "proxy:", 6) != 0) {
-        return DECLINED;
     }
+    else if (r->proxyreq && strncmp(r->filename, "proxy:", 6) == 0) {
+        apr_table_unset(r->notes, "proxy-sethandler");
+        rc = OK;
+    }
+    if (rc != OK) {
+        return rc;
+    }
+
+    uri = r->filename + 6;
+    p = strchr(uri, ':');
+    if (p == NULL) {
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01141)
+                      "proxy_handler no URL in %s", r->filename);
+        return HTTP_BAD_REQUEST;
+    }
+    scheme = apr_pstrmemdup(r->pool, uri, p - uri);
 
     /* handle max-forwards / OPTIONS / TRACE */
     if ((str = apr_table_get(r->headers_in, "Max-Forwards"))) {
         char *end;
         maxfwd = apr_strtoi64(str, &end, 10);
         if (maxfwd < 0 || maxfwd == APR_INT64_MAX || *end) {
-            return ap_proxyerror(r, HTTP_BAD_REQUEST,
-                    apr_psprintf(r->pool,
-                            "Max-Forwards value '%s' could not be parsed", str));
+            ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(10188) 
+                          "Max-Forwards value '%s' could not be parsed", str);
+            return ap_proxyerror(r, HTTP_BAD_REQUEST, 
+                          "Max-Forwards request header could not be parsed");
         }
         else if (maxfwd == 0) {
             switch (r->method_number) {
@@ -1119,14 +1363,6 @@ static int proxy_handler(request_rec *r)
         }
     }
 
-    uri = r->filename + 6;
-    p = strchr(uri, ':');
-    if (p == NULL) {
-        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01141)
-                      "proxy_handler no URL in %s", r->filename);
-        return HTTP_BAD_REQUEST;
-    }
-
     /* If the host doesn't have a domain name, add one and redirect. */
     if (conf->domain != NULL) {
         rc = proxy_needsdomain(r, uri, conf->domain);
@@ -1134,7 +1370,6 @@ static int proxy_handler(request_rec *r)
             return HTTP_MOVED_PERMANENTLY;
     }
 
-    scheme = apr_pstrmemdup(r->pool, uri, p - uri);
     /* Check URI's destination host against NoProxy hosts */
     /* Bypass ProxyRemote server lookup if configured as NoProxy */
     for (direct_connect = i = 0; i < conf->dirconn->nelts &&
@@ -1190,15 +1425,23 @@ static int proxy_handler(request_rec *r)
                     /* handle the scheme */
                     ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01142)
                                   "Trying to run scheme_handler against proxy");
+
+                    if (ents[i].creds) {
+                        apr_table_set(r->notes, "proxy-basic-creds", ents[i].creds);
+                        ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r,
+                                      "Using proxy auth creds %s", ents[i].creds);
+                    }
+
                     access_status = proxy_run_scheme_handler(r, worker,
                                                              conf, url,
                                                              ents[i].hostname,
                                                              ents[i].port);
 
+                    if (ents[i].creds) apr_table_unset(r->notes, "proxy-basic-creds");
+
                     /* Did the scheme handler process the request? */
                     if (access_status != DECLINED) {
                         const char *cl_a;
-                        char *end;
                         apr_off_t cl;
 
                         /*
@@ -1208,18 +1451,17 @@ static int proxy_handler(request_rec *r)
                         if (access_status != HTTP_BAD_GATEWAY) {
                             goto cleanup;
                         }
+
                         cl_a = apr_table_get(r->headers_in, "Content-Length");
-                        if (cl_a) {
-                            apr_strtoff(&cl, cl_a, &end, 10);
+                        if (cl_a && (!ap_parse_strict_length(&cl, cl_a)
+                                     || cl > 0)) {
                             /*
                              * The request body is of length > 0. We cannot
                              * retry with a direct connection since we already
                              * sent (parts of) the request body to the proxy
                              * and do not have any longer.
                              */
-                            if (cl > 0) {
-                                goto cleanup;
-                            }
+                            goto cleanup;
                         }
                         /*
                          * Transfer-Encoding was set as input header, so we had
@@ -1344,6 +1586,8 @@ static void * create_proxy_config(apr_pool_t *p, server_rec *s)
     ps->forward = NULL;
     ps->reverse = NULL;
     ps->domain = NULL;
+    ps->map_encoded_one = 0;
+    ps->map_encoded_all = 1;
     ps->id = apr_psprintf(p, "p%x", 1); /* simply for storage size */
     ps->viaopt = via_off; /* initially backward compatible with 1.3.1 */
     ps->viaopt_set = 0; /* 0 means default */
@@ -1370,6 +1614,7 @@ static void * create_proxy_config(apr_pool_t *p, server_rec *s)
     ps->source_address = NULL;
     ps->source_address_set = 0;
     apr_pool_create_ex(&ps->pool, p, NULL, NULL);
+    apr_pool_tag(ps->pool, "proxy_server_conf");
 
     return ps;
 }
@@ -1500,6 +1745,9 @@ static void * merge_proxy_config(apr_pool_t *p, void *basev, void *overridesv)
     ps->forward = overrides->forward ? overrides->forward : base->forward;
     ps->reverse = overrides->reverse ? overrides->reverse : base->reverse;
 
+    ps->map_encoded_one = overrides->map_encoded_one || base->map_encoded_one;
+    ps->map_encoded_all = overrides->map_encoded_all && base->map_encoded_all;
+
     ps->domain = (overrides->domain == NULL) ? base->domain : overrides->domain;
     ps->id = (overrides->id == NULL) ? base->id : overrides->id;
     ps->viaopt = (overrides->viaopt_set == 0) ? base->viaopt : overrides->viaopt;
@@ -1557,14 +1805,24 @@ static void *create_proxy_dir_config(apr_pool_t *p, char *dummy)
     new->raliases = apr_array_make(p, 10, sizeof(struct proxy_alias));
     new->cookie_paths = apr_array_make(p, 10, sizeof(struct proxy_alias));
     new->cookie_domains = apr_array_make(p, 10, sizeof(struct proxy_alias));
+    new->error_override_codes = apr_array_make(p, 10, sizeof(int));
     new->preserve_host_set = 0;
     new->preserve_host = 0;
     new->interpolate_env = -1; /* unset */
     new->error_override = 0;
     new->error_override_set = 0;
     new->add_forwarded_headers = 1;
+    new->add_forwarded_headers_set = 0;
+    new->forward_100_continue = 1;
+    new->forward_100_continue_set = 0;
+    new->async_delay = -1;
 
     return (void *) new;
+}
+
+static int int_order(const void *i1, const void *i2)
+{
+    return *(const int *)i1 - *(const int *)i2;
 }
 
 static void *merge_proxy_dir_config(apr_pool_t *p, void *basev, void *addv)
@@ -1584,6 +1842,17 @@ static void *merge_proxy_dir_config(apr_pool_t *p, void *basev, void *addv)
         = apr_array_append(p, base->cookie_paths, add->cookie_paths);
     new->cookie_domains
         = apr_array_append(p, base->cookie_domains, add->cookie_domains);
+    new->error_override_codes
+        = apr_array_append(p, base->error_override_codes, add->error_override_codes);
+    /* Keep the array sorted for binary search (since "base" and "add" are
+     * already sorted, it's only needed only if both are merged).
+     */
+    if (base->error_override_codes->nelts
+            && add->error_override_codes->nelts) {
+        qsort(new->error_override_codes->elts,
+              new->error_override_codes->nelts,
+              sizeof(int), int_order);
+    }
     new->interpolate_env = (add->interpolate_env == -1) ? base->interpolate_env
                                                         : add->interpolate_env;
     new->preserve_host = (add->preserve_host_set == 0) ? base->preserve_host
@@ -1594,12 +1863,35 @@ static void *merge_proxy_dir_config(apr_pool_t *p, void *basev, void *addv)
     new->error_override_set = add->error_override_set || base->error_override_set;
     new->alias = (add->alias_set == 0) ? base->alias : add->alias;
     new->alias_set = add->alias_set || base->alias_set;
-    new->add_forwarded_headers = add->add_forwarded_headers;
+
+    new->add_forwarded_headers =
+        (add->add_forwarded_headers_set == 0) ? base->add_forwarded_headers
+        : add->add_forwarded_headers;
+    new->add_forwarded_headers_set = add->add_forwarded_headers_set
+        || base->add_forwarded_headers_set;
+
+    new->forward_100_continue =
+        (add->forward_100_continue_set == 0) ? base->forward_100_continue
+                                             : add->forward_100_continue;
+    new->forward_100_continue_set = add->forward_100_continue_set
+                                    || base->forward_100_continue_set;
+
+    new->async_delay =
+        (add->async_delay_set == 0) ? base->async_delay
+                                    : add->async_delay;
+    new->async_delay_set = add->async_delay_set
+                           || base->async_delay_set;
+    new->async_idle_timeout =
+        (add->async_idle_timeout_set == 0) ? base->async_idle_timeout
+                                           : add->async_idle_timeout;
+    new->async_idle_timeout_set = add->async_idle_timeout_set
+                                  || base->async_idle_timeout_set;
+
     return new;
 }
 
-static const char *
-    add_proxy(cmd_parms *cmd, void *dummy, const char *f1, const char *r1, int regex)
+static const char *add_proxy(cmd_parms *cmd, void *dummy, const char *f1,
+                             const char *r1, const char *creds, int regex)
 {
     server_rec *s = cmd->server;
     proxy_server_conf *conf =
@@ -1657,19 +1949,24 @@ static const char *
     new->port = port;
     new->regexp = reg;
     new->use_regex = regex;
+    if (creds) {
+        new->creds = apr_pstrcat(cmd->pool, "Basic ",
+                                 ap_pbase64encode(cmd->pool, (char *)creds),
+                                 NULL);
+    }
     return NULL;
 }
 
-static const char *
-    add_proxy_noregex(cmd_parms *cmd, void *dummy, const char *f1, const char *r1)
+static const char *add_proxy_noregex(cmd_parms *cmd, void *dummy, const char *f1,
+                                     const char *r1, const char *creds)
 {
-    return add_proxy(cmd, dummy, f1, r1, 0);
+    return add_proxy(cmd, dummy, f1, r1, creds, 0);
 }
 
-static const char *
-    add_proxy_regex(cmd_parms *cmd, void *dummy, const char *f1, const char *r1)
+static const char *add_proxy_regex(cmd_parms *cmd, void *dummy, const char *f1,
+                                   const char *r1, const char *creds)
 {
-    return add_proxy(cmd, dummy, f1, r1, 1);
+    return add_proxy(cmd, dummy, f1, r1, creds, 1);
 }
 
 PROXY_DECLARE(const char *) ap_proxy_de_socketfy(apr_pool_t *p, const char *url)
@@ -1680,20 +1977,23 @@ PROXY_DECLARE(const char *) ap_proxy_de_socketfy(apr_pool_t *p, const char *url)
      * the UDS path... ignore it
      */
     if (!ap_cstr_casecmpn(url, "unix:", 5) &&
-        ((ptr = ap_strchr_c(url, '|')) != NULL)) {
+        ((ptr = ap_strchr_c(url + 5, '|')) != NULL)) {
         /* move past the 'unix:...|' UDS path info */
         const char *ret, *c;
 
         ret = ptr + 1;
-        /* special case: "unix:....|scheme:" is OK, expand
-         * to "unix:....|scheme://localhost"
-         * */
+        /* special cases: "unix:...|scheme:" ind "unix:...|scheme://" are OK,
+         * expand to "unix:....|scheme://localhost"
+         */
         c = ap_strchr_c(ret, ':');
         if (c == NULL) {
             return NULL;
         }
         if (c[1] == '\0') {
             return apr_pstrcat(p, ret, "//localhost", NULL);
+        }
+        else if (c[1] == '/' && c[2] == '/' && !c[3]) {
+            return apr_pstrcat(p, ret, "localhost", NULL);
         }
         else {
             return ret;
@@ -1712,12 +2012,14 @@ static const char *
     struct proxy_alias *new;
     char *f = cmd->path;
     char *r = NULL;
+    const char *real;
     char *word;
     apr_table_t *params = apr_table_make(cmd->pool, 5);
     const apr_array_header_t *arr;
     const apr_table_entry_t *elts;
     int i;
-    int use_regex = is_regex;
+    unsigned int worker_type = (is_regex) ? AP_PROXY_WORKER_IS_MATCH
+                                          : AP_PROXY_WORKER_IS_PREFIX;
     unsigned int flags = 0;
     const char *err;
 
@@ -1733,7 +2035,7 @@ static const char *
                 if (is_regex) {
                     return "ProxyPassMatch invalid syntax ('~' usage).";
                 }
-                use_regex = 1;
+                worker_type = AP_PROXY_WORKER_IS_MATCH;
                 continue;
             }
             f = word;
@@ -1768,15 +2070,39 @@ static const char *
                            "in the form 'key=value'.";
                 }
             }
-            else
+            else {
                 *val++ = '\0';
-            apr_table_setn(params, word, val);
+            }
+            if (!strcasecmp(word, "mapping")) {
+                if (!strcasecmp(val, "encoded")) {
+                    flags |= PROXYPASS_MAP_ENCODED;
+                }
+                else if (!strcasecmp(val, "servlet")) {
+                    flags |= PROXYPASS_MAP_SERVLET;
+                }
+                else {
+                    return "unknown mapping";
+                }
+            }
+            else {
+                apr_table_setn(params, word, val);
+            }
         }
-    };
+    }
+    if (flags & PROXYPASS_MAP_ENCODED) {
+        conf->map_encoded_one = 1;
+    }
+    else {
+        conf->map_encoded_all = 0;
+    }
 
     if (r == NULL) {
         return "ProxyPass|ProxyPassMatch needs a path when not defined in a location";
     }
+    if (!(real = ap_proxy_de_socketfy(cmd->temp_pool, r))) {
+        return "ProxyPass|ProxyPassMatch uses an invalid \"unix:\" URL";
+    }
+
 
     /* if per directory, save away the single alias */
     if (cmd->path) {
@@ -1784,7 +2110,7 @@ static const char *
         dconf->alias_set = 1;
         new = dconf->alias;
         if (apr_fnmatch_test(f)) {
-            use_regex = 1;
+            worker_type = AP_PROXY_WORKER_IS_MATCH;
         }
     }
     /* if per server, add to the alias array */
@@ -1793,9 +2119,9 @@ static const char *
     }
 
     new->fake = apr_pstrdup(cmd->pool, f);
-    new->real = apr_pstrdup(cmd->pool, ap_proxy_de_socketfy(cmd->pool, r));
+    new->real = apr_pstrdup(cmd->pool, real);
     new->flags = flags;
-    if (use_regex) {
+    if (worker_type & AP_PROXY_WORKER_IS_MATCH) {
         new->regex = ap_pregcomp(cmd->pool, f, AP_REG_EXTENDED);
         if (new->regex == NULL)
             return "Regular expression could not be compiled.";
@@ -1819,7 +2145,7 @@ static const char *
          * cannot be parsed anyway with apr_uri_parse later on in
          * ap_proxy_define_balancer / ap_proxy_update_balancer
          */
-        if (use_regex) {
+        if (worker_type & AP_PROXY_WORKER_IS_MATCH) {
             fake_copy = NULL;
         }
         else {
@@ -1842,41 +2168,31 @@ static const char *
         new->balancer = balancer;
     }
     else {
-        proxy_worker *worker = ap_proxy_get_worker(cmd->temp_pool, NULL, conf, new->real);
         int reuse = 0;
+        proxy_worker *worker = ap_proxy_get_worker_ex(cmd->temp_pool, NULL,
+                                                      conf, new->real,
+                                                      worker_type);
         if (!worker) {
             const char *err;
-            if (use_regex) {
-                err = ap_proxy_define_match_worker(cmd->pool, &worker, NULL,
-                                                   conf, r, 0);
-            }
-            else {
-                err = ap_proxy_define_worker(cmd->pool, &worker, NULL,
-                                             conf, r, 0);
-            }
+            err = ap_proxy_define_worker_ex(cmd->pool, &worker, NULL,
+                                            conf, r, worker_type);
             if (err)
                 return apr_pstrcat(cmd->temp_pool, "ProxyPass ", err, NULL);
 
             PROXY_COPY_CONF_PARAMS(worker, conf);
         }
-        else if ((use_regex != 0) ^ (worker->s->is_name_matchable != 0)) {
-            return apr_pstrcat(cmd->temp_pool, "ProxyPass/<Proxy> and "
-                               "ProxyPassMatch/<ProxyMatch> can't be used "
-                               "together with the same worker name ",
-                               "(", worker->s->name, ")", NULL);
-        }
         else {
             reuse = 1;
             ap_log_error(APLOG_MARK, APLOG_INFO, 0, cmd->server, APLOGNO(01145)
                          "Sharing worker '%s' instead of creating new worker '%s'",
-                         ap_proxy_worker_name(cmd->pool, worker), new->real);
+                         ap_proxy_worker_get_name(worker), new->real);
         }
 
         for (i = 0; i < arr->nelts; i++) {
             if (reuse) {
                 ap_log_error(APLOG_MARK, APLOG_WARNING, 0, cmd->server, APLOGNO(01146)
                              "Ignoring parameter '%s=%s' for worker '%s' because of worker sharing",
-                             elts[i].key, elts[i].val, ap_proxy_worker_name(cmd->pool, worker));
+                             elts[i].key, elts[i].val, ap_proxy_worker_get_name(worker));
             } else {
                 const char *err = set_worker_param(cmd->pool, s, worker, elts[i].key,
                                                    elts[i].val);
@@ -2084,19 +2400,56 @@ static const char *
 }
 
 static const char *
-    set_proxy_error_override(cmd_parms *parms, void *dconf, int flag)
+    set_proxy_error_override(cmd_parms *parms, void *dconf, const char *arg)
 {
     proxy_dir_conf *conf = dconf;
 
-    conf->error_override = flag;
-    conf->error_override_set = 1;
+    if (strcasecmp(arg, "Off") == 0) {
+        conf->error_override = 0;
+        conf->error_override_set = 1;
+    }
+    else if (strcasecmp(arg, "On") == 0) {
+        conf->error_override = 1;
+        conf->error_override_set = 1;
+    }
+    else if (conf->error_override_set == 1) {
+        int *newcode;
+        int argcode, i;
+        if (!apr_isdigit(arg[0]))
+            return "ProxyErrorOverride: status codes to intercept must be numeric";
+        if (!conf->error_override) 
+            return "ProxyErrorOverride: status codes must follow a value of 'on'";
+
+        argcode = strtol(arg, NULL, 10);
+        if (!ap_is_HTTP_ERROR(argcode))
+            return "ProxyErrorOverride: status codes to intercept must be valid HTTP Status Codes >=400 && <600";
+
+        newcode = apr_array_push(conf->error_override_codes);
+        *newcode = argcode;
+
+        /* Keep the array sorted for binary search. */
+        for (i = conf->error_override_codes->nelts - 1; i > 0; --i) {
+            int *oldcode = &((int *)conf->error_override_codes->elts)[i - 1];
+            if (*oldcode <= argcode) {
+                break;
+            }
+            *newcode = *oldcode;
+            *oldcode = argcode;
+            newcode = oldcode;
+        }
+    }
+    else
+        return "ProxyErrorOverride first parameter must be one of: off | on";
+
     return NULL;
 }
+
 static const char *
    add_proxy_http_headers(cmd_parms *parms, void *dconf, int flag)
 {
    proxy_dir_conf *conf = dconf;
    conf->add_forwarded_headers = flag;
+   conf->add_forwarded_headers_set = 1;
    return NULL;
 }
 static const char *
@@ -2106,6 +2459,41 @@ static const char *
 
     conf->preserve_host = flag;
     conf->preserve_host_set = 1;
+    return NULL;
+}
+static const char *
+   forward_100_continue(cmd_parms *parms, void *dconf, int flag)
+{
+   proxy_dir_conf *conf = dconf;
+   conf->forward_100_continue = flag;
+   conf->forward_100_continue_set = 1;
+   return NULL;
+}
+
+static const char *
+    set_proxy_async_delay(cmd_parms *parms, void *dconf, const char *arg)
+{
+    proxy_dir_conf *conf = dconf;
+    if (strcmp(arg, "-1") == 0) {
+        conf->async_delay = -1;
+    }
+    else if (ap_timeout_parameter_parse(arg, &conf->async_delay, "s")
+                || conf->async_delay < 0) {
+        return "ProxyAsyncDelay has wrong format";
+    }
+    conf->async_delay_set = 1;
+    return NULL;
+}
+
+static const char *
+    set_proxy_async_idle(cmd_parms *parms, void *dconf, const char *arg)
+{
+    proxy_dir_conf *conf = dconf;
+    if (ap_timeout_parameter_parse(arg, &conf->async_idle_timeout, "s")
+            || conf->async_idle_timeout < 0) {
+        return "ProxyAsyncIdleTimeout has wrong format";
+    }
+    conf->async_idle_timeout_set = 1;
     return NULL;
 }
 
@@ -2284,6 +2672,7 @@ static const char *add_member(cmd_parms *cmd, void *dummy, const char *arg)
     proxy_worker *worker;
     char *path = cmd->path;
     char *name = NULL;
+    const char *real;
     char *word;
     apr_table_t *params = apr_table_make(cmd->pool, 5);
     const apr_array_header_t *arr;
@@ -2324,6 +2713,9 @@ static const char *add_member(cmd_parms *cmd, void *dummy, const char *arg)
         return "BalancerMember must define balancer name when outside <Proxy > section";
     if (!name)
         return "BalancerMember must define remote proxy server";
+    if (!(real = ap_proxy_de_socketfy(cmd->temp_pool, name))) {
+        return "BalancerMember uses an invalid \"unix:\" URL";
+    }
 
     ap_str_tolower(path);   /* lowercase scheme://hostname */
 
@@ -2336,7 +2728,7 @@ static const char *add_member(cmd_parms *cmd, void *dummy, const char *arg)
     }
 
     /* Try to find existing worker */
-    worker = ap_proxy_get_worker(cmd->temp_pool, balancer, conf, ap_proxy_de_socketfy(cmd->temp_pool, name));
+    worker = ap_proxy_get_worker(cmd->temp_pool, balancer, conf, real);
     if (!worker) {
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, cmd->server, APLOGNO(01147)
                      "Defining worker '%s' for balancer '%s'",
@@ -2345,13 +2737,13 @@ static const char *add_member(cmd_parms *cmd, void *dummy, const char *arg)
             return apr_pstrcat(cmd->temp_pool, "BalancerMember ", err, NULL);
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, cmd->server, APLOGNO(01148)
                      "Defined worker '%s' for balancer '%s'",
-                     ap_proxy_worker_name(cmd->pool, worker), balancer->s->name);
+                     ap_proxy_worker_get_name(worker), balancer->s->name);
         PROXY_COPY_CONF_PARAMS(worker, conf);
     } else {
         reuse = 1;
         ap_log_error(APLOG_MARK, APLOG_INFO, 0, cmd->server, APLOGNO(01149)
                      "Sharing worker '%s' instead of creating new worker '%s'",
-                     ap_proxy_worker_name(cmd->pool, worker), name);
+                     ap_proxy_worker_get_name(worker), name);
     }
     if (!worker->section_config) {
         worker->section_config = balancer->section_config;
@@ -2363,7 +2755,7 @@ static const char *add_member(cmd_parms *cmd, void *dummy, const char *arg)
         if (reuse) {
             ap_log_error(APLOG_MARK, APLOG_WARNING, 0, cmd->server, APLOGNO(01150)
                          "Ignoring parameter '%s=%s' for worker '%s' because of worker sharing",
-                         elts[i].key, elts[i].val, ap_proxy_worker_name(cmd->pool, worker));
+                         elts[i].key, elts[i].val, ap_proxy_worker_get_name(worker));
         } else {
             err = set_worker_param(cmd->pool, cmd->server, worker, elts[i].key,
                                    elts[i].val);
@@ -2385,6 +2777,7 @@ static const char *
     char *word, *val;
     proxy_balancer *balancer = NULL;
     proxy_worker *worker = NULL;
+    unsigned int worker_type = 0;
     int in_proxy_section = 0;
     /* XXX: Should this be NOT_IN_DIRECTORY|NOT_IN_FILES? */
     const char *err = ap_check_cmd_context(cmd, NOT_IN_HTACCESS);
@@ -2401,6 +2794,13 @@ static const char *
         name = ap_getword_conf(cmd->temp_pool, &pargs);
         if ((word = ap_strchr(name, '>')))
             *word = '\0';
+        if (strncasecmp(cmd->directive->parent->directive + 6,
+                        "Match", 5) == 0) {
+            worker_type = AP_PROXY_WORKER_IS_MATCH;
+        }
+        else {
+            worker_type = AP_PROXY_WORKER_IS_PREFIX;
+        }
         in_proxy_section = 1;
     }
     else {
@@ -2425,11 +2825,18 @@ static const char *
         }
     }
     else {
-        worker = ap_proxy_get_worker(cmd->temp_pool, NULL, conf, ap_proxy_de_socketfy(cmd->temp_pool, name));
+        const char *real;
+
+        if (!(real = ap_proxy_de_socketfy(cmd->temp_pool, name))) {
+            return "ProxySet uses an invalid \"unix:\" URL";
+        }
+
+        worker = ap_proxy_get_worker_ex(cmd->temp_pool, NULL, conf,
+                                        real, worker_type);
         if (!worker) {
             if (in_proxy_section) {
-                err = ap_proxy_define_worker(cmd->pool, &worker, NULL,
-                                             conf, name, 0);
+                err = ap_proxy_define_worker_ex(cmd->pool, &worker, NULL,
+                                                conf, name, worker_type);
                 if (err)
                     return apr_pstrcat(cmd->temp_pool, "ProxySet ",
                                        err, NULL);
@@ -2483,9 +2890,8 @@ static const char *proxysection(cmd_parms *cmd, void *mconfig, const char *arg)
     char *word, *val;
     proxy_balancer *balancer = NULL;
     proxy_worker *worker = NULL;
-    int use_regex = 0;
-
-    const char *err = ap_check_cmd_context(cmd, NOT_IN_DIR_LOC_FILE);
+    unsigned int worker_type = AP_PROXY_WORKER_IS_PREFIX;
+    const char *err = ap_check_cmd_context(cmd, NOT_IN_DIR_CONTEXT);
     proxy_server_conf *sconf =
     (proxy_server_conf *) ap_get_module_config(cmd->server->module_config, &proxy_module);
 
@@ -2522,7 +2928,7 @@ static const char *proxysection(cmd_parms *cmd, void *mconfig, const char *arg)
         if (!r) {
             return "Regex could not be compiled";
         }
-        use_regex = 1;
+        worker_type = AP_PROXY_WORKER_IS_MATCH;
     }
 
     /* initialize our config and fetch it */
@@ -2569,26 +2975,20 @@ static const char *proxysection(cmd_parms *cmd, void *mconfig, const char *arg)
             }
         }
         else {
-            worker = ap_proxy_get_worker(cmd->temp_pool, NULL, sconf,
-                                         ap_proxy_de_socketfy(cmd->temp_pool, (char*)conf->p));
+            const char *real;
+
+            if (!(real = ap_proxy_de_socketfy(cmd->temp_pool, conf->p))) {
+                return "<Proxy/ProxyMatch > uses an invalid \"unix:\" URL";
+            }
+
+            worker = ap_proxy_get_worker_ex(cmd->temp_pool, NULL, sconf,
+                                            real, worker_type);
             if (!worker) {
-                if (use_regex) {
-                    err = ap_proxy_define_match_worker(cmd->pool, &worker, NULL,
-                                                       sconf, conf->p, 0);
-                }
-                else {
-                    err = ap_proxy_define_worker(cmd->pool, &worker, NULL,
-                                                 sconf, conf->p, 0);
-                }
+                err = ap_proxy_define_worker_ex(cmd->pool, &worker, NULL, sconf,
+                                                conf->p, worker_type);
                 if (err)
                     return apr_pstrcat(cmd->temp_pool, thiscmd->name,
                                        " ", err, NULL);
-            }
-            else if ((use_regex != 0) ^ (worker->s->is_name_matchable != 0)) {
-                return apr_pstrcat(cmd->temp_pool, "ProxyPass/<Proxy> and "
-                                   "ProxyPassMatch/<ProxyMatch> can't be used "
-                                   "altogether with the same worker name ",
-                                   "(", worker->s->name, ")", NULL);
             }
             if (!worker->section_config) {
                 worker->section_config = new_dir_conf;
@@ -2635,9 +3035,9 @@ static const command_rec proxy_cmds[] =
     "location, in regular expression syntax"),
     AP_INIT_FLAG("ProxyRequests", set_proxy_req, NULL, RSRC_CONF,
      "on if the true proxy requests should be accepted"),
-    AP_INIT_TAKE2("ProxyRemote", add_proxy_noregex, NULL, RSRC_CONF,
+    AP_INIT_TAKE23("ProxyRemote", add_proxy_noregex, NULL, RSRC_CONF,
      "a scheme, partial URL or '*' and a proxy server"),
-    AP_INIT_TAKE2("ProxyRemoteMatch", add_proxy_regex, NULL, RSRC_CONF,
+    AP_INIT_TAKE23("ProxyRemoteMatch", add_proxy_regex, NULL, RSRC_CONF,
      "a regex pattern and a proxy server"),
     AP_INIT_FLAG("ProxyPassInterpolateEnv", ap_set_flag_slot_char,
         (void*)APR_OFFSETOF(proxy_dir_conf, interpolate_env),
@@ -2666,7 +3066,7 @@ static const command_rec proxy_cmds[] =
      "The default intranet domain name (in absence of a domain in the URL)"),
     AP_INIT_TAKE1("ProxyVia", set_via_opt, NULL, RSRC_CONF,
      "Configure Via: proxy header header to one of: on | off | block | full"),
-    AP_INIT_FLAG("ProxyErrorOverride", set_proxy_error_override, NULL, RSRC_CONF|ACCESS_CONF,
+    AP_INIT_ITERATE("ProxyErrorOverride", set_proxy_error_override, NULL, RSRC_CONF|ACCESS_CONF,
      "use our error handling pages instead of the servers' we are proxying"),
     AP_INIT_FLAG("ProxyPreserveHost", set_preserve_host, NULL, RSRC_CONF|ACCESS_CONF,
      "on if we should preserve host header while proxying"),
@@ -2695,14 +3095,19 @@ static const command_rec proxy_cmds[] =
      "Configure local source IP used for request forward"),
     AP_INIT_FLAG("ProxyAddHeaders", add_proxy_http_headers, NULL, RSRC_CONF|ACCESS_CONF,
      "on if X-Forwarded-* headers should be added or completed"),
+    AP_INIT_FLAG("Proxy100Continue", forward_100_continue, NULL, RSRC_CONF|ACCESS_CONF,
+     "on if 100-Continue should be forwarded to the origin server, off if the "
+     "proxy should handle it by itself"),
+    AP_INIT_TAKE1("ProxyAsyncDelay", set_proxy_async_delay, NULL, RSRC_CONF|ACCESS_CONF,
+     "Amount of time to poll before going asynchronous"),
+    AP_INIT_TAKE1("ProxyAsyncIdleTimeout", set_proxy_async_idle, NULL, RSRC_CONF|ACCESS_CONF,
+     "Timeout for asynchronous inactivity, ProxyTimeout by default"),
     {NULL}
 };
 
 static APR_OPTIONAL_FN_TYPE(ssl_proxy_enable) *proxy_ssl_enable = NULL;
 static APR_OPTIONAL_FN_TYPE(ssl_engine_disable) *proxy_ssl_disable = NULL;
 static APR_OPTIONAL_FN_TYPE(ssl_engine_set) *proxy_ssl_engine = NULL;
-static APR_OPTIONAL_FN_TYPE(ssl_is_https) *proxy_is_https = NULL;
-static APR_OPTIONAL_FN_TYPE(ssl_var_lookup) *proxy_ssl_val = NULL;
 
 PROXY_DECLARE(int) ap_proxy_ssl_enable(conn_rec *c)
 {
@@ -2710,20 +3115,15 @@ PROXY_DECLARE(int) ap_proxy_ssl_enable(conn_rec *c)
      * if c == NULL just check if the optional function was imported
      * else run the optional function so ssl filters are inserted
      */
-    if (proxy_ssl_enable) {
-        return c ? proxy_ssl_enable(c) : 1;
+    if (c == NULL) {
+        return ap_ssl_has_outgoing_handlers();
     }
-
-    return 0;
+    return ap_ssl_bind_outgoing(c, NULL, 1) == OK;
 }
 
 PROXY_DECLARE(int) ap_proxy_ssl_disable(conn_rec *c)
 {
-    if (proxy_ssl_disable) {
-        return proxy_ssl_disable(c);
-    }
-
-    return 0;
+    return ap_ssl_bind_outgoing(c, NULL, 0) == OK;
 }
 
 PROXY_DECLARE(int) ap_proxy_ssl_engine(conn_rec *c,
@@ -2734,41 +3134,22 @@ PROXY_DECLARE(int) ap_proxy_ssl_engine(conn_rec *c,
      * if c == NULL just check if the optional function was imported
      * else run the optional function so ssl filters are inserted
      */
-    if (proxy_ssl_engine) {
-        return c ? proxy_ssl_engine(c, per_dir_config, 1, enable) : 1;
+    if (c == NULL) {
+        return ap_ssl_has_outgoing_handlers();
     }
-
-    if (!per_dir_config) {
-        if (enable) {
-            return ap_proxy_ssl_enable(c);
-        }
-        else {
-            return ap_proxy_ssl_disable(c);
-        }
-    }
-
-    return 0;
+    return ap_ssl_bind_outgoing(c, per_dir_config, enable) == OK;
 }
 
 PROXY_DECLARE(int) ap_proxy_conn_is_https(conn_rec *c)
 {
-    if (proxy_is_https) {
-        return proxy_is_https(c);
-    }
-    else
-        return 0;
+    return ap_ssl_conn_is_ssl(c);
 }
 
 PROXY_DECLARE(const char *) ap_proxy_ssl_val(apr_pool_t *p, server_rec *s,
                                              conn_rec *c, request_rec *r,
                                              const char *var)
 {
-    if (proxy_ssl_val) {
-        /* XXX Perhaps the casting useless */
-        return (const char *)proxy_ssl_val(p, s, c, r, (char *)var);
-    }
-    else
-        return NULL;
+    return ap_ssl_var_lookup(p, s, c, r, var);
 }
 
 static int proxy_post_config(apr_pool_t *pconf, apr_pool_t *plog,
@@ -2786,8 +3167,6 @@ static int proxy_post_config(apr_pool_t *pconf, apr_pool_t *plog,
     proxy_ssl_enable = APR_RETRIEVE_OPTIONAL_FN(ssl_proxy_enable);
     proxy_ssl_disable = APR_RETRIEVE_OPTIONAL_FN(ssl_engine_disable);
     proxy_ssl_engine = APR_RETRIEVE_OPTIONAL_FN(ssl_engine_set);
-    proxy_is_https = APR_RETRIEVE_OPTIONAL_FN(ssl_is_https);
-    proxy_ssl_val = APR_RETRIEVE_OPTIONAL_FN(ssl_var_lookup);
     ap_proxy_strmatch_path = apr_strmatch_precompile(pconf, "path=", 0);
     ap_proxy_strmatch_domain = apr_strmatch_precompile(pconf, "domain=", 0);
 
@@ -2854,7 +3233,7 @@ static int proxy_status_hook(request_rec *r, int flags)
             ap_rputs("\n\n<table border=\"0\"><tr>"
                      "<th>Sch</th><th>Host</th><th>Stat</th>"
                      "<th>Route</th><th>Redir</th>"
-                     "<th>F</th><th>Set</th><th>Acc</th><th>Wr</th><th>Rd</th>"
+                     "<th>F</th><th>Set</th><th>Acc</th><th>Busy</th><th>Wr</th><th>Rd</th>"
                      "</tr>\n", r);
         }
         else {
@@ -2866,14 +3245,16 @@ static int proxy_status_hook(request_rec *r, int flags)
             char fbuf[50];
             if (!(flags & AP_STATUS_SHORT)) {
                 ap_rvputs(r, "<tr>\n<td>", (*worker)->s->scheme, "</td>", NULL);
-                ap_rvputs(r, "<td>", (*worker)->s->hostname, "</td><td>", NULL);
+                ap_rvputs(r, "<td>", (*worker)->s->hostname_ex, "</td><td>", NULL);
                 ap_rvputs(r, ap_proxy_parse_wstatus(r->pool, *worker), NULL);
                 ap_rvputs(r, "</td><td>", (*worker)->s->route, NULL);
                 ap_rvputs(r, "</td><td>", (*worker)->s->redirect, NULL);
-                ap_rprintf(r, "</td><td>%d</td>", (*worker)->s->lbfactor);
+                ap_rprintf(r, "</td><td>%.2f</td>", (float)((*worker)->s->lbfactor)/100.0);
                 ap_rprintf(r, "<td>%d</td>", (*worker)->s->lbset);
-                ap_rprintf(r, "<td>%" APR_SIZE_T_FMT "</td><td>",
+                ap_rprintf(r, "<td>%" APR_SIZE_T_FMT "</td>",
                            (*worker)->s->elected);
+                ap_rprintf(r, "<td>%" APR_SIZE_T_FMT "</td><td>",
+                           (*worker)->s->busy);
                 ap_rputs(apr_strfsize((*worker)->s->transferred, fbuf), r);
                 ap_rputs("</td><td>", r);
                 ap_rputs(apr_strfsize((*worker)->s->read, fbuf), r);
@@ -2890,10 +3271,16 @@ static int proxy_status_hook(request_rec *r, int flags)
                 ap_rprintf(r, "ProxyBalancer[%d]Worker[%d]Elected: %"
                               APR_SIZE_T_FMT "\n",
                            i, n, (*worker)->s->elected);
-                ap_rprintf(r, "ProxyBalancer[%d]Worker[%d]Sent: %s\n",
-                           i, n, apr_strfsize((*worker)->s->transferred, fbuf));
-                ap_rprintf(r, "ProxyBalancer[%d]Worker[%d]Rcvd: %s\n",
-                           i, n, apr_strfsize((*worker)->s->read, fbuf));
+                ap_rprintf(r, "ProxyBalancer[%d]Worker[%d]Busy: %"
+                              APR_SIZE_T_FMT "\n",
+                           i, n, (*worker)->s->busy);
+                ap_rprintf(r, "ProxyBalancer[%d]Worker[%d]Sent: %"
+                              APR_OFF_T_FMT "K\n",
+                           i, n, (*worker)->s->transferred >> 10);
+                ap_rprintf(r, "ProxyBalancer[%d]Worker[%d]Rcvd: %"
+                              APR_OFF_T_FMT "K\n",
+                           i, n, (*worker)->s->read >> 10);
+
                 /* TODO: Add the rest of dynamic worker data */
             }
 
@@ -2925,6 +3312,8 @@ static int proxy_status_hook(request_rec *r, int flags)
 
 static void child_init(apr_pool_t *p, server_rec *s)
 {
+    proxy_server_conf *main_conf;
+    proxy_worker *forward = NULL;
     proxy_worker *reverse = NULL;
 
     apr_status_t rv = apr_global_mutex_child_init(&proxy_mutex,
@@ -2936,8 +3325,8 @@ static void child_init(apr_pool_t *p, server_rec *s)
         exit(1); /* Ugly, but what else? */
     }
 
-    /* TODO */
-    while (s) {
+    main_conf = ap_get_module_config(s->module_config, &proxy_module);
+    for (; s; s = s->next) {
         void *sconf = s->module_config;
         proxy_server_conf *conf;
         proxy_worker *worker;
@@ -2952,30 +3341,38 @@ static void child_init(apr_pool_t *p, server_rec *s)
         for (i = 0; i < conf->workers->nelts; i++, worker++) {
             ap_proxy_initialize_worker(worker, s, conf->pool);
         }
+
         /* Create and initialize forward worker if defined */
-        if (conf->req_set && conf->req) {
-            proxy_worker *forward;
-            ap_proxy_define_worker(p, &forward, NULL, NULL, "http://www.apache.org", 0);
-            conf->forward = forward;
-            PROXY_STRNCPY(conf->forward->s->name,     "proxy:forward");
-            PROXY_STRNCPY(conf->forward->s->hostname, "*");
-            PROXY_STRNCPY(conf->forward->s->scheme,   "*");
-            conf->forward->hash.def = conf->forward->s->hash.def =
-                ap_proxy_hashfunc(conf->forward->s->name, PROXY_HASHFUNC_DEFAULT);
-             conf->forward->hash.fnv = conf->forward->s->hash.fnv =
-                ap_proxy_hashfunc(conf->forward->s->name, PROXY_HASHFUNC_FNV);
+        if (conf->req_set && conf->req && !forward) {
+            ap_proxy_define_worker(main_conf->pool, &forward, NULL, NULL,
+                                   "http://www.apache.org", 0);
+            PROXY_STRNCPY(forward->s->name,     "proxy:forward");
+            PROXY_STRNCPY(forward->s->hostname, "*"); /* for compatibility */
+            PROXY_STRNCPY(forward->s->hostname_ex, "*");
+            PROXY_STRNCPY(forward->s->scheme,   "*");
+            forward->hash.def = forward->s->hash.def =
+                ap_proxy_hashfunc(forward->s->name, PROXY_HASHFUNC_DEFAULT);
+             forward->hash.fnv = forward->s->hash.fnv =
+                ap_proxy_hashfunc(forward->s->name, PROXY_HASHFUNC_FNV);
             /* Do not disable worker in case of errors */
-            conf->forward->s->status |= PROXY_WORKER_IGNORE_ERRORS;
+            forward->s->status |= PROXY_WORKER_IGNORE_ERRORS;
             /* Mark as the "generic" worker */
-            conf->forward->s->status |= PROXY_WORKER_GENERIC;
-            ap_proxy_initialize_worker(conf->forward, s, conf->pool);
-            /* Disable address cache for generic forward worker */
-            conf->forward->s->is_address_reusable = 0;
+            forward->s->status |= PROXY_WORKER_GENERIC;
+            /* Disable connection and address reuse for generic workers */
+            forward->s->is_address_reusable = 0;
+            ap_proxy_initialize_worker(forward, s, main_conf->pool);
         }
+        if (conf->req_set && conf->req) {
+            conf->forward = forward;
+        }
+
+        /* Create and initialize the generic reserse worker once only */
         if (!reverse) {
-            ap_proxy_define_worker(p, &reverse, NULL, NULL, "http://www.apache.org", 0);
+            ap_proxy_define_worker(main_conf->pool, &reverse, NULL, NULL,
+                                   "http://www.apache.org", 0);
             PROXY_STRNCPY(reverse->s->name,     "proxy:reverse");
-            PROXY_STRNCPY(reverse->s->hostname, "*");
+            PROXY_STRNCPY(reverse->s->hostname, "*"); /* for compatibility */
+            PROXY_STRNCPY(reverse->s->hostname_ex, "*");
             PROXY_STRNCPY(reverse->s->scheme,   "*");
             reverse->hash.def = reverse->s->hash.def =
                 ap_proxy_hashfunc(reverse->s->name, PROXY_HASHFUNC_DEFAULT);
@@ -2985,13 +3382,11 @@ static void child_init(apr_pool_t *p, server_rec *s)
             reverse->s->status |= PROXY_WORKER_IGNORE_ERRORS;
             /* Mark as the "generic" worker */
             reverse->s->status |= PROXY_WORKER_GENERIC;
-            conf->reverse = reverse;
-            ap_proxy_initialize_worker(conf->reverse, s, conf->pool);
-            /* Disable address cache for generic reverse worker */
+            /* Disable connection and address reuse for generic workers */
             reverse->s->is_address_reusable = 0;
+            ap_proxy_initialize_worker(reverse, s, main_conf->pool);
         }
         conf->reverse = reverse;
-        s = s->next;
     }
 }
 
@@ -3012,32 +3407,33 @@ static int proxy_pre_config(apr_pool_t *pconf, apr_pool_t *plog,
 
     APR_OPTIONAL_HOOK(ap, status_hook, proxy_status_hook, NULL, NULL,
                       APR_HOOK_MIDDLE);
-    /* Reset workers count on gracefull restart */
+    /* Reset workers count on graceful restart */
     proxy_lb_workers = 0;
     set_worker_hc_param_f = APR_RETRIEVE_OPTIONAL_FN(set_worker_hc_param);
     return OK;
 }
 static void register_hooks(apr_pool_t *p)
 {
-    /* fixup before mod_rewrite, so that the proxied url will not
-     * escaped accidentally by our fixup.
-     */
-    static const char * const aszSucc[] = { "mod_rewrite.c", NULL};
     /* Only the mpm_winnt has child init hook handler.
      * make sure that we are called after the mpm
      * initializes.
      */
     static const char *const aszPred[] = { "mpm_winnt.c", "mod_proxy_balancer.c",
                                            "mod_proxy_hcheck.c", NULL};
+    static const char * const aszModRewrite[] = { "mod_rewrite.c", NULL };
 
     /* handler */
     ap_hook_handler(proxy_handler, NULL, NULL, APR_HOOK_FIRST);
     /* filename-to-URI translation */
-    ap_hook_translate_name(proxy_trans, aszSucc, NULL, APR_HOOK_FIRST);
+    ap_hook_pre_translate_name(proxy_pre_translate_name, NULL, NULL,
+                               APR_HOOK_MIDDLE);
+    /* mod_rewrite has a say on the uri before proxy translation */
+    ap_hook_translate_name(proxy_translate_name, aszModRewrite, NULL,
+                           APR_HOOK_FIRST);
     /* walk <Proxy > entries and suppress default TRACE behavior */
     ap_hook_map_to_storage(proxy_map_location, NULL,NULL, APR_HOOK_FIRST);
-    /* fixups */
-    ap_hook_fixups(proxy_fixup, NULL, aszSucc, APR_HOOK_FIRST);
+    /* fixup after mod_rewrite so that a [P] URL from there gets fixed up */
+    ap_hook_fixups(proxy_fixup, aszModRewrite, NULL, APR_HOOK_FIRST);
     /* post read_request handling */
     ap_hook_post_read_request(proxy_detect, NULL, NULL, APR_HOOK_FIRST);
     /* pre config handling */
@@ -3068,6 +3464,8 @@ APR_HOOK_STRUCT(
     APR_HOOK_LINK(pre_request)
     APR_HOOK_LINK(post_request)
     APR_HOOK_LINK(request_status)
+    APR_HOOK_LINK(check_trans)
+    APR_HOOK_LINK(tunnel_forward)
 )
 
 APR_IMPLEMENT_EXTERNAL_HOOK_RUN_FIRST(proxy, PROXY, int, scheme_handler,
@@ -3076,6 +3474,9 @@ APR_IMPLEMENT_EXTERNAL_HOOK_RUN_FIRST(proxy, PROXY, int, scheme_handler,
                                       char *url, const char *proxyhost,
                                       apr_port_t proxyport),(r,worker,conf,
                                       url,proxyhost,proxyport),DECLINED)
+APR_IMPLEMENT_EXTERNAL_HOOK_RUN_FIRST(proxy, PROXY, int, check_trans,
+                                      (request_rec *r, const char *url),
+                                      (r, url), DECLINED)
 APR_IMPLEMENT_EXTERNAL_HOOK_RUN_FIRST(proxy, PROXY, int, canon_handler,
                                       (request_rec *r, char *url),(r,
                                       url),DECLINED)
@@ -3108,4 +3509,9 @@ APR_IMPLEMENT_OPTIONAL_HOOK_RUN_ALL(proxy, PROXY, int, request_status,
 APR_IMPLEMENT_OPTIONAL_HOOK_RUN_ALL(proxy, PROXY, int, detach_backend,
                                     (request_rec *r, proxy_conn_rec *backend),
                                     (r, backend), OK, DECLINED)
-
+APR_IMPLEMENT_EXTERNAL_HOOK_RUN_ALL(proxy, PROXY, int, tunnel_forward,
+                                    (proxy_tunnel_rec *tunnel,
+                                     conn_rec *c_i, conn_rec *c_o,
+                                     apr_bucket_brigade *bb),
+                                    (tunnel, c_i, c_o, bb),
+                                    OK, DECLINED)

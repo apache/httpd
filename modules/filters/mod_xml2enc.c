@@ -23,8 +23,27 @@
 
 #include <ctype.h>
 
+/* libxml2 includes unicode/[...].h files which uses C++ comments */
+#if defined(__clang__)
+#pragma clang diagnostic push
+#pragma clang diagnostic warning "-Wcomment"
+#elif defined(__GNUC__)
+#if __GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic warning "-Wcomment"
+#endif
+#endif
+
 /* libxml2 */
 #include <libxml/encoding.h>
+
+#if defined(__clang__)
+#pragma clang diagnostic pop
+#elif defined(__GNUC__)
+#if __GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6)
+#pragma GCC diagnostic pop
+#endif
+#endif
 
 #include "http_protocol.h"
 #include "http_config.h"
@@ -51,7 +70,7 @@ module AP_MODULE_DECLARE_DATA xml2enc_module;
         (((enc)!=XML_CHAR_ENCODING_NONE)&&((enc)!=XML_CHAR_ENCODING_ERROR))
 
 /*
- * XXX: Check all those ap_assert()s ans replace those that should not happen
+ * XXX: Check all those ap_assert()s and replace those that should not happen
  * XXX: with AP_DEBUG_ASSERT and those that may happen with proper error
  * XXX: handling.
  */
@@ -187,11 +206,11 @@ static void sniff_encoding(request_rec* r, xml2ctx* ctx)
             }
         }
     }
-  
+
     /* to sniff, first we look for BOM */
     if (ctx->xml2enc == XML_CHAR_ENCODING_NONE) {
-        ctx->xml2enc = xmlDetectCharEncoding((const xmlChar*)ctx->buf,
-                                             ctx->bytes); 
+        ctx->xml2enc = xmlDetectCharEncoding((const unsigned char*)ctx->buf,
+                                             ctx->bytes);
         if (HAVE_ENCODING(ctx->xml2enc)) {
             ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(01432)
                           "Got charset from XML rules.") ;
@@ -245,7 +264,13 @@ static void sniff_encoding(request_rec* r, xml2ctx* ctx)
         cfg = ap_get_module_config(r->per_dir_config, &xml2enc_module);
         if (!ctx->encoding) {
             ctx->encoding = cfg->default_charset?cfg->default_charset:"ISO-8859-1";
+            ctx->xml2enc = xmlParseCharEncoding(ctx->encoding);
         }
+    }
+    /* Test again: this fallback is only appropriate if we couldn't
+     * just fall back to the configuration default.
+     */
+    if (!HAVE_ENCODING(ctx->xml2enc)) {
         /* Unsupported charset. Can we get (iconv) support through apr_xlate? */
         ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01434)
                       "Charset %s not supported by libxml2; trying apr_xlate",
@@ -303,7 +328,8 @@ static apr_status_t xml2enc_ffunc(ap_filter_t* f, apr_bucket_brigade* bb)
     apr_bucket* b;
     apr_bucket* bstart;
     apr_size_t insz = 0;
-    char *ctype;
+    int pending_meta = 0;
+    char *mtype;
     char *p;
 
     if (!ctx || !f->r->content_type) {
@@ -312,13 +338,17 @@ static apr_status_t xml2enc_ffunc(ap_filter_t* f, apr_bucket_brigade* bb)
         return ap_pass_brigade(f->next, bb) ;
     }
 
-    ctype = apr_pstrdup(f->r->pool, f->r->content_type);
-    for (p = ctype; *p; ++p)
-        if (isupper(*p))
-            *p = tolower(*p);
+    /* Extract the media type, ignoring parameters in content-type. */
+    mtype = apr_pstrdup(f->r->pool, f->r->content_type);
+    if ((p = ap_strchr(mtype, ';')) != NULL) *p = '\0';
+    ap_str_tolower(mtype);
 
-    /* only act if starts-with "text/" or contains "xml" */
-    if (strncmp(ctype, "text/", 5) && !strstr(ctype, "xml"))  {
+    /* Accept text/ types, plus any XML media type per RFC 7303. */
+    if (!(strncmp(mtype, "text/", 5) == 0
+          || strcmp(mtype, "application/xml") == 0
+          || (strlen(mtype) > 7 /* minimum 'a/b+xml' length */
+              && (p = strstr(mtype, "+xml")) != NULL
+              && strlen(p) == 4 /* ensures +xml is a suffix */))) {
         ap_remove_output_filter(f);
         return ap_pass_brigade(f->next, bb) ;
     }
@@ -390,20 +420,36 @@ static apr_status_t xml2enc_ffunc(ap_filter_t* f, apr_bucket_brigade* bb)
     /* move the data back to bb */
     APR_BRIGADE_CONCAT(bb, ctx->bbsave);
 
-    while (b = APR_BRIGADE_FIRST(bb), b != APR_BRIGADE_SENTINEL(bb)) {
+    while (!APR_BRIGADE_EMPTY(bb)) {
+        b = APR_BRIGADE_FIRST(bb);
         ctx->bytes = 0;
         if (APR_BUCKET_IS_METADATA(b)) {
             APR_BUCKET_REMOVE(b);
+            APR_BRIGADE_INSERT_TAIL(ctx->bbnext, b);
+            /* Besides FLUSH, aggregate meta buckets to send them at
+             * once below. This resource filter is over on EOS.
+             */
+            pending_meta = 1;
             if (APR_BUCKET_IS_EOS(b)) {
-                /* send remaining data */
-                APR_BRIGADE_INSERT_TAIL(ctx->bbnext, b);
-                return ap_fflush(f->next, ctx->bbnext);
-            } else if (APR_BUCKET_IS_FLUSH(b)) {
-                ap_fflush(f->next, ctx->bbnext);
+                ap_remove_output_filter(f);
+                APR_BRIGADE_CONCAT(ctx->bbnext, bb);
             }
-            apr_bucket_destroy(b);
+            else if (!APR_BUCKET_IS_FLUSH(b)) {
+                continue;
+            }
         }
-        else {        /* data bucket */
+        if (pending_meta) {
+            pending_meta = 0;
+            /* passing meta bucket down the chain */
+            rv = ap_pass_brigade(f->next, ctx->bbnext);
+            apr_brigade_cleanup(ctx->bbnext);
+            if (rv != APR_SUCCESS) {
+                return rv;
+            }
+            continue;
+        }
+        /* data bucket */
+        {
             char* buf;
             apr_size_t bytes = 0;
             char fixbuf[BUFLEN];
@@ -508,8 +554,7 @@ static apr_status_t xml2enc_ffunc(ap_filter_t* f, apr_bucket_brigade* bb)
                         if (rv != APR_SUCCESS)
                             ap_log_rerror(APLOG_MARK, APLOG_DEBUG, rv, f->r, APLOGNO(01446)
                                           "ap_fflush failed");
-                        else
-                            rv = ap_pass_brigade(f->next, ctx->bbnext);
+                        apr_brigade_cleanup(ctx->bbnext);
                     }
                 }
             } else {
@@ -522,8 +567,18 @@ static apr_status_t xml2enc_ffunc(ap_filter_t* f, apr_bucket_brigade* bb)
                 return rv;
         }
     }
+    if (pending_meta) {
+        /* passing pending meta bucket down the chain before leaving */
+        rv = ap_pass_brigade(f->next, ctx->bbnext);
+        apr_brigade_cleanup(ctx->bbnext);
+        if (rv != APR_SUCCESS) {
+            return rv;
+        }
+    }
+
     return APR_SUCCESS;
 }
+
 static apr_status_t xml2enc_charset(request_rec* r, xmlCharEncoding* encp,
                                     const char** encoding)
 {

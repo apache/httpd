@@ -1,21 +1,24 @@
-/* Copyright 2015 greenbytes GmbH (https://www.greenbytes.de)
+/* Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * http://www.apache.org/licenses/LICENSE-2.0
- 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+ 
 #include <assert.h>
 #include <apr_lib.h>
 #include <apr_strings.h>
+#include <apr_thread_mutex.h>
+#include <apr_thread_cond.h>
 
 #include <httpd.h>
 #include <http_core.h>
@@ -31,7 +34,7 @@
 APLOG_USE_MODULE(proxy_http2);
 
 /* h2_log2(n) iff n is a power of 2 */
-unsigned char h2_proxy_log2(int n)
+unsigned char h2_proxy_log2(unsigned int n)
 {
     int lz = 0;
     if (!n) {
@@ -378,7 +381,7 @@ static int iq_bubble_down(h2_proxy_iqueue *q, int i, int bottom,
  * h2_proxy_ngheader
  ******************************************************************************/
 #define H2_HD_MATCH_LIT_CS(l, name)  \
-    ((strlen(name) == sizeof(l) - 1) && !apr_strnatcasecmp(l, name))
+    ((strlen(name) == sizeof(l) - 1) && !ap_cstr_casecmp(l, name))
 
 static int h2_util_ignore_header(const char *name) 
 {
@@ -449,6 +452,22 @@ h2_proxy_ngheader *h2_proxy_util_nghd_make_req(apr_pool_t *p,
     return ngh;
 }
 
+h2_proxy_ngheader *h2_proxy_util_nghd_make(apr_pool_t *p, apr_table_t *headers)
+{
+    
+    h2_proxy_ngheader *ngh;
+    size_t n;
+    
+    n = 0;
+    apr_table_do(count_header, &n, headers, NULL);
+    
+    ngh = apr_pcalloc(p, sizeof(h2_proxy_ngheader));
+    ngh->nv =  apr_pcalloc(p, n * sizeof(nghttp2_nv));
+    apr_table_do(add_table_header, ngh, headers, NULL);
+
+    return ngh;
+}
+
 /*******************************************************************************
  * header HTTP/1 <-> HTTP/2 conversions
  ******************************************************************************/
@@ -477,11 +496,11 @@ static int ignore_header(const literal *lits, size_t llen,
                          const char *name, size_t nlen)
 {
     const literal *lit;
-    int i;
+    size_t i;
     
     for (i = 0; i < llen; ++i) {
         lit = &lits[i];
-        if (lit->len == nlen && !apr_strnatcasecmp(lit->name, name)) {
+        if (lit->len == nlen && !ap_cstr_casecmp(lit->name, name)) {
             return 1;
         }
     }
@@ -523,7 +542,7 @@ void h2_proxy_util_camel_case_header(char *s, size_t len)
 
 /** Match a header value against a string constance, case insensitive */
 #define H2_HD_MATCH_LIT(l, name, nlen)  \
-    ((nlen == sizeof(l) - 1) && !apr_strnatcasecmp(l, name))
+    ((nlen == sizeof(l) - 1) && !ap_cstr_casecmp(l, name))
 
 static apr_status_t h2_headers_add_h1(apr_table_t *headers, apr_pool_t *pool, 
                                       const char *name, size_t nlen,
@@ -564,8 +583,7 @@ static apr_status_t h2_headers_add_h1(apr_table_t *headers, apr_pool_t *pool,
 
 static h2_proxy_request *h2_proxy_req_createn(int id, apr_pool_t *pool, const char *method, 
                                   const char *scheme, const char *authority, 
-                                  const char *path, apr_table_t *header, 
-                                  int serialize)
+                                  const char *path, apr_table_t *header)
 {
     h2_proxy_request *req = apr_pcalloc(pool, sizeof(h2_proxy_request));
     
@@ -575,14 +593,13 @@ static h2_proxy_request *h2_proxy_req_createn(int id, apr_pool_t *pool, const ch
     req->path           = path;
     req->headers        = header? header : apr_table_make(pool, 10);
     req->request_time   = apr_time_now();
-    req->serialize      = serialize;
-    
+
     return req;
 }
 
-h2_proxy_request *h2_proxy_req_create(int id, apr_pool_t *pool, int serialize)
+h2_proxy_request *h2_proxy_req_create(int id, apr_pool_t *pool)
 {
-    return h2_proxy_req_createn(id, pool, NULL, NULL, NULL, NULL, NULL, serialize);
+    return h2_proxy_req_createn(id, pool, NULL, NULL, NULL, NULL, NULL);
 }
 
 typedef struct {
@@ -606,6 +623,7 @@ apr_status_t h2_proxy_req_make(h2_proxy_request *req, apr_pool_t *pool,
                          apr_table_t *headers)
 {
     h1_ctx x;
+    const char *val;
 
     req->method    = method;
     req->scheme    = scheme;
@@ -620,6 +638,11 @@ apr_status_t h2_proxy_req_make(h2_proxy_request *req, apr_pool_t *pool,
     x.pool = pool;
     x.headers = req->headers;
     apr_table_do(set_h1_header, &x, headers, NULL);
+    if ((val = apr_table_get(headers, "TE")) && ap_find_token(pool, val, "trailers")) {
+        /* client accepts trailers, forward this information */
+        apr_table_addn(req->headers, "TE", "trailers");
+    }
+    apr_table_setn(req->headers, "te", "trailers");
     return APR_SUCCESS;
 }
 
@@ -912,12 +935,12 @@ static size_t subst_str(link_ctx *ctx, int start, int end, const char *ns)
     nlen = (int)strlen(ns);
     delta = nlen - olen;
     plen = ctx->slen + delta + 1;
-    p = apr_pcalloc(ctx->pool, plen);
-    strncpy(p, ctx->s, start);
-    strncpy(p + start, ns, nlen);
+    p = apr_palloc(ctx->pool, plen);
+    memcpy(p, ctx->s, start);
+    memcpy(p + start, ns, nlen);
     strcpy(p + start + nlen, ctx->s + end);
     ctx->s = p;
-    ctx->slen = (int)strlen(p);
+    ctx->slen = plen - 1;   /* (int)strlen(p) */
     if (ctx->i >= end) {
         ctx->i += delta;
     }
@@ -928,7 +951,7 @@ static void map_link(link_ctx *ctx)
 {
     if (ctx->link_start < ctx->link_end) {
         char buffer[HUGE_STRING_LEN];
-        int need_len, link_len, buffer_len, prepend_p_server; 
+        size_t need_len, link_len, buffer_len, prepend_p_server;
         const char *mapped;
         
         buffer[0] = '\0';
@@ -940,7 +963,7 @@ static void map_link(link_ctx *ctx)
             /* common to use relative uris in link header, for mappings
              * to work need to prefix the backend server uri */
             need_len += ctx->psu_len;
-            strncpy(buffer, ctx->p_server_uri, sizeof(buffer));
+            apr_cpystrn(buffer, ctx->p_server_uri, sizeof(buffer));
             buffer_len = ctx->psu_len;
         }
         if (need_len > sizeof(buffer)) {
@@ -948,9 +971,7 @@ static void map_link(link_ctx *ctx)
                           "link_reverse_map uri too long, skipped: %s", ctx->s);
             return;
         }
-        strncpy(buffer + buffer_len, ctx->s + ctx->link_start, link_len);
-        buffer_len += link_len;
-        buffer[buffer_len] = '\0';
+        apr_cpystrn(buffer + buffer_len, ctx->s + ctx->link_start, link_len + 1);
         if (!prepend_p_server
             && strcmp(ctx->real_backend_uri, ctx->p_server_uri)
             && !strncmp(buffer, ctx->real_backend_uri, ctx->rbu_len)) {
@@ -958,8 +979,8 @@ static void map_link(link_ctx *ctx)
              * to work, we need to use the proxy uri */
             int path_start = ctx->link_start + ctx->rbu_len;
             link_len -= ctx->rbu_len;
-            strcpy(buffer, ctx->p_server_uri);
-            strncpy(buffer + ctx->psu_len, ctx->s + path_start, link_len);
+            memcpy(buffer, ctx->p_server_uri, ctx->psu_len);
+            memcpy(buffer + ctx->psu_len, ctx->s + path_start, link_len);
             buffer_len = ctx->psu_len + link_len;
             buffer[buffer_len] = '\0';            
         }
@@ -1052,4 +1073,283 @@ const char *h2_proxy_link_reverse_map(request_rec *r,
     ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r, 
                   "link_reverse_map %s --> %s", s, ctx.s);
     return ctx.s;
+}
+
+/*******************************************************************************
+ * FIFO queue
+ ******************************************************************************/
+
+struct h2_proxy_fifo {
+    void **elems;
+    int nelems;
+    int set;
+    int head;
+    int count;
+    int aborted;
+    apr_thread_mutex_t *lock;
+    apr_thread_cond_t  *not_empty;
+    apr_thread_cond_t  *not_full;
+};
+
+static int nth_index(h2_proxy_fifo *fifo, int n) 
+{
+    return (fifo->head + n) % fifo->nelems;
+}
+
+static apr_status_t fifo_destroy(void *data) 
+{
+    h2_proxy_fifo *fifo = data;
+
+    apr_thread_cond_destroy(fifo->not_empty);
+    apr_thread_cond_destroy(fifo->not_full);
+    apr_thread_mutex_destroy(fifo->lock);
+
+    return APR_SUCCESS;
+}
+
+static int index_of(h2_proxy_fifo *fifo, void *elem)
+{
+    int i;
+    
+    for (i = 0; i < fifo->count; ++i) {
+        if (elem == fifo->elems[nth_index(fifo, i)]) {
+            return i;
+        }
+    }
+    return -1;
+}
+
+static apr_status_t create_int(h2_proxy_fifo **pfifo, apr_pool_t *pool, 
+                               int capacity, int as_set)
+{
+    apr_status_t rv;
+    h2_proxy_fifo *fifo;
+    
+    fifo = apr_pcalloc(pool, sizeof(*fifo));
+    if (fifo == NULL) {
+        return APR_ENOMEM;
+    }
+
+    rv = apr_thread_mutex_create(&fifo->lock,
+                                 APR_THREAD_MUTEX_UNNESTED, pool);
+    if (rv != APR_SUCCESS) {
+        return rv;
+    }
+
+    rv = apr_thread_cond_create(&fifo->not_empty, pool);
+    if (rv != APR_SUCCESS) {
+        return rv;
+    }
+
+    rv = apr_thread_cond_create(&fifo->not_full, pool);
+    if (rv != APR_SUCCESS) {
+        return rv;
+    }
+
+    fifo->elems = apr_pcalloc(pool, capacity * sizeof(void*));
+    if (fifo->elems == NULL) {
+        return APR_ENOMEM;
+    }
+    fifo->nelems = capacity;
+    fifo->set = as_set;
+    
+    *pfifo = fifo;
+    apr_pool_cleanup_register(pool, fifo, fifo_destroy, apr_pool_cleanup_null);
+
+    return APR_SUCCESS;
+}
+
+apr_status_t h2_proxy_fifo_create(h2_proxy_fifo **pfifo, apr_pool_t *pool, int capacity)
+{
+    return create_int(pfifo, pool, capacity, 0);
+}
+
+apr_status_t h2_proxy_fifo_set_create(h2_proxy_fifo **pfifo, apr_pool_t *pool, int capacity)
+{
+    return create_int(pfifo, pool, capacity, 1);
+}
+
+apr_status_t h2_proxy_fifo_term(h2_proxy_fifo *fifo)
+{
+    apr_status_t rv;
+    if ((rv = apr_thread_mutex_lock(fifo->lock)) == APR_SUCCESS) {
+        fifo->aborted = 1;
+        apr_thread_mutex_unlock(fifo->lock);
+    }
+    return rv;
+}
+
+apr_status_t h2_proxy_fifo_interrupt(h2_proxy_fifo *fifo)
+{
+    apr_status_t rv;
+    if ((rv = apr_thread_mutex_lock(fifo->lock)) == APR_SUCCESS) {
+        apr_thread_cond_broadcast(fifo->not_empty);
+        apr_thread_cond_broadcast(fifo->not_full);
+        apr_thread_mutex_unlock(fifo->lock);
+    }
+    return rv;
+}
+
+int h2_proxy_fifo_count(h2_proxy_fifo *fifo)
+{
+    return fifo->count;
+}
+
+int h2_proxy_fifo_capacity(h2_proxy_fifo *fifo)
+{
+    return fifo->nelems;
+}
+
+static apr_status_t check_not_empty(h2_proxy_fifo *fifo, int block)
+{
+    if (fifo->count == 0) {
+        if (!block) {
+            return APR_EAGAIN;
+        }
+        while (fifo->count == 0) {
+            if (fifo->aborted) {
+                return APR_EOF;
+            }
+            apr_thread_cond_wait(fifo->not_empty, fifo->lock);
+        }
+    }
+    return APR_SUCCESS;
+}
+
+static apr_status_t fifo_push(h2_proxy_fifo *fifo, void *elem, int block)
+{
+    apr_status_t rv;
+    
+    if (fifo->aborted) {
+        return APR_EOF;
+    }
+
+    if ((rv = apr_thread_mutex_lock(fifo->lock)) == APR_SUCCESS) {
+        if (fifo->set && index_of(fifo, elem) >= 0) {
+            /* set mode, elem already member */
+            apr_thread_mutex_unlock(fifo->lock);
+            return APR_EEXIST;
+        }
+        else if (fifo->count == fifo->nelems) {
+            if (block) {
+                while (fifo->count == fifo->nelems) {
+                    if (fifo->aborted) {
+                        apr_thread_mutex_unlock(fifo->lock);
+                        return APR_EOF;
+                    }
+                    apr_thread_cond_wait(fifo->not_full, fifo->lock);
+                }
+            }
+            else {
+                apr_thread_mutex_unlock(fifo->lock);
+                return APR_EAGAIN;
+            }
+        }
+        
+        ap_assert(fifo->count < fifo->nelems);
+        fifo->elems[nth_index(fifo, fifo->count)] = elem;
+        ++fifo->count;
+        if (fifo->count == 1) {
+            apr_thread_cond_broadcast(fifo->not_empty);
+        }
+        apr_thread_mutex_unlock(fifo->lock);
+    }
+    return rv;
+}
+
+apr_status_t h2_proxy_fifo_push(h2_proxy_fifo *fifo, void *elem)
+{
+    return fifo_push(fifo, elem, 1);
+}
+
+apr_status_t h2_proxy_fifo_try_push(h2_proxy_fifo *fifo, void *elem)
+{
+    return fifo_push(fifo, elem, 0);
+}
+
+static void *pull_head(h2_proxy_fifo *fifo)
+{
+    void *elem;
+    
+    ap_assert(fifo->count > 0);
+    elem = fifo->elems[fifo->head];
+    --fifo->count;
+    if (fifo->count > 0) {
+        fifo->head = nth_index(fifo, 1);
+        if (fifo->count+1 == fifo->nelems) {
+            apr_thread_cond_broadcast(fifo->not_full);
+        }
+    }
+    return elem;
+}
+
+static apr_status_t fifo_pull(h2_proxy_fifo *fifo, void **pelem, int block)
+{
+    apr_status_t rv;
+    
+    if (fifo->aborted) {
+        return APR_EOF;
+    }
+    
+    if ((rv = apr_thread_mutex_lock(fifo->lock)) == APR_SUCCESS) {
+        if ((rv = check_not_empty(fifo, block)) != APR_SUCCESS) {
+            apr_thread_mutex_unlock(fifo->lock);
+            *pelem = NULL;
+            return rv;
+        }
+
+        ap_assert(fifo->count > 0);
+        *pelem = pull_head(fifo);
+
+        apr_thread_mutex_unlock(fifo->lock);
+    }
+    return rv;
+}
+
+apr_status_t h2_proxy_fifo_pull(h2_proxy_fifo *fifo, void **pelem)
+{
+    return fifo_pull(fifo, pelem, 1);
+}
+
+apr_status_t h2_proxy_fifo_try_pull(h2_proxy_fifo *fifo, void **pelem)
+{
+    return fifo_pull(fifo, pelem, 0);
+}
+
+apr_status_t h2_proxy_fifo_remove(h2_proxy_fifo *fifo, void *elem)
+{
+    apr_status_t rv;
+    
+    if (fifo->aborted) {
+        return APR_EOF;
+    }
+
+    if ((rv = apr_thread_mutex_lock(fifo->lock)) == APR_SUCCESS) {
+        int i, rc;
+        void *e;
+        
+        rc = 0;
+        for (i = 0; i < fifo->count; ++i) {
+            e = fifo->elems[nth_index(fifo, i)];
+            if (e == elem) {
+                ++rc;
+            }
+            else if (rc) {
+                fifo->elems[nth_index(fifo, i-rc)] = e;
+            }
+        }
+        if (rc) {
+            fifo->count -= rc;
+            if (fifo->count + rc == fifo->nelems) {
+                apr_thread_cond_broadcast(fifo->not_full);
+            }
+            rv = APR_SUCCESS;
+        }
+        else {
+            rv = APR_EAGAIN;
+        }
+        
+        apr_thread_mutex_unlock(fifo->lock);
+    }
+    return rv;
 }

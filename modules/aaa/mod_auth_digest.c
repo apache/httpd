@@ -91,7 +91,6 @@ typedef struct digest_config_struct {
     int          check_nc;
     const char  *algorithm;
     char        *uri_list;
-    const char  *ha1;
 } digest_config_rec;
 
 
@@ -152,6 +151,7 @@ typedef struct digest_header_struct {
     apr_time_t            nonce_time;
     enum hdr_sts          auth_hdr_sts;
     int                   needed_auth;
+    const char           *ha1;
     client_entry         *client;
 } digest_header_rec;
 
@@ -260,6 +260,12 @@ static int initialize_tables(server_rec *s, apr_pool_t *ctx)
     /* set up client list */
 
     /* Create the shared memory segment */
+
+    client_shm = NULL;
+    client_rmm = NULL;
+    client_lock = NULL;
+    opaque_lock = NULL;
+    client_list = NULL;
 
     /*
      * Create a unique filename using our pid. This information is
@@ -407,8 +413,6 @@ static int initialize_module(apr_pool_t *p, apr_pool_t *plog,
     if (initialize_tables(s, p) != OK) {
         return !OK;
     }
-    /* Call cleanup_tables on exit or restart */
-    apr_pool_cleanup_register(p, NULL, cleanup_tables, apr_pool_cleanup_null);
 #endif  /* APR_HAS_SHARED_MEMORY */
     return OK;
 }
@@ -829,7 +833,7 @@ static long gc(server_rec *s)
 
             if (err) {
                 /* Nothing we can really do but log... */
-                ap_log_error(APLOG_MARK, APLOG_ERR, err, s, APLOGNO()
+                ap_log_error(APLOG_MARK, APLOG_ERR, err, s, APLOGNO(10007)
                              "Failed to free auth_digest client allocation");
             }
         }
@@ -952,13 +956,13 @@ static int get_digest_rec(request_rec *r, digest_header_rec *resp)
 
         /* find value */
 
+        vv = 0;
         if (auth_line[0] == '=') {
             auth_line++;
             while (apr_isspace(auth_line[0])) {
                 auth_line++;
             }
 
-            vv = 0;
             if (auth_line[0] == '\"') {         /* quoted string */
                 auth_line++;
                 while (auth_line[0] != '\"' && auth_line[0] != '\0') {
@@ -977,8 +981,8 @@ static int get_digest_rec(request_rec *r, digest_header_rec *resp)
                     value[vv++] = *auth_line++;
                 }
             }
-            value[vv] = '\0';
         }
+        value[vv] = '\0';
 
         while (auth_line[0] != ',' && auth_line[0] != '\0') {
             auth_line++;
@@ -1305,7 +1309,7 @@ static int hook_note_digest_auth_failure(request_rec *r, const char *auth_type)
  */
 
 static authn_status get_hash(request_rec *r, const char *user,
-                             digest_config_rec *conf)
+                             digest_config_rec *conf, const char **rethash)
 {
     authn_status auth_result;
     char *password;
@@ -1357,7 +1361,7 @@ static authn_status get_hash(request_rec *r, const char *user,
     } while (current_provider);
 
     if (auth_result == AUTH_USER_FOUND) {
-        conf->ha1 = password;
+        *rethash = password;
     }
 
     return auth_result;
@@ -1423,9 +1427,14 @@ static int check_nonce(request_rec *r, digest_header_rec *resp,
     time_rec nonce_time;
     char tmp, hash[NONCE_HASH_LEN+1];
 
-    if (strlen(resp->nonce) != NONCE_LEN) {
+    /* Since the time part of the nonce is a base64 encoding of an
+     * apr_time_t (8 bytes), it should end with a '=', fail early otherwise.
+     */
+    if (strlen(resp->nonce) != NONCE_LEN
+            || resp->nonce[NONCE_TIME_LEN - 1] != '=') {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01775)
-                      "invalid nonce %s received - length is not %d",
+                      "invalid nonce '%s' received - length is not %d "
+                      "or time encoding is incorrect",
                       resp->nonce, NONCE_LEN);
         note_digest_auth_failure(r, conf, resp, 1);
         return HTTP_UNAUTHORIZED;
@@ -1484,25 +1493,24 @@ static int check_nonce(request_rec *r, digest_header_rec *resp,
 
 /* RFC-2069 */
 static const char *old_digest(const request_rec *r,
-                              const digest_header_rec *resp, const char *ha1)
+                              const digest_header_rec *resp)
 {
     const char *ha2;
 
     ha2 = ap_md5(r->pool, (unsigned char *)apr_pstrcat(r->pool, resp->method, ":",
                                                        resp->uri, NULL));
     return ap_md5(r->pool,
-                  (unsigned char *)apr_pstrcat(r->pool, ha1, ":", resp->nonce,
-                                              ":", ha2, NULL));
+                  (unsigned char *)apr_pstrcat(r->pool, resp->ha1, ":",
+                                               resp->nonce, ":", ha2, NULL));
 }
 
 /* RFC-2617 */
 static const char *new_digest(const request_rec *r,
-                              digest_header_rec *resp,
-                              const digest_config_rec *conf)
+                              digest_header_rec *resp)
 {
     const char *ha1, *ha2, *a2;
 
-    ha1 = conf->ha1;
+    ha1 = resp->ha1;
 
     a2 = apr_pstrcat(r->pool, resp->method, ":", resp->uri, NULL);
     ha2 = ap_md5(r->pool, (const unsigned char *)a2);
@@ -1514,7 +1522,6 @@ static const char *new_digest(const request_rec *r,
                                                resp->message_qop, ":", ha2,
                                                NULL));
 }
-
 
 static void copy_uri_components(apr_uri_t *dst,
                                 apr_uri_t *src, request_rec *r) {
@@ -1738,7 +1745,7 @@ static int authenticate_digest_user(request_rec *r)
         return HTTP_UNAUTHORIZED;
     }
 
-    return_code = get_hash(r, r->user, conf);
+    return_code = get_hash(r, r->user, conf, &resp->ha1);
 
     if (return_code == AUTH_USER_NOT_FOUND) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01790)
@@ -1771,7 +1778,7 @@ static int authenticate_digest_user(request_rec *r)
 
     if (resp->message_qop == NULL) {
         /* old (rfc-2069) style digest */
-        if (strcmp(resp->digest, old_digest(r, resp, conf->ha1))) {
+        if (strcmp(resp->digest, old_digest(r, resp))) {
             ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01792)
                           "user %s: password mismatch: %s", r->user,
                           r->uri);
@@ -1801,7 +1808,7 @@ static int authenticate_digest_user(request_rec *r)
             return HTTP_UNAUTHORIZED;
         }
 
-        exp_digest = new_digest(r, resp, conf);
+        exp_digest = new_digest(r, resp);
         if (!exp_digest) {
             /* we failed to allocate a client struct */
             return HTTP_INTERNAL_SERVER_ERROR;
@@ -1885,7 +1892,7 @@ static int add_auth_info(request_rec *r)
 
         /* calculate rspauth attribute
          */
-        ha1 = conf->ha1;
+        ha1 = resp->ha1;
 
         a2 = apr_pstrcat(r->pool, ":", resp->uri, NULL);
         ha2 = ap_md5(r->pool, (const unsigned char *)a2);

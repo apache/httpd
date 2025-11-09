@@ -42,7 +42,7 @@
 <!-- Generic tag entities -->
 
 <!ENTITY % inlinetags "em | strong | code | a | br | directive | module |
-program | img | cite | q | dfn | var | transnote | glossary | phonetic">
+program | img | cite | q | dfn | var | transnote | glossary | phonetic | since">
 
 <!ENTITY % blocktags "p | example | note | table | ul | ol | dl | pre | 
 highlight | blockquote">
@@ -78,9 +78,13 @@ highlight | blockquote">
                  outdated (true) #IMPLIED>
 
 <!ELEMENT directive (#PCDATA)>
-<!-- name attribute is preferred over contents when generating links -->
+<!-- name attribute is preferred over contents when generating links,
+     and idtype is used to disambiguate two directives sharing the
+     same name but with different type (for example section and non-section).
+-->
 <!ATTLIST directive  module CDATA  #IMPLIED
                      type   CDATA  #IMPLIED
+                     idtype CDATA  #IMPLIED
                      status CDATA  #IMPLIED
                      name   CDATA  #IMPLIED >
 
@@ -106,6 +110,8 @@ highlight | blockquote">
 <!ELEMENT dfn %Inline;>
 
 <!ELEMENT var %Inline;>
+
+<!ELEMENT since %Inline;>
 
 <!-- translators note -->
 <!ELEMENT transnote %Inline;>
@@ -192,6 +198,6 @@ highlight | blockquote">
 <!ATTLIST glossary ref CDATA #IMPLIED>
 
 <!-- The phonetic element should be used only within the glossary. It
-     describes a pronounciation -->
+     describes a pronunciation -->
 <!ELEMENT phonetic (#PCDATA)>
 

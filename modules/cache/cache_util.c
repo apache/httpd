@@ -19,6 +19,8 @@
 #include "cache_util.h"
 #include <ap_provider.h>
 
+#include "test_char.h"
+
 APLOG_USE_MODULE(cache);
 
 /* -------------------------------------------------------------- */
@@ -30,11 +32,9 @@ extern module AP_MODULE_DECLARE_DATA cache_module;
 /* Determine if "url" matches the hostname, scheme and port and path
  * in "filter". All but the path comparisons are case-insensitive.
  */
-static int uri_meets_conditions(const apr_uri_t *filter, const int pathlen,
-                                request_rec *r)
+static int uri_meets_conditions(const apr_uri_t *filter, const apr_size_t pathlen,
+                                const apr_uri_t *url, const char *path)
 {
-    const apr_uri_t *url = &r->parsed_uri;
-
     /* Scheme, hostname port and local part. The filter URI and the
      * URI we test may have the following shapes:
      *   /<path>
@@ -114,7 +114,7 @@ static int uri_meets_conditions(const apr_uri_t *filter, const int pathlen,
     /* For HTTP caching purposes, an empty (NULL) path is equivalent to
      * a single "/" path. RFCs 3986/2396
      */
-    if (!r->uri) {
+    if (!path) {
         if (*filter->path == '/' && pathlen == 1) {
             return 1;
         }
@@ -126,7 +126,23 @@ static int uri_meets_conditions(const apr_uri_t *filter, const int pathlen,
     /* Url has met all of the filter conditions so far, determine
      * if the paths match.
      */
-    return !strncmp(filter->path, r->uri, pathlen);
+    return !strncmp(filter->path, path, pathlen);
+}
+
+int cache_use_early_url(request_rec *r)
+{
+    cache_server_conf *conf;
+
+    if (r->proxyreq == PROXYREQ_PROXY) {
+        return 1;
+    }
+
+    conf = ap_get_module_config(r->server->module_config, &cache_module);
+    if (conf->quick) {
+        return 1;
+    }
+
+    return 0;
 }
 
 static cache_provider_list *get_provider(request_rec *r, struct cache_enable *ent,
@@ -172,6 +188,7 @@ cache_provider_list *cache_get_providers(request_rec *r,
 {
     cache_dir_conf *dconf = ap_get_module_config(r->per_dir_config, &cache_module);
     cache_provider_list *providers = NULL;
+    const char *path;
     int i;
 
     /* per directory cache disable */
@@ -179,11 +196,14 @@ cache_provider_list *cache_get_providers(request_rec *r,
         return NULL;
     }
 
+    path = cache_use_early_url(r) ? r->parsed_uri.path : r->uri;
+
     /* global cache disable */
     for (i = 0; i < conf->cachedisable->nelts; i++) {
         struct cache_disable *ent =
                                (struct cache_disable *)conf->cachedisable->elts;
-        if (uri_meets_conditions(&ent[i].url, ent[i].pathlen, r)) {
+        if (uri_meets_conditions(&ent[i].url, ent[i].pathlen,
+                                 &r->parsed_uri, path)) {
             /* Stop searching now. */
             return NULL;
         }
@@ -200,7 +220,8 @@ cache_provider_list *cache_get_providers(request_rec *r,
     for (i = 0; i < conf->cacheenable->nelts; i++) {
         struct cache_enable *ent =
                                 (struct cache_enable *)conf->cacheenable->elts;
-        if (uri_meets_conditions(&ent[i].url, ent[i].pathlen, r)) {
+        if (uri_meets_conditions(&ent[i].url, ent[i].pathlen,
+                                 &r->parsed_uri, path)) {
             providers = get_provider(r, &ent[i], providers);
         }
     }
@@ -692,7 +713,7 @@ int cache_check_freshness(cache_handle_t *h, cache_request_rec *cache,
                (apr_time_sec(info->expire - info->date)) > age))) {
             /* make sure we don't stomp on a previous warning */
             if ((warn_head == NULL) ||
-                ((warn_head != NULL) && (ap_strstr_c(warn_head, "110") == NULL))) {
+                    (ap_strstr_c(warn_head, "110") == NULL)) {
                 apr_table_mergen(h->resp_hdrs, "Warning",
                                  "110 Response is stale");
             }
@@ -711,7 +732,7 @@ int cache_check_freshness(cache_handle_t *h, cache_request_rec *cache,
              * the new warning to the correct *headers_out location.
              */
             if ((warn_head == NULL) ||
-                ((warn_head != NULL) && (ap_strstr_c(warn_head, "113") == NULL))) {
+                    (ap_strstr_c(warn_head, "113") == NULL)) {
                 apr_table_mergen(h->resp_hdrs, "Warning",
                                  "113 Heuristic expiration");
             }
@@ -768,7 +789,7 @@ int cache_check_freshness(cache_handle_t *h, cache_request_rec *cache,
         /* make sure we don't stomp on a previous warning */
         warn_head = apr_table_get(h->resp_hdrs, "Warning");
         if ((warn_head == NULL) ||
-            ((warn_head != NULL) && (ap_strstr_c(warn_head, "110") == NULL))) {
+                (ap_strstr_c(warn_head, "110") == NULL)) {
             apr_table_mergen(h->resp_hdrs, "Warning",
                              "110 Response is stale");
         }
@@ -904,75 +925,102 @@ CACHE_DECLARE(char *)ap_cache_generate_name(apr_pool_t *p, int dirlevels,
 }
 
 /**
- * String tokenizer that ignores separator characters within quoted strings
- * and escaped characters, as per RFC2616 section 2.2.
+ * String tokenizer per RFC 7234 section 5.2 (1#token[=["]arg["]]).
+ * If any (and arg not NULL), the argument is also returned (unquoted).
  */
-char *cache_strqtok(char *str, const char *sep, char **last)
+apr_status_t cache_strqtok(char *str, char **token, char **arg, char **last)
 {
-    char *token;
-    int quoted = 0;
+#define CACHE_TOKEN_SEPS "\t ,"
+    apr_status_t rv = APR_SUCCESS;
+    enum {
+        IN_TOKEN,
+        IN_BETWEEN,
+        IN_ARGUMENT,
+        IN_QUOTES
+    } state = IN_TOKEN;
+    char *wpos;
 
     if (!str) {         /* subsequent call */
         str = *last;    /* start where we left off */
     }
-
     if (!str) {         /* no more tokens */
-        return NULL;
+        return APR_EOF;
     }
 
-    /* skip characters in sep (will terminate at '\0') */
-    while (*str && ap_strchr_c(sep, *str)) {
+    /* skip separators (will terminate at '\0') */
+    while (*str && TEST_CHAR(*str, T_HTTP_TOKEN_STOP)) {
+        if (!ap_strchr_c(CACHE_TOKEN_SEPS, *str)) {
+            return APR_EINVAL;
+        }
         ++str;
     }
-
     if (!*str) {        /* no more tokens */
-        return NULL;
+        return APR_EOF;
     }
 
-    token = str;
+    *token = str;
+    if (arg) {
+        *arg = NULL;
+    }
 
     /* skip valid token characters to terminate token and
      * prepare for the next call (will terminate at '\0)
-     * on the way, ignore all quoted strings, and within
+     * on the way, handle quoted strings, and within
      * quoted strings, escaped characters.
      */
-    *last = token;
-    while (**last) {
-        if (!quoted) {
-            if (**last == '\"' && !ap_strchr_c(sep, '\"')) {
-                quoted = 1;
-                ++*last;
+    for (wpos = str; *str; ++str) {
+        switch (state) {
+        case IN_TOKEN:
+            if (*str == '=') {
+                state = IN_BETWEEN;
+                *wpos++ = '\0';
+                if (arg) *arg = wpos;
+                continue;
             }
-            else if (!ap_strchr_c(sep, **last)) {
-                ++*last;
+            break;
+
+        case IN_BETWEEN:
+            if (*str == '"') {
+                state = IN_QUOTES;
+                continue;
             }
-            else {
-                break;
+            /* fall through */
+            state = IN_ARGUMENT;
+        case IN_ARGUMENT:
+            if (TEST_CHAR(*str, T_HTTP_TOKEN_STOP)) {
+                goto end;
             }
+            break;
+
+        default:
+            AP_DEBUG_ASSERT(state == IN_QUOTES);
+            if (*str == '"') {
+                ++str;
+                goto end;
+            }
+            if (*str == '\\' && *(str + 1)) {
+                ++str;
+            }
+            break;
         }
-        else {
-            if (**last == '\"') {
-                quoted = 0;
-                ++*last;
-            }
-            else if (**last == '\\') {
-                ++*last;
-                if (**last) {
-                    ++*last;
-                }
-            }
-            else {
-                ++*last;
-            }
+        *wpos++ = *str;
+    }
+end:
+    /* anything after should be trailing OWS or comma */
+    for (; *str; ++str) {
+        if (*str == ',') {
+            ++str;
+            break;
+        }
+        if (*str != '\t' && *str != ' ') {
+            rv = APR_EINVAL;
+            break;
         }
     }
 
-    if (**last) {
-        **last = '\0';
-        ++*last;
-    }
-
-    return token;
+    *wpos = '\0';
+    *last = str;
+    return rv;
 }
 
 /**
@@ -984,6 +1032,7 @@ int ap_cache_control(request_rec *r, cache_control_t *cc,
         const char *cc_header, const char *pragma_header, apr_table_t *headers)
 {
     char *last;
+    apr_status_t rv;
 
     if (cc->parsed) {
         return cc->cache_control || cc->pragma;
@@ -996,32 +1045,34 @@ int ap_cache_control(request_rec *r, cache_control_t *cc,
     cc->s_maxage_value = -1;
 
     if (pragma_header) {
-        char *header = apr_pstrdup(r->pool, pragma_header);
-        const char *token = cache_strqtok(header, CACHE_SEPARATOR, &last);
-        while (token) {
+        char *header = apr_pstrdup(r->pool, pragma_header), *token;
+        for (rv = cache_strqtok(header, &token, NULL, &last);
+             rv == APR_SUCCESS;
+             rv = cache_strqtok(NULL, &token, NULL, &last)) {
             if (!ap_cstr_casecmp(token, "no-cache")) {
                 cc->no_cache = 1;
             }
-            token = cache_strqtok(NULL, CACHE_SEPARATOR, &last);
         }
         cc->pragma = 1;
     }
 
     if (cc_header) {
-        char *endp;
-        apr_off_t offt;
-        char *header = apr_pstrdup(r->pool, cc_header);
-        const char *token = cache_strqtok(header, CACHE_SEPARATOR, &last);
-        while (token) {
+        char *header = apr_pstrdup(r->pool, cc_header), *token, *arg;
+        for (rv = cache_strqtok(header, &token, &arg, &last);
+             rv == APR_SUCCESS;
+             rv = cache_strqtok(NULL, &token, &arg, &last)) {
+            char *endp;
+            apr_off_t offt;
+
             switch (token[0]) {
             case 'n':
-            case 'N': {
-                if (!ap_cstr_casecmpn(token, "no-cache", 8)) {
-                    if (token[8] == '=') {
-                        cc->no_cache_header = 1;
-                    }
-                    else if (!token[8]) {
+            case 'N':
+                if (!ap_cstr_casecmp(token, "no-cache")) {
+                    if (!arg) {
                         cc->no_cache = 1;
+                    }
+                    else {
+                        cc->no_cache_header = 1;
                     }
                 }
                 else if (!ap_cstr_casecmp(token, "no-store")) {
@@ -1031,13 +1082,12 @@ int ap_cache_control(request_rec *r, cache_control_t *cc,
                     cc->no_transform = 1;
                 }
                 break;
-            }
+
             case 'm':
-            case 'M': {
-                if (!ap_cstr_casecmpn(token, "max-age", 7)) {
-                    if (token[7] == '='
-                            && !apr_strtoff(&offt, token + 8, &endp, 10)
-                            && endp > token + 8 && !*endp) {
+            case 'M':
+                if (arg && !ap_cstr_casecmp(token, "max-age")) {
+                    if (!apr_strtoff(&offt, arg, &endp, 10)
+                            && endp > arg && !*endp) {
                         cc->max_age = 1;
                         cc->max_age_value = offt;
                     }
@@ -1045,67 +1095,62 @@ int ap_cache_control(request_rec *r, cache_control_t *cc,
                 else if (!ap_cstr_casecmp(token, "must-revalidate")) {
                     cc->must_revalidate = 1;
                 }
-                else if (!ap_cstr_casecmpn(token, "max-stale", 9)) {
-                    if (token[9] == '='
-                            && !apr_strtoff(&offt, token + 10, &endp, 10)
-                            && endp > token + 10 && !*endp) {
-                        cc->max_stale = 1;
-                        cc->max_stale_value = offt;
-                    }
-                    else if (!token[9]) {
+                else if (!ap_cstr_casecmp(token, "max-stale")) {
+                    if (!arg) {
                         cc->max_stale = 1;
                         cc->max_stale_value = -1;
                     }
+                    else if (!apr_strtoff(&offt, arg, &endp, 10)
+                             && endp > arg && !*endp) {
+                        cc->max_stale = 1;
+                        cc->max_stale_value = offt;
+                    }
                 }
-                else if (!ap_cstr_casecmpn(token, "min-fresh", 9)) {
-                    if (token[9] == '='
-                            && !apr_strtoff(&offt, token + 10, &endp, 10)
-                            && endp > token + 10 && !*endp) {
+                else if (arg && !ap_cstr_casecmp(token, "min-fresh")) {
+                    if (!apr_strtoff(&offt, arg, &endp, 10)
+                            && endp > arg && !*endp) {
                         cc->min_fresh = 1;
                         cc->min_fresh_value = offt;
                     }
                 }
                 break;
-            }
+
             case 'o':
-            case 'O': {
+            case 'O':
                 if (!ap_cstr_casecmp(token, "only-if-cached")) {
                     cc->only_if_cached = 1;
                 }
                 break;
-            }
+
             case 'p':
-            case 'P': {
+            case 'P':
                 if (!ap_cstr_casecmp(token, "public")) {
                     cc->public = 1;
                 }
-                else if (!ap_cstr_casecmpn(token, "private", 7)) {
-                    if (token[7] == '=') {
-                        cc->private_header = 1;
-                    }
-                    else if (!token[7]) {
+                else if (!ap_cstr_casecmp(token, "private")) {
+                    if (!arg) {
                         cc->private = 1;
+                    }
+                    else {
+                        cc->private_header = 1;
                     }
                 }
                 else if (!ap_cstr_casecmp(token, "proxy-revalidate")) {
                     cc->proxy_revalidate = 1;
                 }
                 break;
-            }
+
             case 's':
-            case 'S': {
-                if (!ap_cstr_casecmpn(token, "s-maxage", 8)) {
-                    if (token[8] == '='
-                            && !apr_strtoff(&offt, token + 9, &endp, 10)
-                            && endp > token + 9 && !*endp) {
+            case 'S':
+                if (arg && !ap_cstr_casecmp(token, "s-maxage")) {
+                    if (!apr_strtoff(&offt, arg, &endp, 10)
+                            && endp > arg && !*endp) {
                         cc->s_maxage = 1;
                         cc->s_maxage_value = offt;
                     }
                 }
                 break;
             }
-            }
-            token = cache_strqtok(NULL, CACHE_SEPARATOR, &last);
         }
         cc->cache_control = 1;
     }
@@ -1120,48 +1165,44 @@ int ap_cache_control(request_rec *r, cache_control_t *cc,
 static int cache_control_remove(request_rec *r, const char *cc_header,
         apr_table_t *headers)
 {
-    char *last, *slast;
+    char *last, *slast, *sheader;
     int found = 0;
 
     if (cc_header) {
-        char *header = apr_pstrdup(r->pool, cc_header);
-        char *token = cache_strqtok(header, CACHE_SEPARATOR, &last);
-        while (token) {
+        apr_status_t rv;
+        char *header = apr_pstrdup(r->pool, cc_header), *token, *arg;
+        for (rv = cache_strqtok(header, &token, &arg, &last);
+             rv == APR_SUCCESS;
+             rv = cache_strqtok(NULL, &token, &arg, &last)) {
+            if (!arg) {
+                continue;
+            }
+
             switch (token[0]) {
             case 'n':
-            case 'N': {
-                if (!ap_cstr_casecmpn(token, "no-cache", 8)) {
-                    if (token[8] == '=') {
-                        const char *header = cache_strqtok(token + 9,
-                                CACHE_SEPARATOR "\"", &slast);
-                        while (header) {
-                            apr_table_unset(headers, header);
-                            header = cache_strqtok(NULL, CACHE_SEPARATOR "\"",
-                                    &slast);
-                        }
-                        found = 1;
+            case 'N':
+                if (!ap_cstr_casecmp(token, "no-cache")) {
+                    for (rv = cache_strqtok(arg, &sheader, NULL, &slast);
+                         rv == APR_SUCCESS;
+                         rv = cache_strqtok(NULL, &sheader, NULL, &slast)) {
+                        apr_table_unset(headers, sheader);
                     }
+                    found = 1;
                 }
                 break;
-            }
+
             case 'p':
-            case 'P': {
-                if (!ap_cstr_casecmpn(token, "private", 7)) {
-                    if (token[7] == '=') {
-                        const char *header = cache_strqtok(token + 8,
-                                CACHE_SEPARATOR "\"", &slast);
-                        while (header) {
-                            apr_table_unset(headers, header);
-                            header = cache_strqtok(NULL, CACHE_SEPARATOR "\"",
-                                    &slast);
-                        }
-                        found = 1;
+            case 'P':
+                if (!ap_cstr_casecmp(token, "private")) {
+                    for (rv = cache_strqtok(arg, &sheader, NULL, &slast);
+                         rv == APR_SUCCESS;
+                         rv = cache_strqtok(NULL, &sheader, NULL, &slast)) {
+                        apr_table_unset(headers, sheader);
                     }
+                    found = 1;
                 }
                 break;
             }
-            }
-            token = cache_strqtok(NULL, CACHE_SEPARATOR, &last);
         }
     }
 

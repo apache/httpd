@@ -1,0 +1,104 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
+<!-- $LastChangedRevision: 1834267 $ -->
+<!-- French translation : Lucien GENTIS -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_autht_core.xml.meta">
+
+<name>mod_autht_core</name>
+<description>Gestion des jetons de base</description>
+<status>Base</status>
+<sourcefile>mod_autht_core.c</sourcefile>
+<identifier>autht_core_module</identifier>
+<compatibility>Disponible à partir de la version 2.5 du serveur HTTP Apache</compatibility>
+
+<summary>
+    <p>Ce module fournit des capacités de gestion des jetons de base afin
+    d'autoriser ou interdire l'accès à certaines portions du site web.
+    <module>mod_autht_core</module> fournit des directives communes à tous les
+    fournisseurs de jetons.</p>
+</summary>
+
+<section id="authtalias"><title>Créer des alias de fournisseurs de jetons</title>
+
+    <p>On peut créer des fournisseurs de jetons étendus au sein du fichier de
+    configuration et leur assigner un nom d'alias. On peut ensuite faire
+    référence aux fournisseurs d'alias à l'aide de la directive <directive
+    module="mod_auth_bearer">AuthBearerProvider</directive> de la même façon
+    qu'on le ferait pour un fournisseur de jetons de base. En plus de sa capacité
+    à créer un fournisseur étendu et à lui créer un alias, ce module permet
+    aussi de faire référence au même fournisseur de jetons étendu au sein de
+    plusieurs sections de localisation.</p>
+
+    <section id="example"><title>Exemples</title>
+
+        <p>Cet exemple recherche des signatures de jetons JWT dans deux fichiers
+	de mots de passe différents.</p>
+
+        <example><title>Examiner des sources multiples de jetons JWT</title>
+        <highlight language="config">
+# Recherche dans le premier fichier
+&lt;AuthtProviderAlias jwt jwt1&gt;
+    AuthtJwtVerify hs256 file "/www/conf/realm1.secret"
+&lt;/AuthtProviderAlias&gt;
+
+# Recherche dans le second fichier
+&lt;AuthtProviderAlias jwt jwt2&gt;
+    AuthtJwtVerify hs256 file "/www/conf/realm2.secret"
+&lt;/AuthtProviderAlias&gt;
+
+&lt;Directory "/var/web/pages/secure"&gt;
+    AuthBearerProvider jwt1 jwt2
+
+    AuthType Basic
+    AuthName "Protected Area"
+    Require valid-user
+&lt;/Directory&gt;
+        </highlight>
+        </example>
+
+    </section>
+
+</section>
+
+<directivesynopsis type="section">
+<name>AuthtProviderAlias</name>
+<description>Regroupe des directives qui représentent une extension d'un
+fournisseur de jetons de base et sont référencées par l'alias spécifié</description>
+<syntax>&lt;AuthtProviderAlias <var>baseProvider Alias</var>&gt;
+... &lt;/AuthtProviderAlias&gt;</syntax>
+<contextlist><context>server config</context>
+</contextlist>
+
+<usage>
+    <p><code>&lt;AuthtProviderAlias&gt;</code> et
+    <code>&lt;/AuthtProviderAlias&gt;</code> permettent de regrouper des
+    directives d'authentification qui peuvent être référencées par le nom
+    d'alias à l'aide de la directive <directive
+    module="mod_auth_bearer">AuthBearerProvider</directive>.</p>
+
+    <note>Cette directive n'affecte ni l'authentification, ni l'autorisation,
+    même pour les modules qui fournissent de l'authentification et de
+    l'autorisation en plus de la gestion des jetons.</note>
+</usage>
+</directivesynopsis>
+
+</modulesynopsis>

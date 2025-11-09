@@ -31,8 +31,14 @@
 <compatibility>Available in httpd 2.4.5 and later</compatibility>
 
 <summary>
-    <p>This module <em>requires</em> the service of <module
-    >mod_proxy</module>. It provides support for the tunnelling of web
+  <note type="warning"><title><a id="deprecation" name="deprecation">Deprecation</a></title>
+    <p>Since Apache HTTP Server 2.4.47, protocol Upgrade (tunneling) can be better handled by
+    <module>mod_proxy_http</module>.</p>
+    <p>See <a href="mod_proxy.html#protoupgrade">Protocol Upgrade</a>.</p>
+  </note>
+
+    <p>This module <em>requires</em> the service of <module >mod_proxy</module>.
+    It provides support for the tunnelling of web
     socket connections to a backend websockets server. The connection
     is automatically upgraded to a websocket connection:</p>
 
@@ -49,11 +55,53 @@ Connection: Upgrade
 ProxyPass "/ws2/"  "ws://echo.websocket.org/"
 ProxyPass "/wss2/" "wss://echo.websocket.org/"
     </highlight>
+    
+<p>Proxying both HTTP and websockets at the same time can be done by specifying the websockets
+<directive type="ProxyPass" module="mod_proxy">ProxyPass</directive> directive before the 
+    HTTP directive:</p>
+    <highlight language="config">
+ProxyPass "/"  "ws://backend.example.com:9080/"
+ProxyPass "/"  "http://backend.example.com:9080/"
+    </highlight>
+
 
 <p>Load balancing for multiple backends can be achieved using <module>mod_proxy_balancer</module>.</p>
+
+<p>
+The module can also be used to upgrade to other protocols than WebSocket, by setting
+the <var><a href="mod_proxy.html#upgrade">upgrade</a></var> parameter in the
+<directive type="ProxyPass" module="mod_proxy">ProxyPass</directive>
+directive to some custom protocol name.
+Special <code>upgrade=NONE</code> and <code>upgrade=ANY</code> values may be used for
+testing/forcing the upgrade but they are <strong>not recommended</strong> in production for
+security reasons.
+<code>NONE</code> means that the check for the header is omitted but still the upgrade/tunneling to
+WebSocket always happens.
+<code>ANY</code> means that the upgrade/tunneling will happen using any protocol asked by the client.
+</p>
 </summary>
 
 <seealso><module>mod_proxy</module></seealso>
+
+<directivesynopsis>
+<name>ProxyWebsocketFallbackToProxyHttp</name>
+<description>Instructs this module to let <module>mod_proxy_http</module> handle the request</description>
+<syntax>ProxyWebsocketFallbackToProxyHttp On|Off</syntax>
+<default>ProxyWebsocketFallbackToProxyHttp On</default>
+<contextlist><context>server config</context>
+<context>virtual host</context>
+</contextlist>
+<compatibility>Available in httpd 2.4.48 and later</compatibility>
+
+<usage>
+    <p>Since httpd 2.4.47, <module>mod_proxy_http</module> can handle WebSocket
+    upgrading and tunneling in accordance to RFC 7230, this directive controls
+    whether <module>mod_proxy_wstunnel</module> should hand over to
+    <module>mod_proxy_http</module> to this, which is the case by default.</p>
+    <p>Setting to <em>Off</em> lets <module>mod_proxy_wstunnel</module> handle
+    WebSocket requests as in httpd 2.4.46 and earlier.</p>
+</usage>
+</directivesynopsis>
 
 <directivesynopsis>
 <name>ProxyWebsocketAsync</name>
@@ -83,7 +131,9 @@ ProxyPass "/wss2/" "wss://echo.websocket.org/"
 
 <usage>
     <p>This directive imposes a maximum amount of time for the tunnel to be
-    left open while idle.</p>
+    left open while idle. The timeout is considered in seconds by default, but
+    it is possible to increase the time resolution to milliseconds
+    adding the <em>ms</em> suffix.</p>
 </usage>
 </directivesynopsis>
 
@@ -98,7 +148,9 @@ ProxyPass "/wss2/" "wss://echo.websocket.org/"
 
 <usage>
     <p>If <directive>ProxyWebsocketAsync</directive> is enabled, this directive
-    controls how long the server synchronously waits for more data.</p>
+    controls how long the server synchronously waits for more data. The timeout
+    is considered in seconds by default, but it is possible to increase
+    the time resolution to milliseconds adding the <em>ms</em> suffix.</p>
 
     <note><title>Note</title><p>Async support is experimental and subject
     to change. </p></note>

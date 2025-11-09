@@ -1,0 +1,6 @@
+{
+  "disabled": false,
+  "url": "http://localhost:4000/acme/reg/494",
+  "ca-url": "http://localhost:4000/directory",
+  "id": "ACME-localhost-0000"
+}

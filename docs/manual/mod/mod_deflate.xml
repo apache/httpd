@@ -40,7 +40,7 @@ client</description>
 <section id="supportedencodings"><title>Supported Encodings</title>
   <p>The <code>gzip</code> encoding is the only one supported to ensure complete compatibility
   with old browser implementations. The <code>deflate</code> encoding is not supported, 
-  please check the <a href="http://www.gzip.org/zlib/zlib_faq.html#faq38">zlib's documentation</a>
+  please check the <a href="https://zlib.net/zlib_faq.html#faq39">zlib's documentation</a>
   for a complete explanation.
   </p>
 </section>
@@ -55,8 +55,8 @@ client</description>
 
     <example><title>Compress only a few types</title>
     <highlight language="config">
-      AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript application/javascript
-      </highlight>
+AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript application/javascript
+    </highlight>
     </example>
 
 </section>
@@ -76,7 +76,7 @@ client</description>
 
       <highlight language="config">
 SetOutputFilter DEFLATE
-SetEnvIfNoCase Request_URI \.(?:gif|jpe?g|png)$ no-gzip
+SetEnvIfNoCase Request_URI "\.(?:gif|jpe?g|png)$" no-gzip
       </highlight>
 
       <p>If you want to restrict the compression to particular MIME types
@@ -171,7 +171,7 @@ SetEnvIfNoCase Request_URI \.(?:gif|jpe?g|png)$ no-gzip
     filter depends on the <code>User-Agent</code>, you should add:</p>
 
     <highlight language="config">
-      Header append Vary User-Agent
+Header append Vary User-Agent
     </highlight>
 
     <p>If your decision about compression depends on other information
@@ -181,8 +181,8 @@ SetEnvIfNoCase Request_URI \.(?:gif|jpe?g|png)$ no-gzip
 
     <example><title>Example</title>
     <highlight language="config">
-      Header set Vary *
-      </highlight>
+Header set Vary *
+    </highlight>
     </example>
 </section>
 
@@ -191,24 +191,17 @@ content</title>
 
     <p>Since <module>mod_deflate</module> re-compresses content each
     time a request is made, some performance benefit can be derived by
-    pre-compressing the content and telling mod_deflate to serve them
+    pre-compressing the content and telling <module>mod_deflate</module> to serve them
     without re-compressing them. This may be accomplished using a
     configuration like the following:</p>
 
     <highlight language="config">
 &lt;IfModule mod_headers.c&gt;
-    # Serve gzip compressed CSS files if they exist
+    # Serve gzip compressed CSS and JS files if they exist
     # and the client accepts gzip.
     RewriteCond "%{HTTP:Accept-encoding}" "gzip"
-    RewriteCond "%{REQUEST_FILENAME}\.gz" "-s"
-    RewriteRule "^(.*)\.css"              "$1\.css\.gz" [QSA]
-
-    # Serve gzip compressed JS files if they exist
-    # and the client accepts gzip.
-    RewriteCond "%{HTTP:Accept-encoding}" "gzip"
-    RewriteCond "%{REQUEST_FILENAME}\.gz" "-s"
-    RewriteRule "^(.*)\.js"               "$1\.js\.gz" [QSA]
-
+    RewriteCond "%{REQUEST_FILENAME}\.gz" -s
+    RewriteRule "^(.*)\.(css|js)"         "$1\.$2\.gz" [QSA]
 
     # Serve correct content types, and prevent mod_deflate double gzip.
     RewriteRule "\.css\.gz$" "-" [T=text/css,E=no-gzip:1]
@@ -245,11 +238,11 @@ content</title>
 
     <example><title>Example</title>
     <highlight language="config">
-      DeflateFilterNote ratio
+DeflateFilterNote ratio
 
-      LogFormat '"%r" %b (%{ratio}n) "%{User-agent}i"' deflate
-      CustomLog "logs/deflate_log" deflate
-      </highlight>
+LogFormat '"%r" %b (%{ratio}n) "%{User-agent}i"' deflate
+CustomLog "logs/deflate_log" deflate
+    </highlight>
     </example>
 
     <p>If you want to extract more accurate values from your logs, you
@@ -356,42 +349,13 @@ CustomLog "logs/deflate_log" deflate
 </directivesynopsis>
 
 <directivesynopsis>
-<name>DeflateAlterETag</name>
-<description>How the outgoing ETag header should be modified during compression</description>
-<syntax>DeflateAlterETag AddSuffix|NoChange|Remove</syntax>
-<default>DeflateAlterETag AddSuffix</default>
-<contextlist><context>server config</context><context>virtual host</context>
-</contextlist>
-
-<usage>
-    <p>The <directive>DeflateAlterETag</directive> directive specifies
-    how the ETag hader should be altered when a response is compressed.</p>
-    <dl>
-    <dt>AddSuffix</dt>
-    <dd><p>Append the compression method onto the end of the ETag, causing
-        compressed and uncompressed representations to have unique ETags.
-        This has been the default since 2.4.0, but prevents serving
-        "HTTP Not Modified" (304) responses to conditional requests for
-        compressed content.</p></dd>
-    <dt>NoChange</dt>
-    <dd><p>Don't change the ETag on a compressed response. This was the default
-        prior to 2.4.0, but does not satisfy the HTTP/1.1 property that all
-        representations of the same resource have unique ETags. </p></dd>
-    <dt>Remove</dt>
-    <dd><p>Remove the ETag header from compressed responses. This prevents
-        some conditional requests from being possible, but avoids the
-        shortcomings of the preceding options.  </p></dd>
-    </dl>
-</usage>
-</directivesynopsis>
-
-<directivesynopsis>
 <name>DeflateInflateLimitRequestBody</name>
 <description>Maximum size of inflated request bodies</description>
-<syntax>DeflateInflateLimitRequestBody<var>value</var></syntax>
+<syntax>DeflateInflateLimitRequestBody <var>value</var></syntax>
 <default>None, but LimitRequestBody applies after deflation</default>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
+<override>All</override>
 <compatibility>2.4.10 and later</compatibility>
 
 <usage>
@@ -406,9 +370,10 @@ CustomLog "logs/deflate_log" deflate
 <name>DeflateInflateRatioLimit</name>
 <description>Maximum inflation ratio for request bodies</description>
 <syntax>DeflateInflateRatioLimit <var>value</var></syntax>
-<default>200</default>
+<default>DeflateInflateRatioLimit 200</default>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
+<override>All</override>
 <compatibility>2.4.10 and later</compatibility>
 
 <usage>
@@ -416,8 +381,8 @@ CustomLog "logs/deflate_log" deflate
         specifies the maximum ratio of deflated to inflated size of an
         inflated request body. This ratio is checked as the body is
         streamed in, and if crossed more than
-        <directive>DeflateInflateRatioBurst</directive> times, the request
-        will be terminated.</p>
+        <directive module="mod_deflate">DeflateInflateRatioBurst</directive>
+        times, the request will be terminated.</p>
 </usage>
 </directivesynopsis>
 
@@ -426,16 +391,48 @@ CustomLog "logs/deflate_log" deflate
 <description>Maximum number of times the inflation ratio for request bodies
              can be crossed</description>
 <syntax>DeflateInflateRatioBurst <var>value</var></syntax>
-<default>3</default>
+<default>DeflateInflateRatioBurst 3</default>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
+<override>All</override>
 <compatibility>2.4.10 and later</compatibility>
 
 <usage>
     <p>The <directive>DeflateInflateRatioBurst</directive> directive
        specifies the maximum number of times the
-       <directive>DeflateInflateRatioLimit</directive> can be crossed before
-       terminating the request.</p>
+       <directive module="mod_deflate">DeflateInflateRatioLimit</directive> can
+       be crossed before terminating the request.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>DeflateAlterETag</name>
+<description>How the outgoing ETag header should be modified during compression</description>
+<syntax>DeflateAlterETag AddSuffix|NoChange|Remove</syntax>
+<default>DeflateAlterETag AddSuffix</default>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+<compatibility>Available in Apache 2.4.58 and later</compatibility>
+
+<usage>
+    <p>The <directive>DeflateAlterETag</directive> directive specifies
+    how the ETag header should be altered when a response is compressed.</p>
+    <dl>
+    <dt>AddSuffix</dt>
+    <dd><p>Append the compression method onto the end of the ETag, causing
+        compressed and uncompressed representations to have unique ETags.
+        This has been the default since 2.4.0, but prevents serving
+        "HTTP Not Modified" (304) responses to conditional requests for
+        compressed content.</p></dd>
+    <dt>NoChange</dt>
+    <dd><p>Don't change the ETag on a compressed response. This was the default
+        prior to 2.4.0, but does not satisfy the HTTP/1.1 property that all
+        representations of the same resource have unique ETags.</p></dd>
+    <dt>Remove</dt>
+    <dd><p>Remove the ETag header from compressed responses. This prevents
+        some conditional requests from being possible, but avoids the
+        shortcomings of the preceding options.</p></dd>
+    </dl>
 </usage>
 </directivesynopsis>
 

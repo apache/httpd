@@ -127,15 +127,15 @@ static const char *const safe_env_lst[] =
     "REDIRECT_STATUS=",
     "REDIRECT_URL=",
     "REQUEST_METHOD=",
-    "REQUEST_URI=",
     "REQUEST_SCHEME=",
+    "REQUEST_URI=",
     "SCRIPT_FILENAME=",
     "SCRIPT_NAME=",
     "SCRIPT_URI=",
     "SCRIPT_URL=",
+    "SERVER_ADDR=",
     "SERVER_ADMIN=",
     "SERVER_NAME=",
-    "SERVER_ADDR=",
     "SERVER_PORT=",
     "SERVER_PROTOCOL=",
     "SERVER_SIGNATURE=",
@@ -223,7 +223,6 @@ static void log_no_err(const char *fmt,...)
 
 static void clean_env(void)
 {
-    char pathbuf[512];
     char **cleanenv;
     char **ep;
     int cidx = 0;
@@ -245,8 +244,7 @@ static void clean_env(void)
         exit(123);
     }
 
-    sprintf(pathbuf, "PATH=%s", AP_SAFE_PATH);
-    cleanenv[cidx] = strdup(pathbuf);
+    cleanenv[cidx] = strdup("PATH=" AP_SAFE_PATH);
     if (cleanenv[cidx] == NULL) {
         log_err("failed to malloc memory for environment\n");
         exit(124);
@@ -281,6 +279,20 @@ static void clean_env(void)
     cleanenv[cidx] = NULL;
 
     environ = cleanenv;
+}
+
+/* Converts name (uid/gid) to long, returning -1 on error. */
+static long safe_strtol(const char *name)
+{
+    char *endp;
+    long rv;
+
+    errno = 0;
+    rv = strtol(name, &endp, 10);
+    if (errno || *endp != '\0')
+        rv = -1;
+
+    return rv;
 }
 
 int main(int argc, char *argv[])
@@ -419,7 +431,15 @@ int main(int argc, char *argv[])
         }
     }
     else {
-        if ((pw = getpwuid(atoi(target_uname))) == NULL) {
+        long parsed_uid = safe_strtol(target_uname);
+        uid_t target_uid = parsed_uid;
+
+        /* uid_t may be signed or unsigned and may be smaller than
+         * long; try to catch long->(u)int conversion surprises and
+         * avoid calling getpwuid with a negative value though it
+         * should be safe anyway. */
+        if (parsed_uid < 0 || target_uid < 0 || target_uid != parsed_uid
+            || (pw = getpwuid(target_uid)) == NULL) {
             log_err("invalid target user id: (%s)\n", target_uname);
             exit(121);
         }
@@ -435,7 +455,12 @@ int main(int argc, char *argv[])
         }
     }
     else {
-        if ((gr = getgrgid(atoi(target_gname))) == NULL) {
+        long parsed_gid = safe_strtol(target_gname);
+        gid_t target_gid = parsed_gid;
+
+        /* See above on long to uid_t conversion. */
+        if (parsed_gid < 0 || target_gid < 0 || target_gid != parsed_gid
+            || (gr = getgrgid(target_gid)) == NULL) {
             log_err("invalid target group id: (%s)\n", target_gname);
             exit(106);
         }
@@ -518,7 +543,8 @@ int main(int argc, char *argv[])
      * and setgid() to the target group. If unsuccessful, error out.
      */
     if (((setgid(gid)) != 0) || (initgroups(actual_uname, gid) != 0)) {
-        log_err("failed to setgid (%lu: %s)\n", (unsigned long)gid, cmd);
+        log_err("failed to setgid/initgroups (%lu: %s): %s\n",
+                (unsigned long)gid, cmd, strerror(errno));
         exit(109);
     }
 
@@ -526,13 +552,14 @@ int main(int argc, char *argv[])
      * setuid() to the target user.  Error out on fail.
      */
     if ((setuid(uid)) != 0) {
-        log_err("failed to setuid (%lu: %s)\n", (unsigned long)uid, cmd);
+        log_err("failed to setuid (%lu: %s): %s\n",
+                (unsigned long)uid, cmd, strerror(errno));
         exit(110);
     }
 
     /*
      * Get the current working directory, as well as the proper
-     * document root (dependant upon whether or not it is a
+     * document root (dependent upon whether or not it is a
      * ~userdir request).  Error out if we cannot get either one,
      * or if the current working directory is not in the docroot.
      * Use chdir()s and getcwd()s to avoid problems with symlinked

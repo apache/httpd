@@ -58,7 +58,7 @@
 <seealso><a href="../misc/password_encryptions.html">Password Formats</a></seealso>
 
 <section id="socache">
-<title>Performance and Cacheing</title>
+<title>Performance and Caching</title>
 <p>Some users of DBD authentication in HTTPD 2.2/2.4 have reported that it
 imposes a problematic load on the database.  This is most likely where
 an HTML page contains hundreds of objects (e.g. images, scripts, etc)
@@ -73,7 +73,7 @@ to cache credentials and take most of the load off the database.</p>
 the Authentication and DBD frameworks.</p>
 <highlight language="config">
 # mod_dbd configuration
-# UPDATED to include authentication cacheing
+# UPDATED to include authentication caching
 DBDriver pgsql
 DBDParams "dbname=apacheauth user=apache password=xxxxxx"
 
@@ -107,8 +107,7 @@ DBDExptime 300
 <section id="exposed">
 <title>Exposing Login Information</title>
 <p>
-If httpd was built against <glossary>APR</glossary> version 1.3.0
-or higher, then whenever a query is made to the database server, all
+Whenever a query is made to the database server, all
 column values in the first row returned by the query are placed in the
 environment, using environment variables with the prefix "AUTHENTICATE_".
 </p>
@@ -152,8 +151,7 @@ AuthDBDUserPWQuery "SELECT password FROM authn WHERE user = %s"
     statement should be a string containing the encrypted password.
     Subsequent rows will be ignored.  If no rows are returned, the user
     will not be authenticated through <module>mod_authn_dbd</module>.</p>
-    <p>If httpd was built against <glossary>APR</glossary> version 1.3.0
-    or higher, any additional column values in the first row returned by
+    <p>Any additional column values in the first row returned by
     the query statement will be stored as environment variables with
     names of the form <code>AUTHENTICATE_<var>COLUMN</var></code>.
     </p>
@@ -187,8 +185,7 @@ AuthDBDUserRealmQuery "SELECT password FROM authn WHERE user = %s AND realm = %s
     statement should be a string containing the encrypted password.
     Subsequent rows will be ignored.  If no rows are returned, the user
     will not be authenticated through <module>mod_authn_dbd</module>.</p>
-    <p>If httpd was built against <glossary>APR</glossary> version 1.3.0
-    or higher, any additional column values in the first row returned by
+    <p>Any additional column values in the first row returned by
     the query statement will be stored as environment variables with
     names of the form <code>AUTHENTICATE_<var>COLUMN</var></code>.
     </p>

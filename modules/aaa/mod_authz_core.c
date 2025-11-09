@@ -70,7 +70,7 @@ struct authz_section_conf {
     const char *provider_args;
     const void *provider_parsed_args;
     const authz_provider *provider;
-    apr_int64_t limited;
+    ap_method_mask_t limited;
     authz_logic_op op;
     int negate;
     /** true if this is not a real container but produced by AuthMerging;
@@ -193,12 +193,11 @@ static authz_status authz_alias_check_authorization(request_rec *r,
                                                     const void *parsed_require_args)
 {
     const char *provider_name;
-    authz_status ret = AUTHZ_DENIED;
 
     /* Look up the provider alias in the alias list.
-     * Get the dir_config and call ap_Merge_per_dir_configs()
+     * Get the dir_config and call ap_merge_per_dir_configs()
      * Call the real provider->check_authorization() function
-     * return the result of the above function call
+     * Return the result of the above function call
      */
 
     provider_name = apr_table_get(r->notes, AUTHZ_PROVIDER_NAME_NOTE);
@@ -217,6 +216,7 @@ static authz_status authz_alias_check_authorization(request_rec *r,
            configurations and call the real provider */
         if (prvdraliasrec) {
             ap_conf_vector_t *orig_dir_config = r->per_dir_config;
+            authz_status ret;
 
             r->per_dir_config =
                 ap_merge_per_dir_configs(r->pool, orig_dir_config,
@@ -227,18 +227,16 @@ static authz_status authz_alias_check_authorization(request_rec *r,
                                     prvdraliasrec->provider_parsed_args);
 
             r->per_dir_config = orig_dir_config;
+
+            return ret;
         }
-        else {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(02305)
-                          "no alias provider found for '%s' (BUG?)",
-                          provider_name);
-        }
-    }
-    else {
-        ap_assert(provider_name != NULL);
     }
 
-    return ret;
+    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(02305)
+                  "no alias provider found for '%s' (BUG?)",
+                  provider_name ? provider_name : "n/a");
+
+    return AUTHZ_DENIED;
 }
 
 static const authz_provider authz_alias_provider =
@@ -253,7 +251,7 @@ static const char *authz_require_alias_section(cmd_parms *cmd, void *mconfig,
     const char *endp = ap_strrchr_c(args, '>');
     char *provider_name;
     char *provider_alias;
-    char *provider_args;
+    char *provider_args, *extra_args;
     ap_conf_vector_t *new_authz_config;
     int old_overrides = cmd->override;
     const char *errmsg;
@@ -279,10 +277,21 @@ static const char *authz_require_alias_section(cmd_parms *cmd, void *mconfig,
     provider_name = ap_getword_conf(cmd->pool, &args);
     provider_alias = ap_getword_conf(cmd->pool, &args);
     provider_args = ap_getword_conf(cmd->pool, &args);
+    extra_args = ap_getword_conf(cmd->pool, &args);
 
     if (!provider_name[0] || !provider_alias[0]) {
         return apr_pstrcat(cmd->pool, cmd->cmd->name,
                            "> directive requires additional arguments", NULL);
+    }
+    
+    /* We only handle one "Require-Parameters" parameter.  If several parameters
+       are needed, they must be enclosed between quotes */
+    if (extra_args && *extra_args) {
+        ap_log_error(APLOG_MARK, APLOG_WARNING, 0, cmd->server, APLOGNO(10142)
+                     "When several arguments (%s %s...) are passed to a %s directive, "
+                     "they must be enclosed in quotation marks.  Otherwise, only the "
+                     "first one is taken into account",
+                     provider_args, extra_args, cmd->cmd->name);
     }
 
     new_authz_config = ap_create_per_dir_config(cmd->pool);
@@ -469,7 +478,7 @@ static const char *add_authz_section(cmd_parms *cmd, void *mconfig,
     authz_section_conf *old_section = conf->section;
     authz_section_conf *section;
     int old_overrides = cmd->override;
-    apr_int64_t old_limited = cmd->limited;
+    ap_method_mask_t old_limited = cmd->limited;
     const char *errmsg;
 
     if (endp == NULL) {
@@ -1007,7 +1016,7 @@ static authz_status method_check_authorization(request_rec *r,
                                                const char *require_line,
                                                const void *parsed_require_line)
 {
-    const apr_int64_t *allowed = parsed_require_line;
+    const ap_method_mask_t *allowed = parsed_require_line;
     if (*allowed & (AP_METHOD_BIT << r->method_number))
         return AUTHZ_GRANTED;
     else
@@ -1018,7 +1027,7 @@ static const char *method_parse_config(cmd_parms *cmd, const char *require_line,
                                        const void **parsed_require_line)
 {
     const char *w, *t;
-    apr_int64_t *allowed = apr_pcalloc(cmd->pool, sizeof(apr_int64_t));
+    ap_method_mask_t *allowed = apr_pcalloc(cmd->pool, sizeof *allowed);
 
     t = require_line;
 

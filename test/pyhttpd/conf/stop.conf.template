@@ -1,0 +1,46 @@
+# a config safe to use for stopping the server
+# this allows us to stop the server even when+
+# the config in the file is borked (as test cases may try to do that)
+#
+ServerName localhost
+ServerRoot "${server_dir}"
+
+Include "conf/modules.conf"
+
+DocumentRoot "${server_dir}/htdocs"
+
+<IfModule log_config_module>
+    LogFormat "%h %l %u %t \"%r\" %>s %O \"%{Referer}i\" \"%{User-Agent}i\" %k" combined
+    LogFormat "%h %l %u %t \"%r\" %>s %b" common
+    CustomLog "logs/access_log" combined
+
+</IfModule>
+
+TypesConfig "${gen_dir}/apache/conf/mime.types"
+
+Listen ${http_port}
+Listen ${https_port}
+
+<IfModule mod_ssl.c>
+    # provide some default
+    SSLSessionCache "shmcb:ssl_gcache_data(32000)"
+</IfModule>
+
+<VirtualHost *:${http_port}>
+    ServerName ${http_tld}
+    ServerAlias www.${http_tld}
+    <IfModule ssl_module>
+      SSLEngine off
+    </IfModule>
+    DocumentRoot "${server_dir}/htdocs"
+</VirtualHost>
+
+<Directory "${server_dir}/htdocs/cgi">
+    Options Indexes FollowSymLinks
+    AllowOverride None
+    Require all granted
+
+    AddHandler cgi-script .py
+    AddHandler cgi-script .cgi
+    Options +ExecCGI
+</Directory>

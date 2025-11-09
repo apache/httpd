@@ -113,6 +113,7 @@ void util_ldap_url_node_display(request_rec *r, util_ald_cache_t *cache, void *n
                    "<td nowrap>%ld</td>"
                    "<td nowrap>%ld</td>"
                    "<td nowrap>%ld</td>"
+                   "<td nowrap>%" APR_TIME_T_FMT "</td>"
                    "<td nowrap>%ld</td>"
                    "<td nowrap>%s</td>"
                    "</tr>",
@@ -121,6 +122,7 @@ void util_ldap_url_node_display(request_rec *r, util_ald_cache_t *cache, void *n
                    cache_node->size,
                    cache_node->maxentries,
                    cache_node->numentries,
+                   apr_time_sec(cache_node->ttl),
                    cache_node->fullmark,
                    date_str);
     }
@@ -228,8 +230,8 @@ void util_ldap_search_node_display(request_rec *r, util_ald_cache_t *cache, void
                "<td nowrap>%s</td>"
                "<td nowrap>%s</td>"
                "</tr>",
-               node->username,
-               node->dn,
+               ap_escape_html(r->pool, node->username),
+               ap_escape_html(r->pool, node->dn),
                date_str);
 }
 
@@ -329,9 +331,9 @@ void util_ldap_compare_node_display(request_rec *r, util_ald_cache_t *cache, voi
                "<td nowrap>%s</td>"
                "<td nowrap>%s</td>"
                "</tr>",
-               node->dn,
-               node->attrib,
-               node->value,
+               ap_escape_html(r->pool, node->dn),
+               ap_escape_html(r->pool, node->attrib),
+               ap_escape_html(r->pool, node->value),
                date_str,
                cmp_result,
                sub_groups_val,
@@ -389,30 +391,10 @@ void util_ldap_dn_compare_node_display(request_rec *r, util_ald_cache_t *cache, 
                "<td nowrap>%s</td>"
                "<td nowrap>%s</td>"
                "</tr>",
-               node->reqdn,
-               node->dn);
+               ap_escape_html(r->pool, node->reqdn),
+               ap_escape_html(r->pool, node->dn));
 }
 
-
-/* ------------------------------------------------------------------ */
-static apr_status_t util_ldap_cache_module_kill(void *data)
-{
-    util_ldap_state_t *st = data;
-
-    util_ald_destroy_cache(st->util_ldap_cache);
-#if APR_HAS_SHARED_MEMORY
-    if (st->cache_rmm != NULL) {
-        apr_rmm_destroy (st->cache_rmm);
-        st->cache_rmm = NULL;
-    }
-    if (st->cache_shm != NULL) {
-        apr_status_t result = apr_shm_destroy(st->cache_shm);
-        st->cache_shm = NULL;
-        return result;
-    }
-#endif
-    return APR_SUCCESS;
-}
 
 apr_status_t util_ldap_cache_init(apr_pool_t *pool, util_ldap_state_t *st)
 {
@@ -447,11 +429,10 @@ apr_status_t util_ldap_cache_init(apr_pool_t *pool, util_ldap_state_t *st)
 
 #endif
 
-    apr_pool_cleanup_register(st->pool, st , util_ldap_cache_module_kill, apr_pool_cleanup_null);
-
     st->util_ldap_cache =
         util_ald_create_cache(st,
                               st->search_cache_size,
+                              st->search_cache_ttl,
                               util_ldap_url_node_hash,
                               util_ldap_url_node_compare,
                               util_ldap_url_node_copy,

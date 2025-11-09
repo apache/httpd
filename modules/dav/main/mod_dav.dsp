@@ -112,6 +112,10 @@ SOURCE=.\mod_dav.c
 # End Source File
 # Begin Source File
 
+SOURCE=.\ms_wdv.c
+# End Source File
+# Begin Source File
+
 SOURCE=.\props.c
 # End Source File
 # Begin Source File

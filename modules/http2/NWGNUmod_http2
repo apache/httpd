@@ -184,30 +184,24 @@ TARGET_lib = \
 # Paths must all use the '/' character
 #
 FILES_nlm_objs = \
-	$(OBJDIR)/h2_alt_svc.o \
-	$(OBJDIR)/h2_bucket_beam.o \
-	$(OBJDIR)/h2_bucket_eoc.o \
-	$(OBJDIR)/h2_bucket_eos.o \
-	$(OBJDIR)/h2_config.o \
-	$(OBJDIR)/h2_conn.o \
-	$(OBJDIR)/h2_conn_io.o \
-	$(OBJDIR)/h2_ctx.o \
-	$(OBJDIR)/h2_filter.o \
-	$(OBJDIR)/h2_from_h1.o \
-	$(OBJDIR)/h2_h2.o \
-	$(OBJDIR)/h2_mplx.o \
-	$(OBJDIR)/h2_ngn_shed.o \
-	$(OBJDIR)/h2_push.o \
-	$(OBJDIR)/h2_request.o \
-	$(OBJDIR)/h2_headers.o \
-	$(OBJDIR)/h2_session.o \
-	$(OBJDIR)/h2_stream.o \
-	$(OBJDIR)/h2_switch.o \
-	$(OBJDIR)/h2_task.o \
-	$(OBJDIR)/h2_util.o \
-	$(OBJDIR)/h2_worker.o \
-	$(OBJDIR)/h2_workers.o \
-	$(OBJDIR)/mod_http2.o \
+	$(OBJDIR)/h2_bucket_beam.lo \
+	$(OBJDIR)/h2_bucket_eos.lo \
+	$(OBJDIR)/h2_c1.lo \
+	$(OBJDIR)/h2_c1_io.lo \
+	$(OBJDIR)/h2_c2.lo \
+	$(OBJDIR)/h2_c2_filter.lo \
+	$(OBJDIR)/h2_config.lo \
+	$(OBJDIR)/h2_conn_ctx.lo \
+	$(OBJDIR)/h2_mplx.lo \
+	$(OBJDIR)/h2_protocol.lo \
+	$(OBJDIR)/h2_push.lo \
+	$(OBJDIR)/h2_request.lo \
+	$(OBJDIR)/h2_session.lo \
+	$(OBJDIR)/h2_stream.lo \
+	$(OBJDIR)/h2_switch.lo \
+	$(OBJDIR)/h2_util.lo \
+	$(OBJDIR)/h2_workers.lo \
+	$(OBJDIR)/mod_http2.lo \
 	$(EOLIST)
 
 #
@@ -265,7 +259,7 @@ FILES_nlm_exports = \
 #
 FILES_lib_objs := $(sort $(patsubst $(NGH2SRC)/lib/%.c,$(OBJDIR)/%.o,$(wildcard $(NGH2SRC)/lib/*.c)))
 #
-# implement targets and dependancies (leave this section alone)
+# implement targets and dependencies (leave this section alone)
 #
 
 libs :: $(OBJDIR) $(NGH2SRC)/lib/config.h $(TARGET_lib)

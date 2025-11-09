@@ -452,6 +452,7 @@ authentication hook.</description>
 <em>option</em> ...</syntax>
 <default>none</default>
 <contextlist><context>directory</context></contextlist>
+<override>FileInfo</override>
 <usage>
     <p>This directive is used to enable a FastCGI authorizer to
     handle a specific processing phase of authentication or

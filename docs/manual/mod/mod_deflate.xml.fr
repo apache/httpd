@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1726578 -->
+<!-- English Revision: 1911874 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -42,8 +42,8 @@ client</description>
   <p>Le seul codage supporté est <code>gzip</code> afin d'assurer une complète
   compatibilité avec les anciens navigateurs. Le codage <code>deflate</code>
   n'est donc pas supporté ; voir à ce sujet la <a
-  href="http://www.gzip.org/zlib/zlib_faq.html#faq38">documentation de zlib</a>
-  pour une explication détaillée.
+  href="https://zlib.net/zlib_faq.html#faq39">documentation de zlib</a> pour une
+  explication détaillée.
   </p>
 </section>
 
@@ -81,7 +81,7 @@ client</description>
 
       <highlight language="config">
 SetOutputFilter DEFLATE
-SetEnvIfNoCase Request_URI \.(?:gif|jpe?g|png)$ no-gzip   
+SetEnvIfNoCase Request_URI "\.(?:gif|jpe?g|png)$" no-gzip
 	</highlight>
 
       <p>Si vous voulez limiter la compression à certains types MIME
@@ -205,25 +205,18 @@ SetEnvIfNoCase Request_URI \.(?:gif|jpe?g|png)$ no-gzip
 <section id="precompressed"><title>Servir du contenu précompressé</title>
 
     <p>Comme <module>mod_deflate</module> recompresse le contenu demandé à
-    chaque requête, il est possible de gagner en performances en
-    précompressant ce contenu, et en forçant mod_deflate à servir ce
-    contenu précompressé sans avoir à le recompresser à chaque requête.
-    Pour ce faire, utilisez une configuration du style :</p>
+    chaque requête, il est possible de gagner en performances en précompressant
+    ce contenu, et en forçant <module>mod_deflate</module> à servir ce contenu
+    précompressé sans avoir à le recompresser à chaque requête.  Pour ce faire,
+    utilisez une configuration du style :</p>
 
     <highlight language="config">
 &lt;IfModule mod_headers.c&gt;
-    # Servir des fichiers CSS compressés avec gzip, s'ils existent, et
+    # Servir des fichiers JS et CSS compressés avec gzip, s'ils existent, et
     # si le client accepte gzip.
     RewriteCond "%{HTTP:Accept-encoding}" "gzip"
-    RewriteCond "%{REQUEST_FILENAME}\.gz" "-s"
-    RewriteRule "^(.*)\.css"              "$1\.css\.gz" [QSA]
-
-    # Servir des fichiers JS compressés avec gzip, s'ils existent, et
-    # si le client accepte gzip.
-    RewriteCond "%{HTTP:Accept-encoding}" "gzip"
-    RewriteCond "%{REQUEST_FILENAME}\.gz" "-s"
-    RewriteRule "^(.*)\.js"               "$1\.js\.gz" [QSA]
-
+     RewriteCond "%{REQUEST_FILENAME}\.gz" -s
+    RewriteRule "^(.*)\.(css|js)"              "$1\.$2\.gz" [QSA]
 
     # Servir des types de contenus corrects, et empêcher mod_deflate
     # d'effectuer un double gzip.
@@ -263,7 +256,7 @@ SetEnvIfNoCase Request_URI \.(?:gif|jpe?g|png)$ no-gzip
     <example><title>Exemple</title>
       <highlight language="config">
       DeflateFilterNote ratio
-    
+
       LogFormat '"%r" %b (%{ratio}n) "%{User-agent}i"' deflate
       CustomLog "logs/deflate_log" deflate
       </highlight>
@@ -385,6 +378,69 @@ sortie</description>
 </directivesynopsis>
 
 <directivesynopsis>
+<name>DeflateInflateLimitRequestBody</name>
+<description>Taille maximale des corps de requête décompressés</description>
+<syntax>DeflateInflateLimitRequestBody <var>value</var></syntax>
+<default>Aucune limite, mais LimitRequestBody s'applique après la
+compression</default>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context></contextlist>
+<override>All</override>
+<compatibility>Disponible à partir de la version 2.4.10 du serveur HTTP
+Apache</compatibility>
+
+<usage>
+    <p>La directive
+    <directive>DeflateInflateLimitRequestBody</directive> permet de
+    spécifier la taille maximale d'un corps de requête décompressé. Si
+    elle n'est pas définie, c'est la valeur de la directive <directive
+    module="core">LimitRequestBody</directive> qui s'applique au corps
+    de requête décompressé.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>DeflateInflateRatioLimit</name>
+<description>Ratio de décompression maximum pour les corps de requêtes</description>
+<syntax>DeflateInflateRatioLimit <var>value</var></syntax>
+<default>DeflateInflateRatioLimit 200</default>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context></contextlist>
+<override>All</override>
+<compatibility>Disponible à partir de la version 2.4.10 du serveur HTTP
+Apache</compatibility>
+
+<usage>
+    <p>La directive <directive>DeflateInflateRatioLimit</directive> permet de
+    définir le ratio maximum entre la taille d'un corps de requête compressé et
+    sa taille décompressée. Ce ratio est vérifié au fur et à mesure de l'arrivée
+    du corps de requête, et s'il est dépassé plus de <directive
+    module="mod_deflate">DeflateInflateRatioBurst</directive> fois, le
+    traitement de la requête est interrompu.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>DeflateInflateRatioBurst</name>
+<description>Nombre maximal de fois que le ratio de décompression d'un
+corps de requête peut être dépassé</description>
+<syntax>DeflateInflateRatioBurst <var>value</var></syntax>
+<default>DeflateInflateRatioBurst 3</default>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context></contextlist>
+<override>All</override>
+<compatibility>Disponible à partir de la version 2.4.10 du serveur HTTP
+Apache</compatibility>
+
+<usage>
+    <p>La directive <directive>DeflateInflateRatioBurst</directive> permet de
+    spécifier le nombre maximal de fois que la valeur de la directive <directive
+    module="mod_deflate">DeflateInflateRatioLimit</directive> peut être dépassé
+    avant l'arrêt du traitement de la requête.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
 <name>DeflateAlterETag</name>
 <description>Comment l'en-tête sortant ETag doit être modifié au cours
 de la compression</description>
@@ -392,6 +448,7 @@ de la compression</description>
 <default>DeflateAlterETag AddSuffix</default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
+<compatibility>Disponible à partir de la version 2.4.58 du serveur HTTP Apache</compatibility>
 
 <usage>
     <p>La directive <directive>DeflateAlterETag</directive> permet de
@@ -417,67 +474,6 @@ de la compression</description>
     conditionnelles, mais permet d'éviter les inconvénients des options
     précédentes.</p></dd>
     </dl>
-</usage>
-</directivesynopsis>
-
-<directivesynopsis>
-<name>DeflateInflateLimitRequestBody</name>
-<description>Taille maximale des corps de requête décompressés</description>
-<syntax>DeflateInflateLimitRequestBody<var>value</var></syntax>
-<default>Aucune limite, mais LimitRequestBody s'applique après la
-compression</default>
-<contextlist><context>server config</context><context>virtual host</context>
-<context>directory</context><context>.htaccess</context></contextlist>
-<compatibility>Disponible à partir de la version 2.4.10 du serveur HTTP
-Apache</compatibility>
-
-<usage>
-    <p>La directive
-    <directive>DeflateInflateLimitRequestBody</directive> permet de
-    spécifier la taille maximale d'un corps de requête décompressé. Si
-    elle n'est pas définie, c'est la valeur de la directive <directive
-    module="core">LimitRequestBody</directive> qui s'applique au corps
-    de requête décompressé.</p>
-</usage>
-</directivesynopsis>
-
-<directivesynopsis>
-<name>DeflateInflateRatioLimit</name>
-<description>Ratio de décompression maximum pour les corps de requêtes</description>
-<syntax>DeflateInflateRatioLimit <var>value</var></syntax>
-<default>200</default>
-<contextlist><context>server config</context><context>virtual host</context>
-<context>directory</context><context>.htaccess</context></contextlist>
-<compatibility>Disponible à partir de la version 2.4.10 du serveur HTTP
-Apache</compatibility>
-
-<usage>
-    <p>La directive <directive>DeflateInflateRatioLimit</directive>
-    permet de définir le ratio maximum entre la taille d'un corps de
-    requête compressé et sa taille décompressée. Ce ratio est vérifié au
-    fur et à mesure de
-    l'arrivée du corps de requête, et s'il est dépassé plus de
-    <directive>DeflateInflateRatioBurst</directive> fois, le traitement
-    de la requête est interrompu.</p>
-</usage>
-</directivesynopsis>
-
-<directivesynopsis>
-<name>DeflateInflateRatioBurst</name>
-<description>Nombre maximal de fois que le ratio de décompression d'un
-corps de requête peut être dépassé</description>
-<syntax>DeflateInflateRatioBurst <var>value</var></syntax>
-<default>3</default>
-<contextlist><context>server config</context><context>virtual host</context>
-<context>directory</context><context>.htaccess</context></contextlist>
-<compatibility>Disponible à partir de la version 2.4.10 du serveur HTTP
-Apache</compatibility>
-
-<usage>
-    <p>La directive <directive>DeflateInflateRatioBurst</directive>
-    permet de spécifier le nombre maximal de fois que la valeur de la
-    directive <directive>DeflateInflateRatioLimit</directive> peut être
-    dépassé avant l'arrêt du traitement de la requête.</p>
 </usage>
 </directivesynopsis>
 

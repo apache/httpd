@@ -912,7 +912,7 @@ LRESULT CALLBACK ConnectDlgProc(HWND hDlg, UINT message,
                             WM_SETTEXT,
                             (WPARAM) NULL, (LPARAM) szCmp);
             }
-            if (SHGetMalloc(&pMalloc)) {
+            if (SUCCEEDED(SHGetMalloc(&pMalloc))) {
                 pMalloc->lpVtbl->Free(pMalloc, il);
                 pMalloc->lpVtbl->Release(pMalloc);
             }

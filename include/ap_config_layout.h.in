@@ -60,7 +60,7 @@
 #define DEFAULT_REL_LOGFILEDIR "@rel_logfiledir@"
 #define DEFAULT_EXP_PROXYCACHEDIR "@exp_proxycachedir@"
 #define DEFAULT_REL_PROXYCACHEDIR "@rel_proxycachedir@"
-#define DEFAULT_EXP_DAVLOCKDB "@exp_davlockdb@"
-#define DEFAULT_REL_DAVLOCKDB "@rel_davlockdb@"
+#define DEFAULT_EXP_STATEDIR "@exp_statedir@"
+#define DEFAULT_REL_STATEDIR "@rel_statedir@"
 
 #endif /* AP_CONFIG_LAYOUT_H */

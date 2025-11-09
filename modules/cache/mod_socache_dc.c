@@ -69,7 +69,7 @@ static apr_status_t socache_dc_init(ap_socache_instance_t *ctx,
     /* This mode of operation will open a temporary connection to the 'target'
      * for each cache operation - this makes it safe against fork()
      * automatically. This mode is preferred when running a local proxy (over
-     * unix domain sockets) because overhead is negligable and it reduces the
+     * unix domain sockets) because overhead is negligible and it reduces the
      * performance/stability danger of file-descriptor bloatage. */
 #define SESSION_CTX_FLAGS        0
 #endif

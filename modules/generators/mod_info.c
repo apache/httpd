@@ -80,9 +80,9 @@ typedef struct
 module AP_MODULE_DECLARE_DATA info_module;
 
 /* current file name when doing -DDUMP_CONFIG */
-const char *dump_config_fn_info;
+static const char *dump_config_fn_info;
 /* file handle when doing -DDUMP_CONFIG */
-apr_file_t *out = NULL;
+static apr_file_t *out = NULL;
 
 static void *create_info_config(apr_pool_t * p, server_rec * s)
 {
@@ -230,7 +230,7 @@ static int mod_info_has_cmd(const command_rec * cmds, ap_directive_t * dir)
     if (cmds == NULL)
         return 1;
     for (cmd = cmds; cmd->name; ++cmd) {
-        if (strcasecmp(cmd->name, dir->directive) == 0)
+        if (ap_cstr_casecmp(cmd->name, dir->directive) == 0)
             return 1;
     }
     return 0;
@@ -297,7 +297,7 @@ typedef struct
     hook_get_t get;
 } hook_lookup_t;
 
-static hook_lookup_t startup_hooks[] = {
+static const hook_lookup_t startup_hooks[] = {
     {"Pre-Config", ap_hook_get_pre_config},
     {"Check Configuration", ap_hook_get_check_config},
     {"Test Configuration", ap_hook_get_test_config},
@@ -311,7 +311,7 @@ static hook_lookup_t startup_hooks[] = {
     {NULL},
 };
 
-static hook_lookup_t request_hooks[] = {
+static const hook_lookup_t request_hooks[] = {
     {"Pre-Connection", ap_hook_get_pre_connection},
     {"Create Connection", ap_hook_get_create_connection},
     {"Process Connection", ap_hook_get_process_connection},
@@ -322,6 +322,7 @@ static hook_lookup_t request_hooks[] = {
     {"HTTP Scheme", ap_hook_get_http_scheme},
     {"Default Port", ap_hook_get_default_port},
     {"Quick Handler", ap_hook_get_quick_handler},
+    {"Pre-Translate Name", ap_hook_get_pre_translate_name},
     {"Translate Name", ap_hook_get_translate_name},
     {"Map to Storage", ap_hook_get_map_to_storage},
     {"Check Access", ap_hook_get_access_checker_ex},
@@ -339,7 +340,7 @@ static hook_lookup_t request_hooks[] = {
     {NULL},
 };
 
-static hook_lookup_t other_hooks[] = {
+static const hook_lookup_t other_hooks[] = {
     {"Monitor", ap_hook_get_monitor},
     {"Child Status", ap_hook_get_child_status},
     {"End Generation", ap_hook_get_end_generation},
@@ -378,7 +379,7 @@ static int module_find_hook(module * modp, hook_get_t hook_get)
 
 static void module_participate(request_rec * r,
                                module * modp,
-                               hook_lookup_t * lookup, int *comma)
+                               const hook_lookup_t *lookup, int *comma)
 {
     if (module_find_hook(modp, lookup->get)) {
         if (*comma) {
@@ -474,7 +475,7 @@ static int show_server_settings(request_rec * r)
                "keep-alive: %d</tt></dt>",
                (int) (apr_time_sec(serv->timeout)),
                (int) (apr_time_sec(serv->keep_alive_timeout)));
-    ap_mpm_query(AP_MPMQ_MAX_DAEMON_USED, &max_daemons);
+    ap_mpm_query(AP_MPMQ_MAX_DAEMONS, &max_daemons);
     ap_mpm_query(AP_MPMQ_IS_THREADED, &threaded);
     ap_mpm_query(AP_MPMQ_IS_FORKED, &forked);
     ap_rprintf(r, "<dt><strong>MPM Name:</strong> <tt>%s</tt></dt>\n",
@@ -583,7 +584,7 @@ static int show_server_settings(request_rec * r)
 #ifdef BUFFERED_LOGS
     ap_rputs(" -D BUFFERED_LOGS\n", r);
 #ifdef PIPE_BUF
-    ap_rputs(" -D PIPE_BUF=%ld\n", (long) PIPE_BUF, r);
+    ap_rprintf(r, " -D PIPE_BUF=%ld\n", (long) PIPE_BUF);
 #endif
 #endif
 
@@ -783,7 +784,7 @@ static int display_info(request_rec * r)
         return DECLINED;
     }
 
-    ap_set_content_type(r, "text/html; charset=ISO-8859-1");
+    ap_set_content_type_ex(r, "text/html; charset=ISO-8859-1", 1);
 
     ap_rputs(DOCTYPE_XHTML_1_0T
              "<html xmlns=\"http://www.w3.org/1999/xhtml\">\n"

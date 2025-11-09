@@ -9,6 +9,7 @@
   <variants>
     <variant outdated="yes">de</variant>
     <variant>en</variant>
+    <variant>fr</variant>
     <variant outdated="yes">ja</variant>
     <variant>tr</variant>
   </variants>

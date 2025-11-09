@@ -67,7 +67,7 @@
    <p>CONNECT method requests are controlled by the
    <directive module="mod_proxy">Proxy</directive> block
    as any other HTTP request going through.
-   SSL connections through a proxy may be filtered explicitely
+   SSL connections through a proxy may be filtered explicitly
    by specifying the target host and port, for instance:
    </p>
 

@@ -101,6 +101,9 @@ DAV_DECLARE(dav_error*) dav_join_error(dav_error *dest, dav_error *src)
     return dest;
 }
 
+/* ### Unclear if this was designed to be used with an uninitialized
+ * dav_buffer struct, but is used on by dav_lock_get_activelock().
+ * Hence check for pbuf->buf. */
 DAV_DECLARE(void) dav_check_bufsize(apr_pool_t * p, dav_buffer *pbuf,
                                     apr_size_t extra_needed)
 {
@@ -110,7 +113,8 @@ DAV_DECLARE(void) dav_check_bufsize(apr_pool_t * p, dav_buffer *pbuf,
 
         pbuf->alloc_len += extra_needed + DAV_BUFFER_PAD;
         newbuf = apr_palloc(p, pbuf->alloc_len);
-        memcpy(newbuf, pbuf->buf, pbuf->cur_len);
+        if (pbuf->buf)
+            memcpy(newbuf, pbuf->buf, pbuf->cur_len);
         pbuf->buf = newbuf;
     }
 }
@@ -312,24 +316,69 @@ DAV_DECLARE(dav_lookup_result) dav_lookup_uri(const char *uri,
 */
 
 /* validate that the root element uses a given DAV: tagname (TRUE==valid) */
+DAV_DECLARE(int) dav_validate_root_ns(const apr_xml_doc *doc,
+                                      int ns, const char *tagname)
+{
+    return doc->root &&
+        doc->root->ns == ns &&
+        strcmp(doc->root->name, tagname) == 0;
+}
+
+/* validate that the root element uses a given DAV: tagname (TRUE==valid) */
 DAV_DECLARE(int) dav_validate_root(const apr_xml_doc *doc,
                                    const char *tagname)
 {
-    return doc->root &&
-        doc->root->ns == APR_XML_NS_DAV_ID &&
-        strcmp(doc->root->name, tagname) == 0;
+	return dav_validate_root_ns(doc, APR_XML_NS_DAV_ID, tagname);
+}
+
+/* find and return the next child with a tagname in the given namespace */
+DAV_DECLARE(apr_xml_elem *) dav_find_next_ns(const apr_xml_elem *elem,
+                                             int ns, const char *tagname)
+{
+    apr_xml_elem *child = elem->next;
+
+    for (; child; child = child->next)
+        if (child->ns == ns && !strcmp(child->name, tagname))
+            return child;
+    return NULL;
+}
+
+/* find and return the (unique) child with a tagname in the given namespace */
+DAV_DECLARE(apr_xml_elem *) dav_find_child_ns(const apr_xml_elem *elem,
+                                              int ns, const char *tagname)
+{
+    apr_xml_elem *child = elem->first_child;
+
+    for (; child; child = child->next)
+        if (child->ns == ns && !strcmp(child->name, tagname))
+            return child;
+    return NULL;
 }
 
 /* find and return the (unique) child with a given DAV: tagname */
 DAV_DECLARE(apr_xml_elem *) dav_find_child(const apr_xml_elem *elem,
                                            const char *tagname)
 {
-    apr_xml_elem *child = elem->first_child;
+	return dav_find_child_ns(elem, APR_XML_NS_DAV_ID, tagname);
+}
 
-    for (; child; child = child->next)
-        if (child->ns == APR_XML_NS_DAV_ID && !strcmp(child->name, tagname))
-            return child;
+/* find and return the attribute with a name in the given namespace */
+DAV_DECLARE(apr_xml_attr *) dav_find_attr_ns(const apr_xml_elem *elem,
+                                             int ns, const char *attrname)
+{
+    apr_xml_attr *attr = elem->attr;
+
+    for (; attr; attr = attr->next)
+        if (attr->ns == ns && !strcmp(attr->name, attrname))
+            return attr;
     return NULL;
+}
+
+/* find and return the attribute with a given DAV: tagname */
+DAV_DECLARE(apr_xml_attr *) dav_find_attr(const apr_xml_elem *elem,
+                                          const char *attrname)
+{
+	return dav_find_attr_ns(elem, APR_XML_NS_DAV_ID, attrname);
 }
 
 /* gather up all the CDATA into a single string */
@@ -470,8 +519,8 @@ DAV_DECLARE(void) dav_xmlns_generate(dav_xmlns_info *xi,
 
         apr_hash_this(hi, &prefix, NULL, &uri);
 
-        s = apr_psprintf(xi->pool, " xmlns:%s=\"%s\"",
-                         (const char *)prefix, (const char *)uri);
+        s = apr_pstrcat(xi->pool, " xmlns:", (const char *)prefix, "=\"",
+                        (const char *)uri, "\"", NULL);
         apr_text_append(xi->pool, phdr, s);
     }
 }
@@ -492,9 +541,27 @@ DAV_DECLARE(void) dav_xmlns_generate(dav_xmlns_info *xi,
  */
 DAV_DECLARE(time_t) dav_get_timeout(request_rec *r)
 {
+    const char *timeout_const = apr_table_get(r->headers_in, "Timeout");
+
+    if (timeout_const == NULL)
+        return DAV_TIMEOUT_INFINITE;
+
+    return dav_get_timeout_string(r, timeout_const);
+}
+
+/* dav_get_timeout_string:  From a Timeout header value, return a time_t
+ *    when this lock is expected to expire.  Otherwise, return
+ *    a time_t of DAV_TIMEOUT_INFINITE.
+ *
+ *    It's unclear if DAV clients are required to understand
+ *    Seconds-xxx and Infinity time values.  We assume that they do.
+ *    In addition, for now, that's all we understand, too.
+ */
+DAV_DECLARE(time_t) dav_get_timeout_string(request_rec *r,
+                                           const char *timeout_const)
+{
     time_t now, expires = DAV_TIMEOUT_INFINITE;
 
-    const char *timeout_const = apr_table_get(r->headers_in, "Timeout");
     const char *timeout = apr_pstrdup(r->pool, timeout_const), *val;
 
     if (timeout == NULL)
@@ -660,7 +727,13 @@ static dav_error * dav_process_if_header(request_rec *r, dav_if_header **p_ih)
             /* note that parsed_uri.path is allocated; we can trash it */
 
             /* clean up the URI a bit */
-            ap_getparents(parsed_uri.path);
+            if (!ap_normalize_path(parsed_uri.path,
+                                   AP_NORMALIZE_NOT_ABOVE_ROOT |
+                                   AP_NORMALIZE_DECODE_UNRESERVED)) {
+                return dav_new_error(r->pool, HTTP_BAD_REQUEST,
+                                     DAV_ERR_IF_TAGGED, rv,
+                                     "Invalid URI path tagged If-header.");
+            }
 
             /* the resources we will compare to have unencoded paths */
             if (ap_unescape_url(parsed_uri.path) != OK) {
@@ -746,8 +819,14 @@ static dav_error * dav_process_if_header(request_rec *r, dav_if_header **p_ih)
                                                  "for the same state.");
                         }
                         condition = DAV_IF_COND_NOT;
+                        list += 2;
                     }
-                    list += 2;
+                    else {
+                        return dav_new_error(r->pool, HTTP_BAD_REQUEST,
+                                             DAV_ERR_IF_UNK_CHAR, 0,
+                                             "Invalid \"If:\" header: "
+                                             "Unexpected character in List");
+                    }
                     break;
 
                 case ' ':
@@ -1207,7 +1286,7 @@ static dav_error * dav_validate_resource_state(apr_pool_t *p,
                         const char *errmsg;
 
                         errmsg = apr_pstrcat(p, "User \"",
-                                            r->user,
+                                             r->user ? r->user : "[none]",
                                             "\" submitted a locktoken created "
                                             "by user \"",
                                             lock->auth_user, "\".", NULL);

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-/*                      _             _
+/*
  *  ap_expr_eval.c, based on ssl_expr_eval.c from mod_ssl
  */
 
@@ -23,10 +23,12 @@
 #include "http_core.h"
 #include "http_protocol.h"
 #include "http_request.h"
+#include "http_ssl.h"
 #include "ap_provider.h"
 #include "util_varbuf.h"
 #include "util_expr_private.h"
 #include "util_md5.h"
+#include "util_varbuf.h"
 
 #include "apr_lib.h"
 #include "apr_fnmatch.h"
@@ -54,6 +56,8 @@ AP_IMPLEMENT_HOOK_RUN_FIRST(int, expr_lookup, (ap_expr_lookup_parms *parms),
 
 #define  LOG_MARK(info)  __FILE__, __LINE__, (info)->module_index
 
+static int ap_expr_eval_cond(ap_expr_eval_ctx_t *ctx, const ap_expr_t *node);
+
 static const char *ap_expr_eval_string_func(ap_expr_eval_ctx_t *ctx,
                                             const ap_expr_t *info,
                                             const ap_expr_t *args);
@@ -63,6 +67,19 @@ static const char *ap_expr_eval_var(ap_expr_eval_ctx_t *ctx,
                                     ap_expr_var_func_t *func,
                                     const void *data);
 
+typedef struct {
+    int flags;
+    const ap_expr_t *subst;
+} ap_expr_regctx_t;
+
+static const char *ap_expr_regexec(const char *subject,
+                                   const ap_expr_t *reg,
+                                   apr_array_header_t *list,
+                                   ap_expr_eval_ctx_t *ctx);
+
+static apr_array_header_t *ap_expr_list_make(ap_expr_eval_ctx_t *ctx,
+                                             const ap_expr_t *node);
+
 /* define AP_EXPR_DEBUG to log the parse tree when parsing an expression */
 #ifdef AP_EXPR_DEBUG
 static void expr_dump_tree(const ap_expr_t *e, const server_rec *s,
@@ -71,7 +88,7 @@ static void expr_dump_tree(const ap_expr_t *e, const server_rec *s,
 
 /*
  * To reduce counting overhead, we only count calls to
- * ap_expr_eval_word() and ap_expr_eval(). The max number of
+ * ap_expr_eval_word() and ap_expr_eval_cond(). The max number of
  * stack frames is larger by some factor.
  */
 #define AP_EXPR_MAX_RECURSION   20
@@ -87,6 +104,36 @@ static int inc_rec(ap_expr_eval_ctx_t *ctx)
     return 1;
 }
 
+static const char *ap_expr_list_pstrcat(apr_pool_t *p,
+                                        const apr_array_header_t *list,
+                                        const char *sep)
+{
+    if (list->nelts <= 0) {
+        return NULL;
+    }
+    else if (list->nelts == 1) {
+        return APR_ARRAY_IDX(list, 0, const char*);
+    }
+    else {
+        struct ap_varbuf vb;
+        int n = list->nelts - 1, i;
+        apr_size_t slen = strlen(sep), vlen;
+        const char *val;
+
+        ap_varbuf_init(p, &vb, 0);
+        for (i = 0; i < n; ++i) {
+            val = APR_ARRAY_IDX(list, i, const char*);
+            vlen = strlen(val);
+            ap_varbuf_strmemcat(&vb, val, vlen);
+            ap_varbuf_strmemcat(&vb, sep, slen);
+        }
+        val = APR_ARRAY_IDX(list, n, const char*);
+        ap_varbuf_strmemcat(&vb, val, strlen(val));
+
+        return vb.buf;
+    }
+}
+
 static const char *ap_expr_eval_word(ap_expr_eval_ctx_t *ctx,
                                      const ap_expr_t *node)
 {
@@ -97,6 +144,12 @@ static const char *ap_expr_eval_word(ap_expr_eval_ctx_t *ctx,
     case op_Digit:
     case op_String:
         result = node->node_arg1;
+        break;
+    case op_Word:
+        result = ap_expr_eval_word(ctx, node->node_arg1);
+        break;
+    case op_Bool:
+        result = ap_expr_eval_cond(ctx, node->node_arg1) ? "true" : "false";
         break;
     case op_Var:
         result = ap_expr_eval_var(ctx, (ap_expr_var_func_t *)node->node_arg1,
@@ -168,7 +221,20 @@ static const char *ap_expr_eval_word(ap_expr_eval_ctx_t *ctx,
         result = ap_expr_eval_string_func(ctx, info, args);
         break;
     }
-    case op_RegexBackref: {
+    case op_Join: {
+        const char *sep;
+        apr_array_header_t *list = ap_expr_list_make(ctx, node->node_arg1);
+        sep = node->node_arg2 ? ap_expr_eval_word(ctx, node->node_arg2) : "";
+        result = ap_expr_list_pstrcat(ctx->p, list, sep);
+        break;
+    }
+    case op_Sub: {
+        const ap_expr_t *reg = node->node_arg2;
+        const char *subject = ap_expr_eval_word(ctx, node->node_arg1);
+        result = ap_expr_regexec(subject, reg, NULL, ctx);
+        break;
+    }
+    case op_Backref: {
         const unsigned int *np = node->node_arg1;
         result = ap_expr_eval_re_backref(ctx, *np);
         break;
@@ -196,8 +262,8 @@ static const char *ap_expr_eval_re_backref(ap_expr_eval_ctx_t *ctx, unsigned int
 {
     int len;
 
-    if (!ctx->re_pmatch || !ctx->re_source || *ctx->re_source == '\0' ||
-        ctx->re_nmatch < n + 1)
+    if (!ctx->re_pmatch || !ctx->re_source || !*ctx->re_source
+        || **ctx->re_source == '\0' || ctx->re_nmatch < n + 1)
         return "";
 
     len = ctx->re_pmatch[n].rm_eo - ctx->re_pmatch[n].rm_so;
@@ -219,15 +285,7 @@ static const char *ap_expr_eval_string_func(ap_expr_eval_ctx_t *ctx,
     if (arg->node_op == op_ListElement) {
         /* Evaluate the list elements and store them in apr_array_header. */
         ap_expr_string_list_func_t *func = (ap_expr_string_list_func_t *)info->node_arg1;
-        apr_array_header_t *args = apr_array_make(ctx->p, 2, sizeof(char *));
-        do {
-            const ap_expr_t *val = arg->node_arg1;
-            const char **new = apr_array_push(args);
-            *new = ap_expr_eval_word(ctx, val);
-
-            arg = arg->node_arg2;
-        } while (arg != NULL);
-
+        apr_array_header_t *args = ap_expr_list_make(ctx, arg);
         return (*func)(ctx, data, args);
     }
     else {
@@ -247,6 +305,145 @@ static int intstrcmp(const char *s1, const char *s2)
         return 0;
     else
         return 1;
+}
+
+static const char *ap_expr_regexec(const char *subject,
+                                   const ap_expr_t *reg,
+                                   apr_array_header_t *list,
+                                   ap_expr_eval_ctx_t *ctx)
+{
+    struct ap_varbuf vb;
+    const char *val = subject;
+    const ap_regex_t *regex = reg->node_arg1;
+    const ap_expr_regctx_t *regctx = reg->node_arg2;
+    ap_regmatch_t *pmatch = NULL, match0;
+    apr_size_t nmatch = 0;
+    const char *str = "";
+    apr_size_t len = 0;
+    int empty = 0, rv;
+
+    ap_varbuf_init(ctx->p, &vb, 0);
+    if (ctx->re_nmatch > 0) {
+        nmatch = ctx->re_nmatch;
+        pmatch = ctx->re_pmatch;
+    }
+    else if (regctx->subst) {
+        nmatch = 1;
+        pmatch = &match0;
+    }
+    do {
+        /* If previous match was empty, we can't issue the exact same one or
+         * we'd loop indefinitely.  So let's instead ask for an anchored and
+         * non-empty match (i.e. something not empty at the start of the value)
+         * and if nothing is found advance by one character below.
+         */
+        rv = ap_regexec(regex, val, nmatch, pmatch, 
+                        empty ? AP_REG_ANCHORED | AP_REG_NOTEMPTY : 0);
+        if (rv == 0) {
+            int pos = pmatch[0].rm_so,
+                end = pmatch[0].rm_eo;
+            AP_DEBUG_ASSERT(pos >= 0 && pos <= end);
+
+            if (regctx->subst) {
+                *ctx->re_source = val;
+                str = ap_expr_eval_word(ctx, regctx->subst);
+                len = strlen(str);
+            }
+            if (list) {
+                char *tmp = apr_palloc(ctx->p, pos + len + 1);
+                memcpy(tmp, val, pos);
+                memcpy(tmp + pos, str, len + 1);
+                APR_ARRAY_PUSH(list, const char*) = tmp;
+            }
+            else {
+                ap_varbuf_grow(&vb, pos + len + 1);
+                ap_varbuf_strmemcat(&vb, val, pos);
+                ap_varbuf_strmemcat(&vb, str, len);
+                if (!(regctx->flags & AP_REG_MULTI)) {
+                    /* Single substitution, preserve remaining data */
+                    ap_varbuf_strmemcat(&vb, val + end, strlen(val) - end);
+                    break;
+                }
+            }
+            /* Note an empty match */
+            empty = (end == 0);
+            val += end;
+        }
+        else if (empty) {
+            /* Skip this non-matching character (or full CRLF) and restart
+             * another "normal" match (possibly empty) from there.
+             */
+            if (val[0] == '\r' && val[1] == '\n') {
+                val += 2;
+            }
+            else {
+                val++;
+            }
+            empty = 0;
+        }
+        else {
+            if (list) {
+                APR_ARRAY_PUSH(list, const char*) = val;
+            }
+            else if (vb.avail) {
+                ap_varbuf_strmemcat(&vb, val, strlen(val));
+            }
+            else {
+                return val;
+            }
+            break;
+        }
+    } while (*val);
+
+    return vb.buf;
+}
+
+static apr_array_header_t *ap_expr_list_make(ap_expr_eval_ctx_t *ctx,
+                                             const ap_expr_t *node)
+{
+    apr_array_header_t *list = NULL;
+
+    if (node->node_op == op_Split) {
+        const ap_expr_t *arg = node->node_arg1;
+        const ap_expr_t *reg = node->node_arg2;
+        const apr_array_header_t *source = ap_expr_list_make(ctx, arg);
+        int i;
+
+        list = apr_array_make(ctx->p, source->nelts, sizeof(const char*));
+        for (i = 0; i < source->nelts; ++i) {
+            const char *val = APR_ARRAY_IDX(source, i, const char*);
+            (void)ap_expr_regexec(val, reg, list, ctx);
+        }
+    }
+    else if (node->node_op == op_ListElement) {
+        int n = 0;
+        const ap_expr_t *elem;
+        for (elem = node; elem; elem = elem->node_arg2) {
+            AP_DEBUG_ASSERT(elem->node_op == op_ListElement);
+            n++;
+        }
+
+        list = apr_array_make(ctx->p, n, sizeof(const char*));
+        for (elem = node; elem; elem = elem->node_arg2) {
+            APR_ARRAY_PUSH(list, const char*) =
+                ap_expr_eval_word(ctx, elem->node_arg1);
+        }
+    }
+    else if (node->node_op == op_ListFuncCall) {
+        const ap_expr_t *info = node->node_arg1;
+        ap_expr_list_func_t *func = info->node_arg1;
+
+        AP_DEBUG_ASSERT(func != NULL);
+        AP_DEBUG_ASSERT(info->node_op == op_ListFuncInfo);
+        list = (*func)(ctx, info->node_arg2,
+                       ap_expr_eval_word(ctx, node->node_arg2));
+    }
+    else {
+        list = apr_array_make(ctx->p, 1, sizeof(const char*));
+        APR_ARRAY_PUSH(list, const char*) = ap_expr_eval_word(ctx, node);
+    }
+
+    return list;
 }
 
 static int ap_expr_eval_comp(ap_expr_eval_ctx_t *ctx, const ap_expr_t *node)
@@ -279,30 +476,17 @@ static int ap_expr_eval_comp(ap_expr_eval_ctx_t *ctx, const ap_expr_t *node)
     case op_STR_GE:
         return (strcmp(ap_expr_eval_word(ctx, e1), ap_expr_eval_word(ctx, e2)) >= 0);
     case op_IN: {
-            const char *needle = ap_expr_eval_word(ctx, e1);
-            if (e2->node_op == op_ListElement) {
-                do {
-                    const ap_expr_t *val = e2->node_arg1;
-                    AP_DEBUG_ASSERT(e2->node_op == op_ListElement);
-                    if (strcmp(needle, ap_expr_eval_word(ctx, val)) == 0)
+            int n;
+            const char *needle, *subject;
+            apr_array_header_t *haystack;
+            haystack = ap_expr_list_make(ctx, e2);
+            if (haystack) {
+                needle = ap_expr_eval_word(ctx, e1);
+                for (n = 0; n < haystack->nelts; ++n) {
+                    subject = APR_ARRAY_IDX(haystack, n, const char*);
+                    if (strcmp(needle, subject) == 0) {
                         return 1;
-                    e2 = e2->node_arg2;
-                } while (e2 != NULL);
-            }
-            else if (e2->node_op == op_ListFuncCall) {
-                const ap_expr_t *info = e2->node_arg1;
-                const ap_expr_t *arg = e2->node_arg2;
-                ap_expr_list_func_t *func = (ap_expr_list_func_t *)info->node_arg1;
-                apr_array_header_t *haystack;
-
-                AP_DEBUG_ASSERT(func != NULL);
-                AP_DEBUG_ASSERT(info->node_op == op_ListFuncInfo);
-                haystack = (*func)(ctx, info->node_arg2, ap_expr_eval_word(ctx, arg));
-                if (haystack == NULL) {
-                    return 0;
-                }
-                if (ap_array_str_contains(haystack, needle)) {
-                    return 1;
+                    }
                 }
             }
             return 0;
@@ -326,10 +510,7 @@ static int ap_expr_eval_comp(ap_expr_eval_ctx_t *ctx, const ap_expr_t *node)
                 result = (0 == ap_regexec(regex, word, 0, NULL, 0));
             }
 
-            if (node->node_op == op_REG)
-                return result;
-            else
-                return !result;
+            return result ^ (node->node_op == op_NRE);
         }
     default:
         *ctx->err = "Internal evaluation error: Unknown comp expression node";
@@ -340,7 +521,7 @@ static int ap_expr_eval_comp(ap_expr_eval_ctx_t *ctx, const ap_expr_t *node)
 /* combined string/int comparison for compatibility with ssl_expr */
 static int strcmplex(const char *str1, const char *str2)
 {
-    int i, n1, n2;
+    apr_size_t i, n1, n2;
 
     if (str1 == NULL)
         return -1;
@@ -401,25 +582,28 @@ AP_DECLARE(const char *) ap_expr_parse(apr_pool_t *pool, apr_pool_t *ptemp,
     ap_expr_parse_ctx_t ctx;
     int rc;
 
+    memset(&ctx, 0, sizeof ctx);
     ctx.pool     = pool;
     ctx.ptemp    = ptemp;
     ctx.inputbuf = expr;
     ctx.inputlen = strlen(expr);
     ctx.inputptr = ctx.inputbuf;
-    ctx.expr     = NULL;
-    ctx.error    = NULL;        /* generic bison error message (XXX: usually not very useful, should be axed) */
-    ctx.error2   = NULL;        /* additional error message */
     ctx.flags    = info->flags;
-    ctx.scan_del    = '\0';
-    ctx.scan_buf[0] = '\0';
-    ctx.scan_ptr    = ctx.scan_buf;
     ctx.lookup_fn   = lookup_fn ? lookup_fn : ap_expr_lookup_default;
     ctx.at_start    = 1;
 
-    ap_expr_yylex_init(&ctx.scanner);
+    rc = ap_expr_yylex_init(&ctx.scanner);
+    if (rc)
+        return "ap_expr_yylex_init error";
+
     ap_expr_yyset_extra(&ctx, ctx.scanner);
     rc = ap_expr_yyparse(&ctx);
     ap_expr_yylex_destroy(ctx.scanner);
+
+    /* ctx.error: the generic bison error message
+     *            (XXX: usually not very useful, should be axed)
+     * ctx.error2: an additional error message
+     */
     if (ctx.error) {
         if (ctx.error2)
             return apr_psprintf(pool, "%s: %s", ctx.error, ctx.error2);
@@ -464,12 +648,71 @@ AP_DECLARE(ap_expr_info_t*) ap_expr_parse_cmd_mi(const cmd_parms *cmd,
 }
 
 ap_expr_t *ap_expr_make(ap_expr_node_op_e op, const void *a1, const void *a2,
-                      ap_expr_parse_ctx_t *ctx)
+                        ap_expr_parse_ctx_t *ctx)
 {
     ap_expr_t *node = apr_palloc(ctx->pool, sizeof(ap_expr_t));
     node->node_op   = op;
     node->node_arg1 = a1;
     node->node_arg2 = a2;
+    return node;
+}
+
+ap_expr_t *ap_expr_concat_make(const void *a1, const void *a2,
+                               ap_expr_parse_ctx_t *ctx)
+{
+    const ap_expr_t *node;
+
+    /* Optimize out empty string(s) concatenation */
+    if ((node = a1)
+            && node->node_op == op_String
+            && !*(const char *)node->node_arg1) {
+        return (ap_expr_t *)a2;
+    }
+    if ((node = a2)
+            && node->node_op == op_String
+            && !*(const char *)node->node_arg1) {
+        return (ap_expr_t *)a1;
+    }
+
+    return ap_expr_make(op_Concat, a1, a2, ctx);
+}
+
+ap_expr_t *ap_expr_regex_make(const char *pattern, const ap_expr_t *subst,
+                              const char *flags, ap_expr_parse_ctx_t *ctx)
+{
+    ap_expr_t *node = NULL;
+    ap_expr_regctx_t *regctx;
+    ap_regex_t *regex;
+
+    regctx = apr_pcalloc(ctx->pool, sizeof *regctx);
+    regctx->subst = subst;
+    if (flags) {
+        for (; *flags; ++flags) {
+            switch (*flags) {
+            case 'i':
+                regctx->flags |= AP_REG_ICASE;
+                break;
+            case 'm':
+                regctx->flags |= AP_REG_NEWLINE;
+                break;
+            case 's':
+                regctx->flags |= AP_REG_DOTALL;
+                break;
+            case 'g':
+                regctx->flags |= AP_REG_MULTI;
+                break;
+            }
+        }
+    }
+    regex = ap_pregcomp(ctx->pool, pattern, regctx->flags);
+    if (!regex) {
+        return NULL;
+    }
+
+    node = apr_palloc(ctx->pool, sizeof(ap_expr_t));
+    node->node_op   = op_Regex;
+    node->node_arg1 = regex;
+    node->node_arg2 = regctx;
     return node;
 }
 
@@ -494,10 +737,12 @@ static ap_expr_t *ap_expr_info_make(int type, const char *name,
                 parms.arg = arg->node_arg1;
                 break;
             case op_ListElement:
+                /* save the first literal/simple string argument */
                 do {
                     const ap_expr_t *val = arg->node_arg1;
-                    if (val->node_op == op_String) {
+                    if (val && val->node_op == op_String) {
                         parms.arg = val->node_arg1;
+                        break;
                     }
                     arg = arg->node_arg2;
                 } while (arg != NULL);
@@ -567,6 +812,12 @@ ap_expr_t *ap_expr_var_make(const char *name, ap_expr_parse_ctx_t *ctx)
 
     node->node_op = op_Var;
     return node;
+}
+
+ap_expr_t *ap_expr_backref_make(int num, ap_expr_parse_ctx_t *ctx)
+{
+    int *n = apr_pmemdup(ctx->pool, &num, sizeof(num));
+    return ap_expr_make(op_Backref, n, NULL, ctx);
 }
 
 #ifdef AP_EXPR_DEBUG
@@ -654,6 +905,11 @@ static void expr_dump_tree(const ap_expr_t *e, const server_rec *s,
     case op_IN:
     case op_REG:
     case op_NRE:
+    case op_Word:
+    case op_Bool:
+    case op_Sub:
+    case op_Join:
+    case op_Split:
     case op_Concat:
     case op_StringFuncCall:
     case op_ListFuncCall:
@@ -680,6 +936,11 @@ static void expr_dump_tree(const ap_expr_t *e, const server_rec *s,
             CASE_OP(op_IN);
             CASE_OP(op_REG);
             CASE_OP(op_NRE);
+            CASE_OP(op_Word);
+            CASE_OP(op_Bool);
+            CASE_OP(op_Sub);
+            CASE_OP(op_Join);
+            CASE_OP(op_Split);
             CASE_OP(op_Concat);
             CASE_OP(op_StringFuncCall);
             CASE_OP(op_ListFuncCall);
@@ -729,8 +990,8 @@ static void expr_dump_tree(const ap_expr_t *e, const server_rec *s,
         DUMP_P("op_Regex", e->node_arg1);
         break;
     /* arg1: pointer to int */
-    case op_RegexBackref:
-        DUMP_IP("op_RegexBackref", e->node_arg1);
+    case op_Backref:
+        DUMP_IP("op_Backref", e->node_arg1);
         break;
     default:
         ap_log_error(MARK, "%*sERROR: INVALID OP %d", indent, " ", e->node_op);
@@ -738,6 +999,19 @@ static void expr_dump_tree(const ap_expr_t *e, const server_rec *s,
     }
 }
 #endif /* AP_EXPR_DEBUG */
+
+#define expr_eval_log(ctx, level, ...) do { \
+    ap_expr_eval_ctx_t *x = (ctx); \
+    if (x->r) { \
+        ap_log_rerror(LOG_MARK(x->info), (level), 0, x->r, __VA_ARGS__); \
+    } \
+    else if (x->c) { \
+        ap_log_cerror(LOG_MARK(x->info), (level), 0, x->c, __VA_ARGS__); \
+    } \
+    else { \
+        ap_log_error(LOG_MARK(x->info), (level), 0, x->s, __VA_ARGS__); \
+    } \
+} while (0)
 
 static int ap_expr_eval_unary_op(ap_expr_eval_ctx_t *ctx, const ap_expr_t *info,
                                  const ap_expr_t *arg)
@@ -769,7 +1043,7 @@ static int ap_expr_eval_binary_op(ap_expr_eval_ctx_t *ctx,
 }
 
 
-static int ap_expr_eval(ap_expr_eval_ctx_t *ctx, const ap_expr_t *node)
+static int ap_expr_eval_cond(ap_expr_eval_ctx_t *ctx, const ap_expr_t *node)
 {
     const ap_expr_t *e1 = node->node_arg1;
     const ap_expr_t *e2 = node->node_arg2;
@@ -791,13 +1065,13 @@ static int ap_expr_eval(ap_expr_eval_ctx_t *ctx, const ap_expr_t *node)
         case op_Or:
             do {
                 if (e1->node_op == op_Not) {
-                    if (!ap_expr_eval(ctx, e1->node_arg1)) {
+                    if (!ap_expr_eval_cond(ctx, e1->node_arg1)) {
                         result ^= TRUE;
                         goto out;
                     }
                 }
                 else {
-                    if (ap_expr_eval(ctx, e1)) {
+                    if (ap_expr_eval_cond(ctx, e1)) {
                         result ^= TRUE;
                         goto out;
                     }
@@ -809,13 +1083,13 @@ static int ap_expr_eval(ap_expr_eval_ctx_t *ctx, const ap_expr_t *node)
         case op_And:
             do {
                 if (e1->node_op == op_Not) {
-                    if (ap_expr_eval(ctx, e1->node_arg1)) {
+                    if (ap_expr_eval_cond(ctx, e1->node_arg1)) {
                         result ^= FALSE;
                         goto out;
                     }
                 }
                 else {
-                    if (!ap_expr_eval(ctx, e1)) {
+                    if (!ap_expr_eval_cond(ctx, e1)) {
                         result ^= FALSE;
                         goto out;
                     }
@@ -859,29 +1133,38 @@ AP_DECLARE(int) ap_expr_exec_ctx(ap_expr_eval_ctx_t *ctx)
     int rc;
 
     AP_DEBUG_ASSERT(ctx->p != NULL);
-    /* XXX: allow r, c == NULL */
-    AP_DEBUG_ASSERT(ctx->r != NULL);
-    AP_DEBUG_ASSERT(ctx->c != NULL);
-    AP_DEBUG_ASSERT(ctx->s != NULL);
     AP_DEBUG_ASSERT(ctx->err != NULL);
     AP_DEBUG_ASSERT(ctx->info != NULL);
     if (ctx->re_pmatch) {
         AP_DEBUG_ASSERT(ctx->re_source != NULL);
         AP_DEBUG_ASSERT(ctx->re_nmatch > 0);
     }
-    ctx->reclvl = 0;
+    if (!ctx->s) {
+        if (ctx->r) {
+            ctx->s = ctx->r->server;
+        }
+        else if (ctx->c) {
+            ctx->s = ctx->c->base_server;
+        }
+    }
+    if (!ctx->c) {
+        if (ctx->r) {
+            ctx->c = ctx->r->connection;
+        }
+    }
+    AP_DEBUG_ASSERT(ctx->s != NULL);
 
+    ctx->reclvl = 0;
     *ctx->err = NULL;
     if (ctx->info->flags & AP_EXPR_FLAG_STRING_RESULT) {
         *ctx->result_string = ap_expr_eval_word(ctx, ctx->info->root_node);
         if (*ctx->err != NULL) {
-            ap_log_rerror(LOG_MARK(ctx->info), APLOG_ERR, 0, ctx->r,
-                          APLOGNO(03298)
+            expr_eval_log(ctx, APLOG_ERR, APLOGNO(03298)
                           "Evaluation of string expression from %s:%d failed: %s",
                           ctx->info->filename, ctx->info->line_number, *ctx->err);
             return -1;
         } else {
-            ap_log_rerror(LOG_MARK(ctx->info), APLOG_TRACE4, 0, ctx->r,
+            expr_eval_log(ctx, APLOG_TRACE4,
                           "Evaluation of string expression from %s:%d gave: %s",
                           ctx->info->filename, ctx->info->line_number,
                           *ctx->result_string);
@@ -889,20 +1172,19 @@ AP_DECLARE(int) ap_expr_exec_ctx(ap_expr_eval_ctx_t *ctx)
         }
     }
     else {
-        rc = ap_expr_eval(ctx, ctx->info->root_node);
+        rc = ap_expr_eval_cond(ctx, ctx->info->root_node);
         if (*ctx->err != NULL) {
-            ap_log_rerror(LOG_MARK(ctx->info), APLOG_ERR, 0, ctx->r,
-                          APLOGNO(03299)
+            expr_eval_log(ctx, APLOG_ERR, APLOGNO(03299)
                           "Evaluation of expression from %s:%d failed: %s",
                           ctx->info->filename, ctx->info->line_number, *ctx->err);
             return -1;
         } else {
             rc = rc ? 1 : 0;
-            ap_log_rerror(LOG_MARK(ctx->info), APLOG_TRACE4, 0, ctx->r,
+            expr_eval_log(ctx, APLOG_TRACE4,
                           "Evaluation of expression from %s:%d gave: %d",
                           ctx->info->filename, ctx->info->line_number, rc);
 
-            if (ctx->vary_this && *ctx->vary_this)
+            if (ctx->r && ctx->vary_this && *ctx->vary_this)
                 apr_table_merge(ctx->r->headers_out, "Vary", *ctx->vary_this);
 
             return rc;
@@ -1044,7 +1326,12 @@ static const char *req_table_func(ap_expr_eval_ctx_t *ctx, const void *data,
         t = ctx->r->headers_in;
     else {                          /* req, http */
         t = ctx->r->headers_in;
-        add_vary(ctx, arg);
+        /* Skip the 'Vary: Host' header combination
+         * as indicated in rfc7231 section-7.1.4
+         */
+        if (strcasecmp(arg, "Host")){
+            add_vary(ctx, arg);
+        }
     }
     return apr_table_get(t, arg);
 }
@@ -1113,7 +1400,7 @@ static const char *sha1_func(ap_expr_eval_ctx_t *ctx, const void *data,
     out = apr_palloc(ctx->p, APR_SHA1_DIGESTSIZE*2+1);
 
     apr_sha1_init(&context);
-    apr_sha1_update(&context, arg, strlen(arg));
+    apr_sha1_update(&context, arg, (unsigned int)strlen(arg));
     apr_sha1_final(sha1, &context);
 
     ap_bin2hex(sha1, APR_SHA1_DIGESTSIZE, out);
@@ -1135,16 +1422,22 @@ static const char *ldap_func(ap_expr_eval_ctx_t *ctx, const void *data,
 }
 #endif
 
+static const char *escapehtml_func(ap_expr_eval_ctx_t *ctx, const void *data,
+                                   const char *arg)
+{
+    return ap_escape_html(ctx->p, arg);
+}
+
 static int replace_func_parse_arg(ap_expr_lookup_parms *parms)
 {
     const char *original = parms->arg;
     const apr_strmatch_pattern *pattern;
 
     if (!parms->arg) {
-        *parms->err = apr_psprintf(parms->ptemp, "replace() function needs "
-                                   "exactly 3 arguments");
+        *parms->err = apr_psprintf(parms->ptemp, "replace() function needs an argument");
         return !OK;
     }
+
     pattern = apr_strmatch_precompile(parms->pool, original, 0);
     *parms->data = pattern;
     return OK;
@@ -1162,13 +1455,13 @@ static const char *replace_func(ap_expr_eval_ctx_t *ctx, const void *data,
     const apr_strmatch_pattern *pattern = data;
     if (args->nelts != 3) {
         *ctx->err = apr_psprintf(ctx->p, "replace() function needs "
-                                 "exactly 3 arguments");
+                                 "exactly 3 arguments, got %d", args->nelts);
         return "";
     }
 
-    buff = APR_ARRAY_IDX(args, 2, char *);
+    buff = APR_ARRAY_IDX(args, 0, char *);
     original = APR_ARRAY_IDX(args, 1, char *);
-    replacement = APR_ARRAY_IDX(args, 0, char *);
+    replacement = APR_ARRAY_IDX(args, 2, char *);
     repl_len = strlen(replacement);
     orig_len = strlen(original);
     bytes = strlen(buff);
@@ -1234,10 +1527,21 @@ static const char *file_func(ap_expr_eval_ctx_t *ctx, const void *data,
     return buf;
 }
 
+static apr_status_t stat_check(ap_expr_eval_ctx_t *ctx, const void *data, const char *arg)
+{
+    apr_status_t rv = APR_SUCCESS;
+    if (APR_SUCCESS != (rv = ap_stat_check(arg, ctx->p))) {
+        *ctx->err = apr_psprintf(ctx->p, "stat of %s not allowed", arg);
+    }
+    return rv;
+}
 static const char *filesize_func(ap_expr_eval_ctx_t *ctx, const void *data,
                                   char *arg)
 {
     apr_finfo_t sb;
+    if (APR_SUCCESS != stat_check(ctx, data, arg)) {
+        return "";
+    }
     if (apr_stat(&sb, arg, APR_FINFO_MIN, ctx->p) == APR_SUCCESS
         && sb.filetype == APR_REG && sb.size > 0)
         return apr_psprintf(ctx->p, "%" APR_OFF_T_FMT, sb.size);
@@ -1249,6 +1553,9 @@ static const char *filemod_func(ap_expr_eval_ctx_t *ctx, const void *data,
                                   char *arg)
 {
     apr_finfo_t sb;
+    if (APR_SUCCESS != stat_check(ctx, data, arg)) {
+        return "";
+    }
     if (apr_stat(&sb, arg, APR_FINFO_MIN, ctx->p) == APR_SUCCESS
         && sb.filetype == APR_REG && sb.mtime > 0)
         return apr_psprintf(ctx->p, "%" APR_OFF_T_FMT, (apr_off_t)sb.mtime);
@@ -1264,7 +1571,7 @@ static const char *unescape_func(ap_expr_eval_ctx_t *ctx, const void *data,
     int ret = ap_unescape_url_keep2f(result, 0);
     if (ret == OK)
         return result;
-    ap_log_rerror(LOG_MARK(ctx->info), APLOG_DEBUG, 0, ctx->r, APLOGNO(00538)
+    expr_eval_log(ctx, APLOG_DEBUG, APLOGNO(00538)
                   "%s %% escape in unescape('%s') at %s:%d",
                   ret == HTTP_BAD_REQUEST ? "Bad" : "Forbidden", arg,
                   ctx->info->filename, ctx->info->line_number);
@@ -1284,6 +1591,9 @@ static int op_file_min(ap_expr_eval_ctx_t *ctx, const void *data, const char *ar
 {
     apr_finfo_t sb;
     const char *name = (const char *)data;
+    if (APR_SUCCESS != stat_check(ctx, data, arg)) {
+        return FALSE;
+    }
     if (apr_stat(&sb, arg, APR_FINFO_MIN, ctx->p) != APR_SUCCESS)
         return FALSE;
     switch (name[0]) {
@@ -1305,6 +1615,9 @@ static int op_file_link(ap_expr_eval_ctx_t *ctx, const void *data, const char *a
 {
 #if !defined(OS2)
     apr_finfo_t sb;
+    if (APR_SUCCESS != stat_check(ctx, data, arg)) {
+        return FALSE;
+    }
     if (apr_stat(&sb, arg, APR_FINFO_MIN | APR_FINFO_LINK, ctx->p) == APR_SUCCESS
         && sb.filetype == APR_LNK) {
         return TRUE;
@@ -1316,6 +1629,9 @@ static int op_file_link(ap_expr_eval_ctx_t *ctx, const void *data, const char *a
 static int op_file_xbit(ap_expr_eval_ctx_t *ctx, const void *data, const char *arg)
 {
     apr_finfo_t sb;
+    if (APR_SUCCESS != stat_check(ctx, data, arg)) {
+        return FALSE;
+    }
     if (apr_stat(&sb, arg, APR_FINFO_PROT| APR_FINFO_LINK, ctx->p) == APR_SUCCESS
         && (sb.protection & (APR_UEXECUTE | APR_GEXECUTE | APR_WEXECUTE))) {
         return TRUE;
@@ -1337,7 +1653,7 @@ static int op_url_subr(ap_expr_eval_ctx_t *ctx, const void *data, const char *ar
     if (rsub->status < 400) {
             rc = TRUE;
     }
-    ap_log_rerror(LOG_MARK(ctx->info), APLOG_TRACE5, 0, r,
+    expr_eval_log(ctx, APLOG_TRACE5,
                   "Subrequest for -U %s at %s:%d gave status: %d",
                   arg, ctx->info->filename, ctx->info->line_number,
                   rsub->status);
@@ -1352,13 +1668,16 @@ static int op_file_subr(ap_expr_eval_ctx_t *ctx, const void *data, const char *a
     request_rec *rsub, *r = ctx->r;
     if (!r)
         return FALSE;
+    if (APR_SUCCESS != stat_check(ctx, data, arg)) {
+        return FALSE;
+    }
     rsub = ap_sub_req_lookup_file(arg, r, NULL);
     if (rsub->status < 300 &&
         /* double-check that file exists since default result is 200 */
         apr_stat(&sb, rsub->filename, APR_FINFO_MIN, ctx->p) == APR_SUCCESS) {
         rc = TRUE;
     }
-    ap_log_rerror(LOG_MARK(ctx->info), APLOG_TRACE5, 0, r,
+    expr_eval_log(ctx, APLOG_TRACE5,
                   "Subrequest for -F %s at %s:%d gave status: %d",
                   arg, ctx->info->filename, ctx->info->line_number,
                   rsub->status);
@@ -1367,13 +1686,10 @@ static int op_file_subr(ap_expr_eval_ctx_t *ctx, const void *data, const char *a
 }
 
 
-APR_DECLARE_OPTIONAL_FN(int, ssl_is_https, (conn_rec *));
-static APR_OPTIONAL_FN_TYPE(ssl_is_https) *is_https = NULL;
-
 APR_DECLARE_OPTIONAL_FN(int, http2_is_h2, (conn_rec *));
 static APR_OPTIONAL_FN_TYPE(http2_is_h2) *is_http2 = NULL;
 
-static const char *conn_var_names[] = {
+static const char *const conn_var_names[] = {
     "HTTPS",                    /*  0 */
     "IPV6",                     /*  1 */
     "CONN_LOG_ID",              /*  2 */
@@ -1391,7 +1707,7 @@ static const char *conn_var_fn(ap_expr_eval_ctx_t *ctx, const void *data)
 
     switch (index) {
     case 0:
-        if (is_https && is_https(c))
+        if (ap_ssl_conn_is_ssl(c))
             return "on";
         else
             return "off";
@@ -1423,7 +1739,7 @@ static const char *conn_var_fn(ap_expr_eval_ctx_t *ctx, const void *data)
     }
 }
 
-static const char *request_var_names[] = {
+static const char *const request_var_names[] = {
     "REQUEST_METHOD",           /*  0 */
     "REQUEST_SCHEME",           /*  1 */
     "REQUEST_URI",              /*  2 */
@@ -1525,7 +1841,10 @@ static const char *request_var_fn(ap_expr_eval_ctx_t *ctx, const void *data)
             return result;
         }
     case 23:
-        return r->uri;
+        {
+            const char *uri = apr_table_get(r->subprocess_env, "DOCUMENT_URI");
+            return uri ? uri : r->uri;
+        }
     case 24:
         {
             apr_time_exp_t tm;
@@ -1571,7 +1890,7 @@ static const char *request_var_fn(ap_expr_eval_ctx_t *ctx, const void *data)
     }
 }
 
-static const char *req_header_var_names[] = {
+static const char *const req_header_var_names[] = {
     "HTTP_USER_AGENT",       /* 0 */
     "HTTP_PROXY_CONNECTION", /* 1 */
     "HTTP_REFERER",          /* 2 */
@@ -1582,7 +1901,7 @@ static const char *req_header_var_names[] = {
     NULL
 };
 
-static const char *req_header_header_names[] = {
+static const char *const req_header_header_names[] = {
     "User-Agent",
     "Proxy-Connection",
     "Referer",
@@ -1594,7 +1913,7 @@ static const char *req_header_header_names[] = {
 
 static const char *req_header_var_fn(ap_expr_eval_ctx_t *ctx, const void *data)
 {
-    const char **varname = (const char **)data;
+    const char **const varname = (const char **)data;
     int index = (varname - req_header_var_names);
     const char *name;
 
@@ -1603,11 +1922,16 @@ static const char *req_header_var_fn(ap_expr_eval_ctx_t *ctx, const void *data)
         return "";
 
     name = req_header_header_names[index];
-    add_vary(ctx, name);
+    /* Skip the 'Vary: Host' header combination
+     * as indicated in rfc7231 section-7.1.4
+     */
+    if (strcasecmp(name, "Host")){
+        add_vary(ctx, name);
+    }
     return apr_table_get(ctx->r->headers_in, name);
 }
 
-static const char *misc_var_names[] = {
+static const char *const misc_var_names[] = {
     "TIME_YEAR",        /* 0 */
     "TIME_MON",         /* 1 */
     "TIME_DAY",         /* 2 */
@@ -1764,7 +2088,7 @@ struct expr_provider_single {
 
 struct expr_provider_multi {
     const void *func;
-    const char **names;
+    const char *const *names;
 };
 
 static const struct expr_provider_multi var_providers[] = {
@@ -1800,6 +2124,7 @@ static const struct expr_provider_single string_func_providers[] = {
     { ldap_func,            "ldap",           NULL, 0 },
 #endif
     { replace_func,         "replace",        replace_func_parse_arg, 0 },
+    { escapehtml_func,      "escapehtml",     NULL, 0 },
     { NULL, NULL, NULL}
 };
 
@@ -1835,7 +2160,7 @@ static int core_expr_lookup(ap_expr_lookup_parms *parms)
     case AP_EXPR_FUNC_VAR: {
             const struct expr_provider_multi *prov = var_providers;
             while (prov->func) {
-                const char **name = prov->names;
+                const char *const *name = prov->names;
                 while (*name) {
                     if (ap_cstr_casecmp(*name, parms->name) == 0) {
                         *parms->func = prov->func;
@@ -1851,7 +2176,7 @@ static int core_expr_lookup(ap_expr_lookup_parms *parms)
     case AP_EXPR_FUNC_STRING:
     case AP_EXPR_FUNC_OP_UNARY:
     case AP_EXPR_FUNC_OP_BINARY: {
-            const struct expr_provider_single *prov;
+            const struct expr_provider_single *prov = NULL;
             switch (parms->type) {
             case AP_EXPR_FUNC_STRING:
                 prov = string_func_providers;
@@ -1865,7 +2190,7 @@ static int core_expr_lookup(ap_expr_lookup_parms *parms)
             default:
                 ap_assert(0);
             }
-            while (prov->func) {
+            while (prov && prov->func) {
                 int match;
                 if (parms->type == AP_EXPR_FUNC_OP_UNARY)
                     match = !strcmp(prov->name, parms->name);
@@ -1922,7 +2247,7 @@ static int expr_lookup_not_found(ap_expr_lookup_parms *parms)
         type = "Binary operator";
         break;
     default:
-        *parms->err = "Inavalid expression type in expr_lookup";
+        *parms->err = "Invalid expression type in expr_lookup";
         return !OK;
     }
     if (   parms->type == AP_EXPR_FUNC_OP_UNARY
@@ -1937,10 +2262,7 @@ static int expr_lookup_not_found(ap_expr_lookup_parms *parms)
 static int ap_expr_post_config(apr_pool_t *pconf, apr_pool_t *plog,
                                apr_pool_t *ptemp, server_rec *s)
 {
-    is_https = APR_RETRIEVE_OPTIONAL_FN(ssl_is_https);
     is_http2 = APR_RETRIEVE_OPTIONAL_FN(http2_is_h2);
-    apr_pool_cleanup_register(pconf, &is_https, ap_pool_cleanup_set_null,
-                              apr_pool_cleanup_null);
     return OK;
 }
 

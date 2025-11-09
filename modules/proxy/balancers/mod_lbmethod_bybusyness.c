@@ -15,6 +15,7 @@
  */
 
 #include "mod_proxy.h"
+#include "proxy_util.h"
 #include "scoreboard.h"
 #include "ap_mpm.h"
 #include "apr_version.h"
@@ -22,99 +23,45 @@
 
 module AP_MODULE_DECLARE_DATA lbmethod_bybusyness_module;
 
-static int (*ap_proxy_retry_worker_fn)(const char *proxy_function,
-        proxy_worker *worker, server_rec *s) = NULL;
+static APR_OPTIONAL_FN_TYPE(proxy_balancer_get_best_worker)
+                            *ap_proxy_balancer_get_best_worker_fn = NULL;
+
+
+static int is_best_bybusyness(proxy_worker *current, proxy_worker *prev_best, void *baton)
+{
+    int *total_factor = (int *)baton;
+    apr_size_t current_busy = ap_proxy_get_busy_count(current);
+    apr_size_t prev_best_busy = 0;
+
+    current->s->lbstatus += current->s->lbfactor;
+    *total_factor += current->s->lbfactor;
+    if (prev_best)
+        prev_best_busy = ap_proxy_get_busy_count(prev_best);
+     
+
+    return (
+        !prev_best
+        || (current_busy < prev_best_busy)
+        || (
+            (current_busy == prev_best_busy)
+            && (current->s->lbstatus > prev_best->s->lbstatus)
+        )
+    );
+}
 
 static proxy_worker *find_best_bybusyness(proxy_balancer *balancer,
-                                request_rec *r)
+                                          request_rec *r)
 {
-    int i;
-    proxy_worker **worker;
-    proxy_worker *mycandidate = NULL;
-    int cur_lbset = 0;
-    int max_lbset = 0;
-    int checking_standby;
-    int checked_standby;
-
     int total_factor = 0;
+    proxy_worker *worker =
+        ap_proxy_balancer_get_best_worker_fn(balancer, r, is_best_bybusyness,
+                                          &total_factor);
 
-    if (!ap_proxy_retry_worker_fn) {
-        ap_proxy_retry_worker_fn =
-                APR_RETRIEVE_OPTIONAL_FN(ap_proxy_retry_worker);
-        if (!ap_proxy_retry_worker_fn) {
-            /* can only happen if mod_proxy isn't loaded */
-            return NULL;
-        }
+    if (worker) {
+        worker->s->lbstatus -= total_factor;
     }
 
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server, APLOGNO(01211)
-                 "proxy: Entering bybusyness for BALANCER (%s)",
-                 balancer->s->name);
-
-    /* First try to see if we have available candidate */
-    do {
-
-        checking_standby = checked_standby = 0;
-        while (!mycandidate && !checked_standby) {
-
-            worker = (proxy_worker **)balancer->workers->elts;
-            for (i = 0; i < balancer->workers->nelts; i++, worker++) {
-                if  (!checking_standby) {    /* first time through */
-                    if ((*worker)->s->lbset > max_lbset)
-                        max_lbset = (*worker)->s->lbset;
-                }
-                if (
-                    ((*worker)->s->lbset != cur_lbset) ||
-                    (checking_standby ? !PROXY_WORKER_IS_STANDBY(*worker) : PROXY_WORKER_IS_STANDBY(*worker)) ||
-                    (PROXY_WORKER_IS_DRAINING(*worker))
-                    ) {
-                    continue;
-                }
-
-                /* If the worker is in error state run
-                 * retry on that worker. It will be marked as
-                 * operational if the retry timeout is elapsed.
-                 * The worker might still be unusable, but we try
-                 * anyway.
-                 */
-                if (!PROXY_WORKER_IS_USABLE(*worker)) {
-                    ap_proxy_retry_worker_fn("BALANCER", *worker, r->server);
-                }
-
-                /* Take into calculation only the workers that are
-                 * not in error state or not disabled.
-                 */
-                if (PROXY_WORKER_IS_USABLE(*worker)) {
-
-                    (*worker)->s->lbstatus += (*worker)->s->lbfactor;
-                    total_factor += (*worker)->s->lbfactor;
-
-                    if (!mycandidate
-                        || (*worker)->s->busy < mycandidate->s->busy
-                        || ((*worker)->s->busy == mycandidate->s->busy && (*worker)->s->lbstatus > mycandidate->s->lbstatus))
-                        mycandidate = *worker;
-
-                }
-
-            }
-
-            checked_standby = checking_standby++;
-
-        }
-
-        cur_lbset++;
-
-    } while (cur_lbset <= max_lbset && !mycandidate);
-
-    if (mycandidate) {
-        mycandidate->s->lbstatus -= total_factor;
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server, APLOGNO(01212)
-                     "proxy: bybusyness selected worker \"%s\" : busy %" APR_SIZE_T_FMT " : lbstatus %d",
-                     mycandidate->s->name, mycandidate->s->busy, mycandidate->s->lbstatus);
-
-    }
-
-    return mycandidate;
+    return worker;
 }
 
 /* assumed to be mutex protected by caller */
@@ -125,7 +72,7 @@ static apr_status_t reset(proxy_balancer *balancer, server_rec *s)
     worker = (proxy_worker **)balancer->workers->elts;
     for (i = 0; i < balancer->workers->nelts; i++, worker++) {
         (*worker)->s->lbstatus = 0;
-        (*worker)->s->busy = 0;
+        ap_proxy_set_busy_count(*worker, 0); 
     }
     return APR_SUCCESS;
 }
@@ -141,12 +88,36 @@ static const proxy_balancer_method bybusyness =
     &find_best_bybusyness,
     NULL,
     &reset,
-    &age
+    &age,
+    NULL
 };
+
+/* post_config hook: */
+static int lbmethod_bybusyness_post_config(apr_pool_t *pconf, apr_pool_t *plog,
+        apr_pool_t *ptemp, server_rec *s)
+{
+
+    /* lbmethod_bybusyness_post_config() will be called twice during startup.  So, don't
+     * set up the static data the 1st time through. */
+    if (ap_state_query(AP_SQ_MAIN_STATE) == AP_SQ_MS_CREATE_PRE_CONFIG) {
+        return OK;
+    }
+
+    ap_proxy_balancer_get_best_worker_fn =
+                 APR_RETRIEVE_OPTIONAL_FN(proxy_balancer_get_best_worker);
+    if (!ap_proxy_balancer_get_best_worker_fn) {
+        ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(10151)
+                     "mod_proxy must be loaded for mod_lbmethod_bybusyness");
+        return !OK;
+    }
+
+    return OK;
+}
 
 static void register_hook(apr_pool_t *p)
 {
     ap_register_provider(p, PROXY_LBMETHOD, "bybusyness", "0", &bybusyness);
+    ap_hook_post_config(lbmethod_bybusyness_post_config, NULL, NULL, APR_HOOK_MIDDLE);
 }
 
 AP_DECLARE_MODULE(lbmethod_bybusyness) = {

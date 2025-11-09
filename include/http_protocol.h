@@ -65,7 +65,47 @@ AP_DECLARE(request_rec *) ap_create_request(conn_rec *c);
  * @param c The current connection
  * @return The new request_rec
  */
-request_rec *ap_read_request(conn_rec *c);
+AP_DECLARE(request_rec *) ap_read_request(conn_rec *c);
+
+/**
+ * Assign the method, uri and protocol (in HTTP/1.x the
+ * items from the first line) to the request.
+ * @param r The current request
+ * @param method the HTTP method
+ * @param uri the request uri
+ * @param protocol the request protocol
+ * @return 1 on success, 0 on failure
+ */
+AP_DECLARE(int) ap_assign_request_line(request_rec *r,
+                                       const char *method, const char *uri,
+                                       const char *protocol);
+
+/**
+ * Parse a HTTP/1.x request line, validate and return the components
+ * @param r The current request
+ * @param line the line to parse
+ * @param pmethod the parsed method on success
+ * @param puri the parsed uri on success
+ * @param pprotocol the parsed protocol on success
+ * @return 1 on success, 0 on failure
+ */
+AP_DECLARE(int) ap_h1_tokenize_request_line(
+        request_rec *r, const char *line,
+        const char **pmethod, const char **puri, const char **pprotocol);
+
+/**
+ * Parse and validate the request line.
+ * @param r The current request
+ * @return 1 on success, 0 on failure
+ */
+AP_DECLARE(int) ap_parse_request_line(request_rec *r);
+
+/**
+ * Validate the request header and select vhost.
+ * @param r The current request
+ * @return 1 on success, 0 on failure
+ */
+AP_DECLARE(int) ap_check_request_header(request_rec *r);
 
 /**
  * Read the mime-encoded headers.
@@ -81,6 +121,13 @@ AP_DECLARE(void) ap_get_mime_headers(request_rec *r);
  */
 AP_DECLARE(void) ap_get_mime_headers_core(request_rec *r,
                                           apr_bucket_brigade *bb);
+
+/**
+ * Run post_read_request hook and validate.
+ * @param r The current request
+ * @return OK or HTTP_...
+ */
+AP_DECLARE(int) ap_post_read_request(request_rec *r);
 
 /* Finish up stuff after a request */
 
@@ -152,6 +199,27 @@ AP_DECLARE(const char *) ap_make_content_type(request_rec *r,
  */
 AP_DECLARE(void) ap_setup_make_content_type(apr_pool_t *pool);
 
+/** A structure with the ingredients for a file based etag */
+typedef struct etag_rec etag_rec;
+
+/**
+ * @brief A structure with the ingredients for a file based etag
+ */
+struct etag_rec {
+    /** Optional vary list validator */
+    const char *vlist_validator;
+    /** Time when the request started */
+    apr_time_t request_time;
+    /** finfo.protection (st_mode) set to zero if no such file */
+    apr_finfo_t *finfo;
+    /** File pathname used when generating a digest */
+    const char *pathname;
+    /** File descriptor used when generating a digest */
+    apr_file_t *fd;
+    /** Force a non-digest etag to be weak */
+    int force_weak;
+};
+
 /**
  * Construct an entity tag from the resource information.  If it's a real
  * file, build in some of the file characteristics.
@@ -163,10 +231,25 @@ AP_DECLARE(void) ap_setup_make_content_type(apr_pool_t *pool);
 AP_DECLARE(char *) ap_make_etag(request_rec *r, int force_weak);
 
 /**
+ * Construct an entity tag from information provided in the etag_rec
+ * structure.
+ * @param r The current request
+ * @param er The etag record, containing ingredients for the etag.
+ */
+AP_DECLARE(char *) ap_make_etag_ex(request_rec *r, etag_rec *er);
+
+/**
  * Set the E-tag outgoing header
  * @param r The current request
  */
 AP_DECLARE(void) ap_set_etag(request_rec *r);
+
+/**
+ * Set the E-tag outgoing header, with the option of forcing a strong ETag.
+ * @param r The current request
+ * @param fd The file descriptor
+ */
+AP_DECLARE(void) ap_set_etag_fd(request_rec *r, apr_file_t *fd);
 
 /**
  * Set the last modified time for the file being sent
@@ -382,6 +465,17 @@ AP_DECLARE(void) ap_clear_method_list(ap_method_list_t *l);
 AP_DECLARE(void) ap_set_content_type(request_rec *r, const char *ct);
 
 /**
+ * Set the content type for this request (r->content_type).
+ * @param r The current request
+ * @param ct The new content type
+ * @param trusted If non-zero, The content-type should come from a
+ *        trusted source such as server configuration rather
+ *        than application output.
+ * for the AddOutputFilterByType directive to work correctly.
+ */
+AP_DECLARE(void) ap_set_content_type_ex(request_rec *r, const char *ct, int trusted);
+
+/**
  * Set the Accept-Ranges header for this response
  * @param r The current request
  */
@@ -418,7 +512,27 @@ AP_DECLARE(int) ap_rwrite(const void *buf, int nbyte, request_rec *r);
  */
 static APR_INLINE int ap_rputs(const char *str, request_rec *r)
 {
-    return ap_rwrite(str, (int)strlen(str), r);
+    apr_size_t len;
+
+    len = strlen(str);
+
+    for (;;) {
+        if (len <= INT_MAX) {
+            return ap_rwrite(str, (int)len, r);
+        }
+        else {
+            int rc;
+
+            rc = ap_rwrite(str, INT_MAX, r);
+            if (rc < 0) {
+                return rc;
+            }
+            else {
+                str += INT_MAX;
+                len -= INT_MAX;
+            }
+        }
+    }
 }
 
 /**
@@ -576,7 +690,18 @@ AP_DECLARE(void) ap_note_digest_auth_failure(request_rec *r);
 AP_DECLARE_HOOK(int, note_auth_failure, (request_rec *r, const char *auth_type))
 
 /**
- * Get the password from the request headers
+ * Get the password from the request headers. This function has multiple side
+ * effects due to its prior use in the old authentication framework, including
+ * setting r->user (which is supposed to indicate that the user in question has
+ * been authenticated for the current request).
+ *
+ * Modules which call ap_get_basic_auth_pw() during the authentication phase
+ * MUST either immediately authenticate the user after the call, or else stop
+ * the request immediately with an error response, to avoid incorrectly
+ * authenticating the current request. (See CVE-2017-3167.) The replacement
+ * ap_get_basic_auth_components() API should be preferred.
+ *
+ * @deprecated @see ap_get_basic_auth_components
  * @param r The current request
  * @param pw The password as set in the headers
  * @return 0 (OK) if it set the 'pw' argument (and assured
@@ -589,6 +714,25 @@ AP_DECLARE_HOOK(int, note_auth_failure, (request_rec *r, const char *auth_type))
  */
 AP_DECLARE(int) ap_get_basic_auth_pw(request_rec *r, const char **pw);
 
+#define AP_GET_BASIC_AUTH_PW_NOTE "AP_GET_BASIC_AUTH_PW_NOTE"
+
+/**
+ * Get the username and/or password from the request's Basic authentication
+ * headers. Unlike ap_get_basic_auth_pw(), calling this function has no side
+ * effects on the passed request_rec.
+ *
+ * @param r The current request
+ * @param username If not NULL, set to the username sent by the client
+ * @param password If not NULL, set to the password sent by the client
+ * @return APR_SUCCESS if the credentials were successfully parsed and returned;
+ *         APR_EINVAL if there was no authentication header sent or if the
+ *         client was not using the Basic authentication scheme. username and
+ *         password are unchanged on failure.
+ */
+AP_DECLARE(apr_status_t) ap_get_basic_auth_components(const request_rec *r,
+                                                      const char **username,
+                                                      const char **password);
+
 /**
  * parse_uri: break apart the uri
  * @warning Side Effects:
@@ -600,17 +744,18 @@ AP_DECLARE(int) ap_get_basic_auth_pw(request_rec *r, const char **pw);
  */
 AP_CORE_DECLARE(void) ap_parse_uri(request_rec *r, const char *uri);
 
-#define AP_GETLINE_FOLD 1 /* Whether to merge continuation lines */
-#define AP_GETLINE_CRLF 2 /*Whether line ends must be in the form CR LF */
+#define AP_GETLINE_FOLD      (1 << 0) /* Whether to merge continuation lines */
+#define AP_GETLINE_CRLF      (1 << 1) /* Whether line ends must be CRLF */
+#define AP_GETLINE_NOSPC_EOL (1 << 2) /* Whether to consume up to and including
+                                         the end of line on APR_ENOSPC */
+#define AP_GETLINE_NONBLOCK  (1 << 3) /* Whether to read non-blocking */
 
 /**
  * Get the next line of input for the request
  * @param s The buffer into which to read the line
  * @param n The size of the buffer
  * @param r The request
- * @param flags Bit flag of multiple parsing options
- *              AP_GETLINE_FOLD Whether to merge continuation lines
- *              AP_GETLINE_CRLF Whether line ends must be in the form CR LF
+ * @param flags Bit mask of AP_GETLINE_* options
  * @return The length of the line, if successful
  *         n, if the line is too big to fit in the buffer
  *         -1 for miscellaneous errors
@@ -618,44 +763,35 @@ AP_CORE_DECLARE(void) ap_parse_uri(request_rec *r, const char *uri);
 AP_DECLARE(int) ap_getline(char *s, int n, request_rec *r, int flags);
 
 /**
- * Get the next line of input for the request
- *
- * Note: on ASCII boxes, ap_rgetline is a macro which simply calls
- *       ap_rgetline_core to get the line of input.
- *
- *       on EBCDIC boxes, ap_rgetline is a wrapper function which
- *       translates ASCII protocol lines to the local EBCDIC code page
- *       after getting the line of input.
+ * Get the next line from an input filter
  *
  * @param s Pointer to the pointer to the buffer into which the line
  *          should be read; if *s==NULL, a buffer of the necessary size
- *          to hold the data will be allocated from the request pool
+ *          to hold the data will be allocated from \p p
  * @param n The size of the buffer
  * @param read The length of the line.
- * @param r The request
- * @param flags Bit flag of multiple parsing options
- *              AP_GETLINE_FOLD Whether to merge continuation lines
- *              AP_GETLINE_CRLF Whether line ends must be in the form CR LF
+ * @param f Input filter to read from
+ * @param flags Bit mask of AP_GETLINE_* options
  * @param bb Working brigade to use when reading buckets
+ * @param p The pool to allocate the buffer from (if needed)
  * @return APR_SUCCESS, if successful
  *         APR_ENOSPC, if the line is too big to fit in the buffer
  *         Other errors where appropriate
  */
-#if APR_CHARSET_EBCDIC
-AP_DECLARE(apr_status_t) ap_rgetline(char **s, apr_size_t n,
-                                     apr_size_t *read,
-                                     request_rec *r, int flags,
-                                     apr_bucket_brigade *bb);
-#else /* ASCII box */
-#define ap_rgetline(s, n, read, r, fold, bb) \
-        ap_rgetline_core((s), (n), (read), (r), (fold), (bb))
-#endif
+AP_DECLARE(apr_status_t) ap_fgetline(char **s, apr_size_t n,
+                                     apr_size_t *read, ap_filter_t *f,
+                                     int flags, apr_bucket_brigade *bb,
+                                     apr_pool_t *p);
 
-/** @see ap_rgetline */
-AP_DECLARE(apr_status_t) ap_rgetline_core(char **s, apr_size_t n,
-                                          apr_size_t *read,
-                                          request_rec *r, int flags,
-                                          apr_bucket_brigade *bb);
+/**
+ * @see ap_fgetline
+ *
+ * Note: genuinely calls, ap_fgetline(s, n, read, r->proto_input_filters,
+ *                                    flags, bb, r->pool)
+ */
+AP_DECLARE(apr_status_t) ap_rgetline(char **s, apr_size_t n,
+                                     apr_size_t *read, request_rec *r,
+                                     int flags, apr_bucket_brigade *bb);
 
 /**
  * Get the method number associated with the given string, assumed to
@@ -726,7 +862,7 @@ AP_DECLARE_HOOK(const char *,http_scheme,(const request_rec *r))
 AP_DECLARE_HOOK(apr_port_t,default_port,(const request_rec *r))
 
 
-#define AP_PROTOCOL_HTTP1		"http/1.1"
+#define AP_PROTOCOL_HTTP1        "http/1.1"
 
 /**
  * Determine the list of protocols available for a connection/request. This may
@@ -787,8 +923,7 @@ AP_DECLARE_HOOK(int,protocol_propose,(conn_rec *c, request_rec *r,
  * @param c The current connection
  * @param r The current request or NULL
  * @param s The server/virtual host selected
- * @param choices A list of protocol identifiers, normally the client's wishes
- * @param proposals the list of protocol identifiers proposed by the hooks
+ * @param protocol The protocol identifier we try to switch to
  * @return OK or DECLINED
  */
 AP_DECLARE_HOOK(int,protocol_switch,(conn_rec *c, request_rec *r,
@@ -949,6 +1084,252 @@ AP_DECLARE(apr_bucket *) ap_bucket_error_create(int error, const char *buf,
                                                 apr_pool_t *p,
                                                 apr_bucket_alloc_t *list);
 
+/** @see ap_bucket_type_request */
+typedef struct ap_bucket_request ap_bucket_request;
+
+/**
+ * @struct ap_bucket_request
+ * @brief  A bucket referring to a HTTP request
+ *
+ */
+struct ap_bucket_request {
+    /** Number of buckets using this memory */
+    apr_bucket_refcount refcount;
+    apr_pool_t *pool; /* pool that holds the contents, not for modification */
+    const char *method; /* request method */
+    const char *uri; /* request uri */
+    const char *protocol; /* request protocol */
+    apr_table_t *headers; /* request headers */
+};
+
+/** @see ap_bucket_type_request */
+AP_DECLARE_DATA extern const apr_bucket_type_t ap_bucket_type_request;
+
+/**
+ * Determine if a bucket is a request bucket
+ * @param e The bucket to inspect
+ * @return true or false
+ */
+#define AP_BUCKET_IS_REQUEST(e)         (e->type == &ap_bucket_type_request)
+
+/**
+ * Make the bucket passed in a request bucket
+ * Copies all parameters to the given pool.
+ * @param b The bucket to make into a request bucket
+ * @param method the HTTP method
+ * @param uri the uri requested
+ * @param protocol the protocol requested
+ * @param headers the table of response headers.
+ * @param p A pool to allocate out of.
+ * @return The new bucket, or NULL if allocation failed
+ */
+AP_DECLARE(apr_bucket *) ap_bucket_request_make(
+            apr_bucket *b,
+            const char *method,
+            const char *uri,
+            const char *protocol,
+            apr_table_t *headers,
+            apr_pool_t *p);
+
+/**
+ * Make the bucket passed in a request bucket
+ * Uses all paramters without copying.
+ * @param b The bucket to make into a request bucket
+ * @param method the HTTP method
+ * @param uri the uri requested
+ * @param protocol the protocol requested
+ * @param headers the table of response headers.
+ * @param p A pool to allocate out of.
+ * @return The new bucket, or NULL if allocation failed
+ */
+AP_DECLARE(apr_bucket *) ap_bucket_request_maken(
+            apr_bucket *b,
+            const char *method,
+            const char *uri,
+            const char *protocol,
+            apr_table_t *headers,
+            apr_pool_t *p);
+
+/**
+ * Create a bucket referring to a HTTP request.
+ * Copies all parameters to the given pool.
+ * @param method the HTTP method
+ * @param uri the uri requested
+ * @param protocol the protocol requested
+ * @param headers the table of response headers.
+ * @param p A pool to allocate the error string out of.
+ * @param list The bucket allocator from which to allocate the bucket
+ * @return The new bucket, or NULL if allocation failed
+ */
+AP_DECLARE(apr_bucket *) ap_bucket_request_create(
+            const char *method,
+            const char *uri,
+            const char *protocol,
+            apr_table_t *headers,
+            apr_pool_t *p,
+            apr_bucket_alloc_t *list);
+
+/**
+ * Create a bucket referring to a HTTP request.
+ * Uses all paramters without copying.
+ * @param method the HTTP method
+ * @param uri the uri requested
+ * @param protocol the protocol requested
+ * @param headers the HTTP response headers.
+ * @param p A pool to allocate the error string out of.
+ * @param list The bucket allocator from which to allocate the bucket
+ * @return The new bucket, or NULL if allocation failed
+ */
+AP_DECLARE(apr_bucket *) ap_bucket_request_createn(
+            const char *method,
+            const char *uri,
+            const char *protocol,
+            apr_table_t *headers,
+            apr_pool_t *p,
+            apr_bucket_alloc_t *list);
+
+/**
+ * Clone a request bucket into another pool/bucket_alloc that may
+ * have a separate lifetime than the source bucket/pool.
+ * @param source the request bucket to clone
+ * @param p A pool to allocate the data out of.
+ * @param list The bucket allocator from which to allocate the bucket
+ * @return The new bucket, or NULL if allocation failed
+ */
+AP_DECLARE(apr_bucket *) ap_bucket_request_clone(apr_bucket *source,
+                                                  apr_pool_t *p,
+                                                  apr_bucket_alloc_t *list);
+
+/** @see ap_bucket_type_response */
+typedef struct ap_bucket_response ap_bucket_response;
+
+/**
+ * @struct ap_bucket_response
+ * @brief  A bucket referring to a HTTP response
+ *
+ */
+struct ap_bucket_response {
+    /** Number of buckets using this memory */
+    apr_bucket_refcount refcount;
+    apr_pool_t *pool; /* pool that holds the contents, not for modification */
+    int status; /* The status code */
+    const char *reason; /* The optional HTTP reason for the status. */
+    apr_table_t *headers; /* The response headers */
+    apr_table_t *notes; /* internal notes about the response */
+};
+
+/** @see ap_bucket_type_headers */
+AP_DECLARE_DATA extern const apr_bucket_type_t ap_bucket_type_response;
+
+/**
+ * Determine if a bucket is a response bucket
+ * @param e The bucket to inspect
+ * @return true or false
+ */
+#define AP_BUCKET_IS_RESPONSE(e)         (e->type == &ap_bucket_type_response)
+
+/**
+ * Make the bucket passed in a response bucket
+ * @param b The bucket to make into a response bucket
+ * @param status The HTTP status code of the response.
+ * @param reason textual description of status, can be NULL.
+ * @param headers the table of response headers.
+ * @param notes internal notes on the response
+ * @param p A pool to allocate out of.
+ * @return The new bucket, or NULL if allocation failed
+ */
+AP_DECLARE(apr_bucket *) ap_bucket_response_make(apr_bucket *b, int status,
+            const char *reason, apr_table_t *headers,
+            apr_table_t *notes, apr_pool_t *p);
+
+/**
+ * Create a bucket referring to a HTTP response.
+ * @param status The HTTP status code.
+ * @param reason textual description of status, can be NULL.
+ * @param headers the HTTP response headers.
+ * @param notes internal notes on the response
+ * @param p A pool to allocate the error string out of.
+ * @param list The bucket allocator from which to allocate the bucket
+ * @return The new bucket, or NULL if allocation failed
+ */
+AP_DECLARE(apr_bucket *) ap_bucket_response_create(
+            int status, const char *reason,
+            apr_table_t *headers,
+            apr_table_t *notes,
+            apr_pool_t *p,
+            apr_bucket_alloc_t *list);
+
+/**
+ * Clone a RESPONSE bucket into another pool/bucket_alloc that may
+ * have a separate lifetime than the source bucket/pool.
+ * @param source the response bucket to clone
+ * @param p A pool to allocate the data out of.
+ * @param list The bucket allocator from which to allocate the bucket
+ * @return The new bucket, or NULL if allocation failed
+ */
+AP_DECLARE(apr_bucket *) ap_bucket_response_clone(apr_bucket *source,
+                                                  apr_pool_t *p,
+                                                  apr_bucket_alloc_t *list);
+
+/** @see ap_bucket_type_headers */
+typedef struct ap_bucket_headers ap_bucket_headers;
+
+/**
+ * @struct ap_bucket_headers
+ * @brief  A bucket referring to an HTTP header set
+ *
+ */
+struct ap_bucket_headers {
+    /** Number of buckets using this memory */
+    apr_bucket_refcount refcount;
+    apr_pool_t *pool; /* pool that holds the contents, not for modification */
+    apr_table_t *headers; /* The headers */
+
+};
+
+/** @see ap_bucket_type_headers */
+AP_DECLARE_DATA extern const apr_bucket_type_t ap_bucket_type_headers;
+
+/**
+ * Determine if a bucket is an headers bucket
+ * @param e The bucket to inspect
+ * @return true or false
+ */
+#define AP_BUCKET_IS_HEADERS(e)         (e->type == &ap_bucket_type_headers)
+
+/**
+ * Make the bucket passed in a headers bucket
+ * @param b The bucket to make into a headers bucket
+ * @param headers the table of headers.
+ * @param p A pool to allocate out of.
+ * @return The new bucket, or NULL if allocation failed
+ */
+AP_DECLARE(apr_bucket *) ap_bucket_headers_make(apr_bucket *b,
+                apr_table_t *headers, apr_pool_t *p);
+
+/**
+ * Create a bucket referring to a table of HTTP headers.
+ * @param headers the HTTP headers in the bucket.
+ * @param p A pool to allocate the error string out of.
+ * @param list The bucket allocator from which to allocate the bucket
+ * @return The new bucket, or NULL if allocation failed
+ */
+AP_DECLARE(apr_bucket *) ap_bucket_headers_create(apr_table_t *headers,
+                                                  apr_pool_t *p,
+                                                  apr_bucket_alloc_t *list);
+
+/**
+ * Clone a HEADER bucket into another pool/bucket_alloc that may
+ * have a separate lifetime than the source bucket/pool.
+ * @param source the header bucket to clone
+ * @param p A pool to allocate the data out of.
+ * @param list The bucket allocator from which to allocate the bucket
+ * @return The new bucket, or NULL if allocation failed
+ */
+AP_DECLARE(apr_bucket *) ap_bucket_headers_clone(apr_bucket *source,
+                                                 apr_pool_t *p,
+                                                 apr_bucket_alloc_t *list);
+
 AP_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(ap_filter_t *f, apr_bucket_brigade *b);
 AP_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f, apr_bucket_brigade *b);
 AP_DECLARE_NONSTD(apr_status_t) ap_content_length_filter(ap_filter_t *,
@@ -970,11 +1351,56 @@ AP_DECLARE(void) ap_set_sub_req_protocol(request_rec *rnew, const request_rec *r
 AP_DECLARE(void) ap_finalize_sub_req_protocol(request_rec *sub_r);
 
 /**
+ * Set standard response headers, such as `Date` and `Server`
+ * in r->headers_out. Takes care of precedence of existing
+ * values from proxied requests.
+ */
+AP_DECLARE(void) ap_set_std_response_headers(request_rec *r);
+
+/**
  * Send an interim (HTTP 1xx) response immediately.
  * @param r The request
  * @param send_headers Whether to send&clear headers in r->headers_out
  */
 AP_DECLARE(void) ap_send_interim_response(request_rec *r, int send_headers);
+
+/**
+ * Append a header in HTTP/1.1 format to the brigade.
+ * @param b the brigade to append to
+ * @param p the pool to use
+ * @param name the name of the header field
+ * @param value the value of the header field
+ */
+AP_DECLARE(apr_status_t) ap_h1_append_header(apr_bucket_brigade *b,
+                                             apr_pool_t *pool,
+                                             const char *name, const char *value);
+/**
+ * Append the headers in HTTP/1.1 format to the brigade.
+ * @param b the brigade to append to
+ * @param r the request this is done for (pool and logging)
+ * @param headers the headers to append
+ */
+AP_DECLARE(apr_status_t) ap_h1_append_headers(apr_bucket_brigade *b,
+                                              request_rec *r,
+                                              apr_table_t *headers);
+
+/**
+ * Append the HTTP/1.1 header termination (empty CRLF) to the brigade.
+ * @param b the brigade to append to
+ */
+AP_DECLARE(apr_status_t) ap_h1_terminate_header(apr_bucket_brigade *b);
+
+/**
+ * Insert/Append the last chunk in a HTTP/1.1 Transfer-Encoding chunked.
+ * @param b the brigade to add the chunk to
+ * @param eos the bucket before to add or NULL for insert at tail
+ * @param r the request handled
+ * @param trailers table of trailers or NULL
+ */
+AP_DECLARE(void) ap_h1_add_end_chunk(apr_bucket_brigade *b,
+                                     apr_bucket *eos,
+                                     request_rec *r,
+                                     apr_table_t *trailers);
 
 #ifdef __cplusplus
 }

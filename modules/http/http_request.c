@@ -84,38 +84,25 @@ static void ap_die_r(int type, request_rec *r, int recursive_error)
         return;
     }
 
+    /*
+     * if we have already passed the final response down the
+     * output filter chain, we cannot generate a second final
+     * response here.
+     */
+    if (r->final_resp_passed) {
+        return;
+    }
+
     if (!ap_is_HTTP_VALID_RESPONSE(type)) {
-        ap_filter_t *next;
-
-        /*
-         * Check if we still have the ap_http_header_filter in place. If
-         * this is the case we should not ignore the error here because
-         * it means that we have not sent any response at all and never
-         * will. This is bad. Sent an internal server error instead.
-         */
-        next = r->output_filters;
-        while (next && (next->frec != ap_http_header_filter_handle)) {
-               next = next->next;
-        }
-
-        /*
-         * If next != NULL then we left the while above because of
-         * next->frec == ap_http_header_filter
-         */
-        if (next) {
-            if (type != AP_FILTER_ERROR) {
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01579)
-                              "Invalid response status %i", type);
-            }
-            else {
-                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02831)
-                              "Response from AP_FILTER_ERROR");
-            }
-            type = HTTP_INTERNAL_SERVER_ERROR;
+        if (type != AP_FILTER_ERROR) {
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01579)
+                          "Invalid response status %i", type);
         }
         else {
-            return;
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02831)
+                          "Response from AP_FILTER_ERROR");
         }
+        type = HTTP_INTERNAL_SERVER_ERROR;
     }
 
     /*
@@ -140,6 +127,7 @@ static void ap_die_r(int type, request_rec *r, int recursive_error)
              */
             update_r_in_filters(r_1st_err->proto_output_filters, r, r_1st_err);
             update_r_in_filters(r_1st_err->input_filters, r, r_1st_err);
+            recursive_error = type;
         }
 
         custom_response = NULL; /* Do NOT retry the custom thing! */
@@ -187,7 +175,8 @@ static void ap_die_r(int type, request_rec *r, int recursive_error)
             apr_table_setn(r->headers_out, "Location", custom_response);
         }
         else if (custom_response[0] == '/') {
-            const char *error_notes;
+            const char *error_notes, *original_method;
+            int original_method_number;
             r->no_local_copy = 1;       /* Do NOT send HTTP_NOT_MODIFIED for
                                          * error documents! */
             /*
@@ -205,9 +194,14 @@ static void ap_die_r(int type, request_rec *r, int recursive_error)
                                              "error-notes")) != NULL) {
                 apr_table_setn(r->subprocess_env, "ERROR_NOTES", error_notes);
             }
+            original_method = r->method;
+            original_method_number = r->method_number;
             r->method = "GET";
             r->method_number = M_GET;
             ap_internal_redirect(custom_response, r);
+            /* preserve ability to see %<m in the access log */
+            r->method = original_method;
+            r->method_number = original_method_number;
             return;
         }
         else {
@@ -339,19 +333,18 @@ AP_DECLARE(apr_status_t) ap_check_pipeline(conn_rec *c, apr_bucket_brigade *bb,
     return rv;
 }
 
-
 AP_DECLARE(void) ap_process_request_after_handler(request_rec *r)
 {
     apr_bucket_brigade *bb;
     apr_bucket *b;
     conn_rec *c = r->connection;
-    apr_status_t rv;
+
+    bb = ap_acquire_brigade(c);
 
     /* Send an EOR bucket through the output filter chain.  When
      * this bucket is destroyed, the request will be logged and
      * its pool will be freed
      */
-    bb = apr_brigade_create(c->pool, c->bucket_alloc);
     b = ap_bucket_eor_create(c->bucket_alloc, r);
     APR_BRIGADE_INSERT_HEAD(bb, b);
 
@@ -363,11 +356,15 @@ AP_DECLARE(void) ap_process_request_after_handler(request_rec *r)
         r = r->next;
     }
 
-    ap_pass_brigade(r->output_filters, bb);
+    /* All the request filters should have bailed out on EOS, and in any
+     * case they shouldn't have to handle this EOR which will destroy the
+     * request underneath them. So go straight to the connection filters.
+     */
+    ap_pass_brigade(c->output_filters, bb);
 
     /* The EOR bucket has either been handled by an output filter (eg.
      * deleted or moved to a buffered_bb => no more in bb), or an error
-     * occured before that (eg. c->aborted => still in bb) and we ought
+     * occurred before that (eg. c->aborted => still in bb) and we ought
      * to destroy it now. So cleanup any remaining bucket along with
      * the orphan request (if any).
      */
@@ -383,13 +380,23 @@ AP_DECLARE(void) ap_process_request_after_handler(request_rec *r)
      * without flushing data, and hence possibly delay pending response(s)
      * until the next/real request comes in or the keepalive timeout expires.
      */
-    rv = ap_check_pipeline(c, bb, DEFAULT_LIMIT_BLANK_LINES);
-    c->data_in_input_filters = (rv == APR_SUCCESS);
-    apr_brigade_destroy(bb);
+    (void)ap_check_pipeline(c, bb, DEFAULT_LIMIT_BLANK_LINES);
 
-    if (c->cs)
-        c->cs->state = (c->aborted) ? CONN_STATE_LINGER
-                                    : CONN_STATE_WRITE_COMPLETION;
+    ap_release_brigade(c, bb);
+
+    if (c->cs) {
+        if (c->aborted) {
+            c->cs->state = CONN_STATE_LINGER;
+        }
+        else {
+            /* If we have still data in the output filters here it means that
+             * the last (recent) nonblocking write was EAGAIN, so tell the MPM
+             * to not try another useless/stressful one but to go straight to
+             * POLLOUT.
+            */
+            c->cs->state = CONN_STATE_WRITE_COMPLETION;
+        }
+    }
     AP_PROCESS_REQUEST_RETURN((uintptr_t)r, r->uri, r->status);
     if (ap_extended_status) {
         ap_time_process_request(c->sbh, STOP_PREQUEST);
@@ -478,8 +485,8 @@ AP_DECLARE(void) ap_process_request(request_rec *r)
 
     ap_process_async_request(r);
 
-    if (!c->data_in_input_filters || ap_run_input_pending(c) != OK) {
-        bb = apr_brigade_create(c->pool, c->bucket_alloc);
+    if (ap_run_input_pending(c) != OK) {
+        bb = ap_acquire_brigade(c);
         b = apr_bucket_flush_create(c->bucket_alloc);
         APR_BRIGADE_INSERT_HEAD(bb, b);
         rv = ap_pass_brigade(c->output_filters, bb);
@@ -488,14 +495,11 @@ AP_DECLARE(void) ap_process_request(request_rec *r)
              * Notice a timeout as an error message. This might be
              * valuable for detecting clients with broken network
              * connections or possible DoS attacks.
-             *
-             * It is still safe to use r / r->pool here as the eor bucket
-             * could not have been destroyed in the event of a timeout.
              */
-            ap_log_rerror(APLOG_MARK, APLOG_INFO, rv, r, APLOGNO(01581)
-                          "Timeout while writing data for URI %s to the"
-                          " client", r->unparsed_uri);
+            ap_log_cerror(APLOG_MARK, APLOG_INFO, rv, c, APLOGNO(01581)
+                          "flushing data to the client");
         }
+        ap_release_brigade(c, bb);
     }
     if (ap_extended_status) {
         ap_time_process_request(c->sbh, STOP_PREQUEST);
@@ -523,6 +527,7 @@ static request_rec *internal_internal_redirect(const char *new_uri,
                                                request_rec *r) {
     int access_status;
     request_rec *new;
+    const char *vary_header;
 
     if (ap_is_recursion_limit_exceeded(r)) {
         ap_die(HTTP_INTERNAL_SERVER_ERROR, r);
@@ -586,6 +591,16 @@ static request_rec *internal_internal_redirect(const char *new_uri,
         if (location)
             apr_table_setn(new->headers_out, "Location", location);
     }
+
+    /* A module (like mod_rewrite) can force an internal redirect
+     * to carry over the Vary header (if present).
+     */
+    if (apr_table_get(r->notes, "redirect-keeps-vary")) {
+        if((vary_header = apr_table_get(r->headers_out, "Vary"))) {
+            apr_table_setn(new->headers_out, "Vary", vary_header);
+        }
+    }
+
     new->err_headers_out = r->err_headers_out;
     new->trailers_out    = apr_table_make(r->pool, 5);
     new->subprocess_env  = rename_original_env(r->pool, r->subprocess_env);
@@ -663,7 +678,7 @@ static request_rec *internal_internal_redirect(const char *new_uri,
      * to do their thing on internal redirects as well.  Perhaps this is a
      * misnamed function.
      */
-    if ((access_status = ap_run_post_read_request(new))) {
+    if ((access_status = ap_post_read_request(new))) {
         ap_die(access_status, new);
         return NULL;
     }
@@ -691,7 +706,7 @@ AP_DECLARE(void) ap_internal_fast_redirect(request_rec *rr, request_rec *r)
     r->args = rr->args;
     r->finfo = rr->finfo;
     r->handler = rr->handler;
-    ap_set_content_type(r, rr->content_type);
+    ap_set_content_type_ex(r, rr->content_type, AP_REQUEST_IS_TRUSTED_CT(rr));
     r->content_encoding = rr->content_encoding;
     r->content_languages = rr->content_languages;
     r->per_dir_config = rr->per_dir_config;
@@ -761,7 +776,7 @@ AP_DECLARE(void) ap_internal_redirect(const char *new_uri, request_rec *r)
 
     AP_INTERNAL_REDIRECT(r->uri, new_uri);
 
-    /* ap_die was already called, if an error occured */
+    /* ap_die was already called, if an error occurred */
     if (!new) {
         return;
     }
@@ -785,13 +800,13 @@ AP_DECLARE(void) ap_internal_redirect_handler(const char *new_uri, request_rec *
     int access_status;
     request_rec *new = internal_internal_redirect(new_uri, r);
 
-    /* ap_die was already called, if an error occured */
+    /* ap_die was already called, if an error occurred */
     if (!new) {
         return;
     }
 
     if (r->handler)
-        ap_set_content_type(new, r->content_type);
+        ap_set_content_type_ex(new, r->content_type, AP_REQUEST_IS_TRUSTED_CT(r));
     access_status = ap_process_request_internal(new);
     if (access_status == OK) {
         access_status = ap_invoke_handler(new);
@@ -823,7 +838,7 @@ AP_DECLARE(void) ap_allow_standard_methods(request_rec *r, int reset, ...)
 {
     int method;
     va_list methods;
-    apr_int64_t mask;
+    ap_method_mask_t mask;
 
     /*
      * Get rid of any current settings if requested; not just the

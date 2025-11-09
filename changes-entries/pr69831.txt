@@ -1,0 +1,3 @@
+  *) http: Correctly parse Range headers with multiple ranges that have
+     whitespaces around the comma separating the ranges from each other.
+     PR 69831 [Ruediger Pluem]

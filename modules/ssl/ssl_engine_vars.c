@@ -39,25 +39,26 @@
 **  _________________________________________________________________
 */
 
-static char *ssl_var_lookup_ssl(apr_pool_t *p, SSLConnRec *sslconn, request_rec *r, char *var);
-static char *ssl_var_lookup_ssl_cert(apr_pool_t *p, request_rec *r, X509 *xs, char *var);
-static char *ssl_var_lookup_ssl_cert_dn(apr_pool_t *p, X509_NAME *xsname, char *var);
-static char *ssl_var_lookup_ssl_cert_san(apr_pool_t *p, X509 *xs, char *var);
-static char *ssl_var_lookup_ssl_cert_valid(apr_pool_t *p, ASN1_TIME *tm);
-static char *ssl_var_lookup_ssl_cert_remain(apr_pool_t *p, ASN1_TIME *tm);
-static char *ssl_var_lookup_ssl_cert_serial(apr_pool_t *p, X509 *xs);
-static char *ssl_var_lookup_ssl_cert_chain(apr_pool_t *p, STACK_OF(X509) *sk, char *var);
-static char *ssl_var_lookup_ssl_cert_rfc4523_cea(apr_pool_t *p, SSL *ssl);
-static char *ssl_var_lookup_ssl_cert_PEM(apr_pool_t *p, X509 *xs);
-static char *ssl_var_lookup_ssl_cert_verify(apr_pool_t *p, SSLConnRec *sslconn);
-static char *ssl_var_lookup_ssl_cipher(apr_pool_t *p, SSLConnRec *sslconn, char *var);
+static const char *ssl_var_lookup_ssl(apr_pool_t *p, const SSLConnRec *sslconn, request_rec *r, const char *var);
+static const char *ssl_var_lookup_ssl_cert(apr_pool_t *p, request_rec *r, X509 *xs, const char *var);
+static const char *ssl_var_lookup_ssl_cert_dn(apr_pool_t *p, X509_NAME *xsname, const char *var);
+static const char *ssl_var_lookup_ssl_cert_san(apr_pool_t *p, X509 *xs, const char *var);
+static const char *ssl_var_lookup_ssl_cert_valid(apr_pool_t *p, ASN1_TIME *tm);
+static const char *ssl_var_lookup_ssl_cert_remain(apr_pool_t *p, ASN1_TIME *tm);
+static const char *ssl_var_lookup_ssl_cert_serial(apr_pool_t *p, X509 *xs);
+static const char *ssl_var_lookup_ssl_cert_chain(apr_pool_t *p, STACK_OF(X509) *sk, const char *var, int pem);
+static const char *ssl_var_lookup_ssl_cert_rfc4523_cea(apr_pool_t *p, SSL *ssl);
+static const char *ssl_var_lookup_ssl_cert_verify(apr_pool_t *p, const SSLConnRec *sslconn);
+static const char *ssl_var_lookup_ssl_cipher(apr_pool_t *p, const SSLConnRec *sslconn, const char *var);
 static void  ssl_var_lookup_ssl_cipher_bits(SSL *ssl, int *usekeysize, int *algkeysize);
-static char *ssl_var_lookup_ssl_version(apr_pool_t *p, char *var);
-static char *ssl_var_lookup_ssl_compress_meth(SSL *ssl);
+static const char *ssl_var_lookup_ssl_handshake_rtt(apr_pool_t *p, SSL *ssl);
+static const char *ssl_var_lookup_ssl_clienthello(apr_pool_t *p, const SSLConnRec *sslconn, const char *var);
+static const char *ssl_var_lookup_ssl_version(const char *var);
+static const char *ssl_var_lookup_ssl_compress_meth(SSL *ssl);
 
-static SSLConnRec *ssl_get_effective_config(conn_rec *c)
+static const SSLConnRec *ssl_get_effective_config(conn_rec *c)
 {
-    SSLConnRec *sslconn = myConnConfig(c);
+    const SSLConnRec *sslconn = myConnConfig(c);
     if (!(sslconn && sslconn->ssl) && c->master) {
         /* use master connection if no SSL defined here */
         sslconn = myConnConfig(c->master);
@@ -65,10 +66,40 @@ static SSLConnRec *ssl_get_effective_config(conn_rec *c)
     return sslconn;
 }
 
-static int ssl_is_https(conn_rec *c)
+static int ssl_conn_is_ssl(conn_rec *c)
 {
-    SSLConnRec *sslconn = ssl_get_effective_config(c);
-    return sslconn && sslconn->ssl;
+    const SSLConnRec *sslconn = ssl_get_effective_config(c);
+    return (sslconn && sslconn->ssl)? OK : DECLINED;
+}
+
+/* Returns certificate data, either PEM encoded if 'pem' is non-zero,
+ * else plain base64-encoded DER. */
+static const char *ssl_var_lookup_ssl_cert_data(apr_pool_t *p, X509 *xs,
+                                                int pem)
+{
+    BIO *bio;
+
+    if ((bio = BIO_new(BIO_s_mem())) == NULL)
+        return NULL;
+
+    if (pem) {
+        PEM_write_bio_X509(bio, xs);
+    }
+    else {
+        BIO *b64 = BIO_new(BIO_f_base64());
+        if (b64 == NULL) {
+            BIO_free(bio);
+            return NULL;
+        }
+        BIO_set_flags(b64, BIO_FLAGS_BASE64_NO_NL);
+        b64 = BIO_push(b64, bio);
+        i2d_X509_bio(b64, xs);
+        (void)BIO_flush(b64); /* ensures trailing bytes are padded */
+        BIO_pop(b64);
+        BIO_free(b64);
+    }
+
+    return modssl_bio_free_read(p, bio);
 }
 
 /* SSLv3 uses 36 bytes for Finishd messages, TLS1.0 12 bytes,
@@ -83,7 +114,7 @@ static int ssl_is_https(conn_rec *c)
 static apr_status_t ssl_get_tls_cb(apr_pool_t *p, conn_rec *c, const char *type,
                                    unsigned char **buf, apr_size_t *size)
 {
-    SSLConnRec *sslconn = ssl_get_effective_config(c);
+    const SSLConnRec *sslconn = ssl_get_effective_config(c);
     const char *prefix;
     apr_size_t preflen;
     const unsigned char *data;
@@ -102,6 +133,9 @@ static apr_status_t ssl_get_tls_cb(apr_pool_t *p, conn_rec *c, const char *type,
     }
     else if (strcEQ(type, "SERVER_TLS_SERVER_END_POINT")) {
         x = SSL_get_certificate(sslconn->ssl);
+        /* Increase refcount so X509_free below works for both client
+         * and server cases. */
+        if (x) X509_up_ref(x);
     }
     else if (strcEQ(type, "CLIENT_TLS_SERVER_END_POINT")) {
         x = SSL_get_peer_certificate(sslconn->ssl);
@@ -114,7 +148,7 @@ static apr_status_t ssl_get_tls_cb(apr_pool_t *p, conn_rec *c, const char *type,
     else if (x != NULL) {
         const EVP_MD *md;
 
-#if OPENSSL_VERSION_NUMBER < 0x10100000L
+#if MODSSL_USE_OPENSSL_PRE_1_1_API
         md = EVP_get_digestbynid(OBJ_obj2nid(x->sig_alg->algorithm));
 #else
         md = EVP_get_digestbynid(X509_get_signature_nid(x));
@@ -130,6 +164,8 @@ static apr_status_t ssl_get_tls_cb(apr_pool_t *p, conn_rec *c, const char *type,
         preflen = sizeof(TLS_SERVER_END_POINT_PREFIX) - 1;
         prefix = TLS_SERVER_END_POINT_PREFIX;
         data = cb;
+
+        X509_free(x);
     } 
     else {
         return APR_EGENERAL;
@@ -157,8 +193,8 @@ static apr_array_header_t *expr_peer_ext_list_fn(ap_expr_eval_ctx_t *ctx,
 
 static const char *expr_var_fn(ap_expr_eval_ctx_t *ctx, const void *data)
 {
-    char *var = (char *)data;
-    SSLConnRec *sslconn = ssl_get_effective_config(ctx->c);
+    const char *var = data;
+    const SSLConnRec *sslconn = ssl_get_effective_config(ctx->c);
 
     return sslconn ? ssl_var_lookup_ssl(ctx->p, sslconn, ctx->r, var) : NULL;
 }
@@ -166,7 +202,7 @@ static const char *expr_var_fn(ap_expr_eval_ctx_t *ctx, const void *data)
 static const char *expr_func_fn(ap_expr_eval_ctx_t *ctx, const void *data,
                                 const char *arg)
 {
-    char *var = (char *)arg;
+    const char *var = arg;
 
     return var ? ssl_var_lookup(ctx->p, ctx->s, ctx->c, ctx->r, var) : NULL;
 }
@@ -210,7 +246,7 @@ void ssl_var_register(apr_pool_t *p)
 {
     char *cp, *cp2;
 
-    APR_REGISTER_OPTIONAL_FN(ssl_is_https);
+    ap_hook_ssl_conn_is_ssl(ssl_conn_is_ssl, NULL, NULL, APR_HOOK_MIDDLE);
     APR_REGISTER_OPTIONAL_FN(ssl_get_tls_cb);
     APR_REGISTER_OPTIONAL_FN(ssl_var_lookup);
     APR_REGISTER_OPTIONAL_FN(ssl_ext_list);
@@ -234,27 +270,12 @@ void ssl_var_register(apr_pool_t *p)
 }
 
 /* This function must remain safe to use for a non-SSL connection. */
-char *ssl_var_lookup(apr_pool_t *p, server_rec *s, conn_rec *c, request_rec *r, char *var)
+const char *ssl_var_lookup(apr_pool_t *p, server_rec *s,
+                           conn_rec *c, request_rec *r,
+                           const char *var)
 {
-    SSLModConfigRec *mc = myModConfig(s);
-    const char *result;
-    BOOL resdup;
+    const char *result = NULL;
     apr_time_exp_t tm;
-
-    result = NULL;
-    resdup = TRUE;
-
-    /*
-     * When no pool is given try to find one
-     */
-    if (p == NULL) {
-        if (r != NULL)
-            p = r->pool;
-        else if (c != NULL)
-            p = c->pool;
-        else
-            p = mc->pPool;
-    }
 
     /*
      * Request dependent stuff
@@ -344,7 +365,7 @@ char *ssl_var_lookup(apr_pool_t *p, server_rec *s, conn_rec *c, request_rec *r, 
      * Connection stuff
      */
     if (result == NULL && c != NULL) {
-        SSLConnRec *sslconn = ssl_get_effective_config(c);
+        const SSLConnRec *sslconn = ssl_get_effective_config(c);
         if (strlen(var) > 4 && strcEQn(var, "SSL_", 4)
             && sslconn && sslconn->ssl)
             result = ssl_var_lookup_ssl(p, sslconn, r, var+4);
@@ -361,23 +382,20 @@ char *ssl_var_lookup(apr_pool_t *p, server_rec *s, conn_rec *c, request_rec *r, 
      */
     if (result == NULL) {
         if (strlen(var) > 12 && strcEQn(var, "SSL_VERSION_", 12))
-            result = ssl_var_lookup_ssl_version(p, var+12);
+            result = ssl_var_lookup_ssl_version(var+12);
         else if (strcEQ(var, "SERVER_SOFTWARE"))
             result = ap_get_server_banner();
         else if (strcEQ(var, "API_VERSION")) {
             result = apr_itoa(p, MODULE_MAGIC_NUMBER_MAJOR);
-            resdup = FALSE;
         }
         else if (strcEQ(var, "TIME_YEAR")) {
             apr_time_exp_lt(&tm, apr_time_now());
             result = apr_psprintf(p, "%02d%02d",
                                  (tm.tm_year / 100) + 19, tm.tm_year % 100);
-            resdup = FALSE;
         }
 #define MKTIMESTR(format, tmfield) \
             apr_time_exp_lt(&tm, apr_time_now()); \
-            result = apr_psprintf(p, format, tm.tmfield); \
-            resdup = FALSE;
+            result = apr_psprintf(p, format, tm.tmfield);
         else if (strcEQ(var, "TIME_MON")) {
             MKTIMESTR("%02d", tm_mon+1)
         }
@@ -402,7 +420,6 @@ char *ssl_var_lookup(apr_pool_t *p, server_rec *s, conn_rec *c, request_rec *r, 
                         "%02d%02d%02d%02d%02d%02d%02d", (tm.tm_year / 100) + 19,
                         (tm.tm_year % 100), tm.tm_mon+1, tm.tm_mday,
                         tm.tm_hour, tm.tm_min, tm.tm_sec);
-            resdup = FALSE;
         }
         /* all other env-variables from the parent Apache process */
         else if (strlen(var) > 4 && strcEQn(var, "ENV:", 4)) {
@@ -410,17 +427,57 @@ char *ssl_var_lookup(apr_pool_t *p, server_rec *s, conn_rec *c, request_rec *r, 
         }
     }
 
-    if (result != NULL && resdup)
-        result = apr_pstrdup(p, result);
-    if (result == NULL)
-        result = "";
-    return (char *)result;
+    return result ? result : "";
 }
 
-static char *ssl_var_lookup_ssl(apr_pool_t *p, SSLConnRec *sslconn, 
-                                request_rec *r, char *var)
+#ifdef HAVE_OPENSSL_ECH
+/* Extract ECH status variable from SSL object 'ssl' */
+static const char *ssl_var_lookup_ech_status(apr_pool_t *p, const char *var,
+                                             SSL *ssl)
 {
-    char *result;
+    char *inner_sni = NULL, *outer_sni = NULL;
+    int echrv;
+    const char *result = NULL;
+
+    if (ssl == NULL)
+        return result;
+    echrv = SSL_ech_get1_status(ssl, &inner_sni, &outer_sni);
+    if (strcEQ(var, "STATUS")) {
+        switch (echrv) {
+        case SSL_ECH_STATUS_NOT_TRIED:
+            result = "not attempted";
+            break;
+        case SSL_ECH_STATUS_FAILED:
+            result = "tried but failed";
+            break;
+        case SSL_ECH_STATUS_BAD_NAME:
+            result = "ECH worked but bad name";
+            break;
+        case SSL_ECH_STATUS_SUCCESS:
+            result = "success";
+            break;
+        default:
+            result = "error getting ECH status";
+        }
+    }
+    else if (echrv == SSL_ECH_STATUS_SUCCESS) {
+        if (strcEQ(var, "INNER_SNI")) {
+            result = apr_pstrdup(p, inner_sni);
+        }
+        if (strcEQ(var, "OUTER_SNI")) {
+            result = apr_pstrdup(p, outer_sni);
+        }
+    }
+    OPENSSL_free(inner_sni);
+    OPENSSL_free(outer_sni);
+    return result;
+}
+#endif
+
+static const char *ssl_var_lookup_ssl(apr_pool_t *p, const SSLConnRec *sslconn,
+                                      request_rec *r, const char *var)
+{
+    const char *result;
     X509 *xs;
     STACK_OF(X509) *sk;
     SSL *ssl;
@@ -429,10 +486,10 @@ static char *ssl_var_lookup_ssl(apr_pool_t *p, SSLConnRec *sslconn,
 
     ssl = sslconn->ssl;
     if (strlen(var) > 8 && strcEQn(var, "VERSION_", 8)) {
-        result = ssl_var_lookup_ssl_version(p, var+8);
+        result = ssl_var_lookup_ssl_version(var+8);
     }
     else if (ssl != NULL && strcEQ(var, "PROTOCOL")) {
-        result = (char *)SSL_get_version(ssl);
+        result = SSL_get_version(ssl);
     }
     else if (ssl != NULL && strcEQ(var, "SESSION_ID")) {
         char buf[MODSSL_SESSION_ID_STRING_LEN];
@@ -461,15 +518,28 @@ static char *ssl_var_lookup_ssl(apr_pool_t *p, SSLConnRec *sslconn,
     else if (ssl != NULL && strlen(var) >= 6 && strcEQn(var, "CIPHER", 6)) {
         result = ssl_var_lookup_ssl_cipher(p, sslconn, var+6);
     }
+    else if (ssl != NULL && strcEQ(var, "HANDSHAKE_RTT")) {
+        result = ssl_var_lookup_ssl_handshake_rtt(p, ssl);
+    }
+    else if (ssl != NULL && strlen(var) >= 12 && strcEQn(var, "CLIENTHELLO_", 12)) {
+        result = ssl_var_lookup_ssl_clienthello(p, sslconn, var+12);
+    }
     else if (ssl != NULL && strlen(var) > 18 && strcEQn(var, "CLIENT_CERT_CHAIN_", 18)) {
         sk = SSL_get_peer_cert_chain(ssl);
-        result = ssl_var_lookup_ssl_cert_chain(p, sk, var+18);
+        result = ssl_var_lookup_ssl_cert_chain(p, sk, var+18, 1);
+    }
+    else if (ssl != NULL && strlen(var) > 21 && strcEQn(var, "CLIENT_B64CERT_CHAIN_", 21)) {
+        sk = SSL_get_peer_cert_chain(ssl);
+        result = ssl_var_lookup_ssl_cert_chain(p, sk, var+21, 0);
     }
     else if (ssl != NULL && strcEQ(var, "CLIENT_CERT_RFC4523_CEA")) {
         result = ssl_var_lookup_ssl_cert_rfc4523_cea(p, ssl);
     }
     else if (ssl != NULL && strcEQ(var, "CLIENT_VERIFY")) {
         result = ssl_var_lookup_ssl_cert_verify(p, sslconn);
+    }
+    else if (ssl != NULL && strcEQ(var, "CLIENT_VERIFY_ERRSTR")) {
+        result = sslconn->verify_error;
     }
     else if (ssl != NULL && strlen(var) > 7 && strcEQn(var, "CLIENT_", 7)) {
         if ((xs = SSL_get_peer_certificate(ssl)) != NULL) {
@@ -488,6 +558,11 @@ static char *ssl_var_lookup_ssl(apr_pool_t *p, SSLConnRec *sslconn,
     else if (ssl != NULL && strcEQ(var, "COMPRESS_METHOD")) {
         result = ssl_var_lookup_ssl_compress_meth(ssl);
     }
+    else if (ssl != NULL && strcEQ(var, "SHARED_CIPHERS")) {
+        char buf[HUGE_STRING_LEN * 2];
+        if (SSL_get_shared_ciphers(ssl, buf, sizeof(buf)))
+               result = apr_pstrdup(p, buf);
+    }
 #ifdef HAVE_TLSEXT
     else if (ssl != NULL && strcEQ(var, "TLS_SNI")) {
         result = apr_pstrdup(p, SSL_get_servername(ssl,
@@ -499,7 +574,7 @@ static char *ssl_var_lookup_ssl(apr_pool_t *p, SSLConnRec *sslconn,
 #ifdef SSL_get_secure_renegotiation_support
         flag = SSL_get_secure_renegotiation_support(ssl);
 #endif
-        result = apr_pstrdup(p, flag ? "true" : "false");
+        result = flag ? "true" : "false";
     }
 #ifdef HAVE_SRP
     else if (ssl != NULL && strcEQ(var, "SRP_USER")) {
@@ -513,11 +588,16 @@ static char *ssl_var_lookup_ssl(apr_pool_t *p, SSLConnRec *sslconn,
         }
     }
 #endif
+#ifdef HAVE_OPENSSL_ECH
+    else if (ssl != NULL && strcEQn(var, "ECH_", 4)) {
+        result = ssl_var_lookup_ech_status(p, var+4, ssl);
+    }
+#endif
 
     return result;
 }
 
-static char *ssl_var_lookup_ssl_cert_dn_oneline(apr_pool_t *p, request_rec *r,
+static const char *ssl_var_lookup_ssl_cert_dn_oneline(apr_pool_t *p, request_rec *r,
                                                 X509_NAME *xsname)
 {
     char *result = NULL;
@@ -534,36 +614,28 @@ static char *ssl_var_lookup_ssl_cert_dn_oneline(apr_pool_t *p, request_rec *r,
     }
     else {
         BIO* bio;
-        int n;
         unsigned long flags = XN_FLAG_RFC2253 & ~ASN1_STRFLGS_ESC_MSB;
+
         if ((bio = BIO_new(BIO_s_mem())) == NULL)
             return NULL;
         X509_NAME_print_ex(bio, xsname, 0, flags);
-        n = BIO_pending(bio);
-        if (n > 0) {
-            result = apr_palloc(p, n+1);
-            n = BIO_read(bio, result, n);
-            result[n] = NUL;
-        }
-        BIO_free(bio);
+
+        result = modssl_bio_free_read(p, bio);
     }
     return result;
 }
 
-static char *ssl_var_lookup_ssl_cert(apr_pool_t *p, request_rec *r, X509 *xs,
-                                     char *var)
+static const char *ssl_var_lookup_ssl_cert(apr_pool_t *p, request_rec *r, X509 *xs,
+                                           const char *var)
 {
-    char *result;
-    BOOL resdup;
+    const char *result;
     X509_NAME *xsname;
     int nid;
 
     result = NULL;
-    resdup = TRUE;
 
     if (strcEQ(var, "M_VERSION")) {
         result = apr_psprintf(p, "%lu", X509_get_version(xs)+1);
-        resdup = FALSE;
     }
     else if (strcEQ(var, "M_SERIAL")) {
         result = ssl_var_lookup_ssl_cert_serial(p, xs);
@@ -576,7 +648,6 @@ static char *ssl_var_lookup_ssl_cert(apr_pool_t *p, request_rec *r, X509 *xs,
     }
     else if (strcEQ(var, "V_REMAIN")) {
         result = ssl_var_lookup_ssl_cert_remain(p, X509_get_notAfter(xs));
-        resdup = FALSE;
     }
     else if (*var && strcEQ(var+1, "_DN")) {
         if (*var == 'S')
@@ -586,7 +657,6 @@ static char *ssl_var_lookup_ssl_cert(apr_pool_t *p, request_rec *r, X509 *xs,
         else
             return NULL;
         result = ssl_var_lookup_ssl_cert_dn_oneline(p, r, xsname);
-        resdup = FALSE;
     }
     else if (strlen(var) > 5 && strcEQn(var+1, "_DN_", 4)) {
         if (*var == 'S')
@@ -596,23 +666,19 @@ static char *ssl_var_lookup_ssl_cert(apr_pool_t *p, request_rec *r, X509 *xs,
         else
             return NULL;
         result = ssl_var_lookup_ssl_cert_dn(p, xsname, var+5);
-        resdup = FALSE;
     }
     else if (strlen(var) > 4 && strcEQn(var, "SAN_", 4)) {
         result = ssl_var_lookup_ssl_cert_san(p, xs, var+4);
-        resdup = FALSE;
     }
     else if (strcEQ(var, "A_SIG")) {
-#if OPENSSL_VERSION_NUMBER < 0x10100000L
+#if MODSSL_USE_OPENSSL_PRE_1_1_API
         nid = OBJ_obj2nid((ASN1_OBJECT *)(xs->cert_info->signature->algorithm));
 #else
         const ASN1_OBJECT *paobj;
         X509_ALGOR_get0(&paobj, NULL, NULL, X509_get0_tbs_sigalg(xs));
         nid = OBJ_obj2nid(paobj);
 #endif
-        result = apr_pstrdup(p,
-                             (nid == NID_undef) ? "UNKNOWN" : OBJ_nid2ln(nid));
-        resdup = FALSE;
+        result = (nid == NID_undef) ? "UNKNOWN" : OBJ_nid2ln(nid);
     }
     else if (strcEQ(var, "A_KEY")) {
 #if OPENSSL_VERSION_NUMBER < 0x10100000L
@@ -622,16 +688,15 @@ static char *ssl_var_lookup_ssl_cert(apr_pool_t *p, request_rec *r, X509 *xs,
         X509_PUBKEY_get0_param(&paobj, NULL, 0, NULL, X509_get_X509_PUBKEY(xs));
         nid = OBJ_obj2nid(paobj);
 #endif
-        result = apr_pstrdup(p,
-                             (nid == NID_undef) ? "UNKNOWN" : OBJ_nid2ln(nid));
-        resdup = FALSE;
+        result = (nid == NID_undef) ? "UNKNOWN" : OBJ_nid2ln(nid);
     }
     else if (strcEQ(var, "CERT")) {
-        result = ssl_var_lookup_ssl_cert_PEM(p, xs);
+        result = ssl_var_lookup_ssl_cert_data(p, xs, 1);
+    }
+    else if (strcEQ(var, "B64CERT")) {
+        result = ssl_var_lookup_ssl_cert_data(p, xs, 0);
     }
 
-    if (resdup)
-        result = apr_pstrdup(p, result);
     return result;
 }
 
@@ -639,7 +704,7 @@ static char *ssl_var_lookup_ssl_cert(apr_pool_t *p, request_rec *r, X509 *xs,
  * extracted to for the SSL_{CLIENT,SERVER}_{I,S}_DN_* environment
  * variables. */
 static const struct {
-    char *name;
+    const char *name;
     int   nid;
     int   extract;
 } ssl_var_lookup_ssl_cert_dn_rec[] = {
@@ -662,15 +727,23 @@ static const struct {
     { NULL,    0,                          0 }
 };
 
-static char *ssl_var_lookup_ssl_cert_dn(apr_pool_t *p, X509_NAME *xsname, char *var)
+static const char *ssl_var_lookup_ssl_cert_dn(apr_pool_t *p, X509_NAME *xsname,
+                                        const char *var)
 {
-    char *result, *ptr;
+    const char *ptr;
+    const char *result;
     X509_NAME_ENTRY *xsne;
-    int i, j, n, idx = 0;
+    int i, j, n, idx = 0, raw = 0;
     apr_size_t varlen;
 
+    ptr = ap_strrchr_c(var, '_');
+    if (ptr && ptr > var && strcmp(ptr + 1, "RAW") == 0) {
+        var = apr_pstrmemdup(p, var, ptr - var);
+        raw = 1;
+    }
+    
     /* if an _N suffix is used, find the Nth attribute of given name */
-    ptr = strchr(var, '_');
+    ptr = ap_strchr_c(var, '_');
     if (ptr != NULL && strspn(ptr + 1, "0123456789") == strlen(ptr + 1)) {
         idx = atoi(ptr + 1);
         varlen = ptr - var;
@@ -689,7 +762,7 @@ static char *ssl_var_lookup_ssl_cert_dn(apr_pool_t *p, X509_NAME *xsname, char *
                 n =OBJ_obj2nid((ASN1_OBJECT *)X509_NAME_ENTRY_get_object(xsne));
 
                 if (n == ssl_var_lookup_ssl_cert_dn_rec[i].nid && idx-- == 0) {
-                    result = modssl_X509_NAME_ENTRY_to_string(p, xsne);
+                    result = modssl_X509_NAME_ENTRY_to_string(p, xsne, raw);
                     break;
                 }
             }
@@ -699,9 +772,10 @@ static char *ssl_var_lookup_ssl_cert_dn(apr_pool_t *p, X509_NAME *xsname, char *
     return result;
 }
 
-static char *ssl_var_lookup_ssl_cert_san(apr_pool_t *p, X509 *xs, char *var)
+static const char *ssl_var_lookup_ssl_cert_san(apr_pool_t *p, X509 *xs, const char *var)
 {
-    int type, numlen;
+    int type;
+    apr_size_t numlen;
     const char *onf = NULL;
     apr_array_header_t *entries;
 
@@ -742,28 +816,22 @@ static char *ssl_var_lookup_ssl_cert_san(apr_pool_t *p, X509 *xs, char *var)
         return NULL;
 }
 
-static char *ssl_var_lookup_ssl_cert_valid(apr_pool_t *p, ASN1_TIME *tm)
+static const char *ssl_var_lookup_ssl_cert_valid(apr_pool_t *p, ASN1_TIME *tm)
 {
-    char *result;
     BIO* bio;
-    int n;
 
     if ((bio = BIO_new(BIO_s_mem())) == NULL)
         return NULL;
     ASN1_TIME_print(bio, tm);
-    n = BIO_pending(bio);
-    result = apr_pcalloc(p, n+1);
-    n = BIO_read(bio, result, n);
-    result[n] = NUL;
-    BIO_free(bio);
-    return result;
+
+    return modssl_bio_free_read(p, bio);
 }
 
 #define DIGIT2NUM(x) (((x)[0] - '0') * 10 + (x)[1] - '0')
 
 /* Return a string giving the number of days remaining until 'tm', or
  * "0" if this can't be determined. */
-static char *ssl_var_lookup_ssl_cert_remain(apr_pool_t *p, ASN1_TIME *tm)
+static const char *ssl_var_lookup_ssl_cert_remain(apr_pool_t *p, ASN1_TIME *tm)
 {
     apr_time_t then, now = apr_time_now();
     apr_time_exp_t exp = {0};
@@ -776,7 +844,7 @@ static char *ssl_var_lookup_ssl_cert_remain(apr_pool_t *p, ASN1_TIME *tm)
     if ((tm->type == V_ASN1_UTCTIME && tm->length < 11) ||
         (tm->type == V_ASN1_GENERALIZEDTIME && tm->length < 13) ||
         !ASN1_TIME_check(tm)) {
-        return apr_pstrdup(p, "0");
+        return "0";
     }
 
     if (tm->type == V_ASN1_UTCTIME) {
@@ -795,34 +863,29 @@ static char *ssl_var_lookup_ssl_cert_remain(apr_pool_t *p, ASN1_TIME *tm)
     exp.tm_sec = DIGIT2NUM(dp + 8);
 
     if (apr_time_exp_gmt_get(&then, &exp) != APR_SUCCESS) {
-        return apr_pstrdup(p, "0");
+        return "0";
     }
 
     diff = (long)((apr_time_sec(then) - apr_time_sec(now)) / (60*60*24));
 
-    return diff > 0 ? apr_ltoa(p, diff) : apr_pstrdup(p, "0");
+    return diff > 0 ? apr_ltoa(p, diff) : "0";
 }
 
-static char *ssl_var_lookup_ssl_cert_serial(apr_pool_t *p, X509 *xs)
+static const char *ssl_var_lookup_ssl_cert_serial(apr_pool_t *p, X509 *xs)
 {
-    char *result;
     BIO *bio;
-    int n;
 
     if ((bio = BIO_new(BIO_s_mem())) == NULL)
         return NULL;
     i2a_ASN1_INTEGER(bio, X509_get_serialNumber(xs));
-    n = BIO_pending(bio);
-    result = apr_pcalloc(p, n+1);
-    n = BIO_read(bio, result, n);
-    result[n] = NUL;
-    BIO_free(bio);
-    return result;
+
+    return modssl_bio_free_read(p, bio);
 }
 
-static char *ssl_var_lookup_ssl_cert_chain(apr_pool_t *p, STACK_OF(X509) *sk, char *var)
+static const char *ssl_var_lookup_ssl_cert_chain(apr_pool_t *p, STACK_OF(X509) *sk,
+                                                 const char *var, int pem)
 {
-    char *result;
+    const char *result;
     X509 *xs;
     int n;
 
@@ -832,16 +895,17 @@ static char *ssl_var_lookup_ssl_cert_chain(apr_pool_t *p, STACK_OF(X509) *sk, ch
         n = atoi(var);
         if (n < sk_X509_num(sk)) {
             xs = sk_X509_value(sk, n);
-            result = ssl_var_lookup_ssl_cert_PEM(p, xs);
+            result = ssl_var_lookup_ssl_cert_data(p, xs, pem);
         }
     }
 
     return result;
 }
 
-static char *ssl_var_lookup_ssl_cert_rfc4523_cea(apr_pool_t *p, SSL *ssl)
+static const char *ssl_var_lookup_ssl_cert_rfc4523_cea(apr_pool_t *p, SSL *ssl)
 {
     char *result;
+    char *decimal;
     X509 *xs;
 
     ASN1_INTEGER *serialNumber;
@@ -857,7 +921,11 @@ static char *ssl_var_lookup_ssl_cert_rfc4523_cea(apr_pool_t *p, SSL *ssl)
         X509_NAME *issuer = X509_get_issuer_name(xs);
         if (issuer) {
             BIGNUM *bn = ASN1_INTEGER_to_BN(serialNumber, NULL);
-            char *decimal = BN_bn2dec(bn);
+            if((decimal = BN_bn2dec(bn)) == NULL) {
+              BN_free(bn);
+              X509_free(xs);
+              return NULL;
+            }
             result = apr_pstrcat(p, "{ serialNumber ", decimal,
                     ", issuer rdnSequence:\"",
                     modssl_X509_NAME_to_string(p, issuer, 0), "\" }", NULL);
@@ -870,24 +938,8 @@ static char *ssl_var_lookup_ssl_cert_rfc4523_cea(apr_pool_t *p, SSL *ssl)
     return result;
 }
 
-static char *ssl_var_lookup_ssl_cert_PEM(apr_pool_t *p, X509 *xs)
-{
-    char *result;
-    BIO *bio;
-    int n;
-
-    if ((bio = BIO_new(BIO_s_mem())) == NULL)
-        return NULL;
-    PEM_write_bio_X509(bio, xs);
-    n = BIO_pending(bio);
-    result = apr_pcalloc(p, n+1);
-    n = BIO_read(bio, result, n);
-    result[n] = NUL;
-    BIO_free(bio);
-    return result;
-}
-
-static char *ssl_var_lookup_ssl_cert_verify(apr_pool_t *p, SSLConnRec *sslconn)
+static const char *ssl_var_lookup_ssl_cert_verify(apr_pool_t *p,
+                                                  const SSLConnRec *sslconn)
 {
     char *result;
     long vrc;
@@ -922,36 +974,35 @@ static char *ssl_var_lookup_ssl_cert_verify(apr_pool_t *p, SSLConnRec *sslconn)
     return result;
 }
 
-static char *ssl_var_lookup_ssl_cipher(apr_pool_t *p, SSLConnRec *sslconn, char *var)
+static const char *ssl_var_lookup_ssl_cipher(apr_pool_t *p,
+                                             const SSLConnRec *sslconn,
+                                             const char *var)
 {
-    char *result;
-    BOOL resdup;
+    const char *result;
     int usekeysize, algkeysize;
     SSL *ssl;
 
     result = NULL;
-    resdup = TRUE;
 
     ssl = sslconn->ssl;
     ssl_var_lookup_ssl_cipher_bits(ssl, &usekeysize, &algkeysize);
 
     if (ssl && strEQ(var, "")) {
         MODSSL_SSL_CIPHER_CONST SSL_CIPHER *cipher = SSL_get_current_cipher(ssl);
-        result = (cipher != NULL ? (char *)SSL_CIPHER_get_name(cipher) : NULL);
+
+        if (cipher) {
+            result = apr_pstrdup(p, SSL_CIPHER_get_name(cipher));
+        }
     }
     else if (strcEQ(var, "_EXPORT"))
         result = (usekeysize < 56 ? "true" : "false");
     else if (strcEQ(var, "_USEKEYSIZE")) {
         result = apr_itoa(p, usekeysize);
-        resdup = FALSE;
     }
     else if (strcEQ(var, "_ALGKEYSIZE")) {
         result = apr_itoa(p, algkeysize);
-        resdup = FALSE;
     }
 
-    if (result != NULL && resdup)
-        result = apr_pstrdup(p, result);
     return result;
 }
 
@@ -967,16 +1018,82 @@ static void ssl_var_lookup_ssl_cipher_bits(SSL *ssl, int *usekeysize, int *algke
     return;
 }
 
-static char *ssl_var_lookup_ssl_version(apr_pool_t *p, char *var)
+static const char *ssl_var_lookup_ssl_handshake_rtt(apr_pool_t *p, SSL *ssl)
+{
+#if OPENSSL_VERSION_NUMBER >= 0x30200000L
+    apr_uint64_t rtt;
+    if (SSL_get_handshake_rtt(ssl, &rtt) > 0)
+        return apr_psprintf(p, "%" APR_UINT64_T_FMT, rtt);
+#endif
+    return NULL;
+}
+
+static const char *ssl_var_lookup_ssl_clienthello(apr_pool_t *p, const SSLConnRec *sslconn, const char *var)
+{
+#if OPENSSL_VERSION_NUMBER >= 0x10101000L && !defined(LIBRESSL_VERSION_NUMBER)
+    char *value;
+    modssl_clienthello_vars *clienthello_vars;
+    apr_size_t i;
+
+    clienthello_vars = sslconn->clienthello_vars;
+
+    if (!clienthello_vars)
+        return NULL;
+
+    if (strEQ(var, "VERSION")) {
+        return apr_psprintf(p, "%04x", (uint16_t) clienthello_vars->version);
+    }
+    else if (strEQ(var, "CIPHERS") && (clienthello_vars->ciphers_len > 0)) {
+        value = apr_palloc(p, clienthello_vars->ciphers_len * 2 + 1);
+        ap_bin2hex(clienthello_vars->ciphers_data, clienthello_vars->ciphers_len, value);
+        return value;
+    }
+    else if (strEQ(var, "EXTENSIONS") && (clienthello_vars->extids_len > 0)) {
+        value = apr_palloc(p, clienthello_vars->extids_len * 4 + 1);
+        for (i = 0; i < clienthello_vars->extids_len; i++) {
+            apr_snprintf(value + i * 4, 5, "%04x", (uint16_t) clienthello_vars->extids_data[i]);
+        }
+        return value;
+    }
+    else if (strEQ(var, "GROUPS") && (clienthello_vars->ecgroups_len > 2)) {
+        value = apr_palloc(p, clienthello_vars->ecgroups_len * 2 + 1 - 2);
+        ap_bin2hex(clienthello_vars->ecgroups_data + 2, clienthello_vars->ecgroups_len - 2, value);
+        return value;
+    }
+    else if (strEQ(var, "EC_FORMATS") && (clienthello_vars->ecformats_len > 1)) {
+        value = apr_palloc(p, clienthello_vars->ecformats_len * 2 + 1 - 1);
+        ap_bin2hex(clienthello_vars->ecformats_data + 1, clienthello_vars->ecformats_len - 1, value);
+        return value;
+    }
+    else if (strEQ(var, "SIG_ALGOS") && (clienthello_vars->sigalgos_len > 2)) {
+        value = apr_palloc(p, clienthello_vars->sigalgos_len * 2 + 1 - 2);
+        ap_bin2hex(clienthello_vars->sigalgos_data + 2, clienthello_vars->sigalgos_len - 2, value);
+        return value;
+    }
+    else if (strEQ(var, "ALPN") && (clienthello_vars->alpn_len > 2)) {
+        value = apr_palloc(p, clienthello_vars->alpn_len * 2 + 1 - 2);
+        ap_bin2hex(clienthello_vars->alpn_data + 2, clienthello_vars->alpn_len - 2, value);
+        return value;
+    }
+    else if (strEQ(var, "VERSIONS") && (clienthello_vars->versions_len > 1)) {
+        value = apr_palloc(p, clienthello_vars->versions_len * 2 + 1 - 1);
+        ap_bin2hex(clienthello_vars->versions_data + 1, clienthello_vars->versions_len - 1, value);
+        return value;
+    }
+#endif
+    return NULL;
+}
+
+static const char *ssl_var_lookup_ssl_version(const char *var)
 {
     if (strEQ(var, "INTERFACE")) {
-        return apr_pstrdup(p, var_interface);
+        return var_interface;
     }
     else if (strEQ(var, "LIBRARY_INTERFACE")) {
-        return apr_pstrdup(p, var_library_interface);
+        return var_library_interface;
     }
     else if (strEQ(var, "LIBRARY")) {
-        return apr_pstrdup(p, var_library);
+        return var_library;
     }
     return NULL;
 }
@@ -1021,7 +1138,7 @@ static void extract_dn(apr_table_t *t, apr_hash_t *nids, const char *pfx,
                  apr_hash_set(count, &nid, sizeof nid, dup);
                  key = apr_pstrcat(p, pfx, tag, NULL);
              }
-             value = modssl_X509_NAME_ENTRY_to_string(p, xsne);
+             value = modssl_X509_NAME_ENTRY_to_string(p, xsne, 0);
              apr_table_setn(t, key, value);
          }
     }
@@ -1120,6 +1237,10 @@ static int dump_extn_value(BIO *bio, ASN1_OCTET_STRING *str)
     ASN1_STRING *ret = ASN1_STRING_new();
     int rv = 0;
 
+    if(!ret) {
+      return rv;
+    }
+
     /* This allows UTF8String, IA5String, VisibleString, or BMPString;
      * conversion to UTF-8 is forced. */
     if (d2i_DISPLAYTEXT(&ret, &pp, str->length)) {
@@ -1134,7 +1255,7 @@ static int dump_extn_value(BIO *bio, ASN1_OCTET_STRING *str)
 apr_array_header_t *ssl_ext_list(apr_pool_t *p, conn_rec *c, int peer,
                                  const char *extension)
 {
-    SSLConnRec *sslconn = ssl_get_effective_config(c);
+    const SSLConnRec *sslconn = ssl_get_effective_config(c);
     SSL *ssl = NULL;
     apr_array_header_t *array = NULL;
     X509 *xs = NULL;
@@ -1173,6 +1294,11 @@ apr_array_header_t *ssl_ext_list(apr_pool_t *p, conn_rec *c, int peer,
 
         if (OBJ_cmp(X509_EXTENSION_get_object(ext), oid) == 0) {
             BIO *bio = BIO_new(BIO_s_mem());
+            if(bio == NULL) {
+              X509_free(xs);
+              ASN1_OBJECT_free(oid);
+              return NULL;
+            }
 
             /* We want to obtain a string representation of the extensions
              * value and add it to the array we're building.
@@ -1209,9 +1335,9 @@ apr_array_header_t *ssl_ext_list(apr_pool_t *p, conn_rec *c, int peer,
     return array;
 }
 
-static char *ssl_var_lookup_ssl_compress_meth(SSL *ssl)
+static const char *ssl_var_lookup_ssl_compress_meth(SSL *ssl)
 {
-    char *result = "NULL";
+    const char *result = "NULL";
 #ifndef OPENSSL_NO_COMP
     SSL_SESSION *pSession = SSL_get_session(ssl);
 
@@ -1243,76 +1369,4 @@ static char *ssl_var_lookup_ssl_compress_meth(SSL *ssl)
 #endif
     return result;
 }
-
-/*  _________________________________________________________________
-**
-**  SSL Extension to mod_log_config
-**  _________________________________________________________________
-*/
-
-#include "../../modules/loggers/mod_log_config.h"
-
-static const char *ssl_var_log_handler_c(request_rec *r, char *a);
-static const char *ssl_var_log_handler_x(request_rec *r, char *a);
-
-/*
- * register us for the mod_log_config function registering phase
- * to establish %{...}c and to be able to expand %{...}x variables.
- */
-void ssl_var_log_config_register(apr_pool_t *p)
-{
-    static APR_OPTIONAL_FN_TYPE(ap_register_log_handler) *log_pfn_register;
-
-    log_pfn_register = APR_RETRIEVE_OPTIONAL_FN(ap_register_log_handler);
-
-    if (log_pfn_register) {
-        log_pfn_register(p, "c", ssl_var_log_handler_c, 0);
-        log_pfn_register(p, "x", ssl_var_log_handler_x, 0);
-    }
-    return;
-}
-
-/*
- * implement the %{..}c log function
- * (we are the only function)
- */
-static const char *ssl_var_log_handler_c(request_rec *r, char *a)
-{
-    SSLConnRec *sslconn = ssl_get_effective_config(r->connection);
-    char *result;
-
-    if (sslconn == NULL || sslconn->ssl == NULL)
-        return NULL;
-    result = NULL;
-    if (strEQ(a, "version"))
-        result = ssl_var_lookup(r->pool, r->server, r->connection, r, "SSL_PROTOCOL");
-    else if (strEQ(a, "cipher"))
-        result = ssl_var_lookup(r->pool, r->server, r->connection, r, "SSL_CIPHER");
-    else if (strEQ(a, "subjectdn") || strEQ(a, "clientcert"))
-        result = ssl_var_lookup(r->pool, r->server, r->connection, r, "SSL_CLIENT_S_DN");
-    else if (strEQ(a, "issuerdn") || strEQ(a, "cacert"))
-        result = ssl_var_lookup(r->pool, r->server, r->connection, r, "SSL_CLIENT_I_DN");
-    else if (strEQ(a, "errcode"))
-        result = "-";
-    else if (strEQ(a, "errstr"))
-        result = (char *)sslconn->verify_error;
-    if (result != NULL && result[0] == NUL)
-        result = NULL;
-    return result;
-}
-
-/*
- * extend the implementation of the %{..}x log function
- * (there can be more functions)
- */
-static const char *ssl_var_log_handler_x(request_rec *r, char *a)
-{
-    char *result;
-
-    result = ssl_var_lookup(r->pool, r->server, r->connection, r, a);
-    if (result != NULL && result[0] == NUL)
-        result = NULL;
-    return result;
-}
-
 

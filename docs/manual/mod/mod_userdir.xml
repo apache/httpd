@@ -29,6 +29,14 @@
 <identifier>userdir_module</identifier>
 
 <summary>
+<note type="warning">By using this module you are allowing multiple users
+to host content within the same origin. The same origin policy is a key
+principle of Javascript and web security. By hosting web pages in the same
+origin these pages can read and control each other and security issues in
+one page may affect another. This is particularly dangerous in combination
+with web pages involving dynamic content and authentication and when
+your users don't necessarily trust each other.</note>
+
 <p>This module allows user-specific directories to be accessed using the
 <code>http://example.com/~user/</code> syntax.</p>
 </summary>

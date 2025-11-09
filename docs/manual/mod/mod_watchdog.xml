@@ -37,6 +37,8 @@ Apache distribution use this functionality:</p>
 <ul>
 <li><module>mod_heartbeat</module></li>
 <li><module>mod_heartmonitor</module></li>
+<li><module>mod_md</module></li>
+<li><module>mod_proxy_hcheck</module></li>
 </ul>
 <note type="warning">
 To allow a module to use <module>mod_watchdog</module> functionality,
@@ -48,7 +50,7 @@ core or, if a dynamic module, be loaded before the calling module.
 <directivesynopsis>
 <name>WatchdogInterval</name>
 <description>Watchdog interval in seconds</description>
-<syntax>WatchdogInterval <var>number-of-seconds</var></syntax>
+<syntax>WatchdogInterval <var>time-interval</var>[s]</syntax>
 <default>WatchdogInterval 1</default>
 <contextlist><context>server config</context></contextlist>
 

@@ -161,10 +161,10 @@ module="mod_mime_magic">MimeMagicFile</directive></seealso>
     designed for transmitting a binary file in an ASCII (text)
     format.</p>
 
-    <p>The <a href="http://www.ietf.org/rfc/rfc2616.txt">HTTP/1.1
+    <p>The <a href="https://www.rfc-editor.org/rfc/rfc2616">HTTP/1.1
     RFC</a>, section 14.11 puts it this way:</p>
 
-    <blockquote cite="http://www.ietf.org/rfc/rfc2616.txt">
+    <blockquote cite="https://www.rfc-editor.org/rfc/rfc2616">
       <p>The Content-Encoding entity-header field is used as a modifier to
       the media-type. When present, its value indicates what additional
       content codings have been applied to the entity-body, and thus what
@@ -588,7 +588,7 @@ AddType image/jpeg jpeg jpg jpe
     <var>extension</var> argument will be compared against each of
     them.</p>
 
-    <p>A simmilar effect to <module>mod_negotiation</module>'s
+    <p>A similar effect to <module>mod_negotiation</module>'s
     <directive module="mod_negotiation">LanguagePriority</directive>
     can be achieved by qualifying a <var>media-type</var> with
     <code>qs</code>:</p>
@@ -612,21 +612,21 @@ AddType application/rss+xml;qs=0.8 .xml
     <note><title>Note</title>
     <p>If no handler is explicitly set for a request, the specified content
     type will also be used as the handler name. </p>
-   
-    <p>When explicit directives such as 
-    <directive module="core" >SetHandler</directive> or 
-    <directive module="mod_mime">AddHandler</directive> do not apply 
+
+    <p>When explicit directives such as
+    <directive module="core" >SetHandler</directive> or
+    <directive module="mod_mime">AddHandler</directive> do not apply
     to the current request, the internal handler name normally set by those
-    directives is instead set to the content type specified by this directive. 
-    </p> 
+    directives is instead set to the content type specified by this directive.
+    </p>
     <p>
-    This is a historical behavior that may be used by some third-party modules 
+    This is a historical behavior that may be used by some third-party modules
     (such as mod_php) for taking responsibility for the matching request.
     </p>
 
-    <p>Configurations that rely on such "synthetic" types should be avoided. 
-    Additionally, configurations that restrict access to 
-    <directive module="core" >SetHandler</directive> or 
+    <p>Configurations that rely on such "synthetic" types should be avoided.
+    Additionally, configurations that restrict access to
+    <directive module="core" >SetHandler</directive> or
     <directive module="mod_mime">AddHandler</directive> should
     restrict access to this directive as well.</p>
     </note>
@@ -1051,4 +1051,44 @@ RemoveType .cgi
 <seealso><module>mod_mime_magic</module></seealso>
 </directivesynopsis>
 
+<directivesynopsis>
+<name>MimeOptions</name>
+<description>Configures mod_mime behavior</description>
+<syntax>MimeOptions <var>option</var> [<var>option</var>] ...</syntax>
+<contextlist><context>server config</context>
+<context>virtual host</context><context>directory</context>
+<context>.htaccess</context>
+</contextlist>
+<override>FileInfo</override>
+<compatibility>Apache HTTP Server 2.5.1 and later</compatibility>
+
+<usage>
+    <p>The <directive>MimeOptions</directive> directive configures certain
+    behaviors of <module>mod_mime</module>. <var>Option</var> can
+    be one of</p>
+
+    <dl>
+      <dt><code>TypesLastExtension</code></dt>
+      <dd>This option only consider the last (right-most) filename extension
+      when determining a files Content-Type.</dd>
+      <dt><code>NoTypesLastExtension</code></dt>
+      <dd>This option can be used to revert to the default behavior of testing
+      every filename extension when determining a files Content-Type.</dd>
+      <dt><code>AllLastExtension</code></dt>
+      <dd>This option only consider the last (right-most) filename extension
+      when scanning filenames.</dd>
+      <dt><code>NoAllLastExtension</code></dt>
+      <dd>This option can be used to revert to the default behavior of scanning 
+      every filename extension. Only useful if 
+      <code>MimeOptions AllLastExtension</code> has been used in a lower precedence 
+      configuration section</dd>
+      <dt><code>Disable</code></dt>
+      <dd>All assignment of metadata based on the filename is skipped.</dd>
+      <dt><code>Enable</code></dt>
+      <dd>Re-enables file extension checking by this module. Only useful if a lower
+      precedence configuration section has specified 
+      <code>MimeOptions Disable</code>.</dd>
+    </dl>
+</usage>
+</directivesynopsis>
 </modulesynopsis>

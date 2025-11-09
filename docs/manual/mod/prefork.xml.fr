@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
+<!-- English Revision : 1137744 -->
+<!-- French translation : Lucien GENTIS -->
+<!-- Reviewed by : Vincent Deffontaines -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="prefork.xml.meta">
+
+<name>prefork</name>
+<description>Implémente un serveur web avec démarrage anticipé de
+processus, sans thread</description>
+<status>MPM</status>
+<sourcefile>prefork.c</sourcefile>
+<identifier>mpm_prefork_module</identifier>
+
+<summary>
+    <p>Ce module multi-processus (MPM) implémente un serveur web avec
+    démarrage anticipé de processus. Chaque processus du serveur peut
+    répondre aux requêtes entrantes, et un processus parent contrôle la
+    taille du jeu de processus enfants. Il est particulièrement indiqué pour les
+    sites qui ne doivent pas utiliser les threads afin de maintenir une
+    compatibilité avec certaines bibliothèques non sûres du point de vue
+    des threads. C'est également le MPM le plus approprié si l'on veut
+    isoler les requêtes les unes des autres, de façon à ce qu'un
+    problème concernant une requête n'affecte pas les autres.</p>
+
+    <p>Ce MPM s'auto-contrôle de manière efficace, de sorte qu'il est
+    rarement nécessaire d'ajuster ses directives de configuration. Le
+    plus important est la définition de la directive <directive
+    module="mpm_common">MaxRequestWorkers</directive> ; sa valeur doit être
+    assez grande pour pouvoir traiter autant de requêtes simultanées que
+    vous pensez recevoir, mais assez petite pour conserver suffisamment
+    de mémoire RAM pour tous les processus.</p>
+</summary>
+<seealso><a href="../bind.html">Définition des adresses et ports
+qu'utilise le serveur HTTP Apache</a></seealso>
+
+<section id="how-it-works"><title>Comment ça marche</title>
+    <p>Un processus de contrôle unique a pour tâche de lancer les
+    processus enfants qui attendent les connexions et les traitent au
+    fur et à mesure qu'elles arrivent. Apache httpd essaie toujours de
+    maintenir plusieurs processus serveurs inactifs ou <dfn>en
+    réserve</dfn>, afin de pouvoir traiter les requêtes entrantes. De
+    cette façon, les clients n'ont pas besoin d'attendre le démarrage
+    d'un nouveau processus enfant pour que leurs requêtes puissent être
+    traitées.</p>
+
+    <p>Les directives <directive
+    module="mpm_common">StartServers</directive>, <directive
+    module="prefork">MinSpareServers</directive>, <directive
+    module="prefork">MaxSpareServers</directive> et <directive
+    module="mpm_common">MaxRequestWorkers</directive> permettent de contrôler
+    la manière dont le processus parent crée les processus enfants pour
+    traiter les requêtes. En général, Apache httpd s'auto-contrôle de manière
+    efficace, de sorte que la plupart des sites peuvent conserver les
+    valeurs par défaut des directives. Les sites qui doivent traiter
+    plus de 256 requêtes simultanées doivent augmenter la valeur de
+    <directive module="mpm_common">MaxRequestWorkers</directive>, alors que les
+    sites dont la ressource mémoire est limitée doivent la diminuer afin
+    d'éviter une hyperactivité du serveur (utilisation excessive de la
+    mémoire virtuelle sur disque). Vous trouverez plus d'informations à
+    propos du contrôle de la création de processus dans le document <a
+    href="../misc/perf-tuning.html">conseils en matière de
+    performances</a></p>
+
+    <p>Alors que le processus parent est en général démarré en tant que
+    <code>root</code> sous Unix afin de pouvoir se mettre à l'écoute sur le port 80, les
+    processus enfants sont lancés par Apache httpd sous un utilisateur avec
+    privilèges restreints. On peut contrôler les privilèges accordés aux
+    processus enfants d'Apache httpd à l'aide des directives <directive
+    module="mod_unixd">User</directive> et <directive
+    module="mod_unixd">Group</directive>. Les processus enfants doivent
+    être en mesure de lire tous les contenus destinés à être servis,
+    mais leurs privilèges doivent être aussi bas que possible.</p>
+
+    <p>La directive <directive
+    module="mpm_common">MaxConnectionsPerChild</directive> permet de
+    contrôler la fréquence à laquelle le serveur recycle ses processus
+    en arrêtant les plus anciens et en en lançant de nouveaux.</p>
+
+    <p>Ce module MPM utilise le mutex <code>mpm-accept</code> pour
+    sérialiser l'accès aux connexions entrantes lorsque peut se
+    présenter un problème d'afflux de requêtes (en général quand il y a
+    plusieurs sockets en écoute). Les aspects de l'implémentation de ce
+    mutex peuvent être configurés via la directive <directive
+    module="core">Mutex</directive>. Vous trouverez des informations
+    supplémentaires à propos de ce mutex dans la documentation à propos
+    des  <a href="../misc/perf-tuning.html">conseils en matière de
+    performances</a></p>
+</section>
+
+<directivesynopsis location="mpm_common"><name>CoreDumpDirectory</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>EnableExceptionHook</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>PidFile</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>Listen</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>ListenBacklog</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>MaxRequestWorkers</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>MaxMemFree</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>MaxConnectionsPerChild</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>ScoreBoardFile</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>ReceiveBufferSize</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>SendBufferSize</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>ServerLimit</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>StartServers</name>
+</directivesynopsis>
+<directivesynopsis location="mod_unixd"><name>User</name>
+</directivesynopsis>
+<directivesynopsis location="mod_unixd"><name>Group</name>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>MaxSpareServers</name>
+<description>Nombre maximum de processus serveurs enfants
+inactifs</description>
+<syntax>MaxSpareServers <var>nombre</var></syntax>
+<default>MaxSpareServers 10</default>
+<contextlist><context>server config</context></contextlist>
+
+<usage>
+    <p>La directive <directive>MaxSpareServers</directive> permet de
+    définir le nombre maximum souhaité de processus serveurs enfants
+    <em>inactifs</em>. Un processus inactif est un processus qui ne
+    traite pas de requête. S'il y a plus de
+    <directive>MaxSpareServers</directive> processus inactifs, le
+    processus parent arrêtera les processus excédentaires.</p>
+
+    <p>La modification de ce paramètre n'est nécessaire que
+    dans le cas de sites très sollicités. Définir ce paramètre à une
+    valeur très grande est cependant dans la plupart des cas une
+    mauvaise idée. Si vous essayez d'affecter à ce paramètre une valeur
+    égale ou inférieure à la valeur de <directive
+    module="prefork">MinSpareServers</directive>, le serveur HTTP Apache
+    l'ajustera automatiquement à la valeur de <directive>
+    MinSpareServers</directive><code> + 1</code>.</p>
+</usage>
+<seealso><directive module="prefork">MinSpareServers</directive></seealso>
+<seealso><directive module="mpm_common">StartServers</directive></seealso>
+<seealso><directive module="mpm_common">MaxSpareThreads</directive></seealso>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>MinSpareServers</name>
+<description>Nombre minimum de processus serveurs enfants
+inactifs</description>
+<syntax>MinSpareServers <var>nombre</var></syntax>
+<default>MinSpareServers 5</default>
+<contextlist><context>server config</context></contextlist>
+
+<usage>
+    <p>La directive <directive>MinSpareServers</directive> permet de
+    définir le nombre minimum désiré de processus serveurs enfants
+    <em>inactifs</em>. Un processus inactif est un processus qui ne
+    traite pas de requête. S'il y a moins de
+    <directive>MinSpareServers</directive> processus inactifs, le
+    processus parent va créer de nouveaux enfants de la manière suivante
+    : il en crée un, attend une seconde, il en crée deux, attend une
+    seconde, il en crée quatre, puis continue ainsi exponentiellement
+    jusu'à ce que son taux de création de processus enfants soit de 32
+    par seconde. Il ne s'arrête que lorsque le nombre de processus
+    enfants correspond à la définition de la directive
+    <directive>MinSpareServers</directive>.</p>
+
+    <p>La modification de ce paramètre n'est nécessaire que
+    dans le cas de sites très sollicités. Définir ce paramètre à une
+    valeur très grande est dans la plupart des cas une mauvaise
+    idée.</p>
+</usage>
+<seealso><directive module="prefork">MaxSpareServers</directive></seealso>
+<seealso><directive module="mpm_common">StartServers</directive></seealso>
+<seealso><directive module="mpm_common">MinSpareThreads</directive></seealso>
+</directivesynopsis>
+
+</modulesynopsis>
+

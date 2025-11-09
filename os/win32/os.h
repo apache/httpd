@@ -94,9 +94,6 @@ typedef enum {
 
 FARPROC ap_load_dll_func(ap_dlltoken_e fnLib, char* fnName, int ordinal);
 
-PSECURITY_ATTRIBUTES GetNullACL(void);
-void CleanNullACL(void *sa);
-
 #define AP_DECLARE_LATE_DLL_FUNC(lib, rettype, calltype, fn, ord, args, names) \
     typedef rettype (calltype *ap_winapi_fpt_##fn) args; \
     static ap_winapi_fpt_##fn ap_winapi_pfn_##fn = NULL; \

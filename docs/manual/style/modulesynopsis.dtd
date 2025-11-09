@@ -45,8 +45,15 @@ usage?, seealso*)>
 
 <!ELEMENT description %Inline;>
 
-<!ATTLIST directivesynopsis  type CDATA  #IMPLIED
-                             location CDATA  #IMPLIED >
+<!-- 
+ idtype is appended to the directive name when generating links to allow
+ a directive of type section to share the name with another directive.
+ The attribute type could have been (re)used instead but it would have broken
+ pre-existing links.
+-->
+<!ATTLIST directivesynopsis  type       CDATA  #IMPLIED
+                             idtype     CDATA  #IMPLIED
+                             location   CDATA  #IMPLIED >
 
 <!ELEMENT syntax %Inline;>
 
@@ -75,3 +82,11 @@ usage?, seealso*)>
 <!ATTLIST quickreference metafile CDATA  #REQUIRED>
 
 <!ELEMENT legend (table, table)>
+
+<!-- Used in overrides.xml -->
+<!ELEMENT overrideindex (title | summary | overridesummary)+>
+<!ATTLIST overrideindex metafile CDATA #REQUIRED>
+
+<!ELEMENT overridesummary %Block;>
+<!ATTLIST overridesummary class    CDATA #IMPLIED
+                          fallback CDATA #IMPLIED>

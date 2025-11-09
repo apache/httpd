@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1734412 -->
+<!-- English Revision: 1903838 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -30,8 +30,8 @@ IP)</description>
 <status>Base</status>
 <sourcefile>mod_authz_host.c</sourcefile>
 <identifier>authz_host_module</identifier>
-<compatibility>Disponible depuis les versions 2.3 et supérieures
-d'Apache</compatibility>
+<compatibility>Le fournisseur <code>forward-dns</code> est disponible à partir
+de la version 2.4.19 du serveur HTTP Apache</compatibility>
 
 <summary>
     <p>Les fournisseurs d'autorisation implémentés par le module
@@ -176,18 +176,22 @@ Require host .net example.edu
     <p>A la différence du fournisseur <code>host</code>, ce fournisseur
     n'effectue pas de recherche DNS inverse : il effectue simplement une requête
     DNS directe pour le nom d'hôte spécifié et donne accès au client si son
-    adresse IP correspond. Il ne fonctionnera donc qu'avec des noms d'hôte, et
-    non avec des noms de domaine. Par contre, comme le DNS inverse n'est pas
-    sollicité, il fonctionnera avec des clients qui utilisent un service de DNS
-    dynamique.</p>
+    adresse IP correspond. Il ne fonctionnera donc qu'avec des noms d'hôte
+    complets qui peuvent être résolus par le DNS, et non avec des noms de
+    domaine partiels. Par contre, comme le DNS inverse n'est pas sollicité, et
+    comme les recherches DNS interviennent au moment du traitement de la requête
+    (et non au démarrage), il fonctionnera avec des clients qui utilisent un
+    service de DNS dynamique.</p>
 
     <highlight language="config">
-Require forward-dns bla.example.org
+Require forward-dns dynamic.example.org
     </highlight>
 
     <p>Un client dont l'adresse IP correspond au nom d'hôte
-    <code>bla.example.org</code> se verra autoriser l'accès.</p>
+    <code>dynamic.example.org</code> se verra autoriser l'accès.</p>
 
+    <p>Le fournisseur <code>forward-dns</code> est disponible à partir de la
+    version 2.4.19 du serveur HTTP Apache.</p>
 </section>
 
 <section id="reqlocal"><title>Require local</title>

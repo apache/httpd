@@ -67,7 +67,7 @@ delivery to the client</description>
 # the result set to text/html
 ExtFilterDefine c-to-html mode=output \
     intype=text/c outtype=text/html \
-    cmd="/usr/bin/enscript --color -W html -Ec -o - -"
+    cmd="/usr/bin/enscript --color -w html -Ec -o -"
 
 &lt;Directory "/export/home/trawick/apacheinst/htdocs/c"&gt;
     # core directive to cause the new filter to

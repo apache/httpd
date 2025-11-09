@@ -259,10 +259,12 @@ AP_DECLARE(void) ap_reclaim_child_processes(int terminate,
         while (cur_extra) {
             ap_generation_t old_gen;
             extra_process_t *next = cur_extra->next;
+            pid_t pid = cur_extra->pid;
 
-            if (reclaim_one_pid(cur_extra->pid, action_table[cur_action].action)) {
-                if (ap_unregister_extra_mpm_process(cur_extra->pid, &old_gen) == 1) {
-                    mpm_callback(-1, cur_extra->pid, old_gen);
+            if (reclaim_one_pid(pid, action_table[cur_action].action)) {
+                if (ap_unregister_extra_mpm_process(pid, &old_gen) == 1) {
+                    /* cur_extra dangling pointer from here. */
+                    mpm_callback(-1, pid, old_gen);
                 }
                 else {
                     AP_DEBUG_ASSERT(1 == 0);
@@ -307,10 +309,12 @@ AP_DECLARE(void) ap_relieve_child_processes(ap_reclaim_callback_fn_t *mpm_callba
     while (cur_extra) {
         ap_generation_t old_gen;
         extra_process_t *next = cur_extra->next;
+        pid_t pid = cur_extra->pid;
 
-        if (reclaim_one_pid(cur_extra->pid, DO_NOTHING)) {
-            if (ap_unregister_extra_mpm_process(cur_extra->pid, &old_gen) == 1) {
-                mpm_callback(-1, cur_extra->pid, old_gen);
+        if (reclaim_one_pid(pid, DO_NOTHING)) {
+            if (ap_unregister_extra_mpm_process(pid, &old_gen) == 1) {
+                /* cur_extra dangling pointer from here. */
+                mpm_callback(-1, pid, old_gen);
             }
             else {
                 AP_DEBUG_ASSERT(1 == 0);
@@ -632,6 +636,7 @@ static apr_status_t dummy_connection(ap_pod_t *pod)
     if (rv != APR_SUCCESS) {
         return rv;
     }
+    apr_pool_tag(p, "dummy_connection");
 
     /* If possible, find a listener which is configured for
      * plain-HTTP, not SSL; using an SSL port would either be
@@ -706,7 +711,7 @@ static apr_status_t dummy_connection(ap_pod_t *pod)
     }
     else /* ... XXX other request types here? */ {
         /* Create an HTTP request string.  We include a User-Agent so
-         * that adminstrators can track down the cause of the
+         * that administrators can track down the cause of the
          * odd-looking requests in their logs.  A complete request is
          * used since kernel-level filtering may require that much
          * data before returning from accept(). */
@@ -1009,20 +1014,46 @@ AP_DECLARE(apr_status_t) ap_fatal_signal_child_setup(server_rec *s)
     return APR_SUCCESS;
 }
 
+/* We can't call sig_coredump (ap_log_error) once pconf is destroyed, so
+ * avoid double faults by restoring each default signal handler on cleanup.
+ */
+static apr_status_t fatal_signal_cleanup(void *unused)
+{
+    (void)unused;
+
+    apr_signal(SIGSEGV, SIG_DFL);
+#ifdef SIGBUS
+    apr_signal(SIGBUS, SIG_DFL);
+#endif /* SIGBUS */
+#ifdef SIGABORT
+    apr_signal(SIGABORT, SIG_DFL);
+#endif /* SIGABORT */
+#ifdef SIGABRT
+    apr_signal(SIGABRT, SIG_DFL);
+#endif /* SIGABRT */
+#ifdef SIGILL
+    apr_signal(SIGILL, SIG_DFL);
+#endif /* SIGILL */
+#ifdef SIGFPE
+    apr_signal(SIGFPE, SIG_DFL);
+#endif /* SIGFPE */
+
+    return APR_SUCCESS;
+}
+
 AP_DECLARE(apr_status_t) ap_fatal_signal_setup(server_rec *s,
                                                apr_pool_t *in_pconf)
 {
 #ifndef NO_USE_SIGACTION
     struct sigaction sa;
 
+    memset(&sa, 0, sizeof sa);
     sigemptyset(&sa.sa_mask);
 
 #if defined(SA_ONESHOT)
     sa.sa_flags = SA_ONESHOT;
 #elif defined(SA_RESETHAND)
     sa.sa_flags = SA_RESETHAND;
-#else
-    sa.sa_flags = 0;
 #endif
 
     sa.sa_handler = sig_coredump;
@@ -1072,6 +1103,8 @@ AP_DECLARE(apr_status_t) ap_fatal_signal_setup(server_rec *s,
 
     pconf = in_pconf;
     parent_pid = my_pid = getpid();
+    apr_pool_cleanup_register(pconf, NULL, fatal_signal_cleanup,
+                              fatal_signal_cleanup);
 
     return APR_SUCCESS;
 }

@@ -24,6 +24,7 @@
 <a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Sunucusu</a> &gt; <a href="http://httpd.apache.org/docs/">Belgeleme</a> &gt; <a href="../">Sürüm 2.5</a> &gt; <a href="./">Çeşitli Belgeler</a></div><div id="page-content"><div id="preamble"><h1>Güvenlik İpuçları</h1>
 <div class="toplang">
 <p><span>Mevcut Diller: </span><a href="../en/misc/security_tips.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../es/misc/security_tips.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
 <a href="../fr/misc/security_tips.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ko/misc/security_tips.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/misc/security_tips.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
@@ -49,7 +50,7 @@
 </ul><h3>Ayrıca bakınız:</h3><ul class="seealso"><li><a href="#comments_section">Yorum</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="uptodate" id="uptodate">Güncel Tutma</a></h2>
+<h2><a name="uptodate" id="uptodate">Güncel Tutma</a> <a title="Permanent link" href="#uptodate" class="permalink">&para;</a></h2>
 
     <p>Apache HTTP Sunucusu iyi bir güvenlik sicilinin yanında güvenlik
       konularıyla oldukça ilgili bir geliştirici topluluğuna sahiptir. Fakat,
@@ -70,7 +71,7 @@
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="dos" id="dos">Hizmet Reddi (DoS) Saldırıları</a></h2>
+<h2><a name="dos" id="dos">Hizmet Reddi (DoS) Saldırıları</a> <a title="Permanent link" href="#dos" class="permalink">&para;</a></h2>
     
 
     <p>Tüm ağ sunucuları, istemcilerin sistem kaynaklarından yararlanmalarını
@@ -140,7 +141,7 @@
     </ul>
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="serverroot" id="serverroot"><code>ServerRoot</code> Dizinlerinin İzinleri</a></h2>
+<h2><a name="serverroot" id="serverroot"><code>ServerRoot</code> Dizinlerinin İzinleri</a> <a title="Permanent link" href="#serverroot" class="permalink">&para;</a></h2>
     
 
     <p>Normalde, Apache root kullanıcı tarafından başlatılır ve hizmetleri
@@ -193,7 +194,7 @@
       birileri dosyaya yanıltıcı veriler girebilir.</p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="ssi" id="ssi">Sunucu Taraflı İçerik Yerleştirme</a></h2>
+<h2><a name="ssi" id="ssi">Sunucu Taraflı İçerik Yerleştirme</a> <a title="Permanent link" href="#ssi" class="permalink">&para;</a></h2>
     
 
     <p>SSI sayfaları bir sunucu yöneticisi açısından çeşitli olası risklere
@@ -235,7 +236,7 @@
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="cgi" id="cgi">CGI Genelinde</a></h2>
+<h2><a name="cgi" id="cgi">CGI Genelinde</a> <a title="Permanent link" href="#cgi" class="permalink">&para;</a></h2>
     
 
     <p>Herşeyden önce ya CGI betiğini/programını yazanlara ya da kendinizin
@@ -255,7 +256,7 @@
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="nsaliasedcgi" id="nsaliasedcgi"><code>ScriptAlias</code>’sız CGI</a></h2>
+<h2><a name="nsaliasedcgi" id="nsaliasedcgi"><code>ScriptAlias</code>’sız CGI</a> <a title="Permanent link" href="#nsaliasedcgi" class="permalink">&para;</a></h2>
     
 
     <p>Kullanıcıların sitenin her yerinde CGI betiklerini çalıştırmalarına
@@ -272,7 +273,7 @@
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="saliasedcgi" id="saliasedcgi"><code>ScriptAlias</code>’lı CGI</a></h2>
+<h2><a name="saliasedcgi" id="saliasedcgi"><code>ScriptAlias</code>’lı CGI</a> <a title="Permanent link" href="#saliasedcgi" class="permalink">&para;</a></h2>
     
 
     <p>CGI’yi belli dizinlerle sınırlamak yöneticiye bu dizinlerde daha iyi
@@ -287,7 +288,7 @@
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="dynamic" id="dynamic">Devingen içerikli kaynaklar</a></h2>
+<h2><a name="dynamic" id="dynamic">Devingen içerikli kaynaklar</a> <a title="Permanent link" href="#dynamic" class="permalink">&para;</a></h2>
     
 
     <p>Sunucunun bir parçası gibi çalışan, <code>mod_php</code>,
@@ -301,7 +302,7 @@
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="dynamicsec" id="dynamicsec">Devingen içeriğin güvenliği</a></h2>
+<h2><a name="dynamicsec" id="dynamicsec">Devingen içeriğin güvenliği</a> <a title="Permanent link" href="#dynamicsec" class="permalink">&para;</a></h2>
     
 
     <p><code>mod_php</code>, <code>mod_perl</code> veya
@@ -323,7 +324,7 @@
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="systemsettings" id="systemsettings">Sistem Ayarlarının Korunması</a></h2>
+<h2><a name="systemsettings" id="systemsettings">Sistem Ayarlarının Korunması</a> <a title="Permanent link" href="#systemsettings" class="permalink">&para;</a></h2>
     
 
     <p>Güvenliği gerçekten sıkı tutmak istiyorsanız, kullanıcılarınızın
@@ -347,7 +348,7 @@
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="protectserverfiles" id="protectserverfiles">Sunucu dosyalarının öntanımlı olarak korunması</a></h2>
+<h2><a name="protectserverfiles" id="protectserverfiles">Sunucu dosyalarının öntanımlı olarak korunması</a> <a title="Permanent link" href="#protectserverfiles" class="permalink">&para;</a></h2>
     
 
     <p>Apache’nin ister istemez yanlış anlaşılan yönlerinden biri öntanımlı
@@ -412,7 +413,7 @@
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="watchyourlogs" id="watchyourlogs">Günlüklerin İzlenmesi</a></h2>
+<h2><a name="watchyourlogs" id="watchyourlogs">Günlüklerin İzlenmesi</a> <a title="Permanent link" href="#watchyourlogs" class="permalink">&para;</a></h2>
     
 
     <p>Sunucunuzda olup biteni günü gününe bilmek istiyorsanız <a href="../logs.html">günlük dosyalarına</a> bakmalısınız. Günlük dosyaları
@@ -457,7 +458,7 @@
     </code></p></div>
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="merging" id="merging">Yapılandırma bölümlerinin birleştirilmesi</a></h2>
+<h2><a name="merging" id="merging">Yapılandırma bölümlerinin birleştirilmesi</a> <a title="Permanent link" href="#merging" class="permalink">&para;</a></h2>
 
     
 
@@ -474,10 +475,11 @@
   </div></div>
 <div class="bottomlang">
 <p><span>Mevcut Diller: </span><a href="../en/misc/security_tips.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../es/misc/security_tips.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
 <a href="../fr/misc/security_tips.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ko/misc/security_tips.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/misc/security_tips.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
-</div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Yorum</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
+</div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Yorum</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Libera.chat, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
 var comments_identifier = 'http://httpd.apache.org/docs/trunk/misc/security_tips.html';
@@ -495,7 +497,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/misc/security_tips
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2017 The Apache Software Foundation.<br /><a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> altında lisanslıdır.</p>
+<p class="apache">Copyright 2023 The Apache Software Foundation.<br /><a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> altında lisanslıdır.</p>
 <p class="menu"><a href="../mod/">Modüller</a> | <a href="../mod/quickreference.html">Yönergeler</a> | <a href="http://wiki.apache.org/httpd/FAQ">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

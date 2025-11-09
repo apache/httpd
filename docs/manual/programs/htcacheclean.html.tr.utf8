@@ -24,9 +24,11 @@
 <a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Sunucusu</a> &gt; <a href="http://httpd.apache.org/docs/">Belgeleme</a> &gt; <a href="../">Sürüm 2.5</a> &gt; <a href="./">Programlar</a></div><div id="page-content"><div id="preamble"><h1>htcacheclean - Disk arabelleğini temizler</h1>
 <div class="toplang">
 <p><span>Mevcut Diller: </span><a href="../en/programs/htcacheclean.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../fr/programs/htcacheclean.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ko/programs/htcacheclean.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/programs/htcacheclean.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
+<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 
     <p><code><strong>htcacheclean</strong></code>,
     <code class="module"><a href="../mod/mod_cache_disk.html">mod_cache_disk</a></code> deposunun boyutlarını belli sınırlar
@@ -48,7 +50,7 @@
 </ul><h3>Ayrıca bakınız:</h3><ul class="seealso"><li><code class="module"><a href="../mod/mod_cache_disk.html">mod_cache_disk</a></code></li><li><a href="#comments_section">Yorum</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="synopsis" id="synopsis">Kullanım</a></h2>
+<h2><a name="synopsis" id="synopsis">Kullanım</a> <a title="Permanent link" href="#synopsis" class="permalink">&para;</a></h2>
     <p><code><strong>htcacheclean</strong>
     [ -<strong>D</strong> ]
     [ -<strong>v</strong> ]
@@ -87,7 +89,7 @@
     <var>url</var></code></p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="options" id="options">Seçenekler</a></h2>
+<h2><a name="options" id="options">Seçenekler</a> <a title="Permanent link" href="#options" class="permalink">&para;</a></h2>
     <dl>
     <dt><code><strong>-d</strong><var> süre</var></code></dt>
     <dd>Artalanda çalışarak <code><var>süre</var></code> dakikada bir
@@ -167,7 +169,7 @@
     </dl>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="delete" id="delete">Belli bir URL'nin silinmesi</a></h2>
+<h2><a name="delete" id="delete">Belli bir URL'nin silinmesi</a> <a title="Permanent link" href="#delete" class="permalink">&para;</a></h2>
     <p><code><strong>htcacheclean</strong></code> tarafından aktarılan URL'ler
     arabellekten silinir. Bir URL birden fazla mevcutsa hepsi silinir.</p>
 
@@ -180,7 +182,7 @@
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="list" id="list">Arabellekteki URL'lerin listelenmesi</a></h2>
+<h2><a name="list" id="list">Arabellekteki URL'lerin listelenmesi</a> <a title="Permanent link" href="#list" class="permalink">&para;</a></h2>
     <p><code><strong>htcacheclean</strong></code>'e
     <code><strong>-a</strong></code> veya <code><strong>-A</strong></code>
     seçeneğinin aktarılmasıyla, arabellekteki URL'ler bulundukça her satıra bir
@@ -205,7 +207,7 @@
     </dl>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="exit" id="exit">Çıkış Durumu</a></h2>
+<h2><a name="exit" id="exit">Çıkış Durumu</a> <a title="Permanent link" href="#exit" class="permalink">&para;</a></h2>
     <p><code><strong>htcacheclean</strong></code>, tüm işlemler başarıyla
     yerine getirildiğinde <code>0</code>, aksi takdirde <code>1</code>
     döndürür. Bir URL belirtildiğinde, bu URL arablleklenmi ve silinmişse
@@ -214,9 +216,10 @@
 </div></div>
 <div class="bottomlang">
 <p><span>Mevcut Diller: </span><a href="../en/programs/htcacheclean.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../fr/programs/htcacheclean.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ko/programs/htcacheclean.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/programs/htcacheclean.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
-</div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Yorum</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
+</div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Yorum</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Libera.chat, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
 var comments_identifier = 'http://httpd.apache.org/docs/trunk/programs/htcacheclean.html';
@@ -234,7 +237,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/programs/htcachecl
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2017 The Apache Software Foundation.<br /><a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> altında lisanslıdır.</p>
+<p class="apache">Copyright 2023 The Apache Software Foundation.<br /><a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> altında lisanslıdır.</p>
 <p class="menu"><a href="../mod/">Modüller</a> | <a href="../mod/quickreference.html">Yönergeler</a> | <a href="http://wiki.apache.org/httpd/FAQ">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
