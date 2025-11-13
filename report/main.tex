@@ -1,0 +1,134 @@
+%%%%%%%%%%%%
+%% Please rename this main.tex file and the output PDF to
+%% [lastname_firstname_graduationyear]
+%% before submission.
+%%%%%%%%%%%%
+
+\documentclass[12pt]{caltech_thesis}
+\usepackage[hyphens]{url}
+\usepackage{lipsum}
+\usepackage{graphicx}
+
+\usepackage{todonotes}
+
+%% Tentative: newtx for better-looking Times
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{newtxtext,newtxmath}
+
+% Must use biblatex to produce the Published Contents and Contributions, per-chapter bibliography (if desired), etc.
+\usepackage[
+    backend=biber,natbib,
+    % IMPORTANT: load a style suitable for your discipline
+    style=authoryear
+]{biblatex}
+
+% Name of your .bib file(s)
+\addbibresource{example.bib}
+\addbibresource{ownpubs.bib}
+
+\begin{document}
+
+% Do remember to remove the square bracket!
+\title{[Thesis Title]}
+\author{[Your Full Name]}
+
+\degreeaward{[Name of Degree]}                 % Degree to be awarded
+\university{California Institute of Technology}    % Institution name
+\address{Pasadena, California}                     % Institution address
+\unilogo{caltech.png}                                 % Institution logo
+\copyyear{[Year Degree Conferred]}  % Year (of graduation) on diploma
+\defenddate{[Exact Date]}          % Date of defense
+
+\orcid{[Author ORCID]}
+
+%% IMPORTANT: Select ONE of the rights statement below.
+\rightsstatement{All rights reserved\todo[size=\footnotesize]{Choose one from the choices in the source code!! And delete this \texttt{todo} when you're done that. :-)}}
+% \rightsstatement{All rights reserved except where otherwise noted}
+% \rightsstatement{Some rights reserved. This thesis is distributed under a [name license, e.g., ``Creative Commons Attribution-NonCommercial-ShareAlike License'']}
+
+%% You can add "[logo]" to the maketitle command if you'd like the Caltech logo to appear on your title page
+\maketitle
+%\maketitle[logo]
+
+\begin{acknowledgements} 	 
+   [Add acknowledgements here. If you do not wish to add any to your thesis, you may simply add a blank titled Acknowledgements page.]
+\end{acknowledgements}
+
+\begin{abstract}
+   [This abstract must provide a succinct and informative condensation of your work. Candidates are welcome to prepare a lengthier abstract for inclusion in the dissertation, and provide a shorter one in the CaltechTHESIS record.]
+\end{abstract}
+
+%% Uncomment the `iknowhattodo' option to dismiss the instruction in the PDF.
+\begin{publishedcontent}%[iknowwhattodo]
+% List your publications and contributions here.
+\nocite{Cahn:etal:2015,Cahn:etal:2016}
+\end{publishedcontent}
+
+\tableofcontents
+\listoffigures
+\listoftables
+\printnomenclature
+
+\mainmatter
+
+\chapter{Introduction}
+
+
+\section{Background}
+\
+\subsection{ECH}
+{The Transport Layer Security (TLS) protocol is the foundation of secure communication across the modern internet. It helps keep data private and secure by providing a means of encrypting communication between a client and a server. However, when a TLS connection first starts, the client sends a message called the ClientHello to begin the handshake. In this message is a field called the Server Name Indication (SNI). This contains the hostname which the client wants to connect to.
+
+This SNI is sent in plaintext, allowing anyone monitoring the network to see which website a user is visiting, even though the rest of the communicaiton is encrypted. This can leak information about the user's activity and it can be used for tracking.
+
+Encrypted ClientHello (ECH) is a new feature being added to TLS 1.3 to fix the issue. It hides the SNI and other sensitive parts of the handshake by encrypting the ClientHello message. Only the intended server has the right key to decrypt the message. This can prevent network observers from knowing which site a client is trying to access, improving privacy and security.
+}
+\subsection{Apache}
+The Apache HTTP Server is one of the most widely used and long-standing web servers in the world. It is an open-source project maintained by the Apache Software Foundation and is known for its reliability, flexibility, and modular design. Apache supports a broad range of features, including virtual hosting, authentication and SSL/TLS encryption.
+
+As it is open-source and has large user base, Apache is frequently used as a reference platform for testing new web technologies and standards. Its modular architecture allows developers to extend functionality easily, making it a suitable candidate for experimenting with Encrypted ClientHello (ECH) support and testing its impact on real-world server configurations.
+
+\section{Motivation}
+
+
+\section{This is Another Section}
+\lipsum[6-7] 
+
+\chapter{This is the Second Chapter}
+\begin{refsection}
+If you'd like to have separate bibliographies at the end of each chapter, put a \verb|refsection| around the material of each chapter, then cite as usual -- e.g.~\citep{GMP81,Ful83}. Then do a \verb|\printbibliography| just before the \verb|refsection| ends. \index{bibliography!by chapter}
+
+\printbibliography[heading=subbibliography]
+\end{refsection}
+
+
+\chapter{This is the Third Chapter}
+
+\publishedas{Cahn:etal:2015}
+
+[You can have chapters that were published as part of your thesis. The text style of the body should be single column, as it was submitted to the publisher, not formatted as the publisher did.]
+
+\chapter{This is the Fourth Chapter}
+\chapter{This is the Fifth Chapter}
+\chapter{This is the Sixth Chapter}
+\chapter{This is the Seventh Chapter}
+\chapter{This is the Eighth Chapter}
+
+\printbibliography[heading=bibintoc]
+
+\appendix
+
+\chapter{Questionnaire}
+\chapter{Consent Form}
+
+\printindex
+
+\theendnotes
+
+%% Pocket materials at the VERY END of thesis
+\pocketmaterial
+\extrachapter{Pocket Material: Map of Case Study Solar Systems} 
+
+
+\end{document}
