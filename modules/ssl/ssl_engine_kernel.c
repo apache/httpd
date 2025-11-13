@@ -198,19 +198,8 @@ int ssl_hook_ReadReq(request_rec *r)
         AP_DEBUG_ASSERT(hssc);
 
         if ((servername = SSL_get_servername(ssl, TLSEXT_NAMETYPE_host_name))) {
-            /*
-             * The SNI extension supplied a hostname. So don't accept requests
-             * with either no hostname or a hostname that selected a different
-             * virtual host than the one used for the handshake, causing
-             * different SSL parameters to be applied, such as SSLProtocol,
-             * SSLCACertificateFile/Path and SSLCADNRequestFile/Path which
-             * cannot be renegotiated (SSLCA* due to current limitations in
-             * OpenSSL, see:
-             * http://mail-archives.apache.org/mod_mbox/httpd-dev/200806.mbox/%3C48592955.2090303@velox.ch%3E
-             * and
-             * http://mail-archives.apache.org/mod_mbox/httpd-dev/201312.mbox/%3CCAKQ1sVNpOrdiBm-UPw1hEdSN7YQXRRjeaT-MCWbW_7mN%3DuFiOw%40mail.gmail.com%3E
-             * )
-             */
+            /* The SNI extension supplied a hostname; reject any
+             * request without a Host header. */
             if (!r->hostname) {
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(02031)
                             "Hostname %s provided via SNI, but no hostname"
@@ -237,7 +226,11 @@ int ssl_hook_ReadReq(request_rec *r)
                            "which is required to access this server.<br />\n");
             return HTTP_FORBIDDEN;
         }
-        /* Enforce SSL SNI vhost compatibility policy. */
+
+        /* Enforce SSL SNI vhost compatibility policy: the virtual
+         * host selected for the connection (based on the SNI
+         * extension) must have a "compatible" SSL configuration with
+         * the one selected based on the Host: header. */
         if (!ssl_check_vhost_sni_policy(sc, hssc)) {
             ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(02032)
                          "Hostname %s %s and hostname %s provided"
