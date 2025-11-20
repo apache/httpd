@@ -1244,7 +1244,7 @@ const char *md_cert_get_serial_number(const md_cert_t *cert, apr_pool_t *p)
         serial = BN_bn2hex(bn);
         s = apr_pstrdup(p, serial);
         OPENSSL_free((void*)serial);
-        OPENSSL_free((void*)bn);
+        BN_free(bn);
     }
     return s;
 }
@@ -2254,7 +2254,7 @@ apr_status_t md_cert_get_ari_cert_id(const char **pari_cert_id,
     memset(&ser_buf, 0, sizeof(ser_buf));
     bn = ASN1_INTEGER_to_BN(serial, NULL);
     sder_len = BN_bn2bin(bn, sbuf);
-    OPENSSL_free((void*)bn);
+    BN_free(bn);
     if (sder_len < 1)
         return APR_EINVAL;
     ser_buf.len = (apr_size_t)sder_len;
