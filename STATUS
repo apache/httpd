@@ -183,14 +183,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
       svn merge -c 1924267 ^/httpd/httpd/trunk .
      +1: rpluem, jorton, covener 
 
-  *) mod_md: update to v2.6.5
-     Trunk version of patch:
-        https://svn.apache.org/r1929514
-     Backport version for 2.4.x of patch:
-      Trunk version of patch works
-      svn merge -c 1929514 ^/httpd/httpd/trunk .
-     +1: icing, covener, rpluem
-
   *) mod_http2: use nghttp2 supplied lengths when checking trailers.
      Trunk version of patch:
         https://svn.apache.org/r1929517

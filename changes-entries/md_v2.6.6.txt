@@ -1,0 +1,3 @@
+  *) mod_md: update to version 2.6.6
+     - Fix a small memory leak when using OpenSSL's BIGNUMs. [Theo Buehler]
+     - Fix reuse of curl easy handles by resetting them. [Michael Kaufmann]
