@@ -532,7 +532,7 @@ static const char *certid_summary(const OCSP_CERTID *certid, apr_pool_t *p)
         bn = ASN1_INTEGER_to_BN(aserial, NULL);
         s = BN_bn2hex(bn);
         serial = apr_pstrdup(p, s);
-        OPENSSL_free((void*)bn);
+        BN_free(bn);
         OPENSSL_free((void*)s);
     }
     return apr_psprintf(p, "certid[der=%s, issuer=%s, key=%s, serial=%s]",
