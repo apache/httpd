@@ -60,6 +60,7 @@ typedef enum {
     H2_SESSION_EV_MPM_STOPPING,     /* the process is stopping */
     H2_SESSION_EV_PRE_CLOSE,        /* connection will close after this */
     H2_SESSION_EV_NO_MORE_STREAMS,  /* no more streams to process */
+    H2_SESSION_EV_BAD_CLIENT,       /* client misbehaving badly */
 } h2_session_event_t;
 
 typedef struct h2_session {
@@ -98,7 +99,9 @@ typedef struct h2_session {
     unsigned int pushes_promised;   /* number of http/2 push promises submitted */
     unsigned int pushes_submitted;  /* number of http/2 pushed responses submitted */
     unsigned int pushes_reset;      /* number of http/2 pushed reset by client */
-    
+    unsigned int max_stream_errors; /* max client stream errors tolerated */
+    unsigned int stream_errors;     /* number of stream errors by client */
+
     apr_size_t frames_received;     /* number of http/2 frames received */
     apr_size_t frames_sent;         /* number of http/2 frames sent */
     

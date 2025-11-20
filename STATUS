@@ -160,38 +160,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_http2/mod_proxy_http2: Fix bug in log2() calculation
-     trunk patch: http://svn.apache.org/r1927235
-     2.4.x patch: svn merge -c 1927235 ^/httpd/httpd/trunk .
-     +1: icing, rpluem, jorton
-
-  *) mod_proxy_http2: add support for ProxyErrorOverride. PR69771
-     trunk patch: http://svn.apache.org/r1927647
-     2.4.x patch: svn merge -c 1927647 ^/httpd/httpd/trunk .
-     +1: icing, rpluem, jorton
-
-  *) mod_http2: new directive H2MaxStreamErrors.
-     trunk patch: http://svn.apache.org/r1927792
-     2.4.x patch: svn merge -c 1927792 ^/httpd/httpd/trunk .
-     +1: icing, rpluem, jorton
-
-  *) mod_http2: Fix handling of 304 responses from mod_cache. PR 69580.
-     Trunk version of patch:
-        https://svn.apache.org/r1924267
-     Backport version for 2.4.x of patch:
-      Trunk version of patch works
-      svn merge -c 1924267 ^/httpd/httpd/trunk .
-     +1: rpluem, jorton, covener 
-
-  *) mod_http2: use nghttp2 supplied lengths when checking trailers.
-     Trunk version of patch:
-        https://svn.apache.org/r1929517
-        https://svn.apache.org/r1929527
-     Backport version for 2.4.x of patch:
-      Trunk version of patch works
-      svn merge -c 1929517,1929527 ^/httpd/httpd/trunk .
-     +1: icing, covener, rpluem
-
   *) mod_ssl: fix strict mode handling in SSLVHostSNIPolicy
      Trunk version of patch:
         https://svn.apache.org/r1929631

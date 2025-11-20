@@ -1510,7 +1510,8 @@ static ssize_t stream_data_cb(nghttp2_session *ng2s,
             buf_len = output_data_buffered(stream, &eos, &header_blocked);
         }
         else if (APR_EOF == rv) {
-            if (!stream->output_eos) {
+            if (!stream->output_eos &&
+                !AP_STATUS_IS_HEADER_ONLY(stream->response->status)) {
                 /* Seeing APR_EOF without an EOS bucket received before indicates
                  * that stream output is incomplete. Commonly, we expect to see
                  * an ERROR bucket to have been generated. But faulty handlers
@@ -1618,8 +1619,9 @@ static apr_status_t stream_do_response(h2_stream *stream)
                 ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, c1,
                               H2_STRM_MSG(stream, "process response %d"),
                               resp->status);
-                is_empty = (e != APR_BRIGADE_SENTINEL(stream->out_buffer)
-                            && APR_BUCKET_IS_EOS(e));
+                is_empty = AP_STATUS_IS_HEADER_ONLY(resp->status) ||
+                           ((e != APR_BRIGADE_SENTINEL(stream->out_buffer) &&
+                            APR_BUCKET_IS_EOS(e)));
                 break;
             }
             else if (APR_BUCKET_IS_EOS(b)) {

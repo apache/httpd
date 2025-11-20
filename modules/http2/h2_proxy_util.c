@@ -34,7 +34,7 @@
 APLOG_USE_MODULE(proxy_http2);
 
 /* h2_log2(n) iff n is a power of 2 */
-unsigned char h2_proxy_log2(int n)
+unsigned char h2_proxy_log2(unsigned int n)
 {
     int lz = 0;
     if (!n) {

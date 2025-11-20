@@ -1,0 +1,1 @@
+  * mod_proxy_http2: add support for ProxyErrorOverride directive. PR69771

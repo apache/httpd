@@ -323,7 +323,7 @@ apr_status_t h2_ififo_remove(h2_ififo *fifo, int id);
  * common helpers
  ******************************************************************************/
 /* h2_log2(n) iff n is a power of 2 */
-unsigned char h2_log2(int n);
+unsigned char h2_log2(unsigned int n);
 
 /**
  * Count the bytes that all key/value pairs in a table have
