@@ -168,7 +168,7 @@ fi
 if test -v TEST_OPENSSL3; then
     # For a branch, rebuild if the remote branch has updated.
     if test -v TEST_OPENSSL3_BRANCH -a -f $HOME/root/openssl-is-${TEST_OPENSSL3}; then
-        latest=`git ls-remote -b $TEST_OPENSSL3_BRANCH https://github.com/openssl/openssl refs/heads/${TEST_OPENSSL3_BRANCH} | cut -f1`
+        latest=`git ls-remote https://github.com/openssl/openssl refs/heads/${TEST_OPENSSL3_BRANCH} | cut -f1`
         : Got branch latest commit ${latest}
         if grep -q ^${latest} $HOME/root/openssl-is-${TEST_OPENSSL3}; then
             : Cached repos already at ${latest}
