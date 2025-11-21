@@ -163,9 +163,21 @@ if test -v TEST_SSL; then
     popd
 fi
 
+# Build the requested version of OpenSSL if it's not already installed
+# in the cached ~/root
 if test -v TEST_OPENSSL3; then
-    # Build the requested version of OpenSSL if it's not already
-    # installed in the cached ~/root
+    # For a branch, rebuild if the remote branch has updated.
+    if test -v TEST_OPENSSL3_BRANCH -a -f $HOME/root/openssl-is-${TEST_OPENSSL3}; then
+        latest=`git ls-remote https://github.com/openssl/openssl refs/heads/${TEST_OPENSSL3_BRANCH} | cut -f1`
+        : Got branch latest commit ${latest}
+        if grep -q ^${latest} $HOME/root/openssl-is-${TEST_OPENSSL3}; then
+            : Cached repos already at ${latest}
+        else
+            : Forcing rebuild
+            rm -f $HOME/root/openssl-is-${TEST_OPENSSL3}
+        fi
+    fi
+
     if ! test -f $HOME/root/openssl-is-${TEST_OPENSSL3}; then
         # Remove any previous install.
         rm -rf $HOME/root/openssl3
@@ -173,7 +185,7 @@ if test -v TEST_OPENSSL3; then
         mkdir -p build/openssl
         pushd build/openssl
            if test -v TEST_OPENSSL3_BRANCH; then
-               git clone -b $TEST_OPENSSL3_BRANCH -q https://github.com/openssl/openssl openssl-${TEST_OPENSSL3}
+               git clone --depth=1 -b $TEST_OPENSSL3_BRANCH -q https://github.com/openssl/openssl openssl-${TEST_OPENSSL3}
            else
                curl -L "https://github.com/openssl/openssl/releases/download/openssl-${TEST_OPENSSL3}/openssl-${TEST_OPENSSL3}.tar.gz" |
                    tar -xzf -
@@ -185,7 +197,12 @@ if test -v TEST_OPENSSL3; then
                        '-Wl,-rpath=$(LIBRPATH)'
            make $MFLAGS
            make install_sw
-           touch $HOME/root/openssl-is-${TEST_OPENSSL3}
+           if test -d .git; then
+               : Caching git commit hash:
+               git rev-parse HEAD | tee $HOME/root/openssl-is-${TEST_OPENSSL3}
+           else
+               touch $HOME/root/openssl-is-${TEST_OPENSSL3}
+           fi
        popd
     fi
 
