@@ -198,7 +198,8 @@ if test -v TEST_OPENSSL3; then
            make $MFLAGS
            make install_sw
            if test -d .git; then
-               git rev-parse HEAD > $HOME/root/openssl-is-${TEST_OPENSSL3}
+               : Caching git commit hash:
+               git rev-parse HEAD | tee $HOME/root/openssl-is-${TEST_OPENSSL3}
            else
                touch $HOME/root/openssl-is-${TEST_OPENSSL3}
            fi
