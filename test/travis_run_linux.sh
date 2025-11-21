@@ -61,10 +61,9 @@ fi
 
 if test -v TEST_OPENSSL3; then
     CONFIG="$CONFIG --with-ssl=$HOME/root/openssl3"
-    # Temporarily set LD_RUN_PATH so that httpd/mod_ssl binaries pick
-    # up the custom OpenSSL build
-    export LD_RUN_PATH=$HOME/root/openssl3/lib:$HOME/root/openssl3/lib64
     export PATH=$HOME/root/openssl3/bin:$PATH
+    # Force everything built to hard-code an RPATH
+    export LDFLAGS="-Wl,-rpath,$HOME/root/openssl3/lib -Wl,-rpath,$HOME/root/openssl3/lib64"
     openssl version
 fi
 
