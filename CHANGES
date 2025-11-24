@@ -1,6 +1,34 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.66
 
+  *) mod_http2: Fix handling of 304 responses from mod_cache. PR 69580.
+     [Stefan Eissing]
+
+  *) mod_http2/mod_proxy_http2: fix a bug in calculating the log2 value of
+     integers, used in push diaries and proxy window size calculations.
+     PR69741 [Benjamin P. Kallus]
+
+  *) mod_md: update to version 2.6.5
+     - New directive `MDInitialDelay`, controlling how longer to wait after
+       a server restart before checking certificates for renewal.
+       [Michael Kaufmann]
+     - Hardening: when build with OpenSSL older than 1.0.2 or old libressl
+       versions, the parsing of ASN.1 time strings did not do a length check.
+     - Hardening: when reading back OCSP responses stored in the local JSON
+       store, missing 'valid' key led to uninitialized values, resulting in
+       wrong refresh behaviour.
+
+  *) mod_md: update to version 2.6.6
+     - Fix a small memory leak when using OpenSSL's BIGNUMs. [Theo Buehler]
+     - Fix reuse of curl easy handles by resetting them. [Michael Kaufmann]
+
+  *) mod_http2: update to version 2.0.35
+     New directive `H2MaxStreamErrors` to control how much bad behaviour
+     by clients is tolerated before the connection is closed.
+     [Stefan Eissing]
+
+  * mod_proxy_http2: add support for ProxyErrorOverride directive. PR69771
+
   *) mpm_common: Add new ListenTCPDeferAccept directive that allows to specify
      the value set for the TCP_DEFER_ACCEPT socket option on listen sockets.
      [Ruediger Pluem]
