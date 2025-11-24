@@ -115,8 +115,8 @@ static int ssl_check_vhost_sni_policy(SSLSrvConfigRec *sc1,
         return 1;
     
     /* Policy: strict => fail for any vhost transition. */
-    if (policy == MODSSL_SNIVH_STRICT && sc1 != sc2)
-        return 0;
+    if (policy == MODSSL_SNIVH_STRICT)
+        return sc1 == sc2;
 
     /* For authonly/secure policy, compare the hash. */
     AP_DEBUG_ASSERT(sc1->sni_policy_hash);
