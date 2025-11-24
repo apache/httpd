@@ -160,14 +160,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_ssl: fix strict mode handling in SSLVHostSNIPolicy
-     Trunk version of patch:
-        https://svn.apache.org/r1929631
-     Backport version for 2.4.x of patch:
-      Trunk version of patch works
-      svn merge -c 1929631 ^/httpd/httpd/trunk .
-     +1: jorton, rpluem, covener
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
