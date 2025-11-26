@@ -163,6 +163,13 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
+  *) mod_proxy_hcheck: Fix healthcheck disabled due to child restart while updating
+     trunk patch: https://svn.apache.org/r1929972
+                  https://svn.apache.org/r1929973
+     2.4.x patch: svn merge -c 1929972,1929973 ^/httpd/httpd/trunk .
+                  (or https://github.com/apache/httpd/pull/581)
+     +1: ylavic,
+
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
