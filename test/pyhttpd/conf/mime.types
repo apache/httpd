@@ -1316,6 +1316,10 @@ image/cgm					cgm
 # image/fits
 image/g3fax					g3
 image/gif					gif
+image/heic					heic
+image/heic-sequence			heics
+image/heif					heif
+image/heif-sequence			heifs
 image/ief					ief
 # image/jp2
 image/jpeg					jpeg jpg jpe
