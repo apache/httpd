@@ -334,7 +334,7 @@ static int translate_userdir(request_rec *r)
                 r->finfo = statbuf;
 
             /* For use in the get_suexec_identity phase */
-            apr_table_setn(r->notes, "mod_userdir_user", user);
+            ap_set_module_config(r->request_config, &userdir_module, (void *)user);
 
             return OK;
         }
@@ -348,7 +348,7 @@ static ap_unix_identity_t *get_suexec_id_doer(const request_rec *r)
 {
     ap_unix_identity_t *ugid = NULL;
 #if APR_HAS_USER
-    const char *username = apr_table_get(r->notes, "mod_userdir_user");
+    const char *username = (const char*) ap_get_module_config(r->request_config, &userdir_module);
 
     if (username == NULL) {
         return NULL;
