@@ -5673,8 +5673,8 @@ static apr_status_t check_unc(const char *path, apr_pool_t *p)
         return APR_SUCCESS; /* this early, if we have a UNC, it's specified by an admin */
     }
 
-    if (!path || (path != ap_strstr_c(path, "\\\\") && 
-                path != ap_strstr_c(path, "//"))) { 
+    if (!path || !((path[0] == '\\' || path[0] == '/')
+                && (path[1] == '\\' || path[1] == '/'))) {
         return APR_SUCCESS; /* not a UNC */
     }
 
