@@ -455,8 +455,12 @@ static APR_INLINE const char *header_inout_cmd(cmd_parms *cmd,
         new->action = hdr_edit;
     else if (!strcasecmp(action, "edit*"))
         new->action = hdr_edit_all;
-    else if (!strcasecmp(action, "note"))
+    else if (!strcasecmp(action, "note")) {
+        if (cmd->info == &hdr_in) {
+            return "RequestHeader does not support the 'note' action";
+        }
         new->action = hdr_note;
+    }
     else
         return "first argument must be 'add', 'set', 'setifempty', 'append', 'merge', "
                "'unset', 'echo', 'note', 'edit', or 'edit*'.";
