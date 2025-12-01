@@ -14,7 +14,7 @@
 <script src="../style/scripts/prettify.min.js" type="text/javascript">
 </script>
 
-<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<link href="../images/favicon.png" rel="shortcut icon" /></head>
 <body id="directive-index"><div id="page-header">
 <p class="menu"><a href="../mod/">模块</a> | <a href="../mod/directives.html">指令</a> | <a href="http://wiki.apache.org/httpd/FAQ">常见问题</a> | <a href="../glossary.html">术语</a> | <a href="../sitemap.html">网站导航</a></p>
 <p class="apache">Apache HTTP 服务器版本 2.4</p>
@@ -303,6 +303,7 @@
 <li><a href="mod_http2.html#h2maxdataframelen">H2MaxDataFrameLen</a></li>
 <li><a href="mod_http2.html#h2maxheaderblocklen">H2MaxHeaderBlockLen</a></li>
 <li><a href="mod_http2.html#h2maxsessionstreams">H2MaxSessionStreams</a></li>
+<li><a href="mod_http2.html#h2maxstreamerrors">H2MaxStreamErrors</a></li>
 <li><a href="mod_http2.html#h2maxworkeridleseconds">H2MaxWorkerIdleSeconds</a></li>
 <li><a href="mod_http2.html#h2maxworkers">H2MaxWorkers</a></li>
 <li><a href="mod_http2.html#h2minworkers">H2MinWorkers</a></li>
@@ -391,6 +392,7 @@
 <li><a href="mpm_common.html#listen">Listen</a></li>
 <li><a href="mpm_common.html#listenbacklog">ListenBackLog</a></li>
 <li><a href="mpm_common.html#listencoresbucketsratio">ListenCoresBucketsRatio</a></li>
+<li><a href="mpm_common.html#listentcpdeferaccept">ListenTCPDeferAccept</a></li>
 <li><a href="mod_so.html#loadfile">LoadFile</a></li>
 <li><a href="mod_so.html#loadmodule">LoadModule</a></li>
 <li><a href="core.html#location">&lt;Location&gt;</a></li>
@@ -449,6 +451,7 @@
 <li><a href="mod_md.html#mddrivemode">MDDriveMode</a></li>
 <li><a href="mod_md.html#mdexternalaccountbinding">MDExternalAccountBinding</a></li>
 <li><a href="mod_md.html#mdhttpproxy">MDHttpProxy</a></li>
+<li><a href="mod_md.html#mdinitialdelay">MDInitialDelay</a></li>
 <li><a href="mod_md.html#mdmatchnames">MDMatchNames</a></li>
 <li><a href="mod_md.html#mdmember">MDMember</a></li>
 <li><a href="mod_md.html#mdmembers">MDMembers</a></li>
@@ -462,6 +465,7 @@
 <li><a href="mod_md.html#mdprofile">MDProfile</a></li>
 <li><a href="mod_md.html#mdprofilemandatory">MDProfileMandatory</a></li>
 <li><a href="mod_md.html#mdrenewmode">MDRenewMode</a></li>
+<li><a href="mod_md.html#mdrenewviaari">MDRenewViaARI</a></li>
 <li><a href="mod_md.html#mdrenewwindow">MDRenewWindow</a></li>
 <li><a href="mod_md.html#mdrequirehttps">MDRequireHttps</a></li>
 <li><a href="mod_md.html#mdretrydelay">MDRetryDelay</a></li>
@@ -728,6 +732,7 @@
 <li><a href="mod_ssl.html#sslusestapling">SSLUseStapling</a></li>
 <li><a href="mod_ssl.html#sslverifyclient">SSLVerifyClient</a></li>
 <li><a href="mod_ssl.html#sslverifydepth">SSLVerifyDepth</a></li>
+<li><a href="mod_ssl.html#sslvhostsnipolicy">SSLVHostSNIPolicy</a></li>
 <li><a href="mpm_common.html#startservers">StartServers</a></li>
 <li><a href="mpm_common.html#startthreads">StartThreads</a></li>
 <li><a href="core.html#stricthostcheck">StrictHostCheck</a></li>

@@ -15,7 +15,7 @@
 <script src="../style/scripts/prettify.min.js" type="text/javascript">
 </script>
 
-<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<link href="../images/favicon.png" rel="shortcut icon" /></head>
 <body id="manual-page"><div id="page-header">
 <p class="menu"><a href="../mod/">M&#243;dulos</a> | <a href="../mod/directives.html">Directivas</a> | <a href="http://wiki.apache.org/httpd/FAQ">Preguntas Frecuentes</a> | <a href="../glossary.html">Glosario</a> | <a href="../sitemap.html">Mapa del sitio web</a></p>
 <p class="apache">Versi&#243;n 2.4 del Servidor HTTP Apache</p>
