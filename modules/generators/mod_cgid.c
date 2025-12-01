@@ -239,7 +239,7 @@ static char **create_argv(apr_pool_t *p, char *path, char *user, char *group,
     char *w;
     int idx = 0;
 
-    if (!(*args) || ap_strchr_c(args, '=')) {
+    if (!args || !(*args) || ap_strchr_c(args, '=')) {
         numwords = 0;
     }
     else {
@@ -932,7 +932,10 @@ static int cgid_server(void *data)
                 apr_pool_userdata_set(r, ERRFN_USERDATA_KEY, apr_pool_cleanup_null, ptrans);
             }
 
-            argv = (const char * const *)create_argv(r->pool, NULL, NULL, NULL, argv0, r->args);
+            /* Do not pass args in case of SSI requests */
+            argv = (const char * const *)create_argv(r->pool, NULL, NULL, NULL,
+                                                     argv0,
+                                                     cgid_req.req_type == SSI_REQ ? NULL : r->args);
 
            /* We want to close sd2 for the new CGI process too.
             * If it is left open it'll make ap_pass_brigade() block
