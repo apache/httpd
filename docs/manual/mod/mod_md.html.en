@@ -304,6 +304,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#mddrivemode">MDDriveMode</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mdexternalaccountbinding">MDExternalAccountBinding</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mdhttpproxy">MDHttpProxy</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#mdinitialdelay">MDInitialDelay</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mdmatchnames">MDMatchNames</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mdmember">MDMember</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mdmembers">MDMembers</a></li>
@@ -754,6 +755,23 @@
 </table>
             <p>Use a http proxy to connect to the <code class="directive"><a href="#mdcertificateauthority">MDCertificateAuthority</a></code>. Define this
             if your webserver can only reach the internet with a forward proxy.
+            </p>
+        
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="MDInitialDelay" id="MDInitialDelay">MDInitialDelay</a> <a name="mdinitialdelay" id="mdinitialdelay">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>How long to delay the first certificate check.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>MDInitialDelay <var>duration</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>MDInitialDelay 0s</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_md</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in version 2.4.66 and later</td></tr>
+</table>
+            <p>
+                The amount of time to wait after the server start to check
+                renewals of certificates. By default this occurs right away.
             </p>
         
 </div>
