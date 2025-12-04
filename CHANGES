@@ -1,5 +1,47 @@
                                                          -*- coding: utf-8 -*-
+Changes with Apache 2.4.67
+
 Changes with Apache 2.4.66
+
+  *) SECURITY: CVE-2025-66200: Apache HTTP Server: mod_userdir+suexec
+     bypass via AllowOverride FileInfo (cve.mitre.org)
+     mod_userdir+suexec bypass via AllowOverride FileInfo
+     vulnerability in Apache HTTP Server. Users with access to use
+     the RequestHeader directive in htaccess can cause some CGI
+     scripts to run under an unexpected userid.
+     Credits: Mattias Åsander (Umeå University)
+
+  *) SECURITY: CVE-2025-65082: Apache HTTP Server: CGI environment
+     variable override (cve.mitre.org)
+     Improper Neutralization of Escape, Meta, or Control Sequences
+     vulnerability in Apache HTTP Server through environment
+     variables set via the Apache configuration unexpectedly
+     superseding variables calculated by the server for CGI programs.
+     Credits: Mattias Åsander (Umeå University)
+
+  *) SECURITY: CVE-2025-59775: Apache HTTP Server: NTLM Leakage on
+     Windows through UNC SSRF (cve.mitre.org)
+     Server-Side Request Forgery (SSRF) vulnerability
+     in Apache HTTP Server on Windows with AllowEncodedSlashes On and
+     MergeSlashes Off allows to potentially leak NTLM hashes to a malicious 
+     server via SSRF and malicious requests or content
+     Credits: Orange Tsai (@orange_8361) from DEVCORE
+
+  *) SECURITY: CVE-2025-58098: Apache HTTP Server: Server Side
+     Includes adds query string to #exec cmd=... (cve.mitre.org)
+     Apache HTTP Server 2.4.65 and earlier with Server Side Includes
+     (SSI) enabled and mod_cgid (but not mod_cgi) passes the
+     shell-escaped query string to #exec cmd="..." directives.
+     Credits: Anthony Parfenov (United Rentals, Inc.)
+
+  *) SECURITY: CVE-2025-55753: Apache HTTP Server: mod_md (ACME),
+     unintended retry intervals (cve.mitre.org)
+     An integer overflow in the case of failed ACME certificate
+     renewal leads, after a number of failures (~30 days in default
+     configurations), to the backoff timer becoming 0. Attempts to
+     renew the certificate then are repeated without delays until it
+     succeeds.
+     Credits: Aisle Research
 
   *) mod_http2: Fix handling of 304 responses from mod_cache. PR 69580.
      [Stefan Eissing]
