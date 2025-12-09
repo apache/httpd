@@ -1599,4 +1599,25 @@ MDMessageCmd /etc/apache/md-message
             </p>
         </usage>
     </directivesynopsis>
+
+    <directivesynopsis>
+        <name>MDCACertificateFile</name>
+        <description>File containing x509 trust anchors to verify ACME servers.</description>
+        <syntax>MDCACertificateFile <var>file</var></syntax>
+        <default>MDCACertificateFile none</default>
+        <contextlist>
+            <context>server config</context>
+        </contextlist>
+        <usage>
+            <p>
+                This is mainly used in test setups where the module needs to
+                connect to a test ACME server that has its own root certificate.
+                People who run an enterprise wide internal CA can use this when
+                they run their own ACME servers.
+            </p>
+            <p>
+                Use "none" as path to disable explicitly.
+            </p>
+        </usage>
+    </directivesynopsis>
 </modulesynopsis>
