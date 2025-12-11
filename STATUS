@@ -171,6 +171,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   (or https://github.com/apache/httpd/pull/581)
      +1: ylavic,
 
+  *) mod_http2: update to version 2.0.37
+     trunk patch: https://svn.apache.org/r1930444
+     2.4.x patch: svn merge -c 1930444 ^/httpd/httpd/trunk .
+     +1: icing,
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
