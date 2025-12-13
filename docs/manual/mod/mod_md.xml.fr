@@ -1895,6 +1895,31 @@ MDMessageCmd /etc/apache/md-message
 		cette vérification est immédiate.
             </p>
         </usage>
+    </directivesynopsis>
+
+    <directivesynopsis>
+        <name>MDCACertificateFile</name>
+        <description>Fichier contenant des certificats de confiance x509 pour
+	vérifier les serveurs ACME.</description>
+        <syntax>MDCACertificateFile <var>file</var></syntax>
+        <default>MDCACertificateFile none</default>
+        <contextlist>
+            <context>server config</context>
+        </contextlist>
+        <usage>
+            <p>
+                Cette directive est principalement utilisée dans les
+		configurations de test où le module doit se connecter à un
+		serveur ACME de test qui possède son propre certificat racine.
+		Les administrateurs qui possèdent une autorité de certification
+		interne propre à une entreprise peuvent utiliser cette directive
+		lorsqu’ils utilisent leurs propres serveurs ACME.
+            </p>
+            <p>
+                Définissez cette directive à « none » pour la désactiver
+		explicitement.
+            </p>
+        </usage>
     </directivesynopsis>    
 
 </modulesynopsis>
