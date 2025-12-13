@@ -333,6 +333,7 @@
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#mdactivationdelay">MDActivationDelay</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mdbaseserver">MDBaseServer</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#mdcacertificatefile">MDCACertificateFile</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mdcachallenges">MDCAChallenges</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mdcertificateagreement">MDCertificateAgreement</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mdcertificateauthority">MDCertificateAuthority</a></li>
@@ -415,6 +416,31 @@
 	    générateurs de confusion. Il est donc recommandé de
 	    définir des serveurs virtuels pour tous les domaines gérés, et
 	    d'exclure des domaines gérés le serveur global (serveur par défaut).
+            </p>
+        
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="mdcacertificatefile" id="mdcacertificatefile">Directive</a> <a name="MDCACertificateFile" id="MDCACertificateFile">MDCACertificateFile</a> <a title="Lien permanent" href="#mdcacertificatefile" class="permalink">&para;</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Fichier contenant des certificats de confiance x509 pour
+	vérifier les serveurs ACME.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MDCACertificateFile <var>file</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>MDCACertificateFile none</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_md</td></tr>
+</table>
+            <p>
+                Cette directive est principalement utilisée dans les
+		configurations de test où le module doit se connecter à un
+		serveur ACME de test qui possède son propre certificat racine.
+		Les administrateurs qui possèdent une autorité de certification
+		interne propre à une entreprise peuvent utiliser cette directive
+		lorsqu’ils utilisent leurs propres serveurs ACME.
+            </p>
+            <p>
+                Définissez cette directive à «&nbsp;none&nbsp;» pour la désactiver
+		explicitement.
             </p>
         
 </div>
