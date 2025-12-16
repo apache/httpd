@@ -272,7 +272,6 @@ static int mmap_handler(request_rec *r, a_file *file)
 #if APR_HAS_MMAP
     conn_rec *c = r->connection;
     apr_bucket *b;
-    apr_mmap_t *mm;
     apr_bucket_brigade *bb = apr_brigade_create(r->pool, c->bucket_alloc);
 
     b = apr_bucket_immortal_create((const char *)file->mm->mm,
