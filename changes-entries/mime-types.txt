@@ -1,0 +1,2 @@
+  *) Updated conf/mime.types: added vnd.sqlite3, HEIC, HEIF
+     [Alexandru Mărășteanu <hello alexei.ro>]
