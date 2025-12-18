@@ -161,20 +161,20 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-PATCHES PROPOSED TO BACKPORT FROM TRUNK:
-  [ New proposals should be added at the end of the list ]
-
   *) mod_proxy_hcheck: Fix healthcheck disabled due to child restart while updating
      trunk patch: https://svn.apache.org/r1929972
                   https://svn.apache.org/r1929973
      2.4.x patch: svn merge -c 1929972,1929973 ^/httpd/httpd/trunk .
                   (or https://github.com/apache/httpd/pull/581)
-     +1: ylavic, rpluem
+     +1: ylavic, rpluem, jorton
 
   *) mod_http2: update to version 2.0.37
      trunk patch: https://svn.apache.org/r1930444
      2.4.x patch: svn merge -c 1930444 ^/httpd/httpd/trunk .
-     +1: icing, rpluem
+     +1: icing, rpluem, jorton
+
+PATCHES PROPOSED TO BACKPORT FROM TRUNK:
+  [ New proposals should be added at the end of the list ]
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
