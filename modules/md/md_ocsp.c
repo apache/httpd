@@ -930,9 +930,9 @@ apr_status_t md_ocsp_remove_responses_older_than(md_ocsp_reg_t *reg, apr_pool_t 
 typedef struct {
     apr_pool_t *p;
     md_ocsp_reg_t *reg;
-    int good;
-    int revoked;
-    int unknown;
+    unsigned good;
+    unsigned revoked;
+    unsigned unknown;
 } ocsp_summary_ctx_t;
 
 static int add_to_summary(void *baton, const void *key, apr_ssize_t klen, const void *val)
