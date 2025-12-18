@@ -618,11 +618,14 @@ AC_DEFUN([APACHE_CHECK_SYSTEMD], [
 dnl Check for systemd support for listen.c's socket activation.
 case $host in
 *-linux-*)
-   if test -n "$PKGCONFIG" && $PKGCONFIG --exists libsystemd; then
-      SYSTEMD_LIBS=`$PKGCONFIG --libs libsystemd`
-   elif test -n "$PKGCONFIG" && $PKGCONFIG --exists libsystemd-daemon; then
-      SYSTEMD_LIBS=`$PKGCONFIG --libs libsystemd-daemon`
-   else
+   for libsd in libsystemd libsystemd-daemon; do
+      if test -n "$PKGCONFIG" && $PKGCONFIG --exists $libsd; then
+         SYSTEMD_LIBS=`$PKGCONFIG --libs $libsd`
+         SYSTEMD_VERS=`$PKGCONFIG --modversion $libsd`
+         break
+      fi
+   done
+   if test -n "$SYSTEMD_LIBS"; then
       AC_CHECK_LIB(systemd-daemon, sd_notify, SYSTEMD_LIBS="-lsystemd-daemon")
    fi
    if test -n "$SYSTEMD_LIBS"; then
@@ -631,6 +634,10 @@ case $host in
         AC_MSG_WARN([Your system does not support systemd.])
       else
         AC_DEFINE(HAVE_SYSTEMD, 1, [Define if systemd is supported])
+        if test -n "$SYSTEMD_VERS" -a "$SYSTEMD_VERS" -gt 0; then
+           AC_DEFINE_UNQUOTED([AP_SYSTEMD_VERSION], [$SYSTEMD_VERS],
+              [Define to the systemd version if available])
+        fi
       fi
    fi
    ;;
