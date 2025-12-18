@@ -189,6 +189,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   or https://github.com/apache/httpd/pull/584
      +1: jorton,
 
+  *) mod_proxy_balancer: Include nonce in XML balancer-manager output.
+     trunk patch: https://svn.apache.org/r1887192
+     2.4.x patch: svn merge -c 1887192 ^/httpd/httpd/trunk .
+                  or https://github.com/apache/httpd/pull/587
+     +1: jorton,
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
