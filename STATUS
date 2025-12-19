@@ -195,6 +195,16 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   or https://github.com/apache/httpd/pull/587
      +1: jorton, rpluem
 
+  *) mod_unixd: sync with trunk.
+     trunk patch: https://svn.apache.org/r1617196
+                  https://svn.apache.org/r1617201
+                  https://svn.apache.org/r1618778
+                  https://svn.apache.org/r1897269
+                  https://svn.apache.org/r1927804
+     2.4.x patch: svn merge -c 1617196,1617201,1618778,1897269,1927804,1930444 ^/httpd/httpd/trunk .
+                  (or https://github.com/apache/httpd/pull/588)
+     +1: jorton, 
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
