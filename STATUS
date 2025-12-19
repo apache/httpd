@@ -180,20 +180,20 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: https://svn.apache.org/r1926172
      2.4.x patch: svn merge -c 1926172 ^/httpd/httpd/trunk .
                   or https://github.com/apache/httpd/pull/583
-     +1: jorton,
+     +1: jorton, rpluem
 
   *) mod_file_cache: Fix crashes for MMapFile configurations
      trunk patch: https://svn.apache.org/r1930632
                   https://svn.apache.org/r1930633
      2.4.x patch: svn merge -c 1930632,1930633 ^/httpd/httpd/trunk .
                   or https://github.com/apache/httpd/pull/584
-     +1: jorton,
+     +1: jorton, rpluem
 
   *) mod_proxy_balancer: Include nonce in XML balancer-manager output.
      trunk patch: https://svn.apache.org/r1887192
      2.4.x patch: svn merge -c 1887192 ^/httpd/httpd/trunk .
                   or https://github.com/apache/httpd/pull/587
-     +1: jorton,
+     +1: jorton, rpluem
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
