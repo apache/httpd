@@ -3045,8 +3045,8 @@ known to the server (i.e. the CA's certificate is under
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in httpd 2.5 and later</td></tr>
-</table><p>This directive sets policy applied when checking whether the
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in httpd 2.4.66 and later</td></tr>
+</table><p>This directive sets the policy applied when checking whether the
 <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>
 identified by the <code>Host</code> request header in an HTTP request
 is compatible with the <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> identified from the SNI
@@ -3054,6 +3054,12 @@ extension sent during the initial TLS connection handshake. If an HTTP
 request is associated with a virtual host which has an incompatible
 SSL/TLS configuration under the policy used, an HTTP error response
 with status code 421 ("Misdirected Request") will be sent.</p>
+
+<p>The policy also applies to TLS connections where an SNI extension
+is not sent during the handshake, implicitly using the default or
+first virtual host definition. If the Host header in an HTTP request
+on such a connection identifies any other non-default virtual host,
+the compatibility policy is tested.</p>
 
 <p>The <code>strict</code> policy blocks all HTTP requests which are
 identified with a different virtual host to that identifed by SNI.
@@ -3064,43 +3070,43 @@ of virtual host identified; such a configuration may be vulnerable to
 
 <p>The (default) <code>secure</code>, and <code>authonly</code>
 policies compare specific aspects of the SSL configuration for the two
-virtual hosts, which are grouped into two categories:
+virtual hosts, which are grouped into two categories:</p>
 
 <ul>
-  <li><strong>client vertification and authentication
-  settings</strong>: directives which affect TLS client certificate
-  verification or authentication, such as <code class="directive"><a href="#sslverifyclient">SSLVerifyClient</a></code>, <code class="directive"><a href="#sslverifymode">SSLVerifyMode</a></code>, <code class="directive"><a href="#sslcacertificatepath">SSLCACertificatePath</a></code>, <code class="directive"><a href="#sslsrpverifierfile">SSLSRPVerifierFile</a></code>; any use of <code class="directive"><a href="#sslopensslconfcmd">SSLOpenSSLConfCmd</a></code></li>
-
   <li><strong>server certificate/key, or protocol/cipher
   restrictions</strong>: directives which determine the server
   certificate or key (<code class="directive"><a href="#sslcertificatekeyfile">SSLCertificateKeyFile</a></code> etc), cipher or
   protocol restrictions (<code class="directive"><a href="#sslciphersuite">SSLCipherSuite</a></code> and <code class="directive"><a href="#sslprotocol">SSLProtocol</a></code>)</li>
+
+  <li><strong>client vertification and authentication
+  settings</strong>: directives which affect TLS client certificate
+  verification or authentication, such as <code class="directive"><a href="#sslverifyclient">SSLVerifyClient</a></code>, <code class="directive"><a href="#sslverifymode">SSLVerifyMode</a></code>, <code class="directive"><a href="#sslcacertificatepath">SSLCACertificatePath</a></code>, <code class="directive"><a href="#sslsrpverifierfile">SSLSRPVerifierFile</a></code>; any use of <code class="directive"><a href="#sslopensslconfcmd">SSLOpenSSLConfCmd</a></code></li>
 </ul>
 
-This table illustrates whether an HTTP request will be blocked or
+<p>This table illustrates whether an HTTP request will be blocked or
 allowed when the virtual host configurations differ as described,
-under each different policy setting:
+under each different policy setting:</p>
 
 <table class="bordered"><tr class="header">
   <th>Policy mode</th>
   <th>Any VirtualHost mismatch</th>
-  <th>Client verification/<br />authentication settings</th>
   <th>Server certificate/key, <br />or protocol/cipher restrictions</th>
+  <th>Client verification/<br />authentication settings</th>
 </tr>
 <tr>
-  <td><code>strict</code><td>blocked</td><td>blocked</td><td>blocked</td></td>
+  <td><code>strict</code></td><td>blocked</td><td>blocked</td><td>blocked</td>
 </tr>
 <tr class="odd">
-  <td><code>secure</code><td>allowed</td><td>blocked</td><td>blocked</td></td>
+  <td><code>secure</code></td><td>allowed</td><td>blocked</td><td>blocked</td>
 </tr>
 <tr>
-  <td><code>authonly</code><td>allowed</td><td>blocked</td><td>allowed</td></td>
+  <td><code>authonly</code></td><td>allowed</td><td>allowed</td><td>blocked</td>
 </tr>
 <tr class="odd">
-  <td><code>insecure</code><td>allowed</td><td>allowed</td><td>allowed</td></td>
+  <td><code>insecure</code></td><td>allowed</td><td>allowed</td><td>allowed</td>
 </tr>
 </table>
-</p>
+
 <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">SSLVHostSNIPolicy authonly</pre>
 </div>
 
