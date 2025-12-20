@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1919774 -->
+<!-- English Revision: 1930711 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -55,6 +55,10 @@ règles permettant de réécrire les URLs des requêtes
       réécriture peut inclure une chaîne de paramètres, ou peut renvoyer
       vers un traitement secondaire interne, une redirection vers une
       requête externe ou vers le mandataire interne.</p>
+
+      <p>Une expression rationnelle ne nécessite des guillemets que si elle
+      contient des espaces non protégées, auquel cas les guillemets simples ou
+      doubles sont équivalents.</p>
 
       <p>Vous trouverez d'avantage de détails, discussions et exemples
       dans la
