@@ -254,7 +254,7 @@ ProxyVia On
     <div class="example"><h3>Scripts PHP et mandataire inverse</h3><pre class="prettyprint lang-config">&lt;FilesMatch "\.php$"&gt;
     # Les sockets Unix nécessitent une version 2.4.7 ou supérieure du
     # serveur HTTP Apache
-    SetHandler  "proxy:unix:/path/to/app.sock|fcgi://localhost/"
+    SetHandler  "proxy:unix:/path/to/app.sock|fcgi://localhost"
 &lt;/FilesMatch&gt;</pre>
 </div>
 
