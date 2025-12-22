@@ -26,7 +26,8 @@ The CI scripts use the following environment variables:
 
 * SKIP_TESTING - if set, no testing is done at all
 
-* NO_TEST_FRAMEWORK - if set, the Perl test framework is not used
+* NO_TEST_FRAMEWORK - if set, the Perl-based test framework and
+                      libcheck-based unit tests are skipped
 
 * TEST_UBSAN - set for job using UBSan ("Undefined Behaviour Sanitizer")
 
