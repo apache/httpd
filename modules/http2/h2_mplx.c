@@ -126,12 +126,24 @@ int h2_mplx_c1_stream_is_running(h2_mplx *m, h2_stream *stream)
     return rv;
 }
 
+static int add_for_purge(h2_mplx *m, h2_stream *stream)
+{
+    int i;
+    for (i = 0; i < m->spurge->nelts; ++i) {
+        h2_stream *s = APR_ARRAY_IDX(m->spurge, i, h2_stream*);
+        if (s == stream)  /* already scheduled for purging */
+            return FALSE;
+    }
+    APR_ARRAY_PUSH(m->spurge, h2_stream *) = stream;
+    return TRUE;
+}
+
 static void c1c2_stream_joined(h2_mplx *m, h2_stream *stream)
 {
     ap_assert(!stream_is_running(stream));
     
     h2_ihash_remove(m->shold, stream->id);
-    APR_ARRAY_PUSH(m->spurge, h2_stream *) = stream;
+    add_for_purge(m, stream);
 }
 
 static void m_stream_cleanup(h2_mplx *m, h2_stream *stream)
@@ -164,7 +176,7 @@ static void m_stream_cleanup(h2_mplx *m, h2_stream *stream)
             ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, m->c1,
                           H2_STRM_MSG(stream, "cleanup, c2 is done, move to spurge"));
             /* processing has finished */
-            APR_ARRAY_PUSH(m->spurge, h2_stream *) = stream;
+            add_for_purge(m, stream);
         }
         else {
             ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, m->c1,
@@ -178,9 +190,10 @@ static void m_stream_cleanup(h2_mplx *m, h2_stream *stream)
     }
     else {
         /* never started */
-        ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, m->c1,
-                      H2_STRM_MSG(stream, "cleanup, never started, move to spurge"));
-        APR_ARRAY_PUSH(m->spurge, h2_stream *) = stream;
+        int added = add_for_purge(m, stream);
+        if (added)
+            ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, m->c1,
+                          H2_STRM_MSG(stream, "cleanup, never started, move to spurge"));
     }
 }
 
