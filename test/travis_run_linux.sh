@@ -133,6 +133,11 @@ if test -v PHP_FPM; then
     $PHP_FPM --version
 fi
 
+if test -x ./test/httpdunit; then
+    : Running libcheck-based unit tests.
+    prove ./test/httpdunit
+fi
+
 # Try to keep all potential coredumps from all processes
 sudo sysctl -w kernel.core_uses_pid=1 2>/dev/null || true
 # Systemd based systems might process core dumps via systemd-coredump.
