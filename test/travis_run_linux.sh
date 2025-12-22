@@ -141,7 +141,12 @@ sudo sysctl -w kernel.core_pattern=core || true
 ulimit -c unlimited 2>/dev/null || true
 
 if ! test -v NO_TEST_FRAMEWORK; then
-    if test -v WITH_TEST_SUITE; then
+    : Running libcheck-based unit tests.
+    if ! prove -v ./test/httpdunit; then
+        RV=1
+    fi
+
+    if test -v WITH_TEST_SUITE -a $RV -eq 0; then
         make check TESTS="${TESTS}" TEST_CONFIG="${TEST_ARGS}" | tee test.log
         RV=${PIPESTATUS[0]}
         # re-run failing tests with -v, avoiding set -e
@@ -239,7 +244,7 @@ if test -v LITMUS -a $RV -eq 0; then
 fi
 
 if test -v TEST_CORE -a $RV -eq 0; then
-    # Run HTTP/2 tests.
+    # Run core module tests.
     MPM=event py.test-3 test/modules/core
     RV=$?
 fi
