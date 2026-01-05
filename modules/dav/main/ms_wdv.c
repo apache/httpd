@@ -6,6 +6,7 @@
 #include "http_protocol.h"
 #include "http_request.h"
 #include "http_log.h"
+#include "http_core.h"
 
 #include "mod_dav.h"
 
@@ -589,7 +590,7 @@ static dav_error *mswdv_combined_proppatch(request_rec *r)
     apr_bucket_brigade *bb;
     apr_status_t status;
     apr_size_t len = 16;
-    apr_off_t proppatch_len;
+    apr_off_t proppatch_len, limit;
     char proppatch_len_str[16 + 1];
     char *proppatch_data;
 
@@ -617,6 +618,17 @@ static dav_error *mswdv_combined_proppatch(request_rec *r)
     if (status != APR_SUCCESS)
         return dav_new_error(r->pool, HTTP_BAD_REQUEST, 0, status,
                              "Bad PROPPATCH part length");
+
+    /* Validate PROPPATCH length against configured limits */
+    limit = ap_get_limit_xml_body(r);
+    if (limit > 0 && proppatch_len > limit) {
+        return dav_new_error(r->pool, HTTP_REQUEST_ENTITY_TOO_LARGE, 0, 0,
+                             "PROPPATCH part length exceeds configured limit");
+    }
+    if (proppatch_len <= 0 || proppatch_len > (apr_off_t)APR_SIZE_MAX) {
+        return dav_new_error(r->pool, HTTP_REQUEST_ENTITY_TOO_LARGE, 0, 0,
+                             "PROPPATCH part length invalid or too large");
+    }
 
     apr_brigade_destroy(bb);
 
