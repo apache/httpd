@@ -238,7 +238,7 @@ application/pics-rules				prf
 # application/pidf-diff+xml
 application/pkcs10				p10
 # application/pkcs12
-application/pkcs7-mime				p7m p7c
+application/pkcs7-mime				p7m p7c p7e
 application/pkcs7-signature			p7s
 application/pkcs8				p8
 application/pkix-attr-cert			ac
