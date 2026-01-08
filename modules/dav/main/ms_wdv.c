@@ -619,15 +619,17 @@ static dav_error *mswdv_combined_proppatch(request_rec *r)
         return dav_new_error(r->pool, HTTP_BAD_REQUEST, 0, status,
                              "Bad PROPPATCH part length");
 
-    /* Validate PROPPATCH length against configured limits */
+    /* Validate PROPPATCH length against configured limits. Note
+     * ap_get_limit_xml_body() has a maximum of AP_MAX_LIMIT_XML_BODY
+     * giving a safe upper bound to in-memory caching. */
     limit = ap_get_limit_xml_body(r);
     if (limit > 0 && proppatch_len > limit) {
         return dav_new_error(r->pool, HTTP_REQUEST_ENTITY_TOO_LARGE, 0, 0,
                              "PROPPATCH part length exceeds configured limit");
     }
-    if (proppatch_len <= 0 || proppatch_len > (apr_off_t)APR_SIZE_MAX) {
-        return dav_new_error(r->pool, HTTP_REQUEST_ENTITY_TOO_LARGE, 0, 0,
-                             "PROPPATCH part length invalid or too large");
+    if (proppatch_len <= 0) {
+        return dav_new_error(r->pool, HTTP_BAD_REQUEST, 0, 0,
+                             "invalid or negative PROPPATCH part length");
     }
 
     apr_brigade_destroy(bb);
