@@ -830,6 +830,24 @@ if test "$apache_need_shared" = "yes"; then
   shared_build="shared-build"
 fi
 
+ap_graceful_sig=WINCH
+AC_ARG_ENABLE(sigusr2,
+ APACHE_HELP_STRING(--enable-sigusr2,Use SIGUSR2 for graceful stop),
+[
+ case $APR_VERSION in
+ 0.*|1.[[0-6]].*) AC_MSG_ERROR([APR 1.7 or later is required to use SIGUSR2]) ;;
+ esac
+ ap_graceful_sig=USR2
+])
+AC_MSG_NOTICE([using signal SIG$ap_graceful_sig for graceful stop])
+
+AC_DEFINE_UNQUOTED([AP_SIG_GRACEFUL_STOP], [SIG$ap_graceful_sig],
+        [Signal to use for graceful stop])
+AC_DEFINE_UNQUOTED([AP_SIG_GRACEFUL_STOP_STRING],
+        ["SIG$ap_graceful_sig"], [Signal name in use for graceful stop])
+AC_DEFINE_UNQUOTED([AP_SIG_GRACEFUL_STOP_SHORT],
+        [$ap_graceful_sig], [Short signal name in use for graceful stop])
+
 dnl enable_so tells us if *any* modules can be built as DSOs
 
 if test "$enable_so" = "yes" -o "$enable_so" = "static"; then
