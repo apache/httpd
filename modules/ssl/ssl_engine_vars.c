@@ -839,7 +839,10 @@ static const char *ssl_var_lookup_ssl_cert_valid(apr_pool_t *p, ASN1_TIME *tm)
  * "0" if this can't be determined. */
 static const char *ssl_var_lookup_ssl_cert_remain(apr_pool_t *p, ASN1_TIME *tm)
 {
-#if OPENSSL_VERSION_NUMBER >= 0x10101000L && !defined(LIBRESSL_VERSION_NUMBER)
+/* NOTE: temporary workaround to disable this for HAVE_OPENSSL_ECH since the
+ * feature/ech branch is missing 9fb44b527ee3717795609fb876a7a81f8898c623 */
+#if OPENSSL_VERSION_NUMBER >= 0x10101000L && !defined(LIBRESSL_VERSION_NUMBER) \
+    && !defined(HAVE_OPENSSL_ECH)
     int diff;
 
     if (INVALID_ASN1_TIME(tm) || ASN1_TIME_diff(&diff, NULL, NULL, tm) != 1) {
