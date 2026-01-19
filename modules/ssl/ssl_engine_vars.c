@@ -827,23 +827,36 @@ static const char *ssl_var_lookup_ssl_cert_valid(apr_pool_t *p, ASN1_TIME *tm)
     return modssl_bio_free_read(p, bio);
 }
 
-#define DIGIT2NUM(x) (((x)[0] - '0') * 10 + (x)[1] - '0')
+/* Evaluates to true if asn1 isn't a valid ASN.1 TIME; RFC3280
+ * mandates that the seconds digits are present even though ASN.1
+ * doesn't. */
+#define INVALID_ASN1_TIME(asn1) (                                       \
+    ((asn1)->type == V_ASN1_UTCTIME && (asn1)->length < 11)             \
+    || ((asn1)->type == V_ASN1_GENERALIZEDTIME && (asn1)->length < 13)  \
+    || ASN1_TIME_check(asn1) != 1)
 
 /* Return a string giving the number of days remaining until 'tm', or
  * "0" if this can't be determined. */
 static const char *ssl_var_lookup_ssl_cert_remain(apr_pool_t *p, ASN1_TIME *tm)
 {
+/* NOTE: temporary workaround to disable this for HAVE_OPENSSL_ECH since the
+ * feature/ech branch is missing 9fb44b527ee3717795609fb876a7a81f8898c623 */
+#if OPENSSL_VERSION_NUMBER >= 0x10101000L && !defined(LIBRESSL_VERSION_NUMBER) \
+    && !defined(HAVE_OPENSSL_ECH)
+    int diff;
+
+    if (INVALID_ASN1_TIME(tm) || ASN1_TIME_diff(&diff, NULL, NULL, tm) != 1) {
+        return "0";
+    }
+#else
     apr_time_t then, now = apr_time_now();
     apr_time_exp_t exp = {0};
     long diff;
     unsigned char *dp;
 
-    /* Fail if the time isn't a valid ASN.1 TIME; RFC3280 mandates
-     * that the seconds digits are present even though ASN.1
-     * doesn't. */
-    if ((tm->type == V_ASN1_UTCTIME && tm->length < 11) ||
-        (tm->type == V_ASN1_GENERALIZEDTIME && tm->length < 13) ||
-        !ASN1_TIME_check(tm)) {
+#define DIGIT2NUM(x) (((x)[0] - '0') * 10 + (x)[1] - '0')
+
+    if (INVALID_ASN1_TIME(tm)) {
         return "0";
     }
 
@@ -867,6 +880,7 @@ static const char *ssl_var_lookup_ssl_cert_remain(apr_pool_t *p, ASN1_TIME *tm)
     }
 
     diff = (long)((apr_time_sec(then) - apr_time_sec(now)) / (60*60*24));
+#endif
 
     return diff > 0 ? apr_ltoa(p, diff) : "0";
 }
