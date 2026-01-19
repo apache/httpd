@@ -857,7 +857,7 @@ static const char *ssl_var_lookup_ssl_cert_remain(apr_pool_t *p, ASN1_TIME *tm)
     }
 
     exp.tm_mon = DIGIT2NUM(dp) - 1;
-    exp.tm_mday = DIGIT2NUM(dp + 2) + 1;
+    exp.tm_mday = DIGIT2NUM(dp + 2);
     exp.tm_hour = DIGIT2NUM(dp + 4);
     exp.tm_min = DIGIT2NUM(dp + 6);
     exp.tm_sec = DIGIT2NUM(dp + 8);
