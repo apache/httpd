@@ -664,7 +664,7 @@ static int log_ctime(const ap_errorlog_info *info, const char *arg,
         if (arg[0] == 'u' && !arg[1]) { /* no ErrorLogFormat (fast path) */
             option |= AP_CTIME_OPTION_USEC;
         }
-        else if (arg[0] == 'm' && !arg[1])   /* no ErrorLogFormat (fast path) - msec */
+        else if (arg[0] == 'm' && !arg[1]) { /* no ErrorLogFormat (fast path) - msec */
             option |= AP_CTIME_OPTION_MSEC;
         }
         else if (!ap_strchr_c(arg, '%')) { /* special "%{mcuz}t" formats */
