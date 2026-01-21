@@ -88,4 +88,6 @@ exec sed "
 /^EXPORTS_DOT_C/d
 /^LIBMAIN_LIB/d
 /TEST_SUITE/d
+/^PYTEST3/d
+/^CHECK_TARGETS/d
 "
