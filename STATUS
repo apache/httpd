@@ -200,6 +200,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   (or https://github.com/apache/httpd/pull/588)
      +1: jorton, rpluem
 
+  *) core: Add millisecond time formatting for ErrorLogFormat
+     trunk patch: https://svn.apache.org/r1931452
+                  https://svn.apache.org/r1931453
+     2.4.x patch: svn merge -c 1931452,1931453 ^/httpd/httpd/trunk .
+                  or https://github.com/apache/httpd/pull/599
+     +1: jorton,
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
