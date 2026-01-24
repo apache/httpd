@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1927033 -->
+<!-- English Revision: 1931452 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -1916,6 +1916,9 @@ ErrorLogFormat "[%t] [%l] [pid %P] %F: %E: [client %a] %M"
 
     <tr><td><code>%{u}t</code></td>
         <td>L'heure actuelle avec les microsecondes</td></tr>
+
+    <tr><td><code>%{m}t</code></td>
+        <td>L'heure actuelle avec les millisecondes</td></tr>
 
     <tr><td><code>%{cu}t</code></td>
         <td>L'heure actuelle au format ISO 8601 étendu (compact), avec les
