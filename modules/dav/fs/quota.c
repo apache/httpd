@@ -339,10 +339,10 @@ int dav_fs_quota_precondition(request_rec *r,
     case M_COPY: /* FALLTHROUGH */
     case M_MOVE:
         /*
-         * If source size is known, we can forecast ovequota
+         * If source size is known, we can forecast overquota
          */
-        if ((size = dav_fs_size(src) != DAV_FS_BYTES_ERROR) &&
-            (size > available_bytes)) {
+        if ((size = dav_fs_size(src)) != DAV_FS_BYTES_ERROR
+            && size > available_bytes) {
             status = HTTP_INSUFFICIENT_STORAGE;
             *err = dav_new_error_tag(r->pool, status, 0, 0,
                                      msg, "DAV:", tag);
