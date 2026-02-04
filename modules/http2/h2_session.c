@@ -125,7 +125,7 @@ static h2_stream *h2_session_open_stream(h2_session *session, int stream_id,
     apr_allocator_t *allocator;
     apr_pool_t *stream_pool;
     apr_status_t rv;
-    
+
     rv = apr_allocator_create(&allocator);
     if (rv != APR_SUCCESS)
       return NULL;
@@ -135,7 +135,7 @@ static h2_stream *h2_session_open_stream(h2_session *session, int stream_id,
     apr_allocator_owner_set(allocator, stream_pool);
     apr_pool_abort_set(abort_on_oom, stream_pool);
     apr_pool_tag(stream_pool, "h2_stream");
-    
+
     stream = h2_stream_create(stream_id, stream_pool, session, 
                               session->monitor, initiated_on);
     if (stream) {
