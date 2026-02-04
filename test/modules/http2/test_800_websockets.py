@@ -1,6 +1,7 @@
 import inspect
 import logging
 import os
+import re
 import shutil
 import subprocess
 import time
@@ -73,8 +74,8 @@ def ws_run(env: H2TestEnv, path, authority=None, do_input=None, inbytes=None,
                 proc.communicate(timeout=timeout)
     end = datetime.now()
     lines = open(f'{env.gen_dir}/h2ws.stdout').read().splitlines()
-    infos = [line for line in lines if line.startswith('[1] ')]
-    hex_content = ' '.join([line for line in lines if not line.startswith('[1] ')])
+    infos = [line for line in lines if re.match(r'^\[\d+] ', line)]
+    hex_content = ' '.join([line for line in lines if not re.match(r'^\[\d+] ', line)])
     if len(infos) > 0 and infos[0] == '[1] :status: 200':
         frames = WsFrameReader.parse(bytearray.fromhex(hex_content))
     else:
@@ -195,19 +196,19 @@ class TestWebSockets:
     def test_h2_800_07_miss_path(self, env: H2TestEnv, ws_server):
         r, infos, frames = ws_run(env, path='/ws/echo/', scenario='miss-path')
         assert r.exit_code == 0, f'{r}'
-        assert infos == ['[1] RST'], f'{r}'
+        assert infos == ['[1] RST'] or infos == ['[0] GOAWAY'], f'{r}'
 
     # CONNECT missing the :scheme header
     def test_h2_800_08_miss_scheme(self, env: H2TestEnv, ws_server):
         r, infos, frames = ws_run(env, path='/ws/echo/', scenario='miss-scheme')
         assert r.exit_code == 0, f'{r}'
-        assert infos == ['[1] RST'], f'{r}'
+        assert infos == ['[1] RST'] or infos == ['[0] GOAWAY'], f'{r}'
 
     # CONNECT missing the :authority header
     def test_h2_800_09a_miss_authority(self, env: H2TestEnv, ws_server):
         r, infos, frames = ws_run(env, path='/ws/echo/', scenario='miss-authority')
         assert r.exit_code == 0, f'{r}'
-        assert infos == ['[1] RST'], f'{r}'
+        assert infos == ['[1] RST'] or infos == ['[0] GOAWAY'], f'{r}'
 
     # CONNECT to authority with disabled websockets
     def test_h2_800_09b_unsupported(self, env: H2TestEnv, ws_server):

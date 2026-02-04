@@ -381,7 +381,7 @@ static int iq_bubble_down(h2_proxy_iqueue *q, int i, int bottom,
  * h2_proxy_ngheader
  ******************************************************************************/
 #define H2_HD_MATCH_LIT_CS(l, name)  \
-    ((strlen(name) == sizeof(l) - 1) && !apr_strnatcasecmp(l, name))
+    ((strlen(name) == sizeof(l) - 1) && !ap_cstr_casecmp(l, name))
 
 static int h2_util_ignore_header(const char *name) 
 {
@@ -500,7 +500,7 @@ static int ignore_header(const literal *lits, size_t llen,
     
     for (i = 0; i < llen; ++i) {
         lit = &lits[i];
-        if (lit->len == nlen && !apr_strnatcasecmp(lit->name, name)) {
+        if (lit->len == nlen && !ap_cstr_casecmp(lit->name, name)) {
             return 1;
         }
     }
@@ -542,7 +542,7 @@ void h2_proxy_util_camel_case_header(char *s, size_t len)
 
 /** Match a header value against a string constance, case insensitive */
 #define H2_HD_MATCH_LIT(l, name, nlen)  \
-    ((nlen == sizeof(l) - 1) && !apr_strnatcasecmp(l, name))
+    ((nlen == sizeof(l) - 1) && !ap_cstr_casecmp(l, name))
 
 static apr_status_t h2_headers_add_h1(apr_table_t *headers, apr_pool_t *pool, 
                                       const char *name, size_t nlen,
