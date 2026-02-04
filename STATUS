@@ -207,6 +207,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   or https://github.com/apache/httpd/pull/599
      +1: jorton,
 
+  *) mod_http2: do full source sync to trunk. A small set of deviations have
+     crept in over time. Let's do a full sync, making life easier for
+     maintainers and distros.
+     2.4.x patch: https://github.com/apache/httpd/pull/602
+     +1: icing
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
