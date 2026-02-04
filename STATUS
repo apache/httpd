@@ -50,6 +50,9 @@ CURRENT RELEASE NOTES:
 
 RELEASE SHOWSTOPPERS:
 
+* PR69946 (https://bz.apache.org/bugzilla/show_bug.cgi?id=69946)
+  Authentication Bypass in mod_autht_jwt via JWT Claim Prefix Matching Inbox
+
 
 CURRENT VOTES:
 
