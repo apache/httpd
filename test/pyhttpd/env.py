@@ -1,3 +1,4 @@
+import glob
 import importlib
 import inspect
 import logging
@@ -20,7 +21,6 @@ from .log import HttpdErrorLog
 from .nghttp import Nghttp
 from .result import ExecResult
 
-
 log = logging.getLogger(__name__)
 
 
@@ -29,7 +29,6 @@ class Dummy:
 
 
 class HttpdTestSetup:
-
     # the modules we want to load
     MODULES = [
         "log_config",
@@ -209,8 +208,8 @@ class HttpdTestSetup:
 
 
 class HttpdTestEnv:
-
     LIBEXEC_DIR = None
+    SHARED_SERVER_ENTRIES = {'ca', 'md', 'acme-ca.pem', 'eab.json'}
 
     @classmethod
     def has_python_package(cls, name: str) -> bool:
@@ -339,9 +338,60 @@ class HttpdTestEnv:
 
     def check_error_log(self):
         errors, warnings = self._error_log.get_missed()
-        assert (len(errors), len(warnings)) == (0, 0),\
-                f"apache logged {len(errors)} errors and {len(warnings)} warnings: \n"\
-                "{0}\n{1}\n".format("\n".join(errors), "\n".join(warnings))
+        assert (len(errors), len(warnings)) == (0, 0), \
+            f"apache logged {len(errors)} errors and {len(warnings)} warnings: \n" \
+            "{0}\n{1}\n".format("\n".join(errors), "\n".join(warnings))
+
+    # archives preserving metadata and avoiding duplication
+    def archive_logs(self, package_name, archive_dir):
+        version = self.get_httpd_version()
+        dest = os.path.join(archive_dir, version, package_name)
+        if os.path.isdir(dest):
+            shutil.rmtree(dest)
+
+        # use ignore argument to avoid duplication of files
+        shutil.copytree(self._server_dir, dest, ignore=self.ignore_files)
+        shared_dest = os.path.join(archive_dir, version, 'shared')
+
+        if os.path.isdir(shared_dest):
+            shutil.rmtree(shared_dest)
+        os.makedirs(shared_dest)
+
+        for entry in self.SHARED_SERVER_ENTRIES:
+            src = os.path.join(self._server_dir, entry)
+            entry_dest = os.path.join(shared_dest, entry)
+            if os.path.isdir(src):
+                shutil.copytree(src, entry_dest)
+            elif os.path.isfile(src):
+                shutil.copy2(src, entry_dest)
+
+        shared_conf_dest = os.path.join(shared_dest, 'conf')
+        os.makedirs(shared_conf_dest)
+
+        # copy them once
+        for f in ['httpd.conf', 'mime.types']:
+            src = os.path.join(self._server_conf_dir, f)
+            if os.path.isfile(src):
+                shutil.copy2(src, shared_conf_dest)
+
+    def archive_test_conf(self, test_name, package_name, archive_dir):
+        version = self.get_httpd_version()
+        dest = os.path.join(archive_dir, version, package_name, 'conf')
+        if not os.path.isdir(dest):
+            os.makedirs(dest)
+
+        test_conf = os.path.join(self._server_conf_dir, 'test.conf')
+        if os.path.isfile(test_conf):
+            final_name = test_name.replace('/', '_').replace('\\', '_')
+            dest_file = os.path.join(dest, f"{final_name}.conf")
+            shutil.copy(test_conf, dest_file)
+
+    # return files to ignore
+    def ignore_files(self, d, entries):
+        ignored = [e for e in entries if e.endswith('.sock') or e in self.SHARED_SERVER_ENTRIES]
+        if os.path.basename(d) == 'conf':
+            ignored += ['httpd.conf', 'mime.types']
+        return ignored
 
     @property
     def curl(self) -> str:
@@ -689,7 +739,7 @@ class HttpdTestEnv:
             timeout = timedelta(seconds=10)
             return 0 if self.is_live(self._http_base, timeout=timeout) else -1
         return r.exit_code
-        
+
     def apache_stop(self):
         r = self._run_apachectl("stop")
         if r.exit_code == 0:
@@ -778,6 +828,7 @@ class HttpdTestEnv:
             r = ExecResult(args=[], exit_code=0, stdout=b'', stderr=b'')
 
         response = None
+
         def fin_response(response):
             if response:
                 r.add_response(response)
@@ -878,7 +929,7 @@ class HttpdTestEnv:
         if r.exit_code == 0 and r.response:
             return r.response["body"].decode('utf-8').rstrip()
         return -1
-        
+
     def nghttp(self):
         return Nghttp(self._nghttp, connect_addr=self._httpd_addr,
                       tmp_dir=self.gen_dir, test_name=self._current_test)
@@ -920,4 +971,3 @@ class HttpdTestEnv:
                 s = f"{i:09d}-{s}\n"
                 fd.write(s[0:remain])
         return fpath
-
