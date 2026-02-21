@@ -1,0 +1,2 @@
+  *) mod_md: Use correct function name when compiling against APR < 1.6.0.
+     PR 69954 [Tần Quảng <baobaoxich@gmail.com>]
