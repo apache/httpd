@@ -117,22 +117,30 @@ static OCSP_REQUEST *create_request(X509_STORE_CTX *ctx, X509 *cert,
         return NULL;
     }
 
-    static OCSP_REQUEST *create_request(X509_STORE_CTX *ctx, X509 *cert,
+static OCSP_REQUEST *create_request(X509_STORE_CTX *ctx, X509 *cert,
                                     OCSP_CERTID **certid,
                                     server_rec *s, apr_pool_t *p,
                                     SSLSrvConfigRec *sc)
 {
     OCSP_REQUEST *req = OCSP_REQUEST_new();
+    if (!req) {
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO(01920)
+                     "failed to create OCSP request");
+        return NULL;
+    }
 
     *certid = OCSP_cert_to_id(NULL, cert, X509_STORE_CTX_get0_current_issuer(ctx));
     if (!*certid || !OCSP_request_add0_id(req, *certid)) {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO(01921)
                      "could not retrieve certificate id");
         ssl_log_ssl_error(SSLLOG_MARK, APLOG_ERR, s);
+        OCSP_REQUEST_free(req);
         return NULL;
     }
 
-    OCSP_request_add1_nonce(req, 0, -1);
+    if (sc->server->ocsp_use_request_nonce != FALSE) {
+        OCSP_request_add1_nonce(req, 0, -1);
+    }
 
     return req;
 }
@@ -151,8 +159,8 @@ static int verify_ocsp_status(X509 *cert, X509_STORE_CTX *ctx, conn_rec *c,
     ruri = determine_responder_uri(sc, cert, c, pool);
     if (!ruri) {
         if (sc->server->ocsp_mask & SSL_OCSPCHECK_NO_OCSP_FOR_CERT_OK) {
-            ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, c, 
-                          "Skipping OCSP check for certificate cos no OCSP URL"
+            ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, c,
+                          "Skipping OCSP check for certificate because no OCSP URL"
                           " found and no_ocsp_for_cert_ok is set");
             return V_OCSP_CERTSTATUS_GOOD;
         } else {
@@ -162,7 +170,7 @@ static int verify_ocsp_status(X509 *cert, X509_STORE_CTX *ctx, conn_rec *c,
 
     request = create_request(ctx, cert, &certID, s, pool, sc);
     if (request) {
-        apr_interval_time_t to = sc->server->ocsp_responder_timeout == UNSET ? 
+        apr_interval_time_t to = sc->server->ocsp_responder_timeout == UNSET ?
                                  apr_time_from_sec(DEFAULT_OCSP_TIMEOUT) :
                                  sc->server->ocsp_responder_timeout;
         response = modssl_dispatch_ocsp_request(ruri, to, request, c, pool);
@@ -174,7 +182,6 @@ static int verify_ocsp_status(X509 *cert, X509_STORE_CTX *ctx, conn_rec *c,
 
     if (rc == V_OCSP_CERTSTATUS_GOOD) {
         int r = OCSP_response_status(response);
-
         if (r != OCSP_RESPONSE_STATUS_SUCCESSFUL) {
             ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO(01922)
                          "OCSP response not successful: %d", r);
@@ -193,18 +200,19 @@ static int verify_ocsp_status(X509 *cert, X509_STORE_CTX *ctx, conn_rec *c,
     }
 
     if (rc == V_OCSP_CERTSTATUS_GOOD &&
-            OCSP_check_nonce(request, basicResponse) != 1) {
+        OCSP_check_nonce(request, basicResponse) != 1) {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO(01924)
-                    "Bad OCSP responder answer (bad nonce)");
+                     "Bad OCSP responder answer (bad nonce)");
         rc = V_OCSP_CERTSTATUS_UNKNOWN;
     }
 
     if (rc == V_OCSP_CERTSTATUS_GOOD) {
         if (sc->server->ocsp_noverify != TRUE) {
-            if (OCSP_basic_verify(basicResponse, sc->server->ocsp_certs, X509_STORE_CTX_get0_store(ctx),
+            if (OCSP_basic_verify(basicResponse, sc->server->ocsp_certs,
+                                  X509_STORE_CTX_get0_store(ctx),
                                   sc->server->ocsp_verify_flags) != 1) {
                 ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO(01925)
-                            "failed to verify the OCSP response");
+                             "failed to verify the OCSP response");
                 ssl_log_ssl_error(SSLLOG_MARK, APLOG_ERR, s);
                 rc = V_OCSP_CERTSTATUS_UNKNOWN;
             }
@@ -228,7 +236,7 @@ static int verify_ocsp_status(X509 *cert, X509_STORE_CTX *ctx, conn_rec *c,
         }
 
         if (rc != V_OCSP_CERTSTATUS_UNKNOWN) {
-            long resptime_skew = sc->server->ocsp_resptime_skew == UNSET ? 
+            long resptime_skew = sc->server->ocsp_resptime_skew == UNSET ?
                                  DEFAULT_OCSP_MAX_SKEW : sc->server->ocsp_resptime_skew;
             int vrc  = OCSP_check_validity(thisup, nextup, resptime_skew,
                                            sc->server->ocsp_resp_maxage);
@@ -260,7 +268,6 @@ static int verify_ocsp_status(X509 *cert, X509_STORE_CTX *ctx, conn_rec *c,
 
     return rc;
 }
-
     }
 
     return req;
