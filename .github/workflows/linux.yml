@@ -95,6 +95,13 @@ jobs:
               APU_CONFIG="--with-crypto --with-ldap"
               CLEAR_CACHE=1
           # -------------------------------------------------------------------------
+          - name: APR 1.3.12, APR-util 1.3.12
+            config: --enable-mods-shared=reallyall
+            env: |
+              APR_VERSION=1.3.12
+              APU_VERSION=1.3.12
+              APU_CONFIG="--with-crypto --with-ldap"
+          # -------------------------------------------------------------------------
           - name: Pool-debug
             config: --enable-mods-shared=reallyall
             env: |
