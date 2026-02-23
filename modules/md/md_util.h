@@ -27,7 +27,7 @@
 #else
 /* Define a (poor) backwards-compatibility entry point for
  * apr_cstr_casecmp() from APR 1.6. */
-#define apr_cstr_casecmp apr_strnatcasecmp
+#define apr_cstr_casecmp apr_natcasecmp
 #endif
 
 struct apr_array_header_t;
