@@ -60,17 +60,22 @@ function install_apx() {
     local giturl=https://github.com/apache/${name}.git
     local config=$3
     local buildconf=$4
+    local commit=tarball
 
-    case $version in
-    trunk|*.x) ref=refs/heads/${version} ;;
-    *) ref=refs/tags/${version} ;;
-    esac
+    mkdir -p ${HOME}/build
 
-    # Fetch the object ID (hash) of latest commit
-    local commit=`git ls-remote ${giturl} ${ref} | cut -f1`
-    if test -z "$commit"; then
-        : Could not determine latest commit hash for ${ref} in ${giturl} - check branch is valid?
-        exit 1
+    if ! test -v TEST_APR_TARBALL; then
+         case $version in
+            trunk|*.x) ref=refs/heads/${version} ;;
+            *) ref=refs/tags/${version} ;;
+         esac
+
+         # Fetch the object ID (hash) of latest commit
+         commit=`git ls-remote ${giturl} ${ref} | cut -f1`
+         if test -z "$commit"; then
+            : Could not determine latest commit hash for ${ref} in ${giturl} - check branch is valid?
+            exit 1
+         fi
     fi
 
     # Blow away the cached install root if the cached install is stale
@@ -81,16 +86,24 @@ function install_apx() {
         return 0
     fi
 
-    git init -q ${build}
-    pushd $build
+    if test -v TEST_APR_TARBALL; then
+         curl https://archive.apache.org/dist/apr/${name}-${version}.tar.gz > apx.tar.gz
+         tar -C ${HOME}/build -xzf apx.tar.gz
+         rm apx.tar.gz
+         pushd ${build}
+    else
+         git init -q ${build}
+         pushd $build
          # Clone and checkout the commit identified above.
          git remote add origin ${giturl}
          git fetch -q --depth=1 origin ${commit}
          git checkout ${commit}
          ./buildconf ${buildconf}
-         ./configure --prefix=${prefix} ${config}
-         make -j2
-         make install
+    fi
+
+    ./configure --prefix=${prefix} ${config}
+    make -j2
+    make install
     popd
 
     echo ${version} ${commit} "${config}" "CC=${CC}" > ${HOME}/root/.key-${name}
