@@ -1966,7 +1966,7 @@ int ssl_callback_NewSessionCacheEntry(SSL *ssl, SSL_SESSION *session)
 #endif
 
     rc = ssl_scache_store(s, id, idlen,
-                          apr_time_from_sec(SSL_SESSION_get_time(session)
+                          apr_time_from_sec(SSL_SESSION_get_time_ex(session)
                                           + timeout),
                           session, conn->pool);
 
