@@ -238,8 +238,10 @@ class HttpdTestEnv:
 
     def __init__(self, pytestconfig=None):
         self._our_dir = os.path.dirname(inspect.getfile(Dummy))
+        self._config_ini = os.getenv("PYHTTPD_CONFIG",
+                                     os.path.join(self._our_dir, 'config.ini'))
         self.config = ConfigParser(interpolation=ExtendedInterpolation())
-        self.config.read(os.path.join(self._our_dir, 'config.ini'))
+        self.config.read(self._config_ini)
 
         self._bin_dir = self.config.get('global', 'bindir')
         self._apxs = self.config.get('global', 'apxs')

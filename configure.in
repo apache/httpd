@@ -791,10 +791,11 @@ AC_ARG_WITH(valgrind,
 dnl Enable the unit test executable if Check is installed.
 dnl TODO: at the moment, only pkg-config discovery is supported.
 AC_MSG_CHECKING([for Check to enable unit tests])
-if test "x$PKGCONFIG" != "x" -a "$ap_reduced_exports" = "no" && `$PKGCONFIG --atleast-version='0.9.12' check`; then
+if test "x$PKGCONFIG" != "x" -a -d "./test" -a "$ap_reduced_exports" = "no" && `$PKGCONFIG --atleast-version='0.9.12' check`; then
   UNITTEST_CFLAGS=`$PKGCONFIG --cflags check`
   UNITTEST_LIBS=`$PKGCONFIG --libs check`
   other_targets="$other_targets test/httpdunit"
+  CHECK_TARGETS="$CHECK_TARGETS check-unittests"
 
   AC_MSG_RESULT([yes])
 else
@@ -803,6 +804,13 @@ fi
 APACHE_SUBST(UNITTEST_CFLAGS)
 APACHE_SUBST(UNITTEST_LIBS)
 
+if test -d "./test"; then
+   AC_PATH_PROG(PYTEST3, pytest-3)
+   if test -n "$ac_cv_path_PYTEST3"; then
+      CHECK_TARGETS="$CHECK_TARGETS check-pytest"
+   fi
+fi
+APACHE_SUBST(PYTEST3)
 
 prefix="$orig_prefix"
 APACHE_ENABLE_MODULES
@@ -817,6 +825,7 @@ APACHE_SUBST(BUILTIN_LIBS)
 APACHE_SUBST(SHLIBPATH_VAR)
 APACHE_SUBST(OS_SPECIFIC_VARS)
 APACHE_SUBST(HTTPD_LIBS)
+APACHE_SUBST(CHECK_TARGETS)
 
 PRE_SHARED_CMDS='echo ""'
 POST_SHARED_CMDS='echo ""'
@@ -1007,14 +1016,11 @@ AC_ARG_WITH([test-suite],
         else
             test -f "$withval/Makefile.PL" || AC_MSG_ERROR([--with-test-suite directory $withval does not contain the expected Makefile.PL])
             TEST_SUITE_LOCATION="$withval"
-            WITH_TEST_SUITE=yes
+            CHECK_TARGETS="$CHECK_TARGETS check-test-framework"
         fi
-    ],
-    [ WITH_TEST_SUITE=no ]
-)
+    ])
 
 APACHE_SUBST(TEST_SUITE_LOCATION)
-APACHE_SUBST(WITH_TEST_SUITE)
 
 APACHE_FAST_OUTPUT(Makefile modules/Makefile srclib/Makefile) 
 APACHE_FAST_OUTPUT(os/Makefile server/Makefile)
