@@ -1965,10 +1965,17 @@ int ssl_callback_NewSessionCacheEntry(SSL *ssl, SSL_SESSION *session)
     idlen = session->session_id_length;
 #endif
 
+#if OPENSSL_VERSION_NUMBER >= 0x30300000
     rc = ssl_scache_store(s, id, idlen,
                           apr_time_from_sec(SSL_SESSION_get_time_ex(session)
                                           + timeout),
                           session, conn->pool);
+#else
+      rc = ssl_scache_store(s, id, idlen,
+                          apr_time_from_sec(SSL_SESSION_get_time(session)
+                                          + timeout),
+                          session, conn->pool);
+#endif
 
     ssl_session_log(s, "SET", id, idlen,
                     rc == TRUE ? "OK" : "BAD",
