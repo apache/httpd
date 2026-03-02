@@ -320,7 +320,7 @@ jobs:
             config: --enable-mods-shared=most --enable-maintainer-mode --disable-md --disable-http2 --disable-ldap --disable-crypto
             notest-cflags: -Werror -O2
             env: |
-              TEST_OPENSSL3=ech1
+              TEST_OPENSSL3=ech2
               TEST_OPENSSL3_BRANCH=feature/ech
               OPENSSL_CONFIG=no-engine
               APR_VERSION=1.7.6
