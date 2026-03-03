@@ -236,7 +236,7 @@ char *modssl_X509_NAME_ENTRY_to_string(apr_pool_t *p, X509_NAME_ENTRY *xsne,
  * convert an X509_NAME to an RFC 2253 formatted string, optionally truncated
  * to maxlen characters (specify a maxlen of 0 for no length limit)
  */
-char *modssl_X509_NAME_to_string(apr_pool_t *p, X509_NAME *dn, int maxlen)
+char *modssl_X509_NAME_to_string(apr_pool_t *p, const X509_NAME *dn, int maxlen)
 {
     char *result = NULL;
     BIO *bio;
@@ -373,7 +373,7 @@ BOOL modssl_X509_getSAN(apr_pool_t *p, X509 *x509, int type, const char *onf,
 /* return an array of (RFC 6125 coined) DNS-IDs and CN-IDs in a certificate */
 static BOOL getIDs(apr_pool_t *p, X509 *x509, apr_array_header_t **ids)
 {
-    X509_NAME *subj;
+    const X509_NAME *subj;
     int i = -1;
 
     /* First, the DNS-IDs (dNSName entries in the subjectAltName extension) */

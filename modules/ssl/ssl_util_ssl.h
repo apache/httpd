@@ -73,7 +73,7 @@ int         modssl_smart_shutdown(SSL *ssl);
 BOOL        modssl_X509_getBC(X509 *, int *, int *);
 char       *modssl_X509_NAME_ENTRY_to_string(apr_pool_t *p, X509_NAME_ENTRY *xsne,
                                              int raw);
-char       *modssl_X509_NAME_to_string(apr_pool_t *, X509_NAME *, int);
+char       *modssl_X509_NAME_to_string(apr_pool_t *, const X509_NAME *, int);
 BOOL        modssl_X509_getSAN(apr_pool_t *, X509 *, int, const char *, int, apr_array_header_t **);
 BOOL        modssl_X509_match_name(apr_pool_t *, X509 *, const char *, BOOL, server_rec *);
 char       *modssl_SSL_SESSION_id2sz(IDCONST unsigned char *, int, char *, int);

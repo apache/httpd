@@ -41,7 +41,7 @@
 
 static const char *ssl_var_lookup_ssl(apr_pool_t *p, const SSLConnRec *sslconn, request_rec *r, const char *var);
 static const char *ssl_var_lookup_ssl_cert(apr_pool_t *p, request_rec *r, X509 *xs, const char *var);
-static const char *ssl_var_lookup_ssl_cert_dn(apr_pool_t *p, X509_NAME *xsname, const char *var);
+static const char *ssl_var_lookup_ssl_cert_dn(apr_pool_t *p, const X509_NAME *xsname, const char *var);
 static const char *ssl_var_lookup_ssl_cert_san(apr_pool_t *p, X509 *xs, const char *var);
 static const char *ssl_var_lookup_ssl_cert_valid(apr_pool_t *p, ASN1_TIME *tm);
 static const char *ssl_var_lookup_ssl_cert_remain(apr_pool_t *p, ASN1_TIME *tm);
@@ -598,7 +598,7 @@ static const char *ssl_var_lookup_ssl(apr_pool_t *p, const SSLConnRec *sslconn,
 }
 
 static const char *ssl_var_lookup_ssl_cert_dn_oneline(apr_pool_t *p, request_rec *r,
-                                                X509_NAME *xsname)
+                                                      const X509_NAME *xsname)
 {
     char *result = NULL;
     SSLDirConfigRec *dc;
@@ -629,7 +629,7 @@ static const char *ssl_var_lookup_ssl_cert(apr_pool_t *p, request_rec *r, X509 *
                                            const char *var)
 {
     const char *result;
-    X509_NAME *xsname;
+    const X509_NAME *xsname;
     int nid;
 
     result = NULL;
@@ -727,8 +727,8 @@ static const struct {
     { NULL,    0,                          0 }
 };
 
-static const char *ssl_var_lookup_ssl_cert_dn(apr_pool_t *p, X509_NAME *xsname,
-                                        const char *var)
+static const char *ssl_var_lookup_ssl_cert_dn(apr_pool_t *p, const X509_NAME *xsname,
+                                              const char *var)
 {
     const char *ptr;
     const char *result;
@@ -929,7 +929,7 @@ static const char *ssl_var_lookup_ssl_cert_rfc4523_cea(apr_pool_t *p, SSL *ssl)
 
     serialNumber = X509_get_serialNumber(xs);
     if (serialNumber) {
-        X509_NAME *issuer = X509_get_issuer_name(xs);
+        const X509_NAME *issuer = X509_get_issuer_name(xs);
         if (issuer) {
             BIGNUM *bn = ASN1_INTEGER_to_BN(serialNumber, NULL);
             if((decimal = BN_bn2dec(bn)) == NULL) {

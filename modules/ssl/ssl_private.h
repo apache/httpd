@@ -1212,16 +1212,16 @@ void         ssl_log_ssl_error(const char *, int, int, server_rec *);
  * counterparts. */
 void ssl_log_xerror(const char *file, int line, int level,
                     apr_status_t rv, apr_pool_t *p, server_rec *s,
-                    X509 *cert, const char *format, ...)
+                    const X509 *cert, const char *format, ...)
     __attribute__((format(printf,8,9)));
 
 void ssl_log_cxerror(const char *file, int line, int level,
-                     apr_status_t rv, conn_rec *c, X509 *cert,
+                     apr_status_t rv, conn_rec *c, const X509 *cert,
                      const char *format, ...)
     __attribute__((format(printf,7,8)));
 
 void ssl_log_rxerror(const char *file, int line, int level,
-                     apr_status_t rv, request_rec *r, X509 *cert,
+                     apr_status_t rv, request_rec *r, const X509 *cert,
                      const char *format, ...)
     __attribute__((format(printf,7,8)));
 
