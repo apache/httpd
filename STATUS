@@ -211,7 +211,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      crept in over time. Let's do a full sync, making life easier for
      maintainers and distros.
      2.4.x patch: https://github.com/apache/httpd/pull/602
-     +1: icing
+     +1: icing, steffenal
 
   *) mod_http2: update to v2.0.39
      https://github.com/apache/httpd/pull/602 should have been applied!
