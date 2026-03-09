@@ -398,10 +398,11 @@ apr_status_t h2_mplx_c1_streams_do(h2_mplx *m, h2_mplx_stream_cb *cb, void *ctx)
 {
     stream_iter_ctx_t x;
     
-    H2_MPLX_ENTER(m);
-
     x.cb = cb;
     x.ctx = ctx;
+
+    H2_MPLX_ENTER(m);
+
     h2_ihash_iter(m->streams, m_stream_iter_wrap, &x);
         
     H2_MPLX_LEAVE(m);
@@ -1033,7 +1034,8 @@ static void s_c2_done(h2_mplx *m, conn_rec *c2, h2_conn_ctx_t *conn_ctx)
         int i;
 
         for (i = 0; i < m->spurge->nelts; ++i) {
-            if (stream == APR_ARRAY_IDX(m->spurge, i, h2_stream*)) {
+            stream = APR_ARRAY_IDX(m->spurge, i, h2_stream*);
+            if (stream && (stream->id == conn_ctx->stream_id)) {
                 ap_log_cerror(APLOG_MARK, APLOG_WARNING, 0, c2,
                               H2_STRM_LOG(APLOGNO(03517), stream, "already in spurge"));
                 ap_assert("stream should not be in spurge" == NULL);

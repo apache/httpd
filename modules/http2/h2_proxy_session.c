@@ -866,8 +866,8 @@ static apr_status_t open_stream(h2_proxy_session *session, const char *url,
              * Host: header */
             authority = r->server->server_hostname;
             ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(10511)
-                          "HTTP/0.9 request (with no host line) "
-                          "on incoming request and preserve host set "
+                          "incoming HTTP/0.9 request (with no Host header) "
+                          "and preserve host set, "
                           "forcing hostname to be %s for uri %s",
                           authority, r->uri);
             apr_table_setn(r->headers_in, "Host", authority);
