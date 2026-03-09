@@ -168,6 +168,32 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
                   (or https://github.com/apache/httpd/pull/581)
      +1: ylavic, rpluem, jorton
 
+  *) mod_file_cache: Fix crashes for MMapFile configurations
+     trunk patch: https://svn.apache.org/r1930632
+                  https://svn.apache.org/r1930633
+     2.4.x patch: svn merge -c 1930632,1930633 ^/httpd/httpd/trunk .
+                  or https://github.com/apache/httpd/pull/584
+     +1: jorton, rpluem, covener
+
+  *) mod_proxy_balancer: Include nonce in XML balancer-manager output.
+     trunk patch: https://svn.apache.org/r1887192
+     2.4.x patch: svn merge -c 1887192 ^/httpd/httpd/trunk .
+                  or https://github.com/apache/httpd/pull/587
+     +1: jorton, rpluem, covener
+
+  *) mod_http2: do full source sync to trunk. A small set of deviations have
+     crept in over time. Let's do a full sync, making life easier for
+     maintainers and distros.
+     2.4.x patch: https://github.com/apache/httpd/pull/602
+     +1: icing, steffenal, covener
+
+  *) mod_http2: update to v2.0.39
+     https://github.com/apache/httpd/pull/602 should have been applied!
+     trunk patch: https://svn.apache.org/r1931949
+     2.4.x patch: svn merge -c 1931949 ^/httpd/httpd/trunk .
+     +1: icing, steffenal, covener
+
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -175,19 +201,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: https://svn.apache.org/r1926172
      2.4.x patch: svn merge -c 1926172 ^/httpd/httpd/trunk .
                   or https://github.com/apache/httpd/pull/583
-     +1: jorton, rpluem
-
-  *) mod_file_cache: Fix crashes for MMapFile configurations
-     trunk patch: https://svn.apache.org/r1930632
-                  https://svn.apache.org/r1930633
-     2.4.x patch: svn merge -c 1930632,1930633 ^/httpd/httpd/trunk .
-                  or https://github.com/apache/httpd/pull/584
-     +1: jorton, rpluem
-
-  *) mod_proxy_balancer: Include nonce in XML balancer-manager output.
-     trunk patch: https://svn.apache.org/r1887192
-     2.4.x patch: svn merge -c 1887192 ^/httpd/httpd/trunk .
-                  or https://github.com/apache/httpd/pull/587
      +1: jorton, rpluem
 
   *) mod_unixd: sync with trunk.
@@ -206,18 +219,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c 1931452,1931453 ^/httpd/httpd/trunk .
                   or https://github.com/apache/httpd/pull/599
      +1: jorton,
-
-  *) mod_http2: do full source sync to trunk. A small set of deviations have
-     crept in over time. Let's do a full sync, making life easier for
-     maintainers and distros.
-     2.4.x patch: https://github.com/apache/httpd/pull/602
-     +1: icing, steffenal
-
-  *) mod_http2: update to v2.0.39
-     https://github.com/apache/httpd/pull/602 should have been applied!
-     trunk patch: https://svn.apache.org/r1931949
-     2.4.x patch: svn merge -c 1931949 ^/httpd/httpd/trunk .
-     +1: icing, steffenal
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
