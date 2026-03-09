@@ -111,29 +111,13 @@ static void cleanup_unprocessed_streams(h2_session *session)
     h2_mplx_c1_streams_do(session->mplx, rst_unprocessed_stream, session);
 }
 
-/* APR callback invoked if allocation fails. */
-static int abort_on_oom(int retcode)
-{
-    ap_abort_on_oom();
-    return retcode; /* unreachable, hopefully. */
-}
-
 static h2_stream *h2_session_open_stream(h2_session *session, int stream_id,
                                          int initiated_on)
 {
     h2_stream * stream;
-    apr_allocator_t *allocator;
     apr_pool_t *stream_pool;
-    apr_status_t rv;
 
-    rv = apr_allocator_create(&allocator);
-    if (rv != APR_SUCCESS)
-      return NULL;
-
-    apr_allocator_max_free_set(allocator, ap_max_mem_free);
-    apr_pool_create_ex(&stream_pool, session->pool, NULL, allocator);
-    apr_allocator_owner_set(allocator, stream_pool);
-    apr_pool_abort_set(abort_on_oom, stream_pool);
+    apr_pool_create(&stream_pool, session->pool);
     apr_pool_tag(stream_pool, "h2_stream");
 
     stream = h2_stream_create(stream_id, stream_pool, session, 
