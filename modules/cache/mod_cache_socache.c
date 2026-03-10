@@ -1369,7 +1369,7 @@ static int socache_status_hook(request_rec *r, int flags)
                  "<b><font color=\"#ffffff\" face=\"Arial,Helvetica\">"
                  "mod_cache_socache Status:</font></b>\n"
                  "</td></tr>\n"
-                 "<tr><td bgcolor=\"#ffffff\">\n", r);
+                 "<tr><td>\n", r);
     }
     else {
         ap_rputs("ModCacheSocacheStatus\n", r);
