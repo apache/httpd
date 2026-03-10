@@ -1010,6 +1010,7 @@ static int x_handler(request_rec *r)
     ap_rputs(DOCTYPE_HTML_4_01, r);
     ap_rputs("<HTML>\n", r);
     ap_rputs(" <HEAD>\n", r);
+    ap_rputs("  <META name=\"color-scheme\" content=\"light dark\">\n", r);
     ap_rputs("  <TITLE>mod_example_hooks Module Content-Handler Output\n", r);
     ap_rputs("  </TITLE>\n", r);
     ap_rputs(" </HEAD>\n", r);
