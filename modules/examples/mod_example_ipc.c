@@ -63,7 +63,7 @@
 #include <unistd.h>
 #endif
 
-#define HTML_HEADER "<html>\n<head>\n<title>Mod_example_IPC Status Page " \
+#define HTML_HEADER "<html>\n<head>\n<meta name=\"color-scheme\" content=\"light dark\" />\n<title>Mod_example_IPC Status Page " \
                     "</title>\n</head>\n<body>\n<h1>Mod_example_IPC Status</h1>\n"
 #define HTML_FOOTER "</body>\n</html>\n"
 
