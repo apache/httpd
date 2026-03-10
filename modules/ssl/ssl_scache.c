@@ -207,7 +207,7 @@ static int ssl_ext_status_hook(request_rec *r, int flags)
         ap_rputs("<tr><td bgcolor=\"#000000\">\n", r);
         ap_rputs("<b><font color=\"#ffffff\" face=\"Arial,Helvetica\">SSL/TLS Session Cache Status:</font></b>\r", r);
         ap_rputs("</td></tr>\n", r);
-        ap_rputs("<tr><td bgcolor=\"#ffffff\">\n", r);
+        ap_rputs("<tr><td>\n", r);
     }
     else {
         ap_rputs("TLSSessionCacheStatus\n", r);
@@ -236,4 +236,3 @@ void ssl_scache_status_register(apr_pool_t *p)
     APR_OPTIONAL_HOOK(ap, status_hook, ssl_ext_status_hook, NULL, NULL,
                       APR_HOOK_MIDDLE);
 }
-
