@@ -789,6 +789,7 @@ static int display_info(request_rec * r)
     ap_rputs(DOCTYPE_XHTML_1_0T
              "<html xmlns=\"http://www.w3.org/1999/xhtml\">\n"
              "<head>\n"
+             "  <meta name=\"color-scheme\" content=\"light dark\" />\n"
              "  <title>Server Information</title>\n" "</head>\n", r);
     ap_rputs("<body><h1 style=\"text-align: center\">"
              "Apache Server Information</h1>\n", r);
