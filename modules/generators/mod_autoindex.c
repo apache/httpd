@@ -177,7 +177,8 @@ static void emit_preamble(request_rec *r, int xhtml, const char *title)
     if (xhtml) {
         ap_rvputs(r, DOCTYPE_XHTML_1_0T,
                   "<html xmlns=\"http://www.w3.org/1999/xhtml\">\n"
-                  " <head>\n", NULL);
+                  " <head>\n"
+                  "  <meta name=\"color-scheme\" content=\"light dark\" />\n", NULL);
 	if(d->charset != NULL) {
           ap_rvputs(r, "  <meta http-equiv=\"Content-Type\" content=\"text/html; charset=", d->charset, "\" />\n", NULL);
 	}
@@ -186,6 +187,7 @@ static void emit_preamble(request_rec *r, int xhtml, const char *title)
     } else {
         ap_rvputs(r, DOCTYPE_HTML_4_01,
                   "<html>\n <head>\n"
+                  "  <meta name=\"color-scheme\" content=\"light dark\" />\n"
                   "  <title>Index of ", title,
                   "</title>\n", NULL);
     }
