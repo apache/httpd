@@ -421,6 +421,7 @@ static int status_handler(request_rec *r)
     if (!short_report) {
         ap_rputs(DOCTYPE_HTML_4_01
                  "<html><head>\n"
+                 "<meta name=\"color-scheme\" content=\"light dark\" />\n"
                  "<title>Apache Status</title>\n"
                  "</head><body>\n"
                  "<h1>Apache Server Status for ", r);
