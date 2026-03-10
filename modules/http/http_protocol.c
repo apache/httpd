@@ -1358,7 +1358,7 @@ AP_DECLARE(void) ap_send_error_response(request_rec *r, int recursive_error)
 
         ap_rvputs_proto_in_ascii(r,
                   DOCTYPE_HTML_4_01
-                  "<html><head>\n<title>", title,
+                  "<html><head>\n<meta name=\"color-scheme\" content=\"light dark\" />\n<title>", title,
                   "</title>\n</head><body>\n<h1>", h1, "</h1>\n",
                   NULL);
 
