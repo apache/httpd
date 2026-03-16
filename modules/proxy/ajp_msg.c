@@ -166,7 +166,7 @@ apr_status_t ajp_msg_check_header(ajp_msg_t *msg, apr_size_t *len)
     msglen  = ((head[2] & 0xff) << 8);
     msglen += (head[3] & 0xFF);
 
-    if (msglen > msg->max_size) {
+    if (msglen > msg->max_size - AJP_HEADER_LEN) {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, NULL, APLOGNO(01081)
                      "ajp_msg_check_header() incoming message is "
                      "too big %" APR_SIZE_T_FMT ", max is %" APR_SIZE_T_FMT,
