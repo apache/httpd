@@ -2895,6 +2895,15 @@ If set to <code>on</code> in any other virtual host, SNI unaware clients
 are not allowed to access this particular virtual host.
 </p>
 
+<p>
+If set to <code>on</code> in server context (globally, outside any
+<code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> block),
+the setting is inherited by all virtual hosts that do not override it.
+This has the same effect as setting it to <code>on</code> in every
+default name-based virtual host: non-SNI clients will be denied access
+to any name-based virtual host.
+</p>
+
 <div class="warning"><p>
 This option is only available if httpd was compiled against an SNI capable
 version of OpenSSL.
@@ -3134,7 +3143,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_ssl.html';
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2025 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
