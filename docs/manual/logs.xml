@@ -119,7 +119,7 @@
 
     <example>
     [Fri Sep 09 10:42:29.902022 2011] [core:error] [pid 35708:tid 4328636416]
-    [client 72.15.99.187] File does not exist: /usr/local/apache2/htdocs/favicon.ico
+    [client 72.15.99.187] AH00124: Request exceeded the limit of 10 internal redirects due to probable configuration error
     </example>
 
     <p>The first item in the log entry is the date and time of the
@@ -127,9 +127,16 @@
     case) and the severity level of that message. This is followed by
     the process ID and, if appropriate, the thread ID, of the process
     that experienced the condition. Next, we have the client address
-    that made the request. And finally is the detailed error message,
-    which in this case indicates a request for a file that did not
-    exist.</p>
+    that made the request. And finally is the detailed error message.</p>
+
+    <note><p>Note that some messages that were previously logged at
+    <code>error</code> level have been downgraded to <code>info</code>
+    level in httpd 2.4. For example, "File does not exist" messages
+    for 404 responses are logged at <code>info</code> level and will
+    not appear in the error log with the default
+    <directive module="core">LogLevel</directive> of <code>warn</code>.
+    To restore the previous behavior, use
+    <code>LogLevel warn core:info</code>.</p></note>
 
     <p>A very wide variety of different messages can appear in the
     error log. Most look similar to the example above. The error
