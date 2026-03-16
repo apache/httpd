@@ -214,9 +214,10 @@ RewriteRule    "^foo\.html$"  "foo.cgi"  [H=<strong>cgi-script</strong>]</pre>
     <dt>Solution:</dt>
 
     <dd>
-      <p>We rewrite the name to its basename and test for
-      existence of the new extension. If it exists, we take
-      that name, else we rewrite the URL to its original state.</p>
+      <p>The URL is rewritten from the old extension to the new
+      one only if the target file with the new extension exists
+      and the original file with the old extension does not.
+      Otherwise, the URL is left unchanged.</p>
 
 <pre class="prettyprint lang-config">#   backward compatibility ruleset for
 #   rewriting document.html to document.php
@@ -648,7 +649,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/rewrite/remapping.
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2025 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
