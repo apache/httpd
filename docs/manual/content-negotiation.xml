@@ -159,10 +159,41 @@ AddHandler type-map .var
 </example>
 
     <p>Note also that a typemap file will take precedence over the
-    filename's extension, even when Multiviews is on. If the
-    variants have different source qualities, that may be indicated
-    by the "qs" parameter to the media type, as in this picture
-    (available as JPEG, GIF, or ASCII-art): </p>
+    filename's extension, even when Multiviews is on. If a
+    <code>.var</code> type map file is found during a Multiviews
+    directory scan, the server will use <em>only</em> the variants
+    listed in that type map file. Any other files in the directory
+    that match the base name but are not listed in the type map
+    will be ignored entirely. For example, if <code>foo.var</code>
+    exists and lists only <code>foo.en.html</code> and
+    <code>foo.fr.de.html</code>, then a file
+    <code>foo.mn.html</code> present in the same directory will
+    never be served through negotiation, even if the client
+    requests Mongolian. To make such a variant available, it must
+    be added to the type map file.</p>
+
+    <p>This behavior is important for sites that are adding new
+    language variants over time. If you have an existing resource
+    <code>foo.html</code> and later add translated variants with
+    language extensions, you should list all variants (including
+    the original) in the type map file. The original file can be
+    assigned its language in the type map without being renamed:</p>
+
+<example>
+  URI: foo<br />
+<br />
+  URI: foo.html<br />
+  Content-type: text/html<br />
+  Content-language: en<br />
+<br />
+  URI: foo.fr.html<br />
+  Content-type: text/html<br />
+  Content-language: fr<br />
+</example>
+
+    <p>If the variants have different source qualities, that may be
+    indicated by the "qs" parameter to the media type, as in this
+    picture (available as JPEG, GIF, or ASCII-art): </p>
 
 <example>
   URI: foo<br />
