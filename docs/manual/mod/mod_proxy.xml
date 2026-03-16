@@ -2062,7 +2062,7 @@ NoProxy         .example.com 192.168.112.0/21
     the default domain which the apache proxy server will belong to. If a
     request to a host without a domain name is encountered, a redirection
     response to the same host with the configured <var>Domain</var> appended
-    will be generated.</p>
+    will be generated. The domain name must start with a dot.</p>
 
     <example><title>Example</title>
     <highlight language="config">
