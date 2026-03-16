@@ -1802,6 +1802,15 @@ If set to <code>on</code> in any other virtual host, SNI unaware clients
 are not allowed to access this particular virtual host.
 </p>
 
+<p>
+If set to <code>on</code> in server context (globally, outside any
+<directive module="core" type="section">VirtualHost</directive> block),
+the setting is inherited by all virtual hosts that do not override it.
+This has the same effect as setting it to <code>on</code> in every
+default name-based virtual host: non-SNI clients will be denied access
+to any name-based virtual host.
+</p>
+
 <note type="warning"><p>
 This option is only available if httpd was compiled against an SNI capable
 version of OpenSSL.
