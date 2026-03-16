@@ -389,33 +389,7 @@
 <xsl:call-template name="langavail">
     <xsl:with-param name="position" select="'bottom'" />
 </xsl:call-template>
-<xsl:choose>
-<xsl:when test="not($is-chm or $is-zip or $metafile/basename = 'index')">
-<div class="top"><a href="#page-header"><img alt="top" src="{$path}/images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="comments_section" id="comments_section"><xsl:value-of select="$message[@id='comments']" /></a></h2>
-<div class="warning"><strong>Notice:</strong><br/>This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Libera.chat, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>&lf;
-<script type="text/javascript">
-<xsl:text disable-output-escaping="yes"><![CDATA[<!--//--><![CDATA[//><!--
-var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/]]></xsl:text>&httpd.docs;<xsl:value-of select="concat($metafile/path, $metafile/basename, '.html')" disable-output-escaping="yes" /><xsl:text disable-output-escaping="yes"><![CDATA[';
-(function(w, d) {
-    if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
-        d.write('<div id="comments_thread"><\/div>');
-        var s = d.createElement('script');
-        s.type = 'text/javascript';
-        s.async = true;
-        s.src = 'https://comments.apache.org/show_comments.lua?site=' + comments_shortname + '&page=' + comments_identifier;
-        (d.getElementsByTagName('head')[0] || d.getElementsByTagName('body')[0]).appendChild(s);
-    }
-    else { 
-        d.write('<div id="comments_thread">Comments are disabled for this page at the moment.<\/div>');
-    }
-})(window, document);
-//--><!]]]]>></xsl:text></script>
-</div>
-</xsl:when>
-</xsl:choose>
+<!-- Comments section used to be here -->
 <div id="footer">&lf;
     <p class="apache">
         <xsl:text>Copyright 2026 The Apache Software Foundation.</xsl:text><br />
