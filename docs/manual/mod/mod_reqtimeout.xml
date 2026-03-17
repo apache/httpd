@@ -103,11 +103,12 @@ the request headers and/or body from client.
 [header=<var>timeout</var>[-<var>maxtimeout</var>][,MinRate=<var>rate</var>]
 [body=<var>timeout</var>[-<var>maxtimeout</var>][,MinRate=<var>rate</var>]
 </syntax>
-<default>RequestReadTimeout handshake=0 header=20-40,MinRate=500 body=20,MinRate=500</default>
+<default>RequestReadTimeout handshake=10,MinRate=250 header=20-40,MinRate=500 body=20,MinRate=500</default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 <compatibility>Defaulted to disabled in version 2.3.14 and earlier. The
-<code>handshake</code> stage is available since version 2.4.39.
+<code>handshake</code> stage is available since version 2.4.39 with non-zero
+defaults added in 2.4.67.
 </compatibility>
 
 <usage>

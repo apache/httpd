@@ -29,9 +29,9 @@
 module AP_MODULE_DECLARE_DATA reqtimeout_module;
 
 #define UNSET                            -1
-#define MRT_DEFAULT_handshake_TIMEOUT     0 /* disabled */
+#define MRT_DEFAULT_handshake_TIMEOUT     10
 #define MRT_DEFAULT_handshake_MAX_TIMEOUT 0
-#define MRT_DEFAULT_handshake_MIN_RATE    0
+#define MRT_DEFAULT_handshake_MIN_RATE    250
 #define MRT_DEFAULT_header_TIMEOUT       20
 #define MRT_DEFAULT_header_MAX_TIMEOUT   40
 #define MRT_DEFAULT_header_MIN_RATE      500

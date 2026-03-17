@@ -86,5 +86,5 @@ HostnameLookups Off
 # To disable, set to header=0 body=0
 #
 <IfModule reqtimeout_module>
-  RequestReadTimeout header=20-40,MinRate=500 body=20,MinRate=500
+  RequestReadTimeout handshake=10,MinRate=250 header=20-40,MinRate=500 body=20,MinRate=500
 </IfModule>

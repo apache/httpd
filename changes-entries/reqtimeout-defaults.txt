@@ -1,0 +1,2 @@
+ *) Add add a default handshake timeout (10s) to mod_reqtimeouts internal
+    defaults and the the default configuration. [Eric Covener]
