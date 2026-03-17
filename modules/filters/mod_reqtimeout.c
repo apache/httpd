@@ -375,8 +375,7 @@ static int reqtimeout_init(conn_rec *c)
                                &reqtimeout_module);
     AP_DEBUG_ASSERT(cfg != NULL);
 
-    /* For compatibility, handshake timeout is disabled when UNSET (< 0) */
-    if (cfg->handshake.timeout <= 0
+    if (cfg->handshake.timeout == 0
             && cfg->header.timeout == 0
             && cfg->body.timeout == 0) {
         /* disabled for this vhost */
@@ -391,9 +390,7 @@ static int reqtimeout_init(conn_rec *c)
         ap_add_input_filter(reqtimeout_filter_name, ccfg, NULL, c);
 
         ccfg->type = "handshake";
-        if (cfg->handshake.timeout > 0) {
-            INIT_STAGE(cfg, ccfg, handshake);
-        }
+        INIT_STAGE(cfg, ccfg, handshake);
     }
 
     /* we are not handling the connection, we just do initialization */
