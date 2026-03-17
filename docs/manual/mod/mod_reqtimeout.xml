@@ -157,8 +157,11 @@ defaults added in 2.4.67.
 
     <example>handshake=0 header=0 body=0</example>
 
-    <p>This disables <module>mod_reqtimeout</module> completely (note that
-    <code>handshake=0</code> is the default already and could be omitted).</p>
+    <p>This disables <module>mod_reqtimeout</module> completely. This may be
+       useful in virtual hosts used with alternate protocols where the stages
+       of this module do not map to the protocol and may not transition
+       past the handshake setting.
+    </p>
     </li>
 
     <li><strong>Timeout value that is increased when data is
