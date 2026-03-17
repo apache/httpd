@@ -759,6 +759,10 @@ on to the next rule in the ruleset, which can often result in 'Invalid
 URI in request' warnings.
 </p>
 
+<p>Note: httpd only supports status codes that are included in the HTTP
+spec.  Using an unrecognized status code will result in a 500 error and
+error log message.</p>
+
 </section>
 
 <section id="flag_s"><title>S|skip</title>
