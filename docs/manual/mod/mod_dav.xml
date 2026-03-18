@@ -81,16 +81,16 @@
 DavLockDB "/usr/local/apache2/var/DavLock"
 
 &lt;Directory "/usr/local/apache2/htdocs/foo"&gt;
-    Require all granted
     Dav On
 
     AuthType Basic
     AuthName DAV
     AuthUserFile "user.passwd"
 
-    &lt;LimitExcept GET POST OPTIONS&gt;
+    &lt;RequireAny&gt;
+        Require method GET POST OPTIONS
         Require user admin
-    &lt;/LimitExcept&gt;
+    &lt;/RequireAny&gt;
 &lt;/Directory&gt;
       </highlight>
     </example>
