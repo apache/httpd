@@ -1372,7 +1372,7 @@ MDomain example2.org auto
 		entre autres détails, vous permettra de définir la durée de
 		validité des certificats que vous recevez. À ce titre, le
 		profile «&nbsp;default&nbsp;» conservera la valeur de 90&nbsp;jours, alors que
-		le profile «&nbsp;tlsserver&nbsp;» délivrera des certificats dont la durée
+		le profile «&nbsp;shortlived » délivrera des certificats dont la durée
 		de validité sera de 6&nbsp;jours seulement.
             </p><p>
                 Si vous ne modifiez pas la configuration de votre module mod_md,
@@ -1381,7 +1381,7 @@ MDomain example2.org auto
 		plus courte convient mieux à votre situation (et acceptez le
 		risque que le temps de renouvellement soit beaucoup plus court),
 		vous pouvez définir le profile à utiliser à l’aide de
-		«&nbsp;MDProfile tlsserver&nbsp;».
+		«&nbsp;MDProfile shortlived ».
            </p><p>
                 Les noms de profile sont définis par le CA. Si vous tentez de
 		définie un profile non valable, aucun profile ne sera utilisé,
