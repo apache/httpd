@@ -1180,18 +1180,18 @@ MDomain example2.org auto
             <p>
                 This about a non-standard ACME extension by Let's Encrypt.
             </p><p>
-                Lets Encrypt announced they will add Certificate Profiles
-                support in their CA during 2025, beginning with their staging
-                servers. This, among some other details, let's you select the
-                lifetime of the certificates you get. The "default" profile
-                will keep the 90 days and a "tlsserver" profile will issue
-                certificates with only 6 days of validity.
+                Lets Encrypt supports Certificate Profiles in their CA. This,
+                among some other details, let's you select the lifetime of the
+                certificates you get. The "classic" profile is the default and
+                will keep the 90 days, the "tlsserver" profile is also 90 days
+                with a max of 25 Subject Alternative Names. The "shortlived"
+                profile will issue certificates with only 6 days of validity.
             </p><p>
                 If you do not change your mod_md configuration, you will
                 continue to get the 90 days certificates. Should you believe
                 that a shorter lifetime is beneficial for you (and take the
                 risk that the renewal time is way shorter),
-                you can configure the profile to use via 'MDProfile tlsserver'.
++                you can configure the profile to use via 'MDProfile shortlived'.
            </p><p>
                 The profile names are defined by the CA. If a profile you
                 configure is not available, no profile will be used and
