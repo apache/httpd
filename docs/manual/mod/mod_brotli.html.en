@@ -159,21 +159,20 @@ content</a></h2>
     <pre class="prettyprint lang-config">&lt;IfModule mod_headers.c&gt;
     # Serve brotli compressed CSS files if they exist
     # and the client accepts brotli.
+    RewriteEngine On
     RewriteCond "%{HTTP:Accept-encoding}" "br"
-    RewriteCond "%{REQUEST_FILENAME}\.br" "-s"
-    RewriteRule "^(.*)\.css"              "$1\.css\.br" [QSA]
+    RewriteCond "%{LA-U:REQUEST_FILENAME}.br" "-s"
+    RewriteRule "^(.*)\.css"              "$1.css.br" [QSA]
 
     # Serve brotli compressed JS files if they exist
     # and the client accepts brotli.
     RewriteCond "%{HTTP:Accept-encoding}" "br"
-    RewriteCond "%{REQUEST_FILENAME}\.br" "-s"
-    RewriteRule "^(.*)\.js"               "$1\.js\.br" [QSA]
-
+    RewriteCond "%{LA-U:REQUEST_FILENAME}.br" "-s"
+    RewriteRule "^(.*)\.js"               "$1.js.br" [QSA]
 
     # Serve correct content types, and prevent double compression.
-    RewriteRule "\.css\.br$" "-" [T=text/css,E=no-brotli:1]
-    RewriteRule "\.js\.br$"  "-" [T=text/javascript,E=no-brotli:1]
-
+    RewriteRule "\.css\.br$" "-" [T=text/css,E=no-brotli:1,E=no-gzip:1]
+    RewriteRule "\.js\.br$"  "-" [T=text/javascript,E=no-brotli:1,E=no-gzip:1]
 
     &lt;FilesMatch "(\.js\.br|\.css\.br)$"&gt;
       # Serve correct encoding type.
