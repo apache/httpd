@@ -634,11 +634,11 @@ AP_DECLARE(const char *) ap_add_module(module *m, apr_pool_t *p,
      */
 
     /* We cannot fix the string in-place, because it's const */
-    if (m->name[strlen(m->name)-1] == ')') {
-        char *tmp = ap_malloc(strlen(m->name)); /* FIXME: memory leak, albeit a small one */
-        memcpy(tmp, m->name, strlen(m->name)-1);
-        tmp[strlen(m->name)-1] = '\0';
-        m->name = tmp;
+    {
+        apr_size_t name_len = strlen(m->name);
+        if (name_len > 0 && m->name[name_len - 1] == ')') {
+            m->name = apr_pstrndup(p, m->name, name_len - 1);
+        }
     }
 #endif /*_OSD_POSIX*/
 
