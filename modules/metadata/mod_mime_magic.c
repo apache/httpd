@@ -456,6 +456,7 @@ typedef struct {
     const char *magicfile;    /* where magic be found */
     struct magic *magic;      /* head of magic config list */
     struct magic *last;
+    int decompression_enabled; /* whether to decompress files for content detection */
 } magic_server_config_rec;
 
 /* per-request info */
@@ -472,8 +473,11 @@ module AP_MODULE_DECLARE_DATA mime_magic_module;
 
 static void *create_magic_server_config(apr_pool_t *p, server_rec *d)
 {
+    magic_server_config_rec *conf;
     /* allocate the config - use pcalloc because it needs to be zeroed */
-    return apr_pcalloc(p, sizeof(magic_server_config_rec));
+    conf = apr_pcalloc(p, sizeof(magic_server_config_rec));
+    conf->decompression_enabled = 0; /* disabled by default */
+    return conf;
 }
 
 static void *merge_magic_server_config(apr_pool_t *p, void *basev, void *addv)
@@ -484,6 +488,7 @@ static void *merge_magic_server_config(apr_pool_t *p, void *basev, void *addv)
                             apr_palloc(p, sizeof(magic_server_config_rec));
 
     new->magicfile = add->magicfile ? add->magicfile : base->magicfile;
+    new->decompression_enabled = add->decompression_enabled;
     new->magic = NULL;
     new->last = NULL;
     return new;
@@ -502,6 +507,19 @@ static const char *set_magicfile(cmd_parms *cmd, void *dummy, const char *arg)
     return NULL;
 }
 
+static const char *set_decompression(cmd_parms *cmd, void *dummy, int arg)
+{
+    magic_server_config_rec *conf = (magic_server_config_rec *)
+    ap_get_module_config(cmd->server->module_config,
+                      &mime_magic_module);
+
+    if (!conf) {
+        return MODNAME ": server structure not allocated";
+    }
+    conf->decompression_enabled = arg;
+    return NULL;
+}
+
 /*
  * configuration file commands - exported to Apache API
  */
@@ -510,6 +528,13 @@ static const command_rec mime_magic_cmds[] =
 {
     AP_INIT_TAKE1("MimeMagicFile", set_magicfile, NULL, RSRC_CONF,
      "Path to MIME Magic file (in file(1) format)"),
+    AP_INIT_FLAG("MimeMagicDecompression", set_decompression, NULL, RSRC_CONF,
+     "Enable decompression of compressed files for content type detection "
+     "(Off by default). WARNING: This feature is NOT RFC-compliant, can be "
+     "unpredictable, breaks content integrity (clients will decompress files "
+     "causing checksum mismatches), impacts performance (fork/exec overhead), "
+     "and is unsafe (passes untrusted data to external gzip binary). "
+     "Use only if you understand these risks."),
     {NULL}
 };
 
@@ -878,10 +903,13 @@ static int magic_process(request_rec *r)
 static int tryit(request_rec *r, unsigned char *buf, apr_size_t nb,
                  int checkzmagic)
 {
+    magic_server_config_rec *conf = (magic_server_config_rec *)
+                ap_get_module_config(r->server->module_config, &mime_magic_module);
+
     /*
-     * Try compression stuff
+     * Try compression stuff (only if decompression is enabled)
      */
-    if (checkzmagic == 1) {
+    if (checkzmagic == 1 && conf && conf->decompression_enabled) {
         if (zmagic(r, buf, nb) == 1)
             return OK;
     }
