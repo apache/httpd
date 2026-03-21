@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1930711:1932340 (outdated) -->
+<!-- English Revision: 1932340 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -2301,13 +2301,13 @@ mandatées</description>
 </contextlist>
 
 <usage>
-    <p>Cette directive n'a d'utilité que pour les serveurs mandataires
-    Apache httpd au sein d'un Intranet. La directive
-    <directive>ProxyDomain</directive> permet de spécifier le domaine
-    par défaut auquel le serveur mandataire apache appartient. Si le
-    serveur reçoit une requête pour un hôte sans nom de domaine, il va
-    générer une réponse de redirection vers le même hôte suffixé par le
-    <var>Domaine</var> spécifié.</p>
+    <p>Cette directive n'a d'utilité que pour les serveurs mandataires Apache
+    httpd au sein d'un Intranet. La directive <directive>ProxyDomain</directive>
+    permet de spécifier le domaine par défaut auquel le serveur mandataire
+    apache appartient. Si le serveur reçoit une requête pour un hôte sans nom de
+    domaine, il va générer une réponse de redirection vers le même hôte suffixé
+    par le <var>Domaine</var> spécifié. Le nom du domaine doit commencer par un
+    point.</p>
 
     <example><title>Exemple</title>
     <highlight language="config">

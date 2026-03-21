@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1794162:1932368 (outdated) -->
+<!-- English Revision: 1932368 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -150,21 +150,20 @@ Header set Vary *
 &lt;IfModule mod_headers.c&gt;
     # Sert des fichiers CSS compressés par brotli, s'ils existent
     # et si le client supporte brotli.
+    RewriteEngine On
     RewriteCond "%{HTTP:Accept-encoding}" "br"
-    RewriteCond "%{REQUEST_FILENAME}\.br" "-s"
-    RewriteRule "^(.*)\.css"              "$1\.css\.br" [QSA]
+    RewriteCond "%{LA-U:REQUEST_FILENAME}.br" "-s"
+    RewriteRule "^(.*)\.css"              "$1.css.br" [QSA]
 
     # Sert des fichiers JS compressés par brotli, s'ils existent
     # et si le client supporte brotli.
     RewriteCond "%{HTTP:Accept-encoding}" "br"
-    RewriteCond "%{REQUEST_FILENAME}\.br" "-s"
-    RewriteRule "^(.*)\.js"               "$1\.js\.br" [QSA]
-
+    RewriteCond "%{LA-U:REQUEST_FILENAME}.br" "-s"
+    RewriteRule "^(.*)\.js"               "$1.js.br" [QSA]
 
     # Sert des types de contenu corrects, et évite la double compression.
-    RewriteRule "\.css\.gz$" "-" [T=text/css,E=no-brotli:1]
-    RewriteRule "\.js\.gz$"  "-" [T=text/javascript,E=no-brotli:1]
-
+    RewriteRule "\.css\.br$" "-" [T=text/css,E=no-brotli:1,E=no-gzip:1]
+    RewriteRule "\.js\.br$"  "-" [T=text/javascript,E=no-brotli:1,E=no-gzip:1]
 
     &lt;FilesMatch "(\.js\.br|\.css\.br)$"&gt;
       # Sert un type d'encodage correct.

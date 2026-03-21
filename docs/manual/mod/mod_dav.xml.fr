@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1912086:1932375 (outdated) -->
+<!-- English Revision: 1932375 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -87,16 +87,16 @@ href="http://www.webdav.org/">WebDAV</a>)</description>
 DavLockDB "/usr/local/apache2/var/DavLock"
 
 &lt;Directory "/usr/local/apache2/htdocs/foo"&gt;
-    Require all granted
     Dav On
 
     AuthType Basic
     AuthName DAV
     AuthUserFile "user.passwd"
 
-    &lt;LimitExcept GET POST OPTIONS&gt;
+    &lt;RequireAny&gt;
+        Require method GET POST OPTIONS
         Require user admin
-    &lt;/LimitExcept&gt;
+    &lt;/RequireAny&gt;
 &lt;/Directory&gt;
       </highlight>
     </example>
