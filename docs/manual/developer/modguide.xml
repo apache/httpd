@@ -297,7 +297,7 @@ static int example_handler(request_rec *r)
 <p>
 Now, we put all we have learned together and end up with a program that
 looks like
-<a href="http://people.apache.org/~humbedooh/mods/examples/mod_example_1.c">mod_example_1.c</a>
+<a href="mod_example_1.c">mod_example_1.c</a>
 . The functions used in this example will be explained later in the section
 <a href= "#functions">&quot;Some useful functions you should know&quot;</a>.
 </p>
@@ -712,7 +712,7 @@ static int example_handler(request_rec *r)
 
 <p>
 This version in its entirety can be found here:
-<a href="http://people.apache.org/~humbedooh/mods/examples/mod_example_2.c">mod_example_2.c</a>.
+<a href="mod_example_2.c">mod_example_2.c</a>.
 </p>
 </section>
 
