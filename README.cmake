@@ -289,7 +289,7 @@ This can be resolved in several different ways:
   a service.
 
 * Maintain a script which combines required binaries into a common 
-  location, such as the httpd installion bin directory, and use that
+  location, such as the httpd installation bin directory, and use that
   script after building or otherwise installing or updating support
   libraries.
 

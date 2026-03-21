@@ -1,6 +1,6 @@
 Changes can be documented in two ways now: Either by directly editing the
 CHANGES file like it was done until now or by storing each entry for the
-CHANGES file correctly formated in a separate file in the changes-entries
+CHANGES file correctly formatted in a separate file in the changes-entries
 directory.
 
 The benefit of the single file per change approach is that it eases backporting

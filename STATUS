@@ -71,7 +71,7 @@ THINGS THAT SHOULD BE CONSIDERED EARLY IN THE 2.6/3.0 DEVELOPMENT CYCLE:
 
   * Add performance testing to the test framework.
 
-  * Competely untangle core filesystem behavior where a filesystem htdocs/
+  * Completely untangle core filesystem behavior where a filesystem htdocs/
     resource wasn't indicated by the request URI.
 
   * Refactor r->uri into a %escaped raw form presented by the client, and
