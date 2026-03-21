@@ -26,8 +26,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/rewrite/remapping.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/rewrite/remapping.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
 
 <p>Ce document est un complément à la <a href="../mod/mod_rewrite.html">Documentation de référence</a> de
@@ -224,10 +222,10 @@ RewriteRule    "^foo\.html$"  "foo.cgi"  [H=<strong>cgi-script</strong>]</pre>
         <dt>Solution :</dt>
 
         <dd>
-          <p>On réécrit simplement le nom du fichier en son nom
-	  de base et vérifie s'il existe aussi avec la nouvelle
-	  extension. Si c'est le cas, on utilise ce nom, sinon on
-	  réécrit l'URL sous sa forme originale.</p>
+	  <p>L’URL n’est réécrite en remplaçant l’ancienne extension par la
+	  nouvelle que si le fichier cible avec la nouvelle extension existe et
+	  si le fichier originel avec l’ancienne extension n’existe pas. Sinon,
+	  l’URL reste inchangée.</p>
 
 
 <pre class="prettyprint lang-config">#   jeu de règles assurant une compatibilité ascendante en réécrivant<br />

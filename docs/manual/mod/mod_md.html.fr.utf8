@@ -29,8 +29,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_md.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_md.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Gestion des domaines au sein des serveurs virtuels et obtention
     de certificats via le protocole ACME
     </td></tr>
@@ -1368,14 +1366,14 @@ MDomain example2.org auto
             <p>
                 Il s’agit d’une extension non standard d’ACME par Let's Encrypt.
             </p><p>
-		Lets Encrypt a annoncé qu’ils allaient ajouter la prise en
-		charge des profiles de certificat à leurs CA courant&nbsp;2025, en
-		commençant par leurs serveurs de test. Cette fonctionnalité,
-		entre autres détails, vous permettra de définir la durée de
-		validité des certificats que vous recevez. À ce titre, le
-		profile «&nbsp;default&nbsp;» conservera la valeur de 90&nbsp;jours, alors que
-		le profile «&nbsp;shortlived » délivrera des certificats dont la durée
-		de validité sera de 6&nbsp;jours seulement.
+		Lets Encrypt prend en charge les profiles de certificat dans
+		leurs CA. Cette fonctionnalité, entre autres détails, vous
+		permet de définir la durée de validité des certificats que vous
+		recevez. Le profile par défaut «&nbsp;classic&nbsp;» conserve la valeur de
+		90&nbsp;jours, le profile «&nbsp;tlsserver&nbsp;» conserve aussi la valeur de
+		90&nbsp;jours avec au maximum 25 noms alternatifs pour Subject. Le
+		profile «&nbsp;shortlived » délivre des certificats dont la durée de
+		validité est de 6&nbsp;jours seulement.
             </p><p>
                 Si vous ne modifiez pas la configuration de votre module mod_md,
 		vous continuerez à recevoir des certificats d’une durée de

@@ -29,8 +29,6 @@
 <a href="./ko/logs.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./tr/logs.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
     <p>Pour véritablement gérer un serveur web,
     il est nécessaire de disposer d'un
@@ -99,7 +97,7 @@
 <h2><a name="errorlog" id="errorlog">Journal des erreurs</a> <a title="Lien permanent" href="#errorlog" class="permalink">&para;</a></h2>
     
 
-    <table class="related"><tr><th>Modules Apparentés</th><th>Directives Apparentées</th></tr><tr><td><ul><li><code class="module"><a href="./mod/core.html">core</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/core.html#errorlog">ErrorLog</a></code></li><li><code class="directive"><a href="./mod/core.html#loglevel">LogLevel</a></code></li></ul></td></tr></table>
+    <table class="related"><tr><th>Modules Apparentés</th><th>Directives Apparentées</th></tr><tr><td><ul><li><code class="module"><a href="./mod/core.html">core</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/core.html#errorlog">ErrorLog</a></code></li><li><code class="directive"><a href="./mod/core.html#errorlogformat">ErrorLogFormat</a></code></li><li><code class="directive"><a href="./mod/core.html#loglevel">LogLevel</a></code></li></ul></td></tr></table>
 
     <p>Le journal des erreurs du serveur, dont le nom et la localisation sont
     définis par la directive <code class="directive"><a href="./mod/core.html#errorlog">ErrorLog</a></code>,
@@ -119,27 +117,32 @@
     <a href="#piped">rediriger vers un programme</a> par l'intermédiaire d'un
     tube de communication (pipe).</p>
 
-    <p>Le format par défaut du journal des erreurs est descriptif et de forme
-    relativement libre. Certaines informations apparaissent cependant dans la
-    plupart des entrées du journal. Voici un message typique
-    à titre d'exemple : </p>
+    <p>Le format du journal des erreurs est défini à l’aide de la directive <code class="directive"><a href="./mod/core.html#errorlogformat">ErrorLogFormat</a></code> avec laquelle vous pouvez
+    choisir les valeurs à journaliser. Un format par défaut sera utilisé si vous
+    n’en spécifiez pas un. Un message de journalisation typique se présente
+    comme suit&nbsp;:</p>
 
     <div class="example"><p><code>
-      [Wed Oct 11 14:32:52 2000] [error] [client 127.0.0.1]
-      client denied by server configuration:
-      /export/home/live/ap/htdocs/test
+      [Fri Sep 09 10:42:29.902022 2011] [core:error] [pid 35708:tid 4328636416]
+      [client 72.15.99.187] AH00124: Request exceeded the limit of 10 internal redirects due to probable configuration error
     </code></p></div>
 
     <p>Le premier champ de l'entrée du journal est la date et l'heure du
-    message. Le second champ indique la sévérité de l'erreur rapportée. La
-    directive <code class="directive"><a href="./mod/core.html#loglevel">LogLevel</a></code> permet de
-    restreindre le type des erreurs qui doivent être enregistrées
-    dans le journal des erreurs en définissant leur niveau de sévérité. Le
-    troisième champ contient l'adresse IP du client qui a généré l'erreur.
-    Vient ensuite le message proprement dit, qui indique dans ce cas que le
-    serveur a été configuré pour interdire l'accès au client. Le serveur
-    indique le chemin système du document requis (et non
-    son chemin web).</p>
+    message. Le second champ indique le module qui produit le message (core,
+    dans ce cas) et le niveau de sévérité de ce message. Suivent l’ID du processus
+    et éventuellement l’ID du thread du processus qui a été soumis à cette
+    condition. Le
+    troisième champ contient l'adresse IP du client qui a effectué la requête.
+    Vient ensuite le message d’erreur détaillé.</p>
+
+    <div class="note"><p>Notez que certains messages qui étaient auparavant journalisés au
+    niveau <code>error</code> ont été rétrogradés au niveau <code>info</code>
+    dans httpd 2.4. Par exemple, les messages "File does not exist" pour les
+    réponses 404 sont journalisés au niveau <code>info</code> et n’apparaîtront
+    pas dans le journal des erreurs avec la valeur par défaut <code>warn</code>
+    de la directive <code class="directive"><a href="./mod/core.html#loglevel">LogLevel</a></code>. Pour
+    restaurer le comportement précédent, spécifiez <code>LogLevel warn
+    core:info</code>.</p></div>
 
     <p>Une grande variété de messages différents peuvent apparaître dans le
     journal des erreurs. La plupart d'entre eux sont similaires à l'exemple
@@ -148,15 +151,11 @@
     écrit sur la sortie d'erreurs standard <code>stderr</code> sera recopiée
     telle quelle dans le journal des erreurs.</p>
 
-    <p>La directive <code class="directive"><a href="./mod/core.html#errorlogformat">ErrorLogFormat</a></code>
-    vous permet de personnaliser le format du journal des erreurs, et de
-    définir les informations à journaliser. Si
-    <code class="module"><a href="./mod/mod_unique_id.html">mod_unique_id</a></code> est présent, vous pouvez utiliser le
-    drapeau <code>%L</code> à la fois dans le journal des erreurs et
-    dans le
-    journal des accès, ce qui aura pour effet de générer un identifiant
-    d'entrée qui vous permettra de corréler les entrées du journal des
-    erreurs avec celles du journal des accès.</p>
+     <p>Mettre un symbole <code>%L</code> dans le journal des erreurs et le
+     journal des accès produit un ID d’entrée de journalisation grâce auquel
+     vous pourrez corréler l’entrée du journal des erreurs avec celle du journal
+     des accès. Si <code class="module"><a href="./mod/mod_unique_id.html">mod_unique_id</a></code> est chargé, son ID de requête
+     unique sera utilisé comme ID d’entrée de journalisation.</p>
 
     <p>Pendant la phase de test, il est souvent utile de visualiser en continu
     le journal des erreurs afin de détecter tout problème éventuel. Sur les
