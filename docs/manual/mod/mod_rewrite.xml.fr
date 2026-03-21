@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1919564:1932387 (outdated) -->
+<!-- English Revision: 1932387 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -648,13 +648,15 @@ la réécriture soit effectuée
             </tr>
           </table>
 
-                <p>Ces variables correspondent toutes aux en-têtes MIME
-		HTTP de mêmes noms, au variables C du serveur HTTP Apache, ou
-		aux champs <code>struct tm</code> du système Unix. La
-		plupart d'entre elles sont documentées <a
-		href="../expr.html#vars">ici</a>, dans la
-		spécification CGI ou ailleurs dans le
-		manuel.</p>
+		<p>Ces variables correspondent toutes aux en-têtes MIME HTTP de
+		mêmes noms, au variables C du serveur HTTP Apache, ou aux champs
+		<code>struct tm</code> du système Unix. La plupart d'entre elles
+		sont documentées dans la <a
+		href="../expr.html#vars">documentation des expressions</a>, dans
+		la <a href="../env.html">documentation des variables
+		d’environnement</a> ou dans la <a
+		href="http://www.ietf.org/rfc/rfc3875">spécification de
+		CGI</a>.</p>
 
 		<p>SERVER_NAME et SERVER_PORT dépendent respectivement
 		des valeurs des directives <directive

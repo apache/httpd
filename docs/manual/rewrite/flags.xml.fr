@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1923725:1932362 (outdated) -->
+<!-- English Revision: 1932362 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -804,6 +804,10 @@ dire [R,L]), car employé seul, le drapeau [R] préfixe l'URI avec
 à la règle suivante, ce qui provoquera le plus souvent des
 avertissements 'Invalid URI in request'.
 </p>
+
+<p>Remarque : httpd ne prend en charge que les codes d’état inclus dans la
+spécification de HTTP. Utiliser un code d’état non reconnu provoquera une erreur
+500 et l’enregistrement d’un message dans le journal des erreurs.</p>
 
 </section>
 

@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 1673932:1932308 (outdated) -->
+<!-- English Revision: 1932308 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -170,11 +170,43 @@
 </example>
 
     <p>Notez aussi qu'un fichier de correspondances de types prend le pas sur
-    les extensions de noms de fichiers, même si les Multivues sont activées.
-    Si les variantes sont de qualités différentes, on doit l'indiquer
-    à l'aide du paramètre « qs » à la suite du type de média, comme pour cette
-    image
-    (disponible aux formats JPEG, GIF, ou ASCII-art) : </p>
+    les extensions de noms de fichier, même si les Multivues sont activées. Si
+    un fichier de correspondances de types <code>.var</code> est trouvé au cours
+    d’un balayage de répertoire de Multivues, le serveur n’utilisera
+    <em>que</em> les variantes listées dans ce fichier de correspondances de
+    types. Tout autre fichier du répertoire qui correspond au nom de base mais
+    n’est pas listé dans les correspondances de types sera totalement ignoré.
+    Par exemple, si <code>foo.var</code> existe et ne liste que
+    <code>foo.en.html</code> et <code>foo.fr.de.html</code>, un fichier
+    <code>foo.mn.html</code> présent dans le même répertoire ne sera jamais
+    servi après négociation, même si le client demande « Mongolian ». Pour
+    qu’une telle variante soit disponible, elle doit être ajoutée au fichier de
+    correspondances de types.</p>
+
+    <p>Ce comportement est intéressant pour les sites qui ajoutent de nouvelles
+    variantes linguistiques au cours du temps. Si vous avez une ressource
+    existante <code>foo.html</code> et ajoutez par la suite des variantes
+    traduites avec des extensions de langue, vous devez lister toutes les
+    variantes (y compris l’original) dans le fichier de
+    correspondances de types. Il est possible d’assigner sa langue au fichier
+    original dans le fichier de
+    correspondances de types sans avoir à le renommer :</p>
+
+   <example>
+  URI: foo<br />
+<br />
+  URI: foo.html<br />
+  Content-type: text/html<br />
+  Content-language: en<br />
+<br />
+  URI: foo.fr.html<br />
+  Content-type: text/html<br />
+  Content-language: fr<br />
+</example> 
+
+    <p>Si les variantes possèdent des qualités de source différentes, elles
+    peuvent être indiquées par l’ajout du paramètre « qs » au type de média,
+    comme pour cette image (disponible en JPEG, GIF ou ASCII-art) :</p>
 
 <example>
   URI: foo<br />

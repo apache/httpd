@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1929582:1932312 (outdated) -->
+<!-- English Revision: 1932312 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -18,7 +18,7 @@
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
+See the License for the specific language governing permissions and
  limitations under the License.
 -->
 
@@ -2117,6 +2117,16 @@ appartenant à cette combinaison IP/port. Par
 contre, si elle est définie à <code>on</code> dans un serveur virtuel
 quelconque, les clients non-SNI ne se verront interdire l'accès qu'à ce
 serveur.
+</p>
+
+<p>
+Si cette directive est à <code>on</code> dans un contexte de serveur
+(globalement, en dehors de tout bloc <directive module="core"
+type="section">VirtualHost</directive>), tous les serveurs virtuels qui ne
+l’outrepassent pas héritent de la configuration. Cela a le même effet que la
+définir à <code>on</code> dans tous les serveurs virtuels par défaut à base de
+nom : les clients non-SNI se verront refuser l’accès à tout serveur virtuel à
+base de nom.
 </p>
 
 <note type="warning"><p>
