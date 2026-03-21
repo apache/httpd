@@ -29,8 +29,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_brotli.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_brotli.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Compression du contenu via Brotli avant sa livraison au client</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>brotli_module</td></tr>
@@ -161,21 +159,20 @@ SetEnvIfNoCase Request_URI \.(?:gif|jpe?g|png)$ no-brotli</pre>
     <pre class="prettyprint lang-config">&lt;IfModule mod_headers.c&gt;
     # Sert des fichiers CSS compressés par brotli, s'ils existent
     # et si le client supporte brotli.
+    RewriteEngine On
     RewriteCond "%{HTTP:Accept-encoding}" "br"
-    RewriteCond "%{REQUEST_FILENAME}\.br" "-s"
-    RewriteRule "^(.*)\.css"              "$1\.css\.br" [QSA]
+    RewriteCond "%{LA-U:REQUEST_FILENAME}.br" "-s"
+    RewriteRule "^(.*)\.css"              "$1.css.br" [QSA]
 
     # Sert des fichiers JS compressés par brotli, s'ils existent
     # et si le client supporte brotli.
     RewriteCond "%{HTTP:Accept-encoding}" "br"
-    RewriteCond "%{REQUEST_FILENAME}\.br" "-s"
-    RewriteRule "^(.*)\.js"               "$1\.js\.br" [QSA]
-
+    RewriteCond "%{LA-U:REQUEST_FILENAME}.br" "-s"
+    RewriteRule "^(.*)\.js"               "$1.js.br" [QSA]
 
     # Sert des types de contenu corrects, et évite la double compression.
-    RewriteRule "\.css\.gz$" "-" [T=text/css,E=no-brotli:1]
-    RewriteRule "\.js\.gz$"  "-" [T=text/javascript,E=no-brotli:1]
-
+    RewriteRule "\.css\.br$" "-" [T=text/css,E=no-brotli:1,E=no-gzip:1]
+    RewriteRule "\.js\.br$"  "-" [T=text/javascript,E=no-brotli:1,E=no-gzip:1]
 
     &lt;FilesMatch "(\.js\.br|\.css\.br)$"&gt;
       # Sert un type d'encodage correct.

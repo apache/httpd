@@ -26,8 +26,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/rewrite/flags.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/rewrite/flags.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
 <p>Ce document décrit les drapeaux disponibles dans la directive
 <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>, en fournissant
@@ -793,6 +791,10 @@ dire [R,L]), car employé seul, le drapeau [R] préfixe l'URI avec
 à la règle suivante, ce qui provoquera le plus souvent des
 avertissements 'Invalid URI in request'.
 </p>
+
+<p>Remarque&nbsp;: httpd ne prend en charge que les codes d’état inclus dans la
+spécification de HTTP. Utiliser un code d’état non reconnu provoquera une erreur
+500 et l’enregistrement d’un message dans le journal des erreurs.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
