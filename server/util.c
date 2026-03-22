@@ -2073,7 +2073,11 @@ AP_DECLARE(char *) ap_escape_path_segment_buffer(char *copy, const char *segment
 
 AP_DECLARE(char *) ap_escape_path_segment(apr_pool_t *p, const char *segment)
 {
-    return ap_escape_path_segment_buffer(apr_palloc(p, 3 * strlen(segment) + 1), segment);
+    apr_size_t len = strlen(segment);
+    if (len > (APR_SIZE_MAX - 1) / 3) {
+        abort();
+    }
+    return ap_escape_path_segment_buffer(apr_palloc(p, 3 * len + 1), segment);
 }
 
 AP_DECLARE(char *) ap_os_escape_path(apr_pool_t *p, const char *path, int partial)
@@ -2082,10 +2086,18 @@ AP_DECLARE(char *) ap_os_escape_path(apr_pool_t *p, const char *path, int partia
      * Allocate another +1 to allow the caller to add a trailing '/' (see
      * comment in 'ap_sub_req_lookup_dirent')
      */
-    char *copy = apr_palloc(p, 3 * strlen(path) + 3 + 1);
-    const unsigned char *s = (const unsigned char *)path;
-    unsigned char *d = (unsigned char *)copy;
+    apr_size_t len = strlen(path);
+    char *copy;
+    const unsigned char *s;
+    unsigned char *d;
     unsigned c;
+
+    if (len > (APR_SIZE_MAX - 4) / 3) {
+        abort();
+    }
+    copy = apr_palloc(p, 3 * len + 3 + 1);
+    s = (const unsigned char *)path;
+    d = (unsigned char *)copy;
 
     if (!partial) {
         const char *colon = ap_strchr_c(path, ':');
@@ -2133,7 +2145,11 @@ AP_DECLARE(char *) ap_escape_urlencoded_buffer(char *copy, const char *buffer)
 
 AP_DECLARE(char *) ap_escape_urlencoded(apr_pool_t *p, const char *buffer)
 {
-    return ap_escape_urlencoded_buffer(apr_palloc(p, 3 * strlen(buffer) + 1), buffer);
+    apr_size_t len = strlen(buffer);
+    if (len > (APR_SIZE_MAX - 1) / 3) {
+        abort();
+    }
+    return ap_escape_urlencoded_buffer(apr_palloc(p, 3 * len + 1), buffer);
 }
 
 /* ap_escape_uri is now a macro for os_escape_path */
