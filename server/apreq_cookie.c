@@ -140,6 +140,11 @@ APREQ_DECLARE(apreq_cookie_t *) apreq_cookie_make(apr_pool_t *p,
     apreq_cookie_t *c;
     apreq_value_t *v;
 
+    if (nlen > APR_SIZE_MAX - sizeof *c - 1
+        || nlen + sizeof *c + 1 > APR_SIZE_MAX - vlen) {
+        return NULL;
+    }
+
     c = apr_palloc(p, nlen + vlen + 1 + sizeof *c);
 
     if (c == NULL)

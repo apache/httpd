@@ -35,6 +35,11 @@ APREQ_DECLARE(apreq_param_t *) apreq_param_make(apr_pool_t *p,
     apreq_param_t *param;
     apreq_value_t *v;
 
+    if (nlen > APR_SIZE_MAX - sizeof *param - 1
+        || nlen + sizeof *param + 1 > APR_SIZE_MAX - vlen) {
+        return NULL;
+    }
+
     param = apr_palloc(p, nlen + vlen + 1 + sizeof *param);
 
     if (param == NULL)
@@ -74,6 +79,12 @@ APREQ_DECLARE(apr_status_t) apreq_param_decode(apreq_param_t **param,
     if (nlen == 0) {
         *param = NULL;
         return APR_EBADARG;
+    }
+
+    if (nlen > APR_SIZE_MAX - sizeof *p - 1
+        || nlen + sizeof *p + 1 > APR_SIZE_MAX - vlen) {
+        *param = NULL;
+        return APR_ENOMEM;
     }
 
     p = apr_palloc(pool, nlen + vlen + 1 + sizeof *p);
@@ -130,7 +141,15 @@ APREQ_DECLARE(char *) apreq_param_encode(apr_pool_t *pool,
 {
     apr_size_t dlen;
     char *data;
-    data = apr_palloc(pool, 3 * (param->v.nlen + param->v.dlen) + 2);
+    {
+        apr_size_t sum = param->v.nlen;
+        if (sum > APR_SIZE_MAX - param->v.dlen)
+            return NULL;
+        sum += param->v.dlen;
+        if (sum > (APR_SIZE_MAX - 2) / 3)
+            return NULL;
+        data = apr_palloc(pool, 3 * sum + 2);
+    }
     dlen = apreq_encode(data, param->v.name, param->v.nlen);
     data[dlen++] = '=';
     dlen += apreq_encode(data + dlen, param->v.data, param->v.dlen);
