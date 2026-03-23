@@ -856,6 +856,10 @@ AddOutputFilter INCLUDES .shtml</pre>
     <pre class="prettyprint lang-config">SSIEndTag "%&gt;"</pre>
 
 
+    <div class="warning">
+    Value may not include any whitespace.
+    </div>
+
 
 <h3>See also</h3>
 <ul>
@@ -1009,6 +1013,10 @@ server.</td></tr>
     <pre class="prettyprint lang-config">SSIStartTag "&lt;%"
 SSIEndTag   "%&gt;"</pre>
 
+
+    <div class="warning">
+    Value may not include any whitespace.
+    </div>
 
     <p>The example given above, which also specifies a matching
     <code class="directive"><a href="#ssiendtag">SSIEndTag</a></code>, will
