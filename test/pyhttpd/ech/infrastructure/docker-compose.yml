@@ -16,9 +16,13 @@ services:
       echo 'LogLevel ssl:trace8' >> /usr/local/apache2/conf/httpd.conf
       echo 'Listen 443' >> /usr/local/apache2/conf/httpd.conf
 
+      echo 'SSLSessionTickets off' >> /usr/local/apache2/conf/httpd.conf
+      echo 'SSLSessionCache none' >> /usr/local/apache2/conf/httpd.conf
+
       echo '<VirtualHost *:443>' >> /usr/local/apache2/conf/httpd.conf
       echo '  DocumentRoot /usr/local/apache2/htdocs/public' >> /usr/local/apache2/conf/httpd.conf
       echo '  SSLEngine on' >> /usr/local/apache2/conf/httpd.conf
+      echo '  SSLOptions +StdEnvVars' >> /usr/local/apache2/conf/httpd.conf
       echo '  SSLCertificateFile /usr/local/apache2/conf/ssl/server.crt' >> /usr/local/apache2/conf/httpd.conf
       echo '  SSLCertificateKeyFile /usr/local/apache2/conf/ssl/server.key' >> /usr/local/apache2/conf/httpd.conf
       echo '  SSLECHKeyDir /usr/local/apache2/conf/ech_keys' >> /usr/local/apache2/conf/httpd.conf

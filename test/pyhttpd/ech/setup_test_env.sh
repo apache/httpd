@@ -8,7 +8,8 @@ CONF_DIR="$PROJECT_ROOT/conf"
 SSL_DIR="$CONF_DIR/ssl"
 ECH_DIR="$CONF_DIR/ech"
 
-if [ -z "$OPENSSL_ECH_PATH" ]; 
+# FIX: Added 'then'
+if [ -z "$OPENSSL_ECH_PATH" ]; then 
     echo "ERROR: OPENSSL_ECH_PATH is not set."
     echo "Please set it to your OpenSSL build directory (e.g., export OPENSSL_ECH_PATH=/path/to/openssl)"
     exit 1
@@ -46,7 +47,9 @@ $OPENSSL_BIN x509 -req -in "$SSL_DIR/server.csr" -CA "$SSL_DIR/MyLocalCA.pem" \
 
 echo "[4/5] Generating ECH Key Pair"
 $OPENSSL_BIN ech -public_name "localhost"
-if [ -f "echconfig.pem" ];
+
+# FIX: Added 'then'
+if [ -f "echconfig.pem" ]; then
     mv echconfig.pem "$ECH_DIR/ECH_key.pem"
     echo "Successfully moved ECH key to $ECH_DIR/ECH_key.pem"
 else
@@ -54,12 +57,10 @@ else
     exit 1
 fi
 
-
 echo "[5/5] Checking for geckodriver"
 GECKO_VERSION="v0.34.0"
 if [ ! -f "./geckodriver" ]; then
     echo "Downloading Geckodriver $GECKO_VERSION..."
-    # FIX: Added --no-check-certificate to bypass WSL/Ubuntu trust issues
     wget --no-check-certificate https://github.com/mozilla/geckodriver/releases/download/$GECKO_VERSION/geckodriver-$GECKO_VERSION-linux64.tar.gz
     tar -xzf geckodriver-$GECKO_VERSION-linux64.tar.gz
     rm geckodriver-$GECKO_VERSION-linux64.tar.gz
