@@ -848,6 +848,10 @@ Options +Includes
 SSIEndTag "%&gt;"
     </highlight>
 
+    <note type="warning">
+    Value may not include any whitespace.
+    </note>
+
 </usage>
 <seealso><directive module="mod_include">SSIStartTag</directive></seealso>
 </directivesynopsis>
@@ -918,6 +922,10 @@ SSIErrorMsg "&lt;!-- Error --&gt;"
 SSIStartTag "&lt;%"
 SSIEndTag   "%&gt;"
     </highlight>
+
+    <note type="warning">
+    Value may not include any whitespace.
+    </note>
 
     <p>The example given above, which also specifies a matching
     <directive module="mod_include">SSIEndTag</directive>, will
