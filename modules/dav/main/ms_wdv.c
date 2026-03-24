@@ -198,9 +198,16 @@ static dav_error *mswdv_combined_lock(request_rec *r)
      */
     if (lock_token_hdr) {
         apr_size_t len = strlen(lock_token_hdr);
+        int has_open = (len > 0 && lock_token_hdr[0] == '<');
+        int has_close = (len > 0 && lock_token_hdr[len - 1] == '>');
 
-        if (lock_token_hdr[0] == '<' || lock_token_hdr[len - 1] == '>')
+        if (has_open && has_close && len >= 2) {
             lock_token_hdr = apr_pstrndup(r->pool, lock_token_hdr + 1, len - 2);
+        }
+        else if (has_open || has_close) {
+            failmsg = "Malformed Lock-Token header.";
+            goto done;
+        }
     }
 
     if (lock_timeout_hdr) {
