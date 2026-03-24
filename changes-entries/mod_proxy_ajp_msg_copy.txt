@@ -1,0 +1,2 @@
+  *) mod_proxy_ajp: Fix a wrong comparison in ajp_msg_copy.
+     [Elhanan Haenel <elhanan.haenel@gmail.com>]

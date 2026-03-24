@@ -582,7 +582,7 @@ apr_status_t ajp_msg_create(apr_pool_t *pool, apr_size_t size, ajp_msg_t **rmsg)
  */
 apr_status_t ajp_msg_copy(ajp_msg_t *smsg, ajp_msg_t *dmsg)
 {
-    if (smsg->len > smsg->max_size) {
+    if (smsg->len > dmsg->max_size) {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, NULL, APLOGNO(01082)
                      "ajp_msg_copy(): destination buffer too "
                      "small %" APR_SIZE_T_FMT ", max size is %" APR_SIZE_T_FMT,
