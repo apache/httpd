@@ -201,7 +201,14 @@ ssl_asn1_t *ssl_asn1_table_set(apr_hash_t *table, const char *key,
 {
     apr_ssize_t klen = strlen(key);
     ssl_asn1_t *asn1 = apr_hash_get(table, key, klen);
-    apr_size_t length = i2d_PrivateKey(pkey, NULL);
+    int derlen = i2d_PrivateKey(pkey, NULL);
+    if (derlen <= 0) {
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, ap_server_conf,
+                     "mod_ssl: Failed to encode private key");
+        return NULL;
+    }
+
+    apr_size_t length = (apr_size_t)derlen;
     unsigned char *p;
 
     /* Re-use structure if cached previously. */
@@ -220,7 +227,11 @@ ssl_asn1_t *ssl_asn1_table_set(apr_hash_t *table, const char *key,
 
     asn1->nData = length;
     p = asn1->cpData;
-    i2d_PrivateKey(pkey, &p); /* increases p by length */
+    if (i2d_PrivateKey(pkey, &p) != derlen) {
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, ap_server_conf,
+                     "mod_ssl: Failed to serialize private key");
+        return NULL;
+    }
 
     return asn1;
 }
