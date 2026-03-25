@@ -179,13 +179,13 @@ apr_status_t ssl_load_encrypted_pkey(server_rec *s, apr_pool_t *p, int idx,
      * are used to give a better idea as to what failed.
      */
     if (pkey_mtime) {
-    ssl_asn1_t *asn1 = ssl_asn1_table_get(mc->retained->privkeys, key_id);
-    if (asn1 && (asn1->source_mtime == pkey_mtime)) {
-        ap_log_error(APLOG_MARK, APLOG_INFO, 0, s, APLOGNO(02575)
-                     "Reusing existing private key from %s on restart",
-                     ppcb_arg.pkey_file);
-        return APR_SUCCESS;
-    }
+        ssl_asn1_t *asn1 = ssl_asn1_table_get(mc->retained->privkeys, key_id);
+        if (asn1 && (asn1->source_mtime == pkey_mtime)) {
+            ap_log_error(APLOG_MARK, APLOG_INFO, 0, s,
+                        "Reusing existing private key from %s on restart",
+                        ppcb_arg.pkey_file);
+            return APR_SUCCESS;
+        }
     }
 
     ap_log_error(APLOG_MARK, APLOG_INFO, 0, s, APLOGNO(02576)
