@@ -412,13 +412,18 @@ typedef struct deflate_ctx_t
 
 /* Number of validation bytes (CRC and length) after the compressed data */
 #define VALIDATION_SIZE 8
+
 /* Do not update ctx->crc, see comment in flush_libz_buffer */
-#define NO_UPDATE_CRC 0
+#define NO_UPDATE_CRC 0x0
 /* Do update ctx->crc, see comment in flush_libz_buffer */
-#define UPDATE_CRC 1
+#define UPDATE_CRC    0x1
+/* Use a transient bucket, which is ONLY safe if the bucket will be
+ * passed down the filter chain immediately before the zlib stream is
+ * used again. */
+#define TRANSIENT     0x2
 
 static void consume_buffer(deflate_ctx *ctx, deflate_filter_config *c,
-                           int len, int crc, apr_bucket_brigade *bb)
+                           int len, unsigned int flags, apr_bucket_brigade *bb)
 {
     apr_bucket *b;
 
@@ -427,12 +432,16 @@ static void consume_buffer(deflate_ctx *ctx, deflate_filter_config *c,
      * inflate action where we need to do a crc on the output, whereas
      * in the deflate case we need to do a crc on the input
      */
-    if (crc) {
+    if (flags & UPDATE_CRC) {
         ctx->crc = crc32(ctx->crc, (const Bytef *)ctx->buffer, len);
     }
 
-    b = apr_bucket_heap_create((char *)ctx->buffer, len, NULL,
-                               bb->bucket_alloc);
+    if (flags & TRANSIENT)
+        b = apr_bucket_transient_create((char *)ctx->buffer, len,
+                                        bb->bucket_alloc);
+    else
+        b = apr_bucket_heap_create((char *)ctx->buffer, len, NULL,
+                                   bb->bucket_alloc);
     APR_BRIGADE_INSERT_TAIL(bb, b);
 
     ctx->stream.next_out = ctx->buffer;
@@ -441,7 +450,7 @@ static void consume_buffer(deflate_ctx *ctx, deflate_filter_config *c,
 
 static int flush_libz_buffer(deflate_ctx *ctx, deflate_filter_config *c,
                              int (*libz_func)(z_streamp, int), int flush,
-                             int crc)
+                             unsigned int flags)
 {
     int zRC = Z_OK;
     int done = 0;
@@ -450,7 +459,7 @@ static int flush_libz_buffer(deflate_ctx *ctx, deflate_filter_config *c,
     for (;;) {
          deflate_len = c->bufferSize - ctx->stream.avail_out;
          if (deflate_len > 0) {
-             consume_buffer(ctx, c, deflate_len, crc, ctx->bb);
+             consume_buffer(ctx, c, deflate_len, flags, ctx->bb);
          }
 
          if (done)
@@ -1019,7 +1028,10 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
 
         while (ctx->stream.avail_in != 0) {
             if (ctx->stream.avail_out == 0) {
-                consume_buffer(ctx, c, c->bufferSize, NO_UPDATE_CRC, ctx->bb);
+                /* Use a transient bucket since it will be sent down
+                 * the filter chain immediately. */
+                consume_buffer(ctx, c, c->bufferSize,
+                               NO_UPDATE_CRC|TRANSIENT, ctx->bb);
 
                 /* Send what we have right now to the next filter. */
                 rv = ap_pass_brigade(f->next, ctx->bb);
@@ -1840,7 +1852,10 @@ static apr_status_t inflate_out_filter(ap_filter_t *f,
 
         while (ctx->stream.avail_in != 0) {
             if (ctx->stream.avail_out == 0) {
-                consume_buffer(ctx, c, c->bufferSize, UPDATE_CRC, ctx->bb);
+                /* Use a transient bucket since it will be sent down
+                 * the filter chain immediately. */
+                consume_buffer(ctx, c, c->bufferSize,
+                               UPDATE_CRC|TRANSIENT, ctx->bb);
 
                 /* Send what we have right now to the next filter. */
                 rv = ap_pass_brigade(f->next, ctx->bb);
