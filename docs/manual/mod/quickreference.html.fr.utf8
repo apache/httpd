@@ -139,7 +139,7 @@ d'environnement</var>
 [<var>hôte</var>|env=[!]<var>variable d'environnement</var>] ...</a></td><td></td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Spécifie quels hôtes peuvent accéder à une certaine zone du
 serveur</td></tr>
 <tr><td><a href="mod_proxy_connect.html#allowconnect">AllowCONNECT <var>port</var>[-<var>port</var>]
-[<var>port</var>[-<var>port</var>]] ...</a></td><td> 443 563 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Ports autorisés à se <code>CONNECT</code>er à travers le
+[<var>port</var>[-<var>port</var>]] ... | None</a></td><td> 443 563 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Ports autorisés à se <code>CONNECT</code>er à travers le
 mandataire</td></tr>
 <tr class="odd"><td><a href="core.html#allowencodedslashes">AllowEncodedSlashes On|Off|NoDecode</a></td><td> Off </td><td>sv</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Détermine si les séparateurs de chemin encodés sont
 autorisés à transiter dans les URLs tels quels</td></tr>

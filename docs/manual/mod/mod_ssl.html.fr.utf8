@@ -30,8 +30,6 @@
 <a href="../es/mod/mod_ssl.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
 <a href="../fr/mod/mod_ssl.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Chiffrement de haut niveau basé sur les protocoles Secure
 Sockets Layer (SSL) et Transport Layer Security (TLS)</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
@@ -3272,6 +3270,15 @@ appartenant à cette combinaison IP/port. Par
 contre, si elle est définie à <code>on</code> dans un serveur virtuel
 quelconque, les clients non-SNI ne se verront interdire l'accès qu'à ce
 serveur.
+</p>
+
+<p>
+Si cette directive est à <code>on</code> dans un contexte de serveur
+(globalement, en dehors de tout bloc <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>), tous les serveurs virtuels qui ne
+l’outrepassent pas héritent de la configuration. Cela a le même effet que la
+définir à <code>on</code> dans tous les serveurs virtuels par défaut à base de
+nom&nbsp;: les clients non-SNI se verront refuser l’accès à tout serveur virtuel à
+base de nom.
 </p>
 
 <div class="warning"><p>

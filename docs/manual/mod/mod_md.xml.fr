@@ -2,7 +2,7 @@
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
-<!-- English Revision: 1930379:1932365 (outdated) -->
+<!-- English Revision: 1932365 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -1801,14 +1801,14 @@ MDMessageCmd /etc/apache/md-message
             <p>
                 Il s’agit d’une extension non standard d’ACME par Let's Encrypt.
             </p><p>
-		Lets Encrypt a annoncé qu’ils allaient ajouter la prise en
-		charge des profiles de certificat à leurs CA courant 2025, en
-		commençant par leurs serveurs de test. Cette fonctionnalité,
-		entre autres détails, vous permettra de définir la durée de
-		validité des certificats que vous recevez. À ce titre, le
-		profile « default » conservera la valeur de 90 jours, alors que
-		le profile « shortlived » délivrera des certificats dont la durée
-		de validité sera de 6 jours seulement.
+		Lets Encrypt prend en charge les profiles de certificat dans
+		leurs CA. Cette fonctionnalité, entre autres détails, vous
+		permet de définir la durée de validité des certificats que vous
+		recevez. Le profile par défaut « classic » conserve la valeur de
+		90 jours, le profile « tlsserver » conserve aussi la valeur de
+		90 jours avec au maximum 25 noms alternatifs pour Subject. Le
+		profile « shortlived » délivre des certificats dont la durée de
+		validité est de 6 jours seulement.
             </p><p>
                 Si vous ne modifiez pas la configuration de votre module mod_md,
 		vous continuerez à recevoir des certificats d’une durée de
