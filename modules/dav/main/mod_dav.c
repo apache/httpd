@@ -3587,6 +3587,9 @@ static int dav_method_unlock(request_rec *r)
     dav_resource *resource;
     const dav_hooks_locks *locks_hooks;
     int result;
+    apr_size_t len;
+    int has_open;
+    int has_close;
     const char *const_locktoken_txt;
     char *locktoken_txt;
     dav_locktoken *locktoken = NULL;
