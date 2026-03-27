@@ -69,7 +69,8 @@ class HttpdConf(object):
             # In fact it should go in the corresponding VirtualHost... Not sure how to do that.
             l = "SSLEngine On"
         else:
-            if line != "":
+            # conflict with the SSL_TLS_SNI
+            if line.lstrip().startswith("TLS"):
                 l = line.replace("TLS", "SSL")
             else:
                 l = line

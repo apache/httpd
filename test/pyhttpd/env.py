@@ -921,3 +921,5 @@ class HttpdTestEnv:
                 fd.write(s[0:remain])
         return fpath
 
+    def has_tool(self, name: str) -> bool:
+        return bool(shutil.which(name))
