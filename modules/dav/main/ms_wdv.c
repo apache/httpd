@@ -36,13 +36,21 @@ static void delete_if_fixup(request_rec *r)
     const char *if_hdr;
     const char *cp;
     apr_size_t len;
+    int has_open;
+    int has_close;
 
     if ((if_hdr =  apr_table_get(r->headers_in, "If")) == NULL)
         goto out;
 
     /* check for parenthesis enclosed value */
     len = strlen(if_hdr);
-    if (if_hdr[0] != '(' || if_hdr[len - 1]!= ')')
+    /*
+     * Guard len-based indexing to avoid reading if_hdr[len - 1]
+     * on empty input.
+     */
+    has_open = (len > 0 && if_hdr[0] == '(');
+    has_close = (len > 0 && if_hdr[len - 1] == ')');
+    if (!has_open || !has_close)
         goto out;
 
     for (cp = if_hdr; *cp; cp++) {
@@ -201,10 +209,20 @@ static dav_error *mswdv_combined_lock(request_rec *r)
         int has_open = (len > 0 && lock_token_hdr[0] == '<');
         int has_close = (len > 0 && lock_token_hdr[len - 1] == '>');
 
+        /*
+         * Defensive parsing: never read len - 1 or compute len - 2 unless
+         * length is known to be valid, and reject malformed one-sided
+         * bracket usage before token parsing.
+         */
         if (has_open && has_close && len >= 2) {
             lock_token_hdr = apr_pstrndup(r->pool, lock_token_hdr + 1, len - 2);
         }
         else if (has_open || has_close) {
+            failmsg = "Malformed Lock-Token header.";
+            goto done;
+        }
+
+        if (*lock_token_hdr == '\0') {
             failmsg = "Malformed Lock-Token header.";
             goto done;
         }
@@ -837,4 +855,3 @@ DAV_DECLARE(apr_status_t) dav_mswdv_input(ap_filter_t *f,
 
     return APR_SUCCESS;
 }
-
