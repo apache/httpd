@@ -590,6 +590,47 @@ DAV_DECLARE(time_t) dav_get_timeout_string(request_rec *r,
     return DAV_TIMEOUT_INFINITE;
 }
 
+DAV_DECLARE(dav_error *) dav_parse_locktoken(apr_pool_t *p,
+                                             const char *input,
+                                             char **output)
+{
+    char *token;
+    apr_size_t len;
+    int has_open;
+    int has_close;
+
+    if (output == NULL) {
+        return dav_new_error(p, HTTP_INTERNAL_SERVER_ERROR, 0, 0,
+                             "DAV lock token parser called with NULL output pointer.");
+    }
+    *output = NULL;
+
+    if (input == NULL) {
+        return dav_new_error(p, HTTP_BAD_REQUEST, 0, 0,
+                             "No Lock-Token specified in header.");
+    }
+
+    len = strlen(input);
+
+    has_open = (len > 0 && input[0] == '<');
+    has_close = (len > 0 && input[len - 1] == '>');
+
+    if (len < 2 || !has_open || !has_close) {
+        return dav_new_error(p, HTTP_BAD_REQUEST, 0, 0,
+                             "Malformed Lock-Token header.");
+    }
+
+    token = apr_pstrndup(p, input + 1, len - 2);
+
+    if (*token == '\0') {
+        return dav_new_error(p, HTTP_BAD_REQUEST, 0, 0,
+                             "Malformed Lock-Token header.");
+    }
+
+    *output = token;
+    return NULL;
+}
+
 /* ---------------------------------------------------------------
 **
 ** If Header processing

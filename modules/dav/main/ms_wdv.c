@@ -205,27 +205,13 @@ static dav_error *mswdv_combined_lock(request_rec *r)
      * section 4.5 suggests using Lock-Token without brakets.
      */
     if (lock_token_hdr) {
-        apr_size_t len = strlen(lock_token_hdr);
-        int has_open = (len > 0 && lock_token_hdr[0] == '<');
-        int has_close = (len > 0 && lock_token_hdr[len - 1] == '>');
+        char *parsed_locktoken;
 
-        /*
-         * Defensive parsing: never read len - 1 or compute len - 2 unless
-         * length is known to be valid, and reject malformed one-sided
-         * bracket usage before token parsing.
-         */
-        if (has_open && has_close && len >= 2) {
-            lock_token_hdr = apr_pstrndup(r->pool, lock_token_hdr + 1, len - 2);
-        }
-        else if (has_open || has_close) {
-            failmsg = "Malformed Lock-Token header.";
-            goto done;
-        }
+        err = dav_parse_locktoken(r->pool, lock_token_hdr, &parsed_locktoken);
+        if (err != NULL)
+            goto out;
 
-        if (*lock_token_hdr == '\0') {
-            failmsg = "Malformed Lock-Token header.";
-            goto done;
-        }
+        lock_token_hdr = parsed_locktoken;
     }
 
     if (lock_timeout_hdr) {

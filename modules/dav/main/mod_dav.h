@@ -1331,6 +1331,9 @@ struct dav_hooks_propdb
 
 DAV_DECLARE(time_t) dav_get_timeout(request_rec *r);
 DAV_DECLARE(time_t) dav_get_timeout_string(request_rec *r, const char *s);
+DAV_DECLARE(dav_error *) dav_parse_locktoken(apr_pool_t *p,
+                                             const char *input,
+                                             char **output);
 
 /*
 ** Opaque, provider-specific information for a lock database.
@@ -2757,4 +2760,3 @@ DAV_DECLARE(const dav_resource_type_provider *) dav_get_resource_type_providers(
 
 #endif /* _MOD_DAV_H_ */
 /** @} */
-
