@@ -118,6 +118,8 @@
 
 #define MAXMIMESTRING        256
 
+#define UNSET -1
+
 /* HOWMANY must be at least 4096 to make gzip -dcq work */
 #define HOWMANY  4096
 /* SMALL_HOWMANY limits how much work we do to figure out text files */
@@ -476,7 +478,7 @@ static void *create_magic_server_config(apr_pool_t *p, server_rec *d)
     magic_server_config_rec *conf;
     /* allocate the config - use pcalloc because it needs to be zeroed */
     conf = apr_pcalloc(p, sizeof(magic_server_config_rec));
-    conf->decompression_enabled = 0; /* disabled by default */
+    conf->decompression_enabled = UNSET;
     return conf;
 }
 
@@ -488,7 +490,8 @@ static void *merge_magic_server_config(apr_pool_t *p, void *basev, void *addv)
                             apr_palloc(p, sizeof(magic_server_config_rec));
 
     new->magicfile = add->magicfile ? add->magicfile : base->magicfile;
-    new->decompression_enabled = add->decompression_enabled;
+    new->decompression_enabled = (add->decompression_enabled != UNSET) ?
+                                  add->decompression_enabled : base->decompression_enabled;
     new->magic = NULL;
     new->last = NULL;
     return new;
@@ -500,9 +503,6 @@ static const char *set_magicfile(cmd_parms *cmd, void *dummy, const char *arg)
     ap_get_module_config(cmd->server->module_config,
                       &mime_magic_module);
 
-    if (!conf) {
-        return MODNAME ": server structure not allocated";
-    }
     conf->magicfile = arg;
     return NULL;
 }
@@ -909,7 +909,7 @@ static int tryit(request_rec *r, unsigned char *buf, apr_size_t nb,
     /*
      * Try compression stuff (only if decompression is enabled)
      */
-    if (checkzmagic == 1 && conf && conf->decompression_enabled) {
+    if (checkzmagic == 1 && conf && conf->decompression_enabled == 1) {
         if (zmagic(r, buf, nb) == 1)
             return OK;
     }
