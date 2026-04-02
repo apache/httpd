@@ -933,7 +933,9 @@ ProxyDomain     ".example.com"</pre>
 </table>
     <p>The <code class="directive">ProxyIOBufferSize</code> directive adjusts the size
     of the internal buffer which is used as a scratchpad for the data between
-    input and output. The size must be at least <code>512</code>.</p>
+    input and output. The size must be at least <code>512</code>, or set
+    to <code>0</code> to indicate that the system's default buffer size
+    should be used.</p>
 
     <p>In almost every case, there's no reason to change that value.</p>
 
