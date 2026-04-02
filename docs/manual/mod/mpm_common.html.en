@@ -576,7 +576,8 @@ of the daemon</td></tr>
     bytes specified.</p>
 
     <p>If set to the value of <code>0</code>, the server will use the
-    OS default.</p>
+    OS default. If set to a non-zero value, it must be at least
+    <code>512</code>.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -631,7 +632,8 @@ Apache HTTP Server</a></li>
     (<em>i.e.</em>, 100ms or so, such as transcontinental fast pipes).</p>
 
     <p>If set to the value of <code>0</code>, the server will use the
-    default value provided by your OS.</p>
+    default value provided by your OS. If set to a non-zero value,
+    it must be at least <code>512</code>.</p>
 
     <p>Further configuration of your operating system may be required to elicit
     better performance on high speed, high latency connections.</p>
