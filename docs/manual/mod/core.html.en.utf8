@@ -4109,6 +4109,10 @@ directory</td></tr>
     <p>The default in the absence of any other settings is
     <code>FollowSymlinks</code>.</p>
 
+    <p>When using the <code>All</code> and <code>None</code>, they must
+    be the first option listed. The + and - modifiers cannot be used with
+    the <code>All</code> and <code>None</code> options.</p>
+
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="Protocol" id="Protocol">Protocol</a> <a name="protocol" id="protocol">Directive</a> <a title="Permanent link" href="#protocol" class="permalink">&para;</a></h2>
