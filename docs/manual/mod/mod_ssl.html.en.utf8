@@ -402,6 +402,12 @@ preference. This can be used alternatively and/or additionally to
 <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">SSLCACertificateFile "/usr/local/apache2/conf/ssl.crt/ca-bundle-client.crt"</pre>
 </div>
 
+<p>This file is read at server startup, while the server is still running
+as <code>root</code> (before privilege dropping), so it may be owned by
+and readable only by <code>root</code>. The file is not re-read during
+normal operation; a server restart is required for changes to take
+effect.</p>
+
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="SSLCACertificatePath" id="SSLCACertificatePath">SSLCACertificatePath</a> <a name="sslcacertificatepath" id="sslcacertificatepath">Directive</a> <a title="Permanent link" href="#sslcacertificatepath" class="permalink">&para;</a></h2>
@@ -426,6 +432,12 @@ there: you also have to create symbolic links named
 contains the appropriate symbolic links.</p>
 <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">SSLCACertificatePath "/usr/local/apache2/conf/ssl.crt/"</pre>
 </div>
+
+<p>The files in this directory are read at server startup, while the server
+is still running as <code>root</code> (before privilege dropping), so they
+may be owned by and readable only by <code>root</code>. The files are not
+re-read during normal operation; a server restart is required for changes
+to take effect.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -465,6 +477,12 @@ PEM-encoded CA certificates.</p>
 <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">SSLCADNRequestFile "/usr/local/apache2/conf/ca-names.crt"</pre>
 </div>
 
+<p>This file is read at server startup, while the server is still running
+as <code>root</code> (before privilege dropping), so it may be owned by
+and readable only by <code>root</code>. The file is not re-read during
+normal operation; a server restart is required for changes to take
+effect.</p>
+
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="SSLCADNRequestPath" id="SSLCADNRequestPath">SSLCADNRequestPath</a> <a name="sslcadnrequestpath" id="sslcadnrequestpath">Directive</a> <a title="Permanent link" href="#sslcadnrequestpath" class="permalink">&para;</a></h2>
@@ -489,6 +507,12 @@ Certificate files there: you also have to create symbolic links named
 this directory contains the appropriate symbolic links.</p>
 <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">SSLCADNRequestPath "/usr/local/apache2/conf/ca-names.crt/"</pre>
 </div>
+
+<p>The files in this directory are read at server startup, while the server
+is still running as <code>root</code> (before privilege dropping), so they
+may be owned by and readable only by <code>root</code>. The files are not
+re-read during normal operation; a server restart is required for changes
+to take effect.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -559,6 +583,12 @@ used alternatively and/or additionally to <code class="directive"><a href="#sslc
 <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">SSLCARevocationFile "/usr/local/apache2/conf/ssl.crl/ca-bundle-client.crl"</pre>
 </div>
 
+<p>This file is read at server startup, while the server is still running
+as <code>root</code> (before privilege dropping), so it may be owned by
+and readable only by <code>root</code>. The file is not re-read during
+normal operation; a server restart is required for changes to take
+effect.</p>
+
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="SSLCARevocationPath" id="SSLCARevocationPath">SSLCARevocationPath</a> <a name="sslcarevocationpath" id="sslcarevocationpath">Directive</a> <a title="Permanent link" href="#sslcarevocationpath" class="permalink">&para;</a></h2>
@@ -582,6 +612,12 @@ Additionally you have to create symbolic links named
 contains the appropriate symbolic links.</p>
 <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">SSLCARevocationPath "/usr/local/apache2/conf/ssl.crl/"</pre>
 </div>
+
+<p>The files in this directory are read at server startup, while the server
+is still running as <code>root</code> (before privilege dropping), so they
+may be owned by and readable only by <code>root</code>. The files are not
+re-read during normal operation; a server restart is required for changes
+to take effect.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -625,6 +661,12 @@ certificates use the <em>same</em> certificate chain. Else the browsers will be
 confused in this situation.</p>
 <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">SSLCertificateChainFile "/usr/local/apache2/conf/ssl.crt/ca.crt"</pre>
 </div>
+
+<p>This file is read at server startup, while the server is still running
+as <code>root</code> (before privilege dropping), so it may be owned by
+and readable only by <code>root</code>. The file is not re-read during
+normal operation; a server restart is required for changes to take
+effect.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -738,6 +780,12 @@ SSLCertificateFile "/usr/local/apache2/conf/ssl.crt/server.crt"
 SSLCertificateFile "pkcs11:token=My%20Token%20Name;id=45"</pre>
 </div>
 
+<p>This file is read at server startup, while the server is still running
+as <code>root</code> (before privilege dropping), so it may be owned by
+and readable only by <code>root</code>. The file is not re-read during
+normal operation; a server restart is required for changes to take
+effect.</p>
+
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="SSLCertificateKeyFile" id="SSLCertificateKeyFile">SSLCertificateKeyFile</a> <a name="sslcertificatekeyfile" id="sslcertificatekeyfile">Directive</a> <a title="Permanent link" href="#sslcertificatekeyfile" class="permalink">&para;</a></h2>
@@ -780,6 +828,12 @@ SSLCertificateKeyFile "/usr/local/apache2/conf/ssl.key/server.key"
 # To use a private key from a PKCS#11 token:
 SSLCertificateKeyFile "pkcs11:token=My%20Token%20Name;id=45"</pre>
 </div>
+
+<p>This file is read at server startup, while the server is still running
+as <code>root</code> (before privilege dropping), so it should be owned by
+and readable only by <code>root</code>, since it contains the private key.
+The file is not re-read during normal operation; a server restart is
+required for changes to take effect.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
