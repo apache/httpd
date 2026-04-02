@@ -597,6 +597,10 @@ spikes</description>
     <p><module>mpmt_os2</module> works
     similar to <module>mpm_netware</module>.  For
     <module>mpmt_os2</module> the default value is <code>5</code>.</p>
+
+    <p>The value of <directive>MinSpareThreads</directive> must be at
+    least 1. Values less than 1 will be automatically increased to 1
+    and a warning will be logged.</p>
 </usage>
 <seealso><directive module="mpm_common">MaxSpareThreads</directive></seealso>
 <seealso><directive module="mpm_common">StartServers</directive></seealso>
@@ -762,6 +766,10 @@ Apache HTTP Server</a></seealso>
       even further past this limit, you will need to modify the value of
       MAX_SERVER_LIMIT in the mpm source file and rebuild the server.</p>
     </note>
+
+    <p>The value of <directive>ServerLimit</directive> must be at least
+    1. Values less than 1 will be automatically increased to 1 and a
+    warning will be logged.</p>
 </usage>
 <seealso><a href="../stopping.html">Stopping and Restarting Apache HTTP Server</a></seealso>
 </directivesynopsis>
@@ -790,6 +798,11 @@ Apache HTTP Server</a></seealso>
     <module>event</module> default to <code>StartServers 3</code>; <module>
     prefork</module> defaults to <code>5</code>; <module>mpmt_os2</module>
     defaults to <code>2</code>.</p>
+
+    <p>The value of <directive>StartServers</directive> must be at least
+    1. Values less than 1 will be automatically increased to 1 and a
+    warning will be logged. On <module>mpmt_os2</module>, a value of 0
+    is also accepted; values less than 0 will be increased to 1.</p>
 </usage>
 </directivesynopsis>
 
@@ -863,6 +876,10 @@ per child process</description>
       will need to modify the value of MAX_THREAD_LIMIT in the mpm
       source file and rebuild the server.</p>
     </note>
+
+    <p>The value of <directive>ThreadLimit</directive> must be at least
+    1. Values less than 1 will be automatically increased to 1 and a
+    warning will be logged.</p>
 </usage>
 </directivesynopsis>
 
@@ -895,6 +912,10 @@ per child process</description>
     higher value is configured, it will be automatically reduced at start-up
     and a warning will be logged. The relationship between these 2 directives
     is explained in <directive module="mpm_common">ThreadLimit</directive>.</p>
+
+    <p>The value of <directive>ThreadsPerChild</directive> must be at
+    least 1. Values less than 1 will be automatically increased to 1
+    and a warning will be logged.</p>
 </usage>
 </directivesynopsis>
 
