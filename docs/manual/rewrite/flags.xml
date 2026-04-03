@@ -525,11 +525,26 @@ RewriteRule "(.*\.(jpg|gif|png))$" "http://images.example.com$1" [P,NC]
 </section>
 
 <section id="flag_ne"><title>NE|noescape</title>
-<p>By default, special characters, such as <code>&amp;</code> and
-<code>?</code>, for example, will be converted to their hexcode
-equivalent for rules that result in external redirects. 
-Using the [NE] flag prevents that from happening.
-</p>
+<p>By default, when a <directive module="mod_rewrite">RewriteRule</directive>
+results in an external redirect, any characters in the output that are
+not in the following safe set will be converted to their hexcode
+(percent-encoded) equivalents:</p>
+
+<ul>
+  <li>Alphanumeric characters: <code>A-Z</code>, <code>a-z</code>,
+  <code>0-9</code></li>
+  <li>Special characters: <code>$-_.+!*'(),:;@&amp;=/~</code></li>
+</ul>
+
+<p>For example, <code>#</code> would be converted to <code>%23</code>,
+and <code>?</code> to <code>%3F</code>. The <code>%</code> character
+is also escaped (to <code>%25</code>), which means that any
+percent-encoding already present in the substitution will be
+double-encoded.</p>
+
+<p>Using the [NE] flag prevents this escaping, allowing characters
+such as <code>#</code> and <code>?</code> to pass through to the
+redirect URL unmodified.</p>
 
 <highlight language="config">
 RewriteRule "^/anchor/(.+)" "/bigpage.html#$1" [NE,R]
