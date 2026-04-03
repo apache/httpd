@@ -604,6 +604,11 @@ NoDecode option available in 2.3.12 and later.</td></tr>
     ignored.  In this case, the server will not even attempt to read
     <code>.htaccess</code> files in the filesystem.</p>
 
+    <div class="note">
+    <p>A value of <code>None</code> cannot be combined with other values. 
+    Doing so will result in an error that aborts config parsing.</p>
+    </div>
+
     <p>Example:</p>
 
     <pre class="prettyprint lang-config">AllowOverride None
