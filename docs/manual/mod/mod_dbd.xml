@@ -35,10 +35,7 @@
     to modules requiring SQL database functions, and takes care of
     managing databases with optimal efficiency and scalability
     for both threaded and non-threaded MPMs.  For details, see the
-    <a href="http://apr.apache.org/">APR</a> website and this overview of the
-    <a href="http://people.apache.org/~niq/dbd.html">Apache DBD Framework</a>
-    by its original developer.
-</p>
+    <a href="http://apr.apache.org/">APR</a> website.</p>
 </summary>
 
 <seealso><a href="../misc/password_encryptions.html">Password Formats</a></seealso>
