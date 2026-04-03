@@ -1494,16 +1494,6 @@ ErrorDocument 404 /cgi-bin/bad_urls.pl
     <code>ErrorDocument 401</code> directive, then it must refer to a local
     document.</strong></p>
 
-    <p>Microsoft Internet Explorer (MSIE) will by default ignore
-    server-generated error messages when they are "too small" and substitute
-    its own "friendly" error messages. The size threshold varies depending on
-    the type of error, but in general, if you make your error document
-    greater than 512 bytes, then MSIE will show the server-generated
-    error rather than masking it.  More information is available in
-    Microsoft Knowledge Base article <a
-    href="http://support.microsoft.com/default.aspx?scid=kb;en-us;Q294807"
-    >Q294807</a>.</p>
-
     <p>Although most error messages can be overridden, there are certain
     circumstances where the internal messages are used regardless of the
     setting of <directive module="core">ErrorDocument</directive>.  In
