@@ -408,6 +408,12 @@ establishing a protocol session.</p>
         <td>Update of TLS 1.1 deprecating MD5 as hash, and adding incompatibility
         to SSL so it will never negotiate the use of SSLv2.</td>
     </tr>
+    <tr><td>TLS v1.3</td>
+        <td>Internet Standard (from IETF) [<a href="#TLS13">TLS13</a>]</td>
+        <td>Major revision of TLS 1.2 removing legacy cryptography, mandating
+        perfect forward secrecy, and redesigning the handshake protocol for
+        improved security and performance.</td>
+    </tr>
     </table>
 
 
@@ -639,6 +645,10 @@ Version 3.0</q>, 1996. See <a href="http://www.netscape.com/eng/ssl3/draft302.tx
 <dt><a id="TLS12" name="TLS12">[TLS12]</a></dt>
 <dd><q>The TLS Protocol Version 1.2</q>,
 2008. See <a href="http://tools.ietf.org/html/rfc5246">http://tools.ietf.org/html/rfc5246</a>.</dd>
+
+<dt><a id="TLS13" name="TLS13">[TLS13]</a></dt>
+<dd><q>The Transport Layer Security (TLS) Protocol Version 1.3</q>,
+2018. See <a href="https://tools.ietf.org/html/rfc8446">https://tools.ietf.org/html/rfc8446</a>.</dd>
 </dl>
 </div></div>
 <div class="bottomlang">
