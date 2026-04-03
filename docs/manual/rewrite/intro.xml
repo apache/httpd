@@ -382,7 +382,7 @@ sections or <a href="../howto/htaccess.html"><code>.htaccess</code>
 files</a> at the expense of some additional complexity. This technique
 is called per-directory rewrites.</p>
 
-<p>The main difference with per-server rewrites is that the path
+<p>The main difference from per-server rewrites is that the path
 prefix of the directory containing the <code>.htaccess</code> file is
 stripped before matching in
 the <directive module="mod_rewrite">RewriteRule</directive>. In addition, the <directive module="mod_rewrite">RewriteBase</directive> should be used to assure the request is properly mapped.</p>
