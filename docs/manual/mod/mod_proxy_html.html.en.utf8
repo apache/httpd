@@ -34,8 +34,7 @@ from Clients' networks in a proxy context.</td></tr>
 <tr><th><a href="module-dict.html#Status">Status:</a></th><td>Base</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:</a></th><td>proxy_html_module</td></tr>
 <tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_proxy_html.c</td></tr>
-<tr><th><a href="module-dict.html#Compatibility">Compatibility:</a></th><td>Version 2.4 and later.  Available as a third-party module
-for earlier 2.x versions</td></tr></table>
+<tr><th><a href="module-dict.html#Compatibility">Compatibility:</a></th><td>Version 2.4 and later</td></tr></table>
 <h3>Summary</h3>
 
 <p>This module provides an output filter to rewrite HTML links in a
@@ -173,6 +172,7 @@ size and avoid the need to resize the buffer dynamically during a request.
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Specify a charset for mod_proxy_html output.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ProxyHTMLCharsetOut <var>Charset | *</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>ProxyHTMLCharsetOut UTF-8</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy_html</td></tr>
@@ -263,6 +263,12 @@ module for earlier 2.x versions</td></tr>
 apply <code class="directive"><a href="#proxyhtmlurlmap">ProxyHTMLURLMap</a></code>s to where enabled.
 You can specify any number of attributes in one or more
 <code class="directive">ProxyHTMLEvents</code> directives.</p>
+<div class="note"><h3>Requires ProxyHTMLExtended</h3>
+<p>Scripting events are only processed when
+<code class="directive"><a href="#proxyhtmlextended">ProxyHTMLExtended</a></code> is set to
+<var>On</var>.  Without it, event attributes are passed through unmodified
+even if listed in <code class="directive">ProxyHTMLEvents</code>.</p>
+</div>
 <p>Normally you'll set this globally.  If you set <code class="directive">ProxyHTMLEvents</code> in more than
 one scope so that one overrides the other, you'll need to specify a complete
 set in each of those scopes.</p>
@@ -307,6 +313,7 @@ false matches.
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Fixes for simple HTML errors.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ProxyHTMLFixups [lowercase] [dospath] [reset]</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>ProxyHTMLFixups none</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy_html</td></tr>

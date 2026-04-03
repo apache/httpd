@@ -905,7 +905,7 @@ response</td></tr>
 <tr><td><a href="mod_proxy_hcheck.html#proxyhctpsize">ProxyHCTPsize <em>size</em></a></td><td> 16 </td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Sets the total server-wide size of the threadpool used for the health check workers</td></tr>
 <tr class="odd"><td><a href="mod_proxy_html.html#proxyhtmlbufsize">ProxyHTMLBufSize <var>bytes</var></a></td><td> 8192 </td><td>skd</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">Sets the buffer size increment for buffering inline scripts and
 stylesheets.</td></tr>
-<tr><td><a href="mod_proxy_html.html#proxyhtmlcharsetout">ProxyHTMLCharsetOut <var>Charset | *</var></a></td><td></td><td>skd</td><td>T</td></tr><tr><td class="descr" colspan="4">Specify a charset for mod_proxy_html output.</td></tr>
+<tr><td><a href="mod_proxy_html.html#proxyhtmlcharsetout">ProxyHTMLCharsetOut <var>Charset | *</var></a></td><td> UTF-8 </td><td>skd</td><td>T</td></tr><tr><td class="descr" colspan="4">Specify a charset for mod_proxy_html output.</td></tr>
 <tr class="odd"><td><a href="mod_proxy_html.html#proxyhtmldoctype">ProxyHTMLDocType HTML|XHTML [Legacy]<br /><strong>OR</strong>
 <br />ProxyHTMLDocType <var>fpi</var> [SGML|XML]<br /><strong>OR</strong>
 <br />ProxyHTMLDocType html5<br /><strong>OR</strong>
@@ -914,7 +914,7 @@ stylesheets.</td></tr>
 <tr class="odd"><td><a href="mod_proxy_html.html#proxyhtmlevents">ProxyHTMLEvents <var>attribute [attribute ...]</var></a></td><td></td><td>skd</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">Specify attributes to treat as scripting events.</td></tr>
 <tr><td><a href="mod_proxy_html.html#proxyhtmlextended">ProxyHTMLExtended On|Off</a></td><td> Off </td><td>skd</td><td>T</td></tr><tr><td class="descr" colspan="4">Determines whether to fix links in inline scripts, stylesheets,
 and scripting events.</td></tr>
-<tr class="odd"><td><a href="mod_proxy_html.html#proxyhtmlfixups">ProxyHTMLFixups [lowercase] [dospath] [reset]</a></td><td></td><td>skd</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">Fixes for simple HTML errors.</td></tr>
+<tr class="odd"><td><a href="mod_proxy_html.html#proxyhtmlfixups">ProxyHTMLFixups [lowercase] [dospath] [reset]</a></td><td> none </td><td>skd</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">Fixes for simple HTML errors.</td></tr>
 <tr><td><a href="mod_proxy_html.html#proxyhtmlinterp">ProxyHTMLInterp On|Off</a></td><td> Off </td><td>skd</td><td>T</td></tr><tr><td class="descr" colspan="4">Enables per-request interpolation of
 <code class="directive">ProxyHTMLURLMap</code> rules.</td></tr>
 <tr class="odd"><td><a href="mod_proxy_html.html#proxyhtmllinks">ProxyHTMLLinks <var>element attribute [attribute2 ...]</var></a></td><td></td><td>skd</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">Specify HTML elements that have URL attributes to be rewritten.</td></tr>
