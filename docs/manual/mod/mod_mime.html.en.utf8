@@ -156,12 +156,13 @@
     <p>If you would prefer only the last dot-separated part of the
     filename to be mapped to a particular piece of meta-data, then do
     not use the <code>Add*</code> directives. For example, if you wish
-    to have the file <code>foo.html.cgi</code> processed as a CGI
-    script, but not the file <code>bar.cgi.html</code>, then instead
-    of using <code>AddHandler cgi-script .cgi</code>, use</p>
+    to have the file <code>foo.html.asis</code> served by the <code>send-as-is</code>
+    handler provided by <code class="module"><a href="../mod/mod_asis.html">mod_asis</a></code>
+    script, but not the file <code>bar.asis.html</code>, then instead
+    of using <code>AddHandler send-asis .asis</code>, use</p>
 
-    <div class="example"><h3>Configure handler based on final extension only</h3><pre class="prettyprint lang-config">&lt;FilesMatch "[^.]+\.cgi$"&gt;
-  SetHandler cgi-script
+    <div class="example"><h3>Configure handler based on final extension only</h3><pre class="prettyprint lang-config">&lt;FilesMatch "[^.]+\.asis$"&gt;
+  SetHandler send-asis
 &lt;/FilesMatch&gt;</pre>
 </div>
 
@@ -361,15 +362,12 @@ handler</td></tr>
     <p>Files having the name <var>extension</var> will be served by the
     specified <var><a href="../handler.html">handler-name</a></var>. This
     mapping is added to any already in force, overriding any mappings that
-    already exist for the same <var>extension</var>. For example, to
-    activate CGI scripts with the file extension <code>.cgi</code>, you
-    might use:</p>
+    already exist for the same <var>extension</var>. For example, to associate 
+    <code>.var</code> files with the <code>type-map</code> handler provided by
+    <code class="module"><a href="../mod/mod_negotiation.html">mod_negotiation</a></code>, you might use:</p>
 
-    <pre class="prettyprint lang-config">AddHandler cgi-script .cgi</pre>
+    <pre class="prettyprint lang-config">AddHandler type-map .var</pre>
 
-
-    <p>Once that has been put into your httpd.conf file, any file containing
-    the <code>.cgi</code> extension will be treated as a CGI program.</p>
 
     <p>The <var>extension</var> argument is case-insensitive and can
     be specified with or without a leading dot. Filenames may have <a href="#multipleext">multiple extensions</a> and the

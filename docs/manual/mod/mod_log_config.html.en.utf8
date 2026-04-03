@@ -177,7 +177,9 @@
         <td>The query string (prepended with a <code>?</code> if a query
         string exists, otherwise an empty string).</td></tr>
 <tr><td><code>%r</code></td>
-        <td>First line of request.</td></tr>
+        <td>First line of request. Does not adhere to 
+        <code class="directive"><a href="../mod/core.html#mergeslashes">MergeSlashes</a></code>. (i.e. no merging
+        even if ON)</td></tr>
 <tr class="odd"><td><code>%R</code></td>
         <td>The handler generating the response (if any).</td></tr>
 <tr><td><code>%s</code></td>
@@ -236,7 +238,9 @@
         <td>Remote user if the request was authenticated. May be bogus if return status
         (<code>%s</code>) is 401 (unauthorized).</td></tr>
 <tr><td><code>%U</code></td>
-        <td>The URL path requested, not including any query string.</td></tr>
+        <td>The URL path requested, not including any query string. 
+        Adheres to <code class="directive"><a href="../mod/core.html#mergeslashes">MergeSlashes</a></code>.
+        (i.e. slashes are merged if <code>ON</code>)</td></tr>
 <tr class="odd"><td><code>%v</code></td>
         <td>The canonical <code class="directive"><a href="../mod/core.html#servername">ServerName</a></code>
         of the server serving the request.</td></tr>
