@@ -315,8 +315,8 @@
     <h3><a name="format-notes" id="format-notes">Format Notes</a></h3>
 
       <p>For security reasons, starting with version 2.0.46,
-      non-printable and other special characters in <code>%r</code>,
-      <code>%i</code> and <code>%o</code> are escaped using
+      non-printable and other special characters in format strings
+      that may contain arbitrary string data are escaped using
       <code>\x<var>hh</var></code> sequences, where <var>hh</var>
       stands for the hexadecimal representation of the raw
       byte. Exceptions from this rule are <code>"</code> and
@@ -326,7 +326,46 @@
       prior to 2.0.46, no escaping was performed on these strings so
       you had to be quite careful when dealing with raw log files.</p>
 
-      <p>Since httpd 2.0, unlike 1.3, the <code>%b</code> and
+      <table>
+      
+      <tr><th>Format</th><th>Description</th><th>Escaped</th></tr>
+      <tr><td><code>%c</code></td><td>SSL variable (shortcut)</td><td>Yes</td></tr>
+      <tr><td><code>%C</code></td><td>Cookie value</td><td>Yes</td></tr>
+      <tr><td><code>%e</code></td><td>Environment variable</td><td>Yes</td></tr>
+      <tr><td><code>%f</code></td><td>Request filename</td><td>Yes</td></tr>
+      <tr><td><code>%h</code></td><td>Remote hostname</td><td>Yes</td></tr>
+      <tr><td><code>%H</code></td><td>Request protocol</td><td>Yes</td></tr>
+      <tr><td><code>%i</code></td><td>Request header</td><td>Yes</td></tr>
+      <tr><td><code>%l</code></td><td>Remote logname</td><td>Yes</td></tr>
+      <tr><td><code>%m</code></td><td>Request method</td><td>Yes</td></tr>
+      <tr><td><code>%n</code></td><td>Note</td><td>Yes</td></tr>
+      <tr><td><code>%o</code></td><td>Response header</td><td>Yes</td></tr>
+      <tr><td><code>%q</code></td><td>Query string</td><td>Yes</td></tr>
+      <tr><td><code>%r</code></td><td>Request line</td><td>Yes</td></tr>
+      <tr><td><code>%R</code></td><td>Handler</td><td>Yes</td></tr>
+      <tr><td><code>%u</code></td><td>Remote user</td><td>Yes</td></tr>
+      <tr><td><code>%U</code></td><td>Request URI</td><td>Yes</td></tr>
+      <tr><td><code>%v</code></td><td>Server hostname</td><td>Yes</td></tr>
+      <tr><td><code>%V</code></td><td>Canonical server name</td><td>Yes</td></tr>
+      <tr><td><code>%x</code></td><td>SSL variable</td><td>Yes</td></tr>
+      <tr><td><code>%^ti</code></td><td>Request trailer</td><td>Yes</td></tr>
+      <tr><td><code>%^to</code></td><td>Response trailer</td><td>Yes</td></tr>
+      <tr><td><code>%a</code></td><td>Remote IP address</td><td>No (IP address)</td></tr>
+      <tr><td><code>%A</code></td><td>Local IP address</td><td>No (IP address)</td></tr>
+      <tr><td><code>%b</code>, <code>%B</code></td><td>Bytes sent</td><td>No (numeric)</td></tr>
+      <tr><td><code>%D</code></td><td>Request duration (microseconds)</td><td>No (numeric)</td></tr>
+      <tr><td><code>%F</code></td><td>Request flushed</td><td>No (single character)</td></tr>
+      <tr><td><code>%k</code></td><td>Requests on connection</td><td>No (numeric)</td></tr>
+      <tr><td><code>%L</code></td><td>Log ID</td><td>No (internally generated)</td></tr>
+      <tr><td><code>%p</code></td><td>Server port</td><td>No (numeric)</td></tr>
+      <tr><td><code>%P</code></td><td>PID/TID</td><td>No (numeric)</td></tr>
+      <tr><td><code>%s</code></td><td>Status code</td><td>No (numeric)</td></tr>
+      <tr><td><code>%t</code></td><td>Request time</td><td>No (formatted time)</td></tr>
+      <tr><td><code>%T</code></td><td>Request duration (seconds)</td><td>No (numeric)</td></tr>
+      <tr><td><code>%X</code></td><td>Connection status</td><td>No (single character)</td></tr>
+      </table>
+
+      <p>The <code>%b</code> and
       <code>%B</code> format strings do not represent the number of
       bytes sent to the client, but simply the size in bytes of the
       HTTP response (which will differ, for instance, if the
