@@ -28,8 +28,7 @@ from Clients' networks in a proxy context.</description>
 <status>Base</status>
 <sourcefile>mod_proxy_html.c</sourcefile>
 <identifier>proxy_html_module</identifier>
-<compatibility>Version 2.4 and later.  Available as a third-party module
-for earlier 2.x versions</compatibility>
+<compatibility>Version 2.4 and later</compatibility>
 
 <summary>
 <p>This module provides an output filter to rewrite HTML links in a
@@ -273,6 +272,7 @@ module="core">LogLevel</directive> Debug.</p>
 <name>ProxyHTMLFixups</name>
 <description>Fixes for simple HTML errors.</description>
 <syntax>ProxyHTMLFixups [lowercase] [dospath] [reset]</syntax>
+<default>ProxyHTMLFixups none</default>
 <contextlist><context>server config</context>
 <context>virtual host</context><context>directory</context>
 </contextlist>
@@ -381,6 +381,12 @@ for earlier 2.x versions</compatibility>
 apply <directive module="mod_proxy_html">ProxyHTMLURLMap</directive>s to where enabled.
 You can specify any number of attributes in one or more
 <directive>ProxyHTMLEvents</directive> directives.</p>
+<note><title>Requires ProxyHTMLExtended</title>
+<p>Scripting events are only processed when
+<directive module="mod_proxy_html">ProxyHTMLExtended</directive> is set to
+<var>On</var>.  Without it, event attributes are passed through unmodified
+even if listed in <directive>ProxyHTMLEvents</directive>.</p>
+</note>
 <p>Normally you'll set this globally.  If you set <directive>ProxyHTMLEvents</directive> in more than
 one scope so that one overrides the other, you'll need to specify a complete
 set in each of those scopes.</p>
@@ -434,6 +440,7 @@ ProxyHTMLLinks  script     src for
 <name>ProxyHTMLCharsetOut</name>
 <description>Specify a charset for mod_proxy_html output.</description>
 <syntax>ProxyHTMLCharsetOut <var>Charset | *</var></syntax>
+<default>ProxyHTMLCharsetOut UTF-8</default>
 <contextlist><context>server config</context>
 <context>virtual host</context><context>directory</context>
 </contextlist>
