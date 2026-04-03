@@ -66,7 +66,8 @@
         zero.</td></tr>
 
     <tr><td><code>%O</code></td>
-        <td>Bytes sent, including headers, cannot be zero.</td></tr>
+        <td>Bytes sent, including headers. May be zero in rare cases
+        such as when a request is aborted before a response is sent.</td></tr>
 
     <tr><td><code>%S</code></td>
         <td>Bytes transferred (received and sent), including request and headers,
