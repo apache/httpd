@@ -465,6 +465,8 @@ Require ip 127.0.0.1</pre>
       CGIDScriptTImeout</a></code>.
       </li>
 
+      <li><code class="module"><a href="./mod/mod_include.html">mod_include</a></code>'s <code>&lt;set&gt;</code> tag no 
+      longer performs entity decoding on the value being set.</li>
     </ul>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>

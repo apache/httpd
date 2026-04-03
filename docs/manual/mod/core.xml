@@ -4119,6 +4119,10 @@ directory</description>
 
     <p>The default in the absence of any other settings is
     <code>FollowSymlinks</code>.</p>
+
+    <p>When using the <code>All</code> and <code>None</code>, they must
+    be the first option listed. The + and - modifiers cannot be used with
+    the <code>All</code> and <code>None</code> options.</p>
 </usage>
 </directivesynopsis>
 

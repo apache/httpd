@@ -76,8 +76,12 @@
     must be compiled into the server or loaded at runtime using the
     <code class="directive"><a href="../mod/mod_so.html#loadmodule">LoadModule</a></code> directive.</p>
 
-    <p>You may wish to add a <code class="directive"><a href="../mod/core.html#limit">&lt;Limit&gt;</a></code> clause inside the <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code> directive to limit access to
-    DAV-enabled locations. If you want to set the maximum amount of
+    <p>In the example below, <code class="directive"><a href="../mod/mod_authz_core.html#requireany">&lt;RequireAny&gt;</a></code> is used to ensure that
+    DAV-specific methods (i.e., methods other than <code>GET</code>,
+    <code>POST</code> and <code>OPTIONS</code>) are limited to the
+    authenticated user.</p>
+
+    <p>If you want to set the maximum amount of
     bytes that a DAV client can send at one request, you have to use
     the <code class="directive"><a href="../mod/core.html#limitxmlrequestbody">LimitXMLRequestBody</a></code>
     directive. The "normal" <code class="directive"><a href="../mod/core.html#limitrequestbody">LimitRequestBody</a></code> directive has no effect on DAV

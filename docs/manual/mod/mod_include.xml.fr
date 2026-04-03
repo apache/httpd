@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1892902:1932483 (outdated) -->
+<!-- English Revision: 1932483 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -926,6 +926,10 @@ AddOutputFilter INCLUDES .shtml
       SSIEndTag "%&gt;"
     </highlight>
 
+    <note type="warning">
+    La valeur ne doit pas contenir d’espace.
+    </note>
+
 </usage>
 <seealso><directive module="mod_include">SSIStartTag</directive></seealso>
 </directivesynopsis>
@@ -1001,6 +1005,10 @@ include</description>
 SSIStartTag "&lt;%"
 SSIEndTag   "%&gt;"      
     </highlight>
+
+    <note type="warning">
+    La valeur ne doit pas contenir d’espace.
+    </note>
 
     <p>Avec l'exemple ci-dessus, qui définit aussi une directive
     <directive module="mod_include">SSIEndTag</directive>, vous pourrez

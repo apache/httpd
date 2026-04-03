@@ -539,6 +539,8 @@ Require ip 127.0.0.1
       CGIDScriptTImeout</directive>.
       </li>
 
+      <li><module>mod_include</module>'s <code>&lt;set&gt;</code> tag no 
+      longer performs entity decoding on the value being set.</li>
     </ul>
 
   </section>

@@ -589,6 +589,10 @@ spikes</td></tr>
     similar to <code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code>.  For
     <code class="module"><a href="../mod/mpmt_os2.html">mpmt_os2</a></code> the default value is <code>5</code>.</p>
 
+    <p>The value of <code class="directive">MinSpareThreads</code> must be at
+    least 1. Values less than 1 will be automatically increased to 1
+    and a warning will be logged.</p>
+
 <h3>See also</h3>
 <ul>
 <li><code class="directive"><a href="#maxsparethreads">MaxSpareThreads</a></code></li>
@@ -644,7 +648,8 @@ of the daemon</td></tr>
     bytes specified.</p>
 
     <p>If set to the value of <code>0</code>, the server will use the
-    OS default.</p>
+    OS default. If set to a non-zero value, it must be at least
+    <code>512</code>.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -703,7 +708,8 @@ Apache HTTP Server</a></li>
     (<em>i.e.</em>, 100ms or so, such as transcontinental fast pipes).</p>
 
     <p>If set to the value of <code>0</code>, the server will use the
-    default value provided by your OS.</p>
+    default value provided by your OS. If set to a non-zero value,
+    it must be at least <code>512</code>.</p>
 
     <p>Further configuration of your operating system may be required to elicit
     better performance on high speed, high latency connections.</p>
@@ -769,6 +775,10 @@ Apache HTTP Server</a></li>
       MAX_SERVER_LIMIT in the mpm source file and rebuild the server.</p>
     </div>
 
+    <p>The value of <code class="directive">ServerLimit</code> must be at least
+    1. Values less than 1 will be automatically increased to 1 and a
+    warning will be logged.</p>
+
 <h3>See also</h3>
 <ul>
 <li><a href="../stopping.html">Stopping and Restarting Apache HTTP Server</a></li>
@@ -796,6 +806,11 @@ Apache HTTP Server</a></li>
     <code class="module"><a href="../mod/event.html">event</a></code> default to <code>StartServers 3</code>; <code class="module"><a href="../mod/prefork.html">
     prefork</a></code> defaults to <code>5</code>; <code class="module"><a href="../mod/mpmt_os2.html">mpmt_os2</a></code>
     defaults to <code>2</code>.</p>
+
+    <p>The value of <code class="directive">StartServers</code> must be at least
+    1. Values less than 1 will be automatically increased to 1 and a
+    warning will be logged. On <code class="module"><a href="../mod/mpmt_os2.html">mpmt_os2</a></code>, a value of 0
+    is also accepted; values less than 0 will be increased to 1.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -863,6 +878,10 @@ per child process</td></tr>
       source file and rebuild the server.</p>
     </div>
 
+    <p>The value of <code class="directive">ThreadLimit</code> must be at least
+    1. Values less than 1 will be automatically increased to 1 and a
+    warning will be logged.</p>
+
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="ThreadsPerChild" id="ThreadsPerChild">ThreadsPerChild</a> <a name="threadsperchild" id="threadsperchild">Directive</a> <a title="Permanent link" href="#threadsperchild" class="permalink">&para;</a></h2>
@@ -892,6 +911,10 @@ per child process</td></tr>
     higher value is configured, it will be automatically reduced at start-up
     and a warning will be logged. The relationship between these 2 directives
     is explained in <code class="directive"><a href="#threadlimit">ThreadLimit</a></code>.</p>
+
+    <p>The value of <code class="directive">ThreadsPerChild</code> must be at
+    least 1. Values less than 1 will be automatically increased to 1
+    and a warning will be logged.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>

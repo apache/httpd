@@ -1030,6 +1030,12 @@ SSLCertificateFile "/usr/local/apache2/conf/ssl.crt/server.crt"
 SSLCertificateFile "pkcs11:token=My%20Token%20Name;id=45"
 </highlight>
 </example>
+
+<p>This file is read at server startup, while the server is still running
+as <code>root</code> (before privilege dropping), so it may be owned by
+and readable only by <code>root</code>. The file is not re-read during
+normal operation; a server restart is required for changes to take
+effect.</p>
 </usage>
 </directivesynopsis>
 
@@ -1076,6 +1082,12 @@ SSLCertificateKeyFile "/usr/local/apache2/conf/ssl.key/server.key"
 SSLCertificateKeyFile "pkcs11:token=My%20Token%20Name;id=45"
 </highlight>
 </example>
+
+<p>This file is read at server startup, while the server is still running
+as <code>root</code> (before privilege dropping), so it should be owned by
+and readable only by <code>root</code>, since it contains the private key.
+The file is not re-read during normal operation; a server restart is
+required for changes to take effect.</p>
 </usage>
 </directivesynopsis>
 
@@ -1124,6 +1136,12 @@ confused in this situation.</p>
 SSLCertificateChainFile "/usr/local/apache2/conf/ssl.crt/ca.crt"
 </highlight>
 </example>
+
+<p>This file is read at server startup, while the server is still running
+as <code>root</code> (before privilege dropping), so it may be owned by
+and readable only by <code>root</code>. The file is not re-read during
+normal operation; a server restart is required for changes to take
+effect.</p>
 </usage>
 </directivesynopsis>
 
@@ -1152,6 +1170,12 @@ contains the appropriate symbolic links.</p>
 SSLCACertificatePath "/usr/local/apache2/conf/ssl.crt/"
 </highlight>
 </example>
+
+<p>The files in this directory are read at server startup, while the server
+is still running as <code>root</code> (before privilege dropping), so they
+may be owned by and readable only by <code>root</code>. The files are not
+re-read during normal operation; a server restart is required for changes
+to take effect.</p>
 </usage>
 </directivesynopsis>
 
@@ -1177,6 +1201,12 @@ preference. This can be used alternatively and/or additionally to
 SSLCACertificateFile "/usr/local/apache2/conf/ssl.crt/ca-bundle-client.crt"
 </highlight>
 </example>
+
+<p>This file is read at server startup, while the server is still running
+as <code>root</code> (before privilege dropping), so it may be owned by
+and readable only by <code>root</code>. The file is not re-read during
+normal operation; a server restart is required for changes to take
+effect.</p>
 </usage>
 </directivesynopsis>
 
@@ -1224,6 +1254,12 @@ PEM-encoded CA certificates.</p>
 SSLCADNRequestFile "/usr/local/apache2/conf/ca-names.crt"
 </highlight>
 </example>
+
+<p>This file is read at server startup, while the server is still running
+as <code>root</code> (before privilege dropping), so it may be owned by
+and readable only by <code>root</code>. The file is not re-read during
+normal operation; a server restart is required for changes to take
+effect.</p>
 </usage>
 </directivesynopsis>
 
@@ -1253,6 +1289,12 @@ this directory contains the appropriate symbolic links.</p>
 SSLCADNRequestPath "/usr/local/apache2/conf/ca-names.crt/"
 </highlight>
 </example>
+
+<p>The files in this directory are read at server startup, while the server
+is still running as <code>root</code> (before privilege dropping), so they
+may be owned by and readable only by <code>root</code>. The files are not
+re-read during normal operation; a server restart is required for changes
+to take effect.</p>
 </usage>
 </directivesynopsis>
 
@@ -1280,6 +1322,12 @@ contains the appropriate symbolic links.</p>
 SSLCARevocationPath "/usr/local/apache2/conf/ssl.crl/"
 </highlight>
 </example>
+
+<p>The files in this directory are read at server startup, while the server
+is still running as <code>root</code> (before privilege dropping), so they
+may be owned by and readable only by <code>root</code>. The files are not
+re-read during normal operation; a server restart is required for changes
+to take effect.</p>
 </usage>
 </directivesynopsis>
 
@@ -1305,6 +1353,12 @@ module="mod_ssl">SSLCARevocationPath</directive>.</p>
 SSLCARevocationFile "/usr/local/apache2/conf/ssl.crl/ca-bundle-client.crl"
 </highlight>
 </example>
+
+<p>This file is read at server startup, while the server is still running
+as <code>root</code> (before privilege dropping), so it may be owned by
+and readable only by <code>root</code>. The file is not re-read during
+normal operation; a server restart is required for changes to take
+effect.</p>
 </usage>
 </directivesynopsis>
 
