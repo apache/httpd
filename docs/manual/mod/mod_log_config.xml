@@ -401,7 +401,7 @@
       </table>
 
       <p>The <code>%b</code> and
-      <p><code>%B</code> format strings do not represent the number of
+      <code>%B</code> format strings do not represent the number of
       bytes sent to the client, but simply the size in bytes of the
       HTTP response (which will differ, for instance, if the
       connection is aborted, or if SSL is used).  The <code>%O</code>
