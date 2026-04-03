@@ -886,6 +886,16 @@ indexing</td></tr>
       only has an effect if <a href="#indexoptions.fancyindexing"><code>FancyIndexing</code></a> is also enabled.</strong>
       </dd>
 
+      <dt><a name="indexoptions.none" id="indexoptions.none">None</a></dt>
+
+      <dd>The <code>None</code> keyword disables all indexing options
+      for the directory. No fancy indexing features will be enabled.
+      <div class="note"><code>None</code> cannot be prefixed with <code>+</code>
+      or <code>-</code>, and it cannot be combined with any other
+      <code class="directive">IndexOptions</code> keyword. If <code>None</code>
+      is specified, it must be the only option given.</div>
+      </dd>
+
     </dl>
 
 
