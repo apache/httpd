@@ -663,6 +663,13 @@ header.</td></tr>
     <code class="directive"><a href="#cachedefaultexpire">CacheDefaultExpire</a></code> directive will be used to
     generate an expiration date.</p>
 
+    <div class="note">More precisely, a 200 OK response is only cached if it includes
+    at least one of the <code>Last-Modified</code>, <code>ETag</code>,
+    or <code>Expires</code> headers, or a <code>Cache-Control: max-age</code>
+    or <code>s-maxage</code> directive. This directive bypasses that
+    requirement entirely. When any of those headers are already present,
+    this directive has no effect.</div>
+
     <pre class="prettyprint lang-config">CacheIgnoreNoLastMod On</pre>
 
 
