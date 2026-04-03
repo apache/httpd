@@ -535,6 +535,11 @@ AllowOverride AuthConfig Indexes
     ignored.  In this case, the server will not even attempt to read
     <code>.htaccess</code> files in the filesystem.</p>
 
+    <note>
+    <p>A value of <code>None</code> cannot be combined with other values. 
+    Doing so will result in an error that aborts config parsing.</p>
+    </note>
+
     <p>Example:</p>
 
     <highlight language="config">
