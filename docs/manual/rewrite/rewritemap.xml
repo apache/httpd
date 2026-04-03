@@ -349,16 +349,31 @@ by many requests.
     <p>When a MapType of <code>prg</code> is used, the MapSource is a
     filesystem path to an executable program which will providing the
     mapping behavior. This can be a compiled binary file, or a program
-    in an interpreted language such as Perl or Python.</p>
+    in an interpreted language such as Python or Perl.</p>
 
     <p>This program is started once, when the Apache HTTP Server is
     started, and then communicates with the rewriting engine via
-    <code>STDIN</code> and <code>STDOUT</code>. That is, for each map
-    function lookup, it expects one argument via <code>STDIN</code>, and
-    should return one new-line terminated response string on
-    <code>STDOUT</code>. If there is no corresponding lookup value, the
-    map program should return the four-character string
-    "<code>NULL</code>" to indicate this.</p>
+    <code>STDIN</code> and <code>STDOUT</code>. For each map function
+    lookup, the key is written to the program's <code>STDIN</code>,
+    followed by a newline character. The program should read one line
+    from <code>STDIN</code> (up to and including the newline), and
+    write its response as a single newline-terminated line on
+    <code>STDOUT</code>. Keys will never contain newline characters;
+    if a key containing a newline is encountered, the lookup will
+    fail.</p>
+
+    <p>If there is no corresponding lookup value, the map program
+    should return the four-character string "<code>NULL</code>" to
+    indicate this. Note that this comparison is case-insensitive, so
+    "null", "Null", etc. are also treated as a failed lookup. As a
+    consequence, it is not possible for a mapping program to return
+    the literal string "NULL" as a mapped value.</p>
+
+    <p>The program's <code>STDERR</code> is inherited from the
+    httpd parent process, so anything the program writes to
+    <code>STDERR</code> will end up in the same place as httpd's
+    own error output (typically the <directive
+    module="core">ErrorLog</directive>).</p>
 
     <p>External rewriting programs are not started if they're defined in
     a context that does not have <directive
@@ -381,18 +396,17 @@ by many requests.
 
     <p><strong>Rewrite configuration</strong></p>
     <highlight language="config">
-RewriteMap d2u "prg:/www/bin/dash2under.pl" apache:apache
+RewriteMap d2u "prg:/www/bin/dash2under.py" apache:apache
 RewriteRule "-" "${d2u:%{REQUEST_URI}}"
     </highlight>
 
-    <p><strong>dash2under.pl</strong></p>
-    <highlight language="perl">
-#!/usr/bin/perl
-$| = 1; # Turn off I/O buffering
-while (&lt;STDIN&gt;) {
-    s/-/_/g; # Replace dashes with underscores
-    print $_;
-}
+    <p><strong>dash2under.py</strong></p>
+    <highlight language="python">
+#!/usr/bin/env python3
+import sys
+
+for line in sys.stdin:
+    print(line.strip().replace('-', '_'), flush=True)
     </highlight>
 
 <note><title>Caution!</title>
@@ -401,14 +415,22 @@ while (&lt;STDIN&gt;) {
 hangs, it will cause httpd to wait indefinitely for a response from the
 map, which will, in turn, cause httpd to stop responding to
 requests.</li>
-<li>Be sure to turn off buffering in your program. In Perl this is done
-by the second line in the example script: <code>$| = 1;</code> This will
-of course vary in other languages. Buffered I/O will cause httpd to wait
-for the output, and so it will hang.</li>
+<li>Be sure to turn off buffering in your program. In the Python example
+above, this is done by passing <code>flush=True</code> to
+<code>print()</code>. Buffered I/O will cause httpd to wait for the
+output, and so it will hang.</li>
 <li>Remember that there is only one copy of the program, started at
 server startup. All requests will need to go through this one bottleneck.
 This can cause significant slowdowns if many requests must go through
 this process, or if the script itself is very slow.</li>
+<li>If the mapping program terminates, it will not be automatically
+restarted. Subsequent lookups will fail until the server is
+restarted.</li>
+<li>The mapping program is always killed and restarted on any server
+restart (graceful or otherwise), regardless of whether the related
+configuration directives have changed. On shutdown, the program is
+sent <code>SIGTERM</code>; if it does not exit within 3 seconds, it
+is sent <code>SIGKILL</code>.</li>
 </ul>
 </note>
 
