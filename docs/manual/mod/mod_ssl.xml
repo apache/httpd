@@ -666,7 +666,7 @@ The available (case-insensitive) <em>protocol</em>s are:</p>
     <p>
     This is a shortcut for ``<code>+SSLv3 +TLSv1</code>'' or
     - when using OpenSSL 1.0.1 and later -
-    ``<code>+SSLv3 +TLSv1 +TLSv1.1 +TLSv1.2</code>'', respectively
+    ``<code>+SSLv3 +TLSv1 +TLSv1.1 +TLSv1.2 +TLSv1.3</code>'', respectively
     (except for OpenSSL versions compiled with the ``no-ssl3'' configuration
     option, where <code>all</code> does not include <code>+SSLv3</code>).</p></li>
 </ul>
