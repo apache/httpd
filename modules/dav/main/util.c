@@ -616,8 +616,7 @@ DAV_DECLARE(dav_error *) dav_parse_locktoken(apr_pool_t *p,
                              "Malformed Lock-Token");
     }
 
-    token = apr_pmemdup(p, input + 1, len - 2);
-    token[len - 2] = '\0';
+    token = apr_pstrememdup(p, input + 1, len - 2);
 
     if (*token == '\0') {
         return dav_new_error(p, HTTP_BAD_REQUEST, 0, 0,
