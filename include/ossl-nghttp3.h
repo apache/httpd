@@ -17,39 +17,41 @@
 
 #include <nghttp3/nghttp3.h>
 
-#include "httpd.h"
-#include "http_config.h"
-#include "http_core.h"
-#include "http_log.h"
-#include "http_main.h"
-#include "http_protocol.h"
-#include "http_request.h"
-#include "util_script.h"
-#include "http_connection.h"
-#ifdef HAVE_UNIX_SUEXEC
-#include "unixd.h"
-#endif
-#include "scoreboard.h"
-#include "mpm_common.h"
+#include <httpd.h>
 
-#include "apr_strings.h"
+#include <http_config.h>
+#include <http_connection.h>
+#include <http_core.h>
+#include <http_log.h>
+#include <http_main.h>
+#include <http_protocol.h>
+#include <http_request.h>
+#include <util_script.h>
+#ifdef HAVE_UNIX_SUEXEC
+    #include <unixd.h>
+#endif
+#include <apr_strings.h>
+#include <mpm_common.h>
+#include <scoreboard.h>
 
 /* Context for the request to response logic */
-struct h3_conn_ctx_t {
-    ap_bucket_response *resp; /* Header part of the response */
-    apr_bucket *otherpart;    /* file bucket or something the like */
-    char *dataheap;           /* data from the heap bucket (page response built im memory, like error pages) */
+struct h3_conn_ctx_t
+{
+    ap_bucket_response* resp; /* Header part of the response */
+    apr_bucket* otherpart;    /* file bucket or something the like */
+    char* dataheap;           /* data from the heap bucket (page response built im memory, like error pages) */
     apr_size_t dataheaplen;   /* length of the data head */
-    apr_pool_t *c3reqpool;    /* a pool that lives a bit more than the request pool (until the next request for the moment) */
-    server_rec *s;            /* mostly for log */
+    apr_pool_t* c3reqpool;    /* a pool that lives a bit more than the request pool (until the next request for the moment) */
+    server_rec* s;            /* mostly for log */
 };
 typedef struct h3_conn_ctx_t h3_conn_ctx_t;
 
 /* a connection can have many requests */
-struct h3_request {
-    int64_t id_bidi;        /* streamid used to read request and send response */
-    apr_pool_t *h3reqpool;  /* sub pool of the h3ssl->c->pool */
-    request_rec *r;         /* request to Apache HTTPD */
+struct h3_request
+{
+    int64_t id_bidi;       /* streamid used to read request and send response */
+    apr_pool_t* h3reqpool; /* sub pool of the h3ssl->c->pool */
+    request_rec* r;        /* request to Apache HTTPD */
 
     uint64_t totalsendbyte; /* for nghttp3_conn_add_ack_offset */
     int finsend;            /* server has send a packet with fin=1 */
@@ -60,35 +62,37 @@ struct h3_request {
     int end_headers_received; /* h3 header received call back called */
     int datadone;             /* h3 has given openssl all the data of the response */
 
-    uint8_t *ptr_data;        /* pointer to the data to send */
-    size_t ldata;             /* amount of bytes to send */
-    int offset_data;          /* offset to next data to send */
+    uint8_t* ptr_data; /* pointer to the data to send */
+    size_t ldata;      /* amount of bytes to send */
+    int offset_data;   /* offset to next data to send */
 
-    struct h3_request *next;  /* the next request in the list */
+    struct h3_request* next; /* the next request in the list */
 
-    h3_conn_ctx_t *h3ctx;     /* pointer to request/response we are processing */
+    h3_conn_ctx_t* h3ctx; /* pointer to request/response we are processing */
 };
 
-struct h3_nvs_t {
-    nghttp3_nv *resp;
+struct h3_nvs_t
+{
+    nghttp3_nv* resp;
     size_t cur_nv;
     size_t max_nv;
-    apr_pool_t *p;
-    server_rec *s;
+    apr_pool_t* p;
+    server_rec* s;
 };
 typedef struct h3_nvs_t h3_nvs_t;
 
-struct h3_conn_rec_t {
-    conn_rec *c;          /* The httpd one */
-    h3_conn_ctx_t *h3ctx; /* our h3ctx context */
+struct h3_conn_rec_t
+{
+    conn_rec* c;          /* The httpd one */
+    h3_conn_ctx_t* h3ctx; /* our h3ctx context */
 };
 typedef struct h3_conn_rec_t h3_conn_rec_t;
 
 /* run a h3 server logic using openssl calls */
-int server(apr_pool_t *p, server_rec *s, unsigned long port, const char *cert_path, const char *key_path);
+int server(apr_pool_t* p, server_rec* s, unsigned long port, const char* cert_path, const char* key_path);
 /* create an internal connection for Apache httpd */
-h3_conn_rec_t *create_connection(apr_pool_t *p, server_rec *s);
+h3_conn_rec_t* create_connection(apr_pool_t* p, server_rec* s);
 /* process an internal connection */
-apr_status_t process_connection(apr_pool_t *p, server_rec *s, conn_rec *c);
+apr_status_t process_connection(apr_pool_t* p, server_rec* s, conn_rec* c);
 /* process a request, using a internal connection */
-apr_status_t process_request(request_rec *r, h3_conn_ctx_t *h3ctx);
+apr_status_t process_request(request_rec* r, h3_conn_ctx_t* h3ctx);
