@@ -22,6 +22,9 @@
 #include "ap_slotmem.h"
 #include "heartbeat.h"
 
+#include <errno.h>
+#include <limits.h>
+
 #ifndef LBM_HEARTBEAT_MAX_LASTSEEN
 /* If we haven't seen a heartbeat in the last N seconds, don't count this IP
  * as allive.
@@ -60,6 +63,28 @@ typedef struct ctx_servers {
     apr_time_t now;
     apr_hash_t *servers;
 } ctx_servers_t;
+
+static int hb_parse_int(const char *val, int min, int max, int *result)
+{
+    apr_int64_t parsed;
+    char *end = NULL;
+
+    if (!val || !*val) {
+        return 0;
+    }
+
+    errno = 0;
+    parsed = apr_strtoi64(val, &end, 10);
+    if (errno == ERANGE || end == val || *end != '\0') {
+        return 0;
+    }
+    if (parsed < min || parsed > max) {
+        return 0;
+    }
+
+    *result = (int)parsed;
+    return 1;
+}
 
 static void
 argstr_to_table(apr_pool_t *p, char *str, apr_table_t *parms)
@@ -179,19 +204,31 @@ static apr_status_t readfile_heartbeats(const char *path, apr_hash_t *servers,
             argstr_to_table(pool, apr_pstrdup(pool, t), hbt);
 
             if ((val = apr_table_get(hbt, "busy"))) {
-                server->busy = atoi(val);
+                int parsed;
+                if (hb_parse_int(val, 0, INT_MAX, &parsed)) {
+                    server->busy = parsed;
+                }
             }
 
             if ((val = apr_table_get(hbt, "ready"))) {
-                server->ready = atoi(val);
+                int parsed;
+                if (hb_parse_int(val, 0, INT_MAX, &parsed)) {
+                    server->ready = parsed;
+                }
             }
 
             if ((val = apr_table_get(hbt, "lastseen"))) {
-                server->seen = atoi(val);
+                int parsed;
+                if (hb_parse_int(val, 0, INT_MAX, &parsed)) {
+                    server->seen = parsed;
+                }
             }
 
             if ((val = apr_table_get(hbt, "port"))) {
-                server->port = atoi(val);
+                int parsed;
+                if (hb_parse_int(val, 1, 65535, &parsed)) {
+                    server->port = parsed;
+                }
             }
 
             if (server->busy == 0 && server->ready != 0) {
@@ -312,7 +349,13 @@ static proxy_worker *find_best_hb(proxy_balancer *balancer,
         if (PROXY_WORKER_IS_USABLE(*worker)) {
             server->worker = *worker;
             if (server->seen < LBM_HEARTBEAT_MAX_LASTSEEN) {
-                openslots += server->ready;
+                apr_uint32_t ready = (apr_uint32_t)server->ready;
+                if (ready > APR_UINT32_MAX - openslots) {
+                    openslots = APR_UINT32_MAX;
+                }
+                else {
+                    openslots += ready;
+                }
                 APR_ARRAY_PUSH(up_servers, hb_server_t *) = server;
             }
         }
@@ -325,12 +368,20 @@ static proxy_worker *find_best_hb(proxy_balancer *balancer,
         pick = ap_random_pick(0, openslots);
 
         for (i = 0; i < up_servers->nelts; i++) {
+            apr_uint32_t upper;
             server = APR_ARRAY_IDX(up_servers, i, hb_server_t *);
-            if (pick >= c && pick <= c + server->ready) {
+            if ((apr_uint32_t)server->ready > APR_UINT32_MAX - c) {
+                upper = APR_UINT32_MAX;
+            }
+            else {
+                upper = c + (apr_uint32_t)server->ready;
+            }
+
+            if (pick >= c && pick <= upper) {
                 mycandidate = server->worker;
             }
 
-            c += server->ready;
+            c = upper;
         }
     }
 
