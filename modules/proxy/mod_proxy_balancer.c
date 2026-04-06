@@ -26,6 +26,9 @@
 #include "apr_escape.h"
 #include "mod_watchdog.h"
 
+#include <errno.h>
+#include <stdlib.h>
+
 static const char *balancer_mutex_type = "proxy-balancer-shm";
 ap_slotmem_provider_t *storage = NULL;
 
@@ -39,6 +42,54 @@ static int (*ap_proxy_retry_worker_fn)(const char *proxy_function,
 static APR_OPTIONAL_FN_TYPE(hc_show_exprs) *hc_show_exprs_f = NULL;
 static APR_OPTIONAL_FN_TYPE(hc_select_exprs) *hc_select_exprs_f = NULL;
 static APR_OPTIONAL_FN_TYPE(hc_valid_expr) *hc_valid_expr_f = NULL;
+
+static int balancer_parse_int(const char *val, int min, int max, int *result)
+{
+    apr_int64_t parsed;
+    char *end = NULL;
+
+    if (!val || !*val) {
+        return 0;
+    }
+
+    errno = 0;
+    parsed = apr_strtoi64(val, &end, 10);
+    if (errno == ERANGE || end == val || *end != '\0') {
+        return 0;
+    }
+
+    if (parsed < min || parsed > max) {
+        return 0;
+    }
+
+    *result = (int)parsed;
+    return 1;
+}
+
+static int balancer_parse_lbfactor(const char *val, int *result)
+{
+    char *end = NULL;
+    double parsed;
+    double scaled;
+
+    if (!val || !*val) {
+        return 0;
+    }
+
+    errno = 0;
+    parsed = strtod(val, &end);
+    if (errno == ERANGE || end == val || *end != '\0') {
+        return 0;
+    }
+
+    scaled = parsed * 100.0;
+    if (scaled < 100.0 || scaled > 10000.0) {
+        return 0;
+    }
+
+    *result = (int)scaled;
+    return 1;
+}
 
 
 /*
@@ -1114,9 +1165,7 @@ static int balancer_process_balancer_worker(request_rec *r, proxy_server_conf *c
 
         if ((val = apr_table_get(params, "w_lf"))) {
             int ival;
-            double fval = atof(val);
-            ival = fval * 100.0;
-            if (ival >= 100 && ival <= 10000) {
+            if (balancer_parse_lbfactor(val, &ival)) {
                 wsel->s->lbfactor = ival;
                 if (bsel)
                     recalc_factors(bsel);
@@ -1139,29 +1188,50 @@ static int balancer_process_balancer_worker(request_rec *r, proxy_server_conf *c
          * on that # character, since the character == the flag
          */
         if ((val = apr_table_get(params, "w_status_I"))) {
-            ap_proxy_set_wstatus(PROXY_WORKER_IGNORE_ERRORS_FLAG, atoi(val), wsel);
+            int ival;
+            if (balancer_parse_int(val, 0, 1, &ival)) {
+                ap_proxy_set_wstatus(PROXY_WORKER_IGNORE_ERRORS_FLAG, ival, wsel);
+            }
         }
         if ((val = apr_table_get(params, "w_status_N"))) {
-            ap_proxy_set_wstatus(PROXY_WORKER_DRAIN_FLAG, atoi(val), wsel);
+            int ival;
+            if (balancer_parse_int(val, 0, 1, &ival)) {
+                ap_proxy_set_wstatus(PROXY_WORKER_DRAIN_FLAG, ival, wsel);
+            }
         }
         if ((val = apr_table_get(params, "w_status_D"))) {
-            ap_proxy_set_wstatus(PROXY_WORKER_DISABLED_FLAG, atoi(val), wsel);
+            int ival;
+            if (balancer_parse_int(val, 0, 1, &ival)) {
+                ap_proxy_set_wstatus(PROXY_WORKER_DISABLED_FLAG, ival, wsel);
+            }
         }
         if ((val = apr_table_get(params, "w_status_H"))) {
-            ap_proxy_set_wstatus(PROXY_WORKER_HOT_STANDBY_FLAG, atoi(val), wsel);
+            int ival;
+            if (balancer_parse_int(val, 0, 1, &ival)) {
+                ap_proxy_set_wstatus(PROXY_WORKER_HOT_STANDBY_FLAG, ival, wsel);
+            }
         }
         if ((val = apr_table_get(params, "w_status_R"))) {
-            ap_proxy_set_wstatus(PROXY_WORKER_HOT_SPARE_FLAG, atoi(val), wsel);
+            int ival;
+            if (balancer_parse_int(val, 0, 1, &ival)) {
+                ap_proxy_set_wstatus(PROXY_WORKER_HOT_SPARE_FLAG, ival, wsel);
+            }
         }
         if ((val = apr_table_get(params, "w_status_S"))) {
-            ap_proxy_set_wstatus(PROXY_WORKER_STOPPED_FLAG, atoi(val), wsel);
+            int ival;
+            if (balancer_parse_int(val, 0, 1, &ival)) {
+                ap_proxy_set_wstatus(PROXY_WORKER_STOPPED_FLAG, ival, wsel);
+            }
         }
         if ((val = apr_table_get(params, "w_status_C"))) {
-            ap_proxy_set_wstatus(PROXY_WORKER_HC_FAIL_FLAG, atoi(val), wsel);
+            int ival;
+            if (balancer_parse_int(val, 0, 1, &ival)) {
+                ap_proxy_set_wstatus(PROXY_WORKER_HC_FAIL_FLAG, ival, wsel);
+            }
         }
         if ((val = apr_table_get(params, "w_ls"))) {
-            int ival = atoi(val);
-            if (ival >= 0 && ival <= 99) {
+            int ival;
+            if (balancer_parse_int(val, 0, 99, &ival)) {
                 wsel->s->lbset = ival;
              }
         }
@@ -1174,14 +1244,14 @@ static int balancer_process_balancer_worker(request_rec *r, proxy_server_conf *c
             }
         }
         if ((val = apr_table_get(params, "w_hp"))) {
-            int ival = atoi(val);
-            if (ival >= 1) {
+            int ival;
+            if (balancer_parse_int(val, 1, APR_INT32_MAX, &ival)) {
                 wsel->s->passes = ival;
              }
         }
         if ((val = apr_table_get(params, "w_hf"))) {
-            int ival = atoi(val);
-            if (ival >= 1) {
+            int ival;
+            if (balancer_parse_int(val, 1, APR_INT32_MAX, &ival)) {
                 wsel->s->fails = ival;
              }
         }
@@ -1234,21 +1304,20 @@ static int balancer_process_balancer_worker(request_rec *r, proxy_server_conf *c
             }
         }
         if ((val = apr_table_get(params, "b_tmo"))) {
-            ival = atoi(val);
-            if (ival >= 0 && ival <= 7200) { /* 2 hrs enuff? */
+            if (balancer_parse_int(val, 0, 7200, &ival)) { /* 2 hrs enuff? */
                 bsel->s->timeout = apr_time_from_sec(ival);
             }
         }
         if ((val = apr_table_get(params, "b_max"))) {
-            ival = atoi(val);
-            if (ival >= 0 && ival <= 99) {
+            if (balancer_parse_int(val, 0, 99, &ival)) {
                 bsel->s->max_attempts = ival;
                 bsel->s->max_attempts_set = 1;
             }
         }
         if ((val = apr_table_get(params, "b_sforce"))) {
-            ival = atoi(val);
-            bsel->s->sticky_force = (ival != 0);
+            if (balancer_parse_int(val, 0, 1, &ival)) {
+                bsel->s->sticky_force = (ival != 0);
+            }
         }
         if ((val = apr_table_get(params, "b_ss")) && *val) {
             if (strlen(val) < (sizeof(bsel->s->sticky_path)-1)) {
