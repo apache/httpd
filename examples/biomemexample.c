@@ -35,10 +35,10 @@ int sendreceive(SSL* ssl, BIO* ssl_r, BIO* ssl_w, int fdread, int fdwrite)
         printf("sendreceive: BIO_read %d %d\n", error, ret);
         if (error != SSL_ERROR_NONE)
             break;
-        write(fdwrite, buf, ret);
+        write(fdwrite, buf, (size_t)ret);
 
         /* the receiver */
-        n = read(fdread, buf, 4096);
+        n = (int)read(fdread, buf, 4096);
         if (n <= 0)
         {
             printf("sendreceive: read failed %d\n", errno);
@@ -56,14 +56,17 @@ int sendreceive(SSL* ssl, BIO* ssl_r, BIO* ssl_w, int fdread, int fdwrite)
             printf("We need to retry...\n");
         }
         printf("sendreceive: received: %s send: %s SSL_read %d %d\n", buf, string, ret, SSL_get_error(ssl, ret));
+
         /*
-    ret = BIO_read(ssl_w, buf, 4096);
-    error = SSL_get_error(ssl, ret);
-    printf("sendreceive: BIO_read %d\n", error);
-    if (error != SSL_ERROR_NONE)
-      break;
-    write(fdwrite, buf, ret);
- */
+        ret = BIO_read(ssl_w, buf, 4096);
+        error = SSL_get_error(ssl, ret);
+        printf("sendreceive: BIO_read %d\n", error);
+        if (error != SSL_ERROR_NONE)
+        {
+            break;
+        }
+        write(fdwrite, buf, ret);
+        */
     }
     return 0;
 }
@@ -105,11 +108,11 @@ int client(int fdread, int fdwrite)
             {
                 printf("client: SSL_do_handshake DONE???\n");
                 fflush(stdout);
-                int ret = BIO_read(client_w, buf, 4096);
-                if (ret > 0)
+                int rret = BIO_read(client_w, buf, 4096);
+                if (rret > 0)
                 {
-                    write(fdwrite, buf, ret);
-                    printf("client: SSL_do_handshake DONE %d %d\n", ret, SSL_get_error(ssl_client, ret));
+                    write(fdwrite, buf, (size_t)rret);
+                    printf("client: SSL_do_handshake DONE %d %d\n", rret, SSL_get_error(ssl_client, rret));
                     fflush(stdout);
                     break; /* Done */
                 }
@@ -123,7 +126,7 @@ int client(int fdread, int fdwrite)
             int ret = BIO_read(client_w, buf, 4096);
             if (ret > 0)
             {
-                write(fdwrite, buf, ret);
+                write(fdwrite, buf, (size_t)ret);
                 printf("client SSL_ERROR_WANT_READ read %d\n", ret);
                 fflush(stdout);
                 continue;
@@ -139,7 +142,7 @@ int client(int fdread, int fdwrite)
         {
             printf("client SSL_ERROR_WANT_WRITE\n");
             fflush(stdout);
-            n = read(fdread, buf, 4096);
+            n = (int)read(fdread, buf, 4096);
             if (n <= 0)
             {
                 printf("read failed %d", errno);
@@ -161,7 +164,7 @@ int client(int fdread, int fdwrite)
         int err = select(fdread + 1, &fdset, NULL, NULL, &tv);
         if (err > 0)
         {
-            n = read(fdread, buf, 4096);
+            n = (int)read(fdread, buf, 4096);
             if (n <= 0)
                 break;
             int ret = BIO_write(client_r, buf, n);
@@ -213,11 +216,11 @@ int server(int fdread, int fdwrite)
             {
                 printf("server: SSL_do_handshake DONE???\n");
                 fflush(stdout);
-                int ret = BIO_read(srv_w, buf, 4096);
-                if (ret > 0)
+                int rret = BIO_read(srv_w, buf, 4096);
+                if (rret > 0)
                 {
-                    write(fdwrite, buf, ret);
-                    printf("server: SSL_do_handshake DONE %d %d\n", ret, SSL_get_error(ssl_srv, ret));
+                    write(fdwrite, buf, (size_t)rret);
+                    printf("server: SSL_do_handshake DONE %d %d\n", rret, SSL_get_error(ssl_srv, rret));
                     fflush(stdout);
                     break; /* Done */
                 }
@@ -243,7 +246,7 @@ int server(int fdread, int fdwrite)
             }
             else
             {
-                write(fdwrite, buf, n);
+                write(fdwrite, buf, (size_t)n);
                 printf("server SSL_ERROR_WANT_READ read %d\n", n);
                 fflush(stdout);
                 continue;
@@ -253,7 +256,7 @@ int server(int fdread, int fdwrite)
         {
             printf("server SSL_ERROR_WANT_WRITE\n");
             fflush(stdout);
-            n = read(fdread, buf, 4096);
+            n = (int)read(fdread, buf, 4096);
             if (n <= 0)
             {
                 printf("failed %d\n", errno);
@@ -281,7 +284,7 @@ int server(int fdread, int fdwrite)
         int err = select(fdread + 1, &fdset, NULL, NULL, &tv);
         if (err > 0)
         {
-            n = read(fdread, buf, 4096);
+            n = (int)read(fdread, buf, 4096);
             if (n <= 0)
             {
                 printf("server received read error\n");

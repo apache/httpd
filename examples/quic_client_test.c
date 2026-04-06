@@ -65,7 +65,7 @@ static int calculate_max_streams(int num_streams)
 static void init_id(int num_streams)
 {
     max_ssl_ids = calculate_max_streams(num_streams);
-    ssl_ids = (struct ssl_id*)calloc(max_ssl_ids, sizeof(struct ssl_id));
+    ssl_ids = (struct ssl_id*)calloc((size_t)max_ssl_ids, sizeof(struct ssl_id));
     if (ssl_ids == NULL)
     {
         printf("Failed to allocate ssl_ids array!\n");
@@ -97,7 +97,7 @@ static void add_id(SSL* s)
         if (!ssl_ids[i].s)
         {
             ssl_ids[i].s = s;
-            ssl_ids[i].id = SSL_get_stream_id(s);
+            ssl_ids[i].id = (int64_t)SSL_get_stream_id(s);
             ssl_ids[i].status = STATUS_NONE;
             return;
         }
@@ -136,7 +136,7 @@ static SSL* get_ssl_from_id(int64_t id)
 /* Accept the new QUIC stream opened by the other side */
 static void accept_new_ssl_ids(SSL* s, BIO* bio)
 {
-    int num = SSL_get_accept_stream_queue_len(s);
+    int num = (int)SSL_get_accept_stream_queue_len(s);
     if (num > 0)
     {
         for (int i = 0; i < num; i++)
@@ -144,7 +144,7 @@ static void accept_new_ssl_ids(SSL* s, BIO* bio)
             SSL* new_ssl = SSL_accept_stream(s, 0);
             if (new_ssl)
             {
-                printf("accept_new_ssl_ids accepted: SSL_get_stream_id: %d %d\n", SSL_get_stream_id(new_ssl), SSL_get_stream_type(new_ssl));
+                printf("accept_new_ssl_ids accepted: SSL_get_stream_id: %llu %d\n", (unsigned long long)SSL_get_stream_id(new_ssl), SSL_get_stream_type(new_ssl));
                 add_id(new_ssl);
                 SSL_set_msg_callback(new_ssl, SSL_trace);
                 SSL_set_msg_callback_arg(new_ssl, bio);
@@ -183,8 +183,8 @@ static int read_from_ssl_ids(nghttp3_conn* conn)
     {
         if (ssl_ids[i].s)
         {
-            int id = SSL_get_stream_id(ssl_ids[i].s);
-            if (id == -1 || id == 2 || id == 6 || id == 10)
+            uint64_t id = SSL_get_stream_id(ssl_ids[i].s);
+            if (id == (uint64_t)-1 || id == 2 || id == 6 || id == 10)
                 continue; // skip those.
 
             /* try to read */
@@ -195,33 +195,33 @@ static int read_from_ssl_ids(nghttp3_conn* conn)
                 if (SSL_get_error(ssl_ids[i].s, ret) == SSL_ERROR_ZERO_RETURN)
                 {
                     /* Check status flags */
-                    printf("\n SSL_ERROR_ZERO_RETURN on %d (status=0x%x)\n", id, ssl_ids[i].status);
+                    printf("\n SSL_ERROR_ZERO_RETURN on %llu (status=0x%x)\n", (unsigned long long)id, ssl_ids[i].status);
                     if (ssl_ids[i].status & STATUS_FINSEND)
                     {
-                        printf("  STATUS_FINSEND is set on %d\n", id);
+                        printf("  STATUS_FINSEND is set on %llu\n", (unsigned long long)id);
                     }
                     if (ssl_ids[i].status & STATUS_FINRECEIVED)
                     {
-                        printf("  STATUS_FINRECEIVED is set on %d\n", id);
+                        printf("  STATUS_FINRECEIVED is set on %llu\n", (unsigned long long)id);
                     }
                     if ((ssl_ids[i].status & (STATUS_FINSEND | STATUS_FINRECEIVED)) == (STATUS_FINSEND | STATUS_FINRECEIVED))
                     {
-                        printf("  Both FIN flags set - stream fully closed on %d\n", id);
+                        printf("  Both FIN flags set - stream fully closed on %llu\n", (unsigned long long)id);
                         /* Stream will be closed via cb_h3_end_stream callback */
                         continue;
                     }
                     /* Notify nghttp3 of EOF only if not already done */
                     if (!(ssl_ids[i].status & STATUS_FINRECEIVED))
                     {
-                        ret = nghttp3_conn_read_stream(conn, SSL_get_stream_id(ssl_ids[i].s), NULL, 0, 1);
-                        if (ret < 0)
+                        nghttp3_ssize r = nghttp3_conn_read_stream(conn, (int64_t)SSL_get_stream_id(ssl_ids[i].s), NULL, 0, 1);
+                        if (r < 0)
                         {
-                            printf("\n SSL_read_ex nghttp3_conn_read_stream %d on %d\n", ret, SSL_get_stream_id(ssl_ids[i].s));
+                            printf("\n SSL_read_ex nghttp3_conn_read_stream %ld on %llu\n", (long)r, (unsigned long long)SSL_get_stream_id(ssl_ids[i].s));
                             fflush(stdout);
                             return -1;
                         }
                         ssl_ids[i].status |= STATUS_FINRECEIVED;
-                        printf("  STATUS_FINRECEIVED set via SSL_ERROR_ZERO_RETURN on %d\n", id);
+                        printf("  STATUS_FINRECEIVED set via SSL_ERROR_ZERO_RETURN on %llu\n", (unsigned long long)id);
                     }
                     continue;
                 }
@@ -231,9 +231,9 @@ static int read_from_ssl_ids(nghttp3_conn* conn)
                 }
                 else if (!(is_want(ssl_ids[i].s, ret)))
                 {
-                    printf("\n SSL_read_ex FAILED %d on %d!\n", SSL_get_error(ssl_ids[i].s, ret), SSL_get_stream_id(ssl_ids[i].s));
+                    printf("\n SSL_read_ex FAILED %d on %llu!\n", SSL_get_error(ssl_ids[i].s, ret), (unsigned long long)SSL_get_stream_id(ssl_ids[i].s));
                     char buf[256];
-                    unsigned long err = SSL_get_error(ssl_ids[i].s, ret);
+                    unsigned long err = (unsigned long)SSL_get_error(ssl_ids[i].s, ret);
                     printf("Detailed Error: %s\n", ERR_error_string(err, buf));
                     fflush(stdout);
                     continue; // TODO
@@ -241,35 +241,36 @@ static int read_from_ssl_ids(nghttp3_conn* conn)
             }
             else
             {
-                int32_t flags = NGHTTP3_DATA_FLAG_NONE;
+                uint32_t flags = NGHTTP3_DATA_FLAG_NONE;
                 if (SSL_get_stream_read_state(ssl_ids[i].s) == SSL_STREAM_STATE_FINISHED)
                 {
-                    flags |= NGHTTP3_DATA_FLAG_EOF;
+                    flags |= (uint32_t)NGHTTP3_DATA_FLAG_EOF;
                 }
 
-                printf("\nreading something %d on %d\n", l, SSL_get_stream_id(ssl_ids[i].s));
-                int r = nghttp3_conn_read_stream(conn, SSL_get_stream_id(ssl_ids[i].s), msg2, l, flags);
-                printf("nghttp3_conn_read_stream used %d of %d on %d flag: %d\n", r, l, SSL_get_stream_id(ssl_ids[i].s), flags);
-                if (flags & NGHTTP3_DATA_FLAG_EOF)
+                printf("\nreading something %lu on %llu\n", (unsigned long)l, (unsigned long long)SSL_get_stream_id(ssl_ids[i].s));
+                nghttp3_ssize r = nghttp3_conn_read_stream(conn, (int64_t)SSL_get_stream_id(ssl_ids[i].s), (uint8_t*)msg2, l, (int)flags);
+                printf("nghttp3_conn_read_stream used %ld of %lu on %llu flag: %u\n", (long)r, (unsigned long)l, (unsigned long long)SSL_get_stream_id(ssl_ids[i].s), flags);
+                if (flags & (uint32_t)NGHTTP3_DATA_FLAG_EOF)
                 {
                     ssl_ids[i].status |= STATUS_FINRECEIVED;
-                    printf("Status set to FINRECEIVED for stream %d\n", SSL_get_stream_id(ssl_ids[i].s));
+                    printf("Status set to FINRECEIVED for stream %llu\n", (unsigned long long)SSL_get_stream_id(ssl_ids[i].s));
                 }
             }
         }
     }
-}
-
-static int cb_h3_acked_stream_data(nghttp3_conn* conn, int64_t stream_id, uint64_t datalen, void* conn_user_data, void* stream_user_data)
-{
-    printf("cb_h3_acked_stream_data! on %d\n", stream_id);
     return 0;
 }
 
-static int cb_h3_end_stream(nghttp3_conn* conn, int64_t stream_id, void* conn_user_data, void* stream_user_data)
+static int cb_h3_acked_stream_data(nghttp3_conn* /*conn*/, int64_t stream_id, uint64_t /*datalen*/, void* /*conn_user_data*/, void* /*stream_user_data*/)
+{
+    printf("cb_h3_acked_stream_data! on %lld\n", (long long)stream_id);
+    return 0;
+}
+
+static int cb_h3_end_stream(nghttp3_conn* conn, int64_t stream_id, void* /*conn_user_data*/, void* /*stream_user_data*/)
 {
     SSL* stream = get_ssl_from_id(stream_id);
-    printf("cb_h3_end_stream! on %d\n", stream_id);
+    printf("cb_h3_end_stream! on %lld\n", (long long)stream_id);
     fflush(stdout);
 
     if (stream)
@@ -278,7 +279,7 @@ static int cb_h3_end_stream(nghttp3_conn* conn, int64_t stream_id, void* conn_us
         int ret = nghttp3_conn_close_stream(conn, stream_id, NGHTTP3_H3_NO_ERROR);
         if (ret != 0 && ret != NGHTTP3_ERR_STREAM_NOT_FOUND)
         {
-            printf("  cb_h3_end_stream: nghttp3_conn_close_stream failed: %d on %d\n", ret, stream_id);
+            printf("  cb_h3_end_stream: nghttp3_conn_close_stream failed: %d on %lld\n", ret, (long long)stream_id);
         }
 
         /* Clean up SSL stream */
@@ -290,35 +291,35 @@ static int cb_h3_end_stream(nghttp3_conn* conn, int64_t stream_id, void* conn_us
     return 0;
 }
 
-static int cb_h3_acked_req_body(nghttp3_conn* conn, int64_t stream_id, uint64_t datalen, void* user_data, void* stream_user_data)
+static int cb_h3_acked_req_body(nghttp3_conn* /*conn*/, int64_t stream_id, uint64_t /*datalen*/, void* /*user_data*/, void* /*stream_user_data*/)
 {
-    printf("cb_h3_acked_req_body! on %d\n", stream_id);
+    printf("cb_h3_acked_req_body! on %lld\n", (long long)stream_id);
     return 0;
 }
-static int cb_h3_stream_close(nghttp3_conn* conn, int64_t stream_id, uint64_t app_error_code, void* conn_user_data, void* stream_user_data)
+static int cb_h3_stream_close(nghttp3_conn* /*conn*/, int64_t stream_id, uint64_t app_error_code, void* /*conn_user_data*/, void* /*stream_user_data*/)
 {
-    printf("cb_h3_stream_close! on %d %d\n", stream_id, app_error_code);
+    printf("cb_h3_stream_close! on %lld %llu\n", (long long)stream_id, (unsigned long long)app_error_code);
     return 0;
 }
-static int begin_headers(nghttp3_conn* conn, int64_t stream_id, void* user_data, void* stream_user_data)
+static int begin_headers(nghttp3_conn* /*conn*/, int64_t /*stream_id*/, void* /*user_data*/, void* /*stream_user_data*/)
 {
     printf("begin_headers!\n");
     return 0;
 }
-static int cb_h3_begin_headers(nghttp3_conn* conn, int64_t stream_id, void* conn_user_data, void* stream_user_data)
+static int cb_h3_begin_headers(nghttp3_conn* /*conn*/, int64_t stream_id, void* /*conn_user_data*/, void* /*stream_user_data*/)
 {
-    printf("cb_h3_begin_headers! on %d\n", stream_id);
+    printf("cb_h3_begin_headers! on %lld\n", (long long)stream_id);
     return 0;
 }
-static int cb_h3_recv_header(nghttp3_conn* conn, int64_t stream_id, int32_t token, nghttp3_rcbuf* name, nghttp3_rcbuf* value, uint8_t flags, void* user_data, void* stream_user_data)
+static int cb_h3_recv_header(nghttp3_conn* /*conn*/, int64_t stream_id, int32_t token, nghttp3_rcbuf* name, nghttp3_rcbuf* value, uint8_t /*flags*/, void* /*user_data*/, void* /*stream_user_data*/)
 {
-    printf("cb_h3_recv_header! on %d\n", stream_id);
+    printf("cb_h3_recv_header! on %lld\n", (long long)stream_id);
     nghttp3_vec h3name = nghttp3_rcbuf_get_buf(name);
     nghttp3_vec h3val = nghttp3_rcbuf_get_buf(value);
 
     if (token == NGHTTP3_QPACK_TOKEN__STATUS)
     {
-        printf("Status %.*s\n", h3val.len, h3val.base);
+        printf("Status %.*s\n", (int)h3val.len, h3val.base);
     }
     else
     {
@@ -326,39 +327,39 @@ static int cb_h3_recv_header(nghttp3_conn* conn, int64_t stream_id, int32_t toke
     }
     return 0;
 }
-static int cb_h3_end_headers(nghttp3_conn* conn, int64_t stream_id, int fin, void* user_data, void* stream_user_data)
+static int cb_h3_end_headers(nghttp3_conn* /*conn*/, int64_t stream_id, int fin, void* /*user_data*/, void* /*stream_user_data*/)
 {
 
-    printf("cb_h3_end_headers! on %d fin: %d\n", stream_id, fin);
+    printf("cb_h3_end_headers! on %lld fin: %d\n", (long long)stream_id, fin);
     return 0;
 }
-static int cb_h3_recv_data(nghttp3_conn* conn, int64_t stream_id, const uint8_t* data, size_t datalen, void* conn_user_data, void* stream_user_data)
+static int cb_h3_recv_data(nghttp3_conn* /*conn*/, int64_t stream_id, const uint8_t* data, size_t datalen, void* /*conn_user_data*/, void* /*stream_user_data*/)
 {
-    printf("cb_h3_recv_data! %d on %d\n", datalen, stream_id);
-    printf("cb_h3_recv_data! %.*s\n", datalen, data);
+    printf("cb_h3_recv_data! %lu on %lld\n", (unsigned long)datalen, (long long)stream_id);
+    printf("cb_h3_recv_data! %.*s\n", (int)datalen, data);
     return 0;
 }
-static int cb_h3_deferred_consume(nghttp3_conn* conn, int64_t stream3_id, size_t consumed, void* user_data, void* stream_user_data)
+static int cb_h3_deferred_consume(nghttp3_conn* /*conn*/, int64_t stream3_id, size_t /*consumed*/, void* /*user_data*/, void* /*stream_user_data*/)
 {
-    printf("cb_h3_deferred_consume! on %d\n", stream3_id);
+    printf("cb_h3_deferred_consume! on %lld\n", (long long)stream3_id);
     return 0;
 }
-static int cb_h3_stop_sending(nghttp3_conn* conn, int64_t stream_id, uint64_t app_error_code, void* user_data, void* stream_user_data)
+static int cb_h3_stop_sending(nghttp3_conn* /*conn*/, int64_t stream_id, uint64_t /*app_error_code*/, void* /*user_data*/, void* /*stream_user_data*/)
 {
-    printf("cb_h3_stop_sending! on %d\n", stream_id);
+    printf("cb_h3_stop_sending! on %lld\n", (long long)stream_id);
     return 0;
 }
-static int cb_h3_reset_stream(nghttp3_conn* conn, int64_t stream_id, uint64_t app_error_code, void* user_data, void* stream_user_data)
+static int cb_h3_reset_stream(nghttp3_conn* /*conn*/, int64_t stream_id, uint64_t /*app_error_code*/, void* /*user_data*/, void* /*stream_user_data*/)
 {
-    printf("cb_h3_reset_stream! on %d\n", stream_id);
+    printf("cb_h3_reset_stream! on %lld\n", (long long)stream_id);
     return 0;
 }
-static int cb_h3_shutdown(nghttp3_conn* conn, int64_t id, void* conn_user_data)
+static int cb_h3_shutdown(nghttp3_conn* /*conn*/, int64_t id, void* /*conn_user_data*/)
 {
-    printf("cb_h3_shutdown! on %d\n", id);
+    printf("cb_h3_shutdown! on %lld\n", (long long)id);
     return 0;
 }
-static int cb_h3_recv_settings(nghttp3_conn* conn, const nghttp3_settings* settings, void* conn_user_data)
+static int cb_h3_recv_settings(nghttp3_conn* /*conn*/, const nghttp3_settings* settings, void* /*conn_user_data*/)
 {
     printf("cb_h3_recv_settings!\n");
     printf("cb_h3_recv_settings: max_field_section_size %ld\n", settings->max_field_section_size);
@@ -377,11 +378,11 @@ static int jfc_send_stream(SSL* M_ssl, int sveccnt, nghttp3_vec* vec, int fin)
         size_t written = vec[i].len;
         if (fin && i == sveccnt - 1)
             flagwrite = SSL_WRITE_FLAG_CONCLUDE;
-        int rv = SSL_write_ex2(M_ssl, vec[i].base, vec[i].len, flagwrite, &written);
-        printf("jfc_send_stream written %d:%d on %d\n", written, vec[i].len, SSL_get_stream_id(M_ssl));
+        int rv = SSL_write_ex2(M_ssl, vec[i].base, vec[i].len, (uint64_t)flagwrite, &written);
+        printf("jfc_send_stream written %lu:%lu on %llu\n", (unsigned long)written, (unsigned long)vec[i].len, (unsigned long long)SSL_get_stream_id(M_ssl));
         if (rv <= 0)
-            printf("SSL_write failed! %d on %d\n", SSL_get_error(M_ssl, rv), SSL_get_stream_id(M_ssl));
-        total_written = total_written + written;
+            printf("SSL_write failed! %d on %llu\n", SSL_get_error(M_ssl, rv), (unsigned long long)SSL_get_stream_id(M_ssl));
+        total_written = (int)(total_written + (int)written);
     }
     return total_written;
 }
@@ -397,7 +398,7 @@ static void send_all_stream(nghttp3_conn* conn)
         nghttp3_ssize sveccnt = nghttp3_conn_writev_stream(conn, &stream_id, &fin, vec, 256);
         if (sveccnt < 0)
         {
-            printf("nghttp3_conn_writev_stream failed %d!\n", sveccnt);
+            printf("nghttp3_conn_writev_stream failed %ld!\n", (long)sveccnt);
             exit(1);
         }
         else if (sveccnt == 0 && stream_id == -1)
@@ -408,39 +409,39 @@ static void send_all_stream(nghttp3_conn* conn)
         }
         else if (sveccnt == 0 && stream_id != -1)
         {
-            printf("Done with nghttp3_conn_writev_stream on %d fin: %d\n", stream_id, fin);
+            printf("Done with nghttp3_conn_writev_stream on %lld fin: %d\n", (long long)stream_id, fin);
             nghttp3_conn_add_write_offset(conn, stream_id, 0);
             break;
         }
         else
         {
             /* We have to write the vec stuff */
-            printf("sending %d on %d (fin: %d)\n", sveccnt, stream_id, fin);
+            printf("sending %ld on %lld (fin: %d)\n", (long)sveccnt, (long long)stream_id, fin);
             SSL* MY_ssl = get_ssl_from_id(stream_id);
             if (!MY_ssl)
             {
-                printf("on %d unknown\n", stream_id);
+                printf("on %lld unknown\n", (long long)stream_id);
                 exit(1);
             }
 
-            int i = jfc_send_stream(MY_ssl, sveccnt, vec, fin);
+            int i = jfc_send_stream(MY_ssl, (int)sveccnt, vec, fin);
 
             if (i != 0)
             {
                 /* Assume we have written everything */
-                printf("sent %d on %d (fin: %d)\n", sveccnt, stream_id, fin);
+                printf("sent %ld on %lld (fin: %d)\n", (long)sveccnt, (long long)stream_id, fin);
                 nghttp3_conn_add_write_offset(conn, stream_id, (size_t)nghttp3_vec_len(vec, (size_t)sveccnt));
-                printf("sent %d on %d (fin: %d)\n", sveccnt, stream_id, fin);
+                printf("sent %ld on %lld (fin: %d)\n", (long)sveccnt, (long long)stream_id, fin);
                 if (fin)
                 {
-                    printf("FIN on %d\n", stream_id);
+                    printf("FIN on %lld\n", (long long)stream_id);
                     /* Set FINSEND status */
                     for (int j = 0; j < max_ssl_ids; j++)
                     {
                         if (ssl_ids[j].id == stream_id)
                         {
                             ssl_ids[j].status |= STATUS_FINSEND;
-                            printf("Status set to FINSEND for stream %d\n", stream_id);
+                            printf("Status set to FINSEND for stream %lld\n", (long long)stream_id);
                             break;
                         }
                     }
@@ -451,7 +452,7 @@ static void send_all_stream(nghttp3_conn* conn)
             }
             else
             {
-                printf("sending NOTHING %d on %d (fin: %d)\n", sveccnt, stream_id, fin);
+                printf("sending NOTHING %ld on %lld (fin: %d)\n", (long)sveccnt, (long long)stream_id, fin);
             }
         }
     }
@@ -470,7 +471,6 @@ static int test_quic_client(char* hostname, short port, char* sport, int num_str
     int c_connected = 0, c_write_done = 0, c_shutdown = 0, c_streamopened = 0;
     SSL** d_ssl = NULL;
     int stream_idx = 0;
-    size_t l = 0, c_total_read = 0;
     apr_time_t start_time;
     /* unsigned char alpn[] = { 8, 'h', 't', 't', 'p', '/', '0', '.', '9' }; lol */
     unsigned char alpn[] = {5, 'h', '3', '-', '2', '9', 2, 'h', '3'};
@@ -481,11 +481,8 @@ static int test_quic_client(char* hostname, short port, char* sport, int num_str
     nghttp3_conn* conn;
     nghttp3_settings settings;
     nghttp3_callbacks callbacks = {0};
-    nghttp3_vec vec[256];
-    int64_t stream_id;
     // userdata ud;
     char ud[10];
-    int fin;
     const nghttp3_mem* mem = nghttp3_mem_default();
 
     char authority[128];
@@ -508,7 +505,7 @@ static int test_quic_client(char* hostname, short port, char* sport, int num_str
     memset(&ud, 0, sizeof(ud));
 
     /* Allocate array for multiple d_ssl streams */
-    d_ssl = (SSL**)calloc(num_streams, sizeof(SSL*));
+    d_ssl = (SSL**)calloc((size_t)num_streams, sizeof(SSL*));
     if (d_ssl == NULL)
     {
         TEST_error("Failed to allocate d_ssl array\n");
@@ -542,7 +539,7 @@ static int test_quic_client(char* hostname, short port, char* sport, int num_str
     if (hp == NULL)
         goto err;
 
-    memcpy(&ina, hp->h_addr, hp->h_length);
+    memcpy(&ina, hp->h_addr, (size_t)hp->h_length);
     printf("Connecting to %s:%d\n", inet_ntoa(ina), port);
     printf("Connecting to authority %s\n", authority);
 
@@ -559,7 +556,7 @@ static int test_quic_client(char* hostname, short port, char* sport, int num_str
         goto err;
 
     TEST_info("Before: BIO_ADDR_rawmake\n");
-    if (!(BIO_ADDR_rawmake(s_addr_, AF_INET, &ina, sizeof(ina), htons(port))))
+    if (!(BIO_ADDR_rawmake(s_addr_, AF_INET, &ina, sizeof(ina), htons((uint16_t)port))))
     {
         TEST_error("BIO_ADDR_rawmake failed!\n");
         goto err;
@@ -674,27 +671,27 @@ static int test_quic_client(char* hostname, short port, char* sport, int num_str
             SSL* C_ssl = SSL_new_stream(c_ssl, SSL_STREAM_FLAG_UNI);
             SSL_set_msg_callback(C_ssl, SSL_trace);
             SSL_set_msg_callback_arg(C_ssl, bio);
-            printf("SSL_get_stream_id: %d type: %d\n", SSL_get_stream_id(C_ssl), SSL_get_stream_type(C_ssl));
+            printf("SSL_get_stream_id: %llu type: %d\n", (unsigned long long)SSL_get_stream_id(C_ssl), SSL_get_stream_type(C_ssl));
             SSL* p_ssl = SSL_new_stream(c_ssl, SSL_STREAM_FLAG_UNI);
             SSL_set_msg_callback(p_ssl, SSL_trace);
             SSL_set_msg_callback_arg(p_ssl, bio);
-            printf("SSL_get_stream_id: %d type: %d\n", SSL_get_stream_id(p_ssl), SSL_get_stream_type(p_ssl));
+            printf("SSL_get_stream_id: %llu type: %d\n", (unsigned long long)SSL_get_stream_id(p_ssl), SSL_get_stream_type(p_ssl));
             SSL* r_ssl = SSL_new_stream(c_ssl, SSL_STREAM_FLAG_UNI);
             SSL_set_msg_callback(r_ssl, SSL_trace);
             SSL_set_msg_callback_arg(r_ssl, bio);
-            printf("SSL_get_stream_id: %d type: %d\n", SSL_get_stream_id(r_ssl), SSL_get_stream_type(r_ssl));
+            printf("SSL_get_stream_id: %llu type: %d\n", (unsigned long long)SSL_get_stream_id(r_ssl), SSL_get_stream_type(r_ssl));
 
-            if (nghttp3_conn_bind_control_stream(conn, SSL_get_stream_id(C_ssl)))
+            if (nghttp3_conn_bind_control_stream(conn, (int64_t)SSL_get_stream_id(C_ssl)))
             {
                 printf("nghttp3_conn_bind_control_stream failed!\n");
                 exit(1);
             }
-            if (nghttp3_conn_bind_qpack_streams(conn, SSL_get_stream_id(p_ssl), SSL_get_stream_id(r_ssl)))
+            if (nghttp3_conn_bind_qpack_streams(conn, (int64_t)SSL_get_stream_id(p_ssl), (int64_t)SSL_get_stream_id(r_ssl)))
             {
                 printf("nghttp3_conn_bind_qpack_streams failed!\n");
                 exit(1);
             }
-            printf("control: %d enc %d dec %d\n", SSL_get_stream_id(C_ssl), SSL_get_stream_id(p_ssl), SSL_get_stream_id(r_ssl));
+            printf("control: %llu enc %llu dec %llu\n", (unsigned long long)SSL_get_stream_id(C_ssl), (unsigned long long)SSL_get_stream_id(p_ssl), (unsigned long long)SSL_get_stream_id(r_ssl));
             add_id(C_ssl);
             add_id(p_ssl);
             add_id(r_ssl);
@@ -731,9 +728,9 @@ static int test_quic_client(char* hostname, short port, char* sport, int num_str
                 add_id(d_ssl[stream_idx]);
                 if (stream_idx < 10)
                 {
-                    printf("Stream %d - SSL_get_stream_id: %d type: %d\n", stream_idx, SSL_get_stream_id(d_ssl[stream_idx]), SSL_get_stream_type(d_ssl[stream_idx]));
+                    printf("Stream %d - SSL_get_stream_id: %llu type: %d\n", stream_idx, (unsigned long long)SSL_get_stream_id(d_ssl[stream_idx]), SSL_get_stream_type(d_ssl[stream_idx]));
                 }
-                if (nghttp3_conn_submit_request(conn, SSL_get_stream_id(d_ssl[stream_idx]), nva, num_nv, NULL, NULL))
+                if (nghttp3_conn_submit_request(conn, (int64_t)SSL_get_stream_id(d_ssl[stream_idx]), nva, num_nv, NULL, NULL))
                 {
                     printf("nghttp3_conn_submit_request failed for stream %d!\n", stream_idx);
                     exit(1);
@@ -807,7 +804,7 @@ int main(int argc, char** argv)
         exit(1);
     }
 
-    port = atoi(argv[2]);
+    port = (short)atoi(argv[2]);
     if (port <= 0)
     {
         printf("port: %s invalid\n", argv[2]);

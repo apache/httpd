@@ -210,7 +210,7 @@ static int get_next_timeout(struct h3ssl* h3ssl, struct timeval* tv)
     return 0;
 }
 
-static int on_recv_header(nghttp3_conn* conn, int64_t stream_id, int32_t token, nghttp3_rcbuf* name, nghttp3_rcbuf* value, uint8_t flags, void* user_data, void* stream_user_data)
+static int on_recv_header(nghttp3_conn* /*conn*/, int64_t /*stream_id*/, int32_t token, nghttp3_rcbuf* name, nghttp3_rcbuf* value, uint8_t /*flags*/, void* user_data, void* /*stream_user_data*/)
 {
     nghttp3_vec vname, vvalue;
     struct h3ssl* h3ssl = (struct h3ssl*)user_data;
@@ -242,7 +242,7 @@ static int on_recv_header(nghttp3_conn* conn, int64_t stream_id, int32_t token, 
     return 0;
 }
 
-static int on_end_headers(nghttp3_conn* conn, int64_t stream_id, int fin, void* user_data, void* stream_user_data)
+static int on_end_headers(nghttp3_conn* /*conn*/, int64_t /*stream_id*/, int /*fin*/, void* user_data, void* /*stream_user_data*/)
 {
     struct h3ssl* h3ssl = (struct h3ssl*)user_data;
 
@@ -252,7 +252,7 @@ static int on_end_headers(nghttp3_conn* conn, int64_t stream_id, int fin, void* 
     return 0;
 }
 
-static int on_recv_data(nghttp3_conn* conn, int64_t stream_id, const uint8_t* data, size_t datalen, void* conn_user_data, void* stream_user_data)
+static int on_recv_data(nghttp3_conn* /*conn*/, int64_t /*stream_id*/, const uint8_t* data, size_t datalen, void* /*conn_user_data*/, void* /*stream_user_data*/)
 {
     printf("on_recv_data!!!\n");
     fprintf(stderr, "on_recv_data! %ld\n", (unsigned long)datalen);
@@ -260,7 +260,7 @@ static int on_recv_data(nghttp3_conn* conn, int64_t stream_id, const uint8_t* da
     return 0;
 }
 
-static int on_end_stream(nghttp3_conn* h3conn, int64_t stream_id, void* conn_user_data, void* stream_user_data)
+static int on_end_stream(nghttp3_conn* /*h3conn*/, int64_t /*stream_id*/, void* conn_user_data, void* /*stream_user_data*/)
 {
     struct h3ssl* h3ssl = (struct h3ssl*)conn_user_data;
 
@@ -279,7 +279,7 @@ static int quic_server_read(nghttp3_conn* h3conn, SSL* stream, uint64_t id, stru
     if (!SSL_has_pending(stream))
         return 0; /* Nothing to read */
 
-    ret = SSL_read(stream, msg2, l);
+    ret = SSL_read(stream, msg2, (int)l);
     if (ret <= 0)
     {
         fprintf(stderr, "SSL_read %d on %llu failed\n", SSL_get_error(stream, ret), (unsigned long long)id);
@@ -294,7 +294,7 @@ static int quic_server_read(nghttp3_conn* h3conn, SSL* stream, uint64_t id, stru
     /* XXX: work around nghttp3_conn_read_stream returning  -607 on stream 2 */
     if (!h3ssl->received_from_two && id != 2)
     {
-        r = nghttp3_conn_read_stream(h3conn, id, msg2, ret, 0);
+        r = (int)nghttp3_conn_read_stream(h3conn, (int64_t)id, msg2, (size_t)ret, 0);
     }
     else
     {
@@ -370,12 +370,12 @@ static int quic_server_h3streams(nghttp3_conn* h3conn, struct h3ssl* h3ssl)
     r_streamid = SSL_get_stream_id(rstream);
     p_streamid = SSL_get_stream_id(pstream);
     c_streamid = SSL_get_stream_id(cstream);
-    if (nghttp3_conn_bind_qpack_streams(h3conn, p_streamid, r_streamid))
+    if (nghttp3_conn_bind_qpack_streams(h3conn, (int64_t)p_streamid, (int64_t)r_streamid))
     {
         fprintf(stderr, "nghttp3_conn_bind_qpack_streams failed!\n");
         return -1;
     }
-    if (nghttp3_conn_bind_control_stream(h3conn, c_streamid))
+    if (nghttp3_conn_bind_control_stream(h3conn, (int64_t)c_streamid))
     {
         fprintf(stderr, "nghttp3_conn_bind_qpack_streams failed!\n");
         return -1;
@@ -425,7 +425,7 @@ static int read_from_ssl_ids(nghttp3_conn* h3conn, struct h3ssl* h3ssl)
      * for the moment we let SSL_poll to performs ticking internally
      * on an automatic basis.
      */
-    ret = SSL_poll(items, numitem, sizeof(SSL_POLL_ITEM), &nz_timeout, 0, &result_count);
+    ret = SSL_poll(items, (size_t)numitem, sizeof(SSL_POLL_ITEM), &nz_timeout, 0, &result_count);
     if (!ret)
     {
         fprintf(stderr, "SSL_poll failed\n");
@@ -652,7 +652,7 @@ static int get_file_length(char* filename)
         if (S_ISREG(st.st_mode))
         {
             printf("get_file_length %s %ld\n", filename, st.st_size);
-            return st.st_size;
+            return (int)st.st_size;
         }
     }
     printf("Can't get_file_length %s\n", filename);
@@ -669,10 +669,10 @@ static char* get_file_data(char* filename)
     if (size == 0)
         return NULL;
 
-    res = malloc(size + 1);
+    res = malloc((size_t)(size + 1));
     res[size] = '\0';
     fd = open(filename, O_RDONLY);
-    if (read(fd, res, size) == -1)
+    if (read(fd, res, (size_t)size) == -1)
     {
         close(fd);
         free(res);
@@ -682,7 +682,7 @@ static char* get_file_data(char* filename)
     printf("read from %s : %d\n", filename, size);
     return res;
 }
-static nghttp3_ssize step_read_data(nghttp3_conn* conn, int64_t stream_id, nghttp3_vec* vec, size_t veccnt, uint32_t* pflags, void* user_data, void* stream_user_data)
+static nghttp3_ssize step_read_data(nghttp3_conn* /*conn*/, int64_t /*stream_id*/, nghttp3_vec* vec, size_t /*veccnt*/, uint32_t* pflags, void* user_data, void* /*stream_user_data*/)
 {
     struct h3ssl* h3ssl = (struct h3ssl*)user_data;
 
@@ -820,7 +820,7 @@ static const unsigned char alpn_ossltest[] = {5, 'h', '3', '-', '2', '9', 2, 'h'
 /*
  * This callback validates and negotiates the desired ALPN on the server side.
  */
-static int select_alpn(SSL* ssl, const unsigned char** out, unsigned char* out_len, const unsigned char* in, unsigned int in_len, void* arg)
+static int select_alpn(SSL* /*ssl*/, const unsigned char** out, unsigned char* out_len, const unsigned char* in, unsigned int in_len, void* /*arg*/)
 {
     if (SSL_select_next_proto((unsigned char**)out, out_len, alpn_ossltest, sizeof(alpn_ossltest), in, in_len) != OPENSSL_NPN_NEGOTIATED)
         return SSL_TLSEXT_ERR_ALERT_FATAL;
@@ -1063,7 +1063,7 @@ static int run_quic_server(SSL_CTX* ctx, int fd)
         }
 
         /* add accepted SSL conn to the ids we will poll */
-        add_id(-1, conn, &h3ssl);
+        add_id(UINT64_MAX, conn, &h3ssl);
         printf("process_server starting...\n");
         fflush(stdout);
 
@@ -1146,7 +1146,7 @@ static int run_quic_server(SSL_CTX* ctx, int fd)
         /* we have receive the request build the response and send it */
         /* XXX add  MAKE_NV("connection", "close"), to resp[] and recheck */
         make_nv(&resp[num_nv++], ":status", "200");
-        h3ssl.ldata = get_file_length(h3ssl.url);
+        h3ssl.ldata = (unsigned int)get_file_length(h3ssl.url);
         if (h3ssl.ldata == 0)
         {
             sprintf(slength, "%d", 20);
@@ -1178,7 +1178,7 @@ static int run_quic_server(SSL_CTX* ctx, int fd)
         printf("before nghttp3_conn_submit_response on %llu for %s ...\n", (unsigned long long)h3ssl.id_bidi, h3ssl.url);
         make_nv(&resp[num_nv++], "content-length", slength);
         dr.read_data = step_read_data;
-        if (nghttp3_conn_submit_response(h3conn, h3ssl.id_bidi, resp, num_nv, &dr))
+        if (nghttp3_conn_submit_response(h3conn, (int64_t)h3ssl.id_bidi, resp, num_nv, &dr))
         {
             fprintf(stderr, "nghttp3_conn_submit_response failed!\n");
             goto err;
@@ -1230,11 +1230,11 @@ static int run_quic_server(SSL_CTX* ctx, int fd)
                     flagwrite = SSL_WRITE_FLAG_CONCLUDE;
                 }
                 written = vec[i].len;
-                if (!quic_server_write(&h3ssl, streamid, vec[i].base, vec[i].len, flagwrite, &numbytes))
+                if (!quic_server_write(&h3ssl, (uint64_t)streamid, vec[i].base, vec[i].len, (uint64_t)flagwrite, &numbytes))
                 {
                     fprintf(stderr, "quic_server_write failed!\n");
                     printf("quic_server_write failed!\n");
-                    if (id_SSL_get_error(&h3ssl, streamid, 0) == SSL_ERROR_WANT_WRITE)
+                    if (id_SSL_get_error(&h3ssl, (uint64_t)streamid, 0) == SSL_ERROR_WANT_WRITE)
                     {
                         printf("quic_server_write failed calling nghttp3_conn_block_stream...\n");
                         written = 0;
@@ -1302,7 +1302,7 @@ static int run_quic_server(SSL_CTX* ctx, int fd)
             if (num_nothing == 50)
             {
                 printf("nghttp3_conn_submit_response  nghttp3_conn_unblock_stream...\n");
-                nghttp3_conn_unblock_stream(h3conn, h3ssl.id_bidi);
+                nghttp3_conn_unblock_stream(h3conn, (int64_t)h3ssl.id_bidi);
             }
             if (num_nothing == 100)
             {

@@ -78,11 +78,11 @@ int listenServer()
         fromport = from->port;
         printf("from: %d\n", fromport);
         printf("from: %s\n", ip_addr);
-        printf("from: %.*s\n", len, buf);
+        printf("from: %.*s\n", (int)len, buf);
 
         //Create the new thread
         apr_thread_t* thd_obj;
-        apr_socket_t* ns;
+        apr_socket_t* ns = NULL;
         retStatus = apr_thread_create(&thd_obj, NULL, processConnection, ns, memPool);
 
         if (retStatus != APR_SUCCESS)
@@ -106,7 +106,7 @@ error:
     return -1;
 }
 
-static void* APR_THREAD_FUNC processConnection(apr_thread_t* thd, void* data)
+static void* APR_THREAD_FUNC processConnection(apr_thread_t* /*thd*/, void* data)
 {
 
     apr_socket_t* sock = (apr_socket_t*)data;
@@ -132,9 +132,11 @@ static void* APR_THREAD_FUNC processConnection(apr_thread_t* thd, void* data)
 
         buf[len] = '\0'; /* apr_socket_recv() doesn't return a null-terminated string */
     }
+
+    return NULL;
 }
 
-int main(int argc, const char* const argv[])
+int main(int /*argc*/, const char* const /*argv*/[])
 {
     apr_initialize();
     atexit(apr_terminate);
