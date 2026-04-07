@@ -659,7 +659,7 @@ apr_status_t h2_stream_set_request_rec(h2_stream *stream,
     if (stream->rst_error) {
         return APR_ECONNRESET;
     }
-    status = h2_request_rcreate(&req, stream->pool, r,
+    status = h2_request_rcreate(&req, r->pool, r,
                                 &stream->session->hd_scratch);
     if (status == APR_SUCCESS) {
         ap_log_rerror(APLOG_MARK, APLOG_DEBUG, status, r, 
