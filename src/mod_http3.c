@@ -1,4 +1,13 @@
 /*
+ * Copyright 2023 The Apache Software Foundation.
+ * Copyright (c) 2023-2026 The mod_http3 Project Authors. All rights reserved.
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ *
+ * This file is derived from code originally distributed as part of
+ * the Apache HTTP Server project and has been modified for use in mod_http3.
+ *
+ * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
  * The ASF licenses this file to You under the Apache License, Version 2.0
