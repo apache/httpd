@@ -55,6 +55,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#notes">Notes</a></li>
 </ul><h3 class="directives">Directives</h3>
 <ul id="toc">
+<li><img alt="" src="../images/down.gif" /> <a href="#mimemagicdecompression">MimeMagicDecompression</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mimemagicfile">MimeMagicFile</a></li>
 </ul>
 <h3>Bugfix checklist</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd changelog</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_mime_magic">Known issues</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_mime_magic">Report a bug</a></li></ul><h3>See also</h3>
@@ -250,6 +251,63 @@
         used here.</li>
       </ul>
     </div>
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="MimeMagicDecompression" id="MimeMagicDecompression">MimeMagicDecompression</a> <a name="mimemagicdecompression" id="mimemagicdecompression">Directive</a> <a title="Permanent link" href="#mimemagicdecompression" class="permalink">&para;</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enable decompression of compressed files for MIME type detection</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>MimeMagicDecompression On|Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>MimeMagicDecompression Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_mime_magic</td></tr>
+</table>
+    <p>The <code class="directive">MimeMagicDecompression</code> directive controls
+    whether <code class="module"><a href="../mod/mod_mime_magic.html">mod_mime_magic</a></code> will attempt to decompress files
+    that appear to be compressed (gzip, compress, etc.) in order to determine
+    the MIME type of the uncompressed content. This feature is <strong>disabled
+    by default</strong> and should only be enabled if you understand the
+    significant drawbacks. It exists to maintain backward compatibility with
+    previous releases of httpd, but its use is discouraged.</p>
+
+    <div class="warning"><h3>Security and Compatibility Issues</h3>
+    <p>This feature has several serious flaws and is disabled by default:</p>
+    <ol>
+    <li><strong>Not RFC-compliant:</strong> Standards documents consistently
+    recommend against setting Content-Encoding for files that are already
+    compressed (such as .zip or .gz files). See
+    <a href="https://www.rfc-editor.org/rfc/rfc9110.html#name-content-encoding">RFC 9110</a>.</li>
+
+    <li><strong>Breaks content integrity:</strong> When Content-Encoding is set,
+    most HTTP clients will decompress the file before writing it to disk. This
+    causes the downloaded file to have a different size and checksum than the
+    original, breaking signature verification and checksum validation. Software
+    distribution sites will find this particularly problematic.</li>
+
+    <li><strong>Unpredictable behavior:</strong> This feature only applies to
+    files that don't match a MIME type via file extension. This can lead to
+    inconsistent behavior where some files in a directory are affected and
+    others are not, making problems difficult to diagnose.</li>
+
+    <li><strong>Performance impact:</strong> Decompression requires forking and
+    executing an external <code>gzip</code> process for each compressed file,
+    which adds significant overhead.</li>
+
+    <li><strong>Security risk:</strong> Passing untrusted uploaded file data to
+    an external binary (<code>gzip</code>) could potentially expose the server to
+    compression bombs, resource exhaustion, or remote code execution
+    vulnerabilities in the decompression tool.</li>
+    </ol>
+    </div>
+
+    <div class="example"><h3>Example (not recommended)</h3><pre class="prettyprint lang-config"># Only enable if you fully understand the risks
+MimeMagicDecompression On</pre>
+</div>
+
+    <p>In most cases, it is better to ensure files have proper extensions
+    that can be mapped via <code class="module"><a href="../mod/mod_mime.html">mod_mime</a></code> rather than relying on
+    this feature.</p>
+
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="MimeMagicFile" id="MimeMagicFile">MimeMagicFile</a> <a name="mimemagicfile" id="mimemagicfile">Directive</a> <a title="Permanent link" href="#mimemagicfile" class="permalink">&para;</a></h2>

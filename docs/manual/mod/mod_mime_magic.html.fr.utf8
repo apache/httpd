@@ -29,6 +29,8 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_mime_magic.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_mime_magic.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
+<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
+            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Détermine le type MIME d'un fichier à partir de quelques
 octets de son contenu</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
@@ -56,6 +58,7 @@ octets de son contenu</td></tr>
 <li><img alt="" src="../images/down.gif" /> <a href="#notes">Notes</a></li>
 </ul><h3 class="directives">Directives</h3>
 <ul id="toc">
+<li><img alt="" src="../images/down.gif" /> <a href="#mimemagicdecompression">MimeMagicDecompression</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mimemagicfile">MimeMagicFile</a></li>
 </ul>
 <h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_mime_magic">Problèmes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_mime_magic">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
@@ -258,6 +261,18 @@ octets de son contenu</td></tr>
       </ul>
     </div>
 </div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="mimemagicdecompression" id="mimemagicdecompression">Directive</a> <a name="MimeMagicDecompression" id="MimeMagicDecompression">MimeMagicDecompression</a> <a title="Lien permanent" href="#mimemagicdecompression" class="permalink">&para;</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enable decompression of compressed files for MIME type detection</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MimeMagicDecompression On|Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>MimeMagicDecompression Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_mime_magic</td></tr>
+</table><p>La documentation de cette directive
+	n'a pas encore t traduite. Veuillez vous reporter  la version
+	en langue anglaise.</p></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="mimemagicfile" id="mimemagicfile">Directive</a> <a name="MimeMagicFile" id="MimeMagicFile">MimeMagicFile</a> <a title="Lien permanent" href="#mimemagicfile" class="permalink">&para;</a></h2>
 <table class="directive">
