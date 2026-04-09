@@ -603,7 +603,8 @@ const h2_stream *h2_mplx_c2_stream_get(h2_mplx *m, int stream_id)
     h2_stream *s = NULL;
     
     H2_MPLX_ENTER_ALWAYS(m);
-    s = h2_ihash_get(m->streams, stream_id);
+    if (m->streams)
+        s = h2_ihash_get(m->streams, stream_id);
     H2_MPLX_LEAVE(m);
 
     return s;
