@@ -1630,6 +1630,7 @@ int ssl_callback_SSLVerify(int ok, X509_STORE_CTX *ctx)
     int errdepth = X509_STORE_CTX_get_error_depth(ctx);
     int depth = UNSET;
     int verify = SSL_CVERIFY_UNSET;
+    ssl_verify_eku_t verify_eku = SSL_VERIFY_EKU_UNSET;
 
     /*
      * Log verification information
@@ -1657,6 +1658,13 @@ int ssl_callback_SSLVerify(int ok, X509_STORE_CTX *ctx)
         verify = mctx->auth.verify_mode;
     }
 
+    if (dc && !conn->outgoing) {
+        verify_eku = dc->nVerifyClientEKU;
+    }
+    if (verify_eku == SSL_VERIFY_EKU_UNSET) {
+        verify_eku = mctx->auth.verify_client_eku;
+    }
+
     if (verify == SSL_CVERIFY_NONE) {
         /*
          * SSLProxyVerify is either not configured or set to "none".
@@ -1664,6 +1672,17 @@ int ssl_callback_SSLVerify(int ok, X509_STORE_CTX *ctx)
          *  is not configured or set to "none")
          */
         return TRUE;
+    }
+
+    if (!ok && !conn->outgoing
+            && errnum == X509_V_ERR_INVALID_PURPOSE
+            && verify_eku == SSL_VERIFY_EKU_OFF) {
+        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, conn,
+                      "Certificate Verification: EKU check disabled by "
+                      "SSLVerifyClientEKU, accepting invalid purpose");
+        X509_STORE_CTX_set_error(ctx, X509_V_OK);
+        errnum = X509_V_OK;
+        ok = TRUE;
     }
 
     if (ssl_verify_error_is_optional(errnum) &&
