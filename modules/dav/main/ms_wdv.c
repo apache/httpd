@@ -649,13 +649,15 @@ static dav_error *mswdv_combined_proppatch(request_rec *r)
      * need to copy the PROPPATCH data to perform subrequest in
      * dav_mswdv_postprocessing().
      */
-    proppatch_data = apr_palloc(r->pool, proppatch_len);
+    proppatch_data = apr_palloc(r->pool, proppatch_len + 1);
 
     len = proppatch_len;
     status = apr_brigade_flatten(bb, proppatch_data, &len);
     if (status != APR_SUCCESS)
         return dav_new_error(r->pool, HTTP_BAD_REQUEST, 0, status,
                              "Error flattening PROPPATCH part");
+
+    proppatch_data[len] = '\0';
 
     apr_table_setn(r->notes, "dav_mswdv_proppatch_data", proppatch_data);
 
