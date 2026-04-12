@@ -1,7 +1,8 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.es.xsl"?>
-<!-- English Revision: 1824141:1927861 (outdated) -->
+<!-- English Revision: 1927861 $ -->
+<!-- Updated by: Daniel Ferradal -->
 <!-- Spanish Translation by: Luis Gil de Bernabé --> 
 
 
@@ -55,7 +56,7 @@
        <dt>Instalando en Fedora/CentOS/Red Hat Enterprise Linux</dt>
        <dd>
        <highlight>
-   sudo yum install httpd
+   sudo dnf install httpd
    sudo service httpd start
        </highlight>
    
