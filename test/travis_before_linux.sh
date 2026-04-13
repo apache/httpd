@@ -252,3 +252,8 @@ if test -v TEST_MOD_TLS -a -v RUSTLS_VERSION; then
         popd
     fi
 fi
+
+if test -v PHP_FPM -a ! -v SKIP_TESTING; then
+    # Sanity test the php-fpm executable exists.
+    $PHP_FPM --version || exit 1
+fi
