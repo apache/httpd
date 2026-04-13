@@ -9,7 +9,6 @@ class TestEch:
 
     @pytest.fixture(autouse=True)
     def setup_paths(self):
-        """Pre-test setup: Locates keys and extracts the ECHConfig string."""
         self.base_dir = os.path.dirname(os.path.abspath(__file__))
         self.ech_key_path = os.path.join(self.base_dir, "conf", "ech", "ECH_key.pem")
 
@@ -46,7 +45,6 @@ class TestEch:
 
         driver = webdriver.Firefox(options=options)
         
-        # Set a shorter timeout so you don't wait 3 minutes for a failure
         driver.set_page_load_timeout(20) 
         
         try:
@@ -60,7 +58,6 @@ class TestEch:
         """Test 1: Standard ECH Handshake."""
         print("\n[RUN] Testing Standard ECH Handshake...")
         page_source = self.run_browser_test(self.ech_config)
-        # CHANGED: Match the actual output from your terminal error
         assert "ECH Decryption Successful" in page_source 
         print("✅ SUCCESS: ECH Decrypted and inner content served.")
 
@@ -68,6 +65,5 @@ class TestEch:
         """Test 2: GREASE Interoperability."""
         print("\n[RUN] Testing ECH with GREASE enabled...")
         page_source = self.run_browser_test(self.ech_config, use_grease=True)
-        # CHANGED: Match the actual output
         assert "ECH Decryption Successful" in page_source
         print("✅ SUCCESS: GREASE handled correctly.")

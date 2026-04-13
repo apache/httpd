@@ -4,7 +4,6 @@ import os
 import subprocess
 import re
 
-# Reuse your existing config and runner
 def get_latest_ech_config():
     path = "./conf/ech/ECH_key.pem"
     if not os.path.exists(path):

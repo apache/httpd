@@ -41,17 +41,14 @@ class TestEchNegative:
             shutil.rmtree(self.temp_dir)
 
     def test_ech_disabled_fallback(self):
-        """Negative Test: Verifies that without ECH, the 'Inner' site is invisible."""
         print("\n[AUDIT] Testing Handshake without ECH Extension...")
         page_source = self.run_negative_browser_test(use_ech=False)
         
-        # We expect the PUBLIC gateway, NOT the private content
         assert "Public Gateway" in page_source
         assert "ECH Decrypted Successfully" not in page_source
         print("✅ PASSED: Identity Hidden. Server defaulted to Public Gateway.")
 
     def test_ech_invalid_key_fallback(self):
-        """Negative Test: Verifies that a corrupted ECH key triggers fallback."""
         print("\n[AUDIT] Testing Handshake with Poisoned ECH Key...")
         poisoned_key = "AEH+DQA9tAAgACDG1DRKJzL4jbKU//fdPlSFfASYZgMrpthbvcsc+GbtKQAEAAEAAQAOeW91cmRvbWFpbi5jb20AAA=="
         page_source = self.run_negative_browser_test(ech_config=poisoned_key, use_ech=True)
