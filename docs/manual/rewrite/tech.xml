@@ -26,7 +26,7 @@
   <title>Apache mod_rewrite Technical Details</title>
 
 <summary>
-<p>This document discusses some of the technical details of mod_rewrite
+<p>This document discusses some of the technical details of <module>mod_rewrite</module>
 and URL matching.</p>
 </summary>
 <seealso><a href="../mod/mod_rewrite.html">Module documentation</a></seealso>
@@ -47,7 +47,7 @@ and URL matching.</p>
     like URL-to-filename translation, authentication, authorization,
     content, and logging. (This is not an exhaustive list.)</p>
 
-    <p>mod_rewrite acts in two of these phases (or "hooks", as they are
+    <p><module>mod_rewrite</module> acts in two of these phases (or "hooks", as they are
     often called) to influence how URLs may be rewritten.</p>
 
     <p>First, it uses the URL-to-filename translation hook, which occurs
@@ -59,7 +59,7 @@ and URL matching.</p>
 
     <p>After a request comes in and a corresponding server or
     virtual host has been determined, the rewriting engine starts
-    processing any <code>mod_rewrite</code> directives appearing in the
+    processing any <module>mod_rewrite</module> directives appearing in the
     per-server configuration. (i.e., in the main server configuration file
     and <directive module="core" type="section">Virtualhost</directive>
     sections.) This happens in the URL-to-filename phase.</p>
@@ -70,13 +70,13 @@ and URL matching.</p>
     type="section">Directory</directive> blocks) are applied. This
     happens in the Fixup phase.</p>
 
-    <p>In each of these cases, mod_rewrite rewrites the
+    <p>In each of these cases, <module>mod_rewrite</module> rewrites the
     <code>REQUEST_URI</code> either to a new URL, or to a filename.</p>
 
     <p>In per-directory context (i.e., within <code>.htaccess</code> files
     and <code>Directory</code> blocks), these rules are being applied
     after a URL has already been translated to a filename. Because of
-    this, the URL-path that mod_rewrite initially compares <directive
+    this, the URL-path that <module>mod_rewrite</module> initially compares <directive
     module="mod_rewrite">RewriteRule</directive> directives against
     is the full filesystem path to the translated filename with the current
     directories path (including a trailing slash) removed from the front.</p>
@@ -127,7 +127,7 @@ and URL matching.</p>
 
     </table>
 
-    <p>For even more insight into how mod_rewrite manipulates URLs in
+    <p>For even more insight into how <module>mod_rewrite</module> manipulates URLs in
     different contexts, you should consult the <a
     href="../mod/mod_rewrite.html#logging">log entries</a> made during
     rewriting.</p>
@@ -136,7 +136,7 @@ and URL matching.</p>
 
 <section id="InternalRuleset"><title>Ruleset Processing</title>
 
-      <p>Now when mod_rewrite is triggered in these two API phases, it
+      <p>Now when <module>mod_rewrite</module> is triggered in these two API phases, it
       reads the configured rulesets from its configuration
       structure (which itself was either created on startup for
       per-server context or during the directory walk of the Apache
@@ -163,9 +163,9 @@ and URL matching.</p>
       <dfn>Figure 1:</dfn>The control flow through the rewriting ruleset
 </p>
       <p>First the URL is matched against the
-      <em>Pattern</em> of each rule. If it fails, mod_rewrite
+      <em>Pattern</em> of each rule. If it fails, <module>mod_rewrite</module>
       immediately stops processing this rule, and continues with the
-      next rule. If the <em>Pattern</em> matches, mod_rewrite looks
+      next rule. If the <em>Pattern</em> matches, <module>mod_rewrite</module> looks
       for corresponding rule conditions (RewriteCond directives,
       appearing immediately above the RewriteRule in the configuration).
       If none are present, it substitutes the URL with a new value, which is
