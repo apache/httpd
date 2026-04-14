@@ -91,7 +91,7 @@ of how you might use them.</p>
 <p>The [B] flag instructs <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> to escape non-alphanumeric
 characters before applying the transformation.</p>
 
-<p><code>mod_rewrite</code> has to unescape URLs before mapping them,
+<p><code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> has to unescape URLs before mapping them,
 so backreferences are unescaped at the time they are applied.
 Using the B flag, non-alphanumeric characters in backreferences
 will be escaped. For example, consider the rule:</p>
@@ -265,7 +265,7 @@ RewriteRule   "^/index\.html"   "-" [CO=frontdoor:yes:.example.com:1440:/]</pre>
 
 
 <p>In the example give, the rule doesn't rewrite the request.
-The "-" rewrite target tells mod_rewrite to pass the request
+The "-" rewrite target tells <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> to pass the request
 through unchanged. Instead, it sets a cookie
 called 'frontdoor' to a value of 'yes'. The cookie is valid for any host
 in the <code>.example.com</code> domain. It is set to expire in 1440
@@ -282,12 +282,12 @@ compares against is the concatenation of the current values of the URI
 and PATH_INFO.</p>
 
 <p>The current URI can be the initial URI as requested by the client, the
-result of a previous round of mod_rewrite processing, or the result of
-a prior rule in the current round of mod_rewrite processing.</p>
+result of a previous round of <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> processing, or the result of
+a prior rule in the current round of <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> processing.</p>
 
 <p>In contrast, the PATH_INFO that is appended to the URI before each
 rule reflects only the value of PATH_INFO before this round of
-mod_rewrite processing. As a consequence, if large portions
+<code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> processing. As a consequence, if large portions
 of the URI are matched and copied into a substitution in multiple
 <code class="directive">RewriteRule</code> directives, without regard for
 which parts of the URI came from the current PATH_INFO, the final
@@ -296,8 +296,8 @@ URI may have multiple copies of PATH_INFO appended to it.</p>
 <p>Use this flag on any substitution where the PATH_INFO that resulted
 from the previous mapping of this request to the filesystem is not of
 interest.  This flag permanently forgets the PATH_INFO established
-before this round of mod_rewrite processing began. PATH_INFO will
-not be recalculated until the current round of mod_rewrite processing
+before this round of <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> processing began. PATH_INFO will
+not be recalculated until the current round of <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> processing
 completes.  Subsequent rules during this round of processing will see
 only the direct result of substitutions, without any PATH_INFO
 appended.</p>
@@ -517,11 +517,26 @@ example.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="flag_ne" id="flag_ne">NE|noescape</a></h2>
-<p>By default, special characters, such as <code>&amp;</code> and
-<code>?</code>, for example, will be converted to their hexcode
-equivalent for rules that result in external redirects. 
-Using the [NE] flag prevents that from happening.
-</p>
+<p>By default, when a <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>
+results in an external redirect, any characters in the output that are
+not in the following safe set will be converted to their hexcode
+(percent-encoded) equivalents:</p>
+
+<ul>
+  <li>Alphanumeric characters: <code>A-Z</code>, <code>a-z</code>,
+  <code>0-9</code></li>
+  <li>Special characters: <code>$-_.+!*'(),:;@&amp;=/~</code></li>
+</ul>
+
+<p>For example, <code>#</code> would be converted to <code>%23</code>,
+and <code>?</code> to <code>%3F</code>. The <code>%</code> character
+is also escaped (to <code>%25</code>), which means that any
+percent-encoding already present in the substitution will be
+double-encoded.</p>
+
+<p>Using the [NE] flag prevents this escaping, allowing characters
+such as <code>#</code> and <code>?</code> to pass through to the
+redirect URL unmodified.</p>
 
 <pre class="prettyprint lang-config">RewriteRule "^/anchor/(.+)" "/bigpage.html#$1" [NE,R]</pre>
 
@@ -822,11 +837,11 @@ invariably be a less efficient solution than the alternatives.</p>
 
 <p>
 If used in per-directory context, use only <code>-</code> (dash)
-as the substitution <em>for the entire round of mod_rewrite processing</em>,
+as the substitution <em>for the entire round of <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> processing</em>,
 otherwise the MIME-type set with this flag is lost due to an internal
-re-processing (including subsequent rounds of mod_rewrite processing).
+re-processing (including subsequent rounds of <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> processing).
 The <code>L</code> flag can be useful in this context to end the
-<em>current</em> round of mod_rewrite processing.</p>
+<em>current</em> round of <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> processing.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="flag_unsafe_allow_3f" id="flag_unsafe_allow_3f">UnsafeAllow3F</a></h2>
