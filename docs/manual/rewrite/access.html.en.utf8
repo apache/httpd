@@ -32,7 +32,7 @@
 <a href="../mod/mod_rewrite.html">reference documentation</a>. It describes
 how you can use <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> to control access to
 various resources, and other related techniques.
-This includes many examples of common uses of mod_rewrite,
+This includes many examples of common uses of <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>,
 including detailed descriptions of how each works.</p>
 
 <div class="warning">Note that many of these examples won't work unchanged in your
@@ -113,7 +113,7 @@ RewriteRule "\.(gif|jpg|png)$" "http://other.example.com/image.gif"  [R,NC]</pre
         <dd>
         <p>If all you wish to do is deny access to the resource, rather
         than redirecting that request elsewhere, this can be
-        accomplished without the use of mod_rewrite:</p>
+        accomplished without the use of <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>:</p>
 
         <pre class="prettyprint lang-config">SetEnvIf Referer example\.com localreferer
 &lt;FilesMatch "\.(jpg|png|gif)$"&gt;
@@ -144,7 +144,7 @@ RewriteRule "\.(gif|jpg|png)$" "http://other.example.com/image.gif"  [R,NC]</pre
         </p>
 
         <p>Note that there are methods of accomplishing this which do
-        not use mod_rewrite. Note also that any technique that relies on
+        not use <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>. Note also that any technique that relies on
         the clients <code>USER_AGENT</code> string can be circumvented
         very easily, since that string can be changed.</p>
         </dd>
@@ -172,7 +172,7 @@ RewriteRule "^/secret/files/"      "-"                   [F]</pre>
 
       <dd>
       <p>
-        Rather than using mod_rewrite for this, you can accomplish the
+        Rather than using <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> for this, you can accomplish the
         same end using alternate means, as illustrated here:
       </p>
       <pre class="prettyprint lang-config">SetEnvIfNoCase User-Agent ^NameOfBadRobot goaway
