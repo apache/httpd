@@ -46,8 +46,8 @@ A number of recipes are provided that describe common scenarios.</p>
 
     <dd>
     <p>
-    mod_rewrite provides the [P] flag, which allows URLs to be passed,
-    via mod_proxy, to another server. Two examples are given here. In
+    <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> provides the [P] flag, which allows URLs to be passed,
+    via <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code>, to another server. Two examples are given here. In
     one example, a URL is passed directly to another server, and served
     as though it were a local URL. In the other example, we proxy
     missing content to a back-end server.</p>
@@ -84,7 +84,7 @@ ProxyPassReverse "/" "http://old.example.com/"</pre>
     the client.</p>
 
     <p>Consider using either <code class="directive"><a href="../mod/mod_proxy.html#proxypass">ProxyPass</a></code> or <code class="directive"><a href="../mod/mod_proxy.html#proxypassmatch">ProxyPassMatch</a></code> whenever possible in
-    preference to mod_rewrite.</p>
+    preference to <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>.</p>
     </dd>
   </dl>
 

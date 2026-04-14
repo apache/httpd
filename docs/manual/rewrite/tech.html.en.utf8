@@ -27,7 +27,7 @@
 <a href="../fr/rewrite/tech.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
 
-<p>This document discusses some of the technical details of mod_rewrite
+<p>This document discusses some of the technical details of <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>
 and URL matching.</p>
 </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#InternalAPI">API Phases</a></li>
@@ -43,7 +43,7 @@ and URL matching.</p>
     like URL-to-filename translation, authentication, authorization,
     content, and logging. (This is not an exhaustive list.)</p>
 
-    <p>mod_rewrite acts in two of these phases (or "hooks", as they are
+    <p><code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> acts in two of these phases (or "hooks", as they are
     often called) to influence how URLs may be rewritten.</p>
 
     <p>First, it uses the URL-to-filename translation hook, which occurs
@@ -55,7 +55,7 @@ and URL matching.</p>
 
     <p>After a request comes in and a corresponding server or
     virtual host has been determined, the rewriting engine starts
-    processing any <code>mod_rewrite</code> directives appearing in the
+    processing any <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> directives appearing in the
     per-server configuration. (i.e., in the main server configuration file
     and <code class="directive"><a href="../mod/core.html#virtualhost">&lt;Virtualhost&gt;</a></code>
     sections.) This happens in the URL-to-filename phase.</p>
@@ -65,13 +65,13 @@ and URL matching.</p>
     files and <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> blocks) are applied. This
     happens in the Fixup phase.</p>
 
-    <p>In each of these cases, mod_rewrite rewrites the
+    <p>In each of these cases, <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> rewrites the
     <code>REQUEST_URI</code> either to a new URL, or to a filename.</p>
 
     <p>In per-directory context (i.e., within <code>.htaccess</code> files
     and <code>Directory</code> blocks), these rules are being applied
     after a URL has already been translated to a filename. Because of
-    this, the URL-path that mod_rewrite initially compares <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> directives against
+    this, the URL-path that <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> initially compares <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> directives against
     is the full filesystem path to the translated filename with the current
     directories path (including a trailing slash) removed from the front.</p>
 
@@ -120,7 +120,7 @@ and URL matching.</p>
 
     </table>
 
-    <p>For even more insight into how mod_rewrite manipulates URLs in
+    <p>For even more insight into how <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> manipulates URLs in
     different contexts, you should consult the <a href="../mod/mod_rewrite.html#logging">log entries</a> made during
     rewriting.</p>
 
@@ -128,7 +128,7 @@ and URL matching.</p>
 <div class="section">
 <h2><a name="InternalRuleset" id="InternalRuleset">Ruleset Processing</a> <a title="Permanent link" href="#InternalRuleset" class="permalink">&para;</a></h2>
 
-      <p>Now when mod_rewrite is triggered in these two API phases, it
+      <p>Now when <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> is triggered in these two API phases, it
       reads the configured rulesets from its configuration
       structure (which itself was either created on startup for
       per-server context or during the directory walk of the Apache
@@ -153,9 +153,9 @@ and URL matching.</p>
       <dfn>Figure 1:</dfn>The control flow through the rewriting ruleset
 </p>
       <p>First the URL is matched against the
-      <em>Pattern</em> of each rule. If it fails, mod_rewrite
+      <em>Pattern</em> of each rule. If it fails, <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>
       immediately stops processing this rule, and continues with the
-      next rule. If the <em>Pattern</em> matches, mod_rewrite looks
+      next rule. If the <em>Pattern</em> matches, <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> looks
       for corresponding rule conditions (RewriteCond directives,
       appearing immediately above the RewriteRule in the configuration).
       If none are present, it substitutes the URL with a new value, which is

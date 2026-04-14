@@ -30,7 +30,7 @@
 
 <p>This document supplements the <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>
 <a href="../mod/mod_rewrite.html">reference documentation</a>. It provides
-a few advanced techniques using mod_rewrite.</p>
+a few advanced techniques using <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>.</p>
 
 
 
@@ -159,7 +159,7 @@ RewriteRule "^(.+)\.html$"     "/regenerate_page.cgi"   [PT,L]</pre>
 
     <dd>
       <p>We wish to randomly distribute load across several servers
-      using mod_rewrite.</p>
+      using <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>.</p>
     </dd>
 
     <dt>Solution:</dt>
@@ -190,7 +190,7 @@ others, add it more times to the list.</p>
    <dd>
 <p>Apache comes with a load-balancing module -
 <code class="module"><a href="../mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code> - which is far more flexible and
-featureful than anything you can cobble together using mod_rewrite.</p>
+featureful than anything you can cobble together using <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>.</p>
    </dd>
   </dl>
 
@@ -236,7 +236,7 @@ RewriteRule   "^/~(<strong>([a-z])</strong>[a-z0-9]+)(.*)"  "/home/<strong>$2</s
 
     <dd>
     <p>By default, redirecting to an HTML anchor doesn't work,
-    because mod_rewrite escapes the <code>#</code> character,
+    because <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> escapes the <code>#</code> character,
     turning it into <code>%23</code>. This, in turn, breaks the
     redirection.</p>
     </dd>
@@ -251,7 +251,7 @@ RewriteRule   "^/~(<strong>([a-z])</strong>[a-z0-9]+)(.*)"  "/home/<strong>$2</s
 
     <dt>Discussion:</dt>
     <dd>This technique will of course also work with other
-    special characters that mod_rewrite, by default, URL-encodes.</dd>
+    special characters that <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>, by default, URL-encodes.</dd>
   </dl>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -264,7 +264,7 @@ RewriteRule   "^/~(<strong>([a-z])</strong>[a-z0-9]+)(.*)"  "/home/<strong>$2</s
     <dt>Description:</dt>
 
     <dd>
-      <p>We wish to use mod_rewrite to serve different content based on
+      <p>We wish to use <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> to serve different content based on
       the time of day.</p>
     </dd>
 
