@@ -77,30 +77,30 @@ compatibility variables.</p>
 <tr><td><code>SSL_CLIENT_M_VERSION</code></td>          <td>string</td>    <td>The version of the client certificate</td></tr>
 <tr><td><code>SSL_CLIENT_M_SERIAL</code></td>           <td>string</td>    <td>The serial of the client certificate</td></tr>
 <tr><td><code>SSL_CLIENT_S_DN</code></td>               <td>string</td>    <td>Subject DN in client's certificate</td></tr>
-<tr><td><code>SSL_CLIENT_S_DN_</code><em>x509</em></td> <td>string</td>    <td>Component of client's Subject DN</td></tr>
-<tr><td><code>SSL_CLIENT_SAN_Email_</code><em>n</em></td> <td>string</td>  <td>Client certificate's subjectAltName extension entries of type rfc822Name</td></tr>
-<tr><td><code>SSL_CLIENT_SAN_DNS_</code><em>n</em></td> <td>string</td>    <td>Client certificate's subjectAltName extension entries of type dNSName</td></tr>
-<tr><td><code>SSL_CLIENT_SAN_OTHER_msUPN_</code><em>n</em></td> <td>string</td>    <td>Client certificate's subjectAltName extension entries of type otherName, Microsoft User Principal Name form (OID 1.3.6.1.4.1.311.20.2.3)</td></tr>
+<tr><td><code>SSL_CLIENT_S_DN_</code><var>x509</var></td> <td>string</td>    <td>Component of client's Subject DN</td></tr>
+<tr><td><code>SSL_CLIENT_SAN_Email_</code><var>n</var></td> <td>string</td>  <td>Client certificate's subjectAltName extension entries of type rfc822Name</td></tr>
+<tr><td><code>SSL_CLIENT_SAN_DNS_</code><var>n</var></td> <td>string</td>    <td>Client certificate's subjectAltName extension entries of type dNSName</td></tr>
+<tr><td><code>SSL_CLIENT_SAN_OTHER_msUPN_</code><var>n</var></td> <td>string</td>    <td>Client certificate's subjectAltName extension entries of type otherName, Microsoft User Principal Name form (OID 1.3.6.1.4.1.311.20.2.3)</td></tr>
 <tr><td><code>SSL_CLIENT_I_DN</code></td>               <td>string</td>    <td>Issuer DN of client's certificate</td></tr>
-<tr><td><code>SSL_CLIENT_I_DN_</code><em>x509</em></td> <td>string</td>    <td>Component of client's Issuer DN</td></tr>
+<tr><td><code>SSL_CLIENT_I_DN_</code><var>x509</var></td> <td>string</td>    <td>Component of client's Issuer DN</td></tr>
 <tr><td><code>SSL_CLIENT_V_START</code></td>            <td>string</td>    <td>Validity of client's certificate (start time)</td></tr>
 <tr><td><code>SSL_CLIENT_V_END</code></td>              <td>string</td>    <td>Validity of client's certificate (end time)</td></tr>
 <tr><td><code>SSL_CLIENT_V_REMAIN</code></td>           <td>string</td>    <td>Number of days until client's certificate expires</td></tr>
 <tr><td><code>SSL_CLIENT_A_SIG</code></td>              <td>string</td>    <td>Algorithm used for the signature of client's certificate</td></tr>
 <tr><td><code>SSL_CLIENT_A_KEY</code></td>              <td>string</td>    <td>Algorithm used for the public key of client's certificate</td></tr>
 <tr><td><code>SSL_CLIENT_CERT</code></td>               <td>string</td>    <td>PEM-encoded client certificate</td></tr>
-<tr><td><code>SSL_CLIENT_CERT_CHAIN_</code><em>n</em></td> <td>string</td>    <td>PEM-encoded certificates in client certificate chain</td></tr>
+<tr><td><code>SSL_CLIENT_CERT_CHAIN_</code><var>n</var></td> <td>string</td>    <td>PEM-encoded certificates in client certificate chain</td></tr>
 <tr><td><code>SSL_CLIENT_CERT_RFC4523_CEA</code></td>   <td>string</td>    <td>Serial number and issuer of the certificate. The format matches that of the CertificateExactAssertion in RFC4523</td></tr>
-<tr><td><code>SSL_CLIENT_VERIFY</code></td>             <td>string</td>    <td><code>NONE</code>, <code>SUCCESS</code>, <code>GENEROUS</code> or <code>FAILED:</code><em>reason</em></td></tr>
+<tr><td><code>SSL_CLIENT_VERIFY</code></td>             <td>string</td>    <td><code>NONE</code>, <code>SUCCESS</code>, <code>GENEROUS</code> or <code>FAILED:</code><var>reason</var></td></tr>
 <tr><td><code>SSL_SERVER_M_VERSION</code></td>          <td>string</td>    <td>The version of the server certificate</td></tr>
 <tr><td><code>SSL_SERVER_M_SERIAL</code></td>           <td>string</td>    <td>The serial of the server certificate</td></tr>
 <tr><td><code>SSL_SERVER_S_DN</code></td>               <td>string</td>    <td>Subject DN in server's certificate</td></tr>
-<tr><td><code>SSL_SERVER_SAN_Email_</code><em>n</em></td> <td>string</td>  <td>Server certificate's subjectAltName extension entries of type rfc822Name</td></tr>
-<tr><td><code>SSL_SERVER_SAN_DNS_</code><em>n</em></td> <td>string</td>    <td>Server certificate's subjectAltName extension entries of type dNSName</td></tr>
-<tr><td><code>SSL_SERVER_SAN_OTHER_dnsSRV_</code><em>n</em></td> <td>string</td>    <td>Server certificate's subjectAltName extension entries of type otherName, SRVName form (OID 1.3.6.1.5.5.7.8.7, RFC 4985)</td></tr>
-<tr><td><code>SSL_SERVER_S_DN_</code><em>x509</em></td> <td>string</td>    <td>Component of server's Subject DN</td></tr>
+<tr><td><code>SSL_SERVER_SAN_Email_</code><var>n</var></td> <td>string</td>  <td>Server certificate's subjectAltName extension entries of type rfc822Name</td></tr>
+<tr><td><code>SSL_SERVER_SAN_DNS_</code><var>n</var></td> <td>string</td>    <td>Server certificate's subjectAltName extension entries of type dNSName</td></tr>
+<tr><td><code>SSL_SERVER_SAN_OTHER_dnsSRV_</code><var>n</var></td> <td>string</td>    <td>Server certificate's subjectAltName extension entries of type otherName, SRVName form (OID 1.3.6.1.5.5.7.8.7, RFC 4985)</td></tr>
+<tr><td><code>SSL_SERVER_S_DN_</code><var>x509</var></td> <td>string</td>    <td>Component of server's Subject DN</td></tr>
 <tr><td><code>SSL_SERVER_I_DN</code></td>               <td>string</td>    <td>Issuer DN of server's certificate</td></tr>
-<tr><td><code>SSL_SERVER_I_DN_</code><em>x509</em></td> <td>string</td>    <td>Component of server's Issuer DN</td></tr>
+<tr><td><code>SSL_SERVER_I_DN_</code><var>x509</var></td> <td>string</td>    <td>Component of server's Issuer DN</td></tr>
 <tr><td><code>SSL_SERVER_V_START</code></td>            <td>string</td>    <td>Validity of server's certificate (start time)</td></tr>
 <tr><td><code>SSL_SERVER_V_END</code></td>              <td>string</td>    <td>Validity of server's certificate (end time)</td></tr>
 <tr><td><code>SSL_SERVER_A_SIG</code></td>              <td>string</td>    <td>Algorithm used for the signature of server's certificate</td></tr>
@@ -123,9 +123,9 @@ compatibility variables.</p>
 <tr><td><code>SSL_ECH_OUTER_SNI</code></td>             <td>string</td>    <td>SNI value that was seen in plaintext SNI (or `NONE`)</td></tr>
 </table>
 
-<p><em>x509</em> specifies a component of an X.509 DN; one of
+<p><var>x509</var> specifies a component of an X.509 DN; one of
 <code>C,ST,L,O,OU,CN,T,I,G,S,D,UID,Email</code>.  In httpd 2.2.0 and
-later, <em>x509</em> may also include a numeric <code>_n</code>
+later, <var>x509</var> may also include a numeric <code>_n</code>
 suffix.  If the DN in question contains multiple attributes of the
 same name, this suffix is used as a zero-based index to select a
 particular attribute.  For example, where the server certificate
@@ -140,13 +140,13 @@ the <directive module="mod_ssl">SSLOptions</directive> directive, the
 first (or only) attribute of any DN is added only under a non-suffixed
 name; i.e. no <code>_0</code> suffixed entries are added.</p>
 
-<p>In httpd 2.4.32 and later, an optional <em>_RAW</em> suffix may be
-added to <em>x509</em> in a DN component, to suppress conversion of
+<p>In httpd 2.4.32 and later, an optional <var>_RAW</var> suffix may be
+added to <var>x509</var> in a DN component, to suppress conversion of
 the attribute value to UTF-8. This must be placed after the index
 suffix (if any). For example, <code>SSL_SERVER_S_DN_OU_RAW</code> or
 <code>SSL_SERVER_S_DN_OU_0_RAW</code> could be used.</p>
 
-<p>The format of the <em>*_DN</em> variables has changed in Apache HTTPD
+<p>The format of the <var>*_DN</var> variables has changed in Apache HTTPD
 2.3.11. See the <code>LegacyDNStringFormat</code> option for
 <directive module="mod_ssl">SSLOptions</directive> for details.</p>
 
@@ -177,13 +177,13 @@ REQUEST_URI            REMOTE_USER</pre></note>
 <p>In these contexts, two special formats can also be used:</p>
 
 <dl>
-  <dt><code>ENV:<em>variablename</em></code></dt>
+  <dt><code>ENV:<var>variablename</var></code></dt>
   <dd>This will expand to the standard environment
-  variable <em>variablename</em>.</dd>
+  variable <var>variablename</var>.</dd>
 
-  <dt><code>HTTP:<em>headername</em></code></dt>
+  <dt><code>HTTP:<var>headername</var></code></dt>
   <dd>This will expand to the value of the request header with name
-  <em>headername</em>.</dd>
+  <var>headername</var>.</dd>
 </dl>
 
 </section>
@@ -194,13 +194,13 @@ REQUEST_URI            REMOTE_USER</pre></note>
 loaded (under DSO situation) additional functions exist for the <a
 href="mod_log_config.html#formats">Custom Log Format</a> of
 <module>mod_log_config</module>. First there is an
-additional ``<code>%{</code><em>varname</em><code>}x</code>''
+additional ``<code>%{</code><var>varname</var><code>}x</code>''
 eXtension format function which can be used to expand any variables
 provided by any module, especially those provided by mod_ssl which can
 you find in the above table.</p>
 <p>
 For backward compatibility there is additionally a special
-``<code>%{</code><em>name</em><code>}c</code>'' cryptography format function
+``<code>%{</code><var>name</var><code>}c</code>'' cryptography format function
 provided. Information about this function is provided in the <a
 href="../ssl/ssl_compat.html">Compatibility</a> chapter.</p>
 <example><title>Example</title>
@@ -216,7 +216,7 @@ directive.</p>
 <section id="notes"><title>Request Notes</title>
 
 <p><module>mod_ssl</module> sets "notes" for the request which can be
-used in logging with the <code>%{<em>name</em>}n</code> format
+used in logging with the <code>%{<var>name</var>}n</code> format
 string in <module>mod_log_config</module>.</p>
 
 <p>The notes supported are as follows:</p>
@@ -248,12 +248,12 @@ loaded (under DSO situation) any <a name="envvars">variables</a>
 provided by <module>mod_ssl</module> can be used in expressions
 for the <a href="../expr.html">ap_expr Expression Parser</a>.
 The variables can be referenced using the syntax
-``<code>%{</code><em>varname</em><code>}</code>''. Starting
+``<code>%{</code><var>varname</var><code>}</code>''. Starting
 with version 2.4.18 one can also use the
 <module>mod_rewrite</module> style syntax
-``<code>%{SSL:</code><em>varname</em><code>}</code>'' or
+``<code>%{SSL:</code><var>varname</var><code>}</code>'' or
 the function style syntax
-``<code>ssl(</code><em>varname</em><code>)</code>''.</p>
+``<code>ssl(</code><var>varname</var><code>)</code>''.</p>
 <example><title>Example (using <module>mod_headers</module>)</title>
 <highlight language="config">
 Header set X-SSL-PROTOCOL "expr=%{SSL_PROTOCOL}"
@@ -305,7 +305,7 @@ Require valid-user
 <name>SSLPassPhraseDialog</name>
 <description>Type of pass phrase dialog for encrypted private
 keys</description>
-<syntax>SSLPassPhraseDialog <em>type</em></syntax>
+<syntax>SSLPassPhraseDialog <var>type</var></syntax>
 <default>SSLPassPhraseDialog builtin</default>
 <contextlist><context>server config</context></contextlist>
 
@@ -319,7 +319,7 @@ SSL-enabled virtual servers. Because for security reasons the Private
 Key files are usually encrypted, mod_ssl needs to query the
 administrator for a Pass Phrase in order to decrypt those files. This
 query can be done in two ways which can be configured by
-<em>type</em>:</p>
+<var>type</var>:</p>
 <ul>
 <li><code>builtin</code>
     <p>
@@ -385,8 +385,8 @@ SSLPassPhraseDialog "exec:/usr/local/apache/sbin/pp-filter"
 <name>SSLRandomSeed</name>
 <description>Pseudo Random Number Generator (PRNG) seeding
 source</description>
-<syntax>SSLRandomSeed <em>context</em> <em>source</em>
-[<em>bytes</em>]</syntax>
+<syntax>SSLRandomSeed <var>context</var> <var>source</var>
+[<var>bytes</var>]</syntax>
 <contextlist><context>server config</context></contextlist>
 
 <usage>
@@ -399,12 +399,12 @@ later.</p>
 
 <p>
 This configures one or more sources for seeding the Pseudo Random Number
-Generator (PRNG) in OpenSSL at startup time (<em>context</em> is
+Generator (PRNG) in OpenSSL at startup time (<var>context</var> is
 <code>startup</code>) and/or just before a new SSL connection is established
-(<em>context</em> is <code>connect</code>). This directive can only be used
+(<var>context</var> is <code>connect</code>). This directive can only be used
 in the global server context because the PRNG is a global facility.</p>
 <p>
-The following <em>source</em> variants are available:</p>
+The following <var>source</var> variants are available:</p>
 <ul>
 <li><code>builtin</code>
     <p> This is the always available builtin seeding source. Its usage
@@ -419,10 +419,10 @@ The following <em>source</em> variants are available:</p>
 <li><code>file:/path/to/source</code>
     <p>
     This variant uses an external file <code>/path/to/source</code> as the
-    source for seeding the PRNG. When <em>bytes</em> is specified, only the
-    first <em>bytes</em> number of bytes of the file form the entropy (and
-    <em>bytes</em> is given to <code>/path/to/source</code> as the first
-    argument). When <em>bytes</em> is not specified the whole file forms the
+    source for seeding the PRNG. When <var>bytes</var> is specified, only the
+    first <var>bytes</var> number of bytes of the file form the entropy (and
+    <var>bytes</var> is given to <code>/path/to/source</code> as the first
+    argument). When <var>bytes</var> is not specified the whole file forms the
     entropy (and <code>0</code> is given to <code>/path/to/source</code> as
     the first argument). Use this especially at startup time, for instance
     with an available <code>/dev/random</code> and/or
@@ -443,9 +443,9 @@ The following <em>source</em> variants are available:</p>
     <p>
     This variant uses an external executable
     <code>/path/to/program</code> as the source for seeding the
-    PRNG. When <em>bytes</em> is specified, only the first
-    <em>bytes</em> number of bytes of its <code>stdout</code> contents
-    form the entropy. When <em>bytes</em> is not specified, the
+    PRNG. When <var>bytes</var> is specified, only the first
+    <var>bytes</var> number of bytes of its <code>stdout</code> contents
+    form the entropy. When <var>bytes</var> is not specified, the
     entirety of the data produced on <code>stdout</code> form the
     entropy. Use this only at startup time when you need a very strong
     seeding with the help of an external program (for instance as in
@@ -480,7 +480,7 @@ SSLRandomSeed connect "file:/dev/urandom" 1024
 <name>SSLSessionCache</name>
 <description>Type of the global/inter-process SSL Session
 Cache</description>
-<syntax>SSLSessionCache <em>type</em></syntax>
+<syntax>SSLSessionCache <var>type</var></syntax>
 <default>SSLSessionCache none</default>
 <contextlist><context>server config</context></contextlist>
 
@@ -495,7 +495,7 @@ up to four parallel requests are common) those requests are served by
 <em>different</em> pre-forked server processes. Here an inter-process cache
 helps to avoid unnecessary session handshakes.</p>
 <p>
-The following five storage <em>type</em>s are currently supported:</p>
+The following five storage <var>type</var>s are currently supported:</p>
 <ul>
 <li><code>none</code>
 
@@ -518,10 +518,10 @@ The following five storage <em>type</em>s are currently supported:</p>
     high load. To use this, ensure that
     <module>mod_socache_dbm</module> is loaded.</p></li>
 
-<li><code>shmcb:/path/to/datafile</code>[<code>(</code><em>size</em><code>)</code>]
+<li><code>shmcb:/path/to/datafile</code>[<code>(</code><var>size</var><code>)</code>]
 
     <p>This makes use of a high-performance cyclic buffer
-    (approx. <em>size</em> bytes in size) inside a shared memory
+    (approx. <var>size</var> bytes in size) inside a shared memory
     segment in RAM (established via <code>/path/to/datafile</code>) to
     synchronize the local OpenSSL memory caches of the server
     processes.  This is the recommended session cache. To use this,
@@ -558,7 +558,7 @@ using the <directive module="core">Mutex</directive> directive.</p>
 <name>SSLSessionCacheTimeout</name>
 <description>Number of seconds before an SSL session expires
 in the Session Cache</description>
-<syntax>SSLSessionCacheTimeout <em>seconds</em></syntax>
+<syntax>SSLSessionCacheTimeout <var>seconds</var></syntax>
 <default>SSLSessionCacheTimeout 300</default>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
@@ -640,7 +640,7 @@ by the applicable Security Policy.
 <directivesynopsis>
 <name>SSLProtocol</name>
 <description>Configure usable SSL/TLS protocol versions</description>
-<syntax>SSLProtocol [+|-]<em>protocol</em> ...</syntax>
+<syntax>SSLProtocol [+|-]<var>protocol</var> ...</syntax>
 <default>SSLProtocol all -SSLv3</default>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
@@ -650,7 +650,7 @@ by the applicable Security Policy.
 This directive can be used to control which versions of the SSL/TLS protocol
 will be accepted in new connections.</p>
 <p>
-The available (case-insensitive) <em>protocol</em>s are:</p>
+The available (case-insensitive) <var>protocol</var>s are:</p>
 <ul>
 <li><code>SSLv3</code>
     <p>
@@ -726,7 +726,7 @@ though).
 <name>SSLCipherSuite</name>
 <description>Cipher Suite available for negotiation in SSL
 handshake</description>
-<syntax>SSLCipherSuite [<em>protocol</em>] <em>cipher-spec</em></syntax>
+<syntax>SSLCipherSuite [<var>protocol</var>] <var>cipher-spec</var></syntax>
 <default>SSLCipherSuite DEFAULT (depends on OpenSSL version)</default>
 <contextlist><context>server config</context>
 <context>virtual host</context>
@@ -736,7 +736,7 @@ handshake</description>
 
 <usage>
 <p>
-This complex directive uses a colon-separated <em>cipher-spec</em> string
+This complex directive uses a colon-separated <var>cipher-spec</var> string
 consisting of OpenSSL cipher specifications to configure the Cipher Suite the
 client is permitted to negotiate in the SSL handshake phase. The optional 
 protocol specifier can configure the Cipher Suite for a specific SSL version.
@@ -759,7 +759,7 @@ For a list of TLSv1.3 cipher names, see
 <a href="https://docs.openssl.org/master/man3/SSL_CTX_set_ciphersuites/">the OpenSSL
 documentation</a>.</p>
 <p>
-An SSL cipher specification in <em>cipher-spec</em> is composed of 4 major
+An SSL cipher specification in <var>cipher-spec</var> is composed of 4 major
 attributes plus a few extra minor ones:</p>
 <ul>
 <li><em>Key Exchange Algorithm</em>:<br />
@@ -836,7 +836,7 @@ Now where this becomes interesting is that these can be put together
 to specify the order and ciphers you wish to use. To speed this up
 there are also aliases (<code>SSLv3, TLSv1, EXP, LOW, MEDIUM,
 HIGH</code>) for certain groups of ciphers. These tags can be joined
-together with prefixes to form the <em>cipher-spec</em>. Available
+together with prefixes to form the <var>cipher-spec</var>. Available
 prefixes are:</p>
 <ul>
 <li>none: add cipher to list</li>
@@ -855,7 +855,7 @@ ciphers are always disabled, as mod_ssl unconditionally adds
 
 <p>A simpler way to look at all of this is to use the ``<code>openssl ciphers
 -v</code>'' command which provides a nice way to successively create the
-correct <em>cipher-spec</em> string. The default <em>cipher-spec</em> string
+correct <var>cipher-spec</var> string. The default <var>cipher-spec</var> string
 depends on the version of the OpenSSL libraries used. Let's suppose it is
 ``<code>RC4-SHA:AES128-SHA:HIGH:MEDIUM:!aNULL:!MD5</code>'' which
 means the following: Put <code>RC4-SHA</code> and <code>AES128-SHA</code> at
@@ -1149,7 +1149,7 @@ effect.</p>
 <name>SSLCACertificatePath</name>
 <description>Directory of PEM-encoded CA Certificates for
 Client Auth</description>
-<syntax>SSLCACertificatePath <em>directory-path</em></syntax>
+<syntax>SSLCACertificatePath <var>directory-path</var></syntax>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
 <override>AuthConfig</override>
@@ -1163,7 +1163,7 @@ verify the client certificate on Client Authentication.</p>
 The files in this directory have to be PEM-encoded and are accessed through
 hash filenames. So usually you can't just place the Certificate files
 there: you also have to create symbolic links named
-<em>hash-value</em><code>.N</code>. And you should always make sure this directory
+<var>hash-value</var><code>.N</code>. And you should always make sure this directory
 contains the appropriate symbolic links.</p>
 <example><title>Example</title>
 <highlight language="config">
@@ -1267,7 +1267,7 @@ effect.</p>
 <name>SSLCADNRequestPath</name>
 <description>Directory of PEM-encoded CA Certificates for
 defining acceptable CA names</description>
-<syntax>SSLCADNRequestPath <em>directory-path</em></syntax>
+<syntax>SSLCADNRequestPath <var>directory-path</var></syntax>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
 
@@ -1282,7 +1282,7 @@ details.</p>
 <p>The files in this directory have to be PEM-encoded and are accessed
 through hash filenames. So usually you can't just place the
 Certificate files there: you also have to create symbolic links named
-<em>hash-value</em><code>.N</code>. And you should always make sure
+<var>hash-value</var><code>.N</code>. And you should always make sure
 this directory contains the appropriate symbolic links.</p>
 <example><title>Example</title>
 <highlight language="config">
@@ -1302,7 +1302,7 @@ to take effect.</p>
 <name>SSLCARevocationPath</name>
 <description>Directory of PEM-encoded CA CRLs for
 Client Auth</description>
-<syntax>SSLCARevocationPath <em>directory-path</em></syntax>
+<syntax>SSLCARevocationPath <var>directory-path</var></syntax>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
 
@@ -1315,7 +1315,7 @@ These are used to revoke the client certificate on Client Authentication.</p>
 The files in this directory have to be PEM-encoded and are accessed through
 hash filenames. So usually you have not only to place the CRL files there.
 Additionally you have to create symbolic links named
-<em>hash-value</em><code>.rN</code>. And you should always make sure this directory
+<var>hash-value</var><code>.rN</code>. And you should always make sure this directory
 contains the appropriate symbolic links.</p>
 <example><title>Example</title>
 <highlight language="config">
@@ -1365,11 +1365,11 @@ effect.</p>
 <directivesynopsis>
 <name>SSLCARevocationCheck</name>
 <description>Enable CRL-based revocation checking</description>
-<syntax>SSLCARevocationCheck chain|leaf|none [<em>flag</em>s ...]</syntax>
+<syntax>SSLCARevocationCheck chain|leaf|none [<var>flag</var>s ...]</syntax>
 <default>SSLCARevocationCheck none</default>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
-<compatibility>Optional <em>flag</em>s available in httpd 2.4.21 or
+<compatibility>Optional <var>flag</var>s available in httpd 2.4.21 or
 later</compatibility>
 
 <usage>
@@ -1381,7 +1381,7 @@ configured. When set to <code>chain</code> (recommended setting),
 CRL checks are applied to all certificates in the chain, while setting it to
 <code>leaf</code> limits the checks to the end-entity cert.
 </p>
-<p>The available <em>flag</em>s are:</p>
+<p>The available <var>flag</var>s are:</p>
 <ul>
 <li><code>no_crl_for_cert_ok</code>
     <p>
@@ -1398,7 +1398,7 @@ CRL checks are applied to all certificates in the chain, while setting it to
     <code>"unable to get certificate CRL"</code> error.
     </p>
     <p>
-    The <em>flag</em> <code>no_crl_for_cert_ok</code> allows to restore
+    The <var>flag</var> <code>no_crl_for_cert_ok</code> allows to restore
     previous behaviour.
     </p>
 </li>
@@ -1419,7 +1419,7 @@ SSLCARevocationCheck chain no_crl_for_cert_ok
 <directivesynopsis>
 <name>SSLVerifyClient</name>
 <description>Type of Client Certificate verification</description>
-<syntax>SSLVerifyClient <em>level</em></syntax>
+<syntax>SSLVerifyClient <var>level</var></syntax>
 <default>SSLVerifyClient none</default>
 <contextlist><context>server config</context>
 <context>virtual host</context>
@@ -1437,7 +1437,7 @@ established. In per-directory context it forces a SSL renegotiation with the
 reconfigured client verification level after the HTTP request was read but
 before the HTTP response is sent.</p>
 <p>
-The following levels are available for <em>level</em>:</p>
+The following levels are available for <var>level</var>:</p>
 <ul>
 <li><strong>none</strong>:
      no client Certificate is required at all</li>
@@ -1462,7 +1462,7 @@ SSLVerifyClient require
 <name>SSLVerifyDepth</name>
 <description>Maximum depth of CA Certificates in Client
 Certificate verification</description>
-<syntax>SSLVerifyDepth <em>number</em></syntax>
+<syntax>SSLVerifyDepth <var>number</var></syntax>
 <default>SSLVerifyDepth 1</default>
 <contextlist><context>server config</context>
 <context>virtual host</context>
@@ -1527,7 +1527,7 @@ available in the <code>SSL_SRP_USERINFO</code> request environment variable.</p>
 <directivesynopsis>
 <name>SSLSRPUnknownUserSeed</name>
 <description>SRP unknown user seed</description>
-<syntax>SSLSRPUnknownUserSeed <em>secret-string</em></syntax>
+<syntax>SSLSRPUnknownUserSeed <var>secret-string</var></syntax>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
 <compatibility>Available in httpd 2.4.4 and later, if using OpenSSL 1.0.1 or
@@ -1549,7 +1549,7 @@ SSLSRPUnknownUserSeed "secret"
 <directivesynopsis>
 <name>SSLOptions</name>
 <description>Configure various SSL engine run-time options</description>
-<syntax>SSLOptions [+|-]<em>option</em> ...</syntax>
+<syntax>SSLOptions [+|-]<var>option</var> ...</syntax>
 <contextlist><context>server config</context>
 <context>virtual host</context>
 <context>directory</context>
@@ -1568,7 +1568,7 @@ are merged. Any options preceded by a <code>+</code> are added to the
 options currently in force, and any options preceded by a
 <code>-</code> are removed from the options currently in force.</p>
 <p>
-The available <em>option</em>s are:</p>
+The available <var>option</var>s are:</p>
 <ul>
 <li><code>StdEnvVars</code>
     <p>
@@ -1582,7 +1582,7 @@ The available <em>option</em>s are:</p>
     <p>
     When this option is enabled, additional CGI/SSI environment variables are
     created: <code>SSL_SERVER_CERT</code>, <code>SSL_CLIENT_CERT</code> and
-    <code>SSL_CLIENT_CERT_CHAIN_</code><em>n</em> (with <em>n</em> = 0,1,2,..).
+    <code>SSL_CLIENT_CERT_CHAIN_</code><var>n</var> (with <var>n</var> = 0,1,2,..).
     These contain the PEM-encoded X.509 Certificates of server and client for
     the current HTTPS connection and can be used by CGI scripts for deeper
     Certificate checking. Additionally all other certificates of the client
@@ -1598,7 +1598,7 @@ The available <em>option</em>s are:</p>
     be used for access control. The user name is just the Subject of the
     Client's X509 Certificate (can be determined by running OpenSSL's
     <code>openssl x509</code> command: <code>openssl x509 -noout -subject -in
-    </code><em>certificate</em><code>.crt</code>). The optional <directive
+    </code><var>certificate</var><code>.crt</code>). The optional <directive
     module="mod_ssl">SSLUserName</directive> directive can be used to
     specify which part of the certificate Subject is embedded in the username.
     Note that no password is obtained from the user. Every entry in the user
@@ -1706,7 +1706,7 @@ SSLRequireSSL
 <name>SSLRequire</name>
 <description>Allow access only when an arbitrarily complex
 boolean expression is true</description>
-<syntax>SSLRequire <em>expression</em></syntax>
+<syntax>SSLRequire <var>expression</var></syntax>
 <contextlist><context>directory</context>
 <context>.htaccess</context></contextlist>
 <override>AuthConfig</override>
@@ -1740,7 +1740,7 @@ fulfilled in order to allow access. It is a very powerful directive because the
 requirement specification is an arbitrarily complex boolean expression
 containing any number of access checks.</p>
 <p>
-The <em>expression</em> must match the following syntax (given as a BNF
+The <var>expression</var> must match the following syntax (given as a BNF
 grammar notation):</p>
 <blockquote>
 <pre>
@@ -1781,9 +1781,9 @@ href="#envvars">Environment Variables</a> can be used.  For
 <code>funcname</code> the available functions are listed in
 the <a href="../expr.html#functions">ap_expr documentation</a>.</p>
 
-<p>The <em>expression</em> is parsed into an internal machine
+<p>The <var>expression</var> is parsed into an internal machine
 representation when the configuration is loaded, and then evaluated
-during request processing.  In .htaccess context, the <em>expression</em> is
+during request processing.  In .htaccess context, the <var>expression</var> is
 both parsed and executed each time the .htaccess file is encountered during
 request processing.</p>
 
@@ -1798,9 +1798,9 @@ SSLRequire (    %{SSL_CIPHER} !~ m/^(EXP|NULL)-/                   \
 </highlight>
 </example>
 
-<p>The <code>PeerExtList(<em>object-ID</em>)</code> function expects
+<p>The <code>PeerExtList(<var>object-ID</var>)</code> function expects
 to find zero or more instances of the X.509 certificate extension
-identified by the given <em>object ID</em> (OID) in the client certificate.
+identified by the given <var>object ID</var> (OID) in the client certificate.
 The expression evaluates to true if the left-hand side string matches
 exactly against the value of an extension identified with this OID.
 (If multiple extensions with the same OID are present, at least one
@@ -2010,7 +2010,7 @@ SSLVHostSNIPolicy authonly
 <directivesynopsis>
 <name>SSLProxyMachineCertificatePath</name>
 <description>Directory of PEM-encoded client certificates and keys to be used by the proxy</description>
-<syntax>SSLProxyMachineCertificatePath <em>directory</em></syntax>
+<syntax>SSLProxyMachineCertificatePath <var>directory</var></syntax>
 <contextlist><context>server config</context> <context>virtual host</context>
 <context>proxy section</context></contextlist>
 <compatibility>The proxy section context is allowed in httpd 2.4.30 and later</compatibility>
@@ -2048,7 +2048,7 @@ SSLProxyMachineCertificatePath "/usr/local/apache2/conf/proxy.crt/"
 <directivesynopsis>
 <name>SSLProxyMachineCertificateFile</name>
 <description>File of concatenated PEM-encoded client certificates and keys to be used by the proxy</description>
-<syntax>SSLProxyMachineCertificateFile <em>filename</em></syntax>
+<syntax>SSLProxyMachineCertificateFile <var>filename</var></syntax>
 <contextlist><context>server config</context> <context>virtual host</context>
 <context>proxy section</context></contextlist>
 <compatibility>The proxy section context is allowed in httpd 2.4.30 and later<br/>
@@ -2109,7 +2109,7 @@ SSLProxyMachineCertificateFile "/usr/local/apache2/conf/ssl.crt/proxy.pem"
 <directivesynopsis>
 <name>SSLProxyMachineCertificateChainFile</name>
 <description>File of concatenated PEM-encoded CA certificates to be used by the proxy for choosing a certificate</description>
-<syntax>SSLProxyMachineCertificateChainFile <em>filename</em></syntax>
+<syntax>SSLProxyMachineCertificateChainFile <var>filename</var></syntax>
 <contextlist><context>server config</context> <context>virtual host</context>
 <context>proxy section</context></contextlist>
 <compatibility>The proxy section context is allowed in httpd 2.4.30 and later</compatibility>
@@ -2142,7 +2142,7 @@ SSLProxyMachineCertificateChainFile "/usr/local/apache2/conf/ssl.crt/proxyCA.pem
 <directivesynopsis>
 <name>SSLProxyVerify</name>
 <description>Type of remote server Certificate verification</description>
-<syntax>SSLProxyVerify <em>level</em></syntax>
+<syntax>SSLProxyVerify <var>level</var></syntax>
 <default>SSLProxyVerify none</default>
 <contextlist><context>server config</context> <context>virtual host</context>
 <context>proxy section</context></contextlist>
@@ -2154,7 +2154,7 @@ SSLProxyMachineCertificateChainFile "/usr/local/apache2/conf/ssl.crt/proxyCA.pem
 server, this directive can be used to configure certificate
 verification of the remote server. </p>
 <p>
-The following levels are available for <em>level</em>:</p>
+The following levels are available for <var>level</var>:</p>
 <ul>
 <li><strong>none</strong>:
      no remote server Certificate is required at all</li>
@@ -2183,7 +2183,7 @@ SSLProxyVerify require
 <name>SSLProxyVerifyDepth</name>
 <description>Maximum depth of CA Certificates in Remote Server
 Certificate verification</description>
-<syntax>SSLProxyVerifyDepth <em>number</em></syntax>
+<syntax>SSLProxyVerifyDepth <var>number</var></syntax>
 <default>SSLProxyVerifyDepth 1</default>
 <contextlist><context>server config</context> <context>virtual host</context>
 <context>proxy section</context></contextlist>
@@ -2357,7 +2357,7 @@ server to proxy SSL/TLS requests.</p>
 <directivesynopsis>
 <name>SSLProxyProtocol</name>
 <description>Configure usable SSL protocol flavors for proxy usage</description>
-<syntax>SSLProxyProtocol [+|-]<em>protocol</em> ...</syntax>
+<syntax>SSLProxyProtocol [+|-]<var>protocol</var> ...</syntax>
 <default>SSLProxyProtocol all -SSLv3</default>
 <contextlist><context>server config</context> <context>virtual host</context>
 <context>proxy section</context></contextlist>
@@ -2379,7 +2379,7 @@ for additional information.
 <name>SSLProxyCipherSuite</name>
 <description>Cipher Suite available for negotiation in SSL
 proxy handshake</description>
-<syntax>SSLProxyCipherSuite [<em>protocol</em>] <em>cipher-spec</em></syntax>
+<syntax>SSLProxyCipherSuite [<var>protocol</var>] <var>cipher-spec</var></syntax>
 <default>SSLProxyCipherSuite ALL:!ADH:RC4+RSA:+HIGH:+MEDIUM:+LOW:+EXP</default>
 <contextlist><context>server config</context> <context>virtual host</context>
 <context>proxy section</context></contextlist>
@@ -2397,7 +2397,7 @@ for additional information.</p>
 <name>SSLProxyCACertificatePath</name>
 <description>Directory of PEM-encoded CA Certificates for
 Remote Server Auth</description>
-<syntax>SSLProxyCACertificatePath <em>directory-path</em></syntax>
+<syntax>SSLProxyCACertificatePath <var>directory-path</var></syntax>
 <contextlist><context>server config</context> <context>virtual host</context>
 <context>proxy section</context></contextlist>
 <compatibility>The proxy section context is allowed in httpd 2.4.30 and later</compatibility>
@@ -2411,7 +2411,7 @@ verify the remote server certificate on Remote Server Authentication.</p>
 The files in this directory have to be PEM-encoded and are accessed through
 hash filenames. So usually you can't just place the Certificate files
 there: you also have to create symbolic links named
-<em>hash-value</em><code>.N</code>. And you should always make sure this directory
+<var>hash-value</var><code>.N</code>. And you should always make sure this directory
 contains the appropriate symbolic links.</p>
 <example><title>Example</title>
 <highlight language="config">
@@ -2450,7 +2450,7 @@ SSLProxyCACertificateFile "/usr/local/apache2/conf/ssl.crt/ca-bundle-remote-serv
 <name>SSLProxyCARevocationPath</name>
 <description>Directory of PEM-encoded CA CRLs for
 Remote Server Auth</description>
-<syntax>SSLProxyCARevocationPath <em>directory-path</em></syntax>
+<syntax>SSLProxyCARevocationPath <var>directory-path</var></syntax>
 <contextlist><context>server config</context> <context>virtual host</context>
 <context>proxy section</context></contextlist>
 <compatibility>The proxy section context is allowed in httpd 2.4.30 and later</compatibility>
@@ -2464,7 +2464,7 @@ These are used to revoke the remote server certificate on Remote Server Authenti
 The files in this directory have to be PEM-encoded and are accessed through
 hash filenames. So usually you have not only to place the CRL files there.
 Additionally you have to create symbolic links named
-<em>hash-value</em><code>.rN</code>. And you should always make sure this directory
+<var>hash-value</var><code>.rN</code>. And you should always make sure this directory
 contains the appropriate symbolic links.</p>
 <example><title>Example</title>
 <highlight language="config">
@@ -2544,7 +2544,7 @@ SSLProxyCARevocationCheck chain
 <directivesynopsis>
 <name>SSLUserName</name>
 <description>Variable name to determine user name</description>
-<syntax>SSLUserName <em>varname</em></syntax>
+<syntax>SSLUserName <var>varname</var></syntax>
 <contextlist><context>server config</context>
 <context>directory</context>
 <context>.htaccess</context></contextlist>
@@ -2555,7 +2555,7 @@ SSLProxyCARevocationCheck chain
 This directive sets the "user" field in the Apache request object.
 This is used by lower modules to identify the user with a character
 string. In particular, this may cause the environment variable
-<code>REMOTE_USER</code> to be set.  The <em>varname</em> can be
+<code>REMOTE_USER</code> to be set.  The <var>varname</var> can be
 any of the <a href="#envvars">SSL environment variables</a>.</p>
 
 <p>When the <code>FakeBasicAuth</code> option is enabled, this directive
@@ -2593,7 +2593,7 @@ SSLHonorCipherOrder on
 <directivesynopsis>
 <name>SSLCryptoDevice</name>
 <description>Enable use of a cryptographic hardware accelerator</description>
-<syntax>SSLCryptoDevice <em>engine</em></syntax>
+<syntax>SSLCryptoDevice <var>engine</var></syntax>
 <default>SSLCryptoDevice builtin</default>
 <contextlist><context>server config</context></contextlist>
 
@@ -2662,7 +2662,7 @@ SSLOCSPOverrideResponder on
 <directivesynopsis>
 <name>SSLOCSPDefaultResponder</name>
 <description>Set the default responder URI for OCSP validation</description>
-<syntax>SSLOCSPDefaultResponder <em>uri</em></syntax>
+<syntax>SSLOCSPDefaultResponder <var>uri</var></syntax>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
 
@@ -2692,7 +2692,7 @@ certificate being validated references an OCSP responder.</p>
 <directivesynopsis>
 <name>SSLOCSPResponseTimeSkew</name>
 <description>Maximum allowable time skew for OCSP response validation</description>
-<syntax>SSLOCSPResponseTimeSkew <em>seconds</em></syntax>
+<syntax>SSLOCSPResponseTimeSkew <var>seconds</var></syntax>
 <default>SSLOCSPResponseTimeSkew 300</default>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
@@ -2706,7 +2706,7 @@ certificate being validated references an OCSP responder.</p>
 <directivesynopsis>
 <name>SSLOCSPResponseMaxAge</name>
 <description>Maximum allowable age for OCSP responses</description>
-<syntax>SSLOCSPResponseMaxAge <em>seconds</em></syntax>
+<syntax>SSLOCSPResponseMaxAge <var>seconds</var></syntax>
 <default>SSLOCSPResponseMaxAge -1</default>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
@@ -2722,7 +2722,7 @@ which means that OCSP responses are considered valid as long as their
 <directivesynopsis>
 <name>SSLOCSPResponderTimeout</name>
 <description>Timeout for OCSP queries</description>
-<syntax>SSLOCSPResponderTimeout <em>seconds</em></syntax>
+<syntax>SSLOCSPResponderTimeout <var>seconds</var></syntax>
 <default>SSLOCSPResponderTimeout 10</default>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
@@ -2768,7 +2768,7 @@ testing an OCSP server.</p>
 <directivesynopsis>
 <name>SSLOCSPResponderCertificateFile</name>
 <description>Set of trusted PEM encoded OCSP responder certificates</description>
-<syntax>SSLOCSPResponderCertificateFile <em>file</em></syntax>
+<syntax>SSLOCSPResponderCertificateFile <var>file</var></syntax>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
 <compatibility>Available in httpd 2.4.26 and later, if using OpenSSL 0.9.7 or later</compatibility>
@@ -2784,7 +2784,7 @@ response.</p>
 <directivesynopsis>
 <name>SSLOCSPProxyURL</name>
 <description>Proxy URL to use for OCSP requests</description>
-<syntax>SSLOCSPProxyURL <em>url</em></syntax>
+<syntax>SSLOCSPProxyURL <var>url</var></syntax>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
 <compatibility>Available in httpd 2.4.19 and later</compatibility>
@@ -2836,7 +2836,7 @@ of OCSP responses.  These mutexes can be configured using the
 <directivesynopsis>
 <name>SSLStaplingCache</name>
 <description>Configures the OCSP stapling cache</description>
-<syntax>SSLStaplingCache <em>type</em></syntax>
+<syntax>SSLStaplingCache <var>type</var></syntax>
 <contextlist><context>server config</context></contextlist>
 <compatibility>Available if using OpenSSL 0.9.8h or later</compatibility>
 
@@ -2853,7 +2853,7 @@ the same storage types are supported as with
 <directivesynopsis>
 <name>SSLStaplingResponseTimeSkew</name>
 <description>Maximum allowable time skew for OCSP stapling response validation</description>
-<syntax>SSLStaplingResponseTimeSkew <em>seconds</em></syntax>
+<syntax>SSLStaplingResponseTimeSkew <var>seconds</var></syntax>
 <default>SSLStaplingResponseTimeSkew 300</default>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
@@ -2870,7 +2870,7 @@ if <directive module="mod_ssl">SSLUseStapling</directive> is turned on.</p>
 <directivesynopsis>
 <name>SSLStaplingResponderTimeout</name>
 <description>Timeout for OCSP stapling queries</description>
-<syntax>SSLStaplingResponderTimeout <em>seconds</em></syntax>
+<syntax>SSLStaplingResponderTimeout <var>seconds</var></syntax>
 <default>SSLStaplingResponderTimeout 10</default>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
@@ -2886,7 +2886,7 @@ and mod_ssl is querying a responder for OCSP stapling purposes.</p>
 <directivesynopsis>
 <name>SSLStaplingResponseMaxAge</name>
 <description>Maximum allowable age for OCSP stapling responses</description>
-<syntax>SSLStaplingResponseMaxAge <em>seconds</em></syntax>
+<syntax>SSLStaplingResponseMaxAge <var>seconds</var></syntax>
 <default>SSLStaplingResponseMaxAge -1</default>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
@@ -2905,7 +2905,7 @@ which means that OCSP responses are considered valid as long as their
 <directivesynopsis>
 <name>SSLStaplingStandardCacheTimeout</name>
 <description>Number of seconds before expiring responses in the OCSP stapling cache</description>
-<syntax>SSLStaplingStandardCacheTimeout <em>seconds</em></syntax>
+<syntax>SSLStaplingStandardCacheTimeout <var>seconds</var></syntax>
 <default>SSLStaplingStandardCacheTimeout 3600</default>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
@@ -2961,7 +2961,7 @@ is also enabled.</p>
 <directivesynopsis>
 <name>SSLStaplingErrorCacheTimeout</name>
 <description>Number of seconds before expiring invalid responses in the OCSP stapling cache</description>
-<syntax>SSLStaplingErrorCacheTimeout <em>seconds</em></syntax>
+<syntax>SSLStaplingErrorCacheTimeout <var>seconds</var></syntax>
 <default>SSLStaplingErrorCacheTimeout 600</default>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
@@ -2979,7 +2979,7 @@ To set the cache timeout for valid responses, see
 <directivesynopsis>
 <name>SSLStaplingForceURL</name>
 <description>Override the OCSP responder URI specified in the certificate's AIA extension</description>
-<syntax>SSLStaplingForceURL <em>uri</em></syntax>
+<syntax>SSLStaplingForceURL <var>uri</var></syntax>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
 <compatibility>Available if using OpenSSL 0.9.8h or later</compatibility>
@@ -3093,7 +3093,7 @@ forward secrecy.</p>
 <directivesynopsis>
 <name>SSLOpenSSLConfCmd</name>
 <description>Configure OpenSSL parameters through its <em>SSL_CONF</em> API</description>
-<syntax>SSLOpenSSLConfCmd <em>command-name</em> <em>command-value</em></syntax>
+<syntax>SSLOpenSSLConfCmd <var>command-name</var> <var>command-value</var></syntax>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
 <compatibility>Available in httpd 2.4.8 and later, if using OpenSSL 1.0.2 or later</compatibility>
@@ -3142,7 +3142,7 @@ mod_ssl behaviour will change across versions of httpd where
 <directivesynopsis>
 <name>SSLPolicy</name>
 <description>Apply a SSLPolicy by name</description>
-<syntax>SSLPolicy <em>name</em></syntax>
+<syntax>SSLPolicy <var>name</var></syntax>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
 <compatibility>Available in httpd 2.5.0 and later</compatibility>
@@ -3176,7 +3176,7 @@ httpd -t -D DUMP_SSL_POLICIES
 <directivesynopsis>
 <name>SSLECHKeyDir</name>
 <description>Load the set of Encrypted Client Hello (ECH) PEM files in the named directory</description>
-<syntax>SSLECHKeyDir <em>dirname</em></syntax>
+<syntax>SSLECHKeyDir <var>dirname</var></syntax>
 <contextlist><context>server config</context></contextlist>
 <compatibility>Available in Apache HTTP Server 2.5.1 and later</compatibility>
 
