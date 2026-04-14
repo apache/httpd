@@ -303,7 +303,7 @@
 <div class="directive-section"><h2><a name="H2EarlyHint" id="H2EarlyHint">H2EarlyHint</a> <a name="h2earlyhint" id="h2earlyhint">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Add a response header to be picked up in 103 Early Hints</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>H2EarlyHint <em>name</em> <em>value</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>H2EarlyHint <var>name</var> <var>value</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_http2</td></tr>
@@ -315,7 +315,7 @@
                 are picked up for "103 Early Hints" intermediate responses. The main
                 purpose is to send "preload" information to client browsers.
             </p><p>
-                <em>name</em> and <em>value</em> must be valid HTTP header fields
+                <var>name</var> and <var>value</var> must be valid HTTP header fields
                 or will lead to failed responses. <code class="directive">H2EarlyHints</code>
                 must still be enabled to allow 103 intermediate responses to be sent.
                 This directive can be repeated several times and header fields of the
@@ -355,7 +355,7 @@
 <div class="directive-section"><h2><a name="H2MaxDataFrameLen" id="H2MaxDataFrameLen">H2MaxDataFrameLen</a> <a name="h2maxdataframelen" id="h2maxdataframelen">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Maximum bytes inside a single HTTP/2 DATA frame</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>H2MaxDataFrameLen <em>n</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>H2MaxDataFrameLen <var>n</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>H2MaxDataFrameLen 0</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
@@ -378,7 +378,7 @@
 <div class="directive-section"><h2><a name="H2MaxHeaderBlockLen" id="H2MaxHeaderBlockLen">H2MaxHeaderBlockLen</a> <a name="h2maxheaderblocklen" id="h2maxheaderblocklen">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Maximum size of response headers</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>H2MaxHeaderBlockLen <em>n</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>H2MaxHeaderBlockLen <var>n</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>H2MaxHeaderBlockLen 0</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
@@ -400,7 +400,7 @@
 <div class="directive-section"><h2><a name="H2MaxSessionStreams" id="H2MaxSessionStreams">H2MaxSessionStreams</a> <a name="h2maxsessionstreams" id="h2maxsessionstreams">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Maximum number of active streams per HTTP/2 session.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>H2MaxSessionStreams <em>n</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>H2MaxSessionStreams <var>n</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>H2MaxSessionStreams 100</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
@@ -419,7 +419,7 @@
 <div class="directive-section"><h2><a name="H2MaxStreamErrors" id="H2MaxStreamErrors">H2MaxStreamErrors</a> <a name="h2maxstreamerrors" id="h2maxstreamerrors">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Maximum amount of client caused errors to tolerate</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>H2MaxStreamErrors <em>n</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>H2MaxStreamErrors <var>n</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>H2MaxStreamErrors 8</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
@@ -444,7 +444,7 @@
 <div class="directive-section"><h2><a name="H2MaxWorkerIdleSeconds" id="H2MaxWorkerIdleSeconds">H2MaxWorkerIdleSeconds</a> <a name="h2maxworkeridleseconds" id="h2maxworkeridleseconds">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Maximum number of seconds h2 workers remain idle until shut down.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>H2MaxWorkerIdleSeconds <em>n</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>H2MaxWorkerIdleSeconds <var>n</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>H2MaxWorkerIdleSeconds 600</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
@@ -463,7 +463,7 @@
 <div class="directive-section"><h2><a name="H2MaxWorkers" id="H2MaxWorkers">H2MaxWorkers</a> <a name="h2maxworkers" id="h2maxworkers">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Maximum number of worker threads to use per child process.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>H2MaxWorkers <em>n</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>H2MaxWorkers <var>n</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_http2</td></tr>
@@ -482,7 +482,7 @@
 <div class="directive-section"><h2><a name="H2MinWorkers" id="H2MinWorkers">H2MinWorkers</a> <a name="h2minworkers" id="h2minworkers">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Minimal number of worker threads to use per child process.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>H2MinWorkers <em>n</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>H2MinWorkers <var>n</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_http2</td></tr>
@@ -563,7 +563,7 @@
 <div class="directive-section"><h2><a name="H2Padding" id="H2Padding">H2Padding</a> <a name="h2padding" id="h2padding">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Determine the range of padding bytes added to payload frames</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>H2Padding <em>numbits</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>H2Padding <var>numbits</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>H2Padding 0</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
@@ -683,7 +683,7 @@
 <div class="directive-section"><h2><a name="H2PushDiarySize" id="H2PushDiarySize">H2PushDiarySize</a> <a name="h2pushdiarysize" id="h2pushdiarysize">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>H2 Server Push Diary Size</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>H2PushDiarySize <em>n</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>H2PushDiarySize <var>n</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>H2PushDiarySize 256</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
@@ -716,7 +716,7 @@
 <div class="directive-section"><h2><a name="H2PushPriority" id="H2PushPriority">H2PushPriority</a> <a name="h2pushpriority" id="h2pushpriority">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>H2 Server Push Priority</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>H2PushPriority <em>mime-type</em> [after|before|interleaved] [<em>weight</em>]</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>H2PushPriority <var>mime-type</var> [after|before|interleaved] [<var>weight</var>]</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>H2PushPriority * After 16</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
@@ -833,7 +833,7 @@ H2PushPriority text/css   interleaved      # weight 256 default</pre>
 <div class="directive-section"><h2><a name="H2PushResource" id="H2PushResource">H2PushResource</a> <a name="h2pushresource" id="h2pushresource">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Declares resources for early pushing to the client</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>H2PushResource [add] <em>path</em> [critical]</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>H2PushResource [add] <var>path</var> [critical]</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_http2</td></tr>
@@ -892,7 +892,7 @@ H2PushPriority text/css   interleaved      # weight 256 default</pre>
 <div class="directive-section"><h2><a name="H2StreamMaxMemSize" id="H2StreamMaxMemSize">H2StreamMaxMemSize</a> <a name="h2streammaxmemsize" id="h2streammaxmemsize">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Maximum amount of output data buffered per stream.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>H2StreamMaxMemSize <em>bytes</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>H2StreamMaxMemSize <var>bytes</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>H2StreamMaxMemSize 65536</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
@@ -930,7 +930,7 @@ H2PushPriority text/css   interleaved      # weight 256 default</pre>
 <div class="directive-section"><h2><a name="H2TLSCoolDownSecs" id="H2TLSCoolDownSecs">H2TLSCoolDownSecs</a> <a name="h2tlscooldownsecs" id="h2tlscooldownsecs">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configure the number of seconds of idle time on TLS before shrinking writes</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>H2TLSCoolDownSecs <em>seconds</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>H2TLSCoolDownSecs <var>seconds</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>H2TLSCoolDownSecs 1</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
@@ -969,7 +969,7 @@ H2PushPriority text/css   interleaved      # weight 256 default</pre>
 <div class="directive-section"><h2><a name="H2TLSWarmUpSize" id="H2TLSWarmUpSize">H2TLSWarmUpSize</a> <a name="h2tlswarmupsize" id="h2tlswarmupsize">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configure the number of bytes on TLS connection before doing max writes</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>H2TLSWarmUpSize <em>amount</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>H2TLSWarmUpSize <var>amount</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>H2TLSWarmUpSize 1048576</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
@@ -1097,7 +1097,7 @@ H2PushPriority text/css   interleaved      # weight 256 default</pre>
 <div class="directive-section"><h2><a name="H2WindowSize" id="H2WindowSize">H2WindowSize</a> <a name="h2windowsize" id="h2windowsize">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Size of Stream Window for upstream data.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>H2WindowSize <em>bytes</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>H2WindowSize <var>bytes</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>H2WindowSize 65535</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
