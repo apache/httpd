@@ -29,7 +29,7 @@
 
 <p>This document supplements the <module>mod_rewrite</module>
 <a href="../mod/mod_rewrite.html">reference documentation</a>. It provides
-a few advanced techniques using mod_rewrite.</p>
+a few advanced techniques using <module>mod_rewrite</module>.</p>
 
 <!--
 I question whether anything remailing in this document qualifies as
@@ -165,7 +165,7 @@ RewriteRule "^(.+)\.html$"     "/regenerate_page.cgi"   [PT,L]
 
     <dd>
       <p>We wish to randomly distribute load across several servers
-      using mod_rewrite.</p>
+      using <module>mod_rewrite</module>.</p>
     </dd>
 
     <dt>Solution:</dt>
@@ -198,7 +198,7 @@ others, add it more times to the list.</p>
    <dd>
 <p>Apache comes with a load-balancing module -
 <module>mod_proxy_balancer</module> - which is far more flexible and
-featureful than anything you can cobble together using mod_rewrite.</p>
+featureful than anything you can cobble together using <module>mod_rewrite</module>.</p>
    </dd>
   </dl>
 
@@ -245,7 +245,7 @@ RewriteRule   "^/~(<strong>([a-z])</strong>[a-z0-9]+)(.*)"  "/home/<strong>$2</s
 
     <dd>
     <p>By default, redirecting to an HTML anchor doesn't work,
-    because mod_rewrite escapes the <code>#</code> character,
+    because <module>mod_rewrite</module> escapes the <code>#</code> character,
     turning it into <code>%23</code>. This, in turn, breaks the
     redirection.</p>
     </dd>
@@ -260,7 +260,7 @@ RewriteRule   "^/~(<strong>([a-z])</strong>[a-z0-9]+)(.*)"  "/home/<strong>$2</s
 
     <dt>Discussion:</dt>
     <dd>This technique will of course also work with other
-    special characters that mod_rewrite, by default, URL-encodes.</dd>
+    special characters that <module>mod_rewrite</module>, by default, URL-encodes.</dd>
   </dl>
 
 </section>
@@ -273,7 +273,7 @@ RewriteRule   "^/~(<strong>([a-z])</strong>[a-z0-9]+)(.*)"  "/home/<strong>$2</s
     <dt>Description:</dt>
 
     <dd>
-      <p>We wish to use mod_rewrite to serve different content based on
+      <p>We wish to use <module>mod_rewrite</module> to serve different content based on
       the time of day.</p>
     </dd>
 
