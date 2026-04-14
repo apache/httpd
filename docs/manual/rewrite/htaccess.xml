@@ -29,7 +29,7 @@
 
 <p>This document supplements the <module>mod_rewrite</module>
 <a href="../mod/mod_rewrite.html">reference documentation</a>. It describes
-the way that the rules change when you use mod_rewrite in .htaccess files,
+the way that the rules change when you use <module>mod_rewrite</module> in .htaccess files,
 and how to deal with these changes.</p>
 
 </summary>
