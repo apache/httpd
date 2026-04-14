@@ -104,7 +104,7 @@ trust, as it can be abused to change the internal workings of httpd.</p>
 
 
 <p>
-<code>mod_lua</code> provides a handler named <code>lua-script</code>,
+<code class="module"><a href="../mod/mod_lua.html">mod_lua</a></code> provides a handler named <code>lua-script</code>,
 which can be used with a <code class="directive"><a href="../mod/core.html#sethandler">SetHandler</a></code> or
 <code class="directive"><a href="../mod/mod_mime.html#addhandler">AddHandler</a></code> directive:</p>
 
@@ -114,7 +114,7 @@ which can be used with a <code class="directive"><a href="../mod/core.html#setha
 
 
 <p>
-This will cause <code>mod_lua</code> to handle requests for files
+This will cause <code class="module"><a href="../mod/mod_lua.html">mod_lua</a></code> to handle requests for files
 ending in <code>.lua</code> by invoking that file's
 <code>handle</code> function.
 </p>
@@ -130,7 +130,7 @@ responsible for generating the response.  Examples of modules that include a
 handler are <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code>, <code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code>,
 and <code class="module"><a href="../mod/mod_status.html">mod_status</a></code>.</p>
 
-<p><code>mod_lua</code> always looks to invoke a Lua function for the handler, rather than
+<p><code class="module"><a href="../mod/mod_lua.html">mod_lua</a></code> always looks to invoke a Lua function for the handler, rather than
 just evaluating a script body CGI style. A handler function looks
 something like this:</p>
 
@@ -246,7 +246,7 @@ performing access control, or setting mime types:</p>
 
 <table class="bordered"><tr class="header">
         <th>Hook phase</th>
-        <th>mod_lua directive</th>
+        <th><code class="module"><a href="../mod/mod_lua.html">mod_lua</a></code> directive</th>
         <th>Description</th>
     </tr>
 <tr>
@@ -490,9 +490,9 @@ end</pre>
           <td>string</td>
           <td>yes</td>
           <td>The name of the <a href="../handler.html">handler</a> that should serve this request, f.x.
-            <code>lua-script</code> if it is to be served by mod_lua. This is typically set by the
+            <code>lua-script</code> if it is to be served by <code class="module"><a href="../mod/mod_lua.html">mod_lua</a></code>. This is typically set by the
             <code class="directive"><a href="../mod/mod_mime.html#addhandler">AddHandler</a></code> or <code class="directive"><a href="../mod/core.html#sethandler">SetHandler</a></code>
-            directives, but could also be set via mod_lua to allow another handler to serve up a specific request
+            directives, but could also be set via <code class="module"><a href="../mod/mod_lua.html">mod_lua</a></code> to allow another handler to serve up a specific request
             that would otherwise not be served by it.
             </td>
         </tr>
@@ -1239,8 +1239,8 @@ end</pre>
 
     <p>Database handles should be closed using <code>database:close()</code> when they are no longer
     needed. If you do not close them manually, they will eventually be garbage collected and
-    closed by mod_lua, but you may end up having too many unused connections to the database
-    if you leave the closing up to mod_lua. Essentially, the following two measures are
+    closed by <code class="module"><a href="../mod/mod_lua.html">mod_lua</a></code>, but you may end up having too many unused connections to the database
+    if you leave the closing up to <code class="module"><a href="../mod/mod_lua.html">mod_lua</a></code>. Essentially, the following two measures are
     the same:
     </p>
     <pre class="prettyprint lang-lua">-- Method 1: Manually close a handle
@@ -1846,7 +1846,7 @@ LuaPackagePath /scripts/lib/?/init.lua</pre>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="LuaRoot" id="LuaRoot">LuaRoot</a> <a name="luaroot" id="luaroot">Directive</a> <a title="Permanent link" href="#luaroot" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Specify the base path for resolving relative paths for mod_lua directives</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Specify the base path for resolving relative paths for <code class="module"><a href="../mod/mod_lua.html">mod_lua</a></code> directives</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>LuaRoot /path/to/a/directory</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>All</td></tr>
@@ -1854,7 +1854,7 @@ LuaPackagePath /scripts/lib/?/init.lua</pre>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_lua</td></tr>
 </table>
     <p>Specify the base path which will be used to evaluate all
-    relative paths within mod_lua. If not specified they
+    relative paths within <code class="module"><a href="../mod/mod_lua.html">mod_lua</a></code>. If not specified they
     will be resolved relative to the current working directory,
     which may not always work well for a server.</p>
 
