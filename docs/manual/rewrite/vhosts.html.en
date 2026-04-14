@@ -33,7 +33,7 @@
 how you can use <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> to create dynamically
 configured virtual hosts.</p>
 
-<div class="warning">mod_rewrite is not the best way to configure
+<div class="warning"><code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> is not the best way to configure
 virtual hosts. You should first consider the <a href="../vhosts/mass.html">alternatives</a> before resorting to
 mod_rewrite. See also the "<a href="avoid.html#vhosts">how to avoid
 mod_rewrite</a> document.</div>
@@ -96,7 +96,7 @@ captured into the backreferences <code>$1</code>, <code>$2</code>,
 etc.</p>
 
 <p>
-As with many techniques discussed in this document, mod_rewrite really
+As with many techniques discussed in this document, <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> really
 isn't the best way to accomplish this task. You should, instead,
 consider using <code class="module"><a href="../mod/mod_vhost_alias.html">mod_vhost_alias</a></code> instead, as it will much
 more gracefully handle anything beyond serving static files, such as any
@@ -114,15 +114,15 @@ dynamic content, and Alias resolution.
     thing as <a href="#per-hostname">the first example</a>. The first
     half is very similar to the corresponding part above, except for
     some changes, required for backward compatibility and to make the
-    <code>mod_rewrite</code> part work properly; the second half
-    configures <code>mod_rewrite</code> to do the actual work.</p>
+    <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> part work properly; the second half
+    configures <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> to do the actual work.</p>
 
-    <p>Because <code>mod_rewrite</code> runs before other URI translation
-    modules (e.g., <code>mod_alias</code>), <code>mod_rewrite</code> must
+    <p>Because <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> runs before other URI translation
+    modules (e.g., <code class="module"><a href="../mod/mod_alias.html">mod_alias</a></code>), <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> must
     be told to explicitly ignore any URLs that would have been handled
     by those modules. And, because these rules would otherwise bypass
     any <code>ScriptAlias</code> directives, we must have
-    <code>mod_rewrite</code> explicitly enact those mappings.</p>
+    <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> explicitly enact those mappings.</p>
 
 <pre class="prettyprint lang-config"># get the server name from the Host: header
 UseCanonicalName Off

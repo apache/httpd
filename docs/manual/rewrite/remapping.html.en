@@ -31,7 +31,7 @@
 <p>This document supplements the <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>
 <a href="../mod/mod_rewrite.html">reference documentation</a>. It describes
 how you can use <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> to redirect and remap
-request. This includes many examples of common uses of mod_rewrite,
+request. This includes many examples of common uses of <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>,
 including detailed descriptions of how each works.</p>
 
 <div class="warning">Note that many of these examples won't work unchanged in your
@@ -117,7 +117,7 @@ RewriteRule    "^<strong>/foo</strong>\.html$"  "<strong>bar</strong>.html"  [<s
 
     <dd>
     <p>In this example, as contrasted to the <a href="#old-to-new-intern">internal</a> example above, we can simply
-    use the Redirect directive. mod_rewrite was used in that earlier
+    use the Redirect directive. <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> was used in that earlier
     example in order to hide the redirect from the client:</p>
 
     <pre class="prettyprint lang-config">Redirect "/foo.html" "/bar.html"</pre>
@@ -236,9 +236,9 @@ RewriteRule    "^foo\.html$"  "foo.cgi"  [H=<strong>cgi-script</strong>]</pre>
 
     <dt>Discussion</dt>
     <dd>
-    <p>This example uses an often-overlooked feature of mod_rewrite,
+    <p>This example uses an often-overlooked feature of <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>,
     by taking advantage of the order of execution of the ruleset. In
-    particular, mod_rewrite evaluates the left-hand-side of the
+    particular, <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> evaluates the left-hand-side of the
     RewriteRule before it evaluates the RewriteCond directives.
     Consequently, $1 is already defined by the time the RewriteCond
     directives are evaluated. This allows us to test for the existence
@@ -273,7 +273,7 @@ RewriteRule    "^foo\.html$"  "foo.cgi"  [H=<strong>cgi-script</strong>]</pre>
 
         <dd>
 
-<p>The very best way to solve this doesn't involve mod_rewrite at all,
+<p>The very best way to solve this doesn't involve <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> at all,
 but rather uses the <code class="directive"><a href="../mod/mod_alias.html#redirect">Redirect</a></code>
 directive placed in a virtual host for the non-canonical
 hostname(s).</p>
@@ -307,7 +307,7 @@ might do the following:</p>
 &lt;/If&gt;</pre>
 
 
-<p>If, for whatever reason, you still want to use <code>mod_rewrite</code>
+<p>If, for whatever reason, you still want to use <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>
 - if, for example, you need this to work with a larger set of RewriteRules -
 you might use one of the recipes below.</p>
 

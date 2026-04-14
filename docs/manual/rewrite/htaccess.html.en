@@ -30,7 +30,7 @@
 
 <p>This document supplements the <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>
 <a href="../mod/mod_rewrite.html">reference documentation</a>. It describes
-the way that the rules change when you use mod_rewrite in .htaccess files,
+the way that the rules change when you use <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> in .htaccess files,
 and how to deal with these changes.</p>
 
 </div>
