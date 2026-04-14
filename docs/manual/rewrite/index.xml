@@ -52,13 +52,13 @@
       passthrough, depending on what <a href="flags.html">flags</a> you
       attach to the rules.</p>
 
-      <p>Since mod_rewrite is so powerful, it can indeed be rather
+      <p>Since <module>mod_rewrite</module> is so powerful, it can indeed be rather
       complex. This document supplements the <a
       href="../mod/mod_rewrite.html">reference documentation</a>, and
       attempts to allay some of that complexity, and provide highly
       annotated examples of common scenarios that you may handle with
-      mod_rewrite. But we also attempt to show you when you should not
-      use mod_rewrite, and use other standard Apache features instead,
+      <module>mod_rewrite</module>. But we also attempt to show you when you should not
+      use <module>mod_rewrite</module>, and use other standard Apache features instead,
       thus avoiding this unnecessary complexity.</p>
 
 
