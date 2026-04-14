@@ -40,7 +40,9 @@
     running the command</p>
 
     <example>
-      $ httpd -l
+<highlight language="sh">
+$ httpd -l
+</highlight>
     </example>
 
     <p>The module <module>mod_so</module> should be part of the displayed list.
@@ -49,17 +51,19 @@
     by the help of this <code>apxs</code> tool:</p>
 
     <example>
-      $ apxs -i -a -c mod_foo.c<br />
-      gcc -fpic -DSHARED_MODULE -I/path/to/apache/include -c mod_foo.c<br />
-      ld -Bshareable -o mod_foo.so mod_foo.o<br />
-      cp mod_foo.so /path/to/apache/modules/mod_foo.so<br />
-      chmod 755 /path/to/apache/modules/mod_foo.so<br />
-      [activating module `foo' in /path/to/apache/etc/httpd.conf]<br />
-      $ apachectl restart<br />
-      /path/to/apache/sbin/apachectl restart: httpd not running, trying to start<br />
-      [Tue Mar 31 11:27:55 1998] [debug] mod_so.c(303): loaded module foo_module<br />
-      /path/to/apache/sbin/apachectl restart: httpd started<br />
-      $ _
+<highlight language="sh">
+$ apxs -i -a -c mod_foo.c
+gcc -fpic -DSHARED_MODULE -I/path/to/apache/include -c mod_foo.c
+ld -Bshareable -o mod_foo.so mod_foo.o
+cp mod_foo.so /path/to/apache/modules/mod_foo.so
+chmod 755 /path/to/apache/modules/mod_foo.so
+[activating module `foo' in /path/to/apache/etc/httpd.conf]
+$ apachectl restart
+/path/to/apache/sbin/apachectl restart: httpd not running, trying to start
+[Tue Mar 31 11:27:55 1998] [debug] mod_so.c(303): loaded module foo_module
+/path/to/apache/sbin/apachectl restart: httpd started
+$ _
+</highlight>
     </example>
 
     <p>The arguments <var>files</var> can be any C source file (.c), a object
@@ -140,7 +144,9 @@
       <p>Use this to manually determine settings used to build the
       <code>httpd</code> that will load your module.  For instance use</p>
       <example>
-        INC=-I`apxs -q INCLUDEDIR`
+<highlight language="sh">
+INC=-I`apxs -q INCLUDEDIR`
+</highlight>
       </example>
 
       <p>inside your own Makefiles if you need manual access to Apache's C
@@ -254,10 +260,12 @@
     into the Apache server under runtime via the following command:</p>
 
     <example>
-      $ apxs -c mod_foo.c<br />
-      /path/to/libtool --mode=compile gcc ... -c mod_foo.c<br />
-      /path/to/libtool --mode=link gcc ... -o mod_foo.la mod_foo.slo<br />
-      $ _
+<highlight language="sh">
+$ apxs -c mod_foo.c
+/path/to/libtool --mode=compile gcc ... -c mod_foo.c
+/path/to/libtool --mode=link gcc ... -o mod_foo.la mod_foo.slo
+$ _
+</highlight>
     </example>
 
     <p>Then you have to update the Apache configuration by making sure a
@@ -268,19 +276,23 @@
     achieved by running:</p>
 
     <example>
-      $ apxs -i -a mod_foo.la<br />
-      /path/to/instdso.sh mod_foo.la /path/to/apache/modules<br />
-      /path/to/libtool --mode=install cp mod_foo.la /path/to/apache/modules
-      ...
-      chmod 755 /path/to/apache/modules/mod_foo.so<br />
-      [activating module `foo' in /path/to/apache/conf/httpd.conf]<br />
-      $ _
+<highlight language="sh">
+$ apxs -i -a mod_foo.la
+/path/to/instdso.sh mod_foo.la /path/to/apache/modules
+/path/to/libtool --mode=install cp mod_foo.la /path/to/apache/modules
+...
+chmod 755 /path/to/apache/modules/mod_foo.so
+[activating module `foo' in /path/to/apache/conf/httpd.conf]
+$ _
+</highlight>
     </example>
 
     <p>This way a line named</p>
 
     <example>
-      LoadModule foo_module modules/mod_foo.so
+<highlight language="config">
+LoadModule foo_module modules/mod_foo.so
+</highlight>
     </example>
 
     <p>is added to the configuration file if still not present. If you want to
@@ -288,42 +300,48 @@
     <em>i.e.</em></p>
 
     <example>
-      $ apxs -i -A mod_foo.c
+<highlight language="sh">
+$ apxs -i -A mod_foo.c
+</highlight>
     </example>
 
     <p>For a quick test of the apxs mechanism you can create a sample Apache
     module template plus a corresponding Makefile via:</p>
 
     <example>
-      $ apxs -g -n foo<br />
-      Creating [DIR]  foo<br />
-      Creating [FILE] foo/Makefile<br />
-      Creating [FILE] foo/modules.mk<br />
-      Creating [FILE] foo/mod_foo.c<br />
-      Creating [FILE] foo/.deps<br />
-      $ _
+<highlight language="sh">
+$ apxs -g -n foo
+Creating [DIR]  foo
+Creating [FILE] foo/Makefile
+Creating [FILE] foo/modules.mk
+Creating [FILE] foo/mod_foo.c
+Creating [FILE] foo/.deps
+$ _
+</highlight>
     </example>
 
     <p>Then you can immediately compile this sample module into a shared object
     and load it into the Apache server:</p>
 
     <example>
-      $ cd foo<br />
-      $ make all reload<br />
-      apxs -c mod_foo.c<br />
-      /path/to/libtool --mode=compile gcc ... -c mod_foo.c<br />
-      /path/to/libtool --mode=link gcc ... -o mod_foo.la mod_foo.slo<br />
-      apxs -i -a -n "foo" mod_foo.la<br />
-      /path/to/instdso.sh mod_foo.la /path/to/apache/modules<br />
-      /path/to/libtool --mode=install cp mod_foo.la /path/to/apache/modules
-      ...
-      chmod 755 /path/to/apache/modules/mod_foo.so<br />
-      [activating module `foo' in /path/to/apache/conf/httpd.conf]<br />
-      apachectl restart<br />
-      /path/to/apache/sbin/apachectl restart: httpd not running, trying to start<br />
-      [Tue Mar 31 11:27:55 1998] [debug] mod_so.c(303): loaded module foo_module<br />
-      /path/to/apache/sbin/apachectl restart: httpd started<br />
-      $ _
+<highlight language="sh">
+$ cd foo
+$ make all reload
+apxs -c mod_foo.c
+/path/to/libtool --mode=compile gcc ... -c mod_foo.c
+/path/to/libtool --mode=link gcc ... -o mod_foo.la mod_foo.slo
+apxs -i -a -n "foo" mod_foo.la
+/path/to/instdso.sh mod_foo.la /path/to/apache/modules
+/path/to/libtool --mode=install cp mod_foo.la /path/to/apache/modules
+...
+chmod 755 /path/to/apache/modules/mod_foo.so
+[activating module `foo' in /path/to/apache/conf/httpd.conf]
+apachectl restart
+/path/to/apache/sbin/apachectl restart: httpd not running, trying to start
+[Tue Mar 31 11:27:55 1998] [debug] mod_so.c(303): loaded module foo_module
+/path/to/apache/sbin/apachectl restart: httpd started
+$ _
+</highlight>
     </example>
 
 </section>
