@@ -30,7 +30,7 @@
 <p>This document supplements the <module>mod_rewrite</module>
 <a href="../mod/mod_rewrite.html">reference documentation</a>. It describes
 how you can use <module>mod_rewrite</module> to redirect and remap
-request. This includes many examples of common uses of mod_rewrite,
+request. This includes many examples of common uses of <module>mod_rewrite</module>,
 including detailed descriptions of how each works.</p>
 
 <note type="warning">Note that many of these examples won't work unchanged in your
@@ -113,7 +113,7 @@ RewriteRule    "^<strong>/foo</strong>\.html$"  "<strong>bar</strong>.html"  [<s
     <dd>
     <p>In this example, as contrasted to the <a
     href="#old-to-new-intern">internal</a> example above, we can simply
-    use the Redirect directive. mod_rewrite was used in that earlier
+    use the Redirect directive. <module>mod_rewrite</module> was used in that earlier
     example in order to hide the redirect from the client:</p>
 
     <highlight language="config">
@@ -238,9 +238,9 @@ RewriteRule    "^foo\.html$"  "foo.cgi"  [H=<strong>cgi-script</strong>]
 
     <dt>Discussion</dt>
     <dd>
-    <p>This example uses an often-overlooked feature of mod_rewrite,
+    <p>This example uses an often-overlooked feature of <module>mod_rewrite</module>,
     by taking advantage of the order of execution of the ruleset. In
-    particular, mod_rewrite evaluates the left-hand-side of the
+    particular, <module>mod_rewrite</module> evaluates the left-hand-side of the
     RewriteRule before it evaluates the RewriteCond directives.
     Consequently, $1 is already defined by the time the RewriteCond
     directives are evaluated. This allows us to test for the existence
@@ -276,7 +276,7 @@ RewriteRule    "^foo\.html$"  "foo.cgi"  [H=<strong>cgi-script</strong>]
 
         <dd>
 
-<p>The very best way to solve this doesn't involve mod_rewrite at all,
+<p>The very best way to solve this doesn't involve <module>mod_rewrite</module> at all,
 but rather uses the <directive module="mod_alias">Redirect</directive>
 directive placed in a virtual host for the non-canonical
 hostname(s).</p>
@@ -313,7 +313,7 @@ might do the following:</p>
 &lt;/If&gt;
 </highlight>
 
-<p>If, for whatever reason, you still want to use <code>mod_rewrite</code>
+<p>If, for whatever reason, you still want to use <module>mod_rewrite</module>
 - if, for example, you need this to work with a larger set of RewriteRules -
 you might use one of the recipes below.</p>
 
