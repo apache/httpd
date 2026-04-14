@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.en.xsl"?>
-<!-- English Revision: 1565321:1816110 (outdated) -->
+<!-- English Revision: 1816110 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -113,9 +113,46 @@ Listen 192.0.2.5:8000
     href="http://wiki.apache.org/httpd/CouldNotBindToAddress">Diese
     Diskussion im Wiki</a> gibt weitere Tipps zur Fehlerbehebung.</p>
     </note>
+
   </section>
 
-  <section id="ipv6">
+  <section id="reload">
+    <title>Änderung der Listen-Konfiguration beim Neustart</title>
+
+    <p>Wenn der httpd neu gestartet wird, müssen Änderungen an
+    <directive module="mpm_common">Listen</directive>-Direktiven besonders
+    beachtet werden. Während eines Neustarts bleiben die Ports an den httpd
+    gebunden (wie in der ursprünglichen Konfiguration), um
+    "Connection refused"-Fehler für neue Verbindungsversuche zum
+    Server zu vermeiden. Wenn Änderungen an den verwendeten
+    <directive module="mpm_common">Listen</directive>-Direktiven vorgenommen
+    werden, die mit der alten Konfiguration in Konflikt stehen, schlägt
+    die Konfiguration fehl und der Server wird beendet.</p>
+
+    <p>Zum Beispiel kann die Änderung der Konfiguration von:</p>
+    
+    <example>
+    <highlight language="config">
+      Listen 127.0.0.1:80
+    </highlight>
+    </example>
+
+    <p>zur folgenden Konfiguration fehlschlagen, da das Binden an
+    Port 80 auf allen Adressen mit dem Binden an Port 80 auf nur
+    127.0.0.1 in Konflikt steht.</p>
+    
+    <example>
+    <highlight language="config">
+      Listen 80
+    </highlight>
+    </example>
+
+    <p>Damit solche Konfigurationsänderungen wirksam werden, muss
+    der Server gestoppt und dann neu gestartet werden.</p>
+    
+  </section>
+
+    <section id="ipv6">
     <title>Betrachtung von IPv6-Besonderheiten</title>
 
     <p>Eine wachsende Anzahl von Plattformen implementiert IPv6. Die
@@ -218,4 +255,3 @@ Listen 192.0.2.1:80
     wurde, an dem der Server nicht lauscht.</p>
   </section>
 </manualpage>
-
