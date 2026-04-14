@@ -31,7 +31,7 @@
 <a href="../mod/mod_rewrite.html">reference documentation</a>. It describes
 how you can use <module>mod_rewrite</module> to control access to
 various resources, and other related techniques.
-This includes many examples of common uses of mod_rewrite,
+This includes many examples of common uses of <module>mod_rewrite</module>,
 including detailed descriptions of how each works.</p>
 
 <note type="warning">Note that many of these examples won't work unchanged in your
@@ -118,7 +118,7 @@ RewriteRule "\.(gif|jpg|png)$" "http://other.example.com/image.gif"  [R,NC]
         <dd>
         <p>If all you wish to do is deny access to the resource, rather
         than redirecting that request elsewhere, this can be
-        accomplished without the use of mod_rewrite:</p>
+        accomplished without the use of <module>mod_rewrite</module>:</p>
 
         <highlight language="config">
 SetEnvIf Referer example\.com localreferer
@@ -150,7 +150,7 @@ SetEnvIf Referer example\.com localreferer
         </p>
 
         <p>Note that there are methods of accomplishing this which do
-        not use mod_rewrite. Note also that any technique that relies on
+        not use <module>mod_rewrite</module>. Note also that any technique that relies on
         the clients <code>USER_AGENT</code> string can be circumvented
         very easily, since that string can be changed.</p>
         </dd>
@@ -179,7 +179,7 @@ RewriteRule "^/secret/files/"      "-"                   [F]
 
       <dd>
       <p>
-        Rather than using mod_rewrite for this, you can accomplish the
+        Rather than using <module>mod_rewrite</module> for this, you can accomplish the
         same end using alternate means, as illustrated here:
       </p>
       <highlight language="config">
