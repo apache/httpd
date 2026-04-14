@@ -36,7 +36,7 @@ configured virtual hosts.</p>
 virtual hosts. You should first consider the <a
 href="../vhosts/mass.html">alternatives</a> before resorting to
 mod_rewrite. See also the "<a href="avoid.html#vhosts">how to avoid
-<module>mod_rewrite</module></a> document.</note>
+mod_rewrite</a> document.</note>
 
 </summary>
 <seealso><a href="../mod/mod_rewrite.html">Module documentation</a></seealso>
