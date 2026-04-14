@@ -74,8 +74,10 @@
 
 <section id="examples"><title>Examples</title>
     <example>
-      httxt2dbm -i rewritemap.txt -o rewritemap.dbm<br />
-      httxt2dbm -f SDBM -i rewritemap.txt -o rewritemap.dbm<br />
+<highlight language="sh">
+httxt2dbm -i rewritemap.txt -o rewritemap.dbm
+httxt2dbm -f SDBM -i rewritemap.txt -o rewritemap.dbm
+</highlight>
     </example>
 </section>
 
