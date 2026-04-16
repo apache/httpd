@@ -3040,7 +3040,7 @@ be protected with file permissions similar to those used for
 
 <usage>
 <p>This directive enables collection of ClientHello data during the handshake that is retained for 
-the length of the connection so it can be exposed as <code>SSL_CLIENTHELLLO_*</code> environment 
+the length of the connection so it can be exposed as <code>SSL_CLIENTHELLO_*</code> environment 
 variables for requests depending upon the <code>StdEnvVars</code> setting. The variables are 
 formatted as the hex-encoded raw buffers seen in the raw network protocol and as provided 
 by OpenSSL. GREASE (RFC 8701) values are filtered by OpenSSL when enumerating extension IDs, but 
