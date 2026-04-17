@@ -526,14 +526,34 @@ a directory</td></tr>
 </table>
     <p>The <code class="directive">IndexIgnore</code> directive adds to the
     list of files to hide when listing a directory. <var>File</var> is a
-    shell-style wildcard expression or full
-    filename. Multiple IndexIgnore directives add
-    to the list, rather than replacing the list of ignored
-    files. By default, the list contains <code>.</code> (the current
-    directory).</p>
+    filename or pattern which may contain the <code>?</code> and
+    <code>*</code> wildcard characters. <code>?</code> matches any
+    single character, and <code>*</code> matches any sequence of
+    characters, including an empty sequence. Multiple IndexIgnore
+    directives add to the list, rather than replacing the list of
+    ignored files. By default, the list contains <code>.</code> (the
+    current directory).</p>
 
     <pre class="prettyprint lang-config">IndexIgnore .??* *~ *# HEADER* README* RCS CVS *,v *,t</pre>
 
+
+    <p>If <var>File</var> contains a <code>/</code> character, only
+    the portion after the last <code>/</code> is used for matching
+    against filenames. For example, <code>*/.??*</code> is equivalent
+    to <code>.??*</code>.</p>
+
+    <div class="note"><h3>Differences from shell wildcard patterns</h3>
+      <p>The wildcard matching used here is <em>not</em> the same as
+      shell-style (glob) filename pattern matching. In particular:</p>
+      <ul>
+        <li>Bracket expressions such as <code>[abc]</code> or
+        <code>[!.]</code> are not supported; they are treated as
+        literal characters.</li>
+        <li>A leading <code>.</code> in a filename is not treated
+        specially. For example, <code>*~</code> will match
+        <code>.example~</code>, whereas a shell glob would not.</li>
+      </ul>
+    </div>
 
     <div class="note"><h3>Regular Expressions</h3>
       <p>This directive does not currently work in configuration sections

@@ -29,7 +29,7 @@
 <a href="../tr/programs/apxs.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
 
-    <p><code>apxs</code> is a tool for building and installing extension
+    <p><code class="program"><a href="../programs/apxs.html">apxs</a></code> is a tool for building and installing extension
     modules for the Apache HyperText Transfer Protocol (HTTP) server. This is
     achieved by building a dynamic shared object (DSO) from one or more source
     or object <var>files</var> which then can be loaded into the Apache server
@@ -38,7 +38,7 @@
 
     <p>So to use this extension mechanism your platform has to support the DSO
     feature and your Apache <code class="program"><a href="../programs/httpd.html">httpd</a></code> binary has to be built with the
-    <code class="module"><a href="../mod/mod_so.html">mod_so</a></code> module. The <code>apxs</code> tool automatically
+    <code class="module"><a href="../mod/mod_so.html">mod_so</a></code> module. The <code class="program"><a href="../programs/apxs.html">apxs</a></code> tool automatically
     complains if this is not the case. You can check this yourself by manually
     running the command</p>
 
@@ -48,7 +48,7 @@
     <p>The module <code class="module"><a href="../mod/mod_so.html">mod_so</a></code> should be part of the displayed list.
     If these requirements are fulfilled you can easily extend your Apache
     server's functionality by installing your own modules with the DSO mechanism
-    by the help of this <code>apxs</code> tool:</p>
+    by the help of this <code class="program"><a href="../programs/apxs.html">apxs</a></code> tool:</p>
 
     <div class="example"><pre class="prettyprint lang-sh">$ apxs -i -a -c mod_foo.c
 gcc -fpic -DSHARED_MODULE -I/path/to/apache/include -c mod_foo.c
@@ -64,14 +64,14 @@ $ _</pre>
 </div>
 
     <p>The arguments <var>files</var> can be any C source file (.c), a object
-    file (.o) or even a library archive (.a). The <code>apxs</code> tool
+    file (.o) or even a library archive (.a). The <code class="program"><a href="../programs/apxs.html">apxs</a></code> tool
     automatically recognizes these extensions and  automatically used the C
     source files for compilation while just using the object and archive files
     for the linking phase. But when using such pre-compiled objects make sure
     they are compiled for position independent code (PIC) to be able to use them
     for a dynamically loaded shared object. For instance with GCC you always
     just have to use <code>-fpic</code>. For other C compilers consult its
-    manual page or at watch for the flags <code>apxs</code> uses to compile the
+    manual page or at watch for the flags <code class="program"><a href="../programs/apxs.html">apxs</a></code> uses to compile the
     object files.</p>
 
     <p>For more details about DSO support in Apache read the documentation of
@@ -127,7 +127,7 @@ $ _</pre>
       <dd>This explicitly sets the module name for the <code>-i</code> (install)
       and <code>-g</code> (template generation) option. Use this to explicitly
       specify the module name. For option <code>-g</code> this is required, for
-      option <code>-i</code> the <code>apxs</code> tool tries to determine the
+      option <code>-i</code> the <code class="program"><a href="../programs/apxs.html">apxs</a></code> tool tries to determine the
       name from the source or (as a fallback) at least by guessing it from the
       filename.</dd>
       </dl>
@@ -263,7 +263,7 @@ $ _</pre>
 
     <p>Then you have to update the Apache configuration by making sure a
     <code class="directive"><a href="../mod/mod_so.html#loadmodule">LoadModule</a></code> directive is present to
-    load this shared object. To simplify this step <code>apxs</code> provides
+    load this shared object. To simplify this step <code class="program"><a href="../programs/apxs.html">apxs</a></code> provides
     an automatic way to install the shared object in its "modules" directory
     and updating the <code>httpd.conf</code> file accordingly. This can be
     achieved by running:</p>

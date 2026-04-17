@@ -29,7 +29,7 @@
 <a href="../tr/programs/configure.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
 
-    <p>The <code>configure</code> script configures the source tree
+    <p>The <code class="program"><a href="../programs/configure.html">configure</a></code> script configures the source tree
     for compiling and installing the Apache HTTP Server on your
     particular platform. Various options allow the compilation of a
     server corresponding to your personal requirements.</p>
@@ -45,7 +45,7 @@
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="synopsis" id="synopsis">Synopsis</a></h2>
-    <p>You should call the <code>configure</code> script from within the
+    <p>You should call the <code class="program"><a href="../programs/configure.html">configure</a></code> script from within the
     root directory of the distribution.</p>
 
     <p><code><strong>./configure</strong> [<var>OPTION</var>]...
@@ -69,7 +69,7 @@
   <h3><a name="configurationoptions" id="configurationoptions">Configuration options</a></h3>
 
     <p>The following options influence the behavior of
-    <code>configure</code> itself.</p>
+    <code class="program"><a href="../programs/configure.html">configure</a></code> itself.</p>
 
     <dl>
       <dt><code>-C</code></dt>
@@ -89,7 +89,7 @@
 
       <dt><code>-n</code></dt>
       <dt><code>--no-create</code></dt>
-      <dd>The <code>configure</code> script is run normally but does
+      <dd>The <code class="program"><a href="../programs/configure.html">configure</a></code> script is run normally but does
         not create output files. This is useful to check the test results
         before generating makefiles for compilation.</dd>
 
@@ -100,7 +100,7 @@
 
       <dt><code>--srcdir=<var>DIR</var></code></dt>
       <dd>Defines directory <var>DIR</var> to be the source file directory.
-        Default is the directory where <code>configure</code> is located, or
+        Default is the directory where <code class="program"><a href="../programs/configure.html">configure</a></code> is located, or
         the parent directory.</dd>
 
       <dt><code>--silent</code></dt>
@@ -286,7 +286,7 @@
       </dl>
 
       <div class="note"><h3>Note</h3>
-        <code>configure</code> will not complain about
+        <code class="program"><a href="../programs/configure.html">configure</a></code> will not complain about
         <code>--enable-<var>foo</var></code> even if <var>foo</var> doesn't
         exist, so you need to type carefully.
       </div>
@@ -374,7 +374,7 @@
             modules. The module source file <code><var>module-file</var></code>
             will be searched in the <code>modules/<var>module-type</var></code>
             subdirectory of your Apache HTTP server source tree. If it is not found
-            there <code>configure</code> is considering <var>module-file</var> to be
+            there <code class="program"><a href="../programs/configure.html">configure</a></code> is considering <var>module-file</var> to be
             an absolute file path and tries to copy the source file into the
             <var>module-type</var> subdirectory. If the subdirectory doesn't
             exist it will be created and populated with a standard
@@ -486,7 +486,7 @@
           is part of the httpd
           source distribution and will automatically be build together with the
           HTTP server. If you want to use an already installed APR instead you
-          have to tell <code>configure</code> the path to the
+          have to tell <code class="program"><a href="../programs/configure.html">configure</a></code> the path to the
           <code>apr-config</code> script. You may set the absolute path and name
           or the directory to the installed APR. <code>apr-config</code> must
           exist within this directory or the subdirectory
@@ -496,19 +496,19 @@
         <dd>The Apache Portable Runtime Utilities (APU) are part of the
           httpd source distribution and will automatically be build
           together with the HTTP server. If you want to use an already installed
-          APU instead you have to tell <code>configure</code> the path to the
+          APU instead you have to tell <code class="program"><a href="../programs/configure.html">configure</a></code> the path to the
           <code>apu-config</code> script. You may set the absolute path and name
           or the directory to the installed APU. <code>apu-config</code> must
           exist within this directory or the subdirectory
           <code>bin</code>.</dd>
 
         <dt><code>--with-ssl=<var>DIR</var></code></dt>
-        <dd>If <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> has been enabled <code>configure</code>
+        <dd>If <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> has been enabled <code class="program"><a href="../programs/configure.html">configure</a></code>
           searches for an installed OpenSSL. You can set the directory path
           to the SSL/TLS toolkit instead.</dd>
 
         <dt><code>--with-z=<var>DIR</var></code></dt>
-        <dd><code>configure</code> searches automatically for an installed
+        <dd><code class="program"><a href="../programs/configure.html">configure</a></code> searches automatically for an installed
           <code>zlib</code> library if your source configuration requires one
           (e.g., when <code class="module"><a href="../mod/mod_deflate.html">mod_deflate</a></code> is enabled). You can set the
           directory path to the compression library instead.</dd>
@@ -524,10 +524,10 @@
 
       <dl>
         <dt><code>--with-gdbm[=<var>path</var>]</code></dt>
-        <dd>If no <var>path</var> is specified, <code>configure</code> will
+        <dd>If no <var>path</var> is specified, <code class="program"><a href="../programs/configure.html">configure</a></code> will
           search for the include files and libraries of a GNU DBM
           installation in the usual search paths. An explicit
-          <var>path</var> will cause <code>configure</code> to look in
+          <var>path</var> will cause <code class="program"><a href="../programs/configure.html">configure</a></code> to look in
           <code><var>path</var>/lib</code> and
           <code><var>path</var>/include</code> for the relevant files.
           Finally, the <var>path</var> may specify specific include and
@@ -596,7 +596,7 @@
       <dd>Build a statically linked version of <code class="program"><a href="../programs/rotatelogs.html">rotatelogs</a></code>.</dd>
     </dl>
 
-    <h4><a name="suexec" id="suexec"><code>suexec</code> configuration options</a></h4>
+    <h4><a name="suexec" id="suexec"><code class="program"><a href="../programs/suexec.html">suexec</a></code> configuration options</a></h4>
       
       <p>The following options are used to fine tune the behavior of <code class="program"><a href="../programs/suexec.html">suexec</a></code>. See <a href="suexec.html#install">Configuring and installing suEXEC</a>
         for further information.</p>
@@ -651,7 +651,7 @@
 <div class="section">
 <h2><a name="env" id="env">Environment variables</a></h2>
   <p>There are some useful environment variables to override the choices made by
-    <code>configure</code> or to help it to find libraries and programs with
+    <code class="program"><a href="../programs/configure.html">configure</a></code> or to help it to find libraries and programs with
     nonstandard names or locations.</p>
 
   

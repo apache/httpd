@@ -29,7 +29,7 @@
 <a href="../tr/programs/ab.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
 
-    <p><code>ab</code> is a tool for benchmarking your Apache Hypertext
+    <p><code class="program"><a href="../programs/ab.html">ab</a></code> is a tool for benchmarking your Apache Hypertext
     Transfer Protocol (HTTP) server. It is designed to give you an impression
     of how your current Apache installation performs. This especially shows
     you how many requests per second your Apache installation is capable of
@@ -171,7 +171,7 @@
     needed).</dd>
 
     <dt><code>-q</code></dt>
-    <dd>When processing more than 150 requests, <code>ab</code> outputs a
+    <dd>When processing more than 150 requests, <code class="program"><a href="../programs/ab.html">ab</a></code> outputs a
     progress count on <code>stderr</code> every 10% or 100 requests or so. The
     <code>-q</code> flag will suppress these messages.</dd>
 
@@ -233,7 +233,7 @@
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="output" id="output">Output</a></h2>
-    <p>The following list describes the values returned by <code>ab</code>:
+    <p>The following list describes the values returned by <code class="program"><a href="../programs/ab.html">ab</a></code>:
     </p>
 
     <dl>
@@ -326,7 +326,7 @@
     <p>It does not implement HTTP/1.x fully; only accepts some 'expected' forms
     of responses. The rather heavy use of <code>strstr(3)</code> shows up top
     in profile, which might indicate a performance problem; <em>i.e.</em>, you
-    would measure the <code>ab</code> performance rather than the server's.</p>
+    would measure the <code class="program"><a href="../programs/ab.html">ab</a></code> performance rather than the server's.</p>
 </div></div>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../en/programs/ab.html" title="English">&nbsp;en&nbsp;</a> |

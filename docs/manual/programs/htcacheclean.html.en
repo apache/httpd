@@ -29,7 +29,7 @@
 <a href="../tr/programs/htcacheclean.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
 
-    <p><code>htcacheclean</code> is used to keep the size of
+    <p><code class="program"><a href="../programs/htcacheclean.html">htcacheclean</a></code> is used to keep the size of
     <code class="module"><a href="../mod/mod_cache_disk.html">mod_cache_disk</a></code>'s storage within a given size limit, or
     limit on inodes in use. This tool can run either manually or in daemon mode.
     When running in daemon mode, it sleeps in the background and checks the cache
@@ -113,7 +113,7 @@
 
     <dt><code>-n</code></dt>
     <dd>Be nice. This causes slower processing in favour of other
-    processes. <code>htcacheclean</code> will sleep from time to time
+    processes. <code class="program"><a href="../programs/htcacheclean.html">htcacheclean</a></code> will sleep from time to time
     so that (a) the disk IO will be delayed and (b) the kernel can schedule
     other processes in the meantime.</dd>
 
@@ -168,7 +168,7 @@
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="delete" id="delete">Deleting a specific URL</a></h2>
-    <p>If <code>htcacheclean</code> is passed one or more URLs, each URL will
+    <p>If <code class="program"><a href="../programs/htcacheclean.html">htcacheclean</a></code> is passed one or more URLs, each URL will
     be deleted from the cache. If multiple variants of an URL exists, all
     variants would be deleted.</p>
 
@@ -185,7 +185,7 @@
 <div class="section">
 <h2><a name="list" id="list">Listing URLs in the Cache</a></h2>
     <p>By passing the <code>-a</code> or <code>-A</code> options to
-    <code>htcacheclean</code>, the URLs within the cache will be listed
+    <code class="program"><a href="../programs/htcacheclean.html">htcacheclean</a></code>, the URLs within the cache will be listed
     as they are found, one URL per line. The <code>-A</code> option
     dumps the full cache entry after the URL, with fields in the
     following order:</p>
@@ -210,7 +210,7 @@
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="exit" id="exit">Exit Status</a></h2>
-    <p><code>htcacheclean</code> returns a zero status ("true") if all
+    <p><code class="program"><a href="../programs/htcacheclean.html">htcacheclean</a></code> returns a zero status ("true") if all
     operations were successful, <code>1</code> otherwise. If an URL is
     specified, and the URL was cached and successfully removed,
     <code>0</code> is returned, <code>2</code> otherwise. If an error

@@ -29,10 +29,10 @@
 <a href="../tr/programs/suexec.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
 
-     <p><code>suexec</code> is used by the Apache HTTP Server to switch
+     <p><code class="program"><a href="../programs/suexec.html">suexec</a></code> is used by the Apache HTTP Server to switch
      to another user before executing CGI programs. In order to achieve this,
      it must run as <code>root</code>. Since the HTTP daemon normally doesn't
-     run as <code>root</code>, the <code>suexec</code> executable needs the
+     run as <code>root</code>, the <code class="program"><a href="../programs/suexec.html">suexec</a></code> executable needs the
      setuid bit set and must be owned by <code>root</code>. It should never be
      writable for any other person than <code>root</code>.</p>
 
@@ -54,7 +54,7 @@
 <dt><code>-V</code></dt>
 
 <dd>If you are <code>root</code>, this option displays the compile options of
-<code>suexec</code>. For security reasons all configuration options are
+<code class="program"><a href="../programs/suexec.html">suexec</a></code>. For security reasons all configuration options are
 changeable only at compile time.</dd>
 
 </dl>

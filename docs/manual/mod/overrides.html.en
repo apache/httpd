@@ -170,7 +170,7 @@ processing</td></tr>
 <tr class="odd"><td><a href="mod_lua.html#luaquickhandler">LuaQuickHandler</a></td><td class="module"><a href="mod_lua.html">mod_lua</a></td></tr>
 <tr class="odd"><td colspan="2" class="descr">Provide a hook for the quick handler of request processing</td></tr>
 <tr><td><a href="mod_lua.html#luaroot">LuaRoot</a></td><td class="module"><a href="mod_lua.html">mod_lua</a></td></tr>
-<tr><td colspan="2" class="descr">Specify the base path for resolving relative paths for mod_lua directives</td></tr>
+<tr><td colspan="2" class="descr">Specify the base path for resolving relative paths for <code class="module"><a href="../mod/mod_lua.html">mod_lua</a></code> directives</td></tr>
 <tr class="odd"><td><a href="mod_lua.html#luascope">LuaScope</a></td><td class="module"><a href="mod_lua.html">mod_lua</a></td></tr>
 <tr class="odd"><td colspan="2" class="descr">One of once, request, conn, thread -- default is once</td></tr>
 <tr><td><a href="core.html#rlimitcpu">RLimitCPU</a></td><td class="module"><a href="core.html">core</a></td></tr>

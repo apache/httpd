@@ -277,7 +277,7 @@ groupes.</td></tr>
 <tr><td><a href="mod_authnz_ldap.html#authldapsubgroupclass">AuthLDAPSubGroupClass <em>ObjectClass-LDAP</em></a></td><td> groupOfNames groupO +</td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Spécifie quelles valeurs d'objectClass LDAP identifient les
 objets de l'annuaire qui sont des groupes au cours du traitement des
 sous-groupes.</td></tr>
-<tr class="odd"><td><a href="mod_authnz_ldap.html#authldapurl">AuthLDAPURL <em>url</em> [NONE|SSL|TLS|STARTTLS]</a></td><td></td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">URL specifying the LDAP search parameters</td></tr>
+<tr class="odd"><td><a href="mod_authnz_ldap.html#authldapurl">AuthLDAPURL <var>url</var> [NONE|SSL|TLS|STARTTLS]</a></td><td></td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">URL specifying the LDAP search parameters</td></tr>
 <tr><td><a href="mod_authz_core.html#authmerging">AuthMerging Off | And | Or</a></td><td> Off </td><td>dh</td><td>B</td></tr><tr><td class="descr" colspan="4">Définit la manière dont chaque logique d'autorisation des
 sections de configuration se combine avec celles des sections de
 configuration précédentes.</td></tr>

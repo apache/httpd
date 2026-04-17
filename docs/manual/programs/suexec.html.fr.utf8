@@ -30,6 +30,8 @@ externe</h1>
 <a href="../ko/programs/suexec.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/programs/suexec.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
+<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
+            anglaise pour les changements récents.</div>
 
      <p><code>suexec</code> permet au serveur HTTP Apache de changer
      d'utilisateur avant d'exécuter un programme CGI. Pour ce faire, il
