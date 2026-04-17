@@ -26,7 +26,7 @@
   <title>rotatelogs - Piped logging program to rotate Apache logs</title>
 
 <summary>
-     <p><code>rotatelogs</code> is a simple program for use in
+     <p><program>rotatelogs</program> is a simple program for use in
      conjunction with Apache's piped logfile feature.  It supports
      rotation based on a time interval or maximum size of the log.</p>
 </summary>
@@ -64,19 +64,19 @@ to the specified link name.  This can be used to watch
 the log continuously across rotations using a command like
 <code>tail -F linkname</code>.</p>
 <p>If the linkname is not an absolute
-path, it is relative to <code>rotatelogs</code>' working directory,
+path, it is relative to <program>rotatelogs</program>' working directory,
 which is the <directive module="core">ServerRoot</directive> when
-<code>rotatelogs</code> is run by the server.  
+<program>rotatelogs</program> is run by the server.  
 </p>
 </dd>
 
 <dt><code>-p</code> <var>program</var></dt>
 
-<dd>If given, <code>rotatelogs</code> will execute the specified
+<dd>If given, <program>rotatelogs</program> will execute the specified
 program every time a new log file is opened.  The filename of the
 newly opened file is passed as the first argument to the program.  If
 executing after a rotation, the old log file is passed as the second
-argument.  <code>rotatelogs</code> does not wait for the specified
+argument.  <program>rotatelogs</program> does not wait for the specified
 program to terminate before continuing to operate, and will not log
 any error code returned on termination.  The spawned program uses the
 same stdin, stdout, and stderr as rotatelogs itself, and also inherits
@@ -84,7 +84,7 @@ the environment.</dd>
 
 <dt><code>-f</code></dt>
 <dd>Causes the logfile to be opened immediately, as soon as
-<code>rotatelogs</code> starts, instead of waiting for the
+<program>rotatelogs</program> starts, instead of waiting for the
 first logfile entry to be read (for non-busy sites, there may be
 a substantial delay between when the server is started
 and when the first request is handled, meaning that the
@@ -158,9 +158,9 @@ megabytes, but 5 megabytes was reached twice in the same day, the
 same log file name would be produced and log rotation would keep
 writing to the same file.</p>
 <p>If the logfile is not an absolute
-path, it is relative to <code>rotatelogs</code>' working directory,
+path, it is relative to <program>rotatelogs</program>' working directory,
 which is the <directive module="core">ServerRoot</directive> when
-<code>rotatelogs</code> is run by the server.
+<program>rotatelogs</program> is run by the server.
 </p>
 </dd>
 
