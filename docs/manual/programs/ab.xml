@@ -26,7 +26,7 @@
 <title>ab - Apache HTTP server benchmarking tool</title>
 
 <summary>
-    <p><code>ab</code> is a tool for benchmarking your Apache Hypertext
+    <p><program>ab</program> is a tool for benchmarking your Apache Hypertext
     Transfer Protocol (HTTP) server. It is designed to give you an impression
     of how your current Apache installation performs. This especially shows
     you how many requests per second your Apache installation is capable of
@@ -164,7 +164,7 @@
     needed).</dd>
 
     <dt><code>-q</code></dt>
-    <dd>When processing more than 150 requests, <code>ab</code> outputs a
+    <dd>When processing more than 150 requests, <program>ab</program> outputs a
     progress count on <code>stderr</code> every 10% or 100 requests or so. The
     <code>-q</code> flag will suppress these messages.</dd>
 
@@ -237,7 +237,7 @@
 </section>
 
 <section id="output"><title>Output</title>
-    <p>The following list describes the values returned by <code>ab</code>:
+    <p>The following list describes the values returned by <program>ab</program>:
     </p>
 
     <dl>
@@ -330,7 +330,7 @@
     <p>It does not implement HTTP/1.x fully; only accepts some 'expected' forms
     of responses. The rather heavy use of <code>strstr(3)</code> shows up top
     in profile, which might indicate a performance problem; <em>i.e.</em>, you
-    would measure the <code>ab</code> performance rather than the server's.</p>
+    would measure the <program>ab</program> performance rather than the server's.</p>
 </section>
 
 

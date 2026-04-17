@@ -26,7 +26,7 @@
 <title>htdbm - Manipulate DBM password databases</title>
 
 <summary>
-    <p><code>htdbm</code> is used to manipulate the DBM format files used to
+    <p><program>htdbm</program> is used to manipulate the DBM format files used to
     store usernames and password for basic authentication of HTTP users via
     <module>mod_authn_dbm</module>.  See the <program>dbmmanage</program>
     documentation for more information about these DBM files.</p>
@@ -172,7 +172,7 @@
     This algorithm is <strong>insecure</strong> by today's standards.</dd>
 
     <dt><code>-p</code></dt>
-    <dd>Use plaintext passwords. Though <code>htdbm</code> will support
+    <dd>Use plaintext passwords. Though <program>htdbm</program> will support
     creation on all platforms, the <program>httpd</program> daemon will
     only accept plain text passwords on Windows and Netware.</dd>
 
@@ -222,7 +222,7 @@
     SDBM, NDBM, GNU GDBM, and Berkeley/Sleepycat DB 2/3/4. Unfortunately,
     all these libraries use different file formats, and you must make sure
     that the file format used by <var>filename</var> is the same format that
-    <code>htdbm</code> expects to see. <code>htdbm</code> currently has
+    <program>htdbm</program> expects to see. <program>htdbm</program> currently has
     no way of determining what type of DBM file it is looking at. If used
     against the wrong format, will simply return nothing, or may create a
     different DBM file with a different name, or at worst, it may corrupt
@@ -233,9 +233,9 @@
 </section>
 
 <section id="exit"><title>Exit Status</title>
-    <p><code>htdbm</code> returns a zero status ("true") if the username and
+    <p><program>htdbm</program> returns a zero status ("true") if the username and
     password have been successfully added or updated in the DBM File.
-    <code>htdbm</code> returns <code>1</code> if it encounters some problem
+    <program>htdbm</program> returns <code>1</code> if it encounters some problem
     accessing files, <code>2</code> if there was a syntax problem with the
     command line, <code>3</code> if the password was entered interactively and
     the verification entry didn't match, <code>4</code> if its operation was
@@ -255,7 +255,7 @@
     is prompted for the password. If executed on a Windows system, the password
     will be hashed using the  modified Apache MD5 algorithm; otherwise, the
     system's <code>crypt()</code> routine will be used. If the file does not
-    exist, <code>htdbm</code> will do nothing except return an error.</p>
+    exist, <program>htdbm</program> will do nothing except return an error.</p>
 
     <example>
       htdbm -c /home/doe/public_html/.htdbm jane
@@ -263,7 +263,7 @@
 
     <p>Creates a new file and stores a record in it for user <code>jane</code>.
     The user is prompted for the password. If the file exists and cannot be
-    read, or cannot be written, it is not altered and <code>htdbm</code>
+    read, or cannot be written, it is not altered and <program>htdbm</program>
     will display a message and return an error status.</p>
 
     <example>
@@ -275,7 +275,7 @@
 
     <p>To convert an existing text file <code>htpasswd</code>-generated
     password file to a <code>dbm</code> file, use <code>awk</code> to
-    feed each line of that file into <code>htdbm</code>:</p>
+    feed each line of that file into <program>htdbm</program>:</p>
 
     <example>
       htdbm -cbp passwords.dbm bogus bogus
@@ -289,7 +289,7 @@
 </section>
 
 <section id="security"><title>Security Considerations</title>
-    <p>Web password files such as those managed by <code>htdbm</code> should
+    <p>Web password files such as those managed by <program>htdbm</program> should
     <em>not</em> be within the Web server's URI space -- that is, they should
     not be fetchable with a browser.</p>
 
@@ -311,11 +311,11 @@
 
 <section id="restrictions"><title>Restrictions</title>
     <p>On the Windows platform, passwords hashed with
-    <code>htdbm</code> are limited to no more than <code>255</code>
+    <program>htdbm</program> are limited to no more than <code>255</code>
     characters in length. Longer passwords will be truncated to 255
     characters.</p>
 
-    <p>The MD5 algorithm used by <code>htdbm</code> is specific to the Apache
+    <p>The MD5 algorithm used by <program>htdbm</program> is specific to the Apache
     software; passwords hashed using it will not be usable with other Web
     servers.</p>
 
