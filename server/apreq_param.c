@@ -34,8 +34,18 @@ APREQ_DECLARE(apreq_param_t *) apreq_param_make(apr_pool_t *p,
 {
     apreq_param_t *param;
     apreq_value_t *v;
+    apr_size_t size;
 
-    param = apr_palloc(p, nlen + vlen + 1 + sizeof *param);
+    /* Check for overflow in size computation */
+    if (nlen > APR_SIZE_MAX - vlen)
+        return NULL;
+
+    size = nlen + vlen;
+    if (size > APR_SIZE_MAX - sizeof(*param) - 1)
+        return NULL;
+
+    size += sizeof(*param) + 1;
+    param = apr_palloc(p, size);
 
     if (param == NULL)
         return NULL;
