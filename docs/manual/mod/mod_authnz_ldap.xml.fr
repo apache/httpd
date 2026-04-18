@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1922995:1933117 (outdated) -->
+<!-- English Revision: 1933117 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -412,7 +412,7 @@ Require ldap-user "Joe Manager"
 
     <p>De par la manière dont <module>mod_authnz_ldap</module> traite
     cette directive, Barbara Jenson peut s'authentifier comme
-    <em>Barbara Jenson</em>, <em>Babs Jenson</em> ou tout autre
+    <code>Barbara Jenson</code>, <code>Babs Jenson</code> ou tout autre
     <code>cn</code> sous lequel elle est enregistrée dans l'annuaire
     LDAP. Une seule ligne <code>Require ldap-user</code> suffit pour
     toutes les valeurs de l'attribut dans l'entrée LDAP de
@@ -722,14 +722,14 @@ Require valid-user
         <example>(&amp;(|(qpagePagerID=*)(uid=jmanager))(uid=fuser))</example>
 
         <p>Un recherche avec le filtre ci-dessus ne retournera un
-	résultat positif que si <em>fuser</em> dispose d'un bippeur. Si
-	Joe Manager se connecte en tant que <em>jmanager</em>, le filtre
+	résultat positif que si <code>fuser</code> dispose d'un bippeur. Si
+	Joe Manager se connecte en tant que <code>jmanager</code>, le filtre
 	devra ressembler à :</p>
 
         <example>(&amp;(|(qpagePagerID=*)(uid=jmanager))(uid=jmanager))</example>
 
         <p>Un recherche avec le filtre ci-dessus retournera un
-	résultat positif que <em>jmanager</em> dispose d'un
+	résultat positif que <code>jmanager</code> dispose d'un
 	bippeur ou non</p>
       </li>
     </ul>
@@ -748,7 +748,7 @@ Require valid-user
     remplacer le type de connexion par défaut défini par la directive
     <directive module="mod_ldap">LDAPTrustedMode</directive>. Ceci
     permettra de promouvoir la connexion établie via une URL du type
-    <em>ldap://</em> au statut de connection sécurisée sur le même
+    <code>ldap://</code> au statut de connection sécurisée sur le même
     port.</p>
 </section>
 
@@ -761,8 +761,8 @@ Require valid-user
     module="mod_ldap">LDAPTrustedMode</directive>.</p>
 
     <p>Pour spécifier un serveur LDAP sécurisé, utilisez
-    <em>ldaps://</em> au lieu de
-    <em>ldap://</em> dans la directive <directive
+    <code>ldaps://</code> au lieu de
+    <code>ldap://</code> dans la directive <directive
     module="mod_authnz_ldap">AuthLDAPURL</directive>.</p>
 </section>
 
@@ -799,13 +799,13 @@ Directory</title>
     l'annuaire un identifiant appelé Nom
     Principal d'Utilisateur (User Principle Name ou UPN). Cet UPN se
     compose en général du nom de compte de l'utilisateur, suivi du nom
-    du domaine considéré, par exemple <em>untel@nz.example.com</em>.</p>
+    du domaine considéré, par exemple <code>untel@nz.example.com</code>.</p>
 
     <p>Vous voudrez probablement configurer le module
     <module>mod_authnz_ldap</module> afin de pouvoir authentifier les
     utilisateurs de n'importe quel domaine de la forêt Active Directory.
-    Ainsi, <em>untel@nz.example.com</em> et
-    <em>untel@au.example.com</em> pourront être authentifiés en une
+    Ainsi, <code>untel@nz.example.com</code> et
+    <code>untel@au.example.com</code> pourront être authentifiés en une
     seule fois par la même requête.</p>
 
     <p>Pour y parvenir, on utilise le concept de Catalogue Global
@@ -819,7 +819,7 @@ Directory</title>
     <p>Lorsqu'il est activé, la Catalogue Global est un serveur
     d'annuaire indépendant accessible sur le port 3268 (3269 pour SSL).
     Pour rechercher un utilisateur, effectuez une recherche sur
-    l'attribut <em>userPrincipalName</em>, avec une base de recherche
+    l'attribut <code>userPrincipalName</code>, avec une base de recherche
     vide, comme suit :</p>
 
 <highlight language="config">
@@ -829,7 +829,7 @@ AuthLDAPURL ldap://10.0.0.1:3268/?userPrincipalName?sub
 </highlight>
 
     <p>Les utilisateurs devront s'authentifier en entrant leur UPN, de
-    la forme<em>untel@nz.example.com</em>.</p>
+    la forme<code>untel@nz.example.com</code>.</p>
 
 </section>
 
@@ -926,7 +926,7 @@ Require group     "mygroupfile"
 <name>AuthLDAPAuthorizePrefix</name>
 <description>Spécifie le préfixe ajouté aux variables d'environnement
 durant la phase d'autorisation</description>
-<syntax>AuthLDAPAuthorizePrefix <em>préfixe</em></syntax>
+<syntax>AuthLDAPAuthorizePrefix <var>préfixe</var></syntax>
 <default>AuthLDAPAuthorizePrefix AUTHORIZE_</default>
 <contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
@@ -935,7 +935,7 @@ durant la phase d'autorisation</description>
 <usage>
     <p>Cette directive permet de spécifier le préfixe ajouté aux
     variables d'environnement durant la phase d'autorisation. Si la
-    valeur spécifiée est <em>AUTHENTICATE_</em>, les utilisateurs de ces
+    valeur spécifiée est <code>AUTHENTICATE_</code>, les utilisateurs de ces
     variables d'environnement verront les mêmes informations, que le
     serveur effectue une authentification, une autorisation, ou les
     deux.</p>
@@ -965,7 +965,7 @@ DN.</description>
     l'utilisateur possède un DN et si son mot de passe ne peut pas être
     vérifié lors d'une connexion au serveur LDAP. Si la directive
     <directive>AuthLDAPBindAuthoritative</directive> est
-    définie à <em>off</em>, d'autres modules d'authentification
+    définie à <code>off</code>, d'autres modules d'authentification
     configurés auront une chance de valider le mot de passe de
     l'utilisateur si la tentative de connexion au serveur LDAP échoue
     pour une raison quelconque (avec les données d'authentification
@@ -1029,7 +1029,7 @@ codées en dur pour le serveur</description>
 <description>Spécifie la modification a apporter au nom d'utilisateur
 pour l'authentification de base lors de l'authentification auprès du
 serveur LDAP pour effectuer une recherche de DN</description>
-<syntax>AuthLDAPInitialBindPattern <em><var>regex</var> <var>substitution</var></em></syntax>
+<syntax>AuthLDAPInitialBindPattern <var>regex</var> <var>substitution</var></syntax>
 <default>AuthLDAPInitialBindPattern (.*) $1 (nom de l'utilisateur
 distant utilisé tel quel)</default>
 <contextlist><context>directory</context><context>.htaccess</context>
@@ -1039,7 +1039,7 @@ distant utilisé tel quel)</default>
 <usage>
     <p>Si la directive <directive
     module="mod_authnz_ldap">AuthLDAPInitialBindAsUser</directive> est
-    définie à <em>ON</em>, le nom utilisateur pour l'authentification de
+    définie à <code>ON</code>, le nom utilisateur pour l'authentification de
     base sera transformé selon l'expression rationnelle
     <var>regex</var> et l'argument <var>substitution</var> spécifiés.</p>
 
@@ -1068,7 +1068,7 @@ distant utilisé tel quel)</default>
      </note>
     <note><title>Débogage</title>
         Le DN de substitution est enregistré dans la variable
-	d'environnement <em>LDAP_BINDASUSER</em>. Si l'expression
+	d'environnement <code>LDAP_BINDASUSER</code>. Si l'expression
 	rationnelle ne convient pas, le nom d'utilisateur est utilisé
 	tel quel.
     </note>
@@ -1081,7 +1081,7 @@ distant utilisé tel quel)</default>
 <name>AuthLDAPBindDN</name>
 <description>Un DN optionnel pour se connecter au serveur
 LDAP</description>
-<syntax>AuthLDAPBindDN <em>dn</em></syntax>
+<syntax>AuthLDAPBindDN <var>dn</var></syntax>
 <contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>AuthConfig</override>
@@ -1098,11 +1098,11 @@ LDAP</description>
 <name>AuthLDAPBindPassword</name>
 <description>Mot de passe à utiliser en conjonction avec le DN de
 connexion</description>
-<syntax>AuthLDAPBindPassword <em>mot-de-passe</em></syntax>
+<syntax>AuthLDAPBindPassword <var>mot-de-passe</var></syntax>
 <contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>AuthConfig</override>
-<compatibility><em>exec:</em> est disponible depuis la version 2.4.5 du
+<compatibility><code>exec:</code> est disponible depuis la version 2.4.5 du
 serveur HTTP Apache.</compatibility>
 
 <usage>
@@ -1137,7 +1137,7 @@ AuthLDAPBindPassword "exec:/path/to/otherProgram argument1"
 <name>AuthLDAPCharsetConfig</name>
 <description>Chemin du fichier de configuration de la correspondance
 langage/jeu de caractères</description>
-<syntax>AuthLDAPCharsetConfig <em>chemin-fichier</em></syntax>
+<syntax>AuthLDAPCharsetConfig <var>chemin-fichier</var></syntax>
 <contextlist><context>server config</context>
 </contextlist>
 
@@ -1184,8 +1184,8 @@ pour effectuer les comparaisons pour l'attribution des autorisations</descriptio
     l'utilisateur authentifié au lieu des données d'authentification
     configurées au niveau du serveur.</p>
 
-    <p>Les vérifications d'autorisation <em>ldap-attribute</em>,
-    <em>ldap-user</em>, et <em>ldap-group</em> (niveau simple seulement)
+    <p>Les vérifications d'autorisation <code>ldap-attribute</code>,
+    <code>ldap-user</code>, et <code>ldap-group</code> (niveau simple seulement)
     utilisent des comparaisons.</p>
 
     <p>Cette directive n'a d'effet sur les comparaisons effectuées au
@@ -1250,7 +1250,7 @@ alias</description>
 <name>AuthLDAPGroupAttribute</name>
 <description>L'attribut LDAP utilisé pour vérifier l'appartenance d'un
 utilisateur à un groupe.</description>
-<syntax>AuthLDAPGroupAttribute <em>attribut</em></syntax>
+<syntax>AuthLDAPGroupAttribute <var>attribut</var></syntax>
 <default>AuthLDAPGroupAttribute member uniqueMember</default>
 <contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
@@ -1392,8 +1392,8 @@ pour la recherche des autorisations</description>
     base HTTP de l'utilisateur authentifié, au lieu des données
     d'authentification configurées au niveau du serveur.</p>
 
-    <p>Les vérifications d'autorisation <em>ldap-filter</em> et
-    <em>ldap-dn</em> utilisent des recherches.</p>
+    <p>Les vérifications d'autorisation <code>ldap-filter</code> et
+    <code>ldap-dn</code> utilisent des recherches.</p>
 
     <p>Cette directive n'a d'effet sur les comparaisons effectuées au
     cours des traitements de groupe imbriqués, et lorsque la directive
@@ -1417,7 +1417,7 @@ pour la recherche des autorisations</description>
 <description>Spécifie les noms d'attribut, un par directive, utilisés
 pour différencier les membres du groupe courant qui sont eux-mêmes des
 groupes.</description>
-<syntax>AuthLDAPSubGroupAttribute <em>attribut</em></syntax>
+<syntax>AuthLDAPSubGroupAttribute <var>attribut</var></syntax>
 <default>AuthLDAPSubgroupAttribute member uniqueMember</default>
 <contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
@@ -1444,7 +1444,7 @@ Apache</compatibility>
 <description>Spécifie quelles valeurs d'objectClass LDAP identifient les
 objets de l'annuaire qui sont des groupes au cours du traitement des
 sous-groupes.</description>
-<syntax>AuthLDAPSubGroupClass <em>ObjectClass-LDAP</em></syntax>
+<syntax>AuthLDAPSubGroupClass <var>ObjectClass-LDAP</var></syntax>
 <default>AuthLDAPSubGroupClass groupOfNames groupOfUniqueNames</default>
 <contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
@@ -1475,7 +1475,7 @@ Apache</compatibility>
 <name>AuthLDAPURl</name>
 <description>L'URL permettant de spécifier les paramètres de la
 recherche LDAP</description>
-<syntax>AuthLDAPURL <em>url</em> [NONE|SSL|TLS|STARTTLS]</syntax>
+<syntax>AuthLDAPURL <var>url</var> [NONE|SSL|TLS|STARTTLS]</syntax>
 <contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>AuthConfig</override>
@@ -1490,12 +1490,12 @@ recherche LDAP</description>
 <highlight language="config">
 AuthLDAPURl "ldap://ldap1.example.com ldap2.example.com/dc=..."
 </highlight>
-<p><em><strong>Mise en garde : </strong>Si vous spécifiez plusieurs
-serveurs, vous devez en entourer la liste avec des guillemets ; dans le
-cas contraire, vous générerez une erreur : "AuthLDAPURL takes one
-argument, URL to define LDAP connection..".</em> Vous pouvez bien
-entendu ajouter des paramètres de recherche à chacun des serveurs
-spécifiés.</p>
+<note type="warning"><title>Mise en garde</title>
+<p>Si vous spécifiez plusieurs serveurs, vous devez en entourer la liste avec
+des guillemets ; dans le cas contraire, vous générerez une erreur : "AuthLDAPURL
+takes one argument, URL to define LDAP connection..". Vous pouvez bien entendu
+ajouter des paramètres de recherche à chacun des serveurs spécifiés.</p>
+</note>
 
 <dl>
 <dt>ldap</dt>
@@ -1582,8 +1582,8 @@ spécifiés.</p>
     <p>Pour une recherche, les attribut, filtre et nom d'utilisateur
     fournis par le client HTTP sont combinés pour créer un filtre de
     recherche du style :
-    <code>(&amp;(<em>filtre</em>)(<em>attribut</em>
-    =<em>nom-utilisateur</em>))</code>.</p>
+    <code>(&amp;(<var>filtre</var>)(<var>attribut</var>
+    =<var>nom-utilisateur</var>))</code>.</p>
 
     <p>Par exemple, considérons l'URL
     <code>ldap://ldap.example.com/o=Example?cn?sub?(posixid=*)</code>.
