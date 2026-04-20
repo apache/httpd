@@ -157,7 +157,7 @@ will be considered as HTML links.</p>
 (note that this happens automatically for HTML links).</p></dd>
 <dt>l</dt>
 <dd><p>Opposite to L.  Overrides the one-change-only default
-behaviour with HTML links.</p></dd>
+behavior with HTML links.</p></dd>
 <dt>R</dt>
 <dd><p>Use Regular Expression matching-and-replace.  <code>from-pattern</code>
 is a regexp, and <code>to-pattern</code> a replacement string that may be

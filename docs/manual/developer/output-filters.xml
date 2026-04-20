@@ -143,7 +143,7 @@ apr_status_t dummy_filter(ap_filter_t *f, apr_bucket_brigade *bb)
     sentinel is in fact not a valid bucket structure; any attempt to
     call normal bucket functions (such as
     <code>apr_bucket_read</code>) on the sentinel will have undefined
-    behaviour (i.e. will crash the process).</p>
+    behavior (i.e. will crash the process).</p>
 
     <p>There are a variety of functions and macros for traversing and
     manipulating bucket brigades; see the <a
@@ -323,7 +323,7 @@ apr_status_t dummy_filter(ap_filter_t *f, apr_bucket_brigade *bb)
     state = f->ctx;
     if (state == NULL) {
 
-        /* First invocation for this response: initialise state structure.
+        /* First invocation for this response: initialize state structure.
          */
         f->ctx = state = apr_palloc(f->r->pool, sizeof *state);
 

@@ -76,7 +76,7 @@
     </p></note>
 
     <p>Before Apache 2.4.17, this timeout was hardcoded and its value was 600 usec.
-    So, the closest configuration to match the legacy behaviour is to set
+    So, the closest configuration to match the legacy behavior is to set
     <directive>MemcacheConnTTL</directive> to 1ms.</p>
 
     <example>

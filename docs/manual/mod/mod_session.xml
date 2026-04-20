@@ -187,7 +187,7 @@ SessionHeader X-Replace-Session
       <p>Using the "show cookies" feature of your browser, you would have seen
       a clear text representation of the session. This could potentially be a
       problem should the end user need to be kept unaware of the contents of
-      the session, or where a third party could gain unauthorised access to the
+      the session, or where a third party could gain unauthorized access to the
       data within the session.</p>
 
       <p>The contents of the session can be optionally encrypted before being

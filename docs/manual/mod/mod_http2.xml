@@ -957,7 +957,7 @@ H2TLSCoolDownSecs 0
         <usage>
             <p>
                 With the default 0, no padding bytes are added to any payload
-                frames, e.g. HEADERS, DATA and PUSH_PROMISE. This is the behaviour
+                frames, e.g. HEADERS, DATA and PUSH_PROMISE. This is the behavior
                 of previous versions. It means that under certain conditions, an
                 observer of network traffic can see the length of those frames 
                 in the TLS stream.
@@ -983,7 +983,7 @@ H2TLSCoolDownSecs 0
     
     <directivesynopsis>
         <name>H2OutputBuffering</name>
-        <description>Determine buffering behaviour of output</description>
+        <description>Determine buffering behavior of output</description>
         <syntax>H2OutputBuffering on|off</syntax>
         <default>H2OutputBuffering on</default>
         <contextlist>
@@ -995,7 +995,7 @@ H2TLSCoolDownSecs 0
         <usage>
             <p>
                 The directive <directive>H2OutputBuffering</directive> controls the buffering of stream output.
-                The default is on, which is the behaviour of previous versions. When off, all
+                The default is on, which is the behavior of previous versions. When off, all
                 bytes are made available immediately to the main connection for sending them
                 out to the client. This fixes interop issues with certain flavours of gRPC.
             </p>

@@ -990,7 +990,7 @@ SSITimeFormat "%R, %B %d, %Y"
         response by adding <code>no-etag</code> to the request notes.</p>
 
       <p>The <directive>SSIETag</directive> directive suppresses this
-        behaviour, and allows the server to generate an <code>ETag</code> header.
+        behavior, and allows the server to generate an <code>ETag</code> header.
         This can be used to enable caching of the output. Note that a backend server
         or dynamic content generator may generate an ETag of its own, ignoring
         <code>no-etag</code>, and this ETag will be passed by
@@ -1030,7 +1030,7 @@ server.</description>
         the <code>Last-Modified</code> header is stripped from the response.</p>
 
       <p>The <directive>SSILastModified</directive> directive overrides this
-        behaviour, and allows the <code>Last-Modified</code> header to be respected
+        behavior, and allows the <code>Last-Modified</code> header to be respected
         if already present, or set if the header is not already present. This can
         be used to enable caching of the output. <directive>SSILastModified</directive>
         can take on the following values:</p>

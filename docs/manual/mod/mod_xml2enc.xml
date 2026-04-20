@@ -53,7 +53,7 @@ for 2.2.x versions</compatibility>
     <code>xml2enc_filter</code> optional function to postprocess to another
     encoding.  Using mod_xml2enc with an enabled module, no configuration
     is necessary: the other module will configure mod_xml2enc for you
-    (though you may still want to customise it using the configuration
+    (though you may still want to customize it using the configuration
     directives below).</p>
     </dd>
     <dt>Non-enabled modules</dt><dd>
@@ -145,10 +145,10 @@ xml2EncDefault iso-8859-1
 
 <usage>
     <p>This server-wide directive aliases one or more encoding to another
-    encoding.  This enables encodings not recognised by libxml2 to be handled
+    encoding.  This enables encodings not recognized by libxml2 to be handled
     internally by libxml2's encoding support using the translation table for
-    a recognised encoding.  This serves two purposes: to support character sets
-    (or names) not recognised either by libxml2 or iconv, and to skip
+    a recognized encoding.  This serves two purposes: to support character sets
+    (or names) not recognized either by libxml2 or iconv, and to skip
     conversion for an encoding where it is known to be unnecessary.</p>
 </usage>
 </directivesynopsis>

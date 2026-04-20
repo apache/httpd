@@ -103,7 +103,7 @@
     the <code>-t</code> option.</dd>
 
     <dt><code>-n</code></dt>
-    <dd>Be nice. This causes slower processing in favour of other
+    <dd>Be nice. This causes slower processing in favor of other
     processes. <program>htcacheclean</program> will sleep from time to time
     so that (a) the disk IO will be delayed and (b) the kernel can schedule
     other processes in the meantime.</dd>

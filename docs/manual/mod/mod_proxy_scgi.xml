@@ -79,7 +79,7 @@ ProxyPass "/scgi-bin/" "balancer://somecluster/"
 
 <section id="env"><title>Environment Variables</title>
     <p>In addition to the configuration directives that control the
-    behaviour of <module>mod_proxy</module>, an <dfn>environment
+    behavior of <module>mod_proxy</module>, an <dfn>environment
     variable</dfn> may also control the SCGI protocol
     provider:</p>
     <dl>
@@ -113,7 +113,7 @@ header</description>
     optimizations, which are not possible if the file comes over the backend
     socket.  Additionally, the file contents are not transmitted twice.</p>
     <p>The <directive>ProxySCGISendfile</directive> argument determines the
-    gateway behaviour:</p>
+    gateway behavior:</p>
     <dl>
     <dt><code>Off</code></dt>
     <dd>No special handling takes place.</dd>

@@ -56,7 +56,7 @@
     <title>ap_expr (NEW!)</title>
     <p>Introduces a new API to parse and evaluate boolean and algebraic
        expressions, including provision for a standard syntax and
-       customised variants.</p>
+       customized variants.</p>
   </section>
 
   <section id="ap_listen">
