@@ -1460,7 +1460,7 @@ MDMessageCmd /etc/apache/md-message
         <compatibility>Available in version 2.4.58 and later</compatibility>
         <usage>
             <p>
-                The mode `all` is the behaviour as in all previous versions. Both ServerName
+                The mode `all` is the behavior as in all previous versions. Both ServerName
                 and ServerAlias are inspected to find the MDomain matching a VirtualHost.
                 This automatically detects coverage, even when you only have added
                 one of the names to an MDomain.

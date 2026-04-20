@@ -860,7 +860,7 @@ sys     0m0.000s</pre>
       <code>.htaccess</code> files would be a very expensive operation,
       partially defeating the point of caching (to speed up requests),
       <module>mod_cache</module> makes no decision about whether a cached
-      entity is authorised for serving. In other words; if
+      entity is authorized for serving. In other words; if
       <module>mod_cache</module> has cached some content, it will be served
       from the cache as long as that content has not expired.</p>
 
@@ -916,7 +916,7 @@ sys     0m0.000s</pre>
       Another example is so-called HTTP request-smuggling attacks.</p>
 
       <p>This document is not the correct place for an in-depth discussion
-      of HTTP request smuggling (instead, try your favourite search engine)
+      of HTTP request smuggling (instead, try your favorite search engine)
       however it is important to be aware that it is possible to make
       a series of requests, and to exploit a vulnerability on an origin
       webserver such that the attacker can entirely control the content

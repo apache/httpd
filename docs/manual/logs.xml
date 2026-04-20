@@ -609,7 +609,7 @@ CustomLog "|/usr/local/apache/bin/rotatelogs /var/log/access_log 86400" common
 CustomLog "|$/usr/local/apache/bin/rotatelogs   /var/log/access_log 86400" common
     </highlight>
 
-    <p>This was the default behaviour for Apache 2.2.
+    <p>This was the default behavior for Apache 2.2.
     Depending on the shell specifics this might lead to
     an additional shell process for the lifetime of the logging
     pipe program and signal handling problems during restart.

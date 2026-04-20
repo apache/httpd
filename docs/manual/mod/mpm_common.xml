@@ -276,7 +276,7 @@ Listen 192.170.2.5:8000
       IPv6 address without also accepting connections via IPv4, or
       conflicting with a Listen directive using an IPv4 address bound
       to the same port.  (If the server is built with IPv4-mapped
-      addresses <em>disabled</em>, this is the default behaviour and
+      addresses <em>disabled</em>, this is the default behavior and
       this option has no effect.)</li>
 
       <li><code>multipathtcp</code>: Enable the use of

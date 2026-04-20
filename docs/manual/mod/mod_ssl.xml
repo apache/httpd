@@ -1399,7 +1399,7 @@ CRL checks are applied to all certificates in the chain, while setting it to
     </p>
     <p>
     The <var>flag</var> <code>no_crl_for_cert_ok</code> allows to restore
-    previous behaviour.
+    previous behavior.
     </p>
 </li>
 </ul>
@@ -3133,7 +3133,7 @@ though the syntax / allowable values for the parameters may sometimes differ.</p
 where available to configure OpenSSL, and
 <directive>SSLOpenSSLConfCmd</directive> is only used for features of
 OpenSSL which are not configurable by mod_ssl.  It is possible that
-mod_ssl behaviour will change across versions of httpd where
+mod_ssl behavior will change across versions of httpd where
 <directive>SSLOpenSSLConfCmd</directive> is used.</p>
 </note>
 </usage>

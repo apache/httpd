@@ -76,7 +76,7 @@ stylesheets or scripts: for those you should use another parser such as
 The main customisation directives are <directive>ProxyHTMLLinks</directive>
 and <directive>ProxyHTMLEvents</directive>.  By default these are set in 
 configuration file <var>proxy-html.conf</var>, which also contains
-comments to help you customise your parser if required.</p>
+comments to help you customize your parser if required.</p>
 <note>For historical reasons, configuring mod_proxy_html to rewrite
 URLs in scripting events does not by default rewrite URLs in stylesheets.
 This can be changed by uncommenting the relevant line in
@@ -210,7 +210,7 @@ will be considered as HTML links.</p>
 (note that this happens automatically for HTML links).</p></dd>
 <dt>l</dt>
 <dd><p>Opposite to L.  Overrides the one-change-only default
-behaviour with HTML links.</p></dd>
+behavior with HTML links.</p></dd>
 <dt>R</dt>
 <dd><p>Use Regular Expression matching-and-replace.  <code>from-pattern</code>
 is a regexp, and <code>to-pattern</code> a replacement string that may be
