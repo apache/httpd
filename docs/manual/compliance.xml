@@ -268,10 +268,12 @@
     <p>Invalid content types might include:</p>
 
     <example>
-      # invalid<br />
-      Content-Type: foo<br />
-      # blank<br />
-      Content-Type:
+<highlight language="config">
+# invalid
+Content-Type: foo
+# blank
+Content-Type:
+</highlight>
     </example>
 
     <p>The server administrator has the option to restrict the policy to one

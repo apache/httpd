@@ -244,8 +244,10 @@ sudo service apache2 start
     simple matter of uncompressing, and then untarring:</p>
 
 <example>
-$ gzip -d httpd-<em>NN</em>.tar.gz<br />
+<highlight language="sh">
+$ gzip -d httpd-<em>NN</em>.tar.gz
 $ tar xvf httpd-<em>NN</em>.tar
+</highlight>
 </example>
 
     <p>This will create a new directory under the current directory
@@ -312,10 +314,12 @@ $ tar xvf httpd-<em>NN</em>.tar
     <module>mod_lua</module>:</p>
 
 <example>
-      $ CC="pgcc" CFLAGS="-O2" \<br />
-       ./configure --prefix=/sw/pkg/apache \<br />
-       --enable-ldap=shared \<br />
-       --enable-lua=shared
+<highlight language="sh">
+$ CC="pgcc" CFLAGS="-O2" \
+  ./configure --prefix=/sw/pkg/apache \
+  --enable-ldap=shared \
+  --enable-lua=shared
+</highlight>
 </example>
 
     <p>When <program>configure</program> is run it will take several minutes to
@@ -420,11 +424,13 @@ $ tar xvf httpd-<em>NN</em>.tar
     changes, and then run:</p>
 
     <example>
-    $ ./config.nice<br />
-    $ make<br />
-    $ make install<br />
-    $ <em>PREFIX</em>/bin/apachectl -k graceful-stop<br />
-    $ <em>PREFIX</em>/bin/apachectl -k start<br />
+<highlight language="sh">
+$ ./config.nice
+$ make
+$ make install
+$ <em>PREFIX</em>/bin/apachectl -k graceful-stop
+$ <em>PREFIX</em>/bin/apachectl -k start
+</highlight>
     </example>
 
     <note type="warning">You should always test any new version in your

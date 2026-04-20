@@ -67,8 +67,10 @@
     last resort:</p>
 
 <example>
-  Accept-Language: fr; q=1.0, en; q=0.5<br />
-  Accept: text/html; q=1.0, text/*; q=0.8, image/gif; q=0.6, image/jpeg; q=0.6, image/*; q=0.5, */*; q=0.1
+<highlight language="config">
+Accept-Language: fr; q=1.0, en; q=0.5
+Accept: text/html; q=1.0, text/*; q=0.8, image/gif; q=0.6, image/jpeg; q=0.6, image/*; q=0.5, */*; q=0.1
+</highlight>
 </example>
 
     <p>httpd supports 'server driven' content negotiation, as
@@ -147,15 +149,17 @@ AddHandler type-map .var
     the map file.</p>
 
 <example>
-  URI: foo<br />
-<br />
-  URI: foo.en.html<br />
-  Content-type: text/html<br />
-  Content-language: en<br />
-<br />
-  URI: foo.fr.de.html<br />
-  Content-type: text/html;charset=iso-8859-2<br />
-  Content-language: fr, de<br />
+<highlight language="config">
+URI: foo
+
+URI: foo.en.html
+Content-type: text/html
+Content-language: en
+
+URI: foo.fr.de.html
+Content-type: text/html;charset=iso-8859-2
+Content-language: fr, de
+</highlight>
 </example>
 
     <p>Note also that a typemap file will take precedence over the
@@ -180,15 +184,17 @@ AddHandler type-map .var
     assigned its language in the type map without being renamed:</p>
 
 <example>
-  URI: foo<br />
-<br />
-  URI: foo.html<br />
-  Content-type: text/html<br />
-  Content-language: en<br />
-<br />
-  URI: foo.fr.html<br />
-  Content-type: text/html<br />
-  Content-language: fr<br />
+<highlight language="config">
+URI: foo
+
+URI: foo.html
+Content-type: text/html
+Content-language: en
+
+URI: foo.fr.html
+Content-type: text/html
+Content-language: fr
+</highlight>
 </example>
 
     <p>If the variants have different source qualities, that may be
@@ -196,16 +202,18 @@ AddHandler type-map .var
     picture (available as JPEG, GIF, or ASCII-art): </p>
 
 <example>
-  URI: foo<br />
-<br />
-  URI: foo.jpeg<br />
-  Content-type: image/jpeg; qs=0.8<br />
-<br />
-  URI: foo.gif<br />
-  Content-type: image/gif; qs=0.5<br />
-<br />
-  URI: foo.txt<br />
-  Content-type: text/plain; qs=0.01<br />
+<highlight language="config">
+URI: foo
+
+URI: foo.jpeg
+Content-type: image/jpeg; qs=0.8
+
+URI: foo.gif
+Content-type: image/gif; qs=0.5
+
+URI: foo.txt
+Content-type: text/plain; qs=0.01
+</highlight>
 </example>
 
     <p>qs values can vary in the range 0.000 to 1.000. Note that
