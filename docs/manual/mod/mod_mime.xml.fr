@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1924775:1932814 (outdated) -->
+<!-- English Revision: 1932814 -->
 <!-- French translation : Lucien GENTIS -->
 
 <!--
@@ -142,19 +142,20 @@ multiples</title>
     qui sera utilisé, et il sera donc traité en tant que fichier
     imagemap.</p>
 
-    <p>Si vous préférez que seule la dernière partie d'un nom de fichier
-    séparée du reste du nom par un point soit associée à une métadonnée
-    particulière, n'utilisez pas les directives <code>Add*</code>. Par
-    exemple, si vous souhaitez que le fichier <code>foo.html.cgi</code>
-    soit traité en tant que script CGI, mais pas le fichier
-    <code>bar.cgi.html</code>, alors, au lieu d'utiliser
-    <code>AddHandler cgi-script .cgi</code>, utilisez plutôt :</p>
+    <p>Si vous préférez que seule la dernière partie d'un nom de fichier séparée
+    du reste du nom par un point soit associée à une métadonnée particulière,
+    n'utilisez pas les directives <code>Add*</code>. Par exemple, si vous
+    souhaitez que le fichier <code>foo.html.asis</code> soit servi par le
+    gestionnaire <code>send-as-is</code> fourni par le module
+    <module>mod_asis</module>, mais pas le fichier <code>bar.asis.html</code>,
+    alors, au lieu d'utiliser <code>AddHandler send-asis .asis</code>, utilisez
+    plutôt :</p>
 
     <example><title>Configuration du gestionnaire en se basant seulement
     sur la dernière extension</title>
     <highlight language="config">
-&lt;FilesMatch "[^.]+\.cgi$"&gt;
-  SetHandler cgi-script
+&lt;FilesMatch "[^.]+\.asis$"&gt;
+  SetHandler send-asis
 &lt;/FilesMatch&gt;
     </highlight>
     </example>
@@ -372,22 +373,17 @@ gestionnaire spécifié</description>
 <override>FileInfo</override>
 
 <usage>
-    <p>Les fichiers dont le nom a pour extension <var>extension</var>
-    seront servis par le <var><a
-    href="../handler.html">nom-gestionnaire</a></var> spécifié. Cette
-    association est ajoutée à toutes les autres déjà en vigueur, et
-    écrase toute association préexistante pour la même
-    <var>extension</var>. Par exemple, pour associer les scripts CGI
-    avec l'extension de fichier <code>.cgi</code>, vous pouvez utiliser
-    :</p>
+    <p>Les fichiers dont le nom a pour extension <var>extension</var> seront
+    servis par le <var><a href="../handler.html">nom-gestionnaire</a></var>
+    spécifié. Cette association est ajoutée à toutes les autres déjà en vigueur,
+    et écrase toute association préexistante pour la même <var>extension</var>.
+    Par exemple, pour associer les fichiers <code>.var</code> au gestionnaire
+    <code>type-map</code> fourni par le module <module>mod_negotiation</module>,
+    vous pouvez utiliser :</p>
 
     <highlight language="config">
-      AddHandler cgi-script .cgi
+      AddHandler type-map .var
     </highlight>
-
-    <p>Une fois cette ligne insérée dans votre fichier httpd.conf, tout
-    fichier possédant l'extension <code>.cgi</code> sera traité en tant
-    que programme CGI.</p>
 
     <p>L'argument <var>extension</var> est insensible à la casse et peut
     être spécifié avec ou sans le point initial. Les noms de fichiers

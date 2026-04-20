@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1877522:1932817 (outdated) -->
+<!-- English Revision: 1932817 -->
 <!-- French translation : Lucien GENTIS -->
 
 <!--
@@ -30,8 +30,7 @@ mandataire.</description>
 <status>Base</status>
 <sourcefile>mod_proxy_html.c</sourcefile>
 <identifier>proxy_html_module</identifier>
-<compatibility>Disponible depuis la version 2.4 du serveur HTTP Apache.
-Disponible en tant que module tiers dans les versions 2.x antérieures</compatibility>
+<compatibility>Disponible depuis la version 2.4 du serveur HTTP Apache.</compatibility>
 
 <summary>
     <p>Ce module fournit un filtre en sortie permettant de réécrire les liens
@@ -377,6 +376,7 @@ Debug.</p>
 <name>ProxyHTMLFixups</name>
 <description>Corrige les erreurs HTML simples.</description>
 <syntax>ProxyHTMLFixups [lowercase] [dospath] [reset]</syntax>
+<default>ProxyHTMLFixups none</default>
 <contextlist><context>server config</context>
 <context>virtual host</context><context>directory</context>
 </contextlist>
@@ -500,6 +500,13 @@ des évènements de type scripting et de leur appliquer les règles
 <directive module="mod_proxy_html">ProxyHTMLURLMap</directive> lorsqu'elles ont été définies. Vous
 pouvez spécifier un nombre quelconque d'attributs dans une ou plusieurs
 directives <directive>ProxyHTMLEvents</directive>.</p>
+<note><title>Nécessite ProxyHTMLExtended</title>
+<p>Les évènements de type scripting  ne sont traités que si la directive
+<directive module="mod_proxy_html">ProxyHTMLExtended</directive> est définie à
+<var>On</var>. Dans le cas contraire, les attributs d’évènement sont transmis
+sans modification, même s’ils sont listés dans la directive
+<directive>ProxyHTMLEvents</directive>.</p>
+</note>
 <p>Normalement, cette directive est définie globalement. Si vous
 définissez <directive>ProxyHTMLEvents</directive> à plusieurs niveaux, certains niveaux
 l'emportant sur d'autres, vous devrez spécifier un jeu complet
@@ -561,6 +568,7 @@ ProxyHTMLLinks  script     src for
 <description>Spécifie un jeu de caractères pour la sortie de
 mod_proxy_html.</description>
 <syntax>ProxyHTMLCharsetOut <var>jeu-de-caractères | *</var></syntax>
+<default>ProxyHTMLCharsetOut UTF-8</default>
 <contextlist><context>server config</context>
 <context>virtual host</context><context>directory</context>
 </contextlist>
