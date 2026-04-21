@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1760182:1932789 (outdated) -->
+<!-- English Revision: 1932789 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -39,10 +39,7 @@
     de conférer aux bases de données une efficacité et une
     évolutivité optimales pour les MPMs threadés ou non threadés. Pour
     plus de détails, voir le site web <a
-    href="http://apr.apache.org/">APR</a>,
-    ainsi que cette vue d'ensemble de l'<a
-    href="http://people.apache.org/~niq/dbd.html">environnement de
-    développement d'Apache DBD</a> par son développeur initial.
+    href="http://apr.apache.org/">APR</a>.
 </p>
 </summary>
 

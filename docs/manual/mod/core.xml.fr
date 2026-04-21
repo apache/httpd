@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1932316:1932810 (outdated) -->
+<!-- English Revision: 1932810 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -573,6 +573,12 @@ All pour les versions antérieures</default>
     href="#accessfilename">.htaccess</a> sont totalement ignorés. Dans
     ce cas, le serveur ne cherchera même pas à lire des fichiers
     <code>.htaccess</code> dans le système de fichiers.</p>
+
+    <note>
+    <p>La valeur <code>None</code> ne peut pas être combinée avec d’autres
+    valeurs. Si c’est le cas, une erreur sera produite qui interrompra la
+    lecture de la configuration.</p>
+    </note>
 
     <p>Example:</p>
 
@@ -1620,17 +1626,6 @@ ErrorDocument 404 /cgi-bin/bad_urls.pl
     code de statut 401. C'est pourquoi, <strong>si vous utilisez une
     directive <code>ErrorDocument 401</code>, elle devra faire référence
     à un document par le biais d'un chemin local.</strong></p>
-
-    <p>Microsoft Internet Explorer (MSIE) ignore par défaut les messages
-    d'erreur générés par le serveur lorsqu'ils sont trop courts et
-    remplacent ses propres messages d'erreur "amicaux". Le seuil de
-    taille varie en fonction du type d'erreur, mais en général, si la
-    taille de votre message d'erreur est supérieure à 512 octets, il y a
-    peu de chances pour que MSIE l'occulte, et il sera affiché par ce
-    dernier. Vous trouverez d'avantage d'informations dans l'article de
-    la base de connaissances Microsoft <a
-    href="http://support.microsoft.com/default.aspx?scid=kb;en-us;Q294807"
-    >Q294807</a>.</p>
 
     <p>Bien que la plupart des messages d'erreur internes originaux
     puissent être remplacés, ceux-ci sont cependant conservés dans
@@ -4347,6 +4342,10 @@ host</context>
 
     <p>En l'absence de toute définition d'options, la valeur par défaut
     est <code>FollowSymlinks</code>.</p>
+
+    <p>Les options <code>All</code> et <code>None</code> doivent être spécifiées
+    en première position. Les modificateurs + et - ne peuvent pas être
+    utilisés avec les options <code>All</code> et <code>None</code>.</p>
 </usage>
 </directivesynopsis>
 
@@ -4450,7 +4449,7 @@ seulement depuis la version 2.3.3 sous Windows.</compatibility>
 	<directive>Protocols</directive>.</p>
         
         <p>Si cette directive est définie à Off, l'ordre de la liste des
-	protocoles fournie par le client l'emporte sur l'ordre défini
+protocoles fournie par le client l'emporte sur l'ordre défini
 	dans la configuration du serveur.</p>
         
         <p>Si la directive <directive>ProtocolsHonorOrder</directive>
