@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1932339:1932769 (outdated) -->
+<!-- English Revision: 1932769 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -2126,7 +2126,8 @@ données</description>
     <p>La directive <directive>ProxyIOBufferSize</directive> permet
     d'ajuster la taille du tampon interne utilisé comme bloc-note pour
     les transferts de données entre entrée et sortie. La taille minimale
-    est de <code>512</code> octets.</p>
+    est de <code>512</code> octets, ou définie à <code>0</code> pour indiquer
+    que la taille de tampon par défaut du système doit être utilisée.</p>
 
     <p>Dans la plupart des cas, il n'y a aucune raison de modifier cette
     valeur.</p>
