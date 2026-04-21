@@ -544,7 +544,7 @@
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="H2OutputBuffering" id="H2OutputBuffering">H2OutputBuffering</a> <a name="h2outputbuffering" id="h2outputbuffering">Directive</a> <a title="Permanent link" href="#h2outputbuffering" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Determine buffering behaviour of output</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Determine buffering behavior of output</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>H2OutputBuffering on|off</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>H2OutputBuffering on</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
@@ -554,7 +554,7 @@
 </table>
             <p>
                 The directive <code class="directive">H2OutputBuffering</code> controls the buffering of stream output.
-                The default is on, which is the behaviour of previous versions. When off, all
+                The default is on, which is the behavior of previous versions. When off, all
                 bytes are made available immediately to the main connection for sending them
                 out to the client. This fixes interop issues with certain flavours of gRPC.
             </p>
@@ -573,7 +573,7 @@
 </table>
             <p>
                 With the default 0, no padding bytes are added to any payload
-                frames, e.g. HEADERS, DATA and PUSH_PROMISE. This is the behaviour
+                frames, e.g. HEADERS, DATA and PUSH_PROMISE. This is the behavior
                 of previous versions. It means that under certain conditions, an
                 observer of network traffic can see the length of those frames 
                 in the TLS stream.

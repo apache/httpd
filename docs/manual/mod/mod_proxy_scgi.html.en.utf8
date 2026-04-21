@@ -88,7 +88,7 @@
 <div class="section">
 <h2><a name="env" id="env">Environment Variables</a> <a title="Permanent link" href="#env" class="permalink">&para;</a></h2>
     <p>In addition to the configuration directives that control the
-    behaviour of <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code>, an <dfn>environment
+    behavior of <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code>, an <dfn>environment
     variable</dfn> may also control the SCGI protocol
     provider:</p>
     <dl>
@@ -157,7 +157,7 @@ header</td></tr>
     optimizations, which are not possible if the file comes over the backend
     socket.  Additionally, the file contents are not transmitted twice.</p>
     <p>The <code class="directive">ProxySCGISendfile</code> argument determines the
-    gateway behaviour:</p>
+    gateway behavior:</p>
     <dl>
     <dt><code>Off</code></dt>
     <dd>No special handling takes place.</dd>

@@ -29,12 +29,12 @@
 <a href="../tr/programs/httpd.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
 
-     <p><code>httpd</code> is the Apache HyperText Transfer Protocol
+     <p><code class="program"><a href="../programs/httpd.html">httpd</a></code> is the Apache HyperText Transfer Protocol
      (HTTP) server program.  It is designed to be run as a standalone
      daemon process. When used like this it will create a pool of
      child processes or threads to handle requests.</p>
 
-     <p>In general, <code>httpd</code> should not be invoked directly,
+     <p>In general, <code class="program"><a href="../programs/httpd.html">httpd</a></code> should not be invoked directly,
      but rather should be invoked via <code class="program"><a href="../programs/apachectl.html">apachectl</a></code> on Unix-based systems or <a href="../platform/windows.html#winsvc">as a service on Windows NT,
      2000 and XP</a> and <a href="../platform/windows.html#wincons">as
      a console application on Windows 9x and ME</a>.</p>
@@ -86,7 +86,7 @@ path relative to the <code class="directive"><a href="../mod/core.html#serverroo
 
 <dt><code>-k <code>start|restart|graceful|stop|graceful-stop</code></code></dt>
 
-<dd>Signals <code>httpd</code> to start, restart, or stop.  See <a href="../stopping.html">Stopping Apache httpd</a> for more information.</dd>
+<dd>Signals <code class="program"><a href="../programs/httpd.html">httpd</a></code> to start, restart, or stop.  See <a href="../stopping.html">Stopping Apache httpd</a> for more information.</dd>
 
 <dt><code>-C <var>directive</var></code></dt>
 
@@ -158,11 +158,11 @@ DUMP_...</var> arguments to print information about the configuration,
 
 <dt><code>-v</code></dt>
 
-<dd>Print the version of <code>httpd</code>, and then exit.</dd>
+<dd>Print the version of <code class="program"><a href="../programs/httpd.html">httpd</a></code>, and then exit.</dd>
 
 <dt><code>-V</code></dt>
 
-<dd>Print the version and build parameters of <code>httpd</code>, and
+<dd>Print the version and build parameters of <code class="program"><a href="../programs/httpd.html">httpd</a></code>, and
 then exit.</dd>
 
 <dt><code>-X</code></dt>

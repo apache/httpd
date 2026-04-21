@@ -32,8 +32,6 @@
 <a href="../ko/mod/mod_logio.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/mod/mod_logio.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Journalisation des octets en entrée et en sortie pour
 chaque requête</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
@@ -91,8 +89,9 @@ d'Apache</a></li>
         <td>Octets reçus, en-têtes et corps de requête inclus ; ne peut
 	pas être nul.</td></tr>
 <tr class="odd"><td><code>%O</code></td>
-        <td>Octets envoyés, en-têtes inclus ; ne peut
-	pas être nul.</td></tr>
+        <td>Octets envoyés, en-têtes inclus. Peut être égal à zéro dans de rares
+	cas ; par exemple lorsqu’une requête est interrompue avant l’envoi de la
+	réponse.</td></tr>
 <tr><td><code>%S</code></td>
         <td>Nombre d'octets transmis en émission et réception y compris
 	la requête et les en-têtes ; cette valeur ne peut pas être

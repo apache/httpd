@@ -19,7 +19,7 @@
 .el .ne 3
 .IP "\\$1" \\$2
 ..
-.TH "AB" 1 "2022-03-07" "Apache HTTP Server" "ab"
+.TH "AB" 1 "2026-04-21" "Apache HTTP Server" "ab"
 
 .SH NAME
 ab \- Apache HTTP server benchmarking tool
@@ -33,7 +33,7 @@ ab \- Apache HTTP server benchmarking tool
 .SH "SUMMARY"
  
 .PP
-\fBab\fR is a tool for benchmarking your Apache Hypertext Transfer Protocol (HTTP) server\&. It is designed to give you an impression of how your current Apache installation performs\&. This especially shows you how many requests per second your Apache installation is capable of serving\&.
+ab is a tool for benchmarking your Apache Hypertext Transfer Protocol (HTTP) server\&. It is designed to give you an impression of how your current Apache installation performs\&. This especially shows you how many requests per second your Apache installation is capable of serving\&.
  
 
 .SH "OPTIONS"
@@ -98,7 +98,7 @@ File containing data to POST\&. Remember to also set \fB-T\fR\&.
 Supply BASIC Authentication credentials to a proxy en-route\&. The username and password are separated by a single \fB:\fR and sent on the wire base64 encoded\&. The string is sent regardless of whether the proxy needs it (\fIi\&.e\&.\fR, has sent an 407 proxy authentication needed)\&.  
 .TP
 \fB-q\fR
-When processing more than 150 requests, \fBab\fR outputs a progress count on \fBstderr\fR every 10% or 100 requests or so\&. The \fB-q\fR flag will suppress these messages\&.  
+When processing more than 150 requests, ab outputs a progress count on \fBstderr\fR every 10% or 100 requests or so\&. The \fB-q\fR flag will suppress these messages\&.  
 .TP
 \fB-r\fR
 Don't exit on socket receive errors\&.  
@@ -148,7 +148,7 @@ Specify SSL/TLS cipher suite (See openssl ciphers)
 .SH "OUTPUT"
  
 .PP
-The following list describes the values returned by \fBab\fR:
+The following list describes the values returned by ab:
  
  
 .TP
@@ -215,5 +215,5 @@ The rate of transfer as calculated by the formula \fBtotalread / 1024 / timetake
 There are various statically declared buffers of fixed length\&. Combined with the lazy parsing of the command line arguments, the response headers from the server and other external inputs, this might bite you\&.
  
 .PP
-It does not implement HTTP/1\&.x fully; only accepts some 'expected' forms of responses\&. The rather heavy use of \fBstrstr(3)\fR shows up top in profile, which might indicate a performance problem; \fIi\&.e\&.\fR, you would measure the \fBab\fR performance rather than the server's\&.
+It does not implement HTTP/1\&.x fully; only accepts some 'expected' forms of responses\&. The rather heavy use of \fBstrstr(3)\fR shows up top in profile, which might indicate a performance problem; \fIi\&.e\&.\fR, you would measure the ab performance rather than the server's\&.
  

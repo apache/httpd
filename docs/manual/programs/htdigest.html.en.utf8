@@ -29,10 +29,10 @@
 <a href="../tr/programs/htdigest.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
 
-    <p><code>htdigest</code> is used to create and update the flat-files used
+    <p><code class="program"><a href="../programs/htdigest.html">htdigest</a></code> is used to create and update the flat-files used
     to store usernames, realm and password for digest authentication of HTTP
     users. Resources available from the Apache HTTP server can be restricted
-    to just the users listed in the files created by <code>htdigest</code>.</p>
+    to just the users listed in the files created by <code class="program"><a href="../programs/htdigest.html">htdigest</a></code>.</p>
 
     <p>This manual page only lists the command line arguments. For details of
     the directives necessary to configure digest authentication in

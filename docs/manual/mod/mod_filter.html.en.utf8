@@ -186,7 +186,7 @@ FilterChain SSI</pre>
 
     <dt>Server side Includes (SSI)</dt>
     <dd>The same as the above but dispatching on handler (classic
-    SSI behaviour; .shtml files get processed).
+    SSI behavior; .shtml files get processed).
     <pre class="prettyprint lang-config">FilterProvider SSI INCLUDES "%{HANDLER} = 'server-parsed'"
 FilterChain SSI</pre>
 
@@ -258,7 +258,7 @@ FilterProvider repack png_pack  "%{CONTENT_TYPE} = 'image/png'"
     modules.  For httpd 2.1 and later, the
     <code>ap_register_output_filter_protocol</code> and
     <code>ap_filter_protocol</code> API enables filter modules to
-    declare their own behaviour.</p>
+    declare their own behavior.</p>
 
     <p>At the same time, <code class="module"><a href="../mod/mod_filter.html">mod_filter</a></code> should not interfere
     with a filter that wants to handle all aspects of the protocol.  By

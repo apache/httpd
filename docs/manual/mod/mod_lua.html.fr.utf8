@@ -109,7 +109,7 @@ fonctionnement interne de httpd.</p>
 
 
 <p>
-<code>mod_lua</code> fournit un gestionnaire nommé
+<code class="module"><a href="../mod/mod_lua.html">mod_lua</a></code> fournit un gestionnaire nommé
 <code>lua-script</code> qui peut être utilisé avec une directive
 <code class="directive"><a href="../mod/core.html#sethandler">SetHandler</a></code> ou <code class="directive"><a href="../mod/mod_mime.html#addhandler">AddHandler</a></code> :</p>
 
@@ -120,7 +120,7 @@ fonctionnement interne de httpd.</p>
 
 <p>
 Ceci aura pour effet de faire traiter les requêtes pour les fichiers
-dont l'extension est <code>.lua</code> par <code>mod_lua</code> en
+dont l'extension est <code>.lua</code> par <code class="module"><a href="../mod/mod_lua.html">mod_lua</a></code> en
 invoquant cette fonction de <code>gestion</code> de fichier.
 </p>
 
@@ -136,7 +136,7 @@ réponse. <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></co
 <code class="module"><a href="../mod/mod_status.html">mod_status</a></code> sont des exemples de modules comportant un
 gestionnaire.</p>
 
-<p><code>mod_lua</code> cherche toujours à invoquer une fonction Lua pour le
+<p><code class="module"><a href="../mod/mod_lua.html">mod_lua</a></code> cherche toujours à invoquer une fonction Lua pour le
 gestionnaire, plutôt que de simplement évaluer le corps d'un script dans
 le style de CGI. Une fonction de gestionnaire se présente comme suit :</p>
 
@@ -254,7 +254,7 @@ ou la définition de types MIME : </p>
 
 <table class="bordered"><tr class="header">
         <th>Phase d'accroche</th>
-        <th>Directive mod_lua</th>
+        <th>Directive de <code class="module"><a href="../mod/mod_lua.html">mod_lua</a></code></th>
         <th>Description</th>
     </tr>
 <tr>
@@ -520,9 +520,9 @@ end</pre>
           <td>oui</td>
 	  <td>Le nom du <a href="../handler.html">gestionnaire</a> qui
 	  doit traiter la requête, par exemple <code>lua-script</code>
-	  si elle doit être traitée par mod_lua. Cette valeur est en
+	  si elle doit être traitée par <code class="module"><a href="../mod/mod_lua.html">mod_lua</a></code>. Cette valeur est en
 	  général définie via les directives <code class="directive"><a href="../mod/mod_mime.html#addhandler">AddHandler</a></code> ou <code class="directive"><a href="../mod/core.html#sethandler">SetHandler</a></code>, mais peut aussi l'être
-	  via mod_lua pour permettre à un autre gestionnaire de traiter
+	  via <code class="module"><a href="../mod/mod_lua.html">mod_lua</a></code> pour permettre à un autre gestionnaire de traiter
 	  une requête spécifique qui ne serait pas traitée par défaut
 	  par ce dernier.
             </td>
@@ -1334,7 +1334,7 @@ end</pre>
 
     <p>Lorsqu'elles ne sont plus utilisées, les connexions aux bases de
 données doivent être fermées avec <code>database:close()</code>. Si vous
-ne les fermez pas manuellement, mod_lua les fermera peut-être en tant
+ne les fermez pas manuellement, <code class="module"><a href="../mod/mod_lua.html">mod_lua</a></code> les fermera peut-être en tant
 que résidus collectés, mais si ce n'est pas le cas, vous pouvez finir
 pas avoir trop de connexions vers la base de données inutilisées. Les
 deux mesures suivantes sont pratiquement identiques :
@@ -1997,7 +1997,7 @@ traitement de la requête</td></tr>
 <div class="directive-section"><h2><a name="luaroot" id="luaroot">Directive</a> <a name="LuaRoot" id="LuaRoot">LuaRoot</a> <a title="Lien permanent" href="#luaroot" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Spécifie le chemin de base pour la résolution des chemins
-relatifs dans les directives de mod_lua</td></tr>
+relatifs dans les directives de <code class="module"><a href="../mod/mod_lua.html">mod_lua</a></code></td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LuaRoot /chemin/vers/un/répertoire</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>All</td></tr>
@@ -2005,7 +2005,7 @@ relatifs dans les directives de mod_lua</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_lua</td></tr>
 </table>
     <p>Cette directive permet de spécifier le chemin de base qui sera
-    utilisé pour évaluer tous les chemins relatifs dans mod_lua. En
+    utilisé pour évaluer tous les chemins relatifs dans <code class="module"><a href="../mod/mod_lua.html">mod_lua</a></code>. En
     l'absence de cette directive, les chemins relatifs sont résolus par
     rapport au répertoire de travail courant, ce qui ne sera pas
     toujours approprié pour un serveur.</p>

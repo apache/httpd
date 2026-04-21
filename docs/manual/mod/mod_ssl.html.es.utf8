@@ -1012,7 +1012,7 @@ SSLCryptoDevice ubsec</pre>
 <div class="directive-section"><h2><a name="sslechkeydir" id="sslechkeydir">Directiva</a> <a name="SSLECHKeyDir" id="SSLECHKeyDir">SSLECHKeyDir</a> <a title="Enlace permanente" href="#sslechkeydir" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Descripción:</a></th><td>Load the set of Encrypted Client Hello (ECH) PEM files in the named directory</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Sintaxis:</a></th><td><code>SSLECHKeyDir <em>dirname</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Sintaxis:</a></th><td><code>SSLECHKeyDir <var>dirname</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexto:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Status">Estado:</a></th><td>Extensión</td></tr>
 <tr><th><a href="directive-dict.html#Module">Módulo:</a></th><td>mod_ssl</td></tr>

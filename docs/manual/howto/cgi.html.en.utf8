@@ -7,7 +7,7 @@
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>Apache Tutorial: Dynamic Content with CGI - Apache HTTP Server Version 2.5</title>
+<title>Apache HTTP Server Tutorial: Dynamic Content with CGI - Apache HTTP Server Version 2.5</title>
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
@@ -21,7 +21,7 @@
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">How-To / Tutorials</a></div><div id="page-content"><div id="preamble"><h1>Apache Tutorial: Dynamic Content with CGI</h1>
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">How-To / Tutorials</a></div><div id="page-content"><div id="preamble"><h1>Apache HTTP Server Tutorial: Dynamic Content with CGI</h1>
 <div class="toplang">
 <p><span>Available Languages: </span><a href="../en/howto/cgi.html" title="English">&nbsp;en&nbsp;</a> |
 <a href="../es/howto/cgi.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
@@ -31,7 +31,7 @@
 </div>
 </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#intro">Introduction</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#configuring">Configuring Apache to permit CGI</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#configuring">Configuring httpd to permit CGI</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#writing">Writing a CGI program</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#troubleshoot">But it's still not working!</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#behindscenes">What's going on behind the scenes?</a></li>
@@ -51,18 +51,18 @@
     is a simple way to put dynamic content on
     your web site, using whatever programming language you're most
     familiar with. This document will be an introduction to setting
-    up CGI on your Apache web server, and getting started writing
+    up CGI on your httpd web server, and getting started writing
     CGI programs.</p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="configuring" id="configuring">Configuring Apache to permit CGI</a> <a title="Permanent link" href="#configuring" class="permalink">&para;</a></h2>
+<h2><a name="configuring" id="configuring">Configuring httpd to permit CGI</a> <a title="Permanent link" href="#configuring" class="permalink">&para;</a></h2>
     
 
     <p>In order to get your CGI programs to work properly, you'll
-    need to have Apache configured to permit CGI execution. There
+    need to have httpd configured to permit CGI execution. There
     are several ways to do this.</p>
 
-    <div class="warning">Note: If Apache has been built with shared module
+    <div class="warning">Note: If httpd has been built with shared module
     support you need to ensure that the module is loaded; in your
     <code>httpd.conf</code> you need to make sure the
     <code class="directive"><a href="../mod/mod_so.html#loadmodule">LoadModule</a></code>
@@ -86,8 +86,8 @@
       <p>The
       <code class="directive"><a href="../mod/mod_alias.html#scriptalias">ScriptAlias</a></code>
 
-      directive tells Apache that a particular directory is set
-      aside for CGI programs. Apache will assume that every file in
+      directive tells httpd that a particular directory is set
+      aside for CGI programs. httpd will assume that every file in
       this directory is a CGI program, and will attempt to execute
       it, when that particular resource is requested by a
       client.</p>
@@ -99,7 +99,7 @@
 
 
       <p>The example shown is from your default <code>httpd.conf</code>
-      configuration file, if you installed Apache in the default
+      configuration file, if you installed httpd in the default
       location. The <code class="directive"><a href="../mod/mod_alias.html#scriptalias">ScriptAlias</a></code>
       directive is much like the <code class="directive"><a href="../mod/mod_alias.html#alias">Alias</a></code> directive, which defines a URL prefix that
       is to mapped to a particular directory. <code class="directive">Alias</code>
@@ -108,18 +108,18 @@
       <code class="directive">Alias</code> and <code class="directive">ScriptAlias</code>
       is that <code class="directive">ScriptAlias</code> has the added meaning
       that everything under that URL prefix will be considered a CGI
-      program. So, the example above tells Apache that any request for a
+      program. So, the example above tells httpd that any request for a
       resource beginning with <code>/cgi-bin/</code> should be served from
       the directory  <code>/usr/local/apache2/cgi-bin/</code>, and should be
       treated as a CGI program.</p>
 
       <p>For example, if the URL
       <code>http://www.example.com/cgi-bin/test.pl</code>
-      is requested, Apache will attempt to execute the file
+      is requested, httpd will attempt to execute the file
       <code>/usr/local/apache2/cgi-bin/test.pl</code>
       and return the output. Of course, the file will have to
       exist, and be executable, and return output in a particular
-      way, or Apache will return an error message.</p>
+      way, or httpd will return an error message.</p>
     
 
     <h3><a name="nonscriptalias" id="nonscriptalias">CGI outside of ScriptAlias directories</a></h3>
@@ -154,7 +154,7 @@
 &lt;/Directory&gt;</pre>
 
 
-      <p>The above directive tells Apache to permit the execution
+      <p>The above directive tells httpd to permit the execution
       of CGI files. You will also need to tell the server what
       files are CGI files. The following <code class="directive"><a href="../mod/mod_mime.html#addhandler">AddHandler</a></code> directive tells the server to treat all
       files with the <code>cgi</code> or <code>pl</code> extension as CGI
@@ -237,7 +237,7 @@ print "Hello, World.";</pre>
 
 
       <p>Even if you are not familiar with Perl, you should be able
-      to see what is happening here. The first line tells Apache
+      to see what is happening here. The first line tells httpd
       (or whatever shell you happen to be running under) that this
       program can be executed by feeding the file to the
       interpreter found at the location <code>/usr/bin/perl</code>.
@@ -276,19 +276,19 @@ print "Hello, World.";</pre>
 
       <dt>The source code of your CGI program or a "POST Method Not
       Allowed" message</dt>
-      <dd>That means that you have not properly configured Apache
+      <dd>That means that you have not properly configured httpd
       to process your CGI program. Reread the section on
       <a href="#configuring">configuring
-      Apache</a> and try to find what you missed.</dd>
+      httpd</a> and try to find what you missed.</dd>
 
       <dt>A message starting with "Forbidden"</dt>
       <dd>That means that there is a permissions problem. Check the
-      <a href="#errorlogs">Apache error log</a> and the section below on
+      <a href="#errorlogs">httpd error log</a> and the section below on
       <a href="#permissions">file permissions</a>.</dd>
 
       <dt>A message saying "Internal Server Error"</dt>
       <dd>If you check the
-      <a href="#errorlogs">Apache error log</a>, you will probably
+      <a href="#errorlogs">httpd error log</a>, you will probably
       find that it says "Premature end of
       script headers", possibly along with an error message
       generated by your CGI program. In this case, you will want to
@@ -357,7 +357,7 @@ print "Hello, World.";</pre>
       
 
       <p>If your CGI program depends on non-standard <a href="#env">environment variables</a>, you will need to
-      assure that those variables are passed by Apache.</p>
+      assure that those variables are passed by httpd.</p>
 
       <p>When you miss HTTP headers from the environment, make
       sure they are formatted according to
@@ -384,12 +384,12 @@ print "Hello, World.";</pre>
       </code></p></div>
 
       <p>(Do not call the <code>perl</code> interpreter.  The shell
-      and Apache should find the interpreter using the <a href="#pathinformation">path information</a> on the first line of
+      and httpd should find the interpreter using the <a href="#pathinformation">path information</a> on the first line of
       the script.)</p>
 
       <p>The first thing you see written by your program should be
       a set of HTTP headers, including the <code>Content-Type</code>,
-      followed by a blank line.  If you see anything else, Apache will
+      followed by a blank line.  If you see anything else, httpd will
       return the <code>Premature end of script headers</code> error if
       you try to run it through the server. See <a href="#writing">Writing a CGI program</a> above for more
       details.</p>
@@ -419,7 +419,7 @@ print "Hello, World.";</pre>
 
       <p>To check if you are using suexec, run <code>apachectl
       -V</code> and check for the location of <code>SUEXEC_BIN</code>.
-      If Apache finds an <code class="program"><a href="../programs/suexec.html">suexec</a></code> binary there on startup,
+      If httpd finds an <code class="program"><a href="../programs/suexec.html">suexec</a></code> binary there on startup,
       suexec will be activated.</p>
 
       <p>Unless you fully understand suexec, you should not be using it.
@@ -456,7 +456,7 @@ print "Hello, World.";</pre>
       <p>During the CGI transaction, the server and the browser
       also set environment variables, so that they can communicate
       with one another. These are things like the browser type
-      (Netscape, IE, Lynx), the server type (Apache, IIS, WebSite),
+      (Chrome, Firefox, Lynx), the server type (Apache httpd, Nginx, IIS),
       the name of the CGI program that is being run, and so on.</p>
 
       <p>These variables are available to the CGI programmer, and
@@ -470,10 +470,10 @@ print "Hello, World.";</pre>
       similar programs are included in the
       <code>cgi-bin</code>
 
-      directory of the Apache distribution. Note that some
+      directory of the httpd distribution. Note that some
       variables are required, while others are optional, so you may
       see some variables listed that were not in the official list.
-      In addition, Apache provides many different ways for you to
+      In addition, httpd provides many different ways for you to
       <a href="../env.html">add your own environment variables</a>
       to the basic ones provided by default.</p>
 
@@ -565,8 +565,8 @@ foreach my $key (keys %ENV) {
     make finding your problem much simpler.</p>
 
     <p>Note that questions about CGI problems should <strong>never</strong>
-    be posted to the Apache bug database unless you are sure you
-    have found a problem in the Apache source code.</p>
+    be posted to the httpd bug database unless you are sure you
+    have found a problem in the httpd source code.</p>
   </div></div>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../en/howto/cgi.html" title="English">&nbsp;en&nbsp;</a> |

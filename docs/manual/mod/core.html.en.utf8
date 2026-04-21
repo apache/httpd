@@ -515,7 +515,7 @@ NoDecode option available in 2.3.12 and later.</td></tr>
       Allow use of AllowOverride option to treat invalid (unrecognized
       or disallowed) directives in
       .htaccess as nonfatal. Instead of causing an Internal Server
-      Error, disallowed or unrecognised directives will be ignored
+      Error, disallowed or unrecognized directives will be ignored
       and a warning logged:
       <ul>
           <li><strong>Nonfatal=Override</strong> treats directives

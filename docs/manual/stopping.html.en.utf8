@@ -220,7 +220,7 @@ syntax error(s).</div>
     (<code class="directive"><a href="./mod/core.html#mutex">Mutex</a></code>) and Unix socket files
     (<code class="directive"><a href="./mod/mod_cgid.html#scriptsock">ScriptSock</a></code>) contain the server
     PID, and should coexist without problem. However, if a configuration
-    directive, third-party module or persistent CGI utilises any other on-disk
+    directive, third-party module or persistent CGI utilizes any other on-disk
     lock or  state files, care should be taken to ensure that multiple running
     instances of <code class="program"><a href="./programs/httpd.html">httpd</a></code> do not clobber each other's files.</p>
 

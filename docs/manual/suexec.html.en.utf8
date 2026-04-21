@@ -493,7 +493,7 @@
       option, there is
       always the possibility that a system or library call suEXEC uses
       before this check may be exploitable on your system. To counter
-      this, and because it is best-practise in general, you should use
+      this, and because it is best-practice in general, you should use
       filesystem permissions to ensure that only the group httpd
       runs as may execute suEXEC.</p>
 

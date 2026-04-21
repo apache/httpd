@@ -72,7 +72,7 @@ modules</td></tr>
     access will be denied. Setting the
     <code class="directive">AuthBearerAuthoritative</code> directive explicitly
     to <code>Off</code> allows for token verification to be passed on to
-    other non-provider-based modules if the token is not recognised.
+    other non-provider-based modules if the token is not recognized.
     This should only be necessary when combining
     <code class="module"><a href="../mod/mod_auth_bearer.html">mod_auth_bearer</a></code> with third-party modules that are not
     configured with the

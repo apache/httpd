@@ -82,10 +82,9 @@ Negotiation</a></li>
     other media types, but also allowing any other media type as a
     last resort:</p>
 
-<div class="example"><p><code>
-  Accept-Language: fr; q=1.0, en; q=0.5<br />
-  Accept: text/html; q=1.0, text/*; q=0.8, image/gif; q=0.6, image/jpeg; q=0.6, image/*; q=0.5, */*; q=0.1
-</code></p></div>
+<div class="example"><pre class="prettyprint lang-config">Accept-Language: fr; q=1.0, en; q=0.5
+Accept: text/html; q=1.0, text/*; q=0.8, image/gif; q=0.6, image/jpeg; q=0.6, image/*; q=0.5, */*; q=0.1</pre>
+</div>
 
     <p>httpd supports 'server driven' content negotiation, as
     defined in the HTTP/1.1 specification. It fully supports the
@@ -161,17 +160,16 @@ Negotiation</a></li>
     absolute or relative URIs for any file located on the same server as
     the map file.</p>
 
-<div class="example"><p><code>
-  URI: foo<br />
-<br />
-  URI: foo.en.html<br />
-  Content-type: text/html<br />
-  Content-language: en<br />
-<br />
-  URI: foo.fr.de.html<br />
-  Content-type: text/html;charset=iso-8859-2<br />
-  Content-language: fr, de<br />
-</code></p></div>
+<div class="example"><pre class="prettyprint lang-config">URI: foo
+
+URI: foo.en.html
+Content-type: text/html
+Content-language: en
+
+URI: foo.fr.de.html
+Content-type: text/html;charset=iso-8859-2
+Content-language: fr, de</pre>
+</div>
 
     <p>Note also that a typemap file will take precedence over the
     filename's extension, even when Multiviews is on. If a
@@ -194,34 +192,32 @@ Negotiation</a></li>
     the original) in the type map file. The original file can be
     assigned its language in the type map without being renamed:</p>
 
-<div class="example"><p><code>
-  URI: foo<br />
-<br />
-  URI: foo.html<br />
-  Content-type: text/html<br />
-  Content-language: en<br />
-<br />
-  URI: foo.fr.html<br />
-  Content-type: text/html<br />
-  Content-language: fr<br />
-</code></p></div>
+<div class="example"><pre class="prettyprint lang-config">URI: foo
+
+URI: foo.html
+Content-type: text/html
+Content-language: en
+
+URI: foo.fr.html
+Content-type: text/html
+Content-language: fr</pre>
+</div>
 
     <p>If the variants have different source qualities, that may be
     indicated by the "qs" parameter to the media type, as in this
     picture (available as JPEG, GIF, or ASCII-art): </p>
 
-<div class="example"><p><code>
-  URI: foo<br />
-<br />
-  URI: foo.jpeg<br />
-  Content-type: image/jpeg; qs=0.8<br />
-<br />
-  URI: foo.gif<br />
-  Content-type: image/gif; qs=0.5<br />
-<br />
-  URI: foo.txt<br />
-  Content-type: text/plain; qs=0.01<br />
-</code></p></div>
+<div class="example"><pre class="prettyprint lang-config">URI: foo
+
+URI: foo.jpeg
+Content-type: image/jpeg; qs=0.8
+
+URI: foo.gif
+Content-type: image/gif; qs=0.5
+
+URI: foo.txt
+Content-type: text/plain; qs=0.01</pre>
+</div>
 
     <p>qs values can vary in the range 0.000 to 1.000. Note that
     any variant with a qs value of 0.000 will never be chosen.

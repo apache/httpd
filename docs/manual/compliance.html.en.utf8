@@ -242,12 +242,11 @@
 
     <p>Invalid content types might include:</p>
 
-    <div class="example"><p><code>
-      # invalid<br />
-      Content-Type: foo<br />
-      # blank<br />
-      Content-Type:
-    </code></p></div>
+    <div class="example"><pre class="prettyprint lang-config"># invalid
+Content-Type: foo
+# blank
+Content-Type:</pre>
+</div>
 
     <p>The server administrator has the option to restrict the policy to one
     or more specific types, or could specify a general wildcard type such as

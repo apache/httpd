@@ -469,9 +469,9 @@ lower level modules</td></tr>
 parser has been added in 2.4.4.</td></tr>
 </table>
     <p>The <code class="directive">AuthFormLoginRequiredLocation</code> directive
-    specifies the URL to redirect to should the user not be authorised to view a page. The value
+    specifies the URL to redirect to should the user not be authorized to view a page. The value
     is parsed using the <a href="../expr.html">ap_expr</a> parser before being sent to the client.
-    By default, if a user is not authorised to view a page, the HTTP response code
+    By default, if a user is not authorized to view a page, the HTTP response code
     <code>HTTP_UNAUTHORIZED</code> will be returned with the page specified by the
     <code class="directive"><a href="../mod/core.html#errordocument">ErrorDocument</a></code> directive. This directive overrides this
     default.</p>

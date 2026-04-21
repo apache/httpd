@@ -97,10 +97,9 @@
         <code>mod_foo.c</code>, into its own DSO
         <code>mod_foo.so</code>:</p>
 
-<div class="example"><p><code>
-$ ./configure --prefix=/path/to/install --enable-foo<br />
-$ make install
-</code></p></div>
+<div class="example"><pre class="prettyprint lang-sh">$ ./configure --prefix=/path/to/install --enable-foo
+$ make install</pre>
+</div>
       </li>
 
       <li>
@@ -109,10 +108,9 @@ $ make install
       modules by activating or deactivating the <code class="directive"><a href="./mod/mod_so.html#loadmodule">LoadModule</a></code> directives in
       <code>httpd.conf</code>.</p>
 
-<div class="example"><p><code>
-$ ./configure --enable-mods-shared=all<br />
-$ make install
-</code></p></div>
+<div class="example"><pre class="prettyprint lang-sh">$ ./configure --enable-mods-shared=all
+$ make install</pre>
+</div>
       </li>
 
       <li>
@@ -123,10 +121,9 @@ $ make install
       built modules can be activated via the configure option
       <code>--enable-load-all-modules</code>.</p>
 
-<div class="example"><p><code>
-$ ./configure --enable-mods-shared=reallyall --enable-load-all-modules<br />
-$ make install
-</code></p></div>
+<div class="example"><pre class="prettyprint lang-sh">$ ./configure --enable-mods-shared=reallyall --enable-load-all-modules
+$ make install</pre>
+</div>
       </li>
 
       <li>
@@ -135,10 +132,9 @@ $ make install
         <code>mod_foo.so</code> <em>outside of</em> the Apache httpd
         source tree using <code class="program"><a href="./programs/apxs.html">apxs</a></code>:
 
-<div class="example"><p><code>
-$ cd /path/to/3rdparty<br />
-$ apxs -cia mod_foo.c
-</code></p></div>
+<div class="example"><pre class="prettyprint lang-sh">$ cd /path/to/3rdparty
+$ apxs -cia mod_foo.c</pre>
+</div>
       </li>
     </ol>
 

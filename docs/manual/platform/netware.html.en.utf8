@@ -7,7 +7,7 @@
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>Using Apache With Novell NetWare - Apache HTTP Server Version 2.5</title>
+<title>Using Apache HTTP Server With Novell NetWare - Apache HTTP Server Version 2.5</title>
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
@@ -21,7 +21,7 @@
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Platform Specific Notes</a></div><div id="page-content"><div id="preamble"><h1>Using Apache With Novell NetWare</h1>
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Platform Specific Notes</a></div><div id="page-content"><div id="preamble"><h1>Using Apache HTTP Server With Novell NetWare</h1>
 <div class="toplang">
 <p><span>Available Languages: </span><a href="../en/platform/netware.html" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/platform/netware.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
@@ -30,34 +30,34 @@
 
 
     <p>This document explains how to install, configure and run
-    Apache 2.0 under Novell NetWare 6.0 and above. If you find any bugs,
+    Apache HTTP Server 2.0 under Novell NetWare 6.0 and above. If you find any bugs,
     or wish to contribute in other ways, please use our
     <a href="http://httpd.apache.org/bug_report.html">bug reporting
     page.</a></p>
 
     <p>The bug reporting page and dev-httpd mailing list are
     <em>not</em> provided to answer questions about configuration or
-    running Apache.  Before you submit a bug report or request, first
+    running httpd.  Before you submit a bug report or request, first
     consult this document, the <a href="http://wiki.apache.org/httpd/FAQ">Frequently Asked
     Questions</a> page and the other relevant documentation topics. If
     you still have a question or problem, post it to the <a href="news://developer-forums.novell.com/novell.devsup.webserver">
-    novell.devsup.webserver</a> newsgroup, where many Apache users are
+    novell.devsup.webserver</a> newsgroup, where many httpd users are
     more than willing to answer new and obscure questions about using
-    Apache on NetWare.</p>
+    httpd on NetWare.</p>
 
-    <p>Most of this document assumes that you are installing Apache
-    from a binary distribution. If you want to compile Apache
+    <p>Most of this document assumes that you are installing httpd
+    from a binary distribution. If you want to compile httpd
     yourself (possibly to help with development, or to track down
-    bugs), see the section on <a href="#comp">Compiling Apache for
+    bugs), see the section on <a href="#comp">Compiling Apache httpd for
     NetWare</a> below.</p>
 
   </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#req">Requirements</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#down">Downloading Apache for NetWare</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#inst">Installing Apache for NetWare</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#run">Running Apache for NetWare</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#use">Configuring Apache for NetWare</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#comp">Compiling Apache for NetWare</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#down">Downloading Apache httpd for NetWare</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#inst">Installing Apache httpd for NetWare</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#run">Running Apache httpd for NetWare</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#use">Configuring Apache httpd for NetWare</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#comp">Compiling Apache httpd for NetWare</a></li>
 </ul><h3>See also</h3><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -65,7 +65,7 @@
 
     
 
-    <p>Apache 2.0 is designed to run on NetWare 6.0 service pack 3
+    <p>httpd 2.0 is designed to run on NetWare 6.0 service pack 3
     and above. If you are running a service pack less
     than SP3, you must install the latest
     <a href="http://developer.novell.com/ndk/libc.htm">NetWare Libraries
@@ -73,37 +73,37 @@
 
     <p>NetWare service packs are available <a href="http://support.novell.com/misc/patlst.htm#nw">here</a>.</p>
 
-    <p>Apache 2.0 for NetWare can also be run in a NetWare 5.1 environment
+    <p>httpd 2.0 for NetWare can also be run in a NetWare 5.1 environment
     as long as the latest service pack or the latest version
     of the <a href="http://developer.novell.com/ndk/libc.htm">NetWare Libraries
-    for C (LibC)</a> has been installed .  <strong>WARNING:</strong> Apache 2.0
+    for C (LibC)</a> has been installed .  <strong>WARNING:</strong> httpd 2.0
     for NetWare has not been targeted for or tested in this environment.</p>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="down" id="down">Downloading Apache for NetWare</a> <a title="Permanent link" href="#down" class="permalink">&para;</a></h2>
+<h2><a name="down" id="down">Downloading Apache httpd for NetWare</a> <a title="Permanent link" href="#down" class="permalink">&para;</a></h2>
 
     
 
-    <p>Information on the latest version of Apache can be found on
-    the Apache web server at <a href="http://www.apache.org/">http://www.apache.org/</a>. This
+    <p>Information on the latest version of httpd can be found on
+    the httpd web server at <a href="http://www.apache.org/">http://www.apache.org/</a>. This
     will list the current release, any more recent alpha or
     beta-test releases, together with details of mirror web and
     anonymous ftp sites. Binary builds of the latest releases of
-    Apache 2.0 for NetWare can be downloaded from
+    httpd 2.0 for NetWare can be downloaded from
     <a href="http://www.apache.org/dist/httpd/binaries/netware">here</a>.</p>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="inst" id="inst">Installing Apache for NetWare</a> <a title="Permanent link" href="#inst" class="permalink">&para;</a></h2>
+<h2><a name="inst" id="inst">Installing Apache httpd for NetWare</a> <a title="Permanent link" href="#inst" class="permalink">&para;</a></h2>
 
     
 
-    <p>There is no Apache install program for NetWare currently. If you
-    are building Apache 2.0 for NetWare from source, you will need to
+    <p>There is no httpd install program for NetWare currently. If you
+    are building httpd 2.0 for NetWare from source, you will need to
     copy the files over to the server manually.</p>
 
-    <p>Follow these steps to install Apache on NetWare from the
+    <p>Follow these steps to install httpd on NetWare from the
     binary download (assuming you will install to
     <code>sys:/apache2</code>):</p>
 
@@ -120,7 +120,7 @@
 
     </ul>
 
-    <p>Follow these steps to install Apache on NetWare manually
+    <p>Follow these steps to install httpd on NetWare manually
     from your own build source (assuming you will install to
     <code>sys:/apache2</code>):</p>
 
@@ -178,40 +178,40 @@
       </li>
     </ul>
 
-    <p>Apache may be installed to other volumes besides the default <code>SYS</code> volume.</p>
+    <p>httpd may be installed to other volumes besides the default <code>SYS</code> volume.</p>
 
     <p>During the build process, adding the keyword "install" to the makefile command line
     will automatically produce a complete distribution package under the subdirectory
-    <code>DIST</code>. Install Apache by simply copying the distribution that was produced
-    by the makfiles to the root of a NetWare volume (see: <a href="#comp">Compiling Apache for
+    <code>DIST</code>. Install httpd by simply copying the distribution that was produced
+    by the makfiles to the root of a NetWare volume (see: <a href="#comp">Compiling Apache httpd for
     NetWare</a> below).</p>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="run" id="run">Running Apache for NetWare</a> <a title="Permanent link" href="#run" class="permalink">&para;</a></h2>
+<h2><a name="run" id="run">Running Apache httpd for NetWare</a> <a title="Permanent link" href="#run" class="permalink">&para;</a></h2>
 
     
 
-    <p>To start Apache just type <code>apache</code> at the
+    <p>To start httpd just type <code>apache</code> at the
     console. This will load apache in the OS address space. If you
-    prefer to load Apache in a protected address space you may
+    prefer to load httpd in a protected address space you may
     specify the address space with the load statement as follows:</p>
 
     <div class="example"><p><code>
       load address space = apache2 apache2
     </code></p></div>
 
-    <p>This will load Apache into an address space called apache2.
-    Running multiple instances of Apache concurrently on NetWare is
+    <p>This will load httpd into an address space called apache2.
+    Running multiple instances of httpd concurrently on NetWare is
     possible by loading each instance into its own protected
     address space.</p>
 
-    <p>After starting Apache, it will be listening to port 80
+    <p>After starting httpd, it will be listening to port 80
     (unless you changed the <code class="directive"><a href="../mod/mpm_common.html#listen">Listen</a></code>
     directive in the configuration files).
     To connect to the server and access the default page,
     launch a browser and enter the server's name or address. This
-    should respond with a welcome page, and a link to the Apache
+    should respond with a welcome page, and a link to the httpd
     manual. If nothing happens or you get an error, look in the
     <code>error_log</code> file in the <code>logs</code>
     directory.</p>
@@ -220,7 +220,7 @@
     configure it properly by editing the files in the
     <code>conf</code> directory.</p>
 
-    <p>To unload Apache running in the OS address space just type
+    <p>To unload httpd running in the OS address space just type
     the following at the console:</p>
 
     <div class="example"><p><code>
@@ -240,7 +240,7 @@
       unload address space = apache2 apache2
     </code></p></div>
 
-    <p>When working with Apache it is important to know how it will
+    <p>When working with httpd it is important to know how it will
     find the configuration files. You can specify a configuration
     file on the command line in two ways:</p>
 
@@ -261,10 +261,10 @@
     should be set in the configuration file.</p>
 
     <p>If you don't specify a configuration file name with <code>-f</code>,
-    Apache will use the file name compiled into the server, usually
-    <code>conf/httpd.conf</code>. Invoking Apache with the <code>-V</code>
+    httpd will use the file name compiled into the server, usually
+    <code>conf/httpd.conf</code>. Invoking httpd with the <code>-V</code>
     switch will display this value labeled as <code>SERVER_CONFIG_FILE</code>.
-    Apache will then determine its <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code>
+    httpd will then determine its <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code>
     by trying the following, in this order:</p>
 
     <ul>
@@ -282,20 +282,20 @@
     invoking apache with the <code>-V</code> switch will display this value labeled as
     <code>HTTPD_ROOT</code>.</p>
 
-    <p>Apache 2.0 for NetWare includes a set of command line directives that can
+    <p>httpd 2.0 for NetWare includes a set of command line directives that can
     be used to modify or display information about the running instance of the
-    web server. These directives are only available while Apache is running. Each
+    web server. These directives are only available while httpd is running. Each
     of these directives must be preceded by the keyword <code>APACHE2</code>.</p>
 
     <dl>
       <dt>RESTART</dt>
-      <dd>Instructs Apache to terminate all running worker
+      <dd>Instructs httpd to terminate all running worker
       threads as they become idle, reread the configuration file and restart each
       worker thread based on the new configuration.</dd>
 
       <dt>VERSION</dt>
       <dd>Displays version information about the currently
-      running instance of Apache.</dd>
+      running instance of httpd.</dd>
 
       <dt>MODULES</dt>
       <dd>Displays a list of loaded modules both built-in
@@ -307,39 +307,39 @@
       <dt>SETTINGS</dt>
       <dd>Enables or disables the thread status display
       on the console. When enabled, the state of each running threads is displayed
-      on the Apache console screen.</dd>
+      on the httpd console screen.</dd>
 
       <dt>SHUTDOWN</dt>
-      <dd>Terminates the running instance of the Apache
+      <dd>Terminates the running instance of the httpd
       web server.</dd>
 
       <dt>HELP</dt>
       <dd>Describes each of the runtime directives.</dd>
     </dl>
 
-    <p>By default these directives are issued against the instance of Apache running
+    <p>By default these directives are issued against the instance of httpd running
     in the OS address space. To issue a directive against a specific instance running
     in a protected address space, include the -p parameter along with the name of the
     address space. For more information type "apache2 Help" on the command line.</p>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="use" id="use">Configuring Apache for NetWare</a> <a title="Permanent link" href="#use" class="permalink">&para;</a></h2>
+<h2><a name="use" id="use">Configuring Apache httpd for NetWare</a> <a title="Permanent link" href="#use" class="permalink">&para;</a></h2>
 
     
 
-    <p>Apache is configured by reading configuration files usually stored
+    <p>httpd is configured by reading configuration files usually stored
     in the <code>conf</code> directory. These are the same as files used
     to configure the Unix version, but there are a few different directives for
-    Apache on NetWare. See the <a href="../mod/">Apache module
+    httpd on NetWare. See the <a href="../mod/">httpd module
     documentation</a> for all the available directives.</p>
 
-    <p>The main differences in Apache for NetWare are:</p>
+    <p>The main differences in httpd for NetWare are:</p>
 
     <ul>
       <li>
-        <p>Because Apache for NetWare is multithreaded, it does not
-        use a separate process for each request, as Apache does on some Unix
+        <p>Because httpd for NetWare is multithreaded, it does not
+        use a separate process for each request, as httpd does on some Unix
         implementations. Instead there are only threads running: a parent
         thread, and multiple child or worker threads which handle the requests.</p>
 
@@ -378,16 +378,16 @@
 
       <li>
         <p>The directives that accept filenames as arguments must use
-        NetWare filenames instead of Unix names. However, because Apache
+        NetWare filenames instead of Unix names. However, because httpd
         uses Unix-style names internally, forward slashes must be used
         rather than backslashes. It is recommended that all rooted file paths
-        begin with a volume name. If omitted, Apache will assume the
+        begin with a volume name. If omitted, httpd will assume the
         <code>SYS:</code> volume which may not be correct.</p>
       </li>
 
       <li>
-        <p>Apache for NetWare has the ability to load modules at
-        runtime, without recompiling the server. If Apache is
+        <p>httpd for NetWare has the ability to load modules at
+        runtime, without recompiling the server. If httpd is
         compiled normally, it will install a number of optional
         modules in the <code>\Apache2\modules</code> directory.
         To activate these, or other modules, the <code class="directive"><a href="../mod/mod_so.html#loadmodule">LoadModule</a></code> directive
@@ -428,12 +428,12 @@
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="comp" id="comp">Compiling Apache for NetWare</a> <a title="Permanent link" href="#comp" class="permalink">&para;</a></h2>
+<h2><a name="comp" id="comp">Compiling Apache httpd for NetWare</a> <a title="Permanent link" href="#comp" class="permalink">&para;</a></h2>
 
     
 
-    <p>Compiling Apache requires MetroWerks CodeWarrior 6.x or higher. Once
-    Apache has been built, it can be installed to the root of any NetWare
+    <p>Compiling httpd requires MetroWerks CodeWarrior 6.x or higher. Once
+    httpd has been built, it can be installed to the root of any NetWare
     volume. The default is the <code>sys:/Apache2</code> directory.</p>
 
     <p>Before running the server you must fill out the <code>conf</code>
@@ -450,7 +450,7 @@
       
 
       <p>The following development tools are required to build
-      Apache 2.0 for NetWare:</p>
+      httpd 2.0 for NetWare:</p>
 
       <ul>
         <li>Metrowerks CodeWarrior 6.0 or higher with the
@@ -475,7 +475,7 @@
 
     
 
-    <h3><a name="comp-make" id="comp-make">Building Apache using the NetWare makefiles:</a></h3>
+    <h3><a name="comp-make" id="comp-make">Building Apache httpd using the NetWare makefiles:</a></h3>
 
       
 
@@ -550,7 +550,7 @@
         <li>Copy the files <code>test_char.h</code> and <code>chartables.c</code>
         to the directory <code>\httpd-2.0\os\netware</code> on the build machine.</li>
 
-        <li>Change directory to <code>\httpd-2.0</code> and build Apache by running
+        <li>Change directory to <code>\httpd-2.0</code> and build httpd by running
         "<code>gmake -f nwgnumakefile</code>". You can create a distribution directory by
         adding an install parameter to the command, for example:
         <div class="example"><p><code>gmake -f nwgnumakefile install</code></p></div>
@@ -570,7 +570,7 @@
         <li><code>gmake -f nwgnumakefile DEBUG=1</code><p>Builds debug versions of all of the
         binaries and copies them to a <code>\debug</code> destination directory.</p></li>
 
-        <li><code>gmake -f nwgnumakefile install</code><p>Creates a complete Apache
+        <li><code>gmake -f nwgnumakefile install</code><p>Creates a complete httpd
         distribution with binaries, docs and additional support files in a
         <code>\dist\Apache2</code> directory.</p></li>
 
@@ -601,7 +601,7 @@
         <div class="example"><p><code>Set EXPERIMENTAL=1</code></p></div>
         </li>
 
-        <li>To build Apache using standard BSD style sockets rather than
+        <li>To build httpd using standard BSD style sockets rather than
         Winsock, set the environment variable <code>USE_STDSOCKETS</code>:
         <div class="example"><p><code>Set USE_STDSOCKETS=1</code></p></div>
         </li>
@@ -614,7 +614,7 @@
 
       
 
-      <p>By default Apache for NetWare uses the built-in module
+      <p>By default httpd for NetWare uses the built-in module
       <code class="module"><a href="../mod/mod_nw_ssl.html">mod_nw_ssl</a></code> to provide SSL services.  This module
       simply enables the native SSL services implemented in NetWare OS
       to handle all encryption for a given port.  Alternatively, mod_ssl
@@ -649,7 +649,7 @@
           Warning: don't use the CodeWarrior Assembler - it produces broken code!
           </li>
 
-          <li>Before building Apache, set the environment variable
+          <li>Before building httpd, set the environment variable
           <code>OSSLSDK</code> to the full path to the root of the openssl
           source code directory, and set WITH_MOD_SSL to 1.
           <div class="example"><p><code>

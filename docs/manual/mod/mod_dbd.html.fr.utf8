@@ -43,9 +43,7 @@
     SQL de se connecter à une base de données à la demande, et s'efforce
     de conférer aux bases de données une efficacité et une
     évolutivité optimales pour les MPMs threadés ou non threadés. Pour
-    plus de détails, voir le site web <a href="http://apr.apache.org/">APR</a>,
-    ainsi que cette vue d'ensemble de l'<a href="http://people.apache.org/~niq/dbd.html">environnement de
-    développement d'Apache DBD</a> par son développeur initial.
+    plus de détails, voir le site web <a href="http://apr.apache.org/">APR</a>.
 </p>
 </div>
 <div id="quickview"><h3>Sujets</h3>

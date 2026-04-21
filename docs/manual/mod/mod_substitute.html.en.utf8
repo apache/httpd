@@ -179,7 +179,7 @@ Substitute "s|http://internal.blog.example.com/|http://www.example.com/blog/|i"<
     context (<code>off</code>).
     The latter was the default in versions 2.4 and earlier, but changed
     starting with 2.5, hence <code class="directive">SubstituteInheritBefore</code>
-    set to <code>off</code> allows to restore the legacy behaviour.
+    set to <code>off</code> allows to restore the legacy behavior.
     <code class="directive">SubstituteInheritBefore</code> is itself inherited,
     hence contexts that inherit it (those that don't specify their own
     <code class="directive">SubstituteInheritBefore</code> value) will apply the

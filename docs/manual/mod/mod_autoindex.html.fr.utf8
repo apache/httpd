@@ -578,15 +578,36 @@ de l'index d'un répertoire</td></tr>
 </table>
     <p>La directive <code class="directive">IndexIgnore</code> permet
     d'effectuer des ajouts à la liste des fichiers à cacher lors de
-    l'affichage de l'index d'un répertoire. <var>fichier</var> est une
-    expression avec caractères génériques de style shell ou un nom de
-    fichier complet. Plusieurs directives IndexIgnore effectuent des
-    ajouts à la liste, et ne remplacent pas la liste des fichiers à
-    ignorer. Par défaut, la liste contient <code>.</code> (le répertoire
-    courant).</p>
+    l'affichage de l'index d'un répertoire. <var>fichier</var> est un nom de
+    fichier ou un motif qui peut contenir les caractères génériques
+    <code>?</code> et <code>*</code>. <code>?</code> correspond à tout caractère
+    unique et <code>*</code> à toute chaîne de caractères, y compris la
+    chaîne vide. Des directives IndexIgnore multiples ajoutent des
+    éléments à la liste des fichiers à ignorer au lieu de remplacer cette
+    dernière. Par défaut, la liste contient <code>.</code> (le répertoire
+    actuel).</p>
 
     <pre class="prettyprint lang-config">IndexIgnore .??* *~ *# HEADER* README* RCS CVS *,v *,t</pre>
 
+
+    <p>Si <var>fichier</var> contient un caractère <code>/</code>, seule la
+    partie après le dernier <code>/</code> est utilisée pour la recherche de
+    correspondance avec les noms de fichier. Par exemple, <code>*/.??*</code>
+    est équivalent à <code>.??*</code>.</p>
+
+    <div class="note"><h3>Différences avec les motifs à caractères génériques du shell</h3>
+      <p>La recherche de correspondance avec caractères génériques utilisée ici
+      n’est <em>pas</em> la même que la recherche de correspondance de motifs de
+      noms de fichier dans le style du shell (glob). En particulier&nbsp;:</p>
+      <ul>
+        <li>Les expressions entre crochets telles que <code>[abc]</code> ou
+	<code>[!.]</code> ne sont pas prises en charge&nbsp;; elles sont traitées
+	comme des caractères littéraux.</li>
+        <li>Un point en début de nom de fichier n’est pas traité de manière
+	particulière. Par exemple, <code>*~</code> correspondra avec
+	<code>.example~</code>, alors que ce ne sera pas le cas avec le shell.</li>
+      </ul>
+    </div>
 
     <div class="note"><h3>Expressions rationnelles</h3>
       <p>Cette directive est actuellement incompatible avec les sections
@@ -967,6 +988,17 @@ répertoire</td></tr>
       lieu de HTML 3.2.
        <strong>Cette option n'a d'effet que si <a href="#indexoptions.fancyindexing"><code>FancyIndexing</code></a>
       est aussi activé.</strong>
+      </dd>
+
+      <dt><a name="indexoptions.none" id="indexoptions.none">None</a></dt>
+
+      <dd>Le mot-clé <code>None</code> désactive toutes les options d’indexation
+      pour le répertoire. Aucune fonctionnalité d’indexation fantaisiste ne sera
+      activée.
+      <div class="note"><code>None</code> ne peut pas être préfixé par <code>+</code> ou
+      <code>-</code>, et il ne peut être combiné avec aucun autre mot-clé de la
+      directive <code class="directive">IndexOptions</code>. Si <code>None</code> est
+      spécifié, il doit s’agir de la seule option présente.</div>
       </dd>
     </dl>
 

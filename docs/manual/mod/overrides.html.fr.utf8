@@ -201,7 +201,7 @@ sortie</td></tr>
 traitement de la requête</td></tr>
 <tr class="odd"><td><a href="mod_lua.html#luaroot">LuaRoot</a></td><td class="module"><a href="mod_lua.html">mod_lua</a></td></tr>
 <tr class="odd"><td colspan="2" class="descr">Spécifie le chemin de base pour la résolution des chemins
-relatifs dans les directives de mod_lua</td></tr>
+relatifs dans les directives de <code class="module"><a href="../mod/mod_lua.html">mod_lua</a></code></td></tr>
 <tr><td><a href="mod_lua.html#luascope">LuaScope</a></td><td class="module"><a href="mod_lua.html">mod_lua</a></td></tr>
 <tr><td colspan="2" class="descr">Une valeur parmi once, request, conn, thread -- la valeur par défaut est once</td></tr>
 <tr class="odd"><td><a href="mod_macro.html#macro">&lt;Macro&gt;</a></td><td class="module"><a href="mod_macro.html">mod_macro</a></td></tr>
