@@ -1,7 +1,8 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.es.xsl"?>
-<!-- English Revision: 1855701:1883045 (outdated) -->
+<!-- English Revision: 1933179 $ -->
+<!-- Updated by: Daniel Ferradal -->
 <!-- Spanish Translation by: Luis Gil de Bernabé -->
 <!-- Reviewed by: Sergio Ramos -->
 
@@ -189,9 +190,16 @@
       <dt><module>mod_md</module> (disponible desde la versión 2.4.30)</dt>
       <dd>Soporte para el protocolo ACME para la automatización del proceso de 
         aprovisionamiento de certificados.</dd>
+      
+      <dt><module>mod_proxy_uwsgi</module> (disponible desde la versión 2.4.30)</dt>
+      <dd>módulo de pasarala para UWSGI <module>mod_proxy</module>.</dd>
 
       <dt><module>mod_socache_redis</module> (disponible desde la versión 2.4.39)</dt>
       <dd>Soporte para caché de objetos compartidos basados en <a href="htt://redis.io/">Redis</a>.</dd>
+
+      <dt><module>mod_systemd</module> (disponible desde la versión 2.4.42)</dt>
+      <dd>integración con systemd. Permite usar httpd con un servicio de sistemd con
+      <code>Type=notify</code>.</dd>
 
     </dl>
   </section>
@@ -276,8 +284,8 @@
           <module>mod_isapi</module>, ...</dt>
       <dd>La traducción de cabeceras a variables de entorno es más estricta que antes para mitigar 
       algunos de los posibles ataques de cross-site scripting, a través de la inyección de cabecera. 
-      Las cabeceras que contienen carácteres no válidos (incluyendo guiones bajos)
-      son descartadas de forma silenciosa. <a href="env.html">Las variables de entorno en
+      Los nombres de cabeceras que contienen carácteres no válidos (incluyendo guiones bajos)
+      dejan de convertirse en variables de entorno. <a href="env.html">Las variables de entorno en
       Apache</a> tienen algunos consejos en como trabajar con clientes con sistemas heredados rotos que 
       requieren de este tipo de cabeceras. (Esto afecta a todos los módulos que 
       usan éstas variables de entorno.)</dd>
