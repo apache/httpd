@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1924775:1933179 (outdated) -->
+<!-- English Revision: 1933179 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -612,7 +612,15 @@ Modified.</description>
     ne possède ni date d'expiration, ni date de dernière modification, la valeur
     spécifiée par la directive <directive
     module="mod_cache">CacheDefaultExpire</directive> servira à générer une date
-    d'expiration.  </p>
+    d'expiration. </p>
+
+    <note>Plus précisément, une réponse 200 OK n’est mise en cache que si elle
+    contient au moins un des en-têtes <code>Last-Modified</code>,
+    <code>ETag</code> ou <code>Expires</code>, ou une directive
+    <code>Cache-Control: max-age</code> ou <code>s-maxage</code>. Cette
+    directive permet de s’affranchir entièrement de cette condition préalable.
+    Si un de ces en-têtes est déjà présent, cette directive n’a aucun
+    effet.</note>
 
     <highlight language="config">
       CacheIgnoreNoLastMod On
